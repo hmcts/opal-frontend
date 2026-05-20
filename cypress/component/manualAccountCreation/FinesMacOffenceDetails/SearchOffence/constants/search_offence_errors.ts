@@ -6,7 +6,7 @@ export const SEARCH_OFFENCES_LENGTH_CHECK = {
 export const SEARCH_OFFENCES_FORMAT_CHECK = {
   offenceCodeSpecialCharPattern: 'Offence code must only contain letters or numbers',
   shortTitleSpecialCharPattern:
-    'Short title must only include letters a to z, numbers 0-9 and certain special characters (hyphens, spaces, apostrophes)',
+    'Short title must only include letters a to z, numbers 0-9 and certain special characters (such as hyphens, spaces, apostrophes and commas)',
   actAndSectionSpecialCharPattern:
-    'Act and section must only include letters a to z, numbers 0-9 and certain special characters (hyphens, spaces, apostrophes)',
+    'Act and section must only include letters a to z, numbers 0-9 and certain special characters (such as hyphens, spaces, apostrophes and commas)',
 };

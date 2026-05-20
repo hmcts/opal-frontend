@@ -109,6 +109,14 @@ When('I open the latest matching result from the Companies search results', () =
 });
 
 /**
+ * @step Navigates directly to the most recently created published account details route.
+ */
+When('I navigate directly to the last created published account details', () => {
+  log('step', 'Navigating directly to the last created published account details');
+  flow().visitLastCreatedPublishedAccountDetails();
+});
+
+/**
  * @step Verifies that any page/account/summary header contains the given string.
  *
  * @remarks
@@ -145,6 +153,11 @@ Then('I should see the convert to company account action', () => {
 Then('I should see the convert to individual account action', () => {
   log('assert', 'Convert to individual account action is visible');
   flow().assertConvertToIndividualActionVisible();
+});
+
+Then('I should see the add parent or guardian details action', () => {
+  log('assert', 'Add parent or guardian details action is visible');
+  flow().assertAddParentGuardianActionVisible();
 });
 
 Then('I should not see the convert to company account action', () => {
@@ -199,6 +212,11 @@ Then('the Company details form should be pre-populated with:', (table: DataTable
 When('I start converting the account to an individual account', () => {
   log('step', 'Start converting account to individual');
   flow().openConvertToIndividualConfirmation();
+});
+
+When('I start adding parent or guardian details', () => {
+  log('step', 'Start adding parent or guardian details');
+  flow().openAddParentGuardianDetails();
 });
 
 Then(
@@ -298,6 +316,11 @@ Then('I should see the primary email address contains {string}', (expected: stri
 When('I go to the Parent or guardian details section and the header is {string}', (expected: string) => {
   log('step', 'Navigate to Parent/Guardian details', { expected });
   flow().goToParentGuardianDetailsAndAssert(expected);
+});
+
+Then('I should be on the add parent or guardian details page', () => {
+  log('assert', 'Add parent or guardian details page is visible');
+  flow().assertOnAddParentGuardianDetailsPage();
 });
 
 /**
@@ -637,6 +660,22 @@ Then('I should return to the Enforcement tab', () => {
 });
 
 /**
+ * @step Navigates to the Impositions tab.
+ */
+When('I go to the Impositions tab', () => {
+  log('step', 'Navigate to Impositions tab');
+  navActions().goToImpositionsTab();
+});
+
+/**
+ * @step Asserts the Impositions tab is active.
+ */
+Then('I should return to the Impositions tab', () => {
+  log('assert', 'Impositions tab is active');
+  navActions().assertImpositionsTabIsActive();
+});
+
+/**
  * @step Asserts the enforcement override success banner text.
  */
 Then('the enforcement override success banner is {string}', (expected: string) => {
@@ -776,6 +815,30 @@ When('I edit the Parent or guardian details without making changes', () => {
   flow().editParentGuardianDetailsWithoutChanges();
 });
 
+When('I enter {string} into the parent or guardian first name field', (value: string) => {
+  const valueWithUniq = applyUniqPlaceholder(value);
+  log('step', 'Enter parent or guardian first name', { value: valueWithUniq });
+  flow().enterAddParentGuardianFirstName(valueWithUniq);
+});
+
+When('I enter {string} into the amend parent or guardian first name field', (value: string) => {
+  const valueWithUniq = applyUniqPlaceholder(value);
+  log('step', 'Enter amend parent or guardian first name', { value: valueWithUniq });
+  flow().enterAmendParentGuardianFirstName(valueWithUniq);
+});
+
+When('I enter {string} into the parent or guardian last name field', (value: string) => {
+  const valueWithUniq = applyUniqPlaceholder(value);
+  log('step', 'Enter parent or guardian last name', { value: valueWithUniq });
+  flow().enterParentGuardianLastName(valueWithUniq);
+});
+
+When('I enter {string} into the parent or guardian address line 1 field', (value: string) => {
+  const valueWithUniq = applyUniqPlaceholder(value);
+  log('step', 'Enter parent or guardian address line 1', { value: valueWithUniq });
+  flow().enterParentGuardianAddressLine1(valueWithUniq);
+});
+
 /**
  * @step Edits the Company details, changing the Company name to a given value.
  *
@@ -847,12 +910,62 @@ When('I attempt to cancel editing and choose OK on the confirmation dialog', () 
   commonFlow().cancelEditAndLeave();
 });
 
+When('I cancel adding parent or guardian details without making changes', () => {
+  log('step', 'Cancel add parent or guardian details without making changes');
+  flow().cancelAddParentGuardianWithoutChanges();
+});
+
+When('I attempt to cancel adding parent or guardian details and choose Cancel on the confirmation dialog', () => {
+  log('step', 'Cancel add parent or guardian details and stay on page');
+  flow().cancelAddParentGuardianAndStay();
+});
+
+When('I attempt to cancel adding parent or guardian details and choose OK on the confirmation dialog', () => {
+  log('step', 'Cancel add parent or guardian details and leave page');
+  flow().cancelAddParentGuardianAndLeave();
+});
+
+When('I start changing the non-paying parent or guardian details', () => {
+  log('step', 'Start changing non-paying parent or guardian details');
+  flow().openNonPayingParentGuardianChangeForm();
+});
+
+When('I cancel changing parent or guardian details without making changes', () => {
+  log('step', 'Cancel amend parent or guardian details without making changes');
+  flow().cancelAmendParentGuardianWithoutChanges();
+});
+
+When('I attempt to cancel changing parent or guardian details and choose Cancel on the confirmation dialog', () => {
+  log('step', 'Cancel amend parent or guardian details and stay on page');
+  flow().cancelAmendParentGuardianAndStay();
+});
+
+When('I attempt to cancel changing parent or guardian details and choose OK on the confirmation dialog', () => {
+  log('step', 'Cancel amend parent or guardian details and leave page');
+  flow().cancelAmendParentGuardianAndLeave();
+});
+
 /**
  * @step Ensures we remain on the edit page after cancelling (no navigation occurred).
  */
 Then('I should remain on the defendant edit page', () => {
   log('assert', 'Remain on defendant edit page');
   editDefendantDetails().assertStillOnEditPage();
+});
+
+Then('I should remain on the add parent or guardian details page', () => {
+  log('assert', 'Remain on add parent or guardian details page');
+  flow().assertOnAddParentGuardianDetailsPage();
+});
+
+Then('I should be on the amend parent or guardian details page', () => {
+  log('assert', 'Amend parent or guardian details page is visible');
+  flow().assertOnAmendParentGuardianDetailsPage();
+});
+
+Then('I should remain on the amend parent or guardian details page', () => {
+  log('assert', 'Remain on amend parent or guardian details page');
+  flow().assertOnAmendParentGuardianDetailsPage();
 });
 
 /**
@@ -921,8 +1034,21 @@ Then('I should see the defendant name contains {string}', (expected: string) => 
  * @param expected - Text expected within the parent/guardian name.
  */
 Then('I should see the parent or guardian name contains {string}', (expected: string) => {
-  log('assert', 'Parent or guardian name contains', { expected });
-  flow().assertParentGuardianNameContains(expected);
+  const expectedWithUniq = applyUniqPlaceholder(expected);
+  log('assert', 'Parent or guardian name contains', { expected: expectedWithUniq });
+  flow().assertParentGuardianNameContains(expectedWithUniq);
+});
+
+Then('I should see the parent or guardian first name field contains {string}', (expected: string) => {
+  const expectedWithUniq = applyUniqPlaceholder(expected);
+  log('assert', 'Parent or guardian first name field contains', { expected: expectedWithUniq });
+  flow().assertAddParentGuardianFirstName(expectedWithUniq);
+});
+
+Then('I should see the amend parent or guardian first name field contains {string}', (expected: string) => {
+  const expectedWithUniq = applyUniqPlaceholder(expected);
+  log('assert', 'Amend parent or guardian first name field contains', { expected: expectedWithUniq });
+  flow().assertAmendParentGuardianFirstName(expectedWithUniq);
 });
 
 /**
@@ -1020,6 +1146,26 @@ Then('I verify no amendments were created via API for company details', () => {
 Then('I verify no amendments were created via API for parent or guardian details', () => {
   log('assert', 'Verify no amendments were created via API for parent or guardian details');
   flow().verifyNoParentGuardianAmendments();
+});
+
+When('I attempt to save the parent or guardian add details', () => {
+  log('step', 'Attempt to save add parent or guardian details');
+  flow().attemptSaveAddParentGuardianDetails();
+});
+
+Then('I should see the parent or guardian add error summary contains {string}', (expected: string) => {
+  log('assert', 'Parent or guardian add error summary contains', { expected });
+  flow().assertAddParentGuardianErrorSummaryContains(expected);
+});
+
+When('I attempt to save the parent or guardian amend details', () => {
+  log('step', 'Attempt to save amend parent or guardian details');
+  flow().attemptSaveAmendParentGuardianDetails();
+});
+
+Then('I should see the parent or guardian amend error summary contains {string}', (expected: string) => {
+  log('assert', 'Parent or guardian amend error summary contains', { expected });
+  flow().assertAmendParentGuardianErrorSummaryContains(expected);
 });
 
 /**

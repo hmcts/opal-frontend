@@ -24,6 +24,7 @@ const SELECTED_BUSINESS_UNIT_ALIAS = 'selectedConsolidationBusinessUnit';
 
 /** Actions and assertions for the Consolidation flow screens. */
 export class ConsolidationActions {
+  private readonly selectBusinessUnitPath = '/fines/consolidation/select-business-unit';
   private readonly textFieldSelectorMap: Record<string, string> = {
     'account number': AccountSearchLocators.accountNumberInput,
     'national insurance number': AccountSearchLocators.nationalInsuranceNumberInput,
@@ -58,8 +59,24 @@ export class ConsolidationActions {
   public openFromAccountsPage(): void {
     log('navigate', 'Navigating to Consolidate accounts');
     cy.get(CONSOLIDATION_LINK, { timeout: 10_000 }).should('be.visible').click({ force: true });
-    cy.location('pathname', { timeout: 10_000 }).should('include', '/fines/consolidation/select-business-unit');
+    cy.location('pathname', { timeout: 10_000 }).should('include', this.selectBusinessUnitPath);
     cy.get('h1.govuk-heading-l', { timeout: 10_000 }).should('contain.text', 'Consolidate accounts');
+  }
+
+  /**
+   * Asserts that the Consolidate accounts link is not rendered on the Accounts landing page.
+   */
+  public assertLinkHiddenOnAccountsPage(): void {
+    log('assert', 'Checking Consolidate accounts link is hidden on Accounts');
+    cy.get('body', { timeout: 10_000 }).find(CONSOLIDATION_LINK).should('not.exist');
+  }
+
+  /**
+   * Visits the Consolidate accounts select business unit route directly.
+   */
+  public visitPageDirectly(): void {
+    log('navigate', 'Visiting Consolidate accounts directly', { path: this.selectBusinessUnitPath });
+    cy.visit(this.selectBusinessUnitPath);
   }
 
   /**

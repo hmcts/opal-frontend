@@ -159,12 +159,45 @@ describe('FinesAccDefendantDetailsAtAGlanceTabComponent', () => {
   });
 
   it('should handle add parent or guardian details', () => {
+    fixture.componentRef.setInput('hasAccountMaintenencePermission', true);
+    fixture.componentRef.setInput('canAddParentOrGuardianDetails', true);
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     vi.spyOn<any, any>(component.addParentOrGuardianDetails, 'emit');
     component.handleAddParentOrGuardianDetails();
     expect(component.addParentOrGuardianDetails.emit).toHaveBeenCalledWith(
       FINES_ACC_PARTY_ADD_AMEND_CONVERT_PARTY_TYPES.PARENT_GUARDIAN,
     );
+  });
+
+  it('should not render add parent or guardian details without permission', () => {
+    fixture.componentRef.setInput('hasAccountMaintenencePermission', false);
+    fixture.componentRef.setInput('canAddParentOrGuardianDetails', true);
+    fixture.componentRef.setInput('tabData', {
+      ...structuredClone(OPAL_FINES_ACCOUNT_DEFENDANT_ACCOUNT_PARTY_MOCK),
+      defendant_account_party: {
+        ...structuredClone(OPAL_FINES_ACCOUNT_DEFENDANT_ACCOUNT_PARTY_MOCK.defendant_account_party),
+        is_debtor: false,
+      },
+    });
+    fixture.detectChanges();
+
+    const compiled = fixture.nativeElement as HTMLElement;
+
+    expect(compiled.textContent).not.toContain('Actions');
+    expect(compiled.textContent).not.toContain('Add parent or guardian details');
+  });
+
+  it('should not emit add parent or guardian details without permission', () => {
+    fixture.componentRef.setInput('hasAccountMaintenencePermission', false);
+    fixture.componentRef.setInput('canAddParentOrGuardianDetails', true);
+    const event = { preventDefault: vi.fn() } as unknown as Event;
+
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    vi.spyOn<any, any>(component.addParentOrGuardianDetails, 'emit');
+    component.handleAddParentOrGuardianDetails(event);
+
+    expect(event.preventDefault).toHaveBeenCalled();
+    expect(component.addParentOrGuardianDetails.emit).not.toHaveBeenCalled();
   });
 
   it('should not emit a convert event when no convert action is available', () => {

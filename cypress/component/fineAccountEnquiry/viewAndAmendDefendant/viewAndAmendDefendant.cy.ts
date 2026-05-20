@@ -713,19 +713,19 @@ describe('FinesAccPartyAddAmendConvert - View and Amend Defendant', () => {
       const dataTypeValidationMock = structuredClone(minimalMock);
 
       // Set up data with invalid characters for validation testing
-      dataTypeValidationMock.defendant_account_party.party_details.individual_details!.forenames = 'John123';
-      dataTypeValidationMock.defendant_account_party.party_details.individual_details!.surname = 'Doe@Smith';
+      dataTypeValidationMock.defendant_account_party.party_details.individual_details!.forenames = 'José';
+      dataTypeValidationMock.defendant_account_party.party_details.individual_details!.surname = 'O’Connor';
       dataTypeValidationMock.defendant_account_party.party_details.individual_details!.individual_aliases = [
         {
           alias_id: '1',
           sequence_number: 1,
-          forenames: 'Johnny$',
-          surname: 'Smith#Brown',
+          forenames: 'Chloë',
+          surname: 'Núñez',
         },
       ];
-      dataTypeValidationMock.defendant_account_party.address!.address_line_1 = '123 Main St @#$';
-      dataTypeValidationMock.defendant_account_party.address!.address_line_2 = 'Apt 4B %^&';
-      dataTypeValidationMock.defendant_account_party.address!.address_line_3 = 'Building C *()+=';
+      dataTypeValidationMock.defendant_account_party.address!.address_line_1 = '123 Café Street';
+      dataTypeValidationMock.defendant_account_party.address!.address_line_2 = 'Appartement Étage 2';
+      dataTypeValidationMock.defendant_account_party.address!.address_line_3 = 'Bâtiment C';
       dataTypeValidationMock.defendant_account_party.address!.postcode = 'M1& 1AA';
       dataTypeValidationMock.defendant_account_party.vehicle_details!.vehicle_make_and_model = 'Toyota Corolla {}[]';
       dataTypeValidationMock.defendant_account_party.vehicle_details!.vehicle_registration = 'ABC123|\\';
@@ -1223,23 +1223,23 @@ describe('FinesAccPartyAddAmendConvert - View and Amend Defendant', () => {
 
       // Set all fields with invalid characters using API structure
       dataTypeCompanyMock.defendant_account_party.party_details.organisation_details!.organisation_name =
-        'ABC Company Ltd @#$';
+        'Müller Group';
       dataTypeCompanyMock.defendant_account_party.party_details.organisation_details!.organisation_aliases = [
         {
           alias_id: '1',
           sequence_number: 1,
-          organisation_name: 'Alias One Corp 123!',
+          organisation_name: 'Société Alpha',
         },
         {
           alias_id: '2',
           sequence_number: 2,
-          organisation_name: 'Alias Two Ltd %^&',
+          organisation_name: 'Niño Limited',
         },
       ];
       // AC7b: Alphanumeric fields (letters, numbers, hyphens, spaces, apostrophes only)
-      dataTypeCompanyMock.defendant_account_party.address!.address_line_1 = '123 Main St @#$';
-      dataTypeCompanyMock.defendant_account_party.address!.address_line_2 = 'Suite 4B %^&';
-      dataTypeCompanyMock.defendant_account_party.address!.address_line_3 = 'Building C *()+=';
+      dataTypeCompanyMock.defendant_account_party.address!.address_line_1 = '123 Café Street';
+      dataTypeCompanyMock.defendant_account_party.address!.address_line_2 = 'Suite Élite';
+      dataTypeCompanyMock.defendant_account_party.address!.address_line_3 = 'Bâtiment C';
       dataTypeCompanyMock.defendant_account_party.address!.postcode = 'M1& 1AA';
       dataTypeCompanyMock.defendant_account_party.vehicle_details!.vehicle_make_and_model = 'Mercedes Sprinter <>?/';
       dataTypeCompanyMock.defendant_account_party.vehicle_details!.vehicle_registration = 'ABC123~`';
@@ -1672,19 +1672,19 @@ describe('FinesAccPartyAddAmendConvert - View and Amend Defendant', () => {
       nonPayingDataTypeValidationMock.defendant_account_party.is_debtor = false;
 
       // Set up data with invalid characters for validation testing
-      nonPayingDataTypeValidationMock.defendant_account_party.party_details.individual_details!.forenames = 'John123';
-      nonPayingDataTypeValidationMock.defendant_account_party.party_details.individual_details!.surname = 'Doe@Smith';
+      nonPayingDataTypeValidationMock.defendant_account_party.party_details.individual_details!.forenames = 'José';
+      nonPayingDataTypeValidationMock.defendant_account_party.party_details.individual_details!.surname = 'O’Connor';
       nonPayingDataTypeValidationMock.defendant_account_party.party_details.individual_details!.individual_aliases = [
         {
           alias_id: '1',
           sequence_number: 1,
-          forenames: 'Johnny$',
-          surname: 'Smith#Brown',
+          forenames: 'Chloë',
+          surname: 'Núñez',
         },
       ];
-      nonPayingDataTypeValidationMock.defendant_account_party.address!.address_line_1 = '123 Main St @#$';
-      nonPayingDataTypeValidationMock.defendant_account_party.address!.address_line_2 = 'Apt 4B %^&';
-      nonPayingDataTypeValidationMock.defendant_account_party.address!.address_line_3 = 'Building C *()+=';
+      nonPayingDataTypeValidationMock.defendant_account_party.address!.address_line_1 = '123 Café Street';
+      nonPayingDataTypeValidationMock.defendant_account_party.address!.address_line_2 = 'Appartement Étage 2';
+      nonPayingDataTypeValidationMock.defendant_account_party.address!.address_line_3 = 'Bâtiment C';
       nonPayingDataTypeValidationMock.defendant_account_party.address!.postcode = 'M1& 1AA';
 
       setupComponent('INDIVIDUAL', nonPayingDataTypeValidationMock);

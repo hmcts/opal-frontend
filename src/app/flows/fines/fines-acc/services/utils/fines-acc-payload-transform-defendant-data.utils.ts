@@ -210,8 +210,8 @@ export const transformDefendantAccountPartyPayload = (
     defendant_account_party;
 
   const { organisation_flag } = party_details;
-  const individualDetails = party_details.individual_details;
-  const organisationDetails = party_details.organisation_details;
+  const individualDetails = party_details.individual_details ?? null;
+  const organisationDetails = party_details.organisation_details ?? null;
   const isCompany = partyType === 'company';
   const isIndividual = partyType === 'individual';
   const isParentGuardian = partyType === 'parentGuardian';

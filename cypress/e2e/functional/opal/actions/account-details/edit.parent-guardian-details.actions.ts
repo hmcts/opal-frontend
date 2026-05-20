@@ -8,6 +8,26 @@ const log = createScopedLogger('EditParentGuardianDetailsActions');
 /** Actions for editing Parent/Guardian details within Account Details. */
 export class EditParentGuardianDetailsActions {
   /**
+   * Clears and sets a text input within the Parent/Guardian edit form.
+   *
+   * Supports empty-string values so validation scenarios can clear a mandatory field
+   * without trying to type an empty string through Cypress.
+   *
+   * @param selector - Input selector to update.
+   * @param value - Value to set after clearing the field.
+   * @param timeout - Max time to wait for the field visibility.
+   */
+  private setTextInputValue(selector: string, value: string, timeout: number): void {
+    cy.get(selector, { timeout }).should('be.visible').and('be.enabled').scrollIntoView().clear({ force: true });
+
+    if (value) {
+      cy.get(selector, { timeout }).type(value, { delay: 0, force: true });
+    }
+
+    cy.get(selector, { timeout }).blur().should('have.value', value);
+  }
+
+  /**
    * Ensures the user is still on the edit page (form visible, not navigated away).
    */
   public assertStillOnEditPage(): void {
@@ -65,13 +85,7 @@ export class EditParentGuardianDetailsActions {
     cy.get(L.form, { timeout }).should('be.visible');
 
     log('action', `Typing First names: "${newFirstName}"`);
-    cy.get(L.fields.firstNames, { timeout })
-      .should('be.visible')
-      .and('be.enabled')
-      .scrollIntoView()
-      .clear({ force: true })
-      .type(newFirstName, { delay: 0, force: true })
-      .should('have.value', newFirstName);
+    this.setTextInputValue(L.fields.firstNames, newFirstName, timeout);
 
     log('done', `Entered First names -> "${newFirstName}"`);
   }
@@ -93,15 +107,36 @@ export class EditParentGuardianDetailsActions {
     cy.get(L.form, { timeout }).should('be.visible');
 
     log('action', `Typing Last name: "${newLastName}"`);
-    cy.get(L.fields.lastName, { timeout })
-      .should('be.visible')
-      .and('be.enabled')
-      .scrollIntoView()
-      .clear({ force: true })
-      .type(newLastName, { delay: 0, force: true })
-      .should('have.value', newLastName);
+    cy.get(L.fields.lastName, { timeout }).should('be.visible').and('be.enabled').scrollIntoView().clear({
+      force: true,
+    });
+
+    if (newLastName) {
+      cy.get(L.fields.lastName, { timeout }).type(newLastName, { delay: 0, force: true });
+    }
+
+    cy.get(L.fields.lastName, { timeout }).blur().should('have.value', newLastName.toUpperCase());
 
     log('done', `Entered Last name -> "${newLastName}"`);
+  }
+
+  /**
+   * Edits the "Address line 1" input within the Parent/Guardian edit form.
+   *
+   * @param newAddressLine1 - The new address line 1 value to enter.
+   * @param opts Optional configuration.
+   * @param opts.timeout Max time to wait for the form/field visibility (default 10_000 ms).
+   */
+  public editAddressLine1(newAddressLine1: string, opts?: { timeout?: number }): void {
+    const timeout = opts?.timeout ?? 10_000;
+
+    log('method', 'Editing Address line 1 (Parent/Guardian edit form)');
+    cy.get(L.form, { timeout }).should('be.visible');
+
+    log('action', `Typing Address line 1: "${newAddressLine1}"`);
+    this.setTextInputValue(L.fields.address.line1, newAddressLine1, timeout);
+
+    log('done', `Entered Address line 1 -> "${newAddressLine1}"`);
   }
 
   /**
@@ -141,7 +176,7 @@ export class EditParentGuardianDetailsActions {
     log('assert', `Verifying Last name equals "${expectedLastName}" (edit form)`);
     cy.get(L.form, { timeout }).should('be.visible');
 
-    cy.get(L.fields.lastName, { timeout }).should('be.visible').and('have.value', expectedLastName);
+    cy.get(L.fields.lastName, { timeout }).should('be.visible').and('have.value', expectedLastName.toUpperCase());
 
     log('done', `Verified Last name -> "${expectedLastName}"`);
   }
@@ -152,5 +187,33 @@ export class EditParentGuardianDetailsActions {
   public saveChanges(): void {
     log('action', 'Saving Parent/Guardian details');
     cy.get(L.actions.saveButton, { timeout: 10_000 }).should('be.visible').click();
+  }
+
+  /**
+   * Clicks the Cancel link on the Parent/Guardian form.
+   */
+  public clickCancelLink(): void {
+    log('action', 'Clicking Parent/Guardian cancel link');
+    cy.get(L.actions.cancelLink, { timeout: 10_000 }).should('be.visible').click();
+  }
+
+  /**
+   * Asserts the information banner text shown in youth add mode.
+   *
+   * @param expected - Expected text within the information banner.
+   */
+  public assertInformationBannerText(expected: string): void {
+    log('assert', 'Verifying Parent/Guardian information banner text', { expected });
+    cy.get(L.informationBannerText, { timeout: 10_000 }).should('contain.text', expected);
+  }
+
+  /**
+   * Asserts the edit/add error summary contains the expected message.
+   *
+   * @param expected - Expected text within the error summary.
+   */
+  public assertErrorSummaryContains(expected: string): void {
+    log('assert', 'Verifying Parent/Guardian error summary contains text', { expected });
+    cy.get(L.errorSummary, { timeout: 10_000 }).should('be.visible').and('contain.text', expected);
   }
 }

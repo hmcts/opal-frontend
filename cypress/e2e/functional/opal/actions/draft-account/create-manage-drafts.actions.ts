@@ -4,17 +4,38 @@
  */
 import { createScopedLogger } from '../../../../../support/utils/log.helper';
 import { CreateManageDraftsLocators as L } from '../../../../../shared/selectors/create-manage-drafts.locators';
+import { DraftAccountsTableLocators as TableL } from '../../../../../shared/selectors/draft-accounts-table.locators';
 import { DraftAccountsCommonActions } from './draft-accounts-common.actions';
 
 export type CreateManageTab = 'In review' | 'Rejected' | 'Approved' | 'Deleted';
 
 const log = createScopedLogger('CreateManageDraftsActions');
 const CREATE_AND_MANAGE_DRAFT_ACCOUNTS_LINK = '#finesCavInputterLink';
+const ACCOUNTS_DASHBOARD_PATH = '/fines/dashboard/accounts';
+const CREATE_AND_MANAGE_DRAFT_ACCOUNTS_PATH = '/fines/draft/create-and-manage/tabs#review';
 
 /**
  * Actions for the **Create and Manage Draft Accounts** page (inputter view).
  */
 export class CreateManageDraftsActions extends DraftAccountsCommonActions {
+  /**
+   * Visits the Accounts dashboard directly.
+   */
+  visitAccountsDashboardDirectly(): void {
+    log('navigate', 'Visiting Accounts dashboard directly', { path: ACCOUNTS_DASHBOARD_PATH });
+    cy.visit(ACCOUNTS_DASHBOARD_PATH);
+  }
+
+  /**
+   * Visits the Create and Manage Draft Accounts route directly.
+   */
+  visitPageDirectly(): void {
+    log('navigate', 'Visiting Create and Manage Draft Accounts directly', {
+      path: CREATE_AND_MANAGE_DRAFT_ACCOUNTS_PATH,
+    });
+    cy.visit(CREATE_AND_MANAGE_DRAFT_ACCOUNTS_PATH);
+  }
+
   /**
    * Opens the Create and Manage Draft Accounts page from the Accounts landing page.
    */
@@ -88,5 +109,27 @@ export class CreateManageDraftsActions extends DraftAccountsCommonActions {
   clickCreateAccount(): void {
     log('navigate', 'Clicking Create account button from Create and Manage Draft Accounts');
     cy.get(L.createAccountButton, this.common.getTimeoutOptions()).should('be.visible').click({ force: true });
+  }
+
+  /**
+   * Asserts the approved account number is rendered as a hyperlink.
+   * @param accountNumber - Account number expected in the Approved tab.
+   */
+  assertApprovedAccountNumberIsLink(accountNumber: string): void {
+    log('assert', 'Asserting approved account number is rendered as a hyperlink', { accountNumber });
+    cy.contains(TableL.cells.accountLink, accountNumber, this.common.getTimeoutOptions()).should('be.visible');
+  }
+
+  /**
+   * Asserts the approved account number is rendered as plain text.
+   * @param accountNumber - Account number expected in the Approved tab.
+   */
+  assertApprovedAccountNumberIsPlainText(accountNumber: string): void {
+    log('assert', 'Asserting approved account number is rendered as plain text', { accountNumber });
+    cy.contains(`${TableL.rows} td#account`, accountNumber, this.common.getTimeoutOptions())
+      .should('be.visible')
+      .then(($cell) => {
+        expect($cell.find('a'), `Expected ${accountNumber} to render without a hyperlink`).to.have.length(0);
+      });
   }
 }

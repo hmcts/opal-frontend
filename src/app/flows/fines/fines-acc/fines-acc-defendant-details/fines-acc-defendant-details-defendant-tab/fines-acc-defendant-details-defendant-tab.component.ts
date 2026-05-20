@@ -46,6 +46,13 @@ export class FinesAccDefendantDetailsDefendantTabComponent {
     };
   }
 
+  /**
+   * Determines whether the add parent/guardian action should be available.
+   */
+  public get addParentOrGuardianAction(): boolean {
+    return this.hasAccountMaintenencePermission && this.canAddParentOrGuardianDetails;
+  }
+
   public handleConvertAccount(event?: Event): void {
     event?.preventDefault();
     if (this.convertAction?.interactive) {
@@ -81,6 +88,8 @@ export class FinesAccDefendantDetailsDefendantTabComponent {
    */
   public handleAddParentOrGuardianDetails(event?: Event): void {
     event?.preventDefault();
-    this.addParentOrGuardianDetails.emit(FINES_ACC_PARTY_ADD_AMEND_CONVERT_PARTY_TYPES.PARENT_GUARDIAN);
+    if (this.addParentOrGuardianAction) {
+      this.addParentOrGuardianDetails.emit(FINES_ACC_PARTY_ADD_AMEND_CONVERT_PARTY_TYPES.PARENT_GUARDIAN);
+    }
   }
 }

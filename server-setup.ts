@@ -13,6 +13,7 @@ import {
   SessionStorageConfiguration,
   TransferServerState,
   OpalUserServiceConfiguration,
+  UserStateConfiguration,
 } from '@hmcts/opal-frontend-common-node/interfaces';
 import { DEFAULT_PROXY_CONFIG } from '@hmcts/opal-frontend-common-node/constants';
 
@@ -23,6 +24,7 @@ export function getRoutesConfig(): {
   sessionExpiryConfiguration: ExpiryConfiguration;
   routesConfiguration: RoutesConfiguration;
   opalUserServiceConfiguration: OpalUserServiceConfiguration;
+  userStateConfiguration: UserStateConfiguration;
   proxyConfiguration: ProxyConfiguration;
 } {
   const testMode = config.get<boolean>('expiry.testMode');
@@ -36,7 +38,6 @@ export function getRoutesConfig(): {
 
   const proxyConfiguration: ProxyConfiguration = {
     ...DEFAULT_PROXY_CONFIG,
-    opalApiUrl: config.get('opal-api.url'),
     opalFinesServiceUrl: config.get('opal-api.opal-fines-service'),
     opalUserServiceUrl: config.get('opal-api.opal-user-service'),
   };
@@ -57,15 +58,23 @@ export function getRoutesConfig(): {
     updateUserUrl: config.get('opal-user-service-urls.updateUserUrl'),
   };
 
-  return { sessionExpiryConfiguration, routesConfiguration, opalUserServiceConfiguration, proxyConfiguration };
+  const userStateConfiguration: UserStateConfiguration = {
+    cacheKeyPrefix: config.get('user-state.cacheKeyPrefix'),
+    routePath: config.get('user-state.routePath'),
+    tokenClaim: config.get('user-state.tokenClaim'),
+  };
+
+  return {
+    sessionExpiryConfiguration,
+    routesConfiguration,
+    opalUserServiceConfiguration,
+    userStateConfiguration,
+    proxyConfiguration,
+  };
 }
 
 export function configureApiProxyRoutes(app: Express, proxyConfiguration: ProxyConfiguration): void {
   const ipLoggingEnabled = config.get('features.ip-logging.enabled') as boolean;
-
-  if (proxyConfiguration.opalApiUrl) {
-    app.use('/api', OpalApiProxy(proxyConfiguration.opalApiUrl, ipLoggingEnabled));
-  }
 
   if (proxyConfiguration.opalFinesServiceUrl) {
     app.use('/opal-fines-service', OpalApiProxy(proxyConfiguration.opalFinesServiceUrl, ipLoggingEnabled));

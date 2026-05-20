@@ -71,11 +71,20 @@ const withUniq = (value: string) => applyUniqPlaceholder(value ?? '');
 
 installDraftAccountCleanup();
 /**
+ * @step Confirms the user is on the Search Landing Page.
+ * @description Asserts the Search Landing Page is visible to ensure navigation is in a known state.
+ */
+Then('I should be on the Search Page', () => {
+  log('assert', 'Asserting Search Landing Page is visible');
+  home().assertOnSearchLandingPage();
+});
+
+/**
  * @step Confirms the user is on the dashboard.
- * @description Asserts the dashboard is visible to ensure navigation is in a known state.
+ * @description Historical alias for the default Search landing page used across the functional suite.
  */
 Then('I should be on the dashboard', () => {
-  log('assert', 'Asserting dashboard is visible');
+  log('assert', 'Asserting dashboard/Search landing page is visible');
   home().assertOnSearchLandingPage();
 });
 /**

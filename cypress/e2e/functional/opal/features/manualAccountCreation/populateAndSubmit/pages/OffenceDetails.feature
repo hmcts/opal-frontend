@@ -774,22 +774,39 @@ Feature: Manual account creation - Offence Details
 
 
   @JIRA-STORY:PO-667 @JIRA-STORY:PO-987 @JIRA-EPIC:PO-545
-  Scenario: AC1b-d Single-field offence searches
+  Scenario: AC1b Offence code searches match codes from the start only
     When I follow the offence search link in the same tab
-
-    # Offence code only
     And I search offences with:
-      | Offence code | A |
+      | Offence code | TP47 |
+    Then I see offence search results contain rows with values in column:
+      | Column | Values           |
+      | Code   | TP47033, TP47032 |
 
-    # Short title only
     When I return to the offence search form
     And I search offences with:
-      | Short title | d |
+      | Offence code | 11003 |
+    Then I should see the header containing text "Search results"
+    And I see the following text "There are no matching results"
 
-    # Act and Section only
-    When I return to the offence search form
+
+  @JIRA-STORY:PO-667 @JIRA-STORY:PO-987 @JIRA-EPIC:PO-545
+  Scenario: AC1c Short title searches match text contained within results
+    When I follow the offence search link in the same tab
     And I search offences with:
-      | Act and section | e |
+      | Short title | item |
+    Then I see offence search results contain rows with values in column:
+      | Column      | Values         |
+      | Short title | dangerous item |
+
+
+  @JIRA-STORY:PO-667 @JIRA-STORY:PO-987 @JIRA-EPIC:PO-545
+  Scenario: AC1d Act and section searches match text contained within results
+    When I follow the offence search link in the same tab
+    And I search offences with:
+      | Act and section | Byelaws |
+    Then I see offence search results contain rows with values in column:
+      | Column          | Values         |
+      | Act and section | London Byelaws |
 
 
   @JIRA-STORY:PO-667 @JIRA-STORY:PO-987 @JIRA-EPIC:PO-545
@@ -831,34 +848,8 @@ Feature: Manual account creation - Offence Details
       | Act and section | London |
 
   @JIRA-STORY:PO-667 @JIRA-STORY:PO-987 @JIRA-EPIC:PO-545
-  Scenario: AC1g-h Starts-with, contains and max-results offence searches
+  Scenario: AC1g Broad offence code searches show the max results message
     When I follow the offence search link in the same tab
-
-    # Starts-with (offence code)
-    And I search offences with:
-      | Offence code | TP47 |
-    Then I see offence search results contain rows with values in column:
-      | Column | Values           |
-      | Code   | TP47033, TP47032 |
-
-    When I return to the offence search form
-    And I search offences with:
-      | Short title  | dangerous |
-      | Offence code |           |
-    Then I see offence search results contain rows with values in column:
-      | Column      | Values                            |
-      | Short title | dangerous item, dangerous driving |
-
-    When I return to the offence search form
-    And I search offences with:
-      | Act and section | London |
-      | Short title     |        |
-    Then I see offence search results contain rows with values in column:
-      | Column          | Values         |
-      | Act and section | London Byelaws |
-
-    # Max results message
-    When I return to the offence search form
     And I search offences with:
       | Offence code    | A |
       | Act and section |   |

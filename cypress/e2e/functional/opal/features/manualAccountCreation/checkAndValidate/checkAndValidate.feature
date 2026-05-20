@@ -336,7 +336,7 @@ Feature: Navigate and edit sections from task list
     Then I should see the header containing text "Create accounts"
 
   @JIRA-EPIC:PO-2220
-  @JIRA-STORY:PO-607 @JIRA-TEST-KEY:PO-3883
+  @JIRA-STORY:PO-607 @JIRA-STORY:PO-3720 @JIRA-TEST-KEY:PO-3883 @R1B
   Scenario: Approved tab lists recent accounts
     Given I create a "company" approved account with the following details:
       | account_snapshot.defendant_name | TEST New Company Ltd {uniq} |
@@ -359,6 +359,8 @@ Feature: Navigate and edit sections from task list
       | Approved      | days ago           |
       | Account type  | Fine               |
       | Business unit | Business Unit A    |
+    And the approved draft account number "FP123456" is shown as a hyperlink
+    And the approved draft account number "FINE123456" is shown as a hyperlink
 
   @JIRA-EPIC:PO-855
   @JIRA-STORY:PO-1804 @JIRA-TEST-KEY:PO-3884
