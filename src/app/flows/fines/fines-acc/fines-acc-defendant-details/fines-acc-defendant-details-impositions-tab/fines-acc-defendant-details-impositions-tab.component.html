@@ -131,7 +131,7 @@
                 }
               </td>
               <td opal-lib-moj-sortable-table-row-data [id]="'imposition-imposed-amount-' + rowIndex">
-                {{ imposition.Imposed | monetary }}
+                {{ imposition.Imposed | monetary: 'remove-minus-symbol' }}
               </td>
               <td opal-lib-moj-sortable-table-row-data [id]="'imposition-paid-amount-' + rowIndex">
                 {{ imposition['Paid/Written off'] | monetary }}

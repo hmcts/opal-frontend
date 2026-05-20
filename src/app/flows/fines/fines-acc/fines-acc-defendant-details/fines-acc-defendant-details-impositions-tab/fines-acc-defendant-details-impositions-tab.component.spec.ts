@@ -63,6 +63,25 @@ describe('FinesAccDefendantDetailsImpositionsTabComponent', () => {
     expect(textContent).toContain('04 Dec 2025');
   });
 
+  it('should remove the minus symbol from imposed amount only', () => {
+    const tabData = structuredClone(OPAL_FINES_ACCOUNT_DEFENDANT_DETAILS_IMPOSITIONS_TAB_REF_DATA_MOCK);
+    tabData.impositions[0].imposed_amount = -200;
+    tabData.impositions[0].paid_amount = -50;
+    tabData.impositions[0].balance = -150;
+
+    const { fixture } = setupComponent(tabData);
+
+    const imposedAmountCell = fixture.nativeElement.querySelector(
+      '#imposition-imposed-amount-0',
+    ) as HTMLTableCellElement;
+    const paidAmountCell = fixture.nativeElement.querySelector('#imposition-paid-amount-0') as HTMLTableCellElement;
+    const balanceCell = fixture.nativeElement.querySelector('#imposition-balance-0') as HTMLTableCellElement;
+
+    expect(imposedAmountCell.textContent?.trim()).toBe('£200.00');
+    expect(paidAmountCell.textContent?.trim()).toBe('-£50.00');
+    expect(balanceCell.textContent?.trim()).toBe('-£150.00');
+  });
+
   it('should sort rows when a sortable header is clicked', () => {
     const { component, fixture } = setupComponent();
     const balanceHeaderButton = fixture.nativeElement.querySelector(
