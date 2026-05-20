@@ -139,7 +139,7 @@ Map<String, List<Map<String, Object>>> nightlySecrets() {
 // Configure shared test-selection environment variables for nightly runs.
 void configureNightlyTags() {
   String tagExpression = (params.TAGS ?: env.TAGS ?: '').trim()
-  String releaseSuite = String(params.RELEASE_SUITE ?: env.RELEASE_SUITE ?: defaultReleaseSuite).trim().toLowerCase()
+  String releaseSuite = (params.RELEASE_SUITE ?: env.RELEASE_SUITE ?: defaultReleaseSuite).toString().trim().toLowerCase()
 
   if (!releaseSuiteChoices.contains(releaseSuite)) {
     error "Unsupported RELEASE_SUITE '${releaseSuite}'. Supported values: ${releaseSuiteChoices.join(', ')}"
@@ -463,7 +463,7 @@ void runComponentStage(
   String browserToRun
 ) {
   runNightlyStage(enabled, 'Component Tests', failureResultValue, 'Component tests failed') {
-    String releaseSuite = String(env.RELEASE_SUITE ?: defaultReleaseSuite).trim().toLowerCase()
+    String releaseSuite = (env.RELEASE_SUITE ?: defaultReleaseSuite).toString().trim().toLowerCase()
 
     // Components run for default, r1a, and r1ab.
     // Flag-disabled suites (for example r1a_off) skip this stage unless releaseSuiteComponentScripts includes them.
@@ -553,7 +553,7 @@ void runSmokeStage(
 ) {
   if (enabled && (env.SKIP_SMOKE ?: stringFalse).toBoolean()) {
     stage(smokeStageName) {
-      String releaseSuite = String(env.RELEASE_SUITE ?: defaultReleaseSuite).trim().toLowerCase()
+      String releaseSuite = (env.RELEASE_SUITE ?: defaultReleaseSuite).toString().trim().toLowerCase()
 
       if (releaseSuite != defaultReleaseSuite) {
         echo "Skipping smoke tests because RELEASE_SUITE=${releaseSuite}"
@@ -588,7 +588,7 @@ void runFunctionalStage(
   String browserToRun
 ) {
   runNightlyStage(enabled, 'Functional Tests', failureResultValue, 'Functional tests failed') {
-    String releaseSuite = String(env.RELEASE_SUITE ?: defaultReleaseSuite).trim().toLowerCase()
+    String releaseSuite = (env.RELEASE_SUITE ?: defaultReleaseSuite).toString().trim().toLowerCase()
     String functionalCommand = releaseSuite == defaultReleaseSuite
       ? (shouldRunWithZephyr ? 'zephyr:test:functional' : 'test:functional')
       : releaseSuiteFunctionalScripts.get(releaseSuite)
@@ -639,7 +639,7 @@ void runBrowserStage(
   Map<String, String> stageConfig
 ) {
   runNightlyStage(enabled, stageConfig.stageName, failureResultValue, failureMessage) {
-    String releaseSuite = String(env.RELEASE_SUITE ?: defaultReleaseSuite).trim().toLowerCase()
+    String releaseSuite = (env.RELEASE_SUITE ?: defaultReleaseSuite).toString().trim().toLowerCase()
     boolean hasReleaseSuiteSelection = releaseSuite != defaultReleaseSuite
     String yarnCommand = hasReleaseSuiteSelection
       ? "${releaseSuiteFunctionalScripts.get(releaseSuite)} --browser=${stageConfig.browserToRun}"
