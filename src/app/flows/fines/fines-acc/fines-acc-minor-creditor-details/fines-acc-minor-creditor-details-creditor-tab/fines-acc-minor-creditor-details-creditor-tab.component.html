@@ -20,7 +20,17 @@
           summaryListRowId="creditor-name"
         >
           <ng-container name>Name</ng-container>
-          <ng-container value>First Last</ng-container>
+          @if (tabData.party_details.organisation_flag && tabData.party_details.organisation_details) {
+            <ng-container value>{{ tabData.party_details.organisation_details.organisation_name }}</ng-container>
+          } @else if (!tabData.party_details.organisation_flag && tabData.party_details.individual_details) {
+            <ng-container value>{{
+              tabData.party_details.individual_details.title +
+                ' ' +
+                tabData.party_details.individual_details.forenames +
+                ' ' +
+                tabData.party_details.individual_details.surname
+            }}</ng-container>
+          }
         </div>
         <div
           opal-lib-govuk-summary-list-row
@@ -62,7 +72,7 @@
         >
           <ng-container name>Payment method</ng-container>
           <ng-container value>
-            @if (tabData.payment.is_bacs) {
+            @if (tabData.payment.pay_by_bacs) {
               BACS
             } @else {
               Cheque
@@ -78,7 +88,7 @@
             summaryListRowId="creditor-payment-name-on-account"
           >
             <ng-container name>Name on account</ng-container>
-            <ng-container value>First Last</ng-container>
+            <ng-container value>{{ tabData.payment.account_name }}</ng-container>
           </div>
 
           <div
@@ -88,7 +98,7 @@
             summaryListRowId="creditor-payment-sort-code"
           >
             <ng-container name>Sort code</ng-container>
-            <ng-container value>12-34-56</ng-container>
+            <ng-container value>{{ tabData.payment.sort_code }}</ng-container>
           </div>
 
           <div
@@ -98,7 +108,7 @@
             summaryListRowId="creditor-payment-account-number"
           >
             <ng-container name>Account number</ng-container>
-            <ng-container value>12345678</ng-container>
+            <ng-container value>{{ tabData.payment.account_number }}</ng-container>
           </div>
 
           <div
@@ -108,7 +118,7 @@
             summaryListRowId="creditor-payment-reference"
           >
             <ng-container name>Reference</ng-container>
-            <ng-container value>12345678</ng-container>
+            <ng-container value>{{ tabData.payment.account_reference }}</ng-container>
           </div>
         }
       </opal-lib-govuk-summary-list>

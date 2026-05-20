@@ -3,7 +3,7 @@ import { IOpalFinesAccountMinorCreditorCreditor } from '../interfaces/opal-fines
 export const OPAL_FINES_ACCOUNT_MINOR_CREDITOR_CREDITOR_MOCK: IOpalFinesAccountMinorCreditorCreditor = {
   version: null,
   creditor_account_id: 'ACC-123456',
-  party: {
+  party_details: {
     party_id: 'PARTY-001',
     organisation_flag: true,
     organisation_details: {
@@ -20,15 +20,12 @@ export const OPAL_FINES_ACCOUNT_MINOR_CREDITOR_CREDITOR_MOCK: IOpalFinesAccountM
     address_line_5: null,
     postcode: 'AB12 3CD',
   },
-  defendant: {
-    account_number: 'ACC-654321',
-    account_id: 123456789,
-    title: 'Mr',
-    forenames: 'John',
-    surname: 'Doe',
-  },
   payment: {
-    is_bacs: true,
+    pay_by_bacs: true,
+    sort_code: '12-34-56',
+    account_number: '12345678',
+    account_name: 'Test Account',
+    account_reference: 'REF-001',
     hold_payment: false,
   },
 };

@@ -3,18 +3,15 @@ import { IOpalFinesDefendantAccountPartyDetails } from './opal-fines-defendant-a
 import { IOpalFinesVersion } from './opal-fines-version.interface';
 
 export interface IOpalFinesAccountMinorCreditorCreditor extends IOpalFinesVersion {
-  party: IOpalFinesDefendantAccountPartyDetails;
+  party_details: IOpalFinesDefendantAccountPartyDetails;
   address: IOpalFinesDefendantAccountAddress;
   creditor_account_id: string;
-  defendant: {
-    account_number: string;
-    account_id: number;
-    title: string;
-    forenames: string;
-    surname: string;
-  } | null;
   payment: {
-    is_bacs: boolean;
+    pay_by_bacs: boolean;
     hold_payment: boolean;
+    sort_code: string;
+    account_number: string;
+    account_name: string;
+    account_reference: string;
   };
 }

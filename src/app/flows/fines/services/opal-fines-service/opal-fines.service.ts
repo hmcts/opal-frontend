@@ -57,7 +57,6 @@ import { IOpalFinesEnforcersRefData } from './interfaces/opal-fines-enforcers-re
 import { IOpalFinesEnforcer } from './interfaces/opal-fines-enforcer.interface';
 import { IOpalFinesUpdateMinorCreditorAccountPayload } from './interfaces/opal-fines-update-minor-creditor-account-payload.interface';
 import { IOpalFinesAccountMinorCreditorCreditor } from './interfaces/opal-fines-account-minor-creditor-creditor.interface';
-import { OPAL_FINES_ACCOUNT_MINOR_CREDITOR_CREDITOR_MOCK } from './mocks/opal-fines-account-minor-creditor-creditor.mock';
 
 @Injectable({
   providedIn: 'root',
@@ -1160,21 +1159,20 @@ export class OpalFines {
    */
   public getMinorCreditorAccount(account_id: number | null): Observable<IOpalFinesAccountMinorCreditorCreditor> {
     if (!this.cache.minorCreditorAccountCreditorCache$) {
-      // const url = `${OPAL_FINES_PATHS.minorCreditorAccounts}/${account_id}`;
-      this.cache.minorCreditorAccountCreditorCache$ = of(OPAL_FINES_ACCOUNT_MINOR_CREDITOR_CREDITOR_MOCK);
-      // this.cache.minorCreditorAccountCreditorCache$ = this.http
-      //   .get<IOpalFinesAccountMinorCreditorCreditor>(url, { observe: 'response' })
-      //   .pipe(
-      //     map((response: HttpResponse<IOpalFinesAccountMinorCreditorCreditor>) => {
-      //       const version = this.extractEtagVersion(response.headers);
-      //       const payload = response.body as IOpalFinesAccountMinorCreditorCreditor;
-      //       return {
-      //         ...payload,
-      //         version,
-      //       };
-      //     }),
-      //     shareReplay(1),
-      //   );
+      const url = `${OPAL_FINES_PATHS.minorCreditorAccounts}/${account_id}`;
+      this.cache.minorCreditorAccountCreditorCache$ = this.http
+        .get<IOpalFinesAccountMinorCreditorCreditor>(url, { observe: 'response' })
+        .pipe(
+          map((response: HttpResponse<IOpalFinesAccountMinorCreditorCreditor>) => {
+            const version = this.extractEtagVersion(response.headers);
+            const payload = response.body as IOpalFinesAccountMinorCreditorCreditor;
+            return {
+              ...payload,
+              version,
+            };
+          }),
+          shareReplay(1),
+        );
     }
     return this.cache.minorCreditorAccountCreditorCache$;
   }
