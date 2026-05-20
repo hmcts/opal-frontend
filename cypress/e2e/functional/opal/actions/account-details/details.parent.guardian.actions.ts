@@ -44,6 +44,22 @@ export class AccountDetailsParentGuardianActions {
   }
 
   /**
+   * Asserts the remove parent or guardian action is visible on the Parent or guardian tab.
+   */
+  public assertRemoveParentGuardianActionVisible(): void {
+    cy.get(L.actions.removeParentOrGuardian, { timeout: 10_000 })
+      .should('be.visible')
+      .and('contain.text', 'Remove Parent or guardian details');
+  }
+
+  /**
+   * Clicks the remove parent or guardian action on the Parent or guardian tab.
+   */
+  public startRemoveParentGuardianDetails(): void {
+    cy.get(L.actions.removeParentOrGuardian, { timeout: 10_000 }).should('be.visible').click({ force: true });
+  }
+
+  /**
    * Asserts the Parent/Guardian name on the summary card contains the expected value.
    *
    * @param expected Text expected in the name field.
