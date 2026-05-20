@@ -1122,6 +1122,7 @@ export class AccountEnquiryFlow {
   public enterAddParentGuardianLastName(value: string): void {
     logAE('method', 'enterAddParentGuardianLastName()', { value });
     this.editParentGuardianActions.assertHeader({ route: 'add' });
+    this.editParentGuardianActions.editLastName(value);
   }
 
   /**
@@ -1153,6 +1154,7 @@ export class AccountEnquiryFlow {
   public enterAddParentGuardianAddressLine1(value: string): void {
     logAE('method', 'enterAddParentGuardianAddressLine1()', { value });
     this.editParentGuardianActions.assertHeader({ route: 'add' });
+    this.editParentGuardianActions.editAddressLine1(value);
   }
 
   /**
