@@ -337,3 +337,70 @@ Feature: Account Enquiries – View Account Details
       # LNAME is set in the original pgToPay account creation
       And I should see the parent or guardian name contains "Updated LNAME"
       And I verify no amendments were created via API for parent or guardian details
+
+  Rule: Youth-only amend parent or guardian baseline
+    Background:
+      Given I create a "adultOrYouthOnly" draft account with the following details and set status "Publishing Pending" using user "opal-test-10@dev.platform.hmcts.net":
+        | Account_status                      | Submitted          |
+        | account.defendant.forenames         | Jamie              |
+        | account.defendant.surname           | AmendPgYouth{uniq} |
+        | account.account_type                | Fine               |
+        | account.prosecutor_case_reference   | PCR-AUTO-018       |
+        | account.collection_order_made       | false              |
+        | account.collection_order_made_today | false              |
+        | account.payment_card_request        | false              |
+        | account.defendant.dob               | 2010-05-15         |
+      When I search for the account by last name "AmendPgYouth{uniq}" and open the latest result
+      Then I should see the page header contains "AMENDPGYOUTH{uniqUpper}"
+      When I go to the Defendant details section and the header is "Defendant details"
+      Then I should see the add parent or guardian details action
+      When I start adding parent or guardian details
+      Then I should be on the add parent or guardian details page
+      When I enter "Pat" into the parent or guardian first name field
+      And I enter "GuardianAmend{uniqUpper}" into the parent or guardian last name field
+      And I enter "1 Youth Street" into the parent or guardian address line 1 field
+      And I save the parent or guardian details
+      Then I should return to the account details page Parent or guardian tab
+      And I should see the parent or guardian name contains "Pat GUARDIANAMEND{uniqUpper}"
+
+    @JIRA-STORY:PO-3915 @JIRA-EPIC:PO-1875
+    Scenario: Non-paying parent or guardian change can be cancelled, discarded, and then saved successfully
+      # AC1, AC1a, AC1b – Change opens the reduced parent or guardian details screen with the information banner
+      # AC2 – Cancel with no changes returns to the Defendant tab
+      When I start changing the non-paying parent or guardian details
+      Then I should be on the amend parent or guardian details page
+      When I cancel changing parent or guardian details without making changes
+      Then I should return to the account details page Defendant tab
+
+      # AC2a, AC2ai – Cancel with entered data warns and confirming discards changes
+      When I go to the Parent or guardian details section and the header is "Parent or guardian details"
+      And I start changing the non-paying parent or guardian details
+      Then I should be on the amend parent or guardian details page
+      When I enter "Updated" into the amend parent or guardian first name field
+      And I attempt to cancel changing parent or guardian details and choose OK on the confirmation dialog
+      Then I should return to the account details page Defendant tab
+      When I go to the Parent or guardian details section and the header is "Parent or guardian details"
+      Then I should see the parent or guardian name contains "Pat GUARDIANAMEND{uniqUpper}"
+      # AC3, AC3a – Saving valid changes returns to the Parent or guardian tab with updated information
+      When I start changing the non-paying parent or guardian details
+      Then I should be on the amend parent or guardian details page
+      When I enter "Updated" into the amend parent or guardian first name field
+      And I save the parent or guardian details
+      Then I should return to the account details page Parent or guardian tab
+      And I should see the parent or guardian name contains "Updated GUARDIANAMEND{uniqUpper}"
+      And I verify parent or guardian amendments via API for guardian name "Updated"
+
+    @JIRA-STORY:PO-3915 @JIRA-EPIC:PO-1875
+    Scenario: Non-paying parent or guardian change warning keeps entered data and validation errors when I stay on the form
+      # AC2a, AC2aii – Cancel with entered data warns and staying keeps the user on the page
+      # AC2a, AC2aiii – Existing validation errors remain visible when the warning is dismissed
+      When I start changing the non-paying parent or guardian details
+      Then I should be on the amend parent or guardian details page
+      When I enter "Updated" into the amend parent or guardian first name field
+      And I enter "" into the parent or guardian last name field
+      And I attempt to save the parent or guardian amend details
+      Then I should see the parent or guardian amend error summary contains "Enter parent or guardian last name"
+      When I attempt to cancel changing parent or guardian details and choose Cancel on the confirmation dialog
+      Then I should remain on the amend parent or guardian details page
+      And I should see the amend parent or guardian first name field contains "Updated"
+      And I should see the parent or guardian amend error summary contains "Enter parent or guardian last name"
