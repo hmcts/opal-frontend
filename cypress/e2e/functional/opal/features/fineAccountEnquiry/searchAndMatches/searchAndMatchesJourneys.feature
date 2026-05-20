@@ -181,6 +181,42 @@ Feature: Account Search and Matches - End-to-end journeys
     When I open the latest matching result from the search results
     Then I should see the account summary header contains "LEGACY_INDIVIDUAL_SUMMARY_HEADER"
 
+  @skip @LegacyData @R1B @JIRA-STORY:PO-705 @JIRA-STORY:PO-706 @JIRA-STORY:PO-717
+  # Minimum data set required: one individual defendant account with a unique searchable date of birth LEGACY_INDIVIDUAL_DATE_OF_BIRTH (DD/MM/YYYY), prosecutor case reference LEGACY_INDIVIDUAL_DOB_REFERENCE, and summary header text LEGACY_INDIVIDUAL_DOB_SUMMARY_HEADER.
+  Scenario: Search for an individual defendant account from legacy data by date of birth and open the matching record
+    Given I am on the Account Search page - Individuals form displayed by default
+    When I search using the following inputs:
+      | date of birth | LEGACY_INDIVIDUAL_DATE_OF_BIRTH |
+    Then I see the Search results page
+    And I see the Individuals search results:
+      | Ref | LEGACY_INDIVIDUAL_DOB_REFERENCE |
+    When I open the latest matching result from the search results
+    Then I should see the account summary header contains "LEGACY_INDIVIDUAL_DOB_SUMMARY_HEADER"
+
+  @skip @LegacyData @R1B @JIRA-STORY:PO-705 @JIRA-STORY:PO-706 @JIRA-STORY:PO-717
+  # Minimum data set required: one individual defendant account with searchable national insurance number LEGACY_INDIVIDUAL_NI_NUMBER, prosecutor case reference LEGACY_INDIVIDUAL_NI_REFERENCE, and summary header text LEGACY_INDIVIDUAL_NI_SUMMARY_HEADER.
+  Scenario: Search for an individual defendant account from legacy data by national insurance number and open the matching record
+    Given I am on the Account Search page - Individuals form displayed by default
+    When I search using the following inputs:
+      | national insurance number | LEGACY_INDIVIDUAL_NI_NUMBER |
+    Then I see the Search results page
+    And I see the Individuals search results:
+      | Ref | LEGACY_INDIVIDUAL_NI_REFERENCE |
+    When I open the latest matching result from the search results
+    Then I should see the account summary header contains "LEGACY_INDIVIDUAL_NI_SUMMARY_HEADER"
+
+  @skip @LegacyData @R1B @JIRA-STORY:PO-705 @JIRA-STORY:PO-706 @JIRA-STORY:PO-717
+  # Minimum data set required: one individual defendant account with a unique searchable postcode LEGACY_INDIVIDUAL_POSTCODE, prosecutor case reference LEGACY_INDIVIDUAL_POSTCODE_REFERENCE, and summary header text LEGACY_INDIVIDUAL_POSTCODE_SUMMARY_HEADER.
+  Scenario: Search for an individual defendant account from legacy data by postcode and open the matching record
+    Given I am on the Account Search page - Individuals form displayed by default
+    When I search using the following inputs:
+      | postcode | LEGACY_INDIVIDUAL_POSTCODE |
+    Then I see the Search results page
+    And I see the Individuals search results:
+      | Ref | LEGACY_INDIVIDUAL_POSTCODE_REFERENCE |
+    When I open the latest matching result from the search results
+    Then I should see the account summary header contains "LEGACY_INDIVIDUAL_POSTCODE_SUMMARY_HEADER"
+
   @skip @LegacyData @R1B @JIRA-STORY:PO-712 @JIRA-STORY:PO-706 @JIRA-STORY:PO-707
   # Minimum data set required: one company defendant account with company name LEGACY_COMPANY_NAME, prosecutor case reference LEGACY_COMPANY_REFERENCE, and account header text LEGACY_COMPANY_HEADER.
   Scenario: Search for a company defendant account from legacy data and open the matching record
