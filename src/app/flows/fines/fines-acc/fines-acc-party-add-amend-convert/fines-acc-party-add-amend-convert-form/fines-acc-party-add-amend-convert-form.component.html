@@ -7,6 +7,16 @@
   [errors]="formErrorSummaryMessage"
   (errorClick)="scrollTo($event)"
 ></opal-lib-govuk-error-summary>
+@if (isReducedParentGuardianMode) {
+  <opal-lib-moj-alert type="information" ariaLabel="Parent or guardian details are for information only">
+    <opal-lib-moj-alert-icon icon type="information"></opal-lib-moj-alert-icon>
+    <opal-lib-moj-alert-content content>
+      <opal-lib-moj-alert-content-text>
+        These details are for information only. The youth defendant still pays.
+      </opal-lib-moj-alert-content-text>
+    </opal-lib-moj-alert-content>
+  </opal-lib-moj-alert>
+}
 @if (form) {
   <form (submit)="handleFormSubmit($event)" [formGroup]="form">
     <!-- Party details -->
@@ -20,17 +30,19 @@
     ></app-fines-acc-party-add-amend-convert-party-details>
 
     <!-- aliases -->
-    <opal-lib-govuk-checkboxes fieldSetId="addAliasCheckbox" checkboxClasses="" legendText="">
-      <div
-        opal-lib-govuk-checkboxes-item
-        labelText="Add aliases"
-        inputId="facc_party_add_amend_convert_add_alias"
-        inputName="facc_party_add_amend_convert_add_alias"
-        [control]="form.get('facc_party_add_amend_convert_add_alias')"
-      ></div>
-    </opal-lib-govuk-checkboxes>
+    @if (!isReducedParentGuardianMode) {
+      <opal-lib-govuk-checkboxes fieldSetId="addAliasCheckbox" checkboxClasses="" legendText="">
+        <div
+          opal-lib-govuk-checkboxes-item
+          labelText="Add aliases"
+          inputId="facc_party_add_amend_convert_add_alias"
+          inputName="facc_party_add_amend_convert_add_alias"
+          [control]="form.get('facc_party_add_amend_convert_add_alias')"
+        ></div>
+      </opal-lib-govuk-checkboxes>
+    }
 
-    @if (form.get('facc_party_add_amend_convert_add_alias')?.value === true) {
+    @if (!isReducedParentGuardianMode && form.get('facc_party_add_amend_convert_add_alias')?.value === true) {
       @if (isIndividualPartyType) {
         <div
           opal-lib-govuk-checkboxes-conditional
@@ -168,7 +180,7 @@
     }
 
     <!-- NI and DOB for individual/parent guardian -->
-    @if (isIndividualPartyType || isParentGuardianPartyType) {
+    @if ((isIndividualPartyType || isParentGuardianPartyType) && !isReducedParentGuardianMode) {
       <app-fines-acc-party-add-amend-convert-dob-ni
         [form]="form"
         [formControlErrorMessages]="formControlErrorMessages"
@@ -189,7 +201,7 @@
     ></app-fines-acc-party-add-amend-convert-address>
 
     <!-- Contact details - Only show for debtor or company party types -->
-    @if (checkCompanyOrDebtor) {
+    @if (showContactDetails) {
       <hr class="{{ FINES_ACC_SECTION_BREAK }}" />
       <app-fines-acc-party-add-amend-convert-cd
         [form]="form"
@@ -198,7 +210,7 @@
     }
 
     <!-- Language preferences - Only show for debtor or company party types -->
-    @if (showLanguagePreferences() && checkCompanyOrDebtor) {
+    @if (showLanguagePreferences() && checkCompanyOrDebtor && !isReducedParentGuardianMode) {
       <hr class="{{ FINES_ACC_SECTION_BREAK }}" />
       <app-fines-acc-party-add-amend-convert-lp
         [form]="form"
@@ -208,7 +220,7 @@
     }
 
     <!-- Vehicle details - Only show for debtor or company party types -->
-    @if (checkCompanyOrDebtor) {
+    @if (checkCompanyOrDebtor && !isReducedParentGuardianMode) {
       <hr class="{{ FINES_ACC_SECTION_BREAK }}" />
       <app-fines-acc-party-add-amend-convert-vd
         [form]="form"

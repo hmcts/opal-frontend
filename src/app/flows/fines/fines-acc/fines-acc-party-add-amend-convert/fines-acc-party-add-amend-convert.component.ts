@@ -1,5 +1,5 @@
 import { Component, inject } from '@angular/core';
-import { catchError, EMPTY } from 'rxjs';
+import { catchError, EMPTY, Observable } from 'rxjs';
 import { FinesAccPartyAddAmendConvertFormComponent } from './fines-acc-party-add-amend-convert-form/fines-acc-party-add-amend-convert-form.component';
 import { AbstractFormParentBaseComponent } from '@hmcts/opal-frontend-common/components/abstract/abstract-form-parent-base';
 import { IFinesAccPartyAddAmendConvertForm } from './interfaces/fines-acc-party-add-amend-convert-form.interface';
@@ -12,6 +12,7 @@ import { FINES_ACC_DEFENDANT_ROUTING_PATHS } from '../routing/constants/fines-ac
 import { FINES_ACC_PARTY_ADD_AMEND_CONVERT_MODES } from './constants/fines-acc-party-add-amend-convert-modes.constant';
 import { FINES_ACC_PARTY_ADD_AMEND_CONVERT_PARTY_TYPES } from './constants/fines-acc-party-add-amend-convert-party-types.constant';
 import { FINES_ACC_PARTY_ADD_AMEND_CONVERT_TEXT } from './constants/fines-acc-party-add-amend-convert-text.constant';
+import { FINES_ACC_PARTY_ADD_AMEND_CONVERT_FORM } from './constants/fines-acc-party-add-amend-convert-form.constant';
 @Component({
   selector: 'app-fines-acc-debtor-add-amend',
   imports: [FinesAccPartyAddAmendConvertFormComponent],
@@ -22,24 +23,73 @@ export class FinesAccPartyAddAmendConvert extends AbstractFormParentBaseComponen
   private readonly opalFinesService = inject(OpalFines);
   private readonly finesAccStore = inject(FinesAccountStore);
   private readonly utilsService = inject(UtilsService);
-  private readonly partyPayload: IOpalFinesAccountDefendantAccountParty =
+  private readonly partyPayload: IOpalFinesAccountDefendantAccountParty | null =
     this['activatedRoute'].snapshot.data['partyAddAmendConvertData'];
 
   protected readonly finesDefendantRoutingPaths = FINES_ACC_DEFENDANT_ROUTING_PATHS;
   protected readonly partyType: string = this['activatedRoute'].snapshot.params['partyType'];
   protected readonly mode: string =
     this['activatedRoute'].snapshot.params['mode'] ?? FINES_ACC_PARTY_ADD_AMEND_CONVERT_MODES.AMEND;
-  protected readonly prefilledFormData: IFinesAccPartyAddAmendConvertForm = {
-    formData: this.payloadService.mapDebtorAccountPartyPayload(
-      this.partyPayload,
-      this.partyType,
-      this.partyPayload.defendant_account_party.is_debtor,
-    ),
-    nestedFlow: false,
-  };
-  protected readonly isDebtor: boolean = this.partyPayload.defendant_account_party.is_debtor;
-  protected readonly fragment = this.partyType === 'parentGuardian' ? 'parent-or-guardian' : 'defendant';
+  protected readonly prefilledFormData: IFinesAccPartyAddAmendConvertForm = this.getPrefilledFormData();
+  protected readonly isDebtor: boolean = this.getIsDebtor();
+  protected readonly fragment = this.getFragment();
 
+  /**
+   * Gets the initial form data for add flows or maps the resolved party payload for amend and convert flows.
+   * @returns The form data used to initialise the child form
+   */
+  private getPrefilledFormData(): IFinesAccPartyAddAmendConvertForm {
+    if (this.isAddMode) {
+      return {
+        formData: structuredClone(FINES_ACC_PARTY_ADD_AMEND_CONVERT_FORM.formData),
+        nestedFlow: false,
+      };
+    }
+
+    return {
+      formData: this.payloadService.mapDebtorAccountPartyPayload(
+        this.partyPayload!,
+        this.partyType,
+        this.partyPayload!.defendant_account_party.is_debtor,
+      ),
+      nestedFlow: false,
+    };
+  }
+
+  /**
+   * Determines whether the current party submission should be sent as a debtor.
+   * @returns False for add mode, otherwise the debtor flag from the resolved party payload
+   */
+  private getIsDebtor(): boolean {
+    if (this.isAddMode) {
+      return false;
+    }
+
+    return this.partyPayload!.defendant_account_party.is_debtor;
+  }
+
+  /**
+   * Gets the details page fragment to return to after submit or redirect.
+   * @returns The parent or guardian fragment for parent guardian routes, otherwise the defendant fragment
+   */
+  private getFragment(): string {
+    if (this.partyType === FINES_ACC_PARTY_ADD_AMEND_CONVERT_PARTY_TYPES.PARENT_GUARDIAN) {
+      return 'parent-or-guardian';
+    }
+
+    return 'defendant';
+  }
+
+  /**
+   * Determines whether the shared party details page is running in add mode.
+   */
+  private get isAddMode(): boolean {
+    return this.mode === FINES_ACC_PARTY_ADD_AMEND_CONVERT_MODES.ADD;
+  }
+
+  /**
+   * Returns the post-submit success message for convert flows that display one.
+   */
   private get successMessage(): string | null {
     if (this.mode !== FINES_ACC_PARTY_ADD_AMEND_CONVERT_MODES.CONVERT) {
       return null;
@@ -56,31 +106,74 @@ export class FinesAccPartyAddAmendConvert extends AbstractFormParentBaseComponen
   }
 
   /**
+   * Gets the party identifier required for amend and convert submissions.
+   */
+  private get partyId(): string | null {
+    if (this.partyType === FINES_ACC_PARTY_ADD_AMEND_CONVERT_PARTY_TYPES.PARENT_GUARDIAN) {
+      return this.finesAccStore.pg_party_id();
+    }
+
+    return this.finesAccStore.party_id();
+  }
+
+  /**
+   * Gets the account base version required when adding a parent or guardian party.
+   */
+  private get baseVersion(): string | null {
+    return this.finesAccStore.base_version();
+  }
+
+  /**
+   * Builds and sends the request for adding a parent or guardian party.
+   * @param formData - The form data submitted from the child component
+   * @returns An observable containing the added defendant account party response
+   */
+  private addDefendantAccountParty(
+    formData: IFinesAccPartyAddAmendConvertForm,
+  ): Observable<IOpalFinesAccountDefendantAccountParty> {
+    return this.opalFinesService.postDefendantAccountParty(
+      this.finesAccStore.account_id()!,
+      this.payloadService.buildAddDefendantAccountPayload(formData.formData, this.partyType, this.isDebtor, ''),
+      this.baseVersion!,
+      this.finesAccStore.business_unit_id()!,
+    );
+  }
+
+  /**
+   * Builds and sends the request for amending or converting an existing party.
+   * @param formData - The form data submitted from the child component
+   * @returns An observable containing the updated defendant account party response
+   */
+  private updateDefendantAccountParty(
+    formData: IFinesAccPartyAddAmendConvertForm,
+  ): Observable<IOpalFinesAccountDefendantAccountParty> {
+    return this.opalFinesService.putDefendantAccountParty(
+      this.finesAccStore.account_id()!,
+      this.partyId!,
+      this.payloadService.buildAccountPartyPayload(
+        formData.formData,
+        this.partyType,
+        this.isDebtor,
+        this.partyPayload!.defendant_account_party.party_details.party_id,
+      ),
+      this.partyPayload!.version!,
+      this.finesAccStore.business_unit_id()!,
+    );
+  }
+
+  /**
    * Handles the form submission event from the child form component.
    * @param formData - The form data submitted from the child component
    */
   public handleFormSubmit(formData: IFinesAccPartyAddAmendConvertForm): void {
-    // Defensive checks for required store values
-    const accountId = this.finesAccStore.account_id();
-    const businessUnitId = this.finesAccStore.business_unit_id();
-    const partyId =
-      this.partyType === 'parentGuardian' ? this.finesAccStore.pg_party_id() : this.finesAccStore.party_id();
-
-    // If any required store values are missing, redirect back to defendant details
-    if (!accountId || !businessUnitId || !partyId) {
-      this.routerNavigate(this.finesDefendantRoutingPaths.children.details, false, undefined, undefined, this.fragment);
-      return;
+    let request$: Observable<IOpalFinesAccountDefendantAccountParty>;
+    if (this.isAddMode) {
+      request$ = this.addDefendantAccountParty(formData);
+    } else {
+      request$ = this.updateDefendantAccountParty(formData);
     }
 
-    const builtPayload = this.payloadService.buildAccountPartyPayload(
-      formData.formData,
-      this.partyType,
-      this.isDebtor,
-      this.partyPayload.defendant_account_party.party_details.party_id,
-    );
-
-    this.opalFinesService
-      .putDefendantAccountParty(accountId, partyId, builtPayload, this.partyPayload.version!, businessUnitId)
+    request$
       .pipe(
         catchError(() => {
           this.utilsService.scrollToTop();
@@ -93,6 +186,7 @@ export class FinesAccPartyAddAmendConvert extends AbstractFormParentBaseComponen
           const successMessage = this.successMessage;
 
           this.opalFinesService.clearCache('defendantAccountPartyCache$');
+          this.opalFinesService.clearCache('defendantAccountParentOrGuardianAccountPartyCache$');
           if (successMessage) {
             this.finesAccStore.setSuccessMessage(successMessage);
           }
