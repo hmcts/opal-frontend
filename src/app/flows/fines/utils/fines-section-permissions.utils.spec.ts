@@ -39,8 +39,6 @@ const createUserStateWithPermissions = (permissionIds: readonly number[]): IOpal
 };
 
 describe('fines-section-permissions.utils', () => {
-  const release1aDisabled = { 'release-1a': false };
-  const release1aEnabled = { 'release-1a': true };
   const navigationItems: readonly INavigationBarConfiguration[] = [
     { key: 'accounts', value: 'Accounts' },
     { key: 'reports', value: 'Reports' },
@@ -85,7 +83,7 @@ describe('fines-section-permissions.utils', () => {
         canAccessFinesPrimaryNavigationSection(
           'accounts',
           createUserStateWithPermissions([ACCOUNTS_PERMISSIONS[0]]),
-          release1aEnabled,
+          true,
         ),
       ).toBe(true);
     });
@@ -95,7 +93,7 @@ describe('fines-section-permissions.utils', () => {
         canAccessFinesPrimaryNavigationSection(
           'accounts',
           createUserStateWithPermissions([ACCOUNTS_PERMISSIONS[0]]),
-          release1aDisabled,
+          false,
         ),
       ).toBe(false);
     });
@@ -105,7 +103,7 @@ describe('fines-section-permissions.utils', () => {
         canAccessFinesPrimaryNavigationSection(
           'accounts',
           createUserStateWithPermissions([ACCOUNTS_PERMISSIONS[2]]),
-          release1aDisabled,
+          false,
         ),
       ).toBe(true);
     });
@@ -123,7 +121,7 @@ describe('fines-section-permissions.utils', () => {
     it('should remove Accounts for draft-only users when release-1a is disabled', () => {
       const userState = createUserStateWithPermissions([ACCOUNTS_PERMISSIONS[0]]);
 
-      expect(getAccessiblePrimaryNavigationItems(navigationItems, userState, release1aDisabled)).toEqual([]);
+      expect(getAccessiblePrimaryNavigationItems(navigationItems, userState, false)).toEqual([]);
     });
   });
 
@@ -168,7 +166,7 @@ describe('fines-section-permissions.utils', () => {
         getDashboardLandingType(
           navigationItemsWithFinance,
           createUserStateWithPermissions([ACCOUNTS_PERMISSIONS[0]]),
-          release1aDisabled,
+          false,
         ),
       ).toBe('finance');
     });

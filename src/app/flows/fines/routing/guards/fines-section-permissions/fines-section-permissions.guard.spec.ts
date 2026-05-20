@@ -3,17 +3,20 @@ import { ActivatedRouteSnapshot, Router, RouterStateSnapshot, UrlTree, convertTo
 import { createSpyObj } from '@app/testing/create-spy-obj.helper';
 import { FINES_DASHBOARD_ROUTING_PATHS } from '@app/flows/fines/constants/fines-dashboard-routing-paths.constant';
 import { PAGES_ROUTING_PATHS as COMMON_PAGES_ROUTING_PATHS } from '@hmcts/opal-frontend-common/pages/routing/constants';
-import { LaunchDarklyService } from '@hmcts/opal-frontend-common/services/launch-darkly-service';
+import { featureFlagGuard } from '@hmcts/opal-frontend-common/guards/feature-flag';
 import { IOpalUserState } from '@hmcts/opal-frontend-common/services/opal-user-service/interfaces';
 import { OPAL_USER_STATE_MOCK } from '@hmcts/opal-frontend-common/services/opal-user-service/mocks';
 import { OpalUserService } from '@hmcts/opal-frontend-common/services/opal-user-service';
-import { GlobalStore } from '@hmcts/opal-frontend-common/stores/global';
-import { beforeEach, describe, expect, it, vi } from 'vitest';
+import { beforeEach, describe, expect, it, type Mock, vi } from 'vitest';
 import { firstValueFrom, isObservable, of, throwError } from 'rxjs';
 import { ACCOUNTS_PERMISSIONS } from '@app/flows/fines/constants/accounts-permissions.constant';
 import { REPORTS_PERMISSIONS } from '@app/flows/fines/constants/reports-permissions.constant';
 import { SEARCH_PERMISSIONS } from '@app/flows/fines/constants/search-permissions.constant';
 import { finesSectionPermissionsGuard } from './fines-section-permissions.guard';
+
+vi.mock('@hmcts/opal-frontend-common/guards/feature-flag', () => ({
+  featureFlagGuard: vi.fn(),
+}));
 
 const createUserStateWithPermissions = (permissionIds: readonly number[]): IOpalUserState => {
   const userState = structuredClone(OPAL_USER_STATE_MOCK);
@@ -41,10 +44,7 @@ describe('finesSectionPermissionsGuard', () => {
   let mockRouter: any;
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   let mockOpalUserService: any;
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  let mockGlobalStore: any;
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  let mockLaunchDarklyService: any;
+  let featureFlagGuardMock: Mock;
 
   const runGuard = async ({ sectionKey, dashboardType }: { sectionKey?: string; dashboardType?: string | null }) => {
     const route = {
@@ -60,21 +60,16 @@ describe('finesSectionPermissionsGuard', () => {
   beforeEach(() => {
     mockRouter = createSpyObj('Router', ['createUrlTree']);
     mockOpalUserService = createSpyObj('OpalUserService', ['getLoggedInUserState']);
-    mockGlobalStore = {
-      featureFlags: vi.fn().mockReturnValue({ 'release-1a': true }),
-    };
-    mockLaunchDarklyService = createSpyObj('LaunchDarklyService', ['initializeLaunchDarklyFlags']);
+    featureFlagGuardMock = vi.mocked(featureFlagGuard) as Mock;
 
     mockRouter.createUrlTree.mockReturnValue(new UrlTree());
     mockOpalUserService.getLoggedInUserState.mockReturnValue(of(createUserStateWithPermissions([])));
-    mockLaunchDarklyService.initializeLaunchDarklyFlags.mockResolvedValue(undefined);
+    featureFlagGuardMock.mockReturnValue(vi.fn().mockResolvedValue(true));
 
     TestBed.configureTestingModule({
       providers: [
         { provide: Router, useValue: mockRouter },
         { provide: OpalUserService, useValue: mockOpalUserService },
-        { provide: GlobalStore, useValue: mockGlobalStore },
-        { provide: LaunchDarklyService, useValue: mockLaunchDarklyService },
       ],
     });
   });
@@ -100,7 +95,7 @@ describe('finesSectionPermissionsGuard', () => {
   });
 
   it('should allow Accounts when release-1a is disabled and the user has consolidation permission', async () => {
-    mockGlobalStore.featureFlags.mockReturnValue({ 'release-1a': false });
+    featureFlagGuardMock.mockReturnValue(vi.fn().mockResolvedValue(false));
     mockOpalUserService.getLoggedInUserState.mockReturnValue(
       of(createUserStateWithPermissions([ACCOUNTS_PERMISSIONS[2]])),
     );
@@ -122,7 +117,7 @@ describe('finesSectionPermissionsGuard', () => {
 
   it('should redirect Accounts when release-1a is disabled and the user only has draft accounts permission', async () => {
     const expectedUrlTree = new UrlTree();
-    mockGlobalStore.featureFlags.mockReturnValue({ 'release-1a': false });
+    featureFlagGuardMock.mockReturnValue(vi.fn().mockResolvedValue(false));
     mockOpalUserService.getLoggedInUserState.mockReturnValue(
       of(createUserStateWithPermissions([ACCOUNTS_PERMISSIONS[0]])),
     );
@@ -134,8 +129,8 @@ describe('finesSectionPermissionsGuard', () => {
     expect(mockRouter.createUrlTree).toHaveBeenCalledWith([`/${COMMON_PAGES_ROUTING_PATHS.children.accessDenied}`]);
   });
 
-  it('should wait for LaunchDarkly flags before allowing draft accounts permission', async () => {
-    mockGlobalStore.featureFlags.mockReturnValueOnce({}).mockReturnValue({ 'release-1a': true });
+  it('should resolve the release-1a feature flag before allowing draft accounts permission', async () => {
+    featureFlagGuardMock.mockReturnValue(vi.fn().mockResolvedValue(true));
     mockOpalUserService.getLoggedInUserState.mockReturnValue(
       of(createUserStateWithPermissions([ACCOUNTS_PERMISSIONS[0]])),
     );
@@ -143,7 +138,7 @@ describe('finesSectionPermissionsGuard', () => {
     const result = await runGuard({ dashboardType: FINES_DASHBOARD_ROUTING_PATHS.children.accounts });
 
     expect(result).toBe(true);
-    expect(mockLaunchDarklyService.initializeLaunchDarklyFlags).toHaveBeenCalled();
+    expect(featureFlagGuardMock).toHaveBeenCalledWith('release-1a');
   });
 
   it('should redirect Accounts to access denied when the user lacks all accounts permissions', async () => {

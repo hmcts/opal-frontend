@@ -1,18 +1,17 @@
 import { inject } from '@angular/core';
-import { ActivatedRouteSnapshot, CanActivateFn, Router, UrlTree } from '@angular/router';
+import { ActivatedRouteSnapshot, CanActivateFn, Router, RouterStateSnapshot, UrlTree } from '@angular/router';
 import {
   getRequiredPermissionIdsForSection,
   getUserPermissionIds,
   hasAnyPermission,
-  isRelease1aFeatureFlagPopulated,
+  RELEASE_1A_FEATURE_FLAG,
 } from '@app/flows/fines/utils/fines-section-permissions.utils';
 import { isDashboardPageType } from '@app/pages/dashboard/constants/dashboard-config.constant';
 import { DashboardPageType } from '@app/pages/dashboard/types/dashboard.type';
 import { PAGES_ROUTING_PATHS as COMMON_PAGES_ROUTING_PATHS } from '@hmcts/opal-frontend-common/pages/routing/constants';
-import { LaunchDarklyService } from '@hmcts/opal-frontend-common/services/launch-darkly-service';
 import { OpalUserService } from '@hmcts/opal-frontend-common/services/opal-user-service';
-import { GlobalStore } from '@hmcts/opal-frontend-common/stores/global';
-import { catchError, from, map, Observable, of, switchMap } from 'rxjs';
+import { firstValueFrom } from 'rxjs';
+import { resolveFeatureFlagGuard } from '../helpers/resolve-feature-flag-guard';
 
 const getSectionKey = (route: ActivatedRouteSnapshot): DashboardPageType | null => {
   const routeSectionKey = route.data['sectionKey'];
@@ -30,13 +29,12 @@ const getSectionKey = (route: ActivatedRouteSnapshot): DashboardPageType | null 
   return null;
 };
 
-export const finesSectionPermissionsGuard: CanActivateFn = (
+export const finesSectionPermissionsGuard: CanActivateFn = async (
   route: ActivatedRouteSnapshot,
-): boolean | UrlTree | Observable<boolean | UrlTree> => {
+  state: RouterStateSnapshot,
+): Promise<boolean | UrlTree> => {
   const router = inject(Router);
   const opalUserService = inject(OpalUserService);
-  const globalStore = inject(GlobalStore);
-  const launchDarklyService = inject(LaunchDarklyService);
   const sectionKey = getSectionKey(route);
 
   if (!sectionKey) {
@@ -45,31 +43,28 @@ export const finesSectionPermissionsGuard: CanActivateFn = (
 
   const getAccessDeniedUrlTree = () => router.createUrlTree([`/${COMMON_PAGES_ROUTING_PATHS.children.accessDenied}`]);
 
-  const checkSectionPermissions = (): Observable<boolean | UrlTree> => {
-    const requiredPermissionIds = getRequiredPermissionIdsForSection(sectionKey, globalStore.featureFlags());
+  const checkSectionPermissions = async (isRelease1aEnabled: boolean): Promise<boolean | UrlTree> => {
+    const requiredPermissionIds = getRequiredPermissionIdsForSection(sectionKey, isRelease1aEnabled);
 
     if (!requiredPermissionIds) {
-      return of(true);
+      return true;
     }
 
     if (requiredPermissionIds.length === 0) {
-      return of(getAccessDeniedUrlTree());
+      return getAccessDeniedUrlTree();
     }
 
-    return opalUserService.getLoggedInUserState().pipe(
-      map((userState) =>
-        hasAnyPermission(requiredPermissionIds, getUserPermissionIds(userState)) ? true : getAccessDeniedUrlTree(),
-      ),
-      catchError(() => of(false)),
-    );
+    try {
+      const userState = await firstValueFrom(opalUserService.getLoggedInUserState());
+
+      return hasAnyPermission(requiredPermissionIds, getUserPermissionIds(userState)) ? true : getAccessDeniedUrlTree();
+    } catch {
+      return false;
+    }
   };
 
-  if (sectionKey !== 'accounts' || isRelease1aFeatureFlagPopulated(globalStore.featureFlags())) {
-    return checkSectionPermissions();
-  }
+  const isRelease1aEnabled =
+    sectionKey === 'accounts' ? await resolveFeatureFlagGuard(RELEASE_1A_FEATURE_FLAG, route, state) : false;
 
-  return from(launchDarklyService.initializeLaunchDarklyFlags()).pipe(
-    catchError(() => of(undefined)),
-    switchMap(() => checkSectionPermissions()),
-  );
+  return checkSectionPermissions(isRelease1aEnabled);
 };

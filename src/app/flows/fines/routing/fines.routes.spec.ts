@@ -4,7 +4,7 @@ import { FINES_ROUTING_PATHS } from './constants/fines-routing-paths.constant';
 import { finesRouting } from './fines.routes';
 import { finesSectionPermissionsGuard } from './guards/fines-section-permissions/fines-section-permissions.guard';
 import { PRIMARY_NAV_HIDDEN_ROUTE_DATA } from '@app/constants/route-data.constant';
-import { release1aFeatureFlagGuard } from './guards/release-1a-feature-flag/release-1a-feature-flag.guard';
+import { release1aFeatureFlagGuard } from './guards/feature-flag-redirect/feature-flag-redirect.guard';
 
 describe('fines routes', () => {
   const childRoutes =

@@ -28,19 +28,16 @@ export const hasAnyPermission = (
   userPermissionIds: readonly number[],
 ): boolean => requiredPermissionIds.some((permissionId) => userPermissionIds.includes(permissionId));
 
-export const isRelease1aFeatureFlagPopulated = (featureFlags?: FeatureFlags | null): boolean =>
-  featureFlags?.[RELEASE_1A_FEATURE_FLAG] !== undefined;
-
 export const isRelease1aFeatureEnabled = (featureFlags?: FeatureFlags | null): boolean =>
   featureFlags?.[RELEASE_1A_FEATURE_FLAG] === true;
 
 export const getRequiredPermissionIdsForSection = (
   sectionKey: DashboardPageType,
-  featureFlags?: FeatureFlags | null,
+  isRelease1aEnabled = false,
 ): readonly number[] | undefined => {
   const requiredPermissionIds = FINES_PRIMARY_NAVIGATION_SECTION_PERMISSIONS[sectionKey];
 
-  if (sectionKey !== 'accounts' || isRelease1aFeatureEnabled(featureFlags)) {
+  if (sectionKey !== 'accounts' || isRelease1aEnabled) {
     return requiredPermissionIds;
   }
 
@@ -50,9 +47,9 @@ export const getRequiredPermissionIdsForSection = (
 export const canAccessFinesPrimaryNavigationSection = (
   sectionKey: DashboardPageType,
   userState?: IOpalUserState | null,
-  featureFlags?: FeatureFlags | null,
+  isRelease1aEnabled = false,
 ): boolean => {
-  const requiredPermissionIds = getRequiredPermissionIdsForSection(sectionKey, featureFlags);
+  const requiredPermissionIds = getRequiredPermissionIdsForSection(sectionKey, isRelease1aEnabled);
 
   if (!requiredPermissionIds) {
     return true;
@@ -68,25 +65,26 @@ export const canAccessFinesPrimaryNavigationSection = (
 export const getAccessiblePrimaryNavigationItems = (
   navigationItems: readonly INavigationBarConfiguration[],
   userState?: IOpalUserState | null,
-  featureFlags?: FeatureFlags | null,
+  isRelease1aEnabled = false,
 ): INavigationBarConfiguration[] =>
   navigationItems.filter((navigationItem) =>
-    canAccessFinesPrimaryNavigationSection(navigationItem.key, userState, featureFlags),
+    canAccessFinesPrimaryNavigationSection(navigationItem.key, userState, isRelease1aEnabled),
   );
 
 export const getFirstAccessibleDashboardType = (
   navigationItems: readonly INavigationBarConfiguration[],
   userState?: IOpalUserState | null,
-  featureFlags?: FeatureFlags | null,
+  isRelease1aEnabled = false,
 ): DashboardPageType =>
-  getAccessiblePrimaryNavigationItems(navigationItems, userState, featureFlags)[0]?.key ?? DASHBOARD_PAGE_DEFAULT_TAB;
+  getAccessiblePrimaryNavigationItems(navigationItems, userState, isRelease1aEnabled)[0]?.key ??
+  DASHBOARD_PAGE_DEFAULT_TAB;
 
 export const getDashboardLandingType = (
   navigationItems: readonly INavigationBarConfiguration[],
   userState?: IOpalUserState | null,
-  featureFlags?: FeatureFlags | null,
+  isRelease1aEnabled = false,
 ): DashboardPageType => {
-  const accessibleNavigationItems = getAccessiblePrimaryNavigationItems(navigationItems, userState, featureFlags);
+  const accessibleNavigationItems = getAccessiblePrimaryNavigationItems(navigationItems, userState, isRelease1aEnabled);
   const accessibleNavigationKeys = new Set(accessibleNavigationItems.map((navigationItem) => navigationItem.key));
 
   return (

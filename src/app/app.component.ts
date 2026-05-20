@@ -40,7 +40,10 @@ import { DASHBOARD_PAGE_DEFAULT_TAB } from './pages/dashboard/constants/dashboar
 import { DashboardPageType } from './pages/dashboard/types/dashboard.type';
 import { isDashboardPageType } from './pages/dashboard/constants/dashboard-config.constant';
 import { FINES_DASHBOARD_ROUTING_PATHS } from './flows/fines/constants/fines-dashboard-routing-paths.constant';
-import { getAccessiblePrimaryNavigationItems } from './flows/fines/utils/fines-section-permissions.utils';
+import {
+  getAccessiblePrimaryNavigationItems,
+  isRelease1aFeatureEnabled,
+} from './flows/fines/utils/fines-section-permissions.utils';
 import { HIDE_PRIMARY_NAV_ROUTE_DATA_KEY } from './constants/route-data.constant';
 import { FINES_ACC_ROUTING_PATHS } from './flows/fines/fines-acc/routing/constants/fines-acc-routing-paths.constant';
 import { FINES_ACC_DEFENDANT_ROUTING_PATHS } from './flows/fines/fines-acc/routing/constants/fines-acc-defendant-routing-paths.constant';
@@ -133,7 +136,7 @@ export class AppComponent implements OnInit, OnDestroy {
     getAccessiblePrimaryNavigationItems(
       NAVIGATION_BAR_CONFIGURATION,
       this.globalStore.userState(),
-      this.globalStore.featureFlags(),
+      isRelease1aFeatureEnabled(this.globalStore.featureFlags()),
     ),
   );
   public readonly primaryNavigationHidden = toSignal(
