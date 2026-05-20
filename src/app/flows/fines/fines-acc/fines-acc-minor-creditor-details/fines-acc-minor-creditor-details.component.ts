@@ -283,22 +283,6 @@ export class FinesAccMinorCreditorDetailsComponent
     }
   }
 
-  /**
-   * Navigates to the add account note page.
-   * If the user lacks the required permission in this BU, navigates to the access-denied page instead.
-   */
-  public navigateToChangeCreditorDetailsPage(): void {
-    // if (this.hasBusinessUnitPermissionKey('add-account-activity-notes')) {
-    //   this['router'].navigate([`../${FINES_ACC_MINOR_CREDITOR_ROUTING_PATHS.children.creditor}`], {
-    //     relativeTo: this.activatedRoute,
-    //   });
-    // } else {
-    this['router'].navigate(['/access-denied'], {
-      relativeTo: this.activatedRoute,
-    });
-    // }
-  }
-
   public override ngOnDestroy(): void {
     this.accountStore.clearSuccessMessage();
     this.accountStore.setHasVersionMismatch(false);

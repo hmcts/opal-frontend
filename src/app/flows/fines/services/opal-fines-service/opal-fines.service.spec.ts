@@ -1778,15 +1778,18 @@ describe('OpalFines', () => {
       httpMock.expectNone(`${OPAL_FINES_PATHS.minorCreditorAccounts}/${account_id}`);
     });
 
-    it('should set and return creditor tab data if cache is not available', () => {
+    it('should make an API call if cache is not available', () => {
       const account_id: number = 77;
+      const expectedResponse = OPAL_FINES_ACCOUNT_MINOR_CREDITOR_CREDITOR_MOCK;
 
       service.getMinorCreditorAccount(account_id).subscribe((response) => {
-        expect(response).toEqual(OPAL_FINES_ACCOUNT_MINOR_CREDITOR_CREDITOR_MOCK);
+        expect(response).toEqual(expectedResponse);
       });
 
       expect(service['cache']['minorCreditorAccountCreditorCache$']).toBeTruthy();
-      httpMock.expectNone(`${OPAL_FINES_PATHS.minorCreditorAccounts}/${account_id}`);
+      const req = httpMock.expectOne(`${OPAL_FINES_PATHS.minorCreditorAccounts}/${account_id}`);
+      expect(req.request.method).toBe('GET');
+      req.flush(expectedResponse);
     });
   });
 

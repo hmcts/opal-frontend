@@ -502,6 +502,7 @@ export class OpalFines {
       'defendantAccountPaymentTermsLatestCache$',
       'defendantAccountFixedPenaltyCache$',
       'minorCreditorAccountAtAGlanceCache$',
+      'minorCreditorAccountCreditorCache$',
     ];
 
     this.clearCaches(accountCaches);

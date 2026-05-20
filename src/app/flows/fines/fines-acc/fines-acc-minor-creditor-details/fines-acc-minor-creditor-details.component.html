@@ -96,7 +96,6 @@
       <app-fines-acc-minor-creditor-details-creditor-tab
         [tabData]="tabData"
         [style]="tabContentStyles"
-        (changeCreditorDetails)="navigateToChangeCreditorDetailsPage()"
         [hasAccountMaintenancePermission]="hasPermission(finesPermissions['account-maintenance'])"
         [hasViewCreditorBacsPermission]="hasPermission(finesPermissions['view-creditor-bacs'])"
       ></app-fines-acc-minor-creditor-details-creditor-tab>

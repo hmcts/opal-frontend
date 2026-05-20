@@ -23,13 +23,11 @@
           @if (tabData.party_details.organisation_flag && tabData.party_details.organisation_details) {
             <ng-container value>{{ tabData.party_details.organisation_details.organisation_name }}</ng-container>
           } @else if (!tabData.party_details.organisation_flag && tabData.party_details.individual_details) {
-            <ng-container value>{{
-              tabData.party_details.individual_details.title +
-                ' ' +
-                tabData.party_details.individual_details.forenames +
-                ' ' +
-                tabData.party_details.individual_details.surname
-            }}</ng-container>
+            <ng-container value>
+              {{ tabData.party_details.individual_details.title }}
+              {{ tabData.party_details.individual_details.forenames }}
+              {{ tabData.party_details.individual_details.surname | uppercase }}
+            </ng-container>
           }
         </div>
         <div
@@ -72,11 +70,7 @@
         >
           <ng-container name>Payment method</ng-container>
           <ng-container value>
-            @if (tabData.payment.pay_by_bacs) {
-              BACS
-            } @else {
-              Cheque
-            }
+            {{ tabData.payment.pay_by_bacs ? 'BACS' : 'Cheque' }}
           </ng-container>
         </div>
 
@@ -117,7 +111,7 @@
             summaryListId="creditorDetailsPayment"
             summaryListRowId="creditor-payment-reference"
           >
-            <ng-container name>Reference</ng-container>
+            <ng-container name>Payment reference</ng-container>
             <ng-container value>{{ tabData.payment.account_reference }}</ng-container>
           </div>
         }
