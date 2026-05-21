@@ -105,11 +105,11 @@
     "account_notes": null
   },
   "account_type": "Fixed Penalty",
-  "account_status": "Draft",
+  "account_status": "Submitted",
   "timeline_data": [
     {
       "username": "opal-test",
-      "status": "Draft",
+      "status": "Submitted",
       "status_date": "2025-11-17",
       "reason_text": "Created for testing Fixed Penalty company functionality"
     }
