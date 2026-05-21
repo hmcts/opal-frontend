@@ -132,7 +132,9 @@ export class FinesAccDefendantDetailsImpositionsTabComponent extends AbstractSor
    * @returns The creditor name or account ID, when present.
    */
   public getCreditorDisplay(imposition: IOpalFinesAccountDefendantDetailsImposition): string | null {
-    return imposition.creditor.name ?? imposition.creditor.display_name ?? imposition.creditor.creditor_account_id.toString();
+    return (
+      imposition.creditor.name ?? imposition.creditor.display_name ?? imposition.creditor.creditor_account_id.toString()
+    );
   }
 
   /**
