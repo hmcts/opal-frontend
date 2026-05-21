@@ -13,6 +13,8 @@ import { FINES_ACC_PARTY_ADD_AMEND_CONVERT_MODES } from './constants/fines-acc-p
 import { FINES_ACC_PARTY_ADD_AMEND_CONVERT_PARTY_TYPES } from './constants/fines-acc-party-add-amend-convert-party-types.constant';
 import { FINES_ACC_PARTY_ADD_AMEND_CONVERT_TEXT } from './constants/fines-acc-party-add-amend-convert-text.constant';
 import { FINES_ACC_PARTY_ADD_AMEND_CONVERT_FORM } from './constants/fines-acc-party-add-amend-convert-form.constant';
+import { FINES_ACC_DEFENDANT_DETAILS_TABS_KEYS } from '../fines-acc-defendant-details/constants/fines-acc-defendant-details-tabs-keys.constant';
+import { type TFinesAccDefendantDetailsTabKey } from '../fines-acc-defendant-details/types/fines-acc-defendant-details-tab-key.type';
 @Component({
   selector: 'app-fines-acc-debtor-add-amend',
   imports: [FinesAccPartyAddAmendConvertFormComponent],
@@ -72,12 +74,12 @@ export class FinesAccPartyAddAmendConvert extends AbstractFormParentBaseComponen
    * Gets the details page fragment to return to after submit or redirect.
    * @returns The parent or guardian fragment for parent guardian routes, otherwise the defendant fragment
    */
-  private getFragment(): string {
+  private getFragment(): TFinesAccDefendantDetailsTabKey {
     if (this.partyType === FINES_ACC_PARTY_ADD_AMEND_CONVERT_PARTY_TYPES.PARENT_GUARDIAN) {
-      return 'parent-or-guardian';
+      return FINES_ACC_DEFENDANT_DETAILS_TABS_KEYS['parent-or-guardian'];
     }
 
-    return 'defendant';
+    return FINES_ACC_DEFENDANT_DETAILS_TABS_KEYS.defendant;
   }
 
   /**

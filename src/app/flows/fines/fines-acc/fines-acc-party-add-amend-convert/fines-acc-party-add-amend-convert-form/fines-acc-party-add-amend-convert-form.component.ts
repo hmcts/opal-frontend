@@ -22,6 +22,8 @@ import { FINES_MAC_TITLE_DROPDOWN_OPTIONS } from '../../../fines-mac/constants/f
 import { FINES_MAC_LANGUAGE_PREFERENCES_OPTIONS } from '../../../fines-mac/fines-mac-language-preferences/constants/fines-mac-language-preferences-options';
 import { FinesAccountStore } from '../../stores/fines-acc.store';
 import { FINES_ACC_DEFENDANT_ROUTING_PATHS } from '../../routing/constants/fines-acc-defendant-routing-paths.constant';
+import { FINES_ACC_DEFENDANT_DETAILS_TABS_KEYS } from '../../fines-acc-defendant-details/constants/fines-acc-defendant-details-tabs-keys.constant';
+import { type TFinesAccDefendantDetailsTabKey } from '../../fines-acc-defendant-details/types/fines-acc-defendant-details-tab-key.type';
 import { GovukButtonComponent } from '@hmcts/opal-frontend-common/components/govuk/govuk-button';
 import { GovukHeadingWithCaptionComponent } from '@hmcts/opal-frontend-common/components/govuk/govuk-heading-with-caption';
 import {
@@ -510,12 +512,14 @@ export class FinesAccPartyAddAmendConvertFormComponent
   /**
    * Resolves the defendant-details fragment to use when navigating back from the form.
    */
-  public get routeFragment(): string {
-    if (this.isReducedParentGuardianMode) {
-      return 'defendant';
+  public get routeFragment(): TFinesAccDefendantDetailsTabKey {
+    if (this.isAddParentGuardianMode || this.isReducedParentGuardianMode) {
+      return FINES_ACC_DEFENDANT_DETAILS_TABS_KEYS.defendant;
     }
 
-    return this.partyType === this.partyTypes.PARENT_GUARDIAN ? 'parent-or-guardian' : 'defendant';
+    return this.partyType === this.partyTypes.PARENT_GUARDIAN
+      ? FINES_ACC_DEFENDANT_DETAILS_TABS_KEYS['parent-or-guardian']
+      : FINES_ACC_DEFENDANT_DETAILS_TABS_KEYS.defendant;
   }
 
   public override ngOnInit(): void {
