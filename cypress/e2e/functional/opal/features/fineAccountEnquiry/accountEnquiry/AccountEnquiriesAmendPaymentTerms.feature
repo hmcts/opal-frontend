@@ -28,7 +28,7 @@ Feature: Account Enquiries - Amend Payment Terms
         | account.payment_terms.effective_date            | 2025-05-30                |
 
 @JIRA-EPIC:PO-977
-    @JIRA-STORY:PO-1149
+    @JIRA-STORY:PO-1149 @JIRA-TEST-KEY:PO-5303
     Scenario: Save payment terms changes and return to Payment terms tab
       When I search for the account by last name "AmendPayTerms{uniq}" and open the latest result
       And I go to the Payment terms tab
@@ -43,7 +43,7 @@ Feature: Account Enquiries - Amend Payment Terms
       And the payment terms last enforcement is cleared
 
 @JIRA-EPIC:PO-977
-    @JIRA-STORY:PO-1149
+    @JIRA-STORY:PO-1149 @JIRA-TEST-KEY:PO-5304
     Scenario: Cancel payment terms amendments returns to Payment terms tab
       When I search for the account by last name "AmendPayTerms{uniq}" and open the latest result
       And I go to the Payment terms tab
@@ -71,7 +71,7 @@ Feature: Account Enquiries - Amend Payment Terms
         | account.payment_terms.effective_date            | 2025-05-30              |
 
 @JIRA-EPIC:PO-977
-    @JIRA-STORY:PO-1640
+    @JIRA-STORY:PO-1640 @JIRA-TEST-KEY:PO-5305
     Scenario: Company save payment terms changes and return to Payment terms tab
       When I open the company account details for "Amend Co{uniq}"
       And I go to the Payment terms tab
@@ -86,7 +86,7 @@ Feature: Account Enquiries - Amend Payment Terms
       And the payment terms last enforcement is cleared
 
 @JIRA-EPIC:PO-977
-    @JIRA-STORY:PO-1640
+    @JIRA-STORY:PO-1640 @JIRA-TEST-KEY:PO-5306
     Scenario: Company cancel payment terms amendments returns to Payment terms tab
       When I open the company account details for "Amend Co{uniq}"
       And I go to the Payment terms tab
@@ -117,7 +117,7 @@ Feature: Account Enquiries - Amend Payment Terms
         | account.payment_terms.effective_date            | 2025-05-30             |
 
 @JIRA-EPIC:PO-977
-    @JIRA-STORY:PO-1639
+    @JIRA-STORY:PO-1639 @JIRA-TEST-KEY:PO-5307
     Scenario: Parent or guardian save payment terms changes and return to Payment terms tab
       When I search for the account by last name "AmendPG{uniq}" and open the latest result
       And I go to the Payment terms tab
@@ -132,7 +132,7 @@ Feature: Account Enquiries - Amend Payment Terms
       And the payment terms last enforcement is cleared
 
 @JIRA-EPIC:PO-977
-    @JIRA-STORY:PO-1639
+    @JIRA-STORY:PO-1639 @JIRA-TEST-KEY:PO-5308
     Scenario: Parent or guardian cancel payment terms amendments returns to Payment terms tab
       When I search for the account by last name "AmendPG{uniq}" and open the latest result
       And I go to the Payment terms tab
