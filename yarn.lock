@@ -4000,9 +4000,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@hmcts/opal-frontend-common@npm:^0.0.77":
-  version: 0.0.77
-  resolution: "@hmcts/opal-frontend-common@npm:0.0.77"
+"@hmcts/opal-frontend-common@file:/Users/garethlangley/Documents/dev/opal/opal-frontend-common-ui-lib/hmcts-opal-frontend-common-0.0.78.tgz::locator=opal-frontend%40workspace%3A.":
+  version: 0.0.78
+  resolution: "@hmcts/opal-frontend-common@file:/Users/garethlangley/Documents/dev/opal/opal-frontend-common-ui-lib/hmcts-opal-frontend-common-0.0.78.tgz#/Users/garethlangley/Documents/dev/opal/opal-frontend-common-ui-lib/hmcts-opal-frontend-common-0.0.78.tgz::hash=1270c1&locator=opal-frontend%40workspace%3A."
   dependencies:
     "@microsoft/applicationinsights-web": "npm:^3.3.6"
     "@ministryofjustice/frontend": "npm:^9.0.0"
@@ -4024,7 +4024,7 @@ __metadata:
   peerDependenciesMeta:
     "@ngrx/signals":
       optional: true
-  checksum: 10/cff55000d1e1b08423dbdd1599c080eb5256b834bd25dd832351f272a3de0e2f3515525d26a5a52a898ddcf29e48f5ebc697ef5f2919e64db566b6b5867f200f
+  checksum: 10/c1ccf5503e2761ef36ac99acda95db7fe2b283baf8de8ae1b2841f09bbb7a820d39422fdfcca5c3fdaf71001e08e650d5a34f3de5aaaf920649934d1bc23c0be
   languageName: node
   linkType: hard
 
@@ -16495,7 +16495,7 @@ __metadata:
     "@hmcts/info-provider": "npm:^1.1.0"
     "@hmcts/nodejs-healthcheck": "npm:^1.8.5"
     "@hmcts/nodejs-logging": "npm:^4.0.4"
-    "@hmcts/opal-frontend-common": "npm:^0.0.77"
+    "@hmcts/opal-frontend-common": "file:/Users/garethlangley/Documents/dev/opal/opal-frontend-common-ui-lib/hmcts-opal-frontend-common-0.0.78.tgz"
     "@hmcts/opal-frontend-common-cypress": "npm:^0.0.2"
     "@hmcts/opal-frontend-common-node": "npm:^0.0.30"
     "@hmcts/properties-volume": "npm:^1.1.0"

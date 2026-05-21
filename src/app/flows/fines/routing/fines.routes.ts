@@ -9,6 +9,7 @@ import { FINES_ROUTING_PATHS } from '@routing/fines/constants/fines-routing-path
 import { authGuard } from '@hmcts/opal-frontend-common/guards/auth';
 import { canDeactivateGuard } from '@hmcts/opal-frontend-common/guards/can-deactivate';
 import { accountGuard } from '@hmcts/opal-frontend-common/guards/account';
+import { featureFlagRedirectGuard } from '@hmcts/opal-frontend-common/guards/feature-flag';
 import { TitleResolver } from '@hmcts/opal-frontend-common/resolvers/title';
 import { FINES_SA_ROUTING_TITLES } from '../fines-sa/routing/constants/fines-sa-routing-titles.constant';
 import { FINES_SA_ROUTING_PATHS } from '../fines-sa/routing/constants/fines-sa-routing-paths.constant';
@@ -24,7 +25,9 @@ import { finesSaMinorCreditorAccountsResolver } from '../fines-sa/routing/resolv
 import { dashboardLandingGuard } from './guards/dashboard-landing/dashboard-landing.guard';
 import { finesSectionPermissionsGuard } from './guards/fines-section-permissions/fines-section-permissions.guard';
 import { PRIMARY_NAV_HIDDEN_ROUTE_DATA } from '@app/constants/route-data.constant';
-import { release1aFeatureFlagGuard } from './guards/feature-flag-redirect/feature-flag-redirect.guard';
+import { RELEASE_1A_FEATURE_FLAG } from '../utils/fines-section-permissions.utils';
+
+export const release1aFeatureFlagGuard = featureFlagRedirectGuard(RELEASE_1A_FEATURE_FLAG);
 
 export const finesRouting: Routes = [
   {

@@ -1,14 +1,28 @@
-import { describe, expect, it } from 'vitest';
+import { describe, expect, it, vi } from 'vitest';
 import { FINES_DASHBOARD_ROUTING_PATHS } from '../constants/fines-dashboard-routing-paths.constant';
 import { FINES_ROUTING_PATHS } from './constants/fines-routing-paths.constant';
-import { finesRouting } from './fines.routes';
+import { finesRouting, release1aFeatureFlagGuard } from './fines.routes';
 import { finesSectionPermissionsGuard } from './guards/fines-section-permissions/fines-section-permissions.guard';
 import { PRIMARY_NAV_HIDDEN_ROUTE_DATA } from '@app/constants/route-data.constant';
-import { release1aFeatureFlagGuard } from './guards/feature-flag-redirect/feature-flag-redirect.guard';
+import { RELEASE_1A_FEATURE_FLAG } from '../utils/fines-section-permissions.utils';
+
+const { featureFlagRedirectGuardMock, release1aFeatureFlagGuardMock } = vi.hoisted(() => ({
+  featureFlagRedirectGuardMock: vi.fn(),
+  release1aFeatureFlagGuardMock: vi.fn(),
+}));
+
+vi.mock('@hmcts/opal-frontend-common/guards/feature-flag', () => ({
+  featureFlagRedirectGuard: featureFlagRedirectGuardMock.mockReturnValue(release1aFeatureFlagGuardMock),
+}));
 
 describe('fines routes', () => {
   const childRoutes =
     finesRouting.find((route) => route.path === FINES_ROUTING_PATHS.root && route.children)?.children ?? [];
+
+  it('should create the release-1a feature flag guard from the common redirect guard', () => {
+    expect(featureFlagRedirectGuardMock).toHaveBeenCalledWith(RELEASE_1A_FEATURE_FLAG);
+    expect(release1aFeatureFlagGuard).toBe(release1aFeatureFlagGuardMock);
+  });
 
   it('should guard the draft root as an Accounts section entry route', () => {
     const draftRoute = childRoutes.find((route) => route.path === FINES_ROUTING_PATHS.children.draft.root);

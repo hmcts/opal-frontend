@@ -8,10 +8,10 @@ import {
 } from '@app/flows/fines/utils/fines-section-permissions.utils';
 import { isDashboardPageType } from '@app/pages/dashboard/constants/dashboard-config.constant';
 import { DashboardPageType } from '@app/pages/dashboard/types/dashboard.type';
+import { resolveFeatureFlagGuard } from '@hmcts/opal-frontend-common/guards/feature-flag';
 import { PAGES_ROUTING_PATHS as COMMON_PAGES_ROUTING_PATHS } from '@hmcts/opal-frontend-common/pages/routing/constants';
 import { OpalUserService } from '@hmcts/opal-frontend-common/services/opal-user-service';
 import { firstValueFrom } from 'rxjs';
-import { resolveFeatureFlagGuard } from '../helpers/resolve-feature-flag-guard';
 
 const getSectionKey = (route: ActivatedRouteSnapshot): DashboardPageType | null => {
   const routeSectionKey = route.data['sectionKey'];
