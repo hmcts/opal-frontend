@@ -148,7 +148,7 @@
     "@angular/cli": "^21.1.3",
     "@angular/compiler-cli": "^21.1.3",
     "@cypress/grep": "^6.0.0",
-    "@hmcts/opal-frontend-common-cypress": "^0.0.2",
+    "@hmcts/opal-frontend-common-cypress": "^0.0.3",
     "@openapitools/openapi-generator-cli": "^2.25.0",
     "@types/config": "^4.0.0",
     "@types/cookie-parser": "^1.4.6",
