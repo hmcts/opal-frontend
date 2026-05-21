@@ -26,6 +26,7 @@ import { FINES_ACC_ENF_COURT_CHANGE_ROUTING_PATHS } from '../fines-acc-enf-court
 import { beforeEach, describe, expect, it, vi } from 'vitest';
 import { FINES_ACC_ENF_OVERRIDE_ADD_CHANGE_ROUTING_PATHS } from '../fines-acc-enf-override-add-change/constants/fines-acc-enf-override-add-change-routing-paths.constant';
 import { FINES_ACC_ENF_ACTION_ROUTING_PATHS } from '../fines-acc-enf-action-select/constants/fines-acc-enf-action-select-routing-paths.constant';
+import { FINES_ACC_REMOVE_NON_PAYING_PG_ROUTING_PATHS } from '../fines-acc-remove-non-paying-pg/constants/fines-acc-remove-non-paying-pg-routing-paths.constant';
 
 describe('FinesAccDefendantDetailsComponent', () => {
   let component: FinesAccDefendantDetailsComponent;
@@ -184,6 +185,36 @@ describe('FinesAccDefendantDetailsComponent', () => {
     };
 
     expect(component.canAddParentOrGuardianDetails).toBe(false);
+  });
+
+  it('should show parent or guardian details when the parent guardian is the debtor', () => {
+    component.accountData = {
+      ...structuredClone(FINES_ACC_DEFENDANT_DETAILS_HEADER_MOCK),
+      debtor_type: component.debtorTypes.parentGuardian,
+      parent_guardian_party_id: null,
+    };
+
+    expect(component.hasParentOrGuardianDetails).toBe(true);
+  });
+
+  it('should show parent or guardian details when a parent guardian party exists', () => {
+    component.accountData = {
+      ...structuredClone(FINES_ACC_DEFENDANT_DETAILS_HEADER_MOCK),
+      debtor_type: component.debtorTypes.defendant,
+      parent_guardian_party_id: '123',
+    };
+
+    expect(component.hasParentOrGuardianDetails).toBe(true);
+  });
+
+  it('should not show parent or guardian details when no parent guardian exists', () => {
+    component.accountData = {
+      ...structuredClone(FINES_ACC_DEFENDANT_DETAILS_HEADER_MOCK),
+      debtor_type: component.debtorTypes.defendant,
+      parent_guardian_party_id: null,
+    };
+
+    expect(component.hasParentOrGuardianDetails).toBe(false);
   });
 
   it('should handle tab switch', () => {
@@ -396,6 +427,55 @@ describe('FinesAccDefendantDetailsComponent', () => {
     );
   });
 
+  it('should navigate to add parent or guardian details page when add is allowed', () => {
+    component.accountData = {
+      ...structuredClone(FINES_ACC_DEFENDANT_DETAILS_HEADER_MOCK),
+      is_youth: true,
+      debtor_type: component.debtorTypes.defendant,
+      parent_guardian_party_id: null,
+    };
+
+    component.navigateToAddPartyDetailsPage(FINES_ACC_PARTY_ADD_AMEND_CONVERT_PARTY_TYPES.PARENT_GUARDIAN);
+
+    expect(routerSpy.navigate).toHaveBeenCalledWith(
+      [`../party/${FINES_ACC_PARTY_ADD_AMEND_CONVERT_PARTY_TYPES.PARENT_GUARDIAN}/add`],
+      {
+        relativeTo: component['activatedRoute'],
+      },
+    );
+  });
+
+  it('should navigate to access-denied when add parent or guardian details is not allowed', () => {
+    component.accountData = {
+      ...structuredClone(FINES_ACC_DEFENDANT_DETAILS_HEADER_MOCK),
+      is_youth: true,
+      debtor_type: component.debtorTypes.defendant,
+      parent_guardian_party_id: '123',
+    };
+
+    component.navigateToAddPartyDetailsPage(FINES_ACC_PARTY_ADD_AMEND_CONVERT_PARTY_TYPES.PARENT_GUARDIAN);
+
+    expect(routerSpy.navigate).toHaveBeenCalledWith(['/access-denied'], {
+      relativeTo: component['activatedRoute'],
+    });
+  });
+
+  it('should navigate to remove non-paying parent guardian page', () => {
+    const event = { preventDefault: vi.fn() } as unknown as Event;
+    routerSpy.navigate.mockClear();
+    component.navigateToRemoveNonPayingParentGuardianPage(event);
+
+    expect(event.preventDefault).toHaveBeenCalled();
+    expect(routerSpy.navigate).toHaveBeenCalledWith(
+      [
+        `../${FINES_ACC_DEFENDANT_ROUTING_PATHS.children.remove}/${FINES_ACC_REMOVE_NON_PAYING_PG_ROUTING_PATHS.root}/${FINES_ACC_REMOVE_NON_PAYING_PG_ROUTING_PATHS.children.parentGuardian}`,
+      ],
+      {
+        relativeTo: component['activatedRoute'],
+      },
+    );
+  });
+
   it('should navigate to the company convert page when convert is triggered', () => {
     routerSpy.navigate.mockClear();
     component.navigateToConvertAccountPage(FINES_ACC_PARTY_ADD_AMEND_CONVERT_PARTY_TYPES.COMPANY);
@@ -442,6 +522,16 @@ describe('FinesAccDefendantDetailsComponent', () => {
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     vi.spyOn<any, any>(component['permissionsService'], 'hasBusinessUnitPermissionAccess').mockReturnValue(false);
     component.navigateToConvertAccountPage(FINES_ACC_PARTY_ADD_AMEND_CONVERT_PARTY_TYPES.COMPANY);
+
+    expect(routerSpy.navigate).toHaveBeenCalledWith(['/access-denied'], {
+      relativeTo: component['activatedRoute'],
+    });
+  });
+
+  it('should navigate to access-denied if user lacks permission for remove non-paying parent guardian', () => {
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    vi.spyOn<any, any>(component['permissionsService'], 'hasBusinessUnitPermissionAccess').mockReturnValue(false);
+    component.navigateToRemoveNonPayingParentGuardianPage();
 
     expect(routerSpy.navigate).toHaveBeenCalledWith(['/access-denied'], {
       relativeTo: component['activatedRoute'],

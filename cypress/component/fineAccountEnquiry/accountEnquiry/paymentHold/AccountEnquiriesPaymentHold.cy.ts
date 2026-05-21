@@ -22,6 +22,7 @@ import {
 const ACCOUNT_ENQUIRY_JIRA_LABEL = '@JIRA-LABEL:account-enquiry';
 const ADD_PAYMENT_HOLD_STORY_TAG = '@JIRA-STORY:PO-1930';
 const REMOVE_PAYMENT_HOLD_STORY_TAG = '@JIRA-STORY:PO-1934';
+const PAYMENT_HOLD_EPIC_TAG = '@JIRA-EPIC:PO-2234';
 
 const buildTags = (...tags: string[]): string[] => [...tags, ACCOUNT_ENQUIRY_JIRA_LABEL];
 
@@ -115,7 +116,7 @@ describe('Minor Creditor Payment Hold', () => {
   describe('Add Payment Hold', () => {
     it(
       'AC1a, AC2a: displays Add payment hold and navigates to the Payment Hold Confirmation screen when the user has permission in the associated BU',
-      { tags: buildTags(ADD_PAYMENT_HOLD_STORY_TAG) },
+      { tags: buildTags(ADD_PAYMENT_HOLD_STORY_TAG, PAYMENT_HOLD_EPIC_TAG, '@JIRA-TEST-KEY:PO-4238') },
       () => {
         const userState = createUserStateWithPaymentHoldPermission();
         const atAGlance = createMinorCreditorAtAGlanceWithoutDefendantMock();
@@ -136,7 +137,7 @@ describe('Minor Creditor Payment Hold', () => {
 
     it(
       'AC1b: displays Add payment hold and navigates to the denied screen when the user only has permission in a different BU',
-      { tags: buildTags(ADD_PAYMENT_HOLD_STORY_TAG) },
+      { tags: buildTags(ADD_PAYMENT_HOLD_STORY_TAG, PAYMENT_HOLD_EPIC_TAG, '@JIRA-TEST-KEY:PO-4239') },
       () => {
         const userState = createUserStateWithPaymentHoldPermissionInDifferentBusinessUnit();
         const atAGlance = createMinorCreditorAtAGlanceWithoutDefendantMock();
@@ -152,7 +153,7 @@ describe('Minor Creditor Payment Hold', () => {
 
     it(
       'AC1c: does not display Add payment hold when the user has no payment hold permission in any BU',
-      { tags: buildTags(ADD_PAYMENT_HOLD_STORY_TAG) },
+      { tags: buildTags(ADD_PAYMENT_HOLD_STORY_TAG, PAYMENT_HOLD_EPIC_TAG, '@JIRA-TEST-KEY:PO-4240') },
       () => {
         const atAGlance = createMinorCreditorAtAGlanceWithoutDefendantMock();
 
@@ -166,7 +167,7 @@ describe('Minor Creditor Payment Hold', () => {
 
     it(
       'AC3a: renders the add payment hold confirmation screen with Yes - add hold and No - cancel actions',
-      { tags: buildTags(ADD_PAYMENT_HOLD_STORY_TAG) },
+      { tags: buildTags(ADD_PAYMENT_HOLD_STORY_TAG, PAYMENT_HOLD_EPIC_TAG, '@JIRA-TEST-KEY:PO-4241') },
       () => {
         const initialAtAGlance = createMinorCreditorAtAGlanceWithoutDefendantMock();
         initialAtAGlance.payment.hold_payment = false;
@@ -183,7 +184,7 @@ describe('Minor Creditor Payment Hold', () => {
 
     it(
       'AC3a: No - cancel returns to the At a Glance tab without saving any changes',
-      { tags: buildTags(ADD_PAYMENT_HOLD_STORY_TAG) },
+      { tags: buildTags(ADD_PAYMENT_HOLD_STORY_TAG, PAYMENT_HOLD_EPIC_TAG, '@JIRA-TEST-KEY:PO-4242') },
       () => {
         const initialAtAGlance = createMinorCreditorAtAGlanceWithoutDefendantMock();
         initialAtAGlance.payment.hold_payment = false;
@@ -200,7 +201,7 @@ describe('Minor Creditor Payment Hold', () => {
 
     it(
       'AC3a, AC3b: Yes - add hold posts the update, returns to At a Glance, shows Payments are on hold, and the banner persists after refresh',
-      { tags: buildTags(ADD_PAYMENT_HOLD_STORY_TAG) },
+      { tags: buildTags(ADD_PAYMENT_HOLD_STORY_TAG, PAYMENT_HOLD_EPIC_TAG, '@JIRA-TEST-KEY:PO-4243') },
       () => {
         const initialAtAGlance = createMinorCreditorAtAGlanceWithoutDefendantMock();
         initialAtAGlance.payment.hold_payment = false;
@@ -231,7 +232,7 @@ describe('Minor Creditor Payment Hold', () => {
   describe('Remove Payment Hold', () => {
     it(
       'AC1a, AC2a: displays Remove payment hold and navigates to the Payment Hold Confirmation screen when the user has permission in the associated BU',
-      { tags: buildTags(REMOVE_PAYMENT_HOLD_STORY_TAG) },
+      { tags: buildTags(REMOVE_PAYMENT_HOLD_STORY_TAG, PAYMENT_HOLD_EPIC_TAG, '@JIRA-TEST-KEY:PO-4244') },
       () => {
         const userState = createUserStateWithPaymentHoldPermission();
         const atAGlance = createMinorCreditorAtAGlanceWithoutDefendantMock();
@@ -253,7 +254,7 @@ describe('Minor Creditor Payment Hold', () => {
 
     it(
       'AC1b: displays Remove payment hold and navigates to the denied screen when the user only has permission in a different BU',
-      { tags: buildTags(REMOVE_PAYMENT_HOLD_STORY_TAG) },
+      { tags: buildTags(REMOVE_PAYMENT_HOLD_STORY_TAG, PAYMENT_HOLD_EPIC_TAG, '@JIRA-TEST-KEY:PO-4245') },
       () => {
         const userState = createUserStateWithPaymentHoldPermissionInDifferentBusinessUnit();
         const atAGlance = createMinorCreditorAtAGlanceWithoutDefendantMock();
@@ -270,7 +271,7 @@ describe('Minor Creditor Payment Hold', () => {
 
     it(
       'AC1c: does not display Remove payment hold when the user has no payment hold permission in any BU',
-      { tags: buildTags(REMOVE_PAYMENT_HOLD_STORY_TAG) },
+      { tags: buildTags(REMOVE_PAYMENT_HOLD_STORY_TAG, PAYMENT_HOLD_EPIC_TAG, '@JIRA-TEST-KEY:PO-4246') },
       () => {
         const atAGlance = createMinorCreditorAtAGlanceWithoutDefendantMock();
 
@@ -284,7 +285,7 @@ describe('Minor Creditor Payment Hold', () => {
 
     it(
       'AC3a: renders the remove payment hold confirmation screen with Yes - remove hold and No - cancel actions',
-      { tags: buildTags(REMOVE_PAYMENT_HOLD_STORY_TAG) },
+      { tags: buildTags(REMOVE_PAYMENT_HOLD_STORY_TAG, PAYMENT_HOLD_EPIC_TAG, '@JIRA-TEST-KEY:PO-4247') },
       () => {
         const initialAtAGlance = createMinorCreditorAtAGlanceWithoutDefendantMock();
         initialAtAGlance.payment.hold_payment = true;
@@ -301,7 +302,7 @@ describe('Minor Creditor Payment Hold', () => {
 
     it(
       'AC3a: No - cancel returns to the At a Glance tab without saving any changes',
-      { tags: buildTags(REMOVE_PAYMENT_HOLD_STORY_TAG) },
+      { tags: buildTags(REMOVE_PAYMENT_HOLD_STORY_TAG, PAYMENT_HOLD_EPIC_TAG, '@JIRA-TEST-KEY:PO-4248') },
       () => {
         const initialAtAGlance = createMinorCreditorAtAGlanceWithoutDefendantMock();
         initialAtAGlance.payment.hold_payment = true;
@@ -318,7 +319,7 @@ describe('Minor Creditor Payment Hold', () => {
 
     it(
       'AC3a, AC3b: Yes - remove posts the update, returns to At a Glance, shows Payment hold removed, and the banner does not persist after refresh',
-      { tags: buildTags(REMOVE_PAYMENT_HOLD_STORY_TAG) },
+      { tags: buildTags(REMOVE_PAYMENT_HOLD_STORY_TAG, PAYMENT_HOLD_EPIC_TAG, '@JIRA-TEST-KEY:PO-4249') },
       () => {
         const initialAtAGlance = createMinorCreditorAtAGlanceWithoutDefendantMock();
         initialAtAGlance.payment.hold_payment = true;

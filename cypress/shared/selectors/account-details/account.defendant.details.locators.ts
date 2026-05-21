@@ -169,6 +169,12 @@ export const AccountDefendantDetailsLocators = {
   actions: {
     /** Container for the right column actions within Defendant tab. */
     sideColumn: '#defendant-convert-actions',
+    /** Add parent or guardian details action text block. */
+    addParentGuardianAction: '#defendant-convert-actions p',
+    /** Interactive add parent or guardian details link, when present. */
+    addParentGuardianActionLink: '#defendant-convert-actions a.govuk-link.govuk-link--no-visited-state',
+    /** Visible label for the add parent or guardian details action link. */
+    addParentGuardianActionLabel: 'Add parent or guardian details',
 
     /** Convert action text within the Defendant tab actions column. */
     convertAction: '#defendant-convert-action',

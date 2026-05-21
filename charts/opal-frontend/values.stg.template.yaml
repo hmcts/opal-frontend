@@ -4,7 +4,6 @@ nodejs:
   ingressHost: ${SERVICE_FQDN}
   environment:
     FRONTEND_HOSTNAME: https://${SERVICE_FQDN}
-    OPAL_API_URL: http://${SERVICE_NAME}-opal-fines-service
     OPAL_FINES_SERVICE_API_URL: http://${SERVICE_NAME}-opal-fines-service
     OPAL_USER_SERVICE_API_URL: https://opal-user-service.staging.platform.hmcts.net
     FEATURES_LAUNCH_DARKLY_ENABLED: false
@@ -53,7 +52,7 @@ opal-fines-service:
       OPAL_USER_SERVICE_API_URL: https://opal-user-service.staging.platform.hmcts.net
       OPAL_LEGACY_GATEWAY_URL: ${STG_OPAL_LEGACY_GATEWAY_URL}
       OPAL_FRONTEND_URL: https://${SERVICE_FQDN}
-      FLYWAY_LOCATIONS: classpath:db/migration/allEnvs, classpath:db/migration/devOnly
+      FLYWAY_LOCATIONS: classpath:db/migration/ddl, classpath:db/migration/data/allEnvs, classpath:db/migration/data/nle, classpath:db/migration/data/stg
       FEATURES_APP_INSIGHTS_ENABLED: false
 postgresql:
   enabled: true

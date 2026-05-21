@@ -34,6 +34,7 @@ import { OPAL_FINES_ACCOUNT_DEFENDANT_DETAILS_HISTORY_AND_NOTES_TAB_REF_DATA_MOC
 import { IOpalFinesUpdateDefendantAccountPayload } from './interfaces/opal-fines-update-defendant-account.interface';
 import { IOpalFinesUpdateDefendantAccountResponse } from './interfaces/opal-fines-update-defendant-account-response.interface';
 import { IOpalFinesAccountDefendantAccountParty } from './interfaces/opal-fines-account-defendant-account-party.interface';
+import { IOpalFinesAccountDefendantAccountPartyPayload } from './interfaces/opal-fines-account-defendant-account-party-payload.interface';
 import { IOpalFinesAccountPartyDetails } from './interfaces/opal-fines-account-party-details.interface';
 import { IOpalFinesAccountDefendantDetailsEnforcementTabRefData } from './interfaces/opal-fines-account-defendant-details-enforcement-tab-ref-data.interface';
 import { IOpalFinesAccountDefendantDetailsHistoryAndNotesTabRefData } from './interfaces/opal-fines-account-defendant-details-history-and-notes-tab-ref-data.interface';
@@ -58,6 +59,7 @@ import { IOpalFinesEnforcersRefData } from './interfaces/opal-fines-enforcers-re
 import { IOpalFinesEnforcer } from './interfaces/opal-fines-enforcer.interface';
 import { IOpalFinesDraftAccountPatchRequestPayload } from '@services/fines/opal-fines-service/types/opal-fines-draft-account-patch-request-payload.type';
 import { IOpalFinesUpdateMinorCreditorAccountPayload } from '@services/fines/opal-fines-service/interfaces/opal-fines-update-minor-creditor-account-payload.interface';
+import { IOpalFinesDeleteDefendantAccountPartyPayload } from './interfaces/opal-fines-delete-defendant-account-party-payload.interface';
 
 @Injectable({
   providedIn: 'root',
@@ -694,7 +696,7 @@ export class OpalFines {
     defendant_party_id: string | null,
   ): Observable<IOpalFinesAccountDefendantAccountParty> {
     if (!this.cache.defendantAccountPartyCache$) {
-      const url = `${OPAL_FINES_PATHS.defendantAccounts}/${account_id}/defendant-account-parties/${defendant_party_id}`;
+      const url = `${OPAL_FINES_PATHS.defendantAccounts}/${account_id}/${OPAL_FINES_PATHS.defendantAccountParties}/${defendant_party_id}`;
       this.cache.defendantAccountPartyCache$ = this.http
         .get<IOpalFinesAccountDefendantAccountParty>(url, { observe: 'response' })
         .pipe(
@@ -725,7 +727,7 @@ export class OpalFines {
     party_account_id: string | null,
   ): Observable<IOpalFinesAccountDefendantAccountParty> {
     if (!this.cache.defendantAccountParentOrGuardianAccountPartyCache$) {
-      const url = `${OPAL_FINES_PATHS.defendantAccounts}/${account_id}/defendant-account-parties/${party_account_id}`;
+      const url = `${OPAL_FINES_PATHS.defendantAccounts}/${account_id}/${OPAL_FINES_PATHS.defendantAccountParties}/${party_account_id}`;
       this.cache.defendantAccountParentOrGuardianAccountPartyCache$ = this.http
         .get<IOpalFinesAccountDefendantAccountParty>(url, { observe: 'response' })
         .pipe(
@@ -1004,7 +1006,7 @@ export class OpalFines {
     version?: string,
     businessUnitId?: string,
   ): Observable<IOpalFinesAccountDefendantAccountParty> {
-    const url = `${OPAL_FINES_PATHS.defendantAccounts}/${defendantAccountId}/defendant-account-parties/${defendantAccountPartyId}`;
+    const url = `${OPAL_FINES_PATHS.defendantAccounts}/${defendantAccountId}/${OPAL_FINES_PATHS.defendantAccountParties}/${defendantAccountPartyId}`;
 
     const headers: Record<string, string> = {};
     if (version) {
@@ -1015,6 +1017,64 @@ export class OpalFines {
     }
 
     return this.http.put<IOpalFinesAccountDefendantAccountParty>(url, payload, { headers });
+  }
+
+  /**
+   * Adds defendant account party details.
+   *
+   * @param defendantAccountId - The unique identifier of the defendant account.
+   * @param payload - The payload containing the new party details.
+   * @param version - The version for optimistic concurrency control (If-Match header).
+   * @param businessUnitId - The business unit identifier.
+   * @returns An Observable that emits the added defendant account party response.
+   */
+  public postDefendantAccountParty(
+    defendantAccountId: number,
+    payload: IOpalFinesAccountDefendantAccountPartyPayload,
+    version?: string,
+    businessUnitId?: string,
+  ): Observable<IOpalFinesAccountDefendantAccountParty> {
+    const url = `${OPAL_FINES_PATHS.defendantAccounts}/${defendantAccountId}/${OPAL_FINES_PATHS.defendantAccountParties}`;
+
+    const headers: Record<string, string> = {};
+    if (version) {
+      headers['If-Match'] = version;
+    }
+    if (businessUnitId !== undefined) {
+      headers['Business-Unit-Id'] = businessUnitId;
+    }
+
+    return this.http.post<IOpalFinesAccountDefendantAccountParty>(url, payload, { headers });
+  }
+
+  /**
+   * Deletes defendant account party details.
+   *
+   * @param defendantAccountId - The unique identifier of the defendant account.
+   * @param defendantAccountPartyId - The unique identifier of the defendant account party.
+   * @param payload - The payload identifying the party being removed.
+   * @param version - The version for optimistic concurrency control (If-Match header).
+   * @param businessUnitId - The business unit identifier.
+   * @returns An Observable that completes when the party has been deleted.
+   */
+  public deleteDefendantAccountParty(
+    defendantAccountId: number,
+    defendantAccountPartyId: string,
+    payload: IOpalFinesDeleteDefendantAccountPartyPayload,
+    version?: string,
+    businessUnitId?: string,
+  ): Observable<void> {
+    const url = `${OPAL_FINES_PATHS.defendantAccounts}/${defendantAccountId}/${OPAL_FINES_PATHS.defendantAccountParties}/${defendantAccountPartyId}`;
+
+    const headers: Record<string, string> = {};
+    if (version) {
+      headers['If-Match'] = version;
+    }
+    if (businessUnitId !== undefined) {
+      headers['Business-Unit-Id'] = businessUnitId;
+    }
+
+    return this.http.delete<void>(url, { headers, body: payload });
   }
 
   /**

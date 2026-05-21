@@ -58,6 +58,15 @@ Given('I am on the Account Search page - Individuals form displayed by default',
 });
 
 /**
+ * @step Navigates directly to the Account Search route.
+ * @details Used by feature-flag scenarios that validate direct-route access without going through the dashboard.
+ */
+When('I navigate directly to the Account Search page', () => {
+  log('step', 'Navigating directly to the Account Search page');
+  searchIndividualActions().visitPageDirectly();
+});
+
+/**
  * @step Submits the Individuals search with all fields empty.
  * @details Uses Individuals actions to click Search without entering data.
  * @example

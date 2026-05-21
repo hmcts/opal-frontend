@@ -39,6 +39,70 @@ String skipLabelComponent = 'skip_opal_component'
 @Field String copyFunctionalToPipelineCmd = "cp -r ${weightsRoot}/${functionalWeights} ${pipelineWeightsDir}/"
 String smokeXmlReport = 'cypress/reports/smokeXmlReport.html'
 String functionalXmlReport = 'cypress/reports/functionalXmlReport.html'
+@Field String runReleasePrefix = 'run_release:'
+@Field String skipTagExpression = 'not @skip'
+@Field String functionalFeatureGlob = 'cypress/e2e/functional/opal/**/*.feature'
+@Field String releaseSuiteR1a = 'r1a'
+@Field String releaseSuiteR1ab = 'r1ab'
+@Field String releaseSuiteR1aOff = 'r1a_off'
+@Field String releaseSuiteR1bOff = 'r1b_off'
+@Field String releaseSuiteR1cWriteOffOff = 'r1c_write_off_off'
+@Field String releaseSuiteR1cEnforcementOperationalReportingOff = 'r1c_enforcement_operational_reporting_off'
+@Field String defaultFunctionalTagPrefix = 'not @FeatureFlag and not @UAT-Technical and '
+@Field String macPopulateAndSubmitFeatureGlob =
+  'cypress/e2e/functional/opal/features/manualAccountCreation/populateAndSubmit/**/*.feature,'
+@Field String macCheckAndValidateFeatureGlob =
+  'cypress/e2e/functional/opal/features/manualAccountCreation/checkAndValidate/checkAndValidate*.feature,'
+@Field String macDraftAccountsFeatureGlob =
+  'cypress/e2e/functional/opal/features/manualAccountCreation/checkAndValidateDraftAccounts/**/*.feature,'
+@Field String finesPrimaryNavigationFeatureGlob =
+  'cypress/e2e/functional/opal/features/navigation/finesPrimaryNavigation.feature'
+@Field String r1aPositiveTagExpression =
+  defaultFunctionalTagPrefix + skipTagExpression + ' and not @R1B ' +
+  'and not @R1CFinance and not @R1CEnforcementOperationalReporting and not @R1CAdministration'
+@Field String r1abPositiveTagExpression =
+  defaultFunctionalTagPrefix + skipTagExpression + ' and not @R1CFinance ' +
+  'and not @R1CEnforcementOperationalReporting and not @R1CAdministration'
+@Field String r1aOffTagExpression = '(@R1AOff) and ' + skipTagExpression
+@Field String r1bOffTagExpression = '(@R1BOff) and ' + skipTagExpression
+@Field String r1cWriteOffOffTagExpression = '(@R1CWriteOffOff) and ' + skipTagExpression
+@Field String r1cEnforcementOperationalReportingOffTagExpression =
+  '(@R1CEnforcementOperationalReportingOff) and ' + skipTagExpression
+@Field String r1aFeatureSpecGlob =
+  macPopulateAndSubmitFeatureGlob +
+  macCheckAndValidateFeatureGlob +
+  macDraftAccountsFeatureGlob +
+  finesPrimaryNavigationFeatureGlob
+@Field String r1abFeatureSpecGlob =
+  macPopulateAndSubmitFeatureGlob +
+  macCheckAndValidateFeatureGlob +
+  macDraftAccountsFeatureGlob +
+  'cypress/e2e/functional/opal/features/fineAccountEnquiry/**/*.feature,' +
+  finesPrimaryNavigationFeatureGlob
+@Field List<String> releaseSuiteValues = [
+  releaseSuiteR1a,
+  releaseSuiteR1ab,
+  releaseSuiteR1aOff,
+  releaseSuiteR1bOff,
+  releaseSuiteR1cWriteOffOff,
+  releaseSuiteR1cEnforcementOperationalReportingOff,
+]
+@Field Map<String, String> releaseSuiteTagExpressions = [
+  (releaseSuiteR1a)                                 : r1aPositiveTagExpression,
+  (releaseSuiteR1ab)                                : r1abPositiveTagExpression,
+  (releaseSuiteR1aOff)                              : r1aOffTagExpression,
+  (releaseSuiteR1bOff)                              : r1bOffTagExpression,
+  (releaseSuiteR1cWriteOffOff)                      : r1cWriteOffOffTagExpression,
+  (releaseSuiteR1cEnforcementOperationalReportingOff): r1cEnforcementOperationalReportingOffTagExpression,
+]
+@Field Map<String, String> releaseSuiteSpecGlobs = [
+  (releaseSuiteR1a) : r1aFeatureSpecGlob,
+  (releaseSuiteR1ab): r1abFeatureSpecGlob,
+]
+@Field Map<String, String> releaseSuiteComponentScripts = [
+  (releaseSuiteR1a) : 'test:component:r1a',
+  (releaseSuiteR1ab): 'test:component:r1ab',
+]
 
 // Build an Azure KeyVault secret entry
 static Map<String, Object> secret(String secretName, String envVar) {
@@ -97,6 +161,36 @@ boolean shouldPublishSmokeReport() {
 String accountArtifactPath = 'functional-output/account_evidence/created-accounts.json'
 String accountEvidenceArtifacts = 'functional-output/account_evidence/**'
 String runTagPrefix = 'run_tag:'
+
+// Normalize the release-suite label value for comparisons and map lookups.
+String normalizeReleaseSuite(String rawValue) {
+    return (rawValue ?: '').trim().toLowerCase()
+}
+
+// Read the current release-suite selection from the pipeline environment.
+String selectedReleaseSuite() {
+    return normalizeReleaseSuite(env.RELEASE_SUITE)
+}
+
+// Resolve the tag expression for a release-scoped functional run.
+String releaseSuiteTagExpression(String releaseSuite) {
+    return releaseSuiteTagExpressions.get(releaseSuite, skipTagExpression)
+}
+
+// Resolve the feature spec glob for a release-scoped functional run.
+String releaseSuiteSpecGlob(String releaseSuite) {
+    return releaseSuiteSpecGlobs.get(releaseSuite, functionalFeatureGlob)
+}
+
+// Decide whether this release suite should execute component coverage.
+boolean releaseSuiteRunsComponentStage(String releaseSuite) {
+    return releaseSuiteComponentScripts.containsKey(releaseSuite)
+}
+
+// Resolve the component runner command for a release-scoped PR run.
+String releaseSuiteComponentScript(String releaseSuite) {
+    return releaseSuiteComponentScripts.get(releaseSuite, 'test:component')
+}
 
 // Vault secrets injected into the pipeline
 Map<String, Object> secrets = [
@@ -310,6 +404,15 @@ void performArtifactOperations() {
 // Set TEST_SPECS based on labels or default to all
 void setupTestSpecifications() {
     script {
+        String releaseSuite = selectedReleaseSuite()
+
+        if (releaseSuite) {
+            env.TEST_SPECS = releaseSuiteSpecGlob(releaseSuite)
+            sh "echo 'Release Suite: ${releaseSuite}'"
+            sh "echo 'Test Specs: ${env.TEST_SPECS}'"
+            return
+        }
+
         String projectNameValue = projectName
         List<String> labels = projectLabels
         sh "echo 'Test Labels: ${labels}'"
@@ -333,7 +436,7 @@ void setupTestSpecifications() {
 
         if (directories.empty || projectNameValue == masterProjectName) {
             // No specific test labels, include all directories
-            env.TEST_SPECS = 'cypress/e2e/functional/opal/**/*.feature'
+            env.TEST_SPECS = functionalFeatureGlob
         } else {
             // Build the glob pattern using curly braces
             String dirList = directories.join(',')
@@ -403,6 +506,12 @@ void checkFocusedTests() {
   '''
 }
 
+// Fail the build if covered component or functional E2E tests fail Jira metadata validation,
+// including missing work-item tags or multiple Jira epic references.
+void checkJiraTestMetadata() {
+    new uk.gov.hmcts.contino.YarnBuilder(this).yarn('check:jira:test-metadata')
+}
+
 properties([
   // Permit dependent jobs to copy artifacts from this build
   copyArtifactPermission('*')
@@ -442,8 +551,25 @@ echo "OPAL_LOG_LEVEL=${env.OPAL_LOG_LEVEL}"
 
 // Find the first label like: run_tag:<expression>
 String tagLabel = cachedPrLabels.find { String label -> label.startsWith(runTagPrefix) }
-String skipTagExpression = 'not @skip'
+String releaseSuiteLabel = cachedPrLabels.find { String label -> label.startsWith(runReleasePrefix) }
+String defaultFunctionalTagExpression = defaultFunctionalTagPrefix + skipTagExpression
 String baseTags = tagLabel ? tagLabel.substring(runTagPrefix.length()).trim() : ''
+String releaseSuite = normalizeReleaseSuite(
+  releaseSuiteLabel ? releaseSuiteLabel.substring(runReleasePrefix.length()) : ''
+)
+
+if (releaseSuite && !releaseSuiteValues.contains(releaseSuite)) {
+    error "Unsupported run_release value '${releaseSuite}'. Supported values: ${releaseSuiteValues.join(', ')}"
+}
+
+if (releaseSuite && tagLabel) {
+    error 'run_release:<suite> cannot be combined with run_tag:<expression>. Choose one pipeline selector.'
+}
+
+if (releaseSuite && legacyEnabled && isPR) {
+    error 'run_release:<suite> cannot be combined with enable_legacy_mode. ' +
+      'Use run_tag:<expression> for legacy-scoped runs.'
+}
 
 // Guard: legacy mode must explicitly scope tests via run_tag:<expression>
 if (legacyEnabled && isPR && !baseTags) {
@@ -451,17 +577,27 @@ if (legacyEnabled && isPR && !baseTags) {
       '(e.g. run_tag:@UAT-Technical) to avoid running the full suite.'
 }
 
-if (tagLabel) {
+env.RELEASE_SUITE = releaseSuite
+
+if (releaseSuite) {
+    env.TAGS = releaseSuiteTagExpression(releaseSuite)
+    env.CYPRESS_TAGS = env.TAGS
+    env.SKIP_SMOKE = stringTrue
+    echo "Running release-scoped suite RELEASE_SUITE=${releaseSuite}"
+    echo "Using TEST_SPECS=${releaseSuiteSpecGlob(releaseSuite)}"
+    echo "Using CYPRESS_TAGS=${env.CYPRESS_TAGS}"
+    echo 'Skipping smoke tests for release-scoped run.'
+} else if (tagLabel) {
     env.TAGS = baseTags ? "(${baseTags}) and ${skipTagExpression}" : skipTagExpression
     env.CYPRESS_TAGS = env.TAGS
     env.SKIP_SMOKE = stringTrue
     echo "Running scenarios matching TAGS=${env.TAGS}"
     echo "Skipping smoke tests for tagged run: ${tagLabel}"
 } else {
-    env.TAGS = skipTagExpression
+    env.TAGS = defaultFunctionalTagExpression
     env.CYPRESS_TAGS = env.TAGS
     env.SKIP_SMOKE = stringFalse
-    echo "Running all scenarios except @skip (TAGS=${env.TAGS})"
+    echo "Running default functional selection (TAGS=${env.TAGS})"
 }
 
 // Primary pipeline definition and lifecycle hooks
@@ -499,6 +635,8 @@ withPipeline(type, product, component) {
                 echo 'Running focused test checks (no skip label present)'
                 checkFocusedTests()
             }
+            echo 'Running Jira metadata checks'
+            checkJiraTestMetadata()
         }
     }
 
@@ -526,12 +664,18 @@ withPipeline(type, product, component) {
     afterAlways(stageTest) {
         script {
             List<String> labels = projectLabels
+            String releaseSuiteSelection = selectedReleaseSuite()
             if (labels.contains(skipLabelComponent)) {
                 echo "Skipping opal component tests due to label: ${skipLabelComponent}"
+            } else if (releaseSuiteSelection && !releaseSuiteRunsComponentStage(releaseSuiteSelection)) {
+                echo "Skipping opal component tests for release-scoped run: ${releaseSuiteSelection}"
       } else {
-                echo 'Running opal component tests (no skip label present)'
+                String componentCommand = releaseSuiteSelection
+                  ? releaseSuiteComponentScript(releaseSuiteSelection)
+                  : 'test:component'
+                echo "Running opal component tests via yarn ${componentCommand}"
                 try {
-                    yarnBuilder.yarn('test:component')
+                    yarnBuilder.yarn(componentCommand)
         } catch (hudson.AbortException e) {
                     echo "Opal component tests failed: ${e}"
                     currentBuild.result = 'FAILURE'

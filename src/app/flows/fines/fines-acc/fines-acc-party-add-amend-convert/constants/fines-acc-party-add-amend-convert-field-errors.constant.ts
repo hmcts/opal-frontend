@@ -10,8 +10,8 @@ export const FINES_ACC_PARTY_ADD_AMEND_CONVERT_FIELD_ERRORS: IFinesAccPartyAddAm
       message: `Company name must be 50 characters or fewer`,
       priority: 2,
     },
-    alphanumericWithHyphensSpacesApostrophesDotPattern: {
-      message: `Company name must only include letters a to z, numbers 0-9 and certain special characters (hyphens, spaces, apostrophes)`,
+    singleAsciiCharacters: {
+      message: `Company name must only include letters a to z, numbers 0-9 and certain special characters (such as hyphens, spaces, apostrophes and commas)`,
       priority: 3,
     },
   },
@@ -24,8 +24,8 @@ export const FINES_ACC_PARTY_ADD_AMEND_CONVERT_FIELD_ERRORS: IFinesAccPartyAddAm
       message: `Alias 1 company name must be 20 characters or fewer`,
       priority: 2,
     },
-    alphanumericWithHyphensSpacesApostrophesDotPattern: {
-      message: `Alias 1 company name must only include letters a to z, numbers 0-9 and certain special characters (hyphens, spaces, apostrophes)`,
+    singleAsciiCharacters: {
+      message: `Alias 1 company name must only include letters a to z, numbers 0-9 and certain special characters (such as hyphens, spaces, apostrophes and commas)`,
       priority: 3,
     },
   },
@@ -38,8 +38,8 @@ export const FINES_ACC_PARTY_ADD_AMEND_CONVERT_FIELD_ERRORS: IFinesAccPartyAddAm
       message: `Alias 2 company name must be 20 characters or fewer`,
       priority: 2,
     },
-    alphanumericWithHyphensSpacesApostrophesDotPattern: {
-      message: `Alias 2 company name must only include letters a to z, numbers 0-9 and certain special characters (hyphens, spaces, apostrophes)`,
+    singleAsciiCharacters: {
+      message: `Alias 2 company name must only include letters a to z, numbers 0-9 and certain special characters (such as hyphens, spaces, apostrophes and commas)`,
       priority: 3,
     },
   },
@@ -52,8 +52,8 @@ export const FINES_ACC_PARTY_ADD_AMEND_CONVERT_FIELD_ERRORS: IFinesAccPartyAddAm
       message: `Alias 3 company name must be 20 characters or fewer`,
       priority: 2,
     },
-    alphanumericWithHyphensSpacesApostrophesDotPattern: {
-      message: `Alias 3 company name must only include letters a to z, numbers 0-9 and certain special characters (hyphens, spaces, apostrophes)`,
+    singleAsciiCharacters: {
+      message: `Alias 3 company name must only include letters a to z, numbers 0-9 and certain special characters (such as hyphens, spaces, apostrophes and commas)`,
       priority: 3,
     },
   },
@@ -66,8 +66,8 @@ export const FINES_ACC_PARTY_ADD_AMEND_CONVERT_FIELD_ERRORS: IFinesAccPartyAddAm
       message: `Alias 4 company name must be 20 characters or fewer`,
       priority: 2,
     },
-    alphanumericWithHyphensSpacesApostrophesDotPattern: {
-      message: `Alias 4 company name must only include letters a to z, numbers 0-9 and certain special characters (hyphens, spaces, apostrophes)`,
+    singleAsciiCharacters: {
+      message: `Alias 4 company name must only include letters a to z, numbers 0-9 and certain special characters (such as hyphens, spaces, apostrophes and commas)`,
       priority: 3,
     },
   },
@@ -80,8 +80,8 @@ export const FINES_ACC_PARTY_ADD_AMEND_CONVERT_FIELD_ERRORS: IFinesAccPartyAddAm
       message: `Alias 5 company name must be 20 characters or fewer`,
       priority: 2,
     },
-    alphanumericWithHyphensSpacesApostrophesDotPattern: {
-      message: `Alias 5 company name must only include letters a to z, numbers 0-9 and certain special characters (hyphens, spaces, apostrophes)`,
+    singleAsciiCharacters: {
+      message: `Alias 5 company name must only include letters a to z, numbers 0-9 and certain special characters (such as hyphens, spaces, apostrophes and commas)`,
       priority: 3,
     },
   },
@@ -100,8 +100,8 @@ export const FINES_ACC_PARTY_ADD_AMEND_CONVERT_FIELD_ERRORS: IFinesAccPartyAddAm
       message: `Defendant's first name(s) must be 20 characters or fewer`,
       priority: 2,
     },
-    lettersWithSpacesPattern: {
-      message: `Defendant's first name(s) must only contain letters`,
+    singleAsciiCharacters: {
+      message: `Defendant's first name(s) must only include letters a to z, numbers 0-9 and certain special characters (such as hyphens, spaces, apostrophes and commas)`,
       priority: 3,
     },
   },
@@ -114,8 +114,8 @@ export const FINES_ACC_PARTY_ADD_AMEND_CONVERT_FIELD_ERRORS: IFinesAccPartyAddAm
       message: `Parent or guardian first name(s) must be 20 characters or fewer`,
       priority: 2,
     },
-    lettersWithSpacesPattern: {
-      message: `Parent or guardian first name(s) must only contain letters`,
+    singleAsciiCharacters: {
+      message: `Parent or guardian first name(s) must only include letters a to z, numbers 0-9 and certain special characters (such as hyphens, spaces, apostrophes and commas)`,
       priority: 3,
     },
   },
@@ -128,8 +128,8 @@ export const FINES_ACC_PARTY_ADD_AMEND_CONVERT_FIELD_ERRORS: IFinesAccPartyAddAm
       message: `Defendant's last name must be 30 characters or fewer`,
       priority: 2,
     },
-    lettersWithSpacesPattern: {
-      message: `Defendant's last name must only contain letters`,
+    singleAsciiCharacters: {
+      message: `Defendant's last name must only include letters a to z, numbers 0-9 and certain special characters (such as hyphens, spaces, apostrophes and commas)`,
       priority: 3,
     },
   },
@@ -142,8 +142,8 @@ export const FINES_ACC_PARTY_ADD_AMEND_CONVERT_FIELD_ERRORS: IFinesAccPartyAddAm
       message: `Parent or guardian last name must be 30 characters or fewer`,
       priority: 2,
     },
-    lettersWithSpacesPattern: {
-      message: `Parent or guardian last name must only contain letters`,
+    singleAsciiCharacters: {
+      message: `Parent or guardian last name must only include letters a to z, numbers 0-9 and certain special characters (such as hyphens, spaces, apostrophes and commas)`,
       priority: 3,
     },
   },
@@ -156,8 +156,8 @@ export const FINES_ACC_PARTY_ADD_AMEND_CONVERT_FIELD_ERRORS: IFinesAccPartyAddAm
       message: `Alias 1 first name(s) must be 20 characters or fewer`,
       priority: 2,
     },
-    lettersWithSpacesPattern: {
-      message: `Alias 1 first name(s) must only contain letters`,
+    singleAsciiCharacters: {
+      message: `Alias 1 first name(s) must only include letters a to z, numbers 0-9 and certain special characters (such as hyphens, spaces, apostrophes and commas)`,
       priority: 3,
     },
   },
@@ -170,8 +170,8 @@ export const FINES_ACC_PARTY_ADD_AMEND_CONVERT_FIELD_ERRORS: IFinesAccPartyAddAm
       message: `Alias 1 last name must be 30 characters or fewer`,
       priority: 2,
     },
-    lettersWithSpacesPattern: {
-      message: `Alias 1 last name must only contain letters`,
+    singleAsciiCharacters: {
+      message: `Alias 1 last name must only include letters a to z, numbers 0-9 and certain special characters (such as hyphens, spaces, apostrophes and commas)`,
       priority: 3,
     },
   },
@@ -184,8 +184,8 @@ export const FINES_ACC_PARTY_ADD_AMEND_CONVERT_FIELD_ERRORS: IFinesAccPartyAddAm
       message: `Alias 2 first name(s) must be 20 characters or fewer`,
       priority: 2,
     },
-    lettersWithSpacesPattern: {
-      message: `Alias 2 first name(s) must only contain letters`,
+    singleAsciiCharacters: {
+      message: `Alias 2 first name(s) must only include letters a to z, numbers 0-9 and certain special characters (such as hyphens, spaces, apostrophes and commas)`,
       priority: 3,
     },
   },
@@ -198,8 +198,8 @@ export const FINES_ACC_PARTY_ADD_AMEND_CONVERT_FIELD_ERRORS: IFinesAccPartyAddAm
       message: `Alias 2 last name must be 30 characters or fewer`,
       priority: 2,
     },
-    lettersWithSpacesPattern: {
-      message: `Alias 2 last name must only contain letters`,
+    singleAsciiCharacters: {
+      message: `Alias 2 last name must only include letters a to z, numbers 0-9 and certain special characters (such as hyphens, spaces, apostrophes and commas)`,
       priority: 3,
     },
   },
@@ -212,8 +212,8 @@ export const FINES_ACC_PARTY_ADD_AMEND_CONVERT_FIELD_ERRORS: IFinesAccPartyAddAm
       message: `Alias 3 first name(s) must be 20 characters or fewer`,
       priority: 2,
     },
-    lettersWithSpacesPattern: {
-      message: `Alias 3 first name(s) must only contain letters`,
+    singleAsciiCharacters: {
+      message: `Alias 3 first name(s) must only include letters a to z, numbers 0-9 and certain special characters (such as hyphens, spaces, apostrophes and commas)`,
       priority: 3,
     },
   },
@@ -226,8 +226,8 @@ export const FINES_ACC_PARTY_ADD_AMEND_CONVERT_FIELD_ERRORS: IFinesAccPartyAddAm
       message: `Alias 3 last name must be 30 characters or fewer`,
       priority: 2,
     },
-    lettersWithSpacesPattern: {
-      message: `Alias 3 last name must only contain letters`,
+    singleAsciiCharacters: {
+      message: `Alias 3 last name must only include letters a to z, numbers 0-9 and certain special characters (such as hyphens, spaces, apostrophes and commas)`,
       priority: 3,
     },
   },
@@ -240,8 +240,8 @@ export const FINES_ACC_PARTY_ADD_AMEND_CONVERT_FIELD_ERRORS: IFinesAccPartyAddAm
       message: `Alias 4 first name(s) must be 20 characters or fewer`,
       priority: 2,
     },
-    lettersWithSpacesPattern: {
-      message: `Alias 4 first name(s) must only contain letters`,
+    singleAsciiCharacters: {
+      message: `Alias 4 first name(s) must only include letters a to z, numbers 0-9 and certain special characters (such as hyphens, spaces, apostrophes and commas)`,
       priority: 3,
     },
   },
@@ -254,8 +254,8 @@ export const FINES_ACC_PARTY_ADD_AMEND_CONVERT_FIELD_ERRORS: IFinesAccPartyAddAm
       message: `Alias 4 last name must be 30 characters or fewer`,
       priority: 2,
     },
-    lettersWithSpacesPattern: {
-      message: `Alias 4 last name must only contain letters`,
+    singleAsciiCharacters: {
+      message: `Alias 4 last name must only include letters a to z, numbers 0-9 and certain special characters (such as hyphens, spaces, apostrophes and commas)`,
       priority: 3,
     },
   },
@@ -268,8 +268,8 @@ export const FINES_ACC_PARTY_ADD_AMEND_CONVERT_FIELD_ERRORS: IFinesAccPartyAddAm
       message: `Alias 5 first name(s) must be 20 characters or fewer`,
       priority: 2,
     },
-    lettersWithSpacesPattern: {
-      message: `Alias 5 first name(s) must only contain letters`,
+    singleAsciiCharacters: {
+      message: `Alias 5 first name(s) must only include letters a to z, numbers 0-9 and certain special characters (such as hyphens, spaces, apostrophes and commas)`,
       priority: 3,
     },
   },
@@ -282,8 +282,8 @@ export const FINES_ACC_PARTY_ADD_AMEND_CONVERT_FIELD_ERRORS: IFinesAccPartyAddAm
       message: `Alias 5 last name must be 30 characters or fewer`,
       priority: 2,
     },
-    lettersWithSpacesPattern: {
-      message: `Alias 5 last name must only contain letters`,
+    singleAsciiCharacters: {
+      message: `Alias 5 last name must only include letters a to z, numbers 0-9 and certain special characters (such as hyphens, spaces, apostrophes and commas)`,
       priority: 3,
     },
   },
@@ -316,8 +316,9 @@ export const FINES_ACC_PARTY_ADD_AMEND_CONVERT_FIELD_ERRORS: IFinesAccPartyAddAm
       message: 'Address line 1 must be 30 characters or fewer',
       priority: 2,
     },
-    alphanumericTextPattern: {
-      message: 'Address line 1 must only include letters a to z, numbers, hyphens, spaces and apostrophes',
+    singleAsciiCharacters: {
+      message:
+        'Address line 1 must only include letters a to z, numbers 0-9 and certain special characters (such as hyphens, spaces, apostrophes and commas)',
       priority: 3,
     },
   },
@@ -326,8 +327,9 @@ export const FINES_ACC_PARTY_ADD_AMEND_CONVERT_FIELD_ERRORS: IFinesAccPartyAddAm
       message: 'Address line 2 must be 30 characters or fewer',
       priority: 1,
     },
-    alphanumericTextPattern: {
-      message: 'Address line 2 must only include letters a to z, numbers, hyphens, spaces and apostrophes',
+    singleAsciiCharacters: {
+      message:
+        'Address line 2 must only include letters a to z, numbers 0-9 and certain special characters (such as hyphens, spaces, apostrophes and commas)',
       priority: 2,
     },
   },
@@ -336,8 +338,9 @@ export const FINES_ACC_PARTY_ADD_AMEND_CONVERT_FIELD_ERRORS: IFinesAccPartyAddAm
       message: `Address line 3 must be 16 characters or fewer`,
       priority: 1,
     },
-    alphanumericTextPattern: {
-      message: 'Address line 3 must only include letters a to z, numbers, hyphens, spaces and apostrophes',
+    singleAsciiCharacters: {
+      message:
+        'Address line 3 must only include letters a to z, numbers 0-9 and certain special characters (such as hyphens, spaces, apostrophes and commas)',
       priority: 2,
     },
   },

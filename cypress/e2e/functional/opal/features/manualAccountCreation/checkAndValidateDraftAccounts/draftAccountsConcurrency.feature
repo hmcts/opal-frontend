@@ -7,7 +7,7 @@ Feature: Draft Accounts — ETag/If-Match Concurrency
     Then I should be on the dashboard
 
 
-  @JIRA-STORY:PO-2117 @JIRA-EPIC:PO-2220
+  @JIRA-STORY:PO-2117 @JIRA-EPIC:PO-2220 @JIRA-TEST-KEY:PO-5473
   Scenario: Successful update returns a new strong ETag
     Given a "adultOrYouthOnly" draft account exists with:
       | account_status              | Submitted |
@@ -18,7 +18,7 @@ Feature: Draft Accounts — ETag/If-Match Concurrency
     Then the last draft update should return a new strong ETag
 
 
-  @JIRA-STORY:PO-2117 @JIRA-EPIC:PO-2220
+  @JIRA-STORY:PO-2117 @JIRA-EPIC:PO-2220 @JIRA-TEST-KEY:PO-5474
   Scenario: Stale If-Match results in 409 Conflict
     Given a "adultOrYouthOnly" draft account exists with:
       | account_status              | Submitted      |
