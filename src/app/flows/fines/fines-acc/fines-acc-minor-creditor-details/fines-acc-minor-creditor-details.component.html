@@ -98,6 +98,7 @@
         [style]="tabContentStyles"
         [hasAccountMaintenancePermission]="hasPermission(finesPermissions['account-maintenance'])"
         [hasViewCreditorBacsPermission]="hasPermission(finesPermissions['view-creditor-bacs'])"
+        (changeCreditorDetails)="navigateToChangeCreditorDetailsPage()"
       ></app-fines-acc-minor-creditor-details-creditor-tab>
     }
   }

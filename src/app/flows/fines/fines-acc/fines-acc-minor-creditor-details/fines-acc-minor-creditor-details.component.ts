@@ -283,6 +283,22 @@ export class FinesAccMinorCreditorDetailsComponent
     }
   }
 
+  /**
+   * Navigates to the change creditor details page.
+   * If the user lacks the required permission in this BU, navigates to the access-denied page instead.
+   */
+  public navigateToChangeCreditorDetailsPage(): void {
+    if (this.hasBusinessUnitPermissionKey('account-maintenance')) {
+      this['router'].navigate([`../${FINES_ACC_MINOR_CREDITOR_ROUTING_PATHS.children.amend}`], {
+        relativeTo: this.activatedRoute,
+      });
+    } else {
+      this['router'].navigate(['/access-denied'], {
+        relativeTo: this.activatedRoute,
+      });
+    }
+  }
+
   public override ngOnDestroy(): void {
     this.accountStore.clearSuccessMessage();
     this.accountStore.setHasVersionMismatch(false);

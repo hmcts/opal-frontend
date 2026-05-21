@@ -156,6 +156,26 @@ describe('FinesAccMinorCreditorDetailsComponent', () => {
     });
   });
 
+  it('should navigate to the amend minor creditor details page when user has account maintenance permission', () => {
+    vi.spyOn(component['permissionsService'], 'hasBusinessUnitPermissionAccess').mockReturnValue(true);
+
+    component.navigateToChangeCreditorDetailsPage();
+
+    expect(routerSpy.navigate).toHaveBeenCalledWith([`../${FINES_ACC_MINOR_CREDITOR_ROUTING_PATHS.children.amend}`], {
+      relativeTo: component['activatedRoute'],
+    });
+  });
+
+  it('should navigate to access-denied if user lacks account maintenance permission for change creditor details', () => {
+    vi.spyOn(component['permissionsService'], 'hasBusinessUnitPermissionAccess').mockReturnValue(false);
+
+    component.navigateToChangeCreditorDetailsPage();
+
+    expect(routerSpy.navigate).toHaveBeenCalledWith(['/access-denied'], {
+      relativeTo: component['activatedRoute'],
+    });
+  });
+
   it('should call router.navigate when navigateToAddPaymentHoldPage is called', () => {
     vi.spyOn(component['permissionsService'], 'hasBusinessUnitPermissionAccess').mockReturnValue(true);
     component.navigateToAddPaymentHoldPage();
