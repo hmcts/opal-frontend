@@ -99,18 +99,6 @@ export class FinesAccMinorCreditorDetailsComponent
   }
 
   /**
-   * Checks if the current user has the specified business unit permission.
-   * @param permissionKey The key of the permission to check.
-   * @returns A boolean indicating whether the user has the permission.
-   */
-  private hasBusinessUnitPermissionKey(permissionKey: string): boolean {
-    return super.hasBusinessUnitPermission(
-      FINES_PERMISSIONS[permissionKey],
-      Number(this.accountStore.business_unit_id()!),
-    );
-  }
-
-  /**
    * Initializes and sets up the observable data stream for the fines draft tab component.
    *
    * This method listens to changes in either the route fragment (representing the active tab)
@@ -221,6 +209,18 @@ export class FinesAccMinorCreditorDetailsComponent
   }
 
   /**
+   * Checks if the current user has the specified business unit permission.
+   * @param permissionKey The key of the permission to check.
+   * @returns A boolean indicating whether the user has the permission.
+   */
+  public hasBusinessUnitPermissionKey(permissionKey: string): boolean {
+    return super.hasBusinessUnitPermission(
+      FINES_PERMISSIONS[permissionKey],
+      Number(this.accountStore.business_unit_id()!),
+    );
+  }
+
+  /**
    * Navigates to the add payment hold page.
    */
   public navigateToAddPaymentHoldPage(): void {
@@ -274,22 +274,6 @@ export class FinesAccMinorCreditorDetailsComponent
   public navigateToAddAccountNotePage(): void {
     if (this.hasBusinessUnitPermissionKey('add-account-activity-notes')) {
       this['router'].navigate([`../${FINES_ACC_MINOR_CREDITOR_ROUTING_PATHS.children.note}/add`], {
-        relativeTo: this.activatedRoute,
-      });
-    } else {
-      this['router'].navigate(['/access-denied'], {
-        relativeTo: this.activatedRoute,
-      });
-    }
-  }
-
-  /**
-   * Navigates to the change creditor details page.
-   * If the user lacks the required permission in this BU, navigates to the access-denied page instead.
-   */
-  public navigateToChangeCreditorDetailsPage(): void {
-    if (this.hasBusinessUnitPermissionKey('account-maintenance')) {
-      this['router'].navigate([`../${FINES_ACC_MINOR_CREDITOR_ROUTING_PATHS.children.amend}`], {
         relativeTo: this.activatedRoute,
       });
     } else {
