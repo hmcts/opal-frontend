@@ -3922,9 +3922,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@hmcts/opal-frontend-common-cypress@npm:^0.0.2":
-  version: 0.0.2
-  resolution: "@hmcts/opal-frontend-common-cypress@npm:0.0.2"
+"@hmcts/opal-frontend-common-cypress@npm:^0.0.3":
+  version: 0.0.3
+  resolution: "@hmcts/opal-frontend-common-cypress@npm:0.0.3"
   peerDependencies:
     "@badeball/cypress-cucumber-preprocessor": ">=18 <25"
     cypress: ">=12 <16"
@@ -3963,12 +3963,17 @@ __metadata:
   bin:
     opal-cypress-build-component-report: dist/bin/build-component-report.js
     opal-cypress-build-cucumber-report: dist/bin/build-cucumber-report.js
+    opal-cypress-check-jira-test-metadata: dist/bin/check-cypress-test-metadata.js
+    opal-cypress-check-new-tests-jira-metadata: dist/bin/check-new-tests-jira-metadata.js
     opal-cypress-check-test-metadata: dist/bin/check-cypress-test-metadata.js
+    opal-cypress-extract-jira-test-keys: dist/bin/extract-jira-test-keys.js
+    opal-cypress-find-duplicate-scenarios: dist/bin/find-duplicate-scenarios.js
     opal-cypress-find-tests-missing-epic: dist/bin/find-tests-missing-epic.js
     opal-cypress-find-tests-with-multiple-epics: dist/bin/find-tests-with-multiple-epics.js
+    opal-cypress-find-unused-steps: dist/bin/find-unused-steps.js
     opal-cypress-resolve-placeholder-jira-epics: dist/bin/resolve-placeholder-jira-epics.js
     opal-cypress-runner: dist/bin/run-test-suite.js
-  checksum: 10/6626964bc8d667e253941a1ded1821a11fc8eedea509a13fab4b5cd2c2eba0f02e467e3d36ae670df226982351e38793311a73591d26fa835b884a0a45df1665
+  checksum: 10/d1c9a4dae0817f08f4251612a4bc3c229f31cb3fd6d52fff4f69e8cf56a594c2bba40ecf146bda7c0b1c5e3433c8b3410de965230fd290318290c01af257b33b
   languageName: node
   linkType: hard
 
@@ -16496,7 +16501,7 @@ __metadata:
     "@hmcts/nodejs-healthcheck": "npm:^1.8.5"
     "@hmcts/nodejs-logging": "npm:^4.0.4"
     "@hmcts/opal-frontend-common": "npm:^0.0.76"
-    "@hmcts/opal-frontend-common-cypress": "npm:^0.0.2"
+    "@hmcts/opal-frontend-common-cypress": "npm:^0.0.3"
     "@hmcts/opal-frontend-common-node": "npm:^0.0.30"
     "@hmcts/properties-volume": "npm:^1.1.0"
     "@hmcts/zephyr-automation-nodejs": "npm:0.0.7"

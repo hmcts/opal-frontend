@@ -8,7 +8,7 @@ Feature: Fines Account Consolidation
     Then I open Consolidate accounts
 
 @JIRA-EPIC:PO-2294
-  @JIRA-STORY:PO-2413
+  @JIRA-STORY:PO-2413 @JIRA-TEST-KEY:PO-5498
   Scenario: Consolidation account search for Individuals
     When I continue to the consolidation account search as an "Individual" defendant
 
@@ -77,7 +77,7 @@ Feature: Fines Account Consolidation
     Then I am on the consolidation business unit and defendant type selection screen
 
 @JIRA-EPIC:PO-2294
-  @JIRA-STORY:PO-2413 @JIRA-STORY:PO-3757
+  @JIRA-STORY:PO-2413 @JIRA-STORY:PO-3757 @JIRA-TEST-KEY:PO-5499
   Scenario: Consolidation Successful account search for Individuals
     Given I create a "adultOrYouthOnly" draft account with the following details and set status "Publishing Pending" using user "opal-test-10@dev.platform.hmcts.net":
       | Account_status                          | Submitted                           |
@@ -108,7 +108,7 @@ Feature: Fines Account Consolidation
     Then I should see the account header contains "Mr Consolidation RESULTLINK{uniqUpper}"
 
 @JIRA-EPIC:PO-2294
-  @JIRA-STORY:PO-2413
+  @JIRA-STORY:PO-2413 @JIRA-TEST-KEY:PO-5500
   Scenario: Consolidation search excludes zero balance accounts for Individuals
     Given I create a "adultOrYouthOnly" draft account with the following details and set status "Publishing Pending" using user "opal-test-10@dev.platform.hmcts.net":
       | Account_status                               | Submitted                                 |
@@ -147,7 +147,7 @@ Feature: Fines Account Consolidation
     And the consolidation results exclude accounts with a balance of "£0.00"
 
 @JIRA-EPIC:PO-2294
-  @JIRA-STORY:PO-2414
+  @JIRA-STORY:PO-2414 @JIRA-TEST-KEY:PO-5501
   Scenario: Consolidation account search for Companies
     When I continue to the consolidation account search as an "Company" defendant
     # AC1 - User is navigated to Search tab for Companies after selecting BU and Company
@@ -203,7 +203,7 @@ Feature: Fines Account Consolidation
 
 
 @JIRA-EPIC:PO-2294
-  @JIRA-STORY:PO-2413
+  @JIRA-STORY:PO-2413 @JIRA-TEST-KEY:PO-5502
   Scenario: Consolidation Successful account search for Company
     Given I create a "company" draft account with the following details and set status "Publishing Pending" using user "opal-test-10@dev.platform.hmcts.net":
       | Account_status                    | Submitted                              |
@@ -229,7 +229,7 @@ Feature: Fines Account Consolidation
     Then I should see the account header contains "Consolidation Result Co {uniqUpper}"
 
 @JIRA-EPIC:PO-2294
-  @JIRA-STORY:PO-2414
+  @JIRA-STORY:PO-2414 @JIRA-TEST-KEY:PO-5503
   Scenario: Consolidation search excludes zero balance accounts for Company
     Given I create a "company" draft account with the following details and set status "Publishing Pending" using user "opal-test-10@dev.platform.hmcts.net":
       | Account_status                               | Submitted                                    |
