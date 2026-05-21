@@ -98,28 +98,32 @@
           </th>
         </ng-container>
         <ng-container row>
-          @for (imposition of paginatedTableDataComputed(); track imposition['Imposition ID']; let rowIndex = $index) {
-            <tr opal-lib-moj-sortable-table-row [bodyRowClasses]="getRowClasses(imposition)">
+          @for (
+            impositionTableRow of paginatedTableDataComputed();
+            track impositionTableRow['Imposition ID'];
+            let rowIndex = $index
+          ) {
+            <tr opal-lib-moj-sortable-table-row [bodyRowClasses]="impositionTableRow.rowClasses">
               <td opal-lib-moj-sortable-table-row-data [id]="'imposition-date-added-' + rowIndex">
-                @if (imposition['Date added']; as postedDate) {
+                @if (impositionTableRow['Date added']; as postedDate) {
                   {{ postedDate | dateFormat: DATE_INPUT_FORMAT : DATE_OUTPUT_FORMAT }}
                 } @else {
                   <ng-container *ngTemplateOutlet="notProvided"></ng-container>
                 }
               </td>
               <td opal-lib-moj-sortable-table-row-data [id]="'imposition-result-' + rowIndex">
-                @if (imposition.Imposition) {
-                  {{ imposition.Imposition }}
+                @if (impositionTableRow.Imposition) {
+                  {{ impositionTableRow.Imposition }}
                 } @else {
                   <ng-container *ngTemplateOutlet="notProvided"></ng-container>
                 }
               </td>
               <td opal-lib-moj-sortable-table-row-data [id]="'imposition-creditor-' + rowIndex">
-                @if (imposition.Creditor; as creditorDisplay) {
-                  @if (isMinorCreditor(imposition)) {
+                @if (impositionTableRow.Creditor; as creditorDisplay) {
+                  @if (isMinorCreditor(impositionTableRow)) {
                     <a
                       class="govuk-link govuk-link--no-visited-state"
-                      [routerLink]="getMinorCreditorDetailsRouterLink(imposition)"
+                      [routerLink]="getMinorCreditorDetailsRouterLink(impositionTableRow)"
                     >
                       {{ creditorDisplay }}
                     </a>
@@ -131,39 +135,39 @@
                 }
               </td>
               <td opal-lib-moj-sortable-table-row-data [id]="'imposition-imposed-amount-' + rowIndex">
-                {{ imposition.Imposed | monetary: 'remove-minus-symbol' }}
+                {{ impositionTableRow.Imposed | monetary: 'remove-minus-symbol' }}
               </td>
               <td opal-lib-moj-sortable-table-row-data [id]="'imposition-paid-amount-' + rowIndex">
-                {{ imposition['Paid/Written off'] | monetary }}
+                {{ impositionTableRow['Paid/Written off'] | monetary }}
               </td>
               <td opal-lib-moj-sortable-table-row-data [id]="'imposition-balance-' + rowIndex">
-                @if (hasZeroBalance(imposition)) {
+                @if (impositionTableRow.hasZeroBalance) {
                   -
                 } @else {
-                  {{ imposition.Balance | monetary }}
+                  {{ impositionTableRow.Balance | monetary }}
                 }
               </td>
               <td opal-lib-moj-sortable-table-row-data [id]="'imposition-date-imposed-' + rowIndex">
-                @if (imposition['Date imposed']; as imposedDate) {
+                @if (impositionTableRow['Date imposed']; as imposedDate) {
                   {{ imposedDate | dateFormat: DATE_INPUT_FORMAT : DATE_OUTPUT_FORMAT }}
                 } @else {
                   <ng-container *ngTemplateOutlet="notProvided"></ng-container>
                 }
               </td>
               <td opal-lib-moj-sortable-table-row-data [id]="'imposition-offence-' + rowIndex">
-                @if (imposition.Offence) {
-                  {{ imposition.Offence }}
+                @if (impositionTableRow.Offence) {
+                  {{ impositionTableRow.Offence }}
                 } @else {
                   <ng-container *ngTemplateOutlet="notProvided"></ng-container>
                 }
               </td>
               <td opal-lib-moj-sortable-table-row-data [id]="'imposition-imposed-by-' + rowIndex">
-                @if (imposition['Imposed by']; as imposedByDisplay) {
+                @if (impositionTableRow['Imposed by']; as imposedByDisplay) {
                   {{ imposedByDisplay }}
                 }
               </td>
               <td opal-lib-moj-sortable-table-row-data [id]="'imposition-id-' + rowIndex">
-                {{ imposition['Imposition ID'] }}
+                {{ impositionTableRow['Imposition ID'] }}
               </td>
             </tr>
           }

@@ -1,6 +1,6 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { provideRouter } from '@angular/router';
-import { OPAL_FINES_ACCOUNT_DEFENDANT_DETAILS_IMPOSITIONS_TAB_REF_DATA_MOCK } from '@services/fines/opal-fines-service/mocks/opal-fines-account-defendant-details-impositions-tab-ref-data.mock';
+import { OPAL_FINES_ACCOUNT_DEFENDANT_DETAILS_IMPOSITIONS_TAB_REF_DATA_MOCK } from '@services/fines/opal-fines-service/mocks/opal-fines-account-defendant-details-impositions.mock';
 import { beforeEach, describe, expect, it } from 'vitest';
 import { FinesAccDefendantDetailsImpositionsTabComponent } from './fines-acc-defendant-details-impositions-tab.component';
 
@@ -107,6 +107,17 @@ describe('FinesAccDefendantDetailsImpositionsTabComponent', () => {
     expect(minorCreditorLink.getAttribute('href')).toBe('/fines/account/minor-creditor/660000000001/details');
   });
 
+  it('should identify minor creditors by minor creditor party id rather than account type code', () => {
+    const tabData = structuredClone(OPAL_FINES_ACCOUNT_DEFENDANT_DETAILS_IMPOSITIONS_TAB_REF_DATA_MOCK);
+    tabData.impositions[1].creditor.account_type = 'changed-type';
+
+    const { fixture } = setupComponent(tabData);
+    const minorCreditorLink = fixture.nativeElement.querySelector('#imposition-creditor-1 a') as HTMLAnchorElement;
+
+    expect(minorCreditorLink).toBeTruthy();
+    expect(minorCreditorLink.textContent).toContain('Minor Creditor Test Ltd');
+  });
+
   it('should render major creditor names as plain text until major creditor details exists', () => {
     const { fixture } = setupComponent();
     const majorCreditorCell = fixture.nativeElement.querySelector('#imposition-creditor-0') as HTMLTableCellElement;
@@ -159,14 +170,14 @@ describe('FinesAccDefendantDetailsImpositionsTabComponent', () => {
     expect(imposedByCell.textContent?.trim()).toBe('');
   });
 
-  it('should calculate balance rounded to two decimal places', () => {
-    const { component } = setupComponent();
-    const balance = component.getBalance({
-      ...OPAL_FINES_ACCOUNT_DEFENDANT_DETAILS_IMPOSITIONS_TAB_REF_DATA_MOCK.impositions[0],
-      balance: 9.899999999,
-    });
+  it('should render balance rounded to two decimal places', () => {
+    const tabData = structuredClone(OPAL_FINES_ACCOUNT_DEFENDANT_DETAILS_IMPOSITIONS_TAB_REF_DATA_MOCK);
+    tabData.impositions[0].balance = 9.899999999;
 
-    expect(balance).toBe(9.9);
+    const { fixture } = setupComponent(tabData);
+    const balanceCell = fixture.nativeElement.querySelector('#imposition-balance-0') as HTMLTableCellElement;
+
+    expect(balanceCell.textContent?.trim()).toBe('£9.90');
   });
 
   it('should render an empty state when there are no impositions', () => {
