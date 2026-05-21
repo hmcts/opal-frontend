@@ -172,7 +172,7 @@
     "cypress-multi-reporters": "^2.0.0",
     "cypress-parallel": "^0.15.0",
     "eslint": "^10.0.0",
-    "eslint-plugin-jsdoc": "^62.0.0",
+    "eslint-plugin-jsdoc": "^63.0.0",
     "js-yaml": "^4.1.0",
     "jsdom": "^29.0.0",
     "junit-report-merger": "^9.0.0",
