@@ -38,10 +38,8 @@ export class FinesAccMinorCreditorDetailsCreditorTab {
    * @returns A string representing the target URL for the "Change" link.
    */
   public changeCreditorDetailsLink(): string {
-    if (this.hasAccountMaintenancePermissionInBU) {
-      return `../${FINES_ACC_MINOR_CREDITOR_ROUTING_PATHS.children.amend}`;
-    } else {
-      return '/access-denied';
-    }
+    return this.hasAccountMaintenancePermissionInBU
+      ? `../${FINES_ACC_MINOR_CREDITOR_ROUTING_PATHS.children.amend}`
+      : '/access-denied';
   }
 }
