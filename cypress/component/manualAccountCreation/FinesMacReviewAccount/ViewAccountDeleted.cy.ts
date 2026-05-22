@@ -112,7 +112,14 @@ describe('FinesMacReviewAccountComponent - View Deleted Account', () => {
 
   it(
     'AC.3 - should render Delete History section correctly',
-    { tags: [...buildTags('@JIRA-STORY:PO-603'), '@JIRA-EPIC:PO-2220', '@JIRA-TEST-KEY:PO-5186'] },
+    {
+      tags: [
+        ...buildTags('@JIRA-STORY:PO-603'),
+        '@JIRA-EPIC:PO-2220',
+        '@JIRA-NFR:PO-2324',
+        '@JIRA-TEST-KEY:PO-5186',
+      ],
+    },
     () => {
       let fetchMap = structuredClone(reviewAccountFetchMap);
       fetchMap.finesMacDraft.account_status = 'Deleted';

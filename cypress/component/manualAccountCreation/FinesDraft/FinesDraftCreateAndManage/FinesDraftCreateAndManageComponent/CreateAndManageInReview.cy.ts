@@ -135,7 +135,14 @@ describe('FinesDraftCreateAndManageInReviewComponent', () => {
 
   it(
     '(AC.4a) The table should have the correct default ordering',
-    { tags: [...buildTags('@JIRA-STORY:PO-584'), '@JIRA-EPIC:PO-2220', '@JIRA-TEST-KEY:PO-4739'] },
+    {
+      tags: [
+        ...buildTags('@JIRA-STORY:PO-584'),
+        '@JIRA-EPIC:PO-2220',
+        '@JIRA-NFR:PO-2324',
+        '@JIRA-TEST-KEY:PO-4739',
+      ],
+    },
     () => {
       const inReviewAccountsMockData = structuredClone(OPAL_FINES_DRAFT_ACCOUNTS_MOCK);
 

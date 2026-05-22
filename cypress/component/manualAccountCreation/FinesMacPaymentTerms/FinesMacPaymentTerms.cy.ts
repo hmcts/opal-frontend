@@ -451,7 +451,11 @@ describe('FinesMacPaymentTermsComponent', () => {
   it(
     '(AC.3) Should load make a new collection order for correct permission for AYPG and AY',
     {
-      tags: [...buildTags('@JIRA-STORY:PO-471', '@JIRA-STORY:PO-649'), '@JIRA-EPIC:PO-545', '@JIRA-TEST-KEY:PO-5119'],
+      tags: [
+        ...buildTags('@JIRA-STORY:PO-471', '@JIRA-STORY:PO-649'),
+        '@JIRA-EPIC:PO-545',
+        '@JIRA-TEST-KEY:PO-5119',
+      ],
     },
     () => {
       for (let i = 0; i < 2; i++) {
@@ -1417,16 +1421,18 @@ describe('FinesMacPaymentTermsComponent', () => {
   );
 
   it(
-    '(AC.1,4,5a) correct system note - A collection order was previously made - AY',
-    { tags: [...buildTags('@JIRA-STORY:PO-651'), '@JIRA-EPIC:PO-545', '@JIRA-TEST-KEY:PO-5163'] },
+    '(AC.1,4,5a) correct system note for a leap-day collection order - AY',
+    {
+      tags: [...buildTags('@JIRA-STORY:PO-651'), '@JIRA-EPIC:PO-545', '@JIRA-NFR:PO-2325'],
+    },
     () => {
       const setAccountCommentsNotesSpy = Cypress.sinon.spy();
 
       setupComponent('adultOrYouthOnly', setAccountCommentsNotesSpy, (state) => {
         setDateOfBirth(state, '01/01/2000');
         setBusinessUnitPermission(state);
-        setCollectionOrderPreviouslyMade(state, '05/01/2023');
-        setPayInFull(state, '01/01/2023');
+        setCollectionOrderPreviouslyMade(state, '29/02/2024');
+        setPayInFull(state, '01/03/2024');
       });
       cy.get(DOM_ELEMENTS.submitButton).first().click();
 
@@ -1435,22 +1441,24 @@ describe('FinesMacPaymentTermsComponent', () => {
         const arg = calls.args[0][0];
         const systemNote = arg.formData.fm_account_comments_notes_system_notes;
         expect(systemNote).to.equal(
-          'A collection order was previously made on 05/01/2023 prior to this account creation',
+          'A collection order was previously made on 29/02/2024 prior to this account creation',
         );
       });
     },
   );
   it(
-    '(AC.1,4,5b) correct system note - A collection order was previously made - AYPG',
-    { tags: [...buildTags('@JIRA-STORY:PO-651'), '@JIRA-EPIC:PO-545', '@JIRA-TEST-KEY:PO-5164'] },
+    '(AC.1,4,5b) correct system note for a bank-holiday collection order - AYPG',
+    {
+      tags: [...buildTags('@JIRA-STORY:PO-651'), '@JIRA-EPIC:PO-545', '@JIRA-NFR:PO-2325'],
+    },
     () => {
       const setAccountCommentsNotesSpy = Cypress.sinon.spy();
 
       setupComponent('pgToPay', setAccountCommentsNotesSpy, (state) => {
         setDateOfBirth(state, '01/01/2000');
         setBusinessUnitPermission(state);
-        setCollectionOrderPreviouslyMade(state, '05/01/2023');
-        setPayInFull(state, '01/01/2023');
+        setCollectionOrderPreviouslyMade(state, '25/12/2025');
+        setPayInFull(state, '26/12/2025');
       });
       cy.get(DOM_ELEMENTS.submitButton).first().click();
 
@@ -1459,14 +1467,16 @@ describe('FinesMacPaymentTermsComponent', () => {
         const arg = calls.args[0][0];
         const systemNote = arg.formData.fm_account_comments_notes_system_notes;
         expect(systemNote).to.equal(
-          'A collection order was previously made on 05/01/2023 prior to this account creation',
+          'A collection order was previously made on 25/12/2025 prior to this account creation',
         );
       });
     },
   );
   it(
     '(AC.2,4,5a) correct system note - Make collection order today - AY',
-    { tags: [...buildTags('@JIRA-STORY:PO-651'), '@JIRA-EPIC:PO-545', '@JIRA-TEST-KEY:PO-5165'] },
+    {
+      tags: [...buildTags('@JIRA-STORY:PO-651'), '@JIRA-EPIC:PO-545', '@JIRA-TEST-KEY:PO-5165'],
+    },
     () => {
       const setAccountCommentsNotesSpy = Cypress.sinon.spy();
 
@@ -1489,7 +1499,9 @@ describe('FinesMacPaymentTermsComponent', () => {
 
   it(
     '(AC.2,4,5b) correct system note - Make collection order today - AYPG',
-    { tags: [...buildTags('@JIRA-STORY:PO-651'), '@JIRA-EPIC:PO-545', '@JIRA-TEST-KEY:PO-5166'] },
+    {
+      tags: [...buildTags('@JIRA-STORY:PO-651'), '@JIRA-EPIC:PO-545', '@JIRA-TEST-KEY:PO-5166'],
+    },
     () => {
       const setAccountCommentsNotesSpy = Cypress.sinon.spy();
       setupComponent('pgToPay', setAccountCommentsNotesSpy, (state) => {
@@ -1509,8 +1521,10 @@ describe('FinesMacPaymentTermsComponent', () => {
   );
 
   it(
-    '(AC3a,c,4,5a) update system note - Made today - Previously made - AY',
-    { tags: [...buildTags('@JIRA-STORY:PO-651'), '@JIRA-EPIC:PO-545', '@JIRA-TEST-KEY:PO-5167'] },
+    '(AC3a,c,4,5a) update system note using the DST short-day boundary date - AY',
+    {
+      tags: [...buildTags('@JIRA-STORY:PO-651'), '@JIRA-EPIC:PO-545', '@JIRA-NFR:PO-2325'],
+    },
     () => {
       const setAccountCommentsNotesSpy = Cypress.sinon.spy();
 
@@ -1532,7 +1546,7 @@ describe('FinesMacPaymentTermsComponent', () => {
       });
 
       cy.get(DOM_ELEMENTS.collectionOrder.yes).check();
-      cy.get(DOM_ELEMENTS.collectionOrderDate).clear().type('01/01/2023', { delay: 0, force: true });
+      cy.get(DOM_ELEMENTS.collectionOrderDate).clear().type('30/03/2025', { delay: 0, force: true });
       cy.get(DOM_ELEMENTS.submitButton).first().click();
 
       cy.wrap(setAccountCommentsNotesSpy).should('have.been.calledTwice');
@@ -1542,15 +1556,17 @@ describe('FinesMacPaymentTermsComponent', () => {
         const systemNote = arg.formData.fm_account_comments_notes_system_notes;
         cy.log('System note:', systemNote);
         expect(systemNote).to.equal(
-          'A collection order was previously made on 01/01/2023 prior to this account creation',
+          'A collection order was previously made on 30/03/2025 prior to this account creation',
         );
       });
     },
   );
 
   it(
-    '(AC3a,c,4,5b) update system note - Made today - Previously made - AYPG',
-    { tags: [...buildTags('@JIRA-STORY:PO-651'), '@JIRA-EPIC:PO-545', '@JIRA-TEST-KEY:PO-5168'] },
+    '(AC3a,c,4,5b) update system note using the DST long-day boundary date - AYPG',
+    {
+      tags: [...buildTags('@JIRA-STORY:PO-651'), '@JIRA-EPIC:PO-545', '@JIRA-NFR:PO-2325'],
+    },
     () => {
       const setAccountCommentsNotesSpy = Cypress.sinon.spy();
 
@@ -1573,7 +1589,7 @@ describe('FinesMacPaymentTermsComponent', () => {
       });
 
       cy.get(DOM_ELEMENTS.collectionOrder.yes).check();
-      cy.get(DOM_ELEMENTS.collectionOrderDate).clear().type('01/01/2023', { delay: 0, force: true });
+      cy.get(DOM_ELEMENTS.collectionOrderDate).clear().type('26/10/2025', { delay: 0, force: true });
       cy.get(DOM_ELEMENTS.submitButton).first().click();
 
       cy.wrap(setAccountCommentsNotesSpy).should('have.been.calledTwice');
@@ -1583,7 +1599,7 @@ describe('FinesMacPaymentTermsComponent', () => {
         const systemNote = arg.formData.fm_account_comments_notes_system_notes;
         cy.log('System note:', systemNote);
         expect(systemNote).to.equal(
-          'A collection order was previously made on 01/01/2023 prior to this account creation',
+          'A collection order was previously made on 26/10/2025 prior to this account creation',
         );
       });
     },
@@ -1591,7 +1607,9 @@ describe('FinesMacPaymentTermsComponent', () => {
 
   it(
     '(AC3b,d,4,5a) update system note - Previously made - Made today - AY',
-    { tags: [...buildTags('@JIRA-STORY:PO-651'), '@JIRA-EPIC:PO-545', '@JIRA-TEST-KEY:PO-5169'] },
+    {
+      tags: [...buildTags('@JIRA-STORY:PO-651'), '@JIRA-EPIC:PO-545', '@JIRA-TEST-KEY:PO-5169'],
+    },
     () => {
       const setAccountCommentsNotesSpy = Cypress.sinon.spy();
 
