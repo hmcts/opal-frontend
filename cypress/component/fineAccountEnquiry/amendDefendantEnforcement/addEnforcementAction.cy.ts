@@ -39,6 +39,14 @@ const EMPTY_RESULTS_RESPONSE: IOpalFinesResultsRefData = {
   refData: [],
 };
 
+const statusScenarios = [
+  { code: 'CS', reason: 'Consolidated' },
+  { code: 'WO', reason: 'Written off' },
+  { code: 'TO', reason: 'Transferred out' },
+  { code: 'TS', reason: 'TFO Out Acknowledged' },
+  { code: 'TA', reason: 'TFO to be Acknowledged' },
+];
+
 // Note: 'Adult or youth with Parent/Guardian' has not been incl - it uses the same common code and results as 'Adult/youth'
 describe(
   'Add enforcement action in enforcement tab',
@@ -75,33 +83,49 @@ describe(
       },
     );
 
-    // it(
-    //   'AC1,1a. Individual: Negative testing, account status code is Consolidated so hits error page.',
-    //   { tags: ['@JIRA-STORY:PO-1780', '@JIRA-STORY:PO-1824'] },
-    //   () => {
-    //     let headerMock = structuredClone(createDefendantHeaderMockWithName('Robert', 'Thomson'));
-    //     headerMock.debtor_type = 'Defendant';
-    //     headerMock.account_status_reference.account_status_code = 'CS';
-    //     let enforcementMock = structuredClone(OPAL_FINES_ACCOUNT_DEFENDANT_DETAILS_ENFORCEMENT_TAB_REF_DATA_MOCK);
-    //     enforcementMock.last_enforcement_action!.enforcement_action.result_id = 'NOENF';
-    //     enforcementMock.next_enforcement_action_data = null;
-    //     const accountId = headerMock.defendant_account_party_id;
-    //     interceptAuthenticatedUser();
-    //     interceptUserState(USER_STATE_MOCK_PERMISSION_BU77);
-    //     interceptDefendantHeader(accountId, headerMock, '123');
-    //     interceptEnforcementStatus(accountId, enforcementMock, '123');
+    statusScenarios.forEach(({ code, reason }) => {
+      it(
+        `Negative test: account status ${code} shows correct error page`,
+        { tags: ['@JIRA-STORY:PO-1780', '@JIRA-STORY:PO-1824', '@JIRA-STORY:PO-1781'] },
+        () => {
+          let headerMock = structuredClone(createDefendantHeaderMockWithName('Robert', 'Thomson'));
 
-    //     interceptNextPermittedEnforcementActionsEmpty();
-    //     setupAccountEnquiryComponent({ ...COMPONENT_PROPERTIES, accountId });
+          headerMock.debtor_type = 'Defendant';
+          headerMock.account_status_reference.account_status_code = code;
 
-    //     cy.get(ENF.addEnforcementActionLink).should('exist').click();
+          let enforcementMock = structuredClone(OPAL_FINES_ACCOUNT_DEFENDANT_DETAILS_ENFORCEMENT_TAB_REF_DATA_MOCK);
 
-    //     //   cy.get('@routerNavigate').should('have.been.calledWithMatch', ['../enforcement/action/cannot-add-enforcement-action']);
+          enforcementMock.last_enforcement_action!.enforcement_action.result_id = 'NOENF';
 
-    //   cy.get('@routerNavigate').should('have.been.calledWithMatch', ['../enforcement/action/<real-route-here>']);
-    // });
-    //   },
-    // );
+          enforcementMock.next_enforcement_action_data = null;
+
+          const accountId = headerMock.defendant_account_party_id;
+
+          interceptAuthenticatedUser();
+          interceptUserState(USER_STATE_MOCK_PERMISSION_BU77);
+          interceptDefendantHeader(accountId, headerMock, '123');
+          interceptEnforcementStatus(accountId, enforcementMock, '123');
+          interceptNextPermittedEnforcementActionsEmpty();
+
+          setupAccountEnquiryComponent({
+            ...COMPONENT_PROPERTIES,
+            accountId,
+          });
+
+          cy.get(ENF.addEnforcementActionLink).should('exist').click();
+
+          // cy.get('@routerNavigate').should('have.been.calledWithMatch', [
+          //   '../enforcement/action/cannot-add-enforcement-action',
+          // ]);
+
+          // common error text
+          cy.contains('You cannot add an enforcement action to an account that has a status of').should('be.visible');
+
+          // status-specific text
+          cy.contains(reason).should('be.visible');
+        },
+      );
+    });
 
     it(
       'AC1,1a. Individual: Negative testing, result ID is DW so without NOENF the add enf action button does not appear.',
