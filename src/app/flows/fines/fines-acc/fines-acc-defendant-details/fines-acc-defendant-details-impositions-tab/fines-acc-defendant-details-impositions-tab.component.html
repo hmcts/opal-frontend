@@ -142,7 +142,7 @@
               </td>
               <td opal-lib-moj-sortable-table-row-data [id]="'imposition-balance-' + rowIndex">
                 @if (impositionTableRow.hasZeroBalance) {
-                  -
+                  <ng-container *ngTemplateOutlet="notProvided"></ng-container>
                 } @else {
                   {{ impositionTableRow.Balance | monetary }}
                 }
