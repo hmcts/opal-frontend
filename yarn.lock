@@ -16525,7 +16525,7 @@ __metadata:
     "@hmcts/nodejs-healthcheck": "npm:^1.8.5"
     "@hmcts/nodejs-logging": "npm:^4.0.4"
     "@hmcts/opal-frontend-common": "npm:^0.0.78"
-    "@hmcts/opal-frontend-common-cypress": "npm:^0.0.2"
+    "@hmcts/opal-frontend-common-cypress": "npm:^0.0.3"
     "@hmcts/opal-frontend-common-node": "npm:^0.0.30"
     "@hmcts/properties-volume": "npm:^1.1.0"
     "@hmcts/zephyr-automation-nodejs": "npm:0.0.7"
