@@ -77,23 +77,15 @@ const assertRemoveParentGuardianScreen = (expectedIdentifier: string) => {
 };
 
 describe('Account Enquiry Remove Parent or Guardian', () => {
-  it(
-    'AC1a, AC1b. should display the remove screen title and individual account identifier',
-    { tags: buildTags(STORY_TAG, EPIC_TAG) },
-    () => {
+  it('AC1a, AC1b. should display the remove screen title and individual account identifier', { tags: buildTags(STORY_TAG, EPIC_TAG) }, () => {
       mountRemoveParentGuardianComponent(REMOVE_PARENT_GUARDIAN_INDIVIDUAL_PARTY_NAME);
 
       assertRemoveParentGuardianScreen(REMOVE_PARENT_GUARDIAN_INDIVIDUAL_ACCOUNT_IDENTIFIER);
-    },
-  );
+    });
 
-  it(
-    'AC1b. should display the company account identifier in the correct format',
-    { tags: buildTags(STORY_TAG, EPIC_TAG) },
-    () => {
+  it('AC1b. should display the company account identifier in the correct format', { tags: buildTags(STORY_TAG, EPIC_TAG) }, () => {
       mountRemoveParentGuardianComponent(REMOVE_PARENT_GUARDIAN_COMPANY_PARTY_NAME);
 
       assertRemoveParentGuardianScreen(REMOVE_PARENT_GUARDIAN_COMPANY_ACCOUNT_IDENTIFIER);
-    },
-  );
+    });
 });

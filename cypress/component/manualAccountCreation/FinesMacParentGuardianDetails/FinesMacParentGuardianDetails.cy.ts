@@ -576,19 +576,15 @@ describe('FinesMacParentGuardianDetailsComponent', () => {
     },
   );
 
-  it(
-    '(AC.3) should display validation error when the date of birth is a non-leap-year date',
-    {
-      tags: [...buildTags('@JIRA-STORY:PO-364'), '@JIRA-EPIC:PO-344', '@JIRA-NFR:PO-2325'],
-    },
-    () => {
+  it('(AC.3) should display validation error when the date of birth is a non-leap-year date', {
+      tags: [...buildTags('@JIRA-STORY:PO-364'), '@JIRA-EPIC:PO-344', '@JIRA-NFR:PO-2325', '@JIRA-TEST-KEY:PO-6349'],
+    }, () => {
       setupComponent(null, 'pgToPay');
 
       finesMacState.parentGuardianDetails.formData.fm_parent_guardian_details_dob = '29/02/2023';
       cy.get(DOM_ELEMENTS.returnToAccountDetailsButton).click();
-      cy.get(DOM_ELEMENTS.errorSummary).should('contain', FORMAT_CHECK['dateOfBirthInvalid']);
-    },
-  );
+      cy.get(DOM_ELEMENTS.errorSummary).should('contain', FORMAT_CHECK['dateOfBirthNotValid']);
+    });
 
   it(
     '(AC.4) should not accept national insurance number in the incorrect format',

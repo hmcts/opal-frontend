@@ -457,19 +457,14 @@ describe('FinesMacAddOffenceComponent', () => {
     },
   );
 
-  it(
-    '(AC.8) should allow a leap-year sentence date when the required fields are filled in',
-    {
-      tags: [
-        '@JIRA-STORY:PO-411',
+  it('(AC.8) should allow a leap-year sentence date when the required fields are filled in', {
+      tags: ['@JIRA-STORY:PO-411',
         '@JIRA-STORY:PO-681',
         '@JIRA-STORY:PO-684',
         '@JIRA-EPIC:PO-545',
         '@JIRA-LABEL:manual-account-creation',
-        '@JIRA-NFR:PO-2325',
-      ],
-    },
-    () => {
+        '@JIRA-NFR:PO-2325',, '@JIRA-TEST-KEY:PO-6346'],
+    }, () => {
       const formSubmitSpy = Cypress.sinon.spy();
       setupComponent(formSubmitSpy);
 
@@ -483,8 +478,7 @@ describe('FinesMacAddOffenceComponent', () => {
 
       cy.get(DOM_ELEMENTS.submitButton).first().click();
       cy.wrap(formSubmitSpy).should('have.been.calledOnce');
-    },
-  );
+    });
 
   it(
     '(AC.4b,AC.4bi,AC,4c) should show minor,major creditor fields for (FCOMP,FCOST) Only',
