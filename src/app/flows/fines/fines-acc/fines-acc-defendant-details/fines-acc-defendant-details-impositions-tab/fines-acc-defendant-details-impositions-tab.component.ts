@@ -61,6 +61,20 @@ export class FinesAccDefendantDetailsImpositionsTabComponent extends AbstractSor
   public override itemsPerPageSignal = signal(25);
 
   /**
+   * Gets the static route prefix for minor creditor details links.
+   */
+  private get minorCreditorDetailsRouterLinkPrefix(): string {
+    return `/${FINES_ROUTING_PATHS.root}/${FINES_ACC_ROUTING_PATHS.root}/${FINES_ACC_MINOR_CREDITOR_ROUTING_PATHS.root}`;
+  }
+
+  /**
+   * Gets the minor creditor details route segment.
+   */
+  private get minorCreditorDetailsRouterLinkSuffix(): string {
+    return FINES_ACC_MINOR_CREDITOR_ROUTING_PATHS.children.details;
+  }
+
+  /**
    * Maps an imposition from the API response into the table row shape used by the sortable table.
    *
    * @param apiImposition - The API imposition data to display in the table.
@@ -71,11 +85,19 @@ export class FinesAccDefendantDetailsImpositionsTabComponent extends AbstractSor
   ): IAccountEnquiryImpositionTabTableRow {
     const roundedBalance = Number(apiImposition.balance.toFixed(2));
     const hasZeroBalance = roundedBalance === 0;
+    const isMinorCreditor = apiImposition.creditor.minor_creditor_party_id !== null;
+    const creditorDisplay =
+      apiImposition.creditor.name ??
+      apiImposition.creditor.display_name ??
+      apiImposition.creditor.creditor_account_id.toString();
+    const minorCreditorDetailsRouterLink = isMinorCreditor
+      ? `${this.minorCreditorDetailsRouterLinkPrefix}/${apiImposition.creditor.creditor_account_id}/${this.minorCreditorDetailsRouterLinkSuffix}`
+      : null;
 
     return {
       'Date added': apiImposition.date_added,
       Imposition: apiImposition.imposition.result_id,
-      Creditor: this.getCreditorDisplay(apiImposition),
+      Creditor: creditorDisplay,
       Imposed: apiImposition.imposed_amount,
       'Paid/Written off': apiImposition.paid_amount,
       Balance: roundedBalance,
@@ -85,53 +107,10 @@ export class FinesAccDefendantDetailsImpositionsTabComponent extends AbstractSor
       'Imposition ID': apiImposition.imposition_id,
       'Creditor account id': apiImposition.creditor.creditor_account_id,
       'Minor creditor party id': apiImposition.creditor.minor_creditor_party_id,
+      isMinorCreditor,
+      minorCreditorDetailsRouterLink,
       hasZeroBalance,
       rowClasses: hasZeroBalance ? this.zeroBalanceRowClass : '',
     };
-  }
-
-  /**
-   * Returns the creditor display text until creditor navigation is wired in.
-   *
-   * @param apiImposition - The API imposition data to read creditor details from.
-   * @returns The creditor name or account ID, when present.
-   */
-  public getCreditorDisplay(apiImposition: IOpalFinesAccountDefendantDetailsImposition): string | null {
-    return (
-      apiImposition.creditor.name ??
-      apiImposition.creditor.display_name ??
-      apiImposition.creditor.creditor_account_id.toString()
-    );
-  }
-
-  /**
-   * Determines whether the creditor should route to the minor creditor details page.
-   *
-   * @param impositionTableRow - The imposition table row to check.
-   * @returns Whether the imposition has a linked minor creditor party.
-   */
-  public isMinorCreditor(impositionTableRow: IAccountEnquiryImpositionTabTableRow): boolean {
-    return impositionTableRow['Minor creditor party id'] !== null;
-  }
-
-  /**
-   * Builds the route commands for the minor creditor details page.
-   *
-   * @param impositionTableRow - The imposition table row to build a link for.
-   * @returns Router link commands for the minor creditor details route.
-   */
-  public getMinorCreditorDetailsRouterLink(
-    impositionTableRow: IAccountEnquiryImpositionTabTableRow,
-  ): (string | number)[] {
-    const creditorAccountId = impositionTableRow['Creditor account id'];
-
-    return [
-      '/',
-      FINES_ROUTING_PATHS.root,
-      FINES_ACC_ROUTING_PATHS.root,
-      FINES_ACC_MINOR_CREDITOR_ROUTING_PATHS.root,
-      creditorAccountId,
-      FINES_ACC_MINOR_CREDITOR_ROUTING_PATHS.children.details,
-    ];
   }
 }

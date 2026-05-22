@@ -2,7 +2,7 @@ import { IOpalFinesAccountDefendantDetailsImposition } from '../interfaces/opal-
 import { IOpalFinesAccountDefendantDetailsImpositionsTabRefData } from '../interfaces/opal-fines-account-defendant-details-impositions-tab-ref-data.interface';
 import { OPAL_FINES_ACCOUNT_DEFENDANT_DETAILS_IMPOSITIONS_PAGINATION_ROWS_MOCK } from './opal-fines-account-defendant-details-impositions-pagination-rows.mock';
 
-export const OPAL_FINES_ACCOUNT_DEFENDANT_DETAILS_IMPOSITIONS_MOCK: IOpalFinesAccountDefendantDetailsImposition[] = [
+const OPAL_FINES_ACCOUNT_DEFENDANT_DETAILS_IMPOSITIONS_MOCK: IOpalFinesAccountDefendantDetailsImposition[] = [
   {
     date_added: '2025-01-31',
     imposition: {

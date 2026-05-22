@@ -155,8 +155,10 @@ describe('FinesAccDefendantDetailsImpositionsTabComponent', () => {
 
   it('should display a dash and grey row for zero balance impositions', () => {
     const { fixture } = setupComponent();
-    const zeroBalanceRow = fixture.nativeElement.querySelector('tr.govuk-light-grey-background-colour');
-    const zeroBalanceCell = fixture.nativeElement.querySelector('#imposition-balance-1') as HTMLTableCellElement;
+    const zeroBalanceRow = fixture.nativeElement.querySelector(
+      'tr.govuk-light-grey-background-colour',
+    ) as HTMLTableRowElement;
+    const zeroBalanceCell = zeroBalanceRow.querySelector('[id^="imposition-balance-"]') as HTMLTableCellElement;
 
     expect(zeroBalanceRow).toBeTruthy();
     expect(zeroBalanceCell.textContent?.trim()).toBe('-');

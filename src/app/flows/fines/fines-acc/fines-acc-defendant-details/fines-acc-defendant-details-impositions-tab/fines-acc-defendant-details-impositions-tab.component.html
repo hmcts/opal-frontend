@@ -120,10 +120,10 @@
               </td>
               <td opal-lib-moj-sortable-table-row-data [id]="'imposition-creditor-' + rowIndex">
                 @if (impositionTableRow.Creditor; as creditorDisplay) {
-                  @if (isMinorCreditor(impositionTableRow)) {
+                  @if (impositionTableRow.isMinorCreditor) {
                     <a
                       class="govuk-link govuk-link--no-visited-state"
-                      [routerLink]="getMinorCreditorDetailsRouterLink(impositionTableRow)"
+                      [routerLink]="impositionTableRow.minorCreditorDetailsRouterLink"
                     >
                       {{ creditorDisplay }}
                     </a>
