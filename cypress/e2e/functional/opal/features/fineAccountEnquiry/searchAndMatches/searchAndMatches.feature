@@ -8,14 +8,14 @@ Feature: Account Search and Matches
     And I am on the Account Search page - Individuals form displayed by default
 
 @JIRA-EPIC:PO-704
-  @JIRA-STORY:PO-705
+  @JIRA-STORY:PO-705 @JIRA-TEST-KEY:PO-5418
   Scenario: Individuals empty submit shows defaults
     # PO-705 - AC2
     When I submit an empty individual account search
     Then the Individuals form shows default empty fields and options
 
 @JIRA-EPIC:PO-704
-  @JIRA-STORY:PO-712
+  @JIRA-STORY:PO-712 @JIRA-TEST-KEY:PO-5419
   Scenario: Companies empty submit shows defaults
     #PO-712 - AC2
     When I view the Companies search form
@@ -23,7 +23,7 @@ Feature: Account Search and Matches
     Then the Companies form shows default empty fields and options
 
 @JIRA-EPIC:PO-704
-  @JIRA-STORY:PO-715
+  @JIRA-STORY:PO-715 @JIRA-TEST-KEY:PO-5420
   Scenario: Minor creditors Individual validation message on empty submit
     #PO-715 - AC5, AC5a
     When I view the Minor creditors search form
@@ -33,7 +33,7 @@ Feature: Account Search and Matches
     And I see "Enter minor creditor first name, last name, address or postcode" validation message for a minor creditor "individual"
 
 @JIRA-EPIC:PO-704
-  @JIRA-STORY:PO-715
+  @JIRA-STORY:PO-715 @JIRA-TEST-KEY:PO-5421
   Scenario: Minor creditors Company validation message on empty submit
     #PO-715 - AC5b
     When I view the Minor creditors search form
@@ -43,7 +43,7 @@ Feature: Account Search and Matches
     And I see "Enter minor creditor company name or address" validation message for a minor creditor "company"
 
 @JIRA-EPIC:PO-704
-  @JIRA-STORY:PO-705
+  @JIRA-STORY:PO-705 @JIRA-TEST-KEY:PO-5422
   Scenario: Switching tabs clears Individuals data
     #PO-705 - AC7
     When I prepare an Individuals search - sample details provided
@@ -51,7 +51,7 @@ Feature: Account Search and Matches
     Then the Individuals form is cleared to defaults
 
 @JIRA-EPIC:PO-704
-  @JIRA-STORY:PO-712
+  @JIRA-STORY:PO-712 @JIRA-TEST-KEY:PO-5423
   Scenario: Switching tabs clears Companies data
     #PO-712 - AC6
     When I prepare a Companies search - sample details provided
@@ -59,7 +59,7 @@ Feature: Account Search and Matches
     Then the Companies form is cleared to defaults
 
 @JIRA-EPIC:PO-704
-  @JIRA-STORY:PO-715
+  @JIRA-STORY:PO-715 @JIRA-TEST-KEY:PO-5424
   Scenario: Switching tabs clears Minor creditors data (Individual and Company)
     #PO-715 - AC10
     When I prepare a Minor creditors search for type "Individual" - sample details provided
@@ -71,7 +71,7 @@ Feature: Account Search and Matches
 
 
 @JIRA-EPIC:PO-704
-  @JIRA-STORY:PO-705
+  @JIRA-STORY:PO-705 @JIRA-TEST-KEY:PO-5425
   Scenario: Error when all 3 sections contain data (Account number, Reference number, Individual last name)
     When I search using the following inputs:
       | account number           | 12345678 |
@@ -82,7 +82,7 @@ Feature: Account Search and Matches
     And I see the listed options "account number, reference or case number, selected tab"
 
 @JIRA-EPIC:PO-704
-  @JIRA-STORY:PO-705
+  @JIRA-STORY:PO-705 @JIRA-TEST-KEY:PO-5426
   Scenario: Back returns to search with data intact after all-3-fields error
     When I search using the following inputs:
       | account number           | 12345678 |
@@ -102,19 +102,19 @@ Feature: Account Search and Matches
       | individual last name     | <lastName>      |
     And I see the validation message "Reference data and account information cannot be entered together when searching for an account. Search using either:"
     And I see the listed options "account number, reference or case number, selected tab"
-@JIRA-EPIC:PO-704
+@JIRA-EPIC:PO-704 @JIRA-TEST-KEY:PO-5427
     Examples: Account number and reference
       | validation_case              | accountNumber | reference | lastName |
       | Account number and reference | 12345678      | REF-123   |          |
 
-@JIRA-EPIC:PO-704
+@JIRA-EPIC:PO-704 @JIRA-TEST-KEY:PO-5428
     Examples: Reference and last name
       | validation_case         | accountNumber | reference | lastName |
       | Reference and last name |               | REF-123   | Smith    |
 
 
 @JIRA-EPIC:PO-704
-  @JIRA-STORY:PO-712
+  @JIRA-STORY:PO-712 @JIRA-TEST-KEY:PO-5429
   Scenario: Error when all 3 sections contain data (Account number, Reference number, Company name)
     # PO-712 - AC5i.
     And I view the Companies search form
@@ -146,12 +146,12 @@ Feature: Account Search and Matches
       | account number           | <accountNumber> |
       | reference or case number | <reference>     |
       | company name             | <companyName>   |
-@JIRA-EPIC:PO-704
+@JIRA-EPIC:PO-704 @JIRA-TEST-KEY:PO-5430
     Examples: Reference and company name
       | validation_case            | accountNumber | reference | companyName |
       | Reference and company name |               | REF-123   | CompanyOne  |
 
-@JIRA-EPIC:PO-704
+@JIRA-EPIC:PO-704 @JIRA-TEST-KEY:PO-5431
     Examples: Account number and reference
       | validation_case              | accountNumber | reference | companyName |
       | Account number and reference | 2345678       | REF-123   |             |
@@ -159,6 +159,7 @@ Feature: Account Search and Matches
 @JIRA-EPIC:PO-704
   @JIRA-STORY:PO-715
   #- AC5i.
+  @JIRA-TEST-KEY:PO-5432
   Scenario: Error when all 3 sections contain data on Minor creditors (Company)
     And I view the Minor Creditors search form
     When I search using the following inputs:
@@ -194,23 +195,23 @@ Feature: Account Search and Matches
       | account number           | <accountNumber> |
       | reference or case number | <reference>     |
       | company name             | <companyName>   |
-@JIRA-EPIC:PO-704
+@JIRA-EPIC:PO-704 @JIRA-TEST-KEY:PO-5433
     Examples: Account number, reference, and company name
       | validation_case                            | accountNumber | reference | companyName |
       | Account number, reference, and company name | 12345678      | REF-123   | CompanyOne  |
 
-@JIRA-EPIC:PO-704
+@JIRA-EPIC:PO-704 @JIRA-TEST-KEY:PO-5434
     Examples: Account number and company name
       | validation_case                 | accountNumber | reference | companyName |
       | Account number and company name | 12345678      |           | CompanyOne  |
 
-@JIRA-EPIC:PO-704
+@JIRA-EPIC:PO-704 @JIRA-TEST-KEY:PO-5435
     Examples: Reference and company name
       | validation_case            | accountNumber | reference | companyName |
       | Reference and company name |               | REF-123   | CompanyOne  |
 
 @JIRA-EPIC:PO-704
-  @JIRA-STORY:PO-715
+  @JIRA-STORY:PO-715 @JIRA-TEST-KEY:PO-5436
   Scenario: Minor creditors - company type displays validation message when name, address and postcode are missing
     # AC5a
     And I view the Minor Creditors search form
@@ -222,6 +223,7 @@ Feature: Account Search and Matches
 @JIRA-EPIC:PO-704
   @JIRA-STORY:PO-715
   # AC8.
+  @JIRA-TEST-KEY:PO-5437
   Scenario: Minor creditors - individual first name only triggers last name required
     And I view the Minor Creditors search form
     When I search using the following inputs:
@@ -232,7 +234,7 @@ Feature: Account Search and Matches
 
 
 @JIRA-EPIC:PO-704
-  @JIRA-STORY:PO-705
+  @JIRA-STORY:PO-705 @JIRA-TEST-KEY:PO-5438
   Scenario: Route guard prevents accidental navigation away from search screen with data
     # AC8. Cancelling browser Back keeps the user on Search for an account with entered data retained
     When I view the Individuals search form and enter the following:
@@ -246,6 +248,7 @@ Feature: Account Search and Matches
 @JIRA-EPIC:PO-704
   @JIRA-STORY:PO-717
   # AC5. Back Button navigates to Search Page
+  @JIRA-TEST-KEY:PO-5439
   Scenario: Successful Search For Individual Defendant Accounts
     When I search using the following inputs:
       | individual last name | Graham |
@@ -256,7 +259,7 @@ Feature: Account Search and Matches
 
 
 @JIRA-EPIC:PO-704
-  @JIRA-STORY:PO-707
+  @JIRA-STORY:PO-707 @JIRA-TEST-KEY:PO-5440
   Scenario: Successful Search For company defendant accounts
     And I view the Companies search form
     When I search using the following inputs:
@@ -268,7 +271,7 @@ Feature: Account Search and Matches
 
 
 @JIRA-EPIC:PO-704
-  @JIRA-STORY:PO-708
+  @JIRA-STORY:PO-708 @JIRA-TEST-KEY:PO-5441
   Scenario: Successful Search For Minor Creditor Accounts
     And I view the Minor Creditors search form
     When I search using the following inputs:
@@ -284,7 +287,7 @@ Feature: Account Search and Matches
 
   # PO-706  AC7 Back Button navigates to Search Page
 @JIRA-EPIC:PO-704
-  @JIRA-STORY:PO-706
+  @JIRA-STORY:PO-706 @JIRA-TEST-KEY:PO-5442
   Scenario: Search results back button preserves tab state and form data
     When I search using the following inputs:
       | account number | 12345678A |
@@ -296,7 +299,7 @@ Feature: Account Search and Matches
 
   # Need to check that intercepted call should be organisation = true (it wasn't originally)
 @JIRA-EPIC:PO-704
-  @JIRA-STORY:PO-706
+  @JIRA-STORY:PO-706 @JIRA-TEST-KEY:PO-5443
   Scenario: Verify API call parameters for Defenders and Creditor search using Account number
     # AC1a, AC1b, AC1c
     When I intercept the "account number" account search API
@@ -319,7 +322,7 @@ Feature: Account Search and Matches
 
 
 @JIRA-EPIC:PO-704
-  @JIRA-STORY:PO-709
+  @JIRA-STORY:PO-709 @JIRA-TEST-KEY:PO-5444
   Scenario: Verify API call parameters for Defenders and Creditors search using Reference or case number
     # AC1a, AC1b, AC1c
     Given I create a "company" draft account with the following details and set status "Publishing Pending" using user "opal-test-10@dev.platform.hmcts.net":
@@ -389,23 +392,23 @@ Feature: Account Search and Matches
       | reference or case number | <reference_value> |
     And I see the Companies search results:
       | Ref | <reference_value> |
-@JIRA-EPIC:PO-704
+@JIRA-EPIC:PO-704 @JIRA-TEST-KEY:PO-5445
     Examples: Case Number
       | reference_type | reference_field                   | expected_reference_field | reference_value |
       | Case Number    | account.prosecutor_case_reference | case_number              | CN12345         |
 
-@JIRA-EPIC:PO-704
+@JIRA-EPIC:PO-704 @JIRA-TEST-KEY:PO-5446
     Examples: Police Reference Number
       | reference_type          | reference_field                   | expected_reference_field | reference_value |
       | Police Reference Number | account.prosecutor_case_reference | police_reference_number  | PRN67890        |
 
-@JIRA-EPIC:PO-704
+@JIRA-EPIC:PO-704 @JIRA-TEST-KEY:PO-5447
     Examples: Crown Court Reference
       | reference_type        | reference_field                   | expected_reference_field | reference_value |
       | Crown Court Reference | account.prosecutor_case_reference | crown_court_reference    | CCR98765        |
 
 @JIRA-EPIC:PO-704
-  @JIRA-STORY:PO-709
+  @JIRA-STORY:PO-709 @JIRA-TEST-KEY:PO-5448
   Scenario: Verify that the Reference or Case Number search only returns exact matches
     #AC6a - Return only exact match
     Given I create a "company" draft account with the following details and set status "Publishing Pending" using user "opal-test-10@dev.platform.hmcts.net":
@@ -440,7 +443,7 @@ Feature: Account Search and Matches
 
 
 @JIRA-EPIC:PO-704
-  @JIRA-STORY:PO-709
+  @JIRA-STORY:PO-709 @JIRA-TEST-KEY:PO-5449
   Scenario: Verify that 'Check your search' link returns user to Search for an Account screen after no results found
     And I view the Companies search form
     When I search using the following inputs:
@@ -452,7 +455,7 @@ Feature: Account Search and Matches
 
 
 @JIRA-EPIC:PO-704
-  @JIRA-STORY:PO-717
+  @JIRA-STORY:PO-717 @JIRA-TEST-KEY:PO-5450
   Scenario: Verify API call parameters for Individual search
     #AC1
     When I intercept the "defendant" account search API
@@ -480,7 +483,7 @@ Feature: Account Search and Matches
       | exact_match_organisation_name | null            |
 
 @JIRA-EPIC:PO-704
-  @JIRA-STORY:PO-717
+  @JIRA-STORY:PO-717 @JIRA-TEST-KEY:PO-5451
   Scenario: Verify API call parameters for Individual search with only last name populated
     #AC1
     When I intercept the "defendant" account search API
@@ -501,7 +504,7 @@ Feature: Account Search and Matches
 
 
 @JIRA-EPIC:PO-704
-  @JIRA-STORY:PO-717
+  @JIRA-STORY:PO-717 @JIRA-TEST-KEY:PO-5452
   Scenario: Verify API call parameters for Individual search with "Active accounts only" checkbox unchecked
     #AC1
     When I intercept the "defendant" account search API
@@ -524,7 +527,7 @@ Feature: Account Search and Matches
 
 
 @JIRA-EPIC:PO-704
-  @JIRA-STORY:PO-707
+  @JIRA-STORY:PO-707 @JIRA-TEST-KEY:PO-5453
   Scenario: Verify API call parameters for Company search
     #AC1
     And I view the Companies search form
@@ -549,7 +552,7 @@ Feature: Account Search and Matches
       | national_insurance_number     | null            |
 
 @JIRA-EPIC:PO-704
-  @JIRA-STORY:PO-707
+  @JIRA-STORY:PO-707 @JIRA-TEST-KEY:PO-5454
   Scenario: Verify API call parameters for Company search with only company name populated
     #AC1
     And I view the Companies search form
@@ -569,7 +572,7 @@ Feature: Account Search and Matches
       | national_insurance_number     | null       |
 
 @JIRA-EPIC:PO-704
-  @JIRA-STORY:PO-707
+  @JIRA-STORY:PO-707 @JIRA-TEST-KEY:PO-5455
   Scenario: Verify API call parameters for Company search with "Active accounts only" checkbox unchecked
     #AC1
     And I view the Companies search form
@@ -593,7 +596,7 @@ Feature: Account Search and Matches
       | active_accounts_only          | true       |
 
 @JIRA-EPIC:PO-704
-  @JIRA-STORY:PO-708
+  @JIRA-STORY:PO-708 @JIRA-TEST-KEY:PO-5456
   Scenario: Verify API call parameters for Minor Creditor search - Individual
     #AC1
     And I view the Minor Creditors search form
@@ -616,7 +619,7 @@ Feature: Account Search and Matches
       | postcode                      | SW1A 1AA        |
 
 @JIRA-EPIC:PO-704
-  @JIRA-STORY:PO-708
+  @JIRA-STORY:PO-708 @JIRA-TEST-KEY:PO-5457
   Scenario: Verify API call parameters for Minor Creditor search - Individual with only last name populated
     #AC1
     And I view the Minor Creditors search form
@@ -636,7 +639,7 @@ Feature: Account Search and Matches
       | exact_match_forenames         | null     |
 
 @JIRA-EPIC:PO-704
-  @JIRA-STORY:PO-708
+  @JIRA-STORY:PO-708 @JIRA-TEST-KEY:PO-5458
   Scenario: Verify API call parameters for Minor Creditor search - Company
     #AC1
     And I view the Minor Creditors search form

@@ -15,7 +15,7 @@ describe('FinesAccDefendantDetailsAtAGlanceTabComponent', () => {
 
     fixture = TestBed.createComponent(FinesAccDefendantDetailsParentOrGuardianTabComponent);
     component = fixture.componentInstance;
-    component.tabData = OPAL_FINES_ACCOUNT_DEFENDANT_DETAILS_PARENT_OR_GUARDIAN_TAB_REF_DATA_MOCK;
+    component.tabData = structuredClone(OPAL_FINES_ACCOUNT_DEFENDANT_DETAILS_PARENT_OR_GUARDIAN_TAB_REF_DATA_MOCK);
     fixture.detectChanges();
   });
 
@@ -29,7 +29,7 @@ describe('FinesAccDefendantDetailsAtAGlanceTabComponent', () => {
     vi.spyOn<any, any>(component.removeParentOrGuardianDetails, 'emit');
     component.handleRemoveParentOrGuardianDetails(event);
     expect(event.preventDefault).toHaveBeenCalled();
-    expect(component.removeParentOrGuardianDetails.emit).toHaveBeenCalled();
+    expect(component.removeParentOrGuardianDetails.emit).toHaveBeenCalledWith(event);
   });
 
   it('should handle change parent or guardian details click', () => {
@@ -39,5 +39,43 @@ describe('FinesAccDefendantDetailsAtAGlanceTabComponent', () => {
     component.handleChangeParentOrGuardianDetails(event);
     expect(event.preventDefault).toHaveBeenCalled();
     expect(component.changeParentOrGuardianDetails.emit).toHaveBeenCalled();
+  });
+
+  it('should make remove parent or guardian action available when user has permission and party is not the debtor', () => {
+    fixture.componentRef.setInput('hasAccountMaintenencePermission', true);
+    fixture.detectChanges();
+
+    expect(component.removeParentOrGuardianAction).toBe(true);
+  });
+
+  it('should not make remove parent or guardian action available when user does not have permission', () => {
+    fixture.componentRef.setInput('hasAccountMaintenencePermission', false);
+    fixture.detectChanges();
+
+    expect(component.removeParentOrGuardianAction).toBe(false);
+  });
+
+  it('should not make remove parent or guardian action available when party is the debtor', () => {
+    fixture.componentRef.setInput('hasAccountMaintenencePermission', true);
+    fixture.componentRef.setInput('tabData', {
+      ...structuredClone(OPAL_FINES_ACCOUNT_DEFENDANT_DETAILS_PARENT_OR_GUARDIAN_TAB_REF_DATA_MOCK),
+      defendant_account_party: {
+        ...structuredClone(
+          OPAL_FINES_ACCOUNT_DEFENDANT_DETAILS_PARENT_OR_GUARDIAN_TAB_REF_DATA_MOCK.defendant_account_party,
+        ),
+        is_debtor: true,
+      },
+    });
+    fixture.detectChanges();
+
+    expect(component.removeParentOrGuardianAction).toBe(false);
+  });
+
+  it('should not make remove parent or guardian action available when tab data is missing', () => {
+    fixture.componentRef.setInput('hasAccountMaintenencePermission', true);
+    fixture.componentRef.setInput('tabData', null);
+    fixture.detectChanges();
+
+    expect(component.removeParentOrGuardianAction).toBe(false);
   });
 });

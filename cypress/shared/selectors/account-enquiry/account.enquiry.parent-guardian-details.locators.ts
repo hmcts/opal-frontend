@@ -6,7 +6,34 @@
  * @remarks
  * - Preserves the legacy export name used by component specs to keep migration mechanical.
  */
-export const DOM_ELEMENTS = {
+type AccountEnquiryParentGuardianLocators = {
+  changeLink: string;
+  removeParentGuardianLink: string;
+  parentOrGuardianDetailsName: string;
+  parentOrGuardianDetailsAliases: string;
+  parentOrGuardianDetailsDob: string;
+  parentOrGuardianDetailsAddressKey: string;
+  parentOrGuardianDetailsVehicleMake: string;
+  parentOrGuardianDetailsVehicleReg: string;
+  parentOrGuardianDetailsNational_insurance_numberKey: string;
+  contactSummaryCardTitle: string;
+  contactDetailsPrimaryEmailKey: string;
+  contactDetailsSecondaryEmailKey: string;
+  contactDetailsMobilePhoneKey: string;
+  contactDetailsHomePhoneKey: string;
+  contactDetailsWorkPhoneKey: string;
+  employerDetailsNameKey: string;
+  employerDetailsReferenceKey: string;
+  employerDetailsEmailKey: string;
+  employerDetailsPhoneKey: string;
+  employerDetailsAddressKey: string;
+  languagePreferencePreferred: string;
+  DocumentLanguageKey: string;
+  courtHearingLanguageKey: string;
+  accountCommentsNotesKey: string;
+};
+
+export const DOM_ELEMENTS: AccountEnquiryParentGuardianLocators = {
   // Header actions
   changeLink: 'a.govuk-link.govuk-\\!-margin-bottom-0',
   removeParentGuardianLink: '.govuk-grid-column-one-third a.govuk-link.govuk-link--no-visited-state',

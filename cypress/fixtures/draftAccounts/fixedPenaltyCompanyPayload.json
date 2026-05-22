@@ -105,7 +105,7 @@
     "account_notes": null
   },
   "account_type": "Fixed Penalty",
-  "account_status": "Draft",
+  "account_status": "Submitted",
   "timeline_data": [
     {
       "username": "opal-test",

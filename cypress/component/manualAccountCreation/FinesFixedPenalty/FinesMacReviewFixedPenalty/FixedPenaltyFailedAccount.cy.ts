@@ -33,7 +33,7 @@ describe('Fixed Penalty failed- Review Account Details', () => {
   });
   it(
     '(AC.1) should display failed defendant account details correctly for individual defendant in Review',
-    { tags: [...buildTags('@JIRA-STORY:PO-1816'), '@JIRA-EPIC:PO-855'] },
+    { tags: [...buildTags('@JIRA-STORY:PO-1816'), '@JIRA-EPIC:PO-855', '@JIRA-TEST-KEY:PO-4842'] },
     () => {
       const draftAccountId = '1003';
       const props: IFinesComponentProperties = {
@@ -116,7 +116,7 @@ describe('Fixed Penalty failed- Review Account Details', () => {
   );
   it(
     '(AC.1) should display failed defendant account details correctly for company defendant in Review',
-    { tags: [...buildTags('@JIRA-STORY:PO-1816'), '@JIRA-EPIC:PO-855'] },
+    { tags: [...buildTags('@JIRA-STORY:PO-1816'), '@JIRA-EPIC:PO-855', '@JIRA-TEST-KEY:PO-4843'] },
     () => {
       const draftAccountId = '1004';
       const props: IFinesComponentProperties = {
