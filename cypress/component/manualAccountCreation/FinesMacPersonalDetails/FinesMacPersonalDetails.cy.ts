@@ -376,9 +376,18 @@ describe('FinesMacPersonalDetailsComponent', () => {
     },
   );
 
-  it('(AC.9) should show error for a non-leap-year date of birth', {
-      tags: [...buildTags('@JIRA-STORY:PO-360'), '@JIRA-EPIC:PO-272', '@JIRA-NFR:PO-2323', '@JIRA-NFR:PO-2325', '@JIRA-TEST-KEY:PO-6354'],
-    }, () => {
+  it(
+    '(AC.9) should show error for a non-leap-year date of birth',
+    {
+      tags: [
+        ...buildTags('@JIRA-STORY:PO-360'),
+        '@JIRA-EPIC:PO-272',
+        '@JIRA-NFR:PO-2323',
+        '@JIRA-NFR:PO-2325',
+        '@JIRA-TEST-KEY:PO-6354',
+      ],
+    },
+    () => {
       setupComponent(null, '', (finesMacState) => {
         finesMacState.personalDetails.formData.fm_personal_details_title = 'Mrs';
         finesMacState.personalDetails.formData.fm_personal_details_forenames = 'Smith';
@@ -387,7 +396,8 @@ describe('FinesMacPersonalDetailsComponent', () => {
       });
       cy.get(DOM_ELEMENTS.submitButton).click();
       cy.get(DOM_ELEMENTS.errorSummary).should('contain', FORMAT_CHECK['dateOfBirthNotValid']);
-    });
+    },
+  );
 
   it(
     '(AC.11) should not accept national insurance number in the incorrect format',

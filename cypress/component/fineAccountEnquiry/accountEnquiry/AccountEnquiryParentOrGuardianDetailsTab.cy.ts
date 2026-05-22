@@ -89,7 +89,10 @@ describe('Account Enquiry Parent or Guardian Component', () => {
     setupAccountEnquiryComponent({ ...componentProperties, accountId, fragments });
   };
 
-  it('AC1a: should display the Parent or guardian tab for an adult or youth account with parent or guardian to pay', { tags: [...buildTags('@JIRA-STORY:PO-1876'), '@JIRA-EPIC:PO-1875', '@JIRA-TEST-KEY:PO-6334'] }, () => {
+  it(
+    'AC1a: should display the Parent or guardian tab for an adult or youth account with parent or guardian to pay',
+    { tags: [...buildTags('@JIRA-STORY:PO-1876'), '@JIRA-EPIC:PO-1875', '@JIRA-TEST-KEY:PO-6334'] },
+    () => {
       const headerMock = structuredClone(createDefendantHeaderMockWithName('Robert', 'Thomson'));
       headerMock.parent_guardian_party_id = '1770000001';
       headerMock.debtor_type = 'Parent/Guardian';
@@ -101,9 +104,13 @@ describe('Account Enquiry Parent or Guardian Component', () => {
       setupParentGuardianShell({ headerMock, pgDetailsMock });
 
       cy.get(TABS.parentGuardianTab).should('be.visible');
-    });
+    },
+  );
 
-  it('AC1b, AC2a, AC2b: should display the Parent or guardian tab and the remove action for a youth-only account with a non-paying parent or guardian', { tags: [...buildTags('@JIRA-STORY:PO-1876'), '@JIRA-EPIC:PO-1875', '@JIRA-TEST-KEY:PO-6335'] }, () => {
+  it(
+    'AC1b, AC2a, AC2b: should display the Parent or guardian tab and the remove action for a youth-only account with a non-paying parent or guardian',
+    { tags: [...buildTags('@JIRA-STORY:PO-1876'), '@JIRA-EPIC:PO-1875', '@JIRA-TEST-KEY:PO-6335'] },
+    () => {
       const headerMock = structuredClone(DEFENDANT_HEADER_YOUTH_MOCK);
       headerMock.parent_guardian_party_id = '1770000001';
       headerMock.debtor_type = 'Defendant';
@@ -118,9 +125,13 @@ describe('Account Enquiry Parent or Guardian Component', () => {
       cy.get(DOM.removeParentGuardianLink)
         .should('be.visible')
         .and('contain.text', 'Remove Parent or guardian details');
-    });
+    },
+  );
 
-  it('AC3: should not display the remove action for an adult or youth account with parent or guardian to pay', { tags: [...buildTags('@JIRA-STORY:PO-1876'), '@JIRA-EPIC:PO-1875', '@JIRA-TEST-KEY:PO-6336'] }, () => {
+  it(
+    'AC3: should not display the remove action for an adult or youth account with parent or guardian to pay',
+    { tags: [...buildTags('@JIRA-STORY:PO-1876'), '@JIRA-EPIC:PO-1875', '@JIRA-TEST-KEY:PO-6336'] },
+    () => {
       const headerMock = structuredClone(createDefendantHeaderMockWithName('Robert', 'Thomson'));
       headerMock.parent_guardian_party_id = '1770000001';
       headerMock.debtor_type = 'Parent/Guardian';
@@ -133,7 +144,8 @@ describe('Account Enquiry Parent or Guardian Component', () => {
 
       cy.get(TABS.parentGuardianTab).should('be.visible');
       cy.get(DOM.removeParentGuardianLink).should('not.exist');
-    });
+    },
+  );
 
   it(
     'AC1,Ac1a, Ac1b,Ac1bi:should display "Parent or Guardian details" title and other fields when viewing Parent or Guardian tab',

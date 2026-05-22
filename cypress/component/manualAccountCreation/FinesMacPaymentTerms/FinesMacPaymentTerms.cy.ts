@@ -1416,9 +1416,12 @@ describe('FinesMacPaymentTermsComponent', () => {
     },
   );
 
-  it('(AC.1,4,5a) correct system note for a leap-day collection order - AY', {
+  it(
+    '(AC.1,4,5a) correct system note for a leap-day collection order - AY',
+    {
       tags: [...buildTags('@JIRA-STORY:PO-651'), '@JIRA-EPIC:PO-545', '@JIRA-NFR:PO-2325', '@JIRA-TEST-KEY:PO-6350'],
-    }, () => {
+    },
+    () => {
       const setAccountCommentsNotesSpy = Cypress.sinon.spy();
 
       setupComponent('adultOrYouthOnly', setAccountCommentsNotesSpy, (state) => {
@@ -1437,10 +1440,14 @@ describe('FinesMacPaymentTermsComponent', () => {
           'A collection order was previously made on 29/02/2024 prior to this account creation',
         );
       });
-    });
-  it('(AC.1,4,5b) correct system note for a bank-holiday collection order - AYPG', {
+    },
+  );
+  it(
+    '(AC.1,4,5b) correct system note for a bank-holiday collection order - AYPG',
+    {
       tags: [...buildTags('@JIRA-STORY:PO-651'), '@JIRA-EPIC:PO-545', '@JIRA-NFR:PO-2325', '@JIRA-TEST-KEY:PO-6351'],
-    }, () => {
+    },
+    () => {
       const setAccountCommentsNotesSpy = Cypress.sinon.spy();
 
       setupComponent('pgToPay', setAccountCommentsNotesSpy, (state) => {
@@ -1459,7 +1466,8 @@ describe('FinesMacPaymentTermsComponent', () => {
           'A collection order was previously made on 25/12/2025 prior to this account creation',
         );
       });
-    });
+    },
+  );
   it(
     '(AC.2,4,5a) correct system note - Make collection order today - AY',
     {
@@ -1508,9 +1516,12 @@ describe('FinesMacPaymentTermsComponent', () => {
     },
   );
 
-  it('(AC3a,c,4,5a) update system note using the DST short-day boundary date - AY', {
+  it(
+    '(AC3a,c,4,5a) update system note using the DST short-day boundary date - AY',
+    {
       tags: [...buildTags('@JIRA-STORY:PO-651'), '@JIRA-EPIC:PO-545', '@JIRA-NFR:PO-2325', '@JIRA-TEST-KEY:PO-6352'],
-    }, () => {
+    },
+    () => {
       const setAccountCommentsNotesSpy = Cypress.sinon.spy();
 
       setupComponent('adultOrYouthOnly', setAccountCommentsNotesSpy, (state) => {
@@ -1544,11 +1555,15 @@ describe('FinesMacPaymentTermsComponent', () => {
           'A collection order was previously made on 30/03/2025 prior to this account creation',
         );
       });
-    });
+    },
+  );
 
-  it('(AC3a,c,4,5b) update system note using the DST long-day boundary date - AYPG', {
+  it(
+    '(AC3a,c,4,5b) update system note using the DST long-day boundary date - AYPG',
+    {
       tags: [...buildTags('@JIRA-STORY:PO-651'), '@JIRA-EPIC:PO-545', '@JIRA-NFR:PO-2325', '@JIRA-TEST-KEY:PO-6353'],
-    }, () => {
+    },
+    () => {
       const setAccountCommentsNotesSpy = Cypress.sinon.spy();
 
       setupComponent('pgToPay', setAccountCommentsNotesSpy, (state) => {
@@ -1583,7 +1598,8 @@ describe('FinesMacPaymentTermsComponent', () => {
           'A collection order was previously made on 26/10/2025 prior to this account creation',
         );
       });
-    });
+    },
+  );
 
   it(
     '(AC3b,d,4,5a) update system note - Previously made - Made today - AY',

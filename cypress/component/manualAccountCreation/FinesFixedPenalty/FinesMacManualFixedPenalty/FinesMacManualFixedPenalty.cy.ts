@@ -434,15 +434,19 @@ describe('FinesMacManualFixedPenalty', () => {
     },
   );
 
-  it('(AC7) Validation will exist for the Date of birth field - non-leap-year date', {
+  it(
+    '(AC7) Validation will exist for the Date of birth field - non-leap-year date',
+    {
       tags: [...buildTags('@JIRA-STORY:PO-857'), '@JIRA-EPIC:PO-855', '@JIRA-NFR:PO-2325', '@JIRA-TEST-KEY:PO-6345'],
-    }, () => {
+    },
+    () => {
       // Non-leap-year date validation
       fixedPenaltyMock.personalDetails.formData.fm_personal_details_dob = '29/02/2025';
       setupComponent();
       cy.get(DOM_ELEMENTS.submitButton).click();
       cy.get(DOM_ELEMENTS.errorSummaryList).should('contain', 'Enter a valid date of birth');
-    });
+    },
+  );
 
   it(
     '(AC7) Validation will exist for the Date of birth field - special characters',

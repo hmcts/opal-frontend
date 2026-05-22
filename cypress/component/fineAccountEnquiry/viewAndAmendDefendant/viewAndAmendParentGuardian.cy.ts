@@ -345,7 +345,10 @@ describe('FinesAccPartyAddAmendConvert - View and Amend Parent or Guardian', () 
     },
   );
 
-  it('AC1a, AC1b. Parent/Guardian amend mode should render the reduced youth-only screen with the information banner', { tags: [...buildTags('@JIRA-STORY:PO-3915'), '@JIRA-EPIC:PO-1875', '@JIRA-TEST-KEY:PO-6339'] }, () => {
+  it(
+    'AC1a, AC1b. Parent/Guardian amend mode should render the reduced youth-only screen with the information banner',
+    { tags: [...buildTags('@JIRA-STORY:PO-3915'), '@JIRA-EPIC:PO-1875', '@JIRA-TEST-KEY:PO-6339'] },
+    () => {
       const nonPayingAmendMock = buildReducedParentGuardianAmendMock(fullMock);
 
       setupComponent('parentGuardian', nonPayingAmendMock, 'Y');
@@ -380,7 +383,8 @@ describe('FinesAccPartyAddAmendConvert - View and Amend Parent or Guardian', () 
       cy.get(DOM_ELEMENTS.mobilePhoneInput).should('have.value', '07123456789');
       cy.get(DOM_ELEMENTS.homePhoneInput).should('have.value', '01234567890');
       cy.get(DOM_ELEMENTS.businessPhoneInput).should('have.value', '02087654321');
-    });
+    },
+  );
 
   it(
     'AC3a, AC3b. Parent/Guardian add mode should post valid data and navigate to the Parent or guardian tab',
@@ -416,7 +420,10 @@ describe('FinesAccPartyAddAmendConvert - View and Amend Parent or Guardian', () 
     },
   );
 
-  it('AC3a. Parent/Guardian amend mode should put valid data and navigate to the Parent or guardian tab', { tags: [...buildTags('@JIRA-STORY:PO-3915'), '@JIRA-EPIC:PO-1875', '@JIRA-TEST-KEY:PO-6340'] }, () => {
+  it(
+    'AC3a. Parent/Guardian amend mode should put valid data and navigate to the Parent or guardian tab',
+    { tags: [...buildTags('@JIRA-STORY:PO-3915'), '@JIRA-EPIC:PO-1875', '@JIRA-TEST-KEY:PO-6340'] },
+    () => {
       const nonPayingAmendMock = buildReducedParentGuardianAmendMock(fullMock);
       const updatedForenames = 'Updated';
 
@@ -450,9 +457,13 @@ describe('FinesAccPartyAddAmendConvert - View and Amend Parent or Guardian', () 
       cy.get('@routerNavigate').should('have.been.calledWithMatch', ['details'], {
         fragment: 'parent-or-guardian',
       });
-    });
+    },
+  );
 
-  it('AC4b, AC4c, AC4d. Parent/Guardian amend mode should show required validation errors for first names, last name and address line 1', { tags: [...buildTags('@JIRA-STORY:PO-3915'), '@JIRA-EPIC:PO-1875', '@JIRA-TEST-KEY:PO-6341'] }, () => {
+  it(
+    'AC4b, AC4c, AC4d. Parent/Guardian amend mode should show required validation errors for first names, last name and address line 1',
+    { tags: [...buildTags('@JIRA-STORY:PO-3915'), '@JIRA-EPIC:PO-1875', '@JIRA-TEST-KEY:PO-6341'] },
+    () => {
       const invalidRequiredMock = buildReducedParentGuardianAmendMock(fullMock, (mock) => {
         mock.defendant_account_party.party_details.individual_details!.forenames = '';
         mock.defendant_account_party.party_details.individual_details!.surname = '';
@@ -470,9 +481,13 @@ describe('FinesAccPartyAddAmendConvert - View and Amend Parent or Guardian', () 
         'Enter address line 1, typically the building and street',
       );
       cy.get('@routerNavigate').should('not.have.been.called');
-    });
+    },
+  );
 
-  it('AC5a, AC5b. Parent/Guardian amend mode should show the email format validation errors', { tags: [...buildTags('@JIRA-STORY:PO-3915'), '@JIRA-EPIC:PO-1875', '@JIRA-TEST-KEY:PO-6342'] }, () => {
+  it(
+    'AC5a, AC5b. Parent/Guardian amend mode should show the email format validation errors',
+    { tags: [...buildTags('@JIRA-STORY:PO-3915'), '@JIRA-EPIC:PO-1875', '@JIRA-TEST-KEY:PO-6342'] },
+    () => {
       const invalidEmailMock = buildReducedParentGuardianAmendMock(fullMock, (mock) => {
         mock.defendant_account_party.contact_details!.primary_email_address = 'primary.email';
         mock.defendant_account_party.contact_details!.secondary_email_address = 'secondary.email';
@@ -491,9 +506,13 @@ describe('FinesAccPartyAddAmendConvert - View and Amend Parent or Guardian', () 
         'Enter secondary email address in the correct format, like name@example.com',
       );
       cy.get('@routerNavigate').should('not.have.been.called');
-    });
+    },
+  );
 
-  it('AC6a, AC6b, AC6c. Parent/Guardian amend mode should show the telephone format validation errors', { tags: [...buildTags('@JIRA-STORY:PO-3915'), '@JIRA-EPIC:PO-1875', '@JIRA-TEST-KEY:PO-6343'] }, () => {
+  it(
+    'AC6a, AC6b, AC6c. Parent/Guardian amend mode should show the telephone format validation errors',
+    { tags: [...buildTags('@JIRA-STORY:PO-3915'), '@JIRA-EPIC:PO-1875', '@JIRA-TEST-KEY:PO-6343'] },
+    () => {
       const invalidTelephoneMock = buildReducedParentGuardianAmendMock(fullMock, (mock) => {
         mock.defendant_account_party.contact_details!.home_telephone_number = '0207A214875';
         mock.defendant_account_party.contact_details!.work_telephone_number = '01632-960-001A';
@@ -517,9 +536,13 @@ describe('FinesAccPartyAddAmendConvert - View and Amend Parent or Guardian', () 
         'Enter a valid mobile telephone number, like 07700 900 982',
       );
       cy.get('@routerNavigate').should('not.have.been.called');
-    });
+    },
+  );
 
-  it('AC7a. Parent/Guardian amend mode should show the updated data type validation errors', { tags: [...buildTags('@JIRA-STORY:PO-3915'), '@JIRA-EPIC:PO-1875', '@JIRA-TEST-KEY:PO-6344'] }, () => {
+  it(
+    'AC7a. Parent/Guardian amend mode should show the updated data type validation errors',
+    { tags: [...buildTags('@JIRA-STORY:PO-3915'), '@JIRA-EPIC:PO-1875', '@JIRA-TEST-KEY:PO-6344'] },
+    () => {
       const dataTypeValidationMock = buildReducedParentGuardianAmendMock(fullMock, (mock) => {
         mock.defendant_account_party.party_details.individual_details!.forenames = 'José';
         mock.defendant_account_party.party_details.individual_details!.surname = 'O’Connor';
@@ -553,7 +576,8 @@ describe('FinesAccPartyAddAmendConvert - View and Amend Parent or Guardian', () 
         'Address line 3 must only include letters a to z, numbers 0-9 and certain special characters (such as hyphens, spaces, apostrophes and commas)',
       );
       cy.get('@routerNavigate').should('not.have.been.called');
-    });
+    },
+  );
 
   it(
     'AC4b, AC4c, AC4d. Parent/Guardian add mode should show required validation errors for first names, last name and address line 1',
