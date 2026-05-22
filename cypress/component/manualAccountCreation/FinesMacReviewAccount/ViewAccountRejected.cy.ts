@@ -121,12 +121,7 @@ describe('FinesMacReviewAccountComponent - View Rejected Account', () => {
   it(
     'AC.3 - should render Review History section correctly (FinesMacReviewAccountComponent - View Rejected Account)',
     {
-      tags: [
-        ...buildTags('@JIRA-STORY:PO-601'),
-        '@JIRA-EPIC:PO-2220',
-        '@JIRA-NFR:PO-2324',
-        '@JIRA-TEST-KEY:PO-5204',
-      ],
+      tags: [...buildTags('@JIRA-STORY:PO-601'), '@JIRA-EPIC:PO-2220', '@JIRA-NFR:PO-2324', '@JIRA-TEST-KEY:PO-5204'],
     },
     () => {
       let fetchMap = structuredClone(reviewAccountFetchMap);

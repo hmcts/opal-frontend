@@ -451,11 +451,7 @@ describe('FinesMacPaymentTermsComponent', () => {
   it(
     '(AC.3) Should load make a new collection order for correct permission for AYPG and AY',
     {
-      tags: [
-        ...buildTags('@JIRA-STORY:PO-471', '@JIRA-STORY:PO-649'),
-        '@JIRA-EPIC:PO-545',
-        '@JIRA-TEST-KEY:PO-5119',
-      ],
+      tags: [...buildTags('@JIRA-STORY:PO-471', '@JIRA-STORY:PO-649'), '@JIRA-EPIC:PO-545', '@JIRA-TEST-KEY:PO-5119'],
     },
     () => {
       for (let i = 0; i < 2; i++) {

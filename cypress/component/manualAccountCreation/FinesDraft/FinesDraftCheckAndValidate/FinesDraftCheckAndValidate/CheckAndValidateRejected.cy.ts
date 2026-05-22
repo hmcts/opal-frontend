@@ -108,12 +108,7 @@ describe('FinesDraftCheckAndValidateRejectedComponent', () => {
   it(
     '(AC.4a) should have default sort order for created accounts set to ascending (FinesDraftCheckAndValidateRejectedComponent)',
     {
-      tags: [
-        ...buildTags('@JIRA-STORY:PO-600'),
-        '@JIRA-EPIC:PO-2220',
-        '@JIRA-NFR:PO-2324',
-        '@JIRA-TEST-KEY:PO-4717',
-      ],
+      tags: [...buildTags('@JIRA-STORY:PO-600'), '@JIRA-EPIC:PO-2220', '@JIRA-NFR:PO-2324', '@JIRA-TEST-KEY:PO-4717'],
     },
     () => {
       const rejectedMockData = structuredClone(OPAL_FINES_DRAFT_VALIDATE_ACCOUNTS_MOCK);

@@ -597,12 +597,7 @@ describe('ReviewAccountRejectedApproveComponent', () => {
   it(
     'AC.1b update draft account with patch method',
     {
-      tags: [
-        ...buildTags('@JIRA-STORY:PO-969'),
-        '@JIRA-EPIC:PO-2220',
-        '@JIRA-NFR:PO-2324',
-        '@JIRA-TEST-KEY:PO-5181',
-      ],
+      tags: [...buildTags('@JIRA-STORY:PO-969'), '@JIRA-EPIC:PO-2220', '@JIRA-NFR:PO-2324', '@JIRA-TEST-KEY:PO-5181'],
     },
     () => {
       cy.intercept('PATCH', '**/opal-fines-service/draft-accounts/**', { statusCode: 200 }).as('patchDraftAccount');

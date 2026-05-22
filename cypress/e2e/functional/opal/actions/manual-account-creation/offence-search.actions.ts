@@ -242,6 +242,10 @@ export class ManualOffenceSearchActions {
    * @returns Lower-cased normalized text.
    */
   private normalizeResultText(value: string): string {
-    return value.replace(/\u00a0/g, ' ').replace(/\s+/g, ' ').trim().toLowerCase();
+    return value
+      .replace(/\u00a0/g, ' ')
+      .replace(/\s+/g, ' ')
+      .trim()
+      .toLowerCase();
   }
 }

@@ -168,12 +168,7 @@ describe('FinesMacReviewAccountComponent', () => {
   it(
     '(AC.1c) should show Police and court details card for Conditional Caution',
     {
-      tags: [
-        ...buildTags('@JIRA-STORY:PO-2790'),
-        '@JIRA-EPIC:PO-2750',
-        '@JIRA-NFR:PO-2328',
-        '@JIRA-TEST-KEY:PO-5212',
-      ],
+      tags: [...buildTags('@JIRA-STORY:PO-2790'), '@JIRA-EPIC:PO-2750', '@JIRA-NFR:PO-2328', '@JIRA-TEST-KEY:PO-5212'],
     },
     () => {
       finesMacState.accountDetails.formData.fm_create_account_account_type = FINES_ACCOUNT_TYPES['Conditional Caution'];

@@ -145,12 +145,7 @@ describe('FinesMacReviewFixedPenalty using ReviewAccountComponent', () => {
   it(
     '(AC2, AC2a, AC5a) should display tables in correct order and correct content for adult/youth',
     {
-      tags: [
-        ...buildTags('@JIRA-STORY:PO-861'),
-        '@JIRA-EPIC:PO-855',
-        '@JIRA-NFR:PO-2328',
-        '@JIRA-TEST-KEY:PO-4830',
-      ],
+      tags: [...buildTags('@JIRA-STORY:PO-861'), '@JIRA-EPIC:PO-855', '@JIRA-NFR:PO-2328', '@JIRA-TEST-KEY:PO-4830'],
     },
     () => {
       setupComponent(FINES_DRAFT_STATE, 'adultOrYouthOnly');
@@ -297,12 +292,7 @@ describe('FinesMacReviewFixedPenalty using ReviewAccountComponent', () => {
   it(
     '(AC2, AC2a, AC5b) should display tables in correct order and correct content for company defendant',
     {
-      tags: [
-        ...buildTags('@JIRA-STORY:PO-861'),
-        '@JIRA-EPIC:PO-855',
-        '@JIRA-NFR:PO-2328',
-        '@JIRA-TEST-KEY:PO-4834',
-      ],
+      tags: [...buildTags('@JIRA-STORY:PO-861'), '@JIRA-EPIC:PO-855', '@JIRA-NFR:PO-2328', '@JIRA-TEST-KEY:PO-4834'],
     },
     () => {
       setupComponent(FINES_DRAFT_STATE, 'company');
