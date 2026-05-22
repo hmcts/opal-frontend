@@ -21,7 +21,6 @@ import { MacFixedPenaltyReviewLocators as DOM_ELEMENTS } from '../../../../share
 import { IFinesMacState } from '../../../../../src/app/flows/fines/fines-mac/interfaces/fines-mac-state.interface';
 import { interceptOffences } from 'cypress/component/CommonIntercepts/CommonIntercepts';
 import { ACCOUNT_SESSION_USER_STATE_MOCK } from '../mocks/user_state_mock';
-import { getToday } from 'cypress/support/utils/dateUtils';
 import { FINES_DEFAULT_VALUES } from 'src/app/flows/fines/constants/fines-default-values.constant';
 import { FINES_ACCOUNT_TYPES } from 'src/app/flows/fines/constants/fines-account-types.constant';
 
@@ -438,11 +437,7 @@ describe('FinesMacReviewFixedPenalty using ReviewAccountComponent', () => {
 
         expect(request.request.body.account.defendant_type).to.equal('adultOrYouthOnly');
         expect(request.request.body.account_status).to.equal('Submitted');
-
-        expect(request.request.body.timeline_data[0].username).to.equal(ACCOUNT_SESSION_USER_STATE_MOCK.name);
-        expect(request.request.body.timeline_data[0].status).to.equal('Submitted');
-        expect(request.request.body.timeline_data[0].status_date).to.equal(getToday());
-        expect(request.request.body.timeline_data[0].reason_text).to.equal(null);
+        expect(request.request.body).not.to.have.property('timeline_data');
       });
     },
   );
@@ -517,11 +512,7 @@ describe('FinesMacReviewFixedPenalty using ReviewAccountComponent', () => {
 
         expect(request.request.body.account.defendant_type).to.equal('company');
         expect(request.request.body.account_status).to.equal('Submitted');
-
-        expect(request.request.body.timeline_data[0].username).to.equal(ACCOUNT_SESSION_USER_STATE_MOCK.name);
-        expect(request.request.body.timeline_data[0].status).to.equal('Submitted');
-        expect(request.request.body.timeline_data[0].status_date).to.equal(getToday());
-        expect(request.request.body.timeline_data[0].reason_text).to.equal(null);
+        expect(request.request.body).not.to.have.property('timeline_data');
       });
     },
   );
