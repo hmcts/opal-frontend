@@ -799,7 +799,7 @@ Feature: Manual account creation - Offence Details
       | Short title | dangerous item |
 
 
-  @JIRA-STORY:PO-667 @JIRA-STORY:PO-987 @JIRA-EPIC:PO-545 @JIRA-TEST-KEY:PO-5377 @only
+  @JIRA-STORY:PO-667 @JIRA-STORY:PO-987 @JIRA-EPIC:PO-545 @JIRA-TEST-KEY:PO-5377
   Scenario: AC1d Act and section searches match text contained within results
     When I follow the offence search link in the same tab
     And I search offences with:
