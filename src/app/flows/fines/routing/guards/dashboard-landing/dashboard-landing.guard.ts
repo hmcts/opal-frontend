@@ -7,12 +7,13 @@ import { resolveFeatureFlagGuard } from '@hmcts/opal-frontend-common/guards/feat
 import { firstValueFrom } from 'rxjs';
 import { FINES_DASHBOARD_ROUTING_PATHS } from '@app/flows/fines/constants/fines-dashboard-routing-paths.constant';
 import {
+  type FeatureFlagReleaseState,
   getDashboardLandingType,
   RELEASE_1A_FEATURE_FLAG,
 } from '@app/flows/fines/utils/fines-section-permissions.utils';
 
-const getDefaultDashboardType = (isRelease1aEnabled: boolean) =>
-  getDashboardLandingType(NAVIGATION_BAR_CONFIGURATION, null, isRelease1aEnabled);
+const getDefaultDashboardType = (featureFlagReleaseState: FeatureFlagReleaseState) =>
+  getDashboardLandingType(NAVIGATION_BAR_CONFIGURATION, null, featureFlagReleaseState);
 
 const buildDashboardUrlTree = (router: Router, dashboardType: string): UrlTree =>
   router.createUrlTree(['/', FINES_ROUTING_PATHS.root, FINES_DASHBOARD_ROUTING_PATHS.root, dashboardType]);
@@ -23,16 +24,18 @@ const buildDashboardUrlTree = (router: Router, dashboardType: string): UrlTree =
 export const dashboardLandingGuard: CanActivateFn = async (route, state): Promise<UrlTree> => {
   const opalUserService = inject(OpalUserService);
   const router = inject(Router);
-  const isRelease1aEnabled = await resolveFeatureFlagGuard(RELEASE_1A_FEATURE_FLAG, route, state);
+  const featureFlagReleaseState = {
+    [RELEASE_1A_FEATURE_FLAG]: await resolveFeatureFlagGuard(RELEASE_1A_FEATURE_FLAG, route, state),
+  };
 
   try {
     const userState = await firstValueFrom(opalUserService.getLoggedInUserState());
 
     return buildDashboardUrlTree(
       router,
-      getDashboardLandingType(NAVIGATION_BAR_CONFIGURATION, userState, isRelease1aEnabled),
+      getDashboardLandingType(NAVIGATION_BAR_CONFIGURATION, userState, featureFlagReleaseState),
     );
   } catch {
-    return buildDashboardUrlTree(router, getDefaultDashboardType(isRelease1aEnabled));
+    return buildDashboardUrlTree(router, getDefaultDashboardType(featureFlagReleaseState));
   }
 };

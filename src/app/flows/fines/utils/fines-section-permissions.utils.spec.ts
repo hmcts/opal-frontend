@@ -6,13 +6,16 @@ import { ACCOUNTS_PERMISSIONS } from '../constants/accounts-permissions.constant
 import { SEARCH_PERMISSIONS } from '../constants/search-permissions.constant';
 import {
   canAccessFinesPrimaryNavigationSection,
+  filterDashboardConfigByFeatureFlags,
   getAccessiblePrimaryNavigationItems,
   getDashboardLandingType,
+  getFeatureFlagReleaseState,
   getFirstAccessibleDashboardType,
   getUserPermissionIds,
   hasAnyPermission,
 } from './fines-section-permissions.utils';
 import { describe, expect, it } from 'vitest';
+import { DASHBOARD_PAGE_CONFIGURATION_MAP } from '@app/pages/dashboard/constants/dashboard-config.constant';
 
 const createUserStateWithPermissions = (permissionIds: readonly number[]): IOpalUserState => {
   const userState = structuredClone(OPAL_USER_STATE_MOCK);
@@ -70,6 +73,9 @@ describe('fines-section-permissions.utils', () => {
   });
 
   describe('canAccessFinesPrimaryNavigationSection', () => {
+    const release1aEnabled = { 'release-1a': true };
+    const release1aDisabled = { 'release-1a': false };
+
     it('should allow unrestricted dashboard sections', () => {
       expect(canAccessFinesPrimaryNavigationSection('finance', null)).toBe(true);
     });
@@ -83,7 +89,7 @@ describe('fines-section-permissions.utils', () => {
         canAccessFinesPrimaryNavigationSection(
           'accounts',
           createUserStateWithPermissions([ACCOUNTS_PERMISSIONS[0]]),
-          true,
+          release1aEnabled,
         ),
       ).toBe(true);
     });
@@ -93,7 +99,7 @@ describe('fines-section-permissions.utils', () => {
         canAccessFinesPrimaryNavigationSection(
           'accounts',
           createUserStateWithPermissions([ACCOUNTS_PERMISSIONS[0]]),
-          false,
+          release1aDisabled,
         ),
       ).toBe(false);
     });
@@ -103,7 +109,7 @@ describe('fines-section-permissions.utils', () => {
         canAccessFinesPrimaryNavigationSection(
           'accounts',
           createUserStateWithPermissions([ACCOUNTS_PERMISSIONS[2]]),
-          false,
+          release1aDisabled,
         ),
       ).toBe(true);
     });
@@ -121,7 +127,7 @@ describe('fines-section-permissions.utils', () => {
     it('should remove Accounts for draft-only users when release-1a is disabled', () => {
       const userState = createUserStateWithPermissions([ACCOUNTS_PERMISSIONS[0]]);
 
-      expect(getAccessiblePrimaryNavigationItems(navigationItems, userState, false)).toEqual([]);
+      expect(getAccessiblePrimaryNavigationItems(navigationItems, userState, { 'release-1a': false })).toEqual([]);
     });
   });
 
@@ -163,12 +169,34 @@ describe('fines-section-permissions.utils', () => {
       ];
 
       expect(
-        getDashboardLandingType(
-          navigationItemsWithFinance,
-          createUserStateWithPermissions([ACCOUNTS_PERMISSIONS[0]]),
-          false,
-        ),
+        getDashboardLandingType(navigationItemsWithFinance, createUserStateWithPermissions([ACCOUNTS_PERMISSIONS[0]]), {
+          'release-1a': false,
+        }),
       ).toBe('finance');
+    });
+  });
+
+  describe('getFeatureFlagReleaseState', () => {
+    it('should map raw feature flags into a release feature flag state', () => {
+      expect(getFeatureFlagReleaseState({ 'release-1a': true })).toEqual({ 'release-1a': true });
+      expect(getFeatureFlagReleaseState({ 'release-1a': false })).toEqual({ 'release-1a': false });
+      expect(getFeatureFlagReleaseState({})).toEqual({ 'release-1a': false });
+    });
+  });
+
+  describe('filterDashboardConfigByFeatureFlags', () => {
+    it('should keep feature flag dashboard groups when the matching release is enabled', () => {
+      expect(
+        filterDashboardConfigByFeatureFlags(DASHBOARD_PAGE_CONFIGURATION_MAP.accounts, { 'release-1a': true }),
+      ).toEqual(DASHBOARD_PAGE_CONFIGURATION_MAP.accounts);
+    });
+
+    it('should remove feature flag dashboard groups when the matching release is disabled', () => {
+      expect(
+        filterDashboardConfigByFeatureFlags(DASHBOARD_PAGE_CONFIGURATION_MAP.accounts, {
+          'release-1a': false,
+        }).groups.map((group) => group.id),
+      ).not.toContain('draft-accounts');
     });
   });
 });

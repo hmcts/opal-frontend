@@ -42,7 +42,7 @@ import { isDashboardPageType } from './pages/dashboard/constants/dashboard-confi
 import { FINES_DASHBOARD_ROUTING_PATHS } from './flows/fines/constants/fines-dashboard-routing-paths.constant';
 import {
   getAccessiblePrimaryNavigationItems,
-  isRelease1aFeatureEnabled,
+  getFeatureFlagReleaseState,
 } from './flows/fines/utils/fines-section-permissions.utils';
 import { HIDE_PRIMARY_NAV_ROUTE_DATA_KEY } from './constants/route-data.constant';
 import { FINES_ACC_ROUTING_PATHS } from './flows/fines/fines-acc/routing/constants/fines-acc-routing-paths.constant';
@@ -136,7 +136,7 @@ export class AppComponent implements OnInit, OnDestroy {
     getAccessiblePrimaryNavigationItems(
       NAVIGATION_BAR_CONFIGURATION,
       this.globalStore.userState(),
-      isRelease1aFeatureEnabled(this.globalStore.featureFlags()),
+      getFeatureFlagReleaseState(this.globalStore.featureFlags()),
     ),
   );
   public readonly primaryNavigationHidden = toSignal(

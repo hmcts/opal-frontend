@@ -8,7 +8,10 @@ import { IDashboardPageConfiguration } from '@hmcts/opal-frontend-common/pages/d
 import { DASHBOARD_PAGE_DEFAULT_TAB } from './constants/dashboard-config-default-tab.constant';
 import { DASHBOARD_CONFIG_DEFAULT_DASHBOARD } from './constants/dashboard-config-default-dashboard.constant';
 import { GlobalStore } from '@hmcts/opal-frontend-common/stores/global';
-import { isRelease1aFeatureEnabled } from '@app/flows/fines/utils/fines-section-permissions.utils';
+import {
+  filterDashboardConfigByFeatureFlags,
+  getFeatureFlagReleaseState,
+} from '@app/flows/fines/utils/fines-section-permissions.utils';
 
 @Component({
   selector: 'app-dashboard',
@@ -28,29 +31,20 @@ export class DashboardComponent {
     { initialValue: null },
   );
 
-  /**
-   * Resolves the dashboard configuration based on the current route parameter 'dashboardType'. If the parameter is valid and corresponds to a known dashboard type, it returns the specific configuration for that type. If the parameter is missing or invalid, it falls back to the default dashboard configuration defined in DASHBOARD_CONFIG_DEFAULT_DASHBOARD. Should the 'release-1a' feature flag be false, and the resolved configuration pertains to the 'accounts' dashboard, it filters out the 'draft-accounts' group from the configuration before returning it. This ensures that certain features are conditionally available based on the feature flag, allowing for dynamic adjustments to the dashboard's content without requiring changes to the underlying configuration objects.
-   */
   public readonly resolvedConfig = computed<IDashboardPageConfiguration>(() => {
     const dashboardType = this.dashboardType();
-    const isRelease1aEnabled = isRelease1aFeatureEnabled(this.globalStore.featureFlags());
-
-    const filterDraftAccounts = (config: IDashboardPageConfiguration): IDashboardPageConfiguration => ({
-      ...config,
-      groups: config.groups.filter((group) => group.id !== 'draft-accounts'),
-    });
+    const featureFlagReleaseState = getFeatureFlagReleaseState(this.globalStore.featureFlags());
 
     if (dashboardType && isDashboardPageType(dashboardType)) {
-      const config = DASHBOARD_PAGE_CONFIGURATION_MAP[dashboardType];
-
-      return !isRelease1aEnabled && config.title === 'Accounts' ? filterDraftAccounts(config) : config;
+      return filterDashboardConfigByFeatureFlags(
+        DASHBOARD_PAGE_CONFIGURATION_MAP[dashboardType],
+        featureFlagReleaseState,
+      );
     }
 
     const defaultConfig =
       DASHBOARD_PAGE_CONFIGURATION_MAP[DASHBOARD_PAGE_DEFAULT_TAB] ?? DASHBOARD_CONFIG_DEFAULT_DASHBOARD;
 
-    return !isRelease1aEnabled && defaultConfig.title === 'Accounts'
-      ? filterDraftAccounts(defaultConfig)
-      : defaultConfig;
+    return filterDashboardConfigByFeatureFlags(defaultConfig, featureFlagReleaseState);
   });
 }

@@ -1,6 +1,7 @@
 import { inject } from '@angular/core';
 import { ActivatedRouteSnapshot, CanActivateFn, Router, RouterStateSnapshot, UrlTree } from '@angular/router';
 import {
+  type FeatureFlagReleaseState,
   getRequiredPermissionIdsForSection,
   getUserPermissionIds,
   hasAnyPermission,
@@ -43,8 +44,10 @@ export const finesSectionPermissionsGuard: CanActivateFn = async (
 
   const getAccessDeniedUrlTree = () => router.createUrlTree([`/${COMMON_PAGES_ROUTING_PATHS.children.accessDenied}`]);
 
-  const checkSectionPermissions = async (isRelease1aEnabled: boolean): Promise<boolean | UrlTree> => {
-    const requiredPermissionIds = getRequiredPermissionIdsForSection(sectionKey, isRelease1aEnabled);
+  const checkSectionPermissions = async (
+    featureFlagReleaseState: FeatureFlagReleaseState,
+  ): Promise<boolean | UrlTree> => {
+    const requiredPermissionIds = getRequiredPermissionIdsForSection(sectionKey, featureFlagReleaseState);
 
     if (!requiredPermissionIds) {
       return true;
@@ -63,8 +66,10 @@ export const finesSectionPermissionsGuard: CanActivateFn = async (
     }
   };
 
-  const isRelease1aEnabled =
-    sectionKey === 'accounts' ? await resolveFeatureFlagGuard(RELEASE_1A_FEATURE_FLAG, route, state) : false;
+  const featureFlagReleaseState =
+    sectionKey === 'accounts'
+      ? { [RELEASE_1A_FEATURE_FLAG]: await resolveFeatureFlagGuard(RELEASE_1A_FEATURE_FLAG, route, state) }
+      : {};
 
-  return checkSectionPermissions(isRelease1aEnabled);
+  return checkSectionPermissions(featureFlagReleaseState);
 };
