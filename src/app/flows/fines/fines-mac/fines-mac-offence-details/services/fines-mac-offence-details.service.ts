@@ -176,7 +176,7 @@ export class FinesMacOffenceDetailsService {
 
     const normalisedOffenceCode = offenceCode.trim().toUpperCase();
     const exactCodeMatches = response.refData.filter((offence) => {
-      const returnedCode = this.getOffenceCode(offence as IOpalFinesOffences & { cjs_code?: string });
+      const returnedCode = this.getOffenceCode(offence);
       return returnedCode?.trim().toUpperCase() === normalisedOffenceCode;
     });
 

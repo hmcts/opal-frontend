@@ -20,11 +20,11 @@ import { FINES_ACC_ENF_OVERRIDE_ADD_CHANGE_SUCCESS_MESSAGES } from '../fines-acc
 })
 export class FinesAccEnfOverrideRemoveComponent implements OnDestroy {
   private readonly ngUnsubscribe = new Subject<void>();
-  private route = inject(ActivatedRoute);
-  private router = inject(Router);
-  private finesAccStore = inject(FinesAccountStore);
-  private finesAccPayloadService = inject(FinesAccPayloadService);
-  private opalFinesService = inject(OpalFines);
+  private readonly route = inject(ActivatedRoute);
+  private readonly router = inject(Router);
+  private readonly finesAccStore = inject(FinesAccountStore);
+  private readonly finesAccPayloadService = inject(FinesAccPayloadService);
+  private readonly opalFinesService = inject(OpalFines);
   public accountNumber = this.finesAccStore.getAccountNumber() ?? '';
   public partyName = this.finesAccStore.party_name() ?? '';
   public pageTitle: string = this.route.snapshot.data['title'] ?? '';
