@@ -506,6 +506,12 @@ void checkFocusedTests() {
   '''
 }
 
+// Fail the build if covered component or functional E2E tests fail Jira metadata validation,
+// including missing work-item tags or multiple Jira epic references.
+void checkJiraTestMetadata() {
+    new uk.gov.hmcts.contino.YarnBuilder(this).yarn('check:jira:test-metadata')
+}
+
 properties([
   // Permit dependent jobs to copy artifacts from this build
   copyArtifactPermission('*')
@@ -629,6 +635,8 @@ withPipeline(type, product, component) {
                 echo 'Running focused test checks (no skip label present)'
                 checkFocusedTests()
             }
+            echo 'Running Jira metadata checks'
+            checkJiraTestMetadata()
         }
     }
 

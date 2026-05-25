@@ -246,7 +246,7 @@ function assertErrors() {
 describe('Change Enforcement Court - Individual', { tags: ADULT_OR_YOUTH_TAGS }, () => {
   it(
     'AC1, AC1a, AC2a, AC2b, AC2c, AC2ci. Individual: navigates to the change enforcement court screen and displays the form',
-    { tags: [] },
+    { tags: ['@JIRA-TEST-KEY:PO-4407'] },
     () => {
       // AC1, AC1a, AC2a, AC2b, AC2c, AC2ci
       const { courtsMock, expectedCaption } = commonSetup();
@@ -262,18 +262,22 @@ describe('Change Enforcement Court - Individual', { tags: ADULT_OR_YOUTH_TAGS },
     },
   );
 
-  it('AC3a. Individual: shows validation errors when no enforcement court is selected', { tags: [] }, () => {
-    mountChangeEnforcementCourtForm(buildIndividualHeaderMock());
-    submitForm();
+  it(
+    'AC3a. Individual: shows validation errors when no enforcement court is selected',
+    { tags: ['@JIRA-TEST-KEY:PO-4408'] },
+    () => {
+      mountChangeEnforcementCourtForm(buildIndividualHeaderMock());
+      submitForm();
 
-    assertErrors();
-  });
+      assertErrors();
+    },
+  );
 });
 
 describe('Change Enforcement Court - Parent/Guardian', { tags: PARENT_GUARDIAN_TAGS }, () => {
   it(
     'AC1, AC1a, AC2a, AC2b, AC2c, AC2ci. Parent/Guardian: navigates to the change enforcement court screen and displays the form',
-    { tags: [] },
+    { tags: ['@JIRA-TEST-KEY:PO-4409'] },
     () => {
       const { courtsMock, expectedCaption } = mountChangeEnforcementCourtForm(buildParentGuardianHeaderMock());
       assertTitle();
@@ -285,18 +289,22 @@ describe('Change Enforcement Court - Parent/Guardian', { tags: PARENT_GUARDIAN_T
     },
   );
 
-  it('AC3a. Parent/Guardian: shows validation errors when no enforcement court is selected', { tags: [] }, () => {
-    mountChangeEnforcementCourtForm(buildParentGuardianHeaderMock());
-    submitForm();
+  it(
+    'AC3a. Parent/Guardian: shows validation errors when no enforcement court is selected',
+    { tags: ['@JIRA-TEST-KEY:PO-4410'] },
+    () => {
+      mountChangeEnforcementCourtForm(buildParentGuardianHeaderMock());
+      submitForm();
 
-    assertErrors();
-  });
+      assertErrors();
+    },
+  );
 });
 
 describe('Change Enforcement Court - Company', { tags: COMPANY_TAGS }, () => {
   it(
     'AC1, AC1a, AC2a, AC2b, AC2c, AC2ci. Company: navigates to the change enforcement court screen and displays the form',
-    { tags: [] },
+    { tags: ['@JIRA-TEST-KEY:PO-4411'] },
     () => {
       const { courtsMock, expectedCaption } = mountChangeEnforcementCourtForm(buildCompanyHeaderMock());
       assertTitle();
@@ -308,10 +316,14 @@ describe('Change Enforcement Court - Company', { tags: COMPANY_TAGS }, () => {
     },
   );
 
-  it('AC3a. Company: shows validation errors when no enforcement court is selected', { tags: [] }, () => {
-    mountChangeEnforcementCourtForm(buildCompanyHeaderMock());
-    submitForm();
+  it(
+    'AC3a. Company: shows validation errors when no enforcement court is selected',
+    { tags: ['@JIRA-TEST-KEY:PO-4412'] },
+    () => {
+      mountChangeEnforcementCourtForm(buildCompanyHeaderMock());
+      submitForm();
 
-    assertErrors();
-  });
+      assertErrors();
+    },
+  );
 });

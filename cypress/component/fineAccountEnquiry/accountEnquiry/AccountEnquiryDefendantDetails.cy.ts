@@ -84,7 +84,7 @@ describe('Account Enquiry Defendant Details Tab', () => {
 
   it(
     'AC1a, AC1b, AC1d. Defendant details tab layout, debtor flag true',
-    { tags: [...buildTags('@JIRA-STORY:PO-784'), '@JIRA-EPIC:PO-976'] },
+    { tags: [...buildTags('@JIRA-STORY:PO-784'), '@JIRA-EPIC:PO-976', '@JIRA-TEST-KEY:PO-4182'] },
     () => {
       let headerMock = structuredClone(DEFENDANT_HEADER_MOCK);
       let defendantDetailsMock = structuredClone(OPAL_FINES_ACCOUNT_DEFENDANT_ACCOUNT_PARTY_MOCK);
@@ -139,7 +139,9 @@ describe('Account Enquiry Defendant Details Tab', () => {
 
   it(
     'AC1a, AC1c, AC1d. Defendant details tab layout, debtor flag false',
-    { tags: [...buildTags('@JIRA-STORY:PO-784', '@JIRA-STORY:PO-2365'), '@JIRA-EPIC:PO-976'] },
+    {
+      tags: [...buildTags('@JIRA-STORY:PO-784', '@JIRA-STORY:PO-2365'), '@JIRA-EPIC:PO-976', '@JIRA-TEST-KEY:PO-4183'],
+    },
     () => {
       let defendantDetailsMock = structuredClone(OPAL_FINES_ACCOUNT_DEFENDANT_ACCOUNT_PARTY_MOCK);
       defendantDetailsMock.defendant_account_party.party_details.organisation_flag = false;
@@ -170,7 +172,7 @@ describe('Account Enquiry Defendant Details Tab', () => {
 
   it(
     'AC1div. Should display em-dash for blank row',
-    { tags: [...buildTags('@JIRA-STORY:PO-784'), '@JIRA-EPIC:PO-976'] },
+    { tags: [...buildTags('@JIRA-STORY:PO-784'), '@JIRA-EPIC:PO-976', '@JIRA-TEST-KEY:PO-4184'] },
     () => {
       let defendantDetailsMock = structuredClone(OPAL_FINES_ACCOUNT_DEFENDANT_ACCOUNT_PARTY_MOCK);
       defendantDetailsMock.defendant_account_party.party_details.organisation_flag = false;
@@ -190,7 +192,7 @@ describe('Account Enquiry Defendant Details Tab', () => {
 
   it(
     'AC1bi. Should display language preferences sub-section when applicable',
-    { tags: [...buildTags('@JIRA-STORY:PO-784'), '@JIRA-EPIC:PO-976'] },
+    { tags: [...buildTags('@JIRA-STORY:PO-784'), '@JIRA-EPIC:PO-976', '@JIRA-TEST-KEY:PO-4185'] },
     () => {
       let defendantDetailsMock = structuredClone(OPAL_FINES_ACCOUNT_DEFENDANT_ACCOUNT_PARTY_MOCK);
       defendantDetailsMock.defendant_account_party.party_details.organisation_flag = false;
@@ -208,7 +210,7 @@ describe('Account Enquiry Defendant Details Tab', () => {
 
   it(
     'AC2. Account maintenance permission true, BU associated with account',
-    { tags: [...buildTags('@JIRA-STORY:PO-784'), '@JIRA-EPIC:PO-976'] },
+    { tags: [...buildTags('@JIRA-STORY:PO-784'), '@JIRA-EPIC:PO-976', '@JIRA-TEST-KEY:PO-4186'] },
     () => {
       let headerMock = structuredClone(DEFENDANT_HEADER_MOCK);
       let defendantDetailsMock = structuredClone(OPAL_FINES_ACCOUNT_DEFENDANT_ACCOUNT_PARTY_MOCK);
@@ -231,7 +233,7 @@ describe('Account Enquiry Defendant Details Tab', () => {
 
   it(
     'AC2a. Account maintenance permission true, BU not associated with account',
-    { tags: [...buildTags('@JIRA-STORY:PO-784'), '@JIRA-EPIC:PO-976'] },
+    { tags: [...buildTags('@JIRA-STORY:PO-784'), '@JIRA-EPIC:PO-976', '@JIRA-TEST-KEY:PO-4187'] },
     () => {
       let headerMock = structuredClone(DEFENDANT_HEADER_MOCK);
       let defendantDetailsMock = structuredClone(OPAL_FINES_ACCOUNT_DEFENDANT_ACCOUNT_PARTY_MOCK);
@@ -254,7 +256,7 @@ describe('Account Enquiry Defendant Details Tab', () => {
 
   it(
     'AC2b. Account maintenance permission false',
-    { tags: [...buildTags('@JIRA-STORY:PO-784'), '@JIRA-EPIC:PO-976'] },
+    { tags: [...buildTags('@JIRA-STORY:PO-784'), '@JIRA-EPIC:PO-976', '@JIRA-TEST-KEY:PO-4188'] },
     () => {
       let defendantDetailsMock = structuredClone(OPAL_FINES_ACCOUNT_DEFENDANT_ACCOUNT_PARTY_MOCK);
       defendantDetailsMock.defendant_account_party.party_details.organisation_flag = false;
@@ -271,7 +273,7 @@ describe('Account Enquiry Defendant Details Tab', () => {
 
   it(
     'Company - Defendant details tab layout',
-    { tags: [...buildTags('@JIRA-STORY:PO-790'), '@JIRA-EPIC:PO-976'] },
+    { tags: [...buildTags('@JIRA-STORY:PO-790'), '@JIRA-EPIC:PO-976', '@JIRA-TEST-KEY:PO-4189'] },
     () => {
       let headerMock = structuredClone(DEFENDANT_HEADER_MOCK);
       let defendantDetailsMock = structuredClone(OPAL_FINES_ACCOUNT_DEFENDANT_ACCOUNT_PARTY_MOCK);
@@ -312,7 +314,7 @@ describe('Account Enquiry Defendant Details Tab', () => {
 
   it(
     'AC1ciii. Company - Should display em-dash for blank row',
-    { tags: [...buildTags('@JIRA-STORY:PO-790'), '@JIRA-EPIC:PO-976'] },
+    { tags: [...buildTags('@JIRA-STORY:PO-790'), '@JIRA-EPIC:PO-976', '@JIRA-TEST-KEY:PO-4190'] },
     () => {
       let defendantDetailsMock = structuredClone(OPAL_FINES_ACCOUNT_DEFENDANT_ACCOUNT_PARTY_MOCK);
       defendantDetailsMock.defendant_account_party.party_details.organisation_flag = true;
@@ -331,7 +333,7 @@ describe('Account Enquiry Defendant Details Tab', () => {
 
   it(
     'AC1b. Company - Should display language preferences sub-section when applicable',
-    { tags: [...buildTags('@JIRA-STORY:PO-790'), '@JIRA-EPIC:PO-976'] },
+    { tags: [...buildTags('@JIRA-STORY:PO-790'), '@JIRA-EPIC:PO-976', '@JIRA-TEST-KEY:PO-4191'] },
     () => {
       let defendantDetailsMock = structuredClone(OPAL_FINES_ACCOUNT_DEFENDANT_ACCOUNT_PARTY_MOCK);
       defendantDetailsMock.defendant_account_party.party_details.organisation_flag = true;
@@ -349,7 +351,7 @@ describe('Account Enquiry Defendant Details Tab', () => {
 
   it(
     'AC2. Company - Account maintenance permission true, BU associated with account',
-    { tags: [...buildTags('@JIRA-STORY:PO-790'), '@JIRA-EPIC:PO-976'] },
+    { tags: [...buildTags('@JIRA-STORY:PO-790'), '@JIRA-EPIC:PO-976', '@JIRA-TEST-KEY:PO-4192'] },
     () => {
       let headerMock = structuredClone(DEFENDANT_HEADER_MOCK);
       let defendantDetailsMock = structuredClone(OPAL_FINES_ACCOUNT_DEFENDANT_ACCOUNT_PARTY_MOCK);
@@ -372,7 +374,7 @@ describe('Account Enquiry Defendant Details Tab', () => {
 
   it(
     'AC2a. Company - Account maintenance permission true, BU not associated with account',
-    { tags: [...buildTags('@JIRA-STORY:PO-790'), '@JIRA-EPIC:PO-976'] },
+    { tags: [...buildTags('@JIRA-STORY:PO-790'), '@JIRA-EPIC:PO-976', '@JIRA-TEST-KEY:PO-4193'] },
     () => {
       let headerMock = structuredClone(DEFENDANT_HEADER_MOCK);
       let defendantDetailsMock = structuredClone(OPAL_FINES_ACCOUNT_DEFENDANT_ACCOUNT_PARTY_MOCK);
@@ -395,7 +397,7 @@ describe('Account Enquiry Defendant Details Tab', () => {
 
   it(
     'AC2b. Company - Account maintenance permission false',
-    { tags: [...buildTags('@JIRA-STORY:PO-790'), '@JIRA-EPIC:PO-976'] },
+    { tags: [...buildTags('@JIRA-STORY:PO-790'), '@JIRA-EPIC:PO-976', '@JIRA-TEST-KEY:PO-4194'] },
     () => {
       let defendantDetailsMock = structuredClone(OPAL_FINES_ACCOUNT_DEFENDANT_ACCOUNT_PARTY_MOCK);
       defendantDetailsMock.defendant_account_party.party_details.organisation_flag = true;
@@ -412,7 +414,7 @@ describe('Account Enquiry Defendant Details Tab', () => {
 
   it(
     'AC1, AC1a, AC1b. Youth-only accounts show the Add parent or guardian details action',
-    { tags: [...buildTags('@JIRA-STORY:PO-1874'), '@JIRA-EPIC:PO-1875'] },
+    { tags: [...buildTags('@JIRA-STORY:PO-1874'), '@JIRA-EPIC:PO-1875', '@JIRA-TEST-KEY:PO-4195'] },
     () => {
       const defendantDetailsMock = structuredClone(OPAL_FINES_ACCOUNT_DEFENDANT_ACCOUNT_PARTY_MOCK);
       const { language_preferences } = defendantDetailsMock.defendant_account_party;
@@ -434,7 +436,7 @@ describe('Account Enquiry Defendant Details Tab', () => {
 
   it(
     'AC1. Youth-only accounts navigate to the add parent or guardian details screen',
-    { tags: [...buildTags('@JIRA-STORY:PO-1877'), '@JIRA-EPIC:PO-1875'] },
+    { tags: [...buildTags('@JIRA-STORY:PO-1877'), '@JIRA-EPIC:PO-1875', '@JIRA-TEST-KEY:PO-4196'] },
     () => {
       const headerMock = structuredClone(DEFENDANT_HEADER_YOUTH_MOCK);
       const defendantDetailsMock = structuredClone(OPAL_FINES_ACCOUNT_DEFENDANT_ACCOUNT_PARTY_MOCK);
@@ -460,7 +462,7 @@ describe('Account Enquiry Defendant Details Tab', () => {
 
   it(
     'AC2. Non youth-only accounts do not show the Add parent or guardian details action',
-    { tags: [...buildTags('@JIRA-STORY:PO-1874'), '@JIRA-EPIC:PO-1875'] },
+    { tags: [...buildTags('@JIRA-STORY:PO-1874'), '@JIRA-EPIC:PO-1875', '@JIRA-TEST-KEY:PO-4197'] },
     () => {
       const adultDetailsMock = structuredClone(OPAL_FINES_ACCOUNT_DEFENDANT_ACCOUNT_PARTY_MOCK);
       setLanguagePref(adultDetailsMock.defendant_account_party.language_preferences!.document_language_preference);
