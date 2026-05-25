@@ -36,7 +36,7 @@ describe('FinesMacSubmitConfirmation', () => {
 
   it(
     '(AC.1,AC.2)should render the component and have all elements',
-    { tags: [...buildTags('@JIRA-STORY:PO-660'), '@JIRA-EPIC:PO-973'] },
+    { tags: [...buildTags('@JIRA-STORY:PO-660'), '@JIRA-EPIC:PO-973', '@JIRA-TEST-KEY:PO-5248'] },
     () => {
       setupComponent();
 

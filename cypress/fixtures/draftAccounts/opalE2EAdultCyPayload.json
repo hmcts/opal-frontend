@@ -360,13 +360,5 @@
   },
   "account_type": "Fine",
   "account_status": "Submitted",
-  "version": 0,
-  "timeline_data": [
-    {
-      "username": "opal-test",
-      "status": "Submitted",
-      "status_date": "2025-05-21",
-      "reason_text": null
-    }
-  ]
+  "version": 0
 }

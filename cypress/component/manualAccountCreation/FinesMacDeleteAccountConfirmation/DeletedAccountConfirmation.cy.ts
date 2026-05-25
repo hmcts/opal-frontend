@@ -19,7 +19,6 @@ import { CheckAndValidateReviewLocators as DOM_ELEMENTS } from '../../../shared/
 import { FinesDraftStore } from 'src/app/flows/fines/fines-draft/stores/fines-draft.store';
 import { FINES_DRAFT_STATE } from 'src/app/flows/fines/fines-draft/constants/fines-draft-state.constant';
 import { FinesMacDeleteAccountConfirmationComponent } from 'src/app/flows/fines/fines-mac/fines-mac-delete-account-confirmation/fines-mac-delete-account-confirmation.component';
-import { getToday } from 'cypress/support/utils/dateUtils';
 import { GLOBAL_ERROR_STATE } from '@hmcts/opal-frontend-common/stores/global/constants';
 
 const MANUAL_ACCOUNT_CREATION_JIRA_LABEL = '@JIRA-LABEL:manual-account-creation';
@@ -139,7 +138,7 @@ describe('FinesMacDeleteAccountConfirmation - Checker Delete account', () => {
 
   it(
     'AC.1, AC.2 Reason for deletion screen created as per the design artefact',
-    { tags: [...buildTags('@JIRA-STORY:PO-597'), '@JIRA-EPIC:PO-2220'] },
+    { tags: [...buildTags('@JIRA-STORY:PO-597'), '@JIRA-EPIC:PO-2220', '@JIRA-TEST-KEY:PO-4963'] },
     () => {
       setupComponent(finesAccountPayload, finesAccountPayload, true);
 
@@ -153,7 +152,7 @@ describe('FinesMacDeleteAccountConfirmation - Checker Delete account', () => {
   );
   it(
     'AC.3ai,AC.3aii Yes - Delete button under the character count once a reason is entered',
-    { tags: [...buildTags('@JIRA-STORY:PO-597'), '@JIRA-EPIC:PO-2220'] },
+    { tags: [...buildTags('@JIRA-STORY:PO-597'), '@JIRA-EPIC:PO-2220', '@JIRA-TEST-KEY:PO-4964'] },
     () => {
       setupComponent(finesAccountPayload, finesAccountPayload, true);
       cy.get(DOM_ELEMENTS.confirmDeleteButton).should('exist').click();
@@ -170,7 +169,7 @@ describe('FinesMacDeleteAccountConfirmation - Checker Delete account', () => {
 
   it(
     'AC.3bii a request to update draft account with patch method with status of deleted',
-    { tags: [...buildTags('@JIRA-STORY:PO-597'), '@JIRA-EPIC:PO-2220'] },
+    { tags: [...buildTags('@JIRA-STORY:PO-597'), '@JIRA-EPIC:PO-2220', '@JIRA-TEST-KEY:PO-4965'] },
     () => {
       cy.intercept('PATCH', '**/opal-fines-service/draft-accounts/**', { statusCode: 200 }).as('patchDraftAccount');
       let payload = structuredClone(finesAccountPayload);
@@ -186,24 +185,22 @@ describe('FinesMacDeleteAccountConfirmation - Checker Delete account', () => {
         expect(request.method).to.equal('PATCH');
 
         expect(request.body).to.have.property('account_status', 'Deleted');
-        expect(request.body).to.have.property('timeline_data');
-
-        expect(request.body.timeline_data[0]).to.have.property('username', 'Timmy Test');
-        expect(request.body.timeline_data[0]).to.have.property('status', 'Submitted');
-        expect(request.body.timeline_data[0]).to.have.property('status_date', '2023-07-03');
-        expect(request.body.timeline_data[0]).to.have.property('reason_text', null);
-
-        expect(request.body.timeline_data[1]).to.have.property('username', 'Timmy Test');
-        expect(request.body.timeline_data[1]).to.have.property('status', 'Deleted');
-        expect(request.body.timeline_data[1]).to.have.property('status_date', getToday());
-        expect(request.body.timeline_data[1]).to.have.property('reason_text', 'test reason');
+        expect(request.body).to.have.property('reason_text', 'test reason');
+        expect(request.body).not.to.have.property('timeline_data');
       });
     },
   );
 
   it(
     'Valid character checks for delete account notes',
-    { tags: [...buildTags('@JIRA-DEFECT:PO-2801'), '@JIRA-EPIC:PO-2220', '@JIRA-LABEL:manual-account-creation'] },
+    {
+      tags: [
+        ...buildTags('@JIRA-DEFECT:PO-2801'),
+        '@JIRA-EPIC:PO-2220',
+        '@JIRA-LABEL:manual-account-creation',
+        '@JIRA-TEST-KEY:PO-4966',
+      ],
+    },
     () => {
       cy.intercept('PATCH', '**/opal-fines-service/draft-accounts/**', {
         statusCode: 200,
@@ -219,7 +216,14 @@ describe('FinesMacDeleteAccountConfirmation - Checker Delete account', () => {
   );
   it(
     'Invalid character - confirm updated error for delete account note',
-    { tags: [...buildTags('@JIRA-DEFECT:PO-2801'), '@JIRA-EPIC:PO-2220', '@JIRA-LABEL:manual-account-creation'] },
+    {
+      tags: [
+        ...buildTags('@JIRA-DEFECT:PO-2801'),
+        '@JIRA-EPIC:PO-2220',
+        '@JIRA-LABEL:manual-account-creation',
+        '@JIRA-TEST-KEY:PO-4967',
+      ],
+    },
     () => {
       setupComponent(finesAccountPayload, finesAccountPayload, true);
 

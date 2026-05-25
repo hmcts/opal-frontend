@@ -60,7 +60,7 @@ describe('FinesMacOffenceDetailsSearchOffencesComponent', () => {
 
   it(
     'AC.1a, AC.1b should render all elements on the page',
-    { tags: [...buildTags('@JIRA-STORY:PO-667'), '@JIRA-EPIC:PO-545'] },
+    { tags: [...buildTags('@JIRA-STORY:PO-667'), '@JIRA-EPIC:PO-545', '@JIRA-TEST-KEY:PO-5065'] },
     () => {
       setupComponent(null);
 
@@ -83,7 +83,7 @@ describe('FinesMacOffenceDetailsSearchOffencesComponent', () => {
   // This test verifying the maximum length of the fields
   it(
     'AC.2a, AC.2b, AC.2c Checking the validation failures when exceeding the maximum characters',
-    { tags: [...buildTags('@JIRA-STORY:PO-667'), '@JIRA-EPIC:PO-545'] },
+    { tags: [...buildTags('@JIRA-STORY:PO-667'), '@JIRA-EPIC:PO-545', '@JIRA-TEST-KEY:PO-5066'] },
     () => {
       const formSubmitSpy = Cypress.sinon.spy();
 
@@ -104,7 +104,9 @@ describe('FinesMacOffenceDetailsSearchOffencesComponent', () => {
   //The below code will check each string in the invalidInputs array and check if the error message is displayed
   it(
     'AC.2d Checking the validation failure when a special character is entered into the offence code field',
-    { tags: [...buildTags('@JIRA-STORY:PO-667', '@JIRA-STORY:PO-3967'), '@JIRA-EPIC:PO-545'] },
+    {
+      tags: [...buildTags('@JIRA-STORY:PO-667', '@JIRA-STORY:PO-3967'), '@JIRA-EPIC:PO-545', '@JIRA-TEST-KEY:PO-5067'],
+    },
     () => {
       const formSubmitSpy = Cypress.sinon.spy();
 

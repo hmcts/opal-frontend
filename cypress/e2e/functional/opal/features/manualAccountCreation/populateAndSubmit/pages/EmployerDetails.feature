@@ -10,6 +10,7 @@ Feature: Manual account creation - Employer Details
     And I start a fine manual account for business unit "West London" with defendant type "Adult or youth only" and originator type "New"
     And I view the "Employer details" task
 
+  @JIRA-TEST-KEY:PO-5588
   Scenario: (AC.7) Entered employer data persists in the session [@PO-272, @PO-280, @PO-368, @PO-434, @PO-435]
     When I complete manual employer details:
       | Employer name      | Test Corp            |
@@ -52,6 +53,7 @@ Feature: Manual account creation - Employer Details
       | Address line 5     |  |
       | Postcode           |  |
 
+  @JIRA-TEST-KEY:PO-5589
   Scenario: (AC.8) Unsaved employer data is cleared when user confirms cancel [@PO-272, @PO-280, @PO-368, @PO-434, @PO-435]
     When I complete manual employer details:
       | Employer name      | Test Corp |
@@ -65,6 +67,7 @@ Feature: Manual account creation - Employer Details
       | Employee reference |  |
       | Employer email     |  |
 
+  @JIRA-TEST-KEY:PO-5590
   Scenario: (AC.9, AC.10) Confirming cancel restores last saved employer details [@PO-272, @PO-280, @PO-368, @PO-434, @PO-435]
     When I complete manual employer details:
       | Employer name      | Test Corp |
@@ -83,6 +86,7 @@ Feature: Manual account creation - Employer Details
       | Employer name | Test Corp |
 
 
+  @JIRA-TEST-KEY:PO-5591
   Scenario: (AC.9, AC.10) Unsaved employer details are retained when cancel is dismissed [@PO-272, @PO-280, @PO-368, @PO-434, @PO-435]
     When I complete manual employer details:
       | Employer name | Edited Corp |
@@ -91,10 +95,12 @@ Feature: Manual account creation - Employer Details
       | Employer name | Edited Corp |
 
 
+  @JIRA-TEST-KEY:PO-5592
   Scenario: Employer Details - Axe Core
     Then I check the page for accessibility
 
 
+  @JIRA-TEST-KEY:PO-5593
   Scenario: (AC.1) Grey navigation links routes correctly [@PO-272, @PO-434]
     When I complete manual employer details:
       | Employer name      | Test Corp |

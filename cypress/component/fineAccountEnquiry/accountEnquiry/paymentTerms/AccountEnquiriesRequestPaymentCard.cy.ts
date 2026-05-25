@@ -41,7 +41,7 @@ describe('Account Enquiry Payment Terms - Payment card', () => {
 
   it(
     'Last enforcement action prevents the adding of a payment card',
-    { tags: [...buildTags('@JIRA-STORY:PO-1802'), '@JIRA-EPIC:PO-977'] },
+    { tags: [...buildTags('@JIRA-STORY:PO-1802'), '@JIRA-EPIC:PO-977', '@JIRA-TEST-KEY:PO-4385'] },
     () => {
       let headerMock = structuredClone(createDefendantHeaderMockWithName('John', 'Smith'));
       headerMock.debtor_type = 'individual';
@@ -68,7 +68,7 @@ describe('Account Enquiry Payment Terms - Payment card', () => {
 
   it(
     'No permission in BU prevents the adding of a payment card',
-    { tags: [...buildTags('@JIRA-STORY:PO-1802'), '@JIRA-EPIC:PO-977'] },
+    { tags: [...buildTags('@JIRA-STORY:PO-1802'), '@JIRA-EPIC:PO-977', '@JIRA-TEST-KEY:PO-4386'] },
     () => {
       let headerMock = structuredClone(createDefendantHeaderMockWithName('John', 'Smith'));
       headerMock.debtor_type = 'individual';
@@ -95,7 +95,7 @@ describe('Account Enquiry Payment Terms - Payment card', () => {
 
   it(
     'AC1a: User can request a payment card and sees the confirmation screen',
-    { tags: [...buildTags('@JIRA-STORY:PO-1700'), '@JIRA-EPIC:PO-977'] },
+    { tags: [...buildTags('@JIRA-STORY:PO-1700'), '@JIRA-EPIC:PO-977', '@JIRA-TEST-KEY:PO-4387'] },
     () => {
       let headerMock = structuredClone(createDefendantHeaderMockWithName('Robert', 'Thomson'));
       headerMock.debtor_type = 'individual';
@@ -123,7 +123,7 @@ describe('Account Enquiry Payment Terms - Payment card', () => {
 
   it(
     'AC1bi: Cancel returns to Payment terms with no changes made',
-    { tags: [...buildTags('@JIRA-STORY:PO-1700'), '@JIRA-EPIC:PO-977'] },
+    { tags: [...buildTags('@JIRA-STORY:PO-1700'), '@JIRA-EPIC:PO-977', '@JIRA-TEST-KEY:PO-4388'] },
     () => {
       let headerMock = structuredClone(createDefendantHeaderMockWithName('Robert', 'Thomson'));
       headerMock.debtor_type = 'individual';

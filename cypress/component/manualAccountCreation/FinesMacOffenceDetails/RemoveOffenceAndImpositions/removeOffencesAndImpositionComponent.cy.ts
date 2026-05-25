@@ -88,7 +88,11 @@ describe('RemoveOffenceAndImpositionsComponent', () => {
   it(
     '(AC.1) should render component',
     {
-      tags: [...buildTags('@JIRA-STORY:PO-416', '@JIRA-STORY:PO-682', '@JIRA-STORY:PO-680'), '@JIRA-EPIC:PO-545'],
+      tags: [
+        ...buildTags('@JIRA-STORY:PO-416', '@JIRA-STORY:PO-682', '@JIRA-STORY:PO-680'),
+        '@JIRA-EPIC:PO-545',
+        '@JIRA-TEST-KEY:PO-5051',
+      ],
     },
     () => {
       setupComponent();
@@ -98,7 +102,11 @@ describe('RemoveOffenceAndImpositionsComponent', () => {
   it(
     '(AC.1) should load all elements on the page',
     {
-      tags: [...buildTags('@JIRA-STORY:PO-416', '@JIRA-STORY:PO-682', '@JIRA-STORY:PO-680'), '@JIRA-EPIC:PO-545'],
+      tags: [
+        ...buildTags('@JIRA-STORY:PO-416', '@JIRA-STORY:PO-682', '@JIRA-STORY:PO-680'),
+        '@JIRA-EPIC:PO-545',
+        '@JIRA-TEST-KEY:PO-5052',
+      ],
     },
     () => {
       setupComponent();
@@ -124,7 +132,11 @@ describe('RemoveOffenceAndImpositionsComponent', () => {
   it(
     '(AC.2, AC.3) should have appropriate text for each element',
     {
-      tags: [...buildTags('@JIRA-STORY:PO-416', '@JIRA-STORY:PO-682', '@JIRA-STORY:PO-680'), '@JIRA-EPIC:PO-545'],
+      tags: [
+        ...buildTags('@JIRA-STORY:PO-416', '@JIRA-STORY:PO-682', '@JIRA-STORY:PO-680'),
+        '@JIRA-EPIC:PO-545',
+        '@JIRA-TEST-KEY:PO-5053',
+      ],
     },
     () => {
       setupComponent();
@@ -157,8 +169,12 @@ describe('RemoveOffenceAndImpositionsComponent', () => {
     },
   );
 
-  it('should have only one h1 element', { tags: [...buildTags('@JIRA-STORY:PO-2717'), '@JIRA-EPIC:PO-2807'] }, () => {
-    setupComponent();
-    cy.get('h1').should('have.length', 1);
-  });
+  it(
+    'should have only one h1 element',
+    { tags: [...buildTags('@JIRA-STORY:PO-2717'), '@JIRA-EPIC:PO-2807', '@JIRA-TEST-KEY:PO-5054'] },
+    () => {
+      setupComponent();
+      cy.get('h1').should('have.length', 1);
+    },
+  );
 });

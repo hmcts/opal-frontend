@@ -160,6 +160,11 @@ Then('I should see the add parent or guardian details action', () => {
   flow().assertAddParentGuardianActionVisible();
 });
 
+Then('I should see the remove parent or guardian details action', () => {
+  log('assert', 'Remove parent or guardian details action is visible');
+  flow().assertRemoveParentGuardianActionVisible();
+});
+
 Then('I should not see the convert to company account action', () => {
   log('assert', 'Convert to company account action is absent');
   flow().assertConvertToCompanyActionNotPresent();
@@ -217,6 +222,11 @@ When('I start converting the account to an individual account', () => {
 When('I start adding parent or guardian details', () => {
   log('step', 'Start adding parent or guardian details');
   flow().openAddParentGuardianDetails();
+});
+
+When('I start removing parent or guardian details', () => {
+  log('step', 'Start removing parent or guardian details');
+  flow().openRemoveParentGuardianDetails();
 });
 
 Then(
@@ -321,6 +331,12 @@ When('I go to the Parent or guardian details section and the header is {string}'
 Then('I should be on the add parent or guardian details page', () => {
   log('assert', 'Add parent or guardian details page is visible');
   flow().assertOnAddParentGuardianDetailsPage();
+});
+
+Then('I should be on the remove parent or guardian details page for {string}', (expected: string) => {
+  const expectedWithUniq = applyUniqPlaceholder(expected);
+  log('assert', 'Remove parent or guardian details page is visible', { expected: expectedWithUniq });
+  flow().assertOnRemoveParentGuardianPage(expectedWithUniq);
 });
 
 /**
@@ -836,7 +852,7 @@ When('I enter {string} into the parent or guardian last name field', (value: str
 When('I enter {string} into the parent or guardian address line 1 field', (value: string) => {
   const valueWithUniq = applyUniqPlaceholder(value);
   log('step', 'Enter parent or guardian address line 1', { value: valueWithUniq });
-  flow().enterParentGuardianAddressLine1(valueWithUniq);
+  flow().enterAddParentGuardianAddressLine1(valueWithUniq);
 });
 
 /**
@@ -925,6 +941,16 @@ When('I attempt to cancel adding parent or guardian details and choose OK on the
   flow().cancelAddParentGuardianAndLeave();
 });
 
+When('I cancel removing parent or guardian details', () => {
+  log('step', 'Cancel removing parent or guardian details');
+  flow().cancelRemoveParentGuardianDetails();
+});
+
+When('I confirm removing parent or guardian details', () => {
+  log('step', 'Confirm removing parent or guardian details');
+  flow().confirmRemoveParentGuardianDetails();
+});
+
 When('I start changing the non-paying parent or guardian details', () => {
   log('step', 'Start changing non-paying parent or guardian details');
   flow().openNonPayingParentGuardianChangeForm();
@@ -1003,6 +1029,11 @@ Then('I should remain on the company edit page', () => {
 Then('I should see the company name field contains {string}', (expected: string) => {
   log('assert', 'Company name field contains', { expected });
   editCompanyDetails().verifyFieldValue(expected);
+});
+
+Then('I should see the account details success message {string}', (expected: string) => {
+  log('assert', 'Account details success message is visible', { expected });
+  flow().assertAccountDetailsSuccessBanner(expected);
 });
 
 /**
@@ -1146,6 +1177,11 @@ Then('I verify no amendments were created via API for company details', () => {
 Then('I verify no amendments were created via API for parent or guardian details', () => {
   log('assert', 'Verify no amendments were created via API for parent or guardian details');
   flow().verifyNoParentGuardianAmendments();
+});
+
+Then('I verify the parent or guardian has been removed via API', () => {
+  log('assert', 'Verify parent or guardian removal via API');
+  flow().verifyParentGuardianRemovedViaApi();
 });
 
 When('I attempt to save the parent or guardian add details', () => {
