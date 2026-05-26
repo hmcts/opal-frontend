@@ -114,7 +114,11 @@ export function configureSecurityHeaders(server: Express): void {
   new Helmet(developmentMode).enableFor(server, config.get('features.helmet.enabled'));
 }
 
-export function configureMonitoring(): TransferServerState {
+type OpalTransferServerState = TransferServerState & {
+  userStateDomain: string;
+};
+
+export function configureMonitoring(): OpalTransferServerState {
   const launchDarkly = new LaunchDarkly().enableFor(
     config.get('features.launch-darkly.enabled'),
     config.get('features.launch-darkly.stream'),
@@ -133,5 +137,6 @@ export function configureMonitoring(): TransferServerState {
     ssoEnabled: config.get('features.sso.enabled'),
     appInsightsConfig: appInsights,
     userStateCacheExpirationMilliseconds: config.get('expiry.userStateExpiryInMilliseconds'),
+    userStateDomain: config.get('user-state.domain'),
   };
 }

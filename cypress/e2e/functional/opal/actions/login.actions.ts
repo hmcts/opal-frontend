@@ -9,8 +9,51 @@
 import { LoginLocators as L } from '../../../../shared/selectors/login.locators';
 import { createScopedLogger } from '../../../../support/utils/log.helper';
 import { isLocalOrPrEnvironment } from './auth-environment.actions';
+import { requestLoggedInUserState } from './user-state.actions';
 
 const log = createScopedLogger('LoginActions');
+const AUTHENTICATED_ENDPOINT = '/sso/authenticated';
+const SEARCH_LANDING_PATH = '/fines/dashboard/search';
+const SEARCH_BUSINESS_UNITS_ENDPOINT = '/opal-fines-service/business-units';
+
+/**
+ * Requests an endpoint expected to return 200 for a valid authenticated session.
+ *
+ * @param endpoint - Endpoint path to validate.
+ * @returns Cypress response chainable.
+ */
+function requestEndpointOk(endpoint: string): Cypress.Chainable<Cypress.Response<unknown>> {
+  return cy
+    .request({
+      method: 'GET',
+      url: endpoint,
+      retryOnStatusCodeFailure: true,
+    })
+    .then((response) => {
+      expect(response.status, `GET ${endpoint}`).to.eq(200);
+      return response;
+    });
+}
+
+/**
+ * Validates the frontend authenticated endpoint used by the common UI auth guard.
+ *
+ * @returns Cypress response chainable.
+ */
+function assertSessionAuthenticated(): Cypress.Chainable<Cypress.Response<unknown>> {
+  log('assert', 'Validating restored session via authenticated endpoint');
+  return requestEndpointOk(AUTHENTICATED_ENDPOINT);
+}
+
+/**
+ * Validates the API dependency required by the Search landing route resolver.
+ *
+ * @returns Cypress response chainable.
+ */
+function assertSearchLandingDependenciesAvailable(): Cypress.Chainable<Cypress.Response<unknown>> {
+  log('assert', 'Validating Search landing dependencies');
+  return requestEndpointOk(SEARCH_BUSINESS_UNITS_ENDPOINT);
+}
 
 /**
  * Performs the full login flow for the given user.
@@ -71,18 +114,22 @@ export function performLogin(email: string): void {
       validate() {
         log('assert', 'Validating restored session via signed-in user API', { email });
 
-        captureSignedInUserEmail().then((signedInEmail) => {
-          expect(signedInEmail.trim().toLowerCase()).to.eq(email.trim().toLowerCase());
-        });
-
-        log('done', 'Session validation succeeded', { email });
+        assertSessionAuthenticated()
+          .then(() => captureSignedInUserEmail())
+          .then((signedInEmail) => {
+            expect(signedInEmail.trim().toLowerCase()).to.eq(email.trim().toLowerCase());
+          })
+          .then(() => assertSearchLandingDependenciesAvailable())
+          .then(() => {
+            log('done', 'Session validation succeeded', { email });
+          });
       },
     },
   );
 
-  // Ensure app is accessible after session restoration
-  log('navigate', 'Navigating to /sign-in after session setup');
-  cy.visit('/sign-in');
+  // Land directly on the route asserted by the shared authenticated setup.
+  log('navigate', `Navigating to ${SEARCH_LANDING_PATH} after session setup`);
+  cy.visit(SEARCH_LANDING_PATH);
 }
 
 /**
@@ -101,14 +148,9 @@ export function assertSignOutLinkVisible(): void {
  */
 export function captureSignedInUserEmail(): Cypress.Chainable<string> {
   log('action', 'Capturing signed-in user email from global header');
-  return cy
-    .request({
-      method: 'GET',
-      url: '/opal-user-service/users/0/state',
-    })
-    .as('userState')
-    .then(({ body }) => {
-      const email = body.username as string;
-      return email;
-    });
+  return requestLoggedInUserState().then((body) => {
+    const username = body['username'];
+    expect(username, 'signed-in username').to.be.a('string').and.not.be.empty;
+    return username as string;
+  });
 }
