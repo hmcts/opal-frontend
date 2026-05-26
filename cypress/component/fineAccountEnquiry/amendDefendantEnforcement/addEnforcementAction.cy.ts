@@ -498,5 +498,124 @@ describe(
         cy.get(ENF_ACTION_SELECT.accountInfo).should('contain.text', '177A - Sainsco');
       },
     );
+
+    statusScenarios.forEach(({ code, reason }) => {
+      it(
+        `Negative test: status ${code} shows correct error screen for company`,
+        { tags: ['@JIRA-STORY:PO-1835'] },
+        () => {
+          let headerMock = structuredClone(DEFENDANT_HEADER_ORG_MOCK);
+
+          headerMock.debtor_type = 'company';
+
+          headerMock.account_status_reference.account_status_code = code;
+
+          const enforcementMock = structuredClone(OPAL_FINES_ACCOUNT_DEFENDANT_DETAILS_ENFORCEMENT_TAB_REF_DATA_MOCK);
+
+          enforcementMock.last_enforcement_action!.enforcement_action.result_id = 'NOENF';
+
+          enforcementMock.next_enforcement_action_data = null;
+
+          const accountId = headerMock.defendant_account_party_id;
+
+          interceptAuthenticatedUser();
+          interceptUserState(USER_STATE_MOCK_PERMISSION_BU77);
+          interceptDefendantHeader(accountId, headerMock, '123');
+          interceptEnforcementStatus(accountId, enforcementMock, '123');
+          interceptNextPermittedEnforcementActionsEmpty();
+
+          setupAccountEnquiryComponent({
+            ...COMPONENT_PROPERTIES,
+            accountId,
+          });
+
+          cy.get(ENF.addEnforcementActionLink).click();
+
+          cy.contains('You cannot add an enforcement action to an account that has a status of').should('be.visible');
+
+          cy.contains(reason).should('be.visible');
+
+          cy.contains('177A - Sainsco').should('be.visible');
+
+          cy.contains('Go back').click();
+        },
+      );
+    });
+
+    it('Negative test: NOENF shows remove hold error screen for company', { tags: ['@JIRA-STORY:PO-1835'] }, () => {
+      let headerMock = structuredClone(DEFENDANT_HEADER_ORG_MOCK);
+
+      headerMock.debtor_type = 'company';
+
+      const enforcementMock = structuredClone(OPAL_FINES_ACCOUNT_DEFENDANT_DETAILS_ENFORCEMENT_TAB_REF_DATA_MOCK);
+
+      enforcementMock.last_enforcement_action!.enforcement_action.result_id = 'NOENF';
+
+      enforcementMock.next_enforcement_action_data = null;
+
+      const accountId = headerMock.defendant_account_party_id;
+
+      interceptAuthenticatedUser();
+      interceptUserState(USER_STATE_MOCK_PERMISSION_BU77);
+      interceptDefendantHeader(accountId, headerMock, '123');
+      interceptEnforcementStatus(accountId, enforcementMock, '123');
+      interceptNextPermittedEnforcementActionsEmpty();
+
+      setupAccountEnquiryComponent({
+        ...COMPONENT_PROPERTIES,
+        accountId,
+      });
+
+      cy.get(ENF.addEnforcementActionLink).click();
+
+      cy.contains('You must first remove the enforcement hold on the account.').should('be.visible');
+
+      cy.contains('177A - Sainsco').should('be.visible');
+
+      cy.contains('Go back').click();
+    });
+
+    it(
+      'Negative test: No next permitted actions shows error screen for company',
+      { tags: ['@JIRA-STORY:PO-1835'] },
+      () => {
+        let headerMock = structuredClone(DEFENDANT_HEADER_ORG_MOCK);
+
+        headerMock.debtor_type = 'company';
+
+        const enforcementMock = structuredClone(OPAL_FINES_ACCOUNT_DEFENDANT_DETAILS_ENFORCEMENT_TAB_REF_DATA_MOCK);
+
+        enforcementMock.last_enforcement_action!.enforcement_action.result_id = 'ENFHOLD';
+
+        enforcementMock.last_enforcement_action!.enforcement_action.result_title = 'Enforcement on hold';
+
+        enforcementMock.next_enforcement_action_data = null;
+
+        const accountId = headerMock.defendant_account_party_id;
+
+        interceptAuthenticatedUser();
+        interceptUserState(USER_STATE_MOCK_PERMISSION_BU77);
+        interceptDefendantHeader(accountId, headerMock, '123');
+        interceptEnforcementStatus(accountId, enforcementMock, '123');
+        interceptNextPermittedEnforcementActionsEmpty();
+
+        setupAccountEnquiryComponent({
+          ...COMPONENT_PROPERTIES,
+          accountId,
+        });
+
+        cy.get(ENF.addEnforcementActionLink).click();
+
+        cy.contains('You cannot add an enforcement action to an account that has a last enforcement action of:').should(
+          'be.visible',
+        );
+
+        cy.contains('Enforcement on hold (ENFHOLD)').should('be.visible');
+
+        cy.contains('177A - Sainsco').should('be.visible');
+
+        cy.contains('Go back').click();
+      },
+    );
   },
 );
