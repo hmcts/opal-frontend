@@ -292,7 +292,7 @@ Feature: Account Enquiries – View Account Details
       And I should see the parent or guardian add error summary contains "Enter parent or guardian last name"
       And I should see the parent or guardian add error summary contains "Enter address line 1, typically the building and street"
 
-    @JIRA-STORY:PO-1878 @JIRA-EPIC:PO-1875
+    @JIRA-STORY:PO-1878 @JIRA-EPIC:PO-1875 @JIRA-TEST-KEY:PO-6355
     Scenario: Cancelling and then confirming removal of a non-paying parent or guardian returns to the correct tabs
       When I start adding parent or guardian details
       Then I should be on the add parent or guardian details page
@@ -390,7 +390,7 @@ Feature: Account Enquiries – View Account Details
       Then I should return to the account details page Parent or guardian tab
       And I should see the parent or guardian name contains "Pat GUARDIANAMEND{uniqUpper}"
 
-    @JIRA-STORY:PO-3915 @JIRA-EPIC:PO-1875
+    @JIRA-STORY:PO-3915 @JIRA-EPIC:PO-1875 @JIRA-TEST-KEY:PO-6356
     Scenario: Non-paying parent or guardian change can be cancelled, discarded, and then saved successfully
       # AC1, AC1a, AC1b – Change opens the reduced parent or guardian details screen with the information banner
       # AC2 – Cancel with no changes returns to the Defendant tab
@@ -417,7 +417,7 @@ Feature: Account Enquiries – View Account Details
       And I should see the parent or guardian name contains "Updated GUARDIANAMEND{uniqUpper}"
       And I verify parent or guardian amendments via API for guardian name "Updated"
 
-    @JIRA-STORY:PO-3915 @JIRA-EPIC:PO-1875
+    @JIRA-STORY:PO-3915 @JIRA-EPIC:PO-1875 @JIRA-TEST-KEY:PO-6357
     Scenario: Non-paying parent or guardian change warning keeps entered data and validation errors when I stay on the form
       # AC2a, AC2aii – Cancel with entered data warns and staying keeps the user on the page
       # AC2a, AC2aiii – Existing validation errors remain visible when the warning is dismissed
