@@ -409,6 +409,7 @@ export const routing: Routes = [
             (c) => c.FinesAccMinorCreditorAddAmendConvertComponent,
           ),
         canActivate: [authGuard, finesAccStateGuard, routePermissionsGuard],
+        canDeactivate: [canDeactivateGuard],
         data: {
           routePermissionId: [accRootPermissionIds['account-maintenance']],
           title: FINES_ACC_MINOR_CREDITOR_ROUTING_TITLES.children.amend,
