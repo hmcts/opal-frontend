@@ -19,7 +19,6 @@ import { MacReviewAccountLocators as DOM_ELEMENTS } from '../../../shared/select
 import { FinesDraftStore } from 'src/app/flows/fines/fines-draft/stores/fines-draft.store';
 import { FINES_DRAFT_STATE } from 'src/app/flows/fines/fines-draft/constants/fines-draft-state.constant';
 import { DRAFT_SESSION_USER_STATE_MOCK } from '../../../../cypress/component/manualAccountCreation/FinesMacReviewAccount/mocks/check-and-validate-session-mock';
-import { getToday } from 'cypress/support/utils/dateUtils';
 import { interceptOffences } from 'cypress/component/CommonIntercepts/CommonIntercepts';
 import { FINES_ACCOUNT_TYPES } from 'src/app/flows/fines/constants/fines-account-types.constant';
 import { GLOBAL_ERROR_STATE } from '@hmcts/opal-frontend-common/stores/global/constants';
@@ -145,7 +144,7 @@ describe('ReviewAccountRejectedApproveComponent', () => {
 
   it(
     '(AC.4) should render summary tables under review account for AY (ReviewAccountRejectedApproveComponent)',
-    { tags: [...buildTags('@JIRA-STORY:PO-594'), '@JIRA-EPIC:PO-2220'] },
+    { tags: [...buildTags('@JIRA-STORY:PO-594'), '@JIRA-EPIC:PO-2220', '@JIRA-TEST-KEY:PO-5173'] },
     () => {
       setupComponent(finesAccountPayload, finesAccountPayload, true);
 
@@ -269,7 +268,7 @@ describe('ReviewAccountRejectedApproveComponent', () => {
 
   it(
     '(AC.5) should render all elements on the screen for AYPG (ReviewAccountRejectedApproveComponent)',
-    { tags: [...buildTags('@JIRA-STORY:PO-594'), '@JIRA-EPIC:PO-2220'] },
+    { tags: [...buildTags('@JIRA-STORY:PO-594'), '@JIRA-EPIC:PO-2220', '@JIRA-TEST-KEY:PO-5174'] },
     () => {
       setupComponent(finesAccountPayload, finesAccountPayload);
       finesMacState.accountDetails.formData.fm_create_account_defendant_type = 'pgToPay';
@@ -420,7 +419,7 @@ describe('ReviewAccountRejectedApproveComponent', () => {
 
   it(
     '(AC.6) should render all elements on the screen for company defendant type (ReviewAccountRejectedApproveComponent)',
-    { tags: [...buildTags('@JIRA-STORY:PO-594'), '@JIRA-EPIC:PO-2220'] },
+    { tags: [...buildTags('@JIRA-STORY:PO-594'), '@JIRA-EPIC:PO-2220', '@JIRA-TEST-KEY:PO-5175'] },
     () => {
       setupComponent(finesAccountPayload, finesAccountPayload);
       finesMacState.accountDetails.formData.fm_create_account_defendant_type = 'company';
@@ -502,7 +501,7 @@ describe('ReviewAccountRejectedApproveComponent', () => {
 
   it(
     '(AC.7) should show dashed line if Data is empty for non required details for all defendant types (ReviewAccountRejectedApproveComponent)',
-    { tags: [...buildTags('@JIRA-STORY:PO-594'), '@JIRA-EPIC:PO-2220'] },
+    { tags: [...buildTags('@JIRA-STORY:PO-594'), '@JIRA-EPIC:PO-2220', '@JIRA-TEST-KEY:PO-5176'] },
     () => {
       setupComponent(finesAccountPayload, finesAccountPayload);
       const defendantTypes = ['adultOrYouthOnly', 'pgToPay', 'company'];
@@ -539,7 +538,7 @@ describe('ReviewAccountRejectedApproveComponent', () => {
   );
   it(
     'AC.2 The Review Account screen will be created as per the design artefact (ReviewAccountRejectedApproveComponent)',
-    { tags: [...buildTags('@JIRA-STORY:PO-594'), '@JIRA-EPIC:PO-2220'] },
+    { tags: [...buildTags('@JIRA-STORY:PO-594'), '@JIRA-EPIC:PO-2220', '@JIRA-TEST-KEY:PO-5177'] },
     () => {
       setupComponent(finesAccountPayload, finesAccountPayload, false, true);
 
@@ -552,7 +551,7 @@ describe('ReviewAccountRejectedApproveComponent', () => {
 
   it(
     'AC.8, Decision table will be shown as per the design artefact (ReviewAccountRejectedApproveComponent)',
-    { tags: [...buildTags('@JIRA-STORY:PO-594'), '@JIRA-EPIC:PO-2220'] },
+    { tags: [...buildTags('@JIRA-STORY:PO-594'), '@JIRA-EPIC:PO-2220', '@JIRA-TEST-KEY:PO-5178'] },
     () => {
       setupComponent(finesAccountPayload, finesAccountPayload, false, true);
       cy.get(DOM_ELEMENTS.approveRadioButton).should('exist');
@@ -564,7 +563,7 @@ describe('ReviewAccountRejectedApproveComponent', () => {
   );
   it(
     'AC.8a user does not select any radio button and selects the Continue button (ReviewAccountRejectedApproveComponent)',
-    { tags: [...buildTags('@JIRA-STORY:PO-594'), '@JIRA-EPIC:PO-2220'] },
+    { tags: [...buildTags('@JIRA-STORY:PO-594'), '@JIRA-EPIC:PO-2220', '@JIRA-TEST-KEY:PO-5179'] },
     () => {
       setupComponent(finesAccountPayload, finesAccountPayload, false, true);
       cy.get(DOM_ELEMENTS.continue).should('exist').click();
@@ -574,7 +573,7 @@ describe('ReviewAccountRejectedApproveComponent', () => {
   );
   it(
     'AC.8b,AC.8c,AC.8ci user does not select any radio button and selects the Continue button (ReviewAccountRejectedApproveComponent)',
-    { tags: [...buildTags('@JIRA-STORY:PO-594'), '@JIRA-EPIC:PO-2220'] },
+    { tags: [...buildTags('@JIRA-STORY:PO-594'), '@JIRA-EPIC:PO-2220', '@JIRA-TEST-KEY:PO-5180'] },
     () => {
       setupComponent(finesAccountPayload, finesAccountPayload, false, true);
       cy.get(DOM_ELEMENTS.rejectRadioButton).should('exist').click();
@@ -596,7 +595,7 @@ describe('ReviewAccountRejectedApproveComponent', () => {
   //PO-969
   it(
     'AC.1b update draft account with patch method',
-    { tags: [...buildTags('@JIRA-STORY:PO-969'), '@JIRA-EPIC:PO-2220'] },
+    { tags: [...buildTags('@JIRA-STORY:PO-969'), '@JIRA-EPIC:PO-2220', '@JIRA-TEST-KEY:PO-5181'] },
     () => {
       cy.intercept('PATCH', '**/opal-fines-service/draft-accounts/**', { statusCode: 200 }).as('patchDraftAccount');
       let payload = structuredClone(finesAccountPayload);
@@ -613,20 +612,11 @@ describe('ReviewAccountRejectedApproveComponent', () => {
         expect(request.method).to.equal('PATCH');
 
         expect(request.body).to.have.property('account_status', 'Rejected');
-        expect(request.body).to.have.property('timeline_data');
-
-        expect(request.body.timeline_data[0]).to.have.property('username', 'Timmy Test');
-        expect(request.body.timeline_data[0]).to.have.property('status', 'Submitted');
-        expect(request.body.timeline_data[0]).to.have.property('status_date', '2023-07-03');
-        expect(request.body.timeline_data[0]).to.have.property('reason_text', null);
-
-        expect(request.body.timeline_data[1]).to.have.property('username', 'Timmy Test');
-        expect(request.body.timeline_data[1]).to.have.property('status', 'Rejected');
-        expect(request.body.timeline_data[1]).to.have.property('status_date', getToday());
-        expect(request.body.timeline_data[1]).to.have.property(
+        expect(request.body).to.have.property(
           'reason_text',
           'I have rejected this account because the surname is incorrect',
         );
+        expect(request.body).not.to.have.property('timeline_data');
       });
     },
   );
@@ -634,7 +624,7 @@ describe('ReviewAccountRejectedApproveComponent', () => {
   //PO-968
   it(
     'AC.1b approve draft account with patch method',
-    { tags: [...buildTags('@JIRA-STORY:PO-968'), '@JIRA-EPIC:PO-2220'] },
+    { tags: [...buildTags('@JIRA-STORY:PO-968'), '@JIRA-EPIC:PO-2220', '@JIRA-TEST-KEY:PO-5182'] },
     () => {
       cy.intercept('PATCH', '**/opal-fines-service/draft-accounts/**', { statusCode: 200 }).as('patchDraftAccount');
       let payload = structuredClone(finesAccountPayload);
@@ -650,17 +640,8 @@ describe('ReviewAccountRejectedApproveComponent', () => {
         expect(request.method).to.equal('PATCH');
 
         expect(request.body).to.have.property('account_status', 'Publishing Pending');
-        expect(request.body).to.have.property('timeline_data');
-
-        expect(request.body.timeline_data[0]).to.have.property('username', 'Timmy Test');
-        expect(request.body.timeline_data[0]).to.have.property('status', 'Submitted');
-        expect(request.body.timeline_data[0]).to.have.property('status_date', '2023-07-03');
-        expect(request.body.timeline_data[0]).to.have.property('reason_text', null);
-
-        expect(request.body.timeline_data[1]).to.have.property('username', 'Timmy Test');
-        expect(request.body.timeline_data[1]).to.have.property('status', 'Publishing Pending');
-        expect(request.body.timeline_data[1]).to.have.property('status_date', getToday());
-        expect(request.body.timeline_data[1]).not.to.have.property('reason_text');
+        expect(request.body).to.have.property('reason_text', null);
+        expect(request.body).not.to.have.property('timeline_data');
       });
     },
   );

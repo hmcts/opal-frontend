@@ -20,6 +20,7 @@ import { EditCompanyDetailsActions } from '../actions/account-details/edit.compa
 import { EditParentGuardianDetailsActions } from '../actions/account-details/edit.parent-guardian-details.actions';
 import { AccountConvertActions } from '../actions/account-details/convert.account.actions';
 import { AccountDetailsEnforcementActions } from '../actions/account-details/details.enforcement.actions';
+import { RemoveParentGuardianActions } from '../actions/account-details/remove.parent-guardian.actions';
 import { createScopedLogger, createScopedSyncLogger } from '../../../../support/utils/log.helper';
 import { EtagUpdate } from '../actions/draft-account/draft-account.api';
 
@@ -80,6 +81,7 @@ export class AccountEnquiryFlow {
   private readonly paymentTerms = new AccountDetailsPaymentTermsActions();
   private readonly accountConvert = new AccountConvertActions();
   private readonly enforcement = new AccountDetailsEnforcementActions();
+  private readonly removeParentGuardian = new RemoveParentGuardianActions();
 
   /**
    * Ensures the test is on the Individuals Account Search page.
@@ -333,6 +335,16 @@ export class AccountEnquiryFlow {
   }
 
   /**
+   * Opens the remove parent or guardian confirmation page from the Parent or guardian tab.
+   */
+  public openRemoveParentGuardianDetails(): void {
+    logAE('method', 'openRemoveParentGuardianDetails()');
+    this.detailsNav.goToParentGuardianTab();
+    this.parentGuardianDetails.assertSectionHeader('Parent or guardian details');
+    this.parentGuardianDetails.startRemoveParentGuardianDetails();
+  }
+
+  /**
    * Asserts the convert-to-company confirmation page.
    *
    * @param expectedCaptionName - Expected defendant name shown in the caption.
@@ -517,6 +529,35 @@ export class AccountEnquiryFlow {
   public assertOnAddParentGuardianDetailsPage(): void {
     logAE('method', 'assertOnAddParentGuardianDetailsPage()');
     this.editParentGuardianActions.assertHeader({ route: 'add' });
+    this.editParentGuardianActions.assertInformationBannerText(
+      'These details are for information only. The youth defendant still pays.',
+    );
+  }
+
+  /**
+   * Asserts the Parent or guardian tab shows the remove action.
+   */
+  public assertRemoveParentGuardianActionVisible(): void {
+    logAE('method', 'assertRemoveParentGuardianActionVisible()');
+    this.detailsNav.goToParentGuardianTab();
+    this.parentGuardianDetails.assertRemoveParentGuardianActionVisible();
+  }
+
+  /**
+   * Asserts the remove parent or guardian confirmation page is visible.
+   *
+   * @param expectedIdentifierText - Expected account identifier text fragment.
+   */
+  public assertOnRemoveParentGuardianPage(expectedIdentifierText: string): void {
+    logAE('method', 'assertOnRemoveParentGuardianPage()', { expectedIdentifierText });
+    this.removeParentGuardian.assertOnRemoveParentGuardianConfirmation(expectedIdentifierText);
+  }
+  /**
+   * Asserts the amend parent or guardian route is active and the information banner is shown.
+   */
+  public assertOnAmendParentGuardianDetailsPage(): void {
+    logAE('method', 'assertOnAmendParentGuardianDetailsPage()');
+    this.editParentGuardianActions.assertHeader({ route: 'amend' });
     this.editParentGuardianActions.assertInformationBannerText(
       'These details are for information only. The youth defendant still pays.',
     );
@@ -1053,6 +1094,16 @@ export class AccountEnquiryFlow {
   }
 
   /**
+   * Opens the non-paying parent/guardian change screen from the Parent or guardian tab.
+   */
+  public openNonPayingParentGuardianChangeForm(): void {
+    logAE('method', 'openNonPayingParentGuardianChangeForm()');
+    this.detailsNav.goToParentGuardianTab();
+    this.parentGuardianDetails.change();
+    this.assertOnAmendParentGuardianDetailsPage();
+  }
+
+  /**
    * Enters a first name on the add parent or guardian form.
    *
    * @param value - New first name value.
@@ -1061,6 +1112,59 @@ export class AccountEnquiryFlow {
     logAE('method', 'enterAddParentGuardianFirstName()', { value });
     this.editParentGuardianActions.assertHeader({ route: 'add' });
     this.editParentGuardianActions.editFirstNames(value);
+  }
+
+  /**
+   * Enters a last name on the add parent or guardian form.
+   *
+   * @param value - Last name value.
+   */
+  public enterAddParentGuardianLastName(value: string): void {
+    logAE('method', 'enterAddParentGuardianLastName()', { value });
+    this.editParentGuardianActions.assertHeader({ route: 'add' });
+    this.editParentGuardianActions.editLastName(value);
+  }
+
+  /**
+   * Enters a first name on the amend parent or guardian form.
+   *
+   * @param value - New first name value.
+   */
+  public enterAmendParentGuardianFirstName(value: string): void {
+    logAE('method', 'enterAmendParentGuardianFirstName()', { value });
+    this.assertOnAmendParentGuardianDetailsPage();
+    this.editParentGuardianActions.editFirstNames(value);
+  }
+
+  /**
+   * Enters a last name on the parent or guardian form.
+   *
+   * @param value - New last name value.
+   */
+  public enterParentGuardianLastName(value: string): void {
+    logAE('method', 'enterParentGuardianLastName()', { value });
+    this.editParentGuardianActions.editLastName(value);
+  }
+
+  /**
+   * Enters address line 1 on the add parent or guardian form.
+   *
+   * @param value - Address line 1 value.
+   */
+  public enterAddParentGuardianAddressLine1(value: string): void {
+    logAE('method', 'enterAddParentGuardianAddressLine1()', { value });
+    this.editParentGuardianActions.assertHeader({ route: 'add' });
+    this.editParentGuardianActions.editAddressLine1(value);
+  }
+
+  /**
+   * Enters address line 1 on the parent or guardian form.
+   *
+   * @param value - New address line 1 value.
+   */
+  public enterParentGuardianAddressLine1(value: string): void {
+    logAE('method', 'enterParentGuardianAddressLine1()', { value });
+    this.editParentGuardianActions.editAddressLine1(value);
   }
 
   /**
@@ -1209,11 +1313,53 @@ export class AccountEnquiryFlow {
   }
 
   /**
+   * Cancels the amend parent or guardian form without changes and asserts no warning is shown.
+   */
+  public cancelAmendParentGuardianWithoutChanges(): void {
+    logAE('method', 'cancelAmendParentGuardianWithoutChanges()');
+
+    cy.window().then((win) => {
+      cy.stub(win, 'confirm').as('parentGuardianAmendConfirm');
+    });
+
+    this.assertOnAmendParentGuardianDetailsPage();
+    this.editParentGuardianActions.clickCancelLink();
+    cy.get('@parentGuardianAmendConfirm').should('not.have.been.called');
+  }
+
+  /**
+   * Cancels the amend parent or guardian form and chooses to stay on the page.
+   */
+  public cancelAmendParentGuardianAndStay(): void {
+    logAE('method', 'cancelAmendParentGuardianAndStay()');
+    this.assertOnAmendParentGuardianDetailsPage();
+    this.common.cancelEditing(false);
+  }
+
+  /**
+   * Cancels the amend parent or guardian form and confirms leaving the page.
+   */
+  public cancelAmendParentGuardianAndLeave(): void {
+    logAE('method', 'cancelAmendParentGuardianAndLeave()');
+    this.assertOnAmendParentGuardianDetailsPage();
+    this.common.cancelEditing(true);
+  }
+
+  /**
    * Attempts to save add parent or guardian details.
    */
   public attemptSaveAddParentGuardianDetails(): void {
     logAE('method', 'attemptSaveAddParentGuardianDetails()');
     this.editParentGuardianActions.assertHeader({ route: 'add' });
+    this.editParentGuardianActions.saveChanges();
+  }
+
+  /**
+   * Attempts to save amend parent or guardian details.
+   */
+  public attemptSaveAmendParentGuardianDetails(): void {
+    logAE('method', 'attemptSaveAmendParentGuardianDetails()');
+    this.assertOnAmendParentGuardianDetailsPage();
     this.editParentGuardianActions.saveChanges();
   }
 
@@ -1236,6 +1382,75 @@ export class AccountEnquiryFlow {
   public assertAddParentGuardianErrorSummaryContains(expected: string): void {
     logAE('method', 'assertAddParentGuardianErrorSummaryContains()', { expected });
     this.editParentGuardianActions.assertHeader({ route: 'add' });
+    this.editParentGuardianActions.assertErrorSummaryContains(expected);
+  }
+
+  /**
+   * Cancels the remove parent or guardian confirmation page.
+   */
+  public cancelRemoveParentGuardianDetails(): void {
+    logAE('method', 'cancelRemoveParentGuardianDetails()');
+    this.removeParentGuardian.cancelRemoval();
+    this.detailsNav.assertParentGuardianTabIsActive();
+    this.parentGuardianDetails.assertSectionHeader('Parent or guardian details');
+  }
+
+  /**
+   * Confirms removal of the non-paying parent or guardian.
+   */
+  public confirmRemoveParentGuardianDetails(): void {
+    logAE('method', 'confirmRemoveParentGuardianDetails()');
+    this.removeParentGuardian.confirmRemoval();
+    this.detailsNav.assertDefendantTabIsActive();
+    this.defendantDetails.assertSectionHeader('Defendant');
+  }
+
+  /**
+   * Asserts the account details success banner text.
+   *
+   * @param expected - Expected success message.
+   */
+  public assertAccountDetailsSuccessBanner(expected: string): void {
+    logAE('method', 'assertAccountDetailsSuccessBanner()', { expected });
+    this.detailsNav.assertSuccessBannerText(expected);
+  }
+
+  /**
+   * Verifies the non-paying parent or guardian has been removed from the account via API.
+   */
+  public verifyParentGuardianRemovedViaApi(): void {
+    logAE('method', 'verifyParentGuardianRemovedViaApi()');
+
+    this.extractDefendantAccountIdFromUrl()
+      .then((defendantAccountId) => this.fetchHeaderSummary(defendantAccountId))
+      .then((headerBody) => {
+        expect(headerBody['parent_guardian_party_id'], 'parent_guardian_party_id should be cleared').to.be.oneOf([
+          null,
+          undefined,
+        ]);
+        expect(headerBody['debtor_type'], 'debtor_type should revert to Defendant').to.eq('Defendant');
+      });
+  }
+
+  /**
+   * Asserts the first name on the amend parent or guardian form.
+   *
+   * @param expected - Expected input value.
+   */
+  public assertAmendParentGuardianFirstName(expected: string): void {
+    logAE('method', 'assertAmendParentGuardianFirstName()', { expected });
+    this.assertOnAmendParentGuardianDetailsPage();
+    this.editParentGuardianActions.verifyFirstName(expected);
+  }
+
+  /**
+   * Asserts the amend parent or guardian error summary contains the expected message.
+   *
+   * @param expected - Expected error text.
+   */
+  public assertAmendParentGuardianErrorSummaryContains(expected: string): void {
+    logAE('method', 'assertAmendParentGuardianErrorSummaryContains()', { expected });
+    this.assertOnAmendParentGuardianDetailsPage();
     this.editParentGuardianActions.assertErrorSummaryContains(expected);
   }
 

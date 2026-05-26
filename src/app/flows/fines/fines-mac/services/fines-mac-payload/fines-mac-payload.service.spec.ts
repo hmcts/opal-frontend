@@ -3,37 +3,41 @@ import { FinesMacPayloadService } from './fines-mac-payload.service';
 import { FINES_MAC_PAYLOAD_FINES_MAC_STATE } from './mocks/fines-mac-payload-fines-mac-state.mock';
 import { FINES_MAC_PAYLOAD_ADD_ACCOUNT } from './mocks/fines-mac-payload-add-account.mock';
 import { IFinesMacState } from '../../interfaces/fines-mac-state.interface';
-import { DateTime } from 'luxon';
 import { FINES_MAC_PAYLOAD_OFFENCE_DETAILS_MINOR_CREDITOR_STATE } from './utils/mocks/state/fines-mac-payload-offence-details-minor-creditor-state.mock';
 import { FINES_MAC_PAYLOAD_ACCOUNT_OFFENCES_WITH_MINOR_CREDITOR } from './utils/mocks/fines-mac-payload-account-offences-with-minor-creditor.mock';
 import { FINES_MAC_STATE } from '../../constants/fines-mac-state';
-import { IFinesMacAddAccountPayload } from './interfaces/fines-mac-payload-add-account.interfaces';
+import {
+  IFinesMacAddAccountPayload,
+  IFinesMacAddAccountRequestPayload,
+} from './interfaces/fines-mac-payload-add-account.interfaces';
 import { FINES_MAC_PAYLOAD_STATUSES } from './constants/fines-mac-payload-statuses.constant';
 import { OPAL_FINES_BUSINESS_UNIT_NON_SNAKE_CASE_MOCK } from '@services/fines/opal-fines-service/mocks/opal-fines-business-unit-non-snake-case.mock';
 import { OPAL_FINES_OFFENCE_DATA_NON_SNAKE_CASE_MOCK } from '@services/fines/opal-fines-service/mocks/opal-fines-offence-data-non-snake-case.mock';
-import { DateService } from '@hmcts/opal-frontend-common/services/date-service';
 import { IOpalUserState } from '@hmcts/opal-frontend-common/services/opal-user-service/interfaces';
 import { OPAL_USER_STATE_MOCK } from '@hmcts/opal-frontend-common/services/opal-user-service/mocks';
-import { finesMacPayloadBuildAccountTimelineData } from './utils/fines-mac-payload-build-account/fines-mac-payload-build-account-timeline-data.utils';
 import { FINES_MAC_DEFENDANT_TYPES_KEYS } from '../../constants/fines-mac-defendant-types-keys';
 import { FINES_MAC_PAYLOAD_ADD_ACCOUNT_FIXED_PENALTY_MOCK } from './mocks/fines-mac-payload-add-account-fixed-penalty.mock';
 import { FINES_MAC_PAYLOAD_FIXED_PENALTY_DETAILS_STATE_MOCK } from './utils/mocks/state/fines-mac-payload-fixed-penalty-details-state.mock';
 import { FINES_MAC_PAYMENT_TERMS_FORM } from '../../fines-mac-payment-terms/constants/fines-mac-payment-terms-form';
 import { FINES_ACCOUNT_TYPES } from '../../../constants/fines-account-types.constant';
-import { afterAll, beforeEach, describe, expect, it, vi } from 'vitest';
+import { afterAll, beforeEach, describe, expect, it } from 'vitest';
 
 describe('FinesMacPayloadService', () => {
   let service: FinesMacPayloadService | null;
-  let dateService: DateService | null;
   let finesMacState: IFinesMacState | null;
   let sessionUserState: IOpalUserState | null;
   let finesMacPayloadAddAccount: IFinesMacAddAccountPayload | null;
   let finesMacPayloadAddAccountFixedPenalty: IFinesMacAddAccountPayload;
 
+  const removeTimelineData = (payload: IFinesMacAddAccountPayload): IFinesMacAddAccountRequestPayload => {
+    const requestPayload = structuredClone(payload) as Partial<IFinesMacAddAccountPayload>;
+    delete requestPayload.timeline_data;
+    return requestPayload as IFinesMacAddAccountRequestPayload;
+  };
+
   beforeEach(() => {
     TestBed.configureTestingModule({});
     service = TestBed.inject(FinesMacPayloadService);
-    dateService = TestBed.inject(DateService);
 
     finesMacState = structuredClone(FINES_MAC_PAYLOAD_FINES_MAC_STATE);
     sessionUserState = structuredClone(OPAL_USER_STATE_MOCK);
@@ -43,7 +47,6 @@ describe('FinesMacPayloadService', () => {
 
   afterAll(() => {
     service = null;
-    dateService = null;
     finesMacState = null;
     sessionUserState = null;
     finesMacPayloadAddAccount = null;
@@ -54,37 +57,34 @@ describe('FinesMacPayloadService', () => {
   });
 
   it('should create an add account payload', () => {
-    if (!finesMacState || !sessionUserState || !finesMacPayloadAddAccount || !dateService || !service) {
+    if (!finesMacState || !sessionUserState || !finesMacPayloadAddAccount || !service) {
       throw new Error('Required mock states are not properly initialised');
       return;
     }
 
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    vi.spyOn<any, any>(dateService, 'getDateNow').mockReturnValue(DateTime.fromISO('2023-07-03T12:30:00Z'));
-
     const result = service.buildAddAccountPayload(finesMacState, sessionUserState);
     finesMacPayloadAddAccount.account.defendant.parent_guardian = null;
-    expect(result).toEqual(finesMacPayloadAddAccount);
+    expect(result).toEqual(removeTimelineData(finesMacPayloadAddAccount));
+    expect(result).not.toHaveProperty('timeline_data');
   });
 
   it('should create an add account payload with minor creditor', () => {
-    if (!finesMacState || !sessionUserState || !finesMacPayloadAddAccount || !dateService || !service) {
+    if (!finesMacState || !sessionUserState || !finesMacPayloadAddAccount || !service) {
       throw new Error('Required mock states are not properly initialised');
       return;
     }
 
     finesMacState.offenceDetails = structuredClone([FINES_MAC_PAYLOAD_OFFENCE_DETAILS_MINOR_CREDITOR_STATE]);
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    vi.spyOn<any, any>(dateService, 'getDateNow').mockReturnValue(DateTime.fromISO('2023-07-03T12:30:00Z'));
     const result = service.buildAddAccountPayload(finesMacState, sessionUserState);
 
     finesMacPayloadAddAccount.account.offences = FINES_MAC_PAYLOAD_ACCOUNT_OFFENCES_WITH_MINOR_CREDITOR;
     finesMacPayloadAddAccount.account.defendant.parent_guardian = null;
-    expect(result).toEqual(finesMacPayloadAddAccount);
+    expect(result).toEqual(removeTimelineData(finesMacPayloadAddAccount));
+    expect(result).not.toHaveProperty('timeline_data');
   });
 
   it('should create an add account payload for fixed penalty', () => {
-    if (!finesMacState || !sessionUserState || !finesMacPayloadAddAccount || !dateService || !service) {
+    if (!finesMacState || !sessionUserState || !finesMacPayloadAddAccount || !service) {
       throw new Error('Required mock states are not properly initialised');
       return;
     }
@@ -94,37 +94,28 @@ describe('FinesMacPayloadService', () => {
     finesMacState.fixedPenaltyDetails.formData = structuredClone(FINES_MAC_PAYLOAD_FIXED_PENALTY_DETAILS_STATE_MOCK);
     finesMacState.paymentTerms = structuredClone(FINES_MAC_PAYMENT_TERMS_FORM);
 
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    vi.spyOn<any, any>(dateService, 'getDateNow').mockReturnValue(DateTime.fromISO('2023-07-03T12:30:00Z'));
     const result = service.buildAddAccountPayload(finesMacState, sessionUserState);
 
-    expect(result).toEqual(finesMacPayloadAddAccountFixedPenalty);
+    expect(result).toEqual(removeTimelineData(finesMacPayloadAddAccountFixedPenalty));
+    expect(result).not.toHaveProperty('timeline_data');
   });
 
   it('should create a replace account payload', () => {
-    if (!finesMacState || !sessionUserState || !finesMacPayloadAddAccount || !dateService || !service) {
+    if (!finesMacState || !sessionUserState || !finesMacPayloadAddAccount || !service) {
       throw new Error('Required mock states are not properly initialised');
       return;
     }
 
     finesMacPayloadAddAccount.account_status = FINES_MAC_PAYLOAD_STATUSES.resubmitted;
-    finesMacPayloadAddAccount.timeline_data = [
-      {
-        ...finesMacPayloadAddAccount.timeline_data[0],
-        status: FINES_MAC_PAYLOAD_STATUSES.resubmitted,
-      },
-    ];
-
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    vi.spyOn<any, any>(dateService, 'getDateNow').mockReturnValue(DateTime.fromISO('2023-07-03T12:30:00Z'));
 
     const result = service.buildReplaceAccountPayload(finesMacState, finesMacPayloadAddAccount, sessionUserState);
     finesMacPayloadAddAccount.account.defendant.parent_guardian = null;
-    expect(result).toEqual(finesMacPayloadAddAccount);
+    expect(result).toEqual(removeTimelineData(finesMacPayloadAddAccount));
+    expect(result).not.toHaveProperty('timeline_data');
   });
 
   it('should mapAccountPayload', () => {
-    if (!sessionUserState || !finesMacPayloadAddAccount || !dateService || !service) {
+    if (!sessionUserState || !finesMacPayloadAddAccount || !service) {
       throw new Error('Required mock states are not properly initialised');
       return;
     }
@@ -152,7 +143,7 @@ describe('FinesMacPayloadService', () => {
   });
 
   it('should mapAccountPayload with businessUnitRefData and offencesRefData', () => {
-    if (!sessionUserState || !finesMacPayloadAddAccount || !dateService || !service) {
+    if (!sessionUserState || !finesMacPayloadAddAccount || !service) {
       throw new Error('Required mock states are not properly initialised');
       return;
     }
@@ -185,7 +176,7 @@ describe('FinesMacPayloadService', () => {
   });
 
   it('should build a patch payload with provided status and reason', () => {
-    if (!service || !finesMacPayloadAddAccount || !sessionUserState || !dateService) {
+    if (!service || !finesMacPayloadAddAccount || !sessionUserState) {
       throw new Error('Required mock states are not properly initialised');
       return;
     }
@@ -193,33 +184,21 @@ describe('FinesMacPayloadService', () => {
     const status = 'Rejected';
     const reasonText = 'Some reason';
 
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    vi.spyOn<any, any>(dateService, 'getDateNow').mockReturnValue(DateTime.fromISO('2023-07-03T12:30:00Z'));
-
-    // We need to call the real util to get the expected timeline_data
-    const timeline_data = finesMacPayloadBuildAccountTimelineData(
-      sessionUserState['name'],
-      status,
-      dateService.toFormat(DateTime.fromISO('2023-07-03T12:30:00Z'), 'yyyy-MM-dd'),
-      reasonText,
-      finesMacPayloadAddAccount.timeline_data,
-    );
-
     const result = service.buildPatchAccountPayload(finesMacPayloadAddAccount, status, reasonText, sessionUserState);
 
     expect(result).toEqual({
       account_status: status,
       business_unit_id: finesMacPayloadAddAccount.business_unit_id!,
       reason_text: reasonText,
-      timeline_data,
       validated_by: null,
       validated_by_name: null,
       version: finesMacPayloadAddAccount.version!,
     });
+    expect(result).not.toHaveProperty('timeline_data');
   });
 
   it('should build a patch payload with null reasonText', () => {
-    if (!service || !finesMacPayloadAddAccount || !sessionUserState || !dateService) {
+    if (!service || !finesMacPayloadAddAccount || !sessionUserState) {
       throw new Error('Required mock states are not properly initialised');
       return;
     }
@@ -227,24 +206,12 @@ describe('FinesMacPayloadService', () => {
     const status = FINES_MAC_PAYLOAD_STATUSES.resubmitted;
     const reasonText = null;
 
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    vi.spyOn<any, any>(dateService, 'getDateNow').mockReturnValue(DateTime.fromISO('2023-07-03T12:30:00Z'));
-
-    const timeline_data = finesMacPayloadBuildAccountTimelineData(
-      sessionUserState['name'],
-      status,
-      dateService.toFormat(DateTime.fromISO('2023-07-03T12:30:00Z'), 'yyyy-MM-dd'),
-      reasonText,
-      finesMacPayloadAddAccount.timeline_data,
-    );
-
     const result = service.buildPatchAccountPayload(finesMacPayloadAddAccount, status, reasonText, sessionUserState);
 
     expect(result).toEqual({
       account_status: status,
       business_unit_id: finesMacPayloadAddAccount.business_unit_id!,
       reason_text: reasonText,
-      timeline_data,
       validated_by: service['getBusinessUnitBusinessUserId'](
         finesMacPayloadAddAccount.business_unit_id!,
         sessionUserState,
@@ -252,6 +219,7 @@ describe('FinesMacPayloadService', () => {
       validated_by_name: sessionUserState['name'],
       version: finesMacPayloadAddAccount.version!,
     });
+    expect(result).not.toHaveProperty('timeline_data');
   });
 
   it('should return forenames and surname when defendant_type is "adultOrYouthOnly"', () => {

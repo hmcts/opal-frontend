@@ -22,6 +22,8 @@ import { FINES_MAC_TITLE_DROPDOWN_OPTIONS } from '../../../fines-mac/constants/f
 import { FINES_MAC_LANGUAGE_PREFERENCES_OPTIONS } from '../../../fines-mac/fines-mac-language-preferences/constants/fines-mac-language-preferences-options';
 import { FinesAccountStore } from '../../stores/fines-acc.store';
 import { FINES_ACC_DEFENDANT_ROUTING_PATHS } from '../../routing/constants/fines-acc-defendant-routing-paths.constant';
+import { FINES_ACC_DEFENDANT_DETAILS_TABS_KEYS } from '../../fines-acc-defendant-details/constants/fines-acc-defendant-details-tabs-keys.constant';
+import { type TFinesAccDefendantDetailsTabKey } from '../../fines-acc-defendant-details/types/fines-acc-defendant-details-tab-key.type';
 import { GovukButtonComponent } from '@hmcts/opal-frontend-common/components/govuk/govuk-button';
 import { GovukHeadingWithCaptionComponent } from '@hmcts/opal-frontend-common/components/govuk/govuk-heading-with-caption';
 import {
@@ -47,6 +49,7 @@ import {
 } from '@hmcts/opal-frontend-common/constants';
 import { GovukCancelLinkComponent } from '@hmcts/opal-frontend-common/components/govuk/govuk-cancel-link';
 import { FINES_ACC_PARTY_ADD_AMEND_CONVERT_FORM } from '../constants/fines-acc-party-add-amend-convert-form.constant';
+import { FINES_ACC_PARTY_ADD_AMEND_CONVERT_REDUCED_PARENT_GUARDIAN_HIDDEN_CONTROLS } from '../constants/fines-acc-party-add-amend-convert-reduced-parent-guardian-hidden-controls.constant';
 import { employerFieldsValidator } from '../validators/fines-acc-party-add-amend-convert-validators';
 import { FinesAccPartyAddAmendConvertEd } from './components/fines-acc-party-add-amend-convert-ed/fines-acc-party-add-amend-convert-ed.component';
 import { FinesAccPartyAddAmendConvertPartyDetails } from './components/fines-acc-party-add-amend-convert-party-details/fines-acc-party-add-amend-convert-party-details.component';
@@ -220,7 +223,7 @@ export class FinesAccPartyAddAmendConvertFormComponent
       'facc_party_add_amend_convert_national_insurance_number',
       new FormControl(null, [nationalInsuranceNumberValidator()]),
     );
-    formGroup.addControl('facc_party_add_amend_convert_individual_aliases', new FormArray([]));
+    formGroup.addControl('facc_party_add_amend_convert_individual_aliases', this.createFormAlias([]));
 
     formGroup.addControl(
       'facc_party_add_amend_convert_employer_company_name',
@@ -288,7 +291,7 @@ export class FinesAccPartyAddAmendConvertFormComponent
         SINGLE_ASCII_CHARACTERS_ALPHANUMERIC_WITH_SPECIAL_CHARACTERS_PATTERN_VALIDATOR,
       ]),
     );
-    formGroup.addControl('facc_party_add_amend_convert_organisation_aliases', new FormArray([]));
+    formGroup.addControl('facc_party_add_amend_convert_organisation_aliases', this.createFormAlias([]));
   }
 
   /**
@@ -315,6 +318,48 @@ export class FinesAccPartyAddAmendConvertFormComponent
       this.aliasFields = FINES_ACC_PARTY_ADD_AMEND_CONVERT_ALIAS.map((control) => control.controlName);
       this.aliasControlsValidation = FINES_ACC_PARTY_ADD_AMEND_CONVERT_ALIAS;
     }
+  }
+
+  /**
+   * Clears validators from hidden alias rows while keeping their current values on the form.
+   *
+   * Uses the base form update helper for each nested alias control. The alias controls
+   * are FormArray children, so they need to be addressed by their array path.
+   */
+  private clearHiddenAliasValidators(formArrayName: string): void {
+    const formArray = this.form.get(formArrayName);
+
+    if (!(formArray instanceof FormArray)) {
+      return;
+    }
+
+    formArray.controls.forEach((aliasGroup, index) => {
+      if (aliasGroup instanceof FormGroup) {
+        Object.keys(aliasGroup.controls).forEach((controlName) => {
+          this.updateControl(`${formArrayName}.${index}.${controlName}`, []);
+        });
+      } else {
+        this.updateControl(`${formArrayName}.${index}`, []);
+      }
+    });
+
+    this.updateControl(formArrayName, []);
+  }
+
+  /**
+   * Removes validation from fields hidden by the reduced non-debtor parent/guardian screen.
+   */
+  private clearReducedParentGuardianHiddenFieldValidators(): void {
+    if (!this.isReducedParentGuardianMode) {
+      return;
+    }
+
+    FINES_ACC_PARTY_ADD_AMEND_CONVERT_REDUCED_PARENT_GUARDIAN_HIDDEN_CONTROLS.forEach((controlName) => {
+      this.updateControl(controlName, []);
+    });
+
+    this.clearHiddenAliasValidators('facc_party_add_amend_convert_individual_aliases');
+    this.clearHiddenAliasValidators('facc_party_add_amend_convert_organisation_aliases');
   }
 
   /**
@@ -369,6 +414,7 @@ export class FinesAccPartyAddAmendConvertFormComponent
     }
 
     this.rePopulateForm(this.initialFormData?.formData || null);
+    this.clearReducedParentGuardianHiddenFieldValidators();
     this.setInitialErrorMessages();
     if (this.isIndividualPartyType) {
       this.setUpAliasCheckboxListener(
@@ -430,10 +476,17 @@ export class FinesAccPartyAddAmendConvertFormComponent
   }
 
   /**
+   * Returns true when the parent/guardian form should show only non-debtor information fields.
+   */
+  public get isReducedParentGuardianMode(): boolean {
+    return this.isParentGuardianPartyType && !this.isDebtor;
+  }
+
+  /**
    * Returns true if the contact section should be shown.
    */
   public get showContactDetails(): boolean {
-    return this.checkCompanyOrDebtor || this.isAddParentGuardianMode;
+    return this.checkCompanyOrDebtor || this.isReducedParentGuardianMode;
   }
 
   /**
@@ -459,12 +512,14 @@ export class FinesAccPartyAddAmendConvertFormComponent
   /**
    * Resolves the defendant-details fragment to use when navigating back from the form.
    */
-  public get routeFragment(): string {
-    if (this.isAddParentGuardianMode) {
-      return 'defendant';
+  public get routeFragment(): TFinesAccDefendantDetailsTabKey {
+    if (this.isAddParentGuardianMode || this.isReducedParentGuardianMode) {
+      return FINES_ACC_DEFENDANT_DETAILS_TABS_KEYS.defendant;
     }
 
-    return this.partyType === this.partyTypes.PARENT_GUARDIAN ? 'parent-or-guardian' : 'defendant';
+    return this.partyType === this.partyTypes.PARENT_GUARDIAN
+      ? FINES_ACC_DEFENDANT_DETAILS_TABS_KEYS['parent-or-guardian']
+      : FINES_ACC_DEFENDANT_DETAILS_TABS_KEYS.defendant;
   }
 
   public override ngOnInit(): void {

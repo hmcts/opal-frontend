@@ -9,6 +9,7 @@ Feature: Manual account creation - Parent Guardian Details
     And I start a fine manual account for business unit "West London" with defendant type "Adult or youth with parent or guardian to pay" and originator type "New"
     And I view the "Parent or guardian details" task
 
+  @JIRA-TEST-KEY:PO-5479
   Scenario: (AC.6, AC.5) Entered data persists in the session [@PO-344, @PO-364, @PO-436]
     When I complete parent or guardian details:
       | firstNames          | FNAME       |
@@ -56,6 +57,7 @@ Feature: Manual account creation - Parent Guardian Details
       | vehicleMake         |       |
       | vehicleRegistration |       |
 
+  @JIRA-TEST-KEY:PO-5480
   Scenario: (AC.5) Grey navigation links routes correctly [@PO-344, @PO-436]
     When I complete parent or guardian details:
       | firstNames   | FNAME |
@@ -64,6 +66,7 @@ Feature: Manual account creation - Parent Guardian Details
     And I continue to parent or guardian contact details
     Then I should see the header containing text "Parent or guardian contact details"
 
+  @JIRA-TEST-KEY:PO-5481
   Scenario: (AC.6, AC.7, AC.8) Confirming cancel clears unsaved parent or guardian details
     When I complete parent or guardian details:
       | firstNames          | FNAME         |
@@ -95,6 +98,7 @@ Feature: Manual account creation - Parent Guardian Details
       | vehicleMake         |       |
       | vehicleRegistration |       |
 
+  @JIRA-TEST-KEY:PO-5482
   Scenario: (AC.6, AC.7) Dismissing cancel retains parent or guardian details
     When I complete parent or guardian details:
       | firstNames   | FNAME |
@@ -106,6 +110,7 @@ Feature: Manual account creation - Parent Guardian Details
       | lastName     | LNAME |
       | addressLine1 | Addr1 |
 
+  @JIRA-TEST-KEY:PO-5483
   Scenario: (AC.7, AC.8) Confirming cancel restores last saved parent or guardian details
     When I complete parent or guardian details:
       | firstNames   | FNAME |
@@ -128,6 +133,7 @@ Feature: Manual account creation - Parent Guardian Details
       | addressLine1 | Addr1 |
       | addressLine2 |       |
 
+  @JIRA-TEST-KEY:PO-5484
   Scenario: (AC.6, AC.8) Parent or guardian first names error persists on cancel
     When I complete parent or guardian details:
       | firstNames   | FNAME |
@@ -148,6 +154,7 @@ Feature: Manual account creation - Parent Guardian Details
     And I see the parent or guardian "First names" error "Enter parent or guardian's first name(s)"
 
 
+  @JIRA-TEST-KEY:PO-5485
   Scenario: Parent guardian details - Axe Core
     Then I check the page for accessibility
 
