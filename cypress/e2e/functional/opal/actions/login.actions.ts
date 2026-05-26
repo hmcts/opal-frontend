@@ -13,8 +13,14 @@ import { requestLoggedInUserState } from './user-state.actions';
 
 const log = createScopedLogger('LoginActions');
 const AUTHENTICATED_ENDPOINT = '/sso/authenticated';
-const SEARCH_LANDING_PATH = '/fines/dashboard/search';
+const DEFAULT_LANDING_PATH = '/';
+export const SEARCH_LANDING_PATH = '/fines/dashboard/search';
 const SEARCH_BUSINESS_UNITS_ENDPOINT = '/opal-fines-service/business-units';
+
+interface IPerformLoginOptions {
+  landingPath?: string;
+  validateSearchLandingDependencies?: boolean;
+}
 
 /**
  * Requests an endpoint expected to return 200 for a valid authenticated session.
@@ -59,9 +65,12 @@ function assertSearchLandingDependenciesAvailable(): Cypress.Chainable<Cypress.R
  * Performs the full login flow for the given user.
  *
  * @param email - The email address of the user to log in.
+ * @param options - Optional post-session landing and validation settings.
  */
-export function performLogin(email: string): void {
+export function performLogin(email: string, options: IPerformLoginOptions = {}): void {
   const password = Cypress.env('CYPRESS_TEST_PASSWORD') || '';
+  const landingPath = options.landingPath ?? DEFAULT_LANDING_PATH;
+  const validateSearchLandingDependencies = options.validateSearchLandingDependencies ?? false;
 
   log('action', 'Logging in', { email });
 
@@ -119,7 +128,13 @@ export function performLogin(email: string): void {
           .then((signedInEmail) => {
             expect(signedInEmail.trim().toLowerCase()).to.eq(email.trim().toLowerCase());
           })
-          .then(() => assertSearchLandingDependenciesAvailable())
+          .then(() => {
+            if (validateSearchLandingDependencies) {
+              return assertSearchLandingDependenciesAvailable();
+            }
+
+            return undefined;
+          })
           .then(() => {
             log('done', 'Session validation succeeded', { email });
           });
@@ -127,9 +142,8 @@ export function performLogin(email: string): void {
     },
   );
 
-  // Land directly on the route asserted by the shared authenticated setup.
-  log('navigate', `Navigating to ${SEARCH_LANDING_PATH} after session setup`);
-  cy.visit(SEARCH_LANDING_PATH);
+  log('navigate', `Navigating to ${landingPath} after session setup`);
+  cy.visit(landingPath);
 }
 
 /**

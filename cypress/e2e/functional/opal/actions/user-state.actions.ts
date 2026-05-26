@@ -6,16 +6,28 @@
 export type UserStateRecord = Record<string, unknown>;
 
 const USER_STATE_ENDPOINT = '/api/user-state';
+const DEFAULT_USER_STATE_DOMAIN = 'fines';
+const USER_STATE_DOMAIN_ENV = 'USER_STATE_DOMAIN';
 
 const isRecord = (value: unknown): value is UserStateRecord =>
   typeof value === 'object' && value !== null && !Array.isArray(value);
 
-const readFinesDomain = (body: UserStateRecord): UserStateRecord | undefined => {
+const readConfiguredUserStateDomain = (): string => {
+  const configuredDomain = Cypress.env(USER_STATE_DOMAIN_ENV);
+  return typeof configuredDomain === 'string' && configuredDomain.trim()
+    ? configuredDomain.trim()
+    : DEFAULT_USER_STATE_DOMAIN;
+};
+
+const readUserStateDomain = (body: UserStateRecord): UserStateRecord | undefined => {
   const domains = body['domains'];
   if (!isRecord(domains)) return undefined;
 
-  const fines = domains['fines'];
-  return isRecord(fines) ? fines : undefined;
+  const configuredDomain = domains[readConfiguredUserStateDomain()];
+  if (isRecord(configuredDomain)) return configuredDomain;
+
+  const domainValues = Object.values(domains).filter(isRecord);
+  return domainValues.length === 1 ? domainValues[0] : undefined;
 };
 
 /**
@@ -27,9 +39,9 @@ const readFinesDomain = (body: UserStateRecord): UserStateRecord | undefined => 
 export function normalizeUserStateBody(body: unknown): UserStateRecord {
   if (!isRecord(body)) return {};
 
-  const finesDomain = readFinesDomain(body);
+  const userStateDomain = readUserStateDomain(body);
   const flatBusinessUnitUsers = body['business_unit_users'];
-  const domainBusinessUnitUsers = finesDomain?.['business_unit_users'];
+  const domainBusinessUnitUsers = userStateDomain?.['business_unit_users'];
 
   return {
     ...body,
