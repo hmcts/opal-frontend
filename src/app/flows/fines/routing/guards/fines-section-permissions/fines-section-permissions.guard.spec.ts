@@ -3,20 +3,16 @@ import { ActivatedRouteSnapshot, Router, RouterStateSnapshot, UrlTree, convertTo
 import { createSpyObj } from '@app/testing/create-spy-obj.helper';
 import { FINES_DASHBOARD_ROUTING_PATHS } from '@app/flows/fines/constants/fines-dashboard-routing-paths.constant';
 import { PAGES_ROUTING_PATHS as COMMON_PAGES_ROUTING_PATHS } from '@hmcts/opal-frontend-common/pages/routing/constants';
-import { resolveFeatureFlagGuard } from '@hmcts/opal-frontend-common/guards/feature-flag';
 import { IOpalUserState } from '@hmcts/opal-frontend-common/services/opal-user-service/interfaces';
 import { OPAL_USER_STATE_MOCK } from '@hmcts/opal-frontend-common/services/opal-user-service/mocks';
 import { OpalUserService } from '@hmcts/opal-frontend-common/services/opal-user-service';
-import { beforeEach, describe, expect, it, type Mock, vi } from 'vitest';
+import { beforeAll, beforeEach, describe, expect, it, vi } from 'vitest';
 import { firstValueFrom, isObservable, of, throwError } from 'rxjs';
 import { ACCOUNTS_PERMISSIONS } from '@app/flows/fines/constants/accounts-permissions.constant';
 import { REPORTS_PERMISSIONS } from '@app/flows/fines/constants/reports-permissions.constant';
 import { SEARCH_PERMISSIONS } from '@app/flows/fines/constants/search-permissions.constant';
-import { finesSectionPermissionsGuard } from './fines-section-permissions.guard';
 
-vi.mock('@hmcts/opal-frontend-common/guards/feature-flag', () => ({
-  resolveFeatureFlagGuard: vi.fn(),
-}));
+const resolveFeatureFlagGuardMock = vi.fn();
 
 const createUserStateWithPermissions = (permissionIds: readonly number[]): IOpalUserState => {
   const userState = structuredClone(OPAL_USER_STATE_MOCK);
@@ -44,7 +40,7 @@ describe('finesSectionPermissionsGuard', () => {
   let mockRouter: any;
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   let mockOpalUserService: any;
-  let resolveFeatureFlagGuardMock: Mock;
+  let finesSectionPermissionsGuard: (typeof import('./fines-section-permissions.guard'))['finesSectionPermissionsGuard'];
 
   const runGuard = async ({ sectionKey, dashboardType }: { sectionKey?: string; dashboardType?: string | null }) => {
     const route = {
@@ -57,10 +53,18 @@ describe('finesSectionPermissionsGuard', () => {
     return isObservable(result) ? firstValueFrom(result) : result;
   };
 
+  beforeAll(async () => {
+    vi.doMock('@hmcts/opal-frontend-common/guards/feature-flag', () => ({
+      resolveFeatureFlagGuard: resolveFeatureFlagGuardMock,
+    }));
+
+    ({ finesSectionPermissionsGuard } = await import('./fines-section-permissions.guard'));
+  });
+
   beforeEach(() => {
     mockRouter = createSpyObj('Router', ['createUrlTree']);
     mockOpalUserService = createSpyObj('OpalUserService', ['getLoggedInUserState']);
-    resolveFeatureFlagGuardMock = vi.mocked(resolveFeatureFlagGuard) as Mock;
+    resolveFeatureFlagGuardMock.mockReset();
 
     mockRouter.createUrlTree.mockReturnValue(new UrlTree());
     mockOpalUserService.getLoggedInUserState.mockReturnValue(of(createUserStateWithPermissions([])));

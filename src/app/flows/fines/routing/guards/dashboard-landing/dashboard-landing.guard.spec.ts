@@ -2,21 +2,17 @@ import { TestBed } from '@angular/core/testing';
 import { ActivatedRouteSnapshot, Router, RouterStateSnapshot, UrlTree } from '@angular/router';
 import { FINES_DASHBOARD_ROUTING_PATHS } from '@app/flows/fines/constants/fines-dashboard-routing-paths.constant';
 import { FINES_ROUTING_PATHS } from '@app/flows/fines/routing/constants/fines-routing-paths.constant';
-import { resolveFeatureFlagGuard } from '@hmcts/opal-frontend-common/guards/feature-flag';
 import { IOpalUserState } from '@hmcts/opal-frontend-common/services/opal-user-service/interfaces';
 import { OPAL_USER_STATE_MOCK } from '@hmcts/opal-frontend-common/services/opal-user-service/mocks';
 import { OpalUserService } from '@hmcts/opal-frontend-common/services/opal-user-service';
-import { beforeEach, describe, expect, it, type Mock, vi } from 'vitest';
+import { beforeAll, beforeEach, describe, expect, it, vi } from 'vitest';
 import { createSpyObj } from '@app/testing/create-spy-obj.helper';
 import { of, throwError } from 'rxjs';
-import { dashboardLandingGuard } from './dashboard-landing.guard';
 import { ACCOUNTS_PERMISSIONS } from '@app/flows/fines/constants/accounts-permissions.constant';
 import { REPORTS_PERMISSIONS } from '@app/flows/fines/constants/reports-permissions.constant';
 import { SEARCH_PERMISSIONS } from '@app/flows/fines/constants/search-permissions.constant';
 
-vi.mock('@hmcts/opal-frontend-common/guards/feature-flag', () => ({
-  resolveFeatureFlagGuard: vi.fn(),
-}));
+const resolveFeatureFlagGuardMock = vi.fn();
 
 const createUserStateWithPermissions = (permissionIds: readonly number[]): IOpalUserState => {
   const userState = structuredClone(OPAL_USER_STATE_MOCK);
@@ -44,7 +40,7 @@ describe('dashboardLandingGuard', () => {
   let mockRouter: any;
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   let mockOpalUserService: any;
-  let resolveFeatureFlagGuardMock: Mock;
+  let dashboardLandingGuard: (typeof import('./dashboard-landing.guard'))['dashboardLandingGuard'];
 
   const runGuard = async () => {
     const route = {} as ActivatedRouteSnapshot;
@@ -52,10 +48,18 @@ describe('dashboardLandingGuard', () => {
     return TestBed.runInInjectionContext(() => dashboardLandingGuard(route, state));
   };
 
+  beforeAll(async () => {
+    vi.doMock('@hmcts/opal-frontend-common/guards/feature-flag', () => ({
+      resolveFeatureFlagGuard: resolveFeatureFlagGuardMock,
+    }));
+
+    ({ dashboardLandingGuard } = await import('./dashboard-landing.guard'));
+  });
+
   beforeEach(() => {
     mockRouter = createSpyObj('Router', ['createUrlTree']);
     mockOpalUserService = createSpyObj('OpalUserService', ['getLoggedInUserState']);
-    resolveFeatureFlagGuardMock = vi.mocked(resolveFeatureFlagGuard) as Mock;
+    resolveFeatureFlagGuardMock.mockReset();
 
     mockRouter.createUrlTree.mockReturnValue(new UrlTree());
     mockOpalUserService.getLoggedInUserState.mockReturnValue(of(createUserStateWithPermissions([])));
