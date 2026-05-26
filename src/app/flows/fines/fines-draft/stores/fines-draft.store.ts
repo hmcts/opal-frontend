@@ -9,22 +9,30 @@ import { FINES_DRAFT_BANNER_MESSAGES } from './constants/fines-draft-store-banne
 import { FinesDraftBannerType } from './types/fines-draft-banner.type';
 import { FINES_MAC_DEFENDANT_TYPES_KEYS } from '../../fines-mac/constants/fines-mac-defendant-types-keys';
 
+type FinesDraftState = IFinesMacAddAccountPayload & {
+  fragment: string;
+  amend: boolean;
+  viewAllAccounts: boolean;
+  checker: boolean;
+  bannerMessage: string;
+};
+
 export const FinesDraftStore = signalStore(
   { providedIn: 'root' },
-  withState(() => ({
-    business_unit_id: 0 as number | null,
-    submitted_by: '' as string | null,
-    submitted_by_name: '' as string | null,
+  withState<FinesDraftState>(() => ({
+    business_unit_id: 0,
+    submitted_by: '',
+    submitted_by_name: '',
     account: {} as IFinesMacPayloadAccount,
-    account_type: '' as string | null,
-    account_status: '' as string | null,
-    account_status_message: '' as string | null,
+    account_type: '',
+    account_status: '',
+    account_status_message: '',
     timeline_data: [{}] as IFinesMacAccountTimelineData[],
-    version: '0' as string | null,
-    draft_account_id: 0 as number | null,
-    created_at: '' as string | null,
+    version: '0',
+    draft_account_id: 0,
+    created_at: '',
     account_snapshot: {} as IFinesMacPayloadAccountSnapshot | null,
-    account_status_date: '' as string | null,
+    account_status_date: '',
     fragment: '',
     amend: false,
     viewAllAccounts: false,

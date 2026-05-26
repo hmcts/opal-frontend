@@ -127,7 +127,7 @@ export class FinesAccDefendantDetailsComponent
       !this.lastEnforcement?.extend_ttp_disallow &&
       !invalidCodes.includes(accountStatusCode) &&
       this.hasBusinessUnitPermissionKey('amend-payment-terms') &&
-      this.accountData.payment_state_summary.account_balance! > 0
+      this.accountData.payment_state_summary.account_balance > 0
     );
   }
 
@@ -149,7 +149,7 @@ export class FinesAccDefendantDetailsComponent
       return 'enforcement';
     } else if (!this.hasBusinessUnitPermissionKey('amend-payment-terms')) {
       return 'permission';
-    } else if (this.accountData.payment_state_summary.account_balance! <= 0) {
+    } else if (this.accountData.payment_state_summary.account_balance <= 0) {
       return 'balance';
     } else {
       return 'account-status';
