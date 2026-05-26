@@ -27,7 +27,10 @@ import { OPAL_FINES_BUSINESS_UNIT_NON_SNAKE_CASE_MOCK } from './mocks/opal-fines
 import { OPAL_FINES_OFFENCE_DATA_NON_SNAKE_CASE_MOCK } from './mocks/opal-fines-offence-data-non-snake-case.mock';
 import { OPAL_FINES_SEARCH_OFFENCES_PARAMS_MOCK } from './mocks/opal-fines-search-offences-params.mock';
 import { OPAL_FINES_SEARCH_OFFENCES_MOCK } from './mocks/opal-fines-search-offences.mock';
-import { IFinesMacAddAccountPayload } from '../../fines-mac/services/fines-mac-payload/interfaces/fines-mac-payload-add-account.interfaces';
+import {
+  IFinesMacAddAccountPayload,
+  IFinesMacAddAccountRequestPayload,
+} from '../../fines-mac/services/fines-mac-payload/interfaces/fines-mac-payload-add-account.interfaces';
 import { OPAL_FINES_PATCH_DELETE_ACCOUNT_PAYLOAD_MOCK } from './mocks/opal-fines-patch-delete-account-payload.mock';
 import { OPAL_FINES_DRAFT_ACCOUNTS_PATCH_PAYLOAD } from './mocks/opal-fines-draft-accounts-patch-payload.mock';
 import { OPAL_FINES_PROSECUTOR_REF_DATA_MOCK } from './mocks/opal-fines-prosecutor-ref-data.mock';
@@ -67,6 +70,12 @@ describe('OpalFines', () => {
   function mockHeaders(getFn: (name: string) => string | null) {
     return { get: getFn } as unknown as HttpResponse<unknown>['headers'];
   }
+
+  const removeTimelineData = (payload: IFinesMacAddAccountPayload): IFinesMacAddAccountRequestPayload => {
+    const requestPayload = structuredClone(payload) as Partial<IFinesMacAddAccountPayload>;
+    delete requestPayload.timeline_data;
+    return requestPayload as IFinesMacAddAccountRequestPayload;
+  };
 
   beforeEach(() => {
     TestBed.configureTestingModule({
@@ -599,7 +608,7 @@ describe('OpalFines', () => {
   });
 
   it('should POST the fines mac payload', () => {
-    const body: IFinesMacAddAccountPayload = FINES_MAC_PAYLOAD_ADD_ACCOUNT;
+    const body = removeTimelineData(FINES_MAC_PAYLOAD_ADD_ACCOUNT);
 
     const apiUrl = OPAL_FINES_PATHS.draftAccounts;
 
@@ -609,6 +618,8 @@ describe('OpalFines', () => {
 
     const req = httpMock.expectOne(apiUrl);
     expect(req.request.method).toBe('POST');
+    expect(req.request.body).toEqual(body);
+    expect(req.request.body).not.toHaveProperty('timeline_data');
 
     req.flush(OPAL_FINES_DRAFT_ADD_ACCOUNT_PAYLOAD_MOCK);
   });
@@ -719,7 +730,7 @@ describe('OpalFines', () => {
   });
 
   it('should send a PUT request to update the draft account payload', () => {
-    const body: IFinesMacAddAccountPayload = FINES_MAC_PAYLOAD_ADD_ACCOUNT;
+    const body = removeTimelineData(FINES_MAC_PAYLOAD_ADD_ACCOUNT);
     const apiUrl = `${OPAL_FINES_PATHS.draftAccounts}/${body.draft_account_id}`;
 
     service.putDraftAddAccountPayload(body).subscribe((response) => {
@@ -729,6 +740,7 @@ describe('OpalFines', () => {
     const req = httpMock.expectOne(apiUrl);
     expect(req.request.method).toBe('PUT');
     expect(req.request.body).toEqual(body);
+    expect(req.request.body).not.toHaveProperty('timeline_data');
 
     req.flush(FINES_MAC_PAYLOAD_ADD_ACCOUNT);
   });
@@ -745,6 +757,7 @@ describe('OpalFines', () => {
     const req = httpMock.expectOne(apiUrl);
     expect(req.request.method).toBe('PATCH');
     expect(req.request.body).toEqual(body);
+    expect(req.request.body).not.toHaveProperty('timeline_data');
 
     req.flush(FINES_MAC_PAYLOAD_ADD_ACCOUNT);
   });
@@ -816,6 +829,7 @@ describe('OpalFines', () => {
     const req = httpMock.expectOne(apiUrl);
     expect(req.request.method).toBe('PATCH');
     expect(req.request.body).toEqual(body);
+    expect(req.request.body).not.toHaveProperty('timeline_data');
 
     req.flush(expectedResponse);
   });

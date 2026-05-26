@@ -23,7 +23,10 @@ import { FINES_ROUTING_PATHS } from '@routing/fines/constants/fines-routing-path
 import { IFetchMapFinesMacPayload } from '../routing/resolvers/fetch-map-fines-mac-payload-resolver/interfaces/fetch-map-fines-mac-payload.interface';
 import { FinesDraftStore } from '../../fines-draft/stores/fines-draft.store';
 import { FinesMacReviewAccountHistoryComponent } from './fines-mac-review-account-history/fines-mac-review-account-history.component';
-import { IFinesMacAddAccountPayload } from '../services/fines-mac-payload/interfaces/fines-mac-payload-add-account.interfaces';
+import {
+  IFinesMacAddAccountPayload,
+  IFinesMacAddAccountRequestPayload,
+} from '../services/fines-mac-payload/interfaces/fines-mac-payload-add-account.interfaces';
 import { FINES_DRAFT_ROUTING_PATHS } from '../../fines-draft/routing/constants/fines-draft-routing-paths.constant';
 import { FINES_DRAFT_CREATE_AND_MANAGE_ROUTING_PATHS } from '../../fines-draft/fines-draft-create-and-manage/routing/constants/fines-draft-create-and-manage-routing-paths.constant';
 import { GovukButtonComponent } from '@hmcts/opal-frontend-common/components/govuk/govuk-button';
@@ -194,7 +197,7 @@ export class FinesMacReviewAccountComponent extends AbstractFormParentBaseCompon
    * It processes the response using `processPutResponse` method and handles any errors by scrolling to the top of the page.
    * The request is automatically unsubscribed when the component is destroyed using `takeUntil` with `ngUnsubscribe`.
    */
-  private handlePutRequest(payload: IFinesMacAddAccountPayload): void {
+  private handlePutRequest(payload: IFinesMacAddAccountRequestPayload): void {
     this.opalFinesService
       .putDraftAddAccountPayload(payload)
       .pipe(
@@ -216,7 +219,7 @@ export class FinesMacReviewAccountComponent extends AbstractFormParentBaseCompon
    * It processes the response upon success and handles any errors by scrolling to the top of the page.
    * The request is automatically unsubscribed when the component is destroyed.
    */
-  private handlePostRequest(payload: IFinesMacAddAccountPayload): void {
+  private handlePostRequest(payload: IFinesMacAddAccountRequestPayload): void {
     this.opalFinesService
       .postDraftAddAccountPayload(payload)
       .pipe(
@@ -268,9 +271,9 @@ export class FinesMacReviewAccountComponent extends AbstractFormParentBaseCompon
    * state of fines (`finesMacState`), the draft state of fines (`finesDraftState`),
    * and the user state (`userState`).
    *
-   * @returns {IFinesMacAddAccountPayload} The payload for the PUT request.
+   * @returns {IFinesMacAddAccountRequestPayload} The payload for the PUT request.
    */
-  private preparePutPayload(): IFinesMacAddAccountPayload {
+  private preparePutPayload(): IFinesMacAddAccountRequestPayload {
     return this.finesMacPayloadService.buildReplaceAccountPayload(
       this.finesMacStore.getFinesMacStore(),
       this.finesDraftStore.getFinesDraftState(),
@@ -285,9 +288,9 @@ export class FinesMacReviewAccountComponent extends AbstractFormParentBaseCompon
    * the `finesMacPayloadService` to build the payload based on the current state
    * of `finesMacState` and `userState`.
    *
-   * @returns {IFinesMacAddAccountPayload} The payload for adding an account.
+   * @returns {IFinesMacAddAccountRequestPayload} The payload for adding an account.
    */
-  private preparePostPayload(): IFinesMacAddAccountPayload {
+  private preparePostPayload(): IFinesMacAddAccountRequestPayload {
     return this.finesMacPayloadService.buildAddAccountPayload(this.finesMacStore.getFinesMacStore(), this.userState);
   }
 

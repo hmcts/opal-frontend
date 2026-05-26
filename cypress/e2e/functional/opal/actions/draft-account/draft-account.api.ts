@@ -135,6 +135,25 @@ const stripAccountStatusOverride = (overrides: Record<string, unknown>): Record<
   return sanitized;
 };
 
+// Removes backend-owned fields from draft account request payloads.
+const stripBackendOwnedDraftRequestFields = (
+  payload: Record<string, unknown>,
+  context: string,
+): Record<string, unknown> => {
+  const sanitized = { ...payload };
+  const removedKeys = ['timeline_data'].filter((key) => Object.prototype.hasOwnProperty.call(sanitized, key));
+
+  removedKeys.forEach((key) => {
+    delete sanitized[key];
+  });
+
+  if (removedKeys.length) {
+    log('warn', `Omitting backend-owned fields from ${context} payload`, { removedKeys });
+  }
+
+  return sanitized;
+};
+
 // Reads the draft/account identifier from any of the known response field names.
 const readNumericId = (body: Record<string, unknown>): number | undefined => {
   // Raw identifier value before coercion to a numeric id.
@@ -216,9 +235,6 @@ const buildPatchResponseSummary = (
 // String guard used when normalizing optional API values.
 const isNonEmptyString = (value: unknown): value is string => typeof value === 'string' && value.trim().length > 0;
 
-// Today's date in the yyyy-MM-dd format expected by draft timeline data.
-const toIsoDateToday = (): string => new Date().toISOString().slice(0, 10);
-
 // Resolves the current user's BU-specific business user id for the target business unit.
 const readBusinessUnitUserId = (
   userStateBody: Record<string, unknown>,
@@ -259,27 +275,17 @@ const buildDraftPatchPayload = (
   const existingValidatedBy = isNonEmptyString(draftBody['validated_by']) ? draftBody['validated_by'] : null;
   // Current checker's business-unit user id for the draft business unit.
   const validatedBy = readBusinessUnitUserId(userStateBody, business_unit_id, existingValidatedBy);
-  // Human-readable checker name used in timeline entries and patch metadata.
+  // Human-readable checker name used in patch metadata.
   const validatedByName = isNonEmptyString(userStateBody['name'])
     ? userStateBody['name']
     : isNonEmptyString(userStateBody['username'])
       ? userStateBody['username']
       : null;
-  // Existing draft timeline data preserved ahead of the new status event.
-  const existingTimeline = Array.isArray(draftBody['timeline_data']) ? [...draftBody['timeline_data']] : [];
-  // New timeline event appended for the status transition being applied.
-  const timelineEntry: Record<string, unknown> = {
-    username: validatedByName ?? 'opal-test',
-    status,
-    status_date: toIsoDateToday(),
-    reason_text: reasonText,
-  };
 
   return {
     account_status: status,
     business_unit_id,
     reason_text: reasonText,
-    timeline_data: [...existingTimeline, timelineEntry],
     validated_by: status.toLowerCase() === 'rejected' ? null : validatedBy,
     validated_by_name: status.toLowerCase() === 'rejected' ? null : validatedByName,
     version: String(draftBody['version'] ?? '0'),
@@ -468,7 +474,7 @@ export function createDraftAndSetStatus(
       // Load base fixture and merge overrides before creating the draft.
       .fixture(`draftAccounts/${draftFixture}`)
       .then((base) => {
-        requestBody = merge({}, base, sanitizedOverrides);
+        requestBody = stripBackendOwnedDraftRequestFields(merge({}, base, sanitizedOverrides), 'POST /draft-accounts');
       })
 
       // 1) POST create the draft account.
