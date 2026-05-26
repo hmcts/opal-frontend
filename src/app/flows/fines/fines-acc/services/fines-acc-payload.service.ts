@@ -35,6 +35,9 @@ import { FINES_ACC_COLLECTION_ORDER_PAYLOAD_DEFAULTS } from './constants/fines-a
 import { IOpalFinesUpdateMinorCreditorAccountPayload } from '../../services/opal-fines-service/interfaces/opal-fines-update-minor-creditor-account-payload.interface';
 import { IOpalFinesAccountMinorCreditorAtAGlance } from '../../services/opal-fines-service/interfaces/opal-fines-account-minor-creditor-at-a-glance.interface';
 import { FINES_ACC_PARTY_TYPES } from '../constants/fines-acc-party-types.constant';
+import { IOpalFinesAccountMinorCreditorCreditor } from '../../services/opal-fines-service/interfaces/opal-fines-account-minor-creditor-creditor.interface';
+import { IFinesAccMinorCreditorAddAmendConvertState } from '../fines-acc-minor-creditor-add-amend-convert/interfaces/fines-acc-minor-creditor-add-amend-convert-state.interface';
+import { transformMinorCreditorAccountPayload } from './utils/fines-acc-payload-transform-minor-creditor-data.utils';
 
 @Injectable({
   providedIn: 'root',
@@ -308,6 +311,18 @@ export class FinesAccPayloadService {
       formData,
       nestedFlow: false,
     };
+  }
+
+  /**
+   * Transforms minor creditor account details into the form state for the amend screen.
+   *
+   * @param minorCreditorData - The creditor-tab data from the minor creditor account API
+   * @returns The transformed form state object for minor creditor amend
+   */
+  public mapMinorCreditorAccountPayload(
+    minorCreditorData: IOpalFinesAccountMinorCreditorCreditor,
+  ): IFinesAccMinorCreditorAddAmendConvertState {
+    return transformMinorCreditorAccountPayload(minorCreditorData);
   }
 
   /**

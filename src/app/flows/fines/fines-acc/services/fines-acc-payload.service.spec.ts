@@ -22,6 +22,7 @@ import { FINES_ACC_MINOR_CREDITOR_DETAILS_HEADER_MOCK } from '../fines-acc-minor
 import { IOpalFinesAccountMinorCreditorDetailsHeader } from '../fines-acc-minor-creditor-details/interfaces/fines-acc-minor-creditor-details-header.interface';
 import { OPAL_FINES_ACCOUNT_MINOR_CREDITOR_AT_A_GLANCE_WITH_DEFENDANT_MOCK } from '../../services/opal-fines-service/mocks/opal-fines-account-minor-creditor-at-a-glance-with-defendant.mock';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
+import { OPAL_FINES_ACCOUNT_MINOR_CREDITOR_CREDITOR_MOCK } from '../../services/opal-fines-service/mocks/opal-fines-account-minor-creditor-creditor.mock';
 
 describe('FinesAccPayloadService', () => {
   let service: FinesAccPayloadService;
@@ -857,6 +858,23 @@ describe('FinesAccPayloadService', () => {
         expect.objectContaining({
           nestedFlow: false,
           formData: expect.any(Object),
+        }),
+      );
+    });
+  });
+
+  describe('mapMinorCreditorAccountPayload', () => {
+    it('should map minor creditor creditor-tab data into amend form state', () => {
+      const minorCreditorData = structuredClone(OPAL_FINES_ACCOUNT_MINOR_CREDITOR_CREDITOR_MOCK);
+
+      const result = service.mapMinorCreditorAccountPayload(minorCreditorData);
+
+      expect(result).toEqual(
+        expect.objectContaining({
+          facc_minor_creditor_creditor_type: 'company',
+          facc_minor_creditor_company_name: minorCreditorData.party_details.organisation_details?.organisation_name,
+          facc_minor_creditor_bank_sort_code: '123456',
+          facc_minor_creditor_pay_by_bacs: true,
         }),
       );
     });
