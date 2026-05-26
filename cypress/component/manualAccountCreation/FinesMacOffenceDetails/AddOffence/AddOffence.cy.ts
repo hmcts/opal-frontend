@@ -467,7 +467,6 @@ describe('FinesMacAddOffenceComponent', () => {
         '@JIRA-EPIC:PO-545',
         '@JIRA-LABEL:manual-account-creation',
         '@JIRA-NFR:PO-2325',
-        ,
         '@JIRA-TEST-KEY:PO-6346',
       ],
     },
@@ -1105,8 +1104,6 @@ describe('FinesMacAddOffenceComponent', () => {
     () => {
       setupComponent(null);
 
-      const SELECTOR = impositionSelectors(0);
-
       let Imposition = structuredClone(IMPOSITION_MOCK_1);
       Imposition[0].fm_offence_details_amount_imposed = 0;
 
@@ -1134,8 +1131,6 @@ describe('FinesMacAddOffenceComponent', () => {
     },
     () => {
       setupComponent(null);
-
-      const SELECTOR = impositionSelectors(0);
 
       let Imposition = structuredClone(IMPOSITION_MOCK_1);
       Imposition[0].fm_offence_details_amount_imposed = -200;
