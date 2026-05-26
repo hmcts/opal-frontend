@@ -86,7 +86,7 @@ describe(
     statusScenarios.forEach(({ code, reason }) => {
       it(
         `Negative test: account status ${code} shows correct error page`,
-        { tags: ['@JIRA-STORY:PO-1780', '@JIRA-STORY:PO-1824', '@JIRA-STORY:PO-1781'] },
+        { tags: ['@JIRA-STORY:PO-1780', '@JIRA-STORY:PO-1824', '@JIRA-STORY:PO-1781', '@JIRA-STORY:PO-1825'] },
         () => {
           let headerMock = structuredClone(createDefendantHeaderMockWithName('Robert', 'Thomson'));
 
@@ -114,22 +114,22 @@ describe(
 
           cy.get(ENF.addEnforcementActionLink).should('exist').click();
 
-          // cy.get('@routerNavigate').should('have.been.calledWithMatch', [
-          //   '../enforcement/action/cannot-add-enforcement-action',
-          // ]);
+          cy.contains('Robert THOMSON').should('be.visible');
 
           // common error text
           cy.contains('You cannot add an enforcement action to an account that has a status of').should('be.visible');
 
           // status-specific text
           cy.contains(reason).should('be.visible');
+
+          cy.contains('Go back').click();
         },
       );
     });
 
     it(
       'Negative test: NOENF with no next permitted actions shows error screen and Go back returns to enforcement tab',
-      { tags: ['@JIRA-STORY:PO-1781'] },
+      { tags: ['@JIRA-STORY:PO-1781', '@JIRA-STORY:PO-1825'] },
       () => {
         let headerMock = structuredClone(createDefendantHeaderMockWithName('Robert', 'Thomson'));
 
@@ -159,17 +159,69 @@ describe(
         // Navigate to error page
         cy.get(ENF.addEnforcementActionLink).should('exist').click();
 
-        // Router navigation assertion
-        // cy.get('@routerNavigate').should('have.been.calledWithMatch', [
-        //   '../enforcement/action/cannot-add-enforcement-action',
-        // ]);
-
+        // AC2a
         cy.contains('You cannot add an enforcement action').should('be.visible');
 
+        // AC2b
         cy.contains('Robert THOMSON').should('be.visible');
 
+        // AC2c
         cy.contains('You must first remove the enforcement hold on the account.').should('be.visible');
 
+        // AC3 - Go back
+        cy.contains('Go back').click();
+      },
+    );
+
+    it(
+      'Negative test: last enforcement has no next permitted actions shows error screen',
+      { tags: ['@JIRA-STORY:PO-1781', '@JIRA-STORY:PO-1825'] },
+      () => {
+        let headerMock = structuredClone(createDefendantHeaderMockWithName('Robert', 'Thomson'));
+
+        headerMock.debtor_type = 'Defendant';
+
+        let enforcementMock = structuredClone(OPAL_FINES_ACCOUNT_DEFENDANT_DETAILS_ENFORCEMENT_TAB_REF_DATA_MOCK);
+
+        // Example last enforcement with no next permitted actions
+        enforcementMock.last_enforcement_action!.enforcement_action.result_id = 'ENFHOLD';
+
+        enforcementMock.last_enforcement_action!.enforcement_action.result_title = 'Enforcement on hold';
+
+        enforcementMock.next_enforcement_action_data = null;
+
+        const accountId = headerMock.defendant_account_party_id;
+
+        interceptAuthenticatedUser();
+        interceptUserState(USER_STATE_MOCK_PERMISSION_BU77);
+        interceptDefendantHeader(accountId, headerMock, '123');
+        interceptEnforcementStatus(accountId, enforcementMock, '123');
+
+        // Empty permitted actions
+        interceptNextPermittedEnforcementActionsEmpty();
+
+        setupAccountEnquiryComponent({
+          ...COMPONENT_PROPERTIES,
+          accountId,
+        });
+
+        cy.get(ENF.addEnforcementActionLink).should('exist').click();
+
+        // AC2a
+        cy.contains('You cannot add an enforcement action').should('be.visible');
+
+        // AC2b
+        cy.contains('Robert THOMSON').should('be.visible');
+
+        // AC2c
+        cy.contains('You cannot add an enforcement action to an account that has a last enforcement action of:').should(
+          'be.visible',
+        );
+
+        // AC2ci
+        cy.contains('Enforcement on hold (ENFHOLD)').should('be.visible');
+
+        // AC3
         cy.contains('Go back').click();
       },
     );
