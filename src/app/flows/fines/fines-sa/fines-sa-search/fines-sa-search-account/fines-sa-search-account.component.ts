@@ -45,7 +45,6 @@ export class FinesSaSearchAccountComponent extends AbstractFormParentBaseCompone
    * @returns The constructed URL string for the account enquiry.
    */
   private getAccountEnquiryUrl(accountId: number): string {
-    // TODO: change 'defendant' to 'major-creditor' when that page is implemented
     return `${this.finesRoutingPaths.root}/${this.finesAccRoutingPaths.root}/${accountId}/${this.finesAccRoutingPaths.children.defendant}`;
   }
 
