@@ -19,12 +19,14 @@ import { IOpalFinesResults } from './interfaces/opal-fines-results.interface';
 import { IOpalFinesResultsRefData } from './interfaces/opal-fines-results-ref-data.interface';
 import { IOpalFinesMajorCreditor } from './interfaces/opal-fines-major-creditor.interface';
 import { IOpalFinesMajorCreditorRefData } from './interfaces/opal-fines-major-creditor-ref-data.interface';
-import { IFinesMacAddAccountPayload } from '../../fines-mac/services/fines-mac-payload/interfaces/fines-mac-payload-add-account.interfaces';
+import {
+  IFinesMacAddAccountPayload,
+  IFinesMacAddAccountRequestPayload,
+} from '../../fines-mac/services/fines-mac-payload/interfaces/fines-mac-payload-add-account.interfaces';
 import { IOpalFinesDraftAccountsResponse } from './interfaces/opal-fines-draft-account-data.interface';
 import { IOpalFinesDraftAccountParams } from './interfaces/opal-fines-draft-account-params.interface';
 import { IOpalFinesSearchOffencesParams } from './interfaces/opal-fines-search-offences-params.interface';
 import { IOpalFinesSearchOffencesData } from './interfaces/opal-fines-search-offences.interface';
-import { IOpalFinesDraftAccountPatchPayload } from './interfaces/opal-fines-draft-account.interface';
 import { IOpalFinesAccountDefendantDetailsHeader } from '../../fines-acc/fines-acc-defendant-details/interfaces/fines-acc-defendant-details-header.interface';
 import { IOpalFinesAccountDefendantAtAGlance } from './interfaces/opal-fines-account-defendant-at-a-glance.interface';
 import { OPAL_FINES_ACCOUNT_DEFENDANT_DETAILS_IMPOSITIONS_TAB_REF_DATA_MOCK } from './mocks/opal-fines-account-defendant-details-impositions-tab-ref-data.mock';
@@ -55,7 +57,8 @@ import { IOpalFinesAccountMinorCreditorAtAGlance } from './interfaces/opal-fines
 import { IOpalFinesResultsParams } from './interfaces/opal-fines-results-params.interface';
 import { IOpalFinesEnforcersRefData } from './interfaces/opal-fines-enforcers-ref-data.interface';
 import { IOpalFinesEnforcer } from './interfaces/opal-fines-enforcer.interface';
-import { IOpalFinesUpdateMinorCreditorAccountPayload } from './interfaces/opal-fines-update-minor-creditor-account-payload.interface';
+import { IOpalFinesDraftAccountPatchRequestPayload } from '@services/fines/opal-fines-service/types/opal-fines-draft-account-patch-request-payload.type';
+import { IOpalFinesUpdateMinorCreditorAccountPayload } from '@services/fines/opal-fines-service/interfaces/opal-fines-update-minor-creditor-account-payload.interface';
 import { IOpalFinesDeleteDefendantAccountPartyPayload } from './interfaces/opal-fines-delete-defendant-account-party-payload.interface';
 
 @Injectable({
@@ -423,7 +426,7 @@ export class OpalFines {
    * @param body - The payload containing the account details to be added.
    * @returns An Observable of the added account payload.
    */
-  public postDraftAddAccountPayload(body: IFinesMacAddAccountPayload): Observable<IFinesMacAddAccountPayload> {
+  public postDraftAddAccountPayload(body: IFinesMacAddAccountRequestPayload): Observable<IFinesMacAddAccountPayload> {
     return this.http.post<IFinesMacAddAccountPayload>(OPAL_FINES_PATHS.draftAccounts, body);
   }
 
@@ -574,7 +577,7 @@ export class OpalFines {
    * @param body - The payload containing the account information to be added.
    * @returns An Observable of the updated account payload.
    */
-  public putDraftAddAccountPayload(body: IFinesMacAddAccountPayload): Observable<IFinesMacAddAccountPayload> {
+  public putDraftAddAccountPayload(body: IFinesMacAddAccountRequestPayload): Observable<IFinesMacAddAccountPayload> {
     return this.http.put<IFinesMacAddAccountPayload>(
       `${OPAL_FINES_PATHS.draftAccounts}/${body.draft_account_id}`,
       body,
@@ -602,7 +605,7 @@ export class OpalFines {
    */
   public patchDraftAccountPayload(
     draftAccountId: number,
-    payload: IOpalFinesDraftAccountPatchPayload,
+    payload: IOpalFinesDraftAccountPatchRequestPayload,
   ): Observable<IFinesMacAddAccountPayload> {
     return this.http.patch<IFinesMacAddAccountPayload>(
       `${OPAL_FINES_PATHS.draftAccounts}/${draftAccountId}`,

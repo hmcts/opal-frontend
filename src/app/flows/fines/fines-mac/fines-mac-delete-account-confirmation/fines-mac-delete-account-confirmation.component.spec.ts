@@ -5,12 +5,10 @@ import { FinesMacStore } from '../stores/fines-mac.store';
 import { FinesDraftStore } from '../../fines-draft/stores/fines-draft.store';
 import { OpalFines } from '@services/fines/opal-fines-service/opal-fines.service';
 import { UtilsService } from '@hmcts/opal-frontend-common/services/utils-service';
-import { DateService } from '@hmcts/opal-frontend-common/services/date-service';
 import { ActivatedRoute, Router } from '@angular/router';
 import { of, throwError } from 'rxjs';
 import { FinesMacStoreType } from '../stores/types/fines-mac-store.type';
 import { FinesDraftStoreType } from '../../fines-draft/stores/types/fines-draft.type';
-import { DateTime } from 'luxon';
 import { FINES_MAC_STATE_MOCK } from '../mocks/fines-mac-state.mock';
 import { FINES_DRAFT_STATE } from '../../fines-draft/constants/fines-draft-state.constant';
 import { FINES_MAC_DELETE_ACCOUNT_CONFIRMATION_FORM } from './constants/fines-mac-delete-account-confirmation-form';
@@ -25,8 +23,6 @@ describe('FinesMacDeleteAccountConfirmationComponent', () => {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   let mockUtilsService: any;
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  let mockDateService: any;
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   let mockRouter: any;
 
   let finesMacStore: FinesMacStoreType;
@@ -39,23 +35,15 @@ describe('FinesMacDeleteAccountConfirmationComponent', () => {
     mockUtilsService = {
       scrollToTop: vi.fn().mockName('UtilsService.scrollToTop'),
     };
-    mockDateService = {
-      toFormat: vi.fn().mockName('DateService.toFormat'),
-      getDateNow: vi.fn().mockName('DateService.getDateNow'),
-    };
     mockRouter = {
       navigate: vi.fn().mockName('Router.navigate'),
     };
-
-    mockDateService.getDateNow.mockReturnValue(DateTime.fromISO('2024-01-01'));
-    mockDateService.toFormat.mockReturnValue('2024-01-01');
 
     await TestBed.configureTestingModule({
       imports: [FinesMacDeleteAccountConfirmationComponent, FinesMacDeleteAccountConfirmationFormComponent],
       providers: [
         { provide: OpalFines, useValue: mockOpalFinesService },
         { provide: UtilsService, useValue: mockUtilsService },
-        { provide: DateService, useValue: mockDateService },
         { provide: Router, useValue: mockRouter },
         {
           provide: ActivatedRoute,
@@ -101,9 +89,9 @@ describe('FinesMacDeleteAccountConfirmationComponent', () => {
       42,
       expect.objectContaining({
         account_status: 'Deleted',
-        timeline_data: expect.any(Array),
       }),
     );
+    expect(mockOpalFinesService.patchDraftAccountPayload.mock.calls[0][1]).not.toHaveProperty('timeline_data');
   });
 
   it('should handle patch response and navigate', () => {
@@ -183,7 +171,6 @@ describe('FinesMacDeleteAccountConfirmationComponent', () => {
   });
 
   it('should create a patch payload', () => {
-    component['userState'].name = 'Test User';
     const form = {
       ...FINES_MAC_DELETE_ACCOUNT_CONFIRMATION_FORM,
     };
@@ -195,16 +182,9 @@ describe('FinesMacDeleteAccountConfirmationComponent', () => {
       validated_by_name: null,
       business_unit_id: finesMacStore.getBusinessUnitId(),
       version: finesDraftStore.getFinesDraftState().version || '0',
-      timeline_data: [
-        {
-          username: 'Test User',
-          status: 'Deleted',
-          status_date: '2024-01-01',
-          reason_text: 'Test reason',
-        },
-      ],
       reason_text: 'Test reason',
     });
+    expect(payload).not.toHaveProperty('timeline_data');
   });
 
   it('should setReferrer to reviewAccountRoute when deleteFromCheckAccount is true', () => {
