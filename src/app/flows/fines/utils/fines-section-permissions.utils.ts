@@ -2,53 +2,17 @@ import { INavigationBarConfiguration } from '@app/interfaces/navigation-bar-conf
 import { DASHBOARD_PAGE_DEFAULT_TAB } from '@app/pages/dashboard/constants/dashboard-config-default-tab.constant';
 import { DashboardPageType } from '@app/pages/dashboard/types/dashboard.type';
 import { IOpalUserState } from '@hmcts/opal-frontend-common/services/opal-user-service/interfaces';
-import { FINES_PERMISSIONS } from '@app/constants/fines-permissions.constant';
 import { FINES_PRIMARY_NAVIGATION_SECTION_PERMISSIONS } from '../constants/fines-primary-navigation-section-permissions.constant';
 import { type IDashboardPageConfiguration } from '@hmcts/opal-frontend-common/pages/dashboard-page/interfaces';
+import { FEATURE_FLAG_RELEASE_DASHBOARD_GROUPS } from '../constants/feature-flag-release-dashboard-groups.constant';
+import { RELEASE_1A_FEATURE_FLAG } from '../constants/release-feature-flags.constant';
+import { FEATURE_FLAG_SECTION_PERMISSION_EXCLUSIONS } from '../constants/feature-flag-section-permission-exclusions.constant';
+import { type FeatureFlagReleaseName } from '../types/feature-flag-release-name.type';
+import { type FeatureFlagReleaseState } from '../types/feature-flag-release-state.type';
 
 const DASHBOARD_LANDING_PRIORITY: DashboardPageType[] = ['search', 'accounts', 'reports'];
-export const RELEASE_1A_FEATURE_FLAG = 'release-1a' as const;
 
 type FeatureFlags = Record<string, unknown>;
-export interface IFeatureFlagReleaseState {
-  [RELEASE_1A_FEATURE_FLAG]: boolean;
-}
-
-export type FeatureFlagReleaseState = Partial<IFeatureFlagReleaseState>;
-
-export interface IFeatureFlagReleasePermissions {
-  [RELEASE_1A_FEATURE_FLAG]: readonly number[];
-}
-
-export interface IFeatureFlagReleaseDashboardGroups {
-  [RELEASE_1A_FEATURE_FLAG]: readonly string[];
-}
-
-type FeatureFlagReleaseName = keyof IFeatureFlagReleaseState;
-type PermissionIds = readonly number[];
-
-type FeatureFlagPermissionExclusionsBySection = {
-  [sectionKey in DashboardPageType]?: {
-    [featureFlagName in FeatureFlagReleaseName]?: PermissionIds;
-  };
-};
-
-export const FEATURE_FLAG_RELEASE_PERMISSIONS: IFeatureFlagReleasePermissions = {
-  [RELEASE_1A_FEATURE_FLAG]: [
-    FINES_PERMISSIONS['create-and-manage-draft-accounts'],
-    FINES_PERMISSIONS['check-and-validate-draft-accounts'],
-  ],
-};
-
-export const FEATURE_FLAG_RELEASE_DASHBOARD_GROUPS: IFeatureFlagReleaseDashboardGroups = {
-  [RELEASE_1A_FEATURE_FLAG]: ['draft-accounts'],
-};
-
-const FEATURE_FLAG_SECTION_PERMISSION_EXCLUSIONS: FeatureFlagPermissionExclusionsBySection = {
-  accounts: {
-    [RELEASE_1A_FEATURE_FLAG]: FEATURE_FLAG_RELEASE_PERMISSIONS[RELEASE_1A_FEATURE_FLAG],
-  },
-};
 
 const getDisabledFeatureFlagValues = <T>(
   featureFlagValues: Partial<Record<FeatureFlagReleaseName, readonly T[]>>,

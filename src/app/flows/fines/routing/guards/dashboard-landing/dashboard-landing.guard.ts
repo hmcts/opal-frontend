@@ -6,11 +6,9 @@ import { OpalUserService } from '@hmcts/opal-frontend-common/services/opal-user-
 import { resolveFeatureFlagGuard } from '@hmcts/opal-frontend-common/guards/feature-flag';
 import { firstValueFrom } from 'rxjs';
 import { FINES_DASHBOARD_ROUTING_PATHS } from '@app/flows/fines/constants/fines-dashboard-routing-paths.constant';
-import {
-  type FeatureFlagReleaseState,
-  getDashboardLandingType,
-  RELEASE_1A_FEATURE_FLAG,
-} from '@app/flows/fines/utils/fines-section-permissions.utils';
+import { getDashboardLandingType } from '@app/flows/fines/utils/fines-section-permissions.utils';
+import { RELEASE_1A_FEATURE_FLAG } from '@app/flows/fines/constants/release-feature-flags.constant';
+import { type FeatureFlagReleaseState } from '@app/flows/fines/types/feature-flag-release-state.type';
 
 const getDefaultDashboardType = (featureFlagReleaseState: FeatureFlagReleaseState) =>
   getDashboardLandingType(NAVIGATION_BAR_CONFIGURATION, null, featureFlagReleaseState);

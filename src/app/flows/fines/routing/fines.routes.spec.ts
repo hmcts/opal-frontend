@@ -4,7 +4,7 @@ import { FINES_ROUTING_PATHS } from './constants/fines-routing-paths.constant';
 import { finesRouting, release1aFeatureFlagGuard } from './fines.routes';
 import { finesSectionPermissionsGuard } from './guards/fines-section-permissions/fines-section-permissions.guard';
 import { PRIMARY_NAV_HIDDEN_ROUTE_DATA } from '@app/constants/route-data.constant';
-import { RELEASE_1A_FEATURE_FLAG } from '../utils/fines-section-permissions.utils';
+import { RELEASE_1A_FEATURE_FLAG } from '../constants/release-feature-flags.constant';
 
 const { featureFlagRedirectGuardMock, release1aFeatureFlagGuardMock } = vi.hoisted(() => ({
   featureFlagRedirectGuardMock: vi.fn(),

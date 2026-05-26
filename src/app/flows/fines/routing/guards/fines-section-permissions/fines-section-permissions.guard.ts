@@ -1,12 +1,12 @@
 import { inject } from '@angular/core';
 import { ActivatedRouteSnapshot, CanActivateFn, Router, RouterStateSnapshot, UrlTree } from '@angular/router';
 import {
-  type FeatureFlagReleaseState,
   getRequiredPermissionIdsForSection,
   getUserPermissionIds,
   hasAnyPermission,
-  RELEASE_1A_FEATURE_FLAG,
 } from '@app/flows/fines/utils/fines-section-permissions.utils';
+import { RELEASE_1A_FEATURE_FLAG } from '@app/flows/fines/constants/release-feature-flags.constant';
+import { type FeatureFlagReleaseState } from '@app/flows/fines/types/feature-flag-release-state.type';
 import { isDashboardPageType } from '@app/pages/dashboard/constants/dashboard-config.constant';
 import { DashboardPageType } from '@app/pages/dashboard/types/dashboard.type';
 import { resolveFeatureFlagGuard } from '@hmcts/opal-frontend-common/guards/feature-flag';
