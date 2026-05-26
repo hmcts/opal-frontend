@@ -32,7 +32,7 @@ import { GovukHeadingWithCaptionComponent } from '@hmcts/opal-frontend-common/co
   standalone: true,
 })
 export class FinesAccEnfOverrideAddChangeFormComponent extends AbstractFormBaseComponent implements OnInit, OnDestroy {
-  private finesService = inject(OpalFines);
+  private readonly finesService = inject(OpalFines);
   private _showEnforcerField = false;
   private _showLjaField = false;
   protected override fieldErrors: IAbstractFormBaseFieldErrors = {
