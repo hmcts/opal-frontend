@@ -13,14 +13,14 @@
  * @example
  * ```ts
  * // Example usage inside a test or setup hook
- * loginAndLandOnDashboard('qa.user@example.com');
+ * loginAndLandOnSearch('qa.user@example.com');
  * ```
  *
  * @see {@link performLogin}
  * @see {@link AccountSearchIndividualsActions}
  */
 
-import { performLogin } from '../actions/login.actions';
+import { assertSignOutLinkVisible, performLogin } from '../actions/login.actions';
 import { AccountSearchIndividualsActions } from '../actions/search/search.individuals.actions';
 
 /**
@@ -34,7 +34,23 @@ import { AccountSearchIndividualsActions } from '../actions/search/search.indivi
  * - Instantiates {@link AccountSearchIndividualsActions} to confirm that the authenticated
  *   user lands on a valid post-login home page for the current journey.
  */
-export function loginAndLandOnDashboard(email: string): void {
+export function loginAndLandOnSearch(email: string): void {
   performLogin(email);
   new AccountSearchIndividualsActions().assertOnSearchLandingPage();
+}
+
+/**
+ * Logs in using either SSO or local authentication
+ * and verifies the authenticated shell is available without asserting a specific landing page.
+ *
+ * @param email - The email address of the user to authenticate as.
+ *
+ * @details
+ * - Calls {@link performLogin} to complete the login process.
+ * - Verifies the signed-in shell is available via the Sign out control.
+ * - Intended for feature-flag scenarios where the default landing page may be unavailable.
+ */
+export function loginAndAuthenticate(email: string): void {
+  performLogin(email);
+  assertSignOutLinkVisible();
 }

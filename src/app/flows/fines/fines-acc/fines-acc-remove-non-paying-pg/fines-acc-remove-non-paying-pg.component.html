@@ -1,0 +1,23 @@
+<div class="govuk-grid-column-three-quarters">
+  <opal-lib-govuk-heading-with-caption
+    [captionText]="accountIdentifier"
+    [headingText]="pageTitle"
+    headingClasses="govuk-heading-l govuk-!-margin-bottom-30"
+  >
+  </opal-lib-govuk-heading-with-caption>
+
+  <div class="govuk-button-group govuk-!-padding-top-2">
+    <button
+      id="removeParentGuardianDetails"
+      type="button"
+      class="govuk-button govuk-button--primary govuk-!-margin-right-4"
+      (click)="handleRemoveParentGuardianDetails()"
+    >
+      Yes - remove
+    </button>
+    <opal-lib-govuk-cancel-link
+      (linkClickEvent)="navigateToParentGuardianTab()"
+      cancelLinkText="No - cancel"
+    ></opal-lib-govuk-cancel-link>
+  </div>
+</div>

@@ -22,6 +22,8 @@ import { FINES_MAC_TITLE_DROPDOWN_OPTIONS } from '../../../fines-mac/constants/f
 import { FINES_MAC_LANGUAGE_PREFERENCES_OPTIONS } from '../../../fines-mac/fines-mac-language-preferences/constants/fines-mac-language-preferences-options';
 import { FinesAccountStore } from '../../stores/fines-acc.store';
 import { FINES_ACC_DEFENDANT_ROUTING_PATHS } from '../../routing/constants/fines-acc-defendant-routing-paths.constant';
+import { FINES_ACC_DEFENDANT_DETAILS_TABS_KEYS } from '../../fines-acc-defendant-details/constants/fines-acc-defendant-details-tabs-keys.constant';
+import { type TFinesAccDefendantDetailsTabKey } from '../../fines-acc-defendant-details/types/fines-acc-defendant-details-tab-key.type';
 import { GovukButtonComponent } from '@hmcts/opal-frontend-common/components/govuk/govuk-button';
 import { GovukHeadingWithCaptionComponent } from '@hmcts/opal-frontend-common/components/govuk/govuk-heading-with-caption';
 import {
@@ -42,12 +44,12 @@ import { patternValidator } from '@hmcts/opal-frontend-common/validators/pattern
 import { optionalPhoneNumberValidator } from '@hmcts/opal-frontend-common/validators/optional-valid-telephone';
 import {
   ALPHANUMERIC_WITH_SPACES_PATTERN,
-  LETTERS_WITH_SPACES_PATTERN,
   EMAIL_ADDRESS_PATTERN,
-  ALPHANUMERIC_WITH_HYPHENS_SPACES_APOSTROPHES_DOT_PATTERN,
+  SINGLE_ASCII_CHARACTERS,
 } from '@hmcts/opal-frontend-common/constants';
 import { GovukCancelLinkComponent } from '@hmcts/opal-frontend-common/components/govuk/govuk-cancel-link';
 import { FINES_ACC_PARTY_ADD_AMEND_CONVERT_FORM } from '../constants/fines-acc-party-add-amend-convert-form.constant';
+import { FINES_ACC_PARTY_ADD_AMEND_CONVERT_REDUCED_PARENT_GUARDIAN_HIDDEN_CONTROLS } from '../constants/fines-acc-party-add-amend-convert-reduced-parent-guardian-hidden-controls.constant';
 import { employerFieldsValidator } from '../validators/fines-acc-party-add-amend-convert-validators';
 import { FinesAccPartyAddAmendConvertEd } from './components/fines-acc-party-add-amend-convert-ed/fines-acc-party-add-amend-convert-ed.component';
 import { FinesAccPartyAddAmendConvertPartyDetails } from './components/fines-acc-party-add-amend-convert-party-details/fines-acc-party-add-amend-convert-party-details.component';
@@ -58,11 +60,17 @@ import { FinesAccPartyAddAmendConvertVd } from './components/fines-acc-party-add
 import { FinesAccPartyAddAmendConvertDobNi } from './components/fines-acc-party-add-amend-convert-dob-ni/fines-acc-party-add-amend-convert-dob-ni.component';
 import { FINES_ACC_SUMMARY_TABS_CONTENT_STYLES } from '../../constants/fines-acc-summary-tabs-content-styles.constant';
 import { FINES_ACC_PARTY_ADD_AMEND_CONVERT_MODES } from '../constants/fines-acc-party-add-amend-convert-modes.constant';
+import {
+  MojAlertComponent,
+  MojAlertContentComponent,
+  MojAlertIconComponent,
+  MojAlertTextComponent,
+} from '@hmcts/opal-frontend-common/components/moj/moj-alert';
 
-const LETTERS_WITH_SPACES_PATTERN_VALIDATOR = patternValidator(LETTERS_WITH_SPACES_PATTERN, 'lettersWithSpacesPattern');
-const ALPHANUMERIC_WITH_HYPHENS_SPACES_APOSTROPHES_DOT_PATTERN_VALIDATOR = patternValidator(
-  ALPHANUMERIC_WITH_HYPHENS_SPACES_APOSTROPHES_DOT_PATTERN,
-  'alphanumericWithHyphensSpacesApostrophesDotPattern',
+//regex pattern validators for the form controls
+const SINGLE_ASCII_CHARACTERS_ALPHANUMERIC_WITH_SPECIAL_CHARACTERS_PATTERN_VALIDATOR = patternValidator(
+  SINGLE_ASCII_CHARACTERS,
+  'singleAsciiCharacters',
 );
 const ALPHANUMERIC_WITH_SPACES_PATTERN_VALIDATOR = patternValidator(
   ALPHANUMERIC_WITH_SPACES_PATTERN,
@@ -91,6 +99,10 @@ const EMAIL_ADDRESS_PATTERN_VALIDATOR = patternValidator(EMAIL_ADDRESS_PATTERN, 
     FinesAccPartyAddAmendConvertEd,
     FinesAccPartyAddAmendConvertLp,
     FinesAccPartyAddAmendConvertDobNi,
+    MojAlertComponent,
+    MojAlertContentComponent,
+    MojAlertIconComponent,
+    MojAlertTextComponent,
   ],
   templateUrl: './fines-acc-party-add-amend-convert-form.component.html',
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -134,15 +146,15 @@ export class FinesAccPartyAddAmendConvertFormComponent
       facc_party_add_amend_convert_address_line_1: new FormControl(null, [
         Validators.required,
         Validators.maxLength(30),
-        ALPHANUMERIC_WITH_SPACES_PATTERN_VALIDATOR,
+        SINGLE_ASCII_CHARACTERS_ALPHANUMERIC_WITH_SPECIAL_CHARACTERS_PATTERN_VALIDATOR,
       ]),
       facc_party_add_amend_convert_address_line_2: new FormControl(null, [
         optionalMaxLengthValidator(30),
-        ALPHANUMERIC_WITH_SPACES_PATTERN_VALIDATOR,
+        SINGLE_ASCII_CHARACTERS_ALPHANUMERIC_WITH_SPECIAL_CHARACTERS_PATTERN_VALIDATOR,
       ]),
       facc_party_add_amend_convert_address_line_3: new FormControl(null, [
         optionalMaxLengthValidator(16),
-        ALPHANUMERIC_WITH_SPACES_PATTERN_VALIDATOR,
+        SINGLE_ASCII_CHARACTERS_ALPHANUMERIC_WITH_SPECIAL_CHARACTERS_PATTERN_VALIDATOR,
       ]),
       facc_party_add_amend_convert_post_code: new FormControl(null, [
         optionalMaxLengthValidator(8),
@@ -189,11 +201,19 @@ export class FinesAccPartyAddAmendConvertFormComponent
     formGroup.addControl('facc_party_add_amend_convert_title', new FormControl(null, titleValidator));
     formGroup.addControl(
       'facc_party_add_amend_convert_forenames',
-      new FormControl(null, [Validators.required, Validators.maxLength(20), LETTERS_WITH_SPACES_PATTERN_VALIDATOR]),
+      new FormControl(null, [
+        Validators.required,
+        Validators.maxLength(20),
+        SINGLE_ASCII_CHARACTERS_ALPHANUMERIC_WITH_SPECIAL_CHARACTERS_PATTERN_VALIDATOR,
+      ]),
     );
     formGroup.addControl(
       'facc_party_add_amend_convert_surname',
-      new FormControl(null, [Validators.required, Validators.maxLength(30), LETTERS_WITH_SPACES_PATTERN_VALIDATOR]),
+      new FormControl(null, [
+        Validators.required,
+        Validators.maxLength(30),
+        SINGLE_ASCII_CHARACTERS_ALPHANUMERIC_WITH_SPECIAL_CHARACTERS_PATTERN_VALIDATOR,
+      ]),
     );
     formGroup.addControl(
       'facc_party_add_amend_convert_dob',
@@ -203,7 +223,7 @@ export class FinesAccPartyAddAmendConvertFormComponent
       'facc_party_add_amend_convert_national_insurance_number',
       new FormControl(null, [nationalInsuranceNumberValidator()]),
     );
-    formGroup.addControl('facc_party_add_amend_convert_individual_aliases', new FormArray([]));
+    formGroup.addControl('facc_party_add_amend_convert_individual_aliases', this.createFormAlias([]));
 
     formGroup.addControl(
       'facc_party_add_amend_convert_employer_company_name',
@@ -268,10 +288,10 @@ export class FinesAccPartyAddAmendConvertFormComponent
       new FormControl(null, [
         Validators.required,
         Validators.maxLength(50),
-        ALPHANUMERIC_WITH_HYPHENS_SPACES_APOSTROPHES_DOT_PATTERN_VALIDATOR,
+        SINGLE_ASCII_CHARACTERS_ALPHANUMERIC_WITH_SPECIAL_CHARACTERS_PATTERN_VALIDATOR,
       ]),
     );
-    formGroup.addControl('facc_party_add_amend_convert_organisation_aliases', new FormArray([]));
+    formGroup.addControl('facc_party_add_amend_convert_organisation_aliases', this.createFormAlias([]));
   }
 
   /**
@@ -298,6 +318,48 @@ export class FinesAccPartyAddAmendConvertFormComponent
       this.aliasFields = FINES_ACC_PARTY_ADD_AMEND_CONVERT_ALIAS.map((control) => control.controlName);
       this.aliasControlsValidation = FINES_ACC_PARTY_ADD_AMEND_CONVERT_ALIAS;
     }
+  }
+
+  /**
+   * Clears validators from hidden alias rows while keeping their current values on the form.
+   *
+   * Uses the base form update helper for each nested alias control. The alias controls
+   * are FormArray children, so they need to be addressed by their array path.
+   */
+  private clearHiddenAliasValidators(formArrayName: string): void {
+    const formArray = this.form.get(formArrayName);
+
+    if (!(formArray instanceof FormArray)) {
+      return;
+    }
+
+    formArray.controls.forEach((aliasGroup, index) => {
+      if (aliasGroup instanceof FormGroup) {
+        Object.keys(aliasGroup.controls).forEach((controlName) => {
+          this.updateControl(`${formArrayName}.${index}.${controlName}`, []);
+        });
+      } else {
+        this.updateControl(`${formArrayName}.${index}`, []);
+      }
+    });
+
+    this.updateControl(formArrayName, []);
+  }
+
+  /**
+   * Removes validation from fields hidden by the reduced non-debtor parent/guardian screen.
+   */
+  private clearReducedParentGuardianHiddenFieldValidators(): void {
+    if (!this.isReducedParentGuardianMode) {
+      return;
+    }
+
+    FINES_ACC_PARTY_ADD_AMEND_CONVERT_REDUCED_PARENT_GUARDIAN_HIDDEN_CONTROLS.forEach((controlName) => {
+      this.updateControl(controlName, []);
+    });
+
+    this.clearHiddenAliasValidators('facc_party_add_amend_convert_individual_aliases');
+    this.clearHiddenAliasValidators('facc_party_add_amend_convert_organisation_aliases');
   }
 
   /**
@@ -352,6 +414,7 @@ export class FinesAccPartyAddAmendConvertFormComponent
     }
 
     this.rePopulateForm(this.initialFormData?.formData || null);
+    this.clearReducedParentGuardianHiddenFieldValidators();
     this.setInitialErrorMessages();
     if (this.isIndividualPartyType) {
       this.setUpAliasCheckboxListener(
@@ -406,6 +469,27 @@ export class FinesAccPartyAddAmendConvertFormComponent
   }
 
   /**
+   * Returns true when the shared form is being used to add a non-paying parent/guardian.
+   */
+  public get isAddParentGuardianMode(): boolean {
+    return this.mode === FINES_ACC_PARTY_ADD_AMEND_CONVERT_MODES.ADD && this.isParentGuardianPartyType;
+  }
+
+  /**
+   * Returns true when the parent/guardian form should show only non-debtor information fields.
+   */
+  public get isReducedParentGuardianMode(): boolean {
+    return this.isParentGuardianPartyType && !this.isDebtor;
+  }
+
+  /**
+   * Returns true if the contact section should be shown.
+   */
+  public get showContactDetails(): boolean {
+    return this.checkCompanyOrDebtor || this.isReducedParentGuardianMode;
+  }
+
+  /**
    * Returns true if the party type is parent/guardian.
    */
   public get isParentGuardianPartyType(): boolean {
@@ -428,8 +512,14 @@ export class FinesAccPartyAddAmendConvertFormComponent
   /**
    * Resolves the defendant-details fragment to use when navigating back from the form.
    */
-  public get routeFragment(): string {
-    return this.partyType === this.partyTypes.PARENT_GUARDIAN ? 'parent-or-guardian' : 'defendant';
+  public get routeFragment(): TFinesAccDefendantDetailsTabKey {
+    if (this.isAddParentGuardianMode || this.isReducedParentGuardianMode) {
+      return FINES_ACC_DEFENDANT_DETAILS_TABS_KEYS.defendant;
+    }
+
+    return this.partyType === this.partyTypes.PARENT_GUARDIAN
+      ? FINES_ACC_DEFENDANT_DETAILS_TABS_KEYS['parent-or-guardian']
+      : FINES_ACC_DEFENDANT_DETAILS_TABS_KEYS.defendant;
   }
 
   public override ngOnInit(): void {

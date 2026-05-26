@@ -67,7 +67,7 @@ describe('FinesMacCompanyDetailsComponent', () => {
 
   it(
     'should render the component (FinesMacCompanyDetailsComponent)',
-    { tags: [...buildTags('@JIRA-STORY:PO-365'), '@JIRA-EPIC:PO-345'] },
+    { tags: [...buildTags('@JIRA-STORY:PO-365'), '@JIRA-EPIC:PO-345', '@JIRA-TEST-KEY:PO-4889'] },
     () => {
       setupComponent(null, 'company');
 
@@ -78,7 +78,7 @@ describe('FinesMacCompanyDetailsComponent', () => {
 
   it(
     '(AC.8) should error when submitted without mandatory fields but has included optional input - Return to account details + Add contact details',
-    { tags: [...buildTags('@JIRA-STORY:PO-365'), '@JIRA-EPIC:PO-345'] },
+    { tags: [...buildTags('@JIRA-STORY:PO-365'), '@JIRA-EPIC:PO-345', '@JIRA-TEST-KEY:PO-4890'] },
     () => {
       setupComponent(null, 'company');
 
@@ -96,7 +96,7 @@ describe('FinesMacCompanyDetailsComponent', () => {
 
   it(
     '(AC.1) should be created as per the design artefact',
-    { tags: [...buildTags('@JIRA-STORY:PO-365'), '@JIRA-EPIC:PO-345'] },
+    { tags: [...buildTags('@JIRA-STORY:PO-365'), '@JIRA-EPIC:PO-345', '@JIRA-TEST-KEY:PO-4891'] },
     () => {
       setupComponent(null, 'company');
 
@@ -127,7 +127,7 @@ describe('FinesMacCompanyDetailsComponent', () => {
 
   it(
     '(AC.2) should register all fields for aliases correctly',
-    { tags: [...buildTags('@JIRA-STORY:PO-365'), '@JIRA-EPIC:PO-345'] },
+    { tags: [...buildTags('@JIRA-STORY:PO-365'), '@JIRA-EPIC:PO-345', '@JIRA-TEST-KEY:PO-4892'] },
     () => {
       setupComponent(null, 'company');
 
@@ -142,7 +142,7 @@ describe('FinesMacCompanyDetailsComponent', () => {
 
   it(
     '(AC.3) should allow users to add another aliases',
-    { tags: [...buildTags('@JIRA-STORY:PO-365'), '@JIRA-EPIC:PO-345'] },
+    { tags: [...buildTags('@JIRA-STORY:PO-365'), '@JIRA-EPIC:PO-345', '@JIRA-TEST-KEY:PO-4893'] },
     () => {
       setupComponent(null, 'company');
 
@@ -169,7 +169,7 @@ describe('FinesMacCompanyDetailsComponent', () => {
 
   it(
     '(AC.4) should allow users to add up to 5 aliases',
-    { tags: [...buildTags('@JIRA-STORY:PO-365'), '@JIRA-EPIC:PO-345'] },
+    { tags: [...buildTags('@JIRA-STORY:PO-365'), '@JIRA-EPIC:PO-345', '@JIRA-TEST-KEY:PO-4894'] },
     () => {
       setupComponent(null, 'company');
 
@@ -255,7 +255,7 @@ describe('FinesMacCompanyDetailsComponent', () => {
 
   it(
     '(AC.5) should allow users to remove an alias when an additional alias has been added for the first time',
-    { tags: [...buildTags('@JIRA-STORY:PO-365'), '@JIRA-EPIC:PO-345'] },
+    { tags: [...buildTags('@JIRA-STORY:PO-365'), '@JIRA-EPIC:PO-345', '@JIRA-TEST-KEY:PO-4895'] },
     () => {
       setupComponent(null, 'company');
 
@@ -281,7 +281,7 @@ describe('FinesMacCompanyDetailsComponent', () => {
 
   it(
     '(AC.6) should allow users to remove an alias when multiple additional aliases have been added',
-    { tags: [...buildTags('@JIRA-STORY:PO-365'), '@JIRA-EPIC:PO-345'] },
+    { tags: [...buildTags('@JIRA-STORY:PO-365'), '@JIRA-EPIC:PO-345', '@JIRA-TEST-KEY:PO-4896'] },
     () => {
       setupComponent(null, 'company');
 
@@ -349,7 +349,7 @@ describe('FinesMacCompanyDetailsComponent', () => {
 
   it(
     '(AC.7) should not retain alias information when checkbox is unticked',
-    { tags: [...buildTags('@JIRA-STORY:PO-365'), '@JIRA-EPIC:PO-345'] },
+    { tags: [...buildTags('@JIRA-STORY:PO-365'), '@JIRA-EPIC:PO-345', '@JIRA-TEST-KEY:PO-4897'] },
     () => {
       setupComponent(null, 'company');
 
@@ -375,7 +375,7 @@ describe('FinesMacCompanyDetailsComponent', () => {
 
   it(
     '(AC.12) should allow form to be submitted with valid data',
-    { tags: [...buildTags('@JIRA-STORY:PO-365'), '@JIRA-EPIC:PO-345'] },
+    { tags: [...buildTags('@JIRA-STORY:PO-365'), '@JIRA-EPIC:PO-345', '@JIRA-TEST-KEY:PO-4898'] },
     () => {
       const formSubmitSpy = Cypress.sinon.spy();
       setupComponent(formSubmitSpy);
@@ -392,7 +392,7 @@ describe('FinesMacCompanyDetailsComponent', () => {
 
   it(
     '(AC.9) should errors when form is submitted with empty aliases fields - Return to account details + Add contact details',
-    { tags: [...buildTags('@JIRA-STORY:PO-365'), '@JIRA-EPIC:PO-345'] },
+    { tags: [...buildTags('@JIRA-STORY:PO-365'), '@JIRA-EPIC:PO-345', '@JIRA-TEST-KEY:PO-4899'] },
     () => {
       setupComponent(null, 'company');
 
@@ -408,7 +408,7 @@ describe('FinesMacCompanyDetailsComponent', () => {
 
   it(
     '(AC.10) should error when submitted with many empty aliases fields - Return to account details + Add contact details',
-    { tags: [...buildTags('@JIRA-STORY:PO-365'), '@JIRA-EPIC:PO-345'] },
+    { tags: [...buildTags('@JIRA-STORY:PO-365'), '@JIRA-EPIC:PO-345', '@JIRA-TEST-KEY:PO-4900'] },
     () => {
       setupComponent(null, 'company');
 
@@ -446,7 +446,7 @@ describe('FinesMacCompanyDetailsComponent', () => {
 
   it(
     '(AC.1) should show maxlength errors when form fields exceed character limits',
-    { tags: [...buildTags('@JIRA-STORY:PO-365'), '@JIRA-EPIC:PO-345'] },
+    { tags: [...buildTags('@JIRA-STORY:PO-365'), '@JIRA-EPIC:PO-345', '@JIRA-TEST-KEY:PO-4901'] },
     () => {
       setupComponent(null, 'company');
 
@@ -487,7 +487,7 @@ describe('FinesMacCompanyDetailsComponent', () => {
 
   it(
     '(AC.1) should show errors when address line fields contain asterisks (*)',
-    { tags: [...buildTags('@JIRA-STORY:PO-365'), '@JIRA-EPIC:PO-345'] },
+    { tags: [...buildTags('@JIRA-STORY:PO-365'), '@JIRA-EPIC:PO-345', '@JIRA-TEST-KEY:PO-4902'] },
     () => {
       setupComponent(null, 'company');
 
@@ -515,6 +515,7 @@ describe('FinesMacCompanyDetailsComponent', () => {
           '@JIRA-LABEL:populate-and-submit',
         ),
         '@JIRA-KEY:POT-7336',
+        '@JIRA-TEST-KEY:PO-4903',
       ],
     },
     () => {
@@ -552,6 +553,7 @@ describe('FinesMacCompanyDetailsComponent', () => {
           '@JIRA-LABEL:populate-and-submit',
         ),
         '@JIRA-KEY:POT-7337',
+        '@JIRA-TEST-KEY:PO-4904',
       ],
     },
     () => {
@@ -579,7 +581,7 @@ describe('FinesMacCompanyDetailsComponent', () => {
   );
   it(
     '(AC.11) should allow form to be submitted when validation errors are corrected - Return to account details + Add contact details',
-    { tags: [...buildTags('@JIRA-STORY:PO-365'), '@JIRA-EPIC:PO-345'] },
+    { tags: [...buildTags('@JIRA-STORY:PO-365'), '@JIRA-EPIC:PO-345', '@JIRA-TEST-KEY:PO-4905'] },
     () => {
       const formSubmitSpy = Cypress.sinon.spy();
       setupComponent(formSubmitSpy, 'company');
@@ -605,7 +607,7 @@ describe('FinesMacCompanyDetailsComponent', () => {
 
   it(
     '(AC.12) should allow form to be submitted with valid data with aliases - Return to account details + Add contact details',
-    { tags: [...buildTags('@JIRA-STORY:PO-365'), '@JIRA-EPIC:PO-345'] },
+    { tags: [...buildTags('@JIRA-STORY:PO-365'), '@JIRA-EPIC:PO-345', '@JIRA-TEST-KEY:PO-4906'] },
     () => {
       const formSubmitSpy = Cypress.sinon.spy();
       setupComponent(formSubmitSpy, 'company');
@@ -635,7 +637,7 @@ describe('FinesMacCompanyDetailsComponent', () => {
   );
   it(
     '(AC.1) should convert specified company details fields to uppercase on user input',
-    { tags: [...buildTags('@JIRA-STORY:PO-1450'), '@JIRA-EPIC:PO-345'] },
+    { tags: [...buildTags('@JIRA-STORY:PO-1450'), '@JIRA-EPIC:PO-345', '@JIRA-TEST-KEY:PO-4907'] },
     () => {
       setupComponent(null, 'company');
 

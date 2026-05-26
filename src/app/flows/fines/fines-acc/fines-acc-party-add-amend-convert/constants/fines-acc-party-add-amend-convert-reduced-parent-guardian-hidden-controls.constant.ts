@@ -1,0 +1,20 @@
+import { type IFinesAccPartyAddAmendConvertForm } from '../interfaces/fines-acc-party-add-amend-convert-form.interface';
+
+export const FINES_ACC_PARTY_ADD_AMEND_CONVERT_REDUCED_PARENT_GUARDIAN_HIDDEN_CONTROLS = [
+  'facc_party_add_amend_convert_dob',
+  'facc_party_add_amend_convert_national_insurance_number',
+  'facc_party_add_amend_convert_vehicle_make',
+  'facc_party_add_amend_convert_vehicle_registration_mark',
+  'facc_party_add_amend_convert_language_preferences_document_language',
+  'facc_party_add_amend_convert_language_preferences_hearing_language',
+  'facc_party_add_amend_convert_employer_company_name',
+  'facc_party_add_amend_convert_employer_reference',
+  'facc_party_add_amend_convert_employer_email_address',
+  'facc_party_add_amend_convert_employer_telephone_number',
+  'facc_party_add_amend_convert_employer_address_line_1',
+  'facc_party_add_amend_convert_employer_address_line_2',
+  'facc_party_add_amend_convert_employer_address_line_3',
+  'facc_party_add_amend_convert_employer_address_line_4',
+  'facc_party_add_amend_convert_employer_address_line_5',
+  'facc_party_add_amend_convert_employer_post_code',
+] as const satisfies readonly (keyof IFinesAccPartyAddAmendConvertForm['formData'])[];

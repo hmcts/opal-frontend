@@ -32,6 +32,8 @@ export class AccountDetailsParentGuardianActions {
     // Click the "Change" link in the Parent or guardian tab header
     cy.get(L.parentOrGuardianTabHeader.changeLink, { timeout })
       .should('be.visible')
+      .and('contain.text', L.parentOrGuardianTabHeader.changeLinkLabel)
+      .should('be.visible')
       .scrollIntoView()
       .click({ force: true });
 
@@ -39,6 +41,22 @@ export class AccountDetailsParentGuardianActions {
     if (opts?.formSelector) {
       cy.get(opts.formSelector, { timeout }).should('be.visible');
     }
+  }
+
+  /**
+   * Asserts the remove parent or guardian action is visible on the Parent or guardian tab.
+   */
+  public assertRemoveParentGuardianActionVisible(): void {
+    cy.get(L.actions.removeParentOrGuardian, { timeout: 10_000 })
+      .should('be.visible')
+      .and('contain.text', 'Remove Parent or guardian details');
+  }
+
+  /**
+   * Clicks the remove parent or guardian action on the Parent or guardian tab.
+   */
+  public startRemoveParentGuardianDetails(): void {
+    cy.get(L.actions.removeParentOrGuardian, { timeout: 10_000 }).should('be.visible').click({ force: true });
   }
 
   /**
