@@ -17,3 +17,5 @@ export interface IFinesMacAddAccountPayload extends IOpalFinesVersion {
   account_snapshot: IFinesMacPayloadAccountSnapshot | null;
   account_status_date: string | null;
 }
+
+export type IFinesMacAddAccountRequestPayload = Omit<IFinesMacAddAccountPayload, 'timeline_data'>;

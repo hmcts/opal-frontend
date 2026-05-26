@@ -155,7 +155,7 @@ describe('Filter by Business Unit (CT)', () => {
 
   it(
     'AC1c: shows tabs, master label, Fines list alphabetical (A→Z), and Save/Cancel controls',
-    { tags: [...buildTags(), '@JIRA-EPIC:PO-704'] },
+    { tags: [...buildTags(), '@JIRA-EPIC:PO-704', '@JIRA-TEST-KEY:PO-4524'] },
     () => {
       setupComponent();
 
@@ -189,7 +189,7 @@ describe('Filter by Business Unit (CT)', () => {
 
   it(
     'AC1ci: all business units are selected when filter is set to "All business units" (Fines tab)',
-    { tags: [...buildTags(), '@JIRA-EPIC:PO-704'] },
+    { tags: [...buildTags(), '@JIRA-EPIC:PO-704', '@JIRA-TEST-KEY:PO-4525'] },
     () => {
       // Preselect all Fines IDs
       preselectedIds = resolverPayload.refData
@@ -217,17 +217,21 @@ describe('Filter by Business Unit (CT)', () => {
 
   // ---------------- AC2a ----------------
 
-  it('AC2a: shows two tabs – Fines and Confiscation', { tags: [...buildTags(), '@JIRA-EPIC:PO-704'] }, () => {
-    setupComponent();
-    cy.get(NavLocators.finesTabLink).should('contain.text', TAB_LABELS.fines);
-    cy.get(NavLocators.confiscationTabLink).should('contain.text', TAB_LABELS.confiscation);
-  });
+  it(
+    'AC2a: shows two tabs – Fines and Confiscation',
+    { tags: [...buildTags(), '@JIRA-EPIC:PO-704', '@JIRA-TEST-KEY:PO-4526'] },
+    () => {
+      setupComponent();
+      cy.get(NavLocators.finesTabLink).should('contain.text', TAB_LABELS.fines);
+      cy.get(NavLocators.confiscationTabLink).should('contain.text', TAB_LABELS.confiscation);
+    },
+  );
 
   // ---------------- AC2 (Fines) ----------------
 
   it(
     'AC2ai/2b/2c (Fines): only Fines units, labels equal names, alphabetical A→Z',
-    { tags: [...buildTags(), '@JIRA-EPIC:PO-704'] },
+    { tags: [...buildTags(), '@JIRA-EPIC:PO-704', '@JIRA-TEST-KEY:PO-4527'] },
     () => {
       setupComponent();
       clickTab('fines');
@@ -245,7 +249,7 @@ describe('Filter by Business Unit (CT)', () => {
 
   it(
     'AC2aii/2b/2c (Confiscation): only Confiscation units, labels equal names, alphabetical A→Z',
-    { tags: [...buildTags(), '@JIRA-EPIC:PO-704'] },
+    { tags: [...buildTags(), '@JIRA-EPIC:PO-704', '@JIRA-TEST-KEY:PO-4528'] },
     () => {
       setupComponent();
       // Drive fragment to switch tab in CT
@@ -271,7 +275,7 @@ describe('Filter by Business Unit (CT)', () => {
 
   it(
     'AC3a (Fines): master checkbox selects all fines units and counter shows n of n',
-    { tags: [...buildTags(), '@JIRA-EPIC:PO-704'] },
+    { tags: [...buildTags(), '@JIRA-EPIC:PO-704', '@JIRA-TEST-KEY:PO-4529'] },
     () => {
       preselectedIds = [];
       setupComponent();
@@ -298,7 +302,7 @@ describe('Filter by Business Unit (CT)', () => {
 
   it(
     'AC3ai (Fines): unticking master checkbox clears all fines units and counter shows 0 of n',
-    { tags: [...buildTags(), '@JIRA-EPIC:PO-704'] },
+    { tags: [...buildTags(), '@JIRA-EPIC:PO-704', '@JIRA-TEST-KEY:PO-4530'] },
     () => {
       preselectedIds = resolverPayload.refData
         .filter((bu) => String(bu.opal_domain).toLowerCase() === 'fines')
@@ -330,7 +334,7 @@ describe('Filter by Business Unit (CT)', () => {
 
   it(
     'AC4a (Confiscation): master checkbox selects all confiscation units and counter shows n of n',
-    { tags: [...buildTags(), '@JIRA-EPIC:PO-704'] },
+    { tags: [...buildTags(), '@JIRA-EPIC:PO-704', '@JIRA-TEST-KEY:PO-4531'] },
     () => {
       preselectedIds = [];
       setupComponent();
@@ -357,7 +361,7 @@ describe('Filter by Business Unit (CT)', () => {
 
   it(
     'AC4ai (Confiscation): unticking master checkbox clears all confiscation units and counter shows 0 of n',
-    { tags: [...buildTags(), '@JIRA-EPIC:PO-704'] },
+    { tags: [...buildTags(), '@JIRA-EPIC:PO-704', '@JIRA-TEST-KEY:PO-4532'] },
     () => {
       preselectedIds = resolverPayload.refData
         .filter((bu) => String(bu.opal_domain).toLowerCase() === 'confiscation')
@@ -388,7 +392,7 @@ describe('Filter by Business Unit (CT)', () => {
 
   it(
     'AC5: Save button count shows total across Fines + Confiscation and updates dynamically',
-    { tags: [...buildTags(), '@JIRA-EPIC:PO-704'] },
+    { tags: [...buildTags(), '@JIRA-EPIC:PO-704', '@JIRA-TEST-KEY:PO-4533'] },
     () => {
       setupComponent();
 
@@ -446,7 +450,7 @@ describe('Filter by Business Unit (CT)', () => {
 
   it(
     'AC6a (Fines): shows an error when clicking Save with no business units selected',
-    { tags: [...buildTags(), '@JIRA-EPIC:PO-704'] },
+    { tags: [...buildTags(), '@JIRA-EPIC:PO-704', '@JIRA-TEST-KEY:PO-4534'] },
     () => {
       // Start clean (no preselectedIds)
       preselectedIds = [];
@@ -468,7 +472,7 @@ describe('Filter by Business Unit (CT)', () => {
 
   it(
     'AC6b (Confiscation): shows an error when clicking Save with no business units selected',
-    { tags: [...buildTags(), '@JIRA-EPIC:PO-704'] },
+    { tags: [...buildTags(), '@JIRA-EPIC:PO-704', '@JIRA-TEST-KEY:PO-4535'] },
     () => {
       preselectedIds = [];
       setupComponent();

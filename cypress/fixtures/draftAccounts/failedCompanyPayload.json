@@ -120,13 +120,5 @@
   "account_type": "Fixed Penalty",
   "account_status": "Submitted",
   "account_status_message": null,
-  "timeline_data": [
-    {
-      "username": "opal-test",
-      "status": "Submitted",
-      "status_date": "2025-11-25",
-      "reason_text": null
-    }
-  ],
   "version": "0"
 }

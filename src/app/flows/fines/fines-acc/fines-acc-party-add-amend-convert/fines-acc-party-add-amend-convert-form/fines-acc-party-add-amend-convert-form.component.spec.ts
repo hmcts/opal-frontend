@@ -1,5 +1,5 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
-import { ReactiveFormsModule, FormArray } from '@angular/forms';
+import { ReactiveFormsModule, FormArray, FormControl } from '@angular/forms';
 import { signal } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { of } from 'rxjs';
@@ -9,6 +9,8 @@ import { FinesAccountStore } from '../../stores/fines-acc.store';
 import { MOCK_FINES_ACC_PARTY_ADD_AMEND_CONVERT_FORM_DATA } from '../mocks/fines-acc-party-add-amend-convert-form.mock';
 import { MOCK_FINES_ACC_PARTY_ADD_AMEND_CONVERT_FORM_DATA_WITH_ALIASES } from '../mocks/fines-acc-party-add-amend-convert-form-with-aliases.mock';
 import { FINES_ACC_PARTY_ADD_AMEND_CONVERT_FORM } from '../constants/fines-acc-party-add-amend-convert-form.constant';
+import { FINES_ACC_DEFENDANT_DETAILS_TABS_KEYS } from '../../fines-acc-defendant-details/constants/fines-acc-defendant-details-tabs-keys.constant';
+import { FINES_ACC_PARTY_ADD_AMEND_CONVERT_MODES } from '../constants/fines-acc-party-add-amend-convert-modes.constant';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
 
 describe('FinesAccPartyAddAmendConvertFormComponent', () => {
@@ -257,10 +259,10 @@ describe('FinesAccPartyAddAmendConvertFormComponent', () => {
     component.partyType = 'individual';
     fixture.detectChanges();
 
-    expect(component.routeFragment).toBe('defendant');
+    expect(component.routeFragment).toBe(FINES_ACC_DEFENDANT_DETAILS_TABS_KEYS.defendant);
 
     component.partyType = 'company';
-    expect(component.routeFragment).toBe('defendant');
+    expect(component.routeFragment).toBe(FINES_ACC_DEFENDANT_DETAILS_TABS_KEYS.defendant);
   });
 
   it('should resolve parent or guardian fragment for parent guardian party type', () => {
@@ -268,7 +270,7 @@ describe('FinesAccPartyAddAmendConvertFormComponent', () => {
     component.isDebtor = true;
     fixture.detectChanges();
 
-    expect(component.routeFragment).toBe('parent-or-guardian');
+    expect(component.routeFragment).toBe(FINES_ACC_DEFENDANT_DETAILS_TABS_KEYS['parent-or-guardian']);
   });
 
   it('should resolve defendant fragment for reduced parent guardian mode', () => {
@@ -276,7 +278,17 @@ describe('FinesAccPartyAddAmendConvertFormComponent', () => {
     component.isDebtor = false;
     fixture.detectChanges();
 
-    expect(component.routeFragment).toBe('defendant');
+    expect(component.routeFragment).toBe(FINES_ACC_DEFENDANT_DETAILS_TABS_KEYS.defendant);
+  });
+
+  it('should resolve add parent guardian mode and return to defendant fragment', () => {
+    component.partyType = 'parentGuardian';
+    component.isDebtor = true;
+    component.mode = FINES_ACC_PARTY_ADD_AMEND_CONVERT_MODES.ADD;
+    fixture.detectChanges();
+
+    expect(component.isAddParentGuardianMode).toBe(true);
+    expect(component.routeFragment).toBe(FINES_ACC_DEFENDANT_DETAILS_TABS_KEYS.defendant);
   });
 
   it('should show contact details for reduced parent guardian mode', () => {
@@ -307,6 +319,60 @@ describe('FinesAccPartyAddAmendConvertFormComponent', () => {
     expect(component.form.get('facc_party_add_amend_convert_dob')?.valid).toBe(true);
     expect(component.form.get('facc_party_add_amend_convert_national_insurance_number')?.valid).toBe(true);
     expect(component.form.valid).toBe(true);
+  });
+
+  it('should clear validators from hidden individual aliases in reduced parent guardian mode', () => {
+    component.partyType = 'parentGuardian';
+    component.isDebtor = false;
+    component.initialFormData = {
+      formData: {
+        ...FINES_ACC_PARTY_ADD_AMEND_CONVERT_FORM.formData,
+        facc_party_add_amend_convert_forenames: 'Jane',
+        facc_party_add_amend_convert_surname: 'Smith',
+        facc_party_add_amend_convert_address_line_1: '1 Test Street',
+        facc_party_add_amend_convert_individual_aliases: [
+          {
+            facc_party_add_amend_convert_alias_forenames_0: 'Janie',
+            facc_party_add_amend_convert_alias_surname_0: 'Smith',
+            facc_party_add_amend_convert_alias_id_0: '',
+          },
+        ],
+      },
+      nestedFlow: false,
+    };
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    const updateControlSpy = vi.spyOn<any, any>(component, 'updateControl');
+
+    fixture.detectChanges();
+
+    expect(updateControlSpy).toHaveBeenCalledWith(
+      'facc_party_add_amend_convert_individual_aliases.0.facc_party_add_amend_convert_alias_forenames_0',
+      [],
+    );
+    expect(updateControlSpy).toHaveBeenCalledWith(
+      'facc_party_add_amend_convert_individual_aliases.0.facc_party_add_amend_convert_alias_surname_0',
+      [],
+    );
+    expect(updateControlSpy).toHaveBeenCalledWith(
+      'facc_party_add_amend_convert_individual_aliases.0.facc_party_add_amend_convert_alias_id_0',
+      [],
+    );
+    expect(updateControlSpy).toHaveBeenCalledWith('facc_party_add_amend_convert_individual_aliases', []);
+  });
+
+  it('should clear validators from non-group alias controls', () => {
+    component.partyType = 'individual';
+    fixture.detectChanges();
+
+    const individualAliases = component.form.get('facc_party_add_amend_convert_individual_aliases') as FormArray;
+    individualAliases.push(new FormControl('Alias'));
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    const updateControlSpy = vi.spyOn<any, any>(component, 'updateControl');
+
+    component['clearHiddenAliasValidators']('facc_party_add_amend_convert_individual_aliases');
+
+    expect(updateControlSpy).toHaveBeenCalledWith('facc_party_add_amend_convert_individual_aliases.0', []);
+    expect(updateControlSpy).toHaveBeenCalledWith('facc_party_add_amend_convert_individual_aliases', []);
   });
 
   it('should calculate age when valid date of birth is provided', () => {

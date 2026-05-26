@@ -56,7 +56,7 @@ describe(
   () => {
     it(
       'AC1,1a, AC2,2a,2b. Individual: navigates to the select enforcement action screen and displays the form incl details',
-      { tags: ['@JIRA-STORY:PO-1780', '@JIRA-STORY:PO-1824'] },
+      { tags: ['@JIRA-STORY:PO-1780', '@JIRA-STORY:PO-1824', '@JIRA-EPIC:PO-1674', '@JIRA-TEST-KEY:PO-4439'] },
       () => {
         let headerMock = structuredClone(createDefendantHeaderMockWithName('Robert', 'Thomson'));
         headerMock.debtor_type = 'Defendant';
@@ -228,7 +228,7 @@ describe(
 
     it(
       'AC1,1a. Individual: Negative testing, result ID is DW so without NOENF the add enf action button does not appear.',
-      { tags: ['@JIRA-STORY:PO-1780', '@JIRA-STORY:PO-1824'] },
+      { tags: ['@JIRA-STORY:PO-1780', '@JIRA-STORY:PO-1824', '@JIRA-EPIC:PO-1674', '@JIRA-TEST-KEY:PO-4440'] },
       () => {
         let headerMock = structuredClone(createDefendantHeaderMockWithName('Robert', 'Thomson'));
         headerMock.debtor_type = 'Defendant';
@@ -281,7 +281,7 @@ describe(
 
     it(
       'AC3,a,b,d, Individual: Account meets conditions to cause info banner update',
-      { tags: ['@JIRA-STORY:PO-1780', '@JIRA-STORY:PO-1824'] },
+      { tags: ['@JIRA-STORY:PO-1780', '@JIRA-STORY:PO-1824', '@JIRA-EPIC:PO-1674', '@JIRA-TEST-KEY:PO-4441'] },
       () => {
         let headerMock = structuredClone(createDefendantHeaderMockWithName('Robert', 'Thomson'));
         headerMock.debtor_type = 'Defendant';
@@ -328,7 +328,7 @@ describe(
 
     it(
       'AC4,a,ai,aii, AC5,a, Individual: Enforcement actions dropdown confirmation',
-      { tags: ['@JIRA-STORY:PO-1780', '@JIRA-STORY:PO-1824'] },
+      { tags: ['@JIRA-STORY:PO-1780', '@JIRA-STORY:PO-1824', '@JIRA-EPIC:PO-1674', '@JIRA-TEST-KEY:PO-4442'] },
       () => {
         let headerMock = structuredClone(createDefendantHeaderMockWithName('Robert', 'Thomson'));
         headerMock.debtor_type = 'Defendant';
@@ -405,74 +405,82 @@ describe(
     //   cy.get('@routerNavigate').should('have.been.calledWithMatch', ['../enforcement/action/<real-route-here>']);
     // });
 
-    it('AC6,a Individual: Cancel path no warning', { tags: ['@JIRA-STORY:PO-1780', '@JIRA-STORY:PO-1824'] }, () => {
-      let headerMock = structuredClone(createDefendantHeaderMockWithName('Robert', 'Thomson'));
-      headerMock.debtor_type = 'Defendant';
-      headerMock.account_status_reference.account_status_code = 'L';
-      let enforcementMock = structuredClone(OPAL_FINES_ACCOUNT_DEFENDANT_DETAILS_ENFORCEMENT_TAB_REF_DATA_MOCK);
-      enforcementMock.last_enforcement_action!.enforcement_action.result_id = 'NOENF';
-      enforcementMock.last_enforcement_action!.enforcement_action.result_title = 'No enforcement';
-      enforcementMock.next_enforcement_action_data = 'WOC, WOA';
-      enforcementMock.enforcement_overview.collection_order!.collection_order_flag = true;
-      const accountId = headerMock.defendant_account_party_id;
-      interceptAuthenticatedUser();
-      interceptUserState(USER_STATE_MOCK_PERMISSION_BU77);
-      interceptDefendantHeader(accountId, headerMock, '123');
-      interceptEnforcementStatus(accountId, enforcementMock, '123');
+    it(
+      'AC6,a Individual: Cancel path no warning',
+      { tags: ['@JIRA-STORY:PO-1780', '@JIRA-STORY:PO-1824', '@JIRA-EPIC:PO-1674', '@JIRA-TEST-KEY:PO-4443'] },
+      () => {
+        let headerMock = structuredClone(createDefendantHeaderMockWithName('Robert', 'Thomson'));
+        headerMock.debtor_type = 'Defendant';
+        headerMock.account_status_reference.account_status_code = 'L';
+        let enforcementMock = structuredClone(OPAL_FINES_ACCOUNT_DEFENDANT_DETAILS_ENFORCEMENT_TAB_REF_DATA_MOCK);
+        enforcementMock.last_enforcement_action!.enforcement_action.result_id = 'NOENF';
+        enforcementMock.last_enforcement_action!.enforcement_action.result_title = 'No enforcement';
+        enforcementMock.next_enforcement_action_data = 'WOC, WOA';
+        enforcementMock.enforcement_overview.collection_order!.collection_order_flag = true;
+        const accountId = headerMock.defendant_account_party_id;
+        interceptAuthenticatedUser();
+        interceptUserState(USER_STATE_MOCK_PERMISSION_BU77);
+        interceptDefendantHeader(accountId, headerMock, '123');
+        interceptEnforcementStatus(accountId, enforcementMock, '123');
 
-      interceptNextPermittedEnforcementActions(['WOC', 'WOA']);
-      setupAccountEnquiryComponent({ ...COMPONENT_PROPERTIES, accountId });
+        interceptNextPermittedEnforcementActions(['WOC', 'WOA']);
+        setupAccountEnquiryComponent({ ...COMPONENT_PROPERTIES, accountId });
 
-      cy.get(ENF.addEnforcementActionLink).should('exist').click();
-      cy.get('@routerNavigate').should('have.been.calledWithMatch', ['../enforcement/action/select']);
+        cy.get(ENF.addEnforcementActionLink).should('exist').click();
+        cy.get('@routerNavigate').should('have.been.calledWithMatch', ['../enforcement/action/select']);
 
-      cy.get(ENF_ACTION_SELECT.cancelLink).click();
-      cy.get('@routerNavigate').should('have.been.calledWithMatch', ['details']);
-      cy.get(ENF.tabName).should('contain.text', 'Enforcement');
-    });
+        cy.get(ENF_ACTION_SELECT.cancelLink).click();
+        cy.get('@routerNavigate').should('have.been.calledWithMatch', ['details']);
+        cy.get(ENF.tabName).should('contain.text', 'Enforcement');
+      },
+    );
 
-    it('AC6,b Individual: Cancel path/warning', { tags: ['@JIRA-STORY:PO-1780', '@JIRA-STORY:PO-1824'] }, () => {
-      let headerMock = structuredClone(createDefendantHeaderMockWithName('Robert', 'Thomson'));
-      headerMock.debtor_type = 'Defendant';
-      headerMock.account_status_reference.account_status_code = 'L';
-      let enforcementMock = structuredClone(OPAL_FINES_ACCOUNT_DEFENDANT_DETAILS_ENFORCEMENT_TAB_REF_DATA_MOCK);
-      enforcementMock.last_enforcement_action!.enforcement_action.result_id = 'NOENF';
-      enforcementMock.last_enforcement_action!.enforcement_action.result_title = 'No enforcement';
-      enforcementMock.next_enforcement_action_data = 'WOC, WOA';
-      enforcementMock.enforcement_overview.collection_order!.collection_order_flag = true;
-      const accountId = headerMock.defendant_account_party_id;
-      interceptAuthenticatedUser();
-      interceptUserState(USER_STATE_MOCK_PERMISSION_BU77);
-      interceptDefendantHeader(accountId, headerMock, '123');
-      interceptEnforcementStatus(accountId, enforcementMock, '123');
+    it(
+      'AC6,b Individual: Cancel path/warning',
+      { tags: ['@JIRA-STORY:PO-1780', '@JIRA-STORY:PO-1824', '@JIRA-EPIC:PO-1674', '@JIRA-TEST-KEY:PO-4444'] },
+      () => {
+        let headerMock = structuredClone(createDefendantHeaderMockWithName('Robert', 'Thomson'));
+        headerMock.debtor_type = 'Defendant';
+        headerMock.account_status_reference.account_status_code = 'L';
+        let enforcementMock = structuredClone(OPAL_FINES_ACCOUNT_DEFENDANT_DETAILS_ENFORCEMENT_TAB_REF_DATA_MOCK);
+        enforcementMock.last_enforcement_action!.enforcement_action.result_id = 'NOENF';
+        enforcementMock.last_enforcement_action!.enforcement_action.result_title = 'No enforcement';
+        enforcementMock.next_enforcement_action_data = 'WOC, WOA';
+        enforcementMock.enforcement_overview.collection_order!.collection_order_flag = true;
+        const accountId = headerMock.defendant_account_party_id;
+        interceptAuthenticatedUser();
+        interceptUserState(USER_STATE_MOCK_PERMISSION_BU77);
+        interceptDefendantHeader(accountId, headerMock, '123');
+        interceptEnforcementStatus(accountId, enforcementMock, '123');
 
-      interceptNextPermittedEnforcementActions(['WOC', 'WOA']);
-      setupAccountEnquiryComponent({ ...COMPONENT_PROPERTIES, accountId });
+        interceptNextPermittedEnforcementActions(['WOC', 'WOA']);
+        setupAccountEnquiryComponent({ ...COMPONENT_PROPERTIES, accountId });
 
-      cy.get(ENF.addEnforcementActionLink).should('exist').click();
-      cy.get('@routerNavigate').should('have.been.calledWithMatch', ['../enforcement/action/select']);
+        cy.get(ENF.addEnforcementActionLink).should('exist').click();
+        cy.get('@routerNavigate').should('have.been.calledWithMatch', ['../enforcement/action/select']);
 
-      cy.get(ENF_ACTION_SELECT.actionDropdown).click();
-      cy.get(ENF_ACTION_SELECT.actionDropdownOptions).contains('Warrant of Control').click();
+        cy.get(ENF_ACTION_SELECT.actionDropdown).click();
+        cy.get(ENF_ACTION_SELECT.actionDropdownOptions).contains('Warrant of Control').click();
 
-      cy.window().then((win) => {
-        cy.stub(win, 'confirm')
-          .callsFake((message: string) => {
-            expect(message.replace(/\s+/g, ' ')).to.match(/unsaved changes/i);
-            return false;
-          })
-          .as('confirmDismiss');
-      });
+        cy.window().then((win) => {
+          cy.stub(win, 'confirm')
+            .callsFake((message: string) => {
+              expect(message.replace(/\s+/g, ' ')).to.match(/unsaved changes/i);
+              return false;
+            })
+            .as('confirmDismiss');
+        });
 
-      cy.get(ENF_ACTION_SELECT.cancelLink).click();
-      cy.get('@confirmDismiss').should('have.been.calledOnce');
+        cy.get(ENF_ACTION_SELECT.cancelLink).click();
+        cy.get('@confirmDismiss').should('have.been.calledOnce');
 
-      cy.get(ENF_ACTION_SELECT.pageTitle).should('contain.text', 'Add enforcement action');
-    });
+        cy.get(ENF_ACTION_SELECT.pageTitle).should('contain.text', 'Add enforcement action');
+      },
+    );
 
     it(
       'AC2b, 3c. Company: navigates to the select enforcement action screen and displays the form incl details',
-      { tags: ['@JIRA-STORY:PO-1834'] },
+      { tags: ['@JIRA-STORY:PO-1834', '@JIRA-EPIC:PO-1674', '@JIRA-TEST-KEY:PO-4445'] },
       () => {
         let headerMock = structuredClone(DEFENDANT_HEADER_ORG_MOCK);
         headerMock.debtor_type = 'Defendant';

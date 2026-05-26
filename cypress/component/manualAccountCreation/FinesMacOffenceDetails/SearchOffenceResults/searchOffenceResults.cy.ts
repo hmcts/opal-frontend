@@ -73,7 +73,7 @@ describe('FinesMacOffenceDetailsSearchOffencesResultsComponent', () => {
 
   it(
     'Search offences results component is created correctly',
-    { tags: [...buildTags('@JIRA-STORY:PO-987'), '@JIRA-EPIC:PO-545'] },
+    { tags: [...buildTags('@JIRA-STORY:PO-987'), '@JIRA-EPIC:PO-545', '@JIRA-TEST-KEY:PO-5068'] },
     () => {
       setupComponent();
 
@@ -96,7 +96,7 @@ describe('FinesMacOffenceDetailsSearchOffencesResultsComponent', () => {
 
   it(
     'Displays error message when no search matches are found (AC3, AC3a)',
-    { tags: [...buildTags('@JIRA-STORY:PO-987'), '@JIRA-EPIC:PO-545'] },
+    { tags: [...buildTags('@JIRA-STORY:PO-987'), '@JIRA-EPIC:PO-545', '@JIRA-TEST-KEY:PO-5069'] },
     () => {
       setupComponent(NO_SEARCH_RESULTS_MOCK);
 
@@ -110,7 +110,7 @@ describe('FinesMacOffenceDetailsSearchOffencesResultsComponent', () => {
 
   it(
     'Displays search results with correct column headers (AC4)',
-    { tags: [...buildTags('@JIRA-STORY:PO-987'), '@JIRA-EPIC:PO-545'] },
+    { tags: [...buildTags('@JIRA-STORY:PO-987'), '@JIRA-EPIC:PO-545', '@JIRA-TEST-KEY:PO-5070'] },
     () => {
       setupComponent();
 
@@ -124,7 +124,7 @@ describe('FinesMacOffenceDetailsSearchOffencesResultsComponent', () => {
 
   it(
     'Displays "Copy Code" link between Code and Short Title columns (AC5)',
-    { tags: [...buildTags('@JIRA-STORY:PO-987'), '@JIRA-EPIC:PO-545'] },
+    { tags: [...buildTags('@JIRA-STORY:PO-987'), '@JIRA-EPIC:PO-545', '@JIRA-TEST-KEY:PO-5071'] },
     () => {
       setupComponent();
 
@@ -141,7 +141,7 @@ describe('FinesMacOffenceDetailsSearchOffencesResultsComponent', () => {
 
   it(
     'Correctly handles pagination with 25 results per page (AC6b)',
-    { tags: [...buildTags('@JIRA-STORY:PO-987'), '@JIRA-EPIC:PO-545'] },
+    { tags: [...buildTags('@JIRA-STORY:PO-987'), '@JIRA-EPIC:PO-545', '@JIRA-TEST-KEY:PO-5072'] },
     () => {
       setupComponent(FULL_SEARCH_RESULTS_MOCK);
 
@@ -155,7 +155,7 @@ describe('FinesMacOffenceDetailsSearchOffencesResultsComponent', () => {
 
   it(
     'Handles pagination buttons correctly (AC6a), (AC6b, AC6c)',
-    { tags: [...buildTags('@JIRA-STORY:PO-987'), '@JIRA-EPIC:PO-545'] },
+    { tags: [...buildTags('@JIRA-STORY:PO-987'), '@JIRA-EPIC:PO-545', '@JIRA-TEST-KEY:PO-5073'] },
     () => {
       setupComponent(FULL_SEARCH_RESULTS_MOCK);
 
@@ -215,7 +215,7 @@ describe('FinesMacOffenceDetailsSearchOffencesResultsComponent', () => {
 
   it(
     'Handles column sorting and resets to page 1 for all columns (AC6a)',
-    { tags: [...buildTags('@JIRA-STORY:PO-987'), '@JIRA-EPIC:PO-545'] },
+    { tags: [...buildTags('@JIRA-STORY:PO-987'), '@JIRA-EPIC:PO-545', '@JIRA-TEST-KEY:PO-5074'] },
     () => {
       setupComponent(FULL_SEARCH_RESULTS_MOCK);
 

@@ -95,7 +95,7 @@ describe('FinesSaResultsComponent - All Account Types', () => {
 
   it(
     '(AC1d) Search results component is created correctly',
-    { tags: [...buildTags('@JIRA-STORY:PO-706'), '@JIRA-EPIC:PO-704'] },
+    { tags: [...buildTags('@JIRA-STORY:PO-706'), '@JIRA-EPIC:PO-704', '@JIRA-TEST-KEY:PO-4536'] },
     () => {
       setupComponent('WITH_DATA');
 
@@ -106,7 +106,7 @@ describe('FinesSaResultsComponent - All Account Types', () => {
 
   it(
     '(AC3a) Displays error message when no search matches are found',
-    { tags: [...buildTags('@JIRA-STORY:PO-706'), '@JIRA-EPIC:PO-704'] },
+    { tags: [...buildTags('@JIRA-STORY:PO-706'), '@JIRA-EPIC:PO-704', '@JIRA-TEST-KEY:PO-4537'] },
     () => {
       setupComponent('EMPTY_RESULTS');
 
@@ -125,7 +125,7 @@ describe('FinesSaResultsComponent - All Account Types', () => {
 
   it(
     '(AC4a) Displays "There are more than 100 results" message when more than 100 matches found',
-    { tags: [...buildTags('@JIRA-STORY:PO-706'), '@JIRA-EPIC:PO-704'] },
+    { tags: [...buildTags('@JIRA-STORY:PO-706'), '@JIRA-EPIC:PO-704', '@JIRA-TEST-KEY:PO-4538'] },
     () => {
       setupComponent('LARGE_RESULTS');
 
@@ -143,7 +143,7 @@ describe('FinesSaResultsComponent - All Account Types', () => {
 
   it(
     '(AC5 ,5b,5f) Displays tabs when matches across multiple debtor/creditor types and Individual tab is in focus by default',
-    { tags: [...buildTags('@JIRA-STORY:PO-706'), '@JIRA-EPIC:PO-704'] },
+    { tags: [...buildTags('@JIRA-STORY:PO-706'), '@JIRA-EPIC:PO-704', '@JIRA-TEST-KEY:PO-4539'] },
     () => {
       setupComponent('WITH_DATA', 'individuals');
 
@@ -190,7 +190,7 @@ describe('FinesSaResultsComponent - All Account Types', () => {
 
   it(
     '(AC5c) Companies tab displays company defendant account summary data',
-    { tags: [...buildTags('@JIRA-STORY:PO-706'), '@JIRA-EPIC:PO-704'] },
+    { tags: [...buildTags('@JIRA-STORY:PO-706'), '@JIRA-EPIC:PO-704', '@JIRA-TEST-KEY:PO-4540'] },
     () => {
       setupComponent('WITH_DATA', 'companies');
 
@@ -215,7 +215,7 @@ describe('FinesSaResultsComponent - All Account Types', () => {
   );
   it(
     '(AC5d) Minor Creditors tab displays creditor account summary data',
-    { tags: [...buildTags('@JIRA-STORY:PO-706'), '@JIRA-EPIC:PO-704'] },
+    { tags: [...buildTags('@JIRA-STORY:PO-706'), '@JIRA-EPIC:PO-704', '@JIRA-TEST-KEY:PO-4541'] },
     () => {
       setupComponent('WITH_DATA', 'individuals');
       // Switch to minor creditors tab using helper function
@@ -254,7 +254,7 @@ describe('FinesSaResultsComponent - All Account Types', () => {
 
   it(
     '(AC5e) Tabs only displayed when results exist for corresponding type',
-    { tags: [...buildTags('@JIRA-STORY:PO-706'), '@JIRA-EPIC:PO-704'] },
+    { tags: [...buildTags('@JIRA-STORY:PO-706'), '@JIRA-EPIC:PO-704', '@JIRA-TEST-KEY:PO-4542'] },
     () => {
       // Test scenario with only individuals and companies (no minor creditors)
       setupComponent('PARTIAL_RESULTS');
@@ -268,7 +268,7 @@ describe('FinesSaResultsComponent - All Account Types', () => {
 
   it(
     '(AC5fi) Companies tab in focus when no individuals found',
-    { tags: [...buildTags('@JIRA-STORY:PO-706'), '@JIRA-EPIC:PO-704'] },
+    { tags: [...buildTags('@JIRA-STORY:PO-706'), '@JIRA-EPIC:PO-704', '@JIRA-TEST-KEY:PO-4543'] },
     () => {
       setupComponent('COMPANY_RESULTS_ONLY', 'companies');
 
@@ -281,7 +281,7 @@ describe('FinesSaResultsComponent - All Account Types', () => {
 
   it(
     '(AC5fii) No tabs displayed for single creditor type results',
-    { tags: [...buildTags('@JIRA-STORY:PO-706'), '@JIRA-EPIC:PO-704'] },
+    { tags: [...buildTags('@JIRA-STORY:PO-706'), '@JIRA-EPIC:PO-704', '@JIRA-TEST-KEY:PO-4544'] },
     () => {
       setupComponent('INDIVIDUALS_ONLY_RESULTS', 'individuals');
 
@@ -293,7 +293,7 @@ describe('FinesSaResultsComponent - All Account Types', () => {
 
   it(
     '(AC5fii) No tabs displayed for single debtor type results',
-    { tags: [...buildTags('@JIRA-STORY:PO-706'), '@JIRA-EPIC:PO-704'] },
+    { tags: [...buildTags('@JIRA-STORY:PO-706'), '@JIRA-EPIC:PO-704', '@JIRA-TEST-KEY:PO-4545'] },
     () => {
       setupComponent('MINOR_CREDITOR_ONLY_RESULTS', 'minorCreditors');
 
