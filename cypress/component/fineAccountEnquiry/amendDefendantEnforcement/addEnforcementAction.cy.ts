@@ -128,6 +128,53 @@ describe(
     });
 
     it(
+      'Negative test: NOENF with no next permitted actions shows error screen and Go back returns to enforcement tab',
+      { tags: ['@JIRA-STORY:PO-1781'] },
+      () => {
+        let headerMock = structuredClone(createDefendantHeaderMockWithName('Robert', 'Thomson'));
+
+        headerMock.debtor_type = 'Defendant';
+
+        let enforcementMock = structuredClone(OPAL_FINES_ACCOUNT_DEFENDANT_DETAILS_ENFORCEMENT_TAB_REF_DATA_MOCK);
+
+        enforcementMock.last_enforcement_action!.enforcement_action.result_id = 'NOENF';
+
+        enforcementMock.next_enforcement_action_data = null;
+
+        const accountId = headerMock.defendant_account_party_id;
+
+        interceptAuthenticatedUser();
+        interceptUserState(USER_STATE_MOCK_PERMISSION_BU77);
+        interceptDefendantHeader(accountId, headerMock, '123');
+        interceptEnforcementStatus(accountId, enforcementMock, '123');
+
+        // No permitted next actions
+        interceptNextPermittedEnforcementActionsEmpty();
+
+        setupAccountEnquiryComponent({
+          ...COMPONENT_PROPERTIES,
+          accountId,
+        });
+
+        // Navigate to error page
+        cy.get(ENF.addEnforcementActionLink).should('exist').click();
+
+        // Router navigation assertion
+        // cy.get('@routerNavigate').should('have.been.calledWithMatch', [
+        //   '../enforcement/action/cannot-add-enforcement-action',
+        // ]);
+
+        cy.contains('You cannot add an enforcement action').should('be.visible');
+
+        cy.contains('Robert THOMSON').should('be.visible');
+
+        cy.contains('You must first remove the enforcement hold on the account.').should('be.visible');
+
+        cy.contains('Go back').click();
+      },
+    );
+
+    it(
       'AC1,1a. Individual: Negative testing, result ID is DW so without NOENF the add enf action button does not appear.',
       { tags: ['@JIRA-STORY:PO-1780', '@JIRA-STORY:PO-1824'] },
       () => {
