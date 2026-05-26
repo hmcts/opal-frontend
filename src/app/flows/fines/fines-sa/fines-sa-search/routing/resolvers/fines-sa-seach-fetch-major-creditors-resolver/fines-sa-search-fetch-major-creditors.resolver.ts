@@ -12,7 +12,7 @@ export const finesSaSearchFetchMajorCreditorsResolver: ResolveFn<IOpalFinesMajor
   const businessUnitIds = finesSaStore.searchAccount().fsa_search_account_business_unit_ids;
 
   // Only fetch major creditors if exactly one business unit is selected
-  if (!businessUnitIds || businessUnitIds.length !== 1) {
+  if (businessUnitIds?.length !== 1) {
     return of({ count: 0, refData: [] } as IOpalFinesMajorCreditorRefData);
   }
 

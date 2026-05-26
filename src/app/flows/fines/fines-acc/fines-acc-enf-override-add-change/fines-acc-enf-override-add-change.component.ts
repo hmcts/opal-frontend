@@ -29,12 +29,12 @@ export class FinesAccEnfOverrideAddChangeComponent
   implements OnDestroy, OnInit
 {
   private readonly ngUnsubscribe = new Subject<void>();
-  private route = inject(ActivatedRoute);
-  private finesAccStore = inject(FinesAccountStore);
-  private finesAccPayloadService = inject(FinesAccPayloadService);
-  private opalFinesService = inject(OpalFines);
-  private utilsService = inject(UtilsService);
-  private finesDefendantRoutingPaths = FINES_ACC_DEFENDANT_ROUTING_PATHS;
+  private readonly route = inject(ActivatedRoute);
+  private readonly finesAccStore = inject(FinesAccountStore);
+  private readonly finesAccPayloadService = inject(FinesAccPayloadService);
+  private readonly opalFinesService = inject(OpalFines);
+  private readonly utilsService = inject(UtilsService);
+  private readonly finesDefendantRoutingPaths = FINES_ACC_DEFENDANT_ROUTING_PATHS;
   public accountNumber = this.finesAccStore.getAccountNumber() ?? '';
   public partyName = this.finesAccStore.party_name() ?? '';
   public pageTitle: string = this.route.snapshot.data['title'] ?? '';
