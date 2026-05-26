@@ -73,7 +73,7 @@ describe('Minor Creditor Account Summary - Creditor Tab', () => {
 
   it(
     'AC1a, AC1b, AC2a, AC2ai: builds the creditor tab as a read-only view and replaces bank details with the permission message when the user only has Search and view accounts',
-    { tags: buildTags(CREDITOR_TAB_STORY_TAG) },
+    { tags: buildTags(CREDITOR_TAB_STORY_TAG, CHANGE_BUTTON_EPIC_TAG) },
     () => {
       const creditorTabData = createIndividualMinorCreditorCreditorMock(false);
 
@@ -111,7 +111,7 @@ describe('Minor Creditor Account Summary - Creditor Tab', () => {
 
   it(
     'AC1a, AC1b, AC2b: shows BACS payment details when the user has Search and view accounts and View Creditor BACS permission',
-    { tags: buildTags(CREDITOR_TAB_STORY_TAG) },
+    { tags: buildTags(CREDITOR_TAB_STORY_TAG, CHANGE_BUTTON_EPIC_TAG) },
     () => {
       const creditorTabData = createIndividualMinorCreditorCreditorMock(true);
 
