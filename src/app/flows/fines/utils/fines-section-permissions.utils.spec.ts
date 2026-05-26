@@ -10,7 +10,6 @@ import {
   getAccessiblePrimaryNavigationItems,
   getDashboardLandingType,
   getFeatureFlagReleaseState,
-  getFirstAccessibleDashboardType,
   getUserPermissionIds,
   hasAnyPermission,
 } from './fines-section-permissions.utils';
@@ -128,20 +127,6 @@ describe('fines-section-permissions.utils', () => {
       const userState = createUserStateWithPermissions([ACCOUNTS_PERMISSIONS[0]]);
 
       expect(getAccessiblePrimaryNavigationItems(navigationItems, userState, { 'release-1a': false })).toEqual([]);
-    });
-  });
-
-  describe('getFirstAccessibleDashboardType', () => {
-    it('should return the first accessible navigation key', () => {
-      const userState = createUserStateWithPermissions([SEARCH_PERMISSIONS[0]]);
-
-      expect(getFirstAccessibleDashboardType(navigationItems, userState)).toBe('search');
-    });
-
-    it('should fall back to the default dashboard tab when nothing is accessible', () => {
-      expect(getFirstAccessibleDashboardType(navigationItems, createUserStateWithPermissions([]))).toBe(
-        DASHBOARD_PAGE_DEFAULT_TAB,
-      );
     });
   });
 

@@ -25,9 +25,13 @@ export interface IFeatureFlagReleaseDashboardGroups {
 }
 
 type FeatureFlagReleaseName = keyof IFeatureFlagReleaseState;
-type FeatureFlagReleasePermissionsBySection = Partial<
-  Record<DashboardPageType, Partial<Record<FeatureFlagReleaseName, readonly number[]>>>
->;
+type PermissionIds = readonly number[];
+
+type FeatureFlagPermissionExclusionsBySection = {
+  [sectionKey in DashboardPageType]?: {
+    [featureFlagName in FeatureFlagReleaseName]?: PermissionIds;
+  };
+};
 
 export const FEATURE_FLAG_RELEASE_PERMISSIONS: IFeatureFlagReleasePermissions = {
   [RELEASE_1A_FEATURE_FLAG]: [
@@ -40,7 +44,7 @@ export const FEATURE_FLAG_RELEASE_DASHBOARD_GROUPS: IFeatureFlagReleaseDashboard
   [RELEASE_1A_FEATURE_FLAG]: ['draft-accounts'],
 };
 
-const FEATURE_FLAG_SECTION_PERMISSION_EXCLUSIONS: FeatureFlagReleasePermissionsBySection = {
+const FEATURE_FLAG_SECTION_PERMISSION_EXCLUSIONS: FeatureFlagPermissionExclusionsBySection = {
   accounts: {
     [RELEASE_1A_FEATURE_FLAG]: FEATURE_FLAG_RELEASE_PERMISSIONS[RELEASE_1A_FEATURE_FLAG],
   },
@@ -54,6 +58,12 @@ const getDisabledFeatureFlagValues = <T>(
     featureFlagReleaseState[featureFlagReleaseName] ? [] : (featureFlagValues[featureFlagReleaseName] ?? []),
   );
 
+/**
+ * Returns the unique permission IDs assigned to the logged-in user across their business units.
+ *
+ * @param userState - The logged-in user's state, including business units and permissions.
+ * @returns A deduplicated list of permission IDs, or an empty array when no user state is available.
+ */
 export const getUserPermissionIds = (userState?: IOpalUserState | null): number[] => {
   const permissionIds = (userState?.business_unit_users ?? []).flatMap((businessUnitUser) =>
     businessUnitUser.permissions.map((permission) => permission.permission_id),
@@ -62,15 +72,35 @@ export const getUserPermissionIds = (userState?: IOpalUserState | null): number[
   return [...new Set(permissionIds)];
 };
 
+/**
+ * Checks whether the user has at least one of the permission IDs required for a section or action.
+ *
+ * @param requiredPermissionIds - The permission IDs needed to access the section or action.
+ * @param userPermissionIds - The permission IDs assigned to the user.
+ * @returns True when the user has at least one required permission; otherwise false.
+ */
 export const hasAnyPermission = (
   requiredPermissionIds: readonly number[],
   userPermissionIds: readonly number[],
 ): boolean => requiredPermissionIds.some((permissionId) => userPermissionIds.includes(permissionId));
 
+/**
+ * Converts raw feature flag values into the release flag state used by fines permission helpers.
+ *
+ * @param featureFlags - The raw feature flag values from the global store.
+ * @returns The release flag state used to apply release-specific permission and dashboard rules.
+ */
 export const getFeatureFlagReleaseState = (featureFlags?: FeatureFlags | null): FeatureFlagReleaseState => ({
   [RELEASE_1A_FEATURE_FLAG]: featureFlags?.[RELEASE_1A_FEATURE_FLAG] === true,
 });
 
+/**
+ * Returns the permission IDs required for a dashboard section, excluding permissions for disabled release flags.
+ *
+ * @param sectionKey - The dashboard section being checked.
+ * @param featureFlagReleaseState - The current enabled or disabled state of release feature flags.
+ * @returns The permission IDs required for the section, or undefined when the section has no permission restriction.
+ */
 export const getRequiredPermissionIdsForSection = (
   sectionKey: DashboardPageType,
   featureFlagReleaseState: FeatureFlagReleaseState = {},
@@ -93,6 +123,14 @@ export const getRequiredPermissionIdsForSection = (
   return requiredPermissionIds.filter((permissionId) => !disabledFeatureFlagPermissionIds.includes(permissionId));
 };
 
+/**
+ * Checks whether the user can access a fines primary navigation section after permissions and release flags are applied.
+ *
+ * @param sectionKey - The primary navigation section being checked.
+ * @param userState - The logged-in user's state, including business units and permissions.
+ * @param featureFlagReleaseState - The current enabled or disabled state of release feature flags.
+ * @returns True when the section is unrestricted or the user has a required permission; otherwise false.
+ */
 export const canAccessFinesPrimaryNavigationSection = (
   sectionKey: DashboardPageType,
   userState?: IOpalUserState | null,
@@ -111,6 +149,14 @@ export const canAccessFinesPrimaryNavigationSection = (
   return hasAnyPermission(requiredPermissionIds, getUserPermissionIds(userState));
 };
 
+/**
+ * Filters the fines primary navigation to only the sections the user can access.
+ *
+ * @param navigationItems - The full list of fines primary navigation items.
+ * @param userState - The logged-in user's state, including business units and permissions.
+ * @param featureFlagReleaseState - The current enabled or disabled state of release feature flags.
+ * @returns The navigation items available to the user.
+ */
 export const getAccessiblePrimaryNavigationItems = (
   navigationItems: readonly INavigationBarConfiguration[],
   userState?: IOpalUserState | null,
@@ -120,14 +166,14 @@ export const getAccessiblePrimaryNavigationItems = (
     canAccessFinesPrimaryNavigationSection(navigationItem.key, userState, featureFlagReleaseState),
   );
 
-export const getFirstAccessibleDashboardType = (
-  navigationItems: readonly INavigationBarConfiguration[],
-  userState?: IOpalUserState | null,
-  featureFlagReleaseState: FeatureFlagReleaseState = {},
-): DashboardPageType =>
-  getAccessiblePrimaryNavigationItems(navigationItems, userState, featureFlagReleaseState)[0]?.key ??
-  DASHBOARD_PAGE_DEFAULT_TAB;
-
+/**
+ * Resolves the dashboard tab to land on, using accessible sections and the configured landing priority.
+ *
+ * @param navigationItems - The full list of fines primary navigation items.
+ * @param userState - The logged-in user's state, including business units and permissions.
+ * @param featureFlagReleaseState - The current enabled or disabled state of release feature flags.
+ * @returns The dashboard tab the user should land on.
+ */
 export const getDashboardLandingType = (
   navigationItems: readonly INavigationBarConfiguration[],
   userState?: IOpalUserState | null,
@@ -147,6 +193,13 @@ export const getDashboardLandingType = (
   );
 };
 
+/**
+ * Removes dashboard groups that belong to disabled release flags.
+ *
+ * @param config - The dashboard page configuration to filter.
+ * @param featureFlagReleaseState - The current enabled or disabled state of release feature flags.
+ * @returns The original dashboard configuration, or a copy with disabled release groups removed.
+ */
 export const filterDashboardConfigByFeatureFlags = (
   config: IDashboardPageConfiguration,
   featureFlagReleaseState: FeatureFlagReleaseState = {},
