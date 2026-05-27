@@ -135,7 +135,9 @@ describe('FinesMacCreateAccountComponent', () => {
 
   it(
     '(AC.4a) should have validation if empty business unit but valid account type',
-    { tags: [...buildTags('@JIRA-STORY:PO-523'), '@JIRA-EPIC:PO-545', '@JIRA-TEST-KEY:PO-4945'] },
+    {
+      tags: [...buildTags('@JIRA-STORY:PO-523'), '@JIRA-EPIC:PO-545', '@JIRA-NFR:PO-2323', '@JIRA-TEST-KEY:PO-4945'],
+    },
     () => {
       setupComponent(null);
 
@@ -147,7 +149,9 @@ describe('FinesMacCreateAccountComponent', () => {
 
   it(
     '(AC.4b) should have validation in place if empty account type but valid business unit',
-    { tags: [...buildTags('@JIRA-STORY:PO-523'), '@JIRA-EPIC:PO-545', '@JIRA-TEST-KEY:PO-4946'] },
+    {
+      tags: [...buildTags('@JIRA-STORY:PO-523'), '@JIRA-EPIC:PO-545', '@JIRA-NFR:PO-2323', '@JIRA-TEST-KEY:PO-4946'],
+    },
     () => {
       setupComponent(null);
 
@@ -161,7 +165,9 @@ describe('FinesMacCreateAccountComponent', () => {
 
   it(
     '(AC.4d) should have validation if both business unit and account type are empty',
-    { tags: [...buildTags('@JIRA-STORY:PO-523'), '@JIRA-EPIC:PO-545', '@JIRA-TEST-KEY:PO-4947'] },
+    {
+      tags: [...buildTags('@JIRA-STORY:PO-523'), '@JIRA-EPIC:PO-545', '@JIRA-NFR:PO-2323', '@JIRA-TEST-KEY:PO-4947'],
+    },
     () => {
       setupComponent(null);
 
@@ -205,7 +211,9 @@ describe('FinesMacCreateAccountComponent', () => {
 
   it(
     '(AC.4c)should check through each account type to ensure that error is given when a defendant type is not selected except conditional caution',
-    { tags: [...buildTags('@JIRA-STORY:PO-523'), '@JIRA-EPIC:PO-545', '@JIRA-TEST-KEY:PO-4950'] },
+    {
+      tags: [...buildTags('@JIRA-STORY:PO-523'), '@JIRA-EPIC:PO-545', '@JIRA-NFR:PO-2323', '@JIRA-TEST-KEY:PO-4950'],
+    },
     () => {
       const formSubmitSpy = Cypress.sinon.spy();
 

@@ -128,7 +128,9 @@ describe('FinesMacOffenceDetailsSearchOffencesComponent', () => {
 
   it(
     'AC.2e, AC.2f Short title and Act and section allow single-byte ASCII characters',
-    { tags: [...buildTags('@JIRA-STORY:PO-667', '@JIRA-STORY:PO-3967'), '@JIRA-EPIC:PO-545'] },
+    {
+      tags: [...buildTags('@JIRA-STORY:PO-667', '@JIRA-STORY:PO-3967'), '@JIRA-EPIC:PO-545', '@JIRA-TEST-KEY:PO-6347'],
+    },
     () => {
       const formSubmitSpy = Cypress.sinon.spy();
       const singleByteAsciiInput = " Aa0'!#$%&()*+,-./<>";
@@ -146,7 +148,9 @@ describe('FinesMacOffenceDetailsSearchOffencesComponent', () => {
 
   it(
     'AC.2e, AC.2f Short title and Act and section do not allow non-single-byte ASCII characters',
-    { tags: [...buildTags('@JIRA-STORY:PO-667', '@JIRA-STORY:PO-3967'), '@JIRA-EPIC:PO-545'] },
+    {
+      tags: [...buildTags('@JIRA-STORY:PO-667', '@JIRA-STORY:PO-3967'), '@JIRA-EPIC:PO-545', '@JIRA-TEST-KEY:PO-6348'],
+    },
     () => {
       const formSubmitSpy = Cypress.sinon.spy();
       const nonSingleByteAsciiInput = '©µ±ö€•';
