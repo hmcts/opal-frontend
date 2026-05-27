@@ -8,12 +8,21 @@ import { IFinesSaSearchAccountFormIndividualsState } from '../fines-sa-search/fi
 import { IFinesSaSearchAccountFormCompaniesState } from '../fines-sa-search/fines-sa-search-account/fines-sa-search-account-form/fines-sa-search-account-form-companies/interfaces/fines-sa-search-account-form-companies-state.interface';
 import { IFinesSaSearchAccountFormMinorCreditorsState } from '../fines-sa-search/fines-sa-search-account/fines-sa-search-account-form/fines-sa-search-account-form-minor-creditors/interfaces/fines-sa-search-account-form-minor-creditors-state.interface';
 
+interface FinesSaState {
+  searchAccount: IFinesSaSearchAccountState;
+  activeTab: FinesSaSearchAccountTab;
+  resultsActiveTab: FinesSaSearchAccountTab;
+  stateChanges: boolean;
+  unsavedChanges: boolean;
+  searchAccountPopulated: boolean;
+}
+
 export const FinesSaStore = signalStore(
   { providedIn: 'root' },
-  withState(() => ({
+  withState<FinesSaState>(() => ({
     searchAccount: FINES_SA_SEARCH_ACCOUNT_STATE,
-    activeTab: 'individuals' as FinesSaSearchAccountTab,
-    resultsActiveTab: 'individuals' as FinesSaSearchAccountTab,
+    activeTab: 'individuals',
+    resultsActiveTab: 'individuals',
     stateChanges: false,
     unsavedChanges: false,
     searchAccountPopulated: false,
@@ -23,8 +32,8 @@ export const FinesSaStore = signalStore(
       onDestroy() {
         patchState(store, {
           searchAccount: FINES_SA_SEARCH_ACCOUNT_STATE,
-          activeTab: 'individuals' as FinesSaSearchAccountTab,
-          resultsActiveTab: 'individuals' as FinesSaSearchAccountTab,
+          activeTab: 'individuals',
+          resultsActiveTab: 'individuals',
           stateChanges: false,
           unsavedChanges: false,
           searchAccountPopulated: false,
@@ -123,7 +132,7 @@ export const FinesSaStore = signalStore(
         searchAccount: {
           ...currentStore,
           fsa_search_account_business_unit_ids: businessUnitIds,
-        } as IFinesSaSearchAccountState,
+        },
         stateChanges: true,
         unsavedChanges: true,
       });
@@ -136,7 +145,7 @@ export const FinesSaStore = signalStore(
           fsa_search_account_individuals_search_criteria: null,
           fsa_search_account_minor_creditors_search_criteria: null,
           fsa_search_account_major_creditors_search_criteria: null,
-        } as IFinesSaSearchAccountState,
+        },
       });
     },
     resetSearchAccount: () => {
@@ -150,8 +159,8 @@ export const FinesSaStore = signalStore(
     resetStore: () =>
       patchState(store, {
         searchAccount: FINES_SA_SEARCH_ACCOUNT_STATE,
-        activeTab: 'individuals' as FinesSaSearchAccountTab,
-        resultsActiveTab: 'individuals' as FinesSaSearchAccountTab,
+        activeTab: 'individuals',
+        resultsActiveTab: 'individuals',
         stateChanges: false,
         unsavedChanges: false,
         searchAccountPopulated: false,

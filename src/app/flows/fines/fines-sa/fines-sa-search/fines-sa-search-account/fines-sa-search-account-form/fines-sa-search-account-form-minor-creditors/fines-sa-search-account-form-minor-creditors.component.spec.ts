@@ -364,11 +364,10 @@ describe('FinesSaSearchAccountFormMinorCreditorsComponent', () => {
 
       const { cmp } = createComponentWithFormNoInit(badForm);
 
-      // Should no-op safely when required controls are missing.
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      (cmp as any).setupIndividualConditionalValidation();
-
-      expect(true).toBe(true);
+      expect(() => {
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        (cmp as any).setupIndividualConditionalValidation();
+      }).not.toThrow();
     });
 
     it('handles missing COMPANY controls safely and clears validators even when control is null', () => {
@@ -390,11 +389,11 @@ describe('FinesSaSearchAccountFormMinorCreditorsComponent', () => {
       const { cmp } = createComponentWithFormNoInit(badForm);
       const typeCtrl = cmp.form.get('fsa_search_account_minor_creditors_minor_creditor_type') as FormControl;
 
-      typeCtrl.setValue('company');
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      (cmp as any).handleCompanyConditionalValidation();
-
-      expect(true).toBe(true);
+      expect(() => {
+        typeCtrl.setValue('company');
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        (cmp as any).handleCompanyConditionalValidation();
+      }).not.toThrow();
     });
 
     it('early-returns in handleCompanyConditionalValidation when company controls are missing (no setValidatorPresence call)', () => {

@@ -105,7 +105,9 @@ describe('FinesMacPersonalDetailsComponent', () => {
 
   it(
     '(AC.2, AC.3) should display validation error when mandatory fields are missing',
-    { tags: [...buildTags('@JIRA-STORY:PO-360'), '@JIRA-EPIC:PO-272', '@JIRA-NFR:PO-2323', '@JIRA-TEST-KEY:PO-3973'] },
+    {
+      tags: [...buildTags('@JIRA-STORY:PO-360'), '@JIRA-EPIC:PO-272', '@JIRA-NFR:PO-2323', '@JIRA-TEST-KEY:PO-3973'],
+    },
     () => {
       setupComponent(null);
 
@@ -375,20 +377,33 @@ describe('FinesMacPersonalDetailsComponent', () => {
   );
 
   it(
-    '(AC.9) should show error for invalid date format',
-    { tags: [...buildTags('@JIRA-STORY:PO-360'), '@JIRA-EPIC:PO-272', '@JIRA-TEST-KEY:PO-3985'] },
+    '(AC.9) should show error for a non-leap-year date of birth',
+    {
+      tags: [
+        ...buildTags('@JIRA-STORY:PO-360'),
+        '@JIRA-EPIC:PO-272',
+        '@JIRA-NFR:PO-2323',
+        '@JIRA-NFR:PO-2325',
+        '@JIRA-TEST-KEY:PO-6354',
+      ],
+    },
     () => {
       setupComponent(null, '', (finesMacState) => {
-        finesMacState.personalDetails.formData.fm_personal_details_dob = '01/01/,.';
+        finesMacState.personalDetails.formData.fm_personal_details_title = 'Mrs';
+        finesMacState.personalDetails.formData.fm_personal_details_forenames = 'Smith';
+        finesMacState.personalDetails.formData.fm_personal_details_dob = '29/02/2023';
+        finesMacState.personalDetails.formData.fm_personal_details_address_line_1 = '123 fake street';
       });
       cy.get(DOM_ELEMENTS.submitButton).click();
-      cy.get(DOM_ELEMENTS.errorSummary).should('contain', FORMAT_CHECK['dateOfBirthInvalid']);
+      cy.get(DOM_ELEMENTS.errorSummary).should('contain', FORMAT_CHECK['dateOfBirthNotValid']);
     },
   );
 
   it(
     '(AC.11) should not accept national insurance number in the incorrect format',
-    { tags: [...buildTags('@JIRA-STORY:PO-360'), '@JIRA-EPIC:PO-272', '@JIRA-TEST-KEY:PO-3986'] },
+    {
+      tags: [...buildTags('@JIRA-STORY:PO-360'), '@JIRA-EPIC:PO-272', '@JIRA-NFR:PO-2323', '@JIRA-TEST-KEY:PO-3986'],
+    },
     () => {
       setupComponent(null, '', (finesMacState) => {
         finesMacState.personalDetails.formData.fm_personal_details_title = 'Mrs';

@@ -241,11 +241,9 @@ export class OpalFines {
    *          business unit reference data.
    */
   public getBusinessUnits(): Observable<IOpalFinesBusinessUnitRefData> {
-    if (!this.cache.businessUnitsCache$) {
-      this.cache.businessUnitsCache$ = this.http
-        .get<IOpalFinesBusinessUnitRefData>(OPAL_FINES_PATHS.businessUnitRefData)
-        .pipe(shareReplay(1));
-    }
+    this.cache.businessUnitsCache$ ??= this.http
+      .get<IOpalFinesBusinessUnitRefData>(OPAL_FINES_PATHS.businessUnitRefData)
+      .pipe(shareReplay(1));
 
     return this.cache.businessUnitsCache$;
   }
@@ -291,11 +289,9 @@ export class OpalFines {
       return this.cache.localJusticeAreasLjaTypeCache$[cacheKey];
     }
 
-    if (!this.cache.localJusticeAreasCache$) {
-      this.cache.localJusticeAreasCache$ = this.http
-        .get<IOpalFinesLocalJusticeAreaRefData>(OPAL_FINES_PATHS.localJusticeAreaRefData)
-        .pipe(shareReplay(1));
-    }
+    this.cache.localJusticeAreasCache$ ??= this.http
+      .get<IOpalFinesLocalJusticeAreaRefData>(OPAL_FINES_PATHS.localJusticeAreaRefData)
+      .pipe(shareReplay(1));
 
     return this.cache.localJusticeAreasCache$;
   }
@@ -639,11 +635,9 @@ export class OpalFines {
    * @returns An Observable that emits the prosecutor data for the specified business unit.
    */
   public getEnforcers(): Observable<IOpalFinesEnforcersRefData> {
-    if (!this.cache.enforcersCache$) {
-      this.cache.enforcersCache$ = this.http
-        .get<IOpalFinesEnforcersRefData>(OPAL_FINES_PATHS.enforcersRefData)
-        .pipe(shareReplay(1));
-    }
+    this.cache.enforcersCache$ ??= this.http
+      .get<IOpalFinesEnforcersRefData>(OPAL_FINES_PATHS.enforcersRefData)
+      .pipe(shareReplay(1));
 
     return this.cache.enforcersCache$;
   }
