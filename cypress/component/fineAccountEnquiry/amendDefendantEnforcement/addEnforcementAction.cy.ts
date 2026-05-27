@@ -2,7 +2,6 @@ import { DOM_ELEMENTS as ENF_ACTION_SELECT } from '../../../shared/selectors/acc
 import { ACCOUNT_ENQUIRY_ENFORCEMENT_STATUS_ELEMENTS as ENF } from '../../../shared/selectors/account-enquiry/account.enquiry.enforcement.locators';
 import { setupAccountEnquiryComponent } from '../accountEnquiry/setup/SetupComponent';
 import { IComponentProperties } from '../accountEnquiry/setup/setupComponent.interface';
-import { IOpalFinesResultsRefData } from '@services/fines/opal-fines-service/interfaces/opal-fines-results-ref-data.interface';
 import {
   interceptAuthenticatedUser,
   interceptUserState,
@@ -10,7 +9,6 @@ import {
   interceptNextPermittedEnforcementActions,
 } from 'cypress/component/CommonIntercepts/CommonIntercepts';
 import { USER_STATE_MOCK_PERMISSION_BU77 } from 'cypress/component/CommonIntercepts/CommonUserState.mocks';
-import { FINES_ACC_ENF_ACTION_SELECT_NEXT_PERMITTED_ENF_ACTIONS_MOCK } from '@app/flows/fines/fines-acc/fines-acc-enf-action-select/mocks/fines-acc-enf-action-select-next-permitted-enf-actions.mock';
 import {
   interceptDefendantHeader,
   interceptEnforcementStatus,
@@ -32,11 +30,6 @@ const COMPONENT_PROPERTIES: IComponentProperties = {
     '../enforcement/amend',
     '../enforcement/amend-denied',
   ],
-};
-
-const EMPTY_RESULTS_RESPONSE: IOpalFinesResultsRefData = {
-  count: 0,
-  refData: [],
 };
 
 const statusScenarios = [

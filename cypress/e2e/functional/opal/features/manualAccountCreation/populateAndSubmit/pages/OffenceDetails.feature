@@ -9,7 +9,7 @@ Feature: Manual account creation - Offence Details
     And I start a fine manual account for business unit "West London" with defendant type "Adult or youth" and originator type "New"
     And I view the "Offence details" task
 
- @JIRA-EPIC:PO-272 @JIRA-TEST-KEY:PO-5358
+  @JIRA-EPIC:PO-272 @JIRA-TEST-KEY:PO-5358
   Scenario: The User can add an offence with multiple impositions with different creditor types [@PO-272, @PO-344, @PO-345, @PO-545, @PO-412, @PO-668, @PO-669, @PO-413, @PO-817, @PO-818]
     When I provide offence details for offence code "TP11003" with a sentence date 9 weeks in the past
     Then the "Remove imposition" option is not available
@@ -63,7 +63,7 @@ Feature: Manual account creation - Offence Details
     When I return to account details from offence details
     Then the "Offence details" task status is "Provided"
 
- @JIRA-EPIC:PO-272 @JIRA-TEST-KEY:PO-5359
+  @JIRA-EPIC:PO-272 @JIRA-TEST-KEY:PO-5359
   Scenario: User can add an offence with individual and company minor creditors
     When I provide offence details for offence code "TP11003" with a sentence date 9 weeks in the past
 
@@ -110,7 +110,7 @@ Feature: Manual account creation - Offence Details
       | Compensation | CNAME                       | £200.00        | £100.00     | £100.00           |
       | Totals       |                             | £400.00        | £200.00     | £200.00           |
 
- @JIRA-EPIC:PO-272 @JIRA-TEST-KEY:PO-5360
+  @JIRA-EPIC:PO-272 @JIRA-TEST-KEY:PO-5360
   Scenario: User can update an existing minor creditor for an imposition
     Given an offence exists with 2 minor creditor impositions for offence code "TP11003"
 
@@ -128,7 +128,7 @@ Feature: Manual account creation - Offence Details
       | Payment reference | REFONE                                 |
 
 
- @JIRA-EPIC:PO-272 @JIRA-TEST-KEY:PO-5361
+  @JIRA-EPIC:PO-272 @JIRA-TEST-KEY:PO-5361
   Scenario: User can remove and re-add a minor creditor for an imposition
     Given an offence exists with 2 minor creditor impositions for offence code "TP11003"
     When I cancel removing the minor creditor for imposition 2
@@ -147,7 +147,7 @@ Feature: Manual account creation - Offence Details
       | Account number    | 87654321                |
       | Payment reference | REFTWO                  |
 
- @JIRA-EPIC:PO-272 @JIRA-TEST-KEY:PO-5362
+  @JIRA-EPIC:PO-272 @JIRA-TEST-KEY:PO-5362
   Scenario: User can switch a minor creditor to major and add a new minor creditor on another imposition
     Given an offence exists with 2 minor creditor impositions for offence code "TP11003"
 
@@ -210,7 +210,7 @@ Feature: Manual account creation - Offence Details
     Then the "Offence details" task status is "Provided"
 
 
- @JIRA-EPIC:PO-272 @JIRA-TEST-KEY:PO-5363
+  @JIRA-EPIC:PO-272 @JIRA-TEST-KEY:PO-5363
   Scenario: User can see imposition details before removal and cancel or confirm removal
     Given an offence exists with the following impositions:
       | Offence code | Sentence weeks ago | Imposition | Result code            | Amount imposed | Amount paid | Creditor type | Creditor search           | Minor creditor type | Minor creditor name | Address line 1 | Postcode |
@@ -244,7 +244,7 @@ Feature: Manual account creation - Offence Details
     Then I should see the header containing text "Add an offence"
     And I do not see "Compensation (FCOMP)" in the imposition result code fields
 
- @JIRA-EPIC:PO-272 @JIRA-TEST-KEY:PO-5364
+  @JIRA-EPIC:PO-272 @JIRA-TEST-KEY:PO-5364
   Scenario: User sees correct reindexing and cannot remove the last remaining imposition
     Given an offence exists with the following impositions:
       | Offence code | Sentence weeks ago | Imposition | Result code            | Amount imposed | Amount paid | Creditor type | Creditor search           | Minor creditor type | Minor creditor name | Address line 1 | Postcode |
@@ -284,7 +284,7 @@ Feature: Manual account creation - Offence Details
     And I do not see the "Remove imposition" link for imposition 1
 
 
- @JIRA-EPIC:PO-272 @JIRA-TEST-KEY:PO-5365
+  @JIRA-EPIC:PO-272 @JIRA-TEST-KEY:PO-5365
   Scenario: User removes two impositions and rebuilds four impositions
     When I provide offence details for offence code "TP11003" with a sentence date 9 weeks in the past
 
@@ -336,7 +336,7 @@ Feature: Manual account creation - Offence Details
       | Costs to Crown   | Crown Prosecution Service (CPS)       | £500.00        | £250.00     | £250.00           |
       | Totals           |                                       | £1500.00       | £700.00     | £800.00           |
 
- @JIRA-EPIC:PO-272 @JIRA-TEST-KEY:PO-5366
+  @JIRA-EPIC:PO-272 @JIRA-TEST-KEY:PO-5366
   Scenario: User can update remaining impositions and add a new one after removals
     When I provide offence details for offence code "TP11003" with a sentence date 9 weeks in the past
 
@@ -379,7 +379,7 @@ Feature: Manual account creation - Offence Details
       | Vehicle Excise Back Duty           | HM Courts & Tribunals Service (HMCTS) | £100.00        | £50.00      | £50.00            |
       | Totals                             |                                       | £1500.00       | £434.00     | £1066.00          |
 
- @JIRA-EPIC:PO-272 @JIRA-TEST-KEY:PO-5367
+  @JIRA-EPIC:PO-272 @JIRA-TEST-KEY:PO-5367
   Scenario: (AC.2, AC.7, AC.8) User can add multiple offences and see them ordered with correct totals [@PO-272, @PO-344, @PO-345, @PO-545, @PO-815, @PO-417, @PO-676, @PO-679, @PO-416, @PO-682, @PO-680, @PO-1395]
     # Offence 1
     When I provide offence details for offence code "TP11003" with a sentence date 9 weeks in the past
@@ -439,7 +439,7 @@ Feature: Manual account creation - Offence Details
       | Amount paid    | £600.00  |
       | Balance        | £600.00  |
 
- @JIRA-EPIC:PO-272 @JIRA-TEST-KEY:PO-5368
+  @JIRA-EPIC:PO-272 @JIRA-TEST-KEY:PO-5368
   Scenario: (AC.2, AC.7, AC.8) User can change an offence and remove another offence when multiple offences exist [@PO-272, @PO-344, @PO-345, @PO-545, @PO-815, @PO-417, @PO-676, @PO-679, @PO-416, @PO-682, @PO-680, @PO-1395]
     Given the following offences exist for the account:
       | Offence code | Sentence weeks ago | Result code            | Amount imposed | Amount paid | Creditor type | Creditor search | Creditor name | Minor creditor type |
@@ -640,7 +640,7 @@ Feature: Manual account creation - Offence Details
     When I return to account details from offence details
     Then the "Offence details" task status is "Not provided"
 
- @JIRA-EPIC:PO-272 @JIRA-TEST-KEY:PO-5370
+  @JIRA-EPIC:PO-272 @JIRA-TEST-KEY:PO-5370
   Scenario: (AC.11) Grey navigation links routes correctly [@PO-272, @PO-344, @PO-345, @PO-417, @PO-676, @PO-679]
     When I add offence "TP11003" dated 9 weeks ago with impositions:
       | Imposition | Result code | Amount imposed | Amount paid | Creditor type | Creditor search |
@@ -661,7 +661,7 @@ Feature: Manual account creation - Offence Details
     When I view the "Offence details" task
     When I continue to payment terms from offence review
 
- @JIRA-EPIC:PO-272 @JIRA-TEST-KEY:PO-5371
+  @JIRA-EPIC:PO-272 @JIRA-TEST-KEY:PO-5371
   Scenario: (AC.10, AC.3) Unsaved data is cleared when cancel is clicked [@PO-272, @PO-344, @PO-345, @PO-411, @PO-681, @PO-684, @PO-686]
     When I add and cancel offence "TP11003" dated 9 weeks ago with impositions:
       | Imposition | Result code | Amount imposed | Amount paid | Creditor type | Creditor search |
@@ -701,7 +701,7 @@ Feature: Manual account creation - Offence Details
     Then I should see the header containing text "Add an offence"
 
 
- @JIRA-EPIC:PO-272 @JIRA-TEST-KEY:PO-5372
+  @JIRA-EPIC:PO-272 @JIRA-TEST-KEY:PO-5372
   Scenario: Offences screens - Axe core
     Then I check the page for accessibility
 
@@ -726,7 +726,7 @@ Feature: Manual account creation - Offence Details
 
 
 
- @JIRA-EPIC:PO-272 @JIRA-TEST-KEY:PO-5373
+  @JIRA-EPIC:PO-272 @JIRA-TEST-KEY:PO-5373
   Scenario: AC7. Back button navigation retains search field values [@PO-987, @PO-545]
     When I follow the offence search link in the same tab
     Then I should see the header containing text "Search offences"
