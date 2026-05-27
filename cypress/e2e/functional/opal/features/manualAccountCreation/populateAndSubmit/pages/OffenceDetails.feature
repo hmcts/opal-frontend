@@ -803,7 +803,7 @@ Feature: Manual account creation - Offence Details
   Scenario: AC1d Act and section searches match text contained within results
     When I follow the offence search link in the same tab
     And I search offences with:
-      | Act and section | Byelaws |
+      | Act and section | London Byelaws |
     Then I see offence search results contain rows with values in column:
       | Column          | Values         |
       | Act and section | London Byelaws |
