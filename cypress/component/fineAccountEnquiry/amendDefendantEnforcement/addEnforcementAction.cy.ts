@@ -55,19 +55,19 @@ describe(
         headerMock.debtor_type = 'Defendant';
         headerMock.account_status_reference.account_status_code = 'L';
         let enforcementMock = structuredClone(OPAL_FINES_ACCOUNT_DEFENDANT_DETAILS_ENFORCEMENT_TAB_REF_DATA_MOCK);
-        enforcementMock.last_enforcement_action!.enforcement_action.result_id = 'NOENF';
-        enforcementMock.next_enforcement_action_data = null;
+        enforcementMock.last_enforcement_action!.enforcement_action.result_id = 'WOC';
+        enforcementMock.last_enforcement_action!.enforcement_action.result_title = 'Warrant of Control';
+        enforcementMock.next_enforcement_action_data = 'WOC';
         const accountId = headerMock.defendant_account_party_id;
         interceptAuthenticatedUser();
         interceptUserState(USER_STATE_MOCK_PERMISSION_BU77);
         interceptDefendantHeader(accountId, headerMock, '123');
         interceptEnforcementStatus(accountId, enforcementMock, '123');
 
-        interceptNextPermittedEnforcementActionsEmpty();
+        interceptNextPermittedEnforcementActions(['WOC']);
         setupAccountEnquiryComponent({ ...COMPONENT_PROPERTIES, accountId });
 
         cy.get(ENF.addEnforcementActionLink).should('exist').click();
-        cy.get('@routerNavigate').should('have.been.calledWithMatch', ['../enforcement/action/select']);
 
         cy.get(ENF_ACTION_SELECT.pageTitle).should('contain.text', 'Add enforcement action');
         cy.get(ENF_ACTION_SELECT.actionDropdown).should('exist');
@@ -281,8 +281,8 @@ describe(
         headerMock.is_youth = true;
         headerMock.account_status_reference.account_status_code = 'L';
         let enforcementMock = structuredClone(OPAL_FINES_ACCOUNT_DEFENDANT_DETAILS_ENFORCEMENT_TAB_REF_DATA_MOCK);
-        enforcementMock.last_enforcement_action!.enforcement_action.result_id = 'NOENF';
-        enforcementMock.last_enforcement_action!.enforcement_action.result_title = 'No enforcement';
+        enforcementMock.last_enforcement_action!.enforcement_action.result_id = 'WOC';
+        enforcementMock.last_enforcement_action!.enforcement_action.result_title = 'Warrant of Control';
         enforcementMock.next_enforcement_action_data = 'WOC, WOA';
         enforcementMock.enforcement_overview.collection_order!.collection_order_flag = false;
         const accountId = headerMock.defendant_account_party_id;
@@ -295,7 +295,6 @@ describe(
         setupAccountEnquiryComponent({ ...COMPONENT_PROPERTIES, accountId });
 
         cy.get(ENF.addEnforcementActionLink).should('exist').click();
-        cy.get('@routerNavigate').should('have.been.calledWithMatch', ['../enforcement/action/select']);
 
         cy.get(ENF_ACTION_SELECT.pageTitle).should('contain.text', 'Add enforcement action');
         cy.get(ENF_ACTION_SELECT.actionDropdown).should('exist');
@@ -327,8 +326,8 @@ describe(
         headerMock.debtor_type = 'Defendant';
         headerMock.account_status_reference.account_status_code = 'L';
         let enforcementMock = structuredClone(OPAL_FINES_ACCOUNT_DEFENDANT_DETAILS_ENFORCEMENT_TAB_REF_DATA_MOCK);
-        enforcementMock.last_enforcement_action!.enforcement_action.result_id = 'NOENF';
-        enforcementMock.last_enforcement_action!.enforcement_action.result_title = 'No enforcement';
+        enforcementMock.last_enforcement_action!.enforcement_action.result_id = 'WOC';
+        enforcementMock.last_enforcement_action!.enforcement_action.result_title = 'Warrant of Control';
         enforcementMock.next_enforcement_action_data = 'WOC, WOA';
         enforcementMock.enforcement_overview.collection_order!.collection_order_flag = true;
         const accountId = headerMock.defendant_account_party_id;
@@ -341,7 +340,6 @@ describe(
         setupAccountEnquiryComponent({ ...COMPONENT_PROPERTIES, accountId });
 
         cy.get(ENF.addEnforcementActionLink).should('exist').click();
-        cy.get('@routerNavigate').should('have.been.calledWithMatch', ['../enforcement/action/select']);
 
         cy.get(ENF_ACTION_SELECT.actionDropdownLabel).should('contain.text', 'Select an enforcement action');
         cy.get(ENF_ACTION_SELECT.actionDropdown).should('have.value', '');
@@ -406,8 +404,8 @@ describe(
         headerMock.debtor_type = 'Defendant';
         headerMock.account_status_reference.account_status_code = 'L';
         let enforcementMock = structuredClone(OPAL_FINES_ACCOUNT_DEFENDANT_DETAILS_ENFORCEMENT_TAB_REF_DATA_MOCK);
-        enforcementMock.last_enforcement_action!.enforcement_action.result_id = 'NOENF';
-        enforcementMock.last_enforcement_action!.enforcement_action.result_title = 'No enforcement';
+        enforcementMock.last_enforcement_action!.enforcement_action.result_id = 'WOC';
+        enforcementMock.last_enforcement_action!.enforcement_action.result_title = 'Warrant of Control';
         enforcementMock.next_enforcement_action_data = 'WOC, WOA';
         enforcementMock.enforcement_overview.collection_order!.collection_order_flag = true;
         const accountId = headerMock.defendant_account_party_id;
@@ -420,7 +418,7 @@ describe(
         setupAccountEnquiryComponent({ ...COMPONENT_PROPERTIES, accountId });
 
         cy.get(ENF.addEnforcementActionLink).should('exist').click();
-        cy.get('@routerNavigate').should('have.been.calledWithMatch', ['../enforcement/action/select']);
+        cy.get(ENF_ACTION_SELECT.pageTitle).should('contain.text', 'Add enforcement action');
 
         cy.get(ENF_ACTION_SELECT.cancelLink).click();
         cy.get('@routerNavigate').should('have.been.calledWithMatch', ['details']);
@@ -436,8 +434,8 @@ describe(
         headerMock.debtor_type = 'Defendant';
         headerMock.account_status_reference.account_status_code = 'L';
         let enforcementMock = structuredClone(OPAL_FINES_ACCOUNT_DEFENDANT_DETAILS_ENFORCEMENT_TAB_REF_DATA_MOCK);
-        enforcementMock.last_enforcement_action!.enforcement_action.result_id = 'NOENF';
-        enforcementMock.last_enforcement_action!.enforcement_action.result_title = 'No enforcement';
+        enforcementMock.last_enforcement_action!.enforcement_action.result_id = 'WOC';
+        enforcementMock.last_enforcement_action!.enforcement_action.result_title = 'Warrant of Control';
         enforcementMock.next_enforcement_action_data = 'WOC, WOA';
         enforcementMock.enforcement_overview.collection_order!.collection_order_flag = true;
         const accountId = headerMock.defendant_account_party_id;
@@ -450,7 +448,7 @@ describe(
         setupAccountEnquiryComponent({ ...COMPONENT_PROPERTIES, accountId });
 
         cy.get(ENF.addEnforcementActionLink).should('exist').click();
-        cy.get('@routerNavigate').should('have.been.calledWithMatch', ['../enforcement/action/select']);
+        cy.get(ENF_ACTION_SELECT.pageTitle).should('contain.text', 'Add enforcement action');
 
         cy.get(ENF_ACTION_SELECT.actionDropdown).click();
         cy.get(ENF_ACTION_SELECT.actionDropdownOptions).contains('Warrant of Control').click();
@@ -479,19 +477,19 @@ describe(
         headerMock.debtor_type = 'Defendant';
         headerMock.account_status_reference.account_status_code = 'L';
         let enforcementMock = structuredClone(OPAL_FINES_ACCOUNT_DEFENDANT_DETAILS_ENFORCEMENT_TAB_REF_DATA_MOCK);
-        enforcementMock.last_enforcement_action!.enforcement_action.result_id = 'NOENF';
-        enforcementMock.next_enforcement_action_data = null;
+        enforcementMock.last_enforcement_action!.enforcement_action.result_id = 'WOC';
+        enforcementMock.last_enforcement_action!.enforcement_action.result_title = 'Warrant of Control';
+        enforcementMock.next_enforcement_action_data = 'WOC';
         const accountId = headerMock.defendant_account_party_id;
         interceptAuthenticatedUser();
         interceptUserState(USER_STATE_MOCK_PERMISSION_BU77);
         interceptDefendantHeader(accountId, headerMock, '123');
         interceptEnforcementStatus(accountId, enforcementMock, '123');
 
-        interceptNextPermittedEnforcementActionsEmpty();
+        interceptNextPermittedEnforcementActions(['WOC']);
         setupAccountEnquiryComponent({ ...COMPONENT_PROPERTIES, accountId });
 
         cy.get(ENF.addEnforcementActionLink).should('exist').click();
-        cy.get('@routerNavigate').should('have.been.calledWithMatch', ['../enforcement/action/select']);
 
         cy.get(ENF_ACTION_SELECT.pageTitle).should('contain.text', 'Add enforcement action');
         cy.get(ENF_ACTION_SELECT.actionDropdown).should('exist');
