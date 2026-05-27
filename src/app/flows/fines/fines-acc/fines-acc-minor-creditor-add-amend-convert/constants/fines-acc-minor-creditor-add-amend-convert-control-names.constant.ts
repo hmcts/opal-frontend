@@ -7,6 +7,8 @@ export const FINES_ACC_MINOR_CREDITOR_ADD_AMEND_CONVERT_CONTROL_NAMES = {
   addressLine1: 'facc_minor_creditor_address_line_1',
   addressLine2: 'facc_minor_creditor_address_line_2',
   addressLine3: 'facc_minor_creditor_address_line_3',
+  addressLine4: 'facc_minor_creditor_address_line_4',
+  addressLine5: 'facc_minor_creditor_address_line_5',
   postCode: 'facc_minor_creditor_post_code',
   payByBacs: 'facc_minor_creditor_pay_by_bacs',
   bankAccountName: 'facc_minor_creditor_bank_account_name',

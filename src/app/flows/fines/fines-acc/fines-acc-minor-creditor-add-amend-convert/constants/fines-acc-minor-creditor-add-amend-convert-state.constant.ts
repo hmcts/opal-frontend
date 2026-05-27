@@ -9,6 +9,8 @@ export const FINES_ACC_MINOR_CREDITOR_ADD_AMEND_CONVERT_STATE: IFinesAccMinorCre
   facc_minor_creditor_address_line_1: null,
   facc_minor_creditor_address_line_2: null,
   facc_minor_creditor_address_line_3: null,
+  facc_minor_creditor_address_line_4: null,
+  facc_minor_creditor_address_line_5: null,
   facc_minor_creditor_post_code: null,
   facc_minor_creditor_pay_by_bacs: null,
   facc_minor_creditor_bank_account_name: null,

@@ -41,6 +41,8 @@ export const transformMinorCreditorAccountPayload = (
     facc_minor_creditor_address_line_1: address.address_line_1 || null,
     facc_minor_creditor_address_line_2: address.address_line_2 || null,
     facc_minor_creditor_address_line_3: address.address_line_3 || null,
+    facc_minor_creditor_address_line_4: address.address_line_4 || null,
+    facc_minor_creditor_address_line_5: address.address_line_5 || null,
     facc_minor_creditor_post_code: address.postcode?.toUpperCase() || null,
     ...mapBacsFields(data),
   };

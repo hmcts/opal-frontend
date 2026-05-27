@@ -5,6 +5,7 @@ import { afterAll, beforeAll, beforeEach, describe, expect, it, vi } from 'vites
 
 import { FinesAccMinorCreditorAddAmendConvertFormComponent } from './fines-acc-minor-creditor-add-amend-convert-form.component';
 import { IFinesAccMinorCreditorAddAmendConvertForm } from '../interfaces/fines-acc-minor-creditor-add-amend-convert-form.interface';
+import { FinesAccountStore } from '../../stores/fines-acc.store';
 
 describe('FinesAccMinorCreditorAddAmendConvertFormComponent', () => {
   let component: FinesAccMinorCreditorAddAmendConvertFormComponent;
@@ -21,6 +22,8 @@ describe('FinesAccMinorCreditorAddAmendConvertFormComponent', () => {
       facc_minor_creditor_address_line_1: '123 Main Street',
       facc_minor_creditor_address_line_2: 'Apt 4',
       facc_minor_creditor_address_line_3: null,
+      facc_minor_creditor_address_line_4: null,
+      facc_minor_creditor_address_line_5: null,
       facc_minor_creditor_post_code: 'AB12 3CD',
       facc_minor_creditor_pay_by_bacs: true,
       facc_minor_creditor_bank_account_name: 'Test Account',
@@ -70,6 +73,13 @@ describe('FinesAccMinorCreditorAddAmendConvertFormComponent', () => {
           },
         },
         { provide: Router, useValue: { navigate: vi.fn() } },
+        {
+          provide: FinesAccountStore,
+          useValue: {
+            getAccountNumber: vi.fn().mockReturnValue('ACC123'),
+            party_name: vi.fn().mockReturnValue('Test Creditor'),
+          },
+        },
       ],
     }).compileComponents();
   });
@@ -97,24 +107,23 @@ describe('FinesAccMinorCreditorAddAmendConvertFormComponent', () => {
     expect(component.form.get(component.controls.bankAccountNumber)?.value).toBe('12345678');
   });
 
-  it('should render company and BACS controls when company data with BACS details is provided', () => {
+  it('should render the header and BACS controls when BACS details are provided', () => {
     createComponent();
     const element = fixture.nativeElement as HTMLElement;
 
-    expect(element.textContent).toContain('Change creditor details');
+    expect(element.textContent).toContain('ACC123 - Test Creditor');
+    expect(element.textContent).toContain('Minor creditor details');
     expect(element.textContent).toContain('Company name');
     expect(element.textContent).toContain('Name on account');
-    expect(element.textContent).not.toContain('First name');
   });
 
-  it('should render individual controls and hide BACS controls when individual data without BACS details is provided', () => {
+  it('should render individual controls and hide BACS controls when BACS details are not provided', () => {
     createComponent(individualFormData);
     const element = fixture.nativeElement as HTMLElement;
 
     expect(element.textContent).toContain('Title');
-    expect(element.textContent).toContain('First name');
+    expect(element.textContent).toContain('First names');
     expect(element.textContent).toContain('Last name');
-    expect(element.textContent).not.toContain('Company name');
     expect(element.textContent).not.toContain('Name on account');
   });
 });

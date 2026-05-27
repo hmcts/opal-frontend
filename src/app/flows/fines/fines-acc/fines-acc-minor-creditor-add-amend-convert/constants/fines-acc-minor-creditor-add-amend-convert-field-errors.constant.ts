@@ -93,6 +93,26 @@ export const FINES_ACC_MINOR_CREDITOR_ADD_AMEND_CONVERT_FIELD_ERRORS: IFinesAccM
         priority: 2,
       },
     },
+    facc_minor_creditor_address_line_4: {
+      maxlength: {
+        message: 'Address line 4 must be 16 characters or fewer',
+        priority: 1,
+      },
+      singleAsciiCharacters: {
+        message: 'Address line 4 must only include letters a to z, numbers 0-9 and certain special characters',
+        priority: 2,
+      },
+    },
+    facc_minor_creditor_address_line_5: {
+      maxlength: {
+        message: 'Address line 5 must be 16 characters or fewer',
+        priority: 1,
+      },
+      singleAsciiCharacters: {
+        message: 'Address line 5 must only include letters a to z, numbers 0-9 and certain special characters',
+        priority: 2,
+      },
+    },
     facc_minor_creditor_post_code: {
       maxlength: {
         message: 'Postcode must be 8 characters or fewer',

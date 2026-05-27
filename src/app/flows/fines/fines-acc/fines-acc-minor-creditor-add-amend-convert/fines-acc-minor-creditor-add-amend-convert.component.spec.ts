@@ -37,6 +37,8 @@ describe('FinesAccMinorCreditorAddAmendConvertComponent', () => {
     account_id: ReturnType<typeof vi.fn>;
     base_version: ReturnType<typeof vi.fn>;
     business_unit_id: ReturnType<typeof vi.fn>;
+    getAccountNumber: ReturnType<typeof vi.fn>;
+    party_name: ReturnType<typeof vi.fn>;
   };
   let utilsServiceMock: { scrollToTop: ReturnType<typeof vi.fn> };
   let formState: IFinesAccMinorCreditorAddAmendConvertState;
@@ -52,6 +54,8 @@ describe('FinesAccMinorCreditorAddAmendConvertComponent', () => {
       facc_minor_creditor_address_line_1: '123 Main Street',
       facc_minor_creditor_address_line_2: 'Apt 4',
       facc_minor_creditor_address_line_3: null,
+      facc_minor_creditor_address_line_4: null,
+      facc_minor_creditor_address_line_5: null,
       facc_minor_creditor_post_code: 'AB12 3CD',
       facc_minor_creditor_pay_by_bacs: true,
       facc_minor_creditor_bank_account_name: 'Test Account',
@@ -88,6 +92,8 @@ describe('FinesAccMinorCreditorAddAmendConvertComponent', () => {
       account_id: vi.fn().mockReturnValue(99000000000800),
       base_version: vi.fn().mockReturnValue('v1'),
       business_unit_id: vi.fn().mockReturnValue('77'),
+      getAccountNumber: vi.fn().mockReturnValue('ACC123'),
+      party_name: vi.fn().mockReturnValue('Test Creditor'),
     };
     utilsServiceMock = {
       scrollToTop: vi.fn(),
@@ -127,7 +133,8 @@ describe('FinesAccMinorCreditorAddAmendConvertComponent', () => {
   it('should render the child form shell', () => {
     const element = fixture.nativeElement as HTMLElement;
 
-    expect(element.textContent).toContain('Change creditor details');
+    expect(element.textContent).toContain('ACC123 - Test Creditor');
+    expect(element.textContent).toContain('Minor creditor details');
     expect(element.querySelector('app-fines-acc-minor-creditor-add-amend-convert-form')).toBeTruthy();
   });
 

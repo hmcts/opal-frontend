@@ -3,12 +3,17 @@
   (errorClick)="scrollTo($event)"
 ></opal-lib-govuk-error-summary>
 
-<h1 class="govuk-heading-l">Change creditor details</h1>
+<opal-lib-govuk-heading-with-caption
+  captionText="{{ accountNumber }} - {{ partyName }}"
+  headingText="Minor creditor details"
+  headingClasses="govuk-heading-l govuk-!-margin-bottom-30"
+>
+</opal-lib-govuk-heading-with-caption>
 
 <form (submit)="handleFormSubmit($event)" [formGroup]="form" class="govuk-form">
   <opal-lib-govuk-radio
     fieldSetId="facc_minor_creditor_creditor_type"
-    legendText="Is the minor creditor an individual or company?"
+    legendText="Select creditor type"
     legendClasses="govuk-fieldset__legend--m"
     [errors]="formControlErrorMessages[controls.creditorType]"
   >
@@ -33,17 +38,23 @@
           [control]="form.get(controls.title)!"
           [errors]="formControlErrorMessages[controls.title]"
         ></opal-lib-govuk-select>
+      </div>
 
+      <div class="govuk-form-group">
         <opal-lib-govuk-text-input
-          labelText="First name"
+          labelText="First names"
           labelClasses="govuk-label--s"
           [inputId]="controls.forenames"
           [inputName]="controls.forenames"
           inputClasses="govuk-input--width-20"
+          labelClasses="govuk-label--s"
           [control]="form.get(controls.forenames)"
           [errors]="formControlErrorMessages[controls.forenames]"
+          hintText="Include their middle names"
         ></opal-lib-govuk-text-input>
+      </div>
 
+      <div class="govuk-form-group">
         <opal-lib-govuk-text-input
           labelText="Last name"
           labelClasses="govuk-label--s"
@@ -68,113 +79,156 @@
     ></div>
     <span class="govuk-visually-hidden">Options for company minor creditor</span>
     <opal-lib-govuk-radios-conditional [conditionalId]="companyConditionalId">
-      <opal-lib-govuk-text-input
-        labelText="Company name"
-        labelClasses="govuk-label--s"
-        [inputId]="controls.companyName"
-        [inputName]="controls.companyName"
-        inputClasses="govuk-input--width-20"
-        [control]="form.get(controls.companyName)"
-        [errors]="formControlErrorMessages[controls.companyName]"
-      ></opal-lib-govuk-text-input>
+      <div class="govuk-form-group">
+        <opal-lib-govuk-text-input
+          labelText="Company name"
+          labelClasses="govuk-label--s"
+          [inputId]="controls.companyName"
+          [inputName]="controls.companyName"
+          inputClasses="govuk-input--width-20"
+          [control]="form.get(controls.companyName)"
+          [errors]="formControlErrorMessages[controls.companyName]"
+        ></opal-lib-govuk-text-input>
+      </div>
     </opal-lib-govuk-radios-conditional>
   </opal-lib-govuk-radio>
 
-  <h2 class="govuk-heading-m">Address</h2>
-  <opal-lib-govuk-text-input
-    labelText="Address line 1"
-    labelClasses="govuk-label--s"
-    [inputId]="controls.addressLine1"
-    [inputName]="controls.addressLine1"
-    inputClasses="govuk-input--width-20"
-    [control]="form.get(controls.addressLine1)"
-    [errors]="formControlErrorMessages[controls.addressLine1]"
-  ></opal-lib-govuk-text-input>
-  <opal-lib-govuk-text-input
-    labelText="Address line 2"
-    labelClasses="govuk-label--s"
-    [inputId]="controls.addressLine2"
-    [inputName]="controls.addressLine2"
-    inputClasses="govuk-input--width-20"
-    [control]="form.get(controls.addressLine2)"
-    [errors]="formControlErrorMessages[controls.addressLine2]"
-  ></opal-lib-govuk-text-input>
-  <opal-lib-govuk-text-input
-    labelText="Address line 3"
-    labelClasses="govuk-label--s"
-    [inputId]="controls.addressLine3"
-    [inputName]="controls.addressLine3"
-    inputClasses="govuk-input--width-10"
-    [control]="form.get(controls.addressLine3)"
-    [errors]="formControlErrorMessages[controls.addressLine3]"
-  ></opal-lib-govuk-text-input>
-  <opal-lib-govuk-text-input
-    labelText="Postcode"
-    labelClasses="govuk-label--s"
-    [inputId]="controls.postCode"
-    [inputName]="controls.postCode"
-    inputClasses="govuk-input--width-10"
-    [control]="form.get(controls.postCode)"
-    [errors]="formControlErrorMessages[controls.postCode]"
-    [opalLibCapitaliseAllCharacters]="form.get(controls.postCode)!"
-  ></opal-lib-govuk-text-input>
+  <hr class="govuk-section-break govuk-section-break--l govuk-section-break--visible govuk-!-margin-top-0" />
 
-  <h2 class="govuk-heading-m">Payment details</h2>
-  <opal-lib-govuk-checkboxes fieldSetId="facc_minor_creditor_bacs_details" checkboxClasses="" legendText="">
-    <div
-      opal-lib-govuk-checkboxes-item
-      labelText="I have BACS payment details"
-      [inputId]="controls.payByBacs"
-      [inputName]="controls.payByBacs"
-      [control]="form.get(controls.payByBacs)"
-    ></div>
-  </opal-lib-govuk-checkboxes>
-
-  @if (form.get(controls.payByBacs)?.value === true) {
+  <fieldset class="govuk-fieldset">
+    <legend class="govuk-fieldset__legend govuk-fieldset__legend--m">
+      <h2 class="govuk-heading-m govuk-!-margin-0">Minor creditor address</h2>
+    </legend>
     <opal-lib-govuk-text-input
-      labelText="Name on account"
+      labelText="Address line 1"
       labelClasses="govuk-label--s"
-      [inputId]="controls.bankAccountName"
-      [inputName]="controls.bankAccountName"
-      inputClasses="govuk-input--width-20"
-      [control]="form.get(controls.bankAccountName)"
-      [errors]="formControlErrorMessages[controls.bankAccountName]"
+      [inputId]="controls.addressLine1"
+      [inputName]="controls.addressLine1"
+      inputClasses="govuk-input--width-30"
+      [control]="form.get(controls.addressLine1)"
+      [errors]="formControlErrorMessages[controls.addressLine1]"
     ></opal-lib-govuk-text-input>
     <opal-lib-govuk-text-input
-      labelText="Sort code"
+      labelText="Address line 2"
       labelClasses="govuk-label--s"
-      hintText="Must be 6 digits long"
-      [inputId]="controls.bankSortCode"
-      [inputName]="controls.bankSortCode"
-      inputClasses="govuk-input--width-5"
-      [control]="form.get(controls.bankSortCode)"
-      [errors]="formControlErrorMessages[controls.bankSortCode]"
+      [inputId]="controls.addressLine2"
+      [inputName]="controls.addressLine2"
+      inputClasses="govuk-input--width-30"
+      [control]="form.get(controls.addressLine2)"
+      [errors]="formControlErrorMessages[controls.addressLine2]"
     ></opal-lib-govuk-text-input>
     <opal-lib-govuk-text-input
-      labelText="Account number"
+      labelText="Address line 3"
       labelClasses="govuk-label--s"
-      hintText="Must be between 6 and 8 digits long"
-      [inputId]="controls.bankAccountNumber"
-      [inputName]="controls.bankAccountNumber"
+      [inputId]="controls.addressLine3"
+      [inputName]="controls.addressLine3"
+      inputClasses="govuk-input--width-30"
+      [control]="form.get(controls.addressLine3)"
+      [errors]="formControlErrorMessages[controls.addressLine3]"
+    ></opal-lib-govuk-text-input>
+    <opal-lib-govuk-text-input
+      labelText="Address line 4"
+      labelClasses="govuk-label--s"
+      [inputId]="controls.addressLine4"
+      [inputName]="controls.addressLine4"
+      inputClasses="govuk-input--width-30"
+      [control]="form.get(controls.addressLine4)"
+      [errors]="formControlErrorMessages[controls.addressLine4]"
+    ></opal-lib-govuk-text-input>
+    <opal-lib-govuk-text-input
+      labelText="Address line 5"
+      labelClasses="govuk-label--s"
+      [inputId]="controls.addressLine5"
+      [inputName]="controls.addressLine5"
+      inputClasses="govuk-input--width-30"
+      [control]="form.get(controls.addressLine5)"
+      [errors]="formControlErrorMessages[controls.addressLine5]"
+    ></opal-lib-govuk-text-input>
+    <opal-lib-govuk-text-input
+      labelText="Postcode"
+      labelClasses="govuk-label--s"
+      [inputId]="controls.postCode"
+      [inputName]="controls.postCode"
       inputClasses="govuk-input--width-10"
-      [control]="form.get(controls.bankAccountNumber)"
-      [errors]="formControlErrorMessages[controls.bankAccountNumber]"
+      [control]="form.get(controls.postCode)"
+      [errors]="formControlErrorMessages[controls.postCode]"
+      [opalLibCapitaliseAllCharacters]="form.get(controls.postCode)!"
     ></opal-lib-govuk-text-input>
-    <opal-lib-govuk-text-input
-      labelText="Payment reference"
-      labelClasses="govuk-label--s"
-      [inputId]="controls.bankAccountReference"
-      [inputName]="controls.bankAccountReference"
-      inputClasses="govuk-input--width-20"
-      [control]="form.get(controls.bankAccountReference)"
-      [errors]="formControlErrorMessages[controls.bankAccountReference]"
-    ></opal-lib-govuk-text-input>
-  }
+  </fieldset>
 
-  <div class="govuk-button-group">
-    <opal-lib-govuk-button buttonId="submitForm" type="submit">Save changes</opal-lib-govuk-button>
-    <opal-lib-govuk-cancel-link
-      (linkClickEvent)="handleRoute(minorCreditorRoutingPaths.children.details, { fragment: 'creditor' })"
-    ></opal-lib-govuk-cancel-link>
+  <hr class="govuk-section-break govuk-section-break--l govuk-section-break--visible govuk-!-margin-top-0" />
+
+  <fieldset class="govuk-fieldset">
+    <legend class="govuk-fieldset__legend govuk-fieldset__legend--m">
+      <h2 class="govuk-heading-m govuk-!-margin-0">Payment details</h2>
+    </legend>
+
+    <opal-lib-govuk-checkboxes fieldSetId="facc_minor_creditor_bacs_details" checkboxClasses="" legendText="">
+      <div
+        opal-lib-govuk-checkboxes-item
+        labelText="I have BACS payment details"
+        [inputId]="controls.payByBacs"
+        [inputName]="controls.payByBacs"
+        [control]="form.get(controls.payByBacs)"
+      ></div>
+    </opal-lib-govuk-checkboxes>
+
+    @if (form.get(controls.payByBacs)?.value === true) {
+      <span id="pay-by-bacs-conditional-label" class="govuk-visually-hidden"> Options for BACS payment details </span>
+
+      <div opal-lib-govuk-checkboxes-conditional [conditionalId]="controls.payByBacs">
+        <opal-lib-govuk-text-input
+          labelText="Name on account"
+          labelClasses="govuk-label--s"
+          [inputId]="controls.bankAccountName"
+          [inputName]="controls.bankAccountName"
+          inputClasses="govuk-input--width-20"
+          [control]="form.get(controls.bankAccountName)"
+          [errors]="formControlErrorMessages[controls.bankAccountName]"
+        ></opal-lib-govuk-text-input>
+        <opal-lib-govuk-text-input
+          labelText="Sort code"
+          labelClasses="govuk-label--s"
+          hintText="Must be 6 digits long"
+          [inputId]="controls.bankSortCode"
+          [inputName]="controls.bankSortCode"
+          inputClasses="govuk-input--width-5"
+          [control]="form.get(controls.bankSortCode)"
+          [errors]="formControlErrorMessages[controls.bankSortCode]"
+        ></opal-lib-govuk-text-input>
+        <opal-lib-govuk-text-input
+          labelText="Account number"
+          labelClasses="govuk-label--s"
+          hintText="Must be between 6 and 8 digits long"
+          [inputId]="controls.bankAccountNumber"
+          [inputName]="controls.bankAccountNumber"
+          inputClasses="govuk-input--width-10"
+          [control]="form.get(controls.bankAccountNumber)"
+          [errors]="formControlErrorMessages[controls.bankAccountNumber]"
+        ></opal-lib-govuk-text-input>
+        <opal-lib-govuk-text-input
+          labelText="Payment reference"
+          labelClasses="govuk-label--s"
+          [inputId]="controls.bankAccountReference"
+          [inputName]="controls.bankAccountReference"
+          inputClasses="govuk-input--width-20"
+          [control]="form.get(controls.bankAccountReference)"
+          [errors]="formControlErrorMessages[controls.bankAccountReference]"
+        ></opal-lib-govuk-text-input>
+      </div>
+    }
+  </fieldset>
+  <hr class="govuk-section-break govuk-section-break--l govuk-section-break--visible govuk-!-margin-top-0" />
+  <div class="govuk-grid-row">
+    <div class="govuk-grid-column-full">
+      <opal-lib-govuk-button buttonId="submitForm" type="submit">Save changes</opal-lib-govuk-button>
+    </div>
+  </div>
+  <div class="govuk-grid-row govuk-!-margin-bottom-2">
+    <div class="govuk-grid-column-full">
+      <opal-lib-govuk-cancel-link
+        (linkClickEvent)="handleRoute(minorCreditorRoutingPaths.children.details, { fragment: 'creditor' })"
+      ></opal-lib-govuk-cancel-link>
+    </div>
   </div>
 </form>
