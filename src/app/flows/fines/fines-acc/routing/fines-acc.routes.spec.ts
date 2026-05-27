@@ -6,6 +6,7 @@ import { FINES_ACC_ENF_COURT_CHANGE_ROUTING_PATHS } from '../fines-acc-enf-court
 import { FINES_ACC_ENF_OVERRIDE_ADD_CHANGE_ROUTING_PATHS } from '../fines-acc-enf-override-add-change/constants/fines-acc-enf-override-add-change-routing-paths.constant';
 import { HIDE_PRIMARY_NAV_ROUTE_DATA_KEY } from '@app/constants/route-data.constant';
 import { minorCreditorAccountCreditorResolver } from './resolvers/defendant-minor-creditor-creditor.resolver';
+import { canDeactivateGuard } from '@hmcts/opal-frontend-common/guards/can-deactivate';
 
 describe('fines acc routes', () => {
   const defendantRoute = routing.find((route) => route.path === `${FINES_ACC_DEFENDANT_ROUTING_PATHS.root}/:accountId`);
@@ -63,5 +64,13 @@ describe('fines acc routes', () => {
     );
 
     expect(amendRoute?.resolve?.['minorCreditorAccountCreditor']).toBe(minorCreditorAccountCreditorResolver);
+  });
+
+  it('should protect the minor creditor amend journey from losing unsaved changes', () => {
+    const amendRoute = minorCreditorRoute?.children?.find(
+      (route) => route.path === FINES_ACC_MINOR_CREDITOR_ROUTING_PATHS.children.amend,
+    );
+
+    expect(amendRoute?.canDeactivate).toContain(canDeactivateGuard);
   });
 });
