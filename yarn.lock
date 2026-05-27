@@ -4005,9 +4005,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@hmcts/opal-frontend-common-node@npm:^0.0.30":
-  version: 0.0.30
-  resolution: "@hmcts/opal-frontend-common-node@npm:0.0.30"
+"@hmcts/opal-frontend-common-node@npm:^0.0.31":
+  version: 0.0.31
+  resolution: "@hmcts/opal-frontend-common-node@npm:0.0.31"
   dependencies:
     "@azure/msal-browser": "npm:^5.0.0"
     "@hmcts/info-provider": "npm:^1.1.0"
@@ -4029,7 +4029,7 @@ __metadata:
     redis: "npm:^5.0.0"
     session-file-store: "npm:^1.5.0"
     xml2js: "npm:^0.6.2"
-  checksum: 10/eac78fdd03570db631fd2bf271f502c7b580baf8b96d397d76f0cd569e0441b8d06c2718eddf7b9516a07d1e8f7fb2167b724a06dfb02ad822ca445d02e8e778
+  checksum: 10/18c29034d461c3d687533c55e6d464a1f53fb6b5410da6c8204eb43aeb7fc381ff0eb58b487702a3f36e918d3c04934ec4bf51153ad9246d469bdb603cdc3434
   languageName: node
   linkType: hard
 
@@ -16526,7 +16526,7 @@ __metadata:
     "@hmcts/nodejs-logging": "npm:^4.0.4"
     "@hmcts/opal-frontend-common": "npm:^0.0.79"
     "@hmcts/opal-frontend-common-cypress": "npm:^0.0.3"
-    "@hmcts/opal-frontend-common-node": "npm:^0.0.30"
+    "@hmcts/opal-frontend-common-node": "npm:^0.0.31"
     "@hmcts/properties-volume": "npm:^1.1.0"
     "@hmcts/zephyr-automation-nodejs": "npm:0.0.7"
     "@microsoft/applicationinsights-web": "npm:^3.3.5"

@@ -9,7 +9,6 @@ import { FinesMacComponent } from 'src/app/flows/fines/fines-mac/fines-mac.compo
 import { routing } from 'src/app/flows/fines/fines-mac/routing/fines-mac.routes';
 import { FinesMacPayloadService } from 'src/app/flows/fines/fines-mac/services/fines-mac-payload/fines-mac-payload.service';
 import { FinesMacStore } from 'src/app/flows/fines/fines-mac/stores/fines-mac.store';
-import { USER_STATE_DOMAIN } from '@constants/user-state-domain.constant';
 import { IFinesComponentProperties } from './FinesComponent.interface';
 
 export const setupFinesMacComponent = (finesComponentProperties: IFinesComponentProperties) => {
@@ -25,7 +24,7 @@ export const setupFinesMacComponent = (finesComponentProperties: IFinesComponent
           provide: GlobalStore,
           useFactory: () => {
             const store = new GlobalStore();
-            store.setUserStateDomain(USER_STATE_DOMAIN);
+            store.setUserStateDomain('fines');
             return store;
           },
         },
