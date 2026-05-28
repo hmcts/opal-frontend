@@ -133,6 +133,19 @@ export class AccountDetailsNavActions {
   }
 
   /**
+   * Navigates to the "Creditor" tab within the Account Details shell.
+   *
+   * @description
+   * Clicks the “Creditor” sub-navigation tab and prepares for assertions
+   * or further content checks within the tab panel.
+   */
+  goToCreditorTab(): void {
+    log('navigate', 'Navigating to "Creditor" tab');
+
+    cy.get(N.subNav.creditorTab, { timeout: 10_000 }).should('be.visible').click();
+  }
+
+  /**
    * Navigates to the "Enforcement" tab within the Account Details shell.
    *
    * @description
@@ -231,6 +244,22 @@ export class AccountDetailsNavActions {
       .should('be.visible')
       .and('have.attr', 'aria-current', 'page')
       .and('contain.text', 'Payment terms');
+  }
+
+  /**
+   * Asserts that the "Creditor" tab is currently active.
+   *
+   * @description
+   * Confirms that the active tab link displays “Creditor”
+   * and has the `aria-current="page"` attribute.
+   */
+  assertCreditorTabIsActive(): void {
+    log('assert', 'Asserting "Creditor" tab is active');
+
+    cy.get(N.subNav.currentTab, { timeout: 10_000 })
+      .should('be.visible')
+      .and('have.attr', 'aria-current', 'page')
+      .and('contain.text', 'Creditor');
   }
 
   /**

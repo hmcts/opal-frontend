@@ -64,7 +64,11 @@ describe('ReviewSummaryComponent', () => {
   it(
     '(AC.1)should render component',
     {
-      tags: [...buildTags('@JIRA-STORY:PO-417', '@JIRA-STORY:PO-676', '@JIRA-STORY:PO-679'), '@JIRA-EPIC:PO-545'],
+      tags: [
+        ...buildTags('@JIRA-STORY:PO-417', '@JIRA-STORY:PO-676', '@JIRA-STORY:PO-679'),
+        '@JIRA-EPIC:PO-545',
+        '@JIRA-TEST-KEY:PO-5059',
+      ],
     },
     () => {
       setupComponent();
@@ -84,6 +88,7 @@ describe('ReviewSummaryComponent', () => {
           '@JIRA-STORY:PO-560',
         ),
         '@JIRA-EPIC:PO-545',
+        '@JIRA-TEST-KEY:PO-5060',
       ],
     },
     () => {
@@ -125,6 +130,7 @@ describe('ReviewSummaryComponent', () => {
           '@JIRA-STORY:PO-560',
         ),
         '@JIRA-EPIC:PO-545',
+        '@JIRA-TEST-KEY:PO-5061',
       ],
     },
     () => {
@@ -185,6 +191,7 @@ describe('ReviewSummaryComponent', () => {
           '@JIRA-STORY:PO-560',
         ),
         '@JIRA-EPIC:PO-545',
+        '@JIRA-TEST-KEY:PO-5062',
       ],
     },
     () => {
@@ -260,6 +267,7 @@ describe('ReviewSummaryComponent', () => {
           '@JIRA-STORY:PO-560',
         ),
         '@JIRA-EPIC:PO-545',
+        '@JIRA-TEST-KEY:PO-5063',
       ],
     },
     () => {
@@ -367,6 +375,7 @@ describe('ReviewSummaryComponent', () => {
           '@JIRA-STORY:PO-560',
         ),
         '@JIRA-EPIC:PO-545',
+        '@JIRA-TEST-KEY:PO-5064',
       ],
     },
     () => {

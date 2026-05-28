@@ -53,7 +53,7 @@ describe('FinesDraftCheckAndValidateRejectedComponent', () => {
 
   it(
     '(AC.2) should display rejected tab correctly when there are zero draft records',
-    { tags: [...buildTags('@JIRA-STORY:PO-600'), '@JIRA-EPIC:PO-2220'] },
+    { tags: [...buildTags('@JIRA-STORY:PO-600'), '@JIRA-EPIC:PO-2220', '@JIRA-TEST-KEY:PO-4715'] },
     () => {
       const emptyMockData = { count: 0, summaries: [] };
 
@@ -74,7 +74,7 @@ describe('FinesDraftCheckAndValidateRejectedComponent', () => {
 
   it(
     '(AC.3) should display Rejected tab correctly when there are draft records',
-    { tags: [...buildTags('@JIRA-STORY:PO-600'), '@JIRA-EPIC:PO-2220'] },
+    { tags: [...buildTags('@JIRA-STORY:PO-600'), '@JIRA-EPIC:PO-2220', '@JIRA-TEST-KEY:PO-4716'] },
     () => {
       const rejectedMockData = structuredClone(OPAL_FINES_DRAFT_VALIDATE_ACCOUNTS_MOCK);
       interceptCAVGetRejectedAccounts(200, rejectedMockData);
@@ -107,7 +107,9 @@ describe('FinesDraftCheckAndValidateRejectedComponent', () => {
 
   it(
     '(AC.4a) should have default sort order for created accounts set to ascending (FinesDraftCheckAndValidateRejectedComponent)',
-    { tags: [...buildTags('@JIRA-STORY:PO-600'), '@JIRA-EPIC:PO-2220'] },
+    {
+      tags: [...buildTags('@JIRA-STORY:PO-600'), '@JIRA-EPIC:PO-2220', '@JIRA-NFR:PO-2324', '@JIRA-TEST-KEY:PO-4717'],
+    },
     () => {
       const rejectedMockData = structuredClone(OPAL_FINES_DRAFT_VALIDATE_ACCOUNTS_MOCK);
       interceptCAVGetRejectedAccounts(200, rejectedMockData);
@@ -169,7 +171,7 @@ describe('FinesDraftCheckAndValidateRejectedComponent', () => {
 
   it(
     '(AC.4b) should have pagination for over 25 accounts (FinesDraftCheckAndValidateRejectedComponent)',
-    { tags: [...buildTags('@JIRA-STORY:PO-600'), '@JIRA-EPIC:PO-2220'] },
+    { tags: [...buildTags('@JIRA-STORY:PO-600'), '@JIRA-EPIC:PO-2220', '@JIRA-TEST-KEY:PO-4718'] },
     () => {
       const rejectedMockData = structuredClone(OPAL_FINES_VALIDATE_OVER_25_DRAFT_ACCOUNTS_MOCK);
       interceptCAVGetRejectedAccounts(200, rejectedMockData);

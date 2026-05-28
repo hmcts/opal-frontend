@@ -16,7 +16,7 @@ export class FinesAccDefendantDetailsParentOrGuardianTabComponent {
   @Input() hasAccountMaintenencePermission: boolean = false;
   @Input() style: IFinesAccSummaryTabsContentStyles = FINES_ACC_SUMMARY_TABS_CONTENT_STYLES;
   @Output() changeParentOrGuardianDetails = new EventEmitter<string>();
-  @Output() removeParentOrGuardianDetails = new EventEmitter<string>();
+  @Output() removeParentOrGuardianDetails = new EventEmitter<Event>();
 
   /**
    * Determines whether the remove parent or guardian action should be available.
@@ -27,7 +27,7 @@ export class FinesAccDefendantDetailsParentOrGuardianTabComponent {
 
   public handleRemoveParentOrGuardianDetails(event?: Event): void {
     event?.preventDefault();
-    this.removeParentOrGuardianDetails.emit(FINES_ACC_PARTY_ADD_AMEND_CONVERT_PARTY_TYPES.PARENT_GUARDIAN);
+    this.removeParentOrGuardianDetails.emit(event);
   }
 
   public handleChangeParentOrGuardianDetails(event?: Event): void {

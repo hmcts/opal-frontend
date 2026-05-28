@@ -14,6 +14,7 @@ export interface IComponentProperties {
   finesAccountStoreFactory?: () => InstanceType<typeof FinesAccountStore>;
   fragments:
     | 'at-a-glance'
+    | 'creditor'
     | 'defendant'
     | 'parent-or-guardian'
     | 'payment-terms'

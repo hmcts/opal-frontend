@@ -61,7 +61,9 @@ describe('FinesDraftCreateAndManageHeaderComponent', () => {
 
   it(
     '(AC.1,AC.1a) should display a primary Create account button in the Create accounts header for inputters',
-    { tags: [...buildTags('@JIRA-STORY:PO-2762'), '@JIRA-EPIC:PO-2750'] },
+    {
+      tags: [...buildTags('@JIRA-STORY:PO-2762'), '@JIRA-EPIC:PO-2750', '@JIRA-TEST-KEY:PO-4732'],
+    },
     () => {
       stubAllTabResponses();
       setupComponent(DRAFT_SESSION_USER_STATE_INPUTTER_MOCK);
@@ -76,7 +78,9 @@ describe('FinesDraftCreateAndManageHeaderComponent', () => {
 
   it(
     '(AC.1b) clicking Create account should navigate to originator type',
-    { tags: [...buildTags('@JIRA-STORY:PO-2762'), '@JIRA-EPIC:PO-2750'] },
+    {
+      tags: [...buildTags('@JIRA-STORY:PO-2762'), '@JIRA-EPIC:PO-2750', '@JIRA-TEST-KEY:PO-4733'],
+    },
     () => {
       stubAllTabResponses();
       cy.then(() => {
@@ -117,7 +121,9 @@ describe('FinesDraftCreateAndManageHeaderComponent', () => {
 
   it(
     '(AC.1c) should hide Create account button for users without create/manage permission',
-    { tags: [...buildTags('@JIRA-STORY:PO-2762'), '@JIRA-EPIC:PO-2750'] },
+    {
+      tags: [...buildTags('@JIRA-STORY:PO-2762'), '@JIRA-EPIC:PO-2750', '@JIRA-TEST-KEY:PO-4734'],
+    },
     () => {
       stubAllTabResponses();
       setupComponent(DRAFT_SESSION_USER_STATE_MOCK);
@@ -128,7 +134,9 @@ describe('FinesDraftCreateAndManageHeaderComponent', () => {
 
   it(
     '(AC.1) should display Create account button across all active tabs',
-    { tags: [...buildTags('@JIRA-STORY:PO-2762'), '@JIRA-EPIC:PO-2750'] },
+    {
+      tags: [...buildTags('@JIRA-STORY:PO-2762'), '@JIRA-EPIC:PO-2750', '@JIRA-TEST-KEY:PO-4735'],
+    },
     () => {
       stubAllTabResponses();
       setupComponent(DRAFT_SESSION_USER_STATE_INPUTTER_MOCK);

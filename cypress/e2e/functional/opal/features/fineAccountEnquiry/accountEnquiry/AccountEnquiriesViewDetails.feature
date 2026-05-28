@@ -31,7 +31,7 @@ Feature: Account Enquiries – View Account Details
       Then I should see the convert to company account action
 
 
-    @JIRA-STORY:PO-1593 @JIRA-STORY:PO-866 @JIRA-STORY:PO-1110 @JIRA-STORY:PO-1127 @JIRA-EPIC:PO-812
+    @JIRA-STORY:PO-1593 @JIRA-STORY:PO-866 @JIRA-STORY:PO-1110 @JIRA-STORY:PO-1127 @JIRA-EPIC:PO-812 @JIRA-TEST-KEY:PO-5514
     Scenario: Defendant edit warning retains changes when I stay on the form
       # AC4 – Route Guard (Cancel and stay)
       And I edit the Defendant details and change the First name to "Test"
@@ -40,7 +40,7 @@ Feature: Account Enquiries – View Account Details
       And I should see the First name field still contains "Test"
 
 
-    @JIRA-STORY:PO-1593 @JIRA-STORY:PO-866 @JIRA-STORY:PO-1110 @JIRA-STORY:PO-1127 @JIRA-EPIC:PO-812
+    @JIRA-STORY:PO-1593 @JIRA-STORY:PO-866 @JIRA-STORY:PO-1110 @JIRA-STORY:PO-1127 @JIRA-EPIC:PO-812 @JIRA-TEST-KEY:PO-5515
     Scenario: Defendant edit warning discards changes when I leave the form
       # AC4 – Route Guard (Cancel and leave)
       And I edit the Defendant details and change the First name to "Test"
@@ -49,7 +49,7 @@ Feature: Account Enquiries – View Account Details
       And I should see the account header contains "Mr John ACCDETAILSURNAME{uniqUpper}"
 
 
-    @R1B @JIRA-STORY:PO-1593 @JIRA-STORY:PO-866 @JIRA-STORY:PO-1110 @JIRA-STORY:PO-1127 @JIRA-EPIC:PO-812
+    @R1B @JIRA-STORY:PO-1593 @JIRA-STORY:PO-866 @JIRA-STORY:PO-1110 @JIRA-STORY:PO-1127 @JIRA-EPIC:PO-812 @JIRA-TEST-KEY:PO-5516
     Scenario: Saving defendant details updates the name and audit trail
       # AC1 – Edit and save changes
       And I edit the Defendant details and change the First name to "Updated"
@@ -60,7 +60,7 @@ Feature: Account Enquiries – View Account Details
       And I verify defendant amendments via API for first name "Updated"
 
 
-    @JIRA-STORY:PO-1593 @JIRA-STORY:PO-866 @JIRA-STORY:PO-1110 @JIRA-STORY:PO-1127 @JIRA-EPIC:PO-812
+    @JIRA-STORY:PO-1593 @JIRA-STORY:PO-866 @JIRA-STORY:PO-1110 @JIRA-STORY:PO-1127 @JIRA-EPIC:PO-812 @JIRA-TEST-KEY:PO-5517
     Scenario: Saving unchanged defendant details does not create amendments
       # AC3/4 – Verify via API and store amendment count baseline
       And I establish a defendant amendment baseline with first name "Updated"
@@ -71,7 +71,7 @@ Feature: Account Enquiries – View Account Details
       And I should see the account header contains "Mr Updated ACCDETAILSURNAME{uniqUpper}"
       And I verify no amendments were created via API
 
-    @JIRA-EPIC:PO-1970 @JIRA-STORY:PO-1942 @JIRA-STORY:PO-1943 @JIRA-STORY:PO-1953
+    @JIRA-EPIC:PO-1970 @JIRA-STORY:PO-1942 @JIRA-STORY:PO-1943 @JIRA-STORY:PO-1953 @JIRA-TEST-KEY:PO-5518
     Scenario: Convert to company saves and shows the converted company account details
       When I start converting the account to a company account
       Then I should see the convert to company confirmation screen for defendant "Mr John ACCDETAILSURNAME{uniqUpper}"
@@ -89,7 +89,7 @@ Feature: Account Enquiries – View Account Details
       And I should see the company name contains "Accdetail converted comp{uniq}"
       And I should see the primary email address contains "John.AccDetailSurname{uniq}@test.com"
 
-    @JIRA-EPIC:PO-1970 @JIRA-STORY:PO-1943
+    @JIRA-EPIC:PO-1970 @JIRA-STORY:PO-1943 @JIRA-TEST-KEY:PO-5519
     Scenario: Convert to company confirmation cancel returns to Defendant details with no changes made
       When I start converting the account to a company account
       Then I should see the convert to company confirmation screen for defendant "Mr John ACCDETAILSURNAME{uniqUpper}"
@@ -115,7 +115,7 @@ Feature: Account Enquiries – View Account Details
       And I should not see the convert to company account text
 
 
-    @JIRA-STORY:PO-967 @JIRA-STORY:PO-1111 @JIRA-STORY:PO-1128 @JIRA-EPIC:PO-812
+    @JIRA-STORY:PO-967 @JIRA-STORY:PO-1111 @JIRA-STORY:PO-1128 @JIRA-EPIC:PO-812 @JIRA-TEST-KEY:PO-5520
     Scenario: Company edit warning retains changes when I stay on the form
       # AC4 - Route Guard (stay on edit)
       And I edit the Company details and change the Company name to "Test"
@@ -124,7 +124,7 @@ Feature: Account Enquiries – View Account Details
       And I should see the company name field contains "Test"
 
 
-    @JIRA-STORY:PO-967 @JIRA-STORY:PO-1111 @JIRA-STORY:PO-1128 @JIRA-EPIC:PO-812
+    @JIRA-STORY:PO-967 @JIRA-STORY:PO-1111 @JIRA-STORY:PO-1128 @JIRA-EPIC:PO-812 @JIRA-TEST-KEY:PO-5521
     Scenario: Company edit warning discards changes when I leave the form
       # AC4 - Route Guard (discard changes)
       And I edit the Company details and change the Company name to "Test"
@@ -133,7 +133,7 @@ Feature: Account Enquiries – View Account Details
       And I should see the account header contains "Accdetail comp{uniq}"
 
 
-    @R1B @JIRA-STORY:PO-967 @JIRA-STORY:PO-1111 @JIRA-STORY:PO-1128 @JIRA-EPIC:PO-812
+    @R1B @JIRA-STORY:PO-967 @JIRA-STORY:PO-1111 @JIRA-STORY:PO-1128 @JIRA-EPIC:PO-812 @JIRA-TEST-KEY:PO-5522
     Scenario: Saving company details updates the organisation name and audit trail
       # AC3 - Edit and save changes
       And I edit the Company details and change the Company name to "Accdetail comp updated{uniq}"
@@ -144,7 +144,7 @@ Feature: Account Enquiries – View Account Details
       And I verify Company amendments via API for company name "Accdetail comp updated{uniq}"
 
 
-    @JIRA-STORY:PO-967 @JIRA-STORY:PO-1111 @JIRA-STORY:PO-1128 @JIRA-EPIC:PO-812
+    @JIRA-STORY:PO-967 @JIRA-STORY:PO-1111 @JIRA-STORY:PO-1128 @JIRA-EPIC:PO-812 @JIRA-TEST-KEY:PO-5523
     Scenario: Saving unchanged company details does not create amendments
       # AC3/4 – Verify via API and store amendment count baseline
       And I establish a company amendment baseline with company name "Accdetail comp updated{uniq}"
@@ -155,7 +155,7 @@ Feature: Account Enquiries – View Account Details
       And I should see the account header contains "Accdetail comp updated{uniq}"
       And I verify no amendments were created via API for company details
 
-    @JIRA-EPIC:PO-1970 @JIRA-STORY:PO-1955 @JIRA-STORY:PO-1956 @JIRA-STORY:PO-1957
+    @JIRA-EPIC:PO-1970 @JIRA-STORY:PO-1955 @JIRA-STORY:PO-1956 @JIRA-STORY:PO-1957 @JIRA-TEST-KEY:PO-5524
     Scenario: Convert to individual saves and shows the converted defendant account details
       When I start converting the account to an individual account
       Then I should see the convert to individual confirmation screen for company "Accdetail comp{uniq}"
@@ -173,7 +173,7 @@ Feature: Account Enquiries – View Account Details
       And I should see the defendant name contains "Jamie"
       And I should see the primary email address contains "Test@email.com"
 
-    @JIRA-EPIC:PO-1970 @JIRA-STORY:PO-1955 @JIRA-STORY:PO-1956 @JIRA-STORY:PO-1957
+    @JIRA-EPIC:PO-1970 @JIRA-STORY:PO-1955 @JIRA-STORY:PO-1956 @JIRA-STORY:PO-1957 @JIRA-TEST-KEY:PO-5525
     Scenario: Convert to individual confirmation cancel returns to Defendant details with no changes made
       When I start converting the account to an individual account
       Then I should see the convert to individual confirmation screen for company "Accdetail comp{uniq}"
@@ -199,7 +199,7 @@ Feature: Account Enquiries – View Account Details
       Then I should not see the convert to company account action
 
 
-    @JIRA-STORY:PO-2315 @JIRA-STORY:PO-1663 @JIRA-EPIC:PO-812
+    @JIRA-STORY:PO-2315 @JIRA-STORY:PO-1663 @JIRA-EPIC:PO-812 @JIRA-TEST-KEY:PO-5526
     Scenario: Defendant edit warning retains changes for a non-paying account when I stay
       # AC4 – Route Guard (Cancel and stay)
       And I edit the Defendant details and change the First name to "Test"
@@ -208,7 +208,7 @@ Feature: Account Enquiries – View Account Details
       And I should see the First name field still contains "Test"
 
 
-    @JIRA-STORY:PO-2315 @JIRA-STORY:PO-1663 @JIRA-EPIC:PO-812
+    @JIRA-STORY:PO-2315 @JIRA-STORY:PO-1663 @JIRA-EPIC:PO-812 @JIRA-TEST-KEY:PO-5527
     Scenario: Defendant edit warning discards changes for a non-paying account when I leave
       # AC4 – Route Guard (Cancel and leave)
       And I edit the Defendant details and change the First name to "Test"
@@ -217,7 +217,7 @@ Feature: Account Enquiries – View Account Details
       And I should see the account header contains "Miss Jane TESTNONPAYEE{uniqUpper}"
 
 
-    @R1B @JIRA-STORY:PO-2315 @JIRA-STORY:PO-1663 @JIRA-EPIC:PO-812
+    @R1B @JIRA-STORY:PO-2315 @JIRA-STORY:PO-1663 @JIRA-EPIC:PO-812 @JIRA-TEST-KEY:PO-5528
     Scenario: Saving defendant details updates the name and audit trail for a non-paying account
       # AC1 – Edit and save changes
       And I edit the Defendant details and change the First name to "Updated"
@@ -228,7 +228,7 @@ Feature: Account Enquiries – View Account Details
       And I verify defendant amendments via API for first name "Updated"
 
 
-    @JIRA-STORY:PO-2315 @JIRA-STORY:PO-1663 @JIRA-EPIC:PO-812
+    @JIRA-STORY:PO-2315 @JIRA-STORY:PO-1663 @JIRA-EPIC:PO-812 @JIRA-TEST-KEY:PO-5529
     Scenario: Saving unchanged defendant details does not create amendments for a non-paying account
       # AC3/4 – Verify via API and store amendment count baseline
       And I establish a defendant amendment baseline with first name "Updated"
@@ -256,7 +256,7 @@ Feature: Account Enquiries – View Account Details
       When I go to the Defendant details section and the header is "Defendant details"
       Then I should see the add parent or guardian details action
 
-    @JIRA-STORY:PO-1877 @JIRA-EPIC:PO-1875
+    @JIRA-STORY:PO-1877 @JIRA-EPIC:PO-1875 @JIRA-TEST-KEY:PO-5530
     Scenario: Cancelling add parent or guardian details without changes and after confirming discard returns to the Defendant tab
       # AC2 – Cancel with no entered data returns directly to the Defendant tab
       When I start adding parent or guardian details
@@ -276,7 +276,7 @@ Feature: Account Enquiries – View Account Details
       Then I should be on the add parent or guardian details page
       And I should see the parent or guardian first name field contains ""
 
-    @JIRA-STORY:PO-1877 @JIRA-EPIC:PO-1875
+    @JIRA-STORY:PO-1877 @JIRA-EPIC:PO-1875 @JIRA-TEST-KEY:PO-5531
     Scenario: Add parent or guardian warning keeps entered data and validation errors when I stay on the form
       # AC2a, AC2aii – Cancel with entered data shows a warning and staying keeps the user on the page
       # AC2a, AC2aiii – Existing validation errors remain visible when the cancel warning is dismissed
@@ -291,6 +291,33 @@ Feature: Account Enquiries – View Account Details
       And I should see the parent or guardian first name field contains "Jamie"
       And I should see the parent or guardian add error summary contains "Enter parent or guardian last name"
       And I should see the parent or guardian add error summary contains "Enter address line 1, typically the building and street"
+
+    @JIRA-STORY:PO-1878 @JIRA-EPIC:PO-1875 @JIRA-TEST-KEY:PO-6355
+    Scenario: Cancelling and then confirming removal of a non-paying parent or guardian returns to the correct tabs
+      When I start adding parent or guardian details
+      Then I should be on the add parent or guardian details page
+      When I enter "Pat" into the parent or guardian first name field
+      And I enter "GUARDIANREMOVE{uniqUpper}" into the parent or guardian last name field
+      And I enter "1 Removal Street" into the parent or guardian address line 1 field
+      And I save the parent or guardian details
+      Then I should return to the account details page Parent or guardian tab
+      And I should see the remove parent or guardian details action
+      # AC1a, AC1b – Remove confirmation screen shows the expected title and account identifier
+      When I start removing parent or guardian details
+      Then I should be on the remove parent or guardian details page for "ADDPGYOUTH{uniqUpper}"
+      # AC3, AC3a – No - cancel returns to the Parent or guardian tab without removing the parent/guardian
+      When I cancel removing parent or guardian details
+      Then I should return to the account details page Parent or guardian tab
+      And I should see the parent or guardian name contains "Pat GUARDIANREMOVE{uniqUpper}"
+      And I should see the remove parent or guardian details action
+      # AC2, AC2a, AC2b, AC2c – Yes - remove deletes the party, returns to Defendant, and shows success
+      When I start removing parent or guardian details
+      Then I should be on the remove parent or guardian details page for "ADDPGYOUTH{uniqUpper}"
+      When I confirm removing parent or guardian details
+      Then I should return to the account details page Defendant tab
+      And I should see the add parent or guardian details action
+      And I should see the account details success message "Parent or guardian details removed"
+      And I verify the parent or guardian has been removed via API
 
   Rule: Parent or guardian account baseline
     Background:
@@ -315,7 +342,7 @@ Feature: Account Enquiries – View Account Details
       When I go to the Parent or guardian details section and the header is "Parent or guardian details"
 
     @JIRA-EPIC:PO-976
-    @R1B @JIRA-STORY:PO-1129
+    @R1B @JIRA-STORY:PO-1129 @JIRA-TEST-KEY:PO-5532
     Scenario: Saving parent or guardian details updates the name and audit trail
       # AC1 – Edit and save changes
       And I edit the Parent or guardian details and change the First name to "Updated"
@@ -326,7 +353,7 @@ Feature: Account Enquiries – View Account Details
       And I verify parent or guardian amendments via API for guardian name "Updated"
 
     @JIRA-EPIC:PO-976
-    @JIRA-STORY:PO-1129
+    @JIRA-STORY:PO-1129 @JIRA-TEST-KEY:PO-5533
     Scenario: Saving unchanged parent or guardian details does not create amendments
       # AC3/4 – Verify via API and store amendment count baseline
       And I establish a parent or guardian amendment baseline with first name "Updated"
@@ -363,7 +390,7 @@ Feature: Account Enquiries – View Account Details
       Then I should return to the account details page Parent or guardian tab
       And I should see the parent or guardian name contains "Pat GUARDIANAMEND{uniqUpper}"
 
-    @JIRA-STORY:PO-3915 @JIRA-EPIC:PO-1875
+    @JIRA-STORY:PO-3915 @JIRA-EPIC:PO-1875 @JIRA-TEST-KEY:PO-6356
     Scenario: Non-paying parent or guardian change can be cancelled, discarded, and then saved successfully
       # AC1, AC1a, AC1b – Change opens the reduced parent or guardian details screen with the information banner
       # AC2 – Cancel with no changes returns to the Defendant tab
@@ -390,7 +417,7 @@ Feature: Account Enquiries – View Account Details
       And I should see the parent or guardian name contains "Updated GUARDIANAMEND{uniqUpper}"
       And I verify parent or guardian amendments via API for guardian name "Updated"
 
-    @JIRA-STORY:PO-3915 @JIRA-EPIC:PO-1875
+    @JIRA-STORY:PO-3915 @JIRA-EPIC:PO-1875 @JIRA-TEST-KEY:PO-6357
     Scenario: Non-paying parent or guardian change warning keeps entered data and validation errors when I stay on the form
       # AC2a, AC2aii – Cancel with entered data warns and staying keeps the user on the page
       # AC2a, AC2aiii – Existing validation errors remain visible when the warning is dismissed
