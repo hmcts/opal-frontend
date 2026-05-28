@@ -112,18 +112,37 @@ export class FinesAccMinorCreditorAddAmendConvertFormComponent
     ...FINES_ACC_MINOR_CREDITOR_ADD_AMEND_CONVERT_FIELD_ERRORS,
   };
 
+  /**
+   * Gets a form control by name, cast to the correct type for ease of use in validation and value retrieval.
+   * @param controlName The name of the form control.
+   * @returns The form control cast to the correct type.
+   */
   private getControl(controlName: string): FormControl {
     return this.form.get(controlName) as FormControl;
   }
 
+  /**
+   * Checks if a value is considered "filled" for the purposes of form validation.
+   * @param value The value to check.
+   * @returns True if the value is considered filled, false otherwise.
+   */
   private hasValue(value: unknown): boolean {
     return typeof value === 'string' ? !!value.trim() : value !== null && value !== undefined && value !== false;
   }
 
+  /**
+   * Checks if any of the specified controls have a value that should be considered for validation. Used to determine if the creditor details are sufficiently filled based on the selected creditor type.
+   * @param controlNames The names of the form controls to check.
+   * @returns True if any of the specified controls have a value, false otherwise.
+   */
   private hasAnyControlValue(controlNames: readonly string[]): boolean {
     return controlNames.some((controlName) => this.hasValue(this.form.get(controlName)?.value));
   }
 
+  /**
+   * Validator function for minor creditor details. Ensures that the appropriate details are filled based on the selected creditor type.
+   * @returns A ValidatorFn that checks the minor creditor details.
+   */
   private minorCreditorDetailsValidator(): ValidatorFn {
     return (control: AbstractControl): ValidationErrors | null => {
       if (control.value === 'individual') {
@@ -142,18 +161,30 @@ export class FinesAccMinorCreditorAddAmendConvertFormComponent
     };
   }
 
+  /**
+   * Resets the specified form controls to their initial state.
+   * @param controlNames The names of the form controls to reset.
+   */
   private resetControls(controlNames: readonly string[]): void {
     controlNames.forEach((controlName) => {
       this.getControl(controlName).reset(null, { emitEvent: false });
     });
   }
 
+  /**
+   * Updates the validity of the specified form controls.
+   * @param controlNames The names of the form controls to update.
+   */
   private updateControlsValidity(controlNames: readonly string[]): void {
     controlNames.forEach((controlName) => {
       this.getControl(controlName).updateValueAndValidity({ emitEvent: false });
     });
   }
 
+  /**
+   * Clears the validators of the specified form controls.
+   * @param controlNames The names of the form controls to clear validators for.
+   */
   private clearControlValidators(controlNames: readonly string[]): void {
     controlNames.forEach((controlName) => {
       this.getControl(controlName).clearValidators();
@@ -161,6 +192,11 @@ export class FinesAccMinorCreditorAddAmendConvertFormComponent
     this.updateControlsValidity(controlNames);
   }
 
+  /**
+   * Enables or disables the specified form controls.
+   * @param controlNames The names of the form controls to enable or disable.
+   * @param enabled True to enable the controls, false to disable them.
+   */
   private setControlsEnabled(controlNames: readonly string[], enabled: boolean): void {
     controlNames.forEach((controlName) => {
       const control = this.getControl(controlName);
@@ -175,11 +211,17 @@ export class FinesAccMinorCreditorAddAmendConvertFormComponent
     });
   }
 
+  /**
+   * Resets all error messages to their initial state. This is typically called when the creditor type or payment details options change to ensure that any errors related to now-disabled fields are cleared and that the form reflects the current validation requirements.
+   */
   private resetErrorMessages(): void {
     this.clearAllErrorMessages();
     this.setInitialErrorMessages();
   }
 
+  /**
+   * Sets the validators for individual creditor details and updates their validity. This is called when the creditor type changes to "individual" to ensure that the appropriate fields are validated according to the requirements for an individual creditor.
+   */
   private setIndividualValidators(): void {
     this.getControl(this.controls.title).setValidators([Validators.required]);
     this.getControl(this.controls.forenames).setValidators([
@@ -195,6 +237,9 @@ export class FinesAccMinorCreditorAddAmendConvertFormComponent
     this.updateControlsValidity(FINES_ACC_MINOR_CREDITOR_ADD_AMEND_CONVERT_INDIVIDUAL_CONTROL_NAMES);
   }
 
+  /**
+   * Sets the validators for company creditor details and updates their validity. This is called when the creditor type changes to "company" to ensure that the appropriate fields are validated according to the requirements for a company creditor.
+   */
   private setCompanyValidators(): void {
     this.getControl(this.controls.companyName).setValidators([
       Validators.required,
@@ -204,6 +249,9 @@ export class FinesAccMinorCreditorAddAmendConvertFormComponent
     this.updateControlsValidity(FINES_ACC_MINOR_CREDITOR_ADD_AMEND_CONVERT_COMPANY_CONTROL_NAMES);
   }
 
+  /**
+   * Sets the validators for payment details and updates their validity. This is called when the payment details options change to ensure that the appropriate fields are validated according to the requirements for the selected payment method.
+   */
   private setPaymentDetailValidators(): void {
     this.getControl(this.controls.bankAccountName).setValidators([
       Validators.required,
@@ -226,10 +274,18 @@ export class FinesAccMinorCreditorAddAmendConvertFormComponent
     this.updateControlsValidity(FINES_ACC_MINOR_CREDITOR_ADD_AMEND_CONVERT_BACS_CONTROL_NAMES);
   }
 
+  /**
+   * Updates the validity of the creditor type control. This is typically called after changes to individual or company creditor details to ensure that the creditor type control reflects the current state of the form.
+   */
   private updateCreditorTypeValidity(): void {
     this.getControl(this.controls.creditorType).updateValueAndValidity({ onlySelf: true, emitEvent: false });
   }
 
+  /**
+   * Handles changes to the creditor type and updates the form controls accordingly. This includes clearing validators, resetting inactive controls, and setting validators for the active creditor type.
+   * @param selectedType The selected creditor type, either 'individual' or 'company'.
+   * @param resetInactiveValues Whether to reset the values of inactive controls.
+   */
   private handleCreditorTypeChange(selectedType: string | null, resetInactiveValues: boolean): void {
     this.clearControlValidators(FINES_ACC_MINOR_CREDITOR_ADD_AMEND_CONVERT_INDIVIDUAL_CONTROL_NAMES);
     this.clearControlValidators(FINES_ACC_MINOR_CREDITOR_ADD_AMEND_CONVERT_COMPANY_CONTROL_NAMES);
@@ -264,6 +320,11 @@ export class FinesAccMinorCreditorAddAmendConvertFormComponent
     this.updateCreditorTypeValidity();
   }
 
+  /**
+   * Handles changes to the payment details and updates the form controls accordingly. This includes clearing validators, resetting inactive controls, and setting validators for the active payment details.
+   * @param hasPaymentDetails Whether the payment details are provided.
+   * @param resetValues Whether to reset the values of inactive controls.
+   */
   private handlePaymentDetailsChange(hasPaymentDetails: boolean, resetValues: boolean): void {
     this.clearControlValidators(FINES_ACC_MINOR_CREDITOR_ADD_AMEND_CONVERT_BACS_CONTROL_NAMES);
 
@@ -278,6 +339,9 @@ export class FinesAccMinorCreditorAddAmendConvertFormComponent
     }
   }
 
+  /**
+   * Sets up dynamic validation for the form controls based on changes to the creditor type and payment details.
+   */
   private setupDynamicValidation(): void {
     const creditorTypeControl = this.getControl(this.controls.creditorType);
     const payByBacsControl = this.getControl(this.controls.payByBacs);
