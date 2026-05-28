@@ -1,4 +1,5 @@
-import { ChangeDetectionStrategy, Component, Input, Output, EventEmitter } from '@angular/core';
+import { ChangeDetectionStrategy, Component, EventEmitter, Input, Output } from '@angular/core';
+import { RouterLink } from '@angular/router';
 import { IFinesAccSummaryTabsContentStyles } from '../interfaces/fines-acc-summary-tabs-content-styles.interface';
 import { FINES_ACC_SUMMARY_TABS_CONTENT_STYLES } from '../../constants/fines-acc-summary-tabs-content-styles.constant';
 import {
@@ -15,9 +16,16 @@ import { FinesNotProvidedComponent } from '../../../components/fines-not-provide
 import { DatePipe, TitleCasePipe } from '@angular/common';
 import { GovukTagComponent } from '@hmcts/opal-frontend-common/components/govuk/govuk-tag';
 import { GovukDetailsComponent } from '@hmcts/opal-frontend-common/components/govuk/govuk-details';
+import { FINES_ACC_ENF_ACTION_DENIED_ACCOUNT_STATUS_MAP } from '../../fines-acc-enf-action-denied/constants/fines-acc-enf-action-denied-account-status-map.constant';
+import { FINES_ACC_ENF_ACTION_DENIED_TYPES } from '../../fines-acc-enf-action-denied/constants/fines-acc-enf-action-denied-types.constant';
+import { TFinesAccEnfActionDeniedType } from '../../fines-acc-enf-action-denied/types/fines-acc-enf-action-denied-type.type';
+import { FINES_ACC_DEFENDANT_ROUTING_PATHS } from '../../routing/constants/fines-acc-defendant-routing-paths.constant';
+import { FINES_ACC_ENF_ACTION_ROUTING_PATHS } from '../../fines-acc-enf-action-select/constants/fines-acc-enf-action-select-routing-paths.constant';
+import { getNextPermittedActionIds } from '../../fines-acc-enf-action-select/utils/fines-acc-enf-action-next-permitted-actions.utils';
 @Component({
   selector: 'app-fines-acc-defendant-details-enforcement-tab',
   imports: [
+    RouterLink,
     GovukSummaryCardListComponent,
     GovukSummaryListComponent,
     GovukSummaryListRowComponent,
@@ -38,7 +46,7 @@ export class FinesAccDefendantDetailsEnforcementTab {
   @Input() isCompanyAccount: boolean = false;
   @Input() hasAccountMaintenancePermission: boolean = false;
   @Input() hasEnterEnforcementPermission: boolean = false;
-  @Output() addEnforcementAction = new EventEmitter<void>();
+  @Input({ required: true }) accountStatusCode!: string;
   @Output() addEnforcementOverride = new EventEmitter<void>();
   @Output() changeEnforcementOverride = new EventEmitter<void>();
   @Output() removeEnforcementOverride = new EventEmitter<void>();
@@ -46,11 +54,42 @@ export class FinesAccDefendantDetailsEnforcementTab {
   @Output() changeCollectionOrder = new EventEmitter<boolean>();
 
   /**
-   * Emits an event to add an enforcement action.
+   * Computes the denied reason for adding an enforcement action.
    */
-  public handleAddEnforcementAction(event: Event): void {
-    event.preventDefault();
-    this.addEnforcementAction.emit();
+  private getAddEnforcementActionDeniedType(): TFinesAccEnfActionDeniedType | null {
+    const invalidAccountStatuses = Object.keys(FINES_ACC_ENF_ACTION_DENIED_ACCOUNT_STATUS_MAP);
+    const lastEnforcementActionId = this.tabData.last_enforcement_action?.enforcement_action.result_id ?? null;
+    const nextPermittedActions = getNextPermittedActionIds(this.tabData.next_enforcement_action_data) ?? [];
+
+    if (!this.hasEnterEnforcementPermission) {
+      return FINES_ACC_ENF_ACTION_DENIED_TYPES.permission;
+    }
+
+    if (invalidAccountStatuses.includes(this.accountStatusCode)) {
+      return FINES_ACC_ENF_ACTION_DENIED_TYPES.accountStatus;
+    }
+
+    if (lastEnforcementActionId === 'NOENF') {
+      return FINES_ACC_ENF_ACTION_DENIED_TYPES.enforcementHold;
+    }
+
+    if (this.tabData.last_enforcement_action && nextPermittedActions.length === 0) {
+      return FINES_ACC_ENF_ACTION_DENIED_TYPES.noNextActions;
+    }
+
+    return null;
+  }
+
+  /**
+   * Gets the add enforcement action route for the current account state.
+   */
+  public get addEnforcementActionRoute(): string {
+    const deniedType = this.getAddEnforcementActionDeniedType();
+    const actionRoot = `${FINES_ACC_DEFENDANT_ROUTING_PATHS.children.enforcement}/${FINES_ACC_ENF_ACTION_ROUTING_PATHS.root}`;
+
+    return deniedType === null
+      ? `../${actionRoot}/${FINES_ACC_ENF_ACTION_ROUTING_PATHS.children.select}`
+      : `../${actionRoot}/${FINES_ACC_ENF_ACTION_ROUTING_PATHS.children.denied}/${deniedType}`;
   }
 
   /**
