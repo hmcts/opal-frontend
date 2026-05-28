@@ -1,7 +1,11 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
+import { provideRouter } from '@angular/router';
 import { FinesAccDefendantDetailsEnforcementTab } from './fines-acc-defendant-details-enforcement-tab.component';
 import { OPAL_FINES_ACCOUNT_DEFENDANT_DETAILS_ENFORCEMENT_TAB_REF_DATA_MOCK } from '@services/fines/opal-fines-service/mocks/opal-fines-account-defendant-details-enforcement-tab-ref-data.mock';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
+import { FINES_ACC_ENF_ACTION_DENIED_TYPES } from '../../fines-acc-enf-action-denied/constants/fines-acc-enf-action-denied-types.constant';
+import { FINES_ACC_DEFENDANT_ROUTING_PATHS } from '../../routing/constants/fines-acc-defendant-routing-paths.constant';
+import { FINES_ACC_ENF_ACTION_ROUTING_PATHS } from '../../fines-acc-enf-action-select/constants/fines-acc-enf-action-select-routing-paths.constant';
 
 describe('FinesAccDefendantDetailsEnforcementTab', () => {
   let component: FinesAccDefendantDetailsEnforcementTab;
@@ -10,11 +14,13 @@ describe('FinesAccDefendantDetailsEnforcementTab', () => {
   beforeEach(async () => {
     await TestBed.configureTestingModule({
       imports: [FinesAccDefendantDetailsEnforcementTab],
+      providers: [provideRouter([])],
     }).compileComponents();
 
     fixture = TestBed.createComponent(FinesAccDefendantDetailsEnforcementTab);
     component = fixture.componentInstance;
     component.tabData = structuredClone(OPAL_FINES_ACCOUNT_DEFENDANT_DETAILS_ENFORCEMENT_TAB_REF_DATA_MOCK);
+    component.accountStatusCode = 'L';
     fixture.detectChanges();
   });
 
@@ -31,21 +37,19 @@ describe('FinesAccDefendantDetailsEnforcementTab', () => {
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
       ((FinesAccDefendantDetailsEnforcementTab as any).ɵcmp?.template?.toString() as string | undefined) ?? '';
     const actionLinkConsts = templateConsts.filter(
-      (entry) =>
-        entry.includes('govuk-link') && entry.includes('govuk-link--no-visited-state') && entry.includes('href'),
+      (entry) => entry.includes('govuk-link') && entry.includes('govuk-link--no-visited-state'),
     );
 
     expect(actionLinkConsts.length).toBeGreaterThan(0);
     actionLinkConsts.forEach((entry) => {
-      expect(entry).toContain('href');
-      expect(entry).toContain('');
       expect(entry).not.toContain('tabindex');
     });
+    expect(templateFunction).not.toContain('handleAddEnforcementAction');
     expect(templateFunction).not.toContain('keydown.enter');
     expect(templateFunction).not.toContain('keyup.enter');
   });
 
-  it('should render action links with empty href, no visited state, and no tabindex', () => {
+  it('should render action links with no visited state and no tabindex', () => {
     const tabData = structuredClone(OPAL_FINES_ACCOUNT_DEFENDANT_DETAILS_ENFORCEMENT_TAB_REF_DATA_MOCK);
     tabData.enforcement_override = null;
 
@@ -67,56 +71,116 @@ describe('FinesAccDefendantDetailsEnforcementTab', () => {
 
     actionLinks.forEach((link) => {
       expect(link.classList.contains('govuk-link--no-visited-state')).toBe(true);
-      expect(link.getAttribute('href')).toBe('');
       expect(link.getAttribute('tabindex')).toBeNull();
     });
   });
 
-  it('should handleAddEnforcementOverride when add enforcement override button is clicked', () => {
-    const eventEmitterSpy = vi.spyOn(component.addEnforcementOverride, 'emit');
+  it('should emit add enforcement override when add enforcement override is clicked', () => {
+    const emitSpy = vi.spyOn(component.addEnforcementOverride, 'emit');
     const event = { preventDefault: vi.fn() } as unknown as Event;
     component.hasAccountMaintenancePermission = true;
-    component.tabData.enforcement_override = null; // Ensure there is no existing enforcement override result
+    component.tabData.enforcement_override = null;
+
     component.handleAddEnforcementOverride(event);
-    expect(event.preventDefault).toHaveBeenCalled();
-    expect(eventEmitterSpy).toHaveBeenCalled();
-  });
-
-  it('should emit addEnforcementAction when handleAddEnforcementAction is called', () => {
-    const emitSpy = vi.spyOn(component.addEnforcementAction, 'emit');
-    const event = { preventDefault: vi.fn() } as unknown as Event;
-
-    component.handleAddEnforcementAction(event);
 
     expect(event.preventDefault).toHaveBeenCalled();
     expect(emitSpy).toHaveBeenCalled();
   });
 
-  it('should emit changeEnforcementOverride when user has permission and an override result exists', () => {
-    const emitSpy = vi.spyOn(component.changeEnforcementOverride, 'emit');
+  it('should route add enforcement action to select when permitted', () => {
+    component.hasEnterEnforcementPermission = true;
 
-    component.hasAccountMaintenancePermission = true;
+    expect(component.addEnforcementActionRoute).toBe(
+      `../${FINES_ACC_DEFENDANT_ROUTING_PATHS.children.enforcement}/${FINES_ACC_ENF_ACTION_ROUTING_PATHS.root}/${FINES_ACC_ENF_ACTION_ROUTING_PATHS.children.select}`,
+    );
+  });
+
+  it('should route add enforcement action to permission denied when enter enforcement permission is missing', () => {
+    expect(component.addEnforcementActionRoute).toBe(
+      `../${FINES_ACC_DEFENDANT_ROUTING_PATHS.children.enforcement}/${FINES_ACC_ENF_ACTION_ROUTING_PATHS.root}/${FINES_ACC_ENF_ACTION_ROUTING_PATHS.children.denied}/${FINES_ACC_ENF_ACTION_DENIED_TYPES.permission}`,
+    );
+  });
+
+  it('should route add enforcement action to account-status denied when blocked by account status', () => {
+    component.hasEnterEnforcementPermission = true;
+    component.accountStatusCode = 'CS';
+
+    expect(component.addEnforcementActionRoute).toBe(
+      `../${FINES_ACC_DEFENDANT_ROUTING_PATHS.children.enforcement}/${FINES_ACC_ENF_ACTION_ROUTING_PATHS.root}/${FINES_ACC_ENF_ACTION_ROUTING_PATHS.children.denied}/${FINES_ACC_ENF_ACTION_DENIED_TYPES.accountStatus}`,
+    );
+  });
+
+  it('should route add enforcement action to account-status denied when account status is transferred out', () => {
+    component.hasEnterEnforcementPermission = true;
+    component.accountStatusCode = 'TO';
+
+    expect(component.addEnforcementActionRoute).toBe(
+      `../${FINES_ACC_DEFENDANT_ROUTING_PATHS.children.enforcement}/${FINES_ACC_ENF_ACTION_ROUTING_PATHS.root}/${FINES_ACC_ENF_ACTION_ROUTING_PATHS.children.denied}/${FINES_ACC_ENF_ACTION_DENIED_TYPES.accountStatus}`,
+    );
+  });
+
+  it('should route add enforcement action to enforcement-hold denied when last enforcement is NOENF', () => {
+    component.hasEnterEnforcementPermission = true;
+    component.tabData.last_enforcement_action = {
+      ...structuredClone(OPAL_FINES_ACCOUNT_DEFENDANT_DETAILS_ENFORCEMENT_TAB_REF_DATA_MOCK.last_enforcement_action)!,
+      enforcement_action: {
+        result_id: 'NOENF',
+        result_title: 'No enforcement',
+      },
+    };
+
+    expect(component.addEnforcementActionRoute).toBe(
+      `../${FINES_ACC_DEFENDANT_ROUTING_PATHS.children.enforcement}/${FINES_ACC_ENF_ACTION_ROUTING_PATHS.root}/${FINES_ACC_ENF_ACTION_ROUTING_PATHS.children.denied}/${FINES_ACC_ENF_ACTION_DENIED_TYPES.enforcementHold}`,
+    );
+  });
+
+  it('should route add enforcement action to no-next-actions denied when no next permitted actions exist', () => {
+    component.hasEnterEnforcementPermission = true;
+    component.tabData.next_enforcement_action_data = null;
+
+    expect(component.addEnforcementActionRoute).toBe(
+      `../${FINES_ACC_DEFENDANT_ROUTING_PATHS.children.enforcement}/${FINES_ACC_ENF_ACTION_ROUTING_PATHS.root}/${FINES_ACC_ENF_ACTION_ROUTING_PATHS.children.denied}/${FINES_ACC_ENF_ACTION_DENIED_TYPES.noNextActions}`,
+    );
+  });
+
+  it('should permit add enforcement action when all next actions are permitted', () => {
+    component.hasEnterEnforcementPermission = true;
+    component.tabData.next_enforcement_action_data = 'all';
+
+    expect(component.addEnforcementActionRoute).toBe(
+      `../${FINES_ACC_DEFENDANT_ROUTING_PATHS.children.enforcement}/${FINES_ACC_ENF_ACTION_ROUTING_PATHS.root}/${FINES_ACC_ENF_ACTION_ROUTING_PATHS.children.select}`,
+    );
+  });
+
+  it('should permit add enforcement action when there is no last enforcement action', () => {
+    component.hasEnterEnforcementPermission = true;
+    component.tabData.last_enforcement_action = null;
+    component.tabData.next_enforcement_action_data = null;
+
+    expect(component.addEnforcementActionRoute).toBe(
+      `../${FINES_ACC_DEFENDANT_ROUTING_PATHS.children.enforcement}/${FINES_ACC_ENF_ACTION_ROUTING_PATHS.root}/${FINES_ACC_ENF_ACTION_ROUTING_PATHS.children.select}`,
+    );
+  });
+
+  it('should emit change enforcement override when requested', () => {
+    const emitSpy = vi.spyOn(component.changeEnforcementOverride, 'emit');
     component.handleChangeEnforcementOverride();
 
     expect(emitSpy).toHaveBeenCalled();
   });
 
   it('should emit when handleChangeEnforcementCourt is called', () => {
-    const eventEmitterSpy = vi.spyOn(component.changeEnforcementCourt, 'emit');
-    component.hasAccountMaintenancePermission = true;
-
+    const emitSpy = vi.spyOn(component.changeEnforcementCourt, 'emit');
     component.handleChangeEnforcementCourt();
 
-    expect(eventEmitterSpy).toHaveBeenCalled();
+    expect(emitSpy).toHaveBeenCalled();
   });
 
   it('should emit when handleRemoveEnforcementOverride is called', () => {
-    const eventEmitterSpy = vi.spyOn(component.removeEnforcementOverride, 'emit');
-    component.hasAccountMaintenancePermission = true;
-
+    const emitSpy = vi.spyOn(component.removeEnforcementOverride, 'emit');
     component.handleRemoveEnforcementOverride();
 
-    expect(eventEmitterSpy).toHaveBeenCalled();
+    expect(emitSpy).toHaveBeenCalled();
   });
 
   it('should not render actions when permissions are missing', () => {
@@ -135,19 +199,17 @@ describe('FinesAccDefendantDetailsEnforcementTab', () => {
     expect(actionLinks).toHaveLength(0);
   });
 
-  it('should emit changeCollectionOrder when handleChangeCollectionOrder is called', () => {
-    const eventEmitterSpy = vi.spyOn(component.changeCollectionOrder, 'emit');
-    component.hasAccountMaintenancePermission = true;
-
+  it('should emit collection order flag when handleChangeCollectionOrder is called', () => {
+    const emitSpy = vi.spyOn(component.changeCollectionOrder, 'emit');
     component.handleChangeCollectionOrder();
 
-    expect(eventEmitterSpy).toHaveBeenCalledWith(
+    expect(emitSpy).toHaveBeenCalledWith(
       component.tabData.enforcement_overview.collection_order?.collection_order_flag ?? false,
     );
   });
 
   it('should emit false when collection order is missing', () => {
-    const eventEmitterSpy = vi.spyOn(component.changeCollectionOrder, 'emit');
+    const emitSpy = vi.spyOn(component.changeCollectionOrder, 'emit');
     component.tabData = {
       ...component.tabData,
       enforcement_overview: {
@@ -158,6 +220,6 @@ describe('FinesAccDefendantDetailsEnforcementTab', () => {
 
     component.handleChangeCollectionOrder();
 
-    expect(eventEmitterSpy).toHaveBeenCalledWith(false);
+    expect(emitSpy).toHaveBeenCalledWith(false);
   });
 });
