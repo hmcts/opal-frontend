@@ -1,5 +1,14 @@
 import { CommonModule } from '@angular/common';
-import { ChangeDetectionStrategy, Component, EventEmitter, Input, OnDestroy, OnInit, inject } from '@angular/core';
+import {
+  ChangeDetectionStrategy,
+  Component,
+  EventEmitter,
+  Input,
+  OnDestroy,
+  OnInit,
+  Output,
+  inject,
+} from '@angular/core';
 import {
   AbstractControl,
   FormControl,
@@ -38,7 +47,6 @@ import { CapitalisationDirective } from '@hmcts/opal-frontend-common/directives/
 import { patternValidator } from '@hmcts/opal-frontend-common/validators/pattern-validator';
 import { distinctUntilChanged, takeUntil } from 'rxjs';
 import { FINES_MAC_TITLE_DROPDOWN_OPTIONS } from '../../../fines-mac/constants/fines-mac-title-dropdown-options.constant';
-import { FINES_ACC_MINOR_CREDITOR_ROUTING_PATHS } from '../../routing/constants/fines-acc-minor-creditor-routing-paths.constant';
 import { FinesAccountStore } from '../../stores/fines-acc.store';
 import { IFinesAccMinorCreditorAddAmendConvertForm } from '../interfaces/fines-acc-minor-creditor-add-amend-convert-form.interface';
 import { IFinesAccMinorCreditorAddAmendConvertFieldErrors } from '../interfaces/fines-acc-minor-creditor-add-amend-convert-field-errors.interface';
@@ -94,13 +102,13 @@ export class FinesAccMinorCreditorAddAmendConvertFormComponent
   protected readonly accountNumber = this.finesAccStore.getAccountNumber();
   protected readonly partyName = this.finesAccStore.party_name();
 
+  @Output() public cancelRequested = new EventEmitter<void>();
   @Input({ required: false }) public initialFormData: IFinesAccMinorCreditorAddAmendConvertForm =
     FINES_ACC_MINOR_CREDITOR_ADD_AMEND_CONVERT_FORM;
 
   public override formControlErrorMessages: IAbstractFormControlErrorMessage = {};
   public readonly controls = FINES_ACC_MINOR_CREDITOR_ADD_AMEND_CONVERT_CONTROL_NAMES;
   public readonly creditorTypes = FINES_ACC_MINOR_CREDITOR_ADD_AMEND_CONVERT_CREDITOR_TYPES;
-  public readonly minorCreditorRoutingPaths = FINES_ACC_MINOR_CREDITOR_ROUTING_PATHS;
   public readonly titleOptions: IGovUkSelectOptions[] = FINES_MAC_TITLE_DROPDOWN_OPTIONS;
   public readonly individualConditionalId = 'facc_minor_creditor_creditor_type_individual_conditional';
   public readonly companyConditionalId = 'facc_minor_creditor_creditor_type_company_conditional';
@@ -358,5 +366,13 @@ export class FinesAccMinorCreditorAddAmendConvertFormComponent
   public override ngOnInit(): void {
     this.setupForm();
     super.ngOnInit();
+  }
+
+  /**
+   * Emits the cancel action so the routed parent can navigate while preserving guard state.
+   */
+  public handleCancel(): void {
+    this.unsavedChanges.emit(this.hasUnsavedChanges());
+    this.cancelRequested.emit();
   }
 }

@@ -93,6 +93,22 @@ export class FinesAccMinorCreditorAddAmendConvertComponent
   }
 
   /**
+   * Navigates back to the Creditor tab without saving.
+   *
+   * This intentionally preserves unsaved state so the canDeactivate guard can warn
+   * when the child form has emitted dirty state.
+   */
+  public handleCancel(): void {
+    this.routerNavigate(
+      FINES_ACC_MINOR_CREDITOR_ROUTING_PATHS.children.details,
+      false,
+      undefined,
+      null,
+      'creditor',
+    );
+  }
+
+  /**
    * Updates the page-level unsaved changes state from the child form.
    *
    * @param unsavedChanges - Whether the child form currently has unsaved changes

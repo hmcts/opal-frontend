@@ -74,7 +74,10 @@ describe('FinesAccMinorCreditorAddAmendConvertFormComponent', () => {
           },
         },
         { provide: Router, useValue: { navigate: vi.fn() } },
-        { provide: UtilsService, useValue: { scrollToTop: vi.fn(), upperCaseAllLetters: (value: string) => value.toUpperCase() } },
+        {
+          provide: UtilsService,
+          useValue: { scrollToTop: vi.fn(), upperCaseAllLetters: (value: string) => value.toUpperCase() },
+        },
         {
           provide: FinesAccountStore,
           useValue: {
@@ -129,6 +132,36 @@ describe('FinesAccMinorCreditorAddAmendConvertFormComponent', () => {
     expect(element.textContent).toContain('First names');
     expect(element.textContent).toContain('Last name');
     expect(element.textContent).not.toContain('Name on account');
+  });
+
+  it('should emit form data when a valid save is submitted', () => {
+    createComponent();
+    const emitSpy = vi.spyOn(component['formSubmit'], 'emit');
+
+    component.handleFormSubmit({ submitter: null } as SubmitEvent);
+
+    expect(emitSpy).toHaveBeenCalledWith({
+      formData: expect.objectContaining({
+        facc_minor_creditor_creditor_type: 'company',
+        facc_minor_creditor_company_name: 'Test Organisation',
+        facc_minor_creditor_pay_by_bacs: true,
+        facc_minor_creditor_bank_account_number: '12345678',
+      }),
+      nestedFlow: false,
+    });
+  });
+
+  it('should emit cancel when requested', () => {
+    createComponent();
+    const emitSpy = vi.spyOn(component.cancelRequested, 'emit');
+    const unsavedChangesSpy = vi.spyOn(component['unsavedChanges'], 'emit');
+
+    getControl(component.controls.addressLine1).markAsDirty();
+
+    component.handleCancel();
+
+    expect(unsavedChangesSpy).toHaveBeenCalledWith(true);
+    expect(emitSpy).toHaveBeenCalled();
   });
 
   it('should initialise company controls as active and individual controls as inactive', () => {
@@ -229,9 +262,11 @@ describe('FinesAccMinorCreditorAddAmendConvertFormComponent', () => {
       },
       nestedFlow: false,
     });
+    const emitSpy = vi.spyOn(component['formSubmit'], 'emit');
 
     component.handleFormSubmit({ submitter: null } as SubmitEvent);
 
+    expect(emitSpy).not.toHaveBeenCalled();
     expect(component.formControlErrorMessages[component.controls.creditorType]).toBe('Add minor creditor details');
     expect(component.formErrorSummaryMessage).toContainEqual({
       fieldId: component.controls.creditorType,

@@ -2,6 +2,7 @@
   <app-fines-acc-minor-creditor-add-amend-convert-form
     [initialFormData]="prefilledFormData"
     (formSubmit)="handleFormSubmit($event)"
+    (cancelRequested)="handleCancel()"
     (unsavedChanges)="handleUnsavedChanges($event)"
   ></app-fines-acc-minor-creditor-add-amend-convert-form>
 </div>

@@ -11,6 +11,7 @@ import { OPAL_FINES_ACCOUNT_MINOR_CREDITOR_CREDITOR_MOCK } from '../../services/
 import { OPAL_FINES_MINOR_CREDITOR_UPDATE_PAYLOAD_MOCK } from '../../services/opal-fines-service/mocks/opal-fines-minor-creditor-update-payload.mock';
 import { IFinesAccMinorCreditorAddAmendConvertState } from './interfaces/fines-acc-minor-creditor-add-amend-convert-state.interface';
 import { IFinesAccMinorCreditorAddAmendConvertForm } from './interfaces/fines-acc-minor-creditor-add-amend-convert-form.interface';
+import { FINES_ACC_MINOR_CREDITOR_ROUTING_PATHS } from '../routing/constants/fines-acc-minor-creditor-routing-paths.constant';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
 
 describe('FinesAccMinorCreditorAddAmendConvertComponent', () => {
@@ -139,6 +140,8 @@ describe('FinesAccMinorCreditorAddAmendConvertComponent', () => {
   });
 
   it('should submit minor creditor changes and navigate back to the creditor tab', () => {
+    component.handleUnsavedChanges(true);
+
     component.handleFormSubmit(formData);
 
     expect(payloadServiceMock.buildMinorCreditorAccountAmendPayload).toHaveBeenCalledWith(
@@ -157,6 +160,7 @@ describe('FinesAccMinorCreditorAddAmendConvertComponent', () => {
       relativeTo: routeMock.parent,
       fragment: 'creditor',
     });
+    expect(component.stateUnsavedChanges).toBe(false);
   });
 
   it('should remain on the page and keep unsaved state when submit fails', () => {
@@ -168,6 +172,22 @@ describe('FinesAccMinorCreditorAddAmendConvertComponent', () => {
     expect(component.stateUnsavedChanges).toBe(true);
     expect(opalFinesServiceMock.clearCache).not.toHaveBeenCalled();
     expect(routerMock.navigate).not.toHaveBeenCalled();
+  });
+
+  it('should navigate back to the creditor tab when cancel is requested and preserve unsaved state', () => {
+    const routerNavigateSpy = vi.spyOn(component as never, 'routerNavigate');
+
+    component.handleUnsavedChanges(true);
+    component.handleCancel();
+
+    expect(component.stateUnsavedChanges).toBe(true);
+    expect(routerNavigateSpy).toHaveBeenCalledWith(
+      FINES_ACC_MINOR_CREDITOR_ROUTING_PATHS.children.details,
+      false,
+      undefined,
+      null,
+      'creditor',
+    );
   });
 
   it('should update unsaved changes state from the child form', () => {
