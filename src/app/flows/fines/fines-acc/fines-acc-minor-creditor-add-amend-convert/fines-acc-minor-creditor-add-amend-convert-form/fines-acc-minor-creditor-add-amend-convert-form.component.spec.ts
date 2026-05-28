@@ -192,6 +192,65 @@ describe('FinesAccMinorCreditorAddAmendConvertFormComponent', () => {
     expect(getControl(component.controls.surname).hasError('required')).toBe(true);
   });
 
+  it('should switch to company controls and clear individual details', () => {
+    createComponent(individualFormData);
+
+    getControl(component.controls.creditorType).setValue('company');
+    fixture.detectChanges();
+
+    expect(getControl(component.controls.title).value).toBeNull();
+    expect(getControl(component.controls.forenames).value).toBeNull();
+    expect(getControl(component.controls.surname).value).toBeNull();
+    expect(getControl(component.controls.title).disabled).toBe(true);
+    expect(getControl(component.controls.forenames).disabled).toBe(true);
+    expect(getControl(component.controls.surname).disabled).toBe(true);
+    expect(getControl(component.controls.companyName).enabled).toBe(true);
+
+    getControl(component.controls.companyName).setValue('');
+
+    expect(getControl(component.controls.companyName).hasError('required')).toBe(true);
+    expect(getControl(component.controls.forenames).errors).toBeNull();
+    expect(getControl(component.controls.surname).errors).toBeNull();
+  });
+
+  it('should clear and disable all creditor name controls when creditor type is cleared', () => {
+    createComponent(individualFormData);
+    getControl(component.controls.companyName).setValue('Company to clear');
+
+    getControl(component.controls.creditorType).setValue(null);
+    fixture.detectChanges();
+
+    expect(getControl(component.controls.title).value).toBeNull();
+    expect(getControl(component.controls.forenames).value).toBeNull();
+    expect(getControl(component.controls.surname).value).toBeNull();
+    expect(getControl(component.controls.companyName).value).toBeNull();
+    expect(getControl(component.controls.title).disabled).toBe(true);
+    expect(getControl(component.controls.forenames).disabled).toBe(true);
+    expect(getControl(component.controls.surname).disabled).toBe(true);
+    expect(getControl(component.controls.companyName).disabled).toBe(true);
+    expect(getControl(component.controls.creditorType).hasError('required')).toBe(true);
+  });
+
+  it('should not clear inactive creditor details during initial form setup', () => {
+    createComponent({
+      formData: {
+        ...companyFormData.formData,
+        facc_minor_creditor_title: 'Ms',
+        facc_minor_creditor_forenames: 'Inactive',
+        facc_minor_creditor_surname: 'PERSON',
+      },
+      nestedFlow: false,
+    });
+
+    expect(getControl(component.controls.companyName).enabled).toBe(true);
+    expect(getControl(component.controls.title).disabled).toBe(true);
+    expect(getControl(component.controls.forenames).disabled).toBe(true);
+    expect(getControl(component.controls.surname).disabled).toBe(true);
+    expect(getControl(component.controls.title).value).toBe('Ms');
+    expect(getControl(component.controls.forenames).value).toBe('Inactive');
+    expect(getControl(component.controls.surname).value).toBe('PERSON');
+  });
+
   it('should clear BACS fields and remove validators when payment details are unticked', () => {
     createComponent();
 
