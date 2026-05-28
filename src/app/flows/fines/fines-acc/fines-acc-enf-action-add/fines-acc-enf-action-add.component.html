@@ -1,0 +1,12 @@
+<div class="govuk-grid-row">
+  <app-fines-acc-enf-action-add-form
+    [accountNumber]="accountNumber"
+    [actionTitle]="actionTitle"
+    [fields]="fields"
+    [partyName]="partyName"
+    [showPaymentTerms]="showPaymentTerms"
+    (formSubmit)="handleSubmit($event)"
+    (cancelRequested)="handleCancel()"
+    (unsavedChanges)="handleUnsavedChanges($event)"
+  ></app-fines-acc-enf-action-add-form>
+</div>

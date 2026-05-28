@@ -1,5 +1,5 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
-import { ReactiveFormsModule, FormArray } from '@angular/forms';
+import { ReactiveFormsModule, FormArray, FormControl, FormGroup } from '@angular/forms';
 import { signal } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { of } from 'rxjs';
@@ -307,6 +307,40 @@ describe('FinesAccPartyAddAmendConvertFormComponent', () => {
     expect(component.form.get('facc_party_add_amend_convert_dob')?.valid).toBe(true);
     expect(component.form.get('facc_party_add_amend_convert_national_insurance_number')?.valid).toBe(true);
     expect(component.form.valid).toBe(true);
+  });
+
+  it('should clear hidden alias validators for form group and scalar alias rows', () => {
+    component.partyType = 'parentGuardian';
+    component.isDebtor = false;
+    fixture.detectChanges();
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    const updateControlSpy = vi.spyOn<any, any>(component, 'updateControl');
+    const formArrayName = 'facc_party_add_amend_convert_individual_aliases';
+
+    component.form.setControl(
+      formArrayName,
+      new FormArray([
+        new FormGroup({
+          alias_forenames: new FormControl('Jane'),
+          alias_surname: new FormControl('Smith'),
+        }),
+        new FormControl('Scalar alias'),
+      ]),
+    );
+
+    component['clearHiddenAliasValidators'](formArrayName);
+
+    expect(updateControlSpy).toHaveBeenCalledWith(`${formArrayName}.0.alias_forenames`, []);
+    expect(updateControlSpy).toHaveBeenCalledWith(`${formArrayName}.0.alias_surname`, []);
+    expect(updateControlSpy).toHaveBeenCalledWith(`${formArrayName}.1`, []);
+    expect(updateControlSpy).toHaveBeenCalledWith(formArrayName, []);
+  });
+
+  it('should identify add parent guardian mode', () => {
+    component.partyType = 'parentGuardian';
+    component.mode = 'add';
+
+    expect(component.isAddParentGuardianMode).toBe(true);
   });
 
   it('should calculate age when valid date of birth is provided', () => {

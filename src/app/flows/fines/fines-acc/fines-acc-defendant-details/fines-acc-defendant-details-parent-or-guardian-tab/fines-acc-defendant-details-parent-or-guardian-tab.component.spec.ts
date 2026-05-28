@@ -40,4 +40,15 @@ describe('FinesAccDefendantDetailsAtAGlanceTabComponent', () => {
     expect(event.preventDefault).toHaveBeenCalled();
     expect(component.changeParentOrGuardianDetails.emit).toHaveBeenCalled();
   });
+
+  it('should hide remove action when maintenance permission is missing or tab data is missing', () => {
+    component.hasAccountMaintenencePermission = false;
+
+    expect(component.removeParentOrGuardianAction).toBe(false);
+
+    component.hasAccountMaintenencePermission = true;
+    component.tabData = null;
+
+    expect(component.removeParentOrGuardianAction).toBe(false);
+  });
 });

@@ -89,4 +89,26 @@ describe('FinesAccPartyDetails', () => {
     expect(component.party.party_details.organisation_flag).toBe(true);
     expect(component.party.party_details.organisation_details?.organisation_name).toBe('Test Company Ltd');
   });
+
+  it('should detect Welsh hearing language preference', () => {
+    const party = structuredClone(OPAL_FINES_ACCOUNT_DEFENDANT_ACCOUNT_PARTY_MOCK.defendant_account_party);
+    party.language_preferences = {
+      document_language_preference: {
+        language_code: 'EN',
+        language_display_name: 'English only',
+      },
+      hearing_language_preference: {
+        language_code: 'CY',
+        language_display_name: component.languages.CY,
+      },
+    };
+
+    fixture.componentRef.setInput('party', party);
+    fixture.componentRef.setInput('cardTitle', 'Party Details');
+    fixture.componentRef.setInput('summaryCardListId', 'party-card');
+    fixture.componentRef.setInput('summaryListId', 'party-list');
+    fixture.detectChanges();
+
+    expect(component['hasWelshLanguagePreference']()).toBe(true);
+  });
 });

@@ -33,6 +33,7 @@ import { FINES_ACC_ENF_ACTION_ROUTING_PATHS } from '../fines-acc-enf-action-sele
 import { FINES_ACC_ENF_ACTION_ROUTING_TITLES } from '../fines-acc-enf-action-select/constants/fines-acc-enf-action-select-routing-titles.constant';
 import { nextPermittedEnfActionsResolver } from './resolvers/defendant-account-next-permitted-enf-actions.resolver';
 import { FINES_ACC_PAYMENT_HOLD_ROUTING_PATHS } from '../fines-acc-payment-hold-add-remove/constants/fines-acc-payment-hold-routing-paths.constant';
+import { enforcementActionResultResolver } from './resolvers/fines-acc-enf-action-add/enforcement-action-result.resolver';
 
 const accRootPermissionIds = FINES_PERMISSIONS;
 
@@ -279,6 +280,25 @@ export const routing: Routes = [
               defendantAccountHeadingData: defendantAccountHeadingResolver,
               enforcementStatus: defendantAccountEnforcementStatusResolver,
               nextPermittedEnfActions: nextPermittedEnfActionsResolver,
+            },
+          },
+          {
+            path: `${FINES_ACC_DEFENDANT_ROUTING_PATHS.children.enforcement}/${FINES_ACC_ENF_ACTION_ROUTING_PATHS.root}/${FINES_ACC_ENF_ACTION_ROUTING_PATHS.children.add}`,
+            loadComponent: () =>
+              import('../fines-acc-enf-action-add/fines-acc-enf-action-add.component').then(
+                (c) => c.FinesAccEnfActionAddComponent,
+              ),
+            canActivate: [routePermissionsGuard, finesAccStateGuard],
+            canDeactivate: [canDeactivateGuard],
+            data: {
+              title: FINES_ACC_ENF_ACTION_ROUTING_TITLES.children.add,
+              routePermissionId: [accRootPermissionIds['enter-enforcement']],
+            },
+            resolve: {
+              title: TitleResolver,
+              defendantAccountHeadingData: defendantAccountHeadingResolver,
+              enforcementActionResult: enforcementActionResultResolver,
+              enforcersRefData: fetchEnforcersResolver,
             },
           },
           {

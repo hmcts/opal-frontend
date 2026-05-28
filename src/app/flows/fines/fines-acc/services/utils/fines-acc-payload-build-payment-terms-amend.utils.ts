@@ -3,6 +3,7 @@ import { IOpalFinesAmendPaymentTermsPayload } from '@services/fines/opal-fines-s
 import { IFinesPaymentTermsOptions } from '../../../interfaces/fines-payment-terms-options.interface';
 import { FINES_PAYMENT_TERMS_FREQUENCY_OPTIONS } from '../../../constants/fines-payment-terms-frequency-options.constant';
 import { FINES_PAYMENT_TERMS_TYPE_DISPLAY_OPTIONS } from '../../../constants/fines-payment-terms-type-display-options.constant';
+import { FINES_PAYMENT_TERMS_TYPE_CODE_MAP } from '../../../constants/fines-payment-terms-type-code-map.constant';
 
 /**
  * Maps form payment terms type to API payment terms type code
@@ -10,14 +11,8 @@ import { FINES_PAYMENT_TERMS_TYPE_DISPLAY_OPTIONS } from '../../../constants/fin
  * Pay in full is represented as 'B' with no lump sum amount
  */
 function mapPaymentTermsTypeToCode(paymentTermsType: string | null): string | null {
-  const typeMapping: IFinesPaymentTermsOptions = {
-    payInFull: 'B', // Pay in full is 'B' (Both) with no lump sum amount
-    instalmentsOnly: 'I',
-    lumpSumPlusInstalments: 'B', // Lump sum + instalments is also 'B' but with lump sum amount
-  };
-
-  return paymentTermsType && paymentTermsType in typeMapping
-    ? typeMapping[paymentTermsType as keyof IFinesPaymentTermsOptions]
+  return paymentTermsType && paymentTermsType in FINES_PAYMENT_TERMS_TYPE_CODE_MAP
+    ? FINES_PAYMENT_TERMS_TYPE_CODE_MAP[paymentTermsType as keyof IFinesPaymentTermsOptions]
     : null;
 }
 
@@ -117,9 +112,10 @@ export function buildPaymentTermsAmendPayloadUtil(
 
   return {
     payment_terms: {
-      days_in_default: formData.facc_payment_terms_default_days_in_jail
-        ? Number(formData.facc_payment_terms_default_days_in_jail)
-        : null,
+      days_in_default:
+        formData.facc_payment_terms_default_days_in_jail != null
+          ? Number(formData.facc_payment_terms_default_days_in_jail)
+          : null,
       date_days_in_default_imposed: formData.facc_payment_terms_suspended_committal_date,
       reason_for_extension: formData.facc_payment_terms_reason_for_change,
       extension: true,
