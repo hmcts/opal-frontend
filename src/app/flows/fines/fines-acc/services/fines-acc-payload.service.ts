@@ -368,6 +368,8 @@ export class FinesAccPayloadService {
         address_line_1: formState.facc_minor_creditor_address_line_1 ?? '',
         address_line_2: formState.facc_minor_creditor_address_line_2,
         address_line_3: formState.facc_minor_creditor_address_line_3,
+        address_line_4: formState.facc_minor_creditor_address_line_4,
+        address_line_5: formState.facc_minor_creditor_address_line_5,
         postcode: formState.facc_minor_creditor_post_code,
       },
       payment: {

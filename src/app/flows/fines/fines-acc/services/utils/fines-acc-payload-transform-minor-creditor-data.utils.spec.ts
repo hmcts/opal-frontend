@@ -16,6 +16,8 @@ describe('transformMinorCreditorAccountPayload', () => {
       facc_minor_creditor_address_line_1: '123 Main Street',
       facc_minor_creditor_address_line_2: 'Apt 4',
       facc_minor_creditor_address_line_3: null,
+      facc_minor_creditor_address_line_4: null,
+      facc_minor_creditor_address_line_5: null,
       facc_minor_creditor_post_code: 'AB12 3CD',
       facc_minor_creditor_pay_by_bacs: true,
       facc_minor_creditor_bank_account_name: 'Test Account',
@@ -55,6 +57,8 @@ describe('transformMinorCreditorAccountPayload', () => {
       facc_minor_creditor_address_line_1: '123 Main Street',
       facc_minor_creditor_address_line_2: 'Apt 4',
       facc_minor_creditor_address_line_3: null,
+      facc_minor_creditor_address_line_4: null,
+      facc_minor_creditor_address_line_5: null,
       facc_minor_creditor_post_code: 'AB12 3CD',
       facc_minor_creditor_pay_by_bacs: false,
       facc_minor_creditor_bank_account_name: null,
@@ -70,6 +74,8 @@ describe('transformMinorCreditorAccountPayload', () => {
     minorCreditorData.address.address_line_1 = '';
     minorCreditorData.address.address_line_2 = null;
     minorCreditorData.address.address_line_3 = null;
+    minorCreditorData.address.address_line_4 = null;
+    minorCreditorData.address.address_line_5 = null;
     minorCreditorData.address.postcode = null;
     minorCreditorData.payment.account_name = '';
     minorCreditorData.payment.sort_code = '';
@@ -82,6 +88,8 @@ describe('transformMinorCreditorAccountPayload', () => {
     expect(result.facc_minor_creditor_address_line_1).toBeNull();
     expect(result.facc_minor_creditor_address_line_2).toBeNull();
     expect(result.facc_minor_creditor_address_line_3).toBeNull();
+    expect(result.facc_minor_creditor_address_line_4).toBeNull();
+    expect(result.facc_minor_creditor_address_line_5).toBeNull();
     expect(result.facc_minor_creditor_post_code).toBeNull();
     expect(result.facc_minor_creditor_bank_account_name).toBeNull();
     expect(result.facc_minor_creditor_bank_sort_code).toBeNull();
