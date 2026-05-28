@@ -53,6 +53,7 @@ import { normalizeHash, normalizeTableRows } from '../../utils/cucumberHelpers';
 import { applyUniqPlaceholder } from '../../utils/stringUtils';
 import { installDraftAccountCleanup } from 'cypress/support/draftAccounts';
 import { AccountSearchIndividualsActions } from '../../../e2e/functional/opal/actions/search/search.individuals.actions';
+import { PrimaryNavigationActions } from '../../../e2e/functional/opal/actions/primary-navigation.actions';
 const flow = () => new ManualAccountCreationFlow();
 const comments = () => new ManualAccountCommentsNotesActions();
 const employerDetails = () => new ManualEmployerDetailsActions();
@@ -68,6 +69,7 @@ const originatorType = () => new ManualCreateOrTransferInActions();
 const languagePreferences = () => new ManualLanguagePreferencesActions();
 const intercepts = () => new DraftAccountsInterceptActions();
 const withUniq = (value: string) => applyUniqPlaceholder(value ?? '');
+const primaryNavigation = () => new PrimaryNavigationActions();
 
 installDraftAccountCleanup();
 /**
@@ -81,11 +83,11 @@ Then('I should be on the Search Page', () => {
 
 /**
  * @step Confirms the user is on the dashboard.
- * @description Historical alias for the default Search landing page used across the functional suite.
+ * @description Confirms the dashboard landing is ready for navigation.
  */
 Then('I should be on the dashboard', () => {
-  log('assert', 'Asserting dashboard/Search landing page is visible');
-  home().assertOnSearchLandingPage();
+  log('assert', 'Asserting dashboard landing is ready');
+  primaryNavigation().assertDashboardLandingReady();
 });
 /**
  * @step Starts a fine manual account with a specific business unit and defendant type.

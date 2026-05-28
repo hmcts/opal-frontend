@@ -171,6 +171,7 @@ describe('FinesMacReviewAccountComponent', () => {
       tags: [...buildTags('@JIRA-STORY:PO-2790'), '@JIRA-EPIC:PO-2750', '@JIRA-NFR:PO-2328', '@JIRA-TEST-KEY:PO-5212'],
     },
     () => {
+      cy.intercept('PUT', '**/opal-fines-service/draft-accounts/**', { statusCode: 200 }).as('putDraftAccount');
       finesMacState.accountDetails.formData.fm_create_account_account_type = FINES_ACCOUNT_TYPES['Conditional Caution'];
 
       setupComponent();
@@ -179,6 +180,14 @@ describe('FinesMacReviewAccountComponent', () => {
       cy.get(DOM_ELEMENTS.heading).should('contain', 'Check account details');
       cy.contains('.govuk-summary-card__title', 'Police and court details').should('exist');
       cy.get(DOM_ELEMENTS.originatorName).should('contain', 'Sending police force');
+
+      cy.get(DOM_ELEMENTS.submitButton).click();
+      cy.wait('@putDraftAccount')
+        .its('request.body.account')
+        .should((account) => {
+          expect(account.originator_id).to.equal('9985');
+          expect(account.originator_name).to.equal('Asylum & Immigration Tribunal');
+        });
     },
   );
 
@@ -193,6 +202,7 @@ describe('FinesMacReviewAccountComponent', () => {
       ],
     },
     () => {
+      cy.intercept('PUT', '**/opal-fines-service/draft-accounts/**', { statusCode: 200 }).as('putDraftAccount');
       setupComponent();
       cy.wait('@getOffenceByCjsCode');
 
@@ -264,6 +274,14 @@ describe('FinesMacReviewAccountComponent', () => {
       cy.get(DOM_ELEMENTS.requestPaymentCard).should('contain', 'Request payment card').should('contain', 'Yes');
       cy.get(DOM_ELEMENTS.hasDaysInDefault).should('contain', 'There are days in default').should('contain', 'No');
       cy.get(DOM_ELEMENTS.enforcementActions).should('contain', 'Enforcement action').should('contain', 'No');
+
+      cy.get(DOM_ELEMENTS.submitButton).click();
+      cy.wait('@putDraftAccount')
+        .its('request.body.account')
+        .should((account) => {
+          expect(account.originator_id).to.equal('9985');
+          expect(account.originator_name).to.equal('Asylum & Immigration Tribunal');
+        });
     },
   );
 
@@ -872,12 +890,7 @@ describe('FinesMacReviewAccountComponent', () => {
   it(
     '(AC.2,AC,3a,AC.3bi) should show in review for accounts in review',
     {
-      tags: [
-        ...buildTags('@JIRA-STORY:PO-610', '@JIRA-STORY:PO-584'),
-        '@JIRA-EPIC:PO-2220',
-        '@JIRA-NFR:PO-2324',
-        '@JIRA-TEST-KEY:PO-5228',
-      ],
+      tags: [...buildTags('@JIRA-STORY:PO-610', '@JIRA-STORY:PO-584'), '@JIRA-EPIC:PO-2220', '@JIRA-TEST-KEY:PO-5228'],
     },
     () => {
       setupComponent(finesAccountPayload, finesAccountPayload);
@@ -908,12 +921,7 @@ describe('FinesMacReviewAccountComponent', () => {
   it(
     '(AC.3bii,AC.3biii,AC.3c)should show history of timeline data',
     {
-      tags: [
-        ...buildTags('@JIRA-STORY:PO-610', '@JIRA-STORY:PO-584'),
-        '@JIRA-EPIC:PO-2220',
-        '@JIRA-NFR:PO-2324',
-        '@JIRA-TEST-KEY:PO-5230',
-      ],
+      tags: [...buildTags('@JIRA-STORY:PO-610', '@JIRA-STORY:PO-584'), '@JIRA-EPIC:PO-2220', '@JIRA-TEST-KEY:PO-5230'],
     },
     () => {
       finesAccountPayload.timeline_data.push({

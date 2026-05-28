@@ -102,16 +102,11 @@ describe('FinesMacCourtDetailsComponent', () => {
   it(
     '(AC.2) should dynamically filter LJA field',
     {
-      tags: [
-        ...buildTags('@JIRA-STORY:PO-389'),
-        '@JIRA-EPIC:PO-272',
-        '@JIRA-NFR:PO-2328',
-        '@JIRA-NFR:PO-2329',
-        '@JIRA-TEST-KEY:PO-4928',
-      ],
+      tags: [...buildTags('@JIRA-STORY:PO-389'), '@JIRA-EPIC:PO-272', '@JIRA-TEST-KEY:PO-4928'],
     },
     () => {
-      setupComponent(null, 'adultOrYouthOnly');
+      const formSubmitSpy = Cypress.sinon.spy();
+      setupComponent(formSubmitSpy, 'adultOrYouthOnly');
 
       //Verify working input fields
       cy.get(L.ljaInput).focus().type('Asylum', { delay: 0 });
@@ -124,18 +119,27 @@ describe('FinesMacCourtDetailsComponent', () => {
       cy.get(L.ljaListbox).find('li').should('contain', "Bedfordshire Magistrates' Court (4165)");
       cy.get(L.ljaListbox).find('li').should('contain', "Berkshire Magistrates' Court (4125)");
       cy.get(L.ljaListbox).find('li').should('contain', "Birmingham and Solihull Magistrates' Court (5004)");
+
+      cy.get(L.ljaInput).focus().clear().type('Asylum', { delay: 0 });
+      cy.get(L.ljaListbox).find('li').first().click();
+      cy.get(L.pcrInput).type('TRACE123', { delay: 0 });
+      cy.get(L.enforcementCourtInput).focus().type('Port', { delay: 0 });
+      cy.get(L.enforcementCourtListbox).find('li').first().click();
+      cy.get(L.returnToAccountDetailsButton).click();
+
+      cy.wrap(formSubmitSpy).should('have.been.calledOnce');
+      cy.wrap(formSubmitSpy)
+        .its('firstCall.args.0.formData')
+        .should((formData) => {
+          expect(formData.fm_court_details_originator_id).to.equal(9985);
+          expect(formData.fm_court_details_originator_name).to.equal('Asylum & Immigration Tribunal');
+        });
     },
   );
   it(
     '(AC.3) should dynamically filter Enforcement court field',
     {
-      tags: [
-        ...buildTags('@JIRA-STORY:PO-389'),
-        '@JIRA-EPIC:PO-272',
-        '@JIRA-NFR:PO-2328',
-        '@JIRA-NFR:PO-2329',
-        '@JIRA-TEST-KEY:PO-4929',
-      ],
+      tags: [...buildTags('@JIRA-STORY:PO-389'), '@JIRA-EPIC:PO-272', '@JIRA-TEST-KEY:PO-4929'],
     },
     () => {
       setupComponent(null, 'adultOrYouthOnly');
@@ -278,7 +282,7 @@ describe('FinesMacCourtDetailsComponent', () => {
   it(
     '(AC.8) should clear errors when validation is passed',
     {
-      tags: [...buildTags('@JIRA-STORY:PO-389'), '@JIRA-EPIC:PO-272', '@JIRA-NFR:PO-2329', '@JIRA-TEST-KEY:PO-4934'],
+      tags: [...buildTags('@JIRA-STORY:PO-389'), '@JIRA-EPIC:PO-272', '@JIRA-TEST-KEY:PO-4934'],
     },
     () => {
       const formSubmitSpy = Cypress.sinon.spy();
@@ -395,16 +399,11 @@ describe('FinesMacCourtDetailsComponent', () => {
   it(
     'Should show all values in LJA and Enforcement Court auto-complete dropdown when selected',
     {
-      tags: [
-        ...buildTags('@JIRA-STORY:PO-1990'),
-        '@JIRA-EPIC:PO-545',
-        '@JIRA-NFR:PO-2328',
-        '@JIRA-NFR:PO-2329',
-        '@JIRA-TEST-KEY:PO-4939',
-      ],
+      tags: [...buildTags('@JIRA-STORY:PO-1990'), '@JIRA-EPIC:PO-545', '@JIRA-TEST-KEY:PO-4939'],
     },
     () => {
-      setupComponent(null, 'adultOrYouthOnly');
+      const formSubmitSpy = Cypress.sinon.spy();
+      setupComponent(formSubmitSpy, 'adultOrYouthOnly');
 
       //Verify autocomplete fields display all values when selected
       cy.get(L.ljaInput).focus().click();
@@ -421,33 +420,61 @@ describe('FinesMacCourtDetailsComponent', () => {
       cy.get(L.enforcementCourtListbox).find('li').should('contain', 'Historic Debt Database (998)');
       cy.get(L.enforcementCourtListbox).find('li').should('contain', 'HISTORIC DEBT LODGE COURT (102)');
       cy.get(L.enforcementCourtListbox).find('li').contains('HISTORIC DEBT LODGE COURT (102)').click();
+
+      cy.get(L.pcrInput).type('TRACE321', { delay: 0 });
+      cy.get(L.returnToAccountDetailsButton).click();
+
+      cy.wrap(formSubmitSpy).should('have.been.calledOnce');
+      cy.wrap(formSubmitSpy)
+        .its('firstCall.args.0.formData')
+        .should((formData) => {
+          expect(formData.fm_court_details_originator_id).to.equal(5004);
+          expect(formData.fm_court_details_originator_name).to.equal("Birmingham and Solihull Magistrates' Court");
+        });
     },
   );
 
   it(
     '(AC3, AC4) should only show PSA/CRWCRT local justice areas for filtered journeys (Fine/Confiscation)',
     {
-      tags: [
-        ...buildTags('@JIRA-STORY:PO-2761'),
-        '@JIRA-EPIC:PO-545',
-        '@JIRA-NFR:PO-2328',
-        '@JIRA-NFR:PO-2329',
-        '@JIRA-TEST-KEY:PO-4940',
-      ],
+      tags: [...buildTags('@JIRA-STORY:PO-2761'), '@JIRA-EPIC:PO-545', '@JIRA-NFR:PO-2329', '@JIRA-TEST-KEY:PO-4940'],
     },
     () => {
+      const formSubmitSpy = Cypress.sinon.spy();
       const filteredLocalJusticeAreas: IOpalFinesLocalJusticeAreaRefData = {
         count: 2,
         refData: OPAL_FINES_LOCAL_JUSTICE_AREA_REF_DATA_MOCK.refData.slice(1, 3),
       };
 
-      setupComponent(null, 'adultOrYouthOnly', filteredLocalJusticeAreas);
+      setupComponent(formSubmitSpy, 'adultOrYouthOnly', filteredLocalJusticeAreas);
 
       cy.get(L.ljaInput).focus().click();
       cy.get(L.ljaListbox).find('li').should('have.length', 2);
       cy.get(L.ljaListbox).find('li').should('contain', "Avon & Somerset Magistrates' Court (5735)");
       cy.get(L.ljaListbox).find('li').should('contain', "Bedfordshire Magistrates' Court (4165)");
       cy.get(L.ljaListbox).find('li').should('not.contain', 'Asylum & Immigration Tribunal (9985)');
+
+      cy.get(L.ljaInput).clear().type('Asylum', { delay: 0 }).blur();
+      cy.get(L.pcrInput).type('FILTER123', { delay: 0 });
+      cy.get(L.enforcementCourtInput).focus().type('Port', { delay: 0 });
+      cy.get(L.enforcementCourtListbox).find('li').first().click();
+      cy.get(L.returnToAccountDetailsButton).click();
+
+      cy.wrap(formSubmitSpy).should('not.have.been.called');
+      cy.get(L.errorSummary).should('contain', MISSING_ERRORS.missingLJA);
+      cy.get(L.ljaErrorMessage).should('contain', MISSING_ERRORS.missingLJA);
+
+      cy.get(L.ljaInput).focus().clear().type('Bedford', { delay: 0 });
+      cy.get(L.ljaListbox).find('li').contains("Bedfordshire Magistrates' Court (4165)").click();
+      cy.get(L.returnToAccountDetailsButton).click();
+
+      cy.wrap(formSubmitSpy).should('have.been.calledOnce');
+      cy.wrap(formSubmitSpy)
+        .its('firstCall.args.0.formData')
+        .should((formData) => {
+          expect(formData.fm_court_details_originator_id).to.equal(4165);
+          expect(formData.fm_court_details_originator_name).to.equal("Bedfordshire Magistrates' Court");
+        });
     },
   );
 });

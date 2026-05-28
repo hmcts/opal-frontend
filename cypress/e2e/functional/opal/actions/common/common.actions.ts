@@ -81,6 +81,25 @@ export class CommonActions {
   }
 
   /**
+   * Asserts that no page heading contains the provided text.
+   * @param text - Text that must not appear in any `h1` on the page.
+   */
+  public assertNoPageHeadingContains(text: string): void {
+    const expected = text.toLowerCase();
+
+    log('assert', 'Checking page heading does not contain text', { text });
+    cy.get('body', this.getTimeoutOptions())
+      .find('h1')
+      .should(($headings) => {
+        const matchingHeading = [...$headings]
+          .map((heading) => heading.textContent?.trim() ?? '')
+          .find((heading) => heading.toLowerCase().includes(expected));
+
+        expect(matchingHeading, `Did not expect a page heading containing "${text}"`).to.be.undefined;
+      });
+  }
+
+  /**
    * Asserts that the current URL contains the given substring.
    * @param urlPart - The part of the URL expected to be present.
    */

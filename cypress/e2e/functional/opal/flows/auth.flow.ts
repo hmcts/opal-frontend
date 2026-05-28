@@ -13,30 +13,30 @@
  * @example
  * ```ts
  * // Example usage inside a test or setup hook
- * loginAndLandOnSearch('qa.user@example.com');
+ * loginAndVerifyDashboardLanding('qa.user@example.com');
  * ```
  *
  * @see {@link performLogin}
- * @see {@link AccountSearchIndividualsActions}
+ * @see {@link PrimaryNavigationActions}
  */
 
 import { assertSignOutLinkVisible, performLogin } from '../actions/login.actions';
-import { AccountSearchIndividualsActions } from '../actions/search/search.individuals.actions';
+import { PrimaryNavigationActions } from '../actions/primary-navigation.actions';
 
 /**
  * Logs in using either SSO or local authentication
- * and asserts that the post-login home landing has successfully loaded.
+ * and asserts that the post-login dashboard landing has successfully loaded.
  *
  * @param email - The email address of the user to authenticate as.
  *
  * @details
  * - Calls {@link performLogin} to complete the login process.
- * - Instantiates {@link AccountSearchIndividualsActions} to confirm that the authenticated
- *   user lands on a valid post-login home page for the current journey.
+ * - Instantiates {@link PrimaryNavigationActions} to confirm that the authenticated
+ *   user lands on a valid post-login dashboard page for the current journey.
  */
-export function loginAndLandOnSearch(email: string): void {
+export function loginAndVerifyDashboardLanding(email: string): void {
   performLogin(email);
-  new AccountSearchIndividualsActions().assertOnSearchLandingPage();
+  new PrimaryNavigationActions().assertDashboardLandingReady();
 }
 
 /**

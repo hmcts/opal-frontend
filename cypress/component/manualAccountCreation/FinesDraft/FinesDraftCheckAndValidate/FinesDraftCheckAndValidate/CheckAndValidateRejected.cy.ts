@@ -19,10 +19,13 @@ import {
 import { OPAL_FINES_VALIDATE_OVER_25_DRAFT_ACCOUNTS_MOCK } from './mocks/fines_draft_validate_over_25_account_mock';
 import { OPAL_FINES_DRAFT_VALIDATE_ACCOUNTS_MOCK } from './mocks/fines-draft-validate-account.mock';
 import { FINES_ACCOUNT_TYPES } from 'src/app/flows/fines/constants/fines-account-types.constant';
+import { DateTime } from 'luxon';
 
 const MANUAL_ACCOUNT_CREATION_JIRA_LABEL = '@JIRA-LABEL:manual-account-creation';
 
 const buildTags = (...tags: string[]) => [...tags, MANUAL_ACCOUNT_CREATION_JIRA_LABEL];
+const getUtcTimestampForLocalDay = (daysOffset: number, minutesAfterMidnight: number = 30) =>
+  DateTime.local().plus({ days: daysOffset }).startOf('day').plus({ minutes: minutesAfterMidnight }).toUTC().toISO()!;
 
 describe('FinesDraftCheckAndValidateRejectedComponent', () => {
   const setupComponent = () => {
@@ -112,6 +115,10 @@ describe('FinesDraftCheckAndValidateRejectedComponent', () => {
     },
     () => {
       const rejectedMockData = structuredClone(OPAL_FINES_DRAFT_VALIDATE_ACCOUNTS_MOCK);
+      rejectedMockData.summaries[0].account_snapshot.created_date = getUtcTimestampForLocalDay(0);
+      rejectedMockData.summaries[0].account_status_date = getUtcTimestampForLocalDay(0);
+      rejectedMockData.summaries[1].account_snapshot.created_date = getUtcTimestampForLocalDay(-1);
+      rejectedMockData.summaries[1].account_status_date = getUtcTimestampForLocalDay(-1);
       interceptCAVGetRejectedAccounts(200, rejectedMockData);
       interceptCAVGetToReviewAccounts(200, { count: 0, summaries: [] });
       interceptCAVGetDeletedAccounts(200, { count: 0, summaries: [] });
@@ -129,7 +136,7 @@ describe('FinesDraftCheckAndValidateRejectedComponent', () => {
         .within(() => {
           cy.get(DOM_ELEMENTS.defendant).contains('SMITH, Jane');
           cy.get(DOM_ELEMENTS.dob).contains('—');
-          cy.get(DOM_ELEMENTS.created).contains('4 days ago');
+          cy.get(DOM_ELEMENTS.created).contains('1 day ago');
           cy.get(DOM_ELEMENTS.accountType).contains(FINES_ACCOUNT_TYPES['Fixed Penalty']);
           cy.get(DOM_ELEMENTS.businessUnit).contains('Business Unit B');
         });
@@ -162,7 +169,7 @@ describe('FinesDraftCheckAndValidateRejectedComponent', () => {
         .within(() => {
           cy.get(DOM_ELEMENTS.defendant).contains('SMITH, Jane');
           cy.get(DOM_ELEMENTS.dob).contains('—');
-          cy.get(DOM_ELEMENTS.created).contains('4 days ago');
+          cy.get(DOM_ELEMENTS.created).contains('1 day ago');
           cy.get(DOM_ELEMENTS.accountType).contains(FINES_ACCOUNT_TYPES['Fixed Penalty']);
           cy.get(DOM_ELEMENTS.businessUnit).contains('Business Unit B');
         });
