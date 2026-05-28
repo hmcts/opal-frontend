@@ -101,7 +101,15 @@ describe('FinesMacCourtDetailsComponent', () => {
   );
   it(
     '(AC.2) should dynamically filter LJA field',
-    { tags: [...buildTags('@JIRA-STORY:PO-389'), '@JIRA-EPIC:PO-272', '@JIRA-TEST-KEY:PO-4928'] },
+    {
+      tags: [
+        ...buildTags('@JIRA-STORY:PO-389'),
+        '@JIRA-EPIC:PO-272',
+        '@JIRA-NFR:PO-2328',
+        '@JIRA-NFR:PO-2329',
+        '@JIRA-TEST-KEY:PO-4928',
+      ],
+    },
     () => {
       setupComponent(null, 'adultOrYouthOnly');
 
@@ -120,7 +128,15 @@ describe('FinesMacCourtDetailsComponent', () => {
   );
   it(
     '(AC.3) should dynamically filter Enforcement court field',
-    { tags: [...buildTags('@JIRA-STORY:PO-389'), '@JIRA-EPIC:PO-272', '@JIRA-TEST-KEY:PO-4929'] },
+    {
+      tags: [
+        ...buildTags('@JIRA-STORY:PO-389'),
+        '@JIRA-EPIC:PO-272',
+        '@JIRA-NFR:PO-2328',
+        '@JIRA-NFR:PO-2329',
+        '@JIRA-TEST-KEY:PO-4929',
+      ],
+    },
     () => {
       setupComponent(null, 'adultOrYouthOnly');
       //Verify working input fields
@@ -261,7 +277,9 @@ describe('FinesMacCourtDetailsComponent', () => {
 
   it(
     '(AC.8) should clear errors when validation is passed',
-    { tags: [...buildTags('@JIRA-STORY:PO-389'), '@JIRA-EPIC:PO-272', '@JIRA-TEST-KEY:PO-4934'] },
+    {
+      tags: [...buildTags('@JIRA-STORY:PO-389'), '@JIRA-EPIC:PO-272', '@JIRA-NFR:PO-2329', '@JIRA-TEST-KEY:PO-4934'],
+    },
     () => {
       const formSubmitSpy = Cypress.sinon.spy();
       setupComponent(formSubmitSpy, 'adultOrYouthOnly');
@@ -376,7 +394,15 @@ describe('FinesMacCourtDetailsComponent', () => {
 
   it(
     'Should show all values in LJA and Enforcement Court auto-complete dropdown when selected',
-    { tags: [...buildTags('@JIRA-STORY:PO-1990'), '@JIRA-EPIC:PO-545', '@JIRA-TEST-KEY:PO-4939'] },
+    {
+      tags: [
+        ...buildTags('@JIRA-STORY:PO-1990'),
+        '@JIRA-EPIC:PO-545',
+        '@JIRA-NFR:PO-2328',
+        '@JIRA-NFR:PO-2329',
+        '@JIRA-TEST-KEY:PO-4939',
+      ],
+    },
     () => {
       setupComponent(null, 'adultOrYouthOnly');
 
@@ -400,7 +426,15 @@ describe('FinesMacCourtDetailsComponent', () => {
 
   it(
     '(AC3, AC4) should only show PSA/CRWCRT local justice areas for filtered journeys (Fine/Confiscation)',
-    { tags: [...buildTags('@JIRA-STORY:PO-2761'), '@JIRA-EPIC:PO-545', '@JIRA-TEST-KEY:PO-4940'] },
+    {
+      tags: [
+        ...buildTags('@JIRA-STORY:PO-2761'),
+        '@JIRA-EPIC:PO-545',
+        '@JIRA-NFR:PO-2328',
+        '@JIRA-NFR:PO-2329',
+        '@JIRA-TEST-KEY:PO-4940',
+      ],
+    },
     () => {
       const filteredLocalJusticeAreas: IOpalFinesLocalJusticeAreaRefData = {
         count: 2,

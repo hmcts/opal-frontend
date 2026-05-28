@@ -86,7 +86,9 @@ describe('FinesMacManualFixedPenalty', () => {
 
   it(
     '(AC1a-eii) The Fixed Penalty Details screen will be created as per the Design Artefacts',
-    { tags: [...buildTags('@JIRA-STORY:PO-857'), '@JIRA-EPIC:PO-855', '@JIRA-TEST-KEY:PO-4753'] },
+    {
+      tags: [...buildTags('@JIRA-STORY:PO-857'), '@JIRA-EPIC:PO-855', '@JIRA-NFR:PO-2328', '@JIRA-TEST-KEY:PO-4753'],
+    },
     () => {
       fixedPenaltyMock.languagePreferences.formData.fm_language_preferences_document_language = 'CY';
       fixedPenaltyMock.languagePreferences.formData.fm_language_preferences_hearing_language = 'CY';
@@ -237,7 +239,9 @@ describe('FinesMacManualFixedPenalty', () => {
 
   it(
     '(AC2) Validation will exist for the Issuing Authority field',
-    { tags: [...buildTags('@JIRA-STORY:PO-857'), '@JIRA-EPIC:PO-855', '@JIRA-TEST-KEY:PO-4754'] },
+    {
+      tags: [...buildTags('@JIRA-STORY:PO-857'), '@JIRA-EPIC:PO-855', '@JIRA-NFR:PO-2329', '@JIRA-TEST-KEY:PO-4754'],
+    },
     () => {
       setupComponent(null);
 
@@ -261,7 +265,9 @@ describe('FinesMacManualFixedPenalty', () => {
 
   it(
     '(AC3) Validation will exist for the Enforcement Court field',
-    { tags: [...buildTags('@JIRA-STORY:PO-857'), '@JIRA-EPIC:PO-855', '@JIRA-TEST-KEY:PO-4755'] },
+    {
+      tags: [...buildTags('@JIRA-STORY:PO-857'), '@JIRA-EPIC:PO-855', '@JIRA-NFR:PO-2329', '@JIRA-TEST-KEY:PO-4755'],
+    },
     () => {
       setupComponent();
 
@@ -429,11 +435,13 @@ describe('FinesMacManualFixedPenalty', () => {
   );
 
   it(
-    '(AC7) Validation will exist for the Date of birth field - invalid date',
-    { tags: [...buildTags('@JIRA-STORY:PO-857'), '@JIRA-EPIC:PO-855', '@JIRA-TEST-KEY:PO-4765'] },
+    '(AC7) Validation will exist for the Date of birth field - non-leap-year date',
+    {
+      tags: [...buildTags('@JIRA-STORY:PO-857'), '@JIRA-EPIC:PO-855', '@JIRA-NFR:PO-2325', '@JIRA-TEST-KEY:PO-6345'],
+    },
     () => {
-      // Invalid date validation
-      fixedPenaltyMock.personalDetails.formData.fm_personal_details_dob = '32/13/2000';
+      // Non-leap-year date validation
+      fixedPenaltyMock.personalDetails.formData.fm_personal_details_dob = '29/02/2025';
       setupComponent();
       cy.get(DOM_ELEMENTS.submitButton).click();
       cy.get(DOM_ELEMENTS.errorSummaryList).should('contain', 'Enter a valid date of birth');
@@ -1355,7 +1363,9 @@ describe('FinesMacManualFixedPenalty', () => {
 
   it(
     '(AC5) should keep Prosecutors (All) visible and selectable as originators for non-filtered journeys',
-    { tags: [...buildTags('@JIRA-STORY:PO-2761'), '@JIRA-EPIC:PO-2750', '@JIRA-TEST-KEY:PO-4829'] },
+    {
+      tags: [...buildTags('@JIRA-STORY:PO-2761'), '@JIRA-EPIC:PO-2750', '@JIRA-NFR:PO-2328', '@JIRA-TEST-KEY:PO-4829'],
+    },
     () => {
       const filteredLocalJusticeAreas: IOpalFinesLocalJusticeAreaRefData = {
         count: 1,

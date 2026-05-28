@@ -19,7 +19,6 @@ import { MacReviewAccountLocators as DOM_ELEMENTS } from '../../../shared/select
 import { FinesDraftStore } from 'src/app/flows/fines/fines-draft/stores/fines-draft.store';
 import { FINES_DRAFT_STATE } from 'src/app/flows/fines/fines-draft/constants/fines-draft-state.constant';
 import { DRAFT_SESSION_USER_STATE_MOCK } from '../../../../cypress/component/manualAccountCreation/FinesMacReviewAccount/mocks/check-and-validate-session-mock';
-import { getToday } from 'cypress/support/utils/dateUtils';
 import { interceptOffences } from 'cypress/component/CommonIntercepts/CommonIntercepts';
 import { FINES_ACCOUNT_TYPES } from 'src/app/flows/fines/constants/fines-account-types.constant';
 import { GLOBAL_ERROR_STATE } from '@hmcts/opal-frontend-common/stores/global/constants';
@@ -596,7 +595,9 @@ describe('ReviewAccountRejectedApproveComponent', () => {
   //PO-969
   it(
     'AC.1b update draft account with patch method',
-    { tags: [...buildTags('@JIRA-STORY:PO-969'), '@JIRA-EPIC:PO-2220', '@JIRA-TEST-KEY:PO-5181'] },
+    {
+      tags: [...buildTags('@JIRA-STORY:PO-969'), '@JIRA-EPIC:PO-2220', '@JIRA-NFR:PO-2324', '@JIRA-TEST-KEY:PO-5181'],
+    },
     () => {
       cy.intercept('PATCH', '**/opal-fines-service/draft-accounts/**', { statusCode: 200 }).as('patchDraftAccount');
       let payload = structuredClone(finesAccountPayload);
@@ -613,20 +614,11 @@ describe('ReviewAccountRejectedApproveComponent', () => {
         expect(request.method).to.equal('PATCH');
 
         expect(request.body).to.have.property('account_status', 'Rejected');
-        expect(request.body).to.have.property('timeline_data');
-
-        expect(request.body.timeline_data[0]).to.have.property('username', 'Timmy Test');
-        expect(request.body.timeline_data[0]).to.have.property('status', 'Submitted');
-        expect(request.body.timeline_data[0]).to.have.property('status_date', '2023-07-03');
-        expect(request.body.timeline_data[0]).to.have.property('reason_text', null);
-
-        expect(request.body.timeline_data[1]).to.have.property('username', 'Timmy Test');
-        expect(request.body.timeline_data[1]).to.have.property('status', 'Rejected');
-        expect(request.body.timeline_data[1]).to.have.property('status_date', getToday());
-        expect(request.body.timeline_data[1]).to.have.property(
+        expect(request.body).to.have.property(
           'reason_text',
           'I have rejected this account because the surname is incorrect',
         );
+        expect(request.body).not.to.have.property('timeline_data');
       });
     },
   );
@@ -650,17 +642,8 @@ describe('ReviewAccountRejectedApproveComponent', () => {
         expect(request.method).to.equal('PATCH');
 
         expect(request.body).to.have.property('account_status', 'Publishing Pending');
-        expect(request.body).to.have.property('timeline_data');
-
-        expect(request.body.timeline_data[0]).to.have.property('username', 'Timmy Test');
-        expect(request.body.timeline_data[0]).to.have.property('status', 'Submitted');
-        expect(request.body.timeline_data[0]).to.have.property('status_date', '2023-07-03');
-        expect(request.body.timeline_data[0]).to.have.property('reason_text', null);
-
-        expect(request.body.timeline_data[1]).to.have.property('username', 'Timmy Test');
-        expect(request.body.timeline_data[1]).to.have.property('status', 'Publishing Pending');
-        expect(request.body.timeline_data[1]).to.have.property('status_date', getToday());
-        expect(request.body.timeline_data[1]).not.to.have.property('reason_text');
+        expect(request.body).to.have.property('reason_text', null);
+        expect(request.body).not.to.have.property('timeline_data');
       });
     },
   );

@@ -19,7 +19,6 @@ import { CheckAndValidateReviewLocators as DOM_ELEMENTS } from '../../../shared/
 import { FinesDraftStore } from 'src/app/flows/fines/fines-draft/stores/fines-draft.store';
 import { FINES_DRAFT_STATE } from 'src/app/flows/fines/fines-draft/constants/fines-draft-state.constant';
 import { FinesMacDeleteAccountConfirmationComponent } from 'src/app/flows/fines/fines-mac/fines-mac-delete-account-confirmation/fines-mac-delete-account-confirmation.component';
-import { getToday } from 'cypress/support/utils/dateUtils';
 import { GLOBAL_ERROR_STATE } from '@hmcts/opal-frontend-common/stores/global/constants';
 
 const MANUAL_ACCOUNT_CREATION_JIRA_LABEL = '@JIRA-LABEL:manual-account-creation';
@@ -186,17 +185,8 @@ describe('FinesMacDeleteAccountConfirmation - Checker Delete account', () => {
         expect(request.method).to.equal('PATCH');
 
         expect(request.body).to.have.property('account_status', 'Deleted');
-        expect(request.body).to.have.property('timeline_data');
-
-        expect(request.body.timeline_data[0]).to.have.property('username', 'Timmy Test');
-        expect(request.body.timeline_data[0]).to.have.property('status', 'Submitted');
-        expect(request.body.timeline_data[0]).to.have.property('status_date', '2023-07-03');
-        expect(request.body.timeline_data[0]).to.have.property('reason_text', null);
-
-        expect(request.body.timeline_data[1]).to.have.property('username', 'Timmy Test');
-        expect(request.body.timeline_data[1]).to.have.property('status', 'Deleted');
-        expect(request.body.timeline_data[1]).to.have.property('status_date', getToday());
-        expect(request.body.timeline_data[1]).to.have.property('reason_text', 'test reason');
+        expect(request.body).to.have.property('reason_text', 'test reason');
+        expect(request.body).not.to.have.property('timeline_data');
       });
     },
   );
