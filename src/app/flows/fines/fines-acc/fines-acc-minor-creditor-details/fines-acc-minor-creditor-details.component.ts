@@ -46,6 +46,8 @@ import { FINES_ROUTING_PATHS } from '../../routing/constants/fines-routing-paths
 import { FINES_ACC_ROUTING_PATHS } from '../routing/constants/fines-acc-routing-paths.constant';
 import { IOpalFinesVersion } from '../../services/opal-fines-service/interfaces/opal-fines-version.interface';
 import { FINES_ACC_BANNER_MESSAGES } from '../stores/constants/fines-acc-store-banner-messages.constant';
+import { FinesAccMinorCreditorDetailsCreditorTab } from './fines-acc-minor-creditor-details-creditor-tab/fines-acc-minor-creditor-details-creditor-tab.component';
+import { IOpalFinesAccountMinorCreditorCreditor } from '../../services/opal-fines-service/interfaces/opal-fines-account-minor-creditor-creditor.interface';
 
 @Component({
   selector: 'app-fines-acc-minor-creditor-details',
@@ -63,6 +65,7 @@ import { FINES_ACC_BANNER_MESSAGES } from '../stores/constants/fines-acc-store-b
     MonetaryPipe,
     FinesAccSummaryHeaderComponent,
     FinesAccMinorCreditorDetailsAtAGlanceTabComponent,
+    FinesAccMinorCreditorDetailsCreditorTab,
     AsyncPipe,
   ],
   templateUrl: './fines-acc-minor-creditor-details.component.html',
@@ -80,6 +83,7 @@ export class FinesAccMinorCreditorDetailsComponent
   public accountId: number = Number(this.activatedRoute.snapshot.paramMap.get('accountId'));
   public tabContentStyles: IFinesAccSummaryTabsContentStyles = FINES_ACC_SUMMARY_TABS_CONTENT_STYLES;
   public tabAtAGlance$: Observable<IOpalFinesAccountMinorCreditorAtAGlance> = EMPTY;
+  public tabCreditor$: Observable<IOpalFinesAccountMinorCreditorCreditor> = EMPTY;
   public debtorTypes = FINES_ACC_DEBTOR_TYPES;
   public accountTypes = FINES_ACCOUNT_TYPES;
   public lastEnforcement: IOpalFinesResultRefData | null = null;
@@ -139,6 +143,9 @@ export class FinesAccMinorCreditorDetailsComponent
               }),
             ),
           );
+          break;
+        case 'creditor':
+          this.tabCreditor$ = this.fetchTabDataTyped(this.opalFinesService.getMinorCreditorAccount(account_id));
           break;
       }
     });

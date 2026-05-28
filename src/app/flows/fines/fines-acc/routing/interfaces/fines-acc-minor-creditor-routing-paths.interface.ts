@@ -6,5 +6,6 @@ export interface IFinesAccMinorCreditorRoutingPaths extends IChildRoutingPaths {
     details: string;
     note: string;
     'payment-hold': string;
+    creditor: string;
   };
 }
