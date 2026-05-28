@@ -6,5 +6,6 @@ export const FINES_ACC_MINOR_CREDITOR_ROUTING_PATHS: IFinesAccMinorCreditorRouti
     details: 'details',
     note: 'note',
     'payment-hold': 'payment-hold',
+    creditor: 'creditor',
   },
 };
