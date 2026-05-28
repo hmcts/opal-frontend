@@ -99,13 +99,7 @@ export class FinesAccMinorCreditorAddAmendConvertComponent
    * when the child form has emitted dirty state.
    */
   public handleCancel(): void {
-    this.routerNavigate(
-      FINES_ACC_MINOR_CREDITOR_ROUTING_PATHS.children.details,
-      false,
-      undefined,
-      null,
-      'creditor',
-    );
+    this.routerNavigate(FINES_ACC_MINOR_CREDITOR_ROUTING_PATHS.children.details, false, undefined, null, 'creditor');
   }
 
   /**

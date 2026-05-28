@@ -60,10 +60,7 @@ import {
 } from '../constants/fines-acc-minor-creditor-add-amend-convert-control-names.constant';
 import { FINES_ACC_MINOR_CREDITOR_ADD_AMEND_CONVERT_CREDITOR_TYPES } from '../constants/fines-acc-minor-creditor-add-amend-convert-creditor-types.constant';
 
-const SINGLE_ASCII_CHARACTERS_PATTERN_VALIDATOR = patternValidator(
-  SINGLE_ASCII_CHARACTERS,
-  'singleAsciiCharacters',
-);
+const SINGLE_ASCII_CHARACTERS_PATTERN_VALIDATOR = patternValidator(SINGLE_ASCII_CHARACTERS, 'singleAsciiCharacters');
 const ALPHANUMERIC_WITH_SPACES_PATTERN_VALIDATOR = patternValidator(
   ALPHANUMERIC_WITH_SPACES_PATTERN,
   'alphanumericTextPattern',
@@ -227,10 +224,7 @@ export class FinesAccMinorCreditorAddAmendConvertFormComponent
       Validators.maxLength(8),
       NUMERIC_PATTERN_VALIDATOR,
     ]);
-    this.getControl(this.controls.bankAccountReference).setValidators([
-      Validators.required,
-      Validators.maxLength(18),
-    ]);
+    this.getControl(this.controls.bankAccountReference).setValidators([Validators.required, Validators.maxLength(18)]);
     this.updateControlsValidity(FINES_ACC_MINOR_CREDITOR_ADD_AMEND_CONVERT_BACS_CONTROL_NAMES);
   }
 
