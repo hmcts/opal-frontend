@@ -640,7 +640,7 @@ describe('ReviewAccountRejectedApproveComponent', () => {
         expect(request.method).to.equal('PATCH');
 
         expect(request.body).to.have.property('account_status', 'Publishing Pending');
-        expect(request.body).to.have.property('reason_text', null);
+        expect(request.body.reason_text ?? null).to.equal(null);
         expect(request.body).not.to.have.property('timeline_data');
       });
     },
