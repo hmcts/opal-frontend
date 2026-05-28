@@ -23,7 +23,9 @@ import { IOpalFinesAccountMinorCreditorDetailsHeader } from '../fines-acc-minor-
 import { OPAL_FINES_ACCOUNT_MINOR_CREDITOR_AT_A_GLANCE_WITH_DEFENDANT_MOCK } from '../../services/opal-fines-service/mocks/opal-fines-account-minor-creditor-at-a-glance-with-defendant.mock';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
 import { OPAL_FINES_ACCOUNT_MINOR_CREDITOR_CREDITOR_MOCK } from '../../services/opal-fines-service/mocks/opal-fines-account-minor-creditor-creditor.mock';
-import { IFinesAccMinorCreditorAddAmendConvertState } from '../fines-acc-minor-creditor-add-amend-convert/interfaces/fines-acc-minor-creditor-add-amend-convert-state.interface';
+import { MOCK_FINES_ACC_MINOR_CREDITOR_ADD_AMEND_CONVERT_COMPANY_FORM } from '../fines-acc-minor-creditor-add-amend-convert/mocks/fines-acc-minor-creditor-add-amend-convert-company-form.mock';
+import { MOCK_FINES_ACC_MINOR_CREDITOR_ADD_AMEND_CONVERT_INDIVIDUAL_FORM } from '../fines-acc-minor-creditor-add-amend-convert/mocks/fines-acc-minor-creditor-add-amend-convert-individual-form.mock';
+import { OPAL_FINES_ACCOUNT_MINOR_CREDITOR_CREDITOR_INDIVIDUAL_MOCK } from '../../services/opal-fines-service/mocks/opal-fines-account-minor-creditor-creditor-individual.mock';
 
 describe('FinesAccPayloadService', () => {
   let service: FinesAccPayloadService;
@@ -870,25 +872,15 @@ describe('FinesAccPayloadService', () => {
 
       const result = service.mapMinorCreditorAccountPayload(minorCreditorData);
 
-      expect(result).toEqual(
-        expect.objectContaining({
-          facc_minor_creditor_creditor_type: 'company',
-          facc_minor_creditor_company_name: minorCreditorData.party_details.organisation_details?.organisation_name,
-          facc_minor_creditor_bank_sort_code: '123456',
-          facc_minor_creditor_pay_by_bacs: true,
-        }),
-      );
+      expect(result).toEqual(MOCK_FINES_ACC_MINOR_CREDITOR_ADD_AMEND_CONVERT_COMPANY_FORM.formData);
     });
   });
 
   describe('buildMinorCreditorAccountAmendPayload', () => {
     it('should build a company minor creditor amend payload with BACS details', () => {
       const currentData = structuredClone(OPAL_FINES_ACCOUNT_MINOR_CREDITOR_CREDITOR_MOCK);
-      const formState: IFinesAccMinorCreditorAddAmendConvertState = {
-        facc_minor_creditor_creditor_type: 'company',
-        facc_minor_creditor_title: null,
-        facc_minor_creditor_forenames: null,
-        facc_minor_creditor_surname: null,
+      const formState = {
+        ...structuredClone(MOCK_FINES_ACC_MINOR_CREDITOR_ADD_AMEND_CONVERT_COMPANY_FORM.formData),
         facc_minor_creditor_company_name: 'Updated Organisation',
         facc_minor_creditor_address_line_1: '10 New Street',
         facc_minor_creditor_address_line_2: 'Floor 2',
@@ -937,7 +929,7 @@ describe('FinesAccPayloadService', () => {
     });
 
     it('should build an individual minor creditor amend payload and clear BACS details when not selected', () => {
-      const currentData = structuredClone(OPAL_FINES_ACCOUNT_MINOR_CREDITOR_CREDITOR_MOCK);
+      const currentData = structuredClone(OPAL_FINES_ACCOUNT_MINOR_CREDITOR_CREDITOR_INDIVIDUAL_MOCK);
       currentData.party_details.individual_details = {
         date_of_birth: '1980-01-01',
         age: '45',
@@ -947,12 +939,11 @@ describe('FinesAccPayloadService', () => {
         forenames: 'Existing',
         surname: 'Person',
       };
-      const formState: IFinesAccMinorCreditorAddAmendConvertState = {
-        facc_minor_creditor_creditor_type: 'individual',
+      const formState = {
+        ...structuredClone(MOCK_FINES_ACC_MINOR_CREDITOR_ADD_AMEND_CONVERT_INDIVIDUAL_FORM.formData),
         facc_minor_creditor_title: 'Dr',
         facc_minor_creditor_forenames: 'Jane',
         facc_minor_creditor_surname: 'DOE',
-        facc_minor_creditor_company_name: null,
         facc_minor_creditor_address_line_1: '1 Individual Road',
         facc_minor_creditor_address_line_2: null,
         facc_minor_creditor_address_line_3: null,
