@@ -91,7 +91,7 @@ describe('Account Enquiry Parent or Guardian Component', () => {
 
   it(
     'AC1a: should display the Parent or guardian tab for an adult or youth account with parent or guardian to pay',
-    { tags: [...buildTags('@JIRA-STORY:PO-1876'), '@JIRA-EPIC:PO-1875'] },
+    { tags: [...buildTags('@JIRA-STORY:PO-1876'), '@JIRA-EPIC:PO-1875', '@JIRA-TEST-KEY:PO-6334'] },
     () => {
       const headerMock = structuredClone(createDefendantHeaderMockWithName('Robert', 'Thomson'));
       headerMock.parent_guardian_party_id = '1770000001';
@@ -109,7 +109,7 @@ describe('Account Enquiry Parent or Guardian Component', () => {
 
   it(
     'AC1b, AC2a, AC2b: should display the Parent or guardian tab and the remove action for a youth-only account with a non-paying parent or guardian',
-    { tags: [...buildTags('@JIRA-STORY:PO-1876'), '@JIRA-EPIC:PO-1875'] },
+    { tags: [...buildTags('@JIRA-STORY:PO-1876'), '@JIRA-EPIC:PO-1875', '@JIRA-TEST-KEY:PO-6335'] },
     () => {
       const headerMock = structuredClone(DEFENDANT_HEADER_YOUTH_MOCK);
       headerMock.parent_guardian_party_id = '1770000001';
@@ -130,7 +130,7 @@ describe('Account Enquiry Parent or Guardian Component', () => {
 
   it(
     'AC3: should not display the remove action for an adult or youth account with parent or guardian to pay',
-    { tags: [...buildTags('@JIRA-STORY:PO-1876'), '@JIRA-EPIC:PO-1875'] },
+    { tags: [...buildTags('@JIRA-STORY:PO-1876'), '@JIRA-EPIC:PO-1875', '@JIRA-TEST-KEY:PO-6336'] },
     () => {
       const headerMock = structuredClone(createDefendantHeaderMockWithName('Robert', 'Thomson'));
       headerMock.parent_guardian_party_id = '1770000001';

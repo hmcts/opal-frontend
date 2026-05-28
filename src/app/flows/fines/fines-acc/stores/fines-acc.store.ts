@@ -16,8 +16,8 @@ export const FinesAccountStore = signalStore(
     business_unit_id: null as string | null,
     business_unit_user_id: null as string | null,
     welsh_speaking: null as string | null,
-    hasVersionMismatch: false as boolean,
-    hasPaymentHold: false as boolean,
+    hasVersionMismatch: false,
+    hasPaymentHold: false,
     successMessage: null as string | null,
   })),
   withHooks((store) => {

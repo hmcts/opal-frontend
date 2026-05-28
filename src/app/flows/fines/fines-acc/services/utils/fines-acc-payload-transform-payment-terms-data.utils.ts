@@ -83,7 +83,7 @@ const mapCommonFields = (paymentTermsData: IOpalFinesAccountDefendantDetailsPaym
   return {
     facc_payment_terms_payment_card_request: paymentTermsData.payment_card_last_requested ? true : null,
     facc_payment_terms_has_days_in_default:
-      payment_terms.days_in_default !== null ? payment_terms.days_in_default > 0 : null,
+      payment_terms.days_in_default === null ? null : payment_terms.days_in_default > 0,
     facc_payment_terms_suspended_committal_date: payment_terms.date_days_in_default_imposed || null,
     facc_payment_terms_default_days_in_jail: payment_terms.days_in_default,
   };

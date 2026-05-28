@@ -418,11 +418,19 @@ describe('OpalFines', () => {
     const firstUrl = `${OPAL_FINES_PATHS.resultsRefData}?result_ids=${firstResultIds[0]}&result_ids=${firstResultIds[1]}&result_ids=${firstResultIds[2]}`;
     const secondUrl = `${OPAL_FINES_PATHS.resultsRefData}?result_ids=${secondResultIds[0]}&result_ids=${secondResultIds[1]}`;
 
-    service.getResults(firstResultIds).subscribe();
-    httpMock.expectOne(firstUrl).flush(OPAL_FINES_RESULTS_REF_DATA_MOCK);
+    service.getResults(firstResultIds).subscribe((response) => {
+      expect(response).toEqual(OPAL_FINES_RESULTS_REF_DATA_MOCK);
+    });
+    const firstReq = httpMock.expectOne(firstUrl);
+    expect(firstReq.request.method).toBe('GET');
+    firstReq.flush(OPAL_FINES_RESULTS_REF_DATA_MOCK);
 
-    service.getResults(secondResultIds).subscribe();
-    httpMock.expectOne(secondUrl).flush(OPAL_FINES_RESULTS_REF_DATA_MOCK);
+    service.getResults(secondResultIds).subscribe((response) => {
+      expect(response).toEqual(OPAL_FINES_RESULTS_REF_DATA_MOCK);
+    });
+    const secondReq = httpMock.expectOne(secondUrl);
+    expect(secondReq.request.method).toBe('GET');
+    secondReq.flush(OPAL_FINES_RESULTS_REF_DATA_MOCK);
   });
 
   it('should cache results requests independently by params', () => {
