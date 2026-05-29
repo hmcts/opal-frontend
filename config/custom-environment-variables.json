@@ -58,6 +58,9 @@
     "secure": { "__name": "CSRF_SECURE_ENABLED", "__format": "json" },
     "sameSite": "CSRF_SAME_SITE"
   },
+  "user-state": {
+    "domain": "USER_STATE_DOMAIN"
+  },
   "secrets": {
     "opal": {
       "app-insights-connection-string": "APP_INSIGHTS_CONNECTION_STRING",
