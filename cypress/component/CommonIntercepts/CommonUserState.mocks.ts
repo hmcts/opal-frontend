@@ -1,5 +1,14 @@
 import { IOpalUserState } from '@hmcts/opal-frontend-common/services/opal-user-service/interfaces';
 
+export const ENTER_ENFORCEMENT_PERMISSION = {
+  permission_id: 10,
+  permission_name: 'Enter Enforcement',
+};
+export const MAINTENANCE_PERMISSION = {
+  permission_id: 7,
+  permission_name: 'Account Maintenance',
+};
+
 export const USER_STATE_MOCK_NO_PERMISSION: IOpalUserState = {
   user_id: 50000000,
   username: 'testUserNote@dev.platform.hmcts.net',

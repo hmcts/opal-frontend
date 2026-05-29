@@ -1,6 +1,8 @@
 import { createDefendantHeaderMockWithName, DEFENDANT_HEADER_MOCK } from './mocks/defendant_details_mock';
 
 import {
+  ENTER_ENFORCEMENT_PERMISSION,
+  MAINTENANCE_PERMISSION,
   USER_STATE_MOCK_NO_PERMISSION,
   USER_STATE_MOCK_PERMISSION_BU77,
 } from '../../CommonIntercepts/CommonUserState.mocks';
@@ -119,6 +121,7 @@ describe('Account Enquiry Enforcement Status', () => {
         hasAccountMaintenancePermission,
         hasEnterEnforcementPermission,
         isCompanyAccount,
+        accountStatusCode: 'L',
       },
     });
   };
@@ -175,12 +178,13 @@ describe('Account Enquiry Enforcement Status', () => {
     },
   );
 
-  // Direct component-boundary coverage: action links and overview rows on the tab itself.
   it(
     'AC2: Action column displayed and add enforcement action link visible when user has Enter Enforcement permission',
     { tags: [...buildTags('@JIRA-STORY:PO-1647'), '@JIRA-EPIC:PO-978', '@JIRA-TEST-KEY:PO-4066'] },
     () => {
-      mountEnforcementTab({ hasEnterEnforcementPermission: true });
+      let userStateMock = structuredClone(USER_STATE_MOCK_NO_PERMISSION);
+      userStateMock.business_unit_users[0].permissions.push(ENTER_ENFORCEMENT_PERMISSION);
+      renderEnforcementShell({ header: buildIndividualHeader(), userState: userStateMock });
 
       assertOverviewCardVisible();
       cy.contains('h2', 'Actions').parent().contains('a', 'Add enforcement action').should('exist');
@@ -203,10 +207,10 @@ describe('Account Enquiry Enforcement Status', () => {
     'AC2: Action column displayed and add enforcement action link visible when user has both Account Maintenance and Enter Enforcement permissions',
     { tags: [...buildTags('@JIRA-STORY:PO-1647'), '@JIRA-EPIC:PO-978', '@JIRA-TEST-KEY:PO-4068'] },
     () => {
-      mountEnforcementTab({
-        hasAccountMaintenancePermission: true,
-        hasEnterEnforcementPermission: true,
-      });
+      let userStateMock = structuredClone(USER_STATE_MOCK_NO_PERMISSION);
+      userStateMock.business_unit_users[0].permissions.push(ENTER_ENFORCEMENT_PERMISSION);
+      userStateMock.business_unit_users[0].permissions.push(MAINTENANCE_PERMISSION);
+      renderEnforcementShell({ header: buildIndividualHeader(), userState: userStateMock });
 
       assertOverviewCardVisible();
       cy.contains('h2', 'Actions').parent().contains('a', 'Add enforcement action').should('exist');
