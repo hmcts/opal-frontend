@@ -50,6 +50,7 @@ import { FINES_MAC_TITLE_DROPDOWN_OPTIONS } from '../../../fines-mac/constants/f
 import { FinesAccountStore } from '../../stores/fines-acc.store';
 import { IFinesAccMinorCreditorAddAmendConvertForm } from '../interfaces/fines-acc-minor-creditor-add-amend-convert-form.interface';
 import { IFinesAccMinorCreditorAddAmendConvertFieldErrors } from '../interfaces/fines-acc-minor-creditor-add-amend-convert-field-errors.interface';
+import { IFinesAccMinorCreditorAddAmendConvertState } from '../interfaces/fines-acc-minor-creditor-add-amend-convert-state.interface';
 import { FINES_ACC_MINOR_CREDITOR_ADD_AMEND_CONVERT_FORM } from '../constants/fines-acc-minor-creditor-add-amend-convert-form.constant';
 import { FINES_ACC_MINOR_CREDITOR_ADD_AMEND_CONVERT_FIELD_ERRORS } from '../constants/fines-acc-minor-creditor-add-amend-convert-field-errors.constant';
 import { FINES_ACC_MINOR_CREDITOR_ADD_AMEND_CONVERT_CONTROL_NAMES } from '../constants/fines-acc-minor-creditor-add-amend-convert-control-names.constant';
@@ -162,57 +163,45 @@ export class FinesAccMinorCreditorAddAmendConvertFormComponent
   }
 
   /**
-   * Resets the specified form controls to their initial state.
-   * @param controlNames The names of the form controls to reset.
+   * Adds a control with validators, or updates validators when the control already exists.
+   * @param controlName The name of the form control.
+   * @param validators The validators to apply to the control.
    */
-  private resetControls(controlNames: readonly string[]): void {
-    controlNames.forEach((controlName) => {
-      this.getControl(controlName).reset(null, { emitEvent: false });
-    });
+  private addOrUpdateControl(controlName: string, validators: ValidatorFn[]): void {
+    if (this.form.get(controlName)) {
+      this.updateControl(controlName, validators);
+      return;
+    }
+
+    this.createControl(controlName, validators);
   }
 
   /**
-   * Updates the validity of the specified form controls.
-   * @param controlNames The names of the form controls to update.
+   * Removes the specified controls from the form using the base form helper.
+   * @param controlNames The names of the form controls to remove.
    */
-  private updateControlsValidity(controlNames: readonly string[]): void {
+  private removeControls(controlNames: readonly string[]): void {
     controlNames.forEach((controlName) => {
-      this.getControl(controlName).updateValueAndValidity({ emitEvent: false });
-    });
-  }
-
-  /**
-   * Clears the validators of the specified form controls.
-   * @param controlNames The names of the form controls to clear validators for.
-   */
-  private clearControlValidators(controlNames: readonly string[]): void {
-    controlNames.forEach((controlName) => {
-      this.getControl(controlName).clearValidators();
-    });
-    this.updateControlsValidity(controlNames);
-  }
-
-  /**
-   * Enables or disables the specified form controls.
-   * @param controlNames The names of the form controls to enable or disable.
-   * @param enabled True to enable the controls, false to disable them.
-   */
-  private setControlsEnabled(controlNames: readonly string[], enabled: boolean): void {
-    controlNames.forEach((controlName) => {
-      const control = this.getControl(controlName);
-
-      if (enabled) {
-        control.enable({ emitEvent: false });
-      } else {
-        control.disable({ emitEvent: false });
+      if (this.form.get(controlName)) {
+        this.removeControl(controlName);
       }
-
-      control.updateValueAndValidity({ emitEvent: false });
     });
   }
 
   /**
-   * Resets all error messages to their initial state. This is typically called when the creditor type or payment details options change to ensure that any errors related to now-disabled fields are cleared and that the form reflects the current validation requirements.
+   * Sets up listeners for active creditor detail controls so the creditor type summary validation updates as details are entered.
+   * @param controlNames The names of the active creditor detail controls.
+   */
+  private setupCreditorDetailValidationListeners(controlNames: readonly string[]): void {
+    controlNames.forEach((controlName) => {
+      this.getControl(controlName)
+        .valueChanges.pipe(takeUntil(this.ngUnsubscribe), distinctUntilChanged())
+        .subscribe(() => this.updateCreditorTypeValidity());
+    });
+  }
+
+  /**
+   * Resets all error messages to their initial state after dynamic controls have changed.
    */
   private resetErrorMessages(): void {
     this.clearAllErrorMessages();
@@ -220,58 +209,71 @@ export class FinesAccMinorCreditorAddAmendConvertFormComponent
   }
 
   /**
-   * Sets the validators for individual creditor details and updates their validity. This is called when the creditor type changes to "individual" to ensure that the appropriate fields are validated according to the requirements for an individual creditor.
+   * Adds individual creditor detail controls with their validators.
    */
-  private setIndividualValidators(): void {
-    this.getControl(this.controls.title).setValidators([Validators.required]);
-    this.getControl(this.controls.forenames).setValidators([
+  private addIndividualControls(formData?: IFinesAccMinorCreditorAddAmendConvertState): void {
+    this.addOrUpdateControl(this.controls.title, [Validators.required]);
+    this.addOrUpdateControl(this.controls.forenames, [
       Validators.required,
       Validators.maxLength(20),
       SINGLE_ASCII_CHARACTERS_PATTERN_VALIDATOR,
     ]);
-    this.getControl(this.controls.surname).setValidators([
+    this.addOrUpdateControl(this.controls.surname, [
       Validators.required,
       Validators.maxLength(30),
       SINGLE_ASCII_CHARACTERS_PATTERN_VALIDATOR,
     ]);
-    this.updateControlsValidity(FINES_ACC_MINOR_CREDITOR_ADD_AMEND_CONVERT_INDIVIDUAL_CONTROL_NAMES);
+
+    if (formData) {
+      this.rePopulateForm(formData);
+    }
+
+    this.setupCreditorDetailValidationListeners(FINES_ACC_MINOR_CREDITOR_ADD_AMEND_CONVERT_INDIVIDUAL_CONTROL_NAMES);
   }
 
   /**
-   * Sets the validators for company creditor details and updates their validity. This is called when the creditor type changes to "company" to ensure that the appropriate fields are validated according to the requirements for a company creditor.
+   * Adds company creditor detail controls with their validators.
    */
-  private setCompanyValidators(): void {
-    this.getControl(this.controls.companyName).setValidators([
+  private addCompanyControls(formData?: IFinesAccMinorCreditorAddAmendConvertState): void {
+    this.addOrUpdateControl(this.controls.companyName, [
       Validators.required,
       Validators.maxLength(50),
       SINGLE_ASCII_CHARACTERS_PATTERN_VALIDATOR,
     ]);
-    this.updateControlsValidity(FINES_ACC_MINOR_CREDITOR_ADD_AMEND_CONVERT_COMPANY_CONTROL_NAMES);
+
+    if (formData) {
+      this.rePopulateForm(formData);
+    }
+
+    this.setupCreditorDetailValidationListeners(FINES_ACC_MINOR_CREDITOR_ADD_AMEND_CONVERT_COMPANY_CONTROL_NAMES);
   }
 
   /**
-   * Sets the validators for payment details and updates their validity. This is called when the payment details options change to ensure that the appropriate fields are validated according to the requirements for the selected payment method.
+   * Adds BACS payment detail controls with their validators.
    */
-  private setPaymentDetailValidators(): void {
-    this.getControl(this.controls.bankAccountName).setValidators([
+  private addPaymentDetailControls(formData?: IFinesAccMinorCreditorAddAmendConvertState): void {
+    this.addOrUpdateControl(this.controls.bankAccountName, [
       Validators.required,
       Validators.maxLength(18),
       SINGLE_ASCII_CHARACTERS_PATTERN_VALIDATOR,
     ]);
-    this.getControl(this.controls.bankSortCode).setValidators([
+    this.addOrUpdateControl(this.controls.bankSortCode, [
       Validators.required,
       Validators.minLength(6),
       Validators.maxLength(6),
       NUMERIC_PATTERN_VALIDATOR,
     ]);
-    this.getControl(this.controls.bankAccountNumber).setValidators([
+    this.addOrUpdateControl(this.controls.bankAccountNumber, [
       Validators.required,
       Validators.minLength(6),
       Validators.maxLength(8),
       NUMERIC_PATTERN_VALIDATOR,
     ]);
-    this.getControl(this.controls.bankAccountReference).setValidators([Validators.required, Validators.maxLength(18)]);
-    this.updateControlsValidity(FINES_ACC_MINOR_CREDITOR_ADD_AMEND_CONVERT_BACS_CONTROL_NAMES);
+    this.addOrUpdateControl(this.controls.bankAccountReference, [Validators.required, Validators.maxLength(18)]);
+
+    if (formData) {
+      this.rePopulateForm(formData);
+    }
   }
 
   /**
@@ -282,60 +284,46 @@ export class FinesAccMinorCreditorAddAmendConvertFormComponent
   }
 
   /**
-   * Handles changes to the creditor type and updates the form controls accordingly. This includes clearing validators, resetting inactive controls, and setting validators for the active creditor type.
+   * Handles changes to the creditor type by replacing the active creditor detail controls.
    * @param selectedType The selected creditor type, either 'individual' or 'company'.
-   * @param resetInactiveValues Whether to reset the values of inactive controls.
+   * @param formData The initial form data to patch into newly-added controls.
    */
-  private handleCreditorTypeChange(selectedType: string | null, resetInactiveValues: boolean): void {
-    this.clearControlValidators(FINES_ACC_MINOR_CREDITOR_ADD_AMEND_CONVERT_INDIVIDUAL_CONTROL_NAMES);
-    this.clearControlValidators(FINES_ACC_MINOR_CREDITOR_ADD_AMEND_CONVERT_COMPANY_CONTROL_NAMES);
+  private handleCreditorTypeChange(
+    selectedType: string | null,
+    formData?: IFinesAccMinorCreditorAddAmendConvertState,
+  ): void {
+    this.removeControls([
+      ...FINES_ACC_MINOR_CREDITOR_ADD_AMEND_CONVERT_INDIVIDUAL_CONTROL_NAMES,
+      ...FINES_ACC_MINOR_CREDITOR_ADD_AMEND_CONVERT_COMPANY_CONTROL_NAMES,
+    ]);
 
     const isIndividual = selectedType === 'individual';
     const isCompany = selectedType === 'company';
 
-    if (resetInactiveValues) {
-      if (isIndividual) {
-        this.resetControls(FINES_ACC_MINOR_CREDITOR_ADD_AMEND_CONVERT_COMPANY_CONTROL_NAMES);
-      } else if (isCompany) {
-        this.resetControls(FINES_ACC_MINOR_CREDITOR_ADD_AMEND_CONVERT_INDIVIDUAL_CONTROL_NAMES);
-      } else {
-        this.resetControls([
-          ...FINES_ACC_MINOR_CREDITOR_ADD_AMEND_CONVERT_INDIVIDUAL_CONTROL_NAMES,
-          ...FINES_ACC_MINOR_CREDITOR_ADD_AMEND_CONVERT_COMPANY_CONTROL_NAMES,
-        ]);
-      }
-    }
-
-    this.setControlsEnabled(FINES_ACC_MINOR_CREDITOR_ADD_AMEND_CONVERT_INDIVIDUAL_CONTROL_NAMES, isIndividual);
-    this.setControlsEnabled(FINES_ACC_MINOR_CREDITOR_ADD_AMEND_CONVERT_COMPANY_CONTROL_NAMES, isCompany);
-
     if (isIndividual) {
-      this.setIndividualValidators();
+      this.addIndividualControls(formData);
     }
 
     if (isCompany) {
-      this.setCompanyValidators();
+      this.addCompanyControls(formData);
     }
 
     this.updateCreditorTypeValidity();
   }
 
   /**
-   * Handles changes to the payment details and updates the form controls accordingly. This includes clearing validators, resetting inactive controls, and setting validators for the active payment details.
+   * Handles changes to payment details by replacing the active BACS controls.
    * @param hasPaymentDetails Whether the payment details are provided.
-   * @param resetValues Whether to reset the values of inactive controls.
+   * @param formData The initial form data to patch into newly-added controls.
    */
-  private handlePaymentDetailsChange(hasPaymentDetails: boolean, resetValues: boolean): void {
-    this.clearControlValidators(FINES_ACC_MINOR_CREDITOR_ADD_AMEND_CONVERT_BACS_CONTROL_NAMES);
-
-    if (resetValues && !hasPaymentDetails) {
-      this.resetControls(FINES_ACC_MINOR_CREDITOR_ADD_AMEND_CONVERT_BACS_CONTROL_NAMES);
-    }
-
-    this.setControlsEnabled(FINES_ACC_MINOR_CREDITOR_ADD_AMEND_CONVERT_BACS_CONTROL_NAMES, hasPaymentDetails);
+  private handlePaymentDetailsChange(
+    hasPaymentDetails: boolean,
+    formData?: IFinesAccMinorCreditorAddAmendConvertState,
+  ): void {
+    this.removeControls(FINES_ACC_MINOR_CREDITOR_ADD_AMEND_CONVERT_BACS_CONTROL_NAMES);
 
     if (hasPaymentDetails) {
-      this.setPaymentDetailValidators();
+      this.addPaymentDetailControls(formData);
     }
   }
 
@@ -347,22 +335,13 @@ export class FinesAccMinorCreditorAddAmendConvertFormComponent
     const payByBacsControl = this.getControl(this.controls.payByBacs);
 
     creditorTypeControl.valueChanges.pipe(takeUntil(this.ngUnsubscribe), distinctUntilChanged()).subscribe((value) => {
-      this.handleCreditorTypeChange(value, true);
+      this.handleCreditorTypeChange(value);
       this.resetErrorMessages();
     });
 
     payByBacsControl.valueChanges.pipe(takeUntil(this.ngUnsubscribe), distinctUntilChanged()).subscribe((value) => {
-      this.handlePaymentDetailsChange(value === true, true);
+      this.handlePaymentDetailsChange(value === true);
       this.resetErrorMessages();
-    });
-
-    [
-      ...FINES_ACC_MINOR_CREDITOR_ADD_AMEND_CONVERT_INDIVIDUAL_CONTROL_NAMES,
-      ...FINES_ACC_MINOR_CREDITOR_ADD_AMEND_CONVERT_COMPANY_CONTROL_NAMES,
-    ].forEach((controlName) => {
-      this.getControl(controlName)
-        .valueChanges.pipe(takeUntil(this.ngUnsubscribe), distinctUntilChanged())
-        .subscribe(() => this.updateCreditorTypeValidity());
     });
   }
 
@@ -373,45 +352,41 @@ export class FinesAccMinorCreditorAddAmendConvertFormComponent
     const { formData } = this.initialFormData;
 
     this.form = new FormGroup({
-      [this.controls.creditorType]: new FormControl(formData.facc_minor_creditor_creditor_type, [Validators.required]),
-      [this.controls.title]: new FormControl(formData.facc_minor_creditor_title),
-      [this.controls.forenames]: new FormControl(formData.facc_minor_creditor_forenames),
-      [this.controls.surname]: new FormControl(formData.facc_minor_creditor_surname),
-      [this.controls.companyName]: new FormControl(formData.facc_minor_creditor_company_name),
-      [this.controls.addressLine1]: new FormControl(formData.facc_minor_creditor_address_line_1, [
+      [this.controls.creditorType]: this.createFormControl([Validators.required]),
+      [this.controls.addressLine1]: this.createFormControl([
         Validators.maxLength(30),
         SINGLE_ASCII_CHARACTERS_PATTERN_VALIDATOR,
       ]),
-      [this.controls.addressLine2]: new FormControl(formData.facc_minor_creditor_address_line_2, [
+      [this.controls.addressLine2]: this.createFormControl([
         Validators.maxLength(30),
         SINGLE_ASCII_CHARACTERS_PATTERN_VALIDATOR,
       ]),
-      [this.controls.addressLine3]: new FormControl(formData.facc_minor_creditor_address_line_3, [
+      [this.controls.addressLine3]: this.createFormControl([
         Validators.maxLength(16),
         SINGLE_ASCII_CHARACTERS_PATTERN_VALIDATOR,
       ]),
-      [this.controls.addressLine4]: new FormControl(formData.facc_minor_creditor_address_line_4, [
+      [this.controls.addressLine4]: this.createFormControl([
         Validators.maxLength(16),
         SINGLE_ASCII_CHARACTERS_PATTERN_VALIDATOR,
       ]),
-      [this.controls.addressLine5]: new FormControl(formData.facc_minor_creditor_address_line_5, [
+      [this.controls.addressLine5]: this.createFormControl([
         Validators.maxLength(16),
         SINGLE_ASCII_CHARACTERS_PATTERN_VALIDATOR,
       ]),
-      [this.controls.postCode]: new FormControl(formData.facc_minor_creditor_post_code, [
+      [this.controls.postCode]: this.createFormControl([
         Validators.maxLength(8),
         ALPHANUMERIC_WITH_SPACES_PATTERN_VALIDATOR,
       ]),
       [this.controls.payByBacs]: new FormControl(formData.facc_minor_creditor_pay_by_bacs ?? false),
-      [this.controls.bankAccountName]: new FormControl(formData.facc_minor_creditor_bank_account_name),
-      [this.controls.bankSortCode]: new FormControl(formData.facc_minor_creditor_bank_sort_code),
-      [this.controls.bankAccountNumber]: new FormControl(formData.facc_minor_creditor_bank_account_number),
-      [this.controls.bankAccountReference]: new FormControl(formData.facc_minor_creditor_bank_account_reference),
     });
 
-    this.getControl(this.controls.creditorType).addValidators(this.minorCreditorDetailsValidator());
-    this.handleCreditorTypeChange(formData.facc_minor_creditor_creditor_type, false);
-    this.handlePaymentDetailsChange(formData.facc_minor_creditor_pay_by_bacs === true, false);
+    this.rePopulateForm({
+      ...formData,
+      [this.controls.payByBacs]: formData.facc_minor_creditor_pay_by_bacs ?? false,
+    });
+    this.updateControl(this.controls.creditorType, [Validators.required, this.minorCreditorDetailsValidator()]);
+    this.handleCreditorTypeChange(formData.facc_minor_creditor_creditor_type, formData);
+    this.handlePaymentDetailsChange(formData.facc_minor_creditor_pay_by_bacs === true, formData);
     this.setupDynamicValidation();
     this.setInitialErrorMessages();
   }

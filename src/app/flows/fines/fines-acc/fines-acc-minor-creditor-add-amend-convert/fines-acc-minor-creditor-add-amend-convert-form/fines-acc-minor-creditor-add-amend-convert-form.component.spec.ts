@@ -100,6 +100,14 @@ describe('FinesAccMinorCreditorAddAmendConvertFormComponent', () => {
     expect(element.textContent).not.toContain('Name on account');
   });
 
+  it('should keep both creditor conditional containers in the DOM for GOV.UK radio initialisation', () => {
+    createComponent();
+    const element = fixture.nativeElement as HTMLElement;
+
+    expect(element.querySelector(`#${component.individualConditionalId}`)).toBeTruthy();
+    expect(element.querySelector(`#${component.companyConditionalId}`)).toBeTruthy();
+  });
+
   it('should emit form data when a valid save is submitted', () => {
     createComponent();
     const emitSpy = vi.spyOn(component['formSubmit'], 'emit');
@@ -134,9 +142,9 @@ describe('FinesAccMinorCreditorAddAmendConvertFormComponent', () => {
     createComponent();
 
     expect(getControl(component.controls.companyName).enabled).toBe(true);
-    expect(getControl(component.controls.title).disabled).toBe(true);
-    expect(getControl(component.controls.forenames).disabled).toBe(true);
-    expect(getControl(component.controls.surname).disabled).toBe(true);
+    expect(component.form.get(component.controls.title)).toBeNull();
+    expect(component.form.get(component.controls.forenames)).toBeNull();
+    expect(component.form.get(component.controls.surname)).toBeNull();
 
     getControl(component.controls.companyName).setValue('');
 
@@ -149,8 +157,7 @@ describe('FinesAccMinorCreditorAddAmendConvertFormComponent', () => {
     getControl(component.controls.creditorType).setValue('individual');
     fixture.detectChanges();
 
-    expect(getControl(component.controls.companyName).value).toBeNull();
-    expect(getControl(component.controls.companyName).disabled).toBe(true);
+    expect(component.form.get(component.controls.companyName)).toBeNull();
     expect(getControl(component.controls.title).enabled).toBe(true);
     expect(getControl(component.controls.forenames).enabled).toBe(true);
     expect(getControl(component.controls.surname).enabled).toBe(true);
@@ -164,40 +171,31 @@ describe('FinesAccMinorCreditorAddAmendConvertFormComponent', () => {
     getControl(component.controls.creditorType).setValue('company');
     fixture.detectChanges();
 
-    expect(getControl(component.controls.title).value).toBeNull();
-    expect(getControl(component.controls.forenames).value).toBeNull();
-    expect(getControl(component.controls.surname).value).toBeNull();
-    expect(getControl(component.controls.title).disabled).toBe(true);
-    expect(getControl(component.controls.forenames).disabled).toBe(true);
-    expect(getControl(component.controls.surname).disabled).toBe(true);
+    expect(component.form.get(component.controls.title)).toBeNull();
+    expect(component.form.get(component.controls.forenames)).toBeNull();
+    expect(component.form.get(component.controls.surname)).toBeNull();
     expect(getControl(component.controls.companyName).enabled).toBe(true);
 
     getControl(component.controls.companyName).setValue('');
 
     expect(getControl(component.controls.companyName).hasError('required')).toBe(true);
-    expect(getControl(component.controls.forenames).errors).toBeNull();
-    expect(getControl(component.controls.surname).errors).toBeNull();
   });
 
-  it('should clear and disable all creditor name controls when creditor type is cleared', () => {
+  it('should remove all creditor name controls when creditor type is cleared', () => {
     createComponent(individualFormData);
-    getControl(component.controls.companyName).setValue('Company to clear');
+    getControl(component.controls.forenames).setValue('Name to clear');
 
     getControl(component.controls.creditorType).setValue(null);
     fixture.detectChanges();
 
-    expect(getControl(component.controls.title).value).toBeNull();
-    expect(getControl(component.controls.forenames).value).toBeNull();
-    expect(getControl(component.controls.surname).value).toBeNull();
-    expect(getControl(component.controls.companyName).value).toBeNull();
-    expect(getControl(component.controls.title).disabled).toBe(true);
-    expect(getControl(component.controls.forenames).disabled).toBe(true);
-    expect(getControl(component.controls.surname).disabled).toBe(true);
-    expect(getControl(component.controls.companyName).disabled).toBe(true);
+    expect(component.form.get(component.controls.title)).toBeNull();
+    expect(component.form.get(component.controls.forenames)).toBeNull();
+    expect(component.form.get(component.controls.surname)).toBeNull();
+    expect(component.form.get(component.controls.companyName)).toBeNull();
     expect(getControl(component.controls.creditorType).hasError('required')).toBe(true);
   });
 
-  it('should not clear inactive creditor details during initial form setup', () => {
+  it('should only add active creditor detail controls during initial form setup', () => {
     createComponent({
       formData: {
         ...companyFormData.formData,
@@ -209,29 +207,21 @@ describe('FinesAccMinorCreditorAddAmendConvertFormComponent', () => {
     });
 
     expect(getControl(component.controls.companyName).enabled).toBe(true);
-    expect(getControl(component.controls.title).disabled).toBe(true);
-    expect(getControl(component.controls.forenames).disabled).toBe(true);
-    expect(getControl(component.controls.surname).disabled).toBe(true);
-    expect(getControl(component.controls.title).value).toBe('Ms');
-    expect(getControl(component.controls.forenames).value).toBe('Inactive');
-    expect(getControl(component.controls.surname).value).toBe('PERSON');
+    expect(component.form.get(component.controls.title)).toBeNull();
+    expect(component.form.get(component.controls.forenames)).toBeNull();
+    expect(component.form.get(component.controls.surname)).toBeNull();
   });
 
-  it('should clear BACS fields and remove validators when payment details are unticked', () => {
+  it('should remove BACS fields when payment details are unticked', () => {
     createComponent();
 
     getControl(component.controls.payByBacs).setValue(false);
     fixture.detectChanges();
 
-    expect(getControl(component.controls.bankAccountName).value).toBeNull();
-    expect(getControl(component.controls.bankSortCode).value).toBeNull();
-    expect(getControl(component.controls.bankAccountNumber).value).toBeNull();
-    expect(getControl(component.controls.bankAccountReference).value).toBeNull();
-    expect(getControl(component.controls.bankAccountName).disabled).toBe(true);
-
-    getControl(component.controls.bankAccountName).setValue('');
-
-    expect(getControl(component.controls.bankAccountName).errors).toBeNull();
+    expect(component.form.get(component.controls.bankAccountName)).toBeNull();
+    expect(component.form.get(component.controls.bankSortCode)).toBeNull();
+    expect(component.form.get(component.controls.bankAccountNumber)).toBeNull();
+    expect(component.form.get(component.controls.bankAccountReference)).toBeNull();
   });
 
   it('should apply BACS required, length and numeric validators when payment details are ticked', () => {

@@ -28,44 +28,46 @@
     ></div>
     <span class="govuk-visually-hidden">Options for individual minor creditor</span>
     <opal-lib-govuk-radios-conditional [conditionalId]="individualConditionalId">
-      <div class="govuk-form-group">
-        <opal-lib-govuk-select
-          labelText="Title"
-          labelClasses="govuk-label--s"
-          [selectId]="controls.title"
-          [selectName]="controls.title"
-          [options]="titleOptions"
-          [control]="form.get(controls.title)!"
-          [errors]="formControlErrorMessages[controls.title]"
-        ></opal-lib-govuk-select>
-      </div>
+      @if (form.get(controls.title)) {
+        <div class="govuk-form-group">
+          <opal-lib-govuk-select
+            labelText="Title"
+            labelClasses="govuk-label--s"
+            [selectId]="controls.title"
+            [selectName]="controls.title"
+            [options]="titleOptions"
+            [control]="form.get(controls.title)!"
+            [errors]="formControlErrorMessages[controls.title]"
+          ></opal-lib-govuk-select>
+        </div>
 
-      <div class="govuk-form-group">
-        <opal-lib-govuk-text-input
-          labelText="First names"
-          labelClasses="govuk-label--s"
-          [inputId]="controls.forenames"
-          [inputName]="controls.forenames"
-          inputClasses="govuk-input--width-20"
-          labelClasses="govuk-label--s"
-          [control]="form.get(controls.forenames)"
-          [errors]="formControlErrorMessages[controls.forenames]"
-          hintText="Include their middle names"
-        ></opal-lib-govuk-text-input>
-      </div>
+        <div class="govuk-form-group">
+          <opal-lib-govuk-text-input
+            labelText="First names"
+            labelClasses="govuk-label--s"
+            [inputId]="controls.forenames"
+            [inputName]="controls.forenames"
+            inputClasses="govuk-input--width-20"
+            labelClasses="govuk-label--s"
+            [control]="form.get(controls.forenames)"
+            [errors]="formControlErrorMessages[controls.forenames]"
+            hintText="Include their middle names"
+          ></opal-lib-govuk-text-input>
+        </div>
 
-      <div class="govuk-form-group">
-        <opal-lib-govuk-text-input
-          labelText="Last name"
-          labelClasses="govuk-label--s"
-          [inputId]="controls.surname"
-          [inputName]="controls.surname"
-          inputClasses="govuk-input--width-20"
-          [control]="form.get(controls.surname)"
-          [errors]="formControlErrorMessages[controls.surname]"
-          [opalLibCapitaliseAllCharacters]="form.get(controls.surname)!"
-        ></opal-lib-govuk-text-input>
-      </div>
+        <div class="govuk-form-group">
+          <opal-lib-govuk-text-input
+            labelText="Last name"
+            labelClasses="govuk-label--s"
+            [inputId]="controls.surname"
+            [inputName]="controls.surname"
+            inputClasses="govuk-input--width-20"
+            [control]="form.get(controls.surname)"
+            [errors]="formControlErrorMessages[controls.surname]"
+            [opalLibCapitaliseAllCharacters]="form.get(controls.surname)!"
+          ></opal-lib-govuk-text-input>
+        </div>
+      }
     </opal-lib-govuk-radios-conditional>
 
     <div
@@ -79,17 +81,19 @@
     ></div>
     <span class="govuk-visually-hidden">Options for company minor creditor</span>
     <opal-lib-govuk-radios-conditional [conditionalId]="companyConditionalId">
-      <div class="govuk-form-group">
-        <opal-lib-govuk-text-input
-          labelText="Company name"
-          labelClasses="govuk-label--s"
-          [inputId]="controls.companyName"
-          [inputName]="controls.companyName"
-          inputClasses="govuk-input--width-20"
-          [control]="form.get(controls.companyName)"
-          [errors]="formControlErrorMessages[controls.companyName]"
-        ></opal-lib-govuk-text-input>
-      </div>
+      @if (form.get(controls.companyName)) {
+        <div class="govuk-form-group">
+          <opal-lib-govuk-text-input
+            labelText="Company name"
+            labelClasses="govuk-label--s"
+            [inputId]="controls.companyName"
+            [inputName]="controls.companyName"
+            inputClasses="govuk-input--width-20"
+            [control]="form.get(controls.companyName)"
+            [errors]="formControlErrorMessages[controls.companyName]"
+          ></opal-lib-govuk-text-input>
+        </div>
+      }
     </opal-lib-govuk-radios-conditional>
   </opal-lib-govuk-radio>
 
