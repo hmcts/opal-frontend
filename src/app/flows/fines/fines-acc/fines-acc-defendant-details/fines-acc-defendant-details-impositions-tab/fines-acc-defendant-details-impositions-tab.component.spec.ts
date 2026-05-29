@@ -118,12 +118,32 @@ describe('FinesAccDefendantDetailsImpositionsTabComponent', () => {
     expect(minorCreditorLink.textContent).toContain('Minor Creditor Test Ltd');
   });
 
-  it('should render major creditor names as plain text until major creditor details exists', () => {
+  it('should render major creditor names as links to major creditor details', () => {
     const { fixture } = setupComponent();
-    const majorCreditorCell = fixture.nativeElement.querySelector('#imposition-creditor-0') as HTMLTableCellElement;
+    const majorCreditorLink = fixture.nativeElement.querySelector('#imposition-creditor-0 a') as HTMLAnchorElement;
 
-    expect(majorCreditorCell.querySelector('a')).toBeNull();
-    expect(majorCreditorCell.textContent).toContain('Central Funds');
+    expect(majorCreditorLink).toBeTruthy();
+    expect(majorCreditorLink.textContent).toContain('Central Funds');
+    expect(majorCreditorLink.getAttribute('href')).toBe('/fines/account/major-creditor/770000000001/details');
+  });
+
+  it('should identify major creditors by major creditor id rather than account type code', () => {
+    const tabData = structuredClone(OPAL_FINES_ACCOUNT_DEFENDANT_DETAILS_IMPOSITIONS_TAB_REF_DATA_MOCK);
+    tabData.impositions[0].creditor.account_type = 'changed-type';
+
+    const { fixture } = setupComponent(tabData);
+    const majorCreditorLink = fixture.nativeElement.querySelector('#imposition-creditor-0 a') as HTMLAnchorElement;
+
+    expect(majorCreditorLink).toBeTruthy();
+    expect(majorCreditorLink.textContent).toContain('Central Funds');
+  });
+
+  it('should render creditor names as plain text when no creditor details route can be built', () => {
+    const { fixture } = setupComponent();
+    const creditorCell = fixture.nativeElement.querySelector('#imposition-creditor-2') as HTMLTableCellElement;
+
+    expect(creditorCell.querySelector('a')).toBeNull();
+    expect(creditorCell.textContent).toContain('Central Fund');
   });
 
   it('should paginate imposition rows at 25 results per page', () => {

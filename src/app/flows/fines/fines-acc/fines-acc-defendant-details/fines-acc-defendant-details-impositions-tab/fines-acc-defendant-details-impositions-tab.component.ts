@@ -20,6 +20,7 @@ import { FINES_ACC_SUMMARY_TABS_CONTENT_STYLES } from '../../constants/fines-acc
 import { FinesNotProvidedComponent } from '../../../components/fines-not-provided/fines-not-provided.component';
 import { FINES_ACC_ROUTING_PATHS } from '../../routing/constants/fines-acc-routing-paths.constant';
 import { FINES_ACC_MINOR_CREDITOR_ROUTING_PATHS } from '../../routing/constants/fines-acc-minor-creditor-routing-paths.constant';
+import { FINES_ACC_MAJOR_CREDITOR_ROUTING_PATHS } from '../../routing/constants/fines-acc-major-creditor-routing-paths.constant';
 import { IFinesAccSummaryTabsContentStyles } from '../interfaces/fines-acc-summary-tabs-content-styles.interface';
 import { IAccountEnquiryImpositionTabTableRow } from '../interfaces/account-enquiry-imposition-tab-table-row.interface';
 
@@ -75,6 +76,20 @@ export class FinesAccDefendantDetailsImpositionsTabComponent extends AbstractSor
   }
 
   /**
+   * Gets the static route prefix for major creditor details links.
+   */
+  private get majorCreditorDetailsRouterLinkPrefix(): string {
+    return `/${FINES_ROUTING_PATHS.root}/${FINES_ACC_ROUTING_PATHS.root}/${FINES_ACC_MAJOR_CREDITOR_ROUTING_PATHS.root}`;
+  }
+
+  /**
+   * Gets the major creditor details route segment.
+   */
+  private get majorCreditorDetailsRouterLinkSuffix(): string {
+    return FINES_ACC_MAJOR_CREDITOR_ROUTING_PATHS.children.details;
+  }
+
+  /**
    * Maps an imposition from the API response into the table row shape used by the sortable table.
    *
    * @param apiImposition - The API imposition data to display in the table.
@@ -86,13 +101,17 @@ export class FinesAccDefendantDetailsImpositionsTabComponent extends AbstractSor
     const roundedBalance = Number(apiImposition.balance.toFixed(2));
     const hasZeroBalance = roundedBalance === 0;
     const isMinorCreditor = apiImposition.creditor.minor_creditor_party_id !== null;
+    const isMajorCreditor = apiImposition.creditor.major_creditor_id !== null;
+    const creditorAccountId = apiImposition.creditor.creditor_account_id;
     const creditorDisplay =
-      apiImposition.creditor.name ??
-      apiImposition.creditor.display_name ??
-      apiImposition.creditor.creditor_account_id.toString();
-    const minorCreditorDetailsRouterLink = isMinorCreditor
-      ? `${this.minorCreditorDetailsRouterLinkPrefix}/${apiImposition.creditor.creditor_account_id}/${this.minorCreditorDetailsRouterLinkSuffix}`
-      : null;
+      apiImposition.creditor.name ?? apiImposition.creditor.display_name ?? creditorAccountId.toString();
+    let creditorDetailsRouterLink: string | null = null;
+
+    if (isMinorCreditor) {
+      creditorDetailsRouterLink = `${this.minorCreditorDetailsRouterLinkPrefix}/${creditorAccountId}/${this.minorCreditorDetailsRouterLinkSuffix}`;
+    } else if (isMajorCreditor) {
+      creditorDetailsRouterLink = `${this.majorCreditorDetailsRouterLinkPrefix}/${creditorAccountId}/${this.majorCreditorDetailsRouterLinkSuffix}`;
+    }
 
     return {
       'Date added': apiImposition.date_added,
@@ -105,10 +124,10 @@ export class FinesAccDefendantDetailsImpositionsTabComponent extends AbstractSor
       Offence: apiImposition.offence.title,
       'Imposed by': apiImposition.imposed_by?.court_name ?? null,
       'Imposition ID': apiImposition.imposition_id,
-      'Creditor account id': apiImposition.creditor.creditor_account_id,
+      'Creditor account id': creditorAccountId,
       'Minor creditor party id': apiImposition.creditor.minor_creditor_party_id,
-      isMinorCreditor,
-      minorCreditorDetailsRouterLink,
+      'Major creditor id': apiImposition.creditor.major_creditor_id,
+      creditorDetailsRouterLink,
       hasZeroBalance,
       rowClasses: hasZeroBalance ? this.zeroBalanceRowClass : '',
     };
