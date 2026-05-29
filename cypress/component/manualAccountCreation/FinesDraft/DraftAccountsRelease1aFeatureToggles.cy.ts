@@ -171,7 +171,7 @@ describe('FinesDraftRelease1aFeatureToggles', () => {
   };
 
   it(
-    '(AC.1, AC.2) should show Accounts in primary navigation for draft-account users when release-1a is enabled',
+    '(AC.1, AC.2, AC.4) should show Accounts in primary navigation for draft-account users when release-1a is enabled',
     { tags: [...buildTags(RELEASE_1A_STORY_TAG), RELEASE_EPIC_TAG, '@R1A'] },
     () => {
       setupAppComponent(draftAccountPermissionIds, { 'release-1a': true });
@@ -182,7 +182,7 @@ describe('FinesDraftRelease1aFeatureToggles', () => {
   );
 
   it(
-    '(AC.3) should hide Accounts in primary navigation for draft-account only users when release-1a is disabled',
+    '(AC.3, AC.4) should hide Accounts in primary navigation for draft-account only users when release-1a is disabled',
     { tags: [...buildTags(RELEASE_1A_STORY_TAG), RELEASE_EPIC_TAG, '@R1AOff'] },
     () => {
       setupAppComponent(draftAccountPermissionIds, { 'release-1a': false });
@@ -193,7 +193,7 @@ describe('FinesDraftRelease1aFeatureToggles', () => {
   );
 
   it(
-    '(AC.5) should keep Accounts in primary navigation for consolidation users when release-1a is disabled',
+    '(AC.4, AC.5) should keep Accounts in primary navigation for consolidation users when release-1a is disabled',
     { tags: [...buildTags(RELEASE_1A_STORY_TAG), RELEASE_EPIC_TAG, '@R1AOff'] },
     () => {
       setupAppComponent(consolidationPermissionIds, { 'release-1a': false });
@@ -204,7 +204,7 @@ describe('FinesDraftRelease1aFeatureToggles', () => {
   );
 
   it(
-    '(AC.1, AC.2) should show the Draft accounts dashboard entry points when release-1a is enabled',
+    '(AC.1, AC.2, AC.4) should show the Draft accounts dashboard entry points when release-1a is enabled',
     { tags: [...buildTags(RELEASE_1A_STORY_TAG), RELEASE_EPIC_TAG, '@R1A'] },
     () => {
       setupDashboardComponent(draftAccountPermissionIds, { 'release-1a': true });
@@ -217,7 +217,7 @@ describe('FinesDraftRelease1aFeatureToggles', () => {
   );
 
   it(
-    '(AC.3) should hide the Draft accounts dashboard entry points when release-1a is disabled',
+    '(AC.3, AC.4) should hide the Draft accounts dashboard entry points when release-1a is disabled',
     { tags: [...buildTags(RELEASE_1A_STORY_TAG), RELEASE_EPIC_TAG, '@R1AOff'] },
     () => {
       setupDashboardComponent(draftAccountPermissionIds, { 'release-1a': false });
@@ -230,7 +230,7 @@ describe('FinesDraftRelease1aFeatureToggles', () => {
   );
 
   it(
-    '(AC.5) should keep non-R1A Accounts dashboard links available when release-1a is disabled',
+    '(AC.4, AC.5) should keep non-R1A Accounts dashboard links available when release-1a is disabled',
     { tags: [...buildTags(RELEASE_1A_STORY_TAG), RELEASE_EPIC_TAG, '@R1AOff'] },
     () => {
       setupDashboardComponent(consolidationPermissionIds, { 'release-1a': false });
