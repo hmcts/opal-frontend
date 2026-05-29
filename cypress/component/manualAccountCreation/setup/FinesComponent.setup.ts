@@ -20,7 +20,14 @@ export const setupFinesMacComponent = (finesComponentProperties: IFinesComponent
         OpalFines,
         UtilsService,
         FinesMacPayloadService,
-        GlobalStore,
+        {
+          provide: GlobalStore,
+          useFactory: () => {
+            const store = new GlobalStore();
+            store.setUserStateDomain('fines');
+            return store;
+          },
+        },
         FinesMacStore,
         {
           provide: FinesDraftStore,
