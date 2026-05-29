@@ -347,7 +347,7 @@ describe('FinesAccPartyAddAmendConvert - View and Amend Parent or Guardian', () 
 
   it(
     'AC1a, AC1b. Parent/Guardian amend mode should render the reduced youth-only screen with the information banner',
-    { tags: [...buildTags('@JIRA-STORY:PO-3915'), '@JIRA-EPIC:PO-1875'] },
+    { tags: [...buildTags('@JIRA-STORY:PO-3915'), '@JIRA-EPIC:PO-1875', '@JIRA-TEST-KEY:PO-6339'] },
     () => {
       const nonPayingAmendMock = buildReducedParentGuardianAmendMock(fullMock);
 
@@ -422,7 +422,7 @@ describe('FinesAccPartyAddAmendConvert - View and Amend Parent or Guardian', () 
 
   it(
     'AC3a. Parent/Guardian amend mode should put valid data and navigate to the Parent or guardian tab',
-    { tags: [...buildTags('@JIRA-STORY:PO-3915'), '@JIRA-EPIC:PO-1875'] },
+    { tags: [...buildTags('@JIRA-STORY:PO-3915'), '@JIRA-EPIC:PO-1875', '@JIRA-TEST-KEY:PO-6340'] },
     () => {
       const nonPayingAmendMock = buildReducedParentGuardianAmendMock(fullMock);
       const updatedForenames = 'Updated';
@@ -462,7 +462,7 @@ describe('FinesAccPartyAddAmendConvert - View and Amend Parent or Guardian', () 
 
   it(
     'AC4b, AC4c, AC4d. Parent/Guardian amend mode should show required validation errors for first names, last name and address line 1',
-    { tags: [...buildTags('@JIRA-STORY:PO-3915'), '@JIRA-EPIC:PO-1875'] },
+    { tags: [...buildTags('@JIRA-STORY:PO-3915'), '@JIRA-EPIC:PO-1875', '@JIRA-TEST-KEY:PO-6341'] },
     () => {
       const invalidRequiredMock = buildReducedParentGuardianAmendMock(fullMock, (mock) => {
         mock.defendant_account_party.party_details.individual_details!.forenames = '';
@@ -486,7 +486,7 @@ describe('FinesAccPartyAddAmendConvert - View and Amend Parent or Guardian', () 
 
   it(
     'AC5a, AC5b. Parent/Guardian amend mode should show the email format validation errors',
-    { tags: [...buildTags('@JIRA-STORY:PO-3915'), '@JIRA-EPIC:PO-1875'] },
+    { tags: [...buildTags('@JIRA-STORY:PO-3915'), '@JIRA-EPIC:PO-1875', '@JIRA-TEST-KEY:PO-6342'] },
     () => {
       const invalidEmailMock = buildReducedParentGuardianAmendMock(fullMock, (mock) => {
         mock.defendant_account_party.contact_details!.primary_email_address = 'primary.email';
@@ -511,7 +511,7 @@ describe('FinesAccPartyAddAmendConvert - View and Amend Parent or Guardian', () 
 
   it(
     'AC6a, AC6b, AC6c. Parent/Guardian amend mode should show the telephone format validation errors',
-    { tags: [...buildTags('@JIRA-STORY:PO-3915'), '@JIRA-EPIC:PO-1875'] },
+    { tags: [...buildTags('@JIRA-STORY:PO-3915'), '@JIRA-EPIC:PO-1875', '@JIRA-TEST-KEY:PO-6343'] },
     () => {
       const invalidTelephoneMock = buildReducedParentGuardianAmendMock(fullMock, (mock) => {
         mock.defendant_account_party.contact_details!.home_telephone_number = '0207A214875';
@@ -541,7 +541,7 @@ describe('FinesAccPartyAddAmendConvert - View and Amend Parent or Guardian', () 
 
   it(
     'AC7a. Parent/Guardian amend mode should show the updated data type validation errors',
-    { tags: [...buildTags('@JIRA-STORY:PO-3915'), '@JIRA-EPIC:PO-1875'] },
+    { tags: [...buildTags('@JIRA-STORY:PO-3915'), '@JIRA-EPIC:PO-1875', '@JIRA-TEST-KEY:PO-6344'] },
     () => {
       const dataTypeValidationMock = buildReducedParentGuardianAmendMock(fullMock, (mock) => {
         mock.defendant_account_party.party_details.individual_details!.forenames = 'José';

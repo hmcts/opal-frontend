@@ -167,7 +167,9 @@ describe('FinesMacReviewAccountComponent', () => {
 
   it(
     '(AC.1c) should show Police and court details card for Conditional Caution',
-    { tags: [...buildTags('@JIRA-STORY:PO-2790'), '@JIRA-EPIC:PO-2750', '@JIRA-TEST-KEY:PO-5212'] },
+    {
+      tags: [...buildTags('@JIRA-STORY:PO-2790'), '@JIRA-EPIC:PO-2750', '@JIRA-NFR:PO-2328', '@JIRA-TEST-KEY:PO-5212'],
+    },
     () => {
       finesMacState.accountDetails.formData.fm_create_account_account_type = FINES_ACCOUNT_TYPES['Conditional Caution'];
 
@@ -186,6 +188,7 @@ describe('FinesMacReviewAccountComponent', () => {
       tags: [
         ...buildTags('@JIRA-STORY:PO-560', '@JIRA-STORY:PO-662', '@JIRA-STORY:PO-663', '@JIRA-STORY:PO-657'),
         '@JIRA-EPIC:PO-2219',
+        '@JIRA-NFR:PO-2328',
         '@JIRA-TEST-KEY:PO-5213',
       ],
     },
@@ -869,7 +872,12 @@ describe('FinesMacReviewAccountComponent', () => {
   it(
     '(AC.2,AC,3a,AC.3bi) should show in review for accounts in review',
     {
-      tags: [...buildTags('@JIRA-STORY:PO-610', '@JIRA-STORY:PO-584'), '@JIRA-EPIC:PO-2220', '@JIRA-TEST-KEY:PO-5228'],
+      tags: [
+        ...buildTags('@JIRA-STORY:PO-610', '@JIRA-STORY:PO-584'),
+        '@JIRA-EPIC:PO-2220',
+        '@JIRA-NFR:PO-2324',
+        '@JIRA-TEST-KEY:PO-5228',
+      ],
     },
     () => {
       setupComponent(finesAccountPayload, finesAccountPayload);
@@ -900,7 +908,12 @@ describe('FinesMacReviewAccountComponent', () => {
   it(
     '(AC.3bii,AC.3biii,AC.3c)should show history of timeline data',
     {
-      tags: [...buildTags('@JIRA-STORY:PO-610', '@JIRA-STORY:PO-584'), '@JIRA-EPIC:PO-2220', '@JIRA-TEST-KEY:PO-5230'],
+      tags: [
+        ...buildTags('@JIRA-STORY:PO-610', '@JIRA-STORY:PO-584'),
+        '@JIRA-EPIC:PO-2220',
+        '@JIRA-NFR:PO-2324',
+        '@JIRA-TEST-KEY:PO-5230',
+      ],
     },
     () => {
       finesAccountPayload.timeline_data.push({

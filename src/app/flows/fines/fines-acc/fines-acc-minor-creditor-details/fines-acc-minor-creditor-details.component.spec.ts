@@ -16,6 +16,7 @@ import { OPAL_FINES_ACCOUNT_MINOR_CREDITOR_AT_A_GLANCE_WITH_DEFENDANT_MOCK } fro
 import { FINES_ROUTING_PATHS } from '../../routing/constants/fines-routing-paths.constant';
 import { FINES_ACC_DEFENDANT_ROUTING_PATHS } from '../routing/constants/fines-acc-defendant-routing-paths.constant';
 import { FINES_ACC_ROUTING_PATHS } from '../routing/constants/fines-acc-routing-paths.constant';
+import { OPAL_FINES_ACCOUNT_MINOR_CREDITOR_CREDITOR_MOCK } from '../../services/opal-fines-service/mocks/opal-fines-account-minor-creditor-creditor.mock';
 
 describe('FinesAccMinorCreditorDetailsComponent', () => {
   let component: FinesAccMinorCreditorDetailsComponent;
@@ -25,7 +26,11 @@ describe('FinesAccMinorCreditorDetailsComponent', () => {
   let activatedRouteStub: Partial<ActivatedRoute>;
   let mockOpalFinesService: Pick<
     OpalFines,
-    'getMinorCreditorAccountHeadingData' | 'getMinorCreditorAccountAtAGlance' | 'clearCache' | 'getResult'
+    | 'getMinorCreditorAccountHeadingData'
+    | 'getMinorCreditorAccountAtAGlance'
+    | 'getMinorCreditorAccount'
+    | 'clearCache'
+    | 'getResult'
   >;
   let mockPayloadService: Pick<
     FinesAccPayloadService,
@@ -66,6 +71,9 @@ describe('FinesAccMinorCreditorDetailsComponent', () => {
       getMinorCreditorAccountAtAGlance: vi
         .fn()
         .mockReturnValue(of(structuredClone(OPAL_FINES_ACCOUNT_MINOR_CREDITOR_AT_A_GLANCE_WITH_DEFENDANT_MOCK))),
+      getMinorCreditorAccount: vi
+        .fn()
+        .mockReturnValue(of(structuredClone(OPAL_FINES_ACCOUNT_MINOR_CREDITOR_CREDITOR_MOCK))),
     };
 
     await TestBed.configureTestingModule({
@@ -124,6 +132,19 @@ describe('FinesAccMinorCreditorDetailsComponent', () => {
     component.refreshPage();
     expect(mockOpalFinesService.getMinorCreditorAccountHeadingData).toHaveBeenCalledWith(
       Number(MOCK_FINES_ACCOUNT_STATE.account_id),
+    );
+  });
+
+  it('should fetch creditor tab data when fragment is changed to creditor', () => {
+    vi.mocked(mockPayloadService.transformPayload).mockClear();
+
+    component['refreshFragment$'].next('creditor');
+    component.tabCreditor$.subscribe();
+
+    expect(mockOpalFinesService.getMinorCreditorAccount).toHaveBeenCalledWith(MOCK_FINES_ACCOUNT_STATE.account_id);
+    expect(mockPayloadService.transformPayload).toHaveBeenCalledWith(
+      OPAL_FINES_ACCOUNT_MINOR_CREDITOR_CREDITOR_MOCK,
+      expect.any(Array),
     );
   });
 

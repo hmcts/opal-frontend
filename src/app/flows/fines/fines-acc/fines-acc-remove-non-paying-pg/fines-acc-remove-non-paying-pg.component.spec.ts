@@ -1,7 +1,7 @@
 import { TestBed } from '@angular/core/testing';
 import { ActivatedRoute, Router } from '@angular/router';
 import { signal } from '@angular/core';
-import { of, throwError } from 'rxjs';
+import { of, Subject, throwError } from 'rxjs';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
 import { FinesAccRemoveNonPayingPgComponent } from './fines-acc-remove-non-paying-pg.component';
 import { FinesAccountStore } from '../stores/fines-acc.store';
@@ -55,12 +55,6 @@ describe('FinesAccRemoveNonPayingPgComponent', () => {
       clearAccountDetailsCache: vi.fn(),
       deleteDefendantAccountParty: vi.fn().mockReturnValue(of(null)),
     };
-
-    TestBed.overrideComponent(FinesAccRemoveNonPayingPgComponent, {
-      set: {
-        template: '',
-      },
-    });
 
     await TestBed.configureTestingModule({
       providers: [
@@ -155,8 +149,13 @@ describe('FinesAccRemoveNonPayingPgComponent', () => {
     expect(mockRouter.navigate).not.toHaveBeenCalled();
   });
 
-  it('should navigate back to the parent or guardian tab if required delete data is missing', () => {
-    mockFinesAccStore.pg_party_id = signal(null);
+  it.each([
+    ['account id', 'account_id'],
+    ['parent guardian party id', 'pg_party_id'],
+    ['business unit id', 'business_unit_id'],
+    ['base version', 'base_version'],
+  ])('should navigate back to the parent or guardian tab if %s is missing', (_label, storeKey) => {
+    mockFinesAccStore[storeKey] = signal(null);
 
     const altFixture = TestBed.createComponent(FinesAccRemoveNonPayingPgComponent);
     const altComponent = altFixture.componentInstance;
@@ -172,5 +171,18 @@ describe('FinesAccRemoveNonPayingPgComponent', () => {
         fragment: FINES_ACC_DEFENDANT_DETAILS_TABS_KEYS['parent-or-guardian'],
       },
     );
+  });
+
+  it('should not set the success state if the delete request completes after component destruction', () => {
+    const deleteResponse = new Subject<void>();
+    mockOpalFinesService.deleteDefendantAccountParty.mockReturnValue(deleteResponse.asObservable());
+
+    component.handleRemoveParentGuardianDetails();
+    component.ngOnDestroy();
+    deleteResponse.next();
+
+    expect(mockOpalFinesService.clearAccountDetailsCache).not.toHaveBeenCalled();
+    expect(mockFinesAccStore.setSuccessMessage).not.toHaveBeenCalled();
+    expect(mockRouter.navigate).not.toHaveBeenCalled();
   });
 });

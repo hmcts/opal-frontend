@@ -175,6 +175,7 @@ describe('FinesMacAddOffenceComponent', () => {
         '@JIRA-STORY:PO-2948',
         '@JIRA-LABEL:manual-account-creation',
         '@JIRA-EPIC:PO-2219',
+        '@JIRA-NFR:PO-2329',
         '@JIRA-TEST-KEY:PO-4992',
       ],
     },
@@ -227,6 +228,7 @@ describe('FinesMacAddOffenceComponent', () => {
         '@JIRA-STORY:PO-3412',
         '@JIRA-LABEL:manual-account-creation',
         '@JIRA-EPIC:PO-2219',
+        '@JIRA-NFR:PO-2329',
         '@JIRA-TEST-KEY:PO-4993',
       ],
     },
@@ -289,6 +291,7 @@ describe('FinesMacAddOffenceComponent', () => {
         '@JIRA-STORY:PO-3412',
         '@JIRA-LABEL:manual-account-creation',
         '@JIRA-EPIC:PO-2219',
+        '@JIRA-NFR:PO-2329',
         '@JIRA-TEST-KEY:PO-4994',
       ],
     },
@@ -455,7 +458,7 @@ describe('FinesMacAddOffenceComponent', () => {
   );
 
   it(
-    '(AC.8)should allow form to be submitted with required fields filled in',
+    '(AC.8) should allow a leap-year sentence date when the required fields are filled in',
     {
       tags: [
         '@JIRA-STORY:PO-411',
@@ -463,7 +466,8 @@ describe('FinesMacAddOffenceComponent', () => {
         '@JIRA-STORY:PO-684',
         '@JIRA-EPIC:PO-545',
         '@JIRA-LABEL:manual-account-creation',
-        '@JIRA-TEST-KEY:PO-4999',
+        '@JIRA-NFR:PO-2325',
+        '@JIRA-TEST-KEY:PO-6346',
       ],
     },
     () => {
@@ -472,7 +476,7 @@ describe('FinesMacAddOffenceComponent', () => {
 
       let Imposition = structuredClone(IMPOSITION_MOCK_3);
 
-      finesMacState.offenceDetails[currentoffenceDetails].formData.fm_offence_details_date_of_sentence = '01/01/2021';
+      finesMacState.offenceDetails[currentoffenceDetails].formData.fm_offence_details_date_of_sentence = '29/02/2024';
       finesMacState.offenceDetails[currentoffenceDetails].formData.fm_offence_details_offence_cjs_code = 'AK123456';
       finesMacState.offenceDetails[currentoffenceDetails].formData.fm_offence_details_offence_id = 52;
       finesMacState.offenceDetails[currentoffenceDetails].formData.fm_offence_details_impositions =
@@ -1100,8 +1104,6 @@ describe('FinesMacAddOffenceComponent', () => {
     () => {
       setupComponent(null);
 
-      const SELECTOR = impositionSelectors(0);
-
       let Imposition = structuredClone(IMPOSITION_MOCK_1);
       Imposition[0].fm_offence_details_amount_imposed = 0;
 
@@ -1129,8 +1131,6 @@ describe('FinesMacAddOffenceComponent', () => {
     },
     () => {
       setupComponent(null);
-
-      const SELECTOR = impositionSelectors(0);
 
       let Imposition = structuredClone(IMPOSITION_MOCK_1);
       Imposition[0].fm_offence_details_amount_imposed = -200;

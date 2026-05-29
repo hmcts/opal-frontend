@@ -2,7 +2,6 @@ import { DOM_ELEMENTS as ENF_ACTION_SELECT } from '../../../shared/selectors/acc
 import { ACCOUNT_ENQUIRY_ENFORCEMENT_STATUS_ELEMENTS as ENF } from '../../../shared/selectors/account-enquiry/account.enquiry.enforcement.locators';
 import { setupAccountEnquiryComponent } from '../accountEnquiry/setup/SetupComponent';
 import { IComponentProperties } from '../accountEnquiry/setup/setupComponent.interface';
-import { IOpalFinesResultsRefData } from '@services/fines/opal-fines-service/interfaces/opal-fines-results-ref-data.interface';
 import {
   interceptAuthenticatedUser,
   interceptUserState,
@@ -10,7 +9,6 @@ import {
   interceptNextPermittedEnforcementActions,
 } from 'cypress/component/CommonIntercepts/CommonIntercepts';
 import { USER_STATE_MOCK_PERMISSION_BU77 } from 'cypress/component/CommonIntercepts/CommonUserState.mocks';
-import { FINES_ACC_ENF_ACTION_SELECT_NEXT_PERMITTED_ENF_ACTIONS_MOCK } from '@app/flows/fines/fines-acc/fines-acc-enf-action-select/mocks/fines-acc-enf-action-select-next-permitted-enf-actions.mock';
 import {
   interceptDefendantHeader,
   interceptEnforcementStatus,
@@ -34,10 +32,13 @@ const COMPONENT_PROPERTIES: IComponentProperties = {
   ],
 };
 
-const EMPTY_RESULTS_RESPONSE: IOpalFinesResultsRefData = {
-  count: 0,
-  refData: [],
-};
+const statusScenarios = [
+  { code: 'CS', reason: 'Consolidated' },
+  { code: 'WO', reason: 'Written off' },
+  { code: 'TO', reason: 'Transferred out' },
+  { code: 'TS', reason: 'TFO Out Acknowledged' },
+  { code: 'TA', reason: 'TFO to be Acknowledged' },
+];
 
 // Note: 'Adult or youth with Parent/Guardian' has not been incl - it uses the same common code and results as 'Adult/youth'
 describe(
@@ -54,19 +55,19 @@ describe(
         headerMock.debtor_type = 'Defendant';
         headerMock.account_status_reference.account_status_code = 'L';
         let enforcementMock = structuredClone(OPAL_FINES_ACCOUNT_DEFENDANT_DETAILS_ENFORCEMENT_TAB_REF_DATA_MOCK);
-        enforcementMock.last_enforcement_action!.enforcement_action.result_id = 'NOENF';
-        enforcementMock.next_enforcement_action_data = null;
+        enforcementMock.last_enforcement_action!.enforcement_action.result_id = 'WOC';
+        enforcementMock.last_enforcement_action!.enforcement_action.result_title = 'Warrant of Control';
+        enforcementMock.next_enforcement_action_data = 'WOC';
         const accountId = headerMock.defendant_account_party_id;
         interceptAuthenticatedUser();
         interceptUserState(USER_STATE_MOCK_PERMISSION_BU77);
         interceptDefendantHeader(accountId, headerMock, '123');
         interceptEnforcementStatus(accountId, enforcementMock, '123');
 
-        interceptNextPermittedEnforcementActionsEmpty();
+        interceptNextPermittedEnforcementActions(['WOC']);
         setupAccountEnquiryComponent({ ...COMPONENT_PROPERTIES, accountId });
 
         cy.get(ENF.addEnforcementActionLink).should('exist').click();
-        cy.get('@routerNavigate').should('have.been.calledWithMatch', ['../enforcement/action/select']);
 
         cy.get(ENF_ACTION_SELECT.pageTitle).should('contain.text', 'Add enforcement action');
         cy.get(ENF_ACTION_SELECT.actionDropdown).should('exist');
@@ -75,33 +76,148 @@ describe(
       },
     );
 
-    // it(
-    //   'AC1,1a. Individual: Negative testing, account status code is Consolidated so hits error page.',
-    //   { tags: ['@JIRA-STORY:PO-1780', '@JIRA-STORY:PO-1824'] },
-    //   () => {
-    //     let headerMock = structuredClone(createDefendantHeaderMockWithName('Robert', 'Thomson'));
-    //     headerMock.debtor_type = 'Defendant';
-    //     headerMock.account_status_reference.account_status_code = 'CS';
-    //     let enforcementMock = structuredClone(OPAL_FINES_ACCOUNT_DEFENDANT_DETAILS_ENFORCEMENT_TAB_REF_DATA_MOCK);
-    //     enforcementMock.last_enforcement_action!.enforcement_action.result_id = 'NOENF';
-    //     enforcementMock.next_enforcement_action_data = null;
-    //     const accountId = headerMock.defendant_account_party_id;
-    //     interceptAuthenticatedUser();
-    //     interceptUserState(USER_STATE_MOCK_PERMISSION_BU77);
-    //     interceptDefendantHeader(accountId, headerMock, '123');
-    //     interceptEnforcementStatus(accountId, enforcementMock, '123');
+    statusScenarios.forEach(({ code, reason }) => {
+      it(
+        `Negative test: account status ${code} shows correct error page`,
+        { tags: ['@JIRA-STORY:PO-1780', '@JIRA-STORY:PO-1824', '@JIRA-STORY:PO-1781', '@JIRA-STORY:PO-1825'] },
+        () => {
+          let headerMock = structuredClone(createDefendantHeaderMockWithName('Robert', 'Thomson'));
 
-    //     interceptNextPermittedEnforcementActionsEmpty();
-    //     setupAccountEnquiryComponent({ ...COMPONENT_PROPERTIES, accountId });
+          headerMock.debtor_type = 'Defendant';
+          headerMock.account_status_reference.account_status_code = code;
 
-    //     cy.get(ENF.addEnforcementActionLink).should('exist').click();
+          let enforcementMock = structuredClone(OPAL_FINES_ACCOUNT_DEFENDANT_DETAILS_ENFORCEMENT_TAB_REF_DATA_MOCK);
 
-    //     //   cy.get('@routerNavigate').should('have.been.calledWithMatch', ['../enforcement/action/cannot-add-enforcement-action']);
+          enforcementMock.last_enforcement_action!.enforcement_action.result_id = 'NOENF';
 
-    //   cy.get('@routerNavigate').should('have.been.calledWithMatch', ['../enforcement/action/<real-route-here>']);
-    // });
-    //   },
-    // );
+          enforcementMock.next_enforcement_action_data = null;
+
+          const accountId = headerMock.defendant_account_party_id;
+
+          interceptAuthenticatedUser();
+          interceptUserState(USER_STATE_MOCK_PERMISSION_BU77);
+          interceptDefendantHeader(accountId, headerMock, '123');
+          interceptEnforcementStatus(accountId, enforcementMock, '123');
+          interceptNextPermittedEnforcementActionsEmpty();
+
+          setupAccountEnquiryComponent({
+            ...COMPONENT_PROPERTIES,
+            accountId,
+          });
+
+          cy.get(ENF.addEnforcementActionLink).should('exist').click();
+
+          cy.contains('Robert THOMSON').should('be.visible');
+
+          // common error text
+          cy.contains('You cannot add an enforcement action to an account that has a status of').should('be.visible');
+
+          // status-specific text
+          cy.contains(reason).should('be.visible');
+
+          cy.contains('Go back').click();
+        },
+      );
+    });
+
+    it(
+      'Negative test: NOENF with no next permitted actions shows error screen and Go back returns to enforcement tab',
+      { tags: ['@JIRA-STORY:PO-1781', '@JIRA-STORY:PO-1825'] },
+      () => {
+        let headerMock = structuredClone(createDefendantHeaderMockWithName('Robert', 'Thomson'));
+
+        headerMock.debtor_type = 'Defendant';
+
+        let enforcementMock = structuredClone(OPAL_FINES_ACCOUNT_DEFENDANT_DETAILS_ENFORCEMENT_TAB_REF_DATA_MOCK);
+
+        enforcementMock.last_enforcement_action!.enforcement_action.result_id = 'NOENF';
+
+        enforcementMock.next_enforcement_action_data = null;
+
+        const accountId = headerMock.defendant_account_party_id;
+
+        interceptAuthenticatedUser();
+        interceptUserState(USER_STATE_MOCK_PERMISSION_BU77);
+        interceptDefendantHeader(accountId, headerMock, '123');
+        interceptEnforcementStatus(accountId, enforcementMock, '123');
+
+        // No permitted next actions
+        interceptNextPermittedEnforcementActionsEmpty();
+
+        setupAccountEnquiryComponent({
+          ...COMPONENT_PROPERTIES,
+          accountId,
+        });
+
+        // Navigate to error page
+        cy.get(ENF.addEnforcementActionLink).should('exist').click();
+
+        // AC2a
+        cy.contains('You cannot add an enforcement action').should('be.visible');
+
+        // AC2b
+        cy.contains('Robert THOMSON').should('be.visible');
+
+        // AC2c
+        cy.contains('You must first remove the enforcement hold on the account.').should('be.visible');
+
+        // AC3 - Go back
+        cy.contains('Go back').click();
+      },
+    );
+
+    it(
+      'Negative test: last enforcement has no next permitted actions shows error screen',
+      { tags: ['@JIRA-STORY:PO-1781', '@JIRA-STORY:PO-1825'] },
+      () => {
+        let headerMock = structuredClone(createDefendantHeaderMockWithName('Robert', 'Thomson'));
+
+        headerMock.debtor_type = 'Defendant';
+
+        let enforcementMock = structuredClone(OPAL_FINES_ACCOUNT_DEFENDANT_DETAILS_ENFORCEMENT_TAB_REF_DATA_MOCK);
+
+        // Example last enforcement with no next permitted actions
+        enforcementMock.last_enforcement_action!.enforcement_action.result_id = 'ENFHOLD';
+
+        enforcementMock.last_enforcement_action!.enforcement_action.result_title = 'Enforcement on hold';
+
+        enforcementMock.next_enforcement_action_data = null;
+
+        const accountId = headerMock.defendant_account_party_id;
+
+        interceptAuthenticatedUser();
+        interceptUserState(USER_STATE_MOCK_PERMISSION_BU77);
+        interceptDefendantHeader(accountId, headerMock, '123');
+        interceptEnforcementStatus(accountId, enforcementMock, '123');
+
+        // Empty permitted actions
+        interceptNextPermittedEnforcementActionsEmpty();
+
+        setupAccountEnquiryComponent({
+          ...COMPONENT_PROPERTIES,
+          accountId,
+        });
+
+        cy.get(ENF.addEnforcementActionLink).should('exist').click();
+
+        // AC2a
+        cy.contains('You cannot add an enforcement action').should('be.visible');
+
+        // AC2b
+        cy.contains('Robert THOMSON').should('be.visible');
+
+        // AC2c
+        cy.contains('You cannot add an enforcement action to an account that has a last enforcement action of:').should(
+          'be.visible',
+        );
+
+        // AC2ci
+        cy.contains('Enforcement on hold (ENFHOLD)').should('be.visible');
+
+        // AC3
+        cy.contains('Go back').click();
+      },
+    );
 
     it(
       'AC1,1a. Individual: Negative testing, result ID is DW so without NOENF the add enf action button does not appear.',
@@ -165,8 +281,8 @@ describe(
         headerMock.is_youth = true;
         headerMock.account_status_reference.account_status_code = 'L';
         let enforcementMock = structuredClone(OPAL_FINES_ACCOUNT_DEFENDANT_DETAILS_ENFORCEMENT_TAB_REF_DATA_MOCK);
-        enforcementMock.last_enforcement_action!.enforcement_action.result_id = 'NOENF';
-        enforcementMock.last_enforcement_action!.enforcement_action.result_title = 'No enforcement';
+        enforcementMock.last_enforcement_action!.enforcement_action.result_id = 'WOC';
+        enforcementMock.last_enforcement_action!.enforcement_action.result_title = 'Warrant of Control';
         enforcementMock.next_enforcement_action_data = 'WOC, WOA';
         enforcementMock.enforcement_overview.collection_order!.collection_order_flag = false;
         const accountId = headerMock.defendant_account_party_id;
@@ -179,7 +295,6 @@ describe(
         setupAccountEnquiryComponent({ ...COMPONENT_PROPERTIES, accountId });
 
         cy.get(ENF.addEnforcementActionLink).should('exist').click();
-        cy.get('@routerNavigate').should('have.been.calledWithMatch', ['../enforcement/action/select']);
 
         cy.get(ENF_ACTION_SELECT.pageTitle).should('contain.text', 'Add enforcement action');
         cy.get(ENF_ACTION_SELECT.actionDropdown).should('exist');
@@ -211,8 +326,8 @@ describe(
         headerMock.debtor_type = 'Defendant';
         headerMock.account_status_reference.account_status_code = 'L';
         let enforcementMock = structuredClone(OPAL_FINES_ACCOUNT_DEFENDANT_DETAILS_ENFORCEMENT_TAB_REF_DATA_MOCK);
-        enforcementMock.last_enforcement_action!.enforcement_action.result_id = 'NOENF';
-        enforcementMock.last_enforcement_action!.enforcement_action.result_title = 'No enforcement';
+        enforcementMock.last_enforcement_action!.enforcement_action.result_id = 'WOC';
+        enforcementMock.last_enforcement_action!.enforcement_action.result_title = 'Warrant of Control';
         enforcementMock.next_enforcement_action_data = 'WOC, WOA';
         enforcementMock.enforcement_overview.collection_order!.collection_order_flag = true;
         const accountId = headerMock.defendant_account_party_id;
@@ -225,7 +340,6 @@ describe(
         setupAccountEnquiryComponent({ ...COMPONENT_PROPERTIES, accountId });
 
         cy.get(ENF.addEnforcementActionLink).should('exist').click();
-        cy.get('@routerNavigate').should('have.been.calledWithMatch', ['../enforcement/action/select']);
 
         cy.get(ENF_ACTION_SELECT.actionDropdownLabel).should('contain.text', 'Select an enforcement action');
         cy.get(ENF_ACTION_SELECT.actionDropdown).should('have.value', '');
@@ -290,8 +404,8 @@ describe(
         headerMock.debtor_type = 'Defendant';
         headerMock.account_status_reference.account_status_code = 'L';
         let enforcementMock = structuredClone(OPAL_FINES_ACCOUNT_DEFENDANT_DETAILS_ENFORCEMENT_TAB_REF_DATA_MOCK);
-        enforcementMock.last_enforcement_action!.enforcement_action.result_id = 'NOENF';
-        enforcementMock.last_enforcement_action!.enforcement_action.result_title = 'No enforcement';
+        enforcementMock.last_enforcement_action!.enforcement_action.result_id = 'WOC';
+        enforcementMock.last_enforcement_action!.enforcement_action.result_title = 'Warrant of Control';
         enforcementMock.next_enforcement_action_data = 'WOC, WOA';
         enforcementMock.enforcement_overview.collection_order!.collection_order_flag = true;
         const accountId = headerMock.defendant_account_party_id;
@@ -304,7 +418,7 @@ describe(
         setupAccountEnquiryComponent({ ...COMPONENT_PROPERTIES, accountId });
 
         cy.get(ENF.addEnforcementActionLink).should('exist').click();
-        cy.get('@routerNavigate').should('have.been.calledWithMatch', ['../enforcement/action/select']);
+        cy.get(ENF_ACTION_SELECT.pageTitle).should('contain.text', 'Add enforcement action');
 
         cy.get(ENF_ACTION_SELECT.cancelLink).click();
         cy.get('@routerNavigate').should('have.been.calledWithMatch', ['details']);
@@ -320,8 +434,8 @@ describe(
         headerMock.debtor_type = 'Defendant';
         headerMock.account_status_reference.account_status_code = 'L';
         let enforcementMock = structuredClone(OPAL_FINES_ACCOUNT_DEFENDANT_DETAILS_ENFORCEMENT_TAB_REF_DATA_MOCK);
-        enforcementMock.last_enforcement_action!.enforcement_action.result_id = 'NOENF';
-        enforcementMock.last_enforcement_action!.enforcement_action.result_title = 'No enforcement';
+        enforcementMock.last_enforcement_action!.enforcement_action.result_id = 'WOC';
+        enforcementMock.last_enforcement_action!.enforcement_action.result_title = 'Warrant of Control';
         enforcementMock.next_enforcement_action_data = 'WOC, WOA';
         enforcementMock.enforcement_overview.collection_order!.collection_order_flag = true;
         const accountId = headerMock.defendant_account_party_id;
@@ -334,7 +448,7 @@ describe(
         setupAccountEnquiryComponent({ ...COMPONENT_PROPERTIES, accountId });
 
         cy.get(ENF.addEnforcementActionLink).should('exist').click();
-        cy.get('@routerNavigate').should('have.been.calledWithMatch', ['../enforcement/action/select']);
+        cy.get(ENF_ACTION_SELECT.pageTitle).should('contain.text', 'Add enforcement action');
 
         cy.get(ENF_ACTION_SELECT.actionDropdown).click();
         cy.get(ENF_ACTION_SELECT.actionDropdownOptions).contains('Warrant of Control').click();
@@ -363,24 +477,143 @@ describe(
         headerMock.debtor_type = 'Defendant';
         headerMock.account_status_reference.account_status_code = 'L';
         let enforcementMock = structuredClone(OPAL_FINES_ACCOUNT_DEFENDANT_DETAILS_ENFORCEMENT_TAB_REF_DATA_MOCK);
-        enforcementMock.last_enforcement_action!.enforcement_action.result_id = 'NOENF';
-        enforcementMock.next_enforcement_action_data = null;
+        enforcementMock.last_enforcement_action!.enforcement_action.result_id = 'WOC';
+        enforcementMock.last_enforcement_action!.enforcement_action.result_title = 'Warrant of Control';
+        enforcementMock.next_enforcement_action_data = 'WOC';
         const accountId = headerMock.defendant_account_party_id;
         interceptAuthenticatedUser();
         interceptUserState(USER_STATE_MOCK_PERMISSION_BU77);
         interceptDefendantHeader(accountId, headerMock, '123');
         interceptEnforcementStatus(accountId, enforcementMock, '123');
 
-        interceptNextPermittedEnforcementActionsEmpty();
+        interceptNextPermittedEnforcementActions(['WOC']);
         setupAccountEnquiryComponent({ ...COMPONENT_PROPERTIES, accountId });
 
         cy.get(ENF.addEnforcementActionLink).should('exist').click();
-        cy.get('@routerNavigate').should('have.been.calledWithMatch', ['../enforcement/action/select']);
 
         cy.get(ENF_ACTION_SELECT.pageTitle).should('contain.text', 'Add enforcement action');
         cy.get(ENF_ACTION_SELECT.actionDropdown).should('exist');
         cy.get(ENF_ACTION_SELECT.informationBanner).should('contain.text', 'This is a company account');
         cy.get(ENF_ACTION_SELECT.accountInfo).should('contain.text', '177A - Sainsco');
+      },
+    );
+
+    statusScenarios.forEach(({ code, reason }) => {
+      it(
+        `Negative test: status ${code} shows correct error screen for company`,
+        { tags: ['@JIRA-STORY:PO-1835'] },
+        () => {
+          let headerMock = structuredClone(DEFENDANT_HEADER_ORG_MOCK);
+
+          headerMock.debtor_type = 'company';
+
+          headerMock.account_status_reference.account_status_code = code;
+
+          const enforcementMock = structuredClone(OPAL_FINES_ACCOUNT_DEFENDANT_DETAILS_ENFORCEMENT_TAB_REF_DATA_MOCK);
+
+          enforcementMock.last_enforcement_action!.enforcement_action.result_id = 'NOENF';
+
+          enforcementMock.next_enforcement_action_data = null;
+
+          const accountId = headerMock.defendant_account_party_id;
+
+          interceptAuthenticatedUser();
+          interceptUserState(USER_STATE_MOCK_PERMISSION_BU77);
+          interceptDefendantHeader(accountId, headerMock, '123');
+          interceptEnforcementStatus(accountId, enforcementMock, '123');
+          interceptNextPermittedEnforcementActionsEmpty();
+
+          setupAccountEnquiryComponent({
+            ...COMPONENT_PROPERTIES,
+            accountId,
+          });
+
+          cy.get(ENF.addEnforcementActionLink).click();
+
+          cy.contains('You cannot add an enforcement action to an account that has a status of').should('be.visible');
+
+          cy.contains(reason).should('be.visible');
+
+          cy.contains('177A - Sainsco').should('be.visible');
+
+          cy.contains('Go back').click();
+        },
+      );
+    });
+
+    it('Negative test: NOENF shows remove hold error screen for company', { tags: ['@JIRA-STORY:PO-1835'] }, () => {
+      let headerMock = structuredClone(DEFENDANT_HEADER_ORG_MOCK);
+
+      headerMock.debtor_type = 'company';
+
+      const enforcementMock = structuredClone(OPAL_FINES_ACCOUNT_DEFENDANT_DETAILS_ENFORCEMENT_TAB_REF_DATA_MOCK);
+
+      enforcementMock.last_enforcement_action!.enforcement_action.result_id = 'NOENF';
+
+      enforcementMock.next_enforcement_action_data = null;
+
+      const accountId = headerMock.defendant_account_party_id;
+
+      interceptAuthenticatedUser();
+      interceptUserState(USER_STATE_MOCK_PERMISSION_BU77);
+      interceptDefendantHeader(accountId, headerMock, '123');
+      interceptEnforcementStatus(accountId, enforcementMock, '123');
+      interceptNextPermittedEnforcementActionsEmpty();
+
+      setupAccountEnquiryComponent({
+        ...COMPONENT_PROPERTIES,
+        accountId,
+      });
+
+      cy.get(ENF.addEnforcementActionLink).click();
+
+      cy.contains('You must first remove the enforcement hold on the account.').should('be.visible');
+
+      cy.contains('177A - Sainsco').should('be.visible');
+
+      cy.contains('Go back').click();
+    });
+
+    it(
+      'Negative test: No next permitted actions shows error screen for company',
+      { tags: ['@JIRA-STORY:PO-1835'] },
+      () => {
+        let headerMock = structuredClone(DEFENDANT_HEADER_ORG_MOCK);
+
+        headerMock.debtor_type = 'company';
+
+        const enforcementMock = structuredClone(OPAL_FINES_ACCOUNT_DEFENDANT_DETAILS_ENFORCEMENT_TAB_REF_DATA_MOCK);
+
+        enforcementMock.last_enforcement_action!.enforcement_action.result_id = 'ENFHOLD';
+
+        enforcementMock.last_enforcement_action!.enforcement_action.result_title = 'Enforcement on hold';
+
+        enforcementMock.next_enforcement_action_data = null;
+
+        const accountId = headerMock.defendant_account_party_id;
+
+        interceptAuthenticatedUser();
+        interceptUserState(USER_STATE_MOCK_PERMISSION_BU77);
+        interceptDefendantHeader(accountId, headerMock, '123');
+        interceptEnforcementStatus(accountId, enforcementMock, '123');
+        interceptNextPermittedEnforcementActionsEmpty();
+
+        setupAccountEnquiryComponent({
+          ...COMPONENT_PROPERTIES,
+          accountId,
+        });
+
+        cy.get(ENF.addEnforcementActionLink).click();
+
+        cy.contains('You cannot add an enforcement action to an account that has a last enforcement action of:').should(
+          'be.visible',
+        );
+
+        cy.contains('Enforcement on hold (ENFHOLD)').should('be.visible');
+
+        cy.contains('177A - Sainsco').should('be.visible');
+
+        cy.contains('Go back').click();
       },
     );
   },

@@ -57,8 +57,9 @@ import { IOpalFinesAccountMinorCreditorAtAGlance } from './interfaces/opal-fines
 import { IOpalFinesResultsParams } from './interfaces/opal-fines-results-params.interface';
 import { IOpalFinesEnforcersRefData } from './interfaces/opal-fines-enforcers-ref-data.interface';
 import { IOpalFinesEnforcer } from './interfaces/opal-fines-enforcer.interface';
+import { IOpalFinesUpdateMinorCreditorAccountPayload } from './interfaces/opal-fines-update-minor-creditor-account-payload.interface';
+import { IOpalFinesAccountMinorCreditorCreditor } from './interfaces/opal-fines-account-minor-creditor-creditor.interface';
 import { IOpalFinesDraftAccountPatchRequestPayload } from '@services/fines/opal-fines-service/types/opal-fines-draft-account-patch-request-payload.type';
-import { IOpalFinesUpdateMinorCreditorAccountPayload } from '@services/fines/opal-fines-service/interfaces/opal-fines-update-minor-creditor-account-payload.interface';
 import { IOpalFinesDeleteDefendantAccountPartyPayload } from './interfaces/opal-fines-delete-defendant-account-party-payload.interface';
 
 @Injectable({
@@ -240,11 +241,9 @@ export class OpalFines {
    *          business unit reference data.
    */
   public getBusinessUnits(): Observable<IOpalFinesBusinessUnitRefData> {
-    if (!this.cache.businessUnitsCache$) {
-      this.cache.businessUnitsCache$ = this.http
-        .get<IOpalFinesBusinessUnitRefData>(OPAL_FINES_PATHS.businessUnitRefData)
-        .pipe(shareReplay(1));
-    }
+    this.cache.businessUnitsCache$ ??= this.http
+      .get<IOpalFinesBusinessUnitRefData>(OPAL_FINES_PATHS.businessUnitRefData)
+      .pipe(shareReplay(1));
 
     return this.cache.businessUnitsCache$;
   }
@@ -290,11 +289,9 @@ export class OpalFines {
       return this.cache.localJusticeAreasLjaTypeCache$[cacheKey];
     }
 
-    if (!this.cache.localJusticeAreasCache$) {
-      this.cache.localJusticeAreasCache$ = this.http
-        .get<IOpalFinesLocalJusticeAreaRefData>(OPAL_FINES_PATHS.localJusticeAreaRefData)
-        .pipe(shareReplay(1));
-    }
+    this.cache.localJusticeAreasCache$ ??= this.http
+      .get<IOpalFinesLocalJusticeAreaRefData>(OPAL_FINES_PATHS.localJusticeAreaRefData)
+      .pipe(shareReplay(1));
 
     return this.cache.localJusticeAreasCache$;
   }
@@ -505,6 +502,7 @@ export class OpalFines {
       'defendantAccountPaymentTermsLatestCache$',
       'defendantAccountFixedPenaltyCache$',
       'minorCreditorAccountAtAGlanceCache$',
+      'minorCreditorAccountCreditorCache$',
     ];
 
     this.clearCaches(accountCaches);
@@ -637,11 +635,9 @@ export class OpalFines {
    * @returns An Observable that emits the prosecutor data for the specified business unit.
    */
   public getEnforcers(): Observable<IOpalFinesEnforcersRefData> {
-    if (!this.cache.enforcersCache$) {
-      this.cache.enforcersCache$ = this.http
-        .get<IOpalFinesEnforcersRefData>(OPAL_FINES_PATHS.enforcersRefData)
-        .pipe(shareReplay(1));
-    }
+    this.cache.enforcersCache$ ??= this.http
+      .get<IOpalFinesEnforcersRefData>(OPAL_FINES_PATHS.enforcersRefData)
+      .pipe(shareReplay(1));
 
     return this.cache.enforcersCache$;
   }
@@ -1181,5 +1177,32 @@ export class OpalFines {
     }
 
     return this.http.patch<IOpalFinesUpdateMinorCreditorAccountPayload>(url, payload, { headers });
+  }
+
+  /**
+   * Retrieves the minor creditor account details. Used for the creditor tab.
+   * If the account details for the specified tab are not already cached, it makes an HTTP request to fetch the data and caches it for future use.
+   *
+   * @param account_id - The ID of the minor creditor account.
+   * @returns An Observable that emits the account details for the creditor tab.
+   */
+  public getMinorCreditorAccount(account_id: number | null): Observable<IOpalFinesAccountMinorCreditorCreditor> {
+    if (!this.cache.minorCreditorAccountCreditorCache$) {
+      const url = `${OPAL_FINES_PATHS.minorCreditorAccounts}/${account_id}`;
+      this.cache.minorCreditorAccountCreditorCache$ = this.http
+        .get<IOpalFinesAccountMinorCreditorCreditor>(url, { observe: 'response' })
+        .pipe(
+          map((response: HttpResponse<IOpalFinesAccountMinorCreditorCreditor>) => {
+            const version = this.extractEtagVersion(response.headers);
+            const payload = response.body as IOpalFinesAccountMinorCreditorCreditor;
+            return {
+              ...payload,
+              version,
+            };
+          }),
+          shareReplay(1),
+        );
+    }
+    return this.cache.minorCreditorAccountCreditorCache$;
   }
 }
