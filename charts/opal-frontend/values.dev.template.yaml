@@ -12,7 +12,7 @@ nodejs:
     OPAL_FINES_SERVICE_API_URL: ${DEV_OPAL_FINES_SERVICE_URL}
     OPAL_USER_SERVICE_API_URL: https://opal-user-service.staging.platform.hmcts.net
     FRONTEND_HOSTNAME: https://${SERVICE_FQDN}
-    FEATURES_LAUNCH_DARKLY_ENABLED: false
+    FEATURES_LAUNCH_DARKLY_ENABLED: true
     FEATURES_SSO_ENABLED: false
     FEATURES_APP_INSIGHTS_ENABLED: false
     FEATURES_IP_LOGGING_ENABLED: true
@@ -72,6 +72,8 @@ opal-fines-service:
       LAUNCH_DARKLY_ENABLED: false
       SERVICEBUS_LOGGING_PDPL_QUEUE_NAME: "{{ .Release.Name}}-servicebus-logging-pdpl"
       SERVICEBUS_LOGGING_PDPL_PROTOCOL: amqps
+      RELEASE_1A_ENABLED: true
+      RELEASE_1B_ENABLED: true
 postgresql:
   enabled: ${DEV_ENABLE_OPAL_FINES_SERVICE}
   image:
