@@ -56,6 +56,19 @@ export class CommonActions {
   }
 
   /**
+   * Asserts that a routed page heading has rendered.
+   */
+  public assertPageHeadingVisible(): void {
+    log('assert', 'Checking page heading is visible');
+
+    cy.get(L.header, this.getPathTimeoutOptions())
+      .should('be.visible')
+      .should(($heading) => {
+        expect($heading.first().text().trim(), 'page heading text').to.not.equal('');
+      });
+  }
+
+  /**
    * Asserts that the service name in the global header contains the expected text.
    * @param expected - Text that should appear within the service name link.
    * @param timeoutMs - Optional timeout override for the assertion.
@@ -78,6 +91,25 @@ export class CommonActions {
   assertHeaderEquals(expected: string): void {
     log('verify', 'Checking header equals exact text', { expected });
     cy.get(L.header, { timeout: 15_000 }).should('have.text', expected);
+  }
+
+  /**
+   * Asserts that no page heading contains the provided text.
+   * @param text - Text that must not appear in any `h1` on the page.
+   */
+  public assertNoPageHeadingContains(text: string): void {
+    const expected = text.toLowerCase();
+
+    log('assert', 'Checking page heading does not contain text', { text });
+    cy.get('body', this.getTimeoutOptions())
+      .find('h1')
+      .should(($headings) => {
+        const matchingHeading = [...$headings]
+          .map((heading) => heading.textContent?.trim() ?? '')
+          .find((heading) => heading.toLowerCase().includes(expected));
+
+        expect(matchingHeading, `Did not expect a page heading containing "${text}"`).to.be.undefined;
+      });
   }
 
   /**
