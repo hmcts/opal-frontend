@@ -147,6 +147,7 @@ describe('FinesMacReviewFixedPenalty using ReviewAccountComponent', () => {
       tags: [...buildTags('@JIRA-STORY:PO-861'), '@JIRA-EPIC:PO-855', '@JIRA-NFR:PO-2328', '@JIRA-TEST-KEY:PO-4830'],
     },
     () => {
+      cy.intercept('POST', '/opal-fines-service/draft-accounts', { statusCode: 200 }).as('postDraftAccount');
       setupComponent(FINES_DRAFT_STATE, 'adultOrYouthOnly');
       cy.wait('@getOffenceByCjsCode');
 
@@ -205,6 +206,14 @@ describe('FinesMacReviewFixedPenalty using ReviewAccountComponent', () => {
       // Section 6 - Account comments and notes
       cy.get(DOM_ELEMENTS.comments).should('contain', 'test comments');
       cy.get(DOM_ELEMENTS.accountNotes).should('contain', 'test notes');
+
+      cy.get(DOM_ELEMENTS.submitButton).click();
+      cy.wait('@postDraftAccount')
+        .its('request.body.account')
+        .should((account) => {
+          expect(account.originator_id).to.equal('9985');
+          expect(account.originator_name).to.equal('Asylum & Immigration Tribunal');
+        });
     },
   );
 
@@ -294,6 +303,7 @@ describe('FinesMacReviewFixedPenalty using ReviewAccountComponent', () => {
       tags: [...buildTags('@JIRA-STORY:PO-861'), '@JIRA-EPIC:PO-855', '@JIRA-NFR:PO-2328', '@JIRA-TEST-KEY:PO-4834'],
     },
     () => {
+      cy.intercept('POST', '/opal-fines-service/draft-accounts', { statusCode: 200 }).as('postDraftAccount');
       setupComponent(FINES_DRAFT_STATE, 'company');
 
       // Check the page heading
@@ -330,6 +340,14 @@ describe('FinesMacReviewFixedPenalty using ReviewAccountComponent', () => {
       // Section 4 - Account comments and notes
       cy.get(DOM_ELEMENTS.comments).should('contain', 'Corporate fixed penalty notice');
       cy.get(DOM_ELEMENTS.accountNotes).should('contain', 'Contact company secretary for all correspondence');
+
+      cy.get(DOM_ELEMENTS.submitButton).click();
+      cy.wait('@postDraftAccount')
+        .its('request.body.account')
+        .should((account) => {
+          expect(account.originator_id).to.equal('9985');
+          expect(account.originator_name).to.equal('Asylum & Immigration Tribunal');
+        });
     },
   );
 

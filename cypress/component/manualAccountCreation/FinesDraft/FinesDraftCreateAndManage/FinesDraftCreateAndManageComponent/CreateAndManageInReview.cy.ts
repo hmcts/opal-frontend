@@ -14,10 +14,13 @@ import { NAVIGATION_LINKS } from './constants/fines_draft_cam_tableConstants';
 import { OPAL_FINES_OVER_25_DRAFT_ACCOUNTS_MOCK } from './mocks/fines_draft_over_25_account_mock';
 import { interceptGetInReviewAccounts, interceptGetRejectedAccounts } from './mocks/create-and-manage-intercepts';
 import { FINES_ACCOUNT_TYPES } from 'src/app/flows/fines/constants/fines-account-types.constant';
+import { DateTime } from 'luxon';
 
 const MANUAL_ACCOUNT_CREATION_JIRA_LABEL = '@JIRA-LABEL:manual-account-creation';
 
 const buildTags = (...tags: string[]) => [...tags, MANUAL_ACCOUNT_CREATION_JIRA_LABEL];
+const getUtcTimestampForLocalDay = (daysOffset: number, minutesAfterMidnight: number = 30) =>
+  DateTime.local().plus({ days: daysOffset }).startOf('day').plus({ minutes: minutesAfterMidnight }).toUTC().toISO()!;
 
 describe('FinesDraftCreateAndManageInReviewComponent', () => {
   const setupComponent = () => {
@@ -51,6 +54,10 @@ describe('FinesDraftCreateAndManageInReviewComponent', () => {
     { tags: [...buildTags('@JIRA-STORY:PO-584'), '@JIRA-EPIC:PO-2220', '@JIRA-TEST-KEY:PO-4736'] },
     () => {
       const inReviewAccountsMockData = structuredClone(OPAL_FINES_DRAFT_ACCOUNTS_MOCK);
+      inReviewAccountsMockData.summaries[0].account_snapshot.created_date = getUtcTimestampForLocalDay(0);
+      inReviewAccountsMockData.summaries[0].account_status_date = getUtcTimestampForLocalDay(0);
+      inReviewAccountsMockData.summaries[1].account_snapshot.created_date = getUtcTimestampForLocalDay(-1);
+      inReviewAccountsMockData.summaries[1].account_status_date = getUtcTimestampForLocalDay(-1);
 
       interceptGetRejectedAccounts(200, { count: 0, summaries: [] });
       interceptGetInReviewAccounts(200, inReviewAccountsMockData);
@@ -140,6 +147,10 @@ describe('FinesDraftCreateAndManageInReviewComponent', () => {
     },
     () => {
       const inReviewAccountsMockData = structuredClone(OPAL_FINES_DRAFT_ACCOUNTS_MOCK);
+      inReviewAccountsMockData.summaries[0].account_snapshot.created_date = getUtcTimestampForLocalDay(0);
+      inReviewAccountsMockData.summaries[0].account_status_date = getUtcTimestampForLocalDay(0);
+      inReviewAccountsMockData.summaries[1].account_snapshot.created_date = getUtcTimestampForLocalDay(-1);
+      inReviewAccountsMockData.summaries[1].account_status_date = getUtcTimestampForLocalDay(-1);
 
       interceptGetRejectedAccounts(200, { count: 0, summaries: [] });
       interceptGetInReviewAccounts(200, inReviewAccountsMockData);
@@ -152,7 +163,7 @@ describe('FinesDraftCreateAndManageInReviewComponent', () => {
         .eq(0)
         .within(() => {
           cy.get(DOM_ELEMENTS.defendant).contains('SMITH, Jane');
-          cy.get(DOM_ELEMENTS.created).contains('4 days ago');
+          cy.get(DOM_ELEMENTS.created).contains('1 day ago');
         });
       cy.get(DOM_ELEMENTS.tableRow)
         .eq(1)
@@ -175,7 +186,7 @@ describe('FinesDraftCreateAndManageInReviewComponent', () => {
         .eq(1)
         .within(() => {
           cy.get(DOM_ELEMENTS.defendant).contains('SMITH, Jane');
-          cy.get(DOM_ELEMENTS.created).contains('4 days ago');
+          cy.get(DOM_ELEMENTS.created).contains('1 day ago');
         });
     },
   );

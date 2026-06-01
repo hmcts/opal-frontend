@@ -147,6 +147,15 @@ export function performLogin(email: string, options: IPerformLoginOptions = {}):
 }
 
 /**
+ * Performs login and opens the default Fines Search landing page.
+ *
+ * @param email - The email address of the user to log in.
+ */
+export function performLoginAndLandOnSearch(email: string): void {
+  performLogin(email, { landingPath: SEARCH_LANDING_PATH, validateSearchLandingDependencies: true });
+}
+
+/**
  * Asserts the "Sign out" link is visible in the global header.
  */
 export function assertSignOutLinkVisible(): void {
