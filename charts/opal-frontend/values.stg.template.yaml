@@ -41,6 +41,10 @@ opal-fines-service:
             alias: SERVICEBUS_SHARED_ACCESS_KEY
           - name: servicebus-logging-pdpl-queue-name
             alias: SERVICEBUS_LOGGING_PDPL_QUEUE_NAME
+          - name: launch-darkly-client-id
+            alias: LAUNCH_DARKLY_CLIENT_ID
+          - name: launch-darkly-sdk-key
+            alias: LAUNCH_DARKLY_SDK_KEY
     environment:
       OPAL_FINES_DB_HOST: "{{ .Release.Name }}-postgresql"
       OPAL_FINES_DB_NAME: opal
@@ -54,6 +58,8 @@ opal-fines-service:
       OPAL_FRONTEND_URL: https://${SERVICE_FQDN}
       FLYWAY_LOCATIONS: classpath:db/migration/ddl, classpath:db/migration/data/allEnvs, classpath:db/migration/data/nle, classpath:db/migration/data/stg
       FEATURES_APP_INSIGHTS_ENABLED: false
+      LAUNCH_DARKLY_ENABLED: true
+
 postgresql:
   enabled: true
   auth:
