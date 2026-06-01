@@ -2,7 +2,7 @@ import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { DashboardComponent } from './dashboard.component';
 import { ActivatedRoute, convertToParamMap } from '@angular/router';
 import { BehaviorSubject } from 'rxjs';
-import { beforeEach, describe, expect, it } from 'vitest';
+import { beforeEach, describe, expect, it, vi } from 'vitest';
 import { DashboardPage } from '@hmcts/opal-frontend-common/pages/dashboard-page';
 import { By } from '@angular/platform-browser';
 import { DASHBOARD_PAGE_CONFIGURATION_MAP } from './constants/dashboard-config.constant';
@@ -18,11 +18,23 @@ describe('DashboardComponent', () => {
   let dashboardTypeParamMapSubject: BehaviorSubject<ReturnType<typeof convertToParamMap>>;
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   let permissionsServiceMock: any;
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  let globalStoreMock: any;
+
+  const setupComponent = () => {
+    fixture = TestBed.createComponent(DashboardComponent);
+    component = fixture.componentInstance;
+    fixture.detectChanges();
+  };
 
   beforeEach(async () => {
     dashboardTypeParamMapSubject = new BehaviorSubject(convertToParamMap({ dashboardType: 'accounts' }));
     permissionsServiceMock = createSpyObj('PermissionsService', ['getUniquePermissions']);
     permissionsServiceMock.getUniquePermissions.mockReturnValue([101, 202, 303]);
+    globalStoreMock = {
+      userState: () => null,
+      featureFlags: vi.fn().mockReturnValue({ 'release-1a': true }),
+    };
 
     await TestBed.configureTestingModule({
       imports: [DashboardComponent],
@@ -34,27 +46,54 @@ describe('DashboardComponent', () => {
           },
         },
         { provide: PermissionsService, useValue: permissionsServiceMock },
-        { provide: GlobalStore, useValue: { userState: () => null } },
+        { provide: GlobalStore, useValue: globalStoreMock },
       ],
     }).compileComponents();
-
-    fixture = TestBed.createComponent(DashboardComponent);
-    component = fixture.componentInstance;
-    fixture.detectChanges();
   });
 
   it('should create', () => {
+    setupComponent();
+
     expect(component).toBeTruthy();
   });
 
   it('should resolve the reports config for the reports dashboard type', () => {
+    setupComponent();
     dashboardTypeParamMapSubject.next(convertToParamMap({ dashboardType: 'reports' }));
     fixture.detectChanges();
 
     expect(component.resolvedConfig()).toEqual(DASHBOARD_PAGE_CONFIGURATION_MAP.reports);
   });
 
+  it('should resolve the accounts config with draft accounts when release-1a is enabled', () => {
+    setupComponent();
+    dashboardTypeParamMapSubject.next(convertToParamMap({ dashboardType: 'accounts' }));
+    fixture.detectChanges();
+
+    expect(component.resolvedConfig()).toEqual(DASHBOARD_PAGE_CONFIGURATION_MAP.accounts);
+    expect(component.resolvedConfig().groups.map((group) => group.id)).toContain('draft-accounts');
+  });
+
+  it('should remove draft accounts from the accounts config when release-1a is disabled', () => {
+    globalStoreMock.featureFlags.mockReturnValue({ 'release-1a': false });
+    setupComponent();
+
+    expect(component.resolvedConfig()).toEqual({
+      ...DASHBOARD_PAGE_CONFIGURATION_MAP.accounts,
+      groups: DASHBOARD_PAGE_CONFIGURATION_MAP.accounts.groups.filter((group) => group.id !== 'draft-accounts'),
+    });
+    expect(component.resolvedConfig().groups.map((group) => group.id)).not.toContain('draft-accounts');
+  });
+
+  it('should remove draft accounts from the accounts config when release-1a is missing', () => {
+    globalStoreMock.featureFlags.mockReturnValue({});
+    setupComponent();
+
+    expect(component.resolvedConfig().groups.map((group) => group.id)).not.toContain('draft-accounts');
+  });
+
   it('should fall back to the default config for an unknown dashboard type', () => {
+    setupComponent();
     dashboardTypeParamMapSubject.next(convertToParamMap({ dashboardType: 'unknown' }));
     fixture.detectChanges();
 
@@ -62,6 +101,7 @@ describe('DashboardComponent', () => {
   });
 
   it('should use the hard-coded default dashboard config when the default tab map entry is missing', () => {
+    setupComponent();
     const dashboardConfigMap = DASHBOARD_PAGE_CONFIGURATION_MAP as Partial<typeof DASHBOARD_PAGE_CONFIGURATION_MAP>;
     const originalDefaultConfig = dashboardConfigMap[DASHBOARD_PAGE_DEFAULT_TAB];
 
@@ -78,6 +118,7 @@ describe('DashboardComponent', () => {
   });
 
   it('should render the dashboard page with the resolved dashboard config', () => {
+    setupComponent();
     dashboardTypeParamMapSubject.next(convertToParamMap({ dashboardType: 'reports' }));
     fixture.detectChanges();
 

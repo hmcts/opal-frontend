@@ -74,7 +74,7 @@ describe('Reports dashboard navigation', { tags: [REPORTS_STORY_TAG, REPORTS_EPI
             getUniquePermissions: cy.stub().returns(props.permissionIds),
           },
         },
-        { provide: GlobalStore, useValue: { userState: () => null } },
+        { provide: GlobalStore, useValue: { userState: () => null, featureFlags: () => ({ 'release-1a': true }) } },
       ],
     }).then(({ fixture }) => {
       const router = fixture.componentRef.injector.get(Router);

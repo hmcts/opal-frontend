@@ -40,7 +40,10 @@ import { DASHBOARD_PAGE_DEFAULT_TAB } from './pages/dashboard/constants/dashboar
 import { DashboardPageType } from './pages/dashboard/types/dashboard.type';
 import { isDashboardPageType } from './pages/dashboard/constants/dashboard-config.constant';
 import { FINES_DASHBOARD_ROUTING_PATHS } from './flows/fines/constants/fines-dashboard-routing-paths.constant';
-import { getAccessiblePrimaryNavigationItems } from './flows/fines/utils/fines-section-permissions.utils';
+import {
+  getAccessiblePrimaryNavigationItems,
+  getFeatureFlagReleaseState,
+} from './flows/fines/utils/fines-section-permissions.utils';
 import { HIDE_PRIMARY_NAV_ROUTE_DATA_KEY } from './constants/route-data.constant';
 import { FINES_ACC_ROUTING_PATHS } from './flows/fines/fines-acc/routing/constants/fines-acc-routing-paths.constant';
 import { FINES_ACC_DEFENDANT_ROUTING_PATHS } from './flows/fines/fines-acc/routing/constants/fines-acc-defendant-routing-paths.constant';
@@ -130,7 +133,11 @@ export class AppComponent implements OnInit, OnDestroy {
   public readonly sessionService = inject(SessionService);
   public readonly globalStore = inject(GlobalStore);
   public readonly navigationItems = computed(() =>
-    getAccessiblePrimaryNavigationItems(NAVIGATION_BAR_CONFIGURATION, this.globalStore.userState()),
+    getAccessiblePrimaryNavigationItems(
+      NAVIGATION_BAR_CONFIGURATION,
+      this.globalStore.userState(),
+      getFeatureFlagReleaseState(this.globalStore.featureFlags()),
+    ),
   );
   public readonly primaryNavigationHidden = toSignal(
     this.primaryNavigationRouteEvents$.pipe(map((event) => this.getPrimaryNavigationHiddenFromRouterEvent(event))),
@@ -156,9 +163,11 @@ export class AppComponent implements OnInit, OnDestroy {
   constructor() {
     // There is something odd with the launch darkly lib that requires us to run it outside of the angular zone to initialize
     // https://angular.io/errors/NG0506
-    this.ngZone.runOutsideAngular(() => {
-      this.launchDarklyService.initializeLaunchDarklyClient();
-    });
+    if (isPlatformBrowser(this.platformId)) {
+      this.ngZone.runOutsideAngular(() => {
+        this.launchDarklyService.initializeLaunchDarklyClient();
+      });
+    }
   }
 
   /**
@@ -369,12 +378,14 @@ export class AppComponent implements OnInit, OnDestroy {
    * This method is called once after the first `ngOnChanges` method is called.
    */
   public ngOnInit(): void {
-    from(this.launchDarklyService.initializeLaunchDarklyFlags())
-      .pipe(
-        tap(() => this.launchDarklyService.initializeLaunchDarklyChangeListener()),
-        takeUntil(this.ngUnsubscribe),
-      )
-      .subscribe();
+    if (isPlatformBrowser(this.platformId)) {
+      from(this.launchDarklyService.initializeLaunchDarklyFlags())
+        .pipe(
+          tap(() => this.launchDarklyService.initializeLaunchDarklyChangeListener()),
+          takeUntil(this.ngUnsubscribe),
+        )
+        .subscribe();
+    }
     this.setupTokenExpiry();
     this.trackPageViews();
   }
