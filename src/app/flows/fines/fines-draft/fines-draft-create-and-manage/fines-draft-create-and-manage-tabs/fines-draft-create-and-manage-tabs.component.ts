@@ -41,6 +41,8 @@ import { PermissionsService } from '@hmcts/opal-frontend-common/services/permiss
 import { FINES_PERMISSIONS } from '@app/constants/fines-permissions.constant';
 import { RELEASE_1B_FEATURE_FLAG } from '@app/flows/fines/constants/release-feature-flags.constant';
 
+type FeatureFlags = Record<string, unknown>;
+
 @Component({
   selector: 'app-fines-draft-create-and-manage-tabs',
   imports: [
@@ -222,8 +224,10 @@ export class FinesDraftCreateAndManageTabsComponent extends AbstractTabData impl
    * @returns True when release 1b is enabled and the user has the base R1B account search/view permission.
    */
   public hasApprovedAccountLinkAccess(): boolean {
+    const featureFlags = this.globalStore.featureFlags() as FeatureFlags;
+
     return (
-      this.globalStore.featureFlags()?.[RELEASE_1B_FEATURE_FLAG] === true &&
+      featureFlags[RELEASE_1B_FEATURE_FLAG] === true &&
       this.permissionsService.hasPermissionAccess(
         FINES_PERMISSIONS['search-and-view-accounts'],
         this.userState.business_unit_users,

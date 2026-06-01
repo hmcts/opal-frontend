@@ -22,6 +22,7 @@ import { SESSION_TOKEN_EXPIRY_MOCK } from '@hmcts/opal-frontend-common/services/
 import { IOpalUserState } from '@hmcts/opal-frontend-common/services/opal-user-service/interfaces';
 import { OPAL_USER_STATE_MOCK } from '@hmcts/opal-frontend-common/services/opal-user-service/mocks';
 import { MojAlertComponent } from '@hmcts/opal-frontend-common/components/moj/moj-alert';
+import { LaunchDarklyService } from '@hmcts/opal-frontend-common/services/launch-darkly-service';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
 import { createSpyObj } from './testing/create-spy-obj.helper';
 import { FINES_DASHBOARD_ROUTING_PATHS } from './flows/fines/constants/fines-dashboard-routing-paths.constant';
@@ -859,6 +860,26 @@ describe('AppComponent - server', () => {
 
   beforeEach(() => {
     mockTokenExpiry.expiry = '2023-07-03T12:30:00Z';
+  });
+
+  it('should not initialize LaunchDarkly on server', () => {
+    const launchDarklyService = TestBed.inject(LaunchDarklyService);
+    const initializeLaunchDarklyClientSpy = vi
+      .spyOn(launchDarklyService, 'initializeLaunchDarklyClient')
+      .mockImplementation(() => undefined);
+    const initializeLaunchDarklyFlagsSpy = vi
+      .spyOn(launchDarklyService, 'initializeLaunchDarklyFlags')
+      .mockResolvedValue(undefined);
+    const initializeLaunchDarklyChangeListenerSpy = vi
+      .spyOn(launchDarklyService, 'initializeLaunchDarklyChangeListener')
+      .mockImplementation(() => undefined);
+
+    const fixture = TestBed.createComponent(AppComponent);
+    fixture.detectChanges();
+
+    expect(initializeLaunchDarklyClientSpy).not.toHaveBeenCalled();
+    expect(initializeLaunchDarklyFlagsSpy).not.toHaveBeenCalled();
+    expect(initializeLaunchDarklyChangeListenerSpy).not.toHaveBeenCalled();
   });
 
   it('should not call getTokenExpiry as on server ', () => {

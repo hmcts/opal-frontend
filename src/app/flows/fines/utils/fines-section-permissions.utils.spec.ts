@@ -136,6 +136,7 @@ describe('fines-section-permissions.utils', () => {
         ),
       ).toBe(true);
     });
+
   });
 
   describe('getAccessiblePrimaryNavigationItems', () => {

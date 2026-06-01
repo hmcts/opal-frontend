@@ -1,4 +1,4 @@
-import { performLogin } from '../actions/login.actions';
+import { performLoginAndLandOnSearch } from '../actions/login.actions';
 import { PrimaryNavigationActions } from '../actions/primary-navigation.actions';
 
 const PRIMARY_NAVIGATION_LANDING_MAP = {
@@ -35,7 +35,7 @@ export class PrimaryNavigationFlow {
    * @param email - User email used during authentication.
    */
   public loginAndLandOnSearch(email: string): void {
-    performLogin(email);
+    performLoginAndLandOnSearch(email);
     this.assertDefaultSearchLanding();
   }
 

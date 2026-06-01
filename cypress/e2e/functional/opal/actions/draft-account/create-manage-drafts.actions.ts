@@ -13,6 +13,7 @@ const log = createScopedLogger('CreateManageDraftsActions');
 const CREATE_AND_MANAGE_DRAFT_ACCOUNTS_LINK = '#finesCavInputterLink';
 const ACCOUNTS_DASHBOARD_PATH = '/fines/dashboard/accounts';
 const CREATE_AND_MANAGE_DRAFT_ACCOUNTS_PATH = '/fines/draft/create-and-manage/tabs#review';
+const MANUAL_ACCOUNT_CREATION_ORIGINATOR_PATH = '/fines/manual-account-creation/originator-type';
 
 /**
  * Actions for the **Create and Manage Draft Accounts** page (inputter view).
@@ -109,6 +110,7 @@ export class CreateManageDraftsActions extends DraftAccountsCommonActions {
   clickCreateAccount(): void {
     log('navigate', 'Clicking Create account button from Create and Manage Draft Accounts');
     cy.get(L.createAccountButton, this.common.getTimeoutOptions()).should('be.visible').click({ force: true });
+    cy.location('pathname', this.common.getPathTimeoutOptions()).should('eq', MANUAL_ACCOUNT_CREATION_ORIGINATOR_PATH);
   }
 
   /**

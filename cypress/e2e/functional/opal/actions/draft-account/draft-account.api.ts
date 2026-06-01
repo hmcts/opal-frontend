@@ -25,6 +25,12 @@ import {
 } from '../../../../../support/utils/accountCapture';
 import { createScopedLogger } from '../../../../../support/utils/log.helper';
 import { performLogin } from '../login.actions';
+import {
+  findBusinessUnitUser,
+  readUserDisplayName,
+  requestLoggedInUserState,
+  type UserStateRecord,
+} from '../user-state.actions';
 
 // Scoped logger used by all draft-account API actions in this module.
 const log = createScopedLogger('DraftAccountApiActions');
@@ -237,21 +243,12 @@ const isNonEmptyString = (value: unknown): value is string => typeof value === '
 
 // Resolves the current user's BU-specific business user id for the target business unit.
 const readBusinessUnitUserId = (
-  userStateBody: Record<string, unknown>,
+  userStateBody: UserStateRecord,
   businessUnitId: number,
   fallback?: string | null,
 ): string | null => {
-  // Business-unit memberships returned by the current user-state endpoint.
-  const businessUnitUsers = userStateBody['business_unit_users'];
-  if (!Array.isArray(businessUnitUsers)) {
-    return fallback ?? null;
-  }
-
   // Membership record that matches the draft's business unit id.
-  const matchedBusinessUnit = businessUnitUsers.find((value) => {
-    if (!isRecord(value)) return false;
-    return Number(value['business_unit_id']) === businessUnitId;
-  });
+  const matchedBusinessUnit = findBusinessUnitUser(userStateBody, businessUnitId);
 
   if (!isRecord(matchedBusinessUnit)) {
     return fallback ?? null;
@@ -265,7 +262,7 @@ const readBusinessUnitUserId = (
 // Builds a UI-like PATCH payload for status changes on an existing draft.
 const buildDraftPatchPayload = (
   draftBody: Record<string, unknown>,
-  userStateBody: Record<string, unknown>,
+  userStateBody: UserStateRecord,
   status: string,
   reasonText: string | null = null,
 ): Record<string, unknown> => {
@@ -276,11 +273,7 @@ const buildDraftPatchPayload = (
   // Current checker's business-unit user id for the draft business unit.
   const validatedBy = readBusinessUnitUserId(userStateBody, business_unit_id, existingValidatedBy);
   // Human-readable checker name used in patch metadata.
-  const validatedByName = isNonEmptyString(userStateBody['name'])
-    ? userStateBody['name']
-    : isNonEmptyString(userStateBody['username'])
-      ? userStateBody['username']
-      : null;
+  const validatedByName = readUserDisplayName(userStateBody);
 
   return {
     account_status: status,
@@ -290,6 +283,32 @@ const buildDraftPatchPayload = (
     validated_by_name: status.toLowerCase() === 'rejected' ? null : validatedByName,
     version: String(draftBody['version'] ?? '0'),
   };
+};
+
+const applyCurrentSubmitterToDraftRequest = (
+  draftBody: Record<string, unknown>,
+  userStateBody: UserStateRecord,
+): void => {
+  const businessUnitId = Number(draftBody['business_unit_id'] ?? draftBody['businessUnitId']);
+  if (!Number.isFinite(businessUnitId)) return;
+
+  const submittedBy = readBusinessUnitUserId(userStateBody, businessUnitId, null);
+  if (submittedBy) {
+    draftBody['submitted_by'] = submittedBy;
+  }
+
+  if (!isNonEmptyString(draftBody['submitted_by_name'])) {
+    const submittedByName = readUserDisplayName(userStateBody);
+    if (submittedByName) {
+      draftBody['submitted_by_name'] = submittedByName;
+    }
+  }
+
+  log('info', 'Prepared draft submitter from current user state', {
+    businessUnitId,
+    hasSubmittedBy: isNonEmptyString(draftBody['submitted_by']),
+    hasSubmittedByName: isNonEmptyString(draftBody['submitted_by_name']),
+  });
 };
 
 // Logs a PATCH failure in a redacted, evidence-friendly format.
@@ -476,6 +495,12 @@ export function createDraftAndSetStatus(
       .then((base) => {
         requestBody = stripBackendOwnedDraftRequestFields(merge({}, base, sanitizedOverrides), 'POST /draft-accounts');
       })
+      .then(() =>
+        requestLoggedInUserState().then((userStateBody) => {
+          applyCurrentSubmitterToDraftRequest(requestBody, userStateBody);
+          return cy.wrap<void>(undefined, { log: false });
+        }),
+      )
 
       // 1) POST create the draft account.
       .then(() => {
@@ -545,45 +570,33 @@ export function createDraftAndSetStatus(
             performLogin(user);
 
             return cy.wait(DRAFT_PREPATCH_WAIT_MS, { log: false }).then(() =>
-              cy
-                .request({
-                  method: 'GET',
-                  url: '/opal-user-service/users/0/state',
-                  failOnStatusCode: false,
-                })
-                .then((userStateResp) => {
-                  expect(userStateResp.status, 'GET current user state').to.eq(200);
+              requestLoggedInUserState().then((userStateBody) => {
+                // Latest draft snapshot used to build the status PATCH payload.
+                const body = (getResp.body ?? {}) as Record<string, unknown>;
+                patchBody = buildDraftPatchPayload(body, userStateBody, canonicalStatus);
 
-                  // Latest draft snapshot used to build the status PATCH payload.
-                  const body = (getResp.body ?? {}) as Record<string, unknown>;
-                  patchBody = buildDraftPatchPayload(
-                    body,
-                    (userStateResp.body ?? {}) as Record<string, unknown>,
-                    canonicalStatus,
-                  );
+                log('done', 'Prepared PATCH body and captured strong ETag', {
+                  beforeEtag,
+                  patchBodyKeys: Object.keys(patchBody),
+                  validated_by: patchBody['validated_by'],
+                  validated_by_name: patchBody['validated_by_name'],
+                  version: patchBody['version'],
+                });
 
-                  log('done', 'Prepared PATCH body and captured strong ETag', {
-                    beforeEtag,
-                    patchBodyKeys: Object.keys(patchBody),
-                    validated_by: patchBody['validated_by'],
-                    validated_by_name: patchBody['validated_by_name'],
-                    version: patchBody['version'],
-                  });
-
-                  return cy
-                    .request({
-                      method: 'PATCH',
-                      url: pathForAccount(createdId),
-                      headers: {
-                        'If-Match': beforeEtag,
-                        'Content-Type': 'application/json',
-                        Accept: 'application/json',
-                      },
-                      body: patchBody,
-                      failOnStatusCode: false,
-                    })
-                    .as('patchDraftAccount');
-                }),
+                return cy
+                  .request({
+                    method: 'PATCH',
+                    url: pathForAccount(createdId),
+                    headers: {
+                      'If-Match': beforeEtag,
+                      'Content-Type': 'application/json',
+                      Accept: 'application/json',
+                    },
+                    body: patchBody,
+                    failOnStatusCode: false,
+                  })
+                  .as('patchDraftAccount');
+              }),
             );
           })
           .then((patchResp) => {
@@ -678,7 +691,7 @@ export function createDraftAndSetStatus(
           requestBody,
         ),
       )
-      .then(() => undefined as void)
+      .then(() => undefined as void) as Cypress.Chainable<void>
   );
 }
 
@@ -702,36 +715,28 @@ export function updateLastCreatedDraftAccountStatus(newStatus: string): Cypress.
       .then(({ response: getResp, etag }) => {
         beforeEtag = etag;
         return cy.wait(DRAFT_PREPATCH_WAIT_MS, { log: false }).then(() =>
-          cy
-            .request({
-              method: 'GET',
-              url: '/opal-user-service/users/0/state',
+          requestLoggedInUserState().then((userStateBody) => {
+            // PATCH body built from the current draft snapshot and logged-in user.
+            const patchBody = buildDraftPatchPayload(
+              (getResp.body ?? {}) as Record<string, unknown>,
+              userStateBody,
+              newStatus,
+            );
+
+            log('debug', 'Prepared PATCH body for existing draft', { patchBody, beforeEtag });
+
+            return cy.request({
+              method: 'PATCH',
+              url: pathForAccount(accountId),
+              headers: {
+                'If-Match': beforeEtag,
+                'Content-Type': 'application/json',
+                Accept: 'application/json',
+              },
+              body: patchBody,
               failOnStatusCode: false,
-            })
-            .then((userStateResp) => {
-              expect(userStateResp.status, 'GET current user state').to.eq(200);
-
-              // PATCH body built from the current draft snapshot and logged-in user.
-              const patchBody = buildDraftPatchPayload(
-                (getResp.body ?? {}) as Record<string, unknown>,
-                (userStateResp.body ?? {}) as Record<string, unknown>,
-                newStatus,
-              );
-
-              log('debug', 'Prepared PATCH body for existing draft', { patchBody, beforeEtag });
-
-              return cy.request({
-                method: 'PATCH',
-                url: pathForAccount(accountId),
-                headers: {
-                  'If-Match': beforeEtag,
-                  'Content-Type': 'application/json',
-                  Accept: 'application/json',
-                },
-                body: patchBody,
-                failOnStatusCode: false,
-              });
-            }),
+            });
+          }),
         );
       })
       .then((patchResp) => {
@@ -824,36 +829,24 @@ export function simulateStaleIfMatchConflict(newStatus: string): Cypress.Chainab
       .then((getResp) => {
         expect(getResp.status, 'GET account').to.eq(200);
         etagUsed = readStrongEtag(getResp.headers as Record<string, unknown>);
-        return cy
-          .request({
-            method: 'GET',
-            url: '/opal-user-service/users/0/state',
+        return requestLoggedInUserState().then((userStateBody) => {
+          // PATCH body built once so the second request can intentionally reuse it.
+          patchBody = buildDraftPatchPayload((getResp.body ?? {}) as Record<string, unknown>, userStateBody, newStatus);
+
+          log('debug', 'Prepared stale If-Match patch body', { patchBody, etagUsed });
+
+          return cy.request({
+            method: 'PATCH',
+            url: pathForAccount(accountId),
+            headers: {
+              'If-Match': etagUsed,
+              'Content-Type': 'application/json',
+              Accept: 'application/json',
+            },
+            body: patchBody,
             failOnStatusCode: false,
-          })
-          .then((userStateResp) => {
-            expect(userStateResp.status, 'GET current user state').to.eq(200);
-
-            // PATCH body built once so the second request can intentionally reuse it.
-            patchBody = buildDraftPatchPayload(
-              (getResp.body ?? {}) as Record<string, unknown>,
-              (userStateResp.body ?? {}) as Record<string, unknown>,
-              newStatus,
-            );
-
-            log('debug', 'Prepared stale If-Match patch body', { patchBody, etagUsed });
-
-            return cy.request({
-              method: 'PATCH',
-              url: pathForAccount(accountId),
-              headers: {
-                'If-Match': etagUsed,
-                'Content-Type': 'application/json',
-                Accept: 'application/json',
-              },
-              body: patchBody,
-              failOnStatusCode: false,
-            });
           });
+        });
       })
       .then((firstPatch) => {
         firstStatus = firstPatch.status;
