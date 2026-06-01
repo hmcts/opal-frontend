@@ -52,7 +52,7 @@ export class GlobalApiInterceptorFlow {
    */
   public openManualAccountCreationWithBusinessUnitsError(statusCode: number): void {
     log('flow', 'Opening Manual Account Creation with business units error', { statusCode });
-    this.searchIndividuals.assertOnSearchLandingPage();
+    this.primaryNavigation.assertDashboardLandingReady();
     this.actions.stubBusinessUnitsError(statusCode);
     this.primaryNavigation.chooseItem('Accounts');
     this.primaryNavigation.assertLandingPage('Accounts', '/fines/dashboard/accounts');
@@ -73,7 +73,7 @@ export class GlobalApiInterceptorFlow {
    */
   public openManualAccountCreationWithRetriableBusinessUnitsError(statusCode: number): void {
     log('flow', 'Opening Manual Account Creation with retriable business units error', { statusCode });
-    this.searchIndividuals.assertOnSearchLandingPage();
+    this.primaryNavigation.assertDashboardLandingReady();
     this.actions.stubBusinessUnitsRetriableError(statusCode);
     this.primaryNavigation.chooseItem('Accounts');
     this.primaryNavigation.assertLandingPage('Accounts', '/fines/dashboard/accounts');
@@ -98,7 +98,7 @@ export class GlobalApiInterceptorFlow {
       statusCode,
       expectedHeader,
     });
-    this.searchIndividuals.assertOnSearchLandingPage();
+    this.primaryNavigation.assertDashboardLandingReady();
     this.actions.stubBusinessUnitsNonRetriableError(statusCode);
     this.primaryNavigation.chooseItem('Accounts');
     this.primaryNavigation.assertLandingPage('Accounts', '/fines/dashboard/accounts');
@@ -118,7 +118,7 @@ export class GlobalApiInterceptorFlow {
    */
   public openManualAccountCreationWithBusinessUnitsNetworkFailure(): void {
     log('flow', 'Opening Manual Account Creation with business units network failure');
-    this.searchIndividuals.assertOnSearchLandingPage();
+    this.primaryNavigation.assertDashboardLandingReady();
     this.actions.stubBusinessUnitsNetworkFailure();
     this.primaryNavigation.chooseItem('Accounts');
     this.primaryNavigation.assertLandingPage('Accounts', '/fines/dashboard/accounts');

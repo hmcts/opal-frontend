@@ -7,34 +7,34 @@
  * where login is a prerequisite for other actions.
  *
  * @remarks
- * - The steps use `loginAndLandOnSearch()` from the `auth.flow` module.
+ * - The steps use `loginAndVerifyDashboardLanding()` from the `auth.flow` module.
  * - Logging uses the shared `log()` helper for consistent output.
  * - Supports parameterized logins for different users or roles.
  *
  * @example
  *   Given I am logged in with email "qa.user@example.com"
  *
- * @see {@link loginAndLandOnSearch}
+ * @see {@link loginAndVerifyDashboardLanding}
  */
 
 import { Given, Then } from '@badeball/cypress-cucumber-preprocessor';
-import { loginAndAuthenticate, loginAndLandOnSearch } from '../..//e2e/functional/opal/flows/auth.flow';
+import { loginAndAuthenticate, loginAndVerifyDashboardLanding } from '../..//e2e/functional/opal/flows/auth.flow';
 import { assertSignOutLinkVisible } from '../..//e2e/functional/opal/actions/login.actions';
 import { log } from '../utils/log.helper';
 
 /**
- * @step Logs in using the provided email address and confirms the user lands on Search.
+ * @step Logs in using the provided email address and confirms the dashboard landing is ready.
  *
  * @param email - The email address of the user to log in as.
  *
  * @details
- * - Delegates to the reusable `loginAndLandOnSearch()` flow for actual login steps.
+ * - Delegates to the reusable `loginAndVerifyDashboardLanding()` flow for actual login steps.
  * - Adds structured Cypress logging for traceability in test reports.
  * - Intended to be reusable across all authenticated scenarios.
  */
 Given('I am logged in with email {string}', (email: string) => {
   log('step', 'Logging in via auth flow', { email });
-  loginAndLandOnSearch(email);
+  loginAndVerifyDashboardLanding(email);
 });
 
 /**
