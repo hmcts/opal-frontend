@@ -6,16 +6,29 @@ import { IOpalUserState } from '@hmcts/opal-frontend-common/services/opal-user-s
 import { OPAL_USER_STATE_MOCK } from '@hmcts/opal-frontend-common/services/opal-user-service/mocks';
 import { PermissionsService } from '@hmcts/opal-frontend-common/services/permissions-service';
 import { SessionService } from '@hmcts/opal-frontend-common/services/session-service';
+import { DateService } from '@hmcts/opal-frontend-common/services/date-service';
 import { GlobalStore } from '@hmcts/opal-frontend-common/stores/global';
 import { mount } from 'cypress/angular';
 import { BehaviorSubject, NEVER } from 'rxjs';
 import { FINES_PERMISSIONS } from 'src/app/constants/fines-permissions.constant';
 import { AppComponent } from 'src/app/app.component';
 import { DashboardComponent } from 'src/app/pages/dashboard/dashboard.component';
+import { FinesDraftCreateAndManageTabsComponent } from 'src/app/flows/fines/fines-draft/fines-draft-create-and-manage/fines-draft-create-and-manage-tabs/fines-draft-create-and-manage-tabs.component';
+import { FinesDraftStore } from 'src/app/flows/fines/fines-draft/stores/fines-draft.store';
+import { FinesMacPayloadService } from 'src/app/flows/fines/fines-mac/services/fines-mac-payload/fines-mac-payload.service';
+import { OpalFines } from 'src/app/flows/fines/services/opal-fines-service/opal-fines.service';
+import { OPAL_FINES_DRAFT_ACCOUNTS_MOCK } from './FinesDraftCreateAndManage/FinesDraftCreateAndManageComponent/mocks/fines-draft-account.mock';
+import { DRAFT_SESSION_USER_STATE_MOCK } from './FinesDraftCreateAndManage/FinesDraftCreateAndManageComponent/mocks/fines-draft-session-mock';
+import {
+  interceptGetApprovedAccounts,
+  interceptGetRejectedAccounts,
+} from './FinesDraftCreateAndManage/FinesDraftCreateAndManageComponent/mocks/create-and-manage-intercepts';
 import { PrimaryNavigationLocators as PrimaryNav } from '../../../shared/selectors/primary-navigation.locators';
+import { DraftAccountsTableLocators as Table } from '../../../shared/selectors/draft-accounts-table.locators';
 
 const MANUAL_ACCOUNT_CREATION_JIRA_LABEL = '@JIRA-LABEL:manual-account-creation';
 const RELEASE_1A_STORY_TAG = '@JIRA-STORY:PO-3719';
+const RELEASE_1B_STORY_TAG = '@JIRA-STORY:PO-3720';
 const RELEASE_EPIC_TAG = '@JIRA-EPIC:PO-3685';
 
 type FeatureFlags = Record<string, boolean>;
@@ -124,6 +137,39 @@ describe('FinesDraftRelease1aFeatureToggles', () => {
     });
   };
 
+  const setupCreateAndManageComponent = (featureFlags: FeatureFlags) => {
+    cy.then(() => {
+      mount(FinesDraftCreateAndManageTabsComponent, {
+        providers: [
+          provideHttpClient(),
+          OpalFines,
+          DateService,
+          FinesMacPayloadService,
+          FinesDraftStore,
+          provideRouter([]),
+          {
+            provide: GlobalStore,
+            useFactory: () => createGlobalStore(DRAFT_SESSION_USER_STATE_MOCK, featureFlags),
+          },
+        ],
+        componentProperties: {
+          activeTab: 'review',
+        },
+      });
+    });
+  };
+
+  const setupApprovedAccounts = (featureFlags: FeatureFlags) => {
+    interceptGetRejectedAccounts(200, { count: 0, summaries: [] });
+    interceptGetApprovedAccounts(200, {
+      count: OPAL_FINES_DRAFT_ACCOUNTS_MOCK.summaries.length,
+      summaries: OPAL_FINES_DRAFT_ACCOUNTS_MOCK.summaries,
+    });
+
+    setupCreateAndManageComponent(featureFlags);
+    cy.contains('a.moj-sub-navigation__link', 'Approved').should('be.visible').click();
+  };
+
   it(
     '(AC.1, AC.2, AC.4) should show Accounts in primary navigation for draft-account users when release-1a is enabled',
     { tags: [...buildTags(RELEASE_1A_STORY_TAG), RELEASE_EPIC_TAG, '@R1A'] },
@@ -193,6 +239,16 @@ describe('FinesDraftRelease1aFeatureToggles', () => {
       cy.get('#finesConsolidationLink').should('be.visible').and('contain.text', 'Consolidate accounts');
       cy.get('#finesCavInputterLink').should('not.exist');
       cy.get('#finesCavCheckerLink').should('not.exist');
+    },
+  );
+
+  it(
+    '(AC.5) should show approved account numbers as links when release-1b is enabled',
+    { tags: [...buildTags(RELEASE_1A_STORY_TAG, RELEASE_1B_STORY_TAG), RELEASE_EPIC_TAG, '@R1A', '@R1B'] },
+    () => {
+      setupApprovedAccounts({ 'release-1a': true, 'release-1b': true });
+
+      cy.contains(Table.cells.accountLink, 'FP123456').should('be.visible');
     },
   );
 });
