@@ -7,6 +7,11 @@ import { DASHBOARD_PAGE_CONFIGURATION_MAP, isDashboardPageType } from './constan
 import { IDashboardPageConfiguration } from '@hmcts/opal-frontend-common/pages/dashboard-page/interfaces';
 import { DASHBOARD_PAGE_DEFAULT_TAB } from './constants/dashboard-config-default-tab.constant';
 import { DASHBOARD_CONFIG_DEFAULT_DASHBOARD } from './constants/dashboard-config-default-dashboard.constant';
+import { GlobalStore } from '@hmcts/opal-frontend-common/stores/global';
+import {
+  filterDashboardConfigByFeatureFlags,
+  getFeatureFlagReleaseState,
+} from '@app/flows/fines/utils/fines-section-permissions.utils';
 
 @Component({
   selector: 'app-dashboard',
@@ -16,6 +21,7 @@ import { DASHBOARD_CONFIG_DEFAULT_DASHBOARD } from './constants/dashboard-config
 })
 export class DashboardComponent {
   private readonly activatedRoute = inject(ActivatedRoute);
+  private readonly globalStore = inject(GlobalStore);
 
   /**
    * Creates a signal that tracks the 'dashboardType' route parameter. This signal updates whenever the route parameters change, allowing the component to reactively determine which dashboard configuration to use based on the current URL. The initial value is set to null, indicating that no specific dashboard type has been selected yet.
@@ -25,16 +31,20 @@ export class DashboardComponent {
     { initialValue: null },
   );
 
-  /**
-   * Resolves the dashboard configuration based on the current route parameter 'dashboardType'. If the parameter is valid and corresponds to a known dashboard type, it returns the specific configuration for that type. If the parameter is missing or invalid, it falls back to the default dashboard configuration defined in DASHBOARD_CONFIG_DEFAULT_DASHBOARD.
-   */
   public readonly resolvedConfig = computed<IDashboardPageConfiguration>(() => {
     const dashboardType = this.dashboardType();
+    const featureFlagReleaseState = getFeatureFlagReleaseState(this.globalStore.featureFlags());
 
     if (dashboardType && isDashboardPageType(dashboardType)) {
-      return DASHBOARD_PAGE_CONFIGURATION_MAP[dashboardType];
+      return filterDashboardConfigByFeatureFlags(
+        DASHBOARD_PAGE_CONFIGURATION_MAP[dashboardType],
+        featureFlagReleaseState,
+      );
     }
 
-    return DASHBOARD_PAGE_CONFIGURATION_MAP[DASHBOARD_PAGE_DEFAULT_TAB] ?? DASHBOARD_CONFIG_DEFAULT_DASHBOARD;
+    const defaultConfig =
+      DASHBOARD_PAGE_CONFIGURATION_MAP[DASHBOARD_PAGE_DEFAULT_TAB] ?? DASHBOARD_CONFIG_DEFAULT_DASHBOARD;
+
+    return filterDashboardConfigByFeatureFlags(defaultConfig, featureFlagReleaseState);
   });
 }
