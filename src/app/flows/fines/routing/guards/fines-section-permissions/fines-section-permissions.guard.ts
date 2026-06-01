@@ -1,12 +1,18 @@
 import { inject } from '@angular/core';
-import { ActivatedRouteSnapshot, CanActivateFn, Router, UrlTree } from '@angular/router';
-import { FINES_PRIMARY_NAVIGATION_SECTION_PERMISSIONS } from '@app/flows/fines/constants/fines-primary-navigation-section-permissions.constant';
-import { getUserPermissionIds, hasAnyPermission } from '@app/flows/fines/utils/fines-section-permissions.utils';
+import { ActivatedRouteSnapshot, CanActivateFn, Router, RouterStateSnapshot, UrlTree } from '@angular/router';
+import {
+  getRequiredPermissionIdsForSection,
+  getUserPermissionIds,
+  hasAnyPermission,
+} from '@app/flows/fines/utils/fines-section-permissions.utils';
+import { RELEASE_1A_FEATURE_FLAG } from '@app/flows/fines/constants/release-feature-flags.constant';
+import { type FeatureFlagReleaseState } from '@app/flows/fines/types/feature-flag-release-state.type';
 import { isDashboardPageType } from '@app/pages/dashboard/constants/dashboard-config.constant';
 import { DashboardPageType } from '@app/pages/dashboard/types/dashboard.type';
+import { resolveFeatureFlagGuard } from '@hmcts/opal-frontend-common/guards/feature-flag';
 import { PAGES_ROUTING_PATHS as COMMON_PAGES_ROUTING_PATHS } from '@hmcts/opal-frontend-common/pages/routing/constants';
 import { OpalUserService } from '@hmcts/opal-frontend-common/services/opal-user-service';
-import { catchError, map, Observable, of } from 'rxjs';
+import { firstValueFrom } from 'rxjs';
 
 const getSectionKey = (route: ActivatedRouteSnapshot): DashboardPageType | null => {
   const routeSectionKey = route.data['sectionKey'];
@@ -24,24 +30,46 @@ const getSectionKey = (route: ActivatedRouteSnapshot): DashboardPageType | null 
   return null;
 };
 
-export const finesSectionPermissionsGuard: CanActivateFn = (
+export const finesSectionPermissionsGuard: CanActivateFn = async (
   route: ActivatedRouteSnapshot,
-): boolean | UrlTree | Observable<boolean | UrlTree> => {
+  state: RouterStateSnapshot,
+): Promise<boolean | UrlTree> => {
   const router = inject(Router);
   const opalUserService = inject(OpalUserService);
   const sectionKey = getSectionKey(route);
-  const requiredPermissionIds = sectionKey ? FINES_PRIMARY_NAVIGATION_SECTION_PERMISSIONS[sectionKey] : undefined;
 
-  if (!requiredPermissionIds?.length) {
+  if (!sectionKey) {
     return true;
   }
 
-  return opalUserService.getLoggedInUserState().pipe(
-    map((userState) =>
-      hasAnyPermission(requiredPermissionIds, getUserPermissionIds(userState))
-        ? true
-        : router.createUrlTree([`/${COMMON_PAGES_ROUTING_PATHS.children.accessDenied}`]),
-    ),
-    catchError(() => of(false)),
-  );
+  const getAccessDeniedUrlTree = () => router.createUrlTree([`/${COMMON_PAGES_ROUTING_PATHS.children.accessDenied}`]);
+
+  const checkSectionPermissions = async (
+    featureFlagReleaseState: FeatureFlagReleaseState,
+  ): Promise<boolean | UrlTree> => {
+    const requiredPermissionIds = getRequiredPermissionIdsForSection(sectionKey, featureFlagReleaseState);
+
+    if (!requiredPermissionIds) {
+      return true;
+    }
+
+    if (requiredPermissionIds.length === 0) {
+      return getAccessDeniedUrlTree();
+    }
+
+    try {
+      const userState = await firstValueFrom(opalUserService.getLoggedInUserState());
+
+      return hasAnyPermission(requiredPermissionIds, getUserPermissionIds(userState)) ? true : getAccessDeniedUrlTree();
+    } catch {
+      return false;
+    }
+  };
+
+  const featureFlagReleaseState =
+    sectionKey === 'accounts'
+      ? { [RELEASE_1A_FEATURE_FLAG]: await resolveFeatureFlagGuard(RELEASE_1A_FEATURE_FLAG, route, state) }
+      : {};
+
+  return checkSectionPermissions(featureFlagReleaseState);
 };
