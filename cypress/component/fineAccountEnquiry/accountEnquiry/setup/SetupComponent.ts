@@ -10,6 +10,13 @@ import { PermissionsService } from '@hmcts/opal-frontend-common/services/permiss
 import { UtilsService } from '@hmcts/opal-frontend-common/services/utils-service';
 import { GlobalStore } from '@hmcts/opal-frontend-common/stores/global';
 import { IComponentProperties } from './setupComponent.interface';
+import { DEFAULT_USER_STATE_DOMAIN } from '../../../CommonIntercepts/CommonIntercepts';
+
+const buildGlobalStore = (componentProperties: IComponentProperties): InstanceType<typeof GlobalStore> => {
+  const store = componentProperties.globalStoreFactory ? componentProperties.globalStoreFactory() : new GlobalStore();
+  store.setUserStateDomain(componentProperties.userStateDomain ?? DEFAULT_USER_STATE_DOMAIN);
+  return store;
+};
 
 /**
  * Sets up and mounts the `FinesAccComponent` for Cypress component testing.
@@ -32,12 +39,10 @@ export const setupAccountEnquiryComponent = (componentProperties: IComponentProp
         OpalFines,
         PermissionsService,
         UtilsService,
-        componentProperties.globalStoreFactory
-          ? {
-              provide: GlobalStore,
-              useFactory: componentProperties.globalStoreFactory,
-            }
-          : GlobalStore,
+        {
+          provide: GlobalStore,
+          useFactory: () => buildGlobalStore(componentProperties),
+        },
         componentProperties.finesAccountStoreFactory
           ? {
               provide: FinesAccountStore,

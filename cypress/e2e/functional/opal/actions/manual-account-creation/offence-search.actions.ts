@@ -2,7 +2,10 @@
  * @file Actions for the Manual Account Creation **Offence search** pages.
  * @description Covers entering search criteria, submitting, navigating back, and validating results.
  */
-import { MacOffenceDetailsLocators as L } from '../../../../../shared/selectors/manual-account-creation/mac.offence-details.locators';
+import {
+  MacOffenceDetailsLocators as L,
+  MacOffenceDetailsSearchOffenceResultsLocators as R,
+} from '../../../../../shared/selectors/manual-account-creation/mac.offence-details.locators';
 import { createScopedLogger } from '../../../../../support/utils/log.helper';
 import { CommonActions } from '../common/common.actions';
 
@@ -15,6 +18,7 @@ type ResultsColumn = 'Code' | 'Short title' | 'Act and section' | 'Used from' | 
 export class ManualOffenceSearchActions {
   private readonly common = new CommonActions();
   private readonly pathTimeout = this.common.getPathTimeout();
+  private readonly paginationLimit = 10;
 
   /**
    * Asserts the search form page is displayed.
@@ -110,11 +114,7 @@ export class ManualOffenceSearchActions {
    * @param expected - Expected text.
    */
   assertResultContains(column: ResultsColumn, expected: string): void {
-    const cellId = this.resolveResultColumnId(column);
-    log('assert', 'Validating search results column value', { column, expected });
-    cy.get(L.search.resultsTable, this.common.getTimeoutOptions())
-      .find(`td#${cellId}`)
-      .should('contain.text', expected);
+    this.assertResultsIncludeValues(column, [expected]);
   }
 
   /**
@@ -125,7 +125,7 @@ export class ManualOffenceSearchActions {
   assertAllResultsContain(column: ResultsColumn, expected: string): void {
     const cellId = this.resolveResultColumnId(column);
     log('assert', 'Validating all search results contain value', { column, expected });
-    cy.get(L.search.resultsTable, this.common.getTimeoutOptions())
+    cy.get(R.app, this.common.getTimeoutOptions())
       .find(`td#${cellId}`)
       .should('have.length.greaterThan', 0)
       .each(($cell) => cy.wrap($cell).should('contain.text', expected));
@@ -139,17 +139,53 @@ export class ManualOffenceSearchActions {
   assertResultsIncludeValues(column: ResultsColumn, expectedValues: string[]): void {
     const cellId = this.resolveResultColumnId(column);
     log('assert', 'Validating search results include values', { column, expectedValues });
-    cy.get(L.search.resultsTable, this.common.getTimeoutOptions())
-      .find(`td#${cellId}`)
-      .then(($cells) => {
-        const values = Array.from($cells, (cell) => cell.textContent?.trim() ?? '');
+    const foundValues = new Set<string>();
+
+    const scanPage = (remainingPages: number) => {
+      cy.get(R.app, this.common.getTimeoutOptions()).should('exist');
+      cy.get('body', this.common.getTimeoutOptions()).then(($body) => {
+        const values = Array.from($body.find(`${R.app} td#${cellId}`), (cell) => cell.textContent?.trim() ?? '');
+
         expectedValues.forEach((expected) => {
-          expect(
-            values.some((val) => val.includes(expected)),
-            `Expected at least one "${column}" value to include "${expected}"`,
-          ).to.be.true;
+          if (values.some((value) => this.normalizeResultText(value).includes(this.normalizeResultText(expected)))) {
+            foundValues.add(expected);
+          }
         });
+
+        const missingValues = expectedValues.filter((expected) => !foundValues.has(expected));
+        if (!missingValues.length) {
+          return;
+        }
+
+        const nextPage = $body.find(R.nextPageButton).first();
+        const hasNextPage = nextPage.length > 0;
+
+        if (hasNextPage && remainingPages > 0) {
+          const currentPage = $body.find(R.paginationCurrentPage).first().text().trim();
+          const paginationText = $body.find(R.paginationText).first().text().trim();
+          cy.wrap(nextPage).scrollIntoView().click({ force: true });
+          if (currentPage) {
+            cy.get(R.paginationCurrentPage, this.common.getTimeoutOptions()).should(($currentPage) => {
+              expect($currentPage.text().trim(), 'pagination advanced').not.to.equal(currentPage);
+            });
+          } else if (paginationText) {
+            cy.get(R.paginationText, this.common.getTimeoutOptions()).should(($paginationText) => {
+              expect($paginationText.text().trim(), 'pagination status changed').not.to.equal(paginationText);
+            });
+          }
+          scanPage(remainingPages - 1);
+          return;
+        }
+
+        throw new Error(
+          `Expected offence search results column "${column}" to include ${missingValues
+            .map((value) => `"${value}"`)
+            .join(', ')} across paginated results. Last visible values: ${values.join(' | ') || '[none]'}`,
+        );
       });
+    };
+
+    scanPage(this.paginationLimit);
   }
 
   /**
@@ -160,7 +196,7 @@ export class ManualOffenceSearchActions {
   getResultColumnValues(column: ResultsColumn): Cypress.Chainable<string[]> {
     const cellId = this.resolveResultColumnId(column);
     return cy
-      .get(L.search.resultsTable, this.common.getTimeoutOptions())
+      .get(R.app, this.common.getTimeoutOptions())
       .find(`td#${cellId}`)
       .then(($cells) => Array.from($cells, (cell) => cell.textContent?.trim() ?? ''));
   }
@@ -198,5 +234,18 @@ export class ManualOffenceSearchActions {
     if (normalized.includes('used from')) return 'usedFrom';
     if (normalized.includes('used to')) return 'usedTo';
     throw new Error(`Unknown results column: ${column}`);
+  }
+
+  /**
+   * Normalizes result text so cross-page assertions tolerate whitespace differences.
+   * @param value - Raw cell or expected text.
+   * @returns Lower-cased normalized text.
+   */
+  private normalizeResultText(value: string): string {
+    return value
+      .replace(/\u00a0/g, ' ')
+      .replace(/\s+/g, ' ')
+      .trim()
+      .toLowerCase();
   }
 }

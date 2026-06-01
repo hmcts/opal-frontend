@@ -5,6 +5,7 @@ export const FORMAT_CHECK = {
     "Parent or guardian's last name must only include letters a to z, numbers 0-9 and certain special characters (such as hyphens, spaces, apostrophes and commas)",
   dateOfBirthInFuture: 'Enter a valid date of birth in the past',
   dateOfBirthInvalid: 'Enter date of birth in the format DD/MM/YYYY',
+  dateOfBirthNotValid: 'Enter a valid date of birth',
   addressLine1ContainsSpecialCharacters: 'Address line 1 must only contain letters or numbers',
   addressLine2ContainsSpecialCharacters: 'Address line 2 must only contain letters or numbers',
   addressLine3ContainsSpecialCharacters: 'Address line 3 must only contain letters or numbers',

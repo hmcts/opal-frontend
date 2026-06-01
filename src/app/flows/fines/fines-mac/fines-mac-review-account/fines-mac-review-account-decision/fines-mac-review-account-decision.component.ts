@@ -53,7 +53,7 @@ export class FinesMacReviewAccountDecisionComponent extends AbstractFormParentBa
     const payload = this.finesMacPayloadService.buildPatchAccountPayload(
       this.finesDraftStore.getFinesDraftState(),
       status,
-      form.formData.fm_review_account_decision_reason,
+      form.formData.fm_review_account_decision_reason ?? null,
       this.userState,
     );
 

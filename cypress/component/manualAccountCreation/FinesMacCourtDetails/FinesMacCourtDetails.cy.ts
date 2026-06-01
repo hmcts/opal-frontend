@@ -47,7 +47,7 @@ describe('FinesMacCourtDetailsComponent', () => {
   };
   it(
     'should render the component correctly for AY',
-    { tags: [...buildTags('@JIRA-STORY:PO-389'), '@JIRA-EPIC:PO-272'] },
+    { tags: [...buildTags('@JIRA-STORY:PO-389'), '@JIRA-EPIC:PO-272', '@JIRA-TEST-KEY:PO-4924'] },
     () => {
       setupComponent(null, 'adultOrYouthOnly');
       cy.get(L.componentRoot).should('exist');
@@ -56,7 +56,9 @@ describe('FinesMacCourtDetailsComponent', () => {
   );
   it(
     'should render the component correctly for AYPG',
-    { tags: [...buildTags('@JIRA-STORY:PO-527', '@JIRA-STORY:PO-1449'), '@JIRA-EPIC:PO-344'] },
+    {
+      tags: [...buildTags('@JIRA-STORY:PO-527', '@JIRA-STORY:PO-1449'), '@JIRA-EPIC:PO-344', '@JIRA-TEST-KEY:PO-4925'],
+    },
     () => {
       setupComponent(null, 'pgToPay');
       cy.get(L.componentRoot).should('exist');
@@ -65,7 +67,7 @@ describe('FinesMacCourtDetailsComponent', () => {
   );
   it(
     'should render the component correctly for COMP',
-    { tags: [...buildTags('@JIRA-STORY:PO-529'), '@JIRA-EPIC:PO-345'] },
+    { tags: [...buildTags('@JIRA-STORY:PO-529'), '@JIRA-EPIC:PO-345', '@JIRA-TEST-KEY:PO-4926'] },
     () => {
       setupComponent(null, 'company');
       cy.get(L.componentRoot).should('exist');
@@ -75,7 +77,7 @@ describe('FinesMacCourtDetailsComponent', () => {
 
   it(
     '(AC.1, AC.4) should be created as per the design artifacts',
-    { tags: [...buildTags('@JIRA-STORY:PO-389'), '@JIRA-EPIC:PO-272'] },
+    { tags: [...buildTags('@JIRA-STORY:PO-389'), '@JIRA-EPIC:PO-272', '@JIRA-TEST-KEY:PO-4927'] },
     () => {
       const formSubmitSpy = Cypress.sinon.spy();
       setupComponent(formSubmitSpy, 'adultOrYouthOnly');
@@ -99,7 +101,15 @@ describe('FinesMacCourtDetailsComponent', () => {
   );
   it(
     '(AC.2) should dynamically filter LJA field',
-    { tags: [...buildTags('@JIRA-STORY:PO-389'), '@JIRA-EPIC:PO-272'] },
+    {
+      tags: [
+        ...buildTags('@JIRA-STORY:PO-389'),
+        '@JIRA-EPIC:PO-272',
+        '@JIRA-NFR:PO-2328',
+        '@JIRA-NFR:PO-2329',
+        '@JIRA-TEST-KEY:PO-4928',
+      ],
+    },
     () => {
       setupComponent(null, 'adultOrYouthOnly');
 
@@ -118,7 +128,15 @@ describe('FinesMacCourtDetailsComponent', () => {
   );
   it(
     '(AC.3) should dynamically filter Enforcement court field',
-    { tags: [...buildTags('@JIRA-STORY:PO-389'), '@JIRA-EPIC:PO-272'] },
+    {
+      tags: [
+        ...buildTags('@JIRA-STORY:PO-389'),
+        '@JIRA-EPIC:PO-272',
+        '@JIRA-NFR:PO-2328',
+        '@JIRA-NFR:PO-2329',
+        '@JIRA-TEST-KEY:PO-4929',
+      ],
+    },
     () => {
       setupComponent(null, 'adultOrYouthOnly');
       //Verify working input fields
@@ -136,7 +154,7 @@ describe('FinesMacCourtDetailsComponent', () => {
 
   it(
     '(AC.5) should validate mandatory fields',
-    { tags: [...buildTags('@JIRA-STORY:PO-389'), '@JIRA-EPIC:PO-272'] },
+    { tags: [...buildTags('@JIRA-STORY:PO-389'), '@JIRA-EPIC:PO-272', '@JIRA-TEST-KEY:PO-4930'] },
     () => {
       setupComponent(null, 'adultOrYouthOnly');
 
@@ -180,7 +198,7 @@ describe('FinesMacCourtDetailsComponent', () => {
 
   it(
     '(AC.6) should validate mandatory fields even when data exists in another',
-    { tags: [...buildTags('@JIRA-STORY:PO-389'), '@JIRA-EPIC:PO-272'] },
+    { tags: [...buildTags('@JIRA-STORY:PO-389'), '@JIRA-EPIC:PO-272', '@JIRA-TEST-KEY:PO-4931'] },
     () => {
       setupComponent(null, 'adultOrYouthOnly', undefined, (finesMacState) => {
         finesMacState.courtDetails.formData.fm_court_details_prosecutor_case_reference = '1234';
@@ -226,7 +244,7 @@ describe('FinesMacCourtDetailsComponent', () => {
 
   it(
     '(AC.7) should validate PRC field length',
-    { tags: [...buildTags('@JIRA-STORY:PO-389'), '@JIRA-EPIC:PO-272'] },
+    { tags: [...buildTags('@JIRA-STORY:PO-389'), '@JIRA-EPIC:PO-272', '@JIRA-TEST-KEY:PO-4932'] },
     () => {
       setupComponent(null, undefined, OPAL_FINES_LOCAL_JUSTICE_AREA_REF_DATA_MOCK, (finesMacState) => {
         finesMacState.courtDetails.formData.fm_court_details_prosecutor_case_reference = 'a'.repeat(31);
@@ -242,7 +260,7 @@ describe('FinesMacCourtDetailsComponent', () => {
 
   it(
     '(AC.7) should validate PCR field allowed characters',
-    { tags: [...buildTags('@JIRA-STORY:PO-389'), '@JIRA-EPIC:PO-272'] },
+    { tags: [...buildTags('@JIRA-STORY:PO-389'), '@JIRA-EPIC:PO-272', '@JIRA-TEST-KEY:PO-4933'] },
     () => {
       const invalidInputs = ['1234!', '1@', 'test@', 'test1234@', 'abc#', '123$', 'abc%', '123^', 'abc&', '123*'];
       cy.wrap(invalidInputs).each((input: string) => {
@@ -259,7 +277,9 @@ describe('FinesMacCourtDetailsComponent', () => {
 
   it(
     '(AC.8) should clear errors when validation is passed',
-    { tags: [...buildTags('@JIRA-STORY:PO-389'), '@JIRA-EPIC:PO-272'] },
+    {
+      tags: [...buildTags('@JIRA-STORY:PO-389'), '@JIRA-EPIC:PO-272', '@JIRA-NFR:PO-2329', '@JIRA-TEST-KEY:PO-4934'],
+    },
     () => {
       const formSubmitSpy = Cypress.sinon.spy();
       setupComponent(formSubmitSpy, 'adultOrYouthOnly');
@@ -294,7 +314,7 @@ describe('FinesMacCourtDetailsComponent', () => {
 
   it(
     '(AC.9) should clear errors when validation is passed',
-    { tags: [...buildTags('@JIRA-STORY:PO-389'), '@JIRA-EPIC:PO-272'] },
+    { tags: [...buildTags('@JIRA-STORY:PO-389'), '@JIRA-EPIC:PO-272', '@JIRA-TEST-KEY:PO-4935'] },
     () => {
       const formSubmitSpy = Cypress.sinon.spy();
       setupComponent(formSubmitSpy, 'adultOrYouthOnly');
@@ -330,7 +350,7 @@ describe('FinesMacCourtDetailsComponent', () => {
 
   it(
     '(AC.1) should convert PCR input to uppercase',
-    { tags: [...buildTags('@JIRA-STORY:PO-1450'), '@JIRA-EPIC:PO-345'] },
+    { tags: [...buildTags('@JIRA-STORY:PO-1450'), '@JIRA-EPIC:PO-345', '@JIRA-TEST-KEY:PO-4936'] },
     () => {
       setupComponent(null, 'company');
 
@@ -342,7 +362,7 @@ describe('FinesMacCourtDetailsComponent', () => {
 
   it(
     'Prosecutor Case Reference should capitalise - AYPG',
-    { tags: [...buildTags('@JIRA-STORY:PO-1449'), '@JIRA-EPIC:PO-344'] },
+    { tags: [...buildTags('@JIRA-STORY:PO-1449'), '@JIRA-EPIC:PO-344', '@JIRA-TEST-KEY:PO-4937'] },
     () => {
       const formSubmitSpy = Cypress.sinon.spy();
       setupComponent(formSubmitSpy, 'pgToPay');
@@ -362,7 +382,7 @@ describe('FinesMacCourtDetailsComponent', () => {
 
   it(
     '(AC.1) should convert PCR input to uppercase (Adult or youth only)',
-    { tags: [...buildTags('@JIRA-STORY:PO-1448'), '@JIRA-EPIC:PO-272'] },
+    { tags: [...buildTags('@JIRA-STORY:PO-1448'), '@JIRA-EPIC:PO-272', '@JIRA-TEST-KEY:PO-4938'] },
     () => {
       setupComponent(null, 'adultOrYouthOnly');
 
@@ -374,7 +394,15 @@ describe('FinesMacCourtDetailsComponent', () => {
 
   it(
     'Should show all values in LJA and Enforcement Court auto-complete dropdown when selected',
-    { tags: [...buildTags('@JIRA-STORY:PO-1990'), '@JIRA-EPIC:PO-545'] },
+    {
+      tags: [
+        ...buildTags('@JIRA-STORY:PO-1990'),
+        '@JIRA-EPIC:PO-545',
+        '@JIRA-NFR:PO-2328',
+        '@JIRA-NFR:PO-2329',
+        '@JIRA-TEST-KEY:PO-4939',
+      ],
+    },
     () => {
       setupComponent(null, 'adultOrYouthOnly');
 
@@ -398,7 +426,15 @@ describe('FinesMacCourtDetailsComponent', () => {
 
   it(
     '(AC3, AC4) should only show PSA/CRWCRT local justice areas for filtered journeys (Fine/Confiscation)',
-    { tags: [...buildTags('@JIRA-STORY:PO-2761'), '@JIRA-EPIC:PO-545'] },
+    {
+      tags: [
+        ...buildTags('@JIRA-STORY:PO-2761'),
+        '@JIRA-EPIC:PO-545',
+        '@JIRA-NFR:PO-2328',
+        '@JIRA-NFR:PO-2329',
+        '@JIRA-TEST-KEY:PO-4940',
+      ],
+    },
     () => {
       const filteredLocalJusticeAreas: IOpalFinesLocalJusticeAreaRefData = {
         count: 2,

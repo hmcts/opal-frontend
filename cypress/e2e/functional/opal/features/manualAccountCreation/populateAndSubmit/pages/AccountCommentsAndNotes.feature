@@ -8,6 +8,7 @@ Feature: Manual account creation - Account Comments and Notes
   Background:
     Given I am logged in with email "opal-test@dev.platform.hmcts.net"
 
+  @JIRA-TEST-KEY:PO-5395
   Scenario: Providing account comments and notes updates the task status and persists the data [@PO-272, @PO-344, @PO-345, @PO-469, @PO-499, @PO-500]
     Given I start a fine manual account for business unit "West London" with defendant type "Adult or youth" and originator type "New"
     Then the "Account comments and notes" task status is "Not provided"
@@ -16,13 +17,14 @@ Feature: Manual account creation - Account Comments and Notes
     When I view the "Account comments and notes" task
     Then the manual account comment and note fields show "Test comments" and "Test notes"
 
+  @JIRA-TEST-KEY:PO-5396
   Scenario: A new manual account starts with comments and notes not provided [@PO-272, @PO-344, @PO-345, @PO-469, @PO-499, @PO-500]
     Given I start a fine manual account for business unit "West London" with defendant type "Adult or youth" and originator type "New"
     Then the "Account comments and notes" task status is "Not provided"
     When I view the "Account comments and notes" task
     Then the manual account comment and note fields show "" and ""
 
-  @JIRA-DEFECT:PO-3713
+  @JIRA-DEFECT:PO-3713 @JIRA-TEST-KEY:PO-5397
   Scenario: Account comments and notes accept commas in both fields [@PO-3713]
     Given I start a fine manual account for business unit "West London" with defendant type "Adult or youth" and originator type "New"
     When I provide account comments "O'Neil, note-1." and notes "Account, note-1. O'Neil ok"
@@ -38,12 +40,16 @@ Feature: Manual account creation - Account Comments and Notes
     When I view the "Account comments and notes" task
     Then the manual account comment and note fields show "<comment>" and "<note>"
 
+    @JIRA-TEST-KEY:PO-5398
     Examples:
       | comment            | note                       |
       | O'Neil, comment-1. | Plain note                 |
+    @JIRA-TEST-KEY:PO-5399
+    Examples:
+      | comment            | note                       |
       | Plain comment      | Account, note-1. O'Neil ok |
 
-  @JIRA-DEFECT:PO-3713
+  @JIRA-DEFECT:PO-3713 @JIRA-TEST-KEY:PO-5400
   Scenario: Account comments and notes show updated allowed character error messages [@PO-3713, @PO-3415]
     Given I start a fine manual account for business unit "West London" with defendant type "Adult or youth" and originator type "New"
     When I provide account comments "Invalid ©µ±ö€" and notes "Invalid ©µ±ö€"
@@ -51,7 +57,7 @@ Feature: Manual account creation - Account Comments and Notes
     Then the manual account comment validation error is "Add comment must only include letters a to z, numbers 0-9 and certain special characters (such as hyphens, spaces, apostrophes and commas)"
     And the manual account note validation error is "Add account note must only include letters a to z, numbers 0-9 and certain special characters (such as hyphens, spaces, apostrophes and commas)"
 
-  @JIRA-KEY:POT-5029
+  @JIRA-KEY:POT-5029 @JIRA-TEST-KEY:PO-5401
   Scenario: Unsaved account comments can be kept or discarded [@PO-272, @PO-344, @PO-345, @PO-469, @PO-499, @PO-500]
     Given I start a fine manual account for business unit "West London" with defendant type "Adult or youth" and originator type "New"
     And I provide account comments "Test comments" and notes "Test notes"
@@ -63,6 +69,7 @@ Feature: Manual account creation - Account Comments and Notes
     When I view the "Account comments and notes" task
     Then the manual account comment and note fields show "" and ""
 
+  @JIRA-TEST-KEY:PO-5402
   Scenario: Task navigation allows review after all sections are provided [@PO-272, @PO-469, @PO-499, @PO-500]
     Given I start a fine manual account for business unit "West London" with defendant type "Adult or youth" and originator type "New"
     Then the "Account comments and notes" task status is "Not provided"
@@ -108,6 +115,7 @@ Feature: Manual account creation - Account Comments and Notes
     And I view the "Account comments and notes" task
     Then I can proceed to review account details from comments and notes and see the header "Check account details"
 
+  @JIRA-TEST-KEY:PO-5403
   Scenario: Account Comments and Notes - Axe Core
     Given I start a fine manual account for business unit "West London" with defendant type "Adult or youth" and originator type "New"
     When I view the "Account comments and notes" task

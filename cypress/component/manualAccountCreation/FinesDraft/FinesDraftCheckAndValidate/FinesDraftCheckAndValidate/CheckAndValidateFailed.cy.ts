@@ -53,7 +53,7 @@ describe('FinesDraftCheckAndValidateFailedComponent', () => {
 
   it(
     '(AC.1) Review account is created as per design artefact',
-    { tags: [...buildTags('@JIRA-STORY:PO-1059'), '@JIRA-EPIC:PO-2220'] },
+    { tags: [...buildTags('@JIRA-STORY:PO-1059'), '@JIRA-EPIC:PO-2220', '@JIRA-TEST-KEY:PO-4708'] },
     () => {
       const emptyMockData = { count: 0, summaries: [] };
 
@@ -114,7 +114,7 @@ describe('FinesDraftCheckAndValidateFailedComponent', () => {
 
   it(
     '(AC.2) should display the Failed tab correctly when there are zero draft records',
-    { tags: [...buildTags('@JIRA-STORY:PO-1059'), '@JIRA-EPIC:PO-2220'] },
+    { tags: [...buildTags('@JIRA-STORY:PO-1059'), '@JIRA-EPIC:PO-2220', '@JIRA-TEST-KEY:PO-4709'] },
     () => {
       const emptyMockData = { count: 0, summaries: [] };
 
@@ -138,7 +138,7 @@ describe('FinesDraftCheckAndValidateFailedComponent', () => {
 
   it(
     '(AC.2c) should display the Failed account count for 1-99 accounts',
-    { tags: [...buildTags('@JIRA-STORY:PO-1059'), '@JIRA-EPIC:PO-2220'] },
+    { tags: [...buildTags('@JIRA-STORY:PO-1059'), '@JIRA-EPIC:PO-2220', '@JIRA-TEST-KEY:PO-4710'] },
     () => {
       const count = [1, 2, 30, 49, 80, 99];
       cy.wrap(count).each((accountCount) => {
@@ -161,7 +161,7 @@ describe('FinesDraftCheckAndValidateFailedComponent', () => {
 
   it(
     '(AC.2c) should display the Failed account count for 99+ accounts',
-    { tags: [...buildTags('@JIRA-STORY:PO-1059'), '@JIRA-EPIC:PO-2220'] },
+    { tags: [...buildTags('@JIRA-STORY:PO-1059'), '@JIRA-EPIC:PO-2220', '@JIRA-TEST-KEY:PO-4711'] },
     () => {
       interceptCAVGetRejectedAccounts(200, { count: 0, summaries: [] });
       interceptCAVGetToReviewAccounts(200, { count: 0, summaries: [] });
@@ -181,7 +181,7 @@ describe('FinesDraftCheckAndValidateFailedComponent', () => {
 
   it(
     '(AC.3) should display the Failed tab correctly when there are draft records',
-    { tags: [...buildTags('@JIRA-STORY:PO-1059'), '@JIRA-EPIC:PO-2220'] },
+    { tags: [...buildTags('@JIRA-STORY:PO-1059'), '@JIRA-EPIC:PO-2220', '@JIRA-TEST-KEY:PO-4712'] },
     () => {
       const failedMockData = structuredClone(OPAL_FINES_DRAFT_VALIDATE_ACCOUNTS_MOCK);
       interceptCAVGetRejectedAccounts(200, { count: 0, summaries: [] });
@@ -215,7 +215,7 @@ describe('FinesDraftCheckAndValidateFailedComponent', () => {
 
   it(
     '(AC.4a) should have default sort order for created accounts set to ascending (FinesDraftCheckAndValidateFailedComponent)',
-    { tags: [...buildTags('@JIRA-STORY:PO-1059'), '@JIRA-EPIC:PO-2220'] },
+    { tags: [...buildTags('@JIRA-STORY:PO-1059'), '@JIRA-EPIC:PO-2220', '@JIRA-TEST-KEY:PO-4713'] },
     () => {
       const failedMockData = structuredClone(OPAL_FINES_DRAFT_VALIDATE_ACCOUNTS_MOCK);
       interceptCAVGetRejectedAccounts(200, { count: 0, summaries: [] });
@@ -278,7 +278,7 @@ describe('FinesDraftCheckAndValidateFailedComponent', () => {
 
   it(
     '(AC.4b) should have pagination for over 25 accounts (FinesDraftCheckAndValidateFailedComponent)',
-    { tags: [...buildTags('@JIRA-STORY:PO-1059'), '@JIRA-EPIC:PO-2220'] },
+    { tags: [...buildTags('@JIRA-STORY:PO-1059'), '@JIRA-EPIC:PO-2220', '@JIRA-TEST-KEY:PO-4714'] },
     () => {
       const failedMockData = structuredClone(OPAL_FINES_VALIDATE_OVER_25_DRAFT_ACCOUNTS_MOCK);
       interceptCAVGetRejectedAccounts(200, { count: 0, summaries: [] });

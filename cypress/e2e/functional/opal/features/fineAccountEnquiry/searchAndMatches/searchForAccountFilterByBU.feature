@@ -6,18 +6,18 @@ Feature: Filter by Business Unit
     When I navigate to the Filter by business unit page
 
 
-  @JIRA-STORY:PO-711 @JIRA-STORY:PO-2610 @AC1a @JIRA-EPIC:PO-704
+  @JIRA-STORY:PO-711 @JIRA-STORY:PO-2610 @AC1a @JIRA-EPIC:PO-704 @JIRA-TEST-KEY:PO-5412
   Scenario: AC1a — Page and defaults on first load (Fines)
     Then the Filter by business unit page for Fines is shown with defaults
 
   @JIRA-EPIC:PO-704
-  @JIRA-STORY:PO-711 @AC1b
+  @JIRA-STORY:PO-711 @AC1b @JIRA-TEST-KEY:PO-5413
   Scenario: AC1b — Switching to Confiscation shows Confiscation header
     When the user switches to the Confiscation tab
     Then the Confiscation Filter by business unit page is shown with defaults
 
   @JIRA-EPIC:PO-704
-  @JIRA-STORY:PO-711 @AC7
+  @JIRA-STORY:PO-711 @AC7 @JIRA-TEST-KEY:PO-5414
   Scenario: AC7 — Saving sends the combined selection across tabs
     And I clear all selected business units on the "Fines" tab
     And I clear all selected business units on the "Confiscation" tab
@@ -31,7 +31,7 @@ Feature: Filter by Business Unit
 
 
   @JIRA-EPIC:PO-704
-  @JIRA-STORY:PO-711 @AC8
+  @JIRA-STORY:PO-711 @AC8 @JIRA-TEST-KEY:PO-5415
   Scenario: AC8 — Cancel does not save and returns to previous page
     And I clear all selected business units on the "Fines" tab
     And I clear all selected business units on the "Confiscation" tab
@@ -40,7 +40,7 @@ Feature: Filter by Business Unit
 
 
   @JIRA-EPIC:PO-704
-  @JIRA-STORY:PO-711 @AC9
+  @JIRA-STORY:PO-711 @AC9 @JIRA-TEST-KEY:PO-5416
   Scenario: AC9 — Switching tabs preserves selections and total count
     And I clear all selected business units on the "Fines" tab
     And I clear all selected business units on the "Confiscation" tab
@@ -65,7 +65,7 @@ Feature: Filter by Business Unit
 
 
   @JIRA-EPIC:PO-704
-  @JIRA-STORY:PO-711 @AC10
+  @JIRA-STORY:PO-711 @AC10 @JIRA-TEST-KEY:PO-5417
   Scenario: AC10 — Previously entered search criteria remain populated after saving amended business unit filter
     # Background ends on "Filter by business unit" → go back first
     When I cancel the business unit selection
