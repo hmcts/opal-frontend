@@ -20,7 +20,7 @@
  * @see {@link AccountSearchIndividualsActions}
  */
 
-import { assertSignOutLinkVisible, performLogin } from '../actions/login.actions';
+import { SEARCH_LANDING_PATH, assertSignOutLinkVisible, performLogin } from '../actions/login.actions';
 import { AccountSearchIndividualsActions } from '../actions/search/search.individuals.actions';
 
 /**
@@ -35,7 +35,7 @@ import { AccountSearchIndividualsActions } from '../actions/search/search.indivi
  *   user lands on a valid post-login home page for the current journey.
  */
 export function loginAndLandOnSearch(email: string): void {
-  performLogin(email);
+  performLogin(email, { landingPath: SEARCH_LANDING_PATH, validateSearchLandingDependencies: true });
   new AccountSearchIndividualsActions().assertOnSearchLandingPage();
 }
 
