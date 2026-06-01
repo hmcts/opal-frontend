@@ -52,6 +52,7 @@ export class PrimaryNavigationActions {
     log('assert', 'Checking dashboard landing is ready for navigation');
     this.assertVisible();
     this.assertSignOutVisible();
+    this.common.assertPageHeadingVisible();
     this.common.assertNoPageHeadingContains('there is a problem');
   }
 

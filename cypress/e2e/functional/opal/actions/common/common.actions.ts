@@ -56,6 +56,19 @@ export class CommonActions {
   }
 
   /**
+   * Asserts that a routed page heading has rendered.
+   */
+  public assertPageHeadingVisible(): void {
+    log('assert', 'Checking page heading is visible');
+
+    cy.get(L.header, this.getPathTimeoutOptions())
+      .should('be.visible')
+      .should(($heading) => {
+        expect($heading.first().text().trim(), 'page heading text').to.not.equal('');
+      });
+  }
+
+  /**
    * Asserts that the service name in the global header contains the expected text.
    * @param expected - Text that should appear within the service name link.
    * @param timeoutMs - Optional timeout override for the assertion.

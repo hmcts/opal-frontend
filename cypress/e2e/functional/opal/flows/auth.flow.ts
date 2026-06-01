@@ -7,7 +7,7 @@
  *
  * @remarks
  * - This flow provides a single entry point for test setup steps that require authentication.
- * - Delegates login logic to {@link performLogin} and post-login assertions to {@link AccountSearchIndividualsActions}.
+ * - Delegates login logic to {@link performLogin} and post-login assertions to {@link PrimaryNavigationActions}.
  * - Used by step definitions in `auth.steps.ts` for reusable Gherkin scenarios.
  *
  * @example
@@ -20,8 +20,7 @@
  * @see {@link PrimaryNavigationActions}
  */
 
-import { SEARCH_LANDING_PATH, assertSignOutLinkVisible, performLogin } from '../actions/login.actions';
-import { AccountSearchIndividualsActions } from '../actions/search/search.individuals.actions';
+import { assertSignOutLinkVisible, performLogin } from '../actions/login.actions';
 import { PrimaryNavigationActions } from '../actions/primary-navigation.actions';
 
 /**
@@ -38,20 +37,6 @@ import { PrimaryNavigationActions } from '../actions/primary-navigation.actions'
 export function loginAndVerifyDashboardLanding(email: string): void {
   performLogin(email);
   new PrimaryNavigationActions().assertDashboardLandingReady();
-}
-
-/**
- * Logs in and lands on the Fines Search page.
- *
- * @param email - The email address of the user to authenticate as.
- *
- * @details
- * - Calls {@link performLogin} to complete the login process and navigate to the Search route.
- * - Verifies the Search landing page is loaded and ready for interaction.
- */
-export function loginAndLandOnSearch(email: string): void {
-  performLogin(email, { landingPath: SEARCH_LANDING_PATH, validateSearchLandingDependencies: true });
-  new AccountSearchIndividualsActions().assertOnSearchLandingPage();
 }
 
 /**
