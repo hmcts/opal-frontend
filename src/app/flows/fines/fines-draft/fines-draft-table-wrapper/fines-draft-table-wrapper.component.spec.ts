@@ -120,6 +120,7 @@ describe('FinesDraftTableWrapperComponent', () => {
 
   it('should click account link and preserve current template click behaviour', () => {
     fixture.componentRef.setInput('activeTab', 'approved');
+    fixture.componentRef.setInput('approvedAccountLinksEnabled', true);
     fixture.componentRef.setInput('tableData', FINES_DRAFT_TABLE_WRAPPER_TABLE_DATA_MOCK);
     fixture.detectChanges();
 
@@ -146,6 +147,20 @@ describe('FinesDraftTableWrapperComponent', () => {
     expect(handlerSpy).toHaveBeenCalledWith(FINES_DRAFT_TABLE_WRAPPER_TABLE_DATA_MOCK[0]['Account id'], event);
     expect(event.defaultPrevented).toBe(true);
     expect(emitSpy).toHaveBeenCalledWith(FINES_DRAFT_TABLE_WRAPPER_TABLE_DATA_MOCK[0]['Account id']);
+  });
+
+  it('should render approved account numbers as plain text when account links are disabled', () => {
+    fixture.componentRef.setInput('activeTab', 'approved');
+    fixture.componentRef.setInput('approvedAccountLinksEnabled', false);
+    fixture.componentRef.setInput('tableData', FINES_DRAFT_TABLE_WRAPPER_TABLE_DATA_MOCK);
+    fixture.detectChanges();
+
+    const accountNumber = FINES_DRAFT_TABLE_WRAPPER_TABLE_DATA_MOCK[0].Account;
+    const accountCell = fixture.nativeElement.querySelector('#account') as HTMLTableCellElement | null;
+    const accountLinks = Array.from(fixture.nativeElement.querySelectorAll('a.govuk-link')) as HTMLAnchorElement[];
+
+    expect(accountCell?.textContent?.trim()).toBe(accountNumber);
+    expect(accountLinks.some((anchor) => anchor.textContent?.trim() === accountNumber)).toBe(false);
   });
 
   it('should prevent default and emit accountClicked when onAccountClick is called with an event', () => {

@@ -155,7 +155,7 @@ describe('AppComponent - browser', () => {
   beforeEach(() => {
     globalStore.setTokenExpiry(mockTokenExpiry);
     globalStore.setUserState(OPAL_USER_STATE_MOCK);
-    globalStore.setFeatureFlags({ 'release-1a': true });
+    globalStore.setFeatureFlags({ 'release-1a': true, 'release-1b': true });
   });
 
   it('should create the app', () => {
@@ -449,6 +449,17 @@ describe('AppComponent - browser', () => {
     fixture.detectChanges();
 
     expect(getPrimaryNavigationTexts(fixture)).toContain('Search');
+  });
+
+  it('should hide Search in primary navigation when release-1b is disabled and the user has a search permission', () => {
+    globalStore.setAuthenticated(true);
+    globalStore.setFeatureFlags({ 'release-1a': true, 'release-1b': false });
+    globalStore.setUserState(createUserStateWithPermissions([SEARCH_PERMISSIONS[0]]));
+
+    const fixture = TestBed.createComponent(AppComponent);
+    fixture.detectChanges();
+
+    expect(getPrimaryNavigationTexts(fixture)).not.toContain('Search');
   });
 
   it('should hide Accounts in primary navigation when the user lacks all accounts permissions', () => {

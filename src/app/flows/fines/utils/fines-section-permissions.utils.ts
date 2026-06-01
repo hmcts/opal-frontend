@@ -5,7 +5,7 @@ import { IOpalUserState } from '@hmcts/opal-frontend-common/services/opal-user-s
 import { FINES_PRIMARY_NAVIGATION_SECTION_PERMISSIONS } from '../constants/fines-primary-navigation-section-permissions.constant';
 import { type IDashboardPageConfiguration } from '@hmcts/opal-frontend-common/pages/dashboard-page/interfaces';
 import { FEATURE_FLAG_RELEASE_DASHBOARD_GROUPS } from '../constants/feature-flag-release-dashboard-groups.constant';
-import { RELEASE_1A_FEATURE_FLAG } from '../constants/release-feature-flags.constant';
+import { RELEASE_FEATURE_FLAGS } from '../constants/release-feature-flags.constant';
 import { FEATURE_FLAG_SECTION_PERMISSION_EXCLUSIONS } from '../constants/feature-flag-section-permission-exclusions.constant';
 import { type FeatureFlagReleaseName } from '../types/feature-flag-release-name.type';
 import { type FeatureFlagReleaseState } from '../types/feature-flag-release-state.type';
@@ -54,9 +54,15 @@ export const hasAnyPermission = (
  * @param featureFlags - The raw feature flag values from the global store.
  * @returns The release flag state used to apply release-specific permission and dashboard rules.
  */
-export const getFeatureFlagReleaseState = (featureFlags?: FeatureFlags | null): FeatureFlagReleaseState => ({
-  [RELEASE_1A_FEATURE_FLAG]: featureFlags?.[RELEASE_1A_FEATURE_FLAG] === true,
-});
+export const getFeatureFlagReleaseState = (featureFlags?: FeatureFlags | null): FeatureFlagReleaseState => {
+  const featureFlagReleaseState: FeatureFlagReleaseState = {};
+
+  for (const releaseFeatureFlag of RELEASE_FEATURE_FLAGS) {
+    featureFlagReleaseState[releaseFeatureFlag] = featureFlags?.[releaseFeatureFlag] === true;
+  }
+
+  return featureFlagReleaseState;
+};
 
 /**
  * Returns the permission IDs required for a dashboard section, excluding permissions for disabled release flags.

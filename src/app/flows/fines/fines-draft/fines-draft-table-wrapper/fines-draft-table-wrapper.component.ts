@@ -41,6 +41,7 @@ export class FinesDraftTableWrapperComponent extends AbstractSortableTablePagina
   }
   @Input({ required: false }) public activeTab: string = 'review';
   @Input({ required: false }) public isApprovedTab: boolean = false;
+  @Input({ required: false }) public approvedAccountLinksEnabled: boolean = false;
   @Input({ required: false }) public isChecker: boolean = false;
   @Output() public linkClicked = new EventEmitter<IFinesDraftTableWrapperTableData>();
   @Output() public accountClicked = new EventEmitter<number>();

@@ -86,6 +86,7 @@ describe('finesSectionPermissionsGuard', () => {
     const result = await runGuard({ sectionKey: FINES_DASHBOARD_ROUTING_PATHS.children.search });
 
     expect(result).toBe(true);
+    expect(resolveFeatureFlagGuardMock).toHaveBeenCalledWith('release-1b', expect.any(Object), expect.any(Object));
   });
 
   it('should redirect Search to access denied when the user lacks all search permissions', async () => {
@@ -95,6 +96,21 @@ describe('finesSectionPermissionsGuard', () => {
     const result = await runGuard({ sectionKey: FINES_DASHBOARD_ROUTING_PATHS.children.search });
 
     expect(result).toBe(expectedUrlTree);
+    expect(mockRouter.createUrlTree).toHaveBeenCalledWith([`/${COMMON_PAGES_ROUTING_PATHS.children.accessDenied}`]);
+  });
+
+  it('should redirect Search to access denied when release-1b is disabled and the user has search permissions', async () => {
+    const expectedUrlTree = new UrlTree();
+    resolveFeatureFlagGuardMock.mockResolvedValue(false);
+    mockOpalUserService.getLoggedInUserState.mockReturnValue(
+      of(createUserStateWithPermissions([SEARCH_PERMISSIONS[0]])),
+    );
+    mockRouter.createUrlTree.mockReturnValue(expectedUrlTree);
+
+    const result = await runGuard({ sectionKey: FINES_DASHBOARD_ROUTING_PATHS.children.search });
+
+    expect(result).toBe(expectedUrlTree);
+    expect(resolveFeatureFlagGuardMock).toHaveBeenCalledWith('release-1b', expect.any(Object), expect.any(Object));
     expect(mockRouter.createUrlTree).toHaveBeenCalledWith([`/${COMMON_PAGES_ROUTING_PATHS.children.accessDenied}`]);
   });
 

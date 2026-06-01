@@ -109,6 +109,27 @@ describe('dashboardLandingGuard', () => {
     ]);
   });
 
+  it('should route to Accounts when release-1b is disabled and Search would otherwise be permitted', async () => {
+    const expectedUrlTree = new UrlTree();
+    resolveFeatureFlagGuardMock.mockImplementation((featureFlagName: string) =>
+      Promise.resolve(featureFlagName !== 'release-1b'),
+    );
+    mockOpalUserService.getLoggedInUserState.mockReturnValue(
+      of(createUserStateWithPermissions([SEARCH_PERMISSIONS[0], ACCOUNTS_PERMISSIONS[0]])),
+    );
+    mockRouter.createUrlTree.mockReturnValue(expectedUrlTree);
+
+    const result = await runGuard();
+
+    expect(result).toBe(expectedUrlTree);
+    expect(mockRouter.createUrlTree).toHaveBeenCalledWith([
+      '/',
+      FINES_ROUTING_PATHS.root,
+      FINES_DASHBOARD_ROUTING_PATHS.root,
+      FINES_DASHBOARD_ROUTING_PATHS.children.accounts,
+    ]);
+  });
+
   it('should route to Finance when release-1a is disabled and the user only has draft accounts permission', async () => {
     const expectedUrlTree = new UrlTree();
     resolveFeatureFlagGuardMock.mockResolvedValue(false);
@@ -128,7 +149,7 @@ describe('dashboardLandingGuard', () => {
     ]);
   });
 
-  it('should resolve the release-1a feature flag before routing draft accounts users', async () => {
+  it('should resolve release feature flags before routing dashboard users', async () => {
     const expectedUrlTree = new UrlTree();
     resolveFeatureFlagGuardMock.mockResolvedValue(true);
     mockOpalUserService.getLoggedInUserState.mockReturnValue(
@@ -140,6 +161,7 @@ describe('dashboardLandingGuard', () => {
 
     expect(result).toBe(expectedUrlTree);
     expect(resolveFeatureFlagGuardMock).toHaveBeenCalledWith('release-1a', expect.any(Object), expect.any(Object));
+    expect(resolveFeatureFlagGuardMock).toHaveBeenCalledWith('release-1b', expect.any(Object), expect.any(Object));
     expect(mockRouter.createUrlTree).toHaveBeenCalledWith([
       '/',
       FINES_ROUTING_PATHS.root,

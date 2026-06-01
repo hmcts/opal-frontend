@@ -39,6 +39,7 @@ import { CustomPageHeaderComponent } from '@hmcts/opal-frontend-common/component
 import { GovukButtonDirective } from '@hmcts/opal-frontend-common/directives/govuk-button';
 import { PermissionsService } from '@hmcts/opal-frontend-common/services/permissions-service';
 import { FINES_PERMISSIONS } from '@app/constants/fines-permissions.constant';
+import { RELEASE_1B_FEATURE_FLAG } from '@app/flows/fines/constants/release-feature-flags.constant';
 
 @Component({
   selector: 'app-fines-draft-create-and-manage-tabs',
@@ -192,6 +193,10 @@ export class FinesDraftCreateAndManageTabsComponent extends AbstractTabData impl
    * @param accountNumber - The account number of the clicked account.
    */
   public onAccountClick(accountNumber: number): void {
+    if (!this.hasApprovedAccountLinkAccess()) {
+      return;
+    }
+
     this['router'].navigate([
       FINES_ROUTING_PATHS.root,
       FINES_ACC_ROUTING_PATHS.root,
@@ -209,6 +214,20 @@ export class FinesDraftCreateAndManageTabsComponent extends AbstractTabData impl
     return this.permissionsService.hasPermissionAccess(
       FINES_PERMISSIONS['create-and-manage-draft-accounts'],
       this.userState.business_unit_users,
+    );
+  }
+
+  /**
+   * Checks whether approved draft account numbers should link to Account Enquiry.
+   * @returns True when release 1b is enabled and the user has the base R1B account search/view permission.
+   */
+  public hasApprovedAccountLinkAccess(): boolean {
+    return (
+      this.globalStore.featureFlags()?.[RELEASE_1B_FEATURE_FLAG] === true &&
+      this.permissionsService.hasPermissionAccess(
+        FINES_PERMISSIONS['search-and-view-accounts'],
+        this.userState.business_unit_users,
+      )
     );
   }
 

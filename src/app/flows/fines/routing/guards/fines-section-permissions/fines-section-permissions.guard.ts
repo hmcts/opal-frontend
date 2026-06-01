@@ -5,7 +5,8 @@ import {
   getUserPermissionIds,
   hasAnyPermission,
 } from '@app/flows/fines/utils/fines-section-permissions.utils';
-import { RELEASE_1A_FEATURE_FLAG } from '@app/flows/fines/constants/release-feature-flags.constant';
+import { FEATURE_FLAG_SECTION_PERMISSION_EXCLUSIONS } from '@app/flows/fines/constants/feature-flag-section-permission-exclusions.constant';
+import { type FeatureFlagReleaseName } from '@app/flows/fines/types/feature-flag-release-name.type';
 import { type FeatureFlagReleaseState } from '@app/flows/fines/types/feature-flag-release-state.type';
 import { isDashboardPageType } from '@app/pages/dashboard/constants/dashboard-config.constant';
 import { DashboardPageType } from '@app/pages/dashboard/types/dashboard.type';
@@ -28,6 +29,27 @@ const getSectionKey = (route: ActivatedRouteSnapshot): DashboardPageType | null 
   }
 
   return null;
+};
+
+const getSectionReleaseFeatureFlags = (sectionKey: DashboardPageType): FeatureFlagReleaseName[] =>
+  Object.keys(FEATURE_FLAG_SECTION_PERMISSION_EXCLUSIONS[sectionKey] ?? {}) as FeatureFlagReleaseName[];
+
+const resolveFeatureFlagReleaseState = async (
+  featureFlagReleaseNames: readonly FeatureFlagReleaseName[],
+  route: ActivatedRouteSnapshot,
+  state: RouterStateSnapshot,
+): Promise<FeatureFlagReleaseState> => {
+  const featureFlagReleaseState: FeatureFlagReleaseState = {};
+
+  for (const featureFlagReleaseName of featureFlagReleaseNames) {
+    featureFlagReleaseState[featureFlagReleaseName] = await resolveFeatureFlagGuard(
+      featureFlagReleaseName,
+      route,
+      state,
+    );
+  }
+
+  return featureFlagReleaseState;
 };
 
 export const finesSectionPermissionsGuard: CanActivateFn = async (
@@ -66,10 +88,11 @@ export const finesSectionPermissionsGuard: CanActivateFn = async (
     }
   };
 
-  const featureFlagReleaseState =
-    sectionKey === 'accounts'
-      ? { [RELEASE_1A_FEATURE_FLAG]: await resolveFeatureFlagGuard(RELEASE_1A_FEATURE_FLAG, route, state) }
-      : {};
+  const featureFlagReleaseState = await resolveFeatureFlagReleaseState(
+    getSectionReleaseFeatureFlags(sectionKey),
+    route,
+    state,
+  );
 
   return checkSectionPermissions(featureFlagReleaseState);
 };

@@ -74,13 +74,37 @@ describe('fines-section-permissions.utils', () => {
   describe('canAccessFinesPrimaryNavigationSection', () => {
     const release1aEnabled = { 'release-1a': true };
     const release1aDisabled = { 'release-1a': false };
+    const release1bEnabled = { 'release-1b': true };
+    const release1bDisabled = { 'release-1b': false };
 
     it('should allow unrestricted dashboard sections', () => {
       expect(canAccessFinesPrimaryNavigationSection('finance', null)).toBe(true);
     });
 
     it('should deny restricted sections when the user lacks permissions', () => {
-      expect(canAccessFinesPrimaryNavigationSection('search', createUserStateWithPermissions([]))).toBe(false);
+      expect(
+        canAccessFinesPrimaryNavigationSection('search', createUserStateWithPermissions([]), release1bEnabled),
+      ).toBe(false);
+    });
+
+    it('should allow Search with search permissions when release-1b is enabled', () => {
+      expect(
+        canAccessFinesPrimaryNavigationSection(
+          'search',
+          createUserStateWithPermissions([SEARCH_PERMISSIONS[0]]),
+          release1bEnabled,
+        ),
+      ).toBe(true);
+    });
+
+    it('should deny Search with search permissions when release-1b is disabled', () => {
+      expect(
+        canAccessFinesPrimaryNavigationSection(
+          'search',
+          createUserStateWithPermissions([SEARCH_PERMISSIONS[0]]),
+          release1bDisabled,
+        ),
+      ).toBe(false);
     });
 
     it('should allow Accounts with draft permissions when release-1a is enabled', () => {
@@ -118,9 +142,15 @@ describe('fines-section-permissions.utils', () => {
     it('should filter navigation items down to the sections the user can access', () => {
       const userState = createUserStateWithPermissions([SEARCH_PERMISSIONS[0]]);
 
-      expect(getAccessiblePrimaryNavigationItems(navigationItems, userState)).toEqual([
+      expect(getAccessiblePrimaryNavigationItems(navigationItems, userState, { 'release-1b': true })).toEqual([
         { key: 'search', value: 'Search' },
       ]);
+    });
+
+    it('should remove Search for search users when release-1b is disabled', () => {
+      const userState = createUserStateWithPermissions([SEARCH_PERMISSIONS[0]]);
+
+      expect(getAccessiblePrimaryNavigationItems(navigationItems, userState, { 'release-1b': false })).toEqual([]);
     });
 
     it('should remove Accounts for draft-only users when release-1a is disabled', () => {
@@ -134,7 +164,9 @@ describe('fines-section-permissions.utils', () => {
     it('should prefer the configured landing priority over navigation order', () => {
       const userState = createUserStateWithPermissions([SEARCH_PERMISSIONS[0], ACCOUNTS_PERMISSIONS[0]]);
 
-      expect(getDashboardLandingType(navigationItems, userState)).toBe('search');
+      expect(getDashboardLandingType(navigationItems, userState, { 'release-1a': true, 'release-1b': true })).toBe(
+        'search',
+      );
     });
 
     it('should fall back to the first accessible navigation item when no priority section is available', () => {
@@ -159,13 +191,30 @@ describe('fines-section-permissions.utils', () => {
         }),
       ).toBe('finance');
     });
+
+    it('should skip Search landing when release-1b is disabled', () => {
+      const userState = createUserStateWithPermissions([SEARCH_PERMISSIONS[0], ACCOUNTS_PERMISSIONS[0]]);
+
+      expect(
+        getDashboardLandingType(navigationItems, userState, {
+          'release-1a': true,
+          'release-1b': false,
+        }),
+      ).toBe('accounts');
+    });
   });
 
   describe('getFeatureFlagReleaseState', () => {
     it('should map raw feature flags into a release feature flag state', () => {
-      expect(getFeatureFlagReleaseState({ 'release-1a': true })).toEqual({ 'release-1a': true });
-      expect(getFeatureFlagReleaseState({ 'release-1a': false })).toEqual({ 'release-1a': false });
-      expect(getFeatureFlagReleaseState({})).toEqual({ 'release-1a': false });
+      expect(getFeatureFlagReleaseState({ 'release-1a': true, 'release-1b': true })).toEqual({
+        'release-1a': true,
+        'release-1b': true,
+      });
+      expect(getFeatureFlagReleaseState({ 'release-1a': false, 'release-1b': false })).toEqual({
+        'release-1a': false,
+        'release-1b': false,
+      });
+      expect(getFeatureFlagReleaseState({})).toEqual({ 'release-1a': false, 'release-1b': false });
     });
   });
 

@@ -7,7 +7,8 @@ import { resolveFeatureFlagGuard } from '@hmcts/opal-frontend-common/guards/feat
 import { firstValueFrom } from 'rxjs';
 import { FINES_DASHBOARD_ROUTING_PATHS } from '@app/flows/fines/constants/fines-dashboard-routing-paths.constant';
 import { getDashboardLandingType } from '@app/flows/fines/utils/fines-section-permissions.utils';
-import { RELEASE_1A_FEATURE_FLAG } from '@app/flows/fines/constants/release-feature-flags.constant';
+import { RELEASE_FEATURE_FLAGS } from '@app/flows/fines/constants/release-feature-flags.constant';
+import { type FeatureFlagReleaseName } from '@app/flows/fines/types/feature-flag-release-name.type';
 import { type FeatureFlagReleaseState } from '@app/flows/fines/types/feature-flag-release-state.type';
 
 const getDefaultDashboardType = (featureFlagReleaseState: FeatureFlagReleaseState) =>
@@ -16,15 +17,31 @@ const getDefaultDashboardType = (featureFlagReleaseState: FeatureFlagReleaseStat
 const buildDashboardUrlTree = (router: Router, dashboardType: string): UrlTree =>
   router.createUrlTree(['/', FINES_ROUTING_PATHS.root, FINES_DASHBOARD_ROUTING_PATHS.root, dashboardType]);
 
+const resolveFeatureFlagReleaseState = async (
+  featureFlagReleaseNames: readonly FeatureFlagReleaseName[],
+  route: Parameters<CanActivateFn>[0],
+  state: Parameters<CanActivateFn>[1],
+): Promise<FeatureFlagReleaseState> => {
+  const featureFlagReleaseState: FeatureFlagReleaseState = {};
+
+  for (const featureFlagReleaseName of featureFlagReleaseNames) {
+    featureFlagReleaseState[featureFlagReleaseName] = await resolveFeatureFlagGuard(
+      featureFlagReleaseName,
+      route,
+      state,
+    );
+  }
+
+  return featureFlagReleaseState;
+};
+
 /**
  * Resolves the first accessible dashboard tab shown when entering `/fines/dashboard`.
  */
 export const dashboardLandingGuard: CanActivateFn = async (route, state): Promise<UrlTree> => {
   const opalUserService = inject(OpalUserService);
   const router = inject(Router);
-  const featureFlagReleaseState = {
-    [RELEASE_1A_FEATURE_FLAG]: await resolveFeatureFlagGuard(RELEASE_1A_FEATURE_FLAG, route, state),
-  };
+  const featureFlagReleaseState = await resolveFeatureFlagReleaseState(RELEASE_FEATURE_FLAGS, route, state);
 
   try {
     const userState = await firstValueFrom(opalUserService.getLoggedInUserState());

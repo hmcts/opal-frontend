@@ -1,18 +1,23 @@
 import { describe, expect, it, vi } from 'vitest';
 import { FINES_DASHBOARD_ROUTING_PATHS } from '../constants/fines-dashboard-routing-paths.constant';
 import { FINES_ROUTING_PATHS } from './constants/fines-routing-paths.constant';
-import { finesRouting, release1aFeatureFlagGuard } from './fines.routes';
+import { finesRouting, release1aFeatureFlagGuard, release1bFeatureFlagGuard } from './fines.routes';
 import { finesSectionPermissionsGuard } from './guards/fines-section-permissions/fines-section-permissions.guard';
 import { PRIMARY_NAV_HIDDEN_ROUTE_DATA } from '@app/constants/route-data.constant';
-import { RELEASE_1A_FEATURE_FLAG } from '../constants/release-feature-flags.constant';
+import { RELEASE_1A_FEATURE_FLAG, RELEASE_1B_FEATURE_FLAG } from '../constants/release-feature-flags.constant';
 
-const { featureFlagRedirectGuardMock, release1aFeatureFlagGuardMock } = vi.hoisted(() => ({
-  featureFlagRedirectGuardMock: vi.fn(),
-  release1aFeatureFlagGuardMock: vi.fn(),
-}));
+const { featureFlagRedirectGuardMock, release1aFeatureFlagGuardMock, release1bFeatureFlagGuardMock } = vi.hoisted(
+  () => ({
+    featureFlagRedirectGuardMock: vi.fn(),
+    release1aFeatureFlagGuardMock: vi.fn(),
+    release1bFeatureFlagGuardMock: vi.fn(),
+  }),
+);
 
 vi.mock('@hmcts/opal-frontend-common/guards/feature-flag', () => ({
-  featureFlagRedirectGuard: featureFlagRedirectGuardMock.mockReturnValue(release1aFeatureFlagGuardMock),
+  featureFlagRedirectGuard: featureFlagRedirectGuardMock.mockImplementation((featureFlagName: string) =>
+    featureFlagName === 'release-1b' ? release1bFeatureFlagGuardMock : release1aFeatureFlagGuardMock,
+  ),
 }));
 
 describe('fines routes', () => {
@@ -22,6 +27,11 @@ describe('fines routes', () => {
   it('should create the release-1a feature flag guard from the common redirect guard', () => {
     expect(featureFlagRedirectGuardMock).toHaveBeenCalledWith(RELEASE_1A_FEATURE_FLAG);
     expect(release1aFeatureFlagGuard).toBe(release1aFeatureFlagGuardMock);
+  });
+
+  it('should create the release-1b feature flag guard from the common redirect guard', () => {
+    expect(featureFlagRedirectGuardMock).toHaveBeenCalledWith(RELEASE_1B_FEATURE_FLAG);
+    expect(release1bFeatureFlagGuard).toBe(release1bFeatureFlagGuardMock);
   });
 
   it('should guard the draft root as an Accounts section entry route', () => {
@@ -40,6 +50,13 @@ describe('fines routes', () => {
 
     expect(macRoute?.canActivate).toContain(release1aFeatureFlagGuard);
     expect(macRoute?.canActivateChild).toContain(release1aFeatureFlagGuard);
+  });
+
+  it('should guard the Account Enquiry root behind release-1b', () => {
+    const accountEnquiryRoute = childRoutes.find((route) => route.path === FINES_ROUTING_PATHS.children.acc.root);
+
+    expect(accountEnquiryRoute?.canActivate).toContain(release1bFeatureFlagGuard);
+    expect(accountEnquiryRoute?.canActivateChild).toContain(release1bFeatureFlagGuard);
   });
 
   it('should guard the consolidation root as an Accounts section entry route', () => {
