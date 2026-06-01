@@ -31,7 +31,7 @@
       <opal-lib-custom-summary-metric-bar-item>
         <p opal-lib-custom-summary-metric-bar-item-label>Awarded:</p>
         <p opal-lib-custom-summary-metric-bar-item-value>
-          {{ accountData.financials.awarded | monetary }}
+          {{ accountData.financials.awarded | monetary: 'remove-minus-symbol' }}
         </p>
       </opal-lib-custom-summary-metric-bar-item>
     }
