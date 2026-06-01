@@ -117,7 +117,7 @@ describe('FinesAccEnfActionAddComponent', () => {
           type: FINES_ACC_ENF_ACTION_ADD_FIELD_TYPES.menuAutocomplete,
           required: true,
           options: [],
-          apidata: FINES_ACC_ENF_ACTION_ADD_API_DATA_KEYS.enforcers,
+          apiData: FINES_ACC_ENF_ACTION_ADD_API_DATA_KEYS.enforcers,
         },
       ],
     });
@@ -150,7 +150,7 @@ describe('FinesAccEnfActionAddComponent', () => {
           type: FINES_ACC_ENF_ACTION_ADD_FIELD_TYPES.menuAutocomplete,
           required: true,
           options: [],
-          apidata: FINES_ACC_ENF_ACTION_ADD_API_DATA_KEYS.enforcers,
+          apiData: FINES_ACC_ENF_ACTION_ADD_API_DATA_KEYS.enforcers,
         },
       ],
     });

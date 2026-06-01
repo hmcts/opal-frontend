@@ -12,6 +12,6 @@ export const FINES_ACC_ENF_ACTION_ADD_COLLECTION_TYPE_RESULT_PARAMETERS_MOCK = J
       { value: 'standard', name: 'Standard' },
       { value: 'fast_track', name: 'Fast track' },
     ],
-    language_dependent: false,
+    languageDependent: false,
   },
 ]);

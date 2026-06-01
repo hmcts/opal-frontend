@@ -34,6 +34,7 @@ import {
 import { IGovUkSelectOptions } from '@hmcts/opal-frontend-common/components/govuk/govuk-select/interfaces';
 import { AlphagovAccessibleAutocompleteComponent } from '@hmcts/opal-frontend-common/components/alphagov/alphagov-accessible-autocomplete';
 import { MojDatePickerComponent } from '@hmcts/opal-frontend-common/components/moj/moj-date-picker';
+import { DateService } from '@hmcts/opal-frontend-common/services/date-service';
 import {
   ALPHANUMERIC_WITH_HYPHENS_SPACES_APOSTROPHES_DOT_PATTERN,
   NUMERIC_PATTERN,
@@ -95,6 +96,7 @@ const ALPHANUMERIC_WITH_HYPHENS_SPACES_APOSTROPHES_DOT_PATTERN_VALIDATOR = patte
 })
 export class FinesAccEnfActionAddFormComponent extends AbstractFormBaseComponent implements OnInit, OnDestroy {
   private readonly addService = inject(FinesAccEnfActionAddService);
+  private readonly dateService = inject(DateService);
 
   protected override fieldErrors: IAbstractFormBaseFieldErrors = {};
   protected override formSubmit = new EventEmitter<IAbstractFormBaseForm<IFinesAccEnfActionAddFormState>>();
@@ -270,7 +272,7 @@ export class FinesAccEnfActionAddFormComponent extends AbstractFormBaseComponent
    * Stores selected checkbox values on the root control so standard form submission includes them.
    */
   private updateCheckboxRootControl(field: IFinesAccEnfActionAddFormField): void {
-    const selectedValues = this.getSelectedCheckboxOptions(field).map((option) => String(option.value));
+    const selectedValues = this.selectedCheckboxOptions(field).map((option) => option.value.toString());
     const rootControl = this.form.get(field.controlName);
 
     rootControl?.setValue(selectedValues.length > 0 ? selectedValues.join(',') : null, { emitEvent: false });
@@ -282,7 +284,7 @@ export class FinesAccEnfActionAddFormComponent extends AbstractFormBaseComponent
    */
   private checkboxSelectionCountValidator(field: IFinesAccEnfActionAddFormField): ValidatorFn {
     return () => {
-      const selectedCount = this.getSelectedCheckboxOptions(field).length;
+      const selectedCount = this.selectedCheckboxOptions(field).length;
       const min = typeof field.min === 'number' ? field.min : field.required ? 1 : 0;
       const max = typeof field.max === 'number' ? field.max : undefined;
 
@@ -349,64 +351,74 @@ export class FinesAccEnfActionAddFormComponent extends AbstractFormBaseComponent
   /**
    * Returns the DOM id/name used by the rendered GOV.UK form control.
    */
-  public getInputName(controlName: string): string {
-    return `${FINES_ACC_ENF_ACTION_ADD_INPUT_PREFIX}${controlName.replace(FINES_ACC_ENF_ACTION_ADD_CONTROL_PREFIX, '')}`;
+  public get inputName(): (controlName: string) => string {
+    return (controlName: string): string =>
+      `${FINES_ACC_ENF_ACTION_ADD_INPUT_PREFIX}${controlName.replace(FINES_ACC_ENF_ACTION_ADD_CONTROL_PREFIX, '')}`;
   }
 
   /**
    * Returns a stable id for an individual radio option.
    */
-  public getRadioOptionInputName(controlName: string, optionValue: string | number, optionIndex: number): string {
-    const normalizedOptionValue = String(optionValue)
-      .replace(/[^a-zA-Z0-9]/g, '_')
-      .toLowerCase();
-    return `${this.getInputName(controlName)}-${normalizedOptionValue || optionIndex}`;
+  public get radioOptionInputName(): (
+    controlName: string,
+    optionValue: string | number,
+    optionIndex: number,
+  ) => string {
+    return (controlName: string, optionValue: string | number, optionIndex: number): string => {
+      const normalizedOptionValue = optionValue
+        .toString()
+        .replace(/[^a-zA-Z0-9]/g, '_')
+        .toLowerCase();
+      return `${this.inputName(controlName)}-${normalizedOptionValue || optionIndex}`;
+    };
   }
 
   /**
    * Normalises radio option values to strings for reactive forms.
    */
-  public getRadioOptionValue(optionValue: string | number): string {
-    return String(optionValue);
+  public get radioOptionValue(): (optionValue: string | number) => string {
+    return (optionValue: string | number): string => optionValue.toString();
   }
 
   /**
    * Chooses the GOV.UK input width class from the API max-length contract.
    */
-  public getTextInputClasses(field: IFinesAccEnfActionAddFormField): string {
-    return typeof field.max === 'number'
-      ? (FINES_ACC_ENF_ACTION_ADD_TEXT_INPUT_MAX_LENGTH_CLASSES[field.max] ?? '')
-      : '';
+  public get textInputClasses(): (field: IFinesAccEnfActionAddFormField) => string {
+    return (field: IFinesAccEnfActionAddFormField): string =>
+      typeof field.max === 'number' ? (FINES_ACC_ENF_ACTION_ADD_TEXT_INPUT_MAX_LENGTH_CLASSES[field.max] ?? '') : '';
   }
 
   /**
    * Determines whether a dynamic text field should render as a GOV.UK textarea.
    */
-  public isTextAreaField(field: IFinesAccEnfActionAddFormField): boolean {
-    return field.type === FIELD_TYPES.textarea || field.max === 1000;
+  public get isTextAreaField(): (field: IFinesAccEnfActionAddFormField) => boolean {
+    return (field: IFinesAccEnfActionAddFormField): boolean =>
+      field.type === FIELD_TYPES.textarea || field.max === 1000;
   }
 
   /**
    * Returns the character-count limit for textarea fields.
    */
-  public getTextAreaCharacterLimit(field: IFinesAccEnfActionAddFormField): number {
-    return typeof field.max === 'number' ? field.max : 1000;
+  public get textAreaCharacterLimit(): (field: IFinesAccEnfActionAddFormField) => number {
+    return (field: IFinesAccEnfActionAddFormField): number => (typeof field.max === 'number' ? field.max : 1000);
   }
 
   /**
    * Returns ISO date boundaries for the shared MoJ date picker.
    */
-  public getDateBoundary(value: number | string | undefined): string {
-    return typeof value === 'string' ? value : '';
+  public get dateBoundary(): (value: number | string | undefined) => string {
+    return (value: number | string | undefined): string =>
+      typeof value === 'string' && this.dateService.isValidDate(value, 'yyyy-MM-dd') ? value : '';
   }
 
   /**
    * Returns the selected option objects for a dynamic checkbox group.
    */
-  public getSelectedCheckboxOptions(field: IFinesAccEnfActionAddFormField): IGovUkSelectOptions[] {
-    return (field.checkboxControls ?? [])
-      .filter((checkbox) => this.form?.get(checkbox.controlName)?.value === true)
-      .map((checkbox) => checkbox.option);
+  public get selectedCheckboxOptions(): (field: IFinesAccEnfActionAddFormField) => IGovUkSelectOptions[] {
+    return (field: IFinesAccEnfActionAddFormField): IGovUkSelectOptions[] =>
+      (field.checkboxControls ?? [])
+        .filter((checkbox) => this.form?.get(checkbox.controlName)?.value === true)
+        .map((checkbox) => checkbox.option);
   }
 
   /**

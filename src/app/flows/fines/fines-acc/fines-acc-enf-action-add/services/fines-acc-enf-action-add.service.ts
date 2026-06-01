@@ -56,7 +56,7 @@ export class FinesAccEnfActionAddService {
     const hasWelshField =
       hasWelshLanguagePreference &&
       this.isFieldType(FINES_ACC_ENF_ACTION_ADD_TEXT_FIELD_TYPES, type) &&
-      this.isLanguageDependent(param.language_dependent);
+      this.isLanguageDependent(param.languageDependent);
 
     return {
       controlName,
@@ -68,7 +68,7 @@ export class FinesAccEnfActionAddService {
       max: param.max,
       hint: param.hint,
       options,
-      apidata: param.apidata,
+      apiData: param.apiData,
       ...(type === FIELD_TYPES.menuCheckbox
         ? {
             checkboxControls: options.map((option) => ({
@@ -304,14 +304,14 @@ export class FinesAccEnfActionAddService {
    * Normalises boolean-like API values.
    */
   private isTruthy(value: boolean | string | undefined): boolean {
-    return value === true || String(value).toLowerCase() === 'true';
+    return value === true || value?.toString().toLowerCase() === 'true';
   }
 
   /**
    * Checks whether a control value contains meaningful content.
    */
   private hasValue(value: unknown): boolean {
-    return value !== null && value !== undefined && String(value).trim() !== '';
+    return value !== null && value !== undefined && value.toString().trim() !== '';
   }
 
   /**

@@ -56,7 +56,7 @@ describe('FinesAccEnfActionAddFormComponent', () => {
     createComponent();
     const element = fixture.nativeElement as HTMLElement;
 
-    expect(component.getInputName('fines-acc-enf-action-add_reason')).toBe('fines-acc-enf-action-add_reason');
+    expect(component.inputName('fines-acc-enf-action-add_reason')).toBe('fines-acc-enf-action-add_reason');
     expect(element.querySelector('#fines-acc-enf-action-add_reason')).toBeTruthy();
     expect(element.querySelector('[name="fines-acc-enf-action-add_reason"]')).toBeTruthy();
     expect(element.querySelector('#fines-acc-enf-action-add_add_payment_terms-yes')).toBeTruthy();
@@ -104,7 +104,7 @@ describe('FinesAccEnfActionAddFormComponent', () => {
         type: FINES_ACC_ENF_ACTION_ADD_FIELD_TYPES.menuAutocomplete,
         required: true,
         options: [{ value: 1, name: 'Enforcer One (1)' }],
-        apidata: FINES_ACC_ENF_ACTION_ADD_API_DATA_KEYS.enforcers,
+        apiData: FINES_ACC_ENF_ACTION_ADD_API_DATA_KEYS.enforcers,
       },
     ]);
     const element = fixture.nativeElement as HTMLElement;
@@ -168,7 +168,7 @@ describe('FinesAccEnfActionAddFormComponent', () => {
 
     expect(component.form.get('fines-acc-enf-action-add_notes')?.hasError('minlength')).toBe(true);
     expect(
-      component.getTextInputClasses({
+      component.textInputClasses({
         controlName: 'fines-acc-enf-action-add_long_text',
         parameterName: 'long_text',
         label: 'Long text',
@@ -303,14 +303,14 @@ describe('FinesAccEnfActionAddFormComponent', () => {
       options: [],
     };
 
-    expect(component.getTextInputClasses(fieldWithoutMax)).toBe('');
-    expect(component.getTextAreaCharacterLimit(fieldWithoutMax)).toBe(1000);
-    expect(component.getDateBoundary(10)).toBe('');
-    expect(component.getDateBoundary('2026-05-28')).toBe('2026-05-28');
-    expect(component.getRadioOptionInputName('fines-acc-enf-action-add_type', '', 2)).toBe(
+    expect(component.textInputClasses(fieldWithoutMax)).toBe('');
+    expect(component.textAreaCharacterLimit(fieldWithoutMax)).toBe(1000);
+    expect(component.dateBoundary(10)).toBe('');
+    expect(component.dateBoundary('2026-05-28')).toBe('2026-05-28');
+    expect(component.radioOptionInputName('fines-acc-enf-action-add_type', '', 2)).toBe(
       'fines-acc-enf-action-add_type-2',
     );
-    expect(component.getSelectedCheckboxOptions(fieldWithoutMax)).toEqual([]);
+    expect(component.selectedCheckboxOptions(fieldWithoutMax)).toEqual([]);
   });
 
   it('should not create payment term controls when payment terms are hidden', () => {

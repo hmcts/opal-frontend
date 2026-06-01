@@ -79,7 +79,7 @@ describe('FinesAccEnfActionAddService', () => {
       expect.objectContaining({
         controlName: 'fines-acc-enf-action-add_enforcer',
         type: FINES_ACC_ENF_ACTION_ADD_FIELD_TYPES.menuAutocomplete,
-        apidata: FINES_ACC_ENF_ACTION_ADD_API_DATA_KEYS.enforcers,
+        apiData: FINES_ACC_ENF_ACTION_ADD_API_DATA_KEYS.enforcers,
         required: true,
       }),
       expect.objectContaining({

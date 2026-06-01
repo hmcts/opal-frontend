@@ -19,11 +19,11 @@
           <opal-lib-moj-date-picker
             [labelText]="field.label"
             labelClasses="govuk-label--s"
-            [inputId]="getInputName(field.controlName)"
-            [inputName]="getInputName(field.controlName)"
+            [inputId]="inputName(field.controlName)"
+            [inputName]="inputName(field.controlName)"
             inputClasses="govuk-input--width-10"
-            [minDate]="getDateBoundary(field.min)"
-            [maxDate]="getDateBoundary(field.max)"
+            [minDate]="dateBoundary(field.min)"
+            [maxDate]="dateBoundary(field.max)"
             [hintText]="field.hint ?? 'For example, 31/01/2023'"
             [control]="form.get(field.controlName)!"
             [errors]="formControlErrorMessages[field.controlName]"
@@ -34,8 +34,8 @@
           <opal-lib-govuk-text-input-prefix-suffix
             [labelText]="field.label"
             labelClasses="govuk-label--s"
-            [inputId]="getInputName(field.controlName)"
-            [inputName]="getInputName(field.controlName)"
+            [inputId]="inputName(field.controlName)"
+            [inputName]="inputName(field.controlName)"
             inputClasses="govuk-input--width-10"
             prefixText="£"
             [control]="form.get(field.controlName)"
@@ -47,8 +47,8 @@
           <opal-lib-govuk-text-input
             [labelText]="field.label"
             labelClasses="govuk-label--s"
-            [inputId]="getInputName(field.controlName)"
-            [inputName]="getInputName(field.controlName)"
+            [inputId]="inputName(field.controlName)"
+            [inputName]="inputName(field.controlName)"
             inputClasses="govuk-input--width-10"
             [hintText]="field.hint ?? ''"
             [control]="form.get(field.controlName)"
@@ -57,7 +57,7 @@
         }
         @case (fieldTypes.menuRadio) {
           <opal-lib-govuk-radio
-            [fieldSetId]="getInputName(field.controlName)"
+            [fieldSetId]="inputName(field.controlName)"
             [legendText]="field.label"
             legendClasses="govuk-fieldset__legend--s"
             [errors]="formControlErrorMessages[field.controlName]"
@@ -66,9 +66,9 @@
               <div
                 opal-lib-govuk-radios-item
                 [labelText]="option.name"
-                [inputId]="getRadioOptionInputName(field.controlName, option.value, optionIndex)"
-                [inputName]="getInputName(field.controlName)"
-                [inputValue]="getRadioOptionValue(option.value)"
+                [inputId]="radioOptionInputName(field.controlName, option.value, optionIndex)"
+                [inputName]="inputName(field.controlName)"
+                [inputValue]="radioOptionValue(option.value)"
                 [control]="form.get(field.controlName)"
               ></div>
             }
@@ -79,8 +79,8 @@
             [control]="form.get(field.controlName)"
             [labelText]="field.label"
             labelClasses="govuk-label--s"
-            [inputId]="getInputName(field.controlName)"
-            [inputName]="getInputName(field.controlName)"
+            [inputId]="inputName(field.controlName)"
+            [inputName]="inputName(field.controlName)"
             [hintText]="field.hint ?? ''"
             [autoCompleteItems]="field.options"
             [errors]="formControlErrorMessages[field.controlName]"
@@ -89,7 +89,7 @@
         }
         @case (fieldTypes.menuCheckbox) {
           <opal-lib-govuk-checkboxes
-            [fieldSetId]="getInputName(field.controlName)"
+            [fieldSetId]="inputName(field.controlName)"
             [legendText]="field.label"
             [legendHint]="field.hint ?? ''"
             legendClasses="govuk-fieldset__legend--s"
@@ -100,7 +100,7 @@
                 opal-lib-govuk-checkboxes-item
                 [labelText]="checkbox.option.name"
                 [inputId]="checkbox.controlName"
-                [inputName]="getInputName(field.controlName)"
+                [inputName]="inputName(field.controlName)"
                 [control]="form.get(checkbox.controlName)"
               ></div>
             }
@@ -110,26 +110,26 @@
           <opal-lib-govuk-text-area
             [labelText]="field.label"
             labelClasses="govuk-label--s"
-            [inputId]="getInputName(field.controlName)"
-            [inputName]="getInputName(field.controlName)"
+            [inputId]="inputName(field.controlName)"
+            [inputName]="inputName(field.controlName)"
             [hintText]="field.hint ?? ''"
             [control]="form.get(field.controlName)"
             [errors]="formControlErrorMessages[field.controlName]"
             [characterCountEnabled]="true"
-            [maxCharacterLimit]="getTextAreaCharacterLimit(field)"
+            [maxCharacterLimit]="textAreaCharacterLimit(field)"
           ></opal-lib-govuk-text-area>
 
           @if (field.welshControlName && field.welshLabel) {
             <opal-lib-govuk-text-area
               [labelText]="field.welshLabel"
               labelClasses="govuk-label--s"
-              [inputId]="getInputName(field.welshControlName)"
-              [inputName]="getInputName(field.welshControlName)"
+              [inputId]="inputName(field.welshControlName)"
+              [inputName]="inputName(field.welshControlName)"
               hintText="Provide a Welsh version for the defendant"
               [control]="form.get(field.welshControlName)"
               [errors]="formControlErrorMessages[field.welshControlName]"
               [characterCountEnabled]="true"
-              [maxCharacterLimit]="getTextAreaCharacterLimit(field)"
+              [maxCharacterLimit]="textAreaCharacterLimit(field)"
             ></opal-lib-govuk-text-area>
           }
         }
@@ -138,35 +138,35 @@
             <opal-lib-govuk-text-area
               [labelText]="field.label"
               labelClasses="govuk-label--s"
-              [inputId]="getInputName(field.controlName)"
-              [inputName]="getInputName(field.controlName)"
+              [inputId]="inputName(field.controlName)"
+              [inputName]="inputName(field.controlName)"
               [hintText]="field.hint ?? ''"
               [control]="form.get(field.controlName)"
               [errors]="formControlErrorMessages[field.controlName]"
               [characterCountEnabled]="true"
-              [maxCharacterLimit]="getTextAreaCharacterLimit(field)"
+              [maxCharacterLimit]="textAreaCharacterLimit(field)"
             ></opal-lib-govuk-text-area>
 
             @if (field.welshControlName && field.welshLabel) {
               <opal-lib-govuk-text-area
                 [labelText]="field.welshLabel"
                 labelClasses="govuk-label--s"
-                [inputId]="getInputName(field.welshControlName)"
-                [inputName]="getInputName(field.welshControlName)"
+                [inputId]="inputName(field.welshControlName)"
+                [inputName]="inputName(field.welshControlName)"
                 hintText="Provide a Welsh version for the defendant"
                 [control]="form.get(field.welshControlName)"
                 [errors]="formControlErrorMessages[field.welshControlName]"
                 [characterCountEnabled]="true"
-                [maxCharacterLimit]="getTextAreaCharacterLimit(field)"
+                [maxCharacterLimit]="textAreaCharacterLimit(field)"
               ></opal-lib-govuk-text-area>
             }
           } @else {
             <opal-lib-govuk-text-input
               [labelText]="field.label"
               labelClasses="govuk-label--s"
-              [inputId]="getInputName(field.controlName)"
-              [inputName]="getInputName(field.controlName)"
-              [inputClasses]="getTextInputClasses(field)"
+              [inputId]="inputName(field.controlName)"
+              [inputName]="inputName(field.controlName)"
+              [inputClasses]="textInputClasses(field)"
               [hintText]="field.hint ?? ''"
               [control]="form.get(field.controlName)"
               [errors]="formControlErrorMessages[field.controlName]"
@@ -176,9 +176,9 @@
               <opal-lib-govuk-text-input
                 [labelText]="field.welshLabel"
                 labelClasses="govuk-label--s"
-                [inputId]="getInputName(field.welshControlName)"
-                [inputName]="getInputName(field.welshControlName)"
-                [inputClasses]="getTextInputClasses(field)"
+                [inputId]="inputName(field.welshControlName)"
+                [inputName]="inputName(field.welshControlName)"
+                [inputClasses]="textInputClasses(field)"
                 hintText="Provide a Welsh version for the defendant"
                 [control]="form.get(field.welshControlName)"
                 [errors]="formControlErrorMessages[field.welshControlName]"
@@ -193,7 +193,7 @@
       <hr class="govuk-section-break govuk-section-break--m govuk-section-break--visible" />
 
       <opal-lib-govuk-radio
-        [fieldSetId]="getInputName(formControlNames.addPaymentTerms)"
+        [fieldSetId]="inputName(formControlNames.addPaymentTerms)"
         legendText="Do you want to add payment terms?"
         legendClasses="govuk-fieldset__legend--s"
         [errors]="formControlErrorMessages[formControlNames.addPaymentTerms]"
@@ -201,8 +201,8 @@
         <div
           opal-lib-govuk-radios-item
           labelText="Yes"
-          [inputId]="getInputName(formControlNames.addPaymentTerms) + '-yes'"
-          [inputName]="getInputName(formControlNames.addPaymentTerms)"
+          [inputId]="inputName(formControlNames.addPaymentTerms) + '-yes'"
+          [inputName]="inputName(formControlNames.addPaymentTerms)"
           [inputValue]="true"
           [control]="form.get(formControlNames.addPaymentTerms)"
         ></div>
@@ -210,8 +210,8 @@
         <div
           opal-lib-govuk-radios-item
           labelText="No"
-          [inputId]="getInputName(formControlNames.addPaymentTerms) + '-no'"
-          [inputName]="getInputName(formControlNames.addPaymentTerms)"
+          [inputId]="inputName(formControlNames.addPaymentTerms) + '-no'"
+          [inputName]="inputName(formControlNames.addPaymentTerms)"
           [inputValue]="false"
           [control]="form.get(formControlNames.addPaymentTerms)"
         ></div>
@@ -231,7 +231,7 @@
 
 <ng-template #paymentTermsFields>
   <opal-lib-govuk-radio
-    [fieldSetId]="getInputName(formControlNames.paymentTerms)"
+    [fieldSetId]="inputName(formControlNames.paymentTerms)"
     legendText="Select payment terms"
     legendClasses="govuk-fieldset__legend--s"
     [errors]="formControlErrorMessages[formControlNames.paymentTerms]"
@@ -240,8 +240,8 @@
       <div
         opal-lib-govuk-radios-item
         [labelText]="paymentTerm.value"
-        [inputId]="getInputName(formControlNames.paymentTerms) + '-' + paymentTerm.key"
-        [inputName]="getInputName(formControlNames.paymentTerms)"
+        [inputId]="inputName(formControlNames.paymentTerms) + '-' + paymentTerm.key"
+        [inputName]="inputName(formControlNames.paymentTerms)"
         [inputValue]="paymentTerm.key"
         [ariaControls]="paymentTermsConditionalIdPrefix + paymentTerm.key"
         [control]="form.get(formControlNames.paymentTerms)"
@@ -253,8 +253,8 @@
             <opal-lib-moj-date-picker
               labelText="Pay by date"
               labelClasses="govuk-label--s"
-              [inputId]="getInputName(formControlNames.payByDate)"
-              [inputName]="getInputName(formControlNames.payByDate)"
+              [inputId]="inputName(formControlNames.payByDate)"
+              [inputName]="inputName(formControlNames.payByDate)"
               inputClasses="govuk-input--width-10"
               hintText="For example, 31/01/2023"
               [control]="form.get(formControlNames.payByDate)!"
@@ -274,8 +274,8 @@
             <opal-lib-govuk-text-input-prefix-suffix
               labelText="Lump sum"
               labelClasses="govuk-label--s"
-              [inputId]="getInputName(formControlNames.lumpSumAmount)"
-              [inputName]="getInputName(formControlNames.lumpSumAmount)"
+              [inputId]="inputName(formControlNames.lumpSumAmount)"
+              [inputName]="inputName(formControlNames.lumpSumAmount)"
               inputClasses="govuk-input--width-10"
               prefixText="£"
               [control]="form.get(formControlNames.lumpSumAmount)"
@@ -293,8 +293,8 @@
   <opal-lib-govuk-text-input
     labelText="Days in default"
     labelClasses="govuk-label--s"
-    [inputId]="getInputName(formControlNames.daysInDefault)"
-    [inputName]="getInputName(formControlNames.daysInDefault)"
+    [inputId]="inputName(formControlNames.daysInDefault)"
+    [inputName]="inputName(formControlNames.daysInDefault)"
     inputClasses="govuk-input--width-5"
     [control]="form.get(formControlNames.daysInDefault)"
     [errors]="formControlErrorMessages[formControlNames.daysInDefault]"
@@ -303,8 +303,8 @@
   <opal-lib-moj-date-picker
     labelText="Date days in default were last imposed"
     labelClasses="govuk-label--s"
-    [inputId]="getInputName(formControlNames.dateDaysInDefaultImposed)"
-    [inputName]="getInputName(formControlNames.dateDaysInDefaultImposed)"
+    [inputId]="inputName(formControlNames.dateDaysInDefaultImposed)"
+    [inputName]="inputName(formControlNames.dateDaysInDefaultImposed)"
     inputClasses="govuk-input--width-10"
     hintText="For example, 31/01/2023"
     [control]="form.get(formControlNames.dateDaysInDefaultImposed)!"
@@ -321,8 +321,8 @@
   <opal-lib-govuk-text-input-prefix-suffix
     labelText="Instalment"
     labelClasses="govuk-label--s"
-    [inputId]="getInputName(formControlNames.instalmentAmount)"
-    [inputName]="getInputName(formControlNames.instalmentAmount)"
+    [inputId]="inputName(formControlNames.instalmentAmount)"
+    [inputName]="inputName(formControlNames.instalmentAmount)"
     inputClasses="govuk-input--width-10"
     prefixText="£"
     [control]="form.get(formControlNames.instalmentAmount)"
@@ -331,7 +331,7 @@
   ></opal-lib-govuk-text-input-prefix-suffix>
 
   <opal-lib-govuk-radio
-    [fieldSetId]="getInputName(formControlNames.instalmentPeriod)"
+    [fieldSetId]="inputName(formControlNames.instalmentPeriod)"
     legendText="Frequency"
     legendClasses="govuk-fieldset__legend--s"
     [errors]="formControlErrorMessages[formControlNames.instalmentPeriod]"
@@ -340,8 +340,8 @@
       <div
         opal-lib-govuk-radios-item
         [labelText]="frequency.value"
-        [inputId]="getInputName(formControlNames.instalmentPeriod) + '-' + selectedFrequency + '-' + frequency.key"
-        [inputName]="getInputName(formControlNames.instalmentPeriod)"
+        [inputId]="inputName(formControlNames.instalmentPeriod) + '-' + selectedFrequency + '-' + frequency.key"
+        [inputName]="inputName(formControlNames.instalmentPeriod)"
         [inputValue]="frequency.key"
         [control]="form.get(formControlNames.instalmentPeriod)"
       ></div>
@@ -351,8 +351,8 @@
   <opal-lib-moj-date-picker
     labelText="Start date"
     labelClasses="govuk-label--s"
-    [inputId]="getInputName(formControlNames.startDate)"
-    [inputName]="getInputName(formControlNames.startDate)"
+    [inputId]="inputName(formControlNames.startDate)"
+    [inputName]="inputName(formControlNames.startDate)"
     inputClasses="govuk-input--width-10"
     hintText="For example, 31/01/2023"
     [control]="form.get(formControlNames.startDate)!"

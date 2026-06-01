@@ -12,7 +12,7 @@ export interface IFinesAccEnfActionAddFormField {
   hint?: string;
   options: IGovUkSelectOptions[];
   checkboxControls?: { controlName: string; option: IGovUkSelectOptions }[];
-  apidata?: string;
+  apiData?: string;
   welshControlName?: string;
   welshLabel?: string;
 }

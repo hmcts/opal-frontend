@@ -52,7 +52,7 @@ export class FinesAccEnfActionAddComponent extends AbstractFormParentBaseCompone
    */
   private populateApiDataOptions(fields: IFinesAccEnfActionAddFormField[]): IFinesAccEnfActionAddFormField[] {
     return fields.map((field) => {
-      if (field.type !== FIELD_TYPES.menuAutocomplete || field.apidata !== API_DATA_KEYS.enforcers) return field;
+      if (field.type !== FIELD_TYPES.menuAutocomplete || field.apiData !== API_DATA_KEYS.enforcers) return field;
 
       const enforcers = this.route.snapshot.data['enforcersRefData'] as IOpalFinesEnforcersRefData | undefined;
       return {

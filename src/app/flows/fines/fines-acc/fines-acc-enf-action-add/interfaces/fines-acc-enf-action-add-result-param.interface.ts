@@ -9,6 +9,6 @@ export interface IFinesAccEnfActionAddResultParam {
   max?: number | string;
   hint?: string;
   options?: string[] | IGovUkSelectOptions[] | Record<string, string>;
-  apidata?: string;
-  language_dependent?: boolean | string;
+  apiData?: string;
+  languageDependent?: boolean | string;
 }

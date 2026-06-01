@@ -14,7 +14,7 @@ export const FINES_ACC_ENF_ACTION_ADD_RESULT_MOCK = {
       mandatory: true,
       min: 1,
       max: 60,
-      language_dependent: true,
+      languageDependent: true,
     },
     {
       name: 'hearingdate',
@@ -23,7 +23,7 @@ export const FINES_ACC_ENF_ACTION_ADD_RESULT_MOCK = {
       mandatory: false,
       min: '1900-01-01',
       max: '2100-12-31',
-      language_dependent: false,
+      languageDependent: false,
     },
   ]),
 } as IOpalFinesResultRefData;

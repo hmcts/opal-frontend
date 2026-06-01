@@ -1,3 +1,4 @@
+import { DateService } from '@hmcts/opal-frontend-common/services/date-service';
 import { IOpalFinesAddEnforcementActionPayload } from '@services/fines/opal-fines-service/interfaces/opal-fines-add-enforcement-action-payload.interface';
 import { IOpalFinesAmendPaymentTerms } from '@services/fines/opal-fines-service/interfaces/opal-fines-amend-payment-terms.interface';
 import { IOpalFinesResultRefData } from '@services/fines/opal-fines-service/interfaces/opal-fines-result-ref-data.interface';
@@ -11,8 +12,13 @@ import { IFinesAccEnfActionAddFormState } from '../../fines-acc-enf-action-add/i
 import { IFinesAccEnfActionAddFormField } from '../../fines-acc-enf-action-add/interfaces/fines-acc-enf-action-add-form-field.interface';
 import { TFinesAccEnfActionAddFieldType } from '../../fines-acc-enf-action-add/types/fines-acc-enf-action-add-field-type.type';
 
+type FormValue = string | boolean | null | undefined;
+
 const CONTROL_NAMES = FINES_ACC_ENF_ACTION_ADD_FORM_CONTROL_NAMES;
 const FIELD_TYPES = FINES_ACC_ENF_ACTION_ADD_FIELD_TYPES;
+const FORM_DATE_FORMAT = 'dd/MM/yyyy';
+const API_DATE_FORMAT = 'yyyy-MM-dd';
+const dateService = new DateService();
 
 /**
  * Builds the API payload for adding the selected enforcement action to an account.
@@ -105,10 +111,10 @@ function getCheckboxResponseValue(
 /**
  * Normalises one dynamic field value for the enforcement result response payload.
  */
-function getResponseValue(value: string | boolean | null | undefined, type: TFinesAccEnfActionAddFieldType): string {
+function getResponseValue(value: FormValue, type: TFinesAccEnfActionAddFieldType): string {
   if (!hasValue(value)) return '';
-  const stringValue = String(value);
-  return type === FIELD_TYPES.date ? (toIsoDate(stringValue) ?? stringValue) : stringValue;
+  const stringValue = value!.toString();
+  return type === FIELD_TYPES.date ? (toApiDateOrNull(value) ?? stringValue) : stringValue;
 }
 
 /**
@@ -131,15 +137,15 @@ function buildPaymentTerms(formState: IFinesAccEnfActionAddFormState): IOpalFine
 function mapToPaymentTermsAmendState(formState: IFinesAccEnfActionAddFormState): IFinesAccPaymentTermsAmendState {
   return {
     facc_payment_terms_payment_terms: toStringOrNull(formState[CONTROL_NAMES.paymentTerms]),
-    facc_payment_terms_pay_by_date: toIsoDate(formState[CONTROL_NAMES.payByDate]),
+    facc_payment_terms_pay_by_date: toApiDateOrNull(formState[CONTROL_NAMES.payByDate]),
     facc_payment_terms_lump_sum_amount: toNumberOrNull(formState[CONTROL_NAMES.lumpSumAmount]),
     facc_payment_terms_instalment_amount: toNumberOrNull(formState[CONTROL_NAMES.instalmentAmount]),
     facc_payment_terms_instalment_period: toStringOrNull(formState[CONTROL_NAMES.instalmentPeriod]),
-    facc_payment_terms_start_date: toIsoDate(formState[CONTROL_NAMES.startDate]),
+    facc_payment_terms_start_date: toApiDateOrNull(formState[CONTROL_NAMES.startDate]),
     facc_payment_terms_payment_card_request: null,
     facc_payment_terms_prevent_payment_card: null,
     facc_payment_terms_has_days_in_default: null,
-    facc_payment_terms_suspended_committal_date: toIsoDate(formState[CONTROL_NAMES.dateDaysInDefaultImposed]),
+    facc_payment_terms_suspended_committal_date: toApiDateOrNull(formState[CONTROL_NAMES.dateDaysInDefaultImposed]),
     facc_payment_terms_default_days_in_jail: toNumberOrNull(formState[CONTROL_NAMES.daysInDefault]),
     facc_payment_terms_reason_for_change: '',
     facc_payment_terms_change_letter: null,
@@ -147,9 +153,21 @@ function mapToPaymentTermsAmendState(formState: IFinesAccEnfActionAddFormState):
 }
 
 /**
+ * Converts populated form dates to API date strings, otherwise null.
+ */
+function toApiDateOrNull(value: FormValue): string | null {
+  if (!hasValue(value) || typeof value === 'boolean') return null;
+  const stringValue = value!.toString();
+
+  return dateService.isValidDate(stringValue, FORM_DATE_FORMAT)
+    ? dateService.getFromFormatToFormat(stringValue, FORM_DATE_FORMAT, API_DATE_FORMAT)
+    : null;
+}
+
+/**
  * Converts populated numeric form values to numbers, otherwise null.
  */
-function toNumberOrNull(value: string | boolean | null | undefined): number | null {
+function toNumberOrNull(value: FormValue): number | null {
   if (!hasValue(value)) return null;
   return Number(value);
 }
@@ -157,24 +175,14 @@ function toNumberOrNull(value: string | boolean | null | undefined): number | nu
 /**
  * Converts populated form values to strings, otherwise null.
  */
-function toStringOrNull(value: string | boolean | null | undefined): string | null {
+function toStringOrNull(value: FormValue): string | null {
   if (!hasValue(value) || typeof value === 'boolean') return null;
   return String(value);
 }
 
 /**
- * Converts DD/MM/YYYY form dates to ISO date strings for the API.
- */
-function toIsoDate(value: string | boolean | null | undefined): string | null {
-  if (!hasValue(value) || typeof value === 'boolean') return null;
-  const [day, month, year] = String(value).split('/');
-  if (!day || !month || !year) return null;
-  return `${year}-${month}-${day}`;
-}
-
-/**
  * Checks whether a form value contains meaningful content.
  */
-function hasValue(value: unknown): boolean {
-  return value !== null && value !== undefined && String(value).trim() !== '';
+function hasValue(value: FormValue): boolean {
+  return value !== null && value !== undefined && value.toString().trim() !== '';
 }

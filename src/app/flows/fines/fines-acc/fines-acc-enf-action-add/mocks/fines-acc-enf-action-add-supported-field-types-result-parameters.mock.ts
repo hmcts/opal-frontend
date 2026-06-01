@@ -10,17 +10,17 @@ export const FINES_ACC_ENF_ACTION_ADD_SUPPORTED_FIELD_TYPES_RESULT_PARAMETERS_MO
     mandatory: false,
     min: 0,
     max: 1000,
-    language_dependent: true,
+    languageDependent: true,
   },
   {
     name: 'enforcer',
     prompt: 'Enforcer',
     type: FINES_ACC_ENF_ACTION_ADD_FIELD_TYPES.menuAutocomplete,
-    apidata: FINES_ACC_ENF_ACTION_ADD_API_DATA_KEYS.enforcers,
+    apiData: FINES_ACC_ENF_ACTION_ADD_API_DATA_KEYS.enforcers,
     mandatory: true,
     min: 1,
     max: 1,
-    language_dependent: true,
+    languageDependent: true,
   },
   {
     name: 'selecthowitwillbeserved',
@@ -30,7 +30,7 @@ export const FINES_ACC_ENF_ACTION_ADD_SUPPORTED_FIELD_TYPES_RESULT_PARAMETERS_MO
     min: 0,
     max: 2,
     options: ['Consecutive', 'Concurrent'],
-    language_dependent: true,
+    languageDependent: true,
   },
   {
     name: 'normaldeductionrate',
@@ -39,6 +39,6 @@ export const FINES_ACC_ENF_ACTION_ADD_SUPPORTED_FIELD_TYPES_RESULT_PARAMETERS_MO
     mandatory: true,
     min: -9999999999.99,
     max: 9999999999.99,
-    language_dependent: false,
+    languageDependent: false,
   },
 ]);
