@@ -157,7 +157,7 @@ describe('Account Enquiry Impositions', () => {
     },
   );
 
-  it.skip(
+  it(
     'AC3b: clicking a Major Creditor link routes to the Major Creditor Details page',
     { tags: [...buildTags(IMPOSITIONS_STORY_TAG), IMPOSITIONS_EPIC_TAG] },
     () => {
