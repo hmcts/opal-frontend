@@ -11,7 +11,6 @@ import { FINES_ACC_ENF_ACTION_ROUTING_PATHS } from '../fines-acc-enf-action-sele
 import { FinesAccEnfActionAddComponent } from './fines-acc-enf-action-add.component';
 import { FINES_ACC_ENF_ACTION_ADD_API_DATA_KEYS } from './constants/fines-acc-enf-action-add-api-data-keys.constant';
 import { FINES_ACC_ENF_ACTION_ADD_FIELD_TYPES } from './constants/fines-acc-enf-action-add-field-types.constant';
-import { IFinesAccEnfActionAddFormField } from './interfaces/fines-acc-enf-action-add-form-field.interface';
 import { FinesAccEnfActionAddService } from './services/fines-acc-enf-action-add.service';
 import { FINES_ACC_ENF_ACTION_ADD_ACCOUNT_STATE_MOCK } from './mocks/fines-acc-enf-action-add-account-state.mock';
 import { FINES_ACC_ENF_ACTION_ADD_ADDITIONAL_ACTION_RESULT_MOCK } from './mocks/fines-acc-enf-action-add-additional-action-result.mock';
