@@ -14,6 +14,7 @@ import { AccountSearchMajorCreditorsActions } from '../actions/search/search.maj
 import { AccountSearchCommonActions } from '../actions/search/search.common.actions';
 import { ResultsActions } from '../actions/search/search.results.actions';
 import { CommonActions } from '../actions/common/common.actions';
+import { PrimaryNavigationActions } from '../actions/primary-navigation.actions';
 import { MinorCreditorType } from '../../../../support/utils/macFieldResolvers';
 import { applyUniqPlaceholder } from '../../../../support/utils/stringUtils';
 
@@ -43,6 +44,7 @@ export class AccountSearchFlow {
   private readonly commonSearch = new AccountSearchCommonActions();
   private readonly results = new ResultsActions();
   private readonly common = new CommonActions();
+  private readonly primaryNavigation = new PrimaryNavigationActions();
   // private readonly problem = new AccountSearchProblemActions();
 
   /**
@@ -94,6 +96,8 @@ export class AccountSearchFlow {
    */
   public navigateAndVerifySearchFromDashboard(): void {
     log('navigate', 'Go to Account Search from dashboard');
+    this.primaryNavigation.assertDashboardLandingReady();
+    this.primaryNavigation.chooseItem('Search');
     this.individuals.assertOnSearchLandingPage();
 
     log('assert', 'Verify Individuals form is active by default');
@@ -668,7 +672,7 @@ export class AccountSearchFlow {
    */
   public navigateAndEnterIndividualsFormWithoutSubmit(table: DataTable): void {
     log('navigate', 'Go to Account Search and enter Individuals form (no submit)');
-    this.individuals.assertOnSearchLandingPage();
+    this.navigateAndVerifySearchFromDashboard();
 
     // Reuse existing helper to populate all text-like fields
     this.enterIndividualsFormWithoutSubmit(table);
@@ -1332,8 +1336,8 @@ export class AccountSearchFlow {
    * Responsibilities:
    * - Delegates the actual DOM interaction to CommonActions.clickHmctsHomeLink(),
    *   which owns all locator logic for the HMCTS brand link.
-   * - Asserts that the dashboard is displayed after navigation via
-   *   AccountSearchIndividualsActions.assertOnSearchLandingPage().
+   * - Asserts that a dashboard landing page is ready after navigation via
+   *   PrimaryNavigationActions.assertDashboardLandingReady().
    *
    * Notes:
    * - Flow method is intentionally small to satisfy Sonar and keep responsibilities clear.
@@ -1342,6 +1346,6 @@ export class AccountSearchFlow {
   public returnToDashboardViaHmctsLink(): void {
     log('navigate', 'Returning to dashboard via HMCTS header link');
     this.common.clickHmctsHomeLink();
-    this.individuals.assertOnSearchLandingPage();
+    this.primaryNavigation.assertDashboardLandingReady();
   }
 }

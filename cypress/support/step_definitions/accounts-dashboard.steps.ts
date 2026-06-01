@@ -38,7 +38,7 @@ const primaryNavigation = () => new PrimaryNavigationActions();
  * @step Opens the **Manual Account Creation** page via the dashboard.
  *
  * @details
- * - Asserts the Search landing page, navigates to Accounts, and then calls
+ * - Asserts the dashboard landing is ready, navigates to Accounts, and then calls
  *   `ManualCreateAccountActions.openFromAccountsPage()`.
  * - Typically used at the start of scenarios that create new accounts.
  *
@@ -48,7 +48,7 @@ const primaryNavigation = () => new PrimaryNavigationActions();
  * ```
  */
 When('I open Manual Account Creation', () => {
-  searchIndividuals().assertOnSearchLandingPage();
+  primaryNavigation().assertDashboardLandingReady();
   primaryNavigation().chooseItem('Accounts');
   primaryNavigation().assertLandingPage('Accounts', '/fines/dashboard/accounts');
   createAccount().openFromAccountsPage();
@@ -58,10 +58,12 @@ When('I open Manual Account Creation', () => {
  * @step Opens the **Search for an Account** page via the dashboard.
  *
  * @details
- * - Asserts the Search landing page is already displayed.
- * - Preserves the older dashboard step wording used by some scenarios and editor tooling.
+ * - Asserts the dashboard landing is ready.
+ * - Navigates to Search and verifies the Search page is displayed.
  */
 When('I open Search for an Account', () => {
+  primaryNavigation().assertDashboardLandingReady();
+  primaryNavigation().chooseItem('Search');
   searchIndividuals().assertOnSearchLandingPage();
 });
 
@@ -69,7 +71,7 @@ When('I open Search for an Account', () => {
  * @step Opens the **Consolidate accounts** page via the dashboard.
  *
  * @details
- * - Asserts the Search landing page, navigates to Accounts, and then calls
+ * - Asserts the dashboard landing is ready, navigates to Accounts, and then calls
  *   `ConsolidationActions.openFromAccountsPage()`.
  *
  * @example
@@ -78,7 +80,7 @@ When('I open Search for an Account', () => {
  * ```
  */
 When('I open Consolidate accounts', () => {
-  searchIndividuals().assertOnSearchLandingPage();
+  primaryNavigation().assertDashboardLandingReady();
   primaryNavigation().chooseItem('Accounts');
   primaryNavigation().assertLandingPage('Accounts', '/fines/dashboard/accounts');
   consolidation().openFromAccountsPage();

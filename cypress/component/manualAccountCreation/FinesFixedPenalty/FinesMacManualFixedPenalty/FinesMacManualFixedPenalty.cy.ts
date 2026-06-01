@@ -87,7 +87,7 @@ describe('FinesMacManualFixedPenalty', () => {
   it(
     '(AC1a-eii) The Fixed Penalty Details screen will be created as per the Design Artefacts',
     {
-      tags: [...buildTags('@JIRA-STORY:PO-857'), '@JIRA-EPIC:PO-855', '@JIRA-NFR:PO-2328', '@JIRA-TEST-KEY:PO-4753'],
+      tags: [...buildTags('@JIRA-STORY:PO-857'), '@JIRA-EPIC:PO-855', '@JIRA-TEST-KEY:PO-4753'],
     },
     () => {
       fixedPenaltyMock.languagePreferences.formData.fm_language_preferences_document_language = 'CY';
@@ -240,7 +240,7 @@ describe('FinesMacManualFixedPenalty', () => {
   it(
     '(AC2) Validation will exist for the Issuing Authority field',
     {
-      tags: [...buildTags('@JIRA-STORY:PO-857'), '@JIRA-EPIC:PO-855', '@JIRA-NFR:PO-2329', '@JIRA-TEST-KEY:PO-4754'],
+      tags: [...buildTags('@JIRA-STORY:PO-857'), '@JIRA-EPIC:PO-855', '@JIRA-TEST-KEY:PO-4754'],
     },
     () => {
       setupComponent(null);
@@ -266,7 +266,7 @@ describe('FinesMacManualFixedPenalty', () => {
   it(
     '(AC3) Validation will exist for the Enforcement Court field',
     {
-      tags: [...buildTags('@JIRA-STORY:PO-857'), '@JIRA-EPIC:PO-855', '@JIRA-NFR:PO-2329', '@JIRA-TEST-KEY:PO-4755'],
+      tags: [...buildTags('@JIRA-STORY:PO-857'), '@JIRA-EPIC:PO-855', '@JIRA-TEST-KEY:PO-4755'],
     },
     () => {
       setupComponent();
@@ -1364,7 +1364,7 @@ describe('FinesMacManualFixedPenalty', () => {
   it(
     '(AC5) should keep Prosecutors (All) visible and selectable as originators for non-filtered journeys',
     {
-      tags: [...buildTags('@JIRA-STORY:PO-2761'), '@JIRA-EPIC:PO-2750', '@JIRA-NFR:PO-2328', '@JIRA-TEST-KEY:PO-4829'],
+      tags: [...buildTags('@JIRA-STORY:PO-2761'), '@JIRA-EPIC:PO-2750', '@JIRA-TEST-KEY:PO-4829'],
     },
     () => {
       const filteredLocalJusticeAreas: IOpalFinesLocalJusticeAreaRefData = {
