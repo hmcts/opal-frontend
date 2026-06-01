@@ -163,9 +163,11 @@ export class AppComponent implements OnInit, OnDestroy {
   constructor() {
     // There is something odd with the launch darkly lib that requires us to run it outside of the angular zone to initialize
     // https://angular.io/errors/NG0506
-    this.ngZone.runOutsideAngular(() => {
-      this.launchDarklyService.initializeLaunchDarklyClient();
-    });
+    if (isPlatformBrowser(this.platformId)) {
+      this.ngZone.runOutsideAngular(() => {
+        this.launchDarklyService.initializeLaunchDarklyClient();
+      });
+    }
   }
 
   /**
@@ -376,12 +378,14 @@ export class AppComponent implements OnInit, OnDestroy {
    * This method is called once after the first `ngOnChanges` method is called.
    */
   public ngOnInit(): void {
-    from(this.launchDarklyService.initializeLaunchDarklyFlags())
-      .pipe(
-        tap(() => this.launchDarklyService.initializeLaunchDarklyChangeListener()),
-        takeUntil(this.ngUnsubscribe),
-      )
-      .subscribe();
+    if (isPlatformBrowser(this.platformId)) {
+      from(this.launchDarklyService.initializeLaunchDarklyFlags())
+        .pipe(
+          tap(() => this.launchDarklyService.initializeLaunchDarklyChangeListener()),
+          takeUntil(this.ngUnsubscribe),
+        )
+        .subscribe();
+    }
     this.setupTokenExpiry();
     this.trackPageViews();
   }
