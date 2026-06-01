@@ -15,6 +15,7 @@ import { SearchFilterByBUNavActions } from '../actions/search/search.filter-by-b
 import { SearchFilterByBUFinesActions } from '../actions/search/search.filter-by-bu-fines.actions';
 import { AccountSearchCommonActions } from '../actions/search/search.common.actions';
 import { SearchFilterByBUConfiscationActions } from '../actions/search/search.filter-by-bu-confiscation.actions';
+import { PrimaryNavigationActions } from '../actions/primary-navigation.actions';
 import { createScopedLogger } from '../../../../support/utils/log.helper';
 
 const commonActions = new SearchFilterByBUCommonActions();
@@ -27,6 +28,7 @@ const log = createScopedLogger('SearchFilterByBUFlow');
 export class SearchFilterByBUFlow {
   private readonly searchIndividuals = new AccountSearchIndividualsActions();
   private readonly searchCommonActions = new AccountSearchCommonActions();
+  private readonly primaryNavigation = new PrimaryNavigationActions();
 
   /**
    * Navigates from the Dashboard to the Filter-by-BU screen.
@@ -37,7 +39,8 @@ export class SearchFilterByBUFlow {
    *   3. Open the Business Unit filter via the “Change” link
    *
    * Delegates:
-   *   - AccountSearchIndividualsActions.assertOnSearchLandingPage()
+   *   - PrimaryNavigationActions.assertDashboardLandingReady()
+   *   - PrimaryNavigationActions.chooseItem('Search')
    *   - AccountSearchIndividualsActions.assertDefaultIndividualsActive()
    *   - AccountSearchCommonActions.openBusinessUnitFilter()
    *
@@ -46,6 +49,8 @@ export class SearchFilterByBUFlow {
    */
   navigateToFilterByBusinessUnit(): void {
     log('navigate', 'Go to Account Search from dashboard');
+    this.primaryNavigation.assertDashboardLandingReady();
+    this.primaryNavigation.chooseItem('Search');
     this.searchIndividuals.assertOnSearchLandingPage();
 
     log('assert', 'Verify Individuals form is active by default');

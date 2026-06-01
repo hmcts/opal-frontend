@@ -1,5 +1,4 @@
 import { ManualCreateAccountActions, DefendantType } from '../actions/manual-account-creation/create-account.actions';
-import { AccountSearchIndividualsActions } from '../actions/search/search.individuals.actions';
 import { AccountType } from '../../../../support/utils/payloads';
 import { ManualAccountDetailsActions } from '../actions/manual-account-creation/account-details.actions';
 import { ManualAccountCommentsNotesActions } from '../actions/manual-account-creation/account-comments-notes.actions';
@@ -132,7 +131,6 @@ type CompositeEntry = {
  * feature so Cucumber steps remain intent-driven and thin.
  */
 export class ManualAccountCreationFlow {
-  private readonly searchIndividuals = new AccountSearchIndividualsActions();
   private readonly primaryNavigation = new PrimaryNavigationActions();
   private readonly createAccount = new ManualCreateAccountActions();
   private readonly originatorType = new ManualCreateOrTransferInActions();
@@ -1432,7 +1430,7 @@ export class ManualAccountCreationFlow {
    */
   goToManualAccountCreationFromDashboard(): void {
     log('flow', 'Navigate to Manual Account Creation from dashboard');
-    this.searchIndividuals.assertOnSearchLandingPage();
+    this.primaryNavigation.assertDashboardLandingReady();
     this.primaryNavigation.chooseItem('Accounts');
     this.primaryNavigation.assertLandingPage('Accounts', '/fines/dashboard/accounts');
     this.ensureOnCreateOrTransferInPage();
