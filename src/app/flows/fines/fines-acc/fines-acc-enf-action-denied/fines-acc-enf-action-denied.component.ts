@@ -9,6 +9,8 @@ import { FINES_ACC_ENF_ACTION_DENIED_ACCOUNT_STATUS_MAP } from './constants/fine
 import { FINES_ACC_ENF_ACTION_DENIED_MESSAGES } from './constants/fines-acc-enf-action-denied-messages.constant';
 import { FINES_ACC_DEFENDANT_ROUTING_PATHS } from '../routing/constants/fines-acc-defendant-routing-paths.constant';
 import { FINES_ACC_ENF_ACTION_DENIED_TYPES } from './constants/fines-acc-enf-action-denied-types.constant';
+import { IOpalFinesResultRefData } from '@services/fines/opal-fines-service/interfaces/opal-fines-result-ref-data.interface';
+import { FINES_ACC_ENF_ACTION_ROUTING_PATHS } from '../fines-acc-enf-action-select/constants/fines-acc-enf-action-select-routing-paths.constant';
 
 @Component({
   selector: 'app-fines-acc-enf-action-denied',
@@ -21,10 +23,12 @@ export class FinesAccEnfActionDeniedComponent {
   private readonly router = inject(Router);
 
   public readonly accountStore = inject(FinesAccountStore);
-  public readonly deniedType = this.route.snapshot.paramMap.get('type');
+  public readonly deniedType = this.route.snapshot.paramMap.get('type') ?? this.route.snapshot.data['deniedType'];
   public readonly deniedTypes = FINES_ACC_ENF_ACTION_DENIED_TYPES;
-  public readonly heading = FINES_ACC_ENF_ACTION_DENIED_MESSAGES.heading;
   public readonly messages = FINES_ACC_ENF_ACTION_DENIED_MESSAGES;
+  public readonly enforcementActionResult = this.route.snapshot.data[
+    'enforcementActionResult'
+  ] as IOpalFinesResultRefData | null;
   public readonly defendantAccountHeadingData: IOpalFinesAccountDefendantDetailsHeader =
     this.route.snapshot.data['defendantAccountHeadingData'];
   public readonly enforcementStatus: IOpalFinesAccountDefendantDetailsEnforcementTabRefData =
@@ -39,10 +43,38 @@ export class FinesAccEnfActionDeniedComponent {
     : null;
 
   /**
+   * Returns the page heading for the selected denied type.
+   */
+  public get heading(): string {
+    return this.deniedType === this.deniedTypes.employmentData
+      ? this.messages.employmentDataHeading
+      : this.messages.heading;
+  }
+
+  /**
+   * Formats the selected enforcement action result for display.
+   */
+  public get actionTitle(): string {
+    if (!this.enforcementActionResult) {
+      return '';
+    }
+
+    return `${this.enforcementActionResult.result_title} (${this.enforcementActionResult.result_id})`;
+  }
+
+  /**
    * Navigates back to the account summary details page, preserving the enforcement tab fragment.
    */
   public navigateBackToAccountSummary(event?: Event): void {
     event?.preventDefault();
+
+    if (this.deniedType === this.deniedTypes.employmentData) {
+      this.router.navigate([`../${FINES_ACC_ENF_ACTION_ROUTING_PATHS.children.select}`], {
+        relativeTo: this.route,
+      });
+      return;
+    }
+
     this.router.navigate([`../../../../${FINES_ACC_DEFENDANT_ROUTING_PATHS.children.details}`], {
       relativeTo: this.route,
       fragment: 'enforcement',

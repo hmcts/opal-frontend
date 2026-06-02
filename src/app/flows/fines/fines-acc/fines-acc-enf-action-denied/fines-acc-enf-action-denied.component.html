@@ -23,6 +23,12 @@
       <strong>{{ accountStatus }}</strong>
     </p>
   }
+  @case (deniedTypes.employmentData) {
+    <p class="govuk-body govuk-!-margin-bottom-5">
+      <strong>{{ actionTitle }}</strong>
+    </p>
+    <p class="govuk-body govuk-!-margin-bottom-6">{{ messages.employmentData }}</p>
+  }
 }
 
 <opal-lib-govuk-cancel-link
