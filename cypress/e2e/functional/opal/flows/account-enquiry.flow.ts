@@ -586,6 +586,16 @@ export class AccountEnquiryFlow {
   }
 
   /**
+   * Navigates to the Creditor tab and asserts it is active.
+   */
+  public goToCreditorTab(): void {
+    logAE('method', 'goToCreditorTab()');
+    logAE('navigate', 'Navigating to Creditor tab');
+    this.detailsNav.goToCreditorTab();
+    this.detailsNav.assertCreditorTabIsActive();
+  }
+
+  /**
    * Asserts the Payment terms tab is active.
    */
   public assertPaymentTermsTabIsActive(): void {
