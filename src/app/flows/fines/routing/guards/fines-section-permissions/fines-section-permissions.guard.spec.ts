@@ -192,6 +192,18 @@ describe('finesSectionPermissionsGuard', () => {
     expect(mockRouter.createUrlTree).toHaveBeenCalledWith([`/${COMMON_PAGES_ROUTING_PATHS.children.accessDenied}`]);
   });
 
+  it('should redirect Accounts without looking up user permissions when disabled release flags exclude every account permission', async () => {
+    const expectedUrlTree = new UrlTree();
+    mockFeatureFlags({ 'release-1a': false, 'release-1c-write-off': false });
+    mockRouter.createUrlTree.mockReturnValue(expectedUrlTree);
+
+    const result = await runGuard({ dashboardType: FINES_DASHBOARD_ROUTING_PATHS.children.accounts });
+
+    expect(result).toBe(expectedUrlTree);
+    expect(mockOpalUserService.getLoggedInUserState).not.toHaveBeenCalled();
+    expect(mockRouter.createUrlTree).toHaveBeenCalledWith([`/${COMMON_PAGES_ROUTING_PATHS.children.accessDenied}`]);
+  });
+
   it('should allow Reports when the user has at least one report permission', async () => {
     mockOpalUserService.getLoggedInUserState.mockReturnValue(
       of(createUserStateWithPermissions([REPORTS_PERMISSIONS[1]])),
