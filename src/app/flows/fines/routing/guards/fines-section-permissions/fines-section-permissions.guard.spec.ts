@@ -7,12 +7,18 @@ import { IOpalUserState } from '@hmcts/opal-frontend-common/services/opal-user-s
 import { OPAL_USER_STATE_MOCK } from '@hmcts/opal-frontend-common/services/opal-user-service/mocks';
 import { OpalUserService } from '@hmcts/opal-frontend-common/services/opal-user-service';
 import { beforeAll, beforeEach, describe, expect, it, vi } from 'vitest';
-import { firstValueFrom, isObservable, of, throwError } from 'rxjs';
+import { of, throwError } from 'rxjs';
 import { ACCOUNTS_PERMISSIONS } from '@app/flows/fines/constants/accounts-permissions.constant';
 import { REPORTS_PERMISSIONS } from '@app/flows/fines/constants/reports-permissions.constant';
 import { SEARCH_PERMISSIONS } from '@app/flows/fines/constants/search-permissions.constant';
 
 const resolveFeatureFlagGuardMock = vi.fn();
+
+const mockFeatureFlags = (featureFlags: Record<string, boolean>) => {
+  resolveFeatureFlagGuardMock.mockImplementation((featureFlagName: string) =>
+    Promise.resolve(featureFlags[featureFlagName] ?? false),
+  );
+};
 
 const createUserStateWithPermissions = (permissionIds: readonly number[]): IOpalUserState => {
   const userState = structuredClone(OPAL_USER_STATE_MOCK);
@@ -48,9 +54,7 @@ describe('finesSectionPermissionsGuard', () => {
       paramMap: convertToParamMap(dashboardType ? { dashboardType } : {}),
     } as ActivatedRouteSnapshot;
 
-    const result = TestBed.runInInjectionContext(() => finesSectionPermissionsGuard(route, {} as RouterStateSnapshot));
-
-    return isObservable(result) ? firstValueFrom(result) : result;
+    return TestBed.runInInjectionContext(() => finesSectionPermissionsGuard(route, {} as RouterStateSnapshot));
   };
 
   beforeAll(async () => {
@@ -68,7 +72,7 @@ describe('finesSectionPermissionsGuard', () => {
 
     mockRouter.createUrlTree.mockReturnValue(new UrlTree());
     mockOpalUserService.getLoggedInUserState.mockReturnValue(of(createUserStateWithPermissions([])));
-    resolveFeatureFlagGuardMock.mockResolvedValue(true);
+    mockFeatureFlags({ 'release-1a': true, 'release-1c-enforcement-operational-reporting': true });
 
     TestBed.configureTestingModule({
       providers: [
@@ -99,7 +103,7 @@ describe('finesSectionPermissionsGuard', () => {
   });
 
   it('should allow Accounts when release-1a is disabled and the user has consolidation permission', async () => {
-    resolveFeatureFlagGuardMock.mockResolvedValue(false);
+    mockFeatureFlags({ 'release-1a': false, 'release-1c-enforcement-operational-reporting': true });
     mockOpalUserService.getLoggedInUserState.mockReturnValue(
       of(createUserStateWithPermissions([ACCOUNTS_PERMISSIONS[2]])),
     );
@@ -121,7 +125,7 @@ describe('finesSectionPermissionsGuard', () => {
 
   it('should redirect Accounts when release-1a is disabled and the user only has draft accounts permission', async () => {
     const expectedUrlTree = new UrlTree();
-    resolveFeatureFlagGuardMock.mockResolvedValue(false);
+    mockFeatureFlags({ 'release-1a': false, 'release-1c-enforcement-operational-reporting': true });
     mockOpalUserService.getLoggedInUserState.mockReturnValue(
       of(createUserStateWithPermissions([ACCOUNTS_PERMISSIONS[0]])),
     );
@@ -134,7 +138,6 @@ describe('finesSectionPermissionsGuard', () => {
   });
 
   it('should resolve the release-1a feature flag before allowing draft accounts permission', async () => {
-    resolveFeatureFlagGuardMock.mockResolvedValue(true);
     mockOpalUserService.getLoggedInUserState.mockReturnValue(
       of(createUserStateWithPermissions([ACCOUNTS_PERMISSIONS[0]])),
     );
@@ -163,6 +166,36 @@ describe('finesSectionPermissionsGuard', () => {
     const result = await runGuard({ sectionKey: FINES_DASHBOARD_ROUTING_PATHS.children.reports });
 
     expect(result).toBe(true);
+  });
+
+  it('should resolve the release-1c enforcement operational reporting feature flag before allowing Reports', async () => {
+    mockOpalUserService.getLoggedInUserState.mockReturnValue(
+      of(createUserStateWithPermissions([REPORTS_PERMISSIONS[0]])),
+    );
+
+    const result = await runGuard({ dashboardType: FINES_DASHBOARD_ROUTING_PATHS.children.reports });
+
+    expect(result).toBe(true);
+    expect(resolveFeatureFlagGuardMock).toHaveBeenCalledWith(
+      'release-1c-enforcement-operational-reporting',
+      expect.any(Object),
+      expect.any(Object),
+    );
+  });
+
+  it('should redirect Reports when release-1c enforcement operational reporting is disabled', async () => {
+    const expectedUrlTree = new UrlTree();
+    mockFeatureFlags({ 'release-1a': true, 'release-1c-enforcement-operational-reporting': false });
+    mockOpalUserService.getLoggedInUserState.mockReturnValue(
+      of(createUserStateWithPermissions([REPORTS_PERMISSIONS[0]])),
+    );
+    mockRouter.createUrlTree.mockReturnValue(expectedUrlTree);
+
+    const result = await runGuard({ dashboardType: FINES_DASHBOARD_ROUTING_PATHS.children.reports });
+
+    expect(result).toBe(expectedUrlTree);
+    expect(mockRouter.createUrlTree).toHaveBeenCalledWith([`/${COMMON_PAGES_ROUTING_PATHS.children.accessDenied}`]);
+    expect(mockOpalUserService.getLoggedInUserState).not.toHaveBeenCalled();
   });
 
   it('should redirect Reports to access denied when the user lacks all report permissions', async () => {

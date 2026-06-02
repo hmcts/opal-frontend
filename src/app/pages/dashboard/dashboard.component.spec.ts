@@ -21,6 +21,11 @@ describe('DashboardComponent', () => {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   let globalStoreMock: any;
 
+  const defaultReleaseFeatureFlags = {
+    'release-1a': true,
+    'release-1c-enforcement-operational-reporting': true,
+  };
+
   const setupComponent = () => {
     fixture = TestBed.createComponent(DashboardComponent);
     component = fixture.componentInstance;
@@ -33,7 +38,7 @@ describe('DashboardComponent', () => {
     permissionsServiceMock.getUniquePermissions.mockReturnValue([101, 202, 303]);
     globalStoreMock = {
       userState: () => null,
-      featureFlags: vi.fn().mockReturnValue({ 'release-1a': true }),
+      featureFlags: vi.fn().mockReturnValue(defaultReleaseFeatureFlags),
     };
 
     await TestBed.configureTestingModule({
@@ -75,7 +80,7 @@ describe('DashboardComponent', () => {
   });
 
   it('should remove draft accounts from the accounts config when release-1a is disabled', () => {
-    globalStoreMock.featureFlags.mockReturnValue({ 'release-1a': false });
+    globalStoreMock.featureFlags.mockReturnValue({ ...defaultReleaseFeatureFlags, 'release-1a': false });
     setupComponent();
 
     expect(component.resolvedConfig()).toEqual({
@@ -86,10 +91,28 @@ describe('DashboardComponent', () => {
   });
 
   it('should remove draft accounts from the accounts config when release-1a is missing', () => {
-    globalStoreMock.featureFlags.mockReturnValue({});
+    globalStoreMock.featureFlags.mockReturnValue({
+      'release-1c-enforcement-operational-reporting': true,
+    });
     setupComponent();
 
     expect(component.resolvedConfig().groups.map((group) => group.id)).not.toContain('draft-accounts');
+  });
+
+  it('should remove reports content when release-1c enforcement operational reporting is disabled', () => {
+    globalStoreMock.featureFlags.mockReturnValue({
+      ...defaultReleaseFeatureFlags,
+      'release-1c-enforcement-operational-reporting': false,
+    });
+    setupComponent();
+    dashboardTypeParamMapSubject.next(convertToParamMap({ dashboardType: 'reports' }));
+    fixture.detectChanges();
+
+    expect(component.resolvedConfig()).toEqual({
+      ...DASHBOARD_PAGE_CONFIGURATION_MAP.reports,
+      highlights: [],
+      groups: [],
+    });
   });
 
   it('should fall back to the default config for an unknown dashboard type', () => {

@@ -11,14 +11,23 @@ import { FINES_DASHBOARD_ROUTING_PATHS } from 'src/app/flows/fines/constants/fin
 import { FINES_ROUTING_PATHS } from 'src/app/flows/fines/routing/constants/fines-routing-paths.constant';
 import { DashboardComponent } from 'src/app/pages/dashboard/dashboard.component';
 import { ReportsLocators as L } from '../../shared/selectors/reports.locators';
+import {
+  RELEASE_1A_FEATURE_FLAG,
+  RELEASE_1C_ENFORCEMENT_OPERATIONAL_REPORTING_FEATURE_FLAG,
+} from 'src/app/flows/fines/constants/release-feature-flags.constant';
 
 const REPORTS_JIRA_LABEL = '@JIRA-LABEL:primary-nav-and-dashboards';
 const REPORTS_STORY_TAG = '@JIRA-STORY:PO-2613';
 const REPORTS_EPIC_TAG = '@JIRA-EPIC:PO-2627';
+const DEFAULT_RELEASE_FEATURE_FLAGS = {
+  [RELEASE_1A_FEATURE_FLAG]: true,
+  [RELEASE_1C_ENFORCEMENT_OPERATIONAL_REPORTING_FEATURE_FLAG]: true,
+};
 
 interface IComponentProperties {
   permissionIds: number[];
   dashboardType: string;
+  featureFlags: Record<string, boolean>;
 }
 
 interface ISummaryListComponentProperties {
@@ -46,6 +55,7 @@ const operationalReportPermissions = [
 const componentProperties: IComponentProperties = {
   permissionIds: operationalReportPermissions,
   dashboardType: FINES_DASHBOARD_ROUTING_PATHS.children.reports,
+  featureFlags: DEFAULT_RELEASE_FEATURE_FLAGS,
 };
 
 const summaryListComponentProperties: ISummaryListComponentProperties = {
@@ -74,7 +84,13 @@ describe('Reports dashboard navigation', { tags: [REPORTS_STORY_TAG, REPORTS_EPI
             getUniquePermissions: cy.stub().returns(props.permissionIds),
           },
         },
-        { provide: GlobalStore, useValue: { userState: () => null, featureFlags: () => ({ 'release-1a': true }) } },
+        {
+          provide: GlobalStore,
+          useValue: {
+            userState: () => null,
+            featureFlags: () => ({ ...DEFAULT_RELEASE_FEATURE_FLAGS, ...props.featureFlags }),
+          },
+        },
       ],
     }).then(({ fixture }) => {
       const router = fixture.componentRef.injector.get(Router);
@@ -118,6 +134,14 @@ describe('Reports dashboard navigation', { tags: [REPORTS_STORY_TAG, REPORTS_EPI
     setupDashboardComponent({
       ...componentProperties,
       permissionIds,
+    });
+
+  const featureFlagDisabledSetup = () =>
+    setupDashboardComponent({
+      ...componentProperties,
+      featureFlags: {
+        [RELEASE_1C_ENFORCEMENT_OPERATIONAL_REPORTING_FEATURE_FLAG]: false,
+      },
     });
 
   const noOperationalPermissionsSetup = () => setupDashboardWithPermissions([]);
@@ -254,6 +278,20 @@ describe('Reports dashboard navigation', { tags: [REPORTS_STORY_TAG, REPORTS_EPI
 
       cy.contains(L.pageHeader, 'Reports').should('be.visible');
       cy.get(L.yourReportsLink).should('be.visible');
+      cy.contains(L.sectionHeading, 'Operational reports').should('not.exist');
+      cy.get(L.operationalReportsByEnforcementLink).should('not.exist');
+      cy.get(L.operationalReportsByPaymentsLink).should('not.exist');
+    },
+  );
+
+  it(
+    'hides the Reports dashboard entry points when release-1c enforcement operational reporting is disabled',
+    { tags: ['@JIRA-TEST-KEY:PO-3758'] },
+    () => {
+      featureFlagDisabledSetup();
+
+      cy.contains(L.pageHeader, 'Reports').should('be.visible');
+      cy.get(L.yourReportsLink).should('not.exist');
       cy.contains(L.sectionHeading, 'Operational reports').should('not.exist');
       cy.get(L.operationalReportsByEnforcementLink).should('not.exist');
       cy.get(L.operationalReportsByPaymentsLink).should('not.exist');
