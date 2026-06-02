@@ -46,7 +46,7 @@ import { OPAL_FINES_AMEND_PAYMENT_TERMS_LUMP_SUM_PAYLOAD_MOCK } from './mocks/op
 import { OPAL_FINES_DEFENDANT_ACCOUNT_RESPONSE_INDIVIDUAL_MOCK } from './mocks/opal-fines-defendant-account-response-individual.mock';
 import { OPAL_FINES_ACCOUNT_DEFENDANT_ACCOUNT_PARTY_MOCK } from './mocks/opal-fines-account-defendant-account-party.mock';
 import { OPAL_FINES_ACCOUNT_DEFENDANT_DETAILS_ENFORCEMENT_TAB_REF_DATA_MOCK } from './mocks/opal-fines-account-defendant-details-enforcement-tab-ref-data.mock';
-import { OPAL_FINES_ACCOUNT_DEFENDANT_DETAILS_IMPOSITIONS_TAB_REF_DATA_MOCK } from './mocks/opal-fines-account-defendant-details-impositions-tab-ref-data.mock';
+import { OPAL_FINES_ACCOUNT_DEFENDANT_DETAILS_IMPOSITIONS_TAB_REF_DATA_MOCK } from './mocks/opal-fines-account-defendant-details-impositions.mock';
 import { OPAL_FINES_ACCOUNT_DEFENDANT_DETAILS_PAYMENT_TERMS_LATEST_MOCK } from './mocks/opal-fines-account-defendant-details-payment-terms-latest.mock';
 import { OPAL_FINES_ACCOUNT_DEFENDANT_DETAILS_HISTORY_AND_NOTES_TAB_REF_DATA_MOCK } from './mocks/opal-fines-account-defendant-details-history-and-notes-tab-ref-data.mock';
 import { OPAL_FINES_DEFENDANT_ACCOUNT_SEARCH_PARAMS_INDIVIDUAL_MOCK } from './mocks/opal-fines-defendant-account-search-params.mock';
@@ -1128,11 +1128,43 @@ describe('OpalFines', () => {
   });
 
   it('should getDefendantAccountImpositionsTabData', () => {
-    const expectedResponse = OPAL_FINES_ACCOUNT_DEFENDANT_DETAILS_IMPOSITIONS_TAB_REF_DATA_MOCK;
+    const account_id: number = 77;
+    const apiUrl = `${OPAL_FINES_PATHS.defendantAccounts}/${account_id}/impositions`;
+    const expectedResponse = {
+      ...OPAL_FINES_ACCOUNT_DEFENDANT_DETAILS_IMPOSITIONS_TAB_REF_DATA_MOCK,
+      version: '"123"',
+    };
 
-    service.getDefendantAccountImpositionsTabData().subscribe((response) => {
+    service.getDefendantAccountImpositionsTabData(account_id).subscribe((response) => {
       expect(response).toEqual(expectedResponse);
     });
+
+    const req = httpMock.expectOne(apiUrl);
+    expect(req.request.method).toBe('GET');
+
+    req.flush(OPAL_FINES_ACCOUNT_DEFENDANT_DETAILS_IMPOSITIONS_TAB_REF_DATA_MOCK, {
+      headers: { ETag: '"123"' },
+    });
+  });
+
+  it('should return cached defendant account impositions data on repeated calls', () => {
+    const account_id = 77;
+    const apiUrl = `${OPAL_FINES_PATHS.defendantAccounts}/${account_id}/impositions`;
+    const expectedResponse = {
+      ...OPAL_FINES_ACCOUNT_DEFENDANT_DETAILS_IMPOSITIONS_TAB_REF_DATA_MOCK,
+      version: null,
+    };
+
+    service.getDefendantAccountImpositionsTabData(account_id).subscribe();
+
+    const req = httpMock.expectOne(apiUrl);
+    req.flush(OPAL_FINES_ACCOUNT_DEFENDANT_DETAILS_IMPOSITIONS_TAB_REF_DATA_MOCK);
+
+    service.getDefendantAccountImpositionsTabData(account_id).subscribe((response) => {
+      expect(response).toEqual(expectedResponse);
+    });
+
+    httpMock.expectNone(apiUrl);
   });
 
   it('should getDefendantAccountPaymentTermsTabData', () => {
