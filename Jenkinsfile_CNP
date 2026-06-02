@@ -210,6 +210,12 @@ void archiveArtifact(String path) {
     archiveArtifacts artifacts: path, allowEmptyArchive: true
 }
 
+// Archive Zephyr JSON reports for a test output directory.
+void archiveZephyrReports(String outputDir) {
+    archiveArtifact("${outputDir}/zephyr/cucumber-report.json")
+    archiveArtifact("${outputDir}/zephyr/cypress-report-1.json")
+}
+
 // Publish an HTML report directory with Jenkins HTML Publisher
 void publishHtmlReport(String dir, String files, String name) {
     publishHTML target: [
@@ -731,6 +737,7 @@ withPipeline(type, product, component) {
         functionalReportName()
       )
         archiveArtifact(functionalArtifactsGlob)
+        archiveZephyrReports('smoke-output')
         archiveArtifact(accountArtifactPath)
         archiveArtifact(accountEvidenceArtifacts)
         if (shouldPublishSmokeReport()) {
@@ -751,6 +758,7 @@ withPipeline(type, product, component) {
         functionalReportName()
       )
         archiveArtifact(functionalArtifactsGlob)
+        archiveZephyrReports('smoke-output')
         archiveArtifact(accountArtifactPath)
         archiveArtifact(accountEvidenceArtifacts)
 
