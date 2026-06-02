@@ -459,6 +459,20 @@ export const routing: Routes = [
         },
         resolve: { title: TitleResolver },
       },
+      {
+        path: `${FINES_ACC_MINOR_CREDITOR_ROUTING_PATHS.children.amend}`,
+
+        loadComponent: () =>
+          import('../fines-acc-minor-creditor-add-amend-convert/fines-acc-minor-creditor-add-amend-convert.component').then(
+            (c) => c.FinesAccMinorCreditorAddAmendConvertComponent,
+          ),
+        canActivate: [authGuard, finesAccStateGuard, routePermissionsGuard],
+        data: {
+          routePermissionId: [accRootPermissionIds['account-maintenance']],
+          title: FINES_ACC_MINOR_CREDITOR_ROUTING_TITLES.children.amend,
+        },
+        resolve: { title: TitleResolver },
+      },
     ],
   },
 ];

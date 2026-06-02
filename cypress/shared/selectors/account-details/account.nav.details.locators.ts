@@ -91,6 +91,9 @@ export const AccountNavDetailsLocators = {
     /** Tab link for “Payment terms.” */
     paymentTermsTab: 'li[subnavitemid="payment-terms-tab"] > a.moj-sub-navigation__link',
 
+    /** Tab link for “Creditor.” */
+    creditorTab: 'li[subnavitemid="creditor-tab"] > a.moj-sub-navigation__link',
+
     /** Tab link for “Enforcement.” */
     enforcementTab: 'li[subnavitemid="enforcement-tab"] > a.moj-sub-navigation__link',
 

@@ -7,5 +7,6 @@ export const FINES_ACC_MINOR_CREDITOR_ROUTING_TITLES: IFinesAccMinorCreditorRout
     note: 'Add note',
     'payment-hold': 'Payment hold',
     creditor: 'Creditor details',
+    amend: 'Amend minor creditor details',
   },
 };
