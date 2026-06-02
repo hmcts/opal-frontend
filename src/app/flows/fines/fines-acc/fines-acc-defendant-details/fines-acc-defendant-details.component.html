@@ -217,7 +217,12 @@
     }
   }
   @case ('impositions') {
-    <div class="govuk-grid-column-full"></div>
+    @if (tabImpositions$ | async; as tabData) {
+      <app-fines-acc-defendant-details-impositions-tab
+        [tabData]="tabData"
+        [style]="tabContentStyles"
+      ></app-fines-acc-defendant-details-impositions-tab>
+    }
   }
   @case ('history-and-notes') {
     <div class="govuk-grid-column-full"></div>

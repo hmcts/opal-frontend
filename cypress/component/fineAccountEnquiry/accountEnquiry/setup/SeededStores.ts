@@ -1,5 +1,6 @@
 import { GlobalStore } from '@hmcts/opal-frontend-common/stores/global';
 import { FinesAccountStore } from 'src/app/flows/fines/fines-acc/stores/fines-acc.store';
+import { DEFAULT_USER_STATE_DOMAIN } from '../../../CommonIntercepts/CommonIntercepts';
 import {
   USER_STATE_MOCK_PERMISSION_BU77,
   USER_STATE_MOCK_NO_PERMISSION,
@@ -31,6 +32,7 @@ export const buildSeededGlobalStore = (
 ) => {
   const store = new GlobalStore();
   store.setUserState(userState);
+  store.setUserStateDomain(DEFAULT_USER_STATE_DOMAIN);
   store.setSsoEnabled(false);
   return store;
 };

@@ -19,7 +19,7 @@
       "enabled": false
     },
     "launch-darkly": {
-      "enabled": false,
+      "enabled": true,
       "stream": false
     },
     "app-insights": {
@@ -80,6 +80,7 @@
   "user-state": {
     "cacheKeyPrefix": "USER_STATE_",
     "routePath": "/api/user-state",
-    "tokenClaim": "sub"
+    "tokenClaim": "sub",
+    "domain": "fines"
   }
 }

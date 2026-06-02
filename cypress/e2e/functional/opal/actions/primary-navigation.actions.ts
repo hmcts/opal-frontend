@@ -46,6 +46,17 @@ export class PrimaryNavigationActions {
   }
 
   /**
+   * Asserts the authenticated dashboard shell has loaded and is ready for navigation.
+   */
+  public assertDashboardLandingReady(): void {
+    log('assert', 'Checking dashboard landing is ready for navigation');
+    this.assertVisible();
+    this.assertSignOutVisible();
+    this.common.assertPageHeadingVisible();
+    this.common.assertNoPageHeadingContains('there is a problem');
+  }
+
+  /**
    * Asserts that the Fines primary navigation is hidden.
    */
   public assertHidden(): void {

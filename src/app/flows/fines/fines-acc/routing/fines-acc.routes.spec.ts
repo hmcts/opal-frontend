@@ -2,6 +2,8 @@ import { describe, expect, it } from 'vitest';
 import { routing } from './fines-acc.routes';
 import { FINES_ACC_DEFENDANT_ROUTING_PATHS } from './constants/fines-acc-defendant-routing-paths.constant';
 import { FINES_ACC_MINOR_CREDITOR_ROUTING_PATHS } from './constants/fines-acc-minor-creditor-routing-paths.constant';
+import { FINES_ACC_MAJOR_CREDITOR_ROUTING_PATHS } from './constants/fines-acc-major-creditor-routing-paths.constant';
+import { FINES_ACC_MAJOR_CREDITOR_ROUTING_TITLES } from './constants/fines-acc-major-creditor-routing-titles.constant';
 import { FINES_ACC_ENF_COURT_CHANGE_ROUTING_PATHS } from '../fines-acc-enf-court-change/constants/fines-acc-enf-court-change-routing-paths.constant';
 import { FINES_ACC_ENF_OVERRIDE_ADD_CHANGE_ROUTING_PATHS } from '../fines-acc-enf-override-add-change/constants/fines-acc-enf-override-add-change-routing-paths.constant';
 import { HIDE_PRIMARY_NAV_ROUTE_DATA_KEY } from '@app/constants/route-data.constant';
@@ -21,6 +23,9 @@ describe('fines acc routes', () => {
   );
   const minorCreditorJourneyGroup = minorCreditorRoute?.children?.find(
     (route) => route.path === '' && route.data?.[HIDE_PRIMARY_NAV_ROUTE_DATA_KEY] === true,
+  );
+  const majorCreditorRoute = routing.find(
+    (route) => route.path === `${FINES_ACC_MAJOR_CREDITOR_ROUTING_PATHS.root}/:accountId`,
   );
 
   it('should keep primary navigation visible on defendant details browse routes', () => {
@@ -77,5 +82,14 @@ describe('fines acc routes', () => {
     );
 
     expect(amendRoute?.canDeactivate).toContain(canDeactivateGuard);
+  });
+  
+  it('should route to the major creditor details placeholder page', () => {
+    const detailsRoute = majorCreditorRoute?.children?.find(
+      (route) => route.path === FINES_ACC_MAJOR_CREDITOR_ROUTING_PATHS.children.details,
+    );
+
+    expect(detailsRoute?.data?.['title']).toBe(FINES_ACC_MAJOR_CREDITOR_ROUTING_TITLES.children.details);
+    expect(detailsRoute?.resolve?.['title']).toBeTruthy();
   });
 });

@@ -9,6 +9,7 @@ import {
   interceptDefendantHeader,
   interceptEnforcementStatus,
   interceptPaymentTerms,
+  interceptImpositions,
 } from './intercept/defendantAccountIntercepts';
 import {
   interceptAuthenticatedUser,
@@ -19,6 +20,7 @@ import { DEFENDANT_HEADER_MOCK } from './mocks/defendant_details_mock';
 import { USER_STATE_MOCK_PERMISSION_BU77 } from '../../CommonIntercepts/CommonUserState.mocks';
 import { OPAL_FINES_ACCOUNT_DEFENDANT_DETAILS_PAYMENT_TERMS_LATEST_MOCK } from '@services/fines/opal-fines-service/mocks/opal-fines-account-defendant-details-payment-terms-latest.mock';
 import { OPAL_FINES_ACCOUNT_DEFENDANT_DETAILS_ENFORCEMENT_TAB_REF_DATA_MOCK } from '@services/fines/opal-fines-service/mocks/opal-fines-account-defendant-details-enforcement-tab-ref-data.mock';
+import { OPAL_FINES_ACCOUNT_DEFENDANT_DETAILS_IMPOSITIONS_TAB_REF_DATA_MOCK } from '@services/fines/opal-fines-service/mocks/opal-fines-account-defendant-details-impositions.mock';
 
 const ACCOUNT_ENQUIRY_JIRA_LABEL = '@JIRA-LABEL:account-enquiry';
 
@@ -61,6 +63,7 @@ describe('Global Version Control Mechanism - Component Tests', () => {
       interceptPaymentTerms(77, OPAL_FINES_ACCOUNT_DEFENDANT_DETAILS_PAYMENT_TERMS_LATEST_MOCK, etag);
       interceptResultByCode('REM');
       interceptEnforcementStatus(77, OPAL_FINES_ACCOUNT_DEFENDANT_DETAILS_ENFORCEMENT_TAB_REF_DATA_MOCK, etag);
+      interceptImpositions(77, OPAL_FINES_ACCOUNT_DEFENDANT_DETAILS_IMPOSITIONS_TAB_REF_DATA_MOCK, etag);
 
       setupAccountEnquiryComponent(componentProperties);
 
@@ -93,6 +96,7 @@ describe('Global Version Control Mechanism - Component Tests', () => {
       const headerEtag = 'W/"version-1"';
       const atAGlanceEtag = 'W/"version-2"';
       const paymentTermsEtag = 'W/"version-3"';
+      const impositionsEtag = 'W/"version-4"';
 
       interceptDefendantHeader(77, DEFENDANT_HEADER_MOCK, headerEtag);
       interceptDefendantDetails(
@@ -107,6 +111,7 @@ describe('Global Version Control Mechanism - Component Tests', () => {
       interceptPaymentTerms(77, OPAL_FINES_ACCOUNT_DEFENDANT_DETAILS_PAYMENT_TERMS_LATEST_MOCK, paymentTermsEtag);
       interceptResultByCode('REM');
       interceptEnforcementStatus(77, OPAL_FINES_ACCOUNT_DEFENDANT_DETAILS_ENFORCEMENT_TAB_REF_DATA_MOCK, '123');
+      interceptImpositions(77, OPAL_FINES_ACCOUNT_DEFENDANT_DETAILS_IMPOSITIONS_TAB_REF_DATA_MOCK, impositionsEtag);
 
       setupAccountEnquiryComponent(componentProperties);
 

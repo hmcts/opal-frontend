@@ -5,10 +5,11 @@
  */
 export const MINOR_CREDITOR_CREDITOR_DETAILS = {
   component: 'app-fines-acc-minor-creditor-details-creditor-tab',
-  sectionHeading: 'app-fines-acc-minor-creditor-details-creditor-tab h2',
+  sectionHeading:
+    'app-fines-acc-minor-creditor-details-creditor-tab > .govuk-grid-column-two-thirds > .govuk-grid-row > .govuk-grid-column-two-thirds > h2',
   summaryCardTitle: 'app-fines-acc-minor-creditor-details-creditor-tab .govuk-summary-card__title',
   changeLink:
-    'app-fines-acc-minor-creditor-details-creditor-tab a.govuk-link.govuk-link--no-visited-state.govuk-\\!-margin-bottom-0',
+    'app-fines-acc-minor-creditor-details-creditor-tab > .govuk-grid-column-two-thirds > .govuk-grid-row > .govuk-grid-column-one-third a.govuk-link.govuk-link--no-visited-state.govuk-\\!-margin-bottom-0',
   nameRow: '[summaryListRowId="creditor-name"]',
   addressRow: '[summaryListRowId="creditor-address"]',
   paymentMethodRow: '[summaryListRowId="creditor-payment-method"]',

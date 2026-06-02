@@ -12,6 +12,7 @@ export interface IComponentProperties {
   additionalProviders?: Provider[];
   globalStoreFactory?: () => InstanceType<typeof GlobalStore>;
   finesAccountStoreFactory?: () => InstanceType<typeof FinesAccountStore>;
+  userStateDomain?: string;
   fragments:
     | 'at-a-glance'
     | 'creditor'

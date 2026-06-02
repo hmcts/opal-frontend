@@ -5,13 +5,14 @@ import { FINES_ROUTING_PATHS } from '@app/flows/fines/routing/constants/fines-ro
 import { IOpalUserState } from '@hmcts/opal-frontend-common/services/opal-user-service/interfaces';
 import { OPAL_USER_STATE_MOCK } from '@hmcts/opal-frontend-common/services/opal-user-service/mocks';
 import { OpalUserService } from '@hmcts/opal-frontend-common/services/opal-user-service';
-import { beforeEach, describe, expect, it } from 'vitest';
+import { beforeAll, beforeEach, describe, expect, it, vi } from 'vitest';
 import { createSpyObj } from '@app/testing/create-spy-obj.helper';
-import { Observable, firstValueFrom, of, throwError } from 'rxjs';
-import { dashboardLandingGuard } from './dashboard-landing.guard';
+import { of, throwError } from 'rxjs';
 import { ACCOUNTS_PERMISSIONS } from '@app/flows/fines/constants/accounts-permissions.constant';
 import { REPORTS_PERMISSIONS } from '@app/flows/fines/constants/reports-permissions.constant';
 import { SEARCH_PERMISSIONS } from '@app/flows/fines/constants/search-permissions.constant';
+
+const resolveFeatureFlagGuardMock = vi.fn();
 
 const createUserStateWithPermissions = (permissionIds: readonly number[]): IOpalUserState => {
   const userState = structuredClone(OPAL_USER_STATE_MOCK);
@@ -39,20 +40,30 @@ describe('dashboardLandingGuard', () => {
   let mockRouter: any;
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   let mockOpalUserService: any;
+  let dashboardLandingGuard: (typeof import('./dashboard-landing.guard'))['dashboardLandingGuard'];
 
   const runGuard = async () => {
     const route = {} as ActivatedRouteSnapshot;
     const state = {} as RouterStateSnapshot;
-    const result$ = TestBed.runInInjectionContext(() => dashboardLandingGuard(route, state));
-    return firstValueFrom(result$ as Observable<boolean | UrlTree>);
+    return TestBed.runInInjectionContext(() => dashboardLandingGuard(route, state));
   };
+
+  beforeAll(async () => {
+    vi.doMock('@hmcts/opal-frontend-common/guards/feature-flag', () => ({
+      resolveFeatureFlagGuard: resolveFeatureFlagGuardMock,
+    }));
+
+    ({ dashboardLandingGuard } = await import('./dashboard-landing.guard'));
+  });
 
   beforeEach(() => {
     mockRouter = createSpyObj('Router', ['createUrlTree']);
     mockOpalUserService = createSpyObj('OpalUserService', ['getLoggedInUserState']);
+    resolveFeatureFlagGuardMock.mockReset();
 
     mockRouter.createUrlTree.mockReturnValue(new UrlTree());
     mockOpalUserService.getLoggedInUserState.mockReturnValue(of(createUserStateWithPermissions([])));
+    resolveFeatureFlagGuardMock.mockResolvedValue(true);
 
     TestBed.configureTestingModule({
       providers: [
@@ -90,6 +101,45 @@ describe('dashboardLandingGuard', () => {
     const result = await runGuard();
 
     expect(result).toBe(expectedUrlTree);
+    expect(mockRouter.createUrlTree).toHaveBeenCalledWith([
+      '/',
+      FINES_ROUTING_PATHS.root,
+      FINES_DASHBOARD_ROUTING_PATHS.root,
+      FINES_DASHBOARD_ROUTING_PATHS.children.accounts,
+    ]);
+  });
+
+  it('should route to Finance when release-1a is disabled and the user only has draft accounts permission', async () => {
+    const expectedUrlTree = new UrlTree();
+    resolveFeatureFlagGuardMock.mockResolvedValue(false);
+    mockOpalUserService.getLoggedInUserState.mockReturnValue(
+      of(createUserStateWithPermissions([ACCOUNTS_PERMISSIONS[0]])),
+    );
+    mockRouter.createUrlTree.mockReturnValue(expectedUrlTree);
+
+    const result = await runGuard();
+
+    expect(result).toBe(expectedUrlTree);
+    expect(mockRouter.createUrlTree).toHaveBeenCalledWith([
+      '/',
+      FINES_ROUTING_PATHS.root,
+      FINES_DASHBOARD_ROUTING_PATHS.root,
+      FINES_DASHBOARD_ROUTING_PATHS.children.finance,
+    ]);
+  });
+
+  it('should resolve the release-1a feature flag before routing draft accounts users', async () => {
+    const expectedUrlTree = new UrlTree();
+    resolveFeatureFlagGuardMock.mockResolvedValue(true);
+    mockOpalUserService.getLoggedInUserState.mockReturnValue(
+      of(createUserStateWithPermissions([ACCOUNTS_PERMISSIONS[0]])),
+    );
+    mockRouter.createUrlTree.mockReturnValue(expectedUrlTree);
+
+    const result = await runGuard();
+
+    expect(result).toBe(expectedUrlTree);
+    expect(resolveFeatureFlagGuardMock).toHaveBeenCalledWith('release-1a', expect.any(Object), expect.any(Object));
     expect(mockRouter.createUrlTree).toHaveBeenCalledWith([
       '/',
       FINES_ROUTING_PATHS.root,
