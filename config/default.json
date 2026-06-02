@@ -19,7 +19,7 @@
       "enabled": false
     },
     "launch-darkly": {
-      "enabled": false,
+      "enabled": true,
       "stream": false
     },
     "app-insights": {

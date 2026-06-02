@@ -22,6 +22,7 @@ import { SESSION_TOKEN_EXPIRY_MOCK } from '@hmcts/opal-frontend-common/services/
 import { IOpalUserState } from '@hmcts/opal-frontend-common/services/opal-user-service/interfaces';
 import { OPAL_USER_STATE_MOCK } from '@hmcts/opal-frontend-common/services/opal-user-service/mocks';
 import { MojAlertComponent } from '@hmcts/opal-frontend-common/components/moj/moj-alert';
+import { LaunchDarklyService } from '@hmcts/opal-frontend-common/services/launch-darkly-service';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
 import { createSpyObj } from './testing/create-spy-obj.helper';
 import { FINES_DASHBOARD_ROUTING_PATHS } from './flows/fines/constants/fines-dashboard-routing-paths.constant';
@@ -155,6 +156,7 @@ describe('AppComponent - browser', () => {
   beforeEach(() => {
     globalStore.setTokenExpiry(mockTokenExpiry);
     globalStore.setUserState(OPAL_USER_STATE_MOCK);
+    globalStore.setFeatureFlags({ 'release-1a': true });
   });
 
   it('should create the app', () => {
@@ -463,6 +465,28 @@ describe('AppComponent - browser', () => {
   it('should show Accounts in primary navigation when the user has an accounts permission in any business unit', () => {
     globalStore.setAuthenticated(true);
     globalStore.setUserState(createUserStateWithPermissions([ACCOUNTS_PERMISSIONS[1]]));
+
+    const fixture = TestBed.createComponent(AppComponent);
+    fixture.detectChanges();
+
+    expect(getPrimaryNavigationTexts(fixture)).toContain('Accounts');
+  });
+
+  it('should hide Accounts in primary navigation when release-1a is disabled and the user only has draft accounts permission', () => {
+    globalStore.setAuthenticated(true);
+    globalStore.setFeatureFlags({ 'release-1a': false });
+    globalStore.setUserState(createUserStateWithPermissions([ACCOUNTS_PERMISSIONS[1]]));
+
+    const fixture = TestBed.createComponent(AppComponent);
+    fixture.detectChanges();
+
+    expect(getPrimaryNavigationTexts(fixture)).not.toContain('Accounts');
+  });
+
+  it('should show Accounts in primary navigation when release-1a is disabled and the user has consolidation permission', () => {
+    globalStore.setAuthenticated(true);
+    globalStore.setFeatureFlags({ 'release-1a': false });
+    globalStore.setUserState(createUserStateWithPermissions([ACCOUNTS_PERMISSIONS[2]]));
 
     const fixture = TestBed.createComponent(AppComponent);
     fixture.detectChanges();
@@ -825,6 +849,26 @@ describe('AppComponent - server', () => {
 
   beforeEach(() => {
     mockTokenExpiry.expiry = '2023-07-03T12:30:00Z';
+  });
+
+  it('should not initialize LaunchDarkly on server', () => {
+    const launchDarklyService = TestBed.inject(LaunchDarklyService);
+    const initializeLaunchDarklyClientSpy = vi
+      .spyOn(launchDarklyService, 'initializeLaunchDarklyClient')
+      .mockImplementation(() => undefined);
+    const initializeLaunchDarklyFlagsSpy = vi
+      .spyOn(launchDarklyService, 'initializeLaunchDarklyFlags')
+      .mockResolvedValue(undefined);
+    const initializeLaunchDarklyChangeListenerSpy = vi
+      .spyOn(launchDarklyService, 'initializeLaunchDarklyChangeListener')
+      .mockImplementation(() => undefined);
+
+    const fixture = TestBed.createComponent(AppComponent);
+    fixture.detectChanges();
+
+    expect(initializeLaunchDarklyClientSpy).not.toHaveBeenCalled();
+    expect(initializeLaunchDarklyFlagsSpy).not.toHaveBeenCalled();
+    expect(initializeLaunchDarklyChangeListenerSpy).not.toHaveBeenCalled();
   });
 
   it('should not call getTokenExpiry as on server ', () => {

@@ -9,6 +9,7 @@ import { FINES_ROUTING_PATHS } from '@routing/fines/constants/fines-routing-path
 import { authGuard } from '@hmcts/opal-frontend-common/guards/auth';
 import { canDeactivateGuard } from '@hmcts/opal-frontend-common/guards/can-deactivate';
 import { accountGuard } from '@hmcts/opal-frontend-common/guards/account';
+import { featureFlagRedirectGuard } from '@hmcts/opal-frontend-common/guards/feature-flag';
 import { TitleResolver } from '@hmcts/opal-frontend-common/resolvers/title';
 import { FINES_SA_ROUTING_TITLES } from '../fines-sa/routing/constants/fines-sa-routing-titles.constant';
 import { FINES_SA_ROUTING_PATHS } from '../fines-sa/routing/constants/fines-sa-routing-paths.constant';
@@ -24,6 +25,9 @@ import { finesSaMinorCreditorAccountsResolver } from '../fines-sa/routing/resolv
 import { dashboardLandingGuard } from './guards/dashboard-landing/dashboard-landing.guard';
 import { finesSectionPermissionsGuard } from './guards/fines-section-permissions/fines-section-permissions.guard';
 import { PRIMARY_NAV_HIDDEN_ROUTE_DATA } from '@app/constants/route-data.constant';
+import { RELEASE_1A_FEATURE_FLAG } from '../constants/release-feature-flags.constant';
+
+export const release1aFeatureFlagGuard = featureFlagRedirectGuard(RELEASE_1A_FEATURE_FLAG);
 
 export const finesRouting: Routes = [
   {
@@ -90,7 +94,8 @@ export const finesRouting: Routes = [
         path: FINES_ROUTING_PATHS.children.mac.root,
         loadComponent: () => import('../fines-mac/fines-mac.component').then((c) => c.FinesMacComponent),
         children: macRouting,
-        canActivate: [authGuard],
+        canActivate: [authGuard, release1aFeatureFlagGuard],
+        canActivateChild: [release1aFeatureFlagGuard],
         canDeactivate: [canDeactivateGuard],
         data: {
           ...PRIMARY_NAV_HIDDEN_ROUTE_DATA,
@@ -100,7 +105,8 @@ export const finesRouting: Routes = [
         path: FINES_ROUTING_PATHS.children.draft.root,
         loadComponent: () => import('../fines-draft/fines-draft.component').then((c) => c.FinesDraftComponent),
         children: draftRouting,
-        canActivate: [authGuard, finesSectionPermissionsGuard],
+        canActivate: [authGuard, release1aFeatureFlagGuard, finesSectionPermissionsGuard],
+        canActivateChild: [release1aFeatureFlagGuard],
         data: {
           sectionKey: FINES_DASHBOARD_ROUTING_PATHS.children.accounts,
         },
