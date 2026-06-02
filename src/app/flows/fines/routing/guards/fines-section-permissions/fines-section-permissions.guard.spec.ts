@@ -13,6 +13,9 @@ import { REPORTS_PERMISSIONS } from '@app/flows/fines/constants/reports-permissi
 import { SEARCH_PERMISSIONS } from '@app/flows/fines/constants/search-permissions.constant';
 
 const resolveFeatureFlagGuardMock = vi.fn();
+const mockFeatureFlags = (flags: Record<string, boolean>) => {
+  resolveFeatureFlagGuardMock.mockImplementation((featureFlag: string) => Promise.resolve(flags[featureFlag] ?? false));
+};
 
 const createUserStateWithPermissions = (permissionIds: readonly number[]): IOpalUserState => {
   const userState = structuredClone(OPAL_USER_STATE_MOCK);
@@ -68,7 +71,7 @@ describe('finesSectionPermissionsGuard', () => {
 
     mockRouter.createUrlTree.mockReturnValue(new UrlTree());
     mockOpalUserService.getLoggedInUserState.mockReturnValue(of(createUserStateWithPermissions([])));
-    resolveFeatureFlagGuardMock.mockResolvedValue(true);
+    mockFeatureFlags({ 'release-1a': true, 'release-1c-write-off': true });
 
     TestBed.configureTestingModule({
       providers: [
@@ -99,7 +102,7 @@ describe('finesSectionPermissionsGuard', () => {
   });
 
   it('should allow Accounts when release-1a is disabled and the user has consolidation permission', async () => {
-    resolveFeatureFlagGuardMock.mockResolvedValue(false);
+    mockFeatureFlags({ 'release-1a': false, 'release-1c-write-off': true });
     mockOpalUserService.getLoggedInUserState.mockReturnValue(
       of(createUserStateWithPermissions([ACCOUNTS_PERMISSIONS[2]])),
     );
@@ -107,6 +110,36 @@ describe('finesSectionPermissionsGuard', () => {
     const result = await runGuard({ dashboardType: FINES_DASHBOARD_ROUTING_PATHS.children.accounts });
 
     expect(result).toBe(true);
+  });
+
+  it('should redirect Accounts when release-1c-write-off is disabled and the user only has consolidation permission', async () => {
+    const expectedUrlTree = new UrlTree();
+    mockFeatureFlags({ 'release-1a': true, 'release-1c-write-off': false });
+    mockOpalUserService.getLoggedInUserState.mockReturnValue(
+      of(createUserStateWithPermissions([ACCOUNTS_PERMISSIONS[2]])),
+    );
+    mockRouter.createUrlTree.mockReturnValue(expectedUrlTree);
+
+    const result = await runGuard({ dashboardType: FINES_DASHBOARD_ROUTING_PATHS.children.accounts });
+
+    expect(result).toBe(expectedUrlTree);
+    expect(mockRouter.createUrlTree).toHaveBeenCalledWith([`/${COMMON_PAGES_ROUTING_PATHS.children.accessDenied}`]);
+  });
+
+  it('should allow consolidation section access when release-1c-write-off is enabled and the user has consolidation permission', async () => {
+    mockOpalUserService.getLoggedInUserState.mockReturnValue(
+      of(createUserStateWithPermissions([ACCOUNTS_PERMISSIONS[2]])),
+    );
+
+    const result = await runGuard({ sectionKey: FINES_DASHBOARD_ROUTING_PATHS.children.accounts });
+
+    expect(result).toBe(true);
+    expect(resolveFeatureFlagGuardMock).toHaveBeenCalledWith('release-1a', expect.any(Object), expect.any(Object));
+    expect(resolveFeatureFlagGuardMock).toHaveBeenCalledWith(
+      'release-1c-write-off',
+      expect.any(Object),
+      expect.any(Object),
+    );
   });
 
   it('should allow Accounts when release-1a is enabled and the user has a draft accounts permission', async () => {
@@ -121,7 +154,7 @@ describe('finesSectionPermissionsGuard', () => {
 
   it('should redirect Accounts when release-1a is disabled and the user only has draft accounts permission', async () => {
     const expectedUrlTree = new UrlTree();
-    resolveFeatureFlagGuardMock.mockResolvedValue(false);
+    mockFeatureFlags({ 'release-1a': false, 'release-1c-write-off': true });
     mockOpalUserService.getLoggedInUserState.mockReturnValue(
       of(createUserStateWithPermissions([ACCOUNTS_PERMISSIONS[0]])),
     );
@@ -133,8 +166,7 @@ describe('finesSectionPermissionsGuard', () => {
     expect(mockRouter.createUrlTree).toHaveBeenCalledWith([`/${COMMON_PAGES_ROUTING_PATHS.children.accessDenied}`]);
   });
 
-  it('should resolve the release-1a feature flag before allowing draft accounts permission', async () => {
-    resolveFeatureFlagGuardMock.mockResolvedValue(true);
+  it('should resolve the Accounts release feature flags before allowing draft accounts permission', async () => {
     mockOpalUserService.getLoggedInUserState.mockReturnValue(
       of(createUserStateWithPermissions([ACCOUNTS_PERMISSIONS[0]])),
     );
@@ -143,6 +175,11 @@ describe('finesSectionPermissionsGuard', () => {
 
     expect(result).toBe(true);
     expect(resolveFeatureFlagGuardMock).toHaveBeenCalledWith('release-1a', expect.any(Object), expect.any(Object));
+    expect(resolveFeatureFlagGuardMock).toHaveBeenCalledWith(
+      'release-1c-write-off',
+      expect.any(Object),
+      expect.any(Object),
+    );
   });
 
   it('should redirect Accounts to access denied when the user lacks all accounts permissions', async () => {
