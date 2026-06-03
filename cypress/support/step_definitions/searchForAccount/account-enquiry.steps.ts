@@ -964,6 +964,11 @@ When('I start changing the non-paying parent or guardian details', () => {
   flow().openNonPayingParentGuardianChangeForm();
 });
 
+When('I start changing the minor creditor details', () => {
+  log('step', 'Start changing minor creditor details');
+  flow().openMinorCreditorChangeForm();
+});
+
 When('I cancel changing parent or guardian details without making changes', () => {
   log('step', 'Cancel amend parent or guardian details without making changes');
   flow().cancelAmendParentGuardianWithoutChanges();
@@ -977,6 +982,11 @@ When('I attempt to cancel changing parent or guardian details and choose Cancel 
 When('I attempt to cancel changing parent or guardian details and choose OK on the confirmation dialog', () => {
   log('step', 'Cancel amend parent or guardian details and leave page');
   flow().cancelAmendParentGuardianAndLeave();
+});
+
+When('I attempt to cancel changing minor creditor details and choose OK on the confirmation dialog', () => {
+  log('step', 'Cancel amend minor creditor details and leave page');
+  flow().cancelAmendMinorCreditorAndLeave();
 });
 
 /**
@@ -1000,6 +1010,16 @@ Then('I should be on the amend parent or guardian details page', () => {
 Then('I should remain on the amend parent or guardian details page', () => {
   log('assert', 'Remain on amend parent or guardian details page');
   flow().assertOnAmendParentGuardianDetailsPage();
+});
+
+Then('I should be on the amend minor creditor details page', () => {
+  log('assert', 'Amend minor creditor details page is visible');
+  flow().assertOnAmendMinorCreditorDetailsPage();
+});
+
+Then('I should remain on the amend minor creditor details page', () => {
+  log('assert', 'Remain on amend minor creditor details page');
+  flow().assertOnAmendMinorCreditorDetailsPage();
 });
 
 /**
@@ -1057,6 +1077,11 @@ Then('I should return to the account details page Parent or guardian tab', () =>
   navActions().assertParentGuardianTabIsActive();
 });
 
+Then('I should return to the account details page Creditor tab', () => {
+  log('assert', 'Return to Creditor details tab');
+  navActions().assertCreditorTabIsActive();
+});
+
 /**
  * @step Asserts the defendant name displayed on the account summary contains the expected value.
  *
@@ -1078,6 +1103,12 @@ Then('I should see the parent or guardian name contains {string}', (expected: st
   flow().assertParentGuardianNameContains(expectedWithUniq);
 });
 
+Then('I should see the minor creditor name contains {string}', (expected: string) => {
+  const expectedWithUniq = applyUniqPlaceholder(expected);
+  log('assert', 'Minor creditor name contains', { expected: expectedWithUniq });
+  flow().assertMinorCreditorNameContains(expectedWithUniq);
+});
+
 Then('I should see the parent or guardian first name field contains {string}', (expected: string) => {
   const expectedWithUniq = applyUniqPlaceholder(expected);
   log('assert', 'Parent or guardian first name field contains', { expected: expectedWithUniq });
@@ -1088,6 +1119,12 @@ Then('I should see the amend parent or guardian first name field contains {strin
   const expectedWithUniq = applyUniqPlaceholder(expected);
   log('assert', 'Amend parent or guardian first name field contains', { expected: expectedWithUniq });
   flow().assertAmendParentGuardianFirstName(expectedWithUniq);
+});
+
+When('I enter {string} into the amend minor creditor first name field', (value: string) => {
+  const valueWithUniq = applyUniqPlaceholder(value);
+  log('step', 'Enter amend minor creditor first name', { value: valueWithUniq });
+  flow().enterAmendMinorCreditorFirstName(valueWithUniq);
 });
 
 /**
@@ -1163,6 +1200,12 @@ Then('I verify parent or guardian amendments via API for guardian name {string}'
   flow().verifyParentGuardianAmendmentsViaApi(expectedGuardianName);
 });
 
+Then('I verify minor creditor amendments via API for first name {string}', (expectedForename: string) => {
+  const expectedWithUniq = applyUniqPlaceholder(expectedForename);
+  log('assert', 'Verify minor creditor amendments via API', { expectedForename: expectedWithUniq });
+  flow().verifyMinorCreditorAmendmentsViaApi(expectedWithUniq);
+});
+
 /**
  * @step Verifies via API that no defendant amendments were created.
  */
@@ -1210,6 +1253,16 @@ When('I attempt to save the parent or guardian amend details', () => {
 Then('I should see the parent or guardian amend error summary contains {string}', (expected: string) => {
   log('assert', 'Parent or guardian amend error summary contains', { expected });
   flow().assertAmendParentGuardianErrorSummaryContains(expected);
+});
+
+When('I save the minor creditor amend details', () => {
+  log('step', 'Save amend minor creditor details');
+  flow().saveMinorCreditorDetails();
+});
+
+Then('I should see the minor creditor amend error summary contains {string}', (expected: string) => {
+  log('assert', 'Minor creditor amend error summary contains', { expected });
+  flow().assertAmendMinorCreditorErrorSummaryContains(expected);
 });
 
 /**

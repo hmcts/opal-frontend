@@ -239,6 +239,59 @@ Feature: Account Enquiries – View Account Details
       And I should see the account header contains "Miss Updated TESTNONPAYEE{uniqUpper}"
       And I verify no amendments were created via API
 
+  Rule: Minor creditor amend creditor details baseline
+    Background:
+      Given a published account exists with an individual minor creditor:
+        | prosecutor case reference | PCRMINAMEND{uniqUpper} |
+        | title                     | Mr                     |
+        | first name                | John                   |
+        | last name                 | AmendMinor{uniq}       |
+        | address line 1            | 1 Test Street          |
+        | postcode                  | AB1 2CD                |
+      And I am on the Account Search page - Individuals form displayed by default
+      When I view the Minor creditors search form
+      And I search using the following inputs:
+        | minor creditor type  | Individual       |
+        | individual last name | AmendMinor{uniq} |
+        | first names          | John             |
+        | address line 1       | 1 Test Street    |
+        | postcode             | AB1 2CD          |
+      Then I see the Search results page
+      When I open the latest matching result from the search results
+      Then I should see the account header contains "Mr John AMENDMINOR{uniqUpper}"
+      When I go to the Creditor tab
+
+    @JIRA-STORY:PO-1984 @JIRA-EPIC:PO-1285
+    Scenario: Cancelling amend minor creditor details after making changes discards updates and returns to the Creditor tab
+      # AC2a – Cancel with unsaved changes shows a warning and confirming discard returns to Creditor with no save
+      When I start changing the minor creditor details
+      Then I should be on the amend minor creditor details page
+      When I enter "Updated" into the amend minor creditor first name field
+      And I attempt to cancel changing minor creditor details and choose OK on the confirmation dialog
+      Then I should return to the account details page Creditor tab
+      And I should see the minor creditor name contains "Mr John AMENDMINOR{uniqUpper}"
+
+    @JIRA-STORY:PO-1984 @JIRA-EPIC:PO-1285
+    Scenario: Saving valid amend minor creditor details returns to the Creditor tab and persists the changes
+      # AC2b – Save valid changes returns to Creditor and persists updates
+      When I start changing the minor creditor details
+      Then I should be on the amend minor creditor details page
+      When I enter "Updated" into the amend minor creditor first name field
+      And I save the minor creditor amend details
+      Then I should return to the account details page Creditor tab
+      And I should see the minor creditor name contains "Mr Updated AMENDMINOR{uniqUpper}"
+      And I verify minor creditor amendments via API for first name "Updated"
+
+    @JIRA-STORY:PO-1984 @JIRA-EPIC:PO-1285
+    Scenario: Saving invalid amend minor creditor details keeps me on the form and displays validation errors
+      # AC2c – Save invalid changes remains on the same screen and shows relevant errors
+      When I start changing the minor creditor details
+      Then I should be on the amend minor creditor details page
+      When I enter "" into the amend minor creditor first name field
+      And I save the minor creditor amend details
+      Then I should remain on the amend minor creditor details page
+      And I should see the minor creditor amend error summary contains "Enter minor creditor’s first name"
+
   Rule: Youth-only add parent or guardian baseline
     Background:
       Given I create a "adultOrYouthOnly" draft account with the following details and set status "Publishing Pending" using user "opal-test-10@dev.platform.hmcts.net":
