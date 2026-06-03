@@ -99,18 +99,6 @@ export class FinesAccMinorCreditorDetailsComponent
   }
 
   /**
-   * Checks if the current user has the specified business unit permission.
-   * @param permissionKey The key of the permission to check.
-   * @returns A boolean indicating whether the user has the permission.
-   */
-  private hasBusinessUnitPermissionKey(permissionKey: string): boolean {
-    return super.hasBusinessUnitPermission(
-      FINES_PERMISSIONS[permissionKey],
-      Number(this.accountStore.business_unit_id()!),
-    );
-  }
-
-  /**
    * Initializes and sets up the observable data stream for the fines draft tab component.
    *
    * This method listens to changes in either the route fragment (representing the active tab)
@@ -218,6 +206,18 @@ export class FinesAccMinorCreditorDetailsComponent
       this.accountStore.setSuccessMessage(FINES_ACC_BANNER_MESSAGES.latest);
       this.accountData = header;
     });
+  }
+
+  /**
+   * Checks if the current user has the specified business unit permission.
+   * @param permissionKey The key of the permission to check.
+   * @returns A boolean indicating whether the user has the permission.
+   */
+  public hasBusinessUnitPermissionKey(permissionKey: string): boolean {
+    return super.hasBusinessUnitPermission(
+      FINES_PERMISSIONS[permissionKey],
+      Number(this.accountStore.business_unit_id()!),
+    );
   }
 
   /**
