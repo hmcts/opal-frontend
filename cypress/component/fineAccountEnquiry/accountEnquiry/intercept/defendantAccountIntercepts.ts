@@ -15,6 +15,7 @@ export function interceptAddNotes() {
 }
 import { IOpalFinesAccountDefendantAtAGlance } from '@services/fines/opal-fines-service/interfaces/opal-fines-account-defendant-at-a-glance.interface';
 import { IOpalFinesAccountMinorCreditorAtAGlance } from 'src/app/flows/fines/services/opal-fines-service/interfaces/opal-fines-account-minor-creditor-at-a-glance.interface';
+import { IOpalFinesAccountMinorCreditorCreditor } from 'src/app/flows/fines/services/opal-fines-service/interfaces/opal-fines-account-minor-creditor-creditor.interface';
 
 /**
  * Intercepts the GET request to the defendant accounts "at-a-glance" endpoint and mocks the response.
@@ -106,6 +107,28 @@ export function interceptMinorCreditorAtAGlanceSequence(
 }
 
 /**
+ * Intercepts the GET request to the minor creditor creditor-tab endpoint and mocks the response.
+ *
+ * @param accountId - The unique identifier for the minor creditor account.
+ * @param mockData - The mock data to be returned in the response body.
+ * @param respHeaderEtag - The value to set for the ETag response header.
+ * @returns Cypress chainable object with the alias 'getMinorCreditorCreditor'.
+ */
+export function interceptMinorCreditorCreditor(
+  accountId: number,
+  mockData: IOpalFinesAccountMinorCreditorCreditor,
+  respHeaderEtag: string,
+) {
+  return cy
+    .intercept('GET', `**/minor-creditor-accounts/${accountId}`, {
+      statusCode: 200,
+      headers: { ETag: respHeaderEtag },
+      body: mockData,
+    })
+    .as('getMinorCreditorCreditor');
+}
+
+/**
  * Intercepts the PATCH request that updates a minor creditor account.
  *
  * @param accountId - The unique identifier for the minor creditor account.
@@ -183,6 +206,7 @@ import { IOpalFinesAccountMinorCreditorDetailsHeader } from 'src/app/flows/fines
 import { IOpalFinesAccountDefendantDetailsFixedPenaltyTabRefData } from '@services/fines/opal-fines-service/interfaces/opal-fines-account-defendant-details-fixed-penalty-tab-ref-data.interface';
 import { IOpalFinesAccountDefendantDetailsPaymentTermsLatest } from '@services/fines/opal-fines-service/interfaces/opal-fines-account-defendant-details-payment-terms-latest.interface';
 import { IOpalFinesAccountDefendantDetailsEnforcementTabRefData } from '@services/fines/opal-fines-service/interfaces/opal-fines-account-defendant-details-enforcement-tab-ref-data.interface';
+import { IOpalFinesAccountDefendantDetailsImpositionsTabRefData } from '@services/fines/opal-fines-service/interfaces/opal-fines-account-defendant-details-impositions-tab-ref-data.interface';
 
 /**
  * Intercepts the GET request for the defendant header summary in Cypress tests,
@@ -337,6 +361,22 @@ export function interceptEnforcementStatus(
       },
     })
     .as('getEnforcementStatus');
+}
+
+export function interceptImpositions(
+  accountId: string | number,
+  mockData: IOpalFinesAccountDefendantDetailsImpositionsTabRefData,
+  respHeaderEtag: string,
+) {
+  return cy
+    .intercept('GET', `/opal-fines-service/defendant-accounts/${accountId}/impositions`, {
+      statusCode: 200,
+      body: mockData,
+      headers: {
+        ETag: respHeaderEtag,
+      },
+    })
+    .as('getImpositions');
 }
 
 export function interceptPatchDefendantAccount() {

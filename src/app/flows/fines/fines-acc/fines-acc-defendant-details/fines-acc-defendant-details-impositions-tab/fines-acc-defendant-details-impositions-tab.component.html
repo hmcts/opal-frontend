@@ -1,0 +1,196 @@
+<div class="govuk-grid-column-full">
+  <h2 [class]="style.heading">Impositions</h2>
+  <hr [class]="style.hr" />
+
+  @if (filteredTableDataSignal().length) {
+    <opal-lib-custom-horizontal-scroll-pane>
+      <opal-lib-moj-sortable-table>
+        <ng-container head>
+          <th
+            opal-lib-moj-sortable-table-header
+            columnKey="Date added"
+            [sortDirection]="sortStateSignal()['Date added']"
+            (sortChange)="onSortChange($event)"
+            [dataIndex]="0"
+          >
+            Date added
+          </th>
+          <th
+            opal-lib-moj-sortable-table-header
+            columnKey="Imposition"
+            [sortDirection]="sortStateSignal()['Imposition']"
+            (sortChange)="onSortChange($event)"
+            [dataIndex]="1"
+          >
+            Imposition
+          </th>
+          <th
+            opal-lib-moj-sortable-table-header
+            columnKey="Creditor"
+            [sortDirection]="sortStateSignal()['Creditor']"
+            (sortChange)="onSortChange($event)"
+            [dataIndex]="2"
+          >
+            Creditor
+          </th>
+          <th
+            opal-lib-moj-sortable-table-header
+            columnKey="Imposed"
+            [sortDirection]="sortStateSignal()['Imposed']"
+            (sortChange)="onSortChange($event)"
+            [dataIndex]="3"
+          >
+            Imposed
+          </th>
+          <th
+            opal-lib-moj-sortable-table-header
+            columnKey="Paid/Written off"
+            [sortDirection]="sortStateSignal()['Paid/Written off']"
+            (sortChange)="onSortChange($event)"
+            [dataIndex]="4"
+          >
+            Paid/Written off
+          </th>
+          <th
+            opal-lib-moj-sortable-table-header
+            columnKey="Balance"
+            [sortDirection]="sortStateSignal()['Balance']"
+            (sortChange)="onSortChange($event)"
+            [dataIndex]="5"
+          >
+            Balance
+          </th>
+          <th
+            opal-lib-moj-sortable-table-header
+            columnKey="Date imposed"
+            [sortDirection]="sortStateSignal()['Date imposed']"
+            (sortChange)="onSortChange($event)"
+            [dataIndex]="6"
+          >
+            Date imposed
+          </th>
+          <th
+            opal-lib-moj-sortable-table-header
+            columnKey="Offence"
+            [sortDirection]="sortStateSignal()['Offence']"
+            (sortChange)="onSortChange($event)"
+            [dataIndex]="7"
+          >
+            Offence
+          </th>
+          <th
+            opal-lib-moj-sortable-table-header
+            columnKey="Imposed by"
+            [sortDirection]="sortStateSignal()['Imposed by']"
+            (sortChange)="onSortChange($event)"
+            [dataIndex]="8"
+          >
+            Imposed by
+          </th>
+          <th
+            opal-lib-moj-sortable-table-header
+            columnKey="Imposition ID"
+            [sortDirection]="sortStateSignal()['Imposition ID']"
+            (sortChange)="onSortChange($event)"
+            [dataIndex]="9"
+          >
+            Imposition ID
+          </th>
+        </ng-container>
+        <ng-container row>
+          @for (
+            impositionTableRow of paginatedTableDataComputed();
+            track impositionTableRow['Imposition ID'];
+            let rowIndex = $index
+          ) {
+            <tr opal-lib-moj-sortable-table-row [bodyRowClasses]="impositionTableRow.rowClasses">
+              <td opal-lib-moj-sortable-table-row-data [id]="'imposition-date-added-' + rowIndex">
+                @if (impositionTableRow['Date added']; as postedDate) {
+                  {{ postedDate | dateFormat: DATE_INPUT_FORMAT : DATE_OUTPUT_FORMAT }}
+                } @else {
+                  <ng-container *ngTemplateOutlet="notProvided"></ng-container>
+                }
+              </td>
+              <td opal-lib-moj-sortable-table-row-data [id]="'imposition-result-' + rowIndex">
+                @if (impositionTableRow.Imposition) {
+                  {{ impositionTableRow.Imposition }}
+                } @else {
+                  <ng-container *ngTemplateOutlet="notProvided"></ng-container>
+                }
+              </td>
+              <td opal-lib-moj-sortable-table-row-data [id]="'imposition-creditor-' + rowIndex">
+                @if (impositionTableRow.Creditor; as creditorDisplay) {
+                  @if (impositionTableRow.creditorDetailsRouterLink; as creditorDetailsRouterLink) {
+                    <a class="govuk-link govuk-link--no-visited-state" [routerLink]="creditorDetailsRouterLink">
+                      {{ creditorDisplay }}
+                    </a>
+                  } @else {
+                    {{ creditorDisplay }}
+                  }
+                } @else {
+                  <ng-container *ngTemplateOutlet="notProvided"></ng-container>
+                }
+              </td>
+              <td opal-lib-moj-sortable-table-row-data [id]="'imposition-imposed-amount-' + rowIndex">
+                {{ impositionTableRow.Imposed | monetary: 'remove-minus-symbol' }}
+              </td>
+              <td opal-lib-moj-sortable-table-row-data [id]="'imposition-paid-amount-' + rowIndex">
+                {{ impositionTableRow['Paid/Written off'] | monetary }}
+              </td>
+              <td opal-lib-moj-sortable-table-row-data [id]="'imposition-balance-' + rowIndex">
+                @if (impositionTableRow.hasZeroBalance) {
+                  <ng-container *ngTemplateOutlet="notProvided"></ng-container>
+                } @else {
+                  {{ impositionTableRow.Balance | monetary }}
+                }
+              </td>
+              <td opal-lib-moj-sortable-table-row-data [id]="'imposition-date-imposed-' + rowIndex">
+                @if (impositionTableRow['Date imposed']; as imposedDate) {
+                  {{ imposedDate | dateFormat: DATE_INPUT_FORMAT : DATE_OUTPUT_FORMAT }}
+                } @else {
+                  <ng-container *ngTemplateOutlet="notProvided"></ng-container>
+                }
+              </td>
+              <td opal-lib-moj-sortable-table-row-data [id]="'imposition-offence-' + rowIndex">
+                @if (impositionTableRow.Offence) {
+                  {{ impositionTableRow.Offence }}
+                } @else {
+                  <ng-container *ngTemplateOutlet="notProvided"></ng-container>
+                }
+              </td>
+              <td opal-lib-moj-sortable-table-row-data [id]="'imposition-imposed-by-' + rowIndex">
+                @if (impositionTableRow['Imposed by']; as imposedByDisplay) {
+                  {{ imposedByDisplay }}
+                }
+              </td>
+              <td opal-lib-moj-sortable-table-row-data [id]="'imposition-id-' + rowIndex">
+                {{ impositionTableRow['Imposition ID'] }}
+              </td>
+            </tr>
+          }
+        </ng-container>
+        <ng-container status>
+          <opal-lib-moj-sortable-table-status
+            [columnTitle]="sortedColumnTitleSignal()"
+            [sortDirection]="sortedColumnDirectionSignal()"
+          />
+        </ng-container>
+      </opal-lib-moj-sortable-table>
+    </opal-lib-custom-horizontal-scroll-pane>
+    @if (filteredTableDataSignal().length > this.paginatedTableDataComputed().length) {
+      <opal-lib-moj-pagination
+        id="fines-acc-defendant-details-impositions-pagination"
+        [currentPage]="currentPageSignal()"
+        [limit]="itemsPerPageSignal()"
+        [total]="filteredTableDataSignal().length"
+        (changePage)="onPageChange($event)"
+      ></opal-lib-moj-pagination>
+    }
+  } @else {
+    <p class="govuk-body">There are no impositions for this account.</p>
+  }
+</div>
+
+<ng-template #notProvided>
+  <app-fines-not-provided></app-fines-not-provided>
+</ng-template>
