@@ -1,15 +1,12 @@
 <div class="govuk-grid-column-full">
-  <div class="fines-reports-summary-list__header">
-    <h1 class="govuk-heading-l fines-reports-summary-list__heading">{{ pageHeading }}</h1>
+  <div class="govuk-grid-row">
+    <div class="govuk-grid-column-three-quarters">
+      <h1 class="govuk-heading-l">{{ pageHeading }}</h1>
+    </div>
     @if (canCreateReport) {
-      <button
-        buttonId="create-report-button"
-        buttonClasses="fines-reports-summary-list__create-button"
-        opalLibGovukButton
-        (click)="handleCreateReport()"
-      >
-        Create report
-      </button>
+      <div class="govuk-grid-column-one-quarter govuk-!-text-align-right">
+        <button buttonId="create-report-button" opalLibGovukButton (click)="handleCreateReport()">Create report</button>
+      </div>
     }
   </div>
 </div>

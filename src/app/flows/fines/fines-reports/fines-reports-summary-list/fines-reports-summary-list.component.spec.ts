@@ -115,16 +115,17 @@ describe('FinesReportsSummaryListComponent', () => {
     FINES_REPORTS_SUMMARY_LIST_ROUTING_PATHS.children.operationalReportsByPayments,
   ])('should render a create report button for operational report summary lists', async (reportId) => {
     const { component, fixture } = await setup(`/fines/reports/${reportId}/summary-list`);
-    const header = fixture.nativeElement.querySelector('.fines-reports-summary-list__header');
     const createReportButton = fixture.nativeElement.querySelector('button.govuk-button');
+    const heading = fixture.nativeElement.querySelector('h1.govuk-heading-l');
+    const createReportButtonColumn = createReportButton?.parentElement;
 
     expect(component.canCreateReport).toBe(true);
-    expect(header).toBeTruthy();
-    expect(fixture.nativeElement.querySelector('.fines-reports-summary-list__heading')?.textContent?.trim()).toBe(
-      component.pageHeading,
-    );
+    expect(fixture.nativeElement.querySelector('.govuk-grid-row')).toBeTruthy();
+    expect(heading?.textContent?.trim()).toBe(component.pageHeading);
+    expect(heading?.parentElement?.classList.contains('govuk-grid-column-three-quarters')).toBe(true);
+    expect(createReportButtonColumn?.classList.contains('govuk-grid-column-one-quarter')).toBe(true);
+    expect(createReportButtonColumn?.classList.contains('govuk-!-text-align-right')).toBe(true);
     expect(createReportButton?.textContent?.trim()).toBe('Create report');
-    expect(createReportButton?.classList.contains('fines-reports-summary-list__create-button')).toBe(true);
   });
 
   it('should not render a create report button for your reports', async () => {

@@ -11,7 +11,6 @@ import { FINES_REPORTS_ROUTING_PATHS } from '../routing/constants/fines-reports-
   selector: 'app-fines-reports-summary-list',
   imports: [GovukButtonDirective],
   templateUrl: './fines-reports-summary-list.component.html',
-  styleUrl: './fines-reports-summary-list.component.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class FinesReportsSummaryListComponent {
@@ -31,6 +30,11 @@ export class FinesReportsSummaryListComponent {
     );
   }
 
+  /**
+   * Determines whether the current report summary supports creating a report.
+   *
+   * @returns True for operational reports by enforcement or payments; otherwise false.
+   */
   public get canCreateReport(): boolean {
     return [
       FINES_REPORTS_SUMMARY_LIST_ROUTING_PATHS.children.operationalReportsByEnforcement,
@@ -38,6 +42,9 @@ export class FinesReportsSummaryListComponent {
     ].includes(this.reportId());
   }
 
+  /**
+   * Navigates from the current report summary to the select business units route.
+   */
   public handleCreateReport(): void {
     this.router.navigate(['..', FINES_REPORTS_ROUTING_PATHS.children.selectBusinessUnits], {
       relativeTo: this.activatedRoute,
