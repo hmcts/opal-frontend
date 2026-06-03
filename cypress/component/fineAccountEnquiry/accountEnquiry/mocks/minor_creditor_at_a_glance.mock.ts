@@ -1,10 +1,12 @@
 import {
+  USER_STATE_MOCK_NO_PERMISSION,
   USER_STATE_MOCK_PERMISSION_BU17,
   USER_STATE_MOCK_PERMISSION_BU77,
 } from '../../../CommonIntercepts/CommonUserState.mocks';
 import { FINES_ACC_MINOR_CREDITOR_DETAILS_HEADER_MOCK } from 'src/app/flows/fines/fines-acc/fines-acc-minor-creditor-details/mocks/fines-acc-minor-creditor-details-header.mock';
 import { OPAL_FINES_ACCOUNT_MINOR_CREDITOR_AT_A_GLANCE_WITH_DEFENDANT_MOCK } from 'src/app/flows/fines/services/opal-fines-service/mocks/opal-fines-account-minor-creditor-at-a-glance-with-defendant.mock';
 import { OPAL_FINES_ACCOUNT_MINOR_CREDITOR_AT_A_GLANCE_WITHOUT_DEFENDANT_MOCK } from 'src/app/flows/fines/services/opal-fines-service/mocks/opal-fines-account-minor-creditor-at-a-glance-without-defendant.mock';
+import { OPAL_FINES_ACCOUNT_MINOR_CREDITOR_CREDITOR_MOCK } from 'src/app/flows/fines/services/opal-fines-service/mocks/opal-fines-account-minor-creditor-creditor.mock';
 
 export const MINOR_CREDITOR_ACCOUNT_ID = FINES_ACC_MINOR_CREDITOR_DETAILS_HEADER_MOCK.creditor.account_id;
 
@@ -84,3 +86,43 @@ export const createMinorCreditorHeaderMock = () => structuredClone(FINES_ACC_MIN
 
 export const createMinorCreditorAtAGlanceWithoutDefendantMock = () =>
   structuredClone(OPAL_FINES_ACCOUNT_MINOR_CREDITOR_AT_A_GLANCE_WITHOUT_DEFENDANT_MOCK);
+
+export const createUserStateWithViewCreditorBacsPermission = () => {
+  const userState = structuredClone(USER_STATE_MOCK_NO_PERMISSION);
+
+  userState.business_unit_users[0].permissions.push({
+    permission_id: 11,
+    permission_name: 'View Creditor BACS',
+  });
+
+  return userState;
+};
+
+export const createIndividualMinorCreditorCreditorMock = (payByBacs = true) => {
+  const mock = structuredClone(OPAL_FINES_ACCOUNT_MINOR_CREDITOR_CREDITOR_MOCK);
+
+  mock.party_details.organisation_flag = false;
+  mock.party_details.organisation_details = null;
+  mock.party_details.individual_details = {
+    title: 'Mrs',
+    forenames: 'Jane Amelia',
+    surname: 'Bloggs',
+    date_of_birth: null,
+    age: null,
+    national_insurance_number: null,
+    individual_aliases: null,
+  };
+
+  mock.address = {
+    address_line_1: '1 High Street',
+    address_line_2: 'Town Centre',
+    address_line_3: 'Westminster',
+    address_line_4: null,
+    address_line_5: null,
+    postcode: 'sw1a 1aa',
+  };
+
+  mock.payment.pay_by_bacs = payByBacs;
+
+  return mock;
+};

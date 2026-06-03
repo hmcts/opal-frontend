@@ -359,6 +359,14 @@ When('I go to the Payment terms tab', () => {
 });
 
 /**
+ * @step Navigates to the Creditor tab.
+ */
+When('I go to the Creditor tab', () => {
+  log('step', 'Navigate to Creditor tab');
+  flow().goToCreditorTab();
+});
+
+/**
  * @step Opens the amend payment terms form.
  */
 When('I open the amend payment terms form', () => {

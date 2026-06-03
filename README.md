@@ -239,7 +239,7 @@ Run `yarn build:ssr` to build the project. The build artifacts will be stored in
 
 ## Code style
 
-We use [ESLint](https://github.com/typescript-eslint/typescript-eslint) and [Prettier](https://prettier.io/)
+We use [ESLint](https://github.com/typescript-eslint/typescript-eslint) and [Prettier](https://prettier.io/).
 
 Running the linting:
 
