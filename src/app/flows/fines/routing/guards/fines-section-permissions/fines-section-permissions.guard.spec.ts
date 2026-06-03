@@ -124,23 +124,8 @@ describe('finesSectionPermissionsGuard', () => {
     expect(result).toBe(true);
   });
 
-  it('should allow Accounts when release-1a is enabled and the user has a draft accounts permission', async () => {
-    mockFeatureFlags(DEFAULT_RELEASE_FEATURE_FLAGS);
-    mockOpalUserService.getLoggedInUserState.mockReturnValue(
-      of(createUserStateWithPermissions([ACCOUNTS_PERMISSIONS[0]])),
-    );
-
-    const result = await runGuard({ dashboardType: FINES_DASHBOARD_ROUTING_PATHS.children.accounts });
-
-    expect(result).toBe(true);
-  });
-
-  it('should redirect Accounts when release-1a is disabled and the user only has draft accounts permission', async () => {
+  it('should redirect Accounts when the user only has draft accounts permission', async () => {
     const expectedUrlTree = new UrlTree();
-    mockFeatureFlags({
-      ...DEFAULT_RELEASE_FEATURE_FLAGS,
-      [RELEASE_1A_FEATURE_FLAG]: false,
-    });
     mockOpalUserService.getLoggedInUserState.mockReturnValue(
       of(createUserStateWithPermissions([ACCOUNTS_PERMISSIONS[0]])),
     );
@@ -150,22 +135,18 @@ describe('finesSectionPermissionsGuard', () => {
 
     expect(result).toBe(expectedUrlTree);
     expect(mockRouter.createUrlTree).toHaveBeenCalledWith([`/${COMMON_PAGES_ROUTING_PATHS.children.accessDenied}`]);
+    expect(resolveFeatureFlagGuardMock).not.toHaveBeenCalled();
   });
 
-  it('should resolve the release-1a feature flag before allowing draft accounts permission', async () => {
-    mockFeatureFlags(DEFAULT_RELEASE_FEATURE_FLAGS);
+  it('should allow Accounts when the user has consolidation permission without resolving release-1a', async () => {
     mockOpalUserService.getLoggedInUserState.mockReturnValue(
-      of(createUserStateWithPermissions([ACCOUNTS_PERMISSIONS[0]])),
+      of(createUserStateWithPermissions([ACCOUNTS_PERMISSIONS[2]])),
     );
 
     const result = await runGuard({ dashboardType: FINES_DASHBOARD_ROUTING_PATHS.children.accounts });
 
     expect(result).toBe(true);
-    expect(resolveFeatureFlagGuardMock).toHaveBeenCalledWith(
-      RELEASE_1A_FEATURE_FLAG,
-      expect.any(Object),
-      expect.any(Object),
-    );
+    expect(resolveFeatureFlagGuardMock).not.toHaveBeenCalled();
   });
 
   it('should redirect Accounts to access denied when the user lacks all accounts permissions', async () => {

@@ -54,6 +54,7 @@ describe('fines-section-permissions.utils', () => {
     { key: 'search', value: 'Search' },
   ];
   const release1aEnabled = { [RELEASE_1A_FEATURE_FLAG]: true };
+  const release1aDisabled = { [RELEASE_1A_FEATURE_FLAG]: false };
   const release1cReportingEnabled = { [RELEASE_1C_ENFORCEMENT_OPERATIONAL_REPORTING_FEATURE_FLAG]: true };
   const release1cReportingDisabled = { [RELEASE_1C_ENFORCEMENT_OPERATIONAL_REPORTING_FEATURE_FLAG]: false };
 
@@ -90,6 +91,36 @@ describe('fines-section-permissions.utils', () => {
       expect(canAccessFinesPrimaryNavigationSection('search', createUserStateWithPermissions([]))).toBe(false);
     });
 
+    it('should allow Accounts with draft permissions when release-1a is enabled', () => {
+      expect(
+        canAccessFinesPrimaryNavigationSection(
+          'accounts',
+          createUserStateWithPermissions([ACCOUNTS_PERMISSIONS[0]]),
+          release1aEnabled,
+        ),
+      ).toBe(true);
+    });
+
+    it('should deny Accounts with draft-only permissions when release-1a is disabled', () => {
+      expect(
+        canAccessFinesPrimaryNavigationSection(
+          'accounts',
+          createUserStateWithPermissions([ACCOUNTS_PERMISSIONS[0]]),
+          release1aDisabled,
+        ),
+      ).toBe(false);
+    });
+
+    it('should allow Accounts with consolidation permissions when release-1a is disabled', () => {
+      expect(
+        canAccessFinesPrimaryNavigationSection(
+          'accounts',
+          createUserStateWithPermissions([ACCOUNTS_PERMISSIONS[2]]),
+          release1aDisabled,
+        ),
+      ).toBe(true);
+    });
+
     it('should allow Reports when release-1c enforcement operational reporting is enabled and the user has a report permission', () => {
       expect(
         canAccessFinesPrimaryNavigationSection(
@@ -120,6 +151,12 @@ describe('fines-section-permissions.utils', () => {
       ]);
     });
 
+    it('should remove Accounts for draft-only users when release-1a is disabled', () => {
+      const userState = createUserStateWithPermissions([ACCOUNTS_PERMISSIONS[0]]);
+
+      expect(getAccessiblePrimaryNavigationItems(navigationItems, userState, release1aDisabled)).toEqual([]);
+    });
+
     it('should remove Reports when release-1c enforcement operational reporting is disabled', () => {
       const userState = createUserStateWithPermissions([REPORTS_PERMISSIONS[0]]);
 
@@ -136,6 +173,12 @@ describe('fines-section-permissions.utils', () => {
   });
 
   describe('getDashboardLandingType', () => {
+    it('should prefer the configured landing priority over navigation order', () => {
+      const userState = createUserStateWithPermissions([SEARCH_PERMISSIONS[0], ACCOUNTS_PERMISSIONS[0]]);
+
+      expect(getDashboardLandingType(navigationItems, userState)).toBe('search');
+    });
+
     it('should fall back to the first accessible navigation item when no priority section is available', () => {
       const financeItems: readonly INavigationBarConfiguration[] = [{ key: 'finance', value: 'Finance' }];
 
@@ -157,6 +200,21 @@ describe('fines-section-permissions.utils', () => {
           navigationItemsWithFinance,
           createUserStateWithPermissions([REPORTS_PERMISSIONS[0]]),
           release1cReportingDisabled,
+        ),
+      ).toBe('finance');
+    });
+
+    it('should skip Accounts landing for draft-only users when release-1a is disabled', () => {
+      const navigationItemsWithFinance: readonly INavigationBarConfiguration[] = [
+        { key: 'accounts', value: 'Accounts' },
+        { key: 'finance', value: 'Finance' },
+      ];
+
+      expect(
+        getDashboardLandingType(
+          navigationItemsWithFinance,
+          createUserStateWithPermissions([ACCOUNTS_PERMISSIONS[0]]),
+          release1aDisabled,
         ),
       ).toBe('finance');
     });
@@ -192,6 +250,20 @@ describe('fines-section-permissions.utils', () => {
   });
 
   describe('filterDashboardConfigByFeatureFlags', () => {
+    it('should keep feature flag dashboard groups when the matching release is enabled', () => {
+      expect(
+        filterDashboardConfigByFeatureFlags(DASHBOARD_PAGE_CONFIGURATION_MAP.accounts, release1aEnabled),
+      ).toEqual(DASHBOARD_PAGE_CONFIGURATION_MAP.accounts);
+    });
+
+    it('should remove feature flag dashboard groups when the matching release is disabled', () => {
+      expect(
+        filterDashboardConfigByFeatureFlags(DASHBOARD_PAGE_CONFIGURATION_MAP.accounts, release1aDisabled).groups.map(
+          (group) => group.id,
+        ),
+      ).not.toContain('draft-accounts');
+    });
+
     it('should keep Reports dashboard content when release-1c enforcement operational reporting is enabled', () => {
       expect(
         filterDashboardConfigByFeatureFlags(DASHBOARD_PAGE_CONFIGURATION_MAP.reports, release1cReportingEnabled),
