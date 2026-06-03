@@ -73,7 +73,7 @@ describe('FinesAccEnfActionDeniedComponent', () => {
   });
 
   it('should navigate back to the enforcement tab fragment', () => {
-    component.navigateBackToAccountSummary();
+    component.navigateBack();
 
     expect(mockRouter.navigate).toHaveBeenCalledWith(
       [`../../../../${FINES_ACC_DEFENDANT_ROUTING_PATHS.children.details}`],
@@ -145,16 +145,16 @@ describe('FinesAccEnfActionDeniedComponent', () => {
   });
 
   it('should navigate back to the select enforcement action screen for the missing employment data message', () => {
-    mockActivatedRoute.snapshot.paramMap = new Map<string, string>([
-      ['type', FINES_ACC_ENF_ACTION_DENIED_TYPES.employmentData],
-    ]);
+    mockActivatedRoute.snapshot.paramMap = new Map<string, string>();
+    (mockActivatedRoute.snapshot.data as Record<string, unknown>)['deniedType'] =
+      FINES_ACC_ENF_ACTION_DENIED_TYPES.employmentData;
     fixture = TestBed.createComponent(FinesAccEnfActionDeniedComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
 
-    component.navigateBackToAccountSummary();
+    component.navigateBack();
 
-    expect(mockRouter.navigate).toHaveBeenCalledWith([`../${FINES_ACC_ENF_ACTION_ROUTING_PATHS.children.select}`], {
+    expect(mockRouter.navigate).toHaveBeenCalledWith([`../../${FINES_ACC_ENF_ACTION_ROUTING_PATHS.children.select}`], {
       relativeTo: mockActivatedRoute,
     });
   });

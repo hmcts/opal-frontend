@@ -63,13 +63,13 @@ export class FinesAccEnfActionDeniedComponent {
   }
 
   /**
-   * Navigates back to the account summary details page, preserving the enforcement tab fragment.
+   * Navigates back from the denied page.
    */
-  public navigateBackToAccountSummary(event?: Event): void {
+  public navigateBack(event?: Event): void {
     event?.preventDefault();
 
     if (this.deniedType === this.deniedTypes.employmentData) {
-      this.router.navigate([`../${FINES_ACC_ENF_ACTION_ROUTING_PATHS.children.select}`], {
+      this.router.navigate([`../../${FINES_ACC_ENF_ACTION_ROUTING_PATHS.children.select}`], {
         relativeTo: this.route,
       });
       return;
