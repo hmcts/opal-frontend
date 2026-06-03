@@ -1723,9 +1723,7 @@ export class AccountEnquiryFlow {
    * @param minorCreditorAccountId - ID of the minor creditor account.
    * @returns Chainable yielding the account details response body.
    */
-  private fetchMinorCreditorAccount(
-    minorCreditorAccountId: number,
-  ): Cypress.Chainable<Record<string, unknown>> {
+  private fetchMinorCreditorAccount(minorCreditorAccountId: number): Cypress.Chainable<Record<string, unknown>> {
     logAE('action', `Fetching minor creditor account details for account ${minorCreditorAccountId}`);
     return cy
       .request({
@@ -2337,9 +2335,10 @@ export class AccountEnquiryFlow {
         );
 
         expect(match, 'Amendment record should contain updated minor creditor forename').to.exist;
-        expect(match?.['associated_record_type'], 'associated_record_type should match resolved backend record type').to.eq(
-          recordType,
-        );
+        expect(
+          match?.['associated_record_type'],
+          'associated_record_type should match resolved backend record type',
+        ).to.eq(recordType);
         expect(match?.['function_code'], 'function_code should be ACCOUNT_ENQUIRY').to.eq('ACCOUNT_ENQUIRY');
 
         this.assertAmendmentCoreFields(match);

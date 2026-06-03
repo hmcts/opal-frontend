@@ -49,7 +49,9 @@ export class EditMinorCreditorDetailsActions {
     cy.get(L.pageHeading, { timeout })
       .should('be.visible')
       .invoke('text')
-      .then((text) => expect(String(text).split(/\s+/).join(' ').trim().toLowerCase()).to.contain('minor creditor details'));
+      .then((text) =>
+        expect(String(text).split(/\s+/).join(' ').trim().toLowerCase()).to.contain('minor creditor details'),
+      );
   }
 
   /**
