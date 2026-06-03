@@ -94,7 +94,7 @@
           [tableData]="draftAccounts"
           [existingSortState]="tableSort"
           [activeTab]="activeTab"
-          [approvedAccountLinksEnabled]="hasApprovedAccountLinkAccess()"
+          [approvedAccountLinkEnabled]="hasApprovedAccountLinkAccess()"
           (linkClicked)="onDefendantClick($event)"
           (accountClicked)="onAccountClick($event)"
         ></app-fines-draft-table-wrapper>

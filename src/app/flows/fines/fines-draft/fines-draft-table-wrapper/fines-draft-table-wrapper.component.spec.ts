@@ -120,7 +120,7 @@ describe('FinesDraftTableWrapperComponent', () => {
 
   it('should click account link and preserve current template click behaviour', () => {
     fixture.componentRef.setInput('activeTab', 'approved');
-    fixture.componentRef.setInput('approvedAccountLinksEnabled', true);
+    fixture.componentRef.setInput('approvedAccountLinkEnabled', true);
     fixture.componentRef.setInput('tableData', FINES_DRAFT_TABLE_WRAPPER_TABLE_DATA_MOCK);
     fixture.detectChanges();
 
@@ -151,7 +151,7 @@ describe('FinesDraftTableWrapperComponent', () => {
 
   it('should render approved account numbers as plain text when account links are disabled', () => {
     fixture.componentRef.setInput('activeTab', 'approved');
-    fixture.componentRef.setInput('approvedAccountLinksEnabled', false);
+    fixture.componentRef.setInput('approvedAccountLinkEnabled', false);
     fixture.componentRef.setInput('tableData', FINES_DRAFT_TABLE_WRAPPER_TABLE_DATA_MOCK);
     fixture.detectChanges();
 
