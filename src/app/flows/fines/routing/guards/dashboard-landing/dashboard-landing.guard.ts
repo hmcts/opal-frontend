@@ -30,8 +30,7 @@ const resolveDashboardFeatureFlagReleaseState = async (
 
   return {
     [RELEASE_1A_FEATURE_FLAG]: release1aEnabled,
-    [RELEASE_1C_ENFORCEMENT_OPERATIONAL_REPORTING_FEATURE_FLAG]:
-      release1cEnforcementOperationalReportingEnabled,
+    [RELEASE_1C_ENFORCEMENT_OPERATIONAL_REPORTING_FEATURE_FLAG]: release1cEnforcementOperationalReportingEnabled,
   };
 };
 

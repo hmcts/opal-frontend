@@ -226,9 +226,7 @@ describe('fines-section-permissions.utils', () => {
         [RELEASE_1A_FEATURE_FLAG]: true,
         [RELEASE_1C_ENFORCEMENT_OPERATIONAL_REPORTING_FEATURE_FLAG]: false,
       });
-      expect(
-        getFeatureFlagReleaseState(release1cReportingEnabled),
-      ).toEqual({
+      expect(getFeatureFlagReleaseState(release1cReportingEnabled)).toEqual({
         [RELEASE_1A_FEATURE_FLAG]: false,
         [RELEASE_1C_ENFORCEMENT_OPERATIONAL_REPORTING_FEATURE_FLAG]: true,
       });
@@ -251,9 +249,9 @@ describe('fines-section-permissions.utils', () => {
 
   describe('filterDashboardConfigByFeatureFlags', () => {
     it('should keep feature flag dashboard groups when the matching release is enabled', () => {
-      expect(
-        filterDashboardConfigByFeatureFlags(DASHBOARD_PAGE_CONFIGURATION_MAP.accounts, release1aEnabled),
-      ).toEqual(DASHBOARD_PAGE_CONFIGURATION_MAP.accounts);
+      expect(filterDashboardConfigByFeatureFlags(DASHBOARD_PAGE_CONFIGURATION_MAP.accounts, release1aEnabled)).toEqual(
+        DASHBOARD_PAGE_CONFIGURATION_MAP.accounts,
+      );
     });
 
     it('should remove feature flag dashboard groups when the matching release is disabled', () => {
