@@ -1365,7 +1365,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@azure/opentelemetry-instrumentation-azure-sdk@npm:^1.0.0, @azure/opentelemetry-instrumentation-azure-sdk@npm:^1.0.0-beta.5":
+"@azure/opentelemetry-instrumentation-azure-sdk@npm:^1.0.0":
   version: 1.0.0
   resolution: "@azure/opentelemetry-instrumentation-azure-sdk@npm:1.0.0"
   dependencies:
@@ -1380,7 +1380,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@azure/opentelemetry-instrumentation-azure-sdk@npm:^1.0.0-beta.7":
+"@azure/opentelemetry-instrumentation-azure-sdk@npm:^1.0.0-beta.5, @azure/opentelemetry-instrumentation-azure-sdk@npm:^1.0.0-beta.7":
   version: 1.0.0-beta.10
   resolution: "@azure/opentelemetry-instrumentation-azure-sdk@npm:1.0.0-beta.10"
   dependencies:
@@ -4033,9 +4033,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@hmcts/opal-frontend-common@npm:^0.0.81":
-  version: 0.0.81
-  resolution: "@hmcts/opal-frontend-common@npm:0.0.81"
+"@hmcts/opal-frontend-common@npm:^0.0.82":
+  version: 0.0.82
+  resolution: "@hmcts/opal-frontend-common@npm:0.0.82"
   dependencies:
     "@microsoft/applicationinsights-web": "npm:^3.3.6"
     "@ministryofjustice/frontend": "npm:^9.0.0"
@@ -4057,7 +4057,7 @@ __metadata:
   peerDependenciesMeta:
     "@ngrx/signals":
       optional: true
-  checksum: 10/36b00a843323651dadbba37b67e30aa645f92105fb2f0dcaf89db616c22699bb00c14aa693914ee859434247d80e13180b0274e388a20d4e1a1f0bce053a09d2
+  checksum: 10/e7a5d01039d42556ede8068ad43b59a76ef19d62a23eab0e135ded3ae4f19fa5735af3fa679ce0151c18b12f8468688510eb550b539579ef51123d951db0c40e
   languageName: node
   linkType: hard
 
@@ -16494,7 +16494,7 @@ __metadata:
     "@hmcts/info-provider": "npm:^1.1.0"
     "@hmcts/nodejs-healthcheck": "npm:^1.8.5"
     "@hmcts/nodejs-logging": "npm:^4.0.4"
-    "@hmcts/opal-frontend-common": "npm:^0.0.81"
+    "@hmcts/opal-frontend-common": "npm:^0.0.82"
     "@hmcts/opal-frontend-common-cypress": "npm:^0.0.3"
     "@hmcts/opal-frontend-common-node": "npm:^0.0.33"
     "@hmcts/properties-volume": "npm:^1.1.0"
