@@ -1,4 +1,4 @@
-import { inject } from '@angular/core';
+import { EnvironmentInjector, inject, runInInjectionContext } from '@angular/core';
 import { CanActivateFn, Router, UrlTree } from '@angular/router';
 import { NAVIGATION_BAR_CONFIGURATION } from '@app/constants/navigation-bar-configuration.constant';
 import { FINES_ROUTING_PATHS } from '@routing/fines/constants/fines-routing-paths.constant';
@@ -21,14 +21,13 @@ const resolveFeatureFlagReleaseState = async (
   featureFlagReleaseNames: readonly FeatureFlagReleaseName[],
   route: Parameters<CanActivateFn>[0],
   state: Parameters<CanActivateFn>[1],
+  injector: EnvironmentInjector,
 ): Promise<FeatureFlagReleaseState> => {
   const featureFlagReleaseState: FeatureFlagReleaseState = {};
 
   for (const featureFlagReleaseName of featureFlagReleaseNames) {
-    featureFlagReleaseState[featureFlagReleaseName] = await resolveFeatureFlagGuard(
-      featureFlagReleaseName,
-      route,
-      state,
+    featureFlagReleaseState[featureFlagReleaseName] = await runInInjectionContext(injector, () =>
+      resolveFeatureFlagGuard(featureFlagReleaseName, route, state),
     );
   }
 
@@ -39,9 +38,10 @@ const resolveFeatureFlagReleaseState = async (
  * Resolves the first accessible dashboard tab shown when entering `/fines/dashboard`.
  */
 export const dashboardLandingGuard: CanActivateFn = async (route, state): Promise<UrlTree> => {
+  const injector = inject(EnvironmentInjector);
   const opalUserService = inject(OpalUserService);
   const router = inject(Router);
-  const featureFlagReleaseState = await resolveFeatureFlagReleaseState(RELEASE_FEATURE_FLAGS, route, state);
+  const featureFlagReleaseState = await resolveFeatureFlagReleaseState(RELEASE_FEATURE_FLAGS, route, state, injector);
 
   try {
     const userState = await firstValueFrom(opalUserService.getLoggedInUserState());
