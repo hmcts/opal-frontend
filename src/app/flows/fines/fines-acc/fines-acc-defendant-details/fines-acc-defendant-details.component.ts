@@ -50,6 +50,7 @@ import { IOpalFinesAccountDefendantDetailsFixedPenaltyTabRefData } from '@servic
 import { FINES_ACCOUNT_TYPES } from '../../constants/fines-account-types.constant';
 import { IOpalFinesResultRefData } from '@services/fines/opal-fines-service/interfaces/opal-fines-result-ref-data.interface';
 import { FinesAccDefendantDetailsEnforcementTab } from './fines-acc-defendant-details-enforcement-tab/fines-acc-defendant-details-enforcement-tab.component';
+import { FinesAccDefendantDetailsImpositionsTabComponent } from './fines-acc-defendant-details-impositions-tab/fines-acc-defendant-details-impositions-tab.component';
 import { FinesAccSummaryHeaderComponent } from '../fines-acc-summary-header/fines-acc-summary-header.component';
 import { AbstractAccountSummaryBaseComponent } from '@hmcts/opal-frontend-common/components/abstract/abstract-account-summary-base';
 import { FINES_ACC_ENF_OVERRIDE_ADD_CHANGE_ROUTING_PATHS } from '../fines-acc-enf-override-add-change/constants/fines-acc-enf-override-add-change-routing-paths.constant';
@@ -80,6 +81,7 @@ import { FINES_ACC_REMOVE_NON_PAYING_PG_ROUTING_PATHS } from '../fines-acc-remov
     GovukTagComponent,
     UpperCasePipe,
     FinesAccDefendantDetailsEnforcementTab,
+    FinesAccDefendantDetailsImpositionsTabComponent,
     MonetaryPipe,
     FinesAccSummaryHeaderComponent,
   ],
@@ -253,7 +255,9 @@ export class FinesAccDefendantDetailsComponent
           );
           break;
         case 'impositions':
-          this.tabImpositions$ = this.fetchTabDataTyped(this.opalFinesService.getDefendantAccountImpositionsTabData());
+          this.tabImpositions$ = this.fetchTabDataTyped(
+            this.opalFinesService.getDefendantAccountImpositionsTabData(account_id),
+          );
           break;
         case 'history-and-notes':
           this.tabHistoryAndNotes$ = this.fetchTabDataTyped(
