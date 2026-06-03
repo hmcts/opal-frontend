@@ -1,6 +1,6 @@
 import { TestBed } from '@angular/core/testing';
 import { ActivatedRouteSnapshot, Router, RouterStateSnapshot, UrlTree } from '@angular/router';
-import { describe, expect, it, beforeEach, vi } from 'vitest';
+import { describe, expect, it, beforeAll, beforeEach, vi } from 'vitest';
 import { of } from 'rxjs';
 import { GlobalStore } from '@hmcts/opal-frontend-common/stores/global';
 import { GlobalStoreType } from '@hmcts/opal-frontend-common/stores/global/types';
@@ -12,7 +12,6 @@ import { SEARCH_PERMISSIONS } from '@app/flows/fines/constants/search-permission
 import { ACCOUNTS_PERMISSIONS } from '@app/flows/fines/constants/accounts-permissions.constant';
 import { FINES_ROUTING_PATHS } from '@app/flows/fines/routing/constants/fines-routing-paths.constant';
 import { FINES_DASHBOARD_ROUTING_PATHS } from '@app/flows/fines/constants/fines-dashboard-routing-paths.constant';
-import { dashboardLandingGuard } from './dashboard-landing.guard';
 
 const createUserStateWithPermissions = (permissionIds: readonly number[]): IOpalUserState => {
   const userState = structuredClone(OPAL_USER_STATE_MOCK);
@@ -41,8 +40,15 @@ describe('dashboardLandingGuard injection context', () => {
   const expectedUrlTree = new UrlTree();
   let router: Pick<Router, 'createUrlTree'>;
   let globalStore: GlobalStoreType;
+  let dashboardLandingGuard: (typeof import('./dashboard-landing.guard'))['dashboardLandingGuard'];
 
   const runGuard = () => TestBed.runInInjectionContext(() => dashboardLandingGuard(route, state));
+
+  beforeAll(async () => {
+    vi.doUnmock('@hmcts/opal-frontend-common/guards/feature-flag');
+    vi.resetModules();
+    ({ dashboardLandingGuard } = await import('./dashboard-landing.guard'));
+  });
 
   beforeEach(() => {
     router = {

@@ -10,10 +10,10 @@ import { type FeatureFlagReleaseName } from '@app/flows/fines/types/feature-flag
 import { type FeatureFlagReleaseState } from '@app/flows/fines/types/feature-flag-release-state.type';
 import { isDashboardPageType } from '@app/pages/dashboard/constants/dashboard-config.constant';
 import { DashboardPageType } from '@app/pages/dashboard/types/dashboard.type';
-import { resolveFeatureFlagGuard } from '@hmcts/opal-frontend-common/guards/feature-flag';
 import { PAGES_ROUTING_PATHS as COMMON_PAGES_ROUTING_PATHS } from '@hmcts/opal-frontend-common/pages/routing/constants';
 import { OpalUserService } from '@hmcts/opal-frontend-common/services/opal-user-service';
 import { firstValueFrom } from 'rxjs';
+import { resolveFeatureFlagReleaseState } from '../helpers/resolve-feature-flag-release-state.helper';
 
 const getSectionKey = (route: ActivatedRouteSnapshot): DashboardPageType | null => {
   const routeSectionKey = route.data['sectionKey'];
@@ -33,24 +33,6 @@ const getSectionKey = (route: ActivatedRouteSnapshot): DashboardPageType | null 
 
 const getSectionReleaseFeatureFlags = (sectionKey: DashboardPageType): FeatureFlagReleaseName[] =>
   Object.keys(FEATURE_FLAG_SECTION_PERMISSION_EXCLUSIONS[sectionKey] ?? {}) as FeatureFlagReleaseName[];
-
-const resolveFeatureFlagReleaseState = async (
-  featureFlagReleaseNames: readonly FeatureFlagReleaseName[],
-  route: ActivatedRouteSnapshot,
-  state: RouterStateSnapshot,
-): Promise<FeatureFlagReleaseState> => {
-  const featureFlagReleaseState: FeatureFlagReleaseState = {};
-
-  for (const featureFlagReleaseName of featureFlagReleaseNames) {
-    featureFlagReleaseState[featureFlagReleaseName] = await resolveFeatureFlagGuard(
-      featureFlagReleaseName,
-      route,
-      state,
-    );
-  }
-
-  return featureFlagReleaseState;
-};
 
 export const finesSectionPermissionsGuard: CanActivateFn = async (
   route: ActivatedRouteSnapshot,
