@@ -5,7 +5,7 @@
     </div>
     @if (hasAccountMaintenancePermission) {
       <div class="govuk-grid-column-one-third govuk-!-text-align-right govuk-!-margin-top-3">
-        <a href="" [class]="style.changeLink" (click)="handleChangeCreditorDetails($event)">Change</a>
+        <a [class]="style.changeLink" [routerLink]="changeCreditorDetailsLink()">Change</a>
       </div>
     }
   </div>
