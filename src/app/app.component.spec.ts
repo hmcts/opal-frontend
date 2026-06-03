@@ -31,6 +31,10 @@ import { FINES_DRAFT_ROUTING_PATHS } from './flows/fines/fines-draft/routing/con
 import { ACCOUNTS_PERMISSIONS } from './flows/fines/constants/accounts-permissions.constant';
 import { REPORTS_PERMISSIONS } from './flows/fines/constants/reports-permissions.constant';
 import { SEARCH_PERMISSIONS } from './flows/fines/constants/search-permissions.constant';
+import {
+  RELEASE_1A_FEATURE_FLAG,
+  RELEASE_1C_ENFORCEMENT_OPERATIONAL_REPORTING_FEATURE_FLAG,
+} from './flows/fines/constants/release-feature-flags.constant';
 import { HIDE_PRIMARY_NAV_ROUTE_DATA_KEY } from './constants/route-data.constant';
 import { FINES_ACC_ROUTING_PATHS } from './flows/fines/fines-acc/routing/constants/fines-acc-routing-paths.constant';
 import { FINES_ACC_DEFENDANT_ROUTING_PATHS } from './flows/fines/fines-acc/routing/constants/fines-acc-defendant-routing-paths.constant';
@@ -38,6 +42,10 @@ import { FINES_ACC_MINOR_CREDITOR_ROUTING_PATHS } from './flows/fines/fines-acc/
 import { FINES_CON_ROUTING_PATHS } from './flows/fines/fines-con/routing/constants/fines-con-routing-paths.constant';
 import { FINES_MAC_ROUTING_PATHS } from './flows/fines/fines-mac/routing/constants/fines-mac-routing-paths.constant';
 const mockTokenExpiry: ISessionTokenExpiry = SESSION_TOKEN_EXPIRY_MOCK;
+const DEFAULT_RELEASE_FEATURE_FLAGS = {
+  [RELEASE_1A_FEATURE_FLAG]: true,
+  [RELEASE_1C_ENFORCEMENT_OPERATIONAL_REPORTING_FEATURE_FLAG]: true,
+};
 
 @Component({
   standalone: true,
@@ -155,7 +163,7 @@ describe('AppComponent - browser', () => {
   beforeEach(() => {
     globalStore.setTokenExpiry(mockTokenExpiry);
     globalStore.setUserState(OPAL_USER_STATE_MOCK);
-    globalStore.setFeatureFlags({ 'release-1a': true, 'release-1c-enforcement-operational-reporting': true });
+    globalStore.setFeatureFlags(DEFAULT_RELEASE_FEATURE_FLAGS);
   });
 
   it('should create the app', () => {
@@ -433,7 +441,10 @@ describe('AppComponent - browser', () => {
 
   it('should hide Reports in primary navigation when release-1c enforcement operational reporting is disabled', () => {
     globalStore.setAuthenticated(true);
-    globalStore.setFeatureFlags({ 'release-1a': true, 'release-1c-enforcement-operational-reporting': false });
+    globalStore.setFeatureFlags({
+      ...DEFAULT_RELEASE_FEATURE_FLAGS,
+      [RELEASE_1C_ENFORCEMENT_OPERATIONAL_REPORTING_FEATURE_FLAG]: false,
+    });
     globalStore.setUserState(createUserStateWithPermissions([REPORTS_PERMISSIONS[0]]));
 
     const fixture = TestBed.createComponent(AppComponent);
@@ -484,7 +495,10 @@ describe('AppComponent - browser', () => {
 
   it('should hide Accounts in primary navigation when release-1a is disabled and the user only has draft accounts permission', () => {
     globalStore.setAuthenticated(true);
-    globalStore.setFeatureFlags({ 'release-1a': false, 'release-1c-enforcement-operational-reporting': true });
+    globalStore.setFeatureFlags({
+      ...DEFAULT_RELEASE_FEATURE_FLAGS,
+      [RELEASE_1A_FEATURE_FLAG]: false,
+    });
     globalStore.setUserState(createUserStateWithPermissions([ACCOUNTS_PERMISSIONS[1]]));
 
     const fixture = TestBed.createComponent(AppComponent);
@@ -495,7 +509,10 @@ describe('AppComponent - browser', () => {
 
   it('should show Accounts in primary navigation when release-1a is disabled and the user has consolidation permission', () => {
     globalStore.setAuthenticated(true);
-    globalStore.setFeatureFlags({ 'release-1a': false, 'release-1c-enforcement-operational-reporting': true });
+    globalStore.setFeatureFlags({
+      ...DEFAULT_RELEASE_FEATURE_FLAGS,
+      [RELEASE_1A_FEATURE_FLAG]: false,
+    });
     globalStore.setUserState(createUserStateWithPermissions([ACCOUNTS_PERMISSIONS[2]]));
 
     const fixture = TestBed.createComponent(AppComponent);

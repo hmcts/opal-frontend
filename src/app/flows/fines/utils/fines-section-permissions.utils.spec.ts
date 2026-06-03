@@ -6,6 +6,10 @@ import { ACCOUNTS_PERMISSIONS } from '../constants/accounts-permissions.constant
 import { REPORTS_PERMISSIONS } from '../constants/reports-permissions.constant';
 import { SEARCH_PERMISSIONS } from '../constants/search-permissions.constant';
 import {
+  RELEASE_1A_FEATURE_FLAG,
+  RELEASE_1C_ENFORCEMENT_OPERATIONAL_REPORTING_FEATURE_FLAG,
+} from '../constants/release-feature-flags.constant';
+import {
   canAccessFinesPrimaryNavigationSection,
   filterDashboardConfigByFeatureFlags,
   getAccessiblePrimaryNavigationItems,
@@ -49,8 +53,9 @@ describe('fines-section-permissions.utils', () => {
     { key: 'reports', value: 'Reports' },
     { key: 'search', value: 'Search' },
   ];
-  const release1cReportingEnabled = { 'release-1c-enforcement-operational-reporting': true };
-  const release1cReportingDisabled = { 'release-1c-enforcement-operational-reporting': false };
+  const release1aEnabled = { [RELEASE_1A_FEATURE_FLAG]: true };
+  const release1cReportingEnabled = { [RELEASE_1C_ENFORCEMENT_OPERATIONAL_REPORTING_FEATURE_FLAG]: true };
+  const release1cReportingDisabled = { [RELEASE_1C_ENFORCEMENT_OPERATIONAL_REPORTING_FEATURE_FLAG]: false };
 
   describe('getUserPermissionIds', () => {
     it('should deduplicate permission ids across business units', () => {
@@ -159,21 +164,19 @@ describe('fines-section-permissions.utils', () => {
 
   describe('getFeatureFlagReleaseState', () => {
     it('should map raw feature flags into a release feature flag state', () => {
-      expect(getFeatureFlagReleaseState({ 'release-1a': true })).toEqual({
-        'release-1a': true,
-        'release-1c-enforcement-operational-reporting': false,
+      expect(getFeatureFlagReleaseState(release1aEnabled)).toEqual({
+        [RELEASE_1A_FEATURE_FLAG]: true,
+        [RELEASE_1C_ENFORCEMENT_OPERATIONAL_REPORTING_FEATURE_FLAG]: false,
       });
       expect(
-        getFeatureFlagReleaseState({
-          'release-1c-enforcement-operational-reporting': true,
-        }),
+        getFeatureFlagReleaseState(release1cReportingEnabled),
       ).toEqual({
-        'release-1a': false,
-        'release-1c-enforcement-operational-reporting': true,
+        [RELEASE_1A_FEATURE_FLAG]: false,
+        [RELEASE_1C_ENFORCEMENT_OPERATIONAL_REPORTING_FEATURE_FLAG]: true,
       });
       expect(getFeatureFlagReleaseState({})).toEqual({
-        'release-1a': false,
-        'release-1c-enforcement-operational-reporting': false,
+        [RELEASE_1A_FEATURE_FLAG]: false,
+        [RELEASE_1C_ENFORCEMENT_OPERATIONAL_REPORTING_FEATURE_FLAG]: false,
       });
     });
   });

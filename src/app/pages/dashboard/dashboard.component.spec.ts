@@ -11,6 +11,10 @@ import { DASHBOARD_PAGE_DEFAULT_TAB } from './constants/dashboard-config-default
 import { PermissionsService } from '@hmcts/opal-frontend-common/services/permissions-service';
 import { GlobalStore } from '@hmcts/opal-frontend-common/stores/global';
 import { createSpyObj } from '@app/testing/create-spy-obj.helper';
+import {
+  RELEASE_1A_FEATURE_FLAG,
+  RELEASE_1C_ENFORCEMENT_OPERATIONAL_REPORTING_FEATURE_FLAG,
+} from '@app/flows/fines/constants/release-feature-flags.constant';
 
 describe('DashboardComponent', () => {
   let component: DashboardComponent;
@@ -21,9 +25,9 @@ describe('DashboardComponent', () => {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   let globalStoreMock: any;
 
-  const defaultReleaseFeatureFlags = {
-    'release-1a': true,
-    'release-1c-enforcement-operational-reporting': true,
+  const DEFAULT_RELEASE_FEATURE_FLAGS = {
+    [RELEASE_1A_FEATURE_FLAG]: true,
+    [RELEASE_1C_ENFORCEMENT_OPERATIONAL_REPORTING_FEATURE_FLAG]: true,
   };
 
   const setupComponent = () => {
@@ -38,7 +42,7 @@ describe('DashboardComponent', () => {
     permissionsServiceMock.getUniquePermissions.mockReturnValue([101, 202, 303]);
     globalStoreMock = {
       userState: () => null,
-      featureFlags: vi.fn().mockReturnValue(defaultReleaseFeatureFlags),
+      featureFlags: vi.fn().mockReturnValue(DEFAULT_RELEASE_FEATURE_FLAGS),
     };
 
     await TestBed.configureTestingModule({
@@ -80,7 +84,10 @@ describe('DashboardComponent', () => {
   });
 
   it('should remove draft accounts from the accounts config when release-1a is disabled', () => {
-    globalStoreMock.featureFlags.mockReturnValue({ ...defaultReleaseFeatureFlags, 'release-1a': false });
+    globalStoreMock.featureFlags.mockReturnValue({
+      ...DEFAULT_RELEASE_FEATURE_FLAGS,
+      [RELEASE_1A_FEATURE_FLAG]: false,
+    });
     setupComponent();
 
     expect(component.resolvedConfig()).toEqual({
@@ -92,7 +99,7 @@ describe('DashboardComponent', () => {
 
   it('should remove draft accounts from the accounts config when release-1a is missing', () => {
     globalStoreMock.featureFlags.mockReturnValue({
-      'release-1c-enforcement-operational-reporting': true,
+      [RELEASE_1C_ENFORCEMENT_OPERATIONAL_REPORTING_FEATURE_FLAG]: true,
     });
     setupComponent();
 
@@ -101,8 +108,8 @@ describe('DashboardComponent', () => {
 
   it('should remove reports content when release-1c enforcement operational reporting is disabled', () => {
     globalStoreMock.featureFlags.mockReturnValue({
-      ...defaultReleaseFeatureFlags,
-      'release-1c-enforcement-operational-reporting': false,
+      ...DEFAULT_RELEASE_FEATURE_FLAGS,
+      [RELEASE_1C_ENFORCEMENT_OPERATIONAL_REPORTING_FEATURE_FLAG]: false,
     });
     setupComponent();
     dashboardTypeParamMapSubject.next(convertToParamMap({ dashboardType: 'reports' }));

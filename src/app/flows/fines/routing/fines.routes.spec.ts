@@ -23,7 +23,7 @@ const { featureFlagRedirectGuardMock, release1aFeatureFlagGuardMock, release1cFe
 
 vi.mock('@hmcts/opal-frontend-common/guards/feature-flag', () => ({
   featureFlagRedirectGuard: featureFlagRedirectGuardMock.mockImplementation((featureFlagName: string) =>
-    featureFlagName === 'release-1a' ? release1aFeatureFlagGuardMock : release1cFeatureFlagGuardMock,
+    featureFlagName === RELEASE_1A_FEATURE_FLAG ? release1aFeatureFlagGuardMock : release1cFeatureFlagGuardMock,
   ),
 }));
 
