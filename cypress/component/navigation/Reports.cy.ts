@@ -19,6 +19,8 @@ import {
 const REPORTS_JIRA_LABEL = '@JIRA-LABEL:primary-nav-and-dashboards';
 const REPORTS_STORY_TAG = '@JIRA-STORY:PO-2613';
 const REPORTS_EPIC_TAG = '@JIRA-EPIC:PO-2627';
+const RELEASE_1C_STORY_TAG = '@JIRA-STORY:PO-3758';
+const RELEASE_1C_EPIC_TAG = '@JIRA-EPIC:PO-3685';
 const DEFAULT_RELEASE_FEATURE_FLAGS = {
   [RELEASE_1A_FEATURE_FLAG]: true,
   [RELEASE_1C_ENFORCEMENT_OPERATIONAL_REPORTING_FEATURE_FLAG]: true,
@@ -65,264 +67,319 @@ const summaryListComponentProperties: ISummaryListComponentProperties = {
 const reportsSummaryListPath = (reportId: string) =>
   `/${FINES_ROUTING_PATHS.root}/${FINES_REPORTS_ROUTING_PATHS.root}/${reportId}/${FINES_REPORTS_ROUTING_PATHS.children.summaryList}`;
 
-describe('Reports dashboard navigation', { tags: [REPORTS_STORY_TAG, REPORTS_EPIC_TAG, REPORTS_JIRA_LABEL] }, () => {
-  const setupDashboardComponent = (props: IComponentProperties = componentProperties) => {
-    const dashboardTypeParamMapSubject = new BehaviorSubject(convertToParamMap({ dashboardType: props.dashboardType }));
+describe(
+  'Reports dashboard navigation',
+  {
+    tags: [REPORTS_STORY_TAG, REPORTS_EPIC_TAG, RELEASE_1C_STORY_TAG, RELEASE_1C_EPIC_TAG, REPORTS_JIRA_LABEL],
+  },
+  () => {
+    const setupDashboardComponent = (props: IComponentProperties = componentProperties) => {
+      const dashboardTypeParamMapSubject = new BehaviorSubject(
+        convertToParamMap({ dashboardType: props.dashboardType }),
+      );
 
-    return mount(DashboardComponent, {
-      providers: [
-        provideRouter([]),
-        {
-          provide: ActivatedRoute,
-          useValue: {
-            paramMap: dashboardTypeParamMapSubject.asObservable(),
+      return mount(DashboardComponent, {
+        providers: [
+          provideRouter([]),
+          {
+            provide: ActivatedRoute,
+            useValue: {
+              paramMap: dashboardTypeParamMapSubject.asObservable(),
+            },
           },
-        },
-        {
-          provide: PermissionsService,
-          useValue: {
-            getUniquePermissions: cy.stub().returns(props.permissionIds),
+          {
+            provide: PermissionsService,
+            useValue: {
+              getUniquePermissions: cy.stub().returns(props.permissionIds),
+            },
           },
-        },
-        {
-          provide: GlobalStore,
-          useValue: {
-            userState: () => null,
-            featureFlags: () => ({ ...DEFAULT_RELEASE_FEATURE_FLAGS, ...props.featureFlags }),
+          {
+            provide: GlobalStore,
+            useValue: {
+              userState: () => null,
+              featureFlags: () => ({ ...DEFAULT_RELEASE_FEATURE_FLAGS, ...props.featureFlags }),
+            },
           },
-        },
-      ],
-    }).then(({ fixture }) => {
-      const router = fixture.componentRef.injector.get(Router);
+        ],
+      }).then(({ fixture }) => {
+        const router = fixture.componentRef.injector.get(Router);
 
-      cy.stub(router, 'navigateByUrl')
-        .callsFake(() => Promise.resolve(true))
-        .as('routerNavigateByUrl');
-      cy.wrap(router).as('router');
+        cy.stub(router, 'navigateByUrl')
+          .callsFake(() => Promise.resolve(true))
+          .as('routerNavigateByUrl');
+        cy.wrap(router).as('router');
 
-      fixture.detectChanges();
-    });
-  };
-
-  const setupSummaryListComponent = (props: ISummaryListComponentProperties = summaryListComponentProperties) => {
-    const activatedRoute: MockActivatedRoute = {
-      snapshot: {
-        paramMap: convertToParamMap({}),
-      },
-      paramMap: new BehaviorSubject(convertToParamMap({})),
-      parent: {
-        snapshot: {
-          paramMap: convertToParamMap({ reportId: props.reportId }),
-        },
-        paramMap: new BehaviorSubject(convertToParamMap({ reportId: props.reportId })),
-      },
+        fixture.detectChanges();
+      });
     };
 
-    return mount(FinesReportsSummaryListComponent, {
-      providers: [
-        {
-          provide: ActivatedRoute,
-          useValue: activatedRoute,
+    const setupSummaryListComponent = (props: ISummaryListComponentProperties = summaryListComponentProperties) => {
+      const activatedRoute: MockActivatedRoute = {
+        snapshot: {
+          paramMap: convertToParamMap({}),
         },
-      ],
-    });
-  };
+        paramMap: new BehaviorSubject(convertToParamMap({})),
+        parent: {
+          snapshot: {
+            paramMap: convertToParamMap({ reportId: props.reportId }),
+          },
+          paramMap: new BehaviorSubject(convertToParamMap({ reportId: props.reportId })),
+        },
+      };
 
-  const commonSetup = () => setupDashboardComponent();
+      return mount(FinesReportsSummaryListComponent, {
+        providers: [
+          {
+            provide: ActivatedRoute,
+            useValue: activatedRoute,
+          },
+        ],
+      });
+    };
 
-  const setupDashboardWithPermissions = (permissionIds: number[]) =>
-    setupDashboardComponent({
-      ...componentProperties,
-      permissionIds,
-    });
+    const commonSetup = () => setupDashboardComponent();
 
-  const featureFlagDisabledSetup = () =>
-    setupDashboardComponent({
-      ...componentProperties,
-      featureFlags: {
-        [RELEASE_1C_ENFORCEMENT_OPERATIONAL_REPORTING_FEATURE_FLAG]: false,
-      },
-    });
+    const setupDashboardWithPermissions = (permissionIds: number[]) =>
+      setupDashboardComponent({
+        ...componentProperties,
+        permissionIds,
+      });
 
-  const noOperationalPermissionsSetup = () => setupDashboardWithPermissions([]);
+    const featureFlagDisabledSetup = () =>
+      setupDashboardComponent({
+        ...componentProperties,
+        featureFlags: {
+          [RELEASE_1C_ENFORCEMENT_OPERATIONAL_REPORTING_FEATURE_FLAG]: false,
+        },
+      });
 
-  const enforcementPermissionSetup = () =>
-    setupDashboardWithPermissions([FINES_PERMISSIONS['operational-report-by-enforcement']]);
+    const noOperationalPermissionsSetup = () => setupDashboardWithPermissions([]);
 
-  const paymentsPermissionSetup = () =>
-    setupDashboardWithPermissions([FINES_PERMISSIONS['operational-report-by-payments']]);
+    const enforcementPermissionSetup = () =>
+      setupDashboardWithPermissions([FINES_PERMISSIONS['operational-report-by-enforcement']]);
 
-  const setupSummaryListForReport = (reportId: string) =>
-    setupSummaryListComponent({
-      ...summaryListComponentProperties,
-      reportId,
-    });
+    const paymentsPermissionSetup = () =>
+      setupDashboardWithPermissions([FINES_PERMISSIONS['operational-report-by-payments']]);
 
-  const yourReportsSummaryListSetup = () =>
-    setupSummaryListForReport(FINES_REPORTS_SUMMARY_LIST_ROUTING_PATHS.children.yourReports);
+    const setupSummaryListForReport = (reportId: string) =>
+      setupSummaryListComponent({
+        ...summaryListComponentProperties,
+        reportId,
+      });
 
-  const operationalReportsByEnforcementSummaryListSetup = () =>
-    setupSummaryListForReport(FINES_REPORTS_SUMMARY_LIST_ROUTING_PATHS.children.operationalReportsByEnforcement);
+    const yourReportsSummaryListSetup = () =>
+      setupSummaryListForReport(FINES_REPORTS_SUMMARY_LIST_ROUTING_PATHS.children.yourReports);
 
-  const operationalReportsByPaymentsSummaryListSetup = () =>
-    setupSummaryListForReport(FINES_REPORTS_SUMMARY_LIST_ROUTING_PATHS.children.operationalReportsByPayments);
+    const operationalReportsByEnforcementSummaryListSetup = () =>
+      setupSummaryListForReport(FINES_REPORTS_SUMMARY_LIST_ROUTING_PATHS.children.operationalReportsByEnforcement);
 
-  const assertNavigationTarget = (expectedPath: string) => {
-    cy.get('@routerNavigateByUrl').should('have.been.called');
-    cy.get('@routerNavigateByUrl')
-      .its('lastCall.args.0')
-      .then((urlTree) => {
-        cy.get('@router').then((router) => {
-          const serialisedUrl =
-            typeof urlTree === 'string' ? urlTree : (router as unknown as Router).serializeUrl(urlTree);
+    const operationalReportsByPaymentsSummaryListSetup = () =>
+      setupSummaryListForReport(FINES_REPORTS_SUMMARY_LIST_ROUTING_PATHS.children.operationalReportsByPayments);
 
-          expect(serialisedUrl).to.eq(expectedPath);
+    const assertNavigationTarget = (expectedPath: string) => {
+      cy.get('@routerNavigateByUrl').should('have.been.called');
+      cy.get('@routerNavigateByUrl')
+        .its('lastCall.args.0')
+        .then((urlTree) => {
+          cy.get('@router').then((router) => {
+            const serialisedUrl =
+              typeof urlTree === 'string' ? urlTree : (router as unknown as Router).serializeUrl(urlTree);
+
+            expect(serialisedUrl).to.eq(expectedPath);
+          });
         });
-      });
-  };
+    };
 
-  it(
-    'AC1a AC1b AC1d AC2a AC2b AC2c AC2d shows the Your reports panel and Operational reports links in the correct order',
-    { tags: ['@JIRA-TEST-KEY:PO-5251'] },
-    () => {
-      commonSetup();
+    it(
+      'AC1a AC1b AC1d AC2a AC2b AC2c AC2d shows the Your reports panel and Operational reports links in the correct order',
+      { tags: ['@JIRA-TEST-KEY:PO-5251'] },
+      () => {
+        commonSetup();
 
-      cy.contains(L.pageHeader, 'Reports').should('be.visible');
-      cy.get(L.yourReportsLink).should('be.visible').and('contain.text', 'View all your reports');
-      cy.contains(L.sectionHeading, 'Operational reports').should('be.visible');
-      cy.get(L.operationalReportsByEnforcementLink)
-        .should('be.visible')
-        .and('contain.text', 'Operational reports (by enforcement)');
-      cy.get(L.operationalReportsByPaymentsLink)
-        .should('be.visible')
-        .and('contain.text', 'Operational reports (by payments)');
-      cy.get(`${L.operationalReportsByEnforcementLink}, ${L.operationalReportsByPaymentsLink}`).then(($links) => {
-        const linkTexts = [...$links].map((link) => link.textContent?.trim());
+        cy.contains(L.pageHeader, 'Reports').should('be.visible');
+        cy.get(L.yourReportsLink).should('be.visible').and('contain.text', 'View all your reports');
+        cy.contains(L.sectionHeading, 'Operational reports').should('be.visible');
+        cy.get(L.operationalReportsByEnforcementLink)
+          .should('be.visible')
+          .and('contain.text', 'Operational reports (by enforcement)');
+        cy.get(L.operationalReportsByPaymentsLink)
+          .should('be.visible')
+          .and('contain.text', 'Operational reports (by payments)');
+        cy.get(`${L.operationalReportsByEnforcementLink}, ${L.operationalReportsByPaymentsLink}`).then(($links) => {
+          const linkTexts = [...$links].map((link) => link.textContent?.trim());
 
-        expect(linkTexts).to.deep.equal(['Operational reports (by enforcement)', 'Operational reports (by payments)']);
-      });
-    },
-  );
+          expect(linkTexts).to.deep.equal([
+            'Operational reports (by enforcement)',
+            'Operational reports (by payments)',
+          ]);
+        });
+      },
+    );
 
-  it(
-    'AC1c routes View all your reports to the Your reports summary list screen',
-    { tags: ['@JIRA-TEST-KEY:PO-5252'] },
-    () => {
-      commonSetup();
+    it(
+      'AC1c routes View all your reports to the Your reports summary list screen',
+      { tags: ['@JIRA-TEST-KEY:PO-5252'] },
+      () => {
+        commonSetup();
 
-      cy.get(L.yourReportsLink).click();
+        cy.get(L.yourReportsLink).click();
 
-      assertNavigationTarget(reportsSummaryListPath(FINES_REPORTS_SUMMARY_LIST_ROUTING_PATHS.children.yourReports));
-    },
-  );
+        assertNavigationTarget(reportsSummaryListPath(FINES_REPORTS_SUMMARY_LIST_ROUTING_PATHS.children.yourReports));
+      },
+    );
 
-  it(
-    'AC3a routes Operational reports by enforcement to the correct summary list screen',
-    { tags: ['@JIRA-TEST-KEY:PO-5253'] },
-    () => {
-      commonSetup();
+    it(
+      'AC3a routes Operational reports by enforcement to the correct summary list screen',
+      { tags: ['@JIRA-TEST-KEY:PO-5253'] },
+      () => {
+        commonSetup();
 
-      cy.get(L.operationalReportsByEnforcementLink).click();
+        cy.get(L.operationalReportsByEnforcementLink).click();
 
-      assertNavigationTarget(
-        reportsSummaryListPath(FINES_REPORTS_SUMMARY_LIST_ROUTING_PATHS.children.operationalReportsByEnforcement),
-      );
-    },
-  );
+        assertNavigationTarget(
+          reportsSummaryListPath(FINES_REPORTS_SUMMARY_LIST_ROUTING_PATHS.children.operationalReportsByEnforcement),
+        );
+      },
+    );
 
-  it(
-    'AC3b routes Operational reports by payments to the correct summary list screen',
-    { tags: ['@JIRA-TEST-KEY:PO-5254'] },
-    () => {
-      commonSetup();
+    it(
+      'AC3b routes Operational reports by payments to the correct summary list screen',
+      { tags: ['@JIRA-TEST-KEY:PO-5254'] },
+      () => {
+        commonSetup();
 
-      cy.get(L.operationalReportsByPaymentsLink).click();
+        cy.get(L.operationalReportsByPaymentsLink).click();
 
-      assertNavigationTarget(
-        reportsSummaryListPath(FINES_REPORTS_SUMMARY_LIST_ROUTING_PATHS.children.operationalReportsByPayments),
-      );
-    },
-  );
+        assertNavigationTarget(
+          reportsSummaryListPath(FINES_REPORTS_SUMMARY_LIST_ROUTING_PATHS.children.operationalReportsByPayments),
+        );
+      },
+    );
 
-  it('AC1c renders the Your reports summary list heading', { tags: ['@JIRA-TEST-KEY:PO-5255'] }, () => {
-    yourReportsSummaryListSetup();
+    it('AC1c renders the Your reports summary list heading', { tags: ['@JIRA-TEST-KEY:PO-5255'] }, () => {
+      yourReportsSummaryListSetup();
 
-    cy.contains(L.pageHeader, 'Your reports').should('be.visible');
-  });
+      cy.contains(L.pageHeader, 'Your reports').should('be.visible');
+    });
 
-  it(
-    'AC3a renders the Operational reports by enforcement summary list heading',
-    { tags: ['@JIRA-TEST-KEY:PO-5256'] },
-    () => {
-      operationalReportsByEnforcementSummaryListSetup();
+    it(
+      'AC3a renders the Operational reports by enforcement summary list heading',
+      { tags: ['@JIRA-TEST-KEY:PO-5256'] },
+      () => {
+        operationalReportsByEnforcementSummaryListSetup();
 
-      cy.contains(L.pageHeader, 'Operational reports (by enforcement)').should('be.visible');
-    },
-  );
+        cy.contains(L.pageHeader, 'Operational reports (by enforcement)').should('be.visible');
+      },
+    );
 
-  it(
-    'AC3b renders the Operational reports by payments summary list heading',
-    { tags: ['@JIRA-TEST-KEY:PO-5257'] },
-    () => {
-      operationalReportsByPaymentsSummaryListSetup();
+    it(
+      'AC3b renders the Operational reports by payments summary list heading',
+      { tags: ['@JIRA-TEST-KEY:PO-5257'] },
+      () => {
+        operationalReportsByPaymentsSummaryListSetup();
 
-      cy.contains(L.pageHeader, 'Operational reports (by payments)').should('be.visible');
-    },
-  );
+        cy.contains(L.pageHeader, 'Operational reports (by payments)').should('be.visible');
+      },
+    );
 
-  it(
-    'AC4d hides the Operational reports group when the user has no operational report permissions',
-    { tags: ['@JIRA-TEST-KEY:PO-5258'] },
-    () => {
-      noOperationalPermissionsSetup();
+    it(
+      'AC4d hides the Operational reports group when the user has no operational report permissions',
+      { tags: ['@JIRA-TEST-KEY:PO-5258'] },
+      () => {
+        noOperationalPermissionsSetup();
 
-      cy.contains(L.pageHeader, 'Reports').should('be.visible');
-      cy.get(L.yourReportsLink).should('be.visible');
-      cy.contains(L.sectionHeading, 'Operational reports').should('not.exist');
-      cy.get(L.operationalReportsByEnforcementLink).should('not.exist');
-      cy.get(L.operationalReportsByPaymentsLink).should('not.exist');
-    },
-  );
+        cy.contains(L.pageHeader, 'Reports').should('be.visible');
+        cy.get(L.yourReportsLink).should('be.visible');
+        cy.contains(L.sectionHeading, 'Operational reports').should('not.exist');
+        cy.get(L.operationalReportsByEnforcementLink).should('not.exist');
+        cy.get(L.operationalReportsByPaymentsLink).should('not.exist');
+      },
+    );
 
-  it(
-    'hides the Reports dashboard entry points when release-1c enforcement operational reporting is disabled',
-    { tags: ['@JIRA-TEST-KEY:PO-3758'] },
-    () => {
-      featureFlagDisabledSetup();
+    it(
+      'hides the Reports dashboard entry points when release-1c enforcement operational reporting is disabled',
+      { tags: ['@JIRA-TEST-KEY:PO-3758', '@JIRA-STORY:PO-3758', '@JIRA-EPIC:PO-3685'] },
+      () => {
+        featureFlagDisabledSetup();
 
-      cy.contains(L.pageHeader, 'Reports').should('be.visible');
-      cy.get(L.yourReportsLink).should('not.exist');
-      cy.contains(L.sectionHeading, 'Operational reports').should('not.exist');
-      cy.get(L.operationalReportsByEnforcementLink).should('not.exist');
-      cy.get(L.operationalReportsByPaymentsLink).should('not.exist');
-    },
-  );
+        cy.contains(L.pageHeader, 'Reports').should('be.visible');
+        cy.get(L.yourReportsLink).should('not.exist');
+        cy.contains(L.sectionHeading, 'Operational reports').should('not.exist');
+        cy.get(L.operationalReportsByEnforcementLink).should('not.exist');
+        cy.get(L.operationalReportsByPaymentsLink).should('not.exist');
+      },
+    );
 
-  it(
-    'AC4a AC4c shows only the enforcement link and keeps the Operational reports heading visible',
-    { tags: ['@JIRA-TEST-KEY:PO-5259'] },
-    () => {
-      enforcementPermissionSetup();
+    it(
+      'shows the Reports dashboard entry points when release-1c enforcement operational reporting is enabled',
+      { tags: ['@JIRA-TEST-KEY:PO-3758'] },
+      () => {
+        commonSetup();
 
-      cy.contains(L.sectionHeading, 'Operational reports').should('be.visible');
-      cy.get(L.operationalReportsByEnforcementLink)
-        .should('be.visible')
-        .and('contain.text', 'Operational reports (by enforcement)');
-      cy.get(L.operationalReportsByPaymentsLink).should('not.exist');
-    },
-  );
+        cy.contains(L.pageHeader, 'Reports').should('be.visible');
+        cy.get(L.yourReportsLink).should('be.visible').and('contain.text', 'View all your reports');
+        cy.contains(L.sectionHeading, 'Operational reports').should('be.visible');
+        cy.get(L.operationalReportsByEnforcementLink)
+          .should('be.visible')
+          .and('contain.text', 'Operational reports (by enforcement)');
+        cy.get(L.operationalReportsByPaymentsLink)
+          .should('be.visible')
+          .and('contain.text', 'Operational reports (by payments)');
+      },
+    );
 
-  it(
-    'AC4b AC4c shows only the payments link and keeps the Operational reports heading visible',
-    { tags: ['@JIRA-TEST-KEY:PO-5260'] },
-    () => {
-      paymentsPermissionSetup();
+    it(
+      'navigates to the operational reports by enforcement summary list when release-1c enforcement operational reporting is enabled',
+      { tags: ['@JIRA-TEST-KEY:PO-3758'] },
+      () => {
+        commonSetup();
 
-      cy.contains(L.sectionHeading, 'Operational reports').should('be.visible');
-      cy.get(L.operationalReportsByPaymentsLink)
-        .should('be.visible')
-        .and('contain.text', 'Operational reports (by payments)');
-      cy.get(L.operationalReportsByEnforcementLink).should('not.exist');
-    },
-  );
-});
+        cy.get(L.operationalReportsByEnforcementLink).click();
+        assertNavigationTarget(
+          reportsSummaryListPath(FINES_REPORTS_SUMMARY_LIST_ROUTING_PATHS.children.operationalReportsByEnforcement),
+        );
+      },
+    );
+
+    it(
+      'navigates to the operational reports by payments summary list when release-1c enforcement operational reporting is enabled',
+      { tags: ['@JIRA-TEST-KEY:PO-3758'] },
+      () => {
+        commonSetup();
+
+        cy.get(L.operationalReportsByPaymentsLink).click();
+        assertNavigationTarget(
+          reportsSummaryListPath(FINES_REPORTS_SUMMARY_LIST_ROUTING_PATHS.children.operationalReportsByPayments),
+        );
+      },
+    );
+
+    it(
+      'AC4a AC4c shows only the enforcement link and keeps the Operational reports heading visible',
+      { tags: ['@JIRA-TEST-KEY:PO-5259'] },
+      () => {
+        enforcementPermissionSetup();
+
+        cy.contains(L.sectionHeading, 'Operational reports').should('be.visible');
+        cy.get(L.operationalReportsByEnforcementLink)
+          .should('be.visible')
+          .and('contain.text', 'Operational reports (by enforcement)');
+        cy.get(L.operationalReportsByPaymentsLink).should('not.exist');
+      },
+    );
+
+    it(
+      'AC4b AC4c shows only the payments link and keeps the Operational reports heading visible',
+      { tags: ['@JIRA-TEST-KEY:PO-5260'] },
+      () => {
+        paymentsPermissionSetup();
+
+        cy.contains(L.sectionHeading, 'Operational reports').should('be.visible');
+        cy.get(L.operationalReportsByPaymentsLink)
+          .should('be.visible')
+          .and('contain.text', 'Operational reports (by payments)');
+        cy.get(L.operationalReportsByEnforcementLink).should('not.exist');
+      },
+    );
+  },
+);
