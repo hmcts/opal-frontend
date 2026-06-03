@@ -1,0 +1,26 @@
+.fines-reports-summary-list__header {
+  align-items: flex-start;
+  display: flex;
+  gap: 30px;
+  justify-content: space-between;
+  margin-bottom: 30px;
+}
+
+.fines-reports-summary-list__heading {
+  flex: 1 1 auto;
+  margin-bottom: 0;
+  min-width: 0;
+}
+
+.fines-reports-summary-list__create-button {
+  flex: 0 0 auto;
+  margin-bottom: 0;
+}
+
+@media (max-width: 40.0625em) {
+  .fines-reports-summary-list__header {
+    flex-direction: column;
+    gap: 15px;
+    margin-bottom: 20px;
+  }
+}

@@ -1,3 +1,15 @@
 <div class="govuk-grid-column-full">
-  <h1 class="govuk-heading-l">{{ pageHeading }}</h1>
+  <div class="fines-reports-summary-list__header">
+    <h1 class="govuk-heading-l fines-reports-summary-list__heading">{{ pageHeading }}</h1>
+    @if (canCreateReport) {
+      <button
+        buttonId="create-report-button"
+        buttonClasses="fines-reports-summary-list__create-button"
+        opalLibGovukButton
+        (click)="handleCreateReport()"
+      >
+        Create report
+      </button>
+    }
+  </div>
 </div>

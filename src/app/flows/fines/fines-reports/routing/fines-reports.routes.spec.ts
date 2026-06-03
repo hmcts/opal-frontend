@@ -13,4 +13,17 @@ describe('finesReports routes', () => {
       pathMatch: 'full',
     });
   });
+
+  it('should temporarily redirect select business units routes to the summary list', () => {
+    const reportRoute = routing.find((route) => route.path === ':reportId');
+    const selectBusinessUnitsRoute = reportRoute?.children?.find(
+      (route) => route.path === FINES_REPORTS_ROUTING_PATHS.children.selectBusinessUnits,
+    );
+
+    expect(selectBusinessUnitsRoute).toEqual({
+      path: FINES_REPORTS_ROUTING_PATHS.children.selectBusinessUnits,
+      redirectTo: FINES_REPORTS_ROUTING_PATHS.children.summaryList,
+      pathMatch: 'full',
+    });
+  });
 });

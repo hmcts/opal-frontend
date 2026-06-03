@@ -31,6 +31,11 @@ export const routing: Routes = [
           title: finesReportsTitleResolver,
         },
       },
+      {
+        path: FINES_REPORTS_ROUTING_PATHS.children.selectBusinessUnits,
+        redirectTo: FINES_REPORTS_ROUTING_PATHS.children.summaryList,
+        pathMatch: 'full',
+      },
     ],
   },
 ];
