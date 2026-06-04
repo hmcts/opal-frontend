@@ -50,6 +50,7 @@ export class FinesAccDefendantDetailsEnforcementTab {
   @Output() addEnforcementOverride = new EventEmitter<void>();
   @Output() changeEnforcementOverride = new EventEmitter<void>();
   @Output() removeEnforcementOverride = new EventEmitter<void>();
+  @Output() removeEnforcementHold = new EventEmitter<void>();
   @Output() changeEnforcementCourt = new EventEmitter<void>();
   @Output() changeCollectionOrder = new EventEmitter<boolean>();
 
@@ -121,6 +122,13 @@ export class FinesAccDefendantDetailsEnforcementTab {
    */
   public handleRemoveEnforcementOverride(): void {
     this.removeEnforcementOverride.emit();
+  }
+
+  /**
+   * Emits a request to navigate to the remove enforcement hold page.
+   */
+  public handleRemoveEnforcementHold(): void {
+    this.removeEnforcementHold.emit();
   }
 
   /**

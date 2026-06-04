@@ -5,6 +5,7 @@ export const FINES_ACC_ENF_ACTION_ROUTING_TITLES: IFinesAccEnfActionRoutingPaths
   children: {
     add: 'Add enforcement action details',
     denied: 'You cannot add an enforcement action',
+    remove: 'Remove enforcement hold',
     select: 'Add enforcement action',
   },
 };

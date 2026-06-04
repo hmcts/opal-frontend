@@ -5,6 +5,7 @@ export const FINES_ACC_ENF_ACTION_ROUTING_PATHS: IFinesAccEnfActionRoutingPaths 
   children: {
     add: 'add',
     denied: 'denied',
+    remove: 'remove',
     select: 'select',
   },
 };

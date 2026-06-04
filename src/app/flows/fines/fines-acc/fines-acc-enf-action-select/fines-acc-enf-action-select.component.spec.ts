@@ -34,6 +34,8 @@ describe('FinesAccEnfActionSelectComponent', () => {
   const mockAccountStore = {
     getAccountNumber: signal<string | null>('123456'),
     party_name: signal<string | null>('Test Company Ltd'),
+    successMessage: signal<string | null>(null),
+    clearSuccessMessage: vi.fn(),
   };
 
   const mockOpalFinesService = {

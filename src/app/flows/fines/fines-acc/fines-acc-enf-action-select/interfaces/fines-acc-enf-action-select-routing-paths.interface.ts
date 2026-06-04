@@ -5,6 +5,7 @@ export interface IFinesAccEnfActionRoutingPaths extends IChildRoutingPaths {
   children: {
     add: string;
     denied: string;
+    remove: string;
     select: string;
   };
 }

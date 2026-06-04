@@ -1,0 +1,25 @@
+<opal-lib-govuk-heading-with-caption
+  [captionText]="`${accountNumber} - ${partyName}`"
+  [headingText]="pageTitle"
+  headingClasses="govuk-heading-l govuk-!-margin-bottom-30"
+></opal-lib-govuk-heading-with-caption>
+<opal-lib-govuk-error-summary
+  [errors]="formErrorSummaryMessage"
+  (errorClick)="scrollTo($event)"
+></opal-lib-govuk-error-summary>
+
+<form (submit)="handleFormSubmit($event)" [formGroup]="form" class="govuk-form">
+  <opal-lib-govuk-text-input
+    labelText="Reason"
+    labelClasses="govuk-label--s"
+    inputId="facc_enf_action_remove_reason"
+    inputName="facc_enf_action_remove_reason"
+    [control]="form.get('facc_enf_action_remove_reason')"
+    [errors]="formControlErrorMessages['facc_enf_action_remove_reason']"
+  ></opal-lib-govuk-text-input>
+
+  <div class="govuk-button-group">
+    <button class="govuk-button govuk-!-margin-right-4" id="removeEnforcementHold" type="submit">Remove</button>
+    <opal-lib-govuk-cancel-link (linkClickEvent)="handleCancel()"></opal-lib-govuk-cancel-link>
+  </div>
+</form>

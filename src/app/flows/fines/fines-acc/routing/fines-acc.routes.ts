@@ -321,6 +321,23 @@ export const routing: Routes = [
             },
           },
           {
+            path: `${FINES_ACC_DEFENDANT_ROUTING_PATHS.children.enforcement}/${FINES_ACC_ENF_ACTION_ROUTING_PATHS.root}/${FINES_ACC_ENF_ACTION_ROUTING_PATHS.children.remove}`,
+            loadComponent: () =>
+              import('../fines-acc-enf-action-remove/fines-acc-enf-action-remove.component').then(
+                (c) => c.FinesAccEnfActionRemoveComponent,
+              ),
+            canActivate: [routePermissionsGuard, finesAccStateGuard],
+            canDeactivate: [canDeactivateGuard],
+            data: {
+              title: FINES_ACC_ENF_ACTION_ROUTING_TITLES.children.remove,
+              routePermissionId: [accRootPermissionIds['enter-enforcement']],
+            },
+            resolve: {
+              title: TitleResolver,
+              defendantAccountHeadingData: defendantAccountHeadingResolver,
+            },
+          },
+          {
             path: `${FINES_ACC_DEFENDANT_ROUTING_PATHS.children.enforcement}/${FINES_ACC_ENF_ACTION_ROUTING_PATHS.root}/${FINES_ACC_ENF_ACTION_ROUTING_PATHS.children.denied}/:type`,
             loadComponent: () =>
               import('../fines-acc-enf-action-denied/fines-acc-enf-action-denied.component').then(

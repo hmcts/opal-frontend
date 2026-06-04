@@ -1,0 +1,10 @@
+<div class="govuk-grid-column-two-thirds">
+  <app-fines-acc-enf-action-remove-form
+    [accountNumber]="accountNumber"
+    [pageTitle]="pageTitle"
+    [partyName]="partyName"
+    (formSubmit)="handleSubmit($event)"
+    (cancelRequested)="handleCancel()"
+    (unsavedChanges)="handleUnsavedChanges($event)"
+  ></app-fines-acc-enf-action-remove-form>
+</div>

@@ -17,21 +17,22 @@ import { IOpalFinesResultRefData } from '@services/fines/opal-fines-service/inte
 import { FINES_ACC_ENF_ACTION_SELECT_WARNING_MESSAGES } from './constants/fines-acc-enf-action-select-warning-messages.constant';
 import { FINES_ACC_DEBTOR_TYPES } from '../constants/fines-acc-debtor-types.constant';
 import { FINES_ACC_ENF_ACTION_ROUTING_PATHS } from './constants/fines-acc-enf-action-select-routing-paths.constant';
+import { FinesAccBannerMessagesComponent } from '../fines-acc-banner-messages/fines-acc-banner-messages.component';
 
 @Component({
   selector: 'app-fines-acc-enf-action-select',
   templateUrl: './fines-acc-enf-action-select.component.html',
   changeDetection: ChangeDetectionStrategy.OnPush,
   standalone: true,
-  imports: [FinesAccEnfActionSelectFormComponent],
+  imports: [FinesAccBannerMessagesComponent, FinesAccEnfActionSelectFormComponent],
 })
 export class FinesAccEnfActionSelectComponent extends AbstractFormParentBaseComponent implements OnInit, OnDestroy {
   private readonly ngUnsubscribe = new Subject<void>();
   private readonly route = inject(ActivatedRoute);
-  private readonly finesAccStore = inject(FinesAccountStore);
   private readonly opalFinesService = inject(OpalFines);
   private readonly utilsService = inject(UtilsService);
   private readonly debtorTypes = FINES_ACC_DEBTOR_TYPES;
+  public readonly finesAccStore = inject(FinesAccountStore);
 
   public readonly accountNumber = this.finesAccStore.getAccountNumber() ?? '';
   public readonly partyName = this.finesAccStore.party_name() ?? '';
@@ -88,6 +89,7 @@ export class FinesAccEnfActionSelectComponent extends AbstractFormParentBaseComp
     const hasEmployerData = !!this.enforcementStatus.employer_flag;
 
     this.stateUnsavedChanges = false;
+    this.finesAccStore.clearSuccessMessage();
 
     if (requiresEmploymentData && !hasEmployerData) {
       return;
