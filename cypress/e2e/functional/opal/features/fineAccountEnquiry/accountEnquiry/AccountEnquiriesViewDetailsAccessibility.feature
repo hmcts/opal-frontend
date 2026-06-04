@@ -58,3 +58,26 @@ Feature: Account Enquiries - View Account Details Accessibility
     When I start converting the account to an individual account
     Then I should see the convert to individual confirmation screen for company "Accdetail comp{uniq}"
     And I check the page for accessibility
+
+  @JIRA-STORY:PO-1984 @JIRA-EPIC:PO-1285
+  Scenario: Amend minor creditor validation summary page accessibility
+    Given a published account exists with an individual minor creditor:
+      | prosecutor case reference | PCRMINA11Y{uniqUpper} |
+      | title                     | Mr                    |
+      | first name                | Access                |
+      | last name                 | Minor{uniq}           |
+      | address line 1            | 1 Test Street         |
+      | postcode                  | AB1 2CD               |
+    And I am on the Account Search page - Individuals form displayed by default
+    When I view the Minor creditors search form
+    And I search using the following inputs:
+      | minor creditor type  | Individual    |
+      | individual last name | Minor{uniq}   |
+      | first names          | Access        |
+      | address line 1       | 1 Test Street |
+      | postcode             | AB1 2CD       |
+    Then I see the Search results page
+    When I open the latest matching result from the search results
+    And I go to the Creditor tab
+    When I start changing the minor creditor details
+    Then I check the page for accessibility

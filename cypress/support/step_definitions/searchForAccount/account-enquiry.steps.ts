@@ -989,6 +989,24 @@ When('I attempt to cancel changing minor creditor details and choose OK on the c
   flow().cancelAmendMinorCreditorAndLeave();
 });
 
+When('I amend the minor creditor first name to {string} and discard the changes', (value: string) => {
+  const valueWithUniq = applyUniqPlaceholder(value);
+  log('step', 'Amend minor creditor first name and discard changes', { value: valueWithUniq });
+  flow().amendMinorCreditorFirstNameAndDiscard(valueWithUniq);
+});
+
+When('I amend the minor creditor first name to {string} and save', (value: string) => {
+  const valueWithUniq = applyUniqPlaceholder(value);
+  log('step', 'Amend minor creditor first name and save', { value: valueWithUniq });
+  flow().amendMinorCreditorFirstNameAndSave(valueWithUniq);
+});
+
+When('I attempt to amend the minor creditor first name to {string} and save', (value: string) => {
+  const valueWithUniq = applyUniqPlaceholder(value);
+  log('step', 'Attempt to amend minor creditor first name and save', { value: valueWithUniq });
+  flow().attemptToAmendMinorCreditorFirstNameAndSave(valueWithUniq);
+});
+
 /**
  * @step Ensures we remain on the edit page after cancelling (no navigation occurred).
  */

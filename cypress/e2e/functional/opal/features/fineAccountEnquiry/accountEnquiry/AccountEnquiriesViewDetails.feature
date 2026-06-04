@@ -262,22 +262,16 @@ Feature: Account Enquiries – View Account Details
       When I go to the Creditor tab
 
     @JIRA-STORY:PO-1984 @JIRA-EPIC:PO-1285
-    Scenario: Cancelling amend minor creditor details after making changes discards updates and returns to the Creditor tab
+    Scenario: Discard amended minor creditor details, return to the Creditor tab without changing the creditor name
       # AC2a – Cancel with unsaved changes shows a warning and confirming discard returns to Creditor with no save
-      When I start changing the minor creditor details
-      Then I should be on the amend minor creditor details page
-      When I enter "Updated" into the amend minor creditor first name field
-      And I attempt to cancel changing minor creditor details and choose OK on the confirmation dialog
+      When I amend the minor creditor first name to "Updated" and discard the changes
       Then I should return to the account details page Creditor tab
       And I should see the minor creditor name contains "Mr John AMENDMINOR{uniqUpper}"
 
     @JIRA-STORY:PO-1984 @JIRA-EPIC:PO-1285
-    Scenario: Saving valid amend minor creditor details returns to the Creditor tab and persists the changes
+    Scenario: Amend minor creditor's first name and save, return to the Creditor tab and see the updated name
       # AC2b – Save valid changes returns to Creditor and persists updates
-      When I start changing the minor creditor details
-      Then I should be on the amend minor creditor details page
-      When I enter "Updated" into the amend minor creditor first name field
-      And I save the minor creditor amend details
+      When I amend the minor creditor first name to "Updated" and save
       Then I should return to the account details page Creditor tab
       And I should see the minor creditor name contains "Mr Updated AMENDMINOR{uniqUpper}"
       And I verify minor creditor amendments via API for first name "Updated"
@@ -285,10 +279,7 @@ Feature: Account Enquiries – View Account Details
     @JIRA-STORY:PO-1984 @JIRA-EPIC:PO-1285
     Scenario: Saving invalid amend minor creditor details keeps me on the form and displays validation errors
       # AC2c – Save invalid changes remains on the same screen and shows relevant errors
-      When I start changing the minor creditor details
-      Then I should be on the amend minor creditor details page
-      When I enter "" into the amend minor creditor first name field
-      And I save the minor creditor amend details
+      When I attempt to amend the minor creditor first name to "" and save
       Then I should remain on the amend minor creditor details page
       And I should see the minor creditor amend error summary contains "Enter minor creditor’s first name"
 

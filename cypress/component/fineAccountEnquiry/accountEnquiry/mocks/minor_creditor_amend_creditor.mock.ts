@@ -67,6 +67,29 @@ export const createMinorCreditorAmendCreditorEmptyCompanyMock = (): IOpalFinesAc
   return mock;
 };
 
+export const createMinorCreditorAmendCompanyCreditorMock = (
+  includeBacsDetails = true,
+): IOpalFinesAccountMinorCreditorCreditor => {
+  const mock = createMinorCreditorAmendCreditorMock(includeBacsDetails);
+
+  mock.party_details.organisation_flag = true;
+  mock.party_details.individual_details = null;
+  mock.party_details.organisation_details = {
+    organisation_name: 'Amend Minor Co Ltd',
+    organisation_aliases: null,
+  };
+  mock.payment = {
+    pay_by_bacs: includeBacsDetails,
+    hold_payment: false,
+    account_name: includeBacsDetails ? 'Amend Minor Co Ltd' : '',
+    sort_code: includeBacsDetails ? '112233' : '',
+    account_number: includeBacsDetails ? '12345678' : '',
+    account_reference: includeBacsDetails ? 'MCREF123' : '',
+  };
+
+  return mock;
+};
+
 export const createMinorCreditorAmendHeaderMock = () => {
   const header = createMinorCreditorHeaderMock();
 
@@ -82,3 +105,4 @@ export const createMinorCreditorAmendHeaderMock = () => {
 };
 
 export const buildMinorCreditorAmendPartyName = () => 'Mr John SMITH';
+export const buildMinorCreditorAmendCompanyPartyName = () => 'AMEND MINOR CO LTD';

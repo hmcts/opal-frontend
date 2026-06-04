@@ -1,8 +1,14 @@
 import { USER_STATE_MOCK_PERMISSION_BU77 } from '../../CommonIntercepts/CommonUserState.mocks';
 import { interceptAuthenticatedUser, interceptUserState } from '../../CommonIntercepts/CommonIntercepts';
-import { interceptMinorCreditorCreditor } from './intercept/defendantAccountIntercepts';
 import {
+  interceptMinorCreditorCreditor,
+  interceptMinorCreditorHeader,
+  interceptPatchMinorCreditorAccount,
+} from './intercept/defendantAccountIntercepts';
+import {
+  buildMinorCreditorAmendCompanyPartyName,
   buildMinorCreditorAmendPartyName,
+  createMinorCreditorAmendCompanyCreditorMock,
   createMinorCreditorAmendCreditorMock,
   createMinorCreditorAmendCreditorEmptyCompanyMock,
   createMinorCreditorAmendCreditorEmptyIndividualMock,
@@ -46,6 +52,36 @@ const setupMinorCreditorAmendScreen = (creditorData = createMinorCreditorAmendCr
       buildSeededAccountStore(MINOR_CREDITOR_ACCOUNT_ID, {
         account_number: header.creditor.account_number,
         party_name: buildMinorCreditorAmendPartyName(),
+        party_type: 'Minor Creditor',
+        party_id: header.party.party_id,
+        base_version: header.version ?? '1',
+        business_unit_id: header.business_unit.business_unit_id,
+      }),
+  });
+
+  cy.wait('@getMinorCreditorCreditor');
+  cy.get(AMEND.form).should('exist');
+};
+
+const setupMinorCreditorAmendCompanyScreen = () => {
+  const header = createMinorCreditorAmendHeaderMock();
+  const creditorData = createMinorCreditorAmendCompanyCreditorMock(true);
+
+  header.party.organisation_flag = true;
+  header.party.organisation_details = { organisation_name: 'Amend Minor Co Ltd' };
+  header.party.individual_details = undefined;
+
+  interceptUserState(USER_STATE_MOCK_PERMISSION_BU77);
+  interceptMinorCreditorCreditor(MINOR_CREDITOR_ACCOUNT_ID, creditorData, '1');
+  interceptMinorCreditorHeader(MINOR_CREDITOR_ACCOUNT_ID, header, '1');
+  interceptPatchMinorCreditorAccount(MINOR_CREDITOR_ACCOUNT_ID);
+
+  setupAccountEnquiryComponent({
+    ...componentProperties,
+    finesAccountStoreFactory: () =>
+      buildSeededAccountStore(MINOR_CREDITOR_ACCOUNT_ID, {
+        account_number: header.creditor.account_number,
+        party_name: buildMinorCreditorAmendCompanyPartyName(),
         party_type: 'Minor Creditor',
         party_id: header.party.party_id,
         base_version: header.version ?? '1',
@@ -256,6 +292,41 @@ describe('Minor Creditor Account Enquiry - Amend Minor Creditor Details', () => 
       });
 
       assertMinorCreditorAmendErrorSummary('Enter a valid sort code like 309430');
+    },
+  );
+
+  it(
+    'AC2b: saves amended company minor creditor details with BACS and returns to the creditor tab',
+    { tags: buildTags(AMEND_MINOR_CREDITOR_STORY_TAG, AMEND_MINOR_CREDITOR_EPIC_TAG) },
+    () => {
+      setupMinorCreditorAmendCompanyScreen();
+
+      cy.get(AMEND.companyRadio).should('be.checked');
+      cy.get(AMEND.companyNameInput).should('have.value', 'Amend Minor Co Ltd');
+      cy.get(AMEND.payByBacsCheckbox).should('be.checked');
+      cy.get(AMEND.bankAccountNameInput).should('have.value', 'Amend Minor Co Ltd');
+      cy.get(AMEND.bankSortCodeInput).should('have.value', '112233');
+      cy.get(AMEND.bankAccountNumberInput).should('have.value', '12345678');
+      cy.get(AMEND.bankAccountReferenceInput).should('have.value', 'MCREF123');
+
+      cy.get(AMEND.companyNameInput).clear().type('Updated Minor Co Ltd');
+      cy.get(AMEND.submitButton).click();
+
+      cy.wait('@patchMinorCreditorAccount')
+        .its('request.body')
+        .should((body) => {
+          expect(body.party_details.organisation_flag).to.eq(true);
+          expect(body.party_details.organisation_details.organisation_name).to.eq('Updated Minor Co Ltd');
+          expect(body.payment.pay_by_bacs).to.eq(true);
+          expect(body.payment.account_name).to.eq('Amend Minor Co Ltd');
+          expect(body.payment.sort_code).to.eq('112233');
+          expect(body.payment.account_number).to.eq('12345678');
+          expect(body.payment.account_reference).to.eq('MCREF123');
+        });
+
+      cy.get('@routerNavigate').should('have.been.calledWithMatch', ['details'], {
+        fragment: 'creditor',
+      });
     },
   );
 });
