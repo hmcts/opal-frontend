@@ -16,7 +16,7 @@ Feature: Search and Matches Release 1B Feature Toggles
     When I open the latest matching result from the search results
     Then I should see the account summary header contains "RELEASE1BSEARCH{uniqUpper}"
 
-  @FeatureFlag @R1BOff @JIRA-STORY:PO-3720 @JIRA-EPIC:PO-3685 @only
+  @FeatureFlag @R1BOff @JIRA-STORY:PO-3720 @JIRA-EPIC:PO-3685
   Scenario: Search and Matches is hidden when release 1b is disabled
     Given I am authenticated with email "opal-test@dev.platform.hmcts.net"
     Then I should not see the Fines primary navigation item "Search"
