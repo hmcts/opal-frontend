@@ -1,4 +1,5 @@
 <h1 class="govuk-heading-l">Major creditors</h1>
+<p>{{ finesSaStore.searchAccount().fsa_search_account_business_unit_ids }} ids</p>
 @if ((finesSaStore.searchAccount().fsa_search_account_business_unit_ids ?? []).length === 1) {
   <opal-lib-alphagov-accessible-autocomplete
     [control]="form.get('fsa_search_account_major_creditors_major_creditor_id')"
