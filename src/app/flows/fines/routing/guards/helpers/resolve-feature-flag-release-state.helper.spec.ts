@@ -1,39 +1,53 @@
 import { TestBed } from '@angular/core/testing';
 import { ActivatedRouteSnapshot, RouterStateSnapshot } from '@angular/router';
-import { beforeAll, beforeEach, describe, expect, it, vi } from 'vitest';
+import { beforeEach, describe, expect, it, vi } from 'vitest';
+import { GlobalStore } from '@hmcts/opal-frontend-common/stores/global';
+import { LaunchDarklyService } from '@hmcts/opal-frontend-common/services/launch-darkly-service';
 import { type FeatureFlagReleaseName } from '@app/flows/fines/types/feature-flag-release-name.type';
-
-const resolveFeatureFlagGuardMock = vi.fn();
 
 describe('resolveFeatureFlagReleaseState', () => {
   const route = {} as ActivatedRouteSnapshot;
   const state = {} as RouterStateSnapshot;
   const releaseFlags: readonly FeatureFlagReleaseName[] = ['release-1a', 'release-1b'];
   let featureFlags: Record<string, boolean>;
+  let launchDarklyService: {
+    initializeLaunchDarklyFlags: ReturnType<typeof vi.fn>;
+    initializeLaunchDarklyClient: ReturnType<typeof vi.fn>;
+  };
   let resolveFeatureFlagReleaseState: (typeof import('./resolve-feature-flag-release-state.helper'))['resolveFeatureFlagReleaseState'];
 
   const mockFeatureFlags = (flags: Record<string, boolean>) => {
     featureFlags = flags;
-    resolveFeatureFlagGuardMock.mockImplementation((featureFlag: string) =>
-      Promise.resolve(featureFlags[featureFlag] ?? false),
-    );
   };
 
   const runHelper = () =>
     TestBed.runInInjectionContext(() => resolveFeatureFlagReleaseState(releaseFlags, route, state));
 
-  beforeAll(async () => {
-    vi.doMock('@hmcts/opal-frontend-common/guards/feature-flag', () => ({
-      resolveFeatureFlagGuard: resolveFeatureFlagGuardMock,
-    }));
-
+  beforeEach(async () => {
+    vi.resetModules();
+    vi.doUnmock('@hmcts/opal-frontend-common/guards/feature-flag');
     ({ resolveFeatureFlagReleaseState } = await import('./resolve-feature-flag-release-state.helper'));
-  });
 
-  beforeEach(() => {
-    resolveFeatureFlagGuardMock.mockReset();
     mockFeatureFlags({});
-    TestBed.configureTestingModule({});
+    launchDarklyService = {
+      initializeLaunchDarklyFlags: vi.fn(),
+      initializeLaunchDarklyClient: vi.fn(),
+    };
+
+    TestBed.configureTestingModule({
+      providers: [
+        {
+          provide: GlobalStore,
+          useValue: {
+            featureFlags: () => featureFlags,
+          },
+        },
+        {
+          provide: LaunchDarklyService,
+          useValue: launchDarklyService,
+        },
+      ],
+    });
   });
 
   it('should preserve injection context while resolving multiple release flags', async () => {
@@ -44,8 +58,8 @@ describe('resolveFeatureFlagReleaseState', () => {
       'release-1b': true,
     });
 
-    expect(resolveFeatureFlagGuardMock).toHaveBeenCalledWith('release-1a', route, state);
-    expect(resolveFeatureFlagGuardMock).toHaveBeenCalledWith('release-1b', route, state);
+    expect(launchDarklyService.initializeLaunchDarklyFlags).not.toHaveBeenCalled();
+    expect(launchDarklyService.initializeLaunchDarklyClient).not.toHaveBeenCalled();
   });
 
   it('should preserve the disabled state for a later release flag', async () => {
