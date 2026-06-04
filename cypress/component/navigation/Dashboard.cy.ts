@@ -42,7 +42,7 @@ describe(
               const store = new GlobalStore();
               store.setAuthenticated(true);
               store.setUserState(userState);
-              store.setFeatureFlags({ 'release-1a': true });
+              store.setFeatureFlags({ 'release-1a': true, 'release-1b': true });
               return store;
             },
           },
