@@ -4005,9 +4005,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@hmcts/opal-frontend-common-node@npm:^0.0.32":
-  version: 0.0.32
-  resolution: "@hmcts/opal-frontend-common-node@npm:0.0.32"
+"@hmcts/opal-frontend-common-node@npm:^0.0.34":
+  version: 0.0.34
+  resolution: "@hmcts/opal-frontend-common-node@npm:0.0.34"
   dependencies:
     "@azure/msal-browser": "npm:^5.0.0"
     "@hmcts/info-provider": "npm:^1.1.0"
@@ -4026,10 +4026,10 @@ __metadata:
     helmet: "npm:^8.0.0"
     http-proxy-middleware: "npm:^4.0.0"
     luxon: "npm:^3.4.3"
-    redis: "npm:^5.0.0"
+    redis: "npm:^6.0.0"
     session-file-store: "npm:^1.5.0"
     xml2js: "npm:^0.6.2"
-  checksum: 10/f4358e5c0c25d7e8e42b3561c2c2cae9a71a49611ac0993f4c50173797eb5f3541f4e57f96b7470a30e66e5b1739c9e7526534f2e701843192e6f7f8425e31ad
+  checksum: 10/5441145b7b96f0471991a622b5eafa6b4798cfb8b32dc7d733aaf4a91d982732510eef47faea96a23229e5022eb570992d37b8b595a33582ba3940ef14767564
   languageName: node
   linkType: hard
 
@@ -6750,38 +6750,12 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@redis/bloom@npm:5.12.1":
-  version: 5.12.1
-  resolution: "@redis/bloom@npm:5.12.1"
-  peerDependencies:
-    "@redis/client": ^5.12.1
-  checksum: 10/ecbd942080ff2d70c5ebb9dee47451f5fe12e3f05a7e9994f1e588b96dd435bc2ac9df4c66a67825fa116721531e9a5cc381f00295d7bc4d7ec984e8b6b5e048
-  languageName: node
-  linkType: hard
-
 "@redis/bloom@npm:6.0.0":
   version: 6.0.0
   resolution: "@redis/bloom@npm:6.0.0"
   peerDependencies:
     "@redis/client": ^6.0.0
   checksum: 10/6f48065e2b583afeeb495a8724f538701702c1f9da8885f4ad176e7417123af02eae66e2d74a9914ea204bcc005b5575a48d826527db619e2eb469518f0e3c5a
-  languageName: node
-  linkType: hard
-
-"@redis/client@npm:5.12.1":
-  version: 5.12.1
-  resolution: "@redis/client@npm:5.12.1"
-  dependencies:
-    cluster-key-slot: "npm:1.1.2"
-  peerDependencies:
-    "@node-rs/xxhash": ^1.1.0
-    "@opentelemetry/api": ">=1 <2"
-  peerDependenciesMeta:
-    "@node-rs/xxhash":
-      optional: true
-    "@opentelemetry/api":
-      optional: true
-  checksum: 10/6e7ac59761201ca0cb5eeff78e18b67eb0db2071b6bf3306d08697999a244329dd01a4d521963eb134da87c8ef6689ed52648f5fc15d6d2cd84a77cd5f3351c4
   languageName: node
   linkType: hard
 
@@ -6802,15 +6776,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@redis/json@npm:5.12.1":
-  version: 5.12.1
-  resolution: "@redis/json@npm:5.12.1"
-  peerDependencies:
-    "@redis/client": ^5.12.1
-  checksum: 10/26a7511ab955b6ceb99622d5b8cc5ad0d026cb3d11b8e62a6673465632f9d37ee5b8571e350caf448a30c7579fcf86b75abfc7102f8d8a90980fb940f5f8b4b3
-  languageName: node
-  linkType: hard
-
 "@redis/json@npm:6.0.0":
   version: 6.0.0
   resolution: "@redis/json@npm:6.0.0"
@@ -6820,30 +6785,12 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@redis/search@npm:5.12.1":
-  version: 5.12.1
-  resolution: "@redis/search@npm:5.12.1"
-  peerDependencies:
-    "@redis/client": ^5.12.1
-  checksum: 10/df2459b175b29b9bffce2a72531c95d630a01425116f6d4b3dd183d43d660133d211fb68bf3556024f5c5605be65800df5f0ecde8cd00ef6dd31a98b829e01e7
-  languageName: node
-  linkType: hard
-
 "@redis/search@npm:6.0.0":
   version: 6.0.0
   resolution: "@redis/search@npm:6.0.0"
   peerDependencies:
     "@redis/client": ^6.0.0
   checksum: 10/c189496349654f692aeb26bdb0f8085a40cba0bb12c70ea2842888481f0023645646c688f108550abe33370378465c745b1b2373e150aaf742afd4c77ea65066
-  languageName: node
-  linkType: hard
-
-"@redis/time-series@npm:5.12.1":
-  version: 5.12.1
-  resolution: "@redis/time-series@npm:5.12.1"
-  peerDependencies:
-    "@redis/client": ^5.12.1
-  checksum: 10/61969f5f78e17efb9c3347102da8efa043566a55b152649b85a0bc5646966a03767ec2e48ab17e632470886f2568a30b58f95905b109fa41c85f74ecbf8e8e97
   languageName: node
   linkType: hard
 
@@ -14590,16 +14537,16 @@ __metadata:
   linkType: hard
 
 "junit-report-merger@npm:^9.0.0":
-  version: 9.0.4
-  resolution: "junit-report-merger@npm:9.0.4"
+  version: 9.0.3
+  resolution: "junit-report-merger@npm:9.0.3"
   dependencies:
     commander: "npm:~14.0.0"
     tinyglobby: "npm:^0.2.15"
-    xmlbuilder2: "npm:4.0.3"
+    xmlbuilder2: "npm:4.0.1"
   bin:
     jrm: cli.js
     junit-report-merger: cli.js
-  checksum: 10/995686994a9588c2e15b35a75500115fd92b9f55d66602700f11d6e87f0e1b4f68111d0b3507936e1edd2c6543e37850aede3de3ee056dfa11d0e3576cfe4b94
+  checksum: 10/51affa5cca292d47da8654da8d0fce57ff7a016d0ac2fb44726be046220b58e1a88413a778481f884d9b82c2edacdbac01d9fda666840ea2905ffdf80cdfd008
   languageName: node
   linkType: hard
 
@@ -16549,7 +16496,7 @@ __metadata:
     "@hmcts/nodejs-logging": "npm:^4.0.4"
     "@hmcts/opal-frontend-common": "npm:^0.0.82"
     "@hmcts/opal-frontend-common-cypress": "npm:^0.0.3"
-    "@hmcts/opal-frontend-common-node": "npm:^0.0.32"
+    "@hmcts/opal-frontend-common-node": "npm:^0.0.34"
     "@hmcts/properties-volume": "npm:^1.1.0"
     "@hmcts/zephyr-automation-nodejs": "npm:0.0.7"
     "@microsoft/applicationinsights-web": "npm:^3.3.5"
@@ -17862,19 +17809,6 @@ __metadata:
   dependencies:
     resolve: "npm:^1.1.6"
   checksum: 10/fe76bf9c21875ac16e235defedd7cbd34f333c02a92546142b7911a0f7c7059d2e16f441fe6fb9ae203f459c05a31b2bcf26202896d89e390eda7514d5d2702b
-  languageName: node
-  linkType: hard
-
-"redis@npm:^5.0.0":
-  version: 5.12.1
-  resolution: "redis@npm:5.12.1"
-  dependencies:
-    "@redis/bloom": "npm:5.12.1"
-    "@redis/client": "npm:5.12.1"
-    "@redis/json": "npm:5.12.1"
-    "@redis/search": "npm:5.12.1"
-    "@redis/time-series": "npm:5.12.1"
-  checksum: 10/b46a57e1aef5d8c8893ac58dd7afd8d914e26fb49a5a532986a0a46d6fbfbb5e4b4d24f21c56c2485826f87014519f5bdc9e1a6ae27c0753f3af2fb9ff6904b3
   languageName: node
   linkType: hard
 
@@ -21585,15 +21519,15 @@ __metadata:
   languageName: node
   linkType: hard
 
-"xmlbuilder2@npm:4.0.3":
-  version: 4.0.3
-  resolution: "xmlbuilder2@npm:4.0.3"
+"xmlbuilder2@npm:4.0.1":
+  version: 4.0.1
+  resolution: "xmlbuilder2@npm:4.0.1"
   dependencies:
     "@oozcitak/dom": "npm:^2.0.2"
     "@oozcitak/infra": "npm:^2.0.2"
     "@oozcitak/util": "npm:^10.0.0"
     js-yaml: "npm:^4.1.1"
-  checksum: 10/17a2bac5b9263d991148bd0d657f5b08fd4bd6e67ce7fb4a7333b85ef3b729cdab9cb606feabb25f893454db902945ed20e81cf32be964bbb20b4657ad4573df
+  checksum: 10/9f8c81e1ea0a2bfa725ae6e2c2d3258769941a0a0c04213931339ee07b60232ae757624c9418a8d21967e6b873365b1d4e4ef9c9662293f9c31d00cd785ef341
   languageName: node
   linkType: hard
 
