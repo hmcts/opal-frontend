@@ -180,7 +180,41 @@ describe('FinesAccEnfActionAddFormComponent', () => {
     ).toBe('');
   });
 
-  it('should apply decimal and integer min/max validators', () => {
+  it('should validate dynamic text and textarea fields using the common single-byte ASCII validator', () => {
+    createComponent(false, [
+      {
+        controlName: 'fines-acc-enf-action-add_reason',
+        parameterName: 'reason',
+        label: 'Reason',
+        type: FINES_ACC_ENF_ACTION_ADD_FIELD_TYPES.text,
+        required: false,
+        options: [],
+      },
+      {
+        controlName: 'fines-acc-enf-action-add_notes',
+        parameterName: 'notes',
+        label: 'Notes',
+        type: FINES_ACC_ENF_ACTION_ADD_FIELD_TYPES.textarea,
+        required: false,
+        max: 1000,
+        options: [],
+      },
+    ]);
+
+    component.form.get('fines-acc-enf-action-add_reason')!.setValue('Reason with café');
+    component.form.get('fines-acc-enf-action-add_notes')!.setValue('Long Welsh text: rheswm â nodiadau');
+
+    expect(component.form.get('fines-acc-enf-action-add_reason')?.hasError('singleAsciiCharacters')).toBe(true);
+    expect(component.form.get('fines-acc-enf-action-add_notes')?.hasError('singleAsciiCharacters')).toBe(true);
+
+    component.form.get('fines-acc-enf-action-add_reason')!.setValue("Reason, with hyphens - and apostrophes'");
+    component.form.get('fines-acc-enf-action-add_notes')!.setValue('1000 character notes, still ASCII only.');
+
+    expect(component.form.get('fines-acc-enf-action-add_reason')?.valid).toBe(true);
+    expect(component.form.get('fines-acc-enf-action-add_notes')?.valid).toBe(true);
+  });
+
+  it('should apply decimal max and integer min/max validators', () => {
     createComponent(false, [
       {
         controlName: 'fines-acc-enf-action-add_amount',
@@ -204,13 +238,13 @@ describe('FinesAccEnfActionAddFormComponent', () => {
       },
     ]);
 
-    component.form.get('fines-acc-enf-action-add_amount')!.setValue('9');
+    component.form.get('fines-acc-enf-action-add_amount')!.setValue('9.00');
     component.form.get('fines-acc-enf-action-add_days')!.setValue('6');
 
-    expect(component.form.get('fines-acc-enf-action-add_amount')?.hasError('min')).toBe(true);
+    expect(component.form.get('fines-acc-enf-action-add_amount')?.hasError('min')).toBe(false);
     expect(component.form.get('fines-acc-enf-action-add_days')?.hasError('max')).toBe(true);
 
-    component.form.get('fines-acc-enf-action-add_amount')!.setValue('21');
+    component.form.get('fines-acc-enf-action-add_amount')!.setValue('21.00');
     component.form.get('fines-acc-enf-action-add_days')!.setValue('1');
 
     expect(component.form.get('fines-acc-enf-action-add_amount')?.hasError('max')).toBe(true);
@@ -346,7 +380,11 @@ describe('FinesAccEnfActionAddFormComponent', () => {
     amountControl.setValue('10.123');
 
     expect(dateControl.hasError('invalidDate')).toBe(true);
-    expect(amountControl.hasError('invalidAmount')).toBe(true);
+    expect(amountControl.hasError('invalidDecimal')).toBe(true);
+
+    amountControl.setValue('not a number');
+
+    expect(amountControl.hasError('numericalTextPattern')).toBe(true);
 
     dateControl.setValue('28/02/2026');
     amountControl.setValue('10.10');

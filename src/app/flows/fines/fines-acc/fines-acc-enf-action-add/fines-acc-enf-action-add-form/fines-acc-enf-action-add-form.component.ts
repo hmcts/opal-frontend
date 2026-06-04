@@ -35,12 +35,7 @@ import { IGovUkSelectOptions } from '@hmcts/opal-frontend-common/components/govu
 import { AlphagovAccessibleAutocompleteComponent } from '@hmcts/opal-frontend-common/components/alphagov/alphagov-accessible-autocomplete';
 import { MojDatePickerComponent } from '@hmcts/opal-frontend-common/components/moj/moj-date-picker';
 import { DateService } from '@hmcts/opal-frontend-common/services/date-service';
-import {
-  ALPHANUMERIC_WITH_HYPHENS_SPACES_APOSTROPHES_DOT_PATTERN,
-  NUMERIC_PATTERN,
-  TWO_DECIMAL_PLACES_PATTERN,
-} from '@hmcts/opal-frontend-common/constants';
-import { amountValidator } from '@hmcts/opal-frontend-common/validators/amount';
+import { NUMERIC_PATTERN, SINGLE_ASCII_CHARACTERS } from '@hmcts/opal-frontend-common/constants';
 import { optionalValidDateValidator } from '@hmcts/opal-frontend-common/validators/optional-valid-date';
 import { patternValidator } from '@hmcts/opal-frontend-common/validators/pattern-validator';
 import { FINES_PAYMENT_TERMS_FREQUENCY_OPTIONS } from '../../../constants/fines-payment-terms-frequency-options.constant';
@@ -61,13 +56,10 @@ import { IFinesAccEnfActionAddFormField } from '../interfaces/fines-acc-enf-acti
 
 const CONTROL_NAMES = FINES_ACC_ENF_ACTION_ADD_FORM_CONTROL_NAMES;
 const FIELD_TYPES = FINES_ACC_ENF_ACTION_ADD_FIELD_TYPES;
-const TWO_DECIMAL_PLACES_PATTERN_VALIDATOR = patternValidator(TWO_DECIMAL_PLACES_PATTERN, 'invalidDecimal');
-const DECIMAL_2_DP_AMOUNT_VALIDATOR = amountValidator(10, 2);
+const DECIMAL_NUMERIC_PATTERN_VALIDATOR = patternValidator(/^\d+(\.\d+)?$/, 'numericalTextPattern');
+const TWO_DECIMAL_PLACES_PATTERN_VALIDATOR = patternValidator(/^\d+\.\d{2}$/, 'invalidDecimal');
 const NUMERIC_PATTERN_VALIDATOR = patternValidator(NUMERIC_PATTERN, 'numericalTextPattern');
-const ALPHANUMERIC_WITH_HYPHENS_SPACES_APOSTROPHES_DOT_PATTERN_VALIDATOR = patternValidator(
-  ALPHANUMERIC_WITH_HYPHENS_SPACES_APOSTROPHES_DOT_PATTERN,
-  'alphanumericTextPattern',
-);
+const SINGLE_ASCII_CHARACTERS_PATTERN_VALIDATOR = patternValidator(SINGLE_ASCII_CHARACTERS, 'singleAsciiCharacters');
 
 @Component({
   selector: 'app-fines-acc-enf-action-add-form',
@@ -145,16 +137,16 @@ export class FinesAccEnfActionAddFormComponent extends AbstractFormBaseComponent
       controls[CONTROL_NAMES.addPaymentTerms] = new FormControl<boolean | null>(null, Validators.required);
       controls[CONTROL_NAMES.paymentTerms] = new FormControl<string | null>(null);
       controls[CONTROL_NAMES.payByDate] = new FormControl<string | null>(null, optionalValidDateValidator());
-      controls[CONTROL_NAMES.instalmentAmount] = new FormControl<string | null>(
-        null,
+      controls[CONTROL_NAMES.instalmentAmount] = new FormControl<string | null>(null, [
+        DECIMAL_NUMERIC_PATTERN_VALIDATOR,
         TWO_DECIMAL_PLACES_PATTERN_VALIDATOR,
-      );
+      ]);
       controls[CONTROL_NAMES.instalmentPeriod] = new FormControl<string | null>(null);
       controls[CONTROL_NAMES.startDate] = new FormControl<string | null>(null, optionalValidDateValidator());
-      controls[CONTROL_NAMES.lumpSumAmount] = new FormControl<string | null>(
-        null,
+      controls[CONTROL_NAMES.lumpSumAmount] = new FormControl<string | null>(null, [
+        DECIMAL_NUMERIC_PATTERN_VALIDATOR,
         TWO_DECIMAL_PLACES_PATTERN_VALIDATOR,
-      );
+      ]);
       controls[CONTROL_NAMES.daysInDefault] = new FormControl<string | null>(null, NUMERIC_PATTERN_VALIDATOR);
       controls[CONTROL_NAMES.dateDaysInDefaultImposed] = new FormControl<string | null>(
         null,
@@ -208,10 +200,7 @@ export class FinesAccEnfActionAddFormComponent extends AbstractFormBaseComponent
         validators.push(optionalValidDateValidator());
         break;
       case FIELD_TYPES.decimal:
-        validators.push(DECIMAL_2_DP_AMOUNT_VALIDATOR);
-        if (typeof field.min === 'number') {
-          validators.push(Validators.min(field.min));
-        }
+        validators.push(DECIMAL_NUMERIC_PATTERN_VALIDATOR, TWO_DECIMAL_PLACES_PATTERN_VALIDATOR);
         if (typeof field.max === 'number') {
           validators.push(Validators.max(field.max));
         }
@@ -226,7 +215,7 @@ export class FinesAccEnfActionAddFormComponent extends AbstractFormBaseComponent
         }
         break;
       case FIELD_TYPES.text:
-        validators.push(ALPHANUMERIC_WITH_HYPHENS_SPACES_APOSTROPHES_DOT_PATTERN_VALIDATOR);
+        validators.push(SINGLE_ASCII_CHARACTERS_PATTERN_VALIDATOR);
         if (typeof field.min === 'number' && field.min > 0) {
           validators.push(Validators.minLength(field.min));
         }
@@ -235,6 +224,7 @@ export class FinesAccEnfActionAddFormComponent extends AbstractFormBaseComponent
         }
         break;
       case FIELD_TYPES.textarea:
+        validators.push(SINGLE_ASCII_CHARACTERS_PATTERN_VALIDATOR);
         if (typeof field.min === 'number' && field.min > 0) {
           validators.push(Validators.minLength(field.min));
         }
@@ -314,10 +304,10 @@ export class FinesAccEnfActionAddFormComponent extends AbstractFormBaseComponent
     const lumpSumAmountControl = this.form.get(CONTROL_NAMES.lumpSumAmount)!;
 
     payByDateControl.setValidators(optionalValidDateValidator());
-    instalmentAmountControl.setValidators(TWO_DECIMAL_PLACES_PATTERN_VALIDATOR);
+    instalmentAmountControl.setValidators([DECIMAL_NUMERIC_PATTERN_VALIDATOR, TWO_DECIMAL_PLACES_PATTERN_VALIDATOR]);
     instalmentPeriodControl.clearValidators();
     startDateControl.setValidators(optionalValidDateValidator());
-    lumpSumAmountControl.setValidators(TWO_DECIMAL_PLACES_PATTERN_VALIDATOR);
+    lumpSumAmountControl.setValidators([DECIMAL_NUMERIC_PATTERN_VALIDATOR, TWO_DECIMAL_PLACES_PATTERN_VALIDATOR]);
 
     if (value === FINES_ACC_ENF_ACTION_ADD_PAYMENT_TERM_KEYS.payInFull) {
       payByDateControl.addValidators(Validators.required);

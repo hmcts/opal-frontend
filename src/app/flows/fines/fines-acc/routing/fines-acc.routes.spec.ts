@@ -103,6 +103,8 @@ describe('fines acc routes', () => {
     const componentInstance = TestBed.runInInjectionContext(() => componentType.ɵfac());
 
     expect(componentInstance).toBeInstanceOf(componentType);
+  });
+
   it('should route to the major creditor details placeholder page', () => {
     const detailsRoute = majorCreditorRoute?.children?.find(
       (route) => route.path === FINES_ACC_MAJOR_CREDITOR_ROUTING_PATHS.children.details,
