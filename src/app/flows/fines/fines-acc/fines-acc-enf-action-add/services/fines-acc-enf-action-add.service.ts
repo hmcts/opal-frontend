@@ -373,7 +373,7 @@ export class FinesAccEnfActionAddService {
       ...fieldErrors,
       [CONTROL_NAMES.addPaymentTerms]: {
         required: {
-          message: 'Select whether you want to add payment terms',
+          message: 'Select whether you want to change existing payment terms',
           priority: 1,
         },
       },
