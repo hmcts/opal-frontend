@@ -1,0 +1,54 @@
+<form [formGroup]="form">
+  <opal-lib-govuk-table>
+    <ng-container head>
+      <th opal-lib-govuk-table-heading>
+        @if (businessUnitRows.length > 0) {
+          <div
+            class="govuk-checkboxes--small"
+            opal-lib-govuk-checkboxes-item
+            labelText="Business unit"
+            labelClasses="govuk-!-font-weight-bold"
+            [inputId]="allBusinessUnitsInputId"
+            [inputName]="allBusinessUnitsInputName"
+            [control]="allBusinessUnitsControl"
+          ></div>
+        } @else {
+          Business unit
+        }
+      </th>
+    </ng-container>
+    <ng-container body>
+      @if (businessUnits.length === 1) {
+        <tr opal-lib-govuk-table-body-row>
+          <td id="business-unit-{{ businessUnits[0].business_unit_id }}" opal-lib-govuk-table-body-row-data>
+            {{ businessUnits[0].business_unit_name }}
+          </td>
+        </tr>
+      } @else if (businessUnitRows.length > 0) {
+        @for (row of businessUnitRows; track row.businessUnit.business_unit_id) {
+          <tr opal-lib-govuk-table-body-row>
+            <td id="business-unit-{{ row.businessUnit.business_unit_id }}" opal-lib-govuk-table-body-row-data>
+              <div
+                class="govuk-checkboxes--small"
+                opal-lib-govuk-checkboxes-item
+                [labelText]="row.businessUnit.business_unit_name"
+                [inputId]="row.inputId"
+                [inputName]="row.inputName"
+                [control]="row.control"
+              ></div>
+            </td>
+          </tr>
+        }
+      } @else {
+        <tr opal-lib-govuk-table-body-row>
+          <td id="business-units-empty" opal-lib-govuk-table-body-row-data>Business units will appear here.</td>
+        </tr>
+      }
+    </ng-container>
+  </opal-lib-govuk-table>
+
+  <div class="govuk-button-group">
+    <button buttonId="continue-create-report" opalLibGovukButton type="button" disabled>Continue</button>
+    <opal-lib-govuk-cancel-link (linkClickEvent)="handleCancel()"></opal-lib-govuk-cancel-link>
+  </div>
+</form>

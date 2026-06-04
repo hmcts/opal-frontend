@@ -68,8 +68,9 @@ describe('FinesReportsSelectBusinessUnitsComponent', () => {
 
     expect(component.pageHeading).toBe('Select business units');
     expect(component.reportHeading).toBe(reportHeading);
-    expect(fixture.nativeElement.querySelector('h1')?.textContent?.trim()).toBe('Select business units');
-    expect(fixture.nativeElement.querySelector('h2')?.textContent?.trim()).toBe(reportHeading);
+    expect(fixture.nativeElement.querySelector('.govuk-caption-l')?.textContent?.trim()).toBe('Create report');
+    expect(fixture.nativeElement.querySelector('h1')?.textContent).toContain(reportHeading);
+    expect(fixture.nativeElement.querySelector('h2')?.textContent?.trim()).toBe('Select business units');
   });
 
   it('should render business units in alphabetical order', async () => {
@@ -82,11 +83,11 @@ describe('FinesReportsSelectBusinessUnitsComponent', () => {
       'London Central & South East',
       'London Confiscation Orders',
     ]);
-    expect(
-      Array.from(fixture.nativeElement.querySelectorAll('li') as NodeListOf<HTMLLIElement>).map((item) =>
-        item.textContent?.trim(),
-      ),
-    ).toEqual(['Historical Debt', 'London Central & South East', 'London Confiscation Orders']);
+    const pageText = fixture.nativeElement.textContent;
+    expect(pageText.indexOf('Historical Debt')).toBeLessThan(pageText.indexOf('London Central & South East'));
+    expect(pageText.indexOf('London Central & South East')).toBeLessThan(
+      pageText.indexOf('London Confiscation Orders'),
+    );
   });
 
   it('should navigate back to the summary list when cancel is selected', async () => {

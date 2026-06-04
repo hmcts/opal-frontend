@@ -1,28 +1,12 @@
 <div class="govuk-grid-column-two-thirds">
-  <h1 class="govuk-heading-l">{{ pageHeading }}</h1>
-  <h2 class="govuk-heading-m">{{ reportHeading }}</h2>
-  <p class="govuk-body">Select the business units for this report.</p>
+  <opal-lib-govuk-heading-with-caption
+    captionText="Create report"
+    [headingText]="reportHeading"
+  ></opal-lib-govuk-heading-with-caption>
+  <h2 class="govuk-heading-m">{{ pageHeading }}</h2>
 
-  @if (businessUnits.length > 0) {
-    <ul class="govuk-list govuk-list--bullet">
-      @for (businessUnit of businessUnits; track businessUnit.business_unit_id) {
-        <li>{{ businessUnit.business_unit_name }}</li>
-      }
-    </ul>
-  } @else {
-    <p class="govuk-body">Business units will appear here.</p>
-  }
-
-  <div class="govuk-button-group">
-    <button
-      buttonId="cancel-create-report"
-      buttonClasses="govuk-button--secondary"
-      opalLibGovukButton
-      type="button"
-      (click)="handleCancel()"
-    >
-      Cancel
-    </button>
-    <button buttonId="continue-create-report" opalLibGovukButton type="button" disabled>Continue</button>
-  </div>
+  <app-fines-reports-select-business-units-form
+    [businessUnits]="businessUnits"
+    (cancelSelection)="handleCancel()"
+  ></app-fines-reports-select-business-units-form>
 </div>
