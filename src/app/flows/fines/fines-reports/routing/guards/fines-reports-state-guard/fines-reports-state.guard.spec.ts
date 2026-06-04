@@ -11,6 +11,7 @@ import { finesReportsStateGuard } from './fines-reports-state.guard';
 import { FINES_REPORTS_SUMMARY_LIST_ROUTING_PATHS } from '../../../fines-reports-summary-list/routing/constants/fines-reports-summary-list-routing-paths.constant';
 import { FINES_ROUTING_PATHS } from '@app/flows/fines/routing/constants/fines-routing-paths.constant';
 import { FINES_DASHBOARD_ROUTING_PATHS } from '@app/flows/fines/constants/fines-dashboard-routing-paths.constant';
+import { FINES_REPORTS_ROUTING_PATHS } from '../../constants/fines-reports-routing-paths.constant';
 
 describe('finesReportsStateGuard', () => {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -20,9 +21,15 @@ describe('finesReportsStateGuard', () => {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   let mockOpalUserService: any;
 
-  const runGuard = async (reportId: string | null) => {
+  const runGuard = async (reportId: string | null, data: Record<string, unknown> = {}, reportIdFromParent = false) => {
     const route = {
-      paramMap: convertToParamMap(reportId ? { reportId } : {}),
+      data,
+      paramMap: convertToParamMap(!reportIdFromParent && reportId ? { reportId } : {}),
+      parent: reportIdFromParent
+        ? {
+            paramMap: convertToParamMap(reportId ? { reportId } : {}),
+          }
+        : undefined,
     } as ActivatedRouteSnapshot;
     const state = {} as RouterStateSnapshot;
     const result = TestBed.runInInjectionContext(() => finesReportsStateGuard(route, state));
@@ -64,6 +71,43 @@ describe('finesReportsStateGuard', () => {
 
     expect(result).toBe(true);
     expect(mockOpalUserService.getLoggedInUserState).toHaveBeenCalled();
+  });
+
+  it('should allow operational report child routes when the user has the required permission', async () => {
+    mockPermissionsService.getUniquePermissions.mockReturnValue([
+      FINES_PERMISSIONS['operational-report-by-enforcement'],
+    ]);
+
+    const result = await runGuard(
+      FINES_REPORTS_SUMMARY_LIST_ROUTING_PATHS.children.operationalReportsByEnforcement,
+      { requiresCreateReport: true },
+      true,
+    );
+
+    expect(result).toBe(true);
+    expect(mockOpalUserService.getLoggedInUserState).toHaveBeenCalled();
+  });
+
+  it('should redirect non-create reports to the summary list when the route requires report creation', async () => {
+    const expectedUrlTree = new UrlTree();
+    mockRouter.createUrlTree.mockReturnValue(expectedUrlTree);
+
+    const result = await runGuard(
+      FINES_REPORTS_SUMMARY_LIST_ROUTING_PATHS.children.yourReports,
+      { requiresCreateReport: true },
+      true,
+    );
+
+    expect(result).toBe(expectedUrlTree);
+    expect(mockOpalUserService.getLoggedInUserState).not.toHaveBeenCalled();
+    expect(mockRouter.createUrlTree).toHaveBeenCalledWith([
+      '/',
+      FINES_ROUTING_PATHS.root,
+      FINES_DASHBOARD_ROUTING_PATHS.root,
+      FINES_DASHBOARD_ROUTING_PATHS.children.reports,
+      FINES_REPORTS_SUMMARY_LIST_ROUTING_PATHS.children.yourReports,
+      FINES_REPORTS_ROUTING_PATHS.children.summaryList,
+    ]);
   });
 
   it('should redirect to access denied when the user lacks the required permission', async () => {

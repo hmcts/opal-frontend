@@ -7,12 +7,13 @@ import { catchError, map, of } from 'rxjs';
 import { FINES_REPORT_SUMMARY_LIST_REPORT_CONFIGURATION } from '../../../fines-reports-summary-list/constants/fines-reports-summary-list-report-configuration.constant';
 import { FINES_ROUTING_PATHS } from '@app/flows/fines/routing/constants/fines-routing-paths.constant';
 import { FINES_DASHBOARD_ROUTING_PATHS } from '@app/flows/fines/constants/fines-dashboard-routing-paths.constant';
+import { FINES_REPORTS_ROUTING_PATHS } from '../../constants/fines-reports-routing-paths.constant';
 
 export const finesReportsStateGuard: CanActivateFn = (route) => {
   const router = inject(Router);
   const permissionsService = inject(PermissionsService);
   const opalUserService = inject(OpalUserService);
-  const reportId = route.paramMap.get('reportId');
+  const reportId = route.paramMap.get('reportId') ?? route.parent?.paramMap.get('reportId');
 
   const report = FINES_REPORT_SUMMARY_LIST_REPORT_CONFIGURATION.find((config) => config.id === reportId);
 
@@ -26,8 +27,20 @@ export const finesReportsStateGuard: CanActivateFn = (route) => {
   }
 
   const routePermissionIds = report.permissionIds;
+  const requiresCreateReport = route.data['requiresCreateReport'] === true;
 
   if (routePermissionIds.length === 0) {
+    if (requiresCreateReport) {
+      return router.createUrlTree([
+        '/',
+        FINES_ROUTING_PATHS.root,
+        FINES_DASHBOARD_ROUTING_PATHS.root,
+        FINES_DASHBOARD_ROUTING_PATHS.children.reports,
+        report.id,
+        FINES_REPORTS_ROUTING_PATHS.children.summaryList,
+      ]);
+    }
+
     return true;
   }
 
