@@ -11,10 +11,23 @@ import { of, throwError } from 'rxjs';
 import { ACCOUNTS_PERMISSIONS } from '@app/flows/fines/constants/accounts-permissions.constant';
 import { REPORTS_PERMISSIONS } from '@app/flows/fines/constants/reports-permissions.constant';
 import { SEARCH_PERMISSIONS } from '@app/flows/fines/constants/search-permissions.constant';
+import {
+  RELEASE_1A_FEATURE_FLAG,
+  RELEASE_1C_ENFORCEMENT_OPERATIONAL_REPORTING_FEATURE_FLAG,
+  RELEASE_1C_WRITE_OFF_FEATURE_FLAG,
+} from '@app/flows/fines/constants/release-feature-flags.constant';
 
 const resolveFeatureFlagGuardMock = vi.fn();
-const mockFeatureFlags = (flags: Record<string, boolean>) => {
-  resolveFeatureFlagGuardMock.mockImplementation((featureFlag: string) => Promise.resolve(flags[featureFlag] ?? false));
+const DEFAULT_RELEASE_FEATURE_FLAGS = {
+  [RELEASE_1A_FEATURE_FLAG]: true,
+  [RELEASE_1C_WRITE_OFF_FEATURE_FLAG]: true,
+  [RELEASE_1C_ENFORCEMENT_OPERATIONAL_REPORTING_FEATURE_FLAG]: true,
+};
+
+const mockFeatureFlags = (featureFlags: Record<string, boolean>) => {
+  resolveFeatureFlagGuardMock.mockImplementation((featureFlagName: string) =>
+    Promise.resolve(featureFlags[featureFlagName] ?? false),
+  );
 };
 
 const createUserStateWithPermissions = (permissionIds: readonly number[]): IOpalUserState => {
@@ -66,7 +79,7 @@ describe('dashboardLandingGuard', () => {
 
     mockRouter.createUrlTree.mockReturnValue(new UrlTree());
     mockOpalUserService.getLoggedInUserState.mockReturnValue(of(createUserStateWithPermissions([])));
-    mockFeatureFlags({ 'release-1a': true, 'release-1c-write-off': true });
+    mockFeatureFlags(DEFAULT_RELEASE_FEATURE_FLAGS);
 
     TestBed.configureTestingModule({
       providers: [
@@ -132,7 +145,10 @@ describe('dashboardLandingGuard', () => {
 
   it('should route to Finance when release-1a is disabled and the user only has draft accounts permission', async () => {
     const expectedUrlTree = new UrlTree();
-    mockFeatureFlags({ 'release-1a': false, 'release-1c-write-off': true });
+    mockFeatureFlags({
+      ...DEFAULT_RELEASE_FEATURE_FLAGS,
+      [RELEASE_1A_FEATURE_FLAG]: false,
+    });
     mockOpalUserService.getLoggedInUserState.mockReturnValue(
       of(createUserStateWithPermissions([ACCOUNTS_PERMISSIONS[0]])),
     );
@@ -151,7 +167,10 @@ describe('dashboardLandingGuard', () => {
 
   it('should route to Finance when release-1c-write-off is disabled and the user only has consolidation permission', async () => {
     const expectedUrlTree = new UrlTree();
-    mockFeatureFlags({ 'release-1a': true, 'release-1c-write-off': false });
+    mockFeatureFlags({
+      [RELEASE_1A_FEATURE_FLAG]: true,
+      [RELEASE_1C_WRITE_OFF_FEATURE_FLAG]: false,
+    });
     mockOpalUserService.getLoggedInUserState.mockReturnValue(
       of(createUserStateWithPermissions([ACCOUNTS_PERMISSIONS[2]])),
     );
@@ -178,9 +197,13 @@ describe('dashboardLandingGuard', () => {
     const result = await runGuard();
 
     expect(result).toBe(expectedUrlTree);
-    expect(resolveFeatureFlagGuardMock).toHaveBeenCalledWith('release-1a', expect.any(Object), expect.any(Object));
     expect(resolveFeatureFlagGuardMock).toHaveBeenCalledWith(
-      'release-1c-write-off',
+      RELEASE_1A_FEATURE_FLAG,
+      expect.any(Object),
+      expect.any(Object),
+    );
+    expect(resolveFeatureFlagGuardMock).toHaveBeenCalledWith(
+      RELEASE_1C_WRITE_OFF_FEATURE_FLAG,
       expect.any(Object),
       expect.any(Object),
     );
@@ -207,6 +230,51 @@ describe('dashboardLandingGuard', () => {
       FINES_ROUTING_PATHS.root,
       FINES_DASHBOARD_ROUTING_PATHS.root,
       FINES_DASHBOARD_ROUTING_PATHS.children.reports,
+    ]);
+  });
+
+  it('should resolve release-1c enforcement operational reporting before routing report-only users', async () => {
+    const expectedUrlTree = new UrlTree();
+    mockOpalUserService.getLoggedInUserState.mockReturnValue(
+      of(createUserStateWithPermissions([REPORTS_PERMISSIONS[0]])),
+    );
+    mockRouter.createUrlTree.mockReturnValue(expectedUrlTree);
+
+    const result = await runGuard();
+
+    expect(result).toBe(expectedUrlTree);
+    expect(resolveFeatureFlagGuardMock).toHaveBeenCalledWith(
+      RELEASE_1C_ENFORCEMENT_OPERATIONAL_REPORTING_FEATURE_FLAG,
+      expect.any(Object),
+      expect.any(Object),
+    );
+    expect(mockRouter.createUrlTree).toHaveBeenCalledWith([
+      '/',
+      FINES_ROUTING_PATHS.root,
+      FINES_DASHBOARD_ROUTING_PATHS.root,
+      FINES_DASHBOARD_ROUTING_PATHS.children.reports,
+    ]);
+  });
+
+  it('should route to Finance when release-1c enforcement operational reporting is disabled for a report-only user', async () => {
+    const expectedUrlTree = new UrlTree();
+    mockFeatureFlags({
+      ...DEFAULT_RELEASE_FEATURE_FLAGS,
+      [RELEASE_1C_ENFORCEMENT_OPERATIONAL_REPORTING_FEATURE_FLAG]: false,
+    });
+    mockOpalUserService.getLoggedInUserState.mockReturnValue(
+      of(createUserStateWithPermissions([REPORTS_PERMISSIONS[0]])),
+    );
+    mockRouter.createUrlTree.mockReturnValue(expectedUrlTree);
+
+    const result = await runGuard();
+
+    expect(result).toBe(expectedUrlTree);
+    expect(mockRouter.createUrlTree).toHaveBeenCalledWith([
+      '/',
+      FINES_ROUTING_PATHS.root,
+      FINES_DASHBOARD_ROUTING_PATHS.root,
+      FINES_DASHBOARD_ROUTING_PATHS.children.finance,
     ]);
   });
 
