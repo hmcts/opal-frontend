@@ -10,6 +10,7 @@ import { FEATURE_FLAG_SECTION_PERMISSION_EXCLUSIONS } from '../constants/feature
 import {
   RELEASE_1A_FEATURE_FLAG,
   RELEASE_1C_ENFORCEMENT_OPERATIONAL_REPORTING_FEATURE_FLAG,
+  RELEASE_1C_WRITE_OFF_FEATURE_FLAG,
 } from '../constants/release-feature-flags.constant';
 import { type FeatureFlagReleaseName } from '../types/feature-flag-release-name.type';
 import { type FeatureFlagReleaseState } from '../types/feature-flag-release-state.type';
@@ -68,6 +69,7 @@ export const hasAnyPermission = (
  */
 export const getFeatureFlagReleaseState = (featureFlags?: FeatureFlags | null): FeatureFlagReleaseState => ({
   [RELEASE_1A_FEATURE_FLAG]: featureFlags?.[RELEASE_1A_FEATURE_FLAG] === true,
+  [RELEASE_1C_WRITE_OFF_FEATURE_FLAG]: featureFlags?.[RELEASE_1C_WRITE_OFF_FEATURE_FLAG] === true,
   [RELEASE_1C_ENFORCEMENT_OPERATIONAL_REPORTING_FEATURE_FLAG]:
     featureFlags?.[RELEASE_1C_ENFORCEMENT_OPERATIONAL_REPORTING_FEATURE_FLAG] === true,
 });

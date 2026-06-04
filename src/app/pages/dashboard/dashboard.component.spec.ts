@@ -13,6 +13,7 @@ import { GlobalStore } from '@hmcts/opal-frontend-common/stores/global';
 import { createSpyObj } from '@app/testing/create-spy-obj.helper';
 import {
   RELEASE_1A_FEATURE_FLAG,
+  RELEASE_1C_WRITE_OFF_FEATURE_FLAG,
   RELEASE_1C_ENFORCEMENT_OPERATIONAL_REPORTING_FEATURE_FLAG,
 } from '@app/flows/fines/constants/release-feature-flags.constant';
 
@@ -27,6 +28,7 @@ describe('DashboardComponent', () => {
 
   const DEFAULT_RELEASE_FEATURE_FLAGS = {
     [RELEASE_1A_FEATURE_FLAG]: true,
+    [RELEASE_1C_WRITE_OFF_FEATURE_FLAG]: true,
     [RELEASE_1C_ENFORCEMENT_OPERATIONAL_REPORTING_FEATURE_FLAG]: true,
   };
 
@@ -98,12 +100,49 @@ describe('DashboardComponent', () => {
   });
 
   it('should remove draft accounts from the accounts config when release-1a is missing', () => {
-    globalStoreMock.featureFlags.mockReturnValue({
-      [RELEASE_1C_ENFORCEMENT_OPERATIONAL_REPORTING_FEATURE_FLAG]: true,
-    });
+    globalStoreMock.featureFlags.mockReturnValue({});
     setupComponent();
 
     expect(component.resolvedConfig().groups.map((group) => group.id)).not.toContain('draft-accounts');
+    expect(component.resolvedConfig().groups.map((group) => group.id)).not.toContain('account-management');
+  });
+
+  it('should remove account management from the accounts config when release-1c-write-off is disabled', () => {
+    globalStoreMock.featureFlags.mockReturnValue({
+      ...DEFAULT_RELEASE_FEATURE_FLAGS,
+      [RELEASE_1C_WRITE_OFF_FEATURE_FLAG]: false,
+    });
+    setupComponent();
+
+    expect(component.resolvedConfig()).toEqual({
+      ...DASHBOARD_PAGE_CONFIGURATION_MAP.accounts,
+      groups: DASHBOARD_PAGE_CONFIGURATION_MAP.accounts.groups.filter((group) => group.id !== 'account-management'),
+    });
+    expect(component.resolvedConfig().groups.map((group) => group.id)).not.toContain('account-management');
+  });
+
+  it('should remove reports content when release-1c enforcement operational reporting is disabled', () => {
+    globalStoreMock.featureFlags.mockReturnValue({
+      ...DEFAULT_RELEASE_FEATURE_FLAGS,
+      [RELEASE_1C_ENFORCEMENT_OPERATIONAL_REPORTING_FEATURE_FLAG]: false,
+    });
+    setupComponent();
+    dashboardTypeParamMapSubject.next(convertToParamMap({ dashboardType: 'reports' }));
+    fixture.detectChanges();
+
+    expect(component.resolvedConfig()).toEqual({
+      ...DASHBOARD_PAGE_CONFIGURATION_MAP.reports,
+      highlights: [],
+      groups: [],
+    });
+  });
+
+  it('should remove release-flagged account groups from the accounts config when release flags are missing', () => {
+    globalStoreMock.featureFlags.mockReturnValue({});
+    setupComponent();
+
+    expect(component.resolvedConfig().groups.map((group) => group.id)).not.toContain('draft-accounts');
+    expect(component.resolvedConfig().groups.map((group) => group.id)).not.toContain('account-management');
   });
 
   it('should remove reports content when release-1c enforcement operational reporting is disabled', () => {

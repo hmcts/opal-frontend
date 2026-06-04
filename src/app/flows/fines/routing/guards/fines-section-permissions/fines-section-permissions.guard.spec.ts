@@ -13,12 +13,14 @@ import { REPORTS_PERMISSIONS } from '@app/flows/fines/constants/reports-permissi
 import { SEARCH_PERMISSIONS } from '@app/flows/fines/constants/search-permissions.constant';
 import {
   RELEASE_1A_FEATURE_FLAG,
+  RELEASE_1C_WRITE_OFF_FEATURE_FLAG,
   RELEASE_1C_ENFORCEMENT_OPERATIONAL_REPORTING_FEATURE_FLAG,
 } from '@app/flows/fines/constants/release-feature-flags.constant';
 
 const resolveFeatureFlagGuardMock = vi.fn();
 const DEFAULT_RELEASE_FEATURE_FLAGS = {
   [RELEASE_1A_FEATURE_FLAG]: true,
+  [RELEASE_1C_WRITE_OFF_FEATURE_FLAG]: true,
   [RELEASE_1C_ENFORCEMENT_OPERATIONAL_REPORTING_FEATURE_FLAG]: true,
 };
 
@@ -124,8 +126,96 @@ describe('finesSectionPermissionsGuard', () => {
     expect(result).toBe(true);
   });
 
-  it('should redirect Accounts when the user only has draft accounts permission', async () => {
+  it('should redirect Accounts when release-1c-write-off is disabled and the user only has consolidation permission', async () => {
     const expectedUrlTree = new UrlTree();
+    mockFeatureFlags({
+      ...DEFAULT_RELEASE_FEATURE_FLAGS,
+      [RELEASE_1C_WRITE_OFF_FEATURE_FLAG]: false,
+    });
+    mockOpalUserService.getLoggedInUserState.mockReturnValue(
+      of(createUserStateWithPermissions([ACCOUNTS_PERMISSIONS[2]])),
+    );
+    mockRouter.createUrlTree.mockReturnValue(expectedUrlTree);
+
+    const result = await runGuard({ dashboardType: FINES_DASHBOARD_ROUTING_PATHS.children.accounts });
+
+    expect(result).toBe(expectedUrlTree);
+    expect(mockRouter.createUrlTree).toHaveBeenCalledWith([`/${COMMON_PAGES_ROUTING_PATHS.children.accessDenied}`]);
+  });
+
+  it('should allow consolidation section access when release-1c-write-off is enabled and the user has consolidation permission', async () => {
+    mockOpalUserService.getLoggedInUserState.mockReturnValue(
+      of(createUserStateWithPermissions([ACCOUNTS_PERMISSIONS[2]])),
+    );
+
+    const result = await runGuard({ sectionKey: FINES_DASHBOARD_ROUTING_PATHS.children.accounts });
+
+    expect(result).toBe(true);
+    expect(resolveFeatureFlagGuardMock).toHaveBeenCalledWith(
+      RELEASE_1A_FEATURE_FLAG,
+      expect.any(Object),
+      expect.any(Object),
+    );
+    expect(resolveFeatureFlagGuardMock).toHaveBeenCalledWith(
+      RELEASE_1C_WRITE_OFF_FEATURE_FLAG,
+      expect.any(Object),
+      expect.any(Object),
+    );
+  });
+
+  it('should allow Accounts when release-1a is enabled and the user has a draft accounts permission', async () => {
+    mockOpalUserService.getLoggedInUserState.mockReturnValue(
+      of(createUserStateWithPermissions([ACCOUNTS_PERMISSIONS[0]])),
+    );
+
+    const result = await runGuard({ dashboardType: FINES_DASHBOARD_ROUTING_PATHS.children.accounts });
+
+    expect(result).toBe(true);
+  });
+
+  it('should redirect Accounts when release-1c-write-off is disabled and the user only has consolidation permission', async () => {
+    const expectedUrlTree = new UrlTree();
+    mockFeatureFlags({
+      ...DEFAULT_RELEASE_FEATURE_FLAGS,
+      [RELEASE_1C_WRITE_OFF_FEATURE_FLAG]: false,
+    });
+    mockOpalUserService.getLoggedInUserState.mockReturnValue(
+      of(createUserStateWithPermissions([ACCOUNTS_PERMISSIONS[2]])),
+    );
+    mockRouter.createUrlTree.mockReturnValue(expectedUrlTree);
+
+    const result = await runGuard({ dashboardType: FINES_DASHBOARD_ROUTING_PATHS.children.accounts });
+
+    expect(result).toBe(expectedUrlTree);
+    expect(mockRouter.createUrlTree).toHaveBeenCalledWith([`/${COMMON_PAGES_ROUTING_PATHS.children.accessDenied}`]);
+  });
+
+  it('should allow consolidation section access when release-1c-write-off is enabled and the user has consolidation permission', async () => {
+    mockOpalUserService.getLoggedInUserState.mockReturnValue(
+      of(createUserStateWithPermissions([ACCOUNTS_PERMISSIONS[2]])),
+    );
+
+    const result = await runGuard({ sectionKey: FINES_DASHBOARD_ROUTING_PATHS.children.accounts });
+
+    expect(result).toBe(true);
+    expect(resolveFeatureFlagGuardMock).toHaveBeenCalledWith(
+      RELEASE_1A_FEATURE_FLAG,
+      expect.any(Object),
+      expect.any(Object),
+    );
+    expect(resolveFeatureFlagGuardMock).toHaveBeenCalledWith(
+      RELEASE_1C_WRITE_OFF_FEATURE_FLAG,
+      expect.any(Object),
+      expect.any(Object),
+    );
+  });
+
+  it('should redirect Accounts when the user only has draft accounts permission and release-1a is disabled', async () => {
+    const expectedUrlTree = new UrlTree();
+    mockFeatureFlags({
+      ...DEFAULT_RELEASE_FEATURE_FLAGS,
+      [RELEASE_1A_FEATURE_FLAG]: false,
+    });
     mockOpalUserService.getLoggedInUserState.mockReturnValue(
       of(createUserStateWithPermissions([ACCOUNTS_PERMISSIONS[0]])),
     );
@@ -135,10 +225,19 @@ describe('finesSectionPermissionsGuard', () => {
 
     expect(result).toBe(expectedUrlTree);
     expect(mockRouter.createUrlTree).toHaveBeenCalledWith([`/${COMMON_PAGES_ROUTING_PATHS.children.accessDenied}`]);
-    expect(resolveFeatureFlagGuardMock).not.toHaveBeenCalled();
+    expect(resolveFeatureFlagGuardMock).toHaveBeenCalledWith(
+      RELEASE_1A_FEATURE_FLAG,
+      expect.any(Object),
+      expect.any(Object),
+    );
+    expect(resolveFeatureFlagGuardMock).toHaveBeenCalledWith(
+      RELEASE_1C_WRITE_OFF_FEATURE_FLAG,
+      expect.any(Object),
+      expect.any(Object),
+    );
   });
 
-  it('should allow Accounts when the user has consolidation permission without resolving release-1a', async () => {
+  it('should resolve the Accounts release feature flags before allowing draft accounts permission', async () => {
     mockOpalUserService.getLoggedInUserState.mockReturnValue(
       of(createUserStateWithPermissions([ACCOUNTS_PERMISSIONS[2]])),
     );
@@ -146,7 +245,36 @@ describe('finesSectionPermissionsGuard', () => {
     const result = await runGuard({ dashboardType: FINES_DASHBOARD_ROUTING_PATHS.children.accounts });
 
     expect(result).toBe(true);
-    expect(resolveFeatureFlagGuardMock).not.toHaveBeenCalled();
+    expect(resolveFeatureFlagGuardMock).toHaveBeenCalledWith(
+      RELEASE_1A_FEATURE_FLAG,
+      expect.any(Object),
+      expect.any(Object),
+    );
+    expect(resolveFeatureFlagGuardMock).toHaveBeenCalledWith(
+      RELEASE_1C_WRITE_OFF_FEATURE_FLAG,
+      expect.any(Object),
+      expect.any(Object),
+    );
+  });
+
+  it('should resolve the Accounts release feature flags before allowing consolidation permission', async () => {
+    mockOpalUserService.getLoggedInUserState.mockReturnValue(
+      of(createUserStateWithPermissions([ACCOUNTS_PERMISSIONS[2]])),
+    );
+
+    const result = await runGuard({ dashboardType: FINES_DASHBOARD_ROUTING_PATHS.children.accounts });
+
+    expect(result).toBe(true);
+    expect(resolveFeatureFlagGuardMock).toHaveBeenCalledWith(
+      RELEASE_1A_FEATURE_FLAG,
+      expect.any(Object),
+      expect.any(Object),
+    );
+    expect(resolveFeatureFlagGuardMock).toHaveBeenCalledWith(
+      RELEASE_1C_WRITE_OFF_FEATURE_FLAG,
+      expect.any(Object),
+      expect.any(Object),
+    );
   });
 
   it('should redirect Accounts to access denied when the user lacks all accounts permissions', async () => {
@@ -156,6 +284,21 @@ describe('finesSectionPermissionsGuard', () => {
     const result = await runGuard({ dashboardType: FINES_DASHBOARD_ROUTING_PATHS.children.accounts });
 
     expect(result).toBe(expectedUrlTree);
+    expect(mockRouter.createUrlTree).toHaveBeenCalledWith([`/${COMMON_PAGES_ROUTING_PATHS.children.accessDenied}`]);
+  });
+
+  it('should redirect Accounts without looking up user permissions when disabled release flags exclude every account permission', async () => {
+    const expectedUrlTree = new UrlTree();
+    mockFeatureFlags({
+      [RELEASE_1A_FEATURE_FLAG]: false,
+      [RELEASE_1C_WRITE_OFF_FEATURE_FLAG]: false,
+    });
+    mockRouter.createUrlTree.mockReturnValue(expectedUrlTree);
+
+    const result = await runGuard({ dashboardType: FINES_DASHBOARD_ROUTING_PATHS.children.accounts });
+
+    expect(result).toBe(expectedUrlTree);
+    expect(mockOpalUserService.getLoggedInUserState).not.toHaveBeenCalled();
     expect(mockRouter.createUrlTree).toHaveBeenCalledWith([`/${COMMON_PAGES_ROUTING_PATHS.children.accessDenied}`]);
   });
 

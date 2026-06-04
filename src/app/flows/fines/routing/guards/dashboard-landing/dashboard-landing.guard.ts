@@ -10,6 +10,7 @@ import { getDashboardLandingType } from '@app/flows/fines/utils/fines-section-pe
 import {
   RELEASE_1A_FEATURE_FLAG,
   RELEASE_1C_ENFORCEMENT_OPERATIONAL_REPORTING_FEATURE_FLAG,
+  RELEASE_1C_WRITE_OFF_FEATURE_FLAG,
 } from '@app/flows/fines/constants/release-feature-flags.constant';
 import { type FeatureFlagReleaseState } from '@app/flows/fines/types/feature-flag-release-state.type';
 
@@ -23,13 +24,16 @@ const resolveDashboardFeatureFlagReleaseState = async (
   route: ActivatedRouteSnapshot,
   state: RouterStateSnapshot,
 ): Promise<FeatureFlagReleaseState> => {
-  const [release1aEnabled, release1cEnforcementOperationalReportingEnabled] = await Promise.all([
-    resolveFeatureFlagGuard(RELEASE_1A_FEATURE_FLAG, route, state),
-    resolveFeatureFlagGuard(RELEASE_1C_ENFORCEMENT_OPERATIONAL_REPORTING_FEATURE_FLAG, route, state),
-  ]);
+  const [release1aEnabled, release1cWriteOffEnabled, release1cEnforcementOperationalReportingEnabled] =
+    await Promise.all([
+      resolveFeatureFlagGuard(RELEASE_1A_FEATURE_FLAG, route, state),
+      resolveFeatureFlagGuard(RELEASE_1C_WRITE_OFF_FEATURE_FLAG, route, state),
+      resolveFeatureFlagGuard(RELEASE_1C_ENFORCEMENT_OPERATIONAL_REPORTING_FEATURE_FLAG, route, state),
+    ]);
 
   return {
     [RELEASE_1A_FEATURE_FLAG]: release1aEnabled,
+    [RELEASE_1C_WRITE_OFF_FEATURE_FLAG]: release1cWriteOffEnabled,
     [RELEASE_1C_ENFORCEMENT_OPERATIONAL_REPORTING_FEATURE_FLAG]: release1cEnforcementOperationalReportingEnabled,
   };
 };
