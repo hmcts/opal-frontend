@@ -1,23 +1,42 @@
 import { describe, expect, it, vi } from 'vitest';
 import { FINES_DASHBOARD_ROUTING_PATHS } from '../constants/fines-dashboard-routing-paths.constant';
 import { FINES_ROUTING_PATHS } from './constants/fines-routing-paths.constant';
-import { finesRouting, release1aFeatureFlagGuard, release1bFeatureFlagGuard } from './fines.routes';
+import {
+  finesRouting,
+  release1aFeatureFlagGuard,
+  release1bFeatureFlagGuard,
+  release1cWriteOffFeatureFlagGuard,
+} from './fines.routes';
 import { finesSectionPermissionsGuard } from './guards/fines-section-permissions/fines-section-permissions.guard';
 import { PRIMARY_NAV_HIDDEN_ROUTE_DATA } from '@app/constants/route-data.constant';
-import { RELEASE_1A_FEATURE_FLAG, RELEASE_1B_FEATURE_FLAG } from '../constants/release-feature-flags.constant';
+import {
+  RELEASE_1A_FEATURE_FLAG,
+  RELEASE_1B_FEATURE_FLAG,
+  RELEASE_1C_WRITE_OFF_FEATURE_FLAG,
+} from '../constants/release-feature-flags.constant';
 
-const { featureFlagRedirectGuardMock, release1aFeatureFlagGuardMock, release1bFeatureFlagGuardMock } = vi.hoisted(
-  () => ({
-    featureFlagRedirectGuardMock: vi.fn(),
-    release1aFeatureFlagGuardMock: vi.fn(),
-    release1bFeatureFlagGuardMock: vi.fn(),
-  }),
-);
+const {
+  featureFlagRedirectGuardMock,
+  release1aFeatureFlagGuardMock,
+  release1bFeatureFlagGuardMock,
+  release1cWriteOffFeatureFlagGuardMock,
+} = vi.hoisted(() => ({
+  featureFlagRedirectGuardMock: vi.fn(),
+  release1aFeatureFlagGuardMock: vi.fn(),
+  release1bFeatureFlagGuardMock: vi.fn(),
+  release1cWriteOffFeatureFlagGuardMock: vi.fn(),
+}));
 
 vi.mock('@hmcts/opal-frontend-common/guards/feature-flag', () => ({
-  featureFlagRedirectGuard: featureFlagRedirectGuardMock.mockImplementation((featureFlagName: string) =>
-    featureFlagName === 'release-1b' ? release1bFeatureFlagGuardMock : release1aFeatureFlagGuardMock,
-  ),
+  featureFlagRedirectGuard: featureFlagRedirectGuardMock.mockImplementation((featureFlagName: string) => {
+    if (featureFlagName === 'release-1b') {
+      return release1bFeatureFlagGuardMock;
+    }
+
+    return featureFlagName === 'release-1c-write-off'
+      ? release1cWriteOffFeatureFlagGuardMock
+      : release1aFeatureFlagGuardMock;
+  }),
 }));
 
 describe('fines routes', () => {
@@ -32,6 +51,11 @@ describe('fines routes', () => {
   it('should create the release-1b feature flag guard from the common redirect guard', () => {
     expect(featureFlagRedirectGuardMock).toHaveBeenCalledWith(RELEASE_1B_FEATURE_FLAG);
     expect(release1bFeatureFlagGuard).toBe(release1bFeatureFlagGuardMock);
+  });
+
+  it('should create the release-1c-write-off feature flag guard from the common redirect guard', () => {
+    expect(featureFlagRedirectGuardMock).toHaveBeenCalledWith(RELEASE_1C_WRITE_OFF_FEATURE_FLAG);
+    expect(release1cWriteOffFeatureFlagGuard).toBe(release1cWriteOffFeatureFlagGuardMock);
   });
 
   it('should guard the draft root as an Accounts section entry route', () => {
@@ -62,6 +86,8 @@ describe('fines routes', () => {
   it('should guard the consolidation root as an Accounts section entry route', () => {
     const consolidationRoute = childRoutes.find((route) => route.path === FINES_ROUTING_PATHS.children.con.root);
 
+    expect(consolidationRoute?.canActivate).toContain(release1cWriteOffFeatureFlagGuard);
+    expect(consolidationRoute?.canActivateChild).toContain(release1cWriteOffFeatureFlagGuard);
     expect(consolidationRoute?.canActivate).toContain(finesSectionPermissionsGuard);
     expect(consolidationRoute?.data).toEqual({
       sectionKey: FINES_DASHBOARD_ROUTING_PATHS.children.accounts,

@@ -72,10 +72,11 @@ describe('fines-section-permissions.utils', () => {
   });
 
   describe('canAccessFinesPrimaryNavigationSection', () => {
-    const release1aEnabled = { 'release-1a': true };
-    const release1aDisabled = { 'release-1a': false };
-    const release1bEnabled = { 'release-1b': true };
-    const release1bDisabled = { 'release-1b': false };
+    const allReleaseFlagsEnabled = { 'release-1a': true, 'release-1b': true, 'release-1c-write-off': true };
+    const release1aDisabled = { 'release-1a': false, 'release-1b': true, 'release-1c-write-off': true };
+    const release1bEnabled = allReleaseFlagsEnabled;
+    const release1bDisabled = { 'release-1a': true, 'release-1b': false, 'release-1c-write-off': true };
+    const release1cWriteOffDisabled = { 'release-1a': true, 'release-1b': true, 'release-1c-write-off': false };
 
     it('should allow unrestricted dashboard sections', () => {
       expect(canAccessFinesPrimaryNavigationSection('finance', null)).toBe(true);
@@ -112,7 +113,7 @@ describe('fines-section-permissions.utils', () => {
         canAccessFinesPrimaryNavigationSection(
           'accounts',
           createUserStateWithPermissions([ACCOUNTS_PERMISSIONS[0]]),
-          release1aEnabled,
+          allReleaseFlagsEnabled,
         ),
       ).toBe(true);
     });
@@ -136,6 +137,16 @@ describe('fines-section-permissions.utils', () => {
         ),
       ).toBe(true);
     });
+
+    it('should deny Accounts with consolidation-only permissions when release-1c-write-off is disabled', () => {
+      expect(
+        canAccessFinesPrimaryNavigationSection(
+          'accounts',
+          createUserStateWithPermissions([ACCOUNTS_PERMISSIONS[2]]),
+          release1cWriteOffDisabled,
+        ),
+      ).toBe(false);
+    });
   });
 
   describe('getAccessiblePrimaryNavigationItems', () => {
@@ -156,7 +167,23 @@ describe('fines-section-permissions.utils', () => {
     it('should remove Accounts for draft-only users when release-1a is disabled', () => {
       const userState = createUserStateWithPermissions([ACCOUNTS_PERMISSIONS[0]]);
 
-      expect(getAccessiblePrimaryNavigationItems(navigationItems, userState, { 'release-1a': false })).toEqual([]);
+      expect(
+        getAccessiblePrimaryNavigationItems(navigationItems, userState, {
+          'release-1a': false,
+          'release-1c-write-off': true,
+        }),
+      ).toEqual([]);
+    });
+
+    it('should remove Accounts for consolidation-only users when release-1c-write-off is disabled', () => {
+      const userState = createUserStateWithPermissions([ACCOUNTS_PERMISSIONS[2]]);
+
+      expect(
+        getAccessiblePrimaryNavigationItems(navigationItems, userState, {
+          'release-1a': true,
+          'release-1c-write-off': false,
+        }),
+      ).toEqual([]);
     });
   });
 
@@ -188,6 +215,21 @@ describe('fines-section-permissions.utils', () => {
       expect(
         getDashboardLandingType(navigationItemsWithFinance, createUserStateWithPermissions([ACCOUNTS_PERMISSIONS[0]]), {
           'release-1a': false,
+          'release-1c-write-off': true,
+        }),
+      ).toBe('finance');
+    });
+
+    it('should skip Accounts landing for consolidation-only users when release-1c-write-off is disabled', () => {
+      const navigationItemsWithFinance: readonly INavigationBarConfiguration[] = [
+        { key: 'accounts', value: 'Accounts' },
+        { key: 'finance', value: 'Finance' },
+      ];
+
+      expect(
+        getDashboardLandingType(navigationItemsWithFinance, createUserStateWithPermissions([ACCOUNTS_PERMISSIONS[2]]), {
+          'release-1a': true,
+          'release-1c-write-off': false,
         }),
       ).toBe('finance');
     });
@@ -206,22 +248,35 @@ describe('fines-section-permissions.utils', () => {
 
   describe('getFeatureFlagReleaseState', () => {
     it('should map raw feature flags into a release feature flag state', () => {
-      expect(getFeatureFlagReleaseState({ 'release-1a': true, 'release-1b': true })).toEqual({
+      expect(
+        getFeatureFlagReleaseState({ 'release-1a': true, 'release-1b': true, 'release-1c-write-off': true }),
+      ).toEqual({
         'release-1a': true,
         'release-1b': true,
+        'release-1c-write-off': true,
       });
-      expect(getFeatureFlagReleaseState({ 'release-1a': false, 'release-1b': false })).toEqual({
+      expect(
+        getFeatureFlagReleaseState({ 'release-1a': false, 'release-1b': false, 'release-1c-write-off': false }),
+      ).toEqual({
         'release-1a': false,
         'release-1b': false,
+        'release-1c-write-off': false,
       });
-      expect(getFeatureFlagReleaseState({})).toEqual({ 'release-1a': false, 'release-1b': false });
+      expect(getFeatureFlagReleaseState({})).toEqual({
+        'release-1a': false,
+        'release-1b': false,
+        'release-1c-write-off': false,
+      });
     });
   });
 
   describe('filterDashboardConfigByFeatureFlags', () => {
     it('should keep feature flag dashboard groups when the matching release is enabled', () => {
       expect(
-        filterDashboardConfigByFeatureFlags(DASHBOARD_PAGE_CONFIGURATION_MAP.accounts, { 'release-1a': true }),
+        filterDashboardConfigByFeatureFlags(DASHBOARD_PAGE_CONFIGURATION_MAP.accounts, {
+          'release-1a': true,
+          'release-1c-write-off': true,
+        }),
       ).toEqual(DASHBOARD_PAGE_CONFIGURATION_MAP.accounts);
     });
 
@@ -229,8 +284,18 @@ describe('fines-section-permissions.utils', () => {
       expect(
         filterDashboardConfigByFeatureFlags(DASHBOARD_PAGE_CONFIGURATION_MAP.accounts, {
           'release-1a': false,
+          'release-1c-write-off': true,
         }).groups.map((group) => group.id),
       ).not.toContain('draft-accounts');
+    });
+
+    it('should remove account management dashboard groups when release-1c-write-off is disabled', () => {
+      expect(
+        filterDashboardConfigByFeatureFlags(DASHBOARD_PAGE_CONFIGURATION_MAP.accounts, {
+          'release-1a': true,
+          'release-1c-write-off': false,
+        }).groups.map((group) => group.id),
+      ).not.toContain('account-management');
     });
   });
 });
