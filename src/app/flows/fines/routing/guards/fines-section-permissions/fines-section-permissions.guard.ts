@@ -7,11 +7,11 @@ import {
 } from '@app/flows/fines/utils/fines-section-permissions.utils';
 import { FEATURE_FLAG_SECTION_PERMISSION_EXCLUSIONS } from '@app/flows/fines/constants/feature-flag-section-permission-exclusions.constant';
 import { type FeatureFlagReleaseName } from '@app/flows/fines/types/feature-flag-release-name.type';
-import { type FeatureFlagReleaseState } from '@app/flows/fines/types/feature-flag-release-state.type';
 import { isDashboardPageType } from '@app/pages/dashboard/constants/dashboard-config.constant';
 import { DashboardPageType } from '@app/pages/dashboard/types/dashboard.type';
 import { PAGES_ROUTING_PATHS as COMMON_PAGES_ROUTING_PATHS } from '@hmcts/opal-frontend-common/pages/routing/constants';
 import { OpalUserService } from '@hmcts/opal-frontend-common/services/opal-user-service';
+import { type FeatureFlagReleaseState } from '@app/flows/fines/types/feature-flag-release-state.type';
 import { firstValueFrom } from 'rxjs';
 import { resolveFeatureFlagReleaseState } from '../helpers/resolve-feature-flag-release-state.helper';
 
@@ -49,9 +49,9 @@ export const finesSectionPermissionsGuard: CanActivateFn = async (
   const getAccessDeniedUrlTree = () => router.createUrlTree([`/${COMMON_PAGES_ROUTING_PATHS.children.accessDenied}`]);
 
   const checkSectionPermissions = async (
-    featureFlagReleaseState: FeatureFlagReleaseState,
+    currentFeatureFlagReleaseState: FeatureFlagReleaseState,
   ): Promise<boolean | UrlTree> => {
-    const requiredPermissionIds = getRequiredPermissionIdsForSection(sectionKey, featureFlagReleaseState);
+    const requiredPermissionIds = getRequiredPermissionIdsForSection(sectionKey, currentFeatureFlagReleaseState);
 
     if (!requiredPermissionIds) {
       return true;

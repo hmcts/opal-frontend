@@ -11,10 +11,20 @@ import { USER_STATE_MOCK_NO_PERMISSION } from '../CommonIntercepts/CommonUserSta
 import { PrimaryNavigationLocators as L } from '../../shared/selectors/primary-navigation.locators';
 import { FINES_PERMISSIONS } from 'src/app/constants/fines-permissions.constant';
 import { AppComponent } from 'src/app/app.component';
+import {
+  RELEASE_1A_FEATURE_FLAG,
+  RELEASE_1B_FEATURE_FLAG,
+  RELEASE_1C_ENFORCEMENT_OPERATIONAL_REPORTING_FEATURE_FLAG,
+} from 'src/app/flows/fines/constants/release-feature-flags.constant';
 
 const NAVIGATION_JIRA_LABEL = '@JIRA-LABEL:primary-nav-and-dashboards';
 const NAVIGATION_STORY_TAG = '@JIRA-STORY:PO-2613';
 const NAVIGATION_EPIC_TAG = '@JIRA-EPIC:PO-2627';
+const DEFAULT_RELEASE_FEATURE_FLAGS = {
+  [RELEASE_1A_FEATURE_FLAG]: true,
+  [RELEASE_1B_FEATURE_FLAG]: true,
+  [RELEASE_1C_ENFORCEMENT_OPERATIONAL_REPORTING_FEATURE_FLAG]: true,
+};
 
 const withReportPermission = (userState: IOpalUserState): IOpalUserState => {
   const nextUserState = structuredClone(userState);
@@ -31,7 +41,10 @@ describe(
   'Primary navigation report access',
   { tags: [NAVIGATION_STORY_TAG, NAVIGATION_EPIC_TAG, NAVIGATION_JIRA_LABEL] },
   () => {
-    const setupComponent = (userState: IOpalUserState) =>
+    const setupComponent = (
+      userState: IOpalUserState,
+      featureFlags: Record<string, boolean> = DEFAULT_RELEASE_FEATURE_FLAGS,
+    ) =>
       mount(AppComponent, {
         providers: [
           provideHttpClient(),
@@ -42,7 +55,7 @@ describe(
               const store = new GlobalStore();
               store.setAuthenticated(true);
               store.setUserState(userState);
-              store.setFeatureFlags({ 'release-1a': true, 'release-1b': true });
+              store.setFeatureFlags({ ...DEFAULT_RELEASE_FEATURE_FLAGS, ...featureFlags });
               return store;
             },
           },
@@ -101,6 +114,19 @@ describe(
 
             expect(labels).to.deep.equal(L.expectedItemsWithReports);
           });
+      },
+    );
+
+    it(
+      'hides Reports from the primary navigation when release-1c enforcement operational reporting is disabled',
+      { tags: ['@JIRA-TEST-KEY:PO-3758'] },
+      () => {
+        setupComponent(withReportPermission(USER_STATE_MOCK_NO_PERMISSION), {
+          [RELEASE_1C_ENFORCEMENT_OPERATIONAL_REPORTING_FEATURE_FLAG]: false,
+        });
+
+        cy.get(L.container).should('be.visible');
+        cy.get(L.itemByText(L.labels.reports)).should('not.exist');
       },
     );
   },

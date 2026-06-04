@@ -82,11 +82,18 @@ export class PrimaryNavigationActions {
    */
   public assertMenuItemsInOrder(): void {
     log('assert', 'Checking primary navigation item order');
-    cy.get(L.items, this.common.getTimeoutOptions())
-      .should('have.length', PRIMARY_NAV_ITEMS.length)
-      .then(($items) => {
-        const labels = [...$items].map((item) => item.textContent?.trim() ?? '');
-        expect(labels).to.deep.equal(PRIMARY_NAV_ITEMS.map((item) => item.label));
+    cy.get('body', this.common.getTimeoutOptions())
+      .find(L.itemByText(L.labels.reports))
+      .then(($reportsItem) => {
+        const expectedItems = $reportsItem.length ? L.expectedItemsWithReports : L.expectedItemsWithoutReports;
+
+        cy.get(L.items, this.common.getTimeoutOptions())
+          .should('have.length', expectedItems.length)
+          .then(($items) => {
+            const labels = [...$items].map((item) => item.textContent?.trim() ?? '');
+
+            expect(labels).to.deep.equal(expectedItems);
+          });
       });
   }
 
