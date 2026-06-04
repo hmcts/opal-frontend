@@ -52,7 +52,7 @@ Feature: View Defendant Account Summary - End-to-end journeys
       | Document language      | Welsh and English |
       | Court hearing language | Welsh and English |
 
-  @R1B @JIRA-STORY:PO-1917 @JIRA-EPIC:PO-2234 @JIRA-TEST-KEY:PO-5570
+  @R1B @JIRA-STORY:PO-1917 @JIRA-STORY:PO-6361 @JIRA-EPIC:PO-2234 @JIRA-TEST-KEY:PO-5570
   Scenario: Search for a minor creditor account and view the default account summary
     Given I am logged in with email "opal-test@dev.platform.hmcts.net"
     And a published account exists with an individual minor creditor:
@@ -62,6 +62,7 @@ Feature: View Defendant Account Summary - End-to-end journeys
       | last name                 | SummaryMinor{uniq}   |
       | address line 1            | 1 High Street        |
       | postcode                  | MC1 1AA              |
+    And the minor creditor header summary API returns awarded value "-200"
     And I am on the Account Search page - Individuals form displayed by default
     When I view the Minor creditors search form
     And I search using the following inputs:
@@ -76,7 +77,10 @@ Feature: View Defendant Account Summary - End-to-end journeys
       | Address line 1 | 1 High Street            |
     When I open the latest matching result from the search results
     Then I should see the account header contains "Mrs Mina SUMMARYMINOR{uniqUpper}"
+    And the intercepted minor creditor header summary awarded value is "-200"
     And the At a glance tab should be selected by default
+    And I should see the following minor creditor summary metric values:
+      | Awarded | £200.00 |
     And I should see the following minor creditor values on the At a glance tab:
       | Name         | Mrs Mina SUMMARYMINOR{uniqUpper} |
       | Address      | 1 High Street                    |
