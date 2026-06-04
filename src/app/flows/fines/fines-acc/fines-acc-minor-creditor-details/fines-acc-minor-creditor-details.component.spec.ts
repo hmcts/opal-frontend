@@ -111,6 +111,35 @@ describe('FinesAccMinorCreditorDetailsComponent', () => {
     expect(component.activeTab).toBe('at-a-glance');
   });
 
+  it('should display awarded amount as positive when heading data returns a negative value', () => {
+    const headingDataWithNegativeAwarded = {
+      ...structuredClone(FINES_ACC_MINOR_CREDITOR_DETAILS_HEADER_MOCK),
+      creditor: {
+        ...FINES_ACC_MINOR_CREDITOR_DETAILS_HEADER_MOCK.creditor,
+        has_associated_defendant: true,
+      },
+      financials: {
+        ...FINES_ACC_MINOR_CREDITOR_DETAILS_HEADER_MOCK.financials,
+        awarded: -123.45,
+      },
+    };
+
+    fixture.destroy();
+    activatedRouteStub.snapshot!.data = {
+      minorCreditorAccountHeadingData: headingDataWithNegativeAwarded,
+    };
+    fixture = TestBed.createComponent(FinesAccMinorCreditorDetailsComponent);
+    component = fixture.componentInstance;
+    fixture.detectChanges();
+
+    const compiled = fixture.nativeElement as HTMLElement;
+    const textContent = compiled.textContent ?? '';
+
+    expect(textContent).toContain('Awarded:');
+    expect(textContent).toContain('\u00a3123.45');
+    expect(textContent).not.toContain('-\u00a3123.45');
+  });
+
   it('should handle tab switch', () => {
     component.handleTabSwitch('details');
     expect(component.activeTab).toBe('details');
