@@ -68,6 +68,11 @@ describe('FinesAccEnfActionAddFormComponent', () => {
     const element = fixture.nativeElement as HTMLElement;
 
     expect(element.querySelector('#fines-acc-enf-action-add_payment_terms')).toBeNull();
+    expect(
+      element
+        .querySelector('#fines-acc-enf-action-add_add_payment_terms .govuk-radios')
+        ?.classList.contains('govuk-radios--inline'),
+    ).toBe(true);
 
     const yesRadio = element.querySelector<HTMLInputElement>('#fines-acc-enf-action-add_add_payment_terms-yes')!;
     yesRadio.click();
@@ -77,6 +82,11 @@ describe('FinesAccEnfActionAddFormComponent', () => {
 
     expect(component.showPaymentTermsFields).toBe(true);
     expect(element.textContent).toContain('Select payment terms');
+    expect(
+      element
+        .querySelector('#fines-acc-enf-action-add-payment-terms-section')
+        ?.classList.contains('fines-acc-enf-action-add-form__payment-terms-section'),
+    ).toBe(true);
 
     const noRadio = element.querySelector('#fines-acc-enf-action-add_add_payment_terms-no')!;
     const paymentTermsFieldset = element.querySelector('#fines-acc-enf-action-add_payment_terms')!;

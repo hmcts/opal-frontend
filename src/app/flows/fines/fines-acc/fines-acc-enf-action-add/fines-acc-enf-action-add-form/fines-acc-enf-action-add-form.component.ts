@@ -83,6 +83,7 @@ const SINGLE_ASCII_CHARACTERS_PATTERN_VALIDATOR = patternValidator(SINGLE_ASCII_
     FinesMacDefaultDaysComponent,
   ],
   templateUrl: './fines-acc-enf-action-add-form.component.html',
+  styleUrl: './fines-acc-enf-action-add-form.component.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
   standalone: true,
 })
