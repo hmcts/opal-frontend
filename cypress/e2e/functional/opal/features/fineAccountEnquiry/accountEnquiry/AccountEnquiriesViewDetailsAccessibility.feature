@@ -59,25 +59,35 @@ Feature: Account Enquiries - View Account Details Accessibility
     Then I should see the convert to individual confirmation screen for company "Accdetail comp{uniq}"
     And I check the page for accessibility
 
-  @JIRA-STORY:PO-1984 @JIRA-EPIC:PO-1285
-  Scenario: Amend minor creditor validation summary page accessibility
-    Given a published account exists with an individual minor creditor:
-      | prosecutor case reference | PCRMINA11Y{uniqUpper} |
-      | title                     | Mr                    |
-      | first name                | Access                |
-      | last name                 | Minor{uniq}           |
-      | address line 1            | 1 Test Street         |
-      | postcode                  | AB1 2CD               |
-    And I am on the Account Search page - Individuals form displayed by default
-    When I view the Minor creditors search form
-    And I search using the following inputs:
-      | minor creditor type  | Individual    |
-      | individual last name | Minor{uniq}   |
-      | first names          | Access        |
-      | address line 1       | 1 Test Street |
-      | postcode             | AB1 2CD       |
-    Then I see the Search results page
-    When I open the latest matching result from the search results
-    And I go to the Creditor tab
-    When I start changing the minor creditor details
-    Then I check the page for accessibility
+  Rule: Minor creditor amend accessibility
+    Background:
+      Given a published account exists with an individual minor creditor:
+        | prosecutor case reference | PCRMINA11Y{uniqUpper} |
+        | title                     | Mr                    |
+        | first name                | Access                |
+        | last name                 | Minor{uniq}           |
+        | address line 1            | 1 Test Street         |
+        | postcode                  | AB1 2CD               |
+      And I am on the Account Search page - Individuals form displayed by default
+      When I view the Minor creditors search form
+      And I search using the following inputs:
+        | minor creditor type  | Individual    |
+        | individual last name | Minor{uniq}   |
+        | first names          | Access        |
+        | address line 1       | 1 Test Street |
+        | postcode             | AB1 2CD       |
+      Then I see the Search results page
+      When I open the latest matching result from the search results
+      And I go to the Creditor tab
+
+    @JIRA-STORY:PO-1984 @JIRA-EPIC:PO-1285
+    Scenario: Amend minor creditor details form is accessible
+      When I start changing the minor creditor details
+      Then I check the page for accessibility
+
+    @JIRA-STORY:PO-1984 @JIRA-EPIC:PO-1285
+    Scenario: Amend minor creditor validation summary state is accessible
+      When I attempt to amend the minor creditor first name to "" and save
+      Then I should remain on the amend minor creditor details page
+      And I should see the minor creditor amend error summary contains "Enter minor creditor’s first name"
+      And I check the page for accessibility
