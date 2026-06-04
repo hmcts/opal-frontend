@@ -117,6 +117,35 @@ When('I navigate directly to the last created published account details', () => 
 });
 
 /**
+ * @step Intercepts the minor creditor header summary API and forces the awarded value negative.
+ */
+When('the minor creditor header summary API returns awarded value {string}', (awardedValue: string) => {
+  const normalizedAwardedValue = awardedValue.trim();
+  const numericAwardedValue = Number(normalizedAwardedValue);
+
+  if (!Number.isFinite(numericAwardedValue)) {
+    throw new Error(`Expected a numeric awarded value but received "${awardedValue}"`);
+  }
+
+  log('intercept', 'Overriding minor creditor header summary awarded value', {
+    awardedValue: numericAwardedValue,
+  });
+
+  cy.intercept('GET', '**/minor-creditor-accounts/*/header-summary', (req) => {
+    req.continue((res) => {
+      const body = res.body as { financials?: { awarded?: number } };
+
+      if (!body?.financials) {
+        throw new Error('Expected minor creditor header summary response to include financials');
+      }
+
+      body.financials.awarded = numericAwardedValue;
+      res.send({ body });
+    });
+  }).as('minorCreditorHeaderSummaryOverride');
+});
+
+/**
  * @step Verifies that any page/account/summary header contains the given string.
  *
  * @remarks
@@ -132,6 +161,26 @@ Then(/^I should see the (?:page|account(?: summary)?) header contains "([^"]+)"$
   const expectedWithUniq = applyUniqPlaceholder(expected);
   log('assert', 'Asserting header contains', { expected: expectedWithUniq });
   atAGlanceDetails().assertHeaderContains(expectedWithUniq);
+});
+
+/**
+ * @step Asserts the intercepted minor creditor header summary response awarded value.
+ */
+Then('the intercepted minor creditor header summary awarded value is {string}', (expectedAwardedValue: string) => {
+  const normalizedExpectedAwardedValue = expectedAwardedValue.trim();
+  const numericExpectedAwardedValue = Number(normalizedExpectedAwardedValue);
+
+  if (!Number.isFinite(numericExpectedAwardedValue)) {
+    throw new Error(`Expected a numeric awarded value but received "${expectedAwardedValue}"`);
+  }
+
+  log('assert', 'Asserting intercepted minor creditor header summary awarded value', {
+    awardedValue: numericExpectedAwardedValue,
+  });
+
+  cy.wait('@minorCreditorHeaderSummaryOverride')
+    .its('response.body.financials.awarded')
+    .should('eq', numericExpectedAwardedValue);
 });
 
 /**
@@ -665,6 +714,16 @@ Then('I should see the following minor creditor values on the At a glance tab:',
 
   log('assert', 'Asserting selected values on the minor creditor At a glance tab', { expectedValues });
   atAGlanceDetails().assertMinorCreditorAtAGlanceValues(expectedValues);
+});
+
+/**
+ * @step Asserts the summary metric values shown on a minor creditor account.
+ */
+Then('I should see the following minor creditor summary metric values:', (table: DataTable) => {
+  const expectedValues = normalizeHash(table);
+
+  log('assert', 'Asserting minor creditor summary metric values', { expectedValues });
+  atAGlanceDetails().assertMinorCreditorSummaryMetricValues(expectedValues);
 });
 
 /**

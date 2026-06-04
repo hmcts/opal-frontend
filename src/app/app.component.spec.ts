@@ -156,7 +156,7 @@ describe('AppComponent - browser', () => {
   beforeEach(() => {
     globalStore.setTokenExpiry(mockTokenExpiry);
     globalStore.setUserState(OPAL_USER_STATE_MOCK);
-    globalStore.setFeatureFlags({ 'release-1a': true });
+    globalStore.setFeatureFlags({ 'release-1a': true, 'release-1c-write-off': true });
   });
 
   it('should create the app', () => {
@@ -474,7 +474,7 @@ describe('AppComponent - browser', () => {
 
   it('should hide Accounts in primary navigation when release-1a is disabled and the user only has draft accounts permission', () => {
     globalStore.setAuthenticated(true);
-    globalStore.setFeatureFlags({ 'release-1a': false });
+    globalStore.setFeatureFlags({ 'release-1a': false, 'release-1c-write-off': true });
     globalStore.setUserState(createUserStateWithPermissions([ACCOUNTS_PERMISSIONS[1]]));
 
     const fixture = TestBed.createComponent(AppComponent);
@@ -483,15 +483,26 @@ describe('AppComponent - browser', () => {
     expect(getPrimaryNavigationTexts(fixture)).not.toContain('Accounts');
   });
 
-  it('should show Accounts in primary navigation when release-1a is disabled and the user has consolidation permission', () => {
+  it('should show Accounts in primary navigation when release-1c-write-off is enabled and the user has consolidation permission', () => {
     globalStore.setAuthenticated(true);
-    globalStore.setFeatureFlags({ 'release-1a': false });
+    globalStore.setFeatureFlags({ 'release-1a': false, 'release-1c-write-off': true });
     globalStore.setUserState(createUserStateWithPermissions([ACCOUNTS_PERMISSIONS[2]]));
 
     const fixture = TestBed.createComponent(AppComponent);
     fixture.detectChanges();
 
     expect(getPrimaryNavigationTexts(fixture)).toContain('Accounts');
+  });
+
+  it('should hide Accounts in primary navigation when release-1c-write-off is disabled and the user only has consolidation permission', () => {
+    globalStore.setAuthenticated(true);
+    globalStore.setFeatureFlags({ 'release-1a': true, 'release-1c-write-off': false });
+    globalStore.setUserState(createUserStateWithPermissions([ACCOUNTS_PERMISSIONS[2]]));
+
+    const fixture = TestBed.createComponent(AppComponent);
+    fixture.detectChanges();
+
+    expect(getPrimaryNavigationTexts(fixture)).not.toContain('Accounts');
   });
 
   it('should show the primary navigation on browse routes', async () => {

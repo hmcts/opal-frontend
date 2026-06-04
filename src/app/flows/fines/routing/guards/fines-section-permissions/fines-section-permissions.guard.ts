@@ -5,7 +5,10 @@ import {
   getUserPermissionIds,
   hasAnyPermission,
 } from '@app/flows/fines/utils/fines-section-permissions.utils';
-import { RELEASE_1A_FEATURE_FLAG } from '@app/flows/fines/constants/release-feature-flags.constant';
+import {
+  RELEASE_1A_FEATURE_FLAG,
+  RELEASE_1C_WRITE_OFF_FEATURE_FLAG,
+} from '@app/flows/fines/constants/release-feature-flags.constant';
 import { type FeatureFlagReleaseState } from '@app/flows/fines/types/feature-flag-release-state.type';
 import { isDashboardPageType } from '@app/pages/dashboard/constants/dashboard-config.constant';
 import { DashboardPageType } from '@app/pages/dashboard/types/dashboard.type';
@@ -28,6 +31,21 @@ const getSectionKey = (route: ActivatedRouteSnapshot): DashboardPageType | null 
   }
 
   return null;
+};
+
+const resolveAccountsFeatureFlagReleaseState = async (
+  route: ActivatedRouteSnapshot,
+  state: RouterStateSnapshot,
+): Promise<FeatureFlagReleaseState> => {
+  const [release1aEnabled, release1cWriteOffEnabled] = await Promise.all([
+    resolveFeatureFlagGuard(RELEASE_1A_FEATURE_FLAG, route, state),
+    resolveFeatureFlagGuard(RELEASE_1C_WRITE_OFF_FEATURE_FLAG, route, state),
+  ]);
+
+  return {
+    [RELEASE_1A_FEATURE_FLAG]: release1aEnabled,
+    [RELEASE_1C_WRITE_OFF_FEATURE_FLAG]: release1cWriteOffEnabled,
+  };
 };
 
 export const finesSectionPermissionsGuard: CanActivateFn = async (
@@ -67,9 +85,7 @@ export const finesSectionPermissionsGuard: CanActivateFn = async (
   };
 
   const featureFlagReleaseState =
-    sectionKey === 'accounts'
-      ? { [RELEASE_1A_FEATURE_FLAG]: await resolveFeatureFlagGuard(RELEASE_1A_FEATURE_FLAG, route, state) }
-      : {};
+    sectionKey === 'accounts' ? await resolveAccountsFeatureFlagReleaseState(route, state) : {};
 
   return checkSectionPermissions(featureFlagReleaseState);
 };
