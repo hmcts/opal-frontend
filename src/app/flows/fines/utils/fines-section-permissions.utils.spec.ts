@@ -61,7 +61,6 @@ describe('fines-section-permissions.utils', () => {
     [RELEASE_1C_ENFORCEMENT_OPERATIONAL_REPORTING_FEATURE_FLAG]: true,
   };
   const release1aEnabled = { [RELEASE_1A_FEATURE_FLAG]: true };
-  const release1aDisabled = { [RELEASE_1A_FEATURE_FLAG]: false };
   const release1aEnabledWithWriteOffDisabled = {
     [RELEASE_1A_FEATURE_FLAG]: true,
     [RELEASE_1C_WRITE_OFF_FEATURE_FLAG]: false,
@@ -75,7 +74,6 @@ describe('fines-section-permissions.utils', () => {
     [RELEASE_1C_WRITE_OFF_FEATURE_FLAG]: true,
   };
   const release1cWriteOffEnabled = { [RELEASE_1C_WRITE_OFF_FEATURE_FLAG]: true };
-  const release1cWriteOffDisabled = { [RELEASE_1C_WRITE_OFF_FEATURE_FLAG]: false };
   const release1cReportingEnabled = { [RELEASE_1C_ENFORCEMENT_OPERATIONAL_REPORTING_FEATURE_FLAG]: true };
   const release1cReportingDisabled = { [RELEASE_1C_ENFORCEMENT_OPERATIONAL_REPORTING_FEATURE_FLAG]: false };
 
@@ -133,9 +131,7 @@ describe('fines-section-permissions.utils', () => {
 
   describe('getRequiredPermissionIdsForSection', () => {
     it('should return all Accounts permissions when release-1a and release-1c-write-off are enabled', () => {
-      expect(getRequiredPermissionIdsForSection('accounts', release1aAndWriteOffEnabled)).toEqual(
-        ACCOUNTS_PERMISSIONS,
-      );
+      expect(getRequiredPermissionIdsForSection('accounts', release1aAndWriteOffEnabled)).toEqual(ACCOUNTS_PERMISSIONS);
     });
 
     it('should keep draft Accounts permissions when release-1a is enabled and release-1c-write-off is disabled', () => {
@@ -242,13 +238,17 @@ describe('fines-section-permissions.utils', () => {
     it('should remove Accounts for draft-only users when release-1a is disabled', () => {
       const userState = createUserStateWithPermissions([ACCOUNTS_PERMISSIONS[0]]);
 
-      expect(getAccessiblePrimaryNavigationItems(navigationItems, userState, release1aDisabledWithWriteOffEnabled)).toEqual([]);
+      expect(
+        getAccessiblePrimaryNavigationItems(navigationItems, userState, release1aDisabledWithWriteOffEnabled),
+      ).toEqual([]);
     });
 
     it('should remove Accounts for consolidation-only users when release-1c-write-off is disabled', () => {
       const userState = createUserStateWithPermissions([ACCOUNTS_PERMISSIONS[2]]);
 
-      expect(getAccessiblePrimaryNavigationItems(navigationItems, userState, release1aEnabledWithWriteOffDisabled)).toEqual([]);
+      expect(
+        getAccessiblePrimaryNavigationItems(navigationItems, userState, release1aEnabledWithWriteOffDisabled),
+      ).toEqual([]);
     });
 
     it('should remove Reports when release-1c enforcement operational reporting is disabled', () => {
@@ -331,9 +331,9 @@ describe('fines-section-permissions.utils', () => {
 
   describe('filterDashboardConfigByFeatureFlags', () => {
     it('should keep feature flag dashboard groups when the matching releases are enabled', () => {
-      expect(filterDashboardConfigByFeatureFlags(DASHBOARD_PAGE_CONFIGURATION_MAP.accounts, allReleaseFlagsEnabled)).toEqual(
-        DASHBOARD_PAGE_CONFIGURATION_MAP.accounts,
-      );
+      expect(
+        filterDashboardConfigByFeatureFlags(DASHBOARD_PAGE_CONFIGURATION_MAP.accounts, allReleaseFlagsEnabled),
+      ).toEqual(DASHBOARD_PAGE_CONFIGURATION_MAP.accounts);
     });
 
     it('should remove draft Accounts dashboard groups when release-1a is disabled', () => {
