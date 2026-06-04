@@ -1218,6 +1218,18 @@ export class AccountEnquiryFlow {
   }
 
   /**
+   * Updates the first name on the currently open amend minor creditor form and attempts to save.
+   *
+   * @param value - New first name value.
+   */
+  public attemptToSaveCurrentMinorCreditorAmendFormWithFirstName(value: string): void {
+    logAE('method', 'attemptToSaveCurrentMinorCreditorAmendFormWithFirstName()', { value });
+    this.assertOnAmendMinorCreditorDetailsPage();
+    this.editMinorCreditorActions.editFirstNames(value);
+    this.editMinorCreditorActions.saveChanges();
+  }
+
+  /**
    * Enters a last name on the parent or guardian form.
    *
    * @param value - New last name value.

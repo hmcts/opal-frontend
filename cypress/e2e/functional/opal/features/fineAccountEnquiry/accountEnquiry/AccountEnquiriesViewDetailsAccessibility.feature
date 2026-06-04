@@ -86,7 +86,7 @@ Feature: Account Enquiries - View Account Details Accessibility
       # Check accessibility on the amend minor creditor form
       Then I check the page for accessibility
       # Check accessibility when the validation error summary is displayed
-      When I attempt to amend the minor creditor first name to "" and save
+      When I attempt to save the amend minor creditor details with first name ""
       Then I should remain on the amend minor creditor details page
       And I should see the minor creditor amend error summary contains "Enter minor creditor’s first name"
       And I check the page for accessibility

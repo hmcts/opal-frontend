@@ -1066,6 +1066,12 @@ When('I attempt to amend the minor creditor first name to {string} and save', (v
   flow().attemptToAmendMinorCreditorFirstNameAndSave(valueWithUniq);
 });
 
+When('I attempt to save the amend minor creditor details with first name {string}', (value: string) => {
+  const valueWithUniq = applyUniqPlaceholder(value);
+  log('step', 'Attempt to save current amend minor creditor details with first name', { value: valueWithUniq });
+  flow().attemptToSaveCurrentMinorCreditorAmendFormWithFirstName(valueWithUniq);
+});
+
 /**
  * @step Ensures we remain on the edit page after cancelling (no navigation occurred).
  */
