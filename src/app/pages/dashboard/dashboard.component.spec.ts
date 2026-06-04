@@ -33,7 +33,7 @@ describe('DashboardComponent', () => {
     permissionsServiceMock.getUniquePermissions.mockReturnValue([101, 202, 303]);
     globalStoreMock = {
       userState: () => null,
-      featureFlags: vi.fn().mockReturnValue({ 'release-1a': true }),
+      featureFlags: vi.fn().mockReturnValue({ 'release-1a': true, 'release-1c-write-off': true }),
     };
 
     await TestBed.configureTestingModule({
@@ -75,7 +75,7 @@ describe('DashboardComponent', () => {
   });
 
   it('should remove draft accounts from the accounts config when release-1a is disabled', () => {
-    globalStoreMock.featureFlags.mockReturnValue({ 'release-1a': false });
+    globalStoreMock.featureFlags.mockReturnValue({ 'release-1a': false, 'release-1c-write-off': true });
     setupComponent();
 
     expect(component.resolvedConfig()).toEqual({
@@ -85,11 +85,23 @@ describe('DashboardComponent', () => {
     expect(component.resolvedConfig().groups.map((group) => group.id)).not.toContain('draft-accounts');
   });
 
-  it('should remove draft accounts from the accounts config when release-1a is missing', () => {
+  it('should remove account management from the accounts config when release-1c-write-off is disabled', () => {
+    globalStoreMock.featureFlags.mockReturnValue({ 'release-1a': true, 'release-1c-write-off': false });
+    setupComponent();
+
+    expect(component.resolvedConfig()).toEqual({
+      ...DASHBOARD_PAGE_CONFIGURATION_MAP.accounts,
+      groups: DASHBOARD_PAGE_CONFIGURATION_MAP.accounts.groups.filter((group) => group.id !== 'account-management'),
+    });
+    expect(component.resolvedConfig().groups.map((group) => group.id)).not.toContain('account-management');
+  });
+
+  it('should remove release-flagged account groups from the accounts config when release flags are missing', () => {
     globalStoreMock.featureFlags.mockReturnValue({});
     setupComponent();
 
     expect(component.resolvedConfig().groups.map((group) => group.id)).not.toContain('draft-accounts');
+    expect(component.resolvedConfig().groups.map((group) => group.id)).not.toContain('account-management');
   });
 
   it('should fall back to the default config for an unknown dashboard type', () => {

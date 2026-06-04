@@ -5,6 +5,7 @@
 import { defineConfig } from 'cypress';
 import { mergeZephyrReports, cleanZephyrReports } from '@hmcts/zephyr-automation-nodejs';
 import { readFileSync } from 'node:fs';
+import { createHash } from 'node:crypto';
 
 import {
   addCucumberPreprocessorPlugin,
@@ -138,6 +139,13 @@ async function setupNodeEvents(
   registerScreenshotTasks(on, config);
   // Relay selected logs to the terminal for CI troubleshooting.
   on('task', {
+    'contentDigest:sha512Base64': (payload: unknown) => {
+      if (typeof payload !== 'string') {
+        throw new TypeError('contentDigest:sha512Base64 expects a string payload');
+      }
+
+      return createHash('sha512').update(payload, 'utf8').digest('base64');
+    },
     'log:message': (payload: unknown) => {
       if (typeof payload === 'string') {
         // eslint-disable-next-line no-console

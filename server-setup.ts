@@ -134,5 +134,9 @@ export function configureMonitoring(): TransferServerState {
     appInsightsConfig: appInsights,
     userStateCacheExpirationMilliseconds: config.get('expiry.userStateExpiryInMilliseconds'),
     userStateDomain: config.get('user-state.domain'),
+    featureFlagConfig: {
+      override: config.get<boolean>('features.feature-flags.override'),
+      releases: config.get<Record<string, boolean>>('features.feature-flags.releases'),
+    },
   };
 }
