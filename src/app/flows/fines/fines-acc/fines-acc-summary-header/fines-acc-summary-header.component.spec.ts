@@ -25,7 +25,7 @@ describe('FinesAccSummaryHeaderComponent', () => {
       party_name: vi.fn().mockReturnValue('Test Person'),
     } as unknown as typeof component.accountStore;
 
-    component.hasAddAccountActivityNotePermission = false;
+    component.showAddAccountNoteButton = false;
   });
 
   it('should create', () => {
@@ -68,7 +68,7 @@ describe('FinesAccSummaryHeaderComponent', () => {
   });
 
   it('should show the add account note button when permission is true', () => {
-    component.hasAddAccountActivityNotePermission = true;
+    component.showAddAccountNoteButton = true;
     fixture.detectChanges();
 
     const addButton = fixture.debugElement
@@ -79,7 +79,7 @@ describe('FinesAccSummaryHeaderComponent', () => {
   });
 
   it('should not show the add account note button when permission is false', () => {
-    component.hasAddAccountActivityNotePermission = false;
+    component.showAddAccountNoteButton = false;
     fixture.detectChanges();
 
     const addButton = fixture.debugElement

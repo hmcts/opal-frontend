@@ -16,7 +16,7 @@
       ></opal-lib-govuk-heading-with-caption>
     </ng-container>
     <ng-container pageHeaderButtons>
-      @if (hasAddAccountActivityNotePermission) {
+      @if (showAddAccountNoteButton) {
         <button
           opalLibGovukButton
           buttonId="{{ id }}-addAccountNote"
