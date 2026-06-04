@@ -81,12 +81,11 @@ Feature: Account Enquiries - View Account Details Accessibility
       And I go to the Creditor tab
 
     @JIRA-STORY:PO-1984 @JIRA-EPIC:PO-1285
-    Scenario: Amend minor creditor details form is accessible
-      When I start changing the minor creditor details
+    Scenario: Amend minor creditor details form and validation summary states are accessible
+      When I view the amend minor creditor details form
+      # Check accessibility on the amend minor creditor form
       Then I check the page for accessibility
-
-    @JIRA-STORY:PO-1984 @JIRA-EPIC:PO-1285
-    Scenario: Amend minor creditor validation summary state is accessible
+      # Check accessibility when the validation error summary is displayed
       When I attempt to amend the minor creditor first name to "" and save
       Then I should remain on the amend minor creditor details page
       And I should see the minor creditor amend error summary contains "Enter minor creditor’s first name"

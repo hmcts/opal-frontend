@@ -1023,8 +1023,8 @@ When('I start changing the non-paying parent or guardian details', () => {
   flow().openNonPayingParentGuardianChangeForm();
 });
 
-When('I start changing the minor creditor details', () => {
-  log('step', 'Start changing minor creditor details');
+When('I view the amend minor creditor details form', () => {
+  log('step', 'View amend minor creditor details form');
   flow().openMinorCreditorChangeForm();
 });
 
