@@ -6,12 +6,20 @@ import { FINES_REPORTS_SUMMARY_LIST_ROUTING_PATHS } from './routing/constants/fi
 import { FINES_REPORT_SUMMARY_LIST_REPORT_CONFIGURATION } from './constants/fines-reports-summary-list-report-configuration.constant';
 import { BehaviorSubject } from 'rxjs';
 import { FINES_REPORTS_ROUTING_PATHS } from '../routing/constants/fines-reports-routing-paths.constant';
+import { IOpalFinesReport } from '@services/fines/opal-fines-service/interfaces/opal-fines-report.interface';
+import { OPAL_FINES_REPORT_MOCK } from '@services/fines/opal-fines-service/mocks/opal-fines-report.mock';
+
+type MockRouteData = {
+  report: IOpalFinesReport | null;
+};
 
 type MockActivatedRoute = {
   snapshot: {
     paramMap: ReturnType<typeof convertToParamMap>;
+    data: MockRouteData;
   };
   paramMap: BehaviorSubject<ReturnType<typeof convertToParamMap>>;
+  data: BehaviorSubject<MockRouteData>;
   parent: {
     snapshot: {
       paramMap: ReturnType<typeof convertToParamMap>;
@@ -27,6 +35,7 @@ describe('FinesReportsSummaryListComponent', () => {
 
   const setup = async (
     url: string,
+    report: IOpalFinesReport | null = null,
   ): Promise<{
     component: FinesReportsSummaryListComponent;
     fixture: ComponentFixture<FinesReportsSummaryListComponent>;
@@ -37,8 +46,10 @@ describe('FinesReportsSummaryListComponent', () => {
     const activatedRoute: MockActivatedRoute = {
       snapshot: {
         paramMap: convertToParamMap({}),
+        data: { report },
       },
       paramMap: new BehaviorSubject(convertToParamMap({})),
+      data: new BehaviorSubject<MockRouteData>({ report }),
       parent: {
         snapshot: {
           paramMap: convertToParamMap({ reportId: url.split('/').at(-2) ?? '' }),
@@ -137,6 +148,19 @@ describe('FinesReportsSummaryListComponent', () => {
     expect(fixture.nativeElement.querySelector('button.govuk-button')).toBeNull();
   });
 
+  it('should not render a create report button when report metadata says manual creation is unavailable', async () => {
+    const { component, fixture } = await setup(
+      `/fines/reports/${FINES_REPORTS_SUMMARY_LIST_ROUTING_PATHS.children.operationalReportsByEnforcement}/summary-list`,
+      {
+        ...OPAL_FINES_REPORT_MOCK,
+        can_manually_create: false,
+      },
+    );
+
+    expect(component.canCreateReport).toBe(false);
+    expect(fixture.nativeElement.querySelector('button.govuk-button')).toBeNull();
+  });
+
   it('should navigate to the select business units route when create report is selected', async () => {
     const { component, fixture, router } = await setup(
       `/fines/reports/${FINES_REPORTS_SUMMARY_LIST_ROUTING_PATHS.children.operationalReportsByEnforcement}/summary-list`,
@@ -190,12 +214,14 @@ describe('FinesReportsSummaryListComponent', () => {
               paramMap: convertToParamMap({
                 reportId: FINES_REPORTS_SUMMARY_LIST_ROUTING_PATHS.children.operationalReportsByEnforcement,
               }),
+              data: {},
             },
             paramMap: new BehaviorSubject(
               convertToParamMap({
                 reportId: FINES_REPORTS_SUMMARY_LIST_ROUTING_PATHS.children.operationalReportsByEnforcement,
               }),
             ),
+            data: new BehaviorSubject({}),
             parent: null,
           },
         },
@@ -231,8 +257,12 @@ describe('FinesReportsSummaryListComponent', () => {
           useValue: {
             snapshot: {
               paramMap: convertToParamMap({}),
+              data: {
+                report: null,
+              },
             },
             paramMap: new BehaviorSubject(convertToParamMap({})),
+            data: new BehaviorSubject<MockRouteData>({ report: null }),
             parent: {
               snapshot: {
                 paramMap: convertToParamMap({}),

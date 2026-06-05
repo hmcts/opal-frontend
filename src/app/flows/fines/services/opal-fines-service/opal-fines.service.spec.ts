@@ -63,6 +63,7 @@ import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import { OPAL_FINES_ENFORCER_MOCK } from './mocks/opal-fines-enforcer.mock';
 import { OPAL_FINES_MINOR_CREDITOR_UPDATE_PAYLOAD_MOCK } from './mocks/opal-fines-minor-creditor-update-payload.mock';
 import { OPAL_FINES_ACCOUNT_MINOR_CREDITOR_CREDITOR_MOCK } from './mocks/opal-fines-account-minor-creditor-creditor.mock';
+import { OPAL_FINES_REPORT_MOCK } from './mocks/opal-fines-report.mock';
 
 describe('OpalFines', () => {
   let service: OpalFines;
@@ -162,6 +163,37 @@ describe('OpalFines', () => {
     service.getBusinessUnits().subscribe((response) => {
       expect(response).toEqual(mockBusinessUnits);
     });
+    httpMock.expectNone(expectedUrl);
+  });
+
+  it('should send a GET request to the report definition API', () => {
+    const expectedUrl = `${OPAL_FINES_PATHS.reports}/${OPAL_FINES_REPORT_MOCK.report_id}`;
+
+    service.getReport(OPAL_FINES_REPORT_MOCK.report_id).subscribe((response) => {
+      expect(response).toEqual(OPAL_FINES_REPORT_MOCK);
+    });
+
+    const req = httpMock.expectOne(expectedUrl);
+    expect(req.request.method).toBe('GET');
+
+    req.flush(OPAL_FINES_REPORT_MOCK);
+  });
+
+  it('should return cached response for the same report definition', () => {
+    const expectedUrl = `${OPAL_FINES_PATHS.reports}/${OPAL_FINES_REPORT_MOCK.report_id}`;
+
+    service.getReport(OPAL_FINES_REPORT_MOCK.report_id).subscribe((response) => {
+      expect(response).toEqual(OPAL_FINES_REPORT_MOCK);
+    });
+
+    const req = httpMock.expectOne(expectedUrl);
+    expect(req.request.method).toBe('GET');
+    req.flush(OPAL_FINES_REPORT_MOCK);
+
+    service.getReport(OPAL_FINES_REPORT_MOCK.report_id).subscribe((response) => {
+      expect(response).toEqual(OPAL_FINES_REPORT_MOCK);
+    });
+
     httpMock.expectNone(expectedUrl);
   });
 

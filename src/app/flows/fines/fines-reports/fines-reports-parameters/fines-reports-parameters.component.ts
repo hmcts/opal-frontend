@@ -4,6 +4,7 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { GovukHeadingWithCaptionComponent } from '@hmcts/opal-frontend-common/components/govuk/govuk-heading-with-caption';
 import { IOpalFinesBusinessUnit } from '@services/fines/opal-fines-service/interfaces/opal-fines-business-unit.interface';
 import { IOpalFinesBusinessUnitRefData } from '@services/fines/opal-fines-service/interfaces/opal-fines-business-unit-ref-data.interface';
+import { IOpalFinesReport } from '@services/fines/opal-fines-service/interfaces/opal-fines-report.interface';
 import { FINES_REPORT_SUMMARY_LIST_REPORT_CONFIGURATION } from '../fines-reports-summary-list/constants/fines-reports-summary-list-report-configuration.constant';
 import { FINES_REPORTS_ROUTING_PATHS } from '../routing/constants/fines-reports-routing-paths.constant';
 
@@ -32,7 +33,11 @@ export class FinesReportsParametersComponent implements OnInit {
    * @returns The report heading shown on the parameters screen.
    */
   public get reportHeading(): string {
-    return FINES_REPORT_SUMMARY_LIST_REPORT_CONFIGURATION.find((config) => config.id === this.reportId)?.heading ?? '';
+    const configuredHeading =
+      FINES_REPORT_SUMMARY_LIST_REPORT_CONFIGURATION.find((config) => config.id === this.reportId)?.heading ?? '';
+    const report = this.activatedRoute.snapshot.data['report'] as IOpalFinesReport | null | undefined;
+
+    return configuredHeading || report?.report_title || '';
   }
 
   /**

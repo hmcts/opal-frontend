@@ -6,6 +6,7 @@ import { FINES_REPORT_SUMMARY_LIST_REPORT_CONFIGURATION } from './constants/fine
 import { GovukButtonDirective } from '@hmcts/opal-frontend-common/directives/govuk-button';
 import { FINES_REPORTS_SUMMARY_LIST_ROUTING_PATHS } from './routing/constants/fines-reports-summary-list-routing-paths.constant';
 import { FINES_REPORTS_ROUTING_PATHS } from '../routing/constants/fines-reports-routing-paths.constant';
+import { IOpalFinesReport } from '@services/fines/opal-fines-service/interfaces/opal-fines-report.interface';
 
 @Component({
   selector: 'app-fines-reports-summary-list',
@@ -23,6 +24,12 @@ export class FinesReportsSummaryListComponent {
       initialValue: this.routeWithReportId.snapshot.paramMap.get('reportId') ?? '',
     },
   );
+  private readonly report = toSignal(
+    this.activatedRoute.data.pipe(map((routeData) => routeData['report'] as IOpalFinesReport | null | undefined)),
+    {
+      initialValue: this.activatedRoute.snapshot.data['report'] as IOpalFinesReport | null | undefined,
+    },
+  );
 
   /**
    * Returns the main page heading for the current report summary list.
@@ -36,15 +43,17 @@ export class FinesReportsSummaryListComponent {
   }
 
   /**
-   * Determines whether the current report summary supports creating a report.
+   * Determines whether the current report summary supports creating a report, using API report metadata when available.
    *
    * @returns True for operational reports by enforcement or payments; otherwise false.
    */
   public get canCreateReport(): boolean {
-    return [
+    const supportsCreateJourney = [
       FINES_REPORTS_SUMMARY_LIST_ROUTING_PATHS.children.operationalReportsByEnforcement,
       FINES_REPORTS_SUMMARY_LIST_ROUTING_PATHS.children.operationalReportsByPayments,
     ].includes(this.reportId());
+
+    return supportsCreateJourney && (this.report()?.can_manually_create ?? true);
   }
 
   /**

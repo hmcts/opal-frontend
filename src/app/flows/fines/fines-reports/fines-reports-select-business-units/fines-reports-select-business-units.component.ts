@@ -6,6 +6,7 @@ import { IAbstractFormBaseForm } from '@hmcts/opal-frontend-common/components/ab
 import { GovukHeadingWithCaptionComponent } from '@hmcts/opal-frontend-common/components/govuk/govuk-heading-with-caption';
 import { IOpalFinesBusinessUnit } from '@services/fines/opal-fines-service/interfaces/opal-fines-business-unit.interface';
 import { IOpalFinesBusinessUnitRefData } from '@services/fines/opal-fines-service/interfaces/opal-fines-business-unit-ref-data.interface';
+import { IOpalFinesReport } from '@services/fines/opal-fines-service/interfaces/opal-fines-report.interface';
 import { FINES_REPORTS_BUSINESS_UNIT_WARNING_THRESHOLD } from '../constants/fines-reports-business-unit-thresholds.constant';
 import { FINES_REPORT_SUMMARY_LIST_REPORT_CONFIGURATION } from '../fines-reports-summary-list/constants/fines-reports-summary-list-report-configuration.constant';
 import { FINES_REPORTS_ROUTING_PATHS } from '../routing/constants/fines-reports-routing-paths.constant';
@@ -40,7 +41,11 @@ export class FinesReportsSelectBusinessUnitsComponent extends AbstractFormParent
    * @returns The operational report heading, or an empty string when the report is not recognised.
    */
   public get reportHeading(): string {
-    return FINES_REPORT_SUMMARY_LIST_REPORT_CONFIGURATION.find((config) => config.id === this.reportId)?.heading ?? '';
+    const configuredHeading =
+      FINES_REPORT_SUMMARY_LIST_REPORT_CONFIGURATION.find((config) => config.id === this.reportId)?.heading ?? '';
+    const report = this.route.snapshot.data['report'] as IOpalFinesReport | null | undefined;
+
+    return configuredHeading || report?.report_title || '';
   }
 
   /**
