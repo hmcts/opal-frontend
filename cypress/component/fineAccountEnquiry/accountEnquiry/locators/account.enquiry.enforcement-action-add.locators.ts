@@ -49,6 +49,6 @@ export const DOM_ELEMENTS = {
   addPaymentTermsError: '#fines-acc-enf-action-add_add_payment_terms-error-message',
 
   errorSummary: '.govuk-error-summary',
-
+  cancelLink: '.govuk-link',
   addEnforcementActionButton: '#submitForm',
 } as const;

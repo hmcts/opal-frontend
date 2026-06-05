@@ -459,7 +459,7 @@ describe(
     // });
 
     it(
-      'AC6,a. AC11a Individual: Cancel path no warning',
+      'AC6,a Individual: Cancel path no warning',
       {
         tags: [
           '@JIRA-STORY:PO-1780',
@@ -497,7 +497,7 @@ describe(
     );
 
     it(
-      'AC6,b. AC11b Individual: Cancel path/warning',
+      'AC6,b. Individual: Cancel path/warning',
       {
         tags: [
           '@JIRA-STORY:PO-1780',
@@ -697,7 +697,7 @@ describe(
 
     it(
       'AC1, AC1a. Selected enforcement action continues to the add enforcement action details screen',
-      { tags: ['@JIRA-STORY:PO-1782', '@JIRA-EPIC:PO-1674'] },
+      { tags: ['@JIRA-STORY:PO-1782', '@JIRA-EPIC:PO-2630'] },
       () => {
         let headerMock = structuredClone(createDefendantHeaderMockWithName('Robert', 'Thomson'));
         headerMock.debtor_type = 'Defendant';
@@ -747,7 +747,7 @@ describe(
 
     it(
       'AC2a, AC2b. Add enforcement action details screen shows the correct title and account identifier',
-      { tags: ['@JIRA-STORY:PO-1782', '@JIRA-EPIC:PO-1674'] },
+      { tags: ['@JIRA-STORY:PO-1782', '@JIRA-EPIC:PO-2630'] },
       () => {
         let headerMock = structuredClone(createDefendantHeaderMockWithName('Robert', 'Thomson'));
         headerMock.debtor_type = 'Defendant';
@@ -790,8 +790,52 @@ describe(
     );
 
     it(
+      'AC2a, AC2b. Company add enforcement action details screen shows the correct title and account identifier',
+      { tags: ['@JIRA-STORY:PO-1782', '@JIRA-EPIC:PO-2630'] },
+      () => {
+        let headerMock = structuredClone(DEFENDANT_HEADER_ORG_MOCK);
+        headerMock.debtor_type = 'company';
+        headerMock.account_status_reference.account_status_code = 'L';
+
+        let enforcementMock = structuredClone(OPAL_FINES_ACCOUNT_DEFENDANT_DETAILS_ENFORCEMENT_TAB_REF_DATA_MOCK);
+        enforcementMock.last_enforcement_action!.enforcement_action.result_id = 'COLLO';
+        enforcementMock.last_enforcement_action!.enforcement_action.result_title = 'Collection order';
+        enforcementMock.next_enforcement_action_data = 'COLLO';
+
+        const accountId = headerMock.defendant_account_party_id;
+
+        interceptAuthenticatedUser();
+        interceptUserState(USER_STATE_MOCK_PERMISSION_BU77);
+        interceptDefendantHeader(accountId, headerMock, '123');
+        interceptEnforcementStatus(accountId, enforcementMock, '123');
+        interceptEnforcers();
+
+        cy.intercept(
+          {
+            method: 'GET',
+            pathname: '/opal-fines-service/results/COLLO',
+          },
+          {
+            statusCode: 200,
+            body: FINES_ACC_ENF_ACTION_ADD_RESULT_MOCK,
+          },
+        ).as('getCollectionOrderResult');
+
+        setupAddEnforcementActionDetailsRoute(
+          accountId,
+          `/fines/account/defendant/${accountId}/enforcement/action/add?resultId=COLLO`,
+        );
+
+        cy.wait('@getCollectionOrderResult');
+
+        cy.get(ENF_ACTION_ADD.pageTitle).should('contain.text', 'Collection order (COLLO)');
+        cy.get(ENF_ACTION_ADD.accountInfo).should('contain.text', '177A - Sainsco');
+      },
+    );
+
+    it(
       'AC2d, AC2di. COLLO add enforcement action details screen displays payment terms section and days in default fields',
-      { tags: ['@JIRA-STORY:PO-1782', '@JIRA-EPIC:PO-1674'] },
+      { tags: ['@JIRA-STORY:PO-1782', '@JIRA-EPIC:PO-2630'] },
       () => {
         let headerMock = structuredClone(createDefendantHeaderMockWithName('Robert', 'Thomson'));
         headerMock.debtor_type = 'Defendant';
@@ -845,8 +889,67 @@ describe(
     );
 
     it(
+      'AC2c. Add enforcement action details screen renders hint text, menu option copy and required versus optional behaviour from result parameters',
+      { tags: ['@JIRA-STORY:PO-1782', '@JIRA-EPIC:PO-2630'] },
+      () => {
+        let headerMock = structuredClone(createDefendantHeaderMockWithName('Robert', 'Thomson'));
+        headerMock.debtor_type = 'Defendant';
+        headerMock.account_status_reference.account_status_code = 'L';
+
+        let enforcementMock = structuredClone(OPAL_FINES_ACCOUNT_DEFENDANT_DETAILS_ENFORCEMENT_TAB_REF_DATA_MOCK);
+        enforcementMock.last_enforcement_action!.enforcement_action.result_id = 'COLLO';
+        enforcementMock.last_enforcement_action!.enforcement_action.result_title = 'Collection order';
+        enforcementMock.next_enforcement_action_data = 'COLLO';
+
+        const accountId = headerMock.defendant_account_party_id;
+
+        interceptAuthenticatedUser();
+        interceptUserState(USER_STATE_MOCK_PERMISSION_BU77);
+        interceptDefendantHeader(accountId, headerMock, '123');
+        interceptEnforcementStatus(accountId, enforcementMock, '123');
+        interceptEnforcers();
+
+        cy.intercept(
+          {
+            method: 'GET',
+            pathname: '/opal-fines-service/results/COLLO',
+          },
+          {
+            statusCode: 200,
+            body: ADD_ENFORCEMENT_ACTION_ALL_FIELD_TYPES_RESULT_MOCK,
+          },
+        ).as('getAllFieldTypesCollectionOrderResult');
+
+        setupAddEnforcementActionDetailsRoute(
+          accountId,
+          `/fines/account/defendant/${accountId}/enforcement/action/add?resultId=COLLO`,
+        );
+
+        cy.wait('@getAllFieldTypesCollectionOrderResult');
+
+        cy.contains('For example, account referred for enforcement').should('be.visible');
+        cy.contains('For example, 31/01/2023').should('be.visible');
+        cy.contains('legend', 'Collection type').should('be.visible');
+        cy.contains('label', 'Standard').should('be.visible');
+        cy.contains('label', 'Fast track').should('be.visible');
+        cy.contains('legend', 'Select how it will be served').should('be.visible');
+        cy.contains('label', 'Consecutive').should('be.visible');
+        cy.contains('label', 'Concurrent').should('be.visible');
+
+        cy.get(ENF_ACTION_ADD.addEnforcementActionButton).click();
+
+        cy.get(ENF_ACTION_ADD.errorSummary).should('contain.text', 'Enter a/an Reason');
+        cy.get(ENF_ACTION_ADD.errorSummary).should('contain.text', 'Enter a/an Days in custody');
+        cy.get(ENF_ACTION_ADD.errorSummary).should('contain.text', 'Enter a/an Normal deduction rate');
+        cy.get(ENF_ACTION_ADD.errorSummary).should('contain.text', 'Select a/an Collection type');
+        cy.get(ENF_ACTION_ADD.errorSummary).should('not.contain.text', 'Hearing date');
+        cy.get(ENF_ACTION_ADD.errorSummary).should('not.contain.text', 'Basis of committal');
+      },
+    );
+
+    it(
       'AC3, AC3a, AC3ai. English and Welsh account shows Welsh companion field and Welsh hint text',
-      { tags: ['@JIRA-STORY:PO-1782', '@JIRA-EPIC:PO-1674'] },
+      { tags: ['@JIRA-STORY:PO-1782', '@JIRA-EPIC:PO-2630'] },
       () => {
         let headerMock = structuredClone(createDefendantHeaderMockWithName('Robert', 'Thomson'));
         headerMock.debtor_type = 'Defendant';
@@ -900,7 +1003,7 @@ describe(
 
     it(
       'AC3b, AC3bi, AC10a. If the English field is populated and the Welsh field is blank, the Welsh paired-field error is shown',
-      { tags: ['@JIRA-STORY:PO-1782', '@JIRA-EPIC:PO-1674'] },
+      { tags: ['@JIRA-STORY:PO-1782', '@JIRA-EPIC:PO-2630'] },
       () => {
         let headerMock = structuredClone(createDefendantHeaderMockWithName('Robert', 'Thomson'));
         headerMock.debtor_type = 'Defendant';
@@ -953,7 +1056,7 @@ describe(
 
     it(
       'AC3b, AC3bii, AC10a. If the Welsh field is populated and the English field is blank, the English paired-field error is shown',
-      { tags: ['@JIRA-STORY:PO-1782', '@JIRA-EPIC:PO-1674'] },
+      { tags: ['@JIRA-STORY:PO-1782', '@JIRA-EPIC:PO-2630'] },
       () => {
         let headerMock = structuredClone(createDefendantHeaderMockWithName('Robert', 'Thomson'));
         headerMock.debtor_type = 'Defendant';
@@ -1008,7 +1111,7 @@ describe(
 
     it(
       'AC4, AC4a, AC4d, AC10a. If the English & Welsh fields are blank, the English and Welsh field errors are shown',
-      { tags: ['@JIRA-STORY:PO-1782', '@JIRA-EPIC:PO-1674'] },
+      { tags: ['@JIRA-STORY:PO-1782', '@JIRA-EPIC:PO-2630'] },
       () => {
         let headerMock = structuredClone(createDefendantHeaderMockWithName('Robert', 'Thomson'));
         headerMock.debtor_type = 'Defendant';
@@ -1059,7 +1162,7 @@ describe(
 
     it(
       'AC4b., AC4c, AC10a. If the user enters too many characters or invalid alpha/numerical',
-      { tags: ['@JIRA-STORY:PO-1782', '@JIRA-EPIC:PO-1674'] },
+      { tags: ['@JIRA-STORY:PO-1782', '@JIRA-EPIC:PO-2630'] },
       () => {
         let headerMock = structuredClone(createDefendantHeaderMockWithName('Robert', 'Thomson'));
         headerMock.debtor_type = 'Defendant';
@@ -1131,7 +1234,7 @@ describe(
 
     it(
       'AC5, AC5a, AC5b, AC5c, AC10a. If the user leaves the field blank, enters a invalid or incorrect format decimal value',
-      { tags: ['@JIRA-STORY:PO-1782', '@JIRA-EPIC:PO-1674'] },
+      { tags: ['@JIRA-STORY:PO-1782', '@JIRA-EPIC:PO-2630'] },
       () => {
         let headerMock = structuredClone(createDefendantHeaderMockWithName('Robert', 'Thomson'));
         headerMock.debtor_type = 'Defendant';
@@ -1187,7 +1290,7 @@ describe(
 
     it(
       'AC6, AC6a, AC6b, AC6c, AC10a. If the user leaves the field blank, enters a invalid or incorrect format date',
-      { tags: ['@JIRA-STORY:PO-1782', '@JIRA-EPIC:PO-1674'] },
+      { tags: ['@JIRA-STORY:PO-1782', '@JIRA-EPIC:PO-2630'] },
       () => {
         let headerMock = structuredClone(createDefendantHeaderMockWithName('Robert', 'Thomson'));
         headerMock.debtor_type = 'Defendant';
@@ -1255,7 +1358,7 @@ describe(
 
     it(
       'AC7, AC7a, AC10a. If the user leaves the field blank in a integer field it returns a error',
-      { tags: ['@JIRA-STORY:PO-1782', '@JIRA-EPIC:PO-1674'] },
+      { tags: ['@JIRA-STORY:PO-1782', '@JIRA-EPIC:PO-2630'] },
       () => {
         let headerMock = structuredClone(createDefendantHeaderMockWithName('Robert', 'Thomson'));
         headerMock.debtor_type = 'Defendant';
@@ -1303,7 +1406,7 @@ describe(
 
     it(
       'AC7, AC7b, AC10a. If the user enteres a invalid input in the integer field it returns a error',
-      { tags: ['@JIRA-STORY:PO-1782', '@JIRA-EPIC:PO-1674'] },
+      { tags: ['@JIRA-STORY:PO-1782', '@JIRA-EPIC:PO-2630'] },
       () => {
         let headerMock = structuredClone(createDefendantHeaderMockWithName('Robert', 'Thomson'));
         headerMock.debtor_type = 'Defendant';
@@ -1352,7 +1455,7 @@ describe(
 
     it(
       'AC8, AC8a If the user leaves the field blank in a menu data type it returns a error',
-      { tags: ['@JIRA-STORY:PO-1782', '@JIRA-EPIC:PO-1674'] },
+      { tags: ['@JIRA-STORY:PO-1782', '@JIRA-EPIC:PO-2630'] },
       () => {
         let headerMock = structuredClone(createDefendantHeaderMockWithName('Robert', 'Thomson'));
         headerMock.debtor_type = 'Defendant';
@@ -1400,7 +1503,7 @@ describe(
 
     it(
       'AC9, AC9a If the user does not select whether to change payment terms or not a error is raised',
-      { tags: ['@JIRA-STORY:PO-1782', '@JIRA-EPIC:PO-1674'] },
+      { tags: ['@JIRA-STORY:PO-1782', '@JIRA-EPIC:PO-2630'] },
       () => {
         let headerMock = structuredClone(createDefendantHeaderMockWithName('Robert', 'Thomson'));
         headerMock.debtor_type = 'Defendant';
@@ -1452,9 +1555,117 @@ describe(
       },
     );
 
+    it(
+      'AC11, AC11a. Add enforcement action details screen cancel with no entered values returns to the Enforcement tab without confirmation',
+      { tags: ['@JIRA-STORY:PO-1782', '@JIRA-EPIC:PO-2630'] },
+      () => {
+        let headerMock = structuredClone(createDefendantHeaderMockWithName('Robert', 'Thomson'));
+        headerMock.debtor_type = 'Defendant';
+        headerMock.account_status_reference.account_status_code = 'L';
+
+        let enforcementMock = structuredClone(OPAL_FINES_ACCOUNT_DEFENDANT_DETAILS_ENFORCEMENT_TAB_REF_DATA_MOCK);
+        enforcementMock.last_enforcement_action!.enforcement_action.result_id = 'COLLO';
+        enforcementMock.last_enforcement_action!.enforcement_action.result_title = 'Collection order';
+        enforcementMock.next_enforcement_action_data = 'COLLO';
+
+        const accountId = headerMock.defendant_account_party_id;
+
+        interceptAuthenticatedUser();
+        interceptUserState(USER_STATE_MOCK_PERMISSION_BU77);
+        interceptDefendantHeader(accountId, headerMock, '123');
+        interceptEnforcementStatus(accountId, enforcementMock, '123');
+        interceptEnforcers();
+
+        cy.intercept(
+          {
+            method: 'GET',
+            pathname: '/opal-fines-service/results/COLLO',
+          },
+          {
+            statusCode: 200,
+            body: FINES_ACC_ENF_ACTION_ADD_RESULT_MOCK,
+          },
+        ).as('getCollectionOrderResult');
+
+        setupAddEnforcementActionDetailsRoute(
+          accountId,
+          `/fines/account/defendant/${accountId}/enforcement/action/add?resultId=COLLO`,
+        );
+
+        cy.wait('@getCollectionOrderResult');
+
+        cy.window().then((win) => {
+          cy.stub(win, 'confirm').as('confirmLeave');
+        });
+
+        cy.get(ENF_ACTION_ADD.cancelLink).click();
+
+        cy.get('@confirmLeave').should('not.have.been.called');
+        cy.get('@routerNavigate').should('have.been.calledWithMatch', ['details']);
+        cy.get(ENF.tabName).should('contain.text', 'Enforcement');
+      },
+    );
+
+    it(
+      'AC11, AC11b. Add enforcement action details screen cancel with entered values shows confirmation before navigating away',
+      { tags: ['@JIRA-STORY:PO-1782', '@JIRA-EPIC:PO-2630'] },
+      () => {
+        let headerMock = structuredClone(createDefendantHeaderMockWithName('Robert', 'Thomson'));
+        headerMock.debtor_type = 'Defendant';
+        headerMock.account_status_reference.account_status_code = 'L';
+
+        let enforcementMock = structuredClone(OPAL_FINES_ACCOUNT_DEFENDANT_DETAILS_ENFORCEMENT_TAB_REF_DATA_MOCK);
+        enforcementMock.last_enforcement_action!.enforcement_action.result_id = 'COLLO';
+        enforcementMock.last_enforcement_action!.enforcement_action.result_title = 'Collection order';
+        enforcementMock.next_enforcement_action_data = 'COLLO';
+
+        const accountId = headerMock.defendant_account_party_id;
+
+        interceptAuthenticatedUser();
+        interceptUserState(USER_STATE_MOCK_PERMISSION_BU77);
+        interceptDefendantHeader(accountId, headerMock, '123');
+        interceptEnforcementStatus(accountId, enforcementMock, '123');
+        interceptEnforcers();
+
+        cy.intercept(
+          {
+            method: 'GET',
+            pathname: '/opal-fines-service/results/COLLO',
+          },
+          {
+            statusCode: 200,
+            body: FINES_ACC_ENF_ACTION_ADD_RESULT_MOCK,
+          },
+        ).as('getCollectionOrderResult');
+
+        setupAddEnforcementActionDetailsRoute(
+          accountId,
+          `/fines/account/defendant/${accountId}/enforcement/action/add?resultId=COLLO`,
+        );
+
+        cy.wait('@getCollectionOrderResult');
+
+        cy.get(ENF_ACTION_ADD.reasonInput).type('Test reason');
+
+        cy.window().then((win) => {
+          cy.stub(win, 'confirm')
+            .callsFake((message: string) => {
+              expect(message.replace(/\s+/g, ' ')).to.match(/unsaved changes/i);
+              return true;
+            })
+            .as('confirmLeave');
+        });
+
+        cy.get(ENF_ACTION_ADD.cancelLink).click();
+
+        cy.get('@confirmLeave').should('have.been.calledOnce');
+        cy.get('@routerNavigate').should('have.been.calledWithMatch', ['details']);
+      },
+    );
+
     // it(
     //   'AC10b. If the enforcement action allows an additional action, the user is taken to new page here',
-    //   { tags: ['@JIRA-STORY:PO-1782', '@JIRA-EPIC:PO-1674'] },
+    //   { tags: ['@JIRA-STORY:PO-1782', '@JIRA-EPIC:PO-2630'] },
     //   () => {
     //     let headerMock = structuredClone(createDefendantHeaderMockWithName('Robert', 'Thomson'));
     //     headerMock.debtor_type = 'Defendant';

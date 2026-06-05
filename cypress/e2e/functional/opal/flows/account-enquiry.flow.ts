@@ -767,6 +767,26 @@ export class AccountEnquiryFlow {
   }
 
   /**
+   * Enters a reason on the add enforcement action details form.
+   *
+   * @param reason - Enforcement action reason text.
+   */
+  public enterEnforcementActionReason(reason: string): void {
+    logAE('method', 'enterEnforcementActionReason()', { reason });
+    this.enforcement.enterEnforcementActionReason(reason);
+  }
+
+  /**
+   * Chooses whether to change existing payment terms on the add enforcement action details form.
+   *
+   * @param option - Visible option text, usually "Yes" or "No".
+   */
+  public chooseChangeExistingPaymentTerms(option: string): void {
+    logAE('method', 'chooseChangeExistingPaymentTerms()', { option });
+    this.enforcement.chooseChangeExistingPaymentTerms(option);
+  }
+
+  /**
    * Selects a Local Justice Area on the add form.
    *
    * @param localJusticeArea - Visible LJA option text.
@@ -967,6 +987,16 @@ export class AccountEnquiryFlow {
   public assertEnforcementOverrideSummary(expected: { override?: string; enforcer?: string; lja?: string }): void {
     logAE('method', 'assertEnforcementOverrideSummary()', expected);
     this.enforcement.assertEnforcementOverrideSummary(expected);
+  }
+
+  /**
+   * Asserts the last enforcement action summary value shown on the Enforcement tab.
+   *
+   * @param expected - Expected enforcement action text.
+   */
+  public assertEnforcementActionSummary(expected: string): void {
+    logAE('method', 'assertEnforcementActionSummary()', { expected });
+    this.enforcement.assertEnforcementActionSummary(expected);
   }
 
   /**
