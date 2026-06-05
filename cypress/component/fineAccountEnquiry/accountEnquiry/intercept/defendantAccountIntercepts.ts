@@ -15,6 +15,7 @@ export function interceptAddNotes() {
 }
 import { IOpalFinesAccountDefendantAtAGlance } from '@services/fines/opal-fines-service/interfaces/opal-fines-account-defendant-at-a-glance.interface';
 import { IOpalFinesAccountMinorCreditorAtAGlance } from 'src/app/flows/fines/services/opal-fines-service/interfaces/opal-fines-account-minor-creditor-at-a-glance.interface';
+import { IOpalFinesAccountMinorCreditorCreditor } from 'src/app/flows/fines/services/opal-fines-service/interfaces/opal-fines-account-minor-creditor-creditor.interface';
 
 /**
  * Intercepts the GET request to the defendant accounts "at-a-glance" endpoint and mocks the response.
@@ -103,6 +104,28 @@ export function interceptMinorCreditorAtAGlanceSequence(
       },
     )
     .as('getMinorCreditorAtAGlance');
+}
+
+/**
+ * Intercepts the GET request to the minor creditor creditor-tab endpoint and mocks the response.
+ *
+ * @param accountId - The unique identifier for the minor creditor account.
+ * @param mockData - The mock data to be returned in the response body.
+ * @param respHeaderEtag - The value to set for the ETag response header.
+ * @returns Cypress chainable object with the alias 'getMinorCreditorCreditor'.
+ */
+export function interceptMinorCreditorCreditor(
+  accountId: number,
+  mockData: IOpalFinesAccountMinorCreditorCreditor,
+  respHeaderEtag: string,
+) {
+  return cy
+    .intercept('GET', `**/minor-creditor-accounts/${accountId}`, {
+      statusCode: 200,
+      headers: { ETag: respHeaderEtag },
+      body: mockData,
+    })
+    .as('getMinorCreditorCreditor');
 }
 
 /**

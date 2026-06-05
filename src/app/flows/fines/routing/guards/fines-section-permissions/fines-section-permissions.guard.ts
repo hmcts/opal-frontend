@@ -5,13 +5,17 @@ import {
   getUserPermissionIds,
   hasAnyPermission,
 } from '@app/flows/fines/utils/fines-section-permissions.utils';
-import { RELEASE_1A_FEATURE_FLAG } from '@app/flows/fines/constants/release-feature-flags.constant';
-import { type FeatureFlagReleaseState } from '@app/flows/fines/types/feature-flag-release-state.type';
+import {
+  RELEASE_1A_FEATURE_FLAG,
+  RELEASE_1C_ENFORCEMENT_OPERATIONAL_REPORTING_FEATURE_FLAG,
+  RELEASE_1C_WRITE_OFF_FEATURE_FLAG,
+} from '@app/flows/fines/constants/release-feature-flags.constant';
 import { isDashboardPageType } from '@app/pages/dashboard/constants/dashboard-config.constant';
 import { DashboardPageType } from '@app/pages/dashboard/types/dashboard.type';
 import { resolveFeatureFlagGuard } from '@hmcts/opal-frontend-common/guards/feature-flag';
 import { PAGES_ROUTING_PATHS as COMMON_PAGES_ROUTING_PATHS } from '@hmcts/opal-frontend-common/pages/routing/constants';
 import { OpalUserService } from '@hmcts/opal-frontend-common/services/opal-user-service';
+import { type FeatureFlagReleaseState } from '@app/flows/fines/types/feature-flag-release-state.type';
 import { firstValueFrom } from 'rxjs';
 
 const getSectionKey = (route: ActivatedRouteSnapshot): DashboardPageType | null => {
@@ -30,6 +34,34 @@ const getSectionKey = (route: ActivatedRouteSnapshot): DashboardPageType | null 
   return null;
 };
 
+const resolveAccountsFeatureFlagReleaseState = async (
+  route: ActivatedRouteSnapshot,
+  state: RouterStateSnapshot,
+): Promise<FeatureFlagReleaseState> => {
+  const [release1aEnabled, release1cWriteOffEnabled] = await Promise.all([
+    resolveFeatureFlagGuard(RELEASE_1A_FEATURE_FLAG, route, state),
+    resolveFeatureFlagGuard(RELEASE_1C_WRITE_OFF_FEATURE_FLAG, route, state),
+  ]);
+
+  return {
+    [RELEASE_1A_FEATURE_FLAG]: release1aEnabled,
+    [RELEASE_1C_WRITE_OFF_FEATURE_FLAG]: release1cWriteOffEnabled,
+  };
+};
+
+const resolveReportsFeatureFlagReleaseState = async (
+  route: ActivatedRouteSnapshot,
+  state: RouterStateSnapshot,
+): Promise<FeatureFlagReleaseState> => {
+  const [release1cEnforcementOperationalReportingEnabled] = await Promise.all([
+    resolveFeatureFlagGuard(RELEASE_1C_ENFORCEMENT_OPERATIONAL_REPORTING_FEATURE_FLAG, route, state),
+  ]);
+
+  return {
+    [RELEASE_1C_ENFORCEMENT_OPERATIONAL_REPORTING_FEATURE_FLAG]: release1cEnforcementOperationalReportingEnabled,
+  };
+};
+
 export const finesSectionPermissionsGuard: CanActivateFn = async (
   route: ActivatedRouteSnapshot,
   state: RouterStateSnapshot,
@@ -42,12 +74,18 @@ export const finesSectionPermissionsGuard: CanActivateFn = async (
     return true;
   }
 
+  const featureFlagReleaseState =
+    sectionKey === 'accounts'
+      ? await resolveAccountsFeatureFlagReleaseState(route, state)
+      : sectionKey === 'reports'
+        ? await resolveReportsFeatureFlagReleaseState(route, state)
+        : {};
   const getAccessDeniedUrlTree = () => router.createUrlTree([`/${COMMON_PAGES_ROUTING_PATHS.children.accessDenied}`]);
 
   const checkSectionPermissions = async (
-    featureFlagReleaseState: FeatureFlagReleaseState,
+    currentFeatureFlagReleaseState: FeatureFlagReleaseState,
   ): Promise<boolean | UrlTree> => {
-    const requiredPermissionIds = getRequiredPermissionIdsForSection(sectionKey, featureFlagReleaseState);
+    const requiredPermissionIds = getRequiredPermissionIdsForSection(sectionKey, currentFeatureFlagReleaseState);
 
     if (!requiredPermissionIds) {
       return true;
@@ -65,11 +103,6 @@ export const finesSectionPermissionsGuard: CanActivateFn = async (
       return false;
     }
   };
-
-  const featureFlagReleaseState =
-    sectionKey === 'accounts'
-      ? { [RELEASE_1A_FEATURE_FLAG]: await resolveFeatureFlagGuard(RELEASE_1A_FEATURE_FLAG, route, state) }
-      : {};
 
   return checkSectionPermissions(featureFlagReleaseState);
 };

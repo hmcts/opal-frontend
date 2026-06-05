@@ -196,7 +196,7 @@ describe('FinesDraftRelease1aFeatureToggles', () => {
     '(AC.4, AC.5) should keep Accounts in primary navigation for consolidation users when release-1a is disabled',
     { tags: [...buildTags(RELEASE_1A_STORY_TAG), RELEASE_EPIC_TAG, '@R1AOff'] },
     () => {
-      setupAppComponent(consolidationPermissionIds, { 'release-1a': false });
+      setupAppComponent(consolidationPermissionIds, { 'release-1a': false, 'release-1c-write-off': true });
 
       cy.get(PrimaryNav.container).should('be.visible');
       cy.get(PrimaryNav.itemByText(PrimaryNav.labels.accounts)).should('be.visible');
@@ -233,7 +233,7 @@ describe('FinesDraftRelease1aFeatureToggles', () => {
     '(AC.4, AC.5) should keep non-R1A Accounts dashboard links available when release-1a is disabled',
     { tags: [...buildTags(RELEASE_1A_STORY_TAG), RELEASE_EPIC_TAG, '@R1AOff'] },
     () => {
-      setupDashboardComponent(consolidationPermissionIds, { 'release-1a': false });
+      setupDashboardComponent(consolidationPermissionIds, { 'release-1a': false, 'release-1c-write-off': true });
 
       cy.contains('h1', 'Accounts').should('be.visible');
       cy.get('#finesConsolidationLink').should('be.visible').and('contain.text', 'Consolidate accounts');

@@ -39,6 +39,9 @@ import { IFinesAccEnfActionAddFormState } from '../fines-acc-enf-action-add/inte
 import { IFinesAccEnfActionAddFormField } from '../fines-acc-enf-action-add/interfaces/fines-acc-enf-action-add-form-field.interface';
 import { IOpalFinesAddEnforcementActionPayload } from '../../services/opal-fines-service/interfaces/opal-fines-add-enforcement-action-payload.interface';
 import { buildEnforcementActionAddPayload } from './utils/fines-acc-payload-build-enforcement-action-add.utils';
+import { IOpalFinesAccountMinorCreditorCreditor } from '../../services/opal-fines-service/interfaces/opal-fines-account-minor-creditor-creditor.interface';
+import { IFinesAccMinorCreditorAddAmendConvertState } from '../fines-acc-minor-creditor-add-amend-convert/interfaces/fines-acc-minor-creditor-add-amend-convert-state.interface';
+import { transformMinorCreditorAccountPayload } from './utils/fines-acc-payload-transform-minor-creditor-data.utils';
 
 @Injectable({
   providedIn: 'root',
@@ -311,6 +314,76 @@ export class FinesAccPayloadService {
     return {
       formData,
       nestedFlow: false,
+    };
+  }
+
+  /**
+   * Transforms minor creditor account details into the form state for the amend screen.
+   *
+   * @param minorCreditorData - The creditor-tab data from the minor creditor account API
+   * @returns The transformed form state object for minor creditor amend
+   */
+  public mapMinorCreditorAccountPayload(
+    minorCreditorData: IOpalFinesAccountMinorCreditorCreditor,
+  ): IFinesAccMinorCreditorAddAmendConvertState {
+    return transformMinorCreditorAccountPayload(minorCreditorData);
+  }
+
+  /**
+   * Builds the update payload for amending minor creditor account details.
+   *
+   * @param currentData - The current creditor-tab data from the API
+   * @param formState - The submitted minor creditor amend form state
+   * @returns The payload object conforming to the minor creditor update API contract
+   */
+  public buildMinorCreditorAccountAmendPayload(
+    currentData: IOpalFinesAccountMinorCreditorCreditor,
+    formState: IFinesAccMinorCreditorAddAmendConvertState,
+  ): IOpalFinesUpdateMinorCreditorAccountPayload {
+    const isCompany = formState.facc_minor_creditor_creditor_type === 'company';
+    const hasBacsDetails = formState.facc_minor_creditor_pay_by_bacs === true;
+
+    return {
+      creditor_account_id: currentData.creditor_account_id,
+      party_details: {
+        party_id: currentData.party_details.party_id,
+        organisation_flag: isCompany,
+        organisation_details: isCompany
+          ? {
+              organisation_name: formState.facc_minor_creditor_company_name ?? '',
+              organisation_aliases: currentData.party_details.organisation_details?.organisation_aliases ?? null,
+            }
+          : null,
+        individual_details: isCompany
+          ? null
+          : {
+              date_of_birth: currentData.party_details.individual_details?.date_of_birth ?? null,
+              age: currentData.party_details.individual_details?.age ?? null,
+              national_insurance_number:
+                currentData.party_details.individual_details?.national_insurance_number ?? null,
+              individual_aliases: currentData.party_details.individual_details?.individual_aliases ?? null,
+              title: formState.facc_minor_creditor_title,
+              forenames: formState.facc_minor_creditor_forenames,
+              surname: formState.facc_minor_creditor_surname ?? '',
+            },
+      },
+      address: {
+        ...currentData.address,
+        address_line_1: formState.facc_minor_creditor_address_line_1 ?? '',
+        address_line_2: formState.facc_minor_creditor_address_line_2,
+        address_line_3: formState.facc_minor_creditor_address_line_3,
+        address_line_4: formState.facc_minor_creditor_address_line_4,
+        address_line_5: formState.facc_minor_creditor_address_line_5,
+        postcode: formState.facc_minor_creditor_post_code,
+      },
+      payment: {
+        pay_by_bacs: hasBacsDetails,
+        hold_payment: currentData.payment.hold_payment,
+        account_name: hasBacsDetails ? formState.facc_minor_creditor_bank_account_name : null,
+        sort_code: hasBacsDetails ? formState.facc_minor_creditor_bank_sort_code : null,
+        account_number: hasBacsDetails ? formState.facc_minor_creditor_bank_account_number : null,
+        account_reference: hasBacsDetails ? formState.facc_minor_creditor_bank_account_reference : null,
+      },
     };
   }
 

@@ -123,3 +123,5 @@ Feature: View Defendant Account Summary - Add Comments Accessibility
     Then I should see the account header contains "Mrs Mina ALLYMINOR{uniqUpper}"
     And the At a glance tab should be selected by default
     And I check the page for accessibility
+    When I go to the Creditor tab
+    Then I check the page for accessibility
