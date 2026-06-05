@@ -632,6 +632,14 @@ export class AccountEnquiryFlow {
   }
 
   /**
+   * Submits the add enforcement action form.
+   */
+  public submitAddEnforcementActionForm(): void {
+    logAE('method', 'submitAddEnforcementActionForm()');
+    this.enforcement.submitAddEnforcementActionForm();
+  }
+
+  /**
    * Opens the Change Collection Order status form from the Enforcement tab.
    */
   public openChangeCollectionOrderForm(): void {
@@ -723,6 +731,16 @@ export class AccountEnquiryFlow {
   public selectEnforcementOverride(resultCode: string): void {
     logAE('method', 'selectEnforcementOverride()', { resultCode });
     this.enforcement.selectEnforcementOverride(resultCode);
+  }
+
+  /**
+   * Selects an enforcement action code on the add form.
+   *
+   * @param resultCode - Enforcement action result code.
+   */
+  public selectEnforcementAction(resultCode: string): void {
+    logAE('method', 'selectEnforcementAction()', { resultCode });
+    this.enforcement.selectEnforcementAction(resultCode);
   }
 
   /**

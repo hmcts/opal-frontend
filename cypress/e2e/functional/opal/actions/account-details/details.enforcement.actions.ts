@@ -240,6 +240,38 @@ export class AccountDetailsEnforcementActions {
   }
 
   /**
+   * Selects an enforcement action from the add form.
+   *
+   * @param resultCode - Enforcement action code to select.
+   */
+  public selectEnforcementAction(resultCode: string): void {
+    log('action', 'Selecting enforcement action', { resultCode });
+
+    cy.get(ENF_ACT.actionDropdown, { timeout: AccountDetailsEnforcementActions.DEFAULT_TIMEOUT })
+      .should('be.visible')
+      .click()
+      .type('{selectall}{backspace}', { force: true })
+      .type(resultCode, { delay: 0 })
+      .type('{downarrow}{enter}', { force: true });
+
+    cy.get(ENF_ACT.actionDropdown, { timeout: AccountDetailsEnforcementActions.DEFAULT_TIMEOUT }).should(
+      'not.have.value',
+      '',
+    );
+  }
+
+  /**
+   * Submits the add enforcement action form.
+   */
+  public submitAddEnforcementActionForm(): void {
+    log('action', 'Submitting add enforcement action form');
+    cy.get(ENF_ACT.continueButton, { timeout: AccountDetailsEnforcementActions.DEFAULT_TIMEOUT })
+      .should('be.visible')
+      .and('not.be.disabled')
+      .click();
+  }
+
+  /**
    * Selects a Local Justice Area from the add form.
    *
    * @param localJusticeArea - Visible LJA option text.

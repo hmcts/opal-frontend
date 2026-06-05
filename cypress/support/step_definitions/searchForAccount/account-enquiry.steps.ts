@@ -482,6 +482,22 @@ When('I choose the enforcement override {string}', (resultCode: string) => {
 });
 
 /**
+ * @step Selects an enforcement action on the add form.
+ */
+When('I choose the enforcement action {string}', (resultCode: string) => {
+  log('step', 'Choose enforcement action', { resultCode });
+  flow().selectEnforcementAction(resultCode);
+});
+
+/**
+ * @step Selects to add the enforcement action on the add enf action details form.
+ */
+When('I continue to the confirm enforcement action page', () => {
+  log('step', 'Continue to confirm enforcement action page');
+  flow().submitAddEnforcementActionForm();
+});
+
+/**
  * @step Selects a Local Justice Area on the add form.
  */
 When('I choose the Local Justice Area {string}', (localJusticeArea: string) => {
