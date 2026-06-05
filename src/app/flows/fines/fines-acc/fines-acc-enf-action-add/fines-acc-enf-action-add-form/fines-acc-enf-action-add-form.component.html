@@ -192,34 +192,40 @@
     @if (showPaymentTerms) {
       <hr class="govuk-section-break govuk-section-break--m govuk-section-break--visible" />
 
-      <opal-lib-govuk-radio
-        [fieldSetId]="inputName(formControlNames.addPaymentTerms)"
-        legendText="Do you want to add payment terms?"
-        legendClasses="govuk-fieldset__legend--s"
-        [errors]="formControlErrorMessages[formControlNames.addPaymentTerms]"
+      <div
+        class="fines-acc-enf-action-add-form__payment-terms-section govuk-!-padding-4"
+        id="fines-acc-enf-action-add-payment-terms-section"
       >
-        <div
-          opal-lib-govuk-radios-item
-          labelText="Yes"
-          [inputId]="inputName(formControlNames.addPaymentTerms) + '-yes'"
-          [inputName]="inputName(formControlNames.addPaymentTerms)"
-          [inputValue]="true"
-          [control]="form.get(formControlNames.addPaymentTerms)"
-        ></div>
+        <opal-lib-govuk-radio
+          radioClasses="govuk-radios--inline"
+          [fieldSetId]="inputName(formControlNames.addPaymentTerms)"
+          legendText="Do you want to change the existing payment terms?"
+          legendClasses="govuk-fieldset__legend--s"
+          [errors]="formControlErrorMessages[formControlNames.addPaymentTerms]"
+        >
+          <div
+            opal-lib-govuk-radios-item
+            labelText="Yes"
+            [inputId]="inputName(formControlNames.addPaymentTerms) + '-yes'"
+            [inputName]="inputName(formControlNames.addPaymentTerms)"
+            [inputValue]="true"
+            [control]="form.get(formControlNames.addPaymentTerms)"
+          ></div>
 
-        <div
-          opal-lib-govuk-radios-item
-          labelText="No"
-          [inputId]="inputName(formControlNames.addPaymentTerms) + '-no'"
-          [inputName]="inputName(formControlNames.addPaymentTerms)"
-          [inputValue]="false"
-          [control]="form.get(formControlNames.addPaymentTerms)"
-        ></div>
-      </opal-lib-govuk-radio>
+          <div
+            opal-lib-govuk-radios-item
+            labelText="No"
+            [inputId]="inputName(formControlNames.addPaymentTerms) + '-no'"
+            [inputName]="inputName(formControlNames.addPaymentTerms)"
+            [inputValue]="false"
+            [control]="form.get(formControlNames.addPaymentTerms)"
+          ></div>
+        </opal-lib-govuk-radio>
 
-      @if (form.get(formControlNames.addPaymentTerms)?.value === true) {
-        <ng-container *ngTemplateOutlet="paymentTermsFields"></ng-container>
-      }
+        @if (form.get(formControlNames.addPaymentTerms)?.value === true) {
+          <ng-container *ngTemplateOutlet="paymentTermsFields"></ng-container>
+        }
+      </div>
     }
 
     <div class="govuk-button-group govuk-!-margin-top-6">

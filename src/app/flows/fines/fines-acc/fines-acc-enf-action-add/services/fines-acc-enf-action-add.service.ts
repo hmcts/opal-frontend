@@ -195,6 +195,10 @@ export class FinesAccEnfActionAddService {
           message: `Select a/an ${field.label}`,
           priority: 1,
         },
+        max: {
+          message: `Select ${field.max} or fewer options for ${field.label}`,
+          priority: 2,
+        },
       };
     }
 
@@ -232,12 +236,12 @@ export class FinesAccEnfActionAddService {
             message: `${field.label} must be ${field.max} characters or fewer`,
             priority: 2,
           },
-          minlength: {
-            message: `${field.label} must be ${field.min} characters or more`,
+          singleAsciiCharacters: {
+            message: `${field.label} must only include letters a to z, numbers 0-9 and certain special characters (such as hyphens, spaces, apostrophes and commas)`,
             priority: 3,
           },
-          alphanumericTextPattern: {
-            message: `${field.label} must only include letters a to z, numbers, hyphens, spaces and apostrophes`,
+          minlength: {
+            message: `${field.label} must be ${field.min} characters or more`,
             priority: 4,
           },
           pairedLanguage: {
@@ -257,12 +261,12 @@ export class FinesAccEnfActionAddService {
         message: `Enter a/an ${label}`,
         priority: 1,
       },
-      invalidDate: {
-        message: 'Enter a valid date',
-        priority: 2,
-      },
       invalidDateFormat: {
         message: 'Date must be in the format DD/MM/YYYY',
+        priority: 2,
+      },
+      invalidDate: {
+        message: 'Enter a valid date',
         priority: 3,
       },
     };
@@ -277,25 +281,25 @@ export class FinesAccEnfActionAddService {
         message: `Enter a/an ${label}`,
         priority: 1,
       },
-      invalidDecimal: {
-        message: 'Enter amount as 2 decimal places, such as 100.99',
+      numericalTextPattern: {
+        message: 'Enter only numbers',
         priority: 2,
       },
       invalidAmountValue: {
-        message: 'Enter a valid amount',
+        message: 'Enter only numbers',
         priority: 2,
+      },
+      invalidDecimal: {
+        message: 'Enter amount as 2 decimal places, such as 100.99',
+        priority: 3,
       },
       invalidAmount: {
         message: 'Enter amount as 2 decimal places, such as 100.99',
         priority: 3,
       },
-      min: {
-        message: `${label} must be more than or equal to the minimum amount`,
-        priority: 4,
-      },
       max: {
         message: `${label} must be less than or equal to the maximum amount`,
-        priority: 5,
+        priority: 4,
       },
     };
   }
@@ -369,7 +373,7 @@ export class FinesAccEnfActionAddService {
       ...fieldErrors,
       [CONTROL_NAMES.addPaymentTerms]: {
         required: {
-          message: 'Select whether you want to add payment terms',
+          message: 'Select whether you want to change existing payment terms',
           priority: 1,
         },
       },
