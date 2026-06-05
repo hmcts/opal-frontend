@@ -8,5 +8,6 @@
   <app-fines-reports-select-business-units-form
     [businessUnits]="businessUnits"
     (cancelSelection)="handleCancel()"
+    (formSubmit)="handleContinue($event)"
   ></app-fines-reports-select-business-units-form>
 </div>

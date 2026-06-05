@@ -10,8 +10,14 @@ import {
 } from '@angular/core';
 import { FormControl, FormGroup, FormRecord, ReactiveFormsModule } from '@angular/forms';
 import { AbstractFormBaseComponent } from '@hmcts/opal-frontend-common/components/abstract/abstract-form-base';
+import {
+  IAbstractFormBaseFieldErrors,
+  IAbstractFormBaseForm,
+} from '@hmcts/opal-frontend-common/components/abstract/abstract-form-base/interfaces';
+import { IAbstractFormControlErrorMessage } from '@hmcts/opal-frontend-common/components/abstract/interfaces';
 import { GovukCancelLinkComponent } from '@hmcts/opal-frontend-common/components/govuk/govuk-cancel-link';
 import { GovukCheckboxesItemComponent } from '@hmcts/opal-frontend-common/components/govuk/govuk-checkboxes';
+import { GovukErrorSummaryComponent } from '@hmcts/opal-frontend-common/components/govuk/govuk-error-summary';
 import {
   GovukTableBodyRowComponent,
   GovukTableBodyRowDataComponent,
@@ -21,6 +27,11 @@ import {
 import { GovukButtonDirective } from '@hmcts/opal-frontend-common/directives/govuk-button';
 import { IOpalFinesBusinessUnit } from '@services/fines/opal-fines-service/interfaces/opal-fines-business-unit.interface';
 import { takeUntil } from 'rxjs';
+import {
+  atLeastOneBusinessUnitSelectedRecordValidator,
+  businessUnitSelectionRootMirrorValidator,
+} from '../../../validators/business-unit-selection.validator';
+import { IFinesReportsSelectBusinessUnitsFormState } from '../interfaces/fines-reports-select-business-units-form-state.interface';
 
 interface IFinesReportsSelectBusinessUnitRow {
   businessUnit: IOpalFinesBusinessUnit;
@@ -39,6 +50,7 @@ interface IFinesReportsSelectBusinessUnitRow {
     GovukTableBodyRowDataComponent,
     GovukCheckboxesItemComponent,
     GovukCancelLinkComponent,
+    GovukErrorSummaryComponent,
     GovukButtonDirective,
   ],
   templateUrl: './fines-reports-select-business-units-form.component.html',
@@ -60,6 +72,17 @@ export class FinesReportsSelectBusinessUnitsFormComponent extends AbstractFormBa
    */
   private readonly businessUnitSelections = signal<Record<number, boolean>>({});
 
+  protected override fieldErrors: IAbstractFormBaseFieldErrors = {
+    fines_reports_select_business_unit_ids: {
+      required: {
+        message: 'Select 1 or more business unit',
+        priority: 1,
+      },
+    },
+  };
+
+  protected override formSubmit = new EventEmitter<IAbstractFormBaseForm<IFinesReportsSelectBusinessUnitsFormState>>();
+
   /**
    * Business units available for the selected operational report.
    */
@@ -79,6 +102,11 @@ export class FinesReportsSelectBusinessUnitsFormComponent extends AbstractFormBa
    * Name used by the master business unit checkbox.
    */
   public readonly allBusinessUnitsInputName = this.ALL_BUSINESS_UNITS_CTRL;
+
+  /**
+   * Error messages shown against the business-unit form controls.
+   */
+  public override formControlErrorMessages: IAbstractFormControlErrorMessage = {};
 
   /**
    * Form control backing the master select-all checkbox.
@@ -128,7 +156,9 @@ export class FinesReportsSelectBusinessUnitsFormComponent extends AbstractFormBa
       return acc;
     }, {});
 
-    return new FormRecord<FormControl<boolean>>(controls);
+    return new FormRecord<FormControl<boolean>>(controls, {
+      validators: atLeastOneBusinessUnitSelectedRecordValidator,
+    });
   }
 
   /**
@@ -187,6 +217,8 @@ export class FinesReportsSelectBusinessUnitsFormComponent extends AbstractFormBa
         mapValue: (value) => !!value,
       }),
     );
+    record.updateValueAndValidity({ emitEvent: false });
+    this.form.updateValueAndValidity({ emitEvent: false });
   }
 
   /**
@@ -199,10 +231,13 @@ export class FinesReportsSelectBusinessUnitsFormComponent extends AbstractFormBa
         : new FormRecord<FormControl<boolean>>({});
     this.allBusinessUnitsControl = new FormControl(false, { nonNullable: true });
 
-    this.form = new FormGroup({
-      [this.BUSINESS_UNITS_CTRL]: record,
-      [this.ALL_BUSINESS_UNITS_CTRL]: this.allBusinessUnitsControl,
-    });
+    this.form = new FormGroup(
+      {
+        [this.BUSINESS_UNITS_CTRL]: record,
+        [this.ALL_BUSINESS_UNITS_CTRL]: this.allBusinessUnitsControl,
+      },
+      { validators: businessUnitSelectionRootMirrorValidator(this.BUSINESS_UNITS_CTRL) },
+    );
 
     if (this.businessUnits.length > 1) {
       this.buildBusinessUnitRows(record);

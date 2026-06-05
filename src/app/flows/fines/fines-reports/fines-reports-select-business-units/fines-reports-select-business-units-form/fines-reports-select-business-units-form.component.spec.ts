@@ -48,6 +48,30 @@ describe('FinesReportsSelectBusinessUnitsFormComponent', () => {
     expect(selectAllControl.value).toBe(false);
   });
 
+  it('should mark the form invalid when no business unit is selected', async () => {
+    const { component } = await setup();
+    const record = component['form'].get('fines_reports_select_business_unit_ids') as FormRecord<FormControl<boolean>>;
+
+    expect(record.errors).toEqual({ required: true });
+    expect(component['form'].errors).toEqual({
+      fines_reports_select_business_unit_ids: {
+        required: true,
+      },
+    });
+    expect(component['form'].valid).toBe(false);
+  });
+
+  it('should mark the form valid when one business unit is selected', async () => {
+    const { component } = await setup();
+    const record = component['form'].get('fines_reports_select_business_unit_ids') as FormRecord<FormControl<boolean>>;
+
+    record.get('61')?.setValue(true);
+
+    expect(record.errors).toBeNull();
+    expect(component['form'].errors).toBeNull();
+    expect(component['form'].valid).toBe(true);
+  });
+
   it('should render a master checkbox and one checkbox row per business unit', async () => {
     const { component, fixture } = await setup();
 
@@ -99,6 +123,8 @@ describe('FinesReportsSelectBusinessUnitsFormComponent', () => {
     expect(component.selectedCount()).toBe(0);
     expect(component.isAllSelected()).toBe(false);
     expect(component.allBusinessUnitsControl.value).toBe(false);
+    expect(record.errors).toEqual({ required: true });
+    expect(component['form'].valid).toBe(false);
   });
 
   it('should keep the master checkbox deselected when only some business units are selected', async () => {
@@ -135,6 +161,7 @@ describe('FinesReportsSelectBusinessUnitsFormComponent', () => {
     expect(component.selectedBusinessUnitIds()).toEqual([61]);
     expect(component.selectedCount()).toBe(1);
     expect(component.isAllSelected()).toBe(true);
+    expect(component['form'].valid).toBe(true);
     expect(fixture.nativeElement.querySelector('input[type="checkbox"]')).toBeNull();
     expect(fixture.nativeElement.textContent).toContain('Historical Debt');
   });
@@ -158,5 +185,50 @@ describe('FinesReportsSelectBusinessUnitsFormComponent', () => {
     expect(continueButton.textContent?.trim()).toBe('Continue');
     expect(cancelLink.textContent?.trim()).toBe('Cancel');
     expect(buttonGroupText.indexOf('Continue')).toBeLessThan(buttonGroupText.indexOf('Cancel'));
+  });
+
+  it('should render an enabled continue button', async () => {
+    const { fixture } = await setup();
+    const continueButton = fixture.nativeElement.querySelector('#continue-create-report') as HTMLButtonElement;
+
+    expect(continueButton.disabled).toBe(false);
+  });
+
+  it('should show the required error when continuing without a business unit selection', async () => {
+    const { component, fixture } = await setup();
+    const submitSpy = vi.spyOn(component['formSubmit'], 'emit');
+
+    component.handleFormSubmit({ submitter: null } as SubmitEvent);
+    fixture.detectChanges();
+
+    expect(submitSpy).not.toHaveBeenCalled();
+    expect(component.formErrorSummaryMessage).toEqual([
+      {
+        fieldId: 'fines_reports_select_business_unit_ids',
+        message: 'Select 1 or more business unit',
+      },
+    ]);
+    expect(fixture.nativeElement.textContent).toContain('Select 1 or more business unit');
+  });
+
+  it('should emit the submitted form when continuing with a business unit selection', async () => {
+    const { component } = await setup();
+    const record = component['form'].get('fines_reports_select_business_unit_ids') as FormRecord<FormControl<boolean>>;
+    const submitSpy = vi.spyOn(component['formSubmit'], 'emit');
+
+    record.get('61')?.setValue(true);
+    component.handleFormSubmit({ submitter: null } as SubmitEvent);
+
+    expect(submitSpy).toHaveBeenCalledWith({
+      formData: {
+        fines_reports_select_business_unit_ids: {
+          '61': true,
+          '67': false,
+          '68': false,
+        },
+        fines_reports_select_business_unit_ids_select_all: false,
+      },
+      nestedFlow: false,
+    });
   });
 });

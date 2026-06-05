@@ -1,4 +1,9 @@
-<form [formGroup]="form">
+<opal-lib-govuk-error-summary
+  [errors]="formErrorSummaryMessage"
+  (errorClick)="scrollTo($event)"
+></opal-lib-govuk-error-summary>
+
+<form (submit)="handleFormSubmit($event)" [formGroup]="form">
   <opal-lib-govuk-table>
     <ng-container head>
       <th opal-lib-govuk-table-heading>
@@ -48,7 +53,7 @@
   </opal-lib-govuk-table>
 
   <div class="govuk-button-group">
-    <button buttonId="continue-create-report" opalLibGovukButton type="button" disabled>Continue</button>
+    <button buttonId="continue-create-report" opalLibGovukButton type="submit">Continue</button>
     <opal-lib-govuk-cancel-link (linkClickEvent)="handleCancel()"></opal-lib-govuk-cancel-link>
   </div>
 </form>

@@ -102,10 +102,37 @@ describe('FinesReportsSelectBusinessUnitsComponent', () => {
     });
   });
 
-  it('should keep continue disabled until the selection flow exists', async () => {
-    const { fixture } = await setup(FINES_REPORTS_SUMMARY_LIST_ROUTING_PATHS.children.operationalReportsByPayments);
-    const continueButton = fixture.nativeElement.querySelector('button[disabled]');
+  it('should handle submitted business unit selections', async () => {
+    const { component } = await setup(FINES_REPORTS_SUMMARY_LIST_ROUTING_PATHS.children.operationalReportsByPayments);
 
-    expect(continueButton?.disabled).toBe(true);
+    component.handleContinue({
+      formData: {
+        fines_reports_select_business_unit_ids: {
+          '61': true,
+          '67': false,
+          '68': true,
+        },
+        fines_reports_select_business_unit_ids_select_all: false,
+      },
+      nestedFlow: false,
+    });
+
+    expect(component.selectedBusinessUnitIds).toEqual([61, 68]);
+  });
+
+  it('should handle submitted single business unit selections', async () => {
+    const { fixture } = await setup(FINES_REPORTS_SUMMARY_LIST_ROUTING_PATHS.children.operationalReportsByPayments);
+    const component = fixture.componentInstance;
+
+    component.businessUnits = [component.businessUnits[0]];
+    component.handleContinue({
+      formData: {
+        fines_reports_select_business_unit_ids: {},
+        fines_reports_select_business_unit_ids_select_all: false,
+      },
+      nestedFlow: false,
+    });
+
+    expect(component.selectedBusinessUnitIds).toEqual([61]);
   });
 });
