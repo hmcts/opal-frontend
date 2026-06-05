@@ -143,7 +143,7 @@ Feature: Global API Interceptor shows error banner for all CEP error codes
         | first name        | Robert                  |
         | last name         | FixedPenaltyPo{uniq}    |
         | ticket number     | FPRPO2225{uniqUpper}    |
-        | issuing authority | City of Metropolis      |
+        | issuing authority | City of London Central Ticket Office |
         | time of offence   | 14:30                   |
         | place of offence  | Main Street, Metropolis |
       When I search for the account by last name "FixedPenaltyPo{uniq}" and open the latest result

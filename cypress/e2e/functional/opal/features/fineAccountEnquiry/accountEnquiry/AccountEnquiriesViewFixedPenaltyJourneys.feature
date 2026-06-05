@@ -15,7 +15,7 @@ Feature: Account Enquiries - View Fixed Penalty - End-to-end journeys
       | first name        | Robert                  |
       | last name         | FixedPenaltyNV{uniq}    |
       | ticket number     | FPR1BNV{uniqUpper}      |
-      | issuing authority | City of Metropolis      |
+      | issuing authority | City of London Central Ticket Office |
       | time of offence   | 14:30                   |
       | place of offence  | Main Street, Metropolis |
     When I search for the account by last name "FixedPenaltyNV{uniq}" and open the latest result
@@ -26,7 +26,7 @@ Feature: Account Enquiries - View Fixed Penalty - End-to-end journeys
     And I should see the Fixed penalty tab
     When I go to the Fixed penalty section and the header is "Fixed Penalty details"
     Then I should see the fixed penalty details:
-      | Issuing authority | City of Metropolis      |
+      | Issuing authority | City of London Central Ticket Office |
       | Ticket number     | FPR1BNV{uniqUpper}      |
       | Time of offence   | 14:30                   |
       | Place of offence  | Main Street, Metropolis |
@@ -37,7 +37,7 @@ Feature: Account Enquiries - View Fixed Penalty - End-to-end journeys
     Given a published vehicle fixed penalty company account exists:
       | company name                              | Fixed Penalty Co {uniq} |
       | ticket number                             | FPR1BVEH{uniqUpper}     |
-      | issuing authority                         | City of Metropolis      |
+      | issuing authority                         | City of London Central Ticket Office |
       | registration number                       | XY21 ABC                |
       | driving licence                           | LIC-789012              |
       | notice to owner or hirer number (NTO/NTH) | NT-345678               |
@@ -52,7 +52,7 @@ Feature: Account Enquiries - View Fixed Penalty - End-to-end journeys
     And I should see the Fixed penalty tab
     When I go to the Fixed penalty section and the header is "Fixed Penalty details"
     Then I should see the fixed penalty details:
-      | Issuing authority                         | City of Metropolis      |
+      | Issuing authority                         | City of London Central Ticket Office |
       | Ticket number                             | FPR1BVEH{uniqUpper}     |
       | Registration number                       | XY21 ABC                |
       | Driving licence                           | LIC-789012              |

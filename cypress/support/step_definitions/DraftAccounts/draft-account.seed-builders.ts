@@ -8,6 +8,31 @@
 
 export type DraftAccountSeedOverrides = Record<string, unknown>;
 
+const FIXED_PENALTY_ORIGINATORS = [
+  { originator_id: 34, originator_name: 'City of London Central Ticket Office' },
+] as const;
+
+export const DEFAULT_FIXED_PENALTY_ISSUING_AUTHORITY = 'City of London Central Ticket Office';
+
+const normalizeOriginatorName = (value: string): string => value.trim().toLowerCase();
+
+export const resolveFixedPenaltyOriginator = (
+  issuingAuthority: string,
+): { originator_id: number; originator_name: string } => {
+  const originator = FIXED_PENALTY_ORIGINATORS.find(
+    ({ originator_name }) => normalizeOriginatorName(originator_name) === normalizeOriginatorName(issuingAuthority),
+  );
+
+  if (!originator) {
+    const supportedNames = FIXED_PENALTY_ORIGINATORS.map(({ originator_name }) => originator_name).join(', ');
+    throw new Error(
+      `Unsupported fixed penalty issuing authority "${issuingAuthority}". Use one of: ${supportedNames}.`,
+    );
+  }
+
+  return { ...originator };
+};
+
 /**
  * Input values required to build a published non-vehicle fixed-penalty defendant seed override.
  */
@@ -48,11 +73,13 @@ export function buildPublishedNonVehicleFixedPenaltyOverrides(
 ): DraftAccountSeedOverrides {
   const { businessUnitId, issuingAuthority, ticketNumber, title, firstNames, lastName, timeOfOffence, placeOfOffence } =
     input;
+  const { originator_id, originator_name } = resolveFixedPenaltyOriginator(issuingAuthority);
 
   return {
     business_unit_id: businessUnitId,
     account: {
-      originator_name: issuingAuthority,
+      originator_id,
+      originator_name,
       prosecutor_case_reference: ticketNumber,
       collection_order_made: false,
       collection_order_made_today: false,
@@ -110,11 +137,13 @@ export function buildPublishedVehicleFixedPenaltyCompanyOverrides(
     timeOfOffence,
     placeOfOffence,
   } = input;
+  const { originator_id, originator_name } = resolveFixedPenaltyOriginator(issuingAuthority);
 
   return {
     business_unit_id: businessUnitId,
     account: {
-      originator_name: issuingAuthority,
+      originator_id,
+      originator_name,
       prosecutor_case_reference: ticketNumber,
       collection_order_made: false,
       collection_order_made_today: false,
