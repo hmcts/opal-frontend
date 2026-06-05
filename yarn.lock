@@ -3436,15 +3436,15 @@ __metadata:
   linkType: hard
 
 "@cypress/grep@npm:^6.0.0":
-  version: 6.0.1
-  resolution: "@cypress/grep@npm:6.0.1"
+  version: 6.0.2
+  resolution: "@cypress/grep@npm:6.0.2"
   dependencies:
     debug: "npm:^4.3.4"
     find-test-names: "npm:^1.28.18"
     globby: "npm:^11.0.4"
   peerDependencies:
     cypress: ">=15.10.0"
-  checksum: 10/2d3ba29fa17b929a4dc40cf9ec57ce35053c60a5e9deed90d60142cfeba6b33f0cb96768169da6782f98a15ec4418158e3784f35b0851baee0fdd6643f4b4c54
+  checksum: 10/7a981ccf15fdb4fec7d920df77d3cbd67b682a45dae2c543921dbfb169f95d88349dc1ff03525b3b5ddee61036da6b1a1f44b8c3f23d9f5ea214eb42e5f56bc5
   languageName: node
   linkType: hard
 
