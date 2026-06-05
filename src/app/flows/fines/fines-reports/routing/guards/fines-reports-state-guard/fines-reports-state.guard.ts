@@ -1,3 +1,4 @@
+import { Location } from '@angular/common';
 import { inject } from '@angular/core';
 import { CanActivateFn, Router } from '@angular/router';
 import { PermissionsService } from '@hmcts/opal-frontend-common/services/permissions-service';
@@ -9,8 +10,21 @@ import { FINES_ROUTING_PATHS } from '@app/flows/fines/routing/constants/fines-ro
 import { FINES_DASHBOARD_ROUTING_PATHS } from '@app/flows/fines/constants/fines-dashboard-routing-paths.constant';
 import { FINES_REPORTS_ROUTING_PATHS } from '../../constants/fines-reports-routing-paths.constant';
 
+interface IFinesReportsNavigationState {
+  selectedBusinessUnitIds?: number[];
+}
+
+const getSelectedBusinessUnitIdsFromNavigationState = (router: Router, location: Location): number[] => {
+  const navigationState = router.currentNavigation()?.extras.state as IFinesReportsNavigationState | undefined;
+  const locationState = location.getState() as IFinesReportsNavigationState | undefined;
+  const selectedBusinessUnitIds = navigationState?.selectedBusinessUnitIds ?? locationState?.selectedBusinessUnitIds;
+
+  return Array.isArray(selectedBusinessUnitIds) ? selectedBusinessUnitIds : [];
+};
+
 export const finesReportsStateGuard: CanActivateFn = (route) => {
   const router = inject(Router);
+  const location = inject(Location);
   const permissionsService = inject(PermissionsService);
   const opalUserService = inject(OpalUserService);
   const reportId = route.paramMap.get('reportId') ?? route.parent?.paramMap.get('reportId');
@@ -28,14 +42,14 @@ export const finesReportsStateGuard: CanActivateFn = (route) => {
 
   const routePermissionIds = report.permissionIds;
   const requiresCreateReport = route.data['requiresCreateReport'] === true;
+  const requiresSelectedBusinessUnits = route.data['requiresSelectedBusinessUnits'] === true;
 
   if (routePermissionIds.length === 0) {
     if (requiresCreateReport) {
       return router.createUrlTree([
         '/',
         FINES_ROUTING_PATHS.root,
-        FINES_DASHBOARD_ROUTING_PATHS.root,
-        FINES_DASHBOARD_ROUTING_PATHS.children.reports,
+        FINES_ROUTING_PATHS.children.reports.root,
         report.id,
         FINES_REPORTS_ROUTING_PATHS.children.summaryList,
       ]);
@@ -48,11 +62,24 @@ export const finesReportsStateGuard: CanActivateFn = (route) => {
     map((resp) => {
       const uniquePermissionIds = permissionsService.getUniquePermissions(resp);
 
-      if (uniquePermissionIds.some((id) => routePermissionIds.includes(id))) {
-        return true;
+      if (!uniquePermissionIds.some((id) => routePermissionIds.includes(id))) {
+        return router.createUrlTree([`/${COMMON_PAGES_ROUTING_PATHS.children.accessDenied}`]);
       }
 
-      return router.createUrlTree([`/${COMMON_PAGES_ROUTING_PATHS.children.accessDenied}`]);
+      if (
+        requiresSelectedBusinessUnits &&
+        getSelectedBusinessUnitIdsFromNavigationState(router, location).length === 0
+      ) {
+        return router.createUrlTree([
+          '/',
+          FINES_ROUTING_PATHS.root,
+          FINES_ROUTING_PATHS.children.reports.root,
+          report.id,
+          FINES_REPORTS_ROUTING_PATHS.children.selectBusinessUnits,
+        ]);
+      }
+
+      return true;
     }),
     catchError(() => of(false)),
   );

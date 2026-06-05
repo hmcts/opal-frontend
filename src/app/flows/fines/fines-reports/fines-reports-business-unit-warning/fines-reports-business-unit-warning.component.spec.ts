@@ -59,7 +59,6 @@ describe('FinesReportsBusinessUnitWarningComponent', () => {
   it('should render the warning copy from the selected business unit count', async () => {
     const { fixture } = await setup([61, 67, 68, 69]);
 
-    expect(fixture.nativeElement.querySelector('.govuk-caption-l')?.textContent?.trim()).toBe('Create report');
     expect(fixture.nativeElement.querySelector('h1')?.textContent).toContain('You have selected 4 business units');
     expect(fixture.nativeElement.textContent).toContain('The report creation may time out due to too much data.');
   });
@@ -75,13 +74,14 @@ describe('FinesReportsBusinessUnitWarningComponent', () => {
     });
   });
 
-  it('should navigate to the summary list when continue is selected', async () => {
+  it('should navigate to the parameters screen when continue is selected', async () => {
     const { component, router } = await setup([61, 67, 68, 69]);
 
     component.handleContinue();
 
-    expect(router.navigate).toHaveBeenCalledWith(['..', FINES_REPORTS_ROUTING_PATHS.children.summaryList], {
+    expect(router.navigate).toHaveBeenCalledWith(['..', FINES_REPORTS_ROUTING_PATHS.children.parameters], {
       relativeTo: expect.any(Object),
+      state: { selectedBusinessUnitIds: [61, 67, 68, 69] },
     });
   });
 

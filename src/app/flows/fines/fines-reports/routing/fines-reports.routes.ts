@@ -1,5 +1,6 @@
 import { Routes } from '@angular/router';
 import { authGuard } from '@hmcts/opal-frontend-common/guards/auth';
+import { canDeactivateGuard } from '@hmcts/opal-frontend-common/guards/can-deactivate';
 import { FINES_REPORTS_ROUTING_PATHS } from './constants/fines-reports-routing-paths.constant';
 import { finesReportsStateGuard } from './guards/fines-reports-state-guard/fines-reports-state.guard';
 import { FINES_ROUTING_PATHS } from '@app/flows/fines/routing/constants/fines-routing-paths.constant';
@@ -41,6 +42,7 @@ export const routing: Routes = [
           import('../fines-reports-select-business-units/fines-reports-select-business-units.component').then(
             (c) => c.FinesReportsSelectBusinessUnitsComponent,
           ),
+        canDeactivate: [canDeactivateGuard],
         data: {
           title: FINES_REPORTS_ROUTING_TITLES.children.selectBusinessUnits,
           requiresCreateReport: true,
@@ -59,9 +61,26 @@ export const routing: Routes = [
         data: {
           title: FINES_REPORTS_ROUTING_TITLES.children.businessUnitWarning,
           requiresCreateReport: true,
+          requiresSelectedBusinessUnits: true,
         },
         resolve: {
           title: TitleResolver,
+        },
+      },
+      {
+        path: FINES_REPORTS_ROUTING_PATHS.children.parameters,
+        loadComponent: () =>
+          import('../fines-reports-parameters/fines-reports-parameters.component').then(
+            (c) => c.FinesReportsParametersComponent,
+          ),
+        data: {
+          title: FINES_REPORTS_ROUTING_TITLES.children.parameters,
+          requiresCreateReport: true,
+          requiresSelectedBusinessUnits: true,
+        },
+        resolve: {
+          title: TitleResolver,
+          businessUnits: fetchBusinessUnitsResolver,
         },
       },
     ],

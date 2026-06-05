@@ -1,6 +1,7 @@
 import { Location } from '@angular/common';
 import { ChangeDetectionStrategy, Component, inject, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
+import { AbstractFormParentBaseComponent } from '@hmcts/opal-frontend-common/components/abstract/abstract-form-parent-base';
 import { IAbstractFormBaseForm } from '@hmcts/opal-frontend-common/components/abstract/abstract-form-base/interfaces';
 import { GovukHeadingWithCaptionComponent } from '@hmcts/opal-frontend-common/components/govuk/govuk-heading-with-caption';
 import { IOpalFinesBusinessUnit } from '@services/fines/opal-fines-service/interfaces/opal-fines-business-unit.interface';
@@ -22,11 +23,11 @@ interface IFinesReportsBusinessUnitNavigationState {
   templateUrl: './fines-reports-select-business-units.component.html',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class FinesReportsSelectBusinessUnitsComponent implements OnInit {
-  private readonly activatedRoute = inject(ActivatedRoute);
+export class FinesReportsSelectBusinessUnitsComponent extends AbstractFormParentBaseComponent implements OnInit {
+  private readonly route = inject(ActivatedRoute);
   private readonly location = inject(Location);
-  private readonly router = inject(Router);
-  private readonly routeWithReportId = this.activatedRoute.parent ?? this.activatedRoute;
+  private readonly routerService = inject(Router);
+  private readonly routeWithReportId = this.route.parent ?? this.route;
   private readonly reportId = this.routeWithReportId.snapshot.paramMap.get('reportId') ?? '';
 
   public readonly pageHeading = FINES_REPORTS_ROUTING_TITLES.children.selectBusinessUnits;
@@ -71,10 +72,10 @@ export class FinesReportsSelectBusinessUnitsComponent implements OnInit {
   /**
    * Reads selected business unit ids from the current navigation state.
    *
-   * @returns Selected business unit ids restored from navigation, or an empty array when none were supplied.
+   * @returns Selected business unit ids restored from navigation or browser history state, or an empty array when none were supplied.
    */
   private getSelectedBusinessUnitIdsFromNavigation(): number[] {
-    const navigationState = this.router.currentNavigation()?.extras.state as
+    const navigationState = this.routerService.currentNavigation()?.extras.state as
       | IFinesReportsBusinessUnitNavigationState
       | undefined;
     const locationState = this.location.getState() as IFinesReportsBusinessUnitNavigationState | undefined;
@@ -89,21 +90,22 @@ export class FinesReportsSelectBusinessUnitsComponent implements OnInit {
    * @param selectedBusinessUnitIds - Selected business unit ids waiting for warning confirmation.
    */
   private navigateToBusinessUnitWarning(selectedBusinessUnitIds: number[]): void {
-    this.router.navigate(['..', FINES_REPORTS_ROUTING_PATHS.children.businessUnitWarning], {
-      relativeTo: this.activatedRoute,
+    this.routerService.navigate(['..', FINES_REPORTS_ROUTING_PATHS.children.businessUnitWarning], {
+      relativeTo: this.route,
       state: { selectedBusinessUnitIds },
     });
   }
 
   /**
-   * Stores the selected business unit ids and performs the temporary continue redirect.
+   * Navigates to the parameters screen with the selected business unit ids in route state.
    *
    * @param selectedBusinessUnitIds - Selected business unit ids to continue with.
    */
   private proceedWithSelectedBusinessUnits(selectedBusinessUnitIds: number[]): void {
     this.selectedBusinessUnitIds = selectedBusinessUnitIds;
-    this.router.navigate(['..', FINES_REPORTS_ROUTING_PATHS.children.summaryList], {
-      relativeTo: this.activatedRoute,
+    this.routerService.navigate(['..', FINES_REPORTS_ROUTING_PATHS.children.parameters], {
+      relativeTo: this.route,
+      state: { selectedBusinessUnitIds },
     });
   }
 
@@ -111,9 +113,18 @@ export class FinesReportsSelectBusinessUnitsComponent implements OnInit {
    * Navigates back to the report summary list.
    */
   public handleCancel(): void {
-    this.router.navigate(['..', FINES_REPORTS_ROUTING_PATHS.children.summaryList], {
-      relativeTo: this.activatedRoute,
+    this.routerService.navigate(['..', FINES_REPORTS_ROUTING_PATHS.children.summaryList], {
+      relativeTo: this.route,
     });
+  }
+
+  /**
+   * Updates the page-level unsaved changes state from the child form.
+   *
+   * @param unsavedChanges - Whether the business unit form currently has unsaved changes.
+   */
+  public handleUnsavedChanges(unsavedChanges: boolean): void {
+    this.stateUnsavedChanges = unsavedChanges;
   }
 
   /**
@@ -133,12 +144,11 @@ export class FinesReportsSelectBusinessUnitsComponent implements OnInit {
   }
 
   /**
-   * Populates the current business unit list from the route resolver and sorts it alphabetically.
+   * Populates the current business unit list from the route resolver, sorts it alphabetically,
+   * and restores any in-progress selections.
    */
   public ngOnInit(): void {
-    const resolverData = this.activatedRoute.snapshot.data['businessUnits'] as
-      | IOpalFinesBusinessUnitRefData
-      | undefined;
+    const resolverData = this.route.snapshot.data['businessUnits'] as IOpalFinesBusinessUnitRefData | undefined;
 
     this.businessUnits = [...(resolverData?.refData ?? [])].sort((left, right) =>
       left.business_unit_name.localeCompare(right.business_unit_name),

@@ -24,6 +24,11 @@ export class FinesReportsSummaryListComponent {
     },
   );
 
+  /**
+   * Returns the main page heading for the current report summary list.
+   *
+   * @returns The configured heading for the current report.
+   */
   public get pageHeading(): string {
     return (
       FINES_REPORT_SUMMARY_LIST_REPORT_CONFIGURATION.find((config) => config.id === this.reportId())?.heading ?? ''

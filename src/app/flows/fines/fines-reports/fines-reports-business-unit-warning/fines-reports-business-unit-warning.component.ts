@@ -34,7 +34,7 @@ export class FinesReportsBusinessUnitWarningComponent implements OnInit {
   /**
    * Reads selected business unit ids from the current navigation state.
    *
-   * @returns Selected business unit ids restored from navigation, or an empty array when none were supplied.
+   * @returns Selected business unit ids restored from navigation or browser history state, or an empty array when none were supplied.
    */
   private getSelectedBusinessUnitIdsFromNavigation(): number[] {
     const navigationState = this.router.currentNavigation()?.extras.state as
@@ -57,16 +57,17 @@ export class FinesReportsBusinessUnitWarningComponent implements OnInit {
   }
 
   /**
-   * Performs the temporary continue redirect after the warning has been accepted.
+   * Continues to the parameters screen after the warning has been accepted.
    */
   public handleContinue(): void {
-    this.router.navigate(['..', FINES_REPORTS_ROUTING_PATHS.children.summaryList], {
+    this.router.navigate(['..', FINES_REPORTS_ROUTING_PATHS.children.parameters], {
       relativeTo: this.activatedRoute,
+      state: { selectedBusinessUnitIds: this.selectedBusinessUnitIds },
     });
   }
 
   /**
-   * Hydrates the selected business unit ids from navigation state or redirects back to selection when missing.
+   * Hydrates the selected business unit ids from navigation or browser history state and redirects back to selection when missing.
    */
   public ngOnInit(): void {
     this.selectedBusinessUnitIds = this.getSelectedBusinessUnitIdsFromNavigation();

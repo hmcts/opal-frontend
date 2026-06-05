@@ -84,6 +84,11 @@ export class FinesReportsSelectBusinessUnitsFormComponent extends AbstractFormBa
   protected override formSubmit = new EventEmitter<IAbstractFormBaseForm<IFinesReportsSelectBusinessUnitsFormState>>();
 
   /**
+   * Emits whether the selection form currently contains unsaved changes.
+   */
+  @Output() protected override unsavedChanges = new EventEmitter<boolean>();
+
+  /**
    * Business units available for the selected operational report.
    */
   @Input({ required: true }) public businessUnits!: IOpalFinesBusinessUnit[];

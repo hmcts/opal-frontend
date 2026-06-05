@@ -9,6 +9,7 @@
     [businessUnits]="businessUnits"
     [initialSelectedBusinessUnitIds]="selectedBusinessUnitIds"
     (cancelSelection)="handleCancel()"
+    (unsavedChanges)="handleUnsavedChanges($event)"
     (formSubmit)="handleContinue($event)"
   ></app-fines-reports-select-business-units-form>
 </div>

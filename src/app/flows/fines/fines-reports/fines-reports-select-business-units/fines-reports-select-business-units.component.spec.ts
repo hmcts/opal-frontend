@@ -166,8 +166,9 @@ describe('FinesReportsSelectBusinessUnitsComponent', () => {
     });
 
     expect(component.selectedBusinessUnitIds).toEqual([61, 68]);
-    expect(router.navigate).toHaveBeenCalledWith(['..', FINES_REPORTS_ROUTING_PATHS.children.summaryList], {
+    expect(router.navigate).toHaveBeenCalledWith(['..', FINES_REPORTS_ROUTING_PATHS.children.parameters], {
       relativeTo: expect.any(Object),
+      state: { selectedBusinessUnitIds: [61, 68] },
     });
   });
 
@@ -187,8 +188,9 @@ describe('FinesReportsSelectBusinessUnitsComponent', () => {
     });
 
     expect(component.selectedBusinessUnitIds).toEqual([61]);
-    expect(router.navigate).toHaveBeenCalledWith(['..', FINES_REPORTS_ROUTING_PATHS.children.summaryList], {
+    expect(router.navigate).toHaveBeenCalledWith(['..', FINES_REPORTS_ROUTING_PATHS.children.parameters], {
       relativeTo: expect.any(Object),
+      state: { selectedBusinessUnitIds: [61] },
     });
   });
 
@@ -204,8 +206,11 @@ describe('FinesReportsSelectBusinessUnitsComponent', () => {
     expect(component.selectedBusinessUnitIds).toEqual(
       businessUnits.map((businessUnit) => businessUnit.business_unit_id),
     );
-    expect(router.navigate).toHaveBeenCalledWith(['..', FINES_REPORTS_ROUTING_PATHS.children.summaryList], {
+    expect(router.navigate).toHaveBeenCalledWith(['..', FINES_REPORTS_ROUTING_PATHS.children.parameters], {
       relativeTo: expect.any(Object),
+      state: {
+        selectedBusinessUnitIds: businessUnits.map((businessUnit) => businessUnit.business_unit_id),
+      },
     });
   });
 
@@ -235,7 +240,6 @@ describe('FinesReportsSelectBusinessUnitsComponent', () => {
       FINES_REPORTS_SUMMARY_LIST_ROUTING_PATHS.children.operationalReportsByPayments,
       DEFAULT_BUSINESS_UNITS,
       selectedBusinessUnitIds,
-      false,
     );
 
     expect(component.selectedBusinessUnitIds).toEqual(selectedBusinessUnitIds);
@@ -247,8 +251,19 @@ describe('FinesReportsSelectBusinessUnitsComponent', () => {
       FINES_REPORTS_SUMMARY_LIST_ROUTING_PATHS.children.operationalReportsByPayments,
       DEFAULT_BUSINESS_UNITS,
       selectedBusinessUnitIds,
+      false,
     );
 
     expect(component.selectedBusinessUnitIds).toEqual(selectedBusinessUnitIds);
+  });
+
+  it('should update canDeactivate state from child unsaved changes', async () => {
+    const { component } = await setup(FINES_REPORTS_SUMMARY_LIST_ROUTING_PATHS.children.operationalReportsByPayments);
+
+    component.handleUnsavedChanges(true);
+    expect(component['canDeactivate']()).toBe(false);
+
+    component.handleUnsavedChanges(false);
+    expect(component['canDeactivate']()).toBe(true);
   });
 });

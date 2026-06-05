@@ -1,4 +1,5 @@
 import { TestBed } from '@angular/core/testing';
+import { Location } from '@angular/common';
 import { ActivatedRouteSnapshot, Router, RouterStateSnapshot, UrlTree, convertToParamMap } from '@angular/router';
 import { createSpyObj } from '@app/testing/create-spy-obj.helper';
 import { FINES_PERMISSIONS } from '@app/constants/fines-permissions.constant';
@@ -20,6 +21,8 @@ describe('finesReportsStateGuard', () => {
   let mockPermissionsService: any;
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   let mockOpalUserService: any;
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  let mockLocation: any;
 
   const runGuard = async (reportId: string | null, data: Record<string, unknown> = {}, reportIdFromParent = false) => {
     const route = {
@@ -38,17 +41,21 @@ describe('finesReportsStateGuard', () => {
   };
 
   beforeEach(() => {
-    mockRouter = createSpyObj('Router', ['createUrlTree']);
+    mockRouter = createSpyObj('Router', ['createUrlTree', 'currentNavigation']);
     mockPermissionsService = createSpyObj('PermissionsService', ['getUniquePermissions']);
     mockOpalUserService = createSpyObj('OpalUserService', ['getLoggedInUserState']);
+    mockLocation = createSpyObj('Location', ['getState']);
 
     mockRouter.createUrlTree.mockReturnValue(new UrlTree());
+    mockRouter.currentNavigation.mockReturnValue(null);
     mockPermissionsService.getUniquePermissions.mockReturnValue([]);
     mockOpalUserService.getLoggedInUserState.mockReturnValue(of({}));
+    mockLocation.getState.mockReturnValue({});
 
     TestBed.configureTestingModule({
       providers: [
         { provide: Router, useValue: mockRouter },
+        { provide: Location, useValue: mockLocation },
         { provide: PermissionsService, useValue: mockPermissionsService },
         { provide: OpalUserService, useValue: mockOpalUserService },
       ],
@@ -103,11 +110,57 @@ describe('finesReportsStateGuard', () => {
     expect(mockRouter.createUrlTree).toHaveBeenCalledWith([
       '/',
       FINES_ROUTING_PATHS.root,
-      FINES_DASHBOARD_ROUTING_PATHS.root,
-      FINES_DASHBOARD_ROUTING_PATHS.children.reports,
+      FINES_ROUTING_PATHS.children.reports.root,
       FINES_REPORTS_SUMMARY_LIST_ROUTING_PATHS.children.yourReports,
       FINES_REPORTS_ROUTING_PATHS.children.summaryList,
     ]);
+  });
+
+  it('should redirect report parameter routes back to business unit selection when no selected business units are stored', async () => {
+    mockPermissionsService.getUniquePermissions.mockReturnValue([FINES_PERMISSIONS['operational-report-by-payments']]);
+    const expectedUrlTree = new UrlTree();
+    mockRouter.createUrlTree.mockReturnValue(expectedUrlTree);
+
+    const result = await runGuard(
+      FINES_REPORTS_SUMMARY_LIST_ROUTING_PATHS.children.operationalReportsByPayments,
+      { requiresCreateReport: true, requiresSelectedBusinessUnits: true },
+      true,
+    );
+
+    expect(result).toBe(expectedUrlTree);
+    expect(mockRouter.createUrlTree).toHaveBeenCalledWith([
+      '/',
+      FINES_ROUTING_PATHS.root,
+      FINES_ROUTING_PATHS.children.reports.root,
+      FINES_REPORTS_SUMMARY_LIST_ROUTING_PATHS.children.operationalReportsByPayments,
+      FINES_REPORTS_ROUTING_PATHS.children.selectBusinessUnits,
+    ]);
+  });
+
+  it('should allow report parameter routes when selected business units are already stored', async () => {
+    mockPermissionsService.getUniquePermissions.mockReturnValue([FINES_PERMISSIONS['operational-report-by-payments']]);
+    mockRouter.currentNavigation.mockReturnValue({ extras: { state: { selectedBusinessUnitIds: [61, 68] } } });
+
+    const result = await runGuard(
+      FINES_REPORTS_SUMMARY_LIST_ROUTING_PATHS.children.operationalReportsByPayments,
+      { requiresCreateReport: true, requiresSelectedBusinessUnits: true },
+      true,
+    );
+
+    expect(result).toBe(true);
+  });
+
+  it('should allow report parameter routes when selected business units are available in location state', async () => {
+    mockPermissionsService.getUniquePermissions.mockReturnValue([FINES_PERMISSIONS['operational-report-by-payments']]);
+    mockLocation.getState.mockReturnValue({ selectedBusinessUnitIds: [61, 68] });
+
+    const result = await runGuard(
+      FINES_REPORTS_SUMMARY_LIST_ROUTING_PATHS.children.operationalReportsByPayments,
+      { requiresCreateReport: true, requiresSelectedBusinessUnits: true },
+      true,
+    );
+
+    expect(result).toBe(true);
   });
 
   it('should redirect to access denied when the user lacks the required permission', async () => {
