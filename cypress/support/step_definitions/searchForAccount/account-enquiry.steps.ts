@@ -117,6 +117,35 @@ When('I navigate directly to the last created published account details', () => 
 });
 
 /**
+ * @step Intercepts the minor creditor header summary API and forces the awarded value negative.
+ */
+When('the minor creditor header summary API returns awarded value {string}', (awardedValue: string) => {
+  const normalizedAwardedValue = awardedValue.trim();
+  const numericAwardedValue = Number(normalizedAwardedValue);
+
+  if (!Number.isFinite(numericAwardedValue)) {
+    throw new Error(`Expected a numeric awarded value but received "${awardedValue}"`);
+  }
+
+  log('intercept', 'Overriding minor creditor header summary awarded value', {
+    awardedValue: numericAwardedValue,
+  });
+
+  cy.intercept('GET', '**/minor-creditor-accounts/*/header-summary', (req) => {
+    req.continue((res) => {
+      const body = res.body as { financials?: { awarded?: number } };
+
+      if (!body?.financials) {
+        throw new Error('Expected minor creditor header summary response to include financials');
+      }
+
+      body.financials.awarded = numericAwardedValue;
+      res.send({ body });
+    });
+  }).as('minorCreditorHeaderSummaryOverride');
+});
+
+/**
  * @step Verifies that any page/account/summary header contains the given string.
  *
  * @remarks
@@ -132,6 +161,26 @@ Then(/^I should see the (?:page|account(?: summary)?) header contains "([^"]+)"$
   const expectedWithUniq = applyUniqPlaceholder(expected);
   log('assert', 'Asserting header contains', { expected: expectedWithUniq });
   atAGlanceDetails().assertHeaderContains(expectedWithUniq);
+});
+
+/**
+ * @step Asserts the intercepted minor creditor header summary response awarded value.
+ */
+Then('the intercepted minor creditor header summary awarded value is {string}', (expectedAwardedValue: string) => {
+  const normalizedExpectedAwardedValue = expectedAwardedValue.trim();
+  const numericExpectedAwardedValue = Number(normalizedExpectedAwardedValue);
+
+  if (!Number.isFinite(numericExpectedAwardedValue)) {
+    throw new Error(`Expected a numeric awarded value but received "${expectedAwardedValue}"`);
+  }
+
+  log('assert', 'Asserting intercepted minor creditor header summary awarded value', {
+    awardedValue: numericExpectedAwardedValue,
+  });
+
+  cy.wait('@minorCreditorHeaderSummaryOverride')
+    .its('response.body.financials.awarded')
+    .should('eq', numericExpectedAwardedValue);
 });
 
 /**
@@ -668,6 +717,16 @@ Then('I should see the following minor creditor values on the At a glance tab:',
 });
 
 /**
+ * @step Asserts the summary metric values shown on a minor creditor account.
+ */
+Then('I should see the following minor creditor summary metric values:', (table: DataTable) => {
+  const expectedValues = normalizeHash(table);
+
+  log('assert', 'Asserting minor creditor summary metric values', { expectedValues });
+  atAGlanceDetails().assertMinorCreditorSummaryMetricValues(expectedValues);
+});
+
+/**
  * @step Asserts the payment terms tab is active.
  */
 Then('I should return to the Payment terms tab', () => {
@@ -964,6 +1023,11 @@ When('I start changing the non-paying parent or guardian details', () => {
   flow().openNonPayingParentGuardianChangeForm();
 });
 
+When('I view the amend minor creditor details form', () => {
+  log('step', 'View amend minor creditor details form');
+  flow().openMinorCreditorChangeForm();
+});
+
 When('I cancel changing parent or guardian details without making changes', () => {
   log('step', 'Cancel amend parent or guardian details without making changes');
   flow().cancelAmendParentGuardianWithoutChanges();
@@ -977,6 +1041,35 @@ When('I attempt to cancel changing parent or guardian details and choose Cancel 
 When('I attempt to cancel changing parent or guardian details and choose OK on the confirmation dialog', () => {
   log('step', 'Cancel amend parent or guardian details and leave page');
   flow().cancelAmendParentGuardianAndLeave();
+});
+
+When('I attempt to cancel changing minor creditor details and choose OK on the confirmation dialog', () => {
+  log('step', 'Cancel amend minor creditor details and leave page');
+  flow().cancelAmendMinorCreditorAndLeave();
+});
+
+When('I amend the minor creditor first name to {string} and discard the changes', (value: string) => {
+  const valueWithUniq = applyUniqPlaceholder(value);
+  log('step', 'Amend minor creditor first name and discard changes', { value: valueWithUniq });
+  flow().amendMinorCreditorFirstNameAndDiscard(valueWithUniq);
+});
+
+When('I amend the minor creditor first name to {string} and save', (value: string) => {
+  const valueWithUniq = applyUniqPlaceholder(value);
+  log('step', 'Amend minor creditor first name and save', { value: valueWithUniq });
+  flow().amendMinorCreditorFirstNameAndSave(valueWithUniq);
+});
+
+When('I attempt to amend the minor creditor first name to {string} and save', (value: string) => {
+  const valueWithUniq = applyUniqPlaceholder(value);
+  log('step', 'Attempt to amend minor creditor first name and save', { value: valueWithUniq });
+  flow().attemptToAmendMinorCreditorFirstNameAndSave(valueWithUniq);
+});
+
+When('I attempt to save the amend minor creditor details with first name {string}', (value: string) => {
+  const valueWithUniq = applyUniqPlaceholder(value);
+  log('step', 'Attempt to save current amend minor creditor details with first name', { value: valueWithUniq });
+  flow().attemptToSaveCurrentMinorCreditorAmendFormWithFirstName(valueWithUniq);
 });
 
 /**
@@ -1000,6 +1093,16 @@ Then('I should be on the amend parent or guardian details page', () => {
 Then('I should remain on the amend parent or guardian details page', () => {
   log('assert', 'Remain on amend parent or guardian details page');
   flow().assertOnAmendParentGuardianDetailsPage();
+});
+
+Then('I should be on the amend minor creditor details page', () => {
+  log('assert', 'Amend minor creditor details page is visible');
+  flow().assertOnAmendMinorCreditorDetailsPage();
+});
+
+Then('I should remain on the amend minor creditor details page', () => {
+  log('assert', 'Remain on amend minor creditor details page');
+  flow().assertOnAmendMinorCreditorDetailsPage();
 });
 
 /**
@@ -1057,6 +1160,11 @@ Then('I should return to the account details page Parent or guardian tab', () =>
   navActions().assertParentGuardianTabIsActive();
 });
 
+Then('I should return to the account details page Creditor tab', () => {
+  log('assert', 'Return to Creditor details tab');
+  navActions().assertCreditorTabIsActive();
+});
+
 /**
  * @step Asserts the defendant name displayed on the account summary contains the expected value.
  *
@@ -1078,6 +1186,12 @@ Then('I should see the parent or guardian name contains {string}', (expected: st
   flow().assertParentGuardianNameContains(expectedWithUniq);
 });
 
+Then('I should see the minor creditor name contains {string}', (expected: string) => {
+  const expectedWithUniq = applyUniqPlaceholder(expected);
+  log('assert', 'Minor creditor name contains', { expected: expectedWithUniq });
+  flow().assertMinorCreditorNameContains(expectedWithUniq);
+});
+
 Then('I should see the parent or guardian first name field contains {string}', (expected: string) => {
   const expectedWithUniq = applyUniqPlaceholder(expected);
   log('assert', 'Parent or guardian first name field contains', { expected: expectedWithUniq });
@@ -1088,6 +1202,12 @@ Then('I should see the amend parent or guardian first name field contains {strin
   const expectedWithUniq = applyUniqPlaceholder(expected);
   log('assert', 'Amend parent or guardian first name field contains', { expected: expectedWithUniq });
   flow().assertAmendParentGuardianFirstName(expectedWithUniq);
+});
+
+When('I enter {string} into the amend minor creditor first name field', (value: string) => {
+  const valueWithUniq = applyUniqPlaceholder(value);
+  log('step', 'Enter amend minor creditor first name', { value: valueWithUniq });
+  flow().enterAmendMinorCreditorFirstName(valueWithUniq);
 });
 
 /**
@@ -1163,6 +1283,12 @@ Then('I verify parent or guardian amendments via API for guardian name {string}'
   flow().verifyParentGuardianAmendmentsViaApi(expectedGuardianName);
 });
 
+Then('I verify minor creditor amendments via API for first name {string}', (expectedForename: string) => {
+  const expectedWithUniq = applyUniqPlaceholder(expectedForename);
+  log('assert', 'Verify minor creditor amendments via API', { expectedForename: expectedWithUniq });
+  flow().verifyMinorCreditorAmendmentsViaApi(expectedWithUniq);
+});
+
 /**
  * @step Verifies via API that no defendant amendments were created.
  */
@@ -1210,6 +1336,16 @@ When('I attempt to save the parent or guardian amend details', () => {
 Then('I should see the parent or guardian amend error summary contains {string}', (expected: string) => {
   log('assert', 'Parent or guardian amend error summary contains', { expected });
   flow().assertAmendParentGuardianErrorSummaryContains(expected);
+});
+
+When('I save the minor creditor amend details', () => {
+  log('step', 'Save amend minor creditor details');
+  flow().saveMinorCreditorDetails();
+});
+
+Then('I should see the minor creditor amend error summary contains {string}', (expected: string) => {
+  log('assert', 'Minor creditor amend error summary contains', { expected });
+  flow().assertAmendMinorCreditorErrorSummaryContains(expected);
 });
 
 /**

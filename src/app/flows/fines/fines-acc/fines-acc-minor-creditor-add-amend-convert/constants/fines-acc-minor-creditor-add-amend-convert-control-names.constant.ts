@@ -1,0 +1,18 @@
+export const FINES_ACC_MINOR_CREDITOR_ADD_AMEND_CONVERT_CONTROL_NAMES = {
+  creditorType: 'facc_minor_creditor_creditor_type',
+  title: 'facc_minor_creditor_title',
+  forenames: 'facc_minor_creditor_forenames',
+  surname: 'facc_minor_creditor_surname',
+  companyName: 'facc_minor_creditor_company_name',
+  addressLine1: 'facc_minor_creditor_address_line_1',
+  addressLine2: 'facc_minor_creditor_address_line_2',
+  addressLine3: 'facc_minor_creditor_address_line_3',
+  addressLine4: 'facc_minor_creditor_address_line_4',
+  addressLine5: 'facc_minor_creditor_address_line_5',
+  postCode: 'facc_minor_creditor_post_code',
+  payByBacs: 'facc_minor_creditor_pay_by_bacs',
+  bankAccountName: 'facc_minor_creditor_bank_account_name',
+  bankSortCode: 'facc_minor_creditor_bank_sort_code',
+  bankAccountNumber: 'facc_minor_creditor_bank_account_number',
+  bankAccountReference: 'facc_minor_creditor_bank_account_reference',
+} as const;
