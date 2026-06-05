@@ -201,13 +201,45 @@ export FEATURES_LAUNCH_DARKLY_STREAM=true
 
 ```
 
+#### 8. Local feature flag overrides
+
+Feature flag defaults are configured in `config/default.json` under `features.feature-flags`.
+
+The `override` setting controls where the UI gets its feature flags from:
+
+- `false` means Launch Darkly is used.
+- `true` means the UI uses the configured `releases` values instead of Launch Darkly.
+
+For local development, set `FEATURE_FLAGS_OVERRIDE` to `true` and set the release flags you need. The environment variable mappings are defined in `config/custom-environment-variables.json`, so these can be exported from your shell, including `~/.zshrc`.
+
+For example:
+
+```bash
+
+export FEATURE_FLAGS_OVERRIDE=true
+export RELEASE_1A_ENABLED=true
+export RELEASE_1B_ENABLED=true
+
+```
+
+After updating `~/.zshrc`, reload your shell or run:
+
+```bash
+
+source ~/.zshrc
+yarn dev:ssr
+
+```
+
+Leave `FEATURE_FLAGS_OVERRIDE` unset or set to `false` in deployed environments so Launch Darkly remains the source of truth.
+
 ## Build
 
 Run `yarn build:ssr` to build the project. The build artifacts will be stored in the `dist/opal-frontend` directory. This compiles both the node.js server-side code and angular code.
 
 ## Code style
 
-We use [ESLint](https://github.com/typescript-eslint/typescript-eslint) and [Prettier](https://prettier.io/)
+We use [ESLint](https://github.com/typescript-eslint/typescript-eslint) and [Prettier](https://prettier.io/).
 
 Running the linting:
 

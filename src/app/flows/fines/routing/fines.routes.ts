@@ -25,9 +25,17 @@ import { finesSaMinorCreditorAccountsResolver } from '../fines-sa/routing/resolv
 import { dashboardLandingGuard } from './guards/dashboard-landing/dashboard-landing.guard';
 import { finesSectionPermissionsGuard } from './guards/fines-section-permissions/fines-section-permissions.guard';
 import { PRIMARY_NAV_HIDDEN_ROUTE_DATA } from '@app/constants/route-data.constant';
-import { RELEASE_1A_FEATURE_FLAG } from '../constants/release-feature-flags.constant';
+import {
+  RELEASE_1A_FEATURE_FLAG,
+  RELEASE_1C_WRITE_OFF_FEATURE_FLAG,
+  RELEASE_1C_ENFORCEMENT_OPERATIONAL_REPORTING_FEATURE_FLAG,
+} from '../constants/release-feature-flags.constant';
 
 export const release1aFeatureFlagGuard = featureFlagRedirectGuard(RELEASE_1A_FEATURE_FLAG);
+export const release1cWriteOffFeatureFlagGuard = featureFlagRedirectGuard(RELEASE_1C_WRITE_OFF_FEATURE_FLAG);
+export const release1cEnforcementOperationalReportingFeatureFlagGuard = featureFlagRedirectGuard(
+  RELEASE_1C_ENFORCEMENT_OPERATIONAL_REPORTING_FEATURE_FLAG,
+);
 
 export const finesRouting: Routes = [
   {
@@ -130,7 +138,8 @@ export const finesRouting: Routes = [
         path: FINES_ROUTING_PATHS.children.con.root,
         loadComponent: () => import('../fines-con/fines-con.component').then((c) => c.FinesConComponent),
         children: consolidationRouting,
-        canActivate: [authGuard, finesSectionPermissionsGuard],
+        canActivate: [authGuard, release1cWriteOffFeatureFlagGuard, finesSectionPermissionsGuard],
+        canActivateChild: [release1cWriteOffFeatureFlagGuard],
         data: {
           sectionKey: FINES_DASHBOARD_ROUTING_PATHS.children.accounts,
           ...PRIMARY_NAV_HIDDEN_ROUTE_DATA,
@@ -140,7 +149,12 @@ export const finesRouting: Routes = [
         path: FINES_ROUTING_PATHS.children.reports.root,
         loadComponent: () => import('../fines-reports/fines-reports.component').then((c) => c.FinesReportsComponent),
         children: reportingRouting,
-        canActivate: [authGuard, finesSectionPermissionsGuard],
+        canActivate: [
+          authGuard,
+          release1cEnforcementOperationalReportingFeatureFlagGuard,
+          finesSectionPermissionsGuard,
+        ],
+        canActivateChild: [release1cEnforcementOperationalReportingFeatureFlagGuard],
         data: {
           sectionKey: FINES_DASHBOARD_ROUTING_PATHS.children.reports,
         },
