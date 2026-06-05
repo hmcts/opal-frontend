@@ -1,0 +1,12 @@
+<div class="govuk-grid-column-two-thirds">
+  <h1 class="govuk-heading-l">{{ warningHeading }}</h1>
+
+  <p class="govuk-body">The report creation may time out due to too much data.</p>
+
+  <div class="govuk-button-group">
+    <button buttonId="continue-business-unit-warning" opalLibGovukButton type="button" (click)="handleContinue()">
+      Continue
+    </button>
+    <opal-lib-govuk-cancel-link cancelLinkText="Go back" (linkClickEvent)="handleGoBack()"></opal-lib-govuk-cancel-link>
+  </div>
+</div>

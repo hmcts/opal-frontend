@@ -5,5 +5,6 @@ export const FINES_REPORTS_ROUTING_PATHS: IFinesReportsRoutingPaths = {
   children: {
     summaryList: 'summary-list',
     selectBusinessUnits: 'select-business-units',
+    businessUnitWarning: 'business-unit-warning',
   },
 };

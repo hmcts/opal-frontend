@@ -50,6 +50,20 @@ export const routing: Routes = [
           businessUnits: fetchBusinessUnitsResolver,
         },
       },
+      {
+        path: FINES_REPORTS_ROUTING_PATHS.children.businessUnitWarning,
+        loadComponent: () =>
+          import('../fines-reports-business-unit-warning/fines-reports-business-unit-warning.component').then(
+            (c) => c.FinesReportsBusinessUnitWarningComponent,
+          ),
+        data: {
+          title: FINES_REPORTS_ROUTING_TITLES.children.businessUnitWarning,
+          requiresCreateReport: true,
+        },
+        resolve: {
+          title: TitleResolver,
+        },
+      },
     ],
   },
 ];

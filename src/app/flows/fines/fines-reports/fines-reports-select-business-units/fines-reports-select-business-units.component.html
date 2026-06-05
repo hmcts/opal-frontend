@@ -7,6 +7,7 @@
 
   <app-fines-reports-select-business-units-form
     [businessUnits]="businessUnits"
+    [initialSelectedBusinessUnitIds]="selectedBusinessUnitIds"
     (cancelSelection)="handleCancel()"
     (formSubmit)="handleContinue($event)"
   ></app-fines-reports-select-business-units-form>

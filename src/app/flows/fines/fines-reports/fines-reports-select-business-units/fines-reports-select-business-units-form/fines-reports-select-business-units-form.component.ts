@@ -89,6 +89,11 @@ export class FinesReportsSelectBusinessUnitsFormComponent extends AbstractFormBa
   @Input({ required: true }) public businessUnits!: IOpalFinesBusinessUnit[];
 
   /**
+   * Previously selected business unit ids to restore when returning from the warning screen.
+   */
+  @Input() public initialSelectedBusinessUnitIds: number[] = [];
+
+  /**
    * Emits when the user selects the cancel link.
    */
   @Output() public cancelSelection = new EventEmitter<void>();
@@ -152,7 +157,12 @@ export class FinesReportsSelectBusinessUnitsFormComponent extends AbstractFormBa
    */
   private createBusinessUnitControlsRecord(): FormRecord<FormControl<boolean>> {
     const controls = this.businessUnits.reduce<Record<string, FormControl<boolean>>>((acc, businessUnit) => {
-      acc[businessUnit.business_unit_id.toString()] = new FormControl(false, { nonNullable: true });
+      acc[businessUnit.business_unit_id.toString()] = new FormControl(
+        this.initialSelectedBusinessUnitIds.includes(businessUnit.business_unit_id),
+        {
+          nonNullable: true,
+        },
+      );
       return acc;
     }, {});
 
@@ -244,6 +254,7 @@ export class FinesReportsSelectBusinessUnitsFormComponent extends AbstractFormBa
     }
 
     this.refreshBusinessUnitSelections(record);
+    this.updateAllBusinessUnitsControlFromRecord(record);
     record.valueChanges.pipe(takeUntil(this.ngUnsubscribe)).subscribe(() => {
       this.refreshBusinessUnitSelections(record);
       this.updateAllBusinessUnitsControlFromRecord(record);

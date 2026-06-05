@@ -11,7 +11,7 @@ describe('FinesReportsSelectBusinessUnitsFormComponent', () => {
 
   const businessUnits = OPAL_FINES_BUSINESS_UNIT_REF_DATA_MOCK.refData.slice(0, 3);
 
-  const setup = async (units = businessUnits) => {
+  const setup = async (units = businessUnits, initialSelectedBusinessUnitIds: number[] = []) => {
     await TestBed.configureTestingModule({
       imports: [FinesReportsSelectBusinessUnitsFormComponent],
       providers: [
@@ -25,6 +25,7 @@ describe('FinesReportsSelectBusinessUnitsFormComponent', () => {
     fixture = TestBed.createComponent(FinesReportsSelectBusinessUnitsFormComponent);
     component = fixture.componentInstance;
     component.businessUnits = units;
+    component.initialSelectedBusinessUnitIds = initialSelectedBusinessUnitIds;
     fixture.detectChanges();
 
     return { component, fixture };
@@ -80,6 +81,27 @@ describe('FinesReportsSelectBusinessUnitsFormComponent', () => {
     expect(fixture.nativeElement.textContent).toContain('Historical Debt');
     expect(fixture.nativeElement.textContent).toContain('London Central & South East');
     expect(fixture.nativeElement.textContent).toContain('London Confiscation Orders');
+  });
+
+  it('should restore previously selected business unit ids when provided', async () => {
+    const { component } = await setup(businessUnits, [61, 68]);
+    const record = component['form'].get('fines_reports_select_business_unit_ids') as FormRecord<FormControl<boolean>>;
+
+    expect(record.get('61')?.value).toBe(true);
+    expect(record.get('67')?.value).toBe(false);
+    expect(record.get('68')?.value).toBe(true);
+    expect(component.selectedBusinessUnitIds()).toEqual([61, 68]);
+    expect(component.selectedCount()).toBe(2);
+    expect(component.allBusinessUnitsControl.value).toBe(false);
+  });
+
+  it('should select the master checkbox when every restored business unit is selected', async () => {
+    const { component } = await setup(businessUnits, [61, 67, 68]);
+
+    expect(component.selectedBusinessUnitIds()).toEqual([61, 67, 68]);
+    expect(component.selectedCount()).toBe(3);
+    expect(component.isAllSelected()).toBe(true);
+    expect(component.allBusinessUnitsControl.value).toBe(true);
   });
 
   it('should update selected business unit ids and count when checkbox values change', async () => {

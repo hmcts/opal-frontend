@@ -38,4 +38,23 @@ describe('finesReports routes', () => {
       },
     });
   });
+
+  it('should load the business unit warning route', () => {
+    const reportRoute = routing.find((route) => route.path === ':reportId');
+    const businessUnitWarningRoute = reportRoute?.children?.find(
+      (route) => route.path === FINES_REPORTS_ROUTING_PATHS.children.businessUnitWarning,
+    );
+
+    expect(businessUnitWarningRoute).toEqual({
+      path: FINES_REPORTS_ROUTING_PATHS.children.businessUnitWarning,
+      loadComponent: expect.any(Function),
+      data: {
+        title: FINES_REPORTS_ROUTING_TITLES.children.businessUnitWarning,
+        requiresCreateReport: true,
+      },
+      resolve: {
+        title: TitleResolver,
+      },
+    });
+  });
 });
