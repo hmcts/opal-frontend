@@ -6,7 +6,7 @@ import { PAGES_ROUTING_PATHS as COMMON_PAGES_ROUTING_PATHS } from '@hmcts/opal-f
 import { IOpalUserState } from '@hmcts/opal-frontend-common/services/opal-user-service/interfaces';
 import { OPAL_USER_STATE_MOCK } from '@hmcts/opal-frontend-common/services/opal-user-service/mocks';
 import { OpalUserService } from '@hmcts/opal-frontend-common/services/opal-user-service';
-import { beforeAll, beforeEach, describe, expect, it, vi } from 'vitest';
+import { beforeEach, describe, expect, it, vi } from 'vitest';
 import { of, throwError } from 'rxjs';
 import { ACCOUNTS_PERMISSIONS } from '@app/flows/fines/constants/accounts-permissions.constant';
 import { REPORTS_PERMISSIONS } from '@app/flows/fines/constants/reports-permissions.constant';
@@ -69,15 +69,7 @@ describe('finesSectionPermissionsGuard', () => {
     return TestBed.runInInjectionContext(() => finesSectionPermissionsGuard(route, {} as RouterStateSnapshot));
   };
 
-  beforeAll(async () => {
-    vi.doMock('@hmcts/opal-frontend-common/guards/feature-flag', () => ({
-      resolveFeatureFlagGuard: resolveFeatureFlagGuardMock,
-    }));
-
-    ({ finesSectionPermissionsGuard } = await import('./fines-section-permissions.guard'));
-  });
-
-  beforeEach(() => {
+  beforeEach(async () => {
     mockRouter = createSpyObj('Router', ['createUrlTree']);
     mockOpalUserService = createSpyObj('OpalUserService', ['getLoggedInUserState']);
     resolveFeatureFlagGuardMock.mockReset();
@@ -85,6 +77,13 @@ describe('finesSectionPermissionsGuard', () => {
     mockRouter.createUrlTree.mockReturnValue(new UrlTree());
     mockOpalUserService.getLoggedInUserState.mockReturnValue(of(createUserStateWithPermissions([])));
     mockFeatureFlags(DEFAULT_RELEASE_FEATURE_FLAGS);
+
+    vi.resetModules();
+    vi.doMock('@hmcts/opal-frontend-common/guards/feature-flag', () => ({
+      resolveFeatureFlagGuard: resolveFeatureFlagGuardMock,
+    }));
+
+    ({ finesSectionPermissionsGuard } = await import('./fines-section-permissions.guard'));
 
     TestBed.configureTestingModule({
       providers: [
