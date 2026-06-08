@@ -2,9 +2,14 @@ import { inject } from '@angular/core';
 import { ActivatedRouteSnapshot, ResolveFn } from '@angular/router';
 import { OpalFines } from '@services/fines/opal-fines-service/opal-fines.service';
 import { IOpalFinesResultsRefData } from '@services/fines/opal-fines-service/interfaces/opal-fines-results-ref-data.interface';
-import { map, switchMap } from 'rxjs';
+import { map, of, switchMap } from 'rxjs';
 import { FINES_ACC_ENF_ACTION_SELECT_ALL_PERMITTED_ACTIONS } from '../../fines-acc-enf-action-select/constants/fines-acc-enf-action-select-next-permitted-actions.constant';
 import { getNextPermittedActionIds } from '../../fines-acc-enf-action-select/utils/fines-acc-enf-action-next-permitted-actions.utils';
+
+const EMPTY_NEXT_PERMITTED_ENF_ACTIONS: IOpalFinesResultsRefData = {
+  count: 0,
+  refData: [],
+};
 
 /**
  * Resolves the next permitted enforcement actions by mapping the enforcement status payload to result ids.
@@ -21,10 +26,16 @@ export const nextPermittedEnfActionsResolver: ResolveFn<IOpalFinesResultsRefData
         FINES_ACC_ENF_ACTION_SELECT_ALL_PERMITTED_ACTIONS,
       ),
     ),
-    switchMap((nextPermittedActionIds) =>
-      nextPermittedActionIds === null
-        ? opalFinesService.getResults([], { enforcement: true, enforcement_override: false })
-        : opalFinesService.getResults(nextPermittedActionIds),
-    ),
+    switchMap((nextPermittedActionIds) => {
+      if (nextPermittedActionIds === null) {
+        return opalFinesService.getResults([], { enforcement: true, enforcement_override: false });
+      }
+
+      if (nextPermittedActionIds.length === 0) {
+        return of(EMPTY_NEXT_PERMITTED_ENF_ACTIONS);
+      }
+
+      return opalFinesService.getResults(nextPermittedActionIds);
+    }),
   );
 };

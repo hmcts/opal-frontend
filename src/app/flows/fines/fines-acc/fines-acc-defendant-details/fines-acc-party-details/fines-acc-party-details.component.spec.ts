@@ -7,9 +7,16 @@ import {
   GovukSummaryListComponent,
   GovukSummaryListRowComponent,
 } from '@hmcts/opal-frontend-common/components/govuk/govuk-summary-list';
-import { IOpalFinesAccountPartyDetails } from '@services/fines/opal-fines-service/interfaces/opal-fines-account-party-details.interface';
+import type { IOpalFinesAccountPartyDetails } from '@services/fines/opal-fines-service/interfaces/opal-fines-account-party-details.interface';
+import type { IOpalFinesDefendantAccountLanguagePreference } from '@services/fines/opal-fines-service/interfaces/opal-fines-defendant-account-language-preference.interface';
+import { OPAL_FINES_ACCOUNT_DEFENDANT_AT_A_GLANCE_MOCK } from '@services/fines/opal-fines-service/mocks/opal-fines-account-defendant-at-a-glance.mock';
 import { OPAL_FINES_ACCOUNT_DEFENDANT_ACCOUNT_PARTY_MOCK } from '@services/fines/opal-fines-service/mocks/opal-fines-account-defendant-account-party.mock';
 import { beforeEach, describe, expect, it } from 'vitest';
+
+const ENGLISH_LANGUAGE_PREFERENCE_MOCK = OPAL_FINES_ACCOUNT_DEFENDANT_AT_A_GLANCE_MOCK.language_preferences!
+  .document_language_preference as IOpalFinesDefendantAccountLanguagePreference;
+const WELSH_LANGUAGE_PREFERENCE_MOCK = OPAL_FINES_ACCOUNT_DEFENDANT_ACCOUNT_PARTY_MOCK.defendant_account_party
+  .language_preferences!.document_language_preference as IOpalFinesDefendantAccountLanguagePreference;
 
 describe('FinesAccPartyDetails', () => {
   let component: FinesAccPartyDetails;
@@ -43,6 +50,16 @@ describe('FinesAccPartyDetails', () => {
     fixture.componentRef.setInput('summaryListId', 'party-list');
     fixture.componentRef.setInput('isParentGuardianAccount', isParentGuardianAccount);
     fixture.detectChanges();
+  };
+
+  const setLanguagePreferences = (
+    documentLanguagePreference: IOpalFinesDefendantAccountLanguagePreference,
+    hearingLanguagePreference: IOpalFinesDefendantAccountLanguagePreference,
+  ) => {
+    mockPartyDetails.language_preferences = {
+      document_language_preference: structuredClone(documentLanguagePreference),
+      hearing_language_preference: structuredClone(hearingLanguagePreference),
+    };
   };
 
   it('should create the component', () => {
@@ -123,48 +140,21 @@ describe('FinesAccPartyDetails', () => {
   });
 
   it('should show language preferences when document language is Welsh', () => {
-    mockPartyDetails.language_preferences = {
-      document_language_preference: {
-        language_code: 'CY',
-        language_display_name: component.languages.CY,
-      },
-      hearing_language_preference: {
-        language_code: 'EN',
-        language_display_name: component.languages.EN,
-      },
-    };
+    setLanguagePreferences(WELSH_LANGUAGE_PREFERENCE_MOCK, ENGLISH_LANGUAGE_PREFERENCE_MOCK);
     setupComponent();
 
     expect(component.showLanguagePreferences).toBe(true);
   });
 
   it('should show language preferences when only hearing language is Welsh', () => {
-    mockPartyDetails.language_preferences = {
-      document_language_preference: {
-        language_code: 'EN',
-        language_display_name: component.languages.EN,
-      },
-      hearing_language_preference: {
-        language_code: 'CY',
-        language_display_name: component.languages.CY,
-      },
-    };
+    setLanguagePreferences(ENGLISH_LANGUAGE_PREFERENCE_MOCK, WELSH_LANGUAGE_PREFERENCE_MOCK);
     setupComponent();
 
     expect(component.showLanguagePreferences).toBe(true);
   });
 
   it('should not show language preferences when neither language preference is Welsh', () => {
-    mockPartyDetails.language_preferences = {
-      document_language_preference: {
-        language_code: 'EN',
-        language_display_name: component.languages.EN,
-      },
-      hearing_language_preference: {
-        language_code: 'EN',
-        language_display_name: component.languages.EN,
-      },
-    };
+    setLanguagePreferences(ENGLISH_LANGUAGE_PREFERENCE_MOCK, ENGLISH_LANGUAGE_PREFERENCE_MOCK);
     setupComponent();
 
     expect(component.showLanguagePreferences).toBe(false);

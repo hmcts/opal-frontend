@@ -21,6 +21,9 @@ import { MOCK_EMPTY_FINES_ACC_PARTY_ADD_AMEND_CONVERT_FORM_DATA } from '../fines
 import { FINES_ACC_MINOR_CREDITOR_DETAILS_HEADER_MOCK } from '../fines-acc-minor-creditor-details/mocks/fines-acc-minor-creditor-details-header.mock';
 import { IOpalFinesAccountMinorCreditorDetailsHeader } from '../fines-acc-minor-creditor-details/interfaces/fines-acc-minor-creditor-details-header.interface';
 import { OPAL_FINES_ACCOUNT_MINOR_CREDITOR_AT_A_GLANCE_WITH_DEFENDANT_MOCK } from '../../services/opal-fines-service/mocks/opal-fines-account-minor-creditor-at-a-glance-with-defendant.mock';
+import { FINES_ACC_PAYLOAD_ENFORCEMENT_ACTION_ADD_FIELDS_MOCK } from './utils/mocks/fines-acc-payload-enforcement-action-add-fields.mock';
+import { FINES_ACC_PAYLOAD_ENFORCEMENT_ACTION_ADD_LUMP_SUM_PLUS_INSTALMENTS_FORM_STATE_MOCK } from './utils/mocks/fines-acc-payload-enforcement-action-add-lump-sum-plus-instalments-form-state.mock';
+import { FINES_ACC_PAYLOAD_ENFORCEMENT_ACTION_ADD_RESULT_MOCK } from './utils/mocks/fines-acc-payload-enforcement-action-add-result.mock';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
 import { OPAL_FINES_ACCOUNT_MINOR_CREDITOR_CREDITOR_MOCK } from '../../services/opal-fines-service/mocks/opal-fines-account-minor-creditor-creditor.mock';
 import { MOCK_FINES_ACC_MINOR_CREDITOR_ADD_AMEND_CONVERT_COMPANY_FORM } from '../fines-acc-minor-creditor-add-amend-convert/mocks/fines-acc-minor-creditor-add-amend-convert-company-form.mock';
@@ -999,6 +1002,24 @@ describe('FinesAccPayloadService', () => {
       expect(result).toBeDefined();
       expect(result).toEqual(
         expect.objectContaining({
+          payment_terms: expect.any(Object),
+        }),
+      );
+    });
+  });
+
+  describe('buildEnforcementActionAddPayload', () => {
+    it('should build and return add enforcement action payload', () => {
+      const result = service.buildEnforcementActionAddPayload(
+        FINES_ACC_PAYLOAD_ENFORCEMENT_ACTION_ADD_RESULT_MOCK,
+        FINES_ACC_PAYLOAD_ENFORCEMENT_ACTION_ADD_FIELDS_MOCK,
+        FINES_ACC_PAYLOAD_ENFORCEMENT_ACTION_ADD_LUMP_SUM_PLUS_INSTALMENTS_FORM_STATE_MOCK,
+      );
+
+      expect(result).toEqual(
+        expect.objectContaining({
+          result_id: FINES_ACC_PAYLOAD_ENFORCEMENT_ACTION_ADD_RESULT_MOCK.result_id,
+          enforcement_result_responses: expect.any(Array),
           payment_terms: expect.any(Object),
         }),
       );
