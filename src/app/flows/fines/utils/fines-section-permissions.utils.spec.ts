@@ -9,6 +9,7 @@ import { REPORTS_PERMISSIONS } from '../constants/reports-permissions.constant';
 import { SEARCH_PERMISSIONS } from '../constants/search-permissions.constant';
 import {
   RELEASE_1A_FEATURE_FLAG,
+  RELEASE_1B_FEATURE_FLAG,
   RELEASE_1C_ENFORCEMENT_OPERATIONAL_REPORTING_FEATURE_FLAG,
   RELEASE_1C_WRITE_OFF_FEATURE_FLAG,
 } from '../constants/release-feature-flags.constant';
@@ -57,10 +58,13 @@ describe('fines-section-permissions.utils', () => {
 
   const allReleaseFlagsEnabled = {
     [RELEASE_1A_FEATURE_FLAG]: true,
+    [RELEASE_1B_FEATURE_FLAG]: true,
     [RELEASE_1C_WRITE_OFF_FEATURE_FLAG]: true,
     [RELEASE_1C_ENFORCEMENT_OPERATIONAL_REPORTING_FEATURE_FLAG]: true,
   };
   const release1aEnabled = { [RELEASE_1A_FEATURE_FLAG]: true };
+  const release1bEnabled = { [RELEASE_1B_FEATURE_FLAG]: true };
+  const release1bDisabled = { [RELEASE_1B_FEATURE_FLAG]: false };
   const release1aEnabledWithWriteOffDisabled = {
     [RELEASE_1A_FEATURE_FLAG]: true,
     [RELEASE_1C_WRITE_OFF_FEATURE_FLAG]: false,
@@ -103,26 +107,32 @@ describe('fines-section-permissions.utils', () => {
 
   describe('getFeatureFlagReleaseState', () => {
     it('should map raw feature flags into a release feature flag state', () => {
+      expect(getFeatureFlagReleaseState(allReleaseFlagsEnabled)).toEqual(allReleaseFlagsEnabled);
+
       expect(getFeatureFlagReleaseState(release1aEnabled)).toEqual({
         [RELEASE_1A_FEATURE_FLAG]: true,
+        [RELEASE_1B_FEATURE_FLAG]: false,
         [RELEASE_1C_WRITE_OFF_FEATURE_FLAG]: false,
         [RELEASE_1C_ENFORCEMENT_OPERATIONAL_REPORTING_FEATURE_FLAG]: false,
       });
 
       expect(getFeatureFlagReleaseState(release1cWriteOffEnabled)).toEqual({
         [RELEASE_1A_FEATURE_FLAG]: false,
+        [RELEASE_1B_FEATURE_FLAG]: false,
         [RELEASE_1C_WRITE_OFF_FEATURE_FLAG]: true,
         [RELEASE_1C_ENFORCEMENT_OPERATIONAL_REPORTING_FEATURE_FLAG]: false,
       });
 
       expect(getFeatureFlagReleaseState(release1cReportingEnabled)).toEqual({
         [RELEASE_1A_FEATURE_FLAG]: false,
+        [RELEASE_1B_FEATURE_FLAG]: false,
         [RELEASE_1C_WRITE_OFF_FEATURE_FLAG]: false,
         [RELEASE_1C_ENFORCEMENT_OPERATIONAL_REPORTING_FEATURE_FLAG]: true,
       });
 
       expect(getFeatureFlagReleaseState({})).toEqual({
         [RELEASE_1A_FEATURE_FLAG]: false,
+        [RELEASE_1B_FEATURE_FLAG]: false,
         [RELEASE_1C_WRITE_OFF_FEATURE_FLAG]: false,
         [RELEASE_1C_ENFORCEMENT_OPERATIONAL_REPORTING_FEATURE_FLAG]: false,
       });
@@ -130,6 +140,14 @@ describe('fines-section-permissions.utils', () => {
   });
 
   describe('getRequiredPermissionIdsForSection', () => {
+    it('should return Search permissions when release-1b is enabled', () => {
+      expect(getRequiredPermissionIdsForSection('search', release1bEnabled)).toEqual(SEARCH_PERMISSIONS);
+    });
+
+    it('should remove Search permissions when release-1b is disabled', () => {
+      expect(getRequiredPermissionIdsForSection('search', release1bDisabled)).toEqual([]);
+    });
+
     it('should return all Accounts permissions when release-1a and release-1c-write-off are enabled', () => {
       expect(getRequiredPermissionIdsForSection('accounts', release1aAndWriteOffEnabled)).toEqual(ACCOUNTS_PERMISSIONS);
     });
@@ -162,7 +180,29 @@ describe('fines-section-permissions.utils', () => {
     });
 
     it('should deny restricted sections when the user lacks permissions', () => {
-      expect(canAccessFinesPrimaryNavigationSection('search', createUserStateWithPermissions([]))).toBe(false);
+      expect(
+        canAccessFinesPrimaryNavigationSection('search', createUserStateWithPermissions([]), release1bEnabled),
+      ).toBe(false);
+    });
+
+    it('should allow Search with search permissions when release-1b is enabled', () => {
+      expect(
+        canAccessFinesPrimaryNavigationSection(
+          'search',
+          createUserStateWithPermissions([SEARCH_PERMISSIONS[0]]),
+          release1bEnabled,
+        ),
+      ).toBe(true);
+    });
+
+    it('should deny Search with search permissions when release-1b is disabled', () => {
+      expect(
+        canAccessFinesPrimaryNavigationSection(
+          'search',
+          createUserStateWithPermissions([SEARCH_PERMISSIONS[0]]),
+          release1bDisabled,
+        ),
+      ).toBe(false);
     });
 
     it('should allow Accounts with draft permissions when all release flags are enabled', () => {
@@ -230,9 +270,15 @@ describe('fines-section-permissions.utils', () => {
     it('should filter navigation items down to the sections the user can access', () => {
       const userState = createUserStateWithPermissions([SEARCH_PERMISSIONS[0]]);
 
-      expect(getAccessiblePrimaryNavigationItems(navigationItems, userState)).toEqual([
+      expect(getAccessiblePrimaryNavigationItems(navigationItems, userState, release1bEnabled)).toEqual([
         { key: 'search', value: 'Search' },
       ]);
+    });
+
+    it('should remove Search for search users when release-1b is disabled', () => {
+      const userState = createUserStateWithPermissions([SEARCH_PERMISSIONS[0]]);
+
+      expect(getAccessiblePrimaryNavigationItems(navigationItems, userState, release1bDisabled)).toEqual([]);
     });
 
     it('should remove Accounts for draft-only users when release-1a is disabled', () => {
@@ -270,7 +316,12 @@ describe('fines-section-permissions.utils', () => {
     it('should prefer the configured landing priority over navigation order', () => {
       const userState = createUserStateWithPermissions([SEARCH_PERMISSIONS[0], ACCOUNTS_PERMISSIONS[0]]);
 
-      expect(getDashboardLandingType(navigationItems, userState)).toBe('search');
+      expect(
+        getDashboardLandingType(navigationItems, userState, {
+          [RELEASE_1A_FEATURE_FLAG]: true,
+          [RELEASE_1B_FEATURE_FLAG]: true,
+        }),
+      ).toBe('search');
     });
 
     it('should fall back to the first accessible navigation item when no priority section is available', () => {
@@ -326,6 +377,17 @@ describe('fines-section-permissions.utils', () => {
           release1aEnabledWithWriteOffDisabled,
         ),
       ).toBe('finance');
+    });
+
+    it('should skip Search landing when release-1b is disabled', () => {
+      const userState = createUserStateWithPermissions([SEARCH_PERMISSIONS[0], ACCOUNTS_PERMISSIONS[0]]);
+
+      expect(
+        getDashboardLandingType(navigationItems, userState, {
+          [RELEASE_1A_FEATURE_FLAG]: true,
+          [RELEASE_1B_FEATURE_FLAG]: false,
+        }),
+      ).toBe('accounts');
     });
   });
 
