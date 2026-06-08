@@ -136,7 +136,9 @@ export class DraftAccountsFlow {
           };
           // Read failure text already exposed by the draft detail endpoint. This is the
           // browser-visible fallback path when the legacy gateway XML is only present in pod logs.
-          const readFailureSummary = (record: Record<string, unknown>): {
+          const readFailureSummary = (
+            record: Record<string, unknown>,
+          ): {
             errorCode?: string;
             errorSummary?: string;
             errorSource?: EvidenceErrorSource;
