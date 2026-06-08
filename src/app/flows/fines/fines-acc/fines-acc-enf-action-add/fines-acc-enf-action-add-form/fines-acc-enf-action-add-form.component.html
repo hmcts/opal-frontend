@@ -1,0 +1,368 @@
+<div class="govuk-grid-column-full">
+  <opal-lib-govuk-error-summary
+    [errors]="formErrorSummaryMessage"
+    (errorClick)="scrollTo($event)"
+  ></opal-lib-govuk-error-summary>
+
+  <opal-lib-govuk-heading-with-caption
+    [captionText]="accountNumber + ' - ' + partyName"
+    [headingText]="actionTitle"
+    headingClasses="govuk-heading-l govuk-!-margin-bottom-30"
+  ></opal-lib-govuk-heading-with-caption>
+</div>
+
+<div class="govuk-grid-column-two-thirds">
+  <form (submit)="handleFormSubmit($event)" [formGroup]="form" class="govuk-form">
+    @for (field of fields; track field.controlName) {
+      @switch (field.type) {
+        @case (fieldTypes.date) {
+          <opal-lib-moj-date-picker
+            [labelText]="field.label"
+            labelClasses="govuk-label--s"
+            [inputId]="inputName(field.controlName)"
+            [inputName]="inputName(field.controlName)"
+            inputClasses="govuk-input--width-10"
+            [minDate]="dateBoundary(field.min)"
+            [maxDate]="dateBoundary(field.max)"
+            [hintText]="field.hint ?? 'For example, 31/01/2023'"
+            [control]="form.get(field.controlName)!"
+            [errors]="formControlErrorMessages[field.controlName]"
+            (dateChange)="setInputValue($event, field.controlName)"
+          ></opal-lib-moj-date-picker>
+        }
+        @case (fieldTypes.decimal) {
+          <opal-lib-govuk-text-input-prefix-suffix
+            [labelText]="field.label"
+            labelClasses="govuk-label--s"
+            [inputId]="inputName(field.controlName)"
+            [inputName]="inputName(field.controlName)"
+            inputClasses="govuk-input--width-10"
+            prefixText="£"
+            [control]="form.get(field.controlName)"
+            [errors]="formControlErrorMessages[field.controlName]"
+            [forceTwoDecimalPoints]="true"
+          ></opal-lib-govuk-text-input-prefix-suffix>
+        }
+        @case (fieldTypes.integer) {
+          <opal-lib-govuk-text-input
+            [labelText]="field.label"
+            labelClasses="govuk-label--s"
+            [inputId]="inputName(field.controlName)"
+            [inputName]="inputName(field.controlName)"
+            inputClasses="govuk-input--width-10"
+            [hintText]="field.hint ?? ''"
+            [control]="form.get(field.controlName)"
+            [errors]="formControlErrorMessages[field.controlName]"
+          ></opal-lib-govuk-text-input>
+        }
+        @case (fieldTypes.menuRadio) {
+          <opal-lib-govuk-radio
+            [fieldSetId]="inputName(field.controlName)"
+            [legendText]="field.label"
+            legendClasses="govuk-fieldset__legend--s"
+            [errors]="formControlErrorMessages[field.controlName]"
+          >
+            @for (option of field.options; track option.value; let optionIndex = $index) {
+              <div
+                opal-lib-govuk-radios-item
+                [labelText]="option.name"
+                [inputId]="radioOptionInputName(field.controlName, option.value, optionIndex)"
+                [inputName]="inputName(field.controlName)"
+                [inputValue]="radioOptionValue(option.value)"
+                [control]="form.get(field.controlName)"
+              ></div>
+            }
+          </opal-lib-govuk-radio>
+        }
+        @case (fieldTypes.menuAutocomplete) {
+          <opal-lib-alphagov-accessible-autocomplete
+            [control]="form.get(field.controlName)"
+            [labelText]="field.label"
+            labelClasses="govuk-label--s"
+            [inputId]="inputName(field.controlName)"
+            [inputName]="inputName(field.controlName)"
+            [hintText]="field.hint ?? ''"
+            [autoCompleteItems]="field.options"
+            [errors]="formControlErrorMessages[field.controlName]"
+            [showAllValues]="true"
+          ></opal-lib-alphagov-accessible-autocomplete>
+        }
+        @case (fieldTypes.menuCheckbox) {
+          <opal-lib-govuk-checkboxes
+            [fieldSetId]="inputName(field.controlName)"
+            [legendText]="field.label"
+            [legendHint]="field.hint ?? ''"
+            legendClasses="govuk-fieldset__legend--s"
+            [errors]="formControlErrorMessages[field.controlName]"
+          >
+            @for (checkbox of field.checkboxControls ?? []; track checkbox.controlName) {
+              <div
+                opal-lib-govuk-checkboxes-item
+                [labelText]="checkbox.option.name"
+                [inputId]="checkbox.controlName"
+                [inputName]="inputName(field.controlName)"
+                [control]="form.get(checkbox.controlName)"
+              ></div>
+            }
+          </opal-lib-govuk-checkboxes>
+        }
+        @case (fieldTypes.textarea) {
+          <opal-lib-govuk-text-area
+            [labelText]="field.label"
+            labelClasses="govuk-label--s"
+            [inputId]="inputName(field.controlName)"
+            [inputName]="inputName(field.controlName)"
+            [hintText]="field.hint ?? ''"
+            [control]="form.get(field.controlName)"
+            [errors]="formControlErrorMessages[field.controlName]"
+            [characterCountEnabled]="true"
+            [maxCharacterLimit]="textAreaCharacterLimit(field)"
+          ></opal-lib-govuk-text-area>
+
+          @if (field.welshControlName && field.welshLabel) {
+            <opal-lib-govuk-text-area
+              [labelText]="field.welshLabel"
+              labelClasses="govuk-label--s"
+              [inputId]="inputName(field.welshControlName)"
+              [inputName]="inputName(field.welshControlName)"
+              hintText="Provide a Welsh version for the defendant"
+              [control]="form.get(field.welshControlName)"
+              [errors]="formControlErrorMessages[field.welshControlName]"
+              [characterCountEnabled]="true"
+              [maxCharacterLimit]="textAreaCharacterLimit(field)"
+            ></opal-lib-govuk-text-area>
+          }
+        }
+        @default {
+          @if (isTextAreaField(field)) {
+            <opal-lib-govuk-text-area
+              [labelText]="field.label"
+              labelClasses="govuk-label--s"
+              [inputId]="inputName(field.controlName)"
+              [inputName]="inputName(field.controlName)"
+              [hintText]="field.hint ?? ''"
+              [control]="form.get(field.controlName)"
+              [errors]="formControlErrorMessages[field.controlName]"
+              [characterCountEnabled]="true"
+              [maxCharacterLimit]="textAreaCharacterLimit(field)"
+            ></opal-lib-govuk-text-area>
+
+            @if (field.welshControlName && field.welshLabel) {
+              <opal-lib-govuk-text-area
+                [labelText]="field.welshLabel"
+                labelClasses="govuk-label--s"
+                [inputId]="inputName(field.welshControlName)"
+                [inputName]="inputName(field.welshControlName)"
+                hintText="Provide a Welsh version for the defendant"
+                [control]="form.get(field.welshControlName)"
+                [errors]="formControlErrorMessages[field.welshControlName]"
+                [characterCountEnabled]="true"
+                [maxCharacterLimit]="textAreaCharacterLimit(field)"
+              ></opal-lib-govuk-text-area>
+            }
+          } @else {
+            <opal-lib-govuk-text-input
+              [labelText]="field.label"
+              labelClasses="govuk-label--s"
+              [inputId]="inputName(field.controlName)"
+              [inputName]="inputName(field.controlName)"
+              [inputClasses]="textInputClasses(field)"
+              [hintText]="field.hint ?? ''"
+              [control]="form.get(field.controlName)"
+              [errors]="formControlErrorMessages[field.controlName]"
+            ></opal-lib-govuk-text-input>
+
+            @if (field.welshControlName && field.welshLabel) {
+              <opal-lib-govuk-text-input
+                [labelText]="field.welshLabel"
+                labelClasses="govuk-label--s"
+                [inputId]="inputName(field.welshControlName)"
+                [inputName]="inputName(field.welshControlName)"
+                [inputClasses]="textInputClasses(field)"
+                hintText="Provide a Welsh version for the defendant"
+                [control]="form.get(field.welshControlName)"
+                [errors]="formControlErrorMessages[field.welshControlName]"
+              ></opal-lib-govuk-text-input>
+            }
+          }
+        }
+      }
+    }
+
+    @if (showPaymentTerms) {
+      <hr class="govuk-section-break govuk-section-break--m govuk-section-break--visible" />
+
+      <div
+        class="fines-acc-enf-action-add-form__payment-terms-section govuk-!-padding-4"
+        id="fines-acc-enf-action-add-payment-terms-section"
+      >
+        <opal-lib-govuk-radio
+          radioClasses="govuk-radios--inline"
+          [fieldSetId]="inputName(formControlNames.addPaymentTerms)"
+          legendText="Do you want to change the existing payment terms?"
+          legendClasses="govuk-fieldset__legend--s"
+          [errors]="formControlErrorMessages[formControlNames.addPaymentTerms]"
+        >
+          <div
+            opal-lib-govuk-radios-item
+            labelText="Yes"
+            [inputId]="inputName(formControlNames.addPaymentTerms) + '-yes'"
+            [inputName]="inputName(formControlNames.addPaymentTerms)"
+            [inputValue]="true"
+            [control]="form.get(formControlNames.addPaymentTerms)"
+          ></div>
+
+          <div
+            opal-lib-govuk-radios-item
+            labelText="No"
+            [inputId]="inputName(formControlNames.addPaymentTerms) + '-no'"
+            [inputName]="inputName(formControlNames.addPaymentTerms)"
+            [inputValue]="false"
+            [control]="form.get(formControlNames.addPaymentTerms)"
+          ></div>
+        </opal-lib-govuk-radio>
+
+        @if (form.get(formControlNames.addPaymentTerms)?.value === true) {
+          <ng-container *ngTemplateOutlet="paymentTermsFields"></ng-container>
+        }
+      </div>
+    }
+
+    <div class="govuk-button-group govuk-!-margin-top-6">
+      <button class="govuk-button govuk-!-margin-right-4" id="submitForm" type="submit">Add enforcement action</button>
+      <opal-lib-govuk-cancel-link (linkClickEvent)="handleCancel()"></opal-lib-govuk-cancel-link>
+    </div>
+  </form>
+</div>
+
+<ng-template #paymentTermsFields>
+  <opal-lib-govuk-radio
+    [fieldSetId]="inputName(formControlNames.paymentTerms)"
+    legendText="Select payment terms"
+    legendClasses="govuk-fieldset__legend--s"
+    [errors]="formControlErrorMessages[formControlNames.paymentTerms]"
+  >
+    @for (paymentTerm of paymentTerms; track paymentTerm.key) {
+      <div
+        opal-lib-govuk-radios-item
+        [labelText]="paymentTerm.value"
+        [inputId]="inputName(formControlNames.paymentTerms) + '-' + paymentTerm.key"
+        [inputName]="inputName(formControlNames.paymentTerms)"
+        [inputValue]="paymentTerm.key"
+        [ariaControls]="paymentTermsConditionalIdPrefix + paymentTerm.key"
+        [control]="form.get(formControlNames.paymentTerms)"
+      ></div>
+
+      @switch (paymentTerm.key) {
+        @case (paymentTermKeys.payInFull) {
+          <opal-lib-govuk-radios-conditional [conditionalId]="paymentTermsConditionalIdPrefix + paymentTerm.key">
+            <opal-lib-moj-date-picker
+              labelText="Pay by date"
+              labelClasses="govuk-label--s"
+              [inputId]="inputName(formControlNames.payByDate)"
+              [inputName]="inputName(formControlNames.payByDate)"
+              inputClasses="govuk-input--width-10"
+              hintText="For example, 31/01/2023"
+              [control]="form.get(formControlNames.payByDate)!"
+              [errors]="formControlErrorMessages[formControlNames.payByDate]"
+              (dateChange)="setInputValue($event, formControlNames.payByDate)"
+            ></opal-lib-moj-date-picker>
+          </opal-lib-govuk-radios-conditional>
+        }
+        @case (paymentTermKeys.instalmentsOnly) {
+          <opal-lib-govuk-radios-conditional [conditionalId]="paymentTermsConditionalIdPrefix + paymentTerm.key">
+            <ng-container *ngTemplateOutlet="instalmentFields; context: { selectedFrequency: paymentTerm.key }">
+            </ng-container>
+          </opal-lib-govuk-radios-conditional>
+        }
+        @case (paymentTermKeys.lumpSumPlusInstalments) {
+          <opal-lib-govuk-radios-conditional [conditionalId]="paymentTermsConditionalIdPrefix + paymentTerm.key">
+            <opal-lib-govuk-text-input-prefix-suffix
+              labelText="Lump sum"
+              labelClasses="govuk-label--s"
+              [inputId]="inputName(formControlNames.lumpSumAmount)"
+              [inputName]="inputName(formControlNames.lumpSumAmount)"
+              inputClasses="govuk-input--width-10"
+              prefixText="£"
+              [control]="form.get(formControlNames.lumpSumAmount)"
+              [errors]="formControlErrorMessages[formControlNames.lumpSumAmount]"
+              [forceTwoDecimalPoints]="true"
+            ></opal-lib-govuk-text-input-prefix-suffix>
+            <ng-container *ngTemplateOutlet="instalmentFields; context: { selectedFrequency: paymentTerm.key }">
+            </ng-container>
+          </opal-lib-govuk-radios-conditional>
+        }
+      }
+    }
+  </opal-lib-govuk-radio>
+
+  <opal-lib-govuk-text-input
+    labelText="Days in default"
+    labelClasses="govuk-label--s"
+    [inputId]="inputName(formControlNames.daysInDefault)"
+    [inputName]="inputName(formControlNames.daysInDefault)"
+    inputClasses="govuk-input--width-5"
+    [control]="form.get(formControlNames.daysInDefault)"
+    [errors]="formControlErrorMessages[formControlNames.daysInDefault]"
+  ></opal-lib-govuk-text-input>
+
+  <opal-lib-moj-date-picker
+    labelText="Date days in default were last imposed"
+    labelClasses="govuk-label--s"
+    [inputId]="inputName(formControlNames.dateDaysInDefaultImposed)"
+    [inputName]="inputName(formControlNames.dateDaysInDefaultImposed)"
+    inputClasses="govuk-input--width-10"
+    hintText="For example, 31/01/2023"
+    [control]="form.get(formControlNames.dateDaysInDefaultImposed)!"
+    [errors]="formControlErrorMessages[formControlNames.dateDaysInDefaultImposed]"
+    (dateChange)="setInputValue($event, formControlNames.dateDaysInDefaultImposed)"
+  ></opal-lib-moj-date-picker>
+
+  <app-fines-mac-default-days
+    [date]="form.get(formControlNames.dateDaysInDefaultImposed)?.value"
+  ></app-fines-mac-default-days>
+</ng-template>
+
+<ng-template #instalmentFields let-selectedFrequency="selectedFrequency">
+  <opal-lib-govuk-text-input-prefix-suffix
+    labelText="Instalment"
+    labelClasses="govuk-label--s"
+    [inputId]="inputName(formControlNames.instalmentAmount)"
+    [inputName]="inputName(formControlNames.instalmentAmount)"
+    inputClasses="govuk-input--width-10"
+    prefixText="£"
+    [control]="form.get(formControlNames.instalmentAmount)"
+    [errors]="formControlErrorMessages[formControlNames.instalmentAmount]"
+    [forceTwoDecimalPoints]="true"
+  ></opal-lib-govuk-text-input-prefix-suffix>
+
+  <opal-lib-govuk-radio
+    [fieldSetId]="inputName(formControlNames.instalmentPeriod)"
+    legendText="Frequency"
+    legendClasses="govuk-fieldset__legend--s"
+    [errors]="formControlErrorMessages[formControlNames.instalmentPeriod]"
+  >
+    @for (frequency of frequencyOptions; track frequency.key) {
+      <div
+        opal-lib-govuk-radios-item
+        [labelText]="frequency.value"
+        [inputId]="inputName(formControlNames.instalmentPeriod) + '-' + selectedFrequency + '-' + frequency.key"
+        [inputName]="inputName(formControlNames.instalmentPeriod)"
+        [inputValue]="frequency.key"
+        [control]="form.get(formControlNames.instalmentPeriod)"
+      ></div>
+    }
+  </opal-lib-govuk-radio>
+
+  <opal-lib-moj-date-picker
+    labelText="Start date"
+    labelClasses="govuk-label--s"
+    [inputId]="inputName(formControlNames.startDate)"
+    [inputName]="inputName(formControlNames.startDate)"
+    inputClasses="govuk-input--width-10"
+    hintText="For example, 31/01/2023"
+    [control]="form.get(formControlNames.startDate)!"
+    [errors]="formControlErrorMessages[formControlNames.startDate]"
+    (dateChange)="setInputValue($event, formControlNames.startDate)"
+  ></opal-lib-moj-date-picker>
+</ng-template>

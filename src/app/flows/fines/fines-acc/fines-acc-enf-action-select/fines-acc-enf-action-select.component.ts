@@ -16,6 +16,7 @@ import { IOpalFinesResultsRefData } from '@services/fines/opal-fines-service/int
 import { IOpalFinesResultRefData } from '@services/fines/opal-fines-service/interfaces/opal-fines-result-ref-data.interface';
 import { FINES_ACC_ENF_ACTION_SELECT_WARNING_MESSAGES } from './constants/fines-acc-enf-action-select-warning-messages.constant';
 import { FINES_ACC_DEBTOR_TYPES } from '../constants/fines-acc-debtor-types.constant';
+import { FINES_ACC_ENF_ACTION_ROUTING_PATHS } from './constants/fines-acc-enf-action-select-routing-paths.constant';
 
 @Component({
   selector: 'app-fines-acc-enf-action-select',
@@ -92,6 +93,11 @@ export class FinesAccEnfActionSelectComponent extends AbstractFormParentBaseComp
       return;
       // Submission logic handled in future ticket.
     }
+
+    this['router'].navigate([`../${FINES_ACC_ENF_ACTION_ROUTING_PATHS.children.add}`], {
+      relativeTo: this.route,
+      queryParams: { resultId: selectedAction.result_id },
+    });
   }
 
   /**

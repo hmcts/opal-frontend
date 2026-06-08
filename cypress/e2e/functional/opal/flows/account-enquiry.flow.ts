@@ -661,6 +661,14 @@ export class AccountEnquiryFlow {
   }
 
   /**
+   * Submits the add enforcement action form.
+   */
+  public submitAddEnforcementActionForm(): void {
+    logAE('method', 'submitAddEnforcementActionForm()');
+    this.enforcement.submitAddEnforcementActionForm();
+  }
+
+  /**
    * Opens the Change Collection Order status form from the Enforcement tab.
    */
   public openChangeCollectionOrderForm(): void {
@@ -752,6 +760,36 @@ export class AccountEnquiryFlow {
   public selectEnforcementOverride(resultCode: string): void {
     logAE('method', 'selectEnforcementOverride()', { resultCode });
     this.enforcement.selectEnforcementOverride(resultCode);
+  }
+
+  /**
+   * Selects an enforcement action code on the add form.
+   *
+   * @param resultCode - Enforcement action result code.
+   */
+  public selectEnforcementAction(resultCode: string): void {
+    logAE('method', 'selectEnforcementAction()', { resultCode });
+    this.enforcement.selectEnforcementAction(resultCode);
+  }
+
+  /**
+   * Enters a reason on the add enforcement action details form.
+   *
+   * @param reason - Enforcement action reason text.
+   */
+  public enterEnforcementActionReason(reason: string): void {
+    logAE('method', 'enterEnforcementActionReason()', { reason });
+    this.enforcement.enterEnforcementActionReason(reason);
+  }
+
+  /**
+   * Chooses whether to change existing payment terms on the add enforcement action details form.
+   *
+   * @param option - Visible option text, usually "Yes" or "No".
+   */
+  public chooseChangeExistingPaymentTerms(option: string): void {
+    logAE('method', 'chooseChangeExistingPaymentTerms()', { option });
+    this.enforcement.chooseChangeExistingPaymentTerms(option);
   }
 
   /**
@@ -955,6 +993,16 @@ export class AccountEnquiryFlow {
   public assertEnforcementOverrideSummary(expected: { override?: string; enforcer?: string; lja?: string }): void {
     logAE('method', 'assertEnforcementOverrideSummary()', expected);
     this.enforcement.assertEnforcementOverrideSummary(expected);
+  }
+
+  /**
+   * Asserts the last enforcement action summary value shown on the Enforcement tab.
+   *
+   * @param expected - Expected enforcement action text.
+   */
+  public assertEnforcementActionSummary(expected: string): void {
+    logAE('method', 'assertEnforcementActionSummary()', { expected });
+    this.enforcement.assertEnforcementActionSummary(expected);
   }
 
   /**

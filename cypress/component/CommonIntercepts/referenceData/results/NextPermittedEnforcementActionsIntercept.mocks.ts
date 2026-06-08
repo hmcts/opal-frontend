@@ -1,7 +1,7 @@
 import { IOpalFinesResultsRefData } from '@services/fines/opal-fines-service/interfaces/opal-fines-results-ref-data.interface';
 
 export const OPAL_FINES_NEXT_PERMITTED_ENFORCEMENT_ACTIONS_MOCK: IOpalFinesResultsRefData = {
-  count: 2,
+  count: 3,
   refData: [
     {
       result_id: 'WOC',
@@ -15,6 +15,15 @@ export const OPAL_FINES_NEXT_PERMITTED_ENFORCEMENT_ACTIONS_MOCK: IOpalFinesResul
     {
       result_id: 'WOA',
       result_title: 'Warrant of Arrest',
+      result_title_cy: null,
+      active: true,
+      result_type: 'Result',
+      imposition_creditor: '',
+      imposition_allocation_order: null,
+    },
+    {
+      result_id: 'COLLO',
+      result_title: 'Collection order',
       result_title_cy: null,
       active: true,
       result_type: 'Result',

@@ -1,4 +1,6 @@
-import { describe, expect, it } from 'vitest';
+import { TestBed } from '@angular/core/testing';
+import { ActivatedRoute, Router } from '@angular/router';
+import { describe, expect, it, vi } from 'vitest';
 import { routing } from './fines-acc.routes';
 import { FINES_ACC_DEFENDANT_ROUTING_PATHS } from './constants/fines-acc-defendant-routing-paths.constant';
 import { FINES_ACC_MINOR_CREDITOR_ROUTING_PATHS } from './constants/fines-acc-minor-creditor-routing-paths.constant';
@@ -10,6 +12,16 @@ import { HIDE_PRIMARY_NAV_ROUTE_DATA_KEY } from '@app/constants/route-data.const
 import { minorCreditorAccountCreditorResolver } from './resolvers/defendant-minor-creditor-creditor.resolver';
 import { canDeactivateGuard } from '@hmcts/opal-frontend-common/guards/can-deactivate';
 import { FINES_ACC_ENF_ACTION_ROUTING_PATHS } from '../fines-acc-enf-action-select/constants/fines-acc-enf-action-select-routing-paths.constant';
+import { FinesAccountStore } from '../stores/fines-acc.store';
+import { FinesAccPayloadService } from '../services/fines-acc-payload.service';
+import { FinesAccEnfActionAddService } from '../fines-acc-enf-action-add/services/fines-acc-enf-action-add.service';
+import { OpalFines } from '../../services/opal-fines-service/opal-fines.service';
+import { createFinesAccEnfActionAddActivatedRouteMock } from '../fines-acc-enf-action-add/mocks/fines-acc-enf-action-add-activated-route.mock';
+import { FINES_ACC_ENF_ACTION_ADD_STORE_MOCK } from '../fines-acc-enf-action-add/mocks/fines-acc-enf-action-add-store.mock';
+import { FINES_ACC_ENF_ACTION_ADD_PAYLOAD_SERVICE_MOCK } from '../fines-acc-enf-action-add/mocks/fines-acc-enf-action-add-payload-service.mock';
+import { FINES_ACC_ENF_ACTION_ADD_SERVICE_MOCK } from '../fines-acc-enf-action-add/mocks/fines-acc-enf-action-add-service.mock';
+import { FINES_ACC_ENF_ACTION_ADD_OPAL_FINES_SERVICE_MOCK } from '../fines-acc-enf-action-add/mocks/fines-acc-enf-action-add-opal-fines-service.mock';
+import { FINES_ACC_ENF_ACTION_ADD_ACCOUNT_STATE_MOCK } from '../fines-acc-enf-action-add/mocks/fines-acc-enf-action-add-account-state.mock';
 import { FINES_ACC_REMOVE_NON_PAYING_PG_ROUTING_PATHS } from '../fines-acc-remove-non-paying-pg/constants/fines-acc-remove-non-paying-pg-routing-paths.constant';
 
 describe('fines acc routes', () => {
@@ -68,6 +80,32 @@ describe('fines acc routes', () => {
     );
   });
 
+  it('should load the add enforcement action component through the lazy route factory', async () => {
+    vi.clearAllMocks();
+    FINES_ACC_ENF_ACTION_ADD_PAYLOAD_SERVICE_MOCK.transformDefendantAccountHeaderForStore.mockReturnValue(
+      FINES_ACC_ENF_ACTION_ADD_ACCOUNT_STATE_MOCK,
+    );
+    TestBed.configureTestingModule({
+      providers: [
+        { provide: ActivatedRoute, useValue: createFinesAccEnfActionAddActivatedRouteMock() },
+        { provide: Router, useValue: { navigate: vi.fn() } },
+        { provide: FinesAccountStore, useValue: FINES_ACC_ENF_ACTION_ADD_STORE_MOCK },
+        { provide: FinesAccPayloadService, useValue: FINES_ACC_ENF_ACTION_ADD_PAYLOAD_SERVICE_MOCK },
+        { provide: FinesAccEnfActionAddService, useValue: FINES_ACC_ENF_ACTION_ADD_SERVICE_MOCK },
+        { provide: OpalFines, useValue: FINES_ACC_ENF_ACTION_ADD_OPAL_FINES_SERVICE_MOCK },
+      ],
+    });
+    const addRoute = (defendantJourneyGroup?.children ?? []).find(
+      (route) =>
+        route.path ===
+        `${FINES_ACC_DEFENDANT_ROUTING_PATHS.children.enforcement}/${FINES_ACC_ENF_ACTION_ROUTING_PATHS.root}/${FINES_ACC_ENF_ACTION_ROUTING_PATHS.children.add}`,
+    );
+    const componentType = (await addRoute?.loadComponent?.()) as unknown as { ɵfac: () => unknown };
+
+    const componentInstance = TestBed.runInInjectionContext(() => componentType.ɵfac());
+
+    expect(componentInstance).toBeInstanceOf(componentType);
+  });
   it('should resolve creditor data for the minor creditor amend journey', () => {
     const amendRoute = minorCreditorRoute?.children?.find(
       (route) => route.path === FINES_ACC_MINOR_CREDITOR_ROUTING_PATHS.children.amend,
