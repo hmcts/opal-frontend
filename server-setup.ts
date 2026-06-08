@@ -11,11 +11,11 @@ import {
   ProxyConfiguration,
   RoutesConfiguration,
   SessionStorageConfiguration,
-  TransferServerState,
   OpalUserServiceConfiguration,
   UserStateConfiguration,
 } from '@hmcts/opal-frontend-common-node/interfaces';
 import { DEFAULT_PROXY_CONFIG } from '@hmcts/opal-frontend-common-node/constants';
+import { type ITransferStateServerState } from '@hmcts/opal-frontend-common/services/transfer-state-service/interfaces';
 
 const env = process.env['NODE_ENV'] || 'development';
 const developmentMode = env === 'development';
@@ -114,7 +114,7 @@ export function configureSecurityHeaders(server: Express): void {
   new Helmet(developmentMode).enableFor(server, config.get('features.helmet.enabled'));
 }
 
-export function configureMonitoring(): TransferServerState {
+export function configureMonitoring(): ITransferStateServerState {
   const launchDarkly = new LaunchDarkly().enableFor(
     config.get('features.launch-darkly.enabled'),
     config.get('features.launch-darkly.stream'),
@@ -131,7 +131,11 @@ export function configureMonitoring(): TransferServerState {
   return {
     launchDarklyConfig: launchDarkly,
     ssoEnabled: config.get('features.sso.enabled'),
-    appInsightsConfig: appInsights,
+    appInsightsConfig: {
+      ...appInsights,
+      connectionString: appInsights.connectionString ?? '',
+      cloudRoleName: appInsights.cloudRoleName ?? '',
+    },
     userStateCacheExpirationMilliseconds: config.get('expiry.userStateExpiryInMilliseconds'),
     userStateDomain: config.get('user-state.domain'),
     featureFlagConfig: {

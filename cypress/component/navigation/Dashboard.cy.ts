@@ -13,6 +13,7 @@ import { FINES_PERMISSIONS } from 'src/app/constants/fines-permissions.constant'
 import { AppComponent } from 'src/app/app.component';
 import {
   RELEASE_1A_FEATURE_FLAG,
+  RELEASE_1B_FEATURE_FLAG,
   RELEASE_1C_ENFORCEMENT_OPERATIONAL_REPORTING_FEATURE_FLAG,
 } from 'src/app/flows/fines/constants/release-feature-flags.constant';
 
@@ -21,6 +22,7 @@ const NAVIGATION_STORY_TAG = '@JIRA-STORY:PO-2613';
 const NAVIGATION_EPIC_TAG = '@JIRA-EPIC:PO-2627';
 const DEFAULT_RELEASE_FEATURE_FLAGS = {
   [RELEASE_1A_FEATURE_FLAG]: true,
+  [RELEASE_1B_FEATURE_FLAG]: true,
   [RELEASE_1C_ENFORCEMENT_OPERATIONAL_REPORTING_FEATURE_FLAG]: true,
 };
 
