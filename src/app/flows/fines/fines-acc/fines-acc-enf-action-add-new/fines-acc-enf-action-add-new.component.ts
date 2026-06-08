@@ -33,6 +33,9 @@ export class FinesAccEnfActionAddNewComponent extends AbstractFormParentBaseComp
   public readonly accountNumber = this.accountState.account_number ?? '';
   public readonly partyName = this.accountState.party_name ?? '';
 
+  /**
+   * Clears the success message and routes to the next step based on the user's yes or no answer.
+   */
   public handleSubmit(form: IAbstractFormBaseForm<IFinesAccEnfActionAddNewFormState>): void {
     this.finesAccStore.clearSuccessMessage();
 
@@ -52,6 +55,9 @@ export class FinesAccEnfActionAddNewComponent extends AbstractFormParentBaseComp
     );
   }
 
+  /**
+   * Seeds account state from resolved route data.
+   */
   public ngOnInit(): void {
     this.finesAccStore.setAccountState(this.accountState);
   }

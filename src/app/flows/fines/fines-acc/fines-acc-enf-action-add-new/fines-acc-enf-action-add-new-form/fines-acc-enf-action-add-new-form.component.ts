@@ -39,12 +39,18 @@ export class FinesAccEnfActionAddNewFormComponent extends AbstractFormBaseCompon
   @Input({ required: true }) public accountNumber!: string;
   @Input({ required: true }) public partyName!: string;
 
+  /**
+   * Initialises the yes or no add-new enforcement action form control.
+   */
   private setupForm(): void {
     this.form = new FormGroup({
       facc_enf_action_add_new: new FormControl<boolean | null>(null, Validators.required),
     });
   }
 
+  /**
+   * Sets up the form before registering base form validation behaviour.
+   */
   public override ngOnInit(): void {
     this.setupForm();
     super.ngOnInit();
