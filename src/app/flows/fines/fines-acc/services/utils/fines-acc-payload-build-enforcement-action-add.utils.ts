@@ -109,7 +109,6 @@ export function trimUnderscores(value: string): string {
   return value.slice(start, end);
 }
 
-
 /**
  * Serialises selected menu-checkbox options into the response format expected by the API.
  */
