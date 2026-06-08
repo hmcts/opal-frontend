@@ -91,19 +91,18 @@ describe('nextPermittedEnfActionsResolver', () => {
     expect(result).toEqual(FINES_ACC_ENF_ACTION_SELECT_NEXT_PERMITTED_ENF_ACTIONS_MOCK);
   });
 
-  it('should request results with an empty id list when the status payload does not contain ids', async () => {
+  it('should return empty results without calling results ref data when the status payload does not contain ids', async () => {
     const enforcementStatus = structuredClone(FINES_ACC_ENF_ACTION_SELECT_ENFORCEMENT_STATUS_MOCK);
     enforcementStatus.next_enforcement_action_data = null;
 
     (mockRoute.paramMap.get as Mock).mockReturnValue('12345');
     mockOpalFinesService.getDefendantAccountEnforcementStatus.mockReturnValue(of(enforcementStatus));
-    mockOpalFinesService.getResults.mockReturnValue(of(emptyResultsResponse));
 
     const result = await TestBed.runInInjectionContext(() =>
       firstValueFrom(nextPermittedEnfActionsResolver(mockRoute, {} as never) as never),
     );
 
-    expect(mockOpalFinesService.getResults).toHaveBeenCalledWith([]);
+    expect(mockOpalFinesService.getResults).not.toHaveBeenCalled();
     expect(result).toEqual(emptyResultsResponse);
   });
 });

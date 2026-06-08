@@ -1870,6 +1870,50 @@ describe('OpalFines', () => {
     req.flush({ defendant_account_id: defendantAccountId });
   });
 
+  describe('addEnforcementAction', () => {
+    it('should send a POST request with payload and optional headers', () => {
+      const defendantAccountId = 123456;
+      const version = '2';
+      const businessUnitId = '61';
+      const payload = {
+        result_id: 'REM',
+        enforcement_result_responses: [{ parameter_name: 'reason', response: 'Reason entered' }],
+      };
+
+      service.addEnforcementAction(defendantAccountId, payload, version, businessUnitId).subscribe((response) => {
+        expect(response).toEqual(payload);
+      });
+
+      const req = httpMock.expectOne(`${OPAL_FINES_PATHS.defendantAccounts}/${defendantAccountId}/enforcements`);
+      expect(req.request.method).toBe('POST');
+      expect(req.request.body).toEqual(payload);
+      expect(req.request.headers.get('If-Match')).toBe(version);
+      expect(req.request.headers.get('Business-Unit-Id')).toBe(businessUnitId);
+
+      req.flush(payload);
+    });
+
+    it('should send a POST request without optional headers when not provided', () => {
+      const defendantAccountId = 123456;
+      const payload = {
+        result_id: 'REM',
+        enforcement_result_responses: [],
+      };
+
+      service.addEnforcementAction(defendantAccountId, payload).subscribe((response) => {
+        expect(response).toEqual(payload);
+      });
+
+      const req = httpMock.expectOne(`${OPAL_FINES_PATHS.defendantAccounts}/${defendantAccountId}/enforcements`);
+      expect(req.request.method).toBe('POST');
+      expect(req.request.body).toEqual(payload);
+      expect(req.request.headers.has('If-Match')).toBe(false);
+      expect(req.request.headers.has('Business-Unit-Id')).toBe(false);
+
+      req.flush(payload);
+    });
+  });
+
   describe('getMinorCreditorAccountAtAGlance', () => {
     it('should return cached data if available', () => {
       const account_id: number = 77;

@@ -539,6 +539,46 @@ When('I choose the enforcement override {string}', (resultCode: string) => {
 });
 
 /**
+ * @step Selects an enforcement action on the add form.
+ */
+When('I choose the enforcement action {string}', (resultCode: string) => {
+  log('step', 'Choose enforcement action', { resultCode });
+  flow().selectEnforcementAction(resultCode);
+});
+
+/**
+ * @step Selects to add the enforcement action on the add enf action details form.
+ */
+When('I continue to the confirm enforcement action page', () => {
+  log('step', 'Continue to confirm enforcement action page');
+  flow().submitAddEnforcementActionForm();
+});
+
+/**
+ * @step Enters a reason on the add enforcement action details form.
+ */
+When('I enter {string} for the enforcement action reason', (reason: string) => {
+  log('step', 'Enter enforcement action reason', { reason });
+  flow().enterEnforcementActionReason(reason);
+});
+
+/**
+ * @step Chooses whether to change existing payment terms on the add enforcement action details form.
+ */
+When('I choose {string} for changing existing payment terms', (option: string) => {
+  log('step', 'Choose change existing payment terms option', { option });
+  flow().chooseChangeExistingPaymentTerms(option);
+});
+
+/**
+ * @step Submits the add enforcement action details form.
+ */
+When('I add the enforcement action', () => {
+  log('step', 'Add enforcement action');
+  flow().submitAddEnforcementActionForm();
+});
+
+/**
  * @step Selects a Local Justice Area on the add form.
  */
 When('I choose the Local Justice Area {string}', (localJusticeArea: string) => {
@@ -815,6 +855,15 @@ Then('the enforcement override summary shows:', (table: DataTable) => {
 
   log('assert', 'Enforcement override summary values', { override, enforcer, lja });
   flow().assertEnforcementOverrideSummary({ override, enforcer, lja });
+});
+
+/**
+ * @step Asserts the enforcement action summary row value shown on the Enforcement tab.
+ */
+Then('the enforcement action summary shows {string}', (expected: string) => {
+  const expectedWithUniq = applyUniqPlaceholder(expected);
+  log('assert', 'Enforcement action summary value', { expected: expectedWithUniq });
+  flow().assertEnforcementActionSummary(expectedWithUniq);
 });
 
 /**
