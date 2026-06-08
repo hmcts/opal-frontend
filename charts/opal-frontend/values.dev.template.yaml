@@ -54,7 +54,7 @@ opal-fines-service:
             alias: OPAL_LEGACY_GATEWAY_USERNAME
           - name: opalLegacyJCDEGatewayPassword
             alias: OPAL_LEGACY_GATEWAY_PASSWORD
-          - name: launch-darkly-client-sdk-dev
+          - name: launch-darkly-sdk-key-dev
             alias: LAUNCH_DARKLY_SDK_KEY
     environment:
       OPAL_FINES_DB_HOST: "{{ .Release.Name }}-postgresql"
