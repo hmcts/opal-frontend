@@ -28,6 +28,8 @@ type RequestPayloadEntry = {
   direction?: 'request' | 'response';
 };
 
+type EvidenceErrorSource = 'draft-detail' | 'pod-log';
+
 /**
  * Flow helpers that orchestrate draft account actions.
  */
@@ -96,7 +98,13 @@ export class DraftAccountsFlow {
   }
 
   /**
-   * Record UI approval evidence after publish status resolves.
+   * Persist a snapshot of UI approval evidence for the current draft account.
+   * Callers can save once immediately after the approval PATCH completes so
+   * request/response payloads survive later publish polling failures, then save
+   * again after publish status resolves to refresh the persisted account state.
+   * This snapshot also captures any failure metadata visible on the draft detail itself
+   * (for example `account_status_message` or failure-oriented account notes). Exact legacy
+   * gateway error codes, when available, are added later by the Node-side pod-log enricher.
    * @param requestPayloads - Optional PATCH request/response payloads captured during approval.
    * @returns Cypress chainable for the capture task.
    */
@@ -110,6 +118,12 @@ export class DraftAccountsFlow {
         })
         .then((response) => {
           const body = this.isRecord(response.body) ? response.body : {};
+          // Normalize draft-detail strings before persisting them into evidence metadata.
+          const normalizeText = (value: unknown): string | undefined => {
+            if (typeof value !== 'string') return undefined;
+            const trimmed = value.replace(/\s+/g, ' ').trim();
+            return trimmed || undefined;
+          };
           const normalizeCourtId = (value: unknown): string | undefined => {
             if (typeof value === 'string') {
               const trimmed = value.trim();
@@ -119,6 +133,36 @@ export class DraftAccountsFlow {
               return String(value);
             }
             return undefined;
+          };
+          // Read failure text already exposed by the draft detail endpoint. This is the
+          // browser-visible fallback path when the legacy gateway XML is only present in pod logs.
+          const readFailureSummary = (record: Record<string, unknown>): {
+            errorCode?: string;
+            errorSummary?: string;
+            errorSource?: EvidenceErrorSource;
+          } => {
+            const statusValue = normalizeText(record['account_status']);
+            if (!statusValue || !/failed/i.test(statusValue)) {
+              return {};
+            }
+
+            const statusMessage = normalizeText(record['account_status_message']);
+            const account = this.isRecord(record['account']) ? record['account'] : null;
+            const rawNotes = account && Array.isArray(account['account_notes']) ? account['account_notes'] : [];
+            const noteTexts = rawNotes.flatMap((note) => {
+              if (!this.isRecord(note)) return [];
+              const noteText = normalizeText(note['account_note_text']);
+              if (!noteText || !/(?:failed|error)/i.test(noteText)) return [];
+              return [noteText];
+            });
+            const uniqueParts = Array.from(new Set([statusMessage, ...noteTexts].filter(Boolean)));
+            if (!uniqueParts.length) {
+              return {};
+            }
+            return {
+              errorSummary: uniqueParts.join(' | '),
+              errorSource: 'draft-detail',
+            };
           };
           const readImposingCourtId = (record: Record<string, unknown>): string | undefined => {
             const direct = normalizeCourtId(record['imposing_court_id']);
@@ -147,6 +191,7 @@ export class DraftAccountsFlow {
                 ? body['account']['account_number']
                 : undefined;
           const imposingCourtId = readImposingCourtId(body);
+          const failureSummary = readFailureSummary(body);
           const updatedAt =
             typeof body['account_status_date'] === 'string'
               ? body['account_status_date']
@@ -166,6 +211,9 @@ export class DraftAccountsFlow {
             accountId,
             accountNumber,
             imposingCourtId,
+            errorCode: failureSummary.errorCode,
+            errorSummary: failureSummary.errorSummary,
+            errorSource: failureSummary.errorSource,
             updatedAt,
             requestPayloads: requestPayloads?.length ? requestPayloads : undefined,
             requestSummary: {
@@ -417,8 +465,9 @@ export class DraftAccountsFlow {
 
       return waitForPatchPayloads()
         .then(() => logPatchCaptureSummary())
+        .then(() => this.captureApprovedAccountEvidence(patchPayloads))
         .then(() => this.waitForPublishStatus(['Published', 'Publishing Pending', 'Legacy Response Pending']))
-        .then(() => this.captureApprovedAccountEvidence(patchPayloads));
+        .then(() => this.captureApprovedAccountEvidence());
     }
     return cy.wrap(undefined, { log: false }) as Cypress.Chainable<void>;
   }
