@@ -5,8 +5,9 @@ import { IOpalUserState } from '@hmcts/opal-frontend-common/services/opal-user-s
 import { FINES_PRIMARY_NAVIGATION_SECTION_PERMISSIONS } from '../constants/fines-primary-navigation-section-permissions.constant';
 import { type IDashboardPageConfiguration } from '@hmcts/opal-frontend-common/pages/dashboard-page/interfaces';
 import { FEATURE_FLAG_RELEASE_DASHBOARD_GROUPS } from '../constants/feature-flag-release-dashboard-groups.constant';
-import { RELEASE_1A_FEATURE_FLAG } from '../constants/release-feature-flags.constant';
+import { FEATURE_FLAG_RELEASE_DASHBOARD_HIGHLIGHTS } from '../constants/feature-flag-release-dashboard-highlights.constant';
 import { FEATURE_FLAG_SECTION_PERMISSION_EXCLUSIONS } from '../constants/feature-flag-section-permission-exclusions.constant';
+import { RELEASE_FEATURE_FLAGS } from '../constants/release-feature-flags.constant';
 import { type FeatureFlagReleaseName } from '../types/feature-flag-release-name.type';
 import { type FeatureFlagReleaseState } from '../types/feature-flag-release-state.type';
 
@@ -14,6 +15,14 @@ const DASHBOARD_LANDING_PRIORITY: DashboardPageType[] = ['search', 'accounts', '
 
 type FeatureFlags = Record<string, unknown>;
 
+/**
+ * Collects the values associated with release flags that are currently disabled.
+ *
+ * @typeParam T - The item type stored under each release flag key.
+ * @param featureFlagValues - Values grouped by release flag name.
+ * @param featureFlagReleaseState - The current enabled or disabled state of release feature flags.
+ * @returns The values for all disabled release flags, flattened into a single list.
+ */
 const getDisabledFeatureFlagValues = <T>(
   featureFlagValues: Partial<Record<FeatureFlagReleaseName, readonly T[]>>,
   featureFlagReleaseState: FeatureFlagReleaseState,
@@ -54,9 +63,15 @@ export const hasAnyPermission = (
  * @param featureFlags - The raw feature flag values from the global store.
  * @returns The release flag state used to apply release-specific permission and dashboard rules.
  */
-export const getFeatureFlagReleaseState = (featureFlags?: FeatureFlags | null): FeatureFlagReleaseState => ({
-  [RELEASE_1A_FEATURE_FLAG]: featureFlags?.[RELEASE_1A_FEATURE_FLAG] === true,
-});
+export const getFeatureFlagReleaseState = (featureFlags?: FeatureFlags | null): FeatureFlagReleaseState => {
+  const featureFlagReleaseState: FeatureFlagReleaseState = {};
+
+  for (const releaseFeatureFlag of RELEASE_FEATURE_FLAGS) {
+    featureFlagReleaseState[releaseFeatureFlag] = featureFlags?.[releaseFeatureFlag] === true;
+  }
+
+  return featureFlagReleaseState;
+};
 
 /**
  * Returns the permission IDs required for a dashboard section, excluding permissions for disabled release flags.
@@ -131,6 +146,22 @@ export const getAccessiblePrimaryNavigationItems = (
   );
 
 /**
+ * Returns the first dashboard type the user can access, or the default tab when none are available.
+ *
+ * @param navigationItems - The full list of fines primary navigation items.
+ * @param userState - The logged-in user's state, including business units and permissions.
+ * @param featureFlagReleaseState - The current enabled or disabled state of release feature flags.
+ * @returns The first accessible dashboard type, or the default dashboard tab when no accessible section exists.
+ */
+export const getFirstAccessibleDashboardType = (
+  navigationItems: readonly INavigationBarConfiguration[],
+  userState?: IOpalUserState | null,
+  featureFlagReleaseState: FeatureFlagReleaseState = {},
+): DashboardPageType =>
+  getAccessiblePrimaryNavigationItems(navigationItems, userState, featureFlagReleaseState)[0]?.key ??
+  DASHBOARD_PAGE_DEFAULT_TAB;
+
+/**
  * Resolves the dashboard tab to land on, using accessible sections and the configured landing priority.
  *
  * @param navigationItems - The full list of fines primary navigation items.
@@ -168,16 +199,23 @@ export const filterDashboardConfigByFeatureFlags = (
   config: IDashboardPageConfiguration,
   featureFlagReleaseState: FeatureFlagReleaseState = {},
 ): IDashboardPageConfiguration => {
+  const disabledDashboardHighlightIds = getDisabledFeatureFlagValues(
+    FEATURE_FLAG_RELEASE_DASHBOARD_HIGHLIGHTS,
+    featureFlagReleaseState,
+  );
   const disabledDashboardGroupIds = getDisabledFeatureFlagValues(
     FEATURE_FLAG_RELEASE_DASHBOARD_GROUPS,
     featureFlagReleaseState,
   );
 
-  if (!disabledDashboardGroupIds.length) {
+  if (!disabledDashboardHighlightIds.length && !disabledDashboardGroupIds.length) {
     return config;
   }
 
+  const highlights = config.highlights.filter((highlight) => !disabledDashboardHighlightIds.includes(highlight.id));
   const groups = config.groups.filter((group) => !disabledDashboardGroupIds.includes(group.id));
 
-  return groups.length === config.groups.length ? config : { ...config, groups };
+  return highlights.length === config.highlights.length && groups.length === config.groups.length
+    ? config
+    : { ...config, highlights, groups };
 };

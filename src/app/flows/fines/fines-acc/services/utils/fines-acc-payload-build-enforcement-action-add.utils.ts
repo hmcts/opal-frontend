@@ -87,13 +87,28 @@ function toSnakeCaseParameterName(parameterName: string): string {
   const normalizedName = trimmedName.toLowerCase();
   return (
     FINES_ACC_ENF_ACTION_ADD_RESULT_PARAMETER_NAME_MAP[normalizedName] ??
-    trimmedName
-      .replace(/([a-z0-9])([A-Z])/g, '$1_$2')
-      .replace(/[^a-zA-Z0-9]+/g, '_')
-      .replace(/^_+|_+$/g, '')
-      .toLowerCase()
+    trimUnderscores(trimmedName.replace(/([a-z0-9])([A-Z])/g, '$1_$2').replace(/[^a-zA-Z0-9]+/g, '_')).toLowerCase()
   );
 }
+
+/**
+ * Removes leading and trailing underscores from generated parameter names without using a regex.
+ */
+export function trimUnderscores(value: string): string {
+  let start = 0;
+  let end = value.length;
+
+  while (start < end && value[start] === '_') {
+    start++;
+  }
+
+  while (end > start && value[end - 1] === '_') {
+    end--;
+  }
+
+  return value.slice(start, end);
+}
+
 
 /**
  * Serialises selected menu-checkbox options into the response format expected by the API.

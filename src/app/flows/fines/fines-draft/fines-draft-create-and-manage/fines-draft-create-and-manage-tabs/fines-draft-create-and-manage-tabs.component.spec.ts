@@ -25,6 +25,22 @@ import { FINES_ACC_DEFENDANT_ROUTING_PATHS } from '../../../fines-acc/routing/co
 import { OPAL_USER_STATE_MOCK } from '@hmcts/opal-frontend-common/services/opal-user-service/mocks';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
 import { FINES_MAC_ROUTING_PATHS } from '@app/flows/fines/fines-mac/routing/constants/fines-mac-routing-paths.constant';
+import { FINES_PERMISSIONS } from '@app/constants/fines-permissions.constant';
+import { type IOpalUserState } from '@hmcts/opal-frontend-common/services/opal-user-service/interfaces';
+
+const createUserStateWithPermissions = (permissionIds: readonly number[]): IOpalUserState => {
+  const userState = structuredClone(OPAL_USER_STATE_MOCK);
+
+  userState.business_unit_users = userState.business_unit_users.map((businessUnitUser) => ({
+    ...businessUnitUser,
+    permissions: permissionIds.map((permissionId) => ({
+      permission_id: permissionId,
+      permission_name: `Permission ${permissionId}`,
+    })),
+  }));
+
+  return userState;
+};
 
 describe('FinesDraftCreateAndManageTabsComponent', () => {
   let component: FinesDraftCreateAndManageTabsComponent;
@@ -98,7 +114,13 @@ describe('FinesDraftCreateAndManageTabsComponent', () => {
     }).compileComponents();
 
     globalStore = TestBed.inject(GlobalStore);
-    globalStore.setUserState(OPAL_USER_STATE_MOCK);
+    globalStore.setUserState(
+      createUserStateWithPermissions([
+        FINES_PERMISSIONS['create-and-manage-draft-accounts'],
+        FINES_PERMISSIONS['search-and-view-accounts'],
+      ]),
+    );
+    globalStore.setFeatureFlags({ 'release-1b': true });
 
     finesDraftStore = TestBed.inject(FinesDraftStore);
 
@@ -290,6 +312,15 @@ describe('FinesDraftCreateAndManageTabsComponent', () => {
       accountId,
       FINES_ACC_DEFENDANT_ROUTING_PATHS.children.details,
     ]);
+  });
+
+  it('should not route to account details page onAccountClick when release-1b is disabled', () => {
+    globalStore.setFeatureFlags({ 'release-1b': false });
+    mockRouter.navigate.mockClear();
+
+    component.onAccountClick(77);
+
+    expect(mockRouter.navigate).not.toHaveBeenCalled();
   });
 
   it('should route to originator type selection page on navigateToCreateAccount', () => {

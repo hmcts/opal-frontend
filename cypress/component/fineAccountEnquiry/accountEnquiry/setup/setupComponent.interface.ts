@@ -15,6 +15,7 @@ export interface IComponentProperties {
   userStateDomain?: string;
   fragments:
     | 'at-a-glance'
+    | 'creditor'
     | 'defendant'
     | 'parent-or-guardian'
     | 'payment-terms'
