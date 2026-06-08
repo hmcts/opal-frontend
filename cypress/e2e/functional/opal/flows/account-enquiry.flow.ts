@@ -30,6 +30,12 @@ import { MINOR_CREDITOR_AMEND_ELEMENTS } from '../../../../shared/selectors/acco
 const logAE = createScopedLogger('AccountEnquiryFlow');
 const logAESync = createScopedSyncLogger('AccountEnquiryFlow');
 
+type MinorCreditorAmendmentSearchResult = {
+  amendments: Array<Record<string, unknown>>;
+  count: number | undefined;
+  recordType: string;
+};
+
 /**
  * @file AccountEnquiryFlow
  * @description High-level workflow for searching accounts (individuals/companies),
@@ -1834,17 +1840,11 @@ export class AccountEnquiryFlow {
    */
   private searchAmendmentsForMinorCreditorAccount(
     minorCreditorAccountId: number,
-  ): Cypress.Chainable<{ amendments: Array<Record<string, unknown>>; count?: number }> {
+  ): Cypress.Chainable<MinorCreditorAmendmentSearchResult> {
     const recordTypes = ['minor_creditor_accounts', 'creditor_accounts'];
     const accountId = String(minorCreditorAccountId);
 
-    const searchByRecordType = (
-      index: number,
-    ): Cypress.Chainable<{
-      amendments: Array<Record<string, unknown>>;
-      count?: number;
-      recordType: string;
-    }> => {
+    const searchByRecordType = (index: number): Cypress.Chainable<MinorCreditorAmendmentSearchResult> => {
       const associatedRecordType = recordTypes[index];
       const requestBody = {
         associated_record_type: associatedRecordType,
@@ -1862,7 +1862,7 @@ export class AccountEnquiryFlow {
           body: requestBody,
           failOnStatusCode: false,
         })
-        .then((amendRes) => {
+        .then((amendRes): Cypress.Chainable<MinorCreditorAmendmentSearchResult> => {
           expect(amendRes.status, 'POST minor creditor amendments search should succeed').to.eq(200);
 
           const responseBody = amendRes.body as Record<string, unknown>;
@@ -1876,7 +1876,7 @@ export class AccountEnquiryFlow {
           });
 
           if (amendments.length > 0 || index === recordTypes.length - 1) {
-            return { amendments, count, recordType: associatedRecordType };
+            return cy.wrap({ amendments, count, recordType: associatedRecordType }, { log: false });
           }
 
           return searchByRecordType(index + 1);
