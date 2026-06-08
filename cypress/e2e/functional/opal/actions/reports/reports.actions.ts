@@ -72,11 +72,13 @@ export class ReportsActions {
    * @param reportLink - Visible Reports landing page link label.
    */
   public openLandingPageLink(reportLink: ReportsLandingPageLink): void {
-    const { selector } = this.getReportsLinkConfig(reportLink);
+    const { selector, path, heading } = this.getReportsLinkConfig(reportLink);
 
     log('action', 'Opening Reports landing page link', { reportLink });
-    this.primaryNavigation.assertLandingPage('Reports', this.reportsLandingPagePath);
+    this.primaryNavigation.assertLandingPageHeader('Reports');
     cy.get(selector, this.common.getTimeoutOptions()).should('be.visible').click();
+    this.common.assertHeaderContains(heading);
+    cy.location('pathname', this.common.getPathTimeoutOptions()).should('eq', path);
   }
 
   /**

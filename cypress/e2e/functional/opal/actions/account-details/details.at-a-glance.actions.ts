@@ -4,6 +4,7 @@
  * and navigation to related areas such as Comments. Keeps step definitions thin and reusable.
  */
 import { AccountAtAGlanceLocators as N } from '../../../../../shared/selectors/account-details/account.at-a-glance.details.locators';
+import { ACCOUNT_ENQUIRY_HEADER_ELEMENTS as H } from '../../../../../shared/selectors/account-enquiry/account.enquiry.header.locators';
 import { createScopedLogger } from '../../../../../support/utils/log.helper';
 import { CommonActions } from '../common/common.actions';
 
@@ -133,6 +134,43 @@ export class AccountDetailsAtAGlanceActions {
           const normalizedText = text.replace(/\s+/g, ' ').trim();
           expect(normalizedText).to.contain(value);
         });
+    });
+  }
+
+  /**
+   * Asserts the summary metric bar values shown on a minor creditor account.
+   *
+   * @param expected - Map of summary metric labels to expected values.
+   */
+  public assertMinorCreditorSummaryMetricValues(expected: Record<string, string>): void {
+    const fieldLabels: Record<string, string> = {
+      awarded: H.labelAwarded,
+      'paid out': H.labelPaidOut,
+      'awaiting payout': H.labelAwaitingPayout,
+      outstanding: H.labelOutstanding,
+    };
+
+    cy.get(H.summaryMetricBar, { timeout: 15000 }).should('be.visible');
+
+    Object.entries(expected).forEach(([label, value]) => {
+      const normalizedLabel = label.trim().toLowerCase();
+      const visibleLabel = fieldLabels[normalizedLabel];
+
+      if (!visibleLabel) {
+        throw new Error(
+          `Unsupported minor creditor summary metric label "${label}". Supported labels: ${Object.keys(fieldLabels).join(', ')}`,
+        );
+      }
+
+      log('assert', 'Asserting minor creditor summary metric value', { label, value });
+
+      cy.get(H.summaryMetricBar, this.common.getTimeoutOptions()).within(() => {
+        cy.contains(visibleLabel)
+          .should('be.visible')
+          .closest(H.summaryMetricBarItem)
+          .should('contain.text', value)
+          .and('not.contain.text', `-${value}`);
+      });
     });
   }
 
