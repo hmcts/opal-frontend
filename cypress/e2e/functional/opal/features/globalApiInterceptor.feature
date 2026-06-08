@@ -140,12 +140,12 @@ Feature: Global API Interceptor shows error banner for all CEP error codes
     @JIRA-STORY:PO-2225  @JIRA-EPIC:PO-2239 @JIRA-TEST-KEY:PO-5281
     Scenario: Global warning banner is displayed when the fixed penalty details API receives no response
       Given a published non-vehicle fixed penalty account exists:
-        | first name        | Robert                  |
-        | last name         | FixedPenaltyPo{uniq}    |
-        | ticket number     | FPRPO2225{uniqUpper}    |
+        | first name        | Robert                               |
+        | last name         | FixedPenaltyPo{uniq}                 |
+        | ticket number     | FPRPO2225{uniqUpper}                 |
         | issuing authority | City of London Central Ticket Office |
-        | time of offence   | 14:30                   |
-        | place of offence  | Main Street, Metropolis |
+        | time of offence   | 14:30                                |
+        | place of offence  | Main Street, Metropolis              |
       When I search for the account by last name "FixedPenaltyPo{uniq}" and open the latest result
       And I open the Fixed penalty section and the fixed penalty details request receives no response
       Then the global warning banner is displayed with:

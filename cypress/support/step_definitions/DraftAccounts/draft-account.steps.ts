@@ -406,12 +406,12 @@ Given('a published adult or youth defendant account exists:', (table: DataTable)
  *
  * @example
  *   Given a published non-vehicle fixed penalty account exists:
- *     | first name        | Robert                  |
- *     | last name         | FixedPenaltyNV{uniq}    |
- *     | ticket number     | FPR1BNV{uniqUpper}      |
+ *     | first name        | Robert                               |
+ *     | last name         | FixedPenaltyNV{uniq}                 |
+ *     | ticket number     | FPR1BNV{uniqUpper}                   |
  *     | issuing authority | City of London Central Ticket Office |
- *     | time of offence   | 14:30                   |
- *     | place of offence  | Main Street, Metropolis |
+ *     | time of offence   | 14:30                                |
+ *     | place of offence  | Main Street, Metropolis              |
  */
 Given('a published non-vehicle fixed penalty account exists:', (table: DataTable) => {
   const values = parseSeedValues(table);
