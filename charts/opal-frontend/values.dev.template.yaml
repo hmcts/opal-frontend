@@ -7,7 +7,8 @@ nodejs:
       secrets:
         - app-insights-connection-string
         - redis-connection-string
-        - launch-darkly-client-id
+        - name: launch-darkly-client-id-dev
+          alias: launch-darkly-client-id
   environment:
     OPAL_FINES_SERVICE_API_URL: ${DEV_OPAL_FINES_SERVICE_URL}
     OPAL_USER_SERVICE_API_URL: https://opal-user-service.staging.platform.hmcts.net
@@ -53,6 +54,8 @@ opal-fines-service:
             alias: OPAL_LEGACY_GATEWAY_USERNAME
           - name: opalLegacyJCDEGatewayPassword
             alias: OPAL_LEGACY_GATEWAY_PASSWORD
+          - name: launch-darkly-client-sdk-dev
+            alias: LAUNCH_DARKLY_SDK_KEY
     environment:
       OPAL_FINES_DB_HOST: "{{ .Release.Name }}-postgresql"
       OPAL_FINES_DB_NAME: opal
