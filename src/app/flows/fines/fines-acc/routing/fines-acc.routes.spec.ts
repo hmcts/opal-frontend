@@ -7,6 +7,8 @@ import { FINES_ACC_MAJOR_CREDITOR_ROUTING_TITLES } from './constants/fines-acc-m
 import { FINES_ACC_ENF_COURT_CHANGE_ROUTING_PATHS } from '../fines-acc-enf-court-change/constants/fines-acc-enf-court-change-routing-paths.constant';
 import { FINES_ACC_ENF_OVERRIDE_ADD_CHANGE_ROUTING_PATHS } from '../fines-acc-enf-override-add-change/constants/fines-acc-enf-override-add-change-routing-paths.constant';
 import { HIDE_PRIMARY_NAV_ROUTE_DATA_KEY } from '@app/constants/route-data.constant';
+import { minorCreditorAccountCreditorResolver } from './resolvers/defendant-minor-creditor-creditor.resolver';
+import { canDeactivateGuard } from '@hmcts/opal-frontend-common/guards/can-deactivate';
 import { FINES_ACC_ENF_ACTION_ROUTING_PATHS } from '../fines-acc-enf-action-select/constants/fines-acc-enf-action-select-routing-paths.constant';
 import { FINES_ACC_REMOVE_NON_PAYING_PG_ROUTING_PATHS } from '../fines-acc-remove-non-paying-pg/constants/fines-acc-remove-non-paying-pg-routing-paths.constant';
 
@@ -64,6 +66,22 @@ describe('fines acc routes', () => {
     expect(minorCreditorJourneyPaths).toEqual(
       expect.arrayContaining([`${FINES_ACC_MINOR_CREDITOR_ROUTING_PATHS.children.note}/add`]),
     );
+  });
+
+  it('should resolve creditor data for the minor creditor amend journey', () => {
+    const amendRoute = minorCreditorRoute?.children?.find(
+      (route) => route.path === FINES_ACC_MINOR_CREDITOR_ROUTING_PATHS.children.amend,
+    );
+
+    expect(amendRoute?.resolve?.['minorCreditorAccountCreditor']).toBe(minorCreditorAccountCreditorResolver);
+  });
+
+  it('should protect the minor creditor amend journey from losing unsaved changes', () => {
+    const amendRoute = minorCreditorRoute?.children?.find(
+      (route) => route.path === FINES_ACC_MINOR_CREDITOR_ROUTING_PATHS.children.amend,
+    );
+
+    expect(amendRoute?.canDeactivate).toContain(canDeactivateGuard);
   });
 
   it('should route to the major creditor details placeholder page', () => {

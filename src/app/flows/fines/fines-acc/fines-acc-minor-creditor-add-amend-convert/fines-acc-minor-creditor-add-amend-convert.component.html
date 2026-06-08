@@ -1,1 +1,8 @@
-<h1 class="govuk-heading-l">Change creditor details</h1>
+<div class="govuk-grid-column-two-thirds">
+  <app-fines-acc-minor-creditor-add-amend-convert-form
+    [initialFormData]="prefilledFormData"
+    (formSubmit)="handleFormSubmit($event)"
+    (cancelRequested)="handleCancel()"
+    (unsavedChanges)="handleUnsavedChanges($event)"
+  ></app-fines-acc-minor-creditor-add-amend-convert-form>
+</div>
