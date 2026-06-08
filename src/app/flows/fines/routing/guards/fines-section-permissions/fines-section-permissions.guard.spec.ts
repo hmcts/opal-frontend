@@ -6,13 +6,14 @@ import { PAGES_ROUTING_PATHS as COMMON_PAGES_ROUTING_PATHS } from '@hmcts/opal-f
 import { IOpalUserState } from '@hmcts/opal-frontend-common/services/opal-user-service/interfaces';
 import { OPAL_USER_STATE_MOCK } from '@hmcts/opal-frontend-common/services/opal-user-service/mocks';
 import { OpalUserService } from '@hmcts/opal-frontend-common/services/opal-user-service';
-import { beforeAll, beforeEach, describe, expect, it, vi } from 'vitest';
+import { beforeEach, describe, expect, it, vi } from 'vitest';
 import { of, throwError } from 'rxjs';
 import { ACCOUNTS_PERMISSIONS } from '@app/flows/fines/constants/accounts-permissions.constant';
 import { REPORTS_PERMISSIONS } from '@app/flows/fines/constants/reports-permissions.constant';
 import { SEARCH_PERMISSIONS } from '@app/flows/fines/constants/search-permissions.constant';
 import {
   RELEASE_1A_FEATURE_FLAG,
+  RELEASE_1B_FEATURE_FLAG,
   RELEASE_1C_WRITE_OFF_FEATURE_FLAG,
   RELEASE_1C_ENFORCEMENT_OPERATIONAL_REPORTING_FEATURE_FLAG,
 } from '@app/flows/fines/constants/release-feature-flags.constant';
@@ -20,6 +21,7 @@ import {
 const resolveFeatureFlagGuardMock = vi.fn();
 const DEFAULT_RELEASE_FEATURE_FLAGS = {
   [RELEASE_1A_FEATURE_FLAG]: true,
+  [RELEASE_1B_FEATURE_FLAG]: true,
   [RELEASE_1C_WRITE_OFF_FEATURE_FLAG]: true,
   [RELEASE_1C_ENFORCEMENT_OPERATIONAL_REPORTING_FEATURE_FLAG]: true,
 };
@@ -67,15 +69,7 @@ describe('finesSectionPermissionsGuard', () => {
     return TestBed.runInInjectionContext(() => finesSectionPermissionsGuard(route, {} as RouterStateSnapshot));
   };
 
-  beforeAll(async () => {
-    vi.doMock('@hmcts/opal-frontend-common/guards/feature-flag', () => ({
-      resolveFeatureFlagGuard: resolveFeatureFlagGuardMock,
-    }));
-
-    ({ finesSectionPermissionsGuard } = await import('./fines-section-permissions.guard'));
-  });
-
-  beforeEach(() => {
+  beforeEach(async () => {
     mockRouter = createSpyObj('Router', ['createUrlTree']);
     mockOpalUserService = createSpyObj('OpalUserService', ['getLoggedInUserState']);
     resolveFeatureFlagGuardMock.mockReset();
@@ -83,6 +77,13 @@ describe('finesSectionPermissionsGuard', () => {
     mockRouter.createUrlTree.mockReturnValue(new UrlTree());
     mockOpalUserService.getLoggedInUserState.mockReturnValue(of(createUserStateWithPermissions([])));
     mockFeatureFlags(DEFAULT_RELEASE_FEATURE_FLAGS);
+
+    vi.resetModules();
+    vi.doMock('@hmcts/opal-frontend-common/guards/feature-flag', () => ({
+      resolveFeatureFlagGuard: resolveFeatureFlagGuardMock,
+    }));
+
+    ({ finesSectionPermissionsGuard } = await import('./fines-section-permissions.guard'));
 
     TestBed.configureTestingModule({
       providers: [
@@ -100,6 +101,7 @@ describe('finesSectionPermissionsGuard', () => {
     const result = await runGuard({ sectionKey: FINES_DASHBOARD_ROUTING_PATHS.children.search });
 
     expect(result).toBe(true);
+    expect(resolveFeatureFlagGuardMock).toHaveBeenCalledWith('release-1b', expect.any(Object), expect.any(Object));
   });
 
   it('should redirect Search to access denied when the user lacks all search permissions', async () => {
@@ -109,6 +111,21 @@ describe('finesSectionPermissionsGuard', () => {
     const result = await runGuard({ sectionKey: FINES_DASHBOARD_ROUTING_PATHS.children.search });
 
     expect(result).toBe(expectedUrlTree);
+    expect(mockRouter.createUrlTree).toHaveBeenCalledWith([`/${COMMON_PAGES_ROUTING_PATHS.children.accessDenied}`]);
+  });
+
+  it('should redirect Search to access denied when release-1b is disabled and the user has search permissions', async () => {
+    const expectedUrlTree = new UrlTree();
+    resolveFeatureFlagGuardMock.mockResolvedValue(false);
+    mockOpalUserService.getLoggedInUserState.mockReturnValue(
+      of(createUserStateWithPermissions([SEARCH_PERMISSIONS[0]])),
+    );
+    mockRouter.createUrlTree.mockReturnValue(expectedUrlTree);
+
+    const result = await runGuard({ sectionKey: FINES_DASHBOARD_ROUTING_PATHS.children.search });
+
+    expect(result).toBe(expectedUrlTree);
+    expect(resolveFeatureFlagGuardMock).toHaveBeenCalledWith('release-1b', expect.any(Object), expect.any(Object));
     expect(mockRouter.createUrlTree).toHaveBeenCalledWith([`/${COMMON_PAGES_ROUTING_PATHS.children.accessDenied}`]);
   });
 
