@@ -9,6 +9,7 @@ import { AccountDetailsNavActions } from '../actions/account-details/details.nav
 import { AccountDetailsCommentsActions } from '../actions/account-details/details.comments.actions';
 import { AccountDetailsAtAGlanceActions } from '../actions/account-details/details.at-a-glance.actions';
 import { AccountDetailsParentGuardianActions } from '../actions/account-details/details.parent.guardian.actions';
+import { AccountDetailsMinorCreditorActions } from '../actions/account-details/details.minor-creditor.actions';
 import { AccountDetailsPaymentTermsActions } from '../actions/account-details/details.payment-terms.actions';
 import { AccountDetailsFixedPenaltyActions } from '../actions/account-details/details.fixed-penalty.actions';
 import { AccountSearchIndividualsLocators as L } from '../../../../shared/selectors/account-search/account.search.individuals.locators';
@@ -18,11 +19,13 @@ import { CommonActions } from '../actions/common/common.actions';
 import { EditDefendantDetailsActions } from '../actions/account-details/edit.defendant-details.actions';
 import { EditCompanyDetailsActions } from '../actions/account-details/edit.company-details.actions';
 import { EditParentGuardianDetailsActions } from '../actions/account-details/edit.parent-guardian-details.actions';
+import { EditMinorCreditorDetailsActions } from '../actions/account-details/edit.minor-creditor-details.actions';
 import { AccountConvertActions } from '../actions/account-details/convert.account.actions';
 import { AccountDetailsEnforcementActions } from '../actions/account-details/details.enforcement.actions';
 import { RemoveParentGuardianActions } from '../actions/account-details/remove.parent-guardian.actions';
 import { createScopedLogger, createScopedSyncLogger } from '../../../../support/utils/log.helper';
 import { EtagUpdate } from '../actions/draft-account/draft-account.api';
+import { MINOR_CREDITOR_AMEND_ELEMENTS } from '../../../../shared/selectors/account-enquiry/account.enquiry.minor-creditor-amend.locators';
 
 const logAE = createScopedLogger('AccountEnquiryFlow');
 const logAESync = createScopedSyncLogger('AccountEnquiryFlow');
@@ -68,6 +71,7 @@ export class AccountEnquiryFlow {
   private readonly results = new ResultsActions();
   private readonly defendantDetails = new AccountDetailsDefendantActions();
   private readonly parentGuardianDetails = new AccountDetailsParentGuardianActions();
+  private readonly minorCreditorDetails = new AccountDetailsMinorCreditorActions();
   private readonly fixedPenaltyDetails = new AccountDetailsFixedPenaltyActions();
   private readonly companyDetails = new EditCompanyDetailsActions();
   private readonly detailsNav = new AccountDetailsNavActions();
@@ -78,6 +82,7 @@ export class AccountEnquiryFlow {
   private readonly editDefendantDetailsActions = new EditDefendantDetailsActions();
   private readonly editCompanyDetailsActions = new EditCompanyDetailsActions();
   private readonly editParentGuardianActions = new EditParentGuardianDetailsActions();
+  private readonly editMinorCreditorActions = new EditMinorCreditorDetailsActions();
   private readonly paymentTerms = new AccountDetailsPaymentTermsActions();
   private readonly accountConvert = new AccountConvertActions();
   private readonly enforcement = new AccountDetailsEnforcementActions();
@@ -586,6 +591,24 @@ export class AccountEnquiryFlow {
   }
 
   /**
+   * Navigates to the Creditor tab and asserts it is active.
+   */
+  public goToCreditorTab(): void {
+    logAE('method', 'goToCreditorTab()');
+    logAE('navigate', 'Navigating to Creditor tab');
+    this.detailsNav.goToCreditorTab();
+    this.detailsNav.assertCreditorTabIsActive();
+  }
+
+  /**
+   * Asserts the amend minor creditor route is active and the form heading is shown.
+   */
+  public assertOnAmendMinorCreditorDetailsPage(): void {
+    logAE('method', 'assertOnAmendMinorCreditorDetailsPage()');
+    this.editMinorCreditorActions.assertHeader({ route: 'amend' });
+  }
+
+  /**
    * Asserts the Payment terms tab is active.
    */
   public assertPaymentTermsTabIsActive(): void {
@@ -629,6 +652,14 @@ export class AccountEnquiryFlow {
     logAE('method', 'openAddEnforcementActionForm()');
     this.enforcement.openAddEnforcementActionForm();
     this.enforcement.assertAddEnforcementActionFormVisible();
+  }
+
+  /**
+   * Submits the add enforcement action form.
+   */
+  public submitAddEnforcementActionForm(): void {
+    logAE('method', 'submitAddEnforcementActionForm()');
+    this.enforcement.submitAddEnforcementActionForm();
   }
 
   /**
@@ -723,6 +754,36 @@ export class AccountEnquiryFlow {
   public selectEnforcementOverride(resultCode: string): void {
     logAE('method', 'selectEnforcementOverride()', { resultCode });
     this.enforcement.selectEnforcementOverride(resultCode);
+  }
+
+  /**
+   * Selects an enforcement action code on the add form.
+   *
+   * @param resultCode - Enforcement action result code.
+   */
+  public selectEnforcementAction(resultCode: string): void {
+    logAE('method', 'selectEnforcementAction()', { resultCode });
+    this.enforcement.selectEnforcementAction(resultCode);
+  }
+
+  /**
+   * Enters a reason on the add enforcement action details form.
+   *
+   * @param reason - Enforcement action reason text.
+   */
+  public enterEnforcementActionReason(reason: string): void {
+    logAE('method', 'enterEnforcementActionReason()', { reason });
+    this.enforcement.enterEnforcementActionReason(reason);
+  }
+
+  /**
+   * Chooses whether to change existing payment terms on the add enforcement action details form.
+   *
+   * @param option - Visible option text, usually "Yes" or "No".
+   */
+  public chooseChangeExistingPaymentTerms(option: string): void {
+    logAE('method', 'chooseChangeExistingPaymentTerms()', { option });
+    this.enforcement.chooseChangeExistingPaymentTerms(option);
   }
 
   /**
@@ -929,6 +990,16 @@ export class AccountEnquiryFlow {
   }
 
   /**
+   * Asserts the last enforcement action summary value shown on the Enforcement tab.
+   *
+   * @param expected - Expected enforcement action text.
+   */
+  public assertEnforcementActionSummary(expected: string): void {
+    logAE('method', 'assertEnforcementActionSummary()', { expected });
+    this.enforcement.assertEnforcementActionSummary(expected);
+  }
+
+  /**
    * Submits instalments-only payment terms with a payment card request.
    * Stores the POST request body for later assertions.
    */
@@ -1104,6 +1175,17 @@ export class AccountEnquiryFlow {
   }
 
   /**
+   * Opens the amend minor creditor screen from the Creditor tab.
+   */
+  public openMinorCreditorChangeForm(): void {
+    logAE('method', 'openMinorCreditorChangeForm()');
+    this.detailsNav.goToCreditorTab();
+    this.minorCreditorDetails.assertSectionHeader('Creditor Details');
+    this.minorCreditorDetails.change({ formSelector: MINOR_CREDITOR_AMEND_ELEMENTS.form });
+    this.assertOnAmendMinorCreditorDetailsPage();
+  }
+
+  /**
    * Enters a first name on the add parent or guardian form.
    *
    * @param value - New first name value.
@@ -1134,6 +1216,65 @@ export class AccountEnquiryFlow {
     logAE('method', 'enterAmendParentGuardianFirstName()', { value });
     this.assertOnAmendParentGuardianDetailsPage();
     this.editParentGuardianActions.editFirstNames(value);
+  }
+
+  /**
+   * Enters a first name on the amend minor creditor form.
+   *
+   * @param value - New first name value.
+   */
+  public enterAmendMinorCreditorFirstName(value: string): void {
+    logAE('method', 'enterAmendMinorCreditorFirstName()', { value });
+    this.assertOnAmendMinorCreditorDetailsPage();
+    this.editMinorCreditorActions.editFirstNames(value);
+  }
+
+  /**
+   * Opens the amend minor creditor form, updates the first name, and saves.
+   *
+   * @param value - New first name value.
+   */
+  public amendMinorCreditorFirstNameAndSave(value: string): void {
+    logAE('method', 'amendMinorCreditorFirstNameAndSave()', { value });
+    this.openMinorCreditorChangeForm();
+    this.editMinorCreditorActions.editFirstNames(value);
+    this.editMinorCreditorActions.saveChanges();
+  }
+
+  /**
+   * Opens the amend minor creditor form, updates the first name, and discards the changes.
+   *
+   * @param value - New first name value.
+   */
+  public amendMinorCreditorFirstNameAndDiscard(value: string): void {
+    logAE('method', 'amendMinorCreditorFirstNameAndDiscard()', { value });
+    this.openMinorCreditorChangeForm();
+    this.editMinorCreditorActions.editFirstNames(value);
+    this.common.cancelEditing(true);
+  }
+
+  /**
+   * Opens the amend minor creditor form, updates the first name, and attempts to save.
+   *
+   * @param value - New first name value.
+   */
+  public attemptToAmendMinorCreditorFirstNameAndSave(value: string): void {
+    logAE('method', 'attemptToAmendMinorCreditorFirstNameAndSave()', { value });
+    this.openMinorCreditorChangeForm();
+    this.editMinorCreditorActions.editFirstNames(value);
+    this.editMinorCreditorActions.saveChanges();
+  }
+
+  /**
+   * Updates the first name on the currently open amend minor creditor form and attempts to save.
+   *
+   * @param value - New first name value.
+   */
+  public attemptToSaveCurrentMinorCreditorAmendFormWithFirstName(value: string): void {
+    logAE('method', 'attemptToSaveCurrentMinorCreditorAmendFormWithFirstName()', { value });
+    this.assertOnAmendMinorCreditorDetailsPage();
+    this.editMinorCreditorActions.editFirstNames(value);
+    this.editMinorCreditorActions.saveChanges();
   }
 
   /**
@@ -1231,6 +1372,14 @@ export class AccountEnquiryFlow {
   }
 
   /**
+   * Saves the minor creditor details after editing.
+   */
+  public saveMinorCreditorDetails(): void {
+    logAE('method', 'saveMinorCreditorDetails()');
+    this.editMinorCreditorActions.saveChanges();
+  }
+
+  /**
    * Asserts the defendant summary name contains the expected value.
    * @param expected text expected in name field
    */
@@ -1248,6 +1397,17 @@ export class AccountEnquiryFlow {
     logAE('assert', 'assertParentGuardianNameContains()', { expected });
     this.detailsNav.goToParentGuardianTab();
     this.parentGuardianDetails.assertNameContains(expected);
+  }
+
+  /**
+   * Asserts the minor creditor summary name contains the expected value.
+   *
+   * @param expected text expected in name field
+   */
+  public assertMinorCreditorNameContains(expected: string): void {
+    logAE('assert', 'assertMinorCreditorNameContains()', { expected });
+    this.detailsNav.goToCreditorTab();
+    this.minorCreditorDetails.assertNameContains(expected);
   }
 
   /**
@@ -1342,6 +1502,15 @@ export class AccountEnquiryFlow {
   public cancelAmendParentGuardianAndLeave(): void {
     logAE('method', 'cancelAmendParentGuardianAndLeave()');
     this.assertOnAmendParentGuardianDetailsPage();
+    this.common.cancelEditing(true);
+  }
+
+  /**
+   * Cancels the amend minor creditor form and confirms leaving the page.
+   */
+  public cancelAmendMinorCreditorAndLeave(): void {
+    logAE('method', 'cancelAmendMinorCreditorAndLeave()');
+    this.assertOnAmendMinorCreditorDetailsPage();
     this.common.cancelEditing(true);
   }
 
@@ -1444,6 +1613,17 @@ export class AccountEnquiryFlow {
   }
 
   /**
+   * Asserts the first name on the amend minor creditor form.
+   *
+   * @param expected - Expected input value.
+   */
+  public assertAmendMinorCreditorFirstName(expected: string): void {
+    logAE('method', 'assertAmendMinorCreditorFirstName()', { expected });
+    this.assertOnAmendMinorCreditorDetailsPage();
+    this.editMinorCreditorActions.verifyFirstName(expected);
+  }
+
+  /**
    * Asserts the amend parent or guardian error summary contains the expected message.
    *
    * @param expected - Expected error text.
@@ -1452,6 +1632,17 @@ export class AccountEnquiryFlow {
     logAE('method', 'assertAmendParentGuardianErrorSummaryContains()', { expected });
     this.assertOnAmendParentGuardianDetailsPage();
     this.editParentGuardianActions.assertErrorSummaryContains(expected);
+  }
+
+  /**
+   * Asserts the amend minor creditor error summary contains the expected message.
+   *
+   * @param expected - Expected error text.
+   */
+  public assertAmendMinorCreditorErrorSummaryContains(expected: string): void {
+    logAE('method', 'assertAmendMinorCreditorErrorSummaryContains()', { expected });
+    this.assertOnAmendMinorCreditorDetailsPage();
+    this.editMinorCreditorActions.assertErrorSummaryContains(expected);
   }
 
   /**
@@ -1566,6 +1757,23 @@ export class AccountEnquiryFlow {
   }
 
   /**
+   * Extracts the minor creditor account ID from the current route.
+   * @returns Chainable resolving to the numeric minor creditor account ID.
+   */
+  private extractMinorCreditorAccountIdFromUrl(): Cypress.Chainable<number> {
+    return cy.location('pathname').then((pathname) => {
+      const match = pathname.match(/\/fines\/account\/minor-creditor\/(\d+)(?:\/details|\/amend)?/);
+
+      expect(match, `URL should match minor creditor account pattern: ${pathname}`).to.exist;
+      expect(match?.[1], 'Minor creditor account ID should be captured from URL').to.exist;
+
+      const minorCreditorAccountId = parseInt(match![1], 10);
+      logAESync('action', 'Extracted minor creditor account ID from URL', { minorCreditorAccountId });
+      return minorCreditorAccountId;
+    });
+  }
+
+  /**
    * Fetches the header summary for a defendant account via API.
    * @param defendantAccountId - ID of the defendant account.
    * @returns Chainable yielding the header summary response body.
@@ -1602,6 +1810,27 @@ export class AccountEnquiryFlow {
       .then((partyResp) => {
         expect(partyResp.status, 'GET party details status').to.eq(200);
         return partyResp.body as Record<string, unknown>;
+      });
+  }
+
+  /**
+   * Fetches the creditor tab payload for a minor creditor account via API.
+   *
+   * @param minorCreditorAccountId - ID of the minor creditor account.
+   * @returns Chainable yielding the account details response body.
+   */
+  private fetchMinorCreditorAccount(minorCreditorAccountId: number): Cypress.Chainable<Record<string, unknown>> {
+    logAE('action', `Fetching minor creditor account details for account ${minorCreditorAccountId}`);
+    return cy
+      .request({
+        method: 'GET',
+        url: `${AccountEnquiryFlow.BASE_API_PATH}/minor-creditor-accounts/${minorCreditorAccountId}`,
+        headers: this.getApiHeaders(),
+        failOnStatusCode: false,
+      })
+      .then((accountResp) => {
+        expect(accountResp.status, 'GET minor creditor account details status').to.eq(200);
+        return accountResp.body as Record<string, unknown>;
       });
   }
 
@@ -1643,6 +1872,66 @@ export class AccountEnquiryFlow {
 
         return { amendments, count } as { amendments: Array<Record<string, unknown>>; count?: number };
       });
+  }
+
+  /**
+   * Searches amendments associated with a minor creditor account.
+   *
+   * @param minorCreditorAccountId - ID of the minor creditor account.
+   * @returns Amendments list and optional count.
+   */
+  private searchAmendmentsForMinorCreditorAccount(
+    minorCreditorAccountId: number,
+  ): Cypress.Chainable<{ amendments: Array<Record<string, unknown>>; count?: number }> {
+    const recordTypes = ['minor_creditor_accounts', 'creditor_accounts'];
+    const accountId = String(minorCreditorAccountId);
+
+    const searchByRecordType = (
+      index: number,
+    ): Cypress.Chainable<{
+      amendments: Array<Record<string, unknown>>;
+      count?: number;
+      recordType: string;
+    }> => {
+      const associatedRecordType = recordTypes[index];
+      const requestBody = {
+        associated_record_type: associatedRecordType,
+        associated_record_id: accountId,
+        function_code: 'ACCOUNT_ENQUIRY',
+      };
+
+      logAE('action', 'Searching amendments for minor creditor account', { requestBody });
+
+      return cy
+        .request({
+          method: 'POST',
+          url: `${AccountEnquiryFlow.BASE_API_PATH}/amendments/search`,
+          headers: this.getApiHeaders(),
+          body: requestBody,
+          failOnStatusCode: false,
+        })
+        .then((amendRes) => {
+          expect(amendRes.status, 'POST minor creditor amendments search should succeed').to.eq(200);
+
+          const responseBody = amendRes.body as Record<string, unknown>;
+          const amendments = (responseBody?.['searchData'] ?? []) as Array<Record<string, unknown>>;
+          const count = responseBody?.['count'] as number | undefined;
+
+          logAESync('info', 'Minor creditor amendments search result', {
+            associatedRecordType,
+            count,
+            searchDataLength: amendments.length,
+          });
+
+          if (amendments.length > 0 || index === recordTypes.length - 1) {
+            return { amendments, count, recordType: associatedRecordType };
+          }
+
+          return searchByRecordType(index + 1);
+        });
+    };
+
+    return searchByRecordType(0);
   }
 
   /**
@@ -2103,6 +2392,66 @@ export class AccountEnquiryFlow {
     this.saveParentGuardianDetails();
     this.assertParentGuardianNameContains(updatedFirstName);
     this.verifyParentGuardianAmendmentsViaApi(updatedFirstName);
+  }
+
+  /**
+   * Verifies persisted minor creditor updates and amendment audit rows via backend APIs.
+   *
+   * @param expectedForename - The forename value that should be persisted and audited.
+   */
+  public verifyMinorCreditorAmendmentsViaApi(expectedForename: string): void {
+    logAE('action', 'Verify minor creditor amendments via API', { expectedForename });
+
+    this.extractMinorCreditorAccountIdFromUrl()
+      .then((minorCreditorAccountId) =>
+        this.fetchMinorCreditorAccount(minorCreditorAccountId).then((accountBody) => ({
+          minorCreditorAccountId,
+          accountBody,
+        })),
+      )
+      .then(({ minorCreditorAccountId, accountBody }) => {
+        const partyDetails = accountBody['party_details'] as Record<string, unknown> | undefined;
+        const individual = partyDetails?.['individual_details'] as Record<string, unknown> | undefined;
+
+        expect(individual?.['forenames'], 'Minor creditor forename should match expected value').to.eq(
+          expectedForename,
+        );
+        logAESync('assert', 'Minor creditor forename verified in account details', {
+          forenames: individual?.['forenames'],
+        });
+
+        return minorCreditorAccountId;
+      })
+      .then((minorCreditorAccountId) => this.searchAmendmentsForMinorCreditorAccount(minorCreditorAccountId))
+      .then(({ amendments, recordType }) => {
+        expect(amendments, 'Amendments searchData should be an array').to.be.an('array').and.not.be.empty;
+
+        const match = amendments.find(
+          (row) => typeof row['new_value'] === 'string' && row['new_value'].includes(expectedForename),
+        );
+
+        expect(match, 'Amendment record should contain updated minor creditor forename').to.exist;
+        expect(
+          match?.['associated_record_type'],
+          'associated_record_type should match resolved backend record type',
+        ).to.eq(recordType);
+        expect(match?.['function_code'], 'function_code should be ACCOUNT_ENQUIRY').to.eq('ACCOUNT_ENQUIRY');
+
+        this.assertAmendmentCoreFields(match);
+
+        expect(match?.['new_value'], 'new_value should contain updated minor creditor forename')
+          .to.be.a('string')
+          .and.include(expectedForename);
+
+        expect(match?.['old_value'], 'old_value should exist and be a string').to.be.a('string').and.not.be.empty;
+        expect(match?.['old_value'], 'old_value should differ from new_value').to.not.eq(match?.['new_value']);
+
+        logAE('done', 'Minor creditor amendment verified in amendments log', {
+          amendmentId: match?.['amendment_id'],
+          oldValue: match?.['old_value'],
+          newValue: match?.['new_value'],
+        });
+      });
   }
 
   /**
