@@ -6,6 +6,7 @@ import { ACCOUNT_ENQUIRY_ENFORCEMENT_STATUS_ELEMENTS as ENF } from '../../../../
 import { DOM_ELEMENTS as ENF_COURT_CHANGE } from '../../../../../shared/selectors/account-enquiry/account.enquiry.enforcement-court-change.locators';
 import { DOM_ELEMENTS as ENF_OVR } from '../../../../../shared/selectors/account-enquiry/account.enquiry.enforcement-override-add.locators';
 import { DOM_ELEMENTS as ENF_ACT } from '../../../../../shared/selectors/account-enquiry/account.enquiry.enforcement-action-select.locators';
+import { DOM_ELEMENTS as ENF_ACTION_ADD } from '../../../../../component/fineAccountEnquiry/accountEnquiry/locators/account.enquiry.enforcement-action-add.locators';
 import { COLLECTION_ORDER_CHANGE_ELEMENTS as COLLO } from '../../../../../shared/selectors/account-enquiry/account.enquiry.collection-order-change.locators';
 import { createScopedLogger } from '../../../../../support/utils/log.helper';
 
@@ -240,6 +241,61 @@ export class AccountDetailsEnforcementActions {
   }
 
   /**
+   * Selects an enforcement action from the add form.
+   *
+   * @param resultCode - Enforcement action code to select.
+   */
+  public selectEnforcementAction(resultCode: string): void {
+    log('action', 'Selecting enforcement action', { resultCode });
+
+    cy.get(ENF_ACT.actionDropdown, { timeout: AccountDetailsEnforcementActions.DEFAULT_TIMEOUT })
+      .should('be.visible')
+      .click()
+      .type('{selectall}{backspace}', { force: true })
+      .type(resultCode, { delay: 0 })
+      .type('{downarrow}{enter}', { force: true });
+
+    cy.get(ENF_ACT.actionDropdown, { timeout: AccountDetailsEnforcementActions.DEFAULT_TIMEOUT }).should(
+      'not.have.value',
+      '',
+    );
+  }
+
+  /**
+   * Submits the add enforcement action form.
+   */
+  public submitAddEnforcementActionForm(): void {
+    log('action', 'Submitting add enforcement action form');
+    cy.get(ENF_ACT.continueButton, { timeout: AccountDetailsEnforcementActions.DEFAULT_TIMEOUT })
+      .should('be.visible')
+      .and('not.be.disabled')
+      .click();
+  }
+
+  /**
+   * Enters a reason on the add enforcement action details form.
+   *
+   * @param reason - Enforcement action reason text.
+   */
+  public enterEnforcementActionReason(reason: string): void {
+    log('action', 'Entering enforcement action reason', { reason });
+    cy.get(ENF_ACTION_ADD.reasonInput, { timeout: AccountDetailsEnforcementActions.DEFAULT_TIMEOUT })
+      .should('be.visible')
+      .clear()
+      .type(reason, { delay: 0 });
+  }
+
+  /**
+   * Chooses whether to change existing payment terms on the add enforcement action details form.
+   *
+   * @param option - Visible option text, usually "Yes" or "No".
+   */
+  public chooseChangeExistingPaymentTerms(option: string): void {
+    log('action', 'Choosing change existing payment terms option', { option });
+    cy.contains('label', option, { timeout: AccountDetailsEnforcementActions.DEFAULT_TIMEOUT }).click();
+  }
+
+  /**
    * Selects a Local Justice Area from the add form.
    *
    * @param localJusticeArea - Visible LJA option text.
@@ -428,5 +484,17 @@ export class AccountDetailsEnforcementActions {
         expected.enforcer,
       );
     }
+  }
+
+  /**
+   * Asserts the last enforcement action summary value shown on the Enforcement tab.
+   *
+   * @param expected - Expected enforcement action text.
+   */
+  public assertEnforcementActionSummary(expected: string): void {
+    log('assert', 'Enforcement action summary', { expected });
+    cy.get(ENF.enforcementAction, { timeout: AccountDetailsEnforcementActions.DEFAULT_TIMEOUT })
+      .parent()
+      .should('contain.text', expected);
   }
 }

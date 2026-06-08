@@ -35,6 +35,10 @@ import { FINES_ACC_COLLECTION_ORDER_PAYLOAD_DEFAULTS } from './constants/fines-a
 import { IOpalFinesUpdateMinorCreditorAccountPayload } from '../../services/opal-fines-service/interfaces/opal-fines-update-minor-creditor-account-payload.interface';
 import { IOpalFinesAccountMinorCreditorAtAGlance } from '../../services/opal-fines-service/interfaces/opal-fines-account-minor-creditor-at-a-glance.interface';
 import { FINES_ACC_PARTY_TYPES } from '../constants/fines-acc-party-types.constant';
+import { IFinesAccEnfActionAddFormState } from '../fines-acc-enf-action-add/interfaces/fines-acc-enf-action-add-form-state.interface';
+import { IFinesAccEnfActionAddFormField } from '../fines-acc-enf-action-add/interfaces/fines-acc-enf-action-add-form-field.interface';
+import { IOpalFinesAddEnforcementActionPayload } from '../../services/opal-fines-service/interfaces/opal-fines-add-enforcement-action-payload.interface';
+import { buildEnforcementActionAddPayload } from './utils/fines-acc-payload-build-enforcement-action-add.utils';
 import { IOpalFinesAccountMinorCreditorCreditor } from '../../services/opal-fines-service/interfaces/opal-fines-account-minor-creditor-creditor.interface';
 import { IFinesAccMinorCreditorAddAmendConvertState } from '../fines-acc-minor-creditor-add-amend-convert/interfaces/fines-acc-minor-creditor-add-amend-convert-state.interface';
 import { transformMinorCreditorAccountPayload } from './utils/fines-acc-payload-transform-minor-creditor-data.utils';
@@ -392,6 +396,22 @@ export class FinesAccPayloadService {
    */
   public buildPaymentTermsAmendPayload(formData: IFinesAccPaymentTermsAmendState): IOpalFinesAmendPaymentTermsPayload {
     return this.transformPayload(buildPaymentTermsAmendPayloadUtil(formData), FINES_ACC_BUILD_TRANSFORM_ITEMS_CONFIG);
+  }
+
+  /**
+   * Builds the request payload for adding an enforcement action.
+   *
+   * @param result - The selected enforcement result.
+   * @param fields - The mapped dynamic result parameter fields.
+   * @param formState - Submitted add enforcement action form state.
+   * @returns The add enforcement action payload.
+   */
+  public buildEnforcementActionAddPayload(
+    result: IOpalFinesResultRefData,
+    fields: IFinesAccEnfActionAddFormField[],
+    formState: IFinesAccEnfActionAddFormState,
+  ): IOpalFinesAddEnforcementActionPayload {
+    return buildEnforcementActionAddPayload(result, fields, formState);
   }
 
   /**
