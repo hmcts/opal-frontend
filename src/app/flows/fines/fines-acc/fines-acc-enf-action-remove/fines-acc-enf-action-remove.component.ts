@@ -6,6 +6,7 @@ import { catchError, EMPTY } from 'rxjs';
 import { OpalFines } from '@services/fines/opal-fines-service/opal-fines.service';
 import { IOpalFinesAccountDefendantDetailsHeader } from '../fines-acc-defendant-details/interfaces/fines-acc-defendant-details-header.interface';
 import { FINES_ACC_DEFENDANT_ROUTING_PATHS } from '../routing/constants/fines-acc-defendant-routing-paths.constant';
+import { FINES_ACC_ENF_ACTION_ROUTING_PATHS } from '../fines-acc-enf-action-select/constants/fines-acc-enf-action-select-routing-paths.constant';
 import { FinesAccPayloadService } from '../services/fines-acc-payload.service';
 import { FinesAccountStore } from '../stores/fines-acc.store';
 import { FINES_ACC_ENF_ACTION_REMOVE_SUCCESS_MESSAGE } from './constants/fines-acc-enf-action-remove-success-message.constant';
@@ -38,7 +39,7 @@ export class FinesAccEnfActionRemoveComponent extends AbstractFormParentBaseComp
   public readonly partyName = this.accountState.party_name ?? '';
 
   /**
-   * Removes the enforcement hold and routes back to the enforcement tab (to do - Navigation to additional enforcement page).
+   * Removes the enforcement hold and routes to the additional enforcement action prompt.
    */
   public handleSubmit(form: IAbstractFormBaseForm<IFinesAccEnfActionRemoveFormState>): void {
     const reason = form.formData.facc_enf_action_remove_reason ?? '';
@@ -62,11 +63,7 @@ export class FinesAccEnfActionRemoveComponent extends AbstractFormParentBaseComp
         this.opalFinesService.clearCache('defendantAccountEnforcementCache$');
         this.finesAccStore.setSuccessMessage(FINES_ACC_ENF_ACTION_REMOVE_SUCCESS_MESSAGE);
         this.routerNavigate(
-          FINES_ACC_DEFENDANT_ROUTING_PATHS.children.details,
-          false,
-          undefined,
-          null,
-          FINES_ACC_DEFENDANT_ROUTING_PATHS.children.enforcement,
+          `${FINES_ACC_DEFENDANT_ROUTING_PATHS.children.enforcement}/${FINES_ACC_ENF_ACTION_ROUTING_PATHS.root}/${FINES_ACC_ENF_ACTION_ROUTING_PATHS.children['add-new']}`,
         );
       });
   }
