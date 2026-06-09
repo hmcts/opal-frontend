@@ -10,8 +10,7 @@ let matchedLocalJusticeAreasRequest: Interception | null = null;
 export class ManualAccountRequestMonitorActions {
   private static readonly LOCAL_JUSTICE_AREAS_ALIAS = 'getLocalJusticeAreas';
   private static readonly DRAFT_ACCOUNT_CREATE_ALIAS = 'postDraftAccount';
-  private static readonly UTC_TIMESTAMP_PATTERN =
-    /^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}(?:\.\d+)?Z$/;
+  private static readonly UTC_TIMESTAMP_PATTERN = /^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}(?:\.\d+)?Z$/;
 
   /**
    * Starts intercepting local justice area lookup requests.
