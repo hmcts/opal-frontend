@@ -3,11 +3,8 @@ import { ChangeDetectionStrategy, Component, inject, OnInit } from '@angular/cor
 import { ActivatedRoute, Router } from '@angular/router';
 import { GovukCancelLinkComponent } from '@hmcts/opal-frontend-common/components/govuk/govuk-cancel-link';
 import { GovukButtonDirective } from '@hmcts/opal-frontend-common/directives/govuk-button';
+import { IFinesReportsBusinessUnitNavigationState } from '../interfaces/fines-reports-business-unit-navigation-state.interface';
 import { FINES_REPORTS_ROUTING_PATHS } from '../routing/constants/fines-reports-routing-paths.constant';
-
-interface IFinesReportsBusinessUnitWarningNavigationState {
-  selectedBusinessUnitIds?: number[];
-}
 
 @Component({
   selector: 'app-fines-reports-business-unit-warning',
@@ -38,9 +35,9 @@ export class FinesReportsBusinessUnitWarningComponent implements OnInit {
    */
   private getSelectedBusinessUnitIdsFromNavigation(): number[] {
     const navigationState = this.router.currentNavigation()?.extras.state as
-      | IFinesReportsBusinessUnitWarningNavigationState
+      | IFinesReportsBusinessUnitNavigationState
       | undefined;
-    const locationState = this.location.getState() as IFinesReportsBusinessUnitWarningNavigationState | undefined;
+    const locationState = this.location.getState() as IFinesReportsBusinessUnitNavigationState | undefined;
     const selectedBusinessUnitIds = navigationState?.selectedBusinessUnitIds ?? locationState?.selectedBusinessUnitIds;
 
     return Array.isArray(selectedBusinessUnitIds) ? selectedBusinessUnitIds : [];

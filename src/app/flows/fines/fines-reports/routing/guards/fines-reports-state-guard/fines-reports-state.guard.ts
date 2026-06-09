@@ -8,15 +8,14 @@ import { catchError, map, of } from 'rxjs';
 import { FINES_REPORT_SUMMARY_LIST_REPORT_CONFIGURATION } from '../../../fines-reports-summary-list/constants/fines-reports-summary-list-report-configuration.constant';
 import { FINES_ROUTING_PATHS } from '@app/flows/fines/routing/constants/fines-routing-paths.constant';
 import { FINES_DASHBOARD_ROUTING_PATHS } from '@app/flows/fines/constants/fines-dashboard-routing-paths.constant';
+import { IFinesReportsBusinessUnitNavigationState } from '../../../interfaces/fines-reports-business-unit-navigation-state.interface';
 import { FINES_REPORTS_ROUTING_PATHS } from '../../constants/fines-reports-routing-paths.constant';
 
-interface IFinesReportsNavigationState {
-  selectedBusinessUnitIds?: number[];
-}
-
 const getSelectedBusinessUnitIdsFromNavigationState = (router: Router, location: Location): number[] => {
-  const navigationState = router.currentNavigation()?.extras.state as IFinesReportsNavigationState | undefined;
-  const locationState = location.getState() as IFinesReportsNavigationState | undefined;
+  const navigationState = router.currentNavigation()?.extras.state as
+    | IFinesReportsBusinessUnitNavigationState
+    | undefined;
+  const locationState = location.getState() as IFinesReportsBusinessUnitNavigationState | undefined;
   const selectedBusinessUnitIds = navigationState?.selectedBusinessUnitIds ?? locationState?.selectedBusinessUnitIds;
 
   return Array.isArray(selectedBusinessUnitIds) ? selectedBusinessUnitIds : [];

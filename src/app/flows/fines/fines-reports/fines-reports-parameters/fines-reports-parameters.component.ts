@@ -6,11 +6,8 @@ import { IOpalFinesBusinessUnit } from '@services/fines/opal-fines-service/inter
 import { IOpalFinesBusinessUnitRefData } from '@services/fines/opal-fines-service/interfaces/opal-fines-business-unit-ref-data.interface';
 import { IOpalFinesReport } from '@services/fines/opal-fines-service/interfaces/opal-fines-report.interface';
 import { FINES_REPORT_SUMMARY_LIST_REPORT_CONFIGURATION } from '../fines-reports-summary-list/constants/fines-reports-summary-list-report-configuration.constant';
+import { IFinesReportsBusinessUnitNavigationState } from '../interfaces/fines-reports-business-unit-navigation-state.interface';
 import { FINES_REPORTS_ROUTING_PATHS } from '../routing/constants/fines-reports-routing-paths.constant';
-
-interface IFinesReportsParametersNavigationState {
-  selectedBusinessUnitIds?: number[];
-}
 
 @Component({
   selector: 'app-fines-reports-parameters',
@@ -47,9 +44,9 @@ export class FinesReportsParametersComponent implements OnInit {
    */
   private getSelectedBusinessUnitIdsFromNavigation(): number[] {
     const navigationState = this.router.currentNavigation()?.extras.state as
-      | IFinesReportsParametersNavigationState
+      | IFinesReportsBusinessUnitNavigationState
       | undefined;
-    const locationState = this.location.getState() as IFinesReportsParametersNavigationState | undefined;
+    const locationState = this.location.getState() as IFinesReportsBusinessUnitNavigationState | undefined;
     const selectedBusinessUnitIds = navigationState?.selectedBusinessUnitIds ?? locationState?.selectedBusinessUnitIds;
 
     return Array.isArray(selectedBusinessUnitIds) ? selectedBusinessUnitIds : [];

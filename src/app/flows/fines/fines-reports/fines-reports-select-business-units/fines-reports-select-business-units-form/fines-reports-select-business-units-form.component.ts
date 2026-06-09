@@ -31,14 +31,8 @@ import {
   atLeastOneBusinessUnitSelectedRecordValidator,
   businessUnitSelectionRootMirrorValidator,
 } from '../../../validators/business-unit-selection.validator';
+import { IFinesReportsSelectBusinessUnitRow } from './interfaces/fines-reports-select-business-unit-row.interface';
 import { IFinesReportsSelectBusinessUnitsFormState } from '../interfaces/fines-reports-select-business-units-form-state.interface';
-
-interface IFinesReportsSelectBusinessUnitRow {
-  businessUnit: IOpalFinesBusinessUnit;
-  control: FormControl<boolean>;
-  inputId: string;
-  inputName: string;
-}
 
 @Component({
   selector: 'app-fines-reports-select-business-units-form',
