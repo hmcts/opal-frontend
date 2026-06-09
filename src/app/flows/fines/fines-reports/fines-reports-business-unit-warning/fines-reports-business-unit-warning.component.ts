@@ -32,7 +32,7 @@ export class FinesReportsBusinessUnitWarningComponent implements OnInit {
    * Navigates back to the business unit selection screen with the current selections restored.
    */
   public handleGoBack(): void {
-    this.router.navigate([`../${FINES_REPORTS_ROUTING_PATHS.children.selectBusinessUnits}`], {
+    this.router.navigate([`../../${FINES_REPORTS_ROUTING_PATHS.children.selectBusinessUnits}`], {
       relativeTo: this.activatedRoute,
       state: { selectedBusinessUnitIds: this.selectedBusinessUnitIds },
     });
@@ -42,7 +42,7 @@ export class FinesReportsBusinessUnitWarningComponent implements OnInit {
    * Continues to the parameters screen after the warning has been accepted.
    */
   public handleContinue(): void {
-    this.router.navigate([`../${FINES_REPORTS_ROUTING_PATHS.children.parameters}`], {
+    this.router.navigate([`../../${FINES_REPORTS_ROUTING_PATHS.children.parameters}`], {
       relativeTo: this.activatedRoute,
       state: { selectedBusinessUnitIds: this.selectedBusinessUnitIds },
     });
@@ -58,7 +58,7 @@ export class FinesReportsBusinessUnitWarningComponent implements OnInit {
     );
 
     if (this.selectedBusinessUnitIds.length === 0) {
-      this.router.navigate([`../${FINES_REPORTS_ROUTING_PATHS.children.selectBusinessUnits}`], {
+      this.router.navigate([`../../${FINES_REPORTS_ROUTING_PATHS.children.selectBusinessUnits}`], {
         relativeTo: this.activatedRoute,
       });
     }

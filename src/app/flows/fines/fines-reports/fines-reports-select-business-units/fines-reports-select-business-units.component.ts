@@ -64,7 +64,7 @@ export class FinesReportsSelectBusinessUnitsComponent extends AbstractFormParent
    * @param selectedBusinessUnitIds - Selected business unit ids waiting for warning confirmation.
    */
   private navigateToBusinessUnitWarning(selectedBusinessUnitIds: number[]): void {
-    this.routerService.navigate([`../${FINES_REPORTS_ROUTING_PATHS.children.businessUnitWarning}`], {
+    this.routerService.navigate([`../../${FINES_REPORTS_ROUTING_PATHS.children.businessUnitWarning}`], {
       relativeTo: this.route,
       state: { selectedBusinessUnitIds },
     });
@@ -77,7 +77,7 @@ export class FinesReportsSelectBusinessUnitsComponent extends AbstractFormParent
    */
   private proceedWithSelectedBusinessUnits(selectedBusinessUnitIds: number[]): void {
     this.selectedBusinessUnitIds = selectedBusinessUnitIds;
-    this.routerService.navigate([`../${FINES_REPORTS_ROUTING_PATHS.children.parameters}`], {
+    this.routerService.navigate([`../../${FINES_REPORTS_ROUTING_PATHS.children.parameters}`], {
       relativeTo: this.route,
       state: { selectedBusinessUnitIds },
     });
@@ -87,7 +87,7 @@ export class FinesReportsSelectBusinessUnitsComponent extends AbstractFormParent
    * Navigates back to the report summary list.
    */
   public handleCancel(): void {
-    this.routerService.navigate(['..', FINES_REPORTS_ROUTING_PATHS.children.summaryList], {
+    this.routerService.navigate([`../../${FINES_REPORTS_ROUTING_PATHS.children.summaryList}`], {
       relativeTo: this.route,
     });
   }

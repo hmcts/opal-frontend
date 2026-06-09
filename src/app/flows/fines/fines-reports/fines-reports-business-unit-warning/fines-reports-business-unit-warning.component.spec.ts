@@ -68,10 +68,13 @@ describe('FinesReportsBusinessUnitWarningComponent', () => {
 
     component.handleGoBack();
 
-    expect(router.navigate).toHaveBeenCalledWith([`../${FINES_REPORTS_ROUTING_PATHS.children.selectBusinessUnits}`], {
-      relativeTo: expect.any(Object),
-      state: { selectedBusinessUnitIds: [61, 67, 68, 69] },
-    });
+    expect(router.navigate).toHaveBeenCalledWith(
+      [`../../${FINES_REPORTS_ROUTING_PATHS.children.selectBusinessUnits}`],
+      {
+        relativeTo: expect.any(Object),
+        state: { selectedBusinessUnitIds: [61, 67, 68, 69] },
+      },
+    );
   });
 
   it('should navigate to the parameters screen when continue is selected', async () => {
@@ -79,7 +82,7 @@ describe('FinesReportsBusinessUnitWarningComponent', () => {
 
     component.handleContinue();
 
-    expect(router.navigate).toHaveBeenCalledWith([`../${FINES_REPORTS_ROUTING_PATHS.children.parameters}`], {
+    expect(router.navigate).toHaveBeenCalledWith([`../../${FINES_REPORTS_ROUTING_PATHS.children.parameters}`], {
       relativeTo: expect.any(Object),
       state: { selectedBusinessUnitIds: [61, 67, 68, 69] },
     });
@@ -88,9 +91,12 @@ describe('FinesReportsBusinessUnitWarningComponent', () => {
   it('should redirect back to select business units when no selection state is available', async () => {
     const { router } = await setup();
 
-    expect(router.navigate).toHaveBeenCalledWith([`../${FINES_REPORTS_ROUTING_PATHS.children.selectBusinessUnits}`], {
-      relativeTo: expect.any(Object),
-    });
+    expect(router.navigate).toHaveBeenCalledWith(
+      [`../../${FINES_REPORTS_ROUTING_PATHS.children.selectBusinessUnits}`],
+      {
+        relativeTo: expect.any(Object),
+      },
+    );
   });
 
   it('should restore selected business unit ids from location state when current navigation is unavailable', async () => {

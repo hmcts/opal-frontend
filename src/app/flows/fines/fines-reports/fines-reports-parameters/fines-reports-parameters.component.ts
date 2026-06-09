@@ -45,7 +45,7 @@ export class FinesReportsParametersComponent implements OnInit {
    * Redirects back to business unit selection when no selected business units are available in navigation state.
    */
   private redirectToSelectBusinessUnits(): void {
-    this.router.navigate([`../${FINES_REPORTS_ROUTING_PATHS.children.selectBusinessUnits}`], {
+    this.router.navigate([`../../${FINES_REPORTS_ROUTING_PATHS.children.selectBusinessUnits}`], {
       relativeTo: this.activatedRoute,
     });
   }

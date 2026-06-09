@@ -93,9 +93,12 @@ describe('FinesReportsParametersComponent', () => {
   it('should redirect back to select business units when there is no stored selection', async () => {
     const { router } = await setup(FINES_REPORTS_SUMMARY_LIST_ROUTING_PATHS.children.operationalReportsByPayments, []);
 
-    expect(router.navigate).toHaveBeenCalledWith([`../${FINES_REPORTS_ROUTING_PATHS.children.selectBusinessUnits}`], {
-      relativeTo: expect.any(Object),
-    });
+    expect(router.navigate).toHaveBeenCalledWith(
+      [`../../${FINES_REPORTS_ROUTING_PATHS.children.selectBusinessUnits}`],
+      {
+        relativeTo: expect.any(Object),
+      },
+    );
   });
 
   it('should load selected business units from location state when current navigation is unavailable', async () => {

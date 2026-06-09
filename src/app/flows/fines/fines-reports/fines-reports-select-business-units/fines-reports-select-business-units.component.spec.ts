@@ -146,7 +146,7 @@ describe('FinesReportsSelectBusinessUnitsComponent', () => {
 
     component.handleCancel();
 
-    expect(router.navigate).toHaveBeenCalledWith(['..', 'summary-list'], {
+    expect(router.navigate).toHaveBeenCalledWith([`../../${FINES_REPORTS_ROUTING_PATHS.children.summaryList}`], {
       relativeTo: expect.any(Object),
     });
   });
@@ -169,7 +169,7 @@ describe('FinesReportsSelectBusinessUnitsComponent', () => {
     });
 
     expect(component.selectedBusinessUnitIds).toEqual([61, 68]);
-    expect(router.navigate).toHaveBeenCalledWith([`../${FINES_REPORTS_ROUTING_PATHS.children.parameters}`], {
+    expect(router.navigate).toHaveBeenCalledWith([`../../${FINES_REPORTS_ROUTING_PATHS.children.parameters}`], {
       relativeTo: expect.any(Object),
       state: { selectedBusinessUnitIds: [61, 68] },
     });
@@ -191,7 +191,7 @@ describe('FinesReportsSelectBusinessUnitsComponent', () => {
     });
 
     expect(component.selectedBusinessUnitIds).toEqual([61]);
-    expect(router.navigate).toHaveBeenCalledWith([`../${FINES_REPORTS_ROUTING_PATHS.children.parameters}`], {
+    expect(router.navigate).toHaveBeenCalledWith([`../../${FINES_REPORTS_ROUTING_PATHS.children.parameters}`], {
       relativeTo: expect.any(Object),
       state: { selectedBusinessUnitIds: [61] },
     });
@@ -209,7 +209,7 @@ describe('FinesReportsSelectBusinessUnitsComponent', () => {
     expect(component.selectedBusinessUnitIds).toEqual(
       businessUnits.map((businessUnit) => businessUnit.business_unit_id),
     );
-    expect(router.navigate).toHaveBeenCalledWith([`../${FINES_REPORTS_ROUTING_PATHS.children.parameters}`], {
+    expect(router.navigate).toHaveBeenCalledWith([`../../${FINES_REPORTS_ROUTING_PATHS.children.parameters}`], {
       relativeTo: expect.any(Object),
       state: {
         selectedBusinessUnitIds: businessUnits.map((businessUnit) => businessUnit.business_unit_id),
@@ -229,12 +229,15 @@ describe('FinesReportsSelectBusinessUnitsComponent', () => {
     );
 
     expect(component.selectedBusinessUnitIds).toEqual([]);
-    expect(router.navigate).toHaveBeenCalledWith([`../${FINES_REPORTS_ROUTING_PATHS.children.businessUnitWarning}`], {
-      relativeTo: expect.any(Object),
-      state: {
-        selectedBusinessUnitIds: businessUnits.map((businessUnit) => businessUnit.business_unit_id),
+    expect(router.navigate).toHaveBeenCalledWith(
+      [`../../${FINES_REPORTS_ROUTING_PATHS.children.businessUnitWarning}`],
+      {
+        relativeTo: expect.any(Object),
+        state: {
+          selectedBusinessUnitIds: businessUnits.map((businessUnit) => businessUnit.business_unit_id),
+        },
       },
-    });
+    );
   });
 
   it('should restore selected business unit ids from navigation state', async () => {
