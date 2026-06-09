@@ -4,10 +4,8 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { GovukHeadingWithCaptionComponent } from '@hmcts/opal-frontend-common/components/govuk/govuk-heading-with-caption';
 import { IOpalFinesBusinessUnit } from '@services/fines/opal-fines-service/interfaces/opal-fines-business-unit.interface';
 import { IOpalFinesBusinessUnitRefData } from '@services/fines/opal-fines-service/interfaces/opal-fines-business-unit-ref-data.interface';
-import { IOpalFinesReport } from '@services/fines/opal-fines-service/interfaces/opal-fines-report.interface';
-import { FINES_REPORT_SUMMARY_LIST_REPORT_CONFIGURATION } from '../fines-reports-summary-list/constants/fines-reports-summary-list-report-configuration.constant';
-import { IFinesReportsBusinessUnitNavigationState } from '../interfaces/fines-reports-business-unit-navigation-state.interface';
 import { FINES_REPORTS_ROUTING_PATHS } from '../routing/constants/fines-reports-routing-paths.constant';
+import { getFinesReportsSelectedBusinessUnitIdsFromNavigationState } from '../utils/get-fines-reports-selected-business-unit-ids-from-navigation-state.util';
 
 @Component({
   selector: 'app-fines-reports-parameters',
@@ -19,47 +17,22 @@ export class FinesReportsParametersComponent implements OnInit {
   private readonly activatedRoute = inject(ActivatedRoute);
   private readonly location = inject(Location);
   private readonly router = inject(Router);
-  private readonly routeWithReportId = this.activatedRoute.parent ?? this.activatedRoute;
-  private readonly reportId = this.routeWithReportId.snapshot.paramMap.get('reportId') ?? '';
 
+  /**
+   * Report heading resolved from route data for the current report journey.
+   */
+  public readonly reportHeading = this.activatedRoute.snapshot.data['reportHeading'] as string;
   public selectedBusinessUnitNames: string[] = [];
 
   /**
-   * Returns the heading for the current operational report type.
-   *
-   * @returns The report heading shown on the parameters screen.
-   */
-  public get reportHeading(): string {
-    const configuredHeading =
-      FINES_REPORT_SUMMARY_LIST_REPORT_CONFIGURATION.find((config) => config.id === this.reportId)?.heading ?? '';
-    const report = this.activatedRoute.snapshot.data['report'] as IOpalFinesReport | null | undefined;
-
-    return configuredHeading || report?.report_title || '';
-  }
-
-  /**
-   * Reads selected business unit ids from the current navigation state.
-   *
-   * @returns Selected business unit ids restored from navigation or browser history state, or an empty array when none were supplied.
-   */
-  private getSelectedBusinessUnitIdsFromNavigation(): number[] {
-    const navigationState = this.router.currentNavigation()?.extras.state as
-      | IFinesReportsBusinessUnitNavigationState
-      | undefined;
-    const locationState = this.location.getState() as IFinesReportsBusinessUnitNavigationState | undefined;
-    const selectedBusinessUnitIds = navigationState?.selectedBusinessUnitIds ?? locationState?.selectedBusinessUnitIds;
-
-    return Array.isArray(selectedBusinessUnitIds) ? selectedBusinessUnitIds : [];
-  }
-
-  /**
    * Loads the selected business unit names from the resolver payload and navigation state.
+   *
+   * @param selectedBusinessUnitIds - Selected business unit ids restored for the current journey.
    */
-  private loadSelectedBusinessUnits(): void {
+  private loadSelectedBusinessUnits(selectedBusinessUnitIds: number[]): void {
     const resolverData = this.activatedRoute.snapshot.data['businessUnits'] as
       | IOpalFinesBusinessUnitRefData
       | undefined;
-    const selectedBusinessUnitIds = this.getSelectedBusinessUnitIdsFromNavigation();
     const businessUnits = resolverData?.refData ?? [];
 
     this.selectedBusinessUnitNames = businessUnits
@@ -72,7 +45,7 @@ export class FinesReportsParametersComponent implements OnInit {
    * Redirects back to business unit selection when no selected business units are available in navigation state.
    */
   private redirectToSelectBusinessUnits(): void {
-    this.router.navigate(['..', FINES_REPORTS_ROUTING_PATHS.children.selectBusinessUnits], {
+    this.router.navigate([`../${FINES_REPORTS_ROUTING_PATHS.children.selectBusinessUnits}`], {
       relativeTo: this.activatedRoute,
     });
   }
@@ -81,11 +54,16 @@ export class FinesReportsParametersComponent implements OnInit {
    * Initialises the placeholder parameters screen using the selected business units passed through navigation state.
    */
   public ngOnInit(): void {
-    if (this.getSelectedBusinessUnitIdsFromNavigation().length === 0) {
+    const selectedBusinessUnitIds = getFinesReportsSelectedBusinessUnitIdsFromNavigationState(
+      this.router,
+      this.location,
+    );
+
+    if (selectedBusinessUnitIds.length === 0) {
       this.redirectToSelectBusinessUnits();
       return;
     }
 
-    this.loadSelectedBusinessUnits();
+    this.loadSelectedBusinessUnits(selectedBusinessUnitIds);
   }
 }

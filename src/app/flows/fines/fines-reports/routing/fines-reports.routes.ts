@@ -10,6 +10,7 @@ import { TitleResolver } from '@hmcts/opal-frontend-common/resolvers/title';
 import { fetchBusinessUnitsResolver } from '@routing/fines/resolvers/fetch-business-units-resolver/fetch-business-units.resolver';
 import { FINES_REPORTS_ROUTING_TITLES } from './constants/fines-reports-routing-titles.constant';
 import { fetchReportResolver } from './resolvers/fetch-report/fetch-report.resolver';
+import { finesReportsReportHeadingResolver } from './resolvers/fines-reports-report-heading/fines-reports-report-heading.resolver';
 
 export const routing: Routes = [
   {
@@ -51,7 +52,7 @@ export const routing: Routes = [
         },
         resolve: {
           title: TitleResolver,
-          report: fetchReportResolver,
+          reportHeading: finesReportsReportHeadingResolver,
           businessUnits: fetchBusinessUnitsResolver,
         },
       },
@@ -68,7 +69,6 @@ export const routing: Routes = [
         },
         resolve: {
           title: TitleResolver,
-          report: fetchReportResolver,
         },
       },
       {
@@ -84,7 +84,7 @@ export const routing: Routes = [
         },
         resolve: {
           title: TitleResolver,
-          report: fetchReportResolver,
+          reportHeading: finesReportsReportHeadingResolver,
           businessUnits: fetchBusinessUnitsResolver,
         },
       },

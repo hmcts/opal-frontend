@@ -129,11 +129,7 @@ describe('finesReportsStateGuard', () => {
 
     expect(result).toBe(expectedUrlTree);
     expect(mockRouter.createUrlTree).toHaveBeenCalledWith([
-      '/',
-      FINES_ROUTING_PATHS.root,
-      FINES_ROUTING_PATHS.children.reports.root,
-      FINES_REPORTS_SUMMARY_LIST_ROUTING_PATHS.children.operationalReportsByPayments,
-      FINES_REPORTS_ROUTING_PATHS.children.selectBusinessUnits,
+      `/${FINES_ROUTING_PATHS.root}/${FINES_ROUTING_PATHS.children.reports.root}/${FINES_REPORTS_SUMMARY_LIST_ROUTING_PATHS.children.operationalReportsByPayments}/${FINES_REPORTS_ROUTING_PATHS.children.selectBusinessUnits}`,
     ]);
   });
 

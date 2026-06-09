@@ -6,12 +6,10 @@ import { IAbstractFormBaseForm } from '@hmcts/opal-frontend-common/components/ab
 import { GovukHeadingWithCaptionComponent } from '@hmcts/opal-frontend-common/components/govuk/govuk-heading-with-caption';
 import { IOpalFinesBusinessUnit } from '@services/fines/opal-fines-service/interfaces/opal-fines-business-unit.interface';
 import { IOpalFinesBusinessUnitRefData } from '@services/fines/opal-fines-service/interfaces/opal-fines-business-unit-ref-data.interface';
-import { IOpalFinesReport } from '@services/fines/opal-fines-service/interfaces/opal-fines-report.interface';
 import { FINES_REPORTS_BUSINESS_UNIT_WARNING_THRESHOLD } from '../constants/fines-reports-business-unit-thresholds.constant';
-import { FINES_REPORT_SUMMARY_LIST_REPORT_CONFIGURATION } from '../fines-reports-summary-list/constants/fines-reports-summary-list-report-configuration.constant';
-import { IFinesReportsBusinessUnitNavigationState } from '../interfaces/fines-reports-business-unit-navigation-state.interface';
 import { FINES_REPORTS_ROUTING_PATHS } from '../routing/constants/fines-reports-routing-paths.constant';
 import { FINES_REPORTS_ROUTING_TITLES } from '../routing/constants/fines-reports-routing-titles.constant';
+import { getFinesReportsSelectedBusinessUnitIdsFromNavigationState } from '../utils/get-fines-reports-selected-business-unit-ids-from-navigation-state.util';
 import { FinesReportsSelectBusinessUnitsFormComponent } from './fines-reports-select-business-units-form/fines-reports-select-business-units-form.component';
 import { IFinesReportsSelectBusinessUnitsFormState } from './interfaces/fines-reports-select-business-units-form-state.interface';
 
@@ -25,25 +23,14 @@ export class FinesReportsSelectBusinessUnitsComponent extends AbstractFormParent
   private readonly route = inject(ActivatedRoute);
   private readonly location = inject(Location);
   private readonly routerService = inject(Router);
-  private readonly routeWithReportId = this.route.parent ?? this.route;
-  private readonly reportId = this.routeWithReportId.snapshot.paramMap.get('reportId') ?? '';
 
   public readonly pageHeading = FINES_REPORTS_ROUTING_TITLES.children.selectBusinessUnits;
+  /**
+   * Report heading resolved from route data for the current report journey.
+   */
+  public readonly reportHeading = this.route.snapshot.data['reportHeading'] as string;
   public businessUnits: IOpalFinesBusinessUnit[] = [];
   public selectedBusinessUnitIds: number[] = [];
-
-  /**
-   * Returns the report heading for the selected report type.
-   *
-   * @returns The operational report heading, or an empty string when the report is not recognised.
-   */
-  public get reportHeading(): string {
-    const configuredHeading =
-      FINES_REPORT_SUMMARY_LIST_REPORT_CONFIGURATION.find((config) => config.id === this.reportId)?.heading ?? '';
-    const report = this.route.snapshot.data['report'] as IOpalFinesReport | null | undefined;
-
-    return configuredHeading || report?.report_title || '';
-  }
 
   /**
    * Gets selected business unit ids from a submitted form.
@@ -72,27 +59,12 @@ export class FinesReportsSelectBusinessUnitsComponent extends AbstractFormParent
   }
 
   /**
-   * Reads selected business unit ids from the current navigation state.
-   *
-   * @returns Selected business unit ids restored from navigation or browser history state, or an empty array when none were supplied.
-   */
-  private getSelectedBusinessUnitIdsFromNavigation(): number[] {
-    const navigationState = this.routerService.currentNavigation()?.extras.state as
-      | IFinesReportsBusinessUnitNavigationState
-      | undefined;
-    const locationState = this.location.getState() as IFinesReportsBusinessUnitNavigationState | undefined;
-    const selectedBusinessUnitIds = navigationState?.selectedBusinessUnitIds ?? locationState?.selectedBusinessUnitIds;
-
-    return Array.isArray(selectedBusinessUnitIds) ? selectedBusinessUnitIds : [];
-  }
-
-  /**
    * Navigates to the warning screen for a large business unit selection.
    *
    * @param selectedBusinessUnitIds - Selected business unit ids waiting for warning confirmation.
    */
   private navigateToBusinessUnitWarning(selectedBusinessUnitIds: number[]): void {
-    this.routerService.navigate(['..', FINES_REPORTS_ROUTING_PATHS.children.businessUnitWarning], {
+    this.routerService.navigate([`../${FINES_REPORTS_ROUTING_PATHS.children.businessUnitWarning}`], {
       relativeTo: this.route,
       state: { selectedBusinessUnitIds },
     });
@@ -105,7 +77,7 @@ export class FinesReportsSelectBusinessUnitsComponent extends AbstractFormParent
    */
   private proceedWithSelectedBusinessUnits(selectedBusinessUnitIds: number[]): void {
     this.selectedBusinessUnitIds = selectedBusinessUnitIds;
-    this.routerService.navigate(['..', FINES_REPORTS_ROUTING_PATHS.children.parameters], {
+    this.routerService.navigate([`../${FINES_REPORTS_ROUTING_PATHS.children.parameters}`], {
       relativeTo: this.route,
       state: { selectedBusinessUnitIds },
     });
@@ -155,6 +127,9 @@ export class FinesReportsSelectBusinessUnitsComponent extends AbstractFormParent
     this.businessUnits = [...(resolverData?.refData ?? [])].sort((left, right) =>
       left.business_unit_name.localeCompare(right.business_unit_name),
     );
-    this.selectedBusinessUnitIds = this.getSelectedBusinessUnitIdsFromNavigation();
+    this.selectedBusinessUnitIds = getFinesReportsSelectedBusinessUnitIdsFromNavigationState(
+      this.routerService,
+      this.location,
+    );
   }
 }

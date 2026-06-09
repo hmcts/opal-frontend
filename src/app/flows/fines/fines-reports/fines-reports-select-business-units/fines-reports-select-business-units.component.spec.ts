@@ -4,6 +4,7 @@ import { ActivatedRoute, Router, convertToParamMap } from '@angular/router';
 import { describe, expect, it, vi } from 'vitest';
 import { FinesReportsSelectBusinessUnitsComponent } from './fines-reports-select-business-units.component';
 import { OPAL_FINES_BUSINESS_UNIT_REF_DATA_MOCK } from '@services/fines/opal-fines-service/mocks/opal-fines-business-unit-ref-data.mock';
+import { findFinesReportsDefinition } from '../constants/fines-reports-definitions.constant';
 import { FINES_REPORTS_SUMMARY_LIST_ROUTING_PATHS } from '../fines-reports-summary-list/routing/constants/fines-reports-summary-list-routing-paths.constant';
 import { IOpalFinesBusinessUnit } from '@services/fines/opal-fines-service/interfaces/opal-fines-business-unit.interface';
 import { FINES_REPORTS_BUSINESS_UNIT_WARNING_THRESHOLD } from '../constants/fines-reports-business-unit-thresholds.constant';
@@ -59,12 +60,14 @@ describe('FinesReportsSelectBusinessUnitsComponent', () => {
       router.currentNavigation = vi.fn(() => null);
     }
     const location = createLocationMock(selectedBusinessUnitIds);
+    const reportHeading = findFinesReportsDefinition(reportId)?.heading ?? '';
     const activatedRoute = {
       snapshot: {
         data: {
           businessUnits: {
             refData: businessUnits,
           },
+          reportHeading,
         },
         paramMap: convertToParamMap({}),
       },
@@ -166,7 +169,7 @@ describe('FinesReportsSelectBusinessUnitsComponent', () => {
     });
 
     expect(component.selectedBusinessUnitIds).toEqual([61, 68]);
-    expect(router.navigate).toHaveBeenCalledWith(['..', FINES_REPORTS_ROUTING_PATHS.children.parameters], {
+    expect(router.navigate).toHaveBeenCalledWith([`../${FINES_REPORTS_ROUTING_PATHS.children.parameters}`], {
       relativeTo: expect.any(Object),
       state: { selectedBusinessUnitIds: [61, 68] },
     });
@@ -188,7 +191,7 @@ describe('FinesReportsSelectBusinessUnitsComponent', () => {
     });
 
     expect(component.selectedBusinessUnitIds).toEqual([61]);
-    expect(router.navigate).toHaveBeenCalledWith(['..', FINES_REPORTS_ROUTING_PATHS.children.parameters], {
+    expect(router.navigate).toHaveBeenCalledWith([`../${FINES_REPORTS_ROUTING_PATHS.children.parameters}`], {
       relativeTo: expect.any(Object),
       state: { selectedBusinessUnitIds: [61] },
     });
@@ -206,7 +209,7 @@ describe('FinesReportsSelectBusinessUnitsComponent', () => {
     expect(component.selectedBusinessUnitIds).toEqual(
       businessUnits.map((businessUnit) => businessUnit.business_unit_id),
     );
-    expect(router.navigate).toHaveBeenCalledWith(['..', FINES_REPORTS_ROUTING_PATHS.children.parameters], {
+    expect(router.navigate).toHaveBeenCalledWith([`../${FINES_REPORTS_ROUTING_PATHS.children.parameters}`], {
       relativeTo: expect.any(Object),
       state: {
         selectedBusinessUnitIds: businessUnits.map((businessUnit) => businessUnit.business_unit_id),
@@ -226,7 +229,7 @@ describe('FinesReportsSelectBusinessUnitsComponent', () => {
     );
 
     expect(component.selectedBusinessUnitIds).toEqual([]);
-    expect(router.navigate).toHaveBeenCalledWith(['..', FINES_REPORTS_ROUTING_PATHS.children.businessUnitWarning], {
+    expect(router.navigate).toHaveBeenCalledWith([`../${FINES_REPORTS_ROUTING_PATHS.children.businessUnitWarning}`], {
       relativeTo: expect.any(Object),
       state: {
         selectedBusinessUnitIds: businessUnits.map((businessUnit) => businessUnit.business_unit_id),

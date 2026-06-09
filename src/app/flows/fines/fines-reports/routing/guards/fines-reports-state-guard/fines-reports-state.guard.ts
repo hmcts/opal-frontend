@@ -8,18 +8,8 @@ import { catchError, map, of } from 'rxjs';
 import { FINES_REPORT_SUMMARY_LIST_REPORT_CONFIGURATION } from '../../../fines-reports-summary-list/constants/fines-reports-summary-list-report-configuration.constant';
 import { FINES_ROUTING_PATHS } from '@app/flows/fines/routing/constants/fines-routing-paths.constant';
 import { FINES_DASHBOARD_ROUTING_PATHS } from '@app/flows/fines/constants/fines-dashboard-routing-paths.constant';
-import { IFinesReportsBusinessUnitNavigationState } from '../../../interfaces/fines-reports-business-unit-navigation-state.interface';
 import { FINES_REPORTS_ROUTING_PATHS } from '../../constants/fines-reports-routing-paths.constant';
-
-const getSelectedBusinessUnitIdsFromNavigationState = (router: Router, location: Location): number[] => {
-  const navigationState = router.currentNavigation()?.extras.state as
-    | IFinesReportsBusinessUnitNavigationState
-    | undefined;
-  const locationState = location.getState() as IFinesReportsBusinessUnitNavigationState | undefined;
-  const selectedBusinessUnitIds = navigationState?.selectedBusinessUnitIds ?? locationState?.selectedBusinessUnitIds;
-
-  return Array.isArray(selectedBusinessUnitIds) ? selectedBusinessUnitIds : [];
-};
+import { getFinesReportsSelectedBusinessUnitIdsFromNavigationState } from '../../../utils/get-fines-reports-selected-business-unit-ids-from-navigation-state.util';
 
 export const finesReportsStateGuard: CanActivateFn = (route) => {
   const router = inject(Router);
@@ -67,14 +57,10 @@ export const finesReportsStateGuard: CanActivateFn = (route) => {
 
       if (
         requiresSelectedBusinessUnits &&
-        getSelectedBusinessUnitIdsFromNavigationState(router, location).length === 0
+        getFinesReportsSelectedBusinessUnitIdsFromNavigationState(router, location).length === 0
       ) {
         return router.createUrlTree([
-          '/',
-          FINES_ROUTING_PATHS.root,
-          FINES_ROUTING_PATHS.children.reports.root,
-          report.id,
-          FINES_REPORTS_ROUTING_PATHS.children.selectBusinessUnits,
+          `/${FINES_ROUTING_PATHS.root}/${FINES_ROUTING_PATHS.children.reports.root}/${report.id}/${FINES_REPORTS_ROUTING_PATHS.children.selectBusinessUnits}`,
         ]);
       }
 

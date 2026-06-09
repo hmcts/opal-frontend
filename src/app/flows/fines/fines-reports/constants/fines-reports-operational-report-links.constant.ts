@@ -1,37 +1,20 @@
 import { IDashboardPageConfigurationLink } from '@hmcts/opal-frontend-common/pages/dashboard-page/interfaces';
 import { FINES_ROUTING_PATHS } from '../../routing/constants/fines-routing-paths.constant';
-import { FINES_PERMISSIONS } from '@app/constants/fines-permissions.constant';
-import { FINES_REPORTS_SUMMARY_LIST_ROUTING_PATHS } from '../fines-reports-summary-list/routing/constants/fines-reports-summary-list-routing-paths.constant';
+import { FINES_REPORTS_DEFINITIONS } from './fines-reports-definitions.constant';
 
-export const FINES_REPORTS_OPERATIONAL_REPORT_LINKS: IDashboardPageConfigurationLink[] = [
-  {
-    id: 'finesReportsOperationalReportsByEnforcementLink',
-    text: 'Operational reports (by enforcement)',
+export const FINES_REPORTS_OPERATIONAL_REPORT_LINKS: IDashboardPageConfigurationLink[] =
+  FINES_REPORTS_DEFINITIONS.filter((report) => !!report.operationalLinkId).map((report) => ({
+    id: report.operationalLinkId!,
+    text: report.heading,
     routerLink: [
       '/',
       FINES_ROUTING_PATHS.root,
       FINES_ROUTING_PATHS.children.reports.root,
-      FINES_REPORTS_SUMMARY_LIST_ROUTING_PATHS.children.operationalReportsByEnforcement,
+      report.id,
       FINES_ROUTING_PATHS.children.reports.children['summaryList'],
     ],
     fragment: null,
-    permissionIds: [FINES_PERMISSIONS['operational-report-by-enforcement']],
+    permissionIds: report.permissionIds,
     newTab: false,
     style: 'guidance-panel-blue',
-  },
-  {
-    id: 'finesReportsOperationalReportsByPaymentLink',
-    text: 'Operational reports (by payments)',
-    routerLink: [
-      '/',
-      FINES_ROUTING_PATHS.root,
-      FINES_ROUTING_PATHS.children.reports.root,
-      FINES_REPORTS_SUMMARY_LIST_ROUTING_PATHS.children.operationalReportsByPayments,
-      FINES_ROUTING_PATHS.children.reports.children['summaryList'],
-    ],
-    fragment: null,
-    permissionIds: [FINES_PERMISSIONS['operational-report-by-payments']],
-    newTab: false,
-    style: 'guidance-panel-blue',
-  },
-];
+  }));

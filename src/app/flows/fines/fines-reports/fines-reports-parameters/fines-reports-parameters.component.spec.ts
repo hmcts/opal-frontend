@@ -3,6 +3,7 @@ import { Location } from '@angular/common';
 import { ActivatedRoute, Router, convertToParamMap } from '@angular/router';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
 import { OPAL_FINES_BUSINESS_UNIT_REF_DATA_MOCK } from '@services/fines/opal-fines-service/mocks/opal-fines-business-unit-ref-data.mock';
+import { findFinesReportsDefinition } from '../constants/fines-reports-definitions.constant';
 import { FINES_REPORTS_SUMMARY_LIST_ROUTING_PATHS } from '../fines-reports-summary-list/routing/constants/fines-reports-summary-list-routing-paths.constant';
 import { FinesReportsParametersComponent } from './fines-reports-parameters.component';
 import { FINES_REPORTS_ROUTING_PATHS } from '../routing/constants/fines-reports-routing-paths.constant';
@@ -29,6 +30,7 @@ describe('FinesReportsParametersComponent', () => {
   ) => {
     const router = createRouterMock(selectedBusinessUnitIds, useCurrentNavigation);
     const location = createLocationMock(selectedBusinessUnitIds);
+    const reportHeading = findFinesReportsDefinition(reportId)?.heading ?? '';
 
     await TestBed.configureTestingModule({
       imports: [FinesReportsParametersComponent],
@@ -41,6 +43,7 @@ describe('FinesReportsParametersComponent', () => {
                 businessUnits: {
                   refData: businessUnits,
                 },
+                reportHeading,
               },
               paramMap: convertToParamMap({}),
             },
@@ -90,7 +93,7 @@ describe('FinesReportsParametersComponent', () => {
   it('should redirect back to select business units when there is no stored selection', async () => {
     const { router } = await setup(FINES_REPORTS_SUMMARY_LIST_ROUTING_PATHS.children.operationalReportsByPayments, []);
 
-    expect(router.navigate).toHaveBeenCalledWith(['..', FINES_REPORTS_ROUTING_PATHS.children.selectBusinessUnits], {
+    expect(router.navigate).toHaveBeenCalledWith([`../${FINES_REPORTS_ROUTING_PATHS.children.selectBusinessUnits}`], {
       relativeTo: expect.any(Object),
     });
   });

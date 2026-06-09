@@ -169,7 +169,7 @@ describe('FinesReportsSummaryListComponent', () => {
 
     createReportButton.click();
 
-    expect(router.navigate).toHaveBeenCalledWith(['..', FINES_REPORTS_ROUTING_PATHS.children.selectBusinessUnits], {
+    expect(router.navigate).toHaveBeenCalledWith([`../${FINES_REPORTS_ROUTING_PATHS.children.selectBusinessUnits}`], {
       relativeTo: component['activatedRoute'],
     });
   });

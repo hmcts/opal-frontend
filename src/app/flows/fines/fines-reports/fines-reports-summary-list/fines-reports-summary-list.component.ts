@@ -64,7 +64,7 @@ export class FinesReportsSummaryListComponent {
    * Navigates from the current report summary to the select business units route.
    */
   public handleCreateReport(): void {
-    this.router.navigate(['..', FINES_REPORTS_ROUTING_PATHS.children.selectBusinessUnits], {
+    this.router.navigate([`../${FINES_REPORTS_ROUTING_PATHS.children.selectBusinessUnits}`], {
       relativeTo: this.activatedRoute,
     });
   }
