@@ -419,7 +419,7 @@ const waitForPublishedAccountSearchable = (
     cy
       .request({
         method: 'POST',
-        url: '/opal-fines-service/defendant-accounts/search',
+        url: '/opal-fines-service/defendant-account/search',
         headers: { 'Content-Type': 'application/json', Accept: 'application/json' },
         body,
         failOnStatusCode: false,
