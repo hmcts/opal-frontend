@@ -154,7 +154,7 @@ export class FinesReportsSelectBusinessUnitsFormComponent extends AbstractFormBa
    *
    * @returns A form record containing one unchecked control for each business unit.
    */
-  private createBusinessUnitControlsRecord(): FormRecord<FormControl<boolean>> {
+  private createBusinessUnitCheckboxControls(): FormRecord<FormControl<boolean>> {
     const controls = this.businessUnits.reduce<Record<string, FormControl<boolean>>>((acc, businessUnit) => {
       acc[businessUnit.business_unit_id.toString()] = new FormControl(
         this.initialSelectedBusinessUnitIds.includes(businessUnit.business_unit_id),
@@ -236,7 +236,7 @@ export class FinesReportsSelectBusinessUnitsFormComponent extends AbstractFormBa
   private initialiseBusinessUnitForm(): void {
     const record =
       this.businessUnits.length > 1
-        ? this.createBusinessUnitControlsRecord()
+        ? this.createBusinessUnitCheckboxControls()
         : new FormRecord<FormControl<boolean>>({});
     this.allBusinessUnitsControl = new FormControl(false, { nonNullable: true });
 

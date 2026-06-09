@@ -24,6 +24,10 @@ export class FinesReportsSummaryListComponent {
       initialValue: this.routeWithReportId.snapshot.paramMap.get('reportId') ?? '',
     },
   );
+
+  /**
+   * Reactive signal containing the resolved report metadata for the current summary list route.
+   */
   private readonly report = toSignal(
     this.activatedRoute.data.pipe(map((routeData) => routeData['report'] as IOpalFinesReport | null | undefined)),
     {

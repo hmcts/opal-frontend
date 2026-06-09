@@ -50,8 +50,12 @@ package-lock.json
 .codex-plans
 .codex-docs
 .codex/skills
-docs/po-2305-select-business-units-explainer.html
-docs/po-2305-select-business-units-explainer.pdf
+docs/OPAL_DB_CONNECTION_DEBUGGING.pdf
+docs/PO-2079_CONVERSATION_LOG.pdf
+docs/PO-2079_GIT_HELP.pdf
+docs/PO-2079_TICKET_NOTES.pdf
+docs/PO-2305_CONVERSATION_PROGRESS.pdf
+docs/REPO_GUIDELINES.pdf
 
 # System files
 .DS_Store
