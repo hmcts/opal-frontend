@@ -75,6 +75,7 @@ opal-fines-service:
       LAUNCH_DARKLY_ENABLED: true
       SERVICEBUS_LOGGING_PDPL_QUEUE_NAME: "{{ .Release.Name}}-servicebus-logging-pdpl"
       SERVICEBUS_LOGGING_PDPL_PROTOCOL: amqps
+      OPAL_REDIS_ENABLED: true
       RELEASE_1A_ENABLED: true
       RELEASE_1B_ENABLED: true
 postgresql:
