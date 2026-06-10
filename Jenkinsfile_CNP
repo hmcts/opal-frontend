@@ -33,6 +33,8 @@ String skipLabelComponent = 'skip_opal_component'
 @Field String functionalWeights = 'functional-parallel-weights.json'
 @Field String componentWeights = 'component-parallel-weights.json'
 @Field String functionalArtifactsGlob = 'functional-output/**'
+@Field String smokeArtifactsRoot = 'smoke-output'
+@Field String smokeReportFile = 'smoke-report.html'
 @Field String weightsPipelineArtifactsFilter = '**/cypress/parallel/weights/pipeline/*'
 @Field String mkdirPipelineCmd = "mkdir -p ${pipelineWeightsDir}"
 @Field String copySmokeToPipelineCmd = "cp -r ${weightsRoot}/${smokeWeights} ${pipelineWeightsDir}/"
@@ -129,11 +131,6 @@ String functionalOutputDir() {
     return "functional-output/prod/${resolvedBrowserToRun()}/cucumber/"
 }
 
-// Resolve the functional report filename for the active browser.
-String functionalReportFile() {
-    return "${resolvedBrowserToRun()}-report.html"
-}
-
 // Build the functional report display name for the active browser.
 String functionalReportName() {
     return "Cucumber Functional Test Report (${resolvedBrowserToRun()})"
@@ -141,22 +138,12 @@ String functionalReportName() {
 
 // Resolve the smoke report directory for the active browser.
 String smokeOutputDir() {
-    return "smoke-output/prod/${resolvedBrowserToRun()}/cucumber/"
-}
-
-// Return the smoke report filename.
-String smokeReportFile() {
-    return 'smoke-report.html'
+    return "${smokeArtifactsRoot}/prod/${resolvedBrowserToRun()}/cucumber/"
 }
 
 // Build the smoke report display name for the active browser.
 String smokeReportName() {
     return "Cucumber Smoke Test Report (${resolvedBrowserToRun()})"
-}
-
-// Return whether smoke execution/report publishing is enabled for this run.
-boolean shouldPublishSmokeReport() {
-    return (env.SKIP_SMOKE ?: stringFalse).trim().toLowerCase() != stringTrue
 }
 String accountArtifactPath = 'functional-output/account_evidence/created-accounts.json'
 String accountEvidenceArtifacts = 'functional-output/account_evidence/**'
@@ -733,17 +720,17 @@ withPipeline(type, product, component) {
     afterAlways(stageFunctionalStg) {
         publishHtmlReport(
         functionalOutputDir(),
-        functionalReportFile(),
+        "${resolvedBrowserToRun()}-report.html",
         functionalReportName()
       )
         archiveArtifact(functionalArtifactsGlob)
-        archiveZephyrReports('smoke-output')
+        archiveZephyrReports(smokeArtifactsRoot)
         archiveArtifact(accountArtifactPath)
         archiveArtifact(accountEvidenceArtifacts)
-        if (shouldPublishSmokeReport()) {
+        if ((env.SKIP_SMOKE ?: stringFalse).trim().toLowerCase() != stringTrue) {
             publishHtmlReport(
             smokeOutputDir(),
-            smokeReportFile(),
+            smokeReportFile,
             smokeReportName()
           )
         } else {
@@ -754,18 +741,18 @@ withPipeline(type, product, component) {
     afterAlways(stageFunctionalDev) {
         publishHtmlReport(
         functionalOutputDir(),
-        functionalReportFile(),
+        "${resolvedBrowserToRun()}-report.html",
         functionalReportName()
       )
         archiveArtifact(functionalArtifactsGlob)
-        archiveZephyrReports('smoke-output')
+        archiveZephyrReports(smokeArtifactsRoot)
         archiveArtifact(accountArtifactPath)
         archiveArtifact(accountEvidenceArtifacts)
 
-        if (shouldPublishSmokeReport()) {
+        if ((env.SKIP_SMOKE ?: stringFalse).trim().toLowerCase() != stringTrue) {
             publishHtmlReport(
             smokeOutputDir(),
-            smokeReportFile(),
+            smokeReportFile,
             smokeReportName()
           )
         } else {
