@@ -33,6 +33,7 @@ import { REPORTS_PERMISSIONS } from './flows/fines/constants/reports-permissions
 import { SEARCH_PERMISSIONS } from './flows/fines/constants/search-permissions.constant';
 import {
   RELEASE_1A_FEATURE_FLAG,
+  RELEASE_1B_FEATURE_FLAG,
   RELEASE_1C_WRITE_OFF_FEATURE_FLAG,
   RELEASE_1C_ENFORCEMENT_OPERATIONAL_REPORTING_FEATURE_FLAG,
 } from './flows/fines/constants/release-feature-flags.constant';
@@ -45,6 +46,7 @@ import { FINES_MAC_ROUTING_PATHS } from './flows/fines/fines-mac/routing/constan
 const mockTokenExpiry: ISessionTokenExpiry = SESSION_TOKEN_EXPIRY_MOCK;
 const DEFAULT_RELEASE_FEATURE_FLAGS = {
   [RELEASE_1A_FEATURE_FLAG]: true,
+  [RELEASE_1B_FEATURE_FLAG]: true,
   [RELEASE_1C_WRITE_OFF_FEATURE_FLAG]: true,
   [RELEASE_1C_ENFORCEMENT_OPERATIONAL_REPORTING_FEATURE_FLAG]: true,
 };
@@ -473,6 +475,17 @@ describe('AppComponent - browser', () => {
     fixture.detectChanges();
 
     expect(getPrimaryNavigationTexts(fixture)).toContain('Search');
+  });
+
+  it('should hide Search in primary navigation when release-1b is disabled and the user has a search permission', () => {
+    globalStore.setAuthenticated(true);
+    globalStore.setFeatureFlags({ 'release-1a': true, 'release-1b': false });
+    globalStore.setUserState(createUserStateWithPermissions([SEARCH_PERMISSIONS[0]]));
+
+    const fixture = TestBed.createComponent(AppComponent);
+    fixture.detectChanges();
+
+    expect(getPrimaryNavigationTexts(fixture)).not.toContain('Search');
   });
 
   it('should hide Accounts in primary navigation when the user lacks all accounts permissions', () => {

@@ -159,14 +159,47 @@ describe('FinesDraftRelease1aFeatureToggles', () => {
     });
   };
 
-  const setupApprovedAccounts = (featureFlags: FeatureFlags) => {
+  const setupApprovedAccounts = (featureFlags: FeatureFlags, approvedAccountLinkEnabled = false) => {
     interceptGetRejectedAccounts(200, { count: 0, summaries: [] });
     interceptGetApprovedAccounts(200, {
       count: OPAL_FINES_DRAFT_ACCOUNTS_MOCK.summaries.length,
       summaries: OPAL_FINES_DRAFT_ACCOUNTS_MOCK.summaries,
     });
 
-    setupCreateAndManageComponent(featureFlags);
+    const userState = structuredClone(DRAFT_SESSION_USER_STATE_MOCK);
+
+    if (approvedAccountLinkEnabled) {
+      userState.business_unit_users = userState.business_unit_users.map((businessUnitUser) => ({
+        ...businessUnitUser,
+        permissions: [
+          ...businessUnitUser.permissions,
+          {
+            permission_id: FINES_PERMISSIONS['search-and-view-accounts'],
+            permission_name: 'Search and View Accounts',
+          },
+        ],
+      }));
+    }
+
+    cy.then(() => {
+      mount(FinesDraftCreateAndManageTabsComponent, {
+        providers: [
+          provideHttpClient(),
+          OpalFines,
+          DateService,
+          FinesMacPayloadService,
+          FinesDraftStore,
+          provideRouter([]),
+          {
+            provide: GlobalStore,
+            useFactory: () => createGlobalStore(userState, featureFlags),
+          },
+        ],
+        componentProperties: {
+          activeTab: 'review',
+        },
+      });
+    });
     cy.contains('a.moj-sub-navigation__link', 'Approved').should('be.visible').click();
   };
 
@@ -246,8 +279,10 @@ describe('FinesDraftRelease1aFeatureToggles', () => {
     '(AC.5) should show approved account numbers as links when release-1b is enabled',
     { tags: [...buildTags(RELEASE_1A_STORY_TAG, RELEASE_1B_STORY_TAG), RELEASE_EPIC_TAG, '@R1A', '@R1B'] },
     () => {
-      setupApprovedAccounts({ 'release-1a': true, 'release-1b': true });
+      setupApprovedAccounts({ 'release-1a': true, 'release-1b': true }, true);
 
+      cy.get(Table.cells.accountLink).should('have.length', 2);
+      cy.contains(Table.cells.accountLink, 'FINE123456').should('be.visible');
       cy.contains(Table.cells.accountLink, 'FP123456').should('be.visible');
     },
   );
