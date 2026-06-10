@@ -10,7 +10,10 @@ import { FINES_ACC_PAYLOAD_ENFORCEMENT_ACTION_ADD_PAYMENT_TERMS_DISABLED_RESULT_
 import { FINES_ACC_PAYLOAD_ENFORCEMENT_ACTION_ADD_PAYMENT_TERMS_NOT_ALLOWED_FORM_STATE_MOCK } from './mocks/fines-acc-payload-enforcement-action-add-payment-terms-not-allowed-form-state.mock';
 import { FINES_ACC_PAYLOAD_ENFORCEMENT_ACTION_ADD_PAY_IN_FULL_FORM_STATE_MOCK } from './mocks/fines-acc-payload-enforcement-action-add-pay-in-full-form-state.mock';
 import { FINES_ACC_PAYLOAD_ENFORCEMENT_ACTION_ADD_RESULT_MOCK } from './mocks/fines-acc-payload-enforcement-action-add-result.mock';
-import { buildEnforcementActionAddPayload } from './fines-acc-payload-build-enforcement-action-add.utils';
+import {
+  buildEnforcementActionAddPayload,
+  trimUnderscores,
+} from './fines-acc-payload-build-enforcement-action-add.utils';
 
 describe('buildEnforcementActionAddPayload', () => {
   it('builds result responses and lump sum plus instalments payment terms', () => {
@@ -301,5 +304,18 @@ describe('buildEnforcementActionAddPayload', () => {
     });
 
     expect(payload.payment_terms?.effective_date).toBeNull();
+  });
+});
+
+describe('trimUnderscores', () => {
+  it.each([
+    ['_parameter_name', 'parameter_name'],
+    ['parameter_name_', 'parameter_name'],
+    ['__parameter_name__', 'parameter_name'],
+    ['parameter__name', 'parameter__name'],
+    ['___', ''],
+    ['', ''],
+  ])('returns "%s" as "%s"', (value, expected) => {
+    expect(trimUnderscores(value)).toBe(expected);
   });
 });

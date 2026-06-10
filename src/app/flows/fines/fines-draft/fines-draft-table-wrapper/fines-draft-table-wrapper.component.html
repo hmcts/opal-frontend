@@ -95,12 +95,16 @@
       <tr opal-lib-moj-sortable-table-row>
         @if (activeTab === 'approved') {
           <td opal-lib-moj-sortable-table-row-data id="account">
-            <a
-              class="govuk-link govuk-link--no-visited-state"
-              href=""
-              (click)="onAccountClick(row['Account id'], $event)"
-              >{{ row['Account'] }}</a
-            >
+            @if (approvedAccountLinkEnabled) {
+              <a
+                class="govuk-link govuk-link--no-visited-state"
+                href=""
+                (click)="onAccountClick(row['Account id'], $event)"
+                >{{ row['Account'] }}</a
+              >
+            } @else {
+              {{ row['Account'] }}
+            }
           </td>
         }
         <td opal-lib-moj-sortable-table-row-data id="defendant">
