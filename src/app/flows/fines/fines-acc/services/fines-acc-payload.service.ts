@@ -404,34 +404,22 @@ export class FinesAccPayloadService {
     account_id: number,
     headingData: IOpalFinesAccountMajorCreditorDetailsHeader,
   ): IFinesAccountState {
-    const party_name = headingData.party.organisation_flag
-      ? (headingData.party.organisation_details?.organisation_name ?? '')
-      : [
-          headingData.party.individual_details?.title,
-          headingData.party.individual_details?.forenames,
-          headingData.party.individual_details?.surname
-            ? headingData.party.individual_details.surname.toUpperCase()
-            : undefined,
-        ]
-          .filter(Boolean)
-          .join(' ');
-
     const business_unit_user_id = this.payloadService.getBusinessUnitBusinessUserId(
-      Number(headingData.business_unit.business_unit_id),
+      Number(headingData.business_unit_details.business_unit_id),
       this.globalStore.userState(),
     );
 
     return {
-      account_number: headingData.creditor.account_number,
+      account_number: headingData.major_creditor.account_number,
       account_id: Number(account_id),
       pg_party_id: null,
-      party_id: headingData.party.party_id,
-      party_type: FINES_ACC_PARTY_TYPES.minorCreditor,
-      party_name,
+      party_id: headingData.major_creditor.creditor_account_id.toString(),
+      party_type: headingData.account_reference.creditor_account_display_name,
+      party_name: null,
       base_version: headingData.version,
-      business_unit_id: headingData.business_unit.business_unit_id,
+      business_unit_id: headingData.business_unit_details.business_unit_id,
       business_unit_user_id,
-      welsh_speaking: headingData.business_unit.welsh_speaking,
+      welsh_speaking: headingData.business_unit_details.welsh_speaking,
     };
   }
 }

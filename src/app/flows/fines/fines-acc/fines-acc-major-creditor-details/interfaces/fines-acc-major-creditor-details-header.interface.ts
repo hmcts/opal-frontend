@@ -1,37 +1,20 @@
 import { IOpalFinesVersion } from '../../../services/opal-fines-service/interfaces/opal-fines-version.interface';
 
 export interface IOpalFinesAccountMajorCreditorDetailsHeader extends IOpalFinesVersion {
-  creditor: {
-    account_id: number;
+  major_creditor: {
     account_number: string;
-    account_type: {
-      type: string;
-      display_name: string;
-    };
-    has_associated_defendant: boolean;
+    creditor_account_id: number;
+    name: string;
+    account_reference: string;
   };
-  business_unit: {
+  account_reference: {
+    creditor_account_type: string;
+    creditor_account_display_name: string;
+  };
+  business_unit_details: {
     business_unit_id: string;
     business_unit_name: string;
     welsh_speaking: string;
   };
-  party: {
-    party_id: string;
-    organisation_flag: boolean;
-    organisation_details?: {
-      organisation_name: string;
-      organisation_aliases: string | null;
-    };
-    individual_details?: {
-      title: string;
-      forenames: string;
-      surname: string;
-    };
-  };
-  financials: {
-    awarded: number;
-    paid_out: number;
-    awaiting_payout: number;
-    outstanding: number;
-  };
+  awaiting_payout: number;
 }
