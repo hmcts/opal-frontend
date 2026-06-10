@@ -5,13 +5,7 @@
     </div>
     @if (hasAmendPaymentTermsPermission) {
       <div class="govuk-grid-column-one-third govuk-!-text-align-right govuk-!-margin-top-3">
-        <a
-          tabindex="0"
-          [class]="style.changeLink"
-          (click)="handleChangePaymentTerms()"
-          (keyup.enter)="handleChangePaymentTerms()"
-          >Change</a
-        >
+        <a [class]="style.changeLink" [routerLink]="changePaymentTermsLink()">Change</a>
       </div>
     }
   </div>
@@ -116,7 +110,7 @@
             class="govuk-summary-list__row"
             summaryListId="payment-terms"
             summaryListRowId="payment-card-last-requested"
-            [actionEnabled]="true"
+            [actionEnabled]="hasAmendPaymentTermsPermission ? true : false"
             (actionClick)="handleRequestPaymentCard()"
           >
             <ng-container name>Payment card last requested</ng-container>

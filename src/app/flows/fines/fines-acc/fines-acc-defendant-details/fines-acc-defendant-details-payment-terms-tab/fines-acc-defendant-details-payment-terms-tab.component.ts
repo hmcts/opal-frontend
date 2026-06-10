@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, Component, EventEmitter, Input, Output } from '@angular/core';
+import { ChangeDetectionStrategy, Component, inject, Input } from '@angular/core';
 import { FINES_MAC_LANGUAGE_PREFERENCES_OPTIONS } from '../../../fines-mac/fines-mac-language-preferences/constants/fines-mac-language-preferences-options';
 import { IFinesAccSummaryTabsContentStyles } from '../interfaces/fines-acc-summary-tabs-content-styles.interface';
 import { FINES_ACC_SUMMARY_TABS_CONTENT_STYLES } from '../../constants/fines-acc-summary-tabs-content-styles.constant';
@@ -12,6 +12,8 @@ import { FinesNotProvidedComponent } from '../../../components/fines-not-provide
 import { DateFormatPipe } from '@hmcts/opal-frontend-common/pipes/date-format';
 import { MonetaryPipe } from '@hmcts/opal-frontend-common/pipes/monetary';
 import { DatePipe } from '@angular/common';
+import { ActivatedRoute, Router, RouterLink } from '@angular/router';
+import { FINES_ACC_DEFENDANT_ROUTING_PATHS } from '../../routing/constants/fines-acc-defendant-routing-paths.constant';
 @Component({
   selector: 'app-fines-acc-defendant-details-payment-terms-tab',
   imports: [
@@ -22,16 +24,22 @@ import { DatePipe } from '@angular/common';
     DateFormatPipe,
     MonetaryPipe,
     DatePipe,
+    RouterLink,
   ],
   templateUrl: './fines-acc-defendant-details-payment-terms-tab.component.html',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class FinesAccDefendantDetailsPaymentTermsTabComponent {
+  private readonly router = inject(Router);
+  private readonly activatedRoute = inject(ActivatedRoute);
+
   @Input({ required: true }) tabData!: IOpalFinesAccountDefendantDetailsPaymentTermsLatest;
   @Input() hasAmendPaymentTermsPermission: boolean = false;
+  @Input() canAmendPaymentTerms: boolean = false;
+  @Input() amendPaymentTermsDeniedType: string = 'permission';
+  @Input() canRequestPaymentCard: boolean = false;
+  @Input() requestPaymentCardDeniedType: string = 'permission';
   @Input() style: IFinesAccSummaryTabsContentStyles = FINES_ACC_SUMMARY_TABS_CONTENT_STYLES;
-  @Output() changePaymentTerms = new EventEmitter<void>();
-  @Output() requestPaymentCard = new EventEmitter<void>();
   public readonly languages = FINES_MAC_LANGUAGE_PREFERENCES_OPTIONS;
 
   /**
@@ -52,16 +60,29 @@ export class FinesAccDefendantDetailsPaymentTermsTabComponent {
   }
 
   /**
-   * Emits an event to indicate a request to change payment terms.
+   * Determines the target URL for the change payment terms action.
    */
-  public handleChangePaymentTerms(): void {
-    this.changePaymentTerms.emit();
+  public changePaymentTermsLink(): string {
+    return this.canAmendPaymentTerms
+      ? `../${FINES_ACC_DEFENDANT_ROUTING_PATHS.children['payment-terms']}/amend`
+      : `../${FINES_ACC_DEFENDANT_ROUTING_PATHS.children['payment-terms']}/denied/${this.amendPaymentTermsDeniedType}`;
   }
 
   /**
-   * Emits an event to indicate a request for a payment card.
+   * Determines the target URL for the request payment card action.
+   */
+  public requestPaymentCardLink(): string {
+    return this.canRequestPaymentCard
+      ? `../${FINES_ACC_DEFENDANT_ROUTING_PATHS.children['payment-card']}/request`
+      : `../${FINES_ACC_DEFENDANT_ROUTING_PATHS.children['payment-card']}/denied/${this.requestPaymentCardDeniedType}`;
+  }
+
+  /**
+   * Navigates to the request payment card path resolved by the current tab state.
    */
   public handleRequestPaymentCard(): void {
-    this.requestPaymentCard.emit();
+    this.router.navigate([this.requestPaymentCardLink()], {
+      relativeTo: this.activatedRoute,
+    });
   }
 }

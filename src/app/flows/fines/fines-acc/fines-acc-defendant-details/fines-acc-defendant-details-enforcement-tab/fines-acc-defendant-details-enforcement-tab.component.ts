@@ -1,5 +1,5 @@
-import { ChangeDetectionStrategy, Component, EventEmitter, Input, Output } from '@angular/core';
-import { RouterLink } from '@angular/router';
+import { ChangeDetectionStrategy, Component, inject, Input } from '@angular/core';
+import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 import { IFinesAccSummaryTabsContentStyles } from '../interfaces/fines-acc-summary-tabs-content-styles.interface';
 import { FINES_ACC_SUMMARY_TABS_CONTENT_STYLES } from '../../constants/fines-acc-summary-tabs-content-styles.constant';
 import {
@@ -21,6 +21,8 @@ import { FINES_ACC_ENF_ACTION_DENIED_TYPES } from '../../fines-acc-enf-action-de
 import { TFinesAccEnfActionDeniedType } from '../../fines-acc-enf-action-denied/types/fines-acc-enf-action-denied-type.type';
 import { FINES_ACC_DEFENDANT_ROUTING_PATHS } from '../../routing/constants/fines-acc-defendant-routing-paths.constant';
 import { FINES_ACC_ENF_ACTION_ROUTING_PATHS } from '../../fines-acc-enf-action-select/constants/fines-acc-enf-action-select-routing-paths.constant';
+import { FINES_ACC_ENF_OVERRIDE_ADD_CHANGE_ROUTING_PATHS } from '../../fines-acc-enf-override-add-change/constants/fines-acc-enf-override-add-change-routing-paths.constant';
+import { FINES_ACC_ENF_COURT_CHANGE_ROUTING_PATHS } from '../../fines-acc-enf-court-change/constants/fines-acc-enf-court-change-routing-paths.constant';
 import { getNextPermittedActionIds } from '../../fines-acc-enf-action-select/utils/fines-acc-enf-action-next-permitted-actions.utils';
 @Component({
   selector: 'app-fines-acc-defendant-details-enforcement-tab',
@@ -41,17 +43,15 @@ import { getNextPermittedActionIds } from '../../fines-acc-enf-action-select/uti
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class FinesAccDefendantDetailsEnforcementTab {
+  private readonly router = inject(Router);
+  private readonly activatedRoute = inject(ActivatedRoute);
+
   @Input({ required: true }) tabData!: IOpalFinesAccountDefendantDetailsEnforcementTabRefData;
   @Input() style: IFinesAccSummaryTabsContentStyles = FINES_ACC_SUMMARY_TABS_CONTENT_STYLES;
   @Input() isCompanyAccount: boolean = false;
   @Input() hasAccountMaintenancePermission: boolean = false;
   @Input() hasEnterEnforcementPermission: boolean = false;
   @Input({ required: true }) accountStatusCode!: string;
-  @Output() addEnforcementOverride = new EventEmitter<void>();
-  @Output() changeEnforcementOverride = new EventEmitter<void>();
-  @Output() removeEnforcementOverride = new EventEmitter<void>();
-  @Output() changeEnforcementCourt = new EventEmitter<void>();
-  @Output() changeCollectionOrder = new EventEmitter<boolean>();
 
   /**
    * Computes the denied reason for adding an enforcement action.
@@ -93,40 +93,76 @@ export class FinesAccDefendantDetailsEnforcementTab {
   }
 
   /**
-   * Emits an event to add an enforcement override if the user has the necessary permissions and there is no existing enforcement override result.
-   * @returns void
+   * Gets the route for adding an enforcement override.
    */
-  public handleAddEnforcementOverride(event: Event): void {
-    event.preventDefault();
-    this.addEnforcementOverride.emit();
+  public addEnforcementOverrideLink(): string {
+    return `../${FINES_ACC_DEFENDANT_ROUTING_PATHS.children.enforcement}/${FINES_ACC_ENF_OVERRIDE_ADD_CHANGE_ROUTING_PATHS.root}/${FINES_ACC_ENF_OVERRIDE_ADD_CHANGE_ROUTING_PATHS.children.add}`;
   }
 
   /**
-   * Emits an event to change an enforcement override if the user has the necessary permissions and there is an existing enforcement override result.
-   * @returns void
+   * Gets the route for changing an enforcement override.
+   */
+  public changeEnforcementOverrideLink(): string {
+    return `../${FINES_ACC_DEFENDANT_ROUTING_PATHS.children.enforcement}/${FINES_ACC_ENF_OVERRIDE_ADD_CHANGE_ROUTING_PATHS.root}/${FINES_ACC_ENF_OVERRIDE_ADD_CHANGE_ROUTING_PATHS.children.change}`;
+  }
+
+  /**
+   * Gets the route for removing an enforcement override.
+   */
+  public removeEnforcementOverrideLink(): string {
+    return `../${FINES_ACC_DEFENDANT_ROUTING_PATHS.children.enforcement}/${FINES_ACC_ENF_OVERRIDE_ADD_CHANGE_ROUTING_PATHS.root}/${FINES_ACC_ENF_OVERRIDE_ADD_CHANGE_ROUTING_PATHS.children.remove}`;
+  }
+
+  /**
+   * Gets the route for changing the enforcement court.
+   */
+  public changeEnforcementCourtLink(): string {
+    return `../${FINES_ACC_DEFENDANT_ROUTING_PATHS.children.enforcement}/${FINES_ACC_ENF_COURT_CHANGE_ROUTING_PATHS.root}/${FINES_ACC_ENF_COURT_CHANGE_ROUTING_PATHS.children.change}`;
+  }
+
+  /**
+   * Gets the route for changing the collection order.
+   */
+  public changeCollectionOrderLink(): string {
+    return `../${FINES_ACC_DEFENDANT_ROUTING_PATHS.children.enforcement}/collection-order/change`;
+  }
+
+  /**
+   * Navigates to the change enforcement override page.
    */
   public handleChangeEnforcementOverride(): void {
-    this.changeEnforcementOverride.emit();
+    this.router.navigate([this.changeEnforcementOverrideLink()], {
+      relativeTo: this.activatedRoute,
+    });
   }
 
   /**
-   * Emits a request to navigate to the change enforcement court page.
+   * Navigates to the change enforcement court page.
    */
   public handleChangeEnforcementCourt(): void {
-    this.changeEnforcementCourt.emit();
+    this.router.navigate([this.changeEnforcementCourtLink()], {
+      relativeTo: this.activatedRoute,
+    });
   }
 
   /**
-   * Emits a request to navigate to the remove enforcement override page.
+   * Navigates to the remove enforcement override page.
    */
-  public handleRemoveEnforcementOverride(): void {
-    this.removeEnforcementOverride.emit();
+  public handleRemoveEnforcementOverride(route: string = this.removeEnforcementOverrideLink()): void {
+    this.router.navigate([route], {
+      relativeTo: this.activatedRoute,
+    });
   }
 
   /**
-   * Emits an event to change the collection order status.
+   * Navigates to the change collection order page.
    */
   public handleChangeCollectionOrder(): void {
-    this.changeCollectionOrder.emit(this.tabData.enforcement_overview.collection_order?.collection_order_flag ?? false);
+    this.router.navigate([this.changeCollectionOrderLink()], {
+      relativeTo: this.activatedRoute,
+      state: {
+        currentCollectionOrderFlag: this.tabData.enforcement_overview.collection_order?.collection_order_flag ?? false,
+      },
+    });
   }
 }

@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, Component, EventEmitter, Input, Output } from '@angular/core';
+import { ChangeDetectionStrategy, Component, Input } from '@angular/core';
 import { IOpalFinesAccountDefendantAtAGlance } from '@services/fines/opal-fines-service/interfaces/opal-fines-account-defendant-at-a-glance.interface';
 import { UpperCasePipe } from '@angular/common';
 import { GovukTagComponent } from '@hmcts/opal-frontend-common/components/govuk/govuk-tag';
@@ -11,6 +11,8 @@ import { NationalInsurancePipe } from '@hmcts/opal-frontend-common/pipes/nationa
 import { FinesNotProvidedComponent } from '../../../components/fines-not-provided/fines-not-provided.component';
 import { DateFormatPipe } from '@hmcts/opal-frontend-common/pipes/date-format';
 import { MonetaryPipe } from '@hmcts/opal-frontend-common/pipes/monetary';
+import { RouterLink } from '@angular/router';
+import { FINES_ACC_DEFENDANT_ROUTING_PATHS } from '../../routing/constants/fines-acc-defendant-routing-paths.constant';
 
 @Component({
   selector: 'app-fines-acc-defendant-details-at-a-glance-tab',
@@ -22,6 +24,7 @@ import { MonetaryPipe } from '@hmcts/opal-frontend-common/pipes/monetary';
     FinesNotProvidedComponent,
     DateFormatPipe,
     MonetaryPipe,
+    RouterLink,
   ],
   templateUrl: './fines-acc-defendant-details-at-a-glance-tab.component.html',
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -30,17 +33,17 @@ export class FinesAccDefendantDetailsAtAGlanceTabComponent {
   @Input({ required: true }) tabData!: IOpalFinesAccountDefendantAtAGlance;
   @Input() hasAccountMaintenencePermission: boolean = false;
   @Input() style: IFinesAccSummaryTabsContentStyles = FINES_ACC_SUMMARY_TABS_CONTENT_STYLES;
-  @Output() addComments = new EventEmitter<void>();
+  @Input() hasAccountMaintenancePermissionInBU: boolean = false;
   public readonly languages = FINES_MAC_LANGUAGE_PREFERENCES_OPTIONS;
   public readonly debtorTypes = FINES_ACC_DEBTOR_TYPES;
 
   /**
-   * Emits the add comments action for the current tab.
-   *
-   * @param event - The optional DOM event that triggered the action.
+   * Navigates to the add comments page.
+   * If the user lacks the required permission in this BU, navigates to the access-denied page instead.
    */
-  public handleAddComments(event?: Event): void {
-    event?.preventDefault();
-    this.addComments.emit();
+  public navigateToAddCommentsPage(): string {
+    return this.hasAccountMaintenancePermissionInBU
+      ? `../${FINES_ACC_DEFENDANT_ROUTING_PATHS.children.comments}/add`
+      : '/access-denied';
   }
 }

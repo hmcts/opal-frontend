@@ -270,9 +270,9 @@
         <ng-container actions>
           <opal-lib-govuk-summary-card-action
             actionText="Remove"
-            actionRoute="remove"
+            [actionRoute]="removeEnforcementOverrideLink()"
             visuallyHiddenText="Enforcement override"
-            (clickEvent)="handleRemoveEnforcementOverride()"
+            (clickEvent)="handleRemoveEnforcementOverride($event)"
           ></opal-lib-govuk-summary-card-action>
         </ng-container>
       }
@@ -350,7 +350,7 @@
       !tabData.enforcement_override?.enforcement_override_result?.enforcement_override_result_id
     ) {
       <p>
-        <a class="govuk-link govuk-link--no-visited-state" href="" (click)="handleAddEnforcementOverride($event)"
+        <a class="govuk-link govuk-link--no-visited-state" [routerLink]="addEnforcementOverrideLink()"
           >Add enforcement override</a
         >
       </p>

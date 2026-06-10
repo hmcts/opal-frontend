@@ -150,7 +150,7 @@
       <app-fines-acc-defendant-details-at-a-glance-tab
         [tabData]="tabData"
         [hasAccountMaintenencePermission]="hasPermission(finesPermissions['account-maintenance'])"
-        (addComments)="navigateToAddCommentsPage()"
+        [hasAccountMaintenancePermissionInBU]="hasBusinessUnitPermissionKey('account-maintenance')"
         [style]="tabContentStyles"
       ></app-fines-acc-defendant-details-at-a-glance-tab>
     }
@@ -160,12 +160,9 @@
       <app-fines-acc-defendant-details-defendant-tab
         [tabData]="tabData"
         [hasAccountMaintenencePermission]="hasPermission(finesPermissions['account-maintenance'])"
+        [hasAccountMaintenancePermissionInBU]="hasBusinessUnitPermissionKey('account-maintenance')"
         [canAddParentOrGuardianDetails]="canAddParentOrGuardianDetails"
-        (addComments)="navigateToAddCommentsPage()"
         [style]="tabContentStyles"
-        (changeDefendantDetails)="navigateToAmendPartyDetailsPage($event)"
-        (convertAccount)="navigateToConvertAccountPage($event)"
-        (addParentOrGuardianDetails)="navigateToAddPartyDetailsPage($event)"
       ></app-fines-acc-defendant-details-defendant-tab>
     }
   }
@@ -174,10 +171,8 @@
       <app-fines-acc-defendant-details-parent-or-guardian-tab
         [tabData]="tabData"
         [hasAccountMaintenencePermission]="hasPermission(finesPermissions['account-maintenance'])"
-        (addComments)="navigateToAddCommentsPage()"
+        [hasAccountMaintenancePermissionInBU]="hasBusinessUnitPermissionKey('account-maintenance')"
         [style]="tabContentStyles"
-        (changeParentOrGuardianDetails)="navigateToAmendPartyDetailsPage($event)"
-        (removeParentOrGuardianDetails)="navigateToRemoveNonPayingParentGuardianPage($event)"
       ></app-fines-acc-defendant-details-parent-or-guardian-tab>
     }
   }
@@ -194,9 +189,11 @@
       <app-fines-acc-defendant-details-payment-terms-tab
         [tabData]="tabData"
         [hasAmendPaymentTermsPermission]="hasPermission(finesPermissions['amend-payment-terms'])"
+        [canAmendPaymentTerms]="canAmendPaymentTerms()"
+        [amendPaymentTermsDeniedType]="getAmendPaymentTermsDeniedType()"
+        [canRequestPaymentCard]="canRequestPaymentCard()"
+        [requestPaymentCardDeniedType]="getRequestPaymentCardDeniedType()"
         [style]="tabContentStyles"
-        (changePaymentTerms)="navigateToAmendPaymentTermsPage()"
-        (requestPaymentCard)="navigateToRequestPaymentCardPage()"
       ></app-fines-acc-defendant-details-payment-terms-tab>
     }
   }
@@ -208,11 +205,6 @@
         [accountStatusCode]="accountData.account_status_reference.account_status_code"
         [hasAccountMaintenancePermission]="hasPermission(finesPermissions['account-maintenance'])"
         [hasEnterEnforcementPermission]="hasPermission(finesPermissions['enter-enforcement'])"
-        (addEnforcementOverride)="navigateToAddEnforcementOverridePage()"
-        (changeEnforcementOverride)="navigateToChangeEnforcementOverridePage()"
-        (removeEnforcementOverride)="navigateToRemoveEnforcementOverridePage()"
-        (changeEnforcementCourt)="navigateToChangeEnforcementCourtPage()"
-        (changeCollectionOrder)="navigateToChangeCollectionOrderPage($event)"
       ></app-fines-acc-defendant-details-enforcement-tab>
     }
   }

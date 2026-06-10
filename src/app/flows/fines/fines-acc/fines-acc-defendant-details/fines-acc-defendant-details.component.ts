@@ -53,11 +53,8 @@ import { FinesAccDefendantDetailsEnforcementTab } from './fines-acc-defendant-de
 import { FinesAccDefendantDetailsImpositionsTabComponent } from './fines-acc-defendant-details-impositions-tab/fines-acc-defendant-details-impositions-tab.component';
 import { FinesAccSummaryHeaderComponent } from '../fines-acc-summary-header/fines-acc-summary-header.component';
 import { AbstractAccountSummaryBaseComponent } from '@hmcts/opal-frontend-common/components/abstract/abstract-account-summary-base';
-import { FINES_ACC_ENF_OVERRIDE_ADD_CHANGE_ROUTING_PATHS } from '../fines-acc-enf-override-add-change/constants/fines-acc-enf-override-add-change-routing-paths.constant';
-import { FINES_ACC_ENF_COURT_CHANGE_ROUTING_PATHS } from '../fines-acc-enf-court-change/constants/fines-acc-enf-court-change-routing-paths.constant';
 import { IOpalFinesVersion } from '../../services/opal-fines-service/interfaces/opal-fines-version.interface';
 import { FINES_ACC_BANNER_MESSAGES } from '../stores/constants/fines-acc-store-banner-messages.constant';
-import { FINES_ACC_REMOVE_NON_PAYING_PG_ROUTING_PATHS } from '../fines-acc-remove-non-paying-pg/constants/fines-acc-remove-non-paying-pg-routing-paths.constant';
 
 @Component({
   selector: 'app-fines-acc-defendant-details',
@@ -113,80 +110,6 @@ export class FinesAccDefendantDetailsComponent
   public finesPermissions = FINES_PERMISSIONS;
   private fetchTabDataTyped<T extends IOpalFinesVersion>(serviceCall: Observable<T>): Observable<T> {
     return this.fetchTabData(serviceCall, (version) => this.accountStore.compareVersion(version)) as Observable<T>;
-  }
-
-  /**
-   *
-   * Calculates if the user can amend payment terms based on account status and permissions.
-   * @returns boolean indicating if the user can amend payment terms
-   */
-  private canAmendPaymentTerms(): boolean {
-    const accountStatusCode = this.accountData.account_status_reference.account_status_code;
-    const invalidCodes = ['CS', 'WO', 'TO', 'TS', 'TA'];
-
-    return (
-      !this.lastEnforcement?.extend_ttp_disallow &&
-      !invalidCodes.includes(accountStatusCode) &&
-      this.hasBusinessUnitPermissionKey('amend-payment-terms') &&
-      this.accountData.payment_state_summary.account_balance > 0
-    );
-  }
-
-  /**
-   *
-   * Calculates if the user can request a payment card based on account status and permissions.
-   * @returns boolean indicating if the user can request a payment card
-   */
-  private canRequestPaymentCard(): boolean {
-    return !this.lastEnforcement?.prevent_payment_card && this.hasBusinessUnitPermissionKey('amend-payment-terms');
-  }
-
-  /**
-   * Determines the type of denial for amending payment terms based on permission, account status and enforcement details.
-   * @returns A string representing the denial type: 'enforcement', 'permission', 'balance' or 'account-status'
-   */
-  private getAmendPaymentTermsDeniedType(): string {
-    if (this.lastEnforcement?.extend_ttp_disallow) {
-      return 'enforcement';
-    } else if (!this.hasBusinessUnitPermissionKey('amend-payment-terms')) {
-      return 'permission';
-    } else if (this.accountData.payment_state_summary.account_balance <= 0) {
-      return 'balance';
-    } else {
-      return 'account-status';
-    }
-  }
-
-  /**
-   * Determines the type of denial for requesting a payment card based on permission, account status and enforcement details.
-   * @returns A string representing the denial type: 'enforcement' or 'permission'
-   */
-  private getRequestPaymentCardDeniedType(): string {
-    if (this.lastEnforcement?.prevent_payment_card) {
-      return 'enforcement';
-    } else {
-      return 'permission';
-    }
-  }
-
-  private hasAccountMaintenancePermissionInBusinessUnit(): boolean {
-    return this.permissionsService.hasBusinessUnitPermissionAccess(
-      FINES_PERMISSIONS['account-maintenance'],
-      Number(this.accountStore.business_unit_id()!),
-      this.userState.business_unit_users,
-    );
-  }
-
-  /**
-   * Checks if the user has the specified permission within the business unit related to the account.
-   * @param permissionKey The key of the permission to check.
-   * @returns True if the user has the permission, false otherwise.
-   */
-  private hasBusinessUnitPermissionKey(permissionKey: string): boolean {
-    return super.hasBusinessUnitPermission(
-      FINES_PERMISSIONS[permissionKey],
-      Number(this.accountStore.business_unit_id()!),
-    );
   }
 
   /**
@@ -297,28 +220,78 @@ export class FinesAccDefendantDetailsComponent
   }
 
   /**
+   *
+   * Calculates if the user can amend payment terms based on account status and permissions.
+   * @returns boolean indicating if the user can amend payment terms
+   */
+  public canAmendPaymentTerms(): boolean {
+    const accountStatusCode = this.accountData.account_status_reference.account_status_code;
+    const invalidCodes = ['CS', 'WO', 'TO', 'TS', 'TA'];
+
+    return (
+      !this.lastEnforcement?.extend_ttp_disallow &&
+      !invalidCodes.includes(accountStatusCode) &&
+      this.hasBusinessUnitPermissionKey('amend-payment-terms') &&
+      this.accountData.payment_state_summary.account_balance > 0
+    );
+  }
+
+  /**
+   *
+   * Calculates if the user can request a payment card based on account status and permissions.
+   * @returns boolean indicating if the user can request a payment card
+   */
+  public canRequestPaymentCard(): boolean {
+    return !this.lastEnforcement?.prevent_payment_card && this.hasBusinessUnitPermissionKey('amend-payment-terms');
+  }
+
+  /**
+   * Determines the type of denial for amending payment terms based on permission, account status and enforcement details.
+   * @returns A string representing the denial type: 'enforcement', 'permission', 'balance' or 'account-status'
+   */
+  public getAmendPaymentTermsDeniedType(): string {
+    if (this.lastEnforcement?.extend_ttp_disallow) {
+      return 'enforcement';
+    } else if (!this.hasBusinessUnitPermissionKey('amend-payment-terms')) {
+      return 'permission';
+    } else if (this.accountData.payment_state_summary.account_balance <= 0) {
+      return 'balance';
+    } else {
+      return 'account-status';
+    }
+  }
+
+  /**
+   * Determines the type of denial for requesting a payment card based on permission, account status and enforcement details.
+   * @returns A string representing the denial type: 'enforcement' or 'permission'
+   */
+  public getRequestPaymentCardDeniedType(): string {
+    if (this.lastEnforcement?.prevent_payment_card) {
+      return 'enforcement';
+    } else {
+      return 'permission';
+    }
+  }
+
+  /**
+   * Checks if the user has the specified permission within the business unit related to the account.
+   * @param permissionKey The key of the permission to check.
+   * @returns True if the user has the permission, false otherwise.
+   */
+  public hasBusinessUnitPermissionKey(permissionKey: string): boolean {
+    return super.hasBusinessUnitPermission(
+      FINES_PERMISSIONS[permissionKey],
+      Number(this.accountStore.business_unit_id()!),
+    );
+  }
+
+  /**
    * Navigates to the add account note page.
    * If the user lacks the required permission in this BU, navigates to the access-denied page instead.
    */
   public navigateToAddAccountNotePage(): void {
     if (this.hasBusinessUnitPermissionKey('add-account-activity-notes')) {
       this['router'].navigate([`../${FINES_ACC_DEFENDANT_ROUTING_PATHS.children.note}/add`], {
-        relativeTo: this.activatedRoute,
-      });
-    } else {
-      this['router'].navigate(['/access-denied'], {
-        relativeTo: this.activatedRoute,
-      });
-    }
-  }
-
-  /**
-   * Navigates to the add comments page.
-   * If the user lacks the required permission in this BU, navigates to the access-denied page instead.
-   */
-  public navigateToAddCommentsPage(): void {
-    if (this.hasBusinessUnitPermissionKey('account-maintenance')) {
-      this['router'].navigate([`../${FINES_ACC_DEFENDANT_ROUTING_PATHS.children.comments}/add`], {
         relativeTo: this.activatedRoute,
       });
     } else {
@@ -371,186 +344,5 @@ export class FinesAccDefendantDetailsComponent
     return (
       this.accountData.debtor_type === this.debtorTypes.parentGuardian || !!this.accountData.parent_guardian_party_id
     );
-  }
-
-  /**
-   * Navigates to the shared party details journey for the selected party type.
-   *
-   * This is used by the Defendant details actions and currently routes to the
-   * existing amend page for the chosen party. If the user does not have account
-   * maintenance permission in the active business unit, they are redirected to
-   * the access-denied page instead.
-   *
-   * @param partyType - The party type to open in the party details flow.
-   */
-  public navigateToAmendPartyDetailsPage(partyType: string): void {
-    if (this.hasAccountMaintenancePermissionInBusinessUnit()) {
-      this['router'].navigate([`../party/${partyType}/amend`], {
-        relativeTo: this.activatedRoute,
-      });
-    } else {
-      this['router'].navigate(['/access-denied'], {
-        relativeTo: this.activatedRoute,
-      });
-    }
-  }
-
-  /**
-   * Navigates to the shared party details journey in add mode.
-   *
-   * @param partyType - The party type to open in the party details flow.
-   */
-  public navigateToAddPartyDetailsPage(partyType: string): void {
-    if (this.hasAccountMaintenancePermissionInBusinessUnit() && this.canAddParentOrGuardianDetails) {
-      this['router'].navigate([`../party/${partyType}/add`], {
-        relativeTo: this.activatedRoute,
-      });
-    } else {
-      this['router'].navigate(['/access-denied'], {
-        relativeTo: this.activatedRoute,
-      });
-    }
-  }
-
-  /**
-   * Navigates to the non-paying parent/guardian removal confirmation page.
-   *
-   * @param event - The click event that triggered the navigation.
-   */
-  public navigateToRemoveNonPayingParentGuardianPage(event?: Event): void {
-    event?.preventDefault();
-
-    if (this.hasAccountMaintenancePermissionInBusinessUnit()) {
-      this['router'].navigate(
-        [
-          `../${FINES_ACC_DEFENDANT_ROUTING_PATHS.children.remove}/${FINES_ACC_REMOVE_NON_PAYING_PG_ROUTING_PATHS.root}/${FINES_ACC_REMOVE_NON_PAYING_PG_ROUTING_PATHS.children.parentGuardian}`,
-        ],
-        {
-          relativeTo: this.activatedRoute,
-        },
-      );
-    } else {
-      this['router'].navigate(['/access-denied'], {
-        relativeTo: this.activatedRoute,
-      });
-    }
-  }
-
-  public navigateToConvertAccountPage(targetPartyType: string): void {
-    if (this.hasAccountMaintenancePermissionInBusinessUnit() && targetPartyType) {
-      this['router'].navigate([`../${FINES_ACC_DEFENDANT_ROUTING_PATHS.children.convert}/${targetPartyType}`], {
-        relativeTo: this.activatedRoute,
-      });
-    } else {
-      this['router'].navigate(['/access-denied'], {
-        relativeTo: this.activatedRoute,
-      });
-    }
-  }
-
-  /**
-   * Navigates to the amend payment terms page or amend denied page based on user permissions and account status.
-   */
-  public navigateToAmendPaymentTermsPage(): void {
-    if (this.canAmendPaymentTerms()) {
-      this['router'].navigate([`../${FINES_ACC_DEFENDANT_ROUTING_PATHS.children['payment-terms']}/amend`], {
-        relativeTo: this.activatedRoute,
-      });
-    } else {
-      this['router'].navigate(
-        [
-          `../${FINES_ACC_DEFENDANT_ROUTING_PATHS.children['payment-terms']}/denied/${this.getAmendPaymentTermsDeniedType()}`,
-        ],
-        {
-          relativeTo: this.activatedRoute,
-        },
-      );
-    }
-  }
-
-  /**
-   * Navigates to the amend payment terms page or amend denied page based on user permissions and account status.
-   */
-  public navigateToRequestPaymentCardPage(): void {
-    if (this.canRequestPaymentCard()) {
-      this['router'].navigate([`../${FINES_ACC_DEFENDANT_ROUTING_PATHS.children['payment-card']}/request`], {
-        relativeTo: this.activatedRoute,
-      });
-    } else {
-      this['router'].navigate(
-        [
-          `../${FINES_ACC_DEFENDANT_ROUTING_PATHS.children['payment-card']}/denied/${this.getRequestPaymentCardDeniedType()}`,
-        ],
-        {
-          relativeTo: this.activatedRoute,
-        },
-      );
-    }
-  }
-
-  /**
-   * Navigates to the add enforcement override page.
-   */
-  public navigateToAddEnforcementOverridePage(): void {
-    this['router'].navigate(
-      [
-        `../${FINES_ACC_DEFENDANT_ROUTING_PATHS.children.enforcement}/${FINES_ACC_ENF_OVERRIDE_ADD_CHANGE_ROUTING_PATHS.root}/${FINES_ACC_ENF_OVERRIDE_ADD_CHANGE_ROUTING_PATHS.children.add}`,
-      ],
-      {
-        relativeTo: this.activatedRoute,
-      },
-    );
-  }
-
-  /**
-   * Navigates to the change enforcement override page.
-   */
-  public navigateToChangeEnforcementOverridePage(): void {
-    this['router'].navigate(
-      [
-        `../${FINES_ACC_DEFENDANT_ROUTING_PATHS.children.enforcement}/${FINES_ACC_ENF_OVERRIDE_ADD_CHANGE_ROUTING_PATHS.root}/${FINES_ACC_ENF_OVERRIDE_ADD_CHANGE_ROUTING_PATHS.children.change}`,
-      ],
-      {
-        relativeTo: this.activatedRoute,
-      },
-    );
-  }
-
-  /**
-   * Navigates to the remove enforcement override page.
-   */
-  public navigateToRemoveEnforcementOverridePage(): void {
-    this['router'].navigate(
-      [
-        `../${FINES_ACC_DEFENDANT_ROUTING_PATHS.children.enforcement}/${FINES_ACC_ENF_OVERRIDE_ADD_CHANGE_ROUTING_PATHS.root}/${FINES_ACC_ENF_OVERRIDE_ADD_CHANGE_ROUTING_PATHS.children.remove}`,
-      ],
-      {
-        relativeTo: this.activatedRoute,
-      },
-    );
-  }
-
-  /**
-   * Navigates to the change enforcement court page.
-   */
-  public navigateToChangeEnforcementCourtPage(): void {
-    this['router'].navigate(
-      [
-        `../${FINES_ACC_DEFENDANT_ROUTING_PATHS.children.enforcement}/${FINES_ACC_ENF_COURT_CHANGE_ROUTING_PATHS.root}/${FINES_ACC_ENF_COURT_CHANGE_ROUTING_PATHS.children.change}`,
-      ],
-      {
-        relativeTo: this.activatedRoute,
-      },
-    );
-  }
-
-  /**
-   * Navigates to the change collection order page.
-   */
-  public navigateToChangeCollectionOrderPage(currentCollectionOrderFlag: boolean): void {
-    this['router'].navigate([`../${FINES_ACC_DEFENDANT_ROUTING_PATHS.children.enforcement}/collection-order/change`], {
-      relativeTo: this.activatedRoute,
-      state: { currentCollectionOrderFlag },
-    });
   }
 }

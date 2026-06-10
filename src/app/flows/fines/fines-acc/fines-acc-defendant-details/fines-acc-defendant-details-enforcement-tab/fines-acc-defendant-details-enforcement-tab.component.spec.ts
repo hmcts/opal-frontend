@@ -1,11 +1,13 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
-import { provideRouter } from '@angular/router';
+import { provideRouter, Router } from '@angular/router';
 import { FinesAccDefendantDetailsEnforcementTab } from './fines-acc-defendant-details-enforcement-tab.component';
 import { OPAL_FINES_ACCOUNT_DEFENDANT_DETAILS_ENFORCEMENT_TAB_REF_DATA_MOCK } from '@services/fines/opal-fines-service/mocks/opal-fines-account-defendant-details-enforcement-tab-ref-data.mock';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
 import { FINES_ACC_ENF_ACTION_DENIED_TYPES } from '../../fines-acc-enf-action-denied/constants/fines-acc-enf-action-denied-types.constant';
 import { FINES_ACC_DEFENDANT_ROUTING_PATHS } from '../../routing/constants/fines-acc-defendant-routing-paths.constant';
 import { FINES_ACC_ENF_ACTION_ROUTING_PATHS } from '../../fines-acc-enf-action-select/constants/fines-acc-enf-action-select-routing-paths.constant';
+import { FINES_ACC_ENF_OVERRIDE_ADD_CHANGE_ROUTING_PATHS } from '../../fines-acc-enf-override-add-change/constants/fines-acc-enf-override-add-change-routing-paths.constant';
+import { FINES_ACC_ENF_COURT_CHANGE_ROUTING_PATHS } from '../../fines-acc-enf-court-change/constants/fines-acc-enf-court-change-routing-paths.constant';
 
 describe('FinesAccDefendantDetailsEnforcementTab', () => {
   let component: FinesAccDefendantDetailsEnforcementTab;
@@ -73,18 +75,6 @@ describe('FinesAccDefendantDetailsEnforcementTab', () => {
       expect(link.classList.contains('govuk-link--no-visited-state')).toBe(true);
       expect(link.getAttribute('tabindex')).toBeNull();
     });
-  });
-
-  it('should emit add enforcement override when add enforcement override is clicked', () => {
-    const emitSpy = vi.spyOn(component.addEnforcementOverride, 'emit');
-    const event = { preventDefault: vi.fn() } as unknown as Event;
-    component.hasAccountMaintenancePermission = true;
-    component.tabData.enforcement_override = null;
-
-    component.handleAddEnforcementOverride(event);
-
-    expect(event.preventDefault).toHaveBeenCalled();
-    expect(emitSpy).toHaveBeenCalled();
   });
 
   it('should route add enforcement action to select when permitted', () => {
@@ -162,25 +152,58 @@ describe('FinesAccDefendantDetailsEnforcementTab', () => {
     );
   });
 
-  it('should emit change enforcement override when requested', () => {
-    const emitSpy = vi.spyOn(component.changeEnforcementOverride, 'emit');
+  it('should return the add enforcement override route', () => {
+    expect(component.addEnforcementOverrideLink()).toBe(
+      `../${FINES_ACC_DEFENDANT_ROUTING_PATHS.children.enforcement}/${FINES_ACC_ENF_OVERRIDE_ADD_CHANGE_ROUTING_PATHS.root}/${FINES_ACC_ENF_OVERRIDE_ADD_CHANGE_ROUTING_PATHS.children.add}`,
+    );
+  });
+
+  it('should navigate to the change enforcement override route', () => {
+    const router = TestBed.inject(Router);
+    const routerNavigateSpy = vi.spyOn(router, 'navigate');
+
     component.handleChangeEnforcementOverride();
 
-    expect(emitSpy).toHaveBeenCalled();
+    expect(routerNavigateSpy).toHaveBeenCalledWith(
+      [
+        `../${FINES_ACC_DEFENDANT_ROUTING_PATHS.children.enforcement}/${FINES_ACC_ENF_OVERRIDE_ADD_CHANGE_ROUTING_PATHS.root}/${FINES_ACC_ENF_OVERRIDE_ADD_CHANGE_ROUTING_PATHS.children.change}`,
+      ],
+      {
+        relativeTo: component['activatedRoute'],
+      },
+    );
   });
 
-  it('should emit when handleChangeEnforcementCourt is called', () => {
-    const emitSpy = vi.spyOn(component.changeEnforcementCourt, 'emit');
+  it('should navigate to the change enforcement court route', () => {
+    const router = TestBed.inject(Router);
+    const routerNavigateSpy = vi.spyOn(router, 'navigate');
+
     component.handleChangeEnforcementCourt();
 
-    expect(emitSpy).toHaveBeenCalled();
+    expect(routerNavigateSpy).toHaveBeenCalledWith(
+      [
+        `../${FINES_ACC_DEFENDANT_ROUTING_PATHS.children.enforcement}/${FINES_ACC_ENF_COURT_CHANGE_ROUTING_PATHS.root}/${FINES_ACC_ENF_COURT_CHANGE_ROUTING_PATHS.children.change}`,
+      ],
+      {
+        relativeTo: component['activatedRoute'],
+      },
+    );
   });
 
-  it('should emit when handleRemoveEnforcementOverride is called', () => {
-    const emitSpy = vi.spyOn(component.removeEnforcementOverride, 'emit');
-    component.handleRemoveEnforcementOverride();
+  it('should navigate to the remove enforcement override route', () => {
+    const router = TestBed.inject(Router);
+    const routerNavigateSpy = vi.spyOn(router, 'navigate');
 
-    expect(emitSpy).toHaveBeenCalled();
+    component.handleRemoveEnforcementOverride(component.removeEnforcementOverrideLink());
+
+    expect(routerNavigateSpy).toHaveBeenCalledWith(
+      [
+        `../${FINES_ACC_DEFENDANT_ROUTING_PATHS.children.enforcement}/${FINES_ACC_ENF_OVERRIDE_ADD_CHANGE_ROUTING_PATHS.root}/${FINES_ACC_ENF_OVERRIDE_ADD_CHANGE_ROUTING_PATHS.children.remove}`,
+      ],
+      {
+        relativeTo: component['activatedRoute'],
+      },
+    );
   });
 
   it('should not render actions when permissions are missing', () => {
@@ -199,17 +222,27 @@ describe('FinesAccDefendantDetailsEnforcementTab', () => {
     expect(actionLinks).toHaveLength(0);
   });
 
-  it('should emit collection order flag when handleChangeCollectionOrder is called', () => {
-    const emitSpy = vi.spyOn(component.changeCollectionOrder, 'emit');
+  it('should navigate to the change collection order route with the current flag', () => {
+    const router = TestBed.inject(Router);
+    const routerNavigateSpy = vi.spyOn(router, 'navigate');
+
     component.handleChangeCollectionOrder();
 
-    expect(emitSpy).toHaveBeenCalledWith(
-      component.tabData.enforcement_overview.collection_order?.collection_order_flag ?? false,
+    expect(routerNavigateSpy).toHaveBeenCalledWith(
+      [`../${FINES_ACC_DEFENDANT_ROUTING_PATHS.children.enforcement}/collection-order/change`],
+      {
+        relativeTo: component['activatedRoute'],
+        state: {
+          currentCollectionOrderFlag:
+            component.tabData.enforcement_overview.collection_order?.collection_order_flag ?? false,
+        },
+      },
     );
   });
 
-  it('should emit false when collection order is missing', () => {
-    const emitSpy = vi.spyOn(component.changeCollectionOrder, 'emit');
+  it('should navigate with a false collection order flag when collection order is missing', () => {
+    const router = TestBed.inject(Router);
+    const routerNavigateSpy = vi.spyOn(router, 'navigate');
     component.tabData = {
       ...component.tabData,
       enforcement_overview: {
@@ -220,6 +253,12 @@ describe('FinesAccDefendantDetailsEnforcementTab', () => {
 
     component.handleChangeCollectionOrder();
 
-    expect(emitSpy).toHaveBeenCalledWith(false);
+    expect(routerNavigateSpy).toHaveBeenCalledWith(
+      [`../${FINES_ACC_DEFENDANT_ROUTING_PATHS.children.enforcement}/collection-order/change`],
+      {
+        relativeTo: component['activatedRoute'],
+        state: { currentCollectionOrderFlag: false },
+      },
+    );
   });
 });

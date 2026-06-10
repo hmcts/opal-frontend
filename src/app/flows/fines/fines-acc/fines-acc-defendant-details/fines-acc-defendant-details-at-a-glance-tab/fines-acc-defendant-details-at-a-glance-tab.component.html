@@ -244,14 +244,12 @@
         }
         @if (hasAccountMaintenencePermission) {
           <p [class]="style.value">
-            <a class="govuk-link govuk-link--no-visited-state" href="" (click)="handleAddComments($event)">Change</a>
+            <a class="govuk-link govuk-link--no-visited-state" [routerLink]="navigateToAddCommentsPage()">Change</a>
           </p>
         }
       } @else if (hasAccountMaintenencePermission) {
         <p [class]="style.value">
-          <a class="govuk-link govuk-link--no-visited-state" href="" (click)="handleAddComments($event)"
-            >Add comments</a
-          >
+          <a class="govuk-link govuk-link--no-visited-state" [routerLink]="navigateToAddCommentsPage()">Add comments</a>
         </p>
       }
     </div>
