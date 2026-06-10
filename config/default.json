@@ -20,7 +20,35 @@
     },
     "launch-darkly": {
       "enabled": true,
-      "stream": false
+      "stream": true
+    },
+    "feature-flags": {
+      "override": false,
+      "releases": {
+        "release-1a": true,
+        "release-1b": true,
+        "release-1c-write-off": true,
+        "release-1c-auto-enforcement": true,
+        "release-1d-data-retention": true,
+        "release-1d-auto-enforcement-config": true,
+        "release-1c-rm-financial-movements": true,
+        "release-1c-rm-financial-checks": true,
+        "release-1c-rm-suspense": true,
+        "release-1c-rm-payment": true,
+        "release-1c-rm-admin-reports": true,
+        "release-1c-rm-account-actions": true,
+        "release-1c-financial-movements": true,
+        "release-1c-checks": true,
+        "release-1c-suspense": true,
+        "release-1c-payment": true,
+        "release-1c-r1a-tidy-up": true,
+        "release-1c-reference-data": true,
+        "release-1c-banking-interfaces": true,
+        "release-1c-cpp-enforcement": true,
+        "release-1c-cpp": true,
+        "release-1c-printing": true,
+        "release-1c-enforcement-operational-reporting": true
+      }
     },
     "app-insights": {
       "enabled": false

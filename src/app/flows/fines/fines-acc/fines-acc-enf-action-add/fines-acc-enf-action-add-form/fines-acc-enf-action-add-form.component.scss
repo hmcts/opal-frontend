@@ -1,0 +1,5 @@
+@use 'govuk-frontend/dist/govuk/helpers/colour' as *;
+
+.fines-acc-enf-action-add-form__payment-terms-section {
+  background-color: govuk-colour('black', $variant: 'tint-95');
+}

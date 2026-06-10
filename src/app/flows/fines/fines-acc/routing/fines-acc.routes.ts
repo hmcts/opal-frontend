@@ -35,6 +35,8 @@ import { FINES_ACC_ENF_ACTION_ROUTING_PATHS } from '../fines-acc-enf-action-sele
 import { FINES_ACC_ENF_ACTION_ROUTING_TITLES } from '../fines-acc-enf-action-select/constants/fines-acc-enf-action-select-routing-titles.constant';
 import { nextPermittedEnfActionsResolver } from './resolvers/defendant-account-next-permitted-enf-actions.resolver';
 import { FINES_ACC_PAYMENT_HOLD_ROUTING_PATHS } from '../fines-acc-payment-hold-add-remove/constants/fines-acc-payment-hold-routing-paths.constant';
+import { enforcementActionResultResolver } from './resolvers/fines-acc-enf-action-add/enforcement-action-result.resolver';
+import { minorCreditorAccountCreditorResolver } from './resolvers/defendant-minor-creditor-creditor.resolver';
 import { FINES_ACC_REMOVE_NON_PAYING_PG_ROUTING_PATHS } from '../fines-acc-remove-non-paying-pg/constants/fines-acc-remove-non-paying-pg-routing-paths.constant';
 import { majorCreditorAccountHeadingResolver } from './resolvers/major-creditor-heading.resolver';
 
@@ -302,6 +304,25 @@ export const routing: Routes = [
             },
           },
           {
+            path: `${FINES_ACC_DEFENDANT_ROUTING_PATHS.children.enforcement}/${FINES_ACC_ENF_ACTION_ROUTING_PATHS.root}/${FINES_ACC_ENF_ACTION_ROUTING_PATHS.children.add}`,
+            loadComponent: () =>
+              import('../fines-acc-enf-action-add/fines-acc-enf-action-add.component').then(
+                (c) => c.FinesAccEnfActionAddComponent,
+              ),
+            canActivate: [routePermissionsGuard, finesAccStateGuard],
+            canDeactivate: [canDeactivateGuard],
+            data: {
+              title: FINES_ACC_ENF_ACTION_ROUTING_TITLES.children.add,
+              routePermissionId: [accRootPermissionIds['enter-enforcement']],
+            },
+            resolve: {
+              title: TitleResolver,
+              defendantAccountHeadingData: defendantAccountHeadingResolver,
+              enforcementActionResult: enforcementActionResultResolver,
+              enforcersRefData: fetchEnforcersResolver,
+            },
+          },
+          {
             path: `${FINES_ACC_DEFENDANT_ROUTING_PATHS.children.enforcement}/${FINES_ACC_ENF_ACTION_ROUTING_PATHS.root}/${FINES_ACC_ENF_ACTION_ROUTING_PATHS.children.denied}/:type`,
             loadComponent: () =>
               import('../fines-acc-enf-action-denied/fines-acc-enf-action-denied.component').then(
@@ -468,11 +489,15 @@ export const routing: Routes = [
             (c) => c.FinesAccMinorCreditorAddAmendConvertComponent,
           ),
         canActivate: [authGuard, finesAccStateGuard, routePermissionsGuard],
+        canDeactivate: [canDeactivateGuard],
         data: {
           routePermissionId: [accRootPermissionIds['account-maintenance']],
           title: FINES_ACC_MINOR_CREDITOR_ROUTING_TITLES.children.amend,
         },
-        resolve: { title: TitleResolver },
+        resolve: {
+          title: TitleResolver,
+          minorCreditorAccountCreditor: minorCreditorAccountCreditorResolver,
+        },
       },
     ],
   },

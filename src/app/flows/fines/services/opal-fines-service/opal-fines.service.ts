@@ -57,6 +57,7 @@ import { IOpalFinesResultsParams } from './interfaces/opal-fines-results-params.
 import { IOpalFinesEnforcersRefData } from './interfaces/opal-fines-enforcers-ref-data.interface';
 import { IOpalFinesEnforcer } from './interfaces/opal-fines-enforcer.interface';
 import { IOpalFinesUpdateMinorCreditorAccountPayload } from './interfaces/opal-fines-update-minor-creditor-account-payload.interface';
+import { IOpalFinesAddEnforcementActionPayload } from './interfaces/opal-fines-add-enforcement-action-payload.interface';
 import { IOpalFinesAccountMinorCreditorCreditor } from './interfaces/opal-fines-account-minor-creditor-creditor.interface';
 import { IOpalFinesDraftAccountPatchRequestPayload } from '@services/fines/opal-fines-service/types/opal-fines-draft-account-patch-request-payload.type';
 import { IOpalFinesDeleteDefendantAccountPartyPayload } from './interfaces/opal-fines-delete-defendant-account-party-payload.interface';
@@ -1138,6 +1139,34 @@ export class OpalFines {
       headers['Business-Unit-User-Id'] = businessUnitUserId;
     }
     return this.http.post<IOpalFinesAccountRequestPaymentCardResponse>(url, {}, { headers });
+  }
+
+  /**
+   * Adds an enforcement action to a defendant account.
+   *
+   * @param defendantAccountId - The unique identifier of the defendant account.
+   * @param payload - The enforcement action result responses and optional payment terms.
+   * @param version - Optional account version for optimistic concurrency control.
+   * @param businessUnitId - Optional business unit identifier.
+   * @returns An Observable that emits the submitted payload response.
+   */
+  public addEnforcementAction(
+    defendantAccountId: number,
+    payload: IOpalFinesAddEnforcementActionPayload,
+    version?: string,
+    businessUnitId?: string,
+  ): Observable<IOpalFinesAddEnforcementActionPayload> {
+    const url = `${OPAL_FINES_PATHS.defendantAccounts}/${defendantAccountId}/enforcements`;
+    const headers: Record<string, string> = {};
+
+    if (version) {
+      headers['If-Match'] = version;
+    }
+    if (businessUnitId !== undefined) {
+      headers['Business-Unit-Id'] = businessUnitId;
+    }
+
+    return this.http.post<IOpalFinesAddEnforcementActionPayload>(url, payload, { headers });
   }
 
   /**

@@ -58,6 +58,20 @@ Feature: Account Enquiries - Add Enforcement Override
       Then I should return to the Enforcement tab
       And the enforcement court summary shows the selected value
 
+    @JIRA-STORY:PO-1782 @JIRA-EPIC:PO-2630
+    Scenario: Save an enforcement action and return to the Enforcement tab
+      When I search for the account by last name "AddEnfOverride{uniq}" and open the latest result
+      And I go to the Enforcement tab
+      And I open the add enforcement action form
+      And I choose the enforcement action "Collection order (COLLO)"
+      And I continue to the confirm enforcement action page
+      And I enter "Test reason" for the enforcement action reason
+      And I choose "No" for changing existing payment terms
+      And I add the enforcement action
+      Then I should return to the Enforcement tab
+      And the enforcement action summary shows "Collection Order(COLLO)"
+
+
   Rule: Company account
     Background:
       Given I create a "company" draft account with the following details and set status "Publishing Pending" using user "opal-test-10@dev.platform.hmcts.net":

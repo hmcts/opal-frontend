@@ -36,6 +36,64 @@
         "__format": "json"
       }
     },
+    "feature-flags": {
+      "override": {
+        "__name": "FEATURE_FLAGS_OVERRIDE",
+        "__format": "json"
+      },
+      "releases": {
+        "release-1a": { "__name": "RELEASE_1A_ENABLED", "__format": "json" },
+        "release-1b": { "__name": "RELEASE_1B_ENABLED", "__format": "json" },
+        "release-1c-write-off": { "__name": "RELEASE_1C_WRITE_OFF_ENABLED", "__format": "json" },
+        "release-1c-auto-enforcement": { "__name": "RELEASE_1C_AUTO_ENFORCEMENT_ENABLED", "__format": "json" },
+        "release-1d-data-retention": { "__name": "RELEASE_1D_DATA_RETENTION_ENABLED", "__format": "json" },
+        "release-1d-auto-enforcement-config": {
+          "__name": "RELEASE_1D_AUTO_ENFORCEMENT_CONFIG_ENABLED",
+          "__format": "json"
+        },
+        "release-1c-rm-financial-movements": {
+          "__name": "RELEASE_1C_RM_FINANCIAL_MOVEMENTS_ENABLED",
+          "__format": "json"
+        },
+        "release-1c-rm-financial-checks": {
+          "__name": "RELEASE_1C_RM_FINANCIAL_CHECKS_ENABLED",
+          "__format": "json"
+        },
+        "release-1c-rm-suspense": { "__name": "RELEASE_1C_RM_SUSPENSE_ENABLED", "__format": "json" },
+        "release-1c-rm-payment": { "__name": "RELEASE_1C_RM_PAYMENT_ENABLED", "__format": "json" },
+        "release-1c-rm-admin-reports": {
+          "__name": "RELEASE_1C_RM_ADMIN_REPORTS_ENABLED",
+          "__format": "json"
+        },
+        "release-1c-rm-account-actions": {
+          "__name": "RELEASE_1C_RM_ACCOUNT_ACTIONS_ENABLED",
+          "__format": "json"
+        },
+        "release-1c-financial-movements": {
+          "__name": "RELEASE_1C_FINANCIAL_MOVEMENTS_ENABLED",
+          "__format": "json"
+        },
+        "release-1c-checks": { "__name": "RELEASE_1C_CHECKS_ENABLED", "__format": "json" },
+        "release-1c-suspense": { "__name": "RELEASE_1C_SUSPENSE_ENABLED", "__format": "json" },
+        "release-1c-payment": { "__name": "RELEASE_1C_PAYMENT_ENABLED", "__format": "json" },
+        "release-1c-r1a-tidy-up": { "__name": "RELEASE_1C_R1A_TIDY_UP_ENABLED", "__format": "json" },
+        "release-1c-reference-data": { "__name": "RELEASE_1C_REFERENCE_DATA_ENABLED", "__format": "json" },
+        "release-1c-banking-interfaces": {
+          "__name": "RELEASE_1C_BANKING_INTERFACES_ENABLED",
+          "__format": "json"
+        },
+        "release-1c-cpp-enforcement": {
+          "__name": "RELEASE_1C_CPP_ENFORCEMENT_ENABLED",
+          "__format": "json"
+        },
+        "release-1c-cpp": { "__name": "RELEASE_1C_CPP_ENABLED", "__format": "json" },
+        "release-1c-printing": { "__name": "RELEASE_1C_PRINTING_ENABLED", "__format": "json" },
+        "release-1c-enforcement-operational-reporting": {
+          "__name": "RELEASE_1C_ENFORCEMENT_OPERATIONAL_REPORTING_ENABLED",
+          "__format": "json"
+        }
+      }
+    },
     "app-insights": {
       "enabled": {
         "__name": "FEATURES_APP_INSIGHTS_ENABLED",

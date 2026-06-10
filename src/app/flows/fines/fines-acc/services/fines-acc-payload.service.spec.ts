@@ -21,7 +21,14 @@ import { MOCK_EMPTY_FINES_ACC_PARTY_ADD_AMEND_CONVERT_FORM_DATA } from '../fines
 import { FINES_ACC_MINOR_CREDITOR_DETAILS_HEADER_MOCK } from '../fines-acc-minor-creditor-details/mocks/fines-acc-minor-creditor-details-header.mock';
 import { IOpalFinesAccountMinorCreditorDetailsHeader } from '../fines-acc-minor-creditor-details/interfaces/fines-acc-minor-creditor-details-header.interface';
 import { OPAL_FINES_ACCOUNT_MINOR_CREDITOR_AT_A_GLANCE_WITH_DEFENDANT_MOCK } from '../../services/opal-fines-service/mocks/opal-fines-account-minor-creditor-at-a-glance-with-defendant.mock';
+import { FINES_ACC_PAYLOAD_ENFORCEMENT_ACTION_ADD_FIELDS_MOCK } from './utils/mocks/fines-acc-payload-enforcement-action-add-fields.mock';
+import { FINES_ACC_PAYLOAD_ENFORCEMENT_ACTION_ADD_LUMP_SUM_PLUS_INSTALMENTS_FORM_STATE_MOCK } from './utils/mocks/fines-acc-payload-enforcement-action-add-lump-sum-plus-instalments-form-state.mock';
+import { FINES_ACC_PAYLOAD_ENFORCEMENT_ACTION_ADD_RESULT_MOCK } from './utils/mocks/fines-acc-payload-enforcement-action-add-result.mock';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
+import { OPAL_FINES_ACCOUNT_MINOR_CREDITOR_CREDITOR_MOCK } from '../../services/opal-fines-service/mocks/opal-fines-account-minor-creditor-creditor.mock';
+import { MOCK_FINES_ACC_MINOR_CREDITOR_ADD_AMEND_CONVERT_COMPANY_FORM } from '../fines-acc-minor-creditor-add-amend-convert/mocks/fines-acc-minor-creditor-add-amend-convert-company-form.mock';
+import { MOCK_FINES_ACC_MINOR_CREDITOR_ADD_AMEND_CONVERT_INDIVIDUAL_FORM } from '../fines-acc-minor-creditor-add-amend-convert/mocks/fines-acc-minor-creditor-add-amend-convert-individual-form.mock';
+import { OPAL_FINES_ACCOUNT_MINOR_CREDITOR_CREDITOR_INDIVIDUAL_MOCK } from '../../services/opal-fines-service/mocks/opal-fines-account-minor-creditor-creditor-individual.mock';
 
 describe('FinesAccPayloadService', () => {
   let service: FinesAccPayloadService;
@@ -862,6 +869,124 @@ describe('FinesAccPayloadService', () => {
     });
   });
 
+  describe('mapMinorCreditorAccountPayload', () => {
+    it('should map minor creditor creditor-tab data into amend form state', () => {
+      const minorCreditorData = structuredClone(OPAL_FINES_ACCOUNT_MINOR_CREDITOR_CREDITOR_MOCK);
+
+      const result = service.mapMinorCreditorAccountPayload(minorCreditorData);
+
+      expect(result).toEqual(MOCK_FINES_ACC_MINOR_CREDITOR_ADD_AMEND_CONVERT_COMPANY_FORM.formData);
+    });
+  });
+
+  describe('buildMinorCreditorAccountAmendPayload', () => {
+    it('should build a company minor creditor amend payload with BACS details', () => {
+      const currentData = structuredClone(OPAL_FINES_ACCOUNT_MINOR_CREDITOR_CREDITOR_MOCK);
+      const formState = {
+        ...structuredClone(MOCK_FINES_ACC_MINOR_CREDITOR_ADD_AMEND_CONVERT_COMPANY_FORM.formData),
+        facc_minor_creditor_company_name: 'Updated Organisation',
+        facc_minor_creditor_address_line_1: '10 New Street',
+        facc_minor_creditor_address_line_2: 'Floor 2',
+        facc_minor_creditor_address_line_3: 'West Wing',
+        facc_minor_creditor_address_line_4: 'County',
+        facc_minor_creditor_address_line_5: 'Region',
+        facc_minor_creditor_post_code: 'CD34 5EF',
+        facc_minor_creditor_pay_by_bacs: true,
+        facc_minor_creditor_bank_account_name: 'Updated Account',
+        facc_minor_creditor_bank_sort_code: '309430',
+        facc_minor_creditor_bank_account_number: '00733445',
+        facc_minor_creditor_bank_account_reference: 'UPDATED-REF',
+      };
+
+      const result = service.buildMinorCreditorAccountAmendPayload(currentData, formState);
+
+      expect(result).toEqual({
+        creditor_account_id: currentData.creditor_account_id,
+        party_details: {
+          party_id: currentData.party_details.party_id,
+          organisation_flag: true,
+          organisation_details: {
+            organisation_name: 'Updated Organisation',
+            organisation_aliases: currentData.party_details.organisation_details?.organisation_aliases ?? null,
+          },
+          individual_details: null,
+        },
+        address: {
+          ...currentData.address,
+          address_line_1: '10 New Street',
+          address_line_2: 'Floor 2',
+          address_line_3: 'West Wing',
+          address_line_4: 'County',
+          address_line_5: 'Region',
+          postcode: 'CD34 5EF',
+        },
+        payment: {
+          pay_by_bacs: true,
+          hold_payment: currentData.payment.hold_payment,
+          account_name: 'Updated Account',
+          sort_code: '309430',
+          account_number: '00733445',
+          account_reference: 'UPDATED-REF',
+        },
+      });
+    });
+
+    it('should build an individual minor creditor amend payload and clear BACS details when not selected', () => {
+      const currentData = structuredClone(OPAL_FINES_ACCOUNT_MINOR_CREDITOR_CREDITOR_INDIVIDUAL_MOCK);
+      currentData.party_details.individual_details = {
+        date_of_birth: '1980-01-01',
+        age: '45',
+        national_insurance_number: 'AB123456C',
+        individual_aliases: null,
+        title: 'Mrs',
+        forenames: 'Existing',
+        surname: 'Person',
+      };
+      const formState = {
+        ...structuredClone(MOCK_FINES_ACC_MINOR_CREDITOR_ADD_AMEND_CONVERT_INDIVIDUAL_FORM.formData),
+        facc_minor_creditor_title: 'Dr',
+        facc_minor_creditor_forenames: 'Jane',
+        facc_minor_creditor_surname: 'DOE',
+        facc_minor_creditor_address_line_1: '1 Individual Road',
+        facc_minor_creditor_address_line_2: null,
+        facc_minor_creditor_address_line_3: null,
+        facc_minor_creditor_address_line_4: null,
+        facc_minor_creditor_address_line_5: null,
+        facc_minor_creditor_post_code: null,
+        facc_minor_creditor_pay_by_bacs: false,
+        facc_minor_creditor_bank_account_name: 'Ignored Account',
+        facc_minor_creditor_bank_sort_code: '309430',
+        facc_minor_creditor_bank_account_number: '00733445',
+        facc_minor_creditor_bank_account_reference: 'IGNORED-REF',
+      };
+
+      const result = service.buildMinorCreditorAccountAmendPayload(currentData, formState);
+
+      expect(result.party_details).toEqual({
+        party_id: currentData.party_details.party_id,
+        organisation_flag: false,
+        organisation_details: null,
+        individual_details: {
+          date_of_birth: '1980-01-01',
+          age: '45',
+          national_insurance_number: 'AB123456C',
+          individual_aliases: null,
+          title: 'Dr',
+          forenames: 'Jane',
+          surname: 'DOE',
+        },
+      });
+      expect(result.payment).toEqual({
+        pay_by_bacs: false,
+        hold_payment: currentData.payment.hold_payment,
+        account_name: null,
+        sort_code: null,
+        account_number: null,
+        account_reference: null,
+      });
+    });
+  });
+
   describe('buildPaymentTermsAmendPayload', () => {
     it('should build and return payment terms amend payload', () => {
       const mockFormData = {
@@ -877,6 +1002,24 @@ describe('FinesAccPayloadService', () => {
       expect(result).toBeDefined();
       expect(result).toEqual(
         expect.objectContaining({
+          payment_terms: expect.any(Object),
+        }),
+      );
+    });
+  });
+
+  describe('buildEnforcementActionAddPayload', () => {
+    it('should build and return add enforcement action payload', () => {
+      const result = service.buildEnforcementActionAddPayload(
+        FINES_ACC_PAYLOAD_ENFORCEMENT_ACTION_ADD_RESULT_MOCK,
+        FINES_ACC_PAYLOAD_ENFORCEMENT_ACTION_ADD_FIELDS_MOCK,
+        FINES_ACC_PAYLOAD_ENFORCEMENT_ACTION_ADD_LUMP_SUM_PLUS_INSTALMENTS_FORM_STATE_MOCK,
+      );
+
+      expect(result).toEqual(
+        expect.objectContaining({
+          result_id: FINES_ACC_PAYLOAD_ENFORCEMENT_ACTION_ADD_RESULT_MOCK.result_id,
+          enforcement_result_responses: expect.any(Array),
           payment_terms: expect.any(Object),
         }),
       );
