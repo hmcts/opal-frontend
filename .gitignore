@@ -50,6 +50,8 @@ package-lock.json
 .codex-plans
 .codex-docs
 .codex/skills
+docs/PO-5773_CONVERSATION_SO_FAR.md
+docs/PO-5773_ROUTING_GUARDS_BUSINESS_UNIT_PERMISSIONS_EXPLAINER.pdf
 
 # System files
 .DS_Store
@@ -73,4 +75,3 @@ runner-results
 cypress/parallel/weights
 multi-reporter-config.json
 /openapi/opal-merged.yaml
-

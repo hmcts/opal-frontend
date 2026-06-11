@@ -2,6 +2,8 @@ import { TestBed } from '@angular/core/testing';
 import { ActivatedRoute, Router } from '@angular/router';
 import { describe, expect, it, vi } from 'vitest';
 import { routing } from './fines-acc.routes';
+import { businessUnitRoutePermissionsGuard } from '@hmcts/opal-frontend-common/guards/business-unit-route-permissions';
+import { authGuard } from '@hmcts/opal-frontend-common/guards/auth';
 import { FINES_ACC_DEFENDANT_ROUTING_PATHS } from './constants/fines-acc-defendant-routing-paths.constant';
 import { FINES_ACC_MINOR_CREDITOR_ROUTING_PATHS } from './constants/fines-acc-minor-creditor-routing-paths.constant';
 import { FINES_ACC_MAJOR_CREDITOR_ROUTING_PATHS } from './constants/fines-acc-major-creditor-routing-paths.constant';
@@ -23,6 +25,7 @@ import { FINES_ACC_ENF_ACTION_ADD_SERVICE_MOCK } from '../fines-acc-enf-action-a
 import { FINES_ACC_ENF_ACTION_ADD_OPAL_FINES_SERVICE_MOCK } from '../fines-acc-enf-action-add/mocks/fines-acc-enf-action-add-opal-fines-service.mock';
 import { FINES_ACC_ENF_ACTION_ADD_ACCOUNT_STATE_MOCK } from '../fines-acc-enf-action-add/mocks/fines-acc-enf-action-add-account-state.mock';
 import { FINES_ACC_REMOVE_NON_PAYING_PG_ROUTING_PATHS } from '../fines-acc-remove-non-paying-pg/constants/fines-acc-remove-non-paying-pg-routing-paths.constant';
+import { finesAccStateGuard } from './guards/fines-acc-state-guard/fines-acc-state.guard';
 
 describe('fines acc routes', () => {
   const defendantRoute = routing.find((route) => route.path === `${FINES_ACC_DEFENDANT_ROUTING_PATHS.root}/:accountId`);
@@ -46,6 +49,11 @@ describe('fines acc routes', () => {
     );
 
     expect(detailsRoute?.data?.[HIDE_PRIMARY_NAV_ROUTE_DATA_KEY]).toBeUndefined();
+  });
+
+  it('should mark the defendant and minor creditor account routes with their account types', () => {
+    expect(defendantRoute?.data?.['accountType']).toBe('defendant');
+    expect(minorCreditorRoute?.data?.['accountType']).toBe('minor-creditor');
   });
 
   it('should hide primary navigation for defendant account maintenance journeys', () => {
@@ -111,6 +119,7 @@ describe('fines acc routes', () => {
       (route) => route.path === FINES_ACC_MINOR_CREDITOR_ROUTING_PATHS.children.amend,
     );
 
+    expect(amendRoute?.canActivate).toEqual([authGuard, businessUnitRoutePermissionsGuard, finesAccStateGuard]);
     expect(amendRoute?.resolve?.['minorCreditorAccountCreditor']).toBe(minorCreditorAccountCreditorResolver);
   });
 
