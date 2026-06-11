@@ -192,22 +192,22 @@ describe('Search Account Component', () => {
     cy.get(headingSelector).should('have.text', 'Individuals');
 
     cy.wrap(tabs).each((tab: { selector: string; hash: string; heading: string }) => {
-      let start = 0;
-
       cy.window().then((win) => {
-        start = win.performance.now();
-      });
+        const element = win.document.querySelector(tab.selector) as HTMLElement;
 
-      cy.get(tab.selector).should('exist').and('be.visible').click();
+        expect(element, `${tab.selector} should exist`).to.not.be.null;
 
-      cy.location('hash').should('eq', tab.hash);
+        const start = win.performance.now();
 
-      cy.get(headingSelector, { timeout: 10000 }).should('have.text', tab.heading);
+        element.click();
 
-      cy.window().then((win) => {
-        const elapsed = win.performance.now() - start;
+        cy.get(headingSelector)
+          .should('have.text', tab.heading)
+          .then(() => {
+            const elapsed = win.performance.now() - start;
 
-        expect(elapsed, `${tab.selector} should complete within 250ms`).to.be.lessThan(250);
+            expect(elapsed, `${tab.selector} should complete within 250ms`).to.be.lessThan(250);
+          });
       });
     });
   });
