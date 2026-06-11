@@ -26,10 +26,8 @@ import { beforeEach, describe, expect, it, vi } from 'vitest';
 import { FINES_ACC_ENF_OVERRIDE_ADD_CHANGE_ROUTING_PATHS } from '../fines-acc-enf-override-add-change/constants/fines-acc-enf-override-add-change-routing-paths.constant';
 import { FINES_ACC_ENF_COURT_CHANGE_ROUTING_PATHS } from '../fines-acc-enf-court-change/constants/fines-acc-enf-court-change-routing-paths.constant';
 import { FINES_ACC_REMOVE_NON_PAYING_PG_ROUTING_PATHS } from '../fines-acc-remove-non-paying-pg/constants/fines-acc-remove-non-paying-pg-routing-paths.constant';
-import {
-  FINES_ACC_DEFENDANT_DETAILS_HISTORY_AND_NOTES_FILTER_FORM_MOCK,
-  FINES_ACC_DEFENDANT_DETAILS_HISTORY_AND_NOTES_FILTER_FORM_PAYLOAD_MOCK,
-} from './fines-acc-defendant-details-history-and-notes-tab/mocks/fines-acc-defendant-details-history-and-notes-filter-form.mock';
+import { FINES_ACC_DEFENDANT_DETAILS_HISTORY_AND_NOTES_FILTER_FORM_MOCK } from './fines-acc-defendant-details-history-and-notes-tab/mocks/fines-acc-defendant-details-history-and-notes-filter-form.mock';
+import { FINES_ACC_DEFENDANT_DETAILS_HISTORY_AND_NOTES_FILTER_FORM_PAYLOAD_MOCK } from './fines-acc-defendant-details-history-and-notes-tab/mocks/fines-acc-defendant-details-history-and-notes-filter-form-payload.mock';
 
 describe('FinesAccDefendantDetailsComponent', () => {
   let component: FinesAccDefendantDetailsComponent;
