@@ -138,14 +138,14 @@ describe('Search Account Component', () => {
     setupComponent(componentProperties);
 
     const tabs = [
-      { selector: '#tab-individuals', hash: '#individuals', time: 0 },
-      { selector: '#tab-companies', hash: '#companies', time: 0 },
-      { selector: '#tab-minor-creditors', hash: '#minor-creditor', time: 0 },
-      { selector: '#tab-major-creditors', hash: '#major-creditor', time: 0 },
-      { selector: '#tab-minor-creditors', hash: '#minor-creditor', time: 0 },
-      { selector: '#tab-major-creditors', hash: '#major-creditor', time: 0 },
-      { selector: '#tab-minor-creditors', hash: '#minor-creditor', time: 0 },
-      { selector: '#tab-major-creditors', hash: '#major-creditor', time: 0 },
+      { heading: 'Individuals', selector: '#tab-individuals', hash: '#individuals', time: 0 },
+      { heading: 'Companies', selector: '#tab-companies', hash: '#companies', time: 0 },
+      { heading: 'Minor creditors', selector: '#tab-minor-creditors', hash: '#minor-creditor', time: 0 },
+      { heading: 'Major creditors', selector: '#tab-major-creditors', hash: '#major-creditor', time: 0 },
+      { heading: 'Minor creditors', selector: '#tab-minor-creditors', hash: '#minor-creditor', time: 0 },
+      { heading: 'Major creditors', selector: '#tab-major-creditors', hash: '#major-creditor', time: 0 },
+      { heading: 'Minor creditors', selector: '#tab-minor-creditors', hash: '#minor-creditor', time: 0 },
+      { heading: 'Major creditors', selector: '#tab-major-creditors', hash: '#major-creditor', time: 0 },
     ];
 
     cy.wrap(tabs).each((tab: { selector: string; hash: string; time: number }) => {
@@ -158,6 +158,7 @@ describe('Search Account Component', () => {
       cy.get(tab.selector).should('exist').should('be.visible').click();
 
       cy.window().then((win) => {
+        cy.get('opal-lib-govuk-tabs-panel > * > h1').should('have.text', tab.heading);
         const elapsed = win.performance.now() - start;
 
         tab.time = elapsed;
@@ -170,45 +171,44 @@ describe('Search Account Component', () => {
       cy.log(tabs.map((tab) => `${tab.hash}: ${tab.time.toFixed(2)}ms`).join('\n'));
     });
   });
-  it.only('Time between tab changes should be less than 250ms', { tags: [] }, () => {
+  it('Time between tab changes should be less than 250ms', { tags: [] }, () => {
     interceptAuthenticatedUser();
     interceptUserState(USER_STATE_MOCK_PERMISSION_BU77);
     interceptBusinessUnits();
 
     setupComponent(componentProperties);
 
+    const headingSelector = 'opal-lib-govuk-tabs-panel > * > h1';
     const tabs = [
-      '#tab-individuals',
-      '#tab-companies',
-      '#tab-minor-creditors',
-      '#tab-major-creditors',
-      '#tab-minor-creditors',
-      '#tab-major-creditors',
-      '#tab-minor-creditors',
-      '#tab-individuals',
+      { selector: '#tab-companies', hash: '#companies', heading: 'Companies' },
+      { selector: '#tab-minor-creditors', hash: '#minor-creditor', heading: 'Minor creditors' },
+      { selector: '#tab-major-creditors', hash: '#major-creditor', heading: 'Major creditors' },
+      { selector: '#tab-minor-creditors', hash: '#minor-creditor', heading: 'Minor creditors' },
+      { selector: '#tab-major-creditors', hash: '#major-creditor', heading: 'Major creditors' },
+      { selector: '#tab-minor-creditors', hash: '#minor-creditor', heading: 'Minor creditors' },
+      { selector: '#tab-individuals', hash: '#individuals', heading: 'Individuals' },
     ];
 
-    cy.window().then((win) => {
-      const results: string[] = [];
-      const doc = win.document;
+    cy.get(headingSelector).should('have.text', 'Individuals');
 
-      for (const selector of tabs) {
-        const element = doc.querySelector<HTMLElement>(selector);
+    cy.wrap(tabs).each((tab: { selector: string; hash: string; heading: string }) => {
+      let start = 0;
 
-        expect(element, `${selector} exists`).to.not.be.null;
+      cy.window().then((win) => {
+        start = win.performance.now();
+      });
 
-        const start = performance.now();
+      cy.get(tab.selector).should('exist').and('be.visible').click();
 
-        element!.click();
+      cy.location('hash').should('eq', tab.hash);
 
-        const elapsed = performance.now() - start;
+      cy.get(headingSelector, { timeout: 10000 }).should('have.text', tab.heading);
 
-        results.push(`${selector}: ${elapsed.toFixed(2)}ms`);
+      cy.window().then((win) => {
+        const elapsed = win.performance.now() - start;
 
-        expect(elapsed).to.be.lessThan(250);
-      }
-
-      cy.log(results.join('\n'));
+        expect(elapsed, `${tab.selector} should complete within 250ms`).to.be.lessThan(250);
+      });
     });
   });
 });
