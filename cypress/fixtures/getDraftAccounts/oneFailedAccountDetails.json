@@ -59,7 +59,7 @@
     "account_notes": [
       { "note_type": "AA", "account_note_text": "Publishing failed: Integration error.", "account_note_serial": 1 }
     ],
-    "originator_id": 101,
+    "originator_id": 1080,
     "payment_terms": {
       "enforcements": null,
       "effective_date": "2023-03-22",
@@ -70,7 +70,7 @@
       "payment_terms_type_code": "I"
     },
     "defendant_type": "adultOrYouthOnly",
-    "originator_name": "Aberdare County Court",
+    "originator_name": "Bedfordshire Magistrates' Court",
     "fp_ticket_detail": null,
     "enforcement_court_id": 770000000021,
     "payment_card_request": null,
