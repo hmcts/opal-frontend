@@ -508,7 +508,7 @@ export class FinesAccPayloadService {
       pg_party_id: null,
       party_id: headingData.major_creditor.creditor_account_id.toString(),
       party_type: headingData.account_reference.creditor_account_display_name,
-      party_name: null,
+      party_name: headingData.major_creditor.name,
       base_version: headingData.version,
       business_unit_id: headingData.business_unit_details.business_unit_id,
       business_unit_user_id,
