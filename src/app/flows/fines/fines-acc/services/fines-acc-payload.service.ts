@@ -45,7 +45,6 @@ import { transformMinorCreditorAccountPayload } from './utils/fines-acc-payload-
 import { IFinesAccDefendantDetailsHistoryAndNotesFilterForm } from '../fines-acc-defendant-details/fines-acc-defendant-details-history-and-notes-tab/interfaces/fines-acc-defendant-details-history-and-notes-filter-form.interface';
 import { IOpalFinesDefendantAccountHistoryParams } from '@services/fines/opal-fines-service/interfaces/opal-fines-defendant-account-history-params.interface';
 import { buildHistoryFilterPayload } from './utils/fines-acc-payload-build-history-filter.utils';
-import { FINES_ACC_HISTORY_FILTER_TRANSFORM_ITEMS_CONFIG } from './constants/fines-acc-history-filter-transform-items-config.constant';
 
 @Injectable({
   providedIn: 'root',
@@ -88,7 +87,7 @@ export class FinesAccPayloadService {
   ): IOpalFinesDefendantAccountHistoryParams {
     return this.transformPayload(
       buildHistoryFilterPayload(form),
-      FINES_ACC_HISTORY_FILTER_TRANSFORM_ITEMS_CONFIG,
+      FINES_ACC_BUILD_TRANSFORM_ITEMS_CONFIG,
     ) as IOpalFinesDefendantAccountHistoryParams;
   }
 
