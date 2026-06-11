@@ -1,0 +1,8 @@
+<div class="govuk-grid-column-full">
+  <h2 [class]="style.heading">History and notes</h2>
+  <hr [class]="style.hr" />
+
+  <app-fines-acc-defendant-details-history-and-notes-filter
+    (filterApplied)="handleFilterApplied($event)"
+  ></app-fines-acc-defendant-details-history-and-notes-filter>
+</div>

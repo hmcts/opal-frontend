@@ -225,6 +225,12 @@
     }
   }
   @case ('history-and-notes') {
-    <div class="govuk-grid-column-full"></div>
+    @if (tabHistoryAndNotes$ | async; as tabData) {
+      <app-fines-acc-defendant-details-history-and-notes-tab
+        [tabData]="tabData"
+        [style]="tabContentStyles"
+        (filterApplied)="handleHistoryAndNotesFilterApplied($event)"
+      ></app-fines-acc-defendant-details-history-and-notes-tab>
+    }
   }
 }

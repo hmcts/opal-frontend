@@ -29,6 +29,13 @@ import { OPAL_FINES_ACCOUNT_MINOR_CREDITOR_CREDITOR_MOCK } from '../../services/
 import { MOCK_FINES_ACC_MINOR_CREDITOR_ADD_AMEND_CONVERT_COMPANY_FORM } from '../fines-acc-minor-creditor-add-amend-convert/mocks/fines-acc-minor-creditor-add-amend-convert-company-form.mock';
 import { MOCK_FINES_ACC_MINOR_CREDITOR_ADD_AMEND_CONVERT_INDIVIDUAL_FORM } from '../fines-acc-minor-creditor-add-amend-convert/mocks/fines-acc-minor-creditor-add-amend-convert-individual-form.mock';
 import { OPAL_FINES_ACCOUNT_MINOR_CREDITOR_CREDITOR_INDIVIDUAL_MOCK } from '../../services/opal-fines-service/mocks/opal-fines-account-minor-creditor-creditor-individual.mock';
+import { FINES_ACC_HISTORY_FILTER_TRANSFORM_ITEMS_CONFIG } from './constants/fines-acc-history-filter-transform-items-config.constant';
+import {
+  FINES_ACC_DEFENDANT_DETAILS_HISTORY_AND_NOTES_FILTER_ALL_FORM_MOCK,
+  FINES_ACC_DEFENDANT_DETAILS_HISTORY_AND_NOTES_FILTER_EMPTY_FORM_MOCK,
+  FINES_ACC_DEFENDANT_DETAILS_HISTORY_AND_NOTES_FILTER_PAYLOAD_MOCK,
+  FINES_ACC_DEFENDANT_DETAILS_HISTORY_AND_NOTES_FILTER_RAW_PAYLOAD_MOCK,
+} from '../fines-acc-defendant-details/fines-acc-defendant-details-history-and-notes-tab/mocks/fines-acc-defendant-details-history-and-notes-filter-form.mock';
 
 describe('FinesAccPayloadService', () => {
   let service: FinesAccPayloadService;
@@ -148,6 +155,35 @@ describe('FinesAccPayloadService', () => {
       expect(result.activity_note.note_text).toBeNull();
       expect(result.activity_note.note_type).toBe('AA');
       expect(result.activity_note.record_id).toBe(111);
+    });
+  });
+
+  describe('buildHistoryFilterPayload', () => {
+    it('should build history filter query params from form values', () => {
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      vi.spyOn<any, any>(service['transformationService'], 'transformObjectValues').mockImplementation(
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        (payload: any, config: any) => {
+          expect(payload).toEqual(FINES_ACC_DEFENDANT_DETAILS_HISTORY_AND_NOTES_FILTER_RAW_PAYLOAD_MOCK);
+          expect(config).toEqual(FINES_ACC_HISTORY_FILTER_TRANSFORM_ITEMS_CONFIG);
+          return FINES_ACC_DEFENDANT_DETAILS_HISTORY_AND_NOTES_FILTER_PAYLOAD_MOCK;
+        },
+      );
+
+      const result = service.buildHistoryFilterPayload(
+        FINES_ACC_DEFENDANT_DETAILS_HISTORY_AND_NOTES_FILTER_ALL_FORM_MOCK,
+      );
+
+      expect(service['transformationService'].transformObjectValues).toHaveBeenCalledOnce();
+      expect(result).toEqual(FINES_ACC_DEFENDANT_DETAILS_HISTORY_AND_NOTES_FILTER_PAYLOAD_MOCK);
+    });
+
+    it('should omit empty history filter params', () => {
+      const result = service.buildHistoryFilterPayload(
+        FINES_ACC_DEFENDANT_DETAILS_HISTORY_AND_NOTES_FILTER_EMPTY_FORM_MOCK,
+      );
+
+      expect(result).toEqual({});
     });
   });
 

@@ -12,7 +12,7 @@ import { IOpalFinesProsecutorRefData } from '@services/fines/opal-fines-service/
 import { IOpalFinesLocalJusticeArea } from '@services/fines/opal-fines-service/interfaces/opal-fines-local-justice-area.interface';
 import { IOpalFinesLocalJusticeAreaRefData } from '@services/fines/opal-fines-service/interfaces/opal-fines-local-justice-area-ref-data.interface';
 
-import { map, Observable, of, shareReplay } from 'rxjs';
+import { map, Observable, shareReplay } from 'rxjs';
 import { IOpalFinesOffencesNonSnakeCase } from './interfaces/opal-fines-offences-non-snake-case.interface';
 import { IOpalFinesOffencesRefData } from './interfaces/opal-fines-offences-ref-data.interface';
 import { IOpalFinesResults } from './interfaces/opal-fines-results.interface';
@@ -29,7 +29,6 @@ import { IOpalFinesSearchOffencesParams } from './interfaces/opal-fines-search-o
 import { IOpalFinesSearchOffencesData } from './interfaces/opal-fines-search-offences.interface';
 import { IOpalFinesAccountDefendantDetailsHeader } from '../../fines-acc/fines-acc-defendant-details/interfaces/fines-acc-defendant-details-header.interface';
 import { IOpalFinesAccountDefendantAtAGlance } from './interfaces/opal-fines-account-defendant-at-a-glance.interface';
-import { OPAL_FINES_ACCOUNT_DEFENDANT_DETAILS_HISTORY_AND_NOTES_TAB_REF_DATA_MOCK } from './mocks/opal-fines-account-defendant-details-history-and-notes-tab-ref-data.mock';
 import { IOpalFinesUpdateDefendantAccountPayload } from './interfaces/opal-fines-update-defendant-account.interface';
 import { IOpalFinesUpdateDefendantAccountResponse } from './interfaces/opal-fines-update-defendant-account-response.interface';
 import { IOpalFinesAccountDefendantAccountParty } from './interfaces/opal-fines-account-defendant-account-party.interface';
@@ -37,6 +36,7 @@ import { IOpalFinesAccountDefendantAccountPartyPayload } from './interfaces/opal
 import { IOpalFinesAccountPartyDetails } from './interfaces/opal-fines-account-party-details.interface';
 import { IOpalFinesAccountDefendantDetailsEnforcementTabRefData } from './interfaces/opal-fines-account-defendant-details-enforcement-tab-ref-data.interface';
 import { IOpalFinesAccountDefendantDetailsHistoryAndNotesTabRefData } from './interfaces/opal-fines-account-defendant-details-history-and-notes-tab-ref-data.interface';
+import { IOpalFinesDefendantAccountHistoryParams } from './interfaces/opal-fines-defendant-account-history-params.interface';
 import { IOpalFinesAmendPaymentTermsPayload } from './interfaces/opal-fines-amend-payment-terms-payload.interface';
 import { IOpalFinesAccountDefendantDetailsImpositionsTabRefData } from './interfaces/opal-fines-account-defendant-details-impositions-tab-ref-data.interface';
 import { IOpalFinesAddNotePayload } from './interfaces/opal-fines-add-note.interface';
@@ -831,18 +831,46 @@ export class OpalFines {
 
   /**
    * Retrieves the defendant account details history and notes tab data.
-   * If the account details for the specified tab are not already cached, it makes an HTTP request to fetch the data and caches it for future use.
+   * Unfiltered history uses the tab cache. Filtered history always makes a new request with the submitted query params.
    *
    * @param account_id - The ID of the defendant account.
-   * @param business_unit_id - The ID of the business unit.
-   * @param business_unit_user_id - The ID of the business unit user.
-   * @returns An Observable that emits the account details at a glance for the specified tab.
+   * @param filterParams - Optional query parameters for filtering account history.
+   * @returns An Observable that emits the account history data.
    */
-  public getDefendantAccountHistoryAndNotesTabData(): Observable<IOpalFinesAccountDefendantDetailsHistoryAndNotesTabRefData> {
-    return (
-      this.cache.defendantAccountHistoryAndNotesCache$ ??
-      of(OPAL_FINES_ACCOUNT_DEFENDANT_DETAILS_HISTORY_AND_NOTES_TAB_REF_DATA_MOCK)
+  public getDefendantAccountHistoryAndNotesTabData(
+    account_id: number | null,
+    filterParams?: IOpalFinesDefendantAccountHistoryParams,
+  ): Observable<IOpalFinesAccountDefendantDetailsHistoryAndNotesTabRefData> {
+    const url = `${OPAL_FINES_PATHS.defendantAccounts}/${account_id}/history`;
+    const options: {
+      observe: 'response';
+      params?: Record<string, string>;
+    } = { observe: 'response' };
+
+    if (filterParams) {
+      options.params = Object.fromEntries(
+        Object.entries(filterParams).filter(([, value]) => value !== undefined),
+      ) as Record<string, string>;
+    }
+
+    const request$ = this.http.get<IOpalFinesAccountDefendantDetailsHistoryAndNotesTabRefData>(url, options).pipe(
+      map((response: HttpResponse<IOpalFinesAccountDefendantDetailsHistoryAndNotesTabRefData>) => {
+        const version = this.extractEtagVersion(response.headers);
+        const payload = response.body as IOpalFinesAccountDefendantDetailsHistoryAndNotesTabRefData;
+        return {
+          ...payload,
+          version,
+        };
+      }),
+      shareReplay(1),
     );
+
+    if (filterParams) {
+      return request$;
+    }
+
+    this.cache.defendantAccountHistoryAndNotesCache$ ??= request$;
+    return this.cache.defendantAccountHistoryAndNotesCache$;
   }
 
   /**
