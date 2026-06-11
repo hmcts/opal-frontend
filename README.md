@@ -410,26 +410,6 @@ The `test_*` routing labels only affect the normal CNP path. If `run_release:<su
 
 The nightly pipeline exposes the same selector through the `RELEASE_SUITE` parameter. `RELEASE_SUITE` is also intentionally separate from `ZephyrExecution`: run the release-scoped suite first, then use the Zephyr scripts afterwards if you need that reporting flow.
 
-### Nightly pipeline stages
-
-The nightly Jenkins pipeline runs its stages in this order after checkout and test setup:
-
-- `Component Tests` runs when `Component=true`. With `RELEASE_SUITE=r1a` or `r1ab`, it swaps to the matching component subset instead of the full component suite.
-- `Smoke Tests` runs when `Smoke=true`. It is skipped automatically when `TAGS` or `RELEASE_SUITE` is set.
-- `Functional Tests` runs when `Functional=true`. With `RELEASE_SUITE`, it uses the matching release-scoped functional script instead of the default full-suite run.
-- `R1A Legacy Demo` always runs. It points `TEST_URL` at `https://opal-frontend.demo.apps.hmcts.net/`, switches app mode to legacy, and runs `yarn test:functional:r1a`.
-- `R1A Off Legacy Demo` runs only when `RunR1aOffLegacyDemo=true`. It uses the same demo legacy flow and runs `yarn test:functional:r1a_off`.
-- `UAT-Technical` runs only when `RunUatTech=true`. It uses the same demo legacy flow and runs the `@UAT-Technical` functional subset.
-- `Legacy Tests` runs only when `Legacy=true`. It runs the general functional suite in legacy mode.
-- `Chrome Tests` runs only when `RunChrome=true`. It reruns the functional suite in Chrome.
-- `Firefox Tests` runs only when `RunFirefox=true`. It reruns the functional suite in Firefox.
-
-Notes for the nightly pipeline:
-
-- `RELEASE_SUITE` only changes the normal component and functional stages. The dedicated legacy-demo stages still run separately.
-- `LEGACY_URL=PRE-PROD` points the legacy gateway checks at `https://cloudgobgateway.test.platform.hmcts.net/opal`. `LEGACY_URL=DEV` uses the staging legacy DB stub instead.
-- `ZephyrExecution=true`, or a Friday nightly run, enables the Zephyr reporting flow for the normal component and functional paths.
-
 ### Debugging
 
 Run `yarn cypress` to open the Cypress console.
