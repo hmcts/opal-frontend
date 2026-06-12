@@ -215,6 +215,19 @@ void publishHtmlReport(String dir, String files, String name) {
   ]
 }
 
+// Emit a short hint when functional raw outputs exist but merged reports do not.
+void echoFunctionalReportHint() {
+    String browser = resolvedBrowserToRun()
+    String outputDir = "functional-output/prod/${browser}"
+    String mergedXml = "${outputDir}/${browser}-test-result.xml"
+    String htmlReport = "${outputDir}/cucumber/${browser}-report.html"
+
+    if (fileExists(outputDir) && (!fileExists(mergedXml) || !fileExists(htmlReport))) {
+        echo "Functional stage hint: output exists in ${outputDir}, but merged reports are incomplete. " +
+          "If Cypress already printed 'All specs passed', suspect post-run report merge or runner shutdown."
+    }
+}
+
 // Check whether the requested browser binary is available on the Jenkins agent.
 boolean isBrowserInstalled(String browser) {
     return sh(
@@ -718,6 +731,7 @@ withPipeline(type, product, component) {
 
     // Publish HTML and JSON artifacts for staging functional runs
     afterAlways(stageFunctionalStg) {
+        echoFunctionalReportHint()
         publishHtmlReport(
         functionalOutputDir(),
         "${resolvedBrowserToRun()}-report.html",
@@ -739,6 +753,7 @@ withPipeline(type, product, component) {
     }
     // Publish HTML and JSON artifacts for dev functional runs
     afterAlways(stageFunctionalDev) {
+        echoFunctionalReportHint()
         publishHtmlReport(
         functionalOutputDir(),
         "${resolvedBrowserToRun()}-report.html",
