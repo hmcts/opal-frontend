@@ -8,6 +8,7 @@ import { OPAL_FINES_ACCOUNT_DEFENDANT_DETAILS_ENFORCEMENT_TAB_REF_DATA_MOCK } fr
 import { FinesAccEnfActionDeniedComponent } from './fines-acc-enf-action-denied.component';
 import { FINES_ACC_DEFENDANT_ROUTING_PATHS } from '../routing/constants/fines-acc-defendant-routing-paths.constant';
 import { FINES_ACC_ENF_ACTION_DENIED_TYPES } from './constants/fines-acc-enf-action-denied-types.constant';
+import { FINES_ACC_ENF_ACTION_ROUTING_PATHS } from '../fines-acc-enf-action-select/constants/fines-acc-enf-action-select-routing-paths.constant';
 
 describe('FinesAccEnfActionDeniedComponent', () => {
   let component: FinesAccEnfActionDeniedComponent;
@@ -27,6 +28,7 @@ describe('FinesAccEnfActionDeniedComponent', () => {
       data: {
         defendantAccountHeadingData: structuredClone(FINES_ACC_DEFENDANT_DETAILS_HEADER_MOCK),
         enforcementStatus: structuredClone(OPAL_FINES_ACCOUNT_DEFENDANT_DETAILS_ENFORCEMENT_TAB_REF_DATA_MOCK),
+        enforcementActionResult: null,
       },
     },
     parent: {
@@ -48,6 +50,7 @@ describe('FinesAccEnfActionDeniedComponent', () => {
     mockActivatedRoute.snapshot.data = {
       defendantAccountHeadingData: structuredClone(FINES_ACC_DEFENDANT_DETAILS_HEADER_MOCK),
       enforcementStatus: structuredClone(OPAL_FINES_ACCOUNT_DEFENDANT_DETAILS_ENFORCEMENT_TAB_REF_DATA_MOCK),
+      enforcementActionResult: null,
     };
     mockRouter.navigate.mockClear();
 
@@ -70,7 +73,7 @@ describe('FinesAccEnfActionDeniedComponent', () => {
   });
 
   it('should navigate back to the enforcement tab fragment', () => {
-    component.navigateBackToAccountSummary();
+    component.navigateBack();
 
     expect(mockRouter.navigate).toHaveBeenCalledWith(
       [`../../../../${FINES_ACC_DEFENDANT_ROUTING_PATHS.children.details}`],
@@ -122,5 +125,37 @@ describe('FinesAccEnfActionDeniedComponent', () => {
     fixture.detectChanges();
 
     expect(component.lastEnforcementAction).toBeNull();
+  });
+
+  it('should render the missing employment data message with selected enforcement action details', () => {
+    mockActivatedRoute.snapshot.paramMap = new Map<string, string>([
+      ['type', FINES_ACC_ENF_ACTION_DENIED_TYPES.employmentData],
+    ]);
+    mockActivatedRoute.snapshot.data.enforcementActionResult = {
+      result_title: 'Attachment of earnings order with collection order',
+      result_id: 'AEOC',
+    } as never;
+    fixture = TestBed.createComponent(FinesAccEnfActionDeniedComponent);
+    component = fixture.componentInstance;
+    fixture.detectChanges();
+
+    expect(fixture.nativeElement.textContent).toContain('You cannot add this enforcement action');
+    expect(fixture.nativeElement.textContent).toContain('Attachment of earnings order with collection order (AEOC)');
+    expect(fixture.nativeElement.textContent).toContain('The account has missing or incomplete employment details.');
+  });
+
+  it('should navigate back to the select enforcement action screen for the missing employment data message', () => {
+    mockActivatedRoute.snapshot.paramMap = new Map<string, string>();
+    (mockActivatedRoute.snapshot.data as Record<string, unknown>)['deniedType'] =
+      FINES_ACC_ENF_ACTION_DENIED_TYPES.employmentData;
+    fixture = TestBed.createComponent(FinesAccEnfActionDeniedComponent);
+    component = fixture.componentInstance;
+    fixture.detectChanges();
+
+    component.navigateBack();
+
+    expect(mockRouter.navigate).toHaveBeenCalledWith([`../../${FINES_ACC_ENF_ACTION_ROUTING_PATHS.children.select}`], {
+      relativeTo: mockActivatedRoute,
+    });
   });
 });

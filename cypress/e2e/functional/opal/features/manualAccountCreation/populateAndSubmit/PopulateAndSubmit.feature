@@ -445,7 +445,7 @@ Feature: Manual account creation - Create Draft Account
     Then I see the following text on the page "You've submitted this account for review"
 
   @JIRA-EPIC:PO-2750
-  @JIRA-STORY:PO-2793 @JIRA-TEST-KEY:PO-5553
+  @JIRA-STORY:PO-2793 @JIRA-TEST-KEY:PO-5553 @JIRA-NFR:PO-2324
   Scenario: A checker approves a New account and defendant_accounts.originator_type is NEW
     When I open Manual Account Creation
     And I monitor draft account create requests
@@ -454,6 +454,7 @@ Feature: Manual account creation - Create Draft Account
     When I check the manual account details
     And I submit the manual account for review
     Then the latest draft account create request should include originator type "NEW"
+    And the latest draft account create response should include UTC timestamps
     And I see the following text on the page "You've submitted this account for review"
 
   @JIRA-EPIC:PO-2750

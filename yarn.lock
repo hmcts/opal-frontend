@@ -513,17 +513,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@angular/animations@npm:^21.1.3":
-  version: 21.2.16
-  resolution: "@angular/animations@npm:21.2.16"
-  dependencies:
-    tslib: "npm:^2.3.0"
-  peerDependencies:
-    "@angular/core": 21.2.16
-  checksum: 10/958ad4d1358caac07431f8c1c1b2116507f22a746e2b912a21706d0a805950f446a2e3eccc459b06ebe8d6a8c6bd2b9e4e79abdd3ff5a16d10df98abb62ecca0
-  languageName: node
-  linkType: hard
-
 "@angular/build@npm:21.2.14":
   version: 21.2.14
   resolution: "@angular/build@npm:21.2.14"
@@ -5415,8 +5404,8 @@ __metadata:
   linkType: hard
 
 "@ngrx/signals@npm:^21.0.0":
-  version: 21.1.0
-  resolution: "@ngrx/signals@npm:21.1.0"
+  version: 21.1.1
+  resolution: "@ngrx/signals@npm:21.1.1"
   dependencies:
     tslib: "npm:^2.3.0"
   peerDependencies:
@@ -5425,7 +5414,7 @@ __metadata:
   peerDependenciesMeta:
     rxjs:
       optional: true
-  checksum: 10/c6ce42bfff59f2362316f21420bab343b0b83de9029df405019f3bd9cb56db59e6d9bda233b98dae0c3ed6ebd1302e78e79f4df460b56019808cd56887dfe1bb
+  checksum: 10/e1fdf45c004ec7eb3e91e208b74e6c9d03e9d6e2c1079081dd1d4ebca181e7f9603a339b8de27dbdb7fed13c63d7e8a9d7fed39e6788d946b1e4665f40b256af
   languageName: node
   linkType: hard
 
@@ -16475,7 +16464,6 @@ __metadata:
     "@angular-eslint/eslint-plugin-template": "npm:21.4.0"
     "@angular-eslint/schematics": "npm:21.4.0"
     "@angular-eslint/template-parser": "npm:21.4.0"
-    "@angular/animations": "npm:^21.1.3"
     "@angular/build": "npm:21.2.14"
     "@angular/cli": "npm:^21.1.3"
     "@angular/common": "npm:^21.1.3"

@@ -133,7 +133,7 @@ Feature: Manual account creation - Parent Guardian Details
       | addressLine1 | Addr1 |
       | addressLine2 |       |
 
-  @JIRA-TEST-KEY:PO-5484
+  @JIRA-TEST-KEY:PO-5484 @JIRA_NFR:PO-2549
   Scenario: (AC.6, AC.8) Parent or guardian first names error persists on cancel
     When I complete parent or guardian details:
       | firstNames   | FNAME |
@@ -157,4 +157,3 @@ Feature: Manual account creation - Parent Guardian Details
   @JIRA-TEST-KEY:PO-5485
   Scenario: Parent guardian details - Axe Core
     Then I check the page for accessibility
-
