@@ -68,7 +68,7 @@ const setupMinorCreditorAmendCompanyScreen = () => {
   const creditorData = createMinorCreditorAmendCompanyCreditorMock(true);
 
   header.party.organisation_flag = true;
-  header.party.organisation_details = { organisation_name: 'Amend Minor Co Ltd' };
+  header.party.organisation_details = { organisation_name: 'Amend Minor Co Ltd', organisation_aliases: null };
   header.party.individual_details = undefined;
 
   interceptUserState(USER_STATE_MOCK_PERMISSION_BU77);
