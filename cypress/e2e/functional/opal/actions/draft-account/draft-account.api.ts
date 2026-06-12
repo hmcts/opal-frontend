@@ -416,7 +416,7 @@ const waitForPublishedAccountSearchable = (
   const body = buildPublishedAccountNumberSearchPayload(accountNumber, isCompany);
 
   const attempt = (remaining: number): Cypress.Chainable<void> =>
-    (cy
+    cy
       .request({
         method: 'POST',
         url: '/opal-fines-service/defendant-accounts/search',
@@ -445,7 +445,7 @@ const waitForPublishedAccountSearchable = (
           remaining: remaining - 1,
         });
         return cy.wait(delayMs, { log: false }).then(() => attempt(remaining - 1)) as Cypress.Chainable<void>;
-      }) as unknown as Cypress.Chainable<void>);
+      }) as unknown as Cypress.Chainable<void>;
 
   return attempt(attempts);
 };
