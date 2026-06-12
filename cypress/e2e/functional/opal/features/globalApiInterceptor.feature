@@ -61,7 +61,7 @@ Feature: Global API Interceptor shows error banner for all CEP error codes
         | 500       |
 
     @JIRA-EPIC:PO-2141
-    @JIRA-STORY:PO-2219 @JIRA-TEST-KEY:PO-5602
+    @JIRA-STORY:PO-2219 @JIRA-TEST-KEY:PO-5602 @JIRA-NFR:PO-2542
     Scenario: Global warning banner appears for retriable business units errors
       When I attempt to open Manual Account Creation and the business units request fails with a retriable 500 error
       Then the global warning banner is displayed with:
@@ -72,7 +72,7 @@ Feature: Global API Interceptor shows error banner for all CEP error codes
       And the global banner clears after refresh on the "Do you want to create a new account or transfer in?" page
 
     @JIRA-EPIC:PO-2141
-    @JIRA-STORY:PO-2109 @JIRA-TEST-KEY:PO-5275
+    @JIRA-STORY:PO-2109 @JIRA-TEST-KEY:PO-5275 @JIRA-NFR:PO-2542
     Scenario: Global warning banner appears for business units network failures
       When I attempt to open Manual Account Creation and the business units request fails due to a network error
       Then the global warning banner is displayed with:
@@ -81,7 +81,7 @@ Feature: Global API Interceptor shows error banner for all CEP error codes
       And the global banner clears after refresh on the "Do you want to create a new account or transfer in?" page
 
     @JIRA-EPIC:PO-2141
-    @JIRA-STORY:PO-2108 @JIRA-TEST-KEY:PO-5276
+    @JIRA-STORY:PO-2108 @JIRA-TEST-KEY:PO-5276 @JIRA-NFR:PO-2542
     Scenario: Internal Server Error page is displayed for non-retriable business units errors
       When I attempt to open Manual Account Creation and the business units request fails with a non-retriable 500 error
       Then the error page shows:
@@ -90,7 +90,7 @@ Feature: Global API Interceptor shows error banner for all CEP error codes
         | message | Error code: OP67890.                       |
 
     @JIRA-EPIC:PO-2141
-    @JIRA-STORY:PO-2110 @JIRA-TEST-KEY:PO-5277
+    @JIRA-STORY:PO-2110 @JIRA-TEST-KEY:PO-5277 @JIRA-NFR:PO-2542
     Scenario: Concurrency Failure page is displayed for business units concurrency errors
       When I attempt to open Manual Account Creation and the business units request fails with a non-retriable 409 error
       Then the error page shows:
@@ -100,7 +100,7 @@ Feature: Global API Interceptor shows error banner for all CEP error codes
         | message | Your changes have not been saved. You will need to start again. |
 
     @JIRA-EPIC:PO-2141
-    @JIRA-STORY:PO-2111 @JIRA-TEST-KEY:PO-5278
+    @JIRA-STORY:PO-2111 @JIRA-TEST-KEY:PO-5278 @JIRA-NFR:PO-2542
     Scenario: Permission Denied page is displayed for business units permission errors
       When I attempt to open Manual Account Creation and the business units request fails with a non-retriable 403 error
       Then the error page shows:
@@ -117,7 +117,7 @@ Feature: Global API Interceptor shows error banner for all CEP error codes
       Given I am on the Account Search page - Individuals form displayed by default
 
     @JIRA-EPIC:PO-2239
-    @JIRA-STORY:PO-2224 @JIRA-TEST-KEY:PO-5279
+    @JIRA-STORY:PO-2224 @JIRA-TEST-KEY:PO-5279 @JIRA-NFR:PO-2542
     Scenario: Internal Server Error page is displayed for non-retriable account search errors
       When I attempt a Companies account search for reference "NOMATCH999" with a non-retriable 500 error
       Then the error page shows:
@@ -126,7 +126,7 @@ Feature: Global API Interceptor shows error banner for all CEP error codes
         | message | Error code: OP67890.                       |
 
     @JIRA-EPIC:PO-2239
-    @JIRA-STORY:PO-2223 @JIRA-TEST-KEY:PO-5280
+    @JIRA-STORY:PO-2223 @JIRA-TEST-KEY:PO-5280 @JIRA-NFR:PO-2542
     Scenario: Global warning banner is displayed for retriable account search errors
       When I attempt a Companies account search for reference "NOMATCH999" with a retriable 500 error
       Then the global warning banner is displayed with:
@@ -137,15 +137,15 @@ Feature: Global API Interceptor shows error banner for all CEP error codes
       And the global banner clears after refresh on the "Search for an account" page
 
 
-    @JIRA-STORY:PO-2225  @JIRA-EPIC:PO-2239 @JIRA-TEST-KEY:PO-5281
+    @JIRA-STORY:PO-2225  @JIRA-EPIC:PO-2239 @JIRA-TEST-KEY:PO-5281 @JIRA-NFR:PO-2542
     Scenario: Global warning banner is displayed when the fixed penalty details API receives no response
       Given a published non-vehicle fixed penalty account exists:
-        | first name        | Robert                  |
-        | last name         | FixedPenaltyPo{uniq}    |
-        | ticket number     | FPRPO2225{uniqUpper}    |
-        | issuing authority | City of Metropolis      |
-        | time of offence   | 14:30                   |
-        | place of offence  | Main Street, Metropolis |
+        | first name        | Robert                               |
+        | last name         | FixedPenaltyPo{uniq}                 |
+        | ticket number     | FPRPO2225{uniqUpper}                 |
+        | issuing authority | City of London Central Ticket Office |
+        | time of offence   | 14:30                                |
+        | place of offence  | Main Street, Metropolis              |
       When I search for the account by last name "FixedPenaltyPo{uniq}" and open the latest result
       And I open the Fixed penalty section and the fixed penalty details request receives no response
       Then the global warning banner is displayed with:
@@ -175,7 +175,7 @@ Feature: Global API Interceptor shows error banner for all CEP error codes
       And I go to the Defendant details section and the header is "Defendant details"
 
     @JIRA-EPIC:PO-2239
-    @JIRA-STORY:PO-2226 @JIRA-TEST-KEY:PO-5282
+    @JIRA-STORY:PO-2226 @JIRA-TEST-KEY:PO-5282 @JIRA-NFR:PO-2542
     Scenario: Concurrency failure discards defendant edit state
       # AC1: CTA-triggered Replace Defendant Account Party request fails with a non-retriable HTTP 409 concurrency response.
       When I edit the Defendant details and change the First name to "Concurrency"
@@ -206,7 +206,7 @@ Feature: Global API Interceptor shows error banner for all CEP error codes
       Then I should see the account summary header contains "Mr Priya PERMISSIONNOTE{uniqUpper}"
 
     @JIRA-EPIC:PO-2239
-    @JIRA-STORY:PO-2227 @JIRA-TEST-KEY:PO-5283
+    @JIRA-STORY:PO-2227 @JIRA-TEST-KEY:PO-5283 @JIRA-NFR:PO-2542
     Scenario: Permission Denied page is displayed when the Add Note API returns a non-retriable permission error
       # AC1: CTA-triggered Add Note request fails with a non-retriable HTTP 403 permission response.
       When I open the Add account note screen and verify the header is Add account note

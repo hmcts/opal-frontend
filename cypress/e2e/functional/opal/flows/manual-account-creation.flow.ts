@@ -1488,6 +1488,13 @@ export class ManualAccountCreationFlow {
   }
 
   /**
+   * Asserts the latest draft account create response includes UTC lifecycle timestamps.
+   */
+  assertLatestDraftAccountCreateResponseIncludesUtcTimestamps(): void {
+    this.requestMonitor.assertLatestDraftAccountCreateResponseIncludesUtcTimestamps();
+  }
+
+  /**
    * From Account comments and notes, continue to Review and submit and assert the destination header.
    * @param expectedHeader - Header text expected on the review page.
    */

@@ -31,6 +31,8 @@ type RequestPayloadEntry = {
   direction?: 'request' | 'response';
 };
 
+type EvidenceErrorSource = 'draft-detail' | 'pod-log';
+
 type CreatedAccountInput = {
   source: 'api' | 'ui';
   accountType: string;
@@ -38,6 +40,9 @@ type CreatedAccountInput = {
   accountId?: number;
   accountNumber?: string | null;
   imposingCourtId?: string;
+  errorCode?: string;
+  errorSummary?: string;
+  errorSource?: EvidenceErrorSource;
   uniq?: string;
   scenario?: string;
   featurePath?: string;
