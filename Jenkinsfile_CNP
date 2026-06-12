@@ -42,6 +42,7 @@ String skipLabelComponent = 'skip_opal_component'
 String smokeXmlReport = 'cypress/reports/smokeXmlReport.html'
 String functionalXmlReport = 'cypress/reports/functionalXmlReport.html'
 @Field String runReleasePrefix = 'run_release:'
+@Field String andTagSeparator = ' and '
 @Field String skipTagExpression = 'not @skip'
 @Field String functionalFeatureGlob = 'cypress/e2e/functional/opal/**/*.feature'
 @Field String releaseSuiteR1a = 'r1a'
@@ -51,7 +52,7 @@ String functionalXmlReport = 'cypress/reports/functionalXmlReport.html'
 @Field String releaseSuiteR1cWriteOffOff = 'r1c_write_off_off'
 @Field String releaseSuiteR1cEnforcementOperationalReportingOff = 'r1c_enforcement_operational_reporting_off'
 @Field String defaultFunctionalTagExpression =
-  'not @UAT-Technical and not @skip and ' +
+  'not @UAT-Technical and not @skip' + andTagSeparator +
   'not (@R1AOff or @R1BOff or @R1CWriteOffOff or @R1CEnforcementOperationalReportingOff)'
 @Field String macPopulateAndSubmitFeatureGlob =
   'cypress/e2e/functional/opal/features/manualAccountCreation/populateAndSubmit/**/*.feature,'
@@ -62,16 +63,16 @@ String functionalXmlReport = 'cypress/reports/functionalXmlReport.html'
 @Field String finesPrimaryNavigationFeatureGlob =
   'cypress/e2e/functional/opal/features/navigation/finesPrimaryNavigation.feature'
 @Field String r1aPositiveTagExpression =
-  defaultFunctionalTagExpression + ' and ' +
+  defaultFunctionalTagExpression + andTagSeparator +
   'not (@R1B or @R1CFinance or @R1CWriteOff or @R1CEnforcementOperationalReporting or @R1CAdministration)'
 @Field String r1abPositiveTagExpression =
-  defaultFunctionalTagExpression + ' and ' +
+  defaultFunctionalTagExpression + andTagSeparator +
   'not (@R1CFinance or @R1CWriteOff or @R1CEnforcementOperationalReporting or @R1CAdministration)'
-@Field String r1aOffTagExpression = '(@R1AOff) and ' + skipTagExpression
-@Field String r1bOffTagExpression = '(@R1BOff) and ' + skipTagExpression
-@Field String r1cWriteOffOffTagExpression = '(@R1CWriteOffOff) and ' + skipTagExpression
+@Field String r1aOffTagExpression = '(@R1AOff)' + andTagSeparator + skipTagExpression
+@Field String r1bOffTagExpression = '(@R1BOff)' + andTagSeparator + skipTagExpression
+@Field String r1cWriteOffOffTagExpression = '(@R1CWriteOffOff)' + andTagSeparator + skipTagExpression
 @Field String r1cEnforcementOperationalReportingOffTagExpression =
-  '(@R1CEnforcementOperationalReportingOff) and ' + skipTagExpression
+  '(@R1CEnforcementOperationalReportingOff)' + andTagSeparator + skipTagExpression
 @Field String r1aFeatureSpecGlob =
   macPopulateAndSubmitFeatureGlob +
   macCheckAndValidateFeatureGlob +

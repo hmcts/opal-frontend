@@ -511,7 +511,9 @@ void runR1aLegacyDemoStage(
     stageName         : 'R1A Legacy Demo',
     failureResultValue: failureResultValue,
     failureMessage    : 'R1A Legacy Demo failed',
-    startMessage      : "Running R1A legacy demo scenarios against ${nightlyTestUrlDemo} with yarn ${functionalR1aCommand}",
+    startMessage      :
+      "Running R1A legacy demo scenarios against ${nightlyTestUrlDemo} " +
+      "with yarn ${functionalR1aCommand}",
     outputDirName     : demoStageR1aDirName,
     reportName        : "R1A Legacy Demo Functional Test Report (${browserToRun})",
     browserToRun      : browserToRun,
@@ -532,7 +534,9 @@ void runR1aOffLegacyDemoStage(
     stageName         : 'R1A Off Legacy Demo',
     failureResultValue: failureResultValue,
     failureMessage    : 'R1A Off Legacy Demo failed',
-    startMessage      : "Running R1A Off legacy demo scenarios against ${nightlyTestUrlDemo} with yarn ${functionalR1aOffCommand}",
+    startMessage      :
+      "Running R1A Off legacy demo scenarios against ${nightlyTestUrlDemo} " +
+      "with yarn ${functionalR1aOffCommand}",
     outputDirName     : demoStageR1aOffDirName,
     reportName        : "R1A Off Legacy Demo Functional Test Report (${browserToRun})",
     browserToRun      : browserToRun,
