@@ -61,6 +61,7 @@ import { IOpalFinesAddEnforcementActionPayload } from './interfaces/opal-fines-a
 import { IOpalFinesAccountMinorCreditorCreditor } from './interfaces/opal-fines-account-minor-creditor-creditor.interface';
 import { IOpalFinesDraftAccountPatchRequestPayload } from '@services/fines/opal-fines-service/types/opal-fines-draft-account-patch-request-payload.type';
 import { IOpalFinesDeleteDefendantAccountPartyPayload } from './interfaces/opal-fines-delete-defendant-account-party-payload.interface';
+import { IOpalFinesCentralFund } from './interfaces/opal-fines-account-central-fund.interface';
 
 @Injectable({
   providedIn: 'root',
@@ -1246,5 +1247,16 @@ export class OpalFines {
         );
     }
     return this.cache.minorCreditorAccountCreditorCache$;
+  }
+
+  /**
+   * Retrieves the central fund details for a specific business unit.
+   *
+   * @param busunessUnitId - The ID of the business unit.
+   * @returns An Observable that emits the central fund details.
+   */
+  public getCentralFund(busunessUnitId: number): Observable<IOpalFinesCentralFund> {
+    const url = `${OPAL_FINES_PATHS.centralFunds}/${busunessUnitId}`;
+    return this.http.get<IOpalFinesCentralFund>(url);
   }
 }
