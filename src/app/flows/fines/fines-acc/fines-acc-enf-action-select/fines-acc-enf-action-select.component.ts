@@ -17,6 +17,7 @@ import { IOpalFinesResultRefData } from '@services/fines/opal-fines-service/inte
 import { FINES_ACC_ENF_ACTION_SELECT_WARNING_MESSAGES } from './constants/fines-acc-enf-action-select-warning-messages.constant';
 import { FINES_ACC_DEBTOR_TYPES } from '../constants/fines-acc-debtor-types.constant';
 import { FINES_ACC_ENF_ACTION_ROUTING_PATHS } from './constants/fines-acc-enf-action-select-routing-paths.constant';
+import { FINES_ACC_ENF_ACTION_DENIED_TYPES } from '../fines-acc-enf-action-denied/constants/fines-acc-enf-action-denied-types.constant';
 
 @Component({
   selector: 'app-fines-acc-enf-action-select',
@@ -90,8 +91,16 @@ export class FinesAccEnfActionSelectComponent extends AbstractFormParentBaseComp
     this.stateUnsavedChanges = false;
 
     if (requiresEmploymentData && !hasEmployerData) {
+      this['router'].navigate(
+        [
+          `../${FINES_ACC_ENF_ACTION_ROUTING_PATHS.children.denied}/${FINES_ACC_ENF_ACTION_DENIED_TYPES.employmentData}`,
+        ],
+        {
+          relativeTo: this.route,
+          queryParams: { resultId: selectedAction.result_id },
+        },
+      );
       return;
-      // Submission logic handled in future ticket.
     }
 
     this['router'].navigate([`../${FINES_ACC_ENF_ACTION_ROUTING_PATHS.children.add}`], {
