@@ -6,7 +6,11 @@ import { FINES_REPORTS_ROUTING_TITLES } from '../../constants/fines-reports-rout
 
 export const finesReportsTitleResolver: ResolveFn<string> = (route: ActivatedRouteSnapshot) => {
   const titleService = inject(Title);
-  const reportId = route.paramMap.get('reportId') ?? route.parent?.paramMap.get('reportId');
+  const reportId =
+    route.paramMap.get('reportTypeId') ??
+    route.paramMap.get('reportId') ??
+    route.parent?.paramMap.get('reportTypeId') ??
+    route.parent?.paramMap.get('reportId');
   const pageTitle =
     FINES_REPORT_SUMMARY_LIST_REPORT_CONFIGURATION.find((config) => config.id === reportId)?.title ??
     FINES_REPORTS_ROUTING_TITLES.root;

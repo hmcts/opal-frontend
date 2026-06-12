@@ -1,0 +1,91 @@
+<opal-lib-custom-horizontal-scroll-pane>
+  <opal-lib-moj-sortable-table tableClasses="govuk-!-margin-bottom-3">
+    <ng-container caption>
+      <span class="govuk-visually-hidden">Report instances</span>
+    </ng-container>
+    <ng-container head>
+      <th
+        opal-lib-moj-sortable-table-header
+        columnKey="Date and time"
+        [sortDirection]="sortStateSignal()['Date and time']"
+        (sortChange)="onSortChange($event)"
+        [dataIndex]="0"
+      >
+        Date and time
+      </th>
+      <th
+        opal-lib-moj-sortable-table-header
+        columnKey="Title"
+        [sortDirection]="sortStateSignal()['Title']"
+        (sortChange)="onSortChange($event)"
+        [dataIndex]="1"
+      >
+        Title
+      </th>
+      <th
+        opal-lib-moj-sortable-table-header
+        columnKey="Business unit"
+        [sortDirection]="sortStateSignal()['Business unit']"
+        (sortChange)="onSortChange($event)"
+        [dataIndex]="2"
+      >
+        Business unit
+      </th>
+      <th
+        opal-lib-moj-sortable-table-header
+        columnKey="Created by"
+        [sortDirection]="sortStateSignal()['Created by']"
+        (sortChange)="onSortChange($event)"
+        [dataIndex]="3"
+      >
+        Created by
+      </th>
+      <th
+        opal-lib-moj-sortable-table-header
+        columnKey="Status"
+        [sortDirection]="sortStateSignal()['Status']"
+        (sortChange)="onSortChange($event)"
+        [dataIndex]="4"
+      >
+        Status
+      </th>
+      <th scope="col" class="govuk-table__header">Action</th>
+    </ng-container>
+    <ng-container row>
+      @for (row of paginatedTableDataComputed(); track row.instanceId) {
+        <tr opal-lib-moj-sortable-table-row>
+          <td opal-lib-moj-sortable-table-row-data id="reportInstanceDateTime">
+            <a href="" class="govuk-link govuk-link--no-visited-state">{{ row.dateTimeDisplay }}</a>
+          </td>
+          <td opal-lib-moj-sortable-table-row-data id="reportInstanceTitle">{{ row.Title }}</td>
+          <td opal-lib-moj-sortable-table-row-data id="reportInstanceBusinessUnit">{{ row['Business unit'] }}</td>
+          <td opal-lib-moj-sortable-table-row-data id="reportInstanceCreatedBy">{{ row['Created by'] }}</td>
+          <td opal-lib-moj-sortable-table-row-data id="reportInstanceStatus">{{ row.Status }}</td>
+          <td opal-lib-moj-sortable-table-row-data id="reportInstanceAction">
+            @if (row.isDownloadable && row.supportedTypes) {
+              @for (type of row.supportedTypes.split(','); track type) {
+                <a href="" class="govuk-link govuk-link--no-visited-state govuk-!-margin-right-2">{{ type }}</a>
+              }
+            }
+          </td>
+        </tr>
+      }
+    </ng-container>
+    <ng-container status>
+      <opal-lib-moj-sortable-table-status
+        [columnTitle]="sortedColumnTitleSignal()"
+        [sortDirection]="sortedColumnDirectionSignal()"
+      ></opal-lib-moj-sortable-table-status>
+    </ng-container>
+  </opal-lib-moj-sortable-table>
+</opal-lib-custom-horizontal-scroll-pane>
+
+@if (sortedTableDataSignal().length > itemsPerPageSignal()) {
+  <opal-lib-moj-pagination
+    id="fines-reports-summary-list-pagination"
+    [currentPage]="currentPageSignal()"
+    [total]="sortedTableDataSignal().length"
+    [limit]="itemsPerPageSignal()"
+    (changePage)="onPageChange($event)"
+  ></opal-lib-moj-pagination>
+}

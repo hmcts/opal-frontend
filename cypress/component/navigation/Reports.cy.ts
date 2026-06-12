@@ -2,8 +2,10 @@ import { ActivatedRoute, Router, convertToParamMap, provideRouter } from '@angul
 import { mount } from 'cypress/angular';
 import { PermissionsService } from '@hmcts/opal-frontend-common/services/permissions-service';
 import { GlobalStore } from '@hmcts/opal-frontend-common/stores/global';
-import { BehaviorSubject } from 'rxjs';
+import { BehaviorSubject, of } from 'rxjs';
+import { OpalUserService } from '@hmcts/opal-frontend-common/services/opal-user-service';
 import { FINES_PERMISSIONS } from 'src/app/constants/fines-permissions.constant';
+import { OpalFines } from 'src/app/flows/fines/services/opal-fines-service/opal-fines.service';
 import { FinesReportsSummaryListComponent } from 'src/app/flows/fines/fines-reports/fines-reports-summary-list/fines-reports-summary-list.component';
 import { FINES_REPORTS_SUMMARY_LIST_ROUTING_PATHS } from 'src/app/flows/fines/fines-reports/fines-reports-summary-list/routing/constants/fines-reports-summary-list-routing-paths.constant';
 import { FINES_REPORTS_ROUTING_PATHS } from 'src/app/flows/fines/fines-reports/routing/constants/fines-reports-routing-paths.constant';
@@ -39,8 +41,10 @@ interface ISummaryListComponentProperties {
 type MockActivatedRoute = {
   snapshot: {
     paramMap: ReturnType<typeof convertToParamMap>;
+    data: typeof summaryListRouteData;
   };
   paramMap: BehaviorSubject<ReturnType<typeof convertToParamMap>>;
+  data: BehaviorSubject<typeof summaryListRouteData>;
   parent: {
     snapshot: {
       paramMap: ReturnType<typeof convertToParamMap>;
@@ -62,6 +66,21 @@ const componentProperties: IComponentProperties = {
 
 const summaryListComponentProperties: ISummaryListComponentProperties = {
   reportId: FINES_REPORTS_SUMMARY_LIST_ROUTING_PATHS.children.yourReports,
+};
+
+const summaryListRouteData = {
+  businessUnits: {
+    refData: [],
+  },
+  reportMetadata: {
+    report_id: FINES_REPORTS_SUMMARY_LIST_ROUTING_PATHS.children.operationalReportsByEnforcement,
+    report_title: 'Operational reports (by enforcement)',
+    can_manually_create: true,
+  },
+  reportInstances: {
+    report_instances: [],
+    count: 0,
+  },
 };
 
 const reportsSummaryListPath = (reportId: string) =>
@@ -117,13 +136,15 @@ describe(
       const activatedRoute: MockActivatedRoute = {
         snapshot: {
           paramMap: convertToParamMap({}),
+          data: summaryListRouteData,
         },
         paramMap: new BehaviorSubject(convertToParamMap({})),
+        data: new BehaviorSubject(summaryListRouteData),
         parent: {
           snapshot: {
-            paramMap: convertToParamMap({ reportId: props.reportId }),
+            paramMap: convertToParamMap({ reportTypeId: props.reportId }),
           },
-          paramMap: new BehaviorSubject(convertToParamMap({ reportId: props.reportId })),
+          paramMap: new BehaviorSubject(convertToParamMap({ reportTypeId: props.reportId })),
         },
       };
 
@@ -132,6 +153,18 @@ describe(
           {
             provide: ActivatedRoute,
             useValue: activatedRoute,
+          },
+          {
+            provide: OpalFines,
+            useValue: {
+              getReportInstances: cy.stub().returns(of(summaryListRouteData.reportInstances)),
+            },
+          },
+          {
+            provide: OpalUserService,
+            useValue: {
+              getLoggedInUserState: cy.stub().returns(of({ user_id: 123 })),
+            },
           },
         ],
       });

@@ -12,7 +12,7 @@ export const finesReportsStateGuard: CanActivateFn = (route) => {
   const router = inject(Router);
   const permissionsService = inject(PermissionsService);
   const opalUserService = inject(OpalUserService);
-  const reportId = route.paramMap.get('reportId');
+  const reportId = route.paramMap.get('reportTypeId') ?? route.paramMap.get('reportId');
 
   const report = FINES_REPORT_SUMMARY_LIST_REPORT_CONFIGURATION.find((config) => config.id === reportId);
 
