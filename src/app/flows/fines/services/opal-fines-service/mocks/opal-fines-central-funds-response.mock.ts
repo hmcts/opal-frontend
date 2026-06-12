@@ -12,6 +12,6 @@ export const OPAL_FINES_CENTRAL_FUND_RESPONSE_MOCK: IOpalFinesCentralFund = {
   major_creditor: {
     account_number: '00002000J',
     creditor_account_id: 77,
-    name: null,
+    name: 'Central Funds',
   },
 };

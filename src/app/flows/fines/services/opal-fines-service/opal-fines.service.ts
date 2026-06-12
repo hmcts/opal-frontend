@@ -415,7 +415,9 @@ export class OpalFines {
    * @returns The pretty name of the major creditor.
    */
   public getMajorCreditorPrettyName(majorCreditor: IOpalFinesMajorCreditor): string {
-    return `${majorCreditor.name} (${majorCreditor.major_creditor_code})`;
+    return majorCreditor.major_creditor_code
+      ? `${majorCreditor.name} (${majorCreditor.major_creditor_code})`
+      : (majorCreditor.name ?? '');
   }
 
   /**

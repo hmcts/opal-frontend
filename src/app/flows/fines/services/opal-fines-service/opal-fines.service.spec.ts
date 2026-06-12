@@ -630,6 +630,18 @@ describe('OpalFines', () => {
     expect(result).toEqual(`${majorCreditor.name} (${majorCreditor.major_creditor_code})`);
   });
 
+  it('should return only the major creditor name when no code is present', () => {
+    const majorCreditor: IOpalFinesMajorCreditor = {
+      ...OPAL_FINES_MAJOR_CREDITOR_REF_DATA_MOCK.refData[0],
+      major_creditor_code: null,
+      name: 'Central Funds',
+    };
+
+    const result = service.getMajorCreditorPrettyName(majorCreditor);
+
+    expect(result).toEqual('Central Funds');
+  });
+
   it('should POST the fines mac payload', () => {
     const body = removeTimelineData(FINES_MAC_PAYLOAD_ADD_ACCOUNT);
 

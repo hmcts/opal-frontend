@@ -35,5 +35,5 @@ export const OPAL_FINES_PATHS: IOpalFinesPaths = {
   minorCreditorAccounts: `${baseUrl}${minorCreditorAccounts}`,
   enforcersRefData: `${baseUrl}${enforcers}`,
   defendantAccountParties,
-  centralFunds : `${baseUrl}${centralFunds}`,
+  centralFunds: `${baseUrl}${centralFunds}`,
 };
