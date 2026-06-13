@@ -201,7 +201,7 @@
     "tar": "^7.5.8",
     "diff": "^9.0.0",
     "@actions/http-client/undici": "^8.0.0",
-    "esbuild": "^0.28.0",
+    "esbuild": "^0.28.1",
     "@badeball/cypress-cucumber-preprocessor/glob": "13.0.6",
     "@cucumber/cucumber/glob": "13.0.6",
     "cypress-parallel/glob": "13.0.6",
