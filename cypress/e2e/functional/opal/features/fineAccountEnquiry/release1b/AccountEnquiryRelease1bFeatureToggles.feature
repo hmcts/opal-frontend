@@ -1,20 +1,20 @@
 @JIRA-LABEL:account-enquiry
 Feature: Account Enquiry Release 1B Feature Toggles
 
-  @FeatureFlag @R1BOff @JIRA-STORY:PO-3720 @JIRA-EPIC:PO-3685
+  @R1BOff @JIRA-STORY:PO-3720 @JIRA-EPIC:PO-3685
   Scenario: Accounts is the default landing page when release 1b is disabled
     Given I am authenticated with email "opal-test@dev.platform.hmcts.net"
     Then I am taken to the "Accounts" Fines landing page
     And I should not see the Fines primary navigation item "Search"
 
-  @FeatureFlag @R1BOff @JIRA-STORY:PO-3720 @JIRA-EPIC:PO-3685
+  @R1BOff @JIRA-STORY:PO-3720 @JIRA-EPIC:PO-3685
   Scenario: Direct navigation to Account Search is blocked when release 1b is disabled
     Given I am authenticated with email "opal-test@dev.platform.hmcts.net"
     When I navigate directly to the Account Search page
     Then I should see an Access Denied page
     And I should see a "Back to dashboard" action
 
-  @FeatureFlag @R1BOff @JIRA-STORY:PO-3720 @JIRA-EPIC:PO-3685
+  @R1BOff @JIRA-STORY:PO-3720 @JIRA-EPIC:PO-3685
   Scenario: Direct navigation to Account Enquiry is blocked when release 1b is disabled
     Given I am authenticated with email "opal-test@dev.platform.hmcts.net"
     And a published adult or youth defendant account exists:
@@ -26,7 +26,7 @@ Feature: Account Enquiry Release 1B Feature Toggles
     Then I should see an Access Denied page
     And I should see a "Back to dashboard" action
 
-  @FeatureFlag @R1B @R1CWriteOffOff @JIRA-STORY:PO-3720 @JIRA-STORY:PO-3757 @JIRA-EPIC:PO-3685
+  @R1B @R1CWriteOffOff @JIRA-STORY:PO-3720 @JIRA-STORY:PO-3757 @JIRA-EPIC:PO-3685
   Scenario: Impositions write off actions are hidden when release 1c write off is disabled
     Given I am logged in with email "opal-test@dev.platform.hmcts.net"
     And a published adult or youth defendant account exists:
