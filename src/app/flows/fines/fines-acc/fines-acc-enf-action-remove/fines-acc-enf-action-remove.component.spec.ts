@@ -7,6 +7,7 @@ import { of, throwError } from 'rxjs';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
 import { FINES_ACC_DEFENDANT_DETAILS_HEADER_MOCK } from '../fines-acc-defendant-details/mocks/fines-acc-defendant-details-header.mock';
 import { FINES_ACC_DEFENDANT_ROUTING_PATHS } from '../routing/constants/fines-acc-defendant-routing-paths.constant';
+import { FINES_ACC_ENF_ACTION_ROUTING_PATHS } from '../fines-acc-enf-action-select/constants/fines-acc-enf-action-select-routing-paths.constant';
 import { IFinesAccountState } from '../interfaces/fines-acc-state-interface';
 import { FinesAccPayloadService } from '../services/fines-acc-payload.service';
 import { FinesAccountStore } from '../stores/fines-acc.store';
@@ -125,11 +126,7 @@ describe('FinesAccEnfActionRemoveComponent', () => {
     expect(mockOpalFinesService.clearCache).toHaveBeenCalledWith('defendantAccountEnforcementCache$');
     expect(mockFinesAccStore.setSuccessMessage).toHaveBeenCalledWith(FINES_ACC_ENF_ACTION_REMOVE_SUCCESS_MESSAGE);
     expect(routerNavigateSpy).toHaveBeenCalledWith(
-      FINES_ACC_DEFENDANT_ROUTING_PATHS.children.details,
-      false,
-      undefined,
-      null,
-      FINES_ACC_DEFENDANT_ROUTING_PATHS.children.enforcement,
+      `${FINES_ACC_DEFENDANT_ROUTING_PATHS.children.enforcement}/${FINES_ACC_ENF_ACTION_ROUTING_PATHS.root}/${FINES_ACC_ENF_ACTION_ROUTING_PATHS.children.select}`,
     );
   });
 
@@ -193,5 +190,28 @@ describe('FinesAccEnfActionRemoveComponent', () => {
 
     component.handleUnsavedChanges(true);
     expect((component as unknown as { canDeactivate: () => boolean }).canDeactivate()).toBe(false);
+  });
+
+  it('should render the remove enforcement hold shell and account identifier caption', () => {
+    createComponent();
+
+    const text = fixture.nativeElement.textContent as string;
+
+    expect(text).toContain('Remove enforcement hold');
+    expect(text).toContain('177A – Ms Anna GRAHAM');
+    expect(text).toContain('Reason');
+    expect(text).toContain('Remove');
+  });
+
+  it('should render the remove enforcement hold shell for a company-style caption', () => {
+    mockPayloadService.transformDefendantAccountHeaderForStore.mockReturnValue({
+      ...accountStateMock,
+      account_number: '177A',
+      party_name: 'RemoveHold Company LTD',
+    });
+
+    createComponent();
+
+    expect(fixture.nativeElement.textContent).toContain('177A – RemoveHold Company LTD');
   });
 });

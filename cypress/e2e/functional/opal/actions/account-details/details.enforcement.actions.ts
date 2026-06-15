@@ -79,6 +79,17 @@ export class AccountDetailsEnforcementActions {
   }
 
   /**
+   * Opens the remove enforcement hold form from the Enforcement tab.
+   */
+  public openRemoveEnforcementHoldForm(): void {
+    log('navigate', 'Opening remove enforcement hold form');
+    cy.get('#last-enforcement-action', { timeout: AccountDetailsEnforcementActions.DEFAULT_TIMEOUT })
+      .contains('a, button', 'Remove')
+      .should('be.visible')
+      .click();
+  }
+
+  /**
    * Opens the Change Collection Order status form from the Enforcement tab.
    */
   public openChangeCollectionOrderForm(): void {
@@ -205,6 +216,34 @@ export class AccountDetailsEnforcementActions {
       .should('be.visible')
       .and('contain.text', 'Add enforcement action');
     cy.get(ENF_ACT.actionDropdown, { timeout: AccountDetailsEnforcementActions.DEFAULT_TIMEOUT }).should('be.visible');
+  }
+
+  /**
+   * Asserts the remove enforcement hold form is visible.
+   */
+  public assertRemoveEnforcementHoldFormVisible(): void {
+    log('assert', 'Remove enforcement hold form is visible');
+    cy.get('h1.govuk-heading-l', { timeout: AccountDetailsEnforcementActions.DEFAULT_TIMEOUT })
+      .should('be.visible')
+      .and('contain.text', 'Remove enforcement hold');
+    cy.get('opal-lib-govuk-heading-with-caption', { timeout: AccountDetailsEnforcementActions.DEFAULT_TIMEOUT })
+      .should('be.visible')
+      .and('contain.text', '–');
+    cy.get('#facc_enf_action_remove_reason', { timeout: AccountDetailsEnforcementActions.DEFAULT_TIMEOUT }).should(
+      'be.visible',
+    );
+  }
+
+  /**
+   * Asserts the remove enforcement hold account identifier caption.
+   *
+   * @param expected - Expected account identifier caption text.
+   */
+  public assertRemoveEnforcementHoldAccountIdentifier(expected: string): void {
+    log('assert', 'Remove enforcement hold account identifier', { expected });
+    cy.get('opal-lib-govuk-heading-with-caption', { timeout: AccountDetailsEnforcementActions.DEFAULT_TIMEOUT })
+      .should('be.visible')
+      .and('contain.text', expected);
   }
 
   /**

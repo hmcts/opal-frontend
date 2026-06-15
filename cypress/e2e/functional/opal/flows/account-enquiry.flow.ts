@@ -661,6 +661,33 @@ export class AccountEnquiryFlow {
   }
 
   /**
+   * Asserts the add enforcement action form is visible.
+   */
+  public assertAddEnforcementActionFormVisible(): void {
+    logAE('method', 'assertAddEnforcementActionFormVisible()');
+    this.enforcement.assertAddEnforcementActionFormVisible();
+  }
+
+  /**
+   * Opens the remove enforcement hold form from the Enforcement tab.
+   */
+  public openRemoveEnforcementHoldForm(): void {
+    logAE('method', 'openRemoveEnforcementHoldForm()');
+    this.enforcement.openRemoveEnforcementHoldForm();
+    this.enforcement.assertRemoveEnforcementHoldFormVisible();
+  }
+
+  /**
+   * Asserts the remove enforcement hold account identifier.
+   *
+   * @param expected - Expected account identifier caption text.
+   */
+  public assertRemoveEnforcementHoldAccountIdentifier(expected: string): void {
+    logAE('method', 'assertRemoveEnforcementHoldAccountIdentifier()', { expected });
+    this.enforcement.assertRemoveEnforcementHoldAccountIdentifier(expected);
+  }
+
+  /**
    * Submits the add enforcement action form.
    */
   public submitAddEnforcementActionForm(): void {
@@ -857,6 +884,16 @@ export class AccountEnquiryFlow {
    */
   public assertEnforcementOverrideSuccessBanner(expected: string): void {
     logAE('method', 'assertEnforcementOverrideSuccessBanner()', { expected });
+    this.enforcement.assertSuccessBannerText(expected);
+  }
+
+  /**
+   * Asserts the enforcement hold success banner text.
+   *
+   * @param expected - Expected success banner message.
+   */
+  public assertEnforcementHoldSuccessBanner(expected: string): void {
+    logAE('method', 'assertEnforcementHoldSuccessBanner()', { expected });
     this.enforcement.assertSuccessBannerText(expected);
   }
 
