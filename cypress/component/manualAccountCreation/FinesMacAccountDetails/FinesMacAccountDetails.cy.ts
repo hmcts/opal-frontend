@@ -17,10 +17,9 @@ import {
   interceptUserState,
 } from 'cypress/component/CommonIntercepts/CommonIntercepts';
 import { USER_STATE_MOCK_PERMISSION_BU77 } from 'cypress/component/CommonIntercepts/CommonUserState.mocks';
+import { JIRA_EPICS, NFR } from 'cypress/shared/jiraTicketReference/jiraTicketReference.shared';
 
 const MANUAL_ACCOUNT_CREATION_JIRA_LABEL = '@JIRA-LABEL:manual-account-creation';
-const NFR_EPIC_JIRA_LABEL = '@JIRA-EPIC:PO-2479';
-const SYS_NFR_095_JIRA_REF = '@JIRA-NFR:PO-2547';
 
 const buildTags = (...tags: string[]) => [...tags, MANUAL_ACCOUNT_CREATION_JIRA_LABEL];
 
@@ -111,7 +110,7 @@ describe('FinesMacAccountDetailsComponent', () => {
 
   it(
     'Simple page changes should be less than 250ms - Personal Details Page',
-    { tags: [NFR_EPIC_JIRA_LABEL, SYS_NFR_095_JIRA_REF] },
+    { tags: [JIRA_EPICS.NFR, NFR.SYS_NFR_095] },
     () => {
       interceptAuthenticatedUser();
       interceptUserState(USER_STATE_MOCK_PERMISSION_BU77);
@@ -161,57 +160,61 @@ describe('FinesMacAccountDetailsComponent', () => {
     },
   );
 
-  it('Simple page changes should be less than 250ms - Contact Details Page', { tags: [] }, () => {
-    interceptAuthenticatedUser();
-    interceptUserState(USER_STATE_MOCK_PERMISSION_BU77);
-    interceptBusinessUnits();
+  it(
+    'Simple page changes should be less than 250ms - Contact Details Page',
+    { tags: [JIRA_EPICS.NFR, NFR.SYS_NFR_095] },
+    () => {
+      interceptAuthenticatedUser();
+      interceptUserState(USER_STATE_MOCK_PERMISSION_BU77);
+      interceptBusinessUnits();
 
-    localMacComponentSetup();
+      localMacComponentSetup();
 
-    // Defining selectors rather than re-using due to directly accessing DOM for more accurate performance measurements.
-    const contactDetailsTabSelector = L.contactDetails + ' .govuk-link';
-    const cancelLinkSelector = '.govuk-link';
+      // Defining selectors rather than re-using due to directly accessing DOM for more accurate performance measurements.
+      const contactDetailsTabSelector = L.contactDetails + ' .govuk-link';
+      const cancelLinkSelector = '.govuk-link';
 
-    cy.get(L.pageTitle).should('have.text', 'Account details');
+      cy.get(L.pageTitle).should('have.text', 'Account details');
 
-    cy.window().then((win) => {
-      const start = win.performance.now();
-      const element = win.document.querySelector(contactDetailsTabSelector) as HTMLElement;
+      cy.window().then((win) => {
+        const start = win.performance.now();
+        const element = win.document.querySelector(contactDetailsTabSelector) as HTMLElement;
 
-      expect(element, `${contactDetailsTabSelector} should exist`).to.not.be.null;
+        expect(element, `${contactDetailsTabSelector} should exist`).to.not.be.null;
 
-      element.click();
+        element.click();
 
-      cy.get(L.pageTitle)
-        .should('have.text', 'Defendant contact details')
-        .then(() => {
-          const elapsed = win.performance.now() - start;
+        cy.get(L.pageTitle)
+          .should('have.text', 'Defendant contact details')
+          .then(() => {
+            const elapsed = win.performance.now() - start;
 
-          expect(elapsed, `Contact Details page should load within 250ms`).to.be.lessThan(250);
-        });
-    });
+            expect(elapsed, `Contact Details page should load within 250ms`).to.be.lessThan(250);
+          });
+      });
 
-    cy.window().then((win) => {
-      const start = win.performance.now();
-      const element = win.document.querySelector(cancelLinkSelector) as HTMLElement;
+      cy.window().then((win) => {
+        const start = win.performance.now();
+        const element = win.document.querySelector(cancelLinkSelector) as HTMLElement;
 
-      expect(element, `${cancelLinkSelector} should exist`).to.not.be.null;
+        expect(element, `${cancelLinkSelector} should exist`).to.not.be.null;
 
-      element.click();
+        element.click();
 
-      cy.get(L.pageTitle)
-        .should('have.text', 'Account details')
-        .then(() => {
-          const elapsed = win.performance.now() - start;
+        cy.get(L.pageTitle)
+          .should('have.text', 'Account details')
+          .then(() => {
+            const elapsed = win.performance.now() - start;
 
-          expect(elapsed, `Account Details page should load within 250ms`).to.be.lessThan(250);
-        });
-    });
-  });
+            expect(elapsed, `Account Details page should load within 250ms`).to.be.lessThan(250);
+          });
+      });
+    },
+  );
 
   it(
     'Simple page changes should be less than 250ms - Employer Details Page',
-    { tags: [NFR_EPIC_JIRA_LABEL, SYS_NFR_095_JIRA_REF] },
+    { tags: [JIRA_EPICS.NFR, NFR.SYS_NFR_095] },
     () => {
       interceptAuthenticatedUser();
       interceptUserState(USER_STATE_MOCK_PERMISSION_BU77);
@@ -263,7 +266,7 @@ describe('FinesMacAccountDetailsComponent', () => {
 
   it(
     'Simple page changes should be less than 250ms - Payment Terms Page',
-    { tags: [NFR_EPIC_JIRA_LABEL, SYS_NFR_095_JIRA_REF] },
+    { tags: [JIRA_EPICS.NFR, NFR.SYS_NFR_095] },
     () => {
       interceptAuthenticatedUser();
       interceptUserState(USER_STATE_MOCK_PERMISSION_BU77);
@@ -315,7 +318,7 @@ describe('FinesMacAccountDetailsComponent', () => {
 
   it(
     'Simple page changes should be less than 250ms - Comments and Notes Page',
-    { tags: [NFR_EPIC_JIRA_LABEL, SYS_NFR_095_JIRA_REF] },
+    { tags: [JIRA_EPICS.NFR, NFR.SYS_NFR_095] },
     () => {
       interceptAuthenticatedUser();
       interceptUserState(USER_STATE_MOCK_PERMISSION_BU77);

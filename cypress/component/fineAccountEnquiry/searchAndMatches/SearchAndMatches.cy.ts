@@ -5,13 +5,12 @@ import {
 } from '../../CommonIntercepts/CommonIntercepts';
 import { USER_STATE_MOCK_PERMISSION_BU77 } from 'cypress/component/CommonIntercepts/CommonUserState.mocks';
 import { setupFinesMacRouteComponent } from 'cypress/component/CommonSetup/FinesMac/FinesMacSetup';
+import { JIRA_EPICS, NFR } from 'cypress/shared/jiraTicketReference/jiraTicketReference.shared';
 
 const ACCOUNT_ENQUIRY_JIRA_LABEL = '@JIRA-LABEL:account-enquiry';
 
-const buildTags = (...tags: string[]): string[] => [...tags, ACCOUNT_ENQUIRY_JIRA_LABEL];
-
-describe('Search Account Component', () => {
-  it('Time between tab changes should be less than 250ms cy.wrap', { tags: [] }, () => {
+describe('Search Account Component', { tags: [ACCOUNT_ENQUIRY_JIRA_LABEL] }, () => {
+  it('Time between tab changes should be less than 250ms cy.wrap', { tags: [JIRA_EPICS.NFR, NFR.SYS_NFR_095] }, () => {
     interceptAuthenticatedUser();
     interceptUserState(USER_STATE_MOCK_PERMISSION_BU77);
     interceptBusinessUnits();
