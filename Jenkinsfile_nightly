@@ -1,19 +1,13 @@
 #!groovy
-/* groovylint-disable CompileStatic */
+/* groovylint-disable CompileStatic, MethodCount */
 import groovy.transform.Field
 import java.time.DayOfWeek
 import java.time.ZonedDateTime
 
 @Field String legacyUrlDevChoice = 'DEV'
-@Field String stringTrue = String.valueOf(true)
-@Field String stringFalse = String.valueOf(false)
-@Field String defaultReleaseSuite = 'default'
-@Field String releaseSuiteR1a = 'r1a'
-@Field String releaseSuiteR1ab = 'r1ab'
-@Field String releaseSuiteR1aOff = 'r1a_off'
-@Field String releaseSuiteR1bOff = 'r1b_off'
-@Field String releaseSuiteR1cWriteOffOff = 'r1c_write_off_off'
-@Field String releaseSuiteR1cEnforcementOperationalReportingOff = 'r1c_enforcement_operational_reporting_off'
+@Field String legacyUrlPreProdChoice = 'PRE-PROD'
+@Field String functionalR1aCommand = 'test:functional:r1a'
+@Field String functionalR1aOffCommand = 'test:functional:r1a_off'
 
 properties([
     // H allow predefined but random minute see https://en.wikipedia.org/wiki/Cron#Non-standard_characters
@@ -27,33 +21,25 @@ properties([
     booleanParam(name: 'RunChrome', defaultValue: false, description: 'Run Chrome tests'),
     booleanParam(name: 'RunFirefox', defaultValue: false, description: 'Run Firefox tests'),
     booleanParam(
+      name: 'RunR1aLegacyDemo',
+      defaultValue: true,
+      description: 'Run R1A legacy demo stage (demo -> legacy checks)'
+    ),
+    booleanParam(
       name: 'RunUatTech',
       defaultValue: false,
-      description: 'Run UAT-Technical stage (staging -> pre-prod legacy checks)'
+      description: 'Run UAT-Technical stage (demo -> selected legacy checks)'
+    ),
+    booleanParam(
+      name: 'RunR1aOffLegacyDemo',
+      defaultValue: false,
+      description: 'Run R1A Off legacy demo stage (demo -> selected legacy checks)'
     ),
     booleanParam(name: 'ZephyrExecution', defaultValue: false, description: 'Create Zephyr Execution'),
-    string(
-      name: 'TAGS',
-      defaultValue: '',
-      description: 'Optional Cypress tag expression for targeted nightly runs. When set, smoke tests are skipped.'
-    ),
-    choice(
-      name: 'RELEASE_SUITE',
-      choices: [
-        defaultReleaseSuite,
-        releaseSuiteR1a,
-        releaseSuiteR1ab,
-        releaseSuiteR1aOff,
-        releaseSuiteR1bOff,
-        releaseSuiteR1cWriteOffOff,
-        releaseSuiteR1cEnforcementOperationalReportingOff,
-      ],
-      description: 'Optional release-scoped selector for current-release and feature-flag pipeline runs.'
-    ),
     choice(
       name: 'LEGACY_URL',
-      choices: ['PRE-PROD', legacyUrlDevChoice],
-      description: 'Determines the URL to use for legacy tests.'
+      choices: [legacyUrlDevChoice, legacyUrlPreProdChoice],
+      description: 'Determines the URL to use for legacy tests. Default is DEV until PRE-PROD is ready.'
     ),
   ])
 ])
@@ -72,10 +58,15 @@ String failureResult = 'FAILURE'
 @Field String smokeStageName = 'Smoke Tests'
 @Field String functionalProdArtifactsPath = 'functional-output/prod/**'
 @Field int zeroIndex = 0
+@Field String nightlyTestUrlStaging = 'https://opal-frontend.staging.apps.hmcts.net/'
+@Field String nightlyTestUrlDemo = 'https://opal-frontend.demo.apps.hmcts.net/'
+@Field String demoStageUatTechnicalDirName = 'uat-technical'
+@Field String demoStageR1aDirName = 'r1a-legacy-demo'
+@Field String demoStageR1aOffDirName = 'r1a-off-legacy-demo'
 @Field String legacyGatewayUrlPreProd = 'https://cloudgobgateway.test.platform.hmcts.net/opal'
 @Field String legacyGatewayUrlDev = 'https://opal-legacy-db-stub.staging.platform.hmcts.net/opal'
 @Field String launchDarklyApiVersion = '20240415'
-@Field String launchDarklyEnvironmentKey = 'test'
+@Field String launchDarklyEnvironmentKey = 'demo'
 @Field String launchDarklyFlagKey = 'app-mode'
 @Field String launchDarklyOpalVariationName = opalName
 @Field String launchDarklyLegacyVariationName = 'legacy'
@@ -86,27 +77,6 @@ String failureResult = 'FAILURE'
 @Field String uatTechnicalTagFilter = '(@UAT-Technical) and not @skip'
 @Field int uatHealthCheckIntervalSeconds = 5
 @Field int uatHealthCheckTimeoutMinutes = 1
-@Field List<String> releaseSuiteChoices = [
-  defaultReleaseSuite,
-  releaseSuiteR1a,
-  releaseSuiteR1ab,
-  releaseSuiteR1aOff,
-  releaseSuiteR1bOff,
-  releaseSuiteR1cWriteOffOff,
-  releaseSuiteR1cEnforcementOperationalReportingOff,
-]
-@Field Map<String, String> releaseSuiteFunctionalScripts = [
-  (releaseSuiteR1a)                                 : 'test:functional:r1a',
-  (releaseSuiteR1ab)                                : 'test:functional:r1ab',
-  (releaseSuiteR1aOff)                              : 'test:functional:r1a_off',
-  (releaseSuiteR1bOff)                              : 'test:functional:r1b_off',
-  (releaseSuiteR1cWriteOffOff)                      : 'test:functional:r1c_write_off_off',
-  (releaseSuiteR1cEnforcementOperationalReportingOff): 'test:functional:r1c_enforcement_operational_reporting_off',
-]
-@Field Map<String, String> releaseSuiteComponentScripts = [
-  (releaseSuiteR1a) : 'test:component:r1a',
-  (releaseSuiteR1ab): 'test:component:r1ab',
-]
 
 // Build an Azure KeyVault secret entry.
 static Map<String, Object> secret(String secretName, String envVar) {
@@ -121,69 +91,24 @@ static Map<String, Object> secret(String secretName, String envVar) {
 uk.gov.hmcts.contino.YarnBuilder yarnBuilder =
   new uk.gov.hmcts.contino.YarnBuilder(this)
 
-// Build the nightly secret set, only adding LaunchDarkly credentials for UAT-Technical runs.
+// Build the nightly secret set, including LaunchDarkly credentials for demo legacy stages.
 Map<String, List<Map<String, Object>>> nightlySecrets() {
   List<Map<String, Object>> nightlySecretEntries = [
     secret('OpalTestUserEmail', 'OPAL_TEST_USER_EMAIL'),
     secret('OpalTestUserPassword', 'OPAL_TEST_USER_PASSWORD'),
     secret('jiraAuthToken', 'JIRA_AUTH_TOKEN'),
+    secret('launch-darkly-api-token', 'LD_API_TOKEN'),
   ]
-  if (params.RunUatTech) {
-    nightlySecretEntries.add(secret('launch-darkly-api-token', 'LD_API_TOKEN'))
-  }
   return [
     (secretKey): nightlySecretEntries,
   ]
 }
 
-// Configure shared test-selection environment variables for nightly runs.
-void configureNightlyTags() {
-  String tagExpression = (params.TAGS ?: env.TAGS ?: '').trim()
-  String releaseSuite = (params.RELEASE_SUITE ?: env.RELEASE_SUITE ?: defaultReleaseSuite).toString().trim().toLowerCase()
-
-  if (!releaseSuiteChoices.contains(releaseSuite)) {
-    error "Unsupported RELEASE_SUITE '${releaseSuite}'. Supported values: ${releaseSuiteChoices.join(', ')}"
-  }
-
-  if (tagExpression && releaseSuite != defaultReleaseSuite) {
-    error 'TAGS and RELEASE_SUITE cannot be combined in the nightly pipeline. Choose one selector.'
-  }
-
-  if (releaseSuite != defaultReleaseSuite && (params.Legacy || params.RunUatTech)) {
-    error 'RELEASE_SUITE cannot be combined with Legacy or RunUatTech in the nightly pipeline.'
-  }
-
-  if (releaseSuite != defaultReleaseSuite && params.ZephyrExecution) {
-    error 'RELEASE_SUITE cannot be combined with ZephyrExecution. ' +
-      'Run the release-scoped suite first, then use Zephyr separately if needed.'
-  }
-
-  env.RELEASE_SUITE = releaseSuite
-
-  if (releaseSuite != defaultReleaseSuite) {
-    env.TAGS = ''
-    env.CYPRESS_TAGS = ''
-    env.SKIP_SMOKE = stringTrue
-    echo "Running nightly with RELEASE_SUITE=${releaseSuite}"
-    echo 'Skipping smoke tests for release-scoped nightly run.'
-  } else if (tagExpression) {
-    env.TAGS = tagExpression
-    env.CYPRESS_TAGS = tagExpression
-    env.SKIP_SMOKE = stringTrue
-    echo "Running nightly with TAGS=${tagExpression}"
-    echo 'Skipping smoke tests for tagged nightly run.'
-  } else {
-    env.TAGS = tagExpression
-    env.CYPRESS_TAGS = tagExpression
-    env.SKIP_SMOKE = stringFalse
-    echo 'Running nightly without tag filtering.'
-  }
-}
-
 // Set the staging legacy gateway URL used by chart templating.
 void configureStagingLegacyGatewayUrl() {
+  boolean usePreProdLegacyGateway = params.LEGACY_URL == legacyUrlPreProdChoice
   boolean shouldUsePreProdLegacyGateway =
-    (params.Legacy || params.RunUatTech) && params.LEGACY_URL != legacyUrlDevChoice
+    (params.Legacy || params.RunUatTech) && usePreProdLegacyGateway
 
   env.STG_OPAL_LEGACY_GATEWAY_URL =
     shouldUsePreProdLegacyGateway ? legacyGatewayUrlPreProd : legacyGatewayUrlDev
@@ -278,8 +203,18 @@ INSTALL ${browser.toUpperCase()} OR DISABLE THE ${browser.toUpperCase()} RUN
   return browser
 }
 
-// Archive pipeline artifacts without failing when none are present.
+// Check whether any files in the workspace match the provided glob.
+boolean hasMatchingFiles(String glob) {
+  return findFiles(glob: glob).length > zeroIndex
+}
+
+// Archive pipeline artifacts only when the expected files are present.
 void archiveArtifact(String path) {
+  if (!hasMatchingFiles(path)) {
+    echo "Skipping artifact archive for '${path}' because no matching files were created."
+    return
+  }
+
   archiveArtifacts artifacts: path, allowEmptyArchive: true
 }
 
@@ -289,13 +224,26 @@ void archiveZephyrReports(String outputDir) {
   archiveArtifact("${outputDir}/zephyr/cypress-report-1.json")
 }
 
-// Publish an HTML report directory with Jenkins HTML Publisher.
+// Publish an HTML report directory with Jenkins HTML Publisher when the report exists.
 void publishHtmlReport(String dir, String files, String name) {
+  String normalizedDir = dir.endsWith('/') ? dir[zeroIndex..-2] : dir
+  String reportGlob = "${normalizedDir}/${files}"
+
+  if (!fileExists(normalizedDir)) {
+    echo "Skipping HTML report '${name}' because directory '${normalizedDir}' was not created."
+    return
+  }
+
+  if (!hasMatchingFiles(reportGlob)) {
+    echo "Skipping HTML report '${name}' because report files matching '${reportGlob}' were not created."
+    return
+  }
+
   publishHTML target: [
     allowMissing         : true,
     alwaysLinkToLastBuild: true,
     keepAll              : true,
-    reportDir            : dir,
+    reportDir            : normalizedDir,
     reportFiles          : files,
     reportName           : name
   ]
@@ -333,7 +281,7 @@ int resolveLaunchDarklyVariationIndex(String variationName) {
   return variationIndex
 }
 
-// Patch the LaunchDarkly app-mode flag for the nightly staging environment.
+// Patch the LaunchDarkly app-mode flag for nightly legacy-mode demo checks.
 void patchLaunchDarklyFlagState(boolean enabled, String variationName, String actionMessage) {
   int variationIndex = resolveLaunchDarklyVariationIndex(variationName)
   String patchPayload =
@@ -378,17 +326,33 @@ void patchLaunchDarklyFlagState(boolean enabled, String variationName, String ac
   """
 }
 
-// Probe the nightly staging health endpoint used before running UAT-Technical tests.
-String getHealthCheckStatus() {
-  String legacyHealthEndpoint = "${env.STG_OPAL_LEGACY_GATEWAY_URL}?actionType=getGmasTest"
+// Resolve the legacy gateway URL used by nightly demo legacy checks.
+String resolveLegacyDemoGatewayUrl() {
+  boolean useDevLegacyGateway = params.LEGACY_URL == legacyUrlDevChoice
+  return useDevLegacyGateway ? legacyGatewayUrlDev : legacyGatewayUrlPreProd
+}
+
+// Probe the nightly legacy health endpoint used before running demo legacy checks.
+String getLegacyHealthCheckStatus() {
+  String legacyHealthEndpoint = "${resolveLegacyDemoGatewayUrl()}?actionType=getGmasTest"
   return sh(
     script: "curl -s -o /dev/null -w '%{http_code}' '${legacyHealthEndpoint}' || echo '000'",
     returnStdout: true
   ).trim()
 }
 
-// Wait until the staging health endpoint responds successfully after toggling app mode.
-void waitForUatHealthCheck() {
+// Run the legacy gateway health check only when the selected gateway supports it.
+boolean shouldRunLegacyHealthCheck() {
+  return params.LEGACY_URL == legacyUrlPreProdChoice
+}
+
+// Wait until the legacy health endpoint responds successfully after toggling app mode.
+void waitForLegacyHealthCheck() {
+  if (!shouldRunLegacyHealthCheck()) {
+    echo "Skipping legacy health check because LEGACY_URL=${params.LEGACY_URL} uses the DEV stub."
+    return
+  }
+
   timeout(time: uatHealthCheckTimeoutMinutes, unit: 'MINUTES') {
     script {
       boolean healthy = false
@@ -398,7 +362,7 @@ void waitForUatHealthCheck() {
       )
 
       for (int attemptIndex = zeroIndex; attemptIndex < maxAttempts; attemptIndex++) {
-        String statusCode = healthCheckStatus
+        String statusCode = legacyHealthCheckStatus
         if (statusCode.startsWith('2')) {
           echo "Health check OK (HTTP ${statusCode})"
           healthy = true
@@ -439,25 +403,85 @@ void archiveNightlyWeightArtifacts() {
   }
 }
 
-// Copy generated UAT-Technical report artifacts into a dedicated directory for publishing.
-void prepareUatTechnicalArtifacts(String browserToRun) {
+// Copy generated legacy demo report artifacts into a dedicated directory for publishing.
+void prepareLegacyDemoArtifacts(String browserToRun, String outputDirName, String reportFilePrefix) {
   sh """
-    UAT_DIR='functional-output/prod/${browserToRun}/uat-technical'
-    UAT_CUCUMBER_DIR="\$UAT_DIR/cucumber"
+    OUTPUT_DIR='functional-output/prod/${browserToRun}/${outputDirName}'
+    OUTPUT_CUCUMBER_DIR="\$OUTPUT_DIR/cucumber"
     SOURCE_CUCUMBER_DIR='functional-output/prod/${browserToRun}/cucumber'
     SOURCE_JUNIT_PATH='functional-output/prod/${browserToRun}/${browserToRun}-test-result.xml'
-    mkdir -p "\$UAT_CUCUMBER_DIR"
+    mkdir -p "\$OUTPUT_CUCUMBER_DIR"
 
     if [ -f "\$SOURCE_CUCUMBER_DIR/${browserToRun}-report.html" ]; then
-      cp "\$SOURCE_CUCUMBER_DIR/${browserToRun}-report.html" "\$UAT_CUCUMBER_DIR/uat-technical-report.html"
+      cp "\$SOURCE_CUCUMBER_DIR/${browserToRun}-report.html" "\$OUTPUT_CUCUMBER_DIR/${reportFilePrefix}-report.html"
     fi
     if [ -f "\$SOURCE_CUCUMBER_DIR/${browserToRun}-report.ndjson" ]; then
-      cp "\$SOURCE_CUCUMBER_DIR/${browserToRun}-report.ndjson" "\$UAT_CUCUMBER_DIR/uat-technical-report.ndjson"
+      cp "\$SOURCE_CUCUMBER_DIR/${browserToRun}-report.ndjson" "\$OUTPUT_CUCUMBER_DIR/${reportFilePrefix}-report.ndjson"
     fi
     if [ -f "\$SOURCE_JUNIT_PATH" ]; then
-      cp "\$SOURCE_JUNIT_PATH" "\$UAT_DIR/uat-technical-test-result.xml"
+      cp "\$SOURCE_JUNIT_PATH" "\$OUTPUT_DIR/${reportFilePrefix}-test-result.xml"
     fi
   """
+}
+
+// Run a demo environment legacy-mode stage with dedicated LaunchDarkly handling and reporting.
+void runDemoLegacyStage(Map<String, Object> stageConfig, Closure runCommand) {
+  boolean enabled = (stageConfig.enabled ?: false) as boolean
+  String stageName = stageConfig.stageName as String
+  String failureResultValue = stageConfig.failureResultValue as String
+  String failureMessage = stageConfig.failureMessage as String
+  String startMessage = stageConfig.startMessage as String
+  String outputDirName = stageConfig.outputDirName as String
+  String reportName = stageConfig.reportName as String
+  String browserToRun = stageConfig.browserToRun as String
+  List<String> extraEnv = (stageConfig.extraEnv ?: []) as List<String>
+  String reportFilePrefix = outputDirName
+
+  runNightlyStage(enabled, stageName, failureResultValue, failureMessage) {
+    boolean launchDarklyFlagPatched = false
+    List<String> stageEnv = [
+      "TEST_URL=${nightlyTestUrlDemo}",
+      'DEFAULT_APP_MODE=legacy',
+      'LEGACY_ENABLED=true',
+      "BROWSER_TO_RUN=${browserToRun}",
+    ] + extraEnv
+
+    try {
+      echo startMessage
+      patchLaunchDarklyFlagState(
+        true,
+        launchDarklyLegacyVariationName,
+        "Setting LaunchDarkly flag to legacy for demo (${stageName})..."
+      )
+      launchDarklyFlagPatched = true
+      waitForLegacyHealthCheck()
+      sh 'echo "Waiting 30s for system warmup..." ; sleep 30'
+
+      withEnv(stageEnv) {
+        runCommand.call()
+      }
+
+      prepareLegacyDemoArtifacts(browserToRun, outputDirName, reportFilePrefix)
+    } finally {
+      archiveArtifact(functionalProdArtifactsPath)
+      archiveArtifact('functional-output/account_evidence/created-accounts.json')
+      archiveArtifact('functional-output/account_evidence/**')
+      archiveArtifact("functional-output/screenshots/${browserToRun}/**")
+      archiveArtifact("functional-output/prod/${browserToRun}/${outputDirName}/**")
+      publishHtmlReport(
+        "functional-output/prod/${browserToRun}/${outputDirName}/cucumber/",
+        "${reportFilePrefix}-report.html",
+        reportName
+      )
+      if (launchDarklyFlagPatched) {
+        patchLaunchDarklyFlagState(
+          true,
+          launchDarklyOpalVariationName,
+          "Restoring LaunchDarkly flag to opal for demo (${stageName})..."
+        )
+      }
+    }
+  }
 }
 
 // Run component tests and publish browser-specific reports and screenshots.
@@ -469,20 +493,7 @@ void runComponentStage(
   String browserToRun
 ) {
   runNightlyStage(enabled, 'Component Tests', failureResultValue, 'Component tests failed') {
-    String releaseSuite = (env.RELEASE_SUITE ?: defaultReleaseSuite).toString().trim().toLowerCase()
-
-    // Components run for default, r1a, and r1ab.
-    // Flag-disabled suites (for example r1a_off) skip this stage unless releaseSuiteComponentScripts includes them.
-    if (releaseSuite != defaultReleaseSuite && !releaseSuiteComponentScripts.containsKey(releaseSuite)) {
-      echo "Skipping component tests for release-scoped nightly run: ${releaseSuite}"
-      return
-    }
-
-    // Default nightly runs keep the existing full component/Zephyr path.
-    // Release-scoped runs swap to the matching component subset script.
-    String componentCommand = releaseSuite == defaultReleaseSuite
-      ? (shouldRunWithZephyr ? 'zephyr:test:component' : 'test:component')
-      : releaseSuiteComponentScripts.get(releaseSuite)
+    String componentCommand = shouldRunWithZephyr ? 'zephyr:test:component' : 'test:component'
 
     try {
       builder.yarn(componentCommand)
@@ -497,56 +508,73 @@ void runComponentStage(
   }
 }
 
-// Run the UAT-Technical staging checks against legacy app mode and publish a dedicated report.
+// Run the UAT-Technical demo checks against legacy app mode and publish a dedicated report.
 void runUatTechnicalStage(
   boolean enabled,
   String failureResultValue,
   String browserToRun
 ) {
-  runNightlyStage(enabled, 'UAT-Technical', failureResultValue, 'UAT-Technical failed') {
-    boolean launchDarklyFlagPatched = false
+  String startMessage =
+    "Running UAT-Technical scenarios against ${nightlyTestUrlDemo} " +
+    'with yarn test:functional:uat_legacy'
 
-    try {
-      echo "Running UAT-Technical scenarios with TAGS=${uatTechnicalTagFilter}"
-      patchLaunchDarklyFlagState(
-        true,
-        launchDarklyLegacyVariationName,
-        'Setting LaunchDarkly flag to legacy for staging...'
-      )
-      launchDarklyFlagPatched = true
-      waitForUatHealthCheck()
-      sh 'echo "Waiting 30s for system warmup..." ; sleep 30'
+  runDemoLegacyStage([
+    enabled           : enabled,
+    stageName         : 'UAT-Technical',
+    failureResultValue: failureResultValue,
+    failureMessage    : 'UAT-Technical failed',
+    startMessage      : startMessage,
+    outputDirName     : demoStageUatTechnicalDirName,
+    reportName        : "UAT-Technical Functional Test Report (${browserToRun})",
+    browserToRun      : browserToRun,
+  ]) {
+    sh 'node scripts/run-yarn-sequence.js test:functional:uat_legacy'
+  }
+}
 
-      withEnv([
-        "TAGS=${uatTechnicalTagFilter}",
-        "CYPRESS_TAGS=${uatTechnicalTagFilter}",
-        'DEFAULT_APP_MODE=legacy',
-        'LEGACY_ENABLED=true',
-        "BROWSER_TO_RUN=${browserToRun}",
-      ]) {
-        sh 'node scripts/run-yarn-sequence.js test:functional:tags'
-      }
+// Run the nightly R1A legacy demo checks and publish a dedicated report.
+void runR1aLegacyDemoStage(
+  boolean enabled,
+  String failureResultValue,
+  uk.gov.hmcts.contino.YarnBuilder builder,
+  String browserToRun
+) {
+  runDemoLegacyStage([
+    enabled           : enabled,
+    stageName         : 'R1A Legacy Demo',
+    failureResultValue: failureResultValue,
+    failureMessage    : 'R1A Legacy Demo failed',
+    startMessage      :
+      "Running R1A legacy demo scenarios against ${nightlyTestUrlDemo} " +
+      "with yarn ${functionalR1aCommand}",
+    outputDirName     : demoStageR1aDirName,
+    reportName        : "R1A Legacy Demo Functional Test Report (${browserToRun})",
+    browserToRun      : browserToRun,
+  ]) {
+    builder.yarn(functionalR1aCommand)
+  }
+}
 
-      prepareUatTechnicalArtifacts(browserToRun)
-    } finally {
-      archiveArtifact(functionalProdArtifactsPath)
-      archiveArtifact('functional-output/account_evidence/created-accounts.json')
-      archiveArtifact('functional-output/account_evidence/**')
-      archiveArtifact("functional-output/screenshots/${browserToRun}/**")
-      archiveArtifact("functional-output/prod/${browserToRun}/uat-technical/**")
-      publishHtmlReport(
-        "functional-output/prod/${browserToRun}/uat-technical/cucumber/",
-        'uat-technical-report.html',
-        "UAT-Technical Functional Test Report (${browserToRun})"
-      )
-      if (launchDarklyFlagPatched) {
-        patchLaunchDarklyFlagState(
-          true,
-          launchDarklyOpalVariationName,
-          'Restoring LaunchDarkly flag to opal for staging...'
-        )
-      }
-    }
+// Run the optional R1A Off legacy demo checks and publish a dedicated report.
+void runR1aOffLegacyDemoStage(
+  boolean enabled,
+  String failureResultValue,
+  uk.gov.hmcts.contino.YarnBuilder builder,
+  String browserToRun
+) {
+  runDemoLegacyStage([
+    enabled           : enabled,
+    stageName         : 'R1A Off Legacy Demo',
+    failureResultValue: failureResultValue,
+    failureMessage    : 'R1A Off Legacy Demo failed',
+    startMessage      :
+      "Running R1A Off legacy demo scenarios against ${nightlyTestUrlDemo} " +
+      "with yarn ${functionalR1aOffCommand}",
+    outputDirName     : demoStageR1aOffDirName,
+    reportName        : "R1A Off Legacy Demo Functional Test Report (${browserToRun})",
+    browserToRun      : browserToRun,
+  ]) {
+    builder.yarn(functionalR1aOffCommand)
   }
 }
 
@@ -557,19 +585,6 @@ void runSmokeStage(
   uk.gov.hmcts.contino.YarnBuilder builder,
   String browserToRun
 ) {
-  if (enabled && (env.SKIP_SMOKE ?: stringFalse).toBoolean()) {
-    stage(smokeStageName) {
-      String releaseSuite = (env.RELEASE_SUITE ?: defaultReleaseSuite).toString().trim().toLowerCase()
-
-      if (releaseSuite != defaultReleaseSuite) {
-        echo "Skipping smoke tests because RELEASE_SUITE=${releaseSuite}"
-      } else {
-        echo "Skipping smoke tests because TAGS=${env.TAGS}"
-      }
-    }
-    return
-  }
-
   runNightlyStage(enabled, smokeStageName, failureResultValue, 'Smoke tests failed') {
     try {
       builder.yarn('test:smoke')
@@ -595,10 +610,7 @@ void runFunctionalStage(
   String browserToRun
 ) {
   runNightlyStage(enabled, 'Functional Tests', failureResultValue, 'Functional tests failed') {
-    String releaseSuite = (env.RELEASE_SUITE ?: defaultReleaseSuite).toString().trim().toLowerCase()
-    String functionalCommand = releaseSuite == defaultReleaseSuite
-      ? (shouldRunWithZephyr ? 'zephyr:test:functional' : 'test:functional')
-      : releaseSuiteFunctionalScripts.get(releaseSuite)
+    String functionalCommand = shouldRunWithZephyr ? 'zephyr:test:functional' : 'test:functional'
 
     try {
       builder.yarn(functionalCommand)
@@ -647,14 +659,8 @@ void runBrowserStage(
   Map<String, String> stageConfig
 ) {
   runNightlyStage(enabled, stageConfig.stageName, failureResultValue, failureMessage) {
-    String releaseSuite = (env.RELEASE_SUITE ?: defaultReleaseSuite).toString().trim().toLowerCase()
-    boolean hasReleaseSuiteSelection = releaseSuite != defaultReleaseSuite
-    String yarnCommand = hasReleaseSuiteSelection
-      ? "${releaseSuiteFunctionalScripts.get(releaseSuite)} --browser=${stageConfig.browserToRun}"
-      : stageConfig.yarnCommand
-
     try {
-      builder.yarn(yarnCommand)
+      builder.yarn(stageConfig.yarnCommand)
     } finally {
       archiveArtifact("functional-output/prod/${stageConfig.browserToRun}/**")
       archiveArtifact("functional-output/screenshots/${stageConfig.browserToRun}/**")
@@ -743,7 +749,7 @@ void setupTestSpecifications() {
 
 withNightlyPipeline(type, product, component) {
   loadVaultSecrets(nightlySecrets())
-  env.TEST_URL = 'https://opal-frontend.staging.apps.hmcts.net/'
+  env.TEST_URL = nightlyTestUrlStaging
   configureStagingLegacyGatewayUrl()
 
   before('akschartsinstall') {
@@ -757,7 +763,6 @@ withNightlyPipeline(type, product, component) {
     if (!isBrowserInstalled(browserFirefox)) {
       echoBrowserMissingBanner(browserFirefox)
     }
-    configureNightlyTags()
     env.BROWSER_TO_RUN = resolvePipelineBrowser(env.BROWSER_TO_RUN ?: browserEdge)
     echo "Using browser for this pipeline run: ${env.BROWSER_TO_RUN}"
     performArtifactOperations()
@@ -774,7 +779,9 @@ withNightlyPipeline(type, product, component) {
     echo 'Legacy:' + params.Legacy
     echo 'RunChrome:' + params.RunChrome
     echo 'RunFirefox:' + params.RunFirefox
+    echo 'RunR1aLegacyDemo:' + params.RunR1aLegacyDemo
     echo 'RunUatTech:' + params.RunUatTech
+    echo 'RunR1aOffLegacyDemo:' + params.RunR1aOffLegacyDemo
     echo 'LegacyUrl:' + params.LEGACY_URL
 
     DayOfWeek today = ZonedDateTime.now().dayOfWeek
@@ -810,6 +817,8 @@ Description: ${env.EXECUTION_CYCLE_DESCRIPTION}
       shouldRunWithZephyr,
       browserToRun
     )
+    runR1aLegacyDemoStage(params.RunR1aLegacyDemo, failureResult, yarnBuilder, browserToRun)
+    runR1aOffLegacyDemoStage(params.RunR1aOffLegacyDemo, failureResult, yarnBuilder, browserToRun)
     runUatTechnicalStage(params.RunUatTech, failureResult, browserToRun)
     runLegacyStage(params.Legacy, failureResult, yarnBuilder, browserToRun)
     runBrowserStage(
