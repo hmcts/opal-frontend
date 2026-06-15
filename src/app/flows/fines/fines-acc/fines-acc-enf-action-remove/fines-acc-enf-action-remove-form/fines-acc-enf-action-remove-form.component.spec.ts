@@ -48,9 +48,9 @@ describe('FinesAccEnfActionRemoveFormComponent', () => {
   });
 
   it('maps validation errors to the expected user-facing messages', () => {
-    expect(
-      FINES_ACC_ENF_ACTION_REMOVE_FIELD_ERRORS.facc_enf_action_remove_reason.maxlength.message,
-    ).toBe('Reason must be 24 characters or fewer');
+    expect(FINES_ACC_ENF_ACTION_REMOVE_FIELD_ERRORS.facc_enf_action_remove_reason.maxlength.message).toBe(
+      'Reason must be 24 characters or fewer',
+    );
     expect(
       FINES_ACC_ENF_ACTION_REMOVE_FIELD_ERRORS.facc_enf_action_remove_reason
         .alphanumericWithHyphensSpacesApostrophesPattern.message,
