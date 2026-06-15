@@ -55,6 +55,7 @@ import { PrimaryNavigationActions } from '../../../e2e/functional/opal/actions/p
 import {
   buildPublishedNonVehicleFixedPenaltyOverrides,
   buildPublishedVehicleFixedPenaltyCompanyOverrides,
+  DEFAULT_FIXED_PENALTY_ISSUING_AUTHORITY,
 } from './draft-account.seed-builders';
 
 type AccountType = DraftPayloadType;
@@ -405,12 +406,12 @@ Given('a published adult or youth defendant account exists:', (table: DataTable)
  *
  * @example
  *   Given a published non-vehicle fixed penalty account exists:
- *     | first name        | Robert                  |
- *     | last name         | FixedPenaltyNV{uniq}    |
- *     | ticket number     | FPR1BNV{uniqUpper}      |
- *     | issuing authority | City of Metropolis      |
- *     | time of offence   | 14:30                   |
- *     | place of offence  | Main Street, Metropolis |
+ *     | first name        | Robert                               |
+ *     | last name         | FixedPenaltyNV{uniq}                 |
+ *     | ticket number     | FPR1BNV{uniqUpper}                   |
+ *     | issuing authority | City of London Central Ticket Office |
+ *     | time of offence   | 14:30                                |
+ *     | place of offence  | Main Street, Metropolis              |
  */
 Given('a published non-vehicle fixed penalty account exists:', (table: DataTable) => {
   const values = parseSeedValues(table);
@@ -418,7 +419,7 @@ Given('a published non-vehicle fixed penalty account exists:', (table: DataTable
   const firstNames = values['first name'] ?? values['first names'];
   const lastName = values['last name'];
   const ticketNumber = values['ticket number'];
-  const issuingAuthority = values['issuing authority'] ?? 'Fixed Penalty Office';
+  const issuingAuthority = values['issuing authority'] ?? DEFAULT_FIXED_PENALTY_ISSUING_AUTHORITY;
   const timeOfOffence = values['time of offence'] ?? '14:30';
   const placeOfOffence = values['place of offence'];
   const businessUnitId = resolveBusinessUnitId(values['business unit id']);
@@ -487,7 +488,7 @@ Given('a published vehicle fixed penalty company account exists:', (table: DataT
 
   const companyName = values['company name'];
   const ticketNumber = values['ticket number'];
-  const issuingAuthority = values['issuing authority'] ?? 'Fixed Penalty Office';
+  const issuingAuthority = values['issuing authority'] ?? DEFAULT_FIXED_PENALTY_ISSUING_AUTHORITY;
   const registrationNumber = values['registration number'];
   const drivingLicence = values['driving licence'];
   const ntoNumber = values['notice to owner or hirer number (nto/nth)'];

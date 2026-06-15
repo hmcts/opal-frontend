@@ -49,7 +49,7 @@ Feature: Manual account creation - Account Comments and Notes
       | comment            | note                       |
       | Plain comment      | Account, note-1. O'Neil ok |
 
-  @JIRA-DEFECT:PO-3713 @JIRA-TEST-KEY:PO-5400
+  @JIRA-DEFECT:PO-3713 @JIRA-TEST-KEY:PO-5400 @JIRA_NFR:PO-2549
   Scenario: Account comments and notes show updated allowed character error messages [@PO-3713, @PO-3415]
     Given I start a fine manual account for business unit "West London" with defendant type "Adult or youth" and originator type "New"
     When I provide account comments "Invalid ©µ±ö€" and notes "Invalid ©µ±ö€"

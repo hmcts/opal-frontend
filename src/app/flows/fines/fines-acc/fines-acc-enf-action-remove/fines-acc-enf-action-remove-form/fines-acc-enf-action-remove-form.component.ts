@@ -15,7 +15,10 @@ import { FINES_ACC_ENF_ACTION_REMOVE_FIELD_ERRORS } from '../constants/fines-acc
 import { IFinesAccEnfActionRemoveFormState } from '../interfaces/fines-acc-enf-action-remove-form-state.interface';
 
 const REASON_MAX_LENGTH = 24;
-const REASON_PATTERN_VALIDATOR = patternValidator(/^[a-zA-Z0-9 '-]*$/, 'alphanumericWithHyphensSpacesApostrophesPattern');
+const REASON_PATTERN_VALIDATOR = patternValidator(
+  /^[a-zA-Z0-9 '-]*$/,
+  'alphanumericWithHyphensSpacesApostrophesPattern',
+);
 
 @Component({
   selector: 'app-fines-acc-enf-action-remove-form',
