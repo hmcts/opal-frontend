@@ -33,6 +33,8 @@ String skipLabelComponent = 'skip_opal_component'
 @Field String functionalWeights = 'functional-parallel-weights.json'
 @Field String componentWeights = 'component-parallel-weights.json'
 @Field String functionalArtifactsGlob = 'functional-output/**'
+@Field String smokeArtifactsRoot = 'smoke-output'
+@Field String smokeReportFile = 'smoke-report.html'
 @Field String weightsPipelineArtifactsFilter = '**/cypress/parallel/weights/pipeline/*'
 @Field String mkdirPipelineCmd = "mkdir -p ${pipelineWeightsDir}"
 @Field String copySmokeToPipelineCmd = "cp -r ${weightsRoot}/${smokeWeights} ${pipelineWeightsDir}/"
@@ -40,6 +42,7 @@ String skipLabelComponent = 'skip_opal_component'
 String smokeXmlReport = 'cypress/reports/smokeXmlReport.html'
 String functionalXmlReport = 'cypress/reports/functionalXmlReport.html'
 @Field String runReleasePrefix = 'run_release:'
+@Field String andTagSeparator = ' and '
 @Field String skipTagExpression = 'not @skip'
 @Field String functionalFeatureGlob = 'cypress/e2e/functional/opal/**/*.feature'
 @Field String releaseSuiteR1a = 'r1a'
@@ -48,7 +51,9 @@ String functionalXmlReport = 'cypress/reports/functionalXmlReport.html'
 @Field String releaseSuiteR1bOff = 'r1b_off'
 @Field String releaseSuiteR1cWriteOffOff = 'r1c_write_off_off'
 @Field String releaseSuiteR1cEnforcementOperationalReportingOff = 'r1c_enforcement_operational_reporting_off'
-@Field String defaultFunctionalTagPrefix = 'not @FeatureFlag and not @UAT-Technical and '
+@Field String defaultFunctionalTagExpression =
+  'not @UAT-Technical and not @skip' + andTagSeparator +
+  'not (@R1AOff or @R1BOff or @R1CWriteOffOff or @R1CEnforcementOperationalReportingOff)'
 @Field String macPopulateAndSubmitFeatureGlob =
   'cypress/e2e/functional/opal/features/manualAccountCreation/populateAndSubmit/**/*.feature,'
 @Field String macCheckAndValidateFeatureGlob =
@@ -58,16 +63,16 @@ String functionalXmlReport = 'cypress/reports/functionalXmlReport.html'
 @Field String finesPrimaryNavigationFeatureGlob =
   'cypress/e2e/functional/opal/features/navigation/finesPrimaryNavigation.feature'
 @Field String r1aPositiveTagExpression =
-  defaultFunctionalTagPrefix + skipTagExpression + ' and not @R1B ' +
-  'and not @R1CFinance and not @R1CEnforcementOperationalReporting and not @R1CAdministration'
+  defaultFunctionalTagExpression + andTagSeparator +
+  'not (@R1B or @R1CFinance or @R1CWriteOff or @R1CEnforcementOperationalReporting or @R1CAdministration)'
 @Field String r1abPositiveTagExpression =
-  defaultFunctionalTagPrefix + skipTagExpression + ' and not @R1CFinance ' +
-  'and not @R1CEnforcementOperationalReporting and not @R1CAdministration'
-@Field String r1aOffTagExpression = '(@R1AOff) and ' + skipTagExpression
-@Field String r1bOffTagExpression = '(@R1BOff) and ' + skipTagExpression
-@Field String r1cWriteOffOffTagExpression = '(@R1CWriteOffOff) and ' + skipTagExpression
+  defaultFunctionalTagExpression + andTagSeparator +
+  'not (@R1CFinance or @R1CWriteOff or @R1CEnforcementOperationalReporting or @R1CAdministration)'
+@Field String r1aOffTagExpression = '(@R1AOff)' + andTagSeparator + skipTagExpression
+@Field String r1bOffTagExpression = '(@R1BOff)' + andTagSeparator + skipTagExpression
+@Field String r1cWriteOffOffTagExpression = '(@R1CWriteOffOff)' + andTagSeparator + skipTagExpression
 @Field String r1cEnforcementOperationalReportingOffTagExpression =
-  '(@R1CEnforcementOperationalReportingOff) and ' + skipTagExpression
+  '(@R1CEnforcementOperationalReportingOff)' + andTagSeparator + skipTagExpression
 @Field String r1aFeatureSpecGlob =
   macPopulateAndSubmitFeatureGlob +
   macCheckAndValidateFeatureGlob +
@@ -129,11 +134,6 @@ String functionalOutputDir() {
     return "functional-output/prod/${resolvedBrowserToRun()}/cucumber/"
 }
 
-// Resolve the functional report filename for the active browser.
-String functionalReportFile() {
-    return "${resolvedBrowserToRun()}-report.html"
-}
-
 // Build the functional report display name for the active browser.
 String functionalReportName() {
     return "Cucumber Functional Test Report (${resolvedBrowserToRun()})"
@@ -141,22 +141,12 @@ String functionalReportName() {
 
 // Resolve the smoke report directory for the active browser.
 String smokeOutputDir() {
-    return "smoke-output/prod/${resolvedBrowserToRun()}/cucumber/"
-}
-
-// Return the smoke report filename.
-String smokeReportFile() {
-    return 'smoke-report.html'
+    return "${smokeArtifactsRoot}/prod/${resolvedBrowserToRun()}/cucumber/"
 }
 
 // Build the smoke report display name for the active browser.
 String smokeReportName() {
     return "Cucumber Smoke Test Report (${resolvedBrowserToRun()})"
-}
-
-// Return whether smoke execution/report publishing is enabled for this run.
-boolean shouldPublishSmokeReport() {
-    return (env.SKIP_SMOKE ?: stringFalse).trim().toLowerCase() != stringTrue
 }
 String accountArtifactPath = 'functional-output/account_evidence/created-accounts.json'
 String accountEvidenceArtifacts = 'functional-output/account_evidence/**'
@@ -226,6 +216,19 @@ void publishHtmlReport(String dir, String files, String name) {
     reportFiles          : files,
     reportName           : name
   ]
+}
+
+// Emit a short hint when functional raw outputs exist but merged reports do not.
+void echoFunctionalReportHint() {
+    String browser = resolvedBrowserToRun()
+    String outputDir = "functional-output/prod/${browser}"
+    String mergedXml = "${outputDir}/${browser}-test-result.xml"
+    String htmlReport = "${outputDir}/cucumber/${browser}-report.html"
+
+    if (fileExists(outputDir) && (!fileExists(mergedXml) || !fileExists(htmlReport))) {
+        echo "Functional stage hint: output exists in ${outputDir}, but merged reports are incomplete. " +
+          "If Cypress already printed 'All specs passed', suspect post-run report merge or runner shutdown."
+    }
 }
 
 // Check whether the requested browser binary is available on the Jenkins agent.
@@ -558,7 +561,6 @@ echo "OPAL_LOG_LEVEL=${env.OPAL_LOG_LEVEL}"
 // Find the first label like: run_tag:<expression>
 String tagLabel = cachedPrLabels.find { String label -> label.startsWith(runTagPrefix) }
 String releaseSuiteLabel = cachedPrLabels.find { String label -> label.startsWith(runReleasePrefix) }
-String defaultFunctionalTagExpression = defaultFunctionalTagPrefix + skipTagExpression
 String baseTags = tagLabel ? tagLabel.substring(runTagPrefix.length()).trim() : ''
 String releaseSuite = normalizeReleaseSuite(
   releaseSuiteLabel ? releaseSuiteLabel.substring(runReleasePrefix.length()) : ''
@@ -731,19 +733,20 @@ withPipeline(type, product, component) {
 
     // Publish HTML and JSON artifacts for staging functional runs
     afterAlways(stageFunctionalStg) {
+        echoFunctionalReportHint()
         publishHtmlReport(
         functionalOutputDir(),
-        functionalReportFile(),
+        "${resolvedBrowserToRun()}-report.html",
         functionalReportName()
       )
         archiveArtifact(functionalArtifactsGlob)
-        archiveZephyrReports('smoke-output')
+        archiveZephyrReports(smokeArtifactsRoot)
         archiveArtifact(accountArtifactPath)
         archiveArtifact(accountEvidenceArtifacts)
-        if (shouldPublishSmokeReport()) {
+        if ((env.SKIP_SMOKE ?: stringFalse).trim().toLowerCase() != stringTrue) {
             publishHtmlReport(
             smokeOutputDir(),
-            smokeReportFile(),
+            smokeReportFile,
             smokeReportName()
           )
         } else {
@@ -752,20 +755,21 @@ withPipeline(type, product, component) {
     }
     // Publish HTML and JSON artifacts for dev functional runs
     afterAlways(stageFunctionalDev) {
+        echoFunctionalReportHint()
         publishHtmlReport(
         functionalOutputDir(),
-        functionalReportFile(),
+        "${resolvedBrowserToRun()}-report.html",
         functionalReportName()
       )
         archiveArtifact(functionalArtifactsGlob)
-        archiveZephyrReports('smoke-output')
+        archiveZephyrReports(smokeArtifactsRoot)
         archiveArtifact(accountArtifactPath)
         archiveArtifact(accountEvidenceArtifacts)
 
-        if (shouldPublishSmokeReport()) {
+        if ((env.SKIP_SMOKE ?: stringFalse).trim().toLowerCase() != stringTrue) {
             publishHtmlReport(
             smokeOutputDir(),
-            smokeReportFile(),
+            smokeReportFile,
             smokeReportName()
           )
         } else {

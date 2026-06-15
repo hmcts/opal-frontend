@@ -11,7 +11,6 @@ import {
   interceptUserState,
   interceptNextPermittedEnforcementActionsEmpty,
   interceptNextPermittedEnforcementActions,
-  interceptResultByCode,
   interceptEnforcers,
 } from 'cypress/component/CommonIntercepts/CommonIntercepts';
 import { USER_STATE_MOCK_PERMISSION_BU77 } from 'cypress/component/CommonIntercepts/CommonUserState.mocks';
@@ -21,6 +20,7 @@ import {
 } from '../accountEnquiry/intercept/defendantAccountIntercepts';
 import {
   createDefendantHeaderMockWithName,
+  createParentGuardianHeaderMockWithName,
   DEFENDANT_HEADER_ORG_MOCK,
 } from '../accountEnquiry/mocks/defendant_details_mock';
 import { FINES_ACC_ENF_ACTION_ADD_RESULT_MOCK } from '@app/flows/fines/fines-acc/fines-acc-enf-action-add/mocks/fines-acc-enf-action-add-result.mock';
@@ -80,6 +80,46 @@ const statusScenarios = [
   { code: 'TS', reason: 'TFO Out Acknowledged' },
   { code: 'TA', reason: 'TFO to be Acknowledged' },
 ];
+
+const EMPLOYMENT_REQUIRED_ACTION = {
+  result_id: 'AEOC',
+  result_title: 'Attachment of Earnings Order',
+};
+
+const interceptEmploymentRequiredAction = () => {
+  cy.intercept('GET', `/opal-fines-service/results?result_ids=${EMPLOYMENT_REQUIRED_ACTION.result_id}`, {
+    statusCode: 200,
+    body: {
+      count: 1,
+      refData: [
+        {
+          result_id: EMPLOYMENT_REQUIRED_ACTION.result_id,
+          result_title: EMPLOYMENT_REQUIRED_ACTION.result_title,
+          result_title_cy: null,
+          active: true,
+          result_type: 'Result',
+          imposition_creditor: '',
+          imposition_allocation_order: null,
+        },
+      ],
+    },
+  }).as('getNextPermittedEnfActions');
+
+  cy.intercept(
+    {
+      method: 'GET',
+      pathname: `/opal-fines-service/results/${EMPLOYMENT_REQUIRED_ACTION.result_id}`,
+    },
+    {
+      statusCode: 200,
+      body: {
+        result_id: EMPLOYMENT_REQUIRED_ACTION.result_id,
+        result_title: EMPLOYMENT_REQUIRED_ACTION.result_title,
+        requires_employment_data: true,
+      },
+    },
+  ).as('getResultByCode');
+};
 
 // Note: 'Adult or youth with Parent/Guardian' has not been incl - it uses the same common code and results as 'Adult/youth'
 describe(
@@ -425,38 +465,86 @@ describe(
       },
     );
 
-    // Once route is established in PO 1831 then could uncomment and cover navigation coverage here.
-    // it('AC5b, Individual: Enforcement actions continue no employment history', () => {
-    //   let headerMock = structuredClone(createDefendantHeaderMockWithName('Robert', 'Thomson'));
-    //   headerMock.debtor_type = 'individual';
-    //   headerMock.account_status_reference.account_status_code = 'L';
-    //   let enforcementMock = structuredClone(OPAL_FINES_ACCOUNT_DEFENDANT_DETAILS_ENFORCEMENT_TAB_REF_DATA_MOCK);
-    //   enforcementMock.last_enforcement_action!.enforcement_action.result_id = 'NOENF';
-    //   enforcementMock.last_enforcement_action!.enforcement_action.result_title = 'No enforcement';
-    //   enforcementMock.next_enforcement_action_data = 'WOC, WOA';
-    //   enforcementMock.enforcement_overview.collection_order!.collection_order_flag = true;
-    //   enforcementMock.employer_flag = false;
+    it(
+      'AC1,1a,2a,2b,2c,3. Individual: displays the employment details denied screen when the selected action requires employment data and Go back returns to select enforcement action',
+      { tags: ['@JIRA-STORY:PO-1782', '@JIRA-EPIC:PO-1674'] },
+      () => {
+        let headerMock = structuredClone(createDefendantHeaderMockWithName('Robert', 'Thomson'));
+        headerMock.debtor_type = 'Defendant';
+        headerMock.account_status_reference.account_status_code = 'L';
+        let enforcementMock = structuredClone(OPAL_FINES_ACCOUNT_DEFENDANT_DETAILS_ENFORCEMENT_TAB_REF_DATA_MOCK);
+        enforcementMock.last_enforcement_action!.enforcement_action.result_id = 'WOC';
+        enforcementMock.last_enforcement_action!.enforcement_action.result_title = 'Warrant of Control';
+        enforcementMock.next_enforcement_action_data = EMPLOYMENT_REQUIRED_ACTION.result_id;
+        enforcementMock.enforcement_overview.collection_order!.collection_order_flag = true;
+        enforcementMock.employer_flag = false;
 
-    //   const accountId = headerMock.defendant_account_party_id;
-    //   interceptAuthenticatedUser();
-    //   interceptUserState(USER_STATE_MOCK_PERMISSION_BU77);
-    //   interceptDefendantHeader(accountId, headerMock, '123');
-    //   interceptEnforcementStatus(accountId, enforcementMock, '123');
+        const accountId = headerMock.defendant_account_party_id;
+        interceptAuthenticatedUser();
+        interceptUserState(USER_STATE_MOCK_PERMISSION_BU77);
+        interceptDefendantHeader(accountId, headerMock, '123');
+        interceptEnforcementStatus(accountId, enforcementMock, '123');
+        interceptEmploymentRequiredAction();
 
-    //   interceptNextPermittedEnforcementActions(['WOC', 'WOA']);
-    //   setupAccountEnquiryComponent({ ...COMPONENT_PROPERTIES, accountId });
+        setupAccountEnquiryComponent({ ...COMPONENT_PROPERTIES, accountId });
 
-    //   cy.get(ENF.addEnforcementActionLink).should('exist').click();
-    //   cy.get('@routerNavigate').should('have.been.calledWithMatch', ['../enforcement/action/select']);
+        cy.get(ENF.addEnforcementActionLink).should('exist').click();
+        cy.get(ENF_ACTION_SELECT.actionDropdown).click();
+        cy.get(ENF_ACTION_SELECT.actionDropdownOptions).contains(EMPLOYMENT_REQUIRED_ACTION.result_title).click();
+        cy.get(ENF_ACTION_SELECT.continueButton).click();
 
-    //   cy.get(ENF_ACTION_SELECT.actionDropdown).click();
-    //   cy.get(ENF_ACTION_SELECT.actionDropdownOptions).contains('Warrant of Control').click();
-    //   cy.get(ENF_ACTION_SELECT.continueButton).click();
+        cy.get(ENF_ACTION_SELECT.pageTitle).should('contain.text', 'You cannot add this enforcement action');
+        cy.get(ENF_ACTION_SELECT.accountInfo).should('contain.text', '177A - Mr Robert THOMSON');
+        cy.contains(`${EMPLOYMENT_REQUIRED_ACTION.result_title} (${EMPLOYMENT_REQUIRED_ACTION.result_id})`).should(
+          'be.visible',
+        );
+        cy.contains('The account has missing or incomplete employment details.').should('be.visible');
 
-    //   cy.get('@routerNavigate').should('have.been.calledWithMatch', ['../enforcement/action/cannot-add']);
+        cy.contains('Go back').click();
+        cy.get(ENF_ACTION_SELECT.pageTitle).should('contain.text', 'Add enforcement action');
+        cy.get(ENF_ACTION_SELECT.accountInfo).should('contain.text', '177A - Mr Robert THOMSON');
+      },
+    );
 
-    //   cy.get('@routerNavigate').should('have.been.calledWithMatch', ['../enforcement/action/<real-route-here>']);
-    // });
+    it(
+      'AC1,1a,2a,2b,2c,3. Parent/Guardian: displays the employment details denied screen when the selected action requires employment data and Go back returns to select enforcement action',
+      { tags: ['@JIRA-STORY:PO-1831', '@JIRA-EPIC:PO-1674'] },
+      () => {
+        let headerMock = structuredClone(createParentGuardianHeaderMockWithName('Pat', 'Taylor'));
+        headerMock.account_status_reference.account_status_code = 'L';
+        let enforcementMock = structuredClone(OPAL_FINES_ACCOUNT_DEFENDANT_DETAILS_ENFORCEMENT_TAB_REF_DATA_MOCK);
+        enforcementMock.last_enforcement_action!.enforcement_action.result_id = 'WOC';
+        enforcementMock.last_enforcement_action!.enforcement_action.result_title = 'Warrant of Control';
+        enforcementMock.next_enforcement_action_data = EMPLOYMENT_REQUIRED_ACTION.result_id;
+        enforcementMock.enforcement_overview.collection_order!.collection_order_flag = true;
+        enforcementMock.employer_flag = false;
+
+        const accountId = headerMock.defendant_account_party_id;
+        interceptAuthenticatedUser();
+        interceptUserState(USER_STATE_MOCK_PERMISSION_BU77);
+        interceptDefendantHeader(accountId, headerMock, '123');
+        interceptEnforcementStatus(accountId, enforcementMock, '123');
+        interceptEmploymentRequiredAction();
+
+        setupAccountEnquiryComponent({ ...COMPONENT_PROPERTIES, accountId });
+
+        cy.get(ENF.addEnforcementActionLink).should('exist').click();
+        cy.get(ENF_ACTION_SELECT.actionDropdown).click();
+        cy.get(ENF_ACTION_SELECT.actionDropdownOptions).contains(EMPLOYMENT_REQUIRED_ACTION.result_title).click();
+        cy.get(ENF_ACTION_SELECT.continueButton).click();
+
+        cy.get(ENF_ACTION_SELECT.pageTitle).should('contain.text', 'You cannot add this enforcement action');
+        cy.get(ENF_ACTION_SELECT.accountInfo).should('contain.text', '177A - Mr Pat TAYLOR');
+        cy.contains(`${EMPLOYMENT_REQUIRED_ACTION.result_title} (${EMPLOYMENT_REQUIRED_ACTION.result_id})`).should(
+          'be.visible',
+        );
+        cy.contains('The account has missing or incomplete employment details.').should('be.visible');
+
+        cy.contains('Go back').click();
+        cy.get(ENF_ACTION_SELECT.pageTitle).should('contain.text', 'Add enforcement action');
+        cy.get(ENF_ACTION_SELECT.accountInfo).should('contain.text', '177A - Mr Pat TAYLOR');
+      },
+    );
 
     it(
       'AC6,a Individual: Cancel path no warning',
@@ -572,6 +660,47 @@ describe(
         cy.get(ENF_ACTION_SELECT.pageTitle).should('contain.text', 'Add enforcement action');
         cy.get(ENF_ACTION_SELECT.actionDropdown).should('exist');
         cy.get(ENF_ACTION_SELECT.informationBanner).should('contain.text', 'This is a company account');
+        cy.get(ENF_ACTION_SELECT.accountInfo).should('contain.text', '177A - Sainsco');
+      },
+    );
+
+    it(
+      'AC1,1a,2a,2b,2c,3. Company: displays the employment details denied screen when the selected action requires employment data and Go back returns to select enforcement action',
+      { tags: ['@JIRA-STORY:PO-1841', '@JIRA-EPIC:PO-1674'] },
+      () => {
+        let headerMock = structuredClone(DEFENDANT_HEADER_ORG_MOCK);
+        headerMock.debtor_type = 'Defendant';
+        headerMock.account_status_reference.account_status_code = 'L';
+        let enforcementMock = structuredClone(OPAL_FINES_ACCOUNT_DEFENDANT_DETAILS_ENFORCEMENT_TAB_REF_DATA_MOCK);
+        enforcementMock.last_enforcement_action!.enforcement_action.result_id = 'WOC';
+        enforcementMock.last_enforcement_action!.enforcement_action.result_title = 'Warrant of Control';
+        enforcementMock.next_enforcement_action_data = EMPLOYMENT_REQUIRED_ACTION.result_id;
+        enforcementMock.enforcement_overview.collection_order!.collection_order_flag = true;
+        enforcementMock.employer_flag = false;
+
+        const accountId = headerMock.defendant_account_party_id;
+        interceptAuthenticatedUser();
+        interceptUserState(USER_STATE_MOCK_PERMISSION_BU77);
+        interceptDefendantHeader(accountId, headerMock, '123');
+        interceptEnforcementStatus(accountId, enforcementMock, '123');
+        interceptEmploymentRequiredAction();
+
+        setupAccountEnquiryComponent({ ...COMPONENT_PROPERTIES, accountId });
+
+        cy.get(ENF.addEnforcementActionLink).should('exist').click();
+        cy.get(ENF_ACTION_SELECT.actionDropdown).click();
+        cy.get(ENF_ACTION_SELECT.actionDropdownOptions).contains(EMPLOYMENT_REQUIRED_ACTION.result_title).click();
+        cy.get(ENF_ACTION_SELECT.continueButton).click();
+
+        cy.get(ENF_ACTION_SELECT.pageTitle).should('contain.text', 'You cannot add this enforcement action');
+        cy.get(ENF_ACTION_SELECT.accountInfo).should('contain.text', '177A - Sainsco');
+        cy.contains(`${EMPLOYMENT_REQUIRED_ACTION.result_title} (${EMPLOYMENT_REQUIRED_ACTION.result_id})`).should(
+          'be.visible',
+        );
+        cy.contains('The account has missing or incomplete employment details.').should('be.visible');
+
+        cy.contains('Go back').click();
+        cy.get(ENF_ACTION_SELECT.pageTitle).should('contain.text', 'Add enforcement action');
         cy.get(ENF_ACTION_SELECT.accountInfo).should('contain.text', '177A - Sainsco');
       },
     );

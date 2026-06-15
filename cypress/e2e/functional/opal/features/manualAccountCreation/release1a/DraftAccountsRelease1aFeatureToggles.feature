@@ -1,13 +1,13 @@
 @JIRA-LABEL:manual-account-creation
 Feature: Draft Accounts Release 1A Feature Toggles
 
-  @FeatureFlag @R1A @JIRA-STORY:PO-3719 @JIRA-EPIC:PO-3685
+  @R1A @JIRA-STORY:PO-3719 @JIRA-EPIC:PO-3685
   Scenario: Direct navigation to the Accounts dashboard is allowed when release 1a is enabled
     Given I am authenticated with email "opal-test@dev.platform.hmcts.net"
     When I navigate directly to the Accounts dashboard
     Then I am taken to the "Accounts" Fines landing page
 
-  @FeatureFlag @R1A @JIRA-STORY:PO-3719 @JIRA-EPIC:PO-3685
+  @R1A @JIRA-STORY:PO-3719 @JIRA-EPIC:PO-3685
   Scenario Outline: Direct navigation to <entryPoint> is allowed when release 1a is enabled
     Given I am authenticated with email "opal-test@dev.platform.hmcts.net"
     When I navigate directly to the Accounts dashboard entry point "<entryPoint>"
@@ -18,21 +18,21 @@ Feature: Draft Accounts Release 1A Feature Toggles
       | Create and Manage Draft Accounts | Create accounts |
       | Check and Validate Draft Accounts | Review accounts |
 
-  @FeatureFlag @R1AOff @JIRA-STORY:PO-3719 @JIRA-EPIC:PO-3685
+  @R1AOff @JIRA-STORY:PO-3719 @JIRA-EPIC:PO-3685
   Scenario: Access denied is shown after sign in when release 1a is disabled
     Given I am authenticated with email "opal-test@dev.platform.hmcts.net"
     Then I should see an Access Denied page
     And I should see a "Back to dashboard" action
     And I do not see the Fines primary navigation
 
-  @FeatureFlag @R1AOff @JIRA-STORY:PO-3719 @JIRA-EPIC:PO-3685
+  @R1AOff @JIRA-STORY:PO-3719 @JIRA-EPIC:PO-3685
   Scenario: Direct navigation to the Accounts dashboard is blocked when release 1a is disabled
     Given I am authenticated with email "opal-test@dev.platform.hmcts.net"
     When I navigate directly to the Accounts dashboard
     Then I should see an Access Denied page
     And I should see a "Back to dashboard" action
 
-  @FeatureFlag @R1AOff @JIRA-STORY:PO-3719 @JIRA-EPIC:PO-3685
+  @R1AOff @JIRA-STORY:PO-3719 @JIRA-EPIC:PO-3685
   Scenario Outline: Direct navigation to <entryPoint> is blocked when release 1a is disabled
     Given I am authenticated with email "opal-test@dev.platform.hmcts.net"
     When I navigate directly to the Accounts dashboard entry point "<entryPoint>"
@@ -44,7 +44,7 @@ Feature: Draft Accounts Release 1A Feature Toggles
       | Create and Manage Draft Accounts |
       | Check and Validate Draft Accounts |
 
-  @FeatureFlag @R1BOff @JIRA-STORY:PO-3719 @JIRA-STORY:PO-3720 @JIRA-EPIC:PO-3685
+  @R1BOff @JIRA-STORY:PO-3719 @JIRA-STORY:PO-3720 @JIRA-EPIC:PO-3685
   Scenario: Approved account numbers are shown as plain text when release 1b is disabled
     Given I clear all approved accounts
     And I create a "company" approved account with the following details:
