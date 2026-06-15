@@ -137,28 +137,6 @@ describe('FinesDraftRelease1aFeatureToggles', () => {
     });
   };
 
-  const setupCreateAndManageComponent = (featureFlags: FeatureFlags) => {
-    cy.then(() => {
-      mount(FinesDraftCreateAndManageTabsComponent, {
-        providers: [
-          provideHttpClient(),
-          OpalFines,
-          DateService,
-          FinesMacPayloadService,
-          FinesDraftStore,
-          provideRouter([]),
-          {
-            provide: GlobalStore,
-            useFactory: () => createGlobalStore(DRAFT_SESSION_USER_STATE_MOCK, featureFlags),
-          },
-        ],
-        componentProperties: {
-          activeTab: 'review',
-        },
-      });
-    });
-  };
-
   const setupApprovedAccounts = (featureFlags: FeatureFlags, approvedAccountLinkEnabled = false) => {
     interceptGetRejectedAccounts(200, { count: 0, summaries: [] });
     interceptGetApprovedAccounts(200, {
