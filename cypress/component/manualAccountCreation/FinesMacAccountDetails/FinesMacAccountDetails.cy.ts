@@ -1,19 +1,22 @@
-import { mount } from 'cypress/angular';
-import { ActivatedRoute } from '@angular/router';
 import { FinesMacAccountDetailsComponent } from '../../../../src/app/flows/fines/fines-mac/fines-mac-account-details/fines-mac-account-details.component';
-import { FinesMacStore } from 'src/app/flows/fines/fines-mac/stores/fines-mac.store';
 import { FINES_CHECK_ACCOUNT_MOCK } from './mocks/fines_mac_check_account_mock';
 import { MacAccountDetailsLocators as L } from '../../../shared/selectors/manual-account-creation/mac.account-details.locators';
-import { UtilsService } from '@hmcts/opal-frontend-common/services/utils-service';
-import { DateService } from '@hmcts/opal-frontend-common/services/date-service';
 import { IFinesMacState } from '../../../../src/app/flows/fines/fines-mac/interfaces/fines-mac-state.interface';
 import { FINES_AYG_CHECK_ACCOUNT_MOCK } from './mocks/fines_mac_ayg_check_account_mock';
 import { FINES_AYPG_CHECK_ACCOUNT_MOCK } from './mocks/fines_mac_aypg_check_account_mock';
 import { FINES_COMP_CHECK_ACCOUNT_MOCK } from './mocks/fines_mac_comp_check_account_mock';
-import { FinesDraftStore } from 'src/app/flows/fines/fines-draft/stores/fines-draft.store';
-import { FinesMacPayloadService } from 'src/app/flows/fines/fines-mac/services/fines-mac-payload/fines-mac-payload.service';
 import { FINES_REJECTED_ACCOUNT_MOCK } from './mocks/fines_mac_rejected_account_mock';
 import { FINES_ACCOUNT_TYPES } from 'src/app/flows/fines/constants/fines-account-types.constant';
+import {
+  mountFinesMacComponent,
+  setupFinesMacRouteComponent,
+} from 'cypress/component/CommonSetup/FinesMac/FinesMacSetup';
+import {
+  interceptAuthenticatedUser,
+  interceptBusinessUnits,
+  interceptUserState,
+} from 'cypress/component/CommonIntercepts/CommonIntercepts';
+import { USER_STATE_MOCK_PERMISSION_BU77 } from 'cypress/component/CommonIntercepts/CommonUserState.mocks';
 
 const MANUAL_ACCOUNT_CREATION_JIRA_LABEL = '@JIRA-LABEL:manual-account-creation';
 
@@ -42,47 +45,17 @@ describe('FinesMacAccountDetailsComponent', () => {
     finesMacState = structuredClone(finesMacStateMock);
     finesRejectedAccountMock = structuredClone(finesRejectedAccountMockTemplate);
 
-    mount(FinesMacAccountDetailsComponent, {
-      providers: [
-        UtilsService,
-        DateService,
-        FinesMacPayloadService,
-
-        {
-          provide: FinesMacStore,
-          useFactory: () => {
-            const store = new FinesMacStore();
-            store.setFinesMacStore(finesMacState);
-            return store;
-          },
+    mountFinesMacComponent({
+      component: FinesMacAccountDetailsComponent,
+      initialState: finesMacState,
+      draftState: finesRejectedAccountMock,
+      setAmend,
+      routeSnapshotData: {
+        accountDetailsFetchMap: {
+          finesMacState,
+          finesMacDraft: finesRejectedAccountMock,
         },
-        {
-          provide: FinesDraftStore,
-          useFactory: () => {
-            let store = new FinesDraftStore();
-            store.setAmend(setAmend);
-            return store;
-          },
-        },
-        {
-          provide: ActivatedRoute,
-          useValue: {
-            snapshot: {
-              data: {
-                accountDetailsFetchMap: {
-                  FinesMacStore: finesMacState,
-                  finesMacDraft: finesRejectedAccountMock,
-                },
-              },
-              parent: {
-                snapshot: {
-                  url: [{ path: 'manual-account-creation' }],
-                },
-              },
-            },
-          },
-        },
-      ],
+      },
       componentProperties: {
         defendantType: defendantTypeMock,
       },
@@ -98,6 +71,86 @@ describe('FinesMacAccountDetailsComponent', () => {
       cy.get(L.dataPage).should('exist');
     },
   );
+
+  it('Simple page changes should be less than 250ms - Personal Details Page', { tags: [] }, () => {
+    interceptAuthenticatedUser();
+    interceptUserState(USER_STATE_MOCK_PERMISSION_BU77);
+    interceptBusinessUnits();
+
+    setupFinesMacRouteComponent({
+      targetPath: 'fines/manual-account-creation/account-details',
+      personalDetails: {
+        formData: {
+          fm_personal_details_title: 'Mr',
+          fm_personal_details_forenames: 'John',
+          fm_personal_details_surname: 'Doe',
+          fm_personal_details_add_alias: false,
+          fm_personal_details_aliases: [],
+          fm_personal_details_dob: '1990-01-01',
+          fm_personal_details_national_insurance_number: 'AB123456C',
+          fm_personal_details_address_line_1: '123 Main Street',
+          fm_personal_details_address_line_2: null,
+          fm_personal_details_address_line_3: null,
+          fm_personal_details_post_code: null,
+          fm_personal_details_vehicle_make: null,
+          fm_personal_details_vehicle_registration_mark: null,
+        },
+        nestedFlow: false,
+      },
+      offenceDetails: [
+        {
+          formData: {
+            fm_offence_details_id: 1,
+            fm_offence_details_date_of_sentence: '2023-01-01',
+            fm_offence_details_offence_cjs_code: '12345',
+            fm_offence_details_offence_id: 1,
+            fm_offence_details_impositions: [],
+          },
+          nestedFlow: false,
+        },
+      ],
+    });
+
+    // Defining selectors rather than re-using due to directly accessing DOM for more accurate performance measurements.
+    const personalDetailsTabSelector = L.personalDetails + ' > * > * > .govuk-link';
+    const cancelLinkSelector = '.govuk-link';
+
+    cy.get(L.pageTitle).should('have.text', 'Account details');
+
+    cy.window().then((win) => {
+      const start = win.performance.now();
+      const element = win.document.querySelector(personalDetailsTabSelector) as HTMLElement;
+
+      expect(element, `${personalDetailsTabSelector} should exist`).to.not.be.null;
+
+      element.click();
+
+      cy.get(L.pageTitle)
+        .should('have.text', 'Personal details')
+        .then(() => {
+          const elapsed = win.performance.now() - start;
+
+          expect(elapsed, `Personal Details page should load within 250ms`).to.be.lessThan(250);
+        });
+    });
+
+    cy.window().then((win) => {
+      const start = win.performance.now();
+      const element = win.document.querySelector(cancelLinkSelector) as HTMLElement;
+
+      expect(element, `${cancelLinkSelector} should exist`).to.not.be.null;
+
+      element.click();
+
+      cy.get(L.pageTitle)
+        .should('have.text', 'Account details')
+        .then(() => {
+          const elapsed = win.performance.now() - start;
+
+          expect(elapsed, `Account Details page should load within 250ms`).to.be.lessThan(250);
+        });
+    });
+  });
 
   it(
     '(AC.1a) should show Police and court details for Conditional Caution and pass accessibility checks',
