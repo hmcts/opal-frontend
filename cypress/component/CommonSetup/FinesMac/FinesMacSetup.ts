@@ -13,26 +13,62 @@ import { FINES_ACCOUNT_TYPES } from 'src/app/flows/fines/constants/fines-account
 import { FinesAccountStore } from 'src/app/flows/fines/fines-acc/stores/fines-acc.store';
 import { finesRouting } from 'src/app/flows/fines/routing/fines.routes';
 import { FinesDraftStore } from 'src/app/flows/fines/fines-draft/stores/fines-draft.store';
+import { IFinesMacAccountCommentsNotesForm } from 'src/app/flows/fines/fines-mac/fines-mac-account-comments-notes/interfaces/fines-mac-account-comments-notes-form.interface';
+import { IFinesMacAccountDetailsForm } from 'src/app/flows/fines/fines-mac/fines-mac-account-details/interfaces/fines-mac-account-details-form.interface';
+import { IFinesMacCompanyDetailsForm } from 'src/app/flows/fines/fines-mac/fines-mac-company-details/interfaces/fines-mac-company-details-form.interface';
+import { IFinesMacContactDetailsForm } from 'src/app/flows/fines/fines-mac/fines-mac-contact-details/interfaces/fines-mac-contact-details-form.interface';
+import { IFinesMacCourtDetailsForm } from 'src/app/flows/fines/fines-mac/fines-mac-court-details/interfaces/fines-mac-court-details-form.interface';
+import { IFinesMacDeleteAccountConfirmationForm } from 'src/app/flows/fines/fines-mac/fines-mac-delete-account-confirmation/interfaces/fines-mac-delete-account-confirmation-form.interface';
+import { IFinesMacEmployerDetailsForm } from 'src/app/flows/fines/fines-mac/fines-mac-employer-details/interfaces/fines-mac-employer-details-form.interface';
+import { IFinesMacFixedPenaltyDetailsStoreForm } from 'src/app/flows/fines/fines-mac/fines-mac-fixed-penalty-details/interfaces/fines-mac-fixed-penalty-details-store-form.interface';
+import { IFinesMacLanguagePreferencesForm } from 'src/app/flows/fines/fines-mac/fines-mac-language-preferences/interfaces/fines-mac-language-preferences-form.interface';
 import { IFinesMacState } from 'src/app/flows/fines/fines-mac/interfaces/fines-mac-state.interface';
 import { IFinesMacOffenceDetailsForm } from 'src/app/flows/fines/fines-mac/fines-mac-offence-details/interfaces/fines-mac-offence-details-form.interface';
 import { IFinesMacOriginatorTypeForm } from 'src/app/flows/fines/fines-mac/fines-mac-originator-type/interfaces/fines-mac-originator-type-form.interface';
+import { IFinesMacParentGuardianDetailsForm } from 'src/app/flows/fines/fines-mac/fines-mac-parent-guardian-details/interfaces/fines-mac-parent-guardian-details-form.interface';
+import { IFinesMacPaymentTermsForm } from 'src/app/flows/fines/fines-mac/fines-mac-payment-terms/interfaces/fines-mac-payment-terms-form.interface';
 import { IFinesMacPersonalDetailsForm } from 'src/app/flows/fines/fines-mac/fines-mac-personal-details/interfaces/fines-mac-personal-details-form.interface';
 import { IFinesMacAddAccountPayload } from 'src/app/flows/fines/fines-mac/services/fines-mac-payload/interfaces/fines-mac-payload-add-account.interfaces';
 import { FinesMacPayloadService } from 'src/app/flows/fines/fines-mac/services/fines-mac-payload/fines-mac-payload.service';
 import { FinesMacStore } from 'src/app/flows/fines/fines-mac/stores/fines-mac.store';
 import { FinesAccPayloadService } from 'src/app/flows/fines/fines-acc/services/fines-acc-payload.service';
+import { IOpalFinesBusinessUnit } from '@services/fines/opal-fines-service/interfaces/opal-fines-business-unit.interface';
+
+const DEFAULT_FINES_MAC_FEATURE_FLAGS = {
+  'release-1a': true,
+  'release-1b': true,
+  'release-1c-write-off': false,
+  'release-1c-enforcement-operational-reporting': false,
+};
 
 export interface IFinesMacStoreBuilderOptions {
+  accountCommentsNotes?: IFinesMacAccountCommentsNotesForm;
+  accountDetails?: IFinesMacAccountDetailsForm;
   accountType?: string | null;
+  businessUnit?: IOpalFinesBusinessUnit;
   businessUnitId?: number | null;
+  companyDetails?: IFinesMacCompanyDetailsForm;
+  contactDetails?: IFinesMacContactDetailsForm;
+  courtDetails?: IFinesMacCourtDetailsForm;
   defendantType?: string | null;
+  deleteAccountConfirmation?: IFinesMacDeleteAccountConfirmationForm;
+  deleteFromCheckAccount?: boolean;
+  employerDetails?: IFinesMacEmployerDetailsForm;
+  fixedPenaltyDetails?: IFinesMacFixedPenaltyDetailsStoreForm;
   initialState?: IFinesMacState;
+  languagePreferences?: IFinesMacLanguagePreferencesForm;
   offenceDetails?: IFinesMacOffenceDetailsForm[];
+  parentGuardianDetails?: IFinesMacParentGuardianDetailsForm;
+  paymentTerms?: IFinesMacPaymentTermsForm;
+  paymentTermsStatus?: string;
   originatorType?: 'NEW' | 'TFO';
   personalDetails?: IFinesMacPersonalDetailsForm;
+  stateChanges?: boolean;
+  unsavedChanges?: boolean;
 }
 
 export interface IFinesMacGlobalStoreBuilderOptions {
+  featureFlags?: Partial<typeof DEFAULT_FINES_MAC_FEATURE_FLAGS>;
   globalStoreFactory?: () => InstanceType<typeof GlobalStore>;
   userStateDomain?: string;
 }
@@ -56,6 +92,7 @@ export interface IFinesMacComponentMountOptions<TState extends IFinesMacState> {
 }
 
 export const buildFinesMacGlobalStore = ({
+  featureFlags = {},
   globalStoreFactory,
   userStateDomain = DEFAULT_USER_STATE_DOMAIN,
 }: IFinesMacGlobalStoreBuilderOptions = {}): InstanceType<typeof GlobalStore> => {
@@ -63,23 +100,37 @@ export const buildFinesMacGlobalStore = ({
 
   store.setUserStateDomain(userStateDomain);
   store.setFeatureFlags({
-    'release-1a': true,
-    'release-1b': true,
-    'release-1c-write-off': false,
-    'release-1c-enforcement-operational-reporting': false,
+    ...DEFAULT_FINES_MAC_FEATURE_FLAGS,
+    ...featureFlags,
   });
 
   return store;
 };
 
 export const buildFinesMacStore = ({
+  accountCommentsNotes,
+  accountDetails,
   accountType = FINES_ACCOUNT_TYPES.Fine,
+  businessUnit,
   businessUnitId = 77,
+  companyDetails,
+  contactDetails,
+  courtDetails,
   defendantType = 'adultOrYouthOnly',
+  deleteAccountConfirmation,
+  deleteFromCheckAccount,
+  employerDetails,
+  fixedPenaltyDetails,
   initialState,
+  languagePreferences,
   offenceDetails,
+  parentGuardianDetails,
+  paymentTerms,
+  paymentTermsStatus,
   originatorType = 'NEW',
   personalDetails,
+  stateChanges,
+  unsavedChanges,
 }: IFinesMacStoreBuilderOptions = {}): InstanceType<typeof FinesMacStore> => {
   const store = new FinesMacStore();
 
@@ -101,17 +152,89 @@ export const buildFinesMacStore = ({
 
   store.setOriginatorType(originatorTypeForm);
   store.accountDetails().formData = {
+    ...store.accountDetails().formData,
     fm_create_account_account_type: accountType,
     fm_create_account_business_unit_id: businessUnitId,
     fm_create_account_defendant_type: defendantType,
   };
 
+  if (businessUnit) {
+    store.setBusinessUnit(businessUnit);
+  }
+
+  if (languagePreferences) {
+    store.setLanguagePreferences(languagePreferences);
+  }
+
+  if (accountDetails) {
+    if (businessUnit && languagePreferences) {
+      store.setAccountDetails(accountDetails, businessUnit, languagePreferences);
+    } else {
+      store.setFinesMacStore({
+        ...store.getFinesMacStore(),
+        accountDetails,
+      });
+    }
+  }
+
   if (personalDetails) {
     store.setPersonalDetails(personalDetails);
   }
 
+  if (companyDetails) {
+    store.setCompanyDetails(companyDetails);
+  }
+
+  if (contactDetails) {
+    store.setContactDetails(contactDetails);
+  }
+
+  if (courtDetails) {
+    store.setCourtDetails(courtDetails);
+  }
+
+  if (employerDetails) {
+    store.setEmployerDetails(employerDetails);
+  }
+
+  if (parentGuardianDetails) {
+    store.setParentGuardianDetails(parentGuardianDetails);
+  }
+
   if (offenceDetails) {
     store.setOffenceDetails(offenceDetails);
+  }
+
+  if (paymentTerms) {
+    store.setPaymentTerms(paymentTerms);
+  }
+
+  if (paymentTermsStatus) {
+    store.setPaymentTermsStatus(paymentTermsStatus);
+  }
+
+  if (accountCommentsNotes) {
+    store.setAccountCommentsNotes(accountCommentsNotes);
+  }
+
+  if (deleteAccountConfirmation) {
+    store.setDeleteAccountConfirmation(deleteAccountConfirmation);
+  }
+
+  if (fixedPenaltyDetails) {
+    store.setFixedPenaltyDetails(fixedPenaltyDetails);
+  }
+
+  if (deleteFromCheckAccount !== undefined) {
+    store.setDeleteFromCheckAccount(deleteFromCheckAccount);
+  }
+
+  if (stateChanges !== undefined) {
+    store.setStateChanges(stateChanges);
+  }
+
+  if (unsavedChanges !== undefined) {
+    store.setUnsavedChanges(unsavedChanges);
   }
 
   return store;
