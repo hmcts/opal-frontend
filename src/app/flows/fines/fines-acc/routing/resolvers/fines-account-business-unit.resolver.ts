@@ -10,6 +10,12 @@ import { BusinessUnitIdResolver } from '@hmcts/opal-frontend-common/guards/busin
 
 type FinesAccountRouteType = 'defendant' | 'minor-creditor';
 
+/**
+ * Normalizes a business unit identifier from store or API state into a positive numeric value.
+ *
+ * @param businessUnitId - The raw business unit identifier to parse.
+ * @returns The parsed business unit id, or `null` when the value is missing or invalid.
+ */
 const getBusinessUnitId = (businessUnitId: string | null | undefined): number | null => {
   const parsedBusinessUnitId = Number(businessUnitId);
 
@@ -24,6 +30,17 @@ export class FinesAccountBusinessUnitResolver implements BusinessUnitIdResolver 
   private readonly payloadService = inject(FinesAccPayloadService);
   private readonly opalFinesService = inject(OpalFines);
 
+  /**
+   * Resolves the business unit for the account in the current route.
+   *
+   * This first reuses the value already held in `FinesAccountStore` when the
+   * stored account matches the requested account. If no matching store state is
+   * available, it fetches the account heading data for the current account type,
+   * updates the store, and returns the business unit id for the permission guard.
+   *
+   * @param route - The activated route containing the account id and account type.
+   * @returns The resolved business unit id, or `null` when it cannot be determined.
+   */
   public resolveBusinessUnitId(route: ActivatedRouteSnapshot): MaybeAsync<number | null> {
     const accountId = Number(route.paramMap.get('accountId'));
     const accountType = route.data?.['accountType'] as FinesAccountRouteType | undefined;
