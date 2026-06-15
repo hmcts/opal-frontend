@@ -1,6 +1,6 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { signal } from '@angular/core';
-import { ActivatedRoute } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
 import { of, throwError } from 'rxjs';
 import { UtilsService } from '@hmcts/opal-frontend-common/services/utils-service';
@@ -17,6 +17,8 @@ import { IOpalFinesAccountDefendantDetailsEnforcementTabRefData } from '@service
 import { IOpalFinesResultsRefData } from '@services/fines/opal-fines-service/interfaces/opal-fines-results-ref-data.interface';
 import { IOpalFinesResultRefData } from '@services/fines/opal-fines-service/interfaces/opal-fines-result-ref-data.interface';
 import { FINES_ACC_ENF_ACTION_SELECT_WARNING_MESSAGES } from './constants/fines-acc-enf-action-select-warning-messages.constant';
+import { FINES_ACC_ENF_ACTION_ROUTING_PATHS } from './constants/fines-acc-enf-action-select-routing-paths.constant';
+import { FINES_ACC_ENF_ACTION_DENIED_TYPES } from '../fines-acc-enf-action-denied/constants/fines-acc-enf-action-denied-types.constant';
 
 describe('FinesAccEnfActionSelectComponent', () => {
   let component: FinesAccEnfActionSelectComponent;
@@ -67,6 +69,10 @@ describe('FinesAccEnfActionSelectComponent', () => {
     scrollToTop: vi.fn(),
   };
 
+  const mockRouter = {
+    navigate: vi.fn(),
+  };
+
   const createComponent = () => {
     fixture = TestBed.createComponent(FinesAccEnfActionSelectComponent);
     component = fixture.componentInstance;
@@ -96,6 +102,7 @@ describe('FinesAccEnfActionSelectComponent', () => {
         { provide: FinesAccountStore, useValue: mockAccountStore },
         { provide: OpalFines, useValue: mockOpalFinesService },
         { provide: UtilsService, useValue: mockUtilsService },
+        { provide: Router, useValue: mockRouter },
       ],
     }).compileComponents();
 
@@ -253,6 +260,13 @@ describe('FinesAccEnfActionSelectComponent', () => {
     ).processSelectedAction(selectedAction);
 
     expect((component as unknown as { stateUnsavedChanges: boolean }).stateUnsavedChanges).toBe(false);
+    expect(mockRouter.navigate).toHaveBeenCalledWith(
+      [`../${FINES_ACC_ENF_ACTION_ROUTING_PATHS.children.denied}/${FINES_ACC_ENF_ACTION_DENIED_TYPES.employmentData}`],
+      {
+        relativeTo: activatedRouteStub,
+        queryParams: { resultId: 'WOC' },
+      },
+    );
   });
 
   it('should fetch the selected action and delegate processing when handleSubmit is called', () => {
