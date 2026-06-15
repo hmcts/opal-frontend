@@ -29,6 +29,7 @@ import { OPAL_FINES_ACCOUNT_MINOR_CREDITOR_CREDITOR_MOCK } from '../../services/
 import { MOCK_FINES_ACC_MINOR_CREDITOR_ADD_AMEND_CONVERT_COMPANY_FORM } from '../fines-acc-minor-creditor-add-amend-convert/mocks/fines-acc-minor-creditor-add-amend-convert-company-form.mock';
 import { MOCK_FINES_ACC_MINOR_CREDITOR_ADD_AMEND_CONVERT_INDIVIDUAL_FORM } from '../fines-acc-minor-creditor-add-amend-convert/mocks/fines-acc-minor-creditor-add-amend-convert-individual-form.mock';
 import { OPAL_FINES_ACCOUNT_MINOR_CREDITOR_CREDITOR_INDIVIDUAL_MOCK } from '../../services/opal-fines-service/mocks/opal-fines-account-minor-creditor-creditor-individual.mock';
+import { FINES_ACC_MAJOR_CREDITOR_DETAILS_HEADER_MOCK } from '../fines-acc-major-creditor-details/mocks/fines-acc-major-creditor-details-header.mock';
 
 describe('FinesAccPayloadService', () => {
   let service: FinesAccPayloadService;
@@ -265,6 +266,35 @@ describe('FinesAccPayloadService', () => {
 
     expect(mockMacPayloadService.getBusinessUnitBusinessUserId).toHaveBeenCalledWith(
       Number(header.business_unit.business_unit_id),
+      OPAL_USER_STATE_MOCK,
+    );
+    expect(mockGlobalStore.userState).toHaveBeenCalled();
+  });
+
+  it('should transform major creditor account header for store', () => {
+    mockMacPayloadService.getBusinessUnitBusinessUserId.mockReturnValue(
+      FINES_ACC_MAJOR_CREDITOR_DETAILS_HEADER_MOCK.business_unit_details.business_unit_id,
+    );
+    const header = structuredClone(FINES_ACC_MAJOR_CREDITOR_DETAILS_HEADER_MOCK);
+    const account_id = header.major_creditor.creditor_account_id;
+
+    const result: IFinesAccountState = service.transformMajorCreditorAccountHeaderForStore(account_id, header);
+
+    expect(result).toEqual({
+      account_number: header.major_creditor.account_number,
+      account_id,
+      pg_party_id: null,
+      party_id: header.major_creditor.creditor_account_id.toString(),
+      party_type: header.major_creditor.account_reference.display_name,
+      party_name: header.major_creditor.name,
+      base_version: header.version,
+      business_unit_id: header.business_unit_details.business_unit_id,
+      business_unit_user_id: header.business_unit_details.business_unit_id,
+      welsh_speaking: header.business_unit_details.welsh_speaking,
+    });
+
+    expect(mockMacPayloadService.getBusinessUnitBusinessUserId).toHaveBeenCalledWith(
+      Number(header.business_unit_details.business_unit_id),
       OPAL_USER_STATE_MOCK,
     );
     expect(mockGlobalStore.userState).toHaveBeenCalled();

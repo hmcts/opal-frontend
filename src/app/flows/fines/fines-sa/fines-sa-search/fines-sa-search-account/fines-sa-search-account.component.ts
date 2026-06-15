@@ -10,6 +10,7 @@ import { FINES_SA_SEARCH_ACCOUNT_STATE } from './constants/fines-sa-search-accou
 import { FINES_ACC_ROUTING_PATHS } from '../../../fines-acc/routing/constants/fines-acc-routing-paths.constant';
 import { IOpalFinesMajorCreditor } from '@services/fines/opal-fines-service/interfaces/opal-fines-major-creditor.interface';
 import { FINES_DASHBOARD_ROUTING_PATHS } from '@app/flows/fines/constants/fines-dashboard-routing-paths.constant';
+import { FINES_ACC_MAJOR_CREDITOR_ROUTING_PATHS } from '../../../fines-acc/routing/constants/fines-acc-major-creditor-routing-paths.constant';
 
 @Component({
   selector: 'app-fines-sa-search-account',
@@ -45,7 +46,18 @@ export class FinesSaSearchAccountComponent extends AbstractFormParentBaseCompone
    * @returns The constructed URL string for the account enquiry.
    */
   private getAccountEnquiryUrl(accountId: number): string {
-    return `${this.finesRoutingPaths.root}/${this.finesAccRoutingPaths.root}/${accountId}/${this.finesAccRoutingPaths.children.defendant}`;
+    return `${this.finesRoutingPaths.root}/${this.finesAccRoutingPaths.root}/${FINES_ACC_MAJOR_CREDITOR_ROUTING_PATHS.root}/${accountId}/${FINES_ACC_MAJOR_CREDITOR_ROUTING_PATHS.children.details}`;
+  }
+
+  /**
+   * Gets the creditor account ID for a selected major creditor autocomplete value.
+   *
+   * @param majorCreditorCode - The selected major creditor code from the autocomplete.
+   * @returns The creditor account ID for the selected major creditor, or null if it cannot be found.
+   */
+  private getCreditorAccountId(majorCreditorCode: string): number | null {
+    const majorCreditor = this.majorCreditorsRefData.find((mc) => mc.major_creditor_code === majorCreditorCode);
+    return majorCreditor?.creditor_account_id ?? null;
   }
 
   /**
@@ -109,7 +121,7 @@ export class FinesSaSearchAccountComponent extends AbstractFormParentBaseCompone
    * 1. Updates the search account state in the store with the provided form data.
    * 2. Navigates to the appropriate page based on the active tab in the store:
    *    - If the active tab is 'majorCreditors', it navigates to the major creditor's page
-   *      using the provided major creditor ID from the form data.
+   *      using the creditor account ID associated with the selected major creditor code.
    *    - Otherwise, it navigates to the search results page.
    *
    * @param form - The form data of type `IFinesSaSearchAccountForm` containing the search account details.
@@ -120,10 +132,14 @@ export class FinesSaSearchAccountComponent extends AbstractFormParentBaseCompone
 
     // Navigate to the search results page
     if (this.finesSaStore.activeTab() === 'majorCreditors') {
-      this.navigateToMajorCreditor(
+      const selectedMajorCreditorCode =
         form.formData.fsa_search_account_major_creditors_search_criteria!
-          .fsa_search_account_major_creditors_major_creditor_id!,
-      );
+          .fsa_search_account_major_creditors_major_creditor_id!;
+      const creditorAccountId = this.getCreditorAccountId(selectedMajorCreditorCode);
+
+      if (creditorAccountId) {
+        this.navigateToMajorCreditor(creditorAccountId);
+      }
     } else {
       this.routerNavigate(this.getResultsUrl(), true);
     }

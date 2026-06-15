@@ -63,6 +63,7 @@ import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import { OPAL_FINES_ENFORCER_MOCK } from './mocks/opal-fines-enforcer.mock';
 import { OPAL_FINES_MINOR_CREDITOR_UPDATE_PAYLOAD_MOCK } from './mocks/opal-fines-minor-creditor-update-payload.mock';
 import { OPAL_FINES_ACCOUNT_MINOR_CREDITOR_CREDITOR_MOCK } from './mocks/opal-fines-account-minor-creditor-creditor.mock';
+import { FINES_ACC_MAJOR_CREDITOR_DETAILS_HEADER_MOCK } from '../../fines-acc/fines-acc-major-creditor-details/mocks/fines-acc-major-creditor-details-header.mock';
 
 describe('OpalFines', () => {
   let service: OpalFines;
@@ -1792,6 +1793,21 @@ describe('OpalFines', () => {
     expect(req.request.method).toBe('GET');
 
     req.flush(expectedResponse);
+  });
+
+  it('should getMajorCreditorAccountHeader', () => {
+    const accountId = 10770000000085;
+    const expectedResponse = FINES_ACC_MAJOR_CREDITOR_DETAILS_HEADER_MOCK;
+    const apiUrl = `${OPAL_FINES_PATHS.majorCreditorAccounts}/${accountId}/header-summary`;
+
+    service.getMajorCreditorAccountHeadingData(accountId).subscribe((response) => {
+      expect(response).toEqual({ ...expectedResponse, version: '"2"' });
+    });
+
+    const req = httpMock.expectOne(apiUrl);
+    expect(req.request.method).toBe('GET');
+
+    req.flush(expectedResponse, { headers: { ETag: '"2"' } });
   });
 
   it('should add a defendant account payment card request with headers and context', () => {

@@ -62,7 +62,6 @@ import { IOpalFinesAccountMinorCreditorCreditor } from './interfaces/opal-fines-
 import { IOpalFinesDraftAccountPatchRequestPayload } from '@services/fines/opal-fines-service/types/opal-fines-draft-account-patch-request-payload.type';
 import { IOpalFinesDeleteDefendantAccountPartyPayload } from './interfaces/opal-fines-delete-defendant-account-party-payload.interface';
 import { IOpalFinesAccountMajorCreditorDetailsHeader } from '../../fines-acc/fines-acc-major-creditor-details/interfaces/fines-acc-major-creditor-details-header.interface';
-import { FINES_ACC_MAJOR_CREDITOR_DETAILS_HEADER_MOCK } from '../../fines-acc/fines-acc-major-creditor-details/mocks/fines-acc-major-creditor-details-header.mock';
 
 @Injectable({
   providedIn: 'root',
@@ -1251,26 +1250,25 @@ export class OpalFines {
   }
 
   /**
-   * Retrieves the minor creditor account header data for a specific account ID.
-   * This method makes an HTTP GET request to fetch the header summary for the specified minor creditor account.
+   * Retrieves the major creditor account header data for a specific account ID.
+   * This method makes an HTTP GET request to fetch the header summary for the specified major creditor account.
    *
-   * @param accountId - The unique identifier of the minor creditor account.
-   * @returns An Observable that emits the minor creditor account header data.
+   * @param accountId - The unique identifier of the major creditor account.
+   * @returns An Observable that emits the major creditor account header data.
    */
   public getMajorCreditorAccountHeadingData(
     accountId: number,
   ): Observable<IOpalFinesAccountMajorCreditorDetailsHeader> {
-    // const url = `${OPAL_FINES_PATHS.majorCreditorAccounts}/${accountId}/header-summary`;
-    return of(FINES_ACC_MAJOR_CREDITOR_DETAILS_HEADER_MOCK);
-    // return this.http.get<IOpalFinesAccountMajorCreditorDetailsHeader>(url, { observe: 'response' }).pipe(
-    //   map((response: HttpResponse<IOpalFinesAccountMajorCreditorDetailsHeader>) => {
-    //     const payload = response.body as IOpalFinesAccountMajorCreditorDetailsHeader;
-    //     const version = this.extractEtagVersion(response.headers);
-    //     return {
-    //       ...payload,
-    //       version,
-    //     };
-    //   }),
-    // );
+    const url = `${OPAL_FINES_PATHS.majorCreditorAccounts}/${accountId}/header-summary`;
+    return this.http.get<IOpalFinesAccountMajorCreditorDetailsHeader>(url, { observe: 'response' }).pipe(
+      map((response: HttpResponse<IOpalFinesAccountMajorCreditorDetailsHeader>) => {
+        const payload = response.body as IOpalFinesAccountMajorCreditorDetailsHeader;
+        const version = this.extractEtagVersion(response.headers);
+        return {
+          ...payload,
+          version,
+        };
+      }),
+    );
   }
 }

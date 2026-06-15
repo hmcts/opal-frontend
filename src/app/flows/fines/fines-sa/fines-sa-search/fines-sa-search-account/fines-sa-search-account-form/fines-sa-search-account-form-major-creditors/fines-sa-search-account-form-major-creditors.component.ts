@@ -32,7 +32,7 @@ export class FinesSaSearchAccountFormMajorCreditorsComponent extends AbstractNes
    */
   private buildMajorCreditorFormControls(): FormGroup {
     return new FormGroup({
-      fsa_search_account_major_creditors_major_creditor_id: new FormControl<number | null>(null, [Validators.required]),
+      fsa_search_account_major_creditors_major_creditor_id: new FormControl<string | null>(null, [Validators.required]),
     });
   }
 

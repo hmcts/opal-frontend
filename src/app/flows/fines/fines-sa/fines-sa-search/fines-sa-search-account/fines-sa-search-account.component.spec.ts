@@ -15,6 +15,7 @@ import { FINES_ACC_ROUTING_PATHS } from '../../../fines-acc/routing/constants/fi
 import { OPAL_FINES_MAJOR_CREDITOR_REF_DATA_MOCK } from '@services/fines/opal-fines-service/mocks/opal-fines-major-creditor-ref-data.mock';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
 import { FINES_DASHBOARD_ROUTING_PATHS } from '@app/flows/fines/constants/fines-dashboard-routing-paths.constant';
+import { FINES_ACC_MAJOR_CREDITOR_ROUTING_PATHS } from '../../../fines-acc/routing/constants/fines-acc-major-creditor-routing-paths.constant';
 
 describe('FinesSaSearchAccountComponent', () => {
   let component: FinesSaSearchAccountComponent;
@@ -75,25 +76,25 @@ describe('FinesSaSearchAccountComponent', () => {
     const routerSpy = vi.spyOn<any, any>(component['router'], 'navigate');
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     vi.spyOn<any, any>(component, 'navigateToMajorCreditor');
+    const selectedMajorCreditor = OPAL_FINES_MAJOR_CREDITOR_REF_DATA_MOCK.refData[0];
+    const creditorAccountId = selectedMajorCreditor.creditor_account_id!;
     const mockForm = {
       ...FINES_SA_SEARCH_ACCOUNT_FORM_MOCK,
       formData: {
         ...FINES_SA_SEARCH_ACCOUNT_FORM_MOCK.formData,
         fsa_search_account_major_creditors_search_criteria: {
-          fsa_search_account_major_creditors_major_creditor_id: 1,
+          fsa_search_account_major_creditors_major_creditor_id: selectedMajorCreditor.major_creditor_code!,
         },
       },
     };
+    component.majorCreditorsRefData = OPAL_FINES_MAJOR_CREDITOR_REF_DATA_MOCK.refData;
     mockFinesSaStore.setActiveTab('majorCreditors');
 
     component.handleSearchAccountSubmit(mockForm);
     expect(mockFinesSaStore.searchAccount()).toEqual(mockForm.formData);
     expect(routerSpy).not.toHaveBeenCalled();
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    expect((component as any).navigateToMajorCreditor).toHaveBeenCalledWith(
-      mockForm.formData.fsa_search_account_major_creditors_search_criteria!
-        .fsa_search_account_major_creditors_major_creditor_id!,
-    );
+    expect((component as any).navigateToMajorCreditor).toHaveBeenCalledWith(creditorAccountId);
   });
 
   it('should handle unsaved changes flag', () => {
@@ -215,7 +216,7 @@ describe('FinesSaSearchAccountComponent', () => {
 
   it('getAccountEnquiryUrl should return the correct URL for account enquiry', () => {
     const accountId = 123;
-    const expectedUrl = `${FINES_ROUTING_PATHS.root}/${FINES_ACC_ROUTING_PATHS.root}/${accountId}/${FINES_ACC_ROUTING_PATHS.children.defendant}`;
+    const expectedUrl = `${FINES_ROUTING_PATHS.root}/${FINES_ACC_ROUTING_PATHS.root}/${FINES_ACC_MAJOR_CREDITOR_ROUTING_PATHS.root}/${accountId}/${FINES_ACC_MAJOR_CREDITOR_ROUTING_PATHS.children.details}`;
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     const result = (component as any).getAccountEnquiryUrl(accountId);
     expect(result).toEqual(expectedUrl);
