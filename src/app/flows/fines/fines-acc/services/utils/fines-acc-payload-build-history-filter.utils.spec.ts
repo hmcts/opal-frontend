@@ -16,24 +16,4 @@ describe('buildHistoryFilterPayload', () => {
 
     expect(result).toEqual({});
   });
-
-  it('should map documents when it is the only selected category', () => {
-    const result = buildHistoryFilterPayload({
-      formData: {
-        dateFrom: null,
-        dateTo: null,
-        categories: {
-          amendments: false,
-          documents: true,
-          enforcementActions: false,
-          financial: false,
-          notes: false,
-          paymentTerms: false,
-        },
-      },
-      nestedFlow: false,
-    });
-
-    expect(result).toEqual({ itemTypes: 'documents' });
-  });
 });

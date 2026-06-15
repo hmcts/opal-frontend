@@ -3,7 +3,6 @@ import { IFinesAccDefendantDetailsHistoryAndNotesFilterCategory } from '../inter
 export const FINES_ACC_DEFENDANT_DETAILS_HISTORY_AND_NOTES_FILTER_CATEGORIES: IFinesAccDefendantDetailsHistoryAndNotesFilterCategory[] =
   [
     { label: 'Amendments', value: 'amendments' },
-    { label: 'Documents', value: 'documents' },
     { label: 'Enforcement actions', value: 'enforcementActions' },
     { label: 'Financial', value: 'financial' },
     { label: 'Notes', value: 'notes' },

@@ -5,7 +5,6 @@ export const FINES_ACC_HISTORY_FILTER_ITEM_TYPE_MAP: Record<
   string
 > = {
   amendments: 'amendments',
-  documents: 'documents',
   enforcementActions: 'enforcements',
   financial: 'transactions',
   notes: 'notes',
