@@ -109,9 +109,6 @@ export class FinesAccMajorCreditorDetailsComponent
       ),
       this.refreshFragment$,
     );
-
-    // const { account_id } = this.accountStore.getAccountState();
-
     fragment$.pipe(takeUntil(this.destroy$)).subscribe((tab) => {
       switch (tab) {
         case 'at-a-glance':
