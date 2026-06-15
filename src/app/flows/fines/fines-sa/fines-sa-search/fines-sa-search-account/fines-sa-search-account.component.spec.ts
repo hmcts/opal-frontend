@@ -222,6 +222,25 @@ describe('FinesSaSearchAccountComponent', () => {
     expect(result).toEqual(expectedUrl);
   });
 
+  it('getCreditorAccountId should return the creditor account id for a matching major creditor code', () => {
+    const majorCreditor = OPAL_FINES_MAJOR_CREDITOR_REF_DATA_MOCK.refData[0];
+    component.majorCreditorsRefData = OPAL_FINES_MAJOR_CREDITOR_REF_DATA_MOCK.refData;
+
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    const result = (component as any).getCreditorAccountId(majorCreditor.major_creditor_code);
+
+    expect(result).toBe(majorCreditor.creditor_account_id);
+  });
+
+  it('getCreditorAccountId should return null when no major creditor code matches', () => {
+    component.majorCreditorsRefData = OPAL_FINES_MAJOR_CREDITOR_REF_DATA_MOCK.refData;
+
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    const result = (component as any).getCreditorAccountId('UNKNOWN');
+
+    expect(result).toBeNull();
+  });
+
   it('navigateToMajorCreditor should open a new tab with the correct URL', () => {
     const accountId = 456;
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
