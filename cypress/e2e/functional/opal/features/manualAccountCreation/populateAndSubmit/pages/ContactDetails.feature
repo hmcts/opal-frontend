@@ -90,7 +90,7 @@ Feature: Manual account creation - Contact Details
       | Primary email address   | P@EMAIL.COM   |
       | Mobile telephone number | 07123 456 789 |
 
-  @JIRA-TEST-KEY:PO-5494
+  @JIRA-TEST-KEY:PO-5494 @JIRA_NFR:PO-2549
   Scenario: (AC.11) Inline primary email error persists across navigation and cancel
     When I clear the manual contact "Primary email address" field
     And I complete manual contact details:

@@ -38,6 +38,7 @@ import { FINES_ACC_PAYMENT_HOLD_ROUTING_PATHS } from '../fines-acc-payment-hold-
 import { enforcementActionResultResolver } from './resolvers/fines-acc-enf-action-add/enforcement-action-result.resolver';
 import { minorCreditorAccountCreditorResolver } from './resolvers/defendant-minor-creditor-creditor.resolver';
 import { FINES_ACC_REMOVE_NON_PAYING_PG_ROUTING_PATHS } from '../fines-acc-remove-non-paying-pg/constants/fines-acc-remove-non-paying-pg-routing-paths.constant';
+import { FINES_ACC_ENF_ACTION_DENIED_TYPES } from '../fines-acc-enf-action-denied/constants/fines-acc-enf-action-denied-types.constant';
 
 const accRootPermissionIds = FINES_PERMISSIONS;
 
@@ -352,6 +353,24 @@ export const routing: Routes = [
             resolve: {
               title: TitleResolver,
               defendantAccountHeadingData: defendantAccountHeadingResolver,
+            },
+          },
+          {
+            path: `${FINES_ACC_DEFENDANT_ROUTING_PATHS.children.enforcement}/${FINES_ACC_ENF_ACTION_ROUTING_PATHS.root}/${FINES_ACC_ENF_ACTION_ROUTING_PATHS.children.denied}/${FINES_ACC_ENF_ACTION_DENIED_TYPES.employmentData}`,
+            loadComponent: () =>
+              import('../fines-acc-enf-action-denied/fines-acc-enf-action-denied.component').then(
+                (c) => c.FinesAccEnfActionDeniedComponent,
+              ),
+            canActivate: [routePermissionsGuard, finesAccStateGuard],
+            data: {
+              title: FINES_ACC_ENF_ACTION_ROUTING_TITLES.children.denied,
+              deniedType: FINES_ACC_ENF_ACTION_DENIED_TYPES.employmentData,
+            },
+            resolve: {
+              title: TitleResolver,
+              defendantAccountHeadingData: defendantAccountHeadingResolver,
+              enforcementStatus: defendantAccountEnforcementStatusResolver,
+              enforcementActionResult: enforcementActionResultResolver,
             },
           },
           {

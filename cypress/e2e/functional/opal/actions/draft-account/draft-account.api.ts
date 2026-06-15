@@ -42,6 +42,9 @@ const DRAFT_ETAG_RETRY_ATTEMPTS = 3;
 const DRAFT_ETAG_RETRY_DELAY_MS = 750;
 // Short wait after login before sending the draft PATCH request.
 const DRAFT_PREPATCH_WAIT_MS = 500;
+// Poll window for the published account search index used by downstream UI journeys.
+const PUBLISHED_ACCOUNT_SEARCH_RETRY_ATTEMPTS = 6;
+const PUBLISHED_ACCOUNT_SEARCH_RETRY_DELAY_MS = 1_000;
 
 /**
  * Path builder for a draft account resource.
@@ -115,6 +118,41 @@ const summarizeResponseBodyForLog = (payload: unknown): string => {
   }
 
   return String(payload).slice(0, 500);
+};
+
+const isCompanyDraftRequest = (payload: Record<string, unknown>): boolean => {
+  const account = isRecord(payload['account']) ? payload['account'] : undefined;
+  const defendant = account && isRecord(account['defendant']) ? account['defendant'] : undefined;
+
+  return account?.['defendant_type'] === 'company' || defendant?.['company_flag'] === true;
+};
+
+const buildPublishedAccountNumberSearchPayload = (
+  accountNumber: string,
+  isCompany: boolean,
+): Record<string, unknown> => ({
+  active_accounts_only: false,
+  consolidation_search: false,
+  business_unit_ids: null,
+  reference_number: {
+    account_number: accountNumber,
+    prosecutor_case_reference: null,
+    organisation: isCompany,
+  },
+  defendant: null,
+});
+
+const hasSearchResult = (payload: unknown): boolean => {
+  if (!isRecord(payload)) return false;
+
+  const count = payload['count'];
+  if (typeof count === 'number' && count > 0) return true;
+
+  const defendantAccounts = payload['defendant_accounts'];
+  if (Array.isArray(defendantAccounts) && defendantAccounts.length > 0) return true;
+
+  const searchData = payload['searchData'];
+  return Array.isArray(searchData) && searchData.length > 0;
 };
 
 /**
@@ -369,6 +407,49 @@ const getDraftForPatch = (
   return attempt(attempts);
 };
 
+const waitForPublishedAccountSearchable = (
+  accountNumber: string,
+  isCompany: boolean,
+  attempts: number = PUBLISHED_ACCOUNT_SEARCH_RETRY_ATTEMPTS,
+  delayMs: number = PUBLISHED_ACCOUNT_SEARCH_RETRY_DELAY_MS,
+): Cypress.Chainable<void> => {
+  const body = buildPublishedAccountNumberSearchPayload(accountNumber, isCompany);
+
+  const attempt = (remaining: number): Cypress.Chainable<void> =>
+    cy
+      .request({
+        method: 'POST',
+        url: '/opal-fines-service/defendant-accounts/search',
+        headers: { 'Content-Type': 'application/json', Accept: 'application/json' },
+        body,
+        failOnStatusCode: false,
+      })
+      .then((searchResp) => {
+        const matched = searchResp.status === 200 && hasSearchResult(searchResp.body);
+        if (matched) {
+          log('done', 'Published account is searchable', { accountNumber, isCompany });
+          return cy.wrap(undefined, { log: false }) as Cypress.Chainable<void>;
+        }
+
+        if (remaining <= 1) {
+          throw new Error(
+            `Published account ${accountNumber} was not searchable after ${attempts} attempts. ` +
+              `Last status ${searchResp.status}: ${summarizeResponseBodyForLog(searchResp.body)}`,
+          );
+        }
+
+        log('warn', 'Published account search not ready, retrying', {
+          accountNumber,
+          isCompany,
+          status: searchResp.status,
+          remaining: remaining - 1,
+        });
+        return cy.wait(delayMs, { log: false }).then(() => attempt(remaining - 1)) as Cypress.Chainable<void>;
+      }) as unknown as Cypress.Chainable<void>;
+
+  return attempt(attempts);
+};
+
 /** Alias payload structure exposed as @etagUpdate */
 export interface EtagUpdate {
   status: number;
@@ -505,13 +586,14 @@ export function createDraftAndSetStatus(
       // 1) POST create the draft account.
       .then(() => {
         log('action', 'POST /draft-accounts', { requestBody });
-        cy.request({
-          method: 'POST',
-          url: createDraftEndpoint,
-          headers: { 'Content-Type': 'application/json', Accept: 'application/json' },
-          body: requestBody,
-          failOnStatusCode: false,
-        })
+        return cy
+          .request({
+            method: 'POST',
+            url: createDraftEndpoint,
+            headers: { 'Content-Type': 'application/json', Accept: 'application/json' },
+            body: requestBody,
+            failOnStatusCode: false,
+          })
           .as('postDraftAccount')
           .then((postResp) => {
             log('debug', 'POST /draft-accounts response', {
@@ -558,7 +640,7 @@ export function createDraftAndSetStatus(
       .then(() => {
         if (skipPatch) {
           log('info', 'Skipping GET/PATCH status update for drafts already in submitted state');
-          return undefined as void;
+          return cy.wrap(undefined, { log: false }) as Cypress.Chainable<void>;
         }
 
         return getDraftForPatch(createdId)
@@ -669,6 +751,13 @@ export function createDraftAndSetStatus(
 
             performLogin(returnToUser);
             log('info', `Returned to user ${returnToUser} after status update`, { returnToUser });
+
+            const publishedAccountNumber = numberForUI ?? postAccountNumber ?? null;
+            if (publishedAccountNumber) {
+              return waitForPublishedAccountSearchable(publishedAccountNumber, isCompanyDraftRequest(requestBody));
+            }
+
+            return cy.wrap(undefined, { log: false }) as Cypress.Chainable<void>;
           });
       })
 

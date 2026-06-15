@@ -108,6 +108,7 @@ describe('fines acc routes', () => {
 
     expect(componentInstance).toBeInstanceOf(componentType);
   });
+
   it('should resolve creditor data for the minor creditor amend journey', () => {
     const amendRoute = minorCreditorRoute?.children?.find(
       (route) => route.path === FINES_ACC_MINOR_CREDITOR_ROUTING_PATHS.children.amend,

@@ -107,7 +107,7 @@ Feature: Manual account creation - Company Details
       | address line 1 | Addr1        |
       | address line 2 |              |
 
-  @JIRA-TEST-KEY:PO-5393
+  @JIRA-TEST-KEY:PO-5393 @JIRA_NFR:PO-2549
   Scenario: (AC.14) Inline error persists when cancelling and revisiting company details [@PO-345, @PO-365]
     When I complete manual company details:
       | address line 1 | Addr1 |
