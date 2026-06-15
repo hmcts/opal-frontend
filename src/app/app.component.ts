@@ -381,7 +381,11 @@ export class AppComponent implements OnInit, OnDestroy {
     if (isPlatformBrowser(this.platformId)) {
       from(this.launchDarklyService.initializeLaunchDarklyFlags())
         .pipe(
-          tap(() => this.launchDarklyService.initializeLaunchDarklyChangeListener()),
+          tap(() => {
+            console.log('Feature flags from LaunchDarkly/global store:', this.globalStore.featureFlags());
+
+            this.launchDarklyService.initializeLaunchDarklyChangeListener();
+          }),
           takeUntil(this.ngUnsubscribe),
         )
         .subscribe();

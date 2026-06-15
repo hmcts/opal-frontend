@@ -92,6 +92,10 @@
         "release-1c-enforcement-operational-reporting": {
           "__name": "RELEASE_1C_ENFORCEMENT_OPERATIONAL_REPORTING_ENABLED",
           "__format": "json"
+        },
+        "release-1c-administration": {
+          "__name": "RELEASE_1C_ADMINISTRATION_ENABLED",
+          "__format": "json"
         }
       }
     },

@@ -9,6 +9,7 @@ import { REPORTS_PERMISSIONS } from '../constants/reports-permissions.constant';
 import { SEARCH_PERMISSIONS } from '../constants/search-permissions.constant';
 import {
   RELEASE_1A_FEATURE_FLAG,
+  RELEASE_1C_ADMINISTRATION_FEATURE_FLAG,
   RELEASE_1B_FEATURE_FLAG,
   RELEASE_1C_ENFORCEMENT_OPERATIONAL_REPORTING_FEATURE_FLAG,
   RELEASE_1C_WRITE_OFF_FEATURE_FLAG,
@@ -23,6 +24,7 @@ import {
   getRequiredPermissionIdsForSection,
   getUserPermissionIds,
   hasAnyPermission,
+  isFinesPrimaryNavigationSectionEnabled,
 } from './fines-section-permissions.utils';
 
 const createUserStateWithPermissions = (permissionIds: readonly number[]): IOpalUserState => {
@@ -55,12 +57,17 @@ describe('fines-section-permissions.utils', () => {
     { key: 'accounts', value: 'Accounts' },
     { key: 'reports', value: 'Reports' },
   ];
+  const navigationItemsWithAdministration: readonly INavigationBarConfiguration[] = [
+    ...navigationItems,
+    { key: 'administration', value: 'Administration' },
+  ];
 
   const allReleaseFlagsEnabled = {
     [RELEASE_1A_FEATURE_FLAG]: true,
     [RELEASE_1B_FEATURE_FLAG]: true,
     [RELEASE_1C_WRITE_OFF_FEATURE_FLAG]: true,
     [RELEASE_1C_ENFORCEMENT_OPERATIONAL_REPORTING_FEATURE_FLAG]: true,
+    [RELEASE_1C_ADMINISTRATION_FEATURE_FLAG]: true,
   };
   const release1aEnabled = { [RELEASE_1A_FEATURE_FLAG]: true };
   const release1bEnabled = { [RELEASE_1B_FEATURE_FLAG]: true };
@@ -80,6 +87,8 @@ describe('fines-section-permissions.utils', () => {
   const release1cWriteOffEnabled = { [RELEASE_1C_WRITE_OFF_FEATURE_FLAG]: true };
   const release1cReportingEnabled = { [RELEASE_1C_ENFORCEMENT_OPERATIONAL_REPORTING_FEATURE_FLAG]: true };
   const release1cReportingDisabled = { [RELEASE_1C_ENFORCEMENT_OPERATIONAL_REPORTING_FEATURE_FLAG]: false };
+  const release1cAdministrationEnabled = { [RELEASE_1C_ADMINISTRATION_FEATURE_FLAG]: true };
+  const release1cAdministrationDisabled = { [RELEASE_1C_ADMINISTRATION_FEATURE_FLAG]: false };
 
   describe('getUserPermissionIds', () => {
     it('should deduplicate permission ids across business units', () => {
@@ -114,6 +123,7 @@ describe('fines-section-permissions.utils', () => {
         [RELEASE_1B_FEATURE_FLAG]: false,
         [RELEASE_1C_WRITE_OFF_FEATURE_FLAG]: false,
         [RELEASE_1C_ENFORCEMENT_OPERATIONAL_REPORTING_FEATURE_FLAG]: false,
+        [RELEASE_1C_ADMINISTRATION_FEATURE_FLAG]: false,
       });
 
       expect(getFeatureFlagReleaseState(release1cWriteOffEnabled)).toEqual({
@@ -121,6 +131,7 @@ describe('fines-section-permissions.utils', () => {
         [RELEASE_1B_FEATURE_FLAG]: false,
         [RELEASE_1C_WRITE_OFF_FEATURE_FLAG]: true,
         [RELEASE_1C_ENFORCEMENT_OPERATIONAL_REPORTING_FEATURE_FLAG]: false,
+        [RELEASE_1C_ADMINISTRATION_FEATURE_FLAG]: false,
       });
 
       expect(getFeatureFlagReleaseState(release1cReportingEnabled)).toEqual({
@@ -128,6 +139,15 @@ describe('fines-section-permissions.utils', () => {
         [RELEASE_1B_FEATURE_FLAG]: false,
         [RELEASE_1C_WRITE_OFF_FEATURE_FLAG]: false,
         [RELEASE_1C_ENFORCEMENT_OPERATIONAL_REPORTING_FEATURE_FLAG]: true,
+        [RELEASE_1C_ADMINISTRATION_FEATURE_FLAG]: false,
+      });
+
+      expect(getFeatureFlagReleaseState(release1cAdministrationEnabled)).toEqual({
+        [RELEASE_1A_FEATURE_FLAG]: false,
+        [RELEASE_1B_FEATURE_FLAG]: false,
+        [RELEASE_1C_WRITE_OFF_FEATURE_FLAG]: false,
+        [RELEASE_1C_ENFORCEMENT_OPERATIONAL_REPORTING_FEATURE_FLAG]: false,
+        [RELEASE_1C_ADMINISTRATION_FEATURE_FLAG]: true,
       });
 
       expect(getFeatureFlagReleaseState({})).toEqual({
@@ -135,6 +155,7 @@ describe('fines-section-permissions.utils', () => {
         [RELEASE_1B_FEATURE_FLAG]: false,
         [RELEASE_1C_WRITE_OFF_FEATURE_FLAG]: false,
         [RELEASE_1C_ENFORCEMENT_OPERATIONAL_REPORTING_FEATURE_FLAG]: false,
+        [RELEASE_1C_ADMINISTRATION_FEATURE_FLAG]: false,
       });
     });
   });
@@ -171,6 +192,20 @@ describe('fines-section-permissions.utils', () => {
 
     it('should remove Reports permissions when release-1c enforcement operational reporting is disabled', () => {
       expect(getRequiredPermissionIdsForSection('reports', release1cReportingDisabled)).toEqual([]);
+    });
+  });
+
+  describe('isFinesPrimaryNavigationSectionEnabled', () => {
+    it('should allow Administration when release-1c administration is enabled', () => {
+      expect(isFinesPrimaryNavigationSectionEnabled('administration', release1cAdministrationEnabled)).toBe(true);
+    });
+
+    it('should deny Administration when release-1c administration is disabled', () => {
+      expect(isFinesPrimaryNavigationSectionEnabled('administration', release1cAdministrationDisabled)).toBe(false);
+    });
+
+    it('should allow sections without whole-section release flags', () => {
+      expect(isFinesPrimaryNavigationSectionEnabled('finance', {})).toBe(true);
     });
   });
 
@@ -264,6 +299,20 @@ describe('fines-section-permissions.utils', () => {
         ),
       ).toBe(false);
     });
+
+    it('should allow Administration without permissions when release-1c administration is enabled', () => {
+      expect(canAccessFinesPrimaryNavigationSection('administration', null, release1cAdministrationEnabled)).toBe(true);
+    });
+
+    it('should deny Administration when release-1c administration is disabled', () => {
+      expect(
+        canAccessFinesPrimaryNavigationSection(
+          'administration',
+          createUserStateWithPermissions([SEARCH_PERMISSIONS[0]]),
+          release1cAdministrationDisabled,
+        ),
+      ).toBe(false);
+    });
   });
 
   describe('getAccessiblePrimaryNavigationItems', () => {
@@ -309,6 +358,18 @@ describe('fines-section-permissions.utils', () => {
       expect(getFirstAccessibleDashboardType(navigationItems, userState, release1cReportingDisabled)).toBe(
         DASHBOARD_PAGE_DEFAULT_TAB,
       );
+    });
+
+    it('should keep Administration when release-1c administration is enabled', () => {
+      expect(
+        getAccessiblePrimaryNavigationItems(navigationItemsWithAdministration, null, allReleaseFlagsEnabled),
+      ).toEqual([{ key: 'administration', value: 'Administration' }]);
+    });
+
+    it('should remove Administration when release-1c administration is disabled', () => {
+      expect(
+        getAccessiblePrimaryNavigationItems(navigationItemsWithAdministration, null, release1cAdministrationDisabled),
+      ).toEqual([]);
     });
   });
 
@@ -428,6 +489,27 @@ describe('fines-section-permissions.utils', () => {
       ).toEqual({
         ...DASHBOARD_PAGE_CONFIGURATION_MAP.reports,
         highlights: [],
+        groups: [],
+      });
+    });
+
+    it('should keep Administration dashboard content when release-1c administration is enabled', () => {
+      expect(
+        filterDashboardConfigByFeatureFlags(
+          DASHBOARD_PAGE_CONFIGURATION_MAP.administration,
+          release1cAdministrationEnabled,
+        ),
+      ).toEqual(DASHBOARD_PAGE_CONFIGURATION_MAP.administration);
+    });
+
+    it('should remove Administration dashboard content when release-1c administration is disabled', () => {
+      expect(
+        filterDashboardConfigByFeatureFlags(
+          DASHBOARD_PAGE_CONFIGURATION_MAP.administration,
+          release1cAdministrationDisabled,
+        ),
+      ).toEqual({
+        ...DASHBOARD_PAGE_CONFIGURATION_MAP.administration,
         groups: [],
       });
     });

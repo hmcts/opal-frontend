@@ -33,6 +33,7 @@ import { REPORTS_PERMISSIONS } from './flows/fines/constants/reports-permissions
 import { SEARCH_PERMISSIONS } from './flows/fines/constants/search-permissions.constant';
 import {
   RELEASE_1A_FEATURE_FLAG,
+  RELEASE_1C_ADMINISTRATION_FEATURE_FLAG,
   RELEASE_1B_FEATURE_FLAG,
   RELEASE_1C_WRITE_OFF_FEATURE_FLAG,
   RELEASE_1C_ENFORCEMENT_OPERATIONAL_REPORTING_FEATURE_FLAG,
@@ -49,6 +50,7 @@ const DEFAULT_RELEASE_FEATURE_FLAGS = {
   [RELEASE_1B_FEATURE_FLAG]: true,
   [RELEASE_1C_WRITE_OFF_FEATURE_FLAG]: true,
   [RELEASE_1C_ENFORCEMENT_OPERATIONAL_REPORTING_FEATURE_FLAG]: true,
+  [RELEASE_1C_ADMINISTRATION_FEATURE_FLAG]: true,
 };
 
 @Component({
@@ -545,6 +547,30 @@ describe('AppComponent - browser', () => {
     fixture.detectChanges();
 
     expect(getPrimaryNavigationTexts(fixture)).not.toContain('Accounts');
+  });
+
+  it('should show Administration in primary navigation when release-1c-administration is enabled', () => {
+    globalStore.setAuthenticated(true);
+    globalStore.setUserState(createUserStateWithPermissions([]));
+
+    const fixture = TestBed.createComponent(AppComponent);
+    fixture.detectChanges();
+
+    expect(getPrimaryNavigationTexts(fixture)).toContain('Administration');
+  });
+
+  it('should hide Administration in primary navigation when release-1c-administration is disabled', () => {
+    globalStore.setAuthenticated(true);
+    globalStore.setFeatureFlags({
+      ...DEFAULT_RELEASE_FEATURE_FLAGS,
+      [RELEASE_1C_ADMINISTRATION_FEATURE_FLAG]: false,
+    });
+    globalStore.setUserState(createUserStateWithPermissions([]));
+
+    const fixture = TestBed.createComponent(AppComponent);
+    fixture.detectChanges();
+
+    expect(getPrimaryNavigationTexts(fixture)).not.toContain('Administration');
   });
 
   it('should show the primary navigation on browse routes', async () => {

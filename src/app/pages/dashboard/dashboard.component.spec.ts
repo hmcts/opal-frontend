@@ -13,6 +13,7 @@ import { GlobalStore } from '@hmcts/opal-frontend-common/stores/global';
 import { createSpyObj } from '@app/testing/create-spy-obj.helper';
 import {
   RELEASE_1A_FEATURE_FLAG,
+  RELEASE_1C_ADMINISTRATION_FEATURE_FLAG,
   RELEASE_1C_WRITE_OFF_FEATURE_FLAG,
   RELEASE_1C_ENFORCEMENT_OPERATIONAL_REPORTING_FEATURE_FLAG,
 } from '@app/flows/fines/constants/release-feature-flags.constant';
@@ -30,6 +31,7 @@ describe('DashboardComponent', () => {
     [RELEASE_1A_FEATURE_FLAG]: true,
     [RELEASE_1C_WRITE_OFF_FEATURE_FLAG]: true,
     [RELEASE_1C_ENFORCEMENT_OPERATIONAL_REPORTING_FEATURE_FLAG]: true,
+    [RELEASE_1C_ADMINISTRATION_FEATURE_FLAG]: true,
   };
 
   const setupComponent = () => {
@@ -157,6 +159,30 @@ describe('DashboardComponent', () => {
     expect(component.resolvedConfig()).toEqual({
       ...DASHBOARD_PAGE_CONFIGURATION_MAP.reports,
       highlights: [],
+      groups: [],
+    });
+  });
+
+  it('should resolve the administration config when release-1c-administration is enabled', () => {
+    setupComponent();
+    dashboardTypeParamMapSubject.next(convertToParamMap({ dashboardType: 'administration' }));
+    fixture.detectChanges();
+
+    expect(component.resolvedConfig()).toEqual(DASHBOARD_PAGE_CONFIGURATION_MAP.administration);
+    expect(component.resolvedConfig().groups.map((group) => group.id)).toContain('administration-test');
+  });
+
+  it('should remove administration content when release-1c-administration is disabled', () => {
+    globalStoreMock.featureFlags.mockReturnValue({
+      ...DEFAULT_RELEASE_FEATURE_FLAGS,
+      [RELEASE_1C_ADMINISTRATION_FEATURE_FLAG]: false,
+    });
+    setupComponent();
+    dashboardTypeParamMapSubject.next(convertToParamMap({ dashboardType: 'administration' }));
+    fixture.detectChanges();
+
+    expect(component.resolvedConfig()).toEqual({
+      ...DASHBOARD_PAGE_CONFIGURATION_MAP.administration,
       groups: [],
     });
   });
