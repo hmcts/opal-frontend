@@ -7,13 +7,13 @@ Feature: Fines primary navigation
     Given I am logged in on the Fines Search landing page with email "opal-test@dev.platform.hmcts.net"
     Then I see the Fines primary navigation with Search selected by default
 
-  @FeatureFlag @JIRA-STORY:PO-3720 @JIRA-EPIC:PO-3685 @R1B
+  @JIRA-STORY:PO-3720 @JIRA-EPIC:PO-3685 @R1B
   Scenario: Search is shown as the landing page after login when release 1b is enabled
     Given I am authenticated with email "opal-test@dev.platform.hmcts.net"
     Then I see the Fines primary navigation with Search selected by default
     When I open Search for an Account
 
-  @FeatureFlag @JIRA-STORY:PO-3720 @JIRA-EPIC:PO-3685 @R1BOff
+  @JIRA-STORY:PO-3720 @JIRA-EPIC:PO-3685 @R1BOff
   Scenario: Search is hidden as the landing page after login when release 1b is disabled
     Given I am authenticated with email "opal-test@dev.platform.hmcts.net"
     Then I should not see the Fines primary navigation item "Search"

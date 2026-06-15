@@ -1,7 +1,7 @@
 @JIRA-LABEL:account-enquiry
 Feature: Search and Matches Release 1B Feature Toggles
 
-  @FeatureFlag @R1B @JIRA-STORY:PO-3720 @JIRA-EPIC:PO-3685
+  @R1B @JIRA-STORY:PO-3720 @JIRA-EPIC:PO-3685
   Scenario: Search and Matches is available when release 1b is enabled
     Given I am authenticated with email "opal-test@dev.platform.hmcts.net"
     And a published adult or youth defendant account exists:
@@ -16,7 +16,7 @@ Feature: Search and Matches Release 1B Feature Toggles
     When I open the latest matching result from the search results
     Then I should see the account summary header contains "RELEASE1BSEARCH{uniqUpper}"
 
-  @FeatureFlag @R1BOff @JIRA-STORY:PO-3720 @JIRA-EPIC:PO-3685
+  @R1BOff @JIRA-STORY:PO-3720 @JIRA-EPIC:PO-3685
   Scenario: Search and Matches is hidden when release 1b is disabled
     Given I am authenticated with email "opal-test@dev.platform.hmcts.net"
     Then I should not see the Fines primary navigation item "Search"
