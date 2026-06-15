@@ -191,4 +191,27 @@ describe('FinesAccEnfActionRemoveComponent', () => {
     component.handleUnsavedChanges(true);
     expect((component as unknown as { canDeactivate: () => boolean }).canDeactivate()).toBe(false);
   });
+
+  it('should render the remove enforcement hold shell and account identifier caption', () => {
+    createComponent();
+
+    const text = fixture.nativeElement.textContent as string;
+
+    expect(text).toContain('Remove enforcement hold');
+    expect(text).toContain('177A – Ms Anna GRAHAM');
+    expect(text).toContain('Reason');
+    expect(text).toContain('Remove');
+  });
+
+  it('should render the remove enforcement hold shell for a company-style caption', () => {
+    mockPayloadService.transformDefendantAccountHeaderForStore.mockReturnValue({
+      ...accountStateMock,
+      account_number: '177A',
+      party_name: 'RemoveHold Company LTD',
+    });
+
+    createComponent();
+
+    expect(fixture.nativeElement.textContent).toContain('177A – RemoveHold Company LTD');
+  });
 });
