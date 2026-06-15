@@ -174,6 +174,16 @@ When('I view the Major Creditors search form', () => {
 });
 
 /**
+ * @step Verifies the Major Creditors tab is not visible.
+ * @example
+ *  Then I should not see the Major Creditors search form
+ */
+Then('I should not see the Major Creditors search form', () => {
+  log('assert', 'Major Creditors search form is not visible');
+  cy.get('#tab-major-creditors').should('not.exist');
+});
+
+/**
  * @step Verifies the Companies form shows default/empty values.
  * @details Delegates to `AccountSearchFlow.assertCompaniesDefaults()`.
  * @example
