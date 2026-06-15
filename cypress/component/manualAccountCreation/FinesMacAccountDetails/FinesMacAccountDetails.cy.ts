@@ -72,11 +72,7 @@ describe('FinesMacAccountDetailsComponent', () => {
     },
   );
 
-  it('Simple page changes should be less than 250ms - Personal Details Page', { tags: [] }, () => {
-    interceptAuthenticatedUser();
-    interceptUserState(USER_STATE_MOCK_PERMISSION_BU77);
-    interceptBusinessUnits();
-
+  const localMacComponentSetup = () =>
     setupFinesMacRouteComponent({
       targetPath: 'fines/manual-account-creation/account-details',
       personalDetails: {
@@ -111,8 +107,15 @@ describe('FinesMacAccountDetailsComponent', () => {
       ],
     });
 
+  it('Simple page changes should be less than 250ms - Personal Details Page', { tags: [] }, () => {
+    interceptAuthenticatedUser();
+    interceptUserState(USER_STATE_MOCK_PERMISSION_BU77);
+    interceptBusinessUnits();
+
+    localMacComponentSetup();
+
     // Defining selectors rather than re-using due to directly accessing DOM for more accurate performance measurements.
-    const personalDetailsTabSelector = L.personalDetails + ' > * > * > .govuk-link';
+    const personalDetailsTabSelector = L.personalDetails + ' .govuk-link';
     const cancelLinkSelector = '.govuk-link';
 
     cy.get(L.pageTitle).should('have.text', 'Account details');
@@ -131,6 +134,198 @@ describe('FinesMacAccountDetailsComponent', () => {
           const elapsed = win.performance.now() - start;
 
           expect(elapsed, `Personal Details page should load within 250ms`).to.be.lessThan(250);
+        });
+    });
+
+    cy.window().then((win) => {
+      const start = win.performance.now();
+      const element = win.document.querySelector(cancelLinkSelector) as HTMLElement;
+
+      expect(element, `${cancelLinkSelector} should exist`).to.not.be.null;
+
+      element.click();
+
+      cy.get(L.pageTitle)
+        .should('have.text', 'Account details')
+        .then(() => {
+          const elapsed = win.performance.now() - start;
+
+          expect(elapsed, `Account Details page should load within 250ms`).to.be.lessThan(250);
+        });
+    });
+  });
+
+  it('Simple page changes should be less than 250ms - Contact Details Page', { tags: [] }, () => {
+    interceptAuthenticatedUser();
+    interceptUserState(USER_STATE_MOCK_PERMISSION_BU77);
+    interceptBusinessUnits();
+
+    localMacComponentSetup();
+
+    // Defining selectors rather than re-using due to directly accessing DOM for more accurate performance measurements.
+    const contactDetailsTabSelector = L.contactDetails + ' .govuk-link';
+    const cancelLinkSelector = '.govuk-link';
+
+    cy.get(L.pageTitle).should('have.text', 'Account details');
+
+    cy.window().then((win) => {
+      const start = win.performance.now();
+      const element = win.document.querySelector(contactDetailsTabSelector) as HTMLElement;
+
+      expect(element, `${contactDetailsTabSelector} should exist`).to.not.be.null;
+
+      element.click();
+
+      cy.get(L.pageTitle)
+        .should('have.text', 'Defendant contact details')
+        .then(() => {
+          const elapsed = win.performance.now() - start;
+
+          expect(elapsed, `Contact Details page should load within 250ms`).to.be.lessThan(250);
+        });
+    });
+
+    cy.window().then((win) => {
+      const start = win.performance.now();
+      const element = win.document.querySelector(cancelLinkSelector) as HTMLElement;
+
+      expect(element, `${cancelLinkSelector} should exist`).to.not.be.null;
+
+      element.click();
+
+      cy.get(L.pageTitle)
+        .should('have.text', 'Account details')
+        .then(() => {
+          const elapsed = win.performance.now() - start;
+
+          expect(elapsed, `Account Details page should load within 250ms`).to.be.lessThan(250);
+        });
+    });
+  });
+
+  it('Simple page changes should be less than 250ms - Employer Details Page', { tags: [] }, () => {
+    interceptAuthenticatedUser();
+    interceptUserState(USER_STATE_MOCK_PERMISSION_BU77);
+    interceptBusinessUnits();
+
+    localMacComponentSetup();
+
+    // Defining selectors rather than re-using due to directly accessing DOM for more accurate performance measurements.
+    const employerDetailsTabSelector = L.employerDetails + ' .govuk-link';
+    const cancelLinkSelector = '.govuk-link';
+
+    cy.get(L.pageTitle).should('have.text', 'Account details');
+
+    cy.window().then((win) => {
+      const start = win.performance.now();
+      const element = win.document.querySelector(employerDetailsTabSelector) as HTMLElement;
+
+      expect(element, `${employerDetailsTabSelector} should exist`).to.not.be.null;
+
+      element.click();
+
+      cy.get(L.pageTitle)
+        .should('have.text', 'Employer details')
+        .then(() => {
+          const elapsed = win.performance.now() - start;
+
+          expect(elapsed, `Employer Details page should load within 250ms`).to.be.lessThan(250);
+        });
+    });
+
+    cy.window().then((win) => {
+      const start = win.performance.now();
+      const element = win.document.querySelector(cancelLinkSelector) as HTMLElement;
+
+      expect(element, `${cancelLinkSelector} should exist`).to.not.be.null;
+
+      element.click();
+
+      cy.get(L.pageTitle)
+        .should('have.text', 'Account details')
+        .then(() => {
+          const elapsed = win.performance.now() - start;
+
+          expect(elapsed, `Account Details page should load within 250ms`).to.be.lessThan(250);
+        });
+    });
+  });
+
+  it('Simple page changes should be less than 250ms - Payment Terms Page', { tags: [] }, () => {
+    interceptAuthenticatedUser();
+    interceptUserState(USER_STATE_MOCK_PERMISSION_BU77);
+    interceptBusinessUnits();
+
+    localMacComponentSetup();
+
+    // Defining selectors rather than re-using due to directly accessing DOM for more accurate performance measurements.
+    const paymentTermsTabSelector = L.paymentTerms + ' .govuk-link';
+    const cancelLinkSelector = '.govuk-link';
+
+    cy.get(L.pageTitle).should('have.text', 'Account details');
+
+    cy.window().then((win) => {
+      const start = win.performance.now();
+      const element = win.document.querySelector(paymentTermsTabSelector) as HTMLElement;
+
+      expect(element, `${paymentTermsTabSelector} should exist`).to.not.be.null;
+
+      element.click();
+
+      cy.get(L.pageTitle)
+        .should('have.text', 'Payment terms')
+        .then(() => {
+          const elapsed = win.performance.now() - start;
+
+          expect(elapsed, `Payment Terms page should load within 250ms`).to.be.lessThan(250);
+        });
+    });
+
+    cy.window().then((win) => {
+      const start = win.performance.now();
+      const element = win.document.querySelector(cancelLinkSelector) as HTMLElement;
+
+      expect(element, `${cancelLinkSelector} should exist`).to.not.be.null;
+
+      element.click();
+
+      cy.get(L.pageTitle)
+        .should('have.text', 'Account details')
+        .then(() => {
+          const elapsed = win.performance.now() - start;
+
+          expect(elapsed, `Account Details page should load within 250ms`).to.be.lessThan(250);
+        });
+    });
+  });
+
+  it('Simple page changes should be less than 250ms - Comments and Notes Page', { tags: [] }, () => {
+    interceptAuthenticatedUser();
+    interceptUserState(USER_STATE_MOCK_PERMISSION_BU77);
+    interceptBusinessUnits();
+
+    localMacComponentSetup();
+
+    // Defining selectors rather than re-using due to directly accessing DOM for more accurate performance measurements.
+    const commentsAndNotesTabSelector = L.accountCommentsAndNotes + ' .govuk-link';
+    const cancelLinkSelector = '.govuk-link';
+
+    cy.get(L.pageTitle).should('have.text', 'Account details');
+
+    cy.window().then((win) => {
+      const start = win.performance.now();
+      const element = win.document.querySelector(commentsAndNotesTabSelector) as HTMLElement;
+
+      expect(element, `${commentsAndNotesTabSelector} should exist`).to.not.be.null;
+
+      element.click();
+
+      cy.get(L.pageTitle)
+        .should('have.text', 'Account comments and notes')
+        .then(() => {
+          const elapsed = win.performance.now() - start;
+
+          expect(elapsed, `Comments and Notes page should load within 250ms`).to.be.lessThan(250);
         });
     });
 
