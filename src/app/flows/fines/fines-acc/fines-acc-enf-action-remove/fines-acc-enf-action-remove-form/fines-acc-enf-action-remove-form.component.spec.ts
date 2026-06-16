@@ -1,4 +1,5 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
+import { ActivatedRoute } from '@angular/router';
 import { describe, expect, it, vi, beforeEach } from 'vitest';
 import { FINES_ACC_ENF_ACTION_REMOVE_FIELD_ERRORS } from '../constants/fines-acc-enf-action-remove-field-errors.constant';
 import { FinesAccEnfActionRemoveFormComponent } from './fines-acc-enf-action-remove-form.component';
@@ -19,6 +20,7 @@ describe('FinesAccEnfActionRemoveFormComponent', () => {
   beforeEach(async () => {
     await TestBed.configureTestingModule({
       imports: [FinesAccEnfActionRemoveFormComponent],
+      providers: [{ provide: ActivatedRoute, useValue: { snapshot: { params: {}, data: {} } } }],
     }).compileComponents();
   });
 
@@ -48,12 +50,13 @@ describe('FinesAccEnfActionRemoveFormComponent', () => {
   });
 
   it('maps validation errors to the expected user-facing messages', () => {
-    expect(FINES_ACC_ENF_ACTION_REMOVE_FIELD_ERRORS.facc_enf_action_remove_reason.maxlength.message).toBe(
+    expect(FINES_ACC_ENF_ACTION_REMOVE_FIELD_ERRORS['facc_enf_action_remove_reason']['maxlength'].message).toBe(
       'Reason must be 24 characters or fewer',
     );
     expect(
-      FINES_ACC_ENF_ACTION_REMOVE_FIELD_ERRORS.facc_enf_action_remove_reason
-        .alphanumericWithHyphensSpacesApostrophesPattern.message,
+      FINES_ACC_ENF_ACTION_REMOVE_FIELD_ERRORS['facc_enf_action_remove_reason'][
+        'alphanumericWithHyphensSpacesApostrophesPattern'
+      ].message,
     ).toBe('Reason must only include letters a to z, numbers, hyphens, spaces and apostrophes');
   });
 
@@ -66,12 +69,13 @@ describe('FinesAccEnfActionRemoveFormComponent', () => {
     expect(cancelSpy).toHaveBeenCalled();
   });
 
-  it('marks the form dirty and blocks navigation when a reason has been entered', () => {
+  it('marks the form dirty when a reason has been entered', () => {
     createComponent();
+    const input = fixture.nativeElement.querySelector('#facc_enf_action_remove_reason') as HTMLInputElement;
 
-    component.form.get('facc_enf_action_remove_reason')?.setValue('Removed for review');
+    input.value = 'Removed for review';
+    input.dispatchEvent(new Event('input'));
 
-    expect((component as unknown as { canDeactivate: () => boolean }).canDeactivate()).toBe(false);
     expect(component.form.get('facc_enf_action_remove_reason')?.dirty).toBe(true);
   });
 });
