@@ -73,6 +73,61 @@ function setupAddEnforcementActionDetailsRoute(
   });
 }
 
+function reachAddAnotherEnforcementActionPrompt(
+  accountId: string,
+  headerMock: any,
+  enforcementMock: any,
+  accountStateOverrides: Record<string, unknown> = {},
+): void {
+  const additionalActionResultMock = structuredClone(FINES_ACC_ENF_ACTION_ADD_RESULT_MOCK);
+  additionalActionResultMock.result_id = 'WDN';
+  additionalActionResultMock.result_title = 'Warrant of detention';
+  additionalActionResultMock.allow_additional_action = true;
+
+  interceptAuthenticatedUser();
+  interceptUserState(USER_STATE_MOCK_PERMISSION_BU77);
+  interceptDefendantHeader(accountId, headerMock, '123');
+  interceptEnforcementStatus(accountId, enforcementMock, '123');
+  interceptEnforcers();
+
+  cy.intercept(
+    {
+      method: 'GET',
+      pathname: '/opal-fines-service/results/WDN',
+    },
+    {
+      statusCode: 200,
+      body: additionalActionResultMock,
+    },
+  ).as('getWdnResult');
+
+  cy.intercept(
+    {
+      method: 'POST',
+      pathname: `/opal-fines-service/defendant-accounts/${accountId}/enforcements`,
+    },
+    {
+      statusCode: 200,
+      body: {},
+    },
+  ).as('postAddEnforcementAction');
+
+  setupAddEnforcementActionDetailsRoute(
+    accountId,
+    `/fines/account/defendant/${accountId}/enforcement/action/add?resultId=WDN`,
+    USER_STATE_MOCK_PERMISSION_BU77,
+    accountStateOverrides,
+  );
+
+  cy.wait('@getWdnResult');
+
+  cy.get(ENF_ACTION_ADD.reasonInput).type('Valid reason');
+  cy.get(ENF_ACTION_ADD.changeExistingPaymentTermsNoRadio).check({ force: true });
+  cy.get(ENF_ACTION_ADD.addEnforcementActionButton).click();
+
+  cy.wait('@postAddEnforcementAction');
+}
+
 const statusScenarios = [
   { code: 'CS', reason: 'Consolidated' },
   { code: 'WO', reason: 'Written off' },
@@ -1792,87 +1847,142 @@ describe(
       },
     );
 
-    // it(
-    //   'AC10b. If the enforcement action allows an additional action, the user is taken to new page here',
-    //   { tags: ['@JIRA-STORY:PO-1782', '@JIRA-EPIC:PO-2630'] },
-    //   () => {
-    //     let headerMock = structuredClone(createDefendantHeaderMockWithName('Robert', 'Thomson'));
-    //     headerMock.debtor_type = 'Defendant';
-    //     headerMock.account_status_reference.account_status_code = 'L';
-    //
-    //     let enforcementMock = structuredClone(OPAL_FINES_ACCOUNT_DEFENDANT_DETAILS_ENFORCEMENT_TAB_REF_DATA_MOCK);
-    //     enforcementMock.last_enforcement_action!.enforcement_action.result_id = 'WDN';
-    //     enforcementMock.last_enforcement_action!.enforcement_action.result_title = 'Warrant of detention';
-    //     enforcementMock.next_enforcement_action_data = 'COLLO';
-    //
-    //     const additionalActionResultMock = structuredClone(FINES_ACC_ENF_ACTION_ADD_RESULT_MOCK);
-    //     additionalActionResultMock.result_id = 'WDN';
-    //     additionalActionResultMock.result_title = 'Warrant of detention';
-    //     additionalActionResultMock.allow_additional_action = true;
-    //
-    //     const accountId = headerMock.defendant_account_party_id;
-    //
-    //     interceptAuthenticatedUser();
-    //     interceptUserState(USER_STATE_MOCK_PERMISSION_BU77);
-    //     interceptDefendantHeader(accountId, headerMock, '123');
-    //     interceptEnforcementStatus(accountId, enforcementMock, '123');
-    //     interceptEnforcers();
-    //
-    //     cy.intercept(
-    //       {
-    //         method: 'GET',
-    //         pathname: '/opal-fines-service/results/WDN',
-    //       },
-    //       {
-    //         statusCode: 200,
-    //         body: additionalActionResultMock,
-    //       },
-    //     ).as('getWdnResult');
-    //
-    //     cy.intercept(
-    //       {
-    //         method: 'POST',
-    //         pathname: `/opal-fines-service/defendant-accounts/${accountId}/enforcements`,
-    //       },
-    //       {
-    //         statusCode: 200,
-    //         body: {},
-    //       },
-    //     ).as('postAddEnforcementAction');
-    //
-    //     // new page here
-    //     // intercept whatever API/data the dedicated additional-action page will need
-    //     // cy.intercept(...).as('getAdditionalActionPageData');
-    //
-    //     setupAddEnforcementActionDetailsRoute(
-    //       accountId,
-    //       `/fines/account/defendant/${accountId}/enforcement/action/add?resultId=WDN`,
-    //     );
-    //
-    //     cy.wait('@getWdnResult');
-    //
-    //     cy.get(ENF_ACTION_ADD.reasonInput).type('Valid reason');
-    //     cy.get(ENF_ACTION_ADD.changeExistingPaymentTermsNoRadio).check({ force: true });
-    //     cy.get(ENF_ACTION_ADD.addEnforcementActionButton).click();
-    //
-    //     cy.wait('@postAddEnforcementAction');
-    //
-    //     // TODO PO-1782:
-    //     // Replace the assertions below when the dedicated "Add additional enforcement action"
-    //     // page is implemented. The current app routes back to the existing select page.
-    //
-    //     // new page here
-    //     // cy.wait('@getAdditionalActionPageData');
-    //     //
-    //     // cy.get('@router').then((router) => {
-    //     //   expect((router as any).url).to.include(
-    //     //     `/fines/account/defendant/${accountId}/enforcement/action/new-page-here`,
-    //     //   );
-    //     // });
-    //     //
-    //     // cy.get('new page here title selector').should('contain.text', 'Add additional enforcement action');
-    //     // cy.get('new page here unique selector').should('be.visible');
-    //   },
-    // );
+    it(
+      'AC1a, AC2a, AC2b, AC2ci, AC3a. Individual: displays the add new enforcement action prompt after adding an action that allows an additional action',
+      { tags: ['@JIRA-STORY:PO-1786', '@JIRA-STORY:PO-1833', '@JIRA-STORY:PO-1843', '@JIRA-EPIC:PO-1674'] },
+      () => {
+        const headerMock = structuredClone(createDefendantHeaderMockWithName('Robert', 'Thomson'));
+        headerMock.debtor_type = 'Defendant';
+        headerMock.account_status_reference.account_status_code = 'L';
+
+        const enforcementMock = structuredClone(OPAL_FINES_ACCOUNT_DEFENDANT_DETAILS_ENFORCEMENT_TAB_REF_DATA_MOCK);
+        enforcementMock.last_enforcement_action!.enforcement_action.result_id = 'WDN';
+        enforcementMock.last_enforcement_action!.enforcement_action.result_title = 'Warrant of detention';
+        enforcementMock.next_enforcement_action_data = 'COLLO';
+
+        const accountId = headerMock.defendant_account_party_id;
+
+        reachAddAnotherEnforcementActionPrompt(accountId, headerMock, enforcementMock);
+
+        cy.get(ENF_ACTION_ADD.addNewEnforcementActionPageTitle).should(
+          'contain.text',
+          'Do you want to add a new enforcement action?',
+        );
+        cy.get(ENF_ACTION_ADD.addNewEnforcementActionAccountInfo).should('contain.text', '177A - Mr Robert THOMSON');
+        cy.get(ENF_ACTION_ADD.addNewEnforcementActionSuccessBanner).should('contain.text', 'Enforcement action added');
+
+        cy.get(ENF_ACTION_ADD.addNewEnforcementActionRadioGroup).should('contain.text', 'Yes');
+        cy.get(ENF_ACTION_ADD.addNewEnforcementActionRadioGroup).should('contain.text', 'No');
+      },
+    );
+
+    it(
+      'AC2b. Company: displays the add new enforcement action prompt and account identifier',
+      { tags: ['@JIRA-STORY:PO-1843', '@JIRA-EPIC:PO-1674'] },
+      () => {
+        const headerMock = structuredClone(DEFENDANT_HEADER_ORG_MOCK);
+        headerMock.debtor_type = 'company';
+        headerMock.account_status_reference.account_status_code = 'L';
+
+        const enforcementMock = structuredClone(OPAL_FINES_ACCOUNT_DEFENDANT_DETAILS_ENFORCEMENT_TAB_REF_DATA_MOCK);
+        enforcementMock.last_enforcement_action!.enforcement_action.result_id = 'WDN';
+        enforcementMock.last_enforcement_action!.enforcement_action.result_title = 'Warrant of detention';
+        enforcementMock.next_enforcement_action_data = 'COLLO';
+
+        const accountId = headerMock.defendant_account_party_id;
+
+        reachAddAnotherEnforcementActionPrompt(accountId, headerMock, enforcementMock, {
+          party_type: 'Company',
+          party_name: 'Sainsco',
+        });
+
+        cy.get(ENF_ACTION_ADD.addNewEnforcementActionPageTitle).should(
+          'contain.text',
+          'Do you want to add a new enforcement action?',
+        );
+        cy.get(ENF_ACTION_ADD.addNewEnforcementActionAccountInfo).should('contain.text', '177A - Sainsco');
+        cy.get(ENF_ACTION_ADD.addNewEnforcementActionSuccessBanner).should('contain.text', 'Enforcement action added');
+      },
+    );
+
+    it(
+      'AC3b. Continue without selecting an option shows validation',
+      { tags: ['@JIRA-STORY:PO-1786', '@JIRA-STORY:PO-1833', '@JIRA-STORY:PO-1843', '@JIRA-EPIC:PO-1674'] },
+      () => {
+        const headerMock = structuredClone(createDefendantHeaderMockWithName('Robert', 'Thomson'));
+        headerMock.debtor_type = 'Defendant';
+        headerMock.account_status_reference.account_status_code = 'L';
+
+        const enforcementMock = structuredClone(OPAL_FINES_ACCOUNT_DEFENDANT_DETAILS_ENFORCEMENT_TAB_REF_DATA_MOCK);
+        enforcementMock.last_enforcement_action!.enforcement_action.result_id = 'WDN';
+        enforcementMock.last_enforcement_action!.enforcement_action.result_title = 'Warrant of detention';
+        enforcementMock.next_enforcement_action_data = 'COLLO';
+
+        const accountId = headerMock.defendant_account_party_id;
+
+        reachAddAnotherEnforcementActionPrompt(accountId, headerMock, enforcementMock);
+
+        cy.get(ENF_ACTION_ADD.addNewEnforcementActionContinueButton).click();
+
+        cy.get(ENF_ACTION_ADD.addNewEnforcementActionErrorSummary).should('be.visible');
+        cy.get(ENF_ACTION_ADD.addNewEnforcementActionErrorSummary).should(
+          'contain.text',
+          'Select whether you want to add a new enforcement action',
+        );
+
+        cy.get(ENF_ACTION_ADD.addNewEnforcementActionErrorMessage).should(
+          'contain.text',
+          'Select whether you want to add a new enforcement action',
+        );
+      },
+    );
+
+    it(
+      'AC4a. Selecting Yes continues to the Select enforcement action screen',
+      { tags: ['@JIRA-STORY:PO-1786', '@JIRA-STORY:PO-1833', '@JIRA-STORY:PO-1843', '@JIRA-EPIC:PO-1674'] },
+      () => {
+        const headerMock = structuredClone(createDefendantHeaderMockWithName('Robert', 'Thomson'));
+        headerMock.debtor_type = 'Defendant';
+        headerMock.account_status_reference.account_status_code = 'L';
+
+        const enforcementMock = structuredClone(OPAL_FINES_ACCOUNT_DEFENDANT_DETAILS_ENFORCEMENT_TAB_REF_DATA_MOCK);
+        enforcementMock.last_enforcement_action!.enforcement_action.result_id = 'WDN';
+        enforcementMock.last_enforcement_action!.enforcement_action.result_title = 'Warrant of detention';
+        enforcementMock.next_enforcement_action_data = 'COLLO';
+
+        const accountId = headerMock.defendant_account_party_id;
+
+        reachAddAnotherEnforcementActionPrompt(accountId, headerMock, enforcementMock);
+
+        cy.get(ENF_ACTION_ADD.addNewEnforcementActionYesRadio).check({ force: true });
+        cy.get(ENF_ACTION_ADD.addNewEnforcementActionContinueButton).click();
+
+        cy.get('@routerNavigate').should('have.been.calledWithMatch', ['enforcement/action/select']);
+      },
+    );
+
+    it(
+      'AC4b. Selecting No returns to the Enforcement tab',
+      { tags: ['@JIRA-STORY:PO-1786', '@JIRA-STORY:PO-1833', '@JIRA-STORY:PO-1843', '@JIRA-EPIC:PO-1674'] },
+      () => {
+        const headerMock = structuredClone(createDefendantHeaderMockWithName('Robert', 'Thomson'));
+        headerMock.debtor_type = 'Defendant';
+        headerMock.account_status_reference.account_status_code = 'L';
+
+        const enforcementMock = structuredClone(OPAL_FINES_ACCOUNT_DEFENDANT_DETAILS_ENFORCEMENT_TAB_REF_DATA_MOCK);
+        enforcementMock.last_enforcement_action!.enforcement_action.result_id = 'WDN';
+        enforcementMock.last_enforcement_action!.enforcement_action.result_title = 'Warrant of detention';
+        enforcementMock.next_enforcement_action_data = 'COLLO';
+
+        const accountId = headerMock.defendant_account_party_id;
+
+        reachAddAnotherEnforcementActionPrompt(accountId, headerMock, enforcementMock);
+
+        cy.get(ENF_ACTION_ADD.addNewEnforcementActionNoRadio).check({ force: true });
+        cy.get(ENF_ACTION_ADD.addNewEnforcementActionContinueButton).click();
+
+        cy.get('@routerNavigate').should('have.been.calledWithMatch', ['details'], { fragment: 'enforcement' });
+      },
+    );
   },
 );

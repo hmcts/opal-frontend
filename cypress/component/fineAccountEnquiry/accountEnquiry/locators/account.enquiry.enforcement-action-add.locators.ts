@@ -51,4 +51,15 @@ export const DOM_ELEMENTS = {
   errorSummary: '.govuk-error-summary',
   cancelLink: '.govuk-link',
   addEnforcementActionButton: '#submitForm',
+  addNewEnforcementActionPageTitle: 'opal-lib-govuk-heading-with-caption > h1',
+  addNewEnforcementActionAccountInfo: 'opal-lib-govuk-heading-with-caption .govuk-caption-l',
+  addNewEnforcementActionSuccessBanner: 'opal-lib-moj-alert-content-text',
+
+  addNewEnforcementActionRadioGroup: '.govuk-radios',
+  addNewEnforcementActionYesRadio: '#facc_enf_action_add_new-facc_enf_action_add_new_yes',
+  addNewEnforcementActionNoRadio: '#facc_enf_action_add_new-facc_enf_action_add_new_no',
+
+  addNewEnforcementActionContinueButton: '#submitForm',
+  addNewEnforcementActionErrorSummary: 'opal-lib-govuk-error-summary',
+  addNewEnforcementActionErrorMessage: '#facc_enf_action_add_new-error-message',
 } as const;
