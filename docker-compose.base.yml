@@ -1,0 +1,66 @@
+include:
+  - path: ../opal-fines-service/docker-compose.base.yml
+  - path: ../opal-fines-service/docker-compose.local.yml
+  - path: ../opal-user-service/docker-compose.base.yml
+  - path: ../opal-user-service/docker-compose.local.yml
+services:
+  opal-frontend:
+    env_file:
+      - ../opal-shared-infrastructure/docker-files/.env.shared
+    environment:
+      - ROOT_APPENDER
+      - OPAL_FINES_SERVICE_API_URL=http://host.docker.internal:4550
+      - OPAL_USER_SERVICE_API_URL=http://host.docker.internal:4555
+      - FRONTEND_HOSTNAME=http://localhost:4000
+      - REDIS_CONNECTION_STRING=redis://host.docker.internal:6379
+      - ALLOW_CONFIG_MUTATIONS=true
+      - FEATURES_REDIS_ENABLED=true
+      - SESSION_SECURE_ENABLED=true
+      - CSRF_SECURE_ENABLED=true
+      - FEATURES_HELMET_ENABLED=true
+      - FEATURES_LAUNCH_DARKLY_ENABLED=true
+      - FEATURES_LAUNCH_DARKLY_STREAM=false
+      - FEATURES_SSO_ENABLED=true
+      - SESSION_SAME_SITE=lax
+      - CSRF_SAME_SITE=lax
+      - FEATURE_FLAGS_OVERRIDE=true
+      - FRONTEND_SESSION_SECRET=supersecret
+      - FRONTEND_COOKIE_SECRET=supersecret
+      - SESSION_SECURE_ENABLED=false
+      - CSRF_SECURE_ENABLED=false
+      - opal-frontend-csrf-secret=supersecret
+      - RELEASE_1A_ENABLED=true
+      - RELEASE_1B_ENABLED=true
+      - RELEASE_1C_WRITE_OFF_ENABLED=true
+      - RELEASE_1C_AUTO_ENFORCEMENT_ENABLED=true
+      - RELEASE_1D_DATA_RETENTION_ENABLED=true
+      - RELEASE_1D_AUTO_ENFORCEMENT_CONFIG_ENABLED=true
+      - RELEASE_1C_RM_FINANCIAL_MOVEMENTS_ENABLED=true
+      - RELEASE_1C_RM_FINANCIAL_CHECKS_ENABLED=true
+      - RELEASE_1C_RM_SUSPENSE_ENABLED=true
+      - RELEASE_1C_RM_PAYMENT_ENABLED=true
+      - RELEASE_1C_RM_ADMIN_REPORTS_ENABLED=true
+      - RELEASE_1C_RM_ACCOUNT_ACTIONS_ENABLED=true
+      - RELEASE_1C_FINANCIAL_MOVEMENTS_ENABLED=true
+      - RELEASE_1C_CHECKS_ENABLED=true
+      - RELEASE_1C_SUSPENSE_ENABLED=true
+      - RELEASE_1C_PAYMENT_ENABLED=true
+      - RELEASE_1C_R1A_TIDY_UP_ENABLED=true
+      - RELEASE_1C_REFERENCE_DATA_ENABLED=true
+      - RELEASE_1C_BANKING_INTERFACES_ENABLED=true
+      - RELEASE_1C_CPP_ENFORCEMENT_ENABLED=true
+      - RELEASE_1C_CPP_ENABLED=true
+      - RELEASE_1C_PRINTING_ENABLED=true
+      - RELEASE_1C_ENFORCEMENT_OPERATIONAL_REPORTING_ENABLED=true
+    ports:
+      - "${FRONTEND_PORT:-4000}:4000"
+    depends_on:
+      - redis
+    networks:
+      - default
+
+
+
+
+
+
