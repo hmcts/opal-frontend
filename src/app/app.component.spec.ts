@@ -37,6 +37,7 @@ import {
   RELEASE_1B_FEATURE_FLAG,
   RELEASE_1C_WRITE_OFF_FEATURE_FLAG,
   RELEASE_1C_ENFORCEMENT_OPERATIONAL_REPORTING_FEATURE_FLAG,
+  RELEASE_1C_FINANCIAL_MOVEMENTS_FEATURE_FLAG,
 } from './flows/fines/constants/release-feature-flags.constant';
 import { HIDE_PRIMARY_NAV_ROUTE_DATA_KEY } from './constants/route-data.constant';
 import { FINES_ACC_ROUTING_PATHS } from './flows/fines/fines-acc/routing/constants/fines-acc-routing-paths.constant';
@@ -51,6 +52,7 @@ const DEFAULT_RELEASE_FEATURE_FLAGS = {
   [RELEASE_1C_WRITE_OFF_FEATURE_FLAG]: true,
   [RELEASE_1C_ENFORCEMENT_OPERATIONAL_REPORTING_FEATURE_FLAG]: true,
   [RELEASE_1C_ADMINISTRATION_FEATURE_FLAG]: true,
+  [RELEASE_1C_FINANCIAL_MOVEMENTS_FEATURE_FLAG]: true,
 };
 
 @Component({
@@ -571,6 +573,30 @@ describe('AppComponent - browser', () => {
     fixture.detectChanges();
 
     expect(getPrimaryNavigationTexts(fixture)).not.toContain('Administration');
+  });
+
+  it('should show Finance in primary navigation when release-1c-financial-movements is enabled', () => {
+    globalStore.setAuthenticated(true);
+    globalStore.setUserState(createUserStateWithPermissions([]));
+
+    const fixture = TestBed.createComponent(AppComponent);
+    fixture.detectChanges();
+
+    expect(getPrimaryNavigationTexts(fixture)).toContain('Finance');
+  });
+
+  it('should hide Finance in primary navigation when release-1c-financial-movements is disabled', () => {
+    globalStore.setAuthenticated(true);
+    globalStore.setFeatureFlags({
+      ...DEFAULT_RELEASE_FEATURE_FLAGS,
+      [RELEASE_1C_FINANCIAL_MOVEMENTS_FEATURE_FLAG]: false,
+    });
+    globalStore.setUserState(createUserStateWithPermissions([]));
+
+    const fixture = TestBed.createComponent(AppComponent);
+    fixture.detectChanges();
+
+    expect(getPrimaryNavigationTexts(fixture)).not.toContain('Finance');
   });
 
   it('should show the primary navigation on browse routes', async () => {

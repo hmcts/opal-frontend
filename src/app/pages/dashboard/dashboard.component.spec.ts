@@ -16,6 +16,7 @@ import {
   RELEASE_1C_ADMINISTRATION_FEATURE_FLAG,
   RELEASE_1C_WRITE_OFF_FEATURE_FLAG,
   RELEASE_1C_ENFORCEMENT_OPERATIONAL_REPORTING_FEATURE_FLAG,
+  RELEASE_1C_FINANCIAL_MOVEMENTS_FEATURE_FLAG,
 } from '@app/flows/fines/constants/release-feature-flags.constant';
 
 describe('DashboardComponent', () => {
@@ -32,6 +33,7 @@ describe('DashboardComponent', () => {
     [RELEASE_1C_WRITE_OFF_FEATURE_FLAG]: true,
     [RELEASE_1C_ENFORCEMENT_OPERATIONAL_REPORTING_FEATURE_FLAG]: true,
     [RELEASE_1C_ADMINISTRATION_FEATURE_FLAG]: true,
+    [RELEASE_1C_FINANCIAL_MOVEMENTS_FEATURE_FLAG]: true,
   };
 
   const setupComponent = () => {
@@ -169,7 +171,7 @@ describe('DashboardComponent', () => {
     fixture.detectChanges();
 
     expect(component.resolvedConfig()).toEqual(DASHBOARD_PAGE_CONFIGURATION_MAP.administration);
-    expect(component.resolvedConfig().groups.map((group) => group.id)).toContain('administration-test');
+    expect(component.resolvedConfig().groups.map((group) => group.id)).toContain('administration-placeholder');
   });
 
   it('should remove administration content when release-1c-administration is disabled', () => {
@@ -183,6 +185,30 @@ describe('DashboardComponent', () => {
 
     expect(component.resolvedConfig()).toEqual({
       ...DASHBOARD_PAGE_CONFIGURATION_MAP.administration,
+      groups: [],
+    });
+  });
+
+  it('should resolve the finance config when release-1c-financial-movements is enabled', () => {
+    setupComponent();
+    dashboardTypeParamMapSubject.next(convertToParamMap({ dashboardType: 'finance' }));
+    fixture.detectChanges();
+
+    expect(component.resolvedConfig()).toEqual(DASHBOARD_PAGE_CONFIGURATION_MAP.finance);
+    expect(component.resolvedConfig().groups.map((group) => group.id)).toContain('finance-placeholder');
+  });
+
+  it('should remove finance content when release-1c-financial-movements is disabled', () => {
+    globalStoreMock.featureFlags.mockReturnValue({
+      ...DEFAULT_RELEASE_FEATURE_FLAGS,
+      [RELEASE_1C_FINANCIAL_MOVEMENTS_FEATURE_FLAG]: false,
+    });
+    setupComponent();
+    dashboardTypeParamMapSubject.next(convertToParamMap({ dashboardType: 'finance' }));
+    fixture.detectChanges();
+
+    expect(component.resolvedConfig()).toEqual({
+      ...DASHBOARD_PAGE_CONFIGURATION_MAP.finance,
       groups: [],
     });
   });

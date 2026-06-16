@@ -17,6 +17,7 @@ import {
   RELEASE_1B_FEATURE_FLAG,
   RELEASE_1C_ENFORCEMENT_OPERATIONAL_REPORTING_FEATURE_FLAG,
   RELEASE_1C_WRITE_OFF_FEATURE_FLAG,
+  RELEASE_1C_FINANCIAL_MOVEMENTS_FEATURE_FLAG,
 } from '@app/flows/fines/constants/release-feature-flags.constant';
 
 const resolveFeatureFlagGuardMock = vi.fn();
@@ -26,6 +27,7 @@ const DEFAULT_RELEASE_FEATURE_FLAGS = {
   [RELEASE_1C_WRITE_OFF_FEATURE_FLAG]: true,
   [RELEASE_1C_ENFORCEMENT_OPERATIONAL_REPORTING_FEATURE_FLAG]: true,
   [RELEASE_1C_ADMINISTRATION_FEATURE_FLAG]: true,
+  [RELEASE_1C_FINANCIAL_MOVEMENTS_FEATURE_FLAG]: true,
 };
 
 const mockFeatureFlags = (featureFlags: Record<string, boolean>) => {
@@ -244,6 +246,11 @@ describe('dashboardLandingGuard', () => {
     );
     expect(resolveFeatureFlagGuardMock).toHaveBeenCalledWith(
       RELEASE_1C_ADMINISTRATION_FEATURE_FLAG,
+      expect.any(Object),
+      expect.any(Object),
+    );
+    expect(resolveFeatureFlagGuardMock).toHaveBeenCalledWith(
+      RELEASE_1C_FINANCIAL_MOVEMENTS_FEATURE_FLAG,
       expect.any(Object),
       expect.any(Object),
     );
