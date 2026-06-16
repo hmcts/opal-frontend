@@ -23,12 +23,12 @@ services:
       - FEATURES_SSO_ENABLED=true
       - SESSION_SAME_SITE=lax
       - CSRF_SAME_SITE=lax
-      - FEATURE_FLAGS_OVERRIDE=true
       - FRONTEND_SESSION_SECRET=supersecret
       - FRONTEND_COOKIE_SECRET=supersecret
       - SESSION_SECURE_ENABLED=false
       - CSRF_SECURE_ENABLED=false
       - opal-frontend-csrf-secret=supersecret
+      - FEATURE_FLAGS_OVERRIDE=true
       - RELEASE_1A_ENABLED=true
       - RELEASE_1B_ENABLED=true
       - RELEASE_1C_WRITE_OFF_ENABLED=true
