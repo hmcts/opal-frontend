@@ -28,18 +28,18 @@ properties([
     booleanParam(
       name: 'RunUatTech',
       defaultValue: false,
-      description: 'Run UAT-Technical stage (demo -> pre-prod legacy checks)'
+      description: 'Run UAT-Technical stage (demo -> selected legacy checks)'
     ),
     booleanParam(
       name: 'RunR1aOffLegacyDemo',
       defaultValue: false,
-      description: 'Run R1A Off legacy demo stage (demo -> pre-prod legacy checks)'
+      description: 'Run R1A Off legacy demo stage (demo -> selected legacy checks)'
     ),
     booleanParam(name: 'ZephyrExecution', defaultValue: false, description: 'Create Zephyr Execution'),
     choice(
       name: 'LEGACY_URL',
-      choices: [legacyUrlDevChoice, legacyUrlPreProdChoice],
-      description: 'Determines the URL to use for legacy tests. Default is DEV until PRE-PROD is ready.'
+      choices: [legacyUrlPreProdChoice, legacyUrlDevChoice],
+      description: 'Determines the URL to use for legacy tests. Default is PRE-PROD.'
     ),
   ])
 ])
@@ -66,7 +66,7 @@ String failureResult = 'FAILURE'
 @Field String legacyGatewayUrlPreProd = 'https://cloudgobgateway.test.platform.hmcts.net/opal'
 @Field String legacyGatewayUrlDev = 'https://opal-legacy-db-stub.staging.platform.hmcts.net/opal'
 @Field String launchDarklyApiVersion = '20240415'
-@Field String launchDarklyEnvironmentKey = 'test'
+@Field String launchDarklyEnvironmentKey = 'demo'
 @Field String launchDarklyFlagKey = 'app-mode'
 @Field String launchDarklyOpalVariationName = opalName
 @Field String launchDarklyLegacyVariationName = 'legacy'
@@ -203,8 +203,18 @@ INSTALL ${browser.toUpperCase()} OR DISABLE THE ${browser.toUpperCase()} RUN
   return browser
 }
 
-// Archive pipeline artifacts without failing when none are present.
+// Check whether any files in the workspace match the provided glob.
+boolean hasMatchingFiles(String glob) {
+  return findFiles(glob: glob).length > zeroIndex
+}
+
+// Archive pipeline artifacts only when the expected files are present.
 void archiveArtifact(String path) {
+  if (!hasMatchingFiles(path)) {
+    echo "Skipping artifact archive for '${path}' because no matching files were created."
+    return
+  }
+
   archiveArtifacts artifacts: path, allowEmptyArchive: true
 }
 
@@ -214,13 +224,26 @@ void archiveZephyrReports(String outputDir) {
   archiveArtifact("${outputDir}/zephyr/cypress-report-1.json")
 }
 
-// Publish an HTML report directory with Jenkins HTML Publisher.
+// Publish an HTML report directory with Jenkins HTML Publisher when the report exists.
 void publishHtmlReport(String dir, String files, String name) {
+  String normalizedDir = dir.endsWith('/') ? dir[zeroIndex..-2] : dir
+  String reportGlob = "${normalizedDir}/${files}"
+
+  if (!fileExists(normalizedDir)) {
+    echo "Skipping HTML report '${name}' because directory '${normalizedDir}' was not created."
+    return
+  }
+
+  if (!hasMatchingFiles(reportGlob)) {
+    echo "Skipping HTML report '${name}' because report files matching '${reportGlob}' were not created."
+    return
+  }
+
   publishHTML target: [
     allowMissing         : true,
     alwaysLinkToLastBuild: true,
     keepAll              : true,
-    reportDir            : dir,
+    reportDir            : normalizedDir,
     reportFiles          : files,
     reportName           : name
   ]
@@ -318,8 +341,18 @@ String getLegacyHealthCheckStatus() {
   ).trim()
 }
 
+// Run the legacy gateway health check only when the selected gateway supports it.
+boolean shouldRunLegacyHealthCheck() {
+  return params.LEGACY_URL == legacyUrlPreProdChoice
+}
+
 // Wait until the legacy health endpoint responds successfully after toggling app mode.
 void waitForLegacyHealthCheck() {
+  if (!shouldRunLegacyHealthCheck()) {
+    echo "Skipping legacy health check because LEGACY_URL=${params.LEGACY_URL} uses the DEV stub."
+    return
+  }
+
   timeout(time: uatHealthCheckTimeoutMinutes, unit: 'MINUTES') {
     script {
       boolean healthy = false
