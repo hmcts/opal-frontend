@@ -4,5 +4,5 @@ export const FINES_ACC_DEFENDANT_DETAILS_HISTORY_AND_NOTES_FILTER_FORM_PAYLOAD_M
   {
     dateFrom: '2024-01-01',
     dateTo: '2024-01-31',
-    itemTypes: 'amendments,notes',
+    itemTypes: 'amendment,note',
   };

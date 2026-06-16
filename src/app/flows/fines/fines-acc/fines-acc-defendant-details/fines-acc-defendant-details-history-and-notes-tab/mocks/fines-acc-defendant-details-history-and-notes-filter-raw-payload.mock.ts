@@ -4,5 +4,5 @@ export const FINES_ACC_DEFENDANT_DETAILS_HISTORY_AND_NOTES_FILTER_RAW_PAYLOAD_MO
   {
     dateFrom: '01/01/2024',
     dateTo: '31/01/2024',
-    itemTypes: 'amendments,enforcements,transactions,paymentTerms',
+    itemTypes: 'amendment,enforcement,financial,paymentTerms',
   };

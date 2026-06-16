@@ -4,9 +4,9 @@ export const FINES_ACC_HISTORY_FILTER_ITEM_TYPE_MAP: Record<
   TFinesAccDefendantDetailsHistoryAndNotesFilterCategory,
   string
 > = {
-  amendments: 'amendments',
-  enforcementActions: 'enforcements',
-  financial: 'transactions',
-  notes: 'notes',
+  amendments: 'amendment',
+  enforcementActions: 'enforcement',
+  financial: 'financial',
+  notes: 'note',
   paymentTerms: 'paymentTerms',
 };
