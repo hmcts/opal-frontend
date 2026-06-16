@@ -38,8 +38,8 @@ properties([
     booleanParam(name: 'ZephyrExecution', defaultValue: false, description: 'Create Zephyr Execution'),
     choice(
       name: 'LEGACY_URL',
-      choices: [legacyUrlDevChoice, legacyUrlPreProdChoice],
-      description: 'Determines the URL to use for legacy tests. Default is DEV until PRE-PROD is ready.'
+      choices: [legacyUrlPreProdChoice, legacyUrlDevChoice],
+      description: 'Determines the URL to use for legacy tests. Default is PRE-PROD.'
     ),
   ])
 ])
