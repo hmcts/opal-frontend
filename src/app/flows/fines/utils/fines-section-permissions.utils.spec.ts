@@ -238,9 +238,7 @@ describe('fines-section-permissions.utils', () => {
 
   describe('canAccessFinesPrimaryNavigationSection', () => {
     it('should allow unrestricted dashboard sections when their availability flags are enabled', () => {
-      expect(
-        canAccessFinesPrimaryNavigationSection('finance', null, release1cFinancialMovementsEnabled),
-      ).toBe(true);
+      expect(canAccessFinesPrimaryNavigationSection('finance', null, release1cFinancialMovementsEnabled)).toBe(true);
     });
 
     it('should deny restricted sections when the user lacks permissions', () => {
@@ -457,14 +455,10 @@ describe('fines-section-permissions.utils', () => {
       ];
 
       expect(
-        getDashboardLandingType(
-          navigationItemsWithFinance,
-          createUserStateWithPermissions([REPORTS_PERMISSIONS[0]]),
-          {
-            ...release1cReportingDisabled,
-            ...release1cFinancialMovementsEnabled,
-          },
-        ),
+        getDashboardLandingType(navigationItemsWithFinance, createUserStateWithPermissions([REPORTS_PERMISSIONS[0]]), {
+          ...release1cReportingDisabled,
+          ...release1cFinancialMovementsEnabled,
+        }),
       ).toBe('finance');
     });
 
@@ -475,14 +469,10 @@ describe('fines-section-permissions.utils', () => {
       ];
 
       expect(
-        getDashboardLandingType(
-          navigationItemsWithFinance,
-          createUserStateWithPermissions([ACCOUNTS_PERMISSIONS[0]]),
-          {
-            ...release1aDisabledWithWriteOffEnabled,
-            ...release1cFinancialMovementsEnabled,
-          },
-        ),
+        getDashboardLandingType(navigationItemsWithFinance, createUserStateWithPermissions([ACCOUNTS_PERMISSIONS[0]]), {
+          ...release1aDisabledWithWriteOffEnabled,
+          ...release1cFinancialMovementsEnabled,
+        }),
       ).toBe('finance');
     });
 
@@ -493,14 +483,10 @@ describe('fines-section-permissions.utils', () => {
       ];
 
       expect(
-        getDashboardLandingType(
-          navigationItemsWithFinance,
-          createUserStateWithPermissions([ACCOUNTS_PERMISSIONS[2]]),
-          {
-            ...release1aEnabledWithWriteOffDisabled,
-            ...release1cFinancialMovementsEnabled,
-          },
-        ),
+        getDashboardLandingType(navigationItemsWithFinance, createUserStateWithPermissions([ACCOUNTS_PERMISSIONS[2]]), {
+          ...release1aEnabledWithWriteOffDisabled,
+          ...release1cFinancialMovementsEnabled,
+        }),
       ).toBe('finance');
     });
 
