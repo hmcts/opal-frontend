@@ -1,5 +1,4 @@
 import { ChangeDetectionStrategy, Component, inject, OnInit } from '@angular/core';
-import { AbstractFormParentBaseComponent } from '@hmcts/opal-frontend-common/components/abstract/abstract-form-parent-base';
 import { IAlphagovAccessibleAutocompleteItem } from '@hmcts/opal-frontend-common/components/alphagov/alphagov-accessible-autocomplete/interfaces';
 
 import { RouterModule } from '@angular/router';
@@ -8,9 +7,7 @@ import { OpalFines } from '@services/fines/opal-fines-service/opal-fines.service
 import { IOpalFinesCourtRefData } from '@services/fines/opal-fines-service/interfaces/opal-fines-court-ref-data.interface';
 import { IOpalFinesLocalJusticeAreaRefData } from '@services/fines/opal-fines-service/interfaces/opal-fines-local-justice-area-ref-data.interface';
 import { IFinesMacCourtDetailsForm } from './interfaces/fines-mac-court-details-form.interface';
-import { FINES_MAC_ROUTING_NESTED_ROUTES } from '../routing/constants/fines-mac-routing-nested-routes.constant';
-import { FINES_MAC_ROUTING_PATHS } from '../routing/constants/fines-mac-routing-paths.constant';
-import { FinesMacStore } from '../stores/fines-mac.store';
+import { FinesMacFormParentBaseComponent } from '../abstract/fines-mac-form-parent-base';
 
 @Component({
   selector: 'app-fines-mac-court-details',
@@ -18,16 +15,14 @@ import { FinesMacStore } from '../stores/fines-mac.store';
   templateUrl: './fines-mac-court-details.component.html',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class FinesMacCourtDetailsComponent extends AbstractFormParentBaseComponent implements OnInit {
+export class FinesMacCourtDetailsComponent extends FinesMacFormParentBaseComponent implements OnInit {
   private readonly opalFinesService = inject(OpalFines);
-  private readonly finesMacStore = inject(FinesMacStore);
   private courts!: IOpalFinesCourtRefData;
 
   protected localJusticeAreas!: IOpalFinesLocalJusticeAreaRefData;
 
   public sendingCourtData: IAlphagovAccessibleAutocompleteItem[] = [];
   public enforcementCourtData: IAlphagovAccessibleAutocompleteItem[] = [];
-  public defendantType = this.finesMacStore.getDefendantType();
 
   /**
    * Creates an array of autocomplete items based on the response from the server.
@@ -70,24 +65,12 @@ export class FinesMacCourtDetailsComponent extends AbstractFormParentBaseCompone
   public handleCourtDetailsSubmit(form: IFinesMacCourtDetailsForm): void {
     this.finesMacStore.setCourtDetails(form);
 
-    if (form.nestedFlow && this.defendantType) {
-      const nextRoute = FINES_MAC_ROUTING_NESTED_ROUTES[this.defendantType]['courtDetails'];
-      if (nextRoute) {
-        this.routerNavigate(nextRoute.nextRoute);
-      }
-    } else {
-      this.routerNavigate(FINES_MAC_ROUTING_PATHS.children.accountDetails);
+    if (form.nestedFlow) {
+      this.navigateToNestedRoute('courtDetails');
+      return;
     }
-  }
 
-  /**
-   * Handles unsaved changes coming from the child component
-   *
-   * @param unsavedChanges boolean value from child component
-   */
-  public handleUnsavedChanges(unsavedChanges: boolean): void {
-    this.finesMacStore.setUnsavedChanges(unsavedChanges);
-    this.stateUnsavedChanges = unsavedChanges;
+    this.navigateToAccountDetails();
   }
 
   public ngOnInit(): void {
