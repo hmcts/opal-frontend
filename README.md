@@ -423,8 +423,9 @@ The nightly Jenkins pipeline runs its stages in this order after checkout and te
 
 Notes for the nightly pipeline:
 
-- `LEGACY_URL` currently defaults to `DEV` so the demo legacy stages can run while `PRE-PROD` is not ready.
-- `LEGACY_URL=PRE-PROD` points the legacy gateway checks at `https://cloudgobgateway.test.platform.hmcts.net/opal`. `LEGACY_URL=DEV` uses the staging legacy DB stub instead.
+- `LEGACY_URL` defaults to `PRE-PROD`.
+- `LEGACY_URL=PRE-PROD` points the legacy gateway checks at `https://cloudgobgateway.test.platform.hmcts.net/opal`.
+- `LEGACY_URL=DEV` uses the staging legacy DB stub and skips the pre-prod `getGmasTest` health check.
 - `ZephyrExecution=true`, or a Friday nightly run, enables the Zephyr reporting flow for the normal component and functional paths.
 
 ### Debugging
