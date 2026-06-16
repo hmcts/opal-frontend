@@ -31,6 +31,7 @@ services:
       - FEATURE_FLAGS_OVERRIDE=true
       - RELEASE_1A_ENABLED=true
       - RELEASE_1B_ENABLED=true
+      - RELEASE_1C_ADMINISTRATION_ENABLED=true
       - RELEASE_1C_WRITE_OFF_ENABLED=true
       - RELEASE_1C_AUTO_ENFORCEMENT_ENABLED=true
       - RELEASE_1D_DATA_RETENTION_ENABLED=true
@@ -53,14 +54,8 @@ services:
       - RELEASE_1C_PRINTING_ENABLED=true
       - RELEASE_1C_ENFORCEMENT_OPERATIONAL_REPORTING_ENABLED=true
     ports:
-      - "${FRONTEND_PORT:-4000}:4000"
+      - '${FRONTEND_PORT:-4000}:4000'
     depends_on:
       - redis
     networks:
       - default
-
-
-
-
-
-
