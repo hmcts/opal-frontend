@@ -17,7 +17,6 @@ import {
   interceptUserState,
 } from 'cypress/component/CommonIntercepts/CommonIntercepts';
 import { USER_STATE_MOCK_PERMISSION_BU77 } from 'cypress/component/CommonIntercepts/CommonUserState.mocks';
-import { JIRA_EPICS, NFR } from 'cypress/shared/jiraTicketReference/jiraTicketReference.shared';
 
 const MANUAL_ACCOUNT_CREATION_JIRA_LABEL = '@JIRA-LABEL:manual-account-creation';
 
@@ -110,7 +109,7 @@ describe('FinesMacAccountDetailsComponent', () => {
 
   it(
     'Simple page changes should be less than 250ms - Personal Details Page',
-    { tags: [JIRA_EPICS.NFR, NFR.SYS_NFR_095] },
+    { tags: ['@JIRA-EPIC:PO-2479', '@JIRA-NFR:PO-2547', '@JIRA-STORY:PO-2547'] },
     () => {
       interceptAuthenticatedUser();
       interceptUserState(USER_STATE_MOCK_PERMISSION_BU77);
@@ -162,7 +161,7 @@ describe('FinesMacAccountDetailsComponent', () => {
 
   it(
     'Simple page changes should be less than 250ms - Contact Details Page',
-    { tags: [JIRA_EPICS.NFR, NFR.SYS_NFR_095] },
+    { tags: ['@JIRA-EPIC:PO-2479', '@JIRA-NFR:PO-2547', '@JIRA-STORY:PO-2547'] },
     () => {
       interceptAuthenticatedUser();
       interceptUserState(USER_STATE_MOCK_PERMISSION_BU77);
@@ -214,7 +213,7 @@ describe('FinesMacAccountDetailsComponent', () => {
 
   it(
     'Simple page changes should be less than 250ms - Employer Details Page',
-    { tags: [JIRA_EPICS.NFR, NFR.SYS_NFR_095] },
+    { tags: ['@JIRA-EPIC:PO-2479', '@JIRA-NFR:PO-2547', '@JIRA-STORY:PO-2547'] },
     () => {
       interceptAuthenticatedUser();
       interceptUserState(USER_STATE_MOCK_PERMISSION_BU77);
@@ -266,7 +265,7 @@ describe('FinesMacAccountDetailsComponent', () => {
 
   it(
     'Simple page changes should be less than 250ms - Payment Terms Page',
-    { tags: [JIRA_EPICS.NFR, NFR.SYS_NFR_095] },
+    { tags: ['@JIRA-EPIC:PO-2479', '@JIRA-NFR:PO-2547', '@JIRA-STORY:PO-2547'] },
     () => {
       interceptAuthenticatedUser();
       interceptUserState(USER_STATE_MOCK_PERMISSION_BU77);
@@ -318,7 +317,7 @@ describe('FinesMacAccountDetailsComponent', () => {
 
   it(
     'Simple page changes should be less than 250ms - Comments and Notes Page',
-    { tags: [JIRA_EPICS.NFR, NFR.SYS_NFR_095] },
+    { tags: ['@JIRA-EPIC:PO-2479', '@JIRA-NFR:PO-2547', '@JIRA-STORY:PO-2547'] },
     () => {
       interceptAuthenticatedUser();
       interceptUserState(USER_STATE_MOCK_PERMISSION_BU77);

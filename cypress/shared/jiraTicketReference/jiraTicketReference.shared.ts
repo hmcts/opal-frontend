@@ -1,3 +1,5 @@
+export const buildTags = (...tags: string[]): string[] => [...tags];
+
 export const JIRA_EPICS = {
   NFR: '@JIRA-EPIC:PO-2479', //Non-Functional Requirements (https://tools.hmcts.net/jira/browse/PO-2479)
 };
