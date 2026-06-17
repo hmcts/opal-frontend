@@ -84,7 +84,8 @@
       </opal-lib-govuk-summary-list>
     </ng-container>
   </opal-lib-govuk-summary-card-list>
-  <opal-lib-govuk-summary-card-list cardTitle="Last enforcement action" summaryCardListId="last-enforcement-action">
+  <div id="last-enforcement-action">
+    <opal-lib-govuk-summary-card-list cardTitle="Last enforcement action">
     @if (tabData.last_enforcement_action) {
       <ng-container content>
         <opal-lib-govuk-summary-list summaryListId="lastEnforcementActionDetails">
@@ -259,7 +260,8 @@
     } @else {
       <ng-container content> There is no outstanding enforcement action. </ng-container>
     }
-  </opal-lib-govuk-summary-card-list>
+    </opal-lib-govuk-summary-card-list>
+  </div>
 
   @if (
     tabData.enforcement_override &&
