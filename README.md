@@ -326,7 +326,7 @@ Run `yarn test:component` to execute the Cypress component suite.
 
 #### Release-scoped runners
 
-The default functional runner excludes `@FeatureFlag`, `@UAT-Technical`, and `@skip`, so the normal pipeline does not pick up the feature-flag technical scenarios by default.
+The default functional runner excludes `@UAT-Technical`, `@skip`, and the off-state release tags, so the normal pipeline picks up the enabled-path coverage without automatically running the disabled-path scenarios.
 
 Use these functional scripts when you need a release-aligned run locally or in a dedicated CI stage:
 
@@ -336,7 +336,6 @@ Use these functional scripts when you need a release-aligned run locally or in a
 - `yarn test:functional:r1ab`: current `R1A` + `R1B` positive coverage only
 - `yarn test:functional:r1c_write_off_off`: technical `release-1c-write-off` disabled scenarios only
 - `yarn test:functional:r1c_enforcement_operational_reporting_off`: technical `release-1c-enforcement-operational-reporting` disabled scenarios only
-- `yarn test:functional:feature_flags`: all tagged feature-flag technical scenarios
 
 Use these component scripts to avoid running later-release component coverage when you only want the currently-enabled release package:
 
@@ -380,7 +379,7 @@ yarn test:functional:uat_legacy
 
 If you do not add a selector label, the CNP pipeline uses its normal default functional selection:
 
-- functional tags: `not @FeatureFlag and not @UAT-Technical and not @skip`
+- functional tags: `not @UAT-Technical and not @skip and not (@R1AOff or @R1BOff or @R1CWriteOffOff or @R1CEnforcementOperationalReportingOff)`
 - functional specs: all functional features, unless one or more `test_*` routing labels are present
 
 PR labels supported by the CNP pipeline:
@@ -402,13 +401,32 @@ PR labels supported by the CNP pipeline:
 For release-scoped PR runs, use one of the `run_release:*` labels listed above instead of
 `run_tag:<expression>`.
 
-`run_release` skips smoke tests automatically. It also scopes component execution to the matching current-release package where supported, so an `r1a` run does not execute `R1B` or `R1C` component coverage. Off-state release selectors run the functional feature-flag coverage only. Do not combine `run_release` with `run_tag` or `enable_legacy_mode`.
+`run_release` skips smoke tests automatically. It also scopes component execution to the matching current-release package where supported, so an `r1a` run does not execute `R1B` or `R1C` component coverage. Off-state release selectors run the functional off-state coverage only. Do not combine `run_release` with `run_tag` or `enable_legacy_mode`.
 
 When legacy mode is enabled in CI, you must also provide a `run_tag:<expression>` label, for example `run_tag:@UAT-Technical`, to scope the suite. The pipeline always appends `not @skip`.
 
 The `test_*` routing labels only affect the normal CNP path. If `run_release:<suite>` is present, the release suite decides both the tags and the spec selection.
 
-The nightly pipeline exposes the same selector through the `RELEASE_SUITE` parameter. `RELEASE_SUITE` is also intentionally separate from `ZephyrExecution`: run the release-scoped suite first, then use the Zephyr scripts afterwards if you need that reporting flow.
+### Nightly pipeline stages
+
+The nightly Jenkins pipeline runs its stages in this order after checkout and test setup:
+
+- `Component Tests` runs when `Component=true`.
+- `Smoke Tests` runs when `Smoke=true`.
+- `Functional Tests` runs when `Functional=true`.
+- `R1A Legacy Demo` runs when `RunR1aLegacyDemo=true` and defaults to enabled. It points `TEST_URL` at `https://opal-frontend.demo.apps.hmcts.net/`, switches app mode to legacy, and runs `yarn test:functional:r1a`.
+- `R1A Off Legacy Demo` runs only when `RunR1aOffLegacyDemo=true`. It uses the same demo legacy flow and runs `yarn test:functional:r1a_off`.
+- `UAT-Technical` runs only when `RunUatTech=true`. It uses the same demo legacy flow and runs `yarn test:functional:uat_legacy`.
+- `Legacy Tests` runs only when `Legacy=true`. It runs the general functional suite in legacy mode.
+- `Chrome Tests` runs only when `RunChrome=true`. It reruns the functional suite in Chrome.
+- `Firefox Tests` runs only when `RunFirefox=true`. It reruns the functional suite in Firefox.
+
+Notes for the nightly pipeline:
+
+- `LEGACY_URL` defaults to `PRE-PROD`.
+- `LEGACY_URL=PRE-PROD` points the legacy gateway checks at `https://cloudgobgateway.test.platform.hmcts.net/opal`.
+- `LEGACY_URL=DEV` uses the staging legacy DB stub, skips the pre-prod `getGmasTest` health check, and does not patch the demo `app-mode` LaunchDarkly flag to `legacy`.
+- `ZephyrExecution=true`, or a Friday nightly run, enables the Zephyr reporting flow for the normal component and functional paths.
 
 ### Debugging
 

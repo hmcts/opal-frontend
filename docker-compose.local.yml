@@ -1,0 +1,9 @@
+services:
+  opal-frontend:
+    image: opal-frontend:local
+    build:
+      context: ../opal-frontend
+      args:
+        - http_proxy
+        - https_proxy
+        - no_proxy

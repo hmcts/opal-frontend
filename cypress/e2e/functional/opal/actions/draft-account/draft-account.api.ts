@@ -428,7 +428,7 @@ const waitForPublishedAccountSearchable = (
         const matched = searchResp.status === 200 && hasSearchResult(searchResp.body);
         if (matched) {
           log('done', 'Published account is searchable', { accountNumber, isCompany });
-          return undefined;
+          return cy.wrap(undefined, { log: false }) as Cypress.Chainable<void>;
         }
 
         if (remaining <= 1) {
@@ -444,8 +444,8 @@ const waitForPublishedAccountSearchable = (
           status: searchResp.status,
           remaining: remaining - 1,
         });
-        return cy.wait(delayMs, { log: false }).then(() => attempt(remaining - 1)) as unknown as void;
-      });
+        return cy.wait(delayMs, { log: false }).then(() => attempt(remaining - 1)) as Cypress.Chainable<void>;
+      }) as unknown as Cypress.Chainable<void>;
 
   return attempt(attempts);
 };
@@ -586,13 +586,14 @@ export function createDraftAndSetStatus(
       // 1) POST create the draft account.
       .then(() => {
         log('action', 'POST /draft-accounts', { requestBody });
-        cy.request({
-          method: 'POST',
-          url: createDraftEndpoint,
-          headers: { 'Content-Type': 'application/json', Accept: 'application/json' },
-          body: requestBody,
-          failOnStatusCode: false,
-        })
+        return cy
+          .request({
+            method: 'POST',
+            url: createDraftEndpoint,
+            headers: { 'Content-Type': 'application/json', Accept: 'application/json' },
+            body: requestBody,
+            failOnStatusCode: false,
+          })
           .as('postDraftAccount')
           .then((postResp) => {
             log('debug', 'POST /draft-accounts response', {
@@ -639,7 +640,7 @@ export function createDraftAndSetStatus(
       .then(() => {
         if (skipPatch) {
           log('info', 'Skipping GET/PATCH status update for drafts already in submitted state');
-          return undefined as void;
+          return cy.wrap(undefined, { log: false }) as Cypress.Chainable<void>;
         }
 
         return getDraftForPatch(createdId)
@@ -756,7 +757,7 @@ export function createDraftAndSetStatus(
               return waitForPublishedAccountSearchable(publishedAccountNumber, isCompanyDraftRequest(requestBody));
             }
 
-            return undefined;
+            return cy.wrap(undefined, { log: false }) as Cypress.Chainable<void>;
           });
       })
 

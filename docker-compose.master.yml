@@ -1,0 +1,3 @@
+services:
+  opal-frontend:
+    image: hmctsprod.azurecr.io/opal/frontend:latest
