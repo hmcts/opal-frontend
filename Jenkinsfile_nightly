@@ -39,7 +39,7 @@ properties([
     choice(
       name: 'LEGACY_URL',
       choices: [legacyUrlPreProdChoice, legacyUrlDevChoice],
-      description: 'Determines the URL to use for legacy tests. Default is PRE-PROD.'
+      description: 'Determines the URL to use for legacy tests. PRE-PROD is the default.'
     ),
   ])
 ])
@@ -77,6 +77,7 @@ String failureResult = 'FAILURE'
 @Field String uatTechnicalTagFilter = '(@UAT-Technical) and not @skip'
 @Field int uatHealthCheckIntervalSeconds = 5
 @Field int uatHealthCheckTimeoutMinutes = 1
+@Field String legacyHealthCheckPayload = '{"name":"Steve","age":76,"gender":"Male","hobbies":["jogging","salsa"]}'
 
 // Build an Azure KeyVault secret entry.
 static Map<String, Object> secret(String secretName, String envVar) {
@@ -336,13 +337,23 @@ String resolveLegacyDemoGatewayUrl() {
 String getLegacyHealthCheckStatus() {
   String legacyHealthEndpoint = "${resolveLegacyDemoGatewayUrl()}?actionType=getGmasTest"
   return sh(
-    script: "curl -s -o /dev/null -w '%{http_code}' '${legacyHealthEndpoint}' || echo '000'",
+    script:
+      "curl -s -o /dev/null -w '%{http_code}' " +
+      "-X POST " +
+      "-H 'Content-Type: application/json' " +
+      "--data '${legacyHealthCheckPayload}' " +
+      "'${legacyHealthEndpoint}' || echo '000'",
     returnStdout: true
   ).trim()
 }
 
 // Run the legacy gateway health check only when the selected gateway supports it.
 boolean shouldRunLegacyHealthCheck() {
+  return params.LEGACY_URL == legacyUrlPreProdChoice
+}
+
+// Patch LaunchDarkly app mode only when running demo legacy checks against pre-prod.
+boolean shouldPatchLaunchDarklyForDemoLegacyStage() {
   return params.LEGACY_URL == legacyUrlPreProdChoice
 }
 
@@ -448,12 +459,16 @@ void runDemoLegacyStage(Map<String, Object> stageConfig, Closure runCommand) {
 
     try {
       echo startMessage
-      patchLaunchDarklyFlagState(
-        true,
-        launchDarklyLegacyVariationName,
-        "Setting LaunchDarkly flag to legacy for demo (${stageName})..."
-      )
-      launchDarklyFlagPatched = true
+      if (shouldPatchLaunchDarklyForDemoLegacyStage()) {
+        patchLaunchDarklyFlagState(
+          true,
+          launchDarklyLegacyVariationName,
+          "Setting LaunchDarkly flag to legacy for demo (${stageName})..."
+        )
+        launchDarklyFlagPatched = true
+      } else {
+        echo "Skipping LaunchDarkly app-mode patch because LEGACY_URL=${params.LEGACY_URL}."
+      }
       waitForLegacyHealthCheck()
       sh 'echo "Waiting 30s for system warmup..." ; sleep 30'
 
