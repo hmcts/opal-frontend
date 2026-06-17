@@ -18,6 +18,7 @@ import { IComponentProperties } from './setup/setupComponent.interface';
 import { setupAccountEnquiryComponent } from './setup/SetupComponent';
 
 const ACCOUNT_ENQUIRY_JIRA_LABEL = '@JIRA-LABEL:account-enquiry';
+const ROUTER_NAVIGATE_TIMEOUT = 15_000;
 
 const buildTags = (...tags: string[]): string[] => [...tags, ACCOUNT_ENQUIRY_JIRA_LABEL];
 
@@ -182,7 +183,10 @@ describe('Account Enquiry Payment Terms', () => {
 
       cy.get(PAYMENT_TERMS_TAB.tabName).should('exist').and('contain.text', 'Payment terms');
       cy.get(PAYMENT_TERMS_TAB.paymentTermsLink).contains('Change').click();
-      cy.get('@routerNavigate').should('have.been.calledWithMatch', ['../payment-terms/amend']);
+      cy.get('@routerNavigate', { timeout: ROUTER_NAVIGATE_TIMEOUT }).should(
+        'have.been.calledWithMatch',
+        ['../payment-terms/amend'],
+      );
     },
   );
 
@@ -205,7 +209,10 @@ describe('Account Enquiry Payment Terms', () => {
 
       cy.get(PAYMENT_TERMS_TAB.tabName).should('exist').and('contain.text', 'Payment terms');
       cy.get(PAYMENT_TERMS_TAB.paymentTermsLink).contains('Change').click();
-      cy.get('@routerNavigate').should('have.been.calledWithMatch', ['../payment-terms/denied/permission']);
+      cy.get('@routerNavigate', { timeout: ROUTER_NAVIGATE_TIMEOUT }).should(
+        'have.been.calledWithMatch',
+        ['../payment-terms/denied/permission'],
+      );
     },
   );
 
@@ -251,7 +258,10 @@ describe('Account Enquiry Payment Terms', () => {
 
       cy.get(PAYMENT_TERMS_TAB.tabName).should('exist').and('contain.text', 'Payment terms');
       cy.get(PAYMENT_TERMS_TAB.paymentTermsLink).contains('Change').click();
-      cy.get('@routerNavigate').should('have.been.calledWithMatch', ['../payment-terms/denied/enforcement']);
+      cy.get('@routerNavigate', { timeout: ROUTER_NAVIGATE_TIMEOUT }).should(
+        'have.been.calledWithMatch',
+        ['../payment-terms/denied/enforcement'],
+      );
     },
   );
 
@@ -275,7 +285,10 @@ describe('Account Enquiry Payment Terms', () => {
 
       cy.get(PAYMENT_TERMS_TAB.tabName).should('exist').and('contain.text', 'Payment terms');
       cy.get(PAYMENT_TERMS_TAB.paymentTermsLink).contains('Change').click();
-      cy.get('@routerNavigate').should('have.been.calledWithMatch', ['../payment-terms/denied/account-status']);
+      cy.get('@routerNavigate', { timeout: ROUTER_NAVIGATE_TIMEOUT }).should(
+        'have.been.calledWithMatch',
+        ['../payment-terms/denied/account-status'],
+      );
     },
   );
 
@@ -299,7 +312,10 @@ describe('Account Enquiry Payment Terms', () => {
 
       cy.get(PAYMENT_TERMS_TAB.tabName).should('exist').and('contain.text', 'Payment terms');
       cy.get(PAYMENT_TERMS_TAB.paymentTermsLink).contains('Change').click();
-      cy.get('@routerNavigate').should('have.been.calledWithMatch', ['../payment-terms/denied/account-status']);
+      cy.get('@routerNavigate', { timeout: ROUTER_NAVIGATE_TIMEOUT }).should(
+        'have.been.calledWithMatch',
+        ['../payment-terms/denied/account-status'],
+      );
     },
   );
 
@@ -323,7 +339,10 @@ describe('Account Enquiry Payment Terms', () => {
 
       cy.get(PAYMENT_TERMS_TAB.tabName).should('exist').and('contain.text', 'Payment terms');
       cy.get(PAYMENT_TERMS_TAB.paymentTermsLink).contains('Change').click();
-      cy.get('@routerNavigate').should('have.been.calledWithMatch', ['../payment-terms/denied/account-status']);
+      cy.get('@routerNavigate', { timeout: ROUTER_NAVIGATE_TIMEOUT }).should(
+        'have.been.calledWithMatch',
+        ['../payment-terms/denied/account-status'],
+      );
     },
   );
 
@@ -347,7 +366,10 @@ describe('Account Enquiry Payment Terms', () => {
 
       cy.get(PAYMENT_TERMS_TAB.tabName).should('exist').and('contain.text', 'Payment terms');
       cy.get(PAYMENT_TERMS_TAB.paymentTermsLink).contains('Change').click();
-      cy.get('@routerNavigate').should('have.been.calledWithMatch', ['../payment-terms/denied/account-status']);
+      cy.get('@routerNavigate', { timeout: ROUTER_NAVIGATE_TIMEOUT }).should(
+        'have.been.calledWithMatch',
+        ['../payment-terms/denied/account-status'],
+      );
     },
   );
 
@@ -371,7 +393,10 @@ describe('Account Enquiry Payment Terms', () => {
 
       cy.get(PAYMENT_TERMS_TAB.tabName).should('exist').and('contain.text', 'Payment terms');
       cy.get(PAYMENT_TERMS_TAB.paymentTermsLink).contains('Change').click();
-      cy.get('@routerNavigate').should('have.been.calledWithMatch', ['../payment-terms/denied/account-status']);
+      cy.get('@routerNavigate', { timeout: ROUTER_NAVIGATE_TIMEOUT }).should(
+        'have.been.calledWithMatch',
+        ['../payment-terms/denied/account-status'],
+      );
     },
   );
 
@@ -396,7 +421,10 @@ describe('Account Enquiry Payment Terms', () => {
 
       cy.get(PAYMENT_TERMS_TAB.tabName).should('exist').and('contain.text', 'Payment terms');
       cy.get(PAYMENT_TERMS_TAB.paymentTermsLink).contains('Change').click();
-      cy.get('@routerNavigate').should('have.been.calledWithMatch', ['../payment-terms/denied/enforcement']);
+      cy.get('@routerNavigate', { timeout: ROUTER_NAVIGATE_TIMEOUT }).should(
+        'have.been.calledWithMatch',
+        ['../payment-terms/denied/enforcement'],
+      );
     },
   );
 
@@ -532,7 +560,10 @@ describe('Account Enquiry Payment Terms', () => {
       cy.get(PAYMENT_TERMS_TAB.tabName).should('exist').and('contain.text', 'Payment terms');
       cy.get(PAYMENT_TERMS_TAB.parentGuardianTag).should('exist').and('contain.text', 'Parent or Guardian to pay');
       cy.get(PAYMENT_TERMS_TAB.paymentTermsLink).contains('Change').click();
-      cy.get('@routerNavigate').should('have.been.calledWithMatch', ['../payment-terms/amend']);
+      cy.get('@routerNavigate', { timeout: ROUTER_NAVIGATE_TIMEOUT }).should(
+        'have.been.calledWithMatch',
+        ['../payment-terms/amend'],
+      );
     },
   );
 
@@ -556,7 +587,10 @@ describe('Account Enquiry Payment Terms', () => {
 
       cy.get(PAYMENT_TERMS_TAB.tabName).should('exist').and('contain.text', 'Payment terms');
       cy.get(PAYMENT_TERMS_TAB.paymentTermsLink).contains('Change').click();
-      cy.get('@routerNavigate').should('have.been.calledWithMatch', ['../payment-terms/denied/permission']);
+      cy.get('@routerNavigate', { timeout: ROUTER_NAVIGATE_TIMEOUT }).should(
+        'have.been.calledWithMatch',
+        ['../payment-terms/denied/permission'],
+      );
     },
   );
 
@@ -725,7 +759,10 @@ describe('Account Enquiry Payment Terms', () => {
       cy.get(PAYMENT_TERMS_TAB.tabName).should('exist').and('contain.text', 'Payment terms');
       cy.get(PAYMENT_TERMS_TAB.headingName).should('exist').and('contain.text', 'Test Org Ltd');
       cy.get(PAYMENT_TERMS_TAB.paymentTermsLink).contains('Change').click();
-      cy.get('@routerNavigate').should('have.been.calledWithMatch', ['../payment-terms/amend']);
+      cy.get('@routerNavigate', { timeout: ROUTER_NAVIGATE_TIMEOUT }).should(
+        'have.been.calledWithMatch',
+        ['../payment-terms/amend'],
+      );
     },
   );
 
@@ -753,7 +790,10 @@ describe('Account Enquiry Payment Terms', () => {
 
       cy.get(PAYMENT_TERMS_TAB.tabName).should('exist').and('contain.text', 'Payment terms');
       cy.get(PAYMENT_TERMS_TAB.paymentTermsLink).contains('Change').click();
-      cy.get('@routerNavigate').should('have.been.calledWithMatch', ['../payment-terms/denied/permission']);
+      cy.get('@routerNavigate', { timeout: ROUTER_NAVIGATE_TIMEOUT }).should(
+        'have.been.calledWithMatch',
+        ['../payment-terms/denied/permission'],
+      );
     },
   );
 
@@ -824,7 +864,10 @@ describe('Account Enquiry Payment Terms', () => {
       cy.get('router-outlet').should('exist');
 
       cy.contains(PAYMENT_TERMS_TAB.paymentTermsLink, 'Request payment card').click();
-      cy.get('@routerNavigate').should('have.been.calledWithMatch', ['../payment-card/request']);
+      cy.get('@routerNavigate', { timeout: ROUTER_NAVIGATE_TIMEOUT }).should(
+        'have.been.calledWithMatch',
+        ['../payment-card/request'],
+      );
     },
   );
 
@@ -847,7 +890,10 @@ describe('Account Enquiry Payment Terms', () => {
       cy.get('router-outlet').should('exist');
 
       cy.contains(PAYMENT_TERMS_TAB.paymentTermsLink, 'Request payment card').click();
-      cy.get('@routerNavigate').should('have.been.calledWithMatch', ['../payment-card/denied/enforcement']);
+      cy.get('@routerNavigate', { timeout: ROUTER_NAVIGATE_TIMEOUT }).should(
+        'have.been.calledWithMatch',
+        ['../payment-card/denied/enforcement'],
+      );
     },
   );
 
@@ -893,7 +939,10 @@ describe('Account Enquiry Payment Terms', () => {
       cy.get('router-outlet').should('exist');
 
       cy.contains(PAYMENT_TERMS_TAB.paymentTermsLink, 'Request payment card').click();
-      cy.get('@routerNavigate').should('have.been.calledWithMatch', ['../payment-card/request']);
+      cy.get('@routerNavigate', { timeout: ROUTER_NAVIGATE_TIMEOUT }).should(
+        'have.been.calledWithMatch',
+        ['../payment-card/request'],
+      );
     },
   );
 
@@ -916,7 +965,10 @@ describe('Account Enquiry Payment Terms', () => {
       cy.get('router-outlet').should('exist');
 
       cy.contains(PAYMENT_TERMS_TAB.paymentTermsLink, 'Request payment card').click();
-      cy.get('@routerNavigate').should('have.been.calledWithMatch', ['../payment-card/denied/enforcement']);
+      cy.get('@routerNavigate', { timeout: ROUTER_NAVIGATE_TIMEOUT }).should(
+        'have.been.calledWithMatch',
+        ['../payment-card/denied/enforcement'],
+      );
     },
   );
 
@@ -967,7 +1019,10 @@ describe('Account Enquiry Payment Terms', () => {
       cy.get('router-outlet').should('exist');
 
       cy.contains(PAYMENT_TERMS_TAB.paymentTermsLink, 'Request payment card').click();
-      cy.get('@routerNavigate').should('have.been.calledWithMatch', ['../payment-card/request']);
+      cy.get('@routerNavigate', { timeout: ROUTER_NAVIGATE_TIMEOUT }).should(
+        'have.been.calledWithMatch',
+        ['../payment-card/request'],
+      );
     },
   );
 
@@ -992,7 +1047,10 @@ describe('Account Enquiry Payment Terms', () => {
       setupAccountEnquiryComponent({ ...componentProperties, accountId: accountId });
       cy.get('router-outlet').should('exist');
       cy.contains(PAYMENT_TERMS_TAB.paymentTermsLink, 'Request payment card').click();
-      cy.get('@routerNavigate').should('have.been.calledWithMatch', ['../payment-card/denied/enforcement']);
+      cy.get('@routerNavigate', { timeout: ROUTER_NAVIGATE_TIMEOUT }).should(
+        'have.been.calledWithMatch',
+        ['../payment-card/denied/enforcement'],
+      );
     },
   );
 

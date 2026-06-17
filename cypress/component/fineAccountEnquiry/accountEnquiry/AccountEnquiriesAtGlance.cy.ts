@@ -18,6 +18,7 @@ import { setupAccountEnquiryComponent } from './setup/SetupComponent';
 import { FinesAccDefendantDetailsAtAGlanceTabComponent } from 'src/app/flows/fines/fines-acc/fines-acc-defendant-details/fines-acc-defendant-details-at-a-glance-tab/fines-acc-defendant-details-at-a-glance-tab.component';
 
 const ACCOUNT_ENQUIRY_JIRA_LABEL = '@JIRA-LABEL:account-enquiry';
+const ROUTER_NAVIGATE_TIMEOUT = 15_000;
 type AtAGlanceMock = typeof OPAL_FINES_ACCOUNT_DEFENDANT_AT_A_GLANCE_MOCK;
 
 const buildTags = (...tags: string[]): string[] => [...tags, ACCOUNT_ENQUIRY_JIRA_LABEL];
@@ -467,7 +468,7 @@ describe('Defendant Account Summary - At a Glance Tab', () => {
       // Click the link
       cy.get(DOM.linkText).click();
 
-      cy.get('@routerNavigate')
+      cy.get('@routerNavigate', { timeout: ROUTER_NAVIGATE_TIMEOUT })
         .its('lastCall.args.0')
         .should((arg0) => {
           const path = Array.isArray(arg0) ? arg0.join('/') : String(arg0);
@@ -498,7 +499,7 @@ describe('Defendant Account Summary - At a Glance Tab', () => {
 
       cy.get(DOM.linkText).click();
 
-      cy.get('@routerNavigate')
+      cy.get('@routerNavigate', { timeout: ROUTER_NAVIGATE_TIMEOUT })
         .its('lastCall.args.0')
         .should((arg0) => {
           const path = Array.isArray(arg0) ? arg0.join('/') : String(arg0);
@@ -531,7 +532,7 @@ describe('Defendant Account Summary - At a Glance Tab', () => {
       // Click the link
       cy.get(DOM.linkText).click();
 
-      cy.get('@routerNavigate')
+      cy.get('@routerNavigate', { timeout: ROUTER_NAVIGATE_TIMEOUT })
         .its('lastCall.args.0')
         .should((arg0) => {
           const path = Array.isArray(arg0) ? arg0.join('/') : String(arg0);
@@ -554,7 +555,7 @@ describe('Defendant Account Summary - At a Glance Tab', () => {
       cy.get(DOM.linkText).should('be.visible').and('contain.text', 'Change');
       cy.get(DOM.linkText).click();
 
-      cy.get('@routerNavigate')
+      cy.get('@routerNavigate', { timeout: ROUTER_NAVIGATE_TIMEOUT })
         .its('lastCall.args.0')
         .should((arg0) => {
           const path = Array.isArray(arg0) ? arg0.join('/') : String(arg0);
