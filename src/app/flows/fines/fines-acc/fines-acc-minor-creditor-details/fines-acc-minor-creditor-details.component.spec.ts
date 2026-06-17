@@ -99,16 +99,13 @@ describe('FinesAccMinorCreditorDetailsComponent', () => {
     expect(component).toBeTruthy();
   });
 
-  it('should default to at-a-glance tab if no fragment is present', () => {
-    const activatedRoute = TestBed.inject(ActivatedRoute);
-    activatedRoute.snapshot.fragment = null; // Simulate no fragment
-    component['getHeaderDataFromRoute']();
-    expect(component.activeTab).toBe('at-a-glance');
-  });
-
   it('should initialize accountData and activeTab from route data', () => {
     expect(component.accountData).toEqual(FINES_ACC_MINOR_CREDITOR_DETAILS_HEADER_MOCK);
     expect(component.activeTab).toBe('at-a-glance');
+    expect(mockPayloadService.transformMinorCreditorAccountHeaderForStore).toHaveBeenCalledWith(
+      123,
+      FINES_ACC_MINOR_CREDITOR_DETAILS_HEADER_MOCK,
+    );
   });
 
   it('should display awarded amount as positive when heading data returns a negative value', () => {
@@ -140,11 +137,6 @@ describe('FinesAccMinorCreditorDetailsComponent', () => {
     expect(textContent).not.toContain('-\u00a3123.45');
   });
 
-  it('should handle tab switch', () => {
-    component.handleTabSwitch('details');
-    expect(component.activeTab).toBe('details');
-  });
-
   it('should call router.navigate when navigateToAddAccountNotePage is called', () => {
     vi.spyOn(component['permissionsService'], 'hasBusinessUnitPermissionAccess').mockReturnValue(true);
     component.navigateToAddAccountNotePage();
@@ -156,11 +148,17 @@ describe('FinesAccMinorCreditorDetailsComponent', () => {
     );
   });
 
-  it('should refresh the data for the header and current tab when refreshPage is called', () => {
-    component.accountStore.setAccountState(MOCK_FINES_ACCOUNT_STATE);
-    component.refreshPage();
-    expect(mockOpalFinesService.getMinorCreditorAccountHeadingData).toHaveBeenCalledWith(
-      Number(MOCK_FINES_ACCOUNT_STATE.account_id),
+  it('should set payment hold state when at-a-glance tab data emits', () => {
+    const setHasPaymentHoldSpy = vi.spyOn(component.accountStore, 'setHasPaymentHold');
+
+    component['refreshFragment$'].next('at-a-glance');
+    component.tabAtAGlance$.subscribe();
+
+    expect(mockOpalFinesService.getMinorCreditorAccountAtAGlance).toHaveBeenCalledWith(
+      MOCK_FINES_ACCOUNT_STATE.account_id,
+    );
+    expect(setHasPaymentHoldSpy).toHaveBeenCalledWith(
+      OPAL_FINES_ACCOUNT_MINOR_CREDITOR_AT_A_GLANCE_WITH_DEFENDANT_MOCK.payment.hold_payment,
     );
   });
 

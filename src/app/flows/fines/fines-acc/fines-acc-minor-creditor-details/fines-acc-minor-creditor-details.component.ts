@@ -40,7 +40,7 @@ import { AsyncPipe } from '@angular/common';
 import { IOpalFinesAccountMinorCreditorAtAGlance } from '../../services/opal-fines-service/interfaces/opal-fines-account-minor-creditor-at-a-glance.interface';
 import { FINES_ACC_MINOR_CREDITOR_ACCOUNT_TABS_CACHE_MAP } from './constants/fines-acc-minor-creditor-account-tabs-cache-map.constant';
 import { IFinesAccMinorCreditorAccountTabsCacheMap } from './interfaces/fines-acc-minor-creditor-account-tabs-cache-map.interface';
-import { AbstractAccountSummaryBaseComponent } from '@hmcts/opal-frontend-common/components/abstract/abstract-account-summary-base';
+import { AbstractCreditorDetailsBaseComponent } from '@hmcts/opal-frontend-common/components/abstract/abstract-creditor-details-base';
 import { FINES_ACC_DEFENDANT_ROUTING_PATHS } from '../routing/constants/fines-acc-defendant-routing-paths.constant';
 import { FINES_ROUTING_PATHS } from '../../routing/constants/fines-routing-paths.constant';
 import { FINES_ACC_ROUTING_PATHS } from '../routing/constants/fines-acc-routing-paths.constant';
@@ -72,15 +72,20 @@ import { IOpalFinesAccountMinorCreditorCreditor } from '../../services/opal-fine
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class FinesAccMinorCreditorDetailsComponent
-  extends AbstractAccountSummaryBaseComponent<IOpalFinesAccountMinorCreditorDetailsHeader, IOpalFinesVersion>
+  extends AbstractCreditorDetailsBaseComponent<IOpalFinesAccountMinorCreditorDetailsHeader, IOpalFinesVersion>
   implements OnInit, OnDestroy
 {
   private readonly opalFinesService = inject(OpalFines);
   private readonly payloadService = inject(FinesAccPayloadService);
+  protected readonly payloadTransformer = this.payloadService;
+  protected readonly headerDataRouteKey = 'minorCreditorAccountHeadingData';
+  protected readonly defaultActiveTab = 'at-a-glance';
+  protected readonly transformItemsConfig = FINES_ACC_MAP_TRANSFORM_ITEMS_CONFIG;
+  protected readonly latestBannerMessage = FINES_ACC_BANNER_MESSAGES.latest;
+  protected readonly permissions = FINES_PERMISSIONS;
 
   public accountStore = inject(FinesAccountStore);
   public tabs: IFinesAccountMinorCreditorDetailsTabs = FINES_ACC_MINOR_CREDITOR_DETAILS_TABS;
-  public accountId: number = Number(this.activatedRoute.snapshot.paramMap.get('accountId'));
   public tabContentStyles: IFinesAccSummaryTabsContentStyles = FINES_ACC_SUMMARY_TABS_CONTENT_STYLES;
   public tabAtAGlance$: Observable<IOpalFinesAccountMinorCreditorAtAGlance> = EMPTY;
   public tabCreditor$: Observable<IOpalFinesAccountMinorCreditorCreditor> = EMPTY;
@@ -88,15 +93,6 @@ export class FinesAccMinorCreditorDetailsComponent
   public accountTypes = FINES_ACCOUNT_TYPES;
   public lastEnforcement: IOpalFinesResultRefData | null = null;
   public finesPermissions = FINES_PERMISSIONS;
-
-  /**
-   * Fetches the tab data and ensures it is typed correctly.
-   * @param serviceCall The observable service call to fetch the tab data.
-   * @returns An observable of the typed tab data.
-   */
-  private fetchTabDataTyped<T extends IOpalFinesVersion>(serviceCall: Observable<T>): Observable<T> {
-    return this.fetchTabData(serviceCall, (version) => this.accountStore.compareVersion(version)) as Observable<T>;
-  }
 
   /**
    * Initializes and sets up the observable data stream for the fines draft tab component.
@@ -140,16 +136,6 @@ export class FinesAccMinorCreditorDetailsComponent
   }
 
   /**
-   * Fetches the minor creditor account heading data and current tab fragment from the route.
-   */
-  protected override getHeaderDataFromRoute(): void {
-    const headingData = this.activatedRoute.snapshot.data['minorCreditorAccountHeadingData'];
-    this.accountData = this.transformHeaderForView(headingData);
-    this.transformHeaderForStore(this.accountId, this.accountData);
-    this.activeTab = this.activatedRoute.snapshot.fragment || 'at-a-glance';
-  }
-
-  /**
    * Fetches the minor creditor account heading data for the specified account ID.
    * @param accountId The ID of the account to fetch the heading data for.
    * @returns An observable of the minor creditor account heading data.
@@ -169,54 +155,6 @@ export class FinesAccMinorCreditorDetailsComponent
   ): void {
     this.accountStore.setAccountState(
       this.payloadService.transformMinorCreditorAccountHeaderForStore(accountId, header),
-    );
-  }
-
-  /**
-   * Transforms the minor creditor account heading data for use in the view.
-   * @param header The minor creditor account heading data to transform.
-   * @returns The transformed minor creditor account heading data.
-   */
-  protected override transformHeaderForView(
-    header: IOpalFinesAccountMinorCreditorDetailsHeader,
-  ): IOpalFinesAccountMinorCreditorDetailsHeader {
-    return this.payloadService.transformPayload(header, FINES_ACC_MAP_TRANSFORM_ITEMS_CONFIG);
-  }
-
-  /**
-   * Transforms the tab data for use in the view, ensuring it is typed correctly.
-   * @param data The tab data to transform, which must include a version property for cache validation.
-   * @returns The transformed tab data, typed as the same type as the input data.
-   */
-  protected override transformTabData<T extends IOpalFinesVersion>(data: T): T {
-    return this.payloadService.transformPayload(data, FINES_ACC_MAP_TRANSFORM_ITEMS_CONFIG);
-  }
-
-  /**
-   * Handles the page refresh action.
-   * Sets the version mismatch state to false.
-   * Sets the is refreshed state to true.
-   * Refreshes the page.
-   * @param event The user event that triggered the refresh action.
-   */
-  public override refreshPage(): void {
-    this.accountStore.setHasVersionMismatch(false);
-
-    super.refreshPage(Number(this.accountStore.account_id()), (header) => {
-      this.accountStore.setSuccessMessage(FINES_ACC_BANNER_MESSAGES.latest);
-      this.accountData = header;
-    });
-  }
-
-  /**
-   * Checks if the current user has the specified business unit permission.
-   * @param permissionKey The key of the permission to check.
-   * @returns A boolean indicating whether the user has the permission.
-   */
-  public hasBusinessUnitPermissionKey(permissionKey: string): boolean {
-    return super.hasBusinessUnitPermission(
-      FINES_PERMISSIONS[permissionKey],
-      Number(this.accountStore.business_unit_id()!),
     );
   }
 
@@ -281,11 +219,5 @@ export class FinesAccMinorCreditorDetailsComponent
         relativeTo: this.activatedRoute,
       });
     }
-  }
-
-  public override ngOnDestroy(): void {
-    this.accountStore.clearSuccessMessage();
-    this.accountStore.setHasVersionMismatch(false);
-    super.ngOnDestroy();
   }
 }

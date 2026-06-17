@@ -53,11 +53,17 @@ export class FinesSaSearchAccountComponent extends AbstractFormParentBaseCompone
    * Gets the creditor account ID for a selected major creditor autocomplete value.
    *
    * @param majorCreditorCode - The selected major creditor code from the autocomplete.
-   * @returns The creditor account ID for the selected major creditor, or null if it cannot be found.
+   * @returns The creditor account ID for the selected major creditor.
+   * @throws Error when the selected major creditor cannot be found in the resolved reference data.
    */
-  private getCreditorAccountId(majorCreditorCode: string): number | null {
+  private getCreditorAccountId(majorCreditorCode: string): number {
     const majorCreditor = this.majorCreditorsRefData.find((mc) => mc.major_creditor_code === majorCreditorCode);
-    return majorCreditor?.creditor_account_id ?? null;
+
+    if (!majorCreditor?.creditor_account_id) {
+      throw new Error(`Major creditor account ID could not be found for code: ${majorCreditorCode}`);
+    }
+
+    return majorCreditor.creditor_account_id;
   }
 
   /**
@@ -125,6 +131,7 @@ export class FinesSaSearchAccountComponent extends AbstractFormParentBaseCompone
    *    - Otherwise, it navigates to the search results page.
    *
    * @param form - The form data of type `IFinesSaSearchAccountForm` containing the search account details.
+   * @throws Error when a major-creditor search is submitted with a code that cannot be mapped to an account ID.
    */
   public handleSearchAccountSubmit(form: IFinesSaSearchAccountForm): void {
     // Set the search account state in the store
@@ -137,9 +144,7 @@ export class FinesSaSearchAccountComponent extends AbstractFormParentBaseCompone
           .fsa_search_account_major_creditors_major_creditor_id!;
       const creditorAccountId = this.getCreditorAccountId(selectedMajorCreditorCode);
 
-      if (creditorAccountId) {
-        this.navigateToMajorCreditor(creditorAccountId);
-      }
+      this.navigateToMajorCreditor(creditorAccountId);
     } else {
       this.routerNavigate(this.getResultsUrl(), true);
     }
@@ -154,6 +159,9 @@ export class FinesSaSearchAccountComponent extends AbstractFormParentBaseCompone
     this.stateUnsavedChanges = unsavedChanges;
   }
 
+  /**
+   * Loads the resolver-provided search reference data required by the account search page.
+   */
   public ngOnInit(): void {
     this.getBusinessUnits();
     this.getMajorCreditors();

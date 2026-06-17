@@ -35,6 +35,7 @@ describe('FinesSaSearchAccountComponent', () => {
             snapshot: {
               data: {
                 businessUnits: OPAL_FINES_BUSINESS_UNIT_REF_DATA_MOCK,
+                majorCreditors: OPAL_FINES_MAJOR_CREDITOR_REF_DATA_MOCK,
               },
             },
             parent: 'search',
@@ -103,7 +104,7 @@ describe('FinesSaSearchAccountComponent', () => {
     expect(component.stateUnsavedChanges).toBe(true);
   });
 
-  it('ngOnInit should populate businessUnitRefData (filtering by opal_domain) and set default ids in store when missing', () => {
+  it('ngOnInit should populate businessUnitRefData and set default ids in store when missing', () => {
     // Ensure store starts clean
     mockFinesSaStore.setSearchAccount({
       ...FINES_SA_SEARCH_ACCOUNT_STATE,
@@ -162,7 +163,7 @@ describe('FinesSaSearchAccountComponent', () => {
     expect(setSpy).toHaveBeenCalledTimes(1);
   });
 
-  it('ngOnInit should filter out business units with falsy opal_domain', () => {
+  it('ngOnInit should filter out business units without an Accounting Division type', () => {
     // Ensure store starts clean and missing ids
     mockFinesSaStore.setSearchAccount({
       ...FINES_SA_SEARCH_ACCOUNT_STATE,
@@ -192,10 +193,35 @@ describe('FinesSaSearchAccountComponent', () => {
 
     component.ngOnInit();
 
-    // Only ids 1 and 4 remain (truthy opal_domain)
+    // Only ids 1 and 4 remain because they are Accounting Division business units.
     expect(component.businessUnitRefData.map((b) => b.business_unit_id)).toEqual([1, 4]);
     expect(mockFinesSaStore.searchAccount().fsa_search_account_business_unit_ids).toEqual([1, 4]);
     expect(setSpy).toHaveBeenCalledTimes(1);
+  });
+
+  it('ngOnInit should populate majorCreditorsRefData from resolver data', () => {
+    component.ngOnInit();
+
+    expect(component.majorCreditorsRefData).toEqual(OPAL_FINES_MAJOR_CREDITOR_REF_DATA_MOCK.refData);
+  });
+
+  it('ngOnInit should default majorCreditorsRefData to an empty array when resolver data is not an array', () => {
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    (component as any)['activatedRoute'] = {
+      snapshot: {
+        data: {
+          businessUnits: OPAL_FINES_BUSINESS_UNIT_REF_DATA_MOCK,
+          majorCreditors: { refData: null },
+        },
+      },
+      parent: 'search',
+      fragment: of('individuals'),
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    } as any;
+
+    component.ngOnInit();
+
+    expect(component.majorCreditorsRefData).toEqual([]);
   });
 
   it('ngOnInit should not call setSearchAccount when ids already exist in store', () => {
@@ -232,13 +258,31 @@ describe('FinesSaSearchAccountComponent', () => {
     expect(result).toBe(majorCreditor.creditor_account_id);
   });
 
-  it('getCreditorAccountId should return null when no major creditor code matches', () => {
+  it('getCreditorAccountId should throw an error when no major creditor code matches', () => {
     component.majorCreditorsRefData = OPAL_FINES_MAJOR_CREDITOR_REF_DATA_MOCK.refData;
 
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    const result = (component as any).getCreditorAccountId('UNKNOWN');
+    expect(() => {
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      (component as any).getCreditorAccountId('UNKNOWN');
+    }).toThrow('Major creditor account ID could not be found for code: UNKNOWN');
+  });
 
-    expect(result).toBeNull();
+  it('handleSearchAccountSubmit should throw an error when selected major creditor code has no account ID', () => {
+    const mockForm = {
+      ...FINES_SA_SEARCH_ACCOUNT_FORM_MOCK,
+      formData: {
+        ...FINES_SA_SEARCH_ACCOUNT_FORM_MOCK.formData,
+        fsa_search_account_major_creditors_search_criteria: {
+          fsa_search_account_major_creditors_major_creditor_id: 'UNKNOWN',
+        },
+      },
+    };
+    component.majorCreditorsRefData = OPAL_FINES_MAJOR_CREDITOR_REF_DATA_MOCK.refData;
+    mockFinesSaStore.setActiveTab('majorCreditors');
+
+    expect(() => component.handleSearchAccountSubmit(mockForm)).toThrow(
+      'Major creditor account ID could not be found for code: UNKNOWN',
+    );
   });
 
   it('navigateToMajorCreditor should open a new tab with the correct URL', () => {

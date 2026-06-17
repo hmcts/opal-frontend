@@ -24,10 +24,16 @@ export class FinesAccSummaryHeaderComponent {
   @Output() refreshPage = new EventEmitter<void>();
   @Output() navigateToAddAccountNotePage = new EventEmitter<void>();
 
+  /**
+   * Emits the page refresh request to the parent account summary component.
+   */
   public handleRefreshPage(): void {
     this.refreshPage.emit();
   }
 
+  /**
+   * Emits the request to navigate to the add account note page.
+   */
   public handleNavigateToAddAccountNotePage(): void {
     this.navigateToAddAccountNotePage.emit();
   }
