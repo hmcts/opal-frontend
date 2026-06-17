@@ -1,6 +1,6 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { ActivatedRoute, ActivatedRouteSnapshot, convertToParamMap, Router } from '@angular/router';
-import { of } from 'rxjs';
+import { firstValueFrom, of } from 'rxjs';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
 import {
   MojSubNavigationComponent,
@@ -75,6 +75,22 @@ describe('FinesAccMajorCreditorDetailsComponent', () => {
       123,
       FINES_ACC_MAJOR_CREDITOR_DETAILS_HEADER_MOCK,
     );
+  });
+
+  it('should fetch major creditor account heading data for the supplied account ID', async () => {
+    const headingData = structuredClone(FINES_ACC_MAJOR_CREDITOR_DETAILS_HEADER_MOCK);
+    vi.mocked(mockOpalFinesService.getMajorCreditorAccountHeadingData).mockReturnValue(of(headingData));
+
+    const result = await firstValueFrom(
+      (
+        component as unknown as {
+          getHeaderData: (accountId: number) => ReturnType<OpalFines['getMajorCreditorAccountHeadingData']>;
+        }
+      ).getHeaderData(456),
+    );
+
+    expect(mockOpalFinesService.getMajorCreditorAccountHeadingData).toHaveBeenCalledWith(456);
+    expect(result).toEqual(headingData);
   });
 
   it('should set payment hold state when at-a-glance tab data emits', () => {

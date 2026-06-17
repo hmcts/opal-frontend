@@ -128,6 +128,14 @@ export class FinesAccMajorCreditorDetailsComponent
   }
 
   /**
+   * Gets the account ID from the major creditor details route.
+   * @returns The account ID from the route.
+   */
+  protected override getAccountIdFromRoute(): number {
+    return Number(this.activatedRoute.snapshot.paramMap.get('accountId'));
+  }
+
+  /**
    * Transforms the major creditor account heading data for storage in the account store.
    * @param accountId The ID of the account.
    * @param header The major creditor account heading data.

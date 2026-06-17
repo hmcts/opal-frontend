@@ -6,7 +6,7 @@ import {
   MojSubNavigationItemComponent,
 } from '@hmcts/opal-frontend-common/components/moj/moj-sub-navigation';
 import { FINES_ACC_MINOR_CREDITOR_DETAILS_HEADER_MOCK } from './mocks/fines-acc-minor-creditor-details-header.mock';
-import { of } from 'rxjs';
+import { firstValueFrom, of } from 'rxjs';
 import { OpalFines } from '@services/fines/opal-fines-service/opal-fines.service';
 import { FinesAccPayloadService } from '../services/fines-acc-payload.service';
 import { MOCK_FINES_ACCOUNT_STATE } from '../mocks/fines-acc-state.mock';
@@ -106,6 +106,22 @@ describe('FinesAccMinorCreditorDetailsComponent', () => {
       123,
       FINES_ACC_MINOR_CREDITOR_DETAILS_HEADER_MOCK,
     );
+  });
+
+  it('should fetch minor creditor account heading data for the supplied account ID', async () => {
+    const headingData = structuredClone(FINES_ACC_MINOR_CREDITOR_DETAILS_HEADER_MOCK);
+    vi.mocked(mockOpalFinesService.getMinorCreditorAccountHeadingData).mockReturnValue(of(headingData));
+
+    const result = await firstValueFrom(
+      (
+        component as unknown as {
+          getHeaderData: (accountId: number) => ReturnType<OpalFines['getMinorCreditorAccountHeadingData']>;
+        }
+      ).getHeaderData(456),
+    );
+
+    expect(mockOpalFinesService.getMinorCreditorAccountHeadingData).toHaveBeenCalledWith(456);
+    expect(result).toEqual(headingData);
   });
 
   it('should display awarded amount as positive when heading data returns a negative value', () => {

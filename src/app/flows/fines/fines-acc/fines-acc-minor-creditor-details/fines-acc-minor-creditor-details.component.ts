@@ -145,6 +145,14 @@ export class FinesAccMinorCreditorDetailsComponent
   }
 
   /**
+   * Gets the account ID from the minor creditor details route.
+   * @returns The account ID from the route.
+   */
+  protected override getAccountIdFromRoute(): number {
+    return Number(this.activatedRoute.snapshot.paramMap.get('accountId'));
+  }
+
+  /**
    * Transforms the minor creditor account heading data for storage in the account store.
    * @param accountId The ID of the account.
    * @param header The minor creditor account heading data.
