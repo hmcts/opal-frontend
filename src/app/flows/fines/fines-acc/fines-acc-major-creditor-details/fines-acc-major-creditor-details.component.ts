@@ -43,7 +43,7 @@ import { IOpalFinesAccountMajorCreditorAtAGlance } from '../../services/opal-fin
 import { OPAL_FINES_ACCOUNT_MAJOR_CREDITOR_AT_A_GLANCE_WITH_DEFENDANT_MOCK } from '../../services/opal-fines-service/mocks/opal-fines-account-major-creditor-at-a-glance-with-defendant.mock';
 
 @Component({
-  selector: 'app-fines-acc-minor-creditor-details',
+  selector: 'app-fines-acc-major-creditor-details',
   imports: [
     MojSubNavigationComponent,
     MojSubNavigationItemComponent,
