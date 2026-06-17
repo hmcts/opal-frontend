@@ -19,7 +19,9 @@ function createRoute(accountId?: number, accountType?: 'defendant' | 'minor-cred
 }
 
 async function resolveBusinessUnit(route: ActivatedRouteSnapshot): Promise<number | null> {
-  const result = TestBed.runInInjectionContext(() => TestBed.inject(FinesAccountBusinessUnitResolver).resolveBusinessUnitId(route));
+  const result = TestBed.runInInjectionContext(() =>
+    TestBed.inject(FinesAccountBusinessUnitResolver).resolveBusinessUnitId(route),
+  );
   return isObservable(result) ? firstValueFrom(result) : Promise.resolve(result);
 }
 
@@ -123,6 +125,16 @@ describe('finesAccountBusinessUnitResolver', () => {
 
   it('should return null when the account id is missing', async () => {
     const route = createRoute(undefined, 'defendant');
+
+    const result = await resolveBusinessUnit(route);
+
+    expect(result).toBeNull();
+    expect(mockOpalFinesService.getDefendantAccountHeadingData).not.toHaveBeenCalled();
+    expect(mockOpalFinesService.getMinorCreditorAccountHeadingData).not.toHaveBeenCalled();
+  });
+
+  it('should return null when the account type is not supported', async () => {
+    const route = createRoute(123);
 
     const result = await resolveBusinessUnit(route);
 
