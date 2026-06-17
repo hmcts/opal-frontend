@@ -688,6 +688,7 @@ withPipeline(type, product, component) {
                     echo "Opal component tests failed: ${e}"
                     currentBuild.result = 'FAILURE'
         } finally {
+                    archiveZephyrReports('functional-output')
                     archiveArtifact(functionalArtifactsGlob)
                     publishHtmlReport(
                     "functional-output/component/${resolvedBrowserToRun()}/html/",
@@ -739,6 +740,7 @@ withPipeline(type, product, component) {
         "${resolvedBrowserToRun()}-report.html",
         functionalReportName()
       )
+        archiveZephyrReports('functional-output')
         archiveArtifact(functionalArtifactsGlob)
         archiveZephyrReports(smokeArtifactsRoot)
         archiveArtifact(accountArtifactPath)
@@ -761,6 +763,7 @@ withPipeline(type, product, component) {
         "${resolvedBrowserToRun()}-report.html",
         functionalReportName()
       )
+        archiveZephyrReports('functional-output')
         archiveArtifact(functionalArtifactsGlob)
         archiveZephyrReports(smokeArtifactsRoot)
         archiveArtifact(accountArtifactPath)
