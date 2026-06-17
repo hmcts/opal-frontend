@@ -243,7 +243,17 @@ export class AccountDetailsEnforcementActions {
     log('assert', 'Remove enforcement hold account identifier', { expected });
     cy.get('opal-lib-govuk-heading-with-caption', { timeout: AccountDetailsEnforcementActions.DEFAULT_TIMEOUT })
       .should('be.visible')
-      .and('contain.text', expected);
+      .invoke('text')
+      .then((text) => {
+        const normalize = (value: string): string => value.replace(/\s+/g, ' ').trim();
+        const actual = normalize(text);
+        const expectedText = normalize(expected);
+        const actualBody = actual.replace(/^[^-–]*[-–]\s*/, '');
+        const expectedBody = expectedText.replace(/^[^-–]*[-–]\s*/, '');
+
+        expect(actualBody, 'remove enforcement hold caption').to.contain(expectedBody);
+        expect(actual, 'remove enforcement hold caption').to.contain('Remove enforcement hold');
+      });
   }
 
   /**

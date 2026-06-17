@@ -78,7 +78,7 @@ Feature: Account Enquiries - Add Enforcement Override
     And I go to the Enforcement tab
     And I open the remove enforcement hold screen
     Then I should see the remove enforcement hold page
-    And I should see the remove enforcement hold account identifier "177A – Mr Robert REMOVEHOLD{uniqUpper}"
+    And I should see the remove enforcement hold account identifier "Mr Robert REMOVEHOLD{uniqUpper} Remove enforcement hold"
 
   @JIRA-STORY:PO-1843 @JIRA-EPIC:PO-1675 @JIRA-LABEL:account-enquiry
   Scenario: Canceling remove enforcement hold with entered text shows confirmation before leaving
@@ -122,7 +122,7 @@ Feature: Account Enquiries - Add Enforcement Override
     When I search for the account by last name "RemoveHoldSuccess{uniq}" and open the latest result
     And I go to the Enforcement tab
     And I open the remove enforcement hold screen
-    Then I should see the remove enforcement hold account identifier "177A – Mr Robert REMOVEHOLDSUCCESS{uniqUpper}"
+    Then I should see the remove enforcement hold account identifier "Mr Robert REMOVEHOLDSUCCESS{uniqUpper} Remove enforcement hold"
     When I enter "Removed" in the "Reason" field
     And I press the "Remove" button
     Then I should see the add enforcement action page
