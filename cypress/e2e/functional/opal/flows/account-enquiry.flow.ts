@@ -53,7 +53,7 @@ export class AccountEnquiryFlow {
   /** Default timeout (ms) for key waits in this flow. */
   private static readonly WAIT_MS = 15_000;
   /** Timeout (ms) for route transitions back to the defendant details shell. */
-  private static readonly DETAILS_NAV_WAIT_MS = 20_000;
+  private static readonly DETAILS_NAV_WAIT_MS = 45_000;
   private static readonly BASE_API_PATH = '/opal-fines-service';
 
   /** Waits for the account header summary call to succeed and the At a glance tab to render. */
