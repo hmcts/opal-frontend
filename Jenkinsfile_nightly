@@ -38,8 +38,8 @@ properties([
     booleanParam(name: 'ZephyrExecution', defaultValue: false, description: 'Create Zephyr Execution'),
     choice(
       name: 'LEGACY_URL',
-      choices: [legacyUrlDevChoice, legacyUrlPreProdChoice],
-      description: 'Determines the URL to use for legacy tests. Default is DEV until PRE-PROD is ready.'
+      choices: [legacyUrlPreProdChoice, legacyUrlDevChoice],
+      description: 'Determines the URL to use for legacy tests. PRE-PROD is the default.'
     ),
   ])
 ])
@@ -346,6 +346,11 @@ boolean shouldRunLegacyHealthCheck() {
   return params.LEGACY_URL == legacyUrlPreProdChoice
 }
 
+// Patch LaunchDarkly app mode only when running demo legacy checks against pre-prod.
+boolean shouldPatchLaunchDarklyForDemoLegacyStage() {
+  return params.LEGACY_URL == legacyUrlPreProdChoice
+}
+
 // Wait until the legacy health endpoint responds successfully after toggling app mode.
 void waitForLegacyHealthCheck() {
   if (!shouldRunLegacyHealthCheck()) {
@@ -448,12 +453,16 @@ void runDemoLegacyStage(Map<String, Object> stageConfig, Closure runCommand) {
 
     try {
       echo startMessage
-      patchLaunchDarklyFlagState(
-        true,
-        launchDarklyLegacyVariationName,
-        "Setting LaunchDarkly flag to legacy for demo (${stageName})..."
-      )
-      launchDarklyFlagPatched = true
+      if (shouldPatchLaunchDarklyForDemoLegacyStage()) {
+        patchLaunchDarklyFlagState(
+          true,
+          launchDarklyLegacyVariationName,
+          "Setting LaunchDarkly flag to legacy for demo (${stageName})..."
+        )
+        launchDarklyFlagPatched = true
+      } else {
+        echo "Skipping LaunchDarkly app-mode patch because LEGACY_URL=${params.LEGACY_URL}."
+      }
       waitForLegacyHealthCheck()
       sh 'echo "Waiting 30s for system warmup..." ; sleep 30'
 

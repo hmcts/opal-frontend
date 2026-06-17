@@ -145,13 +145,13 @@ export const mountSearchAccount = ({
     providers.unshift(
       provideRouter([
         {
-          path: 'fines/search-accounts/results',
+          path: 'fines/dashboard/search/results',
           component: FinesSaSearchAccountComponent,
           resolve: resultsResolvers,
           runGuardsAndResolvers: 'always',
         },
         {
-          path: 'fines/search-accounts',
+          path: 'fines/dashboard/search',
           component: FinesSaSearchAccountComponent,
         },
       ]),
