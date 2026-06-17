@@ -17,7 +17,7 @@ const log = createScopedLogger('ResultsActions');
  */
 export class ResultsActions {
   /** Default timeout (ms) used by this actions class. */
-  private static readonly WAIT_MS = 15_000;
+  private static readonly WAIT_MS = 45_000;
   private static readonly DETAILS_ROUTE_PATTERN =
     /^\/fines\/account\/(?:defendant|minor-creditor)\/[A-Za-z0-9-]+\/details$/;
   private static readonly INDIVIDUAL_RESULTS_HEADERS = [
