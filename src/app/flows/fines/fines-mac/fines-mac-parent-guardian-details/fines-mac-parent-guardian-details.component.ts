@@ -1,5 +1,5 @@
 import { ChangeDetectionStrategy, Component } from '@angular/core';
-import { FinesMacFormParentBaseComponent } from '../abstract/fines-mac-form-parent-base';
+import { FinesMacFormParentBaseComponent } from '../components/abstract/fines-mac-form-parent-base/fines-mac-form-parent-base.component';
 import { IFinesMacParentGuardianDetailsForm } from './interfaces/fines-mac-parent-guardian-details-form.interface';
 
 import { RouterModule } from '@angular/router';
@@ -18,7 +18,8 @@ export class FinesMacParentGuardianDetailsComponent extends FinesMacFormParentBa
    */
   public handleParentGuardianDetailsSubmit(form: IFinesMacParentGuardianDetailsForm): void {
     this.finesMacStore.setParentGuardianDetails(form);
-    if (form.nestedFlow && this.navigateToNestedRoute('parentOrGuardianDetails')) {
+    if (form.nestedFlow) {
+      this.handleNestedFlowNavigation('parentOrGuardianDetails');
       return;
     }
 

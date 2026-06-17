@@ -76,7 +76,7 @@ describe('FinesMacPersonalDetailsComponent', () => {
     });
   });
 
-  it('should navigate to account details in nested flow when there is no configured personal details route', () => {
+  it('should not navigate in nested flow when there is no configured personal details route', () => {
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     const routerSpy = vi.spyOn<any, any>(component['router'], 'navigate');
     component.defendantType = FINES_MAC_DEFENDANT_TYPES_KEYS.company;
@@ -88,9 +88,7 @@ describe('FinesMacPersonalDetailsComponent', () => {
       component.handlePersonalDetailsSubmit(formSubmit);
 
       expect(finesMacStore.personalDetails()).toEqual(formSubmit);
-      expect(routerSpy).toHaveBeenCalledWith([FINES_MAC_ROUTING_PATHS.children.accountDetails], {
-        relativeTo: component['activatedRoute'].parent,
-      });
+      expect(routerSpy).not.toHaveBeenCalled();
     } finally {
       FINES_MAC_ROUTING_NESTED_ROUTES['company'].personalDetails = originalRoute;
     }

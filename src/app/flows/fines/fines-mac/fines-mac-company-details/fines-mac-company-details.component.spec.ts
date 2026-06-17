@@ -75,7 +75,7 @@ describe('FinesMacCompanyDetailsComponent', () => {
     });
   });
 
-  it('should navigate to account details when nested flow has no configured next route', () => {
+  it('should not navigate when nested flow has no configured next route', () => {
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     const routerSpy = vi.spyOn<any, any>(component['router'], 'navigate');
     component.defendantType = FINES_MAC_DEFENDANT_TYPES_KEYS.adultOrYouthOnly;
@@ -84,9 +84,7 @@ describe('FinesMacCompanyDetailsComponent', () => {
     component.handleCompanyDetailsSubmit(formSubmit);
 
     expect(finesMacStore.companyDetails()).toEqual(formSubmit);
-    expect(routerSpy).toHaveBeenCalledWith([FINES_MAC_ROUTING_PATHS.children.accountDetails], {
-      relativeTo: component['activatedRoute'].parent,
-    });
+    expect(routerSpy).not.toHaveBeenCalled();
   });
 
   it('should test handleUnsavedChanges', () => {

@@ -1,5 +1,5 @@
 import { ChangeDetectionStrategy, Component } from '@angular/core';
-import { FinesMacFormParentBaseComponent } from '../abstract/fines-mac-form-parent-base';
+import { FinesMacFormParentBaseComponent } from '../components/abstract/fines-mac-form-parent-base/fines-mac-form-parent-base.component';
 import { IFinesMacContactDetailsForm } from './interfaces/fines-mac-contact-details-form.interface';
 import { FinesMacContactDetailsFormComponent } from './fines-mac-contact-details-form/fines-mac-contact-details-form.component';
 
@@ -16,7 +16,8 @@ export class FinesMacContactDetailsComponent extends FinesMacFormParentBaseCompo
    */
   public handleContactDetailsSubmit(form: IFinesMacContactDetailsForm): void {
     this.finesMacStore.setContactDetails(form);
-    if (form.nestedFlow && this.navigateToNestedRoute('contactDetails')) {
+    if (form.nestedFlow) {
+      this.handleNestedFlowNavigation('contactDetails');
       return;
     }
 

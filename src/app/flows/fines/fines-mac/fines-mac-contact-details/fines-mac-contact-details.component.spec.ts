@@ -94,7 +94,7 @@ describe('FinesMacContactDetailsComponent', () => {
     });
   });
 
-  it('should navigate to account details when nested flow has no configured next route', () => {
+  it('should not navigate when nested flow has no configured next route', () => {
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     const routerSpy = vi.spyOn<any, any>(component['router'], 'navigate');
     const originalRoute = FINES_MAC_ROUTING_NESTED_ROUTES[FINES_MAC_DEFENDANT_TYPES_KEYS.company].contactDetails;
@@ -106,12 +106,24 @@ describe('FinesMacContactDetailsComponent', () => {
       component.handleContactDetailsSubmit(formSubmit);
 
       expect(finesMacStore.contactDetails()).toEqual(formSubmit);
-      expect(routerSpy).toHaveBeenCalledWith([FINES_MAC_ROUTING_PATHS.children.accountDetails], {
-        relativeTo: component['activatedRoute'].parent,
-      });
+      expect(routerSpy).not.toHaveBeenCalled();
     } finally {
       FINES_MAC_ROUTING_NESTED_ROUTES[FINES_MAC_DEFENDANT_TYPES_KEYS.company].contactDetails = originalRoute;
     }
+  });
+
+  it('should navigate to account details in nested flow when defendant type is missing', () => {
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    const routerSpy = vi.spyOn<any, any>(component['router'], 'navigate');
+    component.defendantType = undefined as unknown as string;
+    formSubmit.nestedFlow = true;
+
+    component.handleContactDetailsSubmit(formSubmit);
+
+    expect(finesMacStore.contactDetails()).toEqual(formSubmit);
+    expect(routerSpy).toHaveBeenCalledWith([FINES_MAC_ROUTING_PATHS.children.accountDetails], {
+      relativeTo: component['activatedRoute'].parent,
+    });
   });
 
   it('should test handleUnsavedChanges', () => {

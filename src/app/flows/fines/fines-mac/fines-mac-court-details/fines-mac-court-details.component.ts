@@ -7,7 +7,7 @@ import { OpalFines } from '@services/fines/opal-fines-service/opal-fines.service
 import { IOpalFinesCourtRefData } from '@services/fines/opal-fines-service/interfaces/opal-fines-court-ref-data.interface';
 import { IOpalFinesLocalJusticeAreaRefData } from '@services/fines/opal-fines-service/interfaces/opal-fines-local-justice-area-ref-data.interface';
 import { IFinesMacCourtDetailsForm } from './interfaces/fines-mac-court-details-form.interface';
-import { FinesMacFormParentBaseComponent } from '../abstract/fines-mac-form-parent-base';
+import { FinesMacFormParentBaseComponent } from '../components/abstract/fines-mac-form-parent-base/fines-mac-form-parent-base.component';
 
 @Component({
   selector: 'app-fines-mac-court-details',
@@ -65,7 +65,8 @@ export class FinesMacCourtDetailsComponent extends FinesMacFormParentBaseCompone
   public handleCourtDetailsSubmit(form: IFinesMacCourtDetailsForm): void {
     this.finesMacStore.setCourtDetails(form);
 
-    if (form.nestedFlow && this.navigateToNestedRoute('courtDetails')) {
+    if (form.nestedFlow) {
+      this.handleNestedFlowNavigation('courtDetails');
       return;
     }
 
