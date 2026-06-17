@@ -77,6 +77,7 @@ String failureResult = 'FAILURE'
 @Field String uatTechnicalTagFilter = '(@UAT-Technical) and not @skip'
 @Field int uatHealthCheckIntervalSeconds = 5
 @Field int uatHealthCheckTimeoutMinutes = 1
+@Field String legacyHealthCheckPayload = '{"name":"Steve","age":76,"gender":"Male","hobbies":["jogging","salsa"]}'
 
 // Build an Azure KeyVault secret entry.
 static Map<String, Object> secret(String secretName, String envVar) {
@@ -336,7 +337,12 @@ String resolveLegacyDemoGatewayUrl() {
 String getLegacyHealthCheckStatus() {
   String legacyHealthEndpoint = "${resolveLegacyDemoGatewayUrl()}?actionType=getGmasTest"
   return sh(
-    script: "curl -s -o /dev/null -w '%{http_code}' '${legacyHealthEndpoint}' || echo '000'",
+    script:
+      "curl -s -o /dev/null -w '%{http_code}' " +
+      "-X POST " +
+      "-H 'Content-Type: application/json' " +
+      "--data '${legacyHealthCheckPayload}' " +
+      "'${legacyHealthEndpoint}' || echo '000'",
     returnStdout: true
   ).trim()
 }
