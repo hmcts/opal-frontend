@@ -23,7 +23,6 @@ const ACCOUNT_ENQUIRY_JIRA_LABEL = '@JIRA-LABEL:account-enquiry';
 const ADD_PAYMENT_HOLD_STORY_TAG = '@JIRA-STORY:PO-1930';
 const REMOVE_PAYMENT_HOLD_STORY_TAG = '@JIRA-STORY:PO-1934';
 const PAYMENT_HOLD_EPIC_TAG = '@JIRA-EPIC:PO-2234';
-const ROUTER_NAVIGATE_TIMEOUT = 15_000;
 
 const buildTags = (...tags: string[]): string[] => [...tags, ACCOUNT_ENQUIRY_JIRA_LABEL];
 
@@ -127,7 +126,7 @@ describe('Minor Creditor Payment Hold', () => {
         setupMinorCreditorAtAGlance(userState, createMinorCreditorHeaderMock(), atAGlance);
 
         cy.contains(DOM.linkText, DOM.labelAddPaymentHold).should('be.visible').click();
-        cy.get('@routerNavigate', { timeout: ROUTER_NAVIGATE_TIMEOUT })
+        cy.get('@routerNavigate')
           .its('lastCall.args.0')
           .should((arg0) => {
             const path = Array.isArray(arg0) ? arg0.join('/') : String(arg0);
@@ -148,10 +147,7 @@ describe('Minor Creditor Payment Hold', () => {
         setupMinorCreditorAtAGlance(userState, createMinorCreditorHeaderMock(), atAGlance);
 
         cy.contains(DOM.linkText, DOM.labelAddPaymentHold).should('be.visible').click();
-        cy.get('@routerNavigate', { timeout: ROUTER_NAVIGATE_TIMEOUT }).should(
-          'have.been.calledWithMatch',
-          ['../payment-hold/denied'],
-        );
+        cy.get('@routerNavigate').should('have.been.calledWithMatch', ['../payment-hold/denied']);
       },
     );
 
@@ -247,7 +243,7 @@ describe('Minor Creditor Payment Hold', () => {
 
         cy.get(DOM.minorCreditorAtAGlanceTabComponent).should('not.contain.text', DOM.labelAddPaymentHold);
         cy.contains(DOM.linkText, DOM.labelRemovePaymentHold).should('be.visible').click();
-        cy.get('@routerNavigate', { timeout: ROUTER_NAVIGATE_TIMEOUT })
+        cy.get('@routerNavigate')
           .its('lastCall.args.0')
           .should((arg0) => {
             const path = Array.isArray(arg0) ? arg0.join('/') : String(arg0);
@@ -269,10 +265,7 @@ describe('Minor Creditor Payment Hold', () => {
 
         cy.get(DOM.minorCreditorAtAGlanceTabComponent).should('not.contain.text', DOM.labelAddPaymentHold);
         cy.contains(DOM.linkText, DOM.labelRemovePaymentHold).should('be.visible').click();
-        cy.get('@routerNavigate', { timeout: ROUTER_NAVIGATE_TIMEOUT }).should(
-          'have.been.calledWithMatch',
-          ['../payment-hold/denied'],
-        );
+        cy.get('@routerNavigate').should('have.been.calledWithMatch', ['../payment-hold/denied']);
       },
     );
 
