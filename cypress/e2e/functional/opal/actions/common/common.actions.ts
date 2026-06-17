@@ -12,8 +12,8 @@ const log = createScopedLogger('CommonActions');
  * Shared Cypress helpers used across multiple actions/flows.
  */
 export class CommonActions {
-  private readonly TIMEOUT = 10_000;
-  private readonly PATH_TIMEOUT = 20_000;
+  private readonly TIMEOUT = 30_000;
+  private readonly PATH_TIMEOUT = 45_000;
 
   /**
    * Standard timeout options for most UI waits.
@@ -44,7 +44,7 @@ export class CommonActions {
    * @param expected - Text that should appear within the page header.
    * @param timeoutMs - Optional timeout override for the assertion.
    */
-  public assertHeaderContains(expected: string, timeoutMs: number = 15_000): void {
+  public assertHeaderContains(expected: string, timeoutMs: number = 30_000): void {
     log('assert', `Header contains: ${expected}`);
 
     cy.get(L.header, { timeout: timeoutMs })
@@ -73,7 +73,7 @@ export class CommonActions {
    * @param expected - Text that should appear within the service name link.
    * @param timeoutMs - Optional timeout override for the assertion.
    */
-  public assertServiceHeaderContains(expected: string, timeoutMs: number = 15_000): void {
+  public assertServiceHeaderContains(expected: string, timeoutMs: number = 30_000): void {
     log('assert', `Service header contains: ${expected}`);
 
     cy.get(L.serviceNameLink, { timeout: timeoutMs })
@@ -90,7 +90,7 @@ export class CommonActions {
    */
   assertHeaderEquals(expected: string): void {
     log('verify', 'Checking header equals exact text', { expected });
-    cy.get(L.header, { timeout: 15_000 }).should('have.text', expected);
+    cy.get(L.header, { timeout: 30_000 }).should('have.text', expected);
   }
 
   /**

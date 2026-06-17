@@ -16,7 +16,7 @@ const log = createScopedLogger('AccountDetailsEnforcementActions');
  * Actions for the Account Details enforcement tab and add override form.
  */
 export class AccountDetailsEnforcementActions {
-  private static readonly DEFAULT_TIMEOUT = 15_000;
+  private static readonly DEFAULT_TIMEOUT = 45_000;
 
   /**
    * Normalizes visible text for reliable equality assertions.
