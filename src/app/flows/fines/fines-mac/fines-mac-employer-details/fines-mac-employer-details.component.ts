@@ -17,8 +17,7 @@ export class FinesMacEmployerDetailsComponent extends FinesMacFormParentBaseComp
    */
   public handleEmployerDetailsSubmit(form: IFinesMacEmployerDetailsForm): void {
     this.finesMacStore.setEmployerDetails(form);
-    if (form.nestedFlow) {
-      this.navigateToNestedRoute('employerDetails');
+    if (form.nestedFlow && this.navigateToNestedRoute('employerDetails')) {
       return;
     }
 

@@ -18,8 +18,7 @@ export class FinesMacParentGuardianDetailsComponent extends FinesMacFormParentBa
    */
   public handleParentGuardianDetailsSubmit(form: IFinesMacParentGuardianDetailsForm): void {
     this.finesMacStore.setParentGuardianDetails(form);
-    if (form.nestedFlow) {
-      this.navigateToNestedRoute('parentOrGuardianDetails');
+    if (form.nestedFlow && this.navigateToNestedRoute('parentOrGuardianDetails')) {
       return;
     }
 

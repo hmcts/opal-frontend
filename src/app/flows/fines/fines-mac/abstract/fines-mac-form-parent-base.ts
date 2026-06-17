@@ -14,18 +14,20 @@ export abstract class FinesMacFormParentBaseComponent extends AbstractFormParent
    * Navigates to the configured nested route when one exists for the current defendant type.
    *
    * @param nestedRouteKey - The current form's key in the nested route configuration.
+   * @returns Whether a nested route was found and navigation was triggered.
    */
-  protected navigateToNestedRoute(nestedRouteKey: keyof IFinesMacRoutingNestedRoutes): void {
+  protected navigateToNestedRoute(nestedRouteKey: keyof IFinesMacRoutingNestedRoutes): boolean {
     if (!this.defendantType) {
-      return;
+      return false;
     }
 
     const nextRoute = FINES_MAC_ROUTING_NESTED_ROUTES[this.defendantType][nestedRouteKey];
     if (!nextRoute) {
-      return;
+      return false;
     }
 
     this.routerNavigate(nextRoute.nextRoute);
+    return true;
   }
 
   /**

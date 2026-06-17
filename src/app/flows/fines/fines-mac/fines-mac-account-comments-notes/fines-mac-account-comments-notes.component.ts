@@ -22,8 +22,7 @@ export class FinesMacAccountCommentsNotesComponent extends FinesMacFormParentBas
       this.finesMacStore.accountCommentsNotes().formData.fm_account_comments_notes_system_notes;
     this.finesMacStore.setAccountCommentsNotes(form);
 
-    if (form.nestedFlow) {
-      this.navigateToNestedRoute('accountCommentsNotes');
+    if (form.nestedFlow && this.navigateToNestedRoute('accountCommentsNotes')) {
       return;
     }
 

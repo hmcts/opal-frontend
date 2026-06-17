@@ -18,8 +18,7 @@ export class FinesMacPersonalDetailsComponent extends FinesMacFormParentBaseComp
    */
   public handlePersonalDetailsSubmit(form: IFinesMacPersonalDetailsForm): void {
     this.finesMacStore.setPersonalDetails(form);
-    if (form.nestedFlow) {
-      this.navigateToNestedRoute('personalDetails');
+    if (form.nestedFlow && this.navigateToNestedRoute('personalDetails')) {
       return;
     }
 

@@ -16,8 +16,7 @@ export class FinesMacContactDetailsComponent extends FinesMacFormParentBaseCompo
    */
   public handleContactDetailsSubmit(form: IFinesMacContactDetailsForm): void {
     this.finesMacStore.setContactDetails(form);
-    if (form.nestedFlow) {
-      this.navigateToNestedRoute('contactDetails');
+    if (form.nestedFlow && this.navigateToNestedRoute('contactDetails')) {
       return;
     }
 

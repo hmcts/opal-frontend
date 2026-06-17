@@ -90,7 +90,7 @@ describe('FinesMacEmployerDetailsComponent', () => {
     });
   });
 
-  it('should not navigate in nested flow when there is no configured employer details route', () => {
+  it('should navigate to account details in nested flow when there is no configured employer details route', () => {
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     const routerSpy = vi.spyOn<any, any>(component['router'], 'navigate');
     component.defendantType = FINES_MAC_DEFENDANT_TYPES_KEYS.company;
@@ -102,7 +102,9 @@ describe('FinesMacEmployerDetailsComponent', () => {
       component.handleEmployerDetailsSubmit(formSubmit);
 
       expect(finesMacStore.employerDetails()).toEqual(formSubmit);
-      expect(routerSpy).not.toHaveBeenCalled();
+      expect(routerSpy).toHaveBeenCalledWith([FINES_MAC_ROUTING_PATHS.children.accountDetails], {
+        relativeTo: component['activatedRoute'].parent,
+      });
     } finally {
       FINES_MAC_ROUTING_NESTED_ROUTES['company'].employerDetails = originalRoute;
     }
