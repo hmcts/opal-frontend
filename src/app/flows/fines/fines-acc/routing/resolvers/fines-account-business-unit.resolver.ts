@@ -7,10 +7,7 @@ import { OpalFines } from '@services/fines/opal-fines-service/opal-fines.service
 import { IOpalFinesAccountDefendantDetailsHeader } from '../../fines-acc-defendant-details/interfaces/fines-acc-defendant-details-header.interface';
 import { IOpalFinesAccountMinorCreditorDetailsHeader } from '../../fines-acc-minor-creditor-details/interfaces/fines-acc-minor-creditor-details-header.interface';
 import { BusinessUnitIdResolver } from '@hmcts/opal-frontend-common/guards/business-unit-route-permissions';
-import {
-  FINES_ACCOUNT_ROUTE_TYPES,
-  FinesAccountRouteType,
-} from '../../../constants/fines-account-route-types.constant';
+import { FINES_ACCOUNT_ROUTE_TYPES, FinesAccountRouteType } from './types/fines-account-route.type';
 
 /**
  * Normalizes a business unit identifier from store or API state into a positive numeric value.

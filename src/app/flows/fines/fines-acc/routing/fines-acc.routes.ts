@@ -44,7 +44,7 @@ import { minorCreditorAccountCreditorResolver } from './resolvers/defendant-mino
 import { FINES_ACC_REMOVE_NON_PAYING_PG_ROUTING_PATHS } from '../fines-acc-remove-non-paying-pg/constants/fines-acc-remove-non-paying-pg-routing-paths.constant';
 import { FINES_ACC_ENF_ACTION_DENIED_TYPES } from '../fines-acc-enf-action-denied/constants/fines-acc-enf-action-denied-types.constant';
 import { FinesAccountBusinessUnitResolver } from './resolvers/fines-account-business-unit.resolver';
-import { FINES_ACCOUNT_ROUTE_TYPES } from '../../constants/fines-account-route-types.constant';
+import { FINES_ACCOUNT_ROUTE_TYPES } from './resolvers/types/fines-account-route.type';
 
 const accRootPermissionIds = FINES_PERMISSIONS;
 const finesAccountBusinessUnitResolverProvider = {
