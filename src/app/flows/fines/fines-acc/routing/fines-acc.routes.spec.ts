@@ -1,15 +1,18 @@
 import { TestBed } from '@angular/core/testing';
 import { ActivatedRoute, Router } from '@angular/router';
+import { TitleResolver } from '@hmcts/opal-frontend-common/resolvers/title';
 import { describe, expect, it, vi } from 'vitest';
 import { routing } from './fines-acc.routes';
 import { FINES_ACC_DEFENDANT_ROUTING_PATHS } from './constants/fines-acc-defendant-routing-paths.constant';
 import { FINES_ACC_MINOR_CREDITOR_ROUTING_PATHS } from './constants/fines-acc-minor-creditor-routing-paths.constant';
 import { FINES_ACC_MAJOR_CREDITOR_ROUTING_PATHS } from './constants/fines-acc-major-creditor-routing-paths.constant';
 import { FINES_ACC_MAJOR_CREDITOR_ROUTING_TITLES } from './constants/fines-acc-major-creditor-routing-titles.constant';
+import { FINES_ACC_MAJOR_CREDITOR_DETAILS_ROUTE_DATA_KEYS } from '../fines-acc-major-creditor-details/constants/fines-acc-major-creditor-details-route-data-keys.constant';
 import { FINES_ACC_ENF_COURT_CHANGE_ROUTING_PATHS } from '../fines-acc-enf-court-change/constants/fines-acc-enf-court-change-routing-paths.constant';
 import { FINES_ACC_ENF_OVERRIDE_ADD_CHANGE_ROUTING_PATHS } from '../fines-acc-enf-override-add-change/constants/fines-acc-enf-override-add-change-routing-paths.constant';
 import { HIDE_PRIMARY_NAV_ROUTE_DATA_KEY } from '@app/constants/route-data.constant';
 import { minorCreditorAccountCreditorResolver } from './resolvers/defendant-minor-creditor-creditor.resolver';
+import { majorCreditorAccountHeadingResolver } from './resolvers/major-creditor-heading.resolver';
 import { canDeactivateGuard } from '@hmcts/opal-frontend-common/guards/can-deactivate';
 import { FINES_ACC_ENF_ACTION_ROUTING_PATHS } from '../fines-acc-enf-action-select/constants/fines-acc-enf-action-select-routing-paths.constant';
 import { FinesAccountStore } from '../stores/fines-acc.store';
@@ -129,6 +132,9 @@ describe('fines acc routes', () => {
     );
 
     expect(detailsRoute?.data?.['title']).toBe(FINES_ACC_MAJOR_CREDITOR_ROUTING_TITLES.children.details);
-    expect(detailsRoute?.resolve?.['title']).toBeTruthy();
+    expect(detailsRoute?.resolve?.['title']).toBe(TitleResolver);
+    expect(detailsRoute?.resolve?.[FINES_ACC_MAJOR_CREDITOR_DETAILS_ROUTE_DATA_KEYS.headingData]).toBe(
+      majorCreditorAccountHeadingResolver,
+    );
   });
 });
