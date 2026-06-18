@@ -4,8 +4,7 @@ import { IFinesMacRoutingNestedRoutes } from '../../../routing/interfaces/fines-
 import { FINES_MAC_ROUTING_NESTED_ROUTES } from '../../../routing/constants/fines-mac-routing-nested-routes.constant';
 import { FINES_MAC_ROUTING_PATHS } from '../../../routing/constants/fines-mac-routing-paths.constant';
 import { FinesMacStore } from '../../../stores/fines-mac.store';
-
-export type TFinesMacNestedRouteNavigationResult = 'navigated' | 'missingDefendantType' | 'routeNotConfigured';
+import { TFinesMacNestedRouteNavigationResult } from './types/fines-mac-nested-route-navigation-result.type';
 
 export abstract class FinesMacFormParentBaseComponent extends AbstractFormParentBaseComponent {
   protected readonly finesMacStore = inject(FinesMacStore);

@@ -9,10 +9,8 @@ import { FINES_MAC_STATE_MOCK } from '../../../mocks/fines-mac-state.mock';
 import { FINES_MAC_DEFENDANT_TYPES_KEYS } from '../../../constants/fines-mac-defendant-types-keys';
 import { FINES_MAC_ROUTING_PATHS } from '../../../routing/constants/fines-mac-routing-paths.constant';
 import { IFinesMacRoutingNestedRoutes } from '../../../routing/interfaces/fines-mac-routing-nested-routes.interface';
-import {
-  FinesMacFormParentBaseComponent,
-  TFinesMacNestedRouteNavigationResult,
-} from './fines-mac-form-parent-base.component';
+import { FinesMacFormParentBaseComponent } from './fines-mac-form-parent-base.component';
+import { TFinesMacNestedRouteNavigationResult } from './types/fines-mac-nested-route-navigation-result.type';
 
 @Component({
   selector: 'app-test-fines-mac-form-parent-base',
