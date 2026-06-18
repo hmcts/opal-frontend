@@ -26,8 +26,6 @@ import { beforeEach, describe, expect, it, vi } from 'vitest';
 import { FINES_ACC_ENF_OVERRIDE_ADD_CHANGE_ROUTING_PATHS } from '../fines-acc-enf-override-add-change/constants/fines-acc-enf-override-add-change-routing-paths.constant';
 import { FINES_ACC_ENF_COURT_CHANGE_ROUTING_PATHS } from '../fines-acc-enf-court-change/constants/fines-acc-enf-court-change-routing-paths.constant';
 import { FINES_ACC_REMOVE_NON_PAYING_PG_ROUTING_PATHS } from '../fines-acc-remove-non-paying-pg/constants/fines-acc-remove-non-paying-pg-routing-paths.constant';
-import { FINES_ACC_DEFENDANT_DETAILS_HISTORY_AND_NOTES_FILTER_FORM_MOCK } from './fines-acc-defendant-details-history-and-notes-tab/mocks/fines-acc-defendant-details-history-and-notes-filter-form.mock';
-import { FINES_ACC_DEFENDANT_DETAILS_HISTORY_AND_NOTES_FILTER_FORM_PAYLOAD_MOCK } from './fines-acc-defendant-details-history-and-notes-tab/mocks/fines-acc-defendant-details-history-and-notes-filter-form-payload.mock';
 
 describe('FinesAccDefendantDetailsComponent', () => {
   let component: FinesAccDefendantDetailsComponent;
@@ -64,9 +62,6 @@ describe('FinesAccDefendantDetailsComponent', () => {
       buildHistoryFilterPayload: vi.fn().mockName('FinesAccPayloadService.buildHistoryFilterPayload'),
     };
     mockPayloadService.transformDefendantAccountHeaderForStore.mockReturnValue(MOCK_FINES_ACCOUNT_STATE);
-    mockPayloadService.buildHistoryFilterPayload.mockReturnValue(
-      FINES_ACC_DEFENDANT_DETAILS_HISTORY_AND_NOTES_FILTER_FORM_PAYLOAD_MOCK,
-    );
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     mockPayloadService.transformPayload.mockImplementation((...args: any[]) => {
       return args[0]; // returns the first argument = payload
@@ -364,20 +359,6 @@ describe('FinesAccDefendantDetailsComponent', () => {
     component.tabHistoryAndNotes$.subscribe();
     expect(mockOpalFinesService.getDefendantAccountHistoryAndNotesTabData).toHaveBeenCalledWith(
       MOCK_FINES_ACCOUNT_STATE.account_id,
-    );
-    expect(mockPayloadService.transformPayload).toHaveBeenCalled();
-  });
-
-  it('should fetch filtered history and notes tab data when filter is applied', () => {
-    component.handleHistoryAndNotesFilterApplied(FINES_ACC_DEFENDANT_DETAILS_HISTORY_AND_NOTES_FILTER_FORM_MOCK);
-    component.tabHistoryAndNotes$.subscribe();
-
-    expect(mockPayloadService.buildHistoryFilterPayload).toHaveBeenCalledWith(
-      FINES_ACC_DEFENDANT_DETAILS_HISTORY_AND_NOTES_FILTER_FORM_MOCK,
-    );
-    expect(mockOpalFinesService.getDefendantAccountHistoryAndNotesTabData).toHaveBeenCalledWith(
-      component.accountId,
-      FINES_ACC_DEFENDANT_DETAILS_HISTORY_AND_NOTES_FILTER_FORM_PAYLOAD_MOCK,
     );
     expect(mockPayloadService.transformPayload).toHaveBeenCalled();
   });

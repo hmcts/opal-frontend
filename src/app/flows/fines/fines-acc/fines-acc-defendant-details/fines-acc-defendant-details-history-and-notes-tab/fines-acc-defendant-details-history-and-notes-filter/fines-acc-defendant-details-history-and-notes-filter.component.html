@@ -1,4 +1,7 @@
 <app-fines-acc-defendant-details-history-and-notes-filter-form
+  [filterForm]="filterForm"
+  [filterOpen]="filterOpen"
   (formSubmit)="handleFilterSubmit($event)"
+  (filterOpenChange)="handleFilterOpenChange($event)"
   (unsavedChanges)="handleUnsavedChanges($event)"
 ></app-fines-acc-defendant-details-history-and-notes-filter-form>

@@ -45,4 +45,12 @@ describe('FinesAccDefendantDetailsHistoryAndNotesFilterComponent', () => {
 
     expect(component.stateUnsavedChanges).toBe(true);
   });
+
+  it('should emit filter open state from the form component', () => {
+    const emitSpy = vi.spyOn(component.filterOpenChange, 'emit');
+
+    component.handleFilterOpenChange(true);
+
+    expect(emitSpy).toHaveBeenCalledWith(true);
+  });
 });

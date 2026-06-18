@@ -4,10 +4,13 @@ import {
   Component,
   ElementRef,
   EventEmitter,
+  Input,
+  OnChanges,
   OnInit,
   OnDestroy,
   Output,
   Renderer2,
+  SimpleChanges,
   ViewChild,
   inject,
   signal,
@@ -50,16 +53,20 @@ import { takeUntil } from 'rxjs';
 })
 export class FinesAccDefendantDetailsHistoryAndNotesFilterFormComponent
   extends AbstractFormBaseComponent
-  implements OnInit, AfterViewInit, OnDestroy
+  implements OnChanges, OnInit, AfterViewInit, OnDestroy
 {
+  @ViewChild('filterDetails', { read: ElementRef }) private readonly filterDetails!: ElementRef<HTMLElement>;
   private readonly dateService = inject(DateService);
   private readonly renderer = inject(Renderer2);
   private detailsToggleUnlistener: (() => void) | null = null;
 
-  @ViewChild('filterDetails', { read: ElementRef }) private readonly filterDetails!: ElementRef<HTMLElement>;
   @Output() protected override formSubmit = new EventEmitter<IFinesAccDefendantDetailsHistoryAndNotesFilterForm>();
   protected override fieldErrors: IFinesAccDefendantDetailsHistoryAndNotesFilterFieldErrors =
     FINES_ACC_DEFENDANT_DETAILS_HISTORY_AND_NOTES_FILTER_FIELD_ERRORS;
+
+  @Input() public filterForm: IFinesAccDefendantDetailsHistoryAndNotesFilterForm | null = null;
+  @Input() public filterOpen = false;
+  @Output() public filterOpenChange = new EventEmitter<boolean>();
 
   public readonly categories = FINES_ACC_DEFENDANT_DETAILS_HISTORY_AND_NOTES_FILTER_CATEGORIES;
   public readonly filterDetailsSummaryText = signal<string>(
@@ -106,6 +113,55 @@ export class FinesAccDefendantDetailsHistoryAndNotesFilterFormComponent
   }
 
   /**
+   * Updates the details summary text to reflect the open state.
+   *
+   * @param open - Whether the filter details are open.
+   */
+  private updateFilterDetailsSummaryText(open: boolean): void {
+    this.filterDetailsSummaryText.set(
+      open
+        ? FINES_ACC_DEFENDANT_DETAILS_HISTORY_AND_NOTES_FILTER_SUMMARY_TEXT.hide
+        : FINES_ACC_DEFENDANT_DETAILS_HISTORY_AND_NOTES_FILTER_SUMMARY_TEXT.show,
+    );
+  }
+
+  /**
+   * Gets the rendered GOV.UK details element.
+   *
+   * @returns The details element, or null when the view is not ready.
+   */
+  private getFilterDetailsElement(): HTMLDetailsElement | null {
+    return this.filterDetails?.nativeElement.querySelector('details') ?? null;
+  }
+
+  /**
+   * Sets the rendered filter details open state.
+   *
+   * @param open - Whether the filter details should be open.
+   */
+  private setFilterDetailsOpen(open: boolean): void {
+    const detailsElement = this.getFilterDetailsElement();
+
+    if (detailsElement) {
+      detailsElement.open = open;
+    }
+
+    this.updateFilterDetailsSummaryText(open);
+  }
+
+  /**
+   * Patches the form with the last submitted filter values.
+   */
+  private patchFilterForm(): void {
+    if (!this.filterForm) {
+      return;
+    }
+
+    this.form.patchValue(this.filterForm.formData, { emitEvent: false });
+    this.updateDateToValidators();
+  }
+
+  /**
    * Registers a listener to refresh to-date validation when from-date changes.
    */
   private setupDateFromValidatorListener(): void {
@@ -122,12 +178,26 @@ export class FinesAccDefendantDetailsHistoryAndNotesFilterFormComponent
 
     if (detailsElement) {
       this.detailsToggleUnlistener = this.renderer.listen(detailsElement, 'toggle', () => {
-        this.filterDetailsSummaryText.set(
-          detailsElement.open
-            ? FINES_ACC_DEFENDANT_DETAILS_HISTORY_AND_NOTES_FILTER_SUMMARY_TEXT.hide
-            : FINES_ACC_DEFENDANT_DETAILS_HISTORY_AND_NOTES_FILTER_SUMMARY_TEXT.show,
-        );
+        this.updateFilterDetailsSummaryText(detailsElement.open);
+        this.filterOpenChange.emit(detailsElement.open);
       });
+    }
+
+    this.setFilterDetailsOpen(this.filterOpen);
+  }
+
+  /**
+   * Applies externally held filter state when the parent redraws the tab.
+   *
+   * @param changes - Input property changes.
+   */
+  public ngOnChanges(changes: SimpleChanges): void {
+    if (changes['filterForm'] && this.form) {
+      this.patchFilterForm();
+    }
+
+    if (changes['filterOpen']) {
+      this.setFilterDetailsOpen(this.filterOpen);
     }
   }
 
@@ -174,8 +244,21 @@ export class FinesAccDefendantDetailsHistoryAndNotesFilterFormComponent
    */
   public override ngOnInit(): void {
     this.setupFilterForm();
+    this.patchFilterForm();
     this.setupDateFromValidatorListener();
     this.setInitialErrorMessages();
     super.ngOnInit();
+  }
+
+  /**
+   * Keeps the details panel open and prevents native form navigation when filtering.
+   *
+   * @param event - The filter submit event.
+   */
+  public override handleFormSubmit(event: SubmitEvent): void {
+    event.preventDefault();
+    this.setFilterDetailsOpen(true);
+    this.filterOpenChange.emit(true);
+    super.handleFormSubmit(event);
   }
 }

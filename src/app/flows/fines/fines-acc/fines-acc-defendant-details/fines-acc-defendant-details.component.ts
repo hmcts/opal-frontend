@@ -59,7 +59,6 @@ import { IOpalFinesVersion } from '../../services/opal-fines-service/interfaces/
 import { FINES_ACC_BANNER_MESSAGES } from '../stores/constants/fines-acc-store-banner-messages.constant';
 import { FINES_ACC_REMOVE_NON_PAYING_PG_ROUTING_PATHS } from '../fines-acc-remove-non-paying-pg/constants/fines-acc-remove-non-paying-pg-routing-paths.constant';
 import { FinesAccDefendantDetailsHistoryAndNotesTabComponent } from './fines-acc-defendant-details-history-and-notes-tab/fines-acc-defendant-details-history-and-notes-tab.component';
-import { IFinesAccDefendantDetailsHistoryAndNotesFilterForm } from './fines-acc-defendant-details-history-and-notes-tab/interfaces/fines-acc-defendant-details-history-and-notes-filter-form.interface';
 
 @Component({
   selector: 'app-fines-acc-defendant-details',
@@ -313,19 +312,6 @@ export class FinesAccDefendantDetailsComponent
         relativeTo: this.activatedRoute,
       });
     }
-  }
-
-  /**
-   * Fetches history and notes tab data using submitted filter values.
-   *
-   * @param filter - Submitted history and notes filter form.
-   */
-  public handleHistoryAndNotesFilterApplied(filter: IFinesAccDefendantDetailsHistoryAndNotesFilterForm): void {
-    const filterParams = this.payloadService.buildHistoryFilterPayload(filter);
-
-    this.tabHistoryAndNotes$ = this.fetchTabDataTyped(
-      this.opalFinesService.getDefendantAccountHistoryAndNotesTabData(this.accountId, filterParams),
-    );
   }
 
   /**

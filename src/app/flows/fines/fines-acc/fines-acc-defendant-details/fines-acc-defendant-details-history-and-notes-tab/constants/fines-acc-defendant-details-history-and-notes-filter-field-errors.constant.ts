@@ -1,5 +1,8 @@
 import { IFinesAccDefendantDetailsHistoryAndNotesFilterFieldErrors } from '../interfaces/fines-acc-defendant-details-history-and-notes-filter-field-errors.interface';
 
+/**
+ * Validation messages and display priority for the history and notes date filter fields.
+ */
 export const FINES_ACC_DEFENDANT_DETAILS_HISTORY_AND_NOTES_FILTER_FIELD_ERRORS: IFinesAccDefendantDetailsHistoryAndNotesFilterFieldErrors =
   {
     dateFrom: {

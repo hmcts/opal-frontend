@@ -1,5 +1,8 @@
 import { IFinesAccDefendantDetailsHistoryAndNotesFilterCategory } from '../interfaces/fines-acc-defendant-details-history-and-notes-filter-category.interface';
 
+/**
+ * Category checkbox options supported by the defendant account history API filter.
+ */
 export const FINES_ACC_DEFENDANT_DETAILS_HISTORY_AND_NOTES_FILTER_CATEGORIES: IFinesAccDefendantDetailsHistoryAndNotesFilterCategory[] =
   [
     { label: 'Amendments', value: 'amendments' },

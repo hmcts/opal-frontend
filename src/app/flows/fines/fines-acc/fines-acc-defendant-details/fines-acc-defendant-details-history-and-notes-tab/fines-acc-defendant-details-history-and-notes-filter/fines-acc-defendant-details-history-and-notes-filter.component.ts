@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, Component, EventEmitter, Output } from '@angular/core';
+import { ChangeDetectionStrategy, Component, EventEmitter, Input, Output } from '@angular/core';
 import { AbstractFormParentBaseComponent } from '@hmcts/opal-frontend-common/components/abstract/abstract-form-parent-base';
 import { IFinesAccDefendantDetailsHistoryAndNotesFilterForm } from '../interfaces/fines-acc-defendant-details-history-and-notes-filter-form.interface';
 import { FinesAccDefendantDetailsHistoryAndNotesFilterFormComponent } from './fines-acc-defendant-details-history-and-notes-filter-form/fines-acc-defendant-details-history-and-notes-filter-form.component';
@@ -10,7 +10,10 @@ import { FinesAccDefendantDetailsHistoryAndNotesFilterFormComponent } from './fi
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class FinesAccDefendantDetailsHistoryAndNotesFilterComponent extends AbstractFormParentBaseComponent {
+  @Input() public filterForm: IFinesAccDefendantDetailsHistoryAndNotesFilterForm | null = null;
+  @Input() public filterOpen = false;
   @Output() public filterApplied = new EventEmitter<IFinesAccDefendantDetailsHistoryAndNotesFilterForm>();
+  @Output() public filterOpenChange = new EventEmitter<boolean>();
 
   /**
    * Emits the submitted filter form to the history and notes tab component.
@@ -28,5 +31,14 @@ export class FinesAccDefendantDetailsHistoryAndNotesFilterComponent extends Abst
    */
   public handleUnsavedChanges(unsavedChanges: boolean): void {
     this.stateUnsavedChanges = unsavedChanges;
+  }
+
+  /**
+   * Emits the filter details open state to the history and notes tab component.
+   *
+   * @param open - Whether the filter details are open.
+   */
+  public handleFilterOpenChange(open: boolean): void {
+    this.filterOpenChange.emit(open);
   }
 }

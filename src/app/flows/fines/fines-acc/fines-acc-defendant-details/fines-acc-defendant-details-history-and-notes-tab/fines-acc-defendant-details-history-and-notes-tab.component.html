@@ -3,6 +3,13 @@
   <hr [class]="style.hr" />
 
   <app-fines-acc-defendant-details-history-and-notes-filter
+    [filterForm]="filterForm"
+    [filterOpen]="filterOpen"
     (filterApplied)="handleFilterApplied($event)"
+    (filterOpenChange)="handleFilterOpenChange($event)"
   ></app-fines-acc-defendant-details-history-and-notes-filter>
+
+  @if (historyAndNotesTabData$ | async) {
+    <ng-container></ng-container>
+  }
 </div>

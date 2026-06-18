@@ -1,4 +1,5 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
+import { SimpleChange } from '@angular/core';
 import { ActivatedRoute, provideRouter } from '@angular/router';
 import { DateService } from '@hmcts/opal-frontend-common/services/date-service';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
@@ -66,6 +67,9 @@ describe('FinesAccDefendantDetailsHistoryAndNotesFilterFormComponent', () => {
     fixture.detectChanges();
 
     const emitSpy = vi.spyOn(component['formSubmit'], 'emit');
+    const openEmitSpy = vi.spyOn(component.filterOpenChange, 'emit');
+    const submitEvent = new SubmitEvent('submit');
+    const preventDefaultSpy = vi.spyOn(submitEvent, 'preventDefault');
 
     component['setInputValue']('01/01/2024', 'dateFrom');
     component['setInputValue']('31/01/2024', 'dateTo');
@@ -74,9 +78,58 @@ describe('FinesAccDefendantDetailsHistoryAndNotesFilterFormComponent', () => {
 
     expect(emitSpy).not.toHaveBeenCalled();
 
-    component.handleFormSubmit(new SubmitEvent('submit'));
+    component.handleFormSubmit(submitEvent);
 
+    expect(preventDefaultSpy).toHaveBeenCalled();
+    expect(openEmitSpy).toHaveBeenCalledWith(true);
     expect(emitSpy).toHaveBeenCalledWith(FINES_ACC_DEFENDANT_DETAILS_HISTORY_AND_NOTES_FILTER_FORM_MOCK);
+  });
+
+  it('should populate submitted filter values and keep the filter details open after redraw', () => {
+    component.filterForm = FINES_ACC_DEFENDANT_DETAILS_HISTORY_AND_NOTES_FILTER_FORM_MOCK;
+    component.filterOpen = true;
+
+    fixture.detectChanges();
+
+    const detailsElement = fixture.nativeElement.querySelector('details') as HTMLDetailsElement;
+
+    expect(detailsElement.open).toBe(true);
+    expect(fixture.nativeElement.querySelector('.govuk-details__summary-text').textContent.trim()).toBe('Hide filter');
+    expect(component.dateFromControl.value).toBe('01/01/2024');
+    expect(component.dateToControl.value).toBe('31/01/2024');
+    expect(component.getCategoryControl('amendments').value).toBe(true);
+    expect(component.getCategoryControl('notes').value).toBe(true);
+  });
+
+  it('should patch submitted filter values when filter form input changes after initial render', () => {
+    fixture.detectChanges();
+
+    component.filterForm = FINES_ACC_DEFENDANT_DETAILS_HISTORY_AND_NOTES_FILTER_FORM_MOCK;
+    component.ngOnChanges({
+      filterForm: new SimpleChange(null, component.filterForm, false),
+    });
+
+    expect(component.dateFromControl.value).toBe('01/01/2024');
+    expect(component.dateToControl.value).toBe('31/01/2024');
+    expect(component.getCategoryControl('amendments').value).toBe(true);
+    expect(component.getCategoryControl('notes').value).toBe(true);
+  });
+
+  it('should handle details setup when the rendered details element is unavailable', () => {
+    const querySelectorSpy = vi.fn().mockReturnValue(null);
+
+    Object.defineProperty(component, 'filterDetails', {
+      value: {
+        nativeElement: {
+          querySelector: querySelectorSpy,
+        },
+      },
+    });
+
+    component.ngAfterViewInit();
+
+    expect(querySelectorSpy).toHaveBeenCalledWith('details');
+    expect(component.filterDetailsSummaryText()).toBe('Show filter');
   });
 
   it('should show an error and not emit when date from is after date to', () => {
