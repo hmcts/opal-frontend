@@ -1,7 +1,10 @@
 import { Routes } from '@angular/router';
 import { FINES_ACC_ROUTING_PATHS } from './constants/fines-acc-routing-paths.constant';
 import { routePermissionsGuard } from '@hmcts/opal-frontend-common/guards/route-permissions';
-import { businessUnitRoutePermissionsGuard } from '@hmcts/opal-frontend-common/guards/business-unit-route-permissions';
+import {
+  BUSINESS_UNIT_ID_RESOLVER,
+  businessUnitRoutePermissionsGuard,
+} from '@hmcts/opal-frontend-common/guards/business-unit-route-permissions';
 import { authGuard } from '@hmcts/opal-frontend-common/guards/auth';
 import { FINES_PERMISSIONS } from '../../../../constants/fines-permissions.constant';
 import { TitleResolver } from '@hmcts/opal-frontend-common/resolvers/title';
@@ -40,8 +43,13 @@ import { enforcementActionResultResolver } from './resolvers/fines-acc-enf-actio
 import { minorCreditorAccountCreditorResolver } from './resolvers/defendant-minor-creditor-creditor.resolver';
 import { FINES_ACC_REMOVE_NON_PAYING_PG_ROUTING_PATHS } from '../fines-acc-remove-non-paying-pg/constants/fines-acc-remove-non-paying-pg-routing-paths.constant';
 import { FINES_ACC_ENF_ACTION_DENIED_TYPES } from '../fines-acc-enf-action-denied/constants/fines-acc-enf-action-denied-types.constant';
+import { FinesAccountBusinessUnitResolver } from './resolvers/fines-account-business-unit.resolver';
 
 const accRootPermissionIds = FINES_PERMISSIONS;
+const finesAccountBusinessUnitResolverProvider = {
+  provide: BUSINESS_UNIT_ID_RESOLVER,
+  useExisting: FinesAccountBusinessUnitResolver,
+};
 
 export const routing: Routes = [
   {
@@ -55,6 +63,7 @@ export const routing: Routes = [
   },
   {
     path: `${FINES_ACC_DEFENDANT_ROUTING_PATHS.root}/:accountId`,
+    providers: [finesAccountBusinessUnitResolverProvider],
     canActivateChild: [authGuard, routePermissionsGuard],
     data: {
       accountType: 'defendant',
@@ -418,6 +427,7 @@ export const routing: Routes = [
   },
   {
     path: `${FINES_ACC_MINOR_CREDITOR_ROUTING_PATHS.root}/:accountId`,
+    providers: [finesAccountBusinessUnitResolverProvider],
     canActivateChild: [authGuard, routePermissionsGuard],
     data: {
       accountType: 'minor-creditor',

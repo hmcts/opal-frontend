@@ -12,8 +12,6 @@ import { routes } from './app.routes';
 import { AppInitializerService } from '@hmcts/opal-frontend-common/services/app-initializer-service';
 import { httpErrorInterceptor } from '@hmcts/opal-frontend-common/interceptors/http-error';
 import { contentDigestInterceptor } from '@hmcts/opal-frontend-common/interceptors/content-digest';
-import { BUSINESS_UNIT_ID_RESOLVER } from '@hmcts/opal-frontend-common/guards/business-unit-route-permissions';
-import { FinesAccountBusinessUnitResolver } from './flows/fines/fines-acc/routing/resolvers/fines-account-business-unit.resolver';
 
 export const appConfig: ApplicationConfig = {
   providers: [
@@ -24,10 +22,6 @@ export const appConfig: ApplicationConfig = {
       }),
     ),
     provideClientHydration(withNoHttpTransferCache()),
-    {
-      provide: BUSINESS_UNIT_ID_RESOLVER,
-      useExisting: FinesAccountBusinessUnitResolver,
-    },
     provideHttpClient(
       withFetch(),
       withInterceptors([httpErrorInterceptor, contentDigestInterceptor]),
