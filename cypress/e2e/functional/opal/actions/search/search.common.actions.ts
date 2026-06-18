@@ -700,9 +700,7 @@ export class AccountSearchCommonActions {
 
     cy.get(`${alias}.all` as `@${string}`)
       .should((interceptions) => {
-        const interceptionsList = Array.isArray(interceptions)
-          ? (interceptions as SearchRequestInterception[])
-          : [];
+        const interceptionsList = Array.isArray(interceptions) ? (interceptions as SearchRequestInterception[]) : [];
         const matchingInterception =
           interceptionsList.length <= 1
             ? interceptionsList[0]
@@ -721,9 +719,7 @@ export class AccountSearchCommonActions {
         }
       })
       .then((interceptions) => {
-        const interceptionsList = Array.isArray(interceptions)
-          ? (interceptions as SearchRequestInterception[])
-          : [];
+        const interceptionsList = Array.isArray(interceptions) ? (interceptions as SearchRequestInterception[]) : [];
         const matchingInterception =
           interceptionsList.length <= 1
             ? interceptionsList[0]
@@ -800,9 +796,7 @@ export class AccountSearchCommonActions {
 
     cy.get(`${alias}.all` as `@${string}`)
       .should((interceptions) => {
-        const interceptionsList = Array.isArray(interceptions)
-          ? (interceptions as SearchRequestInterception[])
-          : [];
+        const interceptionsList = Array.isArray(interceptions) ? (interceptions as SearchRequestInterception[]) : [];
 
         expect(
           interceptionsList.length,
@@ -838,9 +832,7 @@ export class AccountSearchCommonActions {
         });
       })
       .then((interceptions) => {
-        const interceptionsList = Array.isArray(interceptions)
-          ? (interceptions as SearchRequestInterception[])
-          : [];
+        const interceptionsList = Array.isArray(interceptions) ? (interceptions as SearchRequestInterception[]) : [];
         const capturedBodies = interceptionsList.map((interception, index) => ({
           index,
           body: interception.request.body,
