@@ -40,6 +40,8 @@ import { minorCreditorAccountCreditorResolver } from './resolvers/defendant-mino
 import { FINES_ACC_REMOVE_NON_PAYING_PG_ROUTING_PATHS } from '../fines-acc-remove-non-paying-pg/constants/fines-acc-remove-non-paying-pg-routing-paths.constant';
 import { majorCreditorAccountHeadingResolver } from './resolvers/major-creditor-heading.resolver';
 import { FINES_ACC_ENF_ACTION_DENIED_TYPES } from '../fines-acc-enf-action-denied/constants/fines-acc-enf-action-denied-types.constant';
+import { FINES_ACC_MAJOR_CREDITOR_DETAILS_ROUTE_DATA_KEYS } from '../fines-acc-major-creditor-details/constants/fines-acc-major-creditor-details-route-data-keys.constant';
+import { FINES_ACC_MINOR_CREDITOR_DETAILS_ROUTE_DATA_KEYS } from '../fines-acc-minor-creditor-details/constants/fines-acc-minor-creditor-details-route-data-keys.constant';
 
 const accRootPermissionIds = FINES_PERMISSIONS;
 
@@ -411,7 +413,10 @@ export const routing: Routes = [
         data: {
           title: FINES_ACC_MAJOR_CREDITOR_ROUTING_TITLES.children.details,
         },
-        resolve: { title: TitleResolver, majorCreditorAccountHeadingData: majorCreditorAccountHeadingResolver },
+        resolve: {
+          title: TitleResolver,
+          [FINES_ACC_MAJOR_CREDITOR_DETAILS_ROUTE_DATA_KEYS.headingData]: majorCreditorAccountHeadingResolver,
+        },
       },
     ],
   },
@@ -432,7 +437,10 @@ export const routing: Routes = [
         data: {
           title: FINES_ACC_MINOR_CREDITOR_ROUTING_TITLES.children.details,
         },
-        resolve: { title: TitleResolver, minorCreditorAccountHeadingData: minorCreditorAccountHeadingResolver },
+        resolve: {
+          title: TitleResolver,
+          [FINES_ACC_MINOR_CREDITOR_DETAILS_ROUTE_DATA_KEYS.headingData]: minorCreditorAccountHeadingResolver,
+        },
       },
       {
         path: '',

@@ -37,6 +37,8 @@ import { FINES_ACC_BANNER_MESSAGES } from '../stores/constants/fines-acc-store-b
 import { IOpalFinesAccountMajorCreditorDetailsHeader } from './interfaces/fines-acc-major-creditor-details-header.interface';
 import { IFinesAccountMajorCreditorDetailsTabs } from './interfaces/fines-acc-major-creditor-details-tabs.interface';
 import { FINES_ACC_MAJOR_CREDITOR_DETAILS_TABS } from './constants/fines-acc-major-creditor-details-tabs.constant';
+import { FINES_ACC_MAJOR_CREDITOR_DETAILS_TABS_KEYS } from './constants/fines-acc-major-creditor-details-tabs-keys.constant';
+import { FINES_ACC_MAJOR_CREDITOR_DETAILS_ROUTE_DATA_KEYS } from './constants/fines-acc-major-creditor-details-route-data-keys.constant';
 import { IFinesAccMajorCreditorAccountTabsCacheMap } from './interfaces/fines-acc-major-creditor-account-tabs-cache-map.interface';
 import { FINES_ACC_MAJOR_CREDITOR_ACCOUNT_TABS_CACHE_MAP } from './constants/fines-acc-major-creditor-account-tabs-cache-map.constant';
 import { IOpalFinesAccountMajorCreditorAtAGlance } from '../../services/opal-fines-service/interfaces/opal-fines-account-major-creditor-at-a-glance.interface';
@@ -68,8 +70,8 @@ export class FinesAccMajorCreditorDetailsComponent
   private readonly opalFinesService = inject(OpalFines);
   private readonly payloadService = inject(FinesAccPayloadService);
   protected readonly payloadTransformer = this.payloadService;
-  protected readonly headerDataRouteKey = 'majorCreditorAccountHeadingData';
-  protected readonly defaultActiveTab = 'at-a-glance';
+  protected readonly headerDataRouteKey = FINES_ACC_MAJOR_CREDITOR_DETAILS_ROUTE_DATA_KEYS.headingData;
+  protected readonly defaultActiveTab = FINES_ACC_MAJOR_CREDITOR_DETAILS_TABS_KEYS['at-a-glance'];
   protected readonly transformItemsConfig = FINES_ACC_MAP_TRANSFORM_ITEMS_CONFIG;
   protected readonly latestBannerMessage = FINES_ACC_BANNER_MESSAGES.latest;
   protected readonly permissions = FINES_PERMISSIONS;
@@ -94,7 +96,7 @@ export class FinesAccMajorCreditorDetailsComponent
    */
   protected override setupTabDataStream(): void {
     const fragment$ = merge(
-      this.clearCacheOnTabChange(this.getFragmentStream('at-a-glance', this.destroy$), () =>
+      this.clearCacheOnTabChange(this.getFragmentStream(this.defaultActiveTab, this.destroy$), () =>
         this.opalFinesService.clearCache(
           FINES_ACC_MAJOR_CREDITOR_ACCOUNT_TABS_CACHE_MAP[
             this.activeTab as keyof IFinesAccMajorCreditorAccountTabsCacheMap
@@ -105,7 +107,7 @@ export class FinesAccMajorCreditorDetailsComponent
     );
     fragment$.pipe(takeUntil(this.destroy$)).subscribe((tab) => {
       switch (tab) {
-        case 'at-a-glance':
+        case FINES_ACC_MAJOR_CREDITOR_DETAILS_TABS_KEYS['at-a-glance']:
           this.tabAtAGlance$ = this.fetchTabDataTyped(
             of(OPAL_FINES_ACCOUNT_MAJOR_CREDITOR_AT_A_GLANCE_WITH_DEFENDANT_MOCK).pipe(
               tap((data) => {

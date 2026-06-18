@@ -22,6 +22,8 @@ import { CustomAccountInformationItemValueComponent } from '@hmcts/opal-frontend
 import { MonetaryPipe } from '@hmcts/opal-frontend-common/pipes/monetary';
 // Constants
 import { FINES_ACC_MINOR_CREDITOR_DETAILS_TABS } from './constants/fines-acc-minor-creditor-details-tabs.constant';
+import { FINES_ACC_MINOR_CREDITOR_DETAILS_TABS_KEYS } from './constants/fines-acc-minor-creditor-details-tabs-keys.constant';
+import { FINES_ACC_MINOR_CREDITOR_DETAILS_ROUTE_DATA_KEYS } from './constants/fines-acc-minor-creditor-details-route-data-keys.constant';
 import { FINES_PERMISSIONS } from '@app/constants/fines-permissions.constant';
 import { FINES_ACC_SUMMARY_TABS_CONTENT_STYLES } from '../constants/fines-acc-summary-tabs-content-styles.constant';
 import { FINES_ACC_DEBTOR_TYPES } from '../constants/fines-acc-debtor-types.constant';
@@ -78,8 +80,8 @@ export class FinesAccMinorCreditorDetailsComponent
   private readonly opalFinesService = inject(OpalFines);
   private readonly payloadService = inject(FinesAccPayloadService);
   protected readonly payloadTransformer = this.payloadService;
-  protected readonly headerDataRouteKey = 'minorCreditorAccountHeadingData';
-  protected readonly defaultActiveTab = 'at-a-glance';
+  protected readonly headerDataRouteKey = FINES_ACC_MINOR_CREDITOR_DETAILS_ROUTE_DATA_KEYS.headingData;
+  protected readonly defaultActiveTab = FINES_ACC_MINOR_CREDITOR_DETAILS_TABS_KEYS['at-a-glance'];
   protected readonly transformItemsConfig = FINES_ACC_MAP_TRANSFORM_ITEMS_CONFIG;
   protected readonly latestBannerMessage = FINES_ACC_BANNER_MESSAGES.latest;
   protected readonly permissions = FINES_PERMISSIONS;
@@ -105,7 +107,7 @@ export class FinesAccMinorCreditorDetailsComponent
    */
   protected override setupTabDataStream(): void {
     const fragment$ = merge(
-      this.clearCacheOnTabChange(this.getFragmentStream('at-a-glance', this.destroy$), () =>
+      this.clearCacheOnTabChange(this.getFragmentStream(this.defaultActiveTab, this.destroy$), () =>
         this.opalFinesService.clearCache(
           FINES_ACC_MINOR_CREDITOR_ACCOUNT_TABS_CACHE_MAP[
             this.activeTab as keyof IFinesAccMinorCreditorAccountTabsCacheMap
@@ -119,7 +121,7 @@ export class FinesAccMinorCreditorDetailsComponent
 
     fragment$.pipe(takeUntil(this.destroy$)).subscribe((tab) => {
       switch (tab) {
-        case 'at-a-glance':
+        case FINES_ACC_MINOR_CREDITOR_DETAILS_TABS_KEYS['at-a-glance']:
           this.tabAtAGlance$ = this.fetchTabDataTyped(
             this.opalFinesService.getMinorCreditorAccountAtAGlance(account_id).pipe(
               tap((data) => {
@@ -128,7 +130,7 @@ export class FinesAccMinorCreditorDetailsComponent
             ),
           );
           break;
-        case 'creditor':
+        case FINES_ACC_MINOR_CREDITOR_DETAILS_TABS_KEYS.creditor:
           this.tabCreditor$ = this.fetchTabDataTyped(this.opalFinesService.getMinorCreditorAccount(account_id));
           break;
       }
