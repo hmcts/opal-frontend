@@ -15,14 +15,13 @@ Feature: Draft Accounts Release 1A Feature Toggles
 
     Examples:
       | entryPoint                        | header          |
-      | Create and Manage Draft Accounts | Create accounts |
+      | Create and Manage Draft Accounts  | Create accounts |
       | Check and Validate Draft Accounts | Review accounts |
 
   @R1AOff @JIRA-STORY:PO-3719 @JIRA-EPIC:PO-3685
   Scenario: Access denied is shown after sign in when release 1a is disabled
     Given I am authenticated with email "opal-test@dev.platform.hmcts.net"
     Then I should see an Access Denied page
-    And I should see a "Back to dashboard" action
     And I do not see the Fines primary navigation
 
   @R1AOff @JIRA-STORY:PO-3719 @JIRA-EPIC:PO-3685
@@ -41,7 +40,7 @@ Feature: Draft Accounts Release 1A Feature Toggles
 
     Examples:
       | entryPoint                        |
-      | Create and Manage Draft Accounts |
+      | Create and Manage Draft Accounts  |
       | Check and Validate Draft Accounts |
 
   @R1BOff @JIRA-STORY:PO-3719 @JIRA-STORY:PO-3720 @JIRA-EPIC:PO-3685

@@ -12,6 +12,7 @@
 
 import { createScopedLogger, logSync } from '../../../../../support/utils/log.helper';
 import { DataTable } from '@badeball/cypress-cucumber-preprocessor';
+import type { Interception } from 'cypress/types/net-stubbing';
 import { AccountSearchIndividualsActions } from './search.individuals.actions';
 import { AccountSearchCompanyActions } from './search.companies.actions';
 import { AccountSearchMinorCreditorsActions } from './search.minor-creditors.actions';
@@ -20,6 +21,9 @@ import { AccountSearchCommonLocators as C } from '../../../../../shared/selector
 import { parseToIsoDate } from '../../../../../support/utils/dateUtils';
 
 type Entity = 'individual' | 'company' | 'minorCreditor';
+type SearchRequestAlias = '@getDefendantAccounts' | '@getMinorCreditorAccounts';
+type SearchEntityKey = 'defendant' | 'creditor';
+type SearchRequestInterception = Interception<Record<string, unknown>, Record<string, unknown>>;
 const log = createScopedLogger('AccountSearchCommonActions');
 
 /**
@@ -120,7 +124,7 @@ export const DEFENDANT_GHERKIN_TO_API_KEY: Record<string, string> = {
 };
 
 // Resolves the Cypress alias + entity key based on account type.
-export const resolveAliasAndEntityKey = (type: string): { alias: string; entityKey: string } => {
+export const resolveAliasAndEntityKey = (type: string): { alias: SearchRequestAlias; entityKey: SearchEntityKey } => {
   if (type === 'defendant') {
     return {
       alias: '@getDefendantAccounts',
@@ -248,9 +252,9 @@ const valuesMatch = (actualValue: unknown, expectedRaw: string, mapping: Account
 };
 
 const interceptionMatchesExpected = (
-  interception: any,
+  interception: SearchRequestInterception,
   expectedEntries: ExpectedEntry[],
-  entityKey: string,
+  entityKey: SearchEntityKey,
 ): boolean => {
   const body = (interception.request.body ?? {}) as Record<string, unknown>;
   const entity = (body[entityKey] as Record<string, unknown>) ?? {};
@@ -263,7 +267,11 @@ const interceptionMatchesExpected = (
   });
 };
 
-const pickMatchingInterception = (interceptions: any[], expectedEntries: ExpectedEntry[], entityKey: string): any => {
+const pickMatchingInterception = (
+  interceptions: SearchRequestInterception[],
+  expectedEntries: ExpectedEntry[],
+  entityKey: SearchEntityKey,
+): SearchRequestInterception | undefined => {
   return interceptions.find((interception) => interceptionMatchesExpected(interception, expectedEntries, entityKey));
 };
 
@@ -690,9 +698,9 @@ export class AccountSearchCommonActions {
       return { gherkinKey, expectedRaw, mapping };
     });
 
-    cy.get<any[]>(`${alias}.all`)
+    cy.get(`${alias}.all` as `@${string}`)
       .should((interceptions) => {
-        const interceptionsList = interceptions ?? [];
+        const interceptionsList = Array.isArray(interceptions) ? (interceptions as SearchRequestInterception[]) : [];
         const matchingInterception =
           interceptionsList.length <= 1
             ? interceptionsList[0]
@@ -711,11 +719,15 @@ export class AccountSearchCommonActions {
         }
       })
       .then((interceptions) => {
-        const interceptionsList = interceptions ?? [];
+        const interceptionsList = Array.isArray(interceptions) ? (interceptions as SearchRequestInterception[]) : [];
         const matchingInterception =
           interceptionsList.length <= 1
             ? interceptionsList[0]
             : pickMatchingInterception(interceptionsList, expectedEntries, entityKey);
+
+        if (!matchingInterception) {
+          throw new Error(`No intercepted ${type} request matched expected parameters.`);
+        }
 
         const body = matchingInterception.request.body as Record<string, unknown>;
         const entity = (body[entityKey] as Record<string, unknown>) ?? {};
@@ -782,9 +794,9 @@ export class AccountSearchCommonActions {
 
     const expectedTotal = expectedCounts.reduce((sum, entry) => sum + entry.count, 0);
 
-    cy.get<any[]>(`${alias}.all`)
+    cy.get(`${alias}.all` as `@${string}`)
       .should((interceptions) => {
-        const interceptionsList = interceptions ?? [];
+        const interceptionsList = Array.isArray(interceptions) ? (interceptions as SearchRequestInterception[]) : [];
 
         expect(
           interceptionsList.length,
@@ -820,7 +832,7 @@ export class AccountSearchCommonActions {
         });
       })
       .then((interceptions) => {
-        const interceptionsList = interceptions ?? [];
+        const interceptionsList = Array.isArray(interceptions) ? (interceptions as SearchRequestInterception[]) : [];
         const capturedBodies = interceptionsList.map((interception, index) => ({
           index,
           body: interception.request.body,
