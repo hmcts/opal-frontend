@@ -9,8 +9,12 @@ import { MOCK_FINES_ACCOUNT_STATE } from '../../mocks/fines-acc-state.mock';
 import { FINES_ACC_DEFENDANT_DETAILS_HEADER_MOCK } from '../../fines-acc-defendant-details/mocks/fines-acc-defendant-details-header.mock';
 import { FINES_ACC_MINOR_CREDITOR_DETAILS_HEADER_MOCK } from '../../fines-acc-minor-creditor-details/mocks/fines-acc-minor-creditor-details-header.mock';
 import { FinesAccountBusinessUnitResolver } from './fines-account-business-unit.resolver';
+import {
+  FINES_ACCOUNT_ROUTE_TYPES,
+  FinesAccountRouteType,
+} from '../../../constants/fines-account-route-types.constant';
 
-function createRoute(accountId?: number, accountType?: 'defendant' | 'minor-creditor'): ActivatedRouteSnapshot {
+function createRoute(accountId?: number, accountType?: FinesAccountRouteType): ActivatedRouteSnapshot {
   return {
     data: accountType === undefined ? {} : { accountType },
     paramMap: convertToParamMap(accountId === undefined ? {} : { accountId: accountId.toString() }),
@@ -81,7 +85,7 @@ describe('finesAccountBusinessUnitResolver', () => {
   it('should return the stored business unit when the current account matches the route', async () => {
     mockAccountStore.account_id.mockReturnValue(123);
     mockAccountStore.business_unit_id.mockReturnValue('456');
-    const route = createRoute(123, 'defendant');
+    const route = createRoute(123, FINES_ACCOUNT_ROUTE_TYPES.defendant);
 
     const result = await resolveBusinessUnit(route);
 
@@ -94,7 +98,7 @@ describe('finesAccountBusinessUnitResolver', () => {
   it('should fetch the defendant heading and hydrate the store when the current account does not match', async () => {
     mockAccountStore.account_id.mockReturnValue(999);
     mockAccountStore.business_unit_id.mockReturnValue('321');
-    const route = createRoute(123, 'defendant');
+    const route = createRoute(123, FINES_ACCOUNT_ROUTE_TYPES.defendant);
 
     const result = await resolveBusinessUnit(route);
 
@@ -110,7 +114,7 @@ describe('finesAccountBusinessUnitResolver', () => {
   it('should fetch the minor creditor heading and hydrate the store when the current account does not match', async () => {
     mockAccountStore.account_id.mockReturnValue(999);
     mockAccountStore.business_unit_id.mockReturnValue('321');
-    const route = createRoute(123, 'minor-creditor');
+    const route = createRoute(123, FINES_ACCOUNT_ROUTE_TYPES.minorCreditor);
 
     const result = await resolveBusinessUnit(route);
 
@@ -124,7 +128,7 @@ describe('finesAccountBusinessUnitResolver', () => {
   });
 
   it('should return null when the account id is missing', async () => {
-    const route = createRoute(undefined, 'defendant');
+    const route = createRoute(undefined, FINES_ACCOUNT_ROUTE_TYPES.defendant);
 
     const result = await resolveBusinessUnit(route);
 

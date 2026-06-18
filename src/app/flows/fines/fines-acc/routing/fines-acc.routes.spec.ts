@@ -30,6 +30,7 @@ import { FINES_ACC_ENF_ACTION_ADD_ACCOUNT_STATE_MOCK } from '../fines-acc-enf-ac
 import { FINES_ACC_REMOVE_NON_PAYING_PG_ROUTING_PATHS } from '../fines-acc-remove-non-paying-pg/constants/fines-acc-remove-non-paying-pg-routing-paths.constant';
 import { finesAccStateGuard } from './guards/fines-acc-state-guard/fines-acc-state.guard';
 import { FinesAccountBusinessUnitResolver } from './resolvers/fines-account-business-unit.resolver';
+import { FINES_ACCOUNT_ROUTE_TYPES } from '../../constants/fines-account-route-types.constant';
 
 describe('fines acc routes', () => {
   const defendantRoute = routing.find((route) => route.path === `${FINES_ACC_DEFENDANT_ROUTING_PATHS.root}/:accountId`);
@@ -56,8 +57,8 @@ describe('fines acc routes', () => {
   });
 
   it('should mark the defendant and minor creditor account routes with their account types', () => {
-    expect(defendantRoute?.data?.['accountType']).toBe('defendant');
-    expect(minorCreditorRoute?.data?.['accountType']).toBe('minor-creditor');
+    expect(defendantRoute?.data?.['accountType']).toBe(FINES_ACCOUNT_ROUTE_TYPES.defendant);
+    expect(minorCreditorRoute?.data?.['accountType']).toBe(FINES_ACCOUNT_ROUTE_TYPES.minorCreditor);
   });
 
   it('should scope the business unit resolver provider to account routes that use business unit permissions', () => {

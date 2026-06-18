@@ -7,8 +7,10 @@ import { OpalFines } from '@services/fines/opal-fines-service/opal-fines.service
 import { IOpalFinesAccountDefendantDetailsHeader } from '../../fines-acc-defendant-details/interfaces/fines-acc-defendant-details-header.interface';
 import { IOpalFinesAccountMinorCreditorDetailsHeader } from '../../fines-acc-minor-creditor-details/interfaces/fines-acc-minor-creditor-details-header.interface';
 import { BusinessUnitIdResolver } from '@hmcts/opal-frontend-common/guards/business-unit-route-permissions';
-
-type FinesAccountRouteType = 'defendant' | 'minor-creditor';
+import {
+  FINES_ACCOUNT_ROUTE_TYPES,
+  FinesAccountRouteType,
+} from '../../../constants/fines-account-route-types.constant';
 
 /**
  * Normalizes a business unit identifier from store or API state into a positive numeric value.
@@ -56,7 +58,7 @@ export class FinesAccountBusinessUnitResolver implements BusinessUnitIdResolver 
       return storedBusinessUnitId;
     }
 
-    if (accountType === 'defendant') {
+    if (accountType === FINES_ACCOUNT_ROUTE_TYPES.defendant) {
       return this.opalFinesService.getDefendantAccountHeadingData(accountId).pipe(
         tap((headingData: IOpalFinesAccountDefendantDetailsHeader) => {
           this.accountStore.setAccountState(
@@ -69,7 +71,7 @@ export class FinesAccountBusinessUnitResolver implements BusinessUnitIdResolver 
       );
     }
 
-    if (accountType === 'minor-creditor') {
+    if (accountType === FINES_ACCOUNT_ROUTE_TYPES.minorCreditor) {
       return this.opalFinesService.getMinorCreditorAccountHeadingData(accountId).pipe(
         tap((headingData: IOpalFinesAccountMinorCreditorDetailsHeader) => {
           this.accountStore.setAccountState(
