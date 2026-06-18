@@ -297,19 +297,6 @@ export class AccountSearchCommonActions {
   private readonly commonActions = new CommonActions();
 
   /**
-   * Returns all requests captured for a search alias.
-   * Cypress returns alias subjects as unknown here, so normalize explicitly.
-   *
-   * @param alias - Search intercept alias including the leading @.
-   * @returns Captured search request interceptions.
-   */
-  private getCapturedSearchRequests(alias: SearchRequestAlias): Cypress.Chainable<SearchRequestInterception[]> {
-    return cy
-      .get(`${alias}.all` as `@${string}`)
-      .then((requests: unknown) => (Array.isArray(requests) ? (requests as SearchRequestInterception[]) : []));
-  }
-
-  /**
    * Assert the page header contains the expected text.
    * Keeps locator details here so flows remain locator-free.
    *
@@ -711,9 +698,11 @@ export class AccountSearchCommonActions {
       return { gherkinKey, expectedRaw, mapping };
     });
 
-    this.getCapturedSearchRequests(alias)
+    cy.get(`${alias}.all` as `@${string}`)
       .should((interceptions) => {
-        const interceptionsList = interceptions ?? [];
+        const interceptionsList = Array.isArray(interceptions)
+          ? (interceptions as SearchRequestInterception[])
+          : [];
         const matchingInterception =
           interceptionsList.length <= 1
             ? interceptionsList[0]
@@ -732,7 +721,9 @@ export class AccountSearchCommonActions {
         }
       })
       .then((interceptions) => {
-        const interceptionsList = interceptions ?? [];
+        const interceptionsList = Array.isArray(interceptions)
+          ? (interceptions as SearchRequestInterception[])
+          : [];
         const matchingInterception =
           interceptionsList.length <= 1
             ? interceptionsList[0]
@@ -807,9 +798,11 @@ export class AccountSearchCommonActions {
 
     const expectedTotal = expectedCounts.reduce((sum, entry) => sum + entry.count, 0);
 
-    this.getCapturedSearchRequests(alias)
+    cy.get(`${alias}.all` as `@${string}`)
       .should((interceptions) => {
-        const interceptionsList = interceptions ?? [];
+        const interceptionsList = Array.isArray(interceptions)
+          ? (interceptions as SearchRequestInterception[])
+          : [];
 
         expect(
           interceptionsList.length,
@@ -845,7 +838,9 @@ export class AccountSearchCommonActions {
         });
       })
       .then((interceptions) => {
-        const interceptionsList = interceptions ?? [];
+        const interceptionsList = Array.isArray(interceptions)
+          ? (interceptions as SearchRequestInterception[])
+          : [];
         const capturedBodies = interceptionsList.map((interception, index) => ({
           index,
           body: interception.request.body,
