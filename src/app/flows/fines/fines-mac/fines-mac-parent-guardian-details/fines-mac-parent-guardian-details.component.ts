@@ -1,4 +1,5 @@
 import { ChangeDetectionStrategy, Component } from '@angular/core';
+import { FINES_MAC_NESTED_ROUTE_KEYS } from '../constants/fines-mac-nested-route-keys.constant';
 import { FinesMacFormParentBaseComponent } from '../components/abstract/fines-mac-form-parent-base/fines-mac-form-parent-base.component';
 import { IFinesMacParentGuardianDetailsForm } from './interfaces/fines-mac-parent-guardian-details-form.interface';
 
@@ -19,7 +20,7 @@ export class FinesMacParentGuardianDetailsComponent extends FinesMacFormParentBa
   public handleParentGuardianDetailsSubmit(form: IFinesMacParentGuardianDetailsForm): void {
     this.finesMacStore.setParentGuardianDetails(form);
     if (form.nestedFlow) {
-      this.handleNestedFlowNavigation('parentOrGuardianDetails');
+      this.handleNestedFlowNavigation(FINES_MAC_NESTED_ROUTE_KEYS.parentOrGuardianDetails);
       return;
     }
 

@@ -1,4 +1,5 @@
 import { ChangeDetectionStrategy, Component } from '@angular/core';
+import { FINES_MAC_NESTED_ROUTE_KEYS } from '../constants/fines-mac-nested-route-keys.constant';
 import { FinesMacFormParentBaseComponent } from '../components/abstract/fines-mac-form-parent-base/fines-mac-form-parent-base.component';
 import { IFinesMacPersonalDetailsForm } from './interfaces/fines-mac-personal-details-form.interface';
 import { FinesMacPersonalDetailsFormComponent } from './fines-mac-personal-details-form/fines-mac-personal-details-form.component';
@@ -19,7 +20,7 @@ export class FinesMacPersonalDetailsComponent extends FinesMacFormParentBaseComp
   public handlePersonalDetailsSubmit(form: IFinesMacPersonalDetailsForm): void {
     this.finesMacStore.setPersonalDetails(form);
     if (form.nestedFlow) {
-      this.handleNestedFlowNavigation('personalDetails');
+      this.handleNestedFlowNavigation(FINES_MAC_NESTED_ROUTE_KEYS.personalDetails);
       return;
     }
 

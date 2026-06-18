@@ -2,6 +2,7 @@ import { ChangeDetectionStrategy, Component, inject, OnInit } from '@angular/cor
 import { IAlphagovAccessibleAutocompleteItem } from '@hmcts/opal-frontend-common/components/alphagov/alphagov-accessible-autocomplete/interfaces';
 
 import { RouterModule } from '@angular/router';
+import { FINES_MAC_NESTED_ROUTE_KEYS } from '../constants/fines-mac-nested-route-keys.constant';
 import { FinesMacCourtDetailsFormComponent } from './fines-mac-court-details-form/fines-mac-court-details-form.component';
 import { OpalFines } from '@services/fines/opal-fines-service/opal-fines.service';
 import { IOpalFinesCourtRefData } from '@services/fines/opal-fines-service/interfaces/opal-fines-court-ref-data.interface';
@@ -66,7 +67,7 @@ export class FinesMacCourtDetailsComponent extends FinesMacFormParentBaseCompone
     this.finesMacStore.setCourtDetails(form);
 
     if (form.nestedFlow) {
-      this.handleNestedFlowNavigation('courtDetails');
+      this.handleNestedFlowNavigation(FINES_MAC_NESTED_ROUTE_KEYS.courtDetails);
       return;
     }
 

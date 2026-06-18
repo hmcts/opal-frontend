@@ -1,4 +1,5 @@
 import { ChangeDetectionStrategy, Component } from '@angular/core';
+import { FINES_MAC_NESTED_ROUTE_KEYS } from '../constants/fines-mac-nested-route-keys.constant';
 import { FinesMacFormParentBaseComponent } from '../components/abstract/fines-mac-form-parent-base/fines-mac-form-parent-base.component';
 import { IFinesMacAccountCommentsNotesForm } from './interfaces/fines-mac-account-comments-notes-form.interface';
 import { FinesMacAccountCommentsNotesFormComponent } from './fines-mac-account-comments-notes-form/fines-mac-account-comments-notes-form.component';
@@ -23,7 +24,7 @@ export class FinesMacAccountCommentsNotesComponent extends FinesMacFormParentBas
     this.finesMacStore.setAccountCommentsNotes(form);
 
     if (form.nestedFlow) {
-      this.handleNestedFlowNavigation('accountCommentsNotes');
+      this.handleNestedFlowNavigation(FINES_MAC_NESTED_ROUTE_KEYS.accountCommentsNotes);
       return;
     }
 

@@ -7,9 +7,10 @@ import { FinesMacStore } from '../../../stores/fines-mac.store';
 import { FinesMacStoreType } from '../../../stores/types/fines-mac-store.type';
 import { FINES_MAC_STATE_MOCK } from '../../../mocks/fines-mac-state.mock';
 import { FINES_MAC_DEFENDANT_TYPES_KEYS } from '../../../constants/fines-mac-defendant-types-keys';
+import { FINES_MAC_NESTED_ROUTE_KEYS } from '../../../constants/fines-mac-nested-route-keys.constant';
 import { FINES_MAC_ROUTING_PATHS } from '../../../routing/constants/fines-mac-routing-paths.constant';
-import { IFinesMacRoutingNestedRoutes } from '../../../routing/interfaces/fines-mac-routing-nested-routes.interface';
 import { FinesMacFormParentBaseComponent } from './fines-mac-form-parent-base.component';
+import { FINES_MAC_NESTED_ROUTE_NAVIGATION_RESULTS } from './constants/fines-mac-nested-route-navigation-results.constant';
 import { TFinesMacNestedRouteNavigationResult } from './types/fines-mac-nested-route-navigation-result.type';
 
 @Component({
@@ -18,12 +19,12 @@ import { TFinesMacNestedRouteNavigationResult } from './types/fines-mac-nested-r
 })
 class TestFinesMacFormParentBaseComponent extends FinesMacFormParentBaseComponent {
   public testNavigateToNestedRoute(
-    nestedRouteKey: keyof IFinesMacRoutingNestedRoutes,
+    nestedRouteKey: keyof typeof FINES_MAC_NESTED_ROUTE_KEYS,
   ): TFinesMacNestedRouteNavigationResult {
     return this.navigateToNestedRoute(nestedRouteKey);
   }
 
-  public testHandleNestedFlowNavigation(nestedRouteKey: keyof IFinesMacRoutingNestedRoutes): void {
+  public testHandleNestedFlowNavigation(nestedRouteKey: keyof typeof FINES_MAC_NESTED_ROUTE_KEYS): void {
     this.handleNestedFlowNavigation(nestedRouteKey);
   }
 }
@@ -60,9 +61,9 @@ describe('FinesMacFormParentBaseComponent', () => {
     const routerSpy = vi.spyOn<any, any>(component['router'], 'navigate');
     component.defendantType = FINES_MAC_DEFENDANT_TYPES_KEYS.adultOrYouthOnly;
 
-    const result = component.testNavigateToNestedRoute('personalDetails');
+    const result = component.testNavigateToNestedRoute(FINES_MAC_NESTED_ROUTE_KEYS.personalDetails);
 
-    expect(result).toBe('navigated');
+    expect(result).toBe(FINES_MAC_NESTED_ROUTE_NAVIGATION_RESULTS.navigated);
     expect(routerSpy).toHaveBeenCalledWith([FINES_MAC_ROUTING_PATHS.children.contactDetails], {
       relativeTo: component['activatedRoute'].parent,
     });
@@ -73,9 +74,9 @@ describe('FinesMacFormParentBaseComponent', () => {
     const routerSpy = vi.spyOn<any, any>(component['router'], 'navigate');
     component.defendantType = undefined as unknown as string;
 
-    const result = component.testNavigateToNestedRoute('personalDetails');
+    const result = component.testNavigateToNestedRoute(FINES_MAC_NESTED_ROUTE_KEYS.personalDetails);
 
-    expect(result).toBe('missingDefendantType');
+    expect(result).toBe(FINES_MAC_NESTED_ROUTE_NAVIGATION_RESULTS.missingDefendantType);
     expect(routerSpy).not.toHaveBeenCalled();
   });
 
@@ -84,9 +85,9 @@ describe('FinesMacFormParentBaseComponent', () => {
     const routerSpy = vi.spyOn<any, any>(component['router'], 'navigate');
     component.defendantType = FINES_MAC_DEFENDANT_TYPES_KEYS.company;
 
-    const result = component.testNavigateToNestedRoute('personalDetails');
+    const result = component.testNavigateToNestedRoute(FINES_MAC_NESTED_ROUTE_KEYS.personalDetails);
 
-    expect(result).toBe('routeNotConfigured');
+    expect(result).toBe(FINES_MAC_NESTED_ROUTE_NAVIGATION_RESULTS.routeNotConfigured);
     expect(routerSpy).not.toHaveBeenCalled();
   });
 
@@ -95,7 +96,7 @@ describe('FinesMacFormParentBaseComponent', () => {
     const routerSpy = vi.spyOn<any, any>(component['router'], 'navigate');
     component.defendantType = undefined as unknown as string;
 
-    component.testHandleNestedFlowNavigation('personalDetails');
+    component.testHandleNestedFlowNavigation(FINES_MAC_NESTED_ROUTE_KEYS.personalDetails);
 
     expect(routerSpy).toHaveBeenCalledWith([FINES_MAC_ROUTING_PATHS.children.accountDetails], {
       relativeTo: component['activatedRoute'].parent,
@@ -107,7 +108,7 @@ describe('FinesMacFormParentBaseComponent', () => {
     const routerSpy = vi.spyOn<any, any>(component['router'], 'navigate');
     component.defendantType = FINES_MAC_DEFENDANT_TYPES_KEYS.company;
 
-    component.testHandleNestedFlowNavigation('personalDetails');
+    component.testHandleNestedFlowNavigation(FINES_MAC_NESTED_ROUTE_KEYS.personalDetails);
 
     expect(routerSpy).not.toHaveBeenCalled();
   });

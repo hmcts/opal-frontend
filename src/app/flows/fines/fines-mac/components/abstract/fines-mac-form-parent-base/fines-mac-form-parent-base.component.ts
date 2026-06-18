@@ -1,9 +1,10 @@
 import { inject } from '@angular/core';
 import { AbstractFormParentBaseComponent } from '@hmcts/opal-frontend-common/components/abstract/abstract-form-parent-base';
-import { IFinesMacRoutingNestedRoutes } from '../../../routing/interfaces/fines-mac-routing-nested-routes.interface';
+import { FINES_MAC_NESTED_ROUTE_KEYS } from '../../../constants/fines-mac-nested-route-keys.constant';
 import { FINES_MAC_ROUTING_NESTED_ROUTES } from '../../../routing/constants/fines-mac-routing-nested-routes.constant';
 import { FINES_MAC_ROUTING_PATHS } from '../../../routing/constants/fines-mac-routing-paths.constant';
 import { FinesMacStore } from '../../../stores/fines-mac.store';
+import { FINES_MAC_NESTED_ROUTE_NAVIGATION_RESULTS } from './constants/fines-mac-nested-route-navigation-results.constant';
 import { TFinesMacNestedRouteNavigationResult } from './types/fines-mac-nested-route-navigation-result.type';
 
 export abstract class FinesMacFormParentBaseComponent extends AbstractFormParentBaseComponent {
@@ -18,19 +19,19 @@ export abstract class FinesMacFormParentBaseComponent extends AbstractFormParent
    * @returns The nested route navigation result.
    */
   protected navigateToNestedRoute(
-    nestedRouteKey: keyof IFinesMacRoutingNestedRoutes,
+    nestedRouteKey: keyof typeof FINES_MAC_NESTED_ROUTE_KEYS,
   ): TFinesMacNestedRouteNavigationResult {
     if (!this.defendantType) {
-      return 'missingDefendantType';
+      return FINES_MAC_NESTED_ROUTE_NAVIGATION_RESULTS.missingDefendantType;
     }
 
     const nextRoute = FINES_MAC_ROUTING_NESTED_ROUTES[this.defendantType][nestedRouteKey];
     if (!nextRoute) {
-      return 'routeNotConfigured';
+      return FINES_MAC_NESTED_ROUTE_NAVIGATION_RESULTS.routeNotConfigured;
     }
 
     this.routerNavigate(nextRoute.nextRoute);
-    return 'navigated';
+    return FINES_MAC_NESTED_ROUTE_NAVIGATION_RESULTS.navigated;
   }
 
   /**
@@ -38,8 +39,8 @@ export abstract class FinesMacFormParentBaseComponent extends AbstractFormParent
    *
    * @param nestedRouteKey - The current form's key in the nested route configuration.
    */
-  protected handleNestedFlowNavigation(nestedRouteKey: keyof IFinesMacRoutingNestedRoutes): void {
-    if (this.navigateToNestedRoute(nestedRouteKey) === 'missingDefendantType') {
+  protected handleNestedFlowNavigation(nestedRouteKey: keyof typeof FINES_MAC_NESTED_ROUTE_KEYS): void {
+    if (this.navigateToNestedRoute(nestedRouteKey) === FINES_MAC_NESTED_ROUTE_NAVIGATION_RESULTS.missingDefendantType) {
       this.navigateToAccountDetails();
     }
   }
