@@ -462,6 +462,7 @@ void runDemoLegacyStage(Map<String, Object> stageConfig, Closure runCommand) {
   String outputDirName = stageConfig.outputDirName as String
   String reportName = stageConfig.reportName as String
   String browserToRun = stageConfig.browserToRun as String
+  boolean archiveAccountEvidence = (stageConfig.archiveAccountEvidence ?: false) as boolean
   List<String> extraEnv = (stageConfig.extraEnv ?: []) as List<String>
   String reportFilePrefix = outputDirName
 
@@ -492,12 +493,13 @@ void runDemoLegacyStage(Map<String, Object> stageConfig, Closure runCommand) {
       withEnv(stageEnv) {
         runCommand.call()
       }
-
-      prepareLegacyDemoArtifacts(browserToRun, outputDirName, reportFilePrefix)
     } finally {
+      prepareLegacyDemoArtifacts(browserToRun, outputDirName, reportFilePrefix)
       archiveArtifact(functionalProdArtifactsPath)
-      archiveArtifact('functional-output/account_evidence/created-accounts.json')
-      archiveArtifact('functional-output/account_evidence/**')
+      if (archiveAccountEvidence) {
+        archiveArtifact('functional-output/account_evidence/created-accounts.json')
+        archiveArtifact('functional-output/account_evidence/**')
+      }
       archiveArtifact("functional-output/screenshots/${browserToRun}/**")
       archiveArtifact("functional-output/prod/${browserToRun}/${outputDirName}/**")
       publishHtmlReport(
@@ -563,6 +565,7 @@ void runUatTechnicalStage(
     outputDirName     : demoStageUatTechnicalDirName,
     reportName        : "UAT-Technical Functional Test Report (${browserToRun})",
     browserToRun      : browserToRun,
+    archiveAccountEvidence: true,
   ]) {
     sh "node scripts/run-yarn-sequence.js ${uatCommand}"
   }
