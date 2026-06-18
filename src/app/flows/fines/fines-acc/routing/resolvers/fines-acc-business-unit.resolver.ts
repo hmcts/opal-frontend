@@ -7,7 +7,7 @@ import { OpalFines } from '@services/fines/opal-fines-service/opal-fines.service
 import { IOpalFinesAccountDefendantDetailsHeader } from '../../fines-acc-defendant-details/interfaces/fines-acc-defendant-details-header.interface';
 import { IOpalFinesAccountMinorCreditorDetailsHeader } from '../../fines-acc-minor-creditor-details/interfaces/fines-acc-minor-creditor-details-header.interface';
 import { BusinessUnitIdResolver } from '@hmcts/opal-frontend-common/guards/business-unit-route-permissions';
-import { FINES_ACCOUNT_ROUTE_TYPES, FinesAccountRouteType } from './types/fines-account-route.type';
+import { FINES_ACCOUNT_ROUTE_TYPES, FinesAccRouteType } from './types/fines-acc-route.type';
 
 /**
  * Normalizes a business unit identifier from store or API state into a positive numeric value.
@@ -24,7 +24,7 @@ const getBusinessUnitId = (businessUnitId: string | null | undefined): number | 
 @Injectable({
   providedIn: 'root',
 })
-export class FinesAccountBusinessUnitResolver implements BusinessUnitIdResolver {
+export class FinesAccBusinessUnitResolver implements BusinessUnitIdResolver {
   private readonly accountStore = inject(FinesAccountStore);
   private readonly payloadService = inject(FinesAccPayloadService);
   private readonly opalFinesService = inject(OpalFines);
@@ -42,7 +42,7 @@ export class FinesAccountBusinessUnitResolver implements BusinessUnitIdResolver 
    */
   public resolveBusinessUnitId(route: ActivatedRouteSnapshot): MaybeAsync<number | null> {
     const accountId = Number(route.paramMap.get('accountId'));
-    const accountType = route.data?.['accountType'] as FinesAccountRouteType | undefined;
+    const accountType = route.data?.['accountType'] as FinesAccRouteType | undefined;
 
     if (!Number.isFinite(accountId) || accountId <= 0) {
       return null;

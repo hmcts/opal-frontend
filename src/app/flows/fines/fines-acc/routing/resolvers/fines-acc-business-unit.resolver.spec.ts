@@ -8,10 +8,10 @@ import { FinesAccPayloadService } from '../../services/fines-acc-payload.service
 import { MOCK_FINES_ACCOUNT_STATE } from '../../mocks/fines-acc-state.mock';
 import { FINES_ACC_DEFENDANT_DETAILS_HEADER_MOCK } from '../../fines-acc-defendant-details/mocks/fines-acc-defendant-details-header.mock';
 import { FINES_ACC_MINOR_CREDITOR_DETAILS_HEADER_MOCK } from '../../fines-acc-minor-creditor-details/mocks/fines-acc-minor-creditor-details-header.mock';
-import { FinesAccountBusinessUnitResolver } from './fines-account-business-unit.resolver';
-import { FINES_ACCOUNT_ROUTE_TYPES, FinesAccountRouteType } from './types/fines-account-route.type';
+import { FinesAccBusinessUnitResolver } from './fines-acc-business-unit.resolver';
+import { FINES_ACCOUNT_ROUTE_TYPES, FinesAccRouteType } from './types/fines-acc-route.type';
 
-function createRoute(accountId?: number, accountType?: FinesAccountRouteType): ActivatedRouteSnapshot {
+function createRoute(accountId?: number, accountType?: FinesAccRouteType): ActivatedRouteSnapshot {
   return {
     data: accountType === undefined ? {} : { accountType },
     paramMap: convertToParamMap(accountId === undefined ? {} : { accountId: accountId.toString() }),
@@ -21,12 +21,12 @@ function createRoute(accountId?: number, accountType?: FinesAccountRouteType): A
 
 async function resolveBusinessUnit(route: ActivatedRouteSnapshot): Promise<number | null> {
   const result = TestBed.runInInjectionContext(() =>
-    TestBed.inject(FinesAccountBusinessUnitResolver).resolveBusinessUnitId(route),
+    TestBed.inject(FinesAccBusinessUnitResolver).resolveBusinessUnitId(route),
   );
   return isObservable(result) ? firstValueFrom(result) : Promise.resolve(result);
 }
 
-describe('finesAccountBusinessUnitResolver', () => {
+describe('finesAccBusinessUnitResolver', () => {
   let mockAccountStore: {
     account_id: ReturnType<typeof vi.fn>;
     business_unit_id: ReturnType<typeof vi.fn>;

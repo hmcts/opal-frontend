@@ -4,4 +4,4 @@ export const FINES_ACCOUNT_ROUTE_TYPES = {
   majorCreditor: 'major-creditor',
 } as const;
 
-export type FinesAccountRouteType = (typeof FINES_ACCOUNT_ROUTE_TYPES)[keyof typeof FINES_ACCOUNT_ROUTE_TYPES];
+export type FinesAccRouteType = (typeof FINES_ACCOUNT_ROUTE_TYPES)[keyof typeof FINES_ACCOUNT_ROUTE_TYPES];
