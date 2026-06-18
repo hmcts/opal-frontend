@@ -85,56 +85,10 @@
     </ng-container>
   </opal-lib-govuk-summary-card-list>
   <div id="last-enforcement-action">
-    <opal-lib-govuk-summary-card-list cardTitle="Last enforcement action" summaryListId="lastEnforcementActionDetails">
-    @if (tabData.last_enforcement_action) {
-      <ng-container content>
-        <opal-lib-govuk-summary-list summaryListId="lastEnforcementActionDetails">
-          <div
-            opal-lib-govuk-summary-list-row
-            [class]="
-              tabData.last_enforcement_action.enforcement_action.result_id === 'NOENF' && hasEnterEnforcementPermission
-                ? 'govuk-summary-list__row'
-                : 'govuk-summary-list__row govuk-summary-list__row--no-actions'
-            "
-            summaryListId="lastEnforcementActionDetails"
-            summaryListRowId="enforcement_action"
-            [actionEnabled]="
-              tabData.last_enforcement_action.enforcement_action.result_id === 'NOENF' && hasEnterEnforcementPermission
-                ? true
-                : false
-            "
-            (actionClick)="handleRemoveEnforcementHold()"
-          >
-            <ng-container name>Enforcement action</ng-container>
-            <ng-container value>
-              <opal-lib-govuk-tag
-                [tagClasses]="'govuk-tag govuk-blue-background-colour govuk-white-text-colour govuk-!-margin-bottom-2'"
-                tagId="enforcement_status"
-                >{{ tabData.last_enforcement_action.enforcement_action.result_title }}({{
-                  tabData.last_enforcement_action.enforcement_action.result_id
-                }})</opal-lib-govuk-tag
-              >
-            </ng-container>
-            @if (
-              tabData.last_enforcement_action.enforcement_action.result_id === 'NOENF' && hasEnterEnforcementPermission
-            ) {
-              <ng-container action>Remove</ng-container>
-            }
-          </div>
-          
-           @if (tabData.last_enforcement_action.reason) {
-            <div
-              opal-lib-govuk-summary-list-row
-              class="govuk-summary-list__row govuk-summary-list__row--no-actions"
-              summaryListId="lastEnforcementActionDetails"
-              summaryListRowId="reason"
-            >
-              <ng-container name>Reason</ng-container>
-              <ng-container value>{{ tabData.last_enforcement_action.reason }}</ng-container>
-            </div>
-          }
-
-          @if (tabData.last_enforcement_action.enforcer && tabData.last_enforcement_action.enforcer.enforcer_name) {
+    <opal-lib-govuk-summary-card-list cardTitle="Last enforcement action" summaryCardListId="lastEnforcementAction">
+      @if (tabData.last_enforcement_action) {
+        <ng-container content>
+          <opal-lib-govuk-summary-list summaryListId="lastEnforcementActionDetails">
             <div
               opal-lib-govuk-summary-list-row
               [class]="
@@ -170,6 +124,18 @@
                 <ng-container action>Remove</ng-container>
               }
             </div>
+
+            @if (tabData.last_enforcement_action.reason) {
+              <div
+                opal-lib-govuk-summary-list-row
+                class="govuk-summary-list__row govuk-summary-list__row--no-actions"
+                summaryListId="lastEnforcementActionDetails"
+                summaryListRowId="reason"
+              >
+                <ng-container name>Reason</ng-container>
+                <ng-container value>{{ tabData.last_enforcement_action.reason }}</ng-container>
+              </div>
+            }
 
             @if (tabData.last_enforcement_action.result_responses) {
               @for (param of tabData.last_enforcement_action.result_responses; track param.parameter_name) {
