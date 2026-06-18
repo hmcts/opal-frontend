@@ -669,6 +669,14 @@ export class AccountEnquiryFlow {
   }
 
   /**
+   * Asserts the add enforcement action form is visible.
+   */
+  public assertAddNewEnforcementActionFormVisible(): void {
+    logAE('method', 'assertAddNewEnforcementActionFormVisible()');
+    this.enforcement.assertAddNewEnforcementActionFormVisible();
+  }
+
+  /**
    * Opens the remove enforcement hold form from the Enforcement tab.
    */
   public openRemoveEnforcementHoldForm(): void {
@@ -817,6 +825,16 @@ export class AccountEnquiryFlow {
   public chooseChangeExistingPaymentTerms(option: string): void {
     logAE('method', 'chooseChangeExistingPaymentTerms()', { option });
     this.enforcement.chooseChangeExistingPaymentTerms(option);
+  }
+
+  /**
+   * Asserts the enforcement action added success banner text.
+   *
+   * @param expected - Expected success banner message.
+   */
+  public assertEnforcementActionSuccessBanner(expected: string): void {
+    logAE('method', 'assertEnforcementActionSuccessBanner()', { expected });
+    this.enforcement.assertSuccessBannerText(expected);
   }
 
   /**

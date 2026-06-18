@@ -258,6 +258,11 @@ Then('I should see the add enforcement action page', () => {
   flow().assertAddEnforcementActionFormVisible();
 });
 
+Then('I should see the add new enforcement action page', () => {
+  log('assert', 'Add new enforcement action page is visible');
+  flow().assertAddNewEnforcementActionFormVisible();
+});
+
 Then('the enforcement hold success banner is {string}', (expected: string) => {
   log('assert', 'Enforcement hold success banner text', { expected });
   flow().assertEnforcementHoldSuccessBanner(expected);
@@ -620,6 +625,14 @@ When('I choose {string} for changing existing payment terms', (option: string) =
 When('I add the enforcement action', () => {
   log('step', 'Add enforcement action');
   flow().submitAddEnforcementActionForm();
+});
+
+/**
+ * @step Asserts the enforcement action added success banner text.
+ */
+Then('the enforcement action added success banner is {string}', (expected: string) => {
+  log('assert', 'Enforcement action success banner text', { expected });
+  flow().assertEnforcementActionSuccessBanner(expected);
 });
 
 /**

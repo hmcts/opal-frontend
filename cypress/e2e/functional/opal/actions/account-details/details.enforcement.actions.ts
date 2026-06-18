@@ -219,6 +219,19 @@ export class AccountDetailsEnforcementActions {
   }
 
   /**
+   * Asserts the add new enforcement action form is visible.
+   */
+  public assertAddNewEnforcementActionFormVisible(): void {
+    log('assert', 'Add new enforcement action form is visible');
+    cy.get(ENF_ACT.newEnforcementActionPageTitle, { timeout: AccountDetailsEnforcementActions.DEFAULT_TIMEOUT })
+      .should('be.visible')
+      .and('contain.text', 'Do you want to add a new enforcement action?');
+    cy.get(ENF_ACT.newEnforcementActionRadioGroup, {
+      timeout: AccountDetailsEnforcementActions.DEFAULT_TIMEOUT,
+    }).should('be.visible');
+  }
+
+  /**
    * Asserts the remove enforcement hold form is visible.
    */
   public assertRemoveEnforcementHoldFormVisible(): void {
