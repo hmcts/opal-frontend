@@ -9,7 +9,8 @@ import { MOCK_FINES_ACCOUNT_STATE } from '../../mocks/fines-acc-state.mock';
 import { FINES_ACC_DEFENDANT_DETAILS_HEADER_MOCK } from '../../fines-acc-defendant-details/mocks/fines-acc-defendant-details-header.mock';
 import { FINES_ACC_MINOR_CREDITOR_DETAILS_HEADER_MOCK } from '../../fines-acc-minor-creditor-details/mocks/fines-acc-minor-creditor-details-header.mock';
 import { FinesAccBusinessUnitResolver } from './fines-acc-business-unit.resolver';
-import { FINES_ACCOUNT_ROUTE_TYPES, FinesAccRouteType } from './types/fines-acc-route.type';
+import { FINES_ACCOUNT_ROUTE_TYPES } from '../constants/fines-acc-route-types.constant';
+import { FinesAccRouteType } from './types/fines-acc-route.type';
 
 function createRoute(accountId?: number, accountType?: FinesAccRouteType): ActivatedRouteSnapshot {
   return {
