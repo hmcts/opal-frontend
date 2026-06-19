@@ -111,7 +111,7 @@ describe('FinesAccEnfActionRemoveComponent', () => {
     expect(component.partyName).toBe('');
   });
 
-  it('should remove the enforcement hold and navigate back to the enforcement tab', () => {
+  it('should remove the enforcement hold and navigate to the add new action prompt', () => {
     createComponent();
     const routerNavigateSpy = vi.spyOn(component as never, 'routerNavigate');
 
@@ -126,7 +126,7 @@ describe('FinesAccEnfActionRemoveComponent', () => {
     expect(mockOpalFinesService.clearCache).toHaveBeenCalledWith('defendantAccountEnforcementCache$');
     expect(mockFinesAccStore.setSuccessMessage).toHaveBeenCalledWith(FINES_ACC_ENF_ACTION_REMOVE_SUCCESS_MESSAGE);
     expect(routerNavigateSpy).toHaveBeenCalledWith(
-      `${FINES_ACC_DEFENDANT_ROUTING_PATHS.children.enforcement}/${FINES_ACC_ENF_ACTION_ROUTING_PATHS.root}/${FINES_ACC_ENF_ACTION_ROUTING_PATHS.children.select}`,
+      `${FINES_ACC_DEFENDANT_ROUTING_PATHS.children.enforcement}/${FINES_ACC_ENF_ACTION_ROUTING_PATHS.root}/${FINES_ACC_ENF_ACTION_ROUTING_PATHS.children['add-new']}`,
     );
   });
 
