@@ -11,7 +11,6 @@ import {
   interceptUserState,
   interceptNextPermittedEnforcementActionsEmpty,
   interceptNextPermittedEnforcementActions,
-  interceptResultByCode,
   interceptEnforcers,
 } from 'cypress/component/CommonIntercepts/CommonIntercepts';
 import { USER_STATE_MOCK_PERMISSION_BU77 } from 'cypress/component/CommonIntercepts/CommonUserState.mocks';
