@@ -76,10 +76,7 @@
       "opal-frontend-session-secret": "supersecret",
       "opal-frontend-cookie-secret": "supersecret",
       "opal-frontend-csrf-secret": "supersecret",
-      "app-insights-connection-string": "supersecret",
-      "AzureADClientId": "failtst4",
-      "AzureADClientSecret": "failtst4",
-      "AzureADTenantId": "failtst4"
+      "app-insights-connection-string": "supersecret"
     }
   },
   "expiry": {
