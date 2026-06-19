@@ -22,7 +22,7 @@ Feature: Check and Validate - Checker
     Then I should see the checker header "Review accounts" and status heading "To review"
 
   @JIRA-EPIC:PO-2220 @JIRA-NFR:PO-2505
-  @JIRA-STORY:PO-594 @UAT-Technical
+  @JIRA-STORY:PO-594 @UAT-Technical @JIRA-TEST-KEY:PO-7435
   Scenario: Approve an in-review draft account from the review screen
     Given a "adultOrYouthOnly" draft account exists with:
       | Account_status                                            | Submitted                                                                                                                                                                   |
