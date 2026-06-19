@@ -7,8 +7,8 @@ export const FINES_ACC_DEFENDANT_DETAILS_HISTORY_AND_NOTES_FILTER_FORM_MOCK: IFi
       dateTo: '31/01/2024',
       categories: {
         amendments: true,
-        enforcementActions: false,
-        financial: false,
+        enforcements: false,
+        transactions: false,
         notes: true,
         paymentTerms: false,
       },
