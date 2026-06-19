@@ -25,6 +25,11 @@ properties([
       defaultValue: true,
       description: 'Run functional tests excluding R1AOff and R1BOff'
     ),
+    booleanParam(
+      name: 'RunComponentAllFlagsOff',
+      defaultValue: false,
+      description: 'Run component tests for R1AOff and R1BOff scenarios only'
+    ),
     booleanParam(name: 'Legacy', defaultValue: false, description: 'Run legacy tests'),
     booleanParam(name: 'RunChrome', defaultValue: false, description: 'Run Chrome tests'),
     booleanParam(name: 'RunFirefox', defaultValue: false, description: 'Run Firefox tests'),
@@ -70,6 +75,7 @@ String failureResult = 'FAILURE'
 @Field int zeroIndex = 0
 @Field String nightlyTestUrlStaging = 'https://opal-frontend.staging.apps.hmcts.net/'
 @Field String nightlyTestUrlDemo = 'https://opal-frontend.demo.apps.hmcts.net/'
+@Field String componentAllFlagsOffDirName = 'component-all-flags-off'
 @Field String demoStageUatTechnicalDirName = 'uat-technical'
 @Field String demoStageR1aDirName = 'r1a-legacy-demo'
 @Field String demoStageR1aOffDirName = 'r1a-off-legacy-demo'
@@ -463,6 +469,31 @@ void prepareLegacyDemoArtifacts(String browserToRun, String outputDirName, Strin
   copyZephyrReports(functionalOutputRoot, "${functionalOutputRoot}/prod/${browserToRun}/${outputDirName}")
 }
 
+// Copy generated component report artifacts into a dedicated directory for publishing.
+void prepareComponentStageArtifacts(String browserToRun, String outputDirName, String reportFilePrefix) {
+  sh """
+    SOURCE_DIR='${functionalOutputRoot}/component/${browserToRun}'
+    TARGET_DIR="\$SOURCE_DIR/${outputDirName}"
+    SOURCE_HTML_DIR="\$SOURCE_DIR/html"
+    TARGET_HTML_DIR="\$TARGET_DIR/html"
+    mkdir -p "\$TARGET_HTML_DIR" "\$TARGET_DIR/junit" "\$TARGET_DIR/json"
+
+    if [ -f "\$SOURCE_HTML_DIR/component-report.html" ]; then
+      cp "\$SOURCE_HTML_DIR/component-report.html" "\$TARGET_HTML_DIR/${reportFilePrefix}-report.html"
+    fi
+    if [ -d "\$SOURCE_HTML_DIR/assets" ]; then
+      cp -R "\$SOURCE_HTML_DIR/assets" "\$TARGET_HTML_DIR/"
+    fi
+    if [ -d "\$SOURCE_DIR/junit" ]; then
+      cp -R "\$SOURCE_DIR/junit/." "\$TARGET_DIR/junit/"
+    fi
+    if [ -d "\$SOURCE_DIR/json" ]; then
+      cp -R "\$SOURCE_DIR/json/." "\$TARGET_DIR/json/"
+    fi
+  """
+  copyZephyrReports(functionalOutputRoot, "${functionalOutputRoot}/component/${browserToRun}/${outputDirName}")
+}
+
 // Run a demo environment legacy-mode stage with dedicated LaunchDarkly handling and reporting.
 void runDemoLegacyStage(Map<String, Object> stageConfig, Closure runCommand) {
   boolean enabled = (stageConfig.enabled ?: false) as boolean
@@ -557,6 +588,32 @@ void runComponentStage(
         "${functionalOutputRoot}/component/${browserToRun}/html/",
         'component-report.html',
         "Component Test Report (${browserToRun})"
+      )
+    }
+  }
+}
+
+// Run the optional component all-flags-off checks and publish a dedicated report.
+void runComponentAllFlagsOffStage(
+  boolean enabled,
+  String failureResultValue,
+  uk.gov.hmcts.contino.YarnBuilder builder,
+  boolean shouldRunWithZephyr,
+  String browserToRun
+) {
+  String componentAllFlagsOffCommand =
+    shouldRunWithZephyr ? 'zephyr:test:component_all_flags_off' : 'test:component:all_flags_off'
+  runNightlyStage(enabled, 'Component All Flags Off', failureResultValue, 'Component all flags off tests failed') {
+    try {
+      builder.yarn(componentAllFlagsOffCommand)
+    } finally {
+      prepareComponentStageArtifacts(browserToRun, componentAllFlagsOffDirName, componentAllFlagsOffDirName)
+      archiveArtifact("${functionalOutputRoot}/component/${browserToRun}/${componentAllFlagsOffDirName}/**")
+      archiveZephyrReports("${functionalOutputRoot}/component/${browserToRun}/${componentAllFlagsOffDirName}")
+      publishHtmlReport(
+        "${functionalOutputRoot}/component/${browserToRun}/${componentAllFlagsOffDirName}/html/",
+        "${componentAllFlagsOffDirName}-report.html",
+        "Component All Flags Off Report (${browserToRun})"
       )
     }
   }
@@ -844,6 +901,7 @@ withNightlyPipeline(type, product, component) {
     echo 'Component:' + params.Component
     echo 'Smoke:' + params.Smoke
     echo 'Functional:' + params.Functional
+    echo 'RunComponentAllFlagsOff:' + params.RunComponentAllFlagsOff
     echo 'Legacy:' + params.Legacy
     echo 'RunChrome:' + params.RunChrome
     echo 'RunFirefox:' + params.RunFirefox
@@ -872,6 +930,13 @@ Description: ${env.EXECUTION_CYCLE_DESCRIPTION}
     }
     runComponentStage(
       params.Component,
+      failureResult,
+      yarnBuilder,
+      shouldRunWithZephyr,
+      browserToRun
+    )
+    runComponentAllFlagsOffStage(
+      params.RunComponentAllFlagsOff,
       failureResult,
       yarnBuilder,
       shouldRunWithZephyr,
