@@ -637,7 +637,6 @@ void runSmokeStage(
       copyZephyrReports(smokeOutputRoot, "${smokeOutputRoot}/prod/${browserToRun}")
       archiveArtifact("${smokeOutputRoot}/prod/**")
       archiveArtifact("${smokeOutputRoot}/screenshots/${browserToRun}/**")
-      archiveZephyrReports(smokeOutputRoot)
       archiveZephyrReports("${smokeOutputRoot}/prod/${browserToRun}")
       publishHtmlReport(
         "${smokeOutputRoot}/prod/${browserToRun}/cucumber/",
@@ -665,7 +664,6 @@ void runFunctionalStage(
       copyZephyrReports(functionalOutputRoot, "${functionalOutputRoot}/prod/${browserToRun}")
       archiveArtifact(functionalProdArtifactsPath)
       archiveArtifact("${functionalOutputRoot}/screenshots/${browserToRun}/**")
-      archiveZephyrReports(functionalOutputRoot)
       archiveZephyrReports("${functionalOutputRoot}/prod/${browserToRun}")
       publishHtmlReport(
         "${functionalOutputRoot}/prod/${browserToRun}/cucumber/",
