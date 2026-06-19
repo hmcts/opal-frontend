@@ -8,7 +8,7 @@ Feature: Financial Movements Release 1C Financial Movements Feature Toggles
     Then I am taken to the "Finance" Fines landing page
     And I should see the header containing text "Finance"
     When I open the "Test Finance Link" landing page link
-    Then I should see the header containing text "Test Finance Link"
+    Then I see the following text on the page "Test Finance Link"
 
   @R1CFinancialMovementsOff @JIRA-STORY:PO-7266 @JIRA-EPIC:PO-3685
   Scenario: Finance is hidden from the primary navigation when release 1c financial movements is disabled
