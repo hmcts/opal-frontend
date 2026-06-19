@@ -14,6 +14,16 @@ const PRIMARY_NAV_ITEMS = [
   { label: 'Administration' },
 ] as const;
 
+const DASHBOARD_LINK_SELECTORS: Record<string, string> = {
+  'Test Administration Link': '#testAdministrationLink',
+  'Test Finance Link': '#testFinanceLink',
+};
+
+const DASHBOARD_ENTRY_POINTS: Record<string, string> = {
+  Administration: '/fines/dashboard/administration',
+  Finance: '/fines/dashboard/finance',
+};
+
 /**
  * Cypress actions for the Fines primary navigation and related header behaviour.
  */
@@ -132,6 +142,36 @@ export class PrimaryNavigationActions {
     cy.contains(`${L.container} .moj-primary-navigation__link`, itemLabel, this.common.getTimeoutOptions())
       .should('be.visible')
       .click();
+  }
+
+  /**
+   * Opens a dashboard landing page link.
+   * @param linkLabel - Visible label for the dashboard link.
+   */
+  public openLandingPageLink(linkLabel: string): void {
+    const selector = DASHBOARD_LINK_SELECTORS[linkLabel];
+
+    if (!selector) {
+      throw new Error(`Unsupported dashboard link: ${linkLabel}`);
+    }
+
+    log('action', 'Opening dashboard landing page link', { linkLabel, selector });
+    cy.get(selector, this.common.getTimeoutOptions()).should('be.visible').click();
+  }
+
+  /**
+   * Navigates directly to a dashboard entry point.
+   * @param dashboardLabel - Visible dashboard label.
+   */
+  public navigateDirectlyToEntryPoint(dashboardLabel: string): void {
+    const path = DASHBOARD_ENTRY_POINTS[dashboardLabel];
+
+    if (!path) {
+      throw new Error(`Unsupported dashboard entry point: ${dashboardLabel}`);
+    }
+
+    log('navigate', 'Visiting dashboard entry point directly', { dashboardLabel, path });
+    cy.visit(path);
   }
 
   /**

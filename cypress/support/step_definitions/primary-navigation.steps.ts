@@ -107,6 +107,24 @@ When('I select the Fines primary navigation item {string}', (itemLabel: string) 
 });
 
 /**
+ * Opens a dashboard link by label.
+ * @param linkLabel - Visible label for the dashboard link.
+ */
+When('I open the {string} landing page link', (linkLabel: string) => {
+  log('step', 'Opening a dashboard landing page link', { linkLabel });
+  primaryNavigation().openLandingPageLink(linkLabel);
+});
+
+/**
+ * Directs the browser to a dashboard entry point.
+ * @param dashboardLabel - Visible dashboard label.
+ */
+When('I navigate directly to the {string} entry point', (dashboardLabel: string) => {
+  log('step', 'Navigating directly to a dashboard entry point', { dashboardLabel });
+  primaryNavigation().navigateDirectlyToEntryPoint(dashboardLabel);
+});
+
+/**
  * Asserts that the selected Fines area is displayed.
  * @param itemLabel - Visible label of the Fines area expected to be active.
  */
