@@ -14,9 +14,17 @@ properties([
     pipelineTriggers([cron('H 07 * * 1-5')]),
     copyArtifactPermission('*'),
     parameters([
-    booleanParam(name: 'Component', defaultValue: true, description: 'Run component tests'),
+    booleanParam(
+      name: 'Component',
+      defaultValue: true,
+      description: 'Run component tests excluding R1AOff and R1BOff'
+    ),
     booleanParam(name: 'Smoke', defaultValue: true, description: 'Run smoke tests'),
-    booleanParam(name: 'Functional', defaultValue: true, description: 'Run functional tests'),
+    booleanParam(
+      name: 'Functional',
+      defaultValue: true,
+      description: 'Run functional tests excluding R1AOff and R1BOff'
+    ),
     booleanParam(name: 'Legacy', defaultValue: false, description: 'Run legacy tests'),
     booleanParam(name: 'RunChrome', defaultValue: false, description: 'Run Chrome tests'),
     booleanParam(name: 'RunFirefox', defaultValue: false, description: 'Run Firefox tests'),
@@ -67,6 +75,7 @@ String failureResult = 'FAILURE'
 @Field String demoStageR1aOffDirName = 'r1a-off-legacy-demo'
 @Field String legacyGatewayUrlPreProd = 'https://cloudgobgateway.test.platform.hmcts.net/opal'
 @Field String legacyGatewayUrlDev = 'https://opal-legacy-db-stub.staging.platform.hmcts.net/opal'
+@Field String componentExcludeGrepTags = '-@R1AOff+-@R1BOff'
 @Field String launchDarklyApiVersion = '20240415'
 @Field String launchDarklyEnvironmentKey = 'demo'
 @Field String launchDarklyFlagKey = 'app-mode'
@@ -529,11 +538,18 @@ void runComponentStage(
   String browserToRun
 ) {
   runNightlyStage(enabled, 'Component Tests', failureResultValue, 'Component tests failed') {
-    String componentCommand = shouldRunWithZephyr ? 'zephyr:test:component' : 'test:component'
+    String componentCommand = "test:component --expose grepTags=${componentExcludeGrepTags}"
 
     try {
       builder.yarn(componentCommand)
     } finally {
+      if (shouldRunWithZephyr) {
+        try {
+          builder.yarn('zephyr:cypress:jira-execute')
+        } catch (hudson.AbortException e) {
+          echo "Component Zephyr execution failed: ${e}"
+        }
+      }
       copyZephyrReports(functionalOutputRoot, "${functionalOutputRoot}/component/${browserToRun}")
       archiveArtifact("${functionalOutputRoot}/component/${browserToRun}/**")
       archiveZephyrReports("${functionalOutputRoot}/component/${browserToRun}")
