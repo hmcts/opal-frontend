@@ -58,6 +58,7 @@ import { IOpalFinesEnforcersRefData } from './interfaces/opal-fines-enforcers-re
 import { IOpalFinesEnforcer } from './interfaces/opal-fines-enforcer.interface';
 import { IOpalFinesUpdateMinorCreditorAccountPayload } from './interfaces/opal-fines-update-minor-creditor-account-payload.interface';
 import { IOpalFinesAddEnforcementActionPayload } from './interfaces/opal-fines-add-enforcement-action-payload.interface';
+import { IOpalFinesRemoveEnforcementHoldPayload } from './interfaces/opal-fines-remove-enforcement-hold-payload.interface';
 import { IOpalFinesAccountMinorCreditorCreditor } from './interfaces/opal-fines-account-minor-creditor-creditor.interface';
 import { IOpalFinesDraftAccountPatchRequestPayload } from '@services/fines/opal-fines-service/types/opal-fines-draft-account-patch-request-payload.type';
 import { IOpalFinesDeleteDefendantAccountPartyPayload } from './interfaces/opal-fines-delete-defendant-account-party-payload.interface';
@@ -1165,6 +1166,34 @@ export class OpalFines {
     }
 
     return this.http.post<IOpalFinesAddEnforcementActionPayload>(url, payload, { headers });
+  }
+
+  /**
+   * Removes an enforcement hold from a defendant account.
+   *
+   * @param defendantAccountId - The unique identifier of the defendant account.
+   * @param payload - Optional reason stored as an account note.
+   * @param businessUnitId - Required business unit identifier.
+   * @param version - Optional account version for optimistic concurrency control.
+   * @returns An Observable that completes when the hold has been removed.
+   */
+  public removeEnforcementHold(
+    defendantAccountId: number,
+    payload: IOpalFinesRemoveEnforcementHoldPayload,
+    businessUnitId: string,
+    version?: string,
+  ): Observable<void> {
+    const url = `${OPAL_FINES_PATHS.defendantAccounts}/${defendantAccountId}/remove-enf-hold`;
+    const headers: Record<string, string> = {};
+
+    if (version) {
+      headers['If-Match'] = version;
+    }
+    if (businessUnitId !== undefined) {
+      headers['Business-Unit-Id'] = businessUnitId;
+    }
+
+    return this.http.patch<void>(url, payload, { headers });
   }
 
   /**

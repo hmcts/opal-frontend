@@ -1882,6 +1882,29 @@ describe('OpalFines', () => {
     });
   });
 
+  describe('removeEnforcementHold', () => {
+    it('should send a PATCH request with payload and required headers', () => {
+      const defendantAccountId = 123456;
+      const businessUnitId = '61';
+      const version = '2';
+      const payload = {
+        reason: 'Removed',
+      };
+
+      service.removeEnforcementHold(defendantAccountId, payload, businessUnitId, version).subscribe((response) => {
+        expect(response).toBeNull();
+      });
+
+      const req = httpMock.expectOne(`${OPAL_FINES_PATHS.defendantAccounts}/${defendantAccountId}/remove-enf-hold`);
+      expect(req.request.method).toBe('PATCH');
+      expect(req.request.body).toEqual(payload);
+      expect(req.request.headers.get('Business-Unit-Id')).toBe(businessUnitId);
+      expect(req.request.headers.get('If-Match')).toBe(version);
+
+      req.flush(null);
+    });
+  });
+
   describe('getMinorCreditorAccountAtAGlance', () => {
     it('should return cached data if available', () => {
       const account_id: number = 77;
