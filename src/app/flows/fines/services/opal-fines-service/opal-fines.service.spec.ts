@@ -63,6 +63,8 @@ import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import { OPAL_FINES_ENFORCER_MOCK } from './mocks/opal-fines-enforcer.mock';
 import { OPAL_FINES_MINOR_CREDITOR_UPDATE_PAYLOAD_MOCK } from './mocks/opal-fines-minor-creditor-update-payload.mock';
 import { OPAL_FINES_ACCOUNT_MINOR_CREDITOR_CREDITOR_MOCK } from './mocks/opal-fines-account-minor-creditor-creditor.mock';
+import { IOpalFinesReport } from './interfaces/opal-fines-report.interface';
+import { IOpalFinesReportInstancesResponse } from './interfaces/opal-fines-report-instances-response.interface';
 
 describe('OpalFines', () => {
   let service: OpalFines;
@@ -163,6 +165,64 @@ describe('OpalFines', () => {
       expect(response).toEqual(mockBusinessUnits);
     });
     httpMock.expectNone(expectedUrl);
+  });
+
+  it('should send a GET request to report metadata API and cache the response', () => {
+    const reportId = 'operational_report_enforcement';
+    const mockReport: IOpalFinesReport = {
+      report_id: reportId,
+      report_title: 'Operational reports (by enforcement)',
+      can_manually_create: true,
+    };
+    const expectedUrl = `${OPAL_FINES_PATHS.reports}/${reportId}`;
+
+    service.getReport(reportId).subscribe((response) => {
+      expect(response).toEqual(mockReport);
+    });
+
+    const req = httpMock.expectOne(expectedUrl);
+    expect(req.request.method).toBe('GET');
+    req.flush(mockReport);
+
+    service.getReport(reportId).subscribe((response) => {
+      expect(response).toEqual(mockReport);
+    });
+
+    httpMock.expectNone(expectedUrl);
+  });
+
+  it('should send a GET request to report instances API with query params and not cache the response', () => {
+    const mockResponse: IOpalFinesReportInstancesResponse = {
+      report_instances: [],
+      count: 0,
+    };
+
+    service
+      .getReportInstances({
+        report_id: 'operational_report_enforcement',
+        from_date: '2026-06-02',
+        to_date: '2026-06-08',
+        business_units: [1],
+      })
+      .subscribe((response) => {
+        expect(response).toEqual(mockResponse);
+      });
+
+    const req = httpMock.expectOne((request) => request.url === OPAL_FINES_PATHS.reportInstances);
+    expect(req.request.method).toBe('GET');
+    expect(req.request.params.get('report_id')).toBe('operational_report_enforcement');
+    expect(req.request.params.get('from_date')).toBe('2026-06-02');
+    expect(req.request.params.get('to_date')).toBe('2026-06-08');
+    expect(req.request.params.getAll('business_units')).toEqual(['1']);
+    req.flush(mockResponse);
+
+    service.getReportInstances({ report_id: 'operational_report_enforcement' }).subscribe((response) => {
+      expect(response).toEqual(mockResponse);
+    });
+
+    const secondReq = httpMock.expectOne((request) => request.url === OPAL_FINES_PATHS.reportInstances);
+    expect(secondReq.request.method).toBe('GET');
+    secondReq.flush(mockResponse);
   });
 
   it('should send a GET request to court ref data API', () => {

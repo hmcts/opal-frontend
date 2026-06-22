@@ -61,6 +61,9 @@ import { IOpalFinesAddEnforcementActionPayload } from './interfaces/opal-fines-a
 import { IOpalFinesAccountMinorCreditorCreditor } from './interfaces/opal-fines-account-minor-creditor-creditor.interface';
 import { IOpalFinesDraftAccountPatchRequestPayload } from '@services/fines/opal-fines-service/types/opal-fines-draft-account-patch-request-payload.type';
 import { IOpalFinesDeleteDefendantAccountPartyPayload } from './interfaces/opal-fines-delete-defendant-account-party-payload.interface';
+import { IOpalFinesReport } from './interfaces/opal-fines-report.interface';
+import { IOpalFinesReportInstancesParams } from './interfaces/opal-fines-report-instances-params.interface';
+import { IOpalFinesReportInstancesResponse } from './interfaces/opal-fines-report-instances-response.interface';
 
 @Injectable({
   providedIn: 'root',
@@ -75,6 +78,11 @@ export class OpalFines {
   private readonly PARAM_NOT_SUBMITTED_BY = 'not_submitted_by';
   private readonly PARAM_ACCOUNT_STATUS_DATE_FROM = 'account_status_date_from';
   private readonly PARAM_ACCOUNT_STATUS_DATE_TO = 'account_status_date_to';
+  private readonly PARAM_FROM_DATE = 'from_date';
+  private readonly PARAM_TO_DATE = 'to_date';
+  private readonly PARAM_BUSINESS_UNITS = 'business_units';
+  private readonly PARAM_USER_ID = 'user_id';
+  private readonly PARAM_REPORT_ID = 'report_id';
 
   /**
    * Appends an array of values to the given HttpParams object under the specified key.
@@ -246,6 +254,60 @@ export class OpalFines {
       .pipe(shareReplay(1));
 
     return this.cache.businessUnitsCache$;
+  }
+
+  /**
+   * Retrieves report metadata for a report type.
+   * Metadata is cached because report configuration is reference-like data.
+   *
+   * @param reportId - The report type identifier.
+   * @returns An observable of report metadata.
+   */
+  public getReport(reportId: string | number): Observable<IOpalFinesReport> {
+    const cacheKey = reportId.toString();
+
+    if (!this.cache.reportsCache$[cacheKey]) {
+      this.cache.reportsCache$[cacheKey] = this.http
+        .get<IOpalFinesReport>(`${OPAL_FINES_PATHS.reports}/${reportId}`)
+        .pipe(shareReplay(1));
+    }
+
+    return this.cache.reportsCache$[cacheKey];
+  }
+
+  /**
+   * Retrieves report instances for a report type, user, and optional filters.
+   * This call is intentionally not cached because report generation state changes frequently.
+   *
+   * @param params - Report instance query parameters.
+   * @returns An observable of report instances.
+   */
+  public getReportInstances(
+    params: IOpalFinesReportInstancesParams = {},
+  ): Observable<IOpalFinesReportInstancesResponse> {
+    let httpParams = new HttpParams();
+
+    if (params.from_date) {
+      httpParams = httpParams.set(this.PARAM_FROM_DATE, params.from_date);
+    }
+
+    if (params.to_date) {
+      httpParams = httpParams.set(this.PARAM_TO_DATE, params.to_date);
+    }
+
+    if (params.report_id !== undefined && params.report_id !== null) {
+      httpParams = httpParams.set(this.PARAM_REPORT_ID, params.report_id.toString());
+    }
+
+    if (params.user_id !== undefined && params.user_id !== null) {
+      httpParams = httpParams.set(this.PARAM_USER_ID, params.user_id.toString());
+    }
+
+    httpParams = this.appendArrayParams(httpParams, this.PARAM_BUSINESS_UNITS, params.business_units);
+
+    return this.http.get<IOpalFinesReportInstancesResponse>(OPAL_FINES_PATHS.reportInstances, {
+      params: httpParams,
+    });
   }
 
   /**
