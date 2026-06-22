@@ -1,7 +1,7 @@
 @JIRA-LABEL:consolidation
 Feature: Write Off Release 1C Feature Toggles
 
-  @R1CWriteOff @JIRA-STORY:PO-3757 @JIRA-EPIC:PO-3685
+  @R1CWriteOff @JIRA-STORY:PO-3757 @JIRA-EPIC:PO-3685 @JIRA-TEST-KEY:PO-7563
   Scenario: Consolidate accounts is available through direct navigation when release 1c write off is enabled
     Given I am authenticated with email "opal-test@dev.platform.hmcts.net"
     When I navigate directly to the Consolidate accounts page
