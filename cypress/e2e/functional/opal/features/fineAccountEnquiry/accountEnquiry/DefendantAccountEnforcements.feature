@@ -58,7 +58,7 @@ Feature: Account Enquiries - Add Enforcement Override
       Then I should return to the Enforcement tab
       And the enforcement court summary shows the selected value
 
-    @JIRA-STORY:PO-1782 @JIRA-EPIC:PO-2630
+    @JIRA-STORY:PO-1782 @JIRA-EPIC:PO-2630 @JIRA-TEST-KEY:PO-7552
     Scenario: Save an enforcement action and return to the Enforcement tab
       When I search for the account by last name "AddEnfOverride{uniq}" and open the latest result
       And I go to the Enforcement tab

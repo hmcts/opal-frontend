@@ -1,7 +1,7 @@
 @JIRA-LABEL:manual-account-creation
 Feature: Draft Accounts Release 1A Feature Toggles
 
-  @R1A @JIRA-STORY:PO-3719 @JIRA-EPIC:PO-3685
+  @R1A @JIRA-STORY:PO-3719 @JIRA-EPIC:PO-3685 @JIRA-TEST-KEY:PO-7560
   Scenario: Direct navigation to the Accounts dashboard is allowed when release 1a is enabled
     Given I am authenticated with email "opal-test@dev.platform.hmcts.net"
     When I navigate directly to the Accounts dashboard
@@ -13,9 +13,13 @@ Feature: Draft Accounts Release 1A Feature Toggles
     When I navigate directly to the Accounts dashboard entry point "<entryPoint>"
     Then I should see the header containing text "<header>"
 
+    @JIRA-TEST-KEY:PO-7561
     Examples:
       | entryPoint                        | header          |
       | Create and Manage Draft Accounts  | Create accounts |
+    @JIRA-TEST-KEY:PO-7562
+    Examples:
+      | entryPoint                        | header          |
       | Check and Validate Draft Accounts | Review accounts |
 
   @R1AOff @JIRA-STORY:PO-3719 @JIRA-EPIC:PO-3685
