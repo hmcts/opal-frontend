@@ -8,7 +8,7 @@ export const FINES_ACC_DEFENDANT_DETAILS_HISTORY_AND_NOTES_FILTER_EMPTY_FORM_MOC
       categories: {
         amendments: false,
         enforcements: false,
-        transactions: false,
+        financial: false,
         notes: false,
         paymentTerms: false,
       },

@@ -8,7 +8,7 @@ export const FINES_ACC_DEFENDANT_DETAILS_HISTORY_AND_NOTES_FILTER_FORM_MOCK: IFi
       categories: {
         amendments: true,
         enforcements: false,
-        transactions: false,
+        financial: false,
         notes: true,
         paymentTerms: false,
       },

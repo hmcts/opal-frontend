@@ -7,7 +7,7 @@ export const FINES_ACC_DEFENDANT_DETAILS_HISTORY_AND_NOTES_FILTER_CATEGORIES: IF
   [
     { label: 'Amendments', value: 'amendments' },
     { label: 'Enforcement actions', value: 'enforcements' },
-    { label: 'Financial', value: 'transactions' },
+    { label: 'Financial', value: 'financial' },
     { label: 'Notes', value: 'notes' },
     { label: 'Payment terms', value: 'paymentTerms' },
   ];

@@ -1,6 +1,6 @@
 export type TFinesAccDefendantDetailsHistoryAndNotesFilterCategory =
   | 'amendments'
   | 'enforcements'
-  | 'transactions'
+  | 'financial'
   | 'notes'
   | 'paymentTerms';

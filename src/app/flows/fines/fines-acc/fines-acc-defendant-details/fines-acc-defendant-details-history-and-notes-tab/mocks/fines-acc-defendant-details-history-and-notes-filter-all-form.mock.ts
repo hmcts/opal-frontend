@@ -8,7 +8,7 @@ export const FINES_ACC_DEFENDANT_DETAILS_HISTORY_AND_NOTES_FILTER_ALL_FORM_MOCK:
       categories: {
         amendments: true,
         enforcements: true,
-        transactions: true,
+        financial: true,
         notes: false,
         paymentTerms: true,
       },
