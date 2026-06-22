@@ -203,7 +203,7 @@ describe(
 
     it(
       'Negative test: NOENF with no next permitted actions shows error screen and Go back returns to enforcement tab',
-      { tags: ['@JIRA-STORY:PO-1781', '@JIRA-STORY:PO-1825'] },
+      { tags: ['@JIRA-STORY:PO-1781', '@JIRA-STORY:PO-1825', '@JIRA-TEST-KEY:PO-7500'] },
       () => {
         let headerMock = structuredClone(createDefendantHeaderMockWithName('Robert', 'Thomson'));
 
@@ -249,7 +249,7 @@ describe(
 
     it(
       'Negative test: last enforcement has no next permitted actions shows error screen',
-      { tags: ['@JIRA-STORY:PO-1781', '@JIRA-STORY:PO-1825'] },
+      { tags: ['@JIRA-STORY:PO-1781', '@JIRA-STORY:PO-1825', '@JIRA-TEST-KEY:PO-7501'] },
       () => {
         let headerMock = structuredClone(createDefendantHeaderMockWithName('Robert', 'Thomson'));
 
