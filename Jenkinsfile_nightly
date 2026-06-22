@@ -17,18 +17,13 @@ properties([
     booleanParam(
       name: 'Component',
       defaultValue: true,
-      description: 'Run component tests excluding R1AOff and R1BOff'
+      description: 'Run component tests'
     ),
     booleanParam(name: 'Smoke', defaultValue: true, description: 'Run smoke tests'),
     booleanParam(
       name: 'Functional',
       defaultValue: true,
       description: 'Run functional tests excluding R1AOff and R1BOff'
-    ),
-    booleanParam(
-      name: 'RunComponentAllFlagsOff',
-      defaultValue: false,
-      description: 'Run component tests for R1AOff and R1BOff scenarios only'
     ),
     booleanParam(name: 'Legacy', defaultValue: false, description: 'Run legacy tests'),
     booleanParam(name: 'RunChrome', defaultValue: false, description: 'Run Chrome tests'),
@@ -75,13 +70,11 @@ String failureResult = 'FAILURE'
 @Field int zeroIndex = 0
 @Field String nightlyTestUrlStaging = 'https://opal-frontend.staging.apps.hmcts.net/'
 @Field String nightlyTestUrlDemo = 'https://opal-frontend.demo.apps.hmcts.net/'
-@Field String componentAllFlagsOffDirName = 'component-all-flags-off'
 @Field String demoStageUatTechnicalDirName = 'uat-technical'
 @Field String demoStageR1aDirName = 'r1a-legacy-demo'
 @Field String demoStageR1aOffDirName = 'r1a-off-legacy-demo'
 @Field String legacyGatewayUrlPreProd = 'https://cloudgobgateway.test.platform.hmcts.net/opal'
 @Field String legacyGatewayUrlDev = 'https://opal-legacy-db-stub.staging.platform.hmcts.net/opal'
-@Field String componentExcludeGrepTags = '-@R1AOff+-@R1BOff'
 @Field String launchDarklyApiVersion = '20240415'
 @Field String launchDarklyEnvironmentKey = 'demo'
 @Field String launchDarklyFlagKey = 'app-mode'
@@ -569,10 +562,8 @@ void runComponentStage(
   String browserToRun
 ) {
   runNightlyStage(enabled, 'Component Tests', failureResultValue, 'Component tests failed') {
-    String componentCommand = "test:component --expose grepTags=${componentExcludeGrepTags}"
-
     try {
-      builder.yarn(componentCommand)
+      builder.yarn('test:component')
     } finally {
       if (shouldRunWithZephyr) {
         try {
@@ -588,32 +579,6 @@ void runComponentStage(
         "${functionalOutputRoot}/component/${browserToRun}/html/",
         'component-report.html',
         "Component Test Report (${browserToRun})"
-      )
-    }
-  }
-}
-
-// Run the optional component all-flags-off checks and publish a dedicated report.
-void runComponentAllFlagsOffStage(
-  boolean enabled,
-  String failureResultValue,
-  uk.gov.hmcts.contino.YarnBuilder builder,
-  boolean shouldRunWithZephyr,
-  String browserToRun
-) {
-  String componentAllFlagsOffCommand =
-    shouldRunWithZephyr ? 'zephyr:test:component_all_flags_off' : 'test:component:all_flags_off'
-  runNightlyStage(enabled, 'Component All Flags Off', failureResultValue, 'Component all flags off tests failed') {
-    try {
-      builder.yarn(componentAllFlagsOffCommand)
-    } finally {
-      prepareComponentStageArtifacts(browserToRun, componentAllFlagsOffDirName, componentAllFlagsOffDirName)
-      archiveArtifact("${functionalOutputRoot}/component/${browserToRun}/${componentAllFlagsOffDirName}/**")
-      archiveZephyrReports("${functionalOutputRoot}/component/${browserToRun}/${componentAllFlagsOffDirName}")
-      publishHtmlReport(
-        "${functionalOutputRoot}/component/${browserToRun}/${componentAllFlagsOffDirName}/html/",
-        "${componentAllFlagsOffDirName}-report.html",
-        "Component All Flags Off Report (${browserToRun})"
       )
     }
   }
@@ -901,7 +866,6 @@ withNightlyPipeline(type, product, component) {
     echo 'Component:' + params.Component
     echo 'Smoke:' + params.Smoke
     echo 'Functional:' + params.Functional
-    echo 'RunComponentAllFlagsOff:' + params.RunComponentAllFlagsOff
     echo 'Legacy:' + params.Legacy
     echo 'RunChrome:' + params.RunChrome
     echo 'RunFirefox:' + params.RunFirefox
@@ -930,13 +894,6 @@ Description: ${env.EXECUTION_CYCLE_DESCRIPTION}
     }
     runComponentStage(
       params.Component,
-      failureResult,
-      yarnBuilder,
-      shouldRunWithZephyr,
-      browserToRun
-    )
-    runComponentAllFlagsOffStage(
-      params.RunComponentAllFlagsOff,
       failureResult,
       yarnBuilder,
       shouldRunWithZephyr,
