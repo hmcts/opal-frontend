@@ -18,7 +18,7 @@ Feature: Fines primary navigation
     Given I am authenticated with email "opal-test@dev.platform.hmcts.net"
     Then I should not see the Fines primary navigation item "Search"
 
-  @JIRA-STORY:PO-2611
+  @JIRA-STORY:PO-2611 @R1B
   Scenario Outline: AC4a AC4b AC4c - Selecting a top-level Fines area updates the active navigation item - <menuItem>
     Given I am logged in on the Fines Search landing page with email "opal-test@dev.platform.hmcts.net"
     When I select the Fines primary navigation item "<menuItem>"
@@ -46,7 +46,7 @@ Feature: Fines primary navigation
       | Administration |
 
   @JIRA-EPIC:PO-2627
-  @JIRA-STORY:PO-2611 @JIRA-TEST-KEY:PO-5411
+  @JIRA-STORY:PO-2611 @JIRA-TEST-KEY:PO-5411 @R1B
   Scenario: AC5a - Signing out from the Fines primary navigation returns the user to sign in
     Given I am logged in on the Fines Search landing page with email "opal-test@dev.platform.hmcts.net"
     When I sign out from the Fines primary navigation

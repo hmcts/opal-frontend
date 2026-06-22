@@ -16,7 +16,7 @@ Feature: Manual account creation - Create Draft Account
   @JIRA-EPIC:PO-2750
   @JIRA-STORY:PO-2763
   #AC-5 click cancel without entering details
-  @JIRA-TEST-KEY:PO-5544
+  @JIRA-TEST-KEY:PO-5544 @R1B
   Scenario: Clicking Cancel without entering details returns to the Inputter Dashboard
     When I open Manual Account Creation
     Then I cancel without entering data
