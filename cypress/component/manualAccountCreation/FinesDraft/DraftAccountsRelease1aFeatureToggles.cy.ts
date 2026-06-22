@@ -181,87 +181,59 @@ describe('FinesDraftRelease1aFeatureToggles', () => {
     cy.contains('a.moj-sub-navigation__link', 'Approved').should('be.visible').click();
   };
 
-  it(
-    '(AC.1, AC.2, AC.4) should show Accounts in primary navigation for draft-account users when release-1a is enabled',
-    { tags: [...buildTags(RELEASE_1A_STORY_TAG), RELEASE_EPIC_TAG, '@R1A'] },
-    () => {
+  it('(AC.1, AC.2, AC.4) should show Accounts in primary navigation for draft-account users when release-1a is enabled', { tags: [...buildTags(RELEASE_1A_STORY_TAG), RELEASE_EPIC_TAG, '@R1A', '@JIRA-TEST-KEY:PO-7536'] }, () => {
       setupAppComponent(draftAccountPermissionIds, { 'release-1a': true });
 
       cy.get(PrimaryNav.container).should('be.visible');
       cy.get(PrimaryNav.itemByText(PrimaryNav.labels.accounts)).should('be.visible');
-    },
-  );
+    });
 
-  it(
-    '(AC.3, AC.4) should hide Accounts in primary navigation for draft-account only users when release-1a is disabled',
-    { tags: [...buildTags(RELEASE_1A_STORY_TAG), RELEASE_EPIC_TAG, '@R1AOff'] },
-    () => {
+  it('(AC.3, AC.4) should hide Accounts in primary navigation for draft-account only users when release-1a is disabled', { tags: [...buildTags(RELEASE_1A_STORY_TAG), RELEASE_EPIC_TAG, '@R1AOff', '@JIRA-TEST-KEY:PO-7537'] }, () => {
       setupAppComponent(draftAccountPermissionIds, { 'release-1a': false });
 
       cy.get(PrimaryNav.container).should('be.visible');
       cy.get(PrimaryNav.itemByText(PrimaryNav.labels.accounts)).should('not.exist');
-    },
-  );
+    });
 
-  it(
-    '(AC.4, AC.5) should keep Accounts in primary navigation for consolidation users when release-1a is disabled',
-    { tags: [...buildTags(RELEASE_1A_STORY_TAG), RELEASE_EPIC_TAG, '@R1AOff'] },
-    () => {
+  it('(AC.4, AC.5) should keep Accounts in primary navigation for consolidation users when release-1a is disabled', { tags: [...buildTags(RELEASE_1A_STORY_TAG), RELEASE_EPIC_TAG, '@R1AOff', '@JIRA-TEST-KEY:PO-7538'] }, () => {
       setupAppComponent(consolidationPermissionIds, { 'release-1a': false, 'release-1c-write-off': true });
 
       cy.get(PrimaryNav.container).should('be.visible');
       cy.get(PrimaryNav.itemByText(PrimaryNav.labels.accounts)).should('be.visible');
-    },
-  );
+    });
 
-  it(
-    '(AC.1, AC.2, AC.4) should show the Draft accounts dashboard entry points when release-1a is enabled',
-    { tags: [...buildTags(RELEASE_1A_STORY_TAG), RELEASE_EPIC_TAG, '@R1A'] },
-    () => {
+  it('(AC.1, AC.2, AC.4) should show the Draft accounts dashboard entry points when release-1a is enabled', { tags: [...buildTags(RELEASE_1A_STORY_TAG), RELEASE_EPIC_TAG, '@R1A', '@JIRA-TEST-KEY:PO-7539'] }, () => {
       setupDashboardComponent(draftAccountPermissionIds, { 'release-1a': true });
 
       cy.contains('h1', 'Accounts').should('be.visible');
       cy.contains('h2', 'Draft accounts').should('be.visible');
       cy.get('#finesCavInputterLink').should('be.visible').and('contain.text', 'Create and Manage Draft Accounts');
       cy.get('#finesCavCheckerLink').should('be.visible').and('contain.text', 'Check and Validate Draft Accounts');
-    },
-  );
+    });
 
-  it(
-    '(AC.3, AC.4) should hide the Draft accounts dashboard entry points when release-1a is disabled',
-    { tags: [...buildTags(RELEASE_1A_STORY_TAG), RELEASE_EPIC_TAG, '@R1AOff'] },
-    () => {
+  it('(AC.3, AC.4) should hide the Draft accounts dashboard entry points when release-1a is disabled', { tags: [...buildTags(RELEASE_1A_STORY_TAG), RELEASE_EPIC_TAG, '@R1AOff', '@JIRA-TEST-KEY:PO-7540'] }, () => {
       setupDashboardComponent(draftAccountPermissionIds, { 'release-1a': false });
 
       cy.contains('h1', 'Accounts').should('be.visible');
       cy.contains('h2', 'Draft accounts').should('not.exist');
       cy.get('#finesCavInputterLink').should('not.exist');
       cy.get('#finesCavCheckerLink').should('not.exist');
-    },
-  );
+    });
 
-  it(
-    '(AC.4, AC.5) should keep non-R1A Accounts dashboard links available when release-1a is disabled',
-    { tags: [...buildTags(RELEASE_1A_STORY_TAG), RELEASE_EPIC_TAG, '@R1AOff'] },
-    () => {
+  it('(AC.4, AC.5) should keep non-R1A Accounts dashboard links available when release-1a is disabled', { tags: [...buildTags(RELEASE_1A_STORY_TAG), RELEASE_EPIC_TAG, '@R1AOff', '@JIRA-TEST-KEY:PO-7541'] }, () => {
       setupDashboardComponent(consolidationPermissionIds, { 'release-1a': false, 'release-1c-write-off': true });
 
       cy.contains('h1', 'Accounts').should('be.visible');
       cy.get('#finesConsolidationLink').should('be.visible').and('contain.text', 'Consolidate accounts');
       cy.get('#finesCavInputterLink').should('not.exist');
       cy.get('#finesCavCheckerLink').should('not.exist');
-    },
-  );
+    });
 
-  it(
-    '(AC.5) should show approved account numbers as links when release-1b is enabled',
-    { tags: [...buildTags(RELEASE_1A_STORY_TAG, RELEASE_1B_STORY_TAG), RELEASE_EPIC_TAG, '@R1A', '@R1B'] },
-    () => {
+  it('(AC.5) should show approved account numbers as links when release-1b is enabled', { tags: [...buildTags(RELEASE_1A_STORY_TAG, RELEASE_1B_STORY_TAG), RELEASE_EPIC_TAG, '@R1A', '@R1B', '@JIRA-TEST-KEY:PO-7542'] }, () => {
       setupApprovedAccounts({ 'release-1a': true, 'release-1b': true }, true);
 
       cy.get(Table.cells.accountLink).should('have.length', 2);
       cy.contains(Table.cells.accountLink, 'FINE123456').should('be.visible');
       cy.contains(Table.cells.accountLink, 'FP123456').should('be.visible');
-    },
-  );
+    });
 });

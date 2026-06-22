@@ -201,10 +201,7 @@ describe(
       );
     });
 
-    it(
-      'Negative test: NOENF with no next permitted actions shows error screen and Go back returns to enforcement tab',
-      { tags: ['@JIRA-STORY:PO-1781', '@JIRA-STORY:PO-1825'] },
-      () => {
+    it('Negative test: NOENF with no next permitted actions shows error screen and Go back returns to enforcement tab', { tags: ['@JIRA-STORY:PO-1781', '@JIRA-STORY:PO-1825', '@JIRA-TEST-KEY:PO-7500'] }, () => {
         let headerMock = structuredClone(createDefendantHeaderMockWithName('Robert', 'Thomson'));
 
         headerMock.debtor_type = 'Defendant';
@@ -244,13 +241,9 @@ describe(
 
         // AC3 - Go back
         cy.contains('Go back').click();
-      },
-    );
+      });
 
-    it(
-      'Negative test: last enforcement has no next permitted actions shows error screen',
-      { tags: ['@JIRA-STORY:PO-1781', '@JIRA-STORY:PO-1825'] },
-      () => {
+    it('Negative test: last enforcement has no next permitted actions shows error screen', { tags: ['@JIRA-STORY:PO-1781', '@JIRA-STORY:PO-1825', '@JIRA-TEST-KEY:PO-7501'] }, () => {
         let headerMock = structuredClone(createDefendantHeaderMockWithName('Robert', 'Thomson'));
 
         headerMock.debtor_type = 'Defendant';
@@ -297,8 +290,7 @@ describe(
 
         // AC3
         cy.contains('Go back').click();
-      },
-    );
+      });
 
     it(
       'AC1,1a. Individual: Negative testing, result ID is DW so without NOENF the add enf action button does not appear.',

@@ -72,10 +72,7 @@ describe('Account Enquiry Impositions', () => {
     interceptAuthenticatedUser();
   });
 
-  it(
-    'AC1a, AC1b, AC1c, AC1d, AC1e: fetches impositions when the tab is selected and renders the read-only table with zero-balance formatting',
-    { tags: [...buildTags(IMPOSITIONS_STORY_TAG), IMPOSITIONS_EPIC_TAG] },
-    () => {
+  it('AC1a, AC1b, AC1c, AC1d, AC1e: fetches impositions when the tab is selected and renders the read-only table with zero-balance formatting', { tags: [...buildTags(IMPOSITIONS_STORY_TAG), IMPOSITIONS_EPIC_TAG, '@JIRA-TEST-KEY:PO-7473'] }, () => {
       setupImpositionsScreen();
 
       cy.wait('@getAtAGlance');
@@ -114,13 +111,9 @@ describe('Account Enquiry Impositions', () => {
 
       expectCellText(getImpositionsCell('date-added', 2), '—');
       expectCellText(getImpositionsCell('date-imposed', 2), '—');
-    },
-  );
+    });
 
-  it(
-    'AC2a, AC2b: displays the sentencing court name only when the imposition includes an imposing court',
-    { tags: [...buildTags(IMPOSITIONS_STORY_TAG), IMPOSITIONS_EPIC_TAG] },
-    () => {
+  it('AC2a, AC2b: displays the sentencing court name only when the imposition includes an imposing court', { tags: [...buildTags(IMPOSITIONS_STORY_TAG), IMPOSITIONS_EPIC_TAG, '@JIRA-TEST-KEY:PO-7474'] }, () => {
       setupImpositionsScreen('impositions');
 
       cy.wait('@getImpositions');
@@ -128,13 +121,9 @@ describe('Account Enquiry Impositions', () => {
       expectCellText(getImpositionsCell('imposed-by', 0), 'West London Magistrates Court');
       cy.get(getImpositionsCell('imposed-by', 1)).should('be.empty');
       cy.get(getImpositionsCell('imposed-by', 2)).should('be.empty');
-    },
-  );
+    });
 
-  it(
-    'AC3a: clicking a Minor Creditor link routes to the Minor Creditor Details page',
-    { tags: [...buildTags(IMPOSITIONS_STORY_TAG), IMPOSITIONS_EPIC_TAG] },
-    () => {
+  it('AC3a: clicking a Minor Creditor link routes to the Minor Creditor Details page', { tags: [...buildTags(IMPOSITIONS_STORY_TAG), IMPOSITIONS_EPIC_TAG, '@JIRA-TEST-KEY:PO-7475'] }, () => {
       setupImpositionsScreen('impositions');
 
       cy.wait('@getImpositions');
@@ -154,13 +143,9 @@ describe('Account Enquiry Impositions', () => {
             expect(url).to.eq('/fines/account/minor-creditor/660000000001/details');
           });
         });
-    },
-  );
+    });
 
-  it(
-    'AC3b: clicking a Major Creditor link routes to the Major Creditor Details page',
-    { tags: [...buildTags(IMPOSITIONS_STORY_TAG), IMPOSITIONS_EPIC_TAG] },
-    () => {
+  it('AC3b: clicking a Major Creditor link routes to the Major Creditor Details page', { tags: [...buildTags(IMPOSITIONS_STORY_TAG), IMPOSITIONS_EPIC_TAG, '@JIRA-TEST-KEY:PO-7476'] }, () => {
       setupImpositionsScreen('impositions');
 
       cy.wait('@getImpositions');
@@ -180,13 +165,9 @@ describe('Account Enquiry Impositions', () => {
             expect(url).to.contain('/major-creditor/');
           });
         });
-    },
-  );
+    });
 
-  it(
-    'AC3c: paginates the impositions table to 25 results per page',
-    { tags: [...buildTags(IMPOSITIONS_STORY_TAG), IMPOSITIONS_EPIC_TAG] },
-    () => {
+  it('AC3c: paginates the impositions table to 25 results per page', { tags: [...buildTags(IMPOSITIONS_STORY_TAG), IMPOSITIONS_EPIC_TAG, '@JIRA-TEST-KEY:PO-7477'] }, () => {
       setupImpositionsScreen('impositions');
 
       cy.wait('@getImpositions');
@@ -203,6 +184,5 @@ describe('Account Enquiry Impositions', () => {
       cy.get(IMPOSITIONS.paginationText).should('contain', 'Showing 26 to 33 of 33 total results');
       expectCellText(getImpositionsCell('creditor', 0), 'Major Creditor 23');
       cy.get(IMPOSITIONS.component).should('not.contain.text', 'Central Funds');
-    },
-  );
+    });
 });

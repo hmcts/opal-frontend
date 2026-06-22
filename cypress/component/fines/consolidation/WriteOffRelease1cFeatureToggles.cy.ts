@@ -124,67 +124,44 @@ describe('WriteOffRelease1cFeatureToggles', () => {
     });
   };
 
-  it(
-    'should make Accounts available in primary navigation for consolidation users when release-1c-write-off is enabled',
-    { tags: [...buildTags(RELEASE_1C_WRITE_OFF_STORY_TAG), RELEASE_EPIC_TAG, '@R1CWriteOff'] },
-    () => {
+  it('should make Accounts available in primary navigation for consolidation users when release-1c-write-off is enabled', { tags: [...buildTags(RELEASE_1C_WRITE_OFF_STORY_TAG), RELEASE_EPIC_TAG, '@R1CWriteOff', '@JIRA-TEST-KEY:PO-7530'] }, () => {
       setupAppComponent(consolidationPermissionIds, { 'release-1a': false, 'release-1c-write-off': true });
 
       cy.get(PrimaryNav.container).should('be.visible');
       cy.get(PrimaryNav.itemByText(PrimaryNav.labels.accounts)).should('be.visible');
-    },
-  );
+    });
 
-  it(
-    'should hide Accounts from primary navigation for consolidation-only users when release-1c-write-off is disabled',
-    { tags: [...buildTags(RELEASE_1C_WRITE_OFF_STORY_TAG), RELEASE_EPIC_TAG, '@R1CWriteOffOff'] },
-    () => {
+  it('should hide Accounts from primary navigation for consolidation-only users when release-1c-write-off is disabled', { tags: [...buildTags(RELEASE_1C_WRITE_OFF_STORY_TAG), RELEASE_EPIC_TAG, '@R1CWriteOffOff', '@JIRA-TEST-KEY:PO-7531'] }, () => {
       setupAppComponent(consolidationPermissionIds, { 'release-1a': true, 'release-1c-write-off': false });
 
       cy.get(PrimaryNav.container).should('be.visible');
       cy.get(PrimaryNav.itemByText(PrimaryNav.labels.accounts)).should('not.exist');
-    },
-  );
+    });
 
-  it(
-    'should keep Accounts available in primary navigation for draft-account users when release-1c-write-off is disabled',
-    { tags: [...buildTags(RELEASE_1C_WRITE_OFF_STORY_TAG), RELEASE_EPIC_TAG, '@R1CWriteOffOff'] },
-    () => {
+  it('should keep Accounts available in primary navigation for draft-account users when release-1c-write-off is disabled', { tags: [...buildTags(RELEASE_1C_WRITE_OFF_STORY_TAG), RELEASE_EPIC_TAG, '@R1CWriteOffOff', '@JIRA-TEST-KEY:PO-7532'] }, () => {
       setupAppComponent(draftAccountPermissionIds, { 'release-1a': true, 'release-1c-write-off': false });
 
       cy.get(PrimaryNav.container).should('be.visible');
       cy.get(PrimaryNav.itemByText(PrimaryNav.labels.accounts)).should('be.visible');
-    },
-  );
+    });
 
-  it(
-    'should make the Consolidate accounts entry point available on the Accounts dashboard when release-1c-write-off is enabled',
-    { tags: [...buildTags(RELEASE_1C_WRITE_OFF_STORY_TAG), RELEASE_EPIC_TAG, '@R1CWriteOff'] },
-    () => {
+  it('should make the Consolidate accounts entry point available on the Accounts dashboard when release-1c-write-off is enabled', { tags: [...buildTags(RELEASE_1C_WRITE_OFF_STORY_TAG), RELEASE_EPIC_TAG, '@R1CWriteOff', '@JIRA-TEST-KEY:PO-7533'] }, () => {
       setupDashboardComponent(consolidationPermissionIds, { 'release-1a': false, 'release-1c-write-off': true });
 
       cy.contains('h1', 'Accounts').should('be.visible');
       cy.contains('h2', 'Account management').should('be.visible');
       cy.get('#finesConsolidationLink').should('be.visible').and('contain.text', 'Consolidate accounts');
-    },
-  );
+    });
 
-  it(
-    'should hide the Consolidate accounts entry point from the Accounts dashboard when release-1c-write-off is disabled',
-    { tags: [...buildTags(RELEASE_1C_WRITE_OFF_STORY_TAG), RELEASE_EPIC_TAG, '@R1CWriteOffOff'] },
-    () => {
+  it('should hide the Consolidate accounts entry point from the Accounts dashboard when release-1c-write-off is disabled', { tags: [...buildTags(RELEASE_1C_WRITE_OFF_STORY_TAG), RELEASE_EPIC_TAG, '@R1CWriteOffOff', '@JIRA-TEST-KEY:PO-7534'] }, () => {
       setupDashboardComponent(consolidationPermissionIds, { 'release-1a': false, 'release-1c-write-off': false });
 
       cy.contains('h1', 'Accounts').should('be.visible');
       cy.contains('h2', 'Account management').should('not.exist');
       cy.get('#finesConsolidationLink').should('not.exist');
-    },
-  );
+    });
 
-  it(
-    'should keep existing draft account dashboard entry points available when release-1c-write-off is disabled',
-    { tags: [...buildTags(RELEASE_1C_WRITE_OFF_STORY_TAG), RELEASE_EPIC_TAG, '@R1CWriteOffOff'] },
-    () => {
+  it('should keep existing draft account dashboard entry points available when release-1c-write-off is disabled', { tags: [...buildTags(RELEASE_1C_WRITE_OFF_STORY_TAG), RELEASE_EPIC_TAG, '@R1CWriteOffOff', '@JIRA-TEST-KEY:PO-7535'] }, () => {
       setupDashboardComponent(draftAccountPermissionIds, { 'release-1a': true, 'release-1c-write-off': false });
 
       cy.contains('h1', 'Accounts').should('be.visible');
@@ -192,6 +169,5 @@ describe('WriteOffRelease1cFeatureToggles', () => {
       cy.get('#finesCavInputterLink').should('be.visible').and('contain.text', 'Create and Manage Draft Accounts');
       cy.get('#finesCavCheckerLink').should('be.visible').and('contain.text', 'Check and Validate Draft Accounts');
       cy.get('#finesConsolidationLink').should('not.exist');
-    },
-  );
+    });
 });
