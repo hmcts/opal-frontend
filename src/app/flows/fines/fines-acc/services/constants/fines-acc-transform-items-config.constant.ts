@@ -20,4 +20,6 @@ export const FINES_ACC_BUILD_TRANSFORM_ITEMS_CONFIG: ITransformItem[] = [
   { key: 'posted_date', ...BUILD_PAYLOAD_DATE_FORMAT },
   { key: 'payment_card_last_requested', ...BUILD_PAYLOAD_DATE_FORMAT },
   { key: 'date_notice_issued', ...BUILD_PAYLOAD_DATE_FORMAT },
+  { key: 'dateFrom', ...BUILD_PAYLOAD_DATE_FORMAT },
+  { key: 'dateTo', ...BUILD_PAYLOAD_DATE_FORMAT },
 ];
