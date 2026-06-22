@@ -12,7 +12,7 @@ Feature: Financial Movements Release 1C Financial Movements Feature Toggles
 
   @R1CFinancialMovementsOff @JIRA-STORY:PO-7266 @JIRA-EPIC:PO-3685
   Scenario: Finance is hidden from the primary navigation when release 1c financial movements is disabled
-    Given I am logged in with email "opal-test@dev.platform.hmcts.net"
+    Given I am authenticated with email "opal-test@dev.platform.hmcts.net"
     Then I should not see the Fines primary navigation item "Finance"
 
   @R1CFinancialMovementsOff @JIRA-STORY:PO-7266 @JIRA-EPIC:PO-3685
