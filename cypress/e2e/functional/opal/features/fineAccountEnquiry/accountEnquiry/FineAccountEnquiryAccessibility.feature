@@ -150,7 +150,7 @@ Feature: Account Enquiries - Enforcement Accessibility
     And I open the add enforcement action form
     Then I check the page for accessibility
 
-  @JIRA-STORY:PO-1782 @JIRA-EPIC:PO-2630
+  @JIRA-STORY:PO-1782 @JIRA-EPIC:PO-2630 @JIRA-TEST-KEY:PO-7555
   Scenario: Confirm enforcement action page accessibility
     Given I create a "adultOrYouthOnly" draft account with the following details and set status "Publishing Pending" using user "opal-test-10@dev.platform.hmcts.net":
       | Account_status                                  | Submitted                           |

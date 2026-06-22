@@ -1,7 +1,7 @@
 @JIRA-LABEL:account-enquiry
 Feature: Search and Matches Release 1B Feature Toggles
 
-  @R1B @JIRA-STORY:PO-3720 @JIRA-EPIC:PO-3685
+  @R1B @JIRA-STORY:PO-3720 @JIRA-EPIC:PO-3685 @JIRA-TEST-KEY:PO-7554
   Scenario: Search and Matches is available when release 1b is enabled
     Given I am authenticated with email "opal-test@dev.platform.hmcts.net"
     And a published adult or youth defendant account exists:
