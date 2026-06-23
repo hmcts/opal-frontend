@@ -52,18 +52,6 @@ export class FinesAccDefendantDetailsHistoryAndNotesTabComponent implements OnCh
   }
 
   /**
-   * Logs the transformed History and notes details while the table rendering work is pending.
-   *
-   * @param tabData - The raw History and notes tab data returned by the API.
-   */
-  private logTransformedHistoryAndNotesData(tabData: IOpalFinesAccountDefendantDetailsHistoryAndNotesTabRefData): void {
-    const historyItems = this.getHistoryItems(tabData);
-    const transformedHistoryItems = this.payloadService.transformHistoryAndNotesItems(historyItems);
-
-    console.log('Transformed history and notes details', transformedHistoryItems);
-  }
-
-  /**
    * Extracts history item arrays from the likely API response properties.
    *
    * @param tabData - The raw History and notes tab data returned by the API.
@@ -102,7 +90,6 @@ export class FinesAccDefendantDetailsHistoryAndNotesTabComponent implements OnCh
     const displayTabData$ = tabData$.pipe(
       tap((data) => {
         this.latestTabData = data;
-        this.logTransformedHistoryAndNotesData(data);
       }),
     );
 

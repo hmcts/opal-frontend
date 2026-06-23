@@ -22,7 +22,6 @@ describe('FinesAccDefendantDetailsHistoryAndNotesTabComponent', () => {
   let mockPayloadService: any;
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   let mockAccountStore: any;
-  let consoleLogSpy: ReturnType<typeof vi.spyOn>;
 
   beforeEach(async () => {
     mockOpalFinesService = {
@@ -171,30 +170,5 @@ describe('FinesAccDefendantDetailsHistoryAndNotesTabComponent', () => {
     component.handleFilterOpenChange(true);
 
     expect(component.filterOpen).toBe(true);
-  });
-
-  it('should log transformed history and notes data emitted by the display stream', () => {
-    const rawHistoryItem = {
-      type: 'Note',
-      details: {
-        noteText: 'Customer called, requested update.',
-      },
-    };
-
-    component.tabData$ = of({
-      version: null,
-      history_items: [rawHistoryItem],
-    });
-
-    fixture.detectChanges();
-    component.historyAndNotesTabData$.subscribe();
-
-    expect(mockPayloadService.transformHistoryAndNotesItems).toHaveBeenLastCalledWith([rawHistoryItem]);
-    expect(consoleLogSpy).toHaveBeenLastCalledWith('Transformed history and notes details', [
-      {
-        ...rawHistoryItem,
-        details: { line1: [{ fragments: [{ text: 'Transformed detail', bold: false, hyphen: false }] }], line2: null },
-      },
-    ]);
   });
 });
