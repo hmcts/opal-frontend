@@ -23,7 +23,7 @@ properties([
     booleanParam(
       name: 'Functional',
       defaultValue: true,
-      description: 'Run functional tests excluding R1AOff and R1BOff'
+      description: 'Run functional tests excluding R1AOff, R1BOff, R1CWriteOffOff and R1CEnforcementOperationalReportingOff'
     ),
     booleanParam(name: 'Legacy', defaultValue: false, description: 'Run legacy tests'),
     booleanParam(name: 'RunChrome', defaultValue: false, description: 'Run Chrome tests'),
