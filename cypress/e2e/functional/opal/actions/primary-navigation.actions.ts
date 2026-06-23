@@ -92,19 +92,21 @@ export class PrimaryNavigationActions {
    */
   public assertMenuItemsInOrder(): void {
     log('assert', 'Checking primary navigation item order');
-    cy.get('body', this.common.getTimeoutOptions())
-      .find(L.itemByText(L.labels.reports))
-      .then(($reportsItem) => {
-        const expectedItems = $reportsItem.length ? L.expectedItemsWithReports : L.expectedItemsWithoutReports;
+    const expectedItemOrder = PRIMARY_NAV_ITEMS.map((item) => item.label);
 
-        cy.get(L.items, this.common.getTimeoutOptions())
-          .should('have.length', expectedItems.length)
-          .then(($items) => {
-            const labels = [...$items].map((item) => item.textContent?.trim() ?? '');
+    cy.get(L.items, this.common.getTimeoutOptions()).then(($items) => {
+      const labels = [...$items]
+        .map((item) => item.textContent?.trim() ?? '')
+        .filter((label): label is string => label.length > 0);
+      // Search and Accounts are the stable baseline; the remaining items may be removed by flags.
+      const expectedLeadingItems = PRIMARY_NAV_ITEMS.slice(0, 2).map((item) => item.label);
+      const expectedVisibleItems = expectedItemOrder.filter((label) => labels.includes(label));
 
-            expect(labels).to.deep.equal(expectedItems);
-          });
-      });
+      expect(labels.slice(0, expectedLeadingItems.length), 'primary navigation leading items').to.deep.equal(
+        expectedLeadingItems,
+      );
+      expect(labels).to.deep.equal(expectedVisibleItems);
+    });
   }
 
   /**
@@ -118,14 +120,18 @@ export class PrimaryNavigationActions {
 
     log('assert', 'Checking active primary navigation item', { itemLabel });
     cy.contains(`${L.container} .moj-primary-navigation__link`, itemLabel, this.common.getTimeoutOptions())
-      .should('have.attr', 'aria-current', 'page')
+      .should('be.visible')
+      .and('have.attr', 'aria-current', 'page')
       .and('contain.text', itemLabel);
 
-    PRIMARY_NAV_ITEMS.filter((item) => item.label !== itemLabel).forEach((item) => {
-      cy.contains(`${L.container} .moj-primary-navigation__link`, item.label, this.common.getTimeoutOptions()).should(
-        'not.have.attr',
-        'aria-current',
-      );
+    cy.get(L.items, this.common.getTimeoutOptions()).then(($items) => {
+      const renderedItems = [...$items].filter((item): item is HTMLElement => (item.textContent?.trim().length ?? 0) > 0);
+
+      renderedItems
+        .filter((item) => item.textContent?.trim() !== itemLabel)
+        .forEach((item) => {
+          expect(item).not.to.have.attr('aria-current');
+        });
     });
   }
 

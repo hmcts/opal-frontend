@@ -12,7 +12,7 @@ Feature: Administration Release 1C Administration Feature Toggles
 
   @R1CAdministrationOff @JIRA-STORY:PO-7266 @JIRA-EPIC:PO-3685
   Scenario: Administration is hidden from the primary navigation when release 1c administration is disabled
-    Given I am authenticated with email "opal-test@dev.platform.hmcts.net"
+    Given I am logged in on the Fines Search landing page with email "opal-test@dev.platform.hmcts.net"
     Then I should not see the Fines primary navigation item "Administration"
 
   @R1CAdministrationOff @JIRA-STORY:PO-7266 @JIRA-EPIC:PO-3685
