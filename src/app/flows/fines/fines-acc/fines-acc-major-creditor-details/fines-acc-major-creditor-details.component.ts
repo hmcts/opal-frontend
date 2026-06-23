@@ -1,6 +1,6 @@
 import { ChangeDetectionStrategy, Component, inject, OnDestroy, OnInit } from '@angular/core';
 import { EMPTY, merge, Observable, of } from 'rxjs';
-import { takeUntil, tap } from 'rxjs/operators';
+import { takeUntil } from 'rxjs/operators';
 // Services
 import { OpalFines } from '../../services/opal-fines-service/opal-fines.service';
 // Stores
@@ -42,7 +42,7 @@ import { FINES_ACC_MAJOR_CREDITOR_DETAILS_ROUTE_DATA_KEYS } from './constants/fi
 import { IFinesAccMajorCreditorAccountTabsCacheMap } from './interfaces/fines-acc-major-creditor-account-tabs-cache-map.interface';
 import { FINES_ACC_MAJOR_CREDITOR_ACCOUNT_TABS_CACHE_MAP } from './constants/fines-acc-major-creditor-account-tabs-cache-map.constant';
 import { IOpalFinesAccountMajorCreditorAtAGlance } from '../../services/opal-fines-service/interfaces/opal-fines-account-major-creditor-at-a-glance.interface';
-import { OPAL_FINES_ACCOUNT_MAJOR_CREDITOR_AT_A_GLANCE_WITH_DEFENDANT_MOCK } from '../../services/opal-fines-service/mocks/opal-fines-account-major-creditor-at-a-glance-with-defendant.mock';
+import { OPAL_FINES_ACCOUNT_MAJOR_CREDITOR_AT_A_GLANCE_MOCK } from '../../services/opal-fines-service/mocks/opal-fines-account-major-creditor-at-a-glance-with-defendant.mock';
 
 @Component({
   selector: 'app-fines-acc-major-creditor-details',
@@ -108,13 +108,7 @@ export class FinesAccMajorCreditorDetailsComponent
     fragment$.pipe(takeUntil(this.destroy$)).subscribe((tab) => {
       switch (tab) {
         case FINES_ACC_MAJOR_CREDITOR_DETAILS_TABS_KEYS['at-a-glance']:
-          this.tabAtAGlance$ = this.fetchTabDataTyped(
-            of(OPAL_FINES_ACCOUNT_MAJOR_CREDITOR_AT_A_GLANCE_WITH_DEFENDANT_MOCK).pipe(
-              tap((data) => {
-                this.accountStore.setHasPaymentHold(data.payment.hold_payment);
-              }),
-            ),
-          );
+          this.tabAtAGlance$ = this.fetchTabDataTyped(of(OPAL_FINES_ACCOUNT_MAJOR_CREDITOR_AT_A_GLANCE_MOCK));
           break;
       }
     });
