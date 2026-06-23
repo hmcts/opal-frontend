@@ -8,7 +8,7 @@ Feature: Financial Movements Release 1C Financial Movements Feature Toggles
     And I open the "Test Finance Link" landing page link
     Then I see the following text on the page "Test Finance Link"
 
-  @R1CFinancialMovementsOff @FeatureFlag @JIRA-STORY:PO-7266 @JIRA-EPIC:PO-3685 @only
+  @R1CFinancialMovementsOff @FeatureFlag @JIRA-STORY:PO-7266 @JIRA-EPIC:PO-3685
   Scenario: Finance is hidden from the primary navigation when release 1c financial movements is disabled
     Given I am logged in on the Fines Search landing page with email "opal-test@dev.platform.hmcts.net"
     When I select the Fines primary navigation item "Accounts"
