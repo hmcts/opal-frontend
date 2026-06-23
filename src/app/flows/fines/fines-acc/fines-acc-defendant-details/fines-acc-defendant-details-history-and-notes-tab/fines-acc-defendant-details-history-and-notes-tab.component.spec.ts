@@ -12,10 +12,20 @@ import { FinesAccPayloadService } from '../../services/fines-acc-payload.service
 import { FinesAccountStore } from '../../stores/fines-acc.store';
 import { FINES_ACC_DEFENDANT_DETAILS_HISTORY_AND_NOTES_ACCOUNT_ID_MOCK } from './mocks/fines-acc-defendant-details-history-and-notes-account-id.mock';
 import { FINES_ACC_DEFENDANT_DETAILS_HISTORY_AND_NOTES_FILTERED_TAB_DATA_MOCK } from './mocks/fines-acc-defendant-details-history-and-notes-filtered-tab-data.mock';
+import { IOpalFinesAccountDefendantDetailsHistoryAndNotesTabRefData } from '@services/fines/opal-fines-service/interfaces/opal-fines-account-defendant-details-history-and-notes-tab-ref-data.interface';
+import { TFinesAccHistoryAndNotesRawItem } from '../../services/utils/types/fines-acc-history-and-notes-raw-item.type';
+
+type FinesAccDefendantDetailsHistoryAndNotesTabPrivateMethods = {
+  getHistoryItems(
+    tabData: IOpalFinesAccountDefendantDetailsHistoryAndNotesTabRefData,
+  ): TFinesAccHistoryAndNotesRawItem[];
+  isHistoryItem(value: unknown): value is TFinesAccHistoryAndNotesRawItem;
+};
 
 describe('FinesAccDefendantDetailsHistoryAndNotesTabComponent', () => {
   let component: FinesAccDefendantDetailsHistoryAndNotesTabComponent;
   let fixture: ComponentFixture<FinesAccDefendantDetailsHistoryAndNotesTabComponent>;
+  let privateComponent: FinesAccDefendantDetailsHistoryAndNotesTabPrivateMethods;
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   let mockOpalFinesService: any;
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -70,6 +80,7 @@ describe('FinesAccDefendantDetailsHistoryAndNotesTabComponent', () => {
 
     fixture = TestBed.createComponent(FinesAccDefendantDetailsHistoryAndNotesTabComponent);
     component = fixture.componentInstance;
+    privateComponent = component as unknown as FinesAccDefendantDetailsHistoryAndNotesTabPrivateMethods;
     component.accountId = FINES_ACC_DEFENDANT_DETAILS_HISTORY_AND_NOTES_ACCOUNT_ID_MOCK;
     component.tabData$ = of(OPAL_FINES_ACCOUNT_DEFENDANT_DETAILS_HISTORY_AND_NOTES_TAB_REF_DATA_MOCK);
   });
@@ -163,6 +174,62 @@ describe('FinesAccDefendantDetailsHistoryAndNotesTabComponent', () => {
       OPAL_FINES_ACCOUNT_DEFENDANT_DETAILS_HISTORY_AND_NOTES_TAB_REF_DATA_MOCK,
       FINES_ACC_DEFENDANT_DETAILS_HISTORY_AND_NOTES_FILTERED_TAB_DATA_MOCK,
     ]);
+  });
+
+  it('should extract valid history items from the first recognised history item array', () => {
+    const validHistoryItem = { id: 1, type: 'Note' };
+    const otherValidHistoryItem = { id: 2, type: 'Payment' };
+    const laterHistoryItem = { id: 3, type: 'Ignored because history_items is first' };
+    const tabData: IOpalFinesAccountDefendantDetailsHistoryAndNotesTabRefData = {
+      version: 'test-version',
+      history_items: [validHistoryItem, null, undefined, 'ignored', 10, false, otherValidHistoryItem],
+      historyItems: [laterHistoryItem],
+    };
+
+    const result = privateComponent.getHistoryItems(tabData);
+
+    expect(result).toEqual([validHistoryItem, otherValidHistoryItem]);
+  });
+
+  it('should extract history items from the next recognised array when earlier keys are not arrays', () => {
+    const validHistoryItem = { id: 1, type: 'Note' };
+    const tabData: IOpalFinesAccountDefendantDetailsHistoryAndNotesTabRefData = {
+      version: 'test-version',
+      history_items: 'not an array',
+      historyItems: [validHistoryItem],
+    };
+
+    const result = privateComponent.getHistoryItems(tabData);
+
+    expect(result).toEqual([validHistoryItem]);
+  });
+
+  it('should return an empty array when tab data has no recognised history item array', () => {
+    const tabData: IOpalFinesAccountDefendantDetailsHistoryAndNotesTabRefData = {
+      version: 'test-version',
+      history_items: 'not an array',
+      historyItems: null,
+      history: { id: 1 },
+      items: 1,
+      records: false,
+      results: undefined,
+    };
+
+    const result = privateComponent.getHistoryItems(tabData);
+
+    expect(result).toEqual([]);
+  });
+
+  it('should identify non-null objects as history items', () => {
+    expect(privateComponent.isHistoryItem({ id: 1 })).toBe(true);
+  });
+
+  it('should reject null and primitive values as history items', () => {
+    expect(privateComponent.isHistoryItem(null)).toBe(false);
+    expect(privateComponent.isHistoryItem(undefined)).toBe(false);
+    expect(privateComponent.isHistoryItem('note')).toBe(false);
+    expect(privateComponent.isHistoryItem(1)).toBe(false);
+    expect(privateComponent.isHistoryItem(false)).toBe(false);
   });
 
   it('should store filter open state from the filter component', () => {
