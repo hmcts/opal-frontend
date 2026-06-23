@@ -55,7 +55,6 @@ String functionalXmlReport = 'cypress/reports/functionalXmlReport.html'
 @Field String defaultFunctionalTagExpression =
   'not @UAT-Technical and not @skip' + andTagSeparator +
   'not (@R1AOff or @R1BOff or @R1CWriteOffOff or @R1CEnforcementOperationalReportingOff)'
-@Field String componentExcludeGrepTags = '-@R1AOff+-@R1BOff'
 @Field String macPopulateAndSubmitFeatureGlob =
   'cypress/e2e/functional/opal/features/manualAccountCreation/populateAndSubmit/**/*.feature,'
 @Field String macCheckAndValidateFeatureGlob =
@@ -683,11 +682,9 @@ withPipeline(type, product, component) {
                 String componentCommand = releaseSuiteSelection
                   ? releaseSuiteComponentScript(releaseSuiteSelection)
                   : 'test:component'
-                String filteredComponentCommand =
-                  "${componentCommand} --expose grepTags=${componentExcludeGrepTags}"
-                echo "Running opal component tests via yarn ${filteredComponentCommand}"
+                echo "Running opal component tests via yarn ${componentCommand}"
                 try {
-                    yarnBuilder.yarn(filteredComponentCommand)
+                    yarnBuilder.yarn(componentCommand)
                 } catch (hudson.AbortException e) {
                     echo "Opal component tests failed: ${e}"
                     currentBuild.result = 'FAILURE'
