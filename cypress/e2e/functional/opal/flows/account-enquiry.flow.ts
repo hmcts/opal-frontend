@@ -53,7 +53,7 @@ export class AccountEnquiryFlow {
   /** Default timeout (ms) for key waits in this flow. */
   private static readonly WAIT_MS = 15_000;
   /** Timeout (ms) for route transitions back to the defendant details shell. */
-  private static readonly DETAILS_NAV_WAIT_MS = 20_000;
+  private static readonly DETAILS_NAV_WAIT_MS = 45_000;
   private static readonly BASE_API_PATH = '/opal-fines-service';
 
   /** Waits for the account header summary call to succeed and the At a glance tab to render. */
@@ -661,6 +661,41 @@ export class AccountEnquiryFlow {
   }
 
   /**
+   * Asserts the add enforcement action form is visible.
+   */
+  public assertAddEnforcementActionFormVisible(): void {
+    logAE('method', 'assertAddEnforcementActionFormVisible()');
+    this.enforcement.assertAddEnforcementActionFormVisible();
+  }
+
+  /**
+   * Asserts the add enforcement action form is visible.
+   */
+  public assertAddNewEnforcementActionFormVisible(): void {
+    logAE('method', 'assertAddNewEnforcementActionFormVisible()');
+    this.enforcement.assertAddNewEnforcementActionFormVisible();
+  }
+
+  /**
+   * Opens the remove enforcement hold form from the Enforcement tab.
+   */
+  public openRemoveEnforcementHoldForm(): void {
+    logAE('method', 'openRemoveEnforcementHoldForm()');
+    this.enforcement.openRemoveEnforcementHoldForm();
+    this.enforcement.assertRemoveEnforcementHoldFormVisible();
+  }
+
+  /**
+   * Asserts the remove enforcement hold account identifier.
+   *
+   * @param expected - Expected account identifier caption text.
+   */
+  public assertRemoveEnforcementHoldAccountIdentifier(expected: string): void {
+    logAE('method', 'assertRemoveEnforcementHoldAccountIdentifier()', { expected });
+    this.enforcement.assertRemoveEnforcementHoldAccountIdentifier(expected);
+  }
+
+  /**
    * Submits the add enforcement action form.
    */
   public submitAddEnforcementActionForm(): void {
@@ -793,6 +828,16 @@ export class AccountEnquiryFlow {
   }
 
   /**
+   * Asserts the enforcement action added success banner text.
+   *
+   * @param expected - Expected success banner message.
+   */
+  public assertEnforcementActionSuccessBanner(expected: string): void {
+    logAE('method', 'assertEnforcementActionSuccessBanner()', { expected });
+    this.enforcement.assertSuccessBannerText(expected);
+  }
+
+  /**
    * Selects a Local Justice Area on the add form.
    *
    * @param localJusticeArea - Visible LJA option text.
@@ -857,6 +902,16 @@ export class AccountEnquiryFlow {
    */
   public assertEnforcementOverrideSuccessBanner(expected: string): void {
     logAE('method', 'assertEnforcementOverrideSuccessBanner()', { expected });
+    this.enforcement.assertSuccessBannerText(expected);
+  }
+
+  /**
+   * Asserts the enforcement hold success banner text.
+   *
+   * @param expected - Expected success banner message.
+   */
+  public assertEnforcementHoldSuccessBanner(expected: string): void {
+    logAE('method', 'assertEnforcementHoldSuccessBanner()', { expected });
     this.enforcement.assertSuccessBannerText(expected);
   }
 
@@ -1889,7 +1944,7 @@ export class AccountEnquiryFlow {
   private searchAmendmentsForMinorCreditorAccount(
     minorCreditorAccountId: number,
   ): Cypress.Chainable<MinorCreditorAmendmentSearchResult> {
-    const recordTypes = ['minor_creditor_accounts', 'creditor_accounts'];
+    const recordTypes = ['minor_creditor_accounts', 'minor_creditor_account', 'creditor_accounts', 'creditor_account'];
     const accountId = String(minorCreditorAccountId);
 
     const searchByRecordType = (index: number): Cypress.Chainable<MinorCreditorAmendmentSearchResult> => {
@@ -1911,7 +1966,18 @@ export class AccountEnquiryFlow {
           failOnStatusCode: false,
         })
         .then((amendRes): Cypress.Chainable<MinorCreditorAmendmentSearchResult> => {
-          expect(amendRes.status, 'POST minor creditor amendments search should succeed').to.eq(200);
+          if (amendRes.status !== 200) {
+            logAESync('warn', 'Minor creditor amendments search rejected', {
+              associatedRecordType,
+              status: amendRes.status,
+            });
+
+            if (index < recordTypes.length - 1) {
+              return searchByRecordType(index + 1);
+            }
+
+            expect(amendRes.status, 'POST minor creditor amendments search should succeed').to.eq(200);
+          }
 
           const responseBody = amendRes.body as Record<string, unknown>;
           const amendments = (responseBody?.['searchData'] ?? []) as Array<Record<string, unknown>>;

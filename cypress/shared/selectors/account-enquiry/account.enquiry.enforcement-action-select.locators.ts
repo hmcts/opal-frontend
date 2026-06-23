@@ -19,4 +19,17 @@ export const DOM_ELEMENTS = {
   actionDropdownError: '.govuk-error-message',
   continueButton: '#submitForm',
   cancelLink: '.govuk-link',
+
+  newEnforcementActionButton: '#submitForm',
+  newEnforcementActionPageTitle: 'opal-lib-govuk-heading-with-caption > h1',
+  newEnforcementActionAccountInfo: 'opal-lib-govuk-heading-with-caption .govuk-caption-l',
+  newEnforcementActionSuccessBanner: 'opal-lib-moj-alert-content-text',
+
+  newEnforcementActionRadioGroup: '.govuk-radios',
+  newEnforcementActionYesRadio: '#facc_enf_action_add_new-facc_enf_action_add_new_yes',
+  newEnforcementActionNoRadio: '#facc_enf_action_add_new-facc_enf_action_add_new_no',
+
+  newEnforcementActionContinueButton: '#submitForm',
+  newEnforcementActionErrorSummary: 'opal-lib-govuk-error-summary',
+  newEnforcementActionErrorMessage: '#facc_enf_action_add_new-error-message',
 } as const;

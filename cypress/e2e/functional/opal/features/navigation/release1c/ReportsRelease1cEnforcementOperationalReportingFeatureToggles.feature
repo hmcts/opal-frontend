@@ -1,7 +1,7 @@
 @JIRA-LABEL:primary-nav-and-dashboards
 Feature: Reports Release 1C Enforcement Operational Reporting Feature Toggles
 
-  @R1CEnforcementOperationalReporting @JIRA-STORY:PO-3758 @JIRA-EPIC:PO-3685
+  @R1CEnforcementOperationalReporting @JIRA-STORY:PO-3758 @JIRA-EPIC:PO-3685 @JIRA-TEST-KEY:PO-7557
   Scenario: Reports navigation and entry points are available when release 1c enforcement operational reporting is enabled
     Given I am logged in on the Fines Search landing page with email "opal-test@dev.platform.hmcts.net"
     When I select the Fines primary navigation item "Reports"
@@ -35,7 +35,11 @@ Feature: Reports Release 1C Enforcement Operational Reporting Feature Toggles
     When I navigate directly to the Reports entry point "<entryPoint>"
     Then I am taken to the Reports summary list screen for "<entryPoint>"
 
+    @JIRA-TEST-KEY:PO-7558
     Examples:
       | entryPoint                           |
       | Operational reports (by enforcement) |
+    @JIRA-TEST-KEY:PO-7559
+    Examples:
+      | entryPoint                           |
       | Operational reports (by payments)    |

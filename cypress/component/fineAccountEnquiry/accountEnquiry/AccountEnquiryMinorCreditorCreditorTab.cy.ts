@@ -73,7 +73,7 @@ describe('Minor Creditor Account Summary - Creditor Tab', () => {
 
   it(
     'AC1a, AC1b, AC2a, AC2ai: builds the creditor tab as a read-only view and replaces bank details with the permission message when the user only has Search and view accounts',
-    { tags: buildTags(CREDITOR_TAB_STORY_TAG, CHANGE_BUTTON_EPIC_TAG) },
+    { tags: [...buildTags(CREDITOR_TAB_STORY_TAG, CHANGE_BUTTON_EPIC_TAG), '@JIRA-TEST-KEY:PO-7488'] },
     () => {
       const creditorTabData = createIndividualMinorCreditorCreditorMock(false);
 
@@ -111,7 +111,7 @@ describe('Minor Creditor Account Summary - Creditor Tab', () => {
 
   it(
     'AC1a, AC1b, AC2b: shows BACS payment details when the user has Search and view accounts and View Creditor BACS permission',
-    { tags: buildTags(CREDITOR_TAB_STORY_TAG, CHANGE_BUTTON_EPIC_TAG) },
+    { tags: [...buildTags(CREDITOR_TAB_STORY_TAG, CHANGE_BUTTON_EPIC_TAG), '@JIRA-TEST-KEY:PO-7489'] },
     () => {
       const creditorTabData = createIndividualMinorCreditorCreditorMock(true);
 
@@ -150,7 +150,7 @@ describe('Minor Creditor Account Summary - Creditor Tab', () => {
 
   it(
     'AC1, AC2a: displays the Change button and navigates to Change creditor details when the user has Account Maintenance permission in the account BU',
-    { tags: buildTags(CHANGE_BUTTON_STORY_TAG, CHANGE_BUTTON_EPIC_TAG) },
+    { tags: [...buildTags(CHANGE_BUTTON_STORY_TAG, CHANGE_BUTTON_EPIC_TAG), '@JIRA-TEST-KEY:PO-7490'] },
     () => {
       setupMinorCreditorCreditorTab(USER_STATE_MOCK_PERMISSION_BU77);
       stubRouterNavigateByUrl();
@@ -175,7 +175,7 @@ describe('Minor Creditor Account Summary - Creditor Tab', () => {
 
   it(
     'AC1, AC2b: displays the Change button and routes to access denied when the user only has Account Maintenance permission in a different BU',
-    { tags: buildTags(CHANGE_BUTTON_STORY_TAG, CHANGE_BUTTON_EPIC_TAG) },
+    { tags: [...buildTags(CHANGE_BUTTON_STORY_TAG, CHANGE_BUTTON_EPIC_TAG), '@JIRA-TEST-KEY:PO-7491'] },
     () => {
       setupMinorCreditorCreditorTab(USER_STATE_MOCK_PERMISSION_BU17);
       stubRouterNavigateByUrl();
@@ -203,7 +203,7 @@ describe('Minor Creditor Account Summary - Creditor Tab', () => {
 
   it(
     'AC1: does not display the Change button when the user has no Account Maintenance permission in any BU',
-    { tags: buildTags(CHANGE_BUTTON_STORY_TAG, CHANGE_BUTTON_EPIC_TAG) },
+    { tags: [...buildTags(CHANGE_BUTTON_STORY_TAG, CHANGE_BUTTON_EPIC_TAG), '@JIRA-TEST-KEY:PO-7492'] },
     () => {
       setupMinorCreditorCreditorTab(USER_STATE_MOCK_NO_PERMISSION);
 

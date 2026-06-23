@@ -1,0 +1,17 @@
+<div class="govuk-grid-row">
+  <app-fines-acc-banner-messages
+    id="fines-acc-enf-action-add-new-banners"
+    [hasVersionMismatch]="false"
+    [hasPaymentHold]="false"
+    [successMessage]="finesAccStore.successMessage()"
+    (clearSuccessMessage)="finesAccStore.clearSuccessMessage()"
+  ></app-fines-acc-banner-messages>
+
+  <div class="govuk-grid-column-two-thirds">
+    <app-fines-acc-enf-action-add-new-form
+      [accountNumber]="accountNumber"
+      [partyName]="partyName"
+      (formSubmit)="handleSubmit($event)"
+    ></app-fines-acc-enf-action-add-new-form>
+  </div>
+</div>
