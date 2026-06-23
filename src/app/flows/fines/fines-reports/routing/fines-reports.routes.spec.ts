@@ -43,6 +43,24 @@ describe('finesReports routes', () => {
     });
   });
 
+  it('should load the report summary route', () => {
+    const reportRoute = routing.find((route) => route.path === ':reportId');
+    const reportSummaryRoute = reportRoute?.children?.find(
+      (route) => route.path === FINES_REPORTS_ROUTING_PATHS.children.reportSummary,
+    );
+
+    expect(reportSummaryRoute).toEqual({
+      path: FINES_REPORTS_ROUTING_PATHS.children.reportSummary,
+      loadComponent: expect.any(Function),
+      data: {
+        title: FINES_REPORTS_ROUTING_TITLES.children.reportSummary,
+      },
+      resolve: {
+        title: TitleResolver,
+      },
+    });
+  });
+
   it('should load the business unit warning route', () => {
     const reportRoute = routing.find((route) => route.path === ':reportId');
     const businessUnitWarningRoute = reportRoute?.children?.find(

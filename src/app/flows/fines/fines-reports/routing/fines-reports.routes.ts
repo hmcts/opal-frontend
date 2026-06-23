@@ -40,6 +40,19 @@ export const routing: Routes = [
         },
       },
       {
+        path: FINES_REPORTS_ROUTING_PATHS.children.reportSummary,
+        loadComponent: () =>
+          import('../fines-reports-report-summary/fines-reports-report-summary.component').then(
+            (c) => c.FinesReportsReportSummaryComponent,
+          ),
+        data: {
+          title: FINES_REPORTS_ROUTING_TITLES.children.reportSummary,
+        },
+        resolve: {
+          title: TitleResolver,
+        },
+      },
+      {
         path: FINES_REPORTS_ROUTING_PATHS.children.selectBusinessUnits,
         loadComponent: () =>
           import('../fines-reports-select-business-units/fines-reports-select-business-units.component').then(
