@@ -1,7 +1,7 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { SimpleChange } from '@angular/core';
 import { ActivatedRoute, provideRouter } from '@angular/router';
-import { beforeEach, describe, expect, it, vi } from 'vitest';
+import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import { FinesAccDefendantDetailsHistoryAndNotesTabComponent } from './fines-acc-defendant-details-history-and-notes-tab.component';
 import { OPAL_FINES_ACCOUNT_DEFENDANT_DETAILS_HISTORY_AND_NOTES_TAB_REF_DATA_MOCK } from '@services/fines/opal-fines-service/mocks/opal-fines-account-defendant-details-history-and-notes-tab-ref-data.mock';
 import { of } from 'rxjs';
@@ -22,6 +22,7 @@ describe('FinesAccDefendantDetailsHistoryAndNotesTabComponent', () => {
   let mockPayloadService: any;
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   let mockAccountStore: any;
+  let consoleLogSpy: ReturnType<typeof vi.spyOn>;
 
   beforeEach(async () => {
     mockOpalFinesService = {
@@ -32,6 +33,7 @@ describe('FinesAccDefendantDetailsHistoryAndNotesTabComponent', () => {
     mockPayloadService = {
       buildHistoryFilterPayload: vi.fn().mockName('FinesAccPayloadService.buildHistoryFilterPayload'),
       transformPayload: vi.fn().mockName('FinesAccPayloadService.transformPayload'),
+      transformHistoryAndNotesItems: vi.fn().mockName('FinesAccPayloadService.transformHistoryAndNotesItems'),
     };
     mockAccountStore = {
       compareVersion: vi.fn().mockName('FinesAccountStore.compareVersion'),
@@ -41,9 +43,16 @@ describe('FinesAccDefendantDetailsHistoryAndNotesTabComponent', () => {
       FINES_ACC_DEFENDANT_DETAILS_HISTORY_AND_NOTES_FILTER_FORM_PAYLOAD_MOCK,
     );
     mockPayloadService.transformPayload.mockImplementation((data: unknown) => data);
+    mockPayloadService.transformHistoryAndNotesItems.mockImplementation((items: Record<string, unknown>[]) =>
+      items.map((item) => ({
+        ...item,
+        details: { line1: [{ fragments: [{ text: 'Transformed detail', bold: false, hyphen: false }] }], line2: null },
+      })),
+    );
     mockOpalFinesService.getDefendantAccountHistoryAndNotesTabData.mockReturnValue(
       of(OPAL_FINES_ACCOUNT_DEFENDANT_DETAILS_HISTORY_AND_NOTES_TAB_REF_DATA_MOCK),
     );
+    consoleLogSpy = vi.spyOn(console, 'log').mockImplementation(() => undefined);
 
     await TestBed.configureTestingModule({
       imports: [FinesAccDefendantDetailsHistoryAndNotesTabComponent],
@@ -65,6 +74,10 @@ describe('FinesAccDefendantDetailsHistoryAndNotesTabComponent', () => {
     component = fixture.componentInstance;
     component.accountId = FINES_ACC_DEFENDANT_DETAILS_HISTORY_AND_NOTES_ACCOUNT_ID_MOCK;
     component.tabData$ = of(OPAL_FINES_ACCOUNT_DEFENDANT_DETAILS_HISTORY_AND_NOTES_TAB_REF_DATA_MOCK);
+  });
+
+  afterEach(() => {
+    vi.restoreAllMocks();
   });
 
   it('should create the component', () => {
@@ -158,5 +171,30 @@ describe('FinesAccDefendantDetailsHistoryAndNotesTabComponent', () => {
     component.handleFilterOpenChange(true);
 
     expect(component.filterOpen).toBe(true);
+  });
+
+  it('should log transformed history and notes data emitted by the display stream', () => {
+    const rawHistoryItem = {
+      type: 'Note',
+      details: {
+        noteText: 'Customer called, requested update.',
+      },
+    };
+
+    component.tabData$ = of({
+      version: null,
+      history_items: [rawHistoryItem],
+    });
+
+    fixture.detectChanges();
+    component.historyAndNotesTabData$.subscribe();
+
+    expect(mockPayloadService.transformHistoryAndNotesItems).toHaveBeenLastCalledWith([rawHistoryItem]);
+    expect(consoleLogSpy).toHaveBeenLastCalledWith('Transformed history and notes details', [
+      {
+        ...rawHistoryItem,
+        details: { line1: [{ fragments: [{ text: 'Transformed detail', bold: false, hyphen: false }] }], line2: null },
+      },
+    ]);
   });
 });

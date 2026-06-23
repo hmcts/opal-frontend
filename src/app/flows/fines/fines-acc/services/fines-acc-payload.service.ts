@@ -45,6 +45,13 @@ import { transformMinorCreditorAccountPayload } from './utils/fines-acc-payload-
 import { IFinesAccDefendantDetailsHistoryAndNotesFilterForm } from '../fines-acc-defendant-details/fines-acc-defendant-details-history-and-notes-tab/interfaces/fines-acc-defendant-details-history-and-notes-filter-form.interface';
 import { IOpalFinesDefendantAccountHistoryParams } from '@services/fines/opal-fines-service/interfaces/opal-fines-defendant-account-history-params.interface';
 import { buildHistoryFilterPayload } from './utils/fines-acc-payload-build-history-filter.utils';
+import { IFinesAccHistoryAndNotesDetails } from './utils/interfaces/fines-acc-history-and-notes-details.interface';
+import { TFinesAccHistoryAndNotesRawItem } from './utils/types/fines-acc-history-and-notes-raw-item.type';
+import {
+  transformHistoryAndNotesDetails,
+  transformHistoryAndNotesItems,
+} from './utils/fines-acc-payload-transform-history-and-notes.utils';
+import { FINES_ACC_HISTORY_AND_NOTES_DETAILS_TRANSFORMERS } from './constants/fines-acc-history-and-notes-details-transformers.constant';
 
 @Injectable({
   providedIn: 'root',
@@ -89,6 +96,28 @@ export class FinesAccPayloadService {
       buildHistoryFilterPayload(form),
       FINES_ACC_BUILD_TRANSFORM_ITEMS_CONFIG,
     ) as IOpalFinesDefendantAccountHistoryParams;
+  }
+
+  /**
+   * Transforms a raw history item into the structured details model consumed by the History and notes UI.
+   *
+   * @param item - A raw history item returned by the defendant account history API.
+   * @returns The fragment-based details model for the item.
+   */
+  public transformHistoryAndNotesDetails(item: TFinesAccHistoryAndNotesRawItem): IFinesAccHistoryAndNotesDetails {
+    return transformHistoryAndNotesDetails(item, FINES_ACC_HISTORY_AND_NOTES_DETAILS_TRANSFORMERS);
+  }
+
+  /**
+   * Transforms raw history items by replacing each item's details value with the structured details model.
+   *
+   * @param items - Raw history items returned by the defendant account history API.
+   * @returns History items with structured details.
+   */
+  public transformHistoryAndNotesItems<T extends TFinesAccHistoryAndNotesRawItem>(
+    items: T[],
+  ): Array<Omit<T, 'details'> & { details: IFinesAccHistoryAndNotesDetails }> {
+    return transformHistoryAndNotesItems(items, FINES_ACC_HISTORY_AND_NOTES_DETAILS_TRANSFORMERS);
   }
 
   /**

@@ -11,6 +11,8 @@ import { FinesAccPayloadService } from '../../services/fines-acc-payload.service
 import { FINES_ACC_MAP_TRANSFORM_ITEMS_CONFIG } from '../../services/constants/fines-acc-map-transform-items-config.constant';
 import { FinesAccountStore } from '../../stores/fines-acc.store';
 import { FINES_ACC_DEFENDANT_DETAILS_HISTORY_AND_NOTES_EMPTY_TAB_DATA_STREAM } from './constants/fines-acc-defendant-details-history-and-notes-empty-tab-data-stream.constant';
+import { TFinesAccHistoryAndNotesRawItem } from '../../services/utils/types/fines-acc-history-and-notes-raw-item.type';
+import { FINES_ACC_DEFENDANT_DETAILS_HISTORY_AND_NOTES_TAB_HISTORY_ITEM_KEYS } from './constants/fines-acc-defendant-details-history-and-notes-tab-history-item-keys.constant';
 
 @Component({
   selector: 'app-fines-acc-defendant-details-history-and-notes-tab',
@@ -50,6 +52,44 @@ export class FinesAccDefendantDetailsHistoryAndNotesTabComponent implements OnCh
   }
 
   /**
+   * Logs the transformed History and notes details while the table rendering work is pending.
+   *
+   * @param tabData - The raw History and notes tab data returned by the API.
+   */
+  private logTransformedHistoryAndNotesData(tabData: IOpalFinesAccountDefendantDetailsHistoryAndNotesTabRefData): void {
+    const historyItems = this.getHistoryItems(tabData);
+    const transformedHistoryItems = this.payloadService.transformHistoryAndNotesItems(historyItems);
+
+    console.log('Transformed history and notes details', transformedHistoryItems);
+  }
+
+  /**
+   * Extracts history item arrays from the likely API response properties.
+   *
+   * @param tabData - The raw History and notes tab data returned by the API.
+   * @returns The history item array, or an empty array when the response has no recognised list.
+   */
+  private getHistoryItems(
+    tabData: IOpalFinesAccountDefendantDetailsHistoryAndNotesTabRefData,
+  ): TFinesAccHistoryAndNotesRawItem[] {
+    const historyItems = FINES_ACC_DEFENDANT_DETAILS_HISTORY_AND_NOTES_TAB_HISTORY_ITEM_KEYS.map(
+      (historyItemsKey) => tabData[historyItemsKey],
+    ).find((value): value is unknown[] => Array.isArray(value));
+
+    return historyItems ? historyItems.filter(this.isHistoryItem) : [];
+  }
+
+  /**
+   * Checks whether a value can be transformed as a raw history item.
+   *
+   * @param value - A value from the history items array.
+   * @returns True when the value is an object record.
+   */
+  private isHistoryItem(value: unknown): value is TFinesAccHistoryAndNotesRawItem {
+    return typeof value === 'object' && value !== null;
+  }
+
+  /**
    * Caches each emitted history payload and starts replacement streams with the latest known data.
    * This keeps the filter form mounted while a filtered request is in flight instead of blanking the tab.
    *
@@ -62,6 +102,7 @@ export class FinesAccDefendantDetailsHistoryAndNotesTabComponent implements OnCh
     const displayTabData$ = tabData$.pipe(
       tap((data) => {
         this.latestTabData = data;
+        this.logTransformedHistoryAndNotesData(data);
       }),
     );
 
