@@ -125,7 +125,9 @@ export class PrimaryNavigationActions {
       .and('contain.text', itemLabel);
 
     cy.get(L.items, this.common.getTimeoutOptions()).then(($items) => {
-      const renderedItems = [...$items].filter((item): item is HTMLElement => (item.textContent?.trim().length ?? 0) > 0);
+      const renderedItems = [...$items].filter(
+        (item): item is HTMLElement => (item.textContent?.trim().length ?? 0) > 0,
+      );
 
       renderedItems
         .filter((item) => item.textContent?.trim() !== itemLabel)
