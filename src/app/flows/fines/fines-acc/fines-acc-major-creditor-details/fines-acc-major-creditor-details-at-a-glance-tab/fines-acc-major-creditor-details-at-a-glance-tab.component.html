@@ -1,0 +1,43 @@
+<div class="govuk-grid-column-full">
+  <div class="govuk-grid-row">
+    <div class="govuk-grid-column-one-third">
+      <h2 [class]="style.heading">Major creditor</h2>
+      <hr [class]="style.hr" />
+
+      <h3 [class]="style.key">Name</h3>
+      <p [class]="style.value">{{ tabData.major_creditor.name }} ({{ tabData.major_creditor.code }})</p>
+
+      <h3 [class]="style.key">Address</h3>
+      <p [class]="style.value">
+        {{ tabData.major_creditor.address.line_1 }}
+        @if (tabData.major_creditor.address.line_2) {
+          <br />
+          {{ tabData.major_creditor.address.line_2 }}
+        }
+        @if (tabData.major_creditor.address.line_3) {
+          <br />
+          {{ tabData.major_creditor.address.line_3 }}
+        }
+        @if (tabData.major_creditor.address.postcode) {
+          <br />
+          {{ tabData.major_creditor.address.postcode | uppercase }}
+        }
+      </p>
+    </div>
+
+    <div class="govuk-grid-column-one-third">
+      <h2 [class]="style.heading">Payout status</h2>
+      <hr [class]="style.hr" />
+      <h3 [class]="style.key">BACS details</h3>
+      @if (tabData.major_creditor.pay_by_bacs) {
+        <opal-lib-moj-badge badgeId="is_bacs-badge" badgeClasses="moj-badge--blue govuk-!-margin-bottom-2"
+          >Provided</opal-lib-moj-badge
+        >
+      } @else {
+        <opal-lib-moj-badge badgeId="is_bacs-badge" badgeClasses="moj-badge--red govuk-!-margin-bottom-2"
+          >Not provided</opal-lib-moj-badge
+        >
+      }
+    </div>
+  </div>
+</div>

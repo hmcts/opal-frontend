@@ -6,8 +6,6 @@ export interface IOpalFinesAccountMajorCreditorAtAGlance extends IOpalFinesVersi
       line_1: string;
       line_2?: string | null;
       line_3?: string | null;
-      line_4?: string | null;
-      line_5?: string | null;
       postcode?: string | null;
     };
     code: string;
