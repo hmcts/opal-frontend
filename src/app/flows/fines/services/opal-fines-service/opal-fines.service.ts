@@ -62,6 +62,7 @@ import { IOpalFinesAccountMinorCreditorCreditor } from './interfaces/opal-fines-
 import { IOpalFinesDraftAccountPatchRequestPayload } from '@services/fines/opal-fines-service/types/opal-fines-draft-account-patch-request-payload.type';
 import { IOpalFinesDeleteDefendantAccountPartyPayload } from './interfaces/opal-fines-delete-defendant-account-party-payload.interface';
 import { IOpalFinesAccountMajorCreditorDetailsHeader } from '../../fines-acc/fines-acc-major-creditor-details/interfaces/fines-acc-major-creditor-details-header.interface';
+import { IOpalFinesAccountMajorCreditorAtAGlance } from './interfaces/opal-fines-account-major-creditor-at-a-glance.interface';
 
 @Injectable({
   providedIn: 'root',
@@ -1270,5 +1271,34 @@ export class OpalFines {
         };
       }),
     );
+  }
+
+  /**
+   * Retrieves the major creditor account details at a glance for a specific tab.
+   * If the account details for the specified tab are not already cached, it makes an HTTP request to fetch the data and caches it for future use.
+   *
+   * @param account_id - The ID of the major creditor account.
+   * @returns An Observable that emits the account details for the at a glance tab.
+   */
+  public getMajorCreditorAccountAtAGlance(
+    account_id: number | null,
+  ): Observable<IOpalFinesAccountMajorCreditorAtAGlance> {
+    if (!this.cache.majorCreditorAccountAtAGlanceCache$) {
+      const url = `${OPAL_FINES_PATHS.majorCreditorAccounts}/${account_id}/at-a-glance`;
+      this.cache.majorCreditorAccountAtAGlanceCache$ = this.http
+        .get<IOpalFinesAccountMajorCreditorAtAGlance>(url, { observe: 'response' })
+        .pipe(
+          map((response: HttpResponse<IOpalFinesAccountMajorCreditorAtAGlance>) => {
+            const version = this.extractEtagVersion(response.headers);
+            const payload = response.body as IOpalFinesAccountMajorCreditorAtAGlance;
+            return {
+              ...payload,
+              version,
+            };
+          }),
+          shareReplay(1),
+        );
+    }
+    return this.cache.majorCreditorAccountAtAGlanceCache$;
   }
 }
