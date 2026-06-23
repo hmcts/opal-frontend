@@ -24,6 +24,7 @@ import { FINES_ACC_ENF_ACTION_ADD_STORE_MOCK } from './mocks/fines-acc-enf-actio
 import { FINES_ACC_ENF_ACTION_ADD_SUBMIT_FORM_MOCK } from './mocks/fines-acc-enf-action-add-submit-form.mock';
 import { createFinesAccEnfActionAddActivatedRouteMock } from './mocks/fines-acc-enf-action-add-activated-route.mock';
 import { FINES_ACC_ENF_ACTION_ADD_COLLO_RESULT_WITHOUT_PAYMENT_TERMS_FLAG_MOCK } from './mocks/fines-acc-enf-action-add-collo-result-without-payment-terms-flag.mock';
+import { FINES_ACC_ENF_ACTION_ADD_NEW_SUCCESS_MESSAGE } from '../fines-acc-enf-action-add-new/constants/fines-acc-enf-action-add-new-success-message.constant';
 
 describe('FinesAccEnfActionAddComponent', () => {
   let component: FinesAccEnfActionAddComponent;
@@ -225,7 +226,7 @@ describe('FinesAccEnfActionAddComponent', () => {
     );
   });
 
-  it('should navigate to select another action when the result allows additional action', () => {
+  it('should navigate to the add new action prompt when the result allows additional action', () => {
     activatedRouteStub.snapshot.data.enforcementActionResult = FINES_ACC_ENF_ACTION_ADD_ADDITIONAL_ACTION_RESULT_MOCK;
     createComponent();
     const routerNavigateSpy = vi.spyOn(component as never, 'routerNavigate');
@@ -235,8 +236,9 @@ describe('FinesAccEnfActionAddComponent', () => {
     });
 
     expect(mockOpalFinesService.clearCache).toHaveBeenCalledWith('defendantAccountEnforcementCache$');
+    expect(mockFinesAccStore.setSuccessMessage).toHaveBeenCalledWith(FINES_ACC_ENF_ACTION_ADD_NEW_SUCCESS_MESSAGE);
     expect(routerNavigateSpy).toHaveBeenCalledWith(
-      `${FINES_ACC_DEFENDANT_ROUTING_PATHS.children.enforcement}/${FINES_ACC_ENF_ACTION_ROUTING_PATHS.root}/${FINES_ACC_ENF_ACTION_ROUTING_PATHS.children.select}`,
+      `${FINES_ACC_DEFENDANT_ROUTING_PATHS.children.enforcement}/${FINES_ACC_ENF_ACTION_ROUTING_PATHS.root}/${FINES_ACC_ENF_ACTION_ROUTING_PATHS.children['add-new']}`,
     );
   });
 
