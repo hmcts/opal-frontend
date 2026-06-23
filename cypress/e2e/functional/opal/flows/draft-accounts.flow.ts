@@ -303,7 +303,12 @@ export class DraftAccountsFlow {
   recordDecision(decision: Decision, reason?: string): Cypress.Chainable<void> {
     const normalized = decision.toLowerCase() as Decision;
     log('action', 'Recording checker decision (flow)', { decision: normalized, hasReason: Boolean(reason?.trim()) });
-    const shouldCapturePayload = isEvidenceCaptureEnabled();
+    const aliases = ((Cypress as any).state?.('aliases') ?? {}) as Record<string, unknown>;
+    const expectsFailure =
+      Boolean(aliases['draftDecisionExpectFailure']) || Cypress.env('draftDecisionExpectFailure') === true;
+    // Legacy evidence capture adds its own PATCH/PUT intercepts. Skip that path when the
+    // scenario explicitly stubs a draft decision failure so the failure alias remains authoritative.
+    const shouldCapturePayload = normalized === 'approve' && !expectsFailure && isEvidenceCaptureEnabled();
     const patchPayloads: RequestPayloadEntry[] = [];
     const normalizeEndpoint = (endpoint: string): string => {
       if (!endpoint) return '';
@@ -405,9 +410,6 @@ export class DraftAccountsFlow {
     }
     captureScenarioScreenshot('check-validate-decision-before-submit');
     this.review.submitDecision();
-    const aliases = ((Cypress as any).state?.('aliases') ?? {}) as Record<string, unknown>;
-    const expectsFailure =
-      Boolean(aliases['draftDecisionExpectFailure']) || Cypress.env('draftDecisionExpectFailure') === true;
     if (expectsFailure) {
       log('info', 'Draft decision failure expected; skipping publish wait');
       Cypress.env('draftDecisionExpectFailure', false);

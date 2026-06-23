@@ -23,7 +23,6 @@ import {
   interceptGetApprovedAccounts,
   interceptGetRejectedAccounts,
 } from '../manualAccountCreation/FinesDraft/FinesDraftCreateAndManage/FinesDraftCreateAndManageComponent/mocks/create-and-manage-intercepts';
-import { FINES_DRAFT_TABLE_WRAPPER_TABLE_DATA_MOCK } from 'src/app/flows/fines/fines-draft/fines-draft-table-wrapper/mocks/fines-draft-table-wrapper-table-data.mock';
 
 const MANUAL_ACCOUNT_CREATION_JIRA_LABEL = '@JIRA-LABEL:manual-account-creation';
 const RELEASE_1B_STORY_TAG = '@JIRA-STORY:PO-3720';

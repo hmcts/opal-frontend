@@ -55,6 +55,7 @@ import { FinesAccSummaryHeaderComponent } from '../fines-acc-summary-header/fine
 import { AbstractAccountSummaryBaseComponent } from '@hmcts/opal-frontend-common/components/abstract/abstract-account-summary-base';
 import { IOpalFinesVersion } from '../../services/opal-fines-service/interfaces/opal-fines-version.interface';
 import { FINES_ACC_BANNER_MESSAGES } from '../stores/constants/fines-acc-store-banner-messages.constant';
+import { FinesAccDefendantDetailsHistoryAndNotesTabComponent } from './fines-acc-defendant-details-history-and-notes-tab/fines-acc-defendant-details-history-and-notes-tab.component';
 
 @Component({
   selector: 'app-fines-acc-defendant-details',
@@ -81,6 +82,7 @@ import { FINES_ACC_BANNER_MESSAGES } from '../stores/constants/fines-acc-store-b
     FinesAccDefendantDetailsImpositionsTabComponent,
     MonetaryPipe,
     FinesAccSummaryHeaderComponent,
+    FinesAccDefendantDetailsHistoryAndNotesTabComponent,
   ],
   templateUrl: './fines-acc-defendant-details.component.html',
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -184,7 +186,7 @@ export class FinesAccDefendantDetailsComponent
           break;
         case 'history-and-notes':
           this.tabHistoryAndNotes$ = this.fetchTabDataTyped(
-            this.opalFinesService.getDefendantAccountHistoryAndNotesTabData(),
+            this.opalFinesService.getDefendantAccountHistoryAndNotesTabData(account_id),
           );
           break;
       }

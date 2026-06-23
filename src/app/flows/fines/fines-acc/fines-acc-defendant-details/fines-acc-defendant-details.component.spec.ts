@@ -55,6 +55,7 @@ describe('FinesAccDefendantDetailsComponent', () => {
         .fn()
         .mockName('FinesAccPayloadService.transformDefendantAccountHeaderForStore'),
       transformPayload: vi.fn().mockName('FinesAccPayloadService.transformPayload'),
+      buildHistoryFilterPayload: vi.fn().mockName('FinesAccPayloadService.buildHistoryFilterPayload'),
     };
     mockPayloadService.transformDefendantAccountHeaderForStore.mockReturnValue(MOCK_FINES_ACCOUNT_STATE);
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -284,7 +285,11 @@ describe('FinesAccDefendantDetailsComponent', () => {
 
   it('should fetch the history and notes tab data when fragment is changed to history-and-notes', () => {
     component['refreshFragment$'].next('history-and-notes');
-    expect(mockOpalFinesService.getDefendantAccountHistoryAndNotesTabData).toHaveBeenCalled();
+    component.tabHistoryAndNotes$.subscribe();
+    expect(mockOpalFinesService.getDefendantAccountHistoryAndNotesTabData).toHaveBeenCalledWith(
+      MOCK_FINES_ACCOUNT_STATE.account_id,
+    );
+    expect(mockPayloadService.transformPayload).toHaveBeenCalled();
   });
 
   it('should fetch the impositions tab data when fragment is changed to impositions', () => {

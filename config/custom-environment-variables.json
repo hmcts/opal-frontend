@@ -44,6 +44,7 @@
       "releases": {
         "release-1a": { "__name": "RELEASE_1A_ENABLED", "__format": "json" },
         "release-1b": { "__name": "RELEASE_1B_ENABLED", "__format": "json" },
+        "release-1c-administration": { "__name": "RELEASE_1C_ADMINISTRATION_ENABLED", "__format": "json" },
         "release-1c-write-off": { "__name": "RELEASE_1C_WRITE_OFF_ENABLED", "__format": "json" },
         "release-1c-auto-enforcement": { "__name": "RELEASE_1C_AUTO_ENFORCEMENT_ENABLED", "__format": "json" },
         "release-1d-data-retention": { "__name": "RELEASE_1D_DATA_RETENTION_ENABLED", "__format": "json" },
