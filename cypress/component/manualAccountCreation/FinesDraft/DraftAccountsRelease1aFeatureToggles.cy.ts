@@ -137,28 +137,6 @@ describe('FinesDraftRelease1aFeatureToggles', () => {
     });
   };
 
-  const setupCreateAndManageComponent = (featureFlags: FeatureFlags) => {
-    cy.then(() => {
-      mount(FinesDraftCreateAndManageTabsComponent, {
-        providers: [
-          provideHttpClient(),
-          OpalFines,
-          DateService,
-          FinesMacPayloadService,
-          FinesDraftStore,
-          provideRouter([]),
-          {
-            provide: GlobalStore,
-            useFactory: () => createGlobalStore(DRAFT_SESSION_USER_STATE_MOCK, featureFlags),
-          },
-        ],
-        componentProperties: {
-          activeTab: 'review',
-        },
-      });
-    });
-  };
-
   const setupApprovedAccounts = (featureFlags: FeatureFlags, approvedAccountLinkEnabled = false) => {
     interceptGetRejectedAccounts(200, { count: 0, summaries: [] });
     interceptGetApprovedAccounts(200, {
@@ -205,7 +183,7 @@ describe('FinesDraftRelease1aFeatureToggles', () => {
 
   it(
     '(AC.1, AC.2, AC.4) should show Accounts in primary navigation for draft-account users when release-1a is enabled',
-    { tags: [...buildTags(RELEASE_1A_STORY_TAG), RELEASE_EPIC_TAG, '@R1A'] },
+    { tags: [...buildTags(RELEASE_1A_STORY_TAG), RELEASE_EPIC_TAG, '@R1A', '@JIRA-TEST-KEY:PO-7536'] },
     () => {
       setupAppComponent(draftAccountPermissionIds, { 'release-1a': true });
 
@@ -216,7 +194,7 @@ describe('FinesDraftRelease1aFeatureToggles', () => {
 
   it(
     '(AC.3, AC.4) should hide Accounts in primary navigation for draft-account only users when release-1a is disabled',
-    { tags: [...buildTags(RELEASE_1A_STORY_TAG), RELEASE_EPIC_TAG, '@R1AOff'] },
+    { tags: [...buildTags(RELEASE_1A_STORY_TAG), RELEASE_EPIC_TAG, '@R1AOff', '@JIRA-TEST-KEY:PO-7537'] },
     () => {
       setupAppComponent(draftAccountPermissionIds, { 'release-1a': false });
 
@@ -227,7 +205,7 @@ describe('FinesDraftRelease1aFeatureToggles', () => {
 
   it(
     '(AC.4, AC.5) should keep Accounts in primary navigation for consolidation users when release-1a is disabled',
-    { tags: [...buildTags(RELEASE_1A_STORY_TAG), RELEASE_EPIC_TAG, '@R1AOff'] },
+    { tags: [...buildTags(RELEASE_1A_STORY_TAG), RELEASE_EPIC_TAG, '@R1AOff', '@JIRA-TEST-KEY:PO-7538'] },
     () => {
       setupAppComponent(consolidationPermissionIds, { 'release-1a': false, 'release-1c-write-off': true });
 
@@ -238,7 +216,7 @@ describe('FinesDraftRelease1aFeatureToggles', () => {
 
   it(
     '(AC.1, AC.2, AC.4) should show the Draft accounts dashboard entry points when release-1a is enabled',
-    { tags: [...buildTags(RELEASE_1A_STORY_TAG), RELEASE_EPIC_TAG, '@R1A'] },
+    { tags: [...buildTags(RELEASE_1A_STORY_TAG), RELEASE_EPIC_TAG, '@R1A', '@JIRA-TEST-KEY:PO-7539'] },
     () => {
       setupDashboardComponent(draftAccountPermissionIds, { 'release-1a': true });
 
@@ -251,7 +229,7 @@ describe('FinesDraftRelease1aFeatureToggles', () => {
 
   it(
     '(AC.3, AC.4) should hide the Draft accounts dashboard entry points when release-1a is disabled',
-    { tags: [...buildTags(RELEASE_1A_STORY_TAG), RELEASE_EPIC_TAG, '@R1AOff'] },
+    { tags: [...buildTags(RELEASE_1A_STORY_TAG), RELEASE_EPIC_TAG, '@R1AOff', '@JIRA-TEST-KEY:PO-7540'] },
     () => {
       setupDashboardComponent(draftAccountPermissionIds, { 'release-1a': false });
 
@@ -264,7 +242,7 @@ describe('FinesDraftRelease1aFeatureToggles', () => {
 
   it(
     '(AC.4, AC.5) should keep non-R1A Accounts dashboard links available when release-1a is disabled',
-    { tags: [...buildTags(RELEASE_1A_STORY_TAG), RELEASE_EPIC_TAG, '@R1AOff'] },
+    { tags: [...buildTags(RELEASE_1A_STORY_TAG), RELEASE_EPIC_TAG, '@R1AOff', '@JIRA-TEST-KEY:PO-7541'] },
     () => {
       setupDashboardComponent(consolidationPermissionIds, { 'release-1a': false, 'release-1c-write-off': true });
 
@@ -277,7 +255,15 @@ describe('FinesDraftRelease1aFeatureToggles', () => {
 
   it(
     '(AC.5) should show approved account numbers as links when release-1b is enabled',
-    { tags: [...buildTags(RELEASE_1A_STORY_TAG, RELEASE_1B_STORY_TAG), RELEASE_EPIC_TAG, '@R1A', '@R1B'] },
+    {
+      tags: [
+        ...buildTags(RELEASE_1A_STORY_TAG, RELEASE_1B_STORY_TAG),
+        RELEASE_EPIC_TAG,
+        '@R1A',
+        '@R1B',
+        '@JIRA-TEST-KEY:PO-7542',
+      ],
+    },
     () => {
       setupApprovedAccounts({ 'release-1a': true, 'release-1b': true }, true);
 

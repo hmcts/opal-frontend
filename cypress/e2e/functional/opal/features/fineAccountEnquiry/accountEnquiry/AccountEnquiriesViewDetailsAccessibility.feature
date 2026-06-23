@@ -80,7 +80,7 @@ Feature: Account Enquiries - View Account Details Accessibility
       When I open the latest matching result from the search results
       And I go to the Creditor tab
 
-    @JIRA-STORY:PO-1984 @JIRA-EPIC:PO-1285
+    @JIRA-STORY:PO-1984 @JIRA-EPIC:PO-1285 @JIRA-TEST-KEY:PO-7556
     Scenario: Amend minor creditor details form and validation summary states are accessible
       When I view the amend minor creditor details form
       # Check accessibility on the amend minor creditor form

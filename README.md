@@ -326,7 +326,7 @@ Run `yarn test:component` to execute the Cypress component suite.
 
 #### Release-scoped runners
 
-The default functional runner excludes `@FeatureFlag`, `@UAT-Technical`, and `@skip`, so the normal pipeline does not pick up the feature-flag technical scenarios by default.
+The default functional runner excludes `@UAT-Technical`, `@skip`, and the off-state release tags, so the normal pipeline picks up the enabled-path coverage without automatically running the disabled-path scenarios.
 
 Use these functional scripts when you need a release-aligned run locally or in a dedicated CI stage:
 
@@ -336,10 +336,10 @@ Use these functional scripts when you need a release-aligned run locally or in a
 - `yarn test:functional:r1ab`: current `R1A` + `R1B` positive coverage only
 - `yarn test:functional:r1c_write_off_off`: technical `release-1c-write-off` disabled scenarios only
 - `yarn test:functional:r1c_enforcement_operational_reporting_off`: technical `release-1c-enforcement-operational-reporting` disabled scenarios only
-- `yarn test:functional:feature_flags`: all tagged feature-flag technical scenarios
 
 Use these component scripts to avoid running later-release component coverage when you only want the currently-enabled release package:
 
+- `yarn test:component:all_flags_off`: component tests tagged `R1AOff` or `R1BOff` only
 - `yarn test:component:r1a`: `R1A` manual account creation and draft-account components only
 - `yarn test:component:r1ab`: `R1A` + `R1B` component coverage only
 - `yarn test:component:r1c_write_off`: `R1C` write-off / consolidation components only
@@ -380,7 +380,7 @@ yarn test:functional:uat_legacy
 
 If you do not add a selector label, the CNP pipeline uses its normal default functional selection:
 
-- functional tags: `not @FeatureFlag and not @UAT-Technical and not @skip`
+- functional tags: `not @UAT-Technical and not @skip and not (@R1AOff or @R1BOff or @R1CWriteOffOff or @R1CEnforcementOperationalReportingOff)`
 - functional specs: all functional features, unless one or more `test_*` routing labels are present
 
 PR labels supported by the CNP pipeline:
@@ -402,13 +402,32 @@ PR labels supported by the CNP pipeline:
 For release-scoped PR runs, use one of the `run_release:*` labels listed above instead of
 `run_tag:<expression>`.
 
-`run_release` skips smoke tests automatically. It also scopes component execution to the matching current-release package where supported, so an `r1a` run does not execute `R1B` or `R1C` component coverage. Off-state release selectors run the functional feature-flag coverage only. Do not combine `run_release` with `run_tag` or `enable_legacy_mode`.
+`run_release` skips smoke tests automatically. It also scopes component execution to the matching current-release package where supported, so an `r1a` run does not execute `R1B` or `R1C` component coverage. Off-state release selectors run the functional off-state coverage only. Do not combine `run_release` with `run_tag` or `enable_legacy_mode`.
 
 When legacy mode is enabled in CI, you must also provide a `run_tag:<expression>` label, for example `run_tag:@UAT-Technical`, to scope the suite. The pipeline always appends `not @skip`.
 
 The `test_*` routing labels only affect the normal CNP path. If `run_release:<suite>` is present, the release suite decides both the tags and the spec selection.
 
-The nightly pipeline exposes the same selector through the `RELEASE_SUITE` parameter. `RELEASE_SUITE` is also intentionally separate from `ZephyrExecution`: run the release-scoped suite first, then use the Zephyr scripts afterwards if you need that reporting flow.
+### Nightly pipeline stages
+
+The nightly Jenkins pipeline runs its stages in this order after checkout and test setup:
+
+- `Component Tests` runs when `Component=true`.
+- `Smoke Tests` runs when `Smoke=true`.
+- `Functional Tests` runs when `Functional=true`.
+- `R1A Legacy Demo` runs when `RunR1aLegacyDemo=true` and defaults to enabled. It points `TEST_URL` at `https://opal-frontend.demo.apps.hmcts.net/`, switches app mode to legacy, and runs `yarn test:functional:r1a`.
+- `R1A Off Legacy Demo` runs only when `RunR1aOffLegacyDemo=true`. It uses the same demo legacy flow and runs `yarn test:functional:r1a_off`.
+- `UAT-Technical` runs only when `RunUatTech=true`. It uses the same demo legacy flow and runs `yarn test:functional:uat_legacy`.
+- `Legacy Tests` runs only when `Legacy=true`. It runs the general functional suite in legacy mode.
+- `Chrome Tests` runs only when `RunChrome=true`. It reruns the functional suite in Chrome.
+- `Firefox Tests` runs only when `RunFirefox=true`. It reruns the functional suite in Firefox.
+
+Notes for the nightly pipeline:
+
+- `LEGACY_URL` defaults to `PRE-PROD`.
+- `LEGACY_URL=PRE-PROD` points the legacy gateway checks at `https://cloudgobgateway.test.platform.hmcts.net/opal`.
+- `LEGACY_URL=DEV` uses the staging legacy DB stub, skips the pre-prod `getGmasTest` health check, and does not patch the demo `app-mode` LaunchDarkly flag to `legacy`.
+- `ZephyrExecution=true`, or a Friday nightly run, enables the Zephyr reporting flow for the normal component and functional paths.
 
 ### Debugging
 
@@ -432,6 +451,8 @@ functional-output/
       html/
         component-report.html
         assets/...
+      zephyr/
+        cypress-report-1.json
       json/
         .jsons/
           mochawesome*.json
@@ -446,6 +467,9 @@ functional-output/
         OPAL-report-*.ndjson
         <browser>-report.ndjson
         <browser>-report.html
+      zephyr/
+        cucumber-report.json
+        cypress-report-1.json
       legacy/
         legacy-mode-test-output-*.xml
         legacy-test-result.xml
@@ -453,6 +477,30 @@ functional-output/
           LEGACY-report-*.ndjson
           legacy-report.ndjson
           legacy-report.html
+        zephyr/
+          cucumber-report.json
+          cypress-report-1.json
+      r1a-legacy-demo/
+        r1a-legacy-demo-test-result.xml
+        cucumber/
+          r1a-legacy-demo-report.ndjson
+          r1a-legacy-demo-report.html
+        zephyr/
+          cucumber-report.json
+      r1a-off-legacy-demo/
+        r1a-off-legacy-demo-test-result.xml
+        cucumber/
+          r1a-off-legacy-demo-report.ndjson
+          r1a-off-legacy-demo-report.html
+        zephyr/
+          cucumber-report.json
+      uat-technical/
+        uat-technical-test-result.xml
+        cucumber/
+          uat-technical-report.ndjson
+          uat-technical-report.html
+        zephyr/
+          cucumber-report.json
   screenshots/
     <browser>/...
     <browser>/legacy/...
@@ -472,6 +520,8 @@ smoke-output/
         OPAL-report-*.ndjson
         smoke-report.ndjson
         smoke-report.html
+      zephyr/
+        cucumber-report.json
       legacy/
         legacy-mode-test-output-*.xml
         legacy-test-result.xml
@@ -489,7 +539,9 @@ smoke-output/
 Notes:
 
 - `functional-output/component/<browser>/json/.jsons/` is the raw Mochawesome JSON used to build `html/component-report.html`.
+- Each nightly stage now copies its Zephyr JSON into that stage's own artifact directory as well as the shared root `*-output/zephyr/` location used by the existing scripts.
 - `functional-output/prod/<browser>/legacy/` and `smoke-output/prod/<browser>/legacy/` are only created for legacy-mode runs.
+- `functional-output/prod/<browser>/{r1a-legacy-demo,r1a-off-legacy-demo,uat-technical}/` are created by the dedicated nightly demo stages.
 - `videos/` is only expected when using `yarn test:functionalOpalVideo`.
 - `account_evidence/` is only expected when legacy evidence capture is enabled.
 - These older component paths should not be recreated on a clean run: `functional-output/component-report/`, `functional-output/component-html/`, and `functional-output/prod/<browser>/component/`.
@@ -721,12 +773,28 @@ Zephyr Automation is a tool for integrating test results and ticket management b
 - `zephyr:cucumber:functional:jira-create`: Create Jira tickets from the functional Cucumber JSON report at `functional-output/zephyr/cucumber-report.json`.
 - `zephyr:cucumber:functional:jira-update`: Update Jira tickets using the functional Cucumber JSON report at `functional-output/zephyr/cucumber-report.json`.
 - `zephyr:cucumber:functional:jira-execute`: Create a Zephyr execution from the functional Cucumber JSON report at `functional-output/zephyr/cucumber-report.json`.
+- `zephyr:cucumber:r1a_legacy_demo:jira-create`: Create Jira tickets from the R1A legacy demo Cucumber JSON report at `functional-output/zephyr/cucumber-report.json`.
+- `zephyr:cucumber:r1a_legacy_demo:jira-update`: Update Jira tickets using the R1A legacy demo Cucumber JSON report at `functional-output/zephyr/cucumber-report.json`.
+- `zephyr:cucumber:r1a_legacy_demo:jira-execute`: Create a Zephyr execution from the R1A legacy demo Cucumber JSON report at `functional-output/zephyr/cucumber-report.json`.
+- `zephyr:cucumber:r1a_off_legacy_demo:jira-create`: Create Jira tickets from the R1A Off legacy demo Cucumber JSON report at `functional-output/zephyr/cucumber-report.json`.
+- `zephyr:cucumber:r1a_off_legacy_demo:jira-update`: Update Jira tickets using the R1A Off legacy demo Cucumber JSON report at `functional-output/zephyr/cucumber-report.json`.
+- `zephyr:cucumber:r1a_off_legacy_demo:jira-execute`: Create a Zephyr execution from the R1A Off legacy demo Cucumber JSON report at `functional-output/zephyr/cucumber-report.json`.
 - `zephyr:cucumber:smoke:jira-create`: Create Jira tickets from the smoke Cucumber JSON report at `smoke-output/zephyr/cucumber-report.json`.
 - `zephyr:cucumber:smoke:jira-update`: Update Jira tickets using the smoke Cucumber JSON report at `smoke-output/zephyr/cucumber-report.json`.
 - `zephyr:cucumber:smoke:jira-execute`: Create a Zephyr execution from the smoke Cucumber JSON report at `smoke-output/zephyr/cucumber-report.json`.
+- `zephyr:cucumber:uat_technical:jira-create`: Create Jira tickets from the UAT-Technical Cucumber JSON report at `functional-output/zephyr/cucumber-report.json`.
+- `zephyr:cucumber:uat_technical:jira-update`: Update Jira tickets using the UAT-Technical Cucumber JSON report at `functional-output/zephyr/cucumber-report.json`.
+- `zephyr:cucumber:uat_technical:jira-execute`: Create a Zephyr execution from the UAT-Technical Cucumber JSON report at `functional-output/zephyr/cucumber-report.json`.
+- `zephyr:cucumber:legacy:jira-create`: Create Jira tickets from the legacy-mode Cucumber JSON report at `functional-output/zephyr/cucumber-report.json`.
+- `zephyr:cucumber:legacy:jira-update`: Update Jira tickets using the legacy-mode Cucumber JSON report at `functional-output/zephyr/cucumber-report.json`.
+- `zephyr:cucumber:legacy:jira-execute`: Create a Zephyr execution from the legacy-mode Cucumber JSON report at `functional-output/zephyr/cucumber-report.json`.
 - `zephyr:test:component`: Reset outputs, run component tests, then create a Zephyr execution from the Cypress JSON report.
 - `zephyr:test:functional`: Reset outputs, run functional tests, then create a Zephyr execution from the functional Cucumber JSON report.
+- `zephyr:test:r1a_legacy_demo`: Reset outputs, run the R1A legacy demo functional suite, then create a Zephyr execution from the generated Cucumber JSON report.
+- `zephyr:test:r1a_off_legacy_demo`: Reset outputs, run the R1A Off legacy demo functional suite, then create a Zephyr execution from the generated Cucumber JSON report.
 - `zephyr:test:smoke`: Reset outputs, run smoke tests, then create a Zephyr execution from the smoke Cucumber JSON report.
+- `zephyr:test:uat_technical`: Reset outputs, run the UAT-Technical legacy-mode functional suite, then create a Zephyr execution from the generated Cucumber JSON report.
+- `zephyr:test:legacy`: Reset outputs, run the legacy-mode functional suite, then create a Zephyr execution from the generated Cucumber JSON report.
 
 ## Test Metadata Maintenance
 
