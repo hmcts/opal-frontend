@@ -339,6 +339,7 @@ Use these functional scripts when you need a release-aligned run locally or in a
 
 Use these component scripts to avoid running later-release component coverage when you only want the currently-enabled release package:
 
+- `yarn test:component:all_flags_off`: component tests tagged `R1AOff` or `R1BOff` only
 - `yarn test:component:r1a`: `R1A` manual account creation and draft-account components only
 - `yarn test:component:r1ab`: `R1A` + `R1B` component coverage only
 - `yarn test:component:r1c_write_off`: `R1C` write-off / consolidation components only

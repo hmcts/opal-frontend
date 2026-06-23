@@ -55,6 +55,7 @@ String functionalXmlReport = 'cypress/reports/functionalXmlReport.html'
 @Field String defaultFunctionalTagExpression =
   'not @UAT-Technical and not @skip' + andTagSeparator +
   'not (@R1AOff or @R1BOff or @R1CWriteOffOff or @R1CEnforcementOperationalReportingOff)'
+@Field String componentExcludeGrepTags = '-@R1AOff+-@R1BOff'
 @Field String macPopulateAndSubmitFeatureGlob =
   'cypress/e2e/functional/opal/features/manualAccountCreation/populateAndSubmit/**/*.feature,'
 @Field String macCheckAndValidateFeatureGlob =
@@ -678,17 +679,19 @@ withPipeline(type, product, component) {
                 echo "Skipping opal component tests due to label: ${skipLabelComponent}"
             } else if (releaseSuiteSelection && !releaseSuiteRunsComponentStage(releaseSuiteSelection)) {
                 echo "Skipping opal component tests for release-scoped run: ${releaseSuiteSelection}"
-      } else {
+            } else {
                 String componentCommand = releaseSuiteSelection
                   ? releaseSuiteComponentScript(releaseSuiteSelection)
                   : 'test:component'
-                echo "Running opal component tests via yarn ${componentCommand}"
+                String filteredComponentCommand =
+                  "${componentCommand} --expose grepTags=${componentExcludeGrepTags}"
+                echo "Running opal component tests via yarn ${filteredComponentCommand}"
                 try {
-                    yarnBuilder.yarn(componentCommand)
-        } catch (hudson.AbortException e) {
+                    yarnBuilder.yarn(filteredComponentCommand)
+                } catch (hudson.AbortException e) {
                     echo "Opal component tests failed: ${e}"
                     currentBuild.result = 'FAILURE'
-        } finally {
+                } finally {
                     archiveZephyrReports(functionalOutputRoot)
                     archiveArtifact(functionalArtifactsGlob)
                     publishHtmlReport(

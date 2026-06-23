@@ -14,16 +14,24 @@ properties([
     pipelineTriggers([cron('H 07 * * 1-5')]),
     copyArtifactPermission('*'),
     parameters([
-    booleanParam(name: 'Component', defaultValue: true, description: 'Run component tests'),
+    booleanParam(
+      name: 'Component',
+      defaultValue: true,
+      description: 'Run component tests'
+    ),
     booleanParam(name: 'Smoke', defaultValue: true, description: 'Run smoke tests'),
-    booleanParam(name: 'Functional', defaultValue: true, description: 'Run functional tests'),
+    booleanParam(
+      name: 'Functional',
+      defaultValue: true,
+      description: 'Run functional tests excluding R1AOff, R1BOff, R1CWriteOffOff and R1CEnforcementOperationalReportingOff'
+    ),
     booleanParam(name: 'Legacy', defaultValue: false, description: 'Run legacy tests'),
     booleanParam(name: 'RunChrome', defaultValue: false, description: 'Run Chrome tests'),
     booleanParam(name: 'RunFirefox', defaultValue: false, description: 'Run Firefox tests'),
     booleanParam(
       name: 'RunR1aLegacyDemo',
-      defaultValue: true,
-      description: 'Run R1A legacy demo stage (demo -> legacy checks)'
+      defaultValue: false,
+      description: 'Run optional R1A legacy demo stage (demo -> legacy checks)'
     ),
     booleanParam(
       name: 'RunUatTech',
@@ -454,6 +462,31 @@ void prepareLegacyDemoArtifacts(String browserToRun, String outputDirName, Strin
   copyZephyrReports(functionalOutputRoot, "${functionalOutputRoot}/prod/${browserToRun}/${outputDirName}")
 }
 
+// Copy generated component report artifacts into a dedicated directory for publishing.
+void prepareComponentStageArtifacts(String browserToRun, String outputDirName, String reportFilePrefix) {
+  sh """
+    SOURCE_DIR='${functionalOutputRoot}/component/${browserToRun}'
+    TARGET_DIR="\$SOURCE_DIR/${outputDirName}"
+    SOURCE_HTML_DIR="\$SOURCE_DIR/html"
+    TARGET_HTML_DIR="\$TARGET_DIR/html"
+    mkdir -p "\$TARGET_HTML_DIR" "\$TARGET_DIR/junit" "\$TARGET_DIR/json"
+
+    if [ -f "\$SOURCE_HTML_DIR/component-report.html" ]; then
+      cp "\$SOURCE_HTML_DIR/component-report.html" "\$TARGET_HTML_DIR/${reportFilePrefix}-report.html"
+    fi
+    if [ -d "\$SOURCE_HTML_DIR/assets" ]; then
+      cp -R "\$SOURCE_HTML_DIR/assets" "\$TARGET_HTML_DIR/"
+    fi
+    if [ -d "\$SOURCE_DIR/junit" ]; then
+      cp -R "\$SOURCE_DIR/junit/." "\$TARGET_DIR/junit/"
+    fi
+    if [ -d "\$SOURCE_DIR/json" ]; then
+      cp -R "\$SOURCE_DIR/json/." "\$TARGET_DIR/json/"
+    fi
+  """
+  copyZephyrReports(functionalOutputRoot, "${functionalOutputRoot}/component/${browserToRun}/${outputDirName}")
+}
+
 // Run a demo environment legacy-mode stage with dedicated LaunchDarkly handling and reporting.
 void runDemoLegacyStage(Map<String, Object> stageConfig, Closure runCommand) {
   boolean enabled = (stageConfig.enabled ?: false) as boolean
@@ -529,11 +562,16 @@ void runComponentStage(
   String browserToRun
 ) {
   runNightlyStage(enabled, 'Component Tests', failureResultValue, 'Component tests failed') {
-    String componentCommand = shouldRunWithZephyr ? 'zephyr:test:component' : 'test:component'
-
     try {
-      builder.yarn(componentCommand)
+      builder.yarn('test:component')
     } finally {
+      if (shouldRunWithZephyr) {
+        try {
+          builder.yarn('zephyr:cypress:jira-execute')
+        } catch (hudson.AbortException e) {
+          echo "Component Zephyr execution failed: ${e}"
+        }
+      }
       copyZephyrReports(functionalOutputRoot, "${functionalOutputRoot}/component/${browserToRun}")
       archiveArtifact("${functionalOutputRoot}/component/${browserToRun}/**")
       archiveZephyrReports("${functionalOutputRoot}/component/${browserToRun}")
@@ -637,7 +675,6 @@ void runSmokeStage(
       copyZephyrReports(smokeOutputRoot, "${smokeOutputRoot}/prod/${browserToRun}")
       archiveArtifact("${smokeOutputRoot}/prod/**")
       archiveArtifact("${smokeOutputRoot}/screenshots/${browserToRun}/**")
-      archiveZephyrReports(smokeOutputRoot)
       archiveZephyrReports("${smokeOutputRoot}/prod/${browserToRun}")
       publishHtmlReport(
         "${smokeOutputRoot}/prod/${browserToRun}/cucumber/",
@@ -665,7 +702,6 @@ void runFunctionalStage(
       copyZephyrReports(functionalOutputRoot, "${functionalOutputRoot}/prod/${browserToRun}")
       archiveArtifact(functionalProdArtifactsPath)
       archiveArtifact("${functionalOutputRoot}/screenshots/${browserToRun}/**")
-      archiveZephyrReports(functionalOutputRoot)
       archiveZephyrReports("${functionalOutputRoot}/prod/${browserToRun}")
       publishHtmlReport(
         "${functionalOutputRoot}/prod/${browserToRun}/cucumber/",
