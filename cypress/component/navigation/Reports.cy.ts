@@ -13,7 +13,10 @@ import { DashboardComponent } from 'src/app/pages/dashboard/dashboard.component'
 import { ReportsLocators as L } from '../../shared/selectors/reports.locators';
 import {
   RELEASE_1A_FEATURE_FLAG,
+  RELEASE_1C_WRITE_OFF_FEATURE_FLAG,
   RELEASE_1C_ENFORCEMENT_OPERATIONAL_REPORTING_FEATURE_FLAG,
+  RELEASE_1C_ADMINISTRATION_FEATURE_FLAG,
+  RELEASE_1C_FINANCIAL_MOVEMENTS_FEATURE_FLAG,
 } from 'src/app/flows/fines/constants/release-feature-flags.constant';
 
 const REPORTS_JIRA_LABEL = '@JIRA-LABEL:primary-nav-and-dashboards';
@@ -23,7 +26,10 @@ const RELEASE_1C_STORY_TAG = '@JIRA-STORY:PO-3758';
 const RELEASE_1C_EPIC_TAG = '@JIRA-EPIC:PO-3685';
 const DEFAULT_RELEASE_FEATURE_FLAGS = {
   [RELEASE_1A_FEATURE_FLAG]: true,
+  [RELEASE_1C_WRITE_OFF_FEATURE_FLAG]: true,
   [RELEASE_1C_ENFORCEMENT_OPERATIONAL_REPORTING_FEATURE_FLAG]: true,
+  [RELEASE_1C_ADMINISTRATION_FEATURE_FLAG]: true,
+  [RELEASE_1C_FINANCIAL_MOVEMENTS_FEATURE_FLAG]: true,
 };
 
 interface IComponentProperties {
