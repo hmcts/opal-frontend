@@ -51,7 +51,6 @@ describe('FinesAccDefendantDetailsHistoryAndNotesTabComponent', () => {
     mockOpalFinesService.getDefendantAccountHistoryAndNotesTabData.mockReturnValue(
       of(OPAL_FINES_ACCOUNT_DEFENDANT_DETAILS_HISTORY_AND_NOTES_TAB_REF_DATA_MOCK),
     );
-    consoleLogSpy = vi.spyOn(console, 'log').mockImplementation(() => undefined);
 
     await TestBed.configureTestingModule({
       imports: [FinesAccDefendantDetailsHistoryAndNotesTabComponent],
