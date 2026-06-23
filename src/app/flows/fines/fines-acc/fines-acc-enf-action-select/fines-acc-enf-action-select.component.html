@@ -1,4 +1,12 @@
 <div class="govuk-grid-row">
+  <app-fines-acc-banner-messages
+    id="fines-acc-enf-action-select-banners"
+    [hasVersionMismatch]="false"
+    [hasPaymentHold]="false"
+    [successMessage]="finesAccStore.successMessage()"
+    (clearSuccessMessage)="finesAccStore.clearSuccessMessage()"
+  ></app-fines-acc-banner-messages>
+
   <app-fines-acc-enf-action-select-form
     [accountNumber]="accountNumber"
     [actionOptions]="actionOptions"

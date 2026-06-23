@@ -413,7 +413,6 @@ The `test_*` routing labels only affect the normal CNP path. If `run_release:<su
 The nightly Jenkins pipeline runs its stages in this order after checkout and test setup:
 
 - `Component Tests` runs when `Component=true`.
-- `Component All Flags Off` runs only when `RunComponentAllFlagsOff=true`. It runs `yarn test:component:all_flags_off`.
 - `Smoke Tests` runs when `Smoke=true`.
 - `Functional Tests` runs when `Functional=true`.
 - `R1A Legacy Demo` runs when `RunR1aLegacyDemo=true` and defaults to enabled. It points `TEST_URL` at `https://opal-frontend.demo.apps.hmcts.net/`, switches app mode to legacy, and runs `yarn test:functional:r1a`.
@@ -460,17 +459,6 @@ functional-output/
       junit/
         component-test-output-*.xml
       screenshots/...
-      component-all-flags-off/
-        html/
-          component-all-flags-off-report.html
-          assets/...
-        zephyr/
-          cypress-report-1.json
-        json/
-          .jsons/
-            mochawesome*.json
-        junit/
-          component-test-output-*.xml
   prod/
     <browser>/
       opal-mode-test-output-*.xml
@@ -554,7 +542,6 @@ Notes:
 - Each nightly stage now copies its Zephyr JSON into that stage's own artifact directory as well as the shared root `*-output/zephyr/` location used by the existing scripts.
 - `functional-output/prod/<browser>/legacy/` and `smoke-output/prod/<browser>/legacy/` are only created for legacy-mode runs.
 - `functional-output/prod/<browser>/{r1a-legacy-demo,r1a-off-legacy-demo,uat-technical}/` are created by the dedicated nightly demo stages.
-- `functional-output/component/<browser>/component-all-flags-off/` is created by the optional nightly component all-flags-off stage.
 - `videos/` is only expected when using `yarn test:functionalOpalVideo`.
 - `account_evidence/` is only expected when legacy evidence capture is enabled.
 - These older component paths should not be recreated on a clean run: `functional-output/component-report/`, `functional-output/component-html/`, and `functional-output/prod/<browser>/component/`.
@@ -783,9 +770,6 @@ Zephyr Automation is a tool for integrating test results and ticket management b
 - `zephyr:cypress:jira-create`: Create Jira tickets from the Cypress JSON report at `functional-output/zephyr/cypress-report-1.json`.
 - `zephyr:cypress:jira-update`: Update Jira tickets using the Cypress JSON report at `functional-output/zephyr/cypress-report-1.json`.
 - `zephyr:cypress:jira-execute`: Create a Zephyr execution from the Cypress JSON report at `functional-output/zephyr/cypress-report-1.json`.
-- `zephyr:cypress:component_all_flags_off:jira-create`: Create Jira tickets from the component all-flags-off Cypress JSON report at `functional-output/zephyr/cypress-report-1.json`.
-- `zephyr:cypress:component_all_flags_off:jira-update`: Update Jira tickets using the component all-flags-off Cypress JSON report at `functional-output/zephyr/cypress-report-1.json`.
-- `zephyr:cypress:component_all_flags_off:jira-execute`: Create a Zephyr execution from the component all-flags-off Cypress JSON report at `functional-output/zephyr/cypress-report-1.json`.
 - `zephyr:cucumber:functional:jira-create`: Create Jira tickets from the functional Cucumber JSON report at `functional-output/zephyr/cucumber-report.json`.
 - `zephyr:cucumber:functional:jira-update`: Update Jira tickets using the functional Cucumber JSON report at `functional-output/zephyr/cucumber-report.json`.
 - `zephyr:cucumber:functional:jira-execute`: Create a Zephyr execution from the functional Cucumber JSON report at `functional-output/zephyr/cucumber-report.json`.
@@ -805,7 +789,6 @@ Zephyr Automation is a tool for integrating test results and ticket management b
 - `zephyr:cucumber:legacy:jira-update`: Update Jira tickets using the legacy-mode Cucumber JSON report at `functional-output/zephyr/cucumber-report.json`.
 - `zephyr:cucumber:legacy:jira-execute`: Create a Zephyr execution from the legacy-mode Cucumber JSON report at `functional-output/zephyr/cucumber-report.json`.
 - `zephyr:test:component`: Reset outputs, run component tests, then create a Zephyr execution from the Cypress JSON report.
-- `zephyr:test:component_all_flags_off`: Reset outputs, run the component all-flags-off suite, then create a Zephyr execution from the generated Cypress JSON report.
 - `zephyr:test:functional`: Reset outputs, run functional tests, then create a Zephyr execution from the functional Cucumber JSON report.
 - `zephyr:test:r1a_legacy_demo`: Reset outputs, run the R1A legacy demo functional suite, then create a Zephyr execution from the generated Cucumber JSON report.
 - `zephyr:test:r1a_off_legacy_demo`: Reset outputs, run the R1A Off legacy demo functional suite, then create a Zephyr execution from the generated Cucumber JSON report.

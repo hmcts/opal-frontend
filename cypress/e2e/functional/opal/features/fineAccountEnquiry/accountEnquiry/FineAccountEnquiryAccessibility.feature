@@ -172,3 +172,24 @@ Feature: Account Enquiries - Enforcement Accessibility
     And I choose the enforcement action "Collection order (COLLO)"
     And I continue to the confirm enforcement action page
     Then I check the page for accessibility
+
+  @JIRA-STORY:PO-1785 @JIRA-EPIC:PO-1675 @JIRA-TEST-KEY:PO-5466
+  Scenario: Remove enforcement hold page accessibility
+    Given I create a "adultOrYouthOnly" draft account with the following details and set status "Publishing Pending" using user "opal-test-10@dev.platform.hmcts.net":
+      | Account_status                                  | Submitted                           |
+      | account.defendant.forenames                     | Evan                                |
+      | account.defendant.surname                       | EnfRemoveAccess{uniq}               |
+      | account.defendant.email_address_1               | Evan.EnfRemoveAccess{uniq}@test.com |
+      | account.defendant.telephone_number_home         | 02078259315                         |
+      | account.account_type                            | Fine                                |
+      | account.prosecutor_case_reference               | PCR-AUTO-019                        |
+      | account.collection_order_made                   | false                               |
+      | account.collection_order_made_today             | false                               |
+      | account.payment_card_request                    | false                               |
+      | account.defendant.dob                           | 2002-05-15                          |
+      | account.payment_terms.enforcements[0].result_id | NOENF                               |
+
+    When I search for the account by last name "EnfRemoveAccess{uniq}" and open the latest result
+    And I go to the Enforcement tab
+    And I open the remove enforcement hold screen
+    Then I check the page for accessibility
