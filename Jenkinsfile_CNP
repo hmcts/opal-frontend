@@ -54,7 +54,7 @@ String functionalXmlReport = 'cypress/reports/functionalXmlReport.html'
 @Field String releaseSuiteR1cEnforcementOperationalReportingOff = 'r1c_enforcement_operational_reporting_off'
 @Field String defaultFunctionalTagExpression =
   'not @UAT-Technical and not @skip' + andTagSeparator +
-  'not (@R1AOff or @R1BOff or @R1CWriteOffOff or @R1CEnforcementOperationalReportingOff)'
+  'not (@R1AOff or @R1BOff or @R1CWriteOffOff or @R1CEnforcementOperationalReportingOff or @R1CAdministrationOff or @R1CFinancialMovementsOff)'
 @Field String componentExcludeGrepTags = '-@R1AOff+-@R1BOff'
 @Field String macPopulateAndSubmitFeatureGlob =
   'cypress/e2e/functional/opal/features/manualAccountCreation/populateAndSubmit/**/*.feature,'
