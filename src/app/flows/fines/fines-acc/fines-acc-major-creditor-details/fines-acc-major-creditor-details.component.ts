@@ -44,6 +44,7 @@ import { FINES_ACC_MAJOR_CREDITOR_ACCOUNT_TABS_CACHE_MAP } from './constants/fin
 import { IOpalFinesAccountMajorCreditorAtAGlance } from '../../services/opal-fines-service/interfaces/opal-fines-account-major-creditor-at-a-glance.interface';
 import { FinesAccMajorCreditorDetailsAtAGlanceTabComponent } from './fines-acc-major-creditor-details-at-a-glance-tab/fines-acc-major-creditor-details-at-a-glance-tab.component';
 import { AsyncPipe } from '@angular/common';
+import { FINES_ACC_MAJOR_CREDITOR_ACCOUNT_TYPES } from './constants/fines-acc-major-creditor-account-types.constant';
 
 @Component({
   selector: 'app-fines-acc-major-creditor-details',
@@ -87,6 +88,7 @@ export class FinesAccMajorCreditorDetailsComponent
   public lastEnforcement: IOpalFinesResultRefData | null = null;
   public finesPermissions = FINES_PERMISSIONS;
   public tabAtAGlance$: Observable<IOpalFinesAccountMajorCreditorAtAGlance> = EMPTY;
+  public majorCreditorAccountTypes = FINES_ACC_MAJOR_CREDITOR_ACCOUNT_TYPES;
 
   /**
    * Initializes and sets up the observable data stream for the fines draft tab component.

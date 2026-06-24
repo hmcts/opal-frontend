@@ -55,7 +55,7 @@
       <app-fines-acc-major-creditor-details-at-a-glance-tab
         [tabData]="tabData"
         [style]="tabContentStyles"
-        [centralFund]="accountData.major_creditor.account_reference.account_type === 'CF'"
+        [centralFund]="accountData.major_creditor.account_reference.account_type === majorCreditorAccountTypes.CF"
       ></app-fines-acc-major-creditor-details-at-a-glance-tab>
     }
   }
