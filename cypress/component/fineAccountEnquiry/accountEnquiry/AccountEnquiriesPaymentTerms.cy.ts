@@ -177,12 +177,17 @@ describe('Account Enquiry Payment Terms', () => {
       interceptDefendantHeader(accountId, headerMock, '123');
       interceptPaymentTerms(accountId, paymentTermsMock, '123');
       interceptResultByCode('REM');
-      setupAccountEnquiryComponent({ ...componentProperties, accountId: accountId });
+      setupAccountEnquiryComponent({
+        ...componentProperties,
+        accountId: accountId,
+        interceptedRoutes: componentProperties.interceptedRoutes?.filter((route) => route !== '../payment-terms/amend'),
+      });
       cy.get('router-outlet').should('exist');
 
       cy.get(PAYMENT_TERMS_TAB.tabName).should('exist').and('contain.text', 'Payment terms');
       cy.get(PAYMENT_TERMS_TAB.paymentTermsLink).contains('Change').click();
-      cy.get('@routerNavigate').should('have.been.calledWithMatch', ['../payment-terms/amend']);
+      cy.get('app-fines-acc-payment-terms-amend-form').should('exist');
+      cy.contains('opal-lib-govuk-heading-with-caption, h1, h2', 'Payment terms').should('be.visible');
     },
   );
 
@@ -205,7 +210,11 @@ describe('Account Enquiry Payment Terms', () => {
 
       cy.get(PAYMENT_TERMS_TAB.tabName).should('exist').and('contain.text', 'Payment terms');
       cy.get(PAYMENT_TERMS_TAB.paymentTermsLink).contains('Change').click();
-      cy.get('@routerNavigate').should('have.been.calledWithMatch', ['../payment-terms/denied/permission']);
+      cy.get('app-fines-acc-payment-terms-amend-denied').should('exist');
+      cy.contains('opal-lib-govuk-heading-with-caption, h1, h2', 'You cannot amend the payment terms of this account.')
+        .should('be.visible');
+      cy.contains('You do not have the required permissions to make changes to this account as it is outside your business unit.')
+        .should('be.visible');
     },
   );
 
@@ -227,7 +236,14 @@ describe('Account Enquiry Payment Terms', () => {
       cy.get('router-outlet').should('exist');
 
       cy.get(PAYMENT_TERMS_TAB.tabName).should('exist').and('contain.text', 'Payment terms');
-      cy.get(PAYMENT_TERMS_TAB.paymentTermsLink).contains('Change').should('not.exist');
+      cy.get('body').then(($body) => {
+        const linkTexts = $body
+          .find(PAYMENT_TERMS_TAB.paymentTermsLink)
+          .toArray()
+          .map((link) => link.textContent?.trim());
+
+          expect(linkTexts).to.not.include('Change');
+      });
     },
   );
 
@@ -251,7 +267,10 @@ describe('Account Enquiry Payment Terms', () => {
 
       cy.get(PAYMENT_TERMS_TAB.tabName).should('exist').and('contain.text', 'Payment terms');
       cy.get(PAYMENT_TERMS_TAB.paymentTermsLink).contains('Change').click();
-      cy.get('@routerNavigate').should('have.been.calledWithMatch', ['../payment-terms/denied/enforcement']);
+      cy.get('app-fines-acc-payment-terms-amend-denied').should('exist');
+      cy.contains('opal-lib-govuk-heading-with-caption, h1, h2', 'You cannot amend the payment terms of this account.')
+        .should('be.visible');
+      cy.contains('This account has an enforcement action outstanding: DW.').should('be.visible');
     },
   );
 
@@ -275,7 +294,10 @@ describe('Account Enquiry Payment Terms', () => {
 
       cy.get(PAYMENT_TERMS_TAB.tabName).should('exist').and('contain.text', 'Payment terms');
       cy.get(PAYMENT_TERMS_TAB.paymentTermsLink).contains('Change').click();
-      cy.get('@routerNavigate').should('have.been.calledWithMatch', ['../payment-terms/denied/account-status']);
+      cy.get('app-fines-acc-payment-terms-amend-denied').should('exist');
+      cy.contains('opal-lib-govuk-heading-with-caption, h1, h2', 'You cannot amend the payment terms of this account.')
+        .should('be.visible');
+      cy.contains('This account has been consolidated.').should('be.visible');
     },
   );
 
@@ -299,7 +321,10 @@ describe('Account Enquiry Payment Terms', () => {
 
       cy.get(PAYMENT_TERMS_TAB.tabName).should('exist').and('contain.text', 'Payment terms');
       cy.get(PAYMENT_TERMS_TAB.paymentTermsLink).contains('Change').click();
-      cy.get('@routerNavigate').should('have.been.calledWithMatch', ['../payment-terms/denied/account-status']);
+      cy.get('app-fines-acc-payment-terms-amend-denied').should('exist');
+      cy.contains('opal-lib-govuk-heading-with-caption, h1, h2', 'You cannot amend the payment terms of this account.')
+        .should('be.visible');
+      cy.contains('This account has been written-off.').should('be.visible');
     },
   );
 
@@ -323,7 +348,10 @@ describe('Account Enquiry Payment Terms', () => {
 
       cy.get(PAYMENT_TERMS_TAB.tabName).should('exist').and('contain.text', 'Payment terms');
       cy.get(PAYMENT_TERMS_TAB.paymentTermsLink).contains('Change').click();
-      cy.get('@routerNavigate').should('have.been.calledWithMatch', ['../payment-terms/denied/account-status']);
+      cy.get('app-fines-acc-payment-terms-amend-denied').should('exist');
+      cy.contains('opal-lib-govuk-heading-with-caption, h1, h2', 'You cannot amend the payment terms of this account.')
+        .should('be.visible');
+      cy.contains('This account has been transferred out.').should('be.visible');
     },
   );
 
@@ -347,7 +375,10 @@ describe('Account Enquiry Payment Terms', () => {
 
       cy.get(PAYMENT_TERMS_TAB.tabName).should('exist').and('contain.text', 'Payment terms');
       cy.get(PAYMENT_TERMS_TAB.paymentTermsLink).contains('Change').click();
-      cy.get('@routerNavigate').should('have.been.calledWithMatch', ['../payment-terms/denied/account-status']);
+      cy.get('app-fines-acc-payment-terms-amend-denied').should('exist');
+      cy.contains('opal-lib-govuk-heading-with-caption, h1, h2', 'You cannot amend the payment terms of this account.')
+        .should('be.visible');
+      cy.contains('This account has been transferred out.').should('be.visible');
     },
   );
 
@@ -371,7 +402,10 @@ describe('Account Enquiry Payment Terms', () => {
 
       cy.get(PAYMENT_TERMS_TAB.tabName).should('exist').and('contain.text', 'Payment terms');
       cy.get(PAYMENT_TERMS_TAB.paymentTermsLink).contains('Change').click();
-      cy.get('@routerNavigate').should('have.been.calledWithMatch', ['../payment-terms/denied/account-status']);
+      cy.get('app-fines-acc-payment-terms-amend-denied').should('exist');
+      cy.contains('opal-lib-govuk-heading-with-caption, h1, h2', 'You cannot amend the payment terms of this account.')
+        .should('be.visible');
+      cy.contains('This account has been transferred out.').should('be.visible');
     },
   );
 
@@ -396,7 +430,10 @@ describe('Account Enquiry Payment Terms', () => {
 
       cy.get(PAYMENT_TERMS_TAB.tabName).should('exist').and('contain.text', 'Payment terms');
       cy.get(PAYMENT_TERMS_TAB.paymentTermsLink).contains('Change').click();
-      cy.get('@routerNavigate').should('have.been.calledWithMatch', ['../payment-terms/denied/enforcement']);
+      cy.get('app-fines-acc-payment-terms-amend-denied').should('exist');
+      cy.contains('opal-lib-govuk-heading-with-caption, h1, h2', 'You cannot amend the payment terms of this account.')
+        .should('be.visible');
+      cy.contains('This account has an enforcement action outstanding: DW.').should('be.visible');
     },
   );
 
@@ -526,13 +563,18 @@ describe('Account Enquiry Payment Terms', () => {
       interceptDefendantHeader(accountId, headerMock, '123');
       interceptPaymentTerms(accountId, paymentTermsMock, '123');
       interceptResultByCode('REM');
-      setupAccountEnquiryComponent({ ...componentProperties, accountId: accountId });
+      setupAccountEnquiryComponent({
+        ...componentProperties,
+        accountId: accountId,
+        interceptedRoutes: componentProperties.interceptedRoutes?.filter((route) => route !== '../payment-terms/amend'),
+      });
       cy.get('router-outlet').should('exist');
 
       cy.get(PAYMENT_TERMS_TAB.tabName).should('exist').and('contain.text', 'Payment terms');
       cy.get(PAYMENT_TERMS_TAB.parentGuardianTag).should('exist').and('contain.text', 'Parent or Guardian to pay');
       cy.get(PAYMENT_TERMS_TAB.paymentTermsLink).contains('Change').click();
-      cy.get('@routerNavigate').should('have.been.calledWithMatch', ['../payment-terms/amend']);
+      cy.get('app-fines-acc-payment-terms-amend-form').should('exist');
+      cy.contains('opal-lib-govuk-heading-with-caption, h1, h2', 'Payment terms').should('be.visible');
     },
   );
 
@@ -556,7 +598,11 @@ describe('Account Enquiry Payment Terms', () => {
 
       cy.get(PAYMENT_TERMS_TAB.tabName).should('exist').and('contain.text', 'Payment terms');
       cy.get(PAYMENT_TERMS_TAB.paymentTermsLink).contains('Change').click();
-      cy.get('@routerNavigate').should('have.been.calledWithMatch', ['../payment-terms/denied/permission']);
+      cy.get('app-fines-acc-payment-terms-amend-denied').should('exist');
+      cy.contains('opal-lib-govuk-heading-with-caption, h1, h2', 'You cannot amend the payment terms of this account.')
+        .should('be.visible');
+      cy.contains('You do not have the required permissions to make changes to this account as it is outside your business unit.')
+        .should('be.visible');
     },
   );
 
@@ -580,7 +626,14 @@ describe('Account Enquiry Payment Terms', () => {
 
       cy.get(PAYMENT_TERMS_TAB.tabName).should('exist').and('contain.text', 'Payment terms');
       cy.get(PAYMENT_TERMS_TAB.parentGuardianTag).should('exist').and('contain.text', 'Parent or Guardian to pay');
-      cy.get(PAYMENT_TERMS_TAB.paymentTermsLink).contains('Change').should('not.exist');
+      cy.get('body').then(($body) => {
+        const linkTexts = $body
+          .find(PAYMENT_TERMS_TAB.paymentTermsLink)
+          .toArray()
+          .map((link) => link.textContent?.trim());
+
+          expect(linkTexts).to.not.include('Change');
+      });
     },
   );
 
@@ -719,13 +772,18 @@ describe('Account Enquiry Payment Terms', () => {
       interceptDefendantHeader(accountId, header, '123');
       interceptPaymentTerms(accountId, paymentTermsMock, '123');
       interceptResultByCode('REM');
-      setupAccountEnquiryComponent({ ...componentProperties, accountId: accountId });
+      setupAccountEnquiryComponent({
+        ...componentProperties,
+        accountId: accountId,
+        interceptedRoutes: componentProperties.interceptedRoutes?.filter((route) => route !== '../payment-terms/amend'),
+      });
       cy.get('router-outlet').should('exist');
 
       cy.get(PAYMENT_TERMS_TAB.tabName).should('exist').and('contain.text', 'Payment terms');
       cy.get(PAYMENT_TERMS_TAB.headingName).should('exist').and('contain.text', 'Test Org Ltd');
       cy.get(PAYMENT_TERMS_TAB.paymentTermsLink).contains('Change').click();
-      cy.get('@routerNavigate').should('have.been.calledWithMatch', ['../payment-terms/amend']);
+      cy.get('app-fines-acc-payment-terms-amend-form').should('exist');
+      cy.contains('opal-lib-govuk-heading-with-caption, h1, h2', 'Payment terms').should('be.visible');
     },
   );
 
@@ -753,7 +811,11 @@ describe('Account Enquiry Payment Terms', () => {
 
       cy.get(PAYMENT_TERMS_TAB.tabName).should('exist').and('contain.text', 'Payment terms');
       cy.get(PAYMENT_TERMS_TAB.paymentTermsLink).contains('Change').click();
-      cy.get('@routerNavigate').should('have.been.calledWithMatch', ['../payment-terms/denied/permission']);
+      cy.get('app-fines-acc-payment-terms-amend-denied').should('exist');
+      cy.contains('opal-lib-govuk-heading-with-caption, h1, h2', 'You cannot amend the payment terms of this account.')
+        .should('be.visible');
+      cy.contains('You do not have the required permissions to make changes to this account as it is outside your business unit.')
+        .should('be.visible');
     },
   );
 
@@ -781,7 +843,14 @@ describe('Account Enquiry Payment Terms', () => {
 
       cy.get(PAYMENT_TERMS_TAB.tabName).should('exist').and('contain.text', 'Payment terms');
       cy.get(PAYMENT_TERMS_TAB.headingName).should('exist').and('contain.text', 'Test Org Ltd');
-      cy.get(PAYMENT_TERMS_TAB.paymentTermsLink).contains('Change').should('not.exist');
+      cy.get('body').then(($body) => {
+        const linkTexts = $body
+          .find(PAYMENT_TERMS_TAB.paymentTermsLink)
+          .toArray()
+          .map((link) => link.textContent?.trim());
+
+          expect(linkTexts).to.not.include('Change');
+      });
     },
   );
 

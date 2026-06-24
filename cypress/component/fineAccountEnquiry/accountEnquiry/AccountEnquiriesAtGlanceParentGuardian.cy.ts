@@ -390,13 +390,14 @@ describe('Defendant Account Summary - At a Glance Tab', () => {
 
       setupAccountEnquiryComponent(componentProperties);
       // First verify the button exists and is visible
-      cy.get(DOM.linkText).should('be.visible').and('contain.text', 'Add comments');
+      cy.contains(DOM.linkText, 'Add comments').should('be.visible');
 
       // Click the link
-      cy.get(DOM.linkText).click();
+      cy.contains(DOM.linkText, 'Add comments').click();
 
-      // Verify navigation to note/add page - check if router was called with the expected route
-      cy.get('@routerNavigate').should('have.been.calledWithMatch', ['../comments/add']);
+      // Verify navigation to the Comments screen
+      cy.get('app-fines-acc-comments-add-form').should('exist');
+      cy.contains('opal-lib-govuk-heading-with-caption, h1, h2', 'Comments').should('be.visible');
     },
   );
 
@@ -416,12 +417,13 @@ describe('Defendant Account Summary - At a Glance Tab', () => {
       interceptAtAGlance(77, mockDataNoComments, '1');
 
       setupAccountEnquiryComponent(componentProperties);
-      cy.get(DOM.linkText).should('be.visible').and('contain.text', 'Change');
+      cy.contains(DOM.linkText, 'Change').should('be.visible');
 
-      cy.get(DOM.linkText).click();
+      cy.contains(DOM.linkText, 'Change').click();
 
-      // Verify navigation to note/add page - check if router was called with the expected route
-      cy.get('@routerNavigate').should('have.been.calledWithMatch', ['../comments/add']);
+      // Verify navigation to the Comments screen
+      cy.get('app-fines-acc-comments-add-form').should('exist');
+      cy.contains('opal-lib-govuk-heading-with-caption, h1, h2', 'Comments').should('be.visible');
     },
   );
 
@@ -440,15 +442,27 @@ describe('Defendant Account Summary - At a Glance Tab', () => {
       interceptDefendantHeader(77, createParentGuardianHeaderMockWithName('Albert', 'Lake'), '1');
       interceptAtAGlance(77, mockDataNoComments, '1');
 
-      setupAccountEnquiryComponent(componentProperties);
+      setupAccountEnquiryComponent({
+        ...componentProperties,
+        interceptedRoutes: componentProperties.interceptedRoutes?.filter((route) => route !== '/access-denied'),
+      });
       // First verify the button exists and is visible
-      cy.get(DOM.linkText).should('be.visible').and('contain.text', 'Add comments');
+      cy.contains(DOM.linkText, 'Add comments').should('be.visible');
 
       // Click the link
-      cy.get(DOM.linkText).click();
+      cy.contains(DOM.linkText, 'Add comments').click();
 
-      // Verify navigation to access-denied page
-      cy.get('@routerNavigate').should('have.been.calledWithMatch', ['/access-denied']);
+      // Verify navigation was triggered and the live component resolves the denied destination
+      cy.get('@routerNavigate').should('have.been.called');
+      cy.get(DOM.atAGlanceTabComponent).then(($host) => {
+        cy.window().then((win) => {
+          const component = (win as any).ng.getComponent($host[0]) as {
+            navigateToAddCommentsPage: () => string;
+          };
+
+          expect(component.navigateToAddCommentsPage()).to.eq('/access-denied');
+        });
+      });
     },
   );
 
@@ -460,12 +474,24 @@ describe('Defendant Account Summary - At a Glance Tab', () => {
       interceptDefendantHeader(77, createParentGuardianHeaderMockWithName('Albert', 'Lake'), '1');
       interceptAtAGlance(77, OPAL_FINES_ACCOUNT_PARENT_GUARDIAN_AT_A_GLANCE_MOCK, '1');
 
-      setupAccountEnquiryComponent(componentProperties);
-      cy.get(DOM.linkText).should('be.visible').and('contain.text', 'Change');
-      cy.get(DOM.linkText).click();
+      setupAccountEnquiryComponent({
+        ...componentProperties,
+        interceptedRoutes: componentProperties.interceptedRoutes?.filter((route) => route !== '/access-denied'),
+      });
+      cy.contains(DOM.linkText, 'Change').should('be.visible');
+      cy.contains(DOM.linkText, 'Change').click();
 
-      // Verify navigation to access-denied page
-      cy.get('@routerNavigate').should('have.been.calledWithMatch', ['/access-denied']);
+      // Verify navigation was triggered and the live component resolves the denied destination
+      cy.get('@routerNavigate').should('have.been.called');
+      cy.get(DOM.atAGlanceTabComponent).then(($host) => {
+        cy.window().then((win) => {
+          const component = (win as any).ng.getComponent($host[0]) as {
+            navigateToAddCommentsPage: () => string;
+          };
+
+          expect(component.navigateToAddCommentsPage()).to.eq('/access-denied');
+        });
+      });
     },
   );
 

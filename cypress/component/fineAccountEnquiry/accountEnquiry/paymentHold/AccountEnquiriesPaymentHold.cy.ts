@@ -57,11 +57,12 @@ const setupMinorCreditorAtAGlance = (
   userState: typeof USER_STATE_MOCK_NO_PERMISSION,
   header = createMinorCreditorHeaderMock(),
   atAGlance = createMinorCreditorAtAGlanceWithoutDefendantMock(),
+  componentOverrides: Partial<IComponentProperties> = {},
 ) => {
   interceptUserState(userState);
   interceptMinorCreditorHeader(MINOR_CREDITOR_ACCOUNT_ID, header, '1');
   interceptMinorCreditorAtAGlance(MINOR_CREDITOR_ACCOUNT_ID, atAGlance, '1');
-  setupAccountEnquiryComponent(componentProperties);
+  setupAccountEnquiryComponent({ ...componentProperties, ...componentOverrides });
 };
 
 const setupPaymentHoldPage = (
@@ -123,15 +124,16 @@ describe('Minor Creditor Payment Hold', () => {
 
         atAGlance.payment.hold_payment = false;
 
-        setupMinorCreditorAtAGlance(userState, createMinorCreditorHeaderMock(), atAGlance);
+        setupMinorCreditorAtAGlance(userState, createMinorCreditorHeaderMock(), atAGlance, {
+          interceptedRoutes: componentProperties.interceptedRoutes?.filter((route) => route !== '../payment-hold/add'),
+        });
 
         cy.contains(DOM.linkText, DOM.labelAddPaymentHold).should('be.visible').click();
-        cy.get('@routerNavigate')
-          .its('lastCall.args.0')
-          .should((arg0) => {
-            const path = Array.isArray(arg0) ? arg0.join('/') : String(arg0);
-            expect(path).to.match(/payment-hold\/add/);
-          });
+        assertPaymentHoldConfirmationScreen(
+          DOM.labelAddPaymentHoldConfirmation,
+          DOM.addPaymentHoldButton,
+          DOM.labelYesAddHold,
+        );
       },
     );
 
@@ -146,8 +148,17 @@ describe('Minor Creditor Payment Hold', () => {
 
         setupMinorCreditorAtAGlance(userState, createMinorCreditorHeaderMock(), atAGlance);
 
+        cy.get(DOM.minorCreditorAtAGlanceTabComponent).then(($host) => {
+          cy.window().then((win) => {
+            const component = (win as any).ng.getComponent($host[0]) as {
+              addPaymentHoldLink: () => string;
+            };
+
+            expect(component.addPaymentHoldLink()).to.eq('../payment-hold/denied');
+          });
+        });
         cy.contains(DOM.linkText, DOM.labelAddPaymentHold).should('be.visible').click();
-        cy.get('@routerNavigate').should('have.been.calledWithMatch', ['../payment-hold/denied']);
+        cy.get('@routerNavigate').should('have.been.called');
       },
     );
 
@@ -239,16 +250,17 @@ describe('Minor Creditor Payment Hold', () => {
 
         atAGlance.payment.hold_payment = true;
 
-        setupMinorCreditorAtAGlance(userState, createMinorCreditorHeaderMock(), atAGlance);
+        setupMinorCreditorAtAGlance(userState, createMinorCreditorHeaderMock(), atAGlance, {
+          interceptedRoutes: componentProperties.interceptedRoutes?.filter((route) => route !== '../payment-hold/remove'),
+        });
 
         cy.get(DOM.minorCreditorAtAGlanceTabComponent).should('not.contain.text', DOM.labelAddPaymentHold);
         cy.contains(DOM.linkText, DOM.labelRemovePaymentHold).should('be.visible').click();
-        cy.get('@routerNavigate')
-          .its('lastCall.args.0')
-          .should((arg0) => {
-            const path = Array.isArray(arg0) ? arg0.join('/') : String(arg0);
-            expect(path).to.match(/payment-hold\/remove/);
-          });
+        assertPaymentHoldConfirmationScreen(
+          DOM.labelRemovePaymentHoldConfirmation,
+          DOM.removePaymentHoldButton,
+          DOM.labelYesRemoveHold,
+        );
       },
     );
 
@@ -264,8 +276,17 @@ describe('Minor Creditor Payment Hold', () => {
         setupMinorCreditorAtAGlance(userState, createMinorCreditorHeaderMock(), atAGlance);
 
         cy.get(DOM.minorCreditorAtAGlanceTabComponent).should('not.contain.text', DOM.labelAddPaymentHold);
+        cy.get(DOM.minorCreditorAtAGlanceTabComponent).then(($host) => {
+          cy.window().then((win) => {
+            const component = (win as any).ng.getComponent($host[0]) as {
+              removePaymentHoldLink: () => string;
+            };
+
+            expect(component.removePaymentHoldLink()).to.eq('../payment-hold/denied');
+          });
+        });
         cy.contains(DOM.linkText, DOM.labelRemovePaymentHold).should('be.visible').click();
-        cy.get('@routerNavigate').should('have.been.calledWithMatch', ['../payment-hold/denied']);
+        cy.get('@routerNavigate').should('have.been.called');
       },
     );
 
