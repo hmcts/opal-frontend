@@ -1,8 +1,7 @@
 diff --git a/node_modules/@hmcts/opal-frontend-common-cypress/dist/metadata/jira-metadata-policy-cli.js b/node_modules/@hmcts/opal-frontend-common-cypress/dist/metadata/jira-metadata-policy-cli.js
-index d91f414..45de2dd 100644
 --- a/node_modules/@hmcts/opal-frontend-common-cypress/dist/metadata/jira-metadata-policy-cli.js
 +++ b/node_modules/@hmcts/opal-frontend-common-cypress/dist/metadata/jira-metadata-policy-cli.js
-@@ -93,7 +93,7 @@ function printJiraMetadataSuccess(testCount) {
+@@ -93,7 +93,7 @@
          return;
      }
      console.log(`Checked ${testCount} covered component/functional E2E tests.`);
@@ -11,7 +10,7 @@ index d91f414..45de2dd 100644
  }
  /**
   * Prints the failure summary for a Jira metadata validation run.
-@@ -103,14 +103,21 @@ function printJiraMetadataSuccess(testCount) {
+@@ -103,14 +103,21 @@
   * @returns Nothing. Output is written to stderr.
   */
  function printJiraMetadataFailures(failures, testCount) {
@@ -36,10 +35,9 @@ index d91f414..45de2dd 100644
  }
  /**
 diff --git a/node_modules/@hmcts/opal-frontend-common-cypress/dist/metadata/jira-metadata-policy.js b/node_modules/@hmcts/opal-frontend-common-cypress/dist/metadata/jira-metadata-policy.js
-index 1724f77..2414a36 100644
 --- a/node_modules/@hmcts/opal-frontend-common-cypress/dist/metadata/jira-metadata-policy.js
 +++ b/node_modules/@hmcts/opal-frontend-common-cypress/dist/metadata/jira-metadata-policy.js
-@@ -25,6 +25,8 @@ const JIRA_DEFECT_PREFIX = '@JIRA-DEFECT:';
+@@ -25,6 +25,7 @@
  const JIRA_EPIC_PREFIX = '@JIRA-EPIC:';
  const JIRA_NFR_PREFIX = '@JIRA-NFR:';
  const JIRA_STORY_PREFIX = '@JIRA-STORY:';
@@ -47,7 +45,7 @@ index 1724f77..2414a36 100644
  const SCENARIO_KEYWORDS = ['Scenario Outline:', 'Scenario:', 'Example:'];
  /**
   * Applies default directory settings for Jira metadata validation.
-@@ -57,9 +59,9 @@ function validateJiraMetadataPolicy(options = {}, cwd = process.cwd()) {
+@@ -57,9 +58,9 @@
          const units = parseTestUnits(filePath, content);
          tests.push(...units);
          for (const unit of units) {
@@ -60,7 +58,7 @@ index 1724f77..2414a36 100644
              }
          }
      }
-@@ -96,7 +98,19 @@ function validateTestUnit(unit) {
+@@ -96,8 +97,17 @@
      if (unit.epics.length === 0) {
          missing.push('@JIRA-EPIC');
      }
@@ -72,31 +70,17 @@ index 1724f77..2414a36 100644
 +        const value = tag.slice(tag.indexOf(':') + 1).trim();
 +        return !JIRA_KEY_VALUE_REGEX.test(value);
 +    });
-+}
+ }
 +function getAllJiraMetadataTags(unit) {
 +    return [...unit.defects, ...unit.epics, ...unit.nfrs, ...unit.stories];
- }
++}
  /**
   * Routes a supported test file to the parser that understands its format.
-@@ -170,6 +184,7 @@ function parseComponentTests(filePath, content) {
-                     line: line + 1,
-                     nfrs: tags.filter((tag) => tag.startsWith(JIRA_NFR_PREFIX)),
-                     stories: tags.filter((tag) => tag.startsWith(JIRA_STORY_PREFIX)),
-                     title,
-                 });
-                 return;
-@@ -286,6 +301,7 @@ function buildFeatureTestUnit(filePath, scenarioTitle, line, tags, exampleIndex,
-         line,
-         nfrs: tags.filter((tag) => tag.startsWith(JIRA_NFR_PREFIX)),
-         stories: tags.filter((tag) => tag.startsWith(JIRA_STORY_PREFIX)),
-         title,
-     };
- }
+  *
 diff --git a/node_modules/@hmcts/opal-frontend-common-cypress/dist/runner/opal-suite-runner.js b/node_modules/@hmcts/opal-frontend-common-cypress/dist/runner/opal-suite-runner.js
-index 07fa401..17371dd 100644
 --- a/node_modules/@hmcts/opal-frontend-common-cypress/dist/runner/opal-suite-runner.js
 +++ b/node_modules/@hmcts/opal-frontend-common-cypress/dist/runner/opal-suite-runner.js
-@@ -243,7 +243,8 @@ function executeSuite(suite, options, cwd, baseEnv) {
+@@ -243,7 +243,8 @@
          return testExitCode;
      }
      if (config.isComponent) {
