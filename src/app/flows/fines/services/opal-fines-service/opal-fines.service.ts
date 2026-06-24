@@ -63,6 +63,7 @@ import { IOpalFinesAccountMinorCreditorCreditor } from './interfaces/opal-fines-
 import { IOpalFinesDraftAccountPatchRequestPayload } from '@services/fines/opal-fines-service/types/opal-fines-draft-account-patch-request-payload.type';
 import { IOpalFinesDeleteDefendantAccountPartyPayload } from './interfaces/opal-fines-delete-defendant-account-party-payload.interface';
 import { IOpalFinesReport } from './interfaces/opal-fines-report.interface';
+import { IOpalFinesReportInstance } from './interfaces/opal-fines-report-instance.interface';
 
 @Injectable({
   providedIn: 'root',
@@ -264,6 +265,24 @@ export class OpalFines {
     }
 
     return this.cache.reportsCache$[reportId];
+  }
+
+  /**
+   * Retrieves a report instance by instance id and caches it for later route transitions.
+   *
+   * @param reportInstanceId - The report instance id to fetch from the report instances API.
+   * @returns An observable containing the report instance details.
+   */
+  public getReportInstance(reportInstanceId: string | number): Observable<IOpalFinesReportInstance> {
+    const cacheKey = reportInstanceId.toString();
+
+    if (!this.cache.reportInstancesCache$[cacheKey]) {
+      this.cache.reportInstancesCache$[cacheKey] = this.http
+        .get<IOpalFinesReportInstance>(`${OPAL_FINES_PATHS.reportInstances}/${encodeURIComponent(cacheKey)}`)
+        .pipe(shareReplay(1));
+    }
+
+    return this.cache.reportInstancesCache$[cacheKey];
   }
 
   /**

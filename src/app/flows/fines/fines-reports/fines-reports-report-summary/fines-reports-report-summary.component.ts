@@ -47,12 +47,27 @@ export class FinesReportsReportSummaryComponent {
       initialValue: this.activatedRoute.snapshot.paramMap.get('reportInstanceId') ?? '',
     },
   );
+  private readonly reportSummarySignal = toSignal(
+    this.activatedRoute.data.pipe(
+      map((routeData) => routeData['reportSummary'] as IFinesReportsReportSummaryInstance | null | undefined),
+    ),
+    {
+      initialValue: this.activatedRoute.snapshot.data['reportSummary'] as
+        | IFinesReportsReportSummaryInstance
+        | null
+        | undefined,
+    },
+  );
 
   /**
-   * Maps the selected report instance route parameter into the temporary report summary data for this UI slice.
+   * Maps the selected report instance route data into the report summary data for this UI slice.
    */
   public readonly reportSummary = computed(() => {
-    return REPORT_SUMMARY_MOCKS_BY_INSTANCE_ID[this.reportInstanceId] ?? this.fallbackReportSummary;
+    return (
+      this.reportSummarySignal() ??
+      REPORT_SUMMARY_MOCKS_BY_INSTANCE_ID[this.reportInstanceId] ??
+      this.fallbackReportSummary
+    );
   });
 
   /**

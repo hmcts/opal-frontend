@@ -11,6 +11,7 @@ import { fetchBusinessUnitsResolver } from '@routing/fines/resolvers/fetch-busin
 import { FINES_REPORTS_ROUTING_TITLES } from './constants/fines-reports-routing-titles.constant';
 import { fetchReportResolver } from './resolvers/fetch-report/fetch-report.resolver';
 import { finesReportsReportHeadingResolver } from './resolvers/fines-reports-report-heading/fines-reports-report-heading.resolver';
+import { fetchReportInstanceResolver } from './resolvers/fetch-report-instance/fetch-report-instance.resolver';
 
 export const routing: Routes = [
   {
@@ -50,6 +51,7 @@ export const routing: Routes = [
         },
         resolve: {
           title: TitleResolver,
+          reportSummary: fetchReportInstanceResolver,
         },
       },
       {

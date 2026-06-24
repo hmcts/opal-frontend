@@ -3,7 +3,7 @@ import { IFinesReportsReportSummaryInstance } from '../interfaces/fines-reports-
 const ENFORCEMENT_REPORT_REFERENCE = 'ABDC';
 const ENFORCEMENT_REPORT_TYPE = 'Summary';
 const PAYMENTS_REPORT_REFERENCE = 'PYMT';
-const PAYMENTS_REPORT_TYPE = 'Detail';
+const PAYMENTS_REPORT_TYPE = 'Detailed';
 
 export const FINES_REPORTS_REPORT_SUMMARY_ENFORCEMENT_MOCK: IFinesReportsReportSummaryInstance = {
   report_instance_id: 'report-instance-enforcement-001',

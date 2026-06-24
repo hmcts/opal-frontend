@@ -31,7 +31,7 @@ describe('mapFinesReportsReportSummaryToViewModel', () => {
     const result = mapFinesReportsReportSummaryToViewModel(FINES_REPORTS_REPORT_SUMMARY_PAYMENTS_MOCK);
 
     expect(result.criteriaRows).toEqual([
-      { key: 'Report Type', value: 'Detail' },
+      { key: 'Report Type', value: 'Detailed' },
       { key: 'Account type', value: 'Adult, Company' },
       { key: 'Account status', value: 'Closed' },
       { key: 'Collection order', value: 'With collection order' },

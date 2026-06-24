@@ -64,6 +64,7 @@ import { OPAL_FINES_ENFORCER_MOCK } from './mocks/opal-fines-enforcer.mock';
 import { OPAL_FINES_MINOR_CREDITOR_UPDATE_PAYLOAD_MOCK } from './mocks/opal-fines-minor-creditor-update-payload.mock';
 import { OPAL_FINES_ACCOUNT_MINOR_CREDITOR_CREDITOR_MOCK } from './mocks/opal-fines-account-minor-creditor-creditor.mock';
 import { OPAL_FINES_REPORT_MOCK } from './mocks/opal-fines-report.mock';
+import { OPAL_FINES_REPORT_INSTANCE_MOCK } from './mocks/opal-fines-report-instance.mock';
 import { OPAL_FINES_DEFENDANT_ACCOUNT_HISTORY_PARAMS_MOCK } from './mocks/opal-fines-defendant-account-history-params.mock';
 
 describe('OpalFines', () => {
@@ -193,6 +194,37 @@ describe('OpalFines', () => {
 
     service.getReport(OPAL_FINES_REPORT_MOCK.report_id).subscribe((response) => {
       expect(response).toEqual(OPAL_FINES_REPORT_MOCK);
+    });
+
+    httpMock.expectNone(expectedUrl);
+  });
+
+  it('should send a GET request to the report instance API', () => {
+    const expectedUrl = `${OPAL_FINES_PATHS.reportInstances}/${OPAL_FINES_REPORT_INSTANCE_MOCK.instance_id}`;
+
+    service.getReportInstance(OPAL_FINES_REPORT_INSTANCE_MOCK.instance_id).subscribe((response) => {
+      expect(response).toEqual(OPAL_FINES_REPORT_INSTANCE_MOCK);
+    });
+
+    const req = httpMock.expectOne(expectedUrl);
+    expect(req.request.method).toBe('GET');
+
+    req.flush(OPAL_FINES_REPORT_INSTANCE_MOCK);
+  });
+
+  it('should return cached response for the same report instance', () => {
+    const expectedUrl = `${OPAL_FINES_PATHS.reportInstances}/${OPAL_FINES_REPORT_INSTANCE_MOCK.instance_id}`;
+
+    service.getReportInstance(OPAL_FINES_REPORT_INSTANCE_MOCK.instance_id).subscribe((response) => {
+      expect(response).toEqual(OPAL_FINES_REPORT_INSTANCE_MOCK);
+    });
+
+    const req = httpMock.expectOne(expectedUrl);
+    expect(req.request.method).toBe('GET');
+    req.flush(OPAL_FINES_REPORT_INSTANCE_MOCK);
+
+    service.getReportInstance(OPAL_FINES_REPORT_INSTANCE_MOCK.instance_id).subscribe((response) => {
+      expect(response).toEqual(OPAL_FINES_REPORT_INSTANCE_MOCK);
     });
 
     httpMock.expectNone(expectedUrl);
