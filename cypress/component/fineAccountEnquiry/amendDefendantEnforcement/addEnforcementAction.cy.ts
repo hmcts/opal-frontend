@@ -1864,15 +1864,15 @@ describe(
 
         reachAddAnotherEnforcementActionPrompt(accountId, headerMock, enforcementMock);
 
-        cy.get(ENF_ACTION_ADD.addNewEnforcementActionPageTitle).should(
+        cy.get(ENF_ACTION_SELECT.newEnforcementActionPageTitle).should(
           'contain.text',
           'Do you want to add a new enforcement action?',
         );
-        cy.get(ENF_ACTION_ADD.addNewEnforcementActionAccountInfo).should('contain.text', '177A - Mr Robert THOMSON');
-        cy.get(ENF_ACTION_ADD.addNewEnforcementActionSuccessBanner).should('contain.text', 'Enforcement action added');
+        cy.get(ENF_ACTION_SELECT.newEnforcementActionAccountInfo).should('contain.text', '177A - Mr Robert THOMSON');
+        cy.get(ENF_ACTION_SELECT.newEnforcementActionSuccessBanner).should('contain.text', 'Enforcement action added');
 
-        cy.get(ENF_ACTION_ADD.addNewEnforcementActionRadioGroup).should('contain.text', 'Yes');
-        cy.get(ENF_ACTION_ADD.addNewEnforcementActionRadioGroup).should('contain.text', 'No');
+        cy.get(ENF_ACTION_SELECT.newEnforcementActionRadioGroup).should('contain.text', 'Yes');
+        cy.get(ENF_ACTION_SELECT.newEnforcementActionRadioGroup).should('contain.text', 'No');
       },
     );
 
@@ -1896,12 +1896,12 @@ describe(
           party_name: 'Sainsco',
         });
 
-        cy.get(ENF_ACTION_ADD.addNewEnforcementActionPageTitle).should(
+        cy.get(ENF_ACTION_SELECT.newEnforcementActionPageTitle).should(
           'contain.text',
           'Do you want to add a new enforcement action?',
         );
-        cy.get(ENF_ACTION_ADD.addNewEnforcementActionAccountInfo).should('contain.text', '177A - Sainsco');
-        cy.get(ENF_ACTION_ADD.addNewEnforcementActionSuccessBanner).should('contain.text', 'Enforcement action added');
+        cy.get(ENF_ACTION_SELECT.newEnforcementActionAccountInfo).should('contain.text', '177A - Sainsco');
+        cy.get(ENF_ACTION_SELECT.newEnforcementActionSuccessBanner).should('contain.text', 'Enforcement action added');
       },
     );
 
@@ -1922,15 +1922,15 @@ describe(
 
         reachAddAnotherEnforcementActionPrompt(accountId, headerMock, enforcementMock);
 
-        cy.get(ENF_ACTION_ADD.addNewEnforcementActionContinueButton).click();
+        cy.get(ENF_ACTION_SELECT.newEnforcementActionContinueButton).click();
 
-        cy.get(ENF_ACTION_ADD.addNewEnforcementActionErrorSummary).should('be.visible');
-        cy.get(ENF_ACTION_ADD.addNewEnforcementActionErrorSummary).should(
+        cy.get(ENF_ACTION_SELECT.newEnforcementActionErrorSummary).should('be.visible');
+        cy.get(ENF_ACTION_SELECT.newEnforcementActionErrorSummary).should(
           'contain.text',
           'Select whether you want to add a new enforcement action',
         );
 
-        cy.get(ENF_ACTION_ADD.addNewEnforcementActionErrorMessage).should(
+        cy.get(ENF_ACTION_SELECT.newEnforcementActionErrorMessage).should(
           'contain.text',
           'Select whether you want to add a new enforcement action',
         );
@@ -1954,8 +1954,8 @@ describe(
 
         reachAddAnotherEnforcementActionPrompt(accountId, headerMock, enforcementMock);
 
-        cy.get(ENF_ACTION_ADD.addNewEnforcementActionYesRadio).check({ force: true });
-        cy.get(ENF_ACTION_ADD.addNewEnforcementActionContinueButton).click();
+        cy.get(ENF_ACTION_SELECT.newEnforcementActionYesRadio).check({ force: true });
+        cy.get(ENF_ACTION_SELECT.newEnforcementActionContinueButton).click();
 
         cy.get('@routerNavigate').should('have.been.calledWithMatch', ['enforcement/action/select']);
       },
@@ -1978,8 +1978,8 @@ describe(
 
         reachAddAnotherEnforcementActionPrompt(accountId, headerMock, enforcementMock);
 
-        cy.get(ENF_ACTION_ADD.addNewEnforcementActionNoRadio).check({ force: true });
-        cy.get(ENF_ACTION_ADD.addNewEnforcementActionContinueButton).click();
+        cy.get(ENF_ACTION_SELECT.newEnforcementActionNoRadio).check({ force: true });
+        cy.get(ENF_ACTION_SELECT.newEnforcementActionContinueButton).click();
 
         cy.get('@routerNavigate').should('have.been.calledWithMatch', ['details'], { fragment: 'enforcement' });
       },
