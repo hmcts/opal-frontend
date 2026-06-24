@@ -9,7 +9,7 @@ import { IFinesMacOffenceDetailsPositiveAmountValidatorOptions } from './interfa
  * Returns null for empty or non-numeric values so the existing required and amount validators can surface their own errors.
  */
 export function finesMacOffenceDetailsPositiveAmountValidator(
-  options: IFinesMacOffenceDetailsPositiveAmountValidatorOptions = {},
+  options: IFinesMacOffenceDetailsPositiveAmountValidatorOptions,
 ): ValidatorFn {
   const nonNegativeAmountValidator = nonNegativeValueValidator();
   const nonZeroAmountValidator = nonZeroValueValidator();

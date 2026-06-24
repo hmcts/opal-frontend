@@ -1,3 +1,3 @@
 export interface IFinesMacOffenceDetailsPositiveAmountValidatorOptions {
-  allowZero?: boolean;
+  allowZero: boolean;
 }

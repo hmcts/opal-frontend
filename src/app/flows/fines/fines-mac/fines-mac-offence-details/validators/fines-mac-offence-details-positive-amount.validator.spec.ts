@@ -3,7 +3,7 @@ import { describe, expect, it } from 'vitest';
 import { finesMacOffenceDetailsPositiveAmountValidator } from './fines-mac-offence-details-positive-amount.validator';
 
 describe('finesMacOffenceDetailsPositiveAmountValidator', () => {
-  const validator = finesMacOffenceDetailsPositiveAmountValidator();
+  const validator = finesMacOffenceDetailsPositiveAmountValidator({ allowZero: false });
   const allowZeroValidator = finesMacOffenceDetailsPositiveAmountValidator({ allowZero: true });
 
   it('should return null for empty values', () => {
