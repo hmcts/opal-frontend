@@ -18,6 +18,7 @@ import { FINES_ACC_ENF_ACTION_ADD_API_DATA_KEYS } from './constants/fines-acc-en
 import { FINES_ACC_ENF_ACTION_ADD_FIELD_TYPES } from './constants/fines-acc-enf-action-add-field-types.constant';
 import { FINES_ACC_ENF_ACTION_ADD_PAYMENT_TERMS_RESULT_IDS } from './constants/fines-acc-enf-action-add-payment-terms-result-ids.constant';
 import { IOpalFinesEnforcersRefData } from '@services/fines/opal-fines-service/interfaces/opal-fines-enforcers-ref-data.interface';
+import { FINES_ACC_ENF_ACTION_ADD_NEW_SUCCESS_MESSAGE } from '../fines-acc-enf-action-add-new/constants/fines-acc-enf-action-add-new-success-message.constant';
 
 const FIELD_TYPES = FINES_ACC_ENF_ACTION_ADD_FIELD_TYPES;
 const API_DATA_KEYS = FINES_ACC_ENF_ACTION_ADD_API_DATA_KEYS;
@@ -115,8 +116,9 @@ export class FinesAccEnfActionAddComponent extends AbstractFormParentBaseCompone
         this.opalFinesService.clearCache('defendantAccountEnforcementCache$');
 
         if (this.result.allow_additional_action) {
+          this.finesAccStore.setSuccessMessage(FINES_ACC_ENF_ACTION_ADD_NEW_SUCCESS_MESSAGE);
           this.routerNavigate(
-            `${FINES_ACC_DEFENDANT_ROUTING_PATHS.children.enforcement}/${FINES_ACC_ENF_ACTION_ROUTING_PATHS.root}/${FINES_ACC_ENF_ACTION_ROUTING_PATHS.children.select}`,
+            `${FINES_ACC_DEFENDANT_ROUTING_PATHS.children.enforcement}/${FINES_ACC_ENF_ACTION_ROUTING_PATHS.root}/${FINES_ACC_ENF_ACTION_ROUTING_PATHS.children['add-new']}`,
           );
           return;
         }

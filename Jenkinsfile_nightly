@@ -14,16 +14,24 @@ properties([
     pipelineTriggers([cron('H 07 * * 1-5')]),
     copyArtifactPermission('*'),
     parameters([
-    booleanParam(name: 'Component', defaultValue: true, description: 'Run component tests'),
+    booleanParam(
+      name: 'Component',
+      defaultValue: true,
+      description: 'Run component tests'
+    ),
     booleanParam(name: 'Smoke', defaultValue: true, description: 'Run smoke tests'),
-    booleanParam(name: 'Functional', defaultValue: true, description: 'Run functional tests'),
+    booleanParam(
+      name: 'Functional',
+      defaultValue: true,
+      description: 'Run functional tests excluding feature-flag off scenarios'
+    ),
     booleanParam(name: 'Legacy', defaultValue: false, description: 'Run legacy tests'),
     booleanParam(name: 'RunChrome', defaultValue: false, description: 'Run Chrome tests'),
     booleanParam(name: 'RunFirefox', defaultValue: false, description: 'Run Firefox tests'),
     booleanParam(
       name: 'RunR1aLegacyDemo',
-      defaultValue: true,
-      description: 'Run R1A legacy demo stage (demo -> legacy checks)'
+      defaultValue: false,
+      description: 'Run optional R1A legacy demo stage (demo -> legacy checks)'
     ),
     booleanParam(
       name: 'RunUatTech',
@@ -56,6 +64,8 @@ String failureResult = 'FAILURE'
 @Field String browserEdge = 'edge'
 @Field String browserFirefox = 'firefox'
 @Field String smokeStageName = 'Smoke Tests'
+@Field String functionalOutputRoot = 'functional-output'
+@Field String smokeOutputRoot = 'smoke-output'
 @Field String functionalProdArtifactsPath = 'functional-output/prod/**'
 @Field int zeroIndex = 0
 @Field String nightlyTestUrlStaging = 'https://opal-frontend.staging.apps.hmcts.net/'
@@ -355,7 +365,7 @@ String getLegacyHealthCheckStatus() {
   return sh(
     script:
       "curl -s -o /dev/null -w '%{http_code}' " +
-      "-X POST " +
+      '-X POST ' +
       "-H 'Content-Type: application/json' " +
       "--data '${legacyHealthCheckPayload}' " +
       "'${legacyHealthEndpoint}' || echo '000'",
@@ -433,10 +443,10 @@ void archiveNightlyWeightArtifacts() {
 // Copy generated legacy demo report artifacts into a dedicated directory for publishing.
 void prepareLegacyDemoArtifacts(String browserToRun, String outputDirName, String reportFilePrefix) {
   sh """
-    OUTPUT_DIR='functional-output/prod/${browserToRun}/${outputDirName}'
+    OUTPUT_DIR='${functionalOutputRoot}/prod/${browserToRun}/${outputDirName}'
     OUTPUT_CUCUMBER_DIR="\$OUTPUT_DIR/cucumber"
-    SOURCE_CUCUMBER_DIR='functional-output/prod/${browserToRun}/cucumber'
-    SOURCE_JUNIT_PATH='functional-output/prod/${browserToRun}/${browserToRun}-test-result.xml'
+    SOURCE_CUCUMBER_DIR='${functionalOutputRoot}/prod/${browserToRun}/cucumber'
+    SOURCE_JUNIT_PATH='${functionalOutputRoot}/prod/${browserToRun}/${browserToRun}-test-result.xml'
     mkdir -p "\$OUTPUT_CUCUMBER_DIR"
 
     if [ -f "\$SOURCE_CUCUMBER_DIR/${browserToRun}-report.html" ]; then
@@ -449,7 +459,32 @@ void prepareLegacyDemoArtifacts(String browserToRun, String outputDirName, Strin
       cp "\$SOURCE_JUNIT_PATH" "\$OUTPUT_DIR/${reportFilePrefix}-test-result.xml"
     fi
   """
-  copyZephyrReports('functional-output', "functional-output/prod/${browserToRun}/${outputDirName}")
+  copyZephyrReports(functionalOutputRoot, "${functionalOutputRoot}/prod/${browserToRun}/${outputDirName}")
+}
+
+// Copy generated component report artifacts into a dedicated directory for publishing.
+void prepareComponentStageArtifacts(String browserToRun, String outputDirName, String reportFilePrefix) {
+  sh """
+    SOURCE_DIR='${functionalOutputRoot}/component/${browserToRun}'
+    TARGET_DIR="\$SOURCE_DIR/${outputDirName}"
+    SOURCE_HTML_DIR="\$SOURCE_DIR/html"
+    TARGET_HTML_DIR="\$TARGET_DIR/html"
+    mkdir -p "\$TARGET_HTML_DIR" "\$TARGET_DIR/junit" "\$TARGET_DIR/json"
+
+    if [ -f "\$SOURCE_HTML_DIR/component-report.html" ]; then
+      cp "\$SOURCE_HTML_DIR/component-report.html" "\$TARGET_HTML_DIR/${reportFilePrefix}-report.html"
+    fi
+    if [ -d "\$SOURCE_HTML_DIR/assets" ]; then
+      cp -R "\$SOURCE_HTML_DIR/assets" "\$TARGET_HTML_DIR/"
+    fi
+    if [ -d "\$SOURCE_DIR/junit" ]; then
+      cp -R "\$SOURCE_DIR/junit/." "\$TARGET_DIR/junit/"
+    fi
+    if [ -d "\$SOURCE_DIR/json" ]; then
+      cp -R "\$SOURCE_DIR/json/." "\$TARGET_DIR/json/"
+    fi
+  """
+  copyZephyrReports(functionalOutputRoot, "${functionalOutputRoot}/component/${browserToRun}/${outputDirName}")
 }
 
 // Run a demo environment legacy-mode stage with dedicated LaunchDarkly handling and reporting.
@@ -497,13 +532,13 @@ void runDemoLegacyStage(Map<String, Object> stageConfig, Closure runCommand) {
       prepareLegacyDemoArtifacts(browserToRun, outputDirName, reportFilePrefix)
       archiveArtifact(functionalProdArtifactsPath)
       if (archiveAccountEvidence) {
-        archiveArtifact('functional-output/account_evidence/created-accounts.json')
-        archiveArtifact('functional-output/account_evidence/**')
+        archiveArtifact("${functionalOutputRoot}/account_evidence/created-accounts.json")
+        archiveArtifact("${functionalOutputRoot}/account_evidence/**")
       }
-      archiveArtifact("functional-output/screenshots/${browserToRun}/**")
-      archiveArtifact("functional-output/prod/${browserToRun}/${outputDirName}/**")
+      archiveArtifact("${functionalOutputRoot}/screenshots/${browserToRun}/**")
+      archiveArtifact("${functionalOutputRoot}/prod/${browserToRun}/${outputDirName}/**")
       publishHtmlReport(
-        "functional-output/prod/${browserToRun}/${outputDirName}/cucumber/",
+        "${functionalOutputRoot}/prod/${browserToRun}/${outputDirName}/cucumber/",
         "${reportFilePrefix}-report.html",
         reportName
       )
@@ -527,16 +562,21 @@ void runComponentStage(
   String browserToRun
 ) {
   runNightlyStage(enabled, 'Component Tests', failureResultValue, 'Component tests failed') {
-    String componentCommand = shouldRunWithZephyr ? 'zephyr:test:component' : 'test:component'
-
     try {
-      builder.yarn(componentCommand)
+      builder.yarn('test:component')
     } finally {
-      copyZephyrReports('functional-output', "functional-output/component/${browserToRun}")
-      archiveArtifact("functional-output/component/${browserToRun}/**")
-      archiveZephyrReports("functional-output/component/${browserToRun}")
+      if (shouldRunWithZephyr) {
+        try {
+          builder.yarn('zephyr:cypress:jira-execute')
+        } catch (hudson.AbortException e) {
+          echo "Component Zephyr execution failed: ${e}"
+        }
+      }
+      copyZephyrReports(functionalOutputRoot, "${functionalOutputRoot}/component/${browserToRun}")
+      archiveArtifact("${functionalOutputRoot}/component/${browserToRun}/**")
+      archiveZephyrReports("${functionalOutputRoot}/component/${browserToRun}")
       publishHtmlReport(
-        "functional-output/component/${browserToRun}/html/",
+        "${functionalOutputRoot}/component/${browserToRun}/html/",
         'component-report.html',
         "Component Test Report (${browserToRun})"
       )
@@ -632,13 +672,12 @@ void runSmokeStage(
     try {
       builder.yarn('test:smoke')
     } finally {
-      copyZephyrReports('smoke-output', "smoke-output/prod/${browserToRun}")
-      archiveArtifact('smoke-output/prod/**')
-      archiveArtifact("smoke-output/screenshots/${browserToRun}/**")
-      archiveZephyrReports('smoke-output')
-      archiveZephyrReports("smoke-output/prod/${browserToRun}")
+      copyZephyrReports(smokeOutputRoot, "${smokeOutputRoot}/prod/${browserToRun}")
+      archiveArtifact("${smokeOutputRoot}/prod/**")
+      archiveArtifact("${smokeOutputRoot}/screenshots/${browserToRun}/**")
+      archiveZephyrReports("${smokeOutputRoot}/prod/${browserToRun}")
       publishHtmlReport(
-        "smoke-output/prod/${browserToRun}/cucumber/",
+        "${smokeOutputRoot}/prod/${browserToRun}/cucumber/",
         'smoke-report.html',
         "${browserToRun.capitalize()} Smoke Test Report"
       )
@@ -660,13 +699,12 @@ void runFunctionalStage(
     try {
       builder.yarn(functionalCommand)
     } finally {
-      copyZephyrReports('functional-output', "functional-output/prod/${browserToRun}")
+      copyZephyrReports(functionalOutputRoot, "${functionalOutputRoot}/prod/${browserToRun}")
       archiveArtifact(functionalProdArtifactsPath)
-      archiveArtifact("functional-output/screenshots/${browserToRun}/**")
-      archiveZephyrReports('functional-output')
-      archiveZephyrReports("functional-output/prod/${browserToRun}")
+      archiveArtifact("${functionalOutputRoot}/screenshots/${browserToRun}/**")
+      archiveZephyrReports("${functionalOutputRoot}/prod/${browserToRun}")
       publishHtmlReport(
-        "functional-output/prod/${browserToRun}/cucumber/",
+        "${functionalOutputRoot}/prod/${browserToRun}/cucumber/",
         "${browserToRun}-report.html",
         "${browserToRun.capitalize()} Functional Test Report"
       )
@@ -689,12 +727,12 @@ void runLegacyStage(
     try {
       builder.yarn(legacyCommand)
     } finally {
-      copyZephyrReports('functional-output', "functional-output/prod/${browserToRun}/legacy")
-      archiveArtifact("functional-output/prod/${browserToRun}/legacy/**")
-      archiveArtifact("functional-output/screenshots/${browserToRun}/legacy/**")
-      archiveZephyrReports("functional-output/prod/${browserToRun}/legacy")
+      copyZephyrReports(functionalOutputRoot, "${functionalOutputRoot}/prod/${browserToRun}/legacy")
+      archiveArtifact("${functionalOutputRoot}/prod/${browserToRun}/legacy/**")
+      archiveArtifact("${functionalOutputRoot}/screenshots/${browserToRun}/legacy/**")
+      archiveZephyrReports("${functionalOutputRoot}/prod/${browserToRun}/legacy")
       publishHtmlReport(
-        "functional-output/prod/${browserToRun}/legacy/cucumber/",
+        "${functionalOutputRoot}/prod/${browserToRun}/legacy/cucumber/",
         'legacy-report.html',
         "${browserToRun.capitalize()} Legacy Functional Test Report"
       )
@@ -714,10 +752,10 @@ void runBrowserStage(
     try {
       builder.yarn(stageConfig.yarnCommand)
     } finally {
-      archiveArtifact("functional-output/prod/${stageConfig.browserToRun}/**")
-      archiveArtifact("functional-output/screenshots/${stageConfig.browserToRun}/**")
+      archiveArtifact("${functionalOutputRoot}/prod/${stageConfig.browserToRun}/**")
+      archiveArtifact("${functionalOutputRoot}/screenshots/${stageConfig.browserToRun}/**")
       publishHtmlReport(
-        "functional-output/prod/${stageConfig.browserToRun}/cucumber/",
+        "${functionalOutputRoot}/prod/${stageConfig.browserToRun}/cucumber/",
         "${stageConfig.browserToRun}-report.html",
         "${stageConfig.browserToRun.capitalize()} Functional Test Report"
       )

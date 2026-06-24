@@ -63,6 +63,7 @@ import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import { OPAL_FINES_ENFORCER_MOCK } from './mocks/opal-fines-enforcer.mock';
 import { OPAL_FINES_MINOR_CREDITOR_UPDATE_PAYLOAD_MOCK } from './mocks/opal-fines-minor-creditor-update-payload.mock';
 import { OPAL_FINES_ACCOUNT_MINOR_CREDITOR_CREDITOR_MOCK } from './mocks/opal-fines-account-minor-creditor-creditor.mock';
+import { OPAL_FINES_DEFENDANT_ACCOUNT_HISTORY_PARAMS_MOCK } from './mocks/opal-fines-defendant-account-history-params.mock';
 
 describe('OpalFines', () => {
   let service: OpalFines;
@@ -1219,11 +1220,59 @@ describe('OpalFines', () => {
   });
 
   it('should getDefendantAccountHistoryAndNotesTabData', () => {
-    const expectedResponse = OPAL_FINES_ACCOUNT_DEFENDANT_DETAILS_HISTORY_AND_NOTES_TAB_REF_DATA_MOCK;
+    const account_id: number = 77;
+    const apiUrl = `${OPAL_FINES_PATHS.defendantAccounts}/${account_id}/history`;
+    const expectedResponse = {
+      ...OPAL_FINES_ACCOUNT_DEFENDANT_DETAILS_HISTORY_AND_NOTES_TAB_REF_DATA_MOCK,
+      version: '"123"',
+    };
 
-    service.getDefendantAccountHistoryAndNotesTabData().subscribe((response) => {
+    service.getDefendantAccountHistoryAndNotesTabData(account_id).subscribe((response) => {
       expect(response).toEqual(expectedResponse);
     });
+
+    const req = httpMock.expectOne(apiUrl);
+    expect(req.request.method).toBe('GET');
+    expect(req.request.params.keys()).toEqual([]);
+
+    req.flush(OPAL_FINES_ACCOUNT_DEFENDANT_DETAILS_HISTORY_AND_NOTES_TAB_REF_DATA_MOCK, {
+      headers: { ETag: '"123"' },
+    });
+  });
+
+  it('should return cached defendant account history data on repeated unfiltered calls', () => {
+    const account_id = 77;
+    const apiUrl = `${OPAL_FINES_PATHS.defendantAccounts}/${account_id}/history`;
+
+    service.getDefendantAccountHistoryAndNotesTabData(account_id).subscribe();
+
+    const req = httpMock.expectOne(apiUrl);
+    req.flush(OPAL_FINES_ACCOUNT_DEFENDANT_DETAILS_HISTORY_AND_NOTES_TAB_REF_DATA_MOCK);
+
+    service.getDefendantAccountHistoryAndNotesTabData(account_id).subscribe((response) => {
+      expect(response).toEqual(OPAL_FINES_ACCOUNT_DEFENDANT_DETAILS_HISTORY_AND_NOTES_TAB_REF_DATA_MOCK);
+    });
+
+    httpMock.expectNone(apiUrl);
+  });
+
+  it('should send a GET request to defendant account history with filter query params', () => {
+    const account_id = 77;
+    const apiUrl = `${OPAL_FINES_PATHS.defendantAccounts}/${account_id}/history`;
+
+    service
+      .getDefendantAccountHistoryAndNotesTabData(account_id, OPAL_FINES_DEFENDANT_ACCOUNT_HISTORY_PARAMS_MOCK)
+      .subscribe((response) => {
+        expect(response).toEqual(OPAL_FINES_ACCOUNT_DEFENDANT_DETAILS_HISTORY_AND_NOTES_TAB_REF_DATA_MOCK);
+      });
+
+    const req = httpMock.expectOne((request) => request.url === apiUrl);
+    expect(req.request.method).toBe('GET');
+    expect(req.request.params.get('dateFrom')).toBe(OPAL_FINES_DEFENDANT_ACCOUNT_HISTORY_PARAMS_MOCK.dateFrom);
+    expect(req.request.params.get('dateTo')).toBe(OPAL_FINES_DEFENDANT_ACCOUNT_HISTORY_PARAMS_MOCK.dateTo);
+    expect(req.request.params.get('itemTypes')).toBe(OPAL_FINES_DEFENDANT_ACCOUNT_HISTORY_PARAMS_MOCK.itemTypes);
+
+    req.flush(OPAL_FINES_ACCOUNT_DEFENDANT_DETAILS_HISTORY_AND_NOTES_TAB_REF_DATA_MOCK);
   });
 
   it('should send a POST request to add note API with correct payload and return mock response', () => {
@@ -1879,6 +1928,29 @@ describe('OpalFines', () => {
       expect(req.request.headers.has('Business-Unit-Id')).toBe(false);
 
       req.flush(payload);
+    });
+  });
+
+  describe('removeEnforcementHold', () => {
+    it('should send a PATCH request with payload and required headers', () => {
+      const defendantAccountId = 123456;
+      const businessUnitId = '61';
+      const version = '2';
+      const payload = {
+        reason: 'Removed',
+      };
+
+      service.removeEnforcementHold(defendantAccountId, payload, businessUnitId, version).subscribe((response) => {
+        expect(response).toBeNull();
+      });
+
+      const req = httpMock.expectOne(`${OPAL_FINES_PATHS.defendantAccounts}/${defendantAccountId}/remove-enf-hold`);
+      expect(req.request.method).toBe('PATCH');
+      expect(req.request.body).toEqual(payload);
+      expect(req.request.headers.get('Business-Unit-Id')).toBe(businessUnitId);
+      expect(req.request.headers.get('If-Match')).toBe(version);
+
+      req.flush(null);
     });
   });
 

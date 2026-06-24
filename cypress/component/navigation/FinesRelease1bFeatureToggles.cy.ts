@@ -151,7 +151,7 @@ describe('FinesRelease1bFeatureToggles', () => {
     () => {
       setupAppComponent(searchPermissionIds, { 'release-1b': false });
 
-      cy.get(PrimaryNav.container).should('be.visible');
+      cy.get(PrimaryNav.container).should('not.be.visible');
       cy.get(PrimaryNav.itemByText(PrimaryNav.labels.search)).should('not.exist');
     },
   );

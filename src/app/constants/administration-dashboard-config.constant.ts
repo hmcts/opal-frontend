@@ -6,7 +6,7 @@ export const ADMINISTRATION_DASHBOARD_CONFIG: IDashboardPageConfiguration = {
   highlights: [],
   groups: [
     {
-      id: 'administration-test',
+      id: 'administration-placeholder',
       title: 'Pending development',
       links: ADMINISTRATION_LINKS,
     },
