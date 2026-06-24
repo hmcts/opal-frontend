@@ -1,23 +1,25 @@
 import { DateTime } from 'luxon';
+import { FINES_DEFAULT_VALUES } from '../../../constants/fines-default-values.constant';
 import { FINES_REPORTS_REPORT_SUMMARY_GENERAL_LABELS } from '../constants/fines-reports-report-summary-general-labels.constant';
 import {
+  FINES_REPORTS_REPORT_SUMMARY_NO_CONTENT_STATUS_DISPLAY,
   FINES_REPORTS_REPORT_SUMMARY_RECORD_COUNT_DASH_STATUSES,
   FINES_REPORTS_REPORT_SUMMARY_STATUS_DISPLAY,
 } from '../constants/fines-reports-report-summary-status-display.constant';
+import { FINES_REPORTS_REPORT_SUMMARY_STATUSES } from '../constants/fines-reports-report-summary-statuses.constant';
 import { IFinesReportsReportSummaryDisplayRow } from '../interfaces/fines-reports-report-summary-display-row.interface';
 import { IFinesReportsReportSummaryInstance } from '../interfaces/fines-reports-report-summary-instance.interface';
 import { IFinesReportsReportSummaryNamedValue } from '../interfaces/fines-reports-report-summary-named-value.interface';
 import { IFinesReportsReportSummaryViewModel } from '../interfaces/fines-reports-report-summary-view-model.interface';
+import { type FinesReportsReportSummaryNormalisedStatus } from '../types/fines-reports-report-summary-status.type';
 
-type NormalisedReportSummaryStatus = keyof typeof FINES_REPORTS_REPORT_SUMMARY_STATUS_DISPLAY;
-
-const REPORT_STATUS_NORMALISATION: Record<string, NormalisedReportSummaryStatus> = {
-  requested: 'REQUESTED',
-  in_progress: 'IN_PROGRESS',
-  ready: 'READY',
-  error: 'ERROR',
+const REPORT_STATUS_NORMALISATION: Record<string, FinesReportsReportSummaryNormalisedStatus> = {
+  requested: FINES_REPORTS_REPORT_SUMMARY_STATUSES.requested,
+  in_progress: FINES_REPORTS_REPORT_SUMMARY_STATUSES.inProgress,
+  ready: FINES_REPORTS_REPORT_SUMMARY_STATUSES.ready,
+  error: FINES_REPORTS_REPORT_SUMMARY_STATUSES.error,
 };
-const RECORD_COUNT_DASH_STATUS_SET = new Set<NormalisedReportSummaryStatus>(
+const RECORD_COUNT_DASH_STATUS_SET = new Set<FinesReportsReportSummaryNormalisedStatus>(
   FINES_REPORTS_REPORT_SUMMARY_RECORD_COUNT_DASH_STATUSES,
 );
 
@@ -35,7 +37,7 @@ const formatDisplayValue = (value: IFinesReportsReportSummaryNamedValue['value']
   }
 
   if (isUnusedOptionalValue(value)) {
-    return '-';
+    return FINES_DEFAULT_VALUES.notProvidedLabel;
   }
 
   return String(value);
@@ -47,17 +49,19 @@ const formatDateCreated = (dateCreated: string): string => {
   return parsedDate.isValid ? parsedDate.setLocale('en-gb').toFormat("dd MMM yyyy 'at' HH:mm") : dateCreated;
 };
 
-const normaliseStatus = (status: IFinesReportsReportSummaryInstance['status']): NormalisedReportSummaryStatus => {
+const normaliseStatus = (
+  status: IFinesReportsReportSummaryInstance['status'],
+): FinesReportsReportSummaryNormalisedStatus => {
   const normalisedStatus = status.trim().toLowerCase().replace(/\s+/g, '_');
 
-  return REPORT_STATUS_NORMALISATION[normalisedStatus] ?? 'ERROR';
+  return REPORT_STATUS_NORMALISATION[normalisedStatus] ?? FINES_REPORTS_REPORT_SUMMARY_STATUSES.error;
 };
 
 const getStatusDisplay = (reportSummary: IFinesReportsReportSummaryInstance): string => {
   const status = normaliseStatus(reportSummary.status);
 
-  if (status === 'READY' && reportSummary.number_of_records === 0) {
-    return 'No content';
+  if (status === FINES_REPORTS_REPORT_SUMMARY_STATUSES.ready && reportSummary.number_of_records === 0) {
+    return FINES_REPORTS_REPORT_SUMMARY_NO_CONTENT_STATUS_DISPLAY;
   }
 
   return FINES_REPORTS_REPORT_SUMMARY_STATUS_DISPLAY[status];
@@ -67,10 +71,10 @@ const getNumberOfRecordsDisplay = (reportSummary: IFinesReportsReportSummaryInst
   const status = normaliseStatus(reportSummary.status);
 
   if (RECORD_COUNT_DASH_STATUS_SET.has(status)) {
-    return '-';
+    return FINES_DEFAULT_VALUES.notProvidedLabel;
   }
 
-  return reportSummary.number_of_records?.toString() ?? '-';
+  return reportSummary.number_of_records?.toString() ?? FINES_DEFAULT_VALUES.notProvidedLabel;
 };
 
 const mapNamedValuesToRows = (
@@ -113,6 +117,6 @@ export const mapFinesReportsReportSummaryToViewModel = (
       },
     ],
     criteriaRows: mapNamedValuesToRows(reportSummary.criteria),
-    errorRows: status === 'ERROR' ? mapNamedValuesToRows(reportSummary.errors) : [],
+    errorRows: status === FINES_REPORTS_REPORT_SUMMARY_STATUSES.error ? mapNamedValuesToRows(reportSummary.errors) : [],
   };
 };

@@ -4,7 +4,8 @@ import {
   FINES_REPORTS_REPORT_SUMMARY_ERROR_MOCK,
   FINES_REPORTS_REPORT_SUMMARY_PAYMENTS_MOCK,
 } from '../mocks/fines-reports-report-summary.mock';
-import { mapFinesReportsReportSummaryToViewModel } from './fines-reports-report-summary.mapper';
+import { FINES_DEFAULT_VALUES } from '../../../constants/fines-default-values.constant';
+import { mapFinesReportsReportSummaryToViewModel } from './fines-reports-report-summary-map-view-model.utils';
 
 describe('mapFinesReportsReportSummaryToViewModel', () => {
   it('should map requested reports to in progress and hide record count', () => {
@@ -14,7 +15,7 @@ describe('mapFinesReportsReportSummaryToViewModel', () => {
       { key: 'Status', value: 'In progress' },
       { key: 'Date Created', value: '17 Oct 2025 at 09:30' },
       { key: 'Business Units', value: 'West London, South London' },
-      { key: 'No. of Records', value: '-' },
+      { key: 'No. of Records', value: FINES_DEFAULT_VALUES.notProvidedLabel },
       { key: 'Created By', value: 'jane.doe' },
     ]);
   });
@@ -55,7 +56,10 @@ describe('mapFinesReportsReportSummaryToViewModel', () => {
 
     expect(nonErrorResult.errorRows).toEqual([]);
     expect(errorResult.generalRows[0]).toEqual({ key: 'Status', value: 'Error' });
-    expect(errorResult.generalRows[3]).toEqual({ key: 'No. of Records', value: '-' });
+    expect(errorResult.generalRows[3]).toEqual({
+      key: 'No. of Records',
+      value: FINES_DEFAULT_VALUES.notProvidedLabel,
+    });
     expect(errorResult.errorRows).toEqual([
       { key: 'Report generation error', value: 'Legacy report timed out' },
       { key: 'Report service', value: 'No response from reporting engine' },

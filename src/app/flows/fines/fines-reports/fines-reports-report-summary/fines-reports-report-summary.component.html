@@ -1,14 +1,61 @@
-<div class="govuk-grid-column-two-thirds">
-  <h1 class="govuk-heading-l">Report summary</h1>
+<div class="govuk-grid-column-full">
+  <opal-lib-govuk-back-link (clickEvent)="navigateBack()"></opal-lib-govuk-back-link>
+  <h1 class="govuk-heading-l govuk-!-margin-bottom-7">{{ pageHeading() }}</h1>
+</div>
 
-  <dl class="govuk-summary-list">
-    <div class="govuk-summary-list__row">
-      <dt class="govuk-summary-list__key">Report ID</dt>
-      <dd class="govuk-summary-list__value">{{ reportId }}</dd>
-    </div>
-    <div class="govuk-summary-list__row">
-      <dt class="govuk-summary-list__key">Report instance ID</dt>
-      <dd class="govuk-summary-list__value">{{ reportInstanceId }}</dd>
-    </div>
-  </dl>
+<div class="govuk-grid-column-two-thirds">
+  <h2 class="govuk-heading-m">General</h2>
+  <opal-lib-govuk-summary-list summaryListId="reportSummaryGeneral">
+    @for (row of reportSummaryViewModel().generalRows; track row.key) {
+      <div
+        opal-lib-govuk-summary-list-row
+        class="govuk-summary-list__row govuk-summary-list__row--no-actions"
+        summaryListId="reportSummaryGeneral"
+        [summaryListRowId]="'general-' + $index"
+      >
+        <ng-container name>{{ row.key }}</ng-container>
+        <ng-container value>
+          <p class="govuk-body">{{ row.value }}</p>
+        </ng-container>
+      </div>
+    }
+  </opal-lib-govuk-summary-list>
+
+  @if (reportSummaryViewModel().criteriaRows.length > 0) {
+    <h2 class="govuk-heading-m">Report criteria</h2>
+    <opal-lib-govuk-summary-list summaryListId="reportSummaryCriteria">
+      @for (row of reportSummaryViewModel().criteriaRows; track row.key) {
+        <div
+          opal-lib-govuk-summary-list-row
+          class="govuk-summary-list__row govuk-summary-list__row--no-actions"
+          summaryListId="reportSummaryCriteria"
+          [summaryListRowId]="'criteria-' + $index"
+        >
+          <ng-container name>{{ row.key }}</ng-container>
+          <ng-container value>
+            <p class="govuk-body">{{ row.value }}</p>
+          </ng-container>
+        </div>
+      }
+    </opal-lib-govuk-summary-list>
+  }
+
+  @if (reportSummaryViewModel().errorRows.length > 0) {
+    <h2 class="govuk-heading-m">Errors</h2>
+    <opal-lib-govuk-summary-list summaryListId="reportSummaryErrors">
+      @for (row of reportSummaryViewModel().errorRows; track row.key) {
+        <div
+          opal-lib-govuk-summary-list-row
+          class="govuk-summary-list__row govuk-summary-list__row--no-actions"
+          summaryListId="reportSummaryErrors"
+          [summaryListRowId]="'errors-' + $index"
+        >
+          <ng-container name>{{ row.key }}</ng-container>
+          <ng-container value>
+            <p class="govuk-body">{{ row.value }}</p>
+          </ng-container>
+        </div>
+      }
+    </opal-lib-govuk-summary-list>
+  }
 </div>

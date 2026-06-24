@@ -4,6 +4,8 @@ import { IFinesReportsReportSummaryNamedValue } from './fines-reports-report-sum
 export interface IFinesReportsReportSummaryInstance {
   report_instance_id: string;
   report_id: string;
+  report_reference: string;
+  report_type: string;
   status: FinesReportsReportSummaryStatus;
   date_created: string;
   business_units: string[];
