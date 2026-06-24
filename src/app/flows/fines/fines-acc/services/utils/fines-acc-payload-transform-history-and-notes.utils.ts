@@ -1,17 +1,32 @@
-import { DateService } from '@hmcts/opal-frontend-common/services/date-service';
-import { IFinesAccHistoryAndNotesDetails } from './interfaces/fines-acc-history-and-notes-details.interface';
-import { IFinesAccHistoryAndNotesDetailsFragment } from './interfaces/fines-acc-history-and-notes-details-fragment.interface';
-import { IFinesAccHistoryAndNotesDetailsLink } from './interfaces/fines-acc-history-and-notes-details-link.interface';
-import { IFinesAccHistoryAndNotesDetailsPart } from './interfaces/fines-acc-history-and-notes-details-part.interface';
-import { IFinesAccHistoryAndNotesFragmentOptions } from './interfaces/fines-acc-history-and-notes-fragment-options.interface';
-import { TFinesAccHistoryAndNotesDetailsTransformerConfig } from './types/fines-acc-history-and-notes-details-transformer-config.type';
-import { TFinesAccHistoryAndNotesRawItem } from './types/fines-acc-history-and-notes-raw-item.type';
-import { FINES_ACC_HISTORY_AND_NOTES_DETAILS_ALIAS_PATH_PREFIXES } from '../constants/fines-acc-history-and-notes-details-alias-path-prefixes.constant';
+import {
+  HISTORY_DETAILS_DEFAULT_ALIAS_PATH_PREFIXES,
+  HISTORY_DETAILS_DEFAULT_DATE_FORMAT,
+  HISTORY_DETAILS_DEFAULT_EMPTY_VALUES,
+  createHistoryDetails,
+  createHistoryDetailsPart,
+  createHistoryFragment,
+  createHistoryLink,
+  createHistoryTextPart,
+  formatHistoryDate,
+  formatHistoryMoney,
+  getHistoryString,
+  getHistoryValue,
+  isHistoryPresentString,
+  normaliseHistoryKey,
+  normaliseHistoryTransactionType,
+  toHistorySnakeCase,
+  IHistoryDetails as IFinesAccHistoryAndNotesDetails,
+  IHistoryDetailsFragment as IFinesAccHistoryAndNotesDetailsFragment,
+  IHistoryDetailsLink as IFinesAccHistoryAndNotesDetailsLink,
+  IHistoryDetailsPart as IFinesAccHistoryAndNotesDetailsPart,
+  IHistoryFragmentOptions as IFinesAccHistoryAndNotesFragmentOptions,
+  THistoryDetailsRawItem as TFinesAccHistoryAndNotesRawItem,
+  THistoryDetailsTransformerConfig as TFinesAccHistoryAndNotesDetailsTransformerConfig,
+  transformHistoryDetails,
+} from '@hmcts/opal-frontend-common/services/history-transformation-service';
 import { FINES_ACC_HISTORY_AND_NOTES_DETAILS_CHEQUE_STATUS_LABELS } from '../constants/fines-acc-history-and-notes-details-cheque-status-labels.constant';
 import { FINES_ACC_HISTORY_AND_NOTES_DETAILS_CURRENCY_PREFIX } from '../constants/fines-acc-history-and-notes-details-currency-prefix.constant';
-import { FINES_ACC_HISTORY_AND_NOTES_DETAILS_DATE_FORMAT } from '../constants/fines-acc-history-and-notes-details-date-format.constant';
 import { FINES_ACC_HISTORY_AND_NOTES_DETAILS_DEFENDANT_ACCOUNT_RECORD_TYPE } from '../constants/fines-acc-history-and-notes-details-defendant-account-record-type.constant';
-import { FINES_ACC_HISTORY_AND_NOTES_DETAILS_EMPTY_VALUES } from '../constants/fines-acc-history-and-notes-details-empty-values.constant';
 import { FINES_ACC_HISTORY_AND_NOTES_DETAILS_FALLBACK_ALIASES } from '../constants/fines-acc-history-and-notes-details-fallback-aliases.constant';
 import { FINES_ACC_HISTORY_AND_NOTES_DETAILS_FIELD_ALIASES } from '../constants/fines-acc-history-and-notes-details-field-aliases.constant';
 import { FINES_ACC_HISTORY_AND_NOTES_DETAILS_HISTORY_ITEM_TYPE_ALIASES } from '../constants/fines-acc-history-and-notes-details-history-item-type-aliases.constant';
@@ -19,12 +34,9 @@ import { FINES_ACC_HISTORY_AND_NOTES_DETAILS_LABELS } from '../constants/fines-a
 import { FINES_ACC_HISTORY_AND_NOTES_DETAILS_LINK_TYPES } from '../constants/fines-acc-history-and-notes-details-link-types.constant';
 import { FINES_ACC_HISTORY_AND_NOTES_DETAILS_PAYMENT_TERMS_PERIOD_LABELS } from '../constants/fines-acc-history-and-notes-details-payment-terms-period-labels.constant';
 import { FINES_ACC_HISTORY_AND_NOTES_DETAILS_PAYMENT_TERMS_TYPE_CODES } from '../constants/fines-acc-history-and-notes-details-payment-terms-type-codes.constant';
-import { FINES_ACC_HISTORY_AND_NOTES_DETAILS_PATTERNS } from '../constants/fines-acc-history-and-notes-details-patterns.constant';
 import { FINES_ACC_HISTORY_AND_NOTES_DETAILS_TRANSACTION_TYPE_ALIASES } from '../constants/fines-acc-history-and-notes-details-transaction-type-aliases.constant';
 import { FINES_ACC_HISTORY_AND_NOTES_DETAILS_TRANSACTION_TYPES } from '../constants/fines-acc-history-and-notes-details-transaction-types.constant';
 import { FINES_ACC_HISTORY_AND_NOTES_DETAILS_XFER_REASON_LABELS } from '../constants/fines-acc-history-and-notes-details-xfer-reason-labels.constant';
-
-const FINES_ACC_HISTORY_AND_NOTES_DETAILS_DATE_SERVICE = new DateService();
 
 /**
  * Transforms a raw history item into the structured details model.
@@ -37,27 +49,14 @@ export function transformHistoryAndNotesDetails(
   item: TFinesAccHistoryAndNotesRawItem,
   config: TFinesAccHistoryAndNotesDetailsTransformerConfig,
 ): IFinesAccHistoryAndNotesDetails {
-  const itemType = normaliseKey(getString(item, FINES_ACC_HISTORY_AND_NOTES_DETAILS_HISTORY_ITEM_TYPE_ALIASES));
-  const transformer = itemType ? config[itemType] : null;
-
-  return transformer ? transformer(item) : transformFallbackDetails(item);
-}
-
-/**
- * Transforms raw history items by replacing their details value with structured details.
- *
- * @param items - The raw history items returned by the API.
- * @param config - The history item type to transformer function map.
- * @returns The history items with structured details.
- */
-export function transformHistoryAndNotesItems<T extends TFinesAccHistoryAndNotesRawItem>(
-  items: T[],
-  config: TFinesAccHistoryAndNotesDetailsTransformerConfig,
-): Array<Omit<T, 'details'> & { details: IFinesAccHistoryAndNotesDetails }> {
-  return items.map((item) => ({
-    ...item,
-    details: transformHistoryAndNotesDetails(item, config),
-  }));
+  return transformHistoryDetails(item, {
+    aliasPathPrefixes: HISTORY_DETAILS_DEFAULT_ALIAS_PATH_PREFIXES,
+    dateFormat: HISTORY_DETAILS_DEFAULT_DATE_FORMAT,
+    emptyValues: HISTORY_DETAILS_DEFAULT_EMPTY_VALUES,
+    fallbackAliases: FINES_ACC_HISTORY_AND_NOTES_DETAILS_FALLBACK_ALIASES,
+    historyItemTypeAliases: FINES_ACC_HISTORY_AND_NOTES_DETAILS_HISTORY_ITEM_TYPE_ALIASES,
+    transformers: config,
+  });
 }
 
 /**
@@ -579,13 +578,7 @@ function createDetails(
   line1Parts: Array<IFinesAccHistoryAndNotesDetailsPart | null>,
   line2Parts: Array<IFinesAccHistoryAndNotesDetailsPart | null> = [],
 ): IFinesAccHistoryAndNotesDetails {
-  const line1 = line1Parts.filter(isPresentPart);
-  const line2 = line2Parts.filter(isPresentPart);
-
-  return {
-    line1,
-    line2: line2.length ? line2 : null,
-  };
+  return createHistoryDetails(line1Parts, line2Parts);
 }
 
 /**
@@ -595,7 +588,7 @@ function createDetails(
  * @returns The text part or null.
  */
 function textPart(text: string | null): IFinesAccHistoryAndNotesDetailsPart | null {
-  return text ? part([fragment(text)]) : null;
+  return createHistoryTextPart(text);
 }
 
 /**
@@ -605,11 +598,8 @@ function textPart(text: string | null): IFinesAccHistoryAndNotesDetailsPart | nu
  * @returns The part or null.
  */
 function part(fragments: IFinesAccHistoryAndNotesDetailsFragment[]): IFinesAccHistoryAndNotesDetailsPart | null {
-  const visibleFragments = fragments.filter(({ text }) => text.length > 0);
-  return visibleFragments.length ? { fragments: visibleFragments } : null;
+  return createHistoryDetailsPart(fragments);
 }
-
-export const createHistoryAndNotesDetailsPart = part;
 
 /**
  * Creates a details fragment with default styling flags.
@@ -622,12 +612,7 @@ function fragment(
   text: string,
   options: IFinesAccHistoryAndNotesFragmentOptions = {},
 ): IFinesAccHistoryAndNotesDetailsFragment {
-  return {
-    text,
-    bold: options.bold ?? false,
-    hyphen: options.hyphen ?? false,
-    ...(options.link ? { link: options.link } : {}),
-  };
+  return createHistoryFragment(text, options);
 }
 
 /**
@@ -638,7 +623,7 @@ function fragment(
  * @returns The fragment link metadata.
  */
 function createLink(type: string, emit: string): IFinesAccHistoryAndNotesDetailsLink {
-  return { type, emit };
+  return createHistoryLink(type, emit);
 }
 
 /**
@@ -649,13 +634,12 @@ function createLink(type: string, emit: string): IFinesAccHistoryAndNotesDetails
  * @returns The string value or null.
  */
 function getString(item: TFinesAccHistoryAndNotesRawItem, aliases: string[]): string | null {
-  const value = getValue(item, aliases);
-
-  if (isEmptyValue(value) || isRecord(value)) {
-    return null;
-  }
-
-  return String(value);
+  return getHistoryString(
+    item,
+    aliases,
+    HISTORY_DETAILS_DEFAULT_ALIAS_PATH_PREFIXES,
+    HISTORY_DETAILS_DEFAULT_EMPTY_VALUES,
+  );
 }
 
 /**
@@ -666,65 +650,12 @@ function getString(item: TFinesAccHistoryAndNotesRawItem, aliases: string[]): st
  * @returns The first matching value or null.
  */
 function getValue(item: TFinesAccHistoryAndNotesRawItem, aliases: string[]): unknown {
-  for (const alias of aliases) {
-    for (const path of getAliasPaths(alias)) {
-      const value = getValueByPath(item, path);
-      if (!isEmptyValue(value)) {
-        return value;
-      }
-    }
-  }
-
-  return null;
-}
-
-/**
- * Expands a field alias to supported root and nested paths.
- *
- * @param alias - The field alias.
- * @returns The candidate paths for the alias.
- */
-function getAliasPaths(alias: string): string[] {
-  return alias.includes('.')
-    ? [alias]
-    : FINES_ACC_HISTORY_AND_NOTES_DETAILS_ALIAS_PATH_PREFIXES.map((prefix) => `${prefix}${alias}`);
-}
-
-/**
- * Reads a value from an object using a dot-notated path.
- *
- * @param item - The raw history item.
- * @param path - The dot-notated path.
- * @returns The value or undefined.
- */
-function getValueByPath(item: TFinesAccHistoryAndNotesRawItem, path: string): unknown {
-  return path.split('.').reduce<unknown>((value, key) => {
-    if (!isRecord(value)) {
-      return undefined;
-    }
-
-    return value[key];
-  }, item);
-}
-
-/**
- * Checks whether a value is a non-null record.
- *
- * @param value - The value to check.
- * @returns True when the value is a record.
- */
-function isRecord(value: unknown): value is Record<string, unknown> {
-  return typeof value === 'object' && value !== null;
-}
-
-/**
- * Checks whether a value should be treated as empty.
- *
- * @param value - The value to check.
- * @returns True when the value is empty.
- */
-function isEmptyValue(value: unknown): boolean {
-  return FINES_ACC_HISTORY_AND_NOTES_DETAILS_EMPTY_VALUES.includes(value);
+  return getHistoryValue(
+    item,
+    aliases,
+    HISTORY_DETAILS_DEFAULT_ALIAS_PATH_PREFIXES,
+    HISTORY_DETAILS_DEFAULT_EMPTY_VALUES,
+  );
 }
 
 /**
@@ -734,19 +665,7 @@ function isEmptyValue(value: unknown): boolean {
  * @returns True when the value is a non-empty string.
  */
 function isPresentString(value: string | null): value is string {
-  return !!value;
-}
-
-/**
- * Checks whether a details part is present.
- *
- * @param value - The details part to check.
- * @returns True when the details part is present.
- */
-function isPresentPart(
-  value: IFinesAccHistoryAndNotesDetailsPart | null,
-): value is IFinesAccHistoryAndNotesDetailsPart {
-  return !!value;
+  return isHistoryPresentString(value);
 }
 
 /**
@@ -756,7 +675,7 @@ function isPresentPart(
  * @returns The normalised key or null.
  */
 function normaliseKey(value: string | null): string | null {
-  return value ? value.replace(FINES_ACC_HISTORY_AND_NOTES_DETAILS_PATTERNS.keyNormalise, '').toLowerCase() : null;
+  return normaliseHistoryKey(value);
 }
 
 /**
@@ -766,9 +685,7 @@ function normaliseKey(value: string | null): string | null {
  * @returns The normalised transaction type or null.
  */
 function normaliseTransactionType(value: string | null): string | null {
-  return value
-    ? value.trim().toUpperCase().replace(FINES_ACC_HISTORY_AND_NOTES_DETAILS_PATTERNS.transactionTypeSpace, ' ')
-    : null;
+  return normaliseHistoryTransactionType(value);
 }
 
 /**
@@ -778,10 +695,7 @@ function normaliseTransactionType(value: string | null): string | null {
  * @returns The snake case value.
  */
 function toSnakeCase(value: string): string {
-  return value
-    .replace(FINES_ACC_HISTORY_AND_NOTES_DETAILS_PATTERNS.snakeCaseBoundary, '$1_$2')
-    .replace(FINES_ACC_HISTORY_AND_NOTES_DETAILS_PATTERNS.snakeCaseSeparator, '_')
-    .toLowerCase();
+  return toHistorySnakeCase(value);
 }
 
 /**
@@ -791,31 +705,7 @@ function toSnakeCase(value: string): string {
  * @returns The formatted date or null.
  */
 function formatDate(value: string | null): string | null {
-  if (!value) {
-    return null;
-  }
-
-  const parsedFormattedDate = FINES_ACC_HISTORY_AND_NOTES_DETAILS_DATE_SERVICE.getFromFormat(
-    value,
-    FINES_ACC_HISTORY_AND_NOTES_DETAILS_DATE_FORMAT.input,
-  );
-
-  if (FINES_ACC_HISTORY_AND_NOTES_DETAILS_DATE_SERVICE.isValidDate(parsedFormattedDate)) {
-    return FINES_ACC_HISTORY_AND_NOTES_DETAILS_DATE_SERVICE.getFromFormatToFormat(
-      value,
-      FINES_ACC_HISTORY_AND_NOTES_DETAILS_DATE_FORMAT.input,
-      FINES_ACC_HISTORY_AND_NOTES_DETAILS_DATE_FORMAT.output,
-    );
-  }
-
-  const isoDate = FINES_ACC_HISTORY_AND_NOTES_DETAILS_DATE_SERVICE.getFromIso(value);
-
-  return FINES_ACC_HISTORY_AND_NOTES_DETAILS_DATE_SERVICE.isValidDate(isoDate)
-    ? FINES_ACC_HISTORY_AND_NOTES_DETAILS_DATE_SERVICE.toFormat(
-        isoDate,
-        FINES_ACC_HISTORY_AND_NOTES_DETAILS_DATE_FORMAT.output,
-      )
-    : value;
+  return formatHistoryDate(value, HISTORY_DETAILS_DEFAULT_DATE_FORMAT);
 }
 
 /**
@@ -825,21 +715,9 @@ function formatDate(value: string | null): string | null {
  * @returns The formatted money text or null.
  */
 function formatMoney(value: unknown): string | null {
-  if (isEmptyValue(value)) {
-    return null;
-  }
-
-  if (typeof value === 'number') {
-    return `${FINES_ACC_HISTORY_AND_NOTES_DETAILS_CURRENCY_PREFIX}${value.toFixed(2)}`;
-  }
-
-  const text = String(value);
-  if (text.startsWith(FINES_ACC_HISTORY_AND_NOTES_DETAILS_CURRENCY_PREFIX)) {
-    return text;
-  }
-
-  const numericValue = Number(text);
-  return Number.isFinite(numericValue)
-    ? `${FINES_ACC_HISTORY_AND_NOTES_DETAILS_CURRENCY_PREFIX}${numericValue.toFixed(2)}`
-    : text;
+  return formatHistoryMoney(
+    value,
+    FINES_ACC_HISTORY_AND_NOTES_DETAILS_CURRENCY_PREFIX,
+    HISTORY_DETAILS_DEFAULT_EMPTY_VALUES,
+  );
 }

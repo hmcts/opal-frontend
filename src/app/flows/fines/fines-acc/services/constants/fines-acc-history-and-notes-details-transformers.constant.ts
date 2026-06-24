@@ -1,4 +1,4 @@
-import { TFinesAccHistoryAndNotesDetailsTransformerConfig } from '../utils/types/fines-acc-history-and-notes-details-transformer-config.type';
+import { THistoryDetailsTransformerConfig as TFinesAccHistoryAndNotesDetailsTransformerConfig } from '@hmcts/opal-frontend-common/services/history-transformation-service';
 import {
   transformAmendmentDetails,
   transformEnforcementDetails,

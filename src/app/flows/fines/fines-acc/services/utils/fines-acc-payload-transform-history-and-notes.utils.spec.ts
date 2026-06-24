@@ -1,9 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import {
-  createHistoryAndNotesDetailsPart,
-  transformHistoryAndNotesDetails,
-  transformHistoryAndNotesItems,
-} from './fines-acc-payload-transform-history-and-notes.utils';
+import { transformHistoryAndNotesDetails } from './fines-acc-payload-transform-history-and-notes.utils';
 import { FINES_ACC_HISTORY_AND_NOTES_DETAILS_TRANSFORMERS } from '../constants/fines-acc-history-and-notes-details-transformers.constant';
 import { FINES_ACC_HISTORY_AND_NOTES_DETAILS_PAYMENT_TERMS_TYPE_CODES } from '../constants/fines-acc-history-and-notes-details-payment-terms-type-codes.constant';
 import { FINES_ACC_HISTORY_AND_NOTES_DETAILS_TRANSACTION_TYPES } from '../constants/fines-acc-history-and-notes-details-transaction-types.constant';
@@ -37,16 +33,12 @@ import { FINES_ACC_HISTORY_AND_NOTES_PAYMENT_TERMS_DETAILS_MOCK } from './mocks/
 import { FINES_ACC_HISTORY_AND_NOTES_PAYMENT_TERMS_ITEM_MOCK } from './mocks/fines-acc-history-and-notes-payment-terms-item.mock';
 import { FINES_ACC_HISTORY_AND_NOTES_REVERSED_WRITE_OFF_DETAILS_MOCK } from './mocks/fines-acc-history-and-notes-reversed-write-off-details.mock';
 import { FINES_ACC_HISTORY_AND_NOTES_REVERSED_WRITE_OFF_ITEM_MOCK } from './mocks/fines-acc-history-and-notes-reversed-write-off-item.mock';
-import { FINES_ACC_HISTORY_AND_NOTES_STRUCTURED_NOTE_ITEM_MOCK } from './mocks/fines-acc-history-and-notes-structured-note-item.mock';
-import { FINES_ACC_HISTORY_AND_NOTES_STRUCTURED_NOTE_TRANSFORMED_ITEM_MOCK } from './mocks/fines-acc-history-and-notes-structured-note-transformed-item.mock';
 import { FINES_ACC_HISTORY_AND_NOTES_SUSPENSE_TRANSFER_CAMEL_RECORD_TYPE_DETAILS_MOCK } from './mocks/fines-acc-history-and-notes-suspense-transfer-camel-record-type-details.mock';
 import { FINES_ACC_HISTORY_AND_NOTES_SUSPENSE_TRANSFER_CAMEL_RECORD_TYPE_ITEM_MOCK } from './mocks/fines-acc-history-and-notes-suspense-transfer-camel-record-type-item.mock';
 import { FINES_ACC_HISTORY_AND_NOTES_TFO_IN_DETAILS_MOCK } from './mocks/fines-acc-history-and-notes-tfo-in-details.mock';
 import { FINES_ACC_HISTORY_AND_NOTES_TFO_IN_ITEM_MOCK } from './mocks/fines-acc-history-and-notes-tfo-in-item.mock';
 import { FINES_ACC_HISTORY_AND_NOTES_TRANSFER_WITHOUT_ASSOCIATED_RECORD_DETAILS_MOCK } from './mocks/fines-acc-history-and-notes-transfer-without-associated-record-details.mock';
 import { FINES_ACC_HISTORY_AND_NOTES_TRANSFER_WITHOUT_ASSOCIATED_RECORD_ITEM_MOCK } from './mocks/fines-acc-history-and-notes-transfer-without-associated-record-item.mock';
-import { FINES_ACC_HISTORY_AND_NOTES_UNSUPPORTED_ORDERS_DETAILS_MOCK } from './mocks/fines-acc-history-and-notes-unsupported-orders-details.mock';
-import { FINES_ACC_HISTORY_AND_NOTES_UNSUPPORTED_ORDERS_ITEM_MOCK } from './mocks/fines-acc-history-and-notes-unsupported-orders-item.mock';
 import { FINES_ACC_HISTORY_AND_NOTES_WRITE_OFF_CONSOLIDATED_ACCOUNT_DETAILS_MOCK } from './mocks/fines-acc-history-and-notes-write-off-consolidated-account-details.mock';
 import { FINES_ACC_HISTORY_AND_NOTES_WRITE_OFF_CONSOLIDATED_ACCOUNT_ITEM_MOCK } from './mocks/fines-acc-history-and-notes-write-off-consolidated-account-item.mock';
 
@@ -232,46 +224,6 @@ describe('transformHistoryAndNotesDetails', () => {
     );
 
     expect(result).toEqual(FINES_ACC_HISTORY_AND_NOTES_SUSPENSE_TRANSFER_CAMEL_RECORD_TYPE_DETAILS_MOCK);
-  });
-
-  it('should transform items by replacing raw details with structured details', () => {
-    const result = transformHistoryAndNotesItems(
-      [FINES_ACC_HISTORY_AND_NOTES_STRUCTURED_NOTE_ITEM_MOCK],
-      FINES_ACC_HISTORY_AND_NOTES_DETAILS_TRANSFORMERS,
-    );
-
-    expect(result).toEqual([FINES_ACC_HISTORY_AND_NOTES_STRUCTURED_NOTE_TRANSFORMED_ITEM_MOCK]);
-  });
-
-  it('should fall back to the item type for unsupported history item types', () => {
-    const result = transformHistoryAndNotesDetails(
-      FINES_ACC_HISTORY_AND_NOTES_UNSUPPORTED_ORDERS_ITEM_MOCK,
-      FINES_ACC_HISTORY_AND_NOTES_DETAILS_TRANSFORMERS,
-    );
-
-    expect(result).toEqual(FINES_ACC_HISTORY_AND_NOTES_UNSUPPORTED_ORDERS_DETAILS_MOCK);
-  });
-
-  it('should return empty fallback details when the item type is missing', () => {
-    const result = transformHistoryAndNotesDetails(
-      { details: { noteText: 'No type' } },
-      FINES_ACC_HISTORY_AND_NOTES_DETAILS_TRANSFORMERS,
-    );
-
-    expect(result).toEqual({ line1: [], line2: null });
-  });
-
-  it('should return null when a details part has no visible fragments', () => {
-    expect(createHistoryAndNotesDetailsPart([fragment('')])).toBeNull();
-  });
-
-  it('should ignore record values when scalar text is expected', () => {
-    const result = transformHistoryAndNotesDetails(
-      { type: 'Note', details: { noteText: { text: 'Nested note text' } } },
-      FINES_ACC_HISTORY_AND_NOTES_DETAILS_TRANSFORMERS,
-    );
-
-    expect(result).toEqual({ line1: [], line2: null });
   });
 
   it('should fall back to the item type when a financial item has no transaction type', () => {

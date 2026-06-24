@@ -45,13 +45,12 @@ import { transformMinorCreditorAccountPayload } from './utils/fines-acc-payload-
 import { IFinesAccDefendantDetailsHistoryAndNotesFilterForm } from '../fines-acc-defendant-details/fines-acc-defendant-details-history-and-notes-tab/interfaces/fines-acc-defendant-details-history-and-notes-filter-form.interface';
 import { IOpalFinesDefendantAccountHistoryParams } from '@services/fines/opal-fines-service/interfaces/opal-fines-defendant-account-history-params.interface';
 import { buildHistoryFilterPayload } from './utils/fines-acc-payload-build-history-filter.utils';
-import { IFinesAccHistoryAndNotesDetails } from './utils/interfaces/fines-acc-history-and-notes-details.interface';
-import { TFinesAccHistoryAndNotesRawItem } from './utils/types/fines-acc-history-and-notes-raw-item.type';
 import {
-  transformHistoryAndNotesDetails,
-  transformHistoryAndNotesItems,
-} from './utils/fines-acc-payload-transform-history-and-notes.utils';
-import { FINES_ACC_HISTORY_AND_NOTES_DETAILS_TRANSFORMERS } from './constants/fines-acc-history-and-notes-details-transformers.constant';
+  HistoryTransformationService,
+  IHistoryDetails as IFinesAccHistoryAndNotesDetails,
+  THistoryDetailsRawItem as TFinesAccHistoryAndNotesRawItem,
+} from '@hmcts/opal-frontend-common/services/history-transformation-service';
+import { FINES_ACC_HISTORY_AND_NOTES_DETAILS_TRANSFORMATION_CONFIG } from './constants/fines-acc-history-and-notes-details-transformation-config.constant';
 
 @Injectable({
   providedIn: 'root',
@@ -61,6 +60,7 @@ export class FinesAccPayloadService {
   private readonly payloadService = inject(FinesMacPayloadService);
   private readonly globalStore = inject(GlobalStore);
   private readonly finesAccStore = inject(FinesAccountStore);
+  private readonly historyDetailsTransformationService = inject(HistoryTransformationService);
 
   /**
    * Constructs the payload for adding a note.
@@ -105,7 +105,10 @@ export class FinesAccPayloadService {
    * @returns The fragment-based details model for the item.
    */
   public transformHistoryAndNotesDetails(item: TFinesAccHistoryAndNotesRawItem): IFinesAccHistoryAndNotesDetails {
-    return transformHistoryAndNotesDetails(item, FINES_ACC_HISTORY_AND_NOTES_DETAILS_TRANSFORMERS);
+    return this.historyDetailsTransformationService.transformDetails(
+      item,
+      FINES_ACC_HISTORY_AND_NOTES_DETAILS_TRANSFORMATION_CONFIG,
+    );
   }
 
   /**
@@ -117,7 +120,10 @@ export class FinesAccPayloadService {
   public transformHistoryAndNotesItems<T extends TFinesAccHistoryAndNotesRawItem>(
     items: T[],
   ): Array<Omit<T, 'details'> & { details: IFinesAccHistoryAndNotesDetails }> {
-    return transformHistoryAndNotesItems(items, FINES_ACC_HISTORY_AND_NOTES_DETAILS_TRANSFORMERS);
+    return this.historyDetailsTransformationService.transformItems(
+      items,
+      FINES_ACC_HISTORY_AND_NOTES_DETAILS_TRANSFORMATION_CONFIG,
+    );
   }
 
   /**
