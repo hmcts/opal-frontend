@@ -58,7 +58,7 @@ Feature: Account Enquiries - Add Enforcement Override
       Then I should return to the Enforcement tab
       And the enforcement court summary shows the selected value
 
-    @JIRA-STORY:PO-1843 @JIRA-EPIC:PO-1675 @JIRA-LABEL:account-enquiry
+    @JIRA-STORY:PO-1843 @JIRA-EPIC:PO-1675 @JIRA-LABEL:account-enquiry @JIRA-TEST-KEY:PO-8005
     Scenario: Remove enforcement hold page is displayed for a defendant account on NOENF
       Given I create a "adultOrYouthOnly" draft account with the following details and set status "Publishing Pending" using user "opal-test-10@dev.platform.hmcts.net":
         | Account_status                                  | Submitted                        |
@@ -80,7 +80,7 @@ Feature: Account Enquiries - Add Enforcement Override
       Then I should see the remove enforcement hold page
       And I should see the remove enforcement hold account identifier "Mr Robert REMOVEHOLD{uniqUpper} Remove enforcement hold"
 
-    @JIRA-STORY:PO-1843 @JIRA-EPIC:PO-1675 @JIRA-LABEL:account-enquiry
+    @JIRA-STORY:PO-1843 @JIRA-EPIC:PO-1675 @JIRA-LABEL:account-enquiry @JIRA-TEST-KEY:PO-8006
     Scenario: Canceling remove enforcement hold with entered text shows confirmation before leaving
       Given I create a "adultOrYouthOnly" draft account with the following details and set status "Publishing Pending" using user "opal-test-10@dev.platform.hmcts.net":
         | Account_status                                  | Submitted                              |
@@ -103,7 +103,7 @@ Feature: Account Enquiries - Add Enforcement Override
       And I cancel the remove enforcement hold screen and confirm leaving
       Then I should return to the Enforcement tab
 
-    @JIRA-STORY:PO-1843 @JIRA-STORY:PO-1833 @JIRA-EPIC:PO-1675 @JIRA-LABEL:account-enquiry
+    @JIRA-STORY:PO-1843 @JIRA-STORY:PO-1833 @JIRA-EPIC:PO-1675 @JIRA-LABEL:account-enquiry @JIRA-TEST-KEY:PO-8007
     Scenario: Removing enforcement hold returns to add additional enforcement action with successful remove banner
       Given I create a "adultOrYouthOnly" draft account with the following details and set status "Publishing Pending" using user "opal-test-10@dev.platform.hmcts.net":
         | Account_status                                  | Submitted                               |
@@ -128,7 +128,7 @@ Feature: Account Enquiries - Add Enforcement Override
       Then I should see the add new enforcement action page
       And the enforcement hold success banner is "Enforcement hold removed"
 
-    @JIRA-STORY:PO-1843 @JIRA-EPIC:PO-1675 @JIRA-LABEL:account-enquiry
+    @JIRA-STORY:PO-1843 @JIRA-EPIC:PO-1675 @JIRA-LABEL:account-enquiry @JIRA-TEST-KEY:PO-8008
     Scenario: Company removing enforcement hold returns to add additional enforcement action
       Given I create a "company" draft account with the following details and set status "Publishing Pending" using user "opal-test-10@dev.platform.hmcts.net":
         | Account_status                                  | Submitted                         |
@@ -150,7 +150,7 @@ Feature: Account Enquiries - Add Enforcement Override
       Then I should see the add new enforcement action page
       And the enforcement hold success banner is "Enforcement hold removed"
 
-    @JIRA-STORY:PO-1833 @JIRA-EPIC:PO-1675 @JIRA-LABEL:account-enquiry
+    @JIRA-STORY:PO-1833 @JIRA-EPIC:PO-1675 @JIRA-LABEL:account-enquiry @JIRA-TEST-KEY:PO-8009
     Scenario: Parent or guardian removing enforcement hold returns to add additional enforcement action
       Given I create a "pgToPay" draft account with the following details and set status "Publishing Pending" using user "opal-test-10@dev.platform.hmcts.net":
         | Account_status                                  | Submitted                        |
@@ -175,7 +175,7 @@ Feature: Account Enquiries - Add Enforcement Override
       Then I should see the add new enforcement action page
       And the enforcement hold success banner is "Enforcement hold removed"
 
-    @JIRA-STORY:PO-1843 @JIRA-EPIC:PO-1675 @JIRA-LABEL:account-enquiry
+    @JIRA-STORY:PO-1843 @JIRA-EPIC:PO-1675 @JIRA-LABEL:account-enquiry @JIRA-TEST-KEY:PO-8010
     Scenario: Remove enforcement hold page is displayed for a company account on NOENF
       Given I create a "company" draft account with the following details and set status "Publishing Pending" using user "opal-test-10@dev.platform.hmcts.net":
         | Account_status                                  | Submitted                         |
@@ -195,7 +195,7 @@ Feature: Account Enquiries - Add Enforcement Override
       Then I should see the remove enforcement hold page
       And I should see the remove enforcement hold account identifier "– RemoveHold Company{uniq}"
 
-    @JIRA-STORY:PO-1782 @JIRA-EPIC:PO-2630
+    @JIRA-STORY:PO-1782 @JIRA-EPIC:PO-2630 @JIRA-TEST-KEY:PO-8011
     Scenario: Save an enforcement action and return to the Enforcement tab
       When I search for the account by last name "AddEnfOverride{uniq}" and open the latest result
       And I go to the Enforcement tab
@@ -208,7 +208,7 @@ Feature: Account Enquiries - Add Enforcement Override
       Then I should return to the Enforcement tab
       And the enforcement action summary shows "Collection Order(COLLO)"
 
-    @JIRA-STORY:PO-1786 @JIRA-EPIC:PO-1675
+    @JIRA-STORY:PO-1786 @JIRA-EPIC:PO-1675 @JIRA-TEST-KEY:PO-8012
     Scenario: Save an enforcement action that directs to additional enforcement action
       When I search for the account by last name "AddEnfOverride{uniq}" and open the latest result
       And I go to the Enforcement tab
@@ -268,7 +268,7 @@ Feature: Account Enquiries - Add Enforcement Override
       Then I should return to the Enforcement tab
       And the enforcement court summary shows the selected value
 
-    @JIRA-STORY:PO-1843 @JIRA-EPIC:PO-1675
+    @JIRA-STORY:PO-1843 @JIRA-EPIC:PO-1675 @JIRA-TEST-KEY:PO-8013
     Scenario: Company save an enforcement action that directs to additional enforcement action
       When I open the company account details for "Add Override Company{uniq}"
       And I go to the Enforcement tab
@@ -331,7 +331,7 @@ Feature: Account Enquiries - Add Enforcement Override
       Then I should return to the Enforcement tab
       And the enforcement court summary shows the selected value
 
-    @JIRA-STORY:PO-1833 @JIRA-EPIC:PO-1675
+    @JIRA-STORY:PO-1833 @JIRA-EPIC:PO-1675 @JIRA-TEST-KEY:PO-8014
     Scenario: Parent or guardian save an enforcement action that directs to additional enforcement action
       When I search for the account by last name "AddEnfOverridePG{uniq}" and open the latest result
       And I go to the Enforcement tab

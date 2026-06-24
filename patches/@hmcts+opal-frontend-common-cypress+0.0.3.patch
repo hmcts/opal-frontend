@@ -1,0 +1,108 @@
+diff --git a/node_modules/@hmcts/opal-frontend-common-cypress/dist/metadata/jira-metadata-policy-cli.js b/node_modules/@hmcts/opal-frontend-common-cypress/dist/metadata/jira-metadata-policy-cli.js
+index d91f414..45de2dd 100644
+--- a/node_modules/@hmcts/opal-frontend-common-cypress/dist/metadata/jira-metadata-policy-cli.js
++++ b/node_modules/@hmcts/opal-frontend-common-cypress/dist/metadata/jira-metadata-policy-cli.js
+@@ -93,7 +93,7 @@ function printJiraMetadataSuccess(testCount) {
+         return;
+     }
+     console.log(`Checked ${testCount} covered component/functional E2E tests.`);
+-    console.log('Component tests include @JIRA-EPIC and either @JIRA-STORY or @JIRA-DEFECT. Functional E2E tests include @JIRA-EPIC and at least one of @JIRA-STORY, @JIRA-NFR, or @JIRA-DEFECT.');
++    console.log('Component tests include @JIRA-EPIC and either @JIRA-STORY or @JIRA-DEFECT. Functional E2E tests include @JIRA-EPIC and at least one of @JIRA-STORY, @JIRA-NFR, or @JIRA-DEFECT. All Jira key values must use a valid key format such as PO-1234.');
+ }
+ /**
+  * Prints the failure summary for a Jira metadata validation run.
+@@ -103,14 +103,21 @@ function printJiraMetadataSuccess(testCount) {
+  * @returns Nothing. Output is written to stderr.
+  */
+ function printJiraMetadataFailures(failures, testCount) {
+-    console.error(`FAIL: ${failures.length} of ${testCount} covered component/functional E2E tests are missing required Jira metadata.`);
++    console.error(`FAIL: ${failures.length} of ${testCount} covered component/functional E2E tests have missing or invalid Jira metadata.`);
+     for (const failure of failures.sort((left, right) => {
+         if (left.filePath !== right.filePath) {
+             return left.filePath.localeCompare(right.filePath);
+         }
+         return left.line - right.line;
+     })) {
+-        console.error(`- ${failure.filePath}:${failure.line} [${failure.kind}] ${failure.title} | missing ${failure.missing.join(', ')}`);
++        const details = [];
++        if (failure.missing.length > 0) {
++            details.push(`missing ${failure.missing.join(', ')}`);
++        }
++        if ((failure.invalid ?? []).length > 0) {
++            details.push(`invalid ${(failure.invalid ?? []).join(', ')}`);
++        }
++        console.error(`- ${failure.filePath}:${failure.line} [${failure.kind}] ${failure.title} | ${details.join(' | ')}`);
+     }
+ }
+ /**
+diff --git a/node_modules/@hmcts/opal-frontend-common-cypress/dist/metadata/jira-metadata-policy.js b/node_modules/@hmcts/opal-frontend-common-cypress/dist/metadata/jira-metadata-policy.js
+index 1724f77..2414a36 100644
+--- a/node_modules/@hmcts/opal-frontend-common-cypress/dist/metadata/jira-metadata-policy.js
++++ b/node_modules/@hmcts/opal-frontend-common-cypress/dist/metadata/jira-metadata-policy.js
+@@ -25,6 +25,8 @@ const JIRA_DEFECT_PREFIX = '@JIRA-DEFECT:';
+ const JIRA_EPIC_PREFIX = '@JIRA-EPIC:';
+ const JIRA_NFR_PREFIX = '@JIRA-NFR:';
+ const JIRA_STORY_PREFIX = '@JIRA-STORY:';
++const JIRA_KEY_VALUE_REGEX = /^[A-Z][A-Z0-9]+-\d+$/u;
+ const SCENARIO_KEYWORDS = ['Scenario Outline:', 'Scenario:', 'Example:'];
+ /**
+  * Applies default directory settings for Jira metadata validation.
+@@ -57,9 +59,9 @@ function validateJiraMetadataPolicy(options = {}, cwd = process.cwd()) {
+         const units = parseTestUnits(filePath, content);
+         tests.push(...units);
+         for (const unit of units) {
+-            const missing = validateTestUnit(unit);
+-            if (missing.length > 0) {
+-                failures.push({ ...unit, missing });
++            const validation = validateTestUnit(unit);
++            if (validation.missing.length > 0 || validation.invalid.length > 0) {
++                failures.push({ ...unit, invalid: validation.invalid, missing: validation.missing });
+             }
+         }
+     }
+@@ -96,7 +98,19 @@ function validateTestUnit(unit) {
+     if (unit.epics.length === 0) {
+         missing.push('@JIRA-EPIC');
+     }
+-    return missing;
++    return { invalid: collectInvalidTagValues(unit), missing };
++}
++function collectInvalidTagValues(unit) {
++    return getAllJiraMetadataTags(unit).filter((tag) => {
++        const value = tag.slice(tag.indexOf(':') + 1).trim();
++        return !JIRA_KEY_VALUE_REGEX.test(value);
++    });
++}
++function getAllJiraMetadataTags(unit) {
++    return [...unit.defects, ...unit.epics, ...unit.nfrs, ...unit.stories];
+ }
+ /**
+  * Routes a supported test file to the parser that understands its format.
+@@ -170,6 +184,7 @@ function parseComponentTests(filePath, content) {
+                     line: line + 1,
+                     nfrs: tags.filter((tag) => tag.startsWith(JIRA_NFR_PREFIX)),
+                     stories: tags.filter((tag) => tag.startsWith(JIRA_STORY_PREFIX)),
+                     title,
+                 });
+                 return;
+@@ -286,6 +301,7 @@ function buildFeatureTestUnit(filePath, scenarioTitle, line, tags, exampleIndex,
+         line,
+         nfrs: tags.filter((tag) => tag.startsWith(JIRA_NFR_PREFIX)),
+         stories: tags.filter((tag) => tag.startsWith(JIRA_STORY_PREFIX)),
+         title,
+     };
+ }
+diff --git a/node_modules/@hmcts/opal-frontend-common-cypress/dist/runner/opal-suite-runner.js b/node_modules/@hmcts/opal-frontend-common-cypress/dist/runner/opal-suite-runner.js
+index 07fa401..17371dd 100644
+--- a/node_modules/@hmcts/opal-frontend-common-cypress/dist/runner/opal-suite-runner.js
++++ b/node_modules/@hmcts/opal-frontend-common-cypress/dist/runner/opal-suite-runner.js
+@@ -243,7 +243,8 @@ function executeSuite(suite, options, cwd, baseEnv) {
+         return testExitCode;
+     }
+     if (config.isComponent) {
+-        return testExitCode || buildComponentReport(browser, cwd, env, options.dryRun) || 0;
++        const componentReportExitCode = buildComponentReport(browser, cwd, env, options.dryRun);
++        return testExitCode || componentReportExitCode || 0;
+     }
+     const { hasNdjson, hasXml } = getSuiteArtifacts(config, cwd);
+     const hasTagFiltering = Boolean(String(env.CYPRESS_TAGS || env.TAGS || '').trim());
