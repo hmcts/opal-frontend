@@ -402,7 +402,9 @@ describe('Account Enquiry Parent or Guardian Component', () => {
       setupAccountEnquiryComponent({
         ...componentProperties,
         accountId: accountId,
-        interceptedRoutes: componentProperties.interceptedRoutes?.filter((route) => route !== '../party/parentGuardian/amend'),
+        interceptedRoutes: componentProperties.interceptedRoutes?.filter(
+          (route) => route !== '../party/parentGuardian/amend',
+        ),
       });
 
       cy.get('router-outlet').should('exist');

@@ -211,10 +211,13 @@ describe('Account Enquiry Payment Terms', () => {
       cy.get(PAYMENT_TERMS_TAB.tabName).should('exist').and('contain.text', 'Payment terms');
       cy.get(PAYMENT_TERMS_TAB.paymentTermsLink).contains('Change').click();
       cy.get('app-fines-acc-payment-terms-amend-denied').should('exist');
-      cy.contains('opal-lib-govuk-heading-with-caption, h1, h2', 'You cannot amend the payment terms of this account.')
-        .should('be.visible');
-      cy.contains('You do not have the required permissions to make changes to this account as it is outside your business unit.')
-        .should('be.visible');
+      cy.contains(
+        'opal-lib-govuk-heading-with-caption, h1, h2',
+        'You cannot amend the payment terms of this account.',
+      ).should('be.visible');
+      cy.contains(
+        'You do not have the required permissions to make changes to this account as it is outside your business unit.',
+      ).should('be.visible');
     },
   );
 
@@ -242,7 +245,7 @@ describe('Account Enquiry Payment Terms', () => {
           .toArray()
           .map((link) => link.textContent?.trim());
 
-          expect(linkTexts).to.not.include('Change');
+        expect(linkTexts).to.not.include('Change');
       });
     },
   );
@@ -268,8 +271,10 @@ describe('Account Enquiry Payment Terms', () => {
       cy.get(PAYMENT_TERMS_TAB.tabName).should('exist').and('contain.text', 'Payment terms');
       cy.get(PAYMENT_TERMS_TAB.paymentTermsLink).contains('Change').click();
       cy.get('app-fines-acc-payment-terms-amend-denied').should('exist');
-      cy.contains('opal-lib-govuk-heading-with-caption, h1, h2', 'You cannot amend the payment terms of this account.')
-        .should('be.visible');
+      cy.contains(
+        'opal-lib-govuk-heading-with-caption, h1, h2',
+        'You cannot amend the payment terms of this account.',
+      ).should('be.visible');
       cy.contains('This account has an enforcement action outstanding: DW.').should('be.visible');
     },
   );
@@ -295,8 +300,10 @@ describe('Account Enquiry Payment Terms', () => {
       cy.get(PAYMENT_TERMS_TAB.tabName).should('exist').and('contain.text', 'Payment terms');
       cy.get(PAYMENT_TERMS_TAB.paymentTermsLink).contains('Change').click();
       cy.get('app-fines-acc-payment-terms-amend-denied').should('exist');
-      cy.contains('opal-lib-govuk-heading-with-caption, h1, h2', 'You cannot amend the payment terms of this account.')
-        .should('be.visible');
+      cy.contains(
+        'opal-lib-govuk-heading-with-caption, h1, h2',
+        'You cannot amend the payment terms of this account.',
+      ).should('be.visible');
       cy.contains('This account has been consolidated.').should('be.visible');
     },
   );
@@ -322,8 +329,10 @@ describe('Account Enquiry Payment Terms', () => {
       cy.get(PAYMENT_TERMS_TAB.tabName).should('exist').and('contain.text', 'Payment terms');
       cy.get(PAYMENT_TERMS_TAB.paymentTermsLink).contains('Change').click();
       cy.get('app-fines-acc-payment-terms-amend-denied').should('exist');
-      cy.contains('opal-lib-govuk-heading-with-caption, h1, h2', 'You cannot amend the payment terms of this account.')
-        .should('be.visible');
+      cy.contains(
+        'opal-lib-govuk-heading-with-caption, h1, h2',
+        'You cannot amend the payment terms of this account.',
+      ).should('be.visible');
       cy.contains('This account has been written-off.').should('be.visible');
     },
   );
@@ -349,8 +358,10 @@ describe('Account Enquiry Payment Terms', () => {
       cy.get(PAYMENT_TERMS_TAB.tabName).should('exist').and('contain.text', 'Payment terms');
       cy.get(PAYMENT_TERMS_TAB.paymentTermsLink).contains('Change').click();
       cy.get('app-fines-acc-payment-terms-amend-denied').should('exist');
-      cy.contains('opal-lib-govuk-heading-with-caption, h1, h2', 'You cannot amend the payment terms of this account.')
-        .should('be.visible');
+      cy.contains(
+        'opal-lib-govuk-heading-with-caption, h1, h2',
+        'You cannot amend the payment terms of this account.',
+      ).should('be.visible');
       cy.contains('This account has been transferred out.').should('be.visible');
     },
   );
@@ -376,8 +387,10 @@ describe('Account Enquiry Payment Terms', () => {
       cy.get(PAYMENT_TERMS_TAB.tabName).should('exist').and('contain.text', 'Payment terms');
       cy.get(PAYMENT_TERMS_TAB.paymentTermsLink).contains('Change').click();
       cy.get('app-fines-acc-payment-terms-amend-denied').should('exist');
-      cy.contains('opal-lib-govuk-heading-with-caption, h1, h2', 'You cannot amend the payment terms of this account.')
-        .should('be.visible');
+      cy.contains(
+        'opal-lib-govuk-heading-with-caption, h1, h2',
+        'You cannot amend the payment terms of this account.',
+      ).should('be.visible');
       cy.contains('This account has been transferred out.').should('be.visible');
     },
   );
@@ -403,8 +416,10 @@ describe('Account Enquiry Payment Terms', () => {
       cy.get(PAYMENT_TERMS_TAB.tabName).should('exist').and('contain.text', 'Payment terms');
       cy.get(PAYMENT_TERMS_TAB.paymentTermsLink).contains('Change').click();
       cy.get('app-fines-acc-payment-terms-amend-denied').should('exist');
-      cy.contains('opal-lib-govuk-heading-with-caption, h1, h2', 'You cannot amend the payment terms of this account.')
-        .should('be.visible');
+      cy.contains(
+        'opal-lib-govuk-heading-with-caption, h1, h2',
+        'You cannot amend the payment terms of this account.',
+      ).should('be.visible');
       cy.contains('This account has been transferred out.').should('be.visible');
     },
   );
@@ -431,8 +446,10 @@ describe('Account Enquiry Payment Terms', () => {
       cy.get(PAYMENT_TERMS_TAB.tabName).should('exist').and('contain.text', 'Payment terms');
       cy.get(PAYMENT_TERMS_TAB.paymentTermsLink).contains('Change').click();
       cy.get('app-fines-acc-payment-terms-amend-denied').should('exist');
-      cy.contains('opal-lib-govuk-heading-with-caption, h1, h2', 'You cannot amend the payment terms of this account.')
-        .should('be.visible');
+      cy.contains(
+        'opal-lib-govuk-heading-with-caption, h1, h2',
+        'You cannot amend the payment terms of this account.',
+      ).should('be.visible');
       cy.contains('This account has an enforcement action outstanding: DW.').should('be.visible');
     },
   );
@@ -599,10 +616,13 @@ describe('Account Enquiry Payment Terms', () => {
       cy.get(PAYMENT_TERMS_TAB.tabName).should('exist').and('contain.text', 'Payment terms');
       cy.get(PAYMENT_TERMS_TAB.paymentTermsLink).contains('Change').click();
       cy.get('app-fines-acc-payment-terms-amend-denied').should('exist');
-      cy.contains('opal-lib-govuk-heading-with-caption, h1, h2', 'You cannot amend the payment terms of this account.')
-        .should('be.visible');
-      cy.contains('You do not have the required permissions to make changes to this account as it is outside your business unit.')
-        .should('be.visible');
+      cy.contains(
+        'opal-lib-govuk-heading-with-caption, h1, h2',
+        'You cannot amend the payment terms of this account.',
+      ).should('be.visible');
+      cy.contains(
+        'You do not have the required permissions to make changes to this account as it is outside your business unit.',
+      ).should('be.visible');
     },
   );
 
@@ -632,7 +652,7 @@ describe('Account Enquiry Payment Terms', () => {
           .toArray()
           .map((link) => link.textContent?.trim());
 
-          expect(linkTexts).to.not.include('Change');
+        expect(linkTexts).to.not.include('Change');
       });
     },
   );
@@ -812,10 +832,13 @@ describe('Account Enquiry Payment Terms', () => {
       cy.get(PAYMENT_TERMS_TAB.tabName).should('exist').and('contain.text', 'Payment terms');
       cy.get(PAYMENT_TERMS_TAB.paymentTermsLink).contains('Change').click();
       cy.get('app-fines-acc-payment-terms-amend-denied').should('exist');
-      cy.contains('opal-lib-govuk-heading-with-caption, h1, h2', 'You cannot amend the payment terms of this account.')
-        .should('be.visible');
-      cy.contains('You do not have the required permissions to make changes to this account as it is outside your business unit.')
-        .should('be.visible');
+      cy.contains(
+        'opal-lib-govuk-heading-with-caption, h1, h2',
+        'You cannot amend the payment terms of this account.',
+      ).should('be.visible');
+      cy.contains(
+        'You do not have the required permissions to make changes to this account as it is outside your business unit.',
+      ).should('be.visible');
     },
   );
 
@@ -849,7 +872,7 @@ describe('Account Enquiry Payment Terms', () => {
           .toArray()
           .map((link) => link.textContent?.trim());
 
-          expect(linkTexts).to.not.include('Change');
+        expect(linkTexts).to.not.include('Change');
       });
     },
   );

@@ -227,7 +227,9 @@ describe('Account Enquiry Defendant Details Tab', () => {
       setupAccountEnquiryComponent({
         ...componentProperties,
         accountId: accountId,
-        interceptedRoutes: componentProperties.interceptedRoutes?.filter((route) => route !== '../party/individual/amend'),
+        interceptedRoutes: componentProperties.interceptedRoutes?.filter(
+          (route) => route !== '../party/individual/amend',
+        ),
       });
 
       cy.get(DEFENDANT_DETAILS.defendantChange).should('exist').click();
@@ -485,7 +487,9 @@ describe('Account Enquiry Defendant Details Tab', () => {
       setupAccountEnquiryComponent({
         ...componentProperties,
         accountId: accountId,
-        interceptedRoutes: componentProperties.interceptedRoutes?.filter((route) => route !== '../party/parentGuardian/add'),
+        interceptedRoutes: componentProperties.interceptedRoutes?.filter(
+          (route) => route !== '../party/parentGuardian/add',
+        ),
       });
 
       cy.contains('a', 'Add parent or guardian details').should('be.visible').click();

@@ -251,7 +251,9 @@ describe('Minor Creditor Payment Hold', () => {
         atAGlance.payment.hold_payment = true;
 
         setupMinorCreditorAtAGlance(userState, createMinorCreditorHeaderMock(), atAGlance, {
-          interceptedRoutes: componentProperties.interceptedRoutes?.filter((route) => route !== '../payment-hold/remove'),
+          interceptedRoutes: componentProperties.interceptedRoutes?.filter(
+            (route) => route !== '../payment-hold/remove',
+          ),
         });
 
         cy.get(DOM.minorCreditorAtAGlanceTabComponent).should('not.contain.text', DOM.labelAddPaymentHold);
