@@ -10,11 +10,15 @@ export const FINES_MAC_OFFENCE_DETAILS_IMPOSITIONS: IAbstractFormArrayControlVal
   },
   {
     controlName: 'fm_offence_details_amount_imposed',
-    validators: [Validators.required, amountValidator(18, 2), finesMacOffenceDetailsPositiveAmountValidator()],
+    validators: [
+      Validators.required,
+      amountValidator(18, 2),
+      finesMacOffenceDetailsPositiveAmountValidator({ allowZero: false }),
+    ],
   },
   {
     controlName: 'fm_offence_details_amount_paid',
-    validators: [amountValidator(18, 2)],
+    validators: [amountValidator(18, 2), finesMacOffenceDetailsPositiveAmountValidator({ allowZero: true })],
   },
   {
     controlName: 'fm_offence_details_balance_remaining',
