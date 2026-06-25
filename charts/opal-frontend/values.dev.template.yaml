@@ -75,6 +75,8 @@ opal-fines-service:
       LAUNCH_DARKLY_ENABLED: true
       SERVICEBUS_LOGGING_PDPL_QUEUE_NAME: "{{ .Release.Name}}-servicebus-logging-pdpl"
       SERVICEBUS_LOGGING_PDPL_PROTOCOL: amqps
+      OPAL_REDIS_ENABLED: true
+      REDIS_CONNECTION_STRING: redis://${SERVICE_NAME}-hmcts-redis-master:6379
       OPAL_REDIS_ENABLED: false
       RELEASE_1A_ENABLED: true
       RELEASE_1B_ENABLED: true
@@ -99,7 +101,7 @@ servicebus:
     queues:
       - name: "logging-pdpl"
 redis:
-  enabled: true
+  enabled: false
   architecture: standalone
   master:
     persistence:
