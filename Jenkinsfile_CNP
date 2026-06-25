@@ -210,6 +210,7 @@ void archiveZephyrReports(String outputDir) {
 
 // Publish an HTML report directory with Jenkins HTML Publisher
 void publishHtmlReport(String dir, String files, String name) {
+    ensureFallbackHtmlReport(dir, files, name)
     publishHTML target: [
     allowMissing         : true,
     alwaysLinkToLastBuild: true,
@@ -218,6 +219,54 @@ void publishHtmlReport(String dir, String files, String name) {
     reportFiles          : files,
     reportName           : name
   ]
+}
+
+// Create a small fallback HTML page when report merge/publish output is missing after a timed-out run.
+void ensureFallbackHtmlReport(String dir, String files, String name) {
+    String reportFile = (files ?: '').trim()
+    if (!reportFile || reportFile.contains(',')) {
+        return
+    }
+
+    String normalizedDir = (dir ?: '').trim()
+    if (!normalizedDir || !fileExists(normalizedDir)) {
+        return
+    }
+
+    String reportPath = "${normalizedDir}/${reportFile}"
+    if (fileExists(reportPath)) {
+        return
+    }
+
+    String escapedName = name
+        .replace('&', '&amp;')
+        .replace('<', '&lt;')
+        .replace('>', '&gt;')
+    String escapedDir = normalizedDir
+        .replace('&', '&amp;')
+        .replace('<', '&lt;')
+        .replace('>', '&gt;')
+    String escapedFile = reportFile
+        .replace('&', '&amp;')
+        .replace('<', '&lt;')
+        .replace('>', '&gt;')
+
+    writeFile file: reportPath, text: """<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <title>${escapedName}</title>
+</head>
+<body>
+  <h1>${escapedName}</h1>
+  <p>The merged HTML report was not generated before the test runner stopped.</p>
+  <p>This usually means the suite timed out or the post-run cucumber merge was interrupted.</p>
+  <p>Check the archived artifacts for raw outputs, screenshots, videos, ndjson, and xml under <code>${escapedDir}</code>.</p>
+  <p>Expected report file: <code>${escapedFile}</code></p>
+</body>
+</html>
+"""
+    echo "Created fallback HTML report at ${reportPath}"
 }
 
 // Emit a short hint when functional raw outputs exist but merged reports do not.

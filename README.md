@@ -773,28 +773,16 @@ Zephyr Automation is a tool for integrating test results and ticket management b
 - `zephyr:cucumber:functional:jira-create`: Create Jira tickets from the functional Cucumber JSON report at `functional-output/zephyr/cucumber-report.json`.
 - `zephyr:cucumber:functional:jira-update`: Update Jira tickets using the functional Cucumber JSON report at `functional-output/zephyr/cucumber-report.json`.
 - `zephyr:cucumber:functional:jira-execute`: Create a Zephyr execution from the functional Cucumber JSON report at `functional-output/zephyr/cucumber-report.json`.
-- `zephyr:cucumber:r1a_legacy_demo:jira-create`: Create Jira tickets from the R1A legacy demo Cucumber JSON report at `functional-output/zephyr/cucumber-report.json`.
-- `zephyr:cucumber:r1a_legacy_demo:jira-update`: Update Jira tickets using the R1A legacy demo Cucumber JSON report at `functional-output/zephyr/cucumber-report.json`.
-- `zephyr:cucumber:r1a_legacy_demo:jira-execute`: Create a Zephyr execution from the R1A legacy demo Cucumber JSON report at `functional-output/zephyr/cucumber-report.json`.
-- `zephyr:cucumber:r1a_off_legacy_demo:jira-create`: Create Jira tickets from the R1A Off legacy demo Cucumber JSON report at `functional-output/zephyr/cucumber-report.json`.
-- `zephyr:cucumber:r1a_off_legacy_demo:jira-update`: Update Jira tickets using the R1A Off legacy demo Cucumber JSON report at `functional-output/zephyr/cucumber-report.json`.
-- `zephyr:cucumber:r1a_off_legacy_demo:jira-execute`: Create a Zephyr execution from the R1A Off legacy demo Cucumber JSON report at `functional-output/zephyr/cucumber-report.json`.
 - `zephyr:cucumber:smoke:jira-create`: Create Jira tickets from the smoke Cucumber JSON report at `smoke-output/zephyr/cucumber-report.json`.
 - `zephyr:cucumber:smoke:jira-update`: Update Jira tickets using the smoke Cucumber JSON report at `smoke-output/zephyr/cucumber-report.json`.
 - `zephyr:cucumber:smoke:jira-execute`: Create a Zephyr execution from the smoke Cucumber JSON report at `smoke-output/zephyr/cucumber-report.json`.
-- `zephyr:cucumber:uat_technical:jira-create`: Create Jira tickets from the UAT-Technical Cucumber JSON report at `functional-output/zephyr/cucumber-report.json`.
-- `zephyr:cucumber:uat_technical:jira-update`: Update Jira tickets using the UAT-Technical Cucumber JSON report at `functional-output/zephyr/cucumber-report.json`.
-- `zephyr:cucumber:uat_technical:jira-execute`: Create a Zephyr execution from the UAT-Technical Cucumber JSON report at `functional-output/zephyr/cucumber-report.json`.
-- `zephyr:cucumber:legacy:jira-create`: Create Jira tickets from the legacy-mode Cucumber JSON report at `functional-output/zephyr/cucumber-report.json`.
-- `zephyr:cucumber:legacy:jira-update`: Update Jira tickets using the legacy-mode Cucumber JSON report at `functional-output/zephyr/cucumber-report.json`.
-- `zephyr:cucumber:legacy:jira-execute`: Create a Zephyr execution from the legacy-mode Cucumber JSON report at `functional-output/zephyr/cucumber-report.json`.
 - `zephyr:test:component`: Reset outputs, run component tests, then create a Zephyr execution from the Cypress JSON report.
 - `zephyr:test:functional`: Reset outputs, run functional tests, then create a Zephyr execution from the functional Cucumber JSON report.
-- `zephyr:test:r1a_legacy_demo`: Reset outputs, run the R1A legacy demo functional suite, then create a Zephyr execution from the generated Cucumber JSON report.
-- `zephyr:test:r1a_off_legacy_demo`: Reset outputs, run the R1A Off legacy demo functional suite, then create a Zephyr execution from the generated Cucumber JSON report.
+- `zephyr:test:r1a_legacy_demo`: Reset outputs, run the R1A legacy demo functional suite, then create a Zephyr execution from the functional Cucumber JSON report.
+- `zephyr:test:r1a_off_legacy_demo`: Reset outputs, run the R1A Off legacy demo functional suite, then create a Zephyr execution from the functional Cucumber JSON report.
 - `zephyr:test:smoke`: Reset outputs, run smoke tests, then create a Zephyr execution from the smoke Cucumber JSON report.
-- `zephyr:test:uat_technical`: Reset outputs, run the UAT-Technical legacy-mode functional suite, then create a Zephyr execution from the generated Cucumber JSON report.
-- `zephyr:test:legacy`: Reset outputs, run the legacy-mode functional suite, then create a Zephyr execution from the generated Cucumber JSON report.
+- `zephyr:test:uat_technical`: Reset outputs, run the UAT-Technical legacy-mode functional suite, then create a Zephyr execution from the functional Cucumber JSON report.
+- `zephyr:test:legacy`: Reset outputs, run the legacy-mode functional suite, then create a Zephyr execution from the functional Cucumber JSON report.
 
 ## Test Metadata Maintenance
 
