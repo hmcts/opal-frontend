@@ -62,4 +62,13 @@ describe('fetchReportInstanceResolver', () => {
     expect(mockOpalFinesService.getReportInstance).not.toHaveBeenCalled();
     expect(result).toBeNull();
   });
+
+  it('should fall back to null when the report instance id is not in the API format', async () => {
+    const result = await firstValueFrom(
+      executeResolver(buildRoute('report-instance-enforcement-001'), {} as never) as Observable<unknown>,
+    );
+
+    expect(mockOpalFinesService.getReportInstance).not.toHaveBeenCalled();
+    expect(result).toBeNull();
+  });
 });

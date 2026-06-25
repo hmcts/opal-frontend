@@ -5,6 +5,8 @@ import { IFinesReportsReportSummaryInstance } from '../../../fines-reports-repor
 import { catchError, map, of } from 'rxjs';
 import { mapFinesReportsReportInstanceToReportSummary } from '../../../fines-reports-report-summary/utils/fines-reports-report-summary-map-report-instance.utils';
 
+const REPORT_INSTANCE_ID_API_PATTERN = /^\d+$/;
+
 export const fetchReportInstanceResolver: ResolveFn<IFinesReportsReportSummaryInstance | null> = (
   route: ActivatedRouteSnapshot,
 ) => {
@@ -13,7 +15,7 @@ export const fetchReportInstanceResolver: ResolveFn<IFinesReportsReportSummaryIn
     route.paramMap.get('reportInstanceId') ?? route.parent?.paramMap.get('reportInstanceId') ?? '';
   const reportId = route.parent?.paramMap.get('reportId') ?? route.paramMap.get('reportId') ?? '';
 
-  if (!reportInstanceId) {
+  if (!reportInstanceId || !REPORT_INSTANCE_ID_API_PATTERN.test(reportInstanceId)) {
     return of(null);
   }
 
