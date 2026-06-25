@@ -91,6 +91,38 @@ describe('transformHistoryAndNotesDetails', () => {
     expect(result).toEqual(FINES_ACC_HISTORY_AND_NOTES_ENFORCEMENT_DW_DETAILS_MOCK);
   });
 
+  it('should preserve nested enforcement special characters from backend values', () => {
+    const result = transformHistoryAndNotesDetails(
+      {
+        type: 'Enforcement',
+        details: {
+          enforcementAction: 'BWTD',
+          hearingDate: '2025-10-23',
+          hearingCourt: {
+            court_name: 'Brent & Harrow <Magistrates> "Court"',
+          },
+          caseNumber: "Case 'A' & B",
+          reason: `Defendant said "can't pay" & requested <review>`,
+        },
+      },
+      FINES_ACC_HISTORY_AND_NOTES_DETAILS_TRANSFORMERS,
+    );
+
+    expect(result).toEqual({
+      line1: [
+        part(fragment('BWTD')),
+        part(
+          fragment('Hearing:'),
+          fragment('23/10/2025', { hyphen: true }),
+          fragment('Brent & Harrow <Magistrates> "Court"', { hyphen: true }),
+          fragment('Case:'),
+          fragment("Case 'A' & B"),
+        ),
+      ],
+      line2: [part(fragment(`Defendant said "can't pay" & requested <review>`))],
+    });
+  });
+
   it('should transform the enforcement reason into line2 for warrant and hearing actions', () => {
     const result = transformHistoryAndNotesDetails(
       FINES_ACC_HISTORY_AND_NOTES_ENFORCEMENT_BWTD_ITEM_MOCK,
@@ -454,15 +486,11 @@ describe('transformHistoryAndNotesDetails', () => {
     );
 
     expect(inFullResult).toEqual({
-      line1: [
-        part(fragment('In full')),
-        part(fragment('Due by:'), fragment('10/11/2025')),
-        part(fragment('Instalments:'), fragment('10/11/2025')),
-      ],
+      line1: [part(fragment('In full')), part(fragment('Due by:'), fragment('10/11/2025'))],
       line2: null,
     });
     expect(paidResult).toEqual({
-      line1: [part(fragment('Paid:'), fragment('10/11/2025')), part(fragment('Instalments:'), fragment('10/11/2025'))],
+      line1: [part(fragment('Paid:'), fragment('10/11/2025'))],
       line2: null,
     });
     expect(unsupportedResult).toEqual({ line1: [], line2: null });
@@ -485,6 +513,26 @@ describe('transformHistoryAndNotesDetails', () => {
 
     expect(result).toEqual({
       line1: [part(fragment('Instalments:'), fragment('£15.00'), fragment('FORTNIGHTLY'), fragment('10/11/2025'))],
+      line2: null,
+    });
+  });
+
+  it('should include the effective date once an instalment schedule exists', () => {
+    const result = transformHistoryAndNotesDetails(
+      {
+        type: 'Payment terms',
+        details: {
+          effective_date: '2025-11-10',
+          instalment_period: {
+            instalment_period_code: 'M',
+          },
+        },
+      },
+      FINES_ACC_HISTORY_AND_NOTES_DETAILS_TRANSFORMERS,
+    );
+
+    expect(result).toEqual({
+      line1: [part(fragment('Instalments:'), fragment('monthly from'), fragment('10/11/2025'))],
       line2: null,
     });
   });

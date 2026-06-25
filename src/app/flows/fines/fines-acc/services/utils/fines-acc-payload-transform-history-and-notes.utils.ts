@@ -347,6 +347,10 @@ function instalmentsPart(
   instalmentPeriod: string | null,
   effectiveDate: string | null,
 ): IFinesAccHistoryAndNotesDetailsPart | null {
+  if (!instalmentAmount && !instalmentPeriod) {
+    return null;
+  }
+
   const instalmentValues = [instalmentAmount, instalmentPeriod, effectiveDate].filter(isPresentString);
 
   return instalmentValues.length
