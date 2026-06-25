@@ -44,6 +44,7 @@ String smokeXmlReport = 'cypress/reports/smokeXmlReport.html'
 String functionalXmlReport = 'cypress/reports/functionalXmlReport.html'
 @Field String runReleasePrefix = 'run_release:'
 @Field String andTagSeparator = ' and '
+@Field String commaSeparator = ','
 @Field String skipTagExpression = 'not @skip'
 @Field String functionalFeatureGlob = 'cypress/e2e/functional/opal/**/*.feature'
 @Field String releaseSuiteR1a = 'r1a'
@@ -54,7 +55,8 @@ String functionalXmlReport = 'cypress/reports/functionalXmlReport.html'
 @Field String releaseSuiteR1cEnforcementOperationalReportingOff = 'r1c_enforcement_operational_reporting_off'
 @Field String defaultFunctionalTagExpression =
   'not @UAT-Technical and not @skip' + andTagSeparator +
-  'not (@R1AOff or @R1BOff or @R1CWriteOffOff or @R1CEnforcementOperationalReportingOff or @R1CAdministrationOff or @R1CFinancialMovementsOff)'
+  'not (@R1AOff or @R1BOff or @R1CWriteOffOff or ' +
+  '@R1CEnforcementOperationalReportingOff or @R1CAdministrationOff or @R1CFinancialMovementsOff)'
 @Field String componentExcludeGrepTags = '-@R1AOff+-@R1BOff'
 @Field String macPopulateAndSubmitFeatureGlob =
   'cypress/e2e/functional/opal/features/manualAccountCreation/populateAndSubmit/**/*.feature,'
@@ -221,10 +223,18 @@ void publishHtmlReport(String dir, String files, String name) {
   ]
 }
 
+// Minimal HTML escaping for Jenkins-generated fallback report pages.
+String escapeHtml(String value) {
+    return (value ?: '')
+        .replace('&', '&amp;')
+        .replace('<', '&lt;')
+        .replace('>', '&gt;')
+}
+
 // Create a small fallback HTML page when report merge/publish output is missing after a timed-out run.
 void ensureFallbackHtmlReport(String dir, String files, String name) {
     String reportFile = (files ?: '').trim()
-    if (!reportFile || reportFile.contains(',')) {
+    if (!reportFile || reportFile.contains(commaSeparator)) {
         return
     }
 
@@ -238,18 +248,9 @@ void ensureFallbackHtmlReport(String dir, String files, String name) {
         return
     }
 
-    String escapedName = name
-        .replace('&', '&amp;')
-        .replace('<', '&lt;')
-        .replace('>', '&gt;')
-    String escapedDir = normalizedDir
-        .replace('&', '&amp;')
-        .replace('<', '&lt;')
-        .replace('>', '&gt;')
-    String escapedFile = reportFile
-        .replace('&', '&amp;')
-        .replace('<', '&lt;')
-        .replace('>', '&gt;')
+    String escapedName = escapeHtml(name)
+    String escapedDir = escapeHtml(normalizedDir)
+    String escapedFile = escapeHtml(reportFile)
 
     writeFile file: reportPath, text: """<!doctype html>
 <html lang="en">
@@ -261,7 +262,10 @@ void ensureFallbackHtmlReport(String dir, String files, String name) {
   <h1>${escapedName}</h1>
   <p>The merged HTML report was not generated before the test runner stopped.</p>
   <p>This usually means the suite timed out or the post-run cucumber merge was interrupted.</p>
-  <p>Check the archived artifacts for raw outputs, screenshots, videos, ndjson, and xml under <code>${escapedDir}</code>.</p>
+  <p>
+    Check the archived artifacts for raw outputs, screenshots, videos, ndjson,
+    and xml under <code>${escapedDir}</code>.
+  </p>
   <p>Expected report file: <code>${escapedFile}</code></p>
 </body>
 </html>
@@ -499,7 +503,7 @@ void setupTestSpecifications() {
             env.TEST_SPECS = functionalFeatureGlob
         } else {
             // Build the glob pattern using curly braces
-            String dirList = directories.join(',')
+            String dirList = directories.join(commaSeparator)
             env.TEST_SPECS = "cypress/e2e/functional/opal/{required,${dirList}}/**/*.feature"
         }
         sh "echo 'Test Specs: ${env.TEST_SPECS}'"
