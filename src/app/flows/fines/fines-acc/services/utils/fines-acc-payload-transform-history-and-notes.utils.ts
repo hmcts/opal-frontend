@@ -1,7 +1,4 @@
 import {
-  HISTORY_DETAILS_DEFAULT_ALIAS_PATH_PREFIXES,
-  HISTORY_DETAILS_DEFAULT_DATE_FORMAT,
-  HISTORY_DETAILS_DEFAULT_EMPTY_VALUES,
   createHistoryDetails,
   createHistoryDetailsPart,
   createHistoryFragment,
@@ -24,9 +21,12 @@ import {
   THistoryDetailsTransformerConfig as TFinesAccHistoryAndNotesDetailsTransformerConfig,
   transformHistoryDetails,
 } from '@hmcts/opal-frontend-common/services/history-transformation-service';
+import { FINES_ACC_HISTORY_AND_NOTES_DETAILS_ALIAS_PATH_PREFIXES } from '../constants/fines-acc-history-and-notes-details-alias-path-prefixes.constant';
 import { FINES_ACC_HISTORY_AND_NOTES_DETAILS_CHEQUE_STATUS_LABELS } from '../constants/fines-acc-history-and-notes-details-cheque-status-labels.constant';
 import { FINES_ACC_HISTORY_AND_NOTES_DETAILS_CURRENCY_PREFIX } from '../constants/fines-acc-history-and-notes-details-currency-prefix.constant';
+import { FINES_ACC_HISTORY_AND_NOTES_DETAILS_DATE_FORMAT } from '../constants/fines-acc-history-and-notes-details-date-format.constant';
 import { FINES_ACC_HISTORY_AND_NOTES_DETAILS_DEFENDANT_ACCOUNT_RECORD_TYPE } from '../constants/fines-acc-history-and-notes-details-defendant-account-record-type.constant';
+import { FINES_ACC_HISTORY_AND_NOTES_DETAILS_EMPTY_VALUES } from '../constants/fines-acc-history-and-notes-details-empty-values.constant';
 import { FINES_ACC_HISTORY_AND_NOTES_DETAILS_FALLBACK_ALIASES } from '../constants/fines-acc-history-and-notes-details-fallback-aliases.constant';
 import { FINES_ACC_HISTORY_AND_NOTES_DETAILS_FIELD_ALIASES } from '../constants/fines-acc-history-and-notes-details-field-aliases.constant';
 import { FINES_ACC_HISTORY_AND_NOTES_DETAILS_HISTORY_ITEM_TYPE_ALIASES } from '../constants/fines-acc-history-and-notes-details-history-item-type-aliases.constant';
@@ -50,9 +50,9 @@ export function transformHistoryAndNotesDetails(
   config: TFinesAccHistoryAndNotesDetailsTransformerConfig,
 ): IFinesAccHistoryAndNotesDetails {
   return transformHistoryDetails(item, {
-    aliasPathPrefixes: HISTORY_DETAILS_DEFAULT_ALIAS_PATH_PREFIXES,
-    dateFormat: HISTORY_DETAILS_DEFAULT_DATE_FORMAT,
-    emptyValues: HISTORY_DETAILS_DEFAULT_EMPTY_VALUES,
+    aliasPathPrefixes: FINES_ACC_HISTORY_AND_NOTES_DETAILS_ALIAS_PATH_PREFIXES,
+    dateFormat: FINES_ACC_HISTORY_AND_NOTES_DETAILS_DATE_FORMAT,
+    emptyValues: FINES_ACC_HISTORY_AND_NOTES_DETAILS_EMPTY_VALUES,
     fallbackAliases: FINES_ACC_HISTORY_AND_NOTES_DETAILS_FALLBACK_ALIASES,
     historyItemTypeAliases: FINES_ACC_HISTORY_AND_NOTES_DETAILS_HISTORY_ITEM_TYPE_ALIASES,
     transformers: config,
@@ -662,8 +662,8 @@ function getString(item: TFinesAccHistoryAndNotesRawItem, aliases: string[]): st
   return getHistoryString(
     item,
     aliases,
-    HISTORY_DETAILS_DEFAULT_ALIAS_PATH_PREFIXES,
-    HISTORY_DETAILS_DEFAULT_EMPTY_VALUES,
+    FINES_ACC_HISTORY_AND_NOTES_DETAILS_ALIAS_PATH_PREFIXES,
+    FINES_ACC_HISTORY_AND_NOTES_DETAILS_EMPTY_VALUES,
   );
 }
 
@@ -678,8 +678,8 @@ function getValue(item: TFinesAccHistoryAndNotesRawItem, aliases: string[]): unk
   return getHistoryValue(
     item,
     aliases,
-    HISTORY_DETAILS_DEFAULT_ALIAS_PATH_PREFIXES,
-    HISTORY_DETAILS_DEFAULT_EMPTY_VALUES,
+    FINES_ACC_HISTORY_AND_NOTES_DETAILS_ALIAS_PATH_PREFIXES,
+    FINES_ACC_HISTORY_AND_NOTES_DETAILS_EMPTY_VALUES,
   );
 }
 
@@ -730,7 +730,7 @@ function toSnakeCase(value: string): string {
  * @returns The formatted date or null.
  */
 function formatDate(value: string | null): string | null {
-  return formatHistoryDate(value, HISTORY_DETAILS_DEFAULT_DATE_FORMAT);
+  return formatHistoryDate(value, FINES_ACC_HISTORY_AND_NOTES_DETAILS_DATE_FORMAT);
 }
 
 /**
@@ -743,6 +743,6 @@ function formatMoney(value: unknown): string | null {
   return formatHistoryMoney(
     value,
     FINES_ACC_HISTORY_AND_NOTES_DETAILS_CURRENCY_PREFIX,
-    HISTORY_DETAILS_DEFAULT_EMPTY_VALUES,
+    FINES_ACC_HISTORY_AND_NOTES_DETAILS_EMPTY_VALUES,
   );
 }
