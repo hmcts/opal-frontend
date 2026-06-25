@@ -5,7 +5,7 @@ export const FINES_ACC_HISTORY_AND_NOTES_ENFORCEMENT_DW_DETAILS_MOCK: IFinesAccH
     { fragments: [{ text: 'DW', bold: false, hyphen: false }] },
     {
       fragments: [
-        { text: 'Warrant number:', bold: true, hyphen: false },
+        { text: 'Warrant number:', bold: false, hyphen: false },
         { text: '003/25/00006', bold: false, hyphen: false },
       ],
     },

@@ -55,7 +55,7 @@ const fragment = (
 const part = (...fragments: ReturnType<typeof fragment>[]) => ({ fragments });
 
 describe('transformHistoryAndNotesDetails', () => {
-  it('should transform amendment details into pipe-separated parts with bold labels', () => {
+  it('should transform amendment details into pipe-separated parts with bold attribute and values', () => {
     const result = transformHistoryAndNotesDetails(
       FINES_ACC_HISTORY_AND_NOTES_AMENDMENT_ITEM_MOCK,
       FINES_ACC_HISTORY_AND_NOTES_DETAILS_TRANSFORMERS,
@@ -252,10 +252,7 @@ describe('transformHistoryAndNotesDetails', () => {
     );
 
     expect(result).toEqual({
-      line1: [
-        part(fragment('Cheque cancelled')),
-        part(fragment('Cheque number:', { bold: true }), fragment('Not yet written')),
-      ],
+      line1: [part(fragment('Cheque cancelled')), part(fragment('Cheque number:'), fragment('Not yet written'))],
       line2: null,
     });
   });
@@ -291,11 +288,11 @@ describe('transformHistoryAndNotesDetails', () => {
     );
 
     expect(noStatusResult).toEqual({
-      line1: [part(fragment('Cheque issued')), part(fragment('Cheque number:', { bold: true }), fragment('100001'))],
+      line1: [part(fragment('Cheque issued')), part(fragment('Cheque number:'), fragment('100001'))],
       line2: null,
     });
     expect(unmappedStatusResult).toEqual({
-      line1: [part(fragment('Cheque issued')), part(fragment('Cheque number:', { bold: true }), fragment('100002'))],
+      line1: [part(fragment('Cheque issued')), part(fragment('Cheque number:'), fragment('100002'))],
       line2: null,
     });
   });
@@ -393,10 +390,7 @@ describe('transformHistoryAndNotesDetails', () => {
           },
         },
         expected: {
-          line1: [
-            part(fragment('Cheque reissued')),
-            part(fragment('Cheque number:', { bold: true }), fragment('CHQ-1')),
-          ],
+          line1: [part(fragment('Cheque reissued')), part(fragment('Cheque number:'), fragment('CHQ-1'))],
           line2: null,
         },
       },
@@ -411,10 +405,7 @@ describe('transformHistoryAndNotesDetails', () => {
           },
         },
         expected: {
-          line1: [
-            part(fragment('TFO out')),
-            part(fragment('Transferred to:', { bold: true }), fragment('Central Fund')),
-          ],
+          line1: [part(fragment('TFO out')), part(fragment('Transferred to:'), fragment('Central Fund'))],
           line2: null,
         },
       },
@@ -465,16 +456,13 @@ describe('transformHistoryAndNotesDetails', () => {
     expect(inFullResult).toEqual({
       line1: [
         part(fragment('In full')),
-        part(fragment('Due by:', { bold: true }), fragment('10/11/2025')),
-        part(fragment('Instalments:', { bold: true }), fragment('10/11/2025')),
+        part(fragment('Due by:'), fragment('10/11/2025')),
+        part(fragment('Instalments:'), fragment('10/11/2025')),
       ],
       line2: null,
     });
     expect(paidResult).toEqual({
-      line1: [
-        part(fragment('Paid:', { bold: true }), fragment('10/11/2025')),
-        part(fragment('Instalments:', { bold: true }), fragment('10/11/2025')),
-      ],
+      line1: [part(fragment('Paid:'), fragment('10/11/2025')), part(fragment('Instalments:'), fragment('10/11/2025'))],
       line2: null,
     });
     expect(unsupportedResult).toEqual({ line1: [], line2: null });
@@ -496,14 +484,7 @@ describe('transformHistoryAndNotesDetails', () => {
     );
 
     expect(result).toEqual({
-      line1: [
-        part(
-          fragment('Instalments:', { bold: true }),
-          fragment('£15.00'),
-          fragment('FORTNIGHTLY'),
-          fragment('10/11/2025'),
-        ),
-      ],
+      line1: [part(fragment('Instalments:'), fragment('£15.00'), fragment('FORTNIGHTLY'), fragment('10/11/2025'))],
       line2: null,
     });
   });
@@ -533,16 +514,13 @@ describe('transformHistoryAndNotesDetails', () => {
     );
 
     expect(hearingDateOnlyResult).toEqual({
-      line1: [
-        part(fragment('Hearing listed')),
-        part(fragment('Hearing:', { bold: true }), fragment('10/11/2025', { hyphen: true })),
-      ],
+      line1: [part(fragment('Hearing listed')), part(fragment('Hearing:'), fragment('10/11/2025', { hyphen: true }))],
       line2: null,
     });
     expect(hearingCourtOnlyResult).toEqual({
       line1: [
         part(fragment('Hearing listed')),
-        part(fragment('Hearing:', { bold: true }), fragment('Westminster Magistrates Court', { hyphen: true })),
+        part(fragment('Hearing:'), fragment('Westminster Magistrates Court', { hyphen: true })),
       ],
       line2: null,
     });

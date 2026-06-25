@@ -5,7 +5,7 @@ export const FINES_ACC_HISTORY_AND_NOTES_PAYMENT_TERMS_PREFORMATTED_AMOUNT_DETAI
     line1: [
       {
         fragments: [
-          { text: 'Instalments:', bold: true, hyphen: false },
+          { text: 'Instalments:', bold: false, hyphen: false },
           { text: '£25.00', bold: false, hyphen: false },
           { text: 'monthly from', bold: false, hyphen: false },
           { text: 'pending', bold: false, hyphen: false },

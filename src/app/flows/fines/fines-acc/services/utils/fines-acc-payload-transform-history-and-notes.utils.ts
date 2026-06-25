@@ -70,9 +70,9 @@ export function transformAmendmentDetails(item: TFinesAccHistoryAndNotesRawItem)
   const labels = FINES_ACC_HISTORY_AND_NOTES_DETAILS_LABELS;
 
   return createDetails([
-    textPart(getString(item, aliases.attributeName)),
-    labelValuePart(labels.old, getString(item, aliases.oldValue)),
-    labelValuePart(labels.new, getString(item, aliases.newValue)),
+    boldTextPart(getString(item, aliases.attributeName)),
+    labelBoldValuePart(labels.old, getString(item, aliases.oldValue)),
+    labelBoldValuePart(labels.new, getString(item, aliases.newValue)),
   ]);
 }
 
@@ -350,7 +350,7 @@ function instalmentsPart(
   const instalmentValues = [instalmentAmount, instalmentPeriod, effectiveDate].filter(isPresentString);
 
   return instalmentValues.length
-    ? part([fragment(labels().instalments, { bold: true }), ...instalmentValues.map((text) => fragment(text))])
+    ? part([fragment(labels().instalments), ...instalmentValues.map((text) => fragment(text))])
     : null;
 }
 
@@ -372,10 +372,10 @@ function hearingPart(
   }
 
   const fragments: IFinesAccHistoryAndNotesDetailsFragment[] = [
-    fragment(labels().hearing, { bold: true }),
+    fragment(labels().hearing),
     ...(hearingDate ? [fragment(hearingDate, { hyphen: true })] : []),
     ...(hearingCourt ? [fragment(hearingCourt, { hyphen: true })] : []),
-    ...(caseNumber ? [fragment(labels().case, { bold: true }), fragment(caseNumber)] : []),
+    ...(caseNumber ? [fragment(labels().case), fragment(caseNumber)] : []),
   ];
 
   return part(fragments);
@@ -464,7 +464,7 @@ function impositionPart(item: TFinesAccHistoryAndNotesRawItem): IFinesAccHistory
 
   return part([
     ...[impositionCode, imposedAmount].filter(isPresentString).map((text) => fragment(text)),
-    ...(impositionDate ? [fragment(labels().created, { bold: true }), fragment(impositionDate)] : []),
+    ...(impositionDate ? [fragment(labels().created), fragment(impositionDate)] : []),
   ]);
 }
 
@@ -487,14 +487,25 @@ function associatedRecordPart(
 }
 
 /**
- * Builds a bold label and value part.
+ * Builds a label and value part with no styling.
  *
- * @param label - The bold label text.
+ * @param label - The label text.
  * @param value - The value text.
  * @returns The label-value part or null.
  */
 function labelValuePart(label: string, value: string | null): IFinesAccHistoryAndNotesDetailsPart | null {
-  return value ? part([fragment(label, { bold: true }), fragment(value)]) : null;
+  return value ? part([fragment(label), fragment(value)]) : null;
+}
+
+/**
+ * Builds an amendment label and bold value part.
+ *
+ * @param label - The label text.
+ * @param value - The value text.
+ * @returns The label-value part or null.
+ */
+function labelBoldValuePart(label: string, value: string | null): IFinesAccHistoryAndNotesDetailsPart | null {
+  return value ? part([fragment(label), fragment(value, { bold: true })]) : null;
 }
 
 /**
@@ -589,6 +600,16 @@ function createDetails(
  */
 function textPart(text: string | null): IFinesAccHistoryAndNotesDetailsPart | null {
   return createHistoryTextPart(text);
+}
+
+/**
+ * Creates a single bold fragment part.
+ *
+ * @param text - The text for the part.
+ * @returns The text part or null.
+ */
+function boldTextPart(text: string | null): IFinesAccHistoryAndNotesDetailsPart | null {
+  return text ? part([fragment(text, { bold: true })]) : null;
 }
 
 /**

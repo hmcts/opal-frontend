@@ -5,7 +5,7 @@ export const FINES_ACC_HISTORY_AND_NOTES_TFO_IN_DETAILS_MOCK: IFinesAccHistoryAn
     { fragments: [{ text: 'TFO in', bold: false, hyphen: false }] },
     {
       fragments: [
-        { text: 'Received from:', bold: true, hyphen: false },
+        { text: 'Received from:', bold: false, hyphen: false },
         { text: 'Leeds magistrates court', bold: false, hyphen: false },
       ],
     },

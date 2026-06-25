@@ -4,7 +4,7 @@ export const FINES_ACC_HISTORY_AND_NOTES_PAYMENT_TERMS_TEXT_AMOUNT_DETAILS_MOCK:
   line1: [
     {
       fragments: [
-        { text: 'Lump sum:', bold: true, hyphen: false },
+        { text: 'Lump sum:', bold: false, hyphen: false },
         { text: 'No payment', bold: false, hyphen: false },
       ],
     },

@@ -5,7 +5,7 @@ export const FINES_ACC_HISTORY_AND_NOTES_ENFORCEMENT_WARRANT_NO_REASON_DETAILS_M
     { fragments: [{ text: 'BWTD', bold: false, hyphen: false }] },
     {
       fragments: [
-        { text: 'Warrant number:', bold: true, hyphen: false },
+        { text: 'Warrant number:', bold: false, hyphen: false },
         { text: '1012500012', bold: false, hyphen: false },
       ],
     },

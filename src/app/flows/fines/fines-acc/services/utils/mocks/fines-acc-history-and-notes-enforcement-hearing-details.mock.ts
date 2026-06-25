@@ -5,10 +5,10 @@ export const FINES_ACC_HISTORY_AND_NOTES_ENFORCEMENT_HEARING_DETAILS_MOCK: IFine
     { fragments: [{ text: 'REW', bold: false, hyphen: false }] },
     {
       fragments: [
-        { text: 'Hearing:', bold: true, hyphen: false },
+        { text: 'Hearing:', bold: false, hyphen: false },
         { text: '23/10/2025', bold: false, hyphen: true },
         { text: 'Brent magistrates court', bold: false, hyphen: true },
-        { text: 'Case:', bold: true, hyphen: false },
+        { text: 'Case:', bold: false, hyphen: false },
         { text: '2500000', bold: false, hyphen: false },
       ],
     },

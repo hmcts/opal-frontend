@@ -5,7 +5,7 @@ export const FINES_ACC_HISTORY_AND_NOTES_CHEQUE_TRANSACTION_DETAILS_MOCK: IFines
     { fragments: [{ text: 'Cheque issued', bold: false, hyphen: false }] },
     {
       fragments: [
-        { text: 'Cheque number:', bold: true, hyphen: false },
+        { text: 'Cheque number:', bold: false, hyphen: false },
         { text: '524589', bold: false, hyphen: false },
       ],
     },

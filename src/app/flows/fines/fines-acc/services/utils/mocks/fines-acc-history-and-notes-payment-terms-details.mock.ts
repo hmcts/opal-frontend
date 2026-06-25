@@ -4,13 +4,13 @@ export const FINES_ACC_HISTORY_AND_NOTES_PAYMENT_TERMS_DETAILS_MOCK: IFinesAccHi
   line1: [
     {
       fragments: [
-        { text: 'Lump sum:', bold: true, hyphen: false },
+        { text: 'Lump sum:', bold: false, hyphen: false },
         { text: '£100.00', bold: false, hyphen: false },
       ],
     },
     {
       fragments: [
-        { text: 'Instalments:', bold: true, hyphen: false },
+        { text: 'Instalments:', bold: false, hyphen: false },
         { text: '£25.00', bold: false, hyphen: false },
         { text: 'weekly from', bold: false, hyphen: false },
         { text: '10/11/2025', bold: false, hyphen: false },

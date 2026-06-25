@@ -7,7 +7,7 @@ export const FINES_ACC_HISTORY_AND_NOTES_DISHONOURED_CHEQUE_IMPOSITION_DETAILS_M
       fragments: [
         { text: 'FO', bold: false, hyphen: false },
         { text: '£40.00', bold: false, hyphen: false },
-        { text: 'Created:', bold: true, hyphen: false },
+        { text: 'Created:', bold: false, hyphen: false },
         { text: '23/10/2025', bold: false, hyphen: false },
       ],
     },
