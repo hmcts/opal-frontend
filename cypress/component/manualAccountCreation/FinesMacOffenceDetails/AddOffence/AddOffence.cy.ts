@@ -1146,4 +1146,26 @@ describe('FinesMacAddOffenceComponent', () => {
       cy.get(DOM_ELEMENTS.errorSummary).should('contain', IMPOSITION_ERROR_MESSAGES.invalidNegativeValue);
     },
   );
+  it(
+    'Should show error message for invalid amount paid being a minus value',
+    {
+      tags: ['@JIRA-EPIC:PO-2219', '@JIRA-STORY:PO-8046', '@JIRA-LABEL:manual-account-creation'],
+    },
+    () => {
+      setupComponent(null);
+
+      let Imposition = structuredClone(IMPOSITION_MOCK_1);
+      Imposition[0].fm_offence_details_amount_paid = -100;
+
+      finesMacState.offenceDetails[currentoffenceDetails].formData.fm_offence_details_date_of_sentence = '01/01/2021';
+      finesMacState.offenceDetails[currentoffenceDetails].formData.fm_offence_details_offence_cjs_code = 'AK123456';
+      finesMacState.offenceDetails[currentoffenceDetails].formData.fm_offence_details_offence_id = 52;
+      finesMacState.offenceDetails[currentoffenceDetails].formData.fm_offence_details_impositions =
+        structuredClone(Imposition);
+
+      cy.get(DOM_ELEMENTS.submitButton).first().click();
+
+      cy.get(DOM_ELEMENTS.errorSummary).should('contain', IMPOSITION_ERROR_MESSAGES.invalidNegativeValue);
+    },
+  );
 });
