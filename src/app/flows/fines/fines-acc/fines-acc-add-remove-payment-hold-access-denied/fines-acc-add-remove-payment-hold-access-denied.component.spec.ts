@@ -72,7 +72,7 @@ describe('FinesAccAddRemovePaymentHoldAccessDeniedComponent', () => {
     const preventDefaultSpy = vi.spyOn(event, 'preventDefault');
     component.navigateBackToAccountSummary(event);
     expect(preventDefaultSpy).toHaveBeenCalled();
-    expect(routerSpy).toHaveBeenCalledWith([`../../../details`], { relativeTo: component['route'] });
+    expect(routerSpy).toHaveBeenCalledWith([`../../details`], { relativeTo: component['route'] });
   });
 
   it('should click go back link and prevent default via the passed template event', () => {
