@@ -188,7 +188,7 @@ describe('Search Account Component - Major Creditors', () => {
   // PO-2181 Navigation to the Account Enquiry (Details) screen for a Major Creditor Account
   it(
     'AC1a: navigates to the major creditor account enquiry details screen when a major creditor account is selected',
-    { tags: [...buildTags('@JIRA-STORY:2128'), '@JIRA-EPIC:1286'] },
+    { tags: [...buildTags('@JIRA-STORY:PO-2128'), '@JIRA-EPIC:PO-1286'] },
     () => {
       setupComponent();
 
