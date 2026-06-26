@@ -38,3 +38,12 @@ Feature: Search and Matches Accessibility
       | first names          | John  |
     Then I see the Search results page
     And I check the page for accessibility
+
+  @JIRA-STORY:PO-3720 @JIRA-EPIC:PO-3685 @JIRA-TEST-KEY:PO-3721 @R1B
+  Scenario: Major Creditors search form is available when release 1b is enabled
+    When I view the Major Creditors search form
+    Then I check the page for accessibility
+
+  @JIRA-STORY:PO-3720 @JIRA-EPIC:PO-3685 @JIRA-TEST-KEY:PO-3722 @R1BOff
+  Scenario: Major Creditors search form is hidden when release 1b is disabled
+    Then I should not see the Major Creditors search form
