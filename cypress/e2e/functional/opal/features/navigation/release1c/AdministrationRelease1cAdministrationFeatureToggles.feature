@@ -1,7 +1,7 @@
 @JIRA-LABEL:primary-nav-and-dashboards
 Feature: Administration Release 1C Administration Feature Toggles
 
-  @R1CAdministration @JIRA-STORY:PO-7266 @JIRA-EPIC:PO-3685 @FeatureFlag
+  @R1CAdministration @JIRA-STORY:PO-7266 @JIRA-EPIC:PO-3685 @FeatureFlag @JIRA-TEST-KEY:PO-8359
   Scenario: Administration navigation and entry points are available when release 1c administration is enabled
     Given I am logged in with email "opal-test@dev.platform.hmcts.net"
     When I open the "Administration" landing page
