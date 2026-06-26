@@ -6,6 +6,7 @@ import { FINES_PRIMARY_NAVIGATION_SECTION_PERMISSIONS } from '../constants/fines
 import { type IDashboardPageConfiguration } from '@hmcts/opal-frontend-common/pages/dashboard-page/interfaces';
 import { FEATURE_FLAG_RELEASE_DASHBOARD_GROUPS } from '../constants/feature-flag-release-dashboard-groups.constant';
 import { FEATURE_FLAG_RELEASE_DASHBOARD_HIGHLIGHTS } from '../constants/feature-flag-release-dashboard-highlights.constant';
+import { FEATURE_FLAG_SECTION_AVAILABILITY } from '../constants/feature-flag-section-availability.constant';
 import { FEATURE_FLAG_SECTION_PERMISSION_EXCLUSIONS } from '../constants/feature-flag-section-permission-exclusions.constant';
 import { RELEASE_FEATURE_FLAGS } from '../constants/release-feature-flags.constant';
 import { type FeatureFlagReleaseName } from '../types/feature-flag-release-name.type';
@@ -103,6 +104,21 @@ export const getRequiredPermissionIdsForSection = (
 };
 
 /**
+ * Checks whether a whole dashboard section is available behind its release flags.
+ *
+ * @param sectionKey - The dashboard section being checked.
+ * @param featureFlagReleaseState - The current enabled or disabled state of release feature flags.
+ * @returns True when the section has no availability flags or every availability flag is enabled.
+ */
+export const isFinesPrimaryNavigationSectionEnabled = (
+  sectionKey: DashboardPageType,
+  featureFlagReleaseState: FeatureFlagReleaseState = {},
+): boolean =>
+  (FEATURE_FLAG_SECTION_AVAILABILITY[sectionKey] ?? []).every(
+    (featureFlagReleaseName) => featureFlagReleaseState[featureFlagReleaseName] === true,
+  );
+
+/**
  * Checks whether the user can access a fines primary navigation section after permissions and release flags are applied.
  *
  * @param sectionKey - The primary navigation section being checked.
@@ -115,6 +131,10 @@ export const canAccessFinesPrimaryNavigationSection = (
   userState?: IOpalUserState | null,
   featureFlagReleaseState: FeatureFlagReleaseState = {},
 ): boolean => {
+  if (!isFinesPrimaryNavigationSectionEnabled(sectionKey, featureFlagReleaseState)) {
+    return false;
+  }
+
   const requiredPermissionIds = getRequiredPermissionIdsForSection(sectionKey, featureFlagReleaseState);
 
   if (!requiredPermissionIds) {

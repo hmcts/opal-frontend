@@ -5,10 +5,15 @@ export const RELEASE_1B_FEATURE_FLAG = 'release-1b' satisfies FeatureFlagRelease
 export const RELEASE_1C_WRITE_OFF_FEATURE_FLAG = 'release-1c-write-off' satisfies FeatureFlagReleaseName;
 export const RELEASE_1C_ENFORCEMENT_OPERATIONAL_REPORTING_FEATURE_FLAG =
   'release-1c-enforcement-operational-reporting' satisfies FeatureFlagReleaseName;
+export const RELEASE_1C_ADMINISTRATION_FEATURE_FLAG = 'release-1c-administration' satisfies FeatureFlagReleaseName;
+export const RELEASE_1C_FINANCIAL_MOVEMENTS_FEATURE_FLAG =
+  'release-1c-financial-movements' satisfies FeatureFlagReleaseName;
 
 export const RELEASE_FEATURE_FLAGS = [
   RELEASE_1A_FEATURE_FLAG,
   RELEASE_1B_FEATURE_FLAG,
   RELEASE_1C_WRITE_OFF_FEATURE_FLAG,
   RELEASE_1C_ENFORCEMENT_OPERATIONAL_REPORTING_FEATURE_FLAG,
+  RELEASE_1C_ADMINISTRATION_FEATURE_FLAG,
+  RELEASE_1C_FINANCIAL_MOVEMENTS_FEATURE_FLAG,
 ] as const;
