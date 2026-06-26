@@ -5,6 +5,7 @@ import { beforeEach, describe, expect, it } from 'vitest';
 describe('FinesReportsComponent', () => {
   let component: FinesReportsComponent;
   let fixture: ComponentFixture<FinesReportsComponent>;
+
   beforeEach(async () => {
     await TestBed.configureTestingModule({
       imports: [FinesReportsComponent],

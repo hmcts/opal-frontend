@@ -62,6 +62,8 @@ import { IOpalFinesRemoveEnforcementHoldPayload } from './interfaces/opal-fines-
 import { IOpalFinesAccountMinorCreditorCreditor } from './interfaces/opal-fines-account-minor-creditor-creditor.interface';
 import { IOpalFinesDraftAccountPatchRequestPayload } from '@services/fines/opal-fines-service/types/opal-fines-draft-account-patch-request-payload.type';
 import { IOpalFinesDeleteDefendantAccountPartyPayload } from './interfaces/opal-fines-delete-defendant-account-party-payload.interface';
+import { IOpalFinesReport } from './interfaces/opal-fines-report.interface';
+import { IOpalFinesReportInstance } from './interfaces/opal-fines-report-instance.interface';
 
 @Injectable({
   providedIn: 'root',
@@ -247,6 +249,34 @@ export class OpalFines {
       .pipe(shareReplay(1));
 
     return this.cache.businessUnitsCache$;
+  }
+
+  /**
+   * Retrieves a report definition by report id and caches it for later route transitions.
+   *
+   * @param reportId - The report id to fetch from the reports API.
+   * @returns An observable containing the report definition.
+   */
+  public getReport(reportId: string): Observable<IOpalFinesReport> {
+    if (!this.cache.reportsCache$[reportId]) {
+      this.cache.reportsCache$[reportId] = this.http
+        .get<IOpalFinesReport>(`${OPAL_FINES_PATHS.reports}/${encodeURIComponent(reportId)}`)
+        .pipe(shareReplay(1));
+    }
+
+    return this.cache.reportsCache$[reportId];
+  }
+
+  /**
+   * Retrieves a report instance by instance id without caching, so in-progress report statuses stay current.
+   *
+   * @param reportInstanceId - The report instance id to fetch from the report instances API.
+   * @returns An observable containing the report instance details.
+   */
+  public getReportInstance(reportInstanceId: string | number): Observable<IOpalFinesReportInstance> {
+    const reportInstanceIdPath = encodeURIComponent(reportInstanceId.toString());
+
+    return this.http.get<IOpalFinesReportInstance>(`${OPAL_FINES_PATHS.reportInstances}/${reportInstanceIdPath}`);
   }
 
   /**

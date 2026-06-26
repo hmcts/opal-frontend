@@ -1,0 +1,18 @@
+<div class="govuk-grid-column-two-thirds">
+  <opal-lib-govuk-heading-with-caption
+    captionText="Create report"
+    [headingText]="reportHeading"
+  ></opal-lib-govuk-heading-with-caption>
+
+  <h2 class="govuk-heading-m">Parameters</h2>
+
+  <p class="govuk-body">Selected business units:</p>
+
+  <ul class="govuk-list govuk-list--bullet">
+    @for (businessUnitName of selectedBusinessUnitNames; track businessUnitName) {
+      <li>{{ businessUnitName }}</li>
+    }
+  </ul>
+
+  <p class="govuk-body">This route is now ready to host the report-specific parameter form.</p>
+</div>
