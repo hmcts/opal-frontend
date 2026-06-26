@@ -16,6 +16,7 @@ export function interceptAddNotes() {
 import { IOpalFinesAccountDefendantAtAGlance } from '@services/fines/opal-fines-service/interfaces/opal-fines-account-defendant-at-a-glance.interface';
 import { IOpalFinesAccountMinorCreditorAtAGlance } from 'src/app/flows/fines/services/opal-fines-service/interfaces/opal-fines-account-minor-creditor-at-a-glance.interface';
 import { IOpalFinesAccountMinorCreditorCreditor } from 'src/app/flows/fines/services/opal-fines-service/interfaces/opal-fines-account-minor-creditor-creditor.interface';
+import { IOpalFinesAccountMajorCreditorDetailsHeader } from 'src/app/flows/fines/fines-acc/fines-acc-major-creditor-details/interfaces/fines-acc-major-creditor-details-header.interface';
 
 /**
  * Intercepts the GET request to the defendant accounts "at-a-glance" endpoint and mocks the response.
@@ -271,6 +272,32 @@ export const interceptMinorCreditorHeader = (
     })
     .as('getMinorCreditorHeaderSummary');
 };
+
+/**
+ * Intercepts the GET request for the major creditor header summary in Cypress tests,
+ * returning a mocked response with the provided header details and ETag header.
+ *
+ * @param accountId - The unique identifier for the major creditor account.
+ * @param majorCreditorHeaderMock - The mock data for the major creditor header summary.
+ * @param respHeaderEtag - The ETag value to be returned in the response headers.
+ * @returns Cypress chainable object with the alias 'getMajorCreditorHeaderSummary'.
+ */
+export const interceptMajorCreditorHeader = (
+  accountId: string | number,
+  majorCreditorHeaderMock: IOpalFinesAccountMajorCreditorDetailsHeader,
+  respHeaderEtag: string,
+) => {
+  return cy
+    .intercept('GET', `/opal-fines-service/major-creditor-accounts/${accountId}/header-summary`, {
+      statusCode: 200,
+      body: majorCreditorHeaderMock,
+      headers: {
+        ETag: respHeaderEtag,
+      },
+    })
+    .as('getMajorCreditorHeaderSummary');
+};
+
 /**
  * Intercepts the network request for fetching defendant account party details
  * and mocks the response with provided data and headers.

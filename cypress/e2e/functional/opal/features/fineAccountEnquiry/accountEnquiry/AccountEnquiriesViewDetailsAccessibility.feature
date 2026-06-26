@@ -59,6 +59,24 @@ Feature: Account Enquiries - View Account Details Accessibility
     Then I should see the convert to individual confirmation screen for company "Accdetail comp{uniq}"
     And I check the page for accessibility
 
+
+  Rule: Major creditor account details accessibility
+
+    @only @JIRA-STORY:PO-2128 @JIRA-EPIC:PO-1286
+    Scenario: Check Account Details View Accessibility with Axe-Core for Major Creditor Account
+      Given I am on the Account Search page - Individuals form displayed by default
+      And I open the business unit filter from the search page
+      And I clear all selected business units on the "Fines" tab
+      And I clear all selected business units on the "Confiscation" tab
+      When I select the following business units:
+        | tab   | businessUnit |
+        | Fines | N E Region   |
+      And I save the selected business units and the filter summary is "N E Region"
+      When I view the Major Creditors search form
+      Then I check the page for accessibility
+      When I search for the major creditor "Crown Prosecution Service (DPP)"
+      Then I check the page for accessibility
+
   Rule: Minor creditor amend accessibility
     Background:
       Given a published account exists with an individual minor creditor:

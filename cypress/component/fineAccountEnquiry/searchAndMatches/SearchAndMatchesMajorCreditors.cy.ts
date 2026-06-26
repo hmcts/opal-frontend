@@ -184,4 +184,25 @@ describe('Search Account Component - Major Creditors', () => {
       cy.get('@routerNavigate').should('have.been.calledWithMatch', ['problem']);
     },
   );
+
+  // PO-2181 Navigation to the Account Enquiry (Details) screen for a Major Creditor Account
+  it.only(
+    'AC1a: navigates to the major creditor account enquiry details screen when a major creditor account is selected',
+    { tags: [...buildTags('@JIRA-STORY:2128'), '@JIRA-EPIC:1286'] },
+    () => {
+      setupComponent();
+
+      cy.get(MajorAutocompleteLocators.input).click();
+      cy.get(MajorAutocompleteLocators.listbox).find('li').contains('Arriva Rail North').click();
+      cy.get(MajorAutocompleteLocators.input).should('have.value', 'Arriva Rail North (ARVA)');
+
+      cy.get(CommonLocators.searchButton).click();
+
+      const accountId = OPAL_FINES_MAJOR_CREDITOR_REF_DATA_MOCK.refData[3].creditor_account_id;
+
+      cy.get('@urlTree').should('have.been.calledWithMatch', [`fines/account/major-creditor/${accountId}/details`]);
+
+      cy.get('@windowOpen').should('have.been.calledWithMatch', Cypress.sinon.match.string, '_blank');
+    },
+  );
 });
