@@ -935,6 +935,27 @@ describe('FinesMacOffenceDetailsAddAnOffenceFormComponent', () => {
     expect(formSubmitSpy).not.toHaveBeenCalled();
   });
 
+  it('should not emit form submission when amount paid is negative', () => {
+    const formSubmitSpy = vi.spyOn(component['formSubmit'], 'emit');
+    const amountPaidControl = component.form.get([
+      'fm_offence_details_impositions',
+      0,
+      'fm_offence_details_amount_paid_0',
+    ]) as FormControl;
+    const offenceCodeControl = component.form.controls['fm_offence_details_offence_cjs_code'];
+    const offenceIdControl = component.form.controls['fm_offence_details_offence_id'];
+
+    offenceCodeControl.setValue('OFF1234');
+    offenceIdControl.setValue(123);
+    amountPaidControl.setValue(-10);
+
+    component.handleFormSubmit(new SubmitEvent('submit'));
+
+    expect(amountPaidControl.errors).toEqual(expect.objectContaining({ invalidNegativeAmount: true }));
+    expect(component.form.invalid).toBe(true);
+    expect(formSubmitSpy).not.toHaveBeenCalled();
+  });
+
   it('should set offenceCodeValidationPending on submit when offence code length is valid and offence id is unresolved', () => {
     const offenceCodeControl = component.form.controls['fm_offence_details_offence_cjs_code'];
     const offenceIdControl = component.form.controls['fm_offence_details_offence_id'];
