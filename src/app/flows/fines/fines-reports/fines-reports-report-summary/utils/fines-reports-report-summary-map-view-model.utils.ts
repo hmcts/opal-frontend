@@ -10,7 +10,7 @@ import { IFinesReportsReportSummaryInstance } from '../interfaces/fines-reports-
 import { IFinesReportsReportSummaryNamedValue } from '../interfaces/fines-reports-report-summary-named-value.interface';
 import { IFinesReportsReportSummaryViewModel } from '../interfaces/fines-reports-report-summary-view-model.interface';
 import { type FinesReportsReportSummaryDisplayRowType } from '../types/fines-reports-report-summary-display-row-type.type';
-import { type FinesReportsReportSummaryNormalisedStatus } from '../types/fines-reports-report-summary-status.type';
+import { type FinesReportsReportSummaryNormalisedStatus } from '../types/fines-reports-report-summary-normalised-status.type';
 import {
   isFinesReportsReportSummaryUnusedOptionalValue,
   mapFinesReportsReportSummaryDisplayValue,

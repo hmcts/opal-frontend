@@ -1,7 +1,4 @@
-import { FINES_REPORTS_REPORT_SUMMARY_STATUSES } from '../constants/fines-reports-report-summary-statuses.constant';
-
-export type FinesReportsReportSummaryNormalisedStatus =
-  (typeof FINES_REPORTS_REPORT_SUMMARY_STATUSES)[keyof typeof FINES_REPORTS_REPORT_SUMMARY_STATUSES];
+import { type FinesReportsReportSummaryNormalisedStatus } from './fines-reports-report-summary-normalised-status.type';
 
 export type FinesReportsReportSummaryStatus =
   | FinesReportsReportSummaryNormalisedStatus
