@@ -1,5 +1,3 @@
-import { DateTime } from 'luxon';
-import { FINES_DEFAULT_VALUES } from '../../../constants/fines-default-values.constant';
 import { FINES_REPORTS_REPORT_SUMMARY_GENERAL_LABELS } from '../constants/fines-reports-report-summary-general-labels.constant';
 import {
   FINES_REPORTS_REPORT_SUMMARY_NO_CONTENT_STATUS_DISPLAY,
@@ -11,7 +9,12 @@ import { IFinesReportsReportSummaryDisplayRow } from '../interfaces/fines-report
 import { IFinesReportsReportSummaryInstance } from '../interfaces/fines-reports-report-summary-instance.interface';
 import { IFinesReportsReportSummaryNamedValue } from '../interfaces/fines-reports-report-summary-named-value.interface';
 import { IFinesReportsReportSummaryViewModel } from '../interfaces/fines-reports-report-summary-view-model.interface';
+import { type FinesReportsReportSummaryDisplayRowType } from '../types/fines-reports-report-summary-display-row-type.type';
 import { type FinesReportsReportSummaryNormalisedStatus } from '../types/fines-reports-report-summary-status.type';
+import {
+  isFinesReportsReportSummaryUnusedOptionalValue,
+  mapFinesReportsReportSummaryDisplayValue,
+} from './fines-reports-report-summary-display-value.utils';
 
 const REPORT_STATUS_NORMALISATION: Record<string, FinesReportsReportSummaryNormalisedStatus> = {
   requested: FINES_REPORTS_REPORT_SUMMARY_STATUSES.requested,
@@ -22,32 +25,6 @@ const REPORT_STATUS_NORMALISATION: Record<string, FinesReportsReportSummaryNorma
 const RECORD_COUNT_DASH_STATUS_SET = new Set<FinesReportsReportSummaryNormalisedStatus>(
   FINES_REPORTS_REPORT_SUMMARY_RECORD_COUNT_DASH_STATUSES,
 );
-
-const isUnusedOptionalValue = (value: IFinesReportsReportSummaryNamedValue['value']): boolean => {
-  return value === null || value === undefined || value === '' || (Array.isArray(value) && value.length === 0);
-};
-
-const formatDisplayValue = (value: IFinesReportsReportSummaryNamedValue['value']): string => {
-  if (Array.isArray(value)) {
-    return value.join(', ');
-  }
-
-  if (typeof value === 'boolean') {
-    return value ? 'TRUE' : 'FALSE';
-  }
-
-  if (isUnusedOptionalValue(value)) {
-    return FINES_DEFAULT_VALUES.notProvidedLabel;
-  }
-
-  return String(value);
-};
-
-const formatDateCreated = (dateCreated: string): string => {
-  const parsedDate = DateTime.fromISO(dateCreated, { setZone: true });
-
-  return parsedDate.isValid ? parsedDate.setLocale('en-gb').toFormat("dd MMM yyyy 'at' HH:mm") : dateCreated;
-};
 
 const normaliseStatus = (
   status: IFinesReportsReportSummaryInstance['status'],
@@ -67,53 +44,73 @@ const getStatusDisplay = (reportSummary: IFinesReportsReportSummaryInstance): st
   return FINES_REPORTS_REPORT_SUMMARY_STATUS_DISPLAY[status];
 };
 
-const getNumberOfRecordsDisplay = (reportSummary: IFinesReportsReportSummaryInstance): string => {
+const getNumberOfRecordsDisplayValue = (reportSummary: IFinesReportsReportSummaryInstance): number | null => {
   const status = normaliseStatus(reportSummary.status);
 
   if (RECORD_COUNT_DASH_STATUS_SET.has(status)) {
-    return FINES_DEFAULT_VALUES.notProvidedLabel;
+    return null;
   }
 
-  return reportSummary.number_of_records?.toString() ?? FINES_DEFAULT_VALUES.notProvidedLabel;
+  return reportSummary.number_of_records;
+};
+
+const getDisplayRowType = (
+  value: IFinesReportsReportSummaryDisplayRow['value'],
+  providedType: FinesReportsReportSummaryDisplayRowType = 'text',
+): FinesReportsReportSummaryDisplayRowType => {
+  return value === null ? 'notProvided' : providedType;
 };
 
 const mapNamedValuesToRows = (
   values: IFinesReportsReportSummaryNamedValue[] | undefined,
 ): IFinesReportsReportSummaryDisplayRow[] => {
   return (values ?? [])
-    .filter((row) => !row.optional || !isUnusedOptionalValue(row.value))
-    .map((row) => ({
-      key: row.name,
-      value: formatDisplayValue(row.value),
-    }));
+    .filter((row) => !row.optional || !isFinesReportsReportSummaryUnusedOptionalValue(row.value))
+    .map((row) => {
+      const value = mapFinesReportsReportSummaryDisplayValue(row.value);
+
+      return {
+        key: row.name,
+        value,
+        type: getDisplayRowType(value),
+      };
+    });
 };
 
 export const mapFinesReportsReportSummaryToViewModel = (
   reportSummary: IFinesReportsReportSummaryInstance,
 ): IFinesReportsReportSummaryViewModel => {
   const status = normaliseStatus(reportSummary.status);
+  const businessUnitsValue = mapFinesReportsReportSummaryDisplayValue(reportSummary.business_units);
+  const numberOfRecordsValue = getNumberOfRecordsDisplayValue(reportSummary);
+  const createdByValue = mapFinesReportsReportSummaryDisplayValue(reportSummary.created_by);
 
   return {
     generalRows: [
       {
         key: FINES_REPORTS_REPORT_SUMMARY_GENERAL_LABELS.status,
         value: getStatusDisplay(reportSummary),
+        type: 'text',
       },
       {
         key: FINES_REPORTS_REPORT_SUMMARY_GENERAL_LABELS.dateCreated,
-        value: formatDateCreated(reportSummary.date_created),
+        value: reportSummary.date_created,
+        type: 'dateTime',
       },
       {
         key: FINES_REPORTS_REPORT_SUMMARY_GENERAL_LABELS.businessUnits,
-        value: formatDisplayValue(reportSummary.business_units),
+        value: businessUnitsValue,
+        type: getDisplayRowType(businessUnitsValue),
       },
       {
         key: FINES_REPORTS_REPORT_SUMMARY_GENERAL_LABELS.numberOfRecords,
-        value: getNumberOfRecordsDisplay(reportSummary),
+        value: numberOfRecordsValue,
+        type: getDisplayRowType(numberOfRecordsValue, 'number'),
       },
       {
         key: FINES_REPORTS_REPORT_SUMMARY_GENERAL_LABELS.createdBy,
-        value: formatDisplayValue(reportSummary.created_by),
+        value: createdByValue,
+        type: getDisplayRowType(createdByValue),
       },
     ],
     criteriaRows: mapNamedValuesToRows(reportSummary.criteria),

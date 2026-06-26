@@ -212,7 +212,7 @@ describe('OpalFines', () => {
     req.flush(OPAL_FINES_REPORT_INSTANCE_MOCK);
   });
 
-  it('should return cached response for the same report instance', () => {
+  it('should send a fresh GET request for repeated report instance calls', () => {
     const expectedUrl = `${OPAL_FINES_PATHS.reportInstances}/${OPAL_FINES_REPORT_INSTANCE_MOCK.instance_id}`;
 
     service.getReportInstance(OPAL_FINES_REPORT_INSTANCE_MOCK.instance_id).subscribe((response) => {
@@ -227,7 +227,9 @@ describe('OpalFines', () => {
       expect(response).toEqual(OPAL_FINES_REPORT_INSTANCE_MOCK);
     });
 
-    httpMock.expectNone(expectedUrl);
+    const secondReq = httpMock.expectOne(expectedUrl);
+    expect(secondReq.request.method).toBe('GET');
+    secondReq.flush(OPAL_FINES_REPORT_INSTANCE_MOCK);
   });
 
   it('should send a GET request to court ref data API', () => {

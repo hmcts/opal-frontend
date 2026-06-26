@@ -8,26 +8,21 @@ import {
 } from '@hmcts/opal-frontend-common/components/govuk/govuk-summary-list';
 import { map } from 'rxjs';
 import { FINES_ROUTING_PATHS } from '../../routing/constants/fines-routing-paths.constant';
-import { FINES_REPORTS_SUMMARY_LIST_ROUTING_PATHS } from '../fines-reports-summary-list/routing/constants/fines-reports-summary-list-routing-paths.constant';
 import { FINES_REPORTS_ROUTING_PATHS } from '../routing/constants/fines-reports-routing-paths.constant';
 import { FINES_REPORTS_REPORT_SUMMARY_PAGE_HEADING } from './constants/fines-reports-report-summary-page-heading.constant';
 import { type IFinesReportsReportSummaryInstance } from './interfaces/fines-reports-report-summary-instance.interface';
-import {
-  FINES_REPORTS_REPORT_SUMMARY_ENFORCEMENT_MOCK,
-  FINES_REPORTS_REPORT_SUMMARY_ERROR_MOCK,
-  FINES_REPORTS_REPORT_SUMMARY_PAYMENTS_MOCK,
-} from './mocks/fines-reports-report-summary.mock';
+import { type IFinesReportsReportSummaryViewModel } from './interfaces/fines-reports-report-summary-view-model.interface';
+import { FinesReportsReportSummaryRowValueComponent } from './components/fines-reports-report-summary-row-value/fines-reports-report-summary-row-value.component';
 import { mapFinesReportsReportSummaryToViewModel } from './utils/fines-reports-report-summary-map-view-model.utils';
-
-const REPORT_SUMMARY_MOCKS_BY_INSTANCE_ID: Record<string, IFinesReportsReportSummaryInstance> = {
-  [FINES_REPORTS_REPORT_SUMMARY_ENFORCEMENT_MOCK.report_instance_id]: FINES_REPORTS_REPORT_SUMMARY_ENFORCEMENT_MOCK,
-  [FINES_REPORTS_REPORT_SUMMARY_PAYMENTS_MOCK.report_instance_id]: FINES_REPORTS_REPORT_SUMMARY_PAYMENTS_MOCK,
-  [FINES_REPORTS_REPORT_SUMMARY_ERROR_MOCK.report_instance_id]: FINES_REPORTS_REPORT_SUMMARY_ERROR_MOCK,
-};
 
 @Component({
   selector: 'app-fines-reports-report-summary',
-  imports: [GovukBackLinkComponent, GovukSummaryListComponent, GovukSummaryListRowComponent],
+  imports: [
+    GovukBackLinkComponent,
+    GovukSummaryListComponent,
+    GovukSummaryListRowComponent,
+    FinesReportsReportSummaryRowValueComponent,
+  ],
   templateUrl: './fines-reports-report-summary.component.html',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
@@ -62,26 +57,33 @@ export class FinesReportsReportSummaryComponent {
   /**
    * Maps the selected report instance route data into the report summary data for this UI slice.
    */
-  public readonly reportSummary = computed(() => {
-    return (
-      this.reportSummarySignal() ??
-      REPORT_SUMMARY_MOCKS_BY_INSTANCE_ID[this.reportInstanceId] ??
-      this.fallbackReportSummary
-    );
-  });
+  public readonly reportSummary = computed(() => this.reportSummarySignal() ?? null);
 
   /**
    * Returns the report summary rows used by the template.
    */
-  public readonly reportSummaryViewModel = computed(() =>
-    mapFinesReportsReportSummaryToViewModel(this.reportSummary()),
-  );
+  public readonly reportSummaryViewModel = computed((): IFinesReportsReportSummaryViewModel => {
+    const reportSummary = this.reportSummary();
+
+    return reportSummary
+      ? mapFinesReportsReportSummaryToViewModel(reportSummary)
+      : {
+          generalRows: [],
+          criteriaRows: [],
+          errorRows: [],
+        };
+  });
 
   /**
    * Returns the report summary page heading for the selected report instance.
    */
   public readonly pageHeading = computed(() => {
     const reportSummary = this.reportSummary();
+
+    if (!reportSummary) {
+      return FINES_REPORTS_REPORT_SUMMARY_PAGE_HEADING.default;
+    }
+
     const reportHeading =
       FINES_REPORTS_REPORT_SUMMARY_PAGE_HEADING.reports[reportSummary.report_id] ??
       FINES_REPORTS_REPORT_SUMMARY_PAGE_HEADING.default;
@@ -114,14 +116,5 @@ export class FinesReportsReportSummaryComponent {
       this.reportId,
       FINES_REPORTS_ROUTING_PATHS.children.summaryList,
     ]);
-  }
-
-  /**
-   * Provides a temporary report summary when the direct URL uses a report instance id that has no mock fixture.
-   */
-  private get fallbackReportSummary(): IFinesReportsReportSummaryInstance {
-    return this.reportId === FINES_REPORTS_SUMMARY_LIST_ROUTING_PATHS.children.operationalReportsByPayments
-      ? FINES_REPORTS_REPORT_SUMMARY_PAYMENTS_MOCK
-      : FINES_REPORTS_REPORT_SUMMARY_ENFORCEMENT_MOCK;
   }
 }

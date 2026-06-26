@@ -18,7 +18,7 @@ describe('FinesReportsReportSummaryComponent', () => {
   const setup = async (
     reportId = FINES_REPORTS_REPORT_SUMMARY_ENFORCEMENT_MOCK.report_id,
     reportInstanceId = FINES_REPORTS_REPORT_SUMMARY_ENFORCEMENT_MOCK.report_instance_id,
-    reportSummary: IFinesReportsReportSummaryInstance | null = null,
+    reportSummary: IFinesReportsReportSummaryInstance | null = FINES_REPORTS_REPORT_SUMMARY_ENFORCEMENT_MOCK,
   ): Promise<{
     component: FinesReportsReportSummaryComponent;
     fixture: ComponentFixture<FinesReportsReportSummaryComponent>;
@@ -115,6 +115,7 @@ describe('FinesReportsReportSummaryComponent', () => {
     const { fixture } = await setup(
       FINES_REPORTS_REPORT_SUMMARY_PAYMENTS_MOCK.report_id,
       FINES_REPORTS_REPORT_SUMMARY_PAYMENTS_MOCK.report_instance_id,
+      FINES_REPORTS_REPORT_SUMMARY_PAYMENTS_MOCK,
     );
 
     fixture.detectChanges();
@@ -147,6 +148,7 @@ describe('FinesReportsReportSummaryComponent', () => {
     const { fixture } = await setup(
       FINES_REPORTS_REPORT_SUMMARY_PAYMENTS_MOCK.report_id,
       FINES_REPORTS_REPORT_SUMMARY_PAYMENTS_MOCK.report_instance_id,
+      FINES_REPORTS_REPORT_SUMMARY_PAYMENTS_MOCK,
     );
 
     fixture.detectChanges();
@@ -174,6 +176,7 @@ describe('FinesReportsReportSummaryComponent', () => {
     const { fixture } = await setup(
       FINES_REPORTS_REPORT_SUMMARY_ERROR_MOCK.report_id,
       FINES_REPORTS_REPORT_SUMMARY_ERROR_MOCK.report_instance_id,
+      FINES_REPORTS_REPORT_SUMMARY_ERROR_MOCK,
     );
 
     fixture.detectChanges();
@@ -185,6 +188,23 @@ describe('FinesReportsReportSummaryComponent', () => {
     expect(pageText).toContain('Legacy report timed out');
     expect(pageText).toContain('Report service');
     expect(pageText).toContain('No response from reporting engine');
+  });
+
+  it('should render without a local error banner when no report summary data is resolved', async () => {
+    const { fixture } = await setup(
+      FINES_REPORTS_REPORT_SUMMARY_ENFORCEMENT_MOCK.report_id,
+      FINES_REPORTS_REPORT_SUMMARY_ENFORCEMENT_MOCK.report_instance_id,
+      null,
+    );
+
+    fixture.detectChanges();
+
+    const pageText = fixture.nativeElement.textContent;
+
+    expect(fixture.nativeElement.querySelector('h1')?.textContent).toContain('Operational report');
+    expect(fixture.nativeElement.querySelector('.moj-alert--error')).toBeNull();
+    expect(pageText).not.toContain('ABDC');
+    expect(pageText).not.toContain('General');
   });
 
   it('should navigate back to the current report summary list', async () => {

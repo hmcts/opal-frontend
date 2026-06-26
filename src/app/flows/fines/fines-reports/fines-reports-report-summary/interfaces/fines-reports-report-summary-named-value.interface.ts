@@ -1,5 +1,5 @@
 export interface IFinesReportsReportSummaryNamedValue {
   name: string;
-  value: boolean | number | string | (number | string)[] | null | undefined;
+  value: boolean | number | string | unknown[] | Record<string, unknown> | null | undefined;
   optional?: boolean;
 }

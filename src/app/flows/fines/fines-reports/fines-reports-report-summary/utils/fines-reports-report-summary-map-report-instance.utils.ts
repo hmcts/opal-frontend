@@ -1,13 +1,25 @@
-import { FINES_DEFAULT_VALUES } from '../../../constants/fines-default-values.constant';
 import { FINES_REPORTS_REPORT_SUMMARY_DEFAULT_REPORT_TYPES } from '../constants/fines-reports-report-summary-default-report-types.constant';
 import { type IFinesReportsReportSummaryNamedValue } from '../interfaces/fines-reports-report-summary-named-value.interface';
 import { type IFinesReportsReportSummaryInstance } from '../interfaces/fines-reports-report-summary-instance.interface';
 import { type IOpalFinesReportInstance } from '@services/fines/opal-fines-service/interfaces/opal-fines-report-instance.interface';
+import {
+  isFinesReportsReportSummaryUnusedOptionalValue,
+  mapFinesReportsReportSummaryDisplayValue,
+} from './fines-reports-report-summary-display-value.utils';
 
 const REPORT_TYPE_PARAMETER_KEYS = new Set(['reportType', 'report_type', 'report type']);
-const ACTION_DATE_FROM_KEY = 'action_date_from';
-const ACTION_DATE_TO_KEY = 'action_date_to';
-const ACTION_DATE_LABEL = 'Action date';
+const DATE_RANGE_PARAMETER_CONFIGS = [
+  {
+    fromKey: 'action_date_from',
+    toKey: 'action_date_to',
+    label: 'Action date',
+  },
+  {
+    fromKey: 'payment_date_from',
+    toKey: 'payment_date_to',
+    label: 'Payment date',
+  },
+] as const;
 const REPORT_TYPE_LABEL = 'Report Type';
 const REPORT_PARAMETER_LABEL_OVERRIDES: Record<string, string> = {
   reportType: REPORT_TYPE_LABEL,
@@ -21,34 +33,18 @@ const REPORT_PARAMETER_LABEL_OVERRIDES: Record<string, string> = {
   maximum_account_balance: 'Maximum account balance',
   lower_name_range: 'Lower name range',
   upper_name_range: 'Upper name range',
+  payment_method: 'Payment method',
+  minimum_payment_amount: 'Minimum payment amount',
+  maximum_payment_amount: 'Maximum payment amount',
+  error: 'Error description',
   error_description: 'Error description',
+  operationId: 'Operation ID',
   report_generation_error: 'Report generation error',
   report_service: 'Report service',
 };
-
-const isUnusedOptionalValue = (value: unknown): boolean => {
-  return value === null || value === undefined || value === '' || (Array.isArray(value) && value.length === 0);
-};
-
-const formatDisplayValue = (value: unknown): string => {
-  if (Array.isArray(value)) {
-    return value.join(', ');
-  }
-
-  if (typeof value === 'boolean') {
-    return value ? 'TRUE' : 'FALSE';
-  }
-
-  if (value && typeof value === 'object') {
-    return JSON.stringify(value);
-  }
-
-  if (isUnusedOptionalValue(value)) {
-    return FINES_DEFAULT_VALUES.notProvidedLabel;
-  }
-
-  return String(value);
-};
+const DATE_RANGE_PARAMETER_KEYS = new Set<string>(
+  DATE_RANGE_PARAMETER_CONFIGS.flatMap(({ fromKey, toKey }) => [fromKey, toKey]),
+);
 
 const formatReportTypeDisplay = (value: unknown, reportId: string): string => {
   if (typeof value === 'string') {
@@ -93,32 +89,66 @@ const formatReportParameterName = (key: string): string => {
   return withSpaces.replace(/\b\w/g, (character) => character.toUpperCase());
 };
 
+const mapReportParameterValue = (value: unknown): IFinesReportsReportSummaryNamedValue['value'] => {
+  if (
+    value === null ||
+    value === undefined ||
+    typeof value === 'boolean' ||
+    typeof value === 'number' ||
+    typeof value === 'string' ||
+    Array.isArray(value)
+  ) {
+    return value;
+  }
+
+  if (typeof value === 'object') {
+    return value as Record<string, unknown>;
+  }
+
+  return String(value);
+};
+
 const mapErrorRows = (
   errors: Array<Record<string, unknown>> | null | undefined,
 ): IFinesReportsReportSummaryNamedValue[] => {
   return (errors ?? []).flatMap((error) =>
     Object.entries(error).map(([key, value]) => ({
       name: formatReportParameterName(key),
-      value: formatDisplayValue(value),
-      optional: isUnusedOptionalValue(value),
+      value: mapReportParameterValue(value),
+      optional: isFinesReportsReportSummaryUnusedOptionalValue(value),
     })),
   );
 };
 
-const buildActionDateRow = (reportParameters: Record<string, unknown>): IFinesReportsReportSummaryNamedValue | null => {
-  const fromValue = reportParameters[ACTION_DATE_FROM_KEY];
-  const toValue = reportParameters[ACTION_DATE_TO_KEY];
+const buildDateRangeRow = (reportParameters: Record<string, unknown>): IFinesReportsReportSummaryNamedValue | null => {
+  const dateRangeConfig = DATE_RANGE_PARAMETER_CONFIGS.find(
+    ({ fromKey, toKey }) =>
+      !isFinesReportsReportSummaryUnusedOptionalValue(reportParameters[fromKey]) ||
+      !isFinesReportsReportSummaryUnusedOptionalValue(reportParameters[toKey]),
+  );
 
-  if (isUnusedOptionalValue(fromValue) && isUnusedOptionalValue(toValue)) {
+  if (!dateRangeConfig) {
     return null;
   }
 
-  const fromDisplay = isUnusedOptionalValue(fromValue) ? '' : formatDisplayValue(fromValue);
-  const toDisplay = isUnusedOptionalValue(toValue) ? '' : formatDisplayValue(toValue);
+  const fromValue = reportParameters[dateRangeConfig.fromKey];
+  const toValue = reportParameters[dateRangeConfig.toKey];
+
+  if (
+    isFinesReportsReportSummaryUnusedOptionalValue(fromValue) &&
+    isFinesReportsReportSummaryUnusedOptionalValue(toValue)
+  ) {
+    return null;
+  }
+
+  const fromDisplayValue = mapFinesReportsReportSummaryDisplayValue(mapReportParameterValue(fromValue));
+  const toDisplayValue = mapFinesReportsReportSummaryDisplayValue(mapReportParameterValue(toValue));
+  const fromDisplay = fromDisplayValue === null ? '' : String(fromDisplayValue);
+  const toDisplay = toDisplayValue === null ? '' : String(toDisplayValue);
 
   if (fromDisplay && toDisplay) {
     return {
-      name: ACTION_DATE_LABEL,
+      name: dateRangeConfig.label,
       value: `From ${fromDisplay} to ${toDisplay}`,
       optional: false,
     };
@@ -126,14 +156,14 @@ const buildActionDateRow = (reportParameters: Record<string, unknown>): IFinesRe
 
   if (fromDisplay) {
     return {
-      name: ACTION_DATE_LABEL,
+      name: dateRangeConfig.label,
       value: `From ${fromDisplay}`,
       optional: false,
     };
   }
 
   return {
-    name: ACTION_DATE_LABEL,
+    name: dateRangeConfig.label,
     value: `To ${toDisplay}`,
     optional: false,
   };
@@ -145,23 +175,21 @@ const buildCriteriaRows = (
 ): IFinesReportsReportSummaryNamedValue[] => {
   const parameters = (reportParameters ?? {}) as Record<string, unknown>;
   const rows: IFinesReportsReportSummaryNamedValue[] = Object.entries(parameters)
-    .filter(
-      ([key]) => !REPORT_TYPE_PARAMETER_KEYS.has(key) && key !== ACTION_DATE_FROM_KEY && key !== ACTION_DATE_TO_KEY,
-    )
+    .filter(([key]) => !REPORT_TYPE_PARAMETER_KEYS.has(key) && !DATE_RANGE_PARAMETER_KEYS.has(key))
     .map(([key, value]) => ({
       name: formatReportParameterName(key),
-      value: formatDisplayValue(value),
-      optional: isUnusedOptionalValue(value),
+      value: mapReportParameterValue(value),
+      optional: isFinesReportsReportSummaryUnusedOptionalValue(value),
     }));
 
-  const actionDateRow = buildActionDateRow(parameters);
-  if (actionDateRow) {
-    const actionDateRowIndex = rows.findIndex((row) => row.name === 'Account type');
+  const dateRangeRow = buildDateRangeRow(parameters);
+  if (dateRangeRow) {
+    const dateRangeRowIndex = rows.findIndex((row) => row.name === 'Account type');
 
-    if (actionDateRowIndex >= 0) {
-      rows.splice(actionDateRowIndex, 0, actionDateRow);
+    if (dateRangeRowIndex >= 0) {
+      rows.splice(dateRangeRowIndex, 0, dateRangeRow);
     } else {
-      rows.push(actionDateRow);
+      rows.push(dateRangeRow);
     }
   }
 
@@ -184,11 +212,7 @@ const getReportReference = (reportInstance: IOpalFinesReportInstance): string =>
 };
 
 const getCreatedBy = (reportInstance: IOpalFinesReportInstance): string => {
-  return (
-    reportInstance.requested_by.name?.trim() ||
-    reportInstance.requested_by.user_id?.trim() ||
-    FINES_DEFAULT_VALUES.notProvidedLabel
-  );
+  return reportInstance.requested_by.name?.trim() || reportInstance.requested_by.user_id?.trim() || '';
 };
 
 const getReportStatus = (reportInstance: IOpalFinesReportInstance): IFinesReportsReportSummaryInstance['status'] => {
@@ -208,7 +232,10 @@ export const mapFinesReportsReportInstanceToReportSummary = (
 ): IFinesReportsReportSummaryInstance => {
   const resolvedReportId = reportId || reportInstance.report.id;
   const criteriaRows = buildCriteriaRows(reportInstance.report_parameters, resolvedReportId);
-  const reportType = criteriaRows.find((row) => row.name === REPORT_TYPE_LABEL)?.value?.toString() ?? 'Summary';
+  const reportTypeValue = mapFinesReportsReportSummaryDisplayValue(
+    criteriaRows.find((row) => row.name === REPORT_TYPE_LABEL)?.value,
+  );
+  const reportType = reportTypeValue === null ? 'Summary' : String(reportTypeValue);
 
   return {
     report_instance_id: reportInstance.instance_id.toString(),

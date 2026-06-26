@@ -19,7 +19,6 @@ import { IOpalFinesAccountMinorCreditorAtAGlance } from './opal-fines-account-mi
 import { IOpalFinesEnforcersRefData } from './opal-fines-enforcers-ref-data.interface';
 import { IOpalFinesAccountMinorCreditorCreditor } from './opal-fines-account-minor-creditor-creditor.interface';
 import { IOpalFinesReport } from './opal-fines-report.interface';
-import { IOpalFinesReportInstance } from './opal-fines-report-instance.interface';
 
 export interface IOpalFinesCache {
   courtRefDataCache$: { [key: string]: Observable<IOpalFinesCourtRefData> };
@@ -45,5 +44,4 @@ export interface IOpalFinesCache {
   minorCreditorAccountCreditorCache$: Observable<IOpalFinesAccountMinorCreditorCreditor> | null;
   enforcersCache$: Observable<IOpalFinesEnforcersRefData> | null;
   reportsCache$: { [key: string]: Observable<IOpalFinesReport> };
-  reportInstancesCache$: { [key: string]: Observable<IOpalFinesReportInstance> };
 }

@@ -24,7 +24,7 @@ describe('mapFinesReportsReportInstanceToReportSummary', () => {
         { name: 'Report Type', value: 'Summary', optional: false },
         { name: 'Enforcement', value: 'Last enforcement - Bail warrant - Dated (BWTD)', optional: false },
         { name: 'Action date', value: 'From 01 May 2006 to 30 June 2006', optional: false },
-        { name: 'Account type', value: 'Adult, Youth, Company', optional: false },
+        { name: 'Account type', value: ['Adult', 'Youth', 'Company'], optional: false },
         { name: 'Account status', value: 'Live', optional: false },
         { name: 'Collection order', value: 'All accounts', optional: false },
         { name: 'Minimum account balance', value: '£10.00', optional: false },
@@ -49,6 +49,31 @@ describe('mapFinesReportsReportInstanceToReportSummary', () => {
     expect(result.criteria[0]).toEqual({ name: 'Report Type', value: 'Detailed', optional: false });
   });
 
+  it('should combine payment date range parameters into one criteria row', () => {
+    const result = mapFinesReportsReportInstanceToReportSummary(
+      {
+        ...OPAL_FINES_REPORT_INSTANCE_MOCK,
+        report: {
+          ...OPAL_FINES_REPORT_INSTANCE_MOCK.report,
+          id: FINES_REPORTS_SUMMARY_LIST_ROUTING_PATHS.children.operationalReportsByPayments,
+        },
+        report_parameters: {
+          reportType: 'Detailed',
+          payment_date_from: '01 May 2006',
+          payment_date_to: '30 June 2006',
+          account_type: ['Adult', 'Youth', 'Company'],
+        },
+      },
+      FINES_REPORTS_SUMMARY_LIST_ROUTING_PATHS.children.operationalReportsByPayments,
+    );
+
+    expect(result.criteria).toEqual([
+      { name: 'Report Type', value: 'Detailed', optional: false },
+      { name: 'Payment date', value: 'From 01 May 2006 to 30 June 2006', optional: false },
+      { name: 'Account type', value: ['Adult', 'Youth', 'Company'], optional: false },
+    ]);
+  });
+
   it('should flatten API error maps into named rows', () => {
     const result = mapFinesReportsReportInstanceToReportSummary(
       {
@@ -59,8 +84,8 @@ describe('mapFinesReportsReportInstanceToReportSummary', () => {
         },
         errors: [
           {
-            error_description: 'Legacy report timed out',
-            report_service: 'No response from reporting engine',
+            operationId: 'ERROR-ID',
+            error: 'Generation failed',
           },
         ],
       },
@@ -68,8 +93,8 @@ describe('mapFinesReportsReportInstanceToReportSummary', () => {
     );
 
     expect(result.errors).toEqual([
-      { name: 'Error description', value: 'Legacy report timed out', optional: false },
-      { name: 'Report service', value: 'No response from reporting engine', optional: false },
+      { name: 'Operation ID', value: 'ERROR-ID', optional: false },
+      { name: 'Error description', value: 'Generation failed', optional: false },
     ]);
   });
 });

@@ -1,3 +1,4 @@
+import { HttpErrorResponse } from '@angular/common/http';
 import { TestBed } from '@angular/core/testing';
 import { ActivatedRouteSnapshot, ResolveFn, convertToParamMap } from '@angular/router';
 import { firstValueFrom, Observable, of, throwError } from 'rxjs';
@@ -47,7 +48,7 @@ describe('fetchReportInstanceResolver', () => {
 
   it('should fall back to null when the report instance API fails', async () => {
     mockOpalFinesService.getReportInstance.mockReturnValue(
-      throwError(() => new Error('report instance lookup failed')),
+      throwError(() => new HttpErrorResponse({ status: 406, statusText: 'Not Acceptable' })),
     );
     const route = buildRoute('12345', FINES_REPORTS_SUMMARY_LIST_ROUTING_PATHS.children.operationalReportsByPayments);
 

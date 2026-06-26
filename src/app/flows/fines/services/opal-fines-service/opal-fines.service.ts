@@ -268,21 +268,15 @@ export class OpalFines {
   }
 
   /**
-   * Retrieves a report instance by instance id and caches it for later route transitions.
+   * Retrieves a report instance by instance id without caching, so in-progress report statuses stay current.
    *
    * @param reportInstanceId - The report instance id to fetch from the report instances API.
    * @returns An observable containing the report instance details.
    */
   public getReportInstance(reportInstanceId: string | number): Observable<IOpalFinesReportInstance> {
-    const cacheKey = reportInstanceId.toString();
+    const reportInstanceIdPath = encodeURIComponent(reportInstanceId.toString());
 
-    if (!this.cache.reportInstancesCache$[cacheKey]) {
-      this.cache.reportInstancesCache$[cacheKey] = this.http
-        .get<IOpalFinesReportInstance>(`${OPAL_FINES_PATHS.reportInstances}/${encodeURIComponent(cacheKey)}`)
-        .pipe(shareReplay(1));
-    }
-
-    return this.cache.reportInstancesCache$[cacheKey];
+    return this.http.get<IOpalFinesReportInstance>(`${OPAL_FINES_PATHS.reportInstances}/${reportInstanceIdPath}`);
   }
 
   /**
