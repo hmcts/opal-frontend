@@ -1,6 +1,6 @@
 import { ChangeDetectionStrategy, Component, inject, OnDestroy, OnInit } from '@angular/core';
-import { EMPTY, merge, Observable, of } from 'rxjs';
-import { takeUntil, tap } from 'rxjs/operators';
+import { EMPTY, merge, Observable } from 'rxjs';
+import { takeUntil } from 'rxjs/operators';
 // Services
 import { OpalFines } from '../../services/opal-fines-service/opal-fines.service';
 // Stores
@@ -42,7 +42,9 @@ import { FINES_ACC_MAJOR_CREDITOR_DETAILS_ROUTE_DATA_KEYS } from './constants/fi
 import { IFinesAccMajorCreditorAccountTabsCacheMap } from './interfaces/fines-acc-major-creditor-account-tabs-cache-map.interface';
 import { FINES_ACC_MAJOR_CREDITOR_ACCOUNT_TABS_CACHE_MAP } from './constants/fines-acc-major-creditor-account-tabs-cache-map.constant';
 import { IOpalFinesAccountMajorCreditorAtAGlance } from '../../services/opal-fines-service/interfaces/opal-fines-account-major-creditor-at-a-glance.interface';
-import { OPAL_FINES_ACCOUNT_MAJOR_CREDITOR_AT_A_GLANCE_WITH_DEFENDANT_MOCK } from '../../services/opal-fines-service/mocks/opal-fines-account-major-creditor-at-a-glance-with-defendant.mock';
+import { FinesAccMajorCreditorDetailsAtAGlanceTabComponent } from './fines-acc-major-creditor-details-at-a-glance-tab/fines-acc-major-creditor-details-at-a-glance-tab.component';
+import { AsyncPipe } from '@angular/common';
+import { FINES_ACC_MAJOR_CREDITOR_ACCOUNT_TYPES } from './constants/fines-acc-major-creditor-account-types.constant';
 
 @Component({
   selector: 'app-fines-acc-major-creditor-details',
@@ -58,7 +60,9 @@ import { OPAL_FINES_ACCOUNT_MAJOR_CREDITOR_AT_A_GLANCE_WITH_DEFENDANT_MOCK } fro
     CustomAccountInformationItemLabelComponent,
     CustomAccountInformationItemValueComponent,
     MonetaryPipe,
+    AsyncPipe,
     FinesAccSummaryHeaderComponent,
+    FinesAccMajorCreditorDetailsAtAGlanceTabComponent,
   ],
   templateUrl: './fines-acc-major-creditor-details.component.html',
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -84,6 +88,7 @@ export class FinesAccMajorCreditorDetailsComponent
   public lastEnforcement: IOpalFinesResultRefData | null = null;
   public finesPermissions = FINES_PERMISSIONS;
   public tabAtAGlance$: Observable<IOpalFinesAccountMajorCreditorAtAGlance> = EMPTY;
+  public majorCreditorAccountTypes = FINES_ACC_MAJOR_CREDITOR_ACCOUNT_TYPES;
 
   /**
    * Initializes and sets up the observable data stream for the fines draft tab component.
@@ -105,15 +110,14 @@ export class FinesAccMajorCreditorDetailsComponent
       ),
       this.refreshFragment$,
     );
+
+    const { account_id } = this.accountStore.getAccountState();
+
     fragment$.pipe(takeUntil(this.destroy$)).subscribe((tab) => {
       switch (tab) {
         case FINES_ACC_MAJOR_CREDITOR_DETAILS_TABS_KEYS['at-a-glance']:
           this.tabAtAGlance$ = this.fetchTabDataTyped(
-            of(OPAL_FINES_ACCOUNT_MAJOR_CREDITOR_AT_A_GLANCE_WITH_DEFENDANT_MOCK).pipe(
-              tap((data) => {
-                this.accountStore.setHasPaymentHold(data.payment.hold_payment);
-              }),
-            ),
+            this.opalFinesService.getMajorCreditorAccountAtAGlance(account_id),
           );
           break;
       }
