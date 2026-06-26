@@ -1,0 +1,16 @@
+import { IHistoryDetails as IFinesAccHistoryAndNotesDetails } from '@hmcts/opal-frontend-common/services/history-transformation-service';
+
+export const FINES_ACC_HISTORY_AND_NOTES_PAYMENT_TERMS_PREFORMATTED_AMOUNT_DETAILS_MOCK: IFinesAccHistoryAndNotesDetails =
+  {
+    line1: [
+      {
+        fragments: [
+          { text: 'Instalments:', bold: false, hyphen: false },
+          { text: '£25.00', bold: false, hyphen: false },
+          { text: 'monthly from', bold: false, hyphen: false },
+          { text: 'pending', bold: false, hyphen: false },
+        ],
+      },
+    ],
+    line2: null,
+  };
