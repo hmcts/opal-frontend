@@ -3,7 +3,8 @@ import { describe, expect, it } from 'vitest';
 import { finesMacOffenceDetailsPositiveAmountValidator } from './fines-mac-offence-details-positive-amount.validator';
 
 describe('finesMacOffenceDetailsPositiveAmountValidator', () => {
-  const validator = finesMacOffenceDetailsPositiveAmountValidator();
+  const validator = finesMacOffenceDetailsPositiveAmountValidator({ allowZero: false });
+  const allowZeroValidator = finesMacOffenceDetailsPositiveAmountValidator({ allowZero: true });
 
   it('should return null for empty values', () => {
     expect(validator(new FormControl(null))).toBeNull();
@@ -20,9 +21,16 @@ describe('finesMacOffenceDetailsPositiveAmountValidator', () => {
     expect(validator(new FormControl('0.00'))).toEqual({ invalidZeroAmount: true });
   });
 
+  it('should return null for zero amounts when allowZero is true', () => {
+    expect(allowZeroValidator(new FormControl(0))).toBeNull();
+    expect(allowZeroValidator(new FormControl('0.00'))).toBeNull();
+  });
+
   it('should return invalidNegativeAmount for negative amounts', () => {
     expect(validator(new FormControl(-1))).toEqual({ invalidNegativeAmount: true });
     expect(validator(new FormControl('-12.50'))).toEqual({ invalidNegativeAmount: true });
+    expect(allowZeroValidator(new FormControl(-1))).toEqual({ invalidNegativeAmount: true });
+    expect(allowZeroValidator(new FormControl('-12.50'))).toEqual({ invalidNegativeAmount: true });
   });
 
   it('should ignore non-numeric values so amountValidator handles them', () => {

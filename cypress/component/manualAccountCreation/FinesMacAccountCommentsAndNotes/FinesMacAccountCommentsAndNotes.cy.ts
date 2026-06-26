@@ -279,6 +279,7 @@ describe('FinesMacAccountCommentsAndNotesComponent', () => {
     {
       tags: [
         ...buildTags('@JIRA-DEFECT:PO-3713'),
+        '@JIRA-STORY:PO-773',
         '@JIRA-LABEL:manual-account-creation',
         '@JIRA-EPIC:PO-545',
         '@JIRA-TEST-KEY:PO-4862',
@@ -303,6 +304,7 @@ describe('FinesMacAccountCommentsAndNotesComponent', () => {
     {
       tags: [
         ...buildTags('@JIRA-DEFECT:PO-3713'),
+        '@JIRA-STORY:PO-773',
         '@JIRA-LABEL:manual-account-creation',
         '@JIRA-EPIC:PO-545',
         '@JIRA-TEST-KEY:PO-4863',
@@ -326,6 +328,7 @@ describe('FinesMacAccountCommentsAndNotesComponent', () => {
     {
       tags: [
         ...buildTags('@JIRA-DEFECT:PO-3713'),
+        '@JIRA-STORY:PO-773',
         '@JIRA-LABEL:manual-account-creation',
         '@JIRA-EPIC:PO-545',
         '@JIRA-TEST-KEY:PO-4864',
@@ -349,6 +352,7 @@ describe('FinesMacAccountCommentsAndNotesComponent', () => {
     {
       tags: [
         ...buildTags('@JIRA-DEFECT:PO-3713'),
+        '@JIRA-STORY:PO-773',
         '@JIRA-LABEL:manual-account-creation',
         '@JIRA-EPIC:PO-545',
         '@JIRA-NFR:PO-2323',
@@ -375,6 +379,7 @@ describe('FinesMacAccountCommentsAndNotesComponent', () => {
     {
       tags: [
         ...buildTags('@JIRA-DEFECT:PO-3713'),
+        '@JIRA-STORY:PO-773',
         '@JIRA-LABEL:manual-account-creation',
         '@JIRA-EPIC:PO-545',
         '@JIRA-NFR:PO-2323',
@@ -403,6 +408,7 @@ describe('FinesMacAccountCommentsAndNotesComponent', () => {
     {
       tags: [
         ...buildTags('@JIRA-DEFECT:PO-3713'),
+        '@JIRA-STORY:PO-773',
         '@JIRA-LABEL:manual-account-creation',
         '@JIRA-EPIC:PO-545',
         '@JIRA-NFR:PO-2323',

@@ -14,7 +14,7 @@ import { PrimaryNavigationLocators as PrimaryNav } from '../../shared/selectors/
 import {
   RELEASE_1C_ADMINISTRATION_FEATURE_FLAG,
   RELEASE_1C_FINANCIAL_MOVEMENTS_FEATURE_FLAG,
-} from 'src/app/flows/fines/constants/release-feature-flags.constant';
+} from '@app/flows/fines/constants/release-feature-flags.constant';
 import { FINES_PERMISSIONS } from 'src/app/constants/fines-permissions.constant';
 import { FINES_DASHBOARD_ROUTING_PATHS } from 'src/app/flows/fines/constants/fines-dashboard-routing-paths.constant';
 
@@ -120,7 +120,7 @@ describe(
   'Release1cAdministrationAndFinancialMovements',
   { tags: [NAVIGATION_JIRA_LABEL, RELEASE_1C_STORY_TAG, RELEASE_1C_EPIC_TAG] },
   () => {
-    it('shows Administration and Finance in the primary navigation when both flags are enabled', () => {
+    it('shows Administration and Finance in the primary navigation when both flags are enabled', {tags: ['@JIRA-TEST-KEY:PO-8351']}, () => {
       setupAppComponent({});
 
       cy.get(PrimaryNav.container).should('exist');
@@ -128,7 +128,7 @@ describe(
       cy.get(PrimaryNav.itemByText(PrimaryNav.labels.finance)).should('exist');
     });
 
-    it('hides Administration and Finance from the primary navigation when both flags are disabled', () => {
+    it('hides Administration and Finance from the primary navigation when both flags are disabled', {tags: ['@JIRA-TEST-KEY:PO-8352']}, () => {
       setupAppComponent({
         [RELEASE_1C_ADMINISTRATION_FEATURE_FLAG]: false,
         [RELEASE_1C_FINANCIAL_MOVEMENTS_FEATURE_FLAG]: false,
@@ -139,7 +139,7 @@ describe(
       cy.get(PrimaryNav.itemByText(PrimaryNav.labels.finance)).should('not.exist');
     });
 
-    it('shows the Administration dashboard placeholder when release-1c-administration is enabled', () => {
+    it('shows the Administration dashboard placeholder when release-1c-administration is enabled', {tags: ['@JIRA-TEST-KEY:PO-8353']}, () => {
       setupDashboardComponent(FINES_DASHBOARD_ROUTING_PATHS.children.administration, {});
 
       cy.contains('h1', 'Administration').should('be.visible');
@@ -147,7 +147,7 @@ describe(
       cy.get('#testAdministrationLink').should('be.visible').and('contain.text', 'Test Administration Link');
     });
 
-    it('hides Administration dashboard content when release-1c-administration is disabled', () => {
+    it('hides Administration dashboard content when release-1c-administration is disabled', {tags: ['@JIRA-TEST-KEY:PO-8354']}, () => {
       setupDashboardComponent(FINES_DASHBOARD_ROUTING_PATHS.children.administration, {
         [RELEASE_1C_ADMINISTRATION_FEATURE_FLAG]: false,
       });
@@ -157,7 +157,7 @@ describe(
       cy.get('#testAdministrationLink').should('not.exist');
     });
 
-    it('shows the Finance dashboard placeholder when release-1c-financial-movements is enabled', () => {
+    it('shows the Finance dashboard placeholder when release-1c-financial-movements is enabled', {tags: ['@JIRA-TEST-KEY:PO-8355']}, () => {
       setupDashboardComponent(FINES_DASHBOARD_ROUTING_PATHS.children.finance, {});
 
       cy.contains('h1', 'Finance').should('be.visible');
@@ -165,7 +165,7 @@ describe(
       cy.get('#testFinanceLink').should('be.visible').and('contain.text', 'Test Finance Link');
     });
 
-    it('hides Finance dashboard content when release-1c-financial-movements is disabled', () => {
+    it('hides Finance dashboard content when release-1c-financial-movements is disabled', {tags: ['@JIRA-TEST-KEY:PO-8356']}, () => {
       setupDashboardComponent(FINES_DASHBOARD_ROUTING_PATHS.children.finance, {
         [RELEASE_1C_FINANCIAL_MOVEMENTS_FEATURE_FLAG]: false,
       });
