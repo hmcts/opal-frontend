@@ -1,0 +1,55 @@
+<opal-lib-govuk-details #filterDetails [summaryText]="filterDetailsSummaryText()">
+  <opal-lib-govuk-error-summary
+    [errors]="formErrorSummaryMessage"
+    (errorClick)="scrollTo($event)"
+  ></opal-lib-govuk-error-summary>
+
+  <form [formGroup]="form" (submit)="handleFormSubmit($event)">
+    <div class="govuk-grid-row">
+      <div class="govuk-grid-column-one-third">
+        <opal-lib-moj-date-picker
+          labelText="Date from"
+          labelClasses="govuk-label--s"
+          inputId="dateFrom"
+          inputName="dateFrom"
+          inputClasses="govuk-input--width-10"
+          hintText="For example, 31/01/2023"
+          [control]="dateFromControl"
+          [errors]="formControlErrorMessages['dateFrom']"
+          (dateChange)="setInputValue($event, 'dateFrom')"
+        ></opal-lib-moj-date-picker>
+
+        <opal-lib-moj-date-picker
+          labelText="Date to"
+          labelClasses="govuk-label--s"
+          inputId="dateTo"
+          inputName="dateTo"
+          inputClasses="govuk-input--width-10"
+          hintText="For example, 31/01/2023"
+          [control]="dateToControl"
+          [errors]="formControlErrorMessages['dateTo']"
+          (dateChange)="setInputValue($event, 'dateTo')"
+        ></opal-lib-moj-date-picker>
+      </div>
+    </div>
+
+    <opal-lib-govuk-checkboxes
+      fieldSetId="history-and-notes-categories"
+      checkboxClasses="govuk-checkboxes--small"
+      legendText="Categories"
+      legendClasses="govuk-fieldset__legend--s"
+    >
+      @for (category of categories; track category.value) {
+        <div
+          opal-lib-govuk-checkboxes-item
+          [labelText]="category.label"
+          [inputId]="'history-and-notes-category-' + category.value"
+          [inputName]="'history-and-notes-category-' + category.value"
+          [control]="getCategoryControl(category.value)"
+        ></div>
+      }
+    </opal-lib-govuk-checkboxes>
+
+    <opal-lib-govuk-button buttonId="history-and-notes-filter-button" type="submit">Filter</opal-lib-govuk-button>
+  </form>
+</opal-lib-govuk-details>

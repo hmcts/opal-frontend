@@ -126,7 +126,9 @@ describe('WriteOffRelease1cFeatureToggles', () => {
 
   it(
     'should make Accounts available in primary navigation for consolidation users when release-1c-write-off is enabled',
-    { tags: [...buildTags(RELEASE_1C_WRITE_OFF_STORY_TAG), RELEASE_EPIC_TAG, '@R1CWriteOff'] },
+    {
+      tags: [...buildTags(RELEASE_1C_WRITE_OFF_STORY_TAG), RELEASE_EPIC_TAG, '@R1CWriteOff', '@JIRA-TEST-KEY:PO-7530'],
+    },
     () => {
       setupAppComponent(consolidationPermissionIds, { 'release-1a': false, 'release-1c-write-off': true });
 
@@ -137,18 +139,32 @@ describe('WriteOffRelease1cFeatureToggles', () => {
 
   it(
     'should hide Accounts from primary navigation for consolidation-only users when release-1c-write-off is disabled',
-    { tags: [...buildTags(RELEASE_1C_WRITE_OFF_STORY_TAG), RELEASE_EPIC_TAG, '@R1CWriteOffOff'] },
+    {
+      tags: [
+        ...buildTags(RELEASE_1C_WRITE_OFF_STORY_TAG),
+        RELEASE_EPIC_TAG,
+        '@R1CWriteOffOff',
+        '@JIRA-TEST-KEY:PO-7531',
+      ],
+    },
     () => {
       setupAppComponent(consolidationPermissionIds, { 'release-1a': true, 'release-1c-write-off': false });
 
-      cy.get(PrimaryNav.container).should('be.visible');
+      cy.get(PrimaryNav.container).should('not.be.visible');
       cy.get(PrimaryNav.itemByText(PrimaryNav.labels.accounts)).should('not.exist');
     },
   );
 
   it(
     'should keep Accounts available in primary navigation for draft-account users when release-1c-write-off is disabled',
-    { tags: [...buildTags(RELEASE_1C_WRITE_OFF_STORY_TAG), RELEASE_EPIC_TAG, '@R1CWriteOffOff'] },
+    {
+      tags: [
+        ...buildTags(RELEASE_1C_WRITE_OFF_STORY_TAG),
+        RELEASE_EPIC_TAG,
+        '@R1CWriteOffOff',
+        '@JIRA-TEST-KEY:PO-7532',
+      ],
+    },
     () => {
       setupAppComponent(draftAccountPermissionIds, { 'release-1a': true, 'release-1c-write-off': false });
 
@@ -159,7 +175,9 @@ describe('WriteOffRelease1cFeatureToggles', () => {
 
   it(
     'should make the Consolidate accounts entry point available on the Accounts dashboard when release-1c-write-off is enabled',
-    { tags: [...buildTags(RELEASE_1C_WRITE_OFF_STORY_TAG), RELEASE_EPIC_TAG, '@R1CWriteOff'] },
+    {
+      tags: [...buildTags(RELEASE_1C_WRITE_OFF_STORY_TAG), RELEASE_EPIC_TAG, '@R1CWriteOff', '@JIRA-TEST-KEY:PO-7533'],
+    },
     () => {
       setupDashboardComponent(consolidationPermissionIds, { 'release-1a': false, 'release-1c-write-off': true });
 
@@ -171,7 +189,14 @@ describe('WriteOffRelease1cFeatureToggles', () => {
 
   it(
     'should hide the Consolidate accounts entry point from the Accounts dashboard when release-1c-write-off is disabled',
-    { tags: [...buildTags(RELEASE_1C_WRITE_OFF_STORY_TAG), RELEASE_EPIC_TAG, '@R1CWriteOffOff'] },
+    {
+      tags: [
+        ...buildTags(RELEASE_1C_WRITE_OFF_STORY_TAG),
+        RELEASE_EPIC_TAG,
+        '@R1CWriteOffOff',
+        '@JIRA-TEST-KEY:PO-7534',
+      ],
+    },
     () => {
       setupDashboardComponent(consolidationPermissionIds, { 'release-1a': false, 'release-1c-write-off': false });
 
@@ -183,7 +208,14 @@ describe('WriteOffRelease1cFeatureToggles', () => {
 
   it(
     'should keep existing draft account dashboard entry points available when release-1c-write-off is disabled',
-    { tags: [...buildTags(RELEASE_1C_WRITE_OFF_STORY_TAG), RELEASE_EPIC_TAG, '@R1CWriteOffOff'] },
+    {
+      tags: [
+        ...buildTags(RELEASE_1C_WRITE_OFF_STORY_TAG),
+        RELEASE_EPIC_TAG,
+        '@R1CWriteOffOff',
+        '@JIRA-TEST-KEY:PO-7535',
+      ],
+    },
     () => {
       setupDashboardComponent(draftAccountPermissionIds, { 'release-1a': true, 'release-1c-write-off': false });
 

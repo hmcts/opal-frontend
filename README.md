@@ -339,6 +339,7 @@ Use these functional scripts when you need a release-aligned run locally or in a
 
 Use these component scripts to avoid running later-release component coverage when you only want the currently-enabled release package:
 
+- `yarn test:component:all_flags_off`: component tests tagged `R1AOff` or `R1BOff` only
 - `yarn test:component:r1a`: `R1A` manual account creation and draft-account components only
 - `yarn test:component:r1ab`: `R1A` + `R1B` component coverage only
 - `yarn test:component:r1c_write_off`: `R1C` write-off / consolidation components only
@@ -772,28 +773,16 @@ Zephyr Automation is a tool for integrating test results and ticket management b
 - `zephyr:cucumber:functional:jira-create`: Create Jira tickets from the functional Cucumber JSON report at `functional-output/zephyr/cucumber-report.json`.
 - `zephyr:cucumber:functional:jira-update`: Update Jira tickets using the functional Cucumber JSON report at `functional-output/zephyr/cucumber-report.json`.
 - `zephyr:cucumber:functional:jira-execute`: Create a Zephyr execution from the functional Cucumber JSON report at `functional-output/zephyr/cucumber-report.json`.
-- `zephyr:cucumber:r1a_legacy_demo:jira-create`: Create Jira tickets from the R1A legacy demo Cucumber JSON report at `functional-output/zephyr/cucumber-report.json`.
-- `zephyr:cucumber:r1a_legacy_demo:jira-update`: Update Jira tickets using the R1A legacy demo Cucumber JSON report at `functional-output/zephyr/cucumber-report.json`.
-- `zephyr:cucumber:r1a_legacy_demo:jira-execute`: Create a Zephyr execution from the R1A legacy demo Cucumber JSON report at `functional-output/zephyr/cucumber-report.json`.
-- `zephyr:cucumber:r1a_off_legacy_demo:jira-create`: Create Jira tickets from the R1A Off legacy demo Cucumber JSON report at `functional-output/zephyr/cucumber-report.json`.
-- `zephyr:cucumber:r1a_off_legacy_demo:jira-update`: Update Jira tickets using the R1A Off legacy demo Cucumber JSON report at `functional-output/zephyr/cucumber-report.json`.
-- `zephyr:cucumber:r1a_off_legacy_demo:jira-execute`: Create a Zephyr execution from the R1A Off legacy demo Cucumber JSON report at `functional-output/zephyr/cucumber-report.json`.
 - `zephyr:cucumber:smoke:jira-create`: Create Jira tickets from the smoke Cucumber JSON report at `smoke-output/zephyr/cucumber-report.json`.
 - `zephyr:cucumber:smoke:jira-update`: Update Jira tickets using the smoke Cucumber JSON report at `smoke-output/zephyr/cucumber-report.json`.
 - `zephyr:cucumber:smoke:jira-execute`: Create a Zephyr execution from the smoke Cucumber JSON report at `smoke-output/zephyr/cucumber-report.json`.
-- `zephyr:cucumber:uat_technical:jira-create`: Create Jira tickets from the UAT-Technical Cucumber JSON report at `functional-output/zephyr/cucumber-report.json`.
-- `zephyr:cucumber:uat_technical:jira-update`: Update Jira tickets using the UAT-Technical Cucumber JSON report at `functional-output/zephyr/cucumber-report.json`.
-- `zephyr:cucumber:uat_technical:jira-execute`: Create a Zephyr execution from the UAT-Technical Cucumber JSON report at `functional-output/zephyr/cucumber-report.json`.
-- `zephyr:cucumber:legacy:jira-create`: Create Jira tickets from the legacy-mode Cucumber JSON report at `functional-output/zephyr/cucumber-report.json`.
-- `zephyr:cucumber:legacy:jira-update`: Update Jira tickets using the legacy-mode Cucumber JSON report at `functional-output/zephyr/cucumber-report.json`.
-- `zephyr:cucumber:legacy:jira-execute`: Create a Zephyr execution from the legacy-mode Cucumber JSON report at `functional-output/zephyr/cucumber-report.json`.
 - `zephyr:test:component`: Reset outputs, run component tests, then create a Zephyr execution from the Cypress JSON report.
 - `zephyr:test:functional`: Reset outputs, run functional tests, then create a Zephyr execution from the functional Cucumber JSON report.
-- `zephyr:test:r1a_legacy_demo`: Reset outputs, run the R1A legacy demo functional suite, then create a Zephyr execution from the generated Cucumber JSON report.
-- `zephyr:test:r1a_off_legacy_demo`: Reset outputs, run the R1A Off legacy demo functional suite, then create a Zephyr execution from the generated Cucumber JSON report.
+- `zephyr:test:r1a_legacy_demo`: Reset outputs, run the R1A legacy demo functional suite, then create a Zephyr execution from the functional Cucumber JSON report.
+- `zephyr:test:r1a_off_legacy_demo`: Reset outputs, run the R1A Off legacy demo functional suite, then create a Zephyr execution from the functional Cucumber JSON report.
 - `zephyr:test:smoke`: Reset outputs, run smoke tests, then create a Zephyr execution from the smoke Cucumber JSON report.
-- `zephyr:test:uat_technical`: Reset outputs, run the UAT-Technical legacy-mode functional suite, then create a Zephyr execution from the generated Cucumber JSON report.
-- `zephyr:test:legacy`: Reset outputs, run the legacy-mode functional suite, then create a Zephyr execution from the generated Cucumber JSON report.
+- `zephyr:test:uat_technical`: Reset outputs, run the UAT-Technical legacy-mode functional suite, then create a Zephyr execution from the functional Cucumber JSON report.
+- `zephyr:test:legacy`: Reset outputs, run the legacy-mode functional suite, then create a Zephyr execution from the functional Cucumber JSON report.
 
 ## Test Metadata Maintenance
 
@@ -812,8 +801,8 @@ The following tags can be used in your test scenarios to control ticket creation
 
 | Tag Prefix         | Example Value           | Description                                                        |
 | ------------------ | ----------------------- | ------------------------------------------------------------------ |
-| `@JIRA-KEY:`       | `@JIRA-KEY:PROJ-123`    | Associates the test with an existing Jira issue key.               |
-| `@JIRA-KEY:PO-*`   | `@JIRA-KEY:PO-1234`     | Associates one executable test with one Zephyr PO test case key.   |
+| `@JIRA-TEST-KEY:`  | `@JIRA-TEST-KEY:PROJ-123` | Associates the test with an existing Jira issue key.             |
+| `@JIRA-TEST-KEY:PO-*` | `@JIRA-TEST-KEY:PO-1234` | Associates one executable test with one Zephyr PO test case key. |
 | `@JIRA-COMPONENT:` | `@JIRA-COMPONENT:API`   | Adds the specified Jira component to the ticket.                   |
 | `@JIRA-LABEL:`     | `@JIRA-LABEL:smoke`     | Adds the specified label to the Jira ticket.                       |
 | `@JIRA-EPIC:`      | `@JIRA-EPIC:PROJ-456`   | Links the ticket to the specified Jira Epic.                       |

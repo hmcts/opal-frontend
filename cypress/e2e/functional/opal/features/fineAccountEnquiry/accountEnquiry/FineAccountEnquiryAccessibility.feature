@@ -5,7 +5,7 @@ Feature: Account Enquiries - Enforcement Accessibility
   Background:
     Given I am logged in with email "opal-test@dev.platform.hmcts.net"
     And I clear all approved accounts
-  @JIRA-EPIC:PO-2472 @JIRA-TEST-KEY:PO-5459
+  @JIRA-STORY:PO-1849 @JIRA-STORY:PO-3729 @JIRA-EPIC:PO-2472 @JIRA-TEST-KEY:PO-5459
   Scenario: Enforcement tab accessibility
     Given I create a "adultOrYouthOnly" draft account with the following details and set status "Publishing Pending" using user "opal-test-10@dev.platform.hmcts.net":
       | Account_status                                  | Submitted                     |
@@ -27,7 +27,7 @@ Feature: Account Enquiries - Enforcement Accessibility
     And I open the change enforcement court form
     And I check the page for accessibility
 
-  @JIRA-EPIC:PO-2472 @JIRA-TEST-KEY:PO-5460
+  @JIRA-STORY:PO-1850 @JIRA-EPIC:PO-2472 @JIRA-TEST-KEY:PO-5460
   Scenario: Add enforcement override page accessibility
     Given I create a "adultOrYouthOnly" draft account with the following details and set status "Publishing Pending" using user "opal-test-10@dev.platform.hmcts.net":
       | Account_status                                  | Submitted                             |
@@ -48,7 +48,7 @@ Feature: Account Enquiries - Enforcement Accessibility
     And I open the add enforcement override form
     Then I check the page for accessibility
 
-  @JIRA-EPIC:PO-2472 @JIRA-TEST-KEY:PO-5461
+  @JIRA-STORY:PO-1863 @JIRA-STORY:PO-3729 @JIRA-EPIC:PO-2472 @JIRA-TEST-KEY:PO-5461
   Scenario: Company enforcement tab accessibility
     Given I create a "company" draft account with the following details and set status "Publishing Pending" using user "opal-test-10@dev.platform.hmcts.net":
       | Account_status                                  | Submitted                 |
@@ -68,7 +68,7 @@ Feature: Account Enquiries - Enforcement Accessibility
     And I open the change enforcement court form
     And I check the page for accessibility
 
-  @JIRA-EPIC:PO-2472 @JIRA-TEST-KEY:PO-5462
+  @JIRA-STORY:PO-1867 @JIRA-STORY:PO-1863 @JIRA-EPIC:PO-2472 @JIRA-TEST-KEY:PO-5462
   Scenario: Company add enforcement override page accessibility
     Given I create a "company" draft account with the following details and set status "Publishing Pending" using user "opal-test-10@dev.platform.hmcts.net":
       | Account_status                                  | Submitted                         |
@@ -87,7 +87,7 @@ Feature: Account Enquiries - Enforcement Accessibility
     And I open the add enforcement override form
     Then I check the page for accessibility
 
-  @JIRA-EPIC:PO-2472 @JIRA-TEST-KEY:PO-5463
+  @JIRA-STORY:PO-1862 @JIRA-STORY:PO-3729 @JIRA-EPIC:PO-2472 @JIRA-TEST-KEY:PO-5463
   Scenario: Parent or guardian enforcement tab accessibility
     Given I create a "pgToPay" draft account with the following details and set status "Publishing Pending" using user "opal-test-10@dev.platform.hmcts.net":
       | Account_status                                  | Submitted                       |
@@ -110,7 +110,7 @@ Feature: Account Enquiries - Enforcement Accessibility
     And I open the change enforcement court form
     And I check the page for accessibility
 
-  @JIRA-EPIC:PO-2472 @JIRA-TEST-KEY:PO-5464
+  @JIRA-STORY:PO-1782 @JIRA-EPIC:PO-2472 @JIRA-TEST-KEY:PO-5464
   Scenario: Add enforcement action page accessibility
     Given I create a "adultOrYouthOnly" draft account with the following details and set status "Publishing Pending" using user "opal-test-10@dev.platform.hmcts.net":
       | Account_status                                  | Submitted                           |
@@ -131,7 +131,7 @@ Feature: Account Enquiries - Enforcement Accessibility
     And I open the add enforcement action form
     Then I check the page for accessibility
 
-  @JIRA-EPIC:PO-2472 @JIRA-TEST-KEY:PO-5465
+  @JIRA-STORY:PO-1782 @JIRA-EPIC:PO-2472 @JIRA-TEST-KEY:PO-5465
   Scenario: Company add enforcement action page accessibility
     Given I create a "company" draft account with the following details and set status "Publishing Pending" using user "opal-test-10@dev.platform.hmcts.net":
       | Account_status                                  | Submitted                       |
@@ -150,7 +150,7 @@ Feature: Account Enquiries - Enforcement Accessibility
     And I open the add enforcement action form
     Then I check the page for accessibility
 
-  @JIRA-STORY:PO-1782 @JIRA-EPIC:PO-2630
+  @JIRA-STORY:PO-1782 @JIRA-EPIC:PO-2630 @JIRA-TEST-KEY:PO-7555
   Scenario: Confirm enforcement action page accessibility
     Given I create a "adultOrYouthOnly" draft account with the following details and set status "Publishing Pending" using user "opal-test-10@dev.platform.hmcts.net":
       | Account_status                                  | Submitted                           |
@@ -171,4 +171,25 @@ Feature: Account Enquiries - Enforcement Accessibility
     And I open the add enforcement action form
     And I choose the enforcement action "Collection order (COLLO)"
     And I continue to the confirm enforcement action page
+    Then I check the page for accessibility
+
+  @JIRA-STORY:PO-1785 @JIRA-EPIC:PO-1675 @JIRA-TEST-KEY:PO-5466
+  Scenario: Remove enforcement hold page accessibility
+    Given I create a "adultOrYouthOnly" draft account with the following details and set status "Publishing Pending" using user "opal-test-10@dev.platform.hmcts.net":
+      | Account_status                                  | Submitted                           |
+      | account.defendant.forenames                     | Evan                                |
+      | account.defendant.surname                       | EnfRemoveAccess{uniq}               |
+      | account.defendant.email_address_1               | Evan.EnfRemoveAccess{uniq}@test.com |
+      | account.defendant.telephone_number_home         | 02078259315                         |
+      | account.account_type                            | Fine                                |
+      | account.prosecutor_case_reference               | PCR-AUTO-019                        |
+      | account.collection_order_made                   | false                               |
+      | account.collection_order_made_today             | false                               |
+      | account.payment_card_request                    | false                               |
+      | account.defendant.dob                           | 2002-05-15                          |
+      | account.payment_terms.enforcements[0].result_id | NOENF                               |
+
+    When I search for the account by last name "EnfRemoveAccess{uniq}" and open the latest result
+    And I go to the Enforcement tab
+    And I open the remove enforcement hold screen
     Then I check the page for accessibility

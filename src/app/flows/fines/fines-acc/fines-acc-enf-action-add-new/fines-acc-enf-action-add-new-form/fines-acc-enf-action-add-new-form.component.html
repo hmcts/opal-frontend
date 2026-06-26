@@ -1,0 +1,41 @@
+<opal-lib-govuk-error-summary
+  [errors]="formErrorSummaryMessage"
+  (errorClick)="scrollTo($event)"
+></opal-lib-govuk-error-summary>
+
+<opal-lib-govuk-heading-with-caption
+  [captionText]="`${accountNumber} - ${partyName}`"
+  [headingText]="'Do you want to add a new enforcement action?'"
+  headingClasses="govuk-heading-l govuk-!-margin-bottom-6"
+></opal-lib-govuk-heading-with-caption>
+
+<form (submit)="handleFormSubmit($event)" [formGroup]="form" class="govuk-form">
+  <opal-lib-govuk-radio
+    fieldSetId="facc_enf_action_add_new"
+    legendText="Do you want to add a new enforcement action?"
+    legendClasses="govuk-visually-hidden"
+    radioClasses="govuk-radios--inline"
+    [errors]="formControlErrorMessages['facc_enf_action_add_new']"
+  >
+    <div
+      opal-lib-govuk-radios-item
+      labelText="Yes"
+      inputId="facc_enf_action_add_new_yes"
+      inputName="facc_enf_action_add_new"
+      [inputValue]="true"
+      [control]="form.get('facc_enf_action_add_new')"
+    ></div>
+    <div
+      opal-lib-govuk-radios-item
+      labelText="No"
+      inputId="facc_enf_action_add_new_no"
+      inputName="facc_enf_action_add_new"
+      [inputValue]="false"
+      [control]="form.get('facc_enf_action_add_new')"
+    ></div>
+  </opal-lib-govuk-radio>
+
+  <div class="govuk-button-group">
+    <button class="govuk-button govuk-!-margin-right-4" id="submitForm" type="submit">Continue</button>
+  </div>
+</form>
