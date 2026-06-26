@@ -62,7 +62,7 @@ Feature: Account Enquiries - View Account Details Accessibility
 
   Rule: Major creditor account details accessibility
 
-    @only @JIRA-STORY:PO-2128 @JIRA-EPIC:PO-1286
+    @JIRA-STORY:PO-2128 @JIRA-EPIC:PO-1286
     Scenario: Check Account Details View Accessibility with Axe-Core for Major Creditor Account
       Given I am on the Account Search page - Individuals form displayed by default
       And I open the business unit filter from the search page
