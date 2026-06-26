@@ -1146,9 +1146,17 @@ describe('FinesMacAddOffenceComponent', () => {
       cy.get(DOM_ELEMENTS.errorSummary).should('contain', IMPOSITION_ERROR_MESSAGES.invalidNegativeValue);
     },
   );
-  it('Should show error message for invalid amount paid being a minus value', {
-      tags: ['@JIRA-EPIC:PO-2219', '@JIRA-STORY:PO-8046', '@JIRA-LABEL:manual-account-creation', '@JIRA-TEST-KEY:PO-8350'],
-    }, () => {
+  it(
+    'Should show error message for invalid amount paid being a minus value',
+    {
+      tags: [
+        '@JIRA-EPIC:PO-2219',
+        '@JIRA-STORY:PO-8046',
+        '@JIRA-LABEL:manual-account-creation',
+        '@JIRA-TEST-KEY:PO-8350',
+      ],
+    },
+    () => {
       setupComponent(null);
 
       let Imposition = structuredClone(IMPOSITION_MOCK_1);
@@ -1163,5 +1171,6 @@ describe('FinesMacAddOffenceComponent', () => {
       cy.get(DOM_ELEMENTS.submitButton).first().click();
 
       cy.get(DOM_ELEMENTS.errorSummary).should('contain', IMPOSITION_ERROR_MESSAGES.invalidNegativeValue);
-    });
+    },
+  );
 });
