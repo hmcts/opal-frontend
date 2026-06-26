@@ -174,7 +174,6 @@ describe('FinesMacParentGuardianDetailsComponent', () => {
           '@JIRA-STORY:PO-3415',
           '@JIRA-LABEL:populate-and-submit',
         ),
-        '@JIRA-KEY:POT-7486',
         '@JIRA-TEST-KEY:PO-5084',
       ],
     },
@@ -198,7 +197,6 @@ describe('FinesMacParentGuardianDetailsComponent', () => {
           '@JIRA-STORY:PO-3415',
           '@JIRA-LABEL:populate-and-submit',
         ),
-        '@JIRA-KEY:POT-7487',
         '@JIRA-TEST-KEY:PO-5085',
       ],
     },
@@ -459,7 +457,6 @@ describe('FinesMacParentGuardianDetailsComponent', () => {
           '@JIRA-EPIC:PO-344',
           '@JIRA-EPIC:PO-2219',
         ),
-        '@JIRA-KEY:POT-7498',
         '@JIRA-TEST-KEY:PO-5096',
       ],
     },
@@ -514,7 +511,7 @@ describe('FinesMacParentGuardianDetailsComponent', () => {
   it(
     'Should show error for non-single-byte ASCII characters for alias first and last name',
     {
-      tags: [...buildTags('@JIRA-STORY:PO-1679', '@JIRA-EPIC:PO-344'), '@JIRA-KEY:POT-7499', '@JIRA-TEST-KEY:PO-5097'],
+      tags: [...buildTags('@JIRA-STORY:PO-1679', '@JIRA-EPIC:PO-344'), '@JIRA-TEST-KEY:PO-5097'],
     },
     () => {
       setupComponent(null, 'pgToPay');
