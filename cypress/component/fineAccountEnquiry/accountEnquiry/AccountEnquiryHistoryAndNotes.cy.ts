@@ -58,7 +58,8 @@ describe('Account Enquiry History and notes', () => {
       cy.get(HISTORY_AND_NOTES_TAB.notesCheckbox).should('exist');
       cy.get(HISTORY_AND_NOTES_TAB.paymentTermsCheckbox).should('exist');
       cy.get(HISTORY_AND_NOTES_TAB.filterButton).should('be.visible').and('contain.text', 'Filter');
-    });
+    },
+  );
 
   it(
     'AC2a. should send an initial unfiltered history request when the history and notes tab loads',
@@ -76,7 +77,8 @@ describe('Account Enquiry History and notes', () => {
         expect(response?.statusCode).to.equal(200);
         expect(response?.body).to.deep.equal(OPAL_FINES_ACCOUNT_DEFENDANT_DETAILS_HISTORY_AND_NOTES_TAB_REF_DATA_MOCK);
       });
-    });
+    },
+  );
 
   it(
     'AC2b. should send dateFrom and dateTo query params when both dates are entered and Filter is selected',
@@ -101,7 +103,8 @@ describe('Account Enquiry History and notes', () => {
         expect(response?.statusCode).to.equal(200);
         expect(response?.body).to.deep.equal(OPAL_FINES_ACCOUNT_DEFENDANT_DETAILS_HISTORY_AND_NOTES_TAB_REF_DATA_MOCK);
       });
-    });
+    },
+  );
 
   it(
     'AC2b. should omit dateTo when Date to is left blank and Filter is selected',
@@ -126,7 +129,8 @@ describe('Account Enquiry History and notes', () => {
         expect(response?.statusCode).to.equal(200);
         expect(response?.body).to.deep.equal(OPAL_FINES_ACCOUNT_DEFENDANT_DETAILS_HISTORY_AND_NOTES_TAB_REF_DATA_MOCK);
       });
-    });
+    },
+  );
 
   it(
     'AC2b. should omit dateFrom when Date to is left blank and Filter is selected',
@@ -151,7 +155,8 @@ describe('Account Enquiry History and notes', () => {
         expect(response?.statusCode).to.equal(200);
         expect(response?.body).to.deep.equal(OPAL_FINES_ACCOUNT_DEFENDANT_DETAILS_HISTORY_AND_NOTES_TAB_REF_DATA_MOCK);
       });
-    });
+    },
+  );
 
   it(
     'AC2b. should show an error and not send a filtered request when Date from is later than Date to',
@@ -175,7 +180,8 @@ describe('Account Enquiry History and notes', () => {
         .and('contain.text', 'Date from must be the same as or earlier than Date to');
 
       cy.get('@getHistoryAndNotes.all').should('have.length', 1);
-    });
+    },
+  );
 
   it(
     'AC2c. should send itemTypes when a single category is selected and Filter is selected',
@@ -199,7 +205,8 @@ describe('Account Enquiry History and notes', () => {
         expect(response?.statusCode).to.equal(200);
         expect(response?.body).to.deep.equal(OPAL_FINES_ACCOUNT_DEFENDANT_DETAILS_HISTORY_AND_NOTES_TAB_REF_DATA_MOCK);
       });
-    });
+    },
+  );
 
   it(
     'AC2c. should send a comma-separated itemTypes list when all categories are selected and Filter is selected',
@@ -227,7 +234,8 @@ describe('Account Enquiry History and notes', () => {
         expect(response?.statusCode).to.equal(200);
         expect(response?.body).to.deep.equal(OPAL_FINES_ACCOUNT_DEFENDANT_DETAILS_HISTORY_AND_NOTES_TAB_REF_DATA_MOCK);
       });
-    });
+    },
+  );
 
   it(
     'AC2d. should not send a filtered request when filter values are changed without selecting Filter',
@@ -243,5 +251,6 @@ describe('Account Enquiry History and notes', () => {
       cy.get(HISTORY_AND_NOTES_TAB.notesCheckbox).check();
 
       cy.get('@getHistoryAndNotes.all').should('have.length', 1);
-    });
+    },
+  );
 });
