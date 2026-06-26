@@ -120,59 +120,83 @@ describe(
   'Release1cAdministrationAndFinancialMovements',
   { tags: [NAVIGATION_JIRA_LABEL, RELEASE_1C_STORY_TAG, RELEASE_1C_EPIC_TAG] },
   () => {
-    it('shows Administration and Finance in the primary navigation when both flags are enabled', {tags: ['@JIRA-TEST-KEY:PO-8351']}, () => {
-      setupAppComponent({});
+    it(
+      'shows Administration and Finance in the primary navigation when both flags are enabled',
+      { tags: ['@JIRA-TEST-KEY:PO-8351'] },
+      () => {
+        setupAppComponent({});
 
-      cy.get(PrimaryNav.container).should('exist');
-      cy.get(PrimaryNav.itemByText(PrimaryNav.labels.administration)).should('exist');
-      cy.get(PrimaryNav.itemByText(PrimaryNav.labels.finance)).should('exist');
-    });
+        cy.get(PrimaryNav.container).should('exist');
+        cy.get(PrimaryNav.itemByText(PrimaryNav.labels.administration)).should('exist');
+        cy.get(PrimaryNav.itemByText(PrimaryNav.labels.finance)).should('exist');
+      },
+    );
 
-    it('hides Administration and Finance from the primary navigation when both flags are disabled', {tags: ['@JIRA-TEST-KEY:PO-8352']}, () => {
-      setupAppComponent({
-        [RELEASE_1C_ADMINISTRATION_FEATURE_FLAG]: false,
-        [RELEASE_1C_FINANCIAL_MOVEMENTS_FEATURE_FLAG]: false,
-      });
+    it(
+      'hides Administration and Finance from the primary navigation when both flags are disabled',
+      { tags: ['@JIRA-TEST-KEY:PO-8352'] },
+      () => {
+        setupAppComponent({
+          [RELEASE_1C_ADMINISTRATION_FEATURE_FLAG]: false,
+          [RELEASE_1C_FINANCIAL_MOVEMENTS_FEATURE_FLAG]: false,
+        });
 
-      cy.get(PrimaryNav.container).should('exist');
-      cy.get(PrimaryNav.itemByText(PrimaryNav.labels.administration)).should('not.exist');
-      cy.get(PrimaryNav.itemByText(PrimaryNav.labels.finance)).should('not.exist');
-    });
+        cy.get(PrimaryNav.container).should('exist');
+        cy.get(PrimaryNav.itemByText(PrimaryNav.labels.administration)).should('not.exist');
+        cy.get(PrimaryNav.itemByText(PrimaryNav.labels.finance)).should('not.exist');
+      },
+    );
 
-    it('shows the Administration dashboard placeholder when release-1c-administration is enabled', {tags: ['@JIRA-TEST-KEY:PO-8353']}, () => {
-      setupDashboardComponent(FINES_DASHBOARD_ROUTING_PATHS.children.administration, {});
+    it(
+      'shows the Administration dashboard placeholder when release-1c-administration is enabled',
+      { tags: ['@JIRA-TEST-KEY:PO-8353'] },
+      () => {
+        setupDashboardComponent(FINES_DASHBOARD_ROUTING_PATHS.children.administration, {});
 
-      cy.contains('h1', 'Administration').should('be.visible');
-      cy.contains('h2', 'Pending development').should('be.visible');
-      cy.get('#testAdministrationLink').should('be.visible').and('contain.text', 'Test Administration Link');
-    });
+        cy.contains('h1', 'Administration').should('be.visible');
+        cy.contains('h2', 'Pending development').should('be.visible');
+        cy.get('#testAdministrationLink').should('be.visible').and('contain.text', 'Test Administration Link');
+      },
+    );
 
-    it('hides Administration dashboard content when release-1c-administration is disabled', {tags: ['@JIRA-TEST-KEY:PO-8354']}, () => {
-      setupDashboardComponent(FINES_DASHBOARD_ROUTING_PATHS.children.administration, {
-        [RELEASE_1C_ADMINISTRATION_FEATURE_FLAG]: false,
-      });
+    it(
+      'hides Administration dashboard content when release-1c-administration is disabled',
+      { tags: ['@JIRA-TEST-KEY:PO-8354'] },
+      () => {
+        setupDashboardComponent(FINES_DASHBOARD_ROUTING_PATHS.children.administration, {
+          [RELEASE_1C_ADMINISTRATION_FEATURE_FLAG]: false,
+        });
 
-      cy.contains('h1', 'Administration').should('be.visible');
-      cy.contains('h2', 'Pending development').should('not.exist');
-      cy.get('#testAdministrationLink').should('not.exist');
-    });
+        cy.contains('h1', 'Administration').should('be.visible');
+        cy.contains('h2', 'Pending development').should('not.exist');
+        cy.get('#testAdministrationLink').should('not.exist');
+      },
+    );
 
-    it('shows the Finance dashboard placeholder when release-1c-financial-movements is enabled', {tags: ['@JIRA-TEST-KEY:PO-8355']}, () => {
-      setupDashboardComponent(FINES_DASHBOARD_ROUTING_PATHS.children.finance, {});
+    it(
+      'shows the Finance dashboard placeholder when release-1c-financial-movements is enabled',
+      { tags: ['@JIRA-TEST-KEY:PO-8355'] },
+      () => {
+        setupDashboardComponent(FINES_DASHBOARD_ROUTING_PATHS.children.finance, {});
 
-      cy.contains('h1', 'Finance').should('be.visible');
-      cy.contains('h2', 'Pending development').should('be.visible');
-      cy.get('#testFinanceLink').should('be.visible').and('contain.text', 'Test Finance Link');
-    });
+        cy.contains('h1', 'Finance').should('be.visible');
+        cy.contains('h2', 'Pending development').should('be.visible');
+        cy.get('#testFinanceLink').should('be.visible').and('contain.text', 'Test Finance Link');
+      },
+    );
 
-    it('hides Finance dashboard content when release-1c-financial-movements is disabled', {tags: ['@JIRA-TEST-KEY:PO-8356']}, () => {
-      setupDashboardComponent(FINES_DASHBOARD_ROUTING_PATHS.children.finance, {
-        [RELEASE_1C_FINANCIAL_MOVEMENTS_FEATURE_FLAG]: false,
-      });
+    it(
+      'hides Finance dashboard content when release-1c-financial-movements is disabled',
+      { tags: ['@JIRA-TEST-KEY:PO-8356'] },
+      () => {
+        setupDashboardComponent(FINES_DASHBOARD_ROUTING_PATHS.children.finance, {
+          [RELEASE_1C_FINANCIAL_MOVEMENTS_FEATURE_FLAG]: false,
+        });
 
-      cy.contains('h1', 'Finance').should('be.visible');
-      cy.contains('h2', 'Pending development').should('not.exist');
-      cy.get('#testFinanceLink').should('not.exist');
-    });
+        cy.contains('h1', 'Finance').should('be.visible');
+        cy.contains('h2', 'Pending development').should('not.exist');
+        cy.get('#testFinanceLink').should('not.exist');
+      },
+    );
   },
 );
