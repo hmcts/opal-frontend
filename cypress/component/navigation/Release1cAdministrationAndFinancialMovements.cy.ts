@@ -14,7 +14,7 @@ import { PrimaryNavigationLocators as PrimaryNav } from '../../shared/selectors/
 import {
   RELEASE_1C_ADMINISTRATION_FEATURE_FLAG,
   RELEASE_1C_FINANCIAL_MOVEMENTS_FEATURE_FLAG,
-} from 'src/app/flows/fines/constants/release-feature-flags.constant';
+} from '@app/flows/fines/constants/release-feature-flags.constant';
 import { FINES_PERMISSIONS } from 'src/app/constants/fines-permissions.constant';
 import { FINES_DASHBOARD_ROUTING_PATHS } from 'src/app/flows/fines/constants/fines-dashboard-routing-paths.constant';
 

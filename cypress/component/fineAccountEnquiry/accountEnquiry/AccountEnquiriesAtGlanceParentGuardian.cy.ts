@@ -630,6 +630,7 @@ describe('Defendant Account Summary - At a Glance Tab', () => {
     {
       tags: [
         ...buildTags('@JIRA-DEFECT:PO-2942', '@JIRA-LABEL:MAC-Updates'),
+        '@JIRA-STORY:PO-779',
         '@JIRA-EPIC:PO-2750',
         '@JIRA-TEST-KEY:PO-5261',
       ],
@@ -660,6 +661,7 @@ describe('Defendant Account Summary - At a Glance Tab', () => {
     {
       tags: [
         ...buildTags('@JIRA-DEFECT:PO-2942', '@JIRA-LABEL:MAC-Updates'),
+        '@JIRA-STORY:PO-779',
         '@JIRA-EPIC:PO-2750',
         '@JIRA-TEST-KEY:PO-5262',
       ],
@@ -690,6 +692,7 @@ describe('Defendant Account Summary - At a Glance Tab', () => {
     {
       tags: [
         ...buildTags('@JIRA-DEFECT:PO-2942', '@JIRA-LABEL:MAC-Updates'),
+        '@JIRA-STORY:PO-779',
         '@JIRA-EPIC:PO-2750',
         '@JIRA-TEST-KEY:PO-5263',
       ],
@@ -720,6 +723,7 @@ describe('Defendant Account Summary - At a Glance Tab', () => {
     {
       tags: [
         ...buildTags('@JIRA-DEFECT:PO-2942', '@JIRA-LABEL:MAC-Updates'),
+        '@JIRA-STORY:PO-779',
         '@JIRA-EPIC:PO-2750',
         '@JIRA-TEST-KEY:PO-5264',
       ],
