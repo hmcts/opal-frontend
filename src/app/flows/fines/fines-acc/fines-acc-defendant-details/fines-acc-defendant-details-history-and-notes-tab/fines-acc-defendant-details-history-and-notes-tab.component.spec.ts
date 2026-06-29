@@ -166,7 +166,7 @@ describe('FinesAccDefendantDetailsHistoryAndNotesTabComponent', () => {
     ]);
   });
 
-  it('should transform filtered history items into the history and notes details format', () => {
+  it('should transform filtered history items from the API collection key into the history and notes details format', () => {
     const emitted: unknown[] = [];
     const validHistoryItem = { id: 1, type: 'Note', details: { note_text: 'Original detail' } };
     const transformedHistoryItem = {
@@ -175,7 +175,7 @@ describe('FinesAccDefendantDetailsHistoryAndNotesTabComponent', () => {
     };
     const filteredTabData: IOpalFinesAccountDefendantDetailsHistoryAndNotesTabRefData = {
       version: 'filtered-version',
-      history_items: [validHistoryItem, null, 'ignored'],
+      historyItems: [validHistoryItem, null, 'ignored'],
     };
 
     mockOpalFinesService.getDefendantAccountHistoryAndNotesTabData.mockReturnValue(of(filteredTabData));
@@ -187,7 +187,7 @@ describe('FinesAccDefendantDetailsHistoryAndNotesTabComponent', () => {
     expect(emitted).toEqual([
       {
         version: 'filtered-version',
-        history_items: [transformedHistoryItem],
+        historyItems: [transformedHistoryItem],
       },
     ]);
   });
@@ -196,7 +196,7 @@ describe('FinesAccDefendantDetailsHistoryAndNotesTabComponent', () => {
     const emitted: unknown[] = [];
     const filteredTabData: IOpalFinesAccountDefendantDetailsHistoryAndNotesTabRefData = {
       version: 'filtered-version',
-      history_items: 'not an array',
+      historyItems: 'not an array',
     };
 
     mockOpalFinesService.getDefendantAccountHistoryAndNotesTabData.mockReturnValue(of(filteredTabData));
@@ -208,7 +208,7 @@ describe('FinesAccDefendantDetailsHistoryAndNotesTabComponent', () => {
     expect(emitted).toEqual([
       {
         version: 'filtered-version',
-        history_items: 'not an array',
+        historyItems: 'not an array',
       },
     ]);
   });

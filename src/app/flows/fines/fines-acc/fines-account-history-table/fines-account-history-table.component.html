@@ -1,0 +1,127 @@
+@if (sortedRows().length) {
+  <opal-lib-custom-horizontal-scroll-pane>
+    <opal-lib-moj-sortable-table>
+      <ng-container head>
+        @for (column of columns; track column; let columnIndex = $index) {
+          <th
+            opal-lib-moj-sortable-table-header
+            [columnKey]="column"
+            [sortDirection]="sortStateSignal()[column]"
+            (sortChange)="onSortChange($event)"
+            [dataIndex]="columnIndex"
+          >
+            {{ column }}
+          </th>
+        }
+      </ng-container>
+      <ng-container row>
+        @for (row of sortedRows(); track trackRow($index, row); let rowIndex = $index) {
+          <tr opal-lib-moj-sortable-table-row>
+            <td opal-lib-moj-sortable-table-row-data [id]="tableDisplay.rowIdPrefixes.date + rowIndex">
+              @if (row.displayDate !== null) {
+                {{ row.displayDate | date: tableDisplay.dateFormat }}
+              } @else {
+                {{ tableDisplay.emptyCell }}
+              }
+            </td>
+            <td opal-lib-moj-sortable-table-row-data [id]="tableDisplay.rowIdPrefixes.user + rowIndex">
+              {{ row.User || tableDisplay.emptyCell }}
+            </td>
+            <td opal-lib-moj-sortable-table-row-data [id]="tableDisplay.rowIdPrefixes.type + rowIndex">
+              {{ row.Type || tableDisplay.emptyCell }}
+            </td>
+            <td opal-lib-moj-sortable-table-row-data [id]="tableDisplay.rowIdPrefixes.details + rowIndex">
+              @if (row.details; as details) {
+                <div>
+                  @for (part of details.line1; track trackPart($index); let partIndex = $index) {
+                    @if (partIndex > 0) {
+                      <span>{{ tableDisplay.partSeparator }}</span>
+                    }
+                    @for (fragment of part.fragments; track trackFragment($index); let fragmentIndex = $index) {
+                      @if (asFragment(fragment).link; as link) {
+                        <a
+                          [class]="tableDisplay.cssClasses.link"
+                          [href]="tableDisplay.linkHref"
+                          (click)="handleLinkClick(row, link, $event)"
+                        >
+                          {{ getFragmentPrefix(fragment, fragmentIndex) }}
+                          @if (fragment.bold) {
+                            <strong>{{ fragment.text }}</strong>
+                          } @else {
+                            <span>{{ fragment.text }}</span>
+                          }
+                        </a>
+                      } @else {
+                        {{ getFragmentPrefix(fragment, fragmentIndex) }}
+                        @if (fragment.bold) {
+                          <strong>{{ fragment.text }}</strong>
+                        } @else {
+                          <span>{{ fragment.text }}</span>
+                        }
+                      }
+                    }
+                  }
+                </div>
+                @if (hasLine2(details)) {
+                  <div [class]="tableDisplay.cssClasses.detailsLine2">
+                    @for (part of details.line2; track trackPart($index); let partIndex = $index) {
+                      @if (partIndex > 0) {
+                        <span>{{ tableDisplay.partSeparator }}</span>
+                      }
+                      @for (fragment of part.fragments; track trackFragment($index); let fragmentIndex = $index) {
+                        @if (asFragment(fragment).link; as link) {
+                          <a
+                            [class]="tableDisplay.cssClasses.link"
+                            [href]="tableDisplay.linkHref"
+                            (click)="handleLinkClick(row, link, $event)"
+                          >
+                            {{ getFragmentPrefix(fragment, fragmentIndex) }}
+                            @if (fragment.bold) {
+                              <strong>{{ fragment.text }}</strong>
+                            } @else {
+                              <span>{{ fragment.text }}</span>
+                            }
+                          </a>
+                        } @else {
+                          {{ getFragmentPrefix(fragment, fragmentIndex) }}
+                          @if (fragment.bold) {
+                            <strong>{{ fragment.text }}</strong>
+                          } @else {
+                            <span>{{ fragment.text }}</span>
+                          }
+                        }
+                      }
+                    }
+                  </div>
+                }
+              } @else {
+                {{ tableDisplay.emptyCell }}
+              }
+            </td>
+            <td opal-lib-moj-sortable-table-row-data [id]="tableDisplay.rowIdPrefixes.amount + rowIndex">
+              @if (row.absoluteAmount !== null && row.amountTag && row.amountDescription) {
+                <span>{{ row.absoluteAmount | monetary }}</span>
+                <strong [ngClass]="getAmountTagClasses(row)" [attr.aria-describedby]="row.amountAriaId">
+                  {{ row.amountTag }}
+                </strong>
+                <span [class]="tableDisplay.cssClasses.visuallyHidden" [id]="row.amountAriaId">{{
+                  row.amountDescription
+                }}</span>
+              } @else {
+                {{ tableDisplay.emptyCell }}
+              }
+            </td>
+          </tr>
+        }
+      </ng-container>
+      <ng-container status>
+        <opal-lib-moj-sortable-table-status
+          [columnTitle]="sortedColumnTitleSignal()"
+          [sortDirection]="sortedColumnDirectionSignal()"
+        />
+      </ng-container>
+    </opal-lib-moj-sortable-table>
+  </opal-lib-custom-horizontal-scroll-pane>
+} @else {
+  <p class="govuk-body" [id]="tableDisplay.noResultsId">{{ tableDisplay.noResultsText }}</p>
+}

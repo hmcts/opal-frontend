@@ -1,6 +1,7 @@
 import { AsyncPipe } from '@angular/common';
 import { ChangeDetectionStrategy, Component, Input, OnChanges, OnInit, SimpleChanges, inject } from '@angular/core';
 import { FinesAccDefendantDetailsHistoryAndNotesFilterComponent } from './fines-acc-defendant-details-history-and-notes-filter/fines-acc-defendant-details-history-and-notes-filter.component';
+import { FinesAccDefendantDetailsHistoryAndNotesTableComponent } from './fines-acc-defendant-details-history-and-notes-table/fines-acc-defendant-details-history-and-notes-table.component';
 import { FINES_ACC_SUMMARY_TABS_CONTENT_STYLES } from '../../constants/fines-acc-summary-tabs-content-styles.constant';
 import { IFinesAccSummaryTabsContentStyles } from '../interfaces/fines-acc-summary-tabs-content-styles.interface';
 import { IFinesAccDefendantDetailsHistoryAndNotesFilterForm } from './interfaces/fines-acc-defendant-details-history-and-notes-filter-form.interface';
@@ -13,10 +14,15 @@ import { FinesAccountStore } from '../../stores/fines-acc.store';
 import { FINES_ACC_DEFENDANT_DETAILS_HISTORY_AND_NOTES_EMPTY_TAB_DATA_STREAM } from './constants/fines-acc-defendant-details-history-and-notes-empty-tab-data-stream.constant';
 import { THistoryDetailsRawItem as TFinesAccHistoryAndNotesRawItem } from '@hmcts/opal-frontend-common/services/history-transformation-service';
 import { FINES_ACC_DEFENDANT_DETAILS_HISTORY_AND_NOTES_TAB_HISTORY_ITEM_KEY } from './constants/fines-acc-defendant-details-history-and-notes-tab-history-item-keys.constant';
+import { IFinesAccHistoryAndNotesItemsEntry } from './interfaces/fines-acc-history-and-notes-items-entry.interface';
 
 @Component({
   selector: 'app-fines-acc-defendant-details-history-and-notes-tab',
-  imports: [AsyncPipe, FinesAccDefendantDetailsHistoryAndNotesFilterComponent],
+  imports: [
+    AsyncPipe,
+    FinesAccDefendantDetailsHistoryAndNotesFilterComponent,
+    FinesAccDefendantDetailsHistoryAndNotesTableComponent,
+  ],
   templateUrl: './fines-acc-defendant-details-history-and-notes-tab.component.html',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
@@ -59,16 +65,15 @@ export class FinesAccDefendantDetailsHistoryAndNotesTabComponent implements OnCh
   private transformHistoryItems(
     data: IOpalFinesAccountDefendantDetailsHistoryAndNotesTabRefData,
   ): IOpalFinesAccountDefendantDetailsHistoryAndNotesTabRefData {
-    const historyItems = this.getHistoryItems(data);
+    const historyItemsEntry = this.getHistoryItemsEntry(data);
 
-    if (!historyItems) {
+    if (!historyItemsEntry) {
       return data;
     }
 
     return {
       ...data,
-      [FINES_ACC_DEFENDANT_DETAILS_HISTORY_AND_NOTES_TAB_HISTORY_ITEM_KEY]:
-        this.payloadService.transformHistoryAndNotesItems(historyItems),
+      [historyItemsEntry.key]: this.payloadService.transformHistoryAndNotesItems(historyItemsEntry.items),
     };
   }
 
@@ -90,16 +95,19 @@ export class FinesAccDefendantDetailsHistoryAndNotesTabComponent implements OnCh
    * @param tabData - The raw History and notes tab data returned by the API.
    * @returns The history items, or null when no history item list is present.
    */
-  private getHistoryItems(
+  private getHistoryItemsEntry(
     tabData: IOpalFinesAccountDefendantDetailsHistoryAndNotesTabRefData,
-  ): TFinesAccHistoryAndNotesRawItem[] | null {
+  ): IFinesAccHistoryAndNotesItemsEntry | null {
     const historyItems = tabData[FINES_ACC_DEFENDANT_DETAILS_HISTORY_AND_NOTES_TAB_HISTORY_ITEM_KEY];
 
     if (!Array.isArray(historyItems)) {
       return null;
     }
 
-    return historyItems.filter(this.isHistoryItem);
+    return {
+      key: FINES_ACC_DEFENDANT_DETAILS_HISTORY_AND_NOTES_TAB_HISTORY_ITEM_KEY,
+      items: historyItems.filter(this.isHistoryItem),
+    };
   }
 
   /**
