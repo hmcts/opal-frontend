@@ -114,9 +114,9 @@ describe('Search Account Component - Major Creditors', () => {
       cy.get(MajorAutocompleteLocators.input).should('have.value', 'Arriva Rail North (ARVA)');
 
       cy.get(CommonLocators.searchButton).click();
-      const accountId = OPAL_FINES_MAJOR_CREDITOR_REF_DATA_MOCK.refData[3].major_creditor_id; //3858
+      const accountId = OPAL_FINES_MAJOR_CREDITOR_REF_DATA_MOCK.refData[3].creditor_account_id; //10770000000088
       //The expected screen has not yet been developed, change URL once it has.
-      cy.get('@urlTree').should('have.been.calledWithMatch', [`fines/account/${accountId}/defendant`]);
+      cy.get('@urlTree').should('have.been.calledWithMatch', [`fines/account/major-creditor/${accountId}/details`]);
 
       //A stub is used here so a new tab is not actually opened
       cy.get('@windowOpen').should('have.been.calledOnce');
