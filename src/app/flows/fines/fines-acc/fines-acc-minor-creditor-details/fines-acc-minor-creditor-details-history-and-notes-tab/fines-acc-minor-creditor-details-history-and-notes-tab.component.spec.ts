@@ -13,6 +13,7 @@ import { FinesAccountStore } from '../../stores/fines-acc.store';
 import { FINES_ACC_MINOR_CREDITOR_DETAILS_HISTORY_AND_NOTES_ACCOUNT_ID_MOCK } from './mocks/fines-acc-minor-creditor-details-history-and-notes-account-id.mock';
 import { FINES_ACC_MINOR_CREDITOR_DETAILS_HISTORY_AND_NOTES_FILTERED_TAB_DATA_MOCK } from './mocks/fines-acc-minor-creditor-details-history-and-notes-filtered-tab-data.mock';
 import { IOpalFinesAccountMinorCreditorDetailsHistoryAndNotesTabRefData } from '@services/fines/opal-fines-service/interfaces/opal-fines-account-minor-creditor-details-history-and-notes-tab-ref-data.interface';
+import { FINES_ACC_MINOR_CREDITOR_HISTORY_AND_NOTES_DETAILS_TRANSFORMATION_CONFIG } from '../../services/constants/fines-acc-minor-creditor-history-and-notes-details-transformation-config.constant';
 
 describe('FinesAccMinorCreditorDetailsHistoryAndNotesTabComponent', () => {
   let component: FinesAccMinorCreditorDetailsHistoryAndNotesTabComponent;
@@ -183,7 +184,10 @@ describe('FinesAccMinorCreditorDetailsHistoryAndNotesTabComponent', () => {
     component.handleFilterApplied(FINES_ACC_MINOR_CREDITOR_DETAILS_HISTORY_AND_NOTES_FILTER_FORM_MOCK);
     component.historyAndNotesTabData$.subscribe((data) => emitted.push(data));
 
-    expect(mockPayloadService.transformHistoryAndNotesItems).toHaveBeenCalledWith([validHistoryItem]);
+    expect(mockPayloadService.transformHistoryAndNotesItems).toHaveBeenCalledWith(
+      [validHistoryItem],
+      FINES_ACC_MINOR_CREDITOR_HISTORY_AND_NOTES_DETAILS_TRANSFORMATION_CONFIG,
+    );
     expect(emitted).toEqual([
       {
         version: 'filtered-version',
@@ -210,7 +214,10 @@ describe('FinesAccMinorCreditorDetailsHistoryAndNotesTabComponent', () => {
     component.handleFilterApplied(FINES_ACC_MINOR_CREDITOR_DETAILS_HISTORY_AND_NOTES_FILTER_FORM_MOCK);
     component.historyAndNotesTabData$.subscribe((data) => emitted.push(data));
 
-    expect(mockPayloadService.transformHistoryAndNotesItems).toHaveBeenCalledWith([validHistoryItem]);
+    expect(mockPayloadService.transformHistoryAndNotesItems).toHaveBeenCalledWith(
+      [validHistoryItem],
+      FINES_ACC_MINOR_CREDITOR_HISTORY_AND_NOTES_DETAILS_TRANSFORMATION_CONFIG,
+    );
     expect(emitted).toEqual([
       {
         version: 'filtered-version',

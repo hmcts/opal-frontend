@@ -14,6 +14,7 @@ import { FINES_ACC_MINOR_CREDITOR_DETAILS_HISTORY_AND_NOTES_EMPTY_TAB_DATA_STREA
 import { THistoryDetailsRawItem as TFinesAccHistoryAndNotesRawItem } from '@hmcts/opal-frontend-common/services/history-transformation-service';
 import { FINES_ACC_MINOR_CREDITOR_DETAILS_HISTORY_AND_NOTES_TAB_HISTORY_ITEM_KEYS } from './constants/fines-acc-minor-creditor-details-history-and-notes-tab-history-item-keys.constant';
 import { IFinesAccMinorCreditorHistoryAndNotesItemsEntry } from './interfaces/fines-acc-minor-creditor-history-and-notes-items-entry.interface';
+import { FINES_ACC_MINOR_CREDITOR_HISTORY_AND_NOTES_DETAILS_TRANSFORMATION_CONFIG } from '../../services/constants/fines-acc-minor-creditor-history-and-notes-details-transformation-config.constant';
 
 @Component({
   selector: 'app-fines-acc-minor-creditor-details-history-and-notes-tab',
@@ -68,7 +69,10 @@ export class FinesAccMinorCreditorDetailsHistoryAndNotesTabComponent implements 
 
     return {
       ...data,
-      [historyItemsEntry.key]: this.payloadService.transformHistoryAndNotesItems(historyItemsEntry.items),
+      [historyItemsEntry.key]: this.payloadService.transformHistoryAndNotesItems(
+        historyItemsEntry.items,
+        FINES_ACC_MINOR_CREDITOR_HISTORY_AND_NOTES_DETAILS_TRANSFORMATION_CONFIG,
+      ),
     };
   }
 

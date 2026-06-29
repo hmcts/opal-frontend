@@ -51,6 +51,7 @@ import { buildMinorCreditorHistoryFilterPayload } from './utils/fines-acc-payloa
 import {
   HistoryTransformationService,
   IHistoryDetails as IFinesAccHistoryAndNotesDetails,
+  IHistoryTransformationConfig,
   THistoryDetailsRawItem as TFinesAccHistoryAndNotesRawItem,
 } from '@hmcts/opal-frontend-common/services/history-transformation-service';
 import { FINES_ACC_HISTORY_AND_NOTES_DETAILS_TRANSFORMATION_CONFIG } from './constants/fines-acc-history-and-notes-details-transformation-config.constant';
@@ -160,10 +161,13 @@ export class FinesAccPayloadService {
    * @param item - A raw history item returned by the defendant account history API.
    * @returns The fragment-based details model for the item.
    */
-  public transformHistoryAndNotesDetails(item: TFinesAccHistoryAndNotesRawItem): IFinesAccHistoryAndNotesDetails {
+  public transformHistoryAndNotesDetails(
+    item: TFinesAccHistoryAndNotesRawItem,
+    config: IHistoryTransformationConfig = FINES_ACC_HISTORY_AND_NOTES_DETAILS_TRANSFORMATION_CONFIG,
+  ): IFinesAccHistoryAndNotesDetails {
     return this.historyDetailsTransformationService.transformDetails(
       item,
-      FINES_ACC_HISTORY_AND_NOTES_DETAILS_TRANSFORMATION_CONFIG,
+      config,
     );
   }
 
@@ -175,10 +179,11 @@ export class FinesAccPayloadService {
    */
   public transformHistoryAndNotesItems<T extends TFinesAccHistoryAndNotesRawItem>(
     items: T[],
+    config: IHistoryTransformationConfig = FINES_ACC_HISTORY_AND_NOTES_DETAILS_TRANSFORMATION_CONFIG,
   ): Array<Omit<T, 'details'> & { details: IFinesAccHistoryAndNotesDetails }> {
     return this.historyDetailsTransformationService.transformItems(
       items,
-      FINES_ACC_HISTORY_AND_NOTES_DETAILS_TRANSFORMATION_CONFIG,
+      config,
     );
   }
 

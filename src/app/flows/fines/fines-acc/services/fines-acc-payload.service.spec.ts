@@ -37,6 +37,7 @@ import { FINES_ACC_BUILD_TRANSFORM_ITEMS_CONFIG } from './constants/fines-acc-tr
 import { FINES_ACC_MINOR_CREDITOR_DETAILS_HISTORY_AND_NOTES_FILTER_ALL_FORM_MOCK } from '../fines-acc-minor-creditor-details/fines-acc-minor-creditor-details-history-and-notes-tab/mocks/fines-acc-minor-creditor-details-history-and-notes-filter-all-form.mock';
 import { FINES_ACC_MINOR_CREDITOR_DETAILS_HISTORY_AND_NOTES_FILTER_EMPTY_FORM_MOCK } from '../fines-acc-minor-creditor-details/fines-acc-minor-creditor-details-history-and-notes-tab/mocks/fines-acc-minor-creditor-details-history-and-notes-filter-empty-form.mock';
 import { OPAL_FINES_MINOR_CREDITOR_ACCOUNT_HISTORY_PARAMS_MOCK } from '@services/fines/opal-fines-service/mocks/opal-fines-minor-creditor-account-history-params.mock';
+import { FINES_ACC_MINOR_CREDITOR_HISTORY_AND_NOTES_DETAILS_TRANSFORMATION_CONFIG } from './constants/fines-acc-minor-creditor-history-and-notes-details-transformation-config.constant';
 
 describe('FinesAccPayloadService', () => {
   let service: FinesAccPayloadService;
@@ -234,6 +235,52 @@ describe('FinesAccPayloadService', () => {
 
       expect(result[0]['details']).toEqual({
         line1: [{ fragments: [{ text: 'Structured note', bold: false, hyphen: false }] }],
+        line2: null,
+      });
+    });
+
+    it('should transform raw history details with a supplied transformation config', () => {
+      const result = service.transformHistoryAndNotesDetails(
+        {
+          type: 'Notes',
+          details: {
+            note_text: 'Minor creditor note',
+          },
+        },
+        FINES_ACC_MINOR_CREDITOR_HISTORY_AND_NOTES_DETAILS_TRANSFORMATION_CONFIG,
+      );
+
+      expect(result).toEqual({
+        line1: [{ fragments: [{ text: 'Minor creditor note', bold: false, hyphen: false }] }],
+        line2: null,
+      });
+    });
+
+    it('should transform raw history items with a supplied transformation config', () => {
+      const result = service.transformHistoryAndNotesItems(
+        [
+          {
+            id: 1,
+            type: 'Transactions',
+            details: {
+              transaction_description: 'Payment issued',
+              payment_reference: 'REF123',
+            },
+          },
+        ],
+        FINES_ACC_MINOR_CREDITOR_HISTORY_AND_NOTES_DETAILS_TRANSFORMATION_CONFIG,
+      );
+
+      expect(result[0]['details']).toEqual({
+        line1: [
+          { fragments: [{ text: 'Payment issued', bold: false, hyphen: false }] },
+          {
+            fragments: [
+              { text: 'Reference:', bold: false, hyphen: false },
+              { text: 'REF123', bold: false, hyphen: false },
+            ],
+          },
+        ],
         line2: null,
       });
     });
