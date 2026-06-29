@@ -299,7 +299,10 @@ function writeOffTransactionDetails(item: TFinesAccHistoryAndNotesRawItem): IFin
   const associatedRecordType = getString(item, aliases.associatedRecordType);
   const parts: Array<IFinesAccHistoryAndNotesDetailsPart | null> = [textPart(labels().writeOff)];
 
-  if (normaliseKey(associatedRecordType) === FINES_ACC_HISTORY_AND_NOTES_DETAILS_DEFENDANT_ACCOUNT_RECORD_TYPE) {
+  if (
+    normaliseKey(associatedRecordType) ===
+    normaliseKey(FINES_ACC_HISTORY_AND_NOTES_DETAILS_DEFENDANT_ACCOUNT_RECORD_TYPE)
+  ) {
     parts.push(consolidatedAccountPart(item));
   } else {
     parts.push(

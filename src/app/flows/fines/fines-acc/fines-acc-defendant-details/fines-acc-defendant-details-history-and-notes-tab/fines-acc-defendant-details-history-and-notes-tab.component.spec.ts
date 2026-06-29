@@ -192,17 +192,11 @@ describe('FinesAccDefendantDetailsHistoryAndNotesTabComponent', () => {
     ]);
   });
 
-  it('should transform the next recognised history item array when earlier keys are not arrays', () => {
+  it('should leave filtered history item data unchanged when the API item collection is not an array', () => {
     const emitted: unknown[] = [];
-    const validHistoryItem = { id: 1, type: 'Note' };
-    const transformedHistoryItem = {
-      ...validHistoryItem,
-      details: { line1: [{ fragments: [{ text: 'Transformed detail', bold: false, hyphen: false }] }], line2: null },
-    };
     const filteredTabData: IOpalFinesAccountDefendantDetailsHistoryAndNotesTabRefData = {
       version: 'filtered-version',
       history_items: 'not an array',
-      historyItems: [validHistoryItem],
     };
 
     mockOpalFinesService.getDefendantAccountHistoryAndNotesTabData.mockReturnValue(of(filteredTabData));
@@ -210,12 +204,11 @@ describe('FinesAccDefendantDetailsHistoryAndNotesTabComponent', () => {
     component.handleFilterApplied(FINES_ACC_DEFENDANT_DETAILS_HISTORY_AND_NOTES_FILTER_FORM_MOCK);
     component.historyAndNotesTabData$.subscribe((data) => emitted.push(data));
 
-    expect(mockPayloadService.transformHistoryAndNotesItems).toHaveBeenCalledWith([validHistoryItem]);
+    expect(mockPayloadService.transformHistoryAndNotesItems).not.toHaveBeenCalled();
     expect(emitted).toEqual([
       {
         version: 'filtered-version',
         history_items: 'not an array',
-        historyItems: [transformedHistoryItem],
       },
     ]);
   });
