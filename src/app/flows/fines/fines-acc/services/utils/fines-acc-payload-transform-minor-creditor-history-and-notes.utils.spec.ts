@@ -46,6 +46,32 @@ describe('transformMinorCreditorTransactionDetails', () => {
     });
   });
 
+  it('should transform court fee details', () => {
+    const result = transformMinorCreditorTransactionDetails({
+      details: {
+        transaction_type: 'CFEES',
+      },
+    });
+
+    expect(result).toEqual({
+      line1: [{ fragments: [{ text: 'Court Fee', bold: false, hyphen: false }] }],
+      line2: null,
+    });
+  });
+
+  it('should transform licensing fee details', () => {
+    const result = transformMinorCreditorTransactionDetails({
+      details: {
+        transaction_type: 'LIFEES',
+      },
+    });
+
+    expect(result).toEqual({
+      line1: [{ fragments: [{ text: 'Licensing Fee', bold: false, hyphen: false }] }],
+      line2: null,
+    });
+  });
+
   it('should transform cheque details with cancelled status and formatted status date', () => {
     const result = transformMinorCreditorTransactionDetails({
       details: {

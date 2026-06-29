@@ -14,20 +14,7 @@ import { FINES_ACC_HISTORY_AND_NOTES_DETAILS_ALIAS_PATH_PREFIXES } from '../cons
 import { FINES_ACC_HISTORY_AND_NOTES_DETAILS_DATE_FORMAT } from '../constants/fines-acc-history-and-notes-details-date-format.constant';
 import { FINES_ACC_HISTORY_AND_NOTES_DETAILS_EMPTY_VALUES } from '../constants/fines-acc-history-and-notes-details-empty-values.constant';
 import { FINES_ACC_MINOR_CREDITOR_HISTORY_AND_NOTES_DETAILS_FIELD_ALIASES } from '../constants/fines-acc-minor-creditor-history-and-notes-details-field-aliases.constant';
-
-const MINOR_CREDITOR_REPAYMENT_TRANSACTION_TYPES = [
-  'REPAYC',
-  'REPAYF',
-  'REPAYM',
-  'REPAYP',
-  'REPAYV',
-  'REPAYW',
-] as const;
-
-const MINOR_CREDITOR_TRANSACTION_STATUS_LABELS: Record<string, string> = {
-  D: 'Cheque dishonoured',
-  X: 'Cheque cancelled',
-};
+import { FINES_ACC_MINOR_CREDITOR_HISTORY_AND_NOTES_TRANSACTION_TEMPLATES } from '../constants/fines-acc-minor-creditor-history-and-notes-transaction-templates.constant';
 
 /**
  * Transforms a minor creditor amendment history item.
@@ -72,46 +59,50 @@ export function transformMinorCreditorTransactionDetails(
 ): IFinesAccHistoryAndNotesDetails {
   const aliases = FINES_ACC_MINOR_CREDITOR_HISTORY_AND_NOTES_DETAILS_FIELD_ALIASES;
   const transactionType = normaliseTransactionType(getString(item, aliases.transactionType));
+  const templates = FINES_ACC_MINOR_CREDITOR_HISTORY_AND_NOTES_TRANSACTION_TEMPLATES;
+  const simpleTemplate = getTemplateValue(templates.simple, transactionType);
+  const labelledReferenceTemplate = getTemplateValue(templates.labelledReference, transactionType);
+  const chequeTemplate = getTemplateValue(templates.cheque, transactionType);
+  const defendantAccountTemplate = getTemplateValue(templates.defendantAccount, transactionType);
+  const creditorAccountTemplate = getTemplateValue(templates.creditorAccount, transactionType);
+  const associatedRecordTemplate = getTemplateValue(templates.associatedRecord, transactionType);
+  const associatedValueTemplate = getTemplateValue(templates.associatedValue, transactionType);
 
-  switch (transactionType) {
-    case 'BACS':
-      return createDetails([textPart('BACS payment'), labelValuePart('Payment reference:', paymentReference(item))]);
-    case 'CANCHQ':
-      return createDetails([textPart('Cheque cancelled'), labelValuePart('Cheque number:', paymentReference(item))]);
-    case 'CHEQUE':
-      return chequeDetails('Cheque issued', item);
-    case 'MADJ':
-      return createDetails([textPart('Manual adjustment'), textPart(defendantAccountNumber(item))]);
-    case 'PAYMNT':
-      return createDetails([textPart('Payment received'), textPart(defendantAccountNumber(item))]);
-    case 'REPLIC':
-      return createDetails([textPart('Repayment')]);
-    case 'REPSUS':
-      return createDetails([textPart('Repayment from suspense'), textPart(associatedRecordId(item))]);
-    case 'RIBACS':
-      return createDetails([
-        textPart('BACS payment reissued'),
-        labelValuePart('Payment reference:', paymentReference(item)),
-      ]);
-    case 'RICHEQ':
-      return chequeDetails('Cheque reissued', item);
-    case 'RTBACS':
-      return createDetails([
-        textPart('BACS payment cancelled'),
-        labelValuePart('Payment reference:', paymentReference(item)),
-      ]);
-    case 'XFER':
-      return createDetails([textPart('Suspense transfer'), textPart(suspenseTransferAssociatedValue(item))]);
-    default:
-      if (transactionType && isRepaymentTransactionType(transactionType)) {
-        return createDetails([textPart('Repayment'), textPart(creditorAccountNumber(item))]);
-      }
-
-      return createDetails([
-        textPart(getString(item, aliases.transactionDescription) ?? getString(item, aliases.transactionType)),
-        labelValuePart('Reference:', paymentReference(item)),
-      ]);
+  if (simpleTemplate) {
+    return createDetails([textPart(simpleTemplate)]);
   }
+
+  if (labelledReferenceTemplate) {
+    return createDetails([
+      textPart(labelledReferenceTemplate.label),
+      labelValuePart(labelledReferenceTemplate.referenceLabel, paymentReference(item)),
+    ]);
+  }
+
+  if (chequeTemplate) {
+    return chequeDetails(chequeTemplate, item);
+  }
+
+  if (defendantAccountTemplate) {
+    return createDetails([textPart(defendantAccountTemplate), textPart(defendantAccountNumber(item))]);
+  }
+
+  if (creditorAccountTemplate) {
+    return createDetails([textPart(creditorAccountTemplate), textPart(creditorAccountNumber(item))]);
+  }
+
+  if (associatedRecordTemplate) {
+    return createDetails([textPart(associatedRecordTemplate), textPart(associatedRecordId(item))]);
+  }
+
+  if (associatedValueTemplate) {
+    return createDetails([textPart(associatedValueTemplate), textPart(suspenseTransferAssociatedValue(item))]);
+  }
+
+  return createDetails([
+    textPart(getString(item, aliases.transactionDescription) ?? getString(item, aliases.transactionType)),
+    labelValuePart(templates.fallbackReferenceLabel, paymentReference(item)),
+  ]);
 }
 
 /**
@@ -194,9 +185,11 @@ function labelValuePart(label: string, value: string | null): IFinesAccHistoryAn
  * @returns The structured cheque details.
  */
 function chequeDetails(title: string, item: TFinesAccHistoryAndNotesRawItem): IFinesAccHistoryAndNotesDetails {
+  const templates = FINES_ACC_MINOR_CREDITOR_HISTORY_AND_NOTES_TRANSACTION_TEMPLATES;
+
   return createDetails([
     textPart(title),
-    labelValuePart('Cheque number:', paymentReference(item) ?? 'Not yet written'),
+    labelValuePart(templates.chequeNumberLabel, paymentReference(item) ?? templates.defaultChequeNumber),
     chequeStatusPart(item),
   ]);
 }
@@ -209,7 +202,11 @@ function chequeDetails(title: string, item: TFinesAccHistoryAndNotesRawItem): IF
  */
 function chequeStatusPart(item: TFinesAccHistoryAndNotesRawItem): IFinesAccHistoryAndNotesDetailsPart | null {
   const status = getString(item, FINES_ACC_MINOR_CREDITOR_HISTORY_AND_NOTES_DETAILS_FIELD_ALIASES.status);
-  const statusLabel = status ? MINOR_CREDITOR_TRANSACTION_STATUS_LABELS[status] : null;
+  const statusLabel = status
+    ? FINES_ACC_MINOR_CREDITOR_HISTORY_AND_NOTES_TRANSACTION_TEMPLATES.statusLabels[
+        status as keyof typeof FINES_ACC_MINOR_CREDITOR_HISTORY_AND_NOTES_TRANSACTION_TEMPLATES.statusLabels
+      ]
+    : null;
 
   if (!statusLabel) {
     return null;
@@ -232,17 +229,18 @@ function chequeStatusPart(item: TFinesAccHistoryAndNotesRawItem): IFinesAccHisto
  * @returns The associated display value or null.
  */
 function suspenseTransferAssociatedValue(item: TFinesAccHistoryAndNotesRawItem): string | null {
+  const associatedRecordTypes = FINES_ACC_MINOR_CREDITOR_HISTORY_AND_NOTES_TRANSACTION_TEMPLATES.associatedRecordTypes;
   const associatedRecordType = getString(
     item,
     FINES_ACC_MINOR_CREDITOR_HISTORY_AND_NOTES_DETAILS_FIELD_ALIASES.associatedRecordType,
   );
 
   switch (associatedRecordType) {
-    case 'suspense_item':
+    case associatedRecordTypes.suspenseItem:
       return associatedRecordId(item);
-    case 'defendant_transaction':
+    case associatedRecordTypes.defendantTransaction:
       return defendantAccountNumber(item);
-    case 'creditor_accounts':
+    case associatedRecordTypes.creditorAccounts:
       return creditorAccountNumber(item);
     default:
       return associatedRecordId(item) ?? defendantAccountNumber(item) ?? creditorAccountNumber(item);
@@ -250,15 +248,17 @@ function suspenseTransferAssociatedValue(item: TFinesAccHistoryAndNotesRawItem):
 }
 
 /**
- * Checks whether a transaction type is one of the creditor repayment actions.
+ * Gets a template value for a transaction type.
  *
- * @param transactionType - The normalised transaction type.
- * @returns True when this is a repayment transaction type.
+ * @param templates - The template record.
+ * @param transactionType - The normalised transaction type or null.
+ * @returns The matching template value or null.
  */
-function isRepaymentTransactionType(transactionType: string): boolean {
-  return MINOR_CREDITOR_REPAYMENT_TRANSACTION_TYPES.includes(
-    transactionType as (typeof MINOR_CREDITOR_REPAYMENT_TRANSACTION_TYPES)[number],
-  );
+function getTemplateValue<T extends Record<string, unknown>>(
+  templates: T,
+  transactionType: string | null,
+): T[keyof T] | null {
+  return transactionType && transactionType in templates ? templates[transactionType as keyof T] : null;
 }
 
 /**
