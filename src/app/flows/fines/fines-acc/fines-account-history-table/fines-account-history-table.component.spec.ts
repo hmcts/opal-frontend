@@ -1,4 +1,5 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
+import { AbstractSortableTableComponent } from '@hmcts/opal-frontend-common/components/abstract/abstract-sortable-table';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
 import { FINES_ACCOUNT_HISTORY_TABLE_DEFAULT_SORT } from './constants/fines-account-history-table-default-sort.constant';
 import { FINES_ACCOUNT_HISTORY_TABLE_DISPLAY } from './constants/fines-account-history-table-display.constant';
@@ -11,15 +12,6 @@ import { FINES_ACCOUNT_HISTORY_TABLE_SPACING_ROWS_MOCK } from './mocks/fines-acc
 import { FINES_ACCOUNT_HISTORY_TABLE_SORT_EDGE_ROWS_MOCK } from './mocks/fines-account-history-table-sort-edge-rows.mock';
 
 const normalizedText = (element: Element): string => element.textContent?.replace(/\s+/g, ' ').trim() ?? '';
-
-type TFinesAccountHistoryTableComponentPrivate = {
-  compareValues: (first: string | number | null, second: string | number | null) => number;
-  sortRows: (
-    rows: IFinesAccountHistoryTableRow[],
-    column: 'Date' | 'User' | 'Type' | 'Details' | 'Amount',
-    direction: 'ascending' | 'descending' | 'none',
-  ) => IFinesAccountHistoryTableRow[];
-};
 
 describe('FinesAccountHistoryTableComponent', () => {
   let fixture: ComponentFixture<FinesAccountHistoryTableComponent>;
@@ -47,6 +39,7 @@ describe('FinesAccountHistoryTableComponent', () => {
     setupComponent();
 
     expect(component).toBeTruthy();
+    expect(component).toBeInstanceOf(AbstractSortableTableComponent);
   });
 
   it('should render rows in default newest-to-oldest order using UTC timestamp milliseconds', () => {
@@ -86,27 +79,6 @@ describe('FinesAccountHistoryTableComponent', () => {
     expect(firstUserCell.textContent).toContain('Notes user');
   });
 
-  it('should return a copied row list in input order when sort direction is none', () => {
-    const componentWithPrivate = component as unknown as TFinesAccountHistoryTableComponentPrivate;
-    const rows = structuredClone(FINES_ACCOUNT_HISTORY_TABLE_SORT_EDGE_ROWS_MOCK);
-    const sortedRows = componentWithPrivate.sortRows(rows, 'User', FINES_ACCOUNT_HISTORY_TABLE_SORT_DIRECTIONS.none);
-
-    expect(sortedRows.map((row) => row.id)).toEqual(
-      FINES_ACCOUNT_HISTORY_TABLE_SORT_EDGE_ROWS_MOCK.map((row) => row.id),
-    );
-    expect(sortedRows).not.toBe(rows);
-  });
-
-  it('should compare nullable, numeric, and string values for sort ordering', () => {
-    const componentWithPrivate = component as unknown as TFinesAccountHistoryTableComponentPrivate;
-
-    expect(componentWithPrivate.compareValues(null, null)).toBe(0);
-    expect(componentWithPrivate.compareValues(null, 1)).toBe(1);
-    expect(componentWithPrivate.compareValues(1, null)).toBe(-1);
-    expect(componentWithPrivate.compareValues(2, 10)).toBe(-8);
-    expect(componentWithPrivate.compareValues('User 2', 'User 10')).toBeLessThan(0);
-  });
-
   it('should sort null dates after populated dates and preserve equal null order', () => {
     setupComponent(structuredClone(FINES_ACCOUNT_HISTORY_TABLE_SORT_EDGE_ROWS_MOCK));
 
@@ -123,6 +95,17 @@ describe('FinesAccountHistoryTableComponent', () => {
     ]);
   });
 
+  it('should keep null dates after populated dates when sorting descending', () => {
+    setupComponent(structuredClone(FINES_ACCOUNT_HISTORY_TABLE_SORT_EDGE_ROWS_MOCK));
+
+    expect(component.sortedRows().map((row) => row.id)).toEqual([
+      `${FINES_ACCOUNT_HISTORY_TABLE_DISPLAY.rowIdPrefix}sort-1`,
+      `${FINES_ACCOUNT_HISTORY_TABLE_DISPLAY.rowIdPrefix}sort-3`,
+      `${FINES_ACCOUNT_HISTORY_TABLE_DISPLAY.rowIdPrefix}sort-0`,
+      `${FINES_ACCOUNT_HISTORY_TABLE_DISPLAY.rowIdPrefix}sort-2`,
+    ]);
+  });
+
   it('should sort numeric amounts before null amounts', () => {
     setupComponent(structuredClone(FINES_ACCOUNT_HISTORY_TABLE_SORT_EDGE_ROWS_MOCK));
 
@@ -134,7 +117,7 @@ describe('FinesAccountHistoryTableComponent', () => {
     expect(component.sortedRows().map((row) => row.Amount)).toEqual([-5, 0, 20, null]);
   });
 
-  it('should sort string values with numeric collation before null values', () => {
+  it('should sort string values using the common sortable table ordering before null values', () => {
     setupComponent(structuredClone(FINES_ACCOUNT_HISTORY_TABLE_SORT_EDGE_ROWS_MOCK));
 
     component.onSortChange({
@@ -142,7 +125,7 @@ describe('FinesAccountHistoryTableComponent', () => {
       sortType: FINES_ACCOUNT_HISTORY_TABLE_SORT_DIRECTIONS.ascending,
     });
 
-    expect(component.sortedRows().map((row) => row.User)).toEqual(['alpha', 'User 2', 'User 10', null]);
+    expect(component.sortedRows().map((row) => row.User)).toEqual(['User 10', 'User 2', 'alpha', null]);
   });
 
   it('should ignore sort changes with unsupported columns or none direction', () => {
@@ -245,7 +228,7 @@ describe('FinesAccountHistoryTableComponent', () => {
   it('should render no results when rows input is null', () => {
     setupComponent(null);
 
-    expect(component.rowsSignal()).toEqual([]);
+    expect(component.sortedRows()).toEqual([]);
     expect(fixture.nativeElement.querySelector('opal-lib-moj-sortable-table')).toBeNull();
     expect(fixture.nativeElement.textContent).toContain(FINES_ACCOUNT_HISTORY_TABLE_DISPLAY.noResultsText);
   });

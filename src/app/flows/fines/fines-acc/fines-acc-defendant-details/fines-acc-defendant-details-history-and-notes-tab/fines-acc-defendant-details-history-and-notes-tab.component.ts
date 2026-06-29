@@ -12,9 +12,8 @@ import { FinesAccPayloadService } from '../../services/fines-acc-payload.service
 import { FINES_ACC_MAP_TRANSFORM_ITEMS_CONFIG } from '../../services/constants/fines-acc-map-transform-items-config.constant';
 import { FinesAccountStore } from '../../stores/fines-acc.store';
 import { FINES_ACC_DEFENDANT_DETAILS_HISTORY_AND_NOTES_EMPTY_TAB_DATA_STREAM } from './constants/fines-acc-defendant-details-history-and-notes-empty-tab-data-stream.constant';
-import { THistoryDetailsRawItem as TFinesAccHistoryAndNotesRawItem } from '@hmcts/opal-frontend-common/services/history-transformation-service';
-import { FINES_ACC_DEFENDANT_DETAILS_HISTORY_AND_NOTES_TAB_HISTORY_ITEM_KEY } from './constants/fines-acc-defendant-details-history-and-notes-tab-history-item-keys.constant';
-import { IFinesAccHistoryAndNotesItemsEntry } from './interfaces/fines-acc-history-and-notes-items-entry.interface';
+import { getHistoryMappingItemsEntry } from '@hmcts/opal-frontend-common/services/history-transformation-service';
+import { FINES_ACC_DEFENDANT_DETAILS_HISTORY_AND_NOTES_TAB_HISTORY_ITEM_KEYS } from './constants/fines-acc-defendant-details-history-and-notes-tab-history-item-keys.constant';
 
 @Component({
   selector: 'app-fines-acc-defendant-details-history-and-notes-tab',
@@ -65,7 +64,10 @@ export class FinesAccDefendantDetailsHistoryAndNotesTabComponent implements OnCh
   private transformHistoryItems(
     data: IOpalFinesAccountDefendantDetailsHistoryAndNotesTabRefData,
   ): IOpalFinesAccountDefendantDetailsHistoryAndNotesTabRefData {
-    const historyItemsEntry = this.getHistoryItemsEntry(data);
+    const historyItemsEntry = getHistoryMappingItemsEntry(
+      data,
+      FINES_ACC_DEFENDANT_DETAILS_HISTORY_AND_NOTES_TAB_HISTORY_ITEM_KEYS,
+    );
 
     if (!historyItemsEntry) {
       return data;
@@ -87,37 +89,6 @@ export class FinesAccDefendantDetailsHistoryAndNotesTabComponent implements OnCh
     data: IOpalFinesAccountDefendantDetailsHistoryAndNotesTabRefData,
   ): IOpalFinesAccountDefendantDetailsHistoryAndNotesTabRefData {
     return this.transformHistoryItems(this.formatTabData(data));
-  }
-
-  /**
-   * Finds the history item array and filters it to transformable object items.
-   *
-   * @param tabData - The raw History and notes tab data returned by the API.
-   * @returns The history items, or null when no history item list is present.
-   */
-  private getHistoryItemsEntry(
-    tabData: IOpalFinesAccountDefendantDetailsHistoryAndNotesTabRefData,
-  ): IFinesAccHistoryAndNotesItemsEntry | null {
-    const historyItems = tabData[FINES_ACC_DEFENDANT_DETAILS_HISTORY_AND_NOTES_TAB_HISTORY_ITEM_KEY];
-
-    if (!Array.isArray(historyItems)) {
-      return null;
-    }
-
-    return {
-      key: FINES_ACC_DEFENDANT_DETAILS_HISTORY_AND_NOTES_TAB_HISTORY_ITEM_KEY,
-      items: historyItems.filter(this.isHistoryItem),
-    };
-  }
-
-  /**
-   * Checks whether a value can be transformed as a raw history item.
-   *
-   * @param value - A value from the history items array.
-   * @returns True when the value is an object record.
-   */
-  private isHistoryItem(value: unknown): value is TFinesAccHistoryAndNotesRawItem {
-    return typeof value === 'object' && value !== null;
   }
 
   /**

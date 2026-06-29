@@ -1,5 +1,8 @@
 import { DatePipe, NgClass } from '@angular/common';
-import { ChangeDetectionStrategy, Component, EventEmitter, Input, Output, computed, signal } from '@angular/core';
+import { ChangeDetectionStrategy, Component, EventEmitter, Input, Output, computed } from '@angular/core';
+import { AbstractSortableTableComponent } from '@hmcts/opal-frontend-common/components/abstract/abstract-sortable-table';
+import type { IAbstractTableData } from '@hmcts/opal-frontend-common/components/abstract/abstract-sortable-table/interfaces';
+import type { SortableValuesType } from '@hmcts/opal-frontend-common/components/abstract/abstract-sortable-table/types';
 import { CustomHorizontalScrollPaneComponent } from '@hmcts/opal-frontend-common/components/custom/custom-horizontal-scroll-pane';
 import {
   MojSortableTableComponent,
@@ -10,6 +13,7 @@ import {
 } from '@hmcts/opal-frontend-common/components/moj/moj-sortable-table';
 import { MonetaryPipe } from '@hmcts/opal-frontend-common/pipes/monetary';
 import {
+  getHistoryMappingFragmentPrefix,
   IHistoryDetails,
   IHistoryDetailsFragment,
   IHistoryDetailsLink,
@@ -41,26 +45,18 @@ import { TFinesAccountHistoryTableSortState } from './types/fines-account-histor
   templateUrl: './fines-account-history-table.component.html',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class FinesAccountHistoryTableComponent {
+export class FinesAccountHistoryTableComponent extends AbstractSortableTableComponent {
   public readonly columns = FINES_ACCOUNT_HISTORY_TABLE_COLUMNS;
   public readonly tableDisplay = FINES_ACCOUNT_HISTORY_TABLE_DISPLAY;
 
-  public readonly rowsSignal = signal<IFinesAccountHistoryTableRow[]>([]);
-  public readonly sortStateSignal = signal<TFinesAccountHistoryTableSortState>(
-    this.createSortState(
-      FINES_ACCOUNT_HISTORY_TABLE_DEFAULT_SORT.column,
-      FINES_ACCOUNT_HISTORY_TABLE_DEFAULT_SORT.direction,
-    ),
-  );
-  public readonly sortedColumnTitleSignal = signal<TFinesAccountHistoryTableColumn>(
+  public override abstractExistingSortState: TFinesAccountHistoryTableSortState = this.createDefaultSortState(
     FINES_ACCOUNT_HISTORY_TABLE_DEFAULT_SORT.column,
-  );
-  public readonly sortedColumnDirectionSignal = signal<TFinesAccountHistoryTableSortDirection>(
     FINES_ACCOUNT_HISTORY_TABLE_DEFAULT_SORT.direction,
   );
-  public readonly sortedRows = computed(() =>
-    this.sortRows(this.rowsSignal(), this.sortedColumnTitleSignal(), this.sortedColumnDirectionSignal()),
+  public readonly sortedRows = computed(
+    () => this.sortedTableDataSignal() as unknown as IFinesAccountHistoryTableRow[],
   );
+  private hasInitialised = false;
 
   @Output() public historyLinkClicked = new EventEmitter<IFinesAccountHistoryTableLinkClick>();
 
@@ -70,17 +66,21 @@ export class FinesAccountHistoryTableComponent {
    * @param rows - History table rows to render, or null when no rows are available.
    */
   @Input({ required: true }) public set rows(rows: IFinesAccountHistoryTableRow[] | null) {
-    this.rowsSignal.set(rows ?? []);
+    this.setTableData((rows ?? []) as unknown as IAbstractTableData<SortableValuesType>[]);
+
+    if (this.hasInitialised) {
+      this.onApplyFilters();
+    }
   }
 
   /**
-   * Creates the sortable table state for all columns.
+   * Creates the default sortable table state for all displayed columns.
    *
-   * @param activeColumn - The column currently being sorted.
-   * @param direction - The active column sort direction.
+   * @param activeColumn - The column initially sorted.
+   * @param direction - The initial sort direction.
    * @returns Sort state keyed by table column.
    */
-  private createSortState(
+  private createDefaultSortState(
     activeColumn: TFinesAccountHistoryTableColumn,
     direction: TFinesAccountHistoryTableSortDirection,
   ): TFinesAccountHistoryTableSortState {
@@ -88,53 +88,6 @@ export class FinesAccountHistoryTableComponent {
       state[column] = column === activeColumn ? direction : FINES_ACCOUNT_HISTORY_TABLE_SORT_DIRECTIONS.none;
       return state;
     }, {} as TFinesAccountHistoryTableSortState);
-  }
-
-  /**
-   * Sorts history rows by the requested column and direction.
-   *
-   * @param rows - The rows to sort.
-   * @param column - The table column to sort by.
-   * @param direction - The requested sort direction.
-   * @returns A sorted copy of the supplied rows.
-   */
-  private sortRows(
-    rows: IFinesAccountHistoryTableRow[],
-    column: TFinesAccountHistoryTableColumn,
-    direction: TFinesAccountHistoryTableSortDirection,
-  ): IFinesAccountHistoryTableRow[] {
-    if (direction === FINES_ACCOUNT_HISTORY_TABLE_SORT_DIRECTIONS.none) {
-      return [...rows];
-    }
-
-    return [...rows].sort((first, second) => {
-      const comparison = this.compareValues(first[column], second[column]);
-      return direction === FINES_ACCOUNT_HISTORY_TABLE_SORT_DIRECTIONS.ascending ? comparison : -comparison;
-    });
-  }
-
-  /**
-   * Compares nullable row values for sortable table ordering.
-   *
-   * @param first - The first value to compare.
-   * @param second - The second value to compare.
-   * @returns Sort comparison value.
-   */
-  private compareValues(first: string | number | null, second: string | number | null): number {
-    if (first === null && second === null) {
-      return this.tableDisplay.sortComparison.equal;
-    }
-    if (first === null) {
-      return this.tableDisplay.sortComparison.firstAfterSecond;
-    }
-    if (second === null) {
-      return this.tableDisplay.sortComparison.firstBeforeSecond;
-    }
-    if (typeof first === 'number' && typeof second === 'number') {
-      return first - second;
-    }
-
-    return String(first).localeCompare(String(second), undefined, this.tableDisplay.localeCompareOptions);
   }
 
   /**
@@ -148,18 +101,41 @@ export class FinesAccountHistoryTableComponent {
   }
 
   /**
+   * Keeps empty values after populated values once the common sortable table has applied column ordering.
+   *
+   * @param column - The sorted column.
+   */
+  private moveEmptySortValuesLast(column: TFinesAccountHistoryTableColumn): void {
+    const sortedRows = this.sortedTableDataSignal() as unknown as IFinesAccountHistoryTableRow[];
+    const populatedRows = sortedRows.filter((row) => row[column] !== null && row[column] !== undefined);
+    const emptyRows = sortedRows.filter((row) => row[column] === null || row[column] === undefined);
+
+    this.sortedTableDataSignal.set([
+      ...populatedRows,
+      ...emptyRows,
+    ] as unknown as IAbstractTableData<SortableValuesType>[]);
+  }
+
+  /**
    * Applies a supported sortable table sort change.
    *
    * @param event - The emitted sort change event.
    */
-  public onSortChange(event: IFinesAccountHistoryTableSortChange): void {
+  public override onSortChange(event: IFinesAccountHistoryTableSortChange): void {
     if (!this.isColumn(event.key) || event.sortType === FINES_ACCOUNT_HISTORY_TABLE_SORT_DIRECTIONS.none) {
       return;
     }
 
-    this.sortStateSignal.set(this.createSortState(event.key, event.sortType));
-    this.sortedColumnTitleSignal.set(event.key);
-    this.sortedColumnDirectionSignal.set(event.sortType);
+    super.onSortChange({ key: event.key, sortType: event.sortType });
+    this.moveEmptySortValuesLast(event.key);
+  }
+
+  /**
+   * Initialises inherited sort state after Angular has applied the required rows input.
+   */
+  public override ngOnInit(): void {
+    super.ngOnInit();
+    this.hasInitialised = true;
   }
 
   /**
@@ -199,26 +175,6 @@ export class FinesAccountHistoryTableComponent {
   }
 
   /**
-   * Tracks rendered details parts by index.
-   *
-   * @param index - The part index.
-   * @returns The part index.
-   */
-  public trackPart(index: number): number {
-    return index;
-  }
-
-  /**
-   * Tracks rendered details fragments by index.
-   *
-   * @param index - The fragment index.
-   * @returns The fragment index.
-   */
-  public trackFragment(index: number): number {
-    return index;
-  }
-
-  /**
    * Gets the GOV.UK tag classes for a row amount direction.
    *
    * @param row - The rendered history row.
@@ -240,11 +196,11 @@ export class FinesAccountHistoryTableComponent {
    * @returns The fragment text prefix.
    */
   public getFragmentPrefix(fragment: IHistoryDetailsFragment, index: number): string {
-    if (fragment.hyphen) {
-      return this.tableDisplay.hyphenPrefix;
-    }
-
-    return index > 0 ? this.tableDisplay.fragmentSpacePrefix : this.tableDisplay.fragmentEmptyPrefix;
+    return getHistoryMappingFragmentPrefix(fragment, index, {
+      fragmentEmptyPrefix: this.tableDisplay.fragmentEmptyPrefix,
+      fragmentSpacePrefix: this.tableDisplay.fragmentSpacePrefix,
+      hyphenPrefix: this.tableDisplay.hyphenPrefix,
+    });
   }
 
   /**

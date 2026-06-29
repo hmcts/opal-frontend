@@ -61,6 +61,23 @@ describe('FinesAccDefendantDetailsHistoryAndNotesTableComponent', () => {
     ]);
   });
 
+  it('should map defendant account history items from the existing API history_items key', () => {
+    const tabData = structuredClone(FINES_ACC_DEFENDANT_DETAILS_HISTORY_AND_NOTES_TABLE_MAP_TAB_DATA_MOCK);
+    tabData['history_items'] = tabData['historyItems'];
+    delete tabData['historyItems'];
+
+    const rows = component.getHistoryRows(tabData);
+
+    expect(rows).toEqual([
+      expect.objectContaining({
+        id: `${FINES_ACCOUNT_HISTORY_TABLE_DISPLAY.rowIdPrefix}0`,
+        User: 'Case worker',
+        Type: 'Payment',
+        Details: 'Payment reversed - Account 123',
+      }),
+    ]);
+  });
+
   it('should map optional history item fields and amount branches to shared table rows', () => {
     const rows = component.getHistoryRows(
       structuredClone(FINES_ACC_DEFENDANT_DETAILS_HISTORY_AND_NOTES_TABLE_BRANCH_TAB_DATA_MOCK),

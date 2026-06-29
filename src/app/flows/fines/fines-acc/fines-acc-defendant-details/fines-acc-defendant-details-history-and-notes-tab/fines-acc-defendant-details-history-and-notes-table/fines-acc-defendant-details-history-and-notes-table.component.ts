@@ -1,9 +1,12 @@
 import { ChangeDetectionStrategy, Component, Input, inject } from '@angular/core';
 import { Router } from '@angular/router';
 import {
+  getHistoryMappingDetailsText,
+  getHistoryMappingDateTimestamp,
+  getHistoryMappingNumber,
+  getHistoryMappingRows,
+  getHistoryMappingString,
   IHistoryDetails as IFinesAccHistoryAndNotesDetails,
-  IHistoryDetailsFragment as IFinesAccHistoryAndNotesDetailsFragment,
-  IHistoryDetailsPart as IFinesAccHistoryAndNotesDetailsPart,
   THistoryDetailsRawItem as TFinesAccHistoryAndNotesRawItem,
 } from '@hmcts/opal-frontend-common/services/history-transformation-service';
 import { FINES_ROUTING_PATHS } from '@routing/fines/constants/fines-routing-paths.constant';
@@ -15,8 +18,7 @@ import { IFinesAccountHistoryTableRow } from '../../../fines-account-history-tab
 import { FINES_ACC_DEFENDANT_ROUTING_PATHS } from '../../../routing/constants/fines-acc-defendant-routing-paths.constant';
 import { FINES_ACC_ROUTING_PATHS } from '../../../routing/constants/fines-acc-routing-paths.constant';
 import { FINES_ACC_HISTORY_AND_NOTES_DETAILS_LINK_TYPES } from '../../../services/constants/fines-acc-history-and-notes-details-link-types.constant';
-import { FINES_ACC_DEFENDANT_DETAILS_HISTORY_AND_NOTES_TAB_HISTORY_ITEM_KEY } from '../constants/fines-acc-defendant-details-history-and-notes-tab-history-item-keys.constant';
-import { IFinesAccHistoryAndNotesItemsEntry } from '../interfaces/fines-acc-history-and-notes-items-entry.interface';
+import { FINES_ACC_DEFENDANT_DETAILS_HISTORY_AND_NOTES_TAB_HISTORY_ITEM_KEYS } from '../constants/fines-acc-defendant-details-history-and-notes-tab-history-item-keys.constant';
 import { FINES_ACC_DEFENDANT_DETAILS_HISTORY_AND_NOTES_TABLE_DISPLAY } from './constants/fines-acc-defendant-details-history-and-notes-table-display.constant';
 import { FINES_ACC_DEFENDANT_DETAILS_HISTORY_AND_NOTES_TABLE_FIELD_PATHS } from './constants/fines-acc-defendant-details-history-and-notes-table-field-paths.constant';
 
@@ -30,37 +32,6 @@ export class FinesAccDefendantDetailsHistoryAndNotesTableComponent {
   private readonly router = inject(Router);
 
   @Input({ required: true }) public tabData!: IOpalFinesAccountDefendantDetailsHistoryAndNotesTabRefData;
-
-  /**
-   * Finds the history item array and filters it to transformable object items.
-   *
-   * @param tabData - The History and notes tab data returned by the API.
-   * @returns The history items, or null when no history item list is present.
-   */
-  private getHistoryItemsEntry(
-    tabData: IOpalFinesAccountDefendantDetailsHistoryAndNotesTabRefData,
-  ): IFinesAccHistoryAndNotesItemsEntry | null {
-    const historyItems = tabData[FINES_ACC_DEFENDANT_DETAILS_HISTORY_AND_NOTES_TAB_HISTORY_ITEM_KEY];
-
-    if (!Array.isArray(historyItems)) {
-      return null;
-    }
-
-    return {
-      key: FINES_ACC_DEFENDANT_DETAILS_HISTORY_AND_NOTES_TAB_HISTORY_ITEM_KEY,
-      items: historyItems.filter(this.isHistoryItem),
-    };
-  }
-
-  /**
-   * Checks whether a value can be mapped as a raw history item.
-   *
-   * @param value - A value from the history items array.
-   * @returns True when the value is an object record.
-   */
-  private isHistoryItem(value: unknown): value is TFinesAccHistoryAndNotesRawItem {
-    return typeof value === 'object' && value !== null;
-  }
 
   /**
    * Checks whether a transformed history details value can be rendered by the table.
@@ -89,18 +60,45 @@ export class FinesAccDefendantDetailsHistoryAndNotesTableComponent {
    */
   private mapHistoryItemToRow(item: TFinesAccHistoryAndNotesRawItem, index: number): IFinesAccountHistoryTableRow {
     const details = this.isHistoryDetails(item['details']) ? item['details'] : null;
-    const amount = this.getNumber(item, FINES_ACC_DEFENDANT_DETAILS_HISTORY_AND_NOTES_TABLE_FIELD_PATHS.amount);
-    const dateTimestamp = this.getDateTimestamp(item);
+    const amount = getHistoryMappingNumber(
+      item,
+      FINES_ACC_DEFENDANT_DETAILS_HISTORY_AND_NOTES_TABLE_FIELD_PATHS.amount,
+      {
+        fieldPathSeparator: FINES_ACC_DEFENDANT_DETAILS_HISTORY_AND_NOTES_TABLE_DISPLAY.fieldPathSeparator,
+        numberSanitisePattern: FINES_ACC_DEFENDANT_DETAILS_HISTORY_AND_NOTES_TABLE_DISPLAY.currencySanitisePattern,
+      },
+    );
+    const dateTimestamp = getHistoryMappingDateTimestamp(
+      item,
+      FINES_ACC_DEFENDANT_DETAILS_HISTORY_AND_NOTES_TABLE_FIELD_PATHS.date,
+      FINES_ACC_DEFENDANT_DETAILS_HISTORY_AND_NOTES_TABLE_DISPLAY.dateFormat,
+      FINES_ACC_DEFENDANT_DETAILS_HISTORY_AND_NOTES_TABLE_DISPLAY.fieldPathSeparator,
+    );
     const rowId = `${FINES_ACCOUNT_HISTORY_TABLE_DISPLAY.rowIdPrefix}${index}`;
 
     return {
       id: rowId,
       Date: dateTimestamp,
       displayDate: dateTimestamp,
-      User: this.getString(item, FINES_ACC_DEFENDANT_DETAILS_HISTORY_AND_NOTES_TABLE_FIELD_PATHS.user),
-      Type: this.getString(item, FINES_ACC_DEFENDANT_DETAILS_HISTORY_AND_NOTES_TABLE_FIELD_PATHS.type),
+      User: getHistoryMappingString(
+        item,
+        FINES_ACC_DEFENDANT_DETAILS_HISTORY_AND_NOTES_TABLE_FIELD_PATHS.user,
+        FINES_ACC_DEFENDANT_DETAILS_HISTORY_AND_NOTES_TABLE_DISPLAY.fieldPathSeparator,
+      ),
+      Type: getHistoryMappingString(
+        item,
+        FINES_ACC_DEFENDANT_DETAILS_HISTORY_AND_NOTES_TABLE_FIELD_PATHS.type,
+        FINES_ACC_DEFENDANT_DETAILS_HISTORY_AND_NOTES_TABLE_DISPLAY.fieldPathSeparator,
+      ),
       Details: details
-        ? this.detailsToText(details)
+        ? getHistoryMappingDetailsText(details, {
+            detailsLineSeparator: FINES_ACC_DEFENDANT_DETAILS_HISTORY_AND_NOTES_TABLE_DISPLAY.detailsLineSeparator,
+            fragmentEmptyPrefix: FINES_ACC_DEFENDANT_DETAILS_HISTORY_AND_NOTES_TABLE_DISPLAY.fragmentJoiner,
+            fragmentJoiner: FINES_ACC_DEFENDANT_DETAILS_HISTORY_AND_NOTES_TABLE_DISPLAY.fragmentJoiner,
+            fragmentSpacePrefix: FINES_ACCOUNT_HISTORY_TABLE_DISPLAY.fragmentSpacePrefix,
+            hyphenPrefix: FINES_ACCOUNT_HISTORY_TABLE_DISPLAY.hyphenPrefix,
+            partSeparator: FINES_ACC_DEFENDANT_DETAILS_HISTORY_AND_NOTES_TABLE_DISPLAY.partSeparator,
+          })
         : FINES_ACC_DEFENDANT_DETAILS_HISTORY_AND_NOTES_TABLE_DISPLAY.emptyDetailsText,
       Amount: amount,
       absoluteAmount: amount === null ? null : Math.abs(amount),
@@ -122,170 +120,6 @@ export class FinesAccDefendantDetailsHistoryAndNotesTableComponent {
   }
 
   /**
-   * Gets the first present string or number from the supplied account-history item paths.
-   *
-   * @param item - The raw history item.
-   * @param paths - The defendant-account history field paths to inspect.
-   * @returns The first present string value.
-   */
-  private getString(item: TFinesAccHistoryAndNotesRawItem, paths: string[]): string | null {
-    for (const path of paths) {
-      const value = this.getValue(item, path);
-
-      if (typeof value === 'string' && value.trim()) {
-        return value;
-      }
-
-      if (typeof value === 'number') {
-        return String(value);
-      }
-    }
-
-    return null;
-  }
-
-  /**
-   * Gets the first finite number from the supplied account-history item paths.
-   *
-   * @param item - The raw history item.
-   * @param paths - The defendant-account history field paths to inspect.
-   * @returns The first finite number value.
-   */
-  private getNumber(item: TFinesAccHistoryAndNotesRawItem, paths: string[]): number | null {
-    for (const path of paths) {
-      const value = this.getValue(item, path);
-
-      if (typeof value === 'number' && Number.isFinite(value)) {
-        return value;
-      }
-
-      if (typeof value === 'string') {
-        const parsed = Number(
-          value.replace(FINES_ACC_DEFENDANT_DETAILS_HISTORY_AND_NOTES_TABLE_DISPLAY.currencySanitisePattern, ''),
-        );
-
-        if (Number.isFinite(parsed)) {
-          return parsed;
-        }
-      }
-    }
-
-    return null;
-  }
-
-  /**
-   * Gets the first parseable date timestamp from the defendant-account history item.
-   *
-   * @param item - The raw history item.
-   * @returns The UTC timestamp in milliseconds.
-   */
-  private getDateTimestamp(item: TFinesAccHistoryAndNotesRawItem): number | null {
-    for (const path of FINES_ACC_DEFENDANT_DETAILS_HISTORY_AND_NOTES_TABLE_FIELD_PATHS.date) {
-      const value = this.getValue(item, path);
-      const timestamp = this.parseDateTimestamp(value);
-
-      if (timestamp !== null) {
-        return timestamp;
-      }
-    }
-
-    return null;
-  }
-
-  /**
-   * Parses supported defendant-account history date values to sortable timestamps.
-   *
-   * @param value - The date value.
-   * @returns The UTC timestamp in milliseconds.
-   */
-  private parseDateTimestamp(value: unknown): number | null {
-    if (typeof value === 'number' && Number.isFinite(value)) {
-      return value;
-    }
-
-    if (typeof value !== 'string' || !value.trim()) {
-      return null;
-    }
-
-    const trimmedValue = value.trim();
-    const govukDateMatch =
-      FINES_ACC_DEFENDANT_DETAILS_HISTORY_AND_NOTES_TABLE_DISPLAY.govukDatePattern.exec(trimmedValue);
-    const timestamp = govukDateMatch
-      ? Date.parse(
-          `${govukDateMatch[3]}-${govukDateMatch[2]}-${govukDateMatch[1]}${FINES_ACC_DEFENDANT_DETAILS_HISTORY_AND_NOTES_TABLE_DISPLAY.govukDateTimeSuffix}`,
-        )
-      : Date.parse(trimmedValue);
-
-    return Number.isNaN(timestamp) ? null : timestamp;
-  }
-
-  /**
-   * Gets a value from an object path in a defendant-account history item.
-   *
-   * @param source - The source history item.
-   * @param path - The dot-notated field path.
-   * @returns The field value.
-   */
-  private getValue(source: Record<string, unknown>, path: string): unknown {
-    return path
-      .split(FINES_ACC_DEFENDANT_DETAILS_HISTORY_AND_NOTES_TABLE_DISPLAY.fieldPathSeparator)
-      .reduce<unknown>((current, key) => {
-        if (typeof current !== 'object' || current === null) {
-          return undefined;
-        }
-
-        return (current as Record<string, unknown>)[key];
-      }, source);
-  }
-
-  /**
-   * Converts transformed history details into text used for details-column sorting.
-   *
-   * @param details - The transformed details model.
-   * @returns Details text.
-   */
-  private detailsToText(details: IFinesAccHistoryAndNotesDetails): string {
-    return [this.partsToText(details.line1), this.partsToText(details.line2 ?? [])]
-      .filter(Boolean)
-      .join(FINES_ACC_DEFENDANT_DETAILS_HISTORY_AND_NOTES_TABLE_DISPLAY.detailsLineSeparator);
-  }
-
-  /**
-   * Converts transformed history details parts into text used for details-column sorting.
-   *
-   * @param parts - The transformed details parts.
-   * @returns Parts text.
-   */
-  private partsToText(parts: IFinesAccHistoryAndNotesDetailsPart[]): string {
-    return parts
-      .map((part) =>
-        part.fragments
-          .map((fragment, index) => `${this.getFragmentPrefix(fragment, index)}${fragment.text}`)
-          .join(FINES_ACC_DEFENDANT_DETAILS_HISTORY_AND_NOTES_TABLE_DISPLAY.fragmentJoiner)
-          .trim(),
-      )
-      .filter(Boolean)
-      .join(FINES_ACC_DEFENDANT_DETAILS_HISTORY_AND_NOTES_TABLE_DISPLAY.partSeparator);
-  }
-
-  /**
-   * Gets the rendered prefix for a details fragment.
-   *
-   * @param fragment - The details fragment.
-   * @param index - The fragment index in its part.
-   * @returns The rendered prefix.
-   */
-  private getFragmentPrefix(fragment: IFinesAccHistoryAndNotesDetailsFragment, index: number): string {
-    if (fragment.hyphen) {
-      return FINES_ACCOUNT_HISTORY_TABLE_DISPLAY.hyphenPrefix;
-    }
-
-    return index > 0
-      ? FINES_ACCOUNT_HISTORY_TABLE_DISPLAY.fragmentSpacePrefix
-      : FINES_ACC_DEFENDANT_DETAILS_HISTORY_AND_NOTES_TABLE_DISPLAY.fragmentJoiner;
-  }
-
-  /**
    * Maps the first recognised defendant-account history item list into reusable history table rows.
    *
    * @param tabData - The transformed history and notes tab payload.
@@ -294,8 +128,10 @@ export class FinesAccDefendantDetailsHistoryAndNotesTableComponent {
   public getHistoryRows(
     tabData: IOpalFinesAccountDefendantDetailsHistoryAndNotesTabRefData,
   ): IFinesAccountHistoryTableRow[] {
-    return (this.getHistoryItemsEntry(tabData)?.items ?? []).map((item, index) =>
-      this.mapHistoryItemToRow(item, index),
+    return getHistoryMappingRows(
+      tabData,
+      FINES_ACC_DEFENDANT_DETAILS_HISTORY_AND_NOTES_TAB_HISTORY_ITEM_KEYS,
+      (item, index) => this.mapHistoryItemToRow(item, index),
     );
   }
 

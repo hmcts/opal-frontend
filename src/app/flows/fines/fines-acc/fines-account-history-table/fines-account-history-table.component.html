@@ -33,11 +33,11 @@
             <td opal-lib-moj-sortable-table-row-data [id]="tableDisplay.rowIdPrefixes.details + rowIndex">
               @if (row.details; as details) {
                 <div>
-                  @for (part of details.line1; track trackPart($index); let partIndex = $index) {
+                  @for (part of details.line1; track $index; let partIndex = $index) {
                     @if (partIndex > 0) {
                       <span>{{ tableDisplay.partSeparator }}</span>
                     }
-                    @for (fragment of part.fragments; track trackFragment($index); let fragmentIndex = $index) {
+                    @for (fragment of part.fragments; track $index; let fragmentIndex = $index) {
                       @if (asFragment(fragment).link; as link) {
                         <a
                           [class]="tableDisplay.cssClasses.link"
@@ -64,11 +64,11 @@
                 </div>
                 @if (hasLine2(details)) {
                   <div [class]="tableDisplay.cssClasses.detailsLine2">
-                    @for (part of details.line2; track trackPart($index); let partIndex = $index) {
+                    @for (part of details.line2; track $index; let partIndex = $index) {
                       @if (partIndex > 0) {
                         <span>{{ tableDisplay.partSeparator }}</span>
                       }
-                      @for (fragment of part.fragments; track trackFragment($index); let fragmentIndex = $index) {
+                      @for (fragment of part.fragments; track $index; let fragmentIndex = $index) {
                         @if (asFragment(fragment).link; as link) {
                           <a
                             [class]="tableDisplay.cssClasses.link"
