@@ -11,6 +11,8 @@ import { FinesAccPayloadService } from '../../services/fines-acc-payload.service
 import { FINES_ACC_MAP_TRANSFORM_ITEMS_CONFIG } from '../../services/constants/fines-acc-map-transform-items-config.constant';
 import { FinesAccountStore } from '../../stores/fines-acc.store';
 import { FINES_ACC_DEFENDANT_DETAILS_HISTORY_AND_NOTES_EMPTY_TAB_DATA_STREAM } from './constants/fines-acc-defendant-details-history-and-notes-empty-tab-data-stream.constant';
+import { THistoryDetailsRawItem as TFinesAccHistoryAndNotesRawItem } from '@hmcts/opal-frontend-common/services/history-transformation-service';
+import { FINES_ACC_DEFENDANT_DETAILS_HISTORY_AND_NOTES_TAB_HISTORY_ITEM_KEY } from './constants/fines-acc-defendant-details-history-and-notes-tab-history-item-keys.constant';
 
 @Component({
   selector: 'app-fines-acc-defendant-details-history-and-notes-tab',
@@ -34,19 +36,80 @@ export class FinesAccDefendantDetailsHistoryAndNotesTabComponent implements OnCh
     FINES_ACC_DEFENDANT_DETAILS_HISTORY_AND_NOTES_EMPTY_TAB_DATA_STREAM;
 
   /**
-   * Applies the same payload transform used by the account details parent to filtered history responses.
-   * The parent still transforms the initial tab stream; this keeps child-owned filtered requests consistent.
+   * Applies the parent-level payload formatting to child-owned filtered responses.
    *
    * @param data - The history and notes API response.
-   * @returns The transformed history and notes tab payload.
+   * @returns The formatted history and notes tab payload.
    */
-  private transformTabData(
+  private formatTabData(
     data: IOpalFinesAccountDefendantDetailsHistoryAndNotesTabRefData,
   ): IOpalFinesAccountDefendantDetailsHistoryAndNotesTabRefData {
     return this.payloadService.transformPayload(
       data,
       FINES_ACC_MAP_TRANSFORM_ITEMS_CONFIG,
     ) as IOpalFinesAccountDefendantDetailsHistoryAndNotesTabRefData;
+  }
+
+  /**
+   * Transforms raw history item details into the UI details model.
+   *
+   * @param data - The formatted history and notes tab payload.
+   * @returns The history and notes tab payload with transformed history item details.
+   */
+  private transformHistoryItems(
+    data: IOpalFinesAccountDefendantDetailsHistoryAndNotesTabRefData,
+  ): IOpalFinesAccountDefendantDetailsHistoryAndNotesTabRefData {
+    const historyItems = this.getHistoryItems(data);
+
+    if (!historyItems) {
+      return data;
+    }
+
+    return {
+      ...data,
+      [FINES_ACC_DEFENDANT_DETAILS_HISTORY_AND_NOTES_TAB_HISTORY_ITEM_KEY]:
+        this.payloadService.transformHistoryAndNotesItems(historyItems),
+    };
+  }
+
+  /**
+   * Formats and transforms a filtered history and notes response owned by this component.
+   *
+   * @param data - The filtered history and notes API response.
+   * @returns The formatted payload with transformed history item details.
+   */
+  private transformFilteredTabData(
+    data: IOpalFinesAccountDefendantDetailsHistoryAndNotesTabRefData,
+  ): IOpalFinesAccountDefendantDetailsHistoryAndNotesTabRefData {
+    return this.transformHistoryItems(this.formatTabData(data));
+  }
+
+  /**
+   * Finds the history item array and filters it to transformable object items.
+   *
+   * @param tabData - The raw History and notes tab data returned by the API.
+   * @returns The history items, or null when no history item list is present.
+   */
+  private getHistoryItems(
+    tabData: IOpalFinesAccountDefendantDetailsHistoryAndNotesTabRefData,
+  ): TFinesAccHistoryAndNotesRawItem[] | null {
+    const historyItems = tabData[FINES_ACC_DEFENDANT_DETAILS_HISTORY_AND_NOTES_TAB_HISTORY_ITEM_KEY];
+
+    if (!Array.isArray(historyItems)) {
+      return null;
+    }
+
+    return historyItems.filter(this.isHistoryItem);
+  }
+
+  /**
+   * Checks whether a value can be transformed as a raw history item.
+   *
+   * @param value - A value from the history items array.
+   * @returns True when the value is an object record.
+   */
+  private isHistoryItem(value: unknown): value is TFinesAccHistoryAndNotesRawItem {
+    return typeof value === 'object' && value !== null;
   }
 
   /**
@@ -73,7 +136,9 @@ export class FinesAccDefendantDetailsHistoryAndNotesTabComponent implements OnCh
    * This runs when the tab is first initialised or when the parent refreshes the tab stream.
    */
   private setBaseTabDataStream(): void {
-    this.historyAndNotesTabData$ = this.keepLatestTabData(this.tabData$);
+    this.historyAndNotesTabData$ = this.keepLatestTabData(
+      this.tabData$.pipe(map((data) => this.transformHistoryItems(data))),
+    );
   }
 
   /**
@@ -108,7 +173,7 @@ export class FinesAccDefendantDetailsHistoryAndNotesTabComponent implements OnCh
     const filteredTabData$ = this.opalFinesService
       .getDefendantAccountHistoryAndNotesTabData(this.accountId, filterParams)
       .pipe(
-        map((data) => this.transformTabData(data)),
+        map((data) => this.transformFilteredTabData(data)),
         tap((data) => this.accountStore.compareVersion(data.version)),
       );
 
