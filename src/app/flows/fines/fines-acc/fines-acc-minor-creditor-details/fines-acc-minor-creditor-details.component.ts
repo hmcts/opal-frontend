@@ -41,9 +41,6 @@ import { IOpalFinesAccountMinorCreditorAtAGlance } from '../../services/opal-fin
 import { FINES_ACC_MINOR_CREDITOR_ACCOUNT_TABS_CACHE_MAP } from './constants/fines-acc-minor-creditor-account-tabs-cache-map.constant';
 import { IFinesAccMinorCreditorAccountTabsCacheMap } from './interfaces/fines-acc-minor-creditor-account-tabs-cache-map.interface';
 import { AbstractAccountSummaryBaseComponent } from '@hmcts/opal-frontend-common/components/abstract/abstract-account-summary-base';
-import { FINES_ACC_DEFENDANT_ROUTING_PATHS } from '../routing/constants/fines-acc-defendant-routing-paths.constant';
-import { FINES_ROUTING_PATHS } from '../../routing/constants/fines-routing-paths.constant';
-import { FINES_ACC_ROUTING_PATHS } from '../routing/constants/fines-acc-routing-paths.constant';
 import { IOpalFinesVersion } from '../../services/opal-fines-service/interfaces/opal-fines-version.interface';
 import { FINES_ACC_BANNER_MESSAGES } from '../stores/constants/fines-acc-store-banner-messages.constant';
 import { FinesAccMinorCreditorDetailsCreditorTab } from './fines-acc-minor-creditor-details-creditor-tab/fines-acc-minor-creditor-details-creditor-tab.component';
@@ -218,53 +215,6 @@ export class FinesAccMinorCreditorDetailsComponent
       FINES_PERMISSIONS[permissionKey],
       Number(this.accountStore.business_unit_id()!),
     );
-  }
-
-  /**
-   * Navigates to the add payment hold page.
-   */
-  public navigateToAddPaymentHoldPage(): void {
-    if (this.hasBusinessUnitPermissionKey('add-remove-payment-hold')) {
-      this['router'].navigate([`../${FINES_ACC_MINOR_CREDITOR_ROUTING_PATHS.children['payment-hold']}/add`], {
-        relativeTo: this.activatedRoute,
-      });
-    } else {
-      this['router'].navigate([`../${FINES_ACC_MINOR_CREDITOR_ROUTING_PATHS.children['payment-hold']}/denied`], {
-        relativeTo: this.activatedRoute,
-      });
-    }
-  }
-
-  /**
-   * Navigates to the remove payment hold page.
-   */
-  public navigateToRemovePaymentHoldPage(): void {
-    if (this.hasBusinessUnitPermissionKey('add-remove-payment-hold')) {
-      this['router'].navigate([`../${FINES_ACC_MINOR_CREDITOR_ROUTING_PATHS.children['payment-hold']}/remove`], {
-        relativeTo: this.activatedRoute,
-      });
-    } else {
-      this['router'].navigate([`../${FINES_ACC_MINOR_CREDITOR_ROUTING_PATHS.children['payment-hold']}/denied`], {
-        relativeTo: this.activatedRoute,
-      });
-    }
-  }
-
-  /**
-   * Navigates to the defendant account page for the specified account ID in a new browser tab.
-   * @param accountId The ID of the defendant account.
-   */
-  public navigateToDefendantAccountPage(accountId: number): void {
-    const url = this['router'].serializeUrl(
-      this['router'].createUrlTree([
-        FINES_ROUTING_PATHS.root,
-        FINES_ACC_ROUTING_PATHS.root,
-        FINES_ACC_ROUTING_PATHS.children.defendant,
-        accountId,
-        FINES_ACC_DEFENDANT_ROUTING_PATHS.children.details,
-      ]),
-    );
-    window.open(url, '_blank');
   }
 
   /**
