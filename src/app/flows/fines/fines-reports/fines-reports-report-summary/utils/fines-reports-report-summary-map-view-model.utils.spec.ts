@@ -19,10 +19,10 @@ describe('mapFinesReportsReportSummaryToViewModel', () => {
     ]);
   });
 
-  it('should keep ready status and show zero records for ready reports with no records', () => {
+  it('should map ready reports with no records to no content status and show zero records', () => {
     const result = mapFinesReportsReportSummaryToViewModel(FINES_REPORTS_REPORT_SUMMARY_PAYMENTS_MOCK);
 
-    expect(result.generalRows[0]).toEqual({ key: 'Status', value: 'Ready', type: 'text' });
+    expect(result.generalRows[0]).toEqual({ key: 'Status', value: 'No content', type: 'text' });
     expect(result.generalRows[3]).toEqual({ key: 'No. of Records', value: 0, type: 'number' });
   });
 

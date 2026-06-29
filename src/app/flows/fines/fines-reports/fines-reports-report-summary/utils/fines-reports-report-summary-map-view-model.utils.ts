@@ -1,6 +1,7 @@
 import { FINES_REPORTS_REPORT_SUMMARY_CRITERIA_LABELS } from '../constants/fines-reports-report-summary-criteria-labels.constant';
 import { FINES_REPORTS_REPORT_SUMMARY_GENERAL_LABELS } from '../constants/fines-reports-report-summary-general-labels.constant';
 import {
+  FINES_REPORTS_REPORT_SUMMARY_NO_CONTENT_STATUS_DISPLAY,
   FINES_REPORTS_REPORT_SUMMARY_RECORD_COUNT_DASH_STATUSES,
   FINES_REPORTS_REPORT_SUMMARY_STATUS_DISPLAY,
 } from '../constants/fines-reports-report-summary-status-display.constant';
@@ -32,6 +33,7 @@ const CURRENCY_ROW_KEYS = new Set<string>([
 const RECORD_COUNT_DASH_STATUS_SET = new Set<FinesReportsReportSummaryNormalisedStatus>(
   FINES_REPORTS_REPORT_SUMMARY_RECORD_COUNT_DASH_STATUSES,
 );
+const NO_CONTENT_RECORD_COUNT = 0;
 
 const normaliseStatus = (
   status: IFinesReportsReportSummaryInstance['status'],
@@ -43,6 +45,13 @@ const normaliseStatus = (
 
 const getStatusDisplay = (reportSummary: IFinesReportsReportSummaryInstance): string => {
   const status = normaliseStatus(reportSummary.status);
+
+  if (
+    status === FINES_REPORTS_REPORT_SUMMARY_STATUSES.ready &&
+    reportSummary.number_of_records === NO_CONTENT_RECORD_COUNT
+  ) {
+    return FINES_REPORTS_REPORT_SUMMARY_NO_CONTENT_STATUS_DISPLAY;
+  }
 
   return FINES_REPORTS_REPORT_SUMMARY_STATUS_DISPLAY[status];
 };
