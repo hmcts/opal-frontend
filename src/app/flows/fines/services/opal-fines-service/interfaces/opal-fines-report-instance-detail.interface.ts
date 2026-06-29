@@ -3,7 +3,7 @@ import { type IOpalFinesReportInstanceReportReference } from './opal-fines-repor
 import { type IOpalFinesReportInstanceRequestedBy } from './opal-fines-report-instance-requested-by.interface';
 import { type IOpalFinesReportInstanceStatus } from './opal-fines-report-instance-status.interface';
 
-export interface IOpalFinesReportInstance {
+export interface IOpalFinesReportInstanceDetail {
   instance_id: number;
   requested_at: string;
   generated_at?: string | null;

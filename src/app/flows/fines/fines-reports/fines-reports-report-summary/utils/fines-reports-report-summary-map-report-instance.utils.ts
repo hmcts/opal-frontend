@@ -5,7 +5,7 @@ import { FINES_REPORTS_REPORT_SUMMARY_REPORT_TYPES } from '../constants/fines-re
 import { type IFinesReportsReportSummaryNamedValue } from '../interfaces/fines-reports-report-summary-named-value.interface';
 import { type IFinesReportsReportSummaryInstance } from '../interfaces/fines-reports-report-summary-instance.interface';
 import { type FinesReportsReportSummaryReportType } from '../types/fines-reports-report-summary-report-type.type';
-import { type IOpalFinesReportInstance } from '@services/fines/opal-fines-service/interfaces/opal-fines-report-instance.interface';
+import { type IOpalFinesReportInstanceDetail } from '@services/fines/opal-fines-service/interfaces/opal-fines-report-instance-detail.interface';
 import {
   isFinesReportsReportSummaryUnusedOptionalValue,
   mapFinesReportsReportSummaryDisplayValue,
@@ -216,27 +216,29 @@ const buildCriteriaRows = (
   return rows;
 };
 
-const getReportReference = (reportInstance: IOpalFinesReportInstance): string => {
+const getReportReference = (reportInstance: IOpalFinesReportInstanceDetail): string => {
   return reportInstance.name?.trim() || reportInstance.report.id;
 };
 
-const getCreatedBy = (reportInstance: IOpalFinesReportInstance): string => {
+const getCreatedBy = (reportInstance: IOpalFinesReportInstanceDetail): string => {
   return reportInstance.requested_by.name?.trim() || reportInstance.requested_by.user_id?.trim() || '';
 };
 
-const getReportStatus = (reportInstance: IOpalFinesReportInstance): IFinesReportsReportSummaryInstance['status'] => {
+const getReportStatus = (
+  reportInstance: IOpalFinesReportInstanceDetail,
+): IFinesReportsReportSummaryInstance['status'] => {
   return (reportInstance.status.display_name.trim() ||
     reportInstance.status.code) as IFinesReportsReportSummaryInstance['status'];
 };
 
-const getBusinessUnits = (reportInstance: IOpalFinesReportInstance): string[] => {
+const getBusinessUnits = (reportInstance: IOpalFinesReportInstanceDetail): string[] => {
   return reportInstance.business_units
     .map((businessUnit) => businessUnit.business_unit_name?.trim() || businessUnit.business_unit_id.trim())
     .filter((businessUnit) => businessUnit.length > 0);
 };
 
 export const mapFinesReportsReportInstanceToReportSummary = (
-  reportInstance: IOpalFinesReportInstance,
+  reportInstance: IOpalFinesReportInstanceDetail,
   reportId: string,
 ): IFinesReportsReportSummaryInstance => {
   const resolvedReportId = reportId || reportInstance.report.id;

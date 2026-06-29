@@ -1,6 +1,6 @@
-import { IOpalFinesReportInstance } from '../interfaces/opal-fines-report-instance.interface';
+import { IOpalFinesReportInstanceDetail } from '../interfaces/opal-fines-report-instance-detail.interface';
 
-export const OPAL_FINES_REPORT_INSTANCE_MOCK: IOpalFinesReportInstance = {
+export const OPAL_FINES_REPORT_INSTANCE_MOCK: IOpalFinesReportInstanceDetail = {
   instance_id: 12345,
   requested_at: '2006-06-01T10:36:00',
   generated_at: '2006-06-01T10:37:00',
