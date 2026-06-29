@@ -165,10 +165,7 @@ export class FinesAccPayloadService {
     item: TFinesAccHistoryAndNotesRawItem,
     config: IHistoryTransformationConfig = FINES_ACC_HISTORY_AND_NOTES_DETAILS_TRANSFORMATION_CONFIG,
   ): IFinesAccHistoryAndNotesDetails {
-    return this.historyDetailsTransformationService.transformDetails(
-      item,
-      config,
-    );
+    return this.historyDetailsTransformationService.transformDetails(item, config);
   }
 
   /**
@@ -181,10 +178,7 @@ export class FinesAccPayloadService {
     items: T[],
     config: IHistoryTransformationConfig = FINES_ACC_HISTORY_AND_NOTES_DETAILS_TRANSFORMATION_CONFIG,
   ): Array<Omit<T, 'details'> & { details: IFinesAccHistoryAndNotesDetails }> {
-    return this.historyDetailsTransformationService.transformItems(
-      items,
-      config,
-    );
+    return this.historyDetailsTransformationService.transformItems(items, config);
   }
 
   /**

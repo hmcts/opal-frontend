@@ -9,11 +9,7 @@ export const FINES_ACC_MINOR_CREDITOR_HISTORY_AND_NOTES_DETAILS_FIELD_ALIASES = 
     'details.document_name',
   ],
   documentCode: ['details.documentCode', 'details.document_code', 'details.documentId', 'details.document_id'],
-  documentInstanceId: [
-    'details.documentInstanceId',
-    'details.document_instance_id',
-    'details.documentInstanceID',
-  ],
+  documentInstanceId: ['details.documentInstanceId', 'details.document_instance_id', 'details.documentInstanceID'],
   documentStatus: ['details.documentStatus', 'details.document_status', 'details.status'],
   documentTitle: [
     'details.documentTitle',

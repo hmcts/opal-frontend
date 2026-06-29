@@ -132,9 +132,7 @@ export function transformMinorCreditorGeneratedOrderAndNoticeDetails(
  * @param line1Parts - The primary line parts.
  * @returns The details object.
  */
-function createDetails(
-  line1Parts: Array<IFinesAccHistoryAndNotesDetailsPart | null>,
-): IFinesAccHistoryAndNotesDetails {
+function createDetails(line1Parts: Array<IFinesAccHistoryAndNotesDetailsPart | null>): IFinesAccHistoryAndNotesDetails {
   return createHistoryDetails(line1Parts);
 }
 

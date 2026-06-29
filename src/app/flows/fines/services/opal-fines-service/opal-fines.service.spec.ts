@@ -2054,7 +2054,10 @@ describe('OpalFines', () => {
       const apiUrl = `${OPAL_FINES_PATHS.minorCreditorAccounts}/${account_id}/history`;
 
       service
-        .getMinorCreditorAccountHistoryAndNotesTabData(account_id, OPAL_FINES_MINOR_CREDITOR_ACCOUNT_HISTORY_PARAMS_MOCK)
+        .getMinorCreditorAccountHistoryAndNotesTabData(
+          account_id,
+          OPAL_FINES_MINOR_CREDITOR_ACCOUNT_HISTORY_PARAMS_MOCK,
+        )
         .subscribe((response) => {
           expect(response).toEqual(OPAL_FINES_ACCOUNT_MINOR_CREDITOR_DETAILS_HISTORY_AND_NOTES_TAB_REF_DATA_MOCK);
         });

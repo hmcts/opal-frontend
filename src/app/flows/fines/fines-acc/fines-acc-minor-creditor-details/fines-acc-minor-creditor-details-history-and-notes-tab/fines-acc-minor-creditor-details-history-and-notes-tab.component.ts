@@ -29,7 +29,8 @@ export class FinesAccMinorCreditorDetailsHistoryAndNotesTabComponent implements 
   private latestTabData: IOpalFinesAccountMinorCreditorDetailsHistoryAndNotesTabRefData | null = null;
 
   @Input({ required: true }) public accountId!: number;
-  @Input({ required: true }) public tabData$: Observable<IOpalFinesAccountMinorCreditorDetailsHistoryAndNotesTabRefData> =
+  @Input({ required: true })
+  public tabData$: Observable<IOpalFinesAccountMinorCreditorDetailsHistoryAndNotesTabRefData> =
     FINES_ACC_MINOR_CREDITOR_DETAILS_HISTORY_AND_NOTES_EMPTY_TAB_DATA_STREAM;
   @Input() public style: IFinesAccSummaryTabsContentStyles = FINES_ACC_SUMMARY_TABS_CONTENT_STYLES;
   public filterForm: IFinesAccMinorCreditorDetailsHistoryAndNotesFilterForm | null = null;

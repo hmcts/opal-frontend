@@ -42,8 +42,6 @@ export interface IOpalFinesCache {
   defendantAccountFixedPenaltyCache$: Observable<IOpalFinesAccountDefendantDetailsFixedPenaltyTabRefData> | null;
   minorCreditorAccountAtAGlanceCache$: Observable<IOpalFinesAccountMinorCreditorAtAGlance> | null;
   minorCreditorAccountCreditorCache$: Observable<IOpalFinesAccountMinorCreditorCreditor> | null;
-  minorCreditorAccountHistoryAndNotesCache$: Observable<
-    IOpalFinesAccountMinorCreditorDetailsHistoryAndNotesTabRefData
-  > | null;
+  minorCreditorAccountHistoryAndNotesCache$: Observable<IOpalFinesAccountMinorCreditorDetailsHistoryAndNotesTabRefData> | null;
   enforcersCache$: Observable<IOpalFinesEnforcersRefData> | null;
 }

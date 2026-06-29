@@ -14,6 +14,7 @@ import { FINES_ACC_MINOR_CREDITOR_DETAILS_HISTORY_AND_NOTES_ACCOUNT_ID_MOCK } fr
 import { FINES_ACC_MINOR_CREDITOR_DETAILS_HISTORY_AND_NOTES_FILTERED_TAB_DATA_MOCK } from './mocks/fines-acc-minor-creditor-details-history-and-notes-filtered-tab-data.mock';
 import { IOpalFinesAccountMinorCreditorDetailsHistoryAndNotesTabRefData } from '@services/fines/opal-fines-service/interfaces/opal-fines-account-minor-creditor-details-history-and-notes-tab-ref-data.interface';
 import { FINES_ACC_MINOR_CREDITOR_HISTORY_AND_NOTES_DETAILS_TRANSFORMATION_CONFIG } from '../../services/constants/fines-acc-minor-creditor-history-and-notes-details-transformation-config.constant';
+import { THistoryDetailsRawItem as TFinesAccHistoryAndNotesRawItem } from '@hmcts/opal-frontend-common/services/history-transformation-service';
 
 describe('FinesAccMinorCreditorDetailsHistoryAndNotesTabComponent', () => {
   let component: FinesAccMinorCreditorDetailsHistoryAndNotesTabComponent;
@@ -24,6 +25,17 @@ describe('FinesAccMinorCreditorDetailsHistoryAndNotesTabComponent', () => {
   let mockPayloadService: any;
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   let mockAccountStore: any;
+  const baseHistoryItems =
+    OPAL_FINES_ACCOUNT_MINOR_CREDITOR_DETAILS_HISTORY_AND_NOTES_TAB_REF_DATA_MOCK[
+      'history_items'
+    ] as TFinesAccHistoryAndNotesRawItem[];
+  const transformedBaseTabData = {
+    ...OPAL_FINES_ACCOUNT_MINOR_CREDITOR_DETAILS_HISTORY_AND_NOTES_TAB_REF_DATA_MOCK,
+    history_items: baseHistoryItems.map((item) => ({
+      ...item,
+      details: { line1: [{ fragments: [{ text: 'Transformed detail', bold: false, hyphen: false }] }], line2: null },
+    })),
+  };
 
   beforeEach(async () => {
     mockOpalFinesService = {
@@ -32,7 +44,9 @@ describe('FinesAccMinorCreditorDetailsHistoryAndNotesTabComponent', () => {
         .mockName('OpalFines.getMinorCreditorAccountHistoryAndNotesTabData'),
     };
     mockPayloadService = {
-      buildMinorCreditorHistoryFilterPayload: vi.fn().mockName('FinesAccPayloadService.buildMinorCreditorHistoryFilterPayload'),
+      buildMinorCreditorHistoryFilterPayload: vi
+        .fn()
+        .mockName('FinesAccPayloadService.buildMinorCreditorHistoryFilterPayload'),
       transformPayload: vi.fn().mockName('FinesAccPayloadService.transformPayload'),
       transformHistoryAndNotesItems: vi.fn().mockName('FinesAccPayloadService.transformHistoryAndNotesItems'),
     };
@@ -91,7 +105,7 @@ describe('FinesAccMinorCreditorDetailsHistoryAndNotesTabComponent', () => {
     fixture.detectChanges();
     component.historyAndNotesTabData$.subscribe((data) => emitted.push(data));
 
-    expect(emitted).toEqual([OPAL_FINES_ACCOUNT_MINOR_CREDITOR_DETAILS_HISTORY_AND_NOTES_TAB_REF_DATA_MOCK]);
+    expect(emitted).toEqual([transformedBaseTabData]);
   });
 
   it('should rebind the display stream when parent tab data stream changes', () => {
@@ -109,10 +123,7 @@ describe('FinesAccMinorCreditorDetailsHistoryAndNotesTabComponent', () => {
     });
     component.historyAndNotesTabData$.subscribe((data) => emitted.push(data));
 
-    expect(emitted).toEqual([
-      OPAL_FINES_ACCOUNT_MINOR_CREDITOR_DETAILS_HISTORY_AND_NOTES_TAB_REF_DATA_MOCK,
-      refreshedTabData,
-    ]);
+    expect(emitted).toEqual([transformedBaseTabData, refreshedTabData]);
   });
 
   it('should not rebind the display stream on the first parent tab data change', () => {
@@ -162,7 +173,7 @@ describe('FinesAccMinorCreditorDetailsHistoryAndNotesTabComponent', () => {
       FINES_ACC_MINOR_CREDITOR_DETAILS_HISTORY_AND_NOTES_FILTERED_TAB_DATA_MOCK.version,
     );
     expect(emitted).toEqual([
-      OPAL_FINES_ACCOUNT_MINOR_CREDITOR_DETAILS_HISTORY_AND_NOTES_TAB_REF_DATA_MOCK,
+      transformedBaseTabData,
       FINES_ACC_MINOR_CREDITOR_DETAILS_HISTORY_AND_NOTES_FILTERED_TAB_DATA_MOCK,
     ]);
   });
