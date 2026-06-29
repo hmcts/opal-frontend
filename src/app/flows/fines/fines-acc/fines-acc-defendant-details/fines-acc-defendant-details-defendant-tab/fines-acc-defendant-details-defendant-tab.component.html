@@ -10,7 +10,7 @@
       </div>
       @if (hasAccountMaintenencePermission) {
         <div class="govuk-grid-column-one-third govuk-!-text-align-right govuk-!-margin-top-3">
-          <a href="" [class]="style.changeLink" (click)="handleChangeDefendantDetails($event)">Change</a>
+          <a [class]="style.changeLink" [routerLink]="changeDefendantDetailsLink()">Change</a>
         </div>
       }
     </div>
@@ -29,7 +29,7 @@
       <h2 [class]="style.heading">Actions</h2>
       @if (addParentOrGuardianAction) {
         <p>
-          <a href="" class="govuk-link govuk-link--no-visited-state" (click)="handleAddParentOrGuardianDetails($event)"
+          <a class="govuk-link govuk-link--no-visited-state" [routerLink]="addParentOrGuardianDetailsLink()"
             >Add parent or guardian details</a
           >
         </p>
@@ -39,8 +39,7 @@
           <a
             id="defendant-convert-action-link"
             class="govuk-link govuk-link--no-visited-state"
-            href=""
-            (click)="handleConvertAccount($event)"
+            [routerLink]="convertAccountLink()"
             >{{ convertAction.label }}</a
           >
         </p>
