@@ -14,6 +14,7 @@ import { FINES_ACC_HISTORY_AND_NOTES_DETAILS_ALIAS_PATH_PREFIXES } from '../cons
 import { FINES_ACC_HISTORY_AND_NOTES_DETAILS_DATE_FORMAT } from '../constants/fines-acc-history-and-notes-details-date-format.constant';
 import { FINES_ACC_HISTORY_AND_NOTES_DETAILS_EMPTY_VALUES } from '../constants/fines-acc-history-and-notes-details-empty-values.constant';
 import { FINES_ACC_MINOR_CREDITOR_HISTORY_AND_NOTES_DETAILS_FIELD_ALIASES } from '../constants/fines-acc-minor-creditor-history-and-notes-details-field-aliases.constant';
+import { FINES_ACC_MINOR_CREDITOR_HISTORY_AND_NOTES_ORDER_AND_NOTICE_TEMPLATES } from '../constants/fines-acc-minor-creditor-history-and-notes-order-and-notice-templates.constant';
 import { FINES_ACC_MINOR_CREDITOR_HISTORY_AND_NOTES_TRANSACTION_TEMPLATES } from '../constants/fines-acc-minor-creditor-history-and-notes-transaction-templates.constant';
 
 /**
@@ -115,9 +116,13 @@ export function transformMinorCreditorGeneratedOrderAndNoticeDetails(
   item: TFinesAccHistoryAndNotesRawItem,
 ): IFinesAccHistoryAndNotesDetails {
   const aliases = FINES_ACC_MINOR_CREDITOR_HISTORY_AND_NOTES_DETAILS_FIELD_ALIASES;
+  const templates = FINES_ACC_MINOR_CREDITOR_HISTORY_AND_NOTES_ORDER_AND_NOTICE_TEMPLATES;
 
   return createDetails([
-    textPart(getString(item, aliases.documentDescription) ?? getString(item, aliases.documentType)),
+    textPart(getString(item, aliases.documentTitle) ?? getString(item, aliases.documentType)),
+    labelValuePart(templates.documentCodeLabel, getString(item, aliases.documentCode)),
+    labelValuePart(templates.documentInstanceIdLabel, getString(item, aliases.documentInstanceId)),
+    labelValuePart(templates.statusLabel, getString(item, aliases.documentStatus)),
   ]);
 }
 

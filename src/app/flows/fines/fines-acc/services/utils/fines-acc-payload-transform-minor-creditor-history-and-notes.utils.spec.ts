@@ -1,5 +1,8 @@
 import { describe, expect, it } from 'vitest';
-import { transformMinorCreditorTransactionDetails } from './fines-acc-payload-transform-minor-creditor-history-and-notes.utils';
+import {
+  transformMinorCreditorGeneratedOrderAndNoticeDetails,
+  transformMinorCreditorTransactionDetails,
+} from './fines-acc-payload-transform-minor-creditor-history-and-notes.utils';
 
 describe('transformMinorCreditorTransactionDetails', () => {
   it('should transform BACS payment details with payment reference', () => {
@@ -180,6 +183,44 @@ describe('transformMinorCreditorTransactionDetails', () => {
       line1: [
         { fragments: [{ text: 'Suspense transfer', bold: false, hyphen: false }] },
         { fragments: [{ text: 'MC12345', bold: false, hyphen: false }] },
+      ],
+      line2: null,
+    });
+  });
+});
+
+describe('transformMinorCreditorGeneratedOrderAndNoticeDetails', () => {
+  it('should transform generated order and notice details with document fields', () => {
+    const result = transformMinorCreditorGeneratedOrderAndNoticeDetails({
+      details: {
+        document_id: 'NOA',
+        document_title: 'Notice of account',
+        document_instance_id: '123456',
+        status: 'downloaded',
+      },
+    });
+
+    expect(result).toEqual({
+      line1: [
+        { fragments: [{ text: 'Notice of account', bold: false, hyphen: false }] },
+        {
+          fragments: [
+            { text: 'Document code:', bold: false, hyphen: false },
+            { text: 'NOA', bold: false, hyphen: false },
+          ],
+        },
+        {
+          fragments: [
+            { text: 'Document instance ID:', bold: false, hyphen: false },
+            { text: '123456', bold: false, hyphen: false },
+          ],
+        },
+        {
+          fragments: [
+            { text: 'Status:', bold: false, hyphen: false },
+            { text: 'downloaded', bold: false, hyphen: false },
+          ],
+        },
       ],
       line2: null,
     });
