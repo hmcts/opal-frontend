@@ -1,7 +1,10 @@
-<app-fines-acc-minor-creditor-details-history-and-notes-filter-form
+<app-fines-acc-history-and-notes-filter-form
+  [categories]="categories"
+  [filterFieldErrors]="fieldErrors"
   [filterForm]="filterForm"
   [filterOpen]="filterOpen"
+  [filterSummaryText]="summaryText"
   (formSubmit)="handleFilterSubmit($event)"
   (filterOpenChange)="handleFilterOpenChange($event)"
   (unsavedChanges)="handleUnsavedChanges($event)"
-></app-fines-acc-minor-creditor-details-history-and-notes-filter-form>
+></app-fines-acc-history-and-notes-filter-form>
