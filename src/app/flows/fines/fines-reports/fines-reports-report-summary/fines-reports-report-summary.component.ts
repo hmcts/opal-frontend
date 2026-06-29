@@ -29,11 +29,11 @@ import { mapFinesReportsReportSummaryToViewModel } from './utils/fines-reports-r
 export class FinesReportsReportSummaryComponent {
   private readonly activatedRoute = inject(ActivatedRoute);
   private readonly router = inject(Router);
-  private readonly routeWithReportId = this.activatedRoute.parent ?? this.activatedRoute;
-  private readonly reportIdSignal = toSignal(
-    this.routeWithReportId.paramMap.pipe(map((paramMap) => paramMap.get('reportId') ?? '')),
+  private readonly routeWithReportTypeId = this.activatedRoute.parent ?? this.activatedRoute;
+  private readonly reportTypeIdSignal = toSignal(
+    this.routeWithReportTypeId.paramMap.pipe(map((paramMap) => paramMap.get('reportTypeId') ?? '')),
     {
-      initialValue: this.routeWithReportId.snapshot.paramMap.get('reportId') ?? '',
+      initialValue: this.routeWithReportTypeId.snapshot.paramMap.get('reportTypeId') ?? '',
     },
   );
   private readonly reportInstanceIdSignal = toSignal(
@@ -99,8 +99,8 @@ export class FinesReportsReportSummaryComponent {
   /**
    * Returns the report type id from the parent report route.
    */
-  public get reportId(): string {
-    return this.reportIdSignal();
+  public get reportTypeId(): string {
+    return this.reportTypeIdSignal();
   }
 
   /**
@@ -118,7 +118,7 @@ export class FinesReportsReportSummaryComponent {
       '/',
       FINES_ROUTING_PATHS.root,
       FINES_REPORTS_ROUTING_PATHS.root,
-      this.reportId,
+      this.reportTypeId,
       FINES_REPORTS_ROUTING_PATHS.children.summaryList,
     ]);
   }

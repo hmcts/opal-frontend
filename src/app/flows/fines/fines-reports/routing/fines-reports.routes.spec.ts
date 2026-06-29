@@ -11,7 +11,7 @@ import { fetchReportInstanceResolver } from './resolvers/fetch-report-instance/f
 
 describe('finesReports routes', () => {
   it('should redirect bare report routes to the summary list', () => {
-    const reportRoute = routing.find((route) => route.path === ':reportId');
+    const reportRoute = routing.find((route) => route.path === ':reportTypeId');
     const defaultChildRoute = reportRoute?.children?.find((route) => route.path === '');
 
     expect(reportRoute?.canActivateChild).toEqual([finesReportsStateGuard]);
@@ -23,7 +23,7 @@ describe('finesReports routes', () => {
   });
 
   it('should load the select business units route', () => {
-    const reportRoute = routing.find((route) => route.path === ':reportId');
+    const reportRoute = routing.find((route) => route.path === ':reportTypeId');
     const selectBusinessUnitsRoute = reportRoute?.children?.find(
       (route) => route.path === FINES_REPORTS_ROUTING_PATHS.children.selectBusinessUnits,
     );
@@ -45,7 +45,7 @@ describe('finesReports routes', () => {
   });
 
   it('should load the report summary route', () => {
-    const reportRoute = routing.find((route) => route.path === ':reportId');
+    const reportRoute = routing.find((route) => route.path === ':reportTypeId');
     const reportSummaryRoute = reportRoute?.children?.find(
       (route) => route.path === FINES_REPORTS_ROUTING_PATHS.children.reportSummary,
     );
@@ -64,7 +64,7 @@ describe('finesReports routes', () => {
   });
 
   it('should load the business unit warning route', () => {
-    const reportRoute = routing.find((route) => route.path === ':reportId');
+    const reportRoute = routing.find((route) => route.path === ':reportTypeId');
     const businessUnitWarningRoute = reportRoute?.children?.find(
       (route) => route.path === FINES_REPORTS_ROUTING_PATHS.children.businessUnitWarning,
     );
@@ -84,7 +84,7 @@ describe('finesReports routes', () => {
   });
 
   it('should load the parameters route', () => {
-    const reportRoute = routing.find((route) => route.path === ':reportId');
+    const reportRoute = routing.find((route) => route.path === ':reportTypeId');
     const parametersRoute = reportRoute?.children?.find(
       (route) => route.path === FINES_REPORTS_ROUTING_PATHS.children.parameters,
     );

@@ -23,14 +23,14 @@ describe('FinesReportsParametersComponent', () => {
   });
 
   const setup = async (
-    reportId: string,
+    reportTypeId: string,
     selectedBusinessUnitIds: number[],
     businessUnits = OPAL_FINES_BUSINESS_UNIT_REF_DATA_MOCK.refData,
     useCurrentNavigation = true,
   ) => {
     const router = createRouterMock(selectedBusinessUnitIds, useCurrentNavigation);
     const location = createLocationMock(selectedBusinessUnitIds);
-    const reportHeading = findFinesReportsDefinition(reportId)?.heading ?? '';
+    const reportHeading = findFinesReportsDefinition(reportTypeId)?.heading ?? '';
 
     await TestBed.configureTestingModule({
       imports: [FinesReportsParametersComponent],
@@ -49,7 +49,7 @@ describe('FinesReportsParametersComponent', () => {
             },
             parent: {
               snapshot: {
-                paramMap: convertToParamMap({ reportId }),
+                paramMap: convertToParamMap({ reportTypeId }),
               },
             },
           },

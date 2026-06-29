@@ -10,25 +10,27 @@ import { FINES_REPORTS_SUMMARY_LIST_ROUTING_PATHS } from '../../../fines-reports
 import { FINES_REPORT_SUMMARY_LIST_REPORT_CONFIGURATION } from '../../../fines-reports-summary-list/constants/fines-reports-summary-list-report-configuration.constant';
 
 describe('fetchReportResolver', () => {
-  const API_BACKED_REPORT_ID = 'api_backed_report';
+  const API_BACKED_REPORT_TYPE_ID = 'api_backed_report';
   const executeResolver: ResolveFn<IOpalFinesReport | null> = (...resolverParameters) =>
     TestBed.runInInjectionContext(() => fetchReportResolver(...resolverParameters));
 
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   let mockOpalFinesService: any;
 
-  const buildRoute = (reportId: string | null, parentReportId?: string) => {
-    const parentRoute = parentReportId ? { paramMap: convertToParamMap({ reportId: parentReportId }) } : undefined;
+  const buildRoute = (reportTypeId: string | null, parentReportTypeId?: string) => {
+    const parentRoute = parentReportTypeId
+      ? { paramMap: convertToParamMap({ reportTypeId: parentReportTypeId }) }
+      : undefined;
 
     return {
-      paramMap: convertToParamMap(reportId ? { reportId } : {}),
+      paramMap: convertToParamMap(reportTypeId ? { reportTypeId } : {}),
       parent: parentRoute,
     } as ActivatedRouteSnapshot;
   };
 
   const withApiBackedReportConfig = async (testFn: () => Promise<void>) => {
     FINES_REPORT_SUMMARY_LIST_REPORT_CONFIGURATION.push({
-      id: API_BACKED_REPORT_ID,
+      id: API_BACKED_REPORT_TYPE_ID,
       heading: 'API backed report',
       title: 'API backed report',
       permissionIds: [1],
@@ -60,7 +62,7 @@ describe('fetchReportResolver', () => {
     expect(result).toBeNull();
   });
 
-  it('should use the parent route report id when applying the operational report API bypass', async () => {
+  it('should use the parent route report type id when applying the operational report API bypass', async () => {
     const route = buildRoute(null, FINES_REPORTS_SUMMARY_LIST_ROUTING_PATHS.children.operationalReportsByPayments);
 
     const result = await firstValueFrom(executeResolver(route, {} as never) as Observable<IOpalFinesReport | null>);
@@ -69,13 +71,13 @@ describe('fetchReportResolver', () => {
     expect(result).toBeNull();
   });
 
-  it('should resolve report metadata for an API-backed report id', async () => {
+  it('should resolve report metadata for an API-backed report type id', async () => {
     await withApiBackedReportConfig(async () => {
-      const route = buildRoute(API_BACKED_REPORT_ID);
+      const route = buildRoute(API_BACKED_REPORT_TYPE_ID);
 
       const result = await firstValueFrom(executeResolver(route, {} as never) as Observable<IOpalFinesReport | null>);
 
-      expect(mockOpalFinesService.getReport).toHaveBeenCalledWith(API_BACKED_REPORT_ID);
+      expect(mockOpalFinesService.getReport).toHaveBeenCalledWith(API_BACKED_REPORT_TYPE_ID);
       expect(result).toEqual(OPAL_FINES_REPORT_MOCK);
     });
   });
@@ -92,7 +94,7 @@ describe('fetchReportResolver', () => {
   it('should fall back to null when the report API fails', async () => {
     await withApiBackedReportConfig(async () => {
       mockOpalFinesService.getReport.mockReturnValue(throwError(() => new Error('report lookup failed')));
-      const route = buildRoute(API_BACKED_REPORT_ID);
+      const route = buildRoute(API_BACKED_REPORT_TYPE_ID);
 
       const result = await firstValueFrom(executeResolver(route, {} as never) as Observable<IOpalFinesReport | null>);
 

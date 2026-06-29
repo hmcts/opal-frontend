@@ -15,8 +15,10 @@ describe('fetchReportInstanceResolver', () => {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   let mockOpalFinesService: any;
 
-  const buildRoute = (reportInstanceId: string | null, parentReportId?: string) => {
-    const parentRoute = parentReportId ? { paramMap: convertToParamMap({ reportId: parentReportId }) } : undefined;
+  const buildRoute = (reportInstanceId: string | null, parentReportTypeId?: string) => {
+    const parentRoute = parentReportTypeId
+      ? { paramMap: convertToParamMap({ reportTypeId: parentReportTypeId }) }
+      : undefined;
 
     return {
       paramMap: convertToParamMap(reportInstanceId ? { instanceId: reportInstanceId } : {}),

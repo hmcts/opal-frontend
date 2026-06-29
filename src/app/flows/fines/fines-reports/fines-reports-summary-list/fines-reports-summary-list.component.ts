@@ -17,11 +17,11 @@ import { IOpalFinesReport } from '@services/fines/opal-fines-service/interfaces/
 export class FinesReportsSummaryListComponent {
   private readonly activatedRoute = inject(ActivatedRoute);
   private readonly router = inject(Router);
-  private readonly routeWithReportId = this.activatedRoute.parent ?? this.activatedRoute;
-  private readonly reportId = toSignal(
-    this.routeWithReportId.paramMap.pipe(map((paramMap) => paramMap.get('reportId') ?? '')),
+  private readonly routeWithReportTypeId = this.activatedRoute.parent ?? this.activatedRoute;
+  private readonly reportTypeId = toSignal(
+    this.routeWithReportTypeId.paramMap.pipe(map((paramMap) => paramMap.get('reportTypeId') ?? '')),
     {
-      initialValue: this.routeWithReportId.snapshot.paramMap.get('reportId') ?? '',
+      initialValue: this.routeWithReportTypeId.snapshot.paramMap.get('reportTypeId') ?? '',
     },
   );
 
@@ -42,7 +42,7 @@ export class FinesReportsSummaryListComponent {
    */
   public get pageHeading(): string {
     return (
-      FINES_REPORT_SUMMARY_LIST_REPORT_CONFIGURATION.find((config) => config.id === this.reportId())?.heading ?? ''
+      FINES_REPORT_SUMMARY_LIST_REPORT_CONFIGURATION.find((config) => config.id === this.reportTypeId())?.heading ?? ''
     );
   }
 
@@ -55,7 +55,7 @@ export class FinesReportsSummaryListComponent {
     const supportsCreateJourney = [
       FINES_REPORTS_SUMMARY_LIST_ROUTING_PATHS.children.operationalReportsByEnforcement,
       FINES_REPORTS_SUMMARY_LIST_ROUTING_PATHS.children.operationalReportsByPayments,
-    ].includes(this.reportId());
+    ].includes(this.reportTypeId());
 
     return supportsCreateJourney && (this.report()?.can_manually_create ?? true);
   }

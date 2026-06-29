@@ -20,7 +20,7 @@ export const routing: Routes = [
     pathMatch: 'full',
   },
   {
-    path: ':reportId',
+    path: ':reportTypeId',
     canActivate: [authGuard],
     canActivateChild: [finesReportsStateGuard],
     children: [

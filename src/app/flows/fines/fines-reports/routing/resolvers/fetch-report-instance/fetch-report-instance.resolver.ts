@@ -17,14 +17,14 @@ export const fetchReportInstanceResolver: ResolveFn<IFinesReportsReportSummaryIn
     route.parent?.paramMap.get('instanceId') ??
     route.parent?.paramMap.get('reportInstanceId') ??
     '';
-  const reportId = route.parent?.paramMap.get('reportId') ?? route.paramMap.get('reportId') ?? '';
+  const reportTypeId = route.parent?.paramMap.get('reportTypeId') ?? route.paramMap.get('reportTypeId') ?? '';
 
   if (!reportInstanceId || !REPORT_INSTANCE_ID_API_PATTERN.test(reportInstanceId)) {
     return of(null);
   }
 
   return opalFinesService.getReportInstance(reportInstanceId).pipe(
-    map((reportInstance) => mapFinesReportsReportInstanceToReportSummary(reportInstance, reportId)),
+    map((reportInstance) => mapFinesReportsReportInstanceToReportSummary(reportInstance, reportTypeId)),
     catchError(() => of(null)),
   );
 };
