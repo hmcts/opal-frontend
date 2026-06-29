@@ -17,6 +17,7 @@ import { FINES_ROUTING_PATHS } from '../../routing/constants/fines-routing-paths
 import { FINES_ACC_DEFENDANT_ROUTING_PATHS } from '../routing/constants/fines-acc-defendant-routing-paths.constant';
 import { FINES_ACC_ROUTING_PATHS } from '../routing/constants/fines-acc-routing-paths.constant';
 import { OPAL_FINES_ACCOUNT_MINOR_CREDITOR_CREDITOR_MOCK } from '../../services/opal-fines-service/mocks/opal-fines-account-minor-creditor-creditor.mock';
+import { OPAL_FINES_ACCOUNT_MINOR_CREDITOR_DETAILS_HISTORY_AND_NOTES_TAB_REF_DATA_MOCK } from '../../services/opal-fines-service/mocks/opal-fines-account-minor-creditor-details-history-and-notes-tab-ref-data.mock';
 
 describe('FinesAccMinorCreditorDetailsComponent', () => {
   let component: FinesAccMinorCreditorDetailsComponent;
@@ -29,6 +30,7 @@ describe('FinesAccMinorCreditorDetailsComponent', () => {
     | 'getMinorCreditorAccountHeadingData'
     | 'getMinorCreditorAccountAtAGlance'
     | 'getMinorCreditorAccount'
+    | 'getMinorCreditorAccountHistoryAndNotesTabData'
     | 'clearCache'
     | 'getResult'
   >;
@@ -74,6 +76,11 @@ describe('FinesAccMinorCreditorDetailsComponent', () => {
       getMinorCreditorAccount: vi
         .fn()
         .mockReturnValue(of(structuredClone(OPAL_FINES_ACCOUNT_MINOR_CREDITOR_CREDITOR_MOCK))),
+      getMinorCreditorAccountHistoryAndNotesTabData: vi
+        .fn()
+        .mockReturnValue(
+          of(structuredClone(OPAL_FINES_ACCOUNT_MINOR_CREDITOR_DETAILS_HISTORY_AND_NOTES_TAB_REF_DATA_MOCK)),
+        ),
     };
 
     await TestBed.configureTestingModule({
@@ -173,6 +180,21 @@ describe('FinesAccMinorCreditorDetailsComponent', () => {
     expect(mockOpalFinesService.getMinorCreditorAccount).toHaveBeenCalledWith(MOCK_FINES_ACCOUNT_STATE.account_id);
     expect(mockPayloadService.transformPayload).toHaveBeenCalledWith(
       OPAL_FINES_ACCOUNT_MINOR_CREDITOR_CREDITOR_MOCK,
+      expect.any(Array),
+    );
+  });
+
+  it('should fetch history and notes tab data when fragment is changed to history and notes', () => {
+    vi.mocked(mockPayloadService.transformPayload).mockClear();
+
+    component['refreshFragment$'].next('history-and-notes');
+    component.tabHistoryAndNotes$.subscribe();
+
+    expect(mockOpalFinesService.getMinorCreditorAccountHistoryAndNotesTabData).toHaveBeenCalledWith(
+      MOCK_FINES_ACCOUNT_STATE.account_id,
+    );
+    expect(mockPayloadService.transformPayload).toHaveBeenCalledWith(
+      OPAL_FINES_ACCOUNT_MINOR_CREDITOR_DETAILS_HISTORY_AND_NOTES_TAB_REF_DATA_MOCK,
       expect.any(Array),
     );
   });
