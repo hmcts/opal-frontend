@@ -78,8 +78,9 @@
         <p [class]="style.value">
           <a
             class="govuk-link govuk-link--no-visited-state"
-            href=""
-            (click)="handleDefendantAccountClick(tabData.defendant.account_id, $event)"
+            [href]="defendantAccountLink(tabData.defendant.account_id)"
+            target="_blank"
+            rel="noopener noreferrer"
             >{{ tabData.defendant.account_number }}</a
           >
         </p>
@@ -110,23 +111,13 @@
       @if (hasAddRemovePaymentHoldPermission) {
         @if (tabData.payment.hold_payment) {
           <p [class]="style.value">
-            <a
-              tabindex="0"
-              href=""
-              class="govuk-link govuk-link--no-visited-state"
-              (click)="handleRemovePaymentHold($event)"
+            <a [routerLink]="removePaymentHoldLink()" class="govuk-link govuk-link--no-visited-state"
               >Remove payment hold</a
             >
           </p>
         } @else {
           <p [class]="style.value">
-            <a
-              tabindex="0"
-              href=""
-              class="govuk-link govuk-link--no-visited-state"
-              (click)="handleAddPaymentHold($event)"
-              >Add payment hold</a
-            >
+            <a [routerLink]="addPaymentHoldLink()" class="govuk-link govuk-link--no-visited-state">Add payment hold</a>
           </p>
         }
       }
