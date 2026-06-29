@@ -34,6 +34,9 @@ import { FINES_ACC_DEFENDANT_DETAILS_HISTORY_AND_NOTES_FILTER_EMPTY_FORM_MOCK } 
 import { FINES_ACC_DEFENDANT_DETAILS_HISTORY_AND_NOTES_FILTER_PAYLOAD_MOCK } from '../fines-acc-defendant-details/fines-acc-defendant-details-history-and-notes-tab/mocks/fines-acc-defendant-details-history-and-notes-filter-payload.mock';
 import { FINES_ACC_DEFENDANT_DETAILS_HISTORY_AND_NOTES_FILTER_RAW_PAYLOAD_MOCK } from '../fines-acc-defendant-details/fines-acc-defendant-details-history-and-notes-tab/mocks/fines-acc-defendant-details-history-and-notes-filter-raw-payload.mock';
 import { FINES_ACC_BUILD_TRANSFORM_ITEMS_CONFIG } from './constants/fines-acc-transform-items-config.constant';
+import { FINES_ACC_MINOR_CREDITOR_DETAILS_HISTORY_AND_NOTES_FILTER_ALL_FORM_MOCK } from '../fines-acc-minor-creditor-details/fines-acc-minor-creditor-details-history-and-notes-tab/mocks/fines-acc-minor-creditor-details-history-and-notes-filter-all-form.mock';
+import { FINES_ACC_MINOR_CREDITOR_DETAILS_HISTORY_AND_NOTES_FILTER_EMPTY_FORM_MOCK } from '../fines-acc-minor-creditor-details/fines-acc-minor-creditor-details-history-and-notes-tab/mocks/fines-acc-minor-creditor-details-history-and-notes-filter-empty-form.mock';
+import { OPAL_FINES_MINOR_CREDITOR_ACCOUNT_HISTORY_PARAMS_MOCK } from '@services/fines/opal-fines-service/mocks/opal-fines-minor-creditor-account-history-params.mock';
 
 describe('FinesAccPayloadService', () => {
   let service: FinesAccPayloadService;
@@ -179,6 +182,24 @@ describe('FinesAccPayloadService', () => {
     it('should omit empty history filter params', () => {
       const result = service.buildHistoryFilterPayload(
         FINES_ACC_DEFENDANT_DETAILS_HISTORY_AND_NOTES_FILTER_EMPTY_FORM_MOCK,
+      );
+
+      expect(result).toEqual({});
+    });
+  });
+
+  describe('buildMinorCreditorHistoryFilterPayload', () => {
+    it('should build minor creditor history filter query params from form values', () => {
+      const result = service.buildMinorCreditorHistoryFilterPayload(
+        FINES_ACC_MINOR_CREDITOR_DETAILS_HISTORY_AND_NOTES_FILTER_ALL_FORM_MOCK,
+      );
+
+      expect(result).toEqual(OPAL_FINES_MINOR_CREDITOR_ACCOUNT_HISTORY_PARAMS_MOCK);
+    });
+
+    it('should omit empty minor creditor history filter params', () => {
+      const result = service.buildMinorCreditorHistoryFilterPayload(
+        FINES_ACC_MINOR_CREDITOR_DETAILS_HISTORY_AND_NOTES_FILTER_EMPTY_FORM_MOCK,
       );
 
       expect(result).toEqual({});
