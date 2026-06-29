@@ -4176,9 +4176,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@hmcts/opal-frontend-common-node@npm:^0.0.35":
-  version: 0.0.35
-  resolution: "@hmcts/opal-frontend-common-node@npm:0.0.35"
+"@hmcts/opal-frontend-common-node@npm:^0.0.37":
+  version: 0.0.37
+  resolution: "@hmcts/opal-frontend-common-node@npm:0.0.37"
   dependencies:
     "@azure/msal-browser": "npm:^5.0.0"
     "@hmcts/info-provider": "npm:^1.1.0"
@@ -4200,7 +4200,7 @@ __metadata:
     redis: "npm:^6.0.0"
     session-file-store: "npm:^1.5.0"
     xml2js: "npm:^0.6.2"
-  checksum: 10/b56b55e7485ab530af8bb682ce79dd9c54234a183f2516e09dce1a50d8c6fe98ab0c1aa96fb00c3546477a2561adb0ac0554d21dfc7865d6ef89bc2c7399398a
+  checksum: 10/aa5665787229de96d78352d46b1219d30bb879089b65e6fb0eda18295f62cc952c5ecf3ace5fc136dbbacf51b019df92038f1d1d455ed67e1ddf0a7109522e99
   languageName: node
   linkType: hard
 
@@ -6916,18 +6916,18 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@redis/bloom@npm:6.0.0":
-  version: 6.0.0
-  resolution: "@redis/bloom@npm:6.0.0"
+"@redis/bloom@npm:6.0.1":
+  version: 6.0.1
+  resolution: "@redis/bloom@npm:6.0.1"
   peerDependencies:
-    "@redis/client": ^6.0.0
-  checksum: 10/6f48065e2b583afeeb495a8724f538701702c1f9da8885f4ad176e7417123af02eae66e2d74a9914ea204bcc005b5575a48d826527db619e2eb469518f0e3c5a
+    "@redis/client": ^6.0.1
+  checksum: 10/b7033f2002509b06897c2c83ecb873a9c89f293b9e35fe09e3bb03bcbb3dd50b4e3b8df7c3dc4a3ab4399412c76b65d57a87693379d252ef91d2b782ff200a6f
   languageName: node
   linkType: hard
 
-"@redis/client@npm:6.0.0":
-  version: 6.0.0
-  resolution: "@redis/client@npm:6.0.0"
+"@redis/client@npm:6.0.1":
+  version: 6.0.1
+  resolution: "@redis/client@npm:6.0.1"
   dependencies:
     cluster-key-slot: "npm:1.1.2"
   peerDependencies:
@@ -6938,34 +6938,34 @@ __metadata:
       optional: true
     "@opentelemetry/api":
       optional: true
-  checksum: 10/8f03d48004208a5f4871e98163d89fc1b5c8cf3df37c412b6af13df1c083988d6c766ec5aacb3e67f7a5faf6749c2651d2095412ef2ceda7414b10f6ba739acf
+  checksum: 10/cb01b3a18c5a8539bfc243f07c9bc9912cb56053d105f959c0b77c5607609e61715f6164d965f792e6d33b5e0de2721a6dcc409ef69fa9368580df451434a019
   languageName: node
   linkType: hard
 
-"@redis/json@npm:6.0.0":
-  version: 6.0.0
-  resolution: "@redis/json@npm:6.0.0"
+"@redis/json@npm:6.0.1":
+  version: 6.0.1
+  resolution: "@redis/json@npm:6.0.1"
   peerDependencies:
-    "@redis/client": ^6.0.0
-  checksum: 10/0155e5c61c3e443e3d46c8f7231e1ac997efb29ff63058ee4e5c201eedac67268c4146085f07a88fd83190f9b2ca416bf367fef7fa271c3a08e079fb6ff8852f
+    "@redis/client": ^6.0.1
+  checksum: 10/698b227c7052fe0534a1b9ffbb984f4744eb70e54a05dcf4a16bdf312ed7f3269792831cf3bf3c039af0c7db842426d742d2ab5a4bc6fe8f2cb7d81c29fcc8de
   languageName: node
   linkType: hard
 
-"@redis/search@npm:6.0.0":
-  version: 6.0.0
-  resolution: "@redis/search@npm:6.0.0"
+"@redis/search@npm:6.0.1":
+  version: 6.0.1
+  resolution: "@redis/search@npm:6.0.1"
   peerDependencies:
-    "@redis/client": ^6.0.0
-  checksum: 10/c189496349654f692aeb26bdb0f8085a40cba0bb12c70ea2842888481f0023645646c688f108550abe33370378465c745b1b2373e150aaf742afd4c77ea65066
+    "@redis/client": ^6.0.1
+  checksum: 10/d41ea76028dfa00d3beffd2f825b2c5cbf9b7f2f80ffc9090826a2f0de61c8c8af514eec23c0fddb6c21e0b0eead4443344d485232e43d48a2c2ed6c730cb3a6
   languageName: node
   linkType: hard
 
-"@redis/time-series@npm:6.0.0":
-  version: 6.0.0
-  resolution: "@redis/time-series@npm:6.0.0"
+"@redis/time-series@npm:6.0.1":
+  version: 6.0.1
+  resolution: "@redis/time-series@npm:6.0.1"
   peerDependencies:
-    "@redis/client": ^6.0.0
-  checksum: 10/16c8d54fd364cdf508f53dcb85661f91a42183132d2fe4f17d5beed0e964ad323d76ea10e5bff3537d3e94c7ed770a3b9fa0a4f32b2b4d8126b52e068beae488
+    "@redis/client": ^6.0.1
+  checksum: 10/134ff6b6abbab8344a9abd89d44fe05bb740645bef9f895ecba31782159867a9037f7b0b7ee6e0d6d8dfeff7e187bae1f8f19bb7bbfcd9f5f0e912ad8c083dd9
   languageName: node
   linkType: hard
 
@@ -9437,12 +9437,12 @@ __metadata:
   languageName: node
   linkType: hard
 
-"baseline-browser-mapping@npm:^2.10.12":
-  version: 2.10.13
-  resolution: "baseline-browser-mapping@npm:2.10.13"
+"baseline-browser-mapping@npm:^2.10.38":
+  version: 2.10.38
+  resolution: "baseline-browser-mapping@npm:2.10.38"
   bin:
     baseline-browser-mapping: dist/cli.cjs
-  checksum: 10/c33f047cb7398b557a86a38b4fe019bbc701a3c368b510e1d3553e9aee33b67dfaa1fc603f00e24c364fb0060c1a2e304cb3360c69b614b41da1ddee08465333
+  checksum: 10/cb6c9913df1e8f0f9040cdacd3af0371f2daf2b16563d86d3b208c14a392b4783a6be434b9e7cf5dc413d6e40548b7b719e1a12e59789fb4b3db37146fb9e6b2
   languageName: node
   linkType: hard
 
@@ -9681,17 +9681,17 @@ __metadata:
   linkType: hard
 
 "browserslist@npm:^4.28.1":
-  version: 4.28.2
-  resolution: "browserslist@npm:4.28.2"
+  version: 4.28.4
+  resolution: "browserslist@npm:4.28.4"
   dependencies:
-    baseline-browser-mapping: "npm:^2.10.12"
-    caniuse-lite: "npm:^1.0.30001782"
-    electron-to-chromium: "npm:^1.5.328"
-    node-releases: "npm:^2.0.36"
+    baseline-browser-mapping: "npm:^2.10.38"
+    caniuse-lite: "npm:^1.0.30001799"
+    electron-to-chromium: "npm:^1.5.376"
+    node-releases: "npm:^2.0.48"
     update-browserslist-db: "npm:^1.2.3"
   bin:
     browserslist: cli.js
-  checksum: 10/cff88386e5b5ba5614c9063bd32ef94865bba22b6a381844c7d09ea1eea62a2247e7106e516abdbfda6b75b9986044c991dfe45f92f10add5ad63dccc07589ec
+  checksum: 10/beb030f5b301b6af3fc7df3291d56f9edb34b7e4bd3cdc50d379c84c3410ad1ba013602952bcec1d98af940cf6596609fc81ef09d200f7f2e25e9f84d9d38201
   languageName: node
   linkType: hard
 
@@ -9902,10 +9902,10 @@ __metadata:
   languageName: node
   linkType: hard
 
-"caniuse-lite@npm:^1.0.30001782":
-  version: 1.0.30001784
-  resolution: "caniuse-lite@npm:1.0.30001784"
-  checksum: 10/1450e306d0517cea65931e417dada2266c797ebab86de484af7510dbae9a7dd60abab1a70bcd725f7b87e5d1816e1526a495fb089a7447dea046adf2a24fff97
+"caniuse-lite@npm:^1.0.30001799":
+  version: 1.0.30001799
+  resolution: "caniuse-lite@npm:1.0.30001799"
+  checksum: 10/eb90443f1e4e4ac7cfe3686d43f0d132c0b552d0d896c0520e7306f2ddf743b4dd5380a7b8adc5ca8d250247966a6cf32cb042930dbc1df452e8623ad92c57e2
   languageName: node
   linkType: hard
 
@@ -11489,10 +11489,10 @@ __metadata:
   languageName: node
   linkType: hard
 
-"electron-to-chromium@npm:^1.5.328":
-  version: 1.5.330
-  resolution: "electron-to-chromium@npm:1.5.330"
-  checksum: 10/d77d951fe88c075ea4b8ea90c4c485cab4c316377c13369e1c068a9d02ff3dc37d261e0e1c3c2b618a33a5deb0487addbbb5cee940cb697c8700a0d745948f8e
+"electron-to-chromium@npm:^1.5.376":
+  version: 1.5.378
+  resolution: "electron-to-chromium@npm:1.5.378"
+  checksum: 10/05d86098bdb0f4a65289cd884ed0e44b6808ee47ba3d5ea5f03e8ae4b465a01e5f1111e4dd465f9d078e0788c10580ab8785e0a3a2f83d747400474e224ead05
   languageName: node
   linkType: hard
 
@@ -11951,8 +11951,8 @@ __metadata:
   linkType: hard
 
 "eslint-plugin-jsdoc@npm:^63.0.0":
-  version: 63.0.7
-  resolution: "eslint-plugin-jsdoc@npm:63.0.7"
+  version: 63.0.8
+  resolution: "eslint-plugin-jsdoc@npm:63.0.8"
   dependencies:
     "@es-joy/jsdoccomment": "npm:~0.87.0"
     "@es-joy/resolve.exports": "npm:1.2.0"
@@ -11970,7 +11970,7 @@ __metadata:
     to-valid-identifier: "npm:^1.0.0"
   peerDependencies:
     eslint: ^7.0.0 || ^8.0.0 || ^9.0.0 || ^10.0.0
-  checksum: 10/f0c5826a03920b5fa52b8a5aa12b492ec990ebd472366d0f0f8e1f19414eadfdb04b217e8428f28ebe91ccb3b8dcc2573c88c2e53b7496241369c05f5add1f36
+  checksum: 10/26509464e5ad5a044a119e98f2fea9a0e2b6b238178ae95bc655e145c0b612c86edf28acd8cf774caf085976e6b40364970381cf764bf493863345c61f2ec0f1
   languageName: node
   linkType: hard
 
@@ -16355,10 +16355,10 @@ __metadata:
   languageName: node
   linkType: hard
 
-"node-releases@npm:^2.0.36":
-  version: 2.0.36
-  resolution: "node-releases@npm:2.0.36"
-  checksum: 10/b31ead96e328b1775f07cad80c17b0601d0ee2894650b737e7ab5cbeb14e284e82dbc37ef38f1d915fa46dd7909781bd933d19b79cfe31b352573fac6da377aa
+"node-releases@npm:^2.0.48":
+  version: 2.0.49
+  resolution: "node-releases@npm:2.0.49"
+  checksum: 10/1385f8edf3ed3029d7c4eb550ae94ccdc9051a0de3a1fd23210f13b09b029a9ab2d3259f4519d1869ee52c4cc05c6c8cfd327f64fa71e989ca077a8fd60b5846
   languageName: node
   linkType: hard
 
@@ -16652,7 +16652,7 @@ __metadata:
     "@hmcts/nodejs-logging": "npm:^4.0.4"
     "@hmcts/opal-frontend-common": "npm:^0.0.85"
     "@hmcts/opal-frontend-common-cypress": "npm:^0.0.3"
-    "@hmcts/opal-frontend-common-node": "npm:^0.0.35"
+    "@hmcts/opal-frontend-common-node": "npm:^0.0.37"
     "@hmcts/properties-volume": "npm:^1.1.0"
     "@hmcts/zephyr-automation-nodejs": "npm:0.0.7"
     "@microsoft/applicationinsights-web": "npm:^3.3.5"
@@ -17981,15 +17981,15 @@ __metadata:
   linkType: hard
 
 "redis@npm:^6.0.0":
-  version: 6.0.0
-  resolution: "redis@npm:6.0.0"
+  version: 6.0.1
+  resolution: "redis@npm:6.0.1"
   dependencies:
-    "@redis/bloom": "npm:6.0.0"
-    "@redis/client": "npm:6.0.0"
-    "@redis/json": "npm:6.0.0"
-    "@redis/search": "npm:6.0.0"
-    "@redis/time-series": "npm:6.0.0"
-  checksum: 10/8e1d64b7e2cbf636a259da63ee124790266a7cef08497b4f011dbaa65a45d8d3ef1216b180022687649983640ea37203039316cd407dc58af60d802d25e9a723
+    "@redis/bloom": "npm:6.0.1"
+    "@redis/client": "npm:6.0.1"
+    "@redis/json": "npm:6.0.1"
+    "@redis/search": "npm:6.0.1"
+    "@redis/time-series": "npm:6.0.1"
+  checksum: 10/4763bbc596f8b114db2fc788ae828447cdc700f84deaed4d23de025c0ab486723ad87b243cdfb23b7733acceab1d108dc90e6191bd483009f550caac2e438af2
   languageName: node
   linkType: hard
 
