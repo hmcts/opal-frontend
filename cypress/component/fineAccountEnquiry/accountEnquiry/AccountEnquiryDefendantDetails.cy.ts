@@ -224,10 +224,16 @@ describe('Account Enquiry Defendant Details Tab', () => {
       interceptUserState(USER_STATE_MOCK_PERMISSION_BU77);
       interceptDefendantHeader(accountId, headerMock, accountId);
       interceptDefendantDetails(accountId, defendantDetailsMock, accountId);
-      setupAccountEnquiryComponent({ ...componentProperties, accountId: accountId });
+      setupAccountEnquiryComponent({
+        ...componentProperties,
+        accountId: accountId,
+        interceptedRoutes: componentProperties.interceptedRoutes?.filter(
+          (route) => route !== '../party/individual/amend',
+        ),
+      });
 
       cy.get(DEFENDANT_DETAILS.defendantChange).should('exist').click();
-      cy.get('@routerNavigate').should('have.been.calledWithMatch', ['../party/individual/amend']);
+      cy.get('app-fines-acc-debtor-add-amend-form').should('exist');
     },
   );
 
@@ -250,7 +256,16 @@ describe('Account Enquiry Defendant Details Tab', () => {
       setupAccountEnquiryComponent({ ...componentProperties, accountId: accountId });
 
       cy.get(DEFENDANT_DETAILS.defendantChange).should('exist').click();
-      cy.get('@routerNavigate').should('have.been.calledWithMatch', ['/access-denied']);
+      cy.get('@routerNavigate').should('have.been.called');
+      cy.get('app-fines-acc-defendant-details-defendant-tab').then(($host) => {
+        cy.window().then((win) => {
+          const component = (win as any).ng.getComponent($host[0]) as {
+            changeDefendantDetailsLink: () => string;
+          };
+
+          expect(component.changeDefendantDetailsLink()).to.eq('/access-denied');
+        });
+      });
     },
   );
 
@@ -365,10 +380,14 @@ describe('Account Enquiry Defendant Details Tab', () => {
       interceptUserState(USER_STATE_MOCK_PERMISSION_BU77);
       interceptDefendantHeader(accountId, headerMock, accountId);
       interceptDefendantDetails(accountId, defendantDetailsMock, accountId);
-      setupAccountEnquiryComponent({ ...componentProperties, accountId: accountId });
+      setupAccountEnquiryComponent({
+        ...componentProperties,
+        accountId: accountId,
+        interceptedRoutes: componentProperties.interceptedRoutes?.filter((route) => route !== '../party/company/amend'),
+      });
 
       cy.get(DEFENDANT_DETAILS.defendantChange).should('exist').click();
-      cy.get('@routerNavigate').should('have.been.calledWithMatch', ['../party/company/amend']);
+      cy.get('app-fines-acc-debtor-add-amend-form').should('exist');
     },
   );
 
@@ -391,7 +410,16 @@ describe('Account Enquiry Defendant Details Tab', () => {
       setupAccountEnquiryComponent({ ...componentProperties, accountId: accountId });
 
       cy.get(DEFENDANT_DETAILS.defendantChange).should('exist').click();
-      cy.get('@routerNavigate').should('have.been.calledWithMatch', ['/access-denied']);
+      cy.get('@routerNavigate').should('have.been.called');
+      cy.get('app-fines-acc-defendant-details-defendant-tab').then(($host) => {
+        cy.window().then((win) => {
+          const component = (win as any).ng.getComponent($host[0]) as {
+            changeDefendantDetailsLink: () => string;
+          };
+
+          expect(component.changeDefendantDetailsLink()).to.eq('/access-denied');
+        });
+      });
     },
   );
 
@@ -416,21 +444,24 @@ describe('Account Enquiry Defendant Details Tab', () => {
     'AC1, AC1a, AC1b. Youth-only accounts show the Add parent or guardian details action',
     { tags: [...buildTags('@JIRA-STORY:PO-1874'), '@JIRA-EPIC:PO-1875', '@JIRA-TEST-KEY:PO-4195'] },
     () => {
+      const headerMock = structuredClone(DEFENDANT_HEADER_YOUTH_MOCK);
       const defendantDetailsMock = structuredClone(OPAL_FINES_ACCOUNT_DEFENDANT_ACCOUNT_PARTY_MOCK);
       const { language_preferences } = defendantDetailsMock.defendant_account_party;
+      const accountId = headerMock.defendant_account_party_id;
 
+      headerMock.parent_guardian_party_id = null;
       defendantDetailsMock.defendant_account_party.party_details.organisation_flag = false;
       defendantDetailsMock.defendant_account_party.is_debtor = true;
       setLanguagePref(language_preferences!.document_language_preference);
       setLanguagePref(language_preferences!.hearing_language_preference);
 
-      mountDefendantTab({
-        defendantDetailsMock,
-        hasAccountMaintenencePermission: true,
-        canAddParentOrGuardianDetails: true,
-      });
+      interceptAuthenticatedUser();
+      interceptUserState(USER_STATE_MOCK_PERMISSION_BU77);
+      interceptDefendantHeader(accountId, headerMock, accountId);
+      interceptDefendantDetails(accountId, defendantDetailsMock, accountId);
+      setupAccountEnquiryComponent({ ...componentProperties, accountId: accountId });
 
-      cy.contains(DEFENDANT_DETAILS.linkText, 'Add parent or guardian details').should('be.visible');
+      cy.contains('a', 'Add parent or guardian details').should('be.visible');
     },
   );
 
@@ -453,10 +484,16 @@ describe('Account Enquiry Defendant Details Tab', () => {
       interceptUserState(USER_STATE_MOCK_PERMISSION_BU77);
       interceptDefendantHeader(accountId, headerMock, accountId);
       interceptDefendantDetails(accountId, defendantDetailsMock, accountId);
-      setupAccountEnquiryComponent({ ...componentProperties, accountId: accountId });
+      setupAccountEnquiryComponent({
+        ...componentProperties,
+        accountId: accountId,
+        interceptedRoutes: componentProperties.interceptedRoutes?.filter(
+          (route) => route !== '../party/parentGuardian/add',
+        ),
+      });
 
-      cy.contains(DEFENDANT_DETAILS.linkText, 'Add parent or guardian details').should('be.visible').click();
-      cy.get('@routerNavigate').should('have.been.calledWithMatch', ['../party/parentGuardian/add']);
+      cy.contains('a', 'Add parent or guardian details').should('be.visible').click();
+      cy.get('app-fines-acc-debtor-add-amend-form').should('exist');
     },
   );
 

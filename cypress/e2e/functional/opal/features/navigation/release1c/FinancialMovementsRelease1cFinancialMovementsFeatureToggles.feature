@@ -1,7 +1,7 @@
 @JIRA-LABEL:primary-nav-and-dashboards
 Feature: Financial Movements Release 1C Financial Movements Feature Toggles
 
-  @R1CFinancialMovements @JIRA-STORY:PO-7266 @JIRA-EPIC:PO-3685
+  @R1CFinancialMovements @JIRA-STORY:PO-7266 @JIRA-EPIC:PO-3685 @JIRA-TEST-KEY:PO-8358
   Scenario: Finance navigation and entry points are available when release 1c financial movements is enabled
     Given I am logged in with email "opal-test@dev.platform.hmcts.net"
     When I open the "Finance" landing page

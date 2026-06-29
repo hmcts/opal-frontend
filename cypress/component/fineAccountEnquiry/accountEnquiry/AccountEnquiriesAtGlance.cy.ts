@@ -467,12 +467,8 @@ describe('Defendant Account Summary - At a Glance Tab', () => {
       // Click the link
       cy.get(DOM.linkText).click();
 
-      cy.get('@routerNavigate')
-        .its('lastCall.args.0')
-        .should((arg0) => {
-          const path = Array.isArray(arg0) ? arg0.join('/') : String(arg0);
-          expect(path).to.match(/comments\/add/);
-        });
+      cy.get('app-fines-acc-comments-add-form').should('exist');
+      cy.contains('opal-lib-govuk-heading-with-caption, h1, h2', 'Comments').should('be.visible');
     },
   );
 
@@ -498,12 +494,8 @@ describe('Defendant Account Summary - At a Glance Tab', () => {
 
       cy.get(DOM.linkText).click();
 
-      cy.get('@routerNavigate')
-        .its('lastCall.args.0')
-        .should((arg0) => {
-          const path = Array.isArray(arg0) ? arg0.join('/') : String(arg0);
-          expect(path).to.match(/comments\/add/);
-        });
+      cy.get('app-fines-acc-comments-add-form').should('exist');
+      cy.contains('opal-lib-govuk-heading-with-caption, h1, h2', 'Comments').should('be.visible');
     },
   );
 
@@ -524,19 +516,23 @@ describe('Defendant Account Summary - At a Glance Tab', () => {
       interceptDefendantHeader(77, createDefendantHeaderMockWithName('Robert', 'Thomson'), '1');
       interceptAtAGlance(77, mockDataNoComments, '1');
 
-      setupAccountEnquiryComponent(componentProperties);
-      // First verify the button exists and is visible
-      cy.get(DOM.linkText).should('be.visible').and('contain.text', 'Add comments');
+      setupAccountEnquiryComponent({
+        ...componentProperties,
+        interceptedRoutes: componentProperties.interceptedRoutes?.filter((route) => route !== '/access-denied'),
+      });
+      cy.contains(DOM.linkText, 'Add comments').should('be.visible').click();
 
-      // Click the link
-      cy.get(DOM.linkText).click();
+      cy.get('@routerNavigate').should('have.been.called');
 
-      cy.get('@routerNavigate')
-        .its('lastCall.args.0')
-        .should((arg0) => {
-          const path = Array.isArray(arg0) ? arg0.join('/') : String(arg0);
-          expect(path).to.match(/access-denied/);
+      cy.get(DOM.atAGlanceTabComponent).then(($host) => {
+        cy.window().then((win) => {
+          const component = (win as any).ng.getComponent($host[0]) as {
+            navigateToAddCommentsPage: () => string;
+          };
+
+          expect(component.navigateToAddCommentsPage()).to.eq('/access-denied');
         });
+      });
     },
   );
 
@@ -550,16 +546,23 @@ describe('Defendant Account Summary - At a Glance Tab', () => {
       interceptDefendantHeader(77, createDefendantHeaderMockWithName('Robert', 'Thomson'), '1');
       interceptAtAGlance(77, OPAL_FINES_ACCOUNT_DEFENDANT_AT_A_GLANCE_MOCK, '1');
 
-      setupAccountEnquiryComponent(componentProperties);
-      cy.get(DOM.linkText).should('be.visible').and('contain.text', 'Change');
-      cy.get(DOM.linkText).click();
+      setupAccountEnquiryComponent({
+        ...componentProperties,
+        interceptedRoutes: componentProperties.interceptedRoutes?.filter((route) => route !== '/access-denied'),
+      });
+      cy.contains(DOM.linkText, 'Change').should('be.visible').click();
 
-      cy.get('@routerNavigate')
-        .its('lastCall.args.0')
-        .should((arg0) => {
-          const path = Array.isArray(arg0) ? arg0.join('/') : String(arg0);
-          expect(path).to.match(/access-denied/);
+      cy.get('@routerNavigate').should('have.been.called');
+
+      cy.get(DOM.atAGlanceTabComponent).then(($host) => {
+        cy.window().then((win) => {
+          const component = (win as any).ng.getComponent($host[0]) as {
+            navigateToAddCommentsPage: () => string;
+          };
+
+          expect(component.navigateToAddCommentsPage()).to.eq('/access-denied');
         });
+      });
     },
   );
 

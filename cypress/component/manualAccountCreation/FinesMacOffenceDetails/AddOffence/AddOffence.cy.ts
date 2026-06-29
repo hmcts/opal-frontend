@@ -1149,7 +1149,12 @@ describe('FinesMacAddOffenceComponent', () => {
   it(
     'Should show error message for invalid amount paid being a minus value',
     {
-      tags: ['@JIRA-EPIC:PO-2219', '@JIRA-STORY:PO-8046', '@JIRA-LABEL:manual-account-creation'],
+      tags: [
+        '@JIRA-EPIC:PO-2219',
+        '@JIRA-STORY:PO-8046',
+        '@JIRA-LABEL:manual-account-creation',
+        '@JIRA-TEST-KEY:PO-8350',
+      ],
     },
     () => {
       setupComponent(null);
