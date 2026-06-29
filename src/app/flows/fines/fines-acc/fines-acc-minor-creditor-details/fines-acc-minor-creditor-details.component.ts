@@ -46,6 +46,7 @@ import { AbstractCreditorDetailsBaseComponent } from '@hmcts/opal-frontend-commo
 import { FINES_ACC_DEFENDANT_ROUTING_PATHS } from '../routing/constants/fines-acc-defendant-routing-paths.constant';
 import { FINES_ROUTING_PATHS } from '../../routing/constants/fines-routing-paths.constant';
 import { FINES_ACC_ROUTING_PATHS } from '../routing/constants/fines-acc-routing-paths.constant';
+import { AbstractAccountSummaryBaseComponent } from '@hmcts/opal-frontend-common/components/abstract/abstract-account-summary-base';
 import { IOpalFinesVersion } from '../../services/opal-fines-service/interfaces/opal-fines-version.interface';
 import { FINES_ACC_BANNER_MESSAGES } from '../stores/constants/fines-acc-store-banner-messages.constant';
 import { FinesAccMinorCreditorDetailsCreditorTab } from './fines-acc-minor-creditor-details-creditor-tab/fines-acc-minor-creditor-details-creditor-tab.component';
@@ -213,6 +214,51 @@ export class FinesAccMinorCreditorDetailsComponent
       ]),
     );
     window.open(url, '_blank');
+   * Transforms the minor creditor account heading data for use in the view.
+   * @param header The minor creditor account heading data to transform.
+   * @returns The transformed minor creditor account heading data.
+   */
+  protected override transformHeaderForView(
+    header: IOpalFinesAccountMinorCreditorDetailsHeader,
+  ): IOpalFinesAccountMinorCreditorDetailsHeader {
+    return this.payloadService.transformPayload(header, FINES_ACC_MAP_TRANSFORM_ITEMS_CONFIG);
+  }
+
+  /**
+   * Transforms the tab data for use in the view, ensuring it is typed correctly.
+   * @param data The tab data to transform, which must include a version property for cache validation.
+   * @returns The transformed tab data, typed as the same type as the input data.
+   */
+  protected override transformTabData<T extends IOpalFinesVersion>(data: T): T {
+    return this.payloadService.transformPayload(data, FINES_ACC_MAP_TRANSFORM_ITEMS_CONFIG);
+  }
+
+  /**
+   * Handles the page refresh action.
+   * Sets the version mismatch state to false.
+   * Sets the is refreshed state to true.
+   * Refreshes the page.
+   * @param event The user event that triggered the refresh action.
+   */
+  public override refreshPage(): void {
+    this.accountStore.setHasVersionMismatch(false);
+
+    super.refreshPage(Number(this.accountStore.account_id()), (header) => {
+      this.accountStore.setSuccessMessage(FINES_ACC_BANNER_MESSAGES.latest);
+      this.accountData = header;
+    });
+  }
+
+  /**
+   * Checks if the current user has the specified business unit permission.
+   * @param permissionKey The key of the permission to check.
+   * @returns A boolean indicating whether the user has the permission.
+   */
+  public hasBusinessUnitPermissionKey(permissionKey: string): boolean {
+    return super.hasBusinessUnitPermission(
+      FINES_PERMISSIONS[permissionKey],
+      Number(this.accountStore.business_unit_id()!),
+    );
   }
 
   /**
