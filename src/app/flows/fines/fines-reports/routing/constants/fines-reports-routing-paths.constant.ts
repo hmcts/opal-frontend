@@ -4,7 +4,7 @@ export const FINES_REPORTS_ROUTING_PATHS: IFinesReportsRoutingPaths = {
   root: 'reports',
   children: {
     summaryList: 'summary-list',
-    reportSummary: 'report-summary/:reportInstanceId',
+    reportSummary: 'summary/:instanceId',
     selectBusinessUnits: 'create/select-business-unit',
     businessUnitWarning: 'create/business-unit-warning',
     parameters: 'create/report-parameters',

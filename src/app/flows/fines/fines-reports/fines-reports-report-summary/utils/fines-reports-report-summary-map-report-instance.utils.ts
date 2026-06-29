@@ -1,6 +1,10 @@
 import { FINES_REPORTS_REPORT_SUMMARY_DEFAULT_REPORT_TYPES } from '../constants/fines-reports-report-summary-default-report-types.constant';
+import { FINES_REPORTS_REPORT_SUMMARY_CRITERIA_LABELS } from '../constants/fines-reports-report-summary-criteria-labels.constant';
+import { FINES_REPORTS_REPORT_SUMMARY_REPORT_TYPE_ALIASES } from '../constants/fines-reports-report-summary-report-type-aliases.constant';
+import { FINES_REPORTS_REPORT_SUMMARY_REPORT_TYPES } from '../constants/fines-reports-report-summary-report-types.constant';
 import { type IFinesReportsReportSummaryNamedValue } from '../interfaces/fines-reports-report-summary-named-value.interface';
 import { type IFinesReportsReportSummaryInstance } from '../interfaces/fines-reports-report-summary-instance.interface';
+import { type FinesReportsReportSummaryReportType } from '../types/fines-reports-report-summary-report-type.type';
 import { type IOpalFinesReportInstance } from '@services/fines/opal-fines-service/interfaces/opal-fines-report-instance.interface';
 import {
   isFinesReportsReportSummaryUnusedOptionalValue,
@@ -12,50 +16,51 @@ const DATE_RANGE_PARAMETER_CONFIGS = [
   {
     fromKey: 'action_date_from',
     toKey: 'action_date_to',
-    label: 'Action date',
+    label: FINES_REPORTS_REPORT_SUMMARY_CRITERIA_LABELS.actionDate,
   },
   {
     fromKey: 'payment_date_from',
     toKey: 'payment_date_to',
-    label: 'Payment date',
+    label: FINES_REPORTS_REPORT_SUMMARY_CRITERIA_LABELS.paymentDate,
   },
 ] as const;
-const REPORT_TYPE_LABEL = 'Report Type';
 const REPORT_PARAMETER_LABEL_OVERRIDES: Record<string, string> = {
-  reportType: REPORT_TYPE_LABEL,
-  report_type: REPORT_TYPE_LABEL,
-  'report type': REPORT_TYPE_LABEL,
-  enforcement: 'Enforcement',
-  account_type: 'Account type',
-  account_status: 'Account status',
-  collection_order: 'Collection order',
-  minimum_account_balance: 'Minimum account balance',
-  maximum_account_balance: 'Maximum account balance',
-  lower_name_range: 'Lower name range',
-  upper_name_range: 'Upper name range',
-  payment_method: 'Payment method',
-  minimum_payment_amount: 'Minimum payment amount',
-  maximum_payment_amount: 'Maximum payment amount',
-  error: 'Error description',
-  error_description: 'Error description',
-  operationId: 'Operation ID',
-  report_generation_error: 'Report generation error',
-  report_service: 'Report service',
+  reportType: FINES_REPORTS_REPORT_SUMMARY_CRITERIA_LABELS.reportType,
+  report_type: FINES_REPORTS_REPORT_SUMMARY_CRITERIA_LABELS.reportType,
+  'report type': FINES_REPORTS_REPORT_SUMMARY_CRITERIA_LABELS.reportType,
+  enforcement: FINES_REPORTS_REPORT_SUMMARY_CRITERIA_LABELS.enforcement,
+  account_type: FINES_REPORTS_REPORT_SUMMARY_CRITERIA_LABELS.accountType,
+  account_status: FINES_REPORTS_REPORT_SUMMARY_CRITERIA_LABELS.accountStatus,
+  collection_order: FINES_REPORTS_REPORT_SUMMARY_CRITERIA_LABELS.collectionOrder,
+  minimum_account_balance: FINES_REPORTS_REPORT_SUMMARY_CRITERIA_LABELS.minimumAccountBalance,
+  maximum_account_balance: FINES_REPORTS_REPORT_SUMMARY_CRITERIA_LABELS.maximumAccountBalance,
+  lower_name_range: FINES_REPORTS_REPORT_SUMMARY_CRITERIA_LABELS.lowerNameRange,
+  upper_name_range: FINES_REPORTS_REPORT_SUMMARY_CRITERIA_LABELS.upperNameRange,
+  payment_method: FINES_REPORTS_REPORT_SUMMARY_CRITERIA_LABELS.paymentMethod,
+  minimum_payment_amount: FINES_REPORTS_REPORT_SUMMARY_CRITERIA_LABELS.minimumPaymentAmount,
+  maximum_payment_amount: FINES_REPORTS_REPORT_SUMMARY_CRITERIA_LABELS.maximumPaymentAmount,
+  error: FINES_REPORTS_REPORT_SUMMARY_CRITERIA_LABELS.errorDescription,
+  error_description: FINES_REPORTS_REPORT_SUMMARY_CRITERIA_LABELS.errorDescription,
+  operationId: FINES_REPORTS_REPORT_SUMMARY_CRITERIA_LABELS.operationId,
+  report_generation_error: FINES_REPORTS_REPORT_SUMMARY_CRITERIA_LABELS.reportGenerationError,
+  report_service: FINES_REPORTS_REPORT_SUMMARY_CRITERIA_LABELS.reportService,
 };
 const DATE_RANGE_PARAMETER_KEYS = new Set<string>(
   DATE_RANGE_PARAMETER_CONFIGS.flatMap(({ fromKey, toKey }) => [fromKey, toKey]),
 );
+const REPORT_TYPE_NORMALISATION: Record<string, FinesReportsReportSummaryReportType> = {
+  [FINES_REPORTS_REPORT_SUMMARY_REPORT_TYPE_ALIASES.summary]: FINES_REPORTS_REPORT_SUMMARY_REPORT_TYPES.summary,
+  [FINES_REPORTS_REPORT_SUMMARY_REPORT_TYPE_ALIASES.detailed]: FINES_REPORTS_REPORT_SUMMARY_REPORT_TYPES.detailed,
+  [FINES_REPORTS_REPORT_SUMMARY_REPORT_TYPE_ALIASES.detail]: FINES_REPORTS_REPORT_SUMMARY_REPORT_TYPES.detailed,
+};
 
 const formatReportTypeDisplay = (value: unknown, reportId: string): string => {
   if (typeof value === 'string') {
     const normalised = value.trim().toLowerCase();
+    const reportType = REPORT_TYPE_NORMALISATION[normalised];
 
-    if (normalised === 'summary') {
-      return 'Summary';
-    }
-
-    if (normalised === 'detailed' || normalised === 'detail') {
-      return 'Detailed';
+    if (reportType) {
+      return reportType;
     }
 
     if (value.trim().length > 0) {
@@ -63,7 +68,9 @@ const formatReportTypeDisplay = (value: unknown, reportId: string): string => {
     }
   }
 
-  return FINES_REPORTS_REPORT_SUMMARY_DEFAULT_REPORT_TYPES[reportId] ?? 'Summary';
+  return (
+    FINES_REPORTS_REPORT_SUMMARY_DEFAULT_REPORT_TYPES[reportId] ?? FINES_REPORTS_REPORT_SUMMARY_REPORT_TYPES.summary
+  );
 };
 
 const formatReportParameterName = (key: string): string => {
@@ -184,7 +191,9 @@ const buildCriteriaRows = (
 
   const dateRangeRow = buildDateRangeRow(parameters);
   if (dateRangeRow) {
-    const dateRangeRowIndex = rows.findIndex((row) => row.name === 'Account type');
+    const dateRangeRowIndex = rows.findIndex(
+      (row) => row.name === FINES_REPORTS_REPORT_SUMMARY_CRITERIA_LABELS.accountType,
+    );
 
     if (dateRangeRowIndex >= 0) {
       rows.splice(dateRangeRowIndex, 0, dateRangeRow);
@@ -193,9 +202,9 @@ const buildCriteriaRows = (
     }
   }
 
-  if (!rows.some((row) => row.name === REPORT_TYPE_LABEL)) {
+  if (!rows.some((row) => row.name === FINES_REPORTS_REPORT_SUMMARY_CRITERIA_LABELS.reportType)) {
     rows.unshift({
-      name: REPORT_TYPE_LABEL,
+      name: FINES_REPORTS_REPORT_SUMMARY_CRITERIA_LABELS.reportType,
       value: formatReportTypeDisplay(
         parameters['reportType'] ?? parameters['report_type'] ?? parameters['report type'],
         reportId,
@@ -233,9 +242,10 @@ export const mapFinesReportsReportInstanceToReportSummary = (
   const resolvedReportId = reportId || reportInstance.report.id;
   const criteriaRows = buildCriteriaRows(reportInstance.report_parameters, resolvedReportId);
   const reportTypeValue = mapFinesReportsReportSummaryDisplayValue(
-    criteriaRows.find((row) => row.name === REPORT_TYPE_LABEL)?.value,
+    criteriaRows.find((row) => row.name === FINES_REPORTS_REPORT_SUMMARY_CRITERIA_LABELS.reportType)?.value,
   );
-  const reportType = reportTypeValue === null ? 'Summary' : String(reportTypeValue);
+  const reportType =
+    reportTypeValue === null ? FINES_REPORTS_REPORT_SUMMARY_REPORT_TYPES.summary : String(reportTypeValue);
 
   return {
     report_instance_id: reportInstance.instance_id.toString(),

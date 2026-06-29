@@ -12,7 +12,11 @@ export const fetchReportInstanceResolver: ResolveFn<IFinesReportsReportSummaryIn
 ) => {
   const opalFinesService = inject(OpalFines);
   const reportInstanceId =
-    route.paramMap.get('reportInstanceId') ?? route.parent?.paramMap.get('reportInstanceId') ?? '';
+    route.paramMap.get('instanceId') ??
+    route.paramMap.get('reportInstanceId') ??
+    route.parent?.paramMap.get('instanceId') ??
+    route.parent?.paramMap.get('reportInstanceId') ??
+    '';
   const reportId = route.parent?.paramMap.get('reportId') ?? route.paramMap.get('reportId') ?? '';
 
   if (!reportInstanceId || !REPORT_INSTANCE_ID_API_PATTERN.test(reportInstanceId)) {

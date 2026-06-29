@@ -1,1 +1,1 @@
-export type FinesReportsReportSummaryDisplayRowType = 'dateTime' | 'notProvided' | 'number' | 'text';
+export type FinesReportsReportSummaryDisplayRowType = 'currency' | 'dateTime' | 'notProvided' | 'number' | 'text';

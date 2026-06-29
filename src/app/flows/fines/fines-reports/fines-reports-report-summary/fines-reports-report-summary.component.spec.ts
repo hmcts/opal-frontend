@@ -25,7 +25,7 @@ describe('FinesReportsReportSummaryComponent', () => {
     mockRouter: { navigate: ReturnType<typeof vi.fn> };
   }> => {
     const reportParamMap = convertToParamMap({ reportId });
-    const reportInstanceParamMap = convertToParamMap({ reportInstanceId });
+    const reportInstanceParamMap = convertToParamMap({ instanceId: reportInstanceId });
     const mockRouter = {
       navigate: vi.fn().mockName('Router.navigate'),
     };
@@ -142,6 +142,8 @@ describe('FinesReportsReportSummaryComponent', () => {
     expect(pageText).toContain('Summary');
     expect(pageText).toContain('Account type');
     expect(pageText).toContain('Adult, Youth');
+    expect(pageText).toContain('£120.50');
+    expect(pageText).toContain('£1,000.00');
   });
 
   it('should not render optional criteria that were not used', async () => {

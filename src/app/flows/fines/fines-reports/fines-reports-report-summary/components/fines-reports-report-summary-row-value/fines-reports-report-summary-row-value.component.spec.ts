@@ -23,7 +23,7 @@ describe('FinesReportsReportSummaryRowValueComponent', () => {
   it('should render date time values using the shared date format pipe', () => {
     fixture.componentRef.setInput('row', {
       key: 'Date Created',
-      value: '2006-06-01T10:36:00.000Z',
+      value: '2006-06-01T10:36:00',
       type: 'dateTime',
     });
     fixture.detectChanges();
@@ -36,6 +36,13 @@ describe('FinesReportsReportSummaryRowValueComponent', () => {
     fixture.detectChanges();
 
     expect(fixture.nativeElement.textContent).toContain('1,245');
+  });
+
+  it('should render currency values using the shared currency pipe', () => {
+    fixture.componentRef.setInput('row', { key: 'Minimum account balance', value: 120.5, type: 'currency' });
+    fixture.detectChanges();
+
+    expect(fixture.nativeElement.textContent).toContain('£120.50');
   });
 
   it('should render not provided values using the shared not provided component', () => {

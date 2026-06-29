@@ -12,17 +12,17 @@ describe('mapFinesReportsReportSummaryToViewModel', () => {
 
     expect(result.generalRows).toEqual([
       { key: 'Status', value: 'In progress', type: 'text' },
-      { key: 'Date Created', value: '2025-10-17T09:30:00.000Z', type: 'dateTime' },
+      { key: 'Date Created', value: '2025-10-17T09:30:00', type: 'dateTime' },
       { key: 'Business Units', value: 'West London, South London', type: 'text' },
       { key: 'No. of Records', value: null, type: 'notProvided' },
       { key: 'Created By', value: 'jane.doe', type: 'text' },
     ]);
   });
 
-  it('should map ready reports with no records to no content', () => {
+  it('should keep ready status and show zero records for ready reports with no records', () => {
     const result = mapFinesReportsReportSummaryToViewModel(FINES_REPORTS_REPORT_SUMMARY_PAYMENTS_MOCK);
 
-    expect(result.generalRows[0]).toEqual({ key: 'Status', value: 'No content', type: 'text' });
+    expect(result.generalRows[0]).toEqual({ key: 'Status', value: 'Ready', type: 'text' });
     expect(result.generalRows[3]).toEqual({ key: 'No. of Records', value: 0, type: 'number' });
   });
 
@@ -44,6 +44,21 @@ describe('mapFinesReportsReportSummaryToViewModel', () => {
       key: 'Only accounts with initial or full payment due in the next 7 days',
       value: 'TRUE',
       type: 'text',
+    });
+  });
+
+  it('should map account balance criteria as currency rows', () => {
+    const result = mapFinesReportsReportSummaryToViewModel(FINES_REPORTS_REPORT_SUMMARY_ENFORCEMENT_MOCK);
+
+    expect(result.criteriaRows).toContainEqual({
+      key: 'Minimum account balance',
+      value: 120.5,
+      type: 'currency',
+    });
+    expect(result.criteriaRows).toContainEqual({
+      key: 'Maximum account balance',
+      value: 1000,
+      type: 'currency',
     });
   });
 

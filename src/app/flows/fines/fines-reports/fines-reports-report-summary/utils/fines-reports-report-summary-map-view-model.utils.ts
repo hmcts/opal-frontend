@@ -1,9 +1,10 @@
+import { FINES_REPORTS_REPORT_SUMMARY_CRITERIA_LABELS } from '../constants/fines-reports-report-summary-criteria-labels.constant';
 import { FINES_REPORTS_REPORT_SUMMARY_GENERAL_LABELS } from '../constants/fines-reports-report-summary-general-labels.constant';
 import {
-  FINES_REPORTS_REPORT_SUMMARY_NO_CONTENT_STATUS_DISPLAY,
   FINES_REPORTS_REPORT_SUMMARY_RECORD_COUNT_DASH_STATUSES,
   FINES_REPORTS_REPORT_SUMMARY_STATUS_DISPLAY,
 } from '../constants/fines-reports-report-summary-status-display.constant';
+import { FINES_REPORTS_REPORT_SUMMARY_STATUS_ALIASES } from '../constants/fines-reports-report-summary-status-aliases.constant';
 import { FINES_REPORTS_REPORT_SUMMARY_STATUSES } from '../constants/fines-reports-report-summary-statuses.constant';
 import { IFinesReportsReportSummaryDisplayRow } from '../interfaces/fines-reports-report-summary-display-row.interface';
 import { IFinesReportsReportSummaryInstance } from '../interfaces/fines-reports-report-summary-instance.interface';
@@ -17,11 +18,17 @@ import {
 } from './fines-reports-report-summary-display-value.utils';
 
 const REPORT_STATUS_NORMALISATION: Record<string, FinesReportsReportSummaryNormalisedStatus> = {
-  requested: FINES_REPORTS_REPORT_SUMMARY_STATUSES.requested,
-  in_progress: FINES_REPORTS_REPORT_SUMMARY_STATUSES.inProgress,
-  ready: FINES_REPORTS_REPORT_SUMMARY_STATUSES.ready,
-  error: FINES_REPORTS_REPORT_SUMMARY_STATUSES.error,
+  [FINES_REPORTS_REPORT_SUMMARY_STATUS_ALIASES.requested]: FINES_REPORTS_REPORT_SUMMARY_STATUSES.requested,
+  [FINES_REPORTS_REPORT_SUMMARY_STATUS_ALIASES.inProgress]: FINES_REPORTS_REPORT_SUMMARY_STATUSES.inProgress,
+  [FINES_REPORTS_REPORT_SUMMARY_STATUS_ALIASES.ready]: FINES_REPORTS_REPORT_SUMMARY_STATUSES.ready,
+  [FINES_REPORTS_REPORT_SUMMARY_STATUS_ALIASES.error]: FINES_REPORTS_REPORT_SUMMARY_STATUSES.error,
 };
+const CURRENCY_ROW_KEYS = new Set<string>([
+  FINES_REPORTS_REPORT_SUMMARY_CRITERIA_LABELS.minimumAccountBalance,
+  FINES_REPORTS_REPORT_SUMMARY_CRITERIA_LABELS.maximumAccountBalance,
+  FINES_REPORTS_REPORT_SUMMARY_CRITERIA_LABELS.minimumPaymentAmount,
+  FINES_REPORTS_REPORT_SUMMARY_CRITERIA_LABELS.maximumPaymentAmount,
+]);
 const RECORD_COUNT_DASH_STATUS_SET = new Set<FinesReportsReportSummaryNormalisedStatus>(
   FINES_REPORTS_REPORT_SUMMARY_RECORD_COUNT_DASH_STATUSES,
 );
@@ -36,10 +43,6 @@ const normaliseStatus = (
 
 const getStatusDisplay = (reportSummary: IFinesReportsReportSummaryInstance): string => {
   const status = normaliseStatus(reportSummary.status);
-
-  if (status === FINES_REPORTS_REPORT_SUMMARY_STATUSES.ready && reportSummary.number_of_records === 0) {
-    return FINES_REPORTS_REPORT_SUMMARY_NO_CONTENT_STATUS_DISPLAY;
-  }
 
   return FINES_REPORTS_REPORT_SUMMARY_STATUS_DISPLAY[status];
 };
@@ -61,18 +64,33 @@ const getDisplayRowType = (
   return value === null ? 'notProvided' : providedType;
 };
 
+const getCurrencyDisplayValue = (
+  value: IFinesReportsReportSummaryDisplayRow['value'],
+): IFinesReportsReportSummaryDisplayRow['value'] => {
+  if (typeof value === 'number' || value === null) {
+    return value;
+  }
+
+  const normalisedValue = value.replace(/[£,\s]/g, '');
+  const numericValue = Number(normalisedValue);
+
+  return Number.isNaN(numericValue) ? value : numericValue;
+};
+
 const mapNamedValuesToRows = (
   values: IFinesReportsReportSummaryNamedValue[] | undefined,
 ): IFinesReportsReportSummaryDisplayRow[] => {
   return (values ?? [])
     .filter((row) => !row.optional || !isFinesReportsReportSummaryUnusedOptionalValue(row.value))
     .map((row) => {
-      const value = mapFinesReportsReportSummaryDisplayValue(row.value);
+      const mappedValue = mapFinesReportsReportSummaryDisplayValue(row.value);
+      const value = CURRENCY_ROW_KEYS.has(row.name) ? getCurrencyDisplayValue(mappedValue) : mappedValue;
+      const isCurrencyValue = CURRENCY_ROW_KEYS.has(row.name) && typeof value === 'number';
 
       return {
         key: row.name,
         value,
-        type: getDisplayRowType(value),
+        type: getDisplayRowType(value, isCurrencyValue ? 'currency' : 'text'),
       };
     });
 };

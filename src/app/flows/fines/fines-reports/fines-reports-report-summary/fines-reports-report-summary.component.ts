@@ -37,9 +37,14 @@ export class FinesReportsReportSummaryComponent {
     },
   );
   private readonly reportInstanceIdSignal = toSignal(
-    this.activatedRoute.paramMap.pipe(map((paramMap) => paramMap.get('reportInstanceId') ?? '')),
+    this.activatedRoute.paramMap.pipe(
+      map((paramMap) => paramMap.get('instanceId') ?? paramMap.get('reportInstanceId') ?? ''),
+    ),
     {
-      initialValue: this.activatedRoute.snapshot.paramMap.get('reportInstanceId') ?? '',
+      initialValue:
+        this.activatedRoute.snapshot.paramMap.get('instanceId') ??
+        this.activatedRoute.snapshot.paramMap.get('reportInstanceId') ??
+        '',
     },
   );
   private readonly reportSummarySignal = toSignal(
