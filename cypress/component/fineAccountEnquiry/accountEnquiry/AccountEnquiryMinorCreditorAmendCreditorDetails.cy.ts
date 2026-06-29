@@ -68,7 +68,7 @@ const setupMinorCreditorAmendCompanyScreen = () => {
   const creditorData = createMinorCreditorAmendCompanyCreditorMock(true);
 
   header.party.organisation_flag = true;
-  header.party.organisation_details = { organisation_name: 'Amend Minor Co Ltd' };
+  header.party.organisation_details = { organisation_name: 'Amend Minor Co Ltd', organisation_aliases: null };
   header.party.individual_details = undefined;
 
   interceptUserState(USER_STATE_MOCK_PERMISSION_BU77);
@@ -144,7 +144,7 @@ describe('Minor Creditor Account Enquiry - Amend Minor Creditor Details', () => 
 
   it(
     'AC1a-AC1d: renders the amend screen with minor creditor and BACS details pre-populated from the API',
-    { tags: buildTags(AMEND_MINOR_CREDITOR_STORY_TAG, AMEND_MINOR_CREDITOR_EPIC_TAG) },
+    { tags: [...buildTags(AMEND_MINOR_CREDITOR_STORY_TAG, AMEND_MINOR_CREDITOR_EPIC_TAG), '@JIRA-TEST-KEY:PO-7478'] },
     () => {
       setupMinorCreditorAmendScreen(createMinorCreditorAmendCreditorMock(true));
 
@@ -187,7 +187,7 @@ describe('Minor Creditor Account Enquiry - Amend Minor Creditor Details', () => 
 
   it(
     'AC1d-AC1e: leaves BACS unchecked and hides payment fields when no BACS details exist',
-    { tags: buildTags(AMEND_MINOR_CREDITOR_STORY_TAG, AMEND_MINOR_CREDITOR_EPIC_TAG) },
+    { tags: [...buildTags(AMEND_MINOR_CREDITOR_STORY_TAG, AMEND_MINOR_CREDITOR_EPIC_TAG), '@JIRA-TEST-KEY:PO-7479'] },
     () => {
       setupMinorCreditorAmendScreen(createMinorCreditorAmendCreditorMock(false));
 
@@ -204,7 +204,7 @@ describe('Minor Creditor Account Enquiry - Amend Minor Creditor Details', () => 
 
   it(
     'AC3a.ii: shows the creditor type required error when no creditor type is selected',
-    { tags: buildTags(AMEND_MINOR_CREDITOR_STORY_TAG, AMEND_MINOR_CREDITOR_EPIC_TAG) },
+    { tags: [...buildTags(AMEND_MINOR_CREDITOR_STORY_TAG, AMEND_MINOR_CREDITOR_EPIC_TAG), '@JIRA-TEST-KEY:PO-7480'] },
     () => {
       mountMinorCreditorAmendForm();
 
@@ -214,7 +214,7 @@ describe('Minor Creditor Account Enquiry - Amend Minor Creditor Details', () => 
 
   it(
     'AC3a.i, AC3a.iii, AC3a.iv, AC3a.v: shows individual minor creditor validation errors when details are blank',
-    { tags: buildTags(AMEND_MINOR_CREDITOR_STORY_TAG, AMEND_MINOR_CREDITOR_EPIC_TAG) },
+    { tags: [...buildTags(AMEND_MINOR_CREDITOR_STORY_TAG, AMEND_MINOR_CREDITOR_EPIC_TAG), '@JIRA-TEST-KEY:PO-7481'] },
     () => {
       setupMinorCreditorAmendScreen(createMinorCreditorAmendCreditorEmptyIndividualMock());
 
@@ -228,7 +228,7 @@ describe('Minor Creditor Account Enquiry - Amend Minor Creditor Details', () => 
 
   it(
     'AC3a.vi: shows company name required for a company minor creditor when details are blank',
-    { tags: buildTags(AMEND_MINOR_CREDITOR_STORY_TAG, AMEND_MINOR_CREDITOR_EPIC_TAG) },
+    { tags: [...buildTags(AMEND_MINOR_CREDITOR_STORY_TAG, AMEND_MINOR_CREDITOR_EPIC_TAG), '@JIRA-TEST-KEY:PO-7482'] },
     () => {
       setupMinorCreditorAmendScreen(createMinorCreditorAmendCreditorEmptyCompanyMock());
 
@@ -238,7 +238,7 @@ describe('Minor Creditor Account Enquiry - Amend Minor Creditor Details', () => 
 
   it(
     'AC3b.i, AC3b.ii, AC3b.iii, AC3b.vii: shows required BACS field errors when payment details are blank',
-    { tags: buildTags(AMEND_MINOR_CREDITOR_STORY_TAG, AMEND_MINOR_CREDITOR_EPIC_TAG) },
+    { tags: [...buildTags(AMEND_MINOR_CREDITOR_STORY_TAG, AMEND_MINOR_CREDITOR_EPIC_TAG), '@JIRA-TEST-KEY:PO-7483'] },
     () => {
       mountMinorCreditorAmendForm({
         ...getValidIndividualMinorCreditorFormOverrides(),
@@ -258,7 +258,7 @@ describe('Minor Creditor Account Enquiry - Amend Minor Creditor Details', () => 
 
   it(
     'AC3b.iv: shows an error when the BACS account number has fewer than 6 digits',
-    { tags: buildTags(AMEND_MINOR_CREDITOR_STORY_TAG, AMEND_MINOR_CREDITOR_EPIC_TAG) },
+    { tags: [...buildTags(AMEND_MINOR_CREDITOR_STORY_TAG, AMEND_MINOR_CREDITOR_EPIC_TAG), '@JIRA-TEST-KEY:PO-7484'] },
     () => {
       mountMinorCreditorAmendForm({
         ...getValidIndividualMinorCreditorFormOverrides(),
@@ -271,7 +271,7 @@ describe('Minor Creditor Account Enquiry - Amend Minor Creditor Details', () => 
 
   it(
     'AC3b.v: shows an error when the BACS account number contains non-numerical characters',
-    { tags: buildTags(AMEND_MINOR_CREDITOR_STORY_TAG, AMEND_MINOR_CREDITOR_EPIC_TAG) },
+    { tags: [...buildTags(AMEND_MINOR_CREDITOR_STORY_TAG, AMEND_MINOR_CREDITOR_EPIC_TAG), '@JIRA-TEST-KEY:PO-7485'] },
     () => {
       mountMinorCreditorAmendForm({
         ...getValidIndividualMinorCreditorFormOverrides(),
@@ -284,7 +284,7 @@ describe('Minor Creditor Account Enquiry - Amend Minor Creditor Details', () => 
 
   it(
     'AC3b.vi: shows sort code validation errors for invalid BACS sort codes',
-    { tags: buildTags(AMEND_MINOR_CREDITOR_STORY_TAG, AMEND_MINOR_CREDITOR_EPIC_TAG) },
+    { tags: [...buildTags(AMEND_MINOR_CREDITOR_STORY_TAG, AMEND_MINOR_CREDITOR_EPIC_TAG), '@JIRA-TEST-KEY:PO-7486'] },
     () => {
       mountMinorCreditorAmendForm({
         ...getValidIndividualMinorCreditorFormOverrides(),
@@ -297,7 +297,7 @@ describe('Minor Creditor Account Enquiry - Amend Minor Creditor Details', () => 
 
   it(
     'AC2b: saves amended company minor creditor details with BACS and returns to the creditor tab',
-    { tags: buildTags(AMEND_MINOR_CREDITOR_STORY_TAG, AMEND_MINOR_CREDITOR_EPIC_TAG) },
+    { tags: [...buildTags(AMEND_MINOR_CREDITOR_STORY_TAG, AMEND_MINOR_CREDITOR_EPIC_TAG), '@JIRA-TEST-KEY:PO-7487'] },
     () => {
       setupMinorCreditorAmendCompanyScreen();
 

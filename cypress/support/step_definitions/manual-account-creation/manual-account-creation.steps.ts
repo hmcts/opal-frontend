@@ -1521,3 +1521,11 @@ Then(
     flow().assertLatestDraftAccountCreateOriginatorType(expectedOriginatorType);
   },
 );
+
+/**
+ * @step Asserts UTC lifecycle timestamps on the latest draft account create response.
+ * @description Validates the stored creation and status timestamps are returned in UTC format.
+ */
+Then('the latest draft account create response should include UTC timestamps', () => {
+  flow().assertLatestDraftAccountCreateResponseIncludesUtcTimestamps();
+});

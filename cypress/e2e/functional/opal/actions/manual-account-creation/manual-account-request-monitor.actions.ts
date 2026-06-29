@@ -10,6 +10,7 @@ let matchedLocalJusticeAreasRequest: Interception | null = null;
 export class ManualAccountRequestMonitorActions {
   private static readonly LOCAL_JUSTICE_AREAS_ALIAS = 'getLocalJusticeAreas';
   private static readonly DRAFT_ACCOUNT_CREATE_ALIAS = 'postDraftAccount';
+  private static readonly UTC_TIMESTAMP_PATTERN = /^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}(?:\.\d+)?Z$/;
 
   /**
    * Starts intercepting local justice area lookup requests.
@@ -81,6 +82,31 @@ export class ManualAccountRequestMonitorActions {
 
       expect(requestBody.account, 'draft account payload.account').to.exist;
       expect(requestBody.account?.originator_type).to.equal(expectedOriginatorType);
+    });
+  }
+
+  /**
+   * Asserts the latest draft account create response includes UTC lifecycle timestamps.
+   * @remarks Confirms the backend stores and returns UTC values for creation/status timestamps.
+   */
+  assertLatestDraftAccountCreateResponseIncludesUtcTimestamps(): void {
+    this.getCapturedRequests(ManualAccountRequestMonitorActions.DRAFT_ACCOUNT_CREATE_ALIAS).then((requests) => {
+      const latestRequest = this.getLatestRequest(requests, 'draft account create');
+      const responseBody = latestRequest.response?.body as
+        | {
+            account_snapshot?: { created_date?: string };
+            account_status_date?: string;
+          }
+        | undefined;
+
+      expect(responseBody, 'draft account create response body').to.exist;
+      expect(responseBody?.account_snapshot, 'draft account create response account_snapshot').to.exist;
+      expect(responseBody?.account_snapshot?.created_date, 'draft account create response created_date').to.match(
+        ManualAccountRequestMonitorActions.UTC_TIMESTAMP_PATTERN,
+      );
+      expect(responseBody?.account_status_date, 'draft account create response account_status_date').to.match(
+        ManualAccountRequestMonitorActions.UTC_TIMESTAMP_PATTERN,
+      );
     });
   }
 

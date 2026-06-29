@@ -13,9 +13,11 @@ import { REPORTS_PERMISSIONS } from '@app/flows/fines/constants/reports-permissi
 import { SEARCH_PERMISSIONS } from '@app/flows/fines/constants/search-permissions.constant';
 import {
   RELEASE_1A_FEATURE_FLAG,
+  RELEASE_1C_ADMINISTRATION_FEATURE_FLAG,
   RELEASE_1B_FEATURE_FLAG,
   RELEASE_1C_WRITE_OFF_FEATURE_FLAG,
   RELEASE_1C_ENFORCEMENT_OPERATIONAL_REPORTING_FEATURE_FLAG,
+  RELEASE_1C_FINANCIAL_MOVEMENTS_FEATURE_FLAG,
 } from '@app/flows/fines/constants/release-feature-flags.constant';
 
 const resolveFeatureFlagGuardMock = vi.fn();
@@ -24,6 +26,8 @@ const DEFAULT_RELEASE_FEATURE_FLAGS = {
   [RELEASE_1B_FEATURE_FLAG]: true,
   [RELEASE_1C_WRITE_OFF_FEATURE_FLAG]: true,
   [RELEASE_1C_ENFORCEMENT_OPERATIONAL_REPORTING_FEATURE_FLAG]: true,
+  [RELEASE_1C_ADMINISTRATION_FEATURE_FLAG]: true,
+  [RELEASE_1C_FINANCIAL_MOVEMENTS_FEATURE_FLAG]: true,
 };
 
 const mockFeatureFlags = (featureFlags: Record<string, boolean>) => {
@@ -378,6 +382,69 @@ describe('finesSectionPermissionsGuard', () => {
 
     expect(result).toBe(true);
     expect(mockOpalUserService.getLoggedInUserState).not.toHaveBeenCalled();
+  });
+
+  it('should allow Administration when release-1c-administration is enabled without looking up user permissions', async () => {
+    const result = await runGuard({ dashboardType: FINES_DASHBOARD_ROUTING_PATHS.children.administration });
+
+    expect(result).toBe(true);
+    expect(resolveFeatureFlagGuardMock).toHaveBeenCalledWith(
+      RELEASE_1C_ADMINISTRATION_FEATURE_FLAG,
+      expect.any(Object),
+      expect.any(Object),
+    );
+    expect(mockOpalUserService.getLoggedInUserState).not.toHaveBeenCalled();
+  });
+
+  it('should redirect Administration when release-1c-administration is disabled', async () => {
+    const expectedUrlTree = new UrlTree();
+    mockFeatureFlags({
+      ...DEFAULT_RELEASE_FEATURE_FLAGS,
+      [RELEASE_1C_ADMINISTRATION_FEATURE_FLAG]: false,
+    });
+    mockRouter.createUrlTree.mockReturnValue(expectedUrlTree);
+
+    const result = await runGuard({ dashboardType: FINES_DASHBOARD_ROUTING_PATHS.children.administration });
+
+    expect(result).toBe(expectedUrlTree);
+    expect(resolveFeatureFlagGuardMock).toHaveBeenCalledWith(
+      RELEASE_1C_ADMINISTRATION_FEATURE_FLAG,
+      expect.any(Object),
+      expect.any(Object),
+    );
+    expect(mockOpalUserService.getLoggedInUserState).not.toHaveBeenCalled();
+    expect(mockRouter.createUrlTree).toHaveBeenCalledWith([`/${COMMON_PAGES_ROUTING_PATHS.children.accessDenied}`]);
+  });
+
+  it('should allow Finance when release-1c-financial-movements is enabled without looking up user permissions', async () => {
+    const result = await runGuard({ dashboardType: FINES_DASHBOARD_ROUTING_PATHS.children.finance });
+
+    expect(result).toBe(true);
+    expect(resolveFeatureFlagGuardMock).toHaveBeenCalledWith(
+      RELEASE_1C_FINANCIAL_MOVEMENTS_FEATURE_FLAG,
+      expect.any(Object),
+      expect.any(Object),
+    );
+    expect(mockOpalUserService.getLoggedInUserState).not.toHaveBeenCalled();
+  });
+
+  it('should redirect Finance when release-1c-financial-movements is disabled', async () => {
+    const expectedUrlTree = new UrlTree();
+    mockFeatureFlags({
+      ...DEFAULT_RELEASE_FEATURE_FLAGS,
+      [RELEASE_1C_FINANCIAL_MOVEMENTS_FEATURE_FLAG]: false,
+    });
+    mockRouter.createUrlTree.mockReturnValue(expectedUrlTree);
+
+    const result = await runGuard({ dashboardType: FINES_DASHBOARD_ROUTING_PATHS.children.finance });
+    expect(result).toBe(expectedUrlTree);
+    expect(resolveFeatureFlagGuardMock).toHaveBeenCalledWith(
+      RELEASE_1C_FINANCIAL_MOVEMENTS_FEATURE_FLAG,
+      expect.any(Object),
+      expect.any(Object),
+    );
+    expect(mockOpalUserService.getLoggedInUserState).not.toHaveBeenCalled();
+    expect(mockRouter.createUrlTree).toHaveBeenCalledWith([`/${COMMON_PAGES_ROUTING_PATHS.children.accessDenied}`]);
   });
 
   it('should allow unknown dashboard types without looking up user permissions', async () => {

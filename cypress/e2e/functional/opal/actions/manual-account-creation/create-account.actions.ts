@@ -163,7 +163,7 @@ export class ManualCreateAccountActions {
   }
 
   /**
-   * Confirms the Manual Account Creation Trnsfer In landing page is visible.
+   * Confirms the Manual Account Creation Transfer In landing page is visible.
    *
    * @param expectedHeader Optional header text to assert.
    */

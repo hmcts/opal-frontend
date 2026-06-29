@@ -211,6 +211,7 @@
         (addEnforcementOverride)="navigateToAddEnforcementOverridePage()"
         (changeEnforcementOverride)="navigateToChangeEnforcementOverridePage()"
         (removeEnforcementOverride)="navigateToRemoveEnforcementOverridePage()"
+        (removeEnforcementHold)="navigateToRemoveEnforcementHoldPage()"
         (changeEnforcementCourt)="navigateToChangeEnforcementCourtPage()"
         (changeCollectionOrder)="navigateToChangeCollectionOrderPage($event)"
       ></app-fines-acc-defendant-details-enforcement-tab>
@@ -225,6 +226,10 @@
     }
   }
   @case ('history-and-notes') {
-    <div class="govuk-grid-column-full"></div>
+    <app-fines-acc-defendant-details-history-and-notes-tab
+      [accountId]="accountId"
+      [tabData$]="tabHistoryAndNotes$"
+      [style]="tabContentStyles"
+    ></app-fines-acc-defendant-details-history-and-notes-tab>
   }
 }

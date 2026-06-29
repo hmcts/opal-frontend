@@ -7,18 +7,18 @@ Feature: Fines primary navigation
     Given I am logged in on the Fines Search landing page with email "opal-test@dev.platform.hmcts.net"
     Then I see the Fines primary navigation with Search selected by default
 
-  @FeatureFlag @JIRA-STORY:PO-3720 @JIRA-EPIC:PO-3685 @R1B
+  @JIRA-STORY:PO-3720 @JIRA-EPIC:PO-3685 @R1B @JIRA-TEST-KEY:PO-8357
   Scenario: Search is shown as the landing page after login when release 1b is enabled
     Given I am authenticated with email "opal-test@dev.platform.hmcts.net"
     Then I see the Fines primary navigation with Search selected by default
     When I open Search for an Account
 
-  @FeatureFlag @JIRA-STORY:PO-3720 @JIRA-EPIC:PO-3685 @R1BOff
+  @JIRA-STORY:PO-3720 @JIRA-EPIC:PO-3685 @R1BOff @FeatureFlag @JIRA-TEST-KEY:PO-8023
   Scenario: Search is hidden as the landing page after login when release 1b is disabled
     Given I am authenticated with email "opal-test@dev.platform.hmcts.net"
     Then I should not see the Fines primary navigation item "Search"
 
-  @JIRA-STORY:PO-2611
+  @JIRA-STORY:PO-2611 @R1B
   Scenario Outline: AC4a AC4b AC4c - Selecting a top-level Fines area updates the active navigation item - <menuItem>
     Given I am logged in on the Fines Search landing page with email "opal-test@dev.platform.hmcts.net"
     When I select the Fines primary navigation item "<menuItem>"
@@ -46,7 +46,7 @@ Feature: Fines primary navigation
       | Administration |
 
   @JIRA-EPIC:PO-2627
-  @JIRA-STORY:PO-2611 @JIRA-TEST-KEY:PO-5411
+  @JIRA-STORY:PO-2611 @JIRA-TEST-KEY:PO-5411 @R1B
   Scenario: AC5a - Signing out from the Fines primary navigation returns the user to sign in
     Given I am logged in on the Fines Search landing page with email "opal-test@dev.platform.hmcts.net"
     When I sign out from the Fines primary navigation

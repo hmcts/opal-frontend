@@ -23,6 +23,8 @@ type RequestPayloadEntry = {
   direction?: 'request' | 'response';
 };
 
+type EvidenceErrorSource = 'draft-detail' | 'pod-log';
+
 type AccountCreated = {
   source: SourceField;
   scenario: string;
@@ -35,6 +37,9 @@ type AccountCreated = {
   accountId: number;
   accountNumber?: string;
   imposingCourtId?: string;
+  errorCode?: string;
+  errorSummary?: string;
+  errorSource?: EvidenceErrorSource;
   createdAt: string;
   updatedAt?: string;
   requestPayloads?: RequestPayloadEntry[];
@@ -88,6 +93,187 @@ let cachedRunMeta: RunMeta | null = null;
  * @returns Value from process.env, if defined.
  */
 const readEnv = (key: string): string | undefined => process.env[key];
+
+const LOG_TIMESTAMP_PATTERN = /^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}/;
+const LOG_THREAD_PATTERN = /\[([^\]]+)\]/;
+
+type PodLogPublishError = {
+  errorCode?: string;
+  errorSummary: string;
+  errorSource: EvidenceErrorSource;
+};
+
+/**
+ * @description Collapse arbitrary text into a single, trimmed line for evidence output.
+ * Used for XML-derived error codes/messages so persisted artifacts remain readable and
+ * comparable across environments/log formats.
+ * @param value - Raw text candidate from a pod log or parsed response fragment.
+ * @returns Normalized single-line string, or undefined when the value is not usable text.
+ * @example normalizeSingleLineText('  Enforcement court\\n not found  ');
+ */
+function normalizeSingleLineText(value: unknown): string | undefined {
+  if (typeof value !== 'string') return undefined;
+  const trimmed = value.replace(/\s+/g, ' ').trim();
+  return trimmed || undefined;
+}
+
+/**
+ * @description Resolve optional fines-service pod-log paths used to enrich account evidence
+ * with exact legacy publish errors after the Cypress run completes.
+ * Accepted env vars, in precedence order, are:
+ * - ACCOUNT_CAPTURE_LEGACY_POD_LOG_PATHS
+ * - ACCOUNT_CAPTURE_POD_LOG_PATHS
+ * - LEGACY_POD_LOG_PATHS
+ * Values may be provided as a JSON string array or as comma/newline-delimited paths.
+ * @returns De-duplicated absolute/relative log paths to inspect.
+ * @example resolveLegacyPodLogPaths();
+ */
+function resolveLegacyPodLogPaths(): string[] {
+  const raw =
+    readEnv('ACCOUNT_CAPTURE_LEGACY_POD_LOG_PATHS') ||
+    readEnv('ACCOUNT_CAPTURE_POD_LOG_PATHS') ||
+    readEnv('LEGACY_POD_LOG_PATHS') ||
+    '';
+  if (!raw.trim()) return [];
+
+  try {
+    const parsed = JSON.parse(raw) as unknown;
+    if (Array.isArray(parsed)) {
+      return Array.from(
+        new Set(
+          parsed
+            .filter((value): value is string => typeof value === 'string')
+            .map((value) => value.trim())
+            .filter(Boolean),
+        ),
+      );
+    }
+  } catch {
+    // Fall back to plain delimited parsing when the env var is not JSON.
+  }
+
+  return Array.from(
+    new Set(
+      raw
+        .split(/[\n,]/)
+        .map((value) => value.trim())
+        .filter(Boolean),
+    ),
+  );
+}
+
+/**
+ * @description Parse fines-service pod logs for legacy publish failures and correlate them
+ * back to draft account ids. Correlation is thread-local:
+ * 1. remember "Updating draft account with ID ... PUBLISHING_PENDING"
+ * 2. watch for the later "Legacy Gateway: entity:" XML block on the same thread
+ * 3. extract <error_code> / <error_message> and store them against that draft id
+ * @param content - Full plain-text fines-service log contents.
+ * @returns Map keyed by draft account id containing exact legacy publish error details.
+ * @example parseLegacyPodLogPublishErrors(logContents);
+ */
+function parseLegacyPodLogPublishErrors(content: string): Map<number, PodLogPublishError> {
+  const accountByThread = new Map<string, number>();
+  const errorsByAccountId = new Map<number, PodLogPublishError>();
+  const lines = content.split(/\r?\n/);
+
+  for (let index = 0; index < lines.length; index += 1) {
+    const line = lines[index];
+    const thread = line.match(LOG_THREAD_PATTERN)?.[1];
+    if (!thread) continue;
+
+    const accountMatch = line.match(/Updating draft account with ID:\s*(\d+)\s+and status:\s*PUBLISHING_PENDING/i);
+    if (accountMatch) {
+      accountByThread.set(thread, Number(accountMatch[1]));
+      continue;
+    }
+
+    if (!/Legacy Gateway: entity:/i.test(line)) {
+      continue;
+    }
+
+    const accountId = accountByThread.get(thread);
+    if (!accountId) {
+      continue;
+    }
+
+    let xml = '';
+    let cursor = index + 1;
+    while (cursor < lines.length && !LOG_TIMESTAMP_PATTERN.test(lines[cursor])) {
+      xml += `${lines[cursor]}\n`;
+      cursor += 1;
+    }
+
+    const errorCode = normalizeSingleLineText(xml.match(/<error_code>([^<]+)<\/error_code>/i)?.[1]);
+    const errorMessage = normalizeSingleLineText(xml.match(/<error_message>([^<]+)<\/error_message>/i)?.[1]);
+    if (errorMessage) {
+      errorsByAccountId.set(accountId, {
+        errorCode,
+        errorSummary: errorCode ? `${errorCode} ${errorMessage}` : errorMessage,
+        errorSource: 'pod-log',
+      });
+    }
+
+    index = cursor - 1;
+  }
+
+  return errorsByAccountId;
+}
+
+/**
+ * @description Merge exact legacy publish errors from optional fines-service pod logs into the
+ * run-level account artifact. When available, pod-log metadata takes precedence over the softer
+ * draft-detail-derived summary because it carries the canonical legacy gateway error code/message.
+ * If no configured log files are present, the artifact is returned unchanged.
+ * @param artifact - Current run-level account evidence artifact.
+ * @returns Artifact enriched with pod-log-derived errorCode/errorSummary/errorSource fields.
+ * @example const enriched = await enrichArtifactWithLegacyPodErrors(artifact);
+ */
+async function enrichArtifactWithLegacyPodErrors(artifact: AccountArtifact): Promise<AccountArtifact> {
+  const logPaths = resolveLegacyPodLogPaths();
+  if (!logPaths.length || !artifact.accounts.created.length) {
+    return artifact;
+  }
+
+  const mergedErrors = new Map<number, PodLogPublishError>();
+  for (const logPath of logPaths) {
+    try {
+      const stat = await fs.stat(logPath);
+      if (!stat.isFile()) continue;
+      const content = await fs.readFile(logPath, 'utf8');
+      const parsedErrors = parseLegacyPodLogPublishErrors(content);
+      parsedErrors.forEach((value, accountId) => {
+        mergedErrors.set(accountId, value);
+      });
+    } catch (err: any) {
+      if (err?.code !== 'ENOENT') {
+        // eslint-disable-next-line no-console
+        console.error(`Unable to enrich account evidence from pod log "${logPath}":`, err);
+      }
+    }
+  }
+
+  if (!mergedErrors.size) {
+    return artifact;
+  }
+
+  return {
+    ...artifact,
+    accounts: {
+      ...artifact.accounts,
+      created: artifact.accounts.created.map((entry) => {
+        const podError = mergedErrors.get(entry.accountId);
+        if (!podError) return entry;
+        return {
+          ...entry,
+          errorCode: podError.errorCode ?? entry.errorCode,
+          errorSummary: podError.errorSummary,
+          errorSource: podError.errorSource,
+        };
+      }),
+    },
+  };
+}
 
 /**
  * @description Determine whether evidence capture is enabled (legacy mode only).
@@ -560,6 +746,34 @@ async function upsertScenarioArtifact(
 }
 
 /**
+ * @description Rebuild scenario-scoped evidence JSON files from the current run-level artifact.
+ * This is used after post-run enrichment so scenario artifacts inherit the same merged metadata
+ * (for example pod-log-derived errorCode/errorSummary values) as created-accounts.json.
+ * @param artifact - Run-level account artifact to fan back out into scenario files.
+ * @returns Promise that resolves once all relevant scenario artifacts are rewritten.
+ * @example await rebuildScenarioArtifacts(artifact);
+ */
+async function rebuildScenarioArtifacts(artifact: AccountArtifact): Promise<void> {
+  const allEntries = [...artifact.accounts.created, ...artifact.accounts.failed];
+  const seen = new Set<string>();
+
+  for (const entry of allEntries) {
+    const scenario = entry.scenario?.trim();
+    if (!scenario) continue;
+    const key = [scenario, entry.scenarioStartedAt ?? '', entry.featurePath ?? ''].join('::');
+    if (seen.has(key)) continue;
+    seen.add(key);
+    await upsertScenarioArtifact(
+      artifact,
+      scenario,
+      entry.featurePath,
+      entry.scenarioStartedAt,
+      entry.scenarioFinishedAt,
+    );
+  }
+}
+
+/**
  * @description Persist the artifact to disk (ensuring directories exist).
  * @param artifact - Artifact to write.
  * @returns Persisted artifact payload.
@@ -651,6 +865,9 @@ async function appendEntry(kind: 'created' | 'failed', entry: AccountCreated | A
           status: incoming.status || existing.status,
           accountNumber: incoming.accountNumber ?? existing.accountNumber,
           imposingCourtId: incoming.imposingCourtId ?? existing.imposingCourtId,
+          errorCode: incoming.errorCode ?? existing.errorCode,
+          errorSummary: incoming.errorSummary ?? existing.errorSummary,
+          errorSource: incoming.errorSource ?? existing.errorSource,
           createdAt: existing.createdAt || incoming.createdAt,
           updatedAt: incoming.updatedAt ?? existing.updatedAt,
           scenario: existing.scenario || incoming.scenario,
@@ -776,8 +993,10 @@ async function flushArtifacts(): Promise<AccountArtifact> {
       runMeta: cachedRunMeta ?? artifact.runMeta ?? buildRunMeta(),
       accounts: artifact.accounts,
     };
-    await writeArtifact(next);
-    return next;
+    const enriched = await enrichArtifactWithLegacyPodErrors(next);
+    await writeArtifact(enriched);
+    await rebuildScenarioArtifacts(enriched);
+    return enriched;
   });
 }
 
