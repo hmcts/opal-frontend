@@ -537,6 +537,7 @@ void runDemoLegacyStage(Map<String, Object> stageConfig, Closure runCommand) {
       }
       archiveArtifact("${functionalOutputRoot}/screenshots/${browserToRun}/**")
       archiveArtifact("${functionalOutputRoot}/prod/${browserToRun}/${outputDirName}/**")
+      archiveZephyrReports("${functionalOutputRoot}/prod/${browserToRun}/${outputDirName}")
       publishHtmlReport(
         "${functionalOutputRoot}/prod/${browserToRun}/${outputDirName}/cucumber/",
         "${reportFilePrefix}-report.html",

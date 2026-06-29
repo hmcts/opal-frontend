@@ -677,7 +677,7 @@ describe('transformHistoryAndNotesDetails', () => {
       {
         type: 'Financial',
         details: {
-          associatedRecordType: 'defendantaccount',
+          associatedRecordType: 'defendantAccount',
           transactionType: {
             transactionType: FINES_ACC_HISTORY_AND_NOTES_DETAILS_TRANSACTION_TYPES.writeOff,
           },
@@ -701,7 +701,7 @@ describe('transformHistoryAndNotesDetails', () => {
         type: 'Financial',
         details: {
           accountNumber: '2500000BV',
-          associatedRecordType: 'defendantaccount',
+          associatedRecordType: 'defendantAccount',
           transactionType: {
             transactionType: FINES_ACC_HISTORY_AND_NOTES_DETAILS_TRANSACTION_TYPES.writeOff,
           },

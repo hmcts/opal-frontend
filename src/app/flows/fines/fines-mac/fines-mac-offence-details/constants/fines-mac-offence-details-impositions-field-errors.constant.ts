@@ -35,6 +35,10 @@ export const FINES_MAC_OFFENCE_DETAILS_IMPOSITIONS_FIELD_ERRORS = (index: number
     [`fm_offence_details_amount_paid${indexSuffix}`]: {
       invalidAmountValue: {
         message: 'Enter a valid amount',
+        priority: 1,
+      },
+      invalidNegativeAmount: {
+        message: 'Amount cannot be a negative value',
         priority: 2,
       },
       invalidAmount: {

@@ -196,6 +196,7 @@ describe('FinesMacDeleteAccountConfirmation - Checker Delete account', () => {
     {
       tags: [
         ...buildTags('@JIRA-DEFECT:PO-2801'),
+        '@JIRA-STORY:PO-597',
         '@JIRA-EPIC:PO-2220',
         '@JIRA-LABEL:manual-account-creation',
         '@JIRA-TEST-KEY:PO-4966',
@@ -219,6 +220,7 @@ describe('FinesMacDeleteAccountConfirmation - Checker Delete account', () => {
     {
       tags: [
         ...buildTags('@JIRA-DEFECT:PO-2801'),
+        '@JIRA-STORY:PO-597',
         '@JIRA-EPIC:PO-2220',
         '@JIRA-LABEL:manual-account-creation',
         '@JIRA-TEST-KEY:PO-4967',

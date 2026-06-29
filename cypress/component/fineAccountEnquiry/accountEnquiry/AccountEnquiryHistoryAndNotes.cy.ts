@@ -36,7 +36,7 @@ describe('Account Enquiry History and notes', () => {
 
   it(
     'AC2a. will render the history and notes tab shell with the current filter controls',
-    { tags: [...buildTags('@JIRA-STORY:2633', '@JIRA-EPIC:2621')] },
+    { tags: [...buildTags('@JIRA-STORY:PO-2633', '@JIRA-EPIC:PO-2621'), '@JIRA-TEST-KEY:PO-8303'] },
     () => {
       setupHistoryAndNotesScreen(structuredClone(DEFENDANT_HEADER_MOCK));
 
@@ -63,16 +63,16 @@ describe('Account Enquiry History and notes', () => {
 
   it(
     'AC2a. should send an initial unfiltered history request when the history and notes tab loads',
-    { tags: [...buildTags('@JIRA-STORY:2633', '@JIRA-EPIC:2621')] },
+    { tags: [...buildTags('@JIRA-STORY:PO-2633', '@JIRA-EPIC:PO-2621'), '@JIRA-TEST-KEY:PO-8304'] },
     () => {
       setupHistoryAndNotesScreen(structuredClone(DEFENDANT_HEADER_MOCK));
 
       cy.wait('@getHistoryAndNotes').then(({ request, response }) => {
         expect(request.method).to.equal('GET');
         expect(request.url).to.contain('/defendant-accounts/77/history');
-        expect(request.query.dateFrom).to.be.undefined;
-        expect(request.query.dateTo).to.be.undefined;
-        expect(request.query.itemTypes).to.be.undefined;
+        expect(request.query['dateFrom']).to.be.undefined;
+        expect(request.query['dateTo']).to.be.undefined;
+        expect(request.query['itemTypes']).to.be.undefined;
 
         expect(response?.statusCode).to.equal(200);
         expect(response?.body).to.deep.equal(OPAL_FINES_ACCOUNT_DEFENDANT_DETAILS_HISTORY_AND_NOTES_TAB_REF_DATA_MOCK);
@@ -82,7 +82,7 @@ describe('Account Enquiry History and notes', () => {
 
   it(
     'AC2b. should send dateFrom and dateTo query params when both dates are entered and Filter is selected',
-    { tags: [...buildTags('@JIRA-STORY:2633', '@JIRA-EPIC:2621')] },
+    { tags: [...buildTags('@JIRA-STORY:PO-2633', '@JIRA-EPIC:PO-2621'), '@JIRA-TEST-KEY:PO-8305'] },
     () => {
       setupHistoryAndNotesScreen(structuredClone(DEFENDANT_HEADER_MOCK));
 
@@ -96,9 +96,9 @@ describe('Account Enquiry History and notes', () => {
       cy.wait('@getHistoryAndNotes').then(({ request, response }) => {
         expect(request.method).to.equal('GET');
         expect(request.url).to.contain('/defendant-accounts/77/history');
-        expect(request.query.dateFrom).to.equal('2024-01-01');
-        expect(request.query.dateTo).to.equal('2024-01-31');
-        expect(request.query.itemTypes).to.be.undefined;
+        expect(request.query['dateFrom']).to.equal('2024-01-01');
+        expect(request.query['dateTo']).to.equal('2024-01-31');
+        expect(request.query['itemTypes']).to.be.undefined;
 
         expect(response?.statusCode).to.equal(200);
         expect(response?.body).to.deep.equal(OPAL_FINES_ACCOUNT_DEFENDANT_DETAILS_HISTORY_AND_NOTES_TAB_REF_DATA_MOCK);
@@ -108,7 +108,7 @@ describe('Account Enquiry History and notes', () => {
 
   it(
     'AC2b. should omit dateTo when Date to is left blank and Filter is selected',
-    { tags: [...buildTags('@JIRA-STORY:2633', '@JIRA-EPIC:2621')] },
+    { tags: [...buildTags('@JIRA-STORY:PO-2633', '@JIRA-EPIC:PO-2621'), '@JIRA-TEST-KEY:PO-8306'] },
     () => {
       setupHistoryAndNotesScreen(structuredClone(DEFENDANT_HEADER_MOCK));
 
@@ -122,9 +122,9 @@ describe('Account Enquiry History and notes', () => {
       cy.wait('@getHistoryAndNotes').then(({ request, response }) => {
         expect(request.method).to.equal('GET');
         expect(request.url).to.contain('/defendant-accounts/77/history');
-        expect(request.query.dateFrom).to.equal('2024-01-01');
-        expect(request.query.dateTo).to.be.undefined;
-        expect(request.query.itemTypes).to.be.undefined;
+        expect(request.query['dateFrom']).to.equal('2024-01-01');
+        expect(request.query['dateTo']).to.be.undefined;
+        expect(request.query['itemTypes']).to.be.undefined;
 
         expect(response?.statusCode).to.equal(200);
         expect(response?.body).to.deep.equal(OPAL_FINES_ACCOUNT_DEFENDANT_DETAILS_HISTORY_AND_NOTES_TAB_REF_DATA_MOCK);
@@ -134,7 +134,7 @@ describe('Account Enquiry History and notes', () => {
 
   it(
     'AC2b. should omit dateFrom when Date to is left blank and Filter is selected',
-    { tags: [...buildTags('@JIRA-STORY:2633', '@JIRA-EPIC:2621')] },
+    { tags: [...buildTags('@JIRA-STORY:PO-2633', '@JIRA-EPIC:PO-2621'), '@JIRA-TEST-KEY:PO-8307'] },
     () => {
       setupHistoryAndNotesScreen(structuredClone(DEFENDANT_HEADER_MOCK));
 
@@ -148,9 +148,9 @@ describe('Account Enquiry History and notes', () => {
       cy.wait('@getHistoryAndNotes').then(({ request, response }) => {
         expect(request.method).to.equal('GET');
         expect(request.url).to.contain('/defendant-accounts/77/history');
-        expect(request.query.dateFrom).to.be.undefined;
-        expect(request.query.dateTo).to.equal('2024-01-01');
-        expect(request.query.itemTypes).to.be.undefined;
+        expect(request.query['dateFrom']).to.be.undefined;
+        expect(request.query['dateTo']).to.equal('2024-01-01');
+        expect(request.query['itemTypes']).to.be.undefined;
 
         expect(response?.statusCode).to.equal(200);
         expect(response?.body).to.deep.equal(OPAL_FINES_ACCOUNT_DEFENDANT_DETAILS_HISTORY_AND_NOTES_TAB_REF_DATA_MOCK);
@@ -160,7 +160,7 @@ describe('Account Enquiry History and notes', () => {
 
   it(
     'AC2b. should show an error and not send a filtered request when Date from is later than Date to',
-    { tags: [...buildTags('@JIRA-STORY:2633', '@JIRA-EPIC:2621')] },
+    { tags: [...buildTags('@JIRA-STORY:PO-2633', '@JIRA-EPIC:PO-2621'), '@JIRA-TEST-KEY:PO-8308'] },
     () => {
       setupHistoryAndNotesScreen(structuredClone(DEFENDANT_HEADER_MOCK));
 
@@ -185,7 +185,7 @@ describe('Account Enquiry History and notes', () => {
 
   it(
     'AC2c. should send itemTypes when a single category is selected and Filter is selected',
-    { tags: [...buildTags('@JIRA-STORY:2633', '@JIRA-EPIC:2621')] },
+    { tags: [...buildTags('@JIRA-STORY:PO-2633', '@JIRA-EPIC:PO-2621'), '@JIRA-TEST-KEY:PO-8309'] },
     () => {
       setupHistoryAndNotesScreen(structuredClone(DEFENDANT_HEADER_MOCK));
 
@@ -198,9 +198,9 @@ describe('Account Enquiry History and notes', () => {
       cy.wait('@getHistoryAndNotes').then(({ request, response }) => {
         expect(request.method).to.equal('GET');
         expect(request.url).to.contain('/defendant-accounts/77/history');
-        expect(request.query.dateFrom).to.be.undefined;
-        expect(request.query.dateTo).to.be.undefined;
-        expect(request.query.itemTypes).to.equal('amendment');
+        expect(request.query['dateFrom']).to.be.undefined;
+        expect(request.query['dateTo']).to.be.undefined;
+        expect(request.query['itemTypes']).to.equal('amendment');
 
         expect(response?.statusCode).to.equal(200);
         expect(response?.body).to.deep.equal(OPAL_FINES_ACCOUNT_DEFENDANT_DETAILS_HISTORY_AND_NOTES_TAB_REF_DATA_MOCK);
@@ -210,7 +210,7 @@ describe('Account Enquiry History and notes', () => {
 
   it(
     'AC2c. should send a comma-separated itemTypes list when all categories are selected and Filter is selected',
-    { tags: [...buildTags('@JIRA-STORY:2633', '@JIRA-EPIC:2621')] },
+    { tags: [...buildTags('@JIRA-STORY:PO-2633', '@JIRA-EPIC:PO-2621'), '@JIRA-TEST-KEY:PO-8310'] },
     () => {
       setupHistoryAndNotesScreen(structuredClone(DEFENDANT_HEADER_MOCK));
 
@@ -227,9 +227,9 @@ describe('Account Enquiry History and notes', () => {
       cy.wait('@getHistoryAndNotes').then(({ request, response }) => {
         expect(request.method).to.equal('GET');
         expect(request.url).to.contain('/defendant-accounts/77/history');
-        expect(request.query.dateFrom).to.be.undefined;
-        expect(request.query.dateTo).to.be.undefined;
-        expect(request.query.itemTypes).to.equal('amendment,enforcement,financial,note,paymentTerm');
+        expect(request.query['dateFrom']).to.be.undefined;
+        expect(request.query['dateTo']).to.be.undefined;
+        expect(request.query['itemTypes']).to.equal('amendment,enforcement,financial,note,paymentTerm');
 
         expect(response?.statusCode).to.equal(200);
         expect(response?.body).to.deep.equal(OPAL_FINES_ACCOUNT_DEFENDANT_DETAILS_HISTORY_AND_NOTES_TAB_REF_DATA_MOCK);
@@ -239,7 +239,7 @@ describe('Account Enquiry History and notes', () => {
 
   it(
     'AC2d. should not send a filtered request when filter values are changed without selecting Filter',
-    { tags: [...buildTags('@JIRA-STORY:2633', '@JIRA-EPIC:2621')] },
+    { tags: [...buildTags('@JIRA-STORY:PO-2633', '@JIRA-EPIC:PO-2621'), '@JIRA-TEST-KEY:PO-8311'] },
     () => {
       setupHistoryAndNotesScreen(structuredClone(DEFENDANT_HEADER_MOCK));
 

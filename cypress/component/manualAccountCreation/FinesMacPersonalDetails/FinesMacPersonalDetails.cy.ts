@@ -615,7 +615,6 @@ describe('FinesMacPersonalDetailsComponent', () => {
           '@JIRA-STORY:PO-3415',
           '@JIRA-LABEL:populate-and-submit',
         ),
-        '@JIRA-KEY:POT-7337',
         '@JIRA-TEST-KEY:PO-3995',
       ],
     },
