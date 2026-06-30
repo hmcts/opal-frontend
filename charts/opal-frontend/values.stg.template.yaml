@@ -59,7 +59,8 @@ opal-fines-service:
       FLYWAY_LOCATIONS: classpath:db/migration/ddl, classpath:db/migration/data/allEnvs, classpath:db/migration/data/nle, classpath:db/migration/data/stg
       FEATURES_APP_INSIGHTS_ENABLED: false
       LAUNCH_DARKLY_ENABLED: true
-      OPAL_REDIS_ENABLED: false
+      OPAL_REDIS_ENABLED: true
+      REDIS_CONNECTION_STRING: redis://${SERVICE_NAME}-hmcts-redis-master:6379
 
 postgresql:
   enabled: true

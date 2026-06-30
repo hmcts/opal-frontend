@@ -10,6 +10,7 @@ import {
   interceptEnforcementStatus,
   interceptPaymentTerms,
   interceptImpositions,
+  interceptHistoryAndNotes,
 } from './intercept/defendantAccountIntercepts';
 import {
   interceptAuthenticatedUser,
@@ -21,6 +22,7 @@ import { USER_STATE_MOCK_PERMISSION_BU77 } from '../../CommonIntercepts/CommonUs
 import { OPAL_FINES_ACCOUNT_DEFENDANT_DETAILS_PAYMENT_TERMS_LATEST_MOCK } from '@services/fines/opal-fines-service/mocks/opal-fines-account-defendant-details-payment-terms-latest.mock';
 import { OPAL_FINES_ACCOUNT_DEFENDANT_DETAILS_ENFORCEMENT_TAB_REF_DATA_MOCK } from '@services/fines/opal-fines-service/mocks/opal-fines-account-defendant-details-enforcement-tab-ref-data.mock';
 import { OPAL_FINES_ACCOUNT_DEFENDANT_DETAILS_IMPOSITIONS_TAB_REF_DATA_MOCK } from '@services/fines/opal-fines-service/mocks/opal-fines-account-defendant-details-impositions.mock';
+import { OPAL_FINES_ACCOUNT_DEFENDANT_DETAILS_HISTORY_AND_NOTES_TAB_REF_DATA_MOCK } from '@services/fines/opal-fines-service/mocks/opal-fines-account-defendant-details-history-and-notes-tab-ref-data.mock';
 
 const ACCOUNT_ENQUIRY_JIRA_LABEL = '@JIRA-LABEL:account-enquiry';
 
@@ -64,6 +66,7 @@ describe('Global Version Control Mechanism - Component Tests', () => {
       interceptResultByCode('REM');
       interceptEnforcementStatus(77, OPAL_FINES_ACCOUNT_DEFENDANT_DETAILS_ENFORCEMENT_TAB_REF_DATA_MOCK, etag);
       interceptImpositions(77, OPAL_FINES_ACCOUNT_DEFENDANT_DETAILS_IMPOSITIONS_TAB_REF_DATA_MOCK, etag);
+      interceptHistoryAndNotes(77, OPAL_FINES_ACCOUNT_DEFENDANT_DETAILS_HISTORY_AND_NOTES_TAB_REF_DATA_MOCK, etag);
 
       setupAccountEnquiryComponent(componentProperties);
 
@@ -112,6 +115,7 @@ describe('Global Version Control Mechanism - Component Tests', () => {
       interceptResultByCode('REM');
       interceptEnforcementStatus(77, OPAL_FINES_ACCOUNT_DEFENDANT_DETAILS_ENFORCEMENT_TAB_REF_DATA_MOCK, '123');
       interceptImpositions(77, OPAL_FINES_ACCOUNT_DEFENDANT_DETAILS_IMPOSITIONS_TAB_REF_DATA_MOCK, impositionsEtag);
+      interceptHistoryAndNotes(77, OPAL_FINES_ACCOUNT_DEFENDANT_DETAILS_HISTORY_AND_NOTES_TAB_REF_DATA_MOCK, '123');
 
       setupAccountEnquiryComponent(componentProperties);
 

@@ -79,7 +79,7 @@ const assertRemoveParentGuardianScreen = (expectedIdentifier: string) => {
 describe('Account Enquiry Remove Parent or Guardian', () => {
   it(
     'AC1a, AC1b. should display the remove screen title and individual account identifier',
-    { tags: buildTags(STORY_TAG, EPIC_TAG) },
+    { tags: [...buildTags(STORY_TAG, EPIC_TAG), '@JIRA-TEST-KEY:PO-6337'] },
     () => {
       mountRemoveParentGuardianComponent(REMOVE_PARENT_GUARDIAN_INDIVIDUAL_PARTY_NAME);
 
@@ -89,7 +89,7 @@ describe('Account Enquiry Remove Parent or Guardian', () => {
 
   it(
     'AC1b. should display the company account identifier in the correct format',
-    { tags: buildTags(STORY_TAG, EPIC_TAG) },
+    { tags: [...buildTags(STORY_TAG, EPIC_TAG), '@JIRA-TEST-KEY:PO-6338'] },
     () => {
       mountRemoveParentGuardianComponent(REMOVE_PARENT_GUARDIAN_COMPANY_PARTY_NAME);
 
