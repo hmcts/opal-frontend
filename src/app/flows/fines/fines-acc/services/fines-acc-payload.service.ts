@@ -55,7 +55,6 @@ import {
   THistoryDetailsRawItem as TFinesAccHistoryAndNotesRawItem,
 } from '@hmcts/opal-frontend-common/services/history-transformation-service';
 import { FINES_ACC_HISTORY_AND_NOTES_DETAILS_TRANSFORMATION_CONFIG } from './constants/fines-acc-history-and-notes-details-transformation-config.constant';
-import { DateService } from '@hmcts/opal-frontend-common/services/date-service';
 
 @Injectable({
   providedIn: 'root',
@@ -66,38 +65,6 @@ export class FinesAccPayloadService {
   private readonly globalStore = inject(GlobalStore);
   private readonly finesAccStore = inject(FinesAccountStore);
   private readonly historyDetailsTransformationService = inject(HistoryTransformationService);
-  private readonly dateService = inject(DateService);
-
-  /**
-   * Converts a submitted history filter date into a UTC RFC3339 timestamp.
-   *
-   * @param value - The submitted date in dd/MM/yyyy format.
-   * @param endOfDay - Whether to return the end of the selected day.
-   * @returns The UTC RFC3339 timestamp, or undefined when the date is not parseable.
-   */
-  private toHistoryFilterTimestamp(value: string | undefined, endOfDay = false): string | undefined {
-    if (!value) {
-      return undefined;
-    }
-
-    const date = this.dateService.getDateFromFormat(value, 'dd/MM/yyyy');
-
-    if (!date) {
-      return undefined;
-    }
-
-    return new Date(
-      Date.UTC(
-        date.getFullYear(),
-        date.getMonth(),
-        date.getDate(),
-        endOfDay ? 23 : 0,
-        endOfDay ? 59 : 0,
-        endOfDay ? 59 : 0,
-        endOfDay ? 999 : 0,
-      ),
-    ).toISOString();
-  }
 
   /**
    * Constructs the payload for adding a note.
@@ -144,15 +111,10 @@ export class FinesAccPayloadService {
   public buildMinorCreditorHistoryFilterPayload(
     form: IFinesAccMinorCreditorDetailsHistoryAndNotesFilterForm,
   ): IOpalFinesMinorCreditorAccountHistoryParams {
-    const payload = buildMinorCreditorHistoryFilterPayload(form);
-    const dateFrom = this.toHistoryFilterTimestamp(payload.dateFrom);
-    const dateTo = this.toHistoryFilterTimestamp(payload.dateTo, true);
-
-    return {
-      ...(dateFrom ? { dateFrom } : {}),
-      ...(dateTo ? { dateTo } : {}),
-      ...(payload.itemTypes ? { itemTypes: payload.itemTypes } : {}),
-    };
+    return this.transformPayload(
+      buildMinorCreditorHistoryFilterPayload(form),
+      FINES_ACC_BUILD_TRANSFORM_ITEMS_CONFIG,
+    ) as IOpalFinesMinorCreditorAccountHistoryParams;
   }
 
   /**

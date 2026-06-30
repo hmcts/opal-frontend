@@ -25,10 +25,9 @@ describe('FinesAccMinorCreditorDetailsHistoryAndNotesTabComponent', () => {
   let mockPayloadService: any;
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   let mockAccountStore: any;
-  const baseHistoryItems =
-    OPAL_FINES_ACCOUNT_MINOR_CREDITOR_DETAILS_HISTORY_AND_NOTES_TAB_REF_DATA_MOCK[
-      'history_items'
-    ] as TFinesAccHistoryAndNotesRawItem[];
+  const baseHistoryItems = OPAL_FINES_ACCOUNT_MINOR_CREDITOR_DETAILS_HISTORY_AND_NOTES_TAB_REF_DATA_MOCK[
+    'history_items'
+  ] as TFinesAccHistoryAndNotesRawItem[];
   const transformedBaseTabData = {
     ...OPAL_FINES_ACCOUNT_MINOR_CREDITOR_DETAILS_HISTORY_AND_NOTES_TAB_REF_DATA_MOCK,
     history_items: baseHistoryItems.map((item) => ({
