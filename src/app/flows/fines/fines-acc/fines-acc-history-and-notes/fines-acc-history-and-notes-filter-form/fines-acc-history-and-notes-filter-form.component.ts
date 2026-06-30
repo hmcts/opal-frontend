@@ -35,11 +35,7 @@ import { IFinesAccHistoryAndNotesFilterFormControls } from '../interfaces/fines-
 import { IFinesAccHistoryAndNotesFilterForm } from '../interfaces/fines-acc-history-and-notes-filter-form.interface';
 import { IFinesAccHistoryAndNotesFilterSummaryText } from '../interfaces/fines-acc-history-and-notes-filter-summary-text.interface';
 
-type TFinesAccHistoryAndNotesFilterFormValue = {
-  dateFrom?: string | null;
-  dateTo?: string | null;
-  categories?: Record<string, boolean>;
-};
+type TFinesAccHistoryAndNotesFilterFormValue = FormGroup<IFinesAccHistoryAndNotesFilterFormControls>['value'];
 
 @Component({
   selector: 'app-fines-acc-history-and-notes-filter-form',

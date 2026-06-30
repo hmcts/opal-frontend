@@ -175,6 +175,34 @@ describe('transformMinorCreditorTransactionDetails', () => {
     });
   });
 
+  it('should transform cheque details with nested creditor transaction status', () => {
+    const result = transformMinorCreditorTransactionDetails({
+      details: {
+        transaction_type: 'CHEQUE',
+        payment_reference: 'CHQ123',
+        status: {
+          creditorTransactionStatus: 'X',
+          creditorTransactionStatusDisplayName: 'Cancelled',
+        },
+        status_date: '2024-01-31',
+      },
+    });
+
+    expect(result).toEqual({
+      line1: [
+        { fragments: [{ text: 'Cheque issued', bold: false, hyphen: false }] },
+        {
+          fragments: [
+            { text: 'Cheque number:', bold: false, hyphen: false },
+            { text: 'CHQ123', bold: false, hyphen: false },
+          ],
+        },
+        { fragments: [{ text: 'Cheque cancelled 31/01/2024', bold: false, hyphen: false }] },
+      ],
+      line2: null,
+    });
+  });
+
   it('should transform repayment details with creditor account number', () => {
     const result = transformMinorCreditorTransactionDetails({
       details: {

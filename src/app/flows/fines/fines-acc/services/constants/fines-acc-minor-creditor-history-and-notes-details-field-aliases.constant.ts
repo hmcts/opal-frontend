@@ -29,7 +29,7 @@ export const FINES_ACC_MINOR_CREDITOR_HISTORY_AND_NOTES_DETAILS_FIELD_ALIASES = 
   noteText: ['details.noteText', 'details.note_text'],
   oldValue: ['details.oldValue', 'details.old_value'],
   paymentReference: ['details.paymentReference', 'details.payment_reference'],
-  status: ['details.status', 'details.status.creditorTransactionStatus'],
+  status: ['details.status.creditorTransactionStatus', 'details.status'],
   statusDate: ['details.status_date', 'details.statusDate'],
   transactionAmount: ['details.transaction_amount', 'details.transactionAmount'],
   transactionDescription: [

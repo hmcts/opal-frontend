@@ -112,6 +112,7 @@ describe('FinesAccMinorCreditorDetailsHistoryAndNotesTabComponent', () => {
     const emitted: unknown[] = [];
 
     fixture.detectChanges();
+    component.historyAndNotesTabData$.subscribe();
     component.tabData$ = of(refreshedTabData);
     component.ngOnChanges({
       tabData$: new SimpleChange(
