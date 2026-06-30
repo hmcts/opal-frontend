@@ -4176,9 +4176,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@hmcts/opal-frontend-common-node@npm:^0.0.37":
-  version: 0.0.37
-  resolution: "@hmcts/opal-frontend-common-node@npm:0.0.37"
+"@hmcts/opal-frontend-common-node@npm:^0.0.38":
+  version: 0.0.38
+  resolution: "@hmcts/opal-frontend-common-node@npm:0.0.38"
   dependencies:
     "@azure/msal-browser": "npm:^5.0.0"
     "@hmcts/info-provider": "npm:^1.1.0"
@@ -4200,13 +4200,13 @@ __metadata:
     redis: "npm:^6.0.0"
     session-file-store: "npm:^1.5.0"
     xml2js: "npm:^0.6.2"
-  checksum: 10/aa5665787229de96d78352d46b1219d30bb879089b65e6fb0eda18295f62cc952c5ecf3ace5fc136dbbacf51b019df92038f1d1d455ed67e1ddf0a7109522e99
+  checksum: 10/5eda763d32f1e29ffeecd9bd8ea25c8a80d4a410b4434f93a4c2bc2e8dc759e368562c7d3f665c98498741851b421212ad181019eefef42436006f54a970870f
   languageName: node
   linkType: hard
 
-"@hmcts/opal-frontend-common@npm:^0.0.88":
-  version: 0.0.88
-  resolution: "@hmcts/opal-frontend-common@npm:0.0.88"
+"@hmcts/opal-frontend-common@npm:^0.0.89":
+  version: 0.0.89
+  resolution: "@hmcts/opal-frontend-common@npm:0.0.89"
   dependencies:
     "@microsoft/applicationinsights-web": "npm:^3.3.6"
     "@ministryofjustice/frontend": "npm:^9.0.0"
@@ -4228,7 +4228,7 @@ __metadata:
   peerDependenciesMeta:
     "@ngrx/signals":
       optional: true
-  checksum: 10/ea594b2327fd0e0a02cefc02857ec3f75b0c545021565085f726310217b1d905ab43daf4a39ffd80c7d32a8e744771464b37f5ddf46b2616e1cf52d40f384ff2
+  checksum: 10/718bbcb5b164e50fb9bd0a8c727e5ef6e6a28b70ac7d344e5280506e471fc3d5ee9f3b1e865b99a1374a3c41793c146f4ea3a108a72c8d52f4a1e3a65b6debf9
   languageName: node
   linkType: hard
 
@@ -16650,9 +16650,9 @@ __metadata:
     "@hmcts/info-provider": "npm:^1.1.0"
     "@hmcts/nodejs-healthcheck": "npm:^1.8.5"
     "@hmcts/nodejs-logging": "npm:^4.0.4"
-    "@hmcts/opal-frontend-common": "npm:^0.0.88"
+    "@hmcts/opal-frontend-common": "npm:^0.0.89"
     "@hmcts/opal-frontend-common-cypress": "npm:^0.0.3"
-    "@hmcts/opal-frontend-common-node": "npm:^0.0.37"
+    "@hmcts/opal-frontend-common-node": "npm:^0.0.38"
     "@hmcts/properties-volume": "npm:^1.1.0"
     "@hmcts/zephyr-automation-nodejs": "npm:0.0.7"
     "@microsoft/applicationinsights-web": "npm:^3.3.5"
