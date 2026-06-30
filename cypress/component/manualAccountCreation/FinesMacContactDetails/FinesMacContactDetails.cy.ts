@@ -167,8 +167,8 @@ describe('FinesMacContactDetailsComponent', () => {
           fm_contact_details_email_address_1: '',
           fm_contact_details_email_address_2: '',
           fm_contact_details_telephone_number_mobile: '07123456789',
-          fm_contact_details_telephone_number_home: '01234 567890',
-          fm_contact_details_telephone_number_business: '01234 567890',
+          fm_contact_details_telephone_number_home: '0123456789',
+          fm_contact_details_telephone_number_business: '01234 56789',
         };
       });
 
@@ -193,8 +193,8 @@ describe('FinesMacContactDetailsComponent', () => {
           fm_contact_details_email_address_1: 'primary@email.com',
           fm_contact_details_email_address_2: 'secondary@email.com',
           fm_contact_details_telephone_number_mobile: '07123456789',
-          fm_contact_details_telephone_number_home: '01234 567890',
-          fm_contact_details_telephone_number_business: '01234 567890',
+          fm_contact_details_telephone_number_home: '0123456789',
+          fm_contact_details_telephone_number_business: '01234 56789',
         };
       });
 
@@ -288,7 +288,7 @@ describe('FinesMacContactDetailsComponent', () => {
     '(AC.8) should error when mobile telephone number validation is not met - Return to account details + Add employer details',
     { tags: [...buildTags('@JIRA-STORY:PO-419'), '@JIRA-EPIC:PO-272', '@JIRA-TEST-KEY:PO-4922'] },
     () => {
-      const invalidPhoneNumbers = ['123456789', '123456789012', '1234567890a'];
+      const invalidPhoneNumbers = ['123456789', '1234567890', '123456789012', '1234567890a'];
       cy.wrap(invalidPhoneNumbers).each((number: string) => {
         cy.then(() => {
           setupComponent(null, 'adultOrYouthOnly', (finesMacState) => {
@@ -329,8 +329,8 @@ describe('FinesMacContactDetailsComponent', () => {
             fm_contact_details_email_address_1: 'p@email.com',
             fm_contact_details_email_address_2: 's@email.com',
             fm_contact_details_telephone_number_mobile: '07123456789',
-            fm_contact_details_telephone_number_home: '01234 567890',
-            fm_contact_details_telephone_number_business: '01234 567890',
+            fm_contact_details_telephone_number_home: '0123456789',
+            fm_contact_details_telephone_number_business: '01234 56789',
           };
         });
         cy.get(L.returnToAccountDetailsButton).click();
