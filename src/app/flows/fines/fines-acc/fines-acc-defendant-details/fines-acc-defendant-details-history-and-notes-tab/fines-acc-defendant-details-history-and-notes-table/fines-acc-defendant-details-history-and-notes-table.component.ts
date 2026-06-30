@@ -142,6 +142,7 @@ export class FinesAccDefendantDetailsHistoryAndNotesTableComponent {
    */
   public handleHistoryLinkClicked(link: IFinesAccountHistoryTableLinkClick): void {
     if (link.type !== FINES_ACC_HISTORY_AND_NOTES_DETAILS_LINK_TYPES.account) {
+      // Imposition and suspense transaction history link navigation will be implemented in a future iteration.
       return;
     }
 
