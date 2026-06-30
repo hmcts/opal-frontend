@@ -150,7 +150,7 @@ describe('WriteOffRelease1cFeatureToggles', () => {
     () => {
       setupAppComponent(consolidationPermissionIds, { 'release-1a': true, 'release-1c-write-off': false });
 
-      cy.get(PrimaryNav.container).should('be.visible');
+      cy.get(PrimaryNav.container).should('not.be.visible');
       cy.get(PrimaryNav.itemByText(PrimaryNav.labels.accounts)).should('not.exist');
     },
   );
