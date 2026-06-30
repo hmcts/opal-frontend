@@ -42,36 +42,40 @@ describe('Major Creditor Account Summary - At a Glance Tab', () => {
     setupAccountEnquiryComponent(componentProperties);
   };
 
-  it('AC1a: builds the major creditor at a glance tab in line with the design artefact', { tags: buildTags() }, () => {
-    const header = structuredClone(FINES_ACC_MAJOR_CREDITOR_DETAILS_HEADER_MOCK);
-    const atAGlance = structuredClone(OPAL_FINES_ACCOUNT_MAJOR_CREDITOR_AT_A_GLANCE_MOCK);
+  it(
+    'AC1a: builds the major creditor at a glance tab in line with the design artefact',
+    { tags: [...buildTags('@JIRA-STORY:PO-2129'), '@JIRA-EPIC:PO-1286'] },
+    () => {
+      const header = structuredClone(FINES_ACC_MAJOR_CREDITOR_DETAILS_HEADER_MOCK);
+      const atAGlance = structuredClone(OPAL_FINES_ACCOUNT_MAJOR_CREDITOR_AT_A_GLANCE_MOCK);
 
-    header.major_creditor.account_reference.display_name = 'Major Creditor';
-    atAGlance.major_creditor.name = 'CPS Crown Prosecution Service';
-    atAGlance.major_creditor.code = '9001';
-    atAGlance.major_creditor.address.line_1 = '1 Test Road';
-    atAGlance.major_creditor.address.line_2 = 'Suite 2';
-    atAGlance.major_creditor.address.line_3 = 'Hertford';
-    atAGlance.major_creditor.address.postcode = 'sg13 8dq';
-    atAGlance.major_creditor.pay_by_bacs = true;
+      header.major_creditor.account_reference.display_name = 'Major Creditor';
+      atAGlance.major_creditor.name = 'CPS Crown Prosecution Service';
+      atAGlance.major_creditor.code = '9001';
+      atAGlance.major_creditor.address.line_1 = '1 Test Road';
+      atAGlance.major_creditor.address.line_2 = 'Suite 2';
+      atAGlance.major_creditor.address.line_3 = 'Hertford';
+      atAGlance.major_creditor.address.postcode = 'sg13 8dq';
+      atAGlance.major_creditor.pay_by_bacs = true;
 
-    setupMajorCreditorAtAGlance(header, atAGlance);
+      setupMajorCreditorAtAGlance(header, atAGlance);
 
-    cy.get(DOM.pageHeader).should('exist');
-    cy.get(DOM.accountInfo).should('exist');
-    cy.get(DOM.summaryMetricBar).should('exist');
-    cy.get(DOM.subnav).should('exist');
-    cy.get(MAJOR_CREDITOR_AT_A_GLANCE_COMPONENT).should('exist');
+      cy.get(DOM.pageHeader).should('exist');
+      cy.get(DOM.accountInfo).should('exist');
+      cy.get(DOM.summaryMetricBar).should('exist');
+      cy.get(DOM.subnav).should('exist');
+      cy.get(MAJOR_CREDITOR_AT_A_GLANCE_COMPONENT).should('exist');
 
-    cy.get(MAJOR_CREDITOR_AT_A_GLANCE_COMPONENT).find(DOM.sectionHeading).should('have.length', 2);
-    cy.contains(DOM.sectionHeading, 'Major creditor').should('be.visible');
-    cy.contains(DOM.sectionHeading, 'Payout status').should('be.visible');
-    cy.get(DOM.readOnlyFields).should('not.exist');
-  });
+      cy.get(MAJOR_CREDITOR_AT_A_GLANCE_COMPONENT).find(DOM.sectionHeading).should('have.length', 2);
+      cy.contains(DOM.sectionHeading, 'Major creditor').should('be.visible');
+      cy.contains(DOM.sectionHeading, 'Payout status').should('be.visible');
+      cy.get(DOM.readOnlyFields).should('not.exist');
+    },
+  );
 
   it(
     'AC1b, AC2a: displays the configured major creditor details and shows BACS details as provided',
-    { tags: buildTags() },
+    { tags: [...buildTags('@JIRA-STORY:PO-2129'), '@JIRA-EPIC:PO-1286'] },
     () => {
       const atAGlance = structuredClone(OPAL_FINES_ACCOUNT_MAJOR_CREDITOR_AT_A_GLANCE_MOCK);
 
@@ -107,20 +111,24 @@ describe('Major Creditor Account Summary - At a Glance Tab', () => {
     },
   );
 
-  it('AC2a: displays BACS details as not provided when pay by bacs is false', { tags: buildTags() }, () => {
-    const atAGlance = structuredClone(OPAL_FINES_ACCOUNT_MAJOR_CREDITOR_AT_A_GLANCE_MOCK);
+  it(
+    'AC2a: displays BACS details as not provided when pay by bacs is false',
+    { tags: [...buildTags('@JIRA-STORY:PO-2129'), '@JIRA-EPIC:PO-1286'] },
+    () => {
+      const atAGlance = structuredClone(OPAL_FINES_ACCOUNT_MAJOR_CREDITOR_AT_A_GLANCE_MOCK);
 
-    atAGlance.major_creditor.pay_by_bacs = false;
+      atAGlance.major_creditor.pay_by_bacs = false;
 
-    setupMajorCreditorAtAGlance(undefined, atAGlance);
+      setupMajorCreditorAtAGlance(undefined, atAGlance);
 
-    cy.contains(DOM.fieldHeading, DOM.labelBacsDetails).should('be.visible');
-    cy.get(DOM.badgeRed).should('contain.text', DOM.labelNotProvided).and('have.class', 'moj-badge--red');
-  });
+      cy.contains(DOM.fieldHeading, DOM.labelBacsDetails).should('be.visible');
+      cy.get(DOM.badgeRed).should('contain.text', DOM.labelNotProvided).and('have.class', 'moj-badge--red');
+    },
+  );
 
   it(
     'AC1b: hides the code, postcode, and payout status section for a central fund account',
-    { tags: buildTags() },
+    { tags: [...buildTags('@JIRA-STORY:PO-2129'), '@JIRA-EPIC:PO-1286'] },
     () => {
       const header = structuredClone(FINES_ACC_MAJOR_CREDITOR_DETAILS_HEADER_MOCK);
       const atAGlance = structuredClone(OPAL_FINES_ACCOUNT_MAJOR_CREDITOR_AT_A_GLANCE_MOCK);
