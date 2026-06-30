@@ -1,10 +1,4 @@
-export type TFinesAccHistoryAndNotesFilterCategoryMap = {
-  amendments: 'amendments';
-  enforcements: 'enforcements';
-  financial: 'financial';
-  notes: 'notes';
-  paymentTerms: 'paymentTerms';
-};
+import { TFinesAccHistoryAndNotesFilterCategoryMap } from './fines-acc-history-and-notes-filter-category-map.type';
 
 export type TFinesAccHistoryAndNotesFilterCategory<
   TKeys extends keyof TFinesAccHistoryAndNotesFilterCategoryMap = keyof TFinesAccHistoryAndNotesFilterCategoryMap,
