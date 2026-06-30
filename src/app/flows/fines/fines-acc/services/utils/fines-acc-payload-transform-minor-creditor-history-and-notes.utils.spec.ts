@@ -1,8 +1,71 @@
 import { describe, expect, it } from 'vitest';
 import {
+  transformMinorCreditorAmendmentDetails,
   transformMinorCreditorGeneratedOrderAndNoticeDetails,
+  transformMinorCreditorNoteDetails,
   transformMinorCreditorTransactionDetails,
 } from './fines-acc-payload-transform-minor-creditor-history-and-notes.utils';
+
+const fragment = (text: string, bold = false) => ({ text, bold, hyphen: false });
+const part = (...fragments: ReturnType<typeof fragment>[]) => ({ fragments });
+const details = (...line1: ReturnType<typeof part>[]) => ({ line1, line2: null });
+
+describe('transformMinorCreditorAmendmentDetails', () => {
+  it('should transform amendment details with bold field and values', () => {
+    const result = transformMinorCreditorAmendmentDetails({
+      details: {
+        attribute_name: 'Payment hold',
+        old_value: 'No',
+        new_value: 'Yes',
+      },
+    });
+
+    expect(result).toEqual(
+      details(
+        part(fragment('Payment hold', true)),
+        part(fragment('Old:'), fragment('No', true)),
+        part(fragment('New:'), fragment('Yes', true)),
+      ),
+    );
+  });
+
+  it('should omit missing amendment old and new values', () => {
+    const result = transformMinorCreditorAmendmentDetails({
+      details: {
+        attributeName: 'Status',
+        oldValue: null,
+        newValue: '',
+      },
+    });
+
+    expect(result).toEqual(details(part(fragment('Status', true))));
+  });
+
+  it('should omit missing amendment field names', () => {
+    const result = transformMinorCreditorAmendmentDetails({
+      details: {
+        old_value: 'One',
+        new_value: 'Two',
+      },
+    });
+
+    expect(result).toEqual(
+      details(part(fragment('Old:'), fragment('One', true)), part(fragment('New:'), fragment('Two', true))),
+    );
+  });
+});
+
+describe('transformMinorCreditorNoteDetails', () => {
+  it('should transform note details', () => {
+    const result = transformMinorCreditorNoteDetails({
+      details: {
+        note_text: 'Minor creditor account note',
+      },
+    });
+
+    expect(result).toEqual(details(part(fragment('Minor creditor account note'))));
+  });
+});
 
 describe('transformMinorCreditorTransactionDetails', () => {
   it('should transform BACS payment details with payment reference', () => {
@@ -187,6 +250,188 @@ describe('transformMinorCreditorTransactionDetails', () => {
       line2: null,
     });
   });
+
+  it('should transform cancelled cheque details with payment reference', () => {
+    const result = transformMinorCreditorTransactionDetails({
+      details: {
+        transaction_type: 'CANCHQ',
+        payment_reference: '5429',
+      },
+    });
+
+    expect(result).toEqual(
+      details(part(fragment('Cheque cancelled')), part(fragment('Cheque number:'), fragment('5429'))),
+    );
+  });
+
+  it.each([
+    ['RIBACS', 'BACS payment reissued'],
+    ['RTBACS', 'BACS payment cancelled'],
+  ])('should transform %s BACS details with payment reference', (transactionType, label) => {
+    const result = transformMinorCreditorTransactionDetails({
+      details: {
+        transaction_type: transactionType,
+        payment_reference: '10000291',
+      },
+    });
+
+    expect(result).toEqual(details(part(fragment(label)), part(fragment('Payment reference:'), fragment('10000291'))));
+  });
+
+  it('should transform reissued cheque details with dishonoured status and no status date', () => {
+    const result = transformMinorCreditorTransactionDetails({
+      details: {
+        transaction_type: 'RICHEQ',
+        payment_reference: '524589',
+        status: 'D',
+      },
+    });
+
+    expect(result).toEqual(
+      details(
+        part(fragment('Cheque reissued')),
+        part(fragment('Cheque number:'), fragment('524589')),
+        part(fragment('Cheque dishonoured')),
+      ),
+    );
+  });
+
+  it('should omit cheque status for unrecognised status values', () => {
+    const result = transformMinorCreditorTransactionDetails({
+      details: {
+        transaction_type: 'CHEQUE',
+        payment_reference: '524589',
+        status: 'C',
+      },
+    });
+
+    expect(result).toEqual(
+      details(part(fragment('Cheque issued')), part(fragment('Cheque number:'), fragment('524589'))),
+    );
+  });
+
+  it('should transform repayment details for each creditor repayment transaction type', () => {
+    ['REPAYC', 'REPAYF', 'REPAYM', 'REPAYP', 'REPAYV', 'REPAYW'].forEach((transactionType) => {
+      const result = transformMinorCreditorTransactionDetails({
+        details: {
+          transaction_type: transactionType,
+          creditor_account_number: '250000123M',
+        },
+      });
+
+      expect(result).toEqual(details(part(fragment('Repayment')), part(fragment('250000123M'))));
+    });
+  });
+
+  it('should transform historic licensing repayment details without an account number', () => {
+    const result = transformMinorCreditorTransactionDetails({
+      details: {
+        transaction_type: 'REPLIC',
+      },
+    });
+
+    expect(result).toEqual(details(part(fragment('Repayment'))));
+  });
+
+  it('should transform manual adjustment details with defendant account number', () => {
+    const result = transformMinorCreditorTransactionDetails({
+      details: {
+        transactionType: {
+          transactionType: 'MADJ',
+        },
+        defendantAccountNumber: '250000123M',
+      },
+    });
+
+    expect(result).toEqual(details(part(fragment('Manual adjustment')), part(fragment('250000123M'))));
+  });
+
+  it('should transform payment received details when defendant account number is omitted', () => {
+    const result = transformMinorCreditorTransactionDetails({
+      details: {
+        transactionType: {
+          transactionType: 'PAYMNT',
+          transactionTypeDisplayName: 'PAYMNT',
+        },
+        defendantAccountNumber: null,
+      },
+    });
+
+    expect(result).toEqual(details(part(fragment('Payment received'))));
+  });
+
+  it('should fall back to associated record ID for suspense transfer with unknown associated record type', () => {
+    const result = transformMinorCreditorTransactionDetails({
+      details: {
+        transaction_type: 'XFER',
+        associated_record_type: 'other_record',
+        associated_record_id: 'ASSOC123',
+        defendant_account_number: 'DA12345',
+        creditor_account_number: 'MC12345',
+      },
+    });
+
+    expect(result).toEqual(details(part(fragment('Suspense transfer')), part(fragment('ASSOC123'))));
+  });
+
+  it('should fall back to defendant account number for suspense transfer when associated record ID is omitted', () => {
+    const result = transformMinorCreditorTransactionDetails({
+      details: {
+        transaction_type: 'XFER',
+        associated_record_type: 'other_record',
+        defendant_account_number: 'DA12345',
+        creditor_account_number: 'MC12345',
+      },
+    });
+
+    expect(result).toEqual(details(part(fragment('Suspense transfer')), part(fragment('DA12345'))));
+  });
+
+  it('should fall back to creditor account number for suspense transfer when associated and defendant values are omitted', () => {
+    const result = transformMinorCreditorTransactionDetails({
+      details: {
+        transaction_type: 'XFER',
+        associated_record_type: 'other_record',
+        creditor_account_number: 'MC12345',
+      },
+    });
+
+    expect(result).toEqual(details(part(fragment('Suspense transfer')), part(fragment('MC12345'))));
+  });
+
+  it('should transform unknown transaction details using description and payment reference', () => {
+    const result = transformMinorCreditorTransactionDetails({
+      details: {
+        transaction_type: 'UNKNOWN',
+        transaction_description: 'Unknown transaction',
+        payment_reference: 'REF123',
+      },
+    });
+
+    expect(result).toEqual(
+      details(part(fragment('Unknown transaction')), part(fragment('Reference:'), fragment('REF123'))),
+    );
+  });
+
+  it('should transform unknown transaction details using transaction type when description is omitted', () => {
+    const result = transformMinorCreditorTransactionDetails({
+      details: {
+        transaction_type: 'UNKNOWN',
+      },
+    });
+
+    expect(result).toEqual(details(part(fragment('UNKNOWN'))));
+  });
+
+  it('should transform transaction details using description when transaction type is omitted', () => {
+    const result = transformMinorCreditorTransactionDetails({
+      details: {
+        transactionDescription: 'Description only',
+      },
+    });
+
+    expect(result).toEqual(details(part(fragment('Description only'))));
+  });
 });
 
 describe('transformMinorCreditorGeneratedOrderAndNoticeDetails', () => {
@@ -224,5 +469,15 @@ describe('transformMinorCreditorGeneratedOrderAndNoticeDetails', () => {
       ],
       line2: null,
     });
+  });
+
+  it('should fall back to document type and omit missing labels', () => {
+    const result = transformMinorCreditorGeneratedOrderAndNoticeDetails({
+      details: {
+        document_type: 'Order and notice',
+      },
+    });
+
+    expect(result).toEqual(details(part(fragment('Order and notice'))));
   });
 });
