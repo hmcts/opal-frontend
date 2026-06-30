@@ -339,6 +339,7 @@ Use these functional scripts when you need a release-aligned run locally or in a
 
 Use these component scripts to avoid running later-release component coverage when you only want the currently-enabled release package:
 
+- `yarn test:component:all_flags_off`: component tests tagged `R1AOff` or `R1BOff` only
 - `yarn test:component:r1a`: `R1A` manual account creation and draft-account components only
 - `yarn test:component:r1ab`: `R1A` + `R1B` component coverage only
 - `yarn test:component:r1c_write_off`: `R1C` write-off / consolidation components only
@@ -423,9 +424,9 @@ The nightly Jenkins pipeline runs its stages in this order after checkout and te
 
 Notes for the nightly pipeline:
 
-- `LEGACY_URL` currently defaults to `DEV` so the demo legacy stages can run while `PRE-PROD` is not ready.
+- `LEGACY_URL` defaults to `PRE-PROD`.
 - `LEGACY_URL=PRE-PROD` points the legacy gateway checks at `https://cloudgobgateway.test.platform.hmcts.net/opal`.
-- `LEGACY_URL=DEV` uses the staging legacy DB stub and skips the pre-prod `getGmasTest` health check.
+- `LEGACY_URL=DEV` uses the staging legacy DB stub, skips the pre-prod `getGmasTest` health check, and does not patch the demo `app-mode` LaunchDarkly flag to `legacy`.
 - `ZephyrExecution=true`, or a Friday nightly run, enables the Zephyr reporting flow for the normal component and functional paths.
 
 ### Debugging
@@ -450,6 +451,8 @@ functional-output/
       html/
         component-report.html
         assets/...
+      zephyr/
+        cypress-report-1.json
       json/
         .jsons/
           mochawesome*.json
@@ -464,6 +467,9 @@ functional-output/
         OPAL-report-*.ndjson
         <browser>-report.ndjson
         <browser>-report.html
+      zephyr/
+        cucumber-report.json
+        cypress-report-1.json
       legacy/
         legacy-mode-test-output-*.xml
         legacy-test-result.xml
@@ -471,6 +477,30 @@ functional-output/
           LEGACY-report-*.ndjson
           legacy-report.ndjson
           legacy-report.html
+        zephyr/
+          cucumber-report.json
+          cypress-report-1.json
+      r1a-legacy-demo/
+        r1a-legacy-demo-test-result.xml
+        cucumber/
+          r1a-legacy-demo-report.ndjson
+          r1a-legacy-demo-report.html
+        zephyr/
+          cucumber-report.json
+      r1a-off-legacy-demo/
+        r1a-off-legacy-demo-test-result.xml
+        cucumber/
+          r1a-off-legacy-demo-report.ndjson
+          r1a-off-legacy-demo-report.html
+        zephyr/
+          cucumber-report.json
+      uat-technical/
+        uat-technical-test-result.xml
+        cucumber/
+          uat-technical-report.ndjson
+          uat-technical-report.html
+        zephyr/
+          cucumber-report.json
   screenshots/
     <browser>/...
     <browser>/legacy/...
@@ -490,6 +520,8 @@ smoke-output/
         OPAL-report-*.ndjson
         smoke-report.ndjson
         smoke-report.html
+      zephyr/
+        cucumber-report.json
       legacy/
         legacy-mode-test-output-*.xml
         legacy-test-result.xml
@@ -507,7 +539,9 @@ smoke-output/
 Notes:
 
 - `functional-output/component/<browser>/json/.jsons/` is the raw Mochawesome JSON used to build `html/component-report.html`.
+- Each nightly stage now copies its Zephyr JSON into that stage's own artifact directory as well as the shared root `*-output/zephyr/` location used by the existing scripts.
 - `functional-output/prod/<browser>/legacy/` and `smoke-output/prod/<browser>/legacy/` are only created for legacy-mode runs.
+- `functional-output/prod/<browser>/{r1a-legacy-demo,r1a-off-legacy-demo,uat-technical}/` are created by the dedicated nightly demo stages.
 - `videos/` is only expected when using `yarn test:functionalOpalVideo`.
 - `account_evidence/` is only expected when legacy evidence capture is enabled.
 - These older component paths should not be recreated on a clean run: `functional-output/component-report/`, `functional-output/component-html/`, and `functional-output/prod/<browser>/component/`.
@@ -744,7 +778,11 @@ Zephyr Automation is a tool for integrating test results and ticket management b
 - `zephyr:cucumber:smoke:jira-execute`: Create a Zephyr execution from the smoke Cucumber JSON report at `smoke-output/zephyr/cucumber-report.json`.
 - `zephyr:test:component`: Reset outputs, run component tests, then create a Zephyr execution from the Cypress JSON report.
 - `zephyr:test:functional`: Reset outputs, run functional tests, then create a Zephyr execution from the functional Cucumber JSON report.
+- `zephyr:test:r1a_legacy_demo`: Reset outputs, run the R1A legacy demo functional suite, then create a Zephyr execution from the functional Cucumber JSON report.
+- `zephyr:test:r1a_off_legacy_demo`: Reset outputs, run the R1A Off legacy demo functional suite, then create a Zephyr execution from the functional Cucumber JSON report.
 - `zephyr:test:smoke`: Reset outputs, run smoke tests, then create a Zephyr execution from the smoke Cucumber JSON report.
+- `zephyr:test:uat_technical`: Reset outputs, run the UAT-Technical legacy-mode functional suite, then create a Zephyr execution from the functional Cucumber JSON report.
+- `zephyr:test:legacy`: Reset outputs, run the legacy-mode functional suite, then create a Zephyr execution from the functional Cucumber JSON report.
 
 ## Test Metadata Maintenance
 
@@ -763,8 +801,8 @@ The following tags can be used in your test scenarios to control ticket creation
 
 | Tag Prefix         | Example Value           | Description                                                        |
 | ------------------ | ----------------------- | ------------------------------------------------------------------ |
-| `@JIRA-KEY:`       | `@JIRA-KEY:PROJ-123`    | Associates the test with an existing Jira issue key.               |
-| `@JIRA-KEY:PO-*`   | `@JIRA-KEY:PO-1234`     | Associates one executable test with one Zephyr PO test case key.   |
+| `@JIRA-TEST-KEY:`  | `@JIRA-TEST-KEY:PROJ-123` | Associates the test with an existing Jira issue key.             |
+| `@JIRA-TEST-KEY:PO-*` | `@JIRA-TEST-KEY:PO-1234` | Associates one executable test with one Zephyr PO test case key. |
 | `@JIRA-COMPONENT:` | `@JIRA-COMPONENT:API`   | Adds the specified Jira component to the ticket.                   |
 | `@JIRA-LABEL:`     | `@JIRA-LABEL:smoke`     | Adds the specified label to the Jira ticket.                       |
 | `@JIRA-EPIC:`      | `@JIRA-EPIC:PROJ-456`   | Links the ticket to the specified Jira Epic.                       |

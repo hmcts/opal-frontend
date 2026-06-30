@@ -6,7 +6,7 @@ export const FINANCE_DASHBOARD_CONFIG: IDashboardPageConfiguration = {
   highlights: [],
   groups: [
     {
-      id: 'finance-test',
+      id: 'finance-placeholder',
       title: 'Pending development',
       links: FINANCE_LINKS,
     },

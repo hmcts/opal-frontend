@@ -7,4 +7,5 @@ export const FINES_ACC_ENF_ACTION_ADD_STORE_MOCK = {
   business_unit_id: signal<string | null>('78'),
   welsh_speaking: signal<string | null>('Y'),
   setAccountState: vi.fn(),
+  setSuccessMessage: vi.fn(),
 };

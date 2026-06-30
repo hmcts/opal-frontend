@@ -47,7 +47,8 @@
         "release-1c-cpp-enforcement": true,
         "release-1c-cpp": true,
         "release-1c-printing": true,
-        "release-1c-enforcement-operational-reporting": true
+        "release-1c-enforcement-operational-reporting": true,
+        "release-1c-administration": true
       }
     },
     "app-insights": {
