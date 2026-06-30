@@ -128,6 +128,17 @@ describe('FinesAccountHistoryTableComponent', () => {
     expect(component.sortedRows().map((row) => row.User)).toEqual(['User 10', 'User 2', 'alpha', null]);
   });
 
+  it('should sort blank details after populated details', () => {
+    setupComponent(structuredClone(FINES_ACCOUNT_HISTORY_TABLE_SORT_EDGE_ROWS_MOCK));
+
+    component.onSortChange({
+      key: 'Details',
+      sortType: FINES_ACCOUNT_HISTORY_TABLE_SORT_DIRECTIONS.ascending,
+    });
+
+    expect(component.sortedRows().map((row) => row.Details)).toEqual(['Alpha', 'Beta', 'Gamma', '']);
+  });
+
   it('should ignore sort changes with unsupported columns or none direction', () => {
     setupComponent(structuredClone(FINES_ACCOUNT_HISTORY_TABLE_SORT_EDGE_ROWS_MOCK));
 

@@ -101,14 +101,24 @@ export class FinesAccountHistoryTableComponent extends AbstractSortableTableComp
   }
 
   /**
+   * Checks whether a sortable value should be placed after populated values.
+   *
+   * @param value - The value to check.
+   * @returns True when the value is null, undefined or a blank string.
+   */
+  private isEmptySortValue(value: unknown): boolean {
+    return value === null || value === undefined || (typeof value === 'string' && !value.trim());
+  }
+
+  /**
    * Keeps empty values after populated values once the common sortable table has applied column ordering.
    *
    * @param column - The sorted column.
    */
   private moveEmptySortValuesLast(column: TFinesAccountHistoryTableColumn): void {
     const sortedRows = this.sortedTableDataSignal() as unknown as IFinesAccountHistoryTableRow[];
-    const populatedRows = sortedRows.filter((row) => row[column] !== null && row[column] !== undefined);
-    const emptyRows = sortedRows.filter((row) => row[column] === null || row[column] === undefined);
+    const populatedRows = sortedRows.filter((row) => !this.isEmptySortValue(row[column]));
+    const emptyRows = sortedRows.filter((row) => this.isEmptySortValue(row[column]));
 
     this.sortedTableDataSignal.set([
       ...populatedRows,
