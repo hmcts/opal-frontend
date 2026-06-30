@@ -4309,9 +4309,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@hmcts/opal-frontend-common@npm:^0.0.87":
-  version: 0.0.87
-  resolution: "@hmcts/opal-frontend-common@npm:0.0.87"
+"@hmcts/opal-frontend-common@npm:^0.0.88":
+  version: 0.0.88
+  resolution: "@hmcts/opal-frontend-common@npm:0.0.88"
   dependencies:
     "@microsoft/applicationinsights-web": "npm:^3.3.6"
     "@ministryofjustice/frontend": "npm:^9.0.0"
@@ -4333,7 +4333,7 @@ __metadata:
   peerDependenciesMeta:
     "@ngrx/signals":
       optional: true
-  checksum: 10/19f0a9830e4c669cdc783681a0f1fb343699ce6afd94d5c6bd8ee89f208435767db91968d59c2a54bdfacb2f6dcbac7185c8e06a9beb55e2da36f854130f9603
+  checksum: 10/ea594b2327fd0e0a02cefc02857ec3f75b0c545021565085f726310217b1d905ab43daf4a39ffd80c7d32a8e744771464b37f5ddf46b2616e1cf52d40f384ff2
   languageName: node
   linkType: hard
 
@@ -10941,8 +10941,8 @@ __metadata:
   linkType: hard
 
 "cypress@npm:^15.0.0":
-  version: 15.17.0
-  resolution: "cypress@npm:15.17.0"
+  version: 15.18.0
+  resolution: "cypress@npm:15.18.0"
   dependencies:
     "@cypress/request": "npm:^4.0.0"
     "@cypress/xvfb": "npm:^1.2.4"
@@ -10985,7 +10985,7 @@ __metadata:
     yauzl: "npm:^3.3.1"
   bin:
     cypress: bin/cypress
-  checksum: 10/b4d01d3cebbe9f2525a486cc41af8e14f78dd5a9e9330e53d4ff68148332cc96a82b36016f32424bfc116a04802e0079d59a7908af87a84df6d9247369ae35fb
+  checksum: 10/e81a161b0df769ee5ca6771becb2304df359fa569b654d2d346a577c9ac268b339b4f79756573e2c23dd630e0d8e73b9cad0bd99aef5f18ab4a1d10b03aa81de
   languageName: node
   linkType: hard
 
@@ -16764,7 +16764,7 @@ __metadata:
     "@hmcts/info-provider": "npm:^1.1.0"
     "@hmcts/nodejs-healthcheck": "npm:^1.8.5"
     "@hmcts/nodejs-logging": "npm:^4.0.4"
-    "@hmcts/opal-frontend-common": "npm:^0.0.87"
+    "@hmcts/opal-frontend-common": "npm:^0.0.88"
     "@hmcts/opal-frontend-common-cypress": "npm:^0.0.3"
     "@hmcts/opal-frontend-common-node": "npm:^0.0.37"
     "@hmcts/properties-volume": "npm:^1.1.0"
