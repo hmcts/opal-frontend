@@ -46,9 +46,10 @@ import { TFinesAccountHistoryTableSortState } from './types/fines-account-histor
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class FinesAccountHistoryTableComponent extends AbstractSortableTableComponent {
+  private hasInitialised = false;
+
   public readonly columns = FINES_ACCOUNT_HISTORY_TABLE_COLUMNS;
   public readonly tableDisplay = FINES_ACCOUNT_HISTORY_TABLE_DISPLAY;
-
   public override abstractExistingSortState: TFinesAccountHistoryTableSortState = this.createDefaultSortState(
     FINES_ACCOUNT_HISTORY_TABLE_DEFAULT_SORT.column,
     FINES_ACCOUNT_HISTORY_TABLE_DEFAULT_SORT.direction,
@@ -56,7 +57,6 @@ export class FinesAccountHistoryTableComponent extends AbstractSortableTableComp
   public readonly sortedRows = computed(
     () => this.sortedTableDataSignal() as unknown as IFinesAccountHistoryTableRow[],
   );
-  private hasInitialised = false;
 
   @Output() public historyLinkClicked = new EventEmitter<IFinesAccountHistoryTableLinkClick>();
 
