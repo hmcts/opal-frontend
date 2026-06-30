@@ -30,7 +30,7 @@ properties([
     booleanParam(name: 'RunFirefox', defaultValue: false, description: 'Run Firefox tests'),
     booleanParam(
       name: 'RunR1aLegacyDemo',
-      defaultValue: false,
+      defaultValue: true,
       description: 'Run optional R1A legacy demo stage (demo -> legacy checks)'
     ),
     booleanParam(
