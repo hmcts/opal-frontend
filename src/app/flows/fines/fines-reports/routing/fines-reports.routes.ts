@@ -51,6 +51,7 @@ export const routing: Routes = [
         },
         resolve: {
           title: TitleResolver,
+          report: fetchReportResolver,
           reportSummary: fetchReportInstanceResolver,
         },
       },

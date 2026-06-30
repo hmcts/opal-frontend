@@ -7,9 +7,10 @@ import {
   GovukSummaryListRowComponent,
 } from '@hmcts/opal-frontend-common/components/govuk/govuk-summary-list';
 import { map } from 'rxjs';
+import { type IOpalFinesReport } from '@services/fines/opal-fines-service/interfaces/opal-fines-report.interface';
 import { FINES_ROUTING_PATHS } from '../../routing/constants/fines-routing-paths.constant';
+import { findFinesReportsDefinition } from '../constants/fines-reports-definitions.constant';
 import { FINES_REPORTS_ROUTING_PATHS } from '../routing/constants/fines-reports-routing-paths.constant';
-import { FINES_REPORTS_REPORT_SUMMARY_PAGE_HEADING } from './constants/fines-reports-report-summary-page-heading.constant';
 import { type IFinesReportsReportSummaryInstance } from './interfaces/fines-reports-report-summary-instance.interface';
 import { type IFinesReportsReportSummaryViewModel } from './interfaces/fines-reports-report-summary-view-model.interface';
 import { FinesReportsReportSummaryRowValueComponent } from './components/fines-reports-report-summary-row-value/fines-reports-report-summary-row-value.component';
@@ -53,11 +54,22 @@ export class FinesReportsReportSummaryComponent {
         | undefined,
     },
   );
+  private readonly reportMetadataSignal = toSignal(
+    this.activatedRoute.data.pipe(map((routeData) => routeData['report'] as IOpalFinesReport | null | undefined)),
+    {
+      initialValue: this.activatedRoute.snapshot.data['report'] as IOpalFinesReport | null | undefined,
+    },
+  );
 
   /**
    * Maps the selected report instance route data into the report summary data for this UI slice.
    */
   public readonly reportSummary = computed(() => this.reportSummarySignal() ?? null);
+
+  /**
+   * Returns the resolved report metadata for the current report route.
+   */
+  public readonly reportMetadata = computed(() => this.reportMetadataSignal() ?? null);
 
   /**
    * Returns the report summary rows used by the template.
@@ -79,14 +91,14 @@ export class FinesReportsReportSummaryComponent {
    */
   public readonly pageHeading = computed(() => {
     const reportSummary = this.reportSummary();
+    const reportHeading =
+      this.reportMetadata()?.report_title?.trim() ||
+      findFinesReportsDefinition(reportSummary?.report_id ?? this.reportTypeId)?.heading ||
+      'Operational report';
 
     if (!reportSummary) {
-      return FINES_REPORTS_REPORT_SUMMARY_PAGE_HEADING.default;
+      return reportHeading;
     }
-
-    const reportHeading =
-      FINES_REPORTS_REPORT_SUMMARY_PAGE_HEADING.reports[reportSummary.report_id] ??
-      FINES_REPORTS_REPORT_SUMMARY_PAGE_HEADING.default;
 
     return `${reportHeading} - ${reportSummary.report_reference} - ${reportSummary.report_type}`;
   });

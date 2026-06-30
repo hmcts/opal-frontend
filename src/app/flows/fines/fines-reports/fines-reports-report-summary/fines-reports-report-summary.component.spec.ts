@@ -10,15 +10,25 @@ import {
   FINES_REPORTS_REPORT_SUMMARY_PAYMENTS_MOCK,
 } from './mocks/fines-reports-report-summary.mock';
 import { OPAL_FINES_REPORT_INSTANCE_MOCK } from '@services/fines/opal-fines-service/mocks/opal-fines-report-instance.mock';
+import { OPAL_FINES_REPORT_MOCK } from '@services/fines/opal-fines-service/mocks/opal-fines-report.mock';
 import { FinesReportsReportSummaryComponent } from './fines-reports-report-summary.component';
 import { mapFinesReportsReportInstanceToReportSummary } from './utils/fines-reports-report-summary-map-report-instance.utils';
 import { IFinesReportsReportSummaryInstance } from './interfaces/fines-reports-report-summary-instance.interface';
+import { type IOpalFinesReport } from '@services/fines/opal-fines-service/interfaces/opal-fines-report.interface';
 
 describe('FinesReportsReportSummaryComponent', () => {
+  const PAYMENT_REPORT_METADATA_MOCK: IOpalFinesReport = {
+    ...OPAL_FINES_REPORT_MOCK,
+    report_id: FINES_REPORTS_REPORT_SUMMARY_PAYMENTS_MOCK.report_id,
+    report_title: 'Operational report (by payments)',
+    permission: 'OPERATIONAL_REPORT_BY_PAYMENTS',
+  };
+
   const setup = async (
     reportTypeId = FINES_REPORTS_REPORT_SUMMARY_ENFORCEMENT_MOCK.report_id,
     reportInstanceId = FINES_REPORTS_REPORT_SUMMARY_ENFORCEMENT_MOCK.report_instance_id,
     reportSummary: IFinesReportsReportSummaryInstance | null = FINES_REPORTS_REPORT_SUMMARY_ENFORCEMENT_MOCK,
+    report: IOpalFinesReport | null = OPAL_FINES_REPORT_MOCK,
   ): Promise<{
     component: FinesReportsReportSummaryComponent;
     fixture: ComponentFixture<FinesReportsReportSummaryComponent>;
@@ -41,10 +51,11 @@ describe('FinesReportsReportSummaryComponent', () => {
           provide: ActivatedRoute,
           useValue: {
             paramMap: of(reportInstanceParamMap),
-            data: of({ reportSummary }),
+            data: of({ report, reportSummary }),
             snapshot: {
               paramMap: reportInstanceParamMap,
               data: {
+                report,
                 reportSummary,
               },
             },
@@ -91,6 +102,24 @@ describe('FinesReportsReportSummaryComponent', () => {
     expect(fixture.nativeElement.querySelector('.govuk-back-link')?.textContent.trim()).toBe('Back');
   });
 
+  it('should render the selected report heading from resolved report metadata', async () => {
+    const { fixture } = await setup(
+      FINES_REPORTS_REPORT_SUMMARY_ENFORCEMENT_MOCK.report_id,
+      FINES_REPORTS_REPORT_SUMMARY_ENFORCEMENT_MOCK.report_instance_id,
+      FINES_REPORTS_REPORT_SUMMARY_ENFORCEMENT_MOCK,
+      {
+        ...OPAL_FINES_REPORT_MOCK,
+        report_title: 'Live operational report title',
+      },
+    );
+
+    fixture.detectChanges();
+
+    expect(fixture.nativeElement.querySelector('h1')?.textContent).toContain(
+      'Live operational report title - ABDC - Summary',
+    );
+  });
+
   it('should prefer resolved report summary data when available', async () => {
     const resolvedReportSummary = mapFinesReportsReportInstanceToReportSummary(
       OPAL_FINES_REPORT_INSTANCE_MOCK,
@@ -116,12 +145,13 @@ describe('FinesReportsReportSummaryComponent', () => {
       FINES_REPORTS_REPORT_SUMMARY_PAYMENTS_MOCK.report_id,
       FINES_REPORTS_REPORT_SUMMARY_PAYMENTS_MOCK.report_instance_id,
       FINES_REPORTS_REPORT_SUMMARY_PAYMENTS_MOCK,
+      PAYMENT_REPORT_METADATA_MOCK,
     );
 
     fixture.detectChanges();
 
     expect(fixture.nativeElement.querySelector('h1')?.textContent).toContain(
-      'Operational report (by payments) - PYMT - Detailed',
+      'Operational report (by payments) - PYMT - Detail',
     );
   });
 
@@ -151,6 +181,7 @@ describe('FinesReportsReportSummaryComponent', () => {
       FINES_REPORTS_REPORT_SUMMARY_PAYMENTS_MOCK.report_id,
       FINES_REPORTS_REPORT_SUMMARY_PAYMENTS_MOCK.report_instance_id,
       FINES_REPORTS_REPORT_SUMMARY_PAYMENTS_MOCK,
+      PAYMENT_REPORT_METADATA_MOCK,
     );
 
     fixture.detectChanges();
@@ -159,7 +190,7 @@ describe('FinesReportsReportSummaryComponent', () => {
 
     expect(pageText).toContain('Report criteria');
     expect(pageText).toContain('Report Type');
-    expect(pageText).toContain('Detailed');
+    expect(pageText).toContain('Detail');
     expect(pageText).not.toContain('Minimum account balance');
     expect(pageText).not.toContain('Maximum account balance');
     expect(pageText).not.toContain('Lower name range');

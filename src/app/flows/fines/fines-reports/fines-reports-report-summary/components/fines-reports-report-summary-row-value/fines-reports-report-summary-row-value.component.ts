@@ -7,7 +7,6 @@ import { type IFinesReportsReportSummaryDisplayRow } from '../../interfaces/fine
 
 @Component({
   selector: 'app-fines-reports-report-summary-row-value',
-  standalone: true,
   imports: [CurrencyPipe, DateFormatPipe, DecimalPipe, FinesNotProvidedComponent],
   template: `
     @switch (row().type) {
