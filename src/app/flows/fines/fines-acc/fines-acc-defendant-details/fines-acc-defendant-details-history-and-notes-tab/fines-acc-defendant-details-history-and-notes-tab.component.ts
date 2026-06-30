@@ -1,6 +1,7 @@
 import { AsyncPipe } from '@angular/common';
 import { ChangeDetectionStrategy, Component, Input, OnChanges, OnInit, SimpleChanges, inject } from '@angular/core';
 import { FinesAccDefendantDetailsHistoryAndNotesFilterComponent } from './fines-acc-defendant-details-history-and-notes-filter/fines-acc-defendant-details-history-and-notes-filter.component';
+import { FinesAccDefendantDetailsHistoryAndNotesTableComponent } from './fines-acc-defendant-details-history-and-notes-table/fines-acc-defendant-details-history-and-notes-table.component';
 import { FINES_ACC_SUMMARY_TABS_CONTENT_STYLES } from '../../constants/fines-acc-summary-tabs-content-styles.constant';
 import { IFinesAccSummaryTabsContentStyles } from '../interfaces/fines-acc-summary-tabs-content-styles.interface';
 import { IFinesAccDefendantDetailsHistoryAndNotesFilterForm } from './interfaces/fines-acc-defendant-details-history-and-notes-filter-form.interface';
@@ -11,12 +12,16 @@ import { FinesAccPayloadService } from '../../services/fines-acc-payload.service
 import { FINES_ACC_MAP_TRANSFORM_ITEMS_CONFIG } from '../../services/constants/fines-acc-map-transform-items-config.constant';
 import { FinesAccountStore } from '../../stores/fines-acc.store';
 import { FINES_ACC_DEFENDANT_DETAILS_HISTORY_AND_NOTES_EMPTY_TAB_DATA_STREAM } from './constants/fines-acc-defendant-details-history-and-notes-empty-tab-data-stream.constant';
-import { THistoryDetailsRawItem as TFinesAccHistoryAndNotesRawItem } from '@hmcts/opal-frontend-common/services/history-transformation-service';
-import { FINES_ACC_DEFENDANT_DETAILS_HISTORY_AND_NOTES_TAB_HISTORY_ITEM_KEY } from './constants/fines-acc-defendant-details-history-and-notes-tab-history-item-keys.constant';
+import { getHistoryMappingItemsEntry } from '@hmcts/opal-frontend-common/services/history-transformation-service';
+import { FINES_ACC_DEFENDANT_DETAILS_HISTORY_AND_NOTES_TAB_HISTORY_ITEM_KEYS } from './constants/fines-acc-defendant-details-history-and-notes-tab-history-item-keys.constant';
 
 @Component({
   selector: 'app-fines-acc-defendant-details-history-and-notes-tab',
-  imports: [AsyncPipe, FinesAccDefendantDetailsHistoryAndNotesFilterComponent],
+  imports: [
+    AsyncPipe,
+    FinesAccDefendantDetailsHistoryAndNotesFilterComponent,
+    FinesAccDefendantDetailsHistoryAndNotesTableComponent,
+  ],
   templateUrl: './fines-acc-defendant-details-history-and-notes-tab.component.html',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
@@ -59,16 +64,18 @@ export class FinesAccDefendantDetailsHistoryAndNotesTabComponent implements OnCh
   private transformHistoryItems(
     data: IOpalFinesAccountDefendantDetailsHistoryAndNotesTabRefData,
   ): IOpalFinesAccountDefendantDetailsHistoryAndNotesTabRefData {
-    const historyItems = this.getHistoryItems(data);
+    const historyItemsEntry = getHistoryMappingItemsEntry(
+      data,
+      FINES_ACC_DEFENDANT_DETAILS_HISTORY_AND_NOTES_TAB_HISTORY_ITEM_KEYS,
+    );
 
-    if (!historyItems) {
+    if (!historyItemsEntry) {
       return data;
     }
 
     return {
       ...data,
-      [FINES_ACC_DEFENDANT_DETAILS_HISTORY_AND_NOTES_TAB_HISTORY_ITEM_KEY]:
-        this.payloadService.transformHistoryAndNotesItems(historyItems),
+      [historyItemsEntry.key]: this.payloadService.transformHistoryAndNotesItems(historyItemsEntry.items),
     };
   }
 
@@ -82,34 +89,6 @@ export class FinesAccDefendantDetailsHistoryAndNotesTabComponent implements OnCh
     data: IOpalFinesAccountDefendantDetailsHistoryAndNotesTabRefData,
   ): IOpalFinesAccountDefendantDetailsHistoryAndNotesTabRefData {
     return this.transformHistoryItems(this.formatTabData(data));
-  }
-
-  /**
-   * Finds the history item array and filters it to transformable object items.
-   *
-   * @param tabData - The raw History and notes tab data returned by the API.
-   * @returns The history items, or null when no history item list is present.
-   */
-  private getHistoryItems(
-    tabData: IOpalFinesAccountDefendantDetailsHistoryAndNotesTabRefData,
-  ): TFinesAccHistoryAndNotesRawItem[] | null {
-    const historyItems = tabData[FINES_ACC_DEFENDANT_DETAILS_HISTORY_AND_NOTES_TAB_HISTORY_ITEM_KEY];
-
-    if (!Array.isArray(historyItems)) {
-      return null;
-    }
-
-    return historyItems.filter(this.isHistoryItem);
-  }
-
-  /**
-   * Checks whether a value can be transformed as a raw history item.
-   *
-   * @param value - A value from the history items array.
-   * @returns True when the value is an object record.
-   */
-  private isHistoryItem(value: unknown): value is TFinesAccHistoryAndNotesRawItem {
-    return typeof value === 'object' && value !== null;
   }
 
   /**

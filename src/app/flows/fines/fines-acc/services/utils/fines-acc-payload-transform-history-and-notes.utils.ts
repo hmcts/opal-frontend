@@ -425,7 +425,7 @@ function accountNumberPart(item: TFinesAccHistoryAndNotesRawItem): IFinesAccHist
   return accountNumber
     ? part([
         fragment(accountNumber, {
-          link: createLink(FINES_ACC_HISTORY_AND_NOTES_DETAILS_LINK_TYPES.account, emit ?? accountNumber),
+          link: emit ? createLink(FINES_ACC_HISTORY_AND_NOTES_DETAILS_LINK_TYPES.account, emit) : null,
         }),
       ])
     : null;
@@ -447,7 +447,7 @@ function consolidatedAccountPart(item: TFinesAccHistoryAndNotesRawItem): IFinesA
         fragment(labels().consolidated),
         fragment(accountNumber, {
           hyphen: true,
-          link: createLink(FINES_ACC_HISTORY_AND_NOTES_DETAILS_LINK_TYPES.account, emit ?? accountNumber),
+          link: emit ? createLink(FINES_ACC_HISTORY_AND_NOTES_DETAILS_LINK_TYPES.account, emit) : null,
         }),
       ])
     : null;
