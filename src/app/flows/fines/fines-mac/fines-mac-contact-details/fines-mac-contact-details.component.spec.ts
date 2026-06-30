@@ -112,6 +112,20 @@ describe('FinesMacContactDetailsComponent', () => {
     }
   });
 
+  it('should navigate to account details in nested flow when defendant type is missing', () => {
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    const routerSpy = vi.spyOn<any, any>(component['router'], 'navigate');
+    component.defendantType = undefined as unknown as string;
+    formSubmit.nestedFlow = true;
+
+    component.handleContactDetailsSubmit(formSubmit);
+
+    expect(finesMacStore.contactDetails()).toEqual(formSubmit);
+    expect(routerSpy).toHaveBeenCalledWith([FINES_MAC_ROUTING_PATHS.children.accountDetails], {
+      relativeTo: component['activatedRoute'].parent,
+    });
+  });
+
   it('should test handleUnsavedChanges', () => {
     component.handleUnsavedChanges(true);
     expect(finesMacStore.unsavedChanges()).toBeTruthy();
