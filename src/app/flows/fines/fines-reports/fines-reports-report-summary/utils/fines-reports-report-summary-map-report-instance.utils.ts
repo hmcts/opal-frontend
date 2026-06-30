@@ -1,6 +1,6 @@
 import { FINES_REPORTS_REPORT_SUMMARY_DEFAULT_REPORT_TYPES } from '../constants/fines-reports-report-summary-default-report-types.constant';
 import { FINES_REPORTS_REPORT_SUMMARY_CRITERIA_LABELS } from '../constants/fines-reports-report-summary-criteria-labels.constant';
-import { FINES_REPORTS_REPORT_SUMMARY_REPORT_TYPE_ALIASES } from '../constants/fines-reports-report-summary-report-type-aliases.constant';
+import { FINES_REPORTS_REPORT_SUMMARY_ERROR_LABELS } from '../constants/fines-reports-report-summary-error-labels.constant';
 import { FINES_REPORTS_REPORT_SUMMARY_REPORT_TYPES } from '../constants/fines-reports-report-summary-report-types.constant';
 import { type IFinesReportsReportSummaryNamedValue } from '../interfaces/fines-reports-report-summary-named-value.interface';
 import { type IFinesReportsReportSummaryInstance } from '../interfaces/fines-reports-report-summary-instance.interface';
@@ -12,6 +12,11 @@ import {
 } from './fines-reports-report-summary-display-value.utils';
 
 const REPORT_TYPE_PARAMETER_KEYS = new Set(['reportType', 'report_type', 'report type']);
+const REPORT_TYPE_ALIASES = {
+  summary: 'summary',
+  detailed: 'detailed',
+  detail: 'detail',
+} as const;
 const DATE_RANGE_PARAMETER_CONFIGS = [
   {
     fromKey: 'action_date_from',
@@ -39,19 +44,19 @@ const REPORT_PARAMETER_LABEL_OVERRIDES: Record<string, string> = {
   payment_method: FINES_REPORTS_REPORT_SUMMARY_CRITERIA_LABELS.paymentMethod,
   minimum_payment_amount: FINES_REPORTS_REPORT_SUMMARY_CRITERIA_LABELS.minimumPaymentAmount,
   maximum_payment_amount: FINES_REPORTS_REPORT_SUMMARY_CRITERIA_LABELS.maximumPaymentAmount,
-  error: FINES_REPORTS_REPORT_SUMMARY_CRITERIA_LABELS.errorDescription,
-  error_description: FINES_REPORTS_REPORT_SUMMARY_CRITERIA_LABELS.errorDescription,
-  operationId: FINES_REPORTS_REPORT_SUMMARY_CRITERIA_LABELS.operationId,
-  report_generation_error: FINES_REPORTS_REPORT_SUMMARY_CRITERIA_LABELS.reportGenerationError,
-  report_service: FINES_REPORTS_REPORT_SUMMARY_CRITERIA_LABELS.reportService,
+  error: FINES_REPORTS_REPORT_SUMMARY_ERROR_LABELS.errorDescription,
+  error_description: FINES_REPORTS_REPORT_SUMMARY_ERROR_LABELS.errorDescription,
+  operationId: FINES_REPORTS_REPORT_SUMMARY_ERROR_LABELS.operationId,
+  report_generation_error: FINES_REPORTS_REPORT_SUMMARY_ERROR_LABELS.reportGenerationError,
+  report_service: FINES_REPORTS_REPORT_SUMMARY_ERROR_LABELS.reportService,
 };
 const DATE_RANGE_PARAMETER_KEYS = new Set<string>(
   DATE_RANGE_PARAMETER_CONFIGS.flatMap(({ fromKey, toKey }) => [fromKey, toKey]),
 );
 const REPORT_TYPE_NORMALISATION: Record<string, FinesReportsReportSummaryReportType> = {
-  [FINES_REPORTS_REPORT_SUMMARY_REPORT_TYPE_ALIASES.summary]: FINES_REPORTS_REPORT_SUMMARY_REPORT_TYPES.summary,
-  [FINES_REPORTS_REPORT_SUMMARY_REPORT_TYPE_ALIASES.detailed]: FINES_REPORTS_REPORT_SUMMARY_REPORT_TYPES.detailed,
-  [FINES_REPORTS_REPORT_SUMMARY_REPORT_TYPE_ALIASES.detail]: FINES_REPORTS_REPORT_SUMMARY_REPORT_TYPES.detailed,
+  [REPORT_TYPE_ALIASES.summary]: FINES_REPORTS_REPORT_SUMMARY_REPORT_TYPES.summary,
+  [REPORT_TYPE_ALIASES.detailed]: FINES_REPORTS_REPORT_SUMMARY_REPORT_TYPES.detailed,
+  [REPORT_TYPE_ALIASES.detail]: FINES_REPORTS_REPORT_SUMMARY_REPORT_TYPES.detailed,
 };
 
 const formatReportTypeDisplay = (value: unknown, reportId: string): string => {

@@ -5,7 +5,6 @@ import {
   FINES_REPORTS_REPORT_SUMMARY_RECORD_COUNT_DASH_STATUSES,
   FINES_REPORTS_REPORT_SUMMARY_STATUS_DISPLAY,
 } from '../constants/fines-reports-report-summary-status-display.constant';
-import { FINES_REPORTS_REPORT_SUMMARY_STATUS_ALIASES } from '../constants/fines-reports-report-summary-status-aliases.constant';
 import { FINES_REPORTS_REPORT_SUMMARY_STATUSES } from '../constants/fines-reports-report-summary-statuses.constant';
 import { IFinesReportsReportSummaryDisplayRow } from '../interfaces/fines-reports-report-summary-display-row.interface';
 import { IFinesReportsReportSummaryInstance } from '../interfaces/fines-reports-report-summary-instance.interface';
@@ -18,11 +17,17 @@ import {
   mapFinesReportsReportSummaryDisplayValue,
 } from './fines-reports-report-summary-display-value.utils';
 
+const REPORT_STATUS_ALIASES = {
+  requested: 'requested',
+  inProgress: 'in_progress',
+  ready: 'ready',
+  error: 'error',
+} as const;
 const REPORT_STATUS_NORMALISATION: Record<string, FinesReportsReportSummaryNormalisedStatus> = {
-  [FINES_REPORTS_REPORT_SUMMARY_STATUS_ALIASES.requested]: FINES_REPORTS_REPORT_SUMMARY_STATUSES.requested,
-  [FINES_REPORTS_REPORT_SUMMARY_STATUS_ALIASES.inProgress]: FINES_REPORTS_REPORT_SUMMARY_STATUSES.inProgress,
-  [FINES_REPORTS_REPORT_SUMMARY_STATUS_ALIASES.ready]: FINES_REPORTS_REPORT_SUMMARY_STATUSES.ready,
-  [FINES_REPORTS_REPORT_SUMMARY_STATUS_ALIASES.error]: FINES_REPORTS_REPORT_SUMMARY_STATUSES.error,
+  [REPORT_STATUS_ALIASES.requested]: FINES_REPORTS_REPORT_SUMMARY_STATUSES.requested,
+  [REPORT_STATUS_ALIASES.inProgress]: FINES_REPORTS_REPORT_SUMMARY_STATUSES.inProgress,
+  [REPORT_STATUS_ALIASES.ready]: FINES_REPORTS_REPORT_SUMMARY_STATUSES.ready,
+  [REPORT_STATUS_ALIASES.error]: FINES_REPORTS_REPORT_SUMMARY_STATUSES.error,
 };
 const CURRENCY_ROW_KEYS = new Set<string>([
   FINES_REPORTS_REPORT_SUMMARY_CRITERIA_LABELS.minimumAccountBalance,

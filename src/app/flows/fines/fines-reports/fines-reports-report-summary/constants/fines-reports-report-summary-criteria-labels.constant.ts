@@ -13,8 +13,4 @@ export const FINES_REPORTS_REPORT_SUMMARY_CRITERIA_LABELS = {
   paymentDate: 'Payment date',
   minimumPaymentAmount: 'Minimum payment amount',
   maximumPaymentAmount: 'Maximum payment amount',
-  errorDescription: 'Error description',
-  operationId: 'Operation ID',
-  reportGenerationError: 'Report generation error',
-  reportService: 'Report service',
 } as const;
