@@ -65,6 +65,18 @@ describe('transformMinorCreditorNoteDetails', () => {
 
     expect(result).toEqual(details(part(fragment('Minor creditor account note'))));
   });
+
+  it('should preserve special characters as literal note text', () => {
+    const noteText = 'Template-like text: {section} <value> [optional] | pipe - hyphen ¶ line marker';
+
+    const result = transformMinorCreditorNoteDetails({
+      details: {
+        note_text: noteText,
+      },
+    });
+
+    expect(result).toEqual(details(part(fragment(noteText))));
+  });
 });
 
 describe('transformMinorCreditorTransactionDetails', () => {
