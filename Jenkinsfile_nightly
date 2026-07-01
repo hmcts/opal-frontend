@@ -30,7 +30,7 @@ properties([
     booleanParam(name: 'RunFirefox', defaultValue: false, description: 'Run Firefox tests'),
     booleanParam(
       name: 'RunR1aLegacyDemo',
-      defaultValue: false,
+      defaultValue: true,
       description: 'Run optional R1A legacy demo stage (demo -> legacy checks)'
     ),
     booleanParam(
@@ -524,6 +524,9 @@ void runDemoLegacyStage(Map<String, Object> stageConfig, Closure runCommand) {
       }
       waitForLegacyHealthCheck()
       sh 'echo "Waiting 30s for system warmup..." ; sleep 30'
+      // Demo legacy stages publish from the shared functional output directory.
+      // Reset it first so each stage report contains only the stage that just ran.
+      sh "rm -rf ${functionalOutputRoot}"
 
       withEnv(stageEnv) {
         runCommand.call()

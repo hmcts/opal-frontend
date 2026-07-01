@@ -80,4 +80,18 @@ describe('FinesMacContactDetailsFormComponent', () => {
       }),
     );
   });
+
+  it('should accept 10 digit home and work telephone numbers while keeping mobile telephone number as 11 digits', () => {
+    const mobileTelephoneControl = component.form.get('fm_contact_details_telephone_number_mobile');
+    const homeTelephoneControl = component.form.get('fm_contact_details_telephone_number_home');
+    const workTelephoneControl = component.form.get('fm_contact_details_telephone_number_business');
+
+    mobileTelephoneControl?.setValue('0123456789');
+    homeTelephoneControl?.setValue('0123456789');
+    workTelephoneControl?.setValue('01234 56789');
+
+    expect(mobileTelephoneControl?.hasError('phoneNumberPattern')).toBe(true);
+    expect(homeTelephoneControl?.hasError('phoneNumberPattern')).toBe(false);
+    expect(workTelephoneControl?.hasError('phoneNumberPattern')).toBe(false);
+  });
 });
