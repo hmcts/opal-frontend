@@ -1,3 +1,12 @@
 <div class="govuk-grid-column-full">
-  <h1 class="govuk-heading-l">{{ pageHeading }}</h1>
+  <div class="govuk-grid-row">
+    <div class="govuk-grid-column-three-quarters">
+      <h1 class="govuk-heading-l">{{ pageHeading }}</h1>
+    </div>
+    @if (canCreateReport) {
+      <div class="govuk-grid-column-one-quarter govuk-!-text-align-right">
+        <button buttonId="create-report-button" opalLibGovukButton (click)="handleCreateReport()">Create report</button>
+      </div>
+    }
+  </div>
 </div>
