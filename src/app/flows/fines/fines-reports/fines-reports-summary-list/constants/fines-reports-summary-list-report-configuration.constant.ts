@@ -6,20 +6,27 @@ import { IFinesReportSummaryListReportConfiguration } from '../interfaces/fines-
 export const FINES_REPORT_SUMMARY_LIST_REPORT_CONFIGURATION: IFinesReportSummaryListReportConfiguration[] = [
   {
     id: FINES_REPORTS_SUMMARY_LIST_ROUTING_PATHS.children.yourReports,
+    reportTypeId: FINES_REPORTS_SUMMARY_LIST_ROUTING_PATHS.children.yourReports,
     heading: 'Your reports',
     title: FINES_REPORTS_SUMMARY_LIST_ROUTING_TITLES.children.yourReports,
     permissionIds: [],
+    canCreate: false,
+    isYourReports: true,
   },
   {
     id: FINES_REPORTS_SUMMARY_LIST_ROUTING_PATHS.children.operationalReportsByEnforcement,
+    reportTypeId: FINES_REPORTS_SUMMARY_LIST_ROUTING_PATHS.children.operationalReportsByEnforcement,
     heading: 'Operational reports (by enforcement)',
     title: FINES_REPORTS_SUMMARY_LIST_ROUTING_TITLES.children.operationalReportsByEnforcement,
     permissionIds: [FINES_PERMISSIONS['operational-report-by-enforcement']],
+    canCreate: true,
   },
   {
     id: FINES_REPORTS_SUMMARY_LIST_ROUTING_PATHS.children.operationalReportsByPayments,
+    reportTypeId: FINES_REPORTS_SUMMARY_LIST_ROUTING_PATHS.children.operationalReportsByPayments,
     heading: 'Operational reports (by payments)',
     title: FINES_REPORTS_SUMMARY_LIST_ROUTING_TITLES.children.operationalReportsByPayments,
     permissionIds: [FINES_PERMISSIONS['operational-report-by-payments']],
+    canCreate: true,
   },
 ];

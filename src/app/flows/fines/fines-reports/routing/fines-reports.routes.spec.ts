@@ -4,7 +4,7 @@ import { FINES_REPORTS_ROUTING_PATHS } from './constants/fines-reports-routing-p
 
 describe('finesReports routes', () => {
   it('should redirect bare report routes to the summary list', () => {
-    const reportRoute = routing.find((route) => route.path === ':reportId');
+    const reportRoute = routing.find((route) => route.path === ':reportTypeId');
     const defaultChildRoute = reportRoute?.children?.find((route) => route.path === '');
 
     expect(defaultChildRoute).toEqual({

@@ -1,3 +1,142 @@
 <div class="govuk-grid-column-full">
-  <h1 class="govuk-heading-l">{{ pageHeading }}</h1>
+  <div #errorSummary>
+    <opal-lib-govuk-error-summary
+      [errors]="errorSummaryMessages()"
+      (errorClick)="onErrorClick($event)"
+    ></opal-lib-govuk-error-summary>
+  </div>
+
+  <div class="reports-summary-list-header">
+    <h1 class="govuk-heading-l govuk-!-margin-bottom-0">{{ pageHeading }}</h1>
+    @if (showCreateReportButton) {
+      <button class="govuk-button" id="create-report-button" type="button" data-module="govuk-button">
+        Create report
+      </button>
+    }
+  </div>
+
+  <form [formGroup]="filtersForm" (ngSubmit)="onRefresh()" novalidate>
+    <div class="govuk-grid-row">
+      <div class="govuk-grid-column-one-third">
+        <opal-lib-govuk-select
+          labelText="Filter by business unit"
+          labelClasses="govuk-label--s"
+          selectId="reports-summary-list-business-unit"
+          selectName="reports-summary-list-business-unit"
+          [options]="businessUnitOptions()"
+          [control]="filtersForm.controls.businessUnit"
+        ></opal-lib-govuk-select>
+
+        <opal-lib-govuk-radio
+          fieldSetId="reports-summary-list-date-filter"
+          legendText="Filter by date"
+          legendClasses="govuk-fieldset__legend--s"
+        >
+          <div
+            opal-lib-govuk-radios-item
+            labelText="Last 7 days"
+            inputId="last-7-days"
+            inputName="reports-summary-list-date-filter"
+            inputValue="last7Days"
+            [control]="filtersForm.controls.dateFilter"
+          ></div>
+          <div
+            opal-lib-govuk-radios-item
+            labelText="Custom days"
+            inputId="custom-days"
+            inputName="reports-summary-list-date-filter"
+            inputValue="customDays"
+            ariaControls="reports-summary-list-custom-days"
+            [control]="filtersForm.controls.dateFilter"
+          ></div>
+          @if (dateFilter() === 'customDays') {
+            <div class="govuk-radios__conditional" id="reports-summary-list-custom-days">
+              <div
+                class="govuk-form-group"
+                [class.govuk-form-group--error]="!!getFieldError('reports-summary-list-days')"
+              >
+                <label class="govuk-label" for="reports-summary-list-days">Days</label>
+                @if (getFieldError('reports-summary-list-days')) {
+                  <p id="reports-summary-list-days-error-message" class="govuk-error-message">
+                    <span class="govuk-visually-hidden">Error:</span>
+                    {{ getFieldError('reports-summary-list-days') }}
+                  </p>
+                }
+                <input
+                  class="govuk-input govuk-input--width-2"
+                  id="reports-summary-list-days"
+                  name="reports-summary-list-days"
+                  inputmode="numeric"
+                  type="text"
+                  formControlName="days"
+                  [attr.aria-describedby]="
+                    getFieldError('reports-summary-list-days') ? 'reports-summary-list-days-error-message' : null
+                  "
+                />
+              </div>
+            </div>
+          }
+          <div
+            opal-lib-govuk-radios-item
+            labelText="Date range"
+            inputId="date-range"
+            inputName="reports-summary-list-date-filter"
+            inputValue="dateRange"
+            ariaControls="reports-summary-list-date-range"
+            [control]="filtersForm.controls.dateFilter"
+          ></div>
+          @if (dateFilter() === 'dateRange') {
+            <div class="govuk-radios__conditional reports-summary-list-date-range" id="reports-summary-list-date-range">
+              <opal-lib-moj-date-picker
+                labelText="Enter date from"
+                labelClasses="govuk-label--s"
+                hintText="For example, 31/01/2023"
+                inputId="reports-summary-list-date-from"
+                inputName="reports-summary-list-date-from"
+                inputClasses="govuk-input--width-10"
+                [control]="filtersForm.controls.dateFrom"
+                [errors]="getFieldError('reports-summary-list-date-from')"
+                (dateChange)="onDateChange('dateFrom', $event)"
+              ></opal-lib-moj-date-picker>
+              <opal-lib-moj-date-picker
+                labelText="Enter date to"
+                labelClasses="govuk-label--s"
+                hintText="For example, 31/01/2023"
+                inputId="reports-summary-list-date-to"
+                inputName="reports-summary-list-date-to"
+                inputClasses="govuk-input--width-10"
+                [control]="filtersForm.controls.dateTo"
+                [errors]="getFieldError('reports-summary-list-date-to')"
+                (dateChange)="onDateChange('dateTo', $event)"
+              ></opal-lib-moj-date-picker>
+            </div>
+          }
+        </opal-lib-govuk-radio>
+
+        <button
+          class="govuk-button govuk-button--secondary reports-summary-list-refresh-button"
+          id="refresh-reports-button"
+          type="submit"
+          aria-label="Apply filters and refresh"
+          data-module="govuk-button"
+        >
+          Refresh
+        </button>
+      </div>
+    </div>
+  </form>
+
+  <hr class="govuk-section-break govuk-section-break--m govuk-section-break--visible" />
+
+  @if (overLimit()) {
+    <h2 class="govuk-heading-m">There are more than {{ resultLimit() }} reports</h2>
+    <p class="govuk-body">Use the filters to reduce the number of results.</p>
+  } @else if (tableData().length === 0) {
+    <p class="govuk-body">No reports found</p>
+  } @else {
+    <app-fines-reports-summary-list-table-wrapper
+      [tableData]="tableData()"
+      [existingSortState]="tableSort"
+    ></app-fines-reports-summary-list-table-wrapper>
+  }
 </div>
