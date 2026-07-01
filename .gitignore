@@ -73,4 +73,3 @@ runner-results
 cypress/parallel/weights
 multi-reporter-config.json
 /openapi/opal-merged.yaml
-

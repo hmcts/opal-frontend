@@ -1,0 +1,16 @@
+export const FINES_REPORTS_REPORT_SUMMARY_CRITERIA_LABELS = {
+  reportType: 'Report Type',
+  enforcement: 'Enforcement',
+  actionDate: 'Action date',
+  accountType: 'Account type',
+  accountStatus: 'Account status',
+  collectionOrder: 'Collection order',
+  minimumAccountBalance: 'Minimum account balance',
+  maximumAccountBalance: 'Maximum account balance',
+  lowerNameRange: 'Lower name range',
+  upperNameRange: 'Upper name range',
+  paymentMethod: 'Payment method',
+  paymentDate: 'Payment date',
+  minimumPaymentAmount: 'Minimum payment amount',
+  maximumPaymentAmount: 'Maximum payment amount',
+} as const;
