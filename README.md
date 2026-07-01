@@ -799,18 +799,20 @@ Zephyr Automation is a tool for integrating test results and ticket management b
 
 The following tags can be used in your test scenarios to control ticket creation, linking, and metadata:
 
-| Tag Prefix         | Example Value           | Description                                                        |
-| ------------------ | ----------------------- | ------------------------------------------------------------------ |
-| `@JIRA-TEST-KEY:`  | `@JIRA-TEST-KEY:PROJ-123` | Associates the test with an existing Jira issue key.             |
-| `@JIRA-TEST-KEY:PO-*` | `@JIRA-TEST-KEY:PO-1234` | Associates one executable test with one Zephyr PO test case key. |
-| `@JIRA-COMPONENT:` | `@JIRA-COMPONENT:API`   | Adds the specified Jira component to the ticket.                   |
-| `@JIRA-LABEL:`     | `@JIRA-LABEL:smoke`     | Adds the specified label to the Jira ticket.                       |
-| `@JIRA-EPIC:`      | `@JIRA-EPIC:PROJ-456`   | Links the ticket to the specified Jira Epic.                       |
-| `@JIRA-NFR:`       | `@JIRA-NFR:PROJ-789`    | Links the ticket to a Non-Functional Requirement (NFR) Jira issue. |
-| `@JIRA-LINK:`      | `@JIRA-LINK:PROJ-321`   | Creates a generic link to another Jira issue.                      |
-| `@JIRA-STORY:`     | `@JIRA-STORY:PROJ-654`  | Links the ticket to a Jira Story.                                  |
-| `@JIRA-DEFECT:`    | `@JIRA-DEFECT:PROJ-987` | Links the ticket to a Jira Defect.                                 |
-| `@JIRA-IGNORE:`    | `@JIRA-IGNORE`          | Prevents ticket creation or update for this test.                  |
+| Tag Prefix            | Example Value             | Description                                                        |
+| --------------------- | ------------------------- | ------------------------------------------------------------------ |
+| `@JIRA-TEST-KEY:`     | `@JIRA-TEST-KEY:PROJ-123` | Associates the test with an existing Jira issue key.               |
+| `@JIRA-TEST-KEY:PO-*` | `@JIRA-TEST-KEY:PO-1234`  | Associates one executable test with one Zephyr PO test case key.   |
+| `@JIRA-COMPONENT:`    | `@JIRA-COMPONENT:API`     | Adds the specified Jira component to the ticket.                   |
+| `@JIRA-LABEL:`        | `@JIRA-LABEL:smoke`       | Adds the specified label to the Jira ticket.                       |
+| `@JIRA-EPIC:`         | `@JIRA-EPIC:PROJ-456`     | Links the ticket to the specified Jira Epic.                       |
+| `@JIRA-NFR:`          | `@JIRA-NFR:PROJ-789`      | Links the ticket to a Non-Functional Requirement (NFR) Jira issue. |
+| `@JIRA-LINK:`         | `@JIRA-LINK:PROJ-321`     | Creates a generic link to another Jira issue.                      |
+| `@JIRA-STORY:`        | `@JIRA-STORY:PROJ-654`    | Links the ticket to a Jira Story.                                  |
+| `@JIRA-DEFECT:`       | `@JIRA-DEFECT:PROJ-987`   | Links the ticket to a Jira Defect.                                 |
+| `@JIRA-IGNORE:`       | `@JIRA-IGNORE`            | Prevents ticket creation or update for this test.                  |
 
 - Tags are case-sensitive and must be used exactly as shown.
 - `yarn check:jira:test-metadata` uses `@hmcts/opal-frontend-common-cypress` to enforce the covered-test Jira metadata policy, including the single-epic rule.
+
+Test Update
