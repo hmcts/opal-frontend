@@ -48,3 +48,15 @@
     ></li>
   </opal-lib-moj-sub-navigation>
 </div>
+
+@switch (activeTab) {
+  @case ('at-a-glance') {
+    @if (tabAtAGlance$ | async; as tabData) {
+      <app-fines-acc-major-creditor-details-at-a-glance-tab
+        [tabData]="tabData"
+        [style]="tabContentStyles"
+        [centralFund]="accountData.major_creditor.account_reference.account_type === majorCreditorAccountTypes.CF"
+      ></app-fines-acc-major-creditor-details-at-a-glance-tab>
+    }
+  }
+}

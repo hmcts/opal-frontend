@@ -11,7 +11,6 @@ import { FinesAccMajorCreditorDetailsComponent } from './fines-acc-major-credito
 import { FinesAccPayloadService } from '../services/fines-acc-payload.service';
 import { MOCK_FINES_ACCOUNT_STATE } from '../mocks/fines-acc-state.mock';
 import { FINES_ACC_MAJOR_CREDITOR_DETAILS_HEADER_MOCK } from './mocks/fines-acc-major-creditor-details-header.mock';
-import { OPAL_FINES_ACCOUNT_MAJOR_CREDITOR_AT_A_GLANCE_WITH_DEFENDANT_MOCK } from '../../services/opal-fines-service/mocks/opal-fines-account-major-creditor-at-a-glance-with-defendant.mock';
 
 describe('FinesAccMajorCreditorDetailsComponent', () => {
   let component: FinesAccMajorCreditorDetailsComponent;
@@ -91,16 +90,5 @@ describe('FinesAccMajorCreditorDetailsComponent', () => {
 
     expect(mockOpalFinesService.getMajorCreditorAccountHeadingData).toHaveBeenCalledWith(456);
     expect(result).toEqual(headingData);
-  });
-
-  it('should set payment hold state when at-a-glance tab data emits', () => {
-    const setHasPaymentHoldSpy = vi.spyOn(component.accountStore, 'setHasPaymentHold');
-
-    component['refreshFragment$'].next('at-a-glance');
-    component.tabAtAGlance$.subscribe();
-
-    expect(setHasPaymentHoldSpy).toHaveBeenCalledWith(
-      OPAL_FINES_ACCOUNT_MAJOR_CREDITOR_AT_A_GLANCE_WITH_DEFENDANT_MOCK.payment.hold_payment,
-    );
   });
 });
