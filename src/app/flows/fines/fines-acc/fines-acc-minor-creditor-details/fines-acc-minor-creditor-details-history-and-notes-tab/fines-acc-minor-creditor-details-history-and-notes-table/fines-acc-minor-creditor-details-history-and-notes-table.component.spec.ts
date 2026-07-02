@@ -1,8 +1,11 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
+import { By } from '@angular/platform-browser';
 import { provideRouter } from '@angular/router';
 import { FINES_ROUTING_PATHS } from '@routing/fines/constants/fines-routing-paths.constant';
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import { FINES_ACCOUNT_HISTORY_TABLE_DISPLAY } from '../../../fines-account-history-table/constants/fines-account-history-table-display.constant';
+import { FINES_ACCOUNT_HISTORY_TABLE_SORT_DIRECTIONS } from '../../../fines-account-history-table/constants/fines-account-history-table-sort-directions.constant';
+import { FinesAccountHistoryTableComponent } from '../../../fines-account-history-table/fines-account-history-table.component';
 import { FINES_ACC_DEFENDANT_ROUTING_PATHS } from '../../../routing/constants/fines-acc-defendant-routing-paths.constant';
 import { FINES_ACC_ROUTING_PATHS } from '../../../routing/constants/fines-acc-routing-paths.constant';
 import { FinesAccMinorCreditorDetailsHistoryAndNotesTableComponent } from './fines-acc-minor-creditor-details-history-and-notes-table.component';
@@ -59,6 +62,58 @@ describe('FinesAccMinorCreditorDetailsHistoryAndNotesTableComponent', () => {
         amountTag: FINES_ACCOUNT_HISTORY_TABLE_DISPLAY.amountTags.debit,
       }),
     ]);
+  });
+
+  it('should preserve RFC3339 UTC timestamps including milliseconds as date sort values', () => {
+    const timestamp = '2026-06-25T10:30:15.123Z';
+    const rows = component.getHistoryRows({
+      version: null,
+      historyItems: [
+        {
+          details: {
+            line1: [{ fragments: [{ text: 'Timestamped item', bold: false, hyphen: false }] }],
+            line2: null,
+          },
+          postedDetails: {
+            posted_by_name: 'Case worker',
+            posted_date: timestamp,
+          },
+          type: 'Notes',
+        },
+      ],
+    });
+
+    expect(rows[0]).toEqual(
+      expect.objectContaining({
+        Date: Date.parse(timestamp),
+        displayDate: Date.parse(timestamp),
+      }),
+    );
+  });
+
+  it('should map supported minor creditor date field paths', () => {
+    const timestamp = '2026-06-25T10:30:15.123Z';
+    const rows = component.getHistoryRows({
+      version: null,
+      historyItems: [
+        {
+          details: {
+            line1: [{ fragments: [{ text: 'Posted date item', bold: false, hyphen: false }] }],
+            line2: null,
+          },
+          posted_date: '24/06/2026',
+        },
+        {
+          details: {
+            line1: [{ fragments: [{ text: 'Timestamp item', bold: false, hyphen: false }] }],
+            line2: null,
+          },
+          timestamp,
+        },
+      ],
+    });
+
+    expect(rows.map((row) => row.Date)).toEqual([Date.parse('2026-06-24T00:00:00.000Z'), Date.parse(timestamp)]);
   });
 
   it('should map minor creditor history items from the existing API history_items key', () => {
@@ -147,6 +202,81 @@ describe('FinesAccMinorCreditorDetailsHistoryAndNotesTableComponent', () => {
     expect(fixture.nativeElement.textContent).toContain('Finance officer');
     expect(fixture.nativeElement.textContent).toContain('Payment received');
     expect(fixture.nativeElement.textContent).toContain('CR');
+  });
+
+  it('should render minor creditor rows in default newest-to-oldest date order', () => {
+    fixture.componentRef.setInput('tabData', {
+      version: null,
+      historyItems: [
+        {
+          details: {
+            line1: [{ fragments: [{ text: 'Older item', bold: false, hyphen: false }] }],
+            line2: null,
+          },
+          posted_date: '24/06/2026',
+          posted_by_name: 'Older user',
+          type: 'Notes',
+        },
+        {
+          details: {
+            line1: [{ fragments: [{ text: 'Newer item', bold: false, hyphen: false }] }],
+            line2: null,
+          },
+          posted_date: '25/06/2026',
+          posted_by_name: 'Newer user',
+          type: 'Notes',
+        },
+      ],
+    });
+
+    fixture.detectChanges();
+
+    const firstUserCell = fixture.nativeElement.querySelector(
+      `#${FINES_ACCOUNT_HISTORY_TABLE_DISPLAY.rowIdPrefixes.user}0`,
+    ) as HTMLTableCellElement;
+
+    expect(firstUserCell.textContent).toContain('Newer user');
+  });
+
+  it('should sort minor creditor rows by date ascending when the date sort changes', () => {
+    fixture.componentRef.setInput('tabData', {
+      version: null,
+      historyItems: [
+        {
+          details: {
+            line1: [{ fragments: [{ text: 'Newer item', bold: false, hyphen: false }] }],
+            line2: null,
+          },
+          posted_date: '25/06/2026',
+          posted_by_name: 'Newer user',
+          type: 'Notes',
+        },
+        {
+          details: {
+            line1: [{ fragments: [{ text: 'Older item', bold: false, hyphen: false }] }],
+            line2: null,
+          },
+          posted_date: '24/06/2026',
+          posted_by_name: 'Older user',
+          type: 'Notes',
+        },
+      ],
+    });
+    fixture.detectChanges();
+
+    const historyTable = fixture.debugElement.query(By.directive(FinesAccountHistoryTableComponent))
+      .componentInstance as FinesAccountHistoryTableComponent;
+    historyTable.onSortChange({
+      key: 'Date',
+      sortType: FINES_ACCOUNT_HISTORY_TABLE_SORT_DIRECTIONS.ascending,
+    });
+    fixture.detectChanges();
+
+    const firstUserCell = fixture.nativeElement.querySelector(
+      `#${FINES_ACCOUNT_HISTORY_TABLE_DISPLAY.rowIdPrefixes.user}0`,
+    ) as HTMLTableCellElement;
+
+    expect(firstUserCell.textContent).toContain('Older user');
   });
 
   it('should open account history links in a new browser tab', () => {
