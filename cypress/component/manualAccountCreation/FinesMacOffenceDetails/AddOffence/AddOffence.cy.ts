@@ -487,7 +487,7 @@ describe('FinesMacAddOffenceComponent', () => {
     },
   );
 
-  it('Verify major creditor options for FCOMP', { tags: ['@JIRA-STORY:PO-2127'] }, () => {
+  it('Verify major creditor options for FCOMP', { tags: ['@JIRA-STORY:PO-2127', '@JIRA-EPIC:PO-2219'] }, () => {
     setupComponent(null);
 
     const imposition_1 = impositionSelectors(0);
@@ -516,7 +516,7 @@ describe('FinesMacAddOffenceComponent', () => {
       });
   });
 
-  it('Verify major creditor options for FCOST', { tags: ['@JIRA-STORY:PO-2127'] }, () => {
+  it('Verify major creditor options for FCOST', { tags: ['@JIRA-STORY:PO-2127', '@JIRA-EPIC:PO-2219'] }, () => {
     setupComponent(null);
 
     const imposition_1 = impositionSelectors(0);
