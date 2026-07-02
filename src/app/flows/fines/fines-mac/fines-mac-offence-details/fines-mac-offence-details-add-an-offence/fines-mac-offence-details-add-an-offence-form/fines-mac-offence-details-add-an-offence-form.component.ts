@@ -101,6 +101,7 @@ export class FinesMacOffenceDetailsAddAnOffenceFormComponent
   private readonly changeDetector: ChangeDetectorRef = inject(ChangeDetectorRef);
   private readonly opalFinesService = inject(OpalFines);
   private readonly finesMacStore = inject(FinesMacStore);
+  private readonly creditorListenerControls = new WeakSet<object>();
 
   @Output() protected override formSubmit = new EventEmitter<IFinesMacOffenceDetailsForm>();
   protected readonly dateService = inject(DateService);
@@ -136,7 +137,6 @@ export class FinesMacOffenceDetailsAddAnOffenceFormComponent
   };
   public majorCreditorItemsByCode: Record<string, IAlphagovAccessibleAutocompleteItem[]> = {};
   public currentResultCodeByRow: Record<number, string> = {};
-  private readonly creditorListenerControls = new WeakSet<object>();
 
   /**
    * Replaced during listener setup with a callback that retries the current offence-code lookup.
@@ -394,28 +394,6 @@ export class FinesMacOffenceDetailsAddAnOffenceFormComponent
   }
 
   /**
-   * Gets major creditor autocomplete items for a result code.
-   * @param resultCode - The imposition result code for the row.
-   * @returns The autocomplete items for the result code, or an empty list.
-   */
-  public getMajorCreditorItems(resultCode: string | null | undefined): IAlphagovAccessibleAutocompleteItem[] {
-    return resultCode ? (this.majorCreditorItemsByCode[resultCode] ?? []) : [];
-  }
-
-  /**
-   * Checks whether a creditor option is selected for the requested imposition row.
-   * @param rowIndex - The index of the imposition row.
-   * @param creditor - The creditor option to check.
-   * @returns Whether the creditor option is currently selected.
-   */
-  public isCreditorSelected(rowIndex: number, creditor: string): boolean {
-    return (
-      this.form?.get(['fm_offence_details_impositions', rowIndex, `fm_offence_details_creditor_${rowIndex}`])?.value ===
-      creditor
-    );
-  }
-
-  /**
    * Validates the major creditor control in the form group.
    * @param index - The index of the form group.
    * @param add - Indicates whether to add or remove validators.
@@ -508,6 +486,28 @@ export class FinesMacOffenceDetailsAddAnOffenceFormComponent
         creditorControl?.setErrors({ minorCreditorMissing: true });
       }
     }
+  }
+
+  /**
+   * Gets major creditor autocomplete items for a result code.
+   * @param resultCode - The imposition result code for the row.
+   * @returns The autocomplete items for the result code, or an empty list.
+   */
+  public getMajorCreditorItems(resultCode: string | null | undefined): IAlphagovAccessibleAutocompleteItem[] {
+    return resultCode ? (this.majorCreditorItemsByCode[resultCode] ?? []) : [];
+  }
+
+  /**
+   * Checks whether a creditor option is selected for the requested imposition row.
+   * @param rowIndex - The index of the imposition row.
+   * @param creditor - The creditor option to check.
+   * @returns Whether the creditor option is currently selected.
+   */
+  public isCreditorSelected(rowIndex: number, creditor: string): boolean {
+    return (
+      this.form?.get(['fm_offence_details_impositions', rowIndex, `fm_offence_details_creditor_${rowIndex}`])?.value ===
+      creditor
+    );
   }
 
   /**
