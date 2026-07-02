@@ -1,0 +1,45 @@
+export const FINES_ACCOUNT_HISTORY_TABLE_DISPLAY = {
+  amountDescriptions: {
+    credit: 'credited',
+    debit: 'debited',
+  },
+  amountDirectionSuffix: '-amount-direction',
+  amountTags: {
+    credit: 'CR',
+    debit: 'DR',
+  },
+  cssClasses: {
+    amountTag: 'govuk-tag',
+    amountTagCredit: 'govuk-tag--green',
+    amountTagDebit: 'govuk-tag--red',
+    detailsLine2: 'govuk-!-margin-top-1',
+    link: 'govuk-link govuk-link--no-visited-state',
+    visuallyHidden: 'govuk-visually-hidden',
+  },
+  dateFormat: 'dd MMM yyyy',
+  emptyCell: '—',
+  fragmentEmptyPrefix: '',
+  fragmentSpacePrefix: ' ',
+  hyphenPrefix: ' - ',
+  linkHref: '',
+  localeCompareOptions: {
+    numeric: true,
+    sensitivity: 'base',
+  },
+  noResultsId: 'history-and-notes-no-results',
+  noResultsText: 'No results found.',
+  partSeparator: ' | ',
+  rowIdPrefix: 'history-and-notes-row-',
+  rowIdPrefixes: {
+    amount: 'history-and-notes-amount-',
+    date: 'history-and-notes-date-',
+    details: 'history-and-notes-details-',
+    type: 'history-and-notes-type-',
+    user: 'history-and-notes-user-',
+  },
+  sortComparison: {
+    equal: 0,
+    firstAfterSecond: 1,
+    firstBeforeSecond: -1,
+  },
+} as const;
