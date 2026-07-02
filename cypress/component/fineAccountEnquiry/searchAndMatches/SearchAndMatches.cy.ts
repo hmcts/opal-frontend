@@ -9,51 +9,6 @@ import { setupFinesMacRouteComponent } from 'cypress/component/CommonSetup/Fines
 const ACCOUNT_ENQUIRY_JIRA_LABEL = '@JIRA-LABEL:account-enquiry';
 
 describe('Search Account Component', { tags: [ACCOUNT_ENQUIRY_JIRA_LABEL] }, () => {
-  it.skip(
-    'Time between tab changes should be less than 250ms cy.wrap',
-    { tags: ['@JIRA-EPIC:PO-2479', '@JIRA-NFR:PO-2547', '@JIRA-STORY:PO-2547'] },
-    () => {
-      interceptAuthenticatedUser();
-      interceptUserState(USER_STATE_MOCK_PERMISSION_BU77);
-      interceptBusinessUnits();
-
-      setupFinesMacRouteComponent();
-
-      const tabs = [
-        { heading: 'Individuals', selector: '#tab-individuals', hash: '#individuals', time: 0 },
-        { heading: 'Companies', selector: '#tab-companies', hash: '#companies', time: 0 },
-        { heading: 'Minor creditors', selector: '#tab-minor-creditors', hash: '#minor-creditor', time: 0 },
-        { heading: 'Major creditors', selector: '#tab-major-creditors', hash: '#major-creditor', time: 0 },
-        { heading: 'Minor creditors', selector: '#tab-minor-creditors', hash: '#minor-creditor', time: 0 },
-        { heading: 'Major creditors', selector: '#tab-major-creditors', hash: '#major-creditor', time: 0 },
-        { heading: 'Minor creditors', selector: '#tab-minor-creditors', hash: '#minor-creditor', time: 0 },
-        { heading: 'Major creditors', selector: '#tab-major-creditors', hash: '#major-creditor', time: 0 },
-      ];
-
-      cy.wrap(tabs).each((tab: { selector: string; hash: string; time: number }) => {
-        let start = 0;
-
-        cy.window().then((win) => {
-          start = win.performance.now();
-        });
-
-        cy.get(tab.selector).should('exist').should('be.visible').click();
-
-        cy.window().then((win) => {
-          cy.get('opal-lib-govuk-tabs-panel > * > h1').should('have.text', tab.heading);
-          const elapsed = win.performance.now() - start;
-
-          tab.time = elapsed;
-
-          expect(elapsed, ``).to.be.lessThan(250);
-        });
-      });
-
-      cy.then(() => {
-        cy.log(tabs.map((tab) => `${tab.hash}: ${tab.time.toFixed(2)}ms`).join('\n'));
-      });
-    },
-  );
   it(
     'Time between tab changes should be less than 250ms',
     { tags: ['@JIRA-EPIC:PO-2479', '@JIRA-NFR:PO-2547', '@JIRA-STORY:PO-2547'] },
