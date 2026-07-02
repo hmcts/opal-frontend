@@ -123,13 +123,17 @@ describe(
       },
     );
 
-    it('hides Reports from the primary navigation when release-1c enforcement operational reporting is disabled', {tags: ['@JIRA-TEST-KEY:PO-8675']}, () => {
+    it(
+      'hides Reports from the primary navigation when release-1c enforcement operational reporting is disabled',
+      { tags: ['@JIRA-TEST-KEY:PO-8675'] },
+      () => {
         setupComponent(withReportPermission(USER_STATE_MOCK_NO_PERMISSION), {
           [RELEASE_1C_ENFORCEMENT_OPERATIONAL_REPORTING_FEATURE_FLAG]: false,
         });
 
         cy.get(L.container).should('be.visible');
         cy.get(L.itemByText(L.labels.reports)).should('not.exist');
-      });
+      },
+    );
   },
 );
