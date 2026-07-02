@@ -136,7 +136,7 @@ describe('FinesRelease1bFeatureToggles', () => {
 
   it(
     'should show Search in primary navigation when release-1b is enabled',
-    { tags: [...buildTags(RELEASE_1B_STORY_TAG), RELEASE_EPIC_TAG, '@R1B', '@JIRA-TEST-KEY:PO-3720'] },
+    { tags: [...buildTags(RELEASE_1B_STORY_TAG), RELEASE_EPIC_TAG, '@R1B', '@JIRA-TEST-KEY:PO-8676'] },
     () => {
       setupAppComponent(searchPermissionIds, { 'release-1b': true });
 
@@ -147,7 +147,7 @@ describe('FinesRelease1bFeatureToggles', () => {
 
   it(
     'should hide Search in primary navigation when release-1b is disabled',
-    { tags: [...buildTags(RELEASE_1B_STORY_TAG), RELEASE_EPIC_TAG, '@R1BOff', '@JIRA-TEST-KEY:PO-3720'] },
+    { tags: [...buildTags(RELEASE_1B_STORY_TAG), RELEASE_EPIC_TAG, '@R1BOff', '@JIRA-TEST-KEY:PO-8677'] },
     () => {
       setupAppComponent(searchPermissionIds, { 'release-1b': false });
 
@@ -158,7 +158,7 @@ describe('FinesRelease1bFeatureToggles', () => {
 
   it(
     'should hide approved account links when release-1b is disabled',
-    { tags: [...buildTags(RELEASE_1B_STORY_TAG), RELEASE_EPIC_TAG, '@R1BOff', '@JIRA-TEST-KEY:PO-3720'] },
+    { tags: [...buildTags(RELEASE_1B_STORY_TAG), RELEASE_EPIC_TAG, '@R1BOff', '@JIRA-TEST-KEY:PO-8678'] },
     () => {
       setupApprovedAccounts({ 'release-1b': false });
 
@@ -171,7 +171,7 @@ describe('FinesRelease1bFeatureToggles', () => {
 
   it(
     'should show approved account links when release-1b is enabled',
-    { tags: [...buildTags(RELEASE_1B_STORY_TAG), RELEASE_EPIC_TAG, '@R1B', '@JIRA-TEST-KEY:PO-3720'] },
+    { tags: [...buildTags(RELEASE_1B_STORY_TAG), RELEASE_EPIC_TAG, '@R1B', '@JIRA-TEST-KEY:PO-8679'] },
     () => {
       setupApprovedAccounts({ 'release-1b': true }, true);
 
