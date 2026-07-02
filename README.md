@@ -426,6 +426,8 @@ Notes for the nightly pipeline:
 
 - The nightly pipeline uses Edge by default. If Edge is unavailable on the Jenkins agent, it falls back to Chrome.
 - `RunChrome` and `RunFirefox` are mutually exclusive browser overrides for the selected stages.
+- Selecting `RunChrome` or `RunFirefox` does not add any extra test stages. It only changes the browser used by the stages enabled for that run.
+- If no other parameters are changed, the default-enabled nightly stages still run, using the selected browser override when one is set.
 - `LEGACY_URL` defaults to `PRE-PROD`.
 - `LEGACY_URL=PRE-PROD` points the legacy gateway checks at `https://cloudgobgateway.test.platform.hmcts.net/opal`.
 - `LEGACY_URL=DEV` uses the staging legacy DB stub, skips the pre-prod `getGmasTest` health check, and does not patch the demo `app-mode` LaunchDarkly flag to `legacy`.
