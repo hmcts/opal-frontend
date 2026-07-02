@@ -13,3 +13,18 @@ export function interceptBusinessUnitById(businessUnitId: number, response: any)
     })
     .as('getBusinessUnitById');
 }
+
+export function interceptBusinessUnits() {
+  return cy
+    .intercept('GET', '/opal-fines-service/business-units', {
+      statusCode: 200,
+      body: [
+        {
+          id: 77,
+          name: 'Test Business Unit',
+          description: 'A business unit used for testing purposes',
+        },
+      ],
+    })
+    .as('getBusinessUnits');
+}
