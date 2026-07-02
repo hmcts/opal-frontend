@@ -706,6 +706,37 @@ Then(
 );
 
 /**
+ * @step Assert the major creditor search box is not visible for an imposition.
+ * @description Verifies that the major creditor search control is not visible for the target imposition.
+ *
+ * @param row - 1-based imposition number to check.
+ * @example And the major creditor search box is not visible for imposition 1
+ */
+Then('the major creditor search box is not visible for imposition {int}', (row: number) => {
+  const index = row - 1;
+  setCurrentImpositionIndex(index);
+
+  log('assert', 'Asserting major creditor search box is not visible', { index });
+  offenceDetails().assertMajorCreditorSearchBoxVisible(index, false);
+});
+
+/**
+ * @step Assert a major creditor option is not available for an imposition.
+ * @description Verifies that the specified value does not appear in the major creditor autocomplete options for the target imposition.
+ *
+ * @param value - Major creditor option text that must not be present.
+ * @param row - 1-based imposition number to check.
+ * @example And I do not see "Crown Prosecution Service (DPP)" in the major creditor options for imposition 1
+ */
+Then('I do not see {string} in the major creditor options for imposition {int}', (value: string, row: number) => {
+  const index = row - 1;
+  setCurrentImpositionIndex(index);
+
+  log('assert', 'Asserting major creditor option is not available', { value, index });
+  offenceDetails().assertMajorCreditorOptionUnavailable(index, value);
+});
+
+/**
  * @step Select creditor type radio for an imposition.
  * @description Select creditor type radio for an imposition.
 
@@ -876,4 +907,22 @@ Then('row number {int} has the following data:', (_row: number, table: DataTable
  */
 When('I perform remove imposition accessibility check for imposition {int}', (imposition: number) => {
   flow().runRemoveImpositionAccessibility(imposition);
+});
+
+/**
+ * @step Assert a creditor radio button is not selected for an imposition.
+ * @description Assert the specified creditor radio button is unchecked for an imposition.
+ *
+ * @param label - Creditor radio label.
+ * @param row - 1-based imposition number.
+ * @example Then the "Major" radio button is not selected for imposition 1
+ */
+Then('the {string} radio button is not selected for imposition {int}', (label: string, row: number) => {
+  const index = row - 1;
+  setCurrentImpositionIndex(index);
+  const normalized = label.toLowerCase();
+  const type = normalized.includes('minor') ? 'minor' : 'major';
+
+  log('assert', 'Asserting creditor radio button is not selected', { label, type, index });
+  offenceDetails().assertCreditorTypeSelected(index, type as 'major' | 'minor', false);
 });

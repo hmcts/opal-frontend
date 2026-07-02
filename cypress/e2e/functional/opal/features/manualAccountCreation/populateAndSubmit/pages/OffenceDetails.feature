@@ -283,6 +283,24 @@ Feature: Manual account creation - Offence Details
     # Only one imposition left – cannot remove
     And I do not see the "Remove imposition" link for imposition 1
 
+  @JIRA-STORY:PO-2127 @JIRA-BUG:PO-8265
+  Scenario: Changing an imposition from FCOMP to FCOST clears major creditor selection and re-filters creditor options
+    When I provide offence details for offence code "TP11003" with a sentence date 9 weeks in the past
+
+    And I record imposition financial details:
+      | Imposition | Result code          | Amount imposed | Amount paid |
+      | 1          | Compensation (FCOMP) | 200            | 100         |
+
+    And I select the "Major" radio button for imposition 1
+    And I enter "Crown Prosecution Service (DPP)" into the "Search using name or code" search box for imposition 1
+    Then I see "Crown Prosecution Service (DPP)" in the "Search using name or code" field for imposition 1
+
+    When I enter "Costs (FCOST)" into the "Result code" field for imposition 1 in the MAC flow
+    Then the "Major" radio button is not selected for imposition 1
+    And the major creditor search box is not visible for imposition 1
+
+    When I select the "Major" radio button for imposition 1
+    And I do not see "Crown Prosecution Service (DPP)" in the major creditor options for imposition 1
 
   @JIRA-EPIC:PO-272 @JIRA-TEST-KEY:PO-5365
   Scenario: User removes two impositions and rebuilds four impositions
