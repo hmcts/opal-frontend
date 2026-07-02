@@ -11,7 +11,7 @@ const ACCOUNT_ENQUIRY_JIRA_LABEL = '@JIRA-LABEL:account-enquiry';
 describe('Search Account Component', { tags: [ACCOUNT_ENQUIRY_JIRA_LABEL] }, () => {
   it(
     'Time between tab changes should be less than 250ms',
-    { tags: ['@JIRA-EPIC:PO-2479', '@JIRA-NFR:PO-2547', '@JIRA-STORY:PO-2547'] },
+    { tags: ['@JIRA-EPIC:PO-2479', '@JIRA-NFR:PO-2547', '@JIRA-STORY:PO-2547', '@JIRA-TEST-KEY:PO-8738'] },
     () => {
       interceptAuthenticatedUser();
       interceptUserState(USER_STATE_MOCK_PERMISSION_BU77);
