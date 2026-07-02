@@ -15,10 +15,7 @@ import { GovukRadioComponent } from '@hmcts/opal-frontend-common/components/govu
 import { afterAll, beforeAll, beforeEach, describe, expect, it, vi } from 'vitest';
 import { FINES_MAC_ORIGINATOR_TYPE_FORM } from '../../fines-mac-originator-type/constants/fines-mac-originator-type-form.constant';
 import { FINES_MAC_ORIGINATOR_TYPE_STATE_MOCK } from '../../fines-mac-originator-type/mocks/fines-mac-originator-type-state.mock';
-import { FINES_ROUTING_PATHS } from '@routing/fines/constants/fines-routing-paths.constant';
-import { FINES_DRAFT_ROUTING_PATHS } from '../../../fines-draft/routing/constants/fines-draft-routing-paths.constant';
-import { FINES_DRAFT_CREATE_AND_MANAGE_ROUTING_PATHS } from '../../../fines-draft/fines-draft-create-and-manage/routing/constants/fines-draft-create-and-manage-routing-paths.constant';
-import { FINES_DRAFT_TAB_STATUSES } from '../../../fines-draft/constants/fines-draft-tab-statuses.constant';
+import { FINES_MAC_DRAFT_CREATE_AND_MANAGE_TABS_ROUTE } from '../../constants/fines-mac-draft-create-and-manage-tabs-route.constant';
 
 describe('FinesMacCreateAccountFormComponent', () => {
   let component: FinesMacCreateAccountFormComponent;
@@ -277,19 +274,12 @@ describe('FinesMacCreateAccountFormComponent', () => {
 
   it('should route the cancel link to the review tab in draft create and manage', () => {
     const handleRouteSpy = vi.spyOn(component, 'handleRoute').mockImplementation(() => {});
-    const expectedRoute = [
-      '',
-      FINES_ROUTING_PATHS.root,
-      FINES_DRAFT_ROUTING_PATHS.root,
-      FINES_DRAFT_ROUTING_PATHS.children.createAndManage,
-      FINES_DRAFT_CREATE_AND_MANAGE_ROUTING_PATHS.children.tabs,
-    ].join('/');
 
     fixture.debugElement.query(By.css('opal-lib-govuk-cancel-link')).triggerEventHandler('linkClickEvent');
 
-    expect(handleRouteSpy).toHaveBeenCalledWith(expectedRoute, {
+    expect(handleRouteSpy).toHaveBeenCalledWith(FINES_MAC_DRAFT_CREATE_AND_MANAGE_TABS_ROUTE.path, {
       nonRelative: true,
-      fragment: FINES_DRAFT_TAB_STATUSES[0].tab,
+      fragment: FINES_MAC_DRAFT_CREATE_AND_MANAGE_TABS_ROUTE.fragment,
     });
   });
 });

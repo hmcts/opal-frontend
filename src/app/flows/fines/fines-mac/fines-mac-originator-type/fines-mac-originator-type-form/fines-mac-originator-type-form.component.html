@@ -30,7 +30,10 @@
     <div class="govuk-grid-column-two-thirds">
       <opal-lib-govuk-cancel-link
         (linkClickEvent)="
-          handleRoute(draftCreateAndManageTabsPath, { nonRelative: true, fragment: draftCreateAndManageTabsFragment })
+          handleRoute(draftCreateAndManageTabsRoute.path, {
+            nonRelative: true,
+            fragment: draftCreateAndManageTabsRoute.fragment,
+          })
         "
       ></opal-lib-govuk-cancel-link>
     </div>
