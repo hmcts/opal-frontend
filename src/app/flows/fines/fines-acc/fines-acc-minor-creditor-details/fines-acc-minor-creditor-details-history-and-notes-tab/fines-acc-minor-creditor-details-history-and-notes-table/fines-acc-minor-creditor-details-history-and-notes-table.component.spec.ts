@@ -206,6 +206,91 @@ describe('FinesAccMinorCreditorDetailsHistoryAndNotesTableComponent', () => {
     expect(fixture.nativeElement.textContent).toContain('CR');
   });
 
+  it('should render minor creditor CR and DR amounts with accessible descriptions', () => {
+    fixture.componentRef.setInput('tabData', {
+      version: null,
+      historyItems: [
+        {
+          amount: 50,
+          details: {
+            line1: [{ fragments: [{ text: 'Credited payment', bold: false, hyphen: false }] }],
+            line2: null,
+          },
+          posted_date: '25/06/2026',
+          type: 'Financial',
+        },
+        {
+          amount: -25,
+          details: {
+            line1: [{ fragments: [{ text: 'Debited payment', bold: false, hyphen: false }] }],
+            line2: null,
+          },
+          posted_date: '24/06/2026',
+          type: 'Financial',
+        },
+        {
+          amount: 0,
+          details: {
+            line1: [{ fragments: [{ text: 'Zero amount', bold: false, hyphen: false }] }],
+            line2: null,
+          },
+          posted_date: '23/06/2026',
+          type: 'Financial',
+        },
+        {
+          details: {
+            line1: [{ fragments: [{ text: 'Note without amount', bold: false, hyphen: false }] }],
+            line2: null,
+          },
+          posted_date: '22/06/2026',
+          type: 'Notes',
+        },
+      ],
+    });
+
+    fixture.detectChanges();
+
+    const creditCell = fixture.nativeElement.querySelector(
+      `#${FINES_ACCOUNT_HISTORY_TABLE_DISPLAY.rowIdPrefixes.amount}0`,
+    ) as HTMLTableCellElement;
+    const debitCell = fixture.nativeElement.querySelector(
+      `#${FINES_ACCOUNT_HISTORY_TABLE_DISPLAY.rowIdPrefixes.amount}1`,
+    ) as HTMLTableCellElement;
+    const zeroCell = fixture.nativeElement.querySelector(
+      `#${FINES_ACCOUNT_HISTORY_TABLE_DISPLAY.rowIdPrefixes.amount}2`,
+    ) as HTMLTableCellElement;
+    const emptyCell = fixture.nativeElement.querySelector(
+      `#${FINES_ACCOUNT_HISTORY_TABLE_DISPLAY.rowIdPrefixes.amount}3`,
+    ) as HTMLTableCellElement;
+    const creditTag = creditCell.querySelector('strong') as HTMLElement;
+    const debitTag = debitCell.querySelector('strong') as HTMLElement;
+    const creditAmountDescriptionId = `${FINES_ACCOUNT_HISTORY_TABLE_DISPLAY.rowIdPrefix}0${FINES_ACCOUNT_HISTORY_TABLE_DISPLAY.amountDirectionSuffix}`;
+    const debitAmountDescriptionId = `${FINES_ACCOUNT_HISTORY_TABLE_DISPLAY.rowIdPrefix}1${FINES_ACCOUNT_HISTORY_TABLE_DISPLAY.amountDirectionSuffix}`;
+
+    expect(normalizedText(creditCell)).toContain('£50.00 CR credited');
+    expect(creditTag.classList).toContain(FINES_ACCOUNT_HISTORY_TABLE_DISPLAY.cssClasses.amountTag);
+    expect(creditTag.classList).toContain(FINES_ACCOUNT_HISTORY_TABLE_DISPLAY.cssClasses.amountTagCredit);
+    expect(creditTag.getAttribute('aria-describedby')).toBe(creditAmountDescriptionId);
+    expect(creditTag.getAttribute('tabindex')).toBeNull();
+    expect(creditCell.querySelector(`#${creditAmountDescriptionId}`)?.textContent).toContain(
+      FINES_ACCOUNT_HISTORY_TABLE_DISPLAY.amountDescriptions.credit,
+    );
+
+    expect(normalizedText(debitCell)).toContain('£25.00 DR debited');
+    expect(debitTag.classList).toContain(FINES_ACCOUNT_HISTORY_TABLE_DISPLAY.cssClasses.amountTag);
+    expect(debitTag.classList).toContain(FINES_ACCOUNT_HISTORY_TABLE_DISPLAY.cssClasses.amountTagDebit);
+    expect(debitTag.getAttribute('aria-describedby')).toBe(debitAmountDescriptionId);
+    expect(debitTag.getAttribute('tabindex')).toBeNull();
+    expect(debitCell.querySelector(`#${debitAmountDescriptionId}`)?.textContent).toContain(
+      FINES_ACCOUNT_HISTORY_TABLE_DISPLAY.amountDescriptions.debit,
+    );
+
+    expect(normalizedText(zeroCell)).toBe(FINES_ACCOUNT_HISTORY_TABLE_DISPLAY.emptyCell);
+    expect(zeroCell.querySelector('strong')).toBeNull();
+    expect(normalizedText(emptyCell)).toBe(FINES_ACCOUNT_HISTORY_TABLE_DISPLAY.emptyCell);
+    expect(emptyCell.querySelector('strong')).toBeNull();
+  });
+
   it('should render minor creditor details pipes, hyphens, bold fragments, links, and line2', () => {
     fixture.componentRef.setInput('tabData', {
       version: null,
