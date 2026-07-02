@@ -50,6 +50,7 @@ export function getRoutesConfig(): {
     clientSecret: config.get('secrets.opal.AzureADClientSecret'),
     tenantId: config.get('secrets.opal.AzureADTenantId'),
     microsoftUrl: config.get('microsoft.url'),
+    internalServerErrorPath: config.get('error-pages.internal-server-path'),
   };
 
   const opalUserServiceConfiguration: OpalUserServiceConfiguration = {
