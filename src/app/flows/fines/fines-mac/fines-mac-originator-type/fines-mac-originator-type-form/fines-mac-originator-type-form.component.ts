@@ -11,8 +11,10 @@ import {
 } from '@hmcts/opal-frontend-common/components/govuk/govuk-radio';
 import { FinesMacStore } from '../../stores/fines-mac.store';
 import { IFinesMacOriginatorTypeForm } from '../interfaces/fines-mac-originator-type-form.interface';
-import { FINES_MAC_ROUTING_PATHS } from '../../routing/constants/fines-mac-routing-paths.constant';
-import { PAGES_ROUTING_PATHS } from '@app/pages/routing/constants/routing-paths.constant';
+import { FINES_ROUTING_PATHS } from '@routing/fines/constants/fines-routing-paths.constant';
+import { FINES_DRAFT_ROUTING_PATHS } from '../../../fines-draft/routing/constants/fines-draft-routing-paths.constant';
+import { FINES_DRAFT_CREATE_AND_MANAGE_ROUTING_PATHS } from '../../../fines-draft/fines-draft-create-and-manage/routing/constants/fines-draft-create-and-manage-routing-paths.constant';
+import { FINES_DRAFT_TAB_STATUSES } from '../../../fines-draft/constants/fines-draft-tab-statuses.constant';
 import { IGovUkRadioOptions } from '@hmcts/opal-frontend-common/components/govuk/govuk-radio/interfaces';
 import { FINES_ORIGINATOR_TYPES } from '@app/flows/fines/constants/fines-originator-types.constant';
 import { IFinesMacOriginatorTypeFieldErrors } from '../interfaces/fines-mac-originator-type-field-errors.interface';
@@ -37,8 +39,14 @@ export class FinesMacOriginatorTypeFormComponent extends AbstractFormBaseCompone
   private readonly finesMacStore = inject(FinesMacStore);
 
   @Output() protected override formSubmit = new EventEmitter<IFinesMacOriginatorTypeForm>();
-  protected readonly fineMacRoutingPaths = FINES_MAC_ROUTING_PATHS;
-  protected readonly routingPath = PAGES_ROUTING_PATHS;
+  protected readonly draftCreateAndManageTabsPath = [
+    '',
+    FINES_ROUTING_PATHS.root,
+    FINES_DRAFT_ROUTING_PATHS.root,
+    FINES_DRAFT_ROUTING_PATHS.children.createAndManage,
+    FINES_DRAFT_CREATE_AND_MANAGE_ROUTING_PATHS.children.tabs,
+  ].join('/');
+  protected readonly draftCreateAndManageTabsFragment = FINES_DRAFT_TAB_STATUSES[0].tab;
 
   public readonly originatorTypes: IGovUkRadioOptions[] = Object.entries(FINES_ORIGINATOR_TYPES).map(
     ([key, value]) => ({

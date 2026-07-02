@@ -22,7 +22,10 @@ import { AlphagovAccessibleAutocompleteComponent } from '@hmcts/opal-frontend-co
 import { IAlphagovAccessibleAutocompleteItem } from '@hmcts/opal-frontend-common/components/alphagov/alphagov-accessible-autocomplete/interfaces';
 import { FINES_MAC_ROUTING_PATHS } from '../../routing/constants/fines-mac-routing-paths.constant';
 import { IFinesMacAccountDetailsForm } from '../../fines-mac-account-details/interfaces/fines-mac-account-details-form.interface';
-import { PAGES_ROUTING_PATHS } from '@routing/pages/constants/routing-paths.constant';
+import { FINES_ROUTING_PATHS } from '@routing/fines/constants/fines-routing-paths.constant';
+import { FINES_DRAFT_ROUTING_PATHS } from '../../../fines-draft/routing/constants/fines-draft-routing-paths.constant';
+import { FINES_DRAFT_CREATE_AND_MANAGE_ROUTING_PATHS } from '../../../fines-draft/fines-draft-create-and-manage/routing/constants/fines-draft-create-and-manage-routing-paths.constant';
+import { FINES_DRAFT_TAB_STATUSES } from '../../../fines-draft/constants/fines-draft-tab-statuses.constant';
 import { FinesMacStore } from '../../stores/fines-mac.store';
 import { GovukButtonComponent } from '@hmcts/opal-frontend-common/components/govuk/govuk-button';
 import { GovukCancelLinkComponent } from '@hmcts/opal-frontend-common/components/govuk/govuk-cancel-link';
@@ -63,7 +66,14 @@ export class FinesMacCreateAccountFormComponent extends AbstractFormBaseComponen
 
   @Output() protected override formSubmit = new EventEmitter<IFinesMacAccountDetailsForm>();
   protected readonly fineMacRoutingPaths = FINES_MAC_ROUTING_PATHS;
-  protected readonly routingPath = PAGES_ROUTING_PATHS;
+  protected readonly draftCreateAndManageTabsPath = [
+    '',
+    FINES_ROUTING_PATHS.root,
+    FINES_DRAFT_ROUTING_PATHS.root,
+    FINES_DRAFT_ROUTING_PATHS.children.createAndManage,
+    FINES_DRAFT_CREATE_AND_MANAGE_ROUTING_PATHS.children.tabs,
+  ].join('/');
+  protected readonly draftCreateAndManageTabsFragment = FINES_DRAFT_TAB_STATUSES[0].tab;
 
   @Input({ required: true })
   public autoCompleteItems!: IAlphagovAccessibleAutocompleteItem[];
