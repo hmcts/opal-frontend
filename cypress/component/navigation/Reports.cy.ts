@@ -302,7 +302,10 @@ describe(
       },
     );
 
-    it('hides the Reports dashboard entry points when release-1c enforcement operational reporting is disabled', { tags: ['@JIRA-STORY:PO-3758', '@JIRA-EPIC:PO-3685', '@JIRA-TEST-KEY:PO-8680'] }, () => {
+    it(
+      'hides the Reports dashboard entry points when release-1c enforcement operational reporting is disabled',
+      { tags: ['@JIRA-STORY:PO-3758', '@JIRA-EPIC:PO-3685', '@JIRA-TEST-KEY:PO-8680'] },
+      () => {
         featureFlagDisabledSetup();
 
         cy.contains(L.pageHeader, 'Reports').should('be.visible');
@@ -310,9 +313,13 @@ describe(
         cy.contains(L.sectionHeading, 'Operational reports').should('not.exist');
         cy.get(L.operationalReportsByEnforcementLink).should('not.exist');
         cy.get(L.operationalReportsByPaymentsLink).should('not.exist');
-      });
+      },
+    );
 
-    it('shows the Reports dashboard entry points when release-1c enforcement operational reporting is enabled', {tags: ['@JIRA-TEST-KEY:PO-8681']}, () => {
+    it(
+      'shows the Reports dashboard entry points when release-1c enforcement operational reporting is enabled',
+      { tags: ['@JIRA-TEST-KEY:PO-8681'] },
+      () => {
         commonSetup();
 
         cy.contains(L.pageHeader, 'Reports').should('be.visible');
@@ -324,25 +331,34 @@ describe(
         cy.get(L.operationalReportsByPaymentsLink)
           .should('be.visible')
           .and('contain.text', 'Operational reports (by payments)');
-      });
+      },
+    );
 
-    it('navigates to the operational reports by enforcement summary list when release-1c enforcement operational reporting is enabled', {tags: ['@JIRA-TEST-KEY:PO-8682']}, () => {
+    it(
+      'navigates to the operational reports by enforcement summary list when release-1c enforcement operational reporting is enabled',
+      { tags: ['@JIRA-TEST-KEY:PO-8682'] },
+      () => {
         commonSetup();
 
         cy.get(L.operationalReportsByEnforcementLink).click();
         assertNavigationTarget(
           reportsSummaryListPath(FINES_REPORTS_SUMMARY_LIST_ROUTING_PATHS.children.operationalReportsByEnforcement),
         );
-      });
+      },
+    );
 
-    it('navigates to the operational reports by payments summary list when release-1c enforcement operational reporting is enabled', {tags: ['@JIRA-TEST-KEY:PO-8683']}, () => {
+    it(
+      'navigates to the operational reports by payments summary list when release-1c enforcement operational reporting is enabled',
+      { tags: ['@JIRA-TEST-KEY:PO-8683'] },
+      () => {
         commonSetup();
 
         cy.get(L.operationalReportsByPaymentsLink).click();
         assertNavigationTarget(
           reportsSummaryListPath(FINES_REPORTS_SUMMARY_LIST_ROUTING_PATHS.children.operationalReportsByPayments),
         );
-      });
+      },
+    );
 
     it(
       'AC4a AC4c shows only the enforcement link and keeps the Operational reports heading visible',
