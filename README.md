@@ -419,11 +419,13 @@ The nightly Jenkins pipeline runs its stages in this order after checkout and te
 - `R1A Off Legacy Demo` runs only when `RunR1aOffLegacyDemo=true`. It uses the same demo legacy flow and runs `yarn test:functional:r1a_off`.
 - `UAT-Technical` runs only when `RunUatTech=true`. It uses the same demo legacy flow and runs `yarn test:functional:uat_legacy`.
 - `Legacy Tests` runs only when `Legacy=true`. It runs the general functional suite in legacy mode.
-- `Chrome Tests` runs only when `RunChrome=true`. It reruns the functional suite in Chrome.
-- `Firefox Tests` runs only when `RunFirefox=true`. It reruns the functional suite in Firefox.
+- `RunChrome=true` switches the selected nightly stages to Chrome instead of the default browser.
+- `RunFirefox=true` switches the selected nightly stages to Firefox instead of the default browser.
 
 Notes for the nightly pipeline:
 
+- The nightly pipeline uses Edge by default. If Edge is unavailable on the Jenkins agent, it falls back to Chrome.
+- `RunChrome` and `RunFirefox` are mutually exclusive browser overrides for the selected stages.
 - `LEGACY_URL` defaults to `PRE-PROD`.
 - `LEGACY_URL=PRE-PROD` points the legacy gateway checks at `https://cloudgobgateway.test.platform.hmcts.net/opal`.
 - `LEGACY_URL=DEV` uses the staging legacy DB stub, skips the pre-prod `getGmasTest` health check, and does not patch the demo `app-mode` LaunchDarkly flag to `legacy`.
