@@ -61,9 +61,6 @@ describe('Minor Creditor Account Summary - At a Glance Tab', () => {
       const atAGlance = createIndividualMinorCreditorAtAGlanceMock();
 
       setupMinorCreditorAtAGlance(USER_STATE_MOCK_NO_PERMISSION, header, atAGlance);
-      cy.window().then((win) => {
-        cy.stub(win, 'open').as('windowOpen');
-      });
 
       cy.get(DOM.pageHeader).should('exist');
       cy.get(DOM.accountInfo).should('exist');
@@ -97,11 +94,14 @@ describe('Minor Creditor Account Summary - At a Glance Tab', () => {
       cy.contains(DOM.fieldHeading, DOM.labelDefendantAccount)
         .next(DOM.fieldValue)
         .find(DOM.linkText)
-        .should('have.attr', 'href', '')
         .should('have.text', 'ACC-654321')
-        .click();
-
-      cy.get('@windowOpen').its('firstCall.args.0').should('contain', 'defendant/123456789/details');
+        .then(($link) => {
+          expect($link)
+            .to.have.attr('href')
+            .match(/\/fines\/account\/defendant\/123456789\/details$/);
+          expect($link).to.have.attr('target', '_blank');
+          expect($link).to.have.attr('rel', 'noopener noreferrer');
+        });
 
       cy.contains(DOM.fieldHeading, DOM.labelDefendantName)
         .next(DOM.fieldValue)
@@ -156,12 +156,11 @@ describe('Minor Creditor Account Summary - At a Glance Tab', () => {
       setupMinorCreditorAtAGlance(userState, createMinorCreditorHeaderMock(), atAGlance);
 
       cy.contains(DOM.linkText, DOM.labelAddPaymentHold).should('be.visible').click();
-      cy.get('@routerNavigate')
-        .its('lastCall.args.0')
-        .should((arg0) => {
-          const path = Array.isArray(arg0) ? arg0.join('/') : String(arg0);
-          expect(path).to.match(/payment-hold\/add/);
-        });
+
+      cy.contains('opal-lib-govuk-heading-with-caption, h1, h2', DOM.labelAddPaymentHoldConfirmation).should(
+        'be.visible',
+      );
+      cy.get(DOM.addPaymentHoldButton).should('be.visible').and('contain.text', DOM.labelYesAddHold);
     },
   );
 
@@ -207,12 +206,11 @@ describe('Minor Creditor Account Summary - At a Glance Tab', () => {
 
       cy.get(DOM.minorCreditorAtAGlanceTabComponent).should('not.contain.text', DOM.labelAddPaymentHold);
       cy.contains(DOM.linkText, DOM.labelRemovePaymentHold).should('be.visible').click();
-      cy.get('@routerNavigate')
-        .its('lastCall.args.0')
-        .should((arg0) => {
-          const path = Array.isArray(arg0) ? arg0.join('/') : String(arg0);
-          expect(path).to.match(/payment-hold\/remove/);
-        });
+
+      cy.contains('opal-lib-govuk-heading-with-caption, h1, h2', DOM.labelRemovePaymentHoldConfirmation).should(
+        'be.visible',
+      );
+      cy.get(DOM.removePaymentHoldButton).should('be.visible').and('contain.text', DOM.labelYesRemoveHold);
     },
   );
 
