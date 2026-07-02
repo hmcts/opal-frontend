@@ -1,5 +1,6 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { SimpleChange } from '@angular/core';
+import { By } from '@angular/platform-browser';
 import { ActivatedRoute, provideRouter } from '@angular/router';
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import { FinesAccMinorCreditorDetailsHistoryAndNotesTabComponent } from './fines-acc-minor-creditor-details-history-and-notes-tab.component';
@@ -15,6 +16,7 @@ import { FINES_ACC_MINOR_CREDITOR_DETAILS_HISTORY_AND_NOTES_FILTERED_TAB_DATA_MO
 import { IOpalFinesAccountMinorCreditorDetailsHistoryAndNotesTabRefData } from '@services/fines/opal-fines-service/interfaces/opal-fines-account-minor-creditor-details-history-and-notes-tab-ref-data.interface';
 import { FINES_ACC_MINOR_CREDITOR_HISTORY_AND_NOTES_DETAILS_TRANSFORMATION_CONFIG } from '../../services/constants/fines-acc-minor-creditor-history-and-notes-details-transformation-config.constant';
 import { THistoryDetailsRawItem as TFinesAccHistoryAndNotesRawItem } from '@hmcts/opal-frontend-common/services/history-transformation-service';
+import { FinesAccMinorCreditorDetailsHistoryAndNotesTableComponent } from './fines-acc-minor-creditor-details-history-and-notes-table/fines-acc-minor-creditor-details-history-and-notes-table.component';
 
 describe('FinesAccMinorCreditorDetailsHistoryAndNotesTabComponent', () => {
   let component: FinesAccMinorCreditorDetailsHistoryAndNotesTabComponent;
@@ -105,6 +107,17 @@ describe('FinesAccMinorCreditorDetailsHistoryAndNotesTabComponent', () => {
     component.historyAndNotesTabData$.subscribe((data) => emitted.push(data));
 
     expect(emitted).toEqual([transformedBaseTabData]);
+  });
+
+  it('should render the history and notes table with transformed tab data', () => {
+    fixture.detectChanges();
+
+    const historyTable = fixture.debugElement.query(
+      By.directive(FinesAccMinorCreditorDetailsHistoryAndNotesTableComponent),
+    );
+
+    expect(historyTable).toBeTruthy();
+    expect(historyTable.componentInstance.tabData).toEqual(transformedBaseTabData);
   });
 
   it('should rebind the display stream when parent tab data stream changes', () => {
