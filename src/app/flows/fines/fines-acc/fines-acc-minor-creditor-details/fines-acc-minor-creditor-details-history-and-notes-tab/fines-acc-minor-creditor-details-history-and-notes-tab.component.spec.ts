@@ -5,7 +5,7 @@ import { ActivatedRoute, provideRouter } from '@angular/router';
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import { FinesAccMinorCreditorDetailsHistoryAndNotesTabComponent } from './fines-acc-minor-creditor-details-history-and-notes-tab.component';
 import { OPAL_FINES_ACCOUNT_MINOR_CREDITOR_DETAILS_HISTORY_AND_NOTES_TAB_REF_DATA_MOCK } from '@services/fines/opal-fines-service/mocks/opal-fines-account-minor-creditor-details-history-and-notes-tab-ref-data.mock';
-import { of } from 'rxjs';
+import { Subject, of } from 'rxjs';
 import { FINES_ACC_MINOR_CREDITOR_DETAILS_HISTORY_AND_NOTES_FILTER_FORM_MOCK } from './mocks/fines-acc-minor-creditor-details-history-and-notes-filter-form.mock';
 import { FINES_ACC_MINOR_CREDITOR_DETAILS_HISTORY_AND_NOTES_FILTER_FORM_PAYLOAD_MOCK } from './mocks/fines-acc-minor-creditor-details-history-and-notes-filter-form-payload.mock';
 import { OpalFines } from '@services/fines/opal-fines-service/opal-fines.service';
@@ -17,6 +17,7 @@ import { IOpalFinesAccountMinorCreditorDetailsHistoryAndNotesTabRefData } from '
 import { FINES_ACC_MINOR_CREDITOR_HISTORY_AND_NOTES_DETAILS_TRANSFORMATION_CONFIG } from '../../services/constants/fines-acc-minor-creditor-history-and-notes-details-transformation-config.constant';
 import { THistoryDetailsRawItem as TFinesAccHistoryAndNotesRawItem } from '@hmcts/opal-frontend-common/services/history-transformation-service';
 import { FinesAccMinorCreditorDetailsHistoryAndNotesTableComponent } from './fines-acc-minor-creditor-details-history-and-notes-table/fines-acc-minor-creditor-details-history-and-notes-table.component';
+import { FinesAccMinorCreditorDetailsHistoryAndNotesFilterComponent } from './fines-acc-minor-creditor-details-history-and-notes-filter/fines-acc-minor-creditor-details-history-and-notes-filter.component';
 
 describe('FinesAccMinorCreditorDetailsHistoryAndNotesTabComponent', () => {
   let component: FinesAccMinorCreditorDetailsHistoryAndNotesTabComponent;
@@ -189,6 +190,59 @@ describe('FinesAccMinorCreditorDetailsHistoryAndNotesTabComponent', () => {
       transformedBaseTabData,
       FINES_ACC_MINOR_CREDITOR_DETAILS_HISTORY_AND_NOTES_FILTERED_TAB_DATA_MOCK,
     ]);
+  });
+
+  it('should fetch filtered tab data only when the rendered filter component applies filter values', () => {
+    mockOpalFinesService.getMinorCreditorAccountHistoryAndNotesTabData.mockReturnValue(
+      of(FINES_ACC_MINOR_CREDITOR_DETAILS_HISTORY_AND_NOTES_FILTERED_TAB_DATA_MOCK),
+    );
+
+    fixture.detectChanges();
+
+    const filterComponent = fixture.debugElement.query(
+      By.directive(FinesAccMinorCreditorDetailsHistoryAndNotesFilterComponent),
+    ).componentInstance as FinesAccMinorCreditorDetailsHistoryAndNotesFilterComponent;
+
+    expect(mockOpalFinesService.getMinorCreditorAccountHistoryAndNotesTabData).not.toHaveBeenCalled();
+
+    filterComponent.filterApplied.emit(FINES_ACC_MINOR_CREDITOR_DETAILS_HISTORY_AND_NOTES_FILTER_FORM_MOCK);
+    fixture.detectChanges();
+
+    expect(mockPayloadService.buildMinorCreditorHistoryFilterPayload).toHaveBeenCalledWith(
+      FINES_ACC_MINOR_CREDITOR_DETAILS_HISTORY_AND_NOTES_FILTER_FORM_MOCK,
+    );
+    expect(mockOpalFinesService.getMinorCreditorAccountHistoryAndNotesTabData).toHaveBeenCalledWith(
+      FINES_ACC_MINOR_CREDITOR_DETAILS_HISTORY_AND_NOTES_ACCOUNT_ID_MOCK,
+      FINES_ACC_MINOR_CREDITOR_DETAILS_HISTORY_AND_NOTES_FILTER_FORM_PAYLOAD_MOCK,
+    );
+    expect(filterComponent.filterForm).toEqual(FINES_ACC_MINOR_CREDITOR_DETAILS_HISTORY_AND_NOTES_FILTER_FORM_MOCK);
+    expect(filterComponent.filterOpen).toBe(true);
+  });
+
+  it('should keep the existing table rows while a filtered request is pending', () => {
+    const filteredTabData$ = new Subject<IOpalFinesAccountMinorCreditorDetailsHistoryAndNotesTabRefData>();
+    mockOpalFinesService.getMinorCreditorAccountHistoryAndNotesTabData.mockReturnValue(filteredTabData$);
+
+    fixture.detectChanges();
+
+    const filterComponent = fixture.debugElement.query(
+      By.directive(FinesAccMinorCreditorDetailsHistoryAndNotesFilterComponent),
+    ).componentInstance as FinesAccMinorCreditorDetailsHistoryAndNotesFilterComponent;
+
+    filterComponent.filterApplied.emit(FINES_ACC_MINOR_CREDITOR_DETAILS_HISTORY_AND_NOTES_FILTER_FORM_MOCK);
+    fixture.detectChanges();
+
+    const historyTable = fixture.debugElement.query(
+      By.directive(FinesAccMinorCreditorDetailsHistoryAndNotesTableComponent),
+    ).componentInstance as FinesAccMinorCreditorDetailsHistoryAndNotesTableComponent;
+
+    expect(historyTable.tabData).toEqual(transformedBaseTabData);
+
+    filteredTabData$.next(FINES_ACC_MINOR_CREDITOR_DETAILS_HISTORY_AND_NOTES_FILTERED_TAB_DATA_MOCK);
+    filteredTabData$.complete();
+    fixture.detectChanges();
+
+    expect(historyTable.tabData).toEqual(FINES_ACC_MINOR_CREDITOR_DETAILS_HISTORY_AND_NOTES_FILTERED_TAB_DATA_MOCK);
   });
 
   it('should transform filtered history items into the history and notes details format', () => {
