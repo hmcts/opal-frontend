@@ -2,6 +2,8 @@ import { ComponentFixture, TestBed } from '@angular/core/testing';
 
 import { FinesAccDefendantDetailsPaymentTermsTabComponent } from './fines-acc-defendant-details-payment-terms-tab.component';
 import { OPAL_FINES_ACCOUNT_DEFENDANT_DETAILS_PAYMENT_TERMS_LATEST_MOCK } from '@services/fines/opal-fines-service/mocks/opal-fines-account-defendant-details-payment-terms-latest.mock';
+import { FINES_ACC_DEFENDANT_ROUTING_PATHS } from '../../routing/constants/fines-acc-defendant-routing-paths.constant';
+import { provideRouter, Router } from '@angular/router';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
 
 describe('FinesAccPaymentTermsAmendComponent', () => {
@@ -10,6 +12,7 @@ describe('FinesAccPaymentTermsAmendComponent', () => {
   beforeEach(async () => {
     await TestBed.configureTestingModule({
       imports: [FinesAccDefendantDetailsPaymentTermsTabComponent],
+      providers: [provideRouter([])],
     }).compileComponents();
 
     fixture = TestBed.createComponent(FinesAccDefendantDetailsPaymentTermsTabComponent);
@@ -67,17 +70,52 @@ describe('FinesAccPaymentTermsAmendComponent', () => {
     expect(component.cardTitle()).toBe('Paid');
   });
 
-  it('should handle change payment terms by emitting an event', () => {
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    vi.spyOn<any, any>(component.changePaymentTerms, 'emit');
-    component.handleChangePaymentTerms();
-    expect(component.changePaymentTerms.emit).toHaveBeenCalled();
+  it('should return the amend payment terms route when the action is allowed', () => {
+    component.canAmendPaymentTerms = true;
+
+    expect(component.changePaymentTermsLink()).toBe(
+      `../${FINES_ACC_DEFENDANT_ROUTING_PATHS.children['payment-terms']}/amend`,
+    );
   });
 
-  it('should handle request payment card by emitting an event', () => {
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    vi.spyOn<any, any>(component.requestPaymentCard, 'emit');
+  it('should return the amend denied route when the action is not allowed', () => {
+    component.canAmendPaymentTerms = false;
+    component.amendPaymentTermsDeniedType = 'balance';
+
+    expect(component.changePaymentTermsLink()).toBe(
+      `../${FINES_ACC_DEFENDANT_ROUTING_PATHS.children['payment-terms']}/denied/balance`,
+    );
+  });
+
+  it('should return the request payment card route when the action is allowed', () => {
+    component.canRequestPaymentCard = true;
+
+    expect(component.requestPaymentCardLink()).toBe(
+      `../${FINES_ACC_DEFENDANT_ROUTING_PATHS.children['payment-card']}/request`,
+    );
+  });
+
+  it('should return the request payment card denied route when the action is not allowed', () => {
+    component.canRequestPaymentCard = false;
+    component.requestPaymentCardDeniedType = 'enforcement';
+
+    expect(component.requestPaymentCardLink()).toBe(
+      `../${FINES_ACC_DEFENDANT_ROUTING_PATHS.children['payment-card']}/denied/enforcement`,
+    );
+  });
+
+  it('should navigate to the resolved request payment card route', () => {
+    const router = TestBed.inject(Router);
+    const routerNavigateSpy = vi.spyOn(router, 'navigate');
+    component.canRequestPaymentCard = true;
+
     component.handleRequestPaymentCard();
-    expect(component.requestPaymentCard.emit).toHaveBeenCalled();
+
+    expect(routerNavigateSpy).toHaveBeenCalledWith(
+      [`../${FINES_ACC_DEFENDANT_ROUTING_PATHS.children['payment-card']}/request`],
+      {
+        relativeTo: component['activatedRoute'],
+      },
+    );
   });
 });
