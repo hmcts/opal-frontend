@@ -17,6 +17,8 @@ import { FINES_ACC_MINOR_CREDITOR_DETAILS_HISTORY_AND_NOTES_TABLE_MAP_TAB_DATA_M
 import { FINES_ACC_MINOR_CREDITOR_DETAILS_HISTORY_AND_NOTES_TABLE_RENDER_TAB_DATA_MOCK } from './mocks/fines-acc-minor-creditor-details-history-and-notes-table-render-tab-data.mock';
 import { FINES_ACC_MINOR_CREDITOR_DETAILS_HISTORY_AND_NOTES_TABLE_UNSUPPORTED_LINK_MOCK } from './mocks/fines-acc-minor-creditor-details-history-and-notes-table-unsupported-link.mock';
 
+const normalizedText = (element: Element): string => element.textContent?.replace(/\s+/g, ' ').trim() ?? '';
+
 describe('FinesAccMinorCreditorDetailsHistoryAndNotesTableComponent', () => {
   let component: FinesAccMinorCreditorDetailsHistoryAndNotesTableComponent;
   let fixture: ComponentFixture<FinesAccMinorCreditorDetailsHistoryAndNotesTableComponent>;
@@ -202,6 +204,54 @@ describe('FinesAccMinorCreditorDetailsHistoryAndNotesTableComponent', () => {
     expect(fixture.nativeElement.textContent).toContain('Finance officer');
     expect(fixture.nativeElement.textContent).toContain('Payment received');
     expect(fixture.nativeElement.textContent).toContain('CR');
+  });
+
+  it('should render minor creditor details pipes, hyphens, bold fragments, links, and line2', () => {
+    fixture.componentRef.setInput('tabData', {
+      version: null,
+      historyItems: [
+        {
+          details: {
+            line1: [
+              {
+                fragments: [{ text: 'Repayment', bold: false, hyphen: false }],
+              },
+              {
+                fragments: [
+                  { text: 'Defendant account:', bold: false, hyphen: false },
+                  {
+                    text: '250000123M',
+                    bold: true,
+                    hyphen: true,
+                    link: {
+                      emit: '12345',
+                      type: 'account',
+                    },
+                  },
+                ],
+              },
+            ],
+            line2: [{ fragments: [{ text: 'Additional repayment note', bold: false, hyphen: false }] }],
+          },
+          posted_date: '25/06/2026',
+          posted_by_name: 'Finance officer',
+          type: 'Financial',
+        },
+      ],
+    });
+
+    fixture.detectChanges();
+
+    const detailsCell = fixture.nativeElement.querySelector(
+      `#${FINES_ACCOUNT_HISTORY_TABLE_DISPLAY.rowIdPrefixes.details}0`,
+    ) as HTMLTableCellElement;
+    const accountLink = detailsCell.querySelector('a') as HTMLAnchorElement;
+    const boldFragment = detailsCell.querySelector('strong') as HTMLElement;
+
+    expect(normalizedText(detailsCell)).toContain('Repayment | Defendant account: - 250000123M');
+    expect(normalizedText(detailsCell)).toContain('Additional repayment note');
+    expect(accountLink.textContent).toContain('250000123M');
+    expect(boldFragment.textContent).toContain('250000123M');
   });
 
   it('should render minor creditor rows in default newest-to-oldest date order', () => {
