@@ -66,7 +66,7 @@ describe('FinesAccMinorCreditorDetailsHistoryAndNotesTableComponent', () => {
     ]);
   });
 
-  it('should preserve RFC3339 UTC timestamps including milliseconds as date sort values', () => {
+  it('should preserve API timestamp values including milliseconds as date sort values', () => {
     const timestamp = '2026-06-25T10:30:15.123Z';
     const rows = component.getHistoryRows({
       version: null,

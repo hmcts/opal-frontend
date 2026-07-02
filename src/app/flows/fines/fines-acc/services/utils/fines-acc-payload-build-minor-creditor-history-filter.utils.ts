@@ -6,7 +6,7 @@ import { FINES_ACC_MINOR_CREDITOR_HISTORY_FILTER_ITEM_TYPE_MAP } from '../consta
 /**
  * Builds the raw minor creditor account history filter query params from the submitted form.
  *
- * Date values remain in form format here and are converted to RFC3339 by `FinesAccPayloadService`.
+ * Date values follow the existing defendant-account history filter format.
  *
  * @param form - The submitted history and notes filter form.
  * @returns The untransformed minor creditor history filter query params.

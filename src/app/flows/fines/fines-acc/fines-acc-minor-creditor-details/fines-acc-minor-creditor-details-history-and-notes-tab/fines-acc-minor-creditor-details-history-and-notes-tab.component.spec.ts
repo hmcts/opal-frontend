@@ -38,6 +38,12 @@ describe('FinesAccMinorCreditorDetailsHistoryAndNotesTabComponent', () => {
       details: { line1: [{ fragments: [{ text: 'Transformed detail', bold: false, hyphen: false }] }], line2: null },
     })),
   };
+  const getRenderedFilterComponent = (): FinesAccMinorCreditorDetailsHistoryAndNotesFilterComponent =>
+    fixture.debugElement.query(By.directive(FinesAccMinorCreditorDetailsHistoryAndNotesFilterComponent))
+      .componentInstance as FinesAccMinorCreditorDetailsHistoryAndNotesFilterComponent;
+  const getRenderedTableComponent = (): FinesAccMinorCreditorDetailsHistoryAndNotesTableComponent =>
+    fixture.debugElement.query(By.directive(FinesAccMinorCreditorDetailsHistoryAndNotesTableComponent))
+      .componentInstance as FinesAccMinorCreditorDetailsHistoryAndNotesTableComponent;
 
   beforeEach(async () => {
     mockOpalFinesService = {
@@ -113,12 +119,10 @@ describe('FinesAccMinorCreditorDetailsHistoryAndNotesTabComponent', () => {
   it('should render the history and notes table with transformed tab data', () => {
     fixture.detectChanges();
 
-    const historyTable = fixture.debugElement.query(
-      By.directive(FinesAccMinorCreditorDetailsHistoryAndNotesTableComponent),
-    );
+    const historyTable = getRenderedTableComponent();
 
     expect(historyTable).toBeTruthy();
-    expect(historyTable.componentInstance.tabData).toEqual(transformedBaseTabData);
+    expect(historyTable.tabData).toEqual(transformedBaseTabData);
   });
 
   it('should rebind the display stream when parent tab data stream changes', () => {
@@ -199,9 +203,7 @@ describe('FinesAccMinorCreditorDetailsHistoryAndNotesTabComponent', () => {
 
     fixture.detectChanges();
 
-    const filterComponent = fixture.debugElement.query(
-      By.directive(FinesAccMinorCreditorDetailsHistoryAndNotesFilterComponent),
-    ).componentInstance as FinesAccMinorCreditorDetailsHistoryAndNotesFilterComponent;
+    const filterComponent = getRenderedFilterComponent();
 
     expect(mockOpalFinesService.getMinorCreditorAccountHistoryAndNotesTabData).not.toHaveBeenCalled();
 
@@ -225,16 +227,12 @@ describe('FinesAccMinorCreditorDetailsHistoryAndNotesTabComponent', () => {
 
     fixture.detectChanges();
 
-    const filterComponent = fixture.debugElement.query(
-      By.directive(FinesAccMinorCreditorDetailsHistoryAndNotesFilterComponent),
-    ).componentInstance as FinesAccMinorCreditorDetailsHistoryAndNotesFilterComponent;
+    const filterComponent = getRenderedFilterComponent();
 
     filterComponent.filterApplied.emit(FINES_ACC_MINOR_CREDITOR_DETAILS_HISTORY_AND_NOTES_FILTER_FORM_MOCK);
     fixture.detectChanges();
 
-    const historyTable = fixture.debugElement.query(
-      By.directive(FinesAccMinorCreditorDetailsHistoryAndNotesTableComponent),
-    ).componentInstance as FinesAccMinorCreditorDetailsHistoryAndNotesTableComponent;
+    const historyTable = getRenderedTableComponent();
 
     expect(historyTable.tabData).toEqual(transformedBaseTabData);
 
