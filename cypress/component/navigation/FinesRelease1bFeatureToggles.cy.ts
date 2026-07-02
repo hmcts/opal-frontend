@@ -134,30 +134,45 @@ describe('FinesRelease1bFeatureToggles', () => {
     });
   };
 
-  it('should show Search in primary navigation when release-1b is enabled', { tags: [...buildTags(RELEASE_1B_STORY_TAG), RELEASE_EPIC_TAG, '@R1B', '@JIRA-TEST-KEY:PO-8676'] }, () => {
+  it(
+    'should show Search in primary navigation when release-1b is enabled',
+    { tags: [...buildTags(RELEASE_1B_STORY_TAG), RELEASE_EPIC_TAG, '@R1B', '@JIRA-TEST-KEY:PO-8676'] },
+    () => {
       setupAppComponent(searchPermissionIds, { 'release-1b': true });
 
       cy.get(PrimaryNav.container).should('be.visible');
       cy.get(PrimaryNav.itemByText(PrimaryNav.labels.search)).should('be.visible');
-    });
+    },
+  );
 
-  it('should hide Search in primary navigation when release-1b is disabled', { tags: [...buildTags(RELEASE_1B_STORY_TAG), RELEASE_EPIC_TAG, '@R1BOff', '@JIRA-TEST-KEY:PO-8677'] }, () => {
+  it(
+    'should hide Search in primary navigation when release-1b is disabled',
+    { tags: [...buildTags(RELEASE_1B_STORY_TAG), RELEASE_EPIC_TAG, '@R1BOff', '@JIRA-TEST-KEY:PO-8677'] },
+    () => {
       setupAppComponent(searchPermissionIds, { 'release-1b': false });
 
       cy.get(PrimaryNav.container).should('not.be.visible');
       cy.get(PrimaryNav.itemByText(PrimaryNav.labels.search)).should('not.exist');
-    });
+    },
+  );
 
-  it('should hide approved account links when release-1b is disabled', { tags: [...buildTags(RELEASE_1B_STORY_TAG), RELEASE_EPIC_TAG, '@R1BOff', '@JIRA-TEST-KEY:PO-8678'] }, () => {
+  it(
+    'should hide approved account links when release-1b is disabled',
+    { tags: [...buildTags(RELEASE_1B_STORY_TAG), RELEASE_EPIC_TAG, '@R1BOff', '@JIRA-TEST-KEY:PO-8678'] },
+    () => {
       setupApprovedAccounts({ 'release-1b': false });
 
       cy.contains('a.moj-sub-navigation__link', 'Approved').click();
       cy.contains('h2', 'Approved').should('be.visible');
       cy.get(Table.cells.accountLink).should('not.exist');
       cy.get('#account').should('contain.text', 'FINE123456');
-    });
+    },
+  );
 
-  it('should show approved account links when release-1b is enabled', { tags: [...buildTags(RELEASE_1B_STORY_TAG), RELEASE_EPIC_TAG, '@R1B', '@JIRA-TEST-KEY:PO-8679'] }, () => {
+  it(
+    'should show approved account links when release-1b is enabled',
+    { tags: [...buildTags(RELEASE_1B_STORY_TAG), RELEASE_EPIC_TAG, '@R1B', '@JIRA-TEST-KEY:PO-8679'] },
+    () => {
       setupApprovedAccounts({ 'release-1b': true }, true);
 
       cy.contains('a.moj-sub-navigation__link', 'Approved').click();
@@ -165,5 +180,6 @@ describe('FinesRelease1bFeatureToggles', () => {
       cy.get(Table.cells.accountLink).should('have.length', 2);
       cy.get(Table.cells.accountLink).eq(0).should('contain.text', 'FINE123456');
       cy.get(Table.cells.accountLink).eq(1).should('contain.text', 'FP123456');
-    });
+    },
+  );
 });
