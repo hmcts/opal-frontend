@@ -16,6 +16,7 @@ import { DraftAccountsFlow } from '../../../e2e/functional/opal/flows/draft-acco
 import { log } from '../../utils/log.helper';
 import { applyUniqPlaceholder } from '../../utils/stringUtils';
 import { ManualReviewAccountActions } from '../../../e2e/functional/opal/actions/manual-account-creation/review-account.actions';
+import { getToday } from '../../utils/dateUtils';
 
 const review = () => new CheckAndValidateReviewActions();
 const checkerList = () => new CheckAndValidateDraftsActions();
@@ -35,6 +36,11 @@ const mapTableToObject = (table: DataTable) =>
       .map(([key, value]) => [key.trim(), (value ?? '').trim()])
       .filter(([key]) => Boolean(key)),
   );
+
+const parseDefendantName = (defendantName: string) => {
+  const [surname = '', forenames = ''] = defendantName.split(',').map((part) => part.trim());
+  return { forenames, surname };
+};
 
 /**
  * @step Record a decision (approve/reject) on the draft account using a table.
@@ -183,6 +189,109 @@ Given('failed draft accounts are stubbed with one result', () => {
   log('intercept', 'Stubbing failed draft accounts');
   intercepts().stubFailedDraftSummaries();
   intercepts().stubFailedDraftDetails();
+});
+
+/**
+ * @step Stub a failed fixed-penalty individual draft account with a unique defendant name.
+ * @param defendantName - Display name in "SURNAME, Forename" format.
+ */
+Given('a failed fixed penalty individual draft account is stubbed for defendant {string}', (defendantName: string) => {
+  const resolvedName = applyUniqPlaceholder(defendantName);
+  const { forenames, surname } = parseDefendantName(resolvedName);
+  const today = getToday();
+  const todayTimestamp = `${today}T00:00:00Z`;
+
+  log('intercept', 'Stubbing failed fixed penalty individual draft account', {
+    defendantName: resolvedName,
+  });
+
+  intercepts().stubFailedDraftAccount({
+    summaryOverrides: {
+      summaries: [
+        {
+          created_at: todayTimestamp,
+          account_type: 'Fixed Penalty',
+          account_status_date: today,
+          account_snapshot: {
+            account_type: 'Fixed Penalty',
+            date_of_birth: '2004-11-01',
+            defendant_name: resolvedName,
+          },
+        },
+      ],
+    },
+    detailsOverrides: {
+      created_at: todayTimestamp,
+      account_type: 'Fixed Penalty',
+      account_status_date: today,
+      account_snapshot: {
+        account_type: 'Fixed Penalty',
+        date_of_birth: '2004-11-01',
+        defendant_name: resolvedName,
+      },
+      account: {
+        account_type: 'Fixed Penalty',
+        defendant: {
+          company_flag: false,
+          company_name: null,
+          dob: '2004-11-01',
+          forenames,
+          surname,
+        },
+      },
+    },
+  });
+});
+
+/**
+ * @step Stub a failed fixed-penalty company draft account with a unique company name.
+ * @param companyName - Company name shown in the Defendant column.
+ */
+Given('a failed fixed penalty company draft account is stubbed for defendant {string}', (companyName: string) => {
+  const resolvedName = applyUniqPlaceholder(companyName);
+  const today = getToday();
+  const todayTimestamp = `${today}T00:00:00Z`;
+
+  log('intercept', 'Stubbing failed fixed penalty company draft account', {
+    defendantName: resolvedName,
+  });
+
+  intercepts().stubFailedDraftAccount({
+    summaryOverrides: {
+      summaries: [
+        {
+          created_at: todayTimestamp,
+          account_type: 'Fixed Penalty',
+          account_status_date: today,
+          account_snapshot: {
+            account_type: 'Fixed Penalty',
+            date_of_birth: null,
+            defendant_name: resolvedName,
+          },
+        },
+      ],
+    },
+    detailsOverrides: {
+      created_at: todayTimestamp,
+      account_type: 'Fixed Penalty',
+      account_status_date: today,
+      account_snapshot: {
+        account_type: 'Fixed Penalty',
+        date_of_birth: null,
+        defendant_name: resolvedName,
+      },
+      account: {
+        account_type: 'Fixed Penalty',
+        defendant: {
+          company_flag: true,
+          company_name: resolvedName,
+          dob: null,
+          forenames: null,
+          surname: null,
+        },
+      },
+    },
+  });
 });
 
 /**

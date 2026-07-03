@@ -8,13 +8,10 @@ Feature: Fixed Penalty Failed Account Validation (PO-1816)
     Given I am logged in with email "opal-test@dev.platform.hmcts.net"
     And I clear all approved accounts
 
-@JIRA-EPIC:PO-855
+  @JIRA-EPIC:PO-855
   @JIRA-STORY:PO-1816 @JIRA-TEST-KEY:PO-5469
   Scenario: AC1 - Failed individual fixed penalty draft appears in Failed tab with expected details
-    Given I create a "failedAdultOrYouthOnly" draft account with the following details and set status "Publishing Pending" using user "opal-test-10@dev.platform.hmcts.net":
-      | Account_status              | failed      |
-      | account.defendant.forenames | Oliver      |
-      | account.defendant.surname   | GREEN{uniq} |
+    Given a failed fixed penalty individual draft account is stubbed for defendant "GREEN{uniq}, Oliver"
     And I am logged in with email "opal-test-10@dev.platform.hmcts.net"
     When I open Check and Validate Draft Accounts
     And I view the "Failed" tab on the Check and Validate page
@@ -37,10 +34,7 @@ Feature: Fixed Penalty Failed Account Validation (PO-1816)
 @JIRA-EPIC:PO-855
   @JIRA-STORY:PO-1816 @JIRA-TEST-KEY:PO-5470
   Scenario: AC1a - Failed individual fixed penalty draft returns to Failed tab after viewing details
-    Given I create a "failedAdultOrYouthOnly" draft account with the following details and set status "Publishing Pending" using user "opal-test-10@dev.platform.hmcts.net":
-      | Account_status              | failed      |
-      | account.defendant.forenames | Oliver      |
-      | account.defendant.surname   | GREEN{uniq} |
+    Given a failed fixed penalty individual draft account is stubbed for defendant "GREEN{uniq}, Oliver"
     And I am logged in with email "opal-test-10@dev.platform.hmcts.net"
     When I open Check and Validate Draft Accounts
     And I view the "Failed" tab on the Check and Validate page
@@ -53,10 +47,7 @@ Feature: Fixed Penalty Failed Account Validation (PO-1816)
 @JIRA-EPIC:PO-855
   @JIRA-STORY:PO-1816 @JIRA-TEST-KEY:PO-5471
   Scenario: AC2 - Failed company fixed penalty draft appears in Failed tab with expected details
-    Given I create a "failedCompany" draft account with the following details and set status "Publishing Pending" using user "opal-test-10@dev.platform.hmcts.net":
-      | Account_status                 | Submitted                            |
-      | account.defendant.company_name | Argent Oak Solutions Ltd comp {uniq} |
-      | account.account_type           | Fixed Penalty                        |
+    Given a failed fixed penalty company draft account is stubbed for defendant "Argent Oak Solutions Ltd comp {uniq}"
     And I am logged in with email "opal-test-10@dev.platform.hmcts.net"
     When I open Check and Validate Draft Accounts
     And I view the "Failed" tab on the Check and Validate page
@@ -80,10 +71,7 @@ Feature: Fixed Penalty Failed Account Validation (PO-1816)
 @JIRA-EPIC:PO-855
   @JIRA-STORY:PO-1816 @JIRA-TEST-KEY:PO-5472
   Scenario: AC2a - Failed company fixed penalty draft returns to Failed tab after viewing details
-    Given I create a "failedCompany" draft account with the following details and set status "Publishing Pending" using user "opal-test-10@dev.platform.hmcts.net":
-      | Account_status                 | Submitted                            |
-      | account.defendant.company_name | Argent Oak Solutions Ltd comp {uniq} |
-      | account.account_type           | Fixed Penalty                        |
+    Given a failed fixed penalty company draft account is stubbed for defendant "Argent Oak Solutions Ltd comp {uniq}"
     And I am logged in with email "opal-test-10@dev.platform.hmcts.net"
     When I open Check and Validate Draft Accounts
     And I view the "Failed" tab on the Check and Validate page
@@ -92,4 +80,3 @@ Feature: Fixed Penalty Failed Account Validation (PO-1816)
     Then the "Failed" tab on Check and Validate is active
     And I sort the draft accounts table by column "Date failed" in "descending" order
     And the draft accounts table should contain "Argent Oak Solutions Ltd comp {uniq}" in column "Defendant"
-
