@@ -228,6 +228,30 @@ describe('FinesMacOffenceDetailsAddAnOffenceFormComponent', () => {
     expect(component['removeFormArrayFormGroupControlValidators']).toHaveBeenCalled();
   });
 
+  it('should clear selected creditor and major creditor when result code changes', () => {
+    finesMacOffenceDetailsStore.setOffenceDetailsDraft([]);
+    component.ngOnInit();
+
+    const index = 0;
+    const impositionsFormArray = component.form.get('fm_offence_details_impositions') as FormArray;
+    const impositionsFormGroup = impositionsFormArray.controls[index] as FormGroup;
+    const resultCodeControl = impositionsFormGroup.controls[`fm_offence_details_result_id_${index}`] as FormControl;
+    const creditorControl = impositionsFormGroup.controls[`fm_offence_details_creditor_${index}`] as FormControl;
+    const majorCreditorControl = impositionsFormGroup.controls[
+      `fm_offence_details_major_creditor_id_${index}`
+    ] as FormControl;
+
+    resultCodeControl.setValue(FINES_MAC_OFFENCE_DETAILS_RESULTS_CODES.compensation);
+    creditorControl.setValue('major');
+    majorCreditorControl.setValue(3855);
+
+    resultCodeControl.setValue(FINES_MAC_OFFENCE_DETAILS_RESULTS_CODES.costs);
+
+    expect(creditorControl.value).toBeNull();
+    expect(majorCreditorControl.value).toBeNull();
+    expect(majorCreditorControl.disabled).toBe(true);
+  });
+
   it('should set selectedOffenceConfirmation to false', () => {
     const offenceCodeControl = component.form.controls['fm_offence_details_offence_cjs_code'];
     component.selectedOffenceConfirmation = true;
@@ -445,6 +469,43 @@ describe('FinesMacOffenceDetailsAddAnOffenceFormComponent', () => {
 
     creditorControl.setValue('minor');
     expect(majorCreditorControl.disabled).toBe(true);
+  });
+
+  it('should hide creditor conditional panels when no creditor option is selected', () => {
+    const index = 0;
+    const impositionsFormGroup = component.getFormArrayFormGroup(index, 'fm_offence_details_impositions');
+    const needsCreditorControl = impositionsFormGroup.controls[
+      `fm_offence_details_needs_creditor_${index}`
+    ] as FormControl;
+    const creditorControl = impositionsFormGroup.controls[`fm_offence_details_creditor_${index}`] as FormControl;
+
+    component.minorCreditors = {};
+    component.minorCreditorsHidden = {};
+    needsCreditorControl.setValue(true);
+    creditorControl.setValue('major');
+    component['changeDetector'].detectChanges();
+
+    const majorConditional = fixture.nativeElement.querySelector('#fm_offence_details_creditor_0_major');
+    const minorConditional = fixture.nativeElement.querySelector('#fm_offence_details_creditor_0_minor');
+
+    expect(majorConditional).toBeTruthy();
+    expect(minorConditional).toBeTruthy();
+    expect(majorConditional.classList.contains('govuk-radios__conditional--hidden')).toBe(false);
+    expect(minorConditional.classList.contains('govuk-radios__conditional--hidden')).toBe(true);
+
+    creditorControl.setValue('minor');
+    component['changeDetector'].detectChanges();
+
+    expect(component.isCreditorSelected(index, 'minor')).toBe(true);
+    expect(majorConditional.classList.contains('govuk-radios__conditional--hidden')).toBe(true);
+    expect(minorConditional.classList.contains('govuk-radios__conditional--hidden')).toBe(false);
+
+    creditorControl.reset();
+    component['changeDetector'].detectChanges();
+
+    expect(component.isCreditorSelected(index, 'major')).toBe(false);
+    expect(majorConditional.classList.contains('govuk-radios__conditional--hidden')).toBe(true);
+    expect(minorConditional.classList.contains('govuk-radios__conditional--hidden')).toBe(true);
   });
 
   it('should perform major creditor validation when creditor value is major', () => {
@@ -1148,6 +1209,16 @@ describe('FinesMacOffenceDetailsAddAnOffenceFormComponent', () => {
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
       costList as any,
     );
+  });
+
+  it('should return major creditor items by result code and default to empty items', () => {
+    const compList = [{ name: 'COMP 1', value: 'COMP_1' }];
+
+    component.fcompMajorCreditorItems = compList;
+
+    expect(component.getMajorCreditorItems(FINES_MAC_OFFENCE_DETAILS_RESULTS_CODES.compensation)).toEqual(compList);
+    expect(component.getMajorCreditorItems('UNKNOWN_RESULT_CODE')).toEqual([]);
+    expect(component.getMajorCreditorItems(null)).toEqual([]);
   });
 
   it('should seed and update currentResultCodeByRow, and resolve items via code map', () => {
