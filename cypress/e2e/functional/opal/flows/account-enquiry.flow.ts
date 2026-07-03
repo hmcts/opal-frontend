@@ -12,6 +12,7 @@ import { AccountDetailsParentGuardianActions } from '../actions/account-details/
 import { AccountDetailsMinorCreditorActions } from '../actions/account-details/details.minor-creditor.actions';
 import { AccountDetailsPaymentTermsActions } from '../actions/account-details/details.payment-terms.actions';
 import { AccountDetailsFixedPenaltyActions } from '../actions/account-details/details.fixed-penalty.actions';
+import { AccountDetailsHistoryActions } from '../actions/account-details/details.history.actions';
 import { AccountSearchIndividualsLocators as L } from '../../../../shared/selectors/account-search/account.search.individuals.locators';
 import { AccountSearchCompaniesLocators as C } from '../../../../shared/selectors/account-search/account.search.companies.locators';
 import { ForceSingleTabNavigation } from '../../../../support/utils/navigation';
@@ -93,6 +94,7 @@ export class AccountEnquiryFlow {
   private readonly accountConvert = new AccountConvertActions();
   private readonly enforcement = new AccountDetailsEnforcementActions();
   private readonly removeParentGuardian = new RemoveParentGuardianActions();
+  private readonly historyAndNotes = new AccountDetailsHistoryActions();
 
   /**
    * Ensures the test is on the Individuals Account Search page.
@@ -607,6 +609,24 @@ export class AccountEnquiryFlow {
   }
 
   /**
+   * Configures a deterministic History and notes response for the current published account.
+   */
+  public stubHistoryAndNotesTabData(): void {
+    logAE('method', 'stubHistoryAndNotesTabData()');
+
+    cy.get<EtagUpdate>('@etagUpdate').then((etag) => {
+      const accountId = Number(etag?.accountId);
+      const accountNumber = String(etag?.accountNumber ?? '').trim();
+
+      if (!Number.isFinite(accountId) || !accountNumber) {
+        throw new Error('Expected @etagUpdate to contain numeric accountId and accountNumber for History and notes.');
+      }
+
+      this.historyAndNotes.stubHistoryAndNotesForCurrentAccount(accountId, accountNumber);
+    });
+  }
+
+  /**
    * Asserts the amend minor creditor route is active and the form heading is shown.
    */
   public assertOnAmendMinorCreditorDetailsPage(): void {
@@ -640,6 +660,58 @@ export class AccountEnquiryFlow {
     this.detailsNav.goToEnforcementTab();
     this.detailsNav.assertEnforcementTabIsActive();
     this.enforcement.assertEnforcementTabVisible();
+  }
+
+  /**
+   * Navigates to the History and notes tab and asserts it has loaded.
+   */
+  public goToHistoryAndNotesTab(): void {
+    logAE('method', 'goToHistoryAndNotesTab()');
+    logAE('navigate', 'Navigating to History and notes tab');
+    this.detailsNav.goToHistoryAndNotesTab();
+    this.detailsNav.assertHistoryAndNotesTabIsActive();
+    this.historyAndNotes.assertHistoryAndNotesTabLoaded();
+  }
+
+  /**
+   * Asserts the initial History and notes rows have been rendered.
+   */
+  public assertHistoryAndNotesItemsLoaded(): void {
+    logAE('method', 'assertHistoryAndNotesItemsLoaded()');
+    this.historyAndNotes.assertHistoryAndNotesRowsLoaded(2);
+  }
+
+  /**
+   * Applies the Notes filter to the History and notes tab.
+   */
+  public filterHistoryAndNotesToNotes(): void {
+    logAE('method', 'filterHistoryAndNotesToNotes()');
+    this.historyAndNotes.applyNotesFilter();
+  }
+
+  /**
+   * Asserts the History and notes table only shows Note rows after filtering.
+   */
+  public assertHistoryAndNotesFilteredToNotes(): void {
+    logAE('method', 'assertHistoryAndNotesFilteredToNotes()');
+    this.historyAndNotes.assertHistoryAndNotesFilteredToNotes();
+  }
+
+  /**
+   * Opens the first account link from History and notes and asserts the new-tab target.
+   */
+  public openHistoryAndNotesAccountLinkInNewTab(): void {
+    logAE('method', 'openHistoryAndNotesAccountLinkInNewTab()');
+
+    cy.get<EtagUpdate>('@etagUpdate').then((etag) => {
+      const accountId = Number(etag?.accountId);
+
+      if (!Number.isFinite(accountId)) {
+        throw new Error('Expected @etagUpdate to contain a numeric accountId for History and notes link assertions.');
+      }
+
+      this.historyAndNotes.openFirstAccountLinkInNewTabAndAssert(accountId);
+    });
   }
 
   /**

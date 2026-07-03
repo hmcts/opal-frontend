@@ -46,7 +46,6 @@ import { FinesMacOffenceDetailsStore } from '../../stores/fines-mac-offence-deta
 import { GovukTextInputComponent } from '@hmcts/opal-frontend-common/components/govuk/govuk-text-input';
 import { GovukButtonComponent } from '@hmcts/opal-frontend-common/components/govuk/govuk-button';
 import {
-  GovukRadiosConditionalComponent,
   GovukRadiosItemComponent,
   GovukRadioComponent,
 } from '@hmcts/opal-frontend-common/components/govuk/govuk-radio';
@@ -82,7 +81,6 @@ const ALPHANUMERIC_WITH_SPACES_PATTERN_VALIDATOR = patternValidator(
     GovukRadioComponent,
     GovukRadiosItemComponent,
     GovukCancelLinkComponent,
-    GovukRadiosConditionalComponent,
     GovukTextInputComponent,
     MojAlertComponent,
     MojAlertContentComponent,
@@ -103,6 +101,7 @@ export class FinesMacOffenceDetailsAddAnOffenceFormComponent
   private readonly changeDetector: ChangeDetectorRef = inject(ChangeDetectorRef);
   private readonly opalFinesService = inject(OpalFines);
   private readonly finesMacStore = inject(FinesMacStore);
+  private readonly creditorListenerControls = new WeakSet<object>();
 
   @Output() protected override formSubmit = new EventEmitter<IFinesMacOffenceDetailsForm>();
   protected readonly dateService = inject(DateService);
@@ -347,6 +346,7 @@ export class FinesMacOffenceDetailsAddAnOffenceFormComponent
         this.currentResultCodeByRow[index] = result_code;
         this.changeDetector.markForCheck();
         creditorControl.reset();
+        majorCreditorControl?.reset();
         const needsCreditor =
           result_code &&
           (result_code === FINES_MAC_OFFENCE_DETAILS_RESULTS_CODES.compensation ||
@@ -379,6 +379,12 @@ export class FinesMacOffenceDetailsAddAnOffenceFormComponent
     );
 
     this.majorCreditorValidation(index, creditorControl.value === 'major', impositionsFormGroup);
+
+    if (this.creditorListenerControls.has(creditorControl)) {
+      return;
+    }
+
+    this.creditorListenerControls.add(creditorControl);
 
     creditorControl.valueChanges
       .pipe(distinctUntilChanged(), takeUntil(this['ngUnsubscribe']))
@@ -480,6 +486,28 @@ export class FinesMacOffenceDetailsAddAnOffenceFormComponent
         creditorControl?.setErrors({ minorCreditorMissing: true });
       }
     }
+  }
+
+  /**
+   * Gets major creditor autocomplete items for a result code.
+   * @param resultCode - The imposition result code for the row.
+   * @returns The autocomplete items for the result code, or an empty list.
+   */
+  public getMajorCreditorItems(resultCode: string | null | undefined): IAlphagovAccessibleAutocompleteItem[] {
+    return resultCode ? (this.majorCreditorItemsByCode[resultCode] ?? []) : [];
+  }
+
+  /**
+   * Checks whether a creditor option is selected for the requested imposition row.
+   * @param rowIndex - The index of the imposition row.
+   * @param creditor - The creditor option to check.
+   * @returns Whether the creditor option is currently selected.
+   */
+  public isCreditorSelected(rowIndex: number, creditor: string): boolean {
+    return (
+      this.form?.get(['fm_offence_details_impositions', rowIndex, `fm_offence_details_creditor_${rowIndex}`])?.value ===
+      creditor
+    );
   }
 
   /**
