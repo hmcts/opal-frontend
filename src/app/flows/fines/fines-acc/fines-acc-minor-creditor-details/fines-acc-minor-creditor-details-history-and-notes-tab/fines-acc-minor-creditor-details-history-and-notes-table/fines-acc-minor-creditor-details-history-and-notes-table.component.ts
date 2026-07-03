@@ -65,8 +65,7 @@ export class FinesAccMinorCreditorDetailsHistoryAndNotesTableComponent {
       FINES_ACC_MINOR_CREDITOR_DETAILS_HISTORY_AND_NOTES_TABLE_FIELD_PATHS.amount,
       {
         fieldPathSeparator: FINES_ACC_MINOR_CREDITOR_DETAILS_HISTORY_AND_NOTES_TABLE_DISPLAY.fieldPathSeparator,
-        numberSanitisePattern:
-          FINES_ACC_MINOR_CREDITOR_DETAILS_HISTORY_AND_NOTES_TABLE_DISPLAY.currencySanitisePattern,
+        numberSanitisePattern: FINES_ACC_MINOR_CREDITOR_DETAILS_HISTORY_AND_NOTES_TABLE_DISPLAY.currencySanitisePattern,
       },
     );
     const dateTimestamp = getHistoryMappingDateTimestamp(
