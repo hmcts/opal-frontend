@@ -193,3 +193,24 @@ Feature: Account Enquiries - Enforcement Accessibility
     And I go to the Enforcement tab
     And I open the remove enforcement hold screen
     Then I check the page for accessibility
+
+  @JIRA-STORY:PO-2635 @JIRA-EPIC:PO-2621
+  Scenario: History and notes tab accessibility
+    Given I create a "adultOrYouthOnly" draft account with the following details and set status "Publishing Pending" using user "opal-test-10@dev.platform.hmcts.net":
+      | Account_status                          | Submitted                           |
+      | account.defendant.title                 | Ms                                  |
+      | account.defendant.forenames             | Hannah                              |
+      | account.defendant.surname               | HistoryAccess{uniq}                 |
+      | account.defendant.email_address_1       | Hannah.HistoryAccess{uniq}@test.com |
+      | account.defendant.telephone_number_home | 02078259314                         |
+      | account.account_type                    | Fine                                |
+      | account.prosecutor_case_reference       | PCR-AUTO-027                        |
+      | account.collection_order_made           | false                               |
+      | account.collection_order_made_today     | false                               |
+      | account.payment_card_request            | false                               |
+      | account.defendant.dob                   | 2002-05-15                          |
+    And the History and notes API is stubbed with standard tab data
+
+    When I search for the account by last name "HistoryAccess{uniq}" and open the latest result
+    And I go to the History and notes tab
+    Then I check the page for accessibility

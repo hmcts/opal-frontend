@@ -6,7 +6,7 @@ import { FINES_ACC_SUMMARY_TABS_CONTENT_STYLES } from '../../constants/fines-acc
 import { IFinesAccSummaryTabsContentStyles } from '../../fines-acc-defendant-details/interfaces/fines-acc-summary-tabs-content-styles.interface';
 import { IFinesAccMinorCreditorDetailsHistoryAndNotesFilterForm } from './interfaces/fines-acc-minor-creditor-details-history-and-notes-filter-form.interface';
 import { IOpalFinesAccountMinorCreditorDetailsHistoryAndNotesTabRefData } from '@services/fines/opal-fines-service/interfaces/opal-fines-account-minor-creditor-details-history-and-notes-tab-ref-data.interface';
-import { Observable, map, startWith, tap } from 'rxjs';
+import { EMPTY, Observable, catchError, map, of, startWith, tap } from 'rxjs';
 import { OpalFines } from '@services/fines/opal-fines-service/opal-fines.service';
 import { FinesAccPayloadService } from '../../services/fines-acc-payload.service';
 import { FINES_ACC_MAP_TRANSFORM_ITEMS_CONFIG } from '../../services/constants/fines-acc-map-transform-items-config.constant';
@@ -190,6 +190,7 @@ export class FinesAccMinorCreditorDetailsHistoryAndNotesTabComponent implements 
       .pipe(
         map((data) => this.transformFilteredTabData(data)),
         tap((data) => this.accountStore.compareVersion(data.version)),
+        catchError(() => (this.latestTabData ? of(this.latestTabData) : EMPTY)),
       );
 
     this.historyAndNotesTabData$ = this.keepLatestTabData(filteredTabData$);

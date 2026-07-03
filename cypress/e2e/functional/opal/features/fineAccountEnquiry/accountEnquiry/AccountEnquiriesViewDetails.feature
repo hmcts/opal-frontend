@@ -182,6 +182,37 @@ Feature: Account Enquiries – View Account Details
       And I should see the convert to individual account action
       And I should not see the convert to company account text
 
+  Rule: History and notes tab
+    Background:
+      Given I create a "adultOrYouthOnly" draft account with the following details and set status "Publishing Pending" using user "opal-test-10@dev.platform.hmcts.net":
+        | Account_status                          | Submitted                           |
+        | account.defendant.title                 | Ms                                  |
+        | account.defendant.forenames             | Harriet                             |
+        | account.defendant.surname               | HistoryNotes{uniq}                  |
+        | account.defendant.email_address_1       | Harriet.HistoryNotes{uniq}@test.com |
+        | account.defendant.telephone_number_home | 02078259314                         |
+        | account.account_type                    | Fine                                |
+        | account.prosecutor_case_reference       | PCR-AUTO-026                        |
+        | account.collection_order_made           | false                               |
+        | account.collection_order_made_today     | false                               |
+        | account.payment_card_request            | false                               |
+        | account.defendant.dob                   | 2002-05-15                          |
+      And the History and notes API is stubbed with standard tab data
+      When I search for the account by last name "HistoryNotes{uniq}" and open the latest result
+      Then I should see the page header contains "Ms Harriet HISTORYNOTES{uniqUpper}"
+
+    @JIRA-STORY:PO-2635 @JIRA-EPIC:PO-2621
+    Scenario: History and notes items load and can be filtered
+      When I go to the History and notes tab
+      Then I should see the History and notes items load
+      When I filter the History and notes results to Notes
+      Then I should only see Note items in History and notes
+
+    @JIRA-STORY:PO-2635 @JIRA-EPIC:PO-2621
+    Scenario: History and notes account links open the correct record in a new tab
+      When I go to the History and notes tab
+      And I open the first History and notes account link in a new tab
+
   Rule: Non-paying defendant account baseline
     Background:
       # AC1 – Account setup
