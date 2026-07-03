@@ -1,6 +1,9 @@
 import type config from 'config';
 import { OpalUserServiceConfiguration } from '@hmcts/opal-frontend-common-node/interfaces';
 
+/**
+ * Builds the User Service configuration passed into the common node library.
+ */
 export const getOpalUserServiceConfiguration = (
   configuration: Pick<typeof config, 'get'>,
 ): OpalUserServiceConfiguration => ({
