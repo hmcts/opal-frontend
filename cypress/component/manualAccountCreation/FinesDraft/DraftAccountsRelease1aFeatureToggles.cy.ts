@@ -198,7 +198,7 @@ describe('FinesDraftRelease1aFeatureToggles', () => {
     () => {
       setupAppComponent(draftAccountPermissionIds, { 'release-1a': false });
 
-      cy.get(PrimaryNav.container).should('be.visible');
+      cy.get(PrimaryNav.container).should('not.be.visible');
       cy.get(PrimaryNav.itemByText(PrimaryNav.labels.accounts)).should('not.exist');
     },
   );

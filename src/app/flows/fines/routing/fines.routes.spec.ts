@@ -9,6 +9,7 @@ import {
   release1cWriteOffFeatureFlagGuard,
 } from './fines.routes';
 import { finesSectionPermissionsGuard } from './guards/fines-section-permissions/fines-section-permissions.guard';
+import { dashboardTypeGuard } from './guards/dashboard-type/dashboard-type.guard';
 import { PRIMARY_NAV_HIDDEN_ROUTE_DATA } from '@app/constants/route-data.constant';
 import {
   RELEASE_1A_FEATURE_FLAG,
@@ -86,6 +87,15 @@ describe('fines routes', () => {
     expect(draftRoute?.data).toEqual({
       sectionKey: FINES_DASHBOARD_ROUTING_PATHS.children.accounts,
     });
+  });
+
+  it('should guard dashboard section routes by dashboard type and section availability', () => {
+    const dashboardRoute = childRoutes.find(
+      (route) => route.path === `${FINES_DASHBOARD_ROUTING_PATHS.root}/:dashboardType`,
+    );
+
+    expect(dashboardRoute?.canActivate).toContain(dashboardTypeGuard);
+    expect(dashboardRoute?.canActivate).toContain(finesSectionPermissionsGuard);
   });
 
   it('should guard the MAC journey root behind release-1a', () => {

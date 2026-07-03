@@ -47,7 +47,8 @@
         "release-1c-cpp-enforcement": true,
         "release-1c-cpp": true,
         "release-1c-printing": true,
-        "release-1c-enforcement-operational-reporting": true
+        "release-1c-enforcement-operational-reporting": true,
+        "release-1c-administration": true
       }
     },
     "app-insights": {
@@ -99,6 +100,9 @@
   },
   "microsoft": {
     "url": "https://login.microsoftonline.com/"
+  },
+  "error-pages": {
+    "internal-server-path": "/error/internal-server"
   },
   "opal-user-service-urls": {
     "userStateUrl": "/v2/users/0/state",

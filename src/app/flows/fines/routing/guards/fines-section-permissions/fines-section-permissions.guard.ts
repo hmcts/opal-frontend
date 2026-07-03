@@ -4,8 +4,10 @@ import {
   getRequiredPermissionIdsForSection,
   getUserPermissionIds,
   hasAnyPermission,
+  isFinesPrimaryNavigationSectionEnabled,
 } from '@app/flows/fines/utils/fines-section-permissions.utils';
 import { FEATURE_FLAG_SECTION_PERMISSION_EXCLUSIONS } from '@app/flows/fines/constants/feature-flag-section-permission-exclusions.constant';
+import { FEATURE_FLAG_SECTION_AVAILABILITY } from '@app/flows/fines/constants/feature-flag-section-availability.constant';
 import { type FeatureFlagReleaseName } from '@app/flows/fines/types/feature-flag-release-name.type';
 import { isDashboardPageType } from '@app/pages/dashboard/constants/dashboard-config.constant';
 import { DashboardPageType } from '@app/pages/dashboard/types/dashboard.type';
@@ -31,8 +33,22 @@ const getSectionKey = (route: ActivatedRouteSnapshot): DashboardPageType | null 
   return null;
 };
 
-const getSectionReleaseFeatureFlags = (sectionKey: DashboardPageType): FeatureFlagReleaseName[] =>
-  Object.keys(FEATURE_FLAG_SECTION_PERMISSION_EXCLUSIONS[sectionKey] ?? {}) as FeatureFlagReleaseName[];
+const getSectionReleaseFeatureFlags = (sectionKey: DashboardPageType): FeatureFlagReleaseName[] => {
+  const sectionAvailabilityFlags = FEATURE_FLAG_SECTION_AVAILABILITY[sectionKey] ?? [];
+  const permissionExclusionFlags = Object.keys(
+    FEATURE_FLAG_SECTION_PERMISSION_EXCLUSIONS[sectionKey] ?? {},
+  ) as FeatureFlagReleaseName[];
+
+  const duplicatedFlags = sectionAvailabilityFlags.filter((flag) => permissionExclusionFlags.includes(flag));
+
+  if (duplicatedFlags.length) {
+    throw new Error(
+      `Release feature flags must not be configured as both section availability and permission exclusions: ${duplicatedFlags.join(', ')}`,
+    );
+  }
+
+  return [...sectionAvailabilityFlags, ...permissionExclusionFlags];
+};
 
 export const finesSectionPermissionsGuard: CanActivateFn = async (
   route: ActivatedRouteSnapshot,
@@ -51,6 +67,10 @@ export const finesSectionPermissionsGuard: CanActivateFn = async (
   const checkSectionPermissions = async (
     currentFeatureFlagReleaseState: FeatureFlagReleaseState,
   ): Promise<boolean | UrlTree> => {
+    if (!isFinesPrimaryNavigationSectionEnabled(sectionKey, currentFeatureFlagReleaseState)) {
+      return getAccessDeniedUrlTree();
+    }
+
     const requiredPermissionIds = getRequiredPermissionIdsForSection(sectionKey, currentFeatureFlagReleaseState);
 
     if (!requiredPermissionIds) {

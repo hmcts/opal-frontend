@@ -11,6 +11,7 @@ import { OPAL_FINES_ACCOUNT_DEFENDANT_DETAILS_ENFORCEMENT_TAB_REF_DATA_MOCK } fr
 import { ACCOUNT_ENQUIRY_ENFORCEMENT_STATUS_ELEMENTS as ENFORCEMENT_STATUS_TAB } from '../../../shared/selectors/account-enquiry/account.enquiry.enforcement.locators';
 import { interceptDefendantHeader, interceptEnforcementStatus } from './intercept/defendantAccountIntercepts';
 import { interceptAuthenticatedUser, interceptUserState } from 'cypress/component/CommonIntercepts/CommonIntercepts';
+import { ActivatedRoute, provideRouter } from '@angular/router';
 import { mount } from 'cypress/angular';
 import { IComponentProperties } from './setup/setupComponent.interface';
 import { setupAccountEnquiryComponent } from './setup/SetupComponent';
@@ -21,6 +22,13 @@ const NO_EDITABLE_FIELDS_SELECTOR = 'input, textarea, select, [contenteditable="
 const COMPANY_NAME = 'Test Org Ltd';
 
 const buildTags = (...tags: string[]): string[] => [...tags, ACCOUNT_ENQUIRY_JIRA_LABEL];
+
+const activatedRouteMock = {
+  snapshot: {
+    params: {},
+    data: {},
+  },
+};
 
 type HeaderMock = typeof DEFENDANT_HEADER_MOCK;
 type EnforcementMock = typeof OPAL_FINES_ACCOUNT_DEFENDANT_DETAILS_ENFORCEMENT_TAB_REF_DATA_MOCK;
@@ -123,6 +131,7 @@ describe('Account Enquiry Enforcement Status', () => {
         isCompanyAccount,
         accountStatusCode: 'L',
       },
+      providers: [provideRouter([]), { provide: ActivatedRoute, useValue: activatedRouteMock }],
     });
   };
 

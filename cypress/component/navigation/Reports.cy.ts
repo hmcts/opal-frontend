@@ -13,7 +13,10 @@ import { DashboardComponent } from 'src/app/pages/dashboard/dashboard.component'
 import { ReportsLocators as L } from '../../shared/selectors/reports.locators';
 import {
   RELEASE_1A_FEATURE_FLAG,
+  RELEASE_1C_WRITE_OFF_FEATURE_FLAG,
   RELEASE_1C_ENFORCEMENT_OPERATIONAL_REPORTING_FEATURE_FLAG,
+  RELEASE_1C_ADMINISTRATION_FEATURE_FLAG,
+  RELEASE_1C_FINANCIAL_MOVEMENTS_FEATURE_FLAG,
 } from 'src/app/flows/fines/constants/release-feature-flags.constant';
 
 const REPORTS_JIRA_LABEL = '@JIRA-LABEL:primary-nav-and-dashboards';
@@ -23,7 +26,10 @@ const RELEASE_1C_STORY_TAG = '@JIRA-STORY:PO-3758';
 const RELEASE_1C_EPIC_TAG = '@JIRA-EPIC:PO-3685';
 const DEFAULT_RELEASE_FEATURE_FLAGS = {
   [RELEASE_1A_FEATURE_FLAG]: true,
+  [RELEASE_1C_WRITE_OFF_FEATURE_FLAG]: true,
   [RELEASE_1C_ENFORCEMENT_OPERATIONAL_REPORTING_FEATURE_FLAG]: true,
+  [RELEASE_1C_ADMINISTRATION_FEATURE_FLAG]: true,
+  [RELEASE_1C_FINANCIAL_MOVEMENTS_FEATURE_FLAG]: true,
 };
 
 interface IComponentProperties {
@@ -298,7 +304,7 @@ describe(
 
     it(
       'hides the Reports dashboard entry points when release-1c enforcement operational reporting is disabled',
-      { tags: ['@JIRA-TEST-KEY:PO-3758', '@JIRA-STORY:PO-3758', '@JIRA-EPIC:PO-3685'] },
+      { tags: ['@JIRA-STORY:PO-3758', '@JIRA-EPIC:PO-3685', '@JIRA-TEST-KEY:PO-8680'] },
       () => {
         featureFlagDisabledSetup();
 
@@ -312,7 +318,7 @@ describe(
 
     it(
       'shows the Reports dashboard entry points when release-1c enforcement operational reporting is enabled',
-      { tags: ['@JIRA-TEST-KEY:PO-3758'] },
+      { tags: ['@JIRA-TEST-KEY:PO-8681'] },
       () => {
         commonSetup();
 
@@ -330,7 +336,7 @@ describe(
 
     it(
       'navigates to the operational reports by enforcement summary list when release-1c enforcement operational reporting is enabled',
-      { tags: ['@JIRA-TEST-KEY:PO-3758'] },
+      { tags: ['@JIRA-TEST-KEY:PO-8682'] },
       () => {
         commonSetup();
 
@@ -343,7 +349,7 @@ describe(
 
     it(
       'navigates to the operational reports by payments summary list when release-1c enforcement operational reporting is enabled',
-      { tags: ['@JIRA-TEST-KEY:PO-3758'] },
+      { tags: ['@JIRA-TEST-KEY:PO-8683'] },
       () => {
         commonSetup();
 
