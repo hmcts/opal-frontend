@@ -12,8 +12,6 @@ import { FinesAccPayloadService } from '../services/fines-acc-payload.service';
 import { MOCK_FINES_ACCOUNT_STATE } from '../mocks/fines-acc-state.mock';
 import { FINES_ACC_MINOR_CREDITOR_ROUTING_PATHS } from '../routing/constants/fines-acc-minor-creditor-routing-paths.constant';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
-import { GlobalStore } from '@hmcts/opal-frontend-common/stores/global';
-import { OPAL_USER_STATE_MOCK } from '@hmcts/opal-frontend-common/services/opal-user-service/mocks';
 import { OPAL_FINES_ACCOUNT_MINOR_CREDITOR_AT_A_GLANCE_WITH_DEFENDANT_MOCK } from '../../services/opal-fines-service/mocks/opal-fines-account-minor-creditor-at-a-glance-with-defendant.mock';
 import { OPAL_FINES_ACCOUNT_MINOR_CREDITOR_CREDITOR_MOCK } from '../../services/opal-fines-service/mocks/opal-fines-account-minor-creditor-creditor.mock';
 import { OPAL_FINES_ACCOUNT_MINOR_CREDITOR_DETAILS_HISTORY_AND_NOTES_TAB_REF_DATA_MOCK } from '../../services/opal-fines-service/mocks/opal-fines-account-minor-creditor-details-history-and-notes-tab-ref-data.mock';
@@ -37,10 +35,6 @@ describe('FinesAccMinorCreditorDetailsComponent', () => {
     FinesAccPayloadService,
     'transformMinorCreditorAccountHeaderForStore' | 'transformPayload'
   >;
-  let mockGlobalStore: {
-    featureFlags: ReturnType<typeof vi.fn>;
-    userState: ReturnType<typeof vi.fn>;
-  };
 
   beforeEach(async () => {
     routerSpy = {
@@ -65,11 +59,6 @@ describe('FinesAccMinorCreditorDetailsComponent', () => {
       transformPayload: vi.fn().mockImplementation((...args) => {
         return args[0]; // returns the first argument = payload
       }),
-    };
-    mockGlobalStore = {
-      ...structuredClone(OPAL_USER_STATE_MOCK),
-      featureFlags: vi.fn().mockReturnValue({ 'view-minor-creditor-history': true }),
-      userState: vi.fn().mockReturnValue(structuredClone(OPAL_USER_STATE_MOCK)),
     };
 
     mockOpalFinesService = {
@@ -98,7 +87,6 @@ describe('FinesAccMinorCreditorDetailsComponent', () => {
         { provide: ActivatedRoute, useValue: activatedRouteStub },
         { provide: OpalFines, useValue: mockOpalFinesService },
         { provide: FinesAccPayloadService, useValue: mockPayloadService },
-        { provide: GlobalStore, useValue: mockGlobalStore },
       ],
     }).compileComponents();
 
@@ -206,18 +194,6 @@ describe('FinesAccMinorCreditorDetailsComponent', () => {
       OPAL_FINES_ACCOUNT_MINOR_CREDITOR_DETAILS_HISTORY_AND_NOTES_TAB_REF_DATA_MOCK,
       expect.any(Array),
     );
-  });
-
-  it('should hide the history tab when the feature flag is disabled', () => {
-    vi.mocked(mockGlobalStore.featureFlags).mockReturnValue({ 'view-minor-creditor-history': false });
-
-    fixture.destroy();
-    fixture = TestBed.createComponent(FinesAccMinorCreditorDetailsComponent);
-    component = fixture.componentInstance;
-    fixture.detectChanges();
-
-    const compiled = fixture.nativeElement as HTMLElement;
-    expect(compiled.textContent).not.toContain('History and notes');
   });
 
   it('should navigate to access-denied if user lacks permission for the add account note page', () => {
