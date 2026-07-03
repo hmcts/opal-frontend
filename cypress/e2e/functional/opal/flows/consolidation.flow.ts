@@ -67,6 +67,21 @@ export class ConsolidationFlow {
     this.consolidation.assertOnSearchTabForCompanies();
   }
 
+  /**
+   * Asserts the consolidation summary row shows the expected defendant type.
+   * @param defendantType - Expected defendant type text.
+   */
+  public assertSummaryDefendantType(defendantType: ConsolidationDefendantType): void {
+    log('flow', 'Asserting consolidation summary defendant type', { defendantType });
+    this.consolidation.assertSummaryDefendantType(defendantType);
+  }
+
+  /** Asserts the consolidation search page includes the National Insurance field. */
+  public assertSearchPageIncludesNationalInsuranceField(): void {
+    log('flow', 'Asserting consolidation search page includes the National Insurance field');
+    this.consolidation.assertNationalInsuranceFieldPresent();
+  }
+
   /** Asserts the page-header back link is displayed on the consolidation shell. */
   public assertBackLinkIsDisplayed(): void {
     log('flow', 'Asserting consolidation page-header back link is displayed');

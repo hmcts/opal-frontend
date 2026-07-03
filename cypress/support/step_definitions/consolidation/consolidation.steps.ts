@@ -47,9 +47,19 @@ Then('I am on the consolidation business unit and defendant type selection scree
   consolidationFlow().assertSelectBusinessUnitScreen();
 });
 
+Then('the consolidation summary shows defendant type {string}', (defendantType: ConsolidationDefendantType) => {
+  log('step', 'Verifying consolidation summary defendant type', { defendantType });
+  consolidationFlow().assertSummaryDefendantType(defendantType);
+});
+
 Then('I am on the consolidation Search tab for Companies', () => {
   log('step', 'Verifying consolidation account search defaults for Companies');
   consolidationFlow().assertSearchTabForCompanies();
+});
+
+Then('the consolidation search page includes the NI field', () => {
+  log('step', 'Verifying consolidation search page includes the National Insurance field');
+  consolidationFlow().assertSearchPageIncludesNationalInsuranceField();
 });
 
 Then('the consolidation page header back link is displayed', () => {

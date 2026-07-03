@@ -54,6 +54,35 @@ export class ConsolidationActions {
   };
 
   /**
+   * Logs a diagnostic snapshot of the consolidation journey state.
+   * Captures the current URL, summary values, NI field presence, and any error-page bullets currently rendered.
+   * @param context - Short label describing the point in the journey being inspected.
+   */
+  public logDiagnostics(context: string): void {
+    cy.location('href').then((url) => {
+      cy.get('body', { log: false }).then(($body) => {
+        const businessUnit = $body.find(AccountSearchLocators.businessUnitValue).text().replace(/\s+/g, ' ').trim();
+        const defendantType = $body.find(AccountSearchLocators.defendantTypeValue).text().replace(/\s+/g, ' ').trim();
+        const hasNationalInsuranceField = $body.find(AccountSearchLocators.nationalInsuranceNumberInput).length > 0;
+        const errorPageBulletItems = $body
+          .find(`${ErrorPageLocators.root} ${ErrorPageLocators.bulletItems}`)
+          .toArray()
+          .map((item) => item.textContent?.replace(/\s+/g, ' ').trim())
+          .filter((item): item is string => Boolean(item));
+
+        log('debug', `Consolidation diagnostics: ${context}`, {
+          context,
+          url,
+          summaryBusinessUnit: businessUnit,
+          summaryDefendantType: defendantType,
+          hasNationalInsuranceField,
+          errorPageBulletItems,
+        });
+      });
+    });
+  }
+
+  /**
    * Opens Consolidate accounts from the Accounts landing page.
    */
   public openFromAccountsPage(): void {
@@ -273,6 +302,7 @@ export class ConsolidationActions {
 
   /** Clicks Search on the consolidation Search tab. */
   public clickSearch(): void {
+    this.logDiagnostics('before clicking consolidation search');
     log('click', 'Clicking Search on consolidation account search page');
     cy.get(AccountSearchLocators.searchButton, { timeout: 10_000 }).should('be.visible').click();
   }
@@ -293,6 +323,7 @@ export class ConsolidationActions {
     cy.get(AccountSearchLocators.searchTabLink, { timeout: 10_000 }).should('have.attr', 'aria-current', 'page');
     cy.get(AccountSearchLocators.defendantTypeValue).should('contain', 'Individual');
     cy.get(AccountSearchLocators.accountNumberInput).should('be.visible');
+    this.logDiagnostics('on consolidation search tab for Individuals');
   }
 
   /** Asserts the user is on Consolidation account search for Companies, Search tab active. */
@@ -304,6 +335,24 @@ export class ConsolidationActions {
     cy.get(AccountSearchLocators.defendantTypeValue).should('contain', 'Company');
     cy.get(AccountSearchLocators.accountNumberInput).should('be.visible');
     cy.get(AccountSearchLocators.companyNameInput).should('be.visible');
+    this.logDiagnostics('on consolidation search tab for Companies');
+  }
+
+  /**
+   * Asserts the consolidation summary row shows the expected defendant type.
+   * @param defendantType - Expected defendant type text.
+   */
+  public assertSummaryDefendantType(defendantType: ConsolidationDefendantType): void {
+    log('assert', 'Verifying consolidation summary defendant type', { defendantType });
+    cy.get(AccountSearchLocators.defendantTypeValue, { timeout: 10_000 }).should('contain', defendantType);
+    this.logDiagnostics(`summary defendant type asserted as ${defendantType}`);
+  }
+
+  /** Asserts the NI field is present on the consolidation search page. */
+  public assertNationalInsuranceFieldPresent(): void {
+    log('assert', 'Verifying consolidation search page includes the National Insurance field');
+    cy.get(AccountSearchLocators.nationalInsuranceNumberInput, { timeout: 10_000 }).should('be.visible');
+    this.logDiagnostics('national insurance field asserted on consolidation search page');
   }
 
   /** Asserts the page-header back link is displayed on the consolidation shell. */
@@ -451,6 +500,7 @@ export class ConsolidationActions {
         : ['account number, or', 'advanced search'];
 
     log('assert', 'Verifying consolidation search error page', { defendantType, expectedBulletItems });
+    this.logDiagnostics(`on consolidation search error page for ${defendantType}`);
 
     cy.get(ErrorPageLocators.root, { timeout: 10_000 }).should('be.visible');
     cy.get(`${ErrorPageLocators.root} ${ErrorPageLocators.heading}`).should('have.text', 'There is a problem');
@@ -464,7 +514,7 @@ export class ConsolidationActions {
         );
       });
 
-    cy.get(`${ErrorPageLocators.root} ${ErrorPageLocators.bulletItems}`).then(($items) => {
+    cy.get(`${ErrorPageLocators.root} ${ErrorPageLocators.bulletItems}`).should(($items) => {
       const items = [...$items].map((item) => item.textContent?.replace(/\s+/g, ' ').trim().toLowerCase());
       expect(items).to.deep.equal(expectedBulletItems);
     });
