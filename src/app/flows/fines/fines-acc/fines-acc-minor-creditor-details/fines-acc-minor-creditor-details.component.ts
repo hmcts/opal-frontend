@@ -47,6 +47,7 @@ import { FinesAccMinorCreditorDetailsCreditorTab } from './fines-acc-minor-credi
 import { IOpalFinesAccountMinorCreditorCreditor } from '../../services/opal-fines-service/interfaces/opal-fines-account-minor-creditor-creditor.interface';
 import { FinesAccMinorCreditorDetailsHistoryAndNotesTabComponent } from './fines-acc-minor-creditor-details-history-and-notes-tab/fines-acc-minor-creditor-details-history-and-notes-tab.component';
 import { IOpalFinesAccountMinorCreditorDetailsHistoryAndNotesTabRefData } from '../../services/opal-fines-service/interfaces/opal-fines-account-minor-creditor-details-history-and-notes-tab-ref-data.interface';
+import { GlobalStore } from '@hmcts/opal-frontend-common/stores/global';
 
 @Component({
   selector: 'app-fines-acc-minor-creditor-details',
@@ -77,6 +78,7 @@ export class FinesAccMinorCreditorDetailsComponent
 {
   private readonly opalFinesService = inject(OpalFines);
   private readonly payloadService = inject(FinesAccPayloadService);
+  private readonly appGlobalStore = inject(GlobalStore);
 
   public accountStore = inject(FinesAccountStore);
   public tabs: IFinesAccountMinorCreditorDetailsTabs = FINES_ACC_MINOR_CREDITOR_DETAILS_TABS;
@@ -89,6 +91,10 @@ export class FinesAccMinorCreditorDetailsComponent
   public accountTypes = FINES_ACCOUNT_TYPES;
   public lastEnforcement: IOpalFinesResultRefData | null = null;
   public finesPermissions = FINES_PERMISSIONS;
+  public readonly hasMinorCreditorHistoryFeature = () =>
+    ((this.appGlobalStore.featureFlags() as Record<string, boolean> | null | undefined)?.[
+      'view-minor-creditor-history'
+    ] ?? false) === true;
 
   /**
    * Fetches the tab data and ensures it is typed correctly.

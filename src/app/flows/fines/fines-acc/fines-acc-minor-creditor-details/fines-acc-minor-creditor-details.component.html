@@ -74,13 +74,15 @@
       subNavItemFragment="creditor"
       [subNavItemText]="tabs['creditor']"
     ></li>
-    <li
-      opal-lib-moj-sub-navigation-item
-      subNavItemId="history-and-notes-tab"
-      [activeSubNavItemFragment]="activeTab"
-      subNavItemFragment="history-and-notes"
-      [subNavItemText]="tabs['history-and-notes']"
-    ></li>
+    @if (hasMinorCreditorHistoryFeature()) {
+      <li
+        opal-lib-moj-sub-navigation-item
+        subNavItemId="history-and-notes-tab"
+        [activeSubNavItemFragment]="activeTab"
+        subNavItemFragment="history-and-notes"
+        [subNavItemText]="tabs['history-and-notes']"
+      ></li>
+    }
   </opal-lib-moj-sub-navigation>
 </div>
 
@@ -108,10 +110,12 @@
     }
   }
   @case ('history-and-notes') {
-    <app-fines-acc-minor-creditor-details-history-and-notes-tab
-      [accountId]="accountId"
-      [tabData$]="tabHistoryAndNotes$"
-      [style]="tabContentStyles"
-    ></app-fines-acc-minor-creditor-details-history-and-notes-tab>
+    @if (hasMinorCreditorHistoryFeature()) {
+      <app-fines-acc-minor-creditor-details-history-and-notes-tab
+        [accountId]="accountId"
+        [tabData$]="tabHistoryAndNotes$"
+        [style]="tabContentStyles"
+      ></app-fines-acc-minor-creditor-details-history-and-notes-tab>
+    }
   }
 }
