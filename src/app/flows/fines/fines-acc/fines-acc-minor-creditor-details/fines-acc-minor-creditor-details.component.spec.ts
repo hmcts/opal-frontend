@@ -37,8 +37,10 @@ describe('FinesAccMinorCreditorDetailsComponent', () => {
     FinesAccPayloadService,
     'transformMinorCreditorAccountHeaderForStore' | 'transformPayload'
   >;
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  let mockGlobalStore: any;
+  let mockGlobalStore: {
+    featureFlags: ReturnType<typeof vi.fn>;
+    userState: ReturnType<typeof vi.fn>;
+  };
 
   beforeEach(async () => {
     routerSpy = {
@@ -68,7 +70,7 @@ describe('FinesAccMinorCreditorDetailsComponent', () => {
       ...structuredClone(OPAL_USER_STATE_MOCK),
       featureFlags: vi.fn().mockReturnValue({ 'view-minor-creditor-history': true }),
       userState: vi.fn().mockReturnValue(structuredClone(OPAL_USER_STATE_MOCK)),
-    } as any;
+    };
 
     mockOpalFinesService = {
       getMinorCreditorAccountHeadingData: vi

@@ -91,10 +91,6 @@ export class FinesAccMinorCreditorDetailsComponent
   public accountTypes = FINES_ACCOUNT_TYPES;
   public lastEnforcement: IOpalFinesResultRefData | null = null;
   public finesPermissions = FINES_PERMISSIONS;
-  public readonly hasMinorCreditorHistoryFeature = () =>
-    ((this.appGlobalStore.featureFlags() as Record<string, boolean> | null | undefined)?.[
-      'view-minor-creditor-history'
-    ] ?? false) === true;
 
   /**
    * Fetches the tab data and ensures it is typed correctly.
@@ -203,6 +199,11 @@ export class FinesAccMinorCreditorDetailsComponent
   protected override transformTabData<T extends IOpalFinesVersion>(data: T): T {
     return this.payloadService.transformPayload(data, FINES_ACC_MAP_TRANSFORM_ITEMS_CONFIG);
   }
+
+  public readonly hasMinorCreditorHistoryFeature = () =>
+    ((this.appGlobalStore.featureFlags() as Record<string, boolean> | null | undefined)?.[
+      'view-minor-creditor-history'
+    ] ?? false) === true;
 
   /**
    * Handles the page refresh action.
