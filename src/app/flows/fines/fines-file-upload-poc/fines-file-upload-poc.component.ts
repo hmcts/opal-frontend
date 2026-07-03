@@ -8,13 +8,14 @@ import {
   inject,
   signal,
 } from '@angular/core';
-import { HttpEvent, HttpEventType, HttpRequest, HttpResponse } from '@angular/common/http';
+import { HttpErrorResponse, HttpEvent, HttpEventType, HttpRequest, HttpResponse } from '@angular/common/http';
 import { isPlatformBrowser } from '@angular/common';
 import { MultiFileUpload } from '@ministryofjustice/frontend/moj/components/multi-file-upload/multi-file-upload.mjs';
-import { Observable, concat, map, of, timer } from 'rxjs';
+import { Observable, concat, map, of, throwError, timer } from 'rxjs';
 
 const MAX_FILE_SIZE_BYTES = 1024 * 1024;
 const INVALID_FILE_EXTENSION = '.mov';
+const MOCK_SERVER_ERROR_FILENAME_FRAGMENT = 'server-error';
 const MOCK_UPLOAD_INTERVAL_MS = 120;
 const MOCK_UPLOAD_PROGRESS_STEPS = [20, 40, 60, 80, 100];
 
@@ -50,14 +51,6 @@ class FinesFileUploadPocMultiFileUpload extends MultiFileUpload {
     Array.from(files).forEach((file) => {
       this.uploadFile(file);
     });
-  }
-
-  public override onFileDeleteClick(event: MouseEvent): void {
-    const button = event.target;
-
-    if (button instanceof HTMLButtonElement && button.classList.contains('moj-multi-file-upload__delete')) {
-      event.preventDefault();
-    }
   }
 }
 
@@ -125,19 +118,29 @@ export class FinesFileUploadPocComponent implements AfterViewInit {
         ),
       ),
     );
+    const responseEvent = file.name.toLowerCase().includes(MOCK_SERVER_ERROR_FILENAME_FRAGMENT)
+      ? throwError(
+          () =>
+            new HttpErrorResponse({
+              status: 422,
+              statusText: 'Unprocessable Entity',
+              url: request.url,
+              error: {
+                message: 'Mock upload endpoint rejected this file',
+              },
+            }),
+        )
+      : of(
+          new HttpResponse({
+            status: 200,
+            body: {
+              fileName: file.name,
+              uploadUrl: request.url,
+            },
+          }),
+        );
 
-    return concat(
-      ...progressEvents,
-      of(
-        new HttpResponse({
-          status: 200,
-          body: {
-            fileName: file.name,
-            uploadUrl: request.url,
-          },
-        }),
-      ),
-    );
+    return concat(...progressEvents, responseEvent);
   }
 
   private queueFileUpload(file: File): void {
@@ -156,22 +159,37 @@ export class FinesFileUploadPocComponent implements AfterViewInit {
     return new Promise((resolve) => {
       this.updateFileUpload(id, { status: 'uploading' });
 
-      this.mockUploadFile(file).subscribe((event) => {
-        if (event.type === HttpEventType.UploadProgress) {
-          const total = event.total ?? 0;
-          const progress = total > 0 ? Math.round((100 * event.loaded) / total) : 0;
-          this.updateFileUpload(id, { progress });
-        }
+      this.mockUploadFile(file).subscribe({
+        next: (event) => {
+          if (event.type === HttpEventType.UploadProgress) {
+            const total = event.total ?? 0;
+            const progress = total > 0 ? Math.round((100 * event.loaded) / total) : 0;
+            this.updateFileUpload(id, { progress });
+          }
 
-        if (event.type === HttpEventType.Response) {
+          if (event.type === HttpEventType.Response) {
+            const fileUpload = this.fileUploads().find((item) => item.id === id);
+            this.updateFileUpload(id, {
+              progress: 100,
+              status: 'complete',
+              valid: fileUpload?.validationMessages.length === 0,
+            });
+            resolve();
+          }
+        },
+        error: (error: HttpErrorResponse) => {
           const fileUpload = this.fileUploads().find((item) => item.id === id);
+          const serverMessage = error.error?.message ?? 'Mock upload endpoint failed';
+          const validationMessages = [...(fileUpload?.validationMessages ?? []), serverMessage];
+
           this.updateFileUpload(id, {
             progress: 100,
             status: 'complete',
-            valid: fileUpload?.validationMessages.length === 0,
+            valid: false,
+            validationMessages,
           });
           resolve();
-        }
+        },
       });
     });
   }
@@ -186,9 +204,5 @@ export class FinesFileUploadPocComponent implements AfterViewInit {
     if (multiFileUploadElement) {
       new FinesFileUploadPocMultiFileUpload(multiFileUploadElement, (file) => this.queueFileUpload(file));
     }
-  }
-
-  public removeFile(id: number): void {
-    this.fileUploads.update((fileUploads) => fileUploads.filter((fileUpload) => fileUpload.id !== id));
   }
 }
