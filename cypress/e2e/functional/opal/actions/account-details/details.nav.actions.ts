@@ -168,6 +168,15 @@ export class AccountDetailsNavActions {
   }
 
   /**
+   * Navigates to the "History and notes" tab within the Account Details shell.
+   */
+  goToHistoryAndNotesTab(): void {
+    log('navigate', 'Navigating to "History and notes" tab');
+
+    cy.get(N.subNav.historyAndNotesTab, { timeout: 10_000 }).should('be.visible').click();
+  }
+
+  /**
    * Asserts that the "Parent or guardian" tab is currently active.
    *
    * @description
@@ -308,6 +317,18 @@ export class AccountDetailsNavActions {
       .should('be.visible')
       .and('have.attr', 'aria-current', 'page')
       .and('contain.text', 'Impositions');
+  }
+
+  /**
+   * Asserts that the "History and notes" tab is currently active.
+   */
+  assertHistoryAndNotesTabIsActive(): void {
+    log('assert', 'Asserting "History and notes" tab is active');
+
+    cy.get(N.subNav.currentTab, { timeout: 10_000 })
+      .should('be.visible')
+      .and('have.attr', 'aria-current', 'page')
+      .and('contain.text', 'History and notes');
   }
 
   /**
