@@ -16,6 +16,7 @@ import {
 } from '@hmcts/opal-frontend-common-node/interfaces';
 import { DEFAULT_PROXY_CONFIG } from '@hmcts/opal-frontend-common-node/constants';
 import { type ITransferStateServerState } from '@hmcts/opal-frontend-common/services/transfer-state-service/interfaces';
+import { getOpalUserServiceConfiguration } from './src/app/server-setup/utils/get-opal-user-service-configuration.util';
 
 const env = process.env['NODE_ENV'] || 'development';
 const developmentMode = env === 'development';
@@ -42,7 +43,7 @@ export function getRoutesConfig(): {
     opalUserServiceUrl: config.get('opal-api.opal-user-service'),
   };
 
-  const routesConfiguration: RoutesConfiguration = {
+  const routesConfiguration = new RoutesConfiguration({
     frontendHostname:
       env === 'development' ? config.get('frontend-hostname.dev') : config.get('frontend-hostname.prod'),
     prefix: config.get('session.prefix'),
@@ -51,13 +52,9 @@ export function getRoutesConfig(): {
     tenantId: config.get('secrets.opal.AzureADTenantId'),
     microsoftUrl: config.get('microsoft.url'),
     internalServerErrorPath: config.get('error-pages.internal-server-path'),
-  };
+  });
 
-  const opalUserServiceConfiguration: OpalUserServiceConfiguration = {
-    userStateUrl: config.get('opal-user-service-urls.userStateUrl'),
-    addUserUrl: config.get('opal-user-service-urls.addUserUrl'),
-    updateUserUrl: config.get('opal-user-service-urls.updateUserUrl'),
-  };
+  const opalUserServiceConfiguration: OpalUserServiceConfiguration = getOpalUserServiceConfiguration(config);
 
   const userStateConfiguration: UserStateConfiguration = {
     cacheKeyPrefix: config.get('user-state.cacheKeyPrefix'),
