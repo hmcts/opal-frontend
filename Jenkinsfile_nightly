@@ -26,8 +26,16 @@ properties([
       description: 'Run functional tests excluding feature-flag off scenarios'
     ),
     booleanParam(name: 'Legacy', defaultValue: false, description: 'Run legacy tests'),
-    booleanParam(name: 'RunChrome', defaultValue: false, description: 'Run Chrome tests'),
-    booleanParam(name: 'RunFirefox', defaultValue: false, description: 'Run Firefox tests'),
+    booleanParam(
+      name: 'RunChrome',
+      defaultValue: false,
+      description: 'Run the selected nightly test stages in Chrome instead of the default browser'
+    ),
+    booleanParam(
+      name: 'RunFirefox',
+      defaultValue: false,
+      description: 'Run the selected nightly test stages in Firefox instead of the default browser'
+    ),
     booleanParam(
       name: 'RunR1aLegacyDemo',
       defaultValue: true,
@@ -191,6 +199,28 @@ INSTALL A SUPPORTED BROWSER OR SET BROWSER_TO_RUN EXPLICITLY
   }
 
   return normalizedBrowser
+}
+
+// Resolve the single browser that the selected nightly stages should use.
+String resolveSelectedNightlyBrowser() {
+  if (params.RunChrome && params.RunFirefox) {
+    error '''\
+========================================================================
+RUNCHROME AND RUNFIREFOX CANNOT BOTH BE ENABLED
+SELECT A SINGLE BROWSER OVERRIDE OR USE THE DEFAULT EDGE MODE
+========================================================================
+'''.stripIndent()
+  }
+
+  if (params.RunChrome) {
+    return requireInstalledBrowser(browserChrome)
+  }
+
+  if (params.RunFirefox) {
+    return requireInstalledBrowser(browserFirefox)
+  }
+
+  return resolvePipelineBrowser(env.BROWSER_TO_RUN ?: browserEdge)
 }
 
 // Require an explicitly requested browser to be present before running its stage.
@@ -505,6 +535,9 @@ void runDemoLegacyStage(Map<String, Object> stageConfig, Closure runCommand) {
       }
       waitForLegacyHealthCheck()
       sh 'echo "Waiting 30s for system warmup..." ; sleep 30'
+      // Demo legacy stages publish from the shared functional output directory.
+      // Reset it first so each stage report contains only the stage that just ran.
+      sh "rm -rf ${functionalOutputRoot}"
 
       withEnv(stageEnv) {
         runCommand.call()
@@ -721,29 +754,6 @@ void runLegacyStage(
   }
 }
 
-// Run an explicit browser stage using the provided command and report metadata.
-void runBrowserStage(
-  boolean enabled,
-  String failureResultValue,
-  String failureMessage,
-  uk.gov.hmcts.contino.YarnBuilder builder,
-  Map<String, String> stageConfig
-) {
-  runNightlyStage(enabled, stageConfig.stageName, failureResultValue, failureMessage) {
-    try {
-      builder.yarn(stageConfig.yarnCommand)
-    } finally {
-      archiveArtifact("${functionalOutputRoot}/prod/${stageConfig.browserToRun}/**")
-      archiveArtifact("${functionalOutputRoot}/screenshots/${stageConfig.browserToRun}/**")
-      publishHtmlReport(
-        "${functionalOutputRoot}/prod/${stageConfig.browserToRun}/cucumber/",
-        "${stageConfig.browserToRun}-report.html",
-        "${stageConfig.browserToRun.capitalize()} Functional Test Report"
-      )
-    }
-  }
-}
-
 // Restore cached parallel weight files from the previous successful nightly run.
 void performArtifactOperations() {
   sh 'mkdir -p cypress/parallel/weights/pipeline'
@@ -834,7 +844,7 @@ withNightlyPipeline(type, product, component) {
     if (!isBrowserInstalled(browserFirefox)) {
       echoBrowserMissingBanner(browserFirefox)
     }
-    env.BROWSER_TO_RUN = resolvePipelineBrowser(env.BROWSER_TO_RUN ?: browserEdge)
+    env.BROWSER_TO_RUN = resolveSelectedNightlyBrowser()
     echo "Using browser for this pipeline run: ${env.BROWSER_TO_RUN}"
     performArtifactOperations()
     setupTestSpecifications()
@@ -842,8 +852,6 @@ withNightlyPipeline(type, product, component) {
 
   afterAlways('DependencyCheckNightly') {
     String browserToRun = env.BROWSER_TO_RUN
-    String chromeBrowserToRun = params.RunChrome ? requireInstalledBrowser(browserChrome) : browserChrome
-    String firefoxBrowserToRun = params.RunFirefox ? requireInstalledBrowser(browserFirefox) : browserFirefox
     echo 'Component:' + params.Component
     echo 'Smoke:' + params.Smoke
     echo 'Functional:' + params.Functional
@@ -904,27 +912,5 @@ Description: ${env.EXECUTION_CYCLE_DESCRIPTION}
     )
     runUatTechnicalStage(params.RunUatTech, failureResult, shouldRunWithZephyr, browserToRun)
     runLegacyStage(params.Legacy, failureResult, yarnBuilder, shouldRunWithZephyr, browserToRun)
-    runBrowserStage(
-      params.RunChrome,
-      failureResult,
-      'Chrome tests failed',
-      yarnBuilder,
-      [
-        stageName   : 'Chrome Tests',
-        yarnCommand : 'test:Chrome',
-        browserToRun: chromeBrowserToRun,
-      ]
-    )
-    runBrowserStage(
-      params.RunFirefox,
-      failureResult,
-      'Firefox tests failed',
-      yarnBuilder,
-      [
-        stageName   : 'Firefox Tests',
-        yarnCommand : 'test:Firefox',
-        browserToRun: firefoxBrowserToRun,
-      ]
-    )
   }
 }
