@@ -1,0 +1,75 @@
+<div class="govuk-grid-row">
+  <div class="govuk-grid-column-two-thirds">
+    <h1 class="govuk-heading-l">Upload variant banking files</h1>
+
+    <form class="govuk-form-group" method="post" enctype="multipart/form-data">
+      <div class="moj-multi-file-upload" data-module="moj-multi-file-upload">
+        <div class="moj-multi-file__uploaded-files">
+          <h2 class="govuk-heading-m">Files added</h2>
+
+          <div class="govuk-summary-list moj-multi-file-upload__list">
+            @if (fileUploads().length === 0) {
+              <p class="govuk-body moj-multi-file-upload__empty-message">No files added</p>
+            } @else {
+              @for (file of fileUploads(); track file.id) {
+                <div class="govuk-summary-list__row moj-multi-file-upload__row">
+                  <div class="govuk-summary-list__value moj-multi-file-upload__message">
+                    @if (file.status === 'complete') {
+                      <strong
+                        class="govuk-tag govuk-!-margin-right-2"
+                        [class.govuk-tag--green]="file.valid"
+                        [class.govuk-tag--red]="!file.valid"
+                      >
+                        {{ file.valid ? '✓' : '✕' }}
+                      </strong>
+                    }
+
+                    <span class="moj-multi-file-upload__filename">{{ file.name }}</span>
+
+                    @if (file.status !== 'complete') {
+                      <span class="moj-multi-file-upload__progress"> {{ file.progress }}%</span>
+                    }
+
+                    @if (file.status === 'complete' && !file.valid) {
+                      <p class="govuk-error-message govuk-!-margin-top-2 govuk-!-margin-bottom-0">
+                        <span class="govuk-visually-hidden">Error:</span>
+                        {{ file.validationMessages.join('. ') }}
+                      </p>
+                    }
+                  </div>
+
+                  <div class="govuk-summary-list__actions moj-multi-file-upload__actions">
+                    <button
+                      type="button"
+                      class="moj-multi-file-upload__delete govuk-button govuk-button--secondary govuk-!-margin-bottom-0"
+                      (click)="removeFile(file.id)"
+                    >
+                      Delete <span class="govuk-visually-hidden">{{ file.name }}</span>
+                    </button>
+                  </div>
+                </div>
+              }
+            }
+          </div>
+        </div>
+
+        <div class="moj-multi-file-upload__upload">
+          <div class="govuk-form-group">
+            <label class="govuk-label" for="file-upload-1"> Add files </label>
+            <div class="govuk-file-upload-wrapper" data-module="govuk-file-upload">
+              <input
+                class="govuk-file-upload moj-multi-file-upload__input"
+                id="file-upload-1"
+                name="fileUpload1"
+                type="file"
+                multiple
+              />
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <button class="govuk-button govuk-!-margin-top-6" type="submit">Continue</button>
+    </form>
+  </div>
+</div>

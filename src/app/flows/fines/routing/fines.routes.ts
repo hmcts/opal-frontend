@@ -57,6 +57,18 @@ export const finesRouting: Routes = [
         pathMatch: 'full',
       },
       {
+        path: 'file-upload-poc',
+        loadComponent: () =>
+          import('../fines-file-upload-poc/fines-file-upload-poc.component').then((c) => c.FinesFileUploadPocComponent),
+        canActivate: [authGuard],
+        data: {
+          title: 'File upload proof of concept',
+        },
+        resolve: {
+          title: TitleResolver,
+        },
+      },
+      {
         path: `${FINES_DASHBOARD_ROUTING_PATHS.root}/${FINES_DASHBOARD_ROUTING_PATHS.children.search}`,
         loadComponent: () => import('../fines-sa/fines-sa.component').then((c) => c.FinesSaComponent),
         children: [
