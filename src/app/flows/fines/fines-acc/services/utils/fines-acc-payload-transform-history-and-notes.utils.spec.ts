@@ -574,7 +574,7 @@ describe('transformHistoryAndNotesDetails', () => {
     });
   });
 
-  it('should use the account number as the account link emit value when related id is missing', () => {
+  it('should render the account number without a link when related account id is missing', () => {
     const result = transformHistoryAndNotesDetails(
       {
         type: 'Financial',
@@ -591,7 +591,7 @@ describe('transformHistoryAndNotesDetails', () => {
     expect(result).toEqual({
       line1: [
         part(fragment('Account consolidated')),
-        part(fragment('2500000BV', { link: { type: 'account', emit: '2500000BV' } })),
+        part(fragment('2500000BV')),
         part(fragment('Amount credited to master account')),
       ],
       line2: null,
@@ -695,7 +695,7 @@ describe('transformHistoryAndNotesDetails', () => {
     });
   });
 
-  it('should use the account number as the consolidated account link emit value when related id is missing', () => {
+  it('should render the consolidated account number without a link when related account id is missing', () => {
     const result = transformHistoryAndNotesDetails(
       {
         type: 'Financial',
@@ -711,13 +711,7 @@ describe('transformHistoryAndNotesDetails', () => {
     );
 
     expect(result).toEqual({
-      line1: [
-        part(fragment('Write-off')),
-        part(
-          fragment('Consolidated'),
-          fragment('2500000BV', { hyphen: true, link: { type: 'account', emit: '2500000BV' } }),
-        ),
-      ],
+      line1: [part(fragment('Write-off')), part(fragment('Consolidated'), fragment('2500000BV', { hyphen: true }))],
       line2: null,
     });
   });
