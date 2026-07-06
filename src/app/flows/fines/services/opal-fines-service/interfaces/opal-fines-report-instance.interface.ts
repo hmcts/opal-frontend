@@ -49,11 +49,13 @@ export interface IOpalFinesReportInstance {
     business_unit_code?: string | number;
     business_unit_name?: string;
   }[];
-  status?: OpalFinesReportInstanceStatus | {
-    code?: OpalFinesReportInstanceStatus | string;
-    displayName?: string;
-    display_name?: string;
-  };
+  status?:
+    | OpalFinesReportInstanceStatus
+    | {
+        code?: OpalFinesReportInstanceStatus | string;
+        displayName?: string;
+        display_name?: string;
+      };
   generation_status?: OpalFinesReportInstanceStatus;
   number_of_records?: number;
   numberOfRecords?: number;

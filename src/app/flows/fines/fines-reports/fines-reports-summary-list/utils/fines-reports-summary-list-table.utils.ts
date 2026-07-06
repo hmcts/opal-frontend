@@ -54,10 +54,7 @@ const getBusinessUnitValue = (
 
   const businessUnitData = businessUnit as BusinessUnitLike;
   const explicitName =
-    businessUnitData.business_unit_name ??
-    businessUnitData.businessUnitName ??
-    businessUnitData.name ??
-    null;
+    businessUnitData.business_unit_name ?? businessUnitData.businessUnitName ?? businessUnitData.name ?? null;
 
   if (explicitName) {
     return explicitName;
@@ -73,12 +70,17 @@ const getBusinessUnitValue = (
   return explicitId !== null ? getBusinessUnitNameByValue(explicitId, businessUnitRefData) : null;
 };
 
-const getBusinessUnits = (instance: IOpalFinesReportInstance, businessUnitRefData?: IOpalFinesBusinessUnit[]): string => {
+const getBusinessUnits = (
+  instance: IOpalFinesReportInstance,
+  businessUnitRefData?: IOpalFinesBusinessUnit[],
+): string => {
   if (
     instance.business_units?.length &&
     instance.business_units.every((businessUnit) => typeof businessUnit === 'string')
   ) {
-    return instance.business_units.map((businessUnit) => getBusinessUnitNameByValue(businessUnit, businessUnitRefData)).join(', ');
+    return instance.business_units
+      .map((businessUnit) => getBusinessUnitNameByValue(businessUnit, businessUnitRefData))
+      .join(', ');
   }
 
   if (instance.business_units?.length) {
@@ -117,7 +119,7 @@ const getBusinessUnits = (instance: IOpalFinesReportInstance, businessUnitRefDat
 const getStatusCode = (instance: IOpalFinesReportInstance): string => {
   const status = instance.generation_status ?? instance.status ?? '';
 
-  return typeof status === 'string' ? status : status.code ?? '';
+  return typeof status === 'string' ? status : (status.code ?? '');
 };
 
 const getStatusDisplayName = (instance: IOpalFinesReportInstance): string => {
@@ -211,14 +213,22 @@ export const mapReportInstancesToTableData = (
       'Date and time': parsedDate.isValid ? parsedDate.toMillis() : 0,
       Title: instance.report_name ?? instance.name ?? '',
       'Business unit': getBusinessUnits(instance, businessUnitRefData),
-      'Created by': instance.requested_by_name ?? instance.requested_by?.name ?? instance.requestedBy?.name ?? instance.created_by ?? '',
+      'Created by':
+        instance.requested_by_name ??
+        instance.requested_by?.name ??
+        instance.requestedBy?.name ??
+        instance.created_by ??
+        '',
       Status: getReportInstanceDisplayStatus(instance),
       instanceId: (instance.instance_id ?? instance.instanceId ?? '').toString(),
       dateTimeDisplay,
       isDownloadable: instance.is_downloadable ?? instance.isDownloadable ?? false,
-      supportedTypes: (instance.supported_types ?? instance.supported_file_types ?? instance.supportedFileTypes ?? []).join(
-        ',',
-      ),
+      supportedTypes: (
+        instance.supported_types ??
+        instance.supported_file_types ??
+        instance.supportedFileTypes ??
+        []
+      ).join(','),
     };
   });
 };

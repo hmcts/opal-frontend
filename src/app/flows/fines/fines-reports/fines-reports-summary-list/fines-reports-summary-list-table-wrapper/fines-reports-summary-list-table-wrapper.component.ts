@@ -51,5 +51,4 @@ export class FinesReportsSummaryListTableWrapperComponent extends AbstractSortab
     super();
     this.abstractExistingSortState = FINES_REPORTS_SUMMARY_LIST_TABLE_WRAPPER_TABLE_SORT_DEFAULT;
   }
-
 }

@@ -27,9 +27,7 @@ export const routing: Routes = [
       {
         path: FINES_REPORTS_ROUTING_PATHS.children.create,
         loadComponent: () =>
-          import('../fines-reports-create/fines-reports-create.component').then(
-            (c) => c.FinesReportsCreateComponent,
-          ),
+          import('../fines-reports-create/fines-reports-create.component').then((c) => c.FinesReportsCreateComponent),
         resolve: {
           title: finesReportsTitleResolver,
         },

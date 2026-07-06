@@ -52,9 +52,7 @@ describe('finesReportsBusinessUnitsResolver', () => {
     expect(mockOpalFinesService.getReport).toHaveBeenCalledWith(
       FINES_REPORTS_SUMMARY_LIST_ROUTING_PATHS.children.operationalReportsByEnforcement,
     );
-    expect(mockOpalFinesService.getBusinessUnitsByPermission).toHaveBeenCalledWith(
-      'OPERATIONAL_REPORT_BY_ENFORCEMENT',
-    );
+    expect(mockOpalFinesService.getBusinessUnitsByPermission).toHaveBeenCalledWith('OPERATIONAL_REPORT_BY_ENFORCEMENT');
     expect(mockOpalFinesService.getBusinessUnits).not.toHaveBeenCalled();
     expect(result).toEqual(OPAL_FINES_BUSINESS_UNIT_REF_DATA_MOCK);
   });

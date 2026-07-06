@@ -47,7 +47,7 @@ describe('finesReportsReportInstancesResolver', () => {
     (...resolverParameters: Parameters<ResolveFn<unknown>>) =>
       TestBed.runInInjectionContext(() => finesReportsReportInstancesResolver(...resolverParameters));
 
-  async function runResolver(route: ActivatedRouteSnapshot): Promise<any> {
+  async function runResolver(route: ActivatedRouteSnapshot): Promise<IOpalFinesReportInstancesResponse> {
     const resolver = executeResolver();
     const result = resolver(route, {} as never);
     return isObservable(result) ? await lastValueFrom(result) : result;
@@ -59,11 +59,7 @@ describe('finesReportsReportInstancesResolver', () => {
     };
 
     TestBed.configureTestingModule({
-      providers: [
-        GlobalStore,
-        FinesReportsSummaryListStore,
-        { provide: OpalFines, useValue: mockOpalFines },
-      ],
+      providers: [GlobalStore, FinesReportsSummaryListStore, { provide: OpalFines, useValue: mockOpalFines }],
     });
 
     globalStore = TestBed.inject(GlobalStore);
