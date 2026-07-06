@@ -5,7 +5,7 @@ import { ActivatedRoute, provideRouter } from '@angular/router';
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import { FinesAccMinorCreditorDetailsHistoryAndNotesTabComponent } from './fines-acc-minor-creditor-details-history-and-notes-tab.component';
 import { OPAL_FINES_ACCOUNT_MINOR_CREDITOR_DETAILS_HISTORY_AND_NOTES_TAB_REF_DATA_MOCK } from '@services/fines/opal-fines-service/mocks/opal-fines-account-minor-creditor-details-history-and-notes-tab-ref-data.mock';
-import { Subject, of } from 'rxjs';
+import { Subject, of, throwError } from 'rxjs';
 import { FINES_ACC_MINOR_CREDITOR_DETAILS_HISTORY_AND_NOTES_FILTER_FORM_MOCK } from './mocks/fines-acc-minor-creditor-details-history-and-notes-filter-form.mock';
 import { FINES_ACC_MINOR_CREDITOR_DETAILS_HISTORY_AND_NOTES_FILTER_FORM_PAYLOAD_MOCK } from './mocks/fines-acc-minor-creditor-details-history-and-notes-filter-form-payload.mock';
 import { OpalFines } from '@services/fines/opal-fines-service/opal-fines.service';
@@ -241,6 +241,25 @@ describe('FinesAccMinorCreditorDetailsHistoryAndNotesTabComponent', () => {
     fixture.detectChanges();
 
     expect(historyTable.tabData).toEqual(FINES_ACC_MINOR_CREDITOR_DETAILS_HISTORY_AND_NOTES_FILTERED_TAB_DATA_MOCK);
+  });
+
+  it('should keep the latest tab data when a filtered request fails', () => {
+    const emitted: unknown[] = [];
+    mockOpalFinesService.getMinorCreditorAccountHistoryAndNotesTabData.mockReturnValue(
+      throwError(() => new Error('Filtered request failed')),
+    );
+
+    fixture.detectChanges();
+    component.historyAndNotesTabData$.subscribe();
+    component.handleFilterApplied(FINES_ACC_MINOR_CREDITOR_DETAILS_HISTORY_AND_NOTES_FILTER_FORM_MOCK);
+    component.historyAndNotesTabData$.subscribe((data) => emitted.push(data));
+
+    expect(emitted).toEqual([transformedBaseTabData, transformedBaseTabData]);
+    expect(mockPayloadService.transformPayload).not.toHaveBeenCalledWith(
+      FINES_ACC_MINOR_CREDITOR_DETAILS_HISTORY_AND_NOTES_FILTERED_TAB_DATA_MOCK,
+      expect.any(Array),
+    );
+    expect(mockAccountStore.compareVersion).not.toHaveBeenCalled();
   });
 
   it('should transform filtered history items into the history and notes details format', () => {

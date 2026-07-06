@@ -3,5 +3,5 @@ import { IOpalFinesMinorCreditorAccountHistoryParams } from '../interfaces/opal-
 export const OPAL_FINES_MINOR_CREDITOR_ACCOUNT_HISTORY_PARAMS_MOCK: IOpalFinesMinorCreditorAccountHistoryParams = {
   dateFrom: '2024-01-01',
   dateTo: '2024-01-31',
-  itemTypes: 'amendment,note,transaction',
+  itemTypes: 'amendment,note,financial',
 };
