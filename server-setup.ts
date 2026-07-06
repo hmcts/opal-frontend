@@ -42,7 +42,7 @@ export function getRoutesConfig(): {
     opalUserServiceUrl: config.get('opal-api.opal-user-service'),
   };
 
-  const routesConfiguration = new RoutesConfiguration({
+  const routesConfiguration: RoutesConfiguration = {
     frontendHostname:
       env === 'development' ? config.get('frontend-hostname.dev') : config.get('frontend-hostname.prod'),
     prefix: config.get('session.prefix'),
@@ -51,7 +51,7 @@ export function getRoutesConfig(): {
     tenantId: config.get('secrets.opal.AzureADTenantId'),
     microsoftUrl: config.get('microsoft.url'),
     internalServerErrorPath: config.get('error-pages.internal-server-path'),
-  });
+  };
 
   const opalUserServiceConfiguration: OpalUserServiceConfiguration = {
     userStateUrl: config.get('opal-user-service-urls.userStateUrl'),
