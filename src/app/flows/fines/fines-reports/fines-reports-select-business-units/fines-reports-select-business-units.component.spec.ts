@@ -7,8 +7,8 @@ import { OPAL_FINES_BUSINESS_UNIT_REF_DATA_MOCK } from '@services/fines/opal-fin
 import { findFinesReportsDefinition } from '../constants/fines-reports-definitions.constant';
 import { FINES_REPORTS_SUMMARY_LIST_ROUTING_PATHS } from '../fines-reports-summary-list/routing/constants/fines-reports-summary-list-routing-paths.constant';
 import { IOpalFinesBusinessUnit } from '@services/fines/opal-fines-service/interfaces/opal-fines-business-unit.interface';
-import { FINES_REPORTS_BUSINESS_UNIT_WARNING_THRESHOLD } from '../constants/fines-reports-business-unit-thresholds.constant';
 import { FINES_REPORTS_ROUTING_PATHS } from '../routing/constants/fines-reports-routing-paths.constant';
+import { IOpalFinesReport } from '@services/fines/opal-fines-service/interfaces/opal-fines-report.interface';
 
 describe('FinesReportsSelectBusinessUnitsComponent', () => {
   const DEFAULT_BUSINESS_UNITS = [
@@ -16,6 +16,7 @@ describe('FinesReportsSelectBusinessUnitsComponent', () => {
     OPAL_FINES_BUSINESS_UNIT_REF_DATA_MOCK.refData[0],
     OPAL_FINES_BUSINESS_UNIT_REF_DATA_MOCK.refData[1],
   ];
+  const DEFAULT_BUSINESS_UNIT_WARNING_THRESHOLD = 10;
 
   const createRouterMock = (selectedBusinessUnitIds: number[] = []) => ({
     navigate: vi.fn(),
@@ -54,6 +55,7 @@ describe('FinesReportsSelectBusinessUnitsComponent', () => {
     businessUnits = DEFAULT_BUSINESS_UNITS,
     selectedBusinessUnitIds: number[] = [],
     useCurrentNavigation = true,
+    businessUnitWarningThreshold: number | null = DEFAULT_BUSINESS_UNIT_WARNING_THRESHOLD,
   ) => {
     const router = createRouterMock(selectedBusinessUnitIds);
     if (!useCurrentNavigation) {
@@ -61,12 +63,30 @@ describe('FinesReportsSelectBusinessUnitsComponent', () => {
     }
     const location = createLocationMock(selectedBusinessUnitIds);
     const reportHeading = findFinesReportsDefinition(reportId)?.heading ?? '';
+    const reportParameters =
+      businessUnitWarningThreshold === null ? {} : { business_unit_warning_threshold: businessUnitWarningThreshold };
+
+    const report: IOpalFinesReport = {
+      report_id: reportId,
+      report_title: reportHeading,
+      report_group: 'Operational Reports',
+      supported_file_types: ['CSV', 'PDF'],
+      audited_report: false,
+      report_parameters: reportParameters,
+      supports_multiple_business_units: true,
+      is_bespoke_journey: true,
+      shown_as_worklist: false,
+      retention_period: 'P14D',
+      permission: 'SEARCH_AND_VIEW_ACCOUNTS',
+      can_manually_create: true,
+    };
     const activatedRoute = {
       snapshot: {
         data: {
           businessUnits: {
             refData: businessUnits,
           },
+          report,
           reportHeading,
         },
         paramMap: convertToParamMap({}),
@@ -198,13 +218,13 @@ describe('FinesReportsSelectBusinessUnitsComponent', () => {
   });
 
   it('should continue without warning when selected business units do not exceed the threshold', async () => {
-    const businessUnits = createBusinessUnits(FINES_REPORTS_BUSINESS_UNIT_WARNING_THRESHOLD);
+    const businessUnits = createBusinessUnits(DEFAULT_BUSINESS_UNIT_WARNING_THRESHOLD);
     const { component, router } = await setup(
       FINES_REPORTS_SUMMARY_LIST_ROUTING_PATHS.children.operationalReportsByPayments,
       businessUnits,
     );
 
-    component.handleContinue(createBusinessUnitFormData(businessUnits, FINES_REPORTS_BUSINESS_UNIT_WARNING_THRESHOLD));
+    component.handleContinue(createBusinessUnitFormData(businessUnits, DEFAULT_BUSINESS_UNIT_WARNING_THRESHOLD));
 
     expect(component.selectedBusinessUnitIds).toEqual(
       businessUnits.map((businessUnit) => businessUnit.business_unit_id),
@@ -218,15 +238,13 @@ describe('FinesReportsSelectBusinessUnitsComponent', () => {
   });
 
   it('should navigate to the warning route when selected business units exceed the threshold', async () => {
-    const businessUnits = createBusinessUnits(FINES_REPORTS_BUSINESS_UNIT_WARNING_THRESHOLD + 1);
+    const businessUnits = createBusinessUnits(DEFAULT_BUSINESS_UNIT_WARNING_THRESHOLD + 1);
     const { component, router } = await setup(
       FINES_REPORTS_SUMMARY_LIST_ROUTING_PATHS.children.operationalReportsByPayments,
       businessUnits,
     );
 
-    component.handleContinue(
-      createBusinessUnitFormData(businessUnits, FINES_REPORTS_BUSINESS_UNIT_WARNING_THRESHOLD + 1),
-    );
+    component.handleContinue(createBusinessUnitFormData(businessUnits, DEFAULT_BUSINESS_UNIT_WARNING_THRESHOLD + 1));
 
     expect(component.selectedBusinessUnitIds).toEqual([]);
     expect(router.navigate).toHaveBeenCalledWith(
@@ -238,6 +256,26 @@ describe('FinesReportsSelectBusinessUnitsComponent', () => {
         },
       },
     );
+  });
+
+  it('should not show the warning when the report has no business unit warning threshold', async () => {
+    const businessUnits = createBusinessUnits(DEFAULT_BUSINESS_UNIT_WARNING_THRESHOLD + 1);
+    const { component, router } = await setup(
+      FINES_REPORTS_SUMMARY_LIST_ROUTING_PATHS.children.operationalReportsByPayments,
+      businessUnits,
+      [],
+      true,
+      null,
+    );
+
+    component.handleContinue(createBusinessUnitFormData(businessUnits, DEFAULT_BUSINESS_UNIT_WARNING_THRESHOLD + 1));
+
+    expect(router.navigate).toHaveBeenCalledWith([`../../${FINES_REPORTS_ROUTING_PATHS.children.parameters}`], {
+      relativeTo: expect.any(Object),
+      state: {
+        selectedBusinessUnitIds: businessUnits.map((businessUnit) => businessUnit.business_unit_id),
+      },
+    });
   });
 
   it('should restore selected business unit ids from navigation state', async () => {

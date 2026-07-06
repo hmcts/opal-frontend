@@ -7,6 +7,7 @@ import { fetchBusinessUnitsResolver } from '@routing/fines/resolvers/fetch-busin
 import { FINES_REPORTS_ROUTING_TITLES } from './constants/fines-reports-routing-titles.constant';
 import { finesReportsStateGuard } from './guards/fines-reports-state-guard/fines-reports-state.guard';
 import { finesReportsReportHeadingResolver } from './resolvers/fines-reports-report-heading/fines-reports-report-heading.resolver';
+import { fetchReportResolver } from './resolvers/fetch-report/fetch-report.resolver';
 
 describe('finesReports routes', () => {
   it('should redirect bare report routes to the summary list', () => {
@@ -37,6 +38,7 @@ describe('finesReports routes', () => {
       },
       resolve: {
         title: TitleResolver,
+        report: fetchReportResolver,
         reportHeading: finesReportsReportHeadingResolver,
         businessUnits: fetchBusinessUnitsResolver,
       },

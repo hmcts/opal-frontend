@@ -6,7 +6,7 @@ import { IAbstractFormBaseForm } from '@hmcts/opal-frontend-common/components/ab
 import { GovukHeadingWithCaptionComponent } from '@hmcts/opal-frontend-common/components/govuk/govuk-heading-with-caption';
 import { IOpalFinesBusinessUnit } from '@services/fines/opal-fines-service/interfaces/opal-fines-business-unit.interface';
 import { IOpalFinesBusinessUnitRefData } from '@services/fines/opal-fines-service/interfaces/opal-fines-business-unit-ref-data.interface';
-import { FINES_REPORTS_BUSINESS_UNIT_WARNING_THRESHOLD } from '../constants/fines-reports-business-unit-thresholds.constant';
+import { IOpalFinesReport } from '@services/fines/opal-fines-service/interfaces/opal-fines-report.interface';
 import { FINES_REPORTS_ROUTING_PATHS } from '../routing/constants/fines-reports-routing-paths.constant';
 import { FINES_REPORTS_ROUTING_TITLES } from '../routing/constants/fines-reports-routing-titles.constant';
 import { getFinesReportsSelectedBusinessUnitIdsFromNavigationState } from '../utils/get-fines-reports-selected-business-unit-ids-from-navigation-state.util';
@@ -23,12 +23,14 @@ export class FinesReportsSelectBusinessUnitsComponent extends AbstractFormParent
   private readonly route = inject(ActivatedRoute);
   private readonly location = inject(Location);
   private readonly routerService = inject(Router);
+  private readonly report = this.route.snapshot.data['report'] as IOpalFinesReport | null | undefined;
 
   public readonly pageHeading = FINES_REPORTS_ROUTING_TITLES.children.selectBusinessUnits;
   /**
    * Report heading resolved from route data for the current report journey.
    */
   public readonly reportHeading = this.route.snapshot.data['reportHeading'] as string;
+  public readonly businessUnitWarningThreshold = this.report?.report_parameters?.business_unit_warning_threshold;
   public businessUnits: IOpalFinesBusinessUnit[] = [];
   public selectedBusinessUnitIds: number[] = [];
 
@@ -55,7 +57,7 @@ export class FinesReportsSelectBusinessUnitsComponent extends AbstractFormParent
    * @returns True when the warning threshold has been exceeded.
    */
   private shouldShowBusinessUnitWarning(selectedCount: number): boolean {
-    return selectedCount > FINES_REPORTS_BUSINESS_UNIT_WARNING_THRESHOLD;
+    return this.businessUnitWarningThreshold !== undefined && selectedCount > this.businessUnitWarningThreshold;
   }
 
   /**
