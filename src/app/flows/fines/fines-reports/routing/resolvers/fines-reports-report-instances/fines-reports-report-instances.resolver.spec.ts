@@ -52,7 +52,9 @@ describe('finesReportsReportInstancesResolver', () => {
   async function runResolver(route: ActivatedRouteSnapshot): Promise<ResolverResult> {
     const resolver = executeResolver();
     const result = resolver(route, {} as never);
-    return isObservable(result) ? (await lastValueFrom(result as never)) as ResolverResult : (result as ResolverResult);
+    return isObservable(result)
+      ? ((await lastValueFrom(result as never)) as ResolverResult)
+      : (result as ResolverResult);
   }
 
   beforeEach(() => {
