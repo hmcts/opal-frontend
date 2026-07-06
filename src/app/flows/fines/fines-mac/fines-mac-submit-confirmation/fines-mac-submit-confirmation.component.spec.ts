@@ -10,12 +10,10 @@ import { OPAL_FINES_DRAFT_ADD_ACCOUNT_PAYLOAD_MOCK } from '@services/fines/opal-
 import { FinesMacPayloadService } from '../services/fines-mac-payload/fines-mac-payload.service';
 import { FINES_MAC_PAYLOAD_ADD_ACCOUNT } from '../services/fines-mac-payload/mocks/fines-mac-payload-add-account.mock';
 import { FINES_MAC_ROUTING_PATHS } from '../routing/constants/fines-mac-routing-paths.constant';
-import { FINES_ROUTING_PATHS } from '@routing/fines/constants/fines-routing-paths.constant';
-import { FINES_DRAFT_ROUTING_PATHS } from '../../fines-draft/routing/constants/fines-draft-routing-paths.constant';
-import { FINES_DRAFT_CREATE_AND_MANAGE_ROUTING_PATHS } from '../../fines-draft/fines-draft-create-and-manage/routing/constants/fines-draft-create-and-manage-routing-paths.constant';
 import { FinesMacStoreType } from '../stores/types/fines-mac-store.type';
 import { FinesMacStore } from '../stores/fines-mac.store';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
+import { FINES_MAC_DRAFT_CREATE_AND_MANAGE_TABS_ROUTE } from '../constants/fines-mac-draft-create-and-manage-tabs-route.constant';
 
 import { createSpyObj } from '@app/testing/create-spy-obj.helper';
 
@@ -139,14 +137,9 @@ describe('FinesMacSubmitConfirmationComponent', () => {
 
     component.seeAllAccounts();
 
-    expect(routerSpy).toHaveBeenCalledWith(
-      [
-        `${FINES_ROUTING_PATHS.root}/${FINES_DRAFT_ROUTING_PATHS.root}/${FINES_DRAFT_ROUTING_PATHS.children.createAndManage}/${FINES_DRAFT_CREATE_AND_MANAGE_ROUTING_PATHS.children.tabs}`,
-      ],
-      {
-        fragment: 'review',
-      },
-    );
+    expect(routerSpy).toHaveBeenCalledWith([FINES_MAC_DRAFT_CREATE_AND_MANAGE_TABS_ROUTE.path], {
+      fragment: FINES_MAC_DRAFT_CREATE_AND_MANAGE_TABS_ROUTE.fragment,
+    });
   });
 
   it('should click see all accounts link and preserve current template click behaviour', () => {
