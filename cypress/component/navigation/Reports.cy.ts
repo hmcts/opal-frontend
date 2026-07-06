@@ -337,7 +337,7 @@ describe(
 
     it(
       'hides the Reports dashboard entry points when release-1c enforcement operational reporting is disabled',
-      { tags: ['@JIRA-TEST-KEY:PO-3758', '@JIRA-STORY:PO-3758', '@JIRA-EPIC:PO-3685'] },
+      { tags: ['@JIRA-STORY:PO-3758', '@JIRA-EPIC:PO-3685', '@JIRA-TEST-KEY:PO-8680'] },
       () => {
         featureFlagDisabledSetup();
 
@@ -351,7 +351,7 @@ describe(
 
     it(
       'shows the Reports dashboard entry points when release-1c enforcement operational reporting is enabled',
-      { tags: ['@JIRA-TEST-KEY:PO-3758'] },
+      { tags: ['@JIRA-TEST-KEY:PO-8681'] },
       () => {
         commonSetup();
 
@@ -369,7 +369,7 @@ describe(
 
     it(
       'navigates to the operational reports by enforcement summary list when release-1c enforcement operational reporting is enabled',
-      { tags: ['@JIRA-TEST-KEY:PO-3758'] },
+      { tags: ['@JIRA-TEST-KEY:PO-8682'] },
       () => {
         commonSetup();
 
@@ -382,7 +382,7 @@ describe(
 
     it(
       'navigates to the operational reports by payments summary list when release-1c enforcement operational reporting is enabled',
-      { tags: ['@JIRA-TEST-KEY:PO-3758'] },
+      { tags: ['@JIRA-TEST-KEY:PO-8683'] },
       () => {
         commonSetup();
 

@@ -1,0 +1,17 @@
+export const FINES_ACC_HISTORY_AND_NOTES_DETAILS_TRANSACTION_TYPES = {
+  cancelledCheque: 'CANCHQ',
+  cheque: 'CHEQUE',
+  consolidation: 'CONSOL',
+  dishonouredCheque: 'DISHCQ',
+  manualAdjustment: 'MADJ',
+  payment: 'PAYMNT',
+  repaymentFromSuspense: 'REPSUS',
+  reversedPayment: 'REVPAY',
+  reissuedCheque: 'RICHEQ',
+  reversedWriteOff: 'RVWOFF',
+  suspenseTransfer: 'XFER',
+  transferFromSuspense: 'FR-SUS',
+  tfoIn: 'TFOIN',
+  tfoOut: 'TFO',
+  writeOff: 'WRTOFF',
+};

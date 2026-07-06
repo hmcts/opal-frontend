@@ -397,6 +397,35 @@ export function interceptHistoryAndNotes(
     .as('getHistoryAndNotes');
 }
 
+export function interceptHistoryAndNotesSequence(
+  accountId: string | number,
+  responses: IOpalFinesAccountDefendantDetailsHistoryAndNotesTabRefData[],
+  respHeaderEtag: string,
+) {
+  let callCount = 0;
+
+  return cy
+    .intercept(
+      {
+        method: 'GET',
+        url: `/opal-fines-service/defendant-accounts/${accountId}/history*`,
+        middleware: true,
+      },
+      (req) => {
+        const response = responses[Math.min(callCount, responses.length - 1)];
+        callCount += 1;
+        req.reply({
+          statusCode: 200,
+          headers: {
+            ETag: respHeaderEtag,
+          },
+          body: response,
+        });
+      },
+    )
+    .as('getHistoryAndNotes');
+}
+
 export function interceptPatchDefendantAccount() {
   return cy
     .intercept('PATCH', `/opal-fines-service/defendant-accounts/*`, {
