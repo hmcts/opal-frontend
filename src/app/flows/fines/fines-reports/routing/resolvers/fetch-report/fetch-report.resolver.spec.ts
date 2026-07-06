@@ -93,14 +93,15 @@ describe('fetchReportResolver', () => {
     expect(result).toBeNull();
   });
 
-  it('should fall back to null when the report API fails', async () => {
+  it('should propagate report API failures', async () => {
     await withApiBackedReportConfig(async () => {
-      mockOpalFinesService.getReport.mockReturnValue(throwError(() => new Error('report lookup failed')));
+      const error = new Error('report lookup failed');
+      mockOpalFinesService.getReport.mockReturnValue(throwError(() => error));
       const route = buildRoute(API_BACKED_REPORT_ID);
 
-      const result = await firstValueFrom(executeResolver(route, {} as never) as Observable<IOpalFinesReport | null>);
-
-      expect(result).toBeNull();
+      await expect(
+        firstValueFrom(executeResolver(route, {} as never) as Observable<IOpalFinesReport | null>),
+      ).rejects.toThrow(error);
     });
   });
 });

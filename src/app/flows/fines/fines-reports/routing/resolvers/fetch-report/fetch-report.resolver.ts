@@ -2,7 +2,7 @@ import { inject } from '@angular/core';
 import { ActivatedRouteSnapshot, ResolveFn } from '@angular/router';
 import { OpalFines } from '@services/fines/opal-fines-service/opal-fines.service';
 import { IOpalFinesReport } from '@services/fines/opal-fines-service/interfaces/opal-fines-report.interface';
-import { catchError, of } from 'rxjs';
+import { of } from 'rxjs';
 import { FINES_REPORT_SUMMARY_LIST_REPORT_CONFIGURATION } from '../../../fines-reports-summary-list/constants/fines-reports-summary-list-report-configuration.constant';
 
 export const fetchReportResolver: ResolveFn<IOpalFinesReport | null> = (route: ActivatedRouteSnapshot) => {
@@ -14,5 +14,5 @@ export const fetchReportResolver: ResolveFn<IOpalFinesReport | null> = (route: A
     return of(null);
   }
 
-  return opalFinesService.getReport(reportId).pipe(catchError(() => of(null)));
+  return opalFinesService.getReport(reportId);
 };
