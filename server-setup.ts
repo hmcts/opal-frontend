@@ -16,7 +16,6 @@ import {
 } from '@hmcts/opal-frontend-common-node/interfaces';
 import { DEFAULT_PROXY_CONFIG } from '@hmcts/opal-frontend-common-node/constants';
 import { type ITransferStateServerState } from '@hmcts/opal-frontend-common/services/transfer-state-service/interfaces';
-import { getOpalUserServiceConfiguration } from './src/app/server-setup/utils/get-opal-user-service-configuration.util';
 
 const env = process.env['NODE_ENV'] || 'development';
 const developmentMode = env === 'development';
@@ -54,7 +53,14 @@ export function getRoutesConfig(): {
     internalServerErrorPath: config.get('error-pages.internal-server-path'),
   });
 
-  const opalUserServiceConfiguration: OpalUserServiceConfiguration = getOpalUserServiceConfiguration(config);
+  const opalUserServiceConfiguration: OpalUserServiceConfiguration = {
+    userStateUrl: config.get('opal-user-service-urls.userStateUrl'),
+    addUserUrl: config.get('opal-user-service-urls.addUserUrl'),
+    updateUserUrl: config.get('opal-user-service-urls.updateUserUrl'),
+    timeoutInMilliseconds: config.get('opal-user-service.timeoutInMilliseconds'),
+    retryAttempts: config.get('opal-user-service.retryAttempts'),
+    retryDelayInMilliseconds: config.get('opal-user-service.retryDelayInMilliseconds'),
+  };
 
   const userStateConfiguration: UserStateConfiguration = {
     cacheKeyPrefix: config.get('user-state.cacheKeyPrefix'),
