@@ -11,18 +11,18 @@ import {
 } from '@angular/core';
 import { takeUntilDestroyed, toSignal } from '@angular/core/rxjs-interop';
 import { FormBuilder, ReactiveFormsModule } from '@angular/forms';
-import { ActivatedRoute } from '@angular/router';
-import { map, switchMap } from 'rxjs';
+import { ActivatedRoute, RouterLink } from '@angular/router';
+import { distinctUntilChanged, map } from 'rxjs';
 import { GovukErrorSummaryComponent } from '@hmcts/opal-frontend-common/components/govuk/govuk-error-summary';
 import {
   GovukRadioComponent,
   GovukRadiosItemComponent,
 } from '@hmcts/opal-frontend-common/components/govuk/govuk-radio';
-import { GovukSelectComponent } from '@hmcts/opal-frontend-common/components/govuk/govuk-select';
-import { IGovUkSelectOptions } from '@hmcts/opal-frontend-common/components/govuk/govuk-select/interfaces';
+import { AlphagovAccessibleAutocompleteComponent } from '@hmcts/opal-frontend-common/components/alphagov/alphagov-accessible-autocomplete';
+import { IAlphagovAccessibleAutocompleteItem } from '@hmcts/opal-frontend-common/components/alphagov/alphagov-accessible-autocomplete/interfaces';
 import { MojDatePickerComponent } from '@hmcts/opal-frontend-common/components/moj/moj-date-picker';
 import { IAbstractFormBaseFormErrorSummaryMessage } from '@hmcts/opal-frontend-common/components/abstract/interfaces';
-import { OpalUserService } from '@hmcts/opal-frontend-common/services/opal-user-service';
+import { GlobalStore } from '@hmcts/opal-frontend-common/stores/global';
 import { OpalFines } from '@services/fines/opal-fines-service/opal-fines.service';
 import { IOpalFinesBusinessUnitRefData } from '@services/fines/opal-fines-service/interfaces/opal-fines-business-unit-ref-data.interface';
 import { IOpalFinesReport } from '@services/fines/opal-fines-service/interfaces/opal-fines-report.interface';
@@ -61,9 +61,10 @@ import {
     GovukErrorSummaryComponent,
     GovukRadioComponent,
     GovukRadiosItemComponent,
-    GovukSelectComponent,
+    AlphagovAccessibleAutocompleteComponent,
     MojDatePickerComponent,
     FinesReportsSummaryListTableWrapperComponent,
+    RouterLink,
   ],
   templateUrl: './fines-reports-summary-list.component.html',
   styleUrls: ['./fines-reports-summary-list.component.scss'],
@@ -73,7 +74,7 @@ export class FinesReportsSummaryListComponent {
   private readonly formBuilder = inject(FormBuilder);
   private readonly activatedRoute = inject(ActivatedRoute);
   private readonly opalFinesService = inject(OpalFines);
-  private readonly opalUserService = inject(OpalUserService);
+  private readonly globalStore = inject(GlobalStore);
   private readonly store = inject(FinesReportsSummaryListStore);
   private readonly document = inject(DOCUMENT);
   private readonly destroyRef = inject(DestroyRef);
@@ -111,10 +112,14 @@ export class FinesReportsSummaryListComponent {
   public readonly reportMetadata = computed(
     () => (this.routeData()['reportMetadata'] as IOpalFinesReport | null) ?? null,
   );
-  public readonly businessUnitOptions = computed<IGovUkSelectOptions[]>(() => {
+  public readonly businessUnitRefData = computed(() => {
     const businessUnits = this.routeData()['businessUnits'] as IOpalFinesBusinessUnitRefData | undefined;
+
+    return businessUnits?.refData ?? [];
+  });
+  public readonly businessUnitOptions = computed<IAlphagovAccessibleAutocompleteItem[]>(() => {
     const options =
-      businessUnits?.refData.map((businessUnit) => ({
+      this.businessUnitRefData().map((businessUnit) => ({
         value: businessUnit.business_unit_id.toString(),
         name: businessUnit.business_unit_name,
       })) ?? [];
@@ -122,16 +127,19 @@ export class FinesReportsSummaryListComponent {
     return [{ value: FINES_REPORTS_SUMMARY_LIST_ALL_BUSINESS_UNITS, name: 'All business units' }, ...options];
   });
   public readonly tableData = computed<IFinesReportsSummaryListTableData[]>(() =>
-    mapReportInstancesToTableData(getReportInstancesFromResponse(this.reportInstancesResponse())),
+    mapReportInstancesToTableData(
+      getReportInstancesFromResponse(this.reportInstancesResponse()),
+      this.businessUnitRefData(),
+    ),
   );
   public readonly overLimit = computed(() => isReportInstancesOverLimit(this.reportInstancesResponse()));
   public readonly resultLimit = computed(() => getReportInstancesLimitFromResponse(this.reportInstancesResponse()));
   public readonly errorSummaryMessages = computed<IAbstractFormBaseFormErrorSummaryMessage[]>(() =>
     Object.entries(this.fieldErrors()).map(([fieldId, message]) => ({ fieldId, message })),
   );
-  public readonly dateFilter = toSignal(this.filtersForm.controls.dateFilter.valueChanges, {
-    initialValue: this.filtersForm.controls.dateFilter.value,
-  });
+  public readonly dateFilter = signal<FinesReportsSummaryListDateFilter>(
+    FINES_REPORTS_SUMMARY_LIST_FILTER_STATE.dateFilter,
+  );
 
   public get pageHeading(): string {
     return (
@@ -148,10 +156,33 @@ export class FinesReportsSummaryListComponent {
   }
 
   constructor() {
-    this.initialiseFilters();
+    this.routeWithReportId.paramMap
+      .pipe(
+        map((paramMap) => paramMap.get('reportTypeId') ?? paramMap.get('reportId') ?? ''),
+        distinctUntilChanged(),
+        takeUntilDestroyed(this.destroyRef),
+      )
+      .subscribe(() => {
+        this.initialiseFilters();
+        this.fieldErrors.set({});
+      });
+
+    this.activatedRoute.data
+      .pipe(
+        map((data) => (data['reportInstances'] as IOpalFinesReportInstancesResponse | undefined) ?? null),
+        takeUntilDestroyed(this.destroyRef),
+      )
+      .subscribe((reportInstances) => {
+        this.reportInstancesResponse.set(reportInstances);
+      });
+
     this.filtersForm.controls.dateFilter.valueChanges
       .pipe(takeUntilDestroyed(this.destroyRef))
       .subscribe((dateFilter) => {
+        this.dateFilter.set(
+          (dateFilter ?? FINES_REPORTS_SUMMARY_LIST_FILTER_STATE.dateFilter) as FinesReportsSummaryListDateFilter,
+        );
+
         if (dateFilter !== 'customDays') {
           this.filtersForm.controls.days.setValue('', { emitEvent: false });
         }
@@ -164,8 +195,11 @@ export class FinesReportsSummaryListComponent {
   }
 
   private initialiseFilters(): void {
+    this.store.resetForReportType(this.reportId());
+
     const filters = this.store.appliedQuery() ? this.store.filters() : FINES_REPORTS_SUMMARY_LIST_FILTER_STATE;
     this.filtersForm.setValue(filters, { emitEvent: false });
+    this.dateFilter.set(filters.dateFilter);
 
     if (!this.store.appliedQuery()) {
       this.store.setAppliedQuery(getDefaultReportsSummaryListQuery());
@@ -245,6 +279,7 @@ export class FinesReportsSummaryListComponent {
 
   private loadReportInstances(query: IFinesReportsSummaryListQueryState): void {
     const reportConfiguration = this.getReportConfiguration();
+    const userState = this.globalStore.userState();
     const params = {
       from_date: query.fromDate,
       to_date: query.toDate,
@@ -252,14 +287,10 @@ export class FinesReportsSummaryListComponent {
     };
 
     const request$ = reportConfiguration?.isYourReports
-      ? this.opalUserService.getLoggedInUserState().pipe(
-          switchMap((userState) =>
-            this.opalFinesService.getReportInstances({
-              ...params,
-              user_id: userState.user_id,
-            }),
-          ),
-        )
+      ? this.opalFinesService.getReportInstances({
+          ...params,
+          user_id: userState.user_id,
+        })
       : this.opalFinesService.getReportInstances({
           ...params,
           report_id: reportConfiguration?.reportTypeId ?? this.reportId(),

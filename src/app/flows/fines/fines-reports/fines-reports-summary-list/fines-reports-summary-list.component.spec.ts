@@ -1,15 +1,20 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
-import { ActivatedRoute, convertToParamMap } from '@angular/router';
+import { ActivatedRoute, convertToParamMap, provideRouter } from '@angular/router';
 import { BehaviorSubject, of } from 'rxjs';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
 import { FinesReportsSummaryListComponent } from './fines-reports-summary-list.component';
 import { FINES_REPORTS_SUMMARY_LIST_ROUTING_PATHS } from './routing/constants/fines-reports-summary-list-routing-paths.constant';
 import { FINES_REPORT_SUMMARY_LIST_REPORT_CONFIGURATION } from './constants/fines-reports-summary-list-report-configuration.constant';
+import { FINES_PERMISSIONS } from '@app/constants/fines-permissions.constant';
 import { OPAL_FINES_BUSINESS_UNIT_REF_DATA_MOCK } from '@services/fines/opal-fines-service/mocks/opal-fines-business-unit-ref-data.mock';
 import { OpalFines } from '@services/fines/opal-fines-service/opal-fines.service';
-import { OpalUserService } from '@hmcts/opal-frontend-common/services/opal-user-service';
+import { GlobalStore } from '@hmcts/opal-frontend-common/stores/global';
+import { OPAL_USER_STATE_MOCK } from '@hmcts/opal-frontend-common/services/opal-user-service/mocks';
 import { IOpalFinesReportInstancesResponse } from '@services/fines/opal-fines-service/interfaces/opal-fines-report-instances-response.interface';
 import { IOpalFinesReport } from '@services/fines/opal-fines-service/interfaces/opal-fines-report.interface';
+import { FinesReportsSummaryListStore } from './stores/fines-reports-summary-list.store';
+import { IOpalUserState } from '@hmcts/opal-frontend-common/services/opal-user-service/interfaces';
+import { IOpalFinesBusinessUnitRefData } from '@services/fines/opal-fines-service/interfaces/opal-fines-business-unit-ref-data.interface';
 
 type MockActivatedRoute = {
   snapshot: {
@@ -29,9 +34,15 @@ type MockActivatedRoute = {
 
 describe('FinesReportsSummaryListComponent', () => {
   const reportId = FINES_REPORTS_SUMMARY_LIST_ROUTING_PATHS.children.operationalReportsByEnforcement;
+  const paymentsReportId = FINES_REPORTS_SUMMARY_LIST_ROUTING_PATHS.children.operationalReportsByPayments;
   const mockReportMetadata: IOpalFinesReport = {
     report_id: reportId,
     report_title: 'Operational reports (by enforcement)',
+    can_manually_create: true,
+  };
+  const mockPaymentsReportMetadata: IOpalFinesReport = {
+    report_id: paymentsReportId,
+    report_title: 'Operational reports (by payments)',
     can_manually_create: true,
   };
   const mockReportInstances: IOpalFinesReportInstancesResponse = {
@@ -72,22 +83,51 @@ describe('FinesReportsSummaryListComponent', () => {
     count: 3,
   };
 
+  const createUserState = (): IOpalUserState => {
+    const userState = structuredClone(OPAL_USER_STATE_MOCK);
+    const enforcementPermissionId = FINES_PERMISSIONS['operational-report-by-enforcement'];
+    const paymentsPermissionId = FINES_PERMISSIONS['operational-report-by-payments'];
+
+    userState.business_unit_users = [
+      {
+        ...userState.business_unit_users[0],
+        business_unit_user_id: '99000000008000',
+        business_unit_id: 67,
+        permissions: [
+          {
+            permission_id: enforcementPermissionId,
+            permission_name: 'Operational report by enforcement',
+          },
+          {
+            permission_id: paymentsPermissionId,
+            permission_name: 'Operational report by payments',
+          },
+        ],
+      },
+    ];
+
+    return userState;
+  };
+
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   let mockOpalFines: any;
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  let mockOpalUserService: any;
+  let globalStore: any;
 
   const setup = async (
     currentReportId: string = reportId,
     reportInstances: IOpalFinesReportInstancesResponse = mockReportInstances,
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    configureStore?: (store: any) => void,
+    businessUnits: IOpalFinesBusinessUnitRefData = OPAL_FINES_BUSINESS_UNIT_REF_DATA_MOCK,
   ): Promise<{
     component: FinesReportsSummaryListComponent;
     fixture: ComponentFixture<FinesReportsSummaryListComponent>;
     activatedRoute: MockActivatedRoute;
   }> => {
     const routeData = {
-      businessUnits: OPAL_FINES_BUSINESS_UNIT_REF_DATA_MOCK,
-      reportMetadata: mockReportMetadata,
+      businessUnits,
+      reportMetadata: currentReportId === paymentsReportId ? mockPaymentsReportMetadata : mockReportMetadata,
       reportInstances,
     };
     const activatedRoute: MockActivatedRoute = {
@@ -108,13 +148,11 @@ describe('FinesReportsSummaryListComponent', () => {
     mockOpalFines = {
       getReportInstances: vi.fn().mockReturnValue(of(reportInstances)),
     };
-    mockOpalUserService = {
-      getLoggedInUserState: vi.fn().mockReturnValue(of({ user_id: 123 })),
-    };
 
     await TestBed.configureTestingModule({
       imports: [FinesReportsSummaryListComponent],
       providers: [
+        provideRouter([]),
         {
           provide: ActivatedRoute,
           useValue: activatedRoute,
@@ -123,12 +161,14 @@ describe('FinesReportsSummaryListComponent', () => {
           provide: OpalFines,
           useValue: mockOpalFines,
         },
-        {
-          provide: OpalUserService,
-          useValue: mockOpalUserService,
-        },
       ],
     }).compileComponents();
+
+    globalStore = TestBed.inject(GlobalStore);
+    globalStore.setUserState(createUserState());
+    const store = TestBed.inject(FinesReportsSummaryListStore);
+    store.resetFilters();
+    configureStore?.(store);
 
     const fixture = TestBed.createComponent(FinesReportsSummaryListComponent);
     const component = fixture.componentInstance;
@@ -165,7 +205,45 @@ describe('FinesReportsSummaryListComponent', () => {
 
     const header = fixture.nativeElement.querySelector('.reports-summary-list-header');
     expect(header?.querySelector('h1')?.textContent?.trim()).toBe('Operational reports (by enforcement)');
-    expect(header?.querySelector('button')?.textContent?.trim()).toBe('Create report');
+    expect(header?.querySelector('a')?.textContent?.trim()).toBe('Create report');
+  });
+
+  it('should render report instances returned in the backend DTO shape', async () => {
+    const { fixture } = await setup(reportId, {
+      report_instances: [
+        {
+          instanceId: 99000000008000,
+          reportId,
+          name: 'Operational report (by enforcement) - Backend row',
+          requestedAt: '2026-05-12T11:37:55.196682',
+          requested_by: {
+            user_id: 12345678,
+            name: 'opal-test',
+          },
+          business_units: [
+            {
+              business_unit_id: 77,
+            },
+          ],
+          status: {
+            code: 'READY',
+            display_name: 'Ready',
+          },
+          numberOfRecords: 42,
+          isDownloadable: true,
+          supportedFileTypes: ['CSV', 'PDF'],
+        },
+      ],
+      count: 1,
+    });
+    const text = fixture.nativeElement.textContent;
+
+    expect(text).toContain('Operational report (by enforcement) - Backend row');
+    expect(text).toContain('London Central & South East');
+    expect(text).toContain('opal-test');
+    expect(text).toContain('Ready');
+    expect(text).toContain('CSV');
+    expect(text).toContain('PDF');
   });
 
   it('should render no reports found when the report list is empty', async () => {
@@ -197,15 +275,165 @@ describe('FinesReportsSummaryListComponent', () => {
   it('should call report instances API with selected filters when Refresh is selected', async () => {
     const { component } = await setup();
 
-    component.filtersForm.controls.businessUnit.setValue('1');
+    component.filtersForm.controls.businessUnit.setValue('67');
     component.onRefresh();
 
     expect(mockOpalFines.getReportInstances).toHaveBeenCalledWith(
       expect.objectContaining({
         report_id: reportId,
-        business_units: ['1'],
+        business_units: ['67'],
       }),
     );
+  });
+
+  it('should build business unit options from resolved accessible business units only', async () => {
+    const accessibleBusinessUnits = {
+      count: 1,
+      refData: [OPAL_FINES_BUSINESS_UNIT_REF_DATA_MOCK.refData[1]],
+    };
+    const { component } = await setup(reportId, mockReportInstances, undefined, accessibleBusinessUnits);
+
+    expect(component.businessUnitOptions()).toEqual([
+      { value: 'all', name: 'All business units' },
+      { value: '67', name: 'London Central & South East' },
+    ]);
+  });
+
+  it('should support Operational reports by payments as a configured summary list report type', async () => {
+    const paymentsReportInstances: IOpalFinesReportInstancesResponse = {
+      report_instances: [
+        {
+          instance_id: 5,
+          report_id: paymentsReportId,
+          created_at: '2026-06-08T11:15:00Z',
+          name: 'Operational report (by payments) - Paid in full',
+          business_unit: 'London Central & South East',
+          created_by: 'Priya Patel',
+          status: 'READY',
+          number_of_records: 12,
+        },
+      ],
+      count: 1,
+    };
+    const { component, fixture } = await setup(paymentsReportId, paymentsReportInstances);
+
+    expect(component.pageHeading).toBe('Operational reports (by payments)');
+    expect(fixture.nativeElement.querySelector('h1')?.textContent?.trim()).toBe('Operational reports (by payments)');
+    expect(fixture.nativeElement.textContent).toContain('Operational report (by payments) - Paid in full');
+
+    component.onRefresh();
+
+    expect(mockOpalFines.getReportInstances).toHaveBeenCalledWith(
+      expect.objectContaining({
+        report_id: paymentsReportId,
+      }),
+    );
+  });
+
+  it('should restore Custom days controls for the same report type', async () => {
+    const { component, fixture } = await setup(reportId, mockReportInstances, (store) => {
+      store.setReportTypeId(reportId);
+      store.setFilters({
+        businessUnit: '1',
+        dateFilter: 'customDays',
+        days: '30',
+        dateFrom: '',
+        dateTo: '',
+      });
+      store.setAppliedQuery({
+        fromDate: '2026-05-10',
+        toDate: '2026-06-08',
+        businessUnit: '1',
+      });
+    });
+
+    expect(component.dateFilter()).toBe('customDays');
+    expect(fixture.nativeElement.querySelector('#reports-summary-list-custom-days')).toBeTruthy();
+    expect(fixture.nativeElement.querySelector('#reports-summary-list-days')?.value).toBe('30');
+  });
+
+  it('should restore Date range controls for the same report type', async () => {
+    const { component, fixture } = await setup(reportId, mockReportInstances, (store) => {
+      store.setReportTypeId(reportId);
+      store.setFilters({
+        businessUnit: '1',
+        dateFilter: 'dateRange',
+        days: '',
+        dateFrom: '01/06/2026',
+        dateTo: '08/06/2026',
+      });
+      store.setAppliedQuery({
+        fromDate: '2026-06-01',
+        toDate: '2026-06-08',
+        businessUnit: '1',
+      });
+    });
+
+    expect(component.dateFilter()).toBe('dateRange');
+    expect(fixture.nativeElement.querySelector('#reports-summary-list-date-range')).toBeTruthy();
+    expect(fixture.nativeElement.querySelector('#reports-summary-list-date-from')).toBeTruthy();
+    expect(fixture.nativeElement.querySelector('#reports-summary-list-date-to')).toBeTruthy();
+  });
+
+  it('should reset retained filters when the report type changes', async () => {
+    const { component, fixture } = await setup(paymentsReportId, mockReportInstances, (store) => {
+      store.setReportTypeId(reportId);
+      store.setFilters({
+        businessUnit: '1',
+        dateFilter: 'customDays',
+        days: '30',
+        dateFrom: '',
+        dateTo: '',
+      });
+      store.setAppliedQuery({
+        fromDate: '2026-05-10',
+        toDate: '2026-06-08',
+        businessUnit: '1',
+      });
+    });
+
+    expect(component.dateFilter()).toBe('last7Days');
+    expect(component.filtersForm.controls.businessUnit.value).toBe('all');
+    expect(fixture.nativeElement.querySelector('#reports-summary-list-custom-days')).toBeFalsy();
+  });
+
+  it('should refresh route-backed state when navigating between report types on the same component instance', async () => {
+    const paymentsReportInstances: IOpalFinesReportInstancesResponse = {
+      report_instances: [
+        {
+          instance_id: 5,
+          report_id: paymentsReportId,
+          created_at: '2026-06-08T11:15:00Z',
+          name: 'Operational report (by payments) - Paid in full',
+          business_unit: 'London Central & South East',
+          created_by: 'Priya Patel',
+          status: 'READY',
+          number_of_records: 12,
+        },
+      ],
+      count: 1,
+    };
+    const { component, fixture, activatedRoute } = await setup(reportId, mockReportInstances);
+
+    component.filtersForm.controls.dateFilter.setValue('customDays');
+    component.filtersForm.controls.days.setValue('30');
+    fixture.detectChanges();
+
+    expect(fixture.nativeElement.textContent).toContain('Operational report (by enforcement) - CLAMPO - Detailed');
+
+    activatedRoute.parent?.paramMap.next(convertToParamMap({ reportTypeId: paymentsReportId }));
+    activatedRoute.data.next({
+      businessUnits: OPAL_FINES_BUSINESS_UNIT_REF_DATA_MOCK,
+      reportMetadata: mockPaymentsReportMetadata,
+      reportInstances: paymentsReportInstances,
+    });
+    fixture.detectChanges();
+
+    expect(component.pageHeading).toBe('Operational reports (by payments)');
+    expect(component.dateFilter()).toBe('last7Days');
+    expect(component.filtersForm.controls.businessUnit.value).toBe('all');
+    expect(fixture.nativeElement.textContent).toContain('Operational report (by payments) - Paid in full');
+    expect(fixture.nativeElement.textContent).not.toContain('Operational report (by enforcement) - CLAMPO - Detailed');
   });
 
   it('should update the table rows when Refresh returns new report instances', async () => {
@@ -233,9 +461,7 @@ describe('FinesReportsSummaryListComponent', () => {
     fixture.detectChanges();
 
     expect(fixture.nativeElement.textContent).toContain('Operational report (by enforcement) - Refreshed');
-    expect(fixture.nativeElement.textContent).not.toContain(
-      'Operational report (by enforcement) - CLAMPO - Detailed',
-    );
+    expect(fixture.nativeElement.textContent).not.toContain('Operational report (by enforcement) - CLAMPO - Detailed');
   });
 
   it('should show custom days validation when Custom days is selected without a value', async () => {

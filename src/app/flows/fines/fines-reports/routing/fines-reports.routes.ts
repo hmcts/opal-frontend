@@ -5,9 +5,9 @@ import { finesReportsStateGuard } from './guards/fines-reports-state-guard/fines
 import { FINES_ROUTING_PATHS } from '@app/flows/fines/routing/constants/fines-routing-paths.constant';
 import { FINES_DASHBOARD_ROUTING_PATHS } from '@app/flows/fines/constants/fines-dashboard-routing-paths.constant';
 import { finesReportsTitleResolver } from './resolvers/fines-reports-title/fines-reports-title.resolver';
-import { fetchBusinessUnitsResolver } from '@routing/fines/resolvers/fetch-business-units-resolver/fetch-business-units.resolver';
 import { finesReportsReportMetadataResolver } from './resolvers/fines-reports-report-metadata/fines-reports-report-metadata.resolver';
 import { finesReportsReportInstancesResolver } from './resolvers/fines-reports-report-instances/fines-reports-report-instances.resolver';
+import { finesReportsBusinessUnitsResolver } from './resolvers/fines-reports-business-units/fines-reports-business-units.resolver';
 
 export const routing: Routes = [
   {
@@ -25,6 +25,16 @@ export const routing: Routes = [
         pathMatch: 'full',
       },
       {
+        path: FINES_REPORTS_ROUTING_PATHS.children.create,
+        loadComponent: () =>
+          import('../fines-reports-create/fines-reports-create.component').then(
+            (c) => c.FinesReportsCreateComponent,
+          ),
+        resolve: {
+          title: finesReportsTitleResolver,
+        },
+      },
+      {
         path: FINES_REPORTS_ROUTING_PATHS.children.summaryList,
         loadComponent: () =>
           import('../fines-reports-summary-list/fines-reports-summary-list.component').then(
@@ -32,7 +42,7 @@ export const routing: Routes = [
           ),
         resolve: {
           title: finesReportsTitleResolver,
-          businessUnits: fetchBusinessUnitsResolver,
+          businessUnits: finesReportsBusinessUnitsResolver,
           reportMetadata: finesReportsReportMetadataResolver,
           reportInstances: finesReportsReportInstancesResolver,
         },

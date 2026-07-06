@@ -3,6 +3,7 @@ import { IFinesReportsRoutingPaths } from '../interfaces/fines-reports-routing-p
 export const FINES_REPORTS_ROUTING_TITLES: IFinesReportsRoutingPaths = {
   root: 'Reports',
   children: {
+    create: 'Create report',
     summaryList: 'Summary List',
   },
 };

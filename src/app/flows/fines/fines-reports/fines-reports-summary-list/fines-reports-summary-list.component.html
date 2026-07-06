@@ -9,23 +9,25 @@
   <div class="reports-summary-list-header">
     <h1 class="govuk-heading-l govuk-!-margin-bottom-0">{{ pageHeading }}</h1>
     @if (showCreateReportButton) {
-      <button class="govuk-button" id="create-report-button" type="button" data-module="govuk-button">
+      <a class="govuk-button" id="create-report-button" routerLink="../create" data-module="govuk-button">
         Create report
-      </button>
+      </a>
     }
   </div>
 
   <form [formGroup]="filtersForm" (ngSubmit)="onRefresh()" novalidate>
     <div class="govuk-grid-row">
       <div class="govuk-grid-column-one-third">
-        <opal-lib-govuk-select
+        <opal-lib-alphagov-accessible-autocomplete
+          [control]="filtersForm.controls.businessUnit"
           labelText="Filter by business unit"
           labelClasses="govuk-label--s"
-          selectId="reports-summary-list-business-unit"
-          selectName="reports-summary-list-business-unit"
-          [options]="businessUnitOptions()"
-          [control]="filtersForm.controls.businessUnit"
-        ></opal-lib-govuk-select>
+          inputId="reports-summary-list-business-unit"
+          inputName="reports-summary-list-business-unit"
+          [autoCompleteItems]="businessUnitOptions()"
+          [tabIndex]="0"
+          [showAllValues]="true"
+        ></opal-lib-alphagov-accessible-autocomplete>
 
         <opal-lib-govuk-radio
           fieldSetId="reports-summary-list-date-filter"

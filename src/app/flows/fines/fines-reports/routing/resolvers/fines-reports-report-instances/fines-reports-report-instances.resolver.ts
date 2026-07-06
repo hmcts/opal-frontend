@@ -1,11 +1,13 @@
 import { inject } from '@angular/core';
 import { ResolveFn } from '@angular/router';
-import { OpalUserService } from '@hmcts/opal-frontend-common/services/opal-user-service';
+import { GlobalStore } from '@hmcts/opal-frontend-common/stores/global';
 import { OpalFines } from '@services/fines/opal-fines-service/opal-fines.service';
 import { IOpalFinesReportInstancesParams } from '@services/fines/opal-fines-service/interfaces/opal-fines-report-instances-params.interface';
 import { IOpalFinesReportInstancesResponse } from '@services/fines/opal-fines-service/interfaces/opal-fines-report-instances-response.interface';
-import { map, switchMap } from 'rxjs';
-import { getFinesReportsRouteConfiguration } from '../../../utils/fines-reports-route.utils';
+import {
+  getFinesReportsRouteConfiguration,
+  getFinesReportsRouteReportTypeId,
+} from '../../../utils/fines-reports-route.utils';
 import {
   getDefaultReportsSummaryListQuery,
   getReportsSummaryListQueryFromFilters,
@@ -14,9 +16,13 @@ import { FinesReportsSummaryListStore } from '../../../fines-reports-summary-lis
 
 export const finesReportsReportInstancesResolver: ResolveFn<IOpalFinesReportInstancesResponse> = (route) => {
   const opalFinesService = inject(OpalFines);
-  const opalUserService = inject(OpalUserService);
+  const globalStore = inject(GlobalStore);
   const store = inject(FinesReportsSummaryListStore);
   const reportConfiguration = getFinesReportsRouteConfiguration(route);
+  const reportTypeId = getFinesReportsRouteReportTypeId(route);
+  store.resetForReportType(reportTypeId);
+  const userState = globalStore.userState();
+
   const query =
     store.appliedQuery() ??
     getReportsSummaryListQueryFromFilters(store.filters()) ??
@@ -29,20 +35,14 @@ export const finesReportsReportInstancesResolver: ResolveFn<IOpalFinesReportInst
   };
 
   if (reportConfiguration?.isYourReports) {
-    return opalUserService.getLoggedInUserState().pipe(
-      switchMap((userState) =>
-        opalFinesService.getReportInstances({
-          ...params,
-          user_id: userState.user_id,
-        }),
-      ),
-    );
+    return opalFinesService.getReportInstances({
+      ...params,
+      user_id: userState.user_id,
+    });
   }
 
-  return opalFinesService
-    .getReportInstances({
-      ...params,
-      report_id: reportConfiguration?.reportTypeId ?? null,
-    })
-    .pipe(map((response) => response));
+  return opalFinesService.getReportInstances({
+    ...params,
+    report_id: reportConfiguration?.reportTypeId ?? null,
+  });
 };
