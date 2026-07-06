@@ -1,10 +1,5 @@
-@use 'govuk-frontend/dist/govuk/index' as * with (
-  $govuk-assets-path: '~govuk-frontend/dist/govuk/assets/'
-);
-@use '@ministryofjustice/frontend/moj/all' as moj with (
-  $moj-assets-path: '~@ministryofjustice/frontend/moj/assets/'
-);
+@use '@ministryofjustice/frontend/moj/all' as moj;
+@use 'govuk-frontend/dist/govuk/index' as *;
 
-// Import the shared stylesheet directly so Cypress keeps these asset overrides
-// in scope when GOV.UK and MOJ Sass partials resolve image URLs.
+// Import the shared stylesheet directly so component tests use the same global styles.
 @use '../../src/styles.scss';

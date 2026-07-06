@@ -28,6 +28,7 @@ import { FINES_MAC_DEFENDANT_TYPES_KEYS } from '../../constants/fines-mac-defend
 
 //regex pattern validators for the form controls
 const EMAIL_ADDRESS_PATTERN_VALIDATOR = patternValidator(EMAIL_ADDRESS_PATTERN, 'emailPattern');
+const HOME_OR_WORK_TELEPHONE_NUMBER_LENGTHS = [10, 11];
 
 @Component({
   selector: 'app-fines-mac-contact-details-form',
@@ -72,11 +73,11 @@ export class FinesMacContactDetailsFormComponent extends AbstractFormBaseCompone
       ]),
       fm_contact_details_telephone_number_home: new FormControl(null, [
         optionalMaxLengthValidator(35),
-        optionalPhoneNumberValidator(),
+        optionalPhoneNumberValidator(HOME_OR_WORK_TELEPHONE_NUMBER_LENGTHS),
       ]),
       fm_contact_details_telephone_number_business: new FormControl(null, [
         optionalMaxLengthValidator(35),
-        optionalPhoneNumberValidator(),
+        optionalPhoneNumberValidator(HOME_OR_WORK_TELEPHONE_NUMBER_LENGTHS),
       ]),
     });
   }
