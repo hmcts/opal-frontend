@@ -11,6 +11,6 @@ export const OPAL_FINES_REPORT_MOCK: IOpalFinesReport = {
   is_bespoke_journey: true,
   shown_as_worklist: false,
   retention_period: 'P14D',
-  permission: 'OPERATIONAL_REPORT_BY_ENFORCEMENT',
+  permission: 'SEARCH_AND_VIEW_ACCOUNTS',
   can_manually_create: true,
 };

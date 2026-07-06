@@ -51,22 +51,26 @@ describe('fetchReportResolver', () => {
     });
   });
 
-  it('should temporarily skip the report API for operational reports until backend permissions are supported', async () => {
+  it('should resolve report metadata for operational reports', async () => {
     const route = buildRoute(FINES_REPORTS_SUMMARY_LIST_ROUTING_PATHS.children.operationalReportsByEnforcement);
 
     const result = await firstValueFrom(executeResolver(route, {} as never) as Observable<IOpalFinesReport | null>);
 
-    expect(mockOpalFinesService.getReport).not.toHaveBeenCalled();
-    expect(result).toBeNull();
+    expect(mockOpalFinesService.getReport).toHaveBeenCalledWith(
+      FINES_REPORTS_SUMMARY_LIST_ROUTING_PATHS.children.operationalReportsByEnforcement,
+    );
+    expect(result).toEqual(OPAL_FINES_REPORT_MOCK);
   });
 
-  it('should use the parent route report id when applying the operational report API bypass', async () => {
+  it('should use the parent route report id when resolving operational reports', async () => {
     const route = buildRoute(null, FINES_REPORTS_SUMMARY_LIST_ROUTING_PATHS.children.operationalReportsByPayments);
 
     const result = await firstValueFrom(executeResolver(route, {} as never) as Observable<IOpalFinesReport | null>);
 
-    expect(mockOpalFinesService.getReport).not.toHaveBeenCalled();
-    expect(result).toBeNull();
+    expect(mockOpalFinesService.getReport).toHaveBeenCalledWith(
+      FINES_REPORTS_SUMMARY_LIST_ROUTING_PATHS.children.operationalReportsByPayments,
+    );
+    expect(result).toEqual(OPAL_FINES_REPORT_MOCK);
   });
 
   it('should resolve report metadata for an API-backed report id', async () => {

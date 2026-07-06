@@ -326,7 +326,7 @@ describe('finesSectionPermissionsGuard', () => {
   it('should allow Reports when the user has at least one report permission', async () => {
     mockFeatureFlags(DEFAULT_RELEASE_FEATURE_FLAGS);
     mockOpalUserService.getLoggedInUserState.mockReturnValue(
-      of(createUserStateWithPermissions([REPORTS_PERMISSIONS[1]])),
+      of(createUserStateWithPermissions([REPORTS_PERMISSIONS[0]])),
     );
 
     const result = await runGuard({ sectionKey: FINES_DASHBOARD_ROUTING_PATHS.children.reports });

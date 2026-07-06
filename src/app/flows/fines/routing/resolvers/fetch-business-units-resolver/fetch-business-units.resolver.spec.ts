@@ -100,7 +100,7 @@ describe('fetchBusinessUnitsResolver', () => {
 
   it('should filter business units for operational reports using the logged-in user permissions', async () => {
     globalStore.setUserState(
-      createUserStateWithPermissionInBusinessUnits(FINES_PERMISSIONS['operational-report-by-enforcement'], [67, 71]),
+      createUserStateWithPermissionInBusinessUnits(FINES_PERMISSIONS['search-and-view-accounts'], [67, 71]),
     );
 
     // eslint-disable-next-line @typescript-eslint/no-explicit-any

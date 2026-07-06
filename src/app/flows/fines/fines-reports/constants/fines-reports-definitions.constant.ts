@@ -16,14 +16,14 @@ export const FINES_REPORTS_DEFINITIONS: IFinesReportsDefinition[] = [
     id: FINES_REPORTS_SUMMARY_LIST_ROUTING_PATHS.children.operationalReportsByEnforcement,
     heading: FINES_REPORTS_SUMMARY_LIST_ROUTING_TITLES.children.operationalReportsByEnforcement,
     title: FINES_REPORTS_SUMMARY_LIST_ROUTING_TITLES.children.operationalReportsByEnforcement,
-    permissionIds: [FINES_PERMISSIONS['operational-report-by-enforcement']],
+    permissionIds: [FINES_PERMISSIONS['search-and-view-accounts']],
     operationalLinkId: 'finesReportsOperationalReportsByEnforcementLink',
   },
   {
     id: FINES_REPORTS_SUMMARY_LIST_ROUTING_PATHS.children.operationalReportsByPayments,
     heading: FINES_REPORTS_SUMMARY_LIST_ROUTING_TITLES.children.operationalReportsByPayments,
     title: FINES_REPORTS_SUMMARY_LIST_ROUTING_TITLES.children.operationalReportsByPayments,
-    permissionIds: [FINES_PERMISSIONS['operational-report-by-payments']],
+    permissionIds: [FINES_PERMISSIONS['search-and-view-accounts']],
     operationalLinkId: 'finesReportsOperationalReportsByPaymentLink',
   },
 ];
