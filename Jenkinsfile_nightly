@@ -530,11 +530,12 @@ void runDemoLegacyStage(Map<String, Object> stageConfig, Closure runCommand) {
   boolean archiveAccountEvidence = (stageConfig.archiveAccountEvidence ?: false) as boolean
   List<String> extraEnv = (stageConfig.extraEnv ?: []) as List<String>
   String reportFilePrefix = outputDirName
+  String testUrl = (stageConfig.testUrl ?: nightlyTestUrlDemo) as String
 
   runNightlyStage(enabled, stageName, failureResultValue, failureMessage) {
     boolean launchDarklyFlagPatched = false
     List<String> stageEnv = [
-      "TEST_URL=${nightlyTestUrlDemo}",
+      "TEST_URL=${testUrl}",
       'DEFAULT_APP_MODE=legacy',
       'LEGACY_ENABLED=true',
       "BROWSER_TO_RUN=${browserToRun}",
@@ -576,7 +577,7 @@ void runDemoLegacyStage(Map<String, Object> stageConfig, Closure runCommand) {
         "${reportFilePrefix}-report.html",
         reportName
       )
-      if (launchDarklyFlagPatched) {
+      if (launchDarklyFlagPatched && testUrl != nightlyTestUrlDemo) {
         patchLaunchDarklyFlagState(
           true,
           launchDarklyOpalVariationName,
