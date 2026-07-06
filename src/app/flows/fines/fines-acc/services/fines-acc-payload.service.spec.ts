@@ -186,6 +186,39 @@ describe('FinesAccPayloadService', () => {
     });
   });
 
+  describe('transformHistoryAndNotesDetails', () => {
+    it('should transform raw history details through the history and notes util', () => {
+      const result = service.transformHistoryAndNotesDetails({
+        type: 'Note',
+        details: {
+          noteText: 'System generated note',
+        },
+      });
+
+      expect(result).toEqual({
+        line1: [{ fragments: [{ text: 'System generated note', bold: false, hyphen: false }] }],
+        line2: null,
+      });
+    });
+
+    it('should transform a list of raw history items with structured details', () => {
+      const result = service.transformHistoryAndNotesItems([
+        {
+          id: 1,
+          type: 'Note',
+          details: {
+            noteText: 'Structured note',
+          },
+        },
+      ]);
+
+      expect(result[0]['details']).toEqual({
+        line1: [{ fragments: [{ text: 'Structured note', bold: false, hyphen: false }] }],
+        line2: null,
+      });
+    });
+  });
+
   it('should transform defendant account header for store for an individual', () => {
     const header: IOpalFinesAccountDefendantDetailsHeader = structuredClone(FINES_ACC_DEFENDANT_DETAILS_HEADER_MOCK);
     header.party_details.organisation_flag = false;
@@ -995,6 +1028,18 @@ describe('FinesAccPayloadService', () => {
       });
     });
 
+    it('should use an empty organisation name when company minor creditor amend form name is missing', () => {
+      const currentData = structuredClone(OPAL_FINES_ACCOUNT_MINOR_CREDITOR_CREDITOR_MOCK);
+      const formState = {
+        ...structuredClone(MOCK_FINES_ACC_MINOR_CREDITOR_ADD_AMEND_CONVERT_COMPANY_FORM.formData),
+        facc_minor_creditor_company_name: null,
+      };
+
+      const result = service.buildMinorCreditorAccountAmendPayload(currentData, formState);
+
+      expect(result.party_details.organisation_details?.organisation_name).toBe('');
+    });
+
     it('should build an individual minor creditor amend payload and clear BACS details when not selected', () => {
       const currentData = structuredClone(OPAL_FINES_ACCOUNT_MINOR_CREDITOR_CREDITOR_INDIVIDUAL_MOCK);
       currentData.party_details.individual_details = {
@@ -1048,6 +1093,30 @@ describe('FinesAccPayloadService', () => {
         account_number: null,
         account_reference: null,
       });
+    });
+
+    it('should use individual minor creditor amend payload fallbacks when optional current and form values are missing', () => {
+      const currentData = structuredClone(OPAL_FINES_ACCOUNT_MINOR_CREDITOR_CREDITOR_INDIVIDUAL_MOCK);
+      currentData.party_details.individual_details = null;
+      const formState = {
+        ...structuredClone(MOCK_FINES_ACC_MINOR_CREDITOR_ADD_AMEND_CONVERT_INDIVIDUAL_FORM.formData),
+        facc_minor_creditor_surname: null,
+        facc_minor_creditor_address_line_1: null,
+        facc_minor_creditor_pay_by_bacs: false,
+      };
+
+      const result = service.buildMinorCreditorAccountAmendPayload(currentData, formState);
+
+      expect(result.party_details.individual_details).toEqual({
+        date_of_birth: null,
+        age: null,
+        national_insurance_number: null,
+        individual_aliases: null,
+        title: formState.facc_minor_creditor_title,
+        forenames: formState.facc_minor_creditor_forenames,
+        surname: '',
+      });
+      expect(result.address.address_line_1).toBe('');
     });
   });
 

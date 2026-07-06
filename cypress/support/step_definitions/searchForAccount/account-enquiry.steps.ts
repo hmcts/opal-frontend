@@ -14,7 +14,7 @@
  * - Tasks (e.g., `clearApprovedDrafts`, `createAndPublishAccount`) are run via Cypress plugins.
  */
 
-import { When, Then, DataTable } from '@badeball/cypress-cucumber-preprocessor';
+import { Given, When, Then, DataTable } from '@badeball/cypress-cucumber-preprocessor';
 import { AccountEnquiryFlow } from '../../..//e2e/functional/opal/flows/account-enquiry.flow';
 import { CommonFlow } from '../../..//e2e/functional/opal/flows/common-flow';
 
@@ -462,6 +462,54 @@ When('I go to the Payment terms tab', () => {
 When('I go to the Creditor tab', () => {
   log('step', 'Navigate to Creditor tab');
   flow().goToCreditorTab();
+});
+
+/**
+ * @step Stubs the History and notes API for the current account.
+ */
+Given('the History and notes API is stubbed with standard tab data', () => {
+  log('step', 'Stub History and notes API with standard tab data');
+  flow().stubHistoryAndNotesTabData();
+});
+
+/**
+ * @step Navigates to the History and notes tab.
+ */
+When('I go to the History and notes tab', () => {
+  log('step', 'Navigate to History and notes tab');
+  flow().goToHistoryAndNotesTab();
+});
+
+/**
+ * @step Verifies History and notes rows loaded.
+ */
+Then('I should see the History and notes items load', () => {
+  log('assert', 'History and notes items are loaded');
+  flow().assertHistoryAndNotesItemsLoaded();
+});
+
+/**
+ * @step Applies the Notes filter on the History and notes tab.
+ */
+When('I filter the History and notes results to Notes', () => {
+  log('step', 'Filter History and notes results to Notes');
+  flow().filterHistoryAndNotesToNotes();
+});
+
+/**
+ * @step Verifies the History and notes results are filtered to Note rows only.
+ */
+Then('I should only see Note items in History and notes', () => {
+  log('assert', 'History and notes results only show Note rows');
+  flow().assertHistoryAndNotesFilteredToNotes();
+});
+
+/**
+ * @step Opens the first account-linked history item in a new tab and verifies the target route.
+ */
+When('I open the first History and notes account link in a new tab', () => {
+  log('step', 'Open first History and notes account link in a new tab');
+  flow().openHistoryAndNotesAccountLinkInNewTab();
 });
 
 /**

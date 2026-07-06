@@ -107,7 +107,7 @@
     "@hmcts/nodejs-healthcheck": "^1.8.5",
     "@hmcts/nodejs-logging": "^4.0.4",
     "@hmcts/opal-frontend-common": "^0.0.89",
-    "@hmcts/opal-frontend-common-node": "^0.0.37",
+    "@hmcts/opal-frontend-common-node": "^0.0.38",
     "@hmcts/properties-volume": "^1.1.0",
     "@hmcts/zephyr-automation-nodejs": "0.0.7",
     "@microsoft/applicationinsights-web": "^3.3.5",
@@ -193,7 +193,7 @@
     "typescript": "~6.0.0",
     "vitest": "^4.0.8"
   },
-  "packageManager": "yarn@4.15.0",
+  "packageManager": "yarn@4.17.0",
   "cypress-cucumber-preprocessor": {
     "nonGlobalStepDefinitions": true
   },

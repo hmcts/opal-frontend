@@ -1,0 +1,7 @@
+import { IHistoryDetails as IFinesAccHistoryAndNotesDetails } from '@hmcts/opal-frontend-common/services/history-transformation-service';
+
+export const FINES_ACC_HISTORY_AND_NOTES_TRANSFER_WITHOUT_ASSOCIATED_RECORD_DETAILS_MOCK: IFinesAccHistoryAndNotesDetails =
+  {
+    line1: [{ fragments: [{ text: 'Transfer from suspense', bold: false, hyphen: false }] }],
+    line2: null,
+  };
