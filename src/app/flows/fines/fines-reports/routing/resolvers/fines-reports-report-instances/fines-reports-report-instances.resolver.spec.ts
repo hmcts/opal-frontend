@@ -33,6 +33,8 @@ const createUserState = () => {
 };
 
 describe('finesReportsReportInstancesResolver', () => {
+  type ResolverResult = Awaited<ReturnType<typeof finesReportsReportInstancesResolver>>;
+
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   let mockOpalFines: any;
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -47,10 +49,10 @@ describe('finesReportsReportInstancesResolver', () => {
     (...resolverParameters: Parameters<ResolveFn<unknown>>) =>
       TestBed.runInInjectionContext(() => finesReportsReportInstancesResolver(...resolverParameters));
 
-  async function runResolver(route: ActivatedRouteSnapshot): Promise<IOpalFinesReportInstancesResponse> {
+  async function runResolver(route: ActivatedRouteSnapshot): Promise<ResolverResult> {
     const resolver = executeResolver();
     const result = resolver(route, {} as never);
-    return isObservable(result) ? await lastValueFrom(result) : result;
+    return isObservable(result) ? (await lastValueFrom(result as never)) as ResolverResult : (result as ResolverResult);
   }
 
   beforeEach(() => {
