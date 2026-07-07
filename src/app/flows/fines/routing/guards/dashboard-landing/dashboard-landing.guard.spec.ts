@@ -30,13 +30,19 @@ const DEFAULT_RELEASE_FEATURE_FLAGS = {
   [RELEASE_1C_FINANCIAL_MOVEMENTS_FEATURE_FLAG]: true,
 };
 
+const logInvestigation = (message: string, details: Record<string, unknown>): void => {
+  console.info(`[dashboardLandingGuard.spec] ${message}`, details);
+};
+
 const mockFeatureFlags = (featureFlags: Record<string, boolean>) => {
+  logInvestigation('mock feature flags', featureFlags);
   resolveFeatureFlagGuardMock.mockImplementation((featureFlagName: string) =>
     Promise.resolve(featureFlags[featureFlagName] ?? false),
   );
 };
 
 const createUserStateWithPermissions = (permissionIds: readonly number[]): IOpalUserState => {
+  logInvestigation('create user state with permissions', { permissionIds });
   const userState = structuredClone(OPAL_USER_STATE_MOCK);
   const [firstBusinessUnit, secondBusinessUnit] = userState.business_unit_users;
 
@@ -65,9 +71,12 @@ describe('dashboardLandingGuard', () => {
   let dashboardLandingGuard: (typeof import('./dashboard-landing.guard'))['dashboardLandingGuard'];
 
   const runGuard = async () => {
+    logInvestigation('run guard', {});
     const route = {} as ActivatedRouteSnapshot;
     const state = {} as RouterStateSnapshot;
-    return TestBed.runInInjectionContext(() => dashboardLandingGuard(route, state));
+    const result = await TestBed.runInInjectionContext(() => dashboardLandingGuard(route, state));
+    logInvestigation('guard result', { resultType: result instanceof UrlTree ? 'UrlTree' : typeof result });
+    return result;
   };
 
   beforeEach(async () => {
