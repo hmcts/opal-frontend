@@ -57,6 +57,9 @@ export function getRoutesConfig(): {
     userStateUrl: config.get('opal-user-service-urls.userStateUrl'),
     addUserUrl: config.get('opal-user-service-urls.addUserUrl'),
     updateUserUrl: config.get('opal-user-service-urls.updateUserUrl'),
+    timeoutInMilliseconds: config.get('opal-user-service-urls.timeoutInMilliseconds'),
+    retryAttempts: config.get('opal-user-service-urls.retryAttempts'),
+    retryDelayInMilliseconds: config.get('opal-user-service-urls.retryDelayInMilliseconds'),
   };
 
   const userStateConfiguration: UserStateConfiguration = {

@@ -4,6 +4,20 @@
     "opal-fines-service": "OPAL_FINES_SERVICE_API_URL",
     "opal-user-service": "OPAL_USER_SERVICE_API_URL"
   },
+  "opal-user-service-urls": {
+    "timeoutInMilliseconds": {
+      "__name": "OPAL_USER_SERVICE_TIMEOUT_IN_MILLISECONDS",
+      "__format": "json"
+    },
+    "retryAttempts": {
+      "__name": "OPAL_USER_SERVICE_RETRY_ATTEMPTS",
+      "__format": "json"
+    },
+    "retryDelayInMilliseconds": {
+      "__name": "OPAL_USER_SERVICE_RETRY_DELAY_IN_MILLISECONDS",
+      "__format": "json"
+    }
+  },
   "frontend-hostname": {
     "prod": "FRONTEND_HOSTNAME"
   },
