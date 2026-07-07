@@ -1356,7 +1356,7 @@ describe('FinesMacManualFixedPenalty', () => {
     },
   );
 
-  it.only(
+  it(
     '(AC5) should keep Prosecutors (All) visible and selectable as originators for non-filtered journeys',
     {
       tags: [
