@@ -107,10 +107,7 @@
   "opal-user-service-urls": {
     "userStateUrl": "/v2/users/0/state",
     "addUserUrl": "/users",
-    "updateUserUrl": "/users",
-    "timeoutInMilliseconds": 10000,
-    "retryAttempts": 3,
-    "retryDelayInMilliseconds": 1000
+    "updateUserUrl": "/users"
   },
   "user-state": {
     "cacheKeyPrefix": "USER_STATE_",
