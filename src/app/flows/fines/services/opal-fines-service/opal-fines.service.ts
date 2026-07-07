@@ -205,7 +205,7 @@ export class OpalFines {
    * @returns The pretty name of the prosecutor.
    */
   public getProsecutorPrettyName(prosecutor: IOpalFinesProsecutor): string {
-    return `${prosecutor.prosecutor_name} (${prosecutor.prosecutor_code})`;
+    return `${prosecutor.name} (${prosecutor.prosecutor_code})`;
   }
 
   /**
