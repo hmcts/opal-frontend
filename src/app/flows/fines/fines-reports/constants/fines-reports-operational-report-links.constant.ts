@@ -14,7 +14,7 @@ export const FINES_REPORTS_OPERATIONAL_REPORT_LINKS: IDashboardPageConfiguration
       FINES_ROUTING_PATHS.children.reports.children['summaryList'],
     ],
     fragment: null,
-    permissionIds: report.permissionIds,
+    permissionIds: [...report.permissionIds],
     newTab: false,
     style: 'guidance-panel-blue',
   }));

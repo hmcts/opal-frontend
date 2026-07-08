@@ -2,7 +2,7 @@ export interface IFinesReportsDefinition {
   id: string;
   heading: string;
   title: string;
-  permissionIds: number[];
+  permissionIds: readonly number[];
   operationalLinkId?: string;
   highlightLinkId?: string;
   highlightLinkText?: string;

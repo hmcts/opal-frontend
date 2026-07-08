@@ -9,7 +9,7 @@ import { OpalUserService } from '@hmcts/opal-frontend-common/services/opal-user-
 import { beforeEach, describe, expect, it, vi } from 'vitest';
 import { of, throwError } from 'rxjs';
 import { ACCOUNTS_PERMISSIONS } from '@app/flows/fines/constants/accounts-permissions.constant';
-import { REPORTS_PERMISSIONS } from '@app/flows/fines/constants/reports-permissions.constant';
+import { REPORTS_PRIMARY_NAVIGATION_PERMISSIONS } from '@app/flows/fines/constants/reports-permissions.constant';
 import { SEARCH_PERMISSIONS } from '@app/flows/fines/constants/search-permissions.constant';
 import {
   RELEASE_1A_FEATURE_FLAG,
@@ -326,7 +326,7 @@ describe('finesSectionPermissionsGuard', () => {
   it('should allow Reports when the user has at least one report permission', async () => {
     mockFeatureFlags(DEFAULT_RELEASE_FEATURE_FLAGS);
     mockOpalUserService.getLoggedInUserState.mockReturnValue(
-      of(createUserStateWithPermissions([REPORTS_PERMISSIONS[0]])),
+      of(createUserStateWithPermissions([REPORTS_PRIMARY_NAVIGATION_PERMISSIONS[0]])),
     );
 
     const result = await runGuard({ sectionKey: FINES_DASHBOARD_ROUTING_PATHS.children.reports });
@@ -336,7 +336,7 @@ describe('finesSectionPermissionsGuard', () => {
 
   it('should resolve the release-1c enforcement operational reporting feature flag before allowing Reports', async () => {
     mockOpalUserService.getLoggedInUserState.mockReturnValue(
-      of(createUserStateWithPermissions([REPORTS_PERMISSIONS[0]])),
+      of(createUserStateWithPermissions([REPORTS_PRIMARY_NAVIGATION_PERMISSIONS[0]])),
     );
 
     const result = await runGuard({ dashboardType: FINES_DASHBOARD_ROUTING_PATHS.children.reports });
@@ -356,7 +356,7 @@ describe('finesSectionPermissionsGuard', () => {
       [RELEASE_1C_ENFORCEMENT_OPERATIONAL_REPORTING_FEATURE_FLAG]: false,
     });
     mockOpalUserService.getLoggedInUserState.mockReturnValue(
-      of(createUserStateWithPermissions([REPORTS_PERMISSIONS[0]])),
+      of(createUserStateWithPermissions([REPORTS_PRIMARY_NAVIGATION_PERMISSIONS[0]])),
     );
     mockRouter.createUrlTree.mockReturnValue(expectedUrlTree);
 
