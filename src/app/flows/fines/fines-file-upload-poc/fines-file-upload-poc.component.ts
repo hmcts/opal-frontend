@@ -21,6 +21,51 @@ const MOCK_UPLOAD_PROGRESS_STEPS = [20, 40, 60, 80, 100];
 
 type UploadFile = (file: File) => void;
 type FileUploadStatus = 'pending' | 'uploading' | 'complete';
+type InterfaceFileSource =
+  | 'BTECKOH_REPORT'
+  | 'CAPS_REPORT'
+  | 'OPAL'
+  | 'NATWEST'
+  | 'ALLPAY'
+  | 'ALLPAY_DD'
+  | 'BARCLAYCARD'
+  | 'BTECKOH'
+  | 'DWP'
+  | 'CDER'
+  | 'JACOBS'
+  | 'MARSTON'
+  | 'OTHER'
+  | 'VARIANT_BANKING';
+type InterfaceFileType = 'SOURCE' | 'SOURCE_JSON' | 'TRANSFORMED_JSON';
+type InterfaceFileDomain = 'FINES' | 'MAINTENANCE' | 'FILE_HANDLER';
+type InterfaceFileStatus =
+  | 'DUPLICATE'
+  | 'INGESTED'
+  | 'SUCCESS'
+  | 'SUCCESS_NO_TRANSACTIONS'
+  | 'SUPERSEDED'
+  | 'FAILED'
+  | 'FAILED_SUPERSEDED';
+
+interface IFileUploadPocErrorObject {
+  title: string;
+  description: string;
+}
+
+interface IFileUploadPocInterfaceFile {
+  interface_file_id: number;
+  source: InterfaceFileSource;
+  target: InterfaceFileSource;
+  type: InterfaceFileType[];
+  opal_domain: InterfaceFileDomain;
+  status: InterfaceFileStatus;
+  file_name: string;
+  business_unit_code?: string;
+  filestore_uuid?: string;
+  checksum?: string;
+  created_datetime: string;
+  errors?: IFileUploadPocErrorObject[];
+}
 
 interface IFileUploadPocItem {
   id: number;
@@ -98,7 +143,27 @@ export class FinesFileUploadPocComponent implements AfterViewInit {
     return validationMessages;
   }
 
-  private mockUploadFile(file: File): Observable<HttpEvent<unknown>> {
+  private createMockInterfaceFile(
+    file: File,
+    interfaceFileId: number,
+    status: InterfaceFileStatus,
+  ): IFileUploadPocInterfaceFile {
+    return {
+      interface_file_id: interfaceFileId,
+      source: 'VARIANT_BANKING',
+      target: 'OPAL',
+      type: ['SOURCE'],
+      opal_domain: 'FINES',
+      status,
+      file_name: file.name,
+      business_unit_code: '101',
+      filestore_uuid: 'c79e6388-cd87-4a1c-9d7a-e0f24dc7c4d7',
+      checksum: 'd41d8cd98f00b204e9800998ecf8427e',
+      created_datetime: '2026-07-08T09:00:00.000Z',
+    };
+  }
+
+  private mockUploadFile(file: File, interfaceFileId: number): Observable<HttpEvent<unknown>> {
     const formData = new FormData();
     formData.append('file', file);
 
@@ -126,17 +191,15 @@ export class FinesFileUploadPocComponent implements AfterViewInit {
               statusText: 'Unprocessable Entity',
               url: request.url,
               error: {
-                message: 'Mock upload endpoint rejected this file',
+                title: 'File rejected',
+                description: 'Mock upload endpoint rejected this file',
               },
             }),
         )
       : of(
           new HttpResponse({
             status: 200,
-            body: {
-              fileName: file.name,
-              uploadUrl: request.url,
-            },
+            body: this.createMockInterfaceFile(file, interfaceFileId, 'SUCCESS'),
           }),
         );
 
@@ -159,7 +222,7 @@ export class FinesFileUploadPocComponent implements AfterViewInit {
     return new Promise((resolve) => {
       this.updateFileUpload(id, { status: 'uploading' });
 
-      this.mockUploadFile(file).subscribe({
+      this.mockUploadFile(file, id).subscribe({
         next: (event) => {
           if (event.type === HttpEventType.UploadProgress) {
             const total = event.total ?? 0;
@@ -179,7 +242,7 @@ export class FinesFileUploadPocComponent implements AfterViewInit {
         },
         error: (error: HttpErrorResponse) => {
           const fileUpload = this.fileUploads().find((item) => item.id === id);
-          const serverMessage = error.error?.message ?? 'Mock upload endpoint failed';
+          const serverMessage = error.error?.description ?? error.error?.title ?? 'Mock upload endpoint failed';
           const validationMessages = [...(fileUpload?.validationMessages ?? []), serverMessage];
 
           this.updateFileUpload(id, {
