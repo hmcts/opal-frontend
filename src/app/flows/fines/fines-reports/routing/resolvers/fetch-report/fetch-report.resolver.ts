@@ -7,12 +7,12 @@ import { FINES_REPORT_SUMMARY_LIST_REPORT_CONFIGURATION } from '../../../fines-r
 
 export const fetchReportResolver: ResolveFn<IOpalFinesReport | null> = (route: ActivatedRouteSnapshot) => {
   const opalFinesService = inject(OpalFines);
-  const reportId = route.paramMap.get('reportId') ?? route.parent?.paramMap.get('reportId') ?? '';
-  const report = FINES_REPORT_SUMMARY_LIST_REPORT_CONFIGURATION.find((config) => config.id === reportId);
+  const reportTypeId = route.paramMap.get('reportTypeId') ?? route.parent?.paramMap.get('reportTypeId') ?? '';
+  const report = FINES_REPORT_SUMMARY_LIST_REPORT_CONFIGURATION.find((config) => config.id === reportTypeId);
 
   if (!report?.permissionIds.length) {
     return of(null);
   }
 
-  return opalFinesService.getReport(reportId);
+  return opalFinesService.getReport(reportTypeId);
 };

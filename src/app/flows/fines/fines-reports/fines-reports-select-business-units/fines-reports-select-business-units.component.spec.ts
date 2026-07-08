@@ -51,7 +51,7 @@ describe('FinesReportsSelectBusinessUnitsComponent', () => {
   });
 
   const setup = async (
-    reportId: string,
+    reportTypeId: string,
     businessUnits = DEFAULT_BUSINESS_UNITS,
     selectedBusinessUnitIds: number[] = [],
     useCurrentNavigation = true,
@@ -62,12 +62,12 @@ describe('FinesReportsSelectBusinessUnitsComponent', () => {
       router.currentNavigation = vi.fn(() => null);
     }
     const location = createLocationMock(selectedBusinessUnitIds);
-    const reportHeading = findFinesReportsDefinition(reportId)?.heading ?? '';
+    const reportHeading = findFinesReportsDefinition(reportTypeId)?.heading ?? '';
     const reportParameters =
       businessUnitWarningThreshold === null ? {} : { business_unit_warning_threshold: businessUnitWarningThreshold };
 
     const report: IOpalFinesReport = {
-      report_id: reportId,
+      report_id: reportTypeId,
       report_title: reportHeading,
       report_group: 'Operational Reports',
       supported_file_types: ['CSV', 'PDF'],
@@ -93,7 +93,7 @@ describe('FinesReportsSelectBusinessUnitsComponent', () => {
       },
       parent: {
         snapshot: {
-          paramMap: convertToParamMap({ reportId }),
+          paramMap: convertToParamMap({ reportTypeId }),
         },
       },
     };
@@ -132,8 +132,8 @@ describe('FinesReportsSelectBusinessUnitsComponent', () => {
       FINES_REPORTS_SUMMARY_LIST_ROUTING_PATHS.children.operationalReportsByPayments,
       'Operational reports (by payments)',
     ],
-  ])('should render the report heading for %s', async (reportId, reportHeading) => {
-    const { component, fixture } = await setup(reportId);
+  ])('should render the report heading for %s', async (reportTypeId, reportHeading) => {
+    const { component, fixture } = await setup(reportTypeId);
 
     expect(component.pageHeading).toBe('Select business units');
     expect(component.reportHeading).toBe(reportHeading);

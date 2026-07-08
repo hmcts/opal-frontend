@@ -8,11 +8,13 @@ describe('finesReportsReportHeadingResolver', () => {
   const executeResolver: ResolveFn<string> = (...resolverParameters) =>
     TestBed.runInInjectionContext(() => finesReportsReportHeadingResolver(...resolverParameters));
 
-  const buildRoute = (reportId: string | null, parentReportId?: string) => {
-    const parentRoute = parentReportId ? { paramMap: convertToParamMap({ reportId: parentReportId }) } : undefined;
+  const buildRoute = (reportTypeId: string | null, parentReportTypeId?: string) => {
+    const parentRoute = parentReportTypeId
+      ? { paramMap: convertToParamMap({ reportTypeId: parentReportTypeId }) }
+      : undefined;
 
     return {
-      paramMap: convertToParamMap(reportId ? { reportId } : {}),
+      paramMap: convertToParamMap(reportTypeId ? { reportTypeId } : {}),
       parent: parentRoute,
     } as ActivatedRouteSnapshot;
   };
@@ -26,13 +28,13 @@ describe('finesReportsReportHeadingResolver', () => {
       FINES_REPORTS_SUMMARY_LIST_ROUTING_PATHS.children.operationalReportsByPayments,
       'Operational reports (by payments)',
     ],
-  ])('should resolve the report heading for %s', (reportId, expectedHeading) => {
-    const result = executeResolver(buildRoute(reportId), {} as never);
+  ])('should resolve the report heading for %s', (reportTypeId, expectedHeading) => {
+    const result = executeResolver(buildRoute(reportTypeId), {} as never);
 
     expect(result).toBe(expectedHeading);
   });
 
-  it('should use the parent route report id when the child route does not include one', () => {
+  it('should use the parent route report type id when the child route does not include one', () => {
     const result = executeResolver(
       buildRoute(null, FINES_REPORTS_SUMMARY_LIST_ROUTING_PATHS.children.operationalReportsByPayments),
       {} as never,
@@ -41,7 +43,7 @@ describe('finesReportsReportHeadingResolver', () => {
     expect(result).toBe('Operational reports (by payments)');
   });
 
-  it('should return an empty heading when the report id is unknown', () => {
+  it('should return an empty heading when the report type id is unknown', () => {
     const result = executeResolver(buildRoute('unknown-report-id'), {} as never);
 
     expect(result).toBe('');

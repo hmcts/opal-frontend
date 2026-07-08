@@ -24,13 +24,17 @@ describe('finesReportsStateGuard', () => {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   let mockLocation: any;
 
-  const runGuard = async (reportId: string | null, data: Record<string, unknown> = {}, reportIdFromParent = false) => {
+  const runGuard = async (
+    reportTypeId: string | null,
+    data: Record<string, unknown> = {},
+    reportTypeIdFromParent = false,
+  ) => {
     const route = {
       data,
-      paramMap: convertToParamMap(!reportIdFromParent && reportId ? { reportId } : {}),
-      parent: reportIdFromParent
+      paramMap: convertToParamMap(!reportTypeIdFromParent && reportTypeId ? { reportTypeId } : {}),
+      parent: reportTypeIdFromParent
         ? {
-            paramMap: convertToParamMap(reportId ? { reportId } : {}),
+            paramMap: convertToParamMap(reportTypeId ? { reportTypeId } : {}),
           }
         : undefined,
     } as ActivatedRouteSnapshot;
@@ -165,7 +169,7 @@ describe('finesReportsStateGuard', () => {
     expect(mockRouter.createUrlTree).toHaveBeenCalledWith([`/${COMMON_PAGES_ROUTING_PATHS.children.accessDenied}`]);
   });
 
-  it('should redirect missing report ids to the reports dashboard', async () => {
+  it('should redirect missing report type ids to the reports dashboard', async () => {
     const expectedUrlTree = new UrlTree();
     mockRouter.createUrlTree.mockReturnValue(expectedUrlTree);
 
@@ -180,7 +184,7 @@ describe('finesReportsStateGuard', () => {
     ]);
   });
 
-  it('should redirect invalid report ids to the reports dashboard', async () => {
+  it('should redirect invalid report type ids to the reports dashboard', async () => {
     const expectedUrlTree = new UrlTree();
     mockRouter.createUrlTree.mockReturnValue(expectedUrlTree);
 

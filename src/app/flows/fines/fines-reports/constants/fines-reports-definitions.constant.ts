@@ -28,5 +28,6 @@ export const FINES_REPORTS_DEFINITIONS: IFinesReportsDefinition[] = [
   },
 ];
 
-export const findFinesReportsDefinition = (reportId: string | null | undefined): IFinesReportsDefinition | undefined =>
-  FINES_REPORTS_DEFINITIONS.find((report) => report.id === reportId);
+export const findFinesReportsDefinition = (
+  reportTypeId: string | null | undefined,
+): IFinesReportsDefinition | undefined => FINES_REPORTS_DEFINITIONS.find((report) => report.id === reportTypeId);

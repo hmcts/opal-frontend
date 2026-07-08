@@ -16,9 +16,9 @@ export const finesReportsStateGuard: CanActivateFn = (route) => {
   const location = inject(Location);
   const permissionsService = inject(PermissionsService);
   const opalUserService = inject(OpalUserService);
-  const reportId = route.paramMap.get('reportId') ?? route.parent?.paramMap.get('reportId');
+  const reportTypeId = route.paramMap.get('reportTypeId') ?? route.parent?.paramMap.get('reportTypeId');
 
-  const report = FINES_REPORT_SUMMARY_LIST_REPORT_CONFIGURATION.find((config) => config.id === reportId);
+  const report = FINES_REPORT_SUMMARY_LIST_REPORT_CONFIGURATION.find((config) => config.id === reportTypeId);
 
   if (!report) {
     return router.createUrlTree([

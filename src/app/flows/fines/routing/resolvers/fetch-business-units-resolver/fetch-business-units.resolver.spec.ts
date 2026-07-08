@@ -7,32 +7,7 @@ import { IOpalFinesBusinessUnitRefData } from '@services/fines/opal-fines-servic
 import { OPAL_FINES_BUSINESS_UNIT_REF_DATA_MOCK } from '@services/fines/opal-fines-service/mocks/opal-fines-business-unit-ref-data.mock';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
 import { FINES_REPORTS_SUMMARY_LIST_ROUTING_PATHS } from '@app/flows/fines/fines-reports/fines-reports-summary-list/routing/constants/fines-reports-summary-list-routing-paths.constant';
-import { GlobalStore } from '@hmcts/opal-frontend-common/stores/global';
-import { GlobalStoreType } from '@hmcts/opal-frontend-common/stores/global/types';
-import { OPAL_USER_STATE_MOCK } from '@hmcts/opal-frontend-common/services/opal-user-service/mocks';
-import { IOpalUserState } from '@hmcts/opal-frontend-common/services/opal-user-service/interfaces';
-import { FINES_PERMISSIONS } from '@app/constants/fines-permissions.constant';
-
-const createUserStateWithPermissionInBusinessUnits = (
-  permissionId: number,
-  businessUnitIds: readonly number[],
-): IOpalUserState => {
-  const userState = structuredClone(OPAL_USER_STATE_MOCK);
-
-  userState.business_unit_users = userState.business_unit_users.map((businessUnitUser) => ({
-    ...businessUnitUser,
-    permissions: businessUnitIds.includes(businessUnitUser.business_unit_id)
-      ? [
-          {
-            permission_id: permissionId,
-            permission_name: `Permission ${permissionId}`,
-          },
-        ]
-      : [],
-  }));
-
-  return userState;
-};
+import { OPAL_FINES_REPORT_MOCK } from '@services/fines/opal-fines-service/mocks/opal-fines-report.mock';
 
 describe('fetchBusinessUnitsResolver', () => {
   const executeResolver: ResolveFn<IOpalFinesBusinessUnitRefData> = (...resolverParameters) =>
@@ -40,22 +15,20 @@ describe('fetchBusinessUnitsResolver', () => {
 
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   let mockOpalFinesService: any;
-  let globalStore: GlobalStoreType;
 
   beforeEach(() => {
     mockOpalFinesService = {
       getBusinessUnits: vi.fn().mockName('OpalFines.getBusinessUnits'),
       getBusinessUnitsByPermission: vi.fn().mockName('OpalFines.getBusinessUnitsByPermission'),
+      getReport: vi.fn().mockName('OpalFines.getReport'),
     };
     mockOpalFinesService.getBusinessUnits.mockReturnValue(of(OPAL_FINES_BUSINESS_UNIT_REF_DATA_MOCK));
     mockOpalFinesService.getBusinessUnitsByPermission.mockReturnValue(of(OPAL_FINES_BUSINESS_UNIT_REF_DATA_MOCK));
+    mockOpalFinesService.getReport.mockReturnValue(of(OPAL_FINES_REPORT_MOCK));
 
     TestBed.configureTestingModule({
       providers: [{ provide: OpalFines, useValue: mockOpalFinesService }],
     });
-
-    globalStore = TestBed.inject(GlobalStore);
-    globalStore.setUserState(OPAL_USER_STATE_MOCK);
   });
 
   it('should call getBusinessUnits with the correct permission from route data', async () => {
@@ -98,11 +71,7 @@ describe('fetchBusinessUnitsResolver', () => {
     expect(mockOpalFinesService.getBusinessUnits).toHaveBeenCalledWith();
   });
 
-  it('should filter business units for operational reports using the logged-in user permissions', async () => {
-    globalStore.setUserState(
-      createUserStateWithPermissionInBusinessUnits(FINES_PERMISSIONS['search-and-view-accounts'], [67, 71]),
-    );
-
+  it('should fetch report metadata and use the report permission to filter business units', async () => {
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     const route: any = {
       data: {},
@@ -121,19 +90,30 @@ describe('fetchBusinessUnitsResolver', () => {
       executeResolver(route, mockRouterStateSnapshot) as Observable<IOpalFinesBusinessUnitRefData>,
     );
 
-    expect(mockOpalFinesService.getBusinessUnits).toHaveBeenCalledWith();
-    expect(mockOpalFinesService.getBusinessUnitsByPermission).not.toHaveBeenCalled();
-    expect(result).toEqual({
-      count: 2,
-      refData: OPAL_FINES_BUSINESS_UNIT_REF_DATA_MOCK.refData.filter((businessUnit) =>
-        [67, 71].includes(businessUnit.business_unit_id),
-      ),
-    });
+    expect(mockOpalFinesService.getReport).toHaveBeenCalledWith(
+      FINES_REPORTS_SUMMARY_LIST_ROUTING_PATHS.children.operationalReportsByEnforcement,
+    );
+    expect(mockOpalFinesService.getBusinessUnitsByPermission).toHaveBeenCalledWith(OPAL_FINES_REPORT_MOCK.permission);
+    expect(mockOpalFinesService.getBusinessUnits).not.toHaveBeenCalled();
+    expect(result).toEqual(OPAL_FINES_BUSINESS_UNIT_REF_DATA_MOCK);
   });
 
-  it('should resolve business units data when no permission is provided', async () => {
+  it('should fetch all business units when report metadata has no permission', async () => {
+    mockOpalFinesService.getReport.mockReturnValue(
+      of({
+        ...OPAL_FINES_REPORT_MOCK,
+        permission: null,
+      }),
+    );
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    const route: any = { data: {} }; // no permission
+    const route: any = {
+      data: {},
+      parent: {
+        paramMap: {
+          get: () => FINES_REPORTS_SUMMARY_LIST_ROUTING_PATHS.children.operationalReportsByPayments,
+        },
+      },
+    };
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     const mockRouterStateSnapshot: any = {
       toString: vi.fn().mockName('RouterStateSnapshot.toString'),
@@ -142,6 +122,82 @@ describe('fetchBusinessUnitsResolver', () => {
     const result = await firstValueFrom(
       executeResolver(route, mockRouterStateSnapshot) as Observable<IOpalFinesBusinessUnitRefData>,
     );
+
+    expect(mockOpalFinesService.getReport).toHaveBeenCalledWith(
+      FINES_REPORTS_SUMMARY_LIST_ROUTING_PATHS.children.operationalReportsByPayments,
+    );
+    expect(mockOpalFinesService.getBusinessUnitsByPermission).not.toHaveBeenCalled();
+    expect(mockOpalFinesService.getBusinessUnits).toHaveBeenCalledWith();
     expect(result).toEqual(OPAL_FINES_BUSINESS_UNIT_REF_DATA_MOCK);
+  });
+
+  it('should fetch report metadata using a report type id on the current route', async () => {
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    const route: any = {
+      data: {},
+      paramMap: {
+        get: () => FINES_REPORTS_SUMMARY_LIST_ROUTING_PATHS.children.operationalReportsByPayments,
+      },
+    };
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    const mockRouterStateSnapshot: any = {
+      toString: vi.fn().mockName('RouterStateSnapshot.toString'),
+    };
+
+    await firstValueFrom(executeResolver(route, mockRouterStateSnapshot) as Observable<IOpalFinesBusinessUnitRefData>);
+
+    expect(mockOpalFinesService.getReport).toHaveBeenCalledWith(
+      FINES_REPORTS_SUMMARY_LIST_ROUTING_PATHS.children.operationalReportsByPayments,
+    );
+    expect(mockOpalFinesService.getBusinessUnitsByPermission).toHaveBeenCalledWith(OPAL_FINES_REPORT_MOCK.permission);
+  });
+
+  it('should fetch all business units when no permission or report type id is provided', async () => {
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    const route: any = {
+      data: {},
+      paramMap: {
+        get: () => null,
+      },
+      parent: {
+        paramMap: {
+          get: () => null,
+        },
+      },
+    };
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    const mockRouterStateSnapshot: any = {
+      toString: vi.fn().mockName('RouterStateSnapshot.toString'),
+    };
+
+    const result = await firstValueFrom(
+      executeResolver(route, mockRouterStateSnapshot) as Observable<IOpalFinesBusinessUnitRefData>,
+    );
+
+    expect(mockOpalFinesService.getReport).not.toHaveBeenCalled();
+    expect(mockOpalFinesService.getBusinessUnitsByPermission).not.toHaveBeenCalled();
+    expect(mockOpalFinesService.getBusinessUnits).toHaveBeenCalledWith();
+    expect(result).toEqual(OPAL_FINES_BUSINESS_UNIT_REF_DATA_MOCK);
+  });
+
+  it('should prefer route data permission over report metadata permission', async () => {
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    const route: any = {
+      data: { permission: 'ROUTE_PERMISSION' },
+      parent: {
+        paramMap: {
+          get: () => FINES_REPORTS_SUMMARY_LIST_ROUTING_PATHS.children.operationalReportsByEnforcement,
+        },
+      },
+    };
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    const mockRouterStateSnapshot: any = {
+      toString: vi.fn().mockName('RouterStateSnapshot.toString'),
+    };
+
+    await executeResolver(route, mockRouterStateSnapshot);
+
+    expect(mockOpalFinesService.getReport).not.toHaveBeenCalled();
+    expect(mockOpalFinesService.getBusinessUnitsByPermission).toHaveBeenCalledWith('ROUTE_PERMISSION');
   });
 });
