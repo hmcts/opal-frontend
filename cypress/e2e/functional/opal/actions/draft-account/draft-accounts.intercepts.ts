@@ -18,6 +18,11 @@ type DraftAccountSummary = {
   [key: string]: any;
 };
 
+type FailedDraftStubConfig = {
+  detailsOverrides?: Record<string, any>;
+  summaryOverrides?: Record<string, any>;
+};
+
 const approvedDraftListings: DraftAccountSummary[] = [];
 
 /**
@@ -144,6 +149,55 @@ export class DraftAccountsInterceptActions {
           req.reply(summary);
         },
       ).as('getFailedDraftAccountSummaries');
+    });
+  }
+
+  /**
+   * Stubs a single failed draft summary/detail pair with targeted overrides.
+   * @param config - Override fragments for the summary list payload and detail payload.
+   */
+  stubFailedDraftAccount(config: FailedDraftStubConfig = {}): void {
+    const { summaryOverrides = {}, detailsOverrides = {} } = config;
+
+    log('intercept', 'Stubbing failed draft account with overrides', {
+      hasSummaryOverrides: Object.keys(summaryOverrides).length > 0,
+      hasDetailsOverrides: Object.keys(detailsOverrides).length > 0,
+    });
+
+    cy.fixture('getDraftAccounts/oneFailedAccountSummary.json').then((summaryPayload) => {
+      cy.fixture('getDraftAccounts/oneFailedAccountDetails.json').then((detailsPayload) => {
+        const summary = this.applyUniqPlaceholders(merge({}, summaryPayload, summaryOverrides));
+        const details = this.applyUniqPlaceholders(merge({}, detailsPayload, detailsOverrides));
+        const draftAccountId =
+          details.draft_account_id ??
+          summary?.summaries?.[0]?.draft_account_id ??
+          detailsPayload.draft_account_id ??
+          36;
+
+        if (summary?.summaries?.[0]) {
+          summary.summaries[0].draft_account_id = draftAccountId;
+        }
+        details.draft_account_id = draftAccountId;
+
+        cy.intercept(
+          {
+            method: 'GET',
+            url: /\/opal-fines-service\/draft-accounts\?.*status=Publishing%20Failed/i,
+          },
+          (req) => {
+            log('intercept', 'Intercepted failed draft summaries request', {
+              draftAccountId,
+              url: req.url,
+            });
+            req.reply(summary);
+          },
+        ).as('getFailedDraftAccountSummaries');
+
+        cy.intercept('GET', `/opal-fines-service/draft-accounts/${draftAccountId}`, (req) => {
+          log('intercept', 'Intercepted failed draft details request', { draftAccountId });
+          req.reply(details);
+        }).as('getFailedDraftAccountDetails');
+      });
     });
   }
 

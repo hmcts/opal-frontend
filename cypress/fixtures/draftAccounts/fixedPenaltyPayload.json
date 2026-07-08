@@ -10,8 +10,8 @@
     "originator_type": "FP",
     "account_type": "Fixed Penalty",
     "defendant_type": "adultOrYouthOnly",
-    "originator_name": "City of London Central Ticket Office",
-    "originator_id": 34,
+    "originator_name": "Central London Magistrates' Court",
+    "originator_id": 2570,
     "prosecutor_case_reference": "AADS",
     "enforcement_court_id": 770000000001,
     "collection_order_made": null,
@@ -76,13 +76,13 @@
         "offence_type": "Vehicle",
         "date_of_sentence": "15/05/2025",
         "imposing_court_id": 770000000001,
-        "offence_id": 33369,
+        "offence_id": 47883,
         "impositions": [
           {
-            "result_id": "FCOST",
+            "result_id": "FO",
             "amount_imposed": 2200,
             "amount_paid": 100,
-            "major_creditor_id": 770000000001,
+            "major_creditor_id": null,
             "minor_creditor": null
           }
         ]
