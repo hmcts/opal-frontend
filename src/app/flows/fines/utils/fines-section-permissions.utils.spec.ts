@@ -5,7 +5,7 @@ import { DASHBOARD_PAGE_DEFAULT_TAB } from '@app/pages/dashboard/constants/dashb
 import { IOpalUserState } from '@hmcts/opal-frontend-common/services/opal-user-service/interfaces';
 import { OPAL_USER_STATE_MOCK } from '@hmcts/opal-frontend-common/services/opal-user-service/mocks';
 import { ACCOUNTS_PERMISSIONS } from '../constants/accounts-permissions.constant';
-import { REPORTS_PERMISSIONS } from '../constants/reports-permissions.constant';
+import { REPORTS_PRIMARY_NAVIGATION_PERMISSIONS } from '../constants/reports-permissions.constant';
 import { SEARCH_PERMISSIONS } from '../constants/search-permissions.constant';
 import {
   RELEASE_1A_FEATURE_FLAG,
@@ -210,7 +210,9 @@ describe('fines-section-permissions.utils', () => {
     });
 
     it('should return Reports permissions when release-1c enforcement operational reporting is enabled', () => {
-      expect(getRequiredPermissionIdsForSection('reports', release1cReportingEnabled)).toEqual(REPORTS_PERMISSIONS);
+      expect(getRequiredPermissionIdsForSection('reports', release1cReportingEnabled)).toEqual(
+        REPORTS_PRIMARY_NAVIGATION_PERMISSIONS,
+      );
     });
 
     it('should remove Reports permissions when release-1c enforcement operational reporting is disabled', () => {
@@ -311,7 +313,7 @@ describe('fines-section-permissions.utils', () => {
       expect(
         canAccessFinesPrimaryNavigationSection(
           'reports',
-          createUserStateWithPermissions([REPORTS_PERMISSIONS[0]]),
+          createUserStateWithPermissions([REPORTS_PRIMARY_NAVIGATION_PERMISSIONS[0]]),
           release1cReportingEnabled,
         ),
       ).toBe(true);
@@ -321,7 +323,7 @@ describe('fines-section-permissions.utils', () => {
       expect(
         canAccessFinesPrimaryNavigationSection(
           'reports',
-          createUserStateWithPermissions([REPORTS_PERMISSIONS[0]]),
+          createUserStateWithPermissions([REPORTS_PRIMARY_NAVIGATION_PERMISSIONS[0]]),
           release1cReportingDisabled,
         ),
       ).toBe(false);
@@ -388,13 +390,13 @@ describe('fines-section-permissions.utils', () => {
     });
 
     it('should remove Reports when release-1c enforcement operational reporting is disabled', () => {
-      const userState = createUserStateWithPermissions([REPORTS_PERMISSIONS[0]]);
+      const userState = createUserStateWithPermissions([REPORTS_PRIMARY_NAVIGATION_PERMISSIONS[0]]);
 
       expect(getAccessiblePrimaryNavigationItems(navigationItems, userState, release1cReportingDisabled)).toEqual([]);
     });
 
     it('should skip Reports when release-1c enforcement operational reporting is disabled', () => {
-      const userState = createUserStateWithPermissions([REPORTS_PERMISSIONS[0]]);
+      const userState = createUserStateWithPermissions([REPORTS_PRIMARY_NAVIGATION_PERMISSIONS[0]]);
 
       expect(getFirstAccessibleDashboardType(navigationItems, userState, release1cReportingDisabled)).toBe(
         DASHBOARD_PAGE_DEFAULT_TAB,
@@ -455,10 +457,14 @@ describe('fines-section-permissions.utils', () => {
       ];
 
       expect(
-        getDashboardLandingType(navigationItemsWithFinance, createUserStateWithPermissions([REPORTS_PERMISSIONS[0]]), {
-          ...release1cReportingDisabled,
-          ...release1cFinancialMovementsEnabled,
-        }),
+        getDashboardLandingType(
+          navigationItemsWithFinance,
+          createUserStateWithPermissions([REPORTS_PRIMARY_NAVIGATION_PERMISSIONS[0]]),
+          {
+            ...release1cReportingDisabled,
+            ...release1cFinancialMovementsEnabled,
+          },
+        ),
       ).toBe('finance');
     });
 

@@ -39,6 +39,7 @@ describe('finesReports routes', () => {
       },
       resolve: {
         title: TitleResolver,
+        report: fetchReportResolver,
         reportHeading: finesReportsReportHeadingResolver,
         businessUnits: fetchBusinessUnitsResolver,
       },

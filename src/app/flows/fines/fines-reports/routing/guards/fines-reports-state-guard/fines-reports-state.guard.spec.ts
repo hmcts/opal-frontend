@@ -74,9 +74,7 @@ describe('finesReportsStateGuard', () => {
   });
 
   it('should allow operational reports when the user has the required permission', async () => {
-    mockPermissionsService.getUniquePermissions.mockReturnValue([
-      FINES_PERMISSIONS['operational-report-by-enforcement'],
-    ]);
+    mockPermissionsService.getUniquePermissions.mockReturnValue([FINES_PERMISSIONS['search-and-view-accounts']]);
 
     const result = await runGuard(FINES_REPORTS_SUMMARY_LIST_ROUTING_PATHS.children.operationalReportsByEnforcement);
 
@@ -85,9 +83,7 @@ describe('finesReportsStateGuard', () => {
   });
 
   it('should allow operational report child routes when the user has the required permission', async () => {
-    mockPermissionsService.getUniquePermissions.mockReturnValue([
-      FINES_PERMISSIONS['operational-report-by-enforcement'],
-    ]);
+    mockPermissionsService.getUniquePermissions.mockReturnValue([FINES_PERMISSIONS['search-and-view-accounts']]);
 
     const result = await runGuard(
       FINES_REPORTS_SUMMARY_LIST_ROUTING_PATHS.children.operationalReportsByEnforcement,
@@ -121,7 +117,7 @@ describe('finesReportsStateGuard', () => {
   });
 
   it('should redirect report parameter routes back to business unit selection when no selected business units are stored', async () => {
-    mockPermissionsService.getUniquePermissions.mockReturnValue([FINES_PERMISSIONS['operational-report-by-payments']]);
+    mockPermissionsService.getUniquePermissions.mockReturnValue([FINES_PERMISSIONS['search-and-view-accounts']]);
     const expectedUrlTree = new UrlTree();
     mockRouter.createUrlTree.mockReturnValue(expectedUrlTree);
 
@@ -138,7 +134,7 @@ describe('finesReportsStateGuard', () => {
   });
 
   it('should allow report parameter routes when selected business units are already stored', async () => {
-    mockPermissionsService.getUniquePermissions.mockReturnValue([FINES_PERMISSIONS['operational-report-by-payments']]);
+    mockPermissionsService.getUniquePermissions.mockReturnValue([FINES_PERMISSIONS['search-and-view-accounts']]);
     mockRouter.currentNavigation.mockReturnValue({ extras: { state: { selectedBusinessUnitIds: [61, 68] } } });
 
     const result = await runGuard(
@@ -151,7 +147,7 @@ describe('finesReportsStateGuard', () => {
   });
 
   it('should allow report parameter routes when selected business units are available in location state', async () => {
-    mockPermissionsService.getUniquePermissions.mockReturnValue([FINES_PERMISSIONS['operational-report-by-payments']]);
+    mockPermissionsService.getUniquePermissions.mockReturnValue([FINES_PERMISSIONS['search-and-view-accounts']]);
     mockLocation.getState.mockReturnValue({ selectedBusinessUnitIds: [61, 68] });
 
     const result = await runGuard(
