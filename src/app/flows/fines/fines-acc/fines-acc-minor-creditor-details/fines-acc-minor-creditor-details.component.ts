@@ -41,13 +41,12 @@ import { IOpalFinesAccountMinorCreditorAtAGlance } from '../../services/opal-fin
 import { FINES_ACC_MINOR_CREDITOR_ACCOUNT_TABS_CACHE_MAP } from './constants/fines-acc-minor-creditor-account-tabs-cache-map.constant';
 import { IFinesAccMinorCreditorAccountTabsCacheMap } from './interfaces/fines-acc-minor-creditor-account-tabs-cache-map.interface';
 import { AbstractAccountSummaryBaseComponent } from '@hmcts/opal-frontend-common/components/abstract/abstract-account-summary-base';
-import { FINES_ACC_DEFENDANT_ROUTING_PATHS } from '../routing/constants/fines-acc-defendant-routing-paths.constant';
-import { FINES_ROUTING_PATHS } from '../../routing/constants/fines-routing-paths.constant';
-import { FINES_ACC_ROUTING_PATHS } from '../routing/constants/fines-acc-routing-paths.constant';
 import { IOpalFinesVersion } from '../../services/opal-fines-service/interfaces/opal-fines-version.interface';
 import { FINES_ACC_BANNER_MESSAGES } from '../stores/constants/fines-acc-store-banner-messages.constant';
 import { FinesAccMinorCreditorDetailsCreditorTab } from './fines-acc-minor-creditor-details-creditor-tab/fines-acc-minor-creditor-details-creditor-tab.component';
 import { IOpalFinesAccountMinorCreditorCreditor } from '../../services/opal-fines-service/interfaces/opal-fines-account-minor-creditor-creditor.interface';
+import { FinesAccMinorCreditorDetailsHistoryAndNotesTabComponent } from './fines-acc-minor-creditor-details-history-and-notes-tab/fines-acc-minor-creditor-details-history-and-notes-tab.component';
+import { IOpalFinesAccountMinorCreditorDetailsHistoryAndNotesTabRefData } from '../../services/opal-fines-service/interfaces/opal-fines-account-minor-creditor-details-history-and-notes-tab-ref-data.interface';
 
 @Component({
   selector: 'app-fines-acc-minor-creditor-details',
@@ -66,6 +65,7 @@ import { IOpalFinesAccountMinorCreditorCreditor } from '../../services/opal-fine
     FinesAccSummaryHeaderComponent,
     FinesAccMinorCreditorDetailsAtAGlanceTabComponent,
     FinesAccMinorCreditorDetailsCreditorTab,
+    FinesAccMinorCreditorDetailsHistoryAndNotesTabComponent,
     AsyncPipe,
   ],
   templateUrl: './fines-acc-minor-creditor-details.component.html',
@@ -84,6 +84,7 @@ export class FinesAccMinorCreditorDetailsComponent
   public tabContentStyles: IFinesAccSummaryTabsContentStyles = FINES_ACC_SUMMARY_TABS_CONTENT_STYLES;
   public tabAtAGlance$: Observable<IOpalFinesAccountMinorCreditorAtAGlance> = EMPTY;
   public tabCreditor$: Observable<IOpalFinesAccountMinorCreditorCreditor> = EMPTY;
+  public tabHistoryAndNotes$: Observable<IOpalFinesAccountMinorCreditorDetailsHistoryAndNotesTabRefData> = EMPTY;
   public debtorTypes = FINES_ACC_DEBTOR_TYPES;
   public accountTypes = FINES_ACCOUNT_TYPES;
   public lastEnforcement: IOpalFinesResultRefData | null = null;
@@ -134,6 +135,11 @@ export class FinesAccMinorCreditorDetailsComponent
           break;
         case 'creditor':
           this.tabCreditor$ = this.fetchTabDataTyped(this.opalFinesService.getMinorCreditorAccount(account_id));
+          break;
+        case 'history-and-notes':
+          this.tabHistoryAndNotes$ = this.fetchTabDataTyped(
+            this.opalFinesService.getMinorCreditorAccountHistoryAndNotesTabData(account_id),
+          );
           break;
       }
     });
@@ -218,53 +224,6 @@ export class FinesAccMinorCreditorDetailsComponent
       FINES_PERMISSIONS[permissionKey],
       Number(this.accountStore.business_unit_id()!),
     );
-  }
-
-  /**
-   * Navigates to the add payment hold page.
-   */
-  public navigateToAddPaymentHoldPage(): void {
-    if (this.hasBusinessUnitPermissionKey('add-remove-payment-hold')) {
-      this['router'].navigate([`../${FINES_ACC_MINOR_CREDITOR_ROUTING_PATHS.children['payment-hold']}/add`], {
-        relativeTo: this.activatedRoute,
-      });
-    } else {
-      this['router'].navigate([`../${FINES_ACC_MINOR_CREDITOR_ROUTING_PATHS.children['payment-hold']}/denied`], {
-        relativeTo: this.activatedRoute,
-      });
-    }
-  }
-
-  /**
-   * Navigates to the remove payment hold page.
-   */
-  public navigateToRemovePaymentHoldPage(): void {
-    if (this.hasBusinessUnitPermissionKey('add-remove-payment-hold')) {
-      this['router'].navigate([`../${FINES_ACC_MINOR_CREDITOR_ROUTING_PATHS.children['payment-hold']}/remove`], {
-        relativeTo: this.activatedRoute,
-      });
-    } else {
-      this['router'].navigate([`../${FINES_ACC_MINOR_CREDITOR_ROUTING_PATHS.children['payment-hold']}/denied`], {
-        relativeTo: this.activatedRoute,
-      });
-    }
-  }
-
-  /**
-   * Navigates to the defendant account page for the specified account ID in a new browser tab.
-   * @param accountId The ID of the defendant account.
-   */
-  public navigateToDefendantAccountPage(accountId: number): void {
-    const url = this['router'].serializeUrl(
-      this['router'].createUrlTree([
-        FINES_ROUTING_PATHS.root,
-        FINES_ACC_ROUTING_PATHS.root,
-        FINES_ACC_ROUTING_PATHS.children.defendant,
-        accountId,
-        FINES_ACC_DEFENDANT_ROUTING_PATHS.children.details,
-      ]),
-    );
-    window.open(url, '_blank');
   }
 
   /**

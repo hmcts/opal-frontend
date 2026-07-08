@@ -20,7 +20,7 @@ Feature: Manual account creation - Create Draft Account
   Scenario: Clicking Cancel without entering details returns to the Inputter Dashboard
     When I open Manual Account Creation
     Then I cancel without entering data
-    Then I should see the header containing text "Search for an account"
+    Then I should see the header containing text "Create accounts"
 
 
   @JIRA-STORY:PO-1448 @JIRA-STORY:PO-1638 @JIRA-STORY:PO-1872 @JIRA-EPIC:PO-2219 @JIRA-TEST-KEY:PO-5545

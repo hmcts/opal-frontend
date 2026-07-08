@@ -9,7 +9,9 @@
     (filterOpenChange)="handleFilterOpenChange($event)"
   ></app-fines-acc-defendant-details-history-and-notes-filter>
 
-  @if (historyAndNotesTabData$ | async) {
-    <ng-container></ng-container>
+  @if (historyAndNotesTabData$ | async; as historyAndNotesTabData) {
+    <app-fines-acc-defendant-details-history-and-notes-table
+      [tabData]="historyAndNotesTabData"
+    ></app-fines-acc-defendant-details-history-and-notes-table>
   }
 </div>

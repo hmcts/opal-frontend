@@ -13,10 +13,8 @@ import { MOCK_FINES_ACCOUNT_STATE } from '../mocks/fines-acc-state.mock';
 import { FINES_ACC_MINOR_CREDITOR_ROUTING_PATHS } from '../routing/constants/fines-acc-minor-creditor-routing-paths.constant';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
 import { OPAL_FINES_ACCOUNT_MINOR_CREDITOR_AT_A_GLANCE_WITH_DEFENDANT_MOCK } from '../../services/opal-fines-service/mocks/opal-fines-account-minor-creditor-at-a-glance-with-defendant.mock';
-import { FINES_ROUTING_PATHS } from '../../routing/constants/fines-routing-paths.constant';
-import { FINES_ACC_DEFENDANT_ROUTING_PATHS } from '../routing/constants/fines-acc-defendant-routing-paths.constant';
-import { FINES_ACC_ROUTING_PATHS } from '../routing/constants/fines-acc-routing-paths.constant';
 import { OPAL_FINES_ACCOUNT_MINOR_CREDITOR_CREDITOR_MOCK } from '../../services/opal-fines-service/mocks/opal-fines-account-minor-creditor-creditor.mock';
+import { OPAL_FINES_ACCOUNT_MINOR_CREDITOR_DETAILS_HISTORY_AND_NOTES_TAB_REF_DATA_MOCK } from '../../services/opal-fines-service/mocks/opal-fines-account-minor-creditor-details-history-and-notes-tab-ref-data.mock';
 
 describe('FinesAccMinorCreditorDetailsComponent', () => {
   let component: FinesAccMinorCreditorDetailsComponent;
@@ -29,6 +27,7 @@ describe('FinesAccMinorCreditorDetailsComponent', () => {
     | 'getMinorCreditorAccountHeadingData'
     | 'getMinorCreditorAccountAtAGlance'
     | 'getMinorCreditorAccount'
+    | 'getMinorCreditorAccountHistoryAndNotesTabData'
     | 'clearCache'
     | 'getResult'
   >;
@@ -40,8 +39,8 @@ describe('FinesAccMinorCreditorDetailsComponent', () => {
   beforeEach(async () => {
     routerSpy = {
       navigate: vi.fn().mockName('Router.navigate'),
-      createUrlTree: vi.fn().mockName('Router.createUrlTree'),
-      serializeUrl: vi.fn().mockName('Router.serializeUrl'),
+      createUrlTree: vi.fn().mockImplementation((commands) => commands),
+      serializeUrl: vi.fn().mockImplementation((commands) => `/${commands.join('/')}`),
     };
     activatedRouteStub = {
       fragment: of('at-a-glance'),
@@ -74,6 +73,11 @@ describe('FinesAccMinorCreditorDetailsComponent', () => {
       getMinorCreditorAccount: vi
         .fn()
         .mockReturnValue(of(structuredClone(OPAL_FINES_ACCOUNT_MINOR_CREDITOR_CREDITOR_MOCK))),
+      getMinorCreditorAccountHistoryAndNotesTabData: vi
+        .fn()
+        .mockReturnValue(
+          of(structuredClone(OPAL_FINES_ACCOUNT_MINOR_CREDITOR_DETAILS_HISTORY_AND_NOTES_TAB_REF_DATA_MOCK)),
+        ),
     };
 
     await TestBed.configureTestingModule({
@@ -177,69 +181,26 @@ describe('FinesAccMinorCreditorDetailsComponent', () => {
     );
   });
 
+  it('should fetch history and notes tab data when fragment is changed to history and notes', () => {
+    vi.mocked(mockPayloadService.transformPayload).mockClear();
+
+    component['refreshFragment$'].next('history-and-notes');
+    component.tabHistoryAndNotes$.subscribe();
+
+    expect(mockOpalFinesService.getMinorCreditorAccountHistoryAndNotesTabData).toHaveBeenCalledWith(
+      MOCK_FINES_ACCOUNT_STATE.account_id,
+    );
+    expect(mockPayloadService.transformPayload).toHaveBeenCalledWith(
+      OPAL_FINES_ACCOUNT_MINOR_CREDITOR_DETAILS_HISTORY_AND_NOTES_TAB_REF_DATA_MOCK,
+      expect.any(Array),
+    );
+  });
+
   it('should navigate to access-denied if user lacks permission for the add account note page', () => {
     vi.spyOn(component['permissionsService'], 'hasBusinessUnitPermissionAccess').mockReturnValue(false);
     component.navigateToAddAccountNotePage();
     expect(routerSpy.navigate).toHaveBeenCalledWith(['/access-denied'], {
       relativeTo: component['activatedRoute'],
     });
-  });
-
-  it('should call router.navigate when navigateToAddPaymentHoldPage is called', () => {
-    vi.spyOn(component['permissionsService'], 'hasBusinessUnitPermissionAccess').mockReturnValue(true);
-    component.navigateToAddPaymentHoldPage();
-    expect(routerSpy.navigate).toHaveBeenCalledWith(
-      [`../${FINES_ACC_MINOR_CREDITOR_ROUTING_PATHS.children['payment-hold']}/add`],
-      {
-        relativeTo: component['activatedRoute'],
-      },
-    );
-  });
-
-  it('should navigate to payment hold denied page when user lacks permission for add payment hold', () => {
-    vi.spyOn(component['permissionsService'], 'hasBusinessUnitPermissionAccess').mockReturnValue(false);
-    component.navigateToAddPaymentHoldPage();
-    expect(routerSpy.navigate).toHaveBeenCalledWith(
-      [`../${FINES_ACC_MINOR_CREDITOR_ROUTING_PATHS.children['payment-hold']}/denied`],
-      {
-        relativeTo: component['activatedRoute'],
-      },
-    );
-  });
-
-  it('should call router.navigate when navigateToRemovePaymentHoldPage is called', () => {
-    vi.spyOn(component['permissionsService'], 'hasBusinessUnitPermissionAccess').mockReturnValue(true);
-    component.navigateToRemovePaymentHoldPage();
-    expect(routerSpy.navigate).toHaveBeenCalledWith(
-      [`../${FINES_ACC_MINOR_CREDITOR_ROUTING_PATHS.children['payment-hold']}/remove`],
-      {
-        relativeTo: component['activatedRoute'],
-      },
-    );
-  });
-
-  it('should navigate to payment hold denied page when user lacks permission for remove payment hold', () => {
-    vi.spyOn(component['permissionsService'], 'hasBusinessUnitPermissionAccess').mockReturnValue(false);
-    component.navigateToRemovePaymentHoldPage();
-    expect(routerSpy.navigate).toHaveBeenCalledWith(
-      [`../${FINES_ACC_MINOR_CREDITOR_ROUTING_PATHS.children['payment-hold']}/denied`],
-      {
-        relativeTo: component['activatedRoute'],
-      },
-    );
-  });
-
-  it('should open the defendant account page in a new tab when navigateToDefendantAccountPage is called', () => {
-    const accountId = 123;
-    const expectedUrl = `${FINES_ROUTING_PATHS.root}/${FINES_ACC_ROUTING_PATHS.root}/${FINES_ACC_ROUTING_PATHS.children.defendant}/${accountId}/${FINES_ACC_DEFENDANT_ROUTING_PATHS.children.details}`;
-
-    routerSpy.createUrlTree.mockReturnValue({});
-    routerSpy.serializeUrl.mockReturnValue(expectedUrl);
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    vi.spyOn<any, any>(globalThis, 'open');
-    component.navigateToDefendantAccountPage(accountId);
-
-    expect(routerSpy.serializeUrl).toHaveBeenCalled();
-    expect(window.open).toHaveBeenCalledWith(expectedUrl, '_blank');
   });
 });

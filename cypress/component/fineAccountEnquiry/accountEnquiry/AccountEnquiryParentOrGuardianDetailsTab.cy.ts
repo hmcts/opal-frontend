@@ -399,7 +399,13 @@ describe('Account Enquiry Parent or Guardian Component', () => {
       interceptDefendantHeader(accountId, headerMock, '1');
       interceptPGDetails(accountId, pgPartyId, pgDetailsMock, '1');
 
-      setupAccountEnquiryComponent({ ...componentProperties, accountId: accountId });
+      setupAccountEnquiryComponent({
+        ...componentProperties,
+        accountId: accountId,
+        interceptedRoutes: componentProperties.interceptedRoutes?.filter(
+          (route) => route !== '../party/parentGuardian/amend',
+        ),
+      });
 
       cy.get('router-outlet').should('exist');
 
@@ -483,10 +489,9 @@ describe('Account Enquiry Parent or Guardian Component', () => {
       // AC2: Verify Change button is displayed when user has Account Maintenance permission in current BU
       cy.get(DOM.changeLink).contains('Change').should('be.visible');
 
-      // // Click Change button and verify it navigates to the change screen
+      // Click Change button and verify it navigates to the change screen
       cy.get(DOM.changeLink).contains('Change').click();
-
-      cy.get('@routerNavigate').should('have.been.calledWith', ['../party/parentGuardian/amend']);
+      cy.get('app-fines-acc-debtor-add-amend-form').should('exist');
     },
   );
 
@@ -527,9 +532,19 @@ describe('Account Enquiry Parent or Guardian Component', () => {
       // AC2a: Verify Change button is displayed even when user lacks permission in current BU
       cy.get(DOM.changeLink).contains('Change').should('be.visible');
 
-      // Click Change button and verify it navigates to access denied
+      cy.get('app-fines-acc-defendant-details-parent-or-guardian-tab').then(($host) => {
+        cy.window().then((win) => {
+          const component = (win as any).ng.getComponent($host[0]) as {
+            changeParentOrGuardianDetailsLink: () => string;
+          };
+
+          expect(component.changeParentOrGuardianDetailsLink()).to.eq('/access-denied');
+        });
+      });
+
+      // Click Change button and verify it resolves to access denied
       cy.get(DOM.changeLink).contains('Change').click();
-      cy.get('@routerNavigate').should('have.been.calledWith', ['/access-denied']);
+      cy.get('@routerNavigate').should('have.been.called');
     },
   );
 
