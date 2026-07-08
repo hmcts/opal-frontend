@@ -11,6 +11,7 @@ import { provideRouter, withRouterConfig } from '@angular/router';
 import { routes } from './app.routes';
 import { AppInitializerService } from '@hmcts/opal-frontend-common/services/app-initializer-service';
 import { httpErrorInterceptor } from '@hmcts/opal-frontend-common/interceptors/http-error';
+import { httpRetryInterceptor } from '@hmcts/opal-frontend-common/interceptors/http-retry';
 import { contentDigestInterceptor } from '@hmcts/opal-frontend-common/interceptors/content-digest';
 
 export const appConfig: ApplicationConfig = {
@@ -24,7 +25,7 @@ export const appConfig: ApplicationConfig = {
     provideClientHydration(withNoHttpTransferCache()),
     provideHttpClient(
       withFetch(),
-      withInterceptors([httpErrorInterceptor, contentDigestInterceptor]),
+      withInterceptors([httpRetryInterceptor, httpErrorInterceptor, contentDigestInterceptor]),
       withInterceptorsFromDi(),
       withXsrfConfiguration({
         headerName: 'X-XSRF-TOKEN',
