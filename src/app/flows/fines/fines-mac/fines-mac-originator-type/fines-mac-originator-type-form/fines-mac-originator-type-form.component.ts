@@ -11,12 +11,11 @@ import {
 } from '@hmcts/opal-frontend-common/components/govuk/govuk-radio';
 import { FinesMacStore } from '../../stores/fines-mac.store';
 import { IFinesMacOriginatorTypeForm } from '../interfaces/fines-mac-originator-type-form.interface';
-import { FINES_MAC_ROUTING_PATHS } from '../../routing/constants/fines-mac-routing-paths.constant';
-import { PAGES_ROUTING_PATHS } from '@app/pages/routing/constants/routing-paths.constant';
 import { IGovUkRadioOptions } from '@hmcts/opal-frontend-common/components/govuk/govuk-radio/interfaces';
 import { FINES_ORIGINATOR_TYPES } from '@app/flows/fines/constants/fines-originator-types.constant';
 import { IFinesMacOriginatorTypeFieldErrors } from '../interfaces/fines-mac-originator-type-field-errors.interface';
 import { FINES_MAC_ORIGINATOR_TYPE_FIELD_ERRORS } from '../constants/fines-mac-originator-type-field-errors.constant';
+import { FINES_MAC_DRAFT_CREATE_AND_MANAGE_TABS_ROUTE } from '../../constants/fines-mac-draft-create-and-manage-tabs-route.constant';
 
 @Component({
   selector: 'app-fines-mac-originator-type-form',
@@ -37,8 +36,7 @@ export class FinesMacOriginatorTypeFormComponent extends AbstractFormBaseCompone
   private readonly finesMacStore = inject(FinesMacStore);
 
   @Output() protected override formSubmit = new EventEmitter<IFinesMacOriginatorTypeForm>();
-  protected readonly fineMacRoutingPaths = FINES_MAC_ROUTING_PATHS;
-  protected readonly routingPath = PAGES_ROUTING_PATHS;
+  protected readonly draftCreateAndManageTabsRoute = FINES_MAC_DRAFT_CREATE_AND_MANAGE_TABS_ROUTE;
 
   public readonly originatorTypes: IGovUkRadioOptions[] = Object.entries(FINES_ORIGINATOR_TYPES).map(
     ([key, value]) => ({
