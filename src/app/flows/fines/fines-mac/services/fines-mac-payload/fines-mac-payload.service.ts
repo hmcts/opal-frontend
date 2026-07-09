@@ -24,7 +24,6 @@ import { IOpalFinesOffencesNonSnakeCase } from '@services/fines/opal-fines-servi
 import { finesMacPayloadMapBusinessUnit } from './utils/fines-mac-payload-map-account/fines-mac-payload-map-business-unit.utils';
 import { TransformationService } from '@hmcts/opal-frontend-common/services/transformation-service';
 import { ITransformItem } from '@hmcts/opal-frontend-common/services/transformation-service/interfaces';
-import { OPAL_FINES_DRAFT_ACCOUNT_STATUSES } from '@services/fines/opal-fines-service/constants/opal-fines-draft-account-statues.constant';
 import { FINES_MAC_DEFENDANT_TYPES_KEYS } from '../../constants/fines-mac-defendant-types-keys';
 import { finesMacPayloadBuildAccountFixedPenalty } from './utils/fines-mac-payload-build-account/fines-mac-payload-build-account-fixed-penalty.utils';
 import { finesMacPayloadMapAccountFixedPenalty } from './utils/fines-mac-payload-map-account/fines-mac-payload-map-account-fixed-penalty.utils';
@@ -124,7 +123,7 @@ export class FinesMacPayloadService {
   private buildAddReplaceAccountPayload(
     finesMacState: IFinesMacState,
     draftAccountPayload: IFinesMacAddAccountPayload | null,
-    userState: IOpalUserState,
+    _userState: IOpalUserState,
     addAccount: boolean,
   ): IFinesMacAddAccountRequestPayload {
     const { formData: accountDetailsState } = finesMacState.accountDetails;
@@ -138,11 +137,6 @@ export class FinesMacPayloadService {
       account_snapshot: null,
       account_status_date: null,
       business_unit_id: accountDetailsState['fm_create_account_business_unit_id'],
-      submitted_by: this.getBusinessUnitBusinessUserId(
-        accountDetailsState['fm_create_account_business_unit_id'],
-        userState,
-      ),
-      submitted_by_name: userState['name'],
       account: accountPayload,
       account_type: accountDetailsState['fm_create_account_account_type'],
       account_status: accountStatus,
@@ -213,17 +207,11 @@ export class FinesMacPayloadService {
     draftAccountPayload: IFinesMacAddAccountPayload,
     status: string,
     reasonText: string | null,
-    userState: IOpalUserState,
   ): IOpalFinesDraftAccountPatchRequestPayload {
     return {
       account_status: status,
       business_unit_id: draftAccountPayload.business_unit_id!,
       reason_text: reasonText,
-      validated_by:
-        status === OPAL_FINES_DRAFT_ACCOUNT_STATUSES.rejected
-          ? null
-          : this.getBusinessUnitBusinessUserId(draftAccountPayload.business_unit_id, userState)!,
-      validated_by_name: status === OPAL_FINES_DRAFT_ACCOUNT_STATUSES.rejected ? null : userState['name'],
       version: draftAccountPayload.version!,
     };
   }

@@ -177,9 +177,7 @@ describe('FinesMacDeleteAccountConfirmationComponent', () => {
     form.formData = { fm_delete_account_confirmation_reason: 'Test reason' };
     const payload = component['createPatchPayload'](form);
     expect(payload).toEqual({
-      validated_by: null,
       account_status: 'Deleted',
-      validated_by_name: null,
       business_unit_id: finesMacStore.getBusinessUnitId(),
       version: finesDraftStore.getFinesDraftState().version || '0',
       reason_text: 'Test reason',
