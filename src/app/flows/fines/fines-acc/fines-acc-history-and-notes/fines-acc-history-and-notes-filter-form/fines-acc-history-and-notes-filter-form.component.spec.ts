@@ -2,21 +2,23 @@ import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { SimpleChange } from '@angular/core';
 import { ActivatedRoute, provideRouter } from '@angular/router';
 import { DateService } from '@hmcts/opal-frontend-common/services/date-service';
-import { beforeEach, describe, expect, it, vi } from 'vitest';
-import { FinesAccDefendantDetailsHistoryAndNotesFilterFormComponent } from './fines-acc-defendant-details-history-and-notes-filter-form.component';
 import { of } from 'rxjs';
-import { FINES_ACC_DEFENDANT_DETAILS_HISTORY_AND_NOTES_FILTER_FIELD_ERRORS } from '../../constants/fines-acc-defendant-details-history-and-notes-filter-field-errors.constant';
-import { FINES_ACC_DEFENDANT_DETAILS_HISTORY_AND_NOTES_FILTER_FORM_MOCK } from '../../mocks/fines-acc-defendant-details-history-and-notes-filter-form.mock';
+import { beforeEach, describe, expect, it, vi } from 'vitest';
+import { FINES_ACC_DEFENDANT_DETAILS_HISTORY_AND_NOTES_FILTER_CATEGORIES } from '../../fines-acc-defendant-details/fines-acc-defendant-details-history-and-notes-tab/constants/fines-acc-defendant-details-history-and-notes-filter-categories.constant';
+import { FINES_ACC_DEFENDANT_DETAILS_HISTORY_AND_NOTES_FILTER_FIELD_ERRORS } from '../../fines-acc-defendant-details/fines-acc-defendant-details-history-and-notes-tab/constants/fines-acc-defendant-details-history-and-notes-filter-field-errors.constant';
+import { FINES_ACC_DEFENDANT_DETAILS_HISTORY_AND_NOTES_FILTER_SUMMARY_TEXT } from '../../fines-acc-defendant-details/fines-acc-defendant-details-history-and-notes-tab/constants/fines-acc-defendant-details-history-and-notes-filter-summary-text.constant';
+import { FINES_ACC_DEFENDANT_DETAILS_HISTORY_AND_NOTES_FILTER_FORM_MOCK } from '../../fines-acc-defendant-details/fines-acc-defendant-details-history-and-notes-tab/mocks/fines-acc-defendant-details-history-and-notes-filter-form.mock';
+import { FinesAccHistoryAndNotesFilterFormComponent } from './fines-acc-history-and-notes-filter-form.component';
 
-describe('FinesAccDefendantDetailsHistoryAndNotesFilterFormComponent', () => {
-  let component: FinesAccDefendantDetailsHistoryAndNotesFilterFormComponent;
-  let fixture: ComponentFixture<FinesAccDefendantDetailsHistoryAndNotesFilterFormComponent>;
+describe('FinesAccHistoryAndNotesFilterFormComponent', () => {
+  let component: FinesAccHistoryAndNotesFilterFormComponent;
+  let fixture: ComponentFixture<FinesAccHistoryAndNotesFilterFormComponent>;
 
   beforeEach(async () => {
     vi.spyOn(window, 'scrollTo').mockImplementation(() => {});
 
     await TestBed.configureTestingModule({
-      imports: [FinesAccDefendantDetailsHistoryAndNotesFilterFormComponent],
+      imports: [FinesAccHistoryAndNotesFilterFormComponent],
       providers: [
         provideRouter([]),
         {
@@ -28,8 +30,11 @@ describe('FinesAccDefendantDetailsHistoryAndNotesFilterFormComponent', () => {
       ],
     }).compileComponents();
 
-    fixture = TestBed.createComponent(FinesAccDefendantDetailsHistoryAndNotesFilterFormComponent);
+    fixture = TestBed.createComponent(FinesAccHistoryAndNotesFilterFormComponent);
     component = fixture.componentInstance;
+    component.categories = FINES_ACC_DEFENDANT_DETAILS_HISTORY_AND_NOTES_FILTER_CATEGORIES;
+    component.filterFieldErrors = FINES_ACC_DEFENDANT_DETAILS_HISTORY_AND_NOTES_FILTER_FIELD_ERRORS;
+    component.filterSummaryText = FINES_ACC_DEFENDANT_DETAILS_HISTORY_AND_NOTES_FILTER_SUMMARY_TEXT;
   });
 
   it('should create the component', () => {

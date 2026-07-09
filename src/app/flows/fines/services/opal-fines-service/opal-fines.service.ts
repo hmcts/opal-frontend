@@ -37,6 +37,8 @@ import { IOpalFinesAccountPartyDetails } from './interfaces/opal-fines-account-p
 import { IOpalFinesAccountDefendantDetailsEnforcementTabRefData } from './interfaces/opal-fines-account-defendant-details-enforcement-tab-ref-data.interface';
 import { IOpalFinesAccountDefendantDetailsHistoryAndNotesTabRefData } from './interfaces/opal-fines-account-defendant-details-history-and-notes-tab-ref-data.interface';
 import { IOpalFinesDefendantAccountHistoryParams } from './interfaces/opal-fines-defendant-account-history-params.interface';
+import { IOpalFinesAccountMinorCreditorDetailsHistoryAndNotesTabRefData } from './interfaces/opal-fines-account-minor-creditor-details-history-and-notes-tab-ref-data.interface';
+import { IOpalFinesMinorCreditorAccountHistoryParams } from './interfaces/opal-fines-minor-creditor-account-history-params.interface';
 import { IOpalFinesAmendPaymentTermsPayload } from './interfaces/opal-fines-amend-payment-terms-payload.interface';
 import { IOpalFinesAccountDefendantDetailsImpositionsTabRefData } from './interfaces/opal-fines-account-defendant-details-impositions-tab-ref-data.interface';
 import { IOpalFinesAddNotePayload } from './interfaces/opal-fines-add-note.interface';
@@ -521,6 +523,7 @@ export class OpalFines {
       'defendantAccountFixedPenaltyCache$',
       'minorCreditorAccountAtAGlanceCache$',
       'minorCreditorAccountCreditorCache$',
+      'minorCreditorAccountHistoryAndNotesCache$',
     ];
 
     this.clearCaches(accountCaches);
@@ -1320,5 +1323,49 @@ export class OpalFines {
         );
     }
     return this.cache.minorCreditorAccountCreditorCache$;
+  }
+
+  /**
+   * Retrieves the minor creditor account details history and notes tab data.
+   * Unfiltered history uses the tab cache. Filtered history always makes a new request with the submitted query params.
+   *
+   * @param account_id - The ID of the minor creditor account.
+   * @param filterParams - Optional query parameters for filtering account history.
+   * @returns An Observable that emits the account history data.
+   */
+  public getMinorCreditorAccountHistoryAndNotesTabData(
+    account_id: number | null,
+    filterParams?: IOpalFinesMinorCreditorAccountHistoryParams,
+  ): Observable<IOpalFinesAccountMinorCreditorDetailsHistoryAndNotesTabRefData> {
+    const url = `${OPAL_FINES_PATHS.minorCreditorAccounts}/${account_id}/history`;
+    const options: {
+      observe: 'response';
+      params?: Record<string, string>;
+    } = { observe: 'response' };
+
+    if (filterParams) {
+      options.params = Object.fromEntries(
+        Object.entries(filterParams).filter(([, value]) => value !== undefined),
+      ) as Record<string, string>;
+    }
+
+    const request$ = this.http.get<IOpalFinesAccountMinorCreditorDetailsHistoryAndNotesTabRefData>(url, options).pipe(
+      map((response: HttpResponse<IOpalFinesAccountMinorCreditorDetailsHistoryAndNotesTabRefData>) => {
+        const version = this.extractEtagVersion(response.headers);
+        const payload = response.body as IOpalFinesAccountMinorCreditorDetailsHistoryAndNotesTabRefData;
+        return {
+          ...payload,
+          version,
+        };
+      }),
+      shareReplay(1),
+    );
+
+    if (filterParams) {
+      return request$;
+    }
+
+    this.cache.minorCreditorAccountHistoryAndNotesCache$ ??= request$;
+    return this.cache.minorCreditorAccountHistoryAndNotesCache$;
   }
 }

@@ -1,15 +1,23 @@
 import { ChangeDetectionStrategy, Component, EventEmitter, Input, Output } from '@angular/core';
 import { AbstractFormParentBaseComponent } from '@hmcts/opal-frontend-common/components/abstract/abstract-form-parent-base';
+import { FinesAccHistoryAndNotesFilterFormComponent } from '../../../fines-acc-history-and-notes/fines-acc-history-and-notes-filter-form/fines-acc-history-and-notes-filter-form.component';
+import { IFinesAccHistoryAndNotesFilterForm } from '../../../fines-acc-history-and-notes/interfaces/fines-acc-history-and-notes-filter-form.interface';
+import { FINES_ACC_DEFENDANT_DETAILS_HISTORY_AND_NOTES_FILTER_CATEGORIES } from '../constants/fines-acc-defendant-details-history-and-notes-filter-categories.constant';
+import { FINES_ACC_DEFENDANT_DETAILS_HISTORY_AND_NOTES_FILTER_FIELD_ERRORS } from '../constants/fines-acc-defendant-details-history-and-notes-filter-field-errors.constant';
+import { FINES_ACC_DEFENDANT_DETAILS_HISTORY_AND_NOTES_FILTER_SUMMARY_TEXT } from '../constants/fines-acc-defendant-details-history-and-notes-filter-summary-text.constant';
 import { IFinesAccDefendantDetailsHistoryAndNotesFilterForm } from '../interfaces/fines-acc-defendant-details-history-and-notes-filter-form.interface';
-import { FinesAccDefendantDetailsHistoryAndNotesFilterFormComponent } from './fines-acc-defendant-details-history-and-notes-filter-form/fines-acc-defendant-details-history-and-notes-filter-form.component';
 
 @Component({
   selector: 'app-fines-acc-defendant-details-history-and-notes-filter',
-  imports: [FinesAccDefendantDetailsHistoryAndNotesFilterFormComponent],
+  imports: [FinesAccHistoryAndNotesFilterFormComponent],
   templateUrl: './fines-acc-defendant-details-history-and-notes-filter.component.html',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class FinesAccDefendantDetailsHistoryAndNotesFilterComponent extends AbstractFormParentBaseComponent {
+  public readonly categories = FINES_ACC_DEFENDANT_DETAILS_HISTORY_AND_NOTES_FILTER_CATEGORIES;
+  public readonly fieldErrors = FINES_ACC_DEFENDANT_DETAILS_HISTORY_AND_NOTES_FILTER_FIELD_ERRORS;
+  public readonly summaryText = FINES_ACC_DEFENDANT_DETAILS_HISTORY_AND_NOTES_FILTER_SUMMARY_TEXT;
+
   @Input() public filterForm: IFinesAccDefendantDetailsHistoryAndNotesFilterForm | null = null;
   @Input() public filterOpen = false;
   @Output() public filterApplied = new EventEmitter<IFinesAccDefendantDetailsHistoryAndNotesFilterForm>();
@@ -20,8 +28,8 @@ export class FinesAccDefendantDetailsHistoryAndNotesFilterComponent extends Abst
    *
    * @param form - The submitted history and notes filter form.
    */
-  public handleFilterSubmit(form: IFinesAccDefendantDetailsHistoryAndNotesFilterForm): void {
-    this.filterApplied.emit(form);
+  public handleFilterSubmit(form: IFinesAccHistoryAndNotesFilterForm): void {
+    this.filterApplied.emit(form as IFinesAccDefendantDetailsHistoryAndNotesFilterForm);
   }
 
   /**
