@@ -106,7 +106,7 @@
             "result_id": "FCOMP",
             "amount_imposed": 100,
             "amount_paid": 10,
-            "major_creditor_id": 770000000021,
+            "major_creditor_id": 50000000021,
             "minor_creditor": null
           },
           {
@@ -120,7 +120,7 @@
             "result_id": "FCOST",
             "amount_imposed": 300,
             "amount_paid": 30,
-            "major_creditor_id": 770000000041,
+            "major_creditor_id": 50000000021,
             "minor_creditor": null
           },
           {

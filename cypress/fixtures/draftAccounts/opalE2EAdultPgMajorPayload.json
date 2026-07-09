@@ -106,56 +106,56 @@
             "result_id": "FCOMP",
             "amount_imposed": 100,
             "amount_paid": 1,
-            "major_creditor_id": 770000000041,
+            "major_creditor_id": 50000000021,
             "minor_creditor": null
           },
           {
             "result_id": "FVS",
             "amount_imposed": 200,
             "amount_paid": 2,
-            "major_creditor_id": 770000000041,
+            "major_creditor_id": 50000000021,
             "minor_creditor": null
           },
           {
             "result_id": "FCOST",
             "amount_imposed": 300,
             "amount_paid": 3,
-            "major_creditor_id": 770000000041,
+            "major_creditor_id": 50000000021,
             "minor_creditor": null
           },
           {
             "result_id": "FCPC",
             "amount_imposed": 400,
             "amount_paid": 4,
-            "major_creditor_id": 770000000041,
+            "major_creditor_id": 50000000021,
             "minor_creditor": null
           },
           {
             "result_id": "FO",
             "amount_imposed": 500,
             "amount_paid": 5,
-            "major_creditor_id": 770000000041,
+            "major_creditor_id": 50000000021,
             "minor_creditor": null
           },
           {
             "result_id": "FVEBD",
             "amount_imposed": 600,
             "amount_paid": 6,
-            "major_creditor_id": 770000000041,
+            "major_creditor_id": 50000000021,
             "minor_creditor": null
           },
           {
             "result_id": "FCC",
             "amount_imposed": 700,
             "amount_paid": 7,
-            "major_creditor_id": 770000000041,
+            "major_creditor_id": 50000000021,
             "minor_creditor": null
           },
           {
             "result_id": "FFR",
             "amount_imposed": 800,
             "amount_paid": 8,
-            "major_creditor_id": 770000000041,
+            "major_creditor_id": 50000000021,
             "minor_creditor": null
           }
         ]
