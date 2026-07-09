@@ -73,10 +73,10 @@
         "imposing_court_id": 770000000001,
         "impositions": [
           {
-            "result_id": "FPN",
+            "result_id": "FO",
             "amount_imposed": 2200,
             "amount_paid": 0,
-            "major_creditor_id": 50000000021,
+            "major_creditor_id": null,
             "minor_creditor": null
           }
         ]
