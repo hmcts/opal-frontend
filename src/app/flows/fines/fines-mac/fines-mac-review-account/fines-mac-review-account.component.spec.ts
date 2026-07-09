@@ -283,16 +283,12 @@ describe('FinesMacReviewAccountComponent', () => {
       expect(mockFinesMacPayloadService.buildReplaceAccountPayload).toHaveBeenCalledWith(
         finesMacStore.getFinesMacStore(),
         finesDraftStore.getFinesDraftState(),
-        component['userState'],
       );
     });
 
     it('should test preparePostPayload', () => {
       component['preparePostPayload']();
-      expect(mockFinesMacPayloadService.buildAddAccountPayload).toHaveBeenCalledWith(
-        finesMacStore.getFinesMacStore(),
-        component['userState'],
-      );
+      expect(mockFinesMacPayloadService.buildAddAccountPayload).toHaveBeenCalledWith(finesMacStore.getFinesMacStore());
     });
 
     it('should test submitPutPayload', () => {
