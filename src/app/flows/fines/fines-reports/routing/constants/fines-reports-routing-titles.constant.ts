@@ -6,6 +6,5 @@ export const FINES_REPORTS_ROUTING_TITLES: IFinesReportsRoutingPaths = {
     summaryList: 'Summary List',
     selectBusinessUnits: 'Select business units',
     businessUnitWarning: 'Business unit warning',
-    parameters: 'Parameters',
   },
 };

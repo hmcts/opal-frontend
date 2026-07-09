@@ -37,12 +37,11 @@ export class FinesReportsBusinessUnitWarningComponent implements OnInit {
   }
 
   /**
-   * Continues to the parameters screen after the warning has been accepted.
+   * Logs selected business units while the next create-report screen is out of scope.
    */
   public handleContinue(): void {
-    this.router.navigate([`../../${FINES_REPORTS_ROUTING_PATHS.children.parameters}`], {
-      relativeTo: this.activatedRoute,
-    });
+    // eslint-disable-next-line no-console
+    console.log('PO-2305 selected business unit ids', this.finesReportsStore.selectedBusinessUnitIds());
   }
 
   /**

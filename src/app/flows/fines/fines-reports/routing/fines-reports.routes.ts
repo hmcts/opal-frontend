@@ -72,23 +72,6 @@ export const routing: Routes = [
           title: TitleResolver,
         },
       },
-      {
-        path: FINES_REPORTS_ROUTING_PATHS.children.parameters,
-        loadComponent: () =>
-          import('../fines-reports-parameters/fines-reports-parameters.component').then(
-            (c) => c.FinesReportsParametersComponent,
-          ),
-        data: {
-          title: FINES_REPORTS_ROUTING_TITLES.children.parameters,
-          requiresCreateReport: true,
-          requiresSelectedBusinessUnits: true,
-        },
-        resolve: {
-          title: TitleResolver,
-          reportHeading: finesReportsReportHeadingResolver,
-          businessUnits: fetchBusinessUnitsResolver,
-        },
-      },
     ],
   },
 ];

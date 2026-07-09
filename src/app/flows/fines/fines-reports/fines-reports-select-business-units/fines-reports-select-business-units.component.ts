@@ -72,12 +72,11 @@ export class FinesReportsSelectBusinessUnitsComponent extends AbstractFormParent
   }
 
   /**
-   * Navigates to the parameters screen.
+   * Logs selected business units while the next create-report screen is out of scope.
    */
-  private proceedWithSelectedBusinessUnits(): void {
-    this.routerService.navigate([`../../${FINES_REPORTS_ROUTING_PATHS.children.parameters}`], {
-      relativeTo: this.route,
-    });
+  private logSelectedBusinessUnitIds(): void {
+    // eslint-disable-next-line no-console
+    console.log('PO-2305 selected business unit ids', this.finesReportsStore.selectedBusinessUnitIds());
   }
 
   /**
@@ -113,7 +112,7 @@ export class FinesReportsSelectBusinessUnitsComponent extends AbstractFormParent
       return;
     }
 
-    this.proceedWithSelectedBusinessUnits();
+    this.logSelectedBusinessUnitIds();
   }
 
   /**

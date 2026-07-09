@@ -5,6 +5,5 @@ export interface IFinesReportsRoutingPaths extends IChildRoutingPaths {
     summaryList: string;
     selectBusinessUnits: string;
     businessUnitWarning: string;
-    parameters: string;
   };
 }

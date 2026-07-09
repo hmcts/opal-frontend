@@ -64,26 +64,4 @@ describe('finesReports routes', () => {
       },
     });
   });
-
-  it('should load the parameters route', () => {
-    const reportRoute = routing.find((route) => route.path === ':reportTypeId');
-    const parametersRoute = reportRoute?.children?.find(
-      (route) => route.path === FINES_REPORTS_ROUTING_PATHS.children.parameters,
-    );
-
-    expect(parametersRoute).toEqual({
-      path: FINES_REPORTS_ROUTING_PATHS.children.parameters,
-      loadComponent: expect.any(Function),
-      data: {
-        title: FINES_REPORTS_ROUTING_TITLES.children.parameters,
-        requiresCreateReport: true,
-        requiresSelectedBusinessUnits: true,
-      },
-      resolve: {
-        title: TitleResolver,
-        reportHeading: finesReportsReportHeadingResolver,
-        businessUnits: fetchBusinessUnitsResolver,
-      },
-    });
-  });
 });

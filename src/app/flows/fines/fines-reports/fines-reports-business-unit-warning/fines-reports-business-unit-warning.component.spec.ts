@@ -1,6 +1,6 @@
 import { TestBed } from '@angular/core/testing';
 import { ActivatedRoute, Router } from '@angular/router';
-import { beforeEach, describe, expect, it, vi } from 'vitest';
+import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import { FINES_REPORTS_ROUTING_PATHS } from '../routing/constants/fines-reports-routing-paths.constant';
 import { FinesReportsBusinessUnitWarningComponent } from './fines-reports-business-unit-warning.component';
 import { FinesReportsStore } from '../stores/fines-reports.store';
@@ -9,6 +9,8 @@ describe('FinesReportsBusinessUnitWarningComponent', () => {
   const createRouterMock = () => ({
     navigate: vi.fn(),
   });
+
+  const createConsoleLogSpy = () => vi.spyOn(console, 'log').mockImplementation(() => undefined);
 
   const setup = async (selectedBusinessUnitIds: number[] = []) => {
     const router = createRouterMock();
@@ -45,6 +47,10 @@ describe('FinesReportsBusinessUnitWarningComponent', () => {
     TestBed.resetTestingModule();
   });
 
+  afterEach(() => {
+    vi.restoreAllMocks();
+  });
+
   it('should render the warning copy from the selected business unit count', async () => {
     const { fixture } = await setup([61, 67, 68, 69]);
 
@@ -65,14 +71,14 @@ describe('FinesReportsBusinessUnitWarningComponent', () => {
     );
   });
 
-  it('should navigate to the parameters screen when continue is selected', async () => {
+  it('should log selected business units when continue is selected', async () => {
     const { component, router } = await setup([61, 67, 68, 69]);
+    const consoleLogSpy = createConsoleLogSpy();
 
     component.handleContinue();
 
-    expect(router.navigate).toHaveBeenCalledWith([`../../${FINES_REPORTS_ROUTING_PATHS.children.parameters}`], {
-      relativeTo: expect.any(Object),
-    });
+    expect(router.navigate).not.toHaveBeenCalled();
+    expect(consoleLogSpy).toHaveBeenCalledWith('PO-2305 selected business unit ids', [61, 67, 68, 69]);
   });
 
   it('should redirect back to select business units when no selection state is available', async () => {
