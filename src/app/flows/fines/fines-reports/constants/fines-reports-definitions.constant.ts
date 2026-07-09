@@ -27,7 +27,3 @@ export const FINES_REPORTS_DEFINITIONS: IFinesReportsDefinition[] = [
     operationalLinkId: 'finesReportsOperationalReportsByPaymentLink',
   },
 ];
-
-export const findFinesReportsDefinition = (
-  reportTypeId: string | null | undefined,
-): IFinesReportsDefinition | undefined => FINES_REPORTS_DEFINITIONS.find((report) => report.id === reportTypeId);
