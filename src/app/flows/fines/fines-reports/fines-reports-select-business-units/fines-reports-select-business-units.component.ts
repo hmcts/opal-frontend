@@ -1,5 +1,4 @@
-import { Location } from '@angular/common';
-import { ChangeDetectionStrategy, Component, inject, OnInit } from '@angular/core';
+import { ChangeDetectionStrategy, Component, computed, inject, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { AbstractFormParentBaseComponent } from '@hmcts/opal-frontend-common/components/abstract/abstract-form-parent-base';
 import { IAbstractFormBaseForm } from '@hmcts/opal-frontend-common/components/abstract/abstract-form-base/interfaces';
@@ -9,7 +8,7 @@ import { IOpalFinesBusinessUnitRefData } from '@services/fines/opal-fines-servic
 import { IOpalFinesReport } from '@services/fines/opal-fines-service/interfaces/opal-fines-report.interface';
 import { FINES_REPORTS_ROUTING_PATHS } from '../routing/constants/fines-reports-routing-paths.constant';
 import { FINES_REPORTS_ROUTING_TITLES } from '../routing/constants/fines-reports-routing-titles.constant';
-import { getFinesReportsSelectedBusinessUnitIdsFromNavigationState } from '../utils/get-fines-reports-selected-business-unit-ids-from-navigation-state.util';
+import { FinesReportsStore } from '../stores/fines-reports.store';
 import { FinesReportsSelectBusinessUnitsFormComponent } from './fines-reports-select-business-units-form/fines-reports-select-business-units-form.component';
 import { IFinesReportsSelectBusinessUnitsFormState } from './interfaces/fines-reports-select-business-units-form-state.interface';
 
@@ -20,9 +19,10 @@ import { IFinesReportsSelectBusinessUnitsFormState } from './interfaces/fines-re
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class FinesReportsSelectBusinessUnitsComponent extends AbstractFormParentBaseComponent implements OnInit {
+  private readonly finesReportsStore = inject(FinesReportsStore);
   private readonly route = inject(ActivatedRoute);
-  private readonly location = inject(Location);
   private readonly routerService = inject(Router);
+  private readonly reportTypeId = this.route.parent?.snapshot.paramMap.get('reportTypeId') ?? '';
   private readonly report = this.route.snapshot.data['report'] as IOpalFinesReport | null | undefined;
 
   public readonly pageHeading = FINES_REPORTS_ROUTING_TITLES.children.selectBusinessUnits;
@@ -31,8 +31,10 @@ export class FinesReportsSelectBusinessUnitsComponent extends AbstractFormParent
    */
   public readonly reportHeading = this.route.snapshot.data['reportHeading'] as string;
   public readonly businessUnitWarningThreshold = this.report?.report_parameters?.business_unit_warning_threshold;
+  public readonly selectedBusinessUnitIds = computed(() =>
+    this.finesReportsStore.getSelectedBusinessUnitIdsForReport(this.reportTypeId),
+  );
   public businessUnits: IOpalFinesBusinessUnit[] = [];
-  public selectedBusinessUnitIds: number[] = [];
 
   /**
    * Gets selected business unit ids from a submitted form.
@@ -62,26 +64,19 @@ export class FinesReportsSelectBusinessUnitsComponent extends AbstractFormParent
 
   /**
    * Navigates to the warning screen for a large business unit selection.
-   *
-   * @param selectedBusinessUnitIds - Selected business unit ids waiting for warning confirmation.
    */
-  private navigateToBusinessUnitWarning(selectedBusinessUnitIds: number[]): void {
+  private navigateToBusinessUnitWarning(): void {
     this.routerService.navigate([`../../${FINES_REPORTS_ROUTING_PATHS.children.businessUnitWarning}`], {
       relativeTo: this.route,
-      state: { selectedBusinessUnitIds },
     });
   }
 
   /**
-   * Navigates to the parameters screen with the selected business unit ids in route state.
-   *
-   * @param selectedBusinessUnitIds - Selected business unit ids to continue with.
+   * Navigates to the parameters screen.
    */
-  private proceedWithSelectedBusinessUnits(selectedBusinessUnitIds: number[]): void {
-    this.selectedBusinessUnitIds = selectedBusinessUnitIds;
+  private proceedWithSelectedBusinessUnits(): void {
     this.routerService.navigate([`../../${FINES_REPORTS_ROUTING_PATHS.children.parameters}`], {
       relativeTo: this.route,
-      state: { selectedBusinessUnitIds },
     });
   }
 
@@ -89,6 +84,7 @@ export class FinesReportsSelectBusinessUnitsComponent extends AbstractFormParent
    * Navigates back to the report summary list.
    */
   public handleCancel(): void {
+    this.finesReportsStore.clearSelectedBusinessUnitIds();
     this.routerService.navigate([`../../${FINES_REPORTS_ROUTING_PATHS.children.summaryList}`], {
       relativeTo: this.route,
     });
@@ -110,28 +106,24 @@ export class FinesReportsSelectBusinessUnitsComponent extends AbstractFormParent
    */
   public handleContinue(form: IAbstractFormBaseForm<IFinesReportsSelectBusinessUnitsFormState>): void {
     const selectedBusinessUnitIds = this.getSelectedBusinessUnitIds(form.formData);
+    this.finesReportsStore.setSelectedBusinessUnitIds(this.reportTypeId, selectedBusinessUnitIds);
 
     if (this.shouldShowBusinessUnitWarning(selectedBusinessUnitIds.length)) {
-      this.navigateToBusinessUnitWarning(selectedBusinessUnitIds);
+      this.navigateToBusinessUnitWarning();
       return;
     }
 
-    this.proceedWithSelectedBusinessUnits(selectedBusinessUnitIds);
+    this.proceedWithSelectedBusinessUnits();
   }
 
   /**
-   * Populates the current business unit list from the route resolver, sorts it alphabetically,
-   * and restores any in-progress selections.
+   * Populates the current business unit list from the route resolver and sorts it alphabetically.
    */
   public ngOnInit(): void {
     const resolverData = this.route.snapshot.data['businessUnits'] as IOpalFinesBusinessUnitRefData | undefined;
 
     this.businessUnits = [...(resolverData?.refData ?? [])].sort((left, right) =>
       left.business_unit_name.localeCompare(right.business_unit_name),
-    );
-    this.selectedBusinessUnitIds = getFinesReportsSelectedBusinessUnitIdsFromNavigationState(
-      this.routerService,
-      this.location,
     );
   }
 }

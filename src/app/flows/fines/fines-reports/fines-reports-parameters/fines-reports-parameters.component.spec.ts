@@ -1,5 +1,4 @@
 import { TestBed } from '@angular/core/testing';
-import { Location } from '@angular/common';
 import { ActivatedRoute, Router, convertToParamMap } from '@angular/router';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
 import { OPAL_FINES_BUSINESS_UNIT_REF_DATA_MOCK } from '@services/fines/opal-fines-service/mocks/opal-fines-business-unit-ref-data.mock';
@@ -7,29 +6,19 @@ import { findFinesReportsDefinition } from '../constants/fines-reports-definitio
 import { FINES_REPORTS_SUMMARY_LIST_ROUTING_PATHS } from '../fines-reports-summary-list/routing/constants/fines-reports-summary-list-routing-paths.constant';
 import { FinesReportsParametersComponent } from './fines-reports-parameters.component';
 import { FINES_REPORTS_ROUTING_PATHS } from '../routing/constants/fines-reports-routing-paths.constant';
+import { FinesReportsStore } from '../stores/fines-reports.store';
 
 describe('FinesReportsParametersComponent', () => {
-  const createRouterMock = (selectedBusinessUnitIds: number[] = [], useCurrentNavigation = true) => ({
+  const createRouterMock = () => ({
     navigate: vi.fn(),
-    currentNavigation: vi.fn(() =>
-      useCurrentNavigation && selectedBusinessUnitIds.length > 0
-        ? { extras: { state: { selectedBusinessUnitIds } } }
-        : null,
-    ),
-  });
-
-  const createLocationMock = (selectedBusinessUnitIds: number[]) => ({
-    getState: vi.fn(() => (selectedBusinessUnitIds.length > 0 ? { selectedBusinessUnitIds } : {})),
   });
 
   const setup = async (
     reportTypeId: string,
     selectedBusinessUnitIds: number[],
     businessUnits = OPAL_FINES_BUSINESS_UNIT_REF_DATA_MOCK.refData,
-    useCurrentNavigation = true,
   ) => {
-    const router = createRouterMock(selectedBusinessUnitIds, useCurrentNavigation);
-    const location = createLocationMock(selectedBusinessUnitIds);
+    const router = createRouterMock();
     const reportHeading = findFinesReportsDefinition(reportTypeId)?.heading ?? '';
 
     await TestBed.configureTestingModule({
@@ -58,18 +47,18 @@ describe('FinesReportsParametersComponent', () => {
           provide: Router,
           useValue: router,
         },
-        {
-          provide: Location,
-          useValue: location,
-        },
+        FinesReportsStore,
       ],
     }).compileComponents();
+
+    const finesReportsStore = TestBed.inject(FinesReportsStore);
+    finesReportsStore.setSelectedBusinessUnitIds(reportTypeId, selectedBusinessUnitIds);
 
     const fixture = TestBed.createComponent(FinesReportsParametersComponent);
     const component = fixture.componentInstance;
     fixture.detectChanges();
 
-    return { component, fixture, router };
+    return { component, fixture, router, finesReportsStore };
   };
 
   beforeEach(() => {
@@ -101,12 +90,11 @@ describe('FinesReportsParametersComponent', () => {
     );
   });
 
-  it('should load selected business units from location state when current navigation is unavailable', async () => {
+  it('should load selected business units from the reports store', async () => {
     const { fixture } = await setup(
       FINES_REPORTS_SUMMARY_LIST_ROUTING_PATHS.children.operationalReportsByEnforcement,
       [68, 61],
       OPAL_FINES_BUSINESS_UNIT_REF_DATA_MOCK.refData,
-      false,
     );
 
     expect(fixture.nativeElement.textContent).toContain('Historical Debt');

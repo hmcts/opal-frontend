@@ -7,7 +7,7 @@
 
   <app-fines-reports-select-business-units-form
     [businessUnits]="businessUnits"
-    [initialSelectedBusinessUnitIds]="selectedBusinessUnitIds"
+    [initialSelectedBusinessUnitIds]="selectedBusinessUnitIds()"
     (cancelSelection)="handleCancel()"
     (unsavedChanges)="handleUnsavedChanges($event)"
     (formSubmit)="handleContinue($event)"

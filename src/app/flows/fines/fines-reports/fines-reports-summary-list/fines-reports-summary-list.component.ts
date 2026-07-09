@@ -7,6 +7,7 @@ import { GovukButtonDirective } from '@hmcts/opal-frontend-common/directives/gov
 import { FINES_REPORTS_SUMMARY_LIST_ROUTING_PATHS } from './routing/constants/fines-reports-summary-list-routing-paths.constant';
 import { FINES_REPORTS_ROUTING_PATHS } from '../routing/constants/fines-reports-routing-paths.constant';
 import { IOpalFinesReport } from '@services/fines/opal-fines-service/interfaces/opal-fines-report.interface';
+import { FinesReportsStore } from '../stores/fines-reports.store';
 
 @Component({
   selector: 'app-fines-reports-summary-list',
@@ -16,6 +17,7 @@ import { IOpalFinesReport } from '@services/fines/opal-fines-service/interfaces/
 })
 export class FinesReportsSummaryListComponent {
   private readonly activatedRoute = inject(ActivatedRoute);
+  private readonly finesReportsStore = inject(FinesReportsStore);
   private readonly router = inject(Router);
   private readonly routeWithReportTypeId = this.activatedRoute.parent ?? this.activatedRoute;
   private readonly reportTypeId = toSignal(
@@ -64,6 +66,7 @@ export class FinesReportsSummaryListComponent {
    * Navigates from the current report summary to the select business units route.
    */
   public handleCreateReport(): void {
+    this.finesReportsStore.clearSelectedBusinessUnitIds();
     this.router.navigate([`../${FINES_REPORTS_ROUTING_PATHS.children.selectBusinessUnits}`], {
       relativeTo: this.activatedRoute,
     });

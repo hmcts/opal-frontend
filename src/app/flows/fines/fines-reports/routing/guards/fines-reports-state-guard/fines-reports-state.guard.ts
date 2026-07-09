@@ -1,4 +1,3 @@
-import { Location } from '@angular/common';
 import { inject } from '@angular/core';
 import { CanActivateFn, Router } from '@angular/router';
 import { PermissionsService } from '@hmcts/opal-frontend-common/services/permissions-service';
@@ -9,11 +8,11 @@ import { FINES_REPORT_SUMMARY_LIST_REPORT_CONFIGURATION } from '../../../fines-r
 import { FINES_ROUTING_PATHS } from '@app/flows/fines/routing/constants/fines-routing-paths.constant';
 import { FINES_DASHBOARD_ROUTING_PATHS } from '@app/flows/fines/constants/fines-dashboard-routing-paths.constant';
 import { FINES_REPORTS_ROUTING_PATHS } from '../../constants/fines-reports-routing-paths.constant';
-import { getFinesReportsSelectedBusinessUnitIdsFromNavigationState } from '../../../utils/get-fines-reports-selected-business-unit-ids-from-navigation-state.util';
+import { FinesReportsStore } from '../../../stores/fines-reports.store';
 
 export const finesReportsStateGuard: CanActivateFn = (route) => {
   const router = inject(Router);
-  const location = inject(Location);
+  const finesReportsStore = inject(FinesReportsStore);
   const permissionsService = inject(PermissionsService);
   const opalUserService = inject(OpalUserService);
   const reportTypeId = route.paramMap.get('reportTypeId') ?? route.parent?.paramMap.get('reportTypeId');
@@ -55,10 +54,7 @@ export const finesReportsStateGuard: CanActivateFn = (route) => {
         return router.createUrlTree([`/${COMMON_PAGES_ROUTING_PATHS.children.accessDenied}`]);
       }
 
-      if (
-        requiresSelectedBusinessUnits &&
-        getFinesReportsSelectedBusinessUnitIdsFromNavigationState(router, location).length === 0
-      ) {
+      if (requiresSelectedBusinessUnits && !finesReportsStore.hasSelectedBusinessUnitsForReport(report.id)) {
         return router.createUrlTree([
           `/${FINES_ROUTING_PATHS.root}/${FINES_ROUTING_PATHS.children.reports.root}/${report.id}/${FINES_REPORTS_ROUTING_PATHS.children.selectBusinessUnits}`,
         ]);

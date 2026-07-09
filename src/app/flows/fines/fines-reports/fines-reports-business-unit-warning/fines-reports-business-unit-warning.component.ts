@@ -1,10 +1,9 @@
-import { Location } from '@angular/common';
 import { ChangeDetectionStrategy, Component, inject, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { GovukCancelLinkComponent } from '@hmcts/opal-frontend-common/components/govuk/govuk-cancel-link';
 import { GovukButtonDirective } from '@hmcts/opal-frontend-common/directives/govuk-button';
 import { FINES_REPORTS_ROUTING_PATHS } from '../routing/constants/fines-reports-routing-paths.constant';
-import { getFinesReportsSelectedBusinessUnitIdsFromNavigationState } from '../utils/get-fines-reports-selected-business-unit-ids-from-navigation-state.util';
+import { FinesReportsStore } from '../stores/fines-reports.store';
 
 @Component({
   selector: 'app-fines-reports-business-unit-warning',
@@ -14,10 +13,10 @@ import { getFinesReportsSelectedBusinessUnitIdsFromNavigationState } from '../ut
 })
 export class FinesReportsBusinessUnitWarningComponent implements OnInit {
   private readonly activatedRoute = inject(ActivatedRoute);
-  private readonly location = inject(Location);
+  private readonly finesReportsStore = inject(FinesReportsStore);
   private readonly router = inject(Router);
 
-  public selectedBusinessUnitIds: number[] = [];
+  public readonly selectedBusinessUnitIds = this.finesReportsStore.selectedBusinessUnitIds;
 
   /**
    * Returns the warning heading using the current selected business unit count.
@@ -25,7 +24,7 @@ export class FinesReportsBusinessUnitWarningComponent implements OnInit {
    * @returns The warning heading shown on the business unit warning page.
    */
   public get warningHeading(): string {
-    return `You have selected ${this.selectedBusinessUnitIds.length} business units`;
+    return `You have selected ${this.selectedBusinessUnitIds().length} business units`;
   }
 
   /**
@@ -34,7 +33,6 @@ export class FinesReportsBusinessUnitWarningComponent implements OnInit {
   public handleGoBack(): void {
     this.router.navigate([`../../${FINES_REPORTS_ROUTING_PATHS.children.selectBusinessUnits}`], {
       relativeTo: this.activatedRoute,
-      state: { selectedBusinessUnitIds: this.selectedBusinessUnitIds },
     });
   }
 
@@ -44,20 +42,14 @@ export class FinesReportsBusinessUnitWarningComponent implements OnInit {
   public handleContinue(): void {
     this.router.navigate([`../../${FINES_REPORTS_ROUTING_PATHS.children.parameters}`], {
       relativeTo: this.activatedRoute,
-      state: { selectedBusinessUnitIds: this.selectedBusinessUnitIds },
     });
   }
 
   /**
-   * Hydrates the selected business unit ids from navigation or browser history state and redirects back to selection when missing.
+   * Redirects back to selection when no selected business unit ids are available in the reports store.
    */
   public ngOnInit(): void {
-    this.selectedBusinessUnitIds = getFinesReportsSelectedBusinessUnitIdsFromNavigationState(
-      this.router,
-      this.location,
-    );
-
-    if (this.selectedBusinessUnitIds.length === 0) {
+    if (!this.finesReportsStore.hasSelectedBusinessUnits()) {
       this.router.navigate([`../../${FINES_REPORTS_ROUTING_PATHS.children.selectBusinessUnits}`], {
         relativeTo: this.activatedRoute,
       });

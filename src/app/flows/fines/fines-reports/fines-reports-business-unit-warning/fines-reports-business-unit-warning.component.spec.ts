@@ -1,28 +1,17 @@
 import { TestBed } from '@angular/core/testing';
-import { Location } from '@angular/common';
 import { ActivatedRoute, Router } from '@angular/router';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
 import { FINES_REPORTS_ROUTING_PATHS } from '../routing/constants/fines-reports-routing-paths.constant';
 import { FinesReportsBusinessUnitWarningComponent } from './fines-reports-business-unit-warning.component';
+import { FinesReportsStore } from '../stores/fines-reports.store';
 
 describe('FinesReportsBusinessUnitWarningComponent', () => {
-  const createRouterMock = (selectedBusinessUnitIds: number[] = []) => ({
+  const createRouterMock = () => ({
     navigate: vi.fn(),
-    currentNavigation: vi.fn(() =>
-      selectedBusinessUnitIds.length > 0 ? { extras: { state: { selectedBusinessUnitIds } } } : null,
-    ),
   });
 
-  const createLocationMock = (selectedBusinessUnitIds: number[] = []) => ({
-    getState: vi.fn(() => (selectedBusinessUnitIds.length > 0 ? { selectedBusinessUnitIds } : {})),
-  });
-
-  const setup = async (selectedBusinessUnitIds: number[] = [], useCurrentNavigation = true) => {
-    const router = createRouterMock(selectedBusinessUnitIds);
-    if (!useCurrentNavigation) {
-      router.currentNavigation = vi.fn(() => null);
-    }
-    const location = createLocationMock(selectedBusinessUnitIds);
+  const setup = async (selectedBusinessUnitIds: number[] = []) => {
+    const router = createRouterMock();
     const activatedRoute = {
       snapshot: {},
     };
@@ -38,18 +27,18 @@ describe('FinesReportsBusinessUnitWarningComponent', () => {
           provide: Router,
           useValue: router,
         },
-        {
-          provide: Location,
-          useValue: location,
-        },
+        FinesReportsStore,
       ],
     }).compileComponents();
+
+    const finesReportsStore = TestBed.inject(FinesReportsStore);
+    finesReportsStore.setSelectedBusinessUnitIds('operational_report_enforcement', selectedBusinessUnitIds);
 
     const fixture = TestBed.createComponent(FinesReportsBusinessUnitWarningComponent);
     const component = fixture.componentInstance;
     fixture.detectChanges();
 
-    return { component, fixture, router };
+    return { component, fixture, router, finesReportsStore };
   };
 
   beforeEach(() => {
@@ -72,7 +61,6 @@ describe('FinesReportsBusinessUnitWarningComponent', () => {
       [`../../${FINES_REPORTS_ROUTING_PATHS.children.selectBusinessUnits}`],
       {
         relativeTo: expect.any(Object),
-        state: { selectedBusinessUnitIds: [61, 67, 68, 69] },
       },
     );
   });
@@ -84,7 +72,6 @@ describe('FinesReportsBusinessUnitWarningComponent', () => {
 
     expect(router.navigate).toHaveBeenCalledWith([`../../${FINES_REPORTS_ROUTING_PATHS.children.parameters}`], {
       relativeTo: expect.any(Object),
-      state: { selectedBusinessUnitIds: [61, 67, 68, 69] },
     });
   });
 
@@ -99,10 +86,10 @@ describe('FinesReportsBusinessUnitWarningComponent', () => {
     );
   });
 
-  it('should restore selected business unit ids from location state when current navigation is unavailable', async () => {
-    const { component } = await setup([61, 67, 68, 69], false);
+  it('should restore selected business unit ids from the reports store', async () => {
+    const { component } = await setup([61, 67, 68, 69]);
 
-    expect(component.selectedBusinessUnitIds).toEqual([61, 67, 68, 69]);
+    expect(component.selectedBusinessUnitIds()).toEqual([61, 67, 68, 69]);
     expect(component.warningHeading).toBe('You have selected 4 business units');
   });
 });

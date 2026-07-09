@@ -8,6 +8,7 @@ import { BehaviorSubject } from 'rxjs';
 import { FINES_REPORTS_ROUTING_PATHS } from '../routing/constants/fines-reports-routing-paths.constant';
 import { IOpalFinesReport } from '@services/fines/opal-fines-service/interfaces/opal-fines-report.interface';
 import { OPAL_FINES_REPORT_MOCK } from '@services/fines/opal-fines-service/mocks/opal-fines-report.mock';
+import { FinesReportsStore } from '../stores/fines-reports.store';
 
 type MockRouteData = {
   report: IOpalFinesReport | null;
@@ -41,6 +42,7 @@ describe('FinesReportsSummaryListComponent', () => {
     fixture: ComponentFixture<FinesReportsSummaryListComponent>;
     activatedRoute: MockActivatedRoute;
     router: ReturnType<typeof createRouterMock>;
+    finesReportsStore: InstanceType<typeof FinesReportsStore>;
   }> => {
     const router = createRouterMock();
     const activatedRoute: MockActivatedRoute = {
@@ -69,13 +71,15 @@ describe('FinesReportsSummaryListComponent', () => {
           provide: Router,
           useValue: router,
         },
+        FinesReportsStore,
       ],
     }).compileComponents();
 
+    const finesReportsStore = TestBed.inject(FinesReportsStore);
     const fixture = TestBed.createComponent(FinesReportsSummaryListComponent);
     const component = fixture.componentInstance;
     fixture.detectChanges();
-    return { component, fixture, activatedRoute, router };
+    return { component, fixture, activatedRoute, router, finesReportsStore };
   };
 
   it('should create', async () => {
@@ -162,13 +166,18 @@ describe('FinesReportsSummaryListComponent', () => {
   });
 
   it('should navigate to the select business units route when create report is selected', async () => {
-    const { component, fixture, router } = await setup(
+    const { component, finesReportsStore, fixture, router } = await setup(
       `/fines/reports/${FINES_REPORTS_SUMMARY_LIST_ROUTING_PATHS.children.operationalReportsByEnforcement}/summary-list`,
     );
     const createReportButton: HTMLButtonElement = fixture.nativeElement.querySelector('button.govuk-button');
+    finesReportsStore.setSelectedBusinessUnitIds(
+      FINES_REPORTS_SUMMARY_LIST_ROUTING_PATHS.children.operationalReportsByEnforcement,
+      [61, 68],
+    );
 
     createReportButton.click();
 
+    expect(finesReportsStore.selectedBusinessUnitIds()).toEqual([]);
     expect(router.navigate).toHaveBeenCalledWith([`../${FINES_REPORTS_ROUTING_PATHS.children.selectBusinessUnits}`], {
       relativeTo: component['activatedRoute'],
     });
@@ -229,6 +238,7 @@ describe('FinesReportsSummaryListComponent', () => {
           provide: Router,
           useValue: router,
         },
+        FinesReportsStore,
       ],
     }).compileComponents();
 
@@ -275,6 +285,7 @@ describe('FinesReportsSummaryListComponent', () => {
           provide: Router,
           useValue: router,
         },
+        FinesReportsStore,
       ],
     }).compileComponents();
 

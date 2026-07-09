@@ -1,5 +1,4 @@
 import { TestBed } from '@angular/core/testing';
-import { Location } from '@angular/common';
 import { ActivatedRoute, Router, convertToParamMap } from '@angular/router';
 import { describe, expect, it, vi } from 'vitest';
 import { FinesReportsSelectBusinessUnitsComponent } from './fines-reports-select-business-units.component';
@@ -9,6 +8,7 @@ import { FINES_REPORTS_SUMMARY_LIST_ROUTING_PATHS } from '../fines-reports-summa
 import { IOpalFinesBusinessUnit } from '@services/fines/opal-fines-service/interfaces/opal-fines-business-unit.interface';
 import { FINES_REPORTS_ROUTING_PATHS } from '../routing/constants/fines-reports-routing-paths.constant';
 import { IOpalFinesReport } from '@services/fines/opal-fines-service/interfaces/opal-fines-report.interface';
+import { FinesReportsStore } from '../stores/fines-reports.store';
 
 describe('FinesReportsSelectBusinessUnitsComponent', () => {
   const DEFAULT_BUSINESS_UNITS = [
@@ -18,15 +18,8 @@ describe('FinesReportsSelectBusinessUnitsComponent', () => {
   ];
   const DEFAULT_BUSINESS_UNIT_WARNING_THRESHOLD = 10;
 
-  const createRouterMock = (selectedBusinessUnitIds: number[] = []) => ({
+  const createRouterMock = () => ({
     navigate: vi.fn(),
-    currentNavigation: vi.fn(() =>
-      selectedBusinessUnitIds.length > 0 ? { extras: { state: { selectedBusinessUnitIds } } } : null,
-    ),
-  });
-
-  const createLocationMock = (selectedBusinessUnitIds: number[] = []) => ({
-    getState: vi.fn(() => (selectedBusinessUnitIds.length > 0 ? { selectedBusinessUnitIds } : {})),
   });
 
   const createBusinessUnits = (count: number): IOpalFinesBusinessUnit[] =>
@@ -54,14 +47,9 @@ describe('FinesReportsSelectBusinessUnitsComponent', () => {
     reportTypeId: string,
     businessUnits = DEFAULT_BUSINESS_UNITS,
     selectedBusinessUnitIds: number[] = [],
-    useCurrentNavigation = true,
     businessUnitWarningThreshold: number | null = DEFAULT_BUSINESS_UNIT_WARNING_THRESHOLD,
   ) => {
-    const router = createRouterMock(selectedBusinessUnitIds);
-    if (!useCurrentNavigation) {
-      router.currentNavigation = vi.fn(() => null);
-    }
-    const location = createLocationMock(selectedBusinessUnitIds);
+    const router = createRouterMock();
     const reportHeading = findFinesReportsDefinition(reportTypeId)?.heading ?? '';
     const reportParameters =
       businessUnitWarningThreshold === null ? {} : { business_unit_warning_threshold: businessUnitWarningThreshold };
@@ -109,18 +97,18 @@ describe('FinesReportsSelectBusinessUnitsComponent', () => {
           provide: Router,
           useValue: router,
         },
-        {
-          provide: Location,
-          useValue: location,
-        },
+        FinesReportsStore,
       ],
     }).compileComponents();
+
+    const finesReportsStore = TestBed.inject(FinesReportsStore);
+    finesReportsStore.setSelectedBusinessUnitIds(reportTypeId, selectedBusinessUnitIds);
 
     const fixture = TestBed.createComponent(FinesReportsSelectBusinessUnitsComponent);
     const component = fixture.componentInstance;
     fixture.detectChanges();
 
-    return { component, fixture, router };
+    return { component, fixture, router, finesReportsStore };
   };
 
   it.each([
@@ -160,19 +148,20 @@ describe('FinesReportsSelectBusinessUnitsComponent', () => {
   });
 
   it('should navigate back to the summary list when cancel is selected', async () => {
-    const { component, router } = await setup(
+    const { component, finesReportsStore, router } = await setup(
       FINES_REPORTS_SUMMARY_LIST_ROUTING_PATHS.children.operationalReportsByPayments,
     );
 
     component.handleCancel();
 
+    expect(finesReportsStore.selectedBusinessUnitIds()).toEqual([]);
     expect(router.navigate).toHaveBeenCalledWith([`../../${FINES_REPORTS_ROUTING_PATHS.children.summaryList}`], {
       relativeTo: expect.any(Object),
     });
   });
 
   it('should handle submitted business unit selections', async () => {
-    const { component, router } = await setup(
+    const { component, finesReportsStore, router } = await setup(
       FINES_REPORTS_SUMMARY_LIST_ROUTING_PATHS.children.operationalReportsByPayments,
     );
 
@@ -188,15 +177,15 @@ describe('FinesReportsSelectBusinessUnitsComponent', () => {
       nestedFlow: false,
     });
 
-    expect(component.selectedBusinessUnitIds).toEqual([61, 68]);
+    expect(component.selectedBusinessUnitIds()).toEqual([61, 68]);
+    expect(finesReportsStore.selectedBusinessUnitIds()).toEqual([61, 68]);
     expect(router.navigate).toHaveBeenCalledWith([`../../${FINES_REPORTS_ROUTING_PATHS.children.parameters}`], {
       relativeTo: expect.any(Object),
-      state: { selectedBusinessUnitIds: [61, 68] },
     });
   });
 
   it('should handle submitted single business unit selections', async () => {
-    const { fixture, router } = await setup(
+    const { fixture, finesReportsStore, router } = await setup(
       FINES_REPORTS_SUMMARY_LIST_ROUTING_PATHS.children.operationalReportsByPayments,
     );
     const component = fixture.componentInstance;
@@ -210,50 +199,52 @@ describe('FinesReportsSelectBusinessUnitsComponent', () => {
       nestedFlow: false,
     });
 
-    expect(component.selectedBusinessUnitIds).toEqual([61]);
+    expect(component.selectedBusinessUnitIds()).toEqual([61]);
+    expect(finesReportsStore.selectedBusinessUnitIds()).toEqual([61]);
     expect(router.navigate).toHaveBeenCalledWith([`../../${FINES_REPORTS_ROUTING_PATHS.children.parameters}`], {
       relativeTo: expect.any(Object),
-      state: { selectedBusinessUnitIds: [61] },
     });
   });
 
   it('should continue without warning when selected business units do not exceed the threshold', async () => {
     const businessUnits = createBusinessUnits(DEFAULT_BUSINESS_UNIT_WARNING_THRESHOLD);
-    const { component, router } = await setup(
+    const { component, finesReportsStore, router } = await setup(
       FINES_REPORTS_SUMMARY_LIST_ROUTING_PATHS.children.operationalReportsByPayments,
       businessUnits,
     );
 
     component.handleContinue(createBusinessUnitFormData(businessUnits, DEFAULT_BUSINESS_UNIT_WARNING_THRESHOLD));
 
-    expect(component.selectedBusinessUnitIds).toEqual(
+    expect(component.selectedBusinessUnitIds()).toEqual(
+      businessUnits.map((businessUnit) => businessUnit.business_unit_id),
+    );
+    expect(finesReportsStore.selectedBusinessUnitIds()).toEqual(
       businessUnits.map((businessUnit) => businessUnit.business_unit_id),
     );
     expect(router.navigate).toHaveBeenCalledWith([`../../${FINES_REPORTS_ROUTING_PATHS.children.parameters}`], {
       relativeTo: expect.any(Object),
-      state: {
-        selectedBusinessUnitIds: businessUnits.map((businessUnit) => businessUnit.business_unit_id),
-      },
     });
   });
 
   it('should navigate to the warning route when selected business units exceed the threshold', async () => {
     const businessUnits = createBusinessUnits(DEFAULT_BUSINESS_UNIT_WARNING_THRESHOLD + 1);
-    const { component, router } = await setup(
+    const { component, finesReportsStore, router } = await setup(
       FINES_REPORTS_SUMMARY_LIST_ROUTING_PATHS.children.operationalReportsByPayments,
       businessUnits,
     );
 
     component.handleContinue(createBusinessUnitFormData(businessUnits, DEFAULT_BUSINESS_UNIT_WARNING_THRESHOLD + 1));
 
-    expect(component.selectedBusinessUnitIds).toEqual([]);
+    expect(component.selectedBusinessUnitIds()).toEqual(
+      businessUnits.map((businessUnit) => businessUnit.business_unit_id),
+    );
+    expect(finesReportsStore.selectedBusinessUnitIds()).toEqual(
+      businessUnits.map((businessUnit) => businessUnit.business_unit_id),
+    );
     expect(router.navigate).toHaveBeenCalledWith(
       [`../../${FINES_REPORTS_ROUTING_PATHS.children.businessUnitWarning}`],
       {
         relativeTo: expect.any(Object),
-        state: {
-          selectedBusinessUnitIds: businessUnits.map((businessUnit) => businessUnit.business_unit_id),
-        },
       },
     );
   });
@@ -264,7 +255,6 @@ describe('FinesReportsSelectBusinessUnitsComponent', () => {
       FINES_REPORTS_SUMMARY_LIST_ROUTING_PATHS.children.operationalReportsByPayments,
       businessUnits,
       [],
-      true,
       null,
     );
 
@@ -272,13 +262,10 @@ describe('FinesReportsSelectBusinessUnitsComponent', () => {
 
     expect(router.navigate).toHaveBeenCalledWith([`../../${FINES_REPORTS_ROUTING_PATHS.children.parameters}`], {
       relativeTo: expect.any(Object),
-      state: {
-        selectedBusinessUnitIds: businessUnits.map((businessUnit) => businessUnit.business_unit_id),
-      },
     });
   });
 
-  it('should restore selected business unit ids from navigation state', async () => {
+  it('should restore selected business unit ids from the reports store', async () => {
     const selectedBusinessUnitIds = [61, 68];
     const { component } = await setup(
       FINES_REPORTS_SUMMARY_LIST_ROUTING_PATHS.children.operationalReportsByPayments,
@@ -286,19 +273,7 @@ describe('FinesReportsSelectBusinessUnitsComponent', () => {
       selectedBusinessUnitIds,
     );
 
-    expect(component.selectedBusinessUnitIds).toEqual(selectedBusinessUnitIds);
-  });
-
-  it('should restore selected business unit ids from location state when current navigation is unavailable', async () => {
-    const selectedBusinessUnitIds = [61, 68];
-    const { component } = await setup(
-      FINES_REPORTS_SUMMARY_LIST_ROUTING_PATHS.children.operationalReportsByPayments,
-      DEFAULT_BUSINESS_UNITS,
-      selectedBusinessUnitIds,
-      false,
-    );
-
-    expect(component.selectedBusinessUnitIds).toEqual(selectedBusinessUnitIds);
+    expect(component.selectedBusinessUnitIds()).toEqual(selectedBusinessUnitIds);
   });
 
   it('should update canDeactivate state from child unsaved changes', async () => {

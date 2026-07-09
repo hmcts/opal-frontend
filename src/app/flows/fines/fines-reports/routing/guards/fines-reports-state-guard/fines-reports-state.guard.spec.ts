@@ -1,5 +1,4 @@
 import { TestBed } from '@angular/core/testing';
-import { Location } from '@angular/common';
 import { ActivatedRouteSnapshot, Router, RouterStateSnapshot, UrlTree, convertToParamMap } from '@angular/router';
 import { createSpyObj } from '@app/testing/create-spy-obj.helper';
 import { FINES_PERMISSIONS } from '@app/constants/fines-permissions.constant';
@@ -13,6 +12,7 @@ import { FINES_REPORTS_SUMMARY_LIST_ROUTING_PATHS } from '../../../fines-reports
 import { FINES_ROUTING_PATHS } from '@app/flows/fines/routing/constants/fines-routing-paths.constant';
 import { FINES_DASHBOARD_ROUTING_PATHS } from '@app/flows/fines/constants/fines-dashboard-routing-paths.constant';
 import { FINES_REPORTS_ROUTING_PATHS } from '../../constants/fines-reports-routing-paths.constant';
+import { FinesReportsStore } from '../../../stores/fines-reports.store';
 
 describe('finesReportsStateGuard', () => {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -21,8 +21,7 @@ describe('finesReportsStateGuard', () => {
   let mockPermissionsService: any;
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   let mockOpalUserService: any;
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  let mockLocation: any;
+  let finesReportsStore: InstanceType<typeof FinesReportsStore>;
 
   const runGuard = async (
     reportTypeId: string | null,
@@ -45,25 +44,24 @@ describe('finesReportsStateGuard', () => {
   };
 
   beforeEach(() => {
-    mockRouter = createSpyObj('Router', ['createUrlTree', 'currentNavigation']);
+    mockRouter = createSpyObj('Router', ['createUrlTree']);
     mockPermissionsService = createSpyObj('PermissionsService', ['getUniquePermissions']);
     mockOpalUserService = createSpyObj('OpalUserService', ['getLoggedInUserState']);
-    mockLocation = createSpyObj('Location', ['getState']);
 
     mockRouter.createUrlTree.mockReturnValue(new UrlTree());
-    mockRouter.currentNavigation.mockReturnValue(null);
     mockPermissionsService.getUniquePermissions.mockReturnValue([]);
     mockOpalUserService.getLoggedInUserState.mockReturnValue(of({}));
-    mockLocation.getState.mockReturnValue({});
 
     TestBed.configureTestingModule({
       providers: [
         { provide: Router, useValue: mockRouter },
-        { provide: Location, useValue: mockLocation },
         { provide: PermissionsService, useValue: mockPermissionsService },
         { provide: OpalUserService, useValue: mockOpalUserService },
+        FinesReportsStore,
       ],
     });
+
+    finesReportsStore = TestBed.inject(FinesReportsStore);
   });
 
   it('should capture the selected your reports id without checking permissions', async () => {
@@ -135,7 +133,10 @@ describe('finesReportsStateGuard', () => {
 
   it('should allow report parameter routes when selected business units are already stored', async () => {
     mockPermissionsService.getUniquePermissions.mockReturnValue([FINES_PERMISSIONS['search-and-view-accounts']]);
-    mockRouter.currentNavigation.mockReturnValue({ extras: { state: { selectedBusinessUnitIds: [61, 68] } } });
+    finesReportsStore.setSelectedBusinessUnitIds(
+      FINES_REPORTS_SUMMARY_LIST_ROUTING_PATHS.children.operationalReportsByPayments,
+      [61, 68],
+    );
 
     const result = await runGuard(
       FINES_REPORTS_SUMMARY_LIST_ROUTING_PATHS.children.operationalReportsByPayments,
@@ -146,9 +147,14 @@ describe('finesReportsStateGuard', () => {
     expect(result).toBe(true);
   });
 
-  it('should allow report parameter routes when selected business units are available in location state', async () => {
+  it('should redirect report parameter routes when stored business units belong to a different report', async () => {
     mockPermissionsService.getUniquePermissions.mockReturnValue([FINES_PERMISSIONS['search-and-view-accounts']]);
-    mockLocation.getState.mockReturnValue({ selectedBusinessUnitIds: [61, 68] });
+    const expectedUrlTree = new UrlTree();
+    mockRouter.createUrlTree.mockReturnValue(expectedUrlTree);
+    finesReportsStore.setSelectedBusinessUnitIds(
+      FINES_REPORTS_SUMMARY_LIST_ROUTING_PATHS.children.operationalReportsByEnforcement,
+      [61, 68],
+    );
 
     const result = await runGuard(
       FINES_REPORTS_SUMMARY_LIST_ROUTING_PATHS.children.operationalReportsByPayments,
@@ -156,7 +162,7 @@ describe('finesReportsStateGuard', () => {
       true,
     );
 
-    expect(result).toBe(true);
+    expect(result).toBe(expectedUrlTree);
   });
 
   it('should redirect to access denied when the user lacks the required permission', async () => {
