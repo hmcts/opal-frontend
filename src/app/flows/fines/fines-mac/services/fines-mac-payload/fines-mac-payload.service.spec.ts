@@ -69,7 +69,7 @@ describe('FinesMacPayloadService', () => {
       return;
     }
 
-    const result = service.buildAddAccountPayload(finesMacState, sessionUserState);
+    const result = service.buildAddAccountPayload(finesMacState);
     finesMacPayloadAddAccount.account.defendant.parent_guardian = null;
     expect(result).toEqual(toRequestPayload(finesMacPayloadAddAccount));
     expect(result).not.toHaveProperty('timeline_data');
@@ -82,7 +82,7 @@ describe('FinesMacPayloadService', () => {
     }
 
     finesMacState.offenceDetails = structuredClone([FINES_MAC_PAYLOAD_OFFENCE_DETAILS_MINOR_CREDITOR_STATE]);
-    const result = service.buildAddAccountPayload(finesMacState, sessionUserState);
+    const result = service.buildAddAccountPayload(finesMacState);
 
     finesMacPayloadAddAccount.account.offences = FINES_MAC_PAYLOAD_ACCOUNT_OFFENCES_WITH_MINOR_CREDITOR;
     finesMacPayloadAddAccount.account.defendant.parent_guardian = null;
@@ -101,7 +101,7 @@ describe('FinesMacPayloadService', () => {
     finesMacState.fixedPenaltyDetails.formData = structuredClone(FINES_MAC_PAYLOAD_FIXED_PENALTY_DETAILS_STATE_MOCK);
     finesMacState.paymentTerms = structuredClone(FINES_MAC_PAYMENT_TERMS_FORM);
 
-    const result = service.buildAddAccountPayload(finesMacState, sessionUserState);
+    const result = service.buildAddAccountPayload(finesMacState);
 
     expect(result).toEqual(toRequestPayload(finesMacPayloadAddAccountFixedPenalty));
     expect(result).not.toHaveProperty('timeline_data');
@@ -115,7 +115,7 @@ describe('FinesMacPayloadService', () => {
 
     finesMacPayloadAddAccount.account_status = FINES_MAC_PAYLOAD_STATUSES.resubmitted;
 
-    const result = service.buildReplaceAccountPayload(finesMacState, finesMacPayloadAddAccount, sessionUserState);
+    const result = service.buildReplaceAccountPayload(finesMacState, finesMacPayloadAddAccount);
     finesMacPayloadAddAccount.account.defendant.parent_guardian = null;
     expect(result).toEqual(toRequestPayload(finesMacPayloadAddAccount));
     expect(result).not.toHaveProperty('timeline_data');

@@ -116,14 +116,12 @@ export class FinesMacPayloadService {
    * Builds the payload for adding or replacing an account in the fines MAC system.
    *
    * @param finesMacState - The current state of the fines MAC.
-   * @param sessionUserState - The current state of the session user.
    * @param addAccount - A boolean indicating whether to add a new account (true) or replace an existing account (false).
    * @returns The payload for adding or replacing an account.
    */
   private buildAddReplaceAccountPayload(
     finesMacState: IFinesMacState,
     draftAccountPayload: IFinesMacAddAccountPayload | null,
-    _userState: IOpalUserState,
     addAccount: boolean,
   ): IFinesMacAddAccountRequestPayload {
     const { formData: accountDetailsState } = finesMacState.accountDetails;
@@ -171,29 +169,23 @@ export class FinesMacPayloadService {
    * Builds the payload for adding an account in the fines MAC (Management and Control) system.
    *
    * @param finesMacState - The current state of the fines MAC.
-   * @param sessionUserState - The current state of the session user.
    * @returns The payload required to add an account in the fines MAC system.
    */
-  public buildAddAccountPayload(
-    finesMacState: IFinesMacState,
-    userState: IOpalUserState,
-  ): IFinesMacAddAccountRequestPayload {
-    return this.buildAddReplaceAccountPayload(structuredClone(finesMacState), null, userState, true);
+  public buildAddAccountPayload(finesMacState: IFinesMacState): IFinesMacAddAccountRequestPayload {
+    return this.buildAddReplaceAccountPayload(structuredClone(finesMacState), null, true);
   }
 
   /**
    * Builds the payload for replacing an account in the fines MAC state.
    *
    * @param finesMacState - The current state of the fines MAC.
-   * @param sessionUserState - The current state of the session user.
    * @returns The payload required to add or replace an account in the fines MAC state.
    */
   public buildReplaceAccountPayload(
     finesMacState: IFinesMacState,
     draftAccountPayload: IFinesMacAddAccountPayload,
-    userState: IOpalUserState,
   ): IFinesMacAddAccountRequestPayload {
-    return this.buildAddReplaceAccountPayload(structuredClone(finesMacState), draftAccountPayload, userState, false);
+    return this.buildAddReplaceAccountPayload(structuredClone(finesMacState), draftAccountPayload, false);
   }
 
   /**
