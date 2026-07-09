@@ -9,8 +9,8 @@ import { beforeEach, describe, expect, it, vi } from 'vitest';
 import { createSpyObj } from '@app/testing/create-spy-obj.helper';
 import { of, throwError } from 'rxjs';
 import { ACCOUNTS_PERMISSIONS } from '@app/flows/fines/constants/accounts-permissions.constant';
-import { REPORTS_PRIMARY_NAVIGATION_PERMISSIONS } from '@app/flows/fines/constants/reports-permissions.constant';
 import { SEARCH_PERMISSIONS } from '@app/flows/fines/constants/search-permissions.constant';
+import { REPORTS_PRIMARY_NAVIGATION_PERMISSIONS } from '@app/flows/fines/constants/reports-primary-navigation-permissions.constant';
 import {
   RELEASE_1A_FEATURE_FLAG,
   RELEASE_1C_ADMINISTRATION_FEATURE_FLAG,

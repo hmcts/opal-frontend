@@ -6,7 +6,7 @@ import {
   RELEASE_1C_WRITE_OFF_FEATURE_FLAG,
   RELEASE_1C_ENFORCEMENT_OPERATIONAL_REPORTING_FEATURE_FLAG,
 } from './release-feature-flags.constant';
-import { REPORTS_PRIMARY_NAVIGATION_PERMISSIONS } from './reports-permissions.constant';
+import { REPORTS_PRIMARY_NAVIGATION_PERMISSIONS } from './reports-primary-navigation-permissions.constant';
 
 export const FEATURE_FLAG_RELEASE_PERMISSIONS: FeatureFlagReleasePermissions = {
   [RELEASE_1A_FEATURE_FLAG]: [

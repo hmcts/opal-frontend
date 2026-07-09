@@ -5,8 +5,8 @@ import { DASHBOARD_PAGE_DEFAULT_TAB } from '@app/pages/dashboard/constants/dashb
 import { IOpalUserState } from '@hmcts/opal-frontend-common/services/opal-user-service/interfaces';
 import { OPAL_USER_STATE_MOCK } from '@hmcts/opal-frontend-common/services/opal-user-service/mocks';
 import { ACCOUNTS_PERMISSIONS } from '../constants/accounts-permissions.constant';
-import { REPORTS_PRIMARY_NAVIGATION_PERMISSIONS } from '../constants/reports-permissions.constant';
 import { SEARCH_PERMISSIONS } from '../constants/search-permissions.constant';
+import { REPORTS_PRIMARY_NAVIGATION_PERMISSIONS } from '../constants/reports-primary-navigation-permissions.constant';
 import {
   RELEASE_1A_FEATURE_FLAG,
   RELEASE_1C_ADMINISTRATION_FEATURE_FLAG,
