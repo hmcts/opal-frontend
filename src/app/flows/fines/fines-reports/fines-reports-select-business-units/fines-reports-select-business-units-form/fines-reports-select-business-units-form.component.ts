@@ -1,13 +1,4 @@
-import {
-  ChangeDetectionStrategy,
-  Component,
-  computed,
-  EventEmitter,
-  Input,
-  OnInit,
-  Output,
-  signal,
-} from '@angular/core';
+import { ChangeDetectionStrategy, Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import { FormControl, FormGroup, FormRecord, ReactiveFormsModule } from '@angular/forms';
 import { AbstractFormBaseComponent } from '@hmcts/opal-frontend-common/components/abstract/abstract-form-base';
 import {
@@ -60,11 +51,6 @@ export class FinesReportsSelectBusinessUnitsFormComponent extends AbstractFormBa
    * Form control name for the master select-all business unit checkbox.
    */
   private readonly ALL_BUSINESS_UNITS_CTRL = 'fines_reports_select_business_unit_ids_select_all';
-
-  /**
-   * Signal storing the latest checked state for each business unit id.
-   */
-  private readonly businessUnitSelections = signal<Record<number, boolean>>({});
 
   protected override fieldErrors: IAbstractFormBaseFieldErrors = {
     fines_reports_select_business_unit_ids: {
@@ -123,33 +109,6 @@ export class FinesReportsSelectBusinessUnitsFormComponent extends AbstractFormBa
   public businessUnitRows: IFinesReportsSelectBusinessUnitRow[] = [];
 
   /**
-   * Selected business unit ids derived from the checkbox controls.
-   */
-  public readonly selectedBusinessUnitIds = computed(() => {
-    if (this.businessUnits.length === 1) {
-      return [this.businessUnits[0].business_unit_id];
-    }
-
-    const selections = this.businessUnitSelections();
-
-    return this.businessUnits
-      .filter((businessUnit) => selections[businessUnit.business_unit_id])
-      .map((businessUnit) => businessUnit.business_unit_id);
-  });
-
-  /**
-   * Number of currently selected business units.
-   */
-  public readonly selectedCount = computed(() => this.selectedBusinessUnitIds().length);
-
-  /**
-   * Whether every available business unit is selected.
-   */
-  public readonly isAllSelected = computed(
-    () => this.businessUnits.length > 0 && this.selectedCount() === this.businessUnits.length,
-  );
-
-  /**
    * Creates checkbox form controls keyed by business unit id.
    *
    * @returns A form record containing one unchecked control for each business unit.
@@ -199,7 +158,7 @@ export class FinesReportsSelectBusinessUnitsFormComponent extends AbstractFormBa
       control.setValue(selected, { emitEvent: false });
     }
 
-    this.refreshBusinessUnitSelections(record);
+    this.refreshFormValidation(record);
     this.updateAllBusinessUnitsControlFromRecord(record);
   }
 
@@ -215,17 +174,11 @@ export class FinesReportsSelectBusinessUnitsFormComponent extends AbstractFormBa
   }
 
   /**
-   * Synchronises the selection signal with the current form record values.
+   * Refreshes the business unit record and parent form validation state.
    *
-   * @param record - The business unit form record to read from.
+   * @param record - The business unit form record to validate.
    */
-  private refreshBusinessUnitSelections(record: FormRecord<FormControl<boolean>>): void {
-    this.businessUnitSelections.set(
-      this.objectFromFormRecord<boolean, boolean, number>(record, {
-        mapKey: Number,
-        mapValue: (value) => !!value,
-      }),
-    );
+  private refreshFormValidation(record: FormRecord<FormControl<boolean>>): void {
     record.updateValueAndValidity({ emitEvent: false });
     this.form.updateValueAndValidity({ emitEvent: false });
   }
@@ -252,10 +205,10 @@ export class FinesReportsSelectBusinessUnitsFormComponent extends AbstractFormBa
       this.buildBusinessUnitRows(record);
     }
 
-    this.refreshBusinessUnitSelections(record);
+    this.refreshFormValidation(record);
     this.updateAllBusinessUnitsControlFromRecord(record);
     record.valueChanges.pipe(takeUntil(this.ngUnsubscribe)).subscribe(() => {
-      this.refreshBusinessUnitSelections(record);
+      this.refreshFormValidation(record);
       this.updateAllBusinessUnitsControlFromRecord(record);
     });
     this.allBusinessUnitsControl.valueChanges.pipe(takeUntil(this.ngUnsubscribe)).subscribe((selected) => {

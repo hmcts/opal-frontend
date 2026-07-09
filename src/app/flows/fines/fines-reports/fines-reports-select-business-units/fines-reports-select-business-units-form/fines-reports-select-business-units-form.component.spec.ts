@@ -90,30 +90,30 @@ describe('FinesReportsSelectBusinessUnitsFormComponent', () => {
     expect(record.get('61')?.value).toBe(true);
     expect(record.get('67')?.value).toBe(false);
     expect(record.get('68')?.value).toBe(true);
-    expect(component.selectedBusinessUnitIds()).toEqual([61, 68]);
-    expect(component.selectedCount()).toBe(2);
     expect(component.allBusinessUnitsControl.value).toBe(false);
   });
 
   it('should select the master checkbox when every restored business unit is selected', async () => {
     const { component } = await setup(businessUnits, [61, 67, 68]);
+    const record = component['form'].get('fines_reports_select_business_unit_ids') as FormRecord<FormControl<boolean>>;
 
-    expect(component.selectedBusinessUnitIds()).toEqual([61, 67, 68]);
-    expect(component.selectedCount()).toBe(3);
-    expect(component.isAllSelected()).toBe(true);
+    expect(record.get('61')?.value).toBe(true);
+    expect(record.get('67')?.value).toBe(true);
+    expect(record.get('68')?.value).toBe(true);
     expect(component.allBusinessUnitsControl.value).toBe(true);
   });
 
-  it('should update selected business unit ids and count when checkbox values change', async () => {
+  it('should keep the master checkbox deselected when checkbox values change but not every business unit is selected', async () => {
     const { component } = await setup();
     const record = component['form'].get('fines_reports_select_business_unit_ids') as FormRecord<FormControl<boolean>>;
 
     record.get('61')?.setValue(true);
     record.get('68')?.setValue(true);
 
-    expect(component.selectedBusinessUnitIds()).toEqual([61, 68]);
-    expect(component.selectedCount()).toBe(2);
-    expect(component.isAllSelected()).toBe(false);
+    expect(record.get('61')?.value).toBe(true);
+    expect(record.get('67')?.value).toBe(false);
+    expect(record.get('68')?.value).toBe(true);
+    expect(component.allBusinessUnitsControl.value).toBe(false);
   });
 
   it('should select every business unit when the master checkbox is selected', async () => {
@@ -125,9 +125,6 @@ describe('FinesReportsSelectBusinessUnitsFormComponent', () => {
     expect(record.get('61')?.value).toBe(true);
     expect(record.get('67')?.value).toBe(true);
     expect(record.get('68')?.value).toBe(true);
-    expect(component.selectedBusinessUnitIds()).toEqual([61, 67, 68]);
-    expect(component.selectedCount()).toBe(3);
-    expect(component.isAllSelected()).toBe(true);
     expect(component.allBusinessUnitsControl.value).toBe(true);
   });
 
@@ -141,9 +138,6 @@ describe('FinesReportsSelectBusinessUnitsFormComponent', () => {
     expect(record.get('61')?.value).toBe(false);
     expect(record.get('67')?.value).toBe(false);
     expect(record.get('68')?.value).toBe(false);
-    expect(component.selectedBusinessUnitIds()).toEqual([]);
-    expect(component.selectedCount()).toBe(0);
-    expect(component.isAllSelected()).toBe(false);
     expect(component.allBusinessUnitsControl.value).toBe(false);
     expect(record.errors).toEqual({ required: true });
     expect(component['form'].valid).toBe(false);
@@ -156,8 +150,6 @@ describe('FinesReportsSelectBusinessUnitsFormComponent', () => {
     record.get('61')?.setValue(true);
     record.get('68')?.setValue(true);
 
-    expect(component.selectedBusinessUnitIds()).toEqual([61, 68]);
-    expect(component.isAllSelected()).toBe(false);
     expect(component.allBusinessUnitsControl.value).toBe(false);
   });
 
@@ -169,9 +161,6 @@ describe('FinesReportsSelectBusinessUnitsFormComponent', () => {
     record.get('67')?.setValue(true);
     record.get('68')?.setValue(true);
 
-    expect(component.selectedBusinessUnitIds()).toEqual([61, 67, 68]);
-    expect(component.selectedCount()).toBe(3);
-    expect(component.isAllSelected()).toBe(true);
     expect(component.allBusinessUnitsControl.value).toBe(true);
   });
 
@@ -180,9 +169,6 @@ describe('FinesReportsSelectBusinessUnitsFormComponent', () => {
     const { component, fixture } = await setup(singleBusinessUnit);
 
     expect(component.businessUnitRows).toEqual([]);
-    expect(component.selectedBusinessUnitIds()).toEqual([61]);
-    expect(component.selectedCount()).toBe(1);
-    expect(component.isAllSelected()).toBe(true);
     expect(component['form'].valid).toBe(true);
     expect(fixture.nativeElement.querySelector('input[type="checkbox"]')).toBeNull();
     expect(fixture.nativeElement.textContent).toContain('Historical Debt');
