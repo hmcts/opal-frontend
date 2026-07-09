@@ -12,6 +12,7 @@ import { routes } from './app.routes';
 import { AppInitializerService } from '@hmcts/opal-frontend-common/services/app-initializer-service';
 import { httpErrorInterceptor } from '@hmcts/opal-frontend-common/interceptors/http-error';
 import { contentDigestInterceptor } from '@hmcts/opal-frontend-common/interceptors/content-digest';
+import { httpRetryInterceptor } from '@hmcts/opal-frontend-common/interceptors/http-retry';
 
 export const appConfig: ApplicationConfig = {
   providers: [
@@ -24,7 +25,8 @@ export const appConfig: ApplicationConfig = {
     provideClientHydration(withNoHttpTransferCache()),
     provideHttpClient(
       withFetch(),
-      withInterceptors([httpErrorInterceptor, contentDigestInterceptor]),
+      // Response errors unwind in reverse order, so retry handles transient failures before the error UI.
+      withInterceptors([httpErrorInterceptor, contentDigestInterceptor, httpRetryInterceptor]),
       withInterceptorsFromDi(),
       withXsrfConfiguration({
         headerName: 'X-XSRF-TOKEN',

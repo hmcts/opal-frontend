@@ -1,6 +1,7 @@
 import { HttpClient, HttpParams, HttpResponse } from '@angular/common/http';
 import { inject, Injectable } from '@angular/core';
 import { OPAL_FINES_PATHS } from '@services/fines/opal-fines-service/constants/opal-fines-paths.constant';
+import { withHttpRetry } from '@hmcts/opal-frontend-common/interceptors/http-retry';
 
 import { IOpalFinesBusinessUnit } from '@services/fines/opal-fines-service/interfaces/opal-fines-business-unit.interface';
 import { IOpalFinesBusinessUnitNonSnakeCase } from '@services/fines/opal-fines-service/interfaces/opal-fines-business-unit-non-snake-case.interface';
@@ -78,6 +79,19 @@ export class OpalFines {
   private readonly PARAM_NOT_SUBMITTED_BY = 'not_submitted_by';
   private readonly PARAM_ACCOUNT_STATUS_DATE_FROM = 'account_status_date_from';
   private readonly PARAM_ACCOUNT_STATUS_DATE_TO = 'account_status_date_to';
+
+  private retrySafeReadOptions() {
+    return { context: withHttpRetry({ retryCount: 1, delayMs: 0 }) };
+  }
+
+  private withRetrySafeReadOptions<TOptions extends object>(
+    options: TOptions,
+  ): TOptions & ReturnType<typeof this.retrySafeReadOptions> {
+    return {
+      ...options,
+      ...this.retrySafeReadOptions(),
+    };
+  }
 
   /**
    * Appends an array of values to the given HttpParams object under the specified key.
@@ -183,7 +197,10 @@ export class OpalFines {
   public getCourts(business_unit: number): Observable<IOpalFinesCourtRefData> {
     if (!this.cache.courtRefDataCache$[business_unit]) {
       this.cache.courtRefDataCache$[business_unit] = this.http
-        .get<IOpalFinesCourtRefData>(OPAL_FINES_PATHS.courtRefData, { params: { business_unit } })
+        .get<IOpalFinesCourtRefData>(
+          OPAL_FINES_PATHS.courtRefData,
+          this.withRetrySafeReadOptions({ params: { business_unit } }),
+        )
         .pipe(shareReplay(1));
     }
 
@@ -225,7 +242,10 @@ export class OpalFines {
     // e.g. ACCOUNT_ENQUIRY, ACCOUNT_ENQUIRY_NOTES, CREATE_MANAGE_DRAFT_ACCOUNTS
     if (!this.cache.businessUnitsPermissionCache$[permission]) {
       this.cache.businessUnitsPermissionCache$[permission] = this.http
-        .get<IOpalFinesBusinessUnitRefData>(OPAL_FINES_PATHS.businessUnitRefData, { params: { permission } })
+        .get<IOpalFinesBusinessUnitRefData>(
+          OPAL_FINES_PATHS.businessUnitRefData,
+          this.withRetrySafeReadOptions({ params: { permission } }),
+        )
         .pipe(shareReplay(1));
     }
 
@@ -245,7 +265,7 @@ export class OpalFines {
    */
   public getBusinessUnits(): Observable<IOpalFinesBusinessUnitRefData> {
     this.cache.businessUnitsCache$ ??= this.http
-      .get<IOpalFinesBusinessUnitRefData>(OPAL_FINES_PATHS.businessUnitRefData)
+      .get<IOpalFinesBusinessUnitRefData>(OPAL_FINES_PATHS.businessUnitRefData, this.retrySafeReadOptions())
       .pipe(shareReplay(1));
 
     return this.cache.businessUnitsCache$;
@@ -285,6 +305,7 @@ export class OpalFines {
         this.cache.localJusticeAreasLjaTypeCache$[cacheKey] = this.http
           .get<IOpalFinesLocalJusticeAreaRefData>(OPAL_FINES_PATHS.localJusticeAreaRefData, {
             params: { lja_type: ljaTypes },
+            ...this.retrySafeReadOptions(),
           })
           .pipe(shareReplay(1));
       }
@@ -293,7 +314,7 @@ export class OpalFines {
     }
 
     this.cache.localJusticeAreasCache$ ??= this.http
-      .get<IOpalFinesLocalJusticeAreaRefData>(OPAL_FINES_PATHS.localJusticeAreaRefData)
+      .get<IOpalFinesLocalJusticeAreaRefData>(OPAL_FINES_PATHS.localJusticeAreaRefData, this.retrySafeReadOptions())
       .pipe(shareReplay(1));
 
     return this.cache.localJusticeAreasCache$;
@@ -343,6 +364,7 @@ export class OpalFines {
       this.cache.resultsCache$[cacheKey] = this.http
         .get<IOpalFinesResultsRefData>(OPAL_FINES_PATHS.resultsRefData, {
           params: { result_ids, ...params },
+          ...this.retrySafeReadOptions(),
         })
         .pipe(shareReplay(1));
     }
@@ -362,7 +384,7 @@ export class OpalFines {
     }
     if (!this.cache.resultCache$[result_id]) {
       this.cache.resultCache$[result_id] = this.http
-        .get<IOpalFinesResultRefData>(`${OPAL_FINES_PATHS.resultsRefData}/${result_id}`)
+        .get<IOpalFinesResultRefData>(`${OPAL_FINES_PATHS.resultsRefData}/${result_id}`, this.retrySafeReadOptions())
         .pipe(shareReplay(1));
     }
 
@@ -386,7 +408,7 @@ export class OpalFines {
   public getOffenceByCjsCode(cjsCode: string): Observable<IOpalFinesOffencesRefData> {
     if (!this.cache.offenceCodesCache$[cjsCode]) {
       this.cache.offenceCodesCache$[cjsCode] = this.http
-        .get<IOpalFinesOffencesRefData>(`${OPAL_FINES_PATHS.offencesRefData}?q=${cjsCode}`)
+        .get<IOpalFinesOffencesRefData>(`${OPAL_FINES_PATHS.offencesRefData}?q=${cjsCode}`, this.retrySafeReadOptions())
         .pipe(shareReplay(1));
     }
     return this.cache.offenceCodesCache$[cjsCode];
@@ -404,7 +426,10 @@ export class OpalFines {
   public getMajorCreditors(businessUnit: number): Observable<IOpalFinesMajorCreditorRefData> {
     if (!this.cache.majorCreditorsCache$[businessUnit]) {
       this.cache.majorCreditorsCache$[businessUnit] = this.http
-        .get<IOpalFinesMajorCreditorRefData>(OPAL_FINES_PATHS.majorCreditorRefData, { params: { businessUnit } })
+        .get<IOpalFinesMajorCreditorRefData>(
+          OPAL_FINES_PATHS.majorCreditorRefData,
+          this.withRetrySafeReadOptions({ params: { businessUnit } }),
+        )
         .pipe(shareReplay(1));
     }
 
@@ -465,7 +490,7 @@ export class OpalFines {
       }
 
       this.cache.draftAccountsCache$[cacheKey] = this.http
-        .get<IOpalFinesDraftAccountsResponse>(OPAL_FINES_PATHS.draftAccounts, { params })
+        .get<IOpalFinesDraftAccountsResponse>(OPAL_FINES_PATHS.draftAccounts, this.withRetrySafeReadOptions({ params }))
         .pipe(shareReplay(1));
     }
 
@@ -538,6 +563,7 @@ export class OpalFines {
     return this.http
       .get<IFinesMacAddAccountPayload>(`${OPAL_FINES_PATHS.draftAccounts}/${draftAccountId}`, {
         observe: 'response',
+        ...this.retrySafeReadOptions(),
       })
       .pipe(
         map((response: HttpResponse<IFinesMacAddAccountPayload>) => {
@@ -560,6 +586,7 @@ export class OpalFines {
   public getBusinessUnitById(businessUnitId: number): Observable<IOpalFinesBusinessUnitNonSnakeCase> {
     return this.http.get<IOpalFinesBusinessUnitNonSnakeCase>(
       `${OPAL_FINES_PATHS.businessUnitRefData}/${businessUnitId}`,
+      this.retrySafeReadOptions(),
     );
   }
 
@@ -570,7 +597,10 @@ export class OpalFines {
    * @returns {Observable<IOpalFinesOffencesNonSnakeCase>} An observable containing the offence data.
    */
   public getOffenceById(offenceId: number): Observable<IOpalFinesOffencesNonSnakeCase> {
-    return this.http.get<IOpalFinesOffencesNonSnakeCase>(`${OPAL_FINES_PATHS.offencesRefData}/${offenceId}`);
+    return this.http.get<IOpalFinesOffencesNonSnakeCase>(
+      `${OPAL_FINES_PATHS.offencesRefData}/${offenceId}`,
+      this.retrySafeReadOptions(),
+    );
   }
 
   /**
@@ -625,7 +655,10 @@ export class OpalFines {
   public getProsecutors(business_unit: number): Observable<IOpalFinesProsecutorRefData> {
     if (!this.cache.prosecutorDataCache$[business_unit]) {
       this.cache.prosecutorDataCache$[business_unit] = this.http
-        .get<IOpalFinesProsecutorRefData>(OPAL_FINES_PATHS.prosecutorRefData, { params: { business_unit } })
+        .get<IOpalFinesProsecutorRefData>(
+          OPAL_FINES_PATHS.prosecutorRefData,
+          this.withRetrySafeReadOptions({ params: { business_unit } }),
+        )
         .pipe(shareReplay(1));
     }
 
@@ -640,7 +673,7 @@ export class OpalFines {
    */
   public getEnforcers(): Observable<IOpalFinesEnforcersRefData> {
     this.cache.enforcersCache$ ??= this.http
-      .get<IOpalFinesEnforcersRefData>(OPAL_FINES_PATHS.enforcersRefData)
+      .get<IOpalFinesEnforcersRefData>(OPAL_FINES_PATHS.enforcersRefData, this.retrySafeReadOptions())
       .pipe(shareReplay(1));
 
     return this.cache.enforcersCache$;
@@ -666,7 +699,7 @@ export class OpalFines {
     if (!this.cache.defendantAccountAtAGlanceCache$) {
       const url = `${OPAL_FINES_PATHS.defendantAccounts}/${account_id}/at-a-glance`;
       this.cache.defendantAccountAtAGlanceCache$ = this.http
-        .get<IOpalFinesAccountDefendantAtAGlance>(url, { observe: 'response' })
+        .get<IOpalFinesAccountDefendantAtAGlance>(url, this.withRetrySafeReadOptions({ observe: 'response' as const }))
         .pipe(
           map((response: HttpResponse<IOpalFinesAccountDefendantAtAGlance>) => {
             const version = this.extractEtagVersion(response.headers);
@@ -698,7 +731,10 @@ export class OpalFines {
     if (!this.cache.defendantAccountPartyCache$) {
       const url = `${OPAL_FINES_PATHS.defendantAccounts}/${account_id}/${OPAL_FINES_PATHS.defendantAccountParties}/${defendant_party_id}`;
       this.cache.defendantAccountPartyCache$ = this.http
-        .get<IOpalFinesAccountDefendantAccountParty>(url, { observe: 'response' })
+        .get<IOpalFinesAccountDefendantAccountParty>(
+          url,
+          this.withRetrySafeReadOptions({ observe: 'response' as const }),
+        )
         .pipe(
           map((response: HttpResponse<IOpalFinesAccountDefendantAccountParty>) => {
             const version = this.extractEtagVersion(response.headers);
@@ -729,7 +765,10 @@ export class OpalFines {
     if (!this.cache.defendantAccountParentOrGuardianAccountPartyCache$) {
       const url = `${OPAL_FINES_PATHS.defendantAccounts}/${account_id}/${OPAL_FINES_PATHS.defendantAccountParties}/${party_account_id}`;
       this.cache.defendantAccountParentOrGuardianAccountPartyCache$ = this.http
-        .get<IOpalFinesAccountDefendantAccountParty>(url, { observe: 'response' })
+        .get<IOpalFinesAccountDefendantAccountParty>(
+          url,
+          this.withRetrySafeReadOptions({ observe: 'response' as const }),
+        )
         .pipe(
           map((response: HttpResponse<IOpalFinesAccountDefendantAccountParty>) => {
             const version = this.extractEtagVersion(response.headers);
@@ -758,7 +797,10 @@ export class OpalFines {
     if (!this.cache.defendantAccountFixedPenaltyCache$) {
       const url = `${OPAL_FINES_PATHS.defendantAccounts}/${account_id}/fixed-penalty`;
       this.cache.defendantAccountFixedPenaltyCache$ = this.http
-        .get<IOpalFinesAccountDefendantDetailsFixedPenaltyTabRefData>(url, { observe: 'response' })
+        .get<IOpalFinesAccountDefendantDetailsFixedPenaltyTabRefData>(
+          url,
+          this.withRetrySafeReadOptions({ observe: 'response' as const }),
+        )
         .pipe(
           map((response: HttpResponse<IOpalFinesAccountDefendantDetailsFixedPenaltyTabRefData>) => {
             const version = this.extractEtagVersion(response.headers);
@@ -787,7 +829,10 @@ export class OpalFines {
     if (!this.cache.defendantAccountEnforcementCache$) {
       const url = `${OPAL_FINES_PATHS.defendantAccounts}/${account_id}/enforcement-status`;
       this.cache.defendantAccountEnforcementCache$ = this.http
-        .get<IOpalFinesAccountDefendantDetailsEnforcementTabRefData>(url, { observe: 'response' })
+        .get<IOpalFinesAccountDefendantDetailsEnforcementTabRefData>(
+          url,
+          this.withRetrySafeReadOptions({ observe: 'response' as const }),
+        )
         .pipe(
           map((response: HttpResponse<IOpalFinesAccountDefendantDetailsEnforcementTabRefData>) => {
             const version = this.extractEtagVersion(response.headers);
@@ -816,7 +861,10 @@ export class OpalFines {
     if (!this.cache.defendantAccountImpositionsCache$) {
       const url = `${OPAL_FINES_PATHS.defendantAccounts}/${account_id}/impositions`;
       this.cache.defendantAccountImpositionsCache$ = this.http
-        .get<IOpalFinesAccountDefendantDetailsImpositionsTabRefData>(url, { observe: 'response' })
+        .get<IOpalFinesAccountDefendantDetailsImpositionsTabRefData>(
+          url,
+          this.withRetrySafeReadOptions({ observe: 'response' as const }),
+        )
         .pipe(
           map((response: HttpResponse<IOpalFinesAccountDefendantDetailsImpositionsTabRefData>) => {
             const version = this.extractEtagVersion(response.headers);
@@ -849,7 +897,7 @@ export class OpalFines {
     const options: {
       observe: 'response';
       params?: Record<string, string>;
-    } = { observe: 'response' };
+    } = this.withRetrySafeReadOptions({ observe: 'response' as const });
 
     if (filterParams) {
       options.params = Object.fromEntries(
@@ -895,7 +943,10 @@ export class OpalFines {
     if (!this.cache.defendantAccountPaymentTermsLatestCache$) {
       const url = `${OPAL_FINES_PATHS.defendantAccounts}/${account_id}/payment-terms/latest`;
       this.cache.defendantAccountPaymentTermsLatestCache$ = this.http
-        .get<IOpalFinesAccountDefendantDetailsPaymentTermsLatest>(url, { observe: 'response' })
+        .get<IOpalFinesAccountDefendantDetailsPaymentTermsLatest>(
+          url,
+          this.withRetrySafeReadOptions({ observe: 'response' as const }),
+        )
         .pipe(
           map((response: HttpResponse<IOpalFinesAccountDefendantDetailsPaymentTermsLatest>) => {
             const version = this.extractEtagVersion(response.headers);
@@ -948,16 +999,21 @@ export class OpalFines {
    */
   public getDefendantAccountHeadingData(accountId: number): Observable<IOpalFinesAccountDefendantDetailsHeader> {
     const url = `${OPAL_FINES_PATHS.defendantAccounts}/${accountId}/header-summary`;
-    return this.http.get<IOpalFinesAccountDefendantDetailsHeader>(url, { observe: 'response' }).pipe(
-      map((response: HttpResponse<IOpalFinesAccountDefendantDetailsHeader>) => {
-        const payload = response.body as IOpalFinesAccountDefendantDetailsHeader;
-        const version = this.extractEtagVersion(response.headers);
-        return {
-          ...payload,
-          version,
-        };
-      }),
-    );
+    return this.http
+      .get<IOpalFinesAccountDefendantDetailsHeader>(
+        url,
+        this.withRetrySafeReadOptions({ observe: 'response' as const }),
+      )
+      .pipe(
+        map((response: HttpResponse<IOpalFinesAccountDefendantDetailsHeader>) => {
+          const payload = response.body as IOpalFinesAccountDefendantDetailsHeader;
+          const version = this.extractEtagVersion(response.headers);
+          return {
+            ...payload,
+            version,
+          };
+        }),
+      );
   }
 
   /**
@@ -1130,16 +1186,21 @@ export class OpalFines {
     accountId: number,
   ): Observable<IOpalFinesAccountMinorCreditorDetailsHeader> {
     const url = `${OPAL_FINES_PATHS.minorCreditorAccounts}/${accountId}/header-summary`;
-    return this.http.get<IOpalFinesAccountMinorCreditorDetailsHeader>(url, { observe: 'response' }).pipe(
-      map((response: HttpResponse<IOpalFinesAccountMinorCreditorDetailsHeader>) => {
-        const payload = response.body as IOpalFinesAccountMinorCreditorDetailsHeader;
-        const version = this.extractEtagVersion(response.headers);
-        return {
-          ...payload,
-          version,
-        };
-      }),
-    );
+    return this.http
+      .get<IOpalFinesAccountMinorCreditorDetailsHeader>(
+        url,
+        this.withRetrySafeReadOptions({ observe: 'response' as const }),
+      )
+      .pipe(
+        map((response: HttpResponse<IOpalFinesAccountMinorCreditorDetailsHeader>) => {
+          const payload = response.body as IOpalFinesAccountMinorCreditorDetailsHeader;
+          const version = this.extractEtagVersion(response.headers);
+          return {
+            ...payload,
+            version,
+          };
+        }),
+      );
   }
 
   /**
@@ -1240,7 +1301,10 @@ export class OpalFines {
     if (!this.cache.minorCreditorAccountAtAGlanceCache$) {
       const url = `${OPAL_FINES_PATHS.minorCreditorAccounts}/${account_id}/at-a-glance`;
       this.cache.minorCreditorAccountAtAGlanceCache$ = this.http
-        .get<IOpalFinesAccountMinorCreditorAtAGlance>(url, { observe: 'response' })
+        .get<IOpalFinesAccountMinorCreditorAtAGlance>(
+          url,
+          this.withRetrySafeReadOptions({ observe: 'response' as const }),
+        )
         .pipe(
           map((response: HttpResponse<IOpalFinesAccountMinorCreditorAtAGlance>) => {
             const version = this.extractEtagVersion(response.headers);
@@ -1292,7 +1356,10 @@ export class OpalFines {
     if (!this.cache.minorCreditorAccountCreditorCache$) {
       const url = `${OPAL_FINES_PATHS.minorCreditorAccounts}/${account_id}`;
       this.cache.minorCreditorAccountCreditorCache$ = this.http
-        .get<IOpalFinesAccountMinorCreditorCreditor>(url, { observe: 'response' })
+        .get<IOpalFinesAccountMinorCreditorCreditor>(
+          url,
+          this.withRetrySafeReadOptions({ observe: 'response' as const }),
+        )
         .pipe(
           map((response: HttpResponse<IOpalFinesAccountMinorCreditorCreditor>) => {
             const version = this.extractEtagVersion(response.headers);
