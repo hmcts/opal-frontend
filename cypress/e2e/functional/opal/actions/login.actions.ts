@@ -22,11 +22,6 @@ interface IPerformLoginOptions {
   validateSearchLandingDependencies?: boolean;
 }
 
-interface IInteractiveLoginOptions {
-  initialPath?: string;
-  assertSignOutAfterLogin?: boolean;
-}
-
 /**
  * Requests an endpoint expected to return 200 for a valid authenticated session.
  *
@@ -44,63 +39,6 @@ function requestEndpointOk(endpoint: string): Cypress.Chainable<Cypress.Response
       expect(response.status, `GET ${endpoint}`).to.eq(200);
       return response;
     });
-}
-
-/**
- * Drives the interactive sign-in journey and optionally asserts the signed-in shell.
- *
- * @param email - The email address of the user to log in.
- * @param options - Optional path and post-login assertion settings.
- */
-function performInteractiveLogin(email: string, options: IInteractiveLoginOptions = {}): void {
-  const password = Cypress.env('CYPRESS_TEST_PASSWORD') || '';
-  const initialPath = options.initialPath ?? DEFAULT_LANDING_PATH;
-  const assertSignOutAfterLogin = options.assertSignOutAfterLogin ?? true;
-
-  cy.visit(initialPath);
-
-  cy.location('href').then((href) => {
-    const isLocalOrPR = isLocalOrPrEnvironment();
-
-    if (isLocalOrPR) {
-      // Local / PR environment login (form-based)
-      log('navigate', 'Detected Local/PR environment → using form-based login', { href, initialPath });
-
-      cy.wait(50);
-      cy.get(L.usernameInput).type(email, { delay: 0 });
-      cy.get(L.submitBtn).click();
-
-      if (assertSignOutAfterLogin) {
-        log('assert', 'Verifying login success (Local/PR)');
-        cy.get(L.signOutLink).should('exist');
-        log('done', 'Login successful (Local/PR)', { email });
-      }
-    } else {
-      // Microsoft SSO login
-      log('navigate', 'Detected non-local environment → using Microsoft SSO', { href, initialPath });
-
-      cy.origin('https://login.microsoftonline.com', { args: { email, password } }, ({ email, password }) => {
-        cy.wait(500);
-
-        // Email step
-        cy.get('input[type="email"]', { timeout: 12_000 }).type(email, { delay: 0 });
-        cy.get('input[type="submit"]').click();
-
-        // Password step (never log password)
-        cy.get('input[type="password"]', { timeout: 12_000 }).type(password, { log: false, delay: 0 });
-        cy.get('input[type="submit"]').click();
-
-        // “Stay signed in?” prompt
-        cy.get('#idBtn_Back', { timeout: 12_000 }).click();
-      });
-
-      if (assertSignOutAfterLogin) {
-        log('assert', 'Verifying login success (SSO)');
-        cy.get(L.signOutLink).should('exist');
-        log('done', 'Login successful (SSO)', { email });
-      }
-    }
-  });
 }
 
 /**
@@ -130,6 +68,7 @@ function assertSearchLandingDependenciesAvailable(): Cypress.Chainable<Cypress.R
  * @param options - Optional post-session landing and validation settings.
  */
 export function performLogin(email: string, options: IPerformLoginOptions = {}): void {
+  const password = Cypress.env('CYPRESS_TEST_PASSWORD') || '';
   const landingPath = options.landingPath ?? DEFAULT_LANDING_PATH;
   const validateSearchLandingDependencies = options.validateSearchLandingDependencies ?? false;
 
@@ -138,7 +77,46 @@ export function performLogin(email: string, options: IPerformLoginOptions = {}):
   cy.session(
     email,
     () => {
-      performInteractiveLogin(email);
+      cy.visit('/');
+
+      cy.location('href').then((href) => {
+        const isLocalOrPR = isLocalOrPrEnvironment();
+
+        if (isLocalOrPR) {
+          // Local / PR environment login (form-based)
+          log('navigate', 'Detected Local/PR environment → using form-based login', { href });
+
+          cy.wait(50);
+          cy.get(L.usernameInput).type(email, { delay: 0 });
+          cy.get(L.submitBtn).click();
+
+          log('assert', 'Verifying login success (Local/PR)');
+          cy.get(L.signOutLink).should('exist');
+          log('done', 'Login successful (Local/PR)', { email });
+        } else {
+          // Microsoft SSO login
+          log('navigate', 'Detected non-local environment → using Microsoft SSO', { href });
+
+          cy.origin('https://login.microsoftonline.com', { args: { email, password } }, ({ email, password }) => {
+            cy.wait(500);
+
+            // Email step
+            cy.get('input[type="email"]', { timeout: 12_000 }).type(email, { delay: 0 });
+            cy.get('input[type="submit"]').click();
+
+            // Password step (never log password)
+            cy.get('input[type="password"]', { timeout: 12_000 }).type(password, { log: false, delay: 0 });
+            cy.get('input[type="submit"]').click();
+
+            // “Stay signed in?” prompt
+            cy.get('#idBtn_Back', { timeout: 12_000 }).click();
+          });
+
+          log('assert', 'Verifying login success (SSO)');
+          cy.get(L.signOutLink).should('exist');
+          log('done', 'Login successful (SSO)', { email });
+        }
+      });
     },
     {
       cacheAcrossSpecs: true,
@@ -175,8 +153,43 @@ export function performLogin(email: string, options: IPerformLoginOptions = {}):
  * @param landingPath - The protected path to open before starting sign-in.
  */
 export function performLoginWithoutShellAssertions(email: string, landingPath: string = DEFAULT_LANDING_PATH): void {
+  const password = Cypress.env('CYPRESS_TEST_PASSWORD') || '';
+
   log('action', 'Logging in without post-authenticated shell assertions', { email, landingPath });
-  performInteractiveLogin(email, { initialPath: landingPath, assertSignOutAfterLogin: false });
+  cy.visit(landingPath);
+
+  cy.location('href').then((href) => {
+    const isLocalOrPR = isLocalOrPrEnvironment();
+
+    if (isLocalOrPR) {
+      log('navigate', 'Detected Local/PR environment → using form-based login without shell assertions', {
+        href,
+        landingPath,
+      });
+
+      cy.wait(50);
+      cy.get(L.usernameInput).type(email, { delay: 0 });
+      cy.get(L.submitBtn).click();
+      return;
+    }
+
+    log('navigate', 'Detected non-local environment → using Microsoft SSO without shell assertions', {
+      href,
+      landingPath,
+    });
+
+    cy.origin('https://login.microsoftonline.com', { args: { email, password } }, ({ email, password }) => {
+      cy.wait(500);
+
+      cy.get('input[type="email"]', { timeout: 12_000 }).type(email, { delay: 0 });
+      cy.get('input[type="submit"]').click();
+
+      cy.get('input[type="password"]', { timeout: 12_000 }).type(password, { log: false, delay: 0 });
+      cy.get('input[type="submit"]').click();
+
+      cy.get('#idBtn_Back', { timeout: 12_000 }).click();
+    });
+  });
 }
 
 /**
