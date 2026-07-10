@@ -34,6 +34,10 @@ import { FINES_ACC_DEFENDANT_DETAILS_HISTORY_AND_NOTES_FILTER_EMPTY_FORM_MOCK } 
 import { FINES_ACC_DEFENDANT_DETAILS_HISTORY_AND_NOTES_FILTER_PAYLOAD_MOCK } from '../fines-acc-defendant-details/fines-acc-defendant-details-history-and-notes-tab/mocks/fines-acc-defendant-details-history-and-notes-filter-payload.mock';
 import { FINES_ACC_DEFENDANT_DETAILS_HISTORY_AND_NOTES_FILTER_RAW_PAYLOAD_MOCK } from '../fines-acc-defendant-details/fines-acc-defendant-details-history-and-notes-tab/mocks/fines-acc-defendant-details-history-and-notes-filter-raw-payload.mock';
 import { FINES_ACC_BUILD_TRANSFORM_ITEMS_CONFIG } from './constants/fines-acc-transform-items-config.constant';
+import { FINES_ACC_MINOR_CREDITOR_DETAILS_HISTORY_AND_NOTES_FILTER_ALL_FORM_MOCK } from '../fines-acc-minor-creditor-details/fines-acc-minor-creditor-details-history-and-notes-tab/mocks/fines-acc-minor-creditor-details-history-and-notes-filter-all-form.mock';
+import { FINES_ACC_MINOR_CREDITOR_DETAILS_HISTORY_AND_NOTES_FILTER_EMPTY_FORM_MOCK } from '../fines-acc-minor-creditor-details/fines-acc-minor-creditor-details-history-and-notes-tab/mocks/fines-acc-minor-creditor-details-history-and-notes-filter-empty-form.mock';
+import { OPAL_FINES_MINOR_CREDITOR_ACCOUNT_HISTORY_PARAMS_MOCK } from '@services/fines/opal-fines-service/mocks/opal-fines-minor-creditor-account-history-params.mock';
+import { FINES_ACC_MINOR_CREDITOR_HISTORY_AND_NOTES_DETAILS_TRANSFORMATION_CONFIG } from './constants/fines-acc-minor-creditor-history-and-notes-details-transformation-config.constant';
 
 describe('FinesAccPayloadService', () => {
   let service: FinesAccPayloadService;
@@ -185,6 +189,28 @@ describe('FinesAccPayloadService', () => {
     });
   });
 
+  describe('buildMinorCreditorHistoryFilterPayload', () => {
+    it('should build minor creditor history filter query params from form values', () => {
+      const result = service.buildMinorCreditorHistoryFilterPayload(
+        FINES_ACC_MINOR_CREDITOR_DETAILS_HISTORY_AND_NOTES_FILTER_ALL_FORM_MOCK,
+      );
+
+      expect(result).toEqual({
+        ...OPAL_FINES_MINOR_CREDITOR_ACCOUNT_HISTORY_PARAMS_MOCK,
+        dateFrom: '2024-01-01T00:00:00.000Z',
+        dateTo: '2024-01-31T00:00:00.000Z',
+      });
+    });
+
+    it('should omit empty minor creditor history filter params', () => {
+      const result = service.buildMinorCreditorHistoryFilterPayload(
+        FINES_ACC_MINOR_CREDITOR_DETAILS_HISTORY_AND_NOTES_FILTER_EMPTY_FORM_MOCK,
+      );
+
+      expect(result).toEqual({});
+    });
+  });
+
   describe('transformHistoryAndNotesDetails', () => {
     it('should transform raw history details through the history and notes util', () => {
       const result = service.transformHistoryAndNotesDetails({
@@ -213,6 +239,52 @@ describe('FinesAccPayloadService', () => {
 
       expect(result[0]['details']).toEqual({
         line1: [{ fragments: [{ text: 'Structured note', bold: false, hyphen: false }] }],
+        line2: null,
+      });
+    });
+
+    it('should transform raw history details with a supplied transformation config', () => {
+      const result = service.transformHistoryAndNotesDetails(
+        {
+          type: 'Notes',
+          details: {
+            note_text: 'Minor creditor note',
+          },
+        },
+        FINES_ACC_MINOR_CREDITOR_HISTORY_AND_NOTES_DETAILS_TRANSFORMATION_CONFIG,
+      );
+
+      expect(result).toEqual({
+        line1: [{ fragments: [{ text: 'Minor creditor note', bold: false, hyphen: false }] }],
+        line2: null,
+      });
+    });
+
+    it('should transform raw history items with a supplied transformation config', () => {
+      const result = service.transformHistoryAndNotesItems(
+        [
+          {
+            id: 1,
+            type: 'Transactions',
+            details: {
+              transaction_description: 'Payment issued',
+              payment_reference: 'REF123',
+            },
+          },
+        ],
+        FINES_ACC_MINOR_CREDITOR_HISTORY_AND_NOTES_DETAILS_TRANSFORMATION_CONFIG,
+      );
+
+      expect(result[0]['details']).toEqual({
+        line1: [
+          { fragments: [{ text: 'Payment issued', bold: false, hyphen: false }] },
+          {
+            fragments: [
+              { text: 'Reference:', bold: false, hyphen: false },
+              { text: 'REF123', bold: false, hyphen: false },
+            ],
+          },
+        ],
         line2: null,
       });
     });

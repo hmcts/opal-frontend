@@ -45,9 +45,13 @@ import { transformMinorCreditorAccountPayload } from './utils/fines-acc-payload-
 import { IFinesAccDefendantDetailsHistoryAndNotesFilterForm } from '../fines-acc-defendant-details/fines-acc-defendant-details-history-and-notes-tab/interfaces/fines-acc-defendant-details-history-and-notes-filter-form.interface';
 import { IOpalFinesDefendantAccountHistoryParams } from '@services/fines/opal-fines-service/interfaces/opal-fines-defendant-account-history-params.interface';
 import { buildHistoryFilterPayload } from './utils/fines-acc-payload-build-history-filter.utils';
+import { IFinesAccMinorCreditorDetailsHistoryAndNotesFilterForm } from '../fines-acc-minor-creditor-details/fines-acc-minor-creditor-details-history-and-notes-tab/interfaces/fines-acc-minor-creditor-details-history-and-notes-filter-form.interface';
+import { IOpalFinesMinorCreditorAccountHistoryParams } from '@services/fines/opal-fines-service/interfaces/opal-fines-minor-creditor-account-history-params.interface';
+import { buildMinorCreditorHistoryFilterPayload } from './utils/fines-acc-payload-build-minor-creditor-history-filter.utils';
 import {
   HistoryTransformationService,
   IHistoryDetails as IFinesAccHistoryAndNotesDetails,
+  IHistoryTransformationConfig,
   THistoryDetailsRawItem as TFinesAccHistoryAndNotesRawItem,
 } from '@hmcts/opal-frontend-common/services/history-transformation-service';
 import { FINES_ACC_HISTORY_AND_NOTES_DETAILS_TRANSFORMATION_CONFIG } from './constants/fines-acc-history-and-notes-details-transformation-config.constant';
@@ -99,16 +103,31 @@ export class FinesAccPayloadService {
   }
 
   /**
+   * Builds query parameters for filtering minor creditor account history.
+   *
+   * @param form - The submitted history and notes filter form.
+   * @returns The query parameters expected by the minor creditor account history API.
+   */
+  public buildMinorCreditorHistoryFilterPayload(
+    form: IFinesAccMinorCreditorDetailsHistoryAndNotesFilterForm,
+  ): IOpalFinesMinorCreditorAccountHistoryParams {
+    return this.transformPayload(
+      buildMinorCreditorHistoryFilterPayload(form),
+      FINES_ACC_BUILD_TRANSFORM_ITEMS_CONFIG,
+    ) as IOpalFinesMinorCreditorAccountHistoryParams;
+  }
+
+  /**
    * Transforms a raw history item into the structured details model consumed by the History and notes UI.
    *
    * @param item - A raw history item returned by the defendant account history API.
    * @returns The fragment-based details model for the item.
    */
-  public transformHistoryAndNotesDetails(item: TFinesAccHistoryAndNotesRawItem): IFinesAccHistoryAndNotesDetails {
-    return this.historyDetailsTransformationService.transformDetails(
-      item,
-      FINES_ACC_HISTORY_AND_NOTES_DETAILS_TRANSFORMATION_CONFIG,
-    );
+  public transformHistoryAndNotesDetails(
+    item: TFinesAccHistoryAndNotesRawItem,
+    config: IHistoryTransformationConfig = FINES_ACC_HISTORY_AND_NOTES_DETAILS_TRANSFORMATION_CONFIG,
+  ): IFinesAccHistoryAndNotesDetails {
+    return this.historyDetailsTransformationService.transformDetails(item, config);
   }
 
   /**
@@ -119,11 +138,9 @@ export class FinesAccPayloadService {
    */
   public transformHistoryAndNotesItems<T extends TFinesAccHistoryAndNotesRawItem>(
     items: T[],
+    config: IHistoryTransformationConfig = FINES_ACC_HISTORY_AND_NOTES_DETAILS_TRANSFORMATION_CONFIG,
   ): Array<Omit<T, 'details'> & { details: IFinesAccHistoryAndNotesDetails }> {
-    return this.historyDetailsTransformationService.transformItems(
-      items,
-      FINES_ACC_HISTORY_AND_NOTES_DETAILS_TRANSFORMATION_CONFIG,
-    );
+    return this.historyDetailsTransformationService.transformItems(items, config);
   }
 
   /**
