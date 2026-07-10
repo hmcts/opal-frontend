@@ -1,6 +1,5 @@
 import { IOpalFinesReportParameters } from './opal-fines-report-parameters.interface';
-
-export type TOpalFinesSupportedFileType = 'CSV' | 'PDF' | 'XML';
+import { TOpalFinesSupportedFileType } from './opal-fines-supported-file-type.type';
 
 export interface IOpalFinesReport {
   report_id: string;
