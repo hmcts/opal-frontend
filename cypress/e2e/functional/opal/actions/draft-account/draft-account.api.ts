@@ -414,7 +414,7 @@ const waitForPublishedAccountSearchable = (
   attempts: number = PUBLISHED_ACCOUNT_SEARCH_RETRY_ATTEMPTS,
   delayMs: number = PUBLISHED_ACCOUNT_SEARCH_RETRY_DELAY_MS,
 ): Cypress.Chainable<void> => {
-  cy.fixture('businessUnitIDsForSearch.json').then((data) => {
+  return cy.fixture('businessUnitIDsForSearch.json').then((data) => {
     const body = buildPublishedAccountNumberSearchPayload(accountNumber, isCompany, data.business_unit_ids);
 
     const attempt = (remaining: number): Cypress.Chainable<void> =>
@@ -446,8 +446,8 @@ const waitForPublishedAccountSearchable = (
             status: searchResp.status,
             remaining: remaining - 1,
           });
-          return cy.wait(delayMs, { log: false }).then(() => attempt(remaining - 1)) as Cypress.Chainable<void>;
-        }) as unknown as Cypress.Chainable<void>;
+          return cy.wait(delayMs, { log: false }).then(() => attempt(remaining - 1));
+        });
 
     return attempt(attempts);
   });
