@@ -170,6 +170,7 @@ export class OpalFines {
       'offenceCodesCache$',
       'majorCreditorsCache$',
       'prosecutorDataCache$',
+      'reportsCache$',
     ];
 
     this.clearCaches(referenceCaches);

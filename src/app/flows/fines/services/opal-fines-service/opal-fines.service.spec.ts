@@ -1465,6 +1465,7 @@ describe('OpalFines', () => {
     service['cache']['businessUnitsCache$'] = of(OPAL_FINES_BUSINESS_UNIT_REF_DATA_MOCK);
     service['cache']['localJusticeAreasLjaTypeCache$']['adult'] = of(OPAL_FINES_LOCAL_JUSTICE_AREA_REF_DATA_MOCK);
     service['cache']['offenceCodesCache$']['code'] = of(OPAL_FINES_OFFENCES_REF_DATA_MOCK);
+    service['cache']['reportsCache$']['operational_report_enforcement'] = of(OPAL_FINES_REPORT_MOCK);
 
     service.clearAllCaches();
 
@@ -1474,6 +1475,7 @@ describe('OpalFines', () => {
     expect(service['cache']['businessUnitsCache$']).toBeNull();
     expect(service['cache']['localJusticeAreasLjaTypeCache$']).toEqual({});
     expect(service['cache']['offenceCodesCache$']).toEqual({});
+    expect(service['cache']['reportsCache$']).toEqual({});
   });
 
   it('should send a POST request to search defendant accounts API with correct body', () => {
