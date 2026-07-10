@@ -141,6 +141,15 @@
       subNavItemFragment="history-and-notes"
       [subNavItemText]="tabs['history-and-notes']"
     ></li>
+    @if (hasConsolidatedAccounts()) {
+      <li
+        opal-lib-moj-sub-navigation-item
+        subNavItemId="consolidated-accounts-tab"
+        [activeSubNavItemFragment]="activeTab"
+        subNavItemFragment="consolidated-accounts"
+        [subNavItemText]="tabs['consolidated-accounts']"
+      ></li>
+    }
   </opal-lib-moj-sub-navigation>
 </div>
 

@@ -43,4 +43,5 @@ export interface IOpalFinesAccountDefendantDetailsHeader extends IOpalFinesVersi
       individual_aliases: IOpalFinesDefendantAccountAlias[] | null;
     } | null;
   };
+  has_consolidated_accounts: boolean;
 }

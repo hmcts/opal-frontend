@@ -222,6 +222,14 @@ export class FinesAccDefendantDetailsComponent
   }
 
   /**
+   * Checks if the current account has consolidated accounts.
+   * @returns boolean value indicating whether this account contains consolidated accounts.
+   */
+  public hasConsolidatedAccounts(): boolean {
+    return this.accountData.has_consolidated_accounts;
+  }
+
+  /**
    *
    * Calculates if the user can amend payment terms based on account status and permissions.
    * @returns boolean indicating if the user can amend payment terms
