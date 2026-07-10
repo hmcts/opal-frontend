@@ -21,6 +21,7 @@
   <form (submit)="handleFormSubmit($event)" [formGroup]="form">
     <!-- Party details -->
     <app-fines-acc-party-add-amend-convert-party-details
+      [id]="sectionFragments['party-details']"
       [form]="form"
       [formControlErrorMessages]="formControlErrorMessages"
       [isCompanyPartyType]="isCompanyPartyType"

@@ -174,13 +174,24 @@ describe('FinesAccPartyDetails', () => {
   it('should resolve the parent guardian amend route when viewing a parent guardian account', () => {
     setupComponent(mockPartyDetails, true);
 
-    expect(component.employerDetailsPartyType).toBe(component.partyTypes.PARENT_GUARDIAN);
+    expect(component.changeLinkPartyType).toBe(component.partyTypes.PARENT_GUARDIAN);
   });
 
   it('should resolve the individual amend route when viewing a defendant account', () => {
     setupComponent();
 
-    expect(component.employerDetailsPartyType).toBe(component.partyTypes.INDIVIDUAL);
+    expect(component.changeLinkPartyType).toBe(component.partyTypes.INDIVIDUAL);
+  });
+
+  it('should resolve the company amend route when viewing a company defendant account', () => {
+    mockPartyDetails.party_details.organisation_flag = true;
+    mockPartyDetails.party_details.organisation_details = {
+      organisation_name: 'Test Company Ltd',
+      organisation_aliases: [],
+    };
+    setupComponent(mockPartyDetails);
+
+    expect(component.changeLinkPartyType).toBe(component.partyTypes.COMPANY);
   });
 
   it('should route employer details to access denied when BU permission is missing', () => {
@@ -198,10 +209,10 @@ describe('FinesAccPartyDetails', () => {
   it('should only return a section fragment when BU permission is present', () => {
     setupComponent();
 
-    expect(component.sectionChangeFragment('contact-details')).toBeUndefined();
+    expect(component.sectionChangeFragment('party-details')).toBeUndefined();
 
     setupComponent(mockPartyDetails, false, true);
 
-    expect(component.sectionChangeFragment('contact-details')).toBe('contact-details');
+    expect(component.sectionChangeFragment('party-details')).toBe('party-details');
   });
 });

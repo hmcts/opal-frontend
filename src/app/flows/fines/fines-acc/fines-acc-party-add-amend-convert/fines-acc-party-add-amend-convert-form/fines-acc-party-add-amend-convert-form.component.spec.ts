@@ -328,6 +328,23 @@ describe('FinesAccPartyAddAmendConvertFormComponent', () => {
     getElementByIdSpy.mockRestore();
   });
 
+  it('should scroll to party details when the party-details fragment is present', () => {
+    const scrollIntoViewSpy = vi.fn();
+    const getElementByIdSpy = vi.spyOn(document, 'getElementById').mockReturnValue({
+      scrollIntoView: scrollIntoViewSpy,
+    } as unknown as HTMLElement);
+
+    component.partyType = 'individual';
+    component.isDebtor = true;
+    fixture.detectChanges();
+    mockActivatedRoute.snapshot.fragment = 'party-details';
+    component.ngAfterViewInit();
+
+    expect(getElementByIdSpy).toHaveBeenCalledWith('party-details');
+    expect(scrollIntoViewSpy).toHaveBeenCalledWith({ block: 'start' });
+    getElementByIdSpy.mockRestore();
+  });
+
   it('should show contact details for reduced parent guardian mode', () => {
     component.partyType = 'parentGuardian';
     component.isDebtor = false;
