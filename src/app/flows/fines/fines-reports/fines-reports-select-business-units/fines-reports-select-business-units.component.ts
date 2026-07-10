@@ -72,6 +72,17 @@ export class FinesReportsSelectBusinessUnitsComponent extends AbstractFormParent
   }
 
   /**
+   * Populates the current business unit list from the route resolver and sorts it alphabetically.
+   */
+  private setBusinessUnitsFromRouteResolver(): void {
+    const resolverData = this.route.snapshot.data['businessUnits'] as IOpalFinesBusinessUnitRefData | undefined;
+
+    this.businessUnits = [...(resolverData?.refData ?? [])].sort((left, right) =>
+      left.business_unit_name.localeCompare(right.business_unit_name),
+    );
+  }
+
+  /**
    * Logs selected business units while the next create-report screen is out of scope.
    */
   private logSelectedBusinessUnitIds(): void {
@@ -119,10 +130,6 @@ export class FinesReportsSelectBusinessUnitsComponent extends AbstractFormParent
    * Populates the current business unit list from the route resolver and sorts it alphabetically.
    */
   public ngOnInit(): void {
-    const resolverData = this.route.snapshot.data['businessUnits'] as IOpalFinesBusinessUnitRefData | undefined;
-
-    this.businessUnits = [...(resolverData?.refData ?? [])].sort((left, right) =>
-      left.business_unit_name.localeCompare(right.business_unit_name),
-    );
+    this.setBusinessUnitsFromRouteResolver();
   }
 }
