@@ -19,6 +19,7 @@ import {
   atLeastOneBusinessUnitSelectedRecordValidator,
   businessUnitSelectionRootMirrorValidator,
 } from '../../../validators/business-unit-selection.validator';
+import { IFinesReportsSelectBusinessUnitsFieldErrors } from './interfaces/fines-reports-select-business-units-field-errors.interface';
 import { IFinesReportsSelectBusinessUnitRow } from './interfaces/fines-reports-select-business-unit-row.interface';
 import { IFinesReportsSelectBusinessUnitsFormState } from '../interfaces/fines-reports-select-business-units-form-state.interface';
 import { FINES_REPORTS_SELECT_BUSINESS_UNITS_FIELD_ERRORS } from '../constants/fines-reports-select-business-units-field-errors.constant';
@@ -50,7 +51,8 @@ export class FinesReportsSelectBusinessUnitsFormComponent extends AbstractFormBa
    */
   private readonly ALL_BUSINESS_UNITS_CTRL = 'fines_reports_select_business_unit_ids_select_all';
 
-  protected override fieldErrors = FINES_REPORTS_SELECT_BUSINESS_UNITS_FIELD_ERRORS;
+  protected override fieldErrors: IFinesReportsSelectBusinessUnitsFieldErrors =
+    FINES_REPORTS_SELECT_BUSINESS_UNITS_FIELD_ERRORS;
 
   protected override formSubmit = new EventEmitter<IAbstractFormBaseForm<IFinesReportsSelectBusinessUnitsFormState>>();
 
