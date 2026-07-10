@@ -14,12 +14,12 @@ export const FINES_REPORT_SUMMARY_LIST_REPORT_CONFIGURATION: IFinesReportSummary
     id: FINES_REPORTS_SUMMARY_LIST_ROUTING_PATHS.children.operationalReportsByEnforcement,
     heading: 'Operational reports (by enforcement)',
     title: FINES_REPORTS_SUMMARY_LIST_ROUTING_TITLES.children.operationalReportsByEnforcement,
-    permissionIds: OPERATIONAL_REPORT_ROUTE_PERMISSIONS,
+    permissionIds: [...OPERATIONAL_REPORT_ROUTE_PERMISSIONS],
   },
   {
     id: FINES_REPORTS_SUMMARY_LIST_ROUTING_PATHS.children.operationalReportsByPayments,
     heading: 'Operational reports (by payments)',
     title: FINES_REPORTS_SUMMARY_LIST_ROUTING_TITLES.children.operationalReportsByPayments,
-    permissionIds: OPERATIONAL_REPORT_ROUTE_PERMISSIONS,
+    permissionIds: [...OPERATIONAL_REPORT_ROUTE_PERMISSIONS],
   },
 ];

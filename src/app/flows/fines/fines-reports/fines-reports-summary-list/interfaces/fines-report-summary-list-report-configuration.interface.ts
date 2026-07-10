@@ -2,5 +2,5 @@ export interface IFinesReportSummaryListReportConfiguration {
   id: string;
   heading: string;
   title: string;
-  permissionIds: readonly number[];
+  permissionIds: number[];
 }
