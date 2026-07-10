@@ -10,8 +10,7 @@
   },
   "features": {
     "redis": {
-      "enabled": true,
-      "cluster-enabled": false
+      "enabled": true
     },
     "sso": {
       "enabled": false

@@ -12,10 +12,6 @@
       "enabled": {
         "__name": "FEATURES_REDIS_ENABLED",
         "__format": "json"
-      },
-      "cluster-enabled": {
-        "__name": "FEATURES_REDIS_CLUSTER_ENABLED",
-        "__format": "json"
       }
     },
     "sso": {
