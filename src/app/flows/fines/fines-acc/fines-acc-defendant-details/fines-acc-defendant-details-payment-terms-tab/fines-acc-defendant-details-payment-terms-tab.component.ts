@@ -41,6 +41,7 @@ export class FinesAccDefendantDetailsPaymentTermsTabComponent {
   @Input() requestPaymentCardDeniedType: string = 'permission';
   @Input() style: IFinesAccSummaryTabsContentStyles = FINES_ACC_SUMMARY_TABS_CONTENT_STYLES;
   public readonly languages = FINES_MAC_LANGUAGE_PREFERENCES_OPTIONS;
+  public readonly selectPaymentTermsFragment = 'select-payment-terms';
 
   /**
    * Determines the card title based on the payment terms type and lump sum amount.
@@ -66,6 +67,13 @@ export class FinesAccDefendantDetailsPaymentTermsTabComponent {
     return this.canAmendPaymentTerms
       ? `../${FINES_ACC_DEFENDANT_ROUTING_PATHS.children['payment-terms']}/amend`
       : `../${FINES_ACC_DEFENDANT_ROUTING_PATHS.children['payment-terms']}/denied/${this.amendPaymentTermsDeniedType}`;
+  }
+
+  /**
+   * Resolves the fragment for the change payment terms action when the amend route is allowed.
+   */
+  public changePaymentTermsFragment(): string | undefined {
+    return this.canAmendPaymentTerms ? this.selectPaymentTermsFragment : undefined;
   }
 
   /**
