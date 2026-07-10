@@ -57,6 +57,9 @@ export function getRoutesConfig(): {
     userStateUrl: config.get('opal-user-service-urls.userStateUrl'),
     addUserUrl: config.get('opal-user-service-urls.addUserUrl'),
     updateUserUrl: config.get('opal-user-service-urls.updateUserUrl'),
+    timeoutInMilliseconds: config.get('opal-user-service.timeoutInMilliseconds'),
+    retryAttempts: config.get('opal-user-service.retryAttempts'),
+    retryDelayInMilliseconds: config.get('opal-user-service.retryDelayInMilliseconds'),
   };
 
   const userStateConfiguration: UserStateConfiguration = {
@@ -96,6 +99,7 @@ export function configureSession(server: Express): void {
     domain: config.get('session.domain'),
     redisEnabled: config.get('features.redis.enabled'),
     redisConnectionString: config.get('secrets.opal.redis-connection-string'),
+    redisClusterEnabled: config.get('features.redis.cluster-enabled'),
   };
 
   new SessionStorage().enableFor(server, sessionStorageConfig);
