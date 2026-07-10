@@ -99,7 +99,6 @@ export function configureSession(server: Express): void {
     domain: config.get('session.domain'),
     redisEnabled: config.get('features.redis.enabled'),
     redisConnectionString: config.get('secrets.opal.redis-connection-string'),
-    redisClusterEnabled: config.get('features.redis.cluster-enabled'),
   };
 
   new SessionStorage().enableFor(server, sessionStorageConfig);
