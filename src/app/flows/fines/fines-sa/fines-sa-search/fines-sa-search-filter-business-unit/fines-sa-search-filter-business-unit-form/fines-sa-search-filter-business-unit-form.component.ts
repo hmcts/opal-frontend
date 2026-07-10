@@ -39,7 +39,7 @@ import { FinesSaStore } from '../../../stores/fines-sa.store';
 import {
   atLeastOneBusinessUnitSelectedRecordValidator,
   businessUnitSelectionRootMirrorValidator,
-} from '../validators/fines-sa-search-filter-business-unit-select-bu.validator';
+} from '@app/flows/fines/validators/business-unit-selection.validator';
 import { FINES_SA_SEARCH_FILTER_BUSINESS_UNIT_STATE } from '../constants/fines-sa-search-filter-business-unit-state.constant';
 
 @Component({
