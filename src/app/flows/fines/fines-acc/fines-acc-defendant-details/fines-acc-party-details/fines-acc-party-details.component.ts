@@ -14,7 +14,7 @@ import { DateFormatPipe } from '@hmcts/opal-frontend-common/pipes/date-format';
 import { FINES_ACC_DEFENDANT_ROUTING_PATHS } from '../../routing/constants/fines-acc-defendant-routing-paths.constant';
 import { FINES_ACC_PARTY_ADD_AMEND_CONVERT_PARTY_TYPES } from '../../fines-acc-party-add-amend-convert/constants/fines-acc-party-add-amend-convert-party-types.constant';
 
-type TFinesAccPartyDetailsSection = 'contact-details' | 'employment-details';
+type TFinesAccPartyDetailsSection = 'party-details' | 'contact-details' | 'employment-details';
 
 @Component({
   selector: 'app-fines-acc-party-details',
@@ -42,6 +42,7 @@ export class FinesAccPartyDetails {
   public readonly finesDefendantRoutingPaths = FINES_ACC_DEFENDANT_ROUTING_PATHS;
   public readonly partyTypes = FINES_ACC_PARTY_ADD_AMEND_CONVERT_PARTY_TYPES;
   public readonly sectionFragments: Record<TFinesAccPartyDetailsSection, TFinesAccPartyDetailsSection> = {
+    'party-details': 'party-details',
     'contact-details': 'contact-details',
     'employment-details': 'employment-details',
   };
@@ -118,7 +119,11 @@ export class FinesAccPartyDetails {
    * Resolves the amend route party type for change links.
    */
   public get changeLinkPartyType(): string {
-    return this.isParentGuardianAccount ? this.partyTypes.PARENT_GUARDIAN : this.partyTypes.INDIVIDUAL;
+    if (this.isParentGuardianAccount) {
+      return this.partyTypes.PARENT_GUARDIAN;
+    }
+
+    return this.party.party_details.organisation_flag ? this.partyTypes.COMPANY : this.partyTypes.INDIVIDUAL;
   }
 
   /**

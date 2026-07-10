@@ -69,7 +69,7 @@ import {
   MojAlertTextComponent,
 } from '@hmcts/opal-frontend-common/components/moj/moj-alert';
 
-type TFinesAccPartyAddAmendConvertSectionFragment = 'contact-details' | 'employment-details';
+type TFinesAccPartyAddAmendConvertSectionFragment = 'party-details' | 'contact-details' | 'employment-details';
 
 //regex pattern validators for the form controls
 const SINGLE_ASCII_CHARACTERS_ALPHANUMERIC_WITH_SPECIAL_CHARACTERS_PATTERN_VALIDATOR = patternValidator(
@@ -145,6 +145,7 @@ export class FinesAccPartyAddAmendConvertFormComponent
     TFinesAccPartyAddAmendConvertSectionFragment,
     TFinesAccPartyAddAmendConvertSectionFragment
   > = {
+    'party-details': 'party-details',
     'contact-details': 'contact-details',
     'employment-details': 'employment-details',
   };
