@@ -1,4 +1,5 @@
 import {
+  AfterViewInit,
   ChangeDetectionStrategy,
   Component,
   EventEmitter,
@@ -9,7 +10,7 @@ import {
   inject,
 } from '@angular/core';
 import { FormControl, FormGroup, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
-import { CommonModule } from '@angular/common';
+import { CommonModule, DOCUMENT } from '@angular/common';
 import { AbstractFormBaseComponent } from '@hmcts/opal-frontend-common/components/abstract/abstract-form-base';
 import { IFinesAccPaymentTermsAmendForm } from '../interfaces/fines-acc-payment-terms-amend-form.interface';
 import { IFinesAccPaymentTermsAmendFieldErrors } from '../interfaces/fines-acc-payment-terms-amend-field-errors.interface';
@@ -90,7 +91,11 @@ const ALPHANUMERIC_WITH_HYPHENS_SPACES_APOSTROPHES_DOT_PATTERN_VALIDATOR = patte
   templateUrl: './fines-acc-payment-terms-amend-form.component.html',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class FinesAccPaymentTermsAmendFormComponent extends AbstractFormBaseComponent implements OnInit, OnDestroy {
+export class FinesAccPaymentTermsAmendFormComponent
+  extends AbstractFormBaseComponent
+  implements OnInit, OnDestroy, AfterViewInit
+{
+  private readonly document = inject(DOCUMENT);
   protected readonly dateService = inject(DateService);
   protected readonly accountStore = inject(FinesAccountStore);
   @Output() protected override formSubmit = new EventEmitter<IFinesAccPaymentTermsAmendForm>();
@@ -117,6 +122,7 @@ export class FinesAccPaymentTermsAmendFormComponent extends AbstractFormBaseComp
     ([key, value]) => ({ key, value }),
   );
   public readonly paymentTermsConditionalIdPrefix = 'payment-terms-conditional-';
+  public readonly selectPaymentTermsFragment = 'select-payment-terms';
   public today!: string;
   public yesterday!: string;
 
@@ -406,5 +412,16 @@ export class FinesAccPaymentTermsAmendFormComponent extends AbstractFormBaseComp
 
     this.initialPaymentTermsForm();
     super.ngOnInit();
+  }
+
+  public ngAfterViewInit(): void {
+    if (this['activatedRoute'].snapshot.fragment !== this.selectPaymentTermsFragment) {
+      return;
+    }
+
+    const target = this.document.getElementById(this.selectPaymentTermsFragment);
+    if (typeof target?.scrollIntoView === 'function') {
+      target.scrollIntoView({ block: 'start' });
+    }
   }
 }

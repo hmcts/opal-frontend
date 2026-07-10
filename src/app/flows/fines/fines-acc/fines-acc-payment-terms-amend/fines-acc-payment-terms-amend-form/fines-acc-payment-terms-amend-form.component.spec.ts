@@ -40,7 +40,7 @@ describe('FinesAccPaymentTermsAmendFormComponent', () => {
   beforeEach(async () => {
     mockRouter = createSpyObj('Router', ['navigate']);
     mockActivatedRoute = {
-      snapshot: { data: {} },
+      snapshot: { data: {}, fragment: null },
       params: of({}),
       queryParams: of({}),
       data: of({}),
@@ -285,6 +285,21 @@ describe('FinesAccPaymentTermsAmendFormComponent', () => {
         relativeTo: mockActivatedRoute,
         fragment: 'payment-terms',
       });
+    });
+
+    it('should scroll to select payment terms when the select-payment-terms fragment is present', () => {
+      const scrollIntoViewSpy = vi.fn();
+      const getElementByIdSpy = vi.spyOn(document, 'getElementById').mockReturnValue({
+        scrollIntoView: scrollIntoViewSpy,
+      } as unknown as HTMLElement);
+
+      component.ngOnInit();
+      (mockActivatedRoute.snapshot as { fragment: string | null }).fragment = 'select-payment-terms';
+      component.ngAfterViewInit();
+
+      expect(getElementByIdSpy).toHaveBeenCalledWith('select-payment-terms');
+      expect(scrollIntoViewSpy).toHaveBeenCalledWith({ block: 'start' });
+      getElementByIdSpy.mockRestore();
     });
   });
 
