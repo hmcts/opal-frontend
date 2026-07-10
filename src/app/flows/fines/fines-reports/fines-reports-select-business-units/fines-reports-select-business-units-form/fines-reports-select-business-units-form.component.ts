@@ -95,41 +95,31 @@ export class FinesReportsSelectBusinessUnitsFormComponent extends AbstractFormBa
   public businessUnitRows: IFinesReportsSelectBusinessUnitRow[] = [];
 
   /**
-   * Creates checkbox form controls keyed by business unit id.
+   * Creates checkbox form controls keyed by business unit id and the row metadata used to render them.
    *
    * @returns A form record containing one unchecked control for each business unit.
    */
   private createBusinessUnitCheckboxControls(): FormRecord<FormControl<boolean>> {
-    const controls = this.businessUnits.reduce<Record<string, FormControl<boolean>>>((acc, businessUnit) => {
-      acc[businessUnit.business_unit_id.toString()] = new FormControl(
-        this.initialSelectedBusinessUnitIds.includes(businessUnit.business_unit_id),
-        {
-          nonNullable: true,
-        },
-      );
-      return acc;
-    }, {});
+    const controls: Record<string, FormControl<boolean>> = {};
 
-    return new FormRecord<FormControl<boolean>>(controls, {
-      validators: atLeastOneBusinessUnitSelectedRecordValidator,
-    });
-  }
-
-  /**
-   * Builds the row view model used by the template.
-   *
-   * @param record - The business unit form record that owns each row control.
-   */
-  private buildBusinessUnitRows(record: FormRecord<FormControl<boolean>>): void {
     this.businessUnitRows = this.businessUnits.map((businessUnit) => {
       const businessUnitId = businessUnit.business_unit_id.toString();
+      const control = new FormControl(this.initialSelectedBusinessUnitIds.includes(businessUnit.business_unit_id), {
+        nonNullable: true,
+      });
+
+      controls[businessUnitId] = control;
 
       return {
         businessUnit,
-        control: record.get(businessUnitId) as FormControl<boolean>,
+        control,
         inputId: `business-unit-${businessUnitId}`,
         inputName: businessUnitId,
       };
+    });
+
+    return new FormRecord<FormControl<boolean>>(controls, {
+      validators: atLeastOneBusinessUnitSelectedRecordValidator,
     });
   }
 
@@ -186,10 +176,6 @@ export class FinesReportsSelectBusinessUnitsFormComponent extends AbstractFormBa
       },
       { validators: businessUnitSelectionRootMirrorValidator(this.BUSINESS_UNITS_CTRL) },
     );
-
-    if (this.businessUnits.length > 1) {
-      this.buildBusinessUnitRows(record);
-    }
 
     this.refreshFormValidation(record);
     this.updateAllBusinessUnitsControlFromRecord(record);
