@@ -204,6 +204,7 @@
     @if (showContactDetails) {
       <hr class="{{ FINES_ACC_SECTION_BREAK }}" />
       <app-fines-acc-party-add-amend-convert-cd
+        [id]="sectionFragments['contact-details']"
         [form]="form"
         [formControlErrorMessages]="formControlErrorMessages"
       ></app-fines-acc-party-add-amend-convert-cd>
@@ -233,6 +234,7 @@
       <hr class="{{ FINES_ACC_SECTION_BREAK }}" />
 
       <app-fines-acc-party-add-amend-convert-ed
+        [id]="sectionFragments['employment-details']"
         [form]="form"
         [formControlErrorMessages]="formControlErrorMessages"
       ></app-fines-acc-party-add-amend-convert-ed>
