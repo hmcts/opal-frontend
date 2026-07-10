@@ -11,6 +11,7 @@ import { fetchBusinessUnitsResolver } from '@routing/fines/resolvers/fetch-busin
 import { FINES_REPORTS_ROUTING_TITLES } from './constants/fines-reports-routing-titles.constant';
 import { fetchReportResolver } from './resolvers/fetch-report/fetch-report.resolver';
 import { finesReportsReportHeadingResolver } from './resolvers/fines-reports-report-heading/fines-reports-report-heading.resolver';
+import { FINES_REPORTS_CREATE_ROUTING_PATHS } from './constants/fines-reports-create-routing-paths.constant';
 
 export const routing: Routes = [
   {
@@ -40,37 +41,42 @@ export const routing: Routes = [
         },
       },
       {
-        path: FINES_REPORTS_ROUTING_PATHS.children.selectBusinessUnits,
-        loadComponent: () =>
-          import('../fines-reports-select-business-units/fines-reports-select-business-units.component').then(
-            (c) => c.FinesReportsSelectBusinessUnitsComponent,
-          ),
-        canDeactivate: [canDeactivateGuard],
-        data: {
-          title: FINES_REPORTS_ROUTING_TITLES.children.selectBusinessUnits,
-          requiresCreateReport: true,
-        },
-        resolve: {
-          title: TitleResolver,
-          report: fetchReportResolver,
-          reportHeading: finesReportsReportHeadingResolver,
-          businessUnits: fetchBusinessUnitsResolver,
-        },
-      },
-      {
-        path: FINES_REPORTS_ROUTING_PATHS.children.businessUnitWarning,
-        loadComponent: () =>
-          import('../fines-reports-business-unit-warning/fines-reports-business-unit-warning.component').then(
-            (c) => c.FinesReportsBusinessUnitWarningComponent,
-          ),
-        data: {
-          title: FINES_REPORTS_ROUTING_TITLES.children.businessUnitWarning,
-          requiresCreateReport: true,
-          requiresSelectedBusinessUnits: true,
-        },
-        resolve: {
-          title: TitleResolver,
-        },
+        path: FINES_REPORTS_ROUTING_PATHS.children.create,
+        children: [
+          {
+            path: FINES_REPORTS_CREATE_ROUTING_PATHS.children.selectBusinessUnits,
+            loadComponent: () =>
+              import('../fines-reports-select-business-units/fines-reports-select-business-units.component').then(
+                (c) => c.FinesReportsSelectBusinessUnitsComponent,
+              ),
+            canDeactivate: [canDeactivateGuard],
+            data: {
+              title: FINES_REPORTS_ROUTING_TITLES.children.selectBusinessUnits,
+              requiresCreateReport: true,
+            },
+            resolve: {
+              title: TitleResolver,
+              report: fetchReportResolver,
+              reportHeading: finesReportsReportHeadingResolver,
+              businessUnits: fetchBusinessUnitsResolver,
+            },
+          },
+          {
+            path: FINES_REPORTS_CREATE_ROUTING_PATHS.children.businessUnitWarning,
+            loadComponent: () =>
+              import('../fines-reports-business-unit-warning/fines-reports-business-unit-warning.component').then(
+                (c) => c.FinesReportsBusinessUnitWarningComponent,
+              ),
+            data: {
+              title: FINES_REPORTS_ROUTING_TITLES.children.businessUnitWarning,
+              requiresCreateReport: true,
+              requiresSelectedBusinessUnits: true,
+            },
+            resolve: {
+              title: TitleResolver,
+            },
+          },
+        ],
       },
     ],
   },

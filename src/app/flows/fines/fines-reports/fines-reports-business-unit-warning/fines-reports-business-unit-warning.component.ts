@@ -2,7 +2,7 @@ import { ChangeDetectionStrategy, Component, inject, OnInit } from '@angular/cor
 import { ActivatedRoute, Router } from '@angular/router';
 import { GovukCancelLinkComponent } from '@hmcts/opal-frontend-common/components/govuk/govuk-cancel-link';
 import { GovukButtonDirective } from '@hmcts/opal-frontend-common/directives/govuk-button';
-import { FINES_REPORTS_ROUTING_PATHS } from '../routing/constants/fines-reports-routing-paths.constant';
+import { FINES_REPORTS_CREATE_ROUTING_PATHS } from '../routing/constants/fines-reports-create-routing-paths.constant';
 import { FinesReportsStore } from '../stores/fines-reports.store';
 
 @Component({
@@ -31,7 +31,7 @@ export class FinesReportsBusinessUnitWarningComponent implements OnInit {
    * Navigates back to the business unit selection screen with the current selections restored.
    */
   public handleGoBack(): void {
-    this.router.navigate([`../../${FINES_REPORTS_ROUTING_PATHS.children.selectBusinessUnits}`], {
+    this.router.navigate([`../${FINES_REPORTS_CREATE_ROUTING_PATHS.children.selectBusinessUnits}`], {
       relativeTo: this.activatedRoute,
     });
   }
@@ -49,7 +49,7 @@ export class FinesReportsBusinessUnitWarningComponent implements OnInit {
    */
   public ngOnInit(): void {
     if (!this.finesReportsStore.hasSelectedBusinessUnits()) {
-      this.router.navigate([`../../${FINES_REPORTS_ROUTING_PATHS.children.selectBusinessUnits}`], {
+      this.router.navigate([`../${FINES_REPORTS_CREATE_ROUTING_PATHS.children.selectBusinessUnits}`], {
         relativeTo: this.activatedRoute,
       });
     }

@@ -7,6 +7,7 @@ import { findFinesReportsDefinition } from '../constants/find-fines-reports-defi
 import { FINES_REPORTS_SUMMARY_LIST_ROUTING_PATHS } from '../fines-reports-summary-list/routing/constants/fines-reports-summary-list-routing-paths.constant';
 import { IOpalFinesBusinessUnit } from '@services/fines/opal-fines-service/interfaces/opal-fines-business-unit.interface';
 import { FINES_REPORTS_ROUTING_PATHS } from '../routing/constants/fines-reports-routing-paths.constant';
+import { FINES_REPORTS_CREATE_ROUTING_PATHS } from '../routing/constants/fines-reports-create-routing-paths.constant';
 import { IOpalFinesReport } from '@services/fines/opal-fines-service/interfaces/opal-fines-report.interface';
 import { FinesReportsStore } from '../stores/fines-reports.store';
 
@@ -251,7 +252,7 @@ describe('FinesReportsSelectBusinessUnitsComponent', () => {
       businessUnits.map((businessUnit) => businessUnit.business_unit_id),
     );
     expect(router.navigate).toHaveBeenCalledWith(
-      [`../../${FINES_REPORTS_ROUTING_PATHS.children.businessUnitWarning}`],
+      [`../${FINES_REPORTS_CREATE_ROUTING_PATHS.children.businessUnitWarning}`],
       {
         relativeTo: expect.any(Object),
       },

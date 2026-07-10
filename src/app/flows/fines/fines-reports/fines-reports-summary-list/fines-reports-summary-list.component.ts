@@ -8,6 +8,7 @@ import { FINES_REPORTS_SUMMARY_LIST_ROUTING_PATHS } from './routing/constants/fi
 import { FINES_REPORTS_ROUTING_PATHS } from '../routing/constants/fines-reports-routing-paths.constant';
 import { IOpalFinesReport } from '@services/fines/opal-fines-service/interfaces/opal-fines-report.interface';
 import { FinesReportsStore } from '../stores/fines-reports.store';
+import { FINES_REPORTS_CREATE_ROUTING_PATHS } from '../routing/constants/fines-reports-create-routing-paths.constant';
 
 @Component({
   selector: 'app-fines-reports-summary-list',
@@ -67,8 +68,13 @@ export class FinesReportsSummaryListComponent {
    */
   public handleCreateReport(): void {
     this.finesReportsStore.clearSelectedBusinessUnitIds();
-    this.router.navigate([`../${FINES_REPORTS_ROUTING_PATHS.children.selectBusinessUnits}`], {
-      relativeTo: this.activatedRoute,
-    });
+    this.router.navigate(
+      [
+        `../${FINES_REPORTS_ROUTING_PATHS.children.create}/${FINES_REPORTS_CREATE_ROUTING_PATHS.children.selectBusinessUnits}`,
+      ],
+      {
+        relativeTo: this.activatedRoute,
+      },
+    );
   }
 }

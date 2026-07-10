@@ -1,6 +1,7 @@
 import { describe, expect, it } from 'vitest';
 import { routing } from './fines-reports.routes';
 import { FINES_REPORTS_ROUTING_PATHS } from './constants/fines-reports-routing-paths.constant';
+import { FINES_REPORTS_CREATE_ROUTING_PATHS } from './constants/fines-reports-create-routing-paths.constant';
 import { canDeactivateGuard } from '@hmcts/opal-frontend-common/guards/can-deactivate';
 import { TitleResolver } from '@hmcts/opal-frontend-common/resolvers/title';
 import { fetchBusinessUnitsResolver } from '@routing/fines/resolvers/fetch-business-units-resolver/fetch-business-units.resolver';
@@ -24,12 +25,15 @@ describe('finesReports routes', () => {
 
   it('should load the select business units route', () => {
     const reportRoute = routing.find((route) => route.path === ':reportTypeId');
-    const selectBusinessUnitsRoute = reportRoute?.children?.find(
-      (route) => route.path === FINES_REPORTS_ROUTING_PATHS.children.selectBusinessUnits,
+    const createRoute = reportRoute?.children?.find(
+      (route) => route.path === FINES_REPORTS_ROUTING_PATHS.children.create,
+    );
+    const selectBusinessUnitsRoute = createRoute?.children?.find(
+      (route) => route.path === FINES_REPORTS_CREATE_ROUTING_PATHS.children.selectBusinessUnits,
     );
 
     expect(selectBusinessUnitsRoute).toEqual({
-      path: FINES_REPORTS_ROUTING_PATHS.children.selectBusinessUnits,
+      path: FINES_REPORTS_CREATE_ROUTING_PATHS.children.selectBusinessUnits,
       loadComponent: expect.any(Function),
       canDeactivate: [canDeactivateGuard],
       data: {
@@ -47,12 +51,15 @@ describe('finesReports routes', () => {
 
   it('should load the business unit warning route', () => {
     const reportRoute = routing.find((route) => route.path === ':reportTypeId');
-    const businessUnitWarningRoute = reportRoute?.children?.find(
-      (route) => route.path === FINES_REPORTS_ROUTING_PATHS.children.businessUnitWarning,
+    const createRoute = reportRoute?.children?.find(
+      (route) => route.path === FINES_REPORTS_ROUTING_PATHS.children.create,
+    );
+    const businessUnitWarningRoute = createRoute?.children?.find(
+      (route) => route.path === FINES_REPORTS_CREATE_ROUTING_PATHS.children.businessUnitWarning,
     );
 
     expect(businessUnitWarningRoute).toEqual({
-      path: FINES_REPORTS_ROUTING_PATHS.children.businessUnitWarning,
+      path: FINES_REPORTS_CREATE_ROUTING_PATHS.children.businessUnitWarning,
       loadComponent: expect.any(Function),
       data: {
         title: FINES_REPORTS_ROUTING_TITLES.children.businessUnitWarning,

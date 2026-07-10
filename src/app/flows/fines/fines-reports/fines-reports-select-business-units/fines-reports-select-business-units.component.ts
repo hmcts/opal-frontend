@@ -8,6 +8,7 @@ import { IOpalFinesBusinessUnitRefData } from '@services/fines/opal-fines-servic
 import { IOpalFinesReport } from '@services/fines/opal-fines-service/interfaces/opal-fines-report.interface';
 import { FINES_REPORTS_ROUTING_PATHS } from '../routing/constants/fines-reports-routing-paths.constant';
 import { FINES_REPORTS_ROUTING_TITLES } from '../routing/constants/fines-reports-routing-titles.constant';
+import { FINES_REPORTS_CREATE_ROUTING_PATHS } from '../routing/constants/fines-reports-create-routing-paths.constant';
 import { FinesReportsStore } from '../stores/fines-reports.store';
 import { FinesReportsSelectBusinessUnitsFormComponent } from './fines-reports-select-business-units-form/fines-reports-select-business-units-form.component';
 import { IFinesReportsSelectBusinessUnitsFormState } from './interfaces/fines-reports-select-business-units-form-state.interface';
@@ -66,7 +67,7 @@ export class FinesReportsSelectBusinessUnitsComponent extends AbstractFormParent
    * Navigates to the warning screen for a large business unit selection.
    */
   private navigateToBusinessUnitWarning(): void {
-    this.routerService.navigate([`../../${FINES_REPORTS_ROUTING_PATHS.children.businessUnitWarning}`], {
+    this.routerService.navigate([`../${FINES_REPORTS_CREATE_ROUTING_PATHS.children.businessUnitWarning}`], {
       relativeTo: this.route,
     });
   }

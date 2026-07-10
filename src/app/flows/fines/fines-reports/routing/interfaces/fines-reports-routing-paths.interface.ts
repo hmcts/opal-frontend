@@ -3,7 +3,6 @@ import { IChildRoutingPaths } from '@hmcts/opal-frontend-common/pages/routing/in
 export interface IFinesReportsRoutingPaths extends IChildRoutingPaths {
   children: {
     summaryList: string;
-    selectBusinessUnits: string;
-    businessUnitWarning: string;
+    create: string;
   };
 }

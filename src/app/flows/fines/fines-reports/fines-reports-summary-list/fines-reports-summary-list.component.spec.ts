@@ -9,6 +9,7 @@ import { FINES_REPORTS_ROUTING_PATHS } from '../routing/constants/fines-reports-
 import { IOpalFinesReport } from '@services/fines/opal-fines-service/interfaces/opal-fines-report.interface';
 import { OPAL_FINES_REPORT_MOCK } from '@services/fines/opal-fines-service/mocks/opal-fines-report.mock';
 import { FinesReportsStore } from '../stores/fines-reports.store';
+import { FINES_REPORTS_CREATE_ROUTING_PATHS } from '../routing/constants/fines-reports-create-routing-paths.constant';
 
 type MockRouteData = {
   report: IOpalFinesReport | null;
@@ -178,9 +179,14 @@ describe('FinesReportsSummaryListComponent', () => {
     createReportButton.click();
 
     expect(finesReportsStore.selectedBusinessUnitIds()).toEqual([]);
-    expect(router.navigate).toHaveBeenCalledWith([`../${FINES_REPORTS_ROUTING_PATHS.children.selectBusinessUnits}`], {
-      relativeTo: component['activatedRoute'],
-    });
+    expect(router.navigate).toHaveBeenCalledWith(
+      [
+        `../${FINES_REPORTS_ROUTING_PATHS.children.create}/${FINES_REPORTS_CREATE_ROUTING_PATHS.children.selectBusinessUnits}`,
+      ],
+      {
+        relativeTo: component['activatedRoute'],
+      },
+    );
   });
 
   it('should update the page heading when the parent report type id changes', async () => {

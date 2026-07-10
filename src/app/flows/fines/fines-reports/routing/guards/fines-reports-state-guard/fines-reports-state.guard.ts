@@ -9,6 +9,7 @@ import { FINES_ROUTING_PATHS } from '@app/flows/fines/routing/constants/fines-ro
 import { FINES_DASHBOARD_ROUTING_PATHS } from '@app/flows/fines/constants/fines-dashboard-routing-paths.constant';
 import { FINES_REPORTS_ROUTING_PATHS } from '../../constants/fines-reports-routing-paths.constant';
 import { FinesReportsStore } from '../../../stores/fines-reports.store';
+import { FINES_REPORTS_CREATE_ROUTING_PATHS } from '../../constants/fines-reports-create-routing-paths.constant';
 
 export const finesReportsStateGuard: CanActivateFn = (route) => {
   const router = inject(Router);
@@ -56,7 +57,7 @@ export const finesReportsStateGuard: CanActivateFn = (route) => {
 
       if (requiresSelectedBusinessUnits && !finesReportsStore.hasSelectedBusinessUnitsForReport(report.id)) {
         return router.createUrlTree([
-          `/${FINES_ROUTING_PATHS.root}/${FINES_ROUTING_PATHS.children.reports.root}/${report.id}/${FINES_REPORTS_ROUTING_PATHS.children.selectBusinessUnits}`,
+          `/${FINES_ROUTING_PATHS.root}/${FINES_ROUTING_PATHS.children.reports.root}/${report.id}/${FINES_REPORTS_ROUTING_PATHS.children.create}/${FINES_REPORTS_CREATE_ROUTING_PATHS.children.selectBusinessUnits}`,
         ]);
       }
 
