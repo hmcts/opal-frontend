@@ -1,5 +1,6 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { UpperCasePipe } from '@angular/common';
+import { provideRouter } from '@angular/router';
 import { FinesAccPartyDetails } from './fines-acc-party-details.component';
 import { FinesNotProvidedComponent } from '../../../components/fines-not-provided/fines-not-provided.component';
 import { GovukSummaryCardListComponent } from '@hmcts/opal-frontend-common/components/govuk/govuk-summary-card-list';
@@ -33,6 +34,7 @@ describe('FinesAccPartyDetails', () => {
         GovukSummaryListComponent,
         GovukSummaryListRowComponent,
       ],
+      providers: [provideRouter([])],
     }).compileComponents();
 
     fixture = TestBed.createComponent(FinesAccPartyDetails);
@@ -43,12 +45,14 @@ describe('FinesAccPartyDetails', () => {
   const setupComponent = (
     party: IOpalFinesAccountPartyDetails = mockPartyDetails,
     isParentGuardianAccount: boolean = false,
+    hasAccountMaintenancePermissionInBU: boolean = false,
   ) => {
     fixture.componentRef.setInput('party', party);
     fixture.componentRef.setInput('cardTitle', 'Party Details');
     fixture.componentRef.setInput('summaryCardListId', 'party-card');
     fixture.componentRef.setInput('summaryListId', 'party-list');
     fixture.componentRef.setInput('isParentGuardianAccount', isParentGuardianAccount);
+    fixture.componentRef.setInput('hasAccountMaintenancePermissionInBU', hasAccountMaintenancePermissionInBU);
     fixture.detectChanges();
   };
 
@@ -165,5 +169,39 @@ describe('FinesAccPartyDetails', () => {
     setupComponent();
 
     expect(component.showLanguagePreferences).toBe(false);
+  });
+
+  it('should resolve the parent guardian amend route when viewing a parent guardian account', () => {
+    setupComponent(mockPartyDetails, true);
+
+    expect(component.employerDetailsPartyType).toBe(component.partyTypes.PARENT_GUARDIAN);
+  });
+
+  it('should resolve the individual amend route when viewing a defendant account', () => {
+    setupComponent();
+
+    expect(component.employerDetailsPartyType).toBe(component.partyTypes.INDIVIDUAL);
+  });
+
+  it('should route employer details to access denied when BU permission is missing', () => {
+    setupComponent();
+
+    expect(component.sectionChangeLink()).toBe('/access-denied');
+  });
+
+  it('should route employer details to the amend page when BU permission is present', () => {
+    setupComponent(mockPartyDetails, true, true);
+
+    expect(component.sectionChangeLink()).toBe('../party/parentGuardian/amend');
+  });
+
+  it('should only return a section fragment when BU permission is present', () => {
+    setupComponent();
+
+    expect(component.sectionChangeFragment('contact-details')).toBeUndefined();
+
+    setupComponent(mockPartyDetails, false, true);
+
+    expect(component.sectionChangeFragment('contact-details')).toBe('contact-details');
   });
 });

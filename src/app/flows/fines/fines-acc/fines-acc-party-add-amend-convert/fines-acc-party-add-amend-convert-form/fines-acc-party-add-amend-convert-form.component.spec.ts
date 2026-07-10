@@ -41,6 +41,9 @@ describe('FinesAccPartyAddAmendConvertFormComponent', () => {
     };
     mockActivatedRoute = {
       data: of({}),
+      snapshot: {
+        fragment: null,
+      },
     };
 
     mockFinesAccountStore = {
@@ -289,6 +292,40 @@ describe('FinesAccPartyAddAmendConvertFormComponent', () => {
 
     expect(component.isAddParentGuardianMode).toBe(true);
     expect(component.routeFragment).toBe(FINES_ACC_DEFENDANT_DETAILS_TABS_KEYS.defendant);
+  });
+
+  it('should scroll to employment details when the employment-details fragment is present', () => {
+    const scrollIntoViewSpy = vi.fn();
+    const getElementByIdSpy = vi.spyOn(document, 'getElementById').mockReturnValue({
+      scrollIntoView: scrollIntoViewSpy,
+    } as unknown as HTMLElement);
+
+    component.partyType = 'individual';
+    component.isDebtor = true;
+    fixture.detectChanges();
+    mockActivatedRoute.snapshot.fragment = 'employment-details';
+    component.ngAfterViewInit();
+
+    expect(getElementByIdSpy).toHaveBeenCalledWith('employment-details');
+    expect(scrollIntoViewSpy).toHaveBeenCalledWith({ block: 'start' });
+    getElementByIdSpy.mockRestore();
+  });
+
+  it('should scroll to contact details when the contact-details fragment is present', () => {
+    const scrollIntoViewSpy = vi.fn();
+    const getElementByIdSpy = vi.spyOn(document, 'getElementById').mockReturnValue({
+      scrollIntoView: scrollIntoViewSpy,
+    } as unknown as HTMLElement);
+
+    component.partyType = 'individual';
+    component.isDebtor = true;
+    fixture.detectChanges();
+    mockActivatedRoute.snapshot.fragment = 'contact-details';
+    component.ngAfterViewInit();
+
+    expect(getElementByIdSpy).toHaveBeenCalledWith('contact-details');
+    expect(scrollIntoViewSpy).toHaveBeenCalledWith({ block: 'start' });
+    getElementByIdSpy.mockRestore();
   });
 
   it('should show contact details for reduced parent guardian mode', () => {

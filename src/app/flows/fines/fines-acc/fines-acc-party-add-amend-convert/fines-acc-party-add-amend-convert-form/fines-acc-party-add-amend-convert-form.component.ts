@@ -3,12 +3,14 @@ import {
   Component,
   EventEmitter,
   Input,
+  AfterViewInit,
   OnDestroy,
   OnInit,
   Output,
   computed,
   inject,
 } from '@angular/core';
+import { DOCUMENT } from '@angular/common';
 import { FormArray, FormControl, FormGroup, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
 import { AbstractFormAliasBaseComponent } from '@hmcts/opal-frontend-common/components/abstract/abstract-form-alias-base';
 import { IFinesAccPartyAddAmendConvertFieldErrors } from '../interfaces/fines-acc-party-add-amend-convert-field-errors.interface';
@@ -67,6 +69,8 @@ import {
   MojAlertTextComponent,
 } from '@hmcts/opal-frontend-common/components/moj/moj-alert';
 
+type TFinesAccPartyAddAmendConvertSectionFragment = 'contact-details' | 'employment-details';
+
 //regex pattern validators for the form controls
 const SINGLE_ASCII_CHARACTERS_ALPHANUMERIC_WITH_SPECIAL_CHARACTERS_PATTERN_VALIDATOR = patternValidator(
   SINGLE_ASCII_CHARACTERS,
@@ -109,9 +113,10 @@ const EMAIL_ADDRESS_PATTERN_VALIDATOR = patternValidator(EMAIL_ADDRESS_PATTERN, 
 })
 export class FinesAccPartyAddAmendConvertFormComponent
   extends AbstractFormAliasBaseComponent
-  implements OnInit, OnDestroy
+  implements OnInit, OnDestroy, AfterViewInit
 {
   private readonly finesAccountStore = inject(FinesAccountStore);
+  private readonly document = inject(DOCUMENT);
 
   @Output() protected override formSubmit = new EventEmitter<IFinesAccPartyAddAmendConvertForm>();
   protected readonly dateService = inject(DateService);
@@ -136,6 +141,13 @@ export class FinesAccPartyAddAmendConvertFormComponent
     FINES_MAC_LANGUAGE_PREFERENCES_OPTIONS,
   ).map(([key, value]) => ({ key, value }));
   public readonly FINES_ACC_SECTION_BREAK = FINES_ACC_SUMMARY_TABS_CONTENT_STYLES.hr2;
+  public readonly sectionFragments: Record<
+    TFinesAccPartyAddAmendConvertSectionFragment,
+    TFinesAccPartyAddAmendConvertSectionFragment
+  > = {
+    'contact-details': 'contact-details',
+    'employment-details': 'employment-details',
+  };
 
   /**
    * Creates the base form group with fields shared by all party types.
@@ -531,5 +543,17 @@ export class FinesAccPartyAddAmendConvertFormComponent
     this.initialPartyAddAmendConvertSetup();
     super.ngOnInit();
     this.setupPartySpecificErrorMessages();
+  }
+
+  public ngAfterViewInit(): void {
+    const fragment = this['activatedRoute'].snapshot.fragment as TFinesAccPartyAddAmendConvertSectionFragment | null;
+    if (!fragment || !(fragment in this.sectionFragments)) {
+      return;
+    }
+
+    const target = this.document.getElementById(this.sectionFragments[fragment]);
+    if (typeof target?.scrollIntoView === 'function') {
+      target.scrollIntoView({ block: 'start' });
+    }
   }
 }

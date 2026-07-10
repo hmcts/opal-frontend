@@ -144,6 +144,11 @@
 
 @if (showContactDetails && party.contact_details; as contact_details) {
   <opal-lib-govuk-summary-card-list cardTitle="Contact details" summaryCardListId="contact">
+    <ng-container actions>
+      <a class="govuk-link" [routerLink]="sectionChangeLink()" [fragment]="sectionChangeFragment('contact-details')"
+        >Change</a
+      >
+    </ng-container>
     <ng-container content>
       <opal-lib-govuk-summary-list summaryListId="contactDetails">
         <div
@@ -256,7 +261,15 @@
 }
 
 @if (showEmployerDetails && party.employer_details; as employer_details) {
-  <opal-lib-govuk-summary-card-list cardTitle="Employer details" summaryCardListId="employer">
+  <opal-lib-govuk-summary-card-list cardTitle="Employer details$$" summaryCardListId="employer">
+    <ng-container actions>
+      <a
+        class="govuk-link"
+        [routerLink]="sectionChangeLink()"
+        [fragment]="sectionChangeFragment('employment-details')"
+        >Change</a
+      >
+    </ng-container>
     <ng-container content>
       <opal-lib-govuk-summary-list summaryListId="employerDetails">
         <div
