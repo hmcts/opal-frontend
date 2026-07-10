@@ -1391,7 +1391,7 @@ export class OpalFines {
     const options: {
       observe: 'response';
       params?: Record<string, string>;
-    } = { observe: 'response' };
+    } = this.withRetrySafeReadOptions({ observe: 'response' as const });
 
     if (filterParams) {
       options.params = Object.fromEntries(
