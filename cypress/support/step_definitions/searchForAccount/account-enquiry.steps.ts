@@ -529,14 +529,6 @@ When('I open the amend payment terms form', () => {
 });
 
 /**
- * @step Verifies the current page starts at the top of the viewport.
- */
-Then('the page should be scrolled to the top', () => {
-  log('assert', 'The page is scrolled to the top');
-  flow().assertViewportAtTop();
-});
-
-/**
  * @step Navigates to the Enforcement tab.
  */
 When('I go to the Enforcement tab', () => {

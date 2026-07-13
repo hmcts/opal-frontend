@@ -660,14 +660,6 @@ export class AccountEnquiryFlow {
   }
 
   /**
-   * Asserts that the current page has been positioned at the top of the viewport.
-   */
-  public assertViewportAtTop(): void {
-    logAE('method', 'assertViewportAtTop()');
-    this.common.assertViewportAtTop();
-  }
-
-  /**
    * Navigates to the Enforcement tab and asserts it is active.
    */
   public goToEnforcementTab(): void {

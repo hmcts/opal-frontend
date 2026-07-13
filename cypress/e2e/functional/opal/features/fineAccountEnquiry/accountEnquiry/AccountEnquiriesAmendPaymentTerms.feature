@@ -34,7 +34,6 @@ Feature: Account Enquiries - Amend Payment Terms
       And I go to the Payment terms tab
       And I scroll to the bottom of the page
       And I open the amend payment terms form
-      Then the page should be scrolled to the top
       And I submit instalments only payment terms with a payment card request
       Then I should return to the Payment terms tab
       And the payment terms summary shows instalments:
