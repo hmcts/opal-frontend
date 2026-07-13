@@ -32,7 +32,9 @@ Feature: Account Enquiries - Amend Payment Terms
     Scenario: Save payment terms changes and return to Payment terms tab
       When I search for the account by last name "AmendPayTerms{uniq}" and open the latest result
       And I go to the Payment terms tab
+      And I scroll to the bottom of the page
       And I open the amend payment terms form
+      Then the page should be scrolled to the top
       And I submit instalments only payment terms with a payment card request
       Then I should return to the Payment terms tab
       And the payment terms summary shows instalments:
@@ -141,4 +143,3 @@ Feature: Account Enquiries - Amend Payment Terms
       Then I should return to the Payment terms tab
       And the payment terms pay by date is "30 May 2025"
       And the payment terms instalment rows are not shown
-

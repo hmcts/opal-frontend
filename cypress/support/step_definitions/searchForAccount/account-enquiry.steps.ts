@@ -457,6 +457,14 @@ When('I go to the Payment terms tab', () => {
 });
 
 /**
+ * @step Scrolls the current page to the bottom.
+ */
+When('I scroll to the bottom of the page', () => {
+  log('step', 'Scroll to the bottom of the page');
+  flow().scrollToPageBottom();
+});
+
+/**
  * @step Navigates to the Creditor tab.
  */
 When('I go to the Creditor tab', () => {
@@ -518,6 +526,14 @@ When('I open the first History and notes account link in a new tab', () => {
 When('I open the amend payment terms form', () => {
   log('step', 'Open amend payment terms form');
   flow().openPaymentTermsAmendForm();
+});
+
+/**
+ * @step Verifies the current page starts at the top of the viewport.
+ */
+Then('the page should be scrolled to the top', () => {
+  log('assert', 'The page is scrolled to the top');
+  flow().assertViewportAtTop();
 });
 
 /**

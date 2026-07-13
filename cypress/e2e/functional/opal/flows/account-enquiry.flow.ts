@@ -652,6 +652,22 @@ export class AccountEnquiryFlow {
   }
 
   /**
+   * Scrolls the current page to the bottom so navigation scroll restoration can be verified.
+   */
+  public scrollToPageBottom(): void {
+    logAE('method', 'scrollToPageBottom()');
+    this.common.scrollToPageBottom();
+  }
+
+  /**
+   * Asserts that the current page has been positioned at the top of the viewport.
+   */
+  public assertViewportAtTop(): void {
+    logAE('method', 'assertViewportAtTop()');
+    this.common.assertViewportAtTop();
+  }
+
+  /**
    * Navigates to the Enforcement tab and asserts it is active.
    */
   public goToEnforcementTab(): void {
