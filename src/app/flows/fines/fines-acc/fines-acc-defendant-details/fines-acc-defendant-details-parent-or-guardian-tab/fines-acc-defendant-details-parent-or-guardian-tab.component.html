@@ -4,11 +4,6 @@
       <div class="govuk-grid-column-two-thirds">
         <h2 [class]="style.heading">Parent or guardian details</h2>
       </div>
-      @if (hasAccountMaintenencePermission) {
-        <div class="govuk-grid-column-one-third govuk-!-text-align-right govuk-!-margin-top-3">
-          <a [class]="style.changeLink" [routerLink]="changeParentOrGuardianDetailsLink()">Change</a>
-        </div>
-      }
     </div>
     <hr [class]="style.hr" />
 
