@@ -66,6 +66,11 @@ import { IOpalFinesAccountMinorCreditorCreditor } from './interfaces/opal-fines-
 import { IOpalFinesDraftAccountPatchRequestPayload } from '@services/fines/opal-fines-service/types/opal-fines-draft-account-patch-request-payload.type';
 import { IOpalFinesDeleteDefendantAccountPartyPayload } from './interfaces/opal-fines-delete-defendant-account-party-payload.interface';
 
+const SAFE_READ_RETRY_POLICY = {
+  retryCount: 1,
+  delayMs: 0,
+} as const;
+
 @Injectable({
   providedIn: 'root',
 })
@@ -81,7 +86,7 @@ export class OpalFines {
   private readonly PARAM_ACCOUNT_STATUS_DATE_TO = 'account_status_date_to';
 
   private retrySafeReadOptions() {
-    return { context: withHttpRetry({ retryCount: 1, delayMs: 0 }) };
+    return { context: withHttpRetry(SAFE_READ_RETRY_POLICY) };
   }
 
   private withRetrySafeReadOptions<TOptions extends object>(
