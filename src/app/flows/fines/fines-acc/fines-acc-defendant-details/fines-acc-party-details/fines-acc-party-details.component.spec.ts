@@ -174,13 +174,13 @@ describe('FinesAccPartyDetails', () => {
   it('should resolve the parent guardian amend route when viewing a parent guardian account', () => {
     setupComponent(mockPartyDetails, true);
 
-    expect(component.changeLinkPartyType).toBe(component.partyTypes.PARENT_GUARDIAN);
+    expect(component.setLinkPartyType).toBe(component.partyTypes.PARENT_GUARDIAN);
   });
 
   it('should resolve the individual amend route when viewing a defendant account', () => {
     setupComponent();
 
-    expect(component.changeLinkPartyType).toBe(component.partyTypes.INDIVIDUAL);
+    expect(component.setLinkPartyType).toBe(component.partyTypes.INDIVIDUAL);
   });
 
   it('should resolve the company amend route when viewing a company defendant account', () => {
@@ -191,7 +191,7 @@ describe('FinesAccPartyDetails', () => {
     };
     setupComponent(mockPartyDetails);
 
-    expect(component.changeLinkPartyType).toBe(component.partyTypes.COMPANY);
+    expect(component.setLinkPartyType).toBe(component.partyTypes.COMPANY);
   });
 
   it('should route employer details to access denied when BU permission is missing', () => {
