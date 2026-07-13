@@ -104,10 +104,25 @@ export class FinesSaSearchAccountFormComponent extends AbstractFormBaseComponent
    * Emits after `handleFormSubmit` runs the base validation/submission logic and the form is valid.
    */
   @Output() protected override formSubmit = new EventEmitter<IFinesSaSearchAccountForm>();
+
+  /**
+   * Autocomplete options for the Major Creditors tab, derived from the supplied reference data.
+   */
   protected majorCreditors = signal<IAlphagovAccessibleAutocompleteItem[]>([]);
 
+  /**
+   * Business unit reference data used to render the selected business unit summary.
+   */
   @Input({ required: true }) businessUnitRefData!: IOpalFinesBusinessUnit[];
+
+  /**
+   * Major creditor reference data used to populate the Major Creditors autocomplete.
+   */
   @Input({ required: true }) majorCreditorsRefData!: IOpalFinesMajorCreditor[];
+
+  /**
+   * Shared SA store used to hydrate form state, persist temporary search data, and track the active tab.
+   */
   public readonly finesSaStore = inject(FinesSaStore);
   /**
    * Parent-owned field error templates. These are swapped per active tab using `tabFieldErrorMap`.
@@ -165,10 +180,22 @@ export class FinesSaSearchAccountFormComponent extends AbstractFormBaseComponent
     );
   }
 
+  /**
+   * Creates the National Insurance control used by the Individuals criteria group.
+   *
+   * @param value Optional value to retain when the Individuals group is rebuilt during tab changes.
+   * @returns A FormControl configured with alphanumeric-with-spaces and length validation.
+   */
   private buildNationalInsuranceControl(value: string | null = null): FormControl<string | null> {
     return new FormControl<string | null>(value, [ALPHANUMERIC_WITH_SPACES_PATTERN_VALIDATOR, Validators.maxLength(9)]);
   }
 
+  /**
+   * Builds the Individuals search criteria FormGroup with the parent-owned National Insurance control.
+   *
+   * @param nationalInsuranceNumber Optional National Insurance value to preserve across tab resets.
+   * @returns A FormGroup containing the base Individuals search criteria controls.
+   */
   private buildIndividualSearchCriteriaFormGroup(nationalInsuranceNumber: string | null = null): FormGroup {
     return new FormGroup({
       [NATIONAL_INSURANCE_CONTROL]: this.buildNationalInsuranceControl(nationalInsuranceNumber),
@@ -254,7 +281,7 @@ export class FinesSaSearchAccountFormComponent extends AbstractFormBaseComponent
    * - Clears all tab groups, then rehydrates any persisted form state from the store.
    * - Persists the selected tab to the store (and resets temporary state if the tab changed).
    *
-   * @param tab Fragment string identifying the tab (the component treats this as a string).
+   * @param tab Fragment string or tab-change event identifying the tab to activate.
    */
   private switchTab(tab: string | Event): void {
     const resolvedTab = tab as FinesSaSearchAccountTab;

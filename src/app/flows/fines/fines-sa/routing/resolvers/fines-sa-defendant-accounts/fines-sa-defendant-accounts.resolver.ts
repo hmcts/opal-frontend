@@ -92,10 +92,6 @@ export const finesSaDefendantAccountsResolver =
         reference_number: null,
         defendant: {
           ...OPAL_FINES_DEFENDANT_ACCOUNT_SEARCH_PARAMS_DEFENDANT_DEFAULTS,
-          include_aliases: false,
-          surname: '',
-          exact_match_surname: false,
-          exact_match_forenames: false,
           national_insurance_number: nationalInsuranceNumber,
           organisation: false,
         },
