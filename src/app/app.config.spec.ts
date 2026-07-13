@@ -1,89 +1,92 @@
+import { TestBed } from '@angular/core/testing';
+import { ROUTER_CONFIGURATION } from '@angular/router';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
+import { AppInitializerService } from '@hmcts/opal-frontend-common/services/app-initializer-service';
+import { appConfig } from './app.config';
 
-const provideRouterMock = vi.fn();
-const withRouterConfigMock = vi.fn();
-const withInMemoryScrollingMock = vi.fn();
-const provideClientHydrationMock = vi.fn();
-const withNoHttpTransferCacheMock = vi.fn();
-const provideHttpClientMock = vi.fn();
-const withFetchMock = vi.fn();
-const withInterceptorsMock = vi.fn();
-const withInterceptorsFromDiMock = vi.fn();
-const withXsrfConfigurationMock = vi.fn();
-const provideAppInitializerMock = vi.fn();
+type ProviderRecord = {
+  provide?: {
+    toString?: () => string;
+  };
+  useFactory?: () => unknown;
+  ɵproviders?: unknown;
+};
 
-vi.mock('@angular/router', () => ({
-  provideRouter: provideRouterMock,
-  withInMemoryScrolling: withInMemoryScrollingMock,
-  withRouterConfig: withRouterConfigMock,
-}));
+const findProvider = (value: unknown, matcher: (provider: ProviderRecord) => boolean): ProviderRecord | null => {
+  if (Array.isArray(value)) {
+    for (const item of value) {
+      const match = findProvider(item, matcher);
+      if (match) {
+        return match;
+      }
+    }
+    return null;
+  }
 
-vi.mock('@angular/platform-browser', () => ({
-  provideClientHydration: provideClientHydrationMock,
-  withNoHttpTransferCache: withNoHttpTransferCacheMock,
-}));
+  if (!value || typeof value !== 'object') {
+    return null;
+  }
 
-vi.mock('@angular/common/http', () => ({
-  provideHttpClient: provideHttpClientMock,
-  withFetch: withFetchMock,
-  withInterceptors: withInterceptorsMock,
-  withInterceptorsFromDi: withInterceptorsFromDiMock,
-  withXsrfConfiguration: withXsrfConfigurationMock,
-}));
+  const provider = value as ProviderRecord;
+  if (matcher(provider)) {
+    return provider;
+  }
 
-vi.mock('@angular/core', () => ({
-  inject: vi.fn(),
-  provideAppInitializer: provideAppInitializerMock,
-}));
+  if ('ɵproviders' in provider) {
+    return findProvider(provider.ɵproviders, matcher);
+  }
 
-vi.mock('./app.routes', () => ({
-  routes: [{ path: 'test' }],
-}));
-
-vi.mock('@hmcts/opal-frontend-common/services/app-initializer-service', () => ({
-  AppInitializerService: class AppInitializerService {},
-}));
-
-vi.mock('@hmcts/opal-frontend-common/interceptors/http-error', () => ({
-  httpErrorInterceptor: 'httpErrorInterceptor',
-}));
-
-vi.mock('@hmcts/opal-frontend-common/interceptors/content-digest', () => ({
-  contentDigestInterceptor: 'contentDigestInterceptor',
-}));
+  return null;
+};
 
 describe('appConfig', () => {
   beforeEach(() => {
-    vi.resetModules();
-    vi.clearAllMocks();
+    vi.spyOn(console, 'warn').mockImplementation(() => undefined);
+    vi.spyOn(console, 'error').mockImplementation(() => undefined);
 
-    withRouterConfigMock.mockReturnValue('routerConfigFeature');
-    withInMemoryScrollingMock.mockReturnValue('inMemoryScrollingFeature');
-    provideRouterMock.mockReturnValue('routerProvider');
-    withNoHttpTransferCacheMock.mockReturnValue('noHttpTransferCacheFeature');
-    provideClientHydrationMock.mockReturnValue('clientHydrationProvider');
-    withFetchMock.mockReturnValue('fetchFeature');
-    withInterceptorsMock.mockReturnValue('interceptorsFeature');
-    withInterceptorsFromDiMock.mockReturnValue('interceptorsFromDiFeature');
-    withXsrfConfigurationMock.mockReturnValue('xsrfFeature');
-    provideHttpClientMock.mockReturnValue('httpClientProvider');
-    provideAppInitializerMock.mockReturnValue('appInitializerProvider');
+    TestBed.configureTestingModule({
+      providers: [
+        ...appConfig.providers,
+        {
+          provide: AppInitializerService,
+          useValue: {
+            initializeApp: vi.fn(),
+          },
+        },
+      ],
+    });
   });
 
-  it('should configure router scrolling to reset new navigations to the top', async () => {
-    await import('./app.config');
+  it('should configure router scrolling to reset new navigations to the top', () => {
+    const routerScrollerProvider = findProvider(appConfig.providers, (provider) =>
+      provider.provide?.toString?.().includes('Router Scroller'),
+    );
 
-    expect(withRouterConfigMock).toHaveBeenCalledWith({
-      canceledNavigationResolution: 'computed',
-    });
-    expect(withInMemoryScrollingMock).toHaveBeenCalledWith({
+    if (!routerScrollerProvider?.useFactory) {
+      throw new Error('Expected appConfig to include the Router Scroller provider.');
+    }
+
+    const routerScroller = TestBed.runInInjectionContext(
+      () =>
+        routerScrollerProvider.useFactory?.() as {
+          options: {
+            anchorScrolling: string;
+            scrollPositionRestoration: string;
+          };
+        },
+    );
+
+    expect(routerScroller.options).toMatchObject({
       anchorScrolling: 'enabled',
       scrollPositionRestoration: 'top',
     });
-    expect(provideRouterMock).toHaveBeenCalledWith(
-      [{ path: 'test' }],
-      'routerConfigFeature',
-      'inMemoryScrollingFeature',
-    );
+  });
+
+  it('should preserve the router config used by the app shell', () => {
+    const routerConfiguration = TestBed.inject(ROUTER_CONFIGURATION);
+
+    expect(routerConfiguration).toMatchObject({
+      canceledNavigationResolution: 'computed',
+    });
   });
 });
