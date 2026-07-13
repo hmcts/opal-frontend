@@ -50,6 +50,8 @@ describe('Account Enquiry - Major Creditor Header', () => {
     { tags: [...buildTags('@JIRA-STORY:PO-2128'), '@JIRA-EPIC:PO-1286'] },
     () => {
       const header = structuredClone(FINES_ACC_MAJOR_CREDITOR_DETAILS_HEADER_MOCK);
+      header.major_creditor.account_number = '12345678X';
+      header.major_creditor.name = 'Test Major Creditor Account';
       header.awaiting_payout = 123.45;
 
       interceptUserState(USER_STATE_MOCK_PERMISSION_BU77);
@@ -57,6 +59,8 @@ describe('Account Enquiry - Major Creditor Header', () => {
 
       setupAccountEnquiryComponent(componentProperties);
 
+      cy.get(DOM.headingWithCaption).should('contain.text', header.major_creditor.account_number);
+      cy.get(DOM.headingName).should('contain.text', header.major_creditor.name);
       cy.get(DOM.majorCreditorAccountType).should('contain.text', header.major_creditor.account_reference.display_name);
 
       cy.get(DOM.majorCreditorBusinessUnit).should(
@@ -78,8 +82,10 @@ describe('Account Enquiry - Major Creditor Header', () => {
     { tags: [...buildTags('@JIRA-STORY:PO-2128'), '@JIRA-EPIC:PO-1286'] },
     () => {
       const header = structuredClone(FINES_ACC_MAJOR_CREDITOR_DETAILS_HEADER_MOCK);
+      header.major_creditor.account_number = '00000009C';
       header.major_creditor.account_reference.account_type = 'CFA';
       header.major_creditor.account_reference.display_name = 'Central Fund';
+      header.major_creditor.name = 'Central Fund Main Account';
 
       interceptUserState(USER_STATE_MOCK_PERMISSION_BU77);
       interceptMajorCreditorHeader(majorCreditorAccountId, header, '1');
@@ -87,7 +93,7 @@ describe('Account Enquiry - Major Creditor Header', () => {
       setupAccountEnquiryComponent(componentProperties);
 
       cy.get(DOM.pageHeader).should('exist');
-      cy.get(DOM.headingWithCaption).should('exist');
+      cy.get(DOM.headingWithCaption).should('contain.text', header.major_creditor.account_number);
       cy.get(DOM.headingName).should('contain.text', header.major_creditor.name);
 
       cy.get(DOM.accountInfo).should('exist');

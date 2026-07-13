@@ -50,6 +50,8 @@ import { IOpalFinesVersion } from '../../services/opal-fines-service/interfaces/
 import { FINES_ACC_BANNER_MESSAGES } from '../stores/constants/fines-acc-store-banner-messages.constant';
 import { FinesAccMinorCreditorDetailsCreditorTab } from './fines-acc-minor-creditor-details-creditor-tab/fines-acc-minor-creditor-details-creditor-tab.component';
 import { IOpalFinesAccountMinorCreditorCreditor } from '../../services/opal-fines-service/interfaces/opal-fines-account-minor-creditor-creditor.interface';
+import { FinesAccMinorCreditorDetailsHistoryAndNotesTabComponent } from './fines-acc-minor-creditor-details-history-and-notes-tab/fines-acc-minor-creditor-details-history-and-notes-tab.component';
+import { IOpalFinesAccountMinorCreditorDetailsHistoryAndNotesTabRefData } from '../../services/opal-fines-service/interfaces/opal-fines-account-minor-creditor-details-history-and-notes-tab-ref-data.interface';
 
 @Component({
   selector: 'app-fines-acc-minor-creditor-details',
@@ -68,6 +70,7 @@ import { IOpalFinesAccountMinorCreditorCreditor } from '../../services/opal-fine
     FinesAccSummaryHeaderComponent,
     FinesAccMinorCreditorDetailsAtAGlanceTabComponent,
     FinesAccMinorCreditorDetailsCreditorTab,
+    FinesAccMinorCreditorDetailsHistoryAndNotesTabComponent,
     AsyncPipe,
   ],
   templateUrl: './fines-acc-minor-creditor-details.component.html',
@@ -91,6 +94,7 @@ export class FinesAccMinorCreditorDetailsComponent
   public tabContentStyles: IFinesAccSummaryTabsContentStyles = FINES_ACC_SUMMARY_TABS_CONTENT_STYLES;
   public tabAtAGlance$: Observable<IOpalFinesAccountMinorCreditorAtAGlance> = EMPTY;
   public tabCreditor$: Observable<IOpalFinesAccountMinorCreditorCreditor> = EMPTY;
+  public tabHistoryAndNotes$: Observable<IOpalFinesAccountMinorCreditorDetailsHistoryAndNotesTabRefData> = EMPTY;
   public debtorTypes = FINES_ACC_DEBTOR_TYPES;
   public accountTypes = FINES_ACCOUNT_TYPES;
   public lastEnforcement: IOpalFinesResultRefData | null = null;
@@ -132,6 +136,11 @@ export class FinesAccMinorCreditorDetailsComponent
           break;
         case FINES_ACC_MINOR_CREDITOR_DETAILS_TABS_KEYS.creditor:
           this.tabCreditor$ = this.fetchTabDataTyped(this.opalFinesService.getMinorCreditorAccount(account_id));
+          break;
+        case 'history-and-notes':
+          this.tabHistoryAndNotes$ = this.fetchTabDataTyped(
+            this.opalFinesService.getMinorCreditorAccountHistoryAndNotesTabData(account_id),
+          );
           break;
       }
     });

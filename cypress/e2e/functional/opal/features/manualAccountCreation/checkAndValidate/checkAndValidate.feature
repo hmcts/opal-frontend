@@ -5,7 +5,6 @@ Feature: Navigate and edit sections from task list
     Given I am logged in with email "opal-test@dev.platform.hmcts.net"
     And I open Create and Manage Draft Accounts
 
-
   @JIRA-STORY:PO-640 @JIRA-STORY:PO-618 @JIRA-EPIC:PO-2220 @JIRA-TEST-KEY:PO-3877
   Scenario: View all rejected accounts navigation
     Given I create a "company" draft account with the following details and set status "Rejected":
@@ -84,8 +83,8 @@ Feature: Navigate and edit sections from task list
       | Home telephone number   | 07123 456 789 |
       | Work telephone number   | 07123 456 789 |
     And the manual review offence table contains:
-      | imposition | creditor                 | amountImposed | amountPaid | balanceRemaining |
-      | Costs      | TFL2 ATCM Testing (TFL2) | 122           | 10         | 112              |
+      | imposition | creditor    | amountImposed | amountPaid | balanceRemaining |
+      | Costs      | DVLA (DVL2) | 122           | 10         | 112              |
     And I see the manual review "Payment terms" summary:
       | Payment terms | Lump sum plus instalments |
       | Lump sum      | £150                      |
@@ -174,8 +173,8 @@ Feature: Navigate and edit sections from task list
       | Home telephone number   | 07123 456 789 |
       | Work telephone number   | 07123 456 789 |
     And the manual review offence table contains:
-      | imposition | creditor                 | amountImposed | amountPaid | balanceRemaining |
-      | Costs      | TFL2 ATCM Testing (TFL2) | 125           | 10         | 115              |
+      | imposition | creditor    | amountImposed | amountPaid | balanceRemaining |
+      | Costs      | DVLA (DVL2) | 125           | 10         | 115              |
     And I see the manual review "Payment terms" summary:
       | Has a collection order been made? | No                                  |
       | Make collection order today       | Yes                                 |
