@@ -58,9 +58,10 @@ describe('appConfig', () => {
   });
 
   it('should configure router scrolling to reset new navigations to the top', () => {
-    const routerScrollerProvider = findProvider(appConfig.providers, (provider) =>
-      provider.provide?.toString?.().includes('Router Scroller'),
-    );
+    const routerScrollerProvider = findProvider(appConfig.providers, (provider) => {
+      const providerLabel = provider.provide?.toString?.() ?? '';
+      return providerLabel.includes('Router Scroller');
+    });
 
     if (!routerScrollerProvider?.useFactory) {
       throw new Error('Expected appConfig to include the Router Scroller provider.');
