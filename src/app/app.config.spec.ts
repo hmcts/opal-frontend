@@ -78,7 +78,7 @@ describe('appConfig', () => {
     );
 
     expect(routerScroller.options).toMatchObject({
-      anchorScrolling: 'enabled',
+      anchorScrolling: 'disabled',
       scrollPositionRestoration: 'top',
     });
   });
