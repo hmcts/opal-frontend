@@ -2,7 +2,6 @@ import { ComponentFixture, TestBed } from '@angular/core/testing';
 
 import { FinesAccDefendantDetailsParentOrGuardianTabComponent } from './fines-acc-defendant-details-parent-or-guardian-tab.component';
 import { OPAL_FINES_ACCOUNT_DEFENDANT_DETAILS_PARENT_OR_GUARDIAN_TAB_REF_DATA_MOCK } from '@services/fines/opal-fines-service/mocks/opal-fines-account-defendant-details-parent-or-guardian-tab-ref-data.mock';
-import { FINES_ACC_PARTY_ADD_AMEND_CONVERT_PARTY_TYPES } from '../../fines-acc-party-add-amend-convert/constants/fines-acc-party-add-amend-convert-party-types.constant';
 import { FINES_ACC_DEFENDANT_ROUTING_PATHS } from '../../routing/constants/fines-acc-defendant-routing-paths.constant';
 import { FINES_ACC_REMOVE_NON_PAYING_PG_ROUTING_PATHS } from '../../fines-acc-remove-non-paying-pg/constants/fines-acc-remove-non-paying-pg-routing-paths.constant';
 import { provideRouter } from '@angular/router';
@@ -26,20 +25,6 @@ describe('FinesAccDefendantDetailsParentOrGuardianTabComponent', () => {
 
   it('should create', () => {
     expect(component).toBeTruthy();
-  });
-
-  it('should return the amend route when the user has account maintenance permission in the BU', () => {
-    component.hasAccountMaintenancePermissionInBU = true;
-
-    expect(component.changeParentOrGuardianDetailsLink()).toBe(
-      `../${FINES_ACC_DEFENDANT_ROUTING_PATHS.children.party}/${FINES_ACC_PARTY_ADD_AMEND_CONVERT_PARTY_TYPES.PARENT_GUARDIAN}/amend`,
-    );
-  });
-
-  it('should return the access denied route for change when the user lacks account maintenance permission in the BU', () => {
-    component.hasAccountMaintenancePermissionInBU = false;
-
-    expect(component.changeParentOrGuardianDetailsLink()).toBe('/access-denied');
   });
 
   it('should make remove parent or guardian action available when user has permission and party is not the debtor', () => {

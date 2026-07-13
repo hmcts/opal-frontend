@@ -10,7 +10,7 @@
       @if (hasAmendPaymentTermsPermission) {
         <ng-container actions>
           <a
-            [class]="style.changeLink"
+            class="govuk-link govuk-link--no-visited-state"
             [routerLink]="changePaymentTermsLink()"
             [fragment]="changePaymentTermsFragment()"
             >Change</a

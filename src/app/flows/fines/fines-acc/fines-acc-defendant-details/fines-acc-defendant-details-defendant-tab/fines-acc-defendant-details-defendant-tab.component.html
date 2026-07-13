@@ -8,11 +8,6 @@
           <h2 [class]="style.heading">Defendant Details</h2>
         }
       </div>
-      @if (hasAccountMaintenencePermission) {
-        <div class="govuk-grid-column-one-third govuk-!-text-align-right govuk-!-margin-top-3">
-          <a [class]="style.changeLink" [routerLink]="changeDefendantDetailsLink()">Change</a>
-        </div>
-      }
     </div>
     <hr [class]="style.hr" />
 
