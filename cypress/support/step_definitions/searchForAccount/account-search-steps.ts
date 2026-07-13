@@ -174,6 +174,19 @@ When('I view the Major Creditors search form', () => {
 });
 
 /**
+ * @step Searches for a major creditor from the Major Creditors tab.
+ * @param majorCreditor The visible autocomplete value to search for.
+ * @details Delegates to `AccountSearchFlow.searchForMajorCreditor()`.
+ * @example
+ *  When I search for the major creditor "Arriva Rail North (ARVA)"
+ */
+When('I search for the major creditor {string}', (majorCreditor: string) => {
+  const resolvedMajorCreditor = applyUniqPlaceholder(majorCreditor);
+  log('step', 'Searching for major creditor', { majorCreditor: resolvedMajorCreditor });
+  searchFlow().searchForMajorCreditor(resolvedMajorCreditor);
+});
+
+/**
  * @step Verifies the Major Creditors tab is not visible.
  * @example
  *  Then I should not see the Major Creditors search form
