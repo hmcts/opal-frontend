@@ -118,7 +118,7 @@ export class FinesAccPartyDetails {
   /**
    * Resolves the amend route party type for change links.
    */
-  public get changeLinkPartyType(): string {
+  public get setLinkPartyType(): string {
     if (this.isParentGuardianAccount) {
       return this.partyTypes.PARENT_GUARDIAN;
     }
@@ -131,7 +131,7 @@ export class FinesAccPartyDetails {
    */
   public sectionChangeLink(): string {
     return this.hasAccountMaintenancePermissionInBU
-      ? `../${this.finesDefendantRoutingPaths.children.party}/${this.changeLinkPartyType}/amend`
+      ? `../${this.finesDefendantRoutingPaths.children.party}/${this.setLinkPartyType}/amend`
       : '/access-denied';
   }
 
