@@ -44,6 +44,8 @@ const ALPHANUMERIC_WITH_SPACES_PATTERN_VALIDATOR = patternValidator(
   ALPHANUMERIC_WITH_SPACES_PATTERN,
   'alphanumericTextPattern',
 );
+const NATIONAL_INSURANCE_CONTROL = 'fsa_search_account_individuals_national_insurance_number';
+const INDIVIDUALS_CRITERIA_GROUP = 'fsa_search_account_individuals_search_criteria';
 
 /**
  * Parent form for “Search Account” with tabbed sub-forms (Individuals, Companies, Minor Creditors, Major Creditors).
@@ -153,7 +155,7 @@ export class FinesSaSearchAccountFormComponent extends AbstractFormBaseComponent
           ALPHANUMERIC_WITH_SPACES_PATTERN_VALIDATOR,
           Validators.maxLength(30),
         ]),
-        fsa_search_account_individuals_search_criteria: new FormGroup({}),
+        fsa_search_account_individuals_search_criteria: this.buildIndividualSearchCriteriaFormGroup(),
         fsa_search_account_companies_search_criteria: new FormGroup({}),
         fsa_search_account_minor_creditors_search_criteria: new FormGroup({}),
         fsa_search_account_major_creditors_search_criteria: new FormGroup({}),
@@ -161,6 +163,16 @@ export class FinesSaSearchAccountFormComponent extends AbstractFormBaseComponent
       },
       { validators: finesSaOneCriteriaValidator },
     );
+  }
+
+  private buildNationalInsuranceControl(value: string | null = null): FormControl<string | null> {
+    return new FormControl<string | null>(value, [ALPHANUMERIC_WITH_SPACES_PATTERN_VALIDATOR, Validators.maxLength(9)]);
+  }
+
+  private buildIndividualSearchCriteriaFormGroup(nationalInsuranceNumber: string | null = null): FormGroup {
+    return new FormGroup({
+      [NATIONAL_INSURANCE_CONTROL]: this.buildNationalInsuranceControl(nationalInsuranceNumber),
+    });
   }
 
   /**
@@ -223,7 +235,12 @@ export class FinesSaSearchAccountFormComponent extends AbstractFormBaseComponent
    * inline/summary error messages.
    */
   private clearSearchForm(): void {
-    this.form.setControl('fsa_search_account_individuals_search_criteria', new FormGroup({}));
+    const nationalInsuranceNumber = this.form.get(`${INDIVIDUALS_CRITERIA_GROUP}.${NATIONAL_INSURANCE_CONTROL}`)
+      ?.value as string | null;
+    this.form.setControl(
+      INDIVIDUALS_CRITERIA_GROUP,
+      this.buildIndividualSearchCriteriaFormGroup(nationalInsuranceNumber),
+    );
     this.form.setControl('fsa_search_account_companies_search_criteria', new FormGroup({}));
     this.form.setControl('fsa_search_account_minor_creditors_search_criteria', new FormGroup({}));
     this.form.setControl('fsa_search_account_major_creditors_search_criteria', new FormGroup({}));

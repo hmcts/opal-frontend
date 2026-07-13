@@ -49,7 +49,11 @@
     hintText="For example, QQ123456C"
     inputClasses="govuk-input--width-10"
     labelClasses="govuk-label--s"
-    [control]="form.get('fsa_search_account_individuals_national_insurance_number')"
+    [control]="
+      form.get(
+        'fsa_search_account_individuals_search_criteria.fsa_search_account_individuals_national_insurance_number'
+      )
+    "
     [errors]="formControlErrorMessages['fsa_search_account_individuals_national_insurance_number']"
   ></opal-lib-govuk-text-input>
   <hr class="govuk-section-break govuk-section-break--l govuk-section-break--visible" />

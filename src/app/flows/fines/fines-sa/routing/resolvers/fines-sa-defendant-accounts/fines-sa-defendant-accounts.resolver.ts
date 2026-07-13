@@ -38,6 +38,9 @@ export const finesSaDefendantAccountsResolver =
     const hasReference = !!state.fsa_search_account_reference_case_number;
     const individualCriteria = state.fsa_search_account_individuals_search_criteria;
     const companyCriteria = state.fsa_search_account_companies_search_criteria;
+    const nationalInsuranceNumber =
+      individualCriteria?.fsa_search_account_individuals_national_insurance_number ?? null;
+    const hasNationalInsuranceNumber = !!nationalInsuranceNumber?.trim();
 
     // Build shared base params once
     const baseSearchParams = {
@@ -52,7 +55,7 @@ export const finesSaDefendantAccountsResolver =
     const hasCompanyCriteria = Object.values(state.fsa_search_account_companies_search_criteria ?? {}).some(
       (x) => x !== null,
     );
-    const hasSelectedCriteria = isCompany ? hasCompanyCriteria : hasIndividualCriteria;
+    const hasSelectedCriteria = isCompany ? hasCompanyCriteria : hasNationalInsuranceNumber || hasIndividualCriteria;
     if (!hasAccountNumber && !hasReference && !hasSelectedCriteria) {
       return of({ count: 0, defendant_accounts: [] } as IOpalFinesDefendantAccountResponse);
     }
@@ -83,6 +86,23 @@ export const finesSaDefendantAccountsResolver =
       });
     }
 
+    if (hasNationalInsuranceNumber && !isCompany) {
+      return opalFinesService.getDefendantAccounts({
+        ...baseSearchParams,
+        reference_number: null,
+        defendant: {
+          ...OPAL_FINES_DEFENDANT_ACCOUNT_SEARCH_PARAMS_DEFENDANT_DEFAULTS,
+          include_aliases: false,
+          surname: '',
+          exact_match_surname: false,
+          exact_match_forenames: false,
+          national_insurance_number: nationalInsuranceNumber,
+          organisation: false,
+        },
+        active_accounts_only: state.fsa_search_account_active_accounts_only ?? true,
+      });
+    }
+
     // 3) Criteria based on searchType
     if (activeTab === 'individuals' && individualCriteria) {
       const transformedIndividualCriteria = finesSaPayloadService.transformPayload(
@@ -101,8 +121,7 @@ export const finesSaDefendantAccountsResolver =
           exact_match_forenames:
             transformedIndividualCriteria.fsa_search_account_individuals_first_names_exact_match ?? false,
           birth_date: transformedIndividualCriteria.fsa_search_account_individuals_date_of_birth,
-          national_insurance_number:
-            transformedIndividualCriteria.fsa_search_account_individuals_national_insurance_number,
+          national_insurance_number: null,
           address_line_1: transformedIndividualCriteria.fsa_search_account_individuals_address_line_1,
           postcode: transformedIndividualCriteria.fsa_search_account_individuals_post_code,
           include_aliases: transformedIndividualCriteria.fsa_search_account_individuals_include_aliases ?? false,

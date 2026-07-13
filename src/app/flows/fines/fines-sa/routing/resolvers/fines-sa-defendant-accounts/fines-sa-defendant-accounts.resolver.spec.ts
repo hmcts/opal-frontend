@@ -113,7 +113,6 @@ describe('finesSaDefendantAccountsResolver (store-driven)', () => {
         fsa_search_account_individuals_first_names: 'Jane',
         fsa_search_account_individuals_first_names_exact_match: false,
         fsa_search_account_individuals_date_of_birth: '02/01/1980',
-        fsa_search_account_individuals_national_insurance_number: 'QQ123456C',
         fsa_search_account_individuals_address_line_1: '10 Lane',
         fsa_search_account_individuals_post_code: 'AB1 2CD',
         fsa_search_account_individuals_include_aliases: true,
@@ -155,10 +154,57 @@ describe('finesSaDefendantAccountsResolver (store-driven)', () => {
           forenames: 'Jane',
           exact_match_forenames: false,
           birth_date: '1980-01-02',
-          national_insurance_number: 'QQ123456C',
+          national_insurance_number: null,
         }),
       }),
     );
+  });
+
+  it('builds individual payload from parent-owned national insurance number', async () => {
+    finesSaStore.setSearchAccount({
+      ...FINES_SA_SEARCH_ACCOUNT_STATE,
+      fsa_search_account_business_unit_ids: [65, 66, 73, 77, 80, 78],
+      fsa_search_account_individuals_search_criteria: {
+        fsa_search_account_individuals_national_insurance_number: 'QQ123456C',
+      } as never,
+    });
+    finesSaStore.setActiveTab('companies');
+    opalFines.getDefendantAccounts.mockReturnValue(of({ count: 1, defendant_accounts: [] }));
+
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    await lastValueFrom(execIndividuals(undefined as any, undefined as any) as Observable<any>);
+
+    expect(opalFines.getDefendantAccounts).toHaveBeenCalledWith(
+      expect.objectContaining({
+        active_accounts_only: true,
+        business_unit_ids: [65, 66, 73, 77, 80, 78],
+        reference_number: null,
+        defendant: expect.objectContaining({
+          include_aliases: false,
+          surname: '',
+          exact_match_surname: false,
+          exact_match_forenames: false,
+          national_insurance_number: 'QQ123456C',
+          organisation: false,
+        }),
+      }),
+    );
+  });
+
+  it('returns early for company resolver when only national insurance number is populated', async () => {
+    finesSaStore.setSearchAccount({
+      ...FINES_SA_SEARCH_ACCOUNT_STATE,
+      fsa_search_account_individuals_search_criteria: {
+        fsa_search_account_individuals_national_insurance_number: 'QQ123456C',
+      } as never,
+    });
+    finesSaStore.setActiveTab('companies');
+
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    const result = await lastValueFrom(execCompanies(undefined as any, undefined as any) as Observable<any>);
+
+    expect(opalFines.getDefendantAccounts).not.toHaveBeenCalled();
+    expect(result).toEqual({ count: 0, defendant_accounts: [] });
   });
 
   it('builds company payload when activeTab = companies and criteria present', async () => {
