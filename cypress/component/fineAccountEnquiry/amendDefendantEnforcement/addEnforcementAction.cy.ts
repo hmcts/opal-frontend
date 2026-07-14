@@ -805,38 +805,42 @@ describe(
       );
     });
 
-    it('Negative test: NOENF shows remove hold error screen for company', { tags: ['@JIRA-STORY:PO-1835', '@R1B'] }, () => {
-      let headerMock = structuredClone(DEFENDANT_HEADER_ORG_MOCK);
+    it(
+      'Negative test: NOENF shows remove hold error screen for company',
+      { tags: ['@JIRA-STORY:PO-1835', '@R1B'] },
+      () => {
+        let headerMock = structuredClone(DEFENDANT_HEADER_ORG_MOCK);
 
-      headerMock.debtor_type = 'company';
+        headerMock.debtor_type = 'company';
 
-      const enforcementMock = structuredClone(OPAL_FINES_ACCOUNT_DEFENDANT_DETAILS_ENFORCEMENT_TAB_REF_DATA_MOCK);
+        const enforcementMock = structuredClone(OPAL_FINES_ACCOUNT_DEFENDANT_DETAILS_ENFORCEMENT_TAB_REF_DATA_MOCK);
 
-      enforcementMock.last_enforcement_action!.enforcement_action.result_id = 'NOENF';
+        enforcementMock.last_enforcement_action!.enforcement_action.result_id = 'NOENF';
 
-      enforcementMock.next_enforcement_action_data = null;
+        enforcementMock.next_enforcement_action_data = null;
 
-      const accountId = headerMock.defendant_account_party_id;
+        const accountId = headerMock.defendant_account_party_id;
 
-      interceptAuthenticatedUser();
-      interceptUserState(USER_STATE_MOCK_PERMISSION_BU77);
-      interceptDefendantHeader(accountId, headerMock, '123');
-      interceptEnforcementStatus(accountId, enforcementMock, '123');
-      interceptNextPermittedEnforcementActionsEmpty();
+        interceptAuthenticatedUser();
+        interceptUserState(USER_STATE_MOCK_PERMISSION_BU77);
+        interceptDefendantHeader(accountId, headerMock, '123');
+        interceptEnforcementStatus(accountId, enforcementMock, '123');
+        interceptNextPermittedEnforcementActionsEmpty();
 
-      setupAccountEnquiryComponent({
-        ...COMPONENT_PROPERTIES,
-        accountId,
-      });
+        setupAccountEnquiryComponent({
+          ...COMPONENT_PROPERTIES,
+          accountId,
+        });
 
-      cy.get(ENF.addEnforcementActionLink).click();
+        cy.get(ENF.addEnforcementActionLink).click();
 
-      cy.contains('You must first remove the enforcement hold on the account.').should('be.visible');
+        cy.contains('You must first remove the enforcement hold on the account.').should('be.visible');
 
-      cy.contains('177A - Sainsco').should('be.visible');
+        cy.contains('177A - Sainsco').should('be.visible');
 
-      cy.contains('Go back').click();
-    });
+        cy.contains('Go back').click();
+      },
+    );
 
     it(
       'Negative test: No next permitted actions shows error screen for company',

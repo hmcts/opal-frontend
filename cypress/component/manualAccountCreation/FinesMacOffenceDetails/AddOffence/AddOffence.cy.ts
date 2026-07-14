@@ -124,7 +124,8 @@ describe('FinesMacAddOffenceComponent', () => {
         '@JIRA-STORY:PO-2948',
         '@JIRA-LABEL:manual-account-creation',
         '@JIRA-EPIC:PO-2219',
-        '@JIRA-TEST-KEY:PO-4991', '@R1A'
+        '@JIRA-TEST-KEY:PO-4991',
+        '@R1A',
       ],
     },
     () => {
@@ -176,7 +177,8 @@ describe('FinesMacAddOffenceComponent', () => {
         '@JIRA-LABEL:manual-account-creation',
         '@JIRA-EPIC:PO-2219',
         '@JIRA-NFR:PO-2329',
-        '@JIRA-TEST-KEY:PO-4992', '@R1A'
+        '@JIRA-TEST-KEY:PO-4992',
+        '@R1A',
       ],
     },
     () => {
@@ -229,7 +231,8 @@ describe('FinesMacAddOffenceComponent', () => {
         '@JIRA-LABEL:manual-account-creation',
         '@JIRA-EPIC:PO-2219',
         '@JIRA-NFR:PO-2329',
-        '@JIRA-TEST-KEY:PO-4993', '@R1A'
+        '@JIRA-TEST-KEY:PO-4993',
+        '@R1A',
       ],
     },
     () => {
@@ -292,7 +295,8 @@ describe('FinesMacAddOffenceComponent', () => {
         '@JIRA-LABEL:manual-account-creation',
         '@JIRA-EPIC:PO-2219',
         '@JIRA-NFR:PO-2329',
-        '@JIRA-TEST-KEY:PO-4994', '@R1A'
+        '@JIRA-TEST-KEY:PO-4994',
+        '@R1A',
       ],
     },
     () => {
@@ -352,7 +356,8 @@ describe('FinesMacAddOffenceComponent', () => {
         '@JIRA-STORY:PO-684',
         '@JIRA-EPIC:PO-545',
         '@JIRA-LABEL:manual-account-creation',
-        '@JIRA-TEST-KEY:PO-4995', '@R1A'
+        '@JIRA-TEST-KEY:PO-4995',
+        '@R1A',
       ],
     },
     () => {
@@ -371,7 +376,8 @@ describe('FinesMacAddOffenceComponent', () => {
         '@JIRA-STORY:PO-684',
         '@JIRA-EPIC:PO-545',
         '@JIRA-LABEL:manual-account-creation',
-        '@JIRA-TEST-KEY:PO-4996', '@R1A'
+        '@JIRA-TEST-KEY:PO-4996',
+        '@R1A',
       ],
     },
     () => {
@@ -416,7 +422,8 @@ describe('FinesMacAddOffenceComponent', () => {
         '@JIRA-STORY:PO-684',
         '@JIRA-EPIC:PO-545',
         '@JIRA-LABEL:manual-account-creation',
-        '@JIRA-TEST-KEY:PO-4997', '@R1A'
+        '@JIRA-TEST-KEY:PO-4997',
+        '@R1A',
       ],
     },
     () => {
@@ -441,7 +448,8 @@ describe('FinesMacAddOffenceComponent', () => {
         '@JIRA-STORY:PO-684',
         '@JIRA-EPIC:PO-545',
         '@JIRA-LABEL:manual-account-creation',
-        '@JIRA-TEST-KEY:PO-4998', '@R1A'
+        '@JIRA-TEST-KEY:PO-4998',
+        '@R1A',
       ],
     },
     () => {
@@ -467,7 +475,8 @@ describe('FinesMacAddOffenceComponent', () => {
         '@JIRA-EPIC:PO-545',
         '@JIRA-LABEL:manual-account-creation',
         '@JIRA-NFR:PO-2325',
-        '@JIRA-TEST-KEY:PO-6346', '@R1A'
+        '@JIRA-TEST-KEY:PO-6346',
+        '@R1A',
       ],
     },
     () => {
@@ -549,7 +558,8 @@ describe('FinesMacAddOffenceComponent', () => {
         '@JIRA-STORY:PO-684',
         '@JIRA-EPIC:PO-545',
         '@JIRA-LABEL:manual-account-creation',
-        '@JIRA-TEST-KEY:PO-5000', '@R1A'
+        '@JIRA-TEST-KEY:PO-5000',
+        '@R1A',
       ],
     },
     () => {
@@ -591,7 +601,8 @@ describe('FinesMacAddOffenceComponent', () => {
         '@JIRA-STORY:PO-684',
         '@JIRA-EPIC:PO-545',
         '@JIRA-LABEL:manual-account-creation',
-        '@JIRA-TEST-KEY:PO-5001', '@R1A'
+        '@JIRA-TEST-KEY:PO-5001',
+        '@R1A',
       ],
     },
     () => {
@@ -622,7 +633,8 @@ describe('FinesMacAddOffenceComponent', () => {
         '@JIRA-STORY:PO-684',
         '@JIRA-EPIC:PO-545',
         '@JIRA-LABEL:manual-account-creation',
-        '@JIRA-TEST-KEY:PO-5002', '@R1A'
+        '@JIRA-TEST-KEY:PO-5002',
+        '@R1A',
       ],
     },
     () => {
@@ -641,7 +653,8 @@ describe('FinesMacAddOffenceComponent', () => {
         '@JIRA-STORY:PO-684',
         '@JIRA-EPIC:PO-545',
         '@JIRA-LABEL:manual-account-creation',
-        '@JIRA-TEST-KEY:PO-5003', '@R1A'
+        '@JIRA-TEST-KEY:PO-5003',
+        '@R1A',
       ],
     },
     () => {
@@ -677,7 +690,8 @@ describe('FinesMacAddOffenceComponent', () => {
         '@JIRA-STORY:PO-684',
         '@JIRA-EPIC:PO-545',
         '@JIRA-LABEL:manual-account-creation',
-        '@JIRA-TEST-KEY:PO-5004', '@R1A'
+        '@JIRA-TEST-KEY:PO-5004',
+        '@R1A',
       ],
     },
     () => {
@@ -710,7 +724,8 @@ describe('FinesMacAddOffenceComponent', () => {
         '@JIRA-STORY:PO-684',
         '@JIRA-EPIC:PO-545',
         '@JIRA-LABEL:manual-account-creation',
-        '@JIRA-TEST-KEY:PO-5005', '@R1A'
+        '@JIRA-TEST-KEY:PO-5005',
+        '@R1A',
       ],
     },
     () => {
@@ -743,7 +758,8 @@ describe('FinesMacAddOffenceComponent', () => {
         '@JIRA-STORY:PO-684',
         '@JIRA-EPIC:PO-545',
         '@JIRA-LABEL:manual-account-creation',
-        '@JIRA-TEST-KEY:PO-5006', '@R1A'
+        '@JIRA-TEST-KEY:PO-5006',
+        '@R1A',
       ],
     },
     () => {
@@ -765,7 +781,8 @@ describe('FinesMacAddOffenceComponent', () => {
         '@JIRA-STORY:PO-684',
         '@JIRA-EPIC:PO-545',
         '@JIRA-LABEL:manual-account-creation',
-        '@JIRA-TEST-KEY:PO-5007', '@R1A'
+        '@JIRA-TEST-KEY:PO-5007',
+        '@R1A',
       ],
     },
     () => {
@@ -788,7 +805,8 @@ describe('FinesMacAddOffenceComponent', () => {
         '@JIRA-STORY:PO-684',
         '@JIRA-EPIC:PO-545',
         '@JIRA-LABEL:manual-account-creation',
-        '@JIRA-TEST-KEY:PO-5008', '@R1A'
+        '@JIRA-TEST-KEY:PO-5008',
+        '@R1A',
       ],
     },
     () => {
@@ -816,7 +834,8 @@ describe('FinesMacAddOffenceComponent', () => {
         '@JIRA-STORY:PO-684',
         '@JIRA-EPIC:PO-545',
         '@JIRA-LABEL:manual-account-creation',
-        '@JIRA-TEST-KEY:PO-5009', '@R1A'
+        '@JIRA-TEST-KEY:PO-5009',
+        '@R1A',
       ],
     },
     () => {
@@ -850,7 +869,8 @@ describe('FinesMacAddOffenceComponent', () => {
         '@JIRA-STORY:PO-684',
         '@JIRA-EPIC:PO-545',
         '@JIRA-LABEL:manual-account-creation',
-        '@JIRA-TEST-KEY:PO-5010', '@R1A'
+        '@JIRA-TEST-KEY:PO-5010',
+        '@R1A',
       ],
     },
     () => {
@@ -884,7 +904,8 @@ describe('FinesMacAddOffenceComponent', () => {
         '@JIRA-STORY:PO-684',
         '@JIRA-EPIC:PO-545',
         '@JIRA-LABEL:manual-account-creation',
-        '@JIRA-TEST-KEY:PO-5011', '@R1A'
+        '@JIRA-TEST-KEY:PO-5011',
+        '@R1A',
       ],
     },
     () => {
@@ -909,7 +930,8 @@ describe('FinesMacAddOffenceComponent', () => {
         '@JIRA-STORY:PO-684',
         '@JIRA-EPIC:PO-545',
         '@JIRA-LABEL:manual-account-creation',
-        '@JIRA-TEST-KEY:PO-5012', '@R1A'
+        '@JIRA-TEST-KEY:PO-5012',
+        '@R1A',
       ],
     },
     () => {
@@ -934,7 +956,8 @@ describe('FinesMacAddOffenceComponent', () => {
         '@JIRA-STORY:PO-684',
         '@JIRA-EPIC:PO-545',
         '@JIRA-LABEL:manual-account-creation',
-        '@JIRA-TEST-KEY:PO-5013', '@R1A'
+        '@JIRA-TEST-KEY:PO-5013',
+        '@R1A',
       ],
     },
     () => {
@@ -961,7 +984,8 @@ describe('FinesMacAddOffenceComponent', () => {
         '@JIRA-STORY:PO-684',
         '@JIRA-EPIC:PO-545',
         '@JIRA-LABEL:manual-account-creation',
-        '@JIRA-TEST-KEY:PO-5014', '@R1A'
+        '@JIRA-TEST-KEY:PO-5014',
+        '@R1A',
       ],
     },
     () => {
@@ -1010,7 +1034,8 @@ describe('FinesMacAddOffenceComponent', () => {
         '@JIRA-STORY:PO-1060',
         '@JIRA-LABEL:manual-account-creation',
         '@JIRA-EPIC:PO-2219',
-        '@JIRA-TEST-KEY:PO-5015', '@R1A'
+        '@JIRA-TEST-KEY:PO-5015',
+        '@R1A',
       ],
     },
     () => {
@@ -1042,7 +1067,8 @@ describe('FinesMacAddOffenceComponent', () => {
         '@JIRA-STORY:PO-1060',
         '@JIRA-LABEL:manual-account-creation',
         '@JIRA-EPIC:PO-2219',
-        '@JIRA-TEST-KEY:PO-5016', '@R1A'
+        '@JIRA-TEST-KEY:PO-5016',
+        '@R1A',
       ],
     },
     () => {
@@ -1074,7 +1100,8 @@ describe('FinesMacAddOffenceComponent', () => {
         '@JIRA-STORY:PO-1060',
         '@JIRA-LABEL:manual-account-creation',
         '@JIRA-EPIC:PO-2219',
-        '@JIRA-TEST-KEY:PO-5017', '@R1A'
+        '@JIRA-TEST-KEY:PO-5017',
+        '@R1A',
       ],
     },
     () => {
@@ -1106,7 +1133,8 @@ describe('FinesMacAddOffenceComponent', () => {
         '@JIRA-STORY:PO-2716',
         '@JIRA-LABEL:manual-account-creation',
         '@JIRA-EPIC:PO-2807',
-        '@JIRA-TEST-KEY:PO-5018', '@R1A'
+        '@JIRA-TEST-KEY:PO-5018',
+        '@R1A',
       ],
     },
     () => {
@@ -1151,7 +1179,8 @@ describe('FinesMacAddOffenceComponent', () => {
         '@JIRA-EPIC:PO-2219',
         '@JIRA-STORY:PO-3550',
         '@JIRA-LABEL:manual-account-creation',
-        '@JIRA-TEST-KEY:PO-5019', '@R1A'
+        '@JIRA-TEST-KEY:PO-5019',
+        '@R1A',
       ],
     },
     () => {
@@ -1179,7 +1208,8 @@ describe('FinesMacAddOffenceComponent', () => {
         '@JIRA-EPIC:PO-2219',
         '@JIRA-STORY:PO-3550',
         '@JIRA-LABEL:manual-account-creation',
-        '@JIRA-TEST-KEY:PO-5020', '@R1A'
+        '@JIRA-TEST-KEY:PO-5020',
+        '@R1A',
       ],
     },
     () => {
@@ -1206,7 +1236,8 @@ describe('FinesMacAddOffenceComponent', () => {
         '@JIRA-EPIC:PO-2219',
         '@JIRA-STORY:PO-8046',
         '@JIRA-LABEL:manual-account-creation',
-        '@JIRA-TEST-KEY:PO-8350', '@R1A'
+        '@JIRA-TEST-KEY:PO-8350',
+        '@R1A',
       ],
     },
     () => {
