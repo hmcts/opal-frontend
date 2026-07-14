@@ -1,0 +1,1 @@
+export const FINES_ACC_HISTORY_AND_NOTES_DETAILS_FALLBACK_ALIASES: string[] = [];

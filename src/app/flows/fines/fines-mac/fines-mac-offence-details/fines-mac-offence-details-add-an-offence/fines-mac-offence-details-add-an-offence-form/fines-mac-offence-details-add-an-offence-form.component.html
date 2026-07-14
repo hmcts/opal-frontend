@@ -189,38 +189,44 @@
                       <span id="major-creditor-conditional-label" class="govuk-visually-hidden">
                         Options for Major Creditor
                       </span>
-                      <opal-lib-govuk-radios-conditional
-                        [conditionalId]="'fm_offence_details_creditor_' + rowIndex + '_major'"
+                      <div
+                        class="govuk-radios__conditional"
+                        [class.govuk-radios__conditional--hidden]="!isCreditorSelected(rowIndex, 'major')"
+                        [id]="'fm_offence_details_creditor_' + rowIndex + '_major'"
                       >
-                        <opal-lib-alphagov-accessible-autocomplete
-                          [control]="
-                            form.get([
-                              'fm_offence_details_impositions',
-                              rowIndex,
-                              formArrayControl['fm_offence_details_major_creditor_id'].controlName,
-                            ])
-                          "
-                          labelText="Search using name or code"
-                          labelClasses="govuk-fieldset__legend--s"
-                          [inputId]="formArrayControl['fm_offence_details_major_creditor_id'].inputId"
-                          [inputName]="formArrayControl['fm_offence_details_major_creditor_id'].inputName"
-                          inputClasses="govuk-!-width-one-half"
-                          [autoCompleteItems]="majorCreditorItemsByCode[currentResultCodeByRow[rowIndex]]"
-                          [errors]="
-                            formControlErrorMessages[
-                              formArrayControl['fm_offence_details_major_creditor_id'].controlName
-                            ]
-                          "
-                        >
-                        </opal-lib-alphagov-accessible-autocomplete>
-                      </opal-lib-govuk-radios-conditional>
+                        @for (resultCode of [currentResultCodeByRow[rowIndex]]; track resultCode) {
+                          <opal-lib-alphagov-accessible-autocomplete
+                            [control]="
+                              form.get([
+                                'fm_offence_details_impositions',
+                                rowIndex,
+                                formArrayControl['fm_offence_details_major_creditor_id'].controlName,
+                              ])
+                            "
+                            labelText="Search using name or code"
+                            labelClasses="govuk-fieldset__legend--s"
+                            [inputId]="formArrayControl['fm_offence_details_major_creditor_id'].inputId"
+                            [inputName]="formArrayControl['fm_offence_details_major_creditor_id'].inputName"
+                            inputClasses="govuk-!-width-one-half"
+                            [autoCompleteItems]="getMajorCreditorItems(resultCode)"
+                            [errors]="
+                              formControlErrorMessages[
+                                formArrayControl['fm_offence_details_major_creditor_id'].controlName
+                              ]
+                            "
+                          >
+                          </opal-lib-alphagov-accessible-autocomplete>
+                        }
+                      </div>
                     }
                     @if (creditorOption.key === 'minor') {
                       <span id="minor-creditor-conditional-label" class="govuk-visually-hidden">
                         Options for Minor Creditor
                       </span>
-                      <opal-lib-govuk-radios-conditional
-                        [conditionalId]="'fm_offence_details_creditor_' + rowIndex + '_minor'"
+                      <div
+                        class="govuk-radios__conditional"
+                        [class.govuk-radios__conditional--hidden]="!isCreditorSelected(rowIndex, 'minor')"
+                        [id]="'fm_offence_details_creditor_' + rowIndex + '_minor'"
                       >
                         <a
                           class="govuk-link govuk-link--no-visited-state"
@@ -229,7 +235,7 @@
                         >
                           Add minor creditor details
                         </a>
-                      </opal-lib-govuk-radios-conditional>
+                      </div>
                     }
                   }
                 </opal-lib-govuk-radio>

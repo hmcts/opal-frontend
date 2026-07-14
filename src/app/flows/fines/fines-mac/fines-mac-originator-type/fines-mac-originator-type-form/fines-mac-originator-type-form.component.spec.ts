@@ -1,4 +1,5 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
+import { By } from '@angular/platform-browser';
 import { FinesMacOriginatorTypeFormComponent } from './fines-mac-originator-type-form.component';
 import { IFinesMacOriginatorTypeForm } from '../interfaces/fines-mac-originator-type-form.interface';
 import { FinesMacStoreType } from '../../stores/types/fines-mac-store.type';
@@ -9,6 +10,7 @@ import { FINES_MAC_STATE_MOCK } from '../../mocks/fines-mac-state.mock';
 import { ActivatedRoute } from '@angular/router';
 import { GovukRadioComponent } from '@hmcts/opal-frontend-common/components/govuk/govuk-radio';
 import { describe, beforeAll, afterAll, beforeEach, it, expect, vi } from 'vitest';
+import { FINES_MAC_DRAFT_CREATE_AND_MANAGE_TABS_ROUTE } from '../../constants/fines-mac-draft-create-and-manage-tabs-route.constant';
 
 describe('FinesMacOriginatorTypeFormComponent', () => {
   let component: FinesMacOriginatorTypeFormComponent;
@@ -86,5 +88,16 @@ describe('FinesMacOriginatorTypeFormComponent', () => {
     expect(component['setupOriginatorTypeForm']).toHaveBeenCalled();
     expect(component['setInitialErrorMessages']).toHaveBeenCalled();
     expect(component['rePopulateForm']).toHaveBeenCalledWith(finesMacStore.originatorType().formData);
+  });
+
+  it('should route the cancel link to the review tab in draft create and manage', () => {
+    const handleRouteSpy = vi.spyOn(component, 'handleRoute').mockImplementation(() => {});
+
+    fixture.debugElement.query(By.css('opal-lib-govuk-cancel-link')).triggerEventHandler('linkClickEvent');
+
+    expect(handleRouteSpy).toHaveBeenCalledWith(FINES_MAC_DRAFT_CREATE_AND_MANAGE_TABS_ROUTE.path, {
+      nonRelative: true,
+      fragment: FINES_MAC_DRAFT_CREATE_AND_MANAGE_TABS_ROUTE.fragment,
+    });
   });
 });

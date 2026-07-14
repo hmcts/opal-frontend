@@ -15,7 +15,6 @@ import {
   DefendantType,
 } from '../../../e2e/functional/opal/actions/manual-account-creation/create-account.actions';
 import { ManualCreateOrTransferInActions } from '../../../e2e/functional/opal/actions/manual-account-creation/create-transfer.actions';
-import { CreateNewOrTransferInLocators } from '../../../shared/selectors/manual-account-creation/create-transfer.locators';
 import { ManualAccountCommentsNotesActions } from '../../../e2e/functional/opal/actions/manual-account-creation/account-comments-notes.actions';
 import { ManualCourtFieldKey } from '../../../e2e/functional/opal/actions/manual-account-creation/court-details.actions';
 import {
@@ -1425,20 +1424,6 @@ When(
 When('I access the {string} task', (taskName: MacAccountTaskName) => {
   log('navigate', 'Accessing task from account details', { taskName });
   flow().openTaskFromAccountDetails(taskName);
-});
-
-/**
- * @step Selecting back link on create account page
- * @description Clicks the back link on the Create account page and asserts we return to the Originator type selection page.
- */
-When('I click the back link on create account page I return to Create or Transfer In page - No data retained', () => {
-  log('navigate', 'Clicking back link on Create account page');
-  createAccount().selectBackLink();
-  originatorType().assertOnCreateOrTransferInPage();
-  cy.get(CreateNewOrTransferInLocators.originatorType.transferIn, { timeout: 15_000 })
-    .first()
-    .should('exist')
-    .and('not.be.checked');
 });
 
 /**

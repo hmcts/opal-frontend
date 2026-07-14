@@ -1359,7 +1359,12 @@ describe('FinesMacManualFixedPenalty', () => {
   it(
     '(AC5) should keep Prosecutors (All) visible and selectable as originators for non-filtered journeys',
     {
-      tags: [...buildTags('@JIRA-STORY:PO-2761'), '@JIRA-EPIC:PO-2750', '@JIRA-TEST-KEY:PO-4829'],
+      tags: [
+        ...buildTags('@JIRA-STORY:PO-2761'),
+        '@JIRA-EPIC:PO-2750',
+        '@JIRA-TEST-KEY:PO-4829',
+        '@JIRA-DEFECT:PO-8896',
+      ],
     },
     () => {
       const filteredLocalJusticeAreas: IOpalFinesLocalJusticeAreaRefData = {
