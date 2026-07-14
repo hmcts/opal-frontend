@@ -35,6 +35,7 @@ import { FINES_ACC_COLLECTION_ORDER_PAYLOAD_DEFAULTS } from './constants/fines-a
 import { IOpalFinesUpdateMinorCreditorAccountPayload } from '../../services/opal-fines-service/interfaces/opal-fines-update-minor-creditor-account-payload.interface';
 import { IOpalFinesAccountMinorCreditorAtAGlance } from '../../services/opal-fines-service/interfaces/opal-fines-account-minor-creditor-at-a-glance.interface';
 import { FINES_ACC_PARTY_TYPES } from '../constants/fines-acc-party-types.constant';
+import { IOpalFinesAccountMajorCreditorDetailsHeader } from '../fines-acc-major-creditor-details/interfaces/fines-acc-major-creditor-details-header.interface';
 import { IFinesAccEnfActionAddFormState } from '../fines-acc-enf-action-add/interfaces/fines-acc-enf-action-add-form-state.interface';
 import { IFinesAccEnfActionAddFormField } from '../fines-acc-enf-action-add/interfaces/fines-acc-enf-action-add-form-field.interface';
 import { IOpalFinesAddEnforcementActionPayload } from '../../services/opal-fines-service/interfaces/opal-fines-add-enforcement-action-payload.interface';
@@ -553,6 +554,35 @@ export class FinesAccPayloadService {
         pay_by_bacs: data.payment.is_bacs,
         hold_payment: data.payment.hold_payment,
       },
+    };
+  }
+
+  /**
+   * Transforms the given IOpalFinesAccountMajorCreditorDetailsHeader into IFinesAccountState for the store
+   * @param account_id The account ID for which the header data was fetched. This is needed to set the account_id in the store state, as the header data does not contain the account_id field.
+   * @param headingData The heading data as either IOpalFinesAccountMajorCreditorDetailsHeader
+   * @returns The transformed account state to be set in the store.
+   */
+  public transformMajorCreditorAccountHeaderForStore(
+    account_id: number,
+    headingData: IOpalFinesAccountMajorCreditorDetailsHeader,
+  ): IFinesAccountState {
+    const business_unit_user_id = this.payloadService.getBusinessUnitBusinessUserId(
+      Number(headingData.business_unit_details.business_unit_id),
+      this.globalStore.userState(),
+    );
+
+    return {
+      account_number: headingData.major_creditor.account_number,
+      account_id: Number(account_id),
+      pg_party_id: null,
+      party_id: headingData.major_creditor.creditor_account_id.toString(),
+      party_type: headingData.major_creditor.account_reference.display_name,
+      party_name: headingData.major_creditor.name,
+      base_version: headingData.version,
+      business_unit_id: headingData.business_unit_details.business_unit_id,
+      business_unit_user_id,
+      welsh_speaking: headingData.business_unit_details.welsh_speaking,
     };
   }
 }
