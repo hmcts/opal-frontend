@@ -17,6 +17,7 @@ import { CommonActions } from '../actions/common/common.actions';
 import { PrimaryNavigationActions } from '../actions/primary-navigation.actions';
 import { MinorCreditorType } from '../../../../support/utils/macFieldResolvers';
 import { applyUniqPlaceholder } from '../../../../support/utils/stringUtils';
+import { ForceSingleTabNavigation } from '../../../../support/utils/navigation';
 
 /**
  * Normalised Minor Creditor types used in flow processing.
@@ -89,6 +90,22 @@ export class AccountSearchFlow {
 
       return accountNumber;
     });
+  }
+
+  /**
+   * Searches for a major creditor from the Major Creditors tab and opens the details page.
+   *
+   * @param value - The visible major creditor value to select from the autocomplete.
+   */
+  public searchForMajorCreditor(value: string): void {
+    log('flow', 'Searching for major creditor', { value });
+    this.viewMajorCreditorsForm();
+    this.majors.setMajorCreditor(value);
+    ForceSingleTabNavigation();
+    this.commonSearch.clickSearchButton();
+    cy.location('pathname', { timeout: 15_000 }).should('match', /\/fines\/account\/major-creditor\/\d+\/details$/);
+    cy.get('opal-lib-custom-page-header', { timeout: 15_000 }).should('be.visible');
+    cy.get('h1.govuk-heading-l', { timeout: 15_000 }).should('be.visible');
   }
 
   /**

@@ -6,7 +6,7 @@ import {
   MojSubNavigationItemComponent,
 } from '@hmcts/opal-frontend-common/components/moj/moj-sub-navigation';
 import { FINES_ACC_MINOR_CREDITOR_DETAILS_HEADER_MOCK } from './mocks/fines-acc-minor-creditor-details-header.mock';
-import { of } from 'rxjs';
+import { firstValueFrom, of } from 'rxjs';
 import { OpalFines } from '@services/fines/opal-fines-service/opal-fines.service';
 import { FinesAccPayloadService } from '../services/fines-acc-payload.service';
 import { MOCK_FINES_ACCOUNT_STATE } from '../mocks/fines-acc-state.mock';
@@ -14,6 +14,7 @@ import { FINES_ACC_MINOR_CREDITOR_ROUTING_PATHS } from '../routing/constants/fin
 import { beforeEach, describe, expect, it, vi } from 'vitest';
 import { OPAL_FINES_ACCOUNT_MINOR_CREDITOR_AT_A_GLANCE_WITH_DEFENDANT_MOCK } from '../../services/opal-fines-service/mocks/opal-fines-account-minor-creditor-at-a-glance-with-defendant.mock';
 import { OPAL_FINES_ACCOUNT_MINOR_CREDITOR_CREDITOR_MOCK } from '../../services/opal-fines-service/mocks/opal-fines-account-minor-creditor-creditor.mock';
+import { OPAL_FINES_ACCOUNT_MINOR_CREDITOR_DETAILS_HISTORY_AND_NOTES_TAB_REF_DATA_MOCK } from '../../services/opal-fines-service/mocks/opal-fines-account-minor-creditor-details-history-and-notes-tab-ref-data.mock';
 
 describe('FinesAccMinorCreditorDetailsComponent', () => {
   let component: FinesAccMinorCreditorDetailsComponent;
@@ -26,6 +27,7 @@ describe('FinesAccMinorCreditorDetailsComponent', () => {
     | 'getMinorCreditorAccountHeadingData'
     | 'getMinorCreditorAccountAtAGlance'
     | 'getMinorCreditorAccount'
+    | 'getMinorCreditorAccountHistoryAndNotesTabData'
     | 'clearCache'
     | 'getResult'
   >;
@@ -71,6 +73,11 @@ describe('FinesAccMinorCreditorDetailsComponent', () => {
       getMinorCreditorAccount: vi
         .fn()
         .mockReturnValue(of(structuredClone(OPAL_FINES_ACCOUNT_MINOR_CREDITOR_CREDITOR_MOCK))),
+      getMinorCreditorAccountHistoryAndNotesTabData: vi
+        .fn()
+        .mockReturnValue(
+          of(structuredClone(OPAL_FINES_ACCOUNT_MINOR_CREDITOR_DETAILS_HISTORY_AND_NOTES_TAB_REF_DATA_MOCK)),
+        ),
     };
 
     await TestBed.configureTestingModule({
@@ -96,16 +103,29 @@ describe('FinesAccMinorCreditorDetailsComponent', () => {
     expect(component).toBeTruthy();
   });
 
-  it('should default to at-a-glance tab if no fragment is present', () => {
-    const activatedRoute = TestBed.inject(ActivatedRoute);
-    activatedRoute.snapshot.fragment = null; // Simulate no fragment
-    component['getHeaderDataFromRoute']();
-    expect(component.activeTab).toBe('at-a-glance');
-  });
-
   it('should initialize accountData and activeTab from route data', () => {
     expect(component.accountData).toEqual(FINES_ACC_MINOR_CREDITOR_DETAILS_HEADER_MOCK);
     expect(component.activeTab).toBe('at-a-glance');
+    expect(mockPayloadService.transformMinorCreditorAccountHeaderForStore).toHaveBeenCalledWith(
+      123,
+      FINES_ACC_MINOR_CREDITOR_DETAILS_HEADER_MOCK,
+    );
+  });
+
+  it('should fetch minor creditor account heading data for the supplied account ID', async () => {
+    const headingData = structuredClone(FINES_ACC_MINOR_CREDITOR_DETAILS_HEADER_MOCK);
+    vi.mocked(mockOpalFinesService.getMinorCreditorAccountHeadingData).mockReturnValue(of(headingData));
+
+    const result = await firstValueFrom(
+      (
+        component as unknown as {
+          getHeaderData: (accountId: number) => ReturnType<OpalFines['getMinorCreditorAccountHeadingData']>;
+        }
+      ).getHeaderData(456),
+    );
+
+    expect(mockOpalFinesService.getMinorCreditorAccountHeadingData).toHaveBeenCalledWith(456);
+    expect(result).toEqual(headingData);
   });
 
   it('should display awarded amount as positive when heading data returns a negative value', () => {
@@ -137,11 +157,6 @@ describe('FinesAccMinorCreditorDetailsComponent', () => {
     expect(textContent).not.toContain('-\u00a3123.45');
   });
 
-  it('should handle tab switch', () => {
-    component.handleTabSwitch('details');
-    expect(component.activeTab).toBe('details');
-  });
-
   it('should call router.navigate when navigateToAddAccountNotePage is called', () => {
     vi.spyOn(component['permissionsService'], 'hasBusinessUnitPermissionAccess').mockReturnValue(true);
     component.navigateToAddAccountNotePage();
@@ -153,11 +168,17 @@ describe('FinesAccMinorCreditorDetailsComponent', () => {
     );
   });
 
-  it('should refresh the data for the header and current tab when refreshPage is called', () => {
-    component.accountStore.setAccountState(MOCK_FINES_ACCOUNT_STATE);
-    component.refreshPage();
-    expect(mockOpalFinesService.getMinorCreditorAccountHeadingData).toHaveBeenCalledWith(
-      Number(MOCK_FINES_ACCOUNT_STATE.account_id),
+  it('should set payment hold state when at-a-glance tab data emits', () => {
+    const setHasPaymentHoldSpy = vi.spyOn(component.accountStore, 'setHasPaymentHold');
+
+    component['refreshFragment$'].next('at-a-glance');
+    component.tabAtAGlance$.subscribe();
+
+    expect(mockOpalFinesService.getMinorCreditorAccountAtAGlance).toHaveBeenCalledWith(
+      MOCK_FINES_ACCOUNT_STATE.account_id,
+    );
+    expect(setHasPaymentHoldSpy).toHaveBeenCalledWith(
+      OPAL_FINES_ACCOUNT_MINOR_CREDITOR_AT_A_GLANCE_WITH_DEFENDANT_MOCK.payment.hold_payment,
     );
   });
 
@@ -170,6 +191,21 @@ describe('FinesAccMinorCreditorDetailsComponent', () => {
     expect(mockOpalFinesService.getMinorCreditorAccount).toHaveBeenCalledWith(MOCK_FINES_ACCOUNT_STATE.account_id);
     expect(mockPayloadService.transformPayload).toHaveBeenCalledWith(
       OPAL_FINES_ACCOUNT_MINOR_CREDITOR_CREDITOR_MOCK,
+      expect.any(Array),
+    );
+  });
+
+  it('should fetch history and notes tab data when fragment is changed to history and notes', () => {
+    vi.mocked(mockPayloadService.transformPayload).mockClear();
+
+    component['refreshFragment$'].next('history-and-notes');
+    component.tabHistoryAndNotes$.subscribe();
+
+    expect(mockOpalFinesService.getMinorCreditorAccountHistoryAndNotesTabData).toHaveBeenCalledWith(
+      MOCK_FINES_ACCOUNT_STATE.account_id,
+    );
+    expect(mockPayloadService.transformPayload).toHaveBeenCalledWith(
+      OPAL_FINES_ACCOUNT_MINOR_CREDITOR_DETAILS_HISTORY_AND_NOTES_TAB_REF_DATA_MOCK,
       expect.any(Array),
     );
   });
