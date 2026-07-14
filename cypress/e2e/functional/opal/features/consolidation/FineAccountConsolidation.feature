@@ -7,7 +7,7 @@ Feature: Fines Account Consolidation
     Then I should be on the dashboard
     Then I open Consolidate accounts
 
-  @JIRA-EPIC:PO-2294 @R1CWriteOff
+  @JIRA-EPIC:PO-2294 @JIRA-STORY:PO-2413 @JIRA-TEST-KEY:PO-5498 @R1CWriteOff
   Scenario: Consolidation account search for Individuals
     When I continue to the consolidation account search as an "Individual" defendant
 
