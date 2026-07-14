@@ -10,7 +10,7 @@ import { setupAccountEnquiryComponent } from './setup/SetupComponent';
 const ACCOUNT_ENQUIRY_JIRA_LABEL = '@JIRA-LABEL:account-enquiry';
 const MAJOR_CREDITOR_AT_A_GLANCE_COMPONENT = 'app-fines-acc-major-creditor-details-at-a-glance-tab';
 
-const buildTags = (...tags: string[]): string[] => [...tags, ACCOUNT_ENQUIRY_JIRA_LABEL];
+const buildTags = (...tags: string[]): string[] => [...tags, ACCOUNT_ENQUIRY_JIRA_LABEL, '@R1B'];
 
 const normalizeText = (text: string): string =>
   text

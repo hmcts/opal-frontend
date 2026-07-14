@@ -84,11 +84,11 @@ const setupConvertRoute = ({
   });
 };
 
-describe('Account Enquiry - Convert Account', { tags: ['@JIRA-EPIC:PO-1970', '@JIRA-LABEL:account-enquiry'] }, () => {
-  describe('Convert To Company', { tags: [''] }, () => {
+describe('Account Enquiry - Convert Account', { tags: ['@JIRA-EPIC:PO-1970', '@JIRA-LABEL:account-enquiry', '@R1B'] }, () => {
+  describe('Convert To Company', { tags: ['@R1B'] }, () => {
     it(
       'Convert link should not be visible for parent or guardian accounts',
-      { tags: ['@JIRA-STORY:PO-1942', '@JIRA-TEST-KEY:PO-4173'] },
+      { tags: ['@JIRA-STORY:PO-1942', '@JIRA-TEST-KEY:PO-4173', '@R1B'] },
       () => {
         let partyMock = structuredClone(VIEW_AND_AMEND_DEFENDANT_INDIVIDUAL_FULL_MOCK);
         partyMock.defendant_account_party.is_debtor = false; // Set to non-debtor to simulate parent/guardian scenario
@@ -104,7 +104,7 @@ describe('Account Enquiry - Convert Account', { tags: ['@JIRA-EPIC:PO-1970', '@J
     );
     it(
       'Convert link should be visible for adult or youth accounts',
-      { tags: ['@JIRA-STORY:PO-1942', '@JIRA-TEST-KEY:PO-4174'] },
+      { tags: ['@JIRA-STORY:PO-1942', '@JIRA-TEST-KEY:PO-4174', '@R1B'] },
       () => {
         setupConvertRoute({
           targetPath: '/fines/account/defendant/77/details#defendant',
@@ -120,7 +120,7 @@ describe('Account Enquiry - Convert Account', { tags: ['@JIRA-EPIC:PO-1970', '@J
     );
     it(
       'redirects back to defendant details when a parent or guardian account tries to convert to company',
-      { tags: ['@JIRA-STORY:PO-1942', '@JIRA-TEST-KEY:PO-4175'] },
+      { tags: ['@JIRA-STORY:PO-1942', '@JIRA-TEST-KEY:PO-4175', '@R1B'] },
       () => {
         setupConvertRoute({
           targetPath: '/fines/account/defendant/77/convert/company',
@@ -133,7 +133,7 @@ describe('Account Enquiry - Convert Account', { tags: ['@JIRA-EPIC:PO-1970', '@J
     );
     it(
       'renders the confirmation screen for an individual defendant and continues to the convert form',
-      { tags: ['@JIRA-STORY:PO-1943', '@JIRA-TEST-KEY:PO-4176'] },
+      { tags: ['@JIRA-STORY:PO-1943', '@JIRA-TEST-KEY:PO-4176', '@R1B'] },
       () => {
         setupConvertRoute({
           targetPath: '/fines/account/defendant/77/convert/company',
@@ -163,7 +163,7 @@ describe('Account Enquiry - Convert Account', { tags: ['@JIRA-EPIC:PO-1970', '@J
 
     it(
       'submits the company convert form with the expected API payload structure',
-      { tags: ['@JIRA-STORY:PO-1953', '@JIRA-TEST-KEY:PO-4177'] },
+      { tags: ['@JIRA-STORY:PO-1953', '@JIRA-TEST-KEY:PO-4177', '@R1B'] },
       () => {
         interceptPutDefendantAccountParty(77, VIEW_AND_AMEND_DEFENDANT_INDIVIDUAL_FULL_MOCK);
 
@@ -218,10 +218,10 @@ describe('Account Enquiry - Convert Account', { tags: ['@JIRA-EPIC:PO-1970', '@J
     );
   });
 
-  describe('Convert To Individual', { tags: [''] }, () => {
+  describe('Convert To Individual', { tags: ['@R1B'] }, () => {
     it(
       'convert link should be visible for company accounts',
-      { tags: ['@JIRA-STORY:PO-1955', '@JIRA-TEST-KEY:PO-4178'] },
+      { tags: ['@JIRA-STORY:PO-1955', '@JIRA-TEST-KEY:PO-4178', '@R1B'] },
       () => {
         setupConvertRoute({
           targetPath: '/fines/account/defendant/77/details#defendant',
@@ -236,7 +236,7 @@ describe('Account Enquiry - Convert Account', { tags: ['@JIRA-EPIC:PO-1970', '@J
 
     it(
       'renders the confirmation screen for a company account and supports cancel',
-      { tags: ['@JIRA-STORY:PO-1956', '@JIRA-TEST-KEY:PO-4179'] },
+      { tags: ['@JIRA-STORY:PO-1956', '@JIRA-TEST-KEY:PO-4179', '@R1B'] },
       () => {
         setupConvertRoute({
           targetPath: '/fines/account/defendant/77/convert/individual',
@@ -264,7 +264,7 @@ describe('Account Enquiry - Convert Account', { tags: ['@JIRA-EPIC:PO-1970', '@J
 
     it(
       'renders the convert form with company data mapped into shared fields',
-      { tags: ['@JIRA-STORY:PO-1956', '@JIRA-TEST-KEY:PO-4180'] },
+      { tags: ['@JIRA-STORY:PO-1956', '@JIRA-TEST-KEY:PO-4180', '@R1B'] },
       () => {
         setupConvertRoute({
           targetPath: '/fines/account/defendant/77/convert/individual',
@@ -288,7 +288,7 @@ describe('Account Enquiry - Convert Account', { tags: ['@JIRA-EPIC:PO-1970', '@J
 
     it(
       'submits the individual convert form with the expected API payload structure',
-      { tags: ['@JIRA-STORY:PO-1957', '@JIRA-TEST-KEY:PO-4181'] },
+      { tags: ['@JIRA-STORY:PO-1957', '@JIRA-TEST-KEY:PO-4181', '@R1B'] },
       () => {
         interceptPutDefendantAccountParty(77, VIEW_AND_AMEND_DEFENDANT_INDIVIDUAL_FULL_MOCK);
 
@@ -371,7 +371,7 @@ describe('Account Enquiry - Convert Account', { tags: ['@JIRA-EPIC:PO-1970', '@J
 
   it(
     'redirects back to defendant details when the target conversion is unsupported',
-    { tags: ['@JIRA-STORY:PO-1942', '@JIRA-TEST-KEY:PO-4172'] },
+    { tags: ['@JIRA-STORY:PO-1942', '@JIRA-TEST-KEY:PO-4172', '@R1B'] },
     () => {
       setupConvertRoute({
         targetPath: '/fines/account/defendant/77/convert/unsupported-target',

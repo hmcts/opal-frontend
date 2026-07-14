@@ -7,17 +7,17 @@ Feature: Draft Accounts Release 1A Feature Toggles
     When I navigate directly to the Accounts dashboard
     Then I am taken to the "Accounts" Fines landing page
 
-  @R1A @JIRA-STORY:PO-3719 @JIRA-EPIC:PO-3685
+  @JIRA-STORY:PO-3719 @JIRA-EPIC:PO-3685
   Scenario Outline: Direct navigation to <entryPoint> is allowed when release 1a is enabled
     Given I am authenticated with email "opal-test@dev.platform.hmcts.net"
     When I navigate directly to the Accounts dashboard entry point "<entryPoint>"
     Then I should see the header containing text "<header>"
 
-    @JIRA-TEST-KEY:PO-7561
+    @R1A @JIRA-TEST-KEY:PO-7561
     Examples:
       | entryPoint                        | header          |
       | Create and Manage Draft Accounts  | Create accounts |
-    @JIRA-TEST-KEY:PO-7562
+    @R1A @JIRA-TEST-KEY:PO-7562
     Examples:
       | entryPoint                        | header          |
       | Check and Validate Draft Accounts | Review accounts |
@@ -44,20 +44,20 @@ Feature: Draft Accounts Release 1A Feature Toggles
     And I should see the service header containing text "Opal"
     And I do not see the Fines primary navigation
 
-    @JIRA-TEST-KEY:PO-7921
+    @R1A @JIRA-TEST-KEY:PO-7921
     Examples:
       | entryPoint         | path                      |
       | Accounts dashboard | /fines/dashboard/accounts |
-    @JIRA-TEST-KEY:PO-7922
+    @R1A @JIRA-TEST-KEY:PO-7922
     Examples:
       | entryPoint                       | path                                      |
       | Create and Manage Draft Accounts | /fines/draft/create-and-manage/tabs#review |
-    @JIRA-TEST-KEY:PO-7923
+    @R1A @JIRA-TEST-KEY:PO-7923
     Examples:
       | entryPoint                        | path                                       |
       | Check and Validate Draft Accounts | /fines/draft/check-and-validate/tabs#to-review |
 
-  @R1BOff @FeatureFlag @JIRA-STORY:PO-3719 @JIRA-STORY:PO-3720 @JIRA-EPIC:PO-3685 @JIRA-TEST-KEY:PO-8022
+  @R1A @R1BOff @FeatureFlag @JIRA-STORY:PO-3719 @JIRA-STORY:PO-3720 @JIRA-EPIC:PO-3685 @JIRA-TEST-KEY:PO-8022
   Scenario: Approved account numbers are shown as plain text when release 1b is disabled
     Given I clear all approved accounts
     And I create a "company" approved account with the following details:

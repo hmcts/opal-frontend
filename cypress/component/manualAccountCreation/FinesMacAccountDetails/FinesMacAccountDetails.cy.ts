@@ -20,7 +20,7 @@ import { USER_STATE_MOCK_PERMISSION_BU77 } from 'cypress/component/CommonInterce
 
 const MANUAL_ACCOUNT_CREATION_JIRA_LABEL = '@JIRA-LABEL:manual-account-creation';
 
-const buildTags = (...tags: string[]) => [...tags, MANUAL_ACCOUNT_CREATION_JIRA_LABEL];
+const buildTags = (...tags: string[]) => [...tags, '@R1A', MANUAL_ACCOUNT_CREATION_JIRA_LABEL];
 
 describe('FinesMacAccountDetailsComponent', () => {
   let finesMacStateTemplate = structuredClone(FINES_CHECK_ACCOUNT_MOCK);
