@@ -8,6 +8,7 @@ import { FinesMacOffenceDetailsStore } from './stores/fines-mac-offence-details.
 import { GlobalStore } from '@hmcts/opal-frontend-common/stores/global';
 import { GlobalStoreType } from '@hmcts/opal-frontend-common/stores/global/types';
 import { GLOBAL_ERROR_STATE } from '@hmcts/opal-frontend-common/stores/global/constants';
+import { FINES_MAC_OFFENCE_DETAILS_DRAFT_STATE_MOCK } from './mocks/fines-mac-offence-details-draft-state.mock';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
 
 describe('FinesMacOffenceDetailsComponent', () => {
@@ -60,5 +61,13 @@ describe('FinesMacOffenceDetailsComponent', () => {
 
     finesMacStore.setUnsavedChanges(false);
     expect(component.canDeactivate()).toBeTruthy();
+  });
+
+  it('should block deactivation when offence draft data exists', () => {
+    finesMacOffenceDetailsStore.setOffenceDetailsDraft(
+      structuredClone(FINES_MAC_OFFENCE_DETAILS_DRAFT_STATE_MOCK.offenceDetailsDraft),
+    );
+
+    expect(component.canDeactivate()).toBeFalsy();
   });
 });
