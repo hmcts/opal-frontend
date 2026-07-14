@@ -35,7 +35,7 @@ type FeatureFlags = Record<string, boolean>;
 
 const buildTags = (...tags: string[]) => [
   ...tags,
-  ...(tags.includes('@R1AOff') ? [] : ['@R1A']),
+  ...(tags.some((tag) => tag.startsWith('@R1')) ? [] : ['@R1A']),
   MANUAL_ACCOUNT_CREATION_JIRA_LABEL,
 ];
 

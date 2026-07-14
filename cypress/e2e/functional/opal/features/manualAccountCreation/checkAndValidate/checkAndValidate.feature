@@ -330,7 +330,7 @@ Feature: Navigate and edit sections from task list
     When I go back to Create and Manage Draft Accounts
     Then I should see the header containing text "Create accounts"
 
-  @JIRA-EPIC:PO-2220 @R1A @JIRA-STORY:PO-607 @JIRA-STORY:PO-3720 @JIRA-TEST-KEY:PO-3883 @R1B
+  @JIRA-EPIC:PO-2220 @R1A @JIRA-STORY:PO-607 @JIRA-STORY:PO-3720 @JIRA-TEST-KEY:PO-3883
   Scenario: Approved tab lists recent accounts
     Given I create a "company" approved account with the following details:
       | account_snapshot.defendant_name | TEST New Company Ltd {uniq} |
