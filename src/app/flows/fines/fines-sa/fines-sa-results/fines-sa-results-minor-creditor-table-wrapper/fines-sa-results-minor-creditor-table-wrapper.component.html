@@ -76,7 +76,7 @@
                 <a
                   class="govuk-link govuk-link--no-visited-state"
                   href=""
-                  (click)="goToAccount(row['Creditor account id'], $event)"
+                  (click)="goToMinorCreditorAccount(row['Creditor account id'], $event)"
                   >{{ row['Account'] }}</a
                 >
               } @else {
@@ -114,7 +114,7 @@
                 <a
                   class="govuk-link govuk-link--no-visited-state"
                   href=""
-                  (click)="goToAccount(row['Defendant account id'], $event)"
+                  (click)="goToDefendantAccount(row['Defendant account id'], $event)"
                   >{{ row['Defendant'] }}</a
                 >
               } @else {
