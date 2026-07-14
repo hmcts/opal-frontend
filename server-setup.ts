@@ -50,12 +50,16 @@ export function getRoutesConfig(): {
     clientSecret: config.get('secrets.opal.AzureADClientSecret'),
     tenantId: config.get('secrets.opal.AzureADTenantId'),
     microsoftUrl: config.get('microsoft.url'),
+    internalServerErrorPath: config.get('error-pages.internal-server-path'),
   };
 
   const opalUserServiceConfiguration: OpalUserServiceConfiguration = {
     userStateUrl: config.get('opal-user-service-urls.userStateUrl'),
     addUserUrl: config.get('opal-user-service-urls.addUserUrl'),
     updateUserUrl: config.get('opal-user-service-urls.updateUserUrl'),
+    timeoutInMilliseconds: config.get('opal-user-service.timeoutInMilliseconds'),
+    retryAttempts: config.get('opal-user-service.retryAttempts'),
+    retryDelayInMilliseconds: config.get('opal-user-service.retryDelayInMilliseconds'),
   };
 
   const userStateConfiguration: UserStateConfiguration = {

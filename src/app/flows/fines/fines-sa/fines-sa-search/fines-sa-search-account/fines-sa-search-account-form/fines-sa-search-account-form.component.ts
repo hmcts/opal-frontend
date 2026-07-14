@@ -189,7 +189,7 @@ export class FinesSaSearchAccountFormComponent extends AbstractFormBaseComponent
   /**
    * Populates the `majorCreditors` property with a list of major creditors
    * retrieved from the route's snapshot data. The data is transformed into
-   * an array of objects containing the creditor's ID as `value` and a
+   * an array of objects containing the creditor's code as `value` and a
    * prettified name as `name`.
    *
    * The method uses the `opalFinesService` to generate the prettified names
@@ -200,7 +200,7 @@ export class FinesSaSearchAccountFormComponent extends AbstractFormBaseComponent
   private populateMajorCreditors(): void {
     this.majorCreditors.set(
       this.majorCreditorsRefData.map((mc) => ({
-        value: mc.major_creditor_id!.toString(),
+        value: mc.major_creditor_code!,
         name: this.opalFinesService.getMajorCreditorPrettyName(mc),
       })),
     );

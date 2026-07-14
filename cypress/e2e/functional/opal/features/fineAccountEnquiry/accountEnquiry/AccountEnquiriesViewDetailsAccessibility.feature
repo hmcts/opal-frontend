@@ -7,7 +7,7 @@ Feature: Account Enquiries - View Account Details Accessibility
     And I clear all approved accounts
 
 
-  @JIRA-EPIC:PO-2472 @JIRA-TEST-KEY:PO-5466
+  @JIRA-STORY:PO-1593 @JIRA-STORY:PO-866 @JIRA-STORY:PO-1110 @JIRA-STORY:PO-1127 @JIRA-EPIC:PO-2472 @JIRA-TEST-KEY:PO-5466
   Scenario: Check Account Details View Accessibility with Axe-Core for Individual Account
     Given I create a "adultOrYouthOnly" draft account with the following details and set status "Publishing Pending" using user "opal-test-10@dev.platform.hmcts.net":
       | Account_status                          | Submitted                            |
@@ -34,7 +34,7 @@ Feature: Account Enquiries - View Account Details Accessibility
     And I check the page for accessibility
 
 
-  @JIRA-EPIC:PO-2472 @JIRA-TEST-KEY:PO-5467
+  @JIRA-STORY:PO-967 @JIRA-STORY:PO-1111 @JIRA-STORY:PO-1128 @JIRA-EPIC:PO-2472 @JIRA-TEST-KEY:PO-5467
   Scenario: Check Account Details View Accessibility with Axe-Core for Company Account
     Given I create a "company" draft account with the following details and set status "Publishing Pending" using user "opal-test-10@dev.platform.hmcts.net":
       | Account_status                      | Submitted                    |
@@ -59,6 +59,24 @@ Feature: Account Enquiries - View Account Details Accessibility
     Then I should see the convert to individual confirmation screen for company "Accdetail comp{uniq}"
     And I check the page for accessibility
 
+
+  Rule: Major creditor account details accessibility
+
+    @JIRA-STORY:PO-2128 @JIRA-EPIC:PO-1286
+    Scenario: Check Account Details View Accessibility with Axe-Core for Major Creditor Account
+      Given I am on the Account Search page - Individuals form displayed by default
+      And I open the business unit filter from the search page
+      And I clear all selected business units on the "Fines" tab
+      And I clear all selected business units on the "Confiscation" tab
+      When I select the following business units:
+        | tab   | businessUnit |
+        | Fines | N E Region   |
+      And I save the selected business units and the filter summary is "N E Region"
+      When I view the Major Creditors search form
+      Then I check the page for accessibility
+      When I search for the major creditor "Crown Prosecution Service (DPP)"
+      Then I check the page for accessibility
+
   Rule: Minor creditor amend accessibility
     Background:
       Given a published account exists with an individual minor creditor:
@@ -80,7 +98,7 @@ Feature: Account Enquiries - View Account Details Accessibility
       When I open the latest matching result from the search results
       And I go to the Creditor tab
 
-    @JIRA-STORY:PO-1984 @JIRA-EPIC:PO-1285
+    @JIRA-STORY:PO-1984 @JIRA-EPIC:PO-1285 @JIRA-TEST-KEY:PO-7556
     Scenario: Amend minor creditor details form and validation summary states are accessible
       When I view the amend minor creditor details form
       # Check accessibility on the amend minor creditor form

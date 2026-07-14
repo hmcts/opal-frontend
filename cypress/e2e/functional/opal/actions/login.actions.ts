@@ -147,6 +147,69 @@ export function performLogin(email: string, options: IPerformLoginOptions = {}):
 }
 
 /**
+ * Performs the interactive login journey without asserting a successful authenticated shell.
+ *
+ * @param email - The email address of the user to log in.
+ * @param landingPath - The protected path to open before starting sign-in.
+ */
+export function performLoginWithoutShellAssertions(email: string, landingPath: string = DEFAULT_LANDING_PATH): void {
+  const password = Cypress.env('CYPRESS_TEST_PASSWORD') || '';
+
+  log('action', 'Logging in without post-authenticated shell assertions', { email, landingPath });
+  cy.visit(landingPath);
+
+  cy.location('href').then((href) => {
+    const isLocalOrPR = isLocalOrPrEnvironment();
+
+    if (isLocalOrPR) {
+      log('navigate', 'Detected Local/PR environment → using form-based login without shell assertions', {
+        href,
+        landingPath,
+      });
+
+      cy.wait(50);
+      cy.get(L.usernameInput).type(email, { delay: 0 });
+      cy.get(L.submitBtn).click();
+      return;
+    }
+
+    log('navigate', 'Detected non-local environment → using Microsoft SSO without shell assertions', {
+      href,
+      landingPath,
+    });
+
+    cy.origin('https://login.microsoftonline.com', { args: { email, password } }, ({ email, password }) => {
+      cy.wait(500);
+
+      cy.get('input[type="email"]', { timeout: 12_000 }).type(email, { delay: 0 });
+      cy.get('input[type="submit"]').click();
+
+      cy.get('input[type="password"]', { timeout: 12_000 }).type(password, { log: false, delay: 0 });
+      cy.get('input[type="submit"]').click();
+
+      cy.get('#idBtn_Back', { timeout: 12_000 }).click();
+    });
+  });
+}
+
+/**
+ * Requests the frontend authenticated endpoint and asserts the returned status code.
+ *
+ * @param expectedStatus - HTTP status expected from `/sso/authenticated`.
+ */
+export function assertAuthenticatedEndpointStatus(expectedStatus: number): void {
+  log('assert', 'Validating authenticated endpoint status', { expectedStatus });
+  cy.request({
+    method: 'GET',
+    url: AUTHENTICATED_ENDPOINT,
+    failOnStatusCode: false,
+    retryOnStatusCodeFailure: false,
+  }).then((response) => {
+    expect(response.status, `GET ${AUTHENTICATED_ENDPOINT}`).to.eq(expectedStatus);
+  });
+}
+
+/**
  * Performs login and opens the default Fines Search landing page.
  *
  * @param email - The email address of the user to log in.

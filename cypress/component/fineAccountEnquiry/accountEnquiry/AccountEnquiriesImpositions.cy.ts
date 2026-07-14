@@ -74,7 +74,7 @@ describe('Account Enquiry Impositions', () => {
 
   it(
     'AC1a, AC1b, AC1c, AC1d, AC1e: fetches impositions when the tab is selected and renders the read-only table with zero-balance formatting',
-    { tags: [...buildTags(IMPOSITIONS_STORY_TAG), IMPOSITIONS_EPIC_TAG] },
+    { tags: [...buildTags(IMPOSITIONS_STORY_TAG), IMPOSITIONS_EPIC_TAG, '@JIRA-TEST-KEY:PO-7473'] },
     () => {
       setupImpositionsScreen();
 
@@ -119,7 +119,7 @@ describe('Account Enquiry Impositions', () => {
 
   it(
     'AC2a, AC2b: displays the sentencing court name only when the imposition includes an imposing court',
-    { tags: [...buildTags(IMPOSITIONS_STORY_TAG), IMPOSITIONS_EPIC_TAG] },
+    { tags: [...buildTags(IMPOSITIONS_STORY_TAG), IMPOSITIONS_EPIC_TAG, '@JIRA-TEST-KEY:PO-7474'] },
     () => {
       setupImpositionsScreen('impositions');
 
@@ -133,7 +133,7 @@ describe('Account Enquiry Impositions', () => {
 
   it(
     'AC3a: clicking a Minor Creditor link routes to the Minor Creditor Details page',
-    { tags: [...buildTags(IMPOSITIONS_STORY_TAG), IMPOSITIONS_EPIC_TAG] },
+    { tags: [...buildTags(IMPOSITIONS_STORY_TAG), IMPOSITIONS_EPIC_TAG, '@JIRA-TEST-KEY:PO-7475'] },
     () => {
       setupImpositionsScreen('impositions');
 
@@ -159,7 +159,7 @@ describe('Account Enquiry Impositions', () => {
 
   it(
     'AC3b: clicking a Major Creditor link routes to the Major Creditor Details page',
-    { tags: [...buildTags(IMPOSITIONS_STORY_TAG), IMPOSITIONS_EPIC_TAG] },
+    { tags: [...buildTags(IMPOSITIONS_STORY_TAG), IMPOSITIONS_EPIC_TAG, '@JIRA-TEST-KEY:PO-7476'] },
     () => {
       setupImpositionsScreen('impositions');
 
@@ -185,7 +185,7 @@ describe('Account Enquiry Impositions', () => {
 
   it(
     'AC3c: paginates the impositions table to 25 results per page',
-    { tags: [...buildTags(IMPOSITIONS_STORY_TAG), IMPOSITIONS_EPIC_TAG] },
+    { tags: [...buildTags(IMPOSITIONS_STORY_TAG), IMPOSITIONS_EPIC_TAG, '@JIRA-TEST-KEY:PO-7477'] },
     () => {
       setupImpositionsScreen('impositions');
 

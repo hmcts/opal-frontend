@@ -14,16 +14,32 @@ properties([
     pipelineTriggers([cron('H 07 * * 1-5')]),
     copyArtifactPermission('*'),
     parameters([
-    booleanParam(name: 'Component', defaultValue: true, description: 'Run component tests'),
+    booleanParam(
+      name: 'Component',
+      defaultValue: true,
+      description: 'Run component tests'
+    ),
     booleanParam(name: 'Smoke', defaultValue: true, description: 'Run smoke tests'),
-    booleanParam(name: 'Functional', defaultValue: true, description: 'Run functional tests'),
+    booleanParam(
+      name: 'Functional',
+      defaultValue: true,
+      description: 'Run functional tests excluding feature-flag off scenarios'
+    ),
     booleanParam(name: 'Legacy', defaultValue: false, description: 'Run legacy tests'),
-    booleanParam(name: 'RunChrome', defaultValue: false, description: 'Run Chrome tests'),
-    booleanParam(name: 'RunFirefox', defaultValue: false, description: 'Run Firefox tests'),
+    booleanParam(
+      name: 'RunChrome',
+      defaultValue: false,
+      description: 'Run the selected nightly test stages in Chrome instead of the default browser'
+    ),
+    booleanParam(
+      name: 'RunFirefox',
+      defaultValue: false,
+      description: 'Run the selected nightly test stages in Firefox instead of the default browser'
+    ),
     booleanParam(
       name: 'RunR1aLegacyDemo',
       defaultValue: true,
-      description: 'Run R1A legacy demo stage (demo -> legacy checks)'
+      description: 'Run optional R1A legacy demo stage (demo -> legacy checks)'
     ),
     booleanParam(
       name: 'RunUatTech',
@@ -189,6 +205,28 @@ INSTALL A SUPPORTED BROWSER OR SET BROWSER_TO_RUN EXPLICITLY
   }
 
   return normalizedBrowser
+}
+
+// Resolve the single browser that the selected nightly stages should use.
+String resolveSelectedNightlyBrowser() {
+  if (params.RunChrome && params.RunFirefox) {
+    error '''\
+========================================================================
+RUNCHROME AND RUNFIREFOX CANNOT BOTH BE ENABLED
+SELECT A SINGLE BROWSER OVERRIDE OR USE THE DEFAULT EDGE MODE
+========================================================================
+'''.stripIndent()
+  }
+
+  if (params.RunChrome) {
+    return requireInstalledBrowser(browserChrome)
+  }
+
+  if (params.RunFirefox) {
+    return requireInstalledBrowser(browserFirefox)
+  }
+
+  return resolvePipelineBrowser(env.BROWSER_TO_RUN ?: browserEdge)
 }
 
 // Require an explicitly requested browser to be present before running its stage.
@@ -454,6 +492,31 @@ void prepareLegacyDemoArtifacts(String browserToRun, String outputDirName, Strin
   copyZephyrReports(functionalOutputRoot, "${functionalOutputRoot}/prod/${browserToRun}/${outputDirName}")
 }
 
+// Copy generated component report artifacts into a dedicated directory for publishing.
+void prepareComponentStageArtifacts(String browserToRun, String outputDirName, String reportFilePrefix) {
+  sh """
+    SOURCE_DIR='${functionalOutputRoot}/component/${browserToRun}'
+    TARGET_DIR="\$SOURCE_DIR/${outputDirName}"
+    SOURCE_HTML_DIR="\$SOURCE_DIR/html"
+    TARGET_HTML_DIR="\$TARGET_DIR/html"
+    mkdir -p "\$TARGET_HTML_DIR" "\$TARGET_DIR/junit" "\$TARGET_DIR/json"
+
+    if [ -f "\$SOURCE_HTML_DIR/component-report.html" ]; then
+      cp "\$SOURCE_HTML_DIR/component-report.html" "\$TARGET_HTML_DIR/${reportFilePrefix}-report.html"
+    fi
+    if [ -d "\$SOURCE_HTML_DIR/assets" ]; then
+      cp -R "\$SOURCE_HTML_DIR/assets" "\$TARGET_HTML_DIR/"
+    fi
+    if [ -d "\$SOURCE_DIR/junit" ]; then
+      cp -R "\$SOURCE_DIR/junit/." "\$TARGET_DIR/junit/"
+    fi
+    if [ -d "\$SOURCE_DIR/json" ]; then
+      cp -R "\$SOURCE_DIR/json/." "\$TARGET_DIR/json/"
+    fi
+  """
+  copyZephyrReports(functionalOutputRoot, "${functionalOutputRoot}/component/${browserToRun}/${outputDirName}")
+}
+
 // Run a demo environment legacy-mode stage with dedicated LaunchDarkly handling and reporting.
 void runDemoLegacyStage(Map<String, Object> stageConfig, Closure runCommand) {
   boolean enabled = (stageConfig.enabled ?: false) as boolean
@@ -467,11 +530,12 @@ void runDemoLegacyStage(Map<String, Object> stageConfig, Closure runCommand) {
   boolean archiveAccountEvidence = (stageConfig.archiveAccountEvidence ?: false) as boolean
   List<String> extraEnv = (stageConfig.extraEnv ?: []) as List<String>
   String reportFilePrefix = outputDirName
+  String testUrl = (stageConfig.testUrl ?: nightlyTestUrlDemo) as String
 
   runNightlyStage(enabled, stageName, failureResultValue, failureMessage) {
     boolean launchDarklyFlagPatched = false
     List<String> stageEnv = [
-      "TEST_URL=${nightlyTestUrlDemo}",
+      "TEST_URL=${testUrl}",
       'DEFAULT_APP_MODE=legacy',
       'LEGACY_ENABLED=true',
       "BROWSER_TO_RUN=${browserToRun}",
@@ -491,6 +555,9 @@ void runDemoLegacyStage(Map<String, Object> stageConfig, Closure runCommand) {
       }
       waitForLegacyHealthCheck()
       sh 'echo "Waiting 30s for system warmup..." ; sleep 30'
+      // Demo legacy stages publish from the shared functional output directory.
+      // Reset it first so each stage report contains only the stage that just ran.
+      sh "rm -rf ${functionalOutputRoot}"
 
       withEnv(stageEnv) {
         runCommand.call()
@@ -504,12 +571,13 @@ void runDemoLegacyStage(Map<String, Object> stageConfig, Closure runCommand) {
       }
       archiveArtifact("${functionalOutputRoot}/screenshots/${browserToRun}/**")
       archiveArtifact("${functionalOutputRoot}/prod/${browserToRun}/${outputDirName}/**")
+      archiveZephyrReports("${functionalOutputRoot}/prod/${browserToRun}/${outputDirName}")
       publishHtmlReport(
         "${functionalOutputRoot}/prod/${browserToRun}/${outputDirName}/cucumber/",
         "${reportFilePrefix}-report.html",
         reportName
       )
-      if (launchDarklyFlagPatched) {
+      if (launchDarklyFlagPatched && testUrl != nightlyTestUrlDemo) {
         patchLaunchDarklyFlagState(
           true,
           launchDarklyOpalVariationName,
@@ -529,11 +597,16 @@ void runComponentStage(
   String browserToRun
 ) {
   runNightlyStage(enabled, 'Component Tests', failureResultValue, 'Component tests failed') {
-    String componentCommand = shouldRunWithZephyr ? 'zephyr:test:component' : 'test:component'
-
     try {
-      builder.yarn(componentCommand)
+      builder.yarn('test:component')
     } finally {
+      if (shouldRunWithZephyr) {
+        try {
+          builder.yarn('zephyr:cypress:jira-execute')
+        } catch (hudson.AbortException e) {
+          echo "Component Zephyr execution failed: ${e}"
+        }
+      }
       copyZephyrReports(functionalOutputRoot, "${functionalOutputRoot}/component/${browserToRun}")
       archiveArtifact("${functionalOutputRoot}/component/${browserToRun}/**")
       archiveZephyrReports("${functionalOutputRoot}/component/${browserToRun}")
@@ -637,7 +710,6 @@ void runSmokeStage(
       copyZephyrReports(smokeOutputRoot, "${smokeOutputRoot}/prod/${browserToRun}")
       archiveArtifact("${smokeOutputRoot}/prod/**")
       archiveArtifact("${smokeOutputRoot}/screenshots/${browserToRun}/**")
-      archiveZephyrReports(smokeOutputRoot)
       archiveZephyrReports("${smokeOutputRoot}/prod/${browserToRun}")
       publishHtmlReport(
         "${smokeOutputRoot}/prod/${browserToRun}/cucumber/",
@@ -665,7 +737,6 @@ void runFunctionalStage(
       copyZephyrReports(functionalOutputRoot, "${functionalOutputRoot}/prod/${browserToRun}")
       archiveArtifact(functionalProdArtifactsPath)
       archiveArtifact("${functionalOutputRoot}/screenshots/${browserToRun}/**")
-      archiveZephyrReports(functionalOutputRoot)
       archiveZephyrReports("${functionalOutputRoot}/prod/${browserToRun}")
       publishHtmlReport(
         "${functionalOutputRoot}/prod/${browserToRun}/cucumber/",
@@ -699,29 +770,6 @@ void runLegacyStage(
         "${functionalOutputRoot}/prod/${browserToRun}/legacy/cucumber/",
         'legacy-report.html',
         "${browserToRun.capitalize()} Legacy Functional Test Report"
-      )
-    }
-  }
-}
-
-// Run an explicit browser stage using the provided command and report metadata.
-void runBrowserStage(
-  boolean enabled,
-  String failureResultValue,
-  String failureMessage,
-  uk.gov.hmcts.contino.YarnBuilder builder,
-  Map<String, String> stageConfig
-) {
-  runNightlyStage(enabled, stageConfig.stageName, failureResultValue, failureMessage) {
-    try {
-      builder.yarn(stageConfig.yarnCommand)
-    } finally {
-      archiveArtifact("${functionalOutputRoot}/prod/${stageConfig.browserToRun}/**")
-      archiveArtifact("${functionalOutputRoot}/screenshots/${stageConfig.browserToRun}/**")
-      publishHtmlReport(
-        "${functionalOutputRoot}/prod/${stageConfig.browserToRun}/cucumber/",
-        "${stageConfig.browserToRun}-report.html",
-        "${stageConfig.browserToRun.capitalize()} Functional Test Report"
       )
     }
   }
@@ -817,7 +865,7 @@ withNightlyPipeline(type, product, component) {
     if (!isBrowserInstalled(browserFirefox)) {
       echoBrowserMissingBanner(browserFirefox)
     }
-    env.BROWSER_TO_RUN = resolvePipelineBrowser(env.BROWSER_TO_RUN ?: browserEdge)
+    env.BROWSER_TO_RUN = resolveSelectedNightlyBrowser()
     echo "Using browser for this pipeline run: ${env.BROWSER_TO_RUN}"
     performArtifactOperations()
     setupTestSpecifications()
@@ -825,8 +873,6 @@ withNightlyPipeline(type, product, component) {
 
   afterAlways('DependencyCheckNightly') {
     String browserToRun = env.BROWSER_TO_RUN
-    String chromeBrowserToRun = params.RunChrome ? requireInstalledBrowser(browserChrome) : browserChrome
-    String firefoxBrowserToRun = params.RunFirefox ? requireInstalledBrowser(browserFirefox) : browserFirefox
     echo 'Component:' + params.Component
     echo 'Smoke:' + params.Smoke
     echo 'Functional:' + params.Functional
@@ -887,27 +933,5 @@ Description: ${env.EXECUTION_CYCLE_DESCRIPTION}
     )
     runUatTechnicalStage(params.RunUatTech, failureResult, shouldRunWithZephyr, browserToRun)
     runLegacyStage(params.Legacy, failureResult, yarnBuilder, shouldRunWithZephyr, browserToRun)
-    runBrowserStage(
-      params.RunChrome,
-      failureResult,
-      'Chrome tests failed',
-      yarnBuilder,
-      [
-        stageName   : 'Chrome Tests',
-        yarnCommand : 'test:Chrome',
-        browserToRun: chromeBrowserToRun,
-      ]
-    )
-    runBrowserStage(
-      params.RunFirefox,
-      failureResult,
-      'Firefox tests failed',
-      yarnBuilder,
-      [
-        stageName   : 'Firefox Tests',
-        yarnCommand : 'test:Firefox',
-        browserToRun: firefoxBrowserToRun,
-      ]
-    )
   }
 }

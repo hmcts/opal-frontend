@@ -44,6 +44,7 @@ String smokeXmlReport = 'cypress/reports/smokeXmlReport.html'
 String functionalXmlReport = 'cypress/reports/functionalXmlReport.html'
 @Field String runReleasePrefix = 'run_release:'
 @Field String andTagSeparator = ' and '
+@Field String commaSeparator = ','
 @Field String skipTagExpression = 'not @skip'
 @Field String functionalFeatureGlob = 'cypress/e2e/functional/opal/**/*.feature'
 @Field String releaseSuiteR1a = 'r1a'
@@ -54,7 +55,9 @@ String functionalXmlReport = 'cypress/reports/functionalXmlReport.html'
 @Field String releaseSuiteR1cEnforcementOperationalReportingOff = 'r1c_enforcement_operational_reporting_off'
 @Field String defaultFunctionalTagExpression =
   'not @UAT-Technical and not @skip' + andTagSeparator +
-  'not (@R1AOff or @R1BOff or @R1CWriteOffOff or @R1CEnforcementOperationalReportingOff)'
+  'not (@R1AOff or @R1BOff or @R1CWriteOffOff or ' +
+  '@R1CEnforcementOperationalReportingOff or @R1CAdministrationOff or @R1CFinancialMovementsOff)'
+@Field String componentExcludeGrepTags = '-@R1AOff+-@R1BOff'
 @Field String macPopulateAndSubmitFeatureGlob =
   'cypress/e2e/functional/opal/features/manualAccountCreation/populateAndSubmit/**/*.feature,'
 @Field String macCheckAndValidateFeatureGlob =
@@ -209,6 +212,7 @@ void archiveZephyrReports(String outputDir) {
 
 // Publish an HTML report directory with Jenkins HTML Publisher
 void publishHtmlReport(String dir, String files, String name) {
+    ensureFallbackHtmlReport(dir, files, name)
     publishHTML target: [
     allowMissing         : true,
     alwaysLinkToLastBuild: true,
@@ -217,6 +221,56 @@ void publishHtmlReport(String dir, String files, String name) {
     reportFiles          : files,
     reportName           : name
   ]
+}
+
+// Minimal HTML escaping for Jenkins-generated fallback report pages.
+String escapeHtml(String value) {
+    return (value ?: '')
+        .replace('&', '&amp;')
+        .replace('<', '&lt;')
+        .replace('>', '&gt;')
+}
+
+// Create a small fallback HTML page when report merge/publish output is missing after a timed-out run.
+void ensureFallbackHtmlReport(String dir, String files, String name) {
+    String reportFile = (files ?: '').trim()
+    if (!reportFile || reportFile.contains(commaSeparator)) {
+        return
+    }
+
+    String normalizedDir = (dir ?: '').trim()
+    if (!normalizedDir || !fileExists(normalizedDir)) {
+        return
+    }
+
+    String reportPath = "${normalizedDir}/${reportFile}"
+    if (fileExists(reportPath)) {
+        return
+    }
+
+    String escapedName = escapeHtml(name)
+    String escapedDir = escapeHtml(normalizedDir)
+    String escapedFile = escapeHtml(reportFile)
+
+    writeFile file: reportPath, text: """<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <title>${escapedName}</title>
+</head>
+<body>
+  <h1>${escapedName}</h1>
+  <p>The merged HTML report was not generated before the test runner stopped.</p>
+  <p>This usually means the suite timed out or the post-run cucumber merge was interrupted.</p>
+  <p>
+    Check the archived artifacts for raw outputs, screenshots, videos, ndjson,
+    and xml under <code>${escapedDir}</code>.
+  </p>
+  <p>Expected report file: <code>${escapedFile}</code></p>
+</body>
+</html>
+"""
+    echo "Created fallback HTML report at ${reportPath}"
 }
 
 // Emit a short hint when functional raw outputs exist but merged reports do not.
@@ -449,7 +503,7 @@ void setupTestSpecifications() {
             env.TEST_SPECS = functionalFeatureGlob
         } else {
             // Build the glob pattern using curly braces
-            String dirList = directories.join(',')
+            String dirList = directories.join(commaSeparator)
             env.TEST_SPECS = "cypress/e2e/functional/opal/{required,${dirList}}/**/*.feature"
         }
         sh "echo 'Test Specs: ${env.TEST_SPECS}'"
@@ -678,17 +732,17 @@ withPipeline(type, product, component) {
                 echo "Skipping opal component tests due to label: ${skipLabelComponent}"
             } else if (releaseSuiteSelection && !releaseSuiteRunsComponentStage(releaseSuiteSelection)) {
                 echo "Skipping opal component tests for release-scoped run: ${releaseSuiteSelection}"
-      } else {
+            } else {
                 String componentCommand = releaseSuiteSelection
                   ? releaseSuiteComponentScript(releaseSuiteSelection)
                   : 'test:component'
                 echo "Running opal component tests via yarn ${componentCommand}"
                 try {
                     yarnBuilder.yarn(componentCommand)
-        } catch (hudson.AbortException e) {
+                } catch (hudson.AbortException e) {
                     echo "Opal component tests failed: ${e}"
                     currentBuild.result = 'FAILURE'
-        } finally {
+                } finally {
                     archiveZephyrReports(functionalOutputRoot)
                     archiveArtifact(functionalArtifactsGlob)
                     publishHtmlReport(

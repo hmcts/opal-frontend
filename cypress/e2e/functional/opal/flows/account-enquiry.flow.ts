@@ -12,6 +12,7 @@ import { AccountDetailsParentGuardianActions } from '../actions/account-details/
 import { AccountDetailsMinorCreditorActions } from '../actions/account-details/details.minor-creditor.actions';
 import { AccountDetailsPaymentTermsActions } from '../actions/account-details/details.payment-terms.actions';
 import { AccountDetailsFixedPenaltyActions } from '../actions/account-details/details.fixed-penalty.actions';
+import { AccountDetailsHistoryActions } from '../actions/account-details/details.history.actions';
 import { AccountSearchIndividualsLocators as L } from '../../../../shared/selectors/account-search/account.search.individuals.locators';
 import { AccountSearchCompaniesLocators as C } from '../../../../shared/selectors/account-search/account.search.companies.locators';
 import { ForceSingleTabNavigation } from '../../../../support/utils/navigation';
@@ -53,7 +54,7 @@ export class AccountEnquiryFlow {
   /** Default timeout (ms) for key waits in this flow. */
   private static readonly WAIT_MS = 15_000;
   /** Timeout (ms) for route transitions back to the defendant details shell. */
-  private static readonly DETAILS_NAV_WAIT_MS = 20_000;
+  private static readonly DETAILS_NAV_WAIT_MS = 45_000;
   private static readonly BASE_API_PATH = '/opal-fines-service';
 
   /** Waits for the account header summary call to succeed and the At a glance tab to render. */
@@ -93,6 +94,7 @@ export class AccountEnquiryFlow {
   private readonly accountConvert = new AccountConvertActions();
   private readonly enforcement = new AccountDetailsEnforcementActions();
   private readonly removeParentGuardian = new RemoveParentGuardianActions();
+  private readonly historyAndNotes = new AccountDetailsHistoryActions();
 
   /**
    * Ensures the test is on the Individuals Account Search page.
@@ -607,6 +609,24 @@ export class AccountEnquiryFlow {
   }
 
   /**
+   * Configures a deterministic History and notes response for the current published account.
+   */
+  public stubHistoryAndNotesTabData(): void {
+    logAE('method', 'stubHistoryAndNotesTabData()');
+
+    cy.get<EtagUpdate>('@etagUpdate').then((etag) => {
+      const accountId = Number(etag?.accountId);
+      const accountNumber = String(etag?.accountNumber ?? '').trim();
+
+      if (!Number.isFinite(accountId) || !accountNumber) {
+        throw new Error('Expected @etagUpdate to contain numeric accountId and accountNumber for History and notes.');
+      }
+
+      this.historyAndNotes.stubHistoryAndNotesForCurrentAccount(accountId, accountNumber);
+    });
+  }
+
+  /**
    * Asserts the amend minor creditor route is active and the form heading is shown.
    */
   public assertOnAmendMinorCreditorDetailsPage(): void {
@@ -643,6 +663,58 @@ export class AccountEnquiryFlow {
   }
 
   /**
+   * Navigates to the History and notes tab and asserts it has loaded.
+   */
+  public goToHistoryAndNotesTab(): void {
+    logAE('method', 'goToHistoryAndNotesTab()');
+    logAE('navigate', 'Navigating to History and notes tab');
+    this.detailsNav.goToHistoryAndNotesTab();
+    this.detailsNav.assertHistoryAndNotesTabIsActive();
+    this.historyAndNotes.assertHistoryAndNotesTabLoaded();
+  }
+
+  /**
+   * Asserts the initial History and notes rows have been rendered.
+   */
+  public assertHistoryAndNotesItemsLoaded(): void {
+    logAE('method', 'assertHistoryAndNotesItemsLoaded()');
+    this.historyAndNotes.assertHistoryAndNotesRowsLoaded(2);
+  }
+
+  /**
+   * Applies the Notes filter to the History and notes tab.
+   */
+  public filterHistoryAndNotesToNotes(): void {
+    logAE('method', 'filterHistoryAndNotesToNotes()');
+    this.historyAndNotes.applyNotesFilter();
+  }
+
+  /**
+   * Asserts the History and notes table only shows Note rows after filtering.
+   */
+  public assertHistoryAndNotesFilteredToNotes(): void {
+    logAE('method', 'assertHistoryAndNotesFilteredToNotes()');
+    this.historyAndNotes.assertHistoryAndNotesFilteredToNotes();
+  }
+
+  /**
+   * Opens the first account link from History and notes and asserts the new-tab target.
+   */
+  public openHistoryAndNotesAccountLinkInNewTab(): void {
+    logAE('method', 'openHistoryAndNotesAccountLinkInNewTab()');
+
+    cy.get<EtagUpdate>('@etagUpdate').then((etag) => {
+      const accountId = Number(etag?.accountId);
+
+      if (!Number.isFinite(accountId)) {
+        throw new Error('Expected @etagUpdate to contain a numeric accountId for History and notes link assertions.');
+      }
+
+      this.historyAndNotes.openFirstAccountLinkInNewTabAndAssert(accountId);
+    });
+  }
+
+  /**
    * Opens the add enforcement override form from the Enforcement tab.
    */
   public openAddEnforcementOverrideForm(): void {
@@ -658,6 +730,41 @@ export class AccountEnquiryFlow {
     logAE('method', 'openAddEnforcementActionForm()');
     this.enforcement.openAddEnforcementActionForm();
     this.enforcement.assertAddEnforcementActionFormVisible();
+  }
+
+  /**
+   * Asserts the add enforcement action form is visible.
+   */
+  public assertAddEnforcementActionFormVisible(): void {
+    logAE('method', 'assertAddEnforcementActionFormVisible()');
+    this.enforcement.assertAddEnforcementActionFormVisible();
+  }
+
+  /**
+   * Asserts the add enforcement action form is visible.
+   */
+  public assertAddNewEnforcementActionFormVisible(): void {
+    logAE('method', 'assertAddNewEnforcementActionFormVisible()');
+    this.enforcement.assertAddNewEnforcementActionFormVisible();
+  }
+
+  /**
+   * Opens the remove enforcement hold form from the Enforcement tab.
+   */
+  public openRemoveEnforcementHoldForm(): void {
+    logAE('method', 'openRemoveEnforcementHoldForm()');
+    this.enforcement.openRemoveEnforcementHoldForm();
+    this.enforcement.assertRemoveEnforcementHoldFormVisible();
+  }
+
+  /**
+   * Asserts the remove enforcement hold account identifier.
+   *
+   * @param expected - Expected account identifier caption text.
+   */
+  public assertRemoveEnforcementHoldAccountIdentifier(expected: string): void {
+    logAE('method', 'assertRemoveEnforcementHoldAccountIdentifier()', { expected });
+    this.enforcement.assertRemoveEnforcementHoldAccountIdentifier(expected);
   }
 
   /**
@@ -793,6 +900,16 @@ export class AccountEnquiryFlow {
   }
 
   /**
+   * Asserts the enforcement action added success banner text.
+   *
+   * @param expected - Expected success banner message.
+   */
+  public assertEnforcementActionSuccessBanner(expected: string): void {
+    logAE('method', 'assertEnforcementActionSuccessBanner()', { expected });
+    this.enforcement.assertSuccessBannerText(expected);
+  }
+
+  /**
    * Selects a Local Justice Area on the add form.
    *
    * @param localJusticeArea - Visible LJA option text.
@@ -857,6 +974,16 @@ export class AccountEnquiryFlow {
    */
   public assertEnforcementOverrideSuccessBanner(expected: string): void {
     logAE('method', 'assertEnforcementOverrideSuccessBanner()', { expected });
+    this.enforcement.assertSuccessBannerText(expected);
+  }
+
+  /**
+   * Asserts the enforcement hold success banner text.
+   *
+   * @param expected - Expected success banner message.
+   */
+  public assertEnforcementHoldSuccessBanner(expected: string): void {
+    logAE('method', 'assertEnforcementHoldSuccessBanner()', { expected });
     this.enforcement.assertSuccessBannerText(expected);
   }
 
@@ -1889,7 +2016,7 @@ export class AccountEnquiryFlow {
   private searchAmendmentsForMinorCreditorAccount(
     minorCreditorAccountId: number,
   ): Cypress.Chainable<MinorCreditorAmendmentSearchResult> {
-    const recordTypes = ['minor_creditor_accounts', 'creditor_accounts'];
+    const recordTypes = ['minor_creditor_accounts', 'minor_creditor_account', 'creditor_accounts', 'creditor_account'];
     const accountId = String(minorCreditorAccountId);
 
     const searchByRecordType = (index: number): Cypress.Chainable<MinorCreditorAmendmentSearchResult> => {
@@ -1911,7 +2038,18 @@ export class AccountEnquiryFlow {
           failOnStatusCode: false,
         })
         .then((amendRes): Cypress.Chainable<MinorCreditorAmendmentSearchResult> => {
-          expect(amendRes.status, 'POST minor creditor amendments search should succeed').to.eq(200);
+          if (amendRes.status !== 200) {
+            logAESync('warn', 'Minor creditor amendments search rejected', {
+              associatedRecordType,
+              status: amendRes.status,
+            });
+
+            if (index < recordTypes.length - 1) {
+              return searchByRecordType(index + 1);
+            }
+
+            expect(amendRes.status, 'POST minor creditor amendments search should succeed').to.eq(200);
+          }
 
           const responseBody = amendRes.body as Record<string, unknown>;
           const amendments = (responseBody?.['searchData'] ?? []) as Array<Record<string, unknown>>;

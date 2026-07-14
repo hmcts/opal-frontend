@@ -91,6 +91,26 @@ describe('nextPermittedEnfActionsResolver', () => {
     expect(result).toEqual(FINES_ACC_ENF_ACTION_SELECT_NEXT_PERMITTED_ENF_ACTIONS_MOCK);
   });
 
+  it('should fetch all enforcement results when there is no last enforcement action and no explicit next actions', async () => {
+    const enforcementStatus = structuredClone(FINES_ACC_ENF_ACTION_SELECT_ENFORCEMENT_STATUS_MOCK);
+    enforcementStatus.last_enforcement_action = null;
+    enforcementStatus.next_enforcement_action_data = null;
+
+    (mockRoute.paramMap.get as Mock).mockReturnValue('12345');
+    mockOpalFinesService.getDefendantAccountEnforcementStatus.mockReturnValue(of(enforcementStatus));
+    mockOpalFinesService.getResults.mockReturnValue(of(FINES_ACC_ENF_ACTION_SELECT_NEXT_PERMITTED_ENF_ACTIONS_MOCK));
+
+    const result = await TestBed.runInInjectionContext(() =>
+      firstValueFrom(nextPermittedEnfActionsResolver(mockRoute, {} as never) as never),
+    );
+
+    expect(mockOpalFinesService.getResults).toHaveBeenCalledWith([], {
+      enforcement: true,
+      enforcement_override: false,
+    });
+    expect(result).toEqual(FINES_ACC_ENF_ACTION_SELECT_NEXT_PERMITTED_ENF_ACTIONS_MOCK);
+  });
+
   it('should return empty results without calling results ref data when the status payload does not contain ids', async () => {
     const enforcementStatus = structuredClone(FINES_ACC_ENF_ACTION_SELECT_ENFORCEMENT_STATUS_MOCK);
     enforcementStatus.next_enforcement_action_data = null;

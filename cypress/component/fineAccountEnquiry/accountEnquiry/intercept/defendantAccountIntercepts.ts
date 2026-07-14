@@ -1,3 +1,17 @@
+import { IOpalFinesAccountDefendantAccountParty } from '@services/fines/opal-fines-service/interfaces/opal-fines-account-defendant-account-party.interface';
+import { IOpalFinesAccountDefendantAtAGlance } from '@services/fines/opal-fines-service/interfaces/opal-fines-account-defendant-at-a-glance.interface';
+import { IOpalFinesAccountDefendantDetailsEnforcementTabRefData } from '@services/fines/opal-fines-service/interfaces/opal-fines-account-defendant-details-enforcement-tab-ref-data.interface';
+import { IOpalFinesAccountDefendantDetailsFixedPenaltyTabRefData } from '@services/fines/opal-fines-service/interfaces/opal-fines-account-defendant-details-fixed-penalty-tab-ref-data.interface';
+import { IOpalFinesAccountDefendantDetailsHistoryAndNotesTabRefData } from '@services/fines/opal-fines-service/interfaces/opal-fines-account-defendant-details-history-and-notes-tab-ref-data.interface';
+import { IOpalFinesAccountDefendantDetailsImpositionsTabRefData } from '@services/fines/opal-fines-service/interfaces/opal-fines-account-defendant-details-impositions-tab-ref-data.interface';
+import { IOpalFinesAccountDefendantDetailsPaymentTermsLatest } from '@services/fines/opal-fines-service/interfaces/opal-fines-account-defendant-details-payment-terms-latest.interface';
+import { IOpalFinesAccountMinorCreditorAtAGlance } from 'src/app/flows/fines/services/opal-fines-service/interfaces/opal-fines-account-minor-creditor-at-a-glance.interface';
+import { IOpalFinesAccountMinorCreditorCreditor } from 'src/app/flows/fines/services/opal-fines-service/interfaces/opal-fines-account-minor-creditor-creditor.interface';
+import { IOpalFinesAccountDefendantDetailsHeader } from 'src/app/flows/fines/fines-acc/fines-acc-defendant-details/interfaces/fines-acc-defendant-details-header.interface';
+import { IOpalFinesAccountMinorCreditorDetailsHeader } from 'src/app/flows/fines/fines-acc/fines-acc-minor-creditor-details/interfaces/fines-acc-minor-creditor-details-header.interface';
+import { IOpalFinesAccountMajorCreditorDetailsHeader } from 'src/app/flows/fines/fines-acc/fines-acc-major-creditor-details/interfaces/fines-acc-major-creditor-details-header.interface';
+import { IOpalFinesAccountMajorCreditorAtAGlance } from 'src/app/flows/fines/services/opal-fines-service/interfaces/opal-fines-account-major-creditor-at-a-glance.interface';
+
 /**
  * Intercepts the POST request to the `/opal-fines-service/notes/add` endpoint during Cypress tests.
  *
@@ -13,9 +27,6 @@ export function interceptAddNotes() {
     })
     .as('postAddNotes');
 }
-import { IOpalFinesAccountDefendantAtAGlance } from '@services/fines/opal-fines-service/interfaces/opal-fines-account-defendant-at-a-glance.interface';
-import { IOpalFinesAccountMinorCreditorAtAGlance } from 'src/app/flows/fines/services/opal-fines-service/interfaces/opal-fines-account-minor-creditor-at-a-glance.interface';
-import { IOpalFinesAccountMinorCreditorCreditor } from 'src/app/flows/fines/services/opal-fines-service/interfaces/opal-fines-account-minor-creditor-creditor.interface';
 
 /**
  * Intercepts the GET request to the defendant accounts "at-a-glance" endpoint and mocks the response.
@@ -43,6 +54,28 @@ export function interceptAtAGlance(
       body: mockData,
     })
     .as('getAtAGlance');
+}
+
+/**
+ * Intercepts the GET request to the major creditor accounts "at-a-glance" endpoint and mocks the response.
+ *
+ * @param accountId - The unique identifier for the major creditor account.
+ * @param mockData - The mock data to be returned in the response body.
+ * @param respHeaderEtag - The value to set for the ETag response header.
+ * @returns Cypress chainable object with the intercepted request aliased as 'getMajorCreditorAtAGlance'.
+ */
+export function interceptMajorCreditorAtAGlance(
+  accountId: number,
+  mockData: IOpalFinesAccountMajorCreditorAtAGlance,
+  respHeaderEtag: string,
+) {
+  return cy
+    .intercept('GET', `**/major-creditor-accounts/${accountId}/at-a-glance`, {
+      statusCode: 200,
+      headers: { ETag: respHeaderEtag },
+      body: mockData,
+    })
+    .as('getMajorCreditorAtAGlance');
 }
 
 /**
@@ -142,7 +175,6 @@ export function interceptPatchMinorCreditorAccount(accountId: number) {
     })
     .as('patchMinorCreditorAccount');
 }
-import { IOpalFinesAccountDefendantAccountParty } from '@services/fines/opal-fines-service/interfaces/opal-fines-account-defendant-account-party.interface';
 
 /**
  * Intercepts the network request for defendant account party details and mocks the response.
@@ -201,12 +233,6 @@ export function interceptPostDefendantAccountParty(
     })
     .as('postDefendantAccountParty');
 }
-import { IOpalFinesAccountDefendantDetailsHeader } from 'src/app/flows/fines/fines-acc/fines-acc-defendant-details/interfaces/fines-acc-defendant-details-header.interface';
-import { IOpalFinesAccountMinorCreditorDetailsHeader } from 'src/app/flows/fines/fines-acc/fines-acc-minor-creditor-details/interfaces/fines-acc-minor-creditor-details-header.interface';
-import { IOpalFinesAccountDefendantDetailsFixedPenaltyTabRefData } from '@services/fines/opal-fines-service/interfaces/opal-fines-account-defendant-details-fixed-penalty-tab-ref-data.interface';
-import { IOpalFinesAccountDefendantDetailsPaymentTermsLatest } from '@services/fines/opal-fines-service/interfaces/opal-fines-account-defendant-details-payment-terms-latest.interface';
-import { IOpalFinesAccountDefendantDetailsEnforcementTabRefData } from '@services/fines/opal-fines-service/interfaces/opal-fines-account-defendant-details-enforcement-tab-ref-data.interface';
-import { IOpalFinesAccountDefendantDetailsImpositionsTabRefData } from '@services/fines/opal-fines-service/interfaces/opal-fines-account-defendant-details-impositions-tab-ref-data.interface';
 
 /**
  * Intercepts the GET request for the defendant header summary in Cypress tests,
@@ -271,6 +297,32 @@ export const interceptMinorCreditorHeader = (
     })
     .as('getMinorCreditorHeaderSummary');
 };
+
+/**
+ * Intercepts the GET request for the major creditor header summary in Cypress tests,
+ * returning a mocked response with the provided header details and ETag header.
+ *
+ * @param accountId - The unique identifier for the major creditor account.
+ * @param majorCreditorHeaderMock - The mock data for the major creditor header summary.
+ * @param respHeaderEtag - The ETag value to be returned in the response headers.
+ * @returns Cypress chainable object with the alias 'getMajorCreditorHeaderSummary'.
+ */
+export const interceptMajorCreditorHeader = (
+  accountId: string | number,
+  majorCreditorHeaderMock: IOpalFinesAccountMajorCreditorDetailsHeader,
+  respHeaderEtag: string,
+) => {
+  return cy
+    .intercept('GET', `/opal-fines-service/major-creditor-accounts/${accountId}/header-summary`, {
+      statusCode: 200,
+      body: majorCreditorHeaderMock,
+      headers: {
+        ETag: respHeaderEtag,
+      },
+    })
+    .as('getMajorCreditorHeaderSummary');
+};
+
 /**
  * Intercepts the network request for fetching defendant account party details
  * and mocks the response with provided data and headers.
@@ -377,6 +429,51 @@ export function interceptImpositions(
       },
     })
     .as('getImpositions');
+}
+
+export function interceptHistoryAndNotes(
+  accountId: string | number,
+  mockData: IOpalFinesAccountDefendantDetailsHistoryAndNotesTabRefData,
+  respHeaderEtag: string,
+) {
+  return cy
+    .intercept('GET', `/opal-fines-service/defendant-accounts/${accountId}/history*`, {
+      statusCode: 200,
+      body: mockData,
+      headers: {
+        ETag: respHeaderEtag,
+      },
+    })
+    .as('getHistoryAndNotes');
+}
+
+export function interceptHistoryAndNotesSequence(
+  accountId: string | number,
+  responses: IOpalFinesAccountDefendantDetailsHistoryAndNotesTabRefData[],
+  respHeaderEtag: string,
+) {
+  let callCount = 0;
+
+  return cy
+    .intercept(
+      {
+        method: 'GET',
+        url: `/opal-fines-service/defendant-accounts/${accountId}/history*`,
+        middleware: true,
+      },
+      (req) => {
+        const response = responses[Math.min(callCount, responses.length - 1)];
+        callCount += 1;
+        req.reply({
+          statusCode: 200,
+          headers: {
+            ETag: respHeaderEtag,
+          },
+          body: response,
+        });
+      },
+    )
+    .as('getHistoryAndNotes');
 }
 
 export function interceptPatchDefendantAccount() {

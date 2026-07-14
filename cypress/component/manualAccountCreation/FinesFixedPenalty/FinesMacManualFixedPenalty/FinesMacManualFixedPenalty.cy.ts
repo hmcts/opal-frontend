@@ -342,7 +342,6 @@ describe('FinesMacManualFixedPenalty', () => {
     {
       tags: [
         ...buildTags('@JIRA-STORY:PO-857', '@JIRA-STORY:PO-3415', '@JIRA-LABEL:populate-and-submit'),
-        '@JIRA-KEY:POT-7202',
         '@JIRA-EPIC:PO-855',
         '@JIRA-EPIC:PO-2219',
         '@JIRA-TEST-KEY:PO-4759',
@@ -390,7 +389,6 @@ describe('FinesMacManualFixedPenalty', () => {
     {
       tags: [
         ...buildTags('@JIRA-STORY:PO-857', '@JIRA-STORY:PO-3415', '@JIRA-LABEL:populate-and-submit'),
-        '@JIRA-KEY:POT-7205',
         '@JIRA-EPIC:PO-855',
         '@JIRA-EPIC:PO-2219',
         '@JIRA-TEST-KEY:PO-4762',
@@ -1141,7 +1139,6 @@ describe('FinesMacManualFixedPenalty', () => {
     {
       tags: [
         ...buildTags('@JIRA-STORY:PO-857', '@JIRA-STORY:PO-3415', '@JIRA-LABEL:populate-and-submit'),
-        '@JIRA-KEY:POT-7259',
         '@JIRA-EPIC:PO-855',
         '@JIRA-EPIC:PO-2219',
         '@JIRA-TEST-KEY:PO-4817',
@@ -1172,7 +1169,6 @@ describe('FinesMacManualFixedPenalty', () => {
     {
       tags: [
         ...buildTags('@JIRA-STORY:PO-857', '@JIRA-STORY:PO-3415', '@JIRA-LABEL:populate-and-submit'),
-        '@JIRA-KEY:POT-7261',
         '@JIRA-EPIC:PO-855',
         '@JIRA-EPIC:PO-2219',
         '@JIRA-TEST-KEY:PO-4819',
@@ -1297,7 +1293,6 @@ describe('FinesMacManualFixedPenalty', () => {
     {
       tags: [
         ...buildTags('@JIRA-STORY:PO-860', '@JIRA-STORY:PO-3415', '@JIRA-LABEL:populate-and-submit'),
-        '@JIRA-KEY:POT-7265',
         '@JIRA-EPIC:PO-855',
         '@JIRA-EPIC:PO-2219',
         '@JIRA-TEST-KEY:PO-4825',
@@ -1364,7 +1359,12 @@ describe('FinesMacManualFixedPenalty', () => {
   it(
     '(AC5) should keep Prosecutors (All) visible and selectable as originators for non-filtered journeys',
     {
-      tags: [...buildTags('@JIRA-STORY:PO-2761'), '@JIRA-EPIC:PO-2750', '@JIRA-TEST-KEY:PO-4829'],
+      tags: [
+        ...buildTags('@JIRA-STORY:PO-2761'),
+        '@JIRA-EPIC:PO-2750',
+        '@JIRA-TEST-KEY:PO-4829',
+        '@JIRA-DEFECT:PO-8896',
+      ],
     },
     () => {
       const filteredLocalJusticeAreas: IOpalFinesLocalJusticeAreaRefData = {

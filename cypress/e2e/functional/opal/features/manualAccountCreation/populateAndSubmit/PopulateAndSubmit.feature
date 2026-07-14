@@ -16,11 +16,11 @@ Feature: Manual account creation - Create Draft Account
   @JIRA-EPIC:PO-2750
   @JIRA-STORY:PO-2763
   #AC-5 click cancel without entering details
-  @JIRA-TEST-KEY:PO-5544
+  @JIRA-TEST-KEY:PO-5544 @R1B
   Scenario: Clicking Cancel without entering details returns to the Inputter Dashboard
     When I open Manual Account Creation
     Then I cancel without entering data
-    Then I should see the header containing text "Search for an account"
+    Then I should see the header containing text "Create accounts"
 
 
   @JIRA-STORY:PO-1448 @JIRA-STORY:PO-1638 @JIRA-STORY:PO-1872 @JIRA-EPIC:PO-2219 @JIRA-TEST-KEY:PO-5545
@@ -468,23 +468,6 @@ Feature: Manual account creation - Create Draft Account
     And I submit the manual account for review
     Then the latest draft account create request should include originator type "TFO"
     And I see the following text on the page "You've submitted this account for review"
-
-  @JIRA-STORY:PO-2766
-  Scenario Outline: User can navigate to create account page and return via back link for each originator option - <Originator type>
-    When I open Manual Account Creation
-    Then I choose '<Originator type>' and continue to create account page
-    Then I should see the header containing text '<Create account header>'
-    When I click the back link on create account page I return to Create or Transfer In page - No data retained
-
-    @JIRA-EPIC:PO-2750 @JIRA-TEST-KEY:PO-5555
-    Examples: Transfer in
-      | Originator type | Create account header |
-      | Transfer in     | Transfer in           |
-
-    @JIRA-EPIC:PO-2750 @JIRA-TEST-KEY:PO-5556
-    Examples: New
-      | Originator type | Create account header |
-      | New             | Create account        |
 
   @JIRA-STORY:PO-2766
   Scenario Outline: User can cancel create account from transfer in - <Cancel journey state>

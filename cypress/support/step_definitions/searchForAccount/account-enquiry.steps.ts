@@ -14,7 +14,7 @@
  * - Tasks (e.g., `clearApprovedDrafts`, `createAndPublishAccount`) are run via Cypress plugins.
  */
 
-import { When, Then, DataTable } from '@badeball/cypress-cucumber-preprocessor';
+import { Given, When, Then, DataTable } from '@badeball/cypress-cucumber-preprocessor';
 import { AccountEnquiryFlow } from '../../..//e2e/functional/opal/flows/account-enquiry.flow';
 import { CommonFlow } from '../../..//e2e/functional/opal/flows/common-flow';
 
@@ -219,6 +219,55 @@ Then('I should not see the convert to company account action', () => {
   flow().assertConvertToCompanyActionNotPresent();
 });
 
+When('I open the remove enforcement hold screen', () => {
+  log('step', 'Open remove enforcement hold screen');
+  flow().openRemoveEnforcementHoldForm();
+});
+
+When('I enter {string} in the "Reason" field', (reason: string) => {
+  const resolvedReason = applyUniqPlaceholder(reason);
+  log('step', 'Enter reason on remove enforcement hold screen', { reason: resolvedReason });
+  cy.get('#facc_enf_action_remove_reason').clear().type(resolvedReason);
+});
+
+When('I press the {string} button', (buttonText: string) => {
+  const resolvedButtonText = applyUniqPlaceholder(buttonText);
+  log('step', 'Press button', { buttonText: resolvedButtonText });
+  cy.contains('button', resolvedButtonText).click();
+});
+
+When('I cancel the remove enforcement hold screen and confirm leaving', () => {
+  log('step', 'Cancel remove enforcement hold screen and confirm leaving');
+  common().cancelEditing(true);
+});
+
+Then('I should see the remove enforcement hold page', () => {
+  log('assert', 'Remove enforcement hold page is visible');
+  cy.contains('h1.govuk-heading-l', 'Remove enforcement hold').should('be.visible');
+  cy.get('#facc_enf_action_remove_reason').should('be.visible');
+});
+
+Then('I should see the remove enforcement hold account identifier {string}', (expected: string) => {
+  const expectedWithUniq = applyUniqPlaceholder(expected);
+  log('assert', 'Remove enforcement hold account identifier', { expected: expectedWithUniq });
+  flow().assertRemoveEnforcementHoldAccountIdentifier(expectedWithUniq);
+});
+
+Then('I should see the add enforcement action page', () => {
+  log('assert', 'Add enforcement action page is visible');
+  flow().assertAddEnforcementActionFormVisible();
+});
+
+Then('I should see the add new enforcement action page', () => {
+  log('assert', 'Add new enforcement action page is visible');
+  flow().assertAddNewEnforcementActionFormVisible();
+});
+
+Then('the enforcement hold success banner is {string}', (expected: string) => {
+  log('assert', 'Enforcement hold success banner text', { expected });
+  flow().assertEnforcementHoldSuccessBanner(expected);
+});
+
 Then('I should not see the convert to company account text', () => {
   log('assert', 'Convert to company account text is absent from the visible action');
   flow().assertConvertToCompanyActionTextNotPresent();
@@ -416,6 +465,54 @@ When('I go to the Creditor tab', () => {
 });
 
 /**
+ * @step Stubs the History and notes API for the current account.
+ */
+Given('the History and notes API is stubbed with standard tab data', () => {
+  log('step', 'Stub History and notes API with standard tab data');
+  flow().stubHistoryAndNotesTabData();
+});
+
+/**
+ * @step Navigates to the History and notes tab.
+ */
+When('I go to the History and notes tab', () => {
+  log('step', 'Navigate to History and notes tab');
+  flow().goToHistoryAndNotesTab();
+});
+
+/**
+ * @step Verifies History and notes rows loaded.
+ */
+Then('I should see the History and notes items load', () => {
+  log('assert', 'History and notes items are loaded');
+  flow().assertHistoryAndNotesItemsLoaded();
+});
+
+/**
+ * @step Applies the Notes filter on the History and notes tab.
+ */
+When('I filter the History and notes results to Notes', () => {
+  log('step', 'Filter History and notes results to Notes');
+  flow().filterHistoryAndNotesToNotes();
+});
+
+/**
+ * @step Verifies the History and notes results are filtered to Note rows only.
+ */
+Then('I should only see Note items in History and notes', () => {
+  log('assert', 'History and notes results only show Note rows');
+  flow().assertHistoryAndNotesFilteredToNotes();
+});
+
+/**
+ * @step Opens the first account-linked history item in a new tab and verifies the target route.
+ */
+When('I open the first History and notes account link in a new tab', () => {
+  log('step', 'Open first History and notes account link in a new tab');
+  flow().openHistoryAndNotesAccountLinkInNewTab();
+});
+
+/**
  * @step Opens the amend payment terms form.
  */
 When('I open the amend payment terms form', () => {
@@ -576,6 +673,14 @@ When('I choose {string} for changing existing payment terms', (option: string) =
 When('I add the enforcement action', () => {
   log('step', 'Add enforcement action');
   flow().submitAddEnforcementActionForm();
+});
+
+/**
+ * @step Asserts the enforcement action added success banner text.
+ */
+Then('the enforcement action added success banner is {string}', (expected: string) => {
+  log('assert', 'Enforcement action success banner text', { expected });
+  flow().assertEnforcementActionSuccessBanner(expected);
 });
 
 /**

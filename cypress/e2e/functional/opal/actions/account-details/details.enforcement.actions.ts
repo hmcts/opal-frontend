@@ -16,7 +16,7 @@ const log = createScopedLogger('AccountDetailsEnforcementActions');
  * Actions for the Account Details enforcement tab and add override form.
  */
 export class AccountDetailsEnforcementActions {
-  private static readonly DEFAULT_TIMEOUT = 15_000;
+  private static readonly DEFAULT_TIMEOUT = 30_000;
 
   /**
    * Normalizes visible text for reliable equality assertions.
@@ -74,6 +74,17 @@ export class AccountDetailsEnforcementActions {
   public openAddEnforcementActionForm(): void {
     log('navigate', 'Opening add enforcement action form');
     cy.get(ENF.addEnforcementActionLink, { timeout: AccountDetailsEnforcementActions.DEFAULT_TIMEOUT })
+      .should('be.visible')
+      .click();
+  }
+
+  /**
+   * Opens the remove enforcement hold form from the Enforcement tab.
+   */
+  public openRemoveEnforcementHoldForm(): void {
+    log('navigate', 'Opening remove enforcement hold form');
+    cy.get('#last-enforcement-action', { timeout: AccountDetailsEnforcementActions.DEFAULT_TIMEOUT })
+      .contains('a, button', 'Remove')
       .should('be.visible')
       .click();
   }
@@ -205,6 +216,57 @@ export class AccountDetailsEnforcementActions {
       .should('be.visible')
       .and('contain.text', 'Add enforcement action');
     cy.get(ENF_ACT.actionDropdown, { timeout: AccountDetailsEnforcementActions.DEFAULT_TIMEOUT }).should('be.visible');
+  }
+
+  /**
+   * Asserts the add new enforcement action form is visible.
+   */
+  public assertAddNewEnforcementActionFormVisible(): void {
+    log('assert', 'Add new enforcement action form is visible');
+    cy.get(ENF_ACT.newEnforcementActionPageTitle, { timeout: AccountDetailsEnforcementActions.DEFAULT_TIMEOUT })
+      .should('be.visible')
+      .and('contain.text', 'Do you want to add a new enforcement action?');
+    cy.get(ENF_ACT.newEnforcementActionRadioGroup, {
+      timeout: AccountDetailsEnforcementActions.DEFAULT_TIMEOUT,
+    }).should('be.visible');
+  }
+
+  /**
+   * Asserts the remove enforcement hold form is visible.
+   */
+  public assertRemoveEnforcementHoldFormVisible(): void {
+    log('assert', 'Remove enforcement hold form is visible');
+    cy.get('h1.govuk-heading-l', { timeout: AccountDetailsEnforcementActions.DEFAULT_TIMEOUT })
+      .should('be.visible')
+      .and('contain.text', 'Remove enforcement hold');
+    cy.get('opal-lib-govuk-heading-with-caption', { timeout: AccountDetailsEnforcementActions.DEFAULT_TIMEOUT })
+      .should('be.visible')
+      .and('contain.text', '–');
+    cy.get('#facc_enf_action_remove_reason', { timeout: AccountDetailsEnforcementActions.DEFAULT_TIMEOUT }).should(
+      'be.visible',
+    );
+  }
+
+  /**
+   * Asserts the remove enforcement hold account identifier caption.
+   *
+   * @param expected - Expected account identifier caption text.
+   */
+  public assertRemoveEnforcementHoldAccountIdentifier(expected: string): void {
+    log('assert', 'Remove enforcement hold account identifier', { expected });
+    cy.get('opal-lib-govuk-heading-with-caption', { timeout: AccountDetailsEnforcementActions.DEFAULT_TIMEOUT })
+      .should('be.visible')
+      .invoke('text')
+      .then((text) => {
+        const normalize = (value: string): string => value.replace(/\s+/g, ' ').trim();
+        const actual = normalize(text);
+        const expectedText = normalize(expected);
+        const actualBody = actual.replace(/^[^-–]*[-–]\s*/, '');
+        const expectedBody = expectedText.replace(/^[^-–]*[-–]\s*/, '');
+
+        expect(actualBody, 'remove enforcement hold caption').to.contain(expectedBody);
+        expect(actual, 'remove enforcement hold caption').to.contain('Remove enforcement hold');
+      });
   }
 
   /**

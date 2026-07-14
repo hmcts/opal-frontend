@@ -14,7 +14,10 @@ import { AppComponent } from 'src/app/app.component';
 import {
   RELEASE_1A_FEATURE_FLAG,
   RELEASE_1B_FEATURE_FLAG,
+  RELEASE_1C_WRITE_OFF_FEATURE_FLAG,
   RELEASE_1C_ENFORCEMENT_OPERATIONAL_REPORTING_FEATURE_FLAG,
+  RELEASE_1C_ADMINISTRATION_FEATURE_FLAG,
+  RELEASE_1C_FINANCIAL_MOVEMENTS_FEATURE_FLAG,
 } from 'src/app/flows/fines/constants/release-feature-flags.constant';
 
 const NAVIGATION_JIRA_LABEL = '@JIRA-LABEL:primary-nav-and-dashboards';
@@ -23,7 +26,10 @@ const NAVIGATION_EPIC_TAG = '@JIRA-EPIC:PO-2627';
 const DEFAULT_RELEASE_FEATURE_FLAGS = {
   [RELEASE_1A_FEATURE_FLAG]: true,
   [RELEASE_1B_FEATURE_FLAG]: true,
+  [RELEASE_1C_WRITE_OFF_FEATURE_FLAG]: true,
   [RELEASE_1C_ENFORCEMENT_OPERATIONAL_REPORTING_FEATURE_FLAG]: true,
+  [RELEASE_1C_ADMINISTRATION_FEATURE_FLAG]: true,
+  [RELEASE_1C_FINANCIAL_MOVEMENTS_FEATURE_FLAG]: true,
 };
 
 const withReportPermission = (userState: IOpalUserState): IOpalUserState => {
@@ -119,7 +125,7 @@ describe(
 
     it(
       'hides Reports from the primary navigation when release-1c enforcement operational reporting is disabled',
-      { tags: ['@JIRA-TEST-KEY:PO-3758'] },
+      { tags: ['@JIRA-TEST-KEY:PO-8675'] },
       () => {
         setupComponent(withReportPermission(USER_STATE_MOCK_NO_PERMISSION), {
           [RELEASE_1C_ENFORCEMENT_OPERATIONAL_REPORTING_FEATURE_FLAG]: false,

@@ -1,7 +1,7 @@
 <app-fines-acc-summary-header
   [accountStore]="accountStore"
   id="minor-creditor"
-  [hasAddAccountActivityNotePermission]="hasPermission(finesPermissions['add-account-activity-notes'])"
+  [showAddAccountNoteButton]="hasPermission(finesPermissions['add-account-activity-notes'])"
   (refreshPage)="refreshPage()"
   (navigateToAddAccountNotePage)="navigateToAddAccountNotePage()"
 ></app-fines-acc-summary-header>
@@ -74,6 +74,13 @@
       subNavItemFragment="creditor"
       [subNavItemText]="tabs['creditor']"
     ></li>
+    <li
+      opal-lib-moj-sub-navigation-item
+      subNavItemId="history-and-notes-tab"
+      [activeSubNavItemFragment]="activeTab"
+      subNavItemFragment="history-and-notes"
+      [subNavItemText]="tabs['history-and-notes']"
+    ></li>
   </opal-lib-moj-sub-navigation>
 </div>
 
@@ -83,11 +90,9 @@
       <app-fines-acc-minor-creditor-details-at-a-glance-tab
         [tabData]="tabData"
         [hasAddRemovePaymentHoldPermission]="hasPermission(finesPermissions['add-remove-payment-hold'])"
+        [hasAddRemovePaymentHoldPermissionInBU]="hasBusinessUnitPermissionKey('add-remove-payment-hold')"
         [style]="tabContentStyles"
         [hasAssociatedDefendant]="accountData.creditor.has_associated_defendant"
-        (addPaymentHold)="navigateToAddPaymentHoldPage()"
-        (removePaymentHold)="navigateToRemovePaymentHoldPage()"
-        (defendantAccountClick)="navigateToDefendantAccountPage($event)"
       ></app-fines-acc-minor-creditor-details-at-a-glance-tab>
     }
   }
@@ -101,5 +106,12 @@
         [hasViewCreditorBacsPermission]="hasPermission(finesPermissions['view-creditor-bacs'])"
       ></app-fines-acc-minor-creditor-details-creditor-tab>
     }
+  }
+  @case ('history-and-notes') {
+    <app-fines-acc-minor-creditor-details-history-and-notes-tab
+      [accountId]="accountId"
+      [tabData$]="tabHistoryAndNotes$"
+      [style]="tabContentStyles"
+    ></app-fines-acc-minor-creditor-details-history-and-notes-tab>
   }
 }
