@@ -69,14 +69,6 @@ export class CommonActions {
   }
 
   /**
-   * Scrolls the current page to the bottom.
-   */
-  public scrollToPageBottom(): void {
-    log('action', 'Scrolling to the bottom of the page');
-    cy.scrollTo('bottom');
-  }
-
-  /**
    * Asserts that the service name in the global header contains the expected text.
    * @param expected - Text that should appear within the service name link.
    * @param timeoutMs - Optional timeout override for the assertion.

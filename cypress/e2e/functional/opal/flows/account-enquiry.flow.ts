@@ -652,14 +652,6 @@ export class AccountEnquiryFlow {
   }
 
   /**
-   * Scrolls the current page to the bottom so navigation scroll restoration can be verified.
-   */
-  public scrollToPageBottom(): void {
-    logAE('method', 'scrollToPageBottom()');
-    this.common.scrollToPageBottom();
-  }
-
-  /**
    * Navigates to the Enforcement tab and asserts it is active.
    */
   public goToEnforcementTab(): void {

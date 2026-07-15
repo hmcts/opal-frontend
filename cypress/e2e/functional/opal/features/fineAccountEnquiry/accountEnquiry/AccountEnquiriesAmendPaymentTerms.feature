@@ -32,7 +32,6 @@ Feature: Account Enquiries - Amend Payment Terms
     Scenario: Save payment terms changes and return to Payment terms tab
       When I search for the account by last name "AmendPayTerms{uniq}" and open the latest result
       And I go to the Payment terms tab
-      And I scroll to the bottom of the page
       And I open the amend payment terms form
       And I submit instalments only payment terms with a payment card request
       Then I should return to the Payment terms tab

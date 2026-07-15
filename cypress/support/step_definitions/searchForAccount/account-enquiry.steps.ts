@@ -457,14 +457,6 @@ When('I go to the Payment terms tab', () => {
 });
 
 /**
- * @step Scrolls the current page to the bottom.
- */
-When('I scroll to the bottom of the page', () => {
-  log('step', 'Scroll to the bottom of the page');
-  flow().scrollToPageBottom();
-});
-
-/**
  * @step Navigates to the Creditor tab.
  */
 When('I go to the Creditor tab', () => {
