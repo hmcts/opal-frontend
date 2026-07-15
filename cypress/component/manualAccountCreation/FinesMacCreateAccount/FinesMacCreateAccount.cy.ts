@@ -245,11 +245,7 @@ describe('FinesMacCreateAccountComponent', () => {
       cy.get(L.heading).should('contain', 'Create account');
       cy.get(L.businessUnit.input).should('be.visible');
 
-      // Start from the top of the page
-      cy.press(Cypress.Keyboard.Keys.TAB);
-      cy.get(L.backLink).should('have.focus');
-
-      //Move to Business unit container
+      // Start from the first interactive element on the page
       cy.press(Cypress.Keyboard.Keys.TAB);
       cy.get(L.businessUnit.container).should('have.focus');
 
