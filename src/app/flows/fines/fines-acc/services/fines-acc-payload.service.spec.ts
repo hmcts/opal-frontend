@@ -39,6 +39,7 @@ import { FINES_ACC_MINOR_CREDITOR_DETAILS_HISTORY_AND_NOTES_FILTER_ALL_FORM_MOCK
 import { FINES_ACC_MINOR_CREDITOR_DETAILS_HISTORY_AND_NOTES_FILTER_EMPTY_FORM_MOCK } from '../fines-acc-minor-creditor-details/fines-acc-minor-creditor-details-history-and-notes-tab/mocks/fines-acc-minor-creditor-details-history-and-notes-filter-empty-form.mock';
 import { OPAL_FINES_MINOR_CREDITOR_ACCOUNT_HISTORY_PARAMS_MOCK } from '@services/fines/opal-fines-service/mocks/opal-fines-minor-creditor-account-history-params.mock';
 import { FINES_ACC_MINOR_CREDITOR_HISTORY_AND_NOTES_DETAILS_TRANSFORMATION_CONFIG } from './constants/fines-acc-minor-creditor-history-and-notes-details-transformation-config.constant';
+import { OPAL_FINES_NOTE_RECORD_TYPES } from '@services/fines/opal-fines-service/constants/opal-fines-note-record-types.constant';
 
 describe('FinesAccPayloadService', () => {
   let service: FinesAccPayloadService;
@@ -106,7 +107,7 @@ describe('FinesAccPayloadService', () => {
 
       expect(result).toEqual({
         activity_note: {
-          record_type: 'defendant_accounts',
+          record_type: OPAL_FINES_NOTE_RECORD_TYPES.defendantAccounts,
           record_id: 77,
           note_type: 'AA',
           note_text: 'Test note content',
@@ -138,6 +139,20 @@ describe('FinesAccPayloadService', () => {
       expect(result.activity_note.note_text).toBe(FINES_ACC_ADD_NOTE_FORM_MOCK.formData.facc_add_notes as string);
       expect(result.activity_note.note_type).toBe('AA');
       expect(result.activity_note.record_id).toBe(99);
+    });
+
+    it('should build a minor creditor note payload when minor creditor record type is supplied', () => {
+      mockFinesAccountStore.account_id.mockReturnValue(99000000000800);
+
+      const result = service.buildAddNotePayload(
+        FINES_ACC_ADD_NOTE_FORM_MOCK,
+        OPAL_FINES_NOTE_RECORD_TYPES.minorCreditorAccounts,
+      );
+
+      expect(result.activity_note.record_type).toBe('creditor_accounts');
+      expect(result.activity_note.record_id).toBe(99000000000800);
+      expect(result.activity_note.note_text).toBe(FINES_ACC_ADD_NOTE_FORM_MOCK.formData.facc_add_notes as string);
+      expect(result.activity_note.note_type).toBe('AA');
     });
 
     it('should handle null note text from form', () => {

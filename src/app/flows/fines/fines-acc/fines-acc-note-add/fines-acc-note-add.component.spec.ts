@@ -14,6 +14,9 @@ import { FINES_ACC_ADD_NOTE_FORM_MOCK } from './mocks/fines-acc-add-note-form.mo
 import { IOpalFinesAddNotePayload } from '@services/fines/opal-fines-service/interfaces/opal-fines-add-note.interface';
 import { IOpalFinesAddNoteResponse } from '@services/fines/opal-fines-service/interfaces/opal-fines-add-note-response.interface';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
+import { FINES_ACC_PARTY_TYPES } from '../constants/fines-acc-party-types.constant';
+import { FINES_ACC_ADD_NOTE_MINOR_CREDITOR_PAYLOAD_MOCK } from './mocks/fines-acc-add-note-minor-creditor-payload.mock';
+import { OPAL_FINES_NOTE_RECORD_TYPES } from '@services/fines/opal-fines-service/constants/opal-fines-note-record-types.constant';
 
 describe('FinesAccNoteAddComponent', () => {
   let component: FinesAccNoteAddComponent;
@@ -25,6 +28,7 @@ describe('FinesAccNoteAddComponent', () => {
   let mockFinesAccountStore: {
     party_type: Mock;
     party_id: Mock;
+    account_id: Mock;
     getAccountNumber: Mock;
     party_name: Mock;
     base_version: Mock;
@@ -45,9 +49,10 @@ describe('FinesAccNoteAddComponent', () => {
     mockFinesAccountStore = {
       party_type: vi.fn().mockReturnValue('PERSON'),
       party_id: vi.fn().mockReturnValue('12345'),
+      account_id: vi.fn().mockReturnValue(12345),
       getAccountNumber: vi.fn().mockReturnValue('123456789'),
       party_name: vi.fn().mockReturnValue('Mr John, Peter DOE'),
-      base_version: vi.fn().mockReturnValue(1),
+      base_version: vi.fn().mockReturnValue('1'),
     };
 
     await TestBed.configureTestingModule({
@@ -112,6 +117,29 @@ describe('FinesAccNoteAddComponent', () => {
     expect(mockOpalFinesService.addNote).toHaveBeenCalledWith(expectedPayload, expect.any(String));
   });
 
+  it('should call addNote with a minor creditor record type for minor creditor note form submission', () => {
+    const testForm: IFinesAccAddNoteForm = FINES_ACC_ADD_NOTE_FORM_MOCK;
+    const expectedPayload = FINES_ACC_ADD_NOTE_MINOR_CREDITOR_PAYLOAD_MOCK;
+    const mockResponse: IOpalFinesAddNoteResponse = {
+      note_id: 123,
+    };
+
+    mockFinesAccountStore.party_type.mockReturnValue(FINES_ACC_PARTY_TYPES.minorCreditor);
+    mockFinesAccPayloadService.buildAddNotePayload.mockReturnValue(expectedPayload);
+    mockOpalFinesService.addNote.mockReturnValue(of(mockResponse));
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    vi.spyOn<any, any>(component, 'routerNavigate' as never);
+
+    component.handleAddNoteSubmit(testForm);
+
+    expect(mockFinesAccPayloadService.buildAddNotePayload).toHaveBeenCalledWith(
+      testForm,
+      OPAL_FINES_NOTE_RECORD_TYPES.minorCreditorAccounts,
+    );
+    expect(mockOpalFinesService.addNote).toHaveBeenCalledWith(expectedPayload, '1');
+    expect(component['routerNavigate']).toHaveBeenCalledWith('details');
+  });
+
   it('should navigate to details page on successful API call', () => {
     const testForm: IFinesAccAddNoteForm = FINES_ACC_ADD_NOTE_FORM_MOCK;
     const expectedPayload: IOpalFinesAddNotePayload = {
@@ -149,6 +177,21 @@ describe('FinesAccNoteAddComponent', () => {
 
     mockOpalFinesService.addNote.mockReturnValue(throwError(() => new Error('API Error')));
     mockFinesAccPayloadService.buildAddNotePayload.mockReturnValue(expectedPayload);
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    vi.spyOn<any, any>(component, 'routerNavigate' as never);
+
+    component.handleAddNoteSubmit(testForm);
+
+    expect(component['routerNavigate']).not.toHaveBeenCalled();
+  });
+
+  it('should not navigate when minor creditor add note fails', () => {
+    const testForm: IFinesAccAddNoteForm = FINES_ACC_ADD_NOTE_FORM_MOCK;
+    const expectedPayload = FINES_ACC_ADD_NOTE_MINOR_CREDITOR_PAYLOAD_MOCK;
+
+    mockFinesAccountStore.party_type.mockReturnValue(FINES_ACC_PARTY_TYPES.minorCreditor);
+    mockFinesAccPayloadService.buildAddNotePayload.mockReturnValue(expectedPayload);
+    mockOpalFinesService.addNote.mockReturnValue(throwError(() => new Error('API Error')));
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     vi.spyOn<any, any>(component, 'routerNavigate' as never);
 
