@@ -14,6 +14,7 @@ import { FINES_ROUTING_PATHS } from '@routing/fines/constants/fines-routing-path
 import { FINES_DASHBOARD_ROUTING_PATHS } from '../../constants/fines-dashboard-routing-paths.constant';
 import { FINES_ACC_ROUTING_PATHS } from '../../fines-acc/routing/constants/fines-acc-routing-paths.constant';
 import { FINES_ACC_DEFENDANT_ROUTING_PATHS } from '../../fines-acc/routing/constants/fines-acc-defendant-routing-paths.constant';
+import { FINES_SA_RESULTS_ACCOUNT_TYPE } from './constants/accountType.constant';
 
 describe('FinesSaResultsComponent', () => {
   let component: FinesSaResultsComponent;
@@ -143,7 +144,7 @@ describe('FinesSaResultsComponent', () => {
 
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     const openSpy = vi.spyOn<any, any>(globalThis, 'open').mockImplementation(() => null);
-    component.onAccountIdClick(1, 'defendant');
+    component.onAccountIdClick(1, FINES_SA_RESULTS_ACCOUNT_TYPE.defendant);
 
     expect(router.createUrlTree).toHaveBeenCalledWith([
       FINES_ROUTING_PATHS.root,
@@ -162,7 +163,7 @@ describe('FinesSaResultsComponent', () => {
 
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     const openSpy = vi.spyOn<any, any>(globalThis, 'open').mockImplementation(() => null);
-    component.onAccountIdClick(123, 'minorCreditor');
+    component.onAccountIdClick(123, FINES_SA_RESULTS_ACCOUNT_TYPE.minorCreditor);
 
     expect(router.createUrlTree).toHaveBeenCalledWith([
       FINES_ROUTING_PATHS.root,
@@ -764,10 +765,14 @@ describe('FinesSaResultsComponent', () => {
   });
 
   it('should return minor creditor path segment for minor creditor accounts', () => {
-    expect(component.getAccountTypePathSegment('minorCreditor')).toBe(FINES_ACC_MINOR_CREDITOR_ROUTING_PATHS.root);
+    expect(component.getAccountTypePathSegment(FINES_SA_RESULTS_ACCOUNT_TYPE.minorCreditor)).toBe(
+      FINES_ACC_MINOR_CREDITOR_ROUTING_PATHS.root,
+    );
   });
 
   it('should return defendant path segment for defendant accounts', () => {
-    expect(component.getAccountTypePathSegment('defendant')).toBe(FINES_ACC_ROUTING_PATHS.children.defendant);
+    expect(component.getAccountTypePathSegment(FINES_SA_RESULTS_ACCOUNT_TYPE.defendant)).toBe(
+      FINES_ACC_ROUTING_PATHS.children.defendant,
+    );
   });
 });
