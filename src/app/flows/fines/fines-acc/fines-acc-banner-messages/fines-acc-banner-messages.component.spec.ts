@@ -15,6 +15,7 @@ describe('FinesAccBannerMessagesComponent', () => {
     fixture = TestBed.createComponent(FinesAccBannerMessagesComponent);
     component = fixture.componentInstance;
     component.hasVersionMismatch = false;
+    component.isTransferredIn = false;
     component.successMessage = null;
   });
 
@@ -56,5 +57,17 @@ describe('FinesAccBannerMessagesComponent', () => {
     const bannerText = fixture.debugElement.query(By.css('opal-lib-moj-alert-content-text'))?.nativeElement
       ?.textContent;
     expect(bannerText).toContain('Saved');
+  });
+
+  it('should render the transferred in banner without a dismiss button when isTransferredIn is true', () => {
+    component.isTransferredIn = true;
+    fixture.detectChanges();
+
+    const banner = fixture.debugElement.query(By.css('#acc-summary-header-banners-transferred-in'));
+    const bannerText = banner?.nativeElement?.textContent;
+    const dismissButton = banner.query(By.css('button'));
+
+    expect(bannerText).toContain('Account transferred in');
+    expect(dismissButton).toBeFalsy();
   });
 });

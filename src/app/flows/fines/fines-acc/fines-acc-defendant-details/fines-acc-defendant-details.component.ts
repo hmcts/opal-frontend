@@ -247,6 +247,10 @@ export class FinesAccDefendantDetailsComponent
     return !this.lastEnforcement?.prevent_payment_card && this.hasBusinessUnitPermissionKey('amend-payment-terms');
   }
 
+  public get isTransferredIn(): boolean {
+    return this.accountData.originator_type?.trim().toUpperCase() === 'TFO';
+  }
+
   /**
    * Determines the type of denial for amending payment terms based on permission, account status and enforcement details.
    * @returns A string representing the denial type: 'enforcement', 'permission', 'balance' or 'account-status'

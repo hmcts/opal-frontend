@@ -16,6 +16,7 @@ export const FinesAccountStore = signalStore(
     business_unit_id: null as string | null,
     business_unit_user_id: null as string | null,
     welsh_speaking: null as string | null,
+    originator_type: null as string | null,
     hasVersionMismatch: false,
     hasPaymentHold: false,
     successMessage: null as string | null,
@@ -30,6 +31,9 @@ export const FinesAccountStore = signalStore(
   withComputed((store) => ({
     getAccountNumber: computed(() => {
       return store.account_number() ?? '';
+    }),
+    isTransferredIn: computed(() => {
+      return store.originator_type()?.trim().toUpperCase() === 'TFO';
     }),
   })),
   withMethods((store) => {
@@ -58,6 +62,7 @@ export const FinesAccountStore = signalStore(
           business_unit_id: store.business_unit_id(),
           business_unit_user_id: store.business_unit_user_id(),
           welsh_speaking: store.welsh_speaking(),
+          originator_type: store.originator_type(),
         };
       },
       clearAccountState: () => {

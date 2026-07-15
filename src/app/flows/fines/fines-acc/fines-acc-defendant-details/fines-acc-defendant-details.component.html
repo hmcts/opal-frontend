@@ -1,6 +1,7 @@
 <app-fines-acc-summary-header
   [accountStore]="accountStore"
   id="defendant"
+  [isTransferredIn]="isTransferredIn"
   [showAddAccountNoteButton]="hasPermission(finesPermissions['add-account-activity-notes'])"
   (refreshPage)="refreshPage()"
   (navigateToAddAccountNotePage)="navigateToAddAccountNotePage()"

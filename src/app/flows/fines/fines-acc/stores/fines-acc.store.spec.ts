@@ -29,6 +29,7 @@ describe('FinesAccountStore', () => {
     expect(store.party_type()).toBe(null);
     expect(store.base_version()).toBe(null);
     expect(store.business_unit_user_id()).toBe(null);
+    expect(store.originator_type()).toBe(null);
   });
 
   it('setAccountState should set all fields at once', () => {
@@ -42,6 +43,7 @@ describe('FinesAccountStore', () => {
     expect(store.party_name()).toBe(payload.party_name);
     expect(store.base_version()).toBe(payload.base_version);
     expect(store.business_unit_user_id()).toBe(payload.business_unit_user_id);
+    expect(store.originator_type()).toBe(payload.originator_type);
   });
 
   it('getAccountState should return a snapshot of current state', () => {
@@ -62,6 +64,7 @@ describe('FinesAccountStore', () => {
       business_unit_id: payload.business_unit_id,
       business_unit_user_id: payload.business_unit_user_id,
       welsh_speaking: payload.welsh_speaking,
+      originator_type: payload.originator_type,
     });
   });
 
@@ -84,6 +87,7 @@ describe('FinesAccountStore', () => {
       business_unit_id: initialState.business_unit_id,
       business_unit_user_id: initialState.business_unit_user_id,
       welsh_speaking: initialState.welsh_speaking,
+      originator_type: initialState.originator_type,
     });
   });
 
@@ -110,6 +114,14 @@ describe('FinesAccountStore', () => {
   it('should set success message', () => {
     store.setSuccessMessage('Success');
     expect(store.successMessage()).toBe('Success');
+  });
+
+  it('should identify transferred in accounts when originator_type is TFO', () => {
+    store.setAccountState({ ...MOCK_FINES_ACCOUNT_STATE, originator_type: ' tfo ' });
+    expect(store.isTransferredIn()).toBe(true);
+
+    store.setAccountState({ ...MOCK_FINES_ACCOUNT_STATE, originator_type: null });
+    expect(store.isTransferredIn()).toBe(false);
   });
 
   it('should clear success message', () => {

@@ -11,4 +11,5 @@ export const FINES_ACCOUNT_STATE: IFinesAccountState = {
   business_unit_id: null,
   business_unit_user_id: null,
   welsh_speaking: null,
+  originator_type: null,
 };

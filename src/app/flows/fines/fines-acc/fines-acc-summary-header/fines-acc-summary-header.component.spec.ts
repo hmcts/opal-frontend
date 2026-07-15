@@ -48,13 +48,15 @@ describe('FinesAccSummaryHeaderComponent', () => {
     expect(component.navigateToAddAccountNotePage.emit).toHaveBeenCalled();
   });
 
-  it('should pass banner inputs from accountStore', () => {
+  it('should pass banner inputs from accountStore and isTransferredIn input', () => {
     vi.spyOn(component.accountStore, 'hasVersionMismatch').mockReturnValue(true);
     vi.spyOn(component.accountStore, 'successMessage').mockReturnValue('Saved');
+    component.isTransferredIn = true;
     fixture.detectChanges();
 
     const banner = fixture.debugElement.query(By.directive(FinesAccBannerMessagesComponent));
     expect(banner.componentInstance.hasVersionMismatch).toBe(true);
+    expect(banner.componentInstance.isTransferredIn).toBe(true);
     expect(banner.componentInstance.successMessage).toBe('Saved');
   });
 

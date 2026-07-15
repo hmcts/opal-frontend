@@ -1,4 +1,5 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
+import { By } from '@angular/platform-browser';
 import { FinesAccDefendantDetailsComponent } from './fines-acc-defendant-details.component';
 import { Router, ActivatedRoute, ActivatedRouteSnapshot, convertToParamMap } from '@angular/router';
 import { FinesAccDefendantDetailsAtAGlanceTabComponent } from './fines-acc-defendant-details-at-a-glance-tab/fines-acc-defendant-details-at-a-glance-tab.component';
@@ -137,6 +138,14 @@ describe('FinesAccDefendantDetailsComponent', () => {
   it('should initialize accountData and activeTab from route data', () => {
     expect(component.accountData).toEqual(FINES_ACC_DEFENDANT_DETAILS_HEADER_MOCK);
     expect(component.activeTab).toBe('at-a-glance');
+  });
+
+  it('should display the transferred in banner when accountData originator_type is TFO', () => {
+    const bannerText = fixture.debugElement.query(By.css('#defendant-banners-transferred-in'))?.nativeElement
+      ?.textContent;
+
+    expect(component.isTransferredIn).toBe(true);
+    expect(bannerText).toContain('Account transferred in');
   });
 
   it('should allow adding parent or guardian details for a youth debtor account with no parent guardian', () => {

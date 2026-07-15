@@ -25,6 +25,7 @@ describe('FinesAccEnfActionAddNewComponent', () => {
     business_unit_id: '78',
     business_unit_user_id: 'user-1',
     welsh_speaking: 'Y',
+    originator_type: null,
   };
 
   const activatedRouteStub = {
@@ -39,6 +40,7 @@ describe('FinesAccEnfActionAddNewComponent', () => {
 
   const mockFinesAccStore = {
     successMessage: signal<string | null>('Enforcement action added'),
+    isTransferredIn: vi.fn().mockReturnValue(false),
     setAccountState: vi.fn(),
     clearSuccessMessage: vi.fn(),
   };

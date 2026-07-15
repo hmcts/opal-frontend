@@ -2,6 +2,7 @@
   id="{{ id }}-banners"
   [hasVersionMismatch]="accountStore.hasVersionMismatch()"
   [hasPaymentHold]="accountStore.hasPaymentHold()"
+  [isTransferredIn]="isTransferredIn"
   [successMessage]="accountStore.successMessage()"
   (clearSuccessMessage)="accountStore.clearSuccessMessage()"
   (refreshPage)="handleRefreshPage()"
