@@ -1,23 +1,17 @@
 import { patchState, signalStore, withMethods, withState } from '@ngrx/signals';
 import { IFinesReportsSummaryListFilterState } from '../interfaces/fines-reports-summary-list-filter-state.interface';
-import { FINES_REPORTS_SUMMARY_LIST_FILTER_STATE } from '../constants/fines-reports-summary-list-filter-state.constant';
 import { IFinesReportsSummaryListQueryState } from '../interfaces/fines-reports-summary-list-query-state.interface';
+import { IFinesReportsSummaryListState } from '../interfaces/fines-reports-summary-list-state.interface';
+import { FINES_REPORTS_SUMMARY_LIST_STATE } from '../constants/fines-reports-summary-list-state.constant';
 
-interface FinesReportsSummaryListState {
-  reportTypeId: string | null;
-  filters: IFinesReportsSummaryListFilterState;
-  appliedQuery: IFinesReportsSummaryListQueryState | null;
-  currentPage: number;
-}
+const getFinesReportsSummaryListState = (): IFinesReportsSummaryListState => ({
+  ...FINES_REPORTS_SUMMARY_LIST_STATE,
+  filters: { ...FINES_REPORTS_SUMMARY_LIST_STATE.filters },
+});
 
 export const FinesReportsSummaryListStore = signalStore(
   { providedIn: 'root' },
-  withState<FinesReportsSummaryListState>(() => ({
-    reportTypeId: null,
-    filters: { ...FINES_REPORTS_SUMMARY_LIST_FILTER_STATE },
-    appliedQuery: null,
-    currentPage: 1,
-  })),
+  withState<IFinesReportsSummaryListState>(() => getFinesReportsSummaryListState()),
   withMethods((store) => ({
     setReportTypeId: (reportTypeId: string | null) => {
       patchState(store, { reportTypeId });
@@ -28,10 +22,8 @@ export const FinesReportsSummaryListStore = signalStore(
       }
 
       patchState(store, {
+        ...getFinesReportsSummaryListState(),
         reportTypeId,
-        filters: { ...FINES_REPORTS_SUMMARY_LIST_FILTER_STATE },
-        appliedQuery: null,
-        currentPage: 1,
       });
     },
     setFilters: (filters: IFinesReportsSummaryListFilterState) => {
@@ -44,12 +36,7 @@ export const FinesReportsSummaryListStore = signalStore(
       patchState(store, { currentPage });
     },
     resetFilters: () => {
-      patchState(store, {
-        reportTypeId: null,
-        filters: { ...FINES_REPORTS_SUMMARY_LIST_FILTER_STATE },
-        appliedQuery: null,
-        currentPage: 1,
-      });
+      patchState(store, getFinesReportsSummaryListState());
     },
   })),
 );

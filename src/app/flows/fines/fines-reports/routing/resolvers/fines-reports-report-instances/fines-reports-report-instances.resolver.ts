@@ -1,6 +1,7 @@
 import { inject } from '@angular/core';
 import { ResolveFn } from '@angular/router';
 import { GlobalStore } from '@hmcts/opal-frontend-common/stores/global';
+import { DateService } from '@hmcts/opal-frontend-common/services/date-service';
 import { OpalFines } from '@services/fines/opal-fines-service/opal-fines.service';
 import { IOpalFinesReportInstancesParams } from '@services/fines/opal-fines-service/interfaces/opal-fines-report-instances-params.interface';
 import { IOpalFinesReportInstancesResponse } from '@services/fines/opal-fines-service/interfaces/opal-fines-report-instances-response.interface';
@@ -18,6 +19,7 @@ export const finesReportsReportInstancesResolver: ResolveFn<IOpalFinesReportInst
   const opalFinesService = inject(OpalFines);
   const globalStore = inject(GlobalStore);
   const store = inject(FinesReportsSummaryListStore);
+  const dateService = inject(DateService);
   const reportConfiguration = getFinesReportsRouteConfiguration(route);
   const reportTypeId = getFinesReportsRouteReportTypeId(route);
   store.resetForReportType(reportTypeId);
@@ -25,8 +27,8 @@ export const finesReportsReportInstancesResolver: ResolveFn<IOpalFinesReportInst
 
   const query =
     store.appliedQuery() ??
-    getReportsSummaryListQueryFromFilters(store.filters()) ??
-    getDefaultReportsSummaryListQuery();
+    getReportsSummaryListQueryFromFilters(store.filters(), dateService) ??
+    getDefaultReportsSummaryListQuery(dateService);
 
   const params: IOpalFinesReportInstancesParams = {
     from_date: query.fromDate,

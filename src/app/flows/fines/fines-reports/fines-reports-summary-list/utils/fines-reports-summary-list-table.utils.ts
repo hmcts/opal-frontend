@@ -1,8 +1,12 @@
-import { DateTime } from 'luxon';
+import { DateService } from '@hmcts/opal-frontend-common/services/date-service';
 import { IOpalFinesBusinessUnit } from '@services/fines/opal-fines-service/interfaces/opal-fines-business-unit.interface';
 import { IOpalFinesReportInstance } from '@services/fines/opal-fines-service/interfaces/opal-fines-report-instance.interface';
 import { IOpalFinesReportInstancesResponse } from '@services/fines/opal-fines-service/interfaces/opal-fines-report-instances-response.interface';
 import { IFinesReportsSummaryListTableData } from '../interfaces/fines-reports-summary-list-table-data.interface';
+import {
+  FINES_REPORTS_SUMMARY_LIST_STATUS,
+  FINES_REPORTS_SUMMARY_LIST_STATUS_DISPLAY,
+} from '../constants/fines-reports-summary-list-status.constant';
 
 type BusinessUnitLike = {
   business_unit_id?: string | number;
@@ -183,16 +187,16 @@ export const getReportInstanceDisplayStatus = (instance: IOpalFinesReportInstanc
   const status = getStatusCode(instance);
   const records = instance.number_of_records ?? instance.no_of_records ?? instance.numberOfRecords;
 
-  if (status === 'REQUESTED') {
-    return 'In progress';
+  if (status === FINES_REPORTS_SUMMARY_LIST_STATUS.requested) {
+    return FINES_REPORTS_SUMMARY_LIST_STATUS_DISPLAY.inProgress;
   }
 
-  if (status === 'READY' && records === 0) {
-    return 'No content';
+  if (status === FINES_REPORTS_SUMMARY_LIST_STATUS.ready && records === 0) {
+    return FINES_REPORTS_SUMMARY_LIST_STATUS_DISPLAY.noContent;
   }
 
-  if (status === 'IN_PROGRESS') {
-    return 'In progress';
+  if (status === FINES_REPORTS_SUMMARY_LIST_STATUS.inProgress) {
+    return FINES_REPORTS_SUMMARY_LIST_STATUS_DISPLAY.inProgress;
   }
 
   return getStatusDisplayName(instance) || toDisplayStatus(status);
@@ -201,16 +205,18 @@ export const getReportInstanceDisplayStatus = (instance: IOpalFinesReportInstanc
 export const mapReportInstancesToTableData = (
   instances: IOpalFinesReportInstance[],
   businessUnitRefData?: IOpalFinesBusinessUnit[],
+  dateService?: DateService,
 ): IFinesReportsSummaryListTableData[] => {
   return instances.map((instance) => {
     const createdDate = getCreatedDate(instance);
-    const parsedDate = DateTime.fromISO(createdDate);
-    const dateTimeDisplay = parsedDate.isValid
-      ? parsedDate.setLocale('en-gb').toFormat("dd MMM yyyy 'at' HH:mm")
-      : createdDate;
+    const parsedDate = dateService?.getFromIso(createdDate);
+    const dateTimeDisplay =
+      dateService && parsedDate?.isValid
+        ? dateService.toFormat(parsedDate.setLocale('en-gb'), "dd MMM yyyy 'at' HH:mm")
+        : createdDate;
 
     return {
-      'Date and time': parsedDate.isValid ? parsedDate.toMillis() : 0,
+      'Date and time': parsedDate?.isValid ? parsedDate.toMillis() : 0,
       Title: instance.report_name ?? instance.name ?? '',
       'Business unit': getBusinessUnits(instance, businessUnitRefData),
       'Created by':

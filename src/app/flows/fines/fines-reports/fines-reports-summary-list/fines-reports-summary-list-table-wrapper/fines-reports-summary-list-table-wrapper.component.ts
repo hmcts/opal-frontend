@@ -35,10 +35,10 @@ export class FinesReportsSummaryListTableWrapperComponent extends AbstractSortab
     this.onApplyFilters();
   }
 
-  @Input({ required: false }) set existingSortState(
+  @Input({ required: true }) set existingSortState(
     existingSortState: IFinesReportsSummaryListTableWrapperTableSort | null,
   ) {
-    this.abstractExistingSortState = existingSortState ?? FINES_REPORTS_SUMMARY_LIST_TABLE_WRAPPER_TABLE_SORT_DEFAULT;
+    this.abstractExistingSortState = existingSortState;
   }
 
   public override itemsPerPageSignal = signal(25);

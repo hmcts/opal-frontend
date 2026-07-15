@@ -185,6 +185,36 @@ export class OpalFines {
   }
 
   /**
+   * Builds HTTP query parameters for retrieving report instances.
+   *
+   * @param params - Report instance query parameters.
+   * @returns The HTTP query parameters for the request.
+   */
+  private getReportInstancesParams(params: IOpalFinesReportInstancesParams): HttpParams {
+    let httpParams = new HttpParams();
+
+    if (params.from_date) {
+      httpParams = httpParams.set(this.PARAM_FROM_DATE, params.from_date);
+    }
+
+    if (params.to_date) {
+      httpParams = httpParams.set(this.PARAM_TO_DATE, params.to_date);
+    }
+
+    if (params.report_id !== undefined && params.report_id !== null) {
+      httpParams = httpParams.set(this.PARAM_REPORT_ID, params.report_id.toString());
+    }
+
+    if (params.user_id !== undefined && params.user_id !== null) {
+      httpParams = httpParams.set(this.PARAM_USER_ID, params.user_id.toString());
+    }
+
+    httpParams = this.appendArrayParams(httpParams, this.PARAM_BUSINESS_UNITS, params.business_units);
+
+    return httpParams;
+  }
+
+  /**
    * Retrieves the court data for a specific business unit.
    * If the court data is not already cached, it makes an HTTP request to fetch the data and caches it for future use.
    * @param business_unit - The business unit for which to retrieve the court data.
@@ -290,28 +320,8 @@ export class OpalFines {
   public getReportInstances(
     params: IOpalFinesReportInstancesParams = {},
   ): Observable<IOpalFinesReportInstancesResponse> {
-    let httpParams = new HttpParams();
-
-    if (params.from_date) {
-      httpParams = httpParams.set(this.PARAM_FROM_DATE, params.from_date);
-    }
-
-    if (params.to_date) {
-      httpParams = httpParams.set(this.PARAM_TO_DATE, params.to_date);
-    }
-
-    if (params.report_id !== undefined && params.report_id !== null) {
-      httpParams = httpParams.set(this.PARAM_REPORT_ID, params.report_id.toString());
-    }
-
-    if (params.user_id !== undefined && params.user_id !== null) {
-      httpParams = httpParams.set(this.PARAM_USER_ID, params.user_id.toString());
-    }
-
-    httpParams = this.appendArrayParams(httpParams, this.PARAM_BUSINESS_UNITS, params.business_units);
-
     return this.http.get<IOpalFinesReportInstancesResponse>(OPAL_FINES_PATHS.reportInstances, {
-      params: httpParams,
+      params: this.getReportInstancesParams(params),
     });
   }
 

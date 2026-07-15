@@ -203,9 +203,8 @@ describe('FinesReportsSummaryListComponent', () => {
     expect(text).toContain('In progress');
     expect(text).toContain('No content');
 
-    const header = fixture.nativeElement.querySelector('.reports-summary-list-header');
-    expect(header?.querySelector('h1')?.textContent?.trim()).toBe('Operational reports (by enforcement)');
-    expect(header?.querySelector('a')?.textContent?.trim()).toBe('Create report');
+    expect(fixture.nativeElement.querySelector('h1')?.textContent?.trim()).toBe('Operational reports (by enforcement)');
+    expect(fixture.nativeElement.querySelector('#create-report-button')?.textContent?.trim()).toBe('Create report');
   });
 
   it('should render report instances returned in the backend DTO shape', async () => {

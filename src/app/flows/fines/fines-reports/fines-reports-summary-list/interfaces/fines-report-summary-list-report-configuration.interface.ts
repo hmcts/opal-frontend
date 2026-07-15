@@ -4,6 +4,6 @@ export interface IFinesReportSummaryListReportConfiguration {
   heading: string;
   title: string;
   permissionIds: number[];
-  canCreate?: boolean;
-  isYourReports?: boolean;
+  canCreate: boolean;
+  isYourReports: boolean;
 }

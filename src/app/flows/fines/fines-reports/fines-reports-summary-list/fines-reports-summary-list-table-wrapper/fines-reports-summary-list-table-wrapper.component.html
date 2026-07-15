@@ -52,16 +52,20 @@
       <th scope="col" class="govuk-table__header">Action</th>
     </ng-container>
     <ng-container row>
-      @for (row of paginatedTableDataComputed(); track row.instanceId) {
+      @for (row of paginatedTableDataComputed(); track row.instanceId; let rowIndex = $index) {
         <tr opal-lib-moj-sortable-table-row>
-          <td opal-lib-moj-sortable-table-row-data id="reportInstanceDateTime">
+          <td opal-lib-moj-sortable-table-row-data id="reportInstanceDateTime-{{ rowIndex }}">
             <a href="" class="govuk-link govuk-link--no-visited-state">{{ row.dateTimeDisplay }}</a>
           </td>
-          <td opal-lib-moj-sortable-table-row-data id="reportInstanceTitle">{{ row.Title }}</td>
-          <td opal-lib-moj-sortable-table-row-data id="reportInstanceBusinessUnit">{{ row['Business unit'] }}</td>
-          <td opal-lib-moj-sortable-table-row-data id="reportInstanceCreatedBy">{{ row['Created by'] }}</td>
-          <td opal-lib-moj-sortable-table-row-data id="reportInstanceStatus">{{ row.Status }}</td>
-          <td opal-lib-moj-sortable-table-row-data id="reportInstanceAction">
+          <td opal-lib-moj-sortable-table-row-data id="reportInstanceTitle-{{ rowIndex }}">{{ row.Title }}</td>
+          <td opal-lib-moj-sortable-table-row-data id="reportInstanceBusinessUnit-{{ rowIndex }}">
+            {{ row['Business unit'] }}
+          </td>
+          <td opal-lib-moj-sortable-table-row-data id="reportInstanceCreatedBy-{{ rowIndex }}">
+            {{ row['Created by'] }}
+          </td>
+          <td opal-lib-moj-sortable-table-row-data id="reportInstanceStatus-{{ rowIndex }}">{{ row.Status }}</td>
+          <td opal-lib-moj-sortable-table-row-data id="reportInstanceAction-{{ rowIndex }}">
             @if (row.isDownloadable && row.supportedTypes) {
               @for (type of row.supportedTypes.split(','); track type) {
                 <a href="" class="govuk-link govuk-link--no-visited-state govuk-!-margin-right-2">{{ type }}</a>

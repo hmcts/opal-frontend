@@ -6,14 +6,23 @@
     ></opal-lib-govuk-error-summary>
   </div>
 
-  <div class="reports-summary-list-header">
-    <h1 class="govuk-heading-l govuk-!-margin-bottom-0">{{ pageHeading }}</h1>
-    @if (showCreateReportButton) {
-      <a class="govuk-button" id="create-report-button" routerLink="../create" data-module="govuk-button">
-        Create report
-      </a>
-    }
-  </div>
+  <opal-lib-custom-page-header>
+    <ng-container pageHeaderHeading>
+      <h1 class="govuk-heading-l">{{ pageHeading }}</h1>
+    </ng-container>
+    <ng-container pageHeaderButtons>
+      @if (showCreateReportButton) {
+        <a
+          class="govuk-button"
+          id="create-report-button"
+          [routerLink]="createReportRoutingPath"
+          data-module="govuk-button"
+        >
+          Create report
+        </a>
+      }
+    </ng-container>
+  </opal-lib-custom-page-header>
 
   <form [formGroup]="filtersForm" (ngSubmit)="onRefresh()" novalidate>
     <div class="govuk-grid-row">
@@ -39,7 +48,7 @@
             labelText="Last 7 days"
             inputId="last-7-days"
             inputName="reports-summary-list-date-filter"
-            inputValue="last7Days"
+            [inputValue]="dateFilterLast7Days"
             [control]="filtersForm.controls.dateFilter"
           ></div>
           <div
@@ -47,11 +56,11 @@
             labelText="Custom days"
             inputId="custom-days"
             inputName="reports-summary-list-date-filter"
-            inputValue="customDays"
+            [inputValue]="dateFilterCustomDays"
             ariaControls="reports-summary-list-custom-days"
             [control]="filtersForm.controls.dateFilter"
           ></div>
-          @if (dateFilter() === 'customDays') {
+          @if (dateFilter() === dateFilterCustomDays) {
             <div class="govuk-radios__conditional" id="reports-summary-list-custom-days">
               <div
                 class="govuk-form-group"
@@ -83,11 +92,11 @@
             labelText="Date range"
             inputId="date-range"
             inputName="reports-summary-list-date-filter"
-            inputValue="dateRange"
+            [inputValue]="dateFilterDateRange"
             ariaControls="reports-summary-list-date-range"
             [control]="filtersForm.controls.dateFilter"
           ></div>
-          @if (dateFilter() === 'dateRange') {
+          @if (dateFilter() === dateFilterDateRange) {
             <div class="govuk-radios__conditional reports-summary-list-date-range" id="reports-summary-list-date-range">
               <opal-lib-moj-date-picker
                 labelText="Enter date from"
