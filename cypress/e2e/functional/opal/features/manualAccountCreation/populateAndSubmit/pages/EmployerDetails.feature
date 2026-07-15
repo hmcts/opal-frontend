@@ -24,6 +24,7 @@ Feature: Manual account creation - Employer Details
       | Address line 5     | Addr5                |
       | Postcode           | TE12 3ST             |
     And I return to account details
+    Then I return to the top of the page
     Then the "Employer details" task status is "Provided"
     When I view the "Employer details" task
     Then the manual employer details fields are:
