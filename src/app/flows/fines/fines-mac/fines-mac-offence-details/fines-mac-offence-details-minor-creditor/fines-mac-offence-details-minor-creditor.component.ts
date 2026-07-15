@@ -53,6 +53,7 @@ export class FinesMacOffenceDetailsMinorCreditorComponent
 
     this.finesMacOffenceDetailsStore.setOffenceDetailsDraft(offenceDetailsDraft);
     this.finesMacOffenceDetailsStore.setMinorCreditorAdded(true);
+    this.finesMacStore.setUnsavedChanges(true);
 
     this.routerNavigate(FINES_MAC_OFFENCE_DETAILS_ROUTING_PATHS.children.addOffence);
   }
