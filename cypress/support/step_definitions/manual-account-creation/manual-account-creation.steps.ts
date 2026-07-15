@@ -1514,3 +1514,14 @@ Then(
 Then('the latest draft account create response should include UTC timestamps', () => {
   flow().assertLatestDraftAccountCreateResponseIncludesUtcTimestamps();
 });
+
+/**
+ * @step Asserts the page is scrolled to the top.
+ * @description Validates the page has been scrolled to the top.
+ */
+
+Then('I return to the top of the page', () => {
+  cy.window().should((win) => {
+    expect(win.scrollY).to.equal(0);
+  });
+});

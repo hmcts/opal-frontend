@@ -14,6 +14,7 @@ Feature: Manual account creation - Payment Terms
       | last name      | LNAME |
       | address line 1 | Addr1 |
     And I return to account details
+    Then I return to the top of the page
     Then the "Personal details" task status is "Provided"
     And the "Payment terms" task status is "Not provided"
     When I view the "Payment terms" task
