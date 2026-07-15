@@ -60,9 +60,7 @@ import { FinesAccPartyAddAmendConvertVd } from './components/fines-acc-party-add
 import { FinesAccPartyAddAmendConvertDobNi } from './components/fines-acc-party-add-amend-convert-dob-ni/fines-acc-party-add-amend-convert-dob-ni.component';
 import { FINES_ACC_SUMMARY_TABS_CONTENT_STYLES } from '../../constants/fines-acc-summary-tabs-content-styles.constant';
 import { FINES_ACC_PARTY_ADD_AMEND_CONVERT_MODES } from '../constants/fines-acc-party-add-amend-convert-modes.constant';
-import {
-  FINES_ACC_PARTY_ADD_AMEND_CONVERT_SECTION_FRAGMENTS,
-} from '../constants/fines-acc-party-add-amend-convert-fragments.constant';
+import { FINES_ACC_PARTY_ADD_AMEND_CONVERT_SECTION_FRAGMENTS } from '../constants/fines-acc-party-add-amend-convert-fragments.constant';
 import {
   MojAlertComponent,
   MojAlertContentComponent,
