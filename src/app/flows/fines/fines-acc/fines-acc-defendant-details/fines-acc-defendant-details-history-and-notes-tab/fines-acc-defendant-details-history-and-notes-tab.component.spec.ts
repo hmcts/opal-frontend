@@ -4,7 +4,7 @@ import { ActivatedRoute, provideRouter } from '@angular/router';
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import { FinesAccDefendantDetailsHistoryAndNotesTabComponent } from './fines-acc-defendant-details-history-and-notes-tab.component';
 import { OPAL_FINES_ACCOUNT_DEFENDANT_DETAILS_HISTORY_AND_NOTES_TAB_REF_DATA_MOCK } from '@services/fines/opal-fines-service/mocks/opal-fines-account-defendant-details-history-and-notes-tab-ref-data.mock';
-import { of } from 'rxjs';
+import { of, throwError } from 'rxjs';
 import { FINES_ACC_DEFENDANT_DETAILS_HISTORY_AND_NOTES_FILTER_FORM_MOCK } from './mocks/fines-acc-defendant-details-history-and-notes-filter-form.mock';
 import { FINES_ACC_DEFENDANT_DETAILS_HISTORY_AND_NOTES_FILTER_FORM_PAYLOAD_MOCK } from './mocks/fines-acc-defendant-details-history-and-notes-filter-form-payload.mock';
 import { OpalFines } from '@services/fines/opal-fines-service/opal-fines.service';
@@ -267,6 +267,28 @@ describe('FinesAccDefendantDetailsHistoryAndNotesTabComponent', () => {
   it('should store filter open state from the filter component', () => {
     component.handleFilterOpenChange(true);
 
+    expect(component.filterOpen).toBe(true);
+  });
+
+  it('should keep the last rendered rows when a refresh fails', () => {
+    const emitted: IOpalFinesAccountDefendantDetailsHistoryAndNotesTabRefData[] = [];
+
+    fixture.detectChanges();
+    component.historyAndNotesTabData$.subscribe((data) => emitted.push(data));
+
+    mockOpalFinesService.getDefendantAccountHistoryAndNotesTabData.mockReturnValue(
+      throwError(() => new Error('history request failed')),
+    );
+
+    component.handleFilterApplied(FINES_ACC_DEFENDANT_DETAILS_HISTORY_AND_NOTES_FILTER_FORM_MOCK);
+    component.historyAndNotesTabData$.subscribe({
+      next: (data) => emitted.push(data),
+      error: () => {
+        // The request fails after the last known data has already been re-emitted.
+      },
+    });
+
+    expect(emitted[0]).toEqual(OPAL_FINES_ACCOUNT_DEFENDANT_DETAILS_HISTORY_AND_NOTES_TAB_REF_DATA_MOCK);
     expect(component.filterOpen).toBe(true);
   });
 });

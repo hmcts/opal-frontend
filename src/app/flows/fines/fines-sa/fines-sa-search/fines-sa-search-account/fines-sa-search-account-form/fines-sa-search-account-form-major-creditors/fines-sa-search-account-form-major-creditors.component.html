@@ -2,7 +2,8 @@
 @if ((finesSaStore.searchAccount().fsa_search_account_business_unit_ids ?? []).length === 1) {
   <opal-lib-alphagov-accessible-autocomplete
     [control]="form.get('fsa_search_account_major_creditors_major_creditor_id')"
-    labelText=""
+    labelText="Select a major creditor"
+    labelClasses="govuk-visually-hidden"
     inputId="fsa_search_account_major_creditors_major_creditor_id"
     inputName="fsa_search_account_major_creditors_major_creditor_id"
     label=""
