@@ -1,5 +1,4 @@
 import {
-  AfterViewInit,
   ChangeDetectionStrategy,
   Component,
   EventEmitter,
@@ -10,7 +9,7 @@ import {
   inject,
 } from '@angular/core';
 import { FormControl, FormGroup, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
-import { CommonModule, DOCUMENT } from '@angular/common';
+import { CommonModule } from '@angular/common';
 import { AbstractFormBaseComponent } from '@hmcts/opal-frontend-common/components/abstract/abstract-form-base';
 import { IFinesAccPaymentTermsAmendForm } from '../interfaces/fines-acc-payment-terms-amend-form.interface';
 import { IFinesAccPaymentTermsAmendFieldErrors } from '../interfaces/fines-acc-payment-terms-amend-field-errors.interface';
@@ -27,6 +26,7 @@ import { IGovUkRadioOptions } from '@hmcts/opal-frontend-common/components/govuk
 import { takeUntil } from 'rxjs';
 import { FINES_ACC_SUMMARY_TABS_CONTENT_STYLES } from '../../constants/fines-acc-summary-tabs-content-styles.constant';
 import { FinesMacDefaultDaysComponent } from '../../../fines-mac/components/fines-mac-default-days/fines-mac-default-days.component';
+import { FINES_ACC_PAYMENT_TERMS_AMEND_FRAGMENTS } from '../constants/fines-acc-payment-terms-amend-fragments.constant';
 
 // GovUK Components
 import { GovukButtonComponent } from '@hmcts/opal-frontend-common/components/govuk/govuk-button';
@@ -93,9 +93,8 @@ const ALPHANUMERIC_WITH_HYPHENS_SPACES_APOSTROPHES_DOT_PATTERN_VALIDATOR = patte
 })
 export class FinesAccPaymentTermsAmendFormComponent
   extends AbstractFormBaseComponent
-  implements OnInit, OnDestroy, AfterViewInit
+  implements OnInit, OnDestroy
 {
-  private readonly document = inject(DOCUMENT);
   protected readonly dateService = inject(DateService);
   protected readonly accountStore = inject(FinesAccountStore);
   @Output() protected override formSubmit = new EventEmitter<IFinesAccPaymentTermsAmendForm>();
@@ -122,7 +121,7 @@ export class FinesAccPaymentTermsAmendFormComponent
     ([key, value]) => ({ key, value }),
   );
   public readonly paymentTermsConditionalIdPrefix = 'payment-terms-conditional-';
-  public readonly selectPaymentTermsFragment = 'select-payment-terms';
+  public readonly selectPaymentTermsFragment = FINES_ACC_PAYMENT_TERMS_AMEND_FRAGMENTS.selectPaymentTerms;
   public today!: string;
   public yesterday!: string;
 
@@ -412,16 +411,5 @@ export class FinesAccPaymentTermsAmendFormComponent
 
     this.initialPaymentTermsForm();
     super.ngOnInit();
-  }
-
-  public ngAfterViewInit(): void {
-    if (this['activatedRoute'].snapshot.fragment !== this.selectPaymentTermsFragment) {
-      return;
-    }
-
-    const target = this.document.getElementById(this.selectPaymentTermsFragment);
-    if (typeof target?.scrollIntoView === 'function') {
-      target.scrollIntoView({ block: 'start' });
-    }
   }
 }

@@ -21,7 +21,7 @@
   <form (submit)="handleFormSubmit($event)" [formGroup]="form">
     <!-- Party details -->
     <app-fines-acc-party-add-amend-convert-party-details
-      [id]="sectionFragments['party-details']"
+      [id]="sectionFragments.partyDetails"
       [form]="form"
       [formControlErrorMessages]="formControlErrorMessages"
       [isCompanyPartyType]="isCompanyPartyType"
@@ -205,7 +205,7 @@
     @if (showContactDetails) {
       <hr class="{{ FINES_ACC_SECTION_BREAK }}" />
       <app-fines-acc-party-add-amend-convert-cd
-        [id]="sectionFragments['contact-details']"
+        [id]="sectionFragments.contactDetails"
         [form]="form"
         [formControlErrorMessages]="formControlErrorMessages"
       ></app-fines-acc-party-add-amend-convert-cd>
@@ -235,7 +235,7 @@
       <hr class="{{ FINES_ACC_SECTION_BREAK }}" />
 
       <app-fines-acc-party-add-amend-convert-ed
-        [id]="sectionFragments['employment-details']"
+        [id]="sectionFragments.employmentDetails"
         [form]="form"
         [formControlErrorMessages]="formControlErrorMessages"
       ></app-fines-acc-party-add-amend-convert-ed>

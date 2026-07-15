@@ -11,6 +11,7 @@ import { MOCK_FINES_ACC_PARTY_ADD_AMEND_CONVERT_FORM_DATA_WITH_ALIASES } from '.
 import { FINES_ACC_PARTY_ADD_AMEND_CONVERT_FORM } from '../constants/fines-acc-party-add-amend-convert-form.constant';
 import { FINES_ACC_DEFENDANT_DETAILS_TABS_KEYS } from '../../fines-acc-defendant-details/constants/fines-acc-defendant-details-tabs-keys.constant';
 import { FINES_ACC_PARTY_ADD_AMEND_CONVERT_MODES } from '../constants/fines-acc-party-add-amend-convert-modes.constant';
+import { FINES_ACC_PARTY_ADD_AMEND_CONVERT_SECTION_FRAGMENTS } from '../constants/fines-acc-party-add-amend-convert-fragments.constant';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
 
 describe('FinesAccPartyAddAmendConvertFormComponent', () => {
@@ -294,55 +295,24 @@ describe('FinesAccPartyAddAmendConvertFormComponent', () => {
     expect(component.routeFragment).toBe(FINES_ACC_DEFENDANT_DETAILS_TABS_KEYS.defendant);
   });
 
-  it('should scroll to employment details when the employment-details fragment is present', () => {
-    const scrollIntoViewSpy = vi.fn();
-    const getElementByIdSpy = vi.spyOn(document, 'getElementById').mockReturnValue({
-      scrollIntoView: scrollIntoViewSpy,
-    } as unknown as HTMLElement);
-
+  it('should render matching section ids for fragment navigation', () => {
     component.partyType = 'individual';
     component.isDebtor = true;
     fixture.detectChanges();
-    mockActivatedRoute.snapshot.fragment = 'employment-details';
-    component.ngAfterViewInit();
 
-    expect(getElementByIdSpy).toHaveBeenCalledWith('employment-details');
-    expect(scrollIntoViewSpy).toHaveBeenCalledWith({ block: 'start' });
-    getElementByIdSpy.mockRestore();
-  });
-
-  it('should scroll to contact details when the contact-details fragment is present', () => {
-    const scrollIntoViewSpy = vi.fn();
-    const getElementByIdSpy = vi.spyOn(document, 'getElementById').mockReturnValue({
-      scrollIntoView: scrollIntoViewSpy,
-    } as unknown as HTMLElement);
-
-    component.partyType = 'individual';
-    component.isDebtor = true;
-    fixture.detectChanges();
-    mockActivatedRoute.snapshot.fragment = 'contact-details';
-    component.ngAfterViewInit();
-
-    expect(getElementByIdSpy).toHaveBeenCalledWith('contact-details');
-    expect(scrollIntoViewSpy).toHaveBeenCalledWith({ block: 'start' });
-    getElementByIdSpy.mockRestore();
-  });
-
-  it('should scroll to party details when the party-details fragment is present', () => {
-    const scrollIntoViewSpy = vi.fn();
-    const getElementByIdSpy = vi.spyOn(document, 'getElementById').mockReturnValue({
-      scrollIntoView: scrollIntoViewSpy,
-    } as unknown as HTMLElement);
-
-    component.partyType = 'individual';
-    component.isDebtor = true;
-    fixture.detectChanges();
-    mockActivatedRoute.snapshot.fragment = 'party-details';
-    component.ngAfterViewInit();
-
-    expect(getElementByIdSpy).toHaveBeenCalledWith('party-details');
-    expect(scrollIntoViewSpy).toHaveBeenCalledWith({ block: 'start' });
-    getElementByIdSpy.mockRestore();
+    expect(
+      fixture.nativeElement.querySelector(`#${FINES_ACC_PARTY_ADD_AMEND_CONVERT_SECTION_FRAGMENTS.partyDetails}`),
+    ).toBeTruthy();
+    expect(
+      fixture.nativeElement.querySelector(
+        `#${FINES_ACC_PARTY_ADD_AMEND_CONVERT_SECTION_FRAGMENTS.contactDetails}`,
+      ),
+    ).toBeTruthy();
+    expect(
+      fixture.nativeElement.querySelector(
+        `#${FINES_ACC_PARTY_ADD_AMEND_CONVERT_SECTION_FRAGMENTS.employmentDetails}`,
+      ),
+    ).toBeTruthy();
   });
 
   it('should show contact details for reduced parent guardian mode', () => {
