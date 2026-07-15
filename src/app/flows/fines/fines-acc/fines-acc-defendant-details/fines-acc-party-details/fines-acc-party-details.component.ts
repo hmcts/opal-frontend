@@ -13,8 +13,9 @@ import { NationalInsurancePipe } from '@hmcts/opal-frontend-common/pipes/nationa
 import { DateFormatPipe } from '@hmcts/opal-frontend-common/pipes/date-format';
 import { FINES_ACC_DEFENDANT_ROUTING_PATHS } from '../../routing/constants/fines-acc-defendant-routing-paths.constant';
 import { FINES_ACC_PARTY_ADD_AMEND_CONVERT_PARTY_TYPES } from '../../fines-acc-party-add-amend-convert/constants/fines-acc-party-add-amend-convert-party-types.constant';
-
-type TFinesAccPartyDetailsSection = 'party-details' | 'contact-details' | 'employment-details';
+import {
+  FINES_ACC_PARTY_ADD_AMEND_CONVERT_SECTION_FRAGMENTS,
+} from '../../fines-acc-party-add-amend-convert/constants/fines-acc-party-add-amend-convert-fragments.constant';
 
 @Component({
   selector: 'app-fines-acc-party-details',
@@ -41,11 +42,8 @@ export class FinesAccPartyDetails {
   public readonly languages = FINES_MAC_LANGUAGE_PREFERENCES_OPTIONS;
   public readonly finesDefendantRoutingPaths = FINES_ACC_DEFENDANT_ROUTING_PATHS;
   public readonly partyTypes = FINES_ACC_PARTY_ADD_AMEND_CONVERT_PARTY_TYPES;
-  public readonly sectionFragments: Record<TFinesAccPartyDetailsSection, TFinesAccPartyDetailsSection> = {
-    'party-details': 'party-details',
-    'contact-details': 'contact-details',
-    'employment-details': 'employment-details',
-  };
+  public readonly sectionFragments = FINES_ACC_PARTY_ADD_AMEND_CONVERT_SECTION_FRAGMENTS;
+  public readonly sectionFragmentValues = Object.values(FINES_ACC_PARTY_ADD_AMEND_CONVERT_SECTION_FRAGMENTS);
 
   /**
    * Determines whether the party is responsible for paying the account.
@@ -139,7 +137,7 @@ export class FinesAccPartyDetails {
    * Resolves the fragment for a change link when BU permission is present.
    * @param section - The amend form section to scroll to.
    */
-  public sectionChangeFragment(section: TFinesAccPartyDetailsSection): TFinesAccPartyDetailsSection | undefined {
-    return this.hasAccountMaintenancePermissionInBU ? this.sectionFragments[section] : undefined;
+  public sectionChangeFragment(section: (typeof this.sectionFragmentValues)[number]): string | undefined {
+    return this.hasAccountMaintenancePermissionInBU ? section : undefined;
   }
 }

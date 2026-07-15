@@ -3,6 +3,7 @@ import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { FinesAccDefendantDetailsPaymentTermsTabComponent } from './fines-acc-defendant-details-payment-terms-tab.component';
 import { OPAL_FINES_ACCOUNT_DEFENDANT_DETAILS_PAYMENT_TERMS_LATEST_MOCK } from '@services/fines/opal-fines-service/mocks/opal-fines-account-defendant-details-payment-terms-latest.mock';
 import { FINES_ACC_DEFENDANT_ROUTING_PATHS } from '../../routing/constants/fines-acc-defendant-routing-paths.constant';
+import { FINES_ACC_PAYMENT_TERMS_AMEND_FRAGMENTS } from '../../fines-acc-payment-terms-amend/constants/fines-acc-payment-terms-amend-fragments.constant';
 import { provideRouter, Router } from '@angular/router';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
 
@@ -85,6 +86,12 @@ describe('FinesAccPaymentTermsAmendComponent', () => {
     expect(component.changePaymentTermsLink()).toBe(
       `../${FINES_ACC_DEFENDANT_ROUTING_PATHS.children['payment-terms']}/denied/balance`,
     );
+  });
+
+  it('should return the shared payment terms fragment when the action is allowed', () => {
+    component.canAmendPaymentTerms = true;
+
+    expect(component.changePaymentTermsFragment()).toBe(FINES_ACC_PAYMENT_TERMS_AMEND_FRAGMENTS.selectPaymentTerms);
   });
 
   it('should return the request payment card route when the action is allowed', () => {

@@ -12,6 +12,7 @@ import type { IOpalFinesAccountPartyDetails } from '@services/fines/opal-fines-s
 import type { IOpalFinesDefendantAccountLanguagePreference } from '@services/fines/opal-fines-service/interfaces/opal-fines-defendant-account-language-preference.interface';
 import { OPAL_FINES_ACCOUNT_DEFENDANT_AT_A_GLANCE_MOCK } from '@services/fines/opal-fines-service/mocks/opal-fines-account-defendant-at-a-glance.mock';
 import { OPAL_FINES_ACCOUNT_DEFENDANT_ACCOUNT_PARTY_MOCK } from '@services/fines/opal-fines-service/mocks/opal-fines-account-defendant-account-party.mock';
+import { FINES_ACC_PARTY_ADD_AMEND_CONVERT_SECTION_FRAGMENTS } from '../../fines-acc-party-add-amend-convert/constants/fines-acc-party-add-amend-convert-fragments.constant';
 import { beforeEach, describe, expect, it } from 'vitest';
 
 const ENGLISH_LANGUAGE_PREFERENCE_MOCK = OPAL_FINES_ACCOUNT_DEFENDANT_AT_A_GLANCE_MOCK.language_preferences!
@@ -209,10 +210,12 @@ describe('FinesAccPartyDetails', () => {
   it('should only return a section fragment when BU permission is present', () => {
     setupComponent();
 
-    expect(component.sectionChangeFragment('party-details')).toBeUndefined();
+    expect(component.sectionChangeFragment(component.sectionFragments.partyDetails)).toBeUndefined();
 
     setupComponent(mockPartyDetails, false, true);
 
-    expect(component.sectionChangeFragment('party-details')).toBe('party-details');
+    expect(component.sectionChangeFragment(component.sectionFragments.partyDetails)).toBe(
+      FINES_ACC_PARTY_ADD_AMEND_CONVERT_SECTION_FRAGMENTS.partyDetails,
+    );
   });
 });
