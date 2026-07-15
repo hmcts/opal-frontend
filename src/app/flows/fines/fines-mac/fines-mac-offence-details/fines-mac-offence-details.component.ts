@@ -20,7 +20,11 @@ export class FinesMacOffenceDetailsComponent implements OnDestroy {
    * @returns A boolean indicating whether the component can be deactivated.
    */
   canDeactivate(): CanDeactivateTypes {
-    return !this.finesMacStore.unsavedChanges();
+    if (this.finesMacStore.unsavedChanges()) {
+      return false;
+    } else {
+      return true;
+    }
   }
 
   ngOnDestroy(): void {
