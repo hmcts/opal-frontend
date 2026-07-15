@@ -21,7 +21,7 @@ export const appConfig: ApplicationConfig = {
         canceledNavigationResolution: 'computed',
       }),
       withInMemoryScrolling({
-        anchorScrolling: 'disabled',
+        anchorScrolling: 'enabled',
         scrollPositionRestoration: 'top',
       }),
     ),
