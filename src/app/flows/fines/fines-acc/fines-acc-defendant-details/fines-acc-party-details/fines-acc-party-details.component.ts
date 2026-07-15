@@ -13,9 +13,7 @@ import { NationalInsurancePipe } from '@hmcts/opal-frontend-common/pipes/nationa
 import { DateFormatPipe } from '@hmcts/opal-frontend-common/pipes/date-format';
 import { FINES_ACC_DEFENDANT_ROUTING_PATHS } from '../../routing/constants/fines-acc-defendant-routing-paths.constant';
 import { FINES_ACC_PARTY_ADD_AMEND_CONVERT_PARTY_TYPES } from '../../fines-acc-party-add-amend-convert/constants/fines-acc-party-add-amend-convert-party-types.constant';
-import {
-  FINES_ACC_PARTY_ADD_AMEND_CONVERT_SECTION_FRAGMENTS,
-} from '../../fines-acc-party-add-amend-convert/constants/fines-acc-party-add-amend-convert-fragments.constant';
+import { FINES_ACC_PARTY_ADD_AMEND_CONVERT_SECTION_FRAGMENTS } from '../../fines-acc-party-add-amend-convert/constants/fines-acc-party-add-amend-convert-fragments.constant';
 
 @Component({
   selector: 'app-fines-acc-party-details',

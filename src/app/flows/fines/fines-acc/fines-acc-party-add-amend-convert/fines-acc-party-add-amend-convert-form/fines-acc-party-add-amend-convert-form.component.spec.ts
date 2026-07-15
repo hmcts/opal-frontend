@@ -304,14 +304,10 @@ describe('FinesAccPartyAddAmendConvertFormComponent', () => {
       fixture.nativeElement.querySelector(`#${FINES_ACC_PARTY_ADD_AMEND_CONVERT_SECTION_FRAGMENTS.partyDetails}`),
     ).toBeTruthy();
     expect(
-      fixture.nativeElement.querySelector(
-        `#${FINES_ACC_PARTY_ADD_AMEND_CONVERT_SECTION_FRAGMENTS.contactDetails}`,
-      ),
+      fixture.nativeElement.querySelector(`#${FINES_ACC_PARTY_ADD_AMEND_CONVERT_SECTION_FRAGMENTS.contactDetails}`),
     ).toBeTruthy();
     expect(
-      fixture.nativeElement.querySelector(
-        `#${FINES_ACC_PARTY_ADD_AMEND_CONVERT_SECTION_FRAGMENTS.employmentDetails}`,
-      ),
+      fixture.nativeElement.querySelector(`#${FINES_ACC_PARTY_ADD_AMEND_CONVERT_SECTION_FRAGMENTS.employmentDetails}`),
     ).toBeTruthy();
   });
 

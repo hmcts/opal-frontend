@@ -91,10 +91,7 @@ const ALPHANUMERIC_WITH_HYPHENS_SPACES_APOSTROPHES_DOT_PATTERN_VALIDATOR = patte
   templateUrl: './fines-acc-payment-terms-amend-form.component.html',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class FinesAccPaymentTermsAmendFormComponent
-  extends AbstractFormBaseComponent
-  implements OnInit, OnDestroy
-{
+export class FinesAccPaymentTermsAmendFormComponent extends AbstractFormBaseComponent implements OnInit, OnDestroy {
   protected readonly dateService = inject(DateService);
   protected readonly accountStore = inject(FinesAccountStore);
   @Output() protected override formSubmit = new EventEmitter<IFinesAccPaymentTermsAmendForm>();
