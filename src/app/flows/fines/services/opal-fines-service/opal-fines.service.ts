@@ -66,7 +66,6 @@ import { IOpalFinesDraftAccountPatchRequestPayload } from '@services/fines/opal-
 import { IOpalFinesDeleteDefendantAccountPartyPayload } from './interfaces/opal-fines-delete-defendant-account-party-payload.interface';
 import { IOpalFinesAccountMajorCreditorDetailsHeader } from '../../fines-acc/fines-acc-major-creditor-details/interfaces/fines-acc-major-creditor-details-header.interface';
 import { IOpalFinesAccountMajorCreditorAtAGlance } from './interfaces/opal-fines-account-major-creditor-at-a-glance.interface';
-import { IOpalFinesReport } from './interfaces/opal-fines-report.interface';
 import { IOpalFinesReportInstanceDetail } from './interfaces/opal-fines-report-instance-detail.interface';
 
 @Injectable({
@@ -253,22 +252,6 @@ export class OpalFines {
       .pipe(shareReplay(1));
 
     return this.cache.businessUnitsCache$;
-  }
-
-  /**
-   * Retrieves a report definition by report id and caches it for later route transitions.
-   *
-   * @param reportId - The report id to fetch from the reports API.
-   * @returns An observable containing the report definition.
-   */
-  public getReport(reportId: string): Observable<IOpalFinesReport> {
-    if (!this.cache.reportsCache$[reportId]) {
-      this.cache.reportsCache$[reportId] = this.http
-        .get<IOpalFinesReport>(`${OPAL_FINES_PATHS.reports}/${encodeURIComponent(reportId)}`)
-        .pipe(shareReplay(1));
-    }
-
-    return this.cache.reportsCache$[reportId];
   }
 
   /**

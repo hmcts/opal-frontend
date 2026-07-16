@@ -6,7 +6,7 @@ import { PAGES_ROUTING_PATHS as COMMON_PAGES_ROUTING_PATHS } from '@hmcts/opal-f
 import { PermissionsService } from '@hmcts/opal-frontend-common/services/permissions-service';
 import { OpalUserService } from '@hmcts/opal-frontend-common/services/opal-user-service';
 import { beforeEach, describe, expect, it } from 'vitest';
-import { firstValueFrom, isObservable, Observable, of, throwError } from 'rxjs';
+import { firstValueFrom, isObservable, of, throwError } from 'rxjs';
 import { finesReportsStateGuard } from './fines-reports-state.guard';
 import { FINES_REPORTS_SUMMARY_LIST_ROUTING_PATHS } from '../../../fines-reports-summary-list/routing/constants/fines-reports-summary-list-routing-paths.constant';
 import { FINES_ROUTING_PATHS } from '@app/flows/fines/routing/constants/fines-routing-paths.constant';
@@ -20,9 +20,9 @@ describe('finesReportsStateGuard', () => {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   let mockOpalUserService: any;
 
-  const runGuard = async (reportTypeId: string | null) => {
+  const runGuard = async (reportId: string | null) => {
     const route = {
-      paramMap: convertToParamMap(reportTypeId ? { reportTypeId } : {}),
+      paramMap: convertToParamMap(reportId ? { reportId } : {}),
     } as ActivatedRouteSnapshot;
     const state = {} as RouterStateSnapshot;
     const result = TestBed.runInInjectionContext(() => finesReportsStateGuard(route, state));
@@ -48,7 +48,7 @@ describe('finesReportsStateGuard', () => {
     });
   });
 
-  it('should capture the selected your reports type id without checking permissions', async () => {
+  it('should capture the selected your reports id without checking permissions', async () => {
     const result = await runGuard(FINES_REPORTS_SUMMARY_LIST_ROUTING_PATHS.children.yourReports);
 
     expect(result).toBe(true);
@@ -76,7 +76,7 @@ describe('finesReportsStateGuard', () => {
     expect(mockRouter.createUrlTree).toHaveBeenCalledWith([`/${COMMON_PAGES_ROUTING_PATHS.children.accessDenied}`]);
   });
 
-  it('should redirect missing report type ids to the reports dashboard', async () => {
+  it('should redirect missing report ids to the reports dashboard', async () => {
     const expectedUrlTree = new UrlTree();
     mockRouter.createUrlTree.mockReturnValue(expectedUrlTree);
 
@@ -91,7 +91,7 @@ describe('finesReportsStateGuard', () => {
     ]);
   });
 
-  it('should redirect invalid report type ids to the reports dashboard', async () => {
+  it('should redirect invalid report ids to the reports dashboard', async () => {
     const expectedUrlTree = new UrlTree();
     mockRouter.createUrlTree.mockReturnValue(expectedUrlTree);
 
@@ -104,25 +104,6 @@ describe('finesReportsStateGuard', () => {
       FINES_DASHBOARD_ROUTING_PATHS.root,
       FINES_DASHBOARD_ROUTING_PATHS.children.reports,
     ]);
-  });
-
-  it('should use the parent route report type id when guarding a child route', async () => {
-    mockPermissionsService.getUniquePermissions.mockReturnValue([
-      FINES_PERMISSIONS['operational-report-by-enforcement'],
-    ]);
-    const route = {
-      paramMap: convertToParamMap({}),
-      parent: {
-        paramMap: convertToParamMap({
-          reportTypeId: FINES_REPORTS_SUMMARY_LIST_ROUTING_PATHS.children.operationalReportsByEnforcement,
-        }),
-      },
-    } as ActivatedRouteSnapshot;
-    const state = {} as RouterStateSnapshot;
-    const result = TestBed.runInInjectionContext(() => finesReportsStateGuard(route, state));
-
-    expect(isObservable(result)).toBe(true);
-    expect(await firstValueFrom(result as Observable<boolean | UrlTree>)).toBe(true);
   });
 
   it('should return false when the permissions lookup fails', async () => {

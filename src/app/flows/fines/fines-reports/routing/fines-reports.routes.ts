@@ -7,7 +7,6 @@ import { FINES_DASHBOARD_ROUTING_PATHS } from '@app/flows/fines/constants/fines-
 import { finesReportsTitleResolver } from './resolvers/fines-reports-title/fines-reports-title.resolver';
 import { TitleResolver } from '@hmcts/opal-frontend-common/resolvers/title';
 import { FINES_REPORTS_ROUTING_TITLES } from './constants/fines-reports-routing-titles.constant';
-import { fetchReportResolver } from './resolvers/fetch-report/fetch-report.resolver';
 import { fetchReportInstanceResolver } from './resolvers/fetch-report-instance/fetch-report-instance.resolver';
 
 export const routing: Routes = [
@@ -17,9 +16,8 @@ export const routing: Routes = [
     pathMatch: 'full',
   },
   {
-    path: ':reportTypeId',
-    canActivate: [authGuard],
-    canActivateChild: [finesReportsStateGuard],
+    path: ':reportId',
+    canActivate: [authGuard, finesReportsStateGuard],
     children: [
       {
         path: '',
@@ -31,10 +29,9 @@ export const routing: Routes = [
         loadComponent: () =>
           import('../fines-reports-summary-list/fines-reports-summary-list.component').then(
             (c) => c.FinesReportsSummaryListComponent,
-          ),
+        ),
         resolve: {
           title: finesReportsTitleResolver,
-          report: fetchReportResolver,
         },
       },
       {
@@ -48,7 +45,6 @@ export const routing: Routes = [
         },
         resolve: {
           title: TitleResolver,
-          report: fetchReportResolver,
           reportSummary: fetchReportInstanceResolver,
         },
       },

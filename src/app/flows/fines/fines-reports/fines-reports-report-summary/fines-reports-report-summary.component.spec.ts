@@ -10,31 +10,21 @@ import {
   FINES_REPORTS_REPORT_SUMMARY_PAYMENTS_MOCK,
 } from './mocks/fines-reports-report-summary.mock';
 import { OPAL_FINES_REPORT_INSTANCE_MOCK } from '@services/fines/opal-fines-service/mocks/opal-fines-report-instance.mock';
-import { OPAL_FINES_REPORT_MOCK } from '@services/fines/opal-fines-service/mocks/opal-fines-report.mock';
 import { FinesReportsReportSummaryComponent } from './fines-reports-report-summary.component';
 import { mapFinesReportsReportInstanceToReportSummary } from './utils/fines-reports-report-summary-map-report-instance.utils';
 import { IFinesReportsReportSummaryInstance } from './interfaces/fines-reports-report-summary-instance.interface';
-import { type IOpalFinesReport } from '@services/fines/opal-fines-service/interfaces/opal-fines-report.interface';
 
 describe('FinesReportsReportSummaryComponent', () => {
-  const PAYMENT_REPORT_METADATA_MOCK: IOpalFinesReport = {
-    ...OPAL_FINES_REPORT_MOCK,
-    report_id: FINES_REPORTS_REPORT_SUMMARY_PAYMENTS_MOCK.report_id,
-    report_title: 'Operational report (by payments)',
-    permission: 'OPERATIONAL_REPORT_BY_PAYMENTS',
-  };
-
   const setup = async (
-    reportTypeId = FINES_REPORTS_REPORT_SUMMARY_ENFORCEMENT_MOCK.report_id,
+    reportId = FINES_REPORTS_REPORT_SUMMARY_ENFORCEMENT_MOCK.report_id,
     reportInstanceId = FINES_REPORTS_REPORT_SUMMARY_ENFORCEMENT_MOCK.report_instance_id,
     reportSummary: IFinesReportsReportSummaryInstance | null = FINES_REPORTS_REPORT_SUMMARY_ENFORCEMENT_MOCK,
-    report: IOpalFinesReport | null = OPAL_FINES_REPORT_MOCK,
   ): Promise<{
     component: FinesReportsReportSummaryComponent;
     fixture: ComponentFixture<FinesReportsReportSummaryComponent>;
     mockRouter: { navigate: ReturnType<typeof vi.fn> };
   }> => {
-    const reportTypeParamMap = convertToParamMap({ reportTypeId });
+    const reportParamMap = convertToParamMap({ reportId });
     const reportInstanceParamMap = convertToParamMap({ instanceId: reportInstanceId });
     const mockRouter = {
       navigate: vi.fn().mockName('Router.navigate'),
@@ -51,18 +41,17 @@ describe('FinesReportsReportSummaryComponent', () => {
           provide: ActivatedRoute,
           useValue: {
             paramMap: of(reportInstanceParamMap),
-            data: of({ report, reportSummary }),
+            data: of({ reportSummary }),
             snapshot: {
               paramMap: reportInstanceParamMap,
               data: {
-                report,
                 reportSummary,
               },
             },
             parent: {
-              paramMap: of(reportTypeParamMap),
+              paramMap: of(reportParamMap),
               snapshot: {
-                paramMap: reportTypeParamMap,
+                paramMap: reportParamMap,
               },
             },
           },
@@ -87,7 +76,7 @@ describe('FinesReportsReportSummaryComponent', () => {
 
     fixture.detectChanges();
 
-    expect(component.reportTypeId).toBe('operational_report_enforcement');
+    expect(component.reportId).toBe('operational_report_enforcement');
     expect(component.reportInstanceId).toBe('report-instance-enforcement-001');
   });
 
@@ -97,27 +86,9 @@ describe('FinesReportsReportSummaryComponent', () => {
     fixture.detectChanges();
 
     expect(fixture.nativeElement.querySelector('h1')?.textContent).toContain(
-      'Operational report (by enforcement) - ABDC - Summary',
+      'Operational reports (by enforcement) - ABDC - Summary',
     );
     expect(fixture.nativeElement.querySelector('.govuk-back-link')?.textContent.trim()).toBe('Back');
-  });
-
-  it('should render the selected report heading from resolved report metadata', async () => {
-    const { fixture } = await setup(
-      FINES_REPORTS_REPORT_SUMMARY_ENFORCEMENT_MOCK.report_id,
-      FINES_REPORTS_REPORT_SUMMARY_ENFORCEMENT_MOCK.report_instance_id,
-      FINES_REPORTS_REPORT_SUMMARY_ENFORCEMENT_MOCK,
-      {
-        ...OPAL_FINES_REPORT_MOCK,
-        report_title: 'Live operational report title',
-      },
-    );
-
-    fixture.detectChanges();
-
-    expect(fixture.nativeElement.querySelector('h1')?.textContent).toContain(
-      'Live operational report title - ABDC - Summary',
-    );
   });
 
   it('should prefer resolved report summary data when available', async () => {
@@ -134,7 +105,7 @@ describe('FinesReportsReportSummaryComponent', () => {
     fixture.detectChanges();
 
     expect(fixture.nativeElement.querySelector('h1')?.textContent).toContain(
-      'Operational report (by enforcement) - ABDC - Summary',
+      'Operational reports (by enforcement) - ABDC - Summary',
     );
     expect(fixture.nativeElement.textContent).toContain('01 Jun 2006 at 10:36');
     expect(fixture.nativeElement.textContent).toContain('Summary');
@@ -145,13 +116,12 @@ describe('FinesReportsReportSummaryComponent', () => {
       FINES_REPORTS_REPORT_SUMMARY_PAYMENTS_MOCK.report_id,
       FINES_REPORTS_REPORT_SUMMARY_PAYMENTS_MOCK.report_instance_id,
       FINES_REPORTS_REPORT_SUMMARY_PAYMENTS_MOCK,
-      PAYMENT_REPORT_METADATA_MOCK,
     );
 
     fixture.detectChanges();
 
     expect(fixture.nativeElement.querySelector('h1')?.textContent).toContain(
-      'Operational report (by payments) - PYMT - Detail',
+      'Operational reports (by payments) - PYMT - Detail',
     );
   });
 
@@ -181,7 +151,6 @@ describe('FinesReportsReportSummaryComponent', () => {
       FINES_REPORTS_REPORT_SUMMARY_PAYMENTS_MOCK.report_id,
       FINES_REPORTS_REPORT_SUMMARY_PAYMENTS_MOCK.report_instance_id,
       FINES_REPORTS_REPORT_SUMMARY_PAYMENTS_MOCK,
-      PAYMENT_REPORT_METADATA_MOCK,
     );
 
     fixture.detectChanges();

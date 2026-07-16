@@ -3,17 +3,16 @@ import { routing } from './fines-reports.routes';
 import { FINES_REPORTS_ROUTING_PATHS } from './constants/fines-reports-routing-paths.constant';
 import { finesReportsStateGuard } from './guards/fines-reports-state-guard/fines-reports-state.guard';
 import { finesReportsTitleResolver } from './resolvers/fines-reports-title/fines-reports-title.resolver';
-import { fetchReportResolver } from './resolvers/fetch-report/fetch-report.resolver';
 import { fetchReportInstanceResolver } from './resolvers/fetch-report-instance/fetch-report-instance.resolver';
 import { TitleResolver } from '@hmcts/opal-frontend-common/resolvers/title';
 import { FINES_REPORTS_ROUTING_TITLES } from './constants/fines-reports-routing-titles.constant';
 
 describe('finesReports routes', () => {
   it('should redirect bare report routes to the summary list', () => {
-    const reportRoute = routing.find((route) => route.path === ':reportTypeId');
+    const reportRoute = routing.find((route) => route.path === ':reportId');
     const defaultChildRoute = reportRoute?.children?.find((route) => route.path === '');
 
-    expect(reportRoute?.canActivateChild).toEqual([finesReportsStateGuard]);
+    expect(reportRoute?.canActivate).toContain(finesReportsStateGuard);
     expect(defaultChildRoute).toEqual({
       path: '',
       redirectTo: FINES_REPORTS_ROUTING_PATHS.children.summaryList,
@@ -21,8 +20,8 @@ describe('finesReports routes', () => {
     });
   });
 
-  it('should load the summary list route with report metadata', () => {
-    const reportRoute = routing.find((route) => route.path === ':reportTypeId');
+  it('should load the summary list route', () => {
+    const reportRoute = routing.find((route) => route.path === ':reportId');
     const summaryListRoute = reportRoute?.children?.find(
       (route) => route.path === FINES_REPORTS_ROUTING_PATHS.children.summaryList,
     );
@@ -32,13 +31,12 @@ describe('finesReports routes', () => {
       loadComponent: expect.any(Function),
       resolve: {
         title: finesReportsTitleResolver,
-        report: fetchReportResolver,
       },
     });
   });
 
   it('should load the report summary route', () => {
-    const reportRoute = routing.find((route) => route.path === ':reportTypeId');
+    const reportRoute = routing.find((route) => route.path === ':reportId');
     const reportSummaryRoute = reportRoute?.children?.find(
       (route) => route.path === FINES_REPORTS_ROUTING_PATHS.children.reportSummary,
     );
@@ -51,7 +49,6 @@ describe('finesReports routes', () => {
       },
       resolve: {
         title: TitleResolver,
-        report: fetchReportResolver,
         reportSummary: fetchReportInstanceResolver,
       },
     });

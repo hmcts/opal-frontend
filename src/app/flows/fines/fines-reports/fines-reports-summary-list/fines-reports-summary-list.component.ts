@@ -13,17 +13,17 @@ import { FINES_REPORT_SUMMARY_LIST_REPORT_CONFIGURATION } from './constants/fine
 })
 export class FinesReportsSummaryListComponent {
   private readonly activatedRoute = inject(ActivatedRoute);
-  private readonly routeWithReportTypeId = this.activatedRoute.parent ?? this.activatedRoute;
-  private readonly reportTypeId = toSignal(
-    this.routeWithReportTypeId.paramMap.pipe(map((paramMap) => paramMap.get('reportTypeId') ?? '')),
+  private readonly routeWithReportId = this.activatedRoute.parent ?? this.activatedRoute;
+  private readonly reportId = toSignal(
+    this.routeWithReportId.paramMap.pipe(map((paramMap) => paramMap.get('reportId') ?? '')),
     {
-      initialValue: this.routeWithReportTypeId.snapshot.paramMap.get('reportTypeId') ?? '',
+      initialValue: this.routeWithReportId.snapshot.paramMap.get('reportId') ?? '',
     },
   );
 
   public get pageHeading(): string {
     return (
-      FINES_REPORT_SUMMARY_LIST_REPORT_CONFIGURATION.find((config) => config.id === this.reportTypeId())?.heading ?? ''
+      FINES_REPORT_SUMMARY_LIST_REPORT_CONFIGURATION.find((config) => config.id === this.reportId())?.heading ?? ''
     );
   }
 }

@@ -7,7 +7,6 @@ import {
   GovukSummaryListRowComponent,
 } from '@hmcts/opal-frontend-common/components/govuk/govuk-summary-list';
 import { map } from 'rxjs';
-import { type IOpalFinesReport } from '@services/fines/opal-fines-service/interfaces/opal-fines-report.interface';
 import { FINES_ROUTING_PATHS } from '../../routing/constants/fines-routing-paths.constant';
 import { FINES_REPORT_SUMMARY_LIST_REPORT_CONFIGURATION } from '../fines-reports-summary-list/constants/fines-reports-summary-list-report-configuration.constant';
 import { FINES_REPORTS_ROUTING_PATHS } from '../routing/constants/fines-reports-routing-paths.constant';
@@ -30,11 +29,11 @@ import { mapFinesReportsReportSummaryToViewModel } from './utils/fines-reports-r
 export class FinesReportsReportSummaryComponent {
   private readonly activatedRoute = inject(ActivatedRoute);
   private readonly router = inject(Router);
-  private readonly routeWithReportTypeId = this.activatedRoute.parent ?? this.activatedRoute;
-  private readonly reportTypeIdSignal = toSignal(
-    this.routeWithReportTypeId.paramMap.pipe(map((paramMap) => paramMap.get('reportTypeId') ?? '')),
+  private readonly routeWithReportId = this.activatedRoute.parent ?? this.activatedRoute;
+  private readonly reportIdSignal = toSignal(
+    this.routeWithReportId.paramMap.pipe(map((paramMap) => paramMap.get('reportId') ?? '')),
     {
-      initialValue: this.routeWithReportTypeId.snapshot.paramMap.get('reportTypeId') ?? '',
+      initialValue: this.routeWithReportId.snapshot.paramMap.get('reportId') ?? '',
     },
   );
   private readonly reportInstanceIdSignal = toSignal(
@@ -54,22 +53,11 @@ export class FinesReportsReportSummaryComponent {
         | undefined,
     },
   );
-  private readonly reportMetadataSignal = toSignal(
-    this.activatedRoute.data.pipe(map((routeData) => routeData['report'] as IOpalFinesReport | null | undefined)),
-    {
-      initialValue: this.activatedRoute.snapshot.data['report'] as IOpalFinesReport | null | undefined,
-    },
-  );
 
   /**
    * Maps the selected report instance route data into the report summary data for this UI slice.
    */
   public readonly reportSummary = computed(() => this.reportSummarySignal() ?? null);
-
-  /**
-   * Returns the resolved report metadata for the current report route.
-   */
-  public readonly reportMetadata = computed(() => this.reportMetadataSignal() ?? null);
 
   /**
    * Returns the report summary rows used by the template.
@@ -92,9 +80,8 @@ export class FinesReportsReportSummaryComponent {
   public readonly pageHeading = computed(() => {
     const reportSummary = this.reportSummary();
     const reportHeading =
-      this.reportMetadata()?.report_title?.trim() ||
       FINES_REPORT_SUMMARY_LIST_REPORT_CONFIGURATION.find(
-        (config) => config.id === (reportSummary?.report_id ?? this.reportTypeId),
+        (config) => config.id === (reportSummary?.report_id ?? this.reportId),
       )?.heading ||
       'Operational report';
 
@@ -106,10 +93,10 @@ export class FinesReportsReportSummaryComponent {
   });
 
   /**
-   * Returns the report type id from the parent report route.
+   * Returns the report id from the parent report route.
    */
-  public get reportTypeId(): string {
-    return this.reportTypeIdSignal();
+  public get reportId(): string {
+    return this.reportIdSignal();
   }
 
   /**
@@ -127,7 +114,7 @@ export class FinesReportsReportSummaryComponent {
       '/',
       FINES_ROUTING_PATHS.root,
       FINES_REPORTS_ROUTING_PATHS.root,
-      this.reportTypeId,
+      this.reportId,
       FINES_REPORTS_ROUTING_PATHS.children.summaryList,
     ]);
   }
