@@ -8,27 +8,7 @@ import { type IFinesReportsReportSummaryDisplayRow } from '../../interfaces/fine
 @Component({
   selector: 'app-fines-reports-report-summary-row-value',
   imports: [CurrencyPipe, DateFormatPipe, DecimalPipe, FinesNotProvidedComponent],
-  template: `
-    @switch (row().type) {
-      @case ('currency') {
-        <p class="govuk-body">{{ numberValue() | currency: 'GBP' }}</p>
-      }
-      @case ('dateTime') {
-        <p class="govuk-body">
-          {{ stringValue() | dateFormat: dateCreatedFormat.input : dateCreatedFormat.output }}
-        </p>
-      }
-      @case ('notProvided') {
-        <app-fines-not-provided></app-fines-not-provided>
-      }
-      @case ('number') {
-        <p class="govuk-body">{{ numberValue() | number }}</p>
-      }
-      @default {
-        <p class="govuk-body">{{ stringValue() }}</p>
-      }
-    }
-  `,
+  templateUrl: './fines-reports-report-summary-row-value.component.html',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class FinesReportsReportSummaryRowValueComponent {
