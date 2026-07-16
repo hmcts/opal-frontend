@@ -21,7 +21,7 @@ const ACCOUNT_ENQUIRY_JIRA_LABEL = '@JIRA-LABEL:account-enquiry';
 const NO_EDITABLE_FIELDS_SELECTOR = 'input, textarea, select, [contenteditable="true"]';
 const COMPANY_NAME = 'Test Org Ltd';
 
-const buildTags = (...tags: string[]): string[] => [...tags, ACCOUNT_ENQUIRY_JIRA_LABEL];
+const buildTags = (...tags: string[]): string[] => [...tags, ACCOUNT_ENQUIRY_JIRA_LABEL, '@R1B'];
 
 const activatedRouteMock = {
   snapshot: {
