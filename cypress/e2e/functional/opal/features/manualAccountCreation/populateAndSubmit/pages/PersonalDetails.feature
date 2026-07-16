@@ -25,6 +25,7 @@ Feature: Manual account creation - Personal Details
       | make and model      | FORD FOCUS  |
       | registration number | AB12 CDE    |
     And I return to account details
+    Then I return to the top of the page
     Then the "Personal details" task status is "Provided"
     When I view the "Personal details" task
     Then the manual personal details fields are:
