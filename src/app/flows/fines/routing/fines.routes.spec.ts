@@ -25,25 +25,31 @@ const {
   release1bFeatureFlagGuardMock,
   release1cWriteOffFeatureFlagGuardMock,
   release1cEnforcementOperationalReportingFeatureFlagGuardMock,
+  release1aFeatureFlagName,
+  release1bFeatureFlagName,
+  release1cWriteOffFeatureFlagName,
 } = vi.hoisted(() => ({
   featureFlagRedirectGuardMock: vi.fn(),
   release1aFeatureFlagGuardMock: vi.fn(),
   release1bFeatureFlagGuardMock: vi.fn(),
   release1cWriteOffFeatureFlagGuardMock: vi.fn(),
   release1cEnforcementOperationalReportingFeatureFlagGuardMock: vi.fn(),
+  release1aFeatureFlagName: 'release-1a',
+  release1bFeatureFlagName: 'release-1b',
+  release1cWriteOffFeatureFlagName: 'release-1c-write-off',
 }));
 
 vi.mock('@hmcts/opal-frontend-common/guards/feature-flag', () => ({
   featureFlagRedirectGuard: featureFlagRedirectGuardMock.mockImplementation((featureFlagName: string) => {
-    if (featureFlagName === RELEASE_1A_FEATURE_FLAG) {
+    if (featureFlagName === release1aFeatureFlagName) {
       return release1aFeatureFlagGuardMock;
     }
 
-    if (featureFlagName === RELEASE_1B_FEATURE_FLAG) {
+    if (featureFlagName === release1bFeatureFlagName) {
       return release1bFeatureFlagGuardMock;
     }
 
-    if (featureFlagName === RELEASE_1C_WRITE_OFF_FEATURE_FLAG) {
+    if (featureFlagName === release1cWriteOffFeatureFlagName) {
       return release1cWriteOffFeatureFlagGuardMock;
     }
 
