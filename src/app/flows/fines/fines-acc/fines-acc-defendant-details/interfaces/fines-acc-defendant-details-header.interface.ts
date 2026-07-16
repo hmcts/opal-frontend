@@ -9,6 +9,7 @@ export interface IOpalFinesAccountDefendantDetailsHeader extends IOpalFinesVersi
   defendant_account_party_id: string;
   parent_guardian_party_id: string | null;
   account_type: string | null;
+  originator_name?: string | null;
   prosecutor_case_reference: string | null;
   fixed_penalty_ticket_number: string | null;
   account_status_reference: {
