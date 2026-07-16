@@ -61,6 +61,7 @@ Feature: Manual account creation - Offence Details
       | Balance remaining | £550.00  |
 
     When I return to account details from offence details
+    Then I return to the top of the page
     Then the "Offence details" task status is "Provided"
 
   @JIRA-EPIC:PO-272 @JIRA-TEST-KEY:PO-5359

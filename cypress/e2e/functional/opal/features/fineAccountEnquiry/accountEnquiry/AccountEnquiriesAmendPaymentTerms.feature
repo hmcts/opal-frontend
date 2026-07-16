@@ -141,4 +141,3 @@ Feature: Account Enquiries - Amend Payment Terms
       Then I should return to the Payment terms tab
       And the payment terms pay by date is "30 May 2025"
       And the payment terms instalment rows are not shown
-
