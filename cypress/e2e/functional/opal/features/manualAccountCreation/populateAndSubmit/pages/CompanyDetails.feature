@@ -22,6 +22,7 @@ Feature: Manual account creation - Company Details
       | 1     | ALIAS 1 |
       | 2     | ALIAS 2 |
     And I return to account details
+    Then I return to the top of the page
     Then the "Company details" task status is "Provided"
     When I view the "Company details" task
     Then the manual company details fields are:
