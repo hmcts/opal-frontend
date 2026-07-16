@@ -9,7 +9,7 @@ import { FINES_REPORTS_ROUTING_TITLES } from './constants/fines-reports-routing-
 
 describe('finesReports routes', () => {
   it('should redirect bare report routes to the summary list', () => {
-    const reportRoute = routing.find((route) => route.path === ':reportId');
+    const reportRoute = routing.find((route) => route.path === ':reportTypeId');
     const defaultChildRoute = reportRoute?.children?.find((route) => route.path === '');
 
     expect(reportRoute?.canActivate).toContain(finesReportsStateGuard);
@@ -21,7 +21,7 @@ describe('finesReports routes', () => {
   });
 
   it('should load the summary list route', () => {
-    const reportRoute = routing.find((route) => route.path === ':reportId');
+    const reportRoute = routing.find((route) => route.path === ':reportTypeId');
     const summaryListRoute = reportRoute?.children?.find(
       (route) => route.path === FINES_REPORTS_ROUTING_PATHS.children.summaryList,
     );
@@ -36,7 +36,7 @@ describe('finesReports routes', () => {
   });
 
   it('should load the report summary route', () => {
-    const reportRoute = routing.find((route) => route.path === ':reportId');
+    const reportRoute = routing.find((route) => route.path === ':reportTypeId');
     const reportSummaryRoute = reportRoute?.children?.find(
       (route) => route.path === FINES_REPORTS_ROUTING_PATHS.children.reportSummary,
     );

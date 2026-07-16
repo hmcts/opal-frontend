@@ -16,7 +16,7 @@ import { IFinesReportsReportSummaryInstance } from './interfaces/fines-reports-r
 
 describe('FinesReportsReportSummaryComponent', () => {
   const setup = async (
-    reportId = FINES_REPORTS_REPORT_SUMMARY_ENFORCEMENT_MOCK.report_id,
+    reportTypeId = FINES_REPORTS_REPORT_SUMMARY_ENFORCEMENT_MOCK.report_id,
     reportInstanceId = FINES_REPORTS_REPORT_SUMMARY_ENFORCEMENT_MOCK.report_instance_id,
     reportSummary: IFinesReportsReportSummaryInstance | null = FINES_REPORTS_REPORT_SUMMARY_ENFORCEMENT_MOCK,
   ): Promise<{
@@ -24,7 +24,7 @@ describe('FinesReportsReportSummaryComponent', () => {
     fixture: ComponentFixture<FinesReportsReportSummaryComponent>;
     mockRouter: { navigate: ReturnType<typeof vi.fn> };
   }> => {
-    const reportParamMap = convertToParamMap({ reportId });
+    const reportParamMap = convertToParamMap({ reportTypeId });
     const reportInstanceParamMap = convertToParamMap({ instanceId: reportInstanceId });
     const mockRouter = {
       navigate: vi.fn().mockName('Router.navigate'),
@@ -76,7 +76,7 @@ describe('FinesReportsReportSummaryComponent', () => {
 
     fixture.detectChanges();
 
-    expect(component.reportId).toBe('operational_report_enforcement');
+    expect(component.reportTypeId).toBe('operational_report_enforcement');
     expect(component.reportInstanceId).toBe('report-instance-enforcement-001');
   });
 

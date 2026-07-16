@@ -16,7 +16,7 @@ export const routing: Routes = [
     pathMatch: 'full',
   },
   {
-    path: ':reportId',
+    path: ':reportTypeId',
     canActivate: [authGuard, finesReportsStateGuard],
     children: [
       {
@@ -29,7 +29,7 @@ export const routing: Routes = [
         loadComponent: () =>
           import('../fines-reports-summary-list/fines-reports-summary-list.component').then(
             (c) => c.FinesReportsSummaryListComponent,
-        ),
+          ),
         resolve: {
           title: finesReportsTitleResolver,
         },
