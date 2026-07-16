@@ -68,6 +68,8 @@ import { FINES_ACC_MAJOR_CREDITOR_DETAILS_HEADER_MOCK } from '../../fines-acc/fi
 import { OPAL_FINES_ACCOUNT_MAJOR_CREDITOR_AT_A_GLANCE_MOCK } from './mocks/opal-fines-account-major-creditor-at-a-glance-with-defendant.mock';
 import { OPAL_FINES_ACCOUNT_MINOR_CREDITOR_DETAILS_HISTORY_AND_NOTES_TAB_REF_DATA_MOCK } from './mocks/opal-fines-account-minor-creditor-details-history-and-notes-tab-ref-data.mock';
 import { OPAL_FINES_MINOR_CREDITOR_ACCOUNT_HISTORY_PARAMS_MOCK } from './mocks/opal-fines-minor-creditor-account-history-params.mock';
+import { OPAL_FINES_REPORT_MOCK } from './mocks/opal-fines-report.mock';
+import { OPAL_FINES_REPORT_INSTANCE_MOCK } from './mocks/opal-fines-report-instance.mock';
 
 describe('OpalFines', () => {
   let service: OpalFines;
@@ -168,6 +170,70 @@ describe('OpalFines', () => {
       expect(response).toEqual(mockBusinessUnits);
     });
     httpMock.expectNone(expectedUrl);
+  });
+
+  it('should send a GET request to the report definition API', () => {
+    const expectedUrl = `${OPAL_FINES_PATHS.reports}/${OPAL_FINES_REPORT_MOCK.report_id}`;
+
+    service.getReport(OPAL_FINES_REPORT_MOCK.report_id).subscribe((response) => {
+      expect(response).toEqual(OPAL_FINES_REPORT_MOCK);
+    });
+
+    const req = httpMock.expectOne(expectedUrl);
+    expect(req.request.method).toBe('GET');
+
+    req.flush(OPAL_FINES_REPORT_MOCK);
+  });
+
+  it('should return cached response for the same report definition', () => {
+    const expectedUrl = `${OPAL_FINES_PATHS.reports}/${OPAL_FINES_REPORT_MOCK.report_id}`;
+
+    service.getReport(OPAL_FINES_REPORT_MOCK.report_id).subscribe((response) => {
+      expect(response).toEqual(OPAL_FINES_REPORT_MOCK);
+    });
+
+    const req = httpMock.expectOne(expectedUrl);
+    expect(req.request.method).toBe('GET');
+    req.flush(OPAL_FINES_REPORT_MOCK);
+
+    service.getReport(OPAL_FINES_REPORT_MOCK.report_id).subscribe((response) => {
+      expect(response).toEqual(OPAL_FINES_REPORT_MOCK);
+    });
+
+    httpMock.expectNone(expectedUrl);
+  });
+
+  it('should send a GET request to the report instance API', () => {
+    const expectedUrl = `${OPAL_FINES_PATHS.reportInstances}/${OPAL_FINES_REPORT_INSTANCE_MOCK.instance_id}`;
+
+    service.getReportInstance(OPAL_FINES_REPORT_INSTANCE_MOCK.instance_id).subscribe((response) => {
+      expect(response).toEqual(OPAL_FINES_REPORT_INSTANCE_MOCK);
+    });
+
+    const req = httpMock.expectOne(expectedUrl);
+    expect(req.request.method).toBe('GET');
+
+    req.flush(OPAL_FINES_REPORT_INSTANCE_MOCK);
+  });
+
+  it('should send a fresh GET request for repeated report instance calls', () => {
+    const expectedUrl = `${OPAL_FINES_PATHS.reportInstances}/${OPAL_FINES_REPORT_INSTANCE_MOCK.instance_id}`;
+
+    service.getReportInstance(OPAL_FINES_REPORT_INSTANCE_MOCK.instance_id).subscribe((response) => {
+      expect(response).toEqual(OPAL_FINES_REPORT_INSTANCE_MOCK);
+    });
+
+    const req = httpMock.expectOne(expectedUrl);
+    expect(req.request.method).toBe('GET');
+    req.flush(OPAL_FINES_REPORT_INSTANCE_MOCK);
+
+    service.getReportInstance(OPAL_FINES_REPORT_INSTANCE_MOCK.instance_id).subscribe((response) => {
+      expect(response).toEqual(OPAL_FINES_REPORT_INSTANCE_MOCK);
+    });
+
+    const secondReq = httpMock.expectOne(expectedUrl);
+    expect(secondReq.request.method).toBe('GET');
+    secondReq.flush(OPAL_FINES_REPORT_INSTANCE_MOCK);
   });
 
   it('should send a GET request to court ref data API', () => {
