@@ -4,8 +4,7 @@ Feature: Fines primary navigation visibility through journeys
   Background:
     Given I am logged in with email "opal-test@dev.platform.hmcts.net"
 
-  @JIRA-EPIC:PO-2627
-  @JIRA-STORY:PO-3722 @JIRA-TEST-KEY:PO-5287
+  @JIRA-EPIC:PO-2627 @JIRA-STORY:PO-3722 @JIRA-TEST-KEY:PO-5287 @R1CEnforcementOperationalReporting
   Scenario: Starting a draft account journey from Accounts hides the primary navigation
     When I open Create and Manage Draft Accounts
     And I click the Create account button on Create and Manage Draft Accounts
@@ -16,8 +15,7 @@ Feature: Fines primary navigation visibility through journeys
     Then I should see the header containing text "Create account"
     And I do not see the Fines primary navigation
 
-  @JIRA-EPIC:PO-2627
-  @JIRA-STORY:PO-3722 @JIRA-TEST-KEY:PO-5288
+  @JIRA-EPIC:PO-2627 @JIRA-STORY:PO-3722 @JIRA-TEST-KEY:PO-5288 @R1CEnforcementOperationalReporting
   Scenario: Search-led account note journeys hide the primary navigation until the user returns to browse mode
     Given I clear all approved accounts
     And I create a "adultOrYouthOnly" draft account with the following details and set status "Publishing Pending" using user "opal-test-10@dev.platform.hmcts.net":
@@ -43,8 +41,7 @@ Feature: Fines primary navigation visibility through journeys
     Then I should see the account summary header contains "PRIMARYNAV{uniqUpper}"
     And I see the Fines primary navigation
 
-  @JIRA-EPIC:PO-2627
-  @JIRA-STORY:PO-3722 @JIRA-TEST-KEY:PO-5289
+  @JIRA-EPIC:PO-2627 @JIRA-STORY:PO-3722 @JIRA-TEST-KEY:PO-5289 @R1CEnforcementOperationalReporting
   Scenario: Cancelling a Search-led account note journey shows the primary navigation again
     Given I clear all approved accounts
     And I create a "adultOrYouthOnly" draft account with the following details and set status "Publishing Pending" using user "opal-test-10@dev.platform.hmcts.net":
