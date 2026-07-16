@@ -1,9 +1,15 @@
 import { type IFinesReportsReportSummaryDisplayRow } from '../interfaces/fines-reports-report-summary-display-row.interface';
 
+/**
+ * Checks whether an optional API value should be hidden from the summary rows.
+ */
 export const isFinesReportsReportSummaryUnusedOptionalValue = (value: unknown): boolean => {
   return value === null || value === undefined || value === '' || (Array.isArray(value) && value.length === 0);
 };
 
+/**
+ * Converts an unknown API value into the limited value types that the summary row component can display.
+ */
 export const mapFinesReportsReportSummaryDisplayValue = (
   value: unknown,
 ): IFinesReportsReportSummaryDisplayRow['value'] => {

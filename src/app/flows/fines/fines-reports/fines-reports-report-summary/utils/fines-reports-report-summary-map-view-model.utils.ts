@@ -96,12 +96,18 @@ const RECORD_COUNT_DASH_STATUS_SET = new Set<FinesReportsReportSummaryNormalised
 );
 const NO_CONTENT_RECORD_COUNT = 0;
 
+/**
+ * Converts backend status text into the status keys used by the summary screen.
+ */
 const normaliseStatus = (status: string): FinesReportsReportSummaryNormalisedStatus => {
   const normalisedStatus = status.trim().toLowerCase().replace(/\s+/g, '_');
 
   return REPORT_STATUS_NORMALISATION[normalisedStatus] ?? FINES_REPORTS_REPORT_SUMMARY_STATUSES.error;
 };
 
+/**
+ * Resolves the display label for the report type, falling back to the route's report type when the API omits it.
+ */
 const formatReportTypeDisplay = (value: unknown, reportTypeId: string): string => {
   if (typeof value === 'string') {
     const normalised = value.trim().toLowerCase();
@@ -119,10 +125,16 @@ const formatReportTypeDisplay = (value: unknown, reportTypeId: string): string =
   return DEFAULT_REPORT_TYPES[reportTypeId] ?? FINES_REPORTS_REPORT_SUMMARY_REPORT_TYPES.summary;
 };
 
+/**
+ * Looks up the friendly label for a report parameter key.
+ */
 const getReportParameterLabel = (key: string): string => {
   return REPORT_PARAMETER_LABEL_OVERRIDES[key] ?? key;
 };
 
+/**
+ * Keeps API report-parameter values in a predictable shape before display formatting is applied.
+ */
 const mapReportParameterValue = (value: unknown): ReportSummaryNamedValue['value'] => {
   if (
     value === null ||
@@ -142,10 +154,16 @@ const mapReportParameterValue = (value: unknown): ReportSummaryNamedValue['value
   return String(value);
 };
 
+/**
+ * Returns a trimmed date string only when the API supplied a string value.
+ */
 const getDateRangeDisplayValue = (value: unknown): string => {
   return typeof value === 'string' ? value.trim() : '';
 };
 
+/**
+ * Builds one named row for a known from/to date parameter pair.
+ */
 const buildKnownDateRangeRow = (
   reportParameters: Record<string, unknown>,
   fromKey: string,
@@ -172,6 +190,9 @@ const buildKnownDateRangeRow = (
   };
 };
 
+/**
+ * Builds the first supported date range row found in the report parameters.
+ */
 const buildDateRangeRow = (reportParameters: Record<string, unknown>): ReportSummaryNamedValue | null => {
   return (
     buildKnownDateRangeRow(
@@ -189,6 +210,9 @@ const buildDateRangeRow = (reportParameters: Record<string, unknown>): ReportSum
   );
 };
 
+/**
+ * Builds report criteria rows in the order shown on the summary screen.
+ */
 const buildCriteriaRows = (
   reportParameters: Record<string, unknown> | null | undefined,
   reportType: string,
@@ -211,24 +235,39 @@ const buildCriteriaRows = (
   return dateRangeRow ? [reportTypeRow, dateRangeRow, ...criteriaRows] : [reportTypeRow, ...criteriaRows];
 };
 
+/**
+ * Gets the reference shown in the page heading, using the report id when the API name is blank.
+ */
 const getReportReference = (reportInstance: IOpalFinesReportInstanceDetail): string => {
   return reportInstance.name?.trim() || reportInstance.report.id;
 };
 
+/**
+ * Reads the report type parameter from the API's supported key variants.
+ */
 const getReportTypeParameterValue = (reportParameters: Record<string, unknown> | null | undefined): unknown => {
   return reportParameters?.['reportType'] ?? reportParameters?.['report_type'] ?? reportParameters?.['report type'];
 };
 
+/**
+ * Gets the requester display name, falling back to their user id when no name is available.
+ */
 const getCreatedBy = (reportInstance: IOpalFinesReportInstanceDetail): string => {
   return reportInstance.requested_by.name?.trim() || reportInstance.requested_by.user_id?.trim() || '';
 };
 
+/**
+ * Gets displayable business unit names from the API response.
+ */
 const getBusinessUnits = (reportInstance: IOpalFinesReportInstanceDetail): string[] => {
   return reportInstance.business_units
     .map((businessUnit) => businessUnit.business_unit_name?.trim() || businessUnit.business_unit_id.trim())
     .filter((businessUnit) => businessUnit.length > 0);
 };
 
+/**
+ * Gets the status text shown to the user, including the ready-with-zero-records "No content" case.
+ */
 const getStatusDisplay = (
   normalisedStatus: FinesReportsReportSummaryNormalisedStatus,
   recordCount: number | null,
@@ -240,6 +279,9 @@ const getStatusDisplay = (
   return FINES_REPORTS_REPORT_SUMMARY_STATUS_DISPLAY[normalisedStatus];
 };
 
+/**
+ * Hides the record count for statuses where a count is not meaningful yet.
+ */
 const getNumberOfRecordsDisplayValue = (
   status: FinesReportsReportSummaryNormalisedStatus,
   numberOfRecords: number | null,
@@ -251,6 +293,9 @@ const getNumberOfRecordsDisplayValue = (
   return numberOfRecords;
 };
 
+/**
+ * Chooses the row display type, using the not-provided renderer when the value is missing.
+ */
 const getDisplayRowType = (
   value: IFinesReportsReportSummaryDisplayRow['value'],
   providedType: FinesReportsReportSummaryDisplayRowType = 'text',
@@ -258,6 +303,9 @@ const getDisplayRowType = (
   return value === null ? 'notProvided' : providedType;
 };
 
+/**
+ * Converts currency-like strings to numbers so Angular's CurrencyPipe can format them.
+ */
 const getCurrencyDisplayValue = (
   value: IFinesReportsReportSummaryDisplayRow['value'],
 ): IFinesReportsReportSummaryDisplayRow['value'] => {
@@ -271,6 +319,9 @@ const getCurrencyDisplayValue = (
   return Number.isNaN(numericValue) ? value : numericValue;
 };
 
+/**
+ * Converts named API values into display rows for the GOV.UK summary-list template.
+ */
 const mapNamedValuesToRows = (
   values: ReportSummaryNamedValue[] | undefined,
 ): IFinesReportsReportSummaryDisplayRow[] => {
@@ -289,6 +340,9 @@ const mapNamedValuesToRows = (
     });
 };
 
+/**
+ * Flattens backend error objects into named values that can be rendered as error rows.
+ */
 const mapErrorRows = (errors: Array<Record<string, unknown>> | null | undefined): ReportSummaryNamedValue[] => {
   return (errors ?? []).flatMap((error) =>
     Object.entries(error).map(([key, value]) => ({
@@ -299,6 +353,9 @@ const mapErrorRows = (errors: Array<Record<string, unknown>> | null | undefined)
   );
 };
 
+/**
+ * Maps a backend report instance response into the view model consumed by the report summary component.
+ */
 export const mapFinesReportsReportInstanceToViewModel = (
   reportInstance: IOpalFinesReportInstanceDetail,
   reportTypeId: string,
