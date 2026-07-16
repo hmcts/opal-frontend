@@ -3,7 +3,7 @@ Feature: Reports landing page navigation
   Background:
     Given I am logged in on the Fines Search landing page with email "opal-test@dev.platform.hmcts.net"
 
-  @JIRA-STORY:PO-2613 @JIRA-STORY:PO-3758 @JIRA-EPIC:PO-2627 @JIRA-TEST-KEY:PO-5284
+  @JIRA-STORY:PO-2613 @JIRA-STORY:PO-3758 @JIRA-EPIC:PO-2627 @JIRA-TEST-KEY:PO-5284 @R1CEnforcementOperationalReporting
   Scenario: Your reports keeps Reports selected in the primary navigation
     #AC1d: Report tab stays selected
     When I select the Fines primary navigation item "Reports"
@@ -12,7 +12,7 @@ Feature: Reports landing page navigation
     When I open Your reports from the Reports landing page
     Then I am taken to the Your reports summary list screen
 
-  @JIRA-STORY:PO-3758 @JIRA-EPIC:PO-3685
+  @JIRA-STORY:PO-3758 @JIRA-EPIC:PO-3685 @R1CEnforcementOperationalReporting
   Scenario Outline: Operational report links are available from the Reports landing page
     When I select the Fines primary navigation item "Reports"
     Then I am taken to the "Reports" Fines landing page
@@ -21,9 +21,9 @@ Feature: Reports landing page navigation
 
     @JIRA-TEST-KEY:PO-5285
     Examples:
-      | reportLink                            |
+      | reportLink                           |
       | Operational reports (by enforcement) |
     @JIRA-TEST-KEY:PO-5286
     Examples:
-      | reportLink                            |
-      | Operational reports (by payments)    |
+      | reportLink                        |
+      | Operational reports (by payments) |
