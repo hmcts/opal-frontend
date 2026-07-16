@@ -1,24 +1,85 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { ActivatedRoute, Router, convertToParamMap } from '@angular/router';
+import { OPAL_FINES_REPORT_INSTANCE_MOCK } from '@services/fines/opal-fines-service/mocks/opal-fines-report-instance.mock';
 import { of } from 'rxjs';
 import { describe, expect, it, vi } from 'vitest';
 import { FINES_ROUTING_PATHS } from '../../routing/constants/fines-routing-paths.constant';
+import { FINES_REPORTS_SUMMARY_LIST_ROUTING_PATHS } from '../fines-reports-summary-list/routing/constants/fines-reports-summary-list-routing-paths.constant';
 import { FINES_REPORTS_ROUTING_PATHS } from '../routing/constants/fines-reports-routing-paths.constant';
-import {
-  FINES_REPORTS_REPORT_SUMMARY_ENFORCEMENT_MOCK,
-  FINES_REPORTS_REPORT_SUMMARY_ERROR_MOCK,
-  FINES_REPORTS_REPORT_SUMMARY_PAYMENTS_MOCK,
-} from './mocks/fines-reports-report-summary.mock';
-import { OPAL_FINES_REPORT_INSTANCE_MOCK } from '@services/fines/opal-fines-service/mocks/opal-fines-report-instance.mock';
+import { FINES_REPORTS_REPORT_SUMMARY_REPORT_TYPES } from './constants/fines-reports-report-summary-report-types.constant';
+import { FINES_REPORTS_REPORT_SUMMARY_STATUS_DISPLAY } from './constants/fines-reports-report-summary-status-display.constant';
+import { FINES_REPORTS_REPORT_SUMMARY_STATUSES } from './constants/fines-reports-report-summary-statuses.constant';
 import { FinesReportsReportSummaryComponent } from './fines-reports-report-summary.component';
-import { mapFinesReportsReportInstanceToReportSummary } from './utils/fines-reports-report-summary-map-report-instance.utils';
-import { IFinesReportsReportSummaryInstance } from './interfaces/fines-reports-report-summary-instance.interface';
+import { type IFinesReportsReportSummaryViewModel } from './interfaces/fines-reports-report-summary-view-model.interface';
+import { mapFinesReportsReportInstanceToViewModel } from './utils/fines-reports-report-summary-map-view-model.utils';
 
 describe('FinesReportsReportSummaryComponent', () => {
+  const enforcementReportTypeId = FINES_REPORTS_SUMMARY_LIST_ROUTING_PATHS.children.operationalReportsByEnforcement;
+  const paymentsReportTypeId = FINES_REPORTS_SUMMARY_LIST_ROUTING_PATHS.children.operationalReportsByPayments;
+  const enforcementReportSummary = mapFinesReportsReportInstanceToViewModel(
+    {
+      ...OPAL_FINES_REPORT_INSTANCE_MOCK,
+      requested_at: '2025-10-17T09:30:00',
+      status: {
+        code: FINES_REPORTS_REPORT_SUMMARY_STATUSES.requested,
+        display_name: FINES_REPORTS_REPORT_SUMMARY_STATUS_DISPLAY[FINES_REPORTS_REPORT_SUMMARY_STATUSES.requested],
+      },
+      business_units: [
+        { business_unit_id: '1', business_unit_name: 'West London' },
+        { business_unit_id: '2', business_unit_name: 'South London' },
+      ],
+      requested_by: {
+        user_id: '1',
+        name: 'jane.doe',
+      },
+      report_parameters: {
+        reportType: FINES_REPORTS_REPORT_SUMMARY_REPORT_TYPES.summary,
+        account_type: ['Adult', 'Youth'],
+        minimum_account_balance: '120.50',
+        maximum_account_balance: '1000.00',
+      },
+    },
+    enforcementReportTypeId,
+  );
+  const paymentsReportSummary = mapFinesReportsReportInstanceToViewModel(
+    {
+      ...OPAL_FINES_REPORT_INSTANCE_MOCK,
+      name: 'PYMT',
+      number_of_records: 0,
+      report: {
+        ...OPAL_FINES_REPORT_INSTANCE_MOCK.report,
+        id: paymentsReportTypeId,
+      },
+      report_parameters: {
+        reportType: FINES_REPORTS_REPORT_SUMMARY_REPORT_TYPES.detailed,
+        account_type: ['Adult', 'Company'],
+        account_status: 'Closed',
+        collection_order: 'With collection order',
+      },
+    },
+    paymentsReportTypeId,
+  );
+  const errorReportSummary = mapFinesReportsReportInstanceToViewModel(
+    {
+      ...OPAL_FINES_REPORT_INSTANCE_MOCK,
+      status: {
+        code: FINES_REPORTS_REPORT_SUMMARY_STATUSES.error,
+        display_name: FINES_REPORTS_REPORT_SUMMARY_STATUS_DISPLAY[FINES_REPORTS_REPORT_SUMMARY_STATUSES.error],
+      },
+      errors: [
+        {
+          report_generation_error: 'Legacy report timed out',
+          report_service: 'No response from reporting engine',
+        },
+      ],
+    },
+    enforcementReportTypeId,
+  );
+
   const setup = async (
-    reportTypeId = FINES_REPORTS_REPORT_SUMMARY_ENFORCEMENT_MOCK.report_id,
-    reportInstanceId = FINES_REPORTS_REPORT_SUMMARY_ENFORCEMENT_MOCK.report_instance_id,
-    reportSummary: IFinesReportsReportSummaryInstance | null = FINES_REPORTS_REPORT_SUMMARY_ENFORCEMENT_MOCK,
+    reportTypeId = enforcementReportTypeId,
+    reportInstanceId = OPAL_FINES_REPORT_INSTANCE_MOCK.instance_id.toString(),
+    reportSummary: IFinesReportsReportSummaryViewModel | null = enforcementReportSummary,
   ): Promise<{
     component: FinesReportsReportSummaryComponent;
     fixture: ComponentFixture<FinesReportsReportSummaryComponent>;
@@ -76,8 +137,8 @@ describe('FinesReportsReportSummaryComponent', () => {
 
     fixture.detectChanges();
 
-    expect(component.reportTypeId).toBe('operational_report_enforcement');
-    expect(component.reportInstanceId).toBe('report-instance-enforcement-001');
+    expect(component.reportTypeId).toBe(enforcementReportTypeId);
+    expect(component.reportInstanceId).toBe(OPAL_FINES_REPORT_INSTANCE_MOCK.instance_id.toString());
   });
 
   it('should render the enforcement report heading and back link', async () => {
@@ -91,32 +152,20 @@ describe('FinesReportsReportSummaryComponent', () => {
     expect(fixture.nativeElement.querySelector('.govuk-back-link')?.textContent.trim()).toBe('Back');
   });
 
-  it('should prefer resolved report summary data when available', async () => {
-    const resolvedReportSummary = mapFinesReportsReportInstanceToReportSummary(
-      OPAL_FINES_REPORT_INSTANCE_MOCK,
-      FINES_REPORTS_REPORT_SUMMARY_ENFORCEMENT_MOCK.report_id,
-    );
-    const { fixture } = await setup(
-      FINES_REPORTS_REPORT_SUMMARY_ENFORCEMENT_MOCK.report_id,
-      FINES_REPORTS_REPORT_SUMMARY_ENFORCEMENT_MOCK.report_instance_id,
-      resolvedReportSummary,
-    );
+  it('should render the resolved report summary data', async () => {
+    const { fixture } = await setup(enforcementReportTypeId, OPAL_FINES_REPORT_INSTANCE_MOCK.instance_id.toString());
 
     fixture.detectChanges();
 
     expect(fixture.nativeElement.querySelector('h1')?.textContent).toContain(
       'Operational reports (by enforcement) - ABDC - Summary',
     );
-    expect(fixture.nativeElement.textContent).toContain('01 Jun 2006 at 10:36');
+    expect(fixture.nativeElement.textContent).toContain('17 Oct 2025 at 09:30');
     expect(fixture.nativeElement.textContent).toContain('Summary');
   });
 
   it('should render the payments report heading', async () => {
-    const { fixture } = await setup(
-      FINES_REPORTS_REPORT_SUMMARY_PAYMENTS_MOCK.report_id,
-      FINES_REPORTS_REPORT_SUMMARY_PAYMENTS_MOCK.report_instance_id,
-      FINES_REPORTS_REPORT_SUMMARY_PAYMENTS_MOCK,
-    );
+    const { fixture } = await setup(paymentsReportTypeId, '12345', paymentsReportSummary);
 
     fixture.detectChanges();
 
@@ -147,11 +196,7 @@ describe('FinesReportsReportSummaryComponent', () => {
   });
 
   it('should not render optional criteria that were not used', async () => {
-    const { fixture } = await setup(
-      FINES_REPORTS_REPORT_SUMMARY_PAYMENTS_MOCK.report_id,
-      FINES_REPORTS_REPORT_SUMMARY_PAYMENTS_MOCK.report_instance_id,
-      FINES_REPORTS_REPORT_SUMMARY_PAYMENTS_MOCK,
-    );
+    const { fixture } = await setup(paymentsReportTypeId, '12345', paymentsReportSummary);
 
     fixture.detectChanges();
 
@@ -175,11 +220,7 @@ describe('FinesReportsReportSummaryComponent', () => {
   });
 
   it('should render the errors section when the report is in error', async () => {
-    const { fixture } = await setup(
-      FINES_REPORTS_REPORT_SUMMARY_ERROR_MOCK.report_id,
-      FINES_REPORTS_REPORT_SUMMARY_ERROR_MOCK.report_instance_id,
-      FINES_REPORTS_REPORT_SUMMARY_ERROR_MOCK,
-    );
+    const { fixture } = await setup(enforcementReportTypeId, '12345', errorReportSummary);
 
     fixture.detectChanges();
 
@@ -193,17 +234,13 @@ describe('FinesReportsReportSummaryComponent', () => {
   });
 
   it('should render without a local error banner when no report summary data is resolved', async () => {
-    const { fixture } = await setup(
-      FINES_REPORTS_REPORT_SUMMARY_ENFORCEMENT_MOCK.report_id,
-      FINES_REPORTS_REPORT_SUMMARY_ENFORCEMENT_MOCK.report_instance_id,
-      null,
-    );
+    const { fixture } = await setup(enforcementReportTypeId, '12345', null);
 
     fixture.detectChanges();
 
     const pageText = fixture.nativeElement.textContent;
 
-    expect(fixture.nativeElement.querySelector('h1')?.textContent).toContain('Operational report');
+    expect(fixture.nativeElement.querySelector('h1')?.textContent).toContain('Operational reports (by enforcement)');
     expect(fixture.nativeElement.querySelector('.moj-alert--error')).toBeNull();
     expect(pageText).not.toContain('ABDC');
     expect(pageText).not.toContain('General');
@@ -218,7 +255,7 @@ describe('FinesReportsReportSummaryComponent', () => {
       '/',
       FINES_ROUTING_PATHS.root,
       FINES_REPORTS_ROUTING_PATHS.root,
-      FINES_REPORTS_REPORT_SUMMARY_ENFORCEMENT_MOCK.report_id,
+      enforcementReportTypeId,
       FINES_REPORTS_ROUTING_PATHS.children.summaryList,
     ]);
   });

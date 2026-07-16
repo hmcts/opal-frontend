@@ -1,13 +1,13 @@
 import { inject } from '@angular/core';
 import { ActivatedRouteSnapshot, ResolveFn } from '@angular/router';
 import { OpalFines } from '@services/fines/opal-fines-service/opal-fines.service';
-import { IFinesReportsReportSummaryInstance } from '../../../fines-reports-report-summary/interfaces/fines-reports-report-summary-instance.interface';
+import { IFinesReportsReportSummaryViewModel } from '../../../fines-reports-report-summary/interfaces/fines-reports-report-summary-view-model.interface';
 import { catchError, map, of } from 'rxjs';
-import { mapFinesReportsReportInstanceToReportSummary } from '../../../fines-reports-report-summary/utils/fines-reports-report-summary-map-report-instance.utils';
+import { mapFinesReportsReportInstanceToViewModel } from '../../../fines-reports-report-summary/utils/fines-reports-report-summary-map-view-model.utils';
 
 const REPORT_INSTANCE_ID_API_PATTERN = /^\d+$/;
 
-export const fetchReportInstanceResolver: ResolveFn<IFinesReportsReportSummaryInstance | null> = (
+export const fetchReportInstanceResolver: ResolveFn<IFinesReportsReportSummaryViewModel | null> = (
   route: ActivatedRouteSnapshot,
 ) => {
   const opalFinesService = inject(OpalFines);
@@ -19,7 +19,7 @@ export const fetchReportInstanceResolver: ResolveFn<IFinesReportsReportSummaryIn
   }
 
   return opalFinesService.getReportInstance(reportInstanceId).pipe(
-    map((reportInstance) => mapFinesReportsReportInstanceToReportSummary(reportInstance, reportTypeId)),
+    map((reportInstance) => mapFinesReportsReportInstanceToViewModel(reportInstance, reportTypeId)),
     catchError(() => of(null)),
   );
 };

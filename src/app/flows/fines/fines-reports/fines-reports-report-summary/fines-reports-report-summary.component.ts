@@ -10,10 +10,8 @@ import { map } from 'rxjs';
 import { FINES_ROUTING_PATHS } from '../../routing/constants/fines-routing-paths.constant';
 import { FINES_REPORT_SUMMARY_LIST_REPORT_CONFIGURATION } from '../fines-reports-summary-list/constants/fines-reports-summary-list-report-configuration.constant';
 import { FINES_REPORTS_ROUTING_PATHS } from '../routing/constants/fines-reports-routing-paths.constant';
-import { type IFinesReportsReportSummaryInstance } from './interfaces/fines-reports-report-summary-instance.interface';
 import { type IFinesReportsReportSummaryViewModel } from './interfaces/fines-reports-report-summary-view-model.interface';
 import { FinesReportsReportSummaryRowValueComponent } from './components/fines-reports-report-summary-row-value/fines-reports-report-summary-row-value.component';
-import { mapFinesReportsReportSummaryToViewModel } from './utils/fines-reports-report-summary-map-view-model.utils';
 
 @Component({
   selector: 'app-fines-reports-report-summary',
@@ -44,18 +42,18 @@ export class FinesReportsReportSummaryComponent {
   );
   private readonly reportSummarySignal = toSignal(
     this.activatedRoute.data.pipe(
-      map((routeData) => routeData['reportSummary'] as IFinesReportsReportSummaryInstance | null | undefined),
+      map((routeData) => routeData['reportSummary'] as IFinesReportsReportSummaryViewModel | null | undefined),
     ),
     {
       initialValue: this.activatedRoute.snapshot.data['reportSummary'] as
-        | IFinesReportsReportSummaryInstance
+        | IFinesReportsReportSummaryViewModel
         | null
         | undefined,
     },
   );
 
   /**
-   * Maps the selected report instance route data into the report summary data for this UI slice.
+   * Returns the resolved report summary view model for this UI slice.
    */
   public readonly reportSummary = computed(() => this.reportSummarySignal() ?? null);
 
@@ -63,15 +61,16 @@ export class FinesReportsReportSummaryComponent {
    * Returns the report summary rows used by the template.
    */
   public readonly reportSummaryViewModel = computed((): IFinesReportsReportSummaryViewModel => {
-    const reportSummary = this.reportSummary();
-
-    return reportSummary
-      ? mapFinesReportsReportSummaryToViewModel(reportSummary)
-      : {
-          generalRows: [],
-          criteriaRows: [],
-          errorRows: [],
-        };
+    return (
+      this.reportSummary() ?? {
+        reportId: this.reportTypeId,
+        reportReference: '',
+        reportType: '',
+        generalRows: [],
+        criteriaRows: [],
+        errorRows: [],
+      }
+    );
   });
 
   /**
@@ -81,14 +80,14 @@ export class FinesReportsReportSummaryComponent {
     const reportSummary = this.reportSummary();
     const reportHeading =
       FINES_REPORT_SUMMARY_LIST_REPORT_CONFIGURATION.find(
-        (config) => config.id === (reportSummary?.report_id ?? this.reportTypeId),
+        (config) => config.id === (reportSummary?.reportId ?? this.reportTypeId),
       )?.heading || 'Operational report';
 
     if (!reportSummary) {
       return reportHeading;
     }
 
-    return `${reportHeading} - ${reportSummary.report_reference} - ${reportSummary.report_type}`;
+    return `${reportHeading} - ${reportSummary.reportReference} - ${reportSummary.reportType}`;
   });
 
   /**

@@ -1,15 +1,17 @@
+import { type IOpalFinesReportInstanceDetail } from '@services/fines/opal-fines-service/interfaces/opal-fines-report-instance-detail.interface';
+import { FINES_REPORTS_SUMMARY_LIST_ROUTING_PATHS } from '../../fines-reports-summary-list/routing/constants/fines-reports-summary-list-routing-paths.constant';
 import { FINES_REPORTS_REPORT_SUMMARY_CRITERIA_LABELS } from '../constants/fines-reports-report-summary-criteria-labels.constant';
+import { FINES_REPORTS_REPORT_SUMMARY_ERROR_LABELS } from '../constants/fines-reports-report-summary-error-labels.constant';
 import { FINES_REPORTS_REPORT_SUMMARY_GENERAL_LABELS } from '../constants/fines-reports-report-summary-general-labels.constant';
+import { FINES_REPORTS_REPORT_SUMMARY_REPORT_TYPES } from '../constants/fines-reports-report-summary-report-types.constant';
 import {
   FINES_REPORTS_REPORT_SUMMARY_NO_CONTENT_STATUS_DISPLAY,
   FINES_REPORTS_REPORT_SUMMARY_RECORD_COUNT_DASH_STATUSES,
   FINES_REPORTS_REPORT_SUMMARY_STATUS_DISPLAY,
 } from '../constants/fines-reports-report-summary-status-display.constant';
 import { FINES_REPORTS_REPORT_SUMMARY_STATUSES } from '../constants/fines-reports-report-summary-statuses.constant';
-import { IFinesReportsReportSummaryDisplayRow } from '../interfaces/fines-reports-report-summary-display-row.interface';
-import { IFinesReportsReportSummaryInstance } from '../interfaces/fines-reports-report-summary-instance.interface';
-import { IFinesReportsReportSummaryNamedValue } from '../interfaces/fines-reports-report-summary-named-value.interface';
-import { IFinesReportsReportSummaryViewModel } from '../interfaces/fines-reports-report-summary-view-model.interface';
+import { type IFinesReportsReportSummaryDisplayRow } from '../interfaces/fines-reports-report-summary-display-row.interface';
+import { type IFinesReportsReportSummaryViewModel } from '../interfaces/fines-reports-report-summary-view-model.interface';
 import { type FinesReportsReportSummaryDisplayRowType } from '../types/fines-reports-report-summary-display-row-type.type';
 import { type FinesReportsReportSummaryNormalisedStatus } from '../types/fines-reports-report-summary-normalised-status.type';
 import {
@@ -17,6 +19,60 @@ import {
   mapFinesReportsReportSummaryDisplayValue,
 } from './fines-reports-report-summary-display-value.utils';
 
+type ReportSummaryNamedValue = {
+  name: string;
+  value: boolean | number | string | unknown[] | Record<string, unknown> | null | undefined;
+  optional?: boolean;
+};
+
+const REPORT_TYPE_PARAMETER_KEYS = new Set(['reportType', 'report_type', 'report type']);
+const REPORT_TYPE_ALIASES = {
+  summary: 'summary',
+  detailed: 'detailed',
+  detail: 'detail',
+} as const;
+const ACTION_DATE_FROM_PARAMETER_KEY = 'action_date_from';
+const ACTION_DATE_TO_PARAMETER_KEY = 'action_date_to';
+const PAYMENT_DATE_FROM_PARAMETER_KEY = 'payment_date_from';
+const PAYMENT_DATE_TO_PARAMETER_KEY = 'payment_date_to';
+const REPORT_PARAMETER_LABEL_OVERRIDES: Record<string, string> = {
+  reportType: FINES_REPORTS_REPORT_SUMMARY_CRITERIA_LABELS.reportType,
+  report_type: FINES_REPORTS_REPORT_SUMMARY_CRITERIA_LABELS.reportType,
+  'report type': FINES_REPORTS_REPORT_SUMMARY_CRITERIA_LABELS.reportType,
+  enforcement: FINES_REPORTS_REPORT_SUMMARY_CRITERIA_LABELS.enforcement,
+  account_type: FINES_REPORTS_REPORT_SUMMARY_CRITERIA_LABELS.accountType,
+  account_status: FINES_REPORTS_REPORT_SUMMARY_CRITERIA_LABELS.accountStatus,
+  collection_order: FINES_REPORTS_REPORT_SUMMARY_CRITERIA_LABELS.collectionOrder,
+  minimum_account_balance: FINES_REPORTS_REPORT_SUMMARY_CRITERIA_LABELS.minimumAccountBalance,
+  maximum_account_balance: FINES_REPORTS_REPORT_SUMMARY_CRITERIA_LABELS.maximumAccountBalance,
+  lower_name_range: FINES_REPORTS_REPORT_SUMMARY_CRITERIA_LABELS.lowerNameRange,
+  upper_name_range: FINES_REPORTS_REPORT_SUMMARY_CRITERIA_LABELS.upperNameRange,
+  payment_method: FINES_REPORTS_REPORT_SUMMARY_CRITERIA_LABELS.paymentMethod,
+  minimum_payment_amount: FINES_REPORTS_REPORT_SUMMARY_CRITERIA_LABELS.minimumPaymentAmount,
+  maximum_payment_amount: FINES_REPORTS_REPORT_SUMMARY_CRITERIA_LABELS.maximumPaymentAmount,
+  error: FINES_REPORTS_REPORT_SUMMARY_ERROR_LABELS.errorDescription,
+  error_description: FINES_REPORTS_REPORT_SUMMARY_ERROR_LABELS.errorDescription,
+  operationId: FINES_REPORTS_REPORT_SUMMARY_ERROR_LABELS.operationId,
+  report_generation_error: FINES_REPORTS_REPORT_SUMMARY_ERROR_LABELS.reportGenerationError,
+  report_service: FINES_REPORTS_REPORT_SUMMARY_ERROR_LABELS.reportService,
+};
+const DATE_RANGE_PARAMETER_KEYS = new Set<string>([
+  ACTION_DATE_FROM_PARAMETER_KEY,
+  ACTION_DATE_TO_PARAMETER_KEY,
+  PAYMENT_DATE_FROM_PARAMETER_KEY,
+  PAYMENT_DATE_TO_PARAMETER_KEY,
+]);
+const REPORT_TYPE_NORMALISATION: Record<string, string> = {
+  [REPORT_TYPE_ALIASES.summary]: FINES_REPORTS_REPORT_SUMMARY_REPORT_TYPES.summary,
+  [REPORT_TYPE_ALIASES.detailed]: FINES_REPORTS_REPORT_SUMMARY_REPORT_TYPES.detailed,
+  [REPORT_TYPE_ALIASES.detail]: FINES_REPORTS_REPORT_SUMMARY_REPORT_TYPES.detailed,
+};
+const DEFAULT_REPORT_TYPES: Record<string, string> = {
+  [FINES_REPORTS_SUMMARY_LIST_ROUTING_PATHS.children.operationalReportsByEnforcement]:
+    FINES_REPORTS_REPORT_SUMMARY_REPORT_TYPES.summary,
+  [FINES_REPORTS_SUMMARY_LIST_ROUTING_PATHS.children.operationalReportsByPayments]:
+    FINES_REPORTS_REPORT_SUMMARY_REPORT_TYPES.detailed,
+};
 const REPORT_STATUS_ALIASES = {
   requested: 'requested',
   inProgress: 'in_progress',
@@ -40,35 +96,159 @@ const RECORD_COUNT_DASH_STATUS_SET = new Set<FinesReportsReportSummaryNormalised
 );
 const NO_CONTENT_RECORD_COUNT = 0;
 
-const normaliseStatus = (
-  status: IFinesReportsReportSummaryInstance['status'],
-): FinesReportsReportSummaryNormalisedStatus => {
+const normaliseStatus = (status: string): FinesReportsReportSummaryNormalisedStatus => {
   const normalisedStatus = status.trim().toLowerCase().replace(/\s+/g, '_');
 
   return REPORT_STATUS_NORMALISATION[normalisedStatus] ?? FINES_REPORTS_REPORT_SUMMARY_STATUSES.error;
 };
 
-const getStatusDisplay = (reportSummary: IFinesReportsReportSummaryInstance): string => {
-  const status = normaliseStatus(reportSummary.status);
+const formatReportTypeDisplay = (value: unknown, reportTypeId: string): string => {
+  if (typeof value === 'string') {
+    const normalised = value.trim().toLowerCase();
+    const reportType = REPORT_TYPE_NORMALISATION[normalised];
 
+    if (reportType) {
+      return reportType;
+    }
+
+    if (value.trim().length > 0) {
+      return value.trim();
+    }
+  }
+
+  return DEFAULT_REPORT_TYPES[reportTypeId] ?? FINES_REPORTS_REPORT_SUMMARY_REPORT_TYPES.summary;
+};
+
+const getReportParameterLabel = (key: string): string => {
+  return REPORT_PARAMETER_LABEL_OVERRIDES[key] ?? key;
+};
+
+const mapReportParameterValue = (value: unknown): ReportSummaryNamedValue['value'] => {
   if (
-    status === FINES_REPORTS_REPORT_SUMMARY_STATUSES.ready &&
-    reportSummary.number_of_records === NO_CONTENT_RECORD_COUNT
+    value === null ||
+    value === undefined ||
+    typeof value === 'boolean' ||
+    typeof value === 'number' ||
+    typeof value === 'string' ||
+    Array.isArray(value)
   ) {
+    return value;
+  }
+
+  if (typeof value === 'object') {
+    return value as Record<string, unknown>;
+  }
+
+  return String(value);
+};
+
+const getDateRangeDisplayValue = (value: unknown): string => {
+  return typeof value === 'string' ? value.trim() : '';
+};
+
+const buildKnownDateRangeRow = (
+  reportParameters: Record<string, unknown>,
+  fromKey: string,
+  toKey: string,
+  label: string,
+): ReportSummaryNamedValue | null => {
+  const fromDisplay = getDateRangeDisplayValue(reportParameters[fromKey]);
+  const toDisplay = getDateRangeDisplayValue(reportParameters[toKey]);
+  const value =
+    fromDisplay && toDisplay
+      ? `From ${fromDisplay} to ${toDisplay}`
+      : fromDisplay
+        ? `From ${fromDisplay}`
+        : `To ${toDisplay}`;
+
+  if (!fromDisplay && !toDisplay) {
+    return null;
+  }
+
+  return {
+    name: label,
+    value,
+    optional: false,
+  };
+};
+
+const buildDateRangeRow = (reportParameters: Record<string, unknown>): ReportSummaryNamedValue | null => {
+  return (
+    buildKnownDateRangeRow(
+      reportParameters,
+      ACTION_DATE_FROM_PARAMETER_KEY,
+      ACTION_DATE_TO_PARAMETER_KEY,
+      FINES_REPORTS_REPORT_SUMMARY_CRITERIA_LABELS.actionDate,
+    ) ??
+    buildKnownDateRangeRow(
+      reportParameters,
+      PAYMENT_DATE_FROM_PARAMETER_KEY,
+      PAYMENT_DATE_TO_PARAMETER_KEY,
+      FINES_REPORTS_REPORT_SUMMARY_CRITERIA_LABELS.paymentDate,
+    )
+  );
+};
+
+const buildCriteriaRows = (
+  reportParameters: Record<string, unknown> | null | undefined,
+  reportType: string,
+): ReportSummaryNamedValue[] => {
+  const parameters = reportParameters ?? {};
+  const reportTypeRow: ReportSummaryNamedValue = {
+    name: FINES_REPORTS_REPORT_SUMMARY_CRITERIA_LABELS.reportType,
+    value: reportType,
+    optional: false,
+  };
+  const dateRangeRow = buildDateRangeRow(parameters);
+  const criteriaRows = Object.entries(parameters)
+    .filter(([key]) => !REPORT_TYPE_PARAMETER_KEYS.has(key) && !DATE_RANGE_PARAMETER_KEYS.has(key))
+    .map(([key, value]) => ({
+      name: getReportParameterLabel(key),
+      value: mapReportParameterValue(value),
+      optional: isFinesReportsReportSummaryUnusedOptionalValue(value),
+    }));
+
+  return dateRangeRow ? [reportTypeRow, dateRangeRow, ...criteriaRows] : [reportTypeRow, ...criteriaRows];
+};
+
+const getReportReference = (reportInstance: IOpalFinesReportInstanceDetail): string => {
+  return reportInstance.name?.trim() || reportInstance.report.id;
+};
+
+const getReportTypeParameterValue = (reportParameters: Record<string, unknown> | null | undefined): unknown => {
+  return reportParameters?.['reportType'] ?? reportParameters?.['report_type'] ?? reportParameters?.['report type'];
+};
+
+const getCreatedBy = (reportInstance: IOpalFinesReportInstanceDetail): string => {
+  return reportInstance.requested_by.name?.trim() || reportInstance.requested_by.user_id?.trim() || '';
+};
+
+const getBusinessUnits = (reportInstance: IOpalFinesReportInstanceDetail): string[] => {
+  return reportInstance.business_units
+    .map((businessUnit) => businessUnit.business_unit_name?.trim() || businessUnit.business_unit_id.trim())
+    .filter((businessUnit) => businessUnit.length > 0);
+};
+
+const getStatusDisplay = (
+  normalisedStatus: FinesReportsReportSummaryNormalisedStatus,
+  recordCount: number | null,
+): string => {
+  if (normalisedStatus === FINES_REPORTS_REPORT_SUMMARY_STATUSES.ready && recordCount === NO_CONTENT_RECORD_COUNT) {
     return FINES_REPORTS_REPORT_SUMMARY_NO_CONTENT_STATUS_DISPLAY;
   }
 
-  return FINES_REPORTS_REPORT_SUMMARY_STATUS_DISPLAY[status];
+  return FINES_REPORTS_REPORT_SUMMARY_STATUS_DISPLAY[normalisedStatus];
 };
 
-const getNumberOfRecordsDisplayValue = (reportSummary: IFinesReportsReportSummaryInstance): number | null => {
-  const status = normaliseStatus(reportSummary.status);
-
+const getNumberOfRecordsDisplayValue = (
+  status: FinesReportsReportSummaryNormalisedStatus,
+  numberOfRecords: number | null,
+): number | null => {
   if (RECORD_COUNT_DASH_STATUS_SET.has(status)) {
     return null;
   }
 
-  return reportSummary.number_of_records;
+  return numberOfRecords;
 };
 
 const getDisplayRowType = (
@@ -92,7 +272,7 @@ const getCurrencyDisplayValue = (
 };
 
 const mapNamedValuesToRows = (
-  values: IFinesReportsReportSummaryNamedValue[] | undefined,
+  values: ReportSummaryNamedValue[] | undefined,
 ): IFinesReportsReportSummaryDisplayRow[] => {
   return (values ?? [])
     .filter((row) => !row.optional || !isFinesReportsReportSummaryUnusedOptionalValue(row.value))
@@ -109,24 +289,45 @@ const mapNamedValuesToRows = (
     });
 };
 
-export const mapFinesReportsReportSummaryToViewModel = (
-  reportSummary: IFinesReportsReportSummaryInstance,
+const mapErrorRows = (errors: Array<Record<string, unknown>> | null | undefined): ReportSummaryNamedValue[] => {
+  return (errors ?? []).flatMap((error) =>
+    Object.entries(error).map(([key, value]) => ({
+      name: getReportParameterLabel(key),
+      value: mapReportParameterValue(value),
+      optional: isFinesReportsReportSummaryUnusedOptionalValue(value),
+    })),
+  );
+};
+
+export const mapFinesReportsReportInstanceToViewModel = (
+  reportInstance: IOpalFinesReportInstanceDetail,
+  reportTypeId: string,
 ): IFinesReportsReportSummaryViewModel => {
-  const status = normaliseStatus(reportSummary.status);
-  const businessUnitsValue = mapFinesReportsReportSummaryDisplayValue(reportSummary.business_units);
-  const numberOfRecordsValue = getNumberOfRecordsDisplayValue(reportSummary);
-  const createdByValue = mapFinesReportsReportSummaryDisplayValue(reportSummary.created_by);
+  const resolvedReportTypeId = reportTypeId || reportInstance.report.id;
+  const reportType = formatReportTypeDisplay(
+    getReportTypeParameterValue(reportInstance.report_parameters),
+    resolvedReportTypeId,
+  );
+  const criteria = buildCriteriaRows(reportInstance.report_parameters, reportType);
+  const status = normaliseStatus(reportInstance.status.display_name.trim() || reportInstance.status.code);
+  const numberOfRecords = reportInstance.number_of_records ?? null;
+  const businessUnitsValue = mapFinesReportsReportSummaryDisplayValue(getBusinessUnits(reportInstance));
+  const numberOfRecordsValue = getNumberOfRecordsDisplayValue(status, numberOfRecords);
+  const createdByValue = mapFinesReportsReportSummaryDisplayValue(getCreatedBy(reportInstance));
 
   return {
+    reportId: reportInstance.report.id,
+    reportReference: getReportReference(reportInstance),
+    reportType,
     generalRows: [
       {
         key: FINES_REPORTS_REPORT_SUMMARY_GENERAL_LABELS.status,
-        value: getStatusDisplay(reportSummary),
+        value: getStatusDisplay(status, numberOfRecords),
         type: 'text',
       },
       {
         key: FINES_REPORTS_REPORT_SUMMARY_GENERAL_LABELS.dateCreated,
-        value: reportSummary.date_created,
+        value: reportInstance.requested_at,
         type: 'dateTime',
       },
       {
@@ -145,7 +346,10 @@ export const mapFinesReportsReportSummaryToViewModel = (
         type: getDisplayRowType(createdByValue),
       },
     ],
-    criteriaRows: mapNamedValuesToRows(reportSummary.criteria),
-    errorRows: status === FINES_REPORTS_REPORT_SUMMARY_STATUSES.error ? mapNamedValuesToRows(reportSummary.errors) : [],
+    criteriaRows: mapNamedValuesToRows(criteria),
+    errorRows:
+      status === FINES_REPORTS_REPORT_SUMMARY_STATUSES.error
+        ? mapNamedValuesToRows(mapErrorRows(reportInstance.errors))
+        : [],
   };
 };
