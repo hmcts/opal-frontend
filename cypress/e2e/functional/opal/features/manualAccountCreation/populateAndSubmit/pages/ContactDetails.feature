@@ -19,6 +19,7 @@ Feature: Manual account creation - Contact Details
       | Home telephone number   | 07123 456 789 |
       | Work telephone number   | 07123 456 789 |
     And I return to account details
+    Then I return to the top of the page
     Then the "Contact details" task status is "Provided"
     When I view the "Contact details" task
     Then the manual contact details fields are:

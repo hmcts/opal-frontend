@@ -27,6 +27,7 @@ Feature: Manual account creation - Parent Guardian Details
       | vehicleMake         | CarMake     |
       | vehicleRegistration | CARREG      |
     And I return to account details from parent or guardian details
+    Then I return to the top of the page
     Then the "Parent or guardian details" task status is "Provided"
     When I view the "Parent or guardian details" task
     Then I see parent or guardian details populated:

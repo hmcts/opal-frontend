@@ -52,6 +52,7 @@ Feature: Manual account creation - Court Details
       | Prosecutor Case Reference (PCR)          | 1234              |
       | Enforcement court                        | West London VPFPO |
     And I return to account details
+    Then I return to the top of the page
     Then the "Court details" task status is "Provided"
 
     When I view the "Court details" task
