@@ -1294,11 +1294,11 @@ __metadata:
   linkType: hard
 
 "@azure/msal-browser@npm:^5.0.0":
-  version: 5.7.0
-  resolution: "@azure/msal-browser@npm:5.7.0"
+  version: 5.17.0
+  resolution: "@azure/msal-browser@npm:5.17.0"
   dependencies:
-    "@azure/msal-common": "npm:16.5.0"
-  checksum: 10/37b10c7272db093bbfde9f7307821350e3eb448299ab7319a0c05e283c3f1f904ac7cb14ff78a8fbcc2ea9534b526a4261bb6dd4130cdbd39d58435a266a9871
+    "@azure/msal-common": "npm:16.11.1"
+  checksum: 10/97b3d00ec75a7123a28cf4ad2433d45807dac3f9f42051d54f0a901b202969fecd3976d828470c0f21de899b8c3d23a090133ce7290833c447d52318784f999d
   languageName: node
   linkType: hard
 
@@ -1318,17 +1318,17 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@azure/msal-common@npm:16.11.1":
+  version: 16.11.1
+  resolution: "@azure/msal-common@npm:16.11.1"
+  checksum: 10/cd53b636aec9b724ee838366fb5d37e14d2523764232659b62dd0e04b8de85b24b0d1c1966e5e3b9f923475975be7a1e30c57cdee1f8239551d3f275984a98b8
+  languageName: node
+  linkType: hard
+
 "@azure/msal-common@npm:16.4.1":
   version: 16.4.1
   resolution: "@azure/msal-common@npm:16.4.1"
   checksum: 10/0c9a0c06a3e52a7fe95fef9939124287df926a2c8dc613033a645dd4a15218d65b59b1b25b29fcc7ad0a7984e6d33cf7844e3489da182c54b3f8c4bd7caabb05
-  languageName: node
-  linkType: hard
-
-"@azure/msal-common@npm:16.5.0":
-  version: 16.5.0
-  resolution: "@azure/msal-common@npm:16.5.0"
-  checksum: 10/8577a795f7f255a3e6fdc1198acf0328f1391770ae0f56010192af46e96867cbd6fede3eb8d67f5eabf77a1fe3daf0f55d94a26ff9c98eae9943f3f5c722108f
   languageName: node
   linkType: hard
 
@@ -1354,7 +1354,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@azure/opentelemetry-instrumentation-azure-sdk@npm:^1.0.0":
+"@azure/opentelemetry-instrumentation-azure-sdk@npm:^1.0.0, @azure/opentelemetry-instrumentation-azure-sdk@npm:^1.0.0-beta.5":
   version: 1.0.0
   resolution: "@azure/opentelemetry-instrumentation-azure-sdk@npm:1.0.0"
   dependencies:
@@ -1369,7 +1369,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@azure/opentelemetry-instrumentation-azure-sdk@npm:^1.0.0-beta.5, @azure/opentelemetry-instrumentation-azure-sdk@npm:^1.0.0-beta.7":
+"@azure/opentelemetry-instrumentation-azure-sdk@npm:^1.0.0-beta.7":
   version: 1.0.0-beta.10
   resolution: "@azure/opentelemetry-instrumentation-azure-sdk@npm:1.0.0-beta.10"
   dependencies:
@@ -4143,9 +4143,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@hmcts/opal-frontend-common-node@npm:^0.0.39":
-  version: 0.0.39
-  resolution: "@hmcts/opal-frontend-common-node@npm:0.0.39"
+"@hmcts/opal-frontend-common-node@npm:0.0.42":
+  version: 0.0.42
+  resolution: "@hmcts/opal-frontend-common-node@npm:0.0.42"
   dependencies:
     "@azure/msal-browser": "npm:^5.0.0"
     "@hmcts/info-provider": "npm:^1.1.0"
@@ -4167,13 +4167,13 @@ __metadata:
     redis: "npm:^6.0.0"
     session-file-store: "npm:^1.5.0"
     xml2js: "npm:^0.6.2"
-  checksum: 10/b04750516296dffc985868bafb64aff68defca45380ddad1064504d327f2a20a90f4b2aa49c66613211bc5c362e505d8eecf3143f35ca29fb062c37f1e384c41
+  checksum: 10/9f21eea042c59a807e75b3755b60e1fdeae837aadda47674819ad152a6fbe8e747a2fe01f2a0f1421e6430cfc77a23b4ed274418e988f91d792642704713f638
   languageName: node
   linkType: hard
 
-"@hmcts/opal-frontend-common@npm:^0.0.89":
-  version: 0.0.89
-  resolution: "@hmcts/opal-frontend-common@npm:0.0.89"
+"@hmcts/opal-frontend-common@npm:0.0.91":
+  version: 0.0.91
+  resolution: "@hmcts/opal-frontend-common@npm:0.0.91"
   dependencies:
     "@microsoft/applicationinsights-web": "npm:^3.3.6"
     "@ministryofjustice/frontend": "npm:^9.0.0"
@@ -4195,7 +4195,7 @@ __metadata:
   peerDependenciesMeta:
     "@ngrx/signals":
       optional: true
-  checksum: 10/718bbcb5b164e50fb9bd0a8c727e5ef6e6a28b70ac7d344e5280506e471fc3d5ee9f3b1e865b99a1374a3c41793c146f4ea3a108a72c8d52f4a1e3a65b6debf9
+  checksum: 10/d947cd9e346196a749fc181949e369fab40bfb660f89cd8bab4dfee556a372dd3a837d32a3b9c1a1e03a57e53cf99e9f422e50b03be2e94d5919609fe799994b
   languageName: node
   linkType: hard
 
@@ -6456,10 +6456,10 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@opentelemetry/semantic-conventions@npm:^1.19.0, @opentelemetry/semantic-conventions@npm:^1.33.0, @opentelemetry/semantic-conventions@npm:^1.40.0":
-  version: 1.41.1
-  resolution: "@opentelemetry/semantic-conventions@npm:1.41.1"
-  checksum: 10/3b80fba5b0f28884326966a7b0dfc228c55698531db08834ece2c0ef7537aaaa83cba3f933731c14ffa6b0162b72cc14fee4a0ba68a1858837a590b49be23ee5
+"@opentelemetry/semantic-conventions@npm:^1.19.0":
+  version: 1.43.0
+  resolution: "@opentelemetry/semantic-conventions@npm:1.43.0"
+  checksum: 10/44c0e667cbfbecd98911cd6a90dc5f873de262da82d6684f467a87d529098b04fb2b9705bbd3524ecdedf13c62914d9ccf0ddcc4104dbba5062faf68f361aef4
   languageName: node
   linkType: hard
 
@@ -6467,6 +6467,13 @@ __metadata:
   version: 1.40.0
   resolution: "@opentelemetry/semantic-conventions@npm:1.40.0"
   checksum: 10/edb58894590e42e631006a9f5741955fad248e3589aa334a5e59080c535ead44ee9f376c444ef2be094d1e6c1a2e596538c1df0a31a04508551e91b1a5d5c93c
+  languageName: node
+  linkType: hard
+
+"@opentelemetry/semantic-conventions@npm:^1.33.0, @opentelemetry/semantic-conventions@npm:^1.40.0":
+  version: 1.41.1
+  resolution: "@opentelemetry/semantic-conventions@npm:1.41.1"
+  checksum: 10/3b80fba5b0f28884326966a7b0dfc228c55698531db08834ece2c0ef7537aaaa83cba3f933731c14ffa6b0162b72cc14fee4a0ba68a1858837a590b49be23ee5
   languageName: node
   linkType: hard
 
@@ -16666,9 +16673,9 @@ __metadata:
     "@hmcts/info-provider": "npm:^1.1.0"
     "@hmcts/nodejs-healthcheck": "npm:^1.8.5"
     "@hmcts/nodejs-logging": "npm:^4.0.4"
-    "@hmcts/opal-frontend-common": "npm:^0.0.89"
+    "@hmcts/opal-frontend-common": "npm:0.0.91"
     "@hmcts/opal-frontend-common-cypress": "npm:^0.0.3"
-    "@hmcts/opal-frontend-common-node": "npm:^0.0.39"
+    "@hmcts/opal-frontend-common-node": "npm:0.0.42"
     "@hmcts/properties-volume": "npm:^1.1.0"
     "@hmcts/zephyr-automation-nodejs": "npm:0.0.7"
     "@microsoft/applicationinsights-web": "npm:^3.3.5"
