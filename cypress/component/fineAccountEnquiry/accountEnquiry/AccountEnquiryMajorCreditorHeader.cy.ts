@@ -8,7 +8,7 @@ import { interceptMajorCreditorHeader } from './intercept/defendantAccountInterc
 
 const ACCOUNT_ENQUIRY_JIRA_LABEL = '@JIRA-LABEL:account-enquiry';
 
-const buildTags = (...tags: string[]): string[] => [...tags, ACCOUNT_ENQUIRY_JIRA_LABEL];
+const buildTags = (...tags: string[]): string[] => [...tags, ACCOUNT_ENQUIRY_JIRA_LABEL, '@R1B'];
 
 describe('Account Enquiry - Major Creditor Header', () => {
   beforeEach(() => {
