@@ -3,6 +3,12 @@
   (errorClick)="scrollTo($event)"
 ></opal-lib-govuk-error-summary>
 
+<opal-lib-govuk-heading-with-caption
+  captionText="Create report"
+  [headingText]="reportHeading"
+></opal-lib-govuk-heading-with-caption>
+<h2 class="govuk-heading-m">{{ pageHeading }}</h2>
+
 <form (submit)="handleFormSubmit($event)" [formGroup]="form">
   <opal-lib-govuk-table>
     <ng-container head>

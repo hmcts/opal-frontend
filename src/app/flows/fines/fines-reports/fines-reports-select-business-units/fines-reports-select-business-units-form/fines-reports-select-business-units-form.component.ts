@@ -6,6 +6,7 @@ import { IAbstractFormControlErrorMessage } from '@hmcts/opal-frontend-common/co
 import { GovukCancelLinkComponent } from '@hmcts/opal-frontend-common/components/govuk/govuk-cancel-link';
 import { GovukCheckboxesItemComponent } from '@hmcts/opal-frontend-common/components/govuk/govuk-checkboxes';
 import { GovukErrorSummaryComponent } from '@hmcts/opal-frontend-common/components/govuk/govuk-error-summary';
+import { GovukHeadingWithCaptionComponent } from '@hmcts/opal-frontend-common/components/govuk/govuk-heading-with-caption';
 import {
   GovukTableBodyRowComponent,
   GovukTableBodyRowDataComponent,
@@ -22,6 +23,7 @@ import {
 import { IFinesReportsSelectBusinessUnitRow } from './interfaces/fines-reports-select-business-unit-row.interface';
 import { IFinesReportsSelectBusinessUnitsFormState } from '../interfaces/fines-reports-select-business-units-form-state.interface';
 import { FINES_REPORTS_SELECT_BUSINESS_UNITS_FIELD_ERRORS } from '../constants/fines-reports-select-business-units-field-errors.constant';
+import { FINES_REPORTS_ROUTING_TITLES } from '../../routing/constants/fines-reports-routing-titles.constant';
 
 @Component({
   selector: 'app-fines-reports-select-business-units-form',
@@ -34,6 +36,7 @@ import { FINES_REPORTS_SELECT_BUSINESS_UNITS_FIELD_ERRORS } from '../constants/f
     GovukCheckboxesItemComponent,
     GovukCancelLinkComponent,
     GovukErrorSummaryComponent,
+    GovukHeadingWithCaptionComponent,
     GovukButtonDirective,
   ],
   templateUrl: './fines-reports-select-business-units-form.component.html',
@@ -60,9 +63,19 @@ export class FinesReportsSelectBusinessUnitsFormComponent extends AbstractFormBa
   @Input({ required: true }) public businessUnits!: IOpalFinesBusinessUnit[];
 
   /**
+   * Report-specific heading resolved by the parent route component.
+   */
+  @Input({ required: true }) public reportHeading!: string;
+
+  /**
    * Previously selected business unit ids to restore when returning from the warning screen.
    */
   @Input() public initialSelectedBusinessUnitIds: number[] = [];
+
+  /**
+   * Page heading displayed above the business unit form.
+   */
+  public readonly pageHeading = FINES_REPORTS_ROUTING_TITLES.children.selectBusinessUnits;
 
   /**
    * Emits when the user selects the cancel link.

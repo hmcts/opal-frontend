@@ -1,12 +1,7 @@
 <div class="govuk-grid-column-two-thirds">
-  <opal-lib-govuk-heading-with-caption
-    captionText="Create report"
-    [headingText]="reportHeading"
-  ></opal-lib-govuk-heading-with-caption>
-  <h2 class="govuk-heading-m">{{ pageHeading }}</h2>
-
   <app-fines-reports-select-business-units-form
     [businessUnits]="businessUnits"
+    [reportHeading]="reportHeading"
     [initialSelectedBusinessUnitIds]="selectedBusinessUnitIds()"
     (cancelSelection)="handleCancel()"
     (unsavedChanges)="handleUnsavedChanges($event)"

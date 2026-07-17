@@ -2,12 +2,10 @@ import { ChangeDetectionStrategy, Component, computed, inject, OnInit } from '@a
 import { ActivatedRoute, Router } from '@angular/router';
 import { AbstractFormParentBaseComponent } from '@hmcts/opal-frontend-common/components/abstract/abstract-form-parent-base';
 import { IAbstractFormBaseForm } from '@hmcts/opal-frontend-common/components/abstract/abstract-form-base/interfaces';
-import { GovukHeadingWithCaptionComponent } from '@hmcts/opal-frontend-common/components/govuk/govuk-heading-with-caption';
 import { IOpalFinesBusinessUnit } from '@services/fines/opal-fines-service/interfaces/opal-fines-business-unit.interface';
 import { IOpalFinesBusinessUnitRefData } from '@services/fines/opal-fines-service/interfaces/opal-fines-business-unit-ref-data.interface';
 import { IOpalFinesReport } from '@services/fines/opal-fines-service/interfaces/opal-fines-report.interface';
 import { FINES_REPORTS_ROUTING_PATHS } from '../routing/constants/fines-reports-routing-paths.constant';
-import { FINES_REPORTS_ROUTING_TITLES } from '../routing/constants/fines-reports-routing-titles.constant';
 import { FINES_REPORTS_CREATE_ROUTING_PATHS } from '../routing/constants/fines-reports-create-routing-paths.constant';
 import { FinesReportsStore } from '../stores/fines-reports.store';
 import { FinesReportsSelectBusinessUnitsFormComponent } from './fines-reports-select-business-units-form/fines-reports-select-business-units-form.component';
@@ -15,7 +13,7 @@ import { IFinesReportsSelectBusinessUnitsFormState } from './interfaces/fines-re
 
 @Component({
   selector: 'app-fines-reports-select-business-units',
-  imports: [GovukHeadingWithCaptionComponent, FinesReportsSelectBusinessUnitsFormComponent],
+  imports: [FinesReportsSelectBusinessUnitsFormComponent],
   templateUrl: './fines-reports-select-business-units.component.html',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
@@ -26,7 +24,6 @@ export class FinesReportsSelectBusinessUnitsComponent extends AbstractFormParent
   private readonly reportTypeId = this.route.parent?.snapshot.paramMap.get('reportTypeId') ?? '';
   private readonly report = this.route.snapshot.data['report'] as IOpalFinesReport | null | undefined;
 
-  public readonly pageHeading = FINES_REPORTS_ROUTING_TITLES.children.selectBusinessUnits;
   /**
    * Report heading resolved from route data for the current report journey.
    */

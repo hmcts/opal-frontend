@@ -131,7 +131,6 @@ describe('FinesReportsSelectBusinessUnitsComponent', () => {
   ])('should render the report heading for %s', async (reportTypeId, reportHeading) => {
     const { component, fixture } = await setup(reportTypeId);
 
-    expect(component.pageHeading).toBe('Select business units');
     expect(component.reportHeading).toBe(reportHeading);
     expect(fixture.nativeElement.querySelector('.govuk-caption-l')?.textContent?.trim()).toBe('Create report');
     expect(fixture.nativeElement.querySelector('h1')?.textContent).toContain(reportHeading);

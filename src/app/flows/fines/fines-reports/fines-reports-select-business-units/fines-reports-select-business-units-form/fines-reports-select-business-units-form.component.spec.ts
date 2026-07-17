@@ -25,6 +25,7 @@ describe('FinesReportsSelectBusinessUnitsFormComponent', () => {
     fixture = TestBed.createComponent(FinesReportsSelectBusinessUnitsFormComponent);
     component = fixture.componentInstance;
     component.businessUnits = units;
+    component.reportHeading = 'Operational reports (by enforcement)';
     component.initialSelectedBusinessUnitIds = initialSelectedBusinessUnitIds;
     fixture.detectChanges();
 
@@ -81,6 +82,15 @@ describe('FinesReportsSelectBusinessUnitsFormComponent', () => {
     expect(fixture.nativeElement.textContent).toContain('Historical Debt');
     expect(fixture.nativeElement.textContent).toContain('London Central & South East');
     expect(fixture.nativeElement.textContent).toContain('London Confiscation Orders');
+  });
+
+  it('should render the report and page headings', async () => {
+    const { component, fixture } = await setup();
+
+    expect(component.pageHeading).toBe('Select business units');
+    expect(fixture.nativeElement.querySelector('.govuk-caption-l')?.textContent?.trim()).toBe('Create report');
+    expect(fixture.nativeElement.querySelector('h1')?.textContent).toContain(component.reportHeading);
+    expect(fixture.nativeElement.querySelector('h2')?.textContent?.trim()).toBe('Select business units');
   });
 
   it('should restore previously selected business unit ids when provided', async () => {
