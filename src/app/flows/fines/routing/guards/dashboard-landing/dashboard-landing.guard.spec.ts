@@ -10,7 +10,7 @@ import { createSpyObj } from '@app/testing/create-spy-obj.helper';
 import { of, throwError } from 'rxjs';
 import { ACCOUNTS_PERMISSIONS } from '@app/flows/fines/constants/accounts-permissions.constant';
 import { SEARCH_PERMISSIONS } from '@app/flows/fines/constants/search-permissions.constant';
-import { REPORTS_PRIMARY_NAVIGATION_PERMISSIONS } from '@app/flows/fines/constants/reports-primary-navigation-permissions.constant';
+import { REPORTS_PERMISSIONS } from '@app/flows/fines/constants/reports-permissions.constant';
 import {
   RELEASE_1A_FEATURE_FLAG,
   RELEASE_1C_ADMINISTRATION_FEATURE_FLAG,
@@ -265,7 +265,7 @@ describe('dashboardLandingGuard', () => {
   it('should route to Reports when Search and Accounts are unavailable but Reports is permitted', async () => {
     const expectedUrlTree = new UrlTree();
     mockOpalUserService.getLoggedInUserState.mockReturnValue(
-      of(createUserStateWithPermissions([REPORTS_PRIMARY_NAVIGATION_PERMISSIONS[0]])),
+      of(createUserStateWithPermissions([REPORTS_PERMISSIONS[0]])),
     );
     mockRouter.createUrlTree.mockReturnValue(expectedUrlTree);
 
@@ -283,7 +283,7 @@ describe('dashboardLandingGuard', () => {
   it('should resolve release-1c enforcement operational reporting before routing report-only users', async () => {
     const expectedUrlTree = new UrlTree();
     mockOpalUserService.getLoggedInUserState.mockReturnValue(
-      of(createUserStateWithPermissions([REPORTS_PRIMARY_NAVIGATION_PERMISSIONS[0]])),
+      of(createUserStateWithPermissions([REPORTS_PERMISSIONS[0]])),
     );
     mockRouter.createUrlTree.mockReturnValue(expectedUrlTree);
 
@@ -310,7 +310,7 @@ describe('dashboardLandingGuard', () => {
       [RELEASE_1C_ENFORCEMENT_OPERATIONAL_REPORTING_FEATURE_FLAG]: false,
     });
     mockOpalUserService.getLoggedInUserState.mockReturnValue(
-      of(createUserStateWithPermissions([REPORTS_PRIMARY_NAVIGATION_PERMISSIONS[0]])),
+      of(createUserStateWithPermissions([REPORTS_PERMISSIONS[0]])),
     );
     mockRouter.createUrlTree.mockReturnValue(expectedUrlTree);
 

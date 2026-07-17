@@ -30,7 +30,7 @@ import { FINES_ROUTING_PATHS } from './flows/fines/routing/constants/fines-routi
 import { FINES_DRAFT_ROUTING_PATHS } from './flows/fines/fines-draft/routing/constants/fines-draft-routing-paths.constant';
 import { ACCOUNTS_PERMISSIONS } from './flows/fines/constants/accounts-permissions.constant';
 import { SEARCH_PERMISSIONS } from './flows/fines/constants/search-permissions.constant';
-import { REPORTS_PRIMARY_NAVIGATION_PERMISSIONS } from './flows/fines/constants/reports-primary-navigation-permissions.constant';
+import { REPORTS_PERMISSIONS } from './flows/fines/constants/reports-permissions.constant';
 import {
   RELEASE_1A_FEATURE_FLAG,
   RELEASE_1C_ADMINISTRATION_FEATURE_FLAG,
@@ -439,7 +439,7 @@ describe('AppComponent - browser', () => {
 
   it('should show Reports in primary navigation when the user has a report permission in any business unit', () => {
     globalStore.setAuthenticated(true);
-    globalStore.setUserState(createUserStateWithPermissions([REPORTS_PRIMARY_NAVIGATION_PERMISSIONS[0]]));
+    globalStore.setUserState(createUserStateWithPermissions([REPORTS_PERMISSIONS[0]]));
 
     const fixture = TestBed.createComponent(AppComponent);
     fixture.detectChanges();
@@ -453,7 +453,7 @@ describe('AppComponent - browser', () => {
       ...DEFAULT_RELEASE_FEATURE_FLAGS,
       [RELEASE_1C_ENFORCEMENT_OPERATIONAL_REPORTING_FEATURE_FLAG]: false,
     });
-    globalStore.setUserState(createUserStateWithPermissions([REPORTS_PRIMARY_NAVIGATION_PERMISSIONS[0]]));
+    globalStore.setUserState(createUserStateWithPermissions([REPORTS_PERMISSIONS[0]]));
 
     const fixture = TestBed.createComponent(AppComponent);
     fixture.detectChanges();
