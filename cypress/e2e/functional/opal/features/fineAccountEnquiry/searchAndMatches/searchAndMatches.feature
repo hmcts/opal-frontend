@@ -450,14 +450,6 @@ Feature: Account Search and Matches
       | Last name exact match   | Yes             |
       | First names exact match | No              |
       | Include aliases         | Yes             |
-      | individual last name    | Smith           |
-      | first names             | John            |
-      | Date of birth           | 15/05/1980      |
-      | Address line 1          | 123 Test Street |
-      | Postcode                | SW1A 1AA        |
-      | Last name exact match   | Yes             |
-      | First names exact match | No              |
-      | Include aliases         | Yes             |
     Then the intercepted "defendant" account search API call will contain the following parameters:
       | surname                       | Smith           |
       | exact_match_surname           | true            |
