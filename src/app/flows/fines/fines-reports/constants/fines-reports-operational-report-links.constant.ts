@@ -1,5 +1,5 @@
 import { IDashboardPageConfigurationLink } from '@hmcts/opal-frontend-common/pages/dashboard-page/interfaces';
-import { OPERATIONAL_REPORT_ROUTE_PERMISSIONS } from '@app/flows/fines/constants/operational-report-route-permissions.constant';
+import { FINES_PERMISSIONS } from '@app/constants/fines-permissions.constant';
 import { FINES_ROUTING_PATHS } from '../../routing/constants/fines-routing-paths.constant';
 import { FINES_REPORTS_SUMMARY_LIST_ROUTING_PATHS } from '../fines-reports-summary-list/routing/constants/fines-reports-summary-list-routing-paths.constant';
 import { FINES_REPORTS_SUMMARY_LIST_ROUTING_TITLES } from '../fines-reports-summary-list/routing/constants/fines-reports-summary-list-routing-titles.constant';
@@ -16,7 +16,7 @@ export const FINES_REPORTS_OPERATIONAL_REPORT_LINKS: IDashboardPageConfiguration
       FINES_ROUTING_PATHS.children.reports.children['summaryList'],
     ],
     fragment: null,
-    permissionIds: [...OPERATIONAL_REPORT_ROUTE_PERMISSIONS],
+    permissionIds: [FINES_PERMISSIONS['search-and-view-accounts']],
     newTab: false,
     style: 'guidance-panel-blue',
   },
@@ -31,7 +31,7 @@ export const FINES_REPORTS_OPERATIONAL_REPORT_LINKS: IDashboardPageConfiguration
       FINES_ROUTING_PATHS.children.reports.children['summaryList'],
     ],
     fragment: null,
-    permissionIds: [...OPERATIONAL_REPORT_ROUTE_PERMISSIONS],
+    permissionIds: [FINES_PERMISSIONS['search-and-view-accounts']],
     newTab: false,
     style: 'guidance-panel-blue',
   },
