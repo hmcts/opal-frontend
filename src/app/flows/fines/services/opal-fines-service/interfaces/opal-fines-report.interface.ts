@@ -1,5 +1,5 @@
 import { IOpalFinesReportParameters } from './opal-fines-report-parameters.interface';
-import { TOpalFinesSupportedFileType } from './opal-fines-supported-file-type.type';
+import { TOpalFinesSupportedFileType } from '../types/opal-fines-supported-file-type.type';
 
 export interface IOpalFinesReport {
   report_id: string;
