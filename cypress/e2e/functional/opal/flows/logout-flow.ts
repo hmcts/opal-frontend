@@ -18,15 +18,12 @@ export class LogoutFlow {
    */
   signOut(): void {
     cy.document().then((doc) => {
-      const menu = logoutMenuSelectors
-        .map((s) => doc.querySelector(s))
-        .find(Boolean) as HTMLElement | null;
+      const menu = logoutMenuSelectors.map((s) => doc.querySelector(s)).find(Boolean) as HTMLElement | null;
       if (menu && !menu.classList.contains('open')) {
         cy.wrap(menu).click({ force: true });
       }
 
-      let signOutEl =
-        doc.querySelector(logoutSignOutButtonSelector) as HTMLElement | null;
+      let signOutEl = doc.querySelector(logoutSignOutButtonSelector) as HTMLElement | null;
 
       if (!signOutEl) {
         const candidates = Array.from(doc.querySelectorAll('button, a'));
