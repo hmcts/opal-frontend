@@ -61,47 +61,4 @@ export class LogoutFlow {
       /(login\.microsoftonline\.com|microsoftonline\.com|login\.windows\.net|\/auth(?:\/|$)|\/sign-?in(?:\/|$)|\/login(?:\/|$))/i;
     cy.url({ timeout: 15000 }).should('match', authUrlPattern);
   }
-
-  /**
-   * Wait for a page-level header to become visible.
-   * @param timeout
-   */
-  private waitForPageLoad(timeout: number = 10000): void {
-    const headerSelector = '[data-cy="page-header"]';
-
-    // If the page-header exists, wait for it to be visible; otherwise ensure body exists.
-    cy.document().then((doc) => {
-      if (doc.querySelector(headerSelector)) {
-        cy.get(headerSelector, { timeout }).should('be.visible');
-      } else {
-        // No explicit header present on this page; wait for body to be present as a lightweight sync point.
-        cy.get('body', { timeout }).should('exist');
-      }
-    });
-  }
-
-  /**
-   * Click an element by selector, ensuring visibility first.
-   * @param selector
-   */
-  private clickElement(selector: string): void {
-    cy.get(selector, { timeout: 10000 }).should('be.visible').click({ force: true });
-  }
-
-  /**
-   * Click navigation elements with data-cy fallback to text match.
-   * @param elementName
-   */
-  private clickNavElement(elementName: string): void {
-    const selector = `a[data-cy="${elementName}"], button[data-cy="${elementName}"], [data-cy="${elementName}"]`;
-
-    cy.document().then((doc) => {
-      const el = doc.querySelector(selector) as HTMLElement | null;
-      if (el) {
-        cy.wrap(el).click({ force: true });
-      } else {
-        cy.contains(new RegExp(`^${elementName}$`, 'i'), { timeout: 10000 }).click({ force: true });
-      }
-    });
-  }
 }
