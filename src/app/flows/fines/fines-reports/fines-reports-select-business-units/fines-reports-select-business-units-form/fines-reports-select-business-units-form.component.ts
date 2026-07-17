@@ -177,9 +177,9 @@ export class FinesReportsSelectBusinessUnitsFormComponent extends AbstractFormBa
    */
   private initialiseBusinessUnitForm(): void {
     const record =
-      this.businessUnits.length > 1
-        ? this.createBusinessUnitCheckboxControls()
-        : new FormRecord<FormControl<boolean>>({});
+      this.businessUnits.length === 1
+        ? new FormRecord<FormControl<boolean>>({})
+        : this.createBusinessUnitCheckboxControls();
     this.allBusinessUnitsControl = new FormControl(false, { nonNullable: true });
 
     this.form = new FormGroup(

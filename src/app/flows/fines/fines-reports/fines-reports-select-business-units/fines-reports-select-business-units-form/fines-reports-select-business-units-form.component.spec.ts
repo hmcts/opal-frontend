@@ -184,6 +184,21 @@ describe('FinesReportsSelectBusinessUnitsFormComponent', () => {
     expect(fixture.nativeElement.textContent).toContain('Historical Debt');
   });
 
+  it('should prevent submission when no business units are available', async () => {
+    const { component } = await setup([]);
+    const submitSpy = vi.spyOn(component['formSubmit'], 'emit');
+
+    component.handleFormSubmit({ submitter: null } as SubmitEvent);
+
+    expect(component['form'].valid).toBe(false);
+    expect(component['form'].errors).toEqual({
+      fines_reports_select_business_unit_ids: {
+        required: true,
+      },
+    });
+    expect(submitSpy).not.toHaveBeenCalled();
+  });
+
   it('should emit cancelSelection when cancel is selected', async () => {
     const { component, fixture } = await setup();
     const cancelSpy = vi.spyOn(component.cancelSelection, 'emit');
