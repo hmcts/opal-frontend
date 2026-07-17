@@ -9,28 +9,33 @@ import { LogoutFlow } from '../../e2e/functional/opal/flows/logout-flow';
 
 const logout = () => new LogoutFlow();
 
-When(/I click on (create account|create-account|create-and-manage|search|account|accounts)/i, (target: string) => {
-  // normalize to space-separated, lower-case key so hyphenated variants match
-  const key = target
-    .toLowerCase()
-    .replace(/[-\s]+/g, ' ')
-    .trim();
-
-  if (key === 'create account' || key === 'create and manage') {
-    logout().clickCreateAccount();
-  } else if (key === 'search') {
-    logout().clickSearch();
-  } else if (key === 'account' || key === 'accounts') {
-    logout().clickAccount();
-  } else {
-    throw new Error(`Unhandled click target: ${target}`);
-  }
-});
-
+/**
+ * Perform sign out action using the LogoutFlow helper.
+ */
 When('I sign out', () => {
   logout().signOut();
 });
 
+/**
+ * Verify current page. For "Sign in" assert SSO redirect; otherwise check page header.
+ *
+ * @param pageName - expected page name (e.g. "Sign in")
+ */
 Then('I should be on the {string} page', (pageName: string) => {
-  logout().verifyPage(pageName);
+  const normalized = pageName
+    .toLowerCase()
+    .replace(/[-\s]+/g, ' ')
+    .trim();
+  if (normalized === 'sign in') {
+    logout().verifySignInFlow();
+  } else {
+    logout().verifyPage(pageName);
+  }
+});
+
+/**
+ * Verify the user is being redirected to the sign-in flow (SSO auth entry point).
+ */
+Then('I should be redirected to the sign-in page', () => {
+  logout().verifySignInFlow();
 });

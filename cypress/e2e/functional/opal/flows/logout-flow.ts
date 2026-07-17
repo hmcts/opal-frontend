@@ -8,30 +8,6 @@
  */
 export class LogoutFlow {
   /**
-   * Click the "Create account" control.
-   */
-  clickCreateAccount(): void {
-    this.clickNavElement('create-account');
-    this.waitForPageLoad();
-  }
-
-  /**
-   * Click the "Search" control.
-   */
-  clickSearch(): void {
-    this.clickNavElement('search');
-    this.waitForPageLoad();
-  }
-
-  /**
-   * Open the account area or user menu.
-   */
-  clickAccount(): void {
-    this.clickNavElement('account');
-    this.waitForPageLoad();
-  }
-
-  /**
    * Sign out from the application.
    */
   signOut(): void {
@@ -72,35 +48,18 @@ export class LogoutFlow {
    * @param pageName - The expected page name to verify
    */
   verifyPage(pageName: string): void {
-    const headerSelector = '[data-cy="page-header"] h1';
-    const altSelectors = ['[data-cy="page-title"]', 'h1', 'h2'];
-    const slug = pageName.toLowerCase().replace(/\s+/g, '-');
-    const timeout = 15000;
+    cy.get('[data-cy="page-header"] h1', { timeout: 10000 }).should('contain.text', pageName);
+  }
 
-    // Prefer the explicit page-header if present, otherwise try sensible fallbacks,
-    // finally fall back to URL pathname or document title checks.
-    cy.document().then((doc) => {
-      if (doc.querySelector(headerSelector)) {
-        cy.get(headerSelector, { timeout }).should('contain.text', pageName);
-        return;
-      }
-
-      const foundAlt = altSelectors.find((s) => Boolean(doc.querySelector(s)));
-      if (foundAlt) {
-        cy.get(foundAlt!, { timeout }).should('contain.text', pageName);
-        return;
-      }
-
-      // Fallback: assert on pathname or document.title to reduce flakiness when headers are absent.
-      cy.location('pathname', { timeout }).then((path) => {
-        if (typeof path === 'string' && path.includes(slug)) {
-          // pathname contains expected slug — pass
-          return;
-        }
-        // final fallback: ensure document title contains the page name (case-insensitive)
-        cy.title({ timeout }).should('match', new RegExp(pageName, 'i'));
-      });
-    });
+  /**
+   * Verify the user is being redirected to the sign-in flow (SSO auth entry point).
+   *
+   * @returns void
+   */
+  verifySignInFlow(): void {
+    const authUrlPattern =
+      /(login\.microsoftonline\.com|microsoftonline\.com|login\.windows\.net|\/auth(?:\/|$)|\/sign-?in(?:\/|$)|\/login(?:\/|$))/i;
+    cy.url({ timeout: 15000 }).should('match', authUrlPattern);
   }
 
   /**
