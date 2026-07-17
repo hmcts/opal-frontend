@@ -97,10 +97,15 @@ describe('FinesMacAccountDetailsComponent', () => {
       ],
     });
 
-  const measureNativePageChange = (selector: string, expectedTitle: string, performanceMessage: string) => {
+  const measureNativePageChange = (
+    selector: string,
+    expectedTitle: string,
+    performanceMessage: string,
+    readySelector?: string,
+  ) => {
     cy.get(selector).should('exist');
 
-    cy.window().then((win) => {
+    return cy.window().then((win) => {
       const element = win.document.querySelector(selector) as HTMLElement;
 
       expect(element, `${selector} should exist`).to.not.be.null;
@@ -108,12 +113,17 @@ describe('FinesMacAccountDetailsComponent', () => {
       const start = win.performance.now();
       element.click();
 
-      cy.get(L.pageTitle)
+      return cy
+        .get(L.pageTitle)
         .should('have.text', expectedTitle)
         .then(() => {
           const elapsed = win.performance.now() - start;
 
           expect(elapsed, performanceMessage).to.be.lessThan(250);
+
+          if (readySelector) {
+            return cy.get(readySelector).should('exist');
+          }
         });
     });
   };
@@ -143,6 +153,7 @@ describe('FinesMacAccountDetailsComponent', () => {
       // Defining selectors rather than re-using due to directly accessing DOM for more accurate performance measurements.
       const personalDetailsTabSelector = `${L.personalDetails} a.govuk-link`;
       const cancelLinkSelector = 'a.govuk-link.button-link';
+      const personalDetailsReadySelector = 'app-fines-mac-personal-details-form form';
 
       cy.get(L.pageTitle).should('have.text', 'Account details');
 
@@ -150,8 +161,10 @@ describe('FinesMacAccountDetailsComponent', () => {
         personalDetailsTabSelector,
         'Personal details',
         'Personal Details page should load within 250ms',
+        personalDetailsReadySelector,
+      ).then(() =>
+        measureNativePageChange(cancelLinkSelector, 'Account details', 'Account Details page should load within 250ms'),
       );
-      measureNativePageChange(cancelLinkSelector, 'Account details', 'Account Details page should load within 250ms');
     },
   );
 
@@ -170,6 +183,7 @@ describe('FinesMacAccountDetailsComponent', () => {
       // Defining selectors rather than re-using due to directly accessing DOM for more accurate performance measurements.
       const contactDetailsTabSelector = `${L.contactDetails} a.govuk-link`;
       const cancelLinkSelector = 'a.govuk-link.button-link';
+      const contactDetailsReadySelector = 'app-fines-mac-contact-details-form form';
 
       cy.get(L.pageTitle).should('have.text', 'Account details');
 
@@ -177,8 +191,10 @@ describe('FinesMacAccountDetailsComponent', () => {
         contactDetailsTabSelector,
         'Defendant contact details',
         'Contact Details page should load within 250ms',
+        contactDetailsReadySelector,
+      ).then(() =>
+        measureNativePageChange(cancelLinkSelector, 'Account details', 'Account Details page should load within 250ms'),
       );
-      measureNativePageChange(cancelLinkSelector, 'Account details', 'Account Details page should load within 250ms');
     },
   );
 
@@ -197,6 +213,7 @@ describe('FinesMacAccountDetailsComponent', () => {
       // Defining selectors rather than re-using due to directly accessing DOM for more accurate performance measurements.
       const employerDetailsTabSelector = `${L.employerDetails} a.govuk-link`;
       const cancelLinkSelector = 'a.govuk-link.button-link';
+      const employerDetailsReadySelector = 'app-fines-mac-employer-details-form form';
 
       cy.get(L.pageTitle).should('have.text', 'Account details');
 
@@ -204,8 +221,10 @@ describe('FinesMacAccountDetailsComponent', () => {
         employerDetailsTabSelector,
         'Employer details',
         'Employer Details page should load within 250ms',
+        employerDetailsReadySelector,
+      ).then(() =>
+        measureNativePageChange(cancelLinkSelector, 'Account details', 'Account Details page should load within 250ms'),
       );
-      measureNativePageChange(cancelLinkSelector, 'Account details', 'Account Details page should load within 250ms');
     },
   );
 
@@ -224,11 +243,18 @@ describe('FinesMacAccountDetailsComponent', () => {
       // Defining selectors rather than re-using due to directly accessing DOM for more accurate performance measurements.
       const paymentTermsTabSelector = `${L.paymentTerms} a.govuk-link`;
       const cancelLinkSelector = 'a.govuk-link.button-link';
+      const paymentTermsReadySelector = 'app-fines-mac-payment-terms-form form';
 
       cy.get(L.pageTitle).should('have.text', 'Account details');
 
-      measureNativePageChange(paymentTermsTabSelector, 'Payment terms', 'Payment Terms page should load within 250ms');
-      measureNativePageChange(cancelLinkSelector, 'Account details', 'Account Details page should load within 250ms');
+      measureNativePageChange(
+        paymentTermsTabSelector,
+        'Payment terms',
+        'Payment Terms page should load within 250ms',
+        paymentTermsReadySelector,
+      ).then(() =>
+        measureNativePageChange(cancelLinkSelector, 'Account details', 'Account Details page should load within 250ms'),
+      );
     },
   );
 
@@ -247,6 +273,7 @@ describe('FinesMacAccountDetailsComponent', () => {
       // Defining selectors rather than re-using due to directly accessing DOM for more accurate performance measurements.
       const commentsAndNotesTabSelector = `${L.accountCommentsAndNotes} a.govuk-link`;
       const cancelLinkSelector = 'a.govuk-link.button-link';
+      const commentsAndNotesReadySelector = 'app-fines-mac-account-comments-notes-form form';
 
       cy.get(L.pageTitle).should('have.text', 'Account details');
 
@@ -254,8 +281,10 @@ describe('FinesMacAccountDetailsComponent', () => {
         commentsAndNotesTabSelector,
         'Account comments and notes',
         'Comments and Notes page should load within 250ms',
+        commentsAndNotesReadySelector,
+      ).then(() =>
+        measureNativePageChange(cancelLinkSelector, 'Account details', 'Account Details page should load within 250ms'),
       );
-      measureNativePageChange(cancelLinkSelector, 'Account details', 'Account Details page should load within 250ms');
     },
   );
 
