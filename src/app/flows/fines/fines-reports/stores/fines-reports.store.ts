@@ -2,10 +2,15 @@ import { computed } from '@angular/core';
 import { patchState, signalStore, withComputed, withMethods, withState } from '@ngrx/signals';
 import { IFinesReportsState } from './interfaces/fines-reports-state.interface';
 
+const FINES_REPORTS_INITIAL_STATE: IFinesReportsState = {
+  selectedReportTypeId: null,
+  selectedBusinessUnitIds: [],
+};
+
 export const FinesReportsStore = signalStore(
   withState<IFinesReportsState>(() => ({
-    selectedReportTypeId: null,
-    selectedBusinessUnitIds: [],
+    ...FINES_REPORTS_INITIAL_STATE,
+    selectedBusinessUnitIds: [...FINES_REPORTS_INITIAL_STATE.selectedBusinessUnitIds],
   })),
   withComputed((store) => ({
     hasSelectedBusinessUnits: computed(() => store.selectedBusinessUnitIds().length > 0),
@@ -19,15 +24,13 @@ export const FinesReportsStore = signalStore(
     },
     setSelectedBusinessUnitIds(reportTypeId: string, selectedBusinessUnitIds: number[]): void {
       patchState(store, {
+        ...FINES_REPORTS_INITIAL_STATE,
         selectedReportTypeId: reportTypeId,
         selectedBusinessUnitIds: [...selectedBusinessUnitIds],
       });
     },
     clearSelectedBusinessUnitIds(): void {
-      patchState(store, {
-        selectedReportTypeId: null,
-        selectedBusinessUnitIds: [],
-      });
+      patchState(store, FINES_REPORTS_INITIAL_STATE);
     },
   })),
 );
