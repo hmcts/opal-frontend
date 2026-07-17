@@ -9,6 +9,7 @@ export const FINES_REPORTS_DEFINITIONS: IFinesReportsDefinition[] = [
     heading: FINES_REPORTS_SUMMARY_LIST_ROUTING_TITLES.children.yourReports,
     title: FINES_REPORTS_SUMMARY_LIST_ROUTING_TITLES.children.yourReports,
     permissionIds: [],
+    operationalLinkId: null,
     highlightLinkId: 'user-reports',
     highlightLinkText: 'View all your reports',
   },
@@ -18,6 +19,8 @@ export const FINES_REPORTS_DEFINITIONS: IFinesReportsDefinition[] = [
     title: FINES_REPORTS_SUMMARY_LIST_ROUTING_TITLES.children.operationalReportsByEnforcement,
     permissionIds: OPERATIONAL_REPORT_ROUTE_PERMISSIONS,
     operationalLinkId: 'finesReportsOperationalReportsByEnforcementLink',
+    highlightLinkId: null,
+    highlightLinkText: null,
   },
   {
     id: FINES_REPORTS_SUMMARY_LIST_ROUTING_PATHS.children.operationalReportsByPayments,
@@ -25,5 +28,7 @@ export const FINES_REPORTS_DEFINITIONS: IFinesReportsDefinition[] = [
     title: FINES_REPORTS_SUMMARY_LIST_ROUTING_TITLES.children.operationalReportsByPayments,
     permissionIds: OPERATIONAL_REPORT_ROUTE_PERMISSIONS,
     operationalLinkId: 'finesReportsOperationalReportsByPaymentLink',
+    highlightLinkId: null,
+    highlightLinkText: null,
   },
 ];
