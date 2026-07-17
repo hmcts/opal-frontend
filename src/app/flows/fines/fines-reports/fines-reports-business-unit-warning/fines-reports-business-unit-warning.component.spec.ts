@@ -96,6 +96,6 @@ describe('FinesReportsBusinessUnitWarningComponent', () => {
     const { component } = await setup([61, 67, 68, 69]);
 
     expect(component.selectedBusinessUnitIds()).toEqual([61, 67, 68, 69]);
-    expect(component.warningHeading).toBe('You have selected 4 business units');
+    expect(component.warningHeading()).toBe('You have selected 4 business units');
   });
 });

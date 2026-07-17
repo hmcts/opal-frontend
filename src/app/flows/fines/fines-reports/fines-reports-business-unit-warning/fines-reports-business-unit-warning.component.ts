@@ -1,9 +1,10 @@
-import { ChangeDetectionStrategy, Component, inject, OnInit } from '@angular/core';
+import { ChangeDetectionStrategy, Component, computed, inject, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { GovukCancelLinkComponent } from '@hmcts/opal-frontend-common/components/govuk/govuk-cancel-link';
 import { GovukButtonDirective } from '@hmcts/opal-frontend-common/directives/govuk-button';
 import { FINES_REPORTS_CREATE_ROUTING_PATHS } from '../routing/constants/fines-reports-create-routing-paths.constant';
 import { FinesReportsStore } from '../stores/fines-reports.store';
+import { FINES_REPORTS_BUSINESS_UNIT_WARNING_CONTENT } from './constants/fines-reports-business-unit-warning-content.constant';
 
 @Component({
   selector: 'app-fines-reports-business-unit-warning',
@@ -17,15 +18,8 @@ export class FinesReportsBusinessUnitWarningComponent implements OnInit {
   private readonly router = inject(Router);
 
   public readonly selectedBusinessUnitIds = this.finesReportsStore.selectedBusinessUnitIds;
-
-  /**
-   * Returns the warning heading using the current selected business unit count.
-   *
-   * @returns The warning heading shown on the business unit warning page.
-   */
-  public get warningHeading(): string {
-    return `You have selected ${this.selectedBusinessUnitIds().length} business units`;
-  }
+  public readonly warningContent = FINES_REPORTS_BUSINESS_UNIT_WARNING_CONTENT;
+  public readonly warningHeading = computed(() => this.warningContent.heading(this.selectedBusinessUnitIds().length));
 
   /**
    * Navigates back to the business unit selection screen with the current selections restored.
