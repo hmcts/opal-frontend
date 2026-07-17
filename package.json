@@ -185,7 +185,7 @@
     "typescript": "~6.0.0",
     "vitest": "^4.0.8"
   },
-  "packageManager": "yarn@4.17.0",
+  "packageManager": "yarn@4.17.1",
   "cypress-cucumber-preprocessor": {
     "nonGlobalStepDefinitions": true
   },
