@@ -20,7 +20,7 @@ Feature: Manual account creation - Payment Terms
     When I view the "Payment terms" task
     Then I should see the header containing text "Payment terms"
 
-  @JIRA-TEST-KEY:PO-5582
+  @R1A @JIRA-TEST-KEY:PO-5582
   Scenario: Payment terms data persists within the session [@PO-272, @PO-344, @PO-345, @PO-545, @PO-429, @PO-587, @PO-592]
     When I complete manual payment terms:
       | collection order            | No                                  |
@@ -56,7 +56,7 @@ Feature: Manual account creation - Payment Terms
       | enforcement action          | Hold enforcement on account (NOENF) |
       | enforcement reason          | Reason                              |
 
-  @JIRA-TEST-KEY:PO-5583
+  @R1A @JIRA-TEST-KEY:PO-5583
   Scenario: Restarting manual account clears previous payment terms [@PO-272, @PO-344, @PO-345, @PO-545, @PO-429, @PO-587, @PO-592]
     When I complete manual payment terms:
       | collection order | No                      |
@@ -80,7 +80,7 @@ Feature: Manual account creation - Payment Terms
       | days in default        | No           |
       | add enforcement action | No           |
 
-  @JIRA-TEST-KEY:PO-5584
+  @R1A @JIRA-TEST-KEY:PO-5584
   Scenario: Dismissing cancel keeps unsaved payment terms [@PO-272, @PO-344, @PO-345, @PO-429, @PO-587, @PO-592]
     When I complete manual payment terms:
       | collection order | No                      |
@@ -92,7 +92,7 @@ Feature: Manual account creation - Payment Terms
       | payment term     | Pay in full             |
       | pay in full by   | 1 weeks into the future |
 
-  @JIRA-TEST-KEY:PO-5585
+  @R1A @JIRA-TEST-KEY:PO-5585
   Scenario: Confirming cancel discards payment terms [@PO-272, @PO-344, @PO-345, @PO-429, @PO-587, @PO-592]
     When I complete manual payment terms:
       | collection order | No                      |
@@ -105,7 +105,7 @@ Feature: Manual account creation - Payment Terms
       | collection order | Not selected |
       | payment term     | Not selected |
 
-  @JIRA-TEST-KEY:PO-5586
+  @R1A @JIRA-TEST-KEY:PO-5586
   Scenario: (AC.16) Grey navigation links routes correctly [@PO-272, @PO-344, @PO-345, @PO-429, @PO-587, @PO-592]
     When I complete manual payment terms:
       | collection order | No                      |
@@ -114,7 +114,7 @@ Feature: Manual account creation - Payment Terms
     And I proceed to account comments from payment terms
     Then I should see the header containing text "Account comments and notes"
 
-  @JIRA-TEST-KEY:PO-5587
+  @R1A @JIRA-TEST-KEY:PO-5587
   Scenario: Payment terms - Axe Core
     Then I check the page for accessibility
 
