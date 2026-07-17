@@ -1,5 +1,11 @@
 /// <reference types="cypress" />
 
+import {
+  logoutMenuSelectors,
+  logoutSignOutButtonSelector,
+  logoutSignOutTextRegex,
+} from '../../../../shared/selectors/manual-account-creation/logout.locators';
+
 /**
  * LogoutFlow
  *
@@ -11,33 +17,29 @@ export class LogoutFlow {
    * Sign out from the application.
    */
   signOut(): void {
-    const menuSelectors = ['[data-cy="user-menu"]', '[data-cy="user-avatar"]', '[data-cy="user-toggle"]'];
-    const signOutDataCy = '[data-cy="sign-out-button"]';
-    const signOutTextRegex = /^sign[\s-]*out$/i;
-
     cy.document().then((doc) => {
-      // Ensure any user menu is open first (if present)
-      const menu = menuSelectors.map((s) => doc.querySelector(s)).find(Boolean) as HTMLElement | null;
+      const menu = logoutMenuSelectors
+        .map((s) => doc.querySelector(s))
+        .find(Boolean) as HTMLElement | null;
       if (menu && !menu.classList.contains('open')) {
         cy.wrap(menu).click({ force: true });
       }
 
-      // Prefer data-cy selector, otherwise find by visible text (buttons or links)
-      let signOutEl = doc.querySelector(signOutDataCy) as HTMLElement | null;
+      let signOutEl =
+        doc.querySelector(logoutSignOutButtonSelector) as HTMLElement | null;
 
       if (!signOutEl) {
         const candidates = Array.from(doc.querySelectorAll('button, a'));
         signOutEl = candidates.find((el) => {
           const txt = (el.textContent || '').trim();
-          return signOutTextRegex.test(txt);
+          return logoutSignOutTextRegex.test(txt);
         }) as HTMLElement | null;
       }
 
       if (signOutEl) {
         cy.wrap(signOutEl).click({ force: true });
       } else {
-        // Final fallback: Cypress text search (longer timeout)
-        cy.contains(signOutTextRegex, { timeout: 7000 }).click({ force: true });
+        cy.contains(logoutSignOutTextRegex, { timeout: 7000 }).click({ force: true });
       }
     });
   }
