@@ -294,5 +294,8 @@ export const AccountEnquiryResultsLocators = {
    * ```
    */
   linkByAccountNumber: (accountNumber: string) =>
-    `app-fines-sa-results-defendant-table-wrapper a.govuk-link:contains("${accountNumber}")`,
+    [
+      `app-fines-sa-results-defendant-table-wrapper a.govuk-link:contains("${accountNumber}")`,
+      `app-fines-sa-results-minor-creditor-table-wrapper a.govuk-link:contains("${accountNumber}")`,
+    ].join(', '),
 };

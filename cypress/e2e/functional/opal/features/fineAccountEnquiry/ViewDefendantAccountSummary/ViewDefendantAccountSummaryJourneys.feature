@@ -85,3 +85,19 @@ Feature: View Defendant Account Summary - End-to-end journeys
       | Name         | Mrs Mina SUMMARYMINOR{uniqUpper} |
       | Address      | 1 High Street                    |
       | BACS details | Provided                         |
+
+  @R1B @JIRA-STORY:PO-8927 @JIRA-EPIC:PO-812
+  Scenario: Search for a minor creditor account by account number and view the default account summary
+    Given I am logged in with email "opal-test@dev.platform.hmcts.net"
+    And a published account exists with an individual minor creditor:
+      | prosecutor case reference | PCRMINACC{uniqUpper} |
+      | title                     | Mrs                  |
+      | first name                | Mina                 |
+      | last name                 | AccountSearch{uniq}  |
+      | address line 1            | 1 High Street        |
+      | postcode                  | MC1 1AA              |
+    And I am on the Account Search page - Individuals form displayed by default
+    When I search for the last created account by account number
+    Then I see the Search results page
+    When I open the latest matching result from the search results
+    Then I should see the account header contains "Mrs Mina ACCOUNTSEARCH{uniqUpper}"
