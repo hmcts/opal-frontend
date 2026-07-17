@@ -31,7 +31,6 @@ Feature: Account Search and Matches - End-to-end journeys
       | individual last name      | JourneyInd{uniq}   |
       | first names               | Jordan             |
       | date of birth             | 15/05/2001         |
-      | national insurance number | AB123456C          |
       | address line 1            | 123 Journey Street |
       | postcode                  | AB1 2CD            |
     Then I see the Search results page

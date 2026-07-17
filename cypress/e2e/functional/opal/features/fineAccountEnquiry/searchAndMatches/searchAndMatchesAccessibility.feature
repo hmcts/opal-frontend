@@ -10,12 +10,11 @@ Feature: Search and Matches Accessibility
   Scenario: Check Search and Matches Accessibility with Axe-Core
     ## Check Accessibility on Individuals Tab
     When I search using the following inputs:
-      | individual last name      | * |
-      | first names               | * |
-      | Date of birth             | * |
-      | National Insurance number | * |
-      | Address line 1            | * |
-      | Postcode                  | * |
+      | individual last name | * |
+      | first names          | * |
+      | Date of birth        | * |
+      | Address line 1       | * |
+      | Postcode             | * |
     Then I check the page for accessibility
 
     ## Check Accessibility on Companies Tab
@@ -38,6 +37,13 @@ Feature: Search and Matches Accessibility
       | first names          | John  |
     Then I see the Search results page
     And I check the page for accessibility
+
+  @JIRA-STORY:PO-2953 @JIRA-EPIC:PO-2630
+  Scenario: AC10. Check Search and Matches Accessibility with Axe-Core for National Insurance quick search
+    ## Check Accessibility on National Insurance quick search
+    When I search using the following inputs:
+      | National Insurance number | * |
+    Then I check the page for accessibility
 
   @JIRA-STORY:PO-3720 @JIRA-EPIC:PO-3685 @JIRA-TEST-KEY:PO-3721 @R1B
   Scenario: Major Creditors search form is available when release 1b is enabled
