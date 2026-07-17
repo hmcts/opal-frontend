@@ -18,7 +18,7 @@ import { DEFENDANT_HEADER_ORG_MOCK } from '.././mocks/defendant_details_mock';
 
 const ACCOUNT_ENQUIRY_JIRA_LABEL = '@JIRA-LABEL:account-enquiry';
 
-const buildTags = (...tags: string[]): string[] => [...tags, ACCOUNT_ENQUIRY_JIRA_LABEL];
+const buildTags = (...tags: string[]): string[] => [...tags, ACCOUNT_ENQUIRY_JIRA_LABEL, '@R1B'];
 
 describe('Account Enquiry Payment Terms', () => {
   beforeEach(() => {
