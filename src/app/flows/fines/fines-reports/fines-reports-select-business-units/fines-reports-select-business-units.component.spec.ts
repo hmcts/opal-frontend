@@ -3,7 +3,7 @@ import { ActivatedRoute, Router, convertToParamMap } from '@angular/router';
 import { afterEach, describe, expect, it, vi } from 'vitest';
 import { FinesReportsSelectBusinessUnitsComponent } from './fines-reports-select-business-units.component';
 import { OPAL_FINES_BUSINESS_UNIT_REF_DATA_MOCK } from '@services/fines/opal-fines-service/mocks/opal-fines-business-unit-ref-data.mock';
-import { findFinesReportsDefinition } from '../constants/find-fines-reports-definition.constant';
+import { FINES_REPORT_SUMMARY_LIST_REPORT_CONFIGURATION } from '../fines-reports-summary-list/constants/fines-reports-summary-list-report-configuration.constant';
 import { FINES_REPORTS_SUMMARY_LIST_ROUTING_PATHS } from '../fines-reports-summary-list/routing/constants/fines-reports-summary-list-routing-paths.constant';
 import { IOpalFinesBusinessUnit } from '@services/fines/opal-fines-service/interfaces/opal-fines-business-unit.interface';
 import { FINES_REPORTS_ROUTING_PATHS } from '../routing/constants/fines-reports-routing-paths.constant';
@@ -57,7 +57,8 @@ describe('FinesReportsSelectBusinessUnitsComponent', () => {
     businessUnitWarningThreshold: number | null = DEFAULT_BUSINESS_UNIT_WARNING_THRESHOLD,
   ) => {
     const router = createRouterMock();
-    const reportHeading = findFinesReportsDefinition(reportTypeId)?.heading ?? '';
+    const reportHeading =
+      FINES_REPORT_SUMMARY_LIST_REPORT_CONFIGURATION.find((report) => report.id === reportTypeId)?.heading ?? '';
     const reportParameters =
       businessUnitWarningThreshold === null ? {} : { business_unit_warning_threshold: businessUnitWarningThreshold };
 
