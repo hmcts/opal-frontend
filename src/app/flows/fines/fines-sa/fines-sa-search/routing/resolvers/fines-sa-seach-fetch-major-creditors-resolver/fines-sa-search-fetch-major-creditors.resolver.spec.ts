@@ -3,7 +3,7 @@ import { ResolveFn } from '@angular/router';
 import { finesSaSearchFetchMajorCreditorsResolver } from './fines-sa-search-fetch-major-creditors.resolver';
 import { OpalFines } from '@services/fines/opal-fines-service/opal-fines.service';
 import { IOpalFinesMajorCreditorRefData } from '@services/fines/opal-fines-service/interfaces/opal-fines-major-creditor-ref-data.interface';
-import { firstValueFrom, Observable, of } from 'rxjs';
+import { firstValueFrom, Observable, of, throwError } from 'rxjs';
 import { OPAL_FINES_MAJOR_CREDITOR_REF_DATA_MOCK } from '@services/fines/opal-fines-service/mocks/opal-fines-major-creditor-ref-data.mock';
 import { FinesSaStoreType } from '../../../../stores/types/fines-sa.type';
 import { FinesSaStore } from '../../../../stores/fines-sa.store';
@@ -107,5 +107,39 @@ describe('finesSaSearchFetchMajorCreditorsResolver', () => {
       OPAL_FINES_CENTRAL_FUND_RESPONSE_MOCK,
       1,
     );
+  });
+
+  it('should return major creditors only when central fund is not returned', async () => {
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    mockFinesSaStore.setBusinessUnitIds([1]);
+    mockOpalFinesService.getCentralFund.mockReturnValue(of(null));
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    const route: any = { data: {} };
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    const state: any = {};
+
+    const result = await firstValueFrom(executeResolver(route, state) as Observable<IOpalFinesMajorCreditorRefData>);
+
+    expect(result).toEqual(OPAL_FINES_MAJOR_CREDITOR_REF_DATA_MOCK);
+    expect(mockOpalFinesService.getMajorCreditors).toHaveBeenCalledWith(1);
+    expect(mockOpalFinesService.getCentralFund).toHaveBeenCalledWith(1);
+    expect(mockFinesSaPayloadService.mapCentralFundToMajorCreditor).not.toHaveBeenCalled();
+  });
+
+  it('should return major creditors only when central fund request fails', async () => {
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    mockFinesSaStore.setBusinessUnitIds([1]);
+    mockOpalFinesService.getCentralFund.mockReturnValue(throwError(() => new Error('Central fund not found')));
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    const route: any = { data: {} };
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    const state: any = {};
+
+    const result = await firstValueFrom(executeResolver(route, state) as Observable<IOpalFinesMajorCreditorRefData>);
+
+    expect(result).toEqual(OPAL_FINES_MAJOR_CREDITOR_REF_DATA_MOCK);
+    expect(mockOpalFinesService.getMajorCreditors).toHaveBeenCalledWith(1);
+    expect(mockOpalFinesService.getCentralFund).toHaveBeenCalledWith(1);
+    expect(mockFinesSaPayloadService.mapCentralFundToMajorCreditor).not.toHaveBeenCalled();
   });
 });

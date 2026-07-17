@@ -1323,7 +1323,7 @@ export class OpalFines {
     const url = `${OPAL_FINES_PATHS.centralFunds}/${busunessUnitId}`;
     return this.http.get<IOpalFinesCentralFund>(url);
   }
-  
+
   /**
    * Retrieves the minor creditor account details history and notes tab data.
    * Unfiltered history uses the tab cache. Filtered history always makes a new request with the submitted query params.
