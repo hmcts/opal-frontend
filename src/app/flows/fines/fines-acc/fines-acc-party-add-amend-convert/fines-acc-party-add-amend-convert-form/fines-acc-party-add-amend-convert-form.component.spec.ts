@@ -1159,5 +1159,4 @@ describe('FinesAccPartyAddAmendConvertFormComponent', () => {
     fixture.detectChanges();
     expect(fixture.nativeElement.querySelector('form')?.getAttribute('autocomplete')).toBe('off');
   });
-
 });

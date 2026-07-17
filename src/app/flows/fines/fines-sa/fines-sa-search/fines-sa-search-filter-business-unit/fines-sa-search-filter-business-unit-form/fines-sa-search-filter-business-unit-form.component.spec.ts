@@ -195,5 +195,4 @@ describe('FinesSaSearchFilterBusinessUnitForm', () => {
   it('should set autocomplete="off" on the form', () => {
     expect(fixture.debugElement.query(By.css('form[autocomplete="off"]'))).toBeTruthy();
   });
-
 });
