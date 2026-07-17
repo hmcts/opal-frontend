@@ -494,4 +494,10 @@ describe('FinesMacOffenceDetailsMinorCreditorFormComponent', () => {
       FINES_MAC_OFFENCE_DETAILS_MINOR_CREDITOR_FORM_MOCK.formData,
     );
   });
+
+  it('should set autocomplete="off" on the form', () => {
+    fixture.detectChanges();
+    expect(fixture.nativeElement.querySelector('form')?.getAttribute('autocomplete')).toBe('off');
+  });
+
 });

@@ -41,4 +41,10 @@ describe('FinesAccEnfActionSelectFormComponent', () => {
 
     expect(emitSpy).toHaveBeenCalled();
   });
+
+  it('should set autocomplete="off" on the form', () => {
+    fixture.detectChanges();
+    expect(fixture.nativeElement.querySelector('form')?.getAttribute('autocomplete')).toBe('off');
+  });
+
 });

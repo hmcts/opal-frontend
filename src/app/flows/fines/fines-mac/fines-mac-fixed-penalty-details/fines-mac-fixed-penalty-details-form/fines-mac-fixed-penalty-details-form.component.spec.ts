@@ -565,4 +565,10 @@ describe('FinesMacFixedPenaltyFormComponent', () => {
 
     expect(component.form.get('fm_fp_court_details_originator_name')?.value).toBe('');
   });
+
+  it('should set autocomplete="off" on the form', () => {
+    fixture.detectChanges();
+    expect(fixture.nativeElement.querySelector('form')?.getAttribute('autocomplete')).toBe('off');
+  });
+
 });

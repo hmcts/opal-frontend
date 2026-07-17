@@ -215,4 +215,10 @@ describe('FinesMacCourtDetailsFormComponent', () => {
       FINES_MAC_COURT_DETAILS_COPY_BY_ACCOUNT_TYPE[FINES_ACCOUNT_TYPES['Fine'] as keyof typeof FINES_ACCOUNT_TYPES],
     );
   });
+
+  it('should set autocomplete="off" on the form', () => {
+    fixture.detectChanges();
+    expect(fixture.nativeElement.querySelector('form')?.getAttribute('autocomplete')).toBe('off');
+  });
+
 });

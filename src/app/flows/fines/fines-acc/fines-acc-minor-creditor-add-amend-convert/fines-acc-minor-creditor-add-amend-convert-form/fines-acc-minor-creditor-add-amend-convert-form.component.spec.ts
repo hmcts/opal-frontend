@@ -298,4 +298,10 @@ describe('FinesAccMinorCreditorAddAmendConvertFormComponent', () => {
     getControl(component.controls.postCode).setValue('AB12-3CD');
     expect(getControl(component.controls.postCode).hasError('alphanumericTextPattern')).toBe(true);
   });
+
+  it('should set autocomplete="off" on the form', () => {
+    fixture.detectChanges();
+    expect(fixture.nativeElement.querySelector('form')?.getAttribute('autocomplete')).toBe('off');
+  });
+
 });

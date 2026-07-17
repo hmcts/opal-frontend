@@ -1154,4 +1154,10 @@ describe('FinesAccPartyAddAmendConvertFormComponent', () => {
     expect(component.age).toBe(0);
     expect(component.ageLabel).toBe('');
   });
+
+  it('should set autocomplete="off" on the form', () => {
+    fixture.detectChanges();
+    expect(fixture.nativeElement.querySelector('form')?.getAttribute('autocomplete')).toBe('off');
+  });
+
 });

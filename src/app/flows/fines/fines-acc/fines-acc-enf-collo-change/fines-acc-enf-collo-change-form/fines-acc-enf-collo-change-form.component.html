@@ -24,7 +24,7 @@
   and add an enforcement action.
 </p>
 
-<form (submit)="handleFormSubmit($event)" [formGroup]="form" class="govuk-form">
+<form autocomplete="off" (submit)="handleFormSubmit($event)" [formGroup]="form" class="govuk-form">
   <opal-lib-govuk-radio
     radioClasses="govuk-radios--inline"
     fieldSetId="facc_enf_collection_order_made"

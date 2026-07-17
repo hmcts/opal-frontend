@@ -1,4 +1,5 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
+import { By } from '@angular/platform-browser';
 import { FormControl, FormRecord } from '@angular/forms';
 import { FinesSaSearchFilterBusinessUnitForm } from './fines-sa-search-filter-business-unit-form.component';
 import { FinesSaStore } from '../../../stores/fines-sa.store';
@@ -21,7 +22,7 @@ describe('FinesSaSearchFilterBusinessUnitForm', () => {
           provide: ActivatedRoute,
           useValue: {
             parent: 'search',
-            fragment: of('individuals'),
+            fragment: of('fines'),
           },
         },
       ],
@@ -190,4 +191,9 @@ describe('FinesSaSearchFilterBusinessUnitForm', () => {
     expect(cmp.selectedFines()).toBe(0);
     expect(cmp.selectedConfiscation()).toBe(0);
   });
+
+  it('should set autocomplete="off" on the form', () => {
+    expect(fixture.debugElement.query(By.css('form[autocomplete="off"]'))).toBeTruthy();
+  });
+
 });

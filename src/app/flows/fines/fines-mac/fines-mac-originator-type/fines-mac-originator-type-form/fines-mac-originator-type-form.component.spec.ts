@@ -100,4 +100,10 @@ describe('FinesMacOriginatorTypeFormComponent', () => {
       fragment: FINES_MAC_DRAFT_CREATE_AND_MANAGE_TABS_ROUTE.fragment,
     });
   });
+
+  it('should set autocomplete="off" on the form', () => {
+    fixture.detectChanges();
+    expect(fixture.nativeElement.querySelector('form')?.getAttribute('autocomplete')).toBe('off');
+  });
+
 });
