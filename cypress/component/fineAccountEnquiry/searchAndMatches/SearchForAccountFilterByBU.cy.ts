@@ -53,7 +53,12 @@ const ROW_CHECKBOX_SELECTORS: Record<BusinessUnitTab, string> = {
   confiscation: ConfiscationLocators.businessUnitCheckboxes,
 };
 
-const buildTags = (...tags: string[]): string[] => [...tags, ACCOUNT_ENQUIRY_STORY_TAG, ACCOUNT_ENQUIRY_JIRA_LABEL];
+const buildTags = (...tags: string[]): string[] => [
+  ...tags,
+  ACCOUNT_ENQUIRY_STORY_TAG,
+  ACCOUNT_ENQUIRY_JIRA_LABEL,
+  '@R1B',
+];
 
 describe('Filter by Business Unit (CT)', () => {
   let resolverPayload: typeof OPAL_FINES_BUSINESS_UNIT_REF_DATA_MOCK;

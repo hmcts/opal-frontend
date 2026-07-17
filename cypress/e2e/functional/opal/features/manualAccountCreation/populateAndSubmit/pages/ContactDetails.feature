@@ -10,7 +10,7 @@ Feature: Manual account creation - Contact Details
     And I start a fine manual account for business unit "West London" with defendant type "Adult or youth only" and originator type "New"
     And I view the "Contact details" task
 
-  @JIRA-TEST-KEY:PO-5489
+  @R1A @JIRA-TEST-KEY:PO-5489
   Scenario: (AC.9) Entered data persists in the session [@PO-272, @PO-344, @PO-345, @PO-419, @PO-371, @PO-370, @PO-358]
     When I complete manual contact details:
       | Primary email address   | P@EMAIL.COM   |
@@ -19,6 +19,7 @@ Feature: Manual account creation - Contact Details
       | Home telephone number   | 07123 456 789 |
       | Work telephone number   | 07123 456 789 |
     And I return to account details
+    Then I return to the top of the page
     Then the "Contact details" task status is "Provided"
     When I view the "Contact details" task
     Then the manual contact details fields are:
@@ -39,13 +40,13 @@ Feature: Manual account creation - Contact Details
       | Home telephone number   |  |
       | Work telephone number   |  |
 
-  @JIRA-TEST-KEY:PO-5490
+  @R1A @JIRA-TEST-KEY:PO-5490
   Scenario: (AC.9) Grey navigation links routes correctly [@PO-272, @PO-344, @PO-345, @PO-419, @PO-371, @PO-370, @PO-358]
     When I complete manual contact details:
       | Primary email address | P@EMAIL.COM |
     And I continue to employer details from contact details
 
-  @JIRA-TEST-KEY:PO-5491
+  @R1A @JIRA-TEST-KEY:PO-5491
   Scenario: (AC.10) Unsaved contact details are cleared when user confirms cancel [@PO-272, @PO-344, @PO-345, @PO-419, @PO-371, @PO-370, @PO-358]
     When I complete manual contact details:
       | Primary email address   | P@EMAIL.COM   |
@@ -61,7 +62,7 @@ Feature: Manual account creation - Contact Details
       | Home telephone number   |  |
       | Work telephone number   |  |
 
-  @JIRA-TEST-KEY:PO-5492
+  @R1A @JIRA-TEST-KEY:PO-5492
   Scenario: (AC.10) Unsaved contact details are retained when cancel is dismissed
     When I complete manual contact details:
       | Primary email address   | P@EMAIL.COM   |
@@ -72,7 +73,7 @@ Feature: Manual account creation - Contact Details
       | Primary email address   | P@EMAIL.COM   |
       | Mobile telephone number | 07123 456 789 |
 
-  @JIRA-TEST-KEY:PO-5493
+  @R1A @JIRA-TEST-KEY:PO-5493
   Scenario: (AC.11) Confirming cancel restores last saved contact details
     Given I complete manual contact details:
       | Primary email address   | P@EMAIL.COM   |
@@ -90,7 +91,7 @@ Feature: Manual account creation - Contact Details
       | Primary email address   | P@EMAIL.COM   |
       | Mobile telephone number | 07123 456 789 |
 
-  @JIRA-TEST-KEY:PO-5494 @JIRA-NFR:PO-2549
+  @R1A @JIRA-TEST-KEY:PO-5494 @JIRA-NFR:PO-2549
   Scenario: (AC.11) Inline primary email error persists across navigation and cancel
     When I clear the manual contact "Primary email address" field
     And I complete manual contact details:
@@ -102,6 +103,6 @@ Feature: Manual account creation - Contact Details
       | Primary email address | PEMAIL.COM |
     And I see a manual contact inline error "Enter primary email address in the correct format, like name@example.com" for "Primary email address"
 
-  @JIRA-TEST-KEY:PO-5495
+  @R1A @JIRA-TEST-KEY:PO-5495
   Scenario: Contact Details - Axe Core
     Then I check the page for accessibility

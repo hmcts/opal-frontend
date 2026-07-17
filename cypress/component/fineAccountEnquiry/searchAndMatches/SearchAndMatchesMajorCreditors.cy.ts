@@ -12,7 +12,7 @@ const ACCOUNT_ENQUIRY_JIRA_LABEL = '@JIRA-LABEL:account-enquiry';
 const MajorAutocompleteLocators = MajorCreditorsLocators.autocomplete;
 const MajorRequirementLocators = MajorCreditorsLocators.businessUnitRequirement;
 
-const buildTags = (...tags: string[]): string[] => [...tags, ACCOUNT_ENQUIRY_JIRA_LABEL];
+const buildTags = (...tags: string[]): string[] => [...tags, ACCOUNT_ENQUIRY_JIRA_LABEL, '@R1B'];
 
 describe('Search Account Component - Major Creditors', () => {
   type MajorCreditorsSearchState = typeof MAJOR_CREDITORS_SEARCH_STATE_MOCK;

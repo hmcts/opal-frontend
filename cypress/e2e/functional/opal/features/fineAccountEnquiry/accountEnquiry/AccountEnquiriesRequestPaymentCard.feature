@@ -11,23 +11,24 @@ Feature: Account Enquiries – Request Payment Card
   Rule: Eligible account baseline
     Background:
       Given I create a "adultOrYouthOnly" draft account with the following details and set status "Publishing Pending" using user "opal-test-10@dev.platform.hmcts.net":
-        | Account_status                          | Submitted                           |
-        | account.defendant.forenames             | Jamie                               |
-        | account.defendant.surname               | PayCardRequest{uniq}                |
-        | account.defendant.email_address_1       | Jamie.PayCardRequest{uniq}@test.com |
-        | account.defendant.telephone_number_home | 02078259314                         |
-        | account.account_type                    | Fine                                |
-        | account.prosecutor_case_reference       | PCR-AUTO-013                        |
-        | account.collection_order_made           | false                               |
-        | account.collection_order_made_today     | false                               |
-        | account.payment_card_request            | false                               |
-        | account.defendant.dob                   | 2002-05-15                          |
+        | Account_status                                  | Submitted                           |
+        | account.defendant.forenames                     | Jamie                               |
+        | account.defendant.surname                       | PayCardRequest{uniq}                |
+        | account.defendant.email_address_1               | Jamie.PayCardRequest{uniq}@test.com |
+        | account.defendant.telephone_number_home         | 02078259314                         |
+        | account.account_type                            | Fine                                |
+        | account.prosecutor_case_reference               | PCR-AUTO-013                        |
+        | account.collection_order_made                   | false                               |
+        | account.collection_order_made_today             | false                               |
+        | account.payment_card_request                    | false                               |
+        | account.defendant.dob                           | 2002-05-15                          |
+        | account.offences.0.impositions.0.amount_imposed | 250                                 |
+        | account.offences.0.impositions.0.amount_paid    | 300                                 |
       When I search for the account by last name "PayCardRequest{uniq}" and open the latest result
       Then I should see the page header contains "Mr Jamie PAYCARDREQUEST{uniqUpper}"
       When I go to the Payment terms section
 
-@JIRA-EPIC:PO-977
-    @JIRA-STORY:PO-1803 @JIRA-TEST-KEY:PO-5468
+    @JIRA-EPIC:PO-977 @R1B @JIRA-STORY:PO-1803 @JIRA-TEST-KEY:PO-5468
     Scenario: Confirming a payment card request shows success and updates the last requested date
       #AC1bii/AC1biii - Successfully requesting a payment card shows a success message and updates the last requested date
       When I start a payment card request
