@@ -10,7 +10,7 @@ import {
   signal,
 } from '@angular/core';
 import { takeUntilDestroyed, toSignal } from '@angular/core/rxjs-interop';
-import { FormBuilder, ReactiveFormsModule } from '@angular/forms';
+import { FormControl, FormGroup, ReactiveFormsModule } from '@angular/forms';
 import { ActivatedRoute, RouterLink } from '@angular/router';
 import { distinctUntilChanged, map } from 'rxjs';
 import { GovukErrorSummaryComponent } from '@hmcts/opal-frontend-common/components/govuk/govuk-error-summary';
@@ -21,36 +21,28 @@ import {
 import { AlphagovAccessibleAutocompleteComponent } from '@hmcts/opal-frontend-common/components/alphagov/alphagov-accessible-autocomplete';
 import { IAlphagovAccessibleAutocompleteItem } from '@hmcts/opal-frontend-common/components/alphagov/alphagov-accessible-autocomplete/interfaces';
 import { MojDatePickerComponent } from '@hmcts/opal-frontend-common/components/moj/moj-date-picker';
-import { IAbstractFormBaseFormErrorSummaryMessage } from '@hmcts/opal-frontend-common/components/abstract/interfaces';
 import { GlobalStore } from '@hmcts/opal-frontend-common/stores/global';
-import { DateService } from '@hmcts/opal-frontend-common/services/date-service';
 import { CustomPageHeaderComponent } from '@hmcts/opal-frontend-common/components/custom/custom-page-header';
+import { AbstractReportSummaryListBaseComponent } from '@hmcts/opal-frontend-common/components/abstract/abstract-report-summary-list-base';
+import {
+  ABSTRACT_REPORT_SUMMARY_LIST_CUSTOM_DAYS,
+  ABSTRACT_REPORT_SUMMARY_LIST_DATE_RANGE,
+  ABSTRACT_REPORT_SUMMARY_LIST_FILTER_STATE,
+} from '@hmcts/opal-frontend-common/components/abstract/abstract-report-summary-list-base/constants';
+import { IAbstractReportSummaryListDateValidationMessages } from '@hmcts/opal-frontend-common/components/abstract/abstract-report-summary-list-base/interfaces';
+import { AbstractReportSummaryListDateFilter } from '@hmcts/opal-frontend-common/components/abstract/abstract-report-summary-list-base/types';
 import { OpalFines } from '@services/fines/opal-fines-service/opal-fines.service';
 import { IOpalFinesBusinessUnitRefData } from '@services/fines/opal-fines-service/interfaces/opal-fines-business-unit-ref-data.interface';
 import { IOpalFinesReport } from '@services/fines/opal-fines-service/interfaces/opal-fines-report.interface';
 import { IOpalFinesReportInstancesResponse } from '@services/fines/opal-fines-service/interfaces/opal-fines-report-instances-response.interface';
+import { FINES_REPORTS_SUMMARY_LIST_ALL_BUSINESS_UNITS } from './constants/fines-reports-summary-list-state.constant';
 import { FINES_REPORT_SUMMARY_LIST_REPORT_CONFIGURATION } from './constants/fines-reports-summary-list-report-configuration.constant';
-import { FinesReportsSummaryListDateFilter } from './types/fines-reports-summary-list-date-filter.type';
-import { FinesReportsSummaryListTableWrapperComponent } from './fines-reports-summary-list-table-wrapper/fines-reports-summary-list-table-wrapper.component';
 import { FINES_REPORTS_SUMMARY_LIST_TABLE_WRAPPER_TABLE_SORT_DEFAULT } from './fines-reports-summary-list-table-wrapper/constants/fines-reports-summary-list-table-wrapper-table-sort-default.constant';
-import {
-  FINES_REPORTS_SUMMARY_LIST_ALL_BUSINESS_UNITS,
-  FINES_REPORTS_SUMMARY_LIST_CUSTOM_DAYS,
-  FINES_REPORTS_SUMMARY_LIST_DATE_RANGE,
-  FINES_REPORTS_SUMMARY_LIST_FILTER_STATE,
-  FINES_REPORTS_SUMMARY_LIST_LAST_7_DAYS,
-} from './constants/fines-reports-summary-list-filter-state.constant';
+import { FinesReportsSummaryListTableWrapperComponent } from './fines-reports-summary-list-table-wrapper/fines-reports-summary-list-table-wrapper.component';
 import { IFinesReportsSummaryListFilterState } from './interfaces/fines-reports-summary-list-filter-state.interface';
 import { IFinesReportsSummaryListQueryState } from './interfaces/fines-reports-summary-list-query-state.interface';
 import { IFinesReportsSummaryListTableData } from './interfaces/fines-reports-summary-list-table-data.interface';
 import { FinesReportsSummaryListStore } from './stores/fines-reports-summary-list.store';
-import {
-  getDefaultReportsSummaryListQuery,
-  getReportsSummaryListQueryFromFilters,
-  isReportsSummaryListDateFromAfterDateTo,
-  isReportsSummaryListDateInFuture,
-  isReportsSummaryListDateInvalid,
-} from './utils/fines-reports-summary-list-date.utils';
 import {
   getReportInstancesFromResponse,
   getReportInstancesLimitFromResponse,
@@ -58,6 +50,14 @@ import {
   mapReportInstancesToTableData,
 } from './utils/fines-reports-summary-list-table.utils';
 import { FINES_REPORTS_ROUTING_PATHS } from '../routing/constants/fines-reports-routing-paths.constant';
+
+type FinesReportsSummaryListFilterForm = FormGroup<{
+  businessUnit: FormControl<string | null>;
+  dateFilter: FormControl<AbstractReportSummaryListDateFilter | null>;
+  days: FormControl<string | null>;
+  dateFrom: FormControl<string | null>;
+  dateTo: FormControl<string | null>;
+}>;
 
 @Component({
   selector: 'app-fines-reports-summary-list',
@@ -76,15 +76,13 @@ import { FINES_REPORTS_ROUTING_PATHS } from '../routing/constants/fines-reports-
   templateUrl: './fines-reports-summary-list.component.html',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class FinesReportsSummaryListComponent {
-  private readonly formBuilder = inject(FormBuilder);
+export class FinesReportsSummaryListComponent extends AbstractReportSummaryListBaseComponent<FinesReportsSummaryListFilterForm> {
   private readonly activatedRoute = inject(ActivatedRoute);
   private readonly opalFinesService = inject(OpalFines);
   private readonly globalStore = inject(GlobalStore);
   private readonly store = inject(FinesReportsSummaryListStore);
   private readonly document = inject(DOCUMENT);
   private readonly destroyRef = inject(DestroyRef);
-  private readonly dateService = inject(DateService);
   private readonly routeWithReportId = this.activatedRoute.parent ?? this.activatedRoute;
   private readonly reportId = toSignal(
     this.routeWithReportId.paramMap.pipe(
@@ -103,21 +101,32 @@ export class FinesReportsSummaryListComponent {
   private readonly reportInstancesResponse = signal<IOpalFinesReportInstancesResponse | null>(
     (this.activatedRoute.snapshot.data['reportInstances'] as IOpalFinesReportInstancesResponse | undefined) ?? null,
   );
-  private readonly fieldErrors = signal<Record<string, string>>({});
 
   @ViewChild('errorSummary', { read: ElementRef }) private errorSummary?: ElementRef<HTMLElement>;
 
+  private readonly reportDateFieldIds = {
+    days: 'reports-summary-list-days',
+    dateFrom: 'reports-summary-list-date-from',
+    dateTo: 'reports-summary-list-date-to',
+  };
+  protected readonly dateValidationMessages: IAbstractReportSummaryListDateValidationMessages = {
+    customDaysRequired: 'Enter number of days',
+    dateRangeRequired: 'You must enter at least 1 of date from or date to',
+    invalidDate: 'Date must be in the format DD/MM/YYYY',
+    futureDate: 'Date cannot be in the future',
+    dateFromAfterDateTo: 'The Date from cannot be after the Date to',
+  };
+
   public readonly tableSort = FINES_REPORTS_SUMMARY_LIST_TABLE_WRAPPER_TABLE_SORT_DEFAULT;
   public readonly createReportRoutingPath = `../${FINES_REPORTS_ROUTING_PATHS.children.create}`;
-  public readonly dateFilterLast7Days = FINES_REPORTS_SUMMARY_LIST_LAST_7_DAYS;
-  public readonly dateFilterCustomDays = FINES_REPORTS_SUMMARY_LIST_CUSTOM_DAYS;
-  public readonly dateFilterDateRange = FINES_REPORTS_SUMMARY_LIST_DATE_RANGE;
-  public readonly filtersForm = this.formBuilder.group({
-    businessUnit: [FINES_REPORTS_SUMMARY_LIST_FILTER_STATE.businessUnit],
-    dateFilter: [FINES_REPORTS_SUMMARY_LIST_FILTER_STATE.dateFilter],
-    days: [FINES_REPORTS_SUMMARY_LIST_FILTER_STATE.days],
-    dateFrom: [FINES_REPORTS_SUMMARY_LIST_FILTER_STATE.dateFrom],
-    dateTo: [FINES_REPORTS_SUMMARY_LIST_FILTER_STATE.dateTo],
+  public readonly filtersForm: FinesReportsSummaryListFilterForm = new FormGroup({
+    businessUnit: new FormControl<string | null>(FINES_REPORTS_SUMMARY_LIST_ALL_BUSINESS_UNITS),
+    dateFilter: new FormControl<AbstractReportSummaryListDateFilter | null>(
+      ABSTRACT_REPORT_SUMMARY_LIST_FILTER_STATE.dateFilter,
+    ),
+    days: new FormControl<string | null>(ABSTRACT_REPORT_SUMMARY_LIST_FILTER_STATE.days),
+    dateFrom: new FormControl<string | null>(ABSTRACT_REPORT_SUMMARY_LIST_FILTER_STATE.dateFrom),
+    dateTo: new FormControl<string | null>(ABSTRACT_REPORT_SUMMARY_LIST_FILTER_STATE.dateTo),
   });
 
   public readonly reportMetadata = computed(
@@ -129,11 +138,10 @@ export class FinesReportsSummaryListComponent {
     return businessUnits?.refData ?? [];
   });
   public readonly businessUnitOptions = computed<IAlphagovAccessibleAutocompleteItem[]>(() => {
-    const options =
-      this.businessUnitRefData().map((businessUnit) => ({
-        value: businessUnit.business_unit_id.toString(),
-        name: businessUnit.business_unit_name,
-      })) ?? [];
+    const options = this.businessUnitRefData().map((businessUnit) => ({
+      value: businessUnit.business_unit_id.toString(),
+      name: businessUnit.business_unit_name,
+    }));
 
     return [{ value: FINES_REPORTS_SUMMARY_LIST_ALL_BUSINESS_UNITS, name: 'All business units' }, ...options];
   });
@@ -146,12 +154,6 @@ export class FinesReportsSummaryListComponent {
   );
   public readonly overLimit = computed(() => isReportInstancesOverLimit(this.reportInstancesResponse()));
   public readonly resultLimit = computed(() => getReportInstancesLimitFromResponse(this.reportInstancesResponse()));
-  public readonly errorSummaryMessages = computed<IAbstractFormBaseFormErrorSummaryMessage[]>(() =>
-    Object.entries(this.fieldErrors()).map(([fieldId, message]) => ({ fieldId, message })),
-  );
-  public readonly dateFilter = signal<FinesReportsSummaryListDateFilter>(
-    FINES_REPORTS_SUMMARY_LIST_FILTER_STATE.dateFilter,
-  );
 
   public get pageHeading(): string {
     return (
@@ -168,6 +170,7 @@ export class FinesReportsSummaryListComponent {
   }
 
   constructor() {
+    super();
     this.subscribeToReportIdChanges();
     this.subscribeToReportInstancesData();
     this.subscribeToDateFilterChanges();
@@ -211,17 +214,9 @@ export class FinesReportsSummaryListComponent {
       .pipe(takeUntilDestroyed(this.destroyRef))
       .subscribe((dateFilter) => {
         this.dateFilter.set(
-          (dateFilter ?? FINES_REPORTS_SUMMARY_LIST_FILTER_STATE.dateFilter) as FinesReportsSummaryListDateFilter,
+          (dateFilter ?? ABSTRACT_REPORT_SUMMARY_LIST_FILTER_STATE.dateFilter) as AbstractReportSummaryListDateFilter,
         );
-
-        if (dateFilter !== FINES_REPORTS_SUMMARY_LIST_CUSTOM_DAYS) {
-          this.filtersForm.controls.days.setValue('', { emitEvent: false });
-        }
-
-        if (dateFilter !== FINES_REPORTS_SUMMARY_LIST_DATE_RANGE) {
-          this.filtersForm.controls.dateFrom.setValue('', { emitEvent: false });
-          this.filtersForm.controls.dateTo.setValue('', { emitEvent: false });
-        }
+        this.clearInactiveDateFilterFields(this.filtersForm, dateFilter);
       });
   }
 
@@ -231,12 +226,17 @@ export class FinesReportsSummaryListComponent {
   private initialiseFilters(): void {
     this.store.resetForReportType(this.reportId());
 
-    const filters = this.store.appliedQuery() ? this.store.filters() : FINES_REPORTS_SUMMARY_LIST_FILTER_STATE;
+    const filters: IFinesReportsSummaryListFilterState = this.store.appliedQuery()
+      ? this.store.filters()
+      : {
+          businessUnit: FINES_REPORTS_SUMMARY_LIST_ALL_BUSINESS_UNITS,
+          ...ABSTRACT_REPORT_SUMMARY_LIST_FILTER_STATE,
+        };
     this.filtersForm.setValue(filters, { emitEvent: false });
     this.dateFilter.set(filters.dateFilter);
 
     if (!this.store.appliedQuery()) {
-      this.store.setAppliedQuery(getDefaultReportsSummaryListQuery(this.dateService));
+      this.store.setAppliedQuery(this.getFinesReportQueryFromFilters(filters));
     }
   }
 
@@ -248,75 +248,24 @@ export class FinesReportsSummaryListComponent {
   }
 
   /**
-   * Reads the filter form into a normalized filter state object.
+   * Builds a Fines report query from the selected Fines report filters.
+   *
+   * @param filters - The selected Fines report filter state.
+   * @returns A Fines report query state suitable for report instance API requests.
    */
-  private getFiltersFromForm(): IFinesReportsSummaryListFilterState {
+  private getFinesReportQueryFromFilters(
+    filters: IFinesReportsSummaryListFilterState,
+  ): IFinesReportsSummaryListQueryState {
+    const dateQuery = this.getReportQueryFromFilters(filters);
+    const businessUnit =
+      filters.businessUnit && filters.businessUnit !== FINES_REPORTS_SUMMARY_LIST_ALL_BUSINESS_UNITS
+        ? filters.businessUnit
+        : null;
+
     return {
-      businessUnit: this.filtersForm.controls.businessUnit.value ?? FINES_REPORTS_SUMMARY_LIST_ALL_BUSINESS_UNITS,
-      dateFilter: (this.filtersForm.controls.dateFilter.value ??
-        FINES_REPORTS_SUMMARY_LIST_LAST_7_DAYS) as FinesReportsSummaryListDateFilter,
-      days: this.filtersForm.controls.days.value ?? '',
-      dateFrom: this.filtersForm.controls.dateFrom.value ?? '',
-      dateTo: this.filtersForm.controls.dateTo.value ?? '',
+      ...dateQuery,
+      businessUnit,
     };
-  }
-
-  /**
-   * Builds accessible validation messages for the active filter fields.
-   */
-  private buildFieldErrors(filters: IFinesReportsSummaryListFilterState): Record<string, string> {
-    const errors: Record<string, string> = {};
-
-    if (filters.dateFilter === FINES_REPORTS_SUMMARY_LIST_CUSTOM_DAYS) {
-      if (!filters.days || Number.isNaN(Number(filters.days)) || Number(filters.days) < 1) {
-        errors['reports-summary-list-days'] = 'Enter number of days';
-      }
-    }
-
-    if (filters.dateFilter === FINES_REPORTS_SUMMARY_LIST_DATE_RANGE) {
-      const hasDateFrom = !!filters.dateFrom;
-      const hasDateTo = !!filters.dateTo;
-
-      if (!hasDateFrom && !hasDateTo) {
-        errors['reports-summary-list-date-from'] = 'You must enter at least 1 of date from or date to';
-      }
-
-      if (hasDateFrom && isReportsSummaryListDateInvalid(filters.dateFrom, this.dateService)) {
-        errors['reports-summary-list-date-from'] = 'Date must be in the format DD/MM/YYYY';
-      }
-
-      if (hasDateTo && isReportsSummaryListDateInvalid(filters.dateTo, this.dateService)) {
-        errors['reports-summary-list-date-to'] = 'Date must be in the format DD/MM/YYYY';
-      }
-
-      if (
-        !errors['reports-summary-list-date-from'] &&
-        hasDateFrom &&
-        isReportsSummaryListDateInFuture(filters.dateFrom, this.dateService)
-      ) {
-        errors['reports-summary-list-date-from'] = 'Date cannot be in the future';
-      }
-
-      if (
-        !errors['reports-summary-list-date-to'] &&
-        hasDateTo &&
-        isReportsSummaryListDateInFuture(filters.dateTo, this.dateService)
-      ) {
-        errors['reports-summary-list-date-to'] = 'Date cannot be in the future';
-      }
-
-      if (
-        !errors['reports-summary-list-date-from'] &&
-        !errors['reports-summary-list-date-to'] &&
-        hasDateFrom &&
-        hasDateTo &&
-        isReportsSummaryListDateFromAfterDateTo(filters.dateFrom, filters.dateTo, this.dateService)
-      ) {
-        errors['reports-summary-list-date-from'] = 'The Date from cannot be after the Date to';
-      }
-    }
-
-    return errors;
   }
 
   /**
@@ -356,10 +305,41 @@ export class FinesReportsSummaryListComponent {
   }
 
   /**
-   * Returns the current validation message for a field.
+   * Clears Fines report date fields that do not apply to the selected date filter.
+   *
+   * @param filtersForm - The Fines report filter form to update.
+   * @param dateFilter - The selected date filter.
    */
-  public getFieldError(fieldId: string): string | null {
-    return this.fieldErrors()[fieldId] ?? null;
+  protected override clearInactiveDateFilterFields(
+    filtersForm: FinesReportsSummaryListFilterForm,
+    dateFilter: AbstractReportSummaryListDateFilter | null,
+  ): void {
+    if (dateFilter !== ABSTRACT_REPORT_SUMMARY_LIST_CUSTOM_DAYS) {
+      filtersForm.controls.days.setValue('', { emitEvent: false });
+    }
+
+    if (dateFilter !== ABSTRACT_REPORT_SUMMARY_LIST_DATE_RANGE) {
+      filtersForm.controls.dateFrom.setValue('', { emitEvent: false });
+      filtersForm.controls.dateTo.setValue('', { emitEvent: false });
+    }
+  }
+
+  /**
+   * Reads the Fines report filter form into a normalized report filter state object.
+   *
+   * @param filtersForm - The Fines report filter form to read from.
+   * @returns A normalized report filter state.
+   */
+  protected override getFiltersFromForm(
+    filtersForm: FinesReportsSummaryListFilterForm,
+  ): IFinesReportsSummaryListFilterState {
+    return {
+      businessUnit: filtersForm.controls.businessUnit.value ?? FINES_REPORTS_SUMMARY_LIST_ALL_BUSINESS_UNITS,
+      dateFilter: filtersForm.controls.dateFilter.value ?? this.dateFilterLast7Days,
+      days: filtersForm.controls.days.value ?? '',
+      dateFrom: filtersForm.controls.dateFrom.value ?? '',
+      dateTo: filtersForm.controls.dateTo.value ?? '',
+    };
   }
 
   /**
@@ -380,8 +360,8 @@ export class FinesReportsSummaryListComponent {
    * Validates filters, stores the applied query, and refreshes the report instances table.
    */
   public onRefresh(): void {
-    const filters = this.getFiltersFromForm();
-    const errors = this.buildFieldErrors(filters);
+    const filters = this.getFiltersFromForm(this.filtersForm);
+    const errors = this.buildReportDateFieldErrors(filters, this.reportDateFieldIds);
     this.fieldErrors.set(errors);
 
     if (Object.keys(errors).length) {
@@ -389,7 +369,7 @@ export class FinesReportsSummaryListComponent {
       return;
     }
 
-    const query = getReportsSummaryListQueryFromFilters(filters, this.dateService);
+    const query = this.getFinesReportQueryFromFilters(filters);
     this.store.setFilters(filters);
     this.store.setAppliedQuery(query);
     this.loadReportInstances(query);

@@ -43,6 +43,7 @@ describe('finesReportsReportInstancesResolver', () => {
   let store: any;
 
   const reportId = FINES_REPORTS_SUMMARY_LIST_ROUTING_PATHS.children.operationalReportsByEnforcement;
+  const yourReportsId = FINES_REPORTS_SUMMARY_LIST_ROUTING_PATHS.children.yourReports;
 
   const executeResolver =
     () =>
@@ -104,6 +105,59 @@ describe('finesReportsReportInstancesResolver', () => {
       expect.objectContaining({
         report_id: reportId,
         business_units: ['67'],
+      }),
+    );
+    expect(result).toEqual(response);
+  });
+
+  it('should request user report instances for the your reports route', async () => {
+    const response: IOpalFinesReportInstancesResponse = {
+      report_instances: [],
+      count: 0,
+    };
+    mockOpalFines.getReportInstances.mockReturnValue(of(response));
+
+    const route = {
+      paramMap: convertToParamMap({ reportTypeId: yourReportsId }),
+      parent: null,
+    } as ActivatedRouteSnapshot;
+
+    store.setFilters({
+      businessUnit: 'all',
+      dateFilter: 'last7Days',
+      days: '',
+      dateFrom: '',
+      dateTo: '',
+    });
+
+    const result = await runResolver(route);
+
+    expect(mockOpalFines.getReportInstances).toHaveBeenCalledWith(
+      expect.objectContaining({
+        user_id: OPAL_USER_STATE_MOCK.user_id,
+        business_units: undefined,
+      }),
+    );
+    expect(result).toEqual(response);
+  });
+
+  it('should request report instances with a null report id for unknown report routes', async () => {
+    const response: IOpalFinesReportInstancesResponse = {
+      report_instances: [],
+      count: 0,
+    };
+    mockOpalFines.getReportInstances.mockReturnValue(of(response));
+
+    const route = {
+      paramMap: convertToParamMap({ reportTypeId: 'unknown-report' }),
+      parent: null,
+    } as ActivatedRouteSnapshot;
+
+    const result = await runResolver(route);
+
+    expect(mockOpalFines.getReportInstances).toHaveBeenCalledWith(
+      expect.objectContaining({
+        report_id: null,
       }),
     );
     expect(result).toEqual(response);

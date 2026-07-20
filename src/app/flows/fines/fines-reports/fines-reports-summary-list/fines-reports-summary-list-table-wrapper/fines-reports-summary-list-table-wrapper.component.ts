@@ -1,6 +1,6 @@
 import { CommonModule } from '@angular/common';
-import { ChangeDetectionStrategy, Component, computed, Input, signal } from '@angular/core';
-import { AbstractSortableTablePaginationComponent } from '@hmcts/opal-frontend-common/components/abstract/abstract-sortable-table-pagination';
+import { ChangeDetectionStrategy, Component, Input } from '@angular/core';
+import { AbstractReportInstancesTableBaseComponent } from '@hmcts/opal-frontend-common/components/abstract/abstract-report-instances-table-base';
 import {
   MojSortableTableComponent,
   MojSortableTableHeaderComponent,
@@ -29,26 +29,25 @@ import { FINES_REPORTS_SUMMARY_LIST_TABLE_WRAPPER_TABLE_SORT_DEFAULT } from './c
   templateUrl: './fines-reports-summary-list-table-wrapper.component.html',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class FinesReportsSummaryListTableWrapperComponent extends AbstractSortableTablePaginationComponent {
-  @Input({ required: true }) set tableData(tableData: IFinesReportsSummaryListTableData[]) {
-    this.setTableData(tableData);
-    this.onApplyFilters();
-  }
-
+export class FinesReportsSummaryListTableWrapperComponent extends AbstractReportInstancesTableBaseComponent<IFinesReportsSummaryListTableData> {
   @Input({ required: true }) set existingSortState(
     existingSortState: IFinesReportsSummaryListTableWrapperTableSort | null,
   ) {
     this.abstractExistingSortState = existingSortState;
   }
 
-  public override itemsPerPageSignal = signal(25);
-  public override paginatedTableDataComputed = computed(() => {
-    const data = this.sortedTableDataSignal() as IFinesReportsSummaryListTableData[];
-    return data.slice(this.startIndexComputed() - 1, this.endIndexComputed());
-  });
-
   constructor() {
     super();
     this.abstractExistingSortState = FINES_REPORTS_SUMMARY_LIST_TABLE_WRAPPER_TABLE_SORT_DEFAULT;
+    this.itemsPerPageSignal.set(25);
+  }
+
+  /**
+   * Prevents placeholder report links from navigating until report actions are implemented.
+   *
+   * @param event - The selected placeholder link click event.
+   */
+  public onPlaceholderLinkClick(event: Event): void {
+    event.preventDefault();
   }
 }

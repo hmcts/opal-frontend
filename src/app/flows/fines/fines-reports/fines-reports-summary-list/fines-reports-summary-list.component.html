@@ -139,8 +139,11 @@
 
   <hr class="govuk-section-break govuk-section-break--m govuk-section-break--visible" />
 
-  @if (overLimit()) {
+  @if (overLimit() && resultLimit() !== null) {
     <h2 class="govuk-heading-m">There are more than {{ resultLimit() }} reports</h2>
+    <p class="govuk-body">Use the filters to reduce the number of results.</p>
+  } @else if (overLimit()) {
+    <h2 class="govuk-heading-m">There are more reports than can be shown</h2>
     <p class="govuk-body">Use the filters to reduce the number of results.</p>
   } @else if (tableData().length === 0) {
     <p class="govuk-body">No reports found</p>

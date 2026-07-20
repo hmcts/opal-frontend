@@ -1,9 +1,5 @@
-import { FinesReportsSummaryListDateFilter } from '../types/fines-reports-summary-list-date-filter.type';
+import { IAbstractReportSummaryListFilterState } from '@hmcts/opal-frontend-common/components/abstract/abstract-report-summary-list-base/interfaces';
 
-export interface IFinesReportsSummaryListFilterState {
+export interface IFinesReportsSummaryListFilterState extends IAbstractReportSummaryListFilterState {
   businessUnit: string;
-  dateFilter: FinesReportsSummaryListDateFilter;
-  days: string;
-  dateFrom: string;
-  dateTo: string;
 }

@@ -55,7 +55,9 @@
       @for (row of paginatedTableDataComputed(); track row.instanceId; let rowIndex = $index) {
         <tr opal-lib-moj-sortable-table-row>
           <td opal-lib-moj-sortable-table-row-data id="reportInstanceDateTime-{{ rowIndex }}">
-            <a href="" class="govuk-link govuk-link--no-visited-state">{{ row.dateTimeDisplay }}</a>
+            <a href="" class="govuk-link govuk-link--no-visited-state" (click)="onPlaceholderLinkClick($event)">{{
+              row.dateTimeDisplay
+            }}</a>
           </td>
           <td opal-lib-moj-sortable-table-row-data id="reportInstanceTitle-{{ rowIndex }}">{{ row.Title }}</td>
           <td opal-lib-moj-sortable-table-row-data id="reportInstanceBusinessUnit-{{ rowIndex }}">
@@ -68,7 +70,12 @@
           <td opal-lib-moj-sortable-table-row-data id="reportInstanceAction-{{ rowIndex }}">
             @if (row.isDownloadable && row.supportedTypes) {
               @for (type of row.supportedTypes.split(','); track type) {
-                <a href="" class="govuk-link govuk-link--no-visited-state govuk-!-margin-right-2">{{ type }}</a>
+                <a
+                  href=""
+                  class="govuk-link govuk-link--no-visited-state govuk-!-margin-right-2"
+                  (click)="onPlaceholderLinkClick($event)"
+                  >{{ type }}</a
+                >
               }
             }
           </td>

@@ -116,33 +116,58 @@ describe('FinesReportsSummaryListComponent', () => {
 
   const setup = async (
     currentReportId: string = reportId,
-    reportInstances: IOpalFinesReportInstancesResponse = mockReportInstances,
+    reportInstances: IOpalFinesReportInstancesResponse | undefined = mockReportInstances,
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     configureStore?: (store: any) => void,
     businessUnits: IOpalFinesBusinessUnitRefData = OPAL_FINES_BUSINESS_UNIT_REF_DATA_MOCK,
+    options: {
+      parentParamName?: 'reportTypeId' | 'reportId';
+      childParamName?: 'reportTypeId' | 'reportId';
+      useParentRoute?: boolean;
+      omitRouteParams?: boolean;
+      omitBusinessUnits?: boolean;
+      omitReportInstances?: boolean;
+    } = {},
   ): Promise<{
     component: FinesReportsSummaryListComponent;
     fixture: ComponentFixture<FinesReportsSummaryListComponent>;
     activatedRoute: MockActivatedRoute;
   }> => {
-    const routeData = {
-      businessUnits,
+    const parentParamName = options.parentParamName ?? 'reportTypeId';
+    const childParamName = options.childParamName ?? 'reportTypeId';
+    const childParamMap = convertToParamMap(
+      options.useParentRoute === false && !options.omitRouteParams ? { [childParamName]: currentReportId } : {},
+    );
+    const routeData: Record<string, unknown> = {
       reportMetadata: currentReportId === paymentsReportId ? mockPaymentsReportMetadata : mockReportMetadata,
-      reportInstances,
     };
+
+    if (!options.omitBusinessUnits) {
+      routeData['businessUnits'] = businessUnits;
+    }
+
+    if (!options.omitReportInstances) {
+      routeData['reportInstances'] = reportInstances;
+    }
+
     const activatedRoute: MockActivatedRoute = {
       snapshot: {
-        paramMap: convertToParamMap({}),
+        paramMap: childParamMap,
         data: routeData,
       },
-      paramMap: new BehaviorSubject(convertToParamMap({})),
+      paramMap: new BehaviorSubject(childParamMap),
       data: new BehaviorSubject(routeData),
-      parent: {
-        snapshot: {
-          paramMap: convertToParamMap({ reportTypeId: currentReportId }),
-        },
-        paramMap: new BehaviorSubject(convertToParamMap({ reportTypeId: currentReportId })),
-      },
+      parent:
+        options.useParentRoute === false
+          ? null
+          : {
+              snapshot: {
+                paramMap: convertToParamMap(options.omitRouteParams ? {} : { [parentParamName]: currentReportId }),
+              },
+              paramMap: new BehaviorSubject(
+                convertToParamMap(options.omitRouteParams ? {} : { [parentParamName]: currentReportId }),
+              ),
+            },
     };
 
     mockOpalFines = {
@@ -193,6 +218,20 @@ describe('FinesReportsSummaryListComponent', () => {
     expect(component['reportId']()).toBe(reportId);
     expect(component.pageHeading).toBe(heading);
     expect(fixture.nativeElement.querySelector('h1')?.textContent?.trim()).toBe(heading);
+  });
+
+  it('should return empty heading and hide create report button for unknown report routes', async () => {
+    const { component, fixture, activatedRoute } = await setup('unknown-report');
+
+    activatedRoute.data.next({
+      businessUnits: OPAL_FINES_BUSINESS_UNIT_REF_DATA_MOCK,
+      reportMetadata: null,
+      reportInstances: mockReportInstances,
+    });
+    fixture.detectChanges();
+
+    expect(component.pageHeading).toBe('');
+    expect(component.showCreateReportButton).toBe(false);
   });
 
   it('should render the title, action button, rows, and mapped statuses', async () => {
@@ -263,6 +302,18 @@ describe('FinesReportsSummaryListComponent', () => {
     expect(fixture.nativeElement.textContent).toContain('Use the filters to reduce the number of results.');
   });
 
+  it('should render a generic over-limit state when the backend does not return a result limit', async () => {
+    const { fixture } = await setup(reportId, {
+      report_instances: [],
+      count: 101,
+      has_more: true,
+    });
+
+    expect(fixture.nativeElement.textContent).toContain('There are more reports than can be shown');
+    expect(fixture.nativeElement.textContent).toContain('Use the filters to reduce the number of results.');
+    expect(fixture.nativeElement.textContent).not.toContain('There are more than  reports');
+  });
+
   it('should expose Refresh as Apply filters and refresh for assistive technology', async () => {
     const { fixture } = await setup();
     const refreshButton: HTMLButtonElement | null = fixture.nativeElement.querySelector('button[type="submit"]');
@@ -298,6 +349,15 @@ describe('FinesReportsSummaryListComponent', () => {
     ]);
   });
 
+  it('should fall back to all business units when route data has no business units', async () => {
+    const { component } = await setup(reportId, mockReportInstances, undefined, OPAL_FINES_BUSINESS_UNIT_REF_DATA_MOCK, {
+      omitBusinessUnits: true,
+    });
+
+    expect(component.businessUnitRefData()).toEqual([]);
+    expect(component.businessUnitOptions()).toEqual([{ value: 'all', name: 'All business units' }]);
+  });
+
   it('should support Operational reports by payments as a configured summary list report type', async () => {
     const paymentsReportInstances: IOpalFinesReportInstancesResponse = {
       report_instances: [
@@ -325,6 +385,77 @@ describe('FinesReportsSummaryListComponent', () => {
     expect(mockOpalFines.getReportInstances).toHaveBeenCalledWith(
       expect.objectContaining({
         report_id: paymentsReportId,
+      }),
+    );
+  });
+
+  it('should request current user report instances for Your reports', async () => {
+    const { component, fixture, activatedRoute } = await setup(FINES_REPORTS_SUMMARY_LIST_ROUTING_PATHS.children.yourReports);
+
+    activatedRoute.data.next({
+      businessUnits: OPAL_FINES_BUSINESS_UNIT_REF_DATA_MOCK,
+      reportMetadata: null,
+      reportInstances: mockReportInstances,
+    });
+    fixture.detectChanges();
+
+    component.onRefresh();
+
+    expect(mockOpalFines.getReportInstances).toHaveBeenCalledWith(
+      expect.objectContaining({
+        user_id: OPAL_USER_STATE_MOCK.user_id,
+      }),
+    );
+    expect(mockOpalFines.getReportInstances.mock.calls[0][0]).not.toHaveProperty('report_id');
+  });
+
+  it('should fall back to configured create report visibility when metadata is unavailable', async () => {
+    const { component, fixture, activatedRoute } = await setup(reportId);
+
+    activatedRoute.data.next({
+      businessUnits: OPAL_FINES_BUSINESS_UNIT_REF_DATA_MOCK,
+      reportMetadata: null,
+      reportInstances: mockReportInstances,
+    });
+    fixture.detectChanges();
+
+    expect(component.showCreateReportButton).toBe(true);
+  });
+
+  it('should fall back to the current report id when no report configuration matches refresh', async () => {
+    const { component, activatedRoute, fixture } = await setup('unknown-report');
+
+    activatedRoute.data.next({
+      businessUnits: OPAL_FINES_BUSINESS_UNIT_REF_DATA_MOCK,
+      reportMetadata: null,
+      reportInstances: mockReportInstances,
+    });
+    fixture.detectChanges();
+    component.onRefresh();
+
+    expect(mockOpalFines.getReportInstances).toHaveBeenCalledWith(
+      expect.objectContaining({
+        report_id: 'unknown-report',
+      }),
+    );
+  });
+
+  it('should normalize null filter form values when refreshing', async () => {
+    const { component } = await setup();
+
+    component.filtersForm.setValue({
+      businessUnit: null,
+      dateFilter: null,
+      days: null,
+      dateFrom: null,
+      dateTo: null,
+    });
+    component.onRefresh();
+
+    expect(mockOpalFines.getReportInstances).toHaveBeenCalledWith(
+      expect.objectContaining({
+        report_id: reportId,
+        business_units: undefined,
       }),
     );
   });
@@ -435,6 +566,69 @@ describe('FinesReportsSummaryListComponent', () => {
     expect(fixture.nativeElement.textContent).not.toContain('Operational report (by enforcement) - CLAMPO - Detailed');
   });
 
+  it('should refresh route-backed state when the route uses reportId instead of reportTypeId', async () => {
+    const { component, fixture } = await setup(
+      paymentsReportId,
+      mockReportInstances,
+      undefined,
+      OPAL_FINES_BUSINESS_UNIT_REF_DATA_MOCK,
+      { parentParamName: 'reportId' },
+    );
+
+    fixture.detectChanges();
+
+    expect(component.pageHeading).toBe('Operational reports (by payments)');
+    expect(component.filtersForm.controls.businessUnit.value).toBe('all');
+  });
+
+  it('should read report id from the current route when there is no parent route', async () => {
+    const { component } = await setup(
+      paymentsReportId,
+      mockReportInstances,
+      undefined,
+      OPAL_FINES_BUSINESS_UNIT_REF_DATA_MOCK,
+      { useParentRoute: false, childParamName: 'reportId' },
+    );
+
+    expect(component.pageHeading).toBe('Operational reports (by payments)');
+  });
+
+  it('should use an empty report id when neither current nor parent route has report params', async () => {
+    const { component } = await setup(
+      reportId,
+      mockReportInstances,
+      undefined,
+      OPAL_FINES_BUSINESS_UNIT_REF_DATA_MOCK,
+      { omitRouteParams: true },
+    );
+
+    expect(component['reportId']()).toBe('');
+    expect(component.pageHeading).toBe('');
+  });
+
+  it('should clear report instances when route data has no report instances', async () => {
+    const { fixture, activatedRoute } = await setup(reportId, mockReportInstances);
+
+    expect(fixture.nativeElement.textContent).toContain('Operational report (by enforcement) - CLAMPO - Detailed');
+
+    activatedRoute.data.next({
+      businessUnits: OPAL_FINES_BUSINESS_UNIT_REF_DATA_MOCK,
+      reportMetadata: mockReportMetadata,
+    });
+    fixture.detectChanges();
+
+    expect(fixture.nativeElement.textContent).toContain('No reports found');
+    expect(fixture.nativeElement.textContent).not.toContain('Operational report (by enforcement) - CLAMPO - Detailed');
+  });
+
+  it('should initialise with no reports when snapshot route data has no report instances', async () => {
+    const { fixture } = await setup(reportId, undefined, undefined, OPAL_FINES_BUSINESS_UNIT_REF_DATA_MOCK, {
+      omitReportInstances: true,
+    });
+
+    expect(fixture.nativeElement.textContent).toContain('No reports found');
+  });
+
   it('should update the table rows when Refresh returns new report instances', async () => {
     const refreshedReportInstances: IOpalFinesReportInstancesResponse = {
       report_instances: [
@@ -511,5 +705,27 @@ describe('FinesReportsSummaryListComponent', () => {
 
     expect(component.filtersForm.controls.dateFrom.value).toBe('');
     expect(component.filtersForm.controls.dateTo.value).toBe('');
+  });
+
+  it('should store date picker changes in the matching form control', async () => {
+    const { component } = await setup();
+
+    component.onDateChange('dateFrom', '01/06/2026');
+    component.onDateChange('dateTo', '08/06/2026');
+
+    expect(component.filtersForm.controls.dateFrom.value).toBe('01/06/2026');
+    expect(component.filtersForm.controls.dateTo.value).toBe('08/06/2026');
+  });
+
+  it('should focus the field selected from the error summary', async () => {
+    const { component, fixture } = await setup();
+    const input = document.createElement('input');
+    const focusSpy = vi.spyOn(input, 'focus');
+    input.id = 'reports-summary-list-date-from';
+    fixture.nativeElement.appendChild(input);
+
+    component.onErrorClick('reports-summary-list-date-from');
+
+    expect(focusSpy).toHaveBeenCalled();
   });
 });

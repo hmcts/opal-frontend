@@ -1,8 +1,8 @@
 import { patchState, signalStore, withMethods, withState } from '@ngrx/signals';
-import { IFinesReportsSummaryListFilterState } from '../interfaces/fines-reports-summary-list-filter-state.interface';
-import { IFinesReportsSummaryListQueryState } from '../interfaces/fines-reports-summary-list-query-state.interface';
 import { IFinesReportsSummaryListState } from '../interfaces/fines-reports-summary-list-state.interface';
 import { FINES_REPORTS_SUMMARY_LIST_STATE } from '../constants/fines-reports-summary-list-state.constant';
+import { IFinesReportsSummaryListFilterState } from '../interfaces/fines-reports-summary-list-filter-state.interface';
+import { IFinesReportsSummaryListQueryState } from '../interfaces/fines-reports-summary-list-query-state.interface';
 
 const getFinesReportsSummaryListState = (): IFinesReportsSummaryListState => ({
   ...FINES_REPORTS_SUMMARY_LIST_STATE,

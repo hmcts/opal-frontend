@@ -1,12 +1,9 @@
 import { DateService } from '@hmcts/opal-frontend-common/services/date-service';
+import { AbstractReportSummaryListBaseComponent } from '@hmcts/opal-frontend-common/components/abstract/abstract-report-summary-list-base';
 import { IOpalFinesBusinessUnit } from '@services/fines/opal-fines-service/interfaces/opal-fines-business-unit.interface';
 import { IOpalFinesReportInstance } from '@services/fines/opal-fines-service/interfaces/opal-fines-report-instance.interface';
 import { IOpalFinesReportInstancesResponse } from '@services/fines/opal-fines-service/interfaces/opal-fines-report-instances-response.interface';
 import { IFinesReportsSummaryListTableData } from '../interfaces/fines-reports-summary-list-table-data.interface';
-import {
-  FINES_REPORTS_SUMMARY_LIST_STATUS,
-  FINES_REPORTS_SUMMARY_LIST_STATUS_DISPLAY,
-} from '../constants/fines-reports-summary-list-status.constant';
 
 type BusinessUnitLike = {
   business_unit_id?: string | number;
@@ -132,10 +129,6 @@ const getStatusDisplayName = (instance: IOpalFinesReportInstance): string => {
   return typeof status === 'object' && status ? (status.displayName ?? status.display_name ?? '') : '';
 };
 
-const toDisplayStatus = (status: string): string => {
-  return status ? status.charAt(0).toUpperCase() + status.slice(1).toLowerCase() : '';
-};
-
 export const getReportInstancesFromResponse = (
   response: IOpalFinesReportInstancesResponse | IOpalFinesReportInstance[] | null | undefined,
 ): IOpalFinesReportInstance[] => {
@@ -150,6 +143,12 @@ export const getReportInstancesFromResponse = (
   return response.report_instances ?? response.instances ?? response.refData ?? [];
 };
 
+/**
+ * Gets the total report instance count from any supported report instance response shape.
+ *
+ * @param response - The report instance response to read.
+ * @returns The total report instance count.
+ */
 export const getReportInstancesCountFromResponse = (
   response: IOpalFinesReportInstancesResponse | IOpalFinesReportInstance[] | null | undefined,
 ): number => {
@@ -160,6 +159,12 @@ export const getReportInstancesCountFromResponse = (
   return response.count ?? response.total_count ?? response.total ?? getReportInstancesFromResponse(response).length;
 };
 
+/**
+ * Gets the maximum report instance result limit from any supported report instance response shape.
+ *
+ * @param response - The report instance response to read.
+ * @returns The report instance result limit, or null when the response has no limit.
+ */
 export const getReportInstancesLimitFromResponse = (
   response: IOpalFinesReportInstancesResponse | IOpalFinesReportInstance[] | null | undefined,
 ): number | null => {
@@ -170,6 +175,12 @@ export const getReportInstancesLimitFromResponse = (
   return response.max_results ?? response.limit ?? null;
 };
 
+/**
+ * Checks whether a report instance response indicates additional results are available.
+ *
+ * @param response - The report instance response to check.
+ * @returns True when the response is over the result limit, otherwise false.
+ */
 export const isReportInstancesOverLimit = (
   response: IOpalFinesReportInstancesResponse | IOpalFinesReportInstance[] | null | undefined,
 ): boolean => {
@@ -183,25 +194,22 @@ export const isReportInstancesOverLimit = (
   return response.has_more === true || (limit !== null && count > limit);
 };
 
-export const getReportInstanceDisplayStatus = (instance: IOpalFinesReportInstance): string => {
+const getFinesReportInstanceDisplayStatus = (instance: IOpalFinesReportInstance): string => {
   const status = getStatusCode(instance);
   const records = instance.number_of_records ?? instance.no_of_records ?? instance.numberOfRecords;
+  const displayName = getStatusDisplayName(instance);
 
-  if (status === FINES_REPORTS_SUMMARY_LIST_STATUS.requested) {
-    return FINES_REPORTS_SUMMARY_LIST_STATUS_DISPLAY.inProgress;
-  }
-
-  if (status === FINES_REPORTS_SUMMARY_LIST_STATUS.ready && records === 0) {
-    return FINES_REPORTS_SUMMARY_LIST_STATUS_DISPLAY.noContent;
-  }
-
-  if (status === FINES_REPORTS_SUMMARY_LIST_STATUS.inProgress) {
-    return FINES_REPORTS_SUMMARY_LIST_STATUS_DISPLAY.inProgress;
-  }
-
-  return getStatusDisplayName(instance) || toDisplayStatus(status);
+  return AbstractReportSummaryListBaseComponent.getReportInstanceDisplayStatus(status, records, displayName);
 };
 
+/**
+ * Maps report instance API response rows into the sortable table row shape used by the Fines reports summary list.
+ *
+ * @param instances - The report instances to map.
+ * @param businessUnitRefData - The business unit reference data used to resolve business unit ids and codes.
+ * @param dateService - The date service used to format the created date display value.
+ * @returns The report instances mapped into Fines reports summary list table rows.
+ */
 export const mapReportInstancesToTableData = (
   instances: IOpalFinesReportInstance[],
   businessUnitRefData?: IOpalFinesBusinessUnit[],
@@ -225,7 +233,7 @@ export const mapReportInstancesToTableData = (
         instance.requestedBy?.name ??
         instance.created_by ??
         '',
-      Status: getReportInstanceDisplayStatus(instance),
+      Status: getFinesReportInstanceDisplayStatus(instance),
       instanceId: (instance.instance_id ?? instance.instanceId ?? '').toString(),
       dateTimeDisplay,
       isDownloadable: instance.is_downloadable ?? instance.isDownloadable ?? false,
