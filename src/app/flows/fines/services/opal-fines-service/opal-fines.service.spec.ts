@@ -125,6 +125,7 @@ describe('OpalFines', () => {
   it('should retry selected account detail reads after transient timeout failures', () => {
     const defendantAccountId = 456;
     const minorCreditorAccountId = 77;
+    const majorCreditorAccountId = 10770000000085;
 
     service.getDefendantAccountHeadingData(defendantAccountId).subscribe();
     const firstHeadingRequest = httpMock.expectOne(
@@ -149,6 +150,36 @@ describe('OpalFines', () => {
       `${OPAL_FINES_PATHS.minorCreditorAccounts}/${minorCreditorAccountId}`,
     );
     retriedMinorCreditorRequest.flush(OPAL_FINES_ACCOUNT_MINOR_CREDITOR_CREDITOR_MOCK);
+
+    service.getMajorCreditorAccountHeadingData(majorCreditorAccountId).subscribe();
+    const firstMajorCreditorHeadingRequest = httpMock.expectOne(
+      `${OPAL_FINES_PATHS.majorCreditorAccounts}/${majorCreditorAccountId}/header-summary`,
+    );
+    expect(firstMajorCreditorHeadingRequest.request.method).toBe('GET');
+    firstMajorCreditorHeadingRequest.flush(
+      { message: 'timed out' },
+      { status: 504, statusText: 'Gateway Timeout' },
+    );
+
+    const retriedMajorCreditorHeadingRequest = httpMock.expectOne(
+      `${OPAL_FINES_PATHS.majorCreditorAccounts}/${majorCreditorAccountId}/header-summary`,
+    );
+    retriedMajorCreditorHeadingRequest.flush(FINES_ACC_MAJOR_CREDITOR_DETAILS_HEADER_MOCK);
+
+    service.getMajorCreditorAccountAtAGlance(majorCreditorAccountId).subscribe();
+    const firstMajorCreditorAtAGlanceRequest = httpMock.expectOne(
+      `${OPAL_FINES_PATHS.majorCreditorAccounts}/${majorCreditorAccountId}/at-a-glance`,
+    );
+    expect(firstMajorCreditorAtAGlanceRequest.request.method).toBe('GET');
+    firstMajorCreditorAtAGlanceRequest.flush(
+      { message: 'timed out' },
+      { status: 504, statusText: 'Gateway Timeout' },
+    );
+
+    const retriedMajorCreditorAtAGlanceRequest = httpMock.expectOne(
+      `${OPAL_FINES_PATHS.majorCreditorAccounts}/${majorCreditorAccountId}/at-a-glance`,
+    );
+    retriedMajorCreditorAtAGlanceRequest.flush(OPAL_FINES_ACCOUNT_MAJOR_CREDITOR_AT_A_GLANCE_MOCK);
   });
 
   it('should not retry POST search APIs after transient timeout failures', () => {

@@ -1437,16 +1437,21 @@ export class OpalFines {
     accountId: number,
   ): Observable<IOpalFinesAccountMajorCreditorDetailsHeader> {
     const url = `${OPAL_FINES_PATHS.majorCreditorAccounts}/${accountId}/header-summary`;
-    return this.http.get<IOpalFinesAccountMajorCreditorDetailsHeader>(url, { observe: 'response' }).pipe(
-      map((response: HttpResponse<IOpalFinesAccountMajorCreditorDetailsHeader>) => {
-        const payload = response.body as IOpalFinesAccountMajorCreditorDetailsHeader;
-        const version = this.extractEtagVersion(response.headers);
-        return {
-          ...payload,
-          version,
-        };
-      }),
-    );
+    return this.http
+      .get<IOpalFinesAccountMajorCreditorDetailsHeader>(
+        url,
+        this.withRetrySafeReadOptions({ observe: 'response' as const }),
+      )
+      .pipe(
+        map((response: HttpResponse<IOpalFinesAccountMajorCreditorDetailsHeader>) => {
+          const payload = response.body as IOpalFinesAccountMajorCreditorDetailsHeader;
+          const version = this.extractEtagVersion(response.headers);
+          return {
+            ...payload,
+            version,
+          };
+        }),
+      );
   }
 
   /**
@@ -1462,7 +1467,10 @@ export class OpalFines {
     if (!this.cache.majorCreditorAccountAtAGlanceCache$) {
       const url = `${OPAL_FINES_PATHS.majorCreditorAccounts}/${account_id}/at-a-glance`;
       this.cache.majorCreditorAccountAtAGlanceCache$ = this.http
-        .get<IOpalFinesAccountMajorCreditorAtAGlance>(url, { observe: 'response' })
+        .get<IOpalFinesAccountMajorCreditorAtAGlance>(
+          url,
+          this.withRetrySafeReadOptions({ observe: 'response' as const }),
+        )
         .pipe(
           map((response: HttpResponse<IOpalFinesAccountMajorCreditorAtAGlance>) => {
             const version = this.extractEtagVersion(response.headers);
