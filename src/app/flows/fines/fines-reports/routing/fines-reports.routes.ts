@@ -2,7 +2,8 @@ import { Routes } from '@angular/router';
 import { authGuard } from '@hmcts/opal-frontend-common/guards/auth';
 import { canDeactivateGuard } from '@hmcts/opal-frontend-common/guards/can-deactivate';
 import { FINES_REPORTS_ROUTING_PATHS } from './constants/fines-reports-routing-paths.constant';
-import { finesReportsStateGuard } from './guards/fines-reports-state-guard/fines-reports-state.guard';
+import { finesReportsAccessGuard } from './guards/fines-reports-access-guard/fines-reports-access.guard';
+import { finesReportsCreateStateGuard } from './guards/fines-reports-create-state-guard/fines-reports-create-state.guard';
 import { FINES_ROUTING_PATHS } from '@app/flows/fines/routing/constants/fines-routing-paths.constant';
 import { FINES_DASHBOARD_ROUTING_PATHS } from '@app/flows/fines/constants/fines-dashboard-routing-paths.constant';
 import { finesReportsTitleResolver } from './resolvers/fines-reports-title/fines-reports-title.resolver';
@@ -21,8 +22,7 @@ export const routing: Routes = [
   },
   {
     path: ':reportTypeId',
-    canActivate: [authGuard],
-    canActivateChild: [finesReportsStateGuard],
+    canActivate: [authGuard, finesReportsAccessGuard],
     children: [
       {
         path: '',
@@ -42,6 +42,7 @@ export const routing: Routes = [
       },
       {
         path: FINES_REPORTS_ROUTING_PATHS.children.create,
+        canActivateChild: [finesReportsCreateStateGuard],
         children: [
           {
             path: FINES_REPORTS_CREATE_ROUTING_PATHS.children.selectBusinessUnits,
@@ -52,7 +53,6 @@ export const routing: Routes = [
             canDeactivate: [canDeactivateGuard],
             data: {
               title: FINES_REPORTS_ROUTING_TITLES.children.selectBusinessUnits,
-              requiresCreateReport: true,
             },
             resolve: {
               title: TitleResolver,
@@ -69,7 +69,6 @@ export const routing: Routes = [
               ),
             data: {
               title: FINES_REPORTS_ROUTING_TITLES.children.businessUnitWarning,
-              requiresCreateReport: true,
               requiresSelectedBusinessUnits: true,
             },
             resolve: {

@@ -6,7 +6,9 @@ import { canDeactivateGuard } from '@hmcts/opal-frontend-common/guards/can-deact
 import { TitleResolver } from '@hmcts/opal-frontend-common/resolvers/title';
 import { fetchBusinessUnitsResolver } from '@routing/fines/resolvers/fetch-business-units-resolver/fetch-business-units.resolver';
 import { FINES_REPORTS_ROUTING_TITLES } from './constants/fines-reports-routing-titles.constant';
-import { finesReportsStateGuard } from './guards/fines-reports-state-guard/fines-reports-state.guard';
+import { authGuard } from '@hmcts/opal-frontend-common/guards/auth';
+import { finesReportsAccessGuard } from './guards/fines-reports-access-guard/fines-reports-access.guard';
+import { finesReportsCreateStateGuard } from './guards/fines-reports-create-state-guard/fines-reports-create-state.guard';
 import { finesReportsReportHeadingResolver } from './resolvers/fines-reports-report-heading/fines-reports-report-heading.resolver';
 import { fetchReportResolver } from './resolvers/fetch-report/fetch-report.resolver';
 
@@ -15,7 +17,7 @@ describe('finesReports routes', () => {
     const reportRoute = routing.find((route) => route.path === ':reportTypeId');
     const defaultChildRoute = reportRoute?.children?.find((route) => route.path === '');
 
-    expect(reportRoute?.canActivateChild).toEqual([finesReportsStateGuard]);
+    expect(reportRoute?.canActivate).toEqual([authGuard, finesReportsAccessGuard]);
     expect(defaultChildRoute).toEqual({
       path: '',
       redirectTo: FINES_REPORTS_ROUTING_PATHS.children.summaryList,
@@ -38,7 +40,6 @@ describe('finesReports routes', () => {
       canDeactivate: [canDeactivateGuard],
       data: {
         title: FINES_REPORTS_ROUTING_TITLES.children.selectBusinessUnits,
-        requiresCreateReport: true,
       },
       resolve: {
         title: TitleResolver,
@@ -47,6 +48,7 @@ describe('finesReports routes', () => {
         businessUnits: fetchBusinessUnitsResolver,
       },
     });
+    expect(createRoute?.canActivateChild).toEqual([finesReportsCreateStateGuard]);
   });
 
   it('should load the business unit warning route', () => {
@@ -63,7 +65,6 @@ describe('finesReports routes', () => {
       loadComponent: expect.any(Function),
       data: {
         title: FINES_REPORTS_ROUTING_TITLES.children.businessUnitWarning,
-        requiresCreateReport: true,
         requiresSelectedBusinessUnits: true,
       },
       resolve: {
