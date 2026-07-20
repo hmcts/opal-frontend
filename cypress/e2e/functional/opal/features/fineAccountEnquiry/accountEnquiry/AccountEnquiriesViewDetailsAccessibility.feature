@@ -70,8 +70,8 @@ Feature: Account Enquiries - View Account Details Accessibility
       And I clear all selected business units on the "Confiscation" tab
       When I select the following business units:
         | tab   | businessUnit |
-        | Fines | N E Region   |
-      And I save the selected business units and the filter summary is "N E Region"
+        | Fines | West London  |
+      And I save the selected business units and the filter summary is "West London"
       When I view the Major Creditors search form
       Then I check the page for accessibility
       When I search for the major creditor "Crown Prosecution Service (DPP)"
