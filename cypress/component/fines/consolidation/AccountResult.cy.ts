@@ -171,7 +171,15 @@ describe('FinesConConsolidateAccComponent - Account Results', () => {
 
     it(
       'AC1, AC1a, AC1b. should render the individual account results tab with populated mock data',
-      { tags: ['@JIRA-EPIC:PO-2294', '@JIRA-STORY:PO-2415', '@JIRA-LABEL:consolidation', '@JIRA-TEST-KEY:PO-4650'] },
+      {
+        tags: [
+          '@JIRA-EPIC:PO-2294',
+          '@JIRA-STORY:PO-2415',
+          '@JIRA-LABEL:consolidation',
+          '@JIRA-TEST-KEY:PO-4650',
+          '@R1CWriteOff',
+        ],
+      },
       () => {
         setupComponent();
 
@@ -198,7 +206,13 @@ describe('FinesConConsolidateAccComponent - Account Results', () => {
     it(
       'AC2, AC2a, AC5a, AC5b, AC5c, AC5d, AC5e, AC5f, AC5g, AC5h, AC5i. should display the individual results columns in the AC order and format populated data',
       {
-        tags: ['@JIRA-EPIC:PO-2294', '@JIRA-STORY:PO-2415', '@JIRA-LABEL:consolidation', '@JIRA-TEST-KEY:PO-4651'],
+        tags: [
+          '@JIRA-EPIC:PO-2294',
+          '@JIRA-STORY:PO-2415',
+          '@JIRA-LABEL:consolidation',
+          '@JIRA-TEST-KEY:PO-4651',
+          '@R1CWriteOff',
+        ],
       },
       () => {
         defendantAccountResults[0].has_paying_parent_guardian = true; // Set to true to confirm Y is displayed in the relevant cell
@@ -240,7 +254,13 @@ describe('FinesConConsolidateAccComponent - Account Results', () => {
     it(
       'AC2b, AC2c, AC5b, AC5d, AC5fi, AC5g. should display an em dash for optional or unavailable account data',
       {
-        tags: ['@JIRA-EPIC:PO-2294', '@JIRA-STORY:PO-2415', '@JIRA-LABEL:consolidation', '@JIRA-TEST-KEY:PO-4652'],
+        tags: [
+          '@JIRA-EPIC:PO-2294',
+          '@JIRA-STORY:PO-2415',
+          '@JIRA-LABEL:consolidation',
+          '@JIRA-TEST-KEY:PO-4652',
+          '@R1CWriteOff',
+        ],
       },
       () => {
         defendantAccountResults.push(createFalseyResult());
@@ -271,7 +291,13 @@ describe('FinesConConsolidateAccComponent - Account Results', () => {
     it(
       'AC2d, AC2e. should display a maximum of 100 accounts on a single scrollable page with no pagination',
       {
-        tags: ['@JIRA-EPIC:PO-2294', '@JIRA-STORY:PO-2415', '@JIRA-LABEL:consolidation', '@JIRA-TEST-KEY:PO-4653'],
+        tags: [
+          '@JIRA-EPIC:PO-2294',
+          '@JIRA-STORY:PO-2415',
+          '@JIRA-LABEL:consolidation',
+          '@JIRA-TEST-KEY:PO-4653',
+          '@R1CWriteOff',
+        ],
       },
       () => {
         defendantAccountResults = createMaxResultsMock();
@@ -292,7 +318,13 @@ describe('FinesConConsolidateAccComponent - Account Results', () => {
     it(
       'AC3. should display individual results in Name, Date of birth, then Account number ascending order',
       {
-        tags: ['@JIRA-EPIC:PO-2294', '@JIRA-STORY:PO-2415', '@JIRA-LABEL:consolidation', '@JIRA-TEST-KEY:PO-4654'],
+        tags: [
+          '@JIRA-EPIC:PO-2294',
+          '@JIRA-STORY:PO-2415',
+          '@JIRA-LABEL:consolidation',
+          '@JIRA-TEST-KEY:PO-4654',
+          '@R1CWriteOff',
+        ],
       },
       () => {
         defendantAccountResults = [
@@ -341,7 +373,13 @@ describe('FinesConConsolidateAccComponent - Account Results', () => {
     it(
       'AC1a, AC1b, AC3, AC3a, AC3b, AC3c. should display the individual over-100 results state with the try adding more information link',
       {
-        tags: ['@JIRA-EPIC:PO-2294', '@JIRA-STORY:PO-2420', '@JIRA-LABEL:consolidation', '@JIRA-TEST-KEY:PO-4655'],
+        tags: [
+          '@JIRA-EPIC:PO-2294',
+          '@JIRA-STORY:PO-2420',
+          '@JIRA-LABEL:consolidation',
+          '@JIRA-TEST-KEY:PO-4655',
+          '@R1CWriteOff',
+        ],
       },
       () => {
         defendantAccountResults = createTooManyResultsMock();
@@ -357,7 +395,13 @@ describe('FinesConConsolidateAccComponent - Account Results', () => {
     it(
       'AC1a, AC1b, AC2, AC2a, AC2b, AC2c. should display the individual no-results state with the check your search link',
       {
-        tags: ['@JIRA-EPIC:PO-2294', '@JIRA-STORY:PO-2420', '@JIRA-LABEL:consolidation', '@JIRA-TEST-KEY:PO-4656'],
+        tags: [
+          '@JIRA-EPIC:PO-2294',
+          '@JIRA-STORY:PO-2420',
+          '@JIRA-LABEL:consolidation',
+          '@JIRA-TEST-KEY:PO-4656',
+          '@R1CWriteOff',
+        ],
       },
       () => {
         defendantAccountResults = [];
@@ -373,7 +417,13 @@ describe('FinesConConsolidateAccComponent - Account Results', () => {
     it(
       'AC7. should display warning and error checks beneath the relevant account row',
       {
-        tags: ['@JIRA-EPIC:PO-2294', '@JIRA-STORY:PO-2415', '@JIRA-LABEL:consolidation', '@JIRA-TEST-KEY:PO-4657'],
+        tags: [
+          '@JIRA-EPIC:PO-2294',
+          '@JIRA-STORY:PO-2415',
+          '@JIRA-LABEL:consolidation',
+          '@JIRA-TEST-KEY:PO-4657',
+          '@R1CWriteOff',
+        ],
       },
       () => {
         setupComponent();
@@ -391,7 +441,13 @@ describe('FinesConConsolidateAccComponent - Account Results', () => {
     it(
       'AC7a, AC7b. should show only errors when both errors and warnings exist, listing multiple errors as bullets',
       {
-        tags: ['@JIRA-EPIC:PO-2294', '@JIRA-STORY:PO-2415', '@JIRA-LABEL:consolidation', '@JIRA-TEST-KEY:PO-4658'],
+        tags: [
+          '@JIRA-EPIC:PO-2294',
+          '@JIRA-STORY:PO-2415',
+          '@JIRA-LABEL:consolidation',
+          '@JIRA-TEST-KEY:PO-4658',
+          '@R1CWriteOff',
+        ],
       },
       () => {
         defendantAccountResults = [createMultipleErrorsAndWarningsResult()];
@@ -417,7 +473,13 @@ describe('FinesConConsolidateAccComponent - Account Results', () => {
     it(
       'AC7c. should display all warnings when multiple warnings apply and no errors exist',
       {
-        tags: ['@JIRA-EPIC:PO-2294', '@JIRA-STORY:PO-2415', '@JIRA-LABEL:consolidation', '@JIRA-TEST-KEY:PO-4659'],
+        tags: [
+          '@JIRA-EPIC:PO-2294',
+          '@JIRA-STORY:PO-2415',
+          '@JIRA-LABEL:consolidation',
+          '@JIRA-TEST-KEY:PO-4659',
+          '@R1CWriteOff',
+        ],
       },
       () => {
         defendantAccountResults = [createMultipleWarningsResult()];
@@ -446,7 +508,13 @@ describe('FinesConConsolidateAccComponent - Account Results', () => {
     it(
       'AC1, AC1a, AC1b. should render the company account results tab with populated mock data',
       {
-        tags: ['@JIRA-EPIC:PO-2294', '@JIRA-STORY:PO-2421', '@JIRA-LABEL:consolidation', '@JIRA-TEST-KEY:PO-4660'],
+        tags: [
+          '@JIRA-EPIC:PO-2294',
+          '@JIRA-STORY:PO-2421',
+          '@JIRA-LABEL:consolidation',
+          '@JIRA-TEST-KEY:PO-4660',
+          '@R1CWriteOff',
+        ],
       },
       () => {
         setupComponent({ defendantType: 'company' });
@@ -472,7 +540,13 @@ describe('FinesConConsolidateAccComponent - Account Results', () => {
     it(
       'AC2, AC2a, AC5a, AC5b, AC5d, AC5e, AC5f, AC5i. should display the company results columns in the AC order and format populated data',
       {
-        tags: ['@JIRA-EPIC:PO-2294', '@JIRA-STORY:PO-2421', '@JIRA-LABEL:consolidation', '@JIRA-TEST-KEY:PO-4661'],
+        tags: [
+          '@JIRA-EPIC:PO-2294',
+          '@JIRA-STORY:PO-2421',
+          '@JIRA-LABEL:consolidation',
+          '@JIRA-TEST-KEY:PO-4661',
+          '@R1CWriteOff',
+        ],
       },
       () => {
         setupComponent({ defendantType: 'company' });
@@ -508,7 +582,13 @@ describe('FinesConConsolidateAccComponent - Account Results', () => {
     it(
       'AC2b, AC2c, AC5b, AC5d, AC5fi. should display an em dash for unavailable company account data',
       {
-        tags: ['@JIRA-EPIC:PO-2294', '@JIRA-STORY:PO-2421', '@JIRA-LABEL:consolidation', '@JIRA-TEST-KEY:PO-4662'],
+        tags: [
+          '@JIRA-EPIC:PO-2294',
+          '@JIRA-STORY:PO-2421',
+          '@JIRA-LABEL:consolidation',
+          '@JIRA-TEST-KEY:PO-4662',
+          '@R1CWriteOff',
+        ],
       },
       () => {
         defendantAccountResults.push(createCompanyFalseyResult());
@@ -533,7 +613,13 @@ describe('FinesConConsolidateAccComponent - Account Results', () => {
     it(
       'AC2d, AC2e. should display a maximum of 100 company accounts on a single scrollable page with no pagination',
       {
-        tags: ['@JIRA-EPIC:PO-2294', '@JIRA-STORY:PO-2421', '@JIRA-LABEL:consolidation', '@JIRA-TEST-KEY:PO-4663'],
+        tags: [
+          '@JIRA-EPIC:PO-2294',
+          '@JIRA-STORY:PO-2421',
+          '@JIRA-LABEL:consolidation',
+          '@JIRA-TEST-KEY:PO-4663',
+          '@R1CWriteOff',
+        ],
       },
       () => {
         defendantAccountResults = createCompanyMaxResultsMock();
@@ -551,7 +637,13 @@ describe('FinesConConsolidateAccComponent - Account Results', () => {
     it(
       'AC3. should display company results in Name, then Account number ascending order',
       {
-        tags: ['@JIRA-EPIC:PO-2294', '@JIRA-STORY:PO-2421', '@JIRA-LABEL:consolidation', '@JIRA-TEST-KEY:PO-4664'],
+        tags: [
+          '@JIRA-EPIC:PO-2294',
+          '@JIRA-STORY:PO-2421',
+          '@JIRA-LABEL:consolidation',
+          '@JIRA-TEST-KEY:PO-4664',
+          '@R1CWriteOff',
+        ],
       },
       () => {
         defendantAccountResults = [
@@ -592,7 +684,13 @@ describe('FinesConConsolidateAccComponent - Account Results', () => {
     it(
       'AC1a, AC1b, AC3, AC3a, AC3b, AC3c. should display the company over-100 results state with the try adding more information link',
       {
-        tags: ['@JIRA-EPIC:PO-2294', '@JIRA-STORY:PO-2420', '@JIRA-LABEL:consolidation', '@JIRA-TEST-KEY:PO-4665'],
+        tags: [
+          '@JIRA-EPIC:PO-2294',
+          '@JIRA-STORY:PO-2420',
+          '@JIRA-LABEL:consolidation',
+          '@JIRA-TEST-KEY:PO-4665',
+          '@R1CWriteOff',
+        ],
       },
       () => {
         defendantAccountResults = createCompanyTooManyResultsMock();
@@ -608,7 +706,13 @@ describe('FinesConConsolidateAccComponent - Account Results', () => {
     it(
       'AC1a, AC1b, AC2, AC2a, AC2b, AC2c. should display the company no-results state with the check your search link',
       {
-        tags: ['@JIRA-EPIC:PO-2294', '@JIRA-STORY:PO-2420', '@JIRA-LABEL:consolidation', '@JIRA-TEST-KEY:PO-4666'],
+        tags: [
+          '@JIRA-EPIC:PO-2294',
+          '@JIRA-STORY:PO-2420',
+          '@JIRA-LABEL:consolidation',
+          '@JIRA-TEST-KEY:PO-4666',
+          '@R1CWriteOff',
+        ],
       },
       () => {
         defendantAccountResults = [];
@@ -624,7 +728,13 @@ describe('FinesConConsolidateAccComponent - Account Results', () => {
     it(
       'AC7. should display warning and error checks beneath the relevant company account row',
       {
-        tags: ['@JIRA-EPIC:PO-2294', '@JIRA-STORY:PO-2421', '@JIRA-LABEL:consolidation', '@JIRA-TEST-KEY:PO-4667'],
+        tags: [
+          '@JIRA-EPIC:PO-2294',
+          '@JIRA-STORY:PO-2421',
+          '@JIRA-LABEL:consolidation',
+          '@JIRA-TEST-KEY:PO-4667',
+          '@R1CWriteOff',
+        ],
       },
       () => {
         defendantAccountResults[0].checks = {
@@ -646,7 +756,13 @@ describe('FinesConConsolidateAccComponent - Account Results', () => {
     it(
       'AC7a, AC7b. should show only errors for company results when both errors and warnings exist, listing multiple errors as bullets',
       {
-        tags: ['@JIRA-EPIC:PO-2294', '@JIRA-STORY:PO-2421', '@JIRA-LABEL:consolidation', '@JIRA-TEST-KEY:PO-4668'],
+        tags: [
+          '@JIRA-EPIC:PO-2294',
+          '@JIRA-STORY:PO-2421',
+          '@JIRA-LABEL:consolidation',
+          '@JIRA-TEST-KEY:PO-4668',
+          '@R1CWriteOff',
+        ],
       },
       () => {
         defendantAccountResults = [createCompanyMultipleErrorsAndWarningsResult()];
@@ -670,7 +786,13 @@ describe('FinesConConsolidateAccComponent - Account Results', () => {
     it(
       'AC7c. should display all warnings for company results when multiple warnings apply and no errors exist',
       {
-        tags: ['@JIRA-EPIC:PO-2294', '@JIRA-STORY:PO-2421', '@JIRA-LABEL:consolidation', '@JIRA-TEST-KEY:PO-4669'],
+        tags: [
+          '@JIRA-EPIC:PO-2294',
+          '@JIRA-STORY:PO-2421',
+          '@JIRA-LABEL:consolidation',
+          '@JIRA-TEST-KEY:PO-4669',
+          '@R1CWriteOff',
+        ],
       },
       () => {
         defendantAccountResults = [createCompanyMultipleWarningsResult()];
@@ -698,7 +820,13 @@ describe('FinesConConsolidateAccComponent - Account Results', () => {
     it(
       'AC3, AC3a, AC3b. should show row checkboxes for selectable accounts, hide them for errors, and keep warning rows enabled',
       {
-        tags: ['@JIRA-EPIC:PO-2294', '@JIRA-STORY:PO-2416', '@JIRA-LABEL:consolidation', '@JIRA-TEST-KEY:PO-4670'],
+        tags: [
+          '@JIRA-EPIC:PO-2294',
+          '@JIRA-STORY:PO-2416',
+          '@JIRA-LABEL:consolidation',
+          '@JIRA-TEST-KEY:PO-4670',
+          '@R1CWriteOff',
+        ],
       },
       () => {
         defendantAccountResults[0].checks = { errors: [], warnings: [] };
@@ -732,7 +860,13 @@ describe('FinesConConsolidateAccComponent - Account Results', () => {
     it(
       'AC4, AC4a, AC4b, AC4c, AC5a, AC5b, AC5c. should bulk select and deselect all enabled accounts while excluding accounts with errors',
       {
-        tags: ['@JIRA-EPIC:PO-2294', '@JIRA-STORY:PO-2416', '@JIRA-LABEL:consolidation', '@JIRA-TEST-KEY:PO-4671'],
+        tags: [
+          '@JIRA-EPIC:PO-2294',
+          '@JIRA-STORY:PO-2416',
+          '@JIRA-LABEL:consolidation',
+          '@JIRA-TEST-KEY:PO-4671',
+          '@R1CWriteOff',
+        ],
       },
       () => {
         defendantAccountResults[0].checks = { errors: [], warnings: [] };
@@ -775,7 +909,13 @@ describe('FinesConConsolidateAccComponent - Account Results', () => {
     it(
       'AC6, AC6a, AC6b. should display Add to list above the counter and show a validation error when no accounts are selected',
       {
-        tags: ['@JIRA-EPIC:PO-2294', '@JIRA-STORY:PO-2416', '@JIRA-LABEL:consolidation', '@JIRA-TEST-KEY:PO-4672'],
+        tags: [
+          '@JIRA-EPIC:PO-2294',
+          '@JIRA-STORY:PO-2416',
+          '@JIRA-LABEL:consolidation',
+          '@JIRA-TEST-KEY:PO-4672',
+          '@R1CWriteOff',
+        ],
       },
       () => {
         defendantAccountResults[0].checks = { errors: [], warnings: [] };

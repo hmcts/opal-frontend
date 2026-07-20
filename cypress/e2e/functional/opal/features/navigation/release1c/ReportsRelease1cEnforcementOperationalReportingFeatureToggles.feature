@@ -10,12 +10,12 @@ Feature: Reports Release 1C Enforcement Operational Reporting Feature Toggles
     When I open Your reports from the Reports landing page
     Then I am taken to the Your reports summary list screen
 
-  @R1CEnforcementOperationalReportingOff @FeatureFlag @JIRA-STORY:PO-3758 @JIRA-EPIC:PO-3685 @JIRA-TEST-KEY:PO-8024
+  @R1CEnforcementOperationalReportingOff @JIRA-STORY:PO-3758 @JIRA-EPIC:PO-3685 @JIRA-TEST-KEY:PO-8024
   Scenario: Reports is hidden from the primary navigation when release 1c enforcement operational reporting is disabled
     Given I am logged in with email "opal-test@dev.platform.hmcts.net"
     Then I should not see the Fines primary navigation item "Reports"
 
-  @R1CEnforcementOperationalReportingOff @FeatureFlag @JIRA-STORY:PO-3758 @JIRA-EPIC:PO-3685
+  @R1CEnforcementOperationalReportingOff @JIRA-STORY:PO-3758 @JIRA-EPIC:PO-3685
   Scenario Outline: Direct navigation to <entryPoint> is blocked when release 1c enforcement operational reporting is disabled
     Given I am authenticated with email "opal-test@dev.platform.hmcts.net"
     When I navigate directly to the Reports entry point "<entryPoint>"
