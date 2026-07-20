@@ -1279,12 +1279,13 @@ describe('OpalFines', () => {
     req.flush(OPAL_FINES_ACCOUNT_DEFENDANT_DETAILS_HISTORY_AND_NOTES_TAB_REF_DATA_MOCK);
   });
 
-  it('should send a POST request to add note API with correct payload and return mock response', () => {
+  it('should send a POST request to add note API with correct payload and headers', () => {
     const payload: IOpalFinesAddNotePayload = OPAL_FINES_ADD_NOTE_PAYLOAD_MOCK;
     const version = '1';
+    const businessUnitId = '77';
     const expectedUrl = OPAL_FINES_PATHS.notes;
 
-    service.addNote(payload, version).subscribe((response) => {
+    service.addNote(payload, version, businessUnitId).subscribe((response) => {
       expect(response.note_id).toBeGreaterThan(0);
       expect(response.note_id).toBeLessThanOrEqual(100000);
     });
@@ -1293,6 +1294,7 @@ describe('OpalFines', () => {
     expect(req.request.method).toBe('POST');
     expect(req.request.body).toEqual(payload);
     expect(req.request.headers.get('If-Match')).toBe(version);
+    expect(req.request.headers.get('Business_Unit_ID')).toBe(businessUnitId);
     req.flush(OPAL_FINES_ADD_NOTE_RESPONSE_MOCK);
   });
 
