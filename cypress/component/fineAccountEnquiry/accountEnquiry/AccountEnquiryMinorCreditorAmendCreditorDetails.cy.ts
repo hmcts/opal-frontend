@@ -31,7 +31,7 @@ const ACCOUNT_ENQUIRY_JIRA_LABEL = '@JIRA-LABEL:account-enquiry';
 const AMEND_MINOR_CREDITOR_STORY_TAG = '@JIRA-STORY:PO-1984';
 const AMEND_MINOR_CREDITOR_EPIC_TAG = '@JIRA-EPIC:PO-1285';
 
-const buildTags = (...tags: string[]): string[] => [...tags, ACCOUNT_ENQUIRY_JIRA_LABEL];
+const buildTags = (...tags: string[]): string[] => [...tags, ACCOUNT_ENQUIRY_JIRA_LABEL, '@R1B'];
 
 const componentProperties: IComponentProperties = {
   accountId: MINOR_CREDITOR_ACCOUNT_ID.toString(),

@@ -23,7 +23,7 @@ import { GLOBAL_ERROR_STATE } from '@hmcts/opal-frontend-common/stores/global/co
 
 const MANUAL_ACCOUNT_CREATION_JIRA_LABEL = '@JIRA-LABEL:manual-account-creation';
 
-const buildTags = (...tags: string[]) => [...tags, MANUAL_ACCOUNT_CREATION_JIRA_LABEL];
+const buildTags = (...tags: string[]) => [...tags, '@R1A', MANUAL_ACCOUNT_CREATION_JIRA_LABEL];
 
 describe('FinesMacDeleteAccountConfirmation - Checker Delete account', () => {
   let finesMacState = structuredClone(FINES_AYG_CHECK_ACCOUNT_MOCK);
@@ -209,7 +209,7 @@ describe('FinesMacDeleteAccountConfirmation - Checker Delete account', () => {
 
       setupComponent(finesAccountPayload, finesAccountPayload, true);
 
-      cy.get(DOM_ELEMENTS.commentInput).clear().type("AaBbCc123..--''  ,,", { delay: 0 });
+      cy.get(DOM_ELEMENTS.commentInput).clear().type("AaBbCc123..--''  ,", { delay: 0 });
       cy.get(DOM_ELEMENTS.confirmDeleteButton).click();
 
       cy.wait('@patchDraftAccount').its('request.method').should('eq', 'PATCH');
@@ -229,7 +229,7 @@ describe('FinesMacDeleteAccountConfirmation - Checker Delete account', () => {
     () => {
       setupComponent(finesAccountPayload, finesAccountPayload, true);
 
-      cy.get(DOM_ELEMENTS.commentInput).clear().type("AaBbCc123..--''  ,,@@%%", { delay: 0 });
+      cy.get(DOM_ELEMENTS.commentInput).clear().type("AaBbCc123..--''  ,@@%%", { delay: 0 });
       cy.get(DOM_ELEMENTS.confirmDeleteButton).should('exist').click();
 
       cy.get(DOM_ELEMENTS.fieldError)
