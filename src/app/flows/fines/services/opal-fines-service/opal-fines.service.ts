@@ -971,23 +971,10 @@ export class OpalFines {
    * @param payload - The payload containing note details including associated record information,
    *                  note type, note text, and defendant account version for concurrency.
    * @param version - The version string to be used as the value for the `If-Match` header.
-   * @param businessUnitId - The business unit ID to be used as the value for the `Business_Unit_ID` header.
    * @returns An Observable that emits the created note data.
    */
-  public addNote(
-    payload: IOpalFinesAddNotePayload,
-    version: string,
-    businessUnitId?: string,
-  ): Observable<IOpalFinesAddNoteResponse> {
-    const headers: Record<string, string> = {};
-    if (version !== undefined && version !== null) {
-      headers['If-Match'] = version;
-    }
-    if (businessUnitId !== undefined) {
-      headers['Business-Unit-Id'] = businessUnitId;
-    }
-
-    return this.http.post<IOpalFinesAddNoteResponse>(OPAL_FINES_PATHS.notes, payload, { headers });
+  public addNote(payload: IOpalFinesAddNotePayload, version: string): Observable<IOpalFinesAddNoteResponse> {
+    return this.http.post<IOpalFinesAddNoteResponse>(OPAL_FINES_PATHS.notes, payload, this.buildIfMatchHeader(version));
   }
 
   /**
