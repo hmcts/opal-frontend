@@ -14,7 +14,12 @@ const ACCOUNT_NOTE_ALLOWED_CHARACTERS_ERROR =
   'Account note must only include letters a to z, numbers 0-9 and certain special characters (commas, full stops, hyphens, spaces, apostrophes)';
 const ACCOUNT_ENQUIRY_JIRA_EPIC = '@JIRA-EPIC:PO-812';
 
-const buildTags = (...tags: string[]): string[] => [...tags, ACCOUNT_ENQUIRY_JIRA_EPIC, ACCOUNT_ENQUIRY_JIRA_LABEL];
+const buildTags = (...tags: string[]): string[] => [
+  ...tags,
+  ACCOUNT_ENQUIRY_JIRA_EPIC,
+  ACCOUNT_ENQUIRY_JIRA_LABEL,
+  '@R1B',
+];
 
 describe('FinesAccNoteAddFormComponent', () => {
   const mockFinesAccountStore: IFinesAccountState = {
