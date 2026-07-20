@@ -20,7 +20,7 @@ const MINOR_CREDITOR_SUMMARY_EPIC_TAG = '@JIRA-EPIC:PO-2234';
 const ADD_PAYMENT_HOLD_STORY_TAG = '@JIRA-STORY:PO-1930';
 const REMOVE_PAYMENT_HOLD_STORY_TAG = '@JIRA-STORY:PO-1934';
 
-const buildTags = (...tags: string[]): string[] => [...tags, ACCOUNT_ENQUIRY_JIRA_LABEL];
+const buildTags = (...tags: string[]): string[] => [...tags, ACCOUNT_ENQUIRY_JIRA_LABEL, '@R1B'];
 
 const componentProperties: IComponentProperties = {
   accountId: MINOR_CREDITOR_ACCOUNT_ID.toString(),
