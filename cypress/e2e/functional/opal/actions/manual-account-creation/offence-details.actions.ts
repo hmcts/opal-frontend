@@ -190,6 +190,19 @@ export class ManualOffenceDetailsActions {
   }
 
   /**
+   * Asserts whether the creditor type radio is selected for an imposition.
+   * @param index - Zero-based imposition index.
+   * @param type - Creditor type ("major" | "minor").
+   * @param expected - Whether the radio should be selected.
+   */
+  assertCreditorTypeSelected(index: number, type: 'major' | 'minor', expected: boolean): void {
+    log('assert', 'Asserting creditor type selected state', { index, type, expected });
+    cy.get(L.imposition.creditorRadio(type, index), this.common.getTimeoutOptions())
+      .should('exist')
+      .should(expected ? 'be.checked' : 'not.be.checked');
+  }
+
+  /**
    * Selects the creditor type for an imposition.
    * @param index - Zero-based imposition index.
    * @param type - Creditor type ("major" | "minor").
@@ -224,6 +237,40 @@ export class ManualOffenceDetailsActions {
     cy.get(L.imposition.majorCreditorInput(index), this.common.getTimeoutOptions())
       .invoke('val')
       .should((val) => expect(String(val ?? '')).to.contain(expected));
+  }
+
+  /**
+   * Asserts whether the major creditor search box is visible for an imposition.
+   * @param index - Zero-based imposition index.
+   * @param expected - Whether the search box should be visible.
+   */
+  assertMajorCreditorSearchBoxVisible(index: number, expected: boolean): void {
+    log('assert', 'Asserting major creditor search box visibility', { index, expected });
+
+    cy.get(L.imposition.majorCreditorInput(index), this.common.getTimeoutOptions())
+      .should('exist')
+      .should(expected ? 'be.visible' : 'not.be.visible');
+  }
+
+  /**
+   * Asserts that a major creditor option is not present in the autocomplete list for an imposition.
+   * @param index - Zero-based imposition index.
+   * @param value - Option text that must not be present.
+   */
+  assertMajorCreditorOptionUnavailable(index: number, value: string): void {
+    log('assert', 'Asserting major creditor option is unavailable', { index, value });
+
+    cy.get(L.imposition.majorCreditorInput(index), this.common.getTimeoutOptions())
+      .should('exist')
+      .scrollIntoView()
+      .click({ force: true });
+
+    cy.get(L.imposition.majorCreditorList(index), this.common.getTimeoutOptions()).should('be.visible');
+
+    cy.get(`${L.imposition.majorCreditorList(index)} li`, this.common.getTimeoutOptions()).then(($options) => {
+      const options = [...$options].map((option) => option.textContent?.trim() ?? '');
+      expect(options).not.to.include(value);
+    });
   }
 
   /**

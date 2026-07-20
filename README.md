@@ -330,22 +330,11 @@ The default functional runner excludes `@UAT-Technical`, `@skip`, and the off-st
 
 Use these functional scripts when you need a release-aligned run locally or in a dedicated CI stage:
 
-- `yarn test:functional:r1a_off`: technical `release-1a` disabled scenarios only
 - `yarn test:functional:r1a`: current `R1A` positive coverage only
-- `yarn test:functional:r1b_off`: technical `release-1b` disabled scenarios only
 - `yarn test:functional:r1ab`: current `R1A` + `R1B` positive coverage only
-- `yarn test:functional:r1c_write_off_off`: technical `release-1c-write-off` disabled scenarios only
-- `yarn test:functional:r1c_enforcement_operational_reporting_off`: technical `release-1c-enforcement-operational-reporting` disabled scenarios only
+- `yarn test:functional:all_flags_off`: technical disabled scenarios for `R1A`, `R1B`, `R1CWriteOff`, `R1CEnforcementOperationalReporting`, `R1CAdministration`, and `R1CFinancialMovements`
 
-Use these component scripts to avoid running later-release component coverage when you only want the currently-enabled release package:
-
-- `yarn test:component:all_flags_off`: component tests tagged `R1AOff` or `R1BOff` only
-- `yarn test:component:r1a`: `R1A` manual account creation and draft-account components only
-- `yarn test:component:r1ab`: `R1A` + `R1B` component coverage only
-- `yarn test:component:r1c_write_off`: `R1C` write-off / consolidation components only
-- `yarn test:component:r1c_enforcement_operational_reporting`: `R1C` reports components only
-
-The component release runners use `--spec` selection rather than extra tags. `test:component:r1a` intentionally excludes `manualAccountCreation/FinesFixedPenalty` to mirror the current functional `R1A` split.
+Use `yarn test:component` for all component coverage. Component tests mock responses, so they can run in any release environment without release-specific runners.
 
 All three top-level runners accept:
 
@@ -361,7 +350,7 @@ yarn test:component --browser=chrome --parallel
 yarn test:smoke --mode=legacy --serial
 yarn test:functional --browser=firefox --mode=opal --parallel
 yarn test:functional:r1ab --browser=chrome
-yarn test:component:r1a --browser=edge
+yarn test:component --browser=edge
 
 ```
 
@@ -415,15 +404,21 @@ The nightly Jenkins pipeline runs its stages in this order after checkout and te
 - `Component Tests` runs when `Component=true`.
 - `Smoke Tests` runs when `Smoke=true`.
 - `Functional Tests` runs when `Functional=true`.
-- `R1A Legacy Demo` runs when `RunR1aLegacyDemo=true` and defaults to enabled. It points `TEST_URL` at `https://opal-frontend.demo.apps.hmcts.net/`, switches app mode to legacy, and runs `yarn test:functional:r1a`.
-- `R1A Off Legacy Demo` runs only when `RunR1aOffLegacyDemo=true`. It uses the same demo legacy flow and runs `yarn test:functional:r1a_off`.
+- `LEGACY_DEMO_SUITE` selects which optional demo legacy stage runs. The supported values are `R1A` (default), `R1A_AND_R1B`, `ALL_FLAGS_OFF`, and `NONE`.
+- `R1A Legacy Demo` runs when `LEGACY_DEMO_SUITE=R1A`. It points `TEST_URL` at `https://opal-frontend.demo.apps.hmcts.net/`, switches app mode to legacy, and runs `yarn test:functional:r1a`.
+- `R1A and R1B Legacy Demo` runs when `LEGACY_DEMO_SUITE=R1A_AND_R1B`. It uses the same demo legacy flow and runs `yarn test:functional:r1ab`.
+- `All Flags Off Legacy Demo` runs when `LEGACY_DEMO_SUITE=ALL_FLAGS_OFF`. It uses the same demo legacy flow and runs `yarn test:functional:all_flags_off`.
 - `UAT-Technical` runs only when `RunUatTech=true`. It uses the same demo legacy flow and runs `yarn test:functional:uat_legacy`.
 - `Legacy Tests` runs only when `Legacy=true`. It runs the general functional suite in legacy mode.
-- `Chrome Tests` runs only when `RunChrome=true`. It reruns the functional suite in Chrome.
-- `Firefox Tests` runs only when `RunFirefox=true`. It reruns the functional suite in Firefox.
+- `RunChrome=true` switches the selected nightly stages to Chrome instead of the default browser.
+- `RunFirefox=true` switches the selected nightly stages to Firefox instead of the default browser.
 
 Notes for the nightly pipeline:
 
+- The nightly pipeline uses Edge by default. If Edge is unavailable on the Jenkins agent, it falls back to Chrome.
+- `RunChrome` and `RunFirefox` are mutually exclusive browser overrides for the selected stages.
+- Selecting `RunChrome` or `RunFirefox` does not add any extra test stages. It only changes the browser used by the stages enabled for that run.
+- If no other parameters are changed, the default-enabled nightly stages still run, using the selected browser override when one is set.
 - `LEGACY_URL` defaults to `PRE-PROD`.
 - `LEGACY_URL=PRE-PROD` points the legacy gateway checks at `https://cloudgobgateway.test.platform.hmcts.net/opal`.
 - `LEGACY_URL=DEV` uses the staging legacy DB stub, skips the pre-prod `getGmasTest` health check, and does not patch the demo `app-mode` LaunchDarkly flag to `legacy`.
@@ -487,11 +482,18 @@ functional-output/
           r1a-legacy-demo-report.html
         zephyr/
           cucumber-report.json
-      r1a-off-legacy-demo/
-        r1a-off-legacy-demo-test-result.xml
+      all-flags-off-legacy-demo/
+        all-flags-off-legacy-demo-test-result.xml
         cucumber/
-          r1a-off-legacy-demo-report.ndjson
-          r1a-off-legacy-demo-report.html
+          all-flags-off-legacy-demo-report.ndjson
+          all-flags-off-legacy-demo-report.html
+        zephyr/
+          cucumber-report.json
+      r1ab-legacy-demo/
+        r1ab-legacy-demo-test-result.xml
+        cucumber/
+          r1ab-legacy-demo-report.ndjson
+          r1ab-legacy-demo-report.html
         zephyr/
           cucumber-report.json
       uat-technical/
@@ -541,7 +543,7 @@ Notes:
 - `functional-output/component/<browser>/json/.jsons/` is the raw Mochawesome JSON used to build `html/component-report.html`.
 - Each nightly stage now copies its Zephyr JSON into that stage's own artifact directory as well as the shared root `*-output/zephyr/` location used by the existing scripts.
 - `functional-output/prod/<browser>/legacy/` and `smoke-output/prod/<browser>/legacy/` are only created for legacy-mode runs.
-- `functional-output/prod/<browser>/{r1a-legacy-demo,r1a-off-legacy-demo,uat-technical}/` are created by the dedicated nightly demo stages.
+- `functional-output/prod/<browser>/{r1a-legacy-demo,r1ab-legacy-demo,all-flags-off-legacy-demo,uat-technical}/` are created by the dedicated nightly demo stages.
 - `videos/` is only expected when using `yarn test:functionalOpalVideo`.
 - `account_evidence/` is only expected when legacy evidence capture is enabled.
 - These older component paths should not be recreated on a clean run: `functional-output/component-report/`, `functional-output/component-html/`, and `functional-output/prod/<browser>/component/`.
@@ -779,7 +781,8 @@ Zephyr Automation is a tool for integrating test results and ticket management b
 - `zephyr:test:component`: Reset outputs, run component tests, then create a Zephyr execution from the Cypress JSON report.
 - `zephyr:test:functional`: Reset outputs, run functional tests, then create a Zephyr execution from the functional Cucumber JSON report.
 - `zephyr:test:r1a_legacy_demo`: Reset outputs, run the R1A legacy demo functional suite, then create a Zephyr execution from the functional Cucumber JSON report.
-- `zephyr:test:r1a_off_legacy_demo`: Reset outputs, run the R1A Off legacy demo functional suite, then create a Zephyr execution from the functional Cucumber JSON report.
+- `zephyr:test:r1ab_legacy_demo`: Reset outputs, run the R1A and R1B legacy demo functional suite, then create a Zephyr execution from the functional Cucumber JSON report.
+- `zephyr:test:r1a_off_legacy_demo`: Reset outputs, run the all-flags-off legacy demo functional suite, then create a Zephyr execution from the functional Cucumber JSON report.
 - `zephyr:test:smoke`: Reset outputs, run smoke tests, then create a Zephyr execution from the smoke Cucumber JSON report.
 - `zephyr:test:uat_technical`: Reset outputs, run the UAT-Technical legacy-mode functional suite, then create a Zephyr execution from the functional Cucumber JSON report.
 - `zephyr:test:legacy`: Reset outputs, run the legacy-mode functional suite, then create a Zephyr execution from the functional Cucumber JSON report.

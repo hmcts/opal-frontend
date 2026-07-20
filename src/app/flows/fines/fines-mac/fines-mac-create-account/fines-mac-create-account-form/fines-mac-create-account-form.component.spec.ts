@@ -1,4 +1,5 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
+import { By } from '@angular/platform-browser';
 import { FinesMacCreateAccountFormComponent } from './fines-mac-create-account-form.component';
 import { OPAL_FINES_BUSINESS_UNIT_AUTOCOMPLETE_ITEMS_MOCK } from '@services/fines/opal-fines-service/mocks/opal-fines-business-unit-autocomplete-items.mock';
 import { FINES_MAC_STATE_MOCK } from '../../mocks/fines-mac-state.mock';
@@ -14,6 +15,7 @@ import { GovukRadioComponent } from '@hmcts/opal-frontend-common/components/govu
 import { afterAll, beforeAll, beforeEach, describe, expect, it, vi } from 'vitest';
 import { FINES_MAC_ORIGINATOR_TYPE_FORM } from '../../fines-mac-originator-type/constants/fines-mac-originator-type-form.constant';
 import { FINES_MAC_ORIGINATOR_TYPE_STATE_MOCK } from '../../fines-mac-originator-type/mocks/fines-mac-originator-type-state.mock';
+import { FINES_MAC_DRAFT_CREATE_AND_MANAGE_TABS_ROUTE } from '../../constants/fines-mac-draft-create-and-manage-tabs-route.constant';
 
 describe('FinesMacCreateAccountFormComponent', () => {
   let component: FinesMacCreateAccountFormComponent;
@@ -268,5 +270,42 @@ describe('FinesMacCreateAccountFormComponent', () => {
     const hasConditionalCaution = component.accountTypes.some((type) => type.key === 'ConditionalCaution');
 
     expect(hasConditionalCaution).toBe(false);
+  });
+
+  it('should not render a back link', () => {
+    const backLink = fixture.debugElement.query(By.css('opal-lib-govuk-back-link'));
+
+    expect(backLink).toBeNull();
+  });
+
+  it('should render the create account heading for non-TFO users', () => {
+    const heading = fixture.nativeElement.querySelector('h1');
+
+    expect(heading?.textContent?.trim()).toBe('Create account');
+  });
+
+  it('should render the transfer in heading for TFO users', () => {
+    finesMacStore.setOriginatorType({
+      ...FINES_MAC_ORIGINATOR_TYPE_FORM,
+      formData: { ...FINES_MAC_ORIGINATOR_TYPE_STATE_MOCK, fm_originator_type_originator_type: 'TFO' },
+    });
+
+    component['getAccountTypes']();
+    fixture.detectChanges();
+
+    const heading = fixture.nativeElement.querySelector('h1');
+
+    expect(heading?.textContent?.trim()).toBe('Transfer in');
+  });
+
+  it('should route the cancel link to the review tab in draft create and manage', () => {
+    const handleRouteSpy = vi.spyOn(component, 'handleRoute').mockImplementation(() => {});
+
+    fixture.debugElement.query(By.css('opal-lib-govuk-cancel-link')).triggerEventHandler('linkClickEvent');
+
+    expect(handleRouteSpy).toHaveBeenCalledWith(FINES_MAC_DRAFT_CREATE_AND_MANAGE_TABS_ROUTE.path, {
+      nonRelative: true,
+      fragment: FINES_MAC_DRAFT_CREATE_AND_MANAGE_TABS_ROUTE.fragment,
+    });
   });
 });

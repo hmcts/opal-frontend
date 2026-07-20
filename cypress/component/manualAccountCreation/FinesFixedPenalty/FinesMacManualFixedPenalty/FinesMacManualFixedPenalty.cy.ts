@@ -20,7 +20,7 @@ const ADD_ACCOUNT_NOTE_ALLOWED_CHARACTERS_ERROR =
   'Add account note must only include letters a to z, numbers 0-9 and certain special characters (such as hyphens, spaces, apostrophes and commas)';
 const DRIVING_LICENCE_NUMBER_FORMAT_ERROR = 'Enter Driving licence number in the correct format';
 
-const buildTags = (...tags: string[]) => [...tags, MANUAL_ACCOUNT_CREATION_JIRA_LABEL];
+const buildTags = (...tags: string[]) => [...tags, '@R1A', MANUAL_ACCOUNT_CREATION_JIRA_LABEL];
 
 describe('FinesMacManualFixedPenalty', () => {
   let fixedPenaltyMock = structuredClone(FINES_FIXED_PENALTY_MOCK);
@@ -1359,7 +1359,12 @@ describe('FinesMacManualFixedPenalty', () => {
   it(
     '(AC5) should keep Prosecutors (All) visible and selectable as originators for non-filtered journeys',
     {
-      tags: [...buildTags('@JIRA-STORY:PO-2761'), '@JIRA-EPIC:PO-2750', '@JIRA-TEST-KEY:PO-4829'],
+      tags: [
+        ...buildTags('@JIRA-STORY:PO-2761'),
+        '@JIRA-EPIC:PO-2750',
+        '@JIRA-TEST-KEY:PO-4829',
+        '@JIRA-DEFECT:PO-8896',
+      ],
     },
     () => {
       const filteredLocalJusticeAreas: IOpalFinesLocalJusticeAreaRefData = {

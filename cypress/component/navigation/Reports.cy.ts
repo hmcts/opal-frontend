@@ -24,6 +24,10 @@ const REPORTS_STORY_TAG = '@JIRA-STORY:PO-2613';
 const REPORTS_EPIC_TAG = '@JIRA-EPIC:PO-2627';
 const RELEASE_1C_STORY_TAG = '@JIRA-STORY:PO-3758';
 const RELEASE_1C_EPIC_TAG = '@JIRA-EPIC:PO-3685';
+const buildTags = (...tags: string[]) => [
+  ...tags,
+  ...(tags.includes('@R1CEnforcementOperationalReportingOff') ? [] : ['@R1CEnforcementOperationalReporting']),
+];
 const DEFAULT_RELEASE_FEATURE_FLAGS = {
   [RELEASE_1A_FEATURE_FLAG]: true,
   [RELEASE_1C_WRITE_OFF_FEATURE_FLAG]: true,
@@ -198,7 +202,7 @@ describe(
 
     it(
       'AC1a AC1b AC1d AC2a AC2b AC2c AC2d shows the Your reports panel and Operational reports links in the correct order',
-      { tags: ['@JIRA-TEST-KEY:PO-5251'] },
+      { tags: buildTags('@JIRA-TEST-KEY:PO-5251') },
       () => {
         commonSetup();
 
@@ -224,7 +228,7 @@ describe(
 
     it(
       'AC1c routes View all your reports to the Your reports summary list screen',
-      { tags: ['@JIRA-TEST-KEY:PO-5252'] },
+      { tags: buildTags('@JIRA-TEST-KEY:PO-5252') },
       () => {
         commonSetup();
 
@@ -236,7 +240,7 @@ describe(
 
     it(
       'AC3a routes Operational reports by enforcement to the correct summary list screen',
-      { tags: ['@JIRA-TEST-KEY:PO-5253'] },
+      { tags: buildTags('@JIRA-TEST-KEY:PO-5253') },
       () => {
         commonSetup();
 
@@ -250,7 +254,7 @@ describe(
 
     it(
       'AC3b routes Operational reports by payments to the correct summary list screen',
-      { tags: ['@JIRA-TEST-KEY:PO-5254'] },
+      { tags: buildTags('@JIRA-TEST-KEY:PO-5254') },
       () => {
         commonSetup();
 
@@ -262,7 +266,7 @@ describe(
       },
     );
 
-    it('AC1c renders the Your reports summary list heading', { tags: ['@JIRA-TEST-KEY:PO-5255'] }, () => {
+    it('AC1c renders the Your reports summary list heading', { tags: buildTags('@JIRA-TEST-KEY:PO-5255') }, () => {
       yourReportsSummaryListSetup();
 
       cy.contains(L.pageHeader, 'Your reports').should('be.visible');
@@ -270,7 +274,7 @@ describe(
 
     it(
       'AC3a renders the Operational reports by enforcement summary list heading',
-      { tags: ['@JIRA-TEST-KEY:PO-5256'] },
+      { tags: buildTags('@JIRA-TEST-KEY:PO-5256') },
       () => {
         operationalReportsByEnforcementSummaryListSetup();
 
@@ -280,7 +284,7 @@ describe(
 
     it(
       'AC3b renders the Operational reports by payments summary list heading',
-      { tags: ['@JIRA-TEST-KEY:PO-5257'] },
+      { tags: buildTags('@JIRA-TEST-KEY:PO-5257') },
       () => {
         operationalReportsByPaymentsSummaryListSetup();
 
@@ -290,7 +294,7 @@ describe(
 
     it(
       'AC4d hides the Operational reports group when the user has no operational report permissions',
-      { tags: ['@JIRA-TEST-KEY:PO-5258'] },
+      { tags: buildTags('@JIRA-TEST-KEY:PO-5258') },
       () => {
         noOperationalPermissionsSetup();
 
@@ -304,7 +308,14 @@ describe(
 
     it(
       'hides the Reports dashboard entry points when release-1c enforcement operational reporting is disabled',
-      { tags: ['@JIRA-TEST-KEY:PO-3758', '@JIRA-STORY:PO-3758', '@JIRA-EPIC:PO-3685'] },
+      {
+        tags: buildTags(
+          '@JIRA-STORY:PO-3758',
+          '@JIRA-EPIC:PO-3685',
+          '@R1CEnforcementOperationalReportingOff',
+          '@JIRA-TEST-KEY:PO-8680',
+        ),
+      },
       () => {
         featureFlagDisabledSetup();
 
@@ -318,7 +329,7 @@ describe(
 
     it(
       'shows the Reports dashboard entry points when release-1c enforcement operational reporting is enabled',
-      { tags: ['@JIRA-TEST-KEY:PO-3758'] },
+      { tags: buildTags('@JIRA-TEST-KEY:PO-8681') },
       () => {
         commonSetup();
 
@@ -336,7 +347,7 @@ describe(
 
     it(
       'navigates to the operational reports by enforcement summary list when release-1c enforcement operational reporting is enabled',
-      { tags: ['@JIRA-TEST-KEY:PO-3758'] },
+      { tags: buildTags('@JIRA-TEST-KEY:PO-8682') },
       () => {
         commonSetup();
 
@@ -349,7 +360,7 @@ describe(
 
     it(
       'navigates to the operational reports by payments summary list when release-1c enforcement operational reporting is enabled',
-      { tags: ['@JIRA-TEST-KEY:PO-3758'] },
+      { tags: buildTags('@JIRA-TEST-KEY:PO-8683') },
       () => {
         commonSetup();
 
@@ -362,7 +373,7 @@ describe(
 
     it(
       'AC4a AC4c shows only the enforcement link and keeps the Operational reports heading visible',
-      { tags: ['@JIRA-TEST-KEY:PO-5259'] },
+      { tags: buildTags('@JIRA-TEST-KEY:PO-5259') },
       () => {
         enforcementPermissionSetup();
 
@@ -376,7 +387,7 @@ describe(
 
     it(
       'AC4b AC4c shows only the payments link and keeps the Operational reports heading visible',
-      { tags: ['@JIRA-TEST-KEY:PO-5260'] },
+      { tags: buildTags('@JIRA-TEST-KEY:PO-5260') },
       () => {
         paymentsPermissionSetup();
 

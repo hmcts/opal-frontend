@@ -1,10 +1,10 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { SimpleChange } from '@angular/core';
 import { ActivatedRoute, provideRouter } from '@angular/router';
-import { beforeEach, describe, expect, it, vi } from 'vitest';
+import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import { FinesAccDefendantDetailsHistoryAndNotesTabComponent } from './fines-acc-defendant-details-history-and-notes-tab.component';
 import { OPAL_FINES_ACCOUNT_DEFENDANT_DETAILS_HISTORY_AND_NOTES_TAB_REF_DATA_MOCK } from '@services/fines/opal-fines-service/mocks/opal-fines-account-defendant-details-history-and-notes-tab-ref-data.mock';
-import { of } from 'rxjs';
+import { of, throwError } from 'rxjs';
 import { FINES_ACC_DEFENDANT_DETAILS_HISTORY_AND_NOTES_FILTER_FORM_MOCK } from './mocks/fines-acc-defendant-details-history-and-notes-filter-form.mock';
 import { FINES_ACC_DEFENDANT_DETAILS_HISTORY_AND_NOTES_FILTER_FORM_PAYLOAD_MOCK } from './mocks/fines-acc-defendant-details-history-and-notes-filter-form-payload.mock';
 import { OpalFines } from '@services/fines/opal-fines-service/opal-fines.service';
@@ -12,6 +12,7 @@ import { FinesAccPayloadService } from '../../services/fines-acc-payload.service
 import { FinesAccountStore } from '../../stores/fines-acc.store';
 import { FINES_ACC_DEFENDANT_DETAILS_HISTORY_AND_NOTES_ACCOUNT_ID_MOCK } from './mocks/fines-acc-defendant-details-history-and-notes-account-id.mock';
 import { FINES_ACC_DEFENDANT_DETAILS_HISTORY_AND_NOTES_FILTERED_TAB_DATA_MOCK } from './mocks/fines-acc-defendant-details-history-and-notes-filtered-tab-data.mock';
+import { IOpalFinesAccountDefendantDetailsHistoryAndNotesTabRefData } from '@services/fines/opal-fines-service/interfaces/opal-fines-account-defendant-details-history-and-notes-tab-ref-data.interface';
 
 describe('FinesAccDefendantDetailsHistoryAndNotesTabComponent', () => {
   let component: FinesAccDefendantDetailsHistoryAndNotesTabComponent;
@@ -32,6 +33,7 @@ describe('FinesAccDefendantDetailsHistoryAndNotesTabComponent', () => {
     mockPayloadService = {
       buildHistoryFilterPayload: vi.fn().mockName('FinesAccPayloadService.buildHistoryFilterPayload'),
       transformPayload: vi.fn().mockName('FinesAccPayloadService.transformPayload'),
+      transformHistoryAndNotesItems: vi.fn().mockName('FinesAccPayloadService.transformHistoryAndNotesItems'),
     };
     mockAccountStore = {
       compareVersion: vi.fn().mockName('FinesAccountStore.compareVersion'),
@@ -41,6 +43,12 @@ describe('FinesAccDefendantDetailsHistoryAndNotesTabComponent', () => {
       FINES_ACC_DEFENDANT_DETAILS_HISTORY_AND_NOTES_FILTER_FORM_PAYLOAD_MOCK,
     );
     mockPayloadService.transformPayload.mockImplementation((data: unknown) => data);
+    mockPayloadService.transformHistoryAndNotesItems.mockImplementation((items: Record<string, unknown>[]) =>
+      items.map((item) => ({
+        ...item,
+        details: { line1: [{ fragments: [{ text: 'Transformed detail', bold: false, hyphen: false }] }], line2: null },
+      })),
+    );
     mockOpalFinesService.getDefendantAccountHistoryAndNotesTabData.mockReturnValue(
       of(OPAL_FINES_ACCOUNT_DEFENDANT_DETAILS_HISTORY_AND_NOTES_TAB_REF_DATA_MOCK),
     );
@@ -67,6 +75,10 @@ describe('FinesAccDefendantDetailsHistoryAndNotesTabComponent', () => {
     component.tabData$ = of(OPAL_FINES_ACCOUNT_DEFENDANT_DETAILS_HISTORY_AND_NOTES_TAB_REF_DATA_MOCK);
   });
 
+  afterEach(() => {
+    vi.restoreAllMocks();
+  });
+
   it('should create the component', () => {
     fixture.detectChanges();
     expect(component).toBeTruthy();
@@ -79,6 +91,31 @@ describe('FinesAccDefendantDetailsHistoryAndNotesTabComponent', () => {
     component.historyAndNotesTabData$.subscribe((data) => emitted.push(data));
 
     expect(emitted).toEqual([OPAL_FINES_ACCOUNT_DEFENDANT_DETAILS_HISTORY_AND_NOTES_TAB_REF_DATA_MOCK]);
+  });
+
+  it('should transform parent-provided history items from the existing API history_items collection key', () => {
+    const emitted: unknown[] = [];
+    const validHistoryItem = { id: 1, type: 'Note', details: { note_text: 'Original detail' } };
+    const transformedHistoryItem = {
+      ...validHistoryItem,
+      details: { line1: [{ fragments: [{ text: 'Transformed detail', bold: false, hyphen: false }] }], line2: null },
+    };
+
+    component.tabData$ = of({
+      version: 'base-version',
+      history_items: [validHistoryItem, null, 'ignored'],
+    });
+
+    fixture.detectChanges();
+    component.historyAndNotesTabData$.subscribe((data) => emitted.push(data));
+
+    expect(mockPayloadService.transformHistoryAndNotesItems).toHaveBeenCalledWith([validHistoryItem]);
+    expect(emitted).toEqual([
+      {
+        version: 'base-version',
+        history_items: [transformedHistoryItem],
+      },
+    ]);
   });
 
   it('should rebind the display stream when parent tab data stream changes', () => {
@@ -154,9 +191,104 @@ describe('FinesAccDefendantDetailsHistoryAndNotesTabComponent', () => {
     ]);
   });
 
+  it('should transform filtered history items from the API collection key into the history and notes details format', () => {
+    const emitted: unknown[] = [];
+    const validHistoryItem = { id: 1, type: 'Note', details: { note_text: 'Original detail' } };
+    const transformedHistoryItem = {
+      ...validHistoryItem,
+      details: { line1: [{ fragments: [{ text: 'Transformed detail', bold: false, hyphen: false }] }], line2: null },
+    };
+    const filteredTabData: IOpalFinesAccountDefendantDetailsHistoryAndNotesTabRefData = {
+      version: 'filtered-version',
+      historyItems: [validHistoryItem, null, 'ignored'],
+    };
+
+    mockOpalFinesService.getDefendantAccountHistoryAndNotesTabData.mockReturnValue(of(filteredTabData));
+
+    component.handleFilterApplied(FINES_ACC_DEFENDANT_DETAILS_HISTORY_AND_NOTES_FILTER_FORM_MOCK);
+    component.historyAndNotesTabData$.subscribe((data) => emitted.push(data));
+
+    expect(mockPayloadService.transformHistoryAndNotesItems).toHaveBeenCalledWith([validHistoryItem]);
+    expect(emitted).toEqual([
+      {
+        version: 'filtered-version',
+        historyItems: [transformedHistoryItem],
+      },
+    ]);
+  });
+
+  it('should transform filtered history items from the existing API history_items collection key', () => {
+    const emitted: unknown[] = [];
+    const validHistoryItem = { id: 1, type: 'Note', details: { note_text: 'Original detail' } };
+    const transformedHistoryItem = {
+      ...validHistoryItem,
+      details: { line1: [{ fragments: [{ text: 'Transformed detail', bold: false, hyphen: false }] }], line2: null },
+    };
+    const filteredTabData: IOpalFinesAccountDefendantDetailsHistoryAndNotesTabRefData = {
+      version: 'filtered-version',
+      history_items: [validHistoryItem, null, 'ignored'],
+    };
+
+    mockOpalFinesService.getDefendantAccountHistoryAndNotesTabData.mockReturnValue(of(filteredTabData));
+
+    component.handleFilterApplied(FINES_ACC_DEFENDANT_DETAILS_HISTORY_AND_NOTES_FILTER_FORM_MOCK);
+    component.historyAndNotesTabData$.subscribe((data) => emitted.push(data));
+
+    expect(mockPayloadService.transformHistoryAndNotesItems).toHaveBeenCalledWith([validHistoryItem]);
+    expect(emitted).toEqual([
+      {
+        version: 'filtered-version',
+        history_items: [transformedHistoryItem],
+      },
+    ]);
+  });
+
+  it('should leave filtered history item data unchanged when the API item collection is not an array', () => {
+    const emitted: unknown[] = [];
+    const filteredTabData: IOpalFinesAccountDefendantDetailsHistoryAndNotesTabRefData = {
+      version: 'filtered-version',
+      historyItems: 'not an array',
+    };
+
+    mockOpalFinesService.getDefendantAccountHistoryAndNotesTabData.mockReturnValue(of(filteredTabData));
+
+    component.handleFilterApplied(FINES_ACC_DEFENDANT_DETAILS_HISTORY_AND_NOTES_FILTER_FORM_MOCK);
+    component.historyAndNotesTabData$.subscribe((data) => emitted.push(data));
+
+    expect(mockPayloadService.transformHistoryAndNotesItems).not.toHaveBeenCalled();
+    expect(emitted).toEqual([
+      {
+        version: 'filtered-version',
+        historyItems: 'not an array',
+      },
+    ]);
+  });
+
   it('should store filter open state from the filter component', () => {
     component.handleFilterOpenChange(true);
 
+    expect(component.filterOpen).toBe(true);
+  });
+
+  it('should keep the last rendered rows when a refresh fails', () => {
+    const emitted: IOpalFinesAccountDefendantDetailsHistoryAndNotesTabRefData[] = [];
+
+    fixture.detectChanges();
+    component.historyAndNotesTabData$.subscribe((data) => emitted.push(data));
+
+    mockOpalFinesService.getDefendantAccountHistoryAndNotesTabData.mockReturnValue(
+      throwError(() => new Error('history request failed')),
+    );
+
+    component.handleFilterApplied(FINES_ACC_DEFENDANT_DETAILS_HISTORY_AND_NOTES_FILTER_FORM_MOCK);
+    component.historyAndNotesTabData$.subscribe({
+      next: (data) => emitted.push(data),
+      error: () => {
+        // The request fails after the last known data has already been re-emitted.
+      },
+    });
+
+    expect(emitted[0]).toEqual(OPAL_FINES_ACCOUNT_DEFENDANT_DETAILS_HISTORY_AND_NOTES_TAB_REF_DATA_MOCK);
     expect(component.filterOpen).toBe(true);
   });
 });

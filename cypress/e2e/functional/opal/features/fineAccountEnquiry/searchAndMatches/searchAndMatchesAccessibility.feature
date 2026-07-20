@@ -6,7 +6,7 @@ Feature: Search and Matches Accessibility
     Given I am logged in with email "opal-test@dev.platform.hmcts.net"
     And I am on the Account Search page - Individuals form displayed by default
 
-  @JIRA-STORY:PO-705 @JIRA-STORY:PO-712 @JIRA-STORY:PO-715 @JIRA-EPIC:PO-2472 @JIRA-TEST-KEY:PO-5296
+  @R1B @JIRA-STORY:PO-705 @JIRA-STORY:PO-712 @JIRA-STORY:PO-715 @JIRA-EPIC:PO-2472 @JIRA-TEST-KEY:PO-5296
   Scenario: Check Search and Matches Accessibility with Axe-Core
     ## Check Accessibility on Individuals Tab
     When I search using the following inputs:
@@ -38,3 +38,12 @@ Feature: Search and Matches Accessibility
       | first names          | John  |
     Then I see the Search results page
     And I check the page for accessibility
+
+  @JIRA-STORY:PO-3720 @JIRA-EPIC:PO-3685 @JIRA-TEST-KEY:PO-3721 @R1B
+  Scenario: Major Creditors search form is available when release 1b is enabled
+    When I view the Major Creditors search form
+    Then I check the page for accessibility
+
+  @JIRA-STORY:PO-3720 @JIRA-EPIC:PO-3685 @JIRA-TEST-KEY:PO-3722 @R1BOff
+  Scenario: Major Creditors search form is hidden when release 1b is disabled
+    Then I should not see the Major Creditors search form

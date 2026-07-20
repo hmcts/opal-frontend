@@ -27,7 +27,7 @@ Feature: Manual fixed penalty account creation - Create Draft Account
       And I review the fixed penalty account
 
 
-    @JIRA-STORY:PO-857 @JIRA-STORY:PO-861 @JIRA-EPIC:PO-855 @JIRA-TEST-KEY:PO-5311
+    @R1A @JIRA-STORY:PO-857 @JIRA-STORY:PO-861 @JIRA-EPIC:PO-855 @JIRA-TEST-KEY:PO-5311
     Scenario: Review shows fixed penalty details for adult or youth
       Then the fixed penalty review "Court details" summary is:
         | Label             | Value                                 |
@@ -49,8 +49,7 @@ Feature: Manual fixed penalty account creation - Create Draft Account
         | Place of offence | Oxford Street - London                   |
         | Amount imposed   | £150.00                                  |
 
-    @JIRA-EPIC:PO-855
-    @JIRA-STORY:PO-861 @JIRA-TEST-KEY:PO-5312
+    @JIRA-EPIC:PO-855 @R1A @JIRA-STORY:PO-861 @JIRA-TEST-KEY:PO-5312
     Scenario: Change links reopen adult or youth fixed penalty sections
       When I change the fixed penalty sections from review:
         | Section                             |
@@ -60,44 +59,39 @@ Feature: Manual fixed penalty account creation - Create Draft Account
         | Account comments and notes          |
       Then I should see the header containing text "Check fixed penalty account details"
 
-    @JIRA-EPIC:PO-855
-    @JIRA-STORY:PO-861 @JIRA-TEST-KEY:PO-5313
+    @JIRA-EPIC:PO-855 @R1A @JIRA-STORY:PO-861 @JIRA-TEST-KEY:PO-5313
     Scenario: Back link returns to fixed penalty details
       When I return to fixed penalty details from review
       Then I should see the header containing text "Fixed Penalty details"
 
 
-    @JIRA-STORY:PO-861 @JIRA-STORY:PO-1144 @JIRA-EPIC:PO-855 @JIRA-TEST-KEY:PO-5314
+    @R1A @JIRA-STORY:PO-861 @JIRA-STORY:PO-1144 @JIRA-EPIC:PO-855 @JIRA-TEST-KEY:PO-5314
     Scenario: Delete account prompt can be cancelled for adult or youth
       When I request fixed penalty account deletion
       Then I should see the header containing text "Are you sure you want to delete this account?"
       When I cancel fixed penalty account deletion
       Then I should see the header containing text "Check fixed penalty account details"
 
-    @JIRA-EPIC:PO-855
-    @JIRA-STORY:PO-1796 @JIRA-TEST-KEY:PO-5315
+    @JIRA-EPIC:PO-855 @R1A @JIRA-STORY:PO-1796 @JIRA-TEST-KEY:PO-5315
     Scenario: Submit adult or youth fixed penalty for review
       When I submit the fixed penalty account for review and capture the draft account id
       Then I see the following text on the page "You've submitted this account for review"
 
-    @JIRA-EPIC:PO-855
-    @JIRA-STORY:PO-1796 @JIRA-TEST-KEY:PO-5316
+    @JIRA-EPIC:PO-855 @R1A @JIRA-STORY:PO-1796 @JIRA-TEST-KEY:PO-5316
     Scenario: Submission failure shows global error for adult or youth
       When I stub fixed penalty submission as failing with status 400
       And I submit the fixed penalty account for review
       Then I see the fixed penalty global error banner
 
   Rule: Fixed penalty cancel behaviour
-    @JIRA-EPIC:PO-855
-    @JIRA-STORY:PO-857 @JIRA-TEST-KEY:PO-5317
+    @JIRA-EPIC:PO-855 @R1A @JIRA-STORY:PO-857 @JIRA-TEST-KEY:PO-5317
     Scenario: Cancel without entering details returns to start
       Given I am logged in with email "opal-test@dev.platform.hmcts.net"
       When I start a fixed penalty account for business unit "West London", defendant type "Adult or youth only" and originator type "New"
       And I cancel fixed penalty details choosing "Ok"
       Then I should see the header containing text "Create account"
 
-    @JIRA-EPIC:PO-855
-    @JIRA-STORY:PO-857 @JIRA-TEST-KEY:PO-5318
+    @JIRA-EPIC:PO-855 @R1A @JIRA-STORY:PO-857 @JIRA-TEST-KEY:PO-5318
     Scenario: Cancel after entering details returns to start
       Given I am logged in with email "opal-test@dev.platform.hmcts.net"
       When I start a fixed penalty account for business unit "West London", defendant type "Adult or youth only" and originator type "New"
@@ -108,8 +102,7 @@ Feature: Manual fixed penalty account creation - Create Draft Account
       And I cancel fixed penalty details choosing "Ok"
       Then I should see the header containing text "Create account"
 
-    @JIRA-EPIC:PO-855
-    @JIRA-STORY:PO-857 @JIRA-TEST-KEY:PO-5319
+    @JIRA-EPIC:PO-855 @R1A @JIRA-STORY:PO-857 @JIRA-TEST-KEY:PO-5319
     Scenario: Cancel after entering details keeps data on page
       Given I am logged in with email "opal-test@dev.platform.hmcts.net"
       When I start a fixed penalty account for business unit "West London", defendant type "Adult or youth only" and originator type "New"
@@ -123,8 +116,7 @@ Feature: Manual fixed penalty account creation - Create Draft Account
         | Title       | Mr    |
         | First names | John  |
 
-    @JIRA-EPIC:PO-855
-    @JIRA-STORY:PO-857 @JIRA-TEST-KEY:PO-5320
+    @JIRA-EPIC:PO-855 @R1A @JIRA-STORY:PO-857 @JIRA-TEST-KEY:PO-5320
     Scenario: Validation error persists after dismissing cancel warning
       Given I am logged in with email "opal-test@dev.platform.hmcts.net"
       When I start a fixed penalty account for business unit "West London", defendant type "Adult or youth only" and originator type "New"
@@ -153,8 +145,7 @@ Feature: Manual fixed penalty account creation - Create Draft Account
       Then I see a fixed penalty error "Enter a valid date of birth in the past" for "Date of birth"
 
   Rule: Fixed penalty route guard when navigating back
-    @JIRA-EPIC:PO-855
-    @JIRA-STORY:PO-857 @JIRA-TEST-KEY:PO-5321
+    @JIRA-EPIC:PO-855 @R1A @JIRA-STORY:PO-857 @JIRA-TEST-KEY:PO-5321
     Scenario: Back navigation confirms leaving fixed penalty details
       Given I am logged in with email "opal-test@dev.platform.hmcts.net"
       When I start a fixed penalty account for business unit "West London", defendant type "Adult or youth only" and originator type "New"
@@ -166,8 +157,7 @@ Feature: Manual fixed penalty account creation - Create Draft Account
       And I navigate back from fixed penalty details choosing "Ok"
       Then I should see the header containing text "Create account"
 
-    @JIRA-EPIC:PO-855
-    @JIRA-STORY:PO-857 @JIRA-TEST-KEY:PO-5322
+    @JIRA-EPIC:PO-855 @R1A @JIRA-STORY:PO-857 @JIRA-TEST-KEY:PO-5322
     Scenario: Back navigation can be cancelled to stay on fixed penalty details
       Given I am logged in with email "opal-test@dev.platform.hmcts.net"
       When I start a fixed penalty account for business unit "West London", defendant type "Adult or youth only" and originator type "New"
@@ -188,31 +178,30 @@ Feature: Manual fixed penalty account creation - Create Draft Account
       Given I am logged in with email "opal-test@dev.platform.hmcts.net"
       When I start a fixed penalty account for business unit "West London", defendant type "Company" and originator type "New"
       And I complete fixed penalty details:
-        | Section         | Field                  | Value                         |
-        | Court details   | Issuing Authority      | undefined (052)               |
-        | Court details   | Enforcement court      | Johns Maintenance Court (249) |
-        | Company details | Company name           | Example Corp Ltd {uniq}       |
-        | Company details | Address line 1         | 123 Business Park             |
-        | Company details | Address line 2         | Commerce Way                  |
-        | Company details | Postcode               | EC1A 1BB                      |
-        | Offence details | Notice number          | CORP2025                      |
-        | Offence details | Offence type           | Vehicle                       |
-        | Offence details | Date of offence        | 05/07/2025                    |
-        | Offence details | Offence code           | HY35014                       |
-        | Offence details | Time of offence        | 10:15                         |
-        | Offence details | Place of offence       | London Borough of Westminster |
-        | Offence details | Amount imposed         | 500                           |
-        | Vehicle details | Registration number    | CP12COR                       |
-        | Vehicle details | Driving licence number | SMITH010123JS9AB              |
+        | Section         | Field                  | Value                                            |
+        | Court details   | Issuing Authority      | Avon and Somerset Road Safety Support Unit (052) |
+        | Court details   | Enforcement court      | Johns Maintenance Court (249)                    |
+        | Company details | Company name           | Example Corp Ltd {uniq}                          |
+        | Company details | Address line 1         | 123 Business Park                                |
+        | Company details | Address line 2         | Commerce Way                                     |
+        | Company details | Postcode               | EC1A 1BB                                         |
+        | Offence details | Notice number          | CORP2025                                         |
+        | Offence details | Offence type           | Vehicle                                          |
+        | Offence details | Date of offence        | 05/07/2025                                       |
+        | Offence details | Offence code           | HY35014                                          |
+        | Offence details | Time of offence        | 10:15                                            |
+        | Offence details | Place of offence       | London Borough of Westminster                    |
+        | Offence details | Amount imposed         | 500                                              |
+        | Vehicle details | Registration number    | CP12COR                                          |
+        | Vehicle details | Driving licence number | SMITH010123JS9AB                                 |
       And I review the fixed penalty account
 
-    @JIRA-EPIC:PO-855
-    @JIRA-STORY:PO-861 @JIRA-TEST-KEY:PO-5323
+    @JIRA-EPIC:PO-855 @R1A @JIRA-STORY:PO-861 @JIRA-TEST-KEY:PO-5323
     Scenario: Review shows fixed penalty details for company
       Then the fixed penalty review "Court details" summary is:
-        | Label             | Value                         |
-        | Issuing Authority | undefined (052)               |
-        | Enforcement court | Johns Maintenance Court (249) |
+        | Label             | Value                                            |
+        | Issuing Authority | Avon and Somerset Road Safety Support Unit (052) |
+        | Enforcement court | Johns Maintenance Court (249)                    |
       And the fixed penalty review "Company details" summary is:
         | Label        | Value                   |
         | Company name | Example Corp Ltd {uniq} |
@@ -230,8 +219,7 @@ Feature: Manual fixed penalty account creation - Create Draft Account
         | Comment      | Not provided |
         | Account note | Not provided |
 
-    @JIRA-EPIC:PO-855
-    @JIRA-STORY:PO-861 @JIRA-TEST-KEY:PO-5324
+    @JIRA-EPIC:PO-855 @R1A @JIRA-STORY:PO-861 @JIRA-TEST-KEY:PO-5324
     Scenario: Change links reopen company fixed penalty sections
       When I change the fixed penalty sections from review:
         | Section                             |
@@ -241,35 +229,31 @@ Feature: Manual fixed penalty account creation - Create Draft Account
         | Account comments and notes          |
       Then I should see the header containing text "Check fixed penalty account details"
 
-    @JIRA-EPIC:PO-855
-    @JIRA-STORY:PO-861 @JIRA-TEST-KEY:PO-5325
+    @JIRA-EPIC:PO-855 @R1A @JIRA-STORY:PO-861 @JIRA-TEST-KEY:PO-5325
     Scenario: Company back link returns to fixed penalty details
       When I return to fixed penalty details from review
       Then I should see the header containing text "Fixed Penalty details"
 
 
-    @JIRA-STORY:PO-861 @JIRA-STORY:PO-1144 @JIRA-EPIC:PO-855 @JIRA-TEST-KEY:PO-5326
+    @R1A @JIRA-STORY:PO-861 @JIRA-STORY:PO-1144 @JIRA-EPIC:PO-855 @JIRA-TEST-KEY:PO-5326
     Scenario: Delete account prompt can be cancelled for company
       When I request fixed penalty account deletion
       Then I should see the header containing text "Are you sure you want to delete this account?"
       When I cancel fixed penalty account deletion
       Then I should see the header containing text "Check fixed penalty account details"
 
-    @JIRA-EPIC:PO-855
-    @JIRA-STORY:PO-1796 @JIRA-TEST-KEY:PO-5327
+    @JIRA-EPIC:PO-855 @R1A @JIRA-STORY:PO-1796 @JIRA-TEST-KEY:PO-5327
     Scenario: Submit company fixed penalty for review
       When I submit the fixed penalty account for review and capture the draft account id
       Then I see the following text on the page "You've submitted this account for review"
 
-    @JIRA-EPIC:PO-855
-    @JIRA-STORY:PO-1796 @JIRA-TEST-KEY:PO-5328
+    @JIRA-EPIC:PO-855 @R1A @JIRA-STORY:PO-1796 @JIRA-TEST-KEY:PO-5328
     Scenario: Submission failure shows global error for company
       When I stub fixed penalty submission as failing with status 400
       And I submit the fixed penalty account for review
       Then I see the fixed penalty global error banner
 
-    @JIRA-EPIC:PO-855
-    @JIRA-STORY:PO-1800 @JIRA-TEST-KEY:PO-5329
+    @JIRA-EPIC:PO-855 @R1A @JIRA-STORY:PO-1800 @JIRA-TEST-KEY:PO-5329
     Scenario: Input user can view Fixed Penalty accounts in Create and Manage Draft Accounts
       Given I am logged in with email "opal-test@dev.platform.hmcts.net"
       And I stub fixed penalty draft account listings
@@ -284,8 +268,7 @@ Feature: Manual fixed penalty account creation - Create Draft Account
       Then I see "Fixed Penalty" in the account type column on the draft table
 
 
-    @JIRA-EPIC:PO-855
-    @JIRA-STORY:PO-1800 @JIRA-TEST-KEY:PO-5330
+    @JIRA-EPIC:PO-855 @R1A @JIRA-STORY:PO-1800 @JIRA-TEST-KEY:PO-5330
     Scenario: Checker user can view Fixed Penalty accounts in Check and Validate Draft Accounts
       Given I am logged in with email "opal-test-4@dev.platform.hmcts.net"
       And I stub fixed penalty draft account listings
