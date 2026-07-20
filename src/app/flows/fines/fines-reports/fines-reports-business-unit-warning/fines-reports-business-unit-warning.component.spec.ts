@@ -81,17 +81,6 @@ describe('FinesReportsBusinessUnitWarningComponent', () => {
     expect(consoleLogSpy).toHaveBeenCalledWith('PO-2305 selected business unit ids', [61, 67, 68, 69]);
   });
 
-  it('should redirect back to select business units when no selection state is available', async () => {
-    const { router } = await setup();
-
-    expect(router.navigate).toHaveBeenCalledWith(
-      [`../${FINES_REPORTS_CREATE_ROUTING_PATHS.children.selectBusinessUnits}`],
-      {
-        relativeTo: expect.any(Object),
-      },
-    );
-  });
-
   it('should restore selected business unit ids from the reports store', async () => {
     const { component } = await setup([61, 67, 68, 69]);
 

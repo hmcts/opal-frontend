@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, Component, computed, inject, OnInit } from '@angular/core';
+import { ChangeDetectionStrategy, Component, computed, inject } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { GovukCancelLinkComponent } from '@hmcts/opal-frontend-common/components/govuk/govuk-cancel-link';
 import { GovukButtonDirective } from '@hmcts/opal-frontend-common/directives/govuk-button';
@@ -12,7 +12,7 @@ import { FINES_REPORTS_BUSINESS_UNIT_WARNING_CONTENT } from './constants/fines-r
   templateUrl: './fines-reports-business-unit-warning.component.html',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class FinesReportsBusinessUnitWarningComponent implements OnInit {
+export class FinesReportsBusinessUnitWarningComponent {
   private readonly activatedRoute = inject(ActivatedRoute);
   private readonly finesReportsStore = inject(FinesReportsStore);
   private readonly router = inject(Router);
@@ -36,16 +36,5 @@ export class FinesReportsBusinessUnitWarningComponent implements OnInit {
   public handleContinue(): void {
     // eslint-disable-next-line no-console
     console.log('PO-2305 selected business unit ids', this.finesReportsStore.selectedBusinessUnitIds());
-  }
-
-  /**
-   * Redirects back to selection when no selected business unit ids are available in the reports store.
-   */
-  public ngOnInit(): void {
-    if (!this.finesReportsStore.hasSelectedBusinessUnits()) {
-      this.router.navigate([`../${FINES_REPORTS_CREATE_ROUTING_PATHS.children.selectBusinessUnits}`], {
-        relativeTo: this.activatedRoute,
-      });
-    }
   }
 }
