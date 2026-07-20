@@ -17,14 +17,13 @@
     }
   </div>
 }
-
-<div class="govuk-grid-column-three-quarters">
+<div class="govuk-grid-column-full">
   <opal-lib-custom-account-information>
-    <opal-lib-custom-account-information-item itemClasses="govuk-grid-column-one-quarter">
+    <opal-lib-custom-account-information-item class="govuk-!-padding-left-0">
       <h2 opal-lib-custom-account-information-item-label>Account type:</h2>
       <p opal-lib-custom-account-information-item-value id="defendant-account-type">{{ accountData.account_type }}</p>
     </opal-lib-custom-account-information-item>
-    <opal-lib-custom-account-information-item itemClasses="govuk-grid-column-one-quarter">
+    <opal-lib-custom-account-information-item class="govuk-!-padding-left-0">
       @if (accountData.account_type === accountTypes['Fixed Penalty']) {
         <h3 opal-lib-custom-account-information-item-label>PCR or ticket number:</h3>
         <p opal-lib-custom-account-information-item-value id="defendant-pcr-ticket-number">
@@ -37,7 +36,7 @@
         </p>
       }
     </opal-lib-custom-account-information-item>
-    <opal-lib-custom-account-information-item itemClasses="govuk-grid-column-one-quarter">
+    <opal-lib-custom-account-information-item class="govuk-!-padding-left-0">
       <h2 opal-lib-custom-account-information-item-label>Business Unit:</h2>
       <p opal-lib-custom-account-information-item-value id="defendant-business-unit">
         {{ accountData.business_unit_summary.business_unit_name }} ({{
@@ -52,25 +51,34 @@
   <hr class="govuk-section-break govuk-section-break--visible govuk-!-margin-bottom-3 govuk-!-margin-top-2" />
 
   <opal-lib-custom-summary-metric-bar>
-    <opal-lib-custom-summary-metric-bar-item>
+    <opal-lib-custom-summary-metric-bar-item itemClasses="govuk-grid-column-one-quarter">
       <p opal-lib-custom-summary-metric-bar-item-label>Imposed:</p>
       <p opal-lib-custom-summary-metric-bar-item-value>
         {{ accountData.payment_state_summary.imposed_amount | monetary: 'remove-minus-symbol' }}
       </p>
     </opal-lib-custom-summary-metric-bar-item>
-    <opal-lib-custom-summary-metric-bar-item backgroundColour="govuk-lighter-blue-background-colour">
+    <opal-lib-custom-summary-metric-bar-item
+      itemClasses="govuk-grid-column-one-quarter"
+      backgroundColour="govuk-lighter-blue-background-colour"
+    >
       <p opal-lib-custom-summary-metric-bar-item-label textColour="govuk-dark-blue-text-colour">Arrears:</p>
       <p opal-lib-custom-summary-metric-bar-item-value textColour="govuk-dark-blue-text-colour">
         {{ accountData.payment_state_summary.arrears_amount | monetary: 'remove-minus-symbol' }}
       </p>
     </opal-lib-custom-summary-metric-bar-item>
-    <opal-lib-custom-summary-metric-bar-item backgroundColour="govuk-lighter-blue-background-colour">
+    <opal-lib-custom-summary-metric-bar-item
+      itemClasses="govuk-grid-column-one-quarter"
+      backgroundColour="govuk-lighter-blue-background-colour"
+    >
       <p opal-lib-custom-summary-metric-bar-item-label textColour="govuk-dark-blue-text-colour">Paid/Written off:</p>
       <p opal-lib-custom-summary-metric-bar-item-value textColour="govuk-dark-blue-text-colour">
         {{ accountData.payment_state_summary.paid_amount | monetary: 'remove-minus-symbol' }}
       </p>
     </opal-lib-custom-summary-metric-bar-item>
-    <opal-lib-custom-summary-metric-bar-item backgroundColour="govuk-blue-background-colour">
+    <opal-lib-custom-summary-metric-bar-item
+      itemClasses="govuk-grid-column-one-quarter"
+      backgroundColour="govuk-blue-background-colour"
+    >
       <p opal-lib-custom-summary-metric-bar-item-label textColour="govuk-white-text-colour">Account Balance:</p>
       <p opal-lib-custom-summary-metric-bar-item-value textColour="govuk-white-text-colour">
         {{ accountData.payment_state_summary.account_balance | monetary }}
