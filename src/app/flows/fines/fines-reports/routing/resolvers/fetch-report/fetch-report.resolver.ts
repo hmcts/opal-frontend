@@ -10,7 +10,7 @@ export const fetchReportResolver: ResolveFn<IOpalFinesReport | null> = (route: A
   const reportTypeId = route.paramMap.get('reportTypeId') ?? route.parent?.paramMap.get('reportTypeId') ?? '';
   const report = FINES_REPORT_SUMMARY_LIST_REPORT_CONFIGURATION.find((config) => config.id === reportTypeId);
 
-  if (!report?.permissionIds.length) {
+  if (!report?.requiresReportMetadata) {
     return of(null);
   }
 

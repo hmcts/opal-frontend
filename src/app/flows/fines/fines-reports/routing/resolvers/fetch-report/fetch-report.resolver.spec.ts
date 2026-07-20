@@ -33,7 +33,7 @@ describe('fetchReportResolver', () => {
       id: API_BACKED_REPORT_ID,
       heading: 'API backed report',
       title: 'API backed report',
-      permissionIds: [1],
+      requiresReportMetadata: true,
     });
 
     try {
