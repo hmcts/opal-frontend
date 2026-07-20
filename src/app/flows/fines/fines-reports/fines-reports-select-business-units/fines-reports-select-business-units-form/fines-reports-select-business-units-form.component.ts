@@ -108,18 +108,16 @@ export class FinesReportsSelectBusinessUnitsFormComponent extends AbstractFormBa
   public businessUnitRows: IFinesReportsSelectBusinessUnitRow[] = [];
 
   /**
-   * Creates checkbox form controls keyed by business unit id and the row metadata used to render them.
+   * Creates checkbox controls keyed by business unit id and the row metadata used to render them.
    *
    * @returns A form record containing one unchecked control for each business unit.
    */
-  private createBusinessUnitCheckboxControls(): FormRecord<FormControl<boolean>> {
+  private createBusinessUnitControlsRecord(): FormRecord<FormControl<boolean>> {
     const controls: Record<string, FormControl<boolean>> = {};
 
     this.businessUnitRows = this.businessUnits.map((businessUnit) => {
       const businessUnitId = businessUnit.business_unit_id.toString();
-      const control = new FormControl(this.initialSelectedBusinessUnitIds.includes(businessUnit.business_unit_id), {
-        nonNullable: true,
-      });
+      const control = new FormControl(false, { nonNullable: true });
 
       controls[businessUnitId] = control;
 
@@ -134,6 +132,37 @@ export class FinesReportsSelectBusinessUnitsFormComponent extends AbstractFormBa
     return new FormRecord<FormControl<boolean>>(controls, {
       validators: atLeastOneBusinessUnitSelectedRecordValidator,
     });
+  }
+
+  /**
+   * Builds the reactive form from the business unit record and the master select-all control.
+   *
+   * @param record - The business unit form record containing the child checkbox controls.
+   */
+  private buildBusinessUnitForm(record: FormRecord<FormControl<boolean>>): void {
+    this.allBusinessUnitsControl = new FormControl(false, { nonNullable: true });
+
+    this.form = new FormGroup(
+      {
+        [this.BUSINESS_UNITS_CTRL]: record,
+        [this.ALL_BUSINESS_UNITS_CTRL]: this.allBusinessUnitsControl,
+      },
+      { validators: businessUnitSelectionRootMirrorValidator(this.BUSINESS_UNITS_CTRL) },
+    );
+  }
+
+  /**
+   * Restores selections made before the user navigated to the business unit warning screen.
+   *
+   * @param record - The business unit form record containing the child checkbox controls.
+   */
+  private restoreSelectedBusinessUnitControls(record: FormRecord<FormControl<boolean>>): void {
+    for (const businessUnitId of this.initialSelectedBusinessUnitIds) {
+      record.get(businessUnitId.toString())?.setValue(true, { emitEvent: false });
+    }
+
+    this.refreshFormValidation(record);
+    this.updateAllBusinessUnitsControlFromRecord(record);
   }
 
   /**
@@ -173,32 +202,44 @@ export class FinesReportsSelectBusinessUnitsFormComponent extends AbstractFormBa
   }
 
   /**
-   * Creates the reactive form and wires checkbox changes into component state.
+   * Wires individual checkbox changes into form validation and the master select-all control.
+   *
+   * @param record - The business unit form record containing the child checkbox controls.
    */
-  private initialiseBusinessUnitForm(): void {
-    const record =
-      this.businessUnits.length === 1
-        ? new FormRecord<FormControl<boolean>>({})
-        : this.createBusinessUnitCheckboxControls();
-    this.allBusinessUnitsControl = new FormControl(false, { nonNullable: true });
-
-    this.form = new FormGroup(
-      {
-        [this.BUSINESS_UNITS_CTRL]: record,
-        [this.ALL_BUSINESS_UNITS_CTRL]: this.allBusinessUnitsControl,
-      },
-      { validators: businessUnitSelectionRootMirrorValidator(this.BUSINESS_UNITS_CTRL) },
-    );
-
-    this.refreshFormValidation(record);
-    this.updateAllBusinessUnitsControlFromRecord(record);
+  private subscribeToBusinessUnitChanges(record: FormRecord<FormControl<boolean>>): void {
     record.valueChanges.pipe(takeUntil(this.ngUnsubscribe)).subscribe(() => {
       this.refreshFormValidation(record);
       this.updateAllBusinessUnitsControlFromRecord(record);
     });
+  }
+
+  /**
+   * Wires the master select-all checkbox to update every business unit checkbox.
+   *
+   * @param record - The business unit form record containing the child checkbox controls.
+   */
+  private subscribeToSelectAllChanges(record: FormRecord<FormControl<boolean>>): void {
     this.allBusinessUnitsControl.valueChanges.pipe(takeUntil(this.ngUnsubscribe)).subscribe((selected) => {
       this.setAllBusinessUnitControls(record, selected);
     });
+  }
+
+  /**
+   * Initialises the select business units form while retaining the read-only one-business-unit path.
+   */
+  private initialiseBusinessUnitForm(): void {
+    if (this.businessUnits.length === 1) {
+      this.businessUnitRows = [];
+      this.buildBusinessUnitForm(new FormRecord<FormControl<boolean>>({}));
+      return;
+    }
+
+    const record = this.createBusinessUnitControlsRecord();
+
+    this.buildBusinessUnitForm(record);
+    this.restoreSelectedBusinessUnitControls(record);
+    this.subscribeToBusinessUnitChanges(record);
+    this.subscribeToSelectAllChanges(record);
   }
 
   /**
