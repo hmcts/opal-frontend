@@ -19,11 +19,11 @@
 }
 <div class="govuk-grid-column-full">
   <opal-lib-custom-account-information>
-    <opal-lib-custom-account-information-item class="govuk-!-padding-left-0">
+    <opal-lib-custom-account-information-item>
       <h2 opal-lib-custom-account-information-item-label>Account type:</h2>
       <p opal-lib-custom-account-information-item-value id="defendant-account-type">{{ accountData.account_type }}</p>
     </opal-lib-custom-account-information-item>
-    <opal-lib-custom-account-information-item class="govuk-!-padding-left-0">
+    <opal-lib-custom-account-information-item>
       @if (accountData.account_type === accountTypes['Fixed Penalty']) {
         <h3 opal-lib-custom-account-information-item-label>PCR or ticket number:</h3>
         <p opal-lib-custom-account-information-item-value id="defendant-pcr-ticket-number">
@@ -36,7 +36,7 @@
         </p>
       }
     </opal-lib-custom-account-information-item>
-    <opal-lib-custom-account-information-item class="govuk-!-padding-left-0">
+    <opal-lib-custom-account-information-item>
       <h2 opal-lib-custom-account-information-item-label>Business Unit:</h2>
       <p opal-lib-custom-account-information-item-value id="defendant-business-unit">
         {{ accountData.business_unit_summary.business_unit_name }} ({{
