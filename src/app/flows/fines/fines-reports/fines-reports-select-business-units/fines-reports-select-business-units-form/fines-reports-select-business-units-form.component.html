@@ -9,7 +9,7 @@
 ></opal-lib-govuk-heading-with-caption>
 <h2 class="govuk-heading-m">{{ pageHeading }}</h2>
 
-<form (submit)="handleFormSubmit($event)" [formGroup]="form">
+<form autocomplete="off" (submit)="handleFormSubmit($event)" [formGroup]="form">
   <opal-lib-govuk-table>
     <ng-container head>
       <th opal-lib-govuk-table-heading>
