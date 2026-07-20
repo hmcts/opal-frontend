@@ -1,6 +1,7 @@
 <app-fines-acc-summary-header
   [accountStore]="accountStore"
   id="defendant"
+  [accountStatusCode]="accountData.account_status_reference.account_status_code"
   [showAddAccountNoteButton]="hasPermission(finesPermissions['add-account-activity-notes'])"
   (refreshPage)="refreshPage()"
   (navigateToAddAccountNotePage)="navigateToAddAccountNotePage()"

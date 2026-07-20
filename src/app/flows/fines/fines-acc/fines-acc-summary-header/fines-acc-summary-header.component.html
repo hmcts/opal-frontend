@@ -7,6 +7,17 @@
   (refreshPage)="handleRefreshPage()"
 ></app-fines-acc-banner-messages>
 
+@if (accountStatusBannerLabel; as bannerLabel) {
+  <div class="govuk-grid-column-full" id="{{ id }}-account-status">
+    <opal-lib-moj-alert type="information" [ariaLabel]="bannerLabel">
+      <opal-lib-moj-alert-icon icon type="information"></opal-lib-moj-alert-icon>
+      <opal-lib-moj-alert-content content>
+        <opal-lib-moj-alert-content-text>{{ bannerLabel }}</opal-lib-moj-alert-content-text>
+      </opal-lib-moj-alert-content>
+    </opal-lib-moj-alert>
+  </div>
+}
+
 <div class="govuk-grid-column-full">
   <opal-lib-custom-page-header>
     <ng-container pageHeaderHeading>

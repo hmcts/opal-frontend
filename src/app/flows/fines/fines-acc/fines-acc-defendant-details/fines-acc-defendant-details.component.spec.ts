@@ -1,4 +1,5 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
+import { By } from '@angular/platform-browser';
 import { FinesAccDefendantDetailsComponent } from './fines-acc-defendant-details.component';
 import { Router, ActivatedRoute, ActivatedRouteSnapshot, convertToParamMap } from '@angular/router';
 import { FinesAccDefendantDetailsAtAGlanceTabComponent } from './fines-acc-defendant-details-at-a-glance-tab/fines-acc-defendant-details-at-a-glance-tab.component';
@@ -22,6 +23,7 @@ import { OPAL_FINES_ACCOUNT_DEFENDANT_DETAILS_PARENT_OR_GUARDIAN_TAB_REF_DATA_MO
 import { OPAL_FINES_ACCOUNT_DEFENDANT_DETAILS_FIXED_PENALTY_MOCK } from '@services/fines/opal-fines-service/mocks/opal-fines-account-defendant-details-fixed-penalty.mock';
 import { OPAL_FINES_RESULT_REF_DATA_MOCK } from '@services/fines/opal-fines-service/mocks/opal-fines-result-ref-data.mock';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
+import { FinesAccSummaryHeaderComponent } from '../fines-acc-summary-header/fines-acc-summary-header.component';
 
 describe('FinesAccDefendantDetailsComponent', () => {
   let component: FinesAccDefendantDetailsComponent;
@@ -137,6 +139,40 @@ describe('FinesAccDefendantDetailsComponent', () => {
   it('should initialize accountData and activeTab from route data', () => {
     expect(component.accountData).toEqual(FINES_ACC_DEFENDANT_DETAILS_HEADER_MOCK);
     expect(component.activeTab).toBe('at-a-glance');
+  });
+
+  it('should pass the account status code to the summary header', () => {
+    const summaryHeader = fixture.debugElement.query(By.directive(FinesAccSummaryHeaderComponent));
+
+    expect(summaryHeader.componentInstance.accountStatusCode).toBe('L');
+  });
+
+  it('should display the account status banner when the active tab is not the default tab', () => {
+    fixture.destroy();
+
+    const headingData = {
+      ...structuredClone(FINES_ACC_DEFENDANT_DETAILS_HEADER_MOCK),
+      account_status_reference: {
+        account_status_code: 'TA',
+        account_status_display_name: 'TFO Out Acknowledged (E/W)',
+      },
+    };
+
+    activatedRouteStub.fragment = of('payment-terms');
+    activatedRouteStub.snapshot = {
+      ...activatedRouteStub.snapshot,
+      data: {
+        defendantAccountHeadingData: headingData,
+      },
+      fragment: 'payment-terms',
+    } as unknown as ActivatedRouteSnapshot;
+
+    fixture = TestBed.createComponent(FinesAccDefendantDetailsComponent);
+    component = fixture.componentInstance;
+    fixture.detectChanges();
+
+    const banner = fixture.debugElement.query(By.css('#defendant-account-status'));
+    expect(banner.nativeElement.textContent).toContain('Transferred out');
   });
 
   it('should allow adding parent or guardian details for a youth debtor account with no parent guardian', () => {
