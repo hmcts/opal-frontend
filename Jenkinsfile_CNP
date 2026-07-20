@@ -53,6 +53,7 @@ String functionalXmlReport = 'cypress/reports/functionalXmlReport.html'
 @Field String releaseSuiteR1bOff = 'r1b_off'
 @Field String releaseSuiteR1cWriteOffOff = 'r1c_write_off_off'
 @Field String releaseSuiteR1cEnforcementOperationalReportingOff = 'r1c_enforcement_operational_reporting_off'
+@Field String componentTestScript = 'test:component'
 @Field String defaultFunctionalTagExpression =
   'not @UAT-Technical and not @skip' + andTagSeparator +
   'not (@R1AOff or @R1BOff or @R1CWriteOffOff or ' +
@@ -109,8 +110,8 @@ String functionalXmlReport = 'cypress/reports/functionalXmlReport.html'
   (releaseSuiteR1ab): r1abFeatureSpecGlob,
 ]
 @Field Map<String, String> releaseSuiteComponentScripts = [
-  (releaseSuiteR1a) : 'test:component:r1a',
-  (releaseSuiteR1ab): 'test:component:r1ab',
+  (releaseSuiteR1a) : componentTestScript,
+  (releaseSuiteR1ab): componentTestScript,
 ]
 
 // Build an Azure KeyVault secret entry
@@ -183,7 +184,7 @@ boolean releaseSuiteRunsComponentStage(String releaseSuite) {
 
 // Resolve the component runner command for a release-scoped PR run.
 String releaseSuiteComponentScript(String releaseSuite) {
-    return releaseSuiteComponentScripts.get(releaseSuite, 'test:component')
+    return releaseSuiteComponentScripts.get(releaseSuite, componentTestScript)
 }
 
 // Vault secrets injected into the pipeline
@@ -735,7 +736,7 @@ withPipeline(type, product, component) {
             } else {
                 String componentCommand = releaseSuiteSelection
                   ? releaseSuiteComponentScript(releaseSuiteSelection)
-                  : 'test:component'
+                  : componentTestScript
                 echo "Running opal component tests via yarn ${componentCommand}"
                 try {
                     yarnBuilder.yarn(componentCommand)
