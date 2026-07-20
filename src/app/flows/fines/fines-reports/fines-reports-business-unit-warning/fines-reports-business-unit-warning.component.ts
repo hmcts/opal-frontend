@@ -1,14 +1,12 @@
 import { ChangeDetectionStrategy, Component, computed, inject } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
-import { GovukCancelLinkComponent } from '@hmcts/opal-frontend-common/components/govuk/govuk-cancel-link';
-import { GovukButtonDirective } from '@hmcts/opal-frontend-common/directives/govuk-button';
 import { FINES_REPORTS_CREATE_ROUTING_PATHS } from '../routing/constants/fines-reports-create-routing-paths.constant';
 import { FinesReportsStore } from '../stores/fines-reports.store';
-import { FINES_REPORTS_BUSINESS_UNIT_WARNING_CONTENT } from './constants/fines-reports-business-unit-warning-content.constant';
+import { FinesReportsBusinessUnitWarningContentComponent } from './fines-reports-business-unit-warning-content/fines-reports-business-unit-warning-content.component';
 
 @Component({
   selector: 'app-fines-reports-business-unit-warning',
-  imports: [GovukButtonDirective, GovukCancelLinkComponent],
+  imports: [FinesReportsBusinessUnitWarningContentComponent],
   templateUrl: './fines-reports-business-unit-warning.component.html',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
@@ -17,9 +15,7 @@ export class FinesReportsBusinessUnitWarningComponent {
   private readonly finesReportsStore = inject(FinesReportsStore);
   private readonly router = inject(Router);
 
-  public readonly selectedBusinessUnitIds = this.finesReportsStore.selectedBusinessUnitIds;
-  public readonly warningContent = FINES_REPORTS_BUSINESS_UNIT_WARNING_CONTENT;
-  public readonly warningHeading = computed(() => this.warningContent.heading(this.selectedBusinessUnitIds().length));
+  public readonly selectedBusinessUnitCount = computed(() => this.finesReportsStore.selectedBusinessUnitIds().length);
 
   /**
    * Navigates back to the business unit selection screen with the current selections restored.

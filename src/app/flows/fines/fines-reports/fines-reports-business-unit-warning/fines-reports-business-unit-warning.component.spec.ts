@@ -84,7 +84,6 @@ describe('FinesReportsBusinessUnitWarningComponent', () => {
   it('should restore selected business unit ids from the reports store', async () => {
     const { component } = await setup([61, 67, 68, 69]);
 
-    expect(component.selectedBusinessUnitIds()).toEqual([61, 67, 68, 69]);
-    expect(component.warningHeading()).toBe('You have selected 4 business units');
+    expect(component.selectedBusinessUnitCount()).toBe(4);
   });
 });
