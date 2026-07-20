@@ -23,7 +23,7 @@ import { FINES_MAC_ROUTING_PATHS } from 'src/app/flows/fines/fines-mac/routing/c
 
 const MANUAL_ACCOUNT_CREATION_JIRA_LABEL = '@JIRA-LABEL:manual-account-creation';
 
-const buildTags = (...tags: string[]) => [...tags, MANUAL_ACCOUNT_CREATION_JIRA_LABEL];
+const buildTags = (...tags: string[]) => [...tags, '@R1A', MANUAL_ACCOUNT_CREATION_JIRA_LABEL];
 
 describe('FinesDraftCreateAndManageHeaderComponent', () => {
   const setupComponent = (userState = DRAFT_SESSION_USER_STATE_MOCK) => {
