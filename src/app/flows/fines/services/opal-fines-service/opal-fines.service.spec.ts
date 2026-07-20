@@ -156,10 +156,7 @@ describe('OpalFines', () => {
       `${OPAL_FINES_PATHS.majorCreditorAccounts}/${majorCreditorAccountId}/header-summary`,
     );
     expect(firstMajorCreditorHeadingRequest.request.method).toBe('GET');
-    firstMajorCreditorHeadingRequest.flush(
-      { message: 'timed out' },
-      { status: 504, statusText: 'Gateway Timeout' },
-    );
+    firstMajorCreditorHeadingRequest.flush({ message: 'timed out' }, { status: 504, statusText: 'Gateway Timeout' });
 
     const retriedMajorCreditorHeadingRequest = httpMock.expectOne(
       `${OPAL_FINES_PATHS.majorCreditorAccounts}/${majorCreditorAccountId}/header-summary`,
@@ -171,10 +168,7 @@ describe('OpalFines', () => {
       `${OPAL_FINES_PATHS.majorCreditorAccounts}/${majorCreditorAccountId}/at-a-glance`,
     );
     expect(firstMajorCreditorAtAGlanceRequest.request.method).toBe('GET');
-    firstMajorCreditorAtAGlanceRequest.flush(
-      { message: 'timed out' },
-      { status: 504, statusText: 'Gateway Timeout' },
-    );
+    firstMajorCreditorAtAGlanceRequest.flush({ message: 'timed out' }, { status: 504, statusText: 'Gateway Timeout' });
 
     const retriedMajorCreditorAtAGlanceRequest = httpMock.expectOne(
       `${OPAL_FINES_PATHS.majorCreditorAccounts}/${majorCreditorAccountId}/at-a-glance`,
