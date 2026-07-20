@@ -28,12 +28,10 @@ export const finesReportsReportInstancesResolver: ResolveFn<IOpalFinesReportInst
       ? filters.businessUnit
       : null;
 
-  const query =
-    store.appliedQuery() ??
-    ({
-      ...AbstractReportSummaryListBaseComponent.getReportQueryFromFilters(filters, dateService),
-      businessUnit,
-    });
+  const query = store.appliedQuery() ?? {
+    ...AbstractReportSummaryListBaseComponent.getReportQueryFromFilters(filters, dateService),
+    businessUnit,
+  };
 
   const params: IOpalFinesReportInstancesParams = {
     from_date: query.fromDate,

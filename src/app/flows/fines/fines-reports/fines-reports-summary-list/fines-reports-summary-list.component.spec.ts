@@ -350,9 +350,15 @@ describe('FinesReportsSummaryListComponent', () => {
   });
 
   it('should fall back to all business units when route data has no business units', async () => {
-    const { component } = await setup(reportId, mockReportInstances, undefined, OPAL_FINES_BUSINESS_UNIT_REF_DATA_MOCK, {
-      omitBusinessUnits: true,
-    });
+    const { component } = await setup(
+      reportId,
+      mockReportInstances,
+      undefined,
+      OPAL_FINES_BUSINESS_UNIT_REF_DATA_MOCK,
+      {
+        omitBusinessUnits: true,
+      },
+    );
 
     expect(component.businessUnitRefData()).toEqual([]);
     expect(component.businessUnitOptions()).toEqual([{ value: 'all', name: 'All business units' }]);
@@ -390,7 +396,9 @@ describe('FinesReportsSummaryListComponent', () => {
   });
 
   it('should request current user report instances for Your reports', async () => {
-    const { component, fixture, activatedRoute } = await setup(FINES_REPORTS_SUMMARY_LIST_ROUTING_PATHS.children.yourReports);
+    const { component, fixture, activatedRoute } = await setup(
+      FINES_REPORTS_SUMMARY_LIST_ROUTING_PATHS.children.yourReports,
+    );
 
     activatedRoute.data.next({
       businessUnits: OPAL_FINES_BUSINESS_UNIT_REF_DATA_MOCK,

@@ -1,10 +1,7 @@
 import { ActivatedRouteSnapshot, convertToParamMap } from '@angular/router';
 import { describe, expect, it } from 'vitest';
 import { FINES_REPORTS_SUMMARY_LIST_ROUTING_PATHS } from '../fines-reports-summary-list/routing/constants/fines-reports-summary-list-routing-paths.constant';
-import {
-  getFinesReportsRouteConfiguration,
-  getFinesReportsRouteReportTypeId,
-} from './fines-reports-route.utils';
+import { getFinesReportsRouteConfiguration, getFinesReportsRouteReportTypeId } from './fines-reports-route.utils';
 
 describe('fines-reports-route.utils', () => {
   const buildRoute = (
@@ -26,9 +23,7 @@ describe('fines-reports-route.utils', () => {
     expect(getFinesReportsRouteReportTypeId(buildRoute({}, { reportTypeId: 'parent-report-type-id' }))).toBe(
       'parent-report-type-id',
     );
-    expect(getFinesReportsRouteReportTypeId(buildRoute({}, { reportId: 'parent-report-id' }))).toBe(
-      'parent-report-id',
-    );
+    expect(getFinesReportsRouteReportTypeId(buildRoute({}, { reportId: 'parent-report-id' }))).toBe('parent-report-id');
     expect(getFinesReportsRouteReportTypeId(buildRoute())).toBeNull();
   });
 
