@@ -15,7 +15,6 @@ import {
   DefendantType,
 } from '../../../e2e/functional/opal/actions/manual-account-creation/create-account.actions';
 import { ManualCreateOrTransferInActions } from '../../../e2e/functional/opal/actions/manual-account-creation/create-transfer.actions';
-import { CreateNewOrTransferInLocators } from '../../../shared/selectors/manual-account-creation/create-transfer.locators';
 import { ManualAccountCommentsNotesActions } from '../../../e2e/functional/opal/actions/manual-account-creation/account-comments-notes.actions';
 import { ManualCourtFieldKey } from '../../../e2e/functional/opal/actions/manual-account-creation/court-details.actions';
 import {
@@ -54,6 +53,8 @@ import { applyUniqPlaceholder } from '../../utils/stringUtils';
 import { installDraftAccountCleanup } from 'cypress/support/draftAccounts';
 import { AccountSearchIndividualsActions } from '../../../e2e/functional/opal/actions/search/search.individuals.actions';
 import { PrimaryNavigationActions } from '../../../e2e/functional/opal/actions/primary-navigation.actions';
+// import { log } from '../../utils/log.helper';
+import { assertPageAtTop } from '../../utils/page.utils';
 const flow = () => new ManualAccountCreationFlow();
 const comments = () => new ManualAccountCommentsNotesActions();
 const employerDetails = () => new ManualEmployerDetailsActions();
@@ -1428,20 +1429,6 @@ When('I access the {string} task', (taskName: MacAccountTaskName) => {
 });
 
 /**
- * @step Selecting back link on create account page
- * @description Clicks the back link on the Create account page and asserts we return to the Originator type selection page.
- */
-When('I click the back link on create account page I return to Create or Transfer In page - No data retained', () => {
-  log('navigate', 'Clicking back link on Create account page');
-  createAccount().selectBackLink();
-  originatorType().assertOnCreateOrTransferInPage();
-  cy.get(CreateNewOrTransferInLocators.originatorType.transferIn, { timeout: 15_000 })
-    .first()
-    .should('exist')
-    .and('not.be.checked');
-});
-
-/**
  * @step Handles Cancel on Transfer in with a given choice.
  * @description Triggers the unsaved changes prompt and responds with choice.
  * @param choice - Cancel/Ok selection.
@@ -1528,4 +1515,13 @@ Then(
  */
 Then('the latest draft account create response should include UTC timestamps', () => {
   flow().assertLatestDraftAccountCreateResponseIncludesUtcTimestamps();
+});
+
+/**
+ * @step Asserts the page is scrolled to the top.
+ * @description Validates the page has been scrolled to the top.
+ */
+
+Then('I return to the top of the page', () => {
+  assertPageAtTop();
 });

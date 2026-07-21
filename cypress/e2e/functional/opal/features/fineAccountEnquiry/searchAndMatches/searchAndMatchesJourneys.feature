@@ -144,8 +144,7 @@ Feature: Account Search and Matches - End-to-end journeys
     When I open the latest matching result from the Companies search results
     Then I should see the account header contains "Journey Ref Co {uniq}"
 
-  @JIRA-EPIC:PO-704
-  @R1B @JIRA-STORY:PO-706 @JIRA-TEST-KEY:PO-5295
+  @JIRA-EPIC:PO-704 @R1B @JIRA-STORY:PO-706 @JIRA-TEST-KEY:PO-5295
   Scenario: Search by account number and open the matching record
     Given I create a "adultOrYouthOnly" draft account with the following details and set status "Publishing Pending" using user "opal-test-10@dev.platform.hmcts.net":
       | Account_status                          | Submitted                           |
