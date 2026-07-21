@@ -11,6 +11,13 @@ import { beforeEach, describe, expect, it } from 'vitest';
 describe('FinesAccDefendantDetailsParentOrGuardianTabComponent', () => {
   let component: FinesAccDefendantDetailsParentOrGuardianTabComponent;
   let fixture: ComponentFixture<FinesAccDefendantDetailsParentOrGuardianTabComponent>;
+  const restrictedAccountStatuses = [
+    { statusCode: 'CS', statusDisplayName: 'Consolidated' },
+    { statusCode: 'WO', statusDisplayName: 'Written Off' },
+    { statusCode: 'TA', statusDisplayName: 'TFO to be acknowledged' },
+    { statusCode: 'TS', statusDisplayName: 'TFO Out Acknowledged' },
+    { statusCode: 'TO', statusDisplayName: 'TFO Out S/NI' },
+  ];
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
@@ -42,6 +49,28 @@ describe('FinesAccDefendantDetailsParentOrGuardianTabComponent', () => {
     expect(component.changeParentOrGuardianDetailsLink()).toBe('/access-denied');
   });
 
+  it('should make change parent or guardian action available when user has permission and account status is unrestricted', () => {
+    fixture.componentRef.setInput('hasAccountMaintenencePermission', true);
+    fixture.componentRef.setInput('accountStatusCode', 'L');
+    fixture.detectChanges();
+
+    expect(component.changeParentOrGuardianAction).toBe(true);
+  });
+
+  it.each(restrictedAccountStatuses)(
+    'should not make change parent or guardian action available for restricted account status $statusDisplayName',
+    ({ statusCode }) => {
+      fixture.componentRef.setInput('hasAccountMaintenencePermission', true);
+      fixture.componentRef.setInput('accountStatusCode', statusCode);
+      fixture.detectChanges();
+
+      const compiled = fixture.nativeElement as HTMLElement;
+
+      expect(component.changeParentOrGuardianAction).toBe(false);
+      expect(compiled.textContent).not.toContain('Change');
+    },
+  );
+
   it('should make remove parent or guardian action available when user has permission and party is not the debtor', () => {
     fixture.componentRef.setInput('hasAccountMaintenencePermission', true);
     fixture.detectChanges();
@@ -71,6 +100,20 @@ describe('FinesAccDefendantDetailsParentOrGuardianTabComponent', () => {
 
     expect(component.removeParentOrGuardianAction).toBe(false);
   });
+
+  it.each(restrictedAccountStatuses)(
+    'should not make remove parent or guardian action available for restricted account status $statusDisplayName',
+    ({ statusCode }) => {
+      fixture.componentRef.setInput('hasAccountMaintenencePermission', true);
+      fixture.componentRef.setInput('accountStatusCode', statusCode);
+      fixture.detectChanges();
+
+      const compiled = fixture.nativeElement as HTMLElement;
+
+      expect(component.removeParentOrGuardianAction).toBe(false);
+      expect(compiled.textContent).not.toContain('Remove Parent or guardian details');
+    },
+  );
 
   it('should return the remove route when the user has account maintenance permission in the BU and the action is available', () => {
     component.hasAccountMaintenencePermission = true;
