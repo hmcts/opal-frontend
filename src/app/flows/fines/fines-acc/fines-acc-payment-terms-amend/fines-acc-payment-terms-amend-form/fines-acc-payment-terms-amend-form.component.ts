@@ -26,6 +26,7 @@ import { IGovUkRadioOptions } from '@hmcts/opal-frontend-common/components/govuk
 import { takeUntil } from 'rxjs';
 import { FINES_ACC_SUMMARY_TABS_CONTENT_STYLES } from '../../constants/fines-acc-summary-tabs-content-styles.constant';
 import { FinesMacDefaultDaysComponent } from '../../../fines-mac/components/fines-mac-default-days/fines-mac-default-days.component';
+import { FINES_ACC_PAYMENT_TERMS_AMEND_FRAGMENTS } from '../constants/fines-acc-payment-terms-amend-fragments.constant';
 
 // GovUK Components
 import { GovukButtonComponent } from '@hmcts/opal-frontend-common/components/govuk/govuk-button';
@@ -117,6 +118,7 @@ export class FinesAccPaymentTermsAmendFormComponent extends AbstractFormBaseComp
     ([key, value]) => ({ key, value }),
   );
   public readonly paymentTermsConditionalIdPrefix = 'payment-terms-conditional-';
+  public readonly selectPaymentTermsFragment = FINES_ACC_PAYMENT_TERMS_AMEND_FRAGMENTS.selectPaymentTerms;
   public today!: string;
   public yesterday!: string;
 

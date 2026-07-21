@@ -17,6 +17,7 @@ import { OpalFines } from '@services/fines/opal-fines-service/opal-fines.service
 import { OPAL_FINES_BUSINESS_UNIT_NON_SNAKE_CASE_MOCK } from '@services/fines/opal-fines-service/mocks/opal-fines-business-unit-non-snake-case.mock';
 import { payInFullPaymentCardValidator } from '../validators/fines-acc-payment-terms-pay-in-full.validator';
 import { changeLetterWithoutChangesValidator } from '../validators/fines-acc-payment-terms-change-letter.validator';
+import { FINES_ACC_PAYMENT_TERMS_AMEND_FRAGMENTS } from '../constants/fines-acc-payment-terms-amend-fragments.constant';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
 
 import { createSpyObj } from '@app/testing/create-spy-obj.helper';
@@ -40,7 +41,7 @@ describe('FinesAccPaymentTermsAmendFormComponent', () => {
   beforeEach(async () => {
     mockRouter = createSpyObj('Router', ['navigate']);
     mockActivatedRoute = {
-      snapshot: { data: {} },
+      snapshot: { data: {}, fragment: null },
       params: of({}),
       queryParams: of({}),
       data: of({}),
@@ -285,6 +286,15 @@ describe('FinesAccPaymentTermsAmendFormComponent', () => {
         relativeTo: mockActivatedRoute,
         fragment: 'payment-terms',
       });
+    });
+
+    it('should render the shared payment terms fragment target id', () => {
+      component.ngOnInit();
+      fixture.detectChanges();
+
+      expect(
+        fixture.nativeElement.querySelector(`#${FINES_ACC_PAYMENT_TERMS_AMEND_FRAGMENTS.selectPaymentTerms}`),
+      ).toBeTruthy();
     });
   });
 

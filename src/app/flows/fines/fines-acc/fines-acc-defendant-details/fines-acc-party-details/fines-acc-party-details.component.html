@@ -1,5 +1,13 @@
 @if (!party.party_details.organisation_flag && party.party_details.individual_details; as individualDetails) {
   <opal-lib-govuk-summary-card-list [cardTitle]="cardTitle" [summaryCardListId]="summaryCardListId">
+    <ng-container actions>
+      <a
+        class="govuk-link govuk-link--no-visited-state"
+        [routerLink]="sectionChangeLink()"
+        [fragment]="sectionChangeFragment(sectionFragments.partyDetails)"
+        >Change</a
+      >
+    </ng-container>
     <ng-container content>
       <opal-lib-govuk-summary-list [summaryListId]="summaryListId">
         <div
@@ -88,6 +96,14 @@
 @if (showCompanyDetails && party.party_details.organisation_details; as organisationDetails) {
   <ng-container content>
     <opal-lib-govuk-summary-card-list cardTitle="Company details" summaryCardListId="company">
+      <ng-container actions>
+        <a
+          class="govuk-link govuk-link--no-visited-state"
+          [routerLink]="sectionChangeLink()"
+          [fragment]="sectionChangeFragment(sectionFragments.partyDetails)"
+          >Change</a
+        >
+      </ng-container>
       <ng-container content>
         <opal-lib-govuk-summary-list summaryListId="companyDetails">
           <div
@@ -144,6 +160,14 @@
 
 @if (showContactDetails && party.contact_details; as contact_details) {
   <opal-lib-govuk-summary-card-list cardTitle="Contact details" summaryCardListId="contact">
+    <ng-container actions>
+      <a
+        class="govuk-link govuk-link--no-visited-state"
+        [routerLink]="sectionChangeLink()"
+        [fragment]="sectionChangeFragment(sectionFragments.contactDetails)"
+        >Change</a
+      >
+    </ng-container>
     <ng-container content>
       <opal-lib-govuk-summary-list summaryListId="contactDetails">
         <div
@@ -257,6 +281,14 @@
 
 @if (showEmployerDetails && party.employer_details; as employer_details) {
   <opal-lib-govuk-summary-card-list cardTitle="Employer details" summaryCardListId="employer">
+    <ng-container actions>
+      <a
+        class="govuk-link govuk-link--no-visited-state"
+        [routerLink]="sectionChangeLink()"
+        [fragment]="sectionChangeFragment(sectionFragments.employmentDetails)"
+        >Change</a
+      >
+    </ng-container>
     <ng-container content>
       <opal-lib-govuk-summary-list summaryListId="employerDetails">
         <div

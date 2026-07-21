@@ -3,15 +3,20 @@
     <div class="govuk-grid-column-two-thirds">
       <h2 [class]="style.heading">Payment terms</h2>
     </div>
-    @if (hasAmendPaymentTermsPermission) {
-      <div class="govuk-grid-column-one-third govuk-!-text-align-right govuk-!-margin-top-3">
-        <a [class]="style.changeLink" [routerLink]="changePaymentTermsLink()">Change</a>
-      </div>
-    }
   </div>
   <hr [class]="style.hr" />
   <ng-container content>
     <opal-lib-govuk-summary-card-list [cardTitle]="cardTitle()" summaryCardListId="payment-terms">
+      @if (hasAmendPaymentTermsPermission) {
+        <ng-container actions>
+          <a
+            class="govuk-link govuk-link--no-visited-state"
+            [routerLink]="changePaymentTermsLink()"
+            [fragment]="changePaymentTermsFragment()"
+            >Change</a
+          >
+        </ng-container>
+      }
       <ng-container content>
         <opal-lib-govuk-summary-list summaryListId="payment-terms">
           @if (tabData.payment_terms.lump_sum_amount) {

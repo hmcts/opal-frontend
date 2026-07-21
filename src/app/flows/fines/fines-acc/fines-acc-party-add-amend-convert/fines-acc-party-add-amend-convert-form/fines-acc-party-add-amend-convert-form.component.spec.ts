@@ -11,6 +11,7 @@ import { MOCK_FINES_ACC_PARTY_ADD_AMEND_CONVERT_FORM_DATA_WITH_ALIASES } from '.
 import { FINES_ACC_PARTY_ADD_AMEND_CONVERT_FORM } from '../constants/fines-acc-party-add-amend-convert-form.constant';
 import { FINES_ACC_DEFENDANT_DETAILS_TABS_KEYS } from '../../fines-acc-defendant-details/constants/fines-acc-defendant-details-tabs-keys.constant';
 import { FINES_ACC_PARTY_ADD_AMEND_CONVERT_MODES } from '../constants/fines-acc-party-add-amend-convert-modes.constant';
+import { FINES_ACC_PARTY_ADD_AMEND_CONVERT_SECTION_FRAGMENTS } from '../constants/fines-acc-party-add-amend-convert-fragments.constant';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
 
 describe('FinesAccPartyAddAmendConvertFormComponent', () => {
@@ -41,6 +42,9 @@ describe('FinesAccPartyAddAmendConvertFormComponent', () => {
     };
     mockActivatedRoute = {
       data: of({}),
+      snapshot: {
+        fragment: null,
+      },
     };
 
     mockFinesAccountStore = {
@@ -289,6 +293,22 @@ describe('FinesAccPartyAddAmendConvertFormComponent', () => {
 
     expect(component.isAddParentGuardianMode).toBe(true);
     expect(component.routeFragment).toBe(FINES_ACC_DEFENDANT_DETAILS_TABS_KEYS.defendant);
+  });
+
+  it('should render matching section ids for fragment navigation', () => {
+    component.partyType = 'individual';
+    component.isDebtor = true;
+    fixture.detectChanges();
+
+    expect(
+      fixture.nativeElement.querySelector(`#${FINES_ACC_PARTY_ADD_AMEND_CONVERT_SECTION_FRAGMENTS.partyDetails}`),
+    ).toBeTruthy();
+    expect(
+      fixture.nativeElement.querySelector(`#${FINES_ACC_PARTY_ADD_AMEND_CONVERT_SECTION_FRAGMENTS.contactDetails}`),
+    ).toBeTruthy();
+    expect(
+      fixture.nativeElement.querySelector(`#${FINES_ACC_PARTY_ADD_AMEND_CONVERT_SECTION_FRAGMENTS.employmentDetails}`),
+    ).toBeTruthy();
   });
 
   it('should show contact details for reduced parent guardian mode', () => {
