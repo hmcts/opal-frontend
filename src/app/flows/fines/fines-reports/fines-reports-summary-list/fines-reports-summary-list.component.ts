@@ -155,6 +155,16 @@ export class FinesReportsSummaryListComponent
 
     return [{ value: FINES_REPORTS_SUMMARY_LIST_ALL_BUSINESS_UNITS, name: 'All business units' }, ...options];
   });
+  public readonly businessUnitAutocompleteOptionSets = computed(() => {
+    const items = this.businessUnitOptions();
+
+    return [
+      {
+        key: JSON.stringify({ reportId: this.reportId(), items }),
+        items,
+      },
+    ];
+  });
   public readonly tableData = computed<IFinesReportsSummaryListTableData[]>(() =>
     mapReportInstancesToTableData(
       getReportInstancesFromResponse(this.reportInstancesResponse()),

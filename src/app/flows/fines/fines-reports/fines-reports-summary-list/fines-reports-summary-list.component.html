@@ -27,16 +27,18 @@
   <form [formGroup]="filtersForm" (ngSubmit)="onRefresh()" autocomplete="off" novalidate>
     <div class="govuk-grid-row">
       <div class="govuk-grid-column-one-third">
-        <opal-lib-alphagov-accessible-autocomplete
-          [control]="filtersForm.controls.businessUnit"
-          labelText="Filter by business unit"
-          labelClasses="govuk-label--s"
-          inputId="reports-summary-list-business-unit"
-          inputName="reports-summary-list-business-unit"
-          [autoCompleteItems]="businessUnitOptions()"
-          [tabIndex]="0"
-          [showAllValues]="true"
-        ></opal-lib-alphagov-accessible-autocomplete>
+        @for (optionSet of businessUnitAutocompleteOptionSets(); track optionSet.key) {
+          <opal-lib-alphagov-accessible-autocomplete
+            [control]="filtersForm.controls.businessUnit"
+            labelText="Filter by business unit"
+            labelClasses="govuk-label--s"
+            inputId="reports-summary-list-business-unit"
+            inputName="reports-summary-list-business-unit"
+            [autoCompleteItems]="optionSet.items"
+            [tabIndex]="0"
+            [showAllValues]="true"
+          ></opal-lib-alphagov-accessible-autocomplete>
+        }
 
         <opal-lib-govuk-radio
           fieldSetId="reports-summary-list-date-filter"

@@ -1,4 +1,5 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
+import { By } from '@angular/platform-browser';
 import { ActivatedRoute, convertToParamMap, provideRouter } from '@angular/router';
 import { BehaviorSubject, Subject, of, throwError } from 'rxjs';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
@@ -9,6 +10,7 @@ import { FINES_PERMISSIONS } from '@app/constants/fines-permissions.constant';
 import { OPAL_FINES_BUSINESS_UNIT_REF_DATA_MOCK } from '@services/fines/opal-fines-service/mocks/opal-fines-business-unit-ref-data.mock';
 import { OpalFines } from '@services/fines/opal-fines-service/opal-fines.service';
 import { GlobalStore } from '@hmcts/opal-frontend-common/stores/global';
+import { AlphagovAccessibleAutocompleteComponent } from '@hmcts/opal-frontend-common/components/alphagov/alphagov-accessible-autocomplete';
 import { OPAL_USER_STATE_MOCK } from '@hmcts/opal-frontend-common/services/opal-user-service/mocks';
 import { IOpalFinesReportInstancesResponse } from '@services/fines/opal-fines-service/interfaces/opal-fines-report-instances-response.interface';
 import { IOpalFinesReport } from '@services/fines/opal-fines-service/interfaces/opal-fines-report.interface';
@@ -580,6 +582,64 @@ describe('FinesReportsSummaryListComponent', () => {
     expect(component.filtersForm.controls.businessUnit.value).toBe('all');
     expect(fixture.nativeElement.textContent).toContain('Operational report (by payments) - Paid in full');
     expect(fixture.nativeElement.textContent).not.toContain('Operational report (by enforcement) - CLAMPO - Detailed');
+  });
+
+  it('should recreate the business unit autocomplete with reset state when the report type changes', async () => {
+    const enforcementBusinessUnits: IOpalFinesBusinessUnitRefData = {
+      count: 1,
+      refData: [OPAL_FINES_BUSINESS_UNIT_REF_DATA_MOCK.refData[1]],
+    };
+    const paymentsBusinessUnits: IOpalFinesBusinessUnitRefData = {
+      count: 1,
+      refData: [OPAL_FINES_BUSINESS_UNIT_REF_DATA_MOCK.refData[0]],
+    };
+    const { component, fixture, activatedRoute } = await setup(
+      reportId,
+      mockReportInstances,
+      (store) => {
+        store.setReportTypeId(reportId);
+        store.setFilters({
+          businessUnit: '67',
+          dateFilter: 'last7Days',
+          days: '',
+          dateFrom: '',
+          dateTo: '',
+        });
+        store.setAppliedQuery({
+          fromDate: '2026-06-02',
+          toDate: '2026-06-08',
+          businessUnit: '67',
+        });
+      },
+      enforcementBusinessUnits,
+    );
+    const initialAutocomplete = fixture.debugElement.query(By.directive(AlphagovAccessibleAutocompleteComponent))
+      .componentInstance as AlphagovAccessibleAutocompleteComponent;
+
+    expect(initialAutocomplete.getControl.value).toBe('67');
+    expect(initialAutocomplete.autoCompleteItems).toEqual([
+      { value: 'all', name: 'All business units' },
+      { value: '67', name: 'London Central & South East' },
+    ]);
+
+    activatedRoute.parent?.paramMap.next(convertToParamMap({ reportTypeId: paymentsReportId }));
+    activatedRoute.data.next({
+      businessUnits: paymentsBusinessUnits,
+      reportMetadata: mockPaymentsReportMetadata,
+      reportInstances: { report_instances: [], count: 0 },
+    });
+    fixture.detectChanges();
+
+    const updatedAutocomplete = fixture.debugElement.query(By.directive(AlphagovAccessibleAutocompleteComponent))
+      .componentInstance as AlphagovAccessibleAutocompleteComponent;
+
+    expect(updatedAutocomplete).not.toBe(initialAutocomplete);
+    expect(component.filtersForm.controls.businessUnit.value).toBe('all');
+    expect(updatedAutocomplete.getControl.value).toBe('all');
+    expect(updatedAutocomplete.autoCompleteItems).toEqual([
+      { value: 'all', name: 'All business units' },
+      { value: '61', name: 'Historical Debt' },
+    ]);
   });
 
   it('should refresh route-backed state when the route uses reportId instead of reportTypeId', async () => {
