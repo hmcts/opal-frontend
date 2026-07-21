@@ -32,6 +32,7 @@ describe('FinesAccNoteAddComponent', () => {
     getAccountNumber: Mock;
     party_name: Mock;
     base_version: Mock;
+    business_unit_id: Mock;
   };
 
   beforeEach(async () => {
@@ -53,6 +54,7 @@ describe('FinesAccNoteAddComponent', () => {
       getAccountNumber: vi.fn().mockReturnValue('123456789'),
       party_name: vi.fn().mockReturnValue('Mr John, Peter DOE'),
       base_version: vi.fn().mockReturnValue('1'),
+      business_unit_id: vi.fn().mockReturnValue('78'),
     };
 
     await TestBed.configureTestingModule({
@@ -114,7 +116,7 @@ describe('FinesAccNoteAddComponent', () => {
     component.handleAddNoteSubmit(testForm);
 
     expect(mockFinesAccPayloadService.buildAddNotePayload).toHaveBeenCalledWith(testForm);
-    expect(mockOpalFinesService.addNote).toHaveBeenCalledWith(expectedPayload, expect.any(String));
+    expect(mockOpalFinesService.addNote).toHaveBeenCalledWith(expectedPayload, expect.any(String), '78');
   });
 
   it('should call addNote with a minor creditor record type for minor creditor note form submission', () => {
