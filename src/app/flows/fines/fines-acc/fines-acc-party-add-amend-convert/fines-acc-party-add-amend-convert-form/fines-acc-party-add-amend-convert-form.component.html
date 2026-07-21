@@ -18,7 +18,7 @@
   </opal-lib-moj-alert>
 }
 @if (form) {
-  <form (submit)="handleFormSubmit($event)" [formGroup]="form">
+  <form autocomplete="off" (submit)="handleFormSubmit($event)" [formGroup]="form">
     <!-- Party details -->
     <app-fines-acc-party-add-amend-convert-party-details
       [form]="form"
