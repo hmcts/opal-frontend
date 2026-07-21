@@ -327,4 +327,9 @@ describe('FinesMacPersonalDetailsFormComponent', () => {
       expect(component.form.get(control.controlName)).toBeTruthy();
     });
   });
+
+  it('should set autocomplete="off" on the form', () => {
+    fixture.detectChanges();
+    expect(fixture.nativeElement.querySelector('form')?.getAttribute('autocomplete')).toBe('off');
+  });
 });

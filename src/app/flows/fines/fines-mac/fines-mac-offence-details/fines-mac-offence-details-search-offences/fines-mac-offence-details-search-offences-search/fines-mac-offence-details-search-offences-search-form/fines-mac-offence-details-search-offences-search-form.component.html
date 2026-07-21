@@ -3,7 +3,7 @@
   [errors]="formErrorSummaryMessage"
   (errorClick)="scrollTo($event)"
 ></opal-lib-govuk-error-summary>
-<form (submit)="handleFormSubmit($event)">
+<form autocomplete="off" (submit)="handleFormSubmit($event)">
   <opal-lib-govuk-text-input
     labelText="Offence code"
     labelClasses="govuk-fieldset__legend--s"
