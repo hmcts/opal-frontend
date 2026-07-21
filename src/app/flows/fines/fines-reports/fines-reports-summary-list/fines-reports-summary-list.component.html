@@ -139,7 +139,20 @@
 
   <hr class="govuk-section-break govuk-section-break--m govuk-section-break--visible" />
 
-  @if (overLimit() && resultLimit() !== null) {
+  @if (loadError()) {
+    <div
+      class="govuk-error-summary"
+      id="reports-summary-list-load-error"
+      role="alert"
+      aria-labelledby="reports-summary-list-load-error-title"
+      tabindex="-1"
+    >
+      <h2 class="govuk-error-summary__title" id="reports-summary-list-load-error-title">There is a problem</h2>
+      <div class="govuk-error-summary__body">
+        <p class="govuk-body">Reports could not be loaded. Try again.</p>
+      </div>
+    </div>
+  } @else if (overLimit() && resultLimit() !== null) {
     <h2 class="govuk-heading-m">There are more than {{ resultLimit() }} reports</h2>
     <p class="govuk-body">Use the filters to reduce the number of results.</p>
   } @else if (overLimit()) {

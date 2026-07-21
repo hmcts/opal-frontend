@@ -13,7 +13,7 @@ import {
 import { takeUntilDestroyed, toSignal } from '@angular/core/rxjs-interop';
 import { FormControl, FormGroup, ReactiveFormsModule } from '@angular/forms';
 import { ActivatedRoute, RouterLink } from '@angular/router';
-import { Observable, Subject, distinctUntilChanged, map, switchMap, takeUntil } from 'rxjs';
+import { EMPTY, Observable, Subject, catchError, distinctUntilChanged, map, switchMap, takeUntil } from 'rxjs';
 import { GovukErrorSummaryComponent } from '@hmcts/opal-frontend-common/components/govuk/govuk-error-summary';
 import {
   GovukRadioComponent,
@@ -36,6 +36,7 @@ import { OpalFines } from '@services/fines/opal-fines-service/opal-fines.service
 import { IOpalFinesBusinessUnitRefData } from '@services/fines/opal-fines-service/interfaces/opal-fines-business-unit-ref-data.interface';
 import { IOpalFinesReport } from '@services/fines/opal-fines-service/interfaces/opal-fines-report.interface';
 import { IOpalFinesReportInstancesResponse } from '@services/fines/opal-fines-service/interfaces/opal-fines-report-instances-response.interface';
+import type { FinesReportsReportInstancesResolverData } from '../routing/resolvers/fines-reports-report-instances/fines-reports-report-instances.resolver';
 import { FINES_REPORTS_SUMMARY_LIST_ALL_BUSINESS_UNITS } from './constants/fines-reports-summary-list-state.constant';
 import { FINES_REPORT_SUMMARY_LIST_REPORT_CONFIGURATION } from './constants/fines-reports-summary-list-report-configuration.constant';
 import { FINES_REPORTS_SUMMARY_LIST_TABLE_WRAPPER_TABLE_SORT_DEFAULT } from './fines-reports-summary-list-table-wrapper/constants/fines-reports-summary-list-table-wrapper-table-sort-default.constant';
@@ -104,8 +105,9 @@ export class FinesReportsSummaryListComponent
   private readonly routeData = toSignal(this.activatedRoute.data, {
     initialValue: this.activatedRoute.snapshot.data,
   });
-  private readonly reportInstancesResponse = signal<IOpalFinesReportInstancesResponse | null>(
-    (this.activatedRoute.snapshot.data['reportInstances'] as IOpalFinesReportInstancesResponse | undefined) ?? null,
+  private readonly reportInstancesResponse = signal<FinesReportsReportInstancesResolverData | null>(
+    (this.activatedRoute.snapshot.data['reportInstances'] as FinesReportsReportInstancesResolverData | undefined) ??
+      null,
   );
 
   @ViewChild('errorSummary', { read: ElementRef }) private errorSummary?: ElementRef<HTMLElement>;
@@ -125,6 +127,7 @@ export class FinesReportsSummaryListComponent
 
   public readonly tableSort = FINES_REPORTS_SUMMARY_LIST_TABLE_WRAPPER_TABLE_SORT_DEFAULT;
   public readonly createReportRoutingPath = `../${FINES_REPORTS_ROUTING_PATHS.children.create}`;
+  public readonly loadError = signal(this.reportInstancesResponse()?.loadError ?? false);
   public readonly filtersForm: FinesReportsSummaryListFilterForm = new FormGroup({
     businessUnit: new FormControl<string | null>(FINES_REPORTS_SUMMARY_LIST_ALL_BUSINESS_UNITS),
     dateFilter: new FormControl<AbstractReportSummaryListDateFilter | null>(
@@ -188,6 +191,7 @@ export class FinesReportsSummaryListComponent
       .subscribe(() => {
         this.reportTypeChanges$.next();
         this.reportInstancesResponse.set(null);
+        this.loadError.set(false);
         this.initialiseFilters();
         this.fieldErrors.set({});
       });
@@ -199,10 +203,11 @@ export class FinesReportsSummaryListComponent
   private subscribeToReportInstancesData(): void {
     this.activatedRoute.data
       .pipe(
-        map((data) => (data['reportInstances'] as IOpalFinesReportInstancesResponse | undefined) ?? null),
+        map((data) => (data['reportInstances'] as FinesReportsReportInstancesResolverData | undefined) ?? null),
         takeUntilDestroyed(this.destroyRef),
       )
       .subscribe((reportInstances) => {
+        this.loadError.set(reportInstances?.loadError ?? false);
         this.reportInstancesResponse.set(reportInstances);
       });
   }
@@ -214,10 +219,19 @@ export class FinesReportsSummaryListComponent
   private subscribeToReportInstanceRefreshes(): void {
     this.refreshReportInstances$
       .pipe(
-        switchMap((query) => this.getReportInstancesRequest(query).pipe(takeUntil(this.reportTypeChanges$))),
+        switchMap((query) =>
+          this.getReportInstancesRequest(query).pipe(
+            takeUntil(this.reportTypeChanges$),
+            catchError(() => {
+              this.loadError.set(true);
+              return EMPTY;
+            }),
+          ),
+        ),
         takeUntilDestroyed(this.destroyRef),
       )
       .subscribe((response) => {
+        this.loadError.set(false);
         this.reportInstancesResponse.set(response);
       });
   }
@@ -401,6 +415,7 @@ export class FinesReportsSummaryListComponent
     const query = this.getFinesReportQueryFromFilters(filters);
     this.store.setFilters(filters);
     this.store.setAppliedQuery(query);
+    this.loadError.set(false);
     this.refreshReportInstances$.next(query);
   }
 }

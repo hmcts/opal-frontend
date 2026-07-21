@@ -1,5 +1,6 @@
 import { inject } from '@angular/core';
 import { ResolveFn } from '@angular/router';
+import { catchError, of } from 'rxjs';
 import { GlobalStore } from '@hmcts/opal-frontend-common/stores/global';
 import { DateService } from '@hmcts/opal-frontend-common/services/date-service';
 import { AbstractReportSummaryListBaseComponent } from '@hmcts/opal-frontend-common/components/abstract/abstract-report-summary-list-base';
@@ -13,7 +14,17 @@ import {
 import { FinesReportsSummaryListStore } from '../../../fines-reports-summary-list/stores/fines-reports-summary-list.store';
 import { FINES_REPORTS_SUMMARY_LIST_ALL_BUSINESS_UNITS } from '../../../fines-reports-summary-list/constants/fines-reports-summary-list-state.constant';
 
-export const finesReportsReportInstancesResolver: ResolveFn<IOpalFinesReportInstancesResponse> = (route) => {
+export type FinesReportsReportInstancesResolverData = IOpalFinesReportInstancesResponse & {
+  loadError?: boolean;
+};
+
+const FINES_REPORTS_REPORT_INSTANCES_LOAD_ERROR_RESPONSE: FinesReportsReportInstancesResolverData = {
+  report_instances: [],
+  count: 0,
+  loadError: true,
+};
+
+export const finesReportsReportInstancesResolver: ResolveFn<FinesReportsReportInstancesResolverData> = (route) => {
   const opalFinesService = inject(OpalFines);
   const globalStore = inject(GlobalStore);
   const store = inject(FinesReportsSummaryListStore);
@@ -40,14 +51,18 @@ export const finesReportsReportInstancesResolver: ResolveFn<IOpalFinesReportInst
   };
 
   if (reportConfiguration?.isYourReports) {
-    return opalFinesService.getReportInstances({
-      ...params,
-      user_id: userState.user_id,
-    });
+    return opalFinesService
+      .getReportInstances({
+        ...params,
+        user_id: userState.user_id,
+      })
+      .pipe(catchError(() => of(FINES_REPORTS_REPORT_INSTANCES_LOAD_ERROR_RESPONSE)));
   }
 
-  return opalFinesService.getReportInstances({
-    ...params,
-    report_id: reportConfiguration?.reportTypeId ?? null,
-  });
+  return opalFinesService
+    .getReportInstances({
+      ...params,
+      report_id: reportConfiguration?.reportTypeId ?? null,
+    })
+    .pipe(catchError(() => of(FINES_REPORTS_REPORT_INSTANCES_LOAD_ERROR_RESPONSE)));
 };

@@ -70,7 +70,7 @@
           </td>
           <td opal-lib-moj-sortable-table-row-data id="reportInstanceStatus-{{ rowIndex }}">{{ row.Status }}</td>
           <td opal-lib-moj-sortable-table-row-data id="reportInstanceAction-{{ rowIndex }}">
-            @if (row.isDownloadable && row.supportedTypes) {
+            @if (row.isDownloadable && hasSupportedDownloadType(row, 'CSV')) {
               <!-- Placeholder value. CSV download actions will become a link in a future ticket, PO-2309  -->
               <span>CSV</span>
             }

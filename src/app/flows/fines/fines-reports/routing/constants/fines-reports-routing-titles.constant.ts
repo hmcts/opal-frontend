@@ -4,7 +4,7 @@ export const FINES_REPORTS_ROUTING_TITLES: IFinesReportsRoutingPaths = {
   root: 'Reports',
   children: {
     create: 'Create report',
-    reportSummary: 'Report Summary',
+    reportSummary: 'Report summary',
     summaryList: 'Summary List',
   },
 };

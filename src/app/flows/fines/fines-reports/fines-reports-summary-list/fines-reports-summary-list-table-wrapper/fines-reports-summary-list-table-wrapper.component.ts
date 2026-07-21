@@ -1,5 +1,5 @@
 import { CommonModule } from '@angular/common';
-import { ChangeDetectionStrategy, Component, Input } from '@angular/core';
+import { ChangeDetectionStrategy, Component, Input, signal } from '@angular/core';
 import { RouterLink } from '@angular/router';
 import { AbstractReportInstancesTableBaseComponent } from '@hmcts/opal-frontend-common/components/abstract/abstract-report-instances-table-base';
 import {
@@ -34,6 +34,9 @@ import { FINES_REPORTS_ROUTING_PATHS } from '../../routing/constants/fines-repor
 })
 export class FinesReportsSummaryListTableWrapperComponent extends AbstractReportInstancesTableBaseComponent<IFinesReportsSummaryListTableData> {
   public readonly reportSummaryRoutingPath = `../${FINES_REPORTS_ROUTING_PATHS.children.reportSummary}`;
+  public override abstractExistingSortState: IFinesReportsSummaryListTableWrapperTableSort | null =
+    FINES_REPORTS_SUMMARY_LIST_TABLE_WRAPPER_TABLE_SORT_DEFAULT;
+  public override itemsPerPageSignal = signal(25);
 
   @Input({ required: true }) set existingSortState(
     existingSortState: IFinesReportsSummaryListTableWrapperTableSort | null,
@@ -41,9 +44,17 @@ export class FinesReportsSummaryListTableWrapperComponent extends AbstractReport
     this.abstractExistingSortState = existingSortState;
   }
 
-  constructor() {
-    super();
-    this.abstractExistingSortState = FINES_REPORTS_SUMMARY_LIST_TABLE_WRAPPER_TABLE_SORT_DEFAULT;
-    this.itemsPerPageSignal.set(25);
+  /**
+   * Checks whether a report row supports the selected download file type.
+   *
+   * @param row - The report instance table row to check.
+   * @param supportedType - The download file type to check for.
+   * @returns True when the file type is supported, otherwise false.
+   */
+  public hasSupportedDownloadType(row: IFinesReportsSummaryListTableData, supportedType: string): boolean {
+    return row.supportedTypes
+      .split(',')
+      .map((type) => type.trim().toUpperCase())
+      .includes(supportedType.toUpperCase());
   }
 }

@@ -1,6 +1,6 @@
 import { TestBed } from '@angular/core/testing';
 import { ActivatedRouteSnapshot, convertToParamMap, ResolveFn } from '@angular/router';
-import { isObservable, lastValueFrom, of } from 'rxjs';
+import { isObservable, lastValueFrom, of, throwError } from 'rxjs';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
 import { GlobalStore } from '@hmcts/opal-frontend-common/stores/global';
 import { OPAL_USER_STATE_MOCK } from '@hmcts/opal-frontend-common/services/opal-user-service/mocks';
@@ -161,5 +161,22 @@ describe('finesReportsReportInstancesResolver', () => {
       }),
     );
     expect(result).toEqual(response);
+  });
+
+  it('should return load error route data when the report instances request fails', async () => {
+    mockOpalFines.getReportInstances.mockReturnValue(throwError(() => new Error('Report instances request failed')));
+
+    const route = {
+      paramMap: convertToParamMap({ reportTypeId: reportId }),
+      parent: null,
+    } as ActivatedRouteSnapshot;
+
+    const result = await runResolver(route);
+
+    expect(result).toEqual({
+      report_instances: [],
+      count: 0,
+      loadError: true,
+    });
   });
 });

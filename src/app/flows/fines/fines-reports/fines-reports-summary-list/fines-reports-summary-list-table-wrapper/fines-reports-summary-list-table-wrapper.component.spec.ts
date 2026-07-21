@@ -66,4 +66,25 @@ describe('FinesReportsSummaryListTableWrapperComponent', () => {
     expect(actionCell?.querySelector('a')).toBeNull();
     expect(actionCell?.textContent?.trim()).toBe('CSV');
   });
+
+  it('should not render a CSV placeholder when CSV is not supported', () => {
+    component.tableData = [
+      {
+        'Date and time': 1,
+        Title: 'Report 1',
+        'Business unit': 'London Central & South East',
+        'Created by': 'Olivia Smith',
+        Status: 'Ready',
+        instanceId: '1',
+        dateTimeDisplay: '08 Jun 2026 at 09:15',
+        isDownloadable: true,
+        supportedTypes: 'PDF',
+      },
+    ];
+    fixture.detectChanges();
+    const actionCell: HTMLTableCellElement | null = fixture.nativeElement.querySelector('#reportInstanceAction-0');
+
+    expect(actionCell?.querySelector('a')).toBeNull();
+    expect(actionCell?.textContent?.trim()).toBe('');
+  });
 });

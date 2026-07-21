@@ -25,7 +25,7 @@ describe('FinesReportsReportSummaryComponent', () => {
   it('should render a stub report summary page', () => {
     const text = fixture.nativeElement.textContent;
 
-    expect(text).toContain('Report Summary');
+    expect(text).toContain('Report summary');
     expect(text).toContain('This page is not available yet.');
     expect(fixture.nativeElement.querySelector('a')?.getAttribute('href')).toBe('/summary-list');
   });

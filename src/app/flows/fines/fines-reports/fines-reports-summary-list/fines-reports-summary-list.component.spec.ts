@@ -1,6 +1,6 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { ActivatedRoute, convertToParamMap, provideRouter } from '@angular/router';
-import { BehaviorSubject, Subject, of } from 'rxjs';
+import { BehaviorSubject, Subject, of, throwError } from 'rxjs';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
 import { FinesReportsSummaryListComponent } from './fines-reports-summary-list.component';
 import { FINES_REPORTS_SUMMARY_LIST_ROUTING_PATHS } from './routing/constants/fines-reports-summary-list-routing-paths.constant';
@@ -15,6 +15,7 @@ import { IOpalFinesReport } from '@services/fines/opal-fines-service/interfaces/
 import { FinesReportsSummaryListStore } from './stores/fines-reports-summary-list.store';
 import { IOpalUserState } from '@hmcts/opal-frontend-common/services/opal-user-service/interfaces';
 import { IOpalFinesBusinessUnitRefData } from '@services/fines/opal-fines-service/interfaces/opal-fines-business-unit-ref-data.interface';
+import type { FinesReportsReportInstancesResolverData } from '../routing/resolvers/fines-reports-report-instances/fines-reports-report-instances.resolver';
 
 type MockActivatedRoute = {
   snapshot: {
@@ -116,7 +117,7 @@ describe('FinesReportsSummaryListComponent', () => {
 
   const setup = async (
     currentReportId: string = reportId,
-    reportInstances: IOpalFinesReportInstancesResponse | undefined = mockReportInstances,
+    reportInstances: FinesReportsReportInstancesResolverData | undefined = mockReportInstances,
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     configureStore?: (store: any) => void,
     businessUnits: IOpalFinesBusinessUnitRefData = OPAL_FINES_BUSINESS_UNIT_REF_DATA_MOCK,
@@ -644,6 +645,18 @@ describe('FinesReportsSummaryListComponent', () => {
     expect(fixture.nativeElement.textContent).toContain('No reports found');
   });
 
+  it('should render the load error state when the initial report instances resolver fails', async () => {
+    const { component, fixture } = await setup(reportId, {
+      report_instances: [],
+      count: 0,
+      loadError: true,
+    });
+
+    expect(component.loadError()).toBe(true);
+    expect(fixture.nativeElement.textContent).toContain('Reports could not be loaded. Try again.');
+    expect(fixture.nativeElement.textContent).not.toContain('No reports found');
+  });
+
   it('should update the table rows when Refresh returns new report instances', async () => {
     const refreshedReportInstances: IOpalFinesReportInstancesResponse = {
       report_instances: [
@@ -670,6 +683,41 @@ describe('FinesReportsSummaryListComponent', () => {
 
     expect(fixture.nativeElement.textContent).toContain('Operational report (by enforcement) - Refreshed');
     expect(fixture.nativeElement.textContent).not.toContain('Operational report (by enforcement) - CLAMPO - Detailed');
+  });
+
+  it('should keep handling refreshes after a report instances request error', async () => {
+    const refreshedReportInstances: IOpalFinesReportInstancesResponse = {
+      report_instances: [
+        {
+          instance_id: 10,
+          report_id: reportId,
+          created_at: '2026-06-09T10:30:00Z',
+          name: 'Operational report (by enforcement) - Recovered',
+          business_unit: 'London East',
+          created_by: 'Ava Wilson',
+          status: 'READY',
+          number_of_records: 15,
+        },
+      ],
+      count: 1,
+    };
+    const { component, fixture } = await setup();
+
+    mockOpalFines.getReportInstances
+      .mockReturnValueOnce(throwError(() => new Error('Report instances request failed')))
+      .mockReturnValueOnce(of(refreshedReportInstances));
+
+    component.onRefresh();
+    fixture.detectChanges();
+
+    expect(fixture.nativeElement.textContent).toContain('Reports could not be loaded. Try again.');
+
+    component.onRefresh();
+    fixture.detectChanges();
+
+    expect(fixture.nativeElement.textContent).toContain('Operational report (by enforcement) - Recovered');
+    expect(fixture.nativeElement.textContent).not.toContain('Reports could not be loaded. Try again.');
+    expect(mockOpalFines.getReportInstances).toHaveBeenCalledTimes(2);
   });
 
   it('should ignore stale refresh responses after a newer refresh has completed', async () => {
