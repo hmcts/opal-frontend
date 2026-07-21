@@ -3,7 +3,7 @@
   [errors]="formErrorSummaryMessage"
   (errorClick)="scrollTo($event)"
 ></opal-lib-govuk-error-summary>
-<form (submit)="handleFormSubmit($event)">
+<form autocomplete="off" (submit)="handleFormSubmit($event)">
   <opal-lib-govuk-summary-list summaryListId="accountDetails">
     <div
       opal-lib-govuk-summary-list-row

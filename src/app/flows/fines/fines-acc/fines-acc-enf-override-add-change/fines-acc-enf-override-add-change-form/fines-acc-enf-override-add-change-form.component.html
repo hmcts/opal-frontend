@@ -8,7 +8,7 @@
   [errors]="formErrorSummaryMessage"
   (errorClick)="scrollTo($event)"
 ></opal-lib-govuk-error-summary>
-<form (submit)="handleFormSubmit($event)" [formGroup]="form" class="govuk-form">
+<form autocomplete="off" (submit)="handleFormSubmit($event)" [formGroup]="form" class="govuk-form">
   <opal-lib-alphagov-accessible-autocomplete
     [control]="form.get('fenf_account_enforcement_action')"
     labelText="Select an enforcement override"
