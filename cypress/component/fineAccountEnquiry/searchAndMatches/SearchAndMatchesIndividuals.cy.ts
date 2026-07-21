@@ -35,6 +35,7 @@ describe('Search Account Component - Individuals', () => {
       resultsResolvers: {
         individualAccounts: finesSaIndividualDefendantAccountsResolver,
       },
+      useSpyRouter: true,
     });
 
   it(
@@ -487,6 +488,30 @@ describe('Search Account Component - Individuals', () => {
           expect(payload).to.have.property('reference_number', null);
           expect(payload).to.have.property('active_accounts_only', true);
           expect(payload).to.have.nested.property('defendant.national_insurance_number', 'QQ123456C');
+        });
+    },
+  );
+
+  it(
+    'AC8. should strip spaces from National Insurance number before search',
+    { tags: [...buildTags('@JIRA-STORY:PO-2953'), '@JIRA-EPIC:PO-2630'] },
+    () => {
+      setupComponent((searchState) => {
+        searchState.fsa_search_account_individuals_search_criteria!.fsa_search_account_individuals_national_insurance_number =
+          'AB 12 34 56 C';
+      }).then(({ fixture }) => {
+        cy.spy(fixture.componentRef.injector.get(OpalFines), 'getDefendantAccounts').as('getDefendantAccounts');
+      });
+
+      cy.get(CommonLocators.nationalInsuranceNumberInput).should('have.value', 'AB 12 34 56 C');
+      cy.get(IndividualsLocators.firstNamesExactMatchCheckbox).uncheck().should('not.be.checked');
+      cy.get(CommonLocators.searchButton).click();
+
+      cy.get('@getDefendantAccounts').should('have.been.calledOnce');
+      cy.get('@getDefendantAccounts')
+        .its('firstCall.args.0')
+        .should((payload) => {
+          expect(payload).to.have.nested.property('defendant.national_insurance_number', 'AB123456C');
         });
     },
   );
