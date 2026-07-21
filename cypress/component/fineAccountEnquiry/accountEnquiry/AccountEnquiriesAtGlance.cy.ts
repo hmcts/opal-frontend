@@ -20,7 +20,7 @@ import { FinesAccDefendantDetailsAtAGlanceTabComponent } from 'src/app/flows/fin
 const ACCOUNT_ENQUIRY_JIRA_LABEL = '@JIRA-LABEL:account-enquiry';
 type AtAGlanceMock = typeof OPAL_FINES_ACCOUNT_DEFENDANT_AT_A_GLANCE_MOCK;
 
-const buildTags = (...tags: string[]): string[] => [...tags, ACCOUNT_ENQUIRY_JIRA_LABEL];
+const buildTags = (...tags: string[]): string[] => [...tags, ACCOUNT_ENQUIRY_JIRA_LABEL, '@R1B'];
 
 describe('Defendant Account Summary - At a Glance Tab', () => {
   const mountAtAGlanceTab = ({

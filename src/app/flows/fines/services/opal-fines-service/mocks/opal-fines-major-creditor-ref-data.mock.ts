@@ -6,7 +6,7 @@ export const OPAL_FINES_MAJOR_CREDITOR_REF_DATA_MOCK: IOpalFinesMajorCreditorRef
     {
       account_number: null,
       business_unit_id: 77,
-      creditor_account_id: null,
+      creditor_account_id: 10770000000085,
       creditor_account_type: null,
       from_suspense: null,
       hold_payout: null,
@@ -21,7 +21,7 @@ export const OPAL_FINES_MAJOR_CREDITOR_REF_DATA_MOCK: IOpalFinesMajorCreditorRef
     {
       account_number: null,
       business_unit_id: 77,
-      creditor_account_id: null,
+      creditor_account_id: 10770000000086,
       creditor_account_type: null,
       from_suspense: null,
       hold_payout: null,
@@ -36,7 +36,7 @@ export const OPAL_FINES_MAJOR_CREDITOR_REF_DATA_MOCK: IOpalFinesMajorCreditorRef
     {
       account_number: null,
       business_unit_id: 77,
-      creditor_account_id: null,
+      creditor_account_id: 10770000000087,
       creditor_account_type: null,
       from_suspense: null,
       hold_payout: null,
@@ -51,7 +51,7 @@ export const OPAL_FINES_MAJOR_CREDITOR_REF_DATA_MOCK: IOpalFinesMajorCreditorRef
     {
       account_number: null,
       business_unit_id: 77,
-      creditor_account_id: null,
+      creditor_account_id: 10770000000088,
       creditor_account_type: null,
       from_suspense: null,
       hold_payout: null,

@@ -2,6 +2,8 @@
 <opal-lib-govuk-radio
   fieldSetId="fsa_search_account_minor_creditors_minor_creditor_type"
   [errors]="formControlErrorMessages['fsa_search_account_minor_creditors_minor_creditor_type']"
+  legendText="Minor creditor type"
+  legendClasses="govuk-visually-hidden"
 >
   @for (minorCreditorType of minorCreditorTypes; track minorCreditorType.key) {
     <div

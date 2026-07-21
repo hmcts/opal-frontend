@@ -11,7 +11,7 @@ Feature: Manual account creation - Personal Details
     And I view the "Personal details" task
     Then I should see the header containing text "Personal details"
 
-  @JIRA-TEST-KEY:PO-5575
+  @R1A @JIRA-TEST-KEY:PO-5575
   Scenario: (AC.13) Personal details persist within the session [@PO-272, @PO-344, @PO-360, @PO-369, @PO-502, @PO-505]
     When I complete manual personal details:
       | title               | Mr          |
@@ -25,6 +25,7 @@ Feature: Manual account creation - Personal Details
       | make and model      | FORD FOCUS  |
       | registration number | AB12 CDE    |
     And I return to account details
+    Then I return to the top of the page
     Then the "Personal details" task status is "Provided"
     When I view the "Personal details" task
     Then the manual personal details fields are:
@@ -39,7 +40,7 @@ Feature: Manual account creation - Personal Details
       | make and model      | FORD FOCUS  |
       | registration number | AB12 CDE    |
 
-  @JIRA-TEST-KEY:PO-5576
+  @R1A @JIRA-TEST-KEY:PO-5576
   Scenario: (AC.13) Restarting manual account clears personal details [@PO-272, @PO-344, @PO-360, @PO-369, @PO-502, @PO-505]
     When I complete manual personal details:
       | title          | Mr          |
@@ -64,7 +65,7 @@ Feature: Manual account creation - Personal Details
       | make and model      |              |
       | registration number |              |
 
-  @JIRA-TEST-KEY:PO-5577
+  @R1A @JIRA-TEST-KEY:PO-5577
   Scenario: (AC.14) Confirming cancel clears unsaved personal details [@PO-272, @PO-344, @PO-360, @PO-369, @PO-502, @PO-505]
     When I complete manual personal details:
       | title               | Mr          |
@@ -93,7 +94,7 @@ Feature: Manual account creation - Personal Details
       | make and model      |              |
       | registration number |              |
 
-  @JIRA-TEST-KEY:PO-5578
+  @R1A @JIRA-TEST-KEY:PO-5578
   Scenario: (AC.15) Confirming cancel restores last saved details [@PO-272, @PO-344, @PO-360, @PO-369, @PO-502, @PO-505]
     When I complete manual personal details:
       | title          | Mr          |
@@ -115,7 +116,7 @@ Feature: Manual account creation - Personal Details
       | last name      | LNAME       |
       | address line 1 | Addr Line 1 |
 
-  @JIRA-TEST-KEY:PO-5579
+  @R1A @JIRA-TEST-KEY:PO-5579
   Scenario: (AC.15) Dismissing cancel keeps unsaved personal details on the page [@PO-272, @PO-344, @PO-360, @PO-369, @PO-502, @PO-505]
     When I complete manual personal details:
       | title          | Mr          |
@@ -132,11 +133,11 @@ Feature: Manual account creation - Personal Details
     And the manual personal details fields are:
       | first names | FNAME EDITED |
 
-  @JIRA-TEST-KEY:PO-5580
+  @R1A @JIRA-TEST-KEY:PO-5580
   Scenario: Personal Details - Axe Core
     Then I check the page for accessibility
 
-  @JIRA-TEST-KEY:PO-5581
+  @R1A @JIRA-TEST-KEY:PO-5581
   Scenario: (AC.1) Grey navigation links routes correctly [@PO-272, @PO-433]
     When I complete manual personal details:
       | title          | Mr          |
