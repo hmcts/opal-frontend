@@ -150,6 +150,30 @@ describe('FinesAccDefendantDetailsComponent', () => {
     expect(component.canAddParentOrGuardianDetails).toBe(true);
   });
 
+  it.each([
+    { statusCode: 'CS', statusDisplayName: 'Consolidated' },
+    { statusCode: 'WO', statusDisplayName: 'Written Off' },
+    { statusCode: 'TA', statusDisplayName: 'TFO to be acknowledged' },
+    { statusCode: 'TS', statusDisplayName: 'TFO Out Acknowledged' },
+    { statusCode: 'TO', statusDisplayName: 'TFO Out S/NI' },
+  ])(
+    'should not allow adding parent or guardian details for restricted account status $statusDisplayName',
+    ({ statusCode, statusDisplayName }) => {
+      component.accountData = {
+        ...structuredClone(FINES_ACC_DEFENDANT_DETAILS_HEADER_MOCK),
+        account_status_reference: {
+          account_status_code: statusCode,
+          account_status_display_name: statusDisplayName,
+        },
+        is_youth: true,
+        debtor_type: component.debtorTypes.defendant,
+        parent_guardian_party_id: null,
+      };
+
+      expect(component.canAddParentOrGuardianDetails).toBe(false);
+    },
+  );
+
   it('should not allow adding parent or guardian details when a parent guardian already exists', () => {
     component.accountData = {
       ...structuredClone(FINES_ACC_DEFENDANT_DETAILS_HEADER_MOCK),

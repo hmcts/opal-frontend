@@ -24,6 +24,7 @@ import { AsyncPipe, UpperCasePipe } from '@angular/common';
 import { MonetaryPipe } from '@hmcts/opal-frontend-common/pipes/monetary';
 // Constants
 import { FINES_PERMISSIONS } from '@constants/fines-permissions.constant';
+import { FINES_ACC_RESTRICTED_ACCOUNT_STATUS_CODES } from '../constants/fines-acc-restricted-account-status-codes.constant';
 import { FINES_ACC_DEFENDANT_ROUTING_PATHS } from '../routing/constants/fines-acc-defendant-routing-paths.constant';
 import { FINES_ACC_DEFENDANT_DETAILS_TABS } from './constants/fines-acc-defendant-details-tabs.constant';
 // Interfaces
@@ -228,11 +229,10 @@ export class FinesAccDefendantDetailsComponent
    */
   public canAmendPaymentTerms(): boolean {
     const accountStatusCode = this.accountData.account_status_reference.account_status_code;
-    const invalidCodes = ['CS', 'WO', 'TO', 'TS', 'TA'];
 
     return (
       !this.lastEnforcement?.extend_ttp_disallow &&
-      !invalidCodes.includes(accountStatusCode) &&
+      !FINES_ACC_RESTRICTED_ACCOUNT_STATUS_CODES.includes(accountStatusCode) &&
       this.hasBusinessUnitPermissionKey('amend-payment-terms') &&
       this.accountData.payment_state_summary.account_balance > 0
     );
@@ -329,13 +329,15 @@ export class FinesAccDefendantDetailsComponent
    * Determines whether the Defendant tab should show the add parent/guardian link.
    *
    * The link is only available for youth-only accounts where the defendant is the
-   * debtor and no parent or guardian party is currently attached to the account.
+   * debtor, no parent or guardian party is currently attached to the account,
+   * and the account status still supports the action.
    */
   public get canAddParentOrGuardianDetails(): boolean {
     return (
       this.accountData.is_youth &&
       this.accountData.debtor_type === this.debtorTypes.defendant &&
-      !this.accountData.parent_guardian_party_id
+      !this.accountData.parent_guardian_party_id &&
+      !FINES_ACC_RESTRICTED_ACCOUNT_STATUS_CODES.includes(this.accountData.account_status_reference.account_status_code)
     );
   }
 

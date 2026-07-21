@@ -1,0 +1,1 @@
+export const FINES_ACC_RESTRICTED_ACCOUNT_STATUS_CODES = ['CS', 'WO', 'TO', 'TS', 'TA'];
