@@ -21,7 +21,7 @@
   [errors]="formErrorSummaryMessage"
   (errorClick)="scrollTo($event)"
 ></opal-lib-govuk-error-summary>
-<form (submit)="handleAddAnOffenceSubmit($event)" [formGroup]="form">
+<form autocomplete="off" (submit)="handleAddAnOffenceSubmit($event)" [formGroup]="form">
   <fieldset class="govuk-fieldset">
     <h2 class="govuk-label-wrapper">
       <legend class="govuk-fieldset__legend govuk-fieldset__legend--m">Offence details</legend>
