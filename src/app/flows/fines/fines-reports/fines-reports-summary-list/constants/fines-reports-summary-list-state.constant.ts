@@ -10,5 +10,4 @@ export const FINES_REPORTS_SUMMARY_LIST_STATE: IFinesReportsSummaryListState = {
     ...ABSTRACT_REPORT_SUMMARY_LIST_FILTER_STATE,
   },
   appliedQuery: null,
-  currentPage: 1,
 };

@@ -81,7 +81,7 @@ describe('fines-reports-summary-list-table.utils', () => {
           generation_status: 'READY',
           number_of_records: 0,
           is_downloadable: true,
-          supported_types: ['CSV', 'PDF'],
+          supported_types: [' csv ', 'PDF'],
         },
         {
           instanceId: 2,
@@ -139,7 +139,7 @@ describe('fines-reports-summary-list-table.utils', () => {
         instanceId: '1',
         dateTimeDisplay: expect.stringContaining('08 Jun 2026 at'),
         isDownloadable: true,
-        supportedTypes: 'CSV,PDF',
+        supportsCsv: true,
       }),
     );
     expect(rows[1]).toEqual(
@@ -150,7 +150,7 @@ describe('fines-reports-summary-list-table.utils', () => {
         Status: 'Ready',
         instanceId: '2',
         dateTimeDisplay: 'not-a-date',
-        supportedTypes: 'CSV',
+        supportsCsv: true,
       }),
     );
     expect(rows[2]).toEqual(
@@ -160,7 +160,7 @@ describe('fines-reports-summary-list-table.utils', () => {
         Status: 'Failed',
         instanceId: '',
         isDownloadable: false,
-        supportedTypes: 'PDF',
+        supportsCsv: false,
       }),
     );
     expect(rows[3]).toEqual(
@@ -213,7 +213,7 @@ describe('fines-reports-summary-list-table.utils', () => {
         'Created by': '',
         Status: 'Queued',
         dateTimeDisplay: '2026-06-08T09:15:00Z',
-        supportedTypes: '',
+        supportsCsv: false,
       }),
     );
   });

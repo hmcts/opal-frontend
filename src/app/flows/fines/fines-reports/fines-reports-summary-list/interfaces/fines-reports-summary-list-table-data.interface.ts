@@ -10,5 +10,5 @@ export interface IFinesReportsSummaryListTableData extends IAbstractTableData<So
   instanceId: string;
   dateTimeDisplay: string;
   isDownloadable: boolean;
-  supportedTypes: string;
+  supportsCsv: boolean;
 }

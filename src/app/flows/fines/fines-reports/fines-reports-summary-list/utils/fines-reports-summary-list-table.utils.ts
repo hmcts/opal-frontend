@@ -222,6 +222,8 @@ export const mapReportInstancesToTableData = (
       dateService && parsedDate?.isValid
         ? dateService.toFormat(parsedDate.setLocale('en-gb'), "dd MMM yyyy 'at' HH:mm")
         : createdDate;
+    const supportedTypes =
+      instance.supported_types ?? instance.supported_file_types ?? instance.supportedFileTypes ?? [];
 
     return {
       'Date and time': parsedDate?.isValid ? parsedDate.toMillis() : 0,
@@ -237,12 +239,7 @@ export const mapReportInstancesToTableData = (
       instanceId: (instance.instance_id ?? instance.instanceId ?? '').toString(),
       dateTimeDisplay,
       isDownloadable: instance.is_downloadable ?? instance.isDownloadable ?? false,
-      supportedTypes: (
-        instance.supported_types ??
-        instance.supported_file_types ??
-        instance.supportedFileTypes ??
-        []
-      ).join(','),
+      supportsCsv: supportedTypes.some((type) => type.trim().toUpperCase() === 'CSV'),
     };
   });
 };

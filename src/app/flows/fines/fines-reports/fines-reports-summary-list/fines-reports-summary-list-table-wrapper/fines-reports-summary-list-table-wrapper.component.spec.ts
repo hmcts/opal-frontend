@@ -26,7 +26,7 @@ describe('FinesReportsSummaryListTableWrapperComponent', () => {
         instanceId: '1',
         dateTimeDisplay: '08 Jun 2026 at 09:15',
         isDownloadable: true,
-        supportedTypes: 'CSV',
+        supportsCsv: true,
       },
     ];
     fixture.detectChanges();
@@ -78,7 +78,7 @@ describe('FinesReportsSummaryListTableWrapperComponent', () => {
         instanceId: '1',
         dateTimeDisplay: '08 Jun 2026 at 09:15',
         isDownloadable: true,
-        supportedTypes: 'PDF',
+        supportsCsv: false,
       },
     ];
     fixture.detectChanges();

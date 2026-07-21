@@ -30,10 +30,7 @@ export const FinesReportsSummaryListStore = signalStore(
       patchState(store, { filters });
     },
     setAppliedQuery: (appliedQuery: IFinesReportsSummaryListQueryState) => {
-      patchState(store, { appliedQuery, currentPage: 1 });
-    },
-    setCurrentPage: (currentPage: number) => {
-      patchState(store, { currentPage });
+      patchState(store, { appliedQuery });
     },
     resetFilters: () => {
       patchState(store, getFinesReportsSummaryListState());

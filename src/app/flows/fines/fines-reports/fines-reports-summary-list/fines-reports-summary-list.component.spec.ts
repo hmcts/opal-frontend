@@ -685,6 +685,40 @@ describe('FinesReportsSummaryListComponent', () => {
     expect(fixture.nativeElement.textContent).not.toContain('Operational report (by enforcement) - CLAMPO - Detailed');
   });
 
+  it('should clear stale table rows while a refresh request is pending', async () => {
+    const pendingRefresh$ = new Subject<IOpalFinesReportInstancesResponse>();
+    const refreshedReportInstances: IOpalFinesReportInstancesResponse = {
+      report_instances: [
+        {
+          instance_id: 4,
+          report_id: reportId,
+          created_at: '2026-06-09T10:30:00Z',
+          name: 'Operational report (by enforcement) - Refreshed',
+          business_unit: 'London East',
+          created_by: 'Ava Wilson',
+          status: 'READY',
+          number_of_records: 15,
+        },
+      ],
+      count: 1,
+    };
+    const { component, fixture } = await setup();
+
+    mockOpalFines.getReportInstances.mockReturnValueOnce(pendingRefresh$.asObservable());
+    component.onRefresh();
+    fixture.detectChanges();
+
+    expect(fixture.nativeElement.textContent).toContain('Loading reports');
+    expect(fixture.nativeElement.textContent).not.toContain('No reports found');
+    expect(fixture.nativeElement.textContent).not.toContain('Operational report (by enforcement) - CLAMPO - Detailed');
+
+    pendingRefresh$.next(refreshedReportInstances);
+    fixture.detectChanges();
+
+    expect(fixture.nativeElement.textContent).not.toContain('Loading reports');
+    expect(fixture.nativeElement.textContent).toContain('Operational report (by enforcement) - Refreshed');
+  });
+
   it('should keep handling refreshes after a report instances request error', async () => {
     const refreshedReportInstances: IOpalFinesReportInstancesResponse = {
       report_instances: [

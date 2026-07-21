@@ -43,18 +43,4 @@ export class FinesReportsSummaryListTableWrapperComponent extends AbstractReport
   ) {
     this.abstractExistingSortState = existingSortState;
   }
-
-  /**
-   * Checks whether a report row supports the selected download file type.
-   *
-   * @param row - The report instance table row to check.
-   * @param supportedType - The download file type to check for.
-   * @returns True when the file type is supported, otherwise false.
-   */
-  public hasSupportedDownloadType(row: IFinesReportsSummaryListTableData, supportedType: string): boolean {
-    return row.supportedTypes
-      .split(',')
-      .map((type) => type.trim().toUpperCase())
-      .includes(supportedType.toUpperCase());
-  }
 }

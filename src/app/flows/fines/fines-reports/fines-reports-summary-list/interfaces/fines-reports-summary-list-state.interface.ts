@@ -5,5 +5,4 @@ export interface IFinesReportsSummaryListState {
   reportTypeId: string | null;
   filters: IFinesReportsSummaryListFilterState;
   appliedQuery: IFinesReportsSummaryListQueryState | null;
-  currentPage: number;
 }

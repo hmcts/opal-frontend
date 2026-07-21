@@ -110,7 +110,7 @@ export class FinesReportsSummaryListComponent
       null,
   );
 
-  @ViewChild('errorSummary', { read: ElementRef }) private errorSummary?: ElementRef<HTMLElement>;
+  @ViewChild('errorSummary', { read: ElementRef }) private readonly errorSummary?: ElementRef<HTMLElement>;
 
   private readonly reportDateFieldIds = {
     days: 'reports-summary-list-days',
@@ -127,6 +127,7 @@ export class FinesReportsSummaryListComponent
 
   public readonly tableSort = FINES_REPORTS_SUMMARY_LIST_TABLE_WRAPPER_TABLE_SORT_DEFAULT;
   public readonly createReportRoutingPath = `../${FINES_REPORTS_ROUTING_PATHS.children.create}`;
+  public readonly loading = signal(false);
   public readonly loadError = signal(this.reportInstancesResponse()?.loadError ?? false);
   public readonly filtersForm: FinesReportsSummaryListFilterForm = new FormGroup({
     businessUnit: new FormControl<string | null>(FINES_REPORTS_SUMMARY_LIST_ALL_BUSINESS_UNITS),
@@ -191,6 +192,7 @@ export class FinesReportsSummaryListComponent
       .subscribe(() => {
         this.reportTypeChanges$.next();
         this.reportInstancesResponse.set(null);
+        this.loading.set(false);
         this.loadError.set(false);
         this.initialiseFilters();
         this.fieldErrors.set({});
@@ -223,6 +225,7 @@ export class FinesReportsSummaryListComponent
           this.getReportInstancesRequest(query).pipe(
             takeUntil(this.reportTypeChanges$),
             catchError(() => {
+              this.loading.set(false);
               this.loadError.set(true);
               return EMPTY;
             }),
@@ -231,6 +234,7 @@ export class FinesReportsSummaryListComponent
         takeUntilDestroyed(this.destroyRef),
       )
       .subscribe((response) => {
+        this.loading.set(false);
         this.loadError.set(false);
         this.reportInstancesResponse.set(response);
       });
@@ -415,6 +419,8 @@ export class FinesReportsSummaryListComponent
     const query = this.getFinesReportQueryFromFilters(filters);
     this.store.setFilters(filters);
     this.store.setAppliedQuery(query);
+    this.reportInstancesResponse.set(null);
+    this.loading.set(true);
     this.loadError.set(false);
     this.refreshReportInstances$.next(query);
   }

@@ -139,7 +139,9 @@
 
   <hr class="govuk-section-break govuk-section-break--m govuk-section-break--visible" />
 
-  @if (loadError()) {
+  @if (loading()) {
+    <output class="govuk-body">Loading reports</output>
+  } @else if (loadError()) {
     <div
       class="govuk-error-summary"
       id="reports-summary-list-load-error"

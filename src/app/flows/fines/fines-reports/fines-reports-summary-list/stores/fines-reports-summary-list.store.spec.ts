@@ -68,16 +68,4 @@ describe('FinesReportsSummaryListStore', () => {
     });
     expect(store.appliedQuery()).toBeNull();
   });
-
-  it('should reset current page when an applied query is stored', () => {
-    store.setCurrentPage(3);
-
-    store.setAppliedQuery({
-      fromDate: '2026-06-01',
-      toDate: '2026-06-10',
-      businessUnit: null,
-    });
-
-    expect(store.currentPage()).toBe(1);
-  });
 });
