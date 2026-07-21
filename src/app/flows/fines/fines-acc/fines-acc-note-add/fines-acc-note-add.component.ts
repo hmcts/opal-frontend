@@ -30,7 +30,7 @@ export class FinesAccNoteAddComponent extends AbstractFormParentBaseComponent im
   public handleAddNoteSubmit(form: IFinesAccAddNoteForm): void {
     const payload = this.finesAccPayloadService.buildAddNotePayload(form);
     this.opalFinesService
-      .addNote(payload, this.finesAccStore.base_version()!.toString())
+      .addNote(payload, this.finesAccStore.base_version()!.toString(), this.finesAccStore.business_unit_id()!)
       .pipe(
         tap(() => this.routerNavigate(this.defendantAccRoutingPaths.children.details)),
         catchError(() => {
