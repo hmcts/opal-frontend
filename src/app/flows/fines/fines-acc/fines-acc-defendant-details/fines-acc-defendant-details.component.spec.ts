@@ -22,6 +22,7 @@ import { OPAL_FINES_ACCOUNT_DEFENDANT_DETAILS_PARENT_OR_GUARDIAN_TAB_REF_DATA_MO
 import { OPAL_FINES_ACCOUNT_DEFENDANT_DETAILS_FIXED_PENALTY_MOCK } from '@services/fines/opal-fines-service/mocks/opal-fines-account-defendant-details-fixed-penalty.mock';
 import { OPAL_FINES_RESULT_REF_DATA_MOCK } from '@services/fines/opal-fines-service/mocks/opal-fines-result-ref-data.mock';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
+import { FINES_ACC_RESTRICTED_ACCOUNT_STATUS_CODES } from '../constants/fines-acc-restricted-account-status-codes.constant';
 
 describe('FinesAccDefendantDetailsComponent', () => {
   let component: FinesAccDefendantDetailsComponent;
@@ -150,20 +151,14 @@ describe('FinesAccDefendantDetailsComponent', () => {
     expect(component.canAddParentOrGuardianDetails).toBe(true);
   });
 
-  it.each([
-    { statusCode: 'CS', statusDisplayName: 'Consolidated' },
-    { statusCode: 'WO', statusDisplayName: 'Written Off' },
-    { statusCode: 'TA', statusDisplayName: 'TFO to be acknowledged' },
-    { statusCode: 'TS', statusDisplayName: 'TFO Out Acknowledged' },
-    { statusCode: 'TO', statusDisplayName: 'TFO Out S/NI' },
-  ])(
-    'should not allow adding parent or guardian details for restricted account status $statusDisplayName',
-    ({ statusCode, statusDisplayName }) => {
+  it.each(FINES_ACC_RESTRICTED_ACCOUNT_STATUS_CODES)(
+    'should not allow adding parent or guardian details for restricted account status %s',
+    (statusCode) => {
       component.accountData = {
         ...structuredClone(FINES_ACC_DEFENDANT_DETAILS_HEADER_MOCK),
         account_status_reference: {
+          ...structuredClone(FINES_ACC_DEFENDANT_DETAILS_HEADER_MOCK.account_status_reference),
           account_status_code: statusCode,
-          account_status_display_name: statusDisplayName,
         },
         is_youth: true,
         debtor_type: component.debtorTypes.defendant,
