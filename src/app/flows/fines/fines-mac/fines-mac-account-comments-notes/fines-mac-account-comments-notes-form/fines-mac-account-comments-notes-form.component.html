@@ -3,7 +3,7 @@
   [errors]="formErrorSummaryMessage"
   (errorClick)="scrollTo($event)"
 ></opal-lib-govuk-error-summary>
-<form (submit)="handleFormSubmit($event)">
+<form autocomplete="off" (submit)="handleFormSubmit($event)">
   <opal-lib-govuk-text-area
     labelText="Add comment"
     labelClasses="govuk-label--s"

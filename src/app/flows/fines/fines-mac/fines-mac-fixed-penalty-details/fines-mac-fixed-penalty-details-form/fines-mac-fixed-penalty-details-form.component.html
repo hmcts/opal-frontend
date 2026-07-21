@@ -6,7 +6,7 @@
   [errors]="formErrorSummaryMessage"
   (errorClick)="scrollTo($event)"
 ></opal-lib-govuk-error-summary>
-<form (submit)="handleFormSubmit($event)" [formGroup]="form">
+<form autocomplete="off" (submit)="handleFormSubmit($event)" [formGroup]="form">
   <fieldset class="govuk-fieldset">
     <legend class="govuk-fieldset__legend govuk-fieldset__legend--m">
       <h2 class="govuk-heading-m">Issuing Authority and Court Details</h2>
