@@ -33,6 +33,8 @@ describe('Search Account Component', { tags: [ACCOUNT_ENQUIRY_JIRA_LABEL, '@R1B'
       cy.get(headingSelector).should('have.text', 'Individuals');
 
       cy.wrap(tabs).each((tab: { selector: string; hash: string; heading: string }) => {
+        cy.get(tab.selector).should('exist');
+
         cy.window().then((win) => {
           const element = win.document.querySelector(tab.selector) as HTMLElement;
 

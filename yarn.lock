@@ -4200,15 +4200,15 @@ __metadata:
   linkType: hard
 
 "@hmcts/properties-volume@npm:^1.1.0":
-  version: 1.4.0
-  resolution: "@hmcts/properties-volume@npm:1.4.0"
+  version: 1.4.1
+  resolution: "@hmcts/properties-volume@npm:1.4.1"
   dependencies:
     "@azure/identity": "npm:^4.13.0"
     "@azure/keyvault-secrets": "npm:^4.10.0"
     "@hmcts/nodejs-logging": "npm:^4.0.4"
     js-yaml: "npm:^4.1.1"
     lodash: "npm:^4.18.0"
-  checksum: 10/2d5ecf1286a96b7b35a40e5c71e8fc33b1c0fa59475562c0fa55547fcc3e7901bf6ebbb03eb17df16254447ef68b5f97c0b8d6dcf9b83230f265b98ca3085a76
+  checksum: 10/e5c532a5a488e5dabf31858d7cc73c5ee9b5e362f880a44f9b32b7b2bfc4bc5610a839ae38c301ad3d83608beb0e5cff47bb49c5c85dde46f8cf880ec9303269
   languageName: node
   linkType: hard
 
@@ -11908,8 +11908,8 @@ __metadata:
   linkType: hard
 
 "eslint-plugin-jsdoc@npm:^63.0.0":
-  version: 63.0.13
-  resolution: "eslint-plugin-jsdoc@npm:63.0.13"
+  version: 63.2.0
+  resolution: "eslint-plugin-jsdoc@npm:63.2.0"
   dependencies:
     "@es-joy/jsdoccomment": "npm:~0.88.0"
     "@es-joy/resolve.exports": "npm:1.2.0"
@@ -11927,7 +11927,7 @@ __metadata:
     to-valid-identifier: "npm:^1.0.0"
   peerDependencies:
     eslint: ^7.0.0 || ^8.0.0 || ^9.0.0 || ^10.0.0
-  checksum: 10/29f9add0f84ae6fdd2047c83ef53562431b93e3ae37967a287689200f9d8907e7a21142371625ad930b93d4c15593b29836aefa2b48c90a0d5bf924380ef1b0b
+  checksum: 10/a3c0a353c0d2b12110e35d01f3e07bfb8a6b8d37504004f3ff77bdb89d293983a11f49bfe7c581abbf08d8d5297cd8344f837b6d04e15e318f683dcc28e0dffe
   languageName: node
   linkType: hard
 
@@ -13124,9 +13124,9 @@ __metadata:
   linkType: hard
 
 "govuk-frontend@npm:^6.0.0":
-  version: 6.3.0
-  resolution: "govuk-frontend@npm:6.3.0"
-  checksum: 10/5fe1c6b0e7f83161f740dca68de304477b01470f61c813fe5513b773f777dc301fee39a12311921f38d09b88ad4e796faf2b8ecf5184f1b03e361e08cd5b69e4
+  version: 6.4.0
+  resolution: "govuk-frontend@npm:6.4.0"
+  checksum: 10/e98a24d8e68626154775b5f84478ad12d144c1c4822d539faaf608bb3b60862d4786f6ac5f195893439b38bdb23c8177826768beb9cb793d8f8edb43e74a4e6f
   languageName: node
   linkType: hard
 
@@ -13251,9 +13251,9 @@ __metadata:
   linkType: hard
 
 "helmet@npm:^8.0.0":
-  version: 8.2.0
-  resolution: "helmet@npm:8.2.0"
-  checksum: 10/bc34f2e04369625ab7c441273a1f44ee80548ee6da5fcec8b073f351daa930b02809f9fb186c7f3f80a12a3e0944f05c24eebaa642e1b5e805325ce13042d164
+  version: 8.3.0
+  resolution: "helmet@npm:8.3.0"
+  checksum: 10/077db98df8f8ea749aeab0f56eabe1f37d0ca2ae475c095bc30adf850fe714ea67469dc94b6a6e1b786cde25a40452784e20b728e59c63baa2b18ba12518a6fe
   languageName: node
   linkType: hard
 
