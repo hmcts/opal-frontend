@@ -18,7 +18,7 @@
   </opal-lib-moj-alert>
 }
 @if (form) {
-  <form (submit)="handleFormSubmit($event)" [formGroup]="form">
+  <form autocomplete="off" (submit)="handleFormSubmit($event)" [formGroup]="form">
     <!-- Party details -->
     <app-fines-acc-party-add-amend-convert-party-details
       [form]="form"
@@ -102,7 +102,7 @@
                   removeAlias(aliasControls.length - 1, 'facc_party_add_amend_convert_individual_aliases', $event)
                 "
               >
-                Remove
+                Remove <span class="govuk-visually-hidden">alias {{ aliasControls.length }}</span>
               </a>
             </div>
           }

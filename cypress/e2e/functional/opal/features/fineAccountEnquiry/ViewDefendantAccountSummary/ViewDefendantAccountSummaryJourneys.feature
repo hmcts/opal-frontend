@@ -100,4 +100,4 @@ Feature: View Defendant Account Summary - End-to-end journeys
     When I search for the last created account by account number
     Then I see the Search results page
     When I open the latest matching result from the search results
-    Then I should see the account header contains "Mrs Mina ACCOUNTSEARCH{uniqUpper}"
+    Then I should see the account header contains "Minor Creditor Seed AccountSearch{uniqUpper}"
