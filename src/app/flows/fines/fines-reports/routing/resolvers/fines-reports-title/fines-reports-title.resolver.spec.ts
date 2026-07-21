@@ -85,9 +85,7 @@ describe('finesReportsTitleResolver', () => {
     const result = executeResolver(route, {} as never);
 
     expect(result).toBe(FINES_REPORTS_ROUTING_TITLES.children.create);
-    expect(mockTitleService.setTitle).toHaveBeenCalledWith(
-      `OPAL - ${FINES_REPORTS_ROUTING_TITLES.children.create}`,
-    );
+    expect(mockTitleService.setTitle).toHaveBeenCalledWith(`OPAL - ${FINES_REPORTS_ROUTING_TITLES.children.create}`);
   });
 
   it('should set the report summary title for the report summary child route', () => {
