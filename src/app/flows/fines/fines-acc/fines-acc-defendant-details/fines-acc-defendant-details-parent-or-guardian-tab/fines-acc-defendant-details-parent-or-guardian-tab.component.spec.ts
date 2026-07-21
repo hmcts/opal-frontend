@@ -7,17 +7,11 @@ import { FINES_ACC_DEFENDANT_ROUTING_PATHS } from '../../routing/constants/fines
 import { FINES_ACC_REMOVE_NON_PAYING_PG_ROUTING_PATHS } from '../../fines-acc-remove-non-paying-pg/constants/fines-acc-remove-non-paying-pg-routing-paths.constant';
 import { provideRouter } from '@angular/router';
 import { beforeEach, describe, expect, it } from 'vitest';
+import { FINES_ACC_RESTRICTED_ACCOUNT_STATUS_CODES } from '../../constants/fines-acc-restricted-account-status-codes.constant';
 
 describe('FinesAccDefendantDetailsParentOrGuardianTabComponent', () => {
   let component: FinesAccDefendantDetailsParentOrGuardianTabComponent;
   let fixture: ComponentFixture<FinesAccDefendantDetailsParentOrGuardianTabComponent>;
-  const restrictedAccountStatuses = [
-    { statusCode: 'CS', statusDisplayName: 'Consolidated' },
-    { statusCode: 'WO', statusDisplayName: 'Written Off' },
-    { statusCode: 'TA', statusDisplayName: 'TFO to be acknowledged' },
-    { statusCode: 'TS', statusDisplayName: 'TFO Out Acknowledged' },
-    { statusCode: 'TO', statusDisplayName: 'TFO Out S/NI' },
-  ];
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
@@ -57,9 +51,9 @@ describe('FinesAccDefendantDetailsParentOrGuardianTabComponent', () => {
     expect(component.changeParentOrGuardianAction).toBe(true);
   });
 
-  it.each(restrictedAccountStatuses)(
-    'should not make change parent or guardian action available for restricted account status $statusDisplayName',
-    ({ statusCode }) => {
+  it.each(FINES_ACC_RESTRICTED_ACCOUNT_STATUS_CODES)(
+    'should not make change parent or guardian action available for restricted account status %s',
+    (statusCode) => {
       fixture.componentRef.setInput('hasAccountMaintenencePermission', true);
       fixture.componentRef.setInput('accountStatusCode', statusCode);
       fixture.detectChanges();
@@ -101,9 +95,9 @@ describe('FinesAccDefendantDetailsParentOrGuardianTabComponent', () => {
     expect(component.removeParentOrGuardianAction).toBe(false);
   });
 
-  it.each(restrictedAccountStatuses)(
-    'should not make remove parent or guardian action available for restricted account status $statusDisplayName',
-    ({ statusCode }) => {
+  it.each(FINES_ACC_RESTRICTED_ACCOUNT_STATUS_CODES)(
+    'should not make remove parent or guardian action available for restricted account status %s',
+    (statusCode) => {
       fixture.componentRef.setInput('hasAccountMaintenencePermission', true);
       fixture.componentRef.setInput('accountStatusCode', statusCode);
       fixture.detectChanges();
