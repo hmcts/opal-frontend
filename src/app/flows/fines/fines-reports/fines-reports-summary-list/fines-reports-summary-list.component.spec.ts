@@ -280,7 +280,8 @@ describe('FinesReportsSummaryListComponent', () => {
     expect(text).toContain('London Central & South East');
     expect(text).toContain('opal-test');
     expect(text).toContain('Ready');
-    expect(fixture.nativeElement.querySelector('#reportInstanceAction-0')?.textContent?.trim()).toBe('');
+    expect(fixture.nativeElement.querySelector('#reportInstanceAction-0')?.querySelector('a')).toBeNull();
+    expect(fixture.nativeElement.querySelector('#reportInstanceAction-0')?.textContent?.trim()).toBe('CSV');
   });
 
   it('should render no reports found when the report list is empty', async () => {

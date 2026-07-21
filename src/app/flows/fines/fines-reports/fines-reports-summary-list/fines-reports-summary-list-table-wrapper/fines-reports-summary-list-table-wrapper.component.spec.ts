@@ -60,10 +60,10 @@ describe('FinesReportsSummaryListTableWrapperComponent', () => {
     expect(dateLink?.textContent?.trim()).toBe('08 Jun 2026 at 09:15');
   });
 
-  it('should not expose downloadable report actions until links are implemented', () => {
+  it('should render downloadable report actions as non-interactive placeholder text until links are implemented', () => {
     const actionCell: HTMLTableCellElement | null = fixture.nativeElement.querySelector('#reportInstanceAction-0');
 
     expect(actionCell?.querySelector('a')).toBeNull();
-    expect(actionCell?.textContent?.trim()).toBe('');
+    expect(actionCell?.textContent?.trim()).toBe('CSV');
   });
 });
