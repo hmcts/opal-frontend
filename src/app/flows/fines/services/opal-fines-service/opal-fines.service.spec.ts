@@ -211,12 +211,14 @@ describe('OpalFines', () => {
 
   it('should not retry mutation calls after transient timeout failures', () => {
     const error = vi.fn();
+    const businessUnitId = '61';
 
-    service.addNote(OPAL_FINES_ADD_NOTE_PAYLOAD_MOCK, '1').subscribe({ error });
+    service.addNote(OPAL_FINES_ADD_NOTE_PAYLOAD_MOCK, '1', businessUnitId).subscribe({ error });
 
     const request = httpMock.expectOne(OPAL_FINES_PATHS.notes);
     expect(request.request.method).toBe('POST');
     expect(request.request.headers.get('If-Match')).toBe('1');
+    expect(request.request.headers.get('Business-Unit-Id')).toBe(businessUnitId);
     request.flush({ message: 'timed out' }, { status: 504, statusText: 'Gateway Timeout' });
 
     httpMock.expectNone(OPAL_FINES_PATHS.notes);
