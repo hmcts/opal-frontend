@@ -24,7 +24,7 @@
     </ng-container>
   </opal-lib-custom-page-header>
 
-  <form [formGroup]="filtersForm" (ngSubmit)="onRefresh()" novalidate>
+  <form [formGroup]="filtersForm" (ngSubmit)="onRefresh()" autocomplete="off" novalidate>
     <div class="govuk-grid-row">
       <div class="govuk-grid-column-one-third">
         <opal-lib-alphagov-accessible-autocomplete

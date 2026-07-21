@@ -1,5 +1,6 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
-import { beforeEach, describe, expect, it, vi } from 'vitest';
+import { provideRouter } from '@angular/router';
+import { beforeEach, describe, expect, it } from 'vitest';
 import { FinesReportsSummaryListTableWrapperComponent } from './fines-reports-summary-list-table-wrapper.component';
 import { FINES_REPORTS_SUMMARY_LIST_TABLE_WRAPPER_TABLE_SORT_DEFAULT } from './constants/fines-reports-summary-list-table-wrapper-table-sort-default.constant';
 
@@ -10,6 +11,7 @@ describe('FinesReportsSummaryListTableWrapperComponent', () => {
   beforeEach(async () => {
     await TestBed.configureTestingModule({
       imports: [FinesReportsSummaryListTableWrapperComponent],
+      providers: [provideRouter([])],
     }).compileComponents();
 
     fixture = TestBed.createComponent(FinesReportsSummaryListTableWrapperComponent);
@@ -51,12 +53,17 @@ describe('FinesReportsSummaryListTableWrapperComponent', () => {
     );
   });
 
-  it('should prevent placeholder links from navigating', () => {
-    const event = new Event('click');
-    const preventDefaultSpy = vi.spyOn(event, 'preventDefault');
+  it('should link report instance dates to the report summary stub route', () => {
+    const dateLink: HTMLAnchorElement | null = fixture.nativeElement.querySelector('#reportInstanceDateTime-0 a');
 
-    component.onPlaceholderLinkClick(event);
+    expect(dateLink?.getAttribute('href')).toBe('/summary/1');
+    expect(dateLink?.textContent?.trim()).toBe('08 Jun 2026 at 09:15');
+  });
 
-    expect(preventDefaultSpy).toHaveBeenCalled();
+  it('should not expose downloadable report actions until links are implemented', () => {
+    const actionCell: HTMLTableCellElement | null = fixture.nativeElement.querySelector('#reportInstanceAction-0');
+
+    expect(actionCell?.querySelector('a')).toBeNull();
+    expect(actionCell?.textContent?.trim()).toBe('');
   });
 });

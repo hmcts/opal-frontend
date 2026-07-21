@@ -33,6 +33,16 @@ export const routing: Routes = [
         },
       },
       {
+        path: `${FINES_REPORTS_ROUTING_PATHS.children.reportSummary}/:reportInstanceId`,
+        loadComponent: () =>
+          import('../fines-reports-report-summary/fines-reports-report-summary.component').then(
+            (c) => c.FinesReportsReportSummaryComponent,
+          ),
+        resolve: {
+          title: finesReportsTitleResolver,
+        },
+      },
+      {
         path: FINES_REPORTS_ROUTING_PATHS.children.summaryList,
         loadComponent: () =>
           import('../fines-reports-summary-list/fines-reports-summary-list.component').then(

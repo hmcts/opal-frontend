@@ -4,6 +4,7 @@ import {
   Component,
   DestroyRef,
   ElementRef,
+  OnInit,
   ViewChild,
   computed,
   inject,
@@ -12,7 +13,7 @@ import {
 import { takeUntilDestroyed, toSignal } from '@angular/core/rxjs-interop';
 import { FormControl, FormGroup, ReactiveFormsModule } from '@angular/forms';
 import { ActivatedRoute, RouterLink } from '@angular/router';
-import { distinctUntilChanged, map } from 'rxjs';
+import { Observable, Subject, distinctUntilChanged, map, switchMap, takeUntil } from 'rxjs';
 import { GovukErrorSummaryComponent } from '@hmcts/opal-frontend-common/components/govuk/govuk-error-summary';
 import {
   GovukRadioComponent,
@@ -76,13 +77,18 @@ type FinesReportsSummaryListFilterForm = FormGroup<{
   templateUrl: './fines-reports-summary-list.component.html',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class FinesReportsSummaryListComponent extends AbstractReportSummaryListBaseComponent<FinesReportsSummaryListFilterForm> {
+export class FinesReportsSummaryListComponent
+  extends AbstractReportSummaryListBaseComponent<FinesReportsSummaryListFilterForm>
+  implements OnInit
+{
   private readonly activatedRoute = inject(ActivatedRoute);
   private readonly opalFinesService = inject(OpalFines);
   private readonly globalStore = inject(GlobalStore);
   private readonly store = inject(FinesReportsSummaryListStore);
   private readonly document = inject(DOCUMENT);
   private readonly destroyRef = inject(DestroyRef);
+  private readonly refreshReportInstances$ = new Subject<IFinesReportsSummaryListQueryState>();
+  private readonly reportTypeChanges$ = new Subject<void>();
   private readonly routeWithReportId = this.activatedRoute.parent ?? this.activatedRoute;
   private readonly reportId = toSignal(
     this.routeWithReportId.paramMap.pipe(
@@ -169,13 +175,6 @@ export class FinesReportsSummaryListComponent extends AbstractReportSummaryListB
     return this.reportMetadata()?.can_manually_create ?? reportConfiguration?.canCreate ?? false;
   }
 
-  constructor() {
-    super();
-    this.subscribeToReportIdChanges();
-    this.subscribeToReportInstancesData();
-    this.subscribeToDateFilterChanges();
-  }
-
   /**
    * Resets filter state when the selected report type route changes.
    */
@@ -187,6 +186,8 @@ export class FinesReportsSummaryListComponent extends AbstractReportSummaryListB
         takeUntilDestroyed(this.destroyRef),
       )
       .subscribe(() => {
+        this.reportTypeChanges$.next();
+        this.reportInstancesResponse.set(null);
         this.initialiseFilters();
         this.fieldErrors.set({});
       });
@@ -203,6 +204,21 @@ export class FinesReportsSummaryListComponent extends AbstractReportSummaryListB
       )
       .subscribe((reportInstances) => {
         this.reportInstancesResponse.set(reportInstances);
+      });
+  }
+
+  /**
+   * Subscribes to refresh requests, cancelling stale report instance requests when a newer refresh or report type
+   * change occurs.
+   */
+  private subscribeToReportInstanceRefreshes(): void {
+    this.refreshReportInstances$
+      .pipe(
+        switchMap((query) => this.getReportInstancesRequest(query).pipe(takeUntil(this.reportTypeChanges$))),
+        takeUntilDestroyed(this.destroyRef),
+      )
+      .subscribe((response) => {
+        this.reportInstancesResponse.set(response);
       });
   }
 
@@ -278,9 +294,14 @@ export class FinesReportsSummaryListComponent extends AbstractReportSummaryListB
   }
 
   /**
-   * Requests report instances for the current report type and filter query.
+   * Builds the report instances request for the current report type and filter query.
+   *
+   * @param query - The selected Fines report query state.
+   * @returns An observable of report instances for the active report type.
    */
-  private loadReportInstances(query: IFinesReportsSummaryListQueryState): void {
+  private getReportInstancesRequest(
+    query: IFinesReportsSummaryListQueryState,
+  ): Observable<IOpalFinesReportInstancesResponse> {
     const reportConfiguration = this.getReportConfiguration();
     const userState = this.globalStore.userState();
     const params = {
@@ -299,9 +320,7 @@ export class FinesReportsSummaryListComponent extends AbstractReportSummaryListB
           report_id: reportConfiguration?.reportTypeId ?? this.reportId(),
         });
 
-    request$.pipe(takeUntilDestroyed(this.destroyRef)).subscribe((response) => {
-      this.reportInstancesResponse.set(response);
-    });
+    return request$;
   }
 
   /**
@@ -343,6 +362,16 @@ export class FinesReportsSummaryListComponent extends AbstractReportSummaryListB
   }
 
   /**
+   * Sets up report route, resolver, filter, and refresh request subscriptions.
+   */
+  public ngOnInit(): void {
+    this.subscribeToReportInstanceRefreshes();
+    this.subscribeToReportIdChanges();
+    this.subscribeToReportInstancesData();
+    this.subscribeToDateFilterChanges();
+  }
+
+  /**
    * Stores the normalized date picker value in the form control.
    */
   public onDateChange(fieldName: 'dateFrom' | 'dateTo', value: string): void {
@@ -372,6 +401,6 @@ export class FinesReportsSummaryListComponent extends AbstractReportSummaryListB
     const query = this.getFinesReportQueryFromFilters(filters);
     this.store.setFilters(filters);
     this.store.setAppliedQuery(query);
-    this.loadReportInstances(query);
+    this.refreshReportInstances$.next(query);
   }
 }

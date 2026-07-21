@@ -32,6 +32,23 @@ describe('finesReports routes', () => {
     expect(createRoute?.loadComponent).toEqual(expect.any(Function));
   });
 
+  it('should expose a report summary stub route', () => {
+    const reportRoute = routing.find((route) => route.path === ':reportTypeId');
+    const reportSummaryRoute = reportRoute?.children?.find(
+      (route) => route.path === `${FINES_REPORTS_ROUTING_PATHS.children.reportSummary}/:reportInstanceId`,
+    );
+
+    expect(reportSummaryRoute).toEqual(
+      expect.objectContaining({
+        path: `${FINES_REPORTS_ROUTING_PATHS.children.reportSummary}/:reportInstanceId`,
+        resolve: expect.objectContaining({
+          title: expect.any(Function),
+        }),
+      }),
+    );
+    expect(reportSummaryRoute?.loadComponent).toEqual(expect.any(Function));
+  });
+
   it('should resolve summary list business units using report permissions', () => {
     const reportRoute = routing.find((route) => route.path === ':reportTypeId');
     const summaryListRoute = reportRoute?.children?.find(

@@ -1,6 +1,6 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { ActivatedRoute, convertToParamMap, provideRouter } from '@angular/router';
-import { BehaviorSubject, of } from 'rxjs';
+import { BehaviorSubject, Subject, of } from 'rxjs';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
 import { FinesReportsSummaryListComponent } from './fines-reports-summary-list.component';
 import { FINES_REPORTS_SUMMARY_LIST_ROUTING_PATHS } from './routing/constants/fines-reports-summary-list-routing-paths.constant';
@@ -280,8 +280,7 @@ describe('FinesReportsSummaryListComponent', () => {
     expect(text).toContain('London Central & South East');
     expect(text).toContain('opal-test');
     expect(text).toContain('Ready');
-    expect(text).toContain('CSV');
-    expect(text).toContain('PDF');
+    expect(fixture.nativeElement.querySelector('#reportInstanceAction-0')?.textContent?.trim()).toBe('');
   });
 
   it('should render no reports found when the report list is empty', async () => {
@@ -320,6 +319,13 @@ describe('FinesReportsSummaryListComponent', () => {
 
     expect(refreshButton?.textContent?.trim()).toBe('Refresh');
     expect(refreshButton?.getAttribute('aria-label')).toBe('Apply filters and refresh');
+  });
+
+  it('should disable browser autocomplete on the filters form', async () => {
+    const { fixture } = await setup();
+    const form: HTMLFormElement | null = fixture.nativeElement.querySelector('form');
+
+    expect(form?.getAttribute('autocomplete')).toBe('off');
   });
 
   it('should call report instances API with selected filters when Refresh is selected', async () => {
@@ -663,6 +669,112 @@ describe('FinesReportsSummaryListComponent', () => {
 
     expect(fixture.nativeElement.textContent).toContain('Operational report (by enforcement) - Refreshed');
     expect(fixture.nativeElement.textContent).not.toContain('Operational report (by enforcement) - CLAMPO - Detailed');
+  });
+
+  it('should ignore stale refresh responses after a newer refresh has completed', async () => {
+    const olderRefresh$ = new Subject<IOpalFinesReportInstancesResponse>();
+    const newerRefresh$ = new Subject<IOpalFinesReportInstancesResponse>();
+    const olderRefreshReportInstances: IOpalFinesReportInstancesResponse = {
+      report_instances: [
+        {
+          instance_id: 6,
+          report_id: reportId,
+          created_at: '2026-06-09T10:30:00Z',
+          name: 'Operational report (by enforcement) - Older refresh',
+          business_unit: 'London East',
+          created_by: 'Ava Wilson',
+          status: 'READY',
+          number_of_records: 15,
+        },
+      ],
+      count: 1,
+    };
+    const newerRefreshReportInstances: IOpalFinesReportInstancesResponse = {
+      report_instances: [
+        {
+          instance_id: 7,
+          report_id: reportId,
+          created_at: '2026-06-10T10:30:00Z',
+          name: 'Operational report (by enforcement) - Newer refresh',
+          business_unit: 'London East',
+          created_by: 'Ava Wilson',
+          status: 'READY',
+          number_of_records: 16,
+        },
+      ],
+      count: 1,
+    };
+    const { component, fixture } = await setup();
+
+    mockOpalFines.getReportInstances
+      .mockReturnValueOnce(olderRefresh$.asObservable())
+      .mockReturnValueOnce(newerRefresh$.asObservable());
+
+    component.onRefresh();
+    component.onRefresh();
+
+    newerRefresh$.next(newerRefreshReportInstances);
+    fixture.detectChanges();
+
+    expect(fixture.nativeElement.textContent).toContain('Operational report (by enforcement) - Newer refresh');
+
+    olderRefresh$.next(olderRefreshReportInstances);
+    fixture.detectChanges();
+
+    expect(fixture.nativeElement.textContent).toContain('Operational report (by enforcement) - Newer refresh');
+    expect(fixture.nativeElement.textContent).not.toContain('Operational report (by enforcement) - Older refresh');
+  });
+
+  it('should ignore stale refresh responses after the report type changes', async () => {
+    const staleRefresh$ = new Subject<IOpalFinesReportInstancesResponse>();
+    const staleRefreshReportInstances: IOpalFinesReportInstancesResponse = {
+      report_instances: [
+        {
+          instance_id: 8,
+          report_id: reportId,
+          created_at: '2026-06-09T10:30:00Z',
+          name: 'Operational report (by enforcement) - Stale refresh',
+          business_unit: 'London East',
+          created_by: 'Ava Wilson',
+          status: 'READY',
+          number_of_records: 15,
+        },
+      ],
+      count: 1,
+    };
+    const paymentsReportInstances: IOpalFinesReportInstancesResponse = {
+      report_instances: [
+        {
+          instance_id: 9,
+          report_id: paymentsReportId,
+          created_at: '2026-06-10T10:30:00Z',
+          name: 'Operational report (by payments) - Current route',
+          business_unit: 'London East',
+          created_by: 'Ava Wilson',
+          status: 'READY',
+          number_of_records: 16,
+        },
+      ],
+      count: 1,
+    };
+    const { component, fixture, activatedRoute } = await setup();
+
+    mockOpalFines.getReportInstances.mockReturnValueOnce(staleRefresh$.asObservable());
+    component.onRefresh();
+
+    activatedRoute.parent?.paramMap.next(convertToParamMap({ reportTypeId: paymentsReportId }));
+    activatedRoute.data.next({
+      businessUnits: OPAL_FINES_BUSINESS_UNIT_REF_DATA_MOCK,
+      reportMetadata: mockPaymentsReportMetadata,
+      reportInstances: paymentsReportInstances,
+    });
+    fixture.detectChanges();
+
+    staleRefresh$.next(staleRefreshReportInstances);
+    fixture.detectChanges();
+
+    expect(fixture.nativeElement.textContent).toContain('Operational report (by payments) - Current route');
+    expect(fixture.nativeElement.textContent).not.toContain('Operational report (by enforcement) - Stale refresh');
   });
 
   it('should show custom days validation when Custom days is selected without a value', async () => {
