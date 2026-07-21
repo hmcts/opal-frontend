@@ -1425,9 +1425,10 @@ describe('OpalFines', () => {
   it('should send a POST request to add note API with correct payload and return mock response', () => {
     const payload: IOpalFinesAddNotePayload = OPAL_FINES_ADD_NOTE_PAYLOAD_MOCK;
     const version = '1';
+    const businessUnitId = '78';
     const expectedUrl = OPAL_FINES_PATHS.notes;
 
-    service.addNote(payload, version).subscribe((response) => {
+    service.addNote(payload, version, businessUnitId).subscribe((response) => {
       expect(response.note_id).toBeGreaterThan(0);
       expect(response.note_id).toBeLessThanOrEqual(100000);
     });
@@ -1436,31 +1437,36 @@ describe('OpalFines', () => {
     expect(req.request.method).toBe('POST');
     expect(req.request.body).toEqual(payload);
     expect(req.request.headers.get('If-Match')).toBe(version);
+    expect(req.request.headers.get('Business-Unit-Id')).toBe(businessUnitId);
     req.flush(OPAL_FINES_ADD_NOTE_RESPONSE_MOCK);
   });
 
   it('should return a response with server-generated fields when using real API', () => {
     const payload: IOpalFinesAddNotePayload = OPAL_FINES_ADD_NOTE_PAYLOAD_MOCK;
     const version = '1';
+    const businessUnitId = '78';
     const mockResponse = OPAL_FINES_ADD_NOTE_RESPONSE_MOCK;
 
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     const httpPostSpy = vi.spyOn<any, any>(service['http'], 'post').mockReturnValue(of(mockResponse));
 
-    service.addNote(payload, version).subscribe((response) => {
+    service.addNote(payload, version, businessUnitId).subscribe((response) => {
       expect(response).toEqual(mockResponse);
     });
 
-    expect(httpPostSpy).toHaveBeenCalledWith(OPAL_FINES_PATHS.notes, payload, { headers: { 'If-Match': version } });
+    expect(httpPostSpy).toHaveBeenCalledWith(OPAL_FINES_PATHS.notes, payload, {
+      headers: { 'If-Match': version, 'Business-Unit-Id': businessUnitId },
+    });
   });
 
   it('should generate random note_id and current timestamp in mock response', () => {
     const payload: IOpalFinesAddNotePayload = OPAL_FINES_ADD_NOTE_PAYLOAD_MOCK;
     const version = '1';
+    const businessUnitId = '78';
 
     const responses: number[] = [];
     for (let i = 0; i < 5; i++) {
-      service.addNote(payload, version).subscribe((response) => {
+      service.addNote(payload, version, businessUnitId).subscribe((response) => {
         responses.push(response.note_id);
         expect(response.note_id).toBeGreaterThan(0);
         expect(response.note_id).toBeLessThanOrEqual(100000);
@@ -1469,6 +1475,7 @@ describe('OpalFines', () => {
       const req = httpMock.expectOne(OPAL_FINES_PATHS.notes);
       expect(req.request.method).toBe('POST');
       expect(req.request.headers.get('If-Match')).toBe(version);
+      expect(req.request.headers.get('Business-Unit-Id')).toBe(businessUnitId);
       req.flush(OPAL_FINES_ADD_NOTE_RESPONSE_MOCK);
     }
 
@@ -1486,8 +1493,9 @@ describe('OpalFines', () => {
       },
     };
     const version = '42';
+    const businessUnitId = '78';
 
-    service.addNote(payload, version).subscribe((response) => {
+    service.addNote(payload, version, businessUnitId).subscribe((response) => {
       expect(response.note_id).toBeDefined();
     });
 
@@ -1495,6 +1503,7 @@ describe('OpalFines', () => {
     expect(req.request.method).toBe('POST');
     expect(req.request.body).toEqual(payload);
     expect(req.request.headers.get('If-Match')).toBe(version);
+    expect(req.request.headers.get('Business-Unit-Id')).toBe(businessUnitId);
     req.flush(OPAL_FINES_ADD_NOTE_RESPONSE_MOCK);
   });
 
