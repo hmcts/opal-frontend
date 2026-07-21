@@ -8,10 +8,12 @@
 ></app-fines-acc-banner-messages>
 
 <div class="govuk-grid-column-full">
-  <span class="govuk-caption-l">{{ accountStore.account_number() ?? '' }}</span>
   <opal-lib-custom-page-header>
     <ng-container pageHeaderHeading>
-      <h1 class="govuk-heading-l">{{ accountStore.party_name() ?? '' }}</h1>
+      <opal-lib-govuk-heading-with-caption
+        [captionText]="accountStore.account_number() ?? ''"
+        [headingText]="accountStore.party_name() ?? ''"
+      ></opal-lib-govuk-heading-with-caption>
     </ng-container>
     <ng-container pageHeaderButtons>
       @if (showAddAccountNoteButton) {

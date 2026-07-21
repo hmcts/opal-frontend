@@ -4,11 +4,18 @@ import { FinesAccBannerMessagesComponent } from '../fines-acc-banner-messages/fi
 import { CustomPageHeaderComponent } from '@hmcts/opal-frontend-common/components/custom/custom-page-header';
 import { GovukButtonDirective } from '@hmcts/opal-frontend-common/directives/govuk-button';
 import { MojButtonMenuComponent } from '@hmcts/opal-frontend-common/components/moj/moj-button-menu';
+import { GovukHeadingWithCaptionComponent } from '@hmcts/opal-frontend-common/components/govuk/govuk-heading-with-caption';
 
 @Component({
   selector: 'app-fines-acc-summary-header',
   templateUrl: './fines-acc-summary-header.component.html',
-  imports: [FinesAccBannerMessagesComponent, CustomPageHeaderComponent, GovukButtonDirective, MojButtonMenuComponent],
+  imports: [
+    FinesAccBannerMessagesComponent,
+    CustomPageHeaderComponent,
+    GovukHeadingWithCaptionComponent,
+    GovukButtonDirective,
+    MojButtonMenuComponent,
+  ],
 })
 export class FinesAccSummaryHeaderComponent {
   @Input({ required: true }) accountStore!: FinesAccountStoreType;
