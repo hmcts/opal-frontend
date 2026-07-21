@@ -12,7 +12,7 @@
 </div>
 
 <div class="govuk-grid-column-two-thirds">
-  <form (submit)="handleFormSubmit($event)" [formGroup]="form" class="govuk-form">
+  <form autocomplete="off" (submit)="handleFormSubmit($event)" [formGroup]="form" class="govuk-form">
     @for (field of fields; track field.controlName) {
       @switch (field.type) {
         @case (fieldTypes.date) {

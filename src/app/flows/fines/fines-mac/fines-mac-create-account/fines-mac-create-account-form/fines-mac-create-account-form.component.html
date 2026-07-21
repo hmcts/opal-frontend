@@ -7,7 +7,7 @@
   [errors]="formErrorSummaryMessage"
   (errorClick)="scrollTo($event)"
 ></opal-lib-govuk-error-summary>
-<form (submit)="handleFormSubmit($event)">
+<form autocomplete="off" (submit)="handleFormSubmit($event)">
   @if (autoCompleteItems.length === 1) {
     <p>The account will be created in {{ autoCompleteItems[0].name }}</p>
   } @else {

@@ -698,4 +698,9 @@ describe('FinesMacPaymentTermsFormComponent', () => {
     expect(() => component['disableConditionalControls']()).not.toThrow();
     expect(component.form.get('fm_payment_terms_collection_order_date')).toBeNull();
   });
+
+  it('should set autocomplete="off" on the form', () => {
+    fixture.detectChanges();
+    expect(fixture.nativeElement.querySelector('form')?.getAttribute('autocomplete')).toBe('off');
+  });
 });
