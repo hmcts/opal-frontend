@@ -7,7 +7,7 @@ nodejs:
     opal:
       secrets:
         - app-insights-connection-string
-        - redis-connection-string
+        - managed-redis-connection-string
         - opal-frontend-session-secret
         - opal-frontend-cookie-secret
         - opal-frontend-csrf-secret
