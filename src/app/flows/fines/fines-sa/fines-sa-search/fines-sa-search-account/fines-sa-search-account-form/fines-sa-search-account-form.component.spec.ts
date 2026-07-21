@@ -138,7 +138,11 @@ describe('FinesSaSearchAccountFormComponent', () => {
     tabKeys.forEach((key) => {
       const group = component.form.get(key) as FormGroup;
       expect(group.get('dummy')).toBeNull();
-      expect(Object.keys(group.controls)).toEqual([]);
+      expect(Object.keys(group.controls)).toEqual(
+        key === 'fsa_search_account_individuals_search_criteria'
+          ? ['fsa_search_account_individuals_national_insurance_number']
+          : [],
+      );
     });
 
     expect(component.formControlErrorMessages).toEqual({});

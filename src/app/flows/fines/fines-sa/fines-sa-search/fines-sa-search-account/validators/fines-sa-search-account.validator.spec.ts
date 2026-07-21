@@ -5,6 +5,7 @@ import { describe, expect, it } from 'vitest';
 function createForm({
   accountNumber,
   referenceNumber,
+  nationalInsuranceNumber,
   individuals,
   companies,
   minorCreditors,
@@ -15,6 +16,8 @@ function createForm({
   accountNumber?: any;
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   referenceNumber?: any;
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  nationalInsuranceNumber?: any;
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   individuals?: any;
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -30,11 +33,26 @@ function createForm({
   const makeGroup = (value: any) =>
     new FormGroup({ field: new FormControl(value, nestedValid ? [] : [Validators.required]) });
 
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  const makeIndividualsGroup = (value: any) =>
+    new FormGroup({
+      field: new FormControl(value, nestedValid ? [] : [Validators.required]),
+      fsa_search_account_individuals_national_insurance_number: new FormControl(nationalInsuranceNumber),
+      fsa_search_account_individuals_last_name: new FormControl(value),
+      fsa_search_account_individuals_last_name_exact_match: new FormControl(null),
+      fsa_search_account_individuals_first_names: new FormControl(null),
+      fsa_search_account_individuals_first_names_exact_match: new FormControl(null),
+      fsa_search_account_individuals_include_aliases: new FormControl(null),
+      fsa_search_account_individuals_date_of_birth: new FormControl(null),
+      fsa_search_account_individuals_address_line_1: new FormControl(null),
+      fsa_search_account_individuals_post_code: new FormControl(null),
+    });
+
   return new FormGroup(
     {
       fsa_search_account_number: new FormControl(accountNumber),
       fsa_search_account_reference_case_number: new FormControl(referenceNumber),
-      fsa_search_account_individuals_search_criteria: makeGroup(individuals),
+      fsa_search_account_individuals_search_criteria: makeIndividualsGroup(individuals),
       fsa_search_account_companies_search_criteria: makeGroup(companies),
       fsa_search_account_minor_creditors_search_criteria: makeGroup(minorCreditors),
       fsa_search_account_major_creditors_search_criteria: makeGroup(majorCreditors),
@@ -64,6 +82,11 @@ describe('finesSaOneCriteriaValidator', () => {
     expect(finesSaOneCriteriaValidator(form)).toBeNull();
   });
 
+  it('should return null if only national insurance number is populated', () => {
+    const form = createForm({ nationalInsuranceNumber: 'QQ123456C' });
+    expect(finesSaOneCriteriaValidator(form)).toBeNull();
+  });
+
   it('should return null if only one nested group is populated', () => {
     const form = createForm({ individuals: 'John Doe' });
     expect(finesSaOneCriteriaValidator(form)).toBeNull();
@@ -76,6 +99,11 @@ describe('finesSaOneCriteriaValidator', () => {
 
   it('should return { atLeastOneCriteriaRequired: true } if account number and individuals group are populated', () => {
     const form = createForm({ accountNumber: '123', individuals: 'Acme Corp' });
+    expect(finesSaOneCriteriaValidator(form)).toEqual({ atLeastOneCriteriaRequired: true });
+  });
+
+  it('should return { atLeastOneCriteriaRequired: true } if national insurance number and individuals group are populated', () => {
+    const form = createForm({ nationalInsuranceNumber: 'QQ123456C', individuals: 'Jane' });
     expect(finesSaOneCriteriaValidator(form)).toEqual({ atLeastOneCriteriaRequired: true });
   });
 

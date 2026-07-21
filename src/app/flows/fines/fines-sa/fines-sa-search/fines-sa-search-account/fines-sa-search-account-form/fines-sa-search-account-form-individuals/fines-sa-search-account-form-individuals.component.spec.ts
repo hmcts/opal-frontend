@@ -176,7 +176,6 @@ describe('FinesSaSearchAccountFormIndividualsComponent', () => {
       'fsa_search_account_individuals_first_names_exact_match',
       'fsa_search_account_individuals_include_aliases',
       'fsa_search_account_individuals_date_of_birth',
-      'fsa_search_account_individuals_national_insurance_number',
       'fsa_search_account_individuals_address_line_1',
       'fsa_search_account_individuals_post_code',
     ];

@@ -473,6 +473,8 @@ export class AccountSearchCommonActions {
 
     cy.get(C.referenceOrCaseNumberInput, { timeout: 10_000 }).should('exist').and('have.value', '');
 
+    cy.get(C.nationalInsuranceNumberInput, { timeout: 10_000 }).should('exist').and('have.value', '');
+
     cy.get(C.activeAccountsOnlyCheckbox, { timeout: 10_000 }).should('exist').and('be.checked');
 
     log('done', 'Common default field values asserted');

@@ -21,6 +21,15 @@ export const AccountSearchCommonLocators = {
   /** Top-level page heading for the account search form. */
   pageHeader: 'app-fines-sa-search-account-form > h1.govuk-heading-l',
 
+  /** Hint text shown below the page title. */
+  quickSearchHint: 'app-fines-sa-search-account-form > p.govuk-hint',
+
+  /** Heading above the quick-search fields. */
+  quickSearchHeading: 'app-fines-sa-search-account-form > form > h2.govuk-heading-m.govuk-\\!-margin-bottom-5',
+
+  /** Heading above the advanced-search tab set. */
+  advancedSearchHeading: 'app-fines-sa-search-account-form > form > h2.govuk-heading-m.govuk-\\!-margin-bottom-6',
+
   /** Global error summary shown above the search form. */
   errorSummary: 'opal-lib-govuk-error-summary, .govuk-error-summary',
 
@@ -47,6 +56,15 @@ export const AccountSearchCommonLocators = {
 
   /** Inline validation error for reference or case number. */
   referenceOrCaseNumberError: '#fsa_search_account_reference_case_number-error-message',
+
+  /** Label for the National Insurance number field in the quick search section. */
+  nationalInsuranceNumberLabel: '[for="fsa_search_account_individuals_national_insurance_number"]',
+
+  /** National Insurance number input in the quick search section. */
+  nationalInsuranceNumberInput: '#fsa_search_account_individuals_national_insurance_number',
+
+  /** Inline validation error for National Insurance number. */
+  nationalInsuranceNumberError: '#fsa_search_account_individuals_national_insurance_number-error-message',
 
   /** Global filter: "Active accounts only" checkbox (outside tab panels). */
   activeAccountsOnlyCheckbox: '#fsa_search_account_active_accounts_only',

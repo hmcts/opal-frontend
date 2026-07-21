@@ -8,6 +8,9 @@
   @case ('referenceCaseNumber') {
     <ng-container *ngTemplateOutlet="multipleTypes"></ng-container>
   }
+  @case ('nationalInsuranceNumber') {
+    <ng-container *ngTemplateOutlet="individuals"></ng-container>
+  }
   @case ('individuals') {
     <ng-container *ngTemplateOutlet="individuals"></ng-container>
   }

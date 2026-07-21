@@ -69,10 +69,6 @@ export class FinesSaSearchAccountFormIndividualsComponent extends AbstractNested
         optionalValidDateValidator(),
         dateOfBirthValidator(),
       ]),
-      fsa_search_account_individuals_national_insurance_number: new FormControl<string | null>(null, [
-        ALPHANUMERIC_WITH_SPACES_PATTERN_VALIDATOR,
-        Validators.maxLength(9),
-      ]),
       fsa_search_account_individuals_address_line_1: new FormControl<string | null>(null, [
         ALPHANUMERIC_WITH_SPACES_PATTERN_VALIDATOR,
         Validators.maxLength(30),
