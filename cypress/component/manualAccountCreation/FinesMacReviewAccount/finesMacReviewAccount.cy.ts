@@ -28,9 +28,13 @@ const MANUAL_ACCOUNT_CREATION_JIRA_LABEL = '@JIRA-LABEL:manual-account-creation'
 const buildTags = (...tags: string[]) => [...tags, '@R1A', MANUAL_ACCOUNT_CREATION_JIRA_LABEL];
 
 describe('FinesMacReviewAccountComponent', () => {
-  let finesMacState = structuredClone(FINES_AYG_CHECK_ACCOUNT_MOCK);
-  let finesDraftState = structuredClone(FINES_DRAFT_STATE);
-  let finesAccountPayload = FINES_MAC_PAYLOAD_ADD_ACCOUNT;
+  const baseFinesMacState = structuredClone(FINES_AYG_CHECK_ACCOUNT_MOCK);
+  const baseFinesDraftState = structuredClone(FINES_DRAFT_STATE);
+  const baseFinesAccountPayload = structuredClone(FINES_MAC_PAYLOAD_ADD_ACCOUNT);
+
+  let finesMacState = structuredClone(baseFinesMacState);
+  let finesDraftState = structuredClone(baseFinesDraftState);
+  let finesAccountPayload = structuredClone(baseFinesAccountPayload);
 
   /**
    * Mount the Review Account component with the three stores and a minimal ActivatedRoute.
@@ -42,9 +46,9 @@ describe('FinesMacReviewAccountComponent', () => {
     amend: boolean = true,
     checker: boolean = false,
   ) => {
-    finesMacState = structuredClone(finesMacState);
-    finesDraftState = structuredClone(finesDraftState);
-    finesAccountPayload = structuredClone(finesAccountPayload);
+    finesMacState = structuredClone(baseFinesMacState);
+    finesDraftState = structuredClone(baseFinesDraftState);
+    finesAccountPayload = structuredClone(baseFinesAccountPayload);
     finesDraftStateMock = structuredClone(finesDraftStateMock);
     activatedRouteMock = activatedRouteMock ? structuredClone(activatedRouteMock) : null;
 
@@ -149,9 +153,9 @@ describe('FinesMacReviewAccountComponent', () => {
   });
   beforeEach(() => {
     cy.then(() => {
-      finesMacState = structuredClone(FINES_AYG_CHECK_ACCOUNT_MOCK);
-      finesDraftState = structuredClone(FINES_DRAFT_STATE);
-      finesAccountPayload = FINES_MAC_PAYLOAD_ADD_ACCOUNT;
+      finesMacState = structuredClone(baseFinesMacState);
+      finesDraftState = structuredClone(baseFinesDraftState);
+      finesAccountPayload = structuredClone(baseFinesAccountPayload);
     });
   });
 
