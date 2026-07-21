@@ -2125,7 +2125,9 @@ export class AccountEnquiryFlow {
   public openAddAccountNoteAndVerifyHeader(): void {
     logAE('method', 'openAddAccountNoteAndVerifyHeader()');
     cy.location('pathname').then((pathname) => {
-      const alreadyOnAddAccountNotePage = pathname.includes('/note/add');
+      const alreadyOnAddAccountNotePage = /\/fines\/account\/(?:defendant|minor-creditor)\/\d+\/note\/add$/.test(
+        pathname,
+      );
 
       if (alreadyOnAddAccountNotePage) {
         logAE('navigate', 'Already on "Add account note" screen');
