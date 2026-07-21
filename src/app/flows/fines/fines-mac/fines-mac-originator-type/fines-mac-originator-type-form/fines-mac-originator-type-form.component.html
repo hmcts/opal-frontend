@@ -3,7 +3,7 @@
   [errors]="formErrorSummaryMessage"
   (errorClick)="scrollTo($event)"
 ></opal-lib-govuk-error-summary>
-<form (submit)="handleFormSubmit($event)">
+<form autocomplete="off" (submit)="handleFormSubmit($event)">
   <opal-lib-govuk-radio
     fieldSetId="fm_originator_type_originator_type"
     legendText="Do you want to create a new account or transfer in?"

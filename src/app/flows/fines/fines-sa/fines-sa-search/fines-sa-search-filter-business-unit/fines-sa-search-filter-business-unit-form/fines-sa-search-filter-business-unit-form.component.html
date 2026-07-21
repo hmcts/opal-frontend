@@ -30,7 +30,7 @@
   }
 
   <ng-template #tableWrapper>
-    <form (submit)="handleFormSubmit($event)" [formGroup]="form">
+    <form autocomplete="off" (submit)="handleFormSubmit($event)" [formGroup]="form">
       <div>
         {{ tab() === 'fines' ? selectedFines() : selectedConfiscation() }} of
         {{ tab() === 'fines' ? finesBusinessUnits.length : confiscationBusinessUnits.length }} selected
