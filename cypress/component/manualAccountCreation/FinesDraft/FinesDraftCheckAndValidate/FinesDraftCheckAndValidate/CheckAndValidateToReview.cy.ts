@@ -23,7 +23,7 @@ import { DateTime } from 'luxon';
 
 const MANUAL_ACCOUNT_CREATION_JIRA_LABEL = '@JIRA-LABEL:manual-account-creation';
 
-const buildTags = (...tags: string[]) => [...tags, MANUAL_ACCOUNT_CREATION_JIRA_LABEL];
+const buildTags = (...tags: string[]) => [...tags, '@R1A', MANUAL_ACCOUNT_CREATION_JIRA_LABEL];
 const getUtcTimestampForLocalDay = (daysOffset: number, minutesAfterMidnight: number = 30) =>
   DateTime.local().plus({ days: daysOffset }).startOf('day').plus({ minutes: minutesAfterMidnight }).toUTC().toISO()!;
 
