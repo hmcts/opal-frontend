@@ -1,6 +1,7 @@
 import { TestBed } from '@angular/core/testing';
 import { HttpTestingController, provideHttpClientTesting } from '@angular/common/http/testing';
-import { HttpResponse, provideHttpClient, withInterceptorsFromDi } from '@angular/common/http';
+import { HttpResponse, provideHttpClient, withInterceptors, withInterceptorsFromDi } from '@angular/common/http';
+import { httpRetryInterceptor } from '@hmcts/opal-frontend-common/interceptors/http-retry';
 import { IOpalFinesCourt } from '@services/fines/opal-fines-service/interfaces/opal-fines-court.interface';
 import { IOpalFinesCourtRefData } from '@services/fines/opal-fines-service/interfaces/opal-fines-court-ref-data.interface';
 import { IOpalFinesLocalJusticeArea } from '@services/fines/opal-fines-service/interfaces/opal-fines-local-justice-area.interface';
@@ -85,7 +86,11 @@ describe('OpalFines', () => {
 
   beforeEach(() => {
     TestBed.configureTestingModule({
-      providers: [OpalFines, provideHttpClient(withInterceptorsFromDi()), provideHttpClientTesting()],
+      providers: [
+        OpalFines,
+        provideHttpClient(withInterceptors([httpRetryInterceptor]), withInterceptorsFromDi()),
+        provideHttpClientTesting(),
+      ],
     });
     service = TestBed.inject(OpalFines);
     httpMock = TestBed.inject(HttpTestingController);
@@ -97,6 +102,146 @@ describe('OpalFines', () => {
 
   it('should be created', () => {
     expect(service).toBeTruthy();
+  });
+
+  it('should retry selected safe retrieval-only GET calls after transient timeout failures', () => {
+    const next = vi.fn();
+    const error = vi.fn();
+
+    service.getBusinessUnits().subscribe({ next, error });
+
+    const firstRequest = httpMock.expectOne(OPAL_FINES_PATHS.businessUnitRefData);
+    expect(firstRequest.request.method).toBe('GET');
+    firstRequest.flush({ message: 'timed out' }, { status: 504, statusText: 'Gateway Timeout' });
+
+    const retryRequest = httpMock.expectOne(OPAL_FINES_PATHS.businessUnitRefData);
+    expect(retryRequest.request.method).toBe('GET');
+    retryRequest.flush(OPAL_FINES_BUSINESS_UNIT_REF_DATA_MOCK);
+
+    expect(next).toHaveBeenCalledWith(OPAL_FINES_BUSINESS_UNIT_REF_DATA_MOCK);
+    expect(error).not.toHaveBeenCalled();
+  });
+
+  it('should retry selected account detail reads after transient timeout failures', () => {
+    const defendantAccountId = 456;
+    const minorCreditorAccountId = 77;
+    const majorCreditorAccountId = 10770000000085;
+
+    service.getDefendantAccountHeadingData(defendantAccountId).subscribe();
+    const firstHeadingRequest = httpMock.expectOne(
+      `${OPAL_FINES_PATHS.defendantAccounts}/${defendantAccountId}/header-summary`,
+    );
+    expect(firstHeadingRequest.request.method).toBe('GET');
+    firstHeadingRequest.flush({ message: 'timed out' }, { status: 504, statusText: 'Gateway Timeout' });
+
+    const retriedHeadingRequest = httpMock.expectOne(
+      `${OPAL_FINES_PATHS.defendantAccounts}/${defendantAccountId}/header-summary`,
+    );
+    retriedHeadingRequest.flush(FINES_ACC_DEFENDANT_DETAILS_HEADER_MOCK);
+
+    service.getMinorCreditorAccount(minorCreditorAccountId).subscribe();
+    const firstMinorCreditorRequest = httpMock.expectOne(
+      `${OPAL_FINES_PATHS.minorCreditorAccounts}/${minorCreditorAccountId}`,
+    );
+    expect(firstMinorCreditorRequest.request.method).toBe('GET');
+    firstMinorCreditorRequest.flush({ message: 'timed out' }, { status: 504, statusText: 'Gateway Timeout' });
+
+    const retriedMinorCreditorRequest = httpMock.expectOne(
+      `${OPAL_FINES_PATHS.minorCreditorAccounts}/${minorCreditorAccountId}`,
+    );
+    retriedMinorCreditorRequest.flush(OPAL_FINES_ACCOUNT_MINOR_CREDITOR_CREDITOR_MOCK);
+
+    service.getMajorCreditorAccountHeadingData(majorCreditorAccountId).subscribe();
+    const firstMajorCreditorHeadingRequest = httpMock.expectOne(
+      `${OPAL_FINES_PATHS.majorCreditorAccounts}/${majorCreditorAccountId}/header-summary`,
+    );
+    expect(firstMajorCreditorHeadingRequest.request.method).toBe('GET');
+    firstMajorCreditorHeadingRequest.flush({ message: 'timed out' }, { status: 504, statusText: 'Gateway Timeout' });
+
+    const retriedMajorCreditorHeadingRequest = httpMock.expectOne(
+      `${OPAL_FINES_PATHS.majorCreditorAccounts}/${majorCreditorAccountId}/header-summary`,
+    );
+    retriedMajorCreditorHeadingRequest.flush(FINES_ACC_MAJOR_CREDITOR_DETAILS_HEADER_MOCK);
+
+    service.getMajorCreditorAccountAtAGlance(majorCreditorAccountId).subscribe();
+    const firstMajorCreditorAtAGlanceRequest = httpMock.expectOne(
+      `${OPAL_FINES_PATHS.majorCreditorAccounts}/${majorCreditorAccountId}/at-a-glance`,
+    );
+    expect(firstMajorCreditorAtAGlanceRequest.request.method).toBe('GET');
+    firstMajorCreditorAtAGlanceRequest.flush({ message: 'timed out' }, { status: 504, statusText: 'Gateway Timeout' });
+
+    const retriedMajorCreditorAtAGlanceRequest = httpMock.expectOne(
+      `${OPAL_FINES_PATHS.majorCreditorAccounts}/${majorCreditorAccountId}/at-a-glance`,
+    );
+    retriedMajorCreditorAtAGlanceRequest.flush(OPAL_FINES_ACCOUNT_MAJOR_CREDITOR_AT_A_GLANCE_MOCK);
+  });
+
+  it('should not retry POST search APIs after transient timeout failures', () => {
+    const searchOffencesError = vi.fn();
+    const defendantSearchError = vi.fn();
+    const minorCreditorSearchError = vi.fn();
+
+    service
+      .searchOffences(structuredClone(OPAL_FINES_SEARCH_OFFENCES_PARAMS_MOCK))
+      .subscribe({ error: searchOffencesError });
+    const searchOffencesRequest = httpMock.expectOne(OPAL_FINES_PATHS.searchOffences);
+    expect(searchOffencesRequest.request.method).toBe('POST');
+    searchOffencesRequest.flush({ message: 'timed out' }, { status: 504, statusText: 'Gateway Timeout' });
+    httpMock.expectNone(OPAL_FINES_PATHS.searchOffences);
+    expect(searchOffencesError).toHaveBeenCalledTimes(1);
+
+    service.getDefendantAccounts(OPAL_FINES_DEFENDANT_ACCOUNT_SEARCH_PARAMS_INDIVIDUAL_MOCK).subscribe({
+      error: defendantSearchError,
+    });
+    const defendantSearchRequest = httpMock.expectOne(OPAL_FINES_PATHS.searchDefendantAccounts);
+    expect(defendantSearchRequest.request.method).toBe('POST');
+    defendantSearchRequest.flush({ message: 'timed out' }, { status: 504, statusText: 'Gateway Timeout' });
+    httpMock.expectNone(OPAL_FINES_PATHS.searchDefendantAccounts);
+    expect(defendantSearchError).toHaveBeenCalledTimes(1);
+
+    service.getMinorCreditorAccounts(OPAL_FINES_CREDITOR_ACCOUNT_SEARCH_PARAMS_INDIVIDUAL_MOCK).subscribe({
+      error: minorCreditorSearchError,
+    });
+    const minorCreditorSearchRequest = httpMock.expectOne(OPAL_FINES_PATHS.searchMinorCreditorAccounts);
+    expect(minorCreditorSearchRequest.request.method).toBe('POST');
+    minorCreditorSearchRequest.flush({ message: 'timed out' }, { status: 504, statusText: 'Gateway Timeout' });
+    httpMock.expectNone(OPAL_FINES_PATHS.searchMinorCreditorAccounts);
+    expect(minorCreditorSearchError).toHaveBeenCalledTimes(1);
+  });
+
+  it('should not retry mutation calls after transient timeout failures', () => {
+    const error = vi.fn();
+    const businessUnitId = '61';
+
+    service.addNote(OPAL_FINES_ADD_NOTE_PAYLOAD_MOCK, '1', businessUnitId).subscribe({ error });
+
+    const request = httpMock.expectOne(OPAL_FINES_PATHS.notes);
+    expect(request.request.method).toBe('POST');
+    expect(request.request.headers.get('If-Match')).toBe('1');
+    expect(request.request.headers.get('Business-Unit-Id')).toBe(businessUnitId);
+    request.flush({ message: 'timed out' }, { status: 504, statusText: 'Gateway Timeout' });
+
+    httpMock.expectNone(OPAL_FINES_PATHS.notes);
+    expect(error).toHaveBeenCalledTimes(1);
+  });
+
+  it('should not retry versioned If-Match mutations after transient timeout failures', () => {
+    const error = vi.fn();
+    const body = {
+      ...removeTimelineData(FINES_MAC_PAYLOAD_ADD_ACCOUNT),
+      version: '1',
+    } as IFinesMacAddAccountRequestPayload;
+    const apiUrl = `${OPAL_FINES_PATHS.draftAccounts}/${body.draft_account_id}`;
+
+    service.putDraftAddAccountPayload(body).subscribe({ error });
+
+    const request = httpMock.expectOne(apiUrl);
+    expect(request.request.method).toBe('PUT');
+    expect(request.request.headers.get('If-Match')).toBe('1');
+    request.flush({ message: 'timed out' }, { status: 504, statusText: 'Gateway Timeout' });
+
+    httpMock.expectNone(apiUrl);
+    expect(error).toHaveBeenCalledTimes(1);
   });
 
   it('should send a GET request to business unit ref data API', () => {
