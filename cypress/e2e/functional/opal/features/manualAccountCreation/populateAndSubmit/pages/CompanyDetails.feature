@@ -9,7 +9,7 @@ Feature: Manual account creation - Company Details
     When I start a fine manual account for business unit "West London" with defendant type "Company" and originator type "New"
     And I view the "Company details" task
 
-  @JIRA-TEST-KEY:PO-5388
+  @R1A @JIRA-TEST-KEY:PO-5388
   Scenario: (AC.12) Entered data persists in the session [@PO-345, @PO-365]
     When I complete manual company details:
       | company name   | COMPANY NAME |
@@ -22,6 +22,7 @@ Feature: Manual account creation - Company Details
       | 1     | ALIAS 1 |
       | 2     | ALIAS 2 |
     And I return to account details
+    Then I return to the top of the page
     Then the "Company details" task status is "Provided"
     When I view the "Company details" task
     Then the manual company details fields are:
@@ -46,7 +47,7 @@ Feature: Manual account creation - Company Details
       | postcode       |  |
     And the manual company aliases checkbox is "not checked"
 
-  @JIRA-TEST-KEY:PO-5389
+  @R1A @JIRA-TEST-KEY:PO-5389
   Scenario: (AC.12) Grey navigation links routes correctly [@PO-345, @PO-365]
     When I complete manual company details:
       | company name   | COMPANY NAME |
@@ -55,7 +56,7 @@ Feature: Manual account creation - Company Details
     Then I should see the header containing text "Defendant contact details"
 
 
-  @JIRA-TEST-KEY:PO-5390
+  @R1A @JIRA-TEST-KEY:PO-5390
   Scenario: (AC.13) Unsaved data is cleared when user confirms cancel [@PO-345, @PO-365]
     When I complete manual company details:
       | company name   | COMPANY NAME |
@@ -79,7 +80,7 @@ Feature: Manual account creation - Company Details
     And the manual company aliases checkbox is "not checked"
 
 
-  @JIRA-TEST-KEY:PO-5391
+  @R1A @JIRA-TEST-KEY:PO-5391
   Scenario: (AC.13) Unsaved data is retained when user cancels the cancel [@PO-345, @PO-365]
     When I complete manual company details:
       | company name   | COMPANY NAME |
@@ -89,7 +90,7 @@ Feature: Manual account creation - Company Details
       | company name   | COMPANY NAME |
       | address line 1 | Addr1        |
 
-  @JIRA-TEST-KEY:PO-5392
+  @R1A @JIRA-TEST-KEY:PO-5392
   Scenario: (AC.14) Confirming cancel restores last saved company details [@PO-345, @PO-365]
     When I complete manual company details:
       | company name   | COMPANY NAME |
@@ -107,7 +108,7 @@ Feature: Manual account creation - Company Details
       | address line 1 | Addr1        |
       | address line 2 |              |
 
-  @JIRA-TEST-KEY:PO-5393 @JIRA-NFR:PO-2549
+  @R1A @JIRA-TEST-KEY:PO-5393 @JIRA-NFR:PO-2549
   Scenario: (AC.14) Inline error persists when cancelling and revisiting company details [@PO-345, @PO-365]
     When I complete manual company details:
       | address line 1 | Addr1 |
@@ -119,6 +120,6 @@ Feature: Manual account creation - Company Details
       | address line 1 | Addr1 |
     Then I see a manual company inline error "Enter company name" for "Company name"
 
-  @JIRA-TEST-KEY:PO-5394
+  @R1A @JIRA-TEST-KEY:PO-5394
   Scenario: Company Details - Axe Core
     Then I check the page for accessibility

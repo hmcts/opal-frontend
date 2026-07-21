@@ -12,7 +12,7 @@ import { BehaviorSubject, NEVER } from 'rxjs';
 import { FINES_PERMISSIONS } from 'src/app/constants/fines-permissions.constant';
 import { AppComponent } from 'src/app/app.component';
 import { DashboardComponent } from 'src/app/pages/dashboard/dashboard.component';
-import { PrimaryNavigationLocators as PrimaryNav } from '../../../shared/selectors/primary-navigation.locators';
+import { PrimaryNavigationLocators as PrimaryNav } from '../../shared/selectors/primary-navigation.locators';
 
 const CONSOLIDATION_JIRA_LABEL = '@JIRA-LABEL:consolidation';
 const RELEASE_1C_WRITE_OFF_STORY_TAG = '@JIRA-STORY:PO-3757';
