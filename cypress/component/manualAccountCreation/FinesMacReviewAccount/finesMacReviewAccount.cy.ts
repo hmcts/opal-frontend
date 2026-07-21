@@ -1319,9 +1319,7 @@ describe('FinesMacReviewAccountComponent', () => {
       setupComponent(finesAccountPayload, finesAccountPayload);
 
       cy.get(DOM_ELEMENTS.primaryEmailAddress).should('contain', 'Primary email address').should('contain', '—');
-      cy.get(DOM_ELEMENTS.secondaryEmailAddress)
-        .should('contain', 'Secondary email address')
-        .should('contain', '—');
+      cy.get(DOM_ELEMENTS.secondaryEmailAddress).should('contain', 'Secondary email address').should('contain', '—');
       cy.get(DOM_ELEMENTS.mobileTelephoneNumber).should('contain', 'Mobile telephone number').should('contain', '—');
       cy.get(DOM_ELEMENTS.homeTelephoneNumber).should('contain', 'Home telephone number').should('contain', '—');
       cy.get(DOM_ELEMENTS.workTelephoneNumber).should('contain', 'Work telephone number').should('contain', '—');
