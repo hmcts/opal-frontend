@@ -138,7 +138,7 @@ describe('FinesAccNoteAddComponent', () => {
       testForm,
       OPAL_FINES_NOTE_RECORD_TYPES.minorCreditorAccounts,
     );
-    expect(mockOpalFinesService.addNote).toHaveBeenCalledWith(expectedPayload, '1');
+    expect(mockOpalFinesService.addNote).toHaveBeenCalledWith(expectedPayload, '1', '78');
     expect(component['routerNavigate']).toHaveBeenCalledWith('details');
   });
 
