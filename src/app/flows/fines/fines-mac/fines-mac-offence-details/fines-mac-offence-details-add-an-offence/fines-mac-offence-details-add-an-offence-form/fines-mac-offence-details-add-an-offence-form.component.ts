@@ -176,6 +176,7 @@ export class FinesMacOffenceDetailsAddAnOffenceFormComponent
   private initialAddAnOffenceDetailsSetup(): void {
     const offenceDetailsDraft = structuredClone(this.finesMacOffenceDetailsStore.offenceDetailsDraft());
     const hasOffenceDetailsDraft = offenceDetailsDraft.length > 0;
+    const hasSavedMinorCreditorDraft = hasOffenceDetailsDraft && this.finesMacOffenceDetailsStore.minorCreditorAdded();
     const impositionsKey = 'fm_offence_details_impositions';
     let formData;
 
@@ -228,6 +229,13 @@ export class FinesMacOffenceDetailsAddAnOffenceFormComponent
         this.setupResultCodeListener(index);
       }
     }
+
+    // Returning from the nested minor-creditor flow should still count as unsaved work
+    // until the offence itself is saved or reviewed.
+    if (hasSavedMinorCreditorDraft) {
+      this.form.markAsDirty();
+    }
+
     this.today = this.dateService.toFormat(this.dateService.getDateNow(), 'dd/MM/yyyy');
   }
 

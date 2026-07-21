@@ -680,6 +680,26 @@ describe('FinesMacOffenceDetailsAddAnOffenceFormComponent', () => {
     expect(component.today).toBe('01/01/2022');
   });
 
+  it('should keep the add offence form dirty when returning from a saved minor creditor', () => {
+    finesMacOffenceDetailsStore.setMinorCreditorAdded(true);
+
+    component['initialAddAnOffenceDetailsSetup']();
+
+    expect(component.form.dirty).toBe(true);
+    expect(component['hasUnsavedChanges']()).toBe(true);
+  });
+
+  it('should emit unsaved changes on cancel when returning from a saved minor creditor', () => {
+    finesMacOffenceDetailsStore.setMinorCreditorAdded(true);
+    finesMacOffenceDetailsStore.setEmptyOffences(true);
+    component['initialAddAnOffenceDetailsSetup']();
+    const unsavedChangesEmitSpy = vi.spyOn(component['unsavedChanges'], 'emit');
+
+    component.cancelLink();
+
+    expect(unsavedChangesEmitSpy).toHaveBeenCalledWith(true);
+  });
+
   it('should update removeMinorCreditor in finesMacOffenceDetailsDraftState and call updateOffenceDetailsDraft and handleRoute', () => {
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     const routerSpy = vi.spyOn<any, any>(component['router'], 'navigate');
