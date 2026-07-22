@@ -175,6 +175,34 @@ describe('FinesAccDefendantDetailsComponent', () => {
     expect(banner.nativeElement.textContent).toContain('Transferred out');
   });
 
+  it('should keep the account status banner visible when navigating to another tab', () => {
+    fixture.destroy();
+
+    activatedRouteStub.fragment = of('payment-terms');
+    activatedRouteStub.snapshot = {
+      ...activatedRouteStub.snapshot,
+      data: {
+        defendantAccountHeadingData: {
+          ...structuredClone(FINES_ACC_DEFENDANT_DETAILS_HEADER_MOCK),
+          account_status_reference: {
+            account_status_code: 'CS',
+            account_status_display_name: 'Consolidated',
+          },
+        },
+      },
+      fragment: 'payment-terms',
+    } as unknown as ActivatedRouteSnapshot;
+
+    fixture = TestBed.createComponent(FinesAccDefendantDetailsComponent);
+    component = fixture.componentInstance;
+    fixture.detectChanges();
+
+    const banner = fixture.debugElement.query(By.css('#defendant-account-status'));
+    expect(banner.nativeElement.textContent).toContain('Account consolidated');
+    expect(fixture.debugElement.queryAll(By.css('opal-lib-moj-alert')).length).toBe(1);
+    expect(component.activeTab).toBe('payment-terms');
+  });
+
   it('should allow adding parent or guardian details for a youth debtor account with no parent guardian', () => {
     component.accountData = {
       ...structuredClone(FINES_ACC_DEFENDANT_DETAILS_HEADER_MOCK),
