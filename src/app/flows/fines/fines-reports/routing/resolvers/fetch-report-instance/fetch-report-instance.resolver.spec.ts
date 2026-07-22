@@ -5,6 +5,7 @@ import { firstValueFrom, Observable, of, throwError } from 'rxjs';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
 import { OpalFines } from '@services/fines/opal-fines-service/opal-fines.service';
 import { OPAL_FINES_REPORT_INSTANCE_MOCK } from '@services/fines/opal-fines-service/mocks/opal-fines-report-instance.mock';
+import { OPAL_FINES_RESULT_REF_DATA_MOCK } from '@services/fines/opal-fines-service/mocks/opal-fines-result-ref-data.mock';
 import { fetchReportInstanceResolver } from './fetch-report-instance.resolver';
 import { FINES_REPORTS_SUMMARY_LIST_ROUTING_PATHS } from '../../../fines-reports-summary-list/routing/constants/fines-reports-summary-list-routing-paths.constant';
 
@@ -29,6 +30,7 @@ describe('fetchReportInstanceResolver', () => {
   beforeEach(() => {
     mockOpalFinesService = {
       getReportInstance: vi.fn().mockReturnValue(of(OPAL_FINES_REPORT_INSTANCE_MOCK)),
+      getResult: vi.fn().mockReturnValue(of(OPAL_FINES_RESULT_REF_DATA_MOCK)),
     };
 
     TestBed.configureTestingModule({
@@ -57,6 +59,37 @@ describe('fetchReportInstanceResolver', () => {
     const result = await firstValueFrom(executeResolver(route, {} as never) as Observable<unknown>);
 
     expect(result).toBeNull();
+  });
+
+  it('should resolve the selected last-enforcement action for the summary display', async () => {
+    mockOpalFinesService.getReportInstance.mockReturnValue(
+      of({
+        ...OPAL_FINES_REPORT_INSTANCE_MOCK,
+        report_parameters: {
+          reportType: 'SUMMARY',
+          reportEnforcementMode: 'LAST_ACTION',
+          enforcementAction: 'BWTD',
+        },
+      }),
+    );
+    mockOpalFinesService.getResult.mockReturnValue(
+      of({ ...OPAL_FINES_RESULT_REF_DATA_MOCK, result_id: 'BWTD', result_title: 'Bail Warrant - dated' }),
+    );
+
+    const result = await firstValueFrom(
+      executeResolver(
+        buildRoute('12345', FINES_REPORTS_SUMMARY_LIST_ROUTING_PATHS.children.operationalReportsByEnforcement),
+        {} as never,
+      ) as Observable<unknown>,
+    );
+
+    expect(mockOpalFinesService.getResult).toHaveBeenCalledWith('BWTD');
+    expect(result).toMatchObject({
+      criteriaRows: [
+        { key: 'Report Type', value: 'Summary' },
+        { key: 'Enforcement', value: 'Last enforcement - Bail Warrant - dated (BWTD)' },
+      ],
+    });
   });
 
   it('should fall back to null when the report instance id is missing', async () => {

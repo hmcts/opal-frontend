@@ -1,4 +1,6 @@
+import { formatDate } from '@angular/common';
 import { type IOpalFinesReportInstanceDetail } from '@services/fines/opal-fines-service/interfaces/opal-fines-report-instance-detail.interface';
+import { type IOpalFinesResultRefData } from '@services/fines/opal-fines-service/interfaces/opal-fines-result-ref-data.interface';
 import { FINES_REPORTS_SUMMARY_LIST_ROUTING_PATHS } from '../../fines-reports-summary-list/routing/constants/fines-reports-summary-list-routing-paths.constant';
 import { FINES_REPORTS_REPORT_SUMMARY_CRITERIA_LABELS } from '../constants/fines-reports-report-summary-criteria-labels.constant';
 import { FINES_REPORTS_REPORT_SUMMARY_ERROR_LABELS } from '../constants/fines-reports-report-summary-error-labels.constant';
@@ -25,43 +27,65 @@ type ReportSummaryNamedValue = {
   optional?: boolean;
 };
 
-const REPORT_TYPE_PARAMETER_KEYS = new Set(['reportType', 'report_type', 'report type']);
 const REPORT_TYPE_ALIASES = {
   summary: 'summary',
   detailed: 'detailed',
   detail: 'detail',
 } as const;
-const ACTION_DATE_FROM_PARAMETER_KEY = 'action_date_from';
-const ACTION_DATE_TO_PARAMETER_KEY = 'action_date_to';
-const PAYMENT_DATE_FROM_PARAMETER_KEY = 'payment_date_from';
-const PAYMENT_DATE_TO_PARAMETER_KEY = 'payment_date_to';
-const REPORT_PARAMETER_LABEL_OVERRIDES: Record<string, string> = {
-  reportType: FINES_REPORTS_REPORT_SUMMARY_CRITERIA_LABELS.reportType,
-  report_type: FINES_REPORTS_REPORT_SUMMARY_CRITERIA_LABELS.reportType,
-  'report type': FINES_REPORTS_REPORT_SUMMARY_CRITERIA_LABELS.reportType,
-  enforcement: FINES_REPORTS_REPORT_SUMMARY_CRITERIA_LABELS.enforcement,
-  account_type: FINES_REPORTS_REPORT_SUMMARY_CRITERIA_LABELS.accountType,
-  account_status: FINES_REPORTS_REPORT_SUMMARY_CRITERIA_LABELS.accountStatus,
-  collection_order: FINES_REPORTS_REPORT_SUMMARY_CRITERIA_LABELS.collectionOrder,
-  minimum_account_balance: FINES_REPORTS_REPORT_SUMMARY_CRITERIA_LABELS.minimumAccountBalance,
-  maximum_account_balance: FINES_REPORTS_REPORT_SUMMARY_CRITERIA_LABELS.maximumAccountBalance,
-  lower_name_range: FINES_REPORTS_REPORT_SUMMARY_CRITERIA_LABELS.lowerNameRange,
-  upper_name_range: FINES_REPORTS_REPORT_SUMMARY_CRITERIA_LABELS.upperNameRange,
-  payment_method: FINES_REPORTS_REPORT_SUMMARY_CRITERIA_LABELS.paymentMethod,
-  minimum_payment_amount: FINES_REPORTS_REPORT_SUMMARY_CRITERIA_LABELS.minimumPaymentAmount,
-  maximum_payment_amount: FINES_REPORTS_REPORT_SUMMARY_CRITERIA_LABELS.maximumPaymentAmount,
+const ERROR_PARAMETER_LABEL_OVERRIDES: Record<string, string> = {
   error: FINES_REPORTS_REPORT_SUMMARY_ERROR_LABELS.errorDescription,
   error_description: FINES_REPORTS_REPORT_SUMMARY_ERROR_LABELS.errorDescription,
   operationId: FINES_REPORTS_REPORT_SUMMARY_ERROR_LABELS.operationId,
   report_generation_error: FINES_REPORTS_REPORT_SUMMARY_ERROR_LABELS.reportGenerationError,
   report_service: FINES_REPORTS_REPORT_SUMMARY_ERROR_LABELS.reportService,
 };
-const DATE_RANGE_PARAMETER_KEYS = new Set<string>([
-  ACTION_DATE_FROM_PARAMETER_KEY,
-  ACTION_DATE_TO_PARAMETER_KEY,
-  PAYMENT_DATE_FROM_PARAMETER_KEY,
-  PAYMENT_DATE_TO_PARAMETER_KEY,
-]);
+const ACCOUNT_TYPE_PARAMETER_LABELS: Record<string, string> = {
+  includeAdult: 'Adult',
+  includeYouth: 'Youth',
+  includeCompany: 'Company',
+  onlyAccountsWithParentGuardian: 'Only accounts with parent or guardian to pay',
+};
+const DATE_RANGE_PARAMETER_CONFIGS = [
+  { fromKey: 'enforcementDateFrom', toKey: 'enforcementDateTo' },
+  { fromKey: 'lastActionDateFrom', toKey: 'lastActionDateTo' },
+  { fromKey: 'regfDateFrom', toKey: 'regfDateTo' },
+] as const;
+const REPORT_ENFORCEMENT_MODE_DISPLAY: Record<string, string> = {
+  ALL: 'All accounts',
+  LAST_ACTION: 'Last enforcement action',
+  REGF: 'Registration of fine (REGF)',
+  NOT_UNDER_ENFORCEMENT: 'Accounts not under enforcement',
+};
+const ACCOUNT_STATUS_DISPLAY: Record<string, string> = {
+  ALL: 'All accounts',
+  LIVE: 'Live',
+  CLOSED: 'Closed',
+};
+const COLLECTION_ORDER_DISPLAY: Record<string, string> = {
+  ALL: 'All accounts',
+  WITH: 'With collection order',
+  WITHOUT: 'Without collection order',
+};
+const PAYMENT_REPORT_MODE_DISPLAY: Record<string, string> = {
+  SINCE_LAST_ENFORCEMENT: 'Since last enforcement action',
+  WITH_REGF: 'With registration of fine (REGF)',
+  SINCE_DATE: 'Since date',
+};
+const OPERATIONAL_REPORT_COMMON_PARAMETER_KEYS = [
+  'accountStatus',
+  'collectionOrderChoice',
+  'minBalance',
+  'maxBalance',
+  'firstPaymentOrPayByInNext7Days',
+  'lowerNameRange',
+  'upperNameRange',
+] as const;
+const OPERATIONAL_PAYMENT_PARAMETER_KEYS = [
+  'isPaymentMade',
+  'reportMode',
+  'sinceLastEnforcementAction',
+  'sinceDate',
+] as const;
 const REPORT_TYPE_NORMALISATION: Record<string, string> = {
   [REPORT_TYPE_ALIASES.summary]: FINES_REPORTS_REPORT_SUMMARY_REPORT_TYPES.summary,
   [REPORT_TYPE_ALIASES.detailed]: FINES_REPORTS_REPORT_SUMMARY_REPORT_TYPES.detailed,
@@ -126,10 +150,10 @@ const formatReportTypeDisplay = (value: unknown, reportTypeId: string): string =
 };
 
 /**
- * Looks up the friendly label for a report parameter key.
+ * Looks up the friendly label for a report-generation error key.
  */
-const getReportParameterLabel = (key: string): string => {
-  return REPORT_PARAMETER_LABEL_OVERRIDES[key] ?? key;
+const getErrorParameterLabel = (key: string): string => {
+  return ERROR_PARAMETER_LABEL_OVERRIDES[key] ?? key;
 };
 
 /**
@@ -155,23 +179,28 @@ const mapReportParameterValue = (value: unknown): ReportSummaryNamedValue['value
 };
 
 /**
- * Returns a trimmed date string only when the API supplied a string value.
+ * Formats an ISO date supplied in a report parameter for the summary screen.
  */
-const getDateRangeDisplayValue = (value: unknown): string => {
-  return typeof value === 'string' ? value.trim() : '';
+const getCriteriaDateDisplayValue = (value: unknown): string => {
+  if (typeof value !== 'string' || value.trim().length === 0) {
+    return '';
+  }
+
+  const date = Date.parse(value);
+
+  return Number.isNaN(date) ? value.trim() : formatDate(date, 'dd MMM yyyy', 'en-GB');
 };
 
 /**
- * Builds one named row for a known from/to date parameter pair.
+ * Builds one action-date row from a real operational report date-range pair.
  */
-const buildKnownDateRangeRow = (
+const buildActionDateRow = (
   reportParameters: Record<string, unknown>,
   fromKey: string,
   toKey: string,
-  label: string,
 ): ReportSummaryNamedValue | null => {
-  const fromDisplay = getDateRangeDisplayValue(reportParameters[fromKey]);
-  const toDisplay = getDateRangeDisplayValue(reportParameters[toKey]);
+  const fromDisplay = getCriteriaDateDisplayValue(reportParameters[fromKey]);
+  const toDisplay = getCriteriaDateDisplayValue(reportParameters[toKey]);
   const value =
     fromDisplay && toDisplay
       ? `From ${fromDisplay} to ${toDisplay}`
@@ -184,55 +213,205 @@ const buildKnownDateRangeRow = (
   }
 
   return {
-    name: label,
+    name: FINES_REPORTS_REPORT_SUMMARY_CRITERIA_LABELS.actionDate,
     value,
     optional: false,
   };
 };
 
 /**
- * Builds the first supported date range row found in the report parameters.
+ * Maps the selected account-type flags to their one user-facing summary row.
  */
-const buildDateRangeRow = (reportParameters: Record<string, unknown>): ReportSummaryNamedValue | null => {
-  return (
-    buildKnownDateRangeRow(
-      reportParameters,
-      ACTION_DATE_FROM_PARAMETER_KEY,
-      ACTION_DATE_TO_PARAMETER_KEY,
-      FINES_REPORTS_REPORT_SUMMARY_CRITERIA_LABELS.actionDate,
-    ) ??
-    buildKnownDateRangeRow(
-      reportParameters,
-      PAYMENT_DATE_FROM_PARAMETER_KEY,
-      PAYMENT_DATE_TO_PARAMETER_KEY,
-      FINES_REPORTS_REPORT_SUMMARY_CRITERIA_LABELS.paymentDate,
-    )
-  );
+const buildAccountTypeRow = (reportParameters: Record<string, unknown>): ReportSummaryNamedValue | null => {
+  const accountTypes = Object.entries(ACCOUNT_TYPE_PARAMETER_LABELS)
+    .filter(([key]) => reportParameters[key] === true)
+    .map(([, label]) => label);
+
+  return accountTypes.length > 0
+    ? {
+        name: FINES_REPORTS_REPORT_SUMMARY_CRITERIA_LABELS.accountType,
+        value: accountTypes.join(', '),
+        optional: true,
+      }
+    : null;
 };
 
 /**
- * Builds report criteria rows in the order shown on the summary screen.
+ * Combines a last-enforcement mode and result reference into the wording used by the design.
+ */
+const getEnforcementDisplayValue = (
+  value: unknown,
+  enforcementAction: IOpalFinesResultRefData | null,
+  enforcementActionCode: unknown,
+): string => {
+  const enforcementMode = typeof value === 'string' ? value : '';
+
+  if (enforcementMode !== 'LAST_ACTION') {
+    return REPORT_ENFORCEMENT_MODE_DISPLAY[enforcementMode] ?? enforcementMode;
+  }
+
+  if (enforcementAction) {
+    return `Last enforcement - ${enforcementAction.result_title} (${enforcementAction.result_id})`;
+  }
+
+  return typeof enforcementActionCode === 'string' && enforcementActionCode.trim().length > 0
+    ? `Last enforcement action (${enforcementActionCode})`
+    : REPORT_ENFORCEMENT_MODE_DISPLAY[enforcementMode];
+};
+
+/**
+ * Maps a real operational-report parameter to its user-facing summary row.
+ */
+const mapOperationalReportParameter = (
+  key: string,
+  value: unknown,
+  enforcementAction: IOpalFinesResultRefData | null,
+  enforcementActionCode: unknown,
+): ReportSummaryNamedValue | null => {
+  const stringValue = typeof value === 'string' ? value : '';
+  const displayValue = mapReportParameterValue(value);
+
+  switch (key) {
+    case 'reportEnforcementMode':
+      return {
+        name: FINES_REPORTS_REPORT_SUMMARY_CRITERIA_LABELS.enforcement,
+        value: getEnforcementDisplayValue(value, enforcementAction, enforcementActionCode),
+      };
+    case 'enforcementAction':
+      return null;
+    case 'accountStatus':
+      return {
+        name: FINES_REPORTS_REPORT_SUMMARY_CRITERIA_LABELS.accountStatus,
+        value: ACCOUNT_STATUS_DISPLAY[stringValue] ?? stringValue,
+        optional: true,
+      };
+    case 'collectionOrderChoice':
+      return {
+        name: FINES_REPORTS_REPORT_SUMMARY_CRITERIA_LABELS.collectionOrder,
+        value: COLLECTION_ORDER_DISPLAY[stringValue] ?? stringValue,
+        optional: true,
+      };
+    case 'minBalance':
+      return {
+        name: FINES_REPORTS_REPORT_SUMMARY_CRITERIA_LABELS.minimumAccountBalance,
+        value: displayValue,
+        optional: true,
+      };
+    case 'maxBalance':
+      return {
+        name: FINES_REPORTS_REPORT_SUMMARY_CRITERIA_LABELS.maximumAccountBalance,
+        value: displayValue,
+        optional: true,
+      };
+    case 'lowerNameRange':
+      return { name: FINES_REPORTS_REPORT_SUMMARY_CRITERIA_LABELS.lowerNameRange, value: displayValue, optional: true };
+    case 'upperNameRange':
+      return { name: FINES_REPORTS_REPORT_SUMMARY_CRITERIA_LABELS.upperNameRange, value: displayValue, optional: true };
+    case 'firstPaymentOrPayByInNext7Days':
+      return value === true
+        ? { name: FINES_REPORTS_REPORT_SUMMARY_CRITERIA_LABELS.firstPaymentOrPayByInNext7Days, value }
+        : null;
+    case 'isPaymentMade':
+      return {
+        name: FINES_REPORTS_REPORT_SUMMARY_CRITERIA_LABELS.paymentsMade,
+        value: value === true ? 'Yes' : value === false ? 'No' : displayValue,
+      };
+    case 'reportMode':
+      return {
+        name: FINES_REPORTS_REPORT_SUMMARY_CRITERIA_LABELS.paymentReportMode,
+        value: PAYMENT_REPORT_MODE_DISPLAY[stringValue] ?? stringValue,
+      };
+    case 'sinceLastEnforcementAction':
+      return {
+        name: FINES_REPORTS_REPORT_SUMMARY_CRITERIA_LABELS.sinceLastEnforcementAction,
+        value: displayValue,
+        optional: true,
+      };
+    case 'sinceDate':
+      return {
+        name: FINES_REPORTS_REPORT_SUMMARY_CRITERIA_LABELS.sinceDate,
+        value: getCriteriaDateDisplayValue(value),
+        optional: true,
+      };
+    default:
+      return null;
+  }
+};
+
+/**
+ * Adds the known criteria rows that have values in the report instance.
+ */
+const appendOperationalReportParameterRows = (
+  rows: ReportSummaryNamedValue[],
+  reportParameters: Record<string, unknown>,
+  parameterKeys: readonly string[],
+  enforcementAction: IOpalFinesResultRefData | null,
+): void => {
+  for (const key of parameterKeys) {
+    const row = mapOperationalReportParameter(
+      key,
+      reportParameters[key],
+      enforcementAction,
+      reportParameters['enforcementAction'],
+    );
+    if (row) {
+      rows.push(row);
+    }
+  }
+};
+
+/**
+ * Builds operational-report criteria in the fixed order shown in the report-summary design.
  */
 const buildCriteriaRows = (
   reportParameters: Record<string, unknown> | null | undefined,
   reportType: string,
+  enforcementAction: IOpalFinesResultRefData | null,
 ): ReportSummaryNamedValue[] => {
   const parameters = reportParameters ?? {};
-  const reportTypeRow: ReportSummaryNamedValue = {
-    name: FINES_REPORTS_REPORT_SUMMARY_CRITERIA_LABELS.reportType,
-    value: reportType,
-    optional: false,
-  };
-  const dateRangeRow = buildDateRangeRow(parameters);
-  const criteriaRows = Object.entries(parameters)
-    .filter(([key]) => !REPORT_TYPE_PARAMETER_KEYS.has(key) && !DATE_RANGE_PARAMETER_KEYS.has(key))
-    .map(([key, value]) => ({
-      name: getReportParameterLabel(key),
-      value: mapReportParameterValue(value),
-      optional: isFinesReportsReportSummaryUnusedOptionalValue(value),
-    }));
+  const rows: ReportSummaryNamedValue[] = [
+    {
+      name: FINES_REPORTS_REPORT_SUMMARY_CRITERIA_LABELS.reportType,
+      value: reportType,
+      optional: false,
+    },
+  ];
+  const reportEnforcementMode = parameters['reportEnforcementMode'];
+  const enforcementModeRow =
+    typeof reportEnforcementMode === 'string' && reportEnforcementMode.trim().length > 0
+      ? mapOperationalReportParameter(
+          'reportEnforcementMode',
+          reportEnforcementMode,
+          enforcementAction,
+          parameters['enforcementAction'],
+        )
+      : null;
 
-  return dateRangeRow ? [reportTypeRow, dateRangeRow, ...criteriaRows] : [reportTypeRow, ...criteriaRows];
+  if (enforcementModeRow) {
+    rows.push(enforcementModeRow);
+    const dateRangeConfig = DATE_RANGE_PARAMETER_CONFIGS.find(
+      (config) =>
+        getCriteriaDateDisplayValue(parameters[config.fromKey]) ||
+        getCriteriaDateDisplayValue(parameters[config.toKey]),
+    );
+    if (dateRangeConfig) {
+      const dateRangeRow = buildActionDateRow(parameters, dateRangeConfig.fromKey, dateRangeConfig.toKey);
+      if (dateRangeRow) {
+        rows.push(dateRangeRow);
+      }
+    }
+  } else {
+    appendOperationalReportParameterRows(rows, parameters, OPERATIONAL_PAYMENT_PARAMETER_KEYS, enforcementAction);
+  }
+
+  const accountTypeRow = buildAccountTypeRow(parameters);
+  if (accountTypeRow) {
+    rows.push(accountTypeRow);
+  }
+
+  appendOperationalReportParameterRows(rows, parameters, OPERATIONAL_REPORT_COMMON_PARAMETER_KEYS, enforcementAction);
+
+  return rows;
 };
 
 /**
@@ -294,6 +473,15 @@ const getNumberOfRecordsDisplayValue = (
 };
 
 /**
+ * Converts an API ISO date-time into the numeric value used by Angular's DatePipe.
+ */
+const getDateTimeDisplayValue = (value: string): number | null => {
+  const dateTime = Date.parse(value);
+
+  return Number.isNaN(dateTime) ? null : dateTime;
+};
+
+/**
  * Chooses the row display type, using the not-provided renderer when the value is missing.
  */
 const getDisplayRowType = (
@@ -346,7 +534,7 @@ const mapNamedValuesToRows = (
 const mapErrorRows = (errors: Array<Record<string, unknown>> | null | undefined): ReportSummaryNamedValue[] => {
   return (errors ?? []).flatMap((error) =>
     Object.entries(error).map(([key, value]) => ({
-      name: getReportParameterLabel(key),
+      name: getErrorParameterLabel(key),
       value: mapReportParameterValue(value),
       optional: isFinesReportsReportSummaryUnusedOptionalValue(value),
     })),
@@ -359,18 +547,20 @@ const mapErrorRows = (errors: Array<Record<string, unknown>> | null | undefined)
 export const mapFinesReportsReportInstanceToViewModel = (
   reportInstance: IOpalFinesReportInstanceDetail,
   reportTypeId: string,
+  enforcementAction: IOpalFinesResultRefData | null = null,
 ): IFinesReportsReportSummaryViewModel => {
   const resolvedReportTypeId = reportTypeId || reportInstance.report.id;
   const reportType = formatReportTypeDisplay(
     getReportTypeParameterValue(reportInstance.report_parameters),
     resolvedReportTypeId,
   );
-  const criteria = buildCriteriaRows(reportInstance.report_parameters, reportType);
+  const criteria = buildCriteriaRows(reportInstance.report_parameters, reportType, enforcementAction);
   const status = normaliseStatus(reportInstance.status.display_name.trim() || reportInstance.status.code);
   const numberOfRecords = reportInstance.number_of_records ?? null;
   const businessUnitsValue = mapFinesReportsReportSummaryDisplayValue(getBusinessUnits(reportInstance));
   const numberOfRecordsValue = getNumberOfRecordsDisplayValue(status, numberOfRecords);
   const createdByValue = mapFinesReportsReportSummaryDisplayValue(getCreatedBy(reportInstance));
+  const dateCreatedValue = getDateTimeDisplayValue(reportInstance.requested_at);
 
   return {
     reportId: reportInstance.report.id,
@@ -384,8 +574,8 @@ export const mapFinesReportsReportInstanceToViewModel = (
       },
       {
         key: FINES_REPORTS_REPORT_SUMMARY_GENERAL_LABELS.dateCreated,
-        value: reportInstance.requested_at,
-        type: 'dateTime',
+        value: dateCreatedValue,
+        type: getDisplayRowType(dateCreatedValue, 'dateTime'),
       },
       {
         key: FINES_REPORTS_REPORT_SUMMARY_GENERAL_LABELS.businessUnits,

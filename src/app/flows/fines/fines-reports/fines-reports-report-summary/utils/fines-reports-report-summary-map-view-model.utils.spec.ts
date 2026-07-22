@@ -1,5 +1,6 @@
 import { describe, expect, it } from 'vitest';
 import { OPAL_FINES_REPORT_INSTANCE_MOCK } from '@services/fines/opal-fines-service/mocks/opal-fines-report-instance.mock';
+import { OPAL_FINES_RESULT_REF_DATA_MOCK } from '@services/fines/opal-fines-service/mocks/opal-fines-result-ref-data.mock';
 import { FINES_REPORTS_SUMMARY_LIST_ROUTING_PATHS } from '../../fines-reports-summary-list/routing/constants/fines-reports-summary-list-routing-paths.constant';
 import { FINES_REPORTS_REPORT_SUMMARY_REPORT_TYPES } from '../constants/fines-reports-report-summary-report-types.constant';
 import { FINES_REPORTS_REPORT_SUMMARY_STATUS_DISPLAY } from '../constants/fines-reports-report-summary-status-display.constant';
@@ -9,7 +10,17 @@ import { mapFinesReportsReportInstanceToViewModel } from './fines-reports-report
 describe('mapFinesReportsReportInstanceToViewModel', () => {
   it('should map a ready report instance straight into the summary view model', () => {
     const result = mapFinesReportsReportInstanceToViewModel(
-      OPAL_FINES_REPORT_INSTANCE_MOCK,
+      {
+        ...OPAL_FINES_REPORT_INSTANCE_MOCK,
+        report_parameters: {
+          reportType: 'SUMMARY',
+          businessUnitIds: [77],
+          reportEnforcementMode: 'ALL',
+          includeAdult: true,
+          includeYouth: true,
+          includeCompany: true,
+        },
+      },
       FINES_REPORTS_SUMMARY_LIST_ROUTING_PATHS.children.operationalReportsByEnforcement,
     );
 
@@ -18,23 +29,32 @@ describe('mapFinesReportsReportInstanceToViewModel', () => {
     expect(result.reportType).toBe(FINES_REPORTS_REPORT_SUMMARY_REPORT_TYPES.summary);
     expect(result.generalRows).toEqual([
       { key: 'Status', value: 'Ready', type: 'text' },
-      { key: 'Date Created', value: '2006-06-01T10:36:00', type: 'dateTime' },
+      { key: 'Date Created', value: Date.parse('2006-06-01T10:36:00'), type: 'dateTime' },
       { key: 'Business Units', value: 'London North West', type: 'text' },
       { key: 'No. of Records', value: 1245, type: 'number' },
       { key: 'Created By', value: 'john.smith', type: 'text' },
     ]);
     expect(result.criteriaRows).toEqual([
       { key: 'Report Type', value: FINES_REPORTS_REPORT_SUMMARY_REPORT_TYPES.summary, type: 'text' },
-      { key: 'Action date', value: 'From 01 May 2006 to 30 June 2006', type: 'text' },
-      { key: 'Enforcement', value: 'Last enforcement - Bail warrant - Dated (BWTD)', type: 'text' },
+      { key: 'Enforcement', value: 'All accounts', type: 'text' },
       { key: 'Account type', value: 'Adult, Youth, Company', type: 'text' },
-      { key: 'Account status', value: 'Live', type: 'text' },
-      { key: 'Collection order', value: 'All accounts', type: 'text' },
-      { key: 'Minimum account balance', value: 10, type: 'currency' },
-      { key: 'Maximum account balance', value: 1000, type: 'currency' },
-      { key: 'Lower name range', value: '0', type: 'text' },
-      { key: 'Upper name range', value: 'Z', type: 'text' },
     ]);
+  });
+
+  it('should map a report timestamp with fractional seconds for the date pipe', () => {
+    const result = mapFinesReportsReportInstanceToViewModel(
+      {
+        ...OPAL_FINES_REPORT_INSTANCE_MOCK,
+        requested_at: '2026-07-16T16:13:08.600123',
+      },
+      FINES_REPORTS_SUMMARY_LIST_ROUTING_PATHS.children.operationalReportsByEnforcement,
+    );
+
+    expect(result.generalRows[1]).toEqual({
+      key: 'Date Created',
+      value: Date.parse('2026-07-16T16:13:08.600123'),
+      type: 'dateTime',
+    });
   });
 
   it('should fall back to the route-specific report type when the API payload does not include one', () => {
@@ -73,7 +93,7 @@ describe('mapFinesReportsReportInstanceToViewModel', () => {
     });
   });
 
-  it('should combine payment date range parameters into one criteria row', () => {
+  it('should map operational payment parameters into user-facing criteria rows', () => {
     const result = mapFinesReportsReportInstanceToViewModel(
       {
         ...OPAL_FINES_REPORT_INSTANCE_MOCK,
@@ -83,9 +103,13 @@ describe('mapFinesReportsReportInstanceToViewModel', () => {
         },
         report_parameters: {
           reportType: FINES_REPORTS_REPORT_SUMMARY_REPORT_TYPES.detailed,
-          payment_date_from: '01 May 2006',
-          payment_date_to: '30 June 2006',
-          account_type: ['Adult', 'Youth', 'Company'],
+          businessUnitIds: [77],
+          isPaymentMade: true,
+          reportMode: 'SINCE_DATE',
+          sinceDate: '2026-01-01',
+          includeAdult: true,
+          includeYouth: true,
+          includeCompany: true,
         },
       },
       FINES_REPORTS_SUMMARY_LIST_ROUTING_PATHS.children.operationalReportsByPayments,
@@ -93,32 +117,89 @@ describe('mapFinesReportsReportInstanceToViewModel', () => {
 
     expect(result.criteriaRows).toEqual([
       { key: 'Report Type', value: FINES_REPORTS_REPORT_SUMMARY_REPORT_TYPES.detailed, type: 'text' },
-      { key: 'Payment date', value: 'From 01 May 2006 to 30 June 2006', type: 'text' },
+      { key: 'Payments made', value: 'Yes', type: 'text' },
+      { key: 'Payment report mode', value: 'Since date', type: 'text' },
+      { key: 'Since date', value: '01 Jan 2026', type: 'text' },
       { key: 'Account type', value: 'Adult, Youth, Company', type: 'text' },
     ]);
   });
 
-  it('should show a partial action date range when only one date is supplied', () => {
+  it('should group a partial last-action date range with its operational enforcement criteria', () => {
     const result = mapFinesReportsReportInstanceToViewModel(
       {
         ...OPAL_FINES_REPORT_INSTANCE_MOCK,
         report_parameters: {
           reportType: FINES_REPORTS_REPORT_SUMMARY_REPORT_TYPES.summary,
-          action_date_from: '01 May 2006',
-          account_type: ['Adult'],
+          businessUnitIds: [77],
+          reportEnforcementMode: 'LAST_ACTION',
+          enforcementAction: 'NOENF',
+          lastActionDateFrom: '2026-01-01',
+          includeAdult: true,
+        },
+      },
+      FINES_REPORTS_SUMMARY_LIST_ROUTING_PATHS.children.operationalReportsByEnforcement,
+      {
+        ...OPAL_FINES_RESULT_REF_DATA_MOCK,
+        result_id: 'BWTD',
+        result_title: 'Bail Warrant - dated',
+      },
+    );
+
+    expect(result.criteriaRows).toEqual([
+      { key: 'Report Type', value: FINES_REPORTS_REPORT_SUMMARY_REPORT_TYPES.summary, type: 'text' },
+      { key: 'Enforcement', value: 'Last enforcement - Bail Warrant - dated (BWTD)', type: 'text' },
+      { key: 'Action date', value: 'From 01 Jan 2026', type: 'text' },
+      { key: 'Account type', value: 'Adult', type: 'text' },
+    ]);
+  });
+
+  it('should map the full operational enforcement criteria in the API response order', () => {
+    const result = mapFinesReportsReportInstanceToViewModel(
+      {
+        ...OPAL_FINES_REPORT_INSTANCE_MOCK,
+        report_parameters: {
+          reportType: FINES_REPORTS_REPORT_SUMMARY_REPORT_TYPES.summary,
+          businessUnitIds: [77],
+          reportEnforcementMode: 'ALL',
+          includeAdult: true,
+          includeYouth: true,
+          includeCompany: true,
+          onlyAccountsWithParentGuardian: true,
+          accountStatus: 'LIVE',
+          collectionOrderChoice: 'ALL',
+          minBalance: '120.50',
+          maxBalance: '1000.00',
+          firstPaymentOrPayByInNext7Days: true,
+          lowerNameRange: 'A',
+          upperNameRange: 'Z',
         },
       },
       FINES_REPORTS_SUMMARY_LIST_ROUTING_PATHS.children.operationalReportsByEnforcement,
     );
 
-    expect(result.criteriaRows).toContainEqual({
-      key: 'Action date',
-      value: 'From 01 May 2006',
-      type: 'text',
-    });
+    expect(result.criteriaRows).toEqual([
+      { key: 'Report Type', value: FINES_REPORTS_REPORT_SUMMARY_REPORT_TYPES.summary, type: 'text' },
+      { key: 'Enforcement', value: 'All accounts', type: 'text' },
+      {
+        key: 'Account type',
+        value: 'Adult, Youth, Company, Only accounts with parent or guardian to pay',
+        type: 'text',
+      },
+      { key: 'Account status', value: 'Live', type: 'text' },
+      { key: 'Collection order', value: 'All accounts', type: 'text' },
+      { key: 'Minimum account balance', value: 120.5, type: 'currency' },
+      { key: 'Maximum account balance', value: 1000, type: 'currency' },
+      {
+        key: 'Only accounts with initial or full payment due in the next 7 days',
+        value: 'TRUE',
+        type: 'text',
+      },
+      { key: 'Lower name range', value: 'A', type: 'text' },
+      { key: 'Upper name range', value: 'Z', type: 'text' },
+    ]);
   });
 
-  it('should leave unknown report parameter keys unchanged', () => {
+  it('should ignore report parameters that are not part of the operational report contract', () => {
     const result = mapFinesReportsReportInstanceToViewModel(
       {
         ...OPAL_FINES_REPORT_INSTANCE_MOCK,
@@ -130,7 +211,7 @@ describe('mapFinesReportsReportInstanceToViewModel', () => {
       FINES_REPORTS_SUMMARY_LIST_ROUTING_PATHS.children.operationalReportsByEnforcement,
     );
 
-    expect(result.criteriaRows).toContainEqual({
+    expect(result.criteriaRows).not.toContainEqual({
       key: 'unknown_parameter_key',
       value: 'Unknown value',
       type: 'text',

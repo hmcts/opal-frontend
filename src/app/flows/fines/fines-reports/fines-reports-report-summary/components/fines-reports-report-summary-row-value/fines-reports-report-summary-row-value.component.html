@@ -4,7 +4,7 @@
   }
   @case ('dateTime') {
     <p class="govuk-body">
-      {{ stringValue() | dateFormat: dateCreatedFormat.input : dateCreatedFormat.output }}
+      {{ numberValue() | date: "dd MMM yyyy 'at' HH:mm" }}
     </p>
   }
   @case ('notProvided') {

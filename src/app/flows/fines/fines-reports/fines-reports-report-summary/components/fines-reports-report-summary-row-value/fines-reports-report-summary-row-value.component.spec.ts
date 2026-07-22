@@ -20,10 +20,10 @@ describe('FinesReportsReportSummaryRowValueComponent', () => {
     expect(fixture.nativeElement.textContent).toContain('Ready');
   });
 
-  it('should render date time values using the shared date format pipe', () => {
+  it('should render date time values using Angular date pipe', () => {
     fixture.componentRef.setInput('row', {
       key: 'Date Created',
-      value: '2006-06-01T10:36:00',
+      value: Date.parse('2006-06-01T10:36:00'),
       type: 'dateTime',
     });
     fixture.detectChanges();

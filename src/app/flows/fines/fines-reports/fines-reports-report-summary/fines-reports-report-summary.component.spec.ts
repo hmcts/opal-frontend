@@ -34,9 +34,10 @@ describe('FinesReportsReportSummaryComponent', () => {
       },
       report_parameters: {
         reportType: FINES_REPORTS_REPORT_SUMMARY_REPORT_TYPES.summary,
-        account_type: ['Adult', 'Youth'],
-        minimum_account_balance: '120.50',
-        maximum_account_balance: '1000.00',
+        includeAdult: true,
+        includeYouth: true,
+        minBalance: '120.50',
+        maxBalance: '1000.00',
       },
     },
     enforcementReportTypeId,
@@ -52,9 +53,10 @@ describe('FinesReportsReportSummaryComponent', () => {
       },
       report_parameters: {
         reportType: FINES_REPORTS_REPORT_SUMMARY_REPORT_TYPES.detailed,
-        account_type: ['Adult', 'Company'],
-        account_status: 'Closed',
-        collection_order: 'With collection order',
+        includeAdult: true,
+        includeCompany: true,
+        accountStatus: 'CLOSED',
+        collectionOrderChoice: 'WITH',
       },
     },
     paymentsReportTypeId,
@@ -147,7 +149,7 @@ describe('FinesReportsReportSummaryComponent', () => {
     fixture.detectChanges();
 
     expect(fixture.nativeElement.querySelector('h1')?.textContent).toContain(
-      'Operational reports (by enforcement) - ABDC - Summary',
+      'Operational report (by enforcement) - ABDC - Summary',
     );
     expect(fixture.nativeElement.querySelector('.govuk-back-link')?.textContent.trim()).toBe('Back');
   });
@@ -158,7 +160,7 @@ describe('FinesReportsReportSummaryComponent', () => {
     fixture.detectChanges();
 
     expect(fixture.nativeElement.querySelector('h1')?.textContent).toContain(
-      'Operational reports (by enforcement) - ABDC - Summary',
+      'Operational report (by enforcement) - ABDC - Summary',
     );
     expect(fixture.nativeElement.textContent).toContain('17 Oct 2025 at 09:30');
     expect(fixture.nativeElement.textContent).toContain('Summary');
@@ -170,7 +172,7 @@ describe('FinesReportsReportSummaryComponent', () => {
     fixture.detectChanges();
 
     expect(fixture.nativeElement.querySelector('h1')?.textContent).toContain(
-      'Operational reports (by payments) - PYMT - Detail',
+      'Operational report (by payments) - PYMT - Detail',
     );
   });
 
@@ -240,7 +242,7 @@ describe('FinesReportsReportSummaryComponent', () => {
 
     const pageText = fixture.nativeElement.textContent;
 
-    expect(fixture.nativeElement.querySelector('h1')?.textContent).toContain('Operational reports (by enforcement)');
+    expect(fixture.nativeElement.querySelector('h1')?.textContent).toContain('Operational report (by enforcement)');
     expect(fixture.nativeElement.querySelector('.moj-alert--error')).toBeNull();
     expect(pageText).not.toContain('ABDC');
     expect(pageText).not.toContain('General');

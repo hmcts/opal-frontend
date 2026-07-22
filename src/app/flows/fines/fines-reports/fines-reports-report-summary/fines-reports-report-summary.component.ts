@@ -8,10 +8,10 @@ import {
 } from '@hmcts/opal-frontend-common/components/govuk/govuk-summary-list';
 import { map } from 'rxjs';
 import { FINES_ROUTING_PATHS } from '../../routing/constants/fines-routing-paths.constant';
-import { FINES_REPORT_SUMMARY_LIST_REPORT_CONFIGURATION } from '../fines-reports-summary-list/constants/fines-reports-summary-list-report-configuration.constant';
 import { FINES_REPORTS_ROUTING_PATHS } from '../routing/constants/fines-reports-routing-paths.constant';
 import { type IFinesReportsReportSummaryViewModel } from './interfaces/fines-reports-report-summary-view-model.interface';
 import { FinesReportsReportSummaryRowValueComponent } from './components/fines-reports-report-summary-row-value/fines-reports-report-summary-row-value.component';
+import { FINES_REPORTS_REPORT_SUMMARY_HEADINGS } from './constants/fines-reports-report-summary-headings.constant';
 
 @Component({
   selector: 'app-fines-reports-report-summary',
@@ -79,9 +79,7 @@ export class FinesReportsReportSummaryComponent {
   public readonly pageHeading = computed(() => {
     const reportSummary = this.reportSummary();
     const reportHeading =
-      FINES_REPORT_SUMMARY_LIST_REPORT_CONFIGURATION.find(
-        (config) => config.id === (reportSummary?.reportId ?? this.reportTypeId),
-      )?.heading || 'Operational report';
+      FINES_REPORTS_REPORT_SUMMARY_HEADINGS[reportSummary?.reportId ?? this.reportTypeId] ?? 'Operational report';
 
     if (!reportSummary) {
       return reportHeading;

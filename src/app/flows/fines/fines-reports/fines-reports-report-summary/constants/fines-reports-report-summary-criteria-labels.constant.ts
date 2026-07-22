@@ -13,4 +13,9 @@ export const FINES_REPORTS_REPORT_SUMMARY_CRITERIA_LABELS = {
   paymentDate: 'Payment date',
   minimumPaymentAmount: 'Minimum payment amount',
   maximumPaymentAmount: 'Maximum payment amount',
+  paymentsMade: 'Payments made',
+  paymentReportMode: 'Payment report mode',
+  sinceLastEnforcementAction: 'Since last enforcement action',
+  sinceDate: 'Since date',
+  firstPaymentOrPayByInNext7Days: 'Only accounts with initial or full payment due in the next 7 days',
 } as const;
