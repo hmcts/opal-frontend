@@ -56,9 +56,13 @@ describe('FinesMacOffenceDetailsAddAnOffenceFormComponent', () => {
     const freshFinesMacOffenceDetailsStore = TestBed.inject(FinesMacOffenceDetailsStore);
 
     freshFinesMacStore.setFinesMacStore(FINES_MAC_STATE_MOCK);
-    freshFinesMacOffenceDetailsStore.setOffenceDetailsDraft(FINES_MAC_OFFENCE_DETAILS_DRAFT_STATE_MOCK.offenceDetailsDraft);
+    freshFinesMacOffenceDetailsStore.setOffenceDetailsDraft(
+      FINES_MAC_OFFENCE_DETAILS_DRAFT_STATE_MOCK.offenceDetailsDraft,
+    );
     freshFinesMacOffenceDetailsStore.setRowIndex(0);
-    freshFinesMacOffenceDetailsStore.setRemoveMinorCreditor(FINES_MAC_OFFENCE_DETAILS_DRAFT_STATE_MOCK.removeMinorCreditor);
+    freshFinesMacOffenceDetailsStore.setRemoveMinorCreditor(
+      FINES_MAC_OFFENCE_DETAILS_DRAFT_STATE_MOCK.removeMinorCreditor,
+    );
 
     configureStore?.(freshFinesMacOffenceDetailsStore, freshFinesMacStore);
 

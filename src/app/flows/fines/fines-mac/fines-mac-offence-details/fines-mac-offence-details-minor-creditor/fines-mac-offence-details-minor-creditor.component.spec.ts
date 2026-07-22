@@ -79,7 +79,8 @@ describe('FinesMacOffenceDetailsMinorCreditorComponent', () => {
   });
 
   it('should not mark the offence dirty when saving an unchanged existing creditor and nothing else is unsaved', () => {
-    const routerSpy = vi.spyOn<any, any>(component['router'], 'navigate');
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    const routerSpy = vi.spyOn(component['router'] as any, 'navigate');
     const finesMacState = structuredClone(FINES_MAC_STATE_MOCK);
     finesMacState.offenceDetails = [];
     finesMacStore.setFinesMacStore(finesMacState);
