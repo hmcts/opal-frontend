@@ -706,7 +706,9 @@ describe('FinesMacOffenceDetailsAddAnOffenceFormComponent', () => {
     component.form.setErrors(null);
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     vi.spyOn<any, any>(component, 'checkImpositionMinorCreditors').mockImplementation(() => {});
-    vi.spyOn(component['offenceDetailsService'], 'enforceOffenceCodeValidationBeforeSubmit').mockImplementation(() => {});
+    vi.spyOn(component['offenceDetailsService'], 'enforceOffenceCodeValidationBeforeSubmit').mockImplementation(
+      () => {},
+    );
 
     component.handleFormSubmit(new SubmitEvent('submit'));
 
