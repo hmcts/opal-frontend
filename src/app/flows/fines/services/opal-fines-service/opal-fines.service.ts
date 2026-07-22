@@ -66,6 +66,8 @@ import { IOpalFinesDraftAccountPatchRequestPayload } from '@services/fines/opal-
 import { IOpalFinesDeleteDefendantAccountPartyPayload } from './interfaces/opal-fines-delete-defendant-account-party-payload.interface';
 import { IOpalFinesAccountMajorCreditorDetailsHeader } from '../../fines-acc/fines-acc-major-creditor-details/interfaces/fines-acc-major-creditor-details-header.interface';
 import { IOpalFinesAccountMajorCreditorAtAGlance } from './interfaces/opal-fines-account-major-creditor-at-a-glance.interface';
+import { IOpalFinesAccountDefendantDetailsConsolidatedAccount } from './interfaces/opal-fines-account-defendant-account-consolidated-account.interface';
+import { IOpalFinesAccountDefendantDetailsConsolidatedAccounts } from './interfaces/opal-fines-account-defendant-account-consolidated-accounts.interface';
 
 @Injectable({
   providedIn: 'root',
@@ -506,6 +508,7 @@ export class OpalFines {
       'defendantAccountHistoryAndNotesCache$',
       'defendantAccountPaymentTermsLatestCache$',
       'defendantAccountFixedPenaltyCache$',
+      'defendantAccountConsolidatedAccountsCache$',
       'minorCreditorAccountAtAGlanceCache$',
       'minorCreditorAccountCreditorCache$',
       'minorCreditorAccountHistoryAndNotesCache$',
@@ -1414,5 +1417,33 @@ export class OpalFines {
         );
     }
     return this.cache.majorCreditorAccountAtAGlanceCache$;
+  }
+
+  /**
+   * Retrieves the defendant account consolidated accounts data.
+   * If the account details for the specified tab are not already cached, it makes an HTTP request to fetch the data and caches it for future use.
+   *
+   * @param account_id - The ID of the defendant account.
+   * @returns An Observable that emits the account details for the consolidated accounts tab.
+   */
+  public getDefendantAccountConsolidatedAccounts(
+    account_id: number | null,
+  ): Observable<IOpalFinesAccountDefendantDetailsConsolidatedAccounts> {
+    if (!this.cache.defendantAccountConsolidatedAccountsCache$) {
+      const url = `${OPAL_FINES_PATHS.defendantAccounts}/${account_id}/consolidated-accounts`;
+      this.cache.defendantAccountConsolidatedAccountsCache$ = this.http
+        .get<IOpalFinesAccountDefendantDetailsConsolidatedAccount[]>(url, { observe: 'response' })
+        .pipe(
+          map((response: HttpResponse<IOpalFinesAccountDefendantDetailsConsolidatedAccount[]>) => {
+            const version = this.extractEtagVersion(response.headers);
+            return {
+              consolidated_accounts: response.body ?? [],
+              version,
+            };
+          }),
+          shareReplay(1),
+        );
+    }
+    return this.cache.defendantAccountConsolidatedAccountsCache$;
   }
 }

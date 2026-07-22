@@ -9,4 +9,5 @@ export const FINES_ACC_DEFENDANT_ACCOUNT_TABS_CACHE_MAP: IFinesAccDefendantAccou
   enforcement: 'defendantAccountEnforcementCache$',
   impositions: 'defendantAccountImpositionsCache$',
   'history-and-notes': 'defendantAccountHistoryAndNotesCache$',
+  'consolidated-accounts': 'defendantAccountConsolidatedAccountsCache$',
 };

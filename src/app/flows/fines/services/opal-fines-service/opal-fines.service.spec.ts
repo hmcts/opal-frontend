@@ -68,6 +68,7 @@ import { FINES_ACC_MAJOR_CREDITOR_DETAILS_HEADER_MOCK } from '../../fines-acc/fi
 import { OPAL_FINES_ACCOUNT_MAJOR_CREDITOR_AT_A_GLANCE_MOCK } from './mocks/opal-fines-account-major-creditor-at-a-glance-with-defendant.mock';
 import { OPAL_FINES_ACCOUNT_MINOR_CREDITOR_DETAILS_HISTORY_AND_NOTES_TAB_REF_DATA_MOCK } from './mocks/opal-fines-account-minor-creditor-details-history-and-notes-tab-ref-data.mock';
 import { OPAL_FINES_MINOR_CREDITOR_ACCOUNT_HISTORY_PARAMS_MOCK } from './mocks/opal-fines-minor-creditor-account-history-params.mock';
+import { OPAL_FINES_ACCOUNT_DEFENDANT_DETAILS_CONSOLIDATED_ACCOUNTS_MOCK } from './mocks/opal-fines-account-defendant-details-consolidated-accounts.mock';
 
 describe('OpalFines', () => {
   let service: OpalFines;
@@ -1279,6 +1280,46 @@ describe('OpalFines', () => {
     req.flush(OPAL_FINES_ACCOUNT_DEFENDANT_DETAILS_HISTORY_AND_NOTES_TAB_REF_DATA_MOCK);
   });
 
+  it('should getDefendantAccountConsolidatedAccounts', () => {
+    const account_id = 77;
+    const apiUrl = `${OPAL_FINES_PATHS.defendantAccounts}/${account_id}/consolidated-accounts`;
+    const expectedResponse = {
+      ...OPAL_FINES_ACCOUNT_DEFENDANT_DETAILS_CONSOLIDATED_ACCOUNTS_MOCK,
+      version: '"123"',
+    };
+
+    service.getDefendantAccountConsolidatedAccounts(account_id).subscribe((response) => {
+      expect(response).toEqual(expectedResponse);
+    });
+
+    const req = httpMock.expectOne(apiUrl);
+    expect(req.request.method).toBe('GET');
+
+    req.flush(OPAL_FINES_ACCOUNT_DEFENDANT_DETAILS_CONSOLIDATED_ACCOUNTS_MOCK.consolidated_accounts, {
+      headers: { ETag: '"123"' },
+    });
+  });
+
+  it('should return cached defendant account consolidated accounts on repeated calls', () => {
+    const account_id = 77;
+    const apiUrl = `${OPAL_FINES_PATHS.defendantAccounts}/${account_id}/consolidated-accounts`;
+    const expectedResponse = {
+      ...OPAL_FINES_ACCOUNT_DEFENDANT_DETAILS_CONSOLIDATED_ACCOUNTS_MOCK,
+      version: null,
+    };
+
+    service.getDefendantAccountConsolidatedAccounts(account_id).subscribe();
+
+    const req = httpMock.expectOne(apiUrl);
+    req.flush(OPAL_FINES_ACCOUNT_DEFENDANT_DETAILS_CONSOLIDATED_ACCOUNTS_MOCK.consolidated_accounts);
+
+    service.getDefendantAccountConsolidatedAccounts(account_id).subscribe((response) => {
+      expect(response).toEqual(expectedResponse);
+    });
+
+    httpMock.expectNone(apiUrl);
+  });
+
   it('should send a POST request to add note API with correct payload and return mock response', () => {
     const payload: IOpalFinesAddNotePayload = OPAL_FINES_ADD_NOTE_PAYLOAD_MOCK;
     const version = '1';
@@ -1412,6 +1453,9 @@ describe('OpalFines', () => {
     service['cache']['defendantAccountFixedPenaltyCache$'] = of(
       OPAL_FINES_ACCOUNT_DEFENDANT_DETAILS_FIXED_PENALTY_MOCK,
     );
+    service['cache']['defendantAccountConsolidatedAccountsCache$'] = of(
+      OPAL_FINES_ACCOUNT_DEFENDANT_DETAILS_CONSOLIDATED_ACCOUNTS_MOCK,
+    );
     service['cache']['minorCreditorAccountAtAGlanceCache$'] = of(
       OPAL_FINES_ACCOUNT_MINOR_CREDITOR_AT_A_GLANCE_WITH_DEFENDANT_MOCK,
     );
@@ -1426,6 +1470,7 @@ describe('OpalFines', () => {
     expect(service['cache']['defendantAccountHistoryAndNotesCache$']).toBeNull();
     expect(service['cache']['defendantAccountPaymentTermsLatestCache$']).toBeNull();
     expect(service['cache']['defendantAccountFixedPenaltyCache$']).toBeNull();
+    expect(service['cache']['defendantAccountConsolidatedAccountsCache$']).toBeNull();
     expect(service['cache']['minorCreditorAccountAtAGlanceCache$']).toBeNull();
   });
 

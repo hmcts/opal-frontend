@@ -1,0 +1,53 @@
+<div class="govuk-grid-column-full">
+  <h2 [class]="style.heading">Consolidated accounts</h2>
+  <hr [class]="style.hr" />
+
+  @if (tabData.consolidated_accounts.length) {
+    <opal-lib-custom-horizontal-scroll-pane>
+      <table class="govuk-table">
+        <thead class="govuk-table__head">
+          <tr class="govuk-table__row">
+            <th scope="col" class="govuk-table__header">Account</th>
+            <th scope="col" class="govuk-table__header">Name</th>
+            <th scope="col" class="govuk-table__header">Date imposed</th>
+            <th scope="col" class="govuk-table__header">Imposed by</th>
+            <th scope="col" class="govuk-table__header">Reference</th>
+          </tr>
+        </thead>
+        <tbody class="govuk-table__body">
+          @for (account of tabData.consolidated_accounts; track account.account_id; let rowIndex = $index) {
+            <tr class="govuk-table__row">
+              <td class="govuk-table__cell" [id]="'consolidated-account-number-' + rowIndex">
+                <a
+                  class="govuk-link govuk-link--no-visited-state"
+                  [routerLink]="getAccountRouterLink(account.account_id)"
+                  target="_blank"
+                  fragment="at-a-glance"
+                >
+                  {{ account.account_number }}
+                </a>
+              </td>
+              <td class="govuk-table__cell" [id]="'consolidated-account-name-' + rowIndex">
+                {{ account.last_name | uppercase }}, {{ account.first_name }}
+              </td>
+              <td
+                class="govuk-table__cell govuk-table__cell--numeric"
+                [id]="'consolidated-account-date-imposed-' + rowIndex"
+              >
+                {{ account.date_imposed | dateFormat: DATE_INPUT_FORMAT : DATE_OUTPUT_FORMAT }}
+              </td>
+              <td class="govuk-table__cell" [id]="'consolidated-account-imposed-by-' + rowIndex">
+                {{ account.imposed_by }}
+              </td>
+              <td class="govuk-table__cell" [id]="'consolidated-account-reference-' + rowIndex">
+                {{ account.reference }}
+              </td>
+            </tr>
+          }
+        </tbody>
+      </table>
+    </opal-lib-custom-horizontal-scroll-pane>
+  } @else {
+    <p class="govuk-body">There are no consolidated accounts for this account.</p>
+  }
+</div>
