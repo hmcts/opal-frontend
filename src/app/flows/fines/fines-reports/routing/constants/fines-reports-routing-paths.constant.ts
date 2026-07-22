@@ -4,6 +4,6 @@ export const FINES_REPORTS_ROUTING_PATHS: IFinesReportsRoutingPaths = {
   root: 'reports',
   children: {
     summaryList: 'summary-list',
-    reportSummary: 'summary/:instanceId',
+    reportSummary: 'summary',
   },
 };

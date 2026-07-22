@@ -86,7 +86,7 @@ describe('FinesReportsReportSummaryComponent', () => {
     mockRouter: { navigate: ReturnType<typeof vi.fn> };
   }> => {
     const reportParamMap = convertToParamMap({ reportTypeId });
-    const reportInstanceParamMap = convertToParamMap({ instanceId: reportInstanceId });
+    const reportInstanceParamMap = convertToParamMap({ reportInstanceId });
     const mockRouter = {
       navigate: vi.fn().mockName('Router.navigate'),
     };

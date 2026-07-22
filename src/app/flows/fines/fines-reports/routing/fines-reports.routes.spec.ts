@@ -38,11 +38,11 @@ describe('finesReports routes', () => {
   it('should load the report summary route', () => {
     const reportRoute = routing.find((route) => route.path === ':reportTypeId');
     const reportSummaryRoute = reportRoute?.children?.find(
-      (route) => route.path === FINES_REPORTS_ROUTING_PATHS.children.reportSummary,
+      (route) => route.path === `${FINES_REPORTS_ROUTING_PATHS.children.reportSummary}/:reportInstanceId`,
     );
 
     expect(reportSummaryRoute).toEqual({
-      path: FINES_REPORTS_ROUTING_PATHS.children.reportSummary,
+      path: `${FINES_REPORTS_ROUTING_PATHS.children.reportSummary}/:reportInstanceId`,
       loadComponent: expect.any(Function),
       data: {
         title: FINES_REPORTS_ROUTING_TITLES.children.reportSummary,

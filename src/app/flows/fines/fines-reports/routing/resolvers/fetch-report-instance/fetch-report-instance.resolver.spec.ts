@@ -21,7 +21,7 @@ describe('fetchReportInstanceResolver', () => {
       : undefined;
 
     return {
-      paramMap: convertToParamMap(reportInstanceId ? { instanceId: reportInstanceId } : {}),
+      paramMap: convertToParamMap(reportInstanceId ? { reportInstanceId } : {}),
       parent: parentRoute,
     } as ActivatedRouteSnapshot;
   };
