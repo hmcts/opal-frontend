@@ -160,7 +160,7 @@ describe('Account Enquiry - Defendant Header', () => {
   it(
     'AC1, AC8: renders a persistent account status banner and passes axe on the header shell',
     {
-      tags: [...buildTags('@JIRA-STORY:PO-5755', '@JIRA-NFR:PO-2322'), '@JIRA-TEST-KEY:PO-5755'],
+      tags: [...buildTags('@JIRA-STORY:PO-5755', '@JIRA-NFR:PO-2322'), '@JIRA-EPIC:PO-812', '@JIRA-TEST-KEY:PO-5755'],
     },
     () => {
       const header = structuredClone(DEFENDANT_HEADER_MOCK);
