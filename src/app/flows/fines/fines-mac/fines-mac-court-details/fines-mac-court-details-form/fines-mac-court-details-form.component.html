@@ -3,7 +3,7 @@
   [errors]="formErrorSummaryMessage"
   (errorClick)="scrollTo($event)"
 ></opal-lib-govuk-error-summary>
-<form (submit)="handleFormSubmit($event)">
+<form autocomplete="off" (submit)="handleFormSubmit($event)">
   <opal-lib-alphagov-accessible-autocomplete
     [control]="form.get('fm_court_details_originator_id')"
     [labelText]="originatorIdLabelText"
