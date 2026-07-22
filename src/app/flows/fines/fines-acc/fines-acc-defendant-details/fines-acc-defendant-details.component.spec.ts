@@ -21,6 +21,8 @@ import { FINES_ACC_DEFENDANT_ROUTING_PATHS } from '../routing/constants/fines-ac
 import { OPAL_FINES_ACCOUNT_DEFENDANT_DETAILS_PARENT_OR_GUARDIAN_TAB_REF_DATA_MOCK } from '@services/fines/opal-fines-service/mocks/opal-fines-account-defendant-details-parent-or-guardian-tab-ref-data.mock';
 import { OPAL_FINES_ACCOUNT_DEFENDANT_DETAILS_FIXED_PENALTY_MOCK } from '@services/fines/opal-fines-service/mocks/opal-fines-account-defendant-details-fixed-penalty.mock';
 import { OPAL_FINES_RESULT_REF_DATA_MOCK } from '@services/fines/opal-fines-service/mocks/opal-fines-result-ref-data.mock';
+import { OPAL_FINES_ACCOUNT_DEFENDANT_DETAILS_CONSOLIDATED_ACCOUNTS_MOCK } from '@services/fines/opal-fines-service/mocks/opal-fines-account-defendant-details-consolidated-accounts.mock';
+import { FINES_ACC_DEFENDANT_ACCOUNT_TABS_CACHE_MAP } from './constants/fines-acc-defendant-account-tabs-cache-map.constant';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
 
 describe('FinesAccDefendantDetailsComponent', () => {
@@ -77,6 +79,7 @@ describe('FinesAccDefendantDetailsComponent', () => {
       clearCache: vi.fn().mockName('OpalFines.clearCache'),
       getResult: vi.fn().mockName('OpalFines.getResult'),
       getDefendantAccountFixedPenalty: vi.fn().mockName('OpalFines.getDefendantAccountFixedPenalty'),
+      getDefendantAccountConsolidatedAccounts: vi.fn().mockName('OpalFines.getDefendantAccountConsolidatedAccounts'),
     };
     mockOpalFinesService.getDefendantAccountHeadingData.mockReturnValue(of(FINES_ACC_DEFENDANT_DETAILS_HEADER_MOCK));
     mockOpalFinesService.getDefendantAccountAtAGlance.mockReturnValue(
@@ -100,6 +103,9 @@ describe('FinesAccDefendantDetailsComponent', () => {
     );
     mockOpalFinesService.getDefendantAccountImpositionsTabData.mockReturnValue(
       of(OPAL_FINES_ACCOUNT_DEFENDANT_DETAILS_IMPOSITIONS_TAB_REF_DATA_MOCK),
+    );
+    mockOpalFinesService.getDefendantAccountConsolidatedAccounts.mockReturnValue(
+      of(OPAL_FINES_ACCOUNT_DEFENDANT_DETAILS_CONSOLIDATED_ACCOUNTS_MOCK),
     );
     mockOpalFinesService.getResult.mockReturnValue(of(OPAL_FINES_RESULT_REF_DATA_MOCK));
 
@@ -296,6 +302,22 @@ describe('FinesAccDefendantDetailsComponent', () => {
     component['refreshFragment$'].next('impositions');
     expect(mockOpalFinesService.getDefendantAccountImpositionsTabData).toHaveBeenCalledWith(
       MOCK_FINES_ACCOUNT_STATE.account_id,
+    );
+  });
+
+  it('should fetch the consolidated accounts tab data when fragment is changed to consolidated-accounts', () => {
+    component['refreshFragment$'].next('consolidated-accounts');
+    component.tabConsolidatedAccounts$.subscribe();
+
+    expect(mockOpalFinesService.getDefendantAccountConsolidatedAccounts).toHaveBeenCalledWith(
+      MOCK_FINES_ACCOUNT_STATE.account_id,
+    );
+    expect(mockPayloadService.transformPayload).toHaveBeenCalled();
+  });
+
+  it('should map the consolidated accounts tab to its service cache key', () => {
+    expect(FINES_ACC_DEFENDANT_ACCOUNT_TABS_CACHE_MAP['consolidated-accounts']).toBe(
+      'defendantAccountConsolidatedAccountsCache$',
     );
   });
 
