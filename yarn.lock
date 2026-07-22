@@ -1294,11 +1294,11 @@ __metadata:
   linkType: hard
 
 "@azure/msal-browser@npm:^5.0.0":
-  version: 5.7.0
-  resolution: "@azure/msal-browser@npm:5.7.0"
+  version: 5.16.0
+  resolution: "@azure/msal-browser@npm:5.16.0"
   dependencies:
-    "@azure/msal-common": "npm:16.5.0"
-  checksum: 10/37b10c7272db093bbfde9f7307821350e3eb448299ab7319a0c05e283c3f1f904ac7cb14ff78a8fbcc2ea9534b526a4261bb6dd4130cdbd39d58435a266a9871
+    "@azure/msal-common": "npm:16.11.0"
+  checksum: 10/ceec41de0650670c56440c7908cd907349ce146ca3508c51eab7e65627ba13511295b855f27798b037c96c75ddd47213f8aa0c47944b808c01b20d294812718d
   languageName: node
   linkType: hard
 
@@ -1318,17 +1318,17 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@azure/msal-common@npm:16.11.0":
+  version: 16.11.0
+  resolution: "@azure/msal-common@npm:16.11.0"
+  checksum: 10/d34c650893f9a577c92103649bd7ef90da37fb3c86483dec9a032b71f0a06cb259ea3b597edded26c561ebcd9672f03394ebb89dd7868d0cfe1b11fb7fbb2d2c
+  languageName: node
+  linkType: hard
+
 "@azure/msal-common@npm:16.4.1":
   version: 16.4.1
   resolution: "@azure/msal-common@npm:16.4.1"
   checksum: 10/0c9a0c06a3e52a7fe95fef9939124287df926a2c8dc613033a645dd4a15218d65b59b1b25b29fcc7ad0a7984e6d33cf7844e3489da182c54b3f8c4bd7caabb05
-  languageName: node
-  linkType: hard
-
-"@azure/msal-common@npm:16.5.0":
-  version: 16.5.0
-  resolution: "@azure/msal-common@npm:16.5.0"
-  checksum: 10/8577a795f7f255a3e6fdc1198acf0328f1391770ae0f56010192af46e96867cbd6fede3eb8d67f5eabf77a1fe3daf0f55d94a26ff9c98eae9943f3f5c722108f
   languageName: node
   linkType: hard
 
@@ -1354,7 +1354,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@azure/opentelemetry-instrumentation-azure-sdk@npm:^1.0.0":
+"@azure/opentelemetry-instrumentation-azure-sdk@npm:^1.0.0, @azure/opentelemetry-instrumentation-azure-sdk@npm:^1.0.0-beta.5":
   version: 1.0.0
   resolution: "@azure/opentelemetry-instrumentation-azure-sdk@npm:1.0.0"
   dependencies:
@@ -1369,7 +1369,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@azure/opentelemetry-instrumentation-azure-sdk@npm:^1.0.0-beta.5, @azure/opentelemetry-instrumentation-azure-sdk@npm:^1.0.0-beta.7":
+"@azure/opentelemetry-instrumentation-azure-sdk@npm:^1.0.0-beta.7":
   version: 1.0.0-beta.10
   resolution: "@azure/opentelemetry-instrumentation-azure-sdk@npm:1.0.0-beta.10"
   dependencies:

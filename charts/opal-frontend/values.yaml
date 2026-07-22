@@ -7,14 +7,11 @@ nodejs:
     opal:
       secrets:
         - app-insights-connection-string
-        - redis-connection-string
+        - managed-redis-connection-string
         - opal-frontend-session-secret
         - opal-frontend-cookie-secret
         - opal-frontend-csrf-secret
         - launch-darkly-client-id
-        - AzureADClientId
-        - AzureADClientSecret
-        - AzureADTenantId
   environment:
     ALLOW_CONFIG_MUTATIONS: true
     FEATURES_REDIS_ENABLED: true
