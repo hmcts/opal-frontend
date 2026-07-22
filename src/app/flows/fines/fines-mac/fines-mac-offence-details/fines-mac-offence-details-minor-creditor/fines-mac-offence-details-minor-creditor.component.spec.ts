@@ -70,6 +70,7 @@ describe('FinesMacOffenceDetailsMinorCreditorComponent', () => {
     fixture.detectChanges();
 
     expect(finesMacOffenceDetailsStore.offenceDetailsDraft()[0].childFormData!.length).toEqual(1);
+    expect(finesMacOffenceDetailsStore.offenceDetailsDraftDirty()).toBe(true);
     expect(finesMacStore.unsavedChanges()).toBe(true);
     expect(routerSpy).toHaveBeenCalledWith([FINES_MAC_OFFENCE_DETAILS_ROUTING_PATHS.children.addOffence], {
       relativeTo: component['activatedRoute'].parent,

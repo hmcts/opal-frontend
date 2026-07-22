@@ -681,7 +681,7 @@ describe('FinesMacOffenceDetailsAddAnOffenceFormComponent', () => {
   });
 
   it('should keep the add offence form dirty when returning from a saved minor creditor', () => {
-    finesMacOffenceDetailsStore.setMinorCreditorAdded(true);
+    finesMacOffenceDetailsStore.setOffenceDetailsDraftDirty(true);
 
     component['initialAddAnOffenceDetailsSetup']();
 
@@ -690,7 +690,7 @@ describe('FinesMacOffenceDetailsAddAnOffenceFormComponent', () => {
   });
 
   it('should emit unsaved changes on cancel when returning from a saved minor creditor', () => {
-    finesMacOffenceDetailsStore.setMinorCreditorAdded(true);
+    finesMacOffenceDetailsStore.setOffenceDetailsDraftDirty(true);
     finesMacOffenceDetailsStore.setEmptyOffences(true);
     component['initialAddAnOffenceDetailsSetup']();
     const unsavedChangesEmitSpy = vi.spyOn(component['unsavedChanges'], 'emit');
@@ -698,6 +698,19 @@ describe('FinesMacOffenceDetailsAddAnOffenceFormComponent', () => {
     component.cancelLink();
 
     expect(unsavedChangesEmitSpy).toHaveBeenCalledWith(true);
+  });
+
+  it('should clear offence draft dirty when the offence form is submitted successfully', () => {
+    finesMacOffenceDetailsStore.setOffenceDetailsDraftDirty(true);
+    component.form = new FormGroup({});
+    component.form.setErrors(null);
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    vi.spyOn<any, any>(component, 'checkImpositionMinorCreditors').mockImplementation(() => {});
+    vi.spyOn(component['offenceDetailsService'], 'enforceOffenceCodeValidationBeforeSubmit').mockImplementation(() => {});
+
+    component.handleFormSubmit(new SubmitEvent('submit'));
+
+    expect(finesMacOffenceDetailsStore.offenceDetailsDraftDirty()).toBe(false);
   });
 
   it('should update removeMinorCreditor in finesMacOffenceDetailsDraftState and call updateOffenceDetailsDraft and handleRoute', () => {
