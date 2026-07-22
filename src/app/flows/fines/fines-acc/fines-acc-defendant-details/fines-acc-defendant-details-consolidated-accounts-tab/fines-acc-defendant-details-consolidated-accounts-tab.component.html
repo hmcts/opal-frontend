@@ -28,7 +28,7 @@
                 </a>
               </td>
               <td class="govuk-table__cell" [id]="'consolidated-account-name-' + rowIndex">
-                {{ getDefendantName(account) }}
+                {{ account.last_name | uppercase }}, {{ account.first_name }}
               </td>
               <td
                 class="govuk-table__cell govuk-table__cell--numeric"

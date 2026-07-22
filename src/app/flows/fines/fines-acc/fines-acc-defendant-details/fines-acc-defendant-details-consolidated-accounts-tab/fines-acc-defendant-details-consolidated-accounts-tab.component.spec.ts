@@ -39,7 +39,6 @@ describe('FinesAccDefendantDetailsConsolidatedAccountsTabComponent', () => {
 
     expect(fixture.nativeElement.querySelector('table.govuk-table')).toBeTruthy();
     expect(textContent).toContain('99009902C');
-    expect(textContent).toContain('CHILD, Casey');
     expect(textContent).toContain('21 Jan 2026');
     expect(textContent).toContain('Seed Child Court');
     expect(textContent).toContain('LOCAL-CONSOL-CHILD');

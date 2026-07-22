@@ -1,9 +1,9 @@
+import { UpperCasePipe } from '@angular/common';
 import { ChangeDetectionStrategy, Component, Input } from '@angular/core';
 import { RouterLink } from '@angular/router';
 import { CustomHorizontalScrollPaneComponent } from '@hmcts/opal-frontend-common/components/custom/custom-horizontal-scroll-pane';
 import { DateFormatPipe } from '@hmcts/opal-frontend-common/pipes/date-format';
 import { FINES_ROUTING_PATHS } from '@routing/fines/constants/fines-routing-paths.constant';
-import { IOpalFinesAccountDefendantDetailsConsolidatedAccount } from '@services/fines/opal-fines-service/interfaces/opal-fines-account-defendant-account-consolidated-account.interface';
 import { IOpalFinesAccountDefendantDetailsConsolidatedAccounts } from '@services/fines/opal-fines-service/interfaces/opal-fines-account-defendant-account-consolidated-accounts.interface';
 import { FINES_ACC_SUMMARY_TABS_CONTENT_STYLES } from '../../constants/fines-acc-summary-tabs-content-styles.constant';
 import { FINES_ACC_DEFENDANT_ROUTING_PATHS } from '../../routing/constants/fines-acc-defendant-routing-paths.constant';
@@ -12,7 +12,7 @@ import { IFinesAccSummaryTabsContentStyles } from '../interfaces/fines-acc-summa
 
 @Component({
   selector: 'app-fines-acc-defendant-details-consolidated-accounts-tab',
-  imports: [CustomHorizontalScrollPaneComponent, DateFormatPipe, RouterLink],
+  imports: [CustomHorizontalScrollPaneComponent, DateFormatPipe, RouterLink, UpperCasePipe],
   templateUrl: './fines-acc-defendant-details-consolidated-accounts-tab.component.html',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
@@ -38,15 +38,5 @@ export class FinesAccDefendantDetailsConsolidatedAccountsTabComponent {
       accountId,
       FINES_ACC_DEFENDANT_ROUTING_PATHS.children.details,
     ];
-  }
-
-  /**
-   * Formats the consolidated account defendant name for display.
-   *
-   * @param account - The consolidated account row.
-   * @returns Defendant name in SURNAME, Forename format.
-   */
-  public getDefendantName(account: IOpalFinesAccountDefendantDetailsConsolidatedAccount): string {
-    return `${account.last_name.toUpperCase()}, ${account.first_name}`;
   }
 }
