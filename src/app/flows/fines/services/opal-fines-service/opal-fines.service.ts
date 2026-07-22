@@ -1419,6 +1419,13 @@ export class OpalFines {
     return this.cache.majorCreditorAccountAtAGlanceCache$;
   }
 
+  /**
+   * Retrieves the defendant account consolidated accounts data.
+   * If the account details for the specified tab are not already cached, it makes an HTTP request to fetch the data and caches it for future use.
+   *
+   * @param account_id - The ID of the defendant account.
+   * @returns An Observable that emits the account details for the consolidated accounts tab.
+   */
   public getDefendantAccountConsolidatedAccounts(
     account_id: number | null,
   ): Observable<IOpalFinesAccountDefendantDetailsConsolidatedAccounts> {
