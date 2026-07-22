@@ -30,6 +30,19 @@ Feature: Account Enquiries – View Account Details
       When I go to the Defendant details section and the header is "Defendant details"
       Then I should see the convert to company account action
 
+    @R1B @JIRA-STORY:PO-2671 @JIRA-EPIC:PO-8248
+    Scenario Outline: AC1c-AC1e Individual Defendant tab Change links open the correct amend screens
+      # AC1a – the heading Change link is removed
+      # AC1b – section Change links are shown for Defendant details, Contact details, and Employer details
+      When I open the "<section>" Change link on the Defendant tab
+      Then I should be on the "individual" amend route with fragment "<fragment>"
+
+      Examples:
+        | section           | fragment           |
+        | Defendant details | party-details      |
+        | Contact details   | contact-details    |
+        | Employer details  | employment-details |
+
 
     @R1B @JIRA-STORY:PO-1593 @JIRA-STORY:PO-866 @JIRA-STORY:PO-1110 @JIRA-STORY:PO-1127 @JIRA-EPIC:PO-812 @JIRA-TEST-KEY:PO-5514
     Scenario: Defendant edit warning retains changes when I stay on the form
@@ -113,6 +126,18 @@ Feature: Account Enquiries – View Account Details
       When I go to the Defendant details section and the header is "Company details"
       Then I should see the convert to individual account action
       And I should not see the convert to company account text
+
+    @R1B @JIRA-STORY:PO-2671 @JIRA-EPIC:PO-8248
+    Scenario Outline: AC2c-AC2d Company Defendant tab Change links open the correct amend screens
+      # AC2a – the heading Change link is removed
+      # AC2b – section Change links are shown for Company details and Contact details
+      When I open the "<section>" Change link on the Defendant tab
+      Then I should be on the "company" amend route with fragment "<fragment>"
+
+      Examples:
+        | section         | fragment        |
+        | Company details | party-details   |
+        | Contact details | contact-details |
 
 
     @R1B @JIRA-STORY:PO-967 @JIRA-STORY:PO-1111 @JIRA-STORY:PO-1128 @JIRA-EPIC:PO-812 @JIRA-TEST-KEY:PO-5520
@@ -415,6 +440,19 @@ Feature: Account Enquiries – View Account Details
       Then I should see the page header contains "Alex PGPAYEDIT{uniqUpper}"
       # AC3 – Navigate to Parent or guardian details
       When I go to the Parent or guardian details section and the header is "Parent or guardian details"
+
+    @R1B @JIRA-STORY:PO-2671 @JIRA-EPIC:PO-8248 @only
+    Scenario Outline: AC3c-AC3e Parent or guardian tab Change links open the correct amend screens
+      # AC3a – the heading Change link is removed
+      # AC3b – section Change links are shown for Parent or guardian details, Contact details, and Employer details
+      When I open the "<section>" Change link on the Parent or guardian tab
+      Then I should be on the "parentGuardian" amend route with fragment "<fragment>"
+
+      Examples:
+        | section                    | fragment           |
+        | Parent or guardian details | party-details      |
+        | Contact details            | contact-details    |
+        | Employer details           | employment-details |
 
     @JIRA-EPIC:PO-976 @R1B @JIRA-STORY:PO-1129 @JIRA-TEST-KEY:PO-5532
     Scenario: Saving parent or guardian details updates the name and audit trail

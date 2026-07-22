@@ -152,17 +152,12 @@ describe('Account Enquiry Defendant Details Tab', () => {
 
       mountDefendantTab({ defendantDetailsMock });
 
-      cy.get(DEFENDANT_DETAILS.detailsTitle).should('exist').and('contain.text', 'Defendant details');
-      cy.get(DEFENDANT_DETAILS.defendantName).should('exist').and('contain.text', 'Ms Sarah Jane THOMPSON');
-      cy.get(DEFENDANT_DETAILS.defendantAlias).should('exist').and('contain.text', 'S. J. TAYLOR John PETERS');
-      cy.get(DEFENDANT_DETAILS.defendantDOB).should('exist').and('contain.text', '12 April 1988');
-      cy.get(DEFENDANT_DETAILS.defendantNI).should('exist').and('contain.text', 'QQ 12 34 56 C');
-      cy.get(DEFENDANT_DETAILS.defendantAddress)
-        .should('exist')
-        .invoke('text')
-        .then((text) => {
-          expect(text.trim().replace(/\s+/g, ' ')).to.eq('45 High Street Flat 2B AB1 2CD');
-        });
+      cy.contains('h2', 'Defendant Details').should('be.visible');
+      cy.get(DEFENDANT_DETAILS.defendantName).should('not.exist');
+      cy.get(DEFENDANT_DETAILS.defendantAlias).should('not.exist');
+      cy.get(DEFENDANT_DETAILS.defendantDOB).should('not.exist');
+      cy.get(DEFENDANT_DETAILS.defendantNI).should('not.exist');
+      cy.get(DEFENDANT_DETAILS.defendantAddress).should('not.exist');
       cy.get(DEFENDANT_DETAILS.vehicle).should('not.exist');
       cy.get(DEFENDANT_DETAILS.vehicleReg).should('not.exist');
       cy.get('h2').contains('Contact details').should('not.exist');
@@ -515,6 +510,75 @@ describe('Account Enquiry Defendant Details Tab', () => {
 
       mountDefendantTab({ defendantDetailsMock: companyDetailsMock });
       cy.contains(DEFENDANT_DETAILS.linkText, 'Add parent or guardian details').should('not.exist');
+    },
+  );
+
+  it(
+    'AC1a, AC1b. Individual Defendant tab removes the heading Change link and shows section Change links',
+    { tags: buildTags('@JIRA-STORY:PO-2671', '@JIRA-EPIC:PO-8248') },
+    () => {
+      const defendantDetailsMock = structuredClone(OPAL_FINES_ACCOUNT_DEFENDANT_ACCOUNT_PARTY_MOCK);
+      defendantDetailsMock.defendant_account_party.party_details.organisation_flag = false;
+      defendantDetailsMock.defendant_account_party.is_debtor = true;
+      const { language_preferences } = defendantDetailsMock.defendant_account_party;
+      setLanguagePref(language_preferences!.document_language_preference);
+      setLanguagePref(language_preferences!.hearing_language_preference);
+
+      mountDefendantTab({ defendantDetailsMock });
+
+      cy.get('h2').contains('Defendant Details').should('be.visible');
+      cy.contains('.govuk-summary-card__title', 'Defendant details')
+        .parent()
+        .parent()
+        .within(() => {
+          cy.contains('a', 'Change').should('be.visible');
+        });
+      cy.contains('.govuk-summary-card__title', 'Contact details')
+        .parent()
+        .parent()
+        .within(() => {
+          cy.contains('a', 'Change').should('be.visible');
+        });
+      cy.contains('.govuk-summary-card__title', 'Employer details')
+        .parent()
+        .parent()
+        .within(() => {
+          cy.contains('a', 'Change').should('be.visible');
+        });
+      cy.get(DEFENDANT_DETAILS.defendantChange).should('not.exist');
+    },
+  );
+
+  it(
+    'AC2a, AC2b. Company Defendant tab removes the heading Change link and shows section Change links',
+    { tags: buildTags('@JIRA-STORY:PO-2671', '@JIRA-EPIC:PO-8248') },
+    () => {
+      const headerMock = structuredClone(DEFENDANT_HEADER_MOCK);
+      const defendantDetailsMock = structuredClone(OPAL_FINES_ACCOUNT_DEFENDANT_ACCOUNT_PARTY_MOCK);
+      defendantDetailsMock.defendant_account_party.party_details.organisation_flag = true;
+      defendantDetailsMock.defendant_account_party.is_debtor = true;
+      const { language_preferences } = defendantDetailsMock.defendant_account_party;
+      const accountId = headerMock.defendant_account_party_id;
+      setLanguagePref(language_preferences!.document_language_preference);
+      setLanguagePref(language_preferences!.hearing_language_preference);
+
+      interceptAuthenticatedUser();
+      interceptUserState(USER_STATE_MOCK_PERMISSION_BU77);
+      interceptDefendantHeader(accountId, headerMock, accountId);
+      interceptDefendantDetails(accountId, defendantDetailsMock, accountId);
+      setupAccountEnquiryComponent({ ...componentProperties, accountId });
+
+      cy.get('h2').contains('Company Details').should('be.visible');
+      cy.get('#company-summary-card-list').within(() => {
+        cy.contains('.govuk-summary-card__title', 'Company details').should('be.visible');
+        cy.contains('a', 'Change').should('be.visible');
+      });
+      cy.get('#contact-summary-card-list').within(() => {
+        cy.contains('.govuk-summary-card__title', 'Contact details').should('be.visible');
+        cy.contains('a', 'Change').should('be.visible');
+      });
+      cy.get(DEFENDANT_DETAILS.defendantChange).should('not.exist');
+      cy.contains('.govuk-summary-card__title', 'Employer details').should('not.exist');
     },
   );
 });

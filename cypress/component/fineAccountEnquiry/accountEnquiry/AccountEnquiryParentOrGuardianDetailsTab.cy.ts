@@ -1,6 +1,7 @@
 import { interceptAuthenticatedUser, interceptUserState } from '../../CommonIntercepts/CommonIntercepts';
 import { createDefendantHeaderMockWithName } from './mocks/defendant_details_mock';
 import { mount } from 'cypress/angular';
+import { ActivatedRoute, provideRouter } from '@angular/router';
 
 import {
   USER_STATE_MOCK_NO_PERMISSION,
@@ -54,6 +55,7 @@ describe('Account Enquiry Parent or Guardian Component', () => {
         tabData: pgDetailsMock,
         hasAccountMaintenencePermission,
       },
+      providers: [provideRouter([]), { provide: ActivatedRoute, useValue: { snapshot: { params: {}, data: {} } } }],
     });
   };
 
@@ -486,12 +488,13 @@ describe('Account Enquiry Parent or Guardian Component', () => {
       // Verify Parent or Guardian details title is displayed
       cy.get('h2').contains('Parent or guardian details').should('be.visible');
 
-      // AC2: Verify Change button is displayed when user has Account Maintenance permission in current BU
-      cy.get(DOM.changeLink).contains('Change').should('be.visible');
+      // AC2: Verify the section Change link is displayed when user has Account Maintenance permission in current BU
+      cy.get('#parent-or-guardian-details-summary-card-list').contains('a', 'Change').should('be.visible');
 
-      // Click Change button and verify it navigates to the change screen
-      cy.get(DOM.changeLink).contains('Change').click();
-      cy.get('app-fines-acc-debtor-add-amend-form').should('exist');
+      // Click the section Change link and verify it navigates to the change screen
+      cy.get('#parent-or-guardian-details-summary-card-list').contains('a', 'Change').click();
+      cy.get('@routerNavigate').should('have.been.called');
+      cy.get('app-fines-acc-debtor-add-amend').should('exist');
     },
   );
 
@@ -529,22 +532,19 @@ describe('Account Enquiry Parent or Guardian Component', () => {
       // Verify Parent or Guardian details title is displayed
       cy.get('h2').contains('Parent or guardian details').should('be.visible');
 
-      // AC2a: Verify Change button is displayed even when user lacks permission in current BU
-      cy.get(DOM.changeLink).contains('Change').should('be.visible');
+      // AC2a: Verify the section Change link is displayed even when user lacks permission in current BU
+      cy.get('#parent-or-guardian-details-summary-card-list').contains('a', 'Change').should('be.visible');
 
-      cy.get('app-fines-acc-defendant-details-parent-or-guardian-tab').then(($host) => {
+      // Verify the section link resolves to access denied when BU permission is missing
+      cy.get('app-fines-acc-party-details').then(($host) => {
         cy.window().then((win) => {
           const component = (win as any).ng.getComponent($host[0]) as {
-            changeParentOrGuardianDetailsLink: () => string;
+            sectionChangeLink: () => string;
           };
 
-          expect(component.changeParentOrGuardianDetailsLink()).to.eq('/access-denied');
+          expect(component.sectionChangeLink()).to.eq('/access-denied');
         });
       });
-
-      // Click Change button and verify it resolves to access denied
-      cy.get(DOM.changeLink).contains('Change').click();
-      cy.get('@routerNavigate').should('have.been.called');
     },
   );
 
@@ -605,6 +605,72 @@ describe('Account Enquiry Parent or Guardian Component', () => {
       //Verify other content is still displayed normally
       cy.get(DOM.parentOrGuardianDetailsName).should('be.visible');
       cy.get(DOM.contactSummaryCardTitle).should('be.visible');
+    },
+  );
+
+  it(
+    'AC3a, AC3b. Parent or guardian tab removes the heading Change link and shows section Change links',
+    { tags: [...buildTags('@JIRA-STORY:PO-2671'), '@JIRA-EPIC:PO-8248', '@JIRA-TEST-KEY:PO-4235'] },
+    () => {
+      const headerMock = structuredClone(createDefendantHeaderMockWithName('Robert', 'Thomson'));
+      headerMock.parent_guardian_party_id = '1770000001';
+      headerMock.debtor_type = 'Parent/Guardian';
+
+      const pgDetailsMock = structuredClone(OPAL_FINES_ACCOUNT_PARENT_GUARDIAN_PARTY_MOCK);
+      pgDetailsMock.defendant_account_party.party_details.party_id = headerMock.parent_guardian_party_id;
+      pgDetailsMock.defendant_account_party.is_debtor = true;
+
+      setupParentGuardianShell({ headerMock, pgDetailsMock, fragments: 'parent-or-guardian' });
+
+      cy.get('h2').contains('Parent or guardian details').should('be.visible');
+      cy.get(DOM.changeLink).should('not.exist');
+
+      cy.get('#parent-or-guardian-details-summary-card-list').within(() => {
+        cy.contains('a', 'Change').should('be.visible');
+      });
+      cy.get('#contact-summary-card-list').within(() => {
+        cy.contains('a', 'Change').should('be.visible');
+      });
+      cy.get('#employer-summary-card-list').within(() => {
+        cy.contains('a', 'Change').should('be.visible');
+      });
+    },
+  );
+
+  it(
+    'AC3c, AC3d, AC3e. Parent or guardian section Change links resolve the amend route and fragments',
+    { tags: [...buildTags('@JIRA-STORY:PO-2671'), '@JIRA-EPIC:PO-8248', '@JIRA-TEST-KEY:PO-4236'] },
+    () => {
+      const headerMock = structuredClone(createDefendantHeaderMockWithName('Robert', 'Thomson'));
+      headerMock.parent_guardian_party_id = '1770000001';
+      headerMock.debtor_type = 'Parent/Guardian';
+
+      const pgDetailsMock = structuredClone(OPAL_FINES_ACCOUNT_PARENT_GUARDIAN_PARTY_MOCK);
+      pgDetailsMock.defendant_account_party.party_details.party_id = headerMock.parent_guardian_party_id;
+      pgDetailsMock.defendant_account_party.is_debtor = true;
+
+      setupParentGuardianShell({ headerMock, pgDetailsMock, fragments: 'parent-or-guardian' });
+
+      cy.get('app-fines-acc-party-details').then(($host) => {
+        cy.window().then((win) => {
+          const component = (win as any).ng.getComponent($host[0]) as {
+            sectionChangeLink: () => string;
+            sectionChangeFragment: (section: string) => string | undefined;
+            sectionFragments: {
+              partyDetails: string;
+              contactDetails: string;
+              employmentDetails: string;
+            };
+          };
+
+          expect(component.sectionChangeLink()).to.eq('../party/parentGuardian/amend');
+          expect(component.sectionChangeFragment(component.sectionFragments.partyDetails)).to.eq('party-details');
+          expect(component.sectionChangeFragment(component.sectionFragments.contactDetails)).to.eq('contact-details');
+          expect(component.sectionChangeFragment(component.sectionFragments.employmentDetails)).to.eq(
+            'employment-details',
+          );
+        });
+      });
     },
   );
 });
