@@ -779,6 +779,15 @@ describe('FinesMacOffenceDetailsAddAnOffenceFormComponent', () => {
     });
   });
 
+  it('should persist offence draft dirty state when a dirty parent offence form enters the minor creditor route', () => {
+    finesMacOffenceDetailsStore.setOffenceDetailsDraftDirty(false);
+    component.form.markAsDirty();
+
+    component.goToMinorCreditor(0);
+
+    expect(finesMacOffenceDetailsStore.offenceDetailsDraftDirty()).toBe(true);
+  });
+
   it('should refresh rendered errors when offence validation state changes after submit', () => {
     let confirmChangeCallback: (confirmed: boolean) => void = () => undefined;
     // eslint-disable-next-line @typescript-eslint/no-explicit-any

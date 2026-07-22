@@ -121,6 +121,25 @@ describe('FinesMacOffenceDetailsMinorCreditorComponent', () => {
     expect(finesMacStore.unsavedChanges()).toBe(true);
   });
 
+  it('should restore the global unsaved warning from a persisted dirty offence draft when saving an unchanged creditor', () => {
+    const finesMacState = structuredClone(FINES_MAC_STATE_MOCK);
+    finesMacState.offenceDetails = [];
+    finesMacStore.setFinesMacStore(finesMacState);
+
+    const offenceWithMinorCreditor = structuredClone(FINES_MAC_OFFENCE_DETAILS_FORM_MOCK);
+    offenceWithMinorCreditor.childFormData = [structuredClone(FINES_MAC_OFFENCE_DETAILS_MINOR_CREDITOR_FORM_MOCK)];
+
+    finesMacOffenceDetailsStore.setOffenceDetailsDraft([offenceWithMinorCreditor]);
+    finesMacOffenceDetailsStore.setRemoveMinorCreditor(0);
+    finesMacOffenceDetailsStore.setOffenceDetailsDraftDirty(true);
+    finesMacStore.setUnsavedChanges(false);
+
+    component.handleMinorCreditorFormSubmit(structuredClone(FINES_MAC_OFFENCE_DETAILS_MINOR_CREDITOR_FORM_MOCK));
+
+    expect(finesMacOffenceDetailsStore.offenceDetailsDraftDirty()).toBe(true);
+    expect(finesMacStore.unsavedChanges()).toBe(true);
+  });
+
   it('should handle form submission when editing and navigate to add an offence multiple childFormData', () => {
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     const routerSpy = vi.spyOn<any, any>(component['router'], 'navigate');

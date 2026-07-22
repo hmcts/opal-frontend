@@ -19,6 +19,13 @@ export class FinesMacOffenceDetailsMinorCreditorComponent
   private readonly finesMacOffenceDetailsStore = inject(FinesMacOffenceDetailsStore);
   private readonly finesMacStore = inject(FinesMacStore);
 
+  /**
+   * Determines whether the submitted minor creditor differs from the existing stored creditor.
+   *
+   * @param existingCreditor - The currently stored minor creditor for the imposition, if one exists.
+   * @param submittedCreditor - The minor creditor submitted from the child form.
+   * @returns `true` when the creditor is new or the submitted form data differs from the stored data.
+   */
   private creditorFormChanged(
     existingCreditor: IFinesMacOffenceDetailsMinorCreditorForm | undefined,
     submittedCreditor: IFinesMacOffenceDetailsMinorCreditorForm,
@@ -69,7 +76,7 @@ export class FinesMacOffenceDetailsMinorCreditorComponent
     this.finesMacOffenceDetailsStore.setOffenceDetailsDraft(offenceDetailsDraft);
     this.finesMacOffenceDetailsStore.setMinorCreditorAdded(true);
     this.finesMacOffenceDetailsStore.setOffenceDetailsDraftDirty(offenceDetailsDraftDirty || hasCreditorChanges);
-    this.finesMacStore.setUnsavedChanges(unsavedChanges || hasCreditorChanges);
+    this.finesMacStore.setUnsavedChanges(offenceDetailsDraftDirty || unsavedChanges || hasCreditorChanges);
 
     this.routerNavigate(FINES_MAC_OFFENCE_DETAILS_ROUTING_PATHS.children.addOffence);
   }

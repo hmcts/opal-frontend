@@ -436,6 +436,7 @@ export class FinesMacOffenceDetailsAddAnOffenceFormComponent
   private updateOffenceDetailsDraft(formData: IFinesMacOffenceDetailsState): void {
     const offenceDetailsFineMacStore = structuredClone(this.finesMacStore.offenceDetails());
     const draftOffenceDetails = structuredClone(this.finesMacOffenceDetailsStore.offenceDetailsDraft());
+    const offenceDetailsDraftDirty = this.finesMacOffenceDetailsStore.offenceDetailsDraftDirty();
 
     const offenceDetailsIndex = this.form.get('fm_offence_details_id')!.value;
 
@@ -455,6 +456,7 @@ export class FinesMacOffenceDetailsAddAnOffenceFormComponent
     }
 
     this.finesMacOffenceDetailsStore.setOffenceDetailsDraft(draftOffenceDetails);
+    this.finesMacOffenceDetailsStore.setOffenceDetailsDraftDirty(offenceDetailsDraftDirty || this.hasUnsavedChanges());
   }
 
   /**
