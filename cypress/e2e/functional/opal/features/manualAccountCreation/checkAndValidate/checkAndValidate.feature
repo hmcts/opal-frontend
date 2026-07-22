@@ -356,7 +356,7 @@ Feature: Navigate and edit sections from task list
     And the approved draft account number "FP123456" is shown as a hyperlink
     And the approved draft account number "FINE123456" is shown as a hyperlink
 
-  @JIRA-EPIC:PO-2220 @R1A @JIRA-STORY:PO-607 @JIRA-STORY:PO-3720 @only
+  @JIRA-EPIC:PO-2220 @R1A @JIRA-STORY:PO-607 @JIRA-STORY:PO-3720
   Scenario: Approved tab lists recent accounts - Text
     Given I create a "company" approved account with the following details:
       | account_snapshot.defendant_name | TEST New Company Ltd {uniq} |
