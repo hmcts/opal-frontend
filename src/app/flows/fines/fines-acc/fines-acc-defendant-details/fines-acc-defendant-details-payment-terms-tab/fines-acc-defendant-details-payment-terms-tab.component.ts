@@ -35,6 +35,7 @@ export class FinesAccDefendantDetailsPaymentTermsTabComponent {
 
   @Input({ required: true }) tabData!: IOpalFinesAccountDefendantDetailsPaymentTermsLatest;
   @Input() hasAmendPaymentTermsPermission: boolean = false;
+  @Input() accountAllowsPaymentTermsActions: boolean = false;
   @Input() canAmendPaymentTerms: boolean = false;
   @Input() amendPaymentTermsDeniedType: string = 'permission';
   @Input() canRequestPaymentCard: boolean = false;

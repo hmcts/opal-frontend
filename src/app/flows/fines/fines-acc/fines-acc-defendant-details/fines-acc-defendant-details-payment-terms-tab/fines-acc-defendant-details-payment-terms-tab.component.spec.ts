@@ -87,6 +87,28 @@ describe('FinesAccPaymentTermsAmendComponent', () => {
     );
   });
 
+  it('should display payment terms actions when the user has permission and the account allows actions', () => {
+    fixture.componentRef.setInput('hasAmendPaymentTermsPermission', true);
+    fixture.componentRef.setInput('accountAllowsPaymentTermsActions', true);
+    fixture.detectChanges();
+
+    const compiled = fixture.nativeElement as HTMLElement;
+
+    expect(compiled.textContent).toContain('Change');
+    expect(compiled.textContent).toContain('Request payment card');
+  });
+
+  it('should hide payment terms actions when the user has permission but the account does not allow actions', () => {
+    fixture.componentRef.setInput('hasAmendPaymentTermsPermission', true);
+    fixture.componentRef.setInput('accountAllowsPaymentTermsActions', false);
+    fixture.detectChanges();
+
+    const compiled = fixture.nativeElement as HTMLElement;
+
+    expect(compiled.textContent).not.toContain('Change');
+    expect(compiled.textContent).not.toContain('Request payment card');
+  });
+
   it('should return the request payment card route when the action is allowed', () => {
     component.canRequestPaymentCard = true;
 

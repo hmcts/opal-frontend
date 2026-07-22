@@ -189,6 +189,7 @@
       <app-fines-acc-defendant-details-payment-terms-tab
         [tabData]="tabData"
         [hasAmendPaymentTermsPermission]="hasPermission(finesPermissions['amend-payment-terms'])"
+        [accountAllowsPaymentTermsActions]="accountAllowsPaymentTermsActions"
         [canAmendPaymentTerms]="canAmendPaymentTerms()"
         [amendPaymentTermsDeniedType]="getAmendPaymentTermsDeniedType()"
         [canRequestPaymentCard]="canRequestPaymentCard()"
