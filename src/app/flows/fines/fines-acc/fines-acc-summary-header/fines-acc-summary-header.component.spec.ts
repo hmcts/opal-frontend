@@ -3,6 +3,7 @@ import { By } from '@angular/platform-browser';
 import { FinesAccSummaryHeaderComponent } from './fines-acc-summary-header.component';
 import { FinesAccBannerMessagesComponent } from '../fines-acc-banner-messages/fines-acc-banner-messages.component';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
+import { FINES_ACC_ACCOUNT_STATUS_BANNER_LABELS } from '../constants/fines-acc-account-status-banner-labels.constant';
 
 describe('FinesAccSummaryHeaderComponent', () => {
   let component: FinesAccSummaryHeaderComponent;

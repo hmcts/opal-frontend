@@ -157,6 +157,33 @@ describe('Account Enquiry - Defendant Header', () => {
     },
   );
 
+  it(
+    'AC1, AC8: renders a persistent account status banner and passes axe on the header shell',
+    {
+      tags: [...buildTags('@JIRA-STORY:PO-5755', '@JIRA-NFR:PO-2322'), '@JIRA-TEST-KEY:PO-5755'],
+    },
+    () => {
+      const header = structuredClone(DEFENDANT_HEADER_MOCK);
+      header.account_status_reference = {
+        account_status_code: 'TA',
+        account_status_display_name: 'TFO Out Acknowledged (E/W)',
+      };
+
+      interceptUserState(USER_STATE_MOCK_PERMISSION_BU77);
+      interceptDefendantHeader(77, header, '1');
+      interceptAtAGlance(77, OPAL_FINES_ACCOUNT_DEFENDANT_AT_A_GLANCE_MOCK, '1');
+
+      setupAccountEnquiryComponent(componentProperties);
+
+      cy.get('#defendant-account-status').should('be.visible').and('contain.text', 'Transferred out');
+      cy.get(DOM.pageHeader).should('exist');
+      cy.get(DOM.subnav).should('exist');
+
+      cy.injectAxe();
+      cy.checkA11y();
+    },
+  );
+
   // ONLY Youth tag when youth is the debtor and no P/G associated
   it(
     'AC2: shows ONLY "Youth Account" when youth=true, debtor=Defendant, and no Parent/Guardian',
