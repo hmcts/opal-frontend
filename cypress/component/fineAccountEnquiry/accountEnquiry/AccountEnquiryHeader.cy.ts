@@ -158,7 +158,7 @@ describe('Account Enquiry - Defendant Header', () => {
   );
 
   it(
-    'AC1, AC2, AC4, AC5, AC8: renders a persistent status banner and passes axe on the header shell',
+    'AC1, AC8: renders a persistent account status banner and passes axe on the header shell',
     {
       tags: [...buildTags('@JIRA-STORY:PO-5755', '@JIRA-NFR:PO-2322'), '@JIRA-TEST-KEY:PO-5755'],
     },
