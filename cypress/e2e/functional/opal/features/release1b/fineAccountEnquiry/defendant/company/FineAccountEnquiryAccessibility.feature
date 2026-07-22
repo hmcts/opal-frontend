@@ -4,7 +4,9 @@ Feature: Defendant - Company - Account Enquiries - Enforcement Accessibility
 
   Background:
     Given I am logged in with email "opal-test@dev.platform.hmcts.net"
-    And I clear all approved accounts  @R1B @JIRA-STORY:PO-1863 @JIRA-STORY:PO-3729 @JIRA-EPIC:PO-2472 @JIRA-TEST-KEY:PO-5461
+    And I clear all approved accounts
+
+  @R1B @JIRA-STORY:PO-1863 @JIRA-STORY:PO-3729 @JIRA-EPIC:PO-2472 @JIRA-TEST-KEY:PO-5461
   Scenario: Company enforcement tab accessibility
     Given I create a "company" draft account with the following details and set status "Publishing Pending" using user "opal-test-10@dev.platform.hmcts.net":
       | Account_status                                  | Submitted                 |
@@ -23,6 +25,7 @@ Feature: Defendant - Company - Account Enquiries - Enforcement Accessibility
     Then I check the page for accessibility
     And I open the change enforcement court form
     And I check the page for accessibility
+
   @R1B @JIRA-STORY:PO-1867 @JIRA-STORY:PO-1863 @JIRA-EPIC:PO-2472 @JIRA-TEST-KEY:PO-5462
   Scenario: Company add enforcement override page accessibility
     Given I create a "company" draft account with the following details and set status "Publishing Pending" using user "opal-test-10@dev.platform.hmcts.net":
@@ -41,6 +44,7 @@ Feature: Defendant - Company - Account Enquiries - Enforcement Accessibility
     And I go to the Enforcement tab
     And I open the add enforcement override form
     Then I check the page for accessibility
+
   @R1B @JIRA-STORY:PO-1782 @JIRA-EPIC:PO-2472 @JIRA-TEST-KEY:PO-5465
   Scenario: Company add enforcement action page accessibility
     Given I create a "company" draft account with the following details and set status "Publishing Pending" using user "opal-test-10@dev.platform.hmcts.net":

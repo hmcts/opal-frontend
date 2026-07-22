@@ -4,7 +4,9 @@ Feature: Defendant - Adult or youth - Account Enquiries - Enforcement Accessibil
 
   Background:
     Given I am logged in with email "opal-test@dev.platform.hmcts.net"
-    And I clear all approved accounts  @R1B @JIRA-STORY:PO-1849 @JIRA-STORY:PO-3729 @JIRA-EPIC:PO-2472 @JIRA-TEST-KEY:PO-5459
+    And I clear all approved accounts
+
+  @R1B @JIRA-STORY:PO-1849 @JIRA-STORY:PO-3729 @JIRA-EPIC:PO-2472 @JIRA-TEST-KEY:PO-5459
   Scenario: Enforcement tab accessibility
     Given I create a "adultOrYouthOnly" draft account with the following details and set status "Publishing Pending" using user "opal-test-10@dev.platform.hmcts.net":
       | Account_status                                  | Submitted                     |
@@ -25,6 +27,7 @@ Feature: Defendant - Adult or youth - Account Enquiries - Enforcement Accessibil
     Then I check the page for accessibility
     And I open the change enforcement court form
     And I check the page for accessibility
+
   @R1B @JIRA-STORY:PO-1850 @JIRA-EPIC:PO-2472 @JIRA-TEST-KEY:PO-5460
   Scenario: Add enforcement override page accessibility
     Given I create a "adultOrYouthOnly" draft account with the following details and set status "Publishing Pending" using user "opal-test-10@dev.platform.hmcts.net":
@@ -45,6 +48,7 @@ Feature: Defendant - Adult or youth - Account Enquiries - Enforcement Accessibil
     And I go to the Enforcement tab
     And I open the add enforcement override form
     Then I check the page for accessibility
+
   @R1B @JIRA-STORY:PO-1782 @JIRA-EPIC:PO-2472 @JIRA-TEST-KEY:PO-5464
   Scenario: Add enforcement action page accessibility
     Given I create a "adultOrYouthOnly" draft account with the following details and set status "Publishing Pending" using user "opal-test-10@dev.platform.hmcts.net":
@@ -65,6 +69,7 @@ Feature: Defendant - Adult or youth - Account Enquiries - Enforcement Accessibil
     And I go to the Enforcement tab
     And I open the add enforcement action form
     Then I check the page for accessibility
+
   @R1B @JIRA-STORY:PO-1782 @JIRA-EPIC:PO-2630 @JIRA-TEST-KEY:PO-7555
   Scenario: Confirm enforcement action page accessibility
     Given I create a "adultOrYouthOnly" draft account with the following details and set status "Publishing Pending" using user "opal-test-10@dev.platform.hmcts.net":
@@ -87,6 +92,7 @@ Feature: Defendant - Adult or youth - Account Enquiries - Enforcement Accessibil
     And I choose the enforcement action "Collection order (COLLO)"
     And I continue to the confirm enforcement action page
     Then I check the page for accessibility
+
   @R1B @JIRA-STORY:PO-1785 @JIRA-EPIC:PO-1675 @JIRA-TEST-KEY:PO-5466
   Scenario: Remove enforcement hold page accessibility
     Given I create a "adultOrYouthOnly" draft account with the following details and set status "Publishing Pending" using user "opal-test-10@dev.platform.hmcts.net":
@@ -107,6 +113,7 @@ Feature: Defendant - Adult or youth - Account Enquiries - Enforcement Accessibil
     And I go to the Enforcement tab
     And I open the remove enforcement hold screen
     Then I check the page for accessibility
+
   @R1B @JIRA-STORY:PO-2635 @JIRA-EPIC:PO-2621
   Scenario: History and notes tab accessibility
     Given I create a "adultOrYouthOnly" draft account with the following details and set status "Publishing Pending" using user "opal-test-10@dev.platform.hmcts.net":

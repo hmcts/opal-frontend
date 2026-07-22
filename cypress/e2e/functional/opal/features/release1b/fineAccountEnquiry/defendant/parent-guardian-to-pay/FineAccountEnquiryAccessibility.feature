@@ -4,7 +4,9 @@ Feature: Defendant - Parent or guardian to pay - Account Enquiries - Enforcement
 
   Background:
     Given I am logged in with email "opal-test@dev.platform.hmcts.net"
-    And I clear all approved accounts  @R1B @JIRA-STORY:PO-1862 @JIRA-STORY:PO-3729 @JIRA-EPIC:PO-2472 @JIRA-TEST-KEY:PO-5463
+    And I clear all approved accounts
+
+  @R1B @JIRA-STORY:PO-1862 @JIRA-STORY:PO-3729 @JIRA-EPIC:PO-2472 @JIRA-TEST-KEY:PO-5463
   Scenario: Parent or guardian enforcement tab accessibility
     Given I create a "pgToPay" draft account with the following details and set status "Publishing Pending" using user "opal-test-10@dev.platform.hmcts.net":
       | Account_status                                  | Submitted                       |
