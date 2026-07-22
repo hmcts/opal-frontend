@@ -14,6 +14,36 @@ Use this guide when writing or updating Cypress E2E tests and Cucumber feature f
 - Tag scenarios with `@functional`, `@smoke`, and Jira IDs so suites can target subsets.
 - Keep legacy suites in `cypress/e2e/Old_functional_E2E_Tests`; new scenarios should follow the `opal` layout.
 
+### Journey-Based Organisation
+
+- Keep each feature file focused on one user journey or closely related behaviour. Do not combine unrelated account types or user journeys solely because they use the same screen.
+- For account enquiry coverage, group scenarios by the account journey where practical, such as adult/youth defendant, parent/guardian-to-pay defendant, company defendant, minor creditor, and major creditor.
+- Keep scenarios that intentionally exercise more than one journey in a clearly named shared feature rather than assigning them to one journey arbitrarily.
+- Keep search-form validation, shared state behaviour, business-unit filters, and feature-toggle coverage separate from end-to-end journey features unless the scenario is specifically proving that journey.
+
+For example, Release 1B Search and Matches journeys are organised as:
+
+```
+cypress/e2e/functional/opal/features/release1b/searchAndMatches/
+  defendant/adult-youth/
+  defendant/company/
+  defendant/shared/
+  minor-creditor/
+  legacy-data/
+```
+
+### Legacy Data Scenarios
+
+- Keep scenarios tagged `@LegacyData` together in a dedicated `legacy-data` feature file within the relevant capability.
+- Retain the `@skip` and `@LegacyData` tags until the required seeded data is available.
+- `@LegacyData` scenarios are distinct from the legacy suite under `cypress/e2e/Old_functional_E2E_Tests`; new or reorganised scenarios remain under `functional/opal`.
+
+### Feature File Size and Execution
+
+- Cypress executes and schedules work at the feature-file level. Split large, mixed feature files into focused journey files when doing so preserves clear behaviour boundaries.
+- Focused feature files make test intent easier to locate and allow the execution environment to distribute independent journeys across workers more effectively.
+- Do not split a feature merely by scenario count. Keep setup, assertions, and business intent coherent, and preserve scenario content when performing a structural reorganisation.
+
 ## Accessibility Coverage
 
 - Accessibility specs live alongside features and should navigate to each page, inject `axe-core`, run scans, and assert no violations.
