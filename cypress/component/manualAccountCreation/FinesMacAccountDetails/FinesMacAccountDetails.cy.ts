@@ -121,9 +121,7 @@ describe('FinesMacAccountDetailsComponent', () => {
 
           expect(elapsed, performanceMessage).to.be.lessThan(250);
 
-          if (readySelector) {
-            return cy.get(readySelector).should('exist');
-          }
+          return readySelector ? cy.get(readySelector).should('exist') : cy.wrap(null, { log: false });
         });
     });
   };

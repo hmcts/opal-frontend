@@ -46,9 +46,6 @@ describe('FinesMacReviewAccountComponent', () => {
     amend: boolean = true,
     checker: boolean = false,
   ) => {
-    finesMacState = structuredClone(baseFinesMacState);
-    finesDraftState = structuredClone(baseFinesDraftState);
-    finesAccountPayload = structuredClone(baseFinesAccountPayload);
     finesDraftStateMock = structuredClone(finesDraftStateMock);
     activatedRouteMock = activatedRouteMock ? structuredClone(activatedRouteMock) : null;
 
@@ -152,11 +149,9 @@ describe('FinesMacReviewAccountComponent', () => {
     }).as('getDraftAccounts');
   });
   beforeEach(() => {
-    cy.then(() => {
-      finesMacState = structuredClone(baseFinesMacState);
-      finesDraftState = structuredClone(baseFinesDraftState);
-      finesAccountPayload = structuredClone(baseFinesAccountPayload);
-    });
+    finesMacState = structuredClone(baseFinesMacState);
+    finesDraftState = structuredClone(baseFinesDraftState);
+    finesAccountPayload = structuredClone(baseFinesAccountPayload);
   });
 
   it(
