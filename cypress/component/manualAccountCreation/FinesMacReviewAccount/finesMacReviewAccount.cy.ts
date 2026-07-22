@@ -667,13 +667,17 @@ describe('FinesMacReviewAccountComponent', () => {
     () => {
       finesMacState.accountDetails.formData.fm_create_account_defendant_type = 'pgToPay';
 
-      cy.get(DOM_ELEMENTS.summaryTitle).should('contain', 'Defendant details').should('contain', 'Change');
-      cy.get(DOM_ELEMENTS.summaryTitle).should('contain', 'Contact details').should('contain', 'Change');
-      cy.get(DOM_ELEMENTS.summaryTitle).should('contain', 'Employer details').should('contain', 'Change');
-      cy.get(DOM_ELEMENTS.summaryTitle).should('contain', 'Offences and impositions').should('contain', 'Change');
-      cy.get(DOM_ELEMENTS.summaryTitle).should('contain', 'Parent or guardian details').should('contain', 'Change');
-      cy.get(DOM_ELEMENTS.summaryTitle).should('contain', 'Payment terms').should('contain', 'Change');
-      cy.get(DOM_ELEMENTS.summaryTitle).should('contain', 'Account comments and notes').should('contain', 'Change');
+      [
+        'Defendant details',
+        'Contact details',
+        'Employer details',
+        'Offences and impositions',
+        'Parent or guardian details',
+        'Payment terms',
+        'Account comments and notes',
+      ].forEach((sectionTitle) => {
+        cy.contains(DOM_ELEMENTS.summaryCards, sectionTitle).should('contain', 'Change');
+      });
     },
   );
   it(
