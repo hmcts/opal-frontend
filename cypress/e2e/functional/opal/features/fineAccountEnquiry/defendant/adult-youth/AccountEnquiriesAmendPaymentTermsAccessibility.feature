@@ -1,6 +1,6 @@
 @JIRA-LABEL:account-enquiry
 @JIRA-NFR:PO-2322
-Feature: Account Enquiries - Amend Payment Terms Accessibility
+Feature: Defendant - Adult or youth - Account Enquiries - Amend Payment Terms Accessibility
 
   Background:
     Given I am logged in with email "opal-test@dev.platform.hmcts.net"
@@ -21,7 +21,6 @@ Feature: Account Enquiries - Amend Payment Terms Accessibility
       | account.offences.0.impositions.0.amount_paid    | 300                       |
       | account.payment_terms.payment_terms_type_code   | B                         |
       | account.payment_terms.effective_date            | 2025-05-30                |
-
   @R1B @JIRA-STORY:PO-1149 @JIRA-EPIC:PO-2472 @JIRA-TEST-KEY:PO-5302
   Scenario: Amend payment terms page accessibility
     When I search for the account by last name "AmendPayTerms{uniq}" and open the latest result

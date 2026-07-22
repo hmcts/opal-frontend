@@ -1,5 +1,5 @@
 @JIRA-LABEL:account-enquiry
-Feature: Account Enquiries – Request Payment Card
+Feature: Defendant - Adult or youth - Account Enquiries – Request Payment Card
   As an Opal user
   I want to request a payment card for a defendant
   So that I can confirm or cancel the request
