@@ -32,6 +32,7 @@ This document captures repo structure, commands, and coding conventions for opal
 - Ministry of Justice Design System patterns are used where MoJ components exist.
 - Pages use GOV.UK typography, spacing tokens, and colour palette. Bespoke styling is only allowed when no pattern exists.
 - Content follows the GOV.UK style guide and interactive states retain WCAG AA contrast.
+- Set `autocomplete="off"` on every native `<form>` unless there is a documented exception. This is a client-mandated mitigation to reduce unintended browser autofill in casework forms; browsers may still ignore the attribute.
 
 ## Testing Basics
 - Name unit specs as `*.spec.ts` alongside sources.
