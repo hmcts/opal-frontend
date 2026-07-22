@@ -59,17 +59,20 @@ describe('FinesAccSummaryHeaderComponent', () => {
     expect(banner.componentInstance.successMessage).toBe('Saved');
   });
 
-  it('should render the account status banner when the status code is configured', () => {
-    component.accountStatusCode = 'TA';
-    fixture.detectChanges();
+  it.each(Object.entries(FINES_ACC_ACCOUNT_STATUS_BANNER_LABELS))(
+    'should render the account status banner for status %s',
+    (statusCode, bannerLabel) => {
+      component.accountStatusCode = statusCode;
+      fixture.detectChanges();
 
-    const bannerText = fixture.debugElement.query(By.css('#acc-summary-header-account-status'))?.nativeElement
-      ?.textContent;
-    const banners = fixture.debugElement.queryAll(By.css('opal-lib-moj-alert'));
+      const bannerText = fixture.debugElement.query(By.css('#acc-summary-header-account-status'))?.nativeElement
+        ?.textContent;
+      const banners = fixture.debugElement.queryAll(By.css('opal-lib-moj-alert'));
 
-    expect(bannerText).toContain('Transferred out');
-    expect(banners.length).toBe(1);
-  });
+      expect(bannerText).toContain(bannerLabel);
+      expect(banners).toHaveLength(1);
+    },
+  );
 
   it('should not render the account status banner when the status code is not configured', () => {
     component.accountStatusCode = 'L';
