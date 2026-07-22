@@ -19,6 +19,17 @@ export class FinesMacOffenceDetailsMinorCreditorComponent
   private readonly finesMacOffenceDetailsStore = inject(FinesMacOffenceDetailsStore);
   private readonly finesMacStore = inject(FinesMacStore);
 
+  private creditorFormChanged(
+    existingCreditor: IFinesMacOffenceDetailsMinorCreditorForm | undefined,
+    submittedCreditor: IFinesMacOffenceDetailsMinorCreditorForm,
+  ): boolean {
+    if (!existingCreditor) {
+      return true;
+    }
+
+    return JSON.stringify(existingCreditor.formData) !== JSON.stringify(submittedCreditor.formData);
+  }
+
   /**
    * Handles the submission of the minor creditor form.
    *
@@ -32,16 +43,20 @@ export class FinesMacOffenceDetailsMinorCreditorComponent
     // Update the imposition position in the form data
     const removeMinorCreditor = this.finesMacOffenceDetailsStore.removeMinorCreditor();
     const offenceDetailsDraft = structuredClone(this.finesMacOffenceDetailsStore.offenceDetailsDraft());
+    const offenceDetailsDraftDirty = this.finesMacOffenceDetailsStore.offenceDetailsDraftDirty();
+    const unsavedChanges = this.finesMacStore.unsavedChanges();
     form.formData.fm_offence_details_imposition_position =
       removeMinorCreditor ?? this.finesMacOffenceDetailsStore.rowIndex();
 
     // If childFormData exists and has at least one item in
     const { childFormData } = offenceDetailsDraft[0];
+    let hasCreditorChanges = true;
 
     if (childFormData && childFormData.length > 0) {
       const minorCreditor = childFormData.find(
         (childFormData) => childFormData.formData.fm_offence_details_imposition_position === removeMinorCreditor,
       );
+      hasCreditorChanges = this.creditorFormChanged(minorCreditor, form);
       if (minorCreditor) {
         minorCreditor.formData = form.formData;
       } else {
@@ -53,8 +68,8 @@ export class FinesMacOffenceDetailsMinorCreditorComponent
 
     this.finesMacOffenceDetailsStore.setOffenceDetailsDraft(offenceDetailsDraft);
     this.finesMacOffenceDetailsStore.setMinorCreditorAdded(true);
-    this.finesMacOffenceDetailsStore.setOffenceDetailsDraftDirty(true);
-    this.finesMacStore.setUnsavedChanges(true);
+    this.finesMacOffenceDetailsStore.setOffenceDetailsDraftDirty(offenceDetailsDraftDirty || hasCreditorChanges);
+    this.finesMacStore.setUnsavedChanges(unsavedChanges || hasCreditorChanges);
 
     this.routerNavigate(FINES_MAC_OFFENCE_DETAILS_ROUTING_PATHS.children.addOffence);
   }

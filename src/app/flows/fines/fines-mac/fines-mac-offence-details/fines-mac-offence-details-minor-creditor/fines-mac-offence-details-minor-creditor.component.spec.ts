@@ -62,6 +62,7 @@ describe('FinesMacOffenceDetailsMinorCreditorComponent', () => {
 
     const offenceWithMinorCreditor = structuredClone(FINES_MAC_OFFENCE_DETAILS_FORM_MOCK);
     offenceWithMinorCreditor.childFormData = [structuredClone(FINES_MAC_OFFENCE_DETAILS_MINOR_CREDITOR_FORM_MOCK)];
+    formSubmit.formData.fm_offence_details_minor_creditor_address_line_1 = 'Updated address';
 
     finesMacOffenceDetailsStore.setOffenceDetailsDraft([offenceWithMinorCreditor]);
     finesMacOffenceDetailsStore.setRemoveMinorCreditor(0);
@@ -75,6 +76,48 @@ describe('FinesMacOffenceDetailsMinorCreditorComponent', () => {
     expect(routerSpy).toHaveBeenCalledWith([FINES_MAC_OFFENCE_DETAILS_ROUTING_PATHS.children.addOffence], {
       relativeTo: component['activatedRoute'].parent,
     });
+  });
+
+  it('should not mark the offence dirty when saving an unchanged existing creditor and nothing else is unsaved', () => {
+    const routerSpy = vi.spyOn<any, any>(component['router'], 'navigate');
+    const finesMacState = structuredClone(FINES_MAC_STATE_MOCK);
+    finesMacState.offenceDetails = [];
+    finesMacStore.setFinesMacStore(finesMacState);
+
+    const offenceWithMinorCreditor = structuredClone(FINES_MAC_OFFENCE_DETAILS_FORM_MOCK);
+    offenceWithMinorCreditor.childFormData = [structuredClone(FINES_MAC_OFFENCE_DETAILS_MINOR_CREDITOR_FORM_MOCK)];
+
+    finesMacOffenceDetailsStore.setOffenceDetailsDraft([offenceWithMinorCreditor]);
+    finesMacOffenceDetailsStore.setRemoveMinorCreditor(0);
+    finesMacOffenceDetailsStore.setOffenceDetailsDraftDirty(false);
+    finesMacStore.setUnsavedChanges(false);
+
+    component.handleMinorCreditorFormSubmit(structuredClone(FINES_MAC_OFFENCE_DETAILS_MINOR_CREDITOR_FORM_MOCK));
+
+    expect(finesMacOffenceDetailsStore.offenceDetailsDraftDirty()).toBe(false);
+    expect(finesMacStore.unsavedChanges()).toBe(false);
+    expect(routerSpy).toHaveBeenCalledWith([FINES_MAC_OFFENCE_DETAILS_ROUTING_PATHS.children.addOffence], {
+      relativeTo: component['activatedRoute'].parent,
+    });
+  });
+
+  it('should preserve existing offence and global unsaved state when saving an unchanged existing creditor', () => {
+    const finesMacState = structuredClone(FINES_MAC_STATE_MOCK);
+    finesMacState.offenceDetails = [];
+    finesMacStore.setFinesMacStore(finesMacState);
+
+    const offenceWithMinorCreditor = structuredClone(FINES_MAC_OFFENCE_DETAILS_FORM_MOCK);
+    offenceWithMinorCreditor.childFormData = [structuredClone(FINES_MAC_OFFENCE_DETAILS_MINOR_CREDITOR_FORM_MOCK)];
+
+    finesMacOffenceDetailsStore.setOffenceDetailsDraft([offenceWithMinorCreditor]);
+    finesMacOffenceDetailsStore.setRemoveMinorCreditor(0);
+    finesMacOffenceDetailsStore.setOffenceDetailsDraftDirty(true);
+    finesMacStore.setUnsavedChanges(true);
+
+    component.handleMinorCreditorFormSubmit(structuredClone(FINES_MAC_OFFENCE_DETAILS_MINOR_CREDITOR_FORM_MOCK));
+
+    expect(finesMacOffenceDetailsStore.offenceDetailsDraftDirty()).toBe(true);
+    expect(finesMacStore.unsavedChanges()).toBe(true);
   });
 
   it('should handle form submission when editing and navigate to add an offence multiple childFormData', () => {

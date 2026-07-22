@@ -111,6 +111,9 @@ Feature: Manual account creation - Offence Details
       | Compensation | CNAME                       | £200.00        | £100.00     | £100.00           |
       | Totals       |                             | £400.00        | £200.00     | £200.00           |
 
+    When I return to account details from offence review without an unsaved changes warning
+    Then the "Offence details" task status is "Provided"
+
   @R1A @JIRA-EPIC:PO-272 @JIRA-TEST-KEY:PO-5360
   Scenario: User can update an existing minor creditor for an imposition
     Given an offence exists with 2 minor creditor impositions for offence code "TP11003"

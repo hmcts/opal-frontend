@@ -47,6 +47,35 @@ describe('FinesMacOffenceDetailsAddAnOffenceFormComponent', () => {
   let originalConfigureDatePicker: () => void;
   let originalInitOuterRadios: () => void;
 
+  const createInitializedComponent = (
+    configureStore?: (store: FinesMacOffenceDetailsStoreType, macStore: FinesMacStoreType) => void,
+  ) => {
+    const freshFixture = TestBed.createComponent(FinesMacOffenceDetailsAddAnOffenceFormComponent);
+    const freshComponent = freshFixture.componentInstance;
+    const freshFinesMacStore = TestBed.inject(FinesMacStore);
+    const freshFinesMacOffenceDetailsStore = TestBed.inject(FinesMacOffenceDetailsStore);
+
+    freshFinesMacStore.setFinesMacStore(FINES_MAC_STATE_MOCK);
+    freshFinesMacOffenceDetailsStore.setOffenceDetailsDraft(FINES_MAC_OFFENCE_DETAILS_DRAFT_STATE_MOCK.offenceDetailsDraft);
+    freshFinesMacOffenceDetailsStore.setRowIndex(0);
+    freshFinesMacOffenceDetailsStore.setRemoveMinorCreditor(FINES_MAC_OFFENCE_DETAILS_DRAFT_STATE_MOCK.removeMinorCreditor);
+
+    configureStore?.(freshFinesMacOffenceDetailsStore, freshFinesMacStore);
+
+    freshComponent.resultCodeItems = OPAL_FINES_RESULTS_AUTOCOMPLETE_ITEMS_MOCK;
+    freshComponent.fcompMajorCreditorItems = OPAL_FINES_MAJOR_CREDITOR_AUTOCOMPLETE_ITEMS_MOCK;
+    freshComponent.fcostMajorCreditorItems = OPAL_FINES_MAJOR_CREDITOR_AUTOCOMPLETE_ITEMS_MOCK;
+
+    freshFixture.detectChanges();
+
+    return {
+      fixture: freshFixture,
+      component: freshComponent,
+      finesMacStore: freshFinesMacStore,
+      finesMacOffenceDetailsStore: freshFinesMacOffenceDetailsStore,
+    };
+  };
+
   beforeAll(() => {
     originalConfigureDatePicker = MojDatePickerComponent.prototype.configureDatePicker;
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -681,21 +710,24 @@ describe('FinesMacOffenceDetailsAddAnOffenceFormComponent', () => {
   });
 
   it('should keep the add offence form dirty when returning from a saved minor creditor', () => {
-    finesMacOffenceDetailsStore.setOffenceDetailsDraftDirty(true);
+    fixture.destroy();
+    const { component: freshComponent } = createInitializedComponent((store) => {
+      store.setOffenceDetailsDraftDirty(true);
+    });
 
-    component['initialAddAnOffenceDetailsSetup']();
-
-    expect(component.form.dirty).toBe(true);
-    expect(component['hasUnsavedChanges']()).toBe(true);
+    expect(freshComponent.form.dirty).toBe(true);
+    expect(freshComponent['hasUnsavedChanges']()).toBe(true);
   });
 
   it('should emit unsaved changes on cancel when returning from a saved minor creditor', () => {
-    finesMacOffenceDetailsStore.setOffenceDetailsDraftDirty(true);
-    finesMacOffenceDetailsStore.setEmptyOffences(true);
-    component['initialAddAnOffenceDetailsSetup']();
-    const unsavedChangesEmitSpy = vi.spyOn(component['unsavedChanges'], 'emit');
+    fixture.destroy();
+    const { component: freshComponent } = createInitializedComponent((store) => {
+      store.setOffenceDetailsDraftDirty(true);
+      store.setEmptyOffences(true);
+    });
+    const unsavedChangesEmitSpy = vi.spyOn(freshComponent['unsavedChanges'], 'emit');
 
-    component.cancelLink();
+    freshComponent.cancelLink();
 
     expect(unsavedChangesEmitSpy).toHaveBeenCalledWith(true);
   });
