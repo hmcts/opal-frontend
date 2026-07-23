@@ -36,7 +36,7 @@
   </div>
   <hr />
   <div class="govuk-grid-row">
-    <ng-container *ngTemplateOutlet="offenceTemplate"></ng-container>
+    <ng-container *ngTemplateOutlet="offenceTemplate; context: { $implicit: true }"></ng-container>
   </div>
   <div class="govuk-grid-row">
     <ng-container *ngTemplateOutlet="returnToAccountDetails; context: { $implicit: false }"></ng-container>
@@ -69,7 +69,7 @@
         <hr class="govuk-section-break govuk-section-break--l govuk-section-break--visible govuk-!-margin-top-2" />
       </div>
 
-      <ng-container *ngTemplateOutlet="offenceTemplate"></ng-container>
+      <ng-container *ngTemplateOutlet="offenceTemplate; context: { $implicit: false }"></ng-container>
     }
     <div class="govuk-grid-column-full">
       <div class="border-bottom">
@@ -92,14 +92,18 @@
   </div>
 </ng-template>
 
-<ng-template #offenceTemplate>
+<ng-template #offenceTemplate let-emptyOffences>
   <div class="govuk-grid-column-full">
     <opal-lib-govuk-button
       buttonId="addAnOffence"
       buttonClasses="govuk-button--secondary"
       (buttonClickEvent)="addAnotherOffence()"
     >
-      Add another offence
+      @if (emptyOffences) {
+        Add an offence
+      } @else {
+        Add another offence
+      }
     </opal-lib-govuk-button>
   </div>
 </ng-template>
