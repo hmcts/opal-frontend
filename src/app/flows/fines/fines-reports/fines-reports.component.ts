@@ -11,6 +11,9 @@ import { FinesReportsSummaryListStore } from './fines-reports-summary-list/store
 export class FinesReportsComponent implements OnDestroy {
   private readonly finesReportsSummaryListStore = inject(FinesReportsSummaryListStore);
 
+  /**
+   * Resets report summary list filters when the reports flow is destroyed.
+   */
   public ngOnDestroy(): void {
     this.finesReportsSummaryListStore.resetFilters();
   }

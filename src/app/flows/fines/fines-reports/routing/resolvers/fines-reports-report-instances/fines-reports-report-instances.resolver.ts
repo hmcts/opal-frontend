@@ -24,6 +24,16 @@ const FINES_REPORTS_REPORT_INSTANCES_LOAD_ERROR_RESPONSE: FinesReportsReportInst
   loadError: true,
 };
 
+/**
+ * Resolves report instance data for the selected fines report route.
+ *
+ * The resolver resets the summary list store for the active report type, builds the request from the current
+ * applied query or filter state, and scopes the request to either the current user for "Your reports" or the
+ * configured report type for all other report routes.
+ *
+ * @param route - The activated route snapshot used to determine the report configuration and report type ID.
+ * @returns An observable containing report instances, or an empty load-error response if the request fails.
+ */
 export const finesReportsReportInstancesResolver: ResolveFn<FinesReportsReportInstancesResolverData> = (route) => {
   const opalFinesService = inject(OpalFines);
   const globalStore = inject(GlobalStore);

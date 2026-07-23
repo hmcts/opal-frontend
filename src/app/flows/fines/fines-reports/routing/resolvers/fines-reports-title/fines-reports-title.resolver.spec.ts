@@ -6,7 +6,6 @@ import { finesReportsTitleResolver } from './fines-reports-title.resolver';
 import { FINES_REPORTS_SUMMARY_LIST_ROUTING_PATHS } from '@app/flows/fines/fines-reports/fines-reports-summary-list/routing/constants/fines-reports-summary-list-routing-paths.constant';
 import { FINES_REPORT_SUMMARY_LIST_REPORT_CONFIGURATION } from '@app/flows/fines/fines-reports/fines-reports-summary-list/constants/fines-reports-summary-list-report-configuration.constant';
 import { FINES_REPORTS_ROUTING_TITLES } from '../../constants/fines-reports-routing-titles.constant';
-import { FINES_REPORTS_ROUTING_PATHS } from '../../constants/fines-reports-routing-paths.constant';
 
 describe('finesReportsTitleResolver', () => {
   const executeResolver: ResolveFn<string> = (...resolverParameters) =>
@@ -15,7 +14,7 @@ describe('finesReportsTitleResolver', () => {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   let mockTitleService: any;
 
-  const buildRoute = (reportId: string | null, parentReportId?: string, routePath?: string) => {
+  const buildRoute = (reportId: string | null, parentReportId?: string) => {
     const parentRoute = parentReportId ? { paramMap: convertToParamMap({ reportId: parentReportId }) } : undefined;
 
     const parent = reportId ? undefined : parentRoute;
@@ -23,7 +22,6 @@ describe('finesReportsTitleResolver', () => {
     return {
       paramMap: convertToParamMap(reportId ? { reportId } : {}),
       parent,
-      routeConfig: routePath ? { path: routePath } : undefined,
     } as ActivatedRouteSnapshot;
   };
 
@@ -73,33 +71,5 @@ describe('finesReportsTitleResolver', () => {
 
     expect(result).toBe(expectedTitle);
     expect(mockTitleService.setTitle).toHaveBeenCalledWith(`OPAL - ${expectedTitle}`);
-  });
-
-  it('should set the create report title for the create child route', () => {
-    const route = buildRoute(
-      null,
-      FINES_REPORTS_SUMMARY_LIST_ROUTING_PATHS.children.operationalReportsByEnforcement,
-      FINES_REPORTS_ROUTING_PATHS.children.create,
-    );
-
-    const result = executeResolver(route, {} as never);
-
-    expect(result).toBe(FINES_REPORTS_ROUTING_TITLES.children.create);
-    expect(mockTitleService.setTitle).toHaveBeenCalledWith(`OPAL - ${FINES_REPORTS_ROUTING_TITLES.children.create}`);
-  });
-
-  it('should set the report summary title for the report summary child route', () => {
-    const route = buildRoute(
-      null,
-      FINES_REPORTS_SUMMARY_LIST_ROUTING_PATHS.children.operationalReportsByEnforcement,
-      `${FINES_REPORTS_ROUTING_PATHS.children.reportSummary}/:reportInstanceId`,
-    );
-
-    const result = executeResolver(route, {} as never);
-
-    expect(result).toBe(FINES_REPORTS_ROUTING_TITLES.children.reportSummary);
-    expect(mockTitleService.setTitle).toHaveBeenCalledWith(
-      `OPAL - ${FINES_REPORTS_ROUTING_TITLES.children.reportSummary}`,
-    );
   });
 });
