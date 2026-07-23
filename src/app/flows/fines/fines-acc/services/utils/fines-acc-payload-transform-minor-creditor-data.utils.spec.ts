@@ -1,5 +1,6 @@
-import { OPAL_FINES_ACCOUNT_MINOR_CREDITOR_CREDITOR_MOCK } from '../../../services/opal-fines-service/mocks/opal-fines-account-minor-creditor-creditor.mock';
-import { OPAL_FINES_ACCOUNT_MINOR_CREDITOR_CREDITOR_INDIVIDUAL_MOCK } from '../../../services/opal-fines-service/mocks/opal-fines-account-minor-creditor-creditor-individual.mock';
+import { describe, expect, it } from 'vitest';
+import { OPAL_FINES_ACCOUNT_MINOR_CREDITOR_CREDITOR_MOCK } from '@services/fines/opal-fines-service/mocks/opal-fines-account-minor-creditor-creditor.mock';
+import { OPAL_FINES_ACCOUNT_MINOR_CREDITOR_CREDITOR_INDIVIDUAL_MOCK } from '@services/fines/opal-fines-service/mocks/opal-fines-account-minor-creditor-creditor-individual.mock';
 import { MOCK_FINES_ACC_MINOR_CREDITOR_ADD_AMEND_CONVERT_COMPANY_FORM } from '../../fines-acc-minor-creditor-add-amend-convert/mocks/fines-acc-minor-creditor-add-amend-convert-company-form.mock';
 import { MOCK_FINES_ACC_MINOR_CREDITOR_ADD_AMEND_CONVERT_INDIVIDUAL_FORM } from '../../fines-acc-minor-creditor-add-amend-convert/mocks/fines-acc-minor-creditor-add-amend-convert-individual-form.mock';
 import { transformMinorCreditorAccountPayload } from './fines-acc-payload-transform-minor-creditor-data.utils';
