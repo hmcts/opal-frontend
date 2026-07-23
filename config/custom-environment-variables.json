@@ -120,6 +120,20 @@
   "user-state": {
     "domain": "USER_STATE_DOMAIN"
   },
+  "opal-user-service": {
+    "timeoutInMilliseconds": {
+      "__name": "OPAL_USER_SERVICE_TIMEOUT_IN_MILLISECONDS",
+      "__format": "json"
+    },
+    "retryAttempts": {
+      "__name": "OPAL_USER_SERVICE_RETRY_ATTEMPTS",
+      "__format": "json"
+    },
+    "retryDelayInMilliseconds": {
+      "__name": "OPAL_USER_SERVICE_RETRY_DELAY_IN_MILLISECONDS",
+      "__format": "json"
+    }
+  },
   "secrets": {
     "opal": {
       "app-insights-connection-string": "APP_INSIGHTS_CONNECTION_STRING",
