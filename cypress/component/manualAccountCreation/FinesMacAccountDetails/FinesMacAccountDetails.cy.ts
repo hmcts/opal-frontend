@@ -20,7 +20,7 @@ import { USER_STATE_MOCK_PERMISSION_BU77 } from 'cypress/component/CommonInterce
 
 const MANUAL_ACCOUNT_CREATION_JIRA_LABEL = '@JIRA-LABEL:manual-account-creation';
 
-const buildTags = (...tags: string[]) => [...tags, MANUAL_ACCOUNT_CREATION_JIRA_LABEL];
+const buildTags = (...tags: string[]) => [...tags, '@R1A', MANUAL_ACCOUNT_CREATION_JIRA_LABEL];
 
 describe('FinesMacAccountDetailsComponent', () => {
   let finesMacStateTemplate = structuredClone(FINES_CHECK_ACCOUNT_MOCK);
@@ -97,6 +97,39 @@ describe('FinesMacAccountDetailsComponent', () => {
       ],
     });
 
+  const measureNativePageChange = (
+    selector: string,
+    expectedTitle: string,
+    performanceMessage: string,
+    readySelector?: string,
+  ) => {
+    cy.get(selector).should('exist');
+
+    return cy.window().then((win) => {
+      const element = win.document.querySelector(selector) as HTMLElement;
+
+      expect(element, `${selector} should exist`).to.not.be.null;
+
+      const start = win.performance.now();
+      element.click();
+
+      return cy
+        .get(L.pageTitle)
+        .should('have.text', expectedTitle)
+        .then(() => {
+          const elapsed = win.performance.now() - start;
+
+          expect(elapsed, performanceMessage).to.be.lessThan(250);
+
+          if (readySelector) {
+            return cy.get(readySelector).should('exist');
+          }
+
+          return cy.wrap(undefined, { log: false });
+        });
+    });
+  };
+
   it(
     'should render the component (FinesMacAccountDetailsComponent)',
     { tags: [...buildTags('@JIRA-STORY:PO-2790'), '@JIRA-EPIC:PO-2750', '@JIRA-TEST-KEY:PO-4868'] },
@@ -109,7 +142,9 @@ describe('FinesMacAccountDetailsComponent', () => {
 
   it(
     'Simple page changes should be less than 250ms - Personal Details Page',
-    { tags: ['@JIRA-EPIC:PO-2479', '@JIRA-NFR:PO-2547', '@JIRA-STORY:PO-2547', '@JIRA-TEST-KEY:PO-8739'] },
+    {
+      tags: [...buildTags('@JIRA-EPIC:PO-2479', '@JIRA-NFR:PO-2547', '@JIRA-STORY:PO-2547'), '@JIRA-TEST-KEY:PO-8739'],
+    },
     () => {
       interceptAuthenticatedUser();
       interceptUserState(USER_STATE_MOCK_PERMISSION_BU77);
@@ -118,50 +153,28 @@ describe('FinesMacAccountDetailsComponent', () => {
       localMacComponentSetup();
 
       // Defining selectors rather than re-using due to directly accessing DOM for more accurate performance measurements.
-      const personalDetailsTabSelector = L.personalDetails + ' .govuk-link';
-      const cancelLinkSelector = '.govuk-link';
+      const personalDetailsTabSelector = `${L.personalDetails} a.govuk-link`;
+      const cancelLinkSelector = 'a.govuk-link.button-link';
+      const personalDetailsReadySelector = 'app-fines-mac-personal-details-form form';
 
       cy.get(L.pageTitle).should('have.text', 'Account details');
 
-      cy.window().then((win) => {
-        const start = win.performance.now();
-        const element = win.document.querySelector(personalDetailsTabSelector) as HTMLElement;
-
-        expect(element, `${personalDetailsTabSelector} should exist`).to.not.be.null;
-
-        element.click();
-
-        cy.get(L.pageTitle)
-          .should('have.text', 'Personal details')
-          .then(() => {
-            const elapsed = win.performance.now() - start;
-
-            expect(elapsed, `Personal Details page should load within 250ms`).to.be.lessThan(250);
-          });
-      });
-
-      cy.window().then((win) => {
-        const start = win.performance.now();
-        const element = win.document.querySelector(cancelLinkSelector) as HTMLElement;
-
-        expect(element, `${cancelLinkSelector} should exist`).to.not.be.null;
-
-        element.click();
-
-        cy.get(L.pageTitle)
-          .should('have.text', 'Account details')
-          .then(() => {
-            const elapsed = win.performance.now() - start;
-
-            expect(elapsed, `Account Details page should load within 250ms`).to.be.lessThan(250);
-          });
-      });
+      measureNativePageChange(
+        personalDetailsTabSelector,
+        'Personal details',
+        'Personal Details page should load within 250ms',
+        personalDetailsReadySelector,
+      ).then(() =>
+        measureNativePageChange(cancelLinkSelector, 'Account details', 'Account Details page should load within 250ms'),
+      );
     },
   );
 
   it(
     'Simple page changes should be less than 250ms - Contact Details Page',
-    { tags: ['@JIRA-EPIC:PO-2479', '@JIRA-NFR:PO-2547', '@JIRA-STORY:PO-2547', '@JIRA-TEST-KEY:PO-8740'] },
+    {
+      tags: [...buildTags('@JIRA-EPIC:PO-2479', '@JIRA-NFR:PO-2547', '@JIRA-STORY:PO-2547'), '@JIRA-TEST-KEY:PO-8740'],
+    },
     () => {
       interceptAuthenticatedUser();
       interceptUserState(USER_STATE_MOCK_PERMISSION_BU77);
@@ -170,50 +183,28 @@ describe('FinesMacAccountDetailsComponent', () => {
       localMacComponentSetup();
 
       // Defining selectors rather than re-using due to directly accessing DOM for more accurate performance measurements.
-      const contactDetailsTabSelector = L.contactDetails + ' .govuk-link';
-      const cancelLinkSelector = '.govuk-link';
+      const contactDetailsTabSelector = `${L.contactDetails} a.govuk-link`;
+      const cancelLinkSelector = 'a.govuk-link.button-link';
+      const contactDetailsReadySelector = 'app-fines-mac-contact-details-form form';
 
       cy.get(L.pageTitle).should('have.text', 'Account details');
 
-      cy.window().then((win) => {
-        const start = win.performance.now();
-        const element = win.document.querySelector(contactDetailsTabSelector) as HTMLElement;
-
-        expect(element, `${contactDetailsTabSelector} should exist`).to.not.be.null;
-
-        element.click();
-
-        cy.get(L.pageTitle)
-          .should('have.text', 'Defendant contact details')
-          .then(() => {
-            const elapsed = win.performance.now() - start;
-
-            expect(elapsed, `Contact Details page should load within 250ms`).to.be.lessThan(250);
-          });
-      });
-
-      cy.window().then((win) => {
-        const start = win.performance.now();
-        const element = win.document.querySelector(cancelLinkSelector) as HTMLElement;
-
-        expect(element, `${cancelLinkSelector} should exist`).to.not.be.null;
-
-        element.click();
-
-        cy.get(L.pageTitle)
-          .should('have.text', 'Account details')
-          .then(() => {
-            const elapsed = win.performance.now() - start;
-
-            expect(elapsed, `Account Details page should load within 250ms`).to.be.lessThan(250);
-          });
-      });
+      measureNativePageChange(
+        contactDetailsTabSelector,
+        'Defendant contact details',
+        'Contact Details page should load within 250ms',
+        contactDetailsReadySelector,
+      ).then(() =>
+        measureNativePageChange(cancelLinkSelector, 'Account details', 'Account Details page should load within 250ms'),
+      );
     },
   );
 
   it(
     'Simple page changes should be less than 250ms - Employer Details Page',
-    { tags: ['@JIRA-EPIC:PO-2479', '@JIRA-NFR:PO-2547', '@JIRA-STORY:PO-2547', '@JIRA-TEST-KEY:PO-8741'] },
+    {
+      tags: [...buildTags('@JIRA-EPIC:PO-2479', '@JIRA-NFR:PO-2547', '@JIRA-STORY:PO-2547'), '@JIRA-TEST-KEY:PO-8741'],
+    },
     () => {
       interceptAuthenticatedUser();
       interceptUserState(USER_STATE_MOCK_PERMISSION_BU77);
@@ -222,50 +213,28 @@ describe('FinesMacAccountDetailsComponent', () => {
       localMacComponentSetup();
 
       // Defining selectors rather than re-using due to directly accessing DOM for more accurate performance measurements.
-      const employerDetailsTabSelector = L.employerDetails + ' .govuk-link';
-      const cancelLinkSelector = '.govuk-link';
+      const employerDetailsTabSelector = `${L.employerDetails} a.govuk-link`;
+      const cancelLinkSelector = 'a.govuk-link.button-link';
+      const employerDetailsReadySelector = 'app-fines-mac-employer-details-form form';
 
       cy.get(L.pageTitle).should('have.text', 'Account details');
 
-      cy.window().then((win) => {
-        const start = win.performance.now();
-        const element = win.document.querySelector(employerDetailsTabSelector) as HTMLElement;
-
-        expect(element, `${employerDetailsTabSelector} should exist`).to.not.be.null;
-
-        element.click();
-
-        cy.get(L.pageTitle)
-          .should('have.text', 'Employer details')
-          .then(() => {
-            const elapsed = win.performance.now() - start;
-
-            expect(elapsed, `Employer Details page should load within 250ms`).to.be.lessThan(250);
-          });
-      });
-
-      cy.window().then((win) => {
-        const start = win.performance.now();
-        const element = win.document.querySelector(cancelLinkSelector) as HTMLElement;
-
-        expect(element, `${cancelLinkSelector} should exist`).to.not.be.null;
-
-        element.click();
-
-        cy.get(L.pageTitle)
-          .should('have.text', 'Account details')
-          .then(() => {
-            const elapsed = win.performance.now() - start;
-
-            expect(elapsed, `Account Details page should load within 250ms`).to.be.lessThan(250);
-          });
-      });
+      measureNativePageChange(
+        employerDetailsTabSelector,
+        'Employer details',
+        'Employer Details page should load within 250ms',
+        employerDetailsReadySelector,
+      ).then(() =>
+        measureNativePageChange(cancelLinkSelector, 'Account details', 'Account Details page should load within 250ms'),
+      );
     },
   );
 
   it(
     'Simple page changes should be less than 250ms - Payment Terms Page',
-    { tags: ['@JIRA-EPIC:PO-2479', '@JIRA-NFR:PO-2547', '@JIRA-STORY:PO-2547', '@JIRA-TEST-KEY:PO-8742'] },
+    {
+      tags: [...buildTags('@JIRA-EPIC:PO-2479', '@JIRA-NFR:PO-2547', '@JIRA-STORY:PO-2547'), '@JIRA-TEST-KEY:PO-8742'],
+    },
     () => {
       interceptAuthenticatedUser();
       interceptUserState(USER_STATE_MOCK_PERMISSION_BU77);
@@ -274,50 +243,28 @@ describe('FinesMacAccountDetailsComponent', () => {
       localMacComponentSetup();
 
       // Defining selectors rather than re-using due to directly accessing DOM for more accurate performance measurements.
-      const paymentTermsTabSelector = L.paymentTerms + ' .govuk-link';
-      const cancelLinkSelector = '.govuk-link';
+      const paymentTermsTabSelector = `${L.paymentTerms} a.govuk-link`;
+      const cancelLinkSelector = 'a.govuk-link.button-link';
+      const paymentTermsReadySelector = 'app-fines-mac-payment-terms-form form';
 
       cy.get(L.pageTitle).should('have.text', 'Account details');
 
-      cy.window().then((win) => {
-        const start = win.performance.now();
-        const element = win.document.querySelector(paymentTermsTabSelector) as HTMLElement;
-
-        expect(element, `${paymentTermsTabSelector} should exist`).to.not.be.null;
-
-        element.click();
-
-        cy.get(L.pageTitle)
-          .should('have.text', 'Payment terms')
-          .then(() => {
-            const elapsed = win.performance.now() - start;
-
-            expect(elapsed, `Payment Terms page should load within 250ms`).to.be.lessThan(250);
-          });
-      });
-
-      cy.window().then((win) => {
-        const start = win.performance.now();
-        const element = win.document.querySelector(cancelLinkSelector) as HTMLElement;
-
-        expect(element, `${cancelLinkSelector} should exist`).to.not.be.null;
-
-        element.click();
-
-        cy.get(L.pageTitle)
-          .should('have.text', 'Account details')
-          .then(() => {
-            const elapsed = win.performance.now() - start;
-
-            expect(elapsed, `Account Details page should load within 250ms`).to.be.lessThan(250);
-          });
-      });
+      measureNativePageChange(
+        paymentTermsTabSelector,
+        'Payment terms',
+        'Payment Terms page should load within 250ms',
+        paymentTermsReadySelector,
+      ).then(() =>
+        measureNativePageChange(cancelLinkSelector, 'Account details', 'Account Details page should load within 250ms'),
+      );
     },
   );
 
   it(
     'Simple page changes should be less than 250ms - Comments and Notes Page',
-    { tags: ['@JIRA-EPIC:PO-2479', '@JIRA-NFR:PO-2547', '@JIRA-STORY:PO-2547', '@JIRA-TEST-KEY:PO-8743'] },
+    {
+      tags: [...buildTags('@JIRA-EPIC:PO-2479', '@JIRA-NFR:PO-2547', '@JIRA-STORY:PO-2547'), '@JIRA-TEST-KEY:PO-8743'],
+    },
     () => {
       interceptAuthenticatedUser();
       interceptUserState(USER_STATE_MOCK_PERMISSION_BU77);
@@ -326,44 +273,20 @@ describe('FinesMacAccountDetailsComponent', () => {
       localMacComponentSetup();
 
       // Defining selectors rather than re-using due to directly accessing DOM for more accurate performance measurements.
-      const commentsAndNotesTabSelector = L.accountCommentsAndNotes + ' .govuk-link';
-      const cancelLinkSelector = '.govuk-link';
+      const commentsAndNotesTabSelector = `${L.accountCommentsAndNotes} a.govuk-link`;
+      const cancelLinkSelector = 'a.govuk-link.button-link';
+      const commentsAndNotesReadySelector = 'app-fines-mac-account-comments-notes-form form';
 
       cy.get(L.pageTitle).should('have.text', 'Account details');
 
-      cy.window().then((win) => {
-        const start = win.performance.now();
-        const element = win.document.querySelector(commentsAndNotesTabSelector) as HTMLElement;
-
-        expect(element, `${commentsAndNotesTabSelector} should exist`).to.not.be.null;
-
-        element.click();
-
-        cy.get(L.pageTitle)
-          .should('have.text', 'Account comments and notes')
-          .then(() => {
-            const elapsed = win.performance.now() - start;
-
-            expect(elapsed, `Comments and Notes page should load within 250ms`).to.be.lessThan(250);
-          });
-      });
-
-      cy.window().then((win) => {
-        const start = win.performance.now();
-        const element = win.document.querySelector(cancelLinkSelector) as HTMLElement;
-
-        expect(element, `${cancelLinkSelector} should exist`).to.not.be.null;
-
-        element.click();
-
-        cy.get(L.pageTitle)
-          .should('have.text', 'Account details')
-          .then(() => {
-            const elapsed = win.performance.now() - start;
-
-            expect(elapsed, `Account Details page should load within 250ms`).to.be.lessThan(250);
-          });
-      });
+      measureNativePageChange(
+        commentsAndNotesTabSelector,
+        'Account comments and notes',
+        'Comments and Notes page should load within 250ms',
+        commentsAndNotesReadySelector,
+      ).then(() =>
+        measureNativePageChange(cancelLinkSelector, 'Account details', 'Account Details page should load within 250ms'),
+      );
     },
   );
 

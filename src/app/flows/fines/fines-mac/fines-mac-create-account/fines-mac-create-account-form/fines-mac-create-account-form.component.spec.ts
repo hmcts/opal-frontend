@@ -272,6 +272,32 @@ describe('FinesMacCreateAccountFormComponent', () => {
     expect(hasConditionalCaution).toBe(false);
   });
 
+  it('should not render a back link', () => {
+    const backLink = fixture.debugElement.query(By.css('opal-lib-govuk-back-link'));
+
+    expect(backLink).toBeNull();
+  });
+
+  it('should render the create account heading for non-TFO users', () => {
+    const heading = fixture.nativeElement.querySelector('h1');
+
+    expect(heading?.textContent?.trim()).toBe('Create account');
+  });
+
+  it('should render the transfer in heading for TFO users', () => {
+    finesMacStore.setOriginatorType({
+      ...FINES_MAC_ORIGINATOR_TYPE_FORM,
+      formData: { ...FINES_MAC_ORIGINATOR_TYPE_STATE_MOCK, fm_originator_type_originator_type: 'TFO' },
+    });
+
+    component['getAccountTypes']();
+    fixture.detectChanges();
+
+    const heading = fixture.nativeElement.querySelector('h1');
+
+    expect(heading?.textContent?.trim()).toBe('Transfer in');
+  });
+
   it('should route the cancel link to the review tab in draft create and manage', () => {
     const handleRouteSpy = vi.spyOn(component, 'handleRoute').mockImplementation(() => {});
 
@@ -281,5 +307,10 @@ describe('FinesMacCreateAccountFormComponent', () => {
       nonRelative: true,
       fragment: FINES_MAC_DRAFT_CREATE_AND_MANAGE_TABS_ROUTE.fragment,
     });
+  });
+
+  it('should set autocomplete="off" on the form', () => {
+    fixture.detectChanges();
+    expect(fixture.nativeElement.querySelector('form')?.getAttribute('autocomplete')).toBe('off');
   });
 });

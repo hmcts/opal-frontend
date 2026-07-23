@@ -10,6 +10,9 @@ import { FINES_MAC_OFFENCE_DETAILS_ROUTING_PATHS } from '../routing/constants/fi
 import { FINES_MAC_OFFENCE_DETAILS_FORM_MOCK } from '../mocks/fines-mac-offence-details-form.mock';
 import { FinesMacOffenceDetailsStoreType } from '../stores/types/fines-mac-offence-details.type';
 import { FinesMacOffenceDetailsStore } from '../stores/fines-mac-offence-details.store';
+import { FinesMacStoreType } from '../../stores/types/fines-mac-store.type';
+import { FinesMacStore } from '../../stores/fines-mac.store';
+import { FINES_MAC_STATE_MOCK } from '../../mocks/fines-mac-state.mock';
 import { UtilsService } from '@hmcts/opal-frontend-common/services/utils-service';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
 
@@ -21,6 +24,7 @@ describe('FinesMacOffenceDetailsRemoveMinorCreditorComponent', () => {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   let mockUtilsService: any;
   let finesMacOffenceDetailsStore: FinesMacOffenceDetailsStoreType;
+  let finesMacStore: FinesMacStoreType;
 
   beforeEach(async () => {
     mockUtilsService = createSpyObj(UtilsService, ['formatSortCode', 'upperCaseFirstLetter']);
@@ -47,6 +51,8 @@ describe('FinesMacOffenceDetailsRemoveMinorCreditorComponent', () => {
     const offenceDetailsWithMinorCreditor = structuredClone([FINES_MAC_OFFENCE_DETAILS_FORM_MOCK]);
     offenceDetailsWithMinorCreditor[0].childFormData = [FINES_MAC_OFFENCE_DETAILS_MINOR_CREDITOR_FORM_MOCK];
     finesMacOffenceDetailsStore = TestBed.inject(FinesMacOffenceDetailsStore);
+    finesMacStore = TestBed.inject(FinesMacStore);
+    finesMacStore.setFinesMacStore(FINES_MAC_STATE_MOCK);
     finesMacOffenceDetailsStore.setOffenceDetailsDraft(offenceDetailsWithMinorCreditor);
     finesMacOffenceDetailsStore.setRowIndex(0);
     finesMacOffenceDetailsStore.setRemoveMinorCreditor(0);
@@ -73,6 +79,8 @@ describe('FinesMacOffenceDetailsRemoveMinorCreditorComponent', () => {
     expect(finesMacOffenceDetailsStore.offenceDetailsDraft()[0].childFormData).not.toContain(
       FINES_MAC_OFFENCE_DETAILS_MINOR_CREDITOR_FORM_MOCK,
     );
+    expect(finesMacOffenceDetailsStore.offenceDetailsDraftDirty()).toBe(true);
+    expect(finesMacStore.unsavedChanges()).toBe(true);
     expect(routerSpy).toHaveBeenCalledWith([FINES_MAC_OFFENCE_DETAILS_ROUTING_PATHS.children.addOffence], {
       relativeTo: component['activatedRoute'].parent,
     });

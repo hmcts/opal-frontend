@@ -25,7 +25,7 @@ import { FinesAccDefendantDetailsAtAGlanceTabComponent } from 'src/app/flows/fin
 const ACCOUNT_ENQUIRY_JIRA_LABEL = '@JIRA-LABEL:account-enquiry';
 type ParentGuardianAtAGlanceMock = typeof OPAL_FINES_ACCOUNT_PARENT_GUARDIAN_AT_A_GLANCE_MOCK;
 
-const buildTags = (...tags: string[]): string[] => [...tags, ACCOUNT_ENQUIRY_JIRA_LABEL];
+const buildTags = (...tags: string[]): string[] => [...tags, ACCOUNT_ENQUIRY_JIRA_LABEL, '@R1B'];
 
 describe('Defendant Account Summary - At a Glance Tab', () => {
   const mountAtAGlanceTab = ({
@@ -419,7 +419,7 @@ describe('Defendant Account Summary - At a Glance Tab', () => {
       setupAccountEnquiryComponent(componentProperties);
       cy.contains(DOM.linkText, 'Change').should('be.visible');
 
-      cy.contains(DOM.linkText, 'Change').click();
+      cy.contains(DOM.linkText, 'Change').first().click();
 
       // Verify navigation to the Comments screen
       cy.get('app-fines-acc-comments-add-form').should('exist');
@@ -479,7 +479,7 @@ describe('Defendant Account Summary - At a Glance Tab', () => {
         interceptedRoutes: componentProperties.interceptedRoutes?.filter((route) => route !== '/access-denied'),
       });
       cy.contains(DOM.linkText, 'Change').should('be.visible');
-      cy.contains(DOM.linkText, 'Change').click();
+      cy.contains(DOM.linkText, 'Change').first().click();
 
       // Verify navigation was triggered and the live component resolves the denied destination
       cy.get('@routerNavigate').should('have.been.called');

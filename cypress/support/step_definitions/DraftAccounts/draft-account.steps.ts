@@ -950,6 +950,15 @@ Then('the approved draft account number {string} is shown as plain text', (accou
 });
 
 /**
+ * @step Assert the approved draft account number is rendered as text without a hyperlink.
+ * @param accountNumber - Account number expected in the Approved tab.
+ */
+Then('the approved draft account number {string} is shown as text', (accountNumber: string) => {
+  log('assert', 'Asserting approved draft account number is text', { accountNumber });
+  inputter().assertApprovedAccountNumberIsPlainText(accountNumber);
+});
+
+/**
  * @step Switch tab on the Check and Validate page.
  * @description Clicks the specified tab on the checker view.
  * @param tab - Tab name (e.g., "To review", "Rejected").

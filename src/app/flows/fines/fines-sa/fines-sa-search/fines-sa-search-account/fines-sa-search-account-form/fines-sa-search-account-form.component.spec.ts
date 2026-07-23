@@ -159,6 +159,17 @@ describe('FinesSaSearchAccountFormComponent', () => {
     expect(component.form.valid).toBe(true);
   });
 
+  it('should populate major creditor autocomplete values from major creditor codes', () => {
+    component['populateMajorCreditors']();
+
+    expect(component['majorCreditors']()).toEqual(
+      OPAL_FINES_MAJOR_CREDITOR_REF_DATA_MOCK.refData.map((majorCreditor) => ({
+        value: majorCreditor.major_creditor_code!,
+        name: OPAL_FINES_MAJOR_CREDITOR_PRETTY_NAME_MOCK,
+      })),
+    );
+  });
+
   it('should not clear the current tab controls when the same tab fragment is resolved again', () => {
     component.searchCriteriaForm.get('fsa_search_account_individuals_last_name')?.setValue('Smith');
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -328,5 +339,10 @@ describe('FinesSaSearchAccountFormComponent', () => {
       component.updateFormErrorSummaryMessages([]);
       expect(component.formErrorSummaryMessage).toEqual([]);
     });
+  });
+
+  it('should set autocomplete="off" on the form', () => {
+    fixture.detectChanges();
+    expect(fixture.nativeElement.querySelector('form')?.getAttribute('autocomplete')).toBe('off');
   });
 });
