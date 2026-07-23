@@ -113,15 +113,44 @@ describe('fetchReportInstanceResolver', () => {
     expect(mockRouter.createUrlTree).not.toHaveBeenCalled();
   });
 
-  it('should fall back to null when the report instance API fails', async () => {
-    mockOpalFinesService.getReportInstance.mockReturnValue(
-      throwError(() => new HttpErrorResponse({ status: 406, statusText: 'Not Acceptable' })),
-    );
+  it('should propagate report instance API failures', async () => {
+    const error = new HttpErrorResponse({ status: 406, statusText: 'Not Acceptable' });
+
+    mockOpalFinesService.getReportInstance.mockReturnValue(throwError(() => error));
     const route = buildRoute('12345', FINES_REPORTS_SUMMARY_LIST_ROUTING_PATHS.children.operationalReportsByPayments);
 
-    const result = await firstValueFrom(executeResolver(route, {} as never) as Observable<unknown>);
+    await expect(firstValueFrom(executeResolver(route, {} as never) as Observable<unknown>)).rejects.toBe(error);
+  });
 
-    expect(result).toBeNull();
+  it('should still resolve report summary data when selected last-enforcement action lookup fails', async () => {
+    mockOpalFinesService.getReportInstance.mockReturnValue(
+      of({
+        ...OPAL_FINES_REPORT_INSTANCE_MOCK,
+        report_parameters: {
+          reportType: 'SUMMARY',
+          reportEnforcementMode: 'LAST_ACTION',
+          enforcementAction: 'BWTD',
+        },
+      }),
+    );
+    mockOpalFinesService.getResult.mockReturnValue(
+      throwError(() => new HttpErrorResponse({ status: 500, statusText: 'Internal Server Error' })),
+    );
+
+    const result = await firstValueFrom(
+      executeResolver(
+        buildRoute('12345', FINES_REPORTS_SUMMARY_LIST_ROUTING_PATHS.children.operationalReportsByEnforcement),
+        {} as never,
+      ) as Observable<unknown>,
+    );
+
+    expect(mockOpalFinesService.getResult).toHaveBeenCalledWith('BWTD');
+    expect(result).toMatchObject({
+      criteriaRows: [
+        { key: 'Report Type', value: 'Summary' },
+        { key: 'Enforcement', value: 'Last enforcement action (BWTD)' },
+      ],
+    });
   });
 
   it('should resolve the selected last-enforcement action for the summary display', async () => {

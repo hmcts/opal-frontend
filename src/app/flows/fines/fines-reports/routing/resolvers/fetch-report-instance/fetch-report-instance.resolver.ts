@@ -43,6 +43,5 @@ export const fetchReportInstanceResolver: ResolveFn<IFinesReportsReportSummaryVi
         catchError(() => of(mapFinesReportsReportInstanceToViewModel(reportInstance, reportInstanceReportTypeId))),
       );
     }),
-    catchError(() => of(null)),
   );
 };
