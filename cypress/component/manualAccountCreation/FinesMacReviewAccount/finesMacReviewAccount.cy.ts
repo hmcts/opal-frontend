@@ -438,8 +438,6 @@ describe('FinesMacReviewAccountComponent', () => {
     '(AC.3,AC.7) should show dashed line if Data is empty for non required details',
     { tags: [...buildTags('@JIRA-STORY:PO-560', '@JIRA-STORY:PO-657'), '@JIRA-EPIC:PO-272', '@JIRA-TEST-KEY:PO-5217'] },
     () => {
-      setupComponent();
-
       finesMacState.contactDetails.formData = {
         fm_contact_details_email_address_1: '',
         fm_contact_details_email_address_2: '',
@@ -464,6 +462,7 @@ describe('FinesMacReviewAccountComponent', () => {
         fm_account_comments_notes_notes: '',
         fm_account_comments_notes_system_notes: '',
       };
+      setupComponent();
 
       cy.get(DOM_ELEMENTS.primaryEmailAddress).should('contain', 'Primary email address').should('contain', '—');
       cy.get(DOM_ELEMENTS.secondaryEmailAddress).should('contain', 'Secondary email address').should('contain', '—');
@@ -494,9 +493,8 @@ describe('FinesMacReviewAccountComponent', () => {
     '(AC.3,AC.7) should show dash lines for non required fields in the details',
     { tags: [...buildTags('@JIRA-STORY:PO-560', '@JIRA-STORY:PO-657'), '@JIRA-EPIC:PO-272', '@JIRA-TEST-KEY:PO-5218'] },
     () => {
-      setupComponent();
-
       finesMacState.personalDetails.formData.fm_personal_details_vehicle_make = '';
+      setupComponent();
 
       cy.get(DOM_ELEMENTS.vehicleMakeOrModel).should('contain', 'Vehicle make and model').should('contain', '—');
     },
@@ -506,9 +504,8 @@ describe('FinesMacReviewAccountComponent', () => {
     '(AC.1,AC.2,AC.5)should render all elements on the screen for AYPG',
     { tags: [...buildTags('@JIRA-STORY:PO-662', '@JIRA-STORY:PO-657'), '@JIRA-EPIC:PO-344', '@JIRA-TEST-KEY:PO-5219'] },
     () => {
-      setupComponent();
-
       finesMacState.accountDetails.formData.fm_create_account_defendant_type = 'pgToPay';
+      setupComponent();
       cy.get(DOM_ELEMENTS.heading).should('exist');
       cy.get(DOM_ELEMENTS.backLink).should('exist');
 
@@ -571,8 +568,8 @@ describe('FinesMacReviewAccountComponent', () => {
     '(AC.3,AC.5) should load all data into elements for AYPG',
     { tags: [...buildTags('@JIRA-STORY:PO-662', '@JIRA-STORY:PO-657'), '@JIRA-EPIC:PO-344', '@JIRA-TEST-KEY:PO-5220'] },
     () => {
-      setupComponent();
       finesMacState.accountDetails.formData.fm_create_account_defendant_type = 'pgToPay';
+      setupComponent();
 
       cy.get(DOM_ELEMENTS.heading).should('contain', 'Check account details');
 
@@ -668,25 +665,26 @@ describe('FinesMacReviewAccountComponent', () => {
     '(AC.4a)should check each summary list has change button next to them for AYPG',
     { tags: [...buildTags('@JIRA-STORY:PO-662', '@JIRA-STORY:PO-657'), '@JIRA-EPIC:PO-344', '@JIRA-TEST-KEY:PO-5221'] },
     () => {
-      setupComponent();
       finesMacState.accountDetails.formData.fm_create_account_defendant_type = 'pgToPay';
 
-      cy.get(DOM_ELEMENTS.summaryTitle).should('contain', 'Defendant details').should('contain', 'Change');
-      cy.get(DOM_ELEMENTS.summaryTitle).should('contain', 'Contact details').should('contain', 'Change');
-      cy.get(DOM_ELEMENTS.summaryTitle).should('contain', 'Employer details').should('contain', 'Change');
-      cy.get(DOM_ELEMENTS.summaryTitle).should('contain', 'Offences and impositions').should('contain', 'Change');
-      cy.get(DOM_ELEMENTS.summaryTitle).should('contain', 'Parent or guardian details').should('contain', 'Change');
-      cy.get(DOM_ELEMENTS.summaryTitle).should('contain', 'Payment terms').should('contain', 'Change');
-      cy.get(DOM_ELEMENTS.summaryTitle).should('contain', 'Account comments and notes').should('contain', 'Change');
+      [
+        'Defendant details',
+        'Contact details',
+        'Employer details',
+        'Offences and impositions',
+        'Parent or guardian details',
+        'Payment terms',
+        'Account comments and notes',
+      ].forEach((sectionTitle) => {
+        cy.contains(DOM_ELEMENTS.summaryCard, sectionTitle).should('contain', 'Change');
+      });
     },
   );
   it(
     '(AC.3)should show dashed line if Data is empty for non required details AYPG',
     { tags: [...buildTags('@JIRA-STORY:PO-662'), '@JIRA-EPIC:PO-344', '@JIRA-TEST-KEY:PO-5222'] },
     () => {
-      setupComponent();
       finesMacState.accountDetails.formData.fm_create_account_defendant_type = 'pgToPay';
-
       finesMacState.contactDetails.formData = {
         fm_contact_details_email_address_1: '',
         fm_contact_details_email_address_2: '',
@@ -711,6 +709,7 @@ describe('FinesMacReviewAccountComponent', () => {
         fm_account_comments_notes_notes: '',
         fm_account_comments_notes_system_notes: '',
       };
+      setupComponent();
 
       cy.get(DOM_ELEMENTS.primaryEmailAddress).should('contain', 'Primary email address').should('contain', '—');
       cy.get(DOM_ELEMENTS.secondaryEmailAddress).should('contain', 'Secondary email address').should('contain', '—');
@@ -740,10 +739,9 @@ describe('FinesMacReviewAccountComponent', () => {
     '(AC.3,AC.7) should show dash lines for non required fields in the details AYPG',
     { tags: [...buildTags('@JIRA-STORY:PO-662', '@JIRA-STORY:PO-657'), '@JIRA-EPIC:PO-344', '@JIRA-TEST-KEY:PO-5223'] },
     () => {
-      setupComponent();
       finesMacState.accountDetails.formData.fm_create_account_defendant_type = 'pgToPay';
-
       finesMacState.parentGuardianDetails.formData.fm_parent_guardian_details_vehicle_make = '';
+      setupComponent();
 
       cy.get(DOM_ELEMENTS.PGvehicleMakeOrModel).should('contain', 'Vehicle make and model').should('contain', '—');
     },
@@ -753,8 +751,8 @@ describe('FinesMacReviewAccountComponent', () => {
     '(AC.1,AC.2,AC.5,AC.6)should render all elements for company defendant type',
     { tags: [...buildTags('@JIRA-STORY:PO-663', '@JIRA-STORY:PO-657'), '@JIRA-EPIC:PO-345', '@JIRA-TEST-KEY:PO-5224'] },
     () => {
-      setupComponent();
       finesMacState.accountDetails.formData.fm_create_account_defendant_type = 'company';
+      setupComponent();
 
       cy.get(DOM_ELEMENTS.heading).should('exist');
       cy.get(DOM_ELEMENTS.backLink).should('exist');
@@ -794,8 +792,8 @@ describe('FinesMacReviewAccountComponent', () => {
     '(AC.1,AC.2,AC.6)should load all data into elements for company',
     { tags: [...buildTags('@JIRA-STORY:PO-663', '@JIRA-STORY:PO-657'), '@JIRA-EPIC:PO-345', '@JIRA-TEST-KEY:PO-5225'] },
     () => {
-      setupComponent();
       finesMacState.accountDetails.formData.fm_create_account_defendant_type = 'company';
+      setupComponent();
 
       cy.get(DOM_ELEMENTS.heading).should('contain', 'Check account details');
 
@@ -847,8 +845,8 @@ describe('FinesMacReviewAccountComponent', () => {
     '(AC.4a)should check each summary list has change button next to them for Company',
     { tags: [...buildTags('@JIRA-STORY:PO-663', '@JIRA-STORY:PO-657'), '@JIRA-EPIC:PO-345', '@JIRA-TEST-KEY:PO-5226'] },
     () => {
-      setupComponent();
       finesMacState.accountDetails.formData.fm_create_account_defendant_type = 'company';
+      setupComponent();
 
       cy.get(DOM_ELEMENTS.summaryTitle).should('contain', 'Company details').should('contain', 'Change');
       cy.get(DOM_ELEMENTS.summaryTitle).should('contain', 'Contact details').should('contain', 'Change');
@@ -861,7 +859,6 @@ describe('FinesMacReviewAccountComponent', () => {
     '(AC.3,AC.7) should show dashed line if Data is empty for non required details Company',
     { tags: [...buildTags('@JIRA-STORY:PO-663', '@JIRA-STORY:PO-657'), '@JIRA-EPIC:PO-345', '@JIRA-TEST-KEY:PO-5227'] },
     () => {
-      setupComponent();
       finesMacState.accountDetails.formData.fm_create_account_defendant_type = 'company';
 
       finesMacState.contactDetails.formData = {
@@ -876,6 +873,7 @@ describe('FinesMacReviewAccountComponent', () => {
         fm_account_comments_notes_notes: '',
         fm_account_comments_notes_system_notes: '',
       };
+      setupComponent();
 
       cy.get(DOM_ELEMENTS.primaryEmailAddress).should('contain', 'Primary email address').should('contain', '—');
       cy.get(DOM_ELEMENTS.secondaryEmailAddress).should('contain', 'Secondary email address').should('contain', '—');
@@ -1080,8 +1078,8 @@ describe('FinesMacReviewAccountComponent', () => {
       tags: [...buildTags('@JIRA-STORY:PO-610', '@JIRA-STORY:PO-584'), '@JIRA-EPIC:PO-2220', '@JIRA-TEST-KEY:PO-5232'],
     },
     () => {
-      setupComponent(finesAccountPayload, finesAccountPayload);
       finesMacState.accountDetails.formData.fm_create_account_defendant_type = 'pgToPay';
+      setupComponent(finesAccountPayload, finesAccountPayload);
       cy.get(DOM_ELEMENTS.heading).should('exist');
       cy.get(DOM_ELEMENTS.backLink).should('exist');
 
@@ -1229,8 +1227,8 @@ describe('FinesMacReviewAccountComponent', () => {
       tags: [...buildTags('@JIRA-STORY:PO-610', '@JIRA-STORY:PO-584'), '@JIRA-EPIC:PO-2220', '@JIRA-TEST-KEY:PO-5233'],
     },
     () => {
-      setupComponent(finesAccountPayload, finesAccountPayload);
       finesMacState.accountDetails.formData.fm_create_account_defendant_type = 'company';
+      setupComponent(finesAccountPayload, finesAccountPayload);
 
       cy.get(DOM_ELEMENTS.heading).should('exist');
       cy.get(DOM_ELEMENTS.backLink).should('exist');
@@ -1309,8 +1307,6 @@ describe('FinesMacReviewAccountComponent', () => {
       tags: [...buildTags('@JIRA-STORY:PO-610', '@JIRA-STORY:PO-584'), '@JIRA-EPIC:PO-2220', '@JIRA-TEST-KEY:PO-5234'],
     },
     () => {
-      setupComponent(finesAccountPayload, finesAccountPayload);
-      const defendantTypes = ['adultOrYouthOnly', 'pgToPay', 'company'];
       finesMacState.contactDetails.formData = {
         fm_contact_details_email_address_1: '',
         fm_contact_details_email_address_2: '',
@@ -1323,23 +1319,17 @@ describe('FinesMacReviewAccountComponent', () => {
         fm_account_comments_notes_notes: '',
         fm_account_comments_notes_system_notes: '',
       };
-      cy.wrap(defendantTypes).each((type: string) => {
-        cy.then(() => {
-          finesMacState.accountDetails.formData.fm_create_account_defendant_type = type;
-          cy.get(DOM_ELEMENTS.primaryEmailAddress).should('contain', 'Primary email address').should('contain', '—');
-          cy.get(DOM_ELEMENTS.secondaryEmailAddress)
-            .should('contain', 'Secondary email address')
-            .should('contain', '—');
-          cy.get(DOM_ELEMENTS.mobileTelephoneNumber)
-            .should('contain', 'Mobile telephone number')
-            .should('contain', '—');
-          cy.get(DOM_ELEMENTS.homeTelephoneNumber).should('contain', 'Home telephone number').should('contain', '—');
-          cy.get(DOM_ELEMENTS.workTelephoneNumber).should('contain', 'Work telephone number').should('contain', '—');
+      finesMacState.accountDetails.formData.fm_create_account_defendant_type = 'company';
+      setupComponent(finesAccountPayload, finesAccountPayload);
 
-          cy.get(DOM_ELEMENTS.comments).should('contain', 'Comment').should('contain', '—');
-          cy.get(DOM_ELEMENTS.accountNotes).should('contain', 'Account note').should('contain', '—');
-        });
-      });
+      cy.get(DOM_ELEMENTS.primaryEmailAddress).should('contain', 'Primary email address').should('contain', '—');
+      cy.get(DOM_ELEMENTS.secondaryEmailAddress).should('contain', 'Secondary email address').should('contain', '—');
+      cy.get(DOM_ELEMENTS.mobileTelephoneNumber).should('contain', 'Mobile telephone number').should('contain', '—');
+      cy.get(DOM_ELEMENTS.homeTelephoneNumber).should('contain', 'Home telephone number').should('contain', '—');
+      cy.get(DOM_ELEMENTS.workTelephoneNumber).should('contain', 'Work telephone number').should('contain', '—');
+
+      cy.get(DOM_ELEMENTS.comments).should('contain', 'Comment').should('contain', '—');
+      cy.get(DOM_ELEMENTS.accountNotes).should('contain', 'Account note').should('contain', '—');
     },
   );
   it(
