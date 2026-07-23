@@ -6,9 +6,7 @@
 
 @switch (deniedType) {
   @case ('enforcement') {
-    <p class="govuk-!-margin-bottom-6">
-      The last enforcement action prevents you from amending the payment terms.
-    </p>
+    <p class="govuk-!-margin-bottom-6">The last enforcement action prevents you from amending the payment terms.</p>
     <p class="govuk-!-margin-bottom-6">{{ defendantAccountPaymentTermsData.last_enforcement }}</p>
   }
   @case ('permission') {

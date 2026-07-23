@@ -62,9 +62,7 @@ describe('FinesAccPaymentTermsAmendDeniedComponent', () => {
     const compiled = fixture.nativeElement as HTMLElement;
 
     expect(compiled.textContent).toContain('You cannot amend the payment terms of this account');
-    expect(compiled.textContent).toContain(
-      'The last enforcement action prevents you from amending the payment terms.',
-    );
+    expect(compiled.textContent).toContain('The last enforcement action prevents you from amending the payment terms.');
     expect(compiled.textContent).toContain('REM');
     expect(compiled.textContent).not.toContain('This account has been');
   });
