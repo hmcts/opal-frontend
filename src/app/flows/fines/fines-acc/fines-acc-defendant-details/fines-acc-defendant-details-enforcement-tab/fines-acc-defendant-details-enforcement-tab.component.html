@@ -8,13 +8,13 @@
           <div
             opal-lib-govuk-summary-list-row
             [class]="
-              hasAccountMaintenancePermission
+              canDisplayAccountMaintenanceAction
                 ? 'govuk-summary-list__row'
                 : 'govuk-summary-list__row govuk-summary-list__row--no-actions'
             "
             summaryListId="enforcementOverviewDetails"
             summaryListRowId="collection_order_status"
-            [actionEnabled]="hasAccountMaintenancePermission ? true : false"
+            [actionEnabled]="canDisplayAccountMaintenanceAction ? true : false"
             (actionClick)="handleChangeCollectionOrder()"
           >
             <ng-container name>Collection Order status</ng-container>
@@ -27,7 +27,7 @@
                 {{ 'No Collection Order' }}
               }
             </ng-container>
-            @if (hasAccountMaintenancePermission) {
+            @if (canDisplayAccountMaintenanceAction) {
               <ng-container action>Change</ng-container>
             }
           </div>
@@ -54,13 +54,13 @@
           <div
             opal-lib-govuk-summary-list-row
             [class]="
-              hasAccountMaintenancePermission
+              canDisplayAccountMaintenanceAction
                 ? 'govuk-summary-list__row'
                 : 'govuk-summary-list__row govuk-summary-list__row--no-actions'
             "
             summaryListId="enforcementOverviewDetails"
             summaryListRowId="enforcement_court"
-            [actionEnabled]="hasAccountMaintenancePermission ? true : false"
+            [actionEnabled]="canDisplayAccountMaintenanceAction ? true : false"
             (actionClick)="handleChangeEnforcementCourt()"
           >
             <ng-container name>Enforcement court</ng-container>
@@ -76,7 +76,7 @@
                 <app-fines-not-provided></app-fines-not-provided>
               }
             </ng-container>
-            @if (hasAccountMaintenancePermission) {
+            @if (canDisplayAccountMaintenanceAction) {
               <ng-container action>Change</ng-container>
             }
           </div>
@@ -92,19 +92,13 @@
             <div
               opal-lib-govuk-summary-list-row
               [class]="
-                tabData.last_enforcement_action.enforcement_action.result_id === 'NOENF' &&
-                hasEnterEnforcementPermission
+                canDisplayRemoveEnforcementHold
                   ? 'govuk-summary-list__row'
                   : 'govuk-summary-list__row govuk-summary-list__row--no-actions'
               "
               summaryListId="lastEnforcementActionDetails"
               summaryListRowId="enforcement_action"
-              [actionEnabled]="
-                tabData.last_enforcement_action.enforcement_action.result_id === 'NOENF' &&
-                hasEnterEnforcementPermission
-                  ? true
-                  : false
-              "
+              [actionEnabled]="canDisplayRemoveEnforcementHold ? true : false"
               (actionClick)="handleRemoveEnforcementHold()"
             >
               <ng-container name>Enforcement action</ng-container>
@@ -117,10 +111,7 @@
                   }})</opal-lib-govuk-tag
                 >
               </ng-container>
-              @if (
-                tabData.last_enforcement_action.enforcement_action.result_id === 'NOENF' &&
-                hasEnterEnforcementPermission
-              ) {
+              @if (canDisplayRemoveEnforcementHold) {
                 <ng-container action>Remove</ng-container>
               }
             </div>
@@ -284,7 +275,7 @@
     tabData.enforcement_override.enforcement_override_result.enforcement_override_result_id
   ) {
     <opal-lib-govuk-summary-card-list cardTitle="Enforcement override" summaryCardListId="enforcement-override">
-      @if (hasAccountMaintenancePermission) {
+      @if (canDisplayAccountMaintenanceAction) {
         <ng-container actions>
           <opal-lib-govuk-summary-card-action
             actionText="Remove"
@@ -299,13 +290,13 @@
           <div
             opal-lib-govuk-summary-list-row
             [class]="
-              hasAccountMaintenancePermission
+              canDisplayAccountMaintenanceAction
                 ? 'govuk-summary-list__row'
                 : 'govuk-summary-list__row govuk-summary-list__row--no-actions'
             "
             summaryListId="enforcementOverrideDetails"
             summaryListRowId="enforcement_override"
-            [actionEnabled]="hasAccountMaintenancePermission ? true : false"
+            [actionEnabled]="canDisplayAccountMaintenanceAction ? true : false"
             (actionClick)="handleChangeEnforcementOverride()"
           >
             <ng-container name>Enforcement override</ng-container>
@@ -315,7 +306,7 @@
               }})
             </ng-container>
             @if (
-              hasAccountMaintenancePermission &&
+              canDisplayAccountMaintenanceAction &&
               this.tabData.enforcement_override.enforcement_override_result.enforcement_override_result_id
             ) {
               <ng-container action>Change</ng-container>
@@ -352,29 +343,28 @@
     </opal-lib-govuk-summary-card-list>
   }
 </div>
-@if (hasAccountMaintenancePermission || hasEnterEnforcementPermission) {
+@if (canDisplayActionsColumn) {
   <div class="govuk-grid-column-one-third">
     <hr [class]="style.hr" />
     <h2 [class]="style.heading">Actions</h2>
-    @if (hasEnterEnforcementPermission) {
+    @if (canDisplayAddEnforcementAction) {
       <p>
         <a class="govuk-link govuk-link--no-visited-state" [routerLink]="addEnforcementActionRoute"
           >Add enforcement action</a
         >
       </p>
     }
-    @if (
-      hasAccountMaintenancePermission &&
-      !tabData.enforcement_override?.enforcement_override_result?.enforcement_override_result_id
-    ) {
+    @if (canDisplayAddEnforcementOverride) {
       <p>
         <a class="govuk-link govuk-link--no-visited-state" [routerLink]="addEnforcementOverrideLink()"
           >Add enforcement override</a
         >
       </p>
     }
-    <p>
-      <a class="govuk-link govuk-link--no-visited-state" href="">Request an HMRC check</a>
-    </p>
+    @if (canDisplayRequestHmrcCheck) {
+      <p>
+        <a class="govuk-link govuk-link--no-visited-state" href="">Request an HMRC check</a>
+      </p>
+    }
   </div>
 }
