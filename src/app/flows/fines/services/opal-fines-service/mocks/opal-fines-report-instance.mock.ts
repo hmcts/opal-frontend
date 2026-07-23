@@ -5,7 +5,7 @@ export const OPAL_FINES_REPORT_INSTANCE_MOCK: IOpalFinesReportInstanceDetail = {
   requested_at: '2006-06-01T10:36:00',
   generated_at: '2006-06-01T10:37:00',
   requested_by: {
-    user_id: '42',
+    user_id: 42,
     name: 'john.smith',
   },
   name: 'ABDC',

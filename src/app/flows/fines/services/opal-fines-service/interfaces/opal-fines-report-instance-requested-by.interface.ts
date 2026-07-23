@@ -1,4 +1,4 @@
 export interface IOpalFinesReportInstanceRequestedBy {
-  user_id?: string | null;
-  name?: string | null;
+  user_id: number | null;
+  name: string | null;
 }

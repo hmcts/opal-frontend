@@ -432,7 +432,7 @@ const getReportTypeParameterValue = (reportParameters: Record<string, unknown> |
  * Gets the requester display name, falling back to their user id when no name is available.
  */
 const getCreatedBy = (reportInstance: IOpalFinesReportInstanceDetail): string => {
-  return reportInstance.requested_by.name?.trim() || reportInstance.requested_by.user_id?.trim() || '';
+  return reportInstance.requested_by.name?.trim() || reportInstance.requested_by.user_id?.toString().trim() || '';
 };
 
 /**
