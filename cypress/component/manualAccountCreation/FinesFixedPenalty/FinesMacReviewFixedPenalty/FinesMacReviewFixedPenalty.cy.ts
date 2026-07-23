@@ -8,6 +8,7 @@ import { OPAL_FINES_COURT_REF_DATA_MOCK } from '../../../../../src/app/flows/fin
 import { OPAL_FINES_LOCAL_JUSTICE_AREA_REF_DATA_MOCK } from '../../../../../src/app/flows/fines/services/opal-fines-service/mocks/opal-fines-local-justice-area-ref-data.mock';
 import { FINES_AYG_FIXED_PENALTY_ACCOUNT_MOCK } from './mocks/fines_mac_review_fixed_penalty_data_mock';
 import { FINES_COMPANY_FIXED_PENALTY_ACCOUNT_MOCK } from './mocks/fines_mac_review_fixed_penalty_company_data_mock';
+import { ACCOUNT_SESSION_USER_STATE_MOCK } from '../FinesMacReviewAccount/mocks/user_state_mock';
 import { UtilsService } from '@hmcts/opal-frontend-common/services/utils-service';
 import { FinesMacPayloadService } from 'src/app/flows/fines/fines-mac/services/fines-mac-payload/fines-mac-payload.service';
 import { GlobalStore } from '@hmcts/opal-frontend-common/stores/global';

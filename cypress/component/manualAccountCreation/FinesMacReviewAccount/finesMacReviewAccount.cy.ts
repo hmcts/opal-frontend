@@ -676,7 +676,7 @@ describe('FinesMacReviewAccountComponent', () => {
         'Payment terms',
         'Account comments and notes',
       ].forEach((sectionTitle) => {
-        cy.contains(DOM_ELEMENTS.summaryCards, sectionTitle).should('contain', 'Change');
+        cy.contains(DOM_ELEMENTS.summaryCard, sectionTitle).should('contain', 'Change');
       });
     },
   );
