@@ -40,6 +40,7 @@ export function getRoutesConfig(): {
     ...DEFAULT_PROXY_CONFIG,
     opalFinesServiceUrl: config.get('opal-api.opal-fines-service'),
     opalUserServiceUrl: config.get('opal-api.opal-user-service'),
+    timeoutInMilliseconds: config.get('opal-api.timeoutInMilliseconds'),
   };
 
   const routesConfiguration: RoutesConfiguration = {
@@ -81,11 +82,17 @@ export function configureApiProxyRoutes(app: Express, proxyConfiguration: ProxyC
   const ipLoggingEnabled = config.get('features.ip-logging.enabled') as boolean;
 
   if (proxyConfiguration.opalFinesServiceUrl) {
-    app.use('/opal-fines-service', OpalApiProxy(proxyConfiguration.opalFinesServiceUrl, ipLoggingEnabled));
+    app.use(
+      '/opal-fines-service',
+      OpalApiProxy(proxyConfiguration.opalFinesServiceUrl, ipLoggingEnabled, proxyConfiguration.timeoutInMilliseconds),
+    );
   }
 
   if (proxyConfiguration.opalUserServiceUrl) {
-    app.use('/opal-user-service', OpalApiProxy(proxyConfiguration.opalUserServiceUrl, ipLoggingEnabled));
+    app.use(
+      '/opal-user-service',
+      OpalApiProxy(proxyConfiguration.opalUserServiceUrl, ipLoggingEnabled, proxyConfiguration.timeoutInMilliseconds),
+    );
   }
 }
 
