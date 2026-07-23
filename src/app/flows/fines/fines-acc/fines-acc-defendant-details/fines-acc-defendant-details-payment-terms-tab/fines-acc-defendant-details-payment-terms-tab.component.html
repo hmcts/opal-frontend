@@ -110,7 +110,7 @@
             class="govuk-summary-list__row"
             summaryListId="payment-terms"
             summaryListRowId="payment-card-last-requested"
-            [actionEnabled]="hasAmendPaymentTermsPermission && accountAllowsPaymentTermsActions ? true : false"
+            [actionEnabled]="hasAmendPaymentTermsPermission && accountAllowsPaymentTermsActions"
             (actionClick)="handleRequestPaymentCard()"
           >
             <ng-container name>Payment card last requested</ng-container>
