@@ -288,7 +288,10 @@ export class OpalFines {
   public getReportInstance(reportInstanceId: string | number): Observable<IOpalFinesReportInstanceDetail> {
     const reportInstanceIdPath = encodeURIComponent(reportInstanceId.toString());
 
-    return this.http.get<IOpalFinesReportInstanceDetail>(`${OPAL_FINES_PATHS.reportInstances}/${reportInstanceIdPath}`);
+    return this.http.get<IOpalFinesReportInstanceDetail>(
+      `${OPAL_FINES_PATHS.reportInstances}/${reportInstanceIdPath}`,
+      this.retrySafeReadOptions(),
+    );
   }
 
   /**

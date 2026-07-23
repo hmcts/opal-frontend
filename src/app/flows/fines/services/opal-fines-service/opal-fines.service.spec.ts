@@ -123,6 +123,25 @@ describe('OpalFines', () => {
     expect(error).not.toHaveBeenCalled();
   });
 
+  it('should retry report instance reads after transient timeout failures', () => {
+    const next = vi.fn();
+    const error = vi.fn();
+    const expectedUrl = `${OPAL_FINES_PATHS.reportInstances}/${OPAL_FINES_REPORT_INSTANCE_MOCK.instance_id}`;
+
+    service.getReportInstance(OPAL_FINES_REPORT_INSTANCE_MOCK.instance_id).subscribe({ next, error });
+
+    const firstRequest = httpMock.expectOne(expectedUrl);
+    expect(firstRequest.request.method).toBe('GET');
+    firstRequest.flush({ message: 'timed out' }, { status: 504, statusText: 'Gateway Timeout' });
+
+    const retryRequest = httpMock.expectOne(expectedUrl);
+    expect(retryRequest.request.method).toBe('GET');
+    retryRequest.flush(OPAL_FINES_REPORT_INSTANCE_MOCK);
+
+    expect(next).toHaveBeenCalledWith(OPAL_FINES_REPORT_INSTANCE_MOCK);
+    expect(error).not.toHaveBeenCalled();
+  });
+
   it('should retry selected account detail reads after transient timeout failures', () => {
     const defendantAccountId = 456;
     const minorCreditorAccountId = 77;
