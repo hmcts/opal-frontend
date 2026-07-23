@@ -49,6 +49,9 @@ import { buildHistoryFilterPayload } from './utils/fines-acc-payload-build-histo
 import { IFinesAccMinorCreditorDetailsHistoryAndNotesFilterForm } from '../fines-acc-minor-creditor-details/fines-acc-minor-creditor-details-history-and-notes-tab/interfaces/fines-acc-minor-creditor-details-history-and-notes-filter-form.interface';
 import { IOpalFinesMinorCreditorAccountHistoryParams } from '@services/fines/opal-fines-service/interfaces/opal-fines-minor-creditor-account-history-params.interface';
 import { buildMinorCreditorHistoryFilterPayload } from './utils/fines-acc-payload-build-minor-creditor-history-filter.utils';
+import { IFinesAccHistoryAndNotesFilterForm } from '../fines-acc-history-and-notes/interfaces/fines-acc-history-and-notes-filter-form.interface';
+import { IOpalFinesMajorCreditorAccountHistoryParams } from '@services/fines/opal-fines-service/interfaces/opal-fines-major-creditor-account-history-params.interface';
+import { buildMajorCreditorHistoryFilterPayload } from './utils/fines-acc-payload-build-major-creditor-history-filter.utils';
 import {
   HistoryTransformationService,
   IHistoryDetails as IFinesAccHistoryAndNotesDetails,
@@ -116,6 +119,21 @@ export class FinesAccPayloadService {
       buildMinorCreditorHistoryFilterPayload(form),
       FINES_ACC_BUILD_TRANSFORM_ITEMS_CONFIG,
     ) as IOpalFinesMinorCreditorAccountHistoryParams;
+  }
+
+  /**
+   * Builds query parameters for filtering major creditor account history.
+   *
+   * @param form - The submitted history and notes filter form.
+   * @returns The query parameters expected by the major creditor account history API.
+   */
+  public buildMajorCreditorHistoryFilterPayload(
+    form: IFinesAccHistoryAndNotesFilterForm,
+  ): IOpalFinesMajorCreditorAccountHistoryParams {
+    return this.transformPayload(
+      buildMajorCreditorHistoryFilterPayload(form),
+      FINES_ACC_BUILD_TRANSFORM_ITEMS_CONFIG,
+    ) as IOpalFinesMajorCreditorAccountHistoryParams;
   }
 
   /**

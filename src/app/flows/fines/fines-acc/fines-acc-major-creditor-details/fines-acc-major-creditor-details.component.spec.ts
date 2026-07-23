@@ -11,12 +11,21 @@ import { FinesAccMajorCreditorDetailsComponent } from './fines-acc-major-credito
 import { FinesAccPayloadService } from '../services/fines-acc-payload.service';
 import { MOCK_FINES_ACCOUNT_STATE } from '../mocks/fines-acc-state.mock';
 import { FINES_ACC_MAJOR_CREDITOR_DETAILS_HEADER_MOCK } from './mocks/fines-acc-major-creditor-details-header.mock';
+import { OPAL_FINES_ACCOUNT_MAJOR_CREDITOR_AT_A_GLANCE_MOCK } from '../../services/opal-fines-service/mocks/opal-fines-account-major-creditor-at-a-glance-with-defendant.mock';
+import { OPAL_FINES_ACCOUNT_MAJOR_CREDITOR_DETAILS_HISTORY_AND_NOTES_TAB_REF_DATA_MOCK } from '../../services/opal-fines-service/mocks/opal-fines-account-major-creditor-details-history-and-notes-tab-ref-data.mock';
 
 describe('FinesAccMajorCreditorDetailsComponent', () => {
   let component: FinesAccMajorCreditorDetailsComponent;
   let fixture: ComponentFixture<FinesAccMajorCreditorDetailsComponent>;
   let activatedRouteStub: Partial<ActivatedRoute>;
-  let mockOpalFinesService: Pick<OpalFines, 'getMajorCreditorAccountHeadingData' | 'clearCache' | 'getResult'>;
+  let mockOpalFinesService: Pick<
+    OpalFines,
+    | 'getMajorCreditorAccountHeadingData'
+    | 'getMajorCreditorAccountAtAGlance'
+    | 'getMajorCreditorAccountHistoryAndNotesTabData'
+    | 'clearCache'
+    | 'getResult'
+  >;
   let mockPayloadService: Pick<
     FinesAccPayloadService,
     'transformMajorCreditorAccountHeaderForStore' | 'transformPayload'
@@ -44,6 +53,12 @@ describe('FinesAccMajorCreditorDetailsComponent', () => {
       getMajorCreditorAccountHeadingData: vi
         .fn()
         .mockReturnValue(of(structuredClone(FINES_ACC_MAJOR_CREDITOR_DETAILS_HEADER_MOCK))),
+      getMajorCreditorAccountAtAGlance: vi
+        .fn()
+        .mockReturnValue(of(structuredClone(OPAL_FINES_ACCOUNT_MAJOR_CREDITOR_AT_A_GLANCE_MOCK))),
+      getMajorCreditorAccountHistoryAndNotesTabData: vi
+        .fn()
+        .mockReturnValue(of(structuredClone(OPAL_FINES_ACCOUNT_MAJOR_CREDITOR_DETAILS_HISTORY_AND_NOTES_TAB_REF_DATA_MOCK))),
       clearCache: vi.fn(),
       getResult: vi.fn(),
     };
@@ -90,5 +105,24 @@ describe('FinesAccMajorCreditorDetailsComponent', () => {
 
     expect(mockOpalFinesService.getMajorCreditorAccountHeadingData).toHaveBeenCalledWith(456);
     expect(result).toEqual(headingData);
+  });
+
+  it('should render the history and notes tab in the sub-navigation', () => {
+    expect(fixture.nativeElement.textContent).toContain('History and notes');
+  });
+
+  it('should fetch history and notes tab data when fragment is changed to history and notes', () => {
+    vi.mocked(mockPayloadService.transformPayload).mockClear();
+
+    component['refreshFragment$'].next('history-and-notes');
+    component.tabHistoryAndNotes$.subscribe();
+
+    expect(mockOpalFinesService.getMajorCreditorAccountHistoryAndNotesTabData).toHaveBeenCalledWith(
+      MOCK_FINES_ACCOUNT_STATE.account_id,
+    );
+    expect(mockPayloadService.transformPayload).toHaveBeenCalledWith(
+      OPAL_FINES_ACCOUNT_MAJOR_CREDITOR_DETAILS_HISTORY_AND_NOTES_TAB_REF_DATA_MOCK,
+      expect.any(Array),
+    );
   });
 });
