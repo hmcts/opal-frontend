@@ -1,11 +1,19 @@
 import { HttpErrorResponse } from '@angular/common/http';
 import { TestBed } from '@angular/core/testing';
-import { ActivatedRouteSnapshot, ResolveFn, convertToParamMap } from '@angular/router';
+import {
+  ActivatedRouteSnapshot,
+  RedirectCommand,
+  ResolveFn,
+  Router,
+  UrlTree,
+  convertToParamMap,
+} from '@angular/router';
 import { firstValueFrom, Observable, of, throwError } from 'rxjs';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
 import { OpalFines } from '@services/fines/opal-fines-service/opal-fines.service';
 import { OPAL_FINES_REPORT_INSTANCE_MOCK } from '@services/fines/opal-fines-service/mocks/opal-fines-report-instance.mock';
 import { OPAL_FINES_RESULT_REF_DATA_MOCK } from '@services/fines/opal-fines-service/mocks/opal-fines-result-ref-data.mock';
+import { PAGES_ROUTING_PATHS as COMMON_PAGES_ROUTING_PATHS } from '@hmcts/opal-frontend-common/pages/routing/constants';
 import { fetchReportInstanceResolver } from './fetch-report-instance.resolver';
 import { FINES_REPORTS_SUMMARY_LIST_ROUTING_PATHS } from '../../../fines-reports-summary-list/routing/constants/fines-reports-summary-list-routing-paths.constant';
 
@@ -15,6 +23,7 @@ describe('fetchReportInstanceResolver', () => {
 
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   let mockOpalFinesService: any;
+  let mockRouter: { createUrlTree: ReturnType<typeof vi.fn> };
 
   const buildRoute = (reportInstanceId: string | null, parentReportTypeId?: string) => {
     const parentRoute = parentReportTypeId
@@ -32,9 +41,15 @@ describe('fetchReportInstanceResolver', () => {
       getReportInstance: vi.fn().mockReturnValue(of(OPAL_FINES_REPORT_INSTANCE_MOCK)),
       getResult: vi.fn().mockReturnValue(of(OPAL_FINES_RESULT_REF_DATA_MOCK)),
     };
+    mockRouter = {
+      createUrlTree: vi.fn().mockReturnValue({} as UrlTree),
+    };
 
     TestBed.configureTestingModule({
-      providers: [{ provide: OpalFines, useValue: mockOpalFinesService }],
+      providers: [
+        { provide: OpalFines, useValue: mockOpalFinesService },
+        { provide: Router, useValue: mockRouter },
+      ],
     });
   });
 
@@ -48,6 +63,29 @@ describe('fetchReportInstanceResolver', () => {
 
     expect(mockOpalFinesService.getReportInstance).toHaveBeenCalledWith('12345');
     expect(result).not.toBeNull();
+  });
+
+  it('should redirect to access denied when the report instance does not match the permitted route report type', async () => {
+    mockOpalFinesService.getReportInstance.mockReturnValue(
+      of({
+        ...OPAL_FINES_REPORT_INSTANCE_MOCK,
+        report: {
+          ...OPAL_FINES_REPORT_INSTANCE_MOCK.report,
+          id: FINES_REPORTS_SUMMARY_LIST_ROUTING_PATHS.children.operationalReportsByPayments,
+        },
+      }),
+    );
+
+    const result = await firstValueFrom(
+      executeResolver(
+        buildRoute('12345', FINES_REPORTS_SUMMARY_LIST_ROUTING_PATHS.children.operationalReportsByEnforcement),
+        {} as never,
+      ) as Observable<unknown>,
+    );
+
+    expect(result).toBeInstanceOf(RedirectCommand);
+    expect(mockRouter.createUrlTree).toHaveBeenCalledWith([`/${COMMON_PAGES_ROUTING_PATHS.children.accessDenied}`]);
+    expect(mockOpalFinesService.getResult).not.toHaveBeenCalled();
   });
 
   it('should fall back to null when the report instance API fails', async () => {
