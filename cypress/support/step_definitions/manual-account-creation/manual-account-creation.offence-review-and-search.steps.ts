@@ -435,6 +435,16 @@ When('I return to account details from offence details', () => {
 });
 
 /**
+ * @step Return to Account details from offence review and assert no unsaved-changes warning appears.
+ * @description Uses the review CTA and verifies the shared route guard does not prompt after the offence is saved.
+ *
+ * @example When I return to account details from offence review without an unsaved changes warning
+ */
+When('I return to account details from offence review without an unsaved changes warning', () => {
+  flow().returnToAccountDetailsFromReviewWithoutWarning();
+});
+
+/**
  * @step Navigate from offence review to Payment terms using the CTA.
  * @description Navigate from offence review to Payment terms using the CTA.
 
