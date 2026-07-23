@@ -111,6 +111,9 @@ Feature: Manual account creation - Offence Details
       | Compensation | CNAME                       | £200.00        | £100.00     | £100.00           |
       | Totals       |                             | £400.00        | £200.00     | £200.00           |
 
+    When I return to account details from offence review without an unsaved changes warning
+    Then the "Offence details" task status is "Provided"
+
   @R1A @JIRA-EPIC:PO-272 @JIRA-TEST-KEY:PO-5360
   Scenario: User can update an existing minor creditor for an imposition
     Given an offence exists with 2 minor creditor impositions for offence code "TP11003"
@@ -710,6 +713,9 @@ Feature: Manual account creation - Offence Details
     When I maintain company minor creditor with BACS details for imposition 1:
       | Company | Address line 1 | Address line 2 | Address line 3 | Postcode | Account name | Sort code | Account number | Payment reference |
       | CNAME   |                |                |                |          |              |           |                |                   |
+
+    When I cancel offence details choosing "Cancel"
+    Then I see the offence details page with header "Add an offence" and text "Offence details"
 
     When I choose to "change" imposition 1
     And I enter "addr1" into the "Address line 1" field in the MAC flow

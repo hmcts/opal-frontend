@@ -114,6 +114,7 @@ export class FinesMacOffenceDetailsReviewComponent implements OnInit, OnDestroy 
   public ngOnDestroy(): void {
     this.finesMacOffenceDetailsStore.setAddedOffenceCode('');
     this.finesMacOffenceDetailsStore.setMinorCreditorAdded(false);
+    this.finesMacOffenceDetailsStore.setOffenceDetailsDraftDirty(false);
     this.finesMacOffenceDetailsStore.setOffenceRemoved(false);
     if (this.finesMacOffenceDetailsStore.offenceDetailsDraft()) {
       this.finesMacOffenceDetailsStore.setOffenceDetailsDraft([]);

@@ -147,12 +147,14 @@ describe('FinesMacOffenceDetailsReviewComponent', () => {
     finesMacOffenceDetailsStore.setRowIndex(0);
     finesMacOffenceDetailsStore.setAddedOffenceCode('Testing');
     finesMacOffenceDetailsStore.setMinorCreditorAdded(true);
+    finesMacOffenceDetailsStore.setOffenceDetailsDraftDirty(true);
     finesMacOffenceDetailsStore.setOffenceRemoved(true);
 
     component.ngOnDestroy();
 
     expect(finesMacOffenceDetailsStore.addedOffenceCode()).toEqual('');
     expect(finesMacOffenceDetailsStore.minorCreditorAdded()).toBe(false);
+    expect(finesMacOffenceDetailsStore.offenceDetailsDraftDirty()).toBe(false);
     expect(finesMacOffenceDetailsStore.offenceRemoved()).toBe(false);
     expect(finesMacOffenceDetailsStore.offenceDetailsDraft()).toEqual([]);
   });
@@ -167,6 +169,7 @@ describe('FinesMacOffenceDetailsReviewComponent', () => {
 
     expect(finesMacOffenceDetailsStore.addedOffenceCode()).toEqual('');
     expect(finesMacOffenceDetailsStore.minorCreditorAdded()).toBe(false);
+    expect(finesMacOffenceDetailsStore.offenceDetailsDraftDirty()).toBe(false);
     expect(finesMacOffenceDetailsStore.offenceRemoved()).toBe(false);
     expect(setOffenceDetailsDraftSpy).not.toHaveBeenCalled();
   });
