@@ -141,7 +141,14 @@ const normalizeEvidenceRelativePath = (value: string): string => {
  * @param input - Screenshot task payload.
  * @returns Evidence path for attaching to reports, or null when not found.
  */
-async function saveEvidenceScreenshot(input: SaveEvidenceInput | SaveEvidenceByNameInput): Promise<string | null> {
+type SavedEvidenceScreenshot = {
+  path: string;
+  base64: string;
+};
+
+async function saveEvidenceScreenshot(
+  input: SaveEvidenceInput | SaveEvidenceByNameInput,
+): Promise<SavedEvidenceScreenshot | null> {
   if (!isLegacyEvidenceEnabled()) {
     return null;
   }
@@ -168,7 +175,10 @@ async function saveEvidenceScreenshot(input: SaveEvidenceInput | SaveEvidenceByN
     await Promise.all(rest.map((entry) => fs.unlink(entry.path).catch(() => undefined)));
   }
 
-  return destination;
+  return {
+    path: destination,
+    base64: await fs.readFile(destination, 'base64'),
+  };
 }
 
 /**
