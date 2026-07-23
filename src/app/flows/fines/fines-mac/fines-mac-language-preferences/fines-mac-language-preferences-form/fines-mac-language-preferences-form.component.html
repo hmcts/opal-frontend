@@ -3,7 +3,7 @@
   These language preferences are for the defendant, or a parent or guardian if they are paying on behalf of the
   defendant.
 </p>
-<form (submit)="handleFormSubmit($event)" [formGroup]="form">
+<form autocomplete="off" (submit)="handleFormSubmit($event)" [formGroup]="form">
   <opal-lib-govuk-radio
     fieldSetId="fm_language_preferences_document_language"
     legendText="Documents"
