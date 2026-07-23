@@ -78,11 +78,18 @@ describe('OpalFines', () => {
     return { get: getFn } as unknown as HttpResponse<unknown>['headers'];
   }
 
-  const removeTimelineData = (payload: IFinesMacAddAccountPayload): IFinesMacAddAccountRequestPayload => {
-    const requestPayload = structuredClone(payload) as Partial<IFinesMacAddAccountPayload>;
-    delete requestPayload.timeline_data;
-    return requestPayload as IFinesMacAddAccountRequestPayload;
-  };
+  const toRequestPayload = (payload: IFinesMacAddAccountPayload): IFinesMacAddAccountRequestPayload => ({
+    draft_account_id: payload.draft_account_id,
+    created_at: payload.created_at,
+    account_snapshot: payload.account_snapshot,
+    account_status_date: payload.account_status_date,
+    business_unit_id: payload.business_unit_id,
+    account: payload.account,
+    account_type: payload.account_type,
+    account_status: payload.account_status,
+    account_status_message: payload.account_status_message,
+    version: payload.version,
+  });
 
   beforeEach(() => {
     TestBed.configureTestingModule({
@@ -767,7 +774,7 @@ describe('OpalFines', () => {
   });
 
   it('should POST the fines mac payload', () => {
-    const body = removeTimelineData(FINES_MAC_PAYLOAD_ADD_ACCOUNT);
+    const body = toRequestPayload(FINES_MAC_PAYLOAD_ADD_ACCOUNT);
 
     const apiUrl = OPAL_FINES_PATHS.draftAccounts;
 
@@ -889,7 +896,7 @@ describe('OpalFines', () => {
   });
 
   it('should send a PUT request to update the draft account payload', () => {
-    const body = removeTimelineData(FINES_MAC_PAYLOAD_ADD_ACCOUNT);
+    const body = toRequestPayload(FINES_MAC_PAYLOAD_ADD_ACCOUNT);
     const apiUrl = `${OPAL_FINES_PATHS.draftAccounts}/${body.draft_account_id}`;
 
     service.putDraftAddAccountPayload(body).subscribe((response) => {

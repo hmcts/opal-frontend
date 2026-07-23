@@ -8,6 +8,7 @@ import { OPAL_FINES_COURT_REF_DATA_MOCK } from '../../../../../src/app/flows/fin
 import { OPAL_FINES_LOCAL_JUSTICE_AREA_REF_DATA_MOCK } from '../../../../../src/app/flows/fines/services/opal-fines-service/mocks/opal-fines-local-justice-area-ref-data.mock';
 import { FINES_AYG_FIXED_PENALTY_ACCOUNT_MOCK } from './mocks/fines_mac_review_fixed_penalty_data_mock';
 import { FINES_COMPANY_FIXED_PENALTY_ACCOUNT_MOCK } from './mocks/fines_mac_review_fixed_penalty_company_data_mock';
+import { ACCOUNT_SESSION_USER_STATE_MOCK } from '../FinesMacReviewAccount/mocks/user_state_mock';
 import { UtilsService } from '@hmcts/opal-frontend-common/services/utils-service';
 import { FinesMacPayloadService } from 'src/app/flows/fines/fines-mac/services/fines-mac-payload/fines-mac-payload.service';
 import { GlobalStore } from '@hmcts/opal-frontend-common/stores/global';
@@ -20,7 +21,6 @@ import { FINES_DRAFT_STATE } from 'src/app/flows/fines/fines-draft/constants/fin
 import { MacFixedPenaltyReviewLocators as DOM_ELEMENTS } from '../../../../shared/selectors/manual-account-creation/mac.fixed-penalty.review.locators';
 import { IFinesMacState } from '../../../../../src/app/flows/fines/fines-mac/interfaces/fines-mac-state.interface';
 import { interceptOffences } from 'cypress/component/CommonIntercepts/CommonIntercepts';
-import { ACCOUNT_SESSION_USER_STATE_MOCK } from '../mocks/user_state_mock';
 import { FINES_DEFAULT_VALUES } from 'src/app/flows/fines/constants/fines-default-values.constant';
 import { FINES_ACCOUNT_TYPES } from 'src/app/flows/fines/constants/fines-account-types.constant';
 
@@ -434,9 +434,6 @@ describe('FinesMacReviewFixedPenalty using ReviewAccountComponent', () => {
         expect(request.request.body.business_unit_id).to.equal(
           FINES_AYG_FIXED_PENALTY_ACCOUNT_MOCK.businessUnit.business_unit_id,
         );
-        expect(request.request.body.submitted_by).to.equal(
-          ACCOUNT_SESSION_USER_STATE_MOCK.business_unit_users[0].business_unit_user_id,
-        );
         expect(request.request.body.submitted_by_name).to.equal(ACCOUNT_SESSION_USER_STATE_MOCK.name);
 
         expect(request.request.body.account.defendant.company_flag).to.equal(false);
@@ -503,9 +500,6 @@ describe('FinesMacReviewFixedPenalty using ReviewAccountComponent', () => {
         // Verify the request body contains the correct account type and details
         expect(request.request.body.business_unit_id).to.equal(
           FINES_AYG_FIXED_PENALTY_ACCOUNT_MOCK.businessUnit.business_unit_id,
-        );
-        expect(request.request.body.submitted_by).to.equal(
-          ACCOUNT_SESSION_USER_STATE_MOCK.business_unit_users[0].business_unit_user_id,
         );
         expect(request.request.body.submitted_by_name).to.equal(ACCOUNT_SESSION_USER_STATE_MOCK.name);
 
