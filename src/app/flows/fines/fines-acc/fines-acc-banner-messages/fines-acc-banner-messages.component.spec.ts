@@ -15,6 +15,7 @@ describe('FinesAccBannerMessagesComponent', () => {
     fixture = TestBed.createComponent(FinesAccBannerMessagesComponent);
     component = fixture.componentInstance;
     component.hasVersionMismatch = false;
+    component.hasPaymentHold = false;
     component.successMessage = null;
   });
 
@@ -56,5 +57,16 @@ describe('FinesAccBannerMessagesComponent', () => {
     const bannerText = fixture.debugElement.query(By.css('opal-lib-moj-alert-content-text'))?.nativeElement
       ?.textContent;
     expect(bannerText).toContain('Saved');
+  });
+
+  it('should render the collection order error banner when collectionOrderMessage is provided', () => {
+    component.collectionOrderMessage = 'Account has no Collection Order.';
+    fixture.detectChanges();
+
+    const errorBanner = fixture.debugElement.query(By.css('opal-lib-moj-alert[type="error"]'));
+    const bannerText = errorBanner.query(By.css('opal-lib-moj-alert-content-text'))?.nativeElement?.textContent;
+
+    expect(errorBanner).toBeTruthy();
+    expect(bannerText).toContain('Account has no Collection Order.');
   });
 });

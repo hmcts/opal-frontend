@@ -1,5 +1,6 @@
 <app-fines-acc-summary-header
   [accountStore]="accountStore"
+  [collectionOrderMessage]="collectionOrderMessage"
   id="defendant"
   [showAddAccountNoteButton]="hasPermission(finesPermissions['add-account-activity-notes'])"
   (refreshPage)="refreshPage()"

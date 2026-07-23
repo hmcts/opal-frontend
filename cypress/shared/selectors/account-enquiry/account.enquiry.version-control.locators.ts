@@ -21,6 +21,9 @@ export const DOM_ELEMENTS = {
   successBannerText: 'opal-lib-moj-alert-content-text',
   successBannerDismiss: '.moj-alert__dismiss',
   labelPaymentHoldRemoved: 'Payment hold removed',
+  collectionOrderBanner: 'opal-lib-moj-alert[type="error"]',
+  collectionOrderBannerIcon: 'opal-lib-moj-alert-icon[type="error"]',
+  collectionOrderBannerText: 'opal-lib-moj-alert[type="error"] opal-lib-moj-alert-content-text',
 
   // Tab Elements
   atAGlanceTab: '[subnavitemid="at-a-glance-tab"] > .moj-sub-navigation__link',

@@ -3,6 +3,7 @@ import { IOpalFinesVersion } from '../../../services/opal-fines-service/interfac
 
 export interface IOpalFinesAccountDefendantDetailsHeader extends IOpalFinesVersion {
   defendant_account_id: string;
+  collection_order?: boolean;
   debtor_type: string;
   is_youth: boolean;
   account_number: string;

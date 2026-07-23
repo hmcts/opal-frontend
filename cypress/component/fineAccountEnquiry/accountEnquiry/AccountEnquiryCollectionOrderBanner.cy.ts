@@ -37,10 +37,7 @@ const componentProperties: IComponentProperties = {
   interceptedRoutes: ['/access-denied', '../note/add'],
 };
 
-const setupAccountDetails = (
-  headerMock: typeof DEFENDANT_HEADER_MOCK,
-  enforcementMock: typeof OPAL_FINES_ACCOUNT_DEFENDANT_DETAILS_ENFORCEMENT_TAB_REF_DATA_MOCK,
-) => {
+const setupAccountDetails = (headerMock: typeof DEFENDANT_HEADER_MOCK) => {
   interceptAuthenticatedUser();
   interceptUserState(USER_STATE_MOCK_PERMISSION_BU77);
   interceptDefendantHeader(77, headerMock, '123');
@@ -55,7 +52,7 @@ const setupAccountDetails = (
   interceptAtAGlance(77, OPAL_FINES_ACCOUNT_DEFENDANT_AT_A_GLANCE_MOCK, '123');
   interceptPaymentTerms(77, OPAL_FINES_ACCOUNT_DEFENDANT_DETAILS_PAYMENT_TERMS_LATEST_MOCK, '123');
   interceptResultByCode('REM');
-  interceptEnforcementStatus(77, enforcementMock, '123');
+  interceptEnforcementStatus(77, OPAL_FINES_ACCOUNT_DEFENDANT_DETAILS_ENFORCEMENT_TAB_REF_DATA_MOCK, '123');
   interceptHistoryAndNotes(77, OPAL_FINES_ACCOUNT_DEFENDANT_DETAILS_HISTORY_AND_NOTES_TAB_REF_DATA_MOCK, '123');
 
   setupAccountEnquiryComponent(componentProperties);
@@ -67,19 +64,7 @@ describe('Account Enquiry Collection Order Banner', () => {
     'AC1a, AC1b, AC1c, AC4. Shows the adult collection order banner, keeps it across tabs, and passes axe',
     { tags: [...buildTags('@JIRA-LABEL:accessibility')] },
     () => {
-      const enforcementMock = {
-        ...structuredClone(OPAL_FINES_ACCOUNT_DEFENDANT_DETAILS_ENFORCEMENT_TAB_REF_DATA_MOCK),
-        defendant_account_type: 'adult',
-        enforcement_overview: {
-          ...structuredClone(OPAL_FINES_ACCOUNT_DEFENDANT_DETAILS_ENFORCEMENT_TAB_REF_DATA_MOCK.enforcement_overview),
-          collection_order: {
-            collection_order_date: '2025-12-10',
-            collection_order_flag: false,
-          },
-        },
-      };
-
-      setupAccountDetails(structuredClone(DEFENDANT_HEADER_MOCK), enforcementMock);
+      setupAccountDetails({ ...structuredClone(DEFENDANT_HEADER_MOCK), collection_order: false });
 
       cy.get(DOM_ELEMENTS.collectionOrderBanner).should('be.visible');
       cy.get(DOM_ELEMENTS.collectionOrderBannerIcon).should('have.attr', 'type', 'error');
@@ -103,19 +88,7 @@ describe('Account Enquiry Collection Order Banner', () => {
   );
 
   it('AC2a, AC2b, AC2c. Shows the youth collection order banner', { tags: [...buildTags()] }, () => {
-    const enforcementMock = {
-      ...structuredClone(OPAL_FINES_ACCOUNT_DEFENDANT_DETAILS_ENFORCEMENT_TAB_REF_DATA_MOCK),
-      defendant_account_type: 'youth',
-      enforcement_overview: {
-        ...structuredClone(OPAL_FINES_ACCOUNT_DEFENDANT_DETAILS_ENFORCEMENT_TAB_REF_DATA_MOCK.enforcement_overview),
-        collection_order: {
-          collection_order_date: '2025-12-10',
-          collection_order_flag: true,
-        },
-      },
-    };
-
-    setupAccountDetails(structuredClone(DEFENDANT_HEADER_YOUTH_MOCK), enforcementMock);
+    setupAccountDetails({ ...structuredClone(DEFENDANT_HEADER_YOUTH_MOCK), collection_order: true });
 
     cy.get(DOM_ELEMENTS.collectionOrderBannerText).should(
       'contain.text',
@@ -124,19 +97,7 @@ describe('Account Enquiry Collection Order Banner', () => {
   });
 
   it('AC3a, AC3b, AC3c. Shows the company collection order banner', { tags: [...buildTags()] }, () => {
-    const enforcementMock = {
-      ...structuredClone(OPAL_FINES_ACCOUNT_DEFENDANT_DETAILS_ENFORCEMENT_TAB_REF_DATA_MOCK),
-      defendant_account_type: 'company',
-      enforcement_overview: {
-        ...structuredClone(OPAL_FINES_ACCOUNT_DEFENDANT_DETAILS_ENFORCEMENT_TAB_REF_DATA_MOCK.enforcement_overview),
-        collection_order: {
-          collection_order_date: '2025-12-10',
-          collection_order_flag: true,
-        },
-      },
-    };
-
-    setupAccountDetails(structuredClone(DEFENDANT_HEADER_ORG_MOCK), enforcementMock);
+    setupAccountDetails({ ...structuredClone(DEFENDANT_HEADER_ORG_MOCK), collection_order: true });
 
     cy.get(DOM_ELEMENTS.collectionOrderBannerText).should(
       'contain.text',

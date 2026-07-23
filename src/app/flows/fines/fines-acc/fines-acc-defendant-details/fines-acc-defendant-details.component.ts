@@ -91,6 +91,11 @@ export class FinesAccDefendantDetailsComponent
   extends AbstractAccountSummaryBaseComponent<IOpalFinesAccountDefendantDetailsHeader, IOpalFinesVersion>
   implements OnInit, OnDestroy
 {
+  private readonly collectionOrderBannerMessages = {
+    noCollectionOrder: 'Account has no Collection Order.',
+    youthCollectionOrder: 'Account has a Collection Order but is a youth account.',
+    companyCollectionOrder: 'Account has a Collection Order but is a company account.',
+  } as const;
   private readonly opalFinesService = inject(OpalFines);
   private readonly payloadService = inject(FinesAccPayloadService);
 
@@ -110,8 +115,34 @@ export class FinesAccDefendantDetailsComponent
   public accountTypes = FINES_ACCOUNT_TYPES;
   public lastEnforcement: IOpalFinesResultRefData | null = null;
   public finesPermissions = FINES_PERMISSIONS;
+  public collectionOrderMessage: string | null = null;
   private fetchTabDataTyped<T extends IOpalFinesVersion>(serviceCall: Observable<T>): Observable<T> {
     return this.fetchTabData(serviceCall, (version) => this.accountStore.compareVersion(version)) as Observable<T>;
+  }
+
+  /**
+   * Derives the permanent Collection Order banner copy from the header summary data.
+   */
+  private setCollectionOrderMessage(header: IOpalFinesAccountDefendantDetailsHeader): void {
+    const { collection_order, is_youth, party_details } = header;
+    const isCompany = party_details.organisation_flag;
+
+    if (collection_order === false && !is_youth && !isCompany) {
+      this.collectionOrderMessage = this.collectionOrderBannerMessages.noCollectionOrder;
+      return;
+    }
+
+    if (collection_order === true && is_youth) {
+      this.collectionOrderMessage = this.collectionOrderBannerMessages.youthCollectionOrder;
+      return;
+    }
+
+    if (collection_order === true && isCompany) {
+      this.collectionOrderMessage = this.collectionOrderBannerMessages.companyCollectionOrder;
+      return;
+    }
+
+    this.collectionOrderMessage = null;
   }
 
   /**
@@ -200,6 +231,7 @@ export class FinesAccDefendantDetailsComponent
     const headingData = this.activatedRoute.snapshot.data['defendantAccountHeadingData'];
     this.accountData = this.transformHeaderForView(headingData);
     this.transformHeaderForStore(this.accountId, this.accountData);
+    this.setCollectionOrderMessage(this.accountData);
     this.activeTab = this.activatedRoute.snapshot.fragment || 'at-a-glance';
   }
 
@@ -316,6 +348,7 @@ export class FinesAccDefendantDetailsComponent
     super.refreshPage(Number(this.accountStore.account_id()), (header) => {
       this.accountStore.setSuccessMessage(FINES_ACC_BANNER_MESSAGES.latest);
       this.accountData = header;
+      this.setCollectionOrderMessage(header);
     });
   }
 

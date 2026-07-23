@@ -26,6 +26,7 @@ describe('FinesAccSummaryHeaderComponent', () => {
     } as unknown as typeof component.accountStore;
 
     component.showAddAccountNoteButton = false;
+    component.collectionOrderMessage = null;
   });
 
   it('should create', () => {
@@ -51,11 +52,13 @@ describe('FinesAccSummaryHeaderComponent', () => {
   it('should pass banner inputs from accountStore', () => {
     vi.spyOn(component.accountStore, 'hasVersionMismatch').mockReturnValue(true);
     vi.spyOn(component.accountStore, 'successMessage').mockReturnValue('Saved');
+    component.collectionOrderMessage = 'Account has no Collection Order.';
     fixture.detectChanges();
 
     const banner = fixture.debugElement.query(By.directive(FinesAccBannerMessagesComponent));
     expect(banner.componentInstance.hasVersionMismatch).toBe(true);
     expect(banner.componentInstance.successMessage).toBe('Saved');
+    expect(banner.componentInstance.collectionOrderMessage).toBe('Account has no Collection Order.');
   });
 
   it('should clear success message when banner emits clearSuccessMessage', () => {

@@ -21,6 +21,7 @@ import { FINES_ACC_DEFENDANT_ROUTING_PATHS } from '../routing/constants/fines-ac
 import { OPAL_FINES_ACCOUNT_DEFENDANT_DETAILS_PARENT_OR_GUARDIAN_TAB_REF_DATA_MOCK } from '@services/fines/opal-fines-service/mocks/opal-fines-account-defendant-details-parent-or-guardian-tab-ref-data.mock';
 import { OPAL_FINES_ACCOUNT_DEFENDANT_DETAILS_FIXED_PENALTY_MOCK } from '@services/fines/opal-fines-service/mocks/opal-fines-account-defendant-details-fixed-penalty.mock';
 import { OPAL_FINES_RESULT_REF_DATA_MOCK } from '@services/fines/opal-fines-service/mocks/opal-fines-result-ref-data.mock';
+import { By } from '@angular/platform-browser';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
 
 describe('FinesAccDefendantDetailsComponent', () => {
@@ -137,6 +138,55 @@ describe('FinesAccDefendantDetailsComponent', () => {
   it('should initialize accountData and activeTab from route data', () => {
     expect(component.accountData).toEqual(FINES_ACC_DEFENDANT_DETAILS_HEADER_MOCK);
     expect(component.activeTab).toBe('at-a-glance');
+  });
+
+  it('should set the adult collection order banner when an adult account has no collection order', () => {
+    activatedRouteStub.snapshot!.data['defendantAccountHeadingData'] = {
+      ...structuredClone(FINES_ACC_DEFENDANT_DETAILS_HEADER_MOCK),
+      collection_order: false,
+    };
+
+    component['getHeaderDataFromRoute']();
+
+    expect(component.collectionOrderMessage).toBe('Account has no Collection Order.');
+  });
+
+  it('should set the youth collection order banner when a youth account has a collection order', () => {
+    activatedRouteStub.snapshot!.data['defendantAccountHeadingData'] = {
+      ...structuredClone(FINES_ACC_DEFENDANT_DETAILS_HEADER_MOCK),
+      collection_order: true,
+      is_youth: true,
+    };
+
+    component['getHeaderDataFromRoute']();
+
+    expect(component.collectionOrderMessage).toBe('Account has a Collection Order but is a youth account.');
+  });
+
+  it('should set the company collection order banner when a company account has a collection order', () => {
+    activatedRouteStub.snapshot!.data['defendantAccountHeadingData'] = {
+      ...structuredClone(FINES_ACC_DEFENDANT_DETAILS_HEADER_MOCK),
+      collection_order: true,
+      party_details: {
+        ...structuredClone(FINES_ACC_DEFENDANT_DETAILS_HEADER_MOCK.party_details),
+        organisation_flag: true,
+      },
+    };
+
+    component['getHeaderDataFromRoute']();
+
+    expect(component.collectionOrderMessage).toBe('Account has a Collection Order but is a company account.');
+  });
+
+  it('should not set a collection order banner when the account state is valid', () => {
+    activatedRouteStub.snapshot!.data['defendantAccountHeadingData'] = {
+      ...structuredClone(FINES_ACC_DEFENDANT_DETAILS_HEADER_MOCK),
+      collection_order: true,
+    };
+
+    component['getHeaderDataFromRoute']();
+
+    expect(component.collectionOrderMessage).toBeNull();
   });
 
   it('should allow adding parent or guardian details for a youth debtor account with no parent guardian', () => {
