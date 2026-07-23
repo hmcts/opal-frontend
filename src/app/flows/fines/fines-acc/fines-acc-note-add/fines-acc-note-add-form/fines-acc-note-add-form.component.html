@@ -8,7 +8,7 @@
   headingClasses="govuk-heading-l govuk-!-margin-bottom-0"
 >
 </opal-lib-govuk-heading-with-caption>
-<form (submit)="handleFormSubmit($event)" [formGroup]="form">
+<form autocomplete="off" (submit)="handleFormSubmit($event)" [formGroup]="form">
   <opal-lib-govuk-text-area
     labelText="Add account note"
     labelClasses="govuk-label--s govuk-visually-hidden"
