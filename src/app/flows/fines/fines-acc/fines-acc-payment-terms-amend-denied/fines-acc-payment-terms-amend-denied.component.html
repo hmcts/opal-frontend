@@ -1,14 +1,13 @@
 <opal-lib-govuk-heading-with-caption
   captionText="{{ accountStore.getAccountState().account_number }} - {{ accountStore.getAccountState().party_name }}"
-  headingText="You cannot amend the payment terms of this account."
+  headingText="You cannot amend the payment terms of this account"
   headingClasses="govuk-heading-l govuk-!-margin-bottom-6"
 />
 
 @switch (deniedType) {
   @case ('enforcement') {
-    <p class="govuk-!-margin-bottom-6">
-      This account has an enforcement action outstanding: {{ defendantAccountPaymentTermsData.last_enforcement }}.
-    </p>
+    <p class="govuk-!-margin-bottom-6">The last enforcement action prevents you from amending the payment terms.</p>
+    <p class="govuk-!-margin-bottom-6">{{ defendantAccountPaymentTermsData.last_enforcement }}</p>
   }
   @case ('permission') {
     <p class="govuk-!-margin-bottom-6">
@@ -17,9 +16,6 @@
   }
   @case ('balance') {
     <p class="govuk-!-margin-bottom-6">The account has a zero balance.</p>
-  }
-  @case ('account-status') {
-    <p class="govuk-!-margin-bottom-6">This account has {{ accountStatusDescription }}.</p>
   }
 }
 
