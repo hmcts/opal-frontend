@@ -45,7 +45,7 @@
             </div>
           </div>
         </div>
-        <div class="govuk-grid-column-one-half">
+        <div class="govuk-grid-column-one-half" aria-live="polite" aria-atomic="true">
           @if (date && daysInDefaultCalculated) {
             @let daysText = daysInDefaultCalculated > 1 ? 'days' : 'day';
             <strong>Total time in days</strong>
