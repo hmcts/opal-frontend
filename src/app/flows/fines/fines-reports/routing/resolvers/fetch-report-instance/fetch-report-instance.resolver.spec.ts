@@ -88,6 +88,31 @@ describe('fetchReportInstanceResolver', () => {
     expect(mockOpalFinesService.getResult).not.toHaveBeenCalled();
   });
 
+  it('should resolve a report instance opened from Your reports', async () => {
+    const reportInstanceReportTypeId = FINES_REPORTS_SUMMARY_LIST_ROUTING_PATHS.children.operationalReportsByPayments;
+
+    mockOpalFinesService.getReportInstance.mockReturnValue(
+      of({
+        ...OPAL_FINES_REPORT_INSTANCE_MOCK,
+        report: {
+          ...OPAL_FINES_REPORT_INSTANCE_MOCK.report,
+          id: reportInstanceReportTypeId,
+        },
+      }),
+    );
+
+    const result = await firstValueFrom(
+      executeResolver(
+        buildRoute('12345', FINES_REPORTS_SUMMARY_LIST_ROUTING_PATHS.children.yourReports),
+        {} as never,
+      ) as Observable<unknown>,
+    );
+
+    expect(mockOpalFinesService.getReportInstance).toHaveBeenCalledWith('12345');
+    expect(result).toMatchObject({ reportId: reportInstanceReportTypeId });
+    expect(mockRouter.createUrlTree).not.toHaveBeenCalled();
+  });
+
   it('should fall back to null when the report instance API fails', async () => {
     mockOpalFinesService.getReportInstance.mockReturnValue(
       throwError(() => new HttpErrorResponse({ status: 406, statusText: 'Not Acceptable' })),
