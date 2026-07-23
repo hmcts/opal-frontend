@@ -14,7 +14,7 @@
             "
             summaryListId="enforcementOverviewDetails"
             summaryListRowId="collection_order_status"
-            [actionEnabled]="canDisplayAccountMaintenanceAction ? true : false"
+            [actionEnabled]="canDisplayAccountMaintenanceAction"
             (actionClick)="handleChangeCollectionOrder()"
           >
             <ng-container name>Collection Order status</ng-container>
@@ -60,7 +60,7 @@
             "
             summaryListId="enforcementOverviewDetails"
             summaryListRowId="enforcement_court"
-            [actionEnabled]="canDisplayAccountMaintenanceAction ? true : false"
+            [actionEnabled]="canDisplayAccountMaintenanceAction"
             (actionClick)="handleChangeEnforcementCourt()"
           >
             <ng-container name>Enforcement court</ng-container>
@@ -98,7 +98,7 @@
               "
               summaryListId="lastEnforcementActionDetails"
               summaryListRowId="enforcement_action"
-              [actionEnabled]="canDisplayRemoveEnforcementHold ? true : false"
+              [actionEnabled]="canDisplayRemoveEnforcementHold"
               (actionClick)="handleRemoveEnforcementHold()"
             >
               <ng-container name>Enforcement action</ng-container>
@@ -296,7 +296,7 @@
             "
             summaryListId="enforcementOverrideDetails"
             summaryListRowId="enforcement_override"
-            [actionEnabled]="canDisplayAccountMaintenanceAction ? true : false"
+            [actionEnabled]="canDisplayAccountMaintenanceAction"
             (actionClick)="handleChangeEnforcementOverride()"
           >
             <ng-container name>Enforcement override</ng-container>
