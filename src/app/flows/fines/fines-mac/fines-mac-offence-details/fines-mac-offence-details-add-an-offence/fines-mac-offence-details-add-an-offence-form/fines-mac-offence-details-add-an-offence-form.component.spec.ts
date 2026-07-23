@@ -715,12 +715,13 @@ describe('FinesMacOffenceDetailsAddAnOffenceFormComponent', () => {
 
   it('should keep the add offence form dirty when returning from a saved minor creditor', () => {
     fixture.destroy();
-    const { component: freshComponent } = createInitializedComponent((store) => {
+    const { component: freshComponent, finesMacStore: freshFinesMacStore } = createInitializedComponent((store) => {
       store.setOffenceDetailsDraftDirty(true);
     });
 
     expect(freshComponent.form.dirty).toBe(true);
     expect(freshComponent['hasUnsavedChanges']()).toBe(true);
+    expect(freshFinesMacStore.unsavedChanges()).toBe(true);
   });
 
   it('should emit unsaved changes on cancel when returning from a saved minor creditor', () => {

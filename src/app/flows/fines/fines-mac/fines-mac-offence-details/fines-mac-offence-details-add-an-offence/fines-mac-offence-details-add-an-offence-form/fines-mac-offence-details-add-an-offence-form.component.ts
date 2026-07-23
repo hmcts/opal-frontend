@@ -234,6 +234,7 @@ export class FinesMacOffenceDetailsAddAnOffenceFormComponent
     // until the offence itself is saved or reviewed.
     if (hasSavedDraftChanges) {
       this.form.markAsDirty();
+      this.finesMacStore.setUnsavedChanges(true);
     }
 
     this.today = this.dateService.toFormat(this.dateService.getDateNow(), 'dd/MM/yyyy');
