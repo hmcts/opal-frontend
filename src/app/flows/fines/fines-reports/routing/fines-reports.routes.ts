@@ -5,6 +5,9 @@ import { finesReportsStateGuard } from './guards/fines-reports-state-guard/fines
 import { FINES_ROUTING_PATHS } from '@app/flows/fines/routing/constants/fines-routing-paths.constant';
 import { FINES_DASHBOARD_ROUTING_PATHS } from '@app/flows/fines/constants/fines-dashboard-routing-paths.constant';
 import { finesReportsTitleResolver } from './resolvers/fines-reports-title/fines-reports-title.resolver';
+import { TitleResolver } from '@hmcts/opal-frontend-common/resolvers/title';
+import { FINES_REPORTS_ROUTING_TITLES } from './constants/fines-reports-routing-titles.constant';
+import { fetchReportInstanceResolver } from './resolvers/fetch-report-instance/fetch-report-instance.resolver';
 
 export const routing: Routes = [
   {
@@ -13,7 +16,7 @@ export const routing: Routes = [
     pathMatch: 'full',
   },
   {
-    path: ':reportId',
+    path: ':reportTypeId',
     canActivate: [authGuard, finesReportsStateGuard],
     children: [
       {
@@ -29,6 +32,20 @@ export const routing: Routes = [
           ),
         resolve: {
           title: finesReportsTitleResolver,
+        },
+      },
+      {
+        path: `${FINES_REPORTS_ROUTING_PATHS.children.reportSummary}/:reportInstanceId`,
+        loadComponent: () =>
+          import('../fines-reports-report-summary/fines-reports-report-summary.component').then(
+            (c) => c.FinesReportsReportSummaryComponent,
+          ),
+        data: {
+          title: FINES_REPORTS_ROUTING_TITLES.children.reportSummary,
+        },
+        resolve: {
+          title: TitleResolver,
+          reportSummary: fetchReportInstanceResolver,
         },
       },
     ],

@@ -34,9 +34,9 @@ describe('FinesReportsSummaryListComponent', () => {
       paramMap: new BehaviorSubject(convertToParamMap({})),
       parent: {
         snapshot: {
-          paramMap: convertToParamMap({ reportId: url.split('/').at(-2) ?? '' }),
+          paramMap: convertToParamMap({ reportTypeId: url.split('/').at(-2) ?? '' }),
         },
-        paramMap: new BehaviorSubject(convertToParamMap({ reportId: url.split('/').at(-2) ?? '' })),
+        paramMap: new BehaviorSubject(convertToParamMap({ reportTypeId: url.split('/').at(-2) ?? '' })),
       },
     };
 
@@ -86,7 +86,7 @@ describe('FinesReportsSummaryListComponent', () => {
   ])('should derive the page heading from the current url', async (url, heading) => {
     const { component, fixture } = await setup(url);
 
-    expect(component['reportId']()).toBe(url.split('/').at(-2));
+    expect(component['reportTypeId']()).toBe(url.split('/').at(-2));
     expect(component.pageHeading).toBe(heading);
     expect(fixture.nativeElement.querySelector('h1')?.textContent?.trim()).toBe(heading);
   });
@@ -99,19 +99,19 @@ describe('FinesReportsSummaryListComponent', () => {
     expect(fixture.nativeElement.textContent).toContain('Your reports');
   });
 
-  it('should update the page heading when the parent report id changes', async () => {
+  it('should update the page heading when the parent report type id changes', async () => {
     const { component, fixture, activatedRoute } = await setup(
       `/fines/reports/${FINES_REPORTS_SUMMARY_LIST_ROUTING_PATHS.children.yourReports}/summary-list`,
     );
 
     const updatedParamMap = convertToParamMap({
-      reportId: FINES_REPORTS_SUMMARY_LIST_ROUTING_PATHS.children.operationalReportsByPayments,
+      reportTypeId: FINES_REPORTS_SUMMARY_LIST_ROUTING_PATHS.children.operationalReportsByPayments,
     });
     activatedRoute.parent!.snapshot.paramMap = updatedParamMap;
     activatedRoute.parent!.paramMap.next(updatedParamMap);
     fixture.detectChanges();
 
-    expect(component['reportId']()).toBe(
+    expect(component['reportTypeId']()).toBe(
       FINES_REPORTS_SUMMARY_LIST_ROUTING_PATHS.children.operationalReportsByPayments,
     );
     expect(component.pageHeading).toBe(
@@ -135,12 +135,12 @@ describe('FinesReportsSummaryListComponent', () => {
           useValue: {
             snapshot: {
               paramMap: convertToParamMap({
-                reportId: FINES_REPORTS_SUMMARY_LIST_ROUTING_PATHS.children.operationalReportsByEnforcement,
+                reportTypeId: FINES_REPORTS_SUMMARY_LIST_ROUTING_PATHS.children.operationalReportsByEnforcement,
               }),
             },
             paramMap: new BehaviorSubject(
               convertToParamMap({
-                reportId: FINES_REPORTS_SUMMARY_LIST_ROUTING_PATHS.children.operationalReportsByEnforcement,
+                reportTypeId: FINES_REPORTS_SUMMARY_LIST_ROUTING_PATHS.children.operationalReportsByEnforcement,
               }),
             ),
             parent: null,
@@ -153,7 +153,7 @@ describe('FinesReportsSummaryListComponent', () => {
     const component = fixture.componentInstance;
     fixture.detectChanges();
 
-    expect(component['reportId']()).toBe(
+    expect(component['reportTypeId']()).toBe(
       FINES_REPORTS_SUMMARY_LIST_ROUTING_PATHS.children.operationalReportsByEnforcement,
     );
     expect(component.pageHeading).toBe(
@@ -163,7 +163,7 @@ describe('FinesReportsSummaryListComponent', () => {
     );
   });
 
-  it('should default to an empty report id and heading when the parent route has no report id', async () => {
+  it('should default to an empty report type id and heading when the parent route has no report type id', async () => {
     await TestBed.configureTestingModule({
       imports: [FinesReportsSummaryListComponent],
       providers: [
@@ -189,7 +189,7 @@ describe('FinesReportsSummaryListComponent', () => {
     const component = fixture.componentInstance;
     fixture.detectChanges();
 
-    expect(component['reportId']()).toBe('');
+    expect(component['reportTypeId']()).toBe('');
     expect(component.pageHeading).toBe('');
     expect(fixture.nativeElement.querySelector('h1')?.textContent?.trim()).toBe('');
   });
