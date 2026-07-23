@@ -2,6 +2,6 @@ import { IOpalFinesMajorCreditorAccountHistoryParams } from '@services/fines/opa
 
 export const FINES_ACC_MAJOR_CREDITOR_DETAILS_HISTORY_AND_NOTES_FILTER_PAYLOAD_MOCK: IOpalFinesMajorCreditorAccountHistoryParams =
   {
-    dateFrom: '2024-01-01',
-    dateTo: '2024-01-31',
+    dateFrom: '2024-01-01T00:00:00.000Z',
+    dateTo: '2024-01-31T00:00:00.000Z',
   };

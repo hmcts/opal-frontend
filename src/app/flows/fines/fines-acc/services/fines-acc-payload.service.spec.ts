@@ -218,21 +218,10 @@ describe('FinesAccPayloadService', () => {
 
   describe('buildMajorCreditorHistoryFilterPayload', () => {
     it('should build major creditor history filter query params from form values', () => {
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      vi.spyOn<any, any>(service['transformationService'], 'transformObjectValues').mockImplementation(
-        // eslint-disable-next-line @typescript-eslint/no-explicit-any
-        (payload: any, config: any) => {
-          expect(payload).toEqual(FINES_ACC_MAJOR_CREDITOR_DETAILS_HISTORY_AND_NOTES_FILTER_RAW_PAYLOAD_MOCK);
-          expect(config).toEqual(FINES_ACC_BUILD_TRANSFORM_ITEMS_CONFIG);
-          return FINES_ACC_MAJOR_CREDITOR_DETAILS_HISTORY_AND_NOTES_FILTER_PAYLOAD_MOCK;
-        },
-      );
-
       const result = service.buildMajorCreditorHistoryFilterPayload(
         FINES_ACC_MAJOR_CREDITOR_DETAILS_HISTORY_AND_NOTES_FILTER_FORM_MOCK,
       );
 
-      expect(service['transformationService'].transformObjectValues).toHaveBeenCalledOnce();
       expect(result).toEqual(FINES_ACC_MAJOR_CREDITOR_DETAILS_HISTORY_AND_NOTES_FILTER_PAYLOAD_MOCK);
     });
 
