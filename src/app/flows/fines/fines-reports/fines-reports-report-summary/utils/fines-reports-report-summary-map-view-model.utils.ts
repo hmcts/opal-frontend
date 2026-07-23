@@ -121,7 +121,7 @@ const RECORD_COUNT_DASH_STATUS_SET = new Set<FinesReportsReportSummaryNormalised
 const NO_CONTENT_RECORD_COUNT = 0;
 
 /**
- * Converts backend status text into the status keys used by the summary screen.
+ * Converts backend status codes into the status keys used by the summary screen.
  */
 const normaliseStatus = (status: string): FinesReportsReportSummaryNormalisedStatus => {
   const normalisedStatus = status.trim().toLowerCase().replace(/\s+/g, '_');
@@ -548,6 +548,7 @@ export const mapFinesReportsReportInstanceToViewModel = (
   reportInstance: IOpalFinesReportInstanceDetail,
   reportTypeId: string,
   enforcementAction: IOpalFinesResultRefData | null = null,
+  reportTitle = '',
 ): IFinesReportsReportSummaryViewModel => {
   const resolvedReportTypeId = reportTypeId || reportInstance.report.id;
   const reportType = formatReportTypeDisplay(
@@ -555,7 +556,7 @@ export const mapFinesReportsReportInstanceToViewModel = (
     resolvedReportTypeId,
   );
   const criteria = buildCriteriaRows(reportInstance.report_parameters, reportType, enforcementAction);
-  const status = normaliseStatus(reportInstance.status.display_name.trim() || reportInstance.status.code);
+  const status = normaliseStatus(reportInstance.status.code);
   const numberOfRecords = reportInstance.number_of_records ?? null;
   const businessUnitsValue = mapFinesReportsReportSummaryDisplayValue(getBusinessUnits(reportInstance));
   const numberOfRecordsValue = getNumberOfRecordsDisplayValue(status, numberOfRecords);
@@ -564,6 +565,7 @@ export const mapFinesReportsReportInstanceToViewModel = (
 
   return {
     reportId: reportInstance.report.id,
+    reportTitle,
     reportReference: getReportReference(reportInstance),
     reportType,
     generalRows: [

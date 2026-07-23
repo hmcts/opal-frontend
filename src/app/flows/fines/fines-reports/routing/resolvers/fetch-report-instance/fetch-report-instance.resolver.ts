@@ -5,7 +5,6 @@ import { OpalFines } from '@services/fines/opal-fines-service/opal-fines.service
 import { IFinesReportsReportSummaryViewModel } from '../../../fines-reports-report-summary/interfaces/fines-reports-report-summary-view-model.interface';
 import { catchError, map, of, switchMap } from 'rxjs';
 import { mapFinesReportsReportInstanceToViewModel } from '../../../fines-reports-report-summary/utils/fines-reports-report-summary-map-view-model.utils';
-import { FINES_REPORTS_SUMMARY_LIST_ROUTING_PATHS } from '../../../fines-reports-summary-list/routing/constants/fines-reports-summary-list-routing-paths.constant';
 
 const REPORT_INSTANCE_ID_API_PATTERN = /^\d+$/;
 
@@ -21,27 +20,51 @@ export const fetchReportInstanceResolver: ResolveFn<IFinesReportsReportSummaryVi
     return of(null);
   }
 
-  return opalFinesService.getReportInstance(reportInstanceId).pipe(
-    switchMap((reportInstance) => {
-      const reportInstanceReportTypeId = reportInstance.report.id;
-      const isYourReportsRoute = reportTypeId === FINES_REPORTS_SUMMARY_LIST_ROUTING_PATHS.children.yourReports;
+  return opalFinesService.getReport(reportTypeId).pipe(
+    switchMap((reportDefinition) =>
+      opalFinesService.getReportInstance(reportInstanceId).pipe(
+        switchMap((reportInstance) => {
+          if (reportDefinition.report_id !== reportInstance.report.id) {
+            return of(
+              new RedirectCommand(router.createUrlTree([`/${COMMON_PAGES_ROUTING_PATHS.children.accessDenied}`])),
+            );
+          }
 
-      // A user can open different report types from "Your reports", so only perform
-      // this type check when they came from a list for one specific report type.
-      if (!isYourReportsRoute && reportInstanceReportTypeId !== reportTypeId) {
-        return of(new RedirectCommand(router.createUrlTree([`/${COMMON_PAGES_ROUTING_PATHS.children.accessDenied}`])));
-      }
+          const enforcementAction = reportInstance.report_parameters?.['enforcementAction'];
 
-      const enforcementAction = reportInstance.report_parameters?.['enforcementAction'];
+          if (typeof enforcementAction !== 'string' || enforcementAction.trim().length === 0) {
+            return of(
+              mapFinesReportsReportInstanceToViewModel(
+                reportInstance,
+                reportDefinition.report_id,
+                null,
+                reportDefinition.report_title,
+              ),
+            );
+          }
 
-      if (typeof enforcementAction !== 'string' || enforcementAction.trim().length === 0) {
-        return of(mapFinesReportsReportInstanceToViewModel(reportInstance, reportInstanceReportTypeId));
-      }
-
-      return opalFinesService.getResult(enforcementAction).pipe(
-        map((result) => mapFinesReportsReportInstanceToViewModel(reportInstance, reportInstanceReportTypeId, result)),
-        catchError(() => of(mapFinesReportsReportInstanceToViewModel(reportInstance, reportInstanceReportTypeId))),
-      );
-    }),
+          return opalFinesService.getResult(enforcementAction).pipe(
+            map((result) =>
+              mapFinesReportsReportInstanceToViewModel(
+                reportInstance,
+                reportDefinition.report_id,
+                result,
+                reportDefinition.report_title,
+              ),
+            ),
+            catchError(() =>
+              of(
+                mapFinesReportsReportInstanceToViewModel(
+                  reportInstance,
+                  reportDefinition.report_id,
+                  null,
+                  reportDefinition.report_title,
+                ),
+              ),
+            ),
+          );
+        }),
+      ),
+    ),
   );
 };

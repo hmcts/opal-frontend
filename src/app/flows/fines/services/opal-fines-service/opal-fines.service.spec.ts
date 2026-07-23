@@ -70,6 +70,7 @@ import { OPAL_FINES_ACCOUNT_MAJOR_CREDITOR_AT_A_GLANCE_MOCK } from './mocks/opal
 import { OPAL_FINES_ACCOUNT_MINOR_CREDITOR_DETAILS_HISTORY_AND_NOTES_TAB_REF_DATA_MOCK } from './mocks/opal-fines-account-minor-creditor-details-history-and-notes-tab-ref-data.mock';
 import { OPAL_FINES_MINOR_CREDITOR_ACCOUNT_HISTORY_PARAMS_MOCK } from './mocks/opal-fines-minor-creditor-account-history-params.mock';
 import { OPAL_FINES_REPORT_INSTANCE_MOCK } from './mocks/opal-fines-report-instance.mock';
+import { OPAL_FINES_REPORT_MOCK } from './mocks/opal-fines-report.mock';
 
 describe('OpalFines', () => {
   let service: OpalFines;
@@ -139,6 +140,25 @@ describe('OpalFines', () => {
     retryRequest.flush(OPAL_FINES_REPORT_INSTANCE_MOCK);
 
     expect(next).toHaveBeenCalledWith(OPAL_FINES_REPORT_INSTANCE_MOCK);
+    expect(error).not.toHaveBeenCalled();
+  });
+
+  it('should retry report definition reads after transient timeout failures', () => {
+    const next = vi.fn();
+    const error = vi.fn();
+    const expectedUrl = `${OPAL_FINES_PATHS.reports}/${OPAL_FINES_REPORT_MOCK.report_id}`;
+
+    service.getReport(OPAL_FINES_REPORT_MOCK.report_id).subscribe({ next, error });
+
+    const firstRequest = httpMock.expectOne(expectedUrl);
+    expect(firstRequest.request.method).toBe('GET');
+    firstRequest.flush({ message: 'timed out' }, { status: 504, statusText: 'Gateway Timeout' });
+
+    const retryRequest = httpMock.expectOne(expectedUrl);
+    expect(retryRequest.request.method).toBe('GET');
+    retryRequest.flush(OPAL_FINES_REPORT_MOCK);
+
+    expect(next).toHaveBeenCalledWith(OPAL_FINES_REPORT_MOCK);
     expect(error).not.toHaveBeenCalled();
   });
 
@@ -346,6 +366,28 @@ describe('OpalFines', () => {
     expect(req.request.method).toBe('GET');
 
     req.flush(OPAL_FINES_REPORT_INSTANCE_MOCK);
+  });
+
+  it('should send a GET request to the report definition API', () => {
+    const expectedUrl = `${OPAL_FINES_PATHS.reports}/${OPAL_FINES_REPORT_MOCK.report_id}`;
+
+    service.getReport(OPAL_FINES_REPORT_MOCK.report_id).subscribe((response) => {
+      expect(response).toEqual(OPAL_FINES_REPORT_MOCK);
+    });
+
+    const req = httpMock.expectOne(expectedUrl);
+    expect(req.request.method).toBe('GET');
+    req.flush(OPAL_FINES_REPORT_MOCK);
+  });
+
+  it('should send a fresh GET request for repeated report definition calls', () => {
+    const expectedUrl = `${OPAL_FINES_PATHS.reports}/${OPAL_FINES_REPORT_MOCK.report_id}`;
+
+    service.getReport(OPAL_FINES_REPORT_MOCK.report_id).subscribe();
+    httpMock.expectOne(expectedUrl).flush(OPAL_FINES_REPORT_MOCK);
+
+    service.getReport(OPAL_FINES_REPORT_MOCK.report_id).subscribe();
+    httpMock.expectOne(expectedUrl).flush(OPAL_FINES_REPORT_MOCK);
   });
 
   it('should send a fresh GET request for repeated report instance calls', () => {

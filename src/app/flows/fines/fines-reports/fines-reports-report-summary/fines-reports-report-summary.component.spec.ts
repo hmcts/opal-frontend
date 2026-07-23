@@ -73,6 +73,9 @@ describe('FinesReportsReportSummaryComponent', () => {
           report_generation_error: 'Legacy report timed out',
           report_service: 'No response from reporting engine',
         },
+        {
+          report_generation_error: 'Reporting service connection was reset',
+        },
       ],
     },
     enforcementReportTypeId,
@@ -80,7 +83,6 @@ describe('FinesReportsReportSummaryComponent', () => {
 
   const setup = async (
     reportTypeId = enforcementReportTypeId,
-    reportInstanceId = OPAL_FINES_REPORT_INSTANCE_MOCK.instance_id.toString(),
     reportSummary: IFinesReportsReportSummaryViewModel | null = enforcementReportSummary,
   ): Promise<{
     component: FinesReportsReportSummaryComponent;
@@ -88,7 +90,6 @@ describe('FinesReportsReportSummaryComponent', () => {
     mockRouter: { navigate: ReturnType<typeof vi.fn> };
   }> => {
     const reportParamMap = convertToParamMap({ reportTypeId });
-    const reportInstanceParamMap = convertToParamMap({ reportInstanceId });
     const mockRouter = {
       navigate: vi.fn().mockName('Router.navigate'),
     };
@@ -103,10 +104,8 @@ describe('FinesReportsReportSummaryComponent', () => {
         {
           provide: ActivatedRoute,
           useValue: {
-            paramMap: of(reportInstanceParamMap),
             data: of({ reportSummary }),
             snapshot: {
-              paramMap: reportInstanceParamMap,
               data: {
                 reportSummary,
               },
@@ -134,13 +133,12 @@ describe('FinesReportsReportSummaryComponent', () => {
     expect(component).toBeTruthy();
   });
 
-  it('should render the selected report route ids in the component state', async () => {
+  it('should read the report type id from the parent route', async () => {
     const { component, fixture } = await setup();
 
     fixture.detectChanges();
 
     expect(component.reportTypeId).toBe(enforcementReportTypeId);
-    expect(component.reportInstanceId).toBe(OPAL_FINES_REPORT_INSTANCE_MOCK.instance_id.toString());
   });
 
   it('should render the enforcement report heading and back link', async () => {
@@ -154,8 +152,22 @@ describe('FinesReportsReportSummaryComponent', () => {
     expect(fixture.nativeElement.querySelector('.govuk-back-link')?.textContent.trim()).toBe('Back');
   });
 
+  it('should use the report definition title for the page heading', async () => {
+    const reportSummary = {
+      ...enforcementReportSummary,
+      reportTitle: 'Operational report (current title)',
+    };
+    const { fixture } = await setup(enforcementReportTypeId, reportSummary);
+
+    fixture.detectChanges();
+
+    expect(fixture.nativeElement.querySelector('h1')?.textContent).toContain(
+      'Operational report (current title) - ABDC - Summary',
+    );
+  });
+
   it('should render the resolved report summary data', async () => {
-    const { fixture } = await setup(enforcementReportTypeId, OPAL_FINES_REPORT_INSTANCE_MOCK.instance_id.toString());
+    const { fixture } = await setup(enforcementReportTypeId);
 
     fixture.detectChanges();
 
@@ -167,7 +179,7 @@ describe('FinesReportsReportSummaryComponent', () => {
   });
 
   it('should render the payments report heading', async () => {
-    const { fixture } = await setup(paymentsReportTypeId, '12345', paymentsReportSummary);
+    const { fixture } = await setup(paymentsReportTypeId, paymentsReportSummary);
 
     fixture.detectChanges();
 
@@ -198,7 +210,7 @@ describe('FinesReportsReportSummaryComponent', () => {
   });
 
   it('should not render optional criteria that were not used', async () => {
-    const { fixture } = await setup(paymentsReportTypeId, '12345', paymentsReportSummary);
+    const { fixture } = await setup(paymentsReportTypeId, paymentsReportSummary);
 
     fixture.detectChanges();
 
@@ -222,7 +234,7 @@ describe('FinesReportsReportSummaryComponent', () => {
   });
 
   it('should render the errors section when the report is in error', async () => {
-    const { fixture } = await setup(enforcementReportTypeId, '12345', errorReportSummary);
+    const { fixture } = await setup(enforcementReportTypeId, errorReportSummary);
 
     fixture.detectChanges();
 
@@ -233,10 +245,11 @@ describe('FinesReportsReportSummaryComponent', () => {
     expect(pageText).toContain('Legacy report timed out');
     expect(pageText).toContain('Report service');
     expect(pageText).toContain('No response from reporting engine');
+    expect(pageText).toContain('Reporting service connection was reset');
   });
 
   it('should render without a local error banner when no report summary data is resolved', async () => {
-    const { fixture } = await setup(enforcementReportTypeId, '12345', null);
+    const { fixture } = await setup(enforcementReportTypeId, null);
 
     fixture.detectChanges();
 

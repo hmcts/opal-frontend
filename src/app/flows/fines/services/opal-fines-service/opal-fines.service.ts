@@ -68,6 +68,7 @@ import { IOpalFinesDeleteDefendantAccountPartyPayload } from './interfaces/opal-
 import { IOpalFinesAccountMajorCreditorDetailsHeader } from '../../fines-acc/fines-acc-major-creditor-details/interfaces/fines-acc-major-creditor-details-header.interface';
 import { IOpalFinesAccountMajorCreditorAtAGlance } from './interfaces/opal-fines-account-major-creditor-at-a-glance.interface';
 import { IOpalFinesReportInstanceDetail } from './interfaces/opal-fines-report-instance-detail.interface';
+import { IOpalFinesReport } from './interfaces/opal-fines-report.interface';
 
 const SAFE_READ_RETRY_POLICY = {
   retryCount: 1,
@@ -292,6 +293,18 @@ export class OpalFines {
       `${OPAL_FINES_PATHS.reportInstances}/${reportInstanceIdPath}`,
       this.retrySafeReadOptions(),
     );
+  }
+
+  /**
+   * Retrieves a report definition by report id without caching, so title and access metadata stay current.
+   *
+   * @param reportId - The report definition id to fetch from the reports API.
+   * @returns An observable containing the report definition.
+   */
+  public getReport(reportId: string): Observable<IOpalFinesReport> {
+    const reportIdPath = encodeURIComponent(reportId);
+
+    return this.http.get<IOpalFinesReport>(`${OPAL_FINES_PATHS.reports}/${reportIdPath}`, this.retrySafeReadOptions());
   }
 
   /**

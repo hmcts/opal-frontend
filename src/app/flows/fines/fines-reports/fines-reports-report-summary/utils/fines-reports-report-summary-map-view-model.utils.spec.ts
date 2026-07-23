@@ -247,6 +247,24 @@ describe('mapFinesReportsReportInstanceToViewModel', () => {
     expect(result.generalRows[3]).toEqual({ key: 'No. of Records', value: 0, type: 'number' });
   });
 
+  it('should use the status code when backend display wording changes', () => {
+    const result = mapFinesReportsReportInstanceToViewModel(
+      {
+        ...OPAL_FINES_REPORT_INSTANCE_MOCK,
+        number_of_records: 0,
+        status: {
+          code: FINES_REPORTS_REPORT_SUMMARY_STATUSES.ready,
+          display_name: 'Available to download',
+        },
+      },
+      FINES_REPORTS_SUMMARY_LIST_ROUTING_PATHS.children.operationalReportsByEnforcement,
+    );
+
+    expect(result.generalRows[0]).toEqual({ key: 'Status', value: 'No content', type: 'text' });
+    expect(result.generalRows[3]).toEqual({ key: 'No. of Records', value: 0, type: 'number' });
+    expect(result.errorRows).toEqual([]);
+  });
+
   it('should only show error rows for reports in error', () => {
     const result = mapFinesReportsReportInstanceToViewModel(
       {
@@ -260,6 +278,9 @@ describe('mapFinesReportsReportInstanceToViewModel', () => {
             report_generation_error: 'Legacy report timed out',
             report_service: 'No response from reporting engine',
           },
+          {
+            report_generation_error: 'Reporting service connection was reset',
+          },
         ],
       },
       FINES_REPORTS_SUMMARY_LIST_ROUTING_PATHS.children.operationalReportsByEnforcement,
@@ -270,6 +291,7 @@ describe('mapFinesReportsReportInstanceToViewModel', () => {
     expect(result.errorRows).toEqual([
       { key: 'Report generation error', value: 'Legacy report timed out', type: 'text' },
       { key: 'Report service', value: 'No response from reporting engine', type: 'text' },
+      { key: 'Report generation error', value: 'Reporting service connection was reset', type: 'text' },
     ]);
   });
 });

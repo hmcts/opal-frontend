@@ -3,11 +3,11 @@
   <h1 class="govuk-heading-l govuk-!-margin-bottom-7">{{ pageHeading() }}</h1>
 </div>
 
-@if (reportSummary()) {
+@if (reportSummary(); as summary) {
   <div class="govuk-grid-column-two-thirds">
     <h2 class="govuk-heading-m">General</h2>
     <opal-lib-govuk-summary-list summaryListId="reportSummaryGeneral">
-      @for (row of reportSummaryViewModel().generalRows; track row.key) {
+      @for (row of summary.generalRows; track row.key) {
         <div
           opal-lib-govuk-summary-list-row
           class="govuk-summary-list__row govuk-summary-list__row--no-actions"
@@ -22,10 +22,10 @@
       }
     </opal-lib-govuk-summary-list>
 
-    @if (reportSummaryViewModel().criteriaRows.length > 0) {
+    @if (summary.criteriaRows.length > 0) {
       <h2 class="govuk-heading-m">Report criteria</h2>
       <opal-lib-govuk-summary-list summaryListId="reportSummaryCriteria">
-        @for (row of reportSummaryViewModel().criteriaRows; track row.key) {
+        @for (row of summary.criteriaRows; track row.key) {
           <div
             opal-lib-govuk-summary-list-row
             class="govuk-summary-list__row govuk-summary-list__row--no-actions"
@@ -41,10 +41,10 @@
       </opal-lib-govuk-summary-list>
     }
 
-    @if (reportSummaryViewModel().errorRows.length > 0) {
+    @if (summary.errorRows.length > 0) {
       <h2 class="govuk-heading-m">Errors</h2>
       <opal-lib-govuk-summary-list summaryListId="reportSummaryErrors">
-        @for (row of reportSummaryViewModel().errorRows; track row.key) {
+        @for (row of summary.errorRows; track $index) {
           <div
             opal-lib-govuk-summary-list-row
             class="govuk-summary-list__row govuk-summary-list__row--no-actions"

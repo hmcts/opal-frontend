@@ -34,12 +34,6 @@ export class FinesReportsReportSummaryComponent {
       initialValue: this.routeWithReportTypeId.snapshot.paramMap.get('reportTypeId') ?? '',
     },
   );
-  private readonly reportInstanceIdSignal = toSignal(
-    this.activatedRoute.paramMap.pipe(map((paramMap) => paramMap.get('reportInstanceId') ?? '')),
-    {
-      initialValue: this.activatedRoute.snapshot.paramMap.get('reportInstanceId') ?? '',
-    },
-  );
   private readonly reportSummarySignal = toSignal(
     this.activatedRoute.data.pipe(
       map((routeData) => routeData['reportSummary'] as IFinesReportsReportSummaryViewModel | null | undefined),
@@ -58,28 +52,14 @@ export class FinesReportsReportSummaryComponent {
   public readonly reportSummary = computed(() => this.reportSummarySignal() ?? null);
 
   /**
-   * Returns the report summary rows used by the template.
-   */
-  public readonly reportSummaryViewModel = computed((): IFinesReportsReportSummaryViewModel => {
-    return (
-      this.reportSummary() ?? {
-        reportId: this.reportTypeId,
-        reportReference: '',
-        reportType: '',
-        generalRows: [],
-        criteriaRows: [],
-        errorRows: [],
-      }
-    );
-  });
-
-  /**
    * Returns the report summary page heading for the selected report instance.
    */
   public readonly pageHeading = computed(() => {
     const reportSummary = this.reportSummary();
     const reportHeading =
-      FINES_REPORTS_REPORT_SUMMARY_HEADINGS[reportSummary?.reportId ?? this.reportTypeId] ?? 'Operational report';
+      reportSummary?.reportTitle ||
+      FINES_REPORTS_REPORT_SUMMARY_HEADINGS[reportSummary?.reportId ?? this.reportTypeId] ||
+      'Operational report';
 
     if (!reportSummary) {
       return reportHeading;
@@ -93,13 +73,6 @@ export class FinesReportsReportSummaryComponent {
    */
   public get reportTypeId(): string {
     return this.reportTypeIdSignal();
-  }
-
-  /**
-   * Returns the selected report instance id from the current summary route.
-   */
-  public get reportInstanceId(): string {
-    return this.reportInstanceIdSignal();
   }
 
   /**

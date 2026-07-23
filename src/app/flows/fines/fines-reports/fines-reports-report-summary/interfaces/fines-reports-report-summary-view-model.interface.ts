@@ -2,6 +2,7 @@ import { IFinesReportsReportSummaryDisplayRow } from './fines-reports-report-sum
 
 export interface IFinesReportsReportSummaryViewModel {
   reportId: string;
+  reportTitle: string;
   reportReference: string;
   reportType: string;
   generalRows: IFinesReportsReportSummaryDisplayRow[];
