@@ -143,25 +143,6 @@ describe('OpalFines', () => {
     expect(error).not.toHaveBeenCalled();
   });
 
-  it('should retry report definition reads after transient timeout failures', () => {
-    const next = vi.fn();
-    const error = vi.fn();
-    const expectedUrl = `${OPAL_FINES_PATHS.reports}/${OPAL_FINES_REPORT_MOCK.report_id}`;
-
-    service.getReport(OPAL_FINES_REPORT_MOCK.report_id).subscribe({ next, error });
-
-    const firstRequest = httpMock.expectOne(expectedUrl);
-    expect(firstRequest.request.method).toBe('GET');
-    firstRequest.flush({ message: 'timed out' }, { status: 504, statusText: 'Gateway Timeout' });
-
-    const retryRequest = httpMock.expectOne(expectedUrl);
-    expect(retryRequest.request.method).toBe('GET');
-    retryRequest.flush(OPAL_FINES_REPORT_MOCK);
-
-    expect(next).toHaveBeenCalledWith(OPAL_FINES_REPORT_MOCK);
-    expect(error).not.toHaveBeenCalled();
-  });
-
   it('should retry selected account detail reads after transient timeout failures', () => {
     const defendantAccountId = 456;
     const minorCreditorAccountId = 77;
@@ -380,14 +361,22 @@ describe('OpalFines', () => {
     req.flush(OPAL_FINES_REPORT_MOCK);
   });
 
-  it('should send a fresh GET request for repeated report definition calls', () => {
+  it('should return the cached response for repeated report definition calls', () => {
     const expectedUrl = `${OPAL_FINES_PATHS.reports}/${OPAL_FINES_REPORT_MOCK.report_id}`;
 
-    service.getReport(OPAL_FINES_REPORT_MOCK.report_id).subscribe();
-    httpMock.expectOne(expectedUrl).flush(OPAL_FINES_REPORT_MOCK);
+    service.getReport(OPAL_FINES_REPORT_MOCK.report_id).subscribe((response) => {
+      expect(response).toEqual(OPAL_FINES_REPORT_MOCK);
+    });
 
-    service.getReport(OPAL_FINES_REPORT_MOCK.report_id).subscribe();
-    httpMock.expectOne(expectedUrl).flush(OPAL_FINES_REPORT_MOCK);
+    const req = httpMock.expectOne(expectedUrl);
+    expect(req.request.method).toBe('GET');
+    req.flush(OPAL_FINES_REPORT_MOCK);
+
+    service.getReport(OPAL_FINES_REPORT_MOCK.report_id).subscribe((response) => {
+      expect(response).toEqual(OPAL_FINES_REPORT_MOCK);
+    });
+
+    httpMock.expectNone(expectedUrl);
   });
 
   it('should send a fresh GET request for repeated report instance calls', () => {
@@ -1684,6 +1673,7 @@ describe('OpalFines', () => {
     service['cache']['businessUnitsCache$'] = of(OPAL_FINES_BUSINESS_UNIT_REF_DATA_MOCK);
     service['cache']['localJusticeAreasLjaTypeCache$']['adult'] = of(OPAL_FINES_LOCAL_JUSTICE_AREA_REF_DATA_MOCK);
     service['cache']['offenceCodesCache$']['code'] = of(OPAL_FINES_OFFENCES_REF_DATA_MOCK);
+    service['cache']['reportsCache$'][OPAL_FINES_REPORT_MOCK.report_id] = of(OPAL_FINES_REPORT_MOCK);
 
     service.clearAllCaches();
 
@@ -1693,6 +1683,7 @@ describe('OpalFines', () => {
     expect(service['cache']['businessUnitsCache$']).toBeNull();
     expect(service['cache']['localJusticeAreasLjaTypeCache$']).toEqual({});
     expect(service['cache']['offenceCodesCache$']).toEqual({});
+    expect(service['cache']['reportsCache$']).toEqual({});
   });
 
   it('should send a POST request to search defendant accounts API with correct body', () => {

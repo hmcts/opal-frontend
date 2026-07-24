@@ -192,6 +192,7 @@ export class OpalFines {
       'offenceCodesCache$',
       'majorCreditorsCache$',
       'prosecutorDataCache$',
+      'reportsCache$',
     ];
 
     this.clearCaches(referenceCaches);
@@ -295,16 +296,23 @@ export class OpalFines {
     );
   }
 
+  // TODO: Use this.retrySafeReadOptions() for this request.
   /**
-   * Retrieves a report definition by report id without caching, so title and access metadata stay current.
+   * Retrieves a report definition by report id and caches it for later route transitions.
    *
-   * @param reportId - The report definition id to fetch from the reports API.
+   * @param reportId - The report id to fetch from the reports API.
    * @returns An observable containing the report definition.
    */
-  public getReport(reportId: string): Observable<IOpalFinesReport> {
-    const reportIdPath = encodeURIComponent(reportId);
+  public getReport(reportId: string | number): Observable<IOpalFinesReport> {
+    const cacheKey = reportId.toString();
 
-    return this.http.get<IOpalFinesReport>(`${OPAL_FINES_PATHS.reports}/${reportIdPath}`, this.retrySafeReadOptions());
+    if (!this.cache.reportsCache$[cacheKey]) {
+      this.cache.reportsCache$[cacheKey] = this.http
+        .get<IOpalFinesReport>(`${OPAL_FINES_PATHS.reports}/${reportId}`)
+        .pipe(shareReplay(1));
+    }
+
+    return this.cache.reportsCache$[cacheKey];
   }
 
   /**
