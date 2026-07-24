@@ -8,6 +8,7 @@ import {
   USER_STATE_MOCK_PERMISSION_BU77,
 } from '../../CommonIntercepts/CommonUserState.mocks';
 import { mount } from 'cypress/angular';
+import { ActivatedRoute, provideRouter } from '@angular/router';
 
 import { interceptDefendantHeader, interceptDefendantDetails } from './intercept/defendantAccountIntercepts';
 import { OPAL_FINES_ACCOUNT_DEFENDANT_ACCOUNT_PARTY_MOCK } from '@services/fines/opal-fines-service/mocks/opal-fines-account-defendant-account-party.mock';
@@ -60,6 +61,7 @@ describe('Account Enquiry Defendant Details Tab', () => {
         hasAccountMaintenencePermission,
         canAddParentOrGuardianDetails,
       },
+      providers: [provideRouter([]), { provide: ActivatedRoute, useValue: { snapshot: { params: {}, data: {} } } }],
     });
   };
 
@@ -153,11 +155,16 @@ describe('Account Enquiry Defendant Details Tab', () => {
       mountDefendantTab({ defendantDetailsMock });
 
       cy.contains('h2', 'Defendant Details').should('be.visible');
-      cy.get(DEFENDANT_DETAILS.defendantName).should('not.exist');
-      cy.get(DEFENDANT_DETAILS.defendantAlias).should('not.exist');
-      cy.get(DEFENDANT_DETAILS.defendantDOB).should('not.exist');
-      cy.get(DEFENDANT_DETAILS.defendantNI).should('not.exist');
-      cy.get(DEFENDANT_DETAILS.defendantAddress).should('not.exist');
+      cy.get(DEFENDANT_DETAILS.defendantName).should('exist').and('contain.text', 'Ms Sarah Jane THOMPSON');
+      cy.get(DEFENDANT_DETAILS.defendantAlias).should('exist').and('contain.text', 'S. J. TAYLOR John PETERS');
+      cy.get(DEFENDANT_DETAILS.defendantDOB).should('exist').and('contain.text', '12 April 1988');
+      cy.get(DEFENDANT_DETAILS.defendantNI).should('exist').and('contain.text', 'QQ 12 34 56 C');
+      cy.get(DEFENDANT_DETAILS.defendantAddress)
+        .should('exist')
+        .invoke('text')
+        .then((text) => {
+          expect(text.trim().replace(/\s+/g, ' ')).to.eq('45 High Street Flat 2B AB1 2CD');
+        });
       cy.get(DEFENDANT_DETAILS.vehicle).should('not.exist');
       cy.get(DEFENDANT_DETAILS.vehicleReg).should('not.exist');
       cy.get('h2').contains('Contact details').should('not.exist');
@@ -255,10 +262,10 @@ describe('Account Enquiry Defendant Details Tab', () => {
       cy.get('app-fines-acc-defendant-details-defendant-tab').then(($host) => {
         cy.window().then((win) => {
           const component = (win as any).ng.getComponent($host[0]) as {
-            changeDefendantDetailsLink: () => string;
+            convertAccountLink: () => string;
           };
 
-          expect(component.changeDefendantDetailsLink()).to.eq('/access-denied');
+          expect(component.convertAccountLink()).to.eq('/access-denied');
         });
       });
     },
@@ -277,7 +284,7 @@ describe('Account Enquiry Defendant Details Tab', () => {
 
       mountDefendantTab({ defendantDetailsMock });
 
-      cy.get(DEFENDANT_DETAILS.defendantChange).should('not.exist');
+      cy.get(DEFENDANT_DETAILS.defendantChange).should('exist');
     },
   );
 
@@ -311,8 +318,8 @@ describe('Account Enquiry Defendant Details Tab', () => {
         .then((text) => {
           expect(text.trim().replace(/\s+/g, ' ')).to.eq('45 High Street Flat 2B AB1 2CD');
         });
-      cy.get(DEFENDANT_DETAILS.vehicle).should('exist').and('contain.text', 'Ford Focus');
-      cy.get(DEFENDANT_DETAILS.vehicleReg).should('exist').and('contain.text', 'XY21 ABC');
+      cy.get(DEFENDANT_DETAILS.companyVehicle).should('exist').and('contain.text', 'Ford Focus');
+      cy.get(DEFENDANT_DETAILS.companyVehicleReg).should('exist').and('contain.text', 'XY21 ABC');
 
       cy.get(DEFENDANT_DETAILS.primaryEmail).should('exist').and('contain.text', 'sarah.thompson@example.com');
       cy.get(DEFENDANT_DETAILS.secondaryEmail).should('exist').and('contain.text', 'sarah.t@example.com');
@@ -378,11 +385,13 @@ describe('Account Enquiry Defendant Details Tab', () => {
       setupAccountEnquiryComponent({
         ...componentProperties,
         accountId: accountId,
-        interceptedRoutes: componentProperties.interceptedRoutes?.filter((route) => route !== '../party/company/amend'),
       });
 
-      cy.get(DEFENDANT_DETAILS.defendantChange).should('exist').click();
-      cy.get('app-fines-acc-debtor-add-amend-form').should('exist');
+      cy.get(DEFENDANT_DETAILS.convertActionLink)
+        .should('exist')
+        .and('contain.text', 'Convert to an individual account')
+        .and('have.attr', 'href')
+        .and('include', '/convert/individual');
     },
   );
 
@@ -404,15 +413,15 @@ describe('Account Enquiry Defendant Details Tab', () => {
       interceptDefendantDetails(accountId, defendantDetailsMock, accountId);
       setupAccountEnquiryComponent({ ...componentProperties, accountId: accountId });
 
-      cy.get(DEFENDANT_DETAILS.defendantChange).should('exist').click();
+      cy.get(DEFENDANT_DETAILS.convertActionLink).should('exist').click();
       cy.get('@routerNavigate').should('have.been.called');
       cy.get('app-fines-acc-defendant-details-defendant-tab').then(($host) => {
         cy.window().then((win) => {
           const component = (win as any).ng.getComponent($host[0]) as {
-            changeDefendantDetailsLink: () => string;
+            convertAccountLink: () => string;
           };
 
-          expect(component.changeDefendantDetailsLink()).to.eq('/access-denied');
+          expect(component.convertAccountLink()).to.eq('/access-denied');
         });
       });
     },
@@ -431,7 +440,7 @@ describe('Account Enquiry Defendant Details Tab', () => {
 
       mountDefendantTab({ defendantDetailsMock });
 
-      cy.get(DEFENDANT_DETAILS.defendantChange).should('not.exist');
+      cy.get(DEFENDANT_DETAILS.convertActionLink).should('not.exist');
     },
   );
 
@@ -545,7 +554,6 @@ describe('Account Enquiry Defendant Details Tab', () => {
         .within(() => {
           cy.contains('a', 'Change').should('be.visible');
         });
-      cy.get(DEFENDANT_DETAILS.defendantChange).should('not.exist');
     },
   );
 
@@ -569,6 +577,8 @@ describe('Account Enquiry Defendant Details Tab', () => {
       setupAccountEnquiryComponent({ ...componentProperties, accountId });
 
       cy.get('h2').contains('Company Details').should('be.visible');
+      cy.get(DEFENDANT_DETAILS.defendantChange).should('not.exist');
+      cy.get(DEFENDANT_DETAILS.companyChange).should('exist');
       cy.get('#company-summary-card-list').within(() => {
         cy.contains('.govuk-summary-card__title', 'Company details').should('be.visible');
         cy.contains('a', 'Change').should('be.visible');
@@ -577,7 +587,6 @@ describe('Account Enquiry Defendant Details Tab', () => {
         cy.contains('.govuk-summary-card__title', 'Contact details').should('be.visible');
         cy.contains('a', 'Change').should('be.visible');
       });
-      cy.get(DEFENDANT_DETAILS.defendantChange).should('not.exist');
       cy.contains('.govuk-summary-card__title', 'Employer details').should('not.exist');
     },
   );
