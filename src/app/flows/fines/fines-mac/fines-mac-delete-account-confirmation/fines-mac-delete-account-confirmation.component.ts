@@ -39,7 +39,7 @@ export class FinesMacDeleteAccountConfirmationComponent extends AbstractFormPare
   protected readonly opalFinesService = inject(OpalFines);
 
   public accountId: number | null = Number(this.route.snapshot.paramMap.get('draftAccountId'));
-  public referrer = this.setReferrer();
+  public referrer = this.accountDetailsRoute;
 
   /**
    * Creates the payload for the PATCH request to delete an account.
@@ -114,6 +114,10 @@ export class FinesMacDeleteAccountConfirmationComponent extends AbstractFormPare
    * @returns {string} The referrer path to navigate back to the review account page.
    */
   private setReferrer(): string {
+    const navigationReferrer = (history.state?.['referrer'] ??
+      this['router'].currentNavigation()?.extras.state?.['referrer']) as string | undefined;
+    if (navigationReferrer) return navigationReferrer;
+
     if (this.finesDraftStore.checker()) return this.reviewAccountRoute;
     const accountType = this.finesMacStore.accountDetails().formData.fm_create_account_account_type;
 
@@ -152,6 +156,10 @@ export class FinesMacDeleteAccountConfirmationComponent extends AbstractFormPare
     this.finesMacStore.setDeleteAccountConfirmation(form);
     const payload = this.createPatchPayload(form);
     this.handlePatchRequest(payload);
+  }
+
+  public ngOnInit(): void {
+    this.referrer = this.setReferrer();
   }
 
   /**

@@ -520,7 +520,12 @@ describe('FinesMacReviewAccountComponent', () => {
 
       component.handleDeleteAccount(mockEvent);
 
-      expect(routerSpy).toHaveBeenCalledWith([route], { relativeTo: component['activatedRoute'].parent });
+      expect(routerSpy).toHaveBeenCalledWith([route], {
+        relativeTo: component['activatedRoute'].parent,
+        state: {
+          referrer: component['finesMacRoutes'].children.reviewAccount,
+        },
+      });
       expect(mockEvent.preventDefault).toHaveBeenCalled();
       expect(component['finesMacStore'].setDeleteFromCheckAccount).toHaveBeenCalledTimes(0);
     });
@@ -539,7 +544,12 @@ describe('FinesMacReviewAccountComponent', () => {
 
       component.handleDeleteAccount(mockEvent);
 
-      expect(routerSpy).toHaveBeenCalledWith([route], { relativeTo: component['activatedRoute'].parent });
+      expect(routerSpy).toHaveBeenCalledWith([route], {
+        relativeTo: component['activatedRoute'].parent,
+        state: {
+          referrer: component['finesMacRoutes'].children.reviewAccount,
+        },
+      });
       expect(mockEvent.preventDefault).toHaveBeenCalled();
       expect(component['finesMacStore'].setDeleteFromCheckAccount).toHaveBeenCalledTimes(1);
     });

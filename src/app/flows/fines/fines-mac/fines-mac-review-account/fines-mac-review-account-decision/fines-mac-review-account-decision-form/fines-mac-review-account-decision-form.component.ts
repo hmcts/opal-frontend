@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
+import { ChangeDetectionStrategy, Component, EventEmitter, Input, OnInit, Output, inject } from '@angular/core';
 import { AbstractFormBaseComponent } from '@hmcts/opal-frontend-common/components/abstract/abstract-form-base';
 import { IFinesMacReviewAccountDecisionForm } from '../interfaces/fines-mac-review-account-decision-form.interface';
 import { FINES_MAC_REVIEW_ACCOUNT_DECISION_OPTIONS } from '../constants/fines-mac-review-account-decision-options.constant';
@@ -12,6 +12,7 @@ import {
 import { GovukTextAreaComponent } from '@hmcts/opal-frontend-common/components/govuk/govuk-text-area';
 import { GovukButtonComponent } from '@hmcts/opal-frontend-common/components/govuk/govuk-button';
 import { FINES_MAC_ROUTING_PATHS } from '../../../routing/constants/fines-mac-routing-paths.constant';
+import { FinesMacStore } from '../../../stores/fines-mac.store';
 
 import { IFinesMacReviewAccountDecisionFieldErrors } from '../interfaces/fines-mac-review-account-decision-field-errors.interface';
 import { FINES_MAC_REVIEW_ACCOUNT_DECISION_FIELD_ERRORS } from '../constants/fines-mac-review-account-decision-field-errors.constant';
@@ -45,6 +46,7 @@ export class FinesMacReviewAccountDecisionFormComponent extends AbstractFormBase
   public readonly DECISION_OPTIONS = FINES_MAC_REVIEW_ACCOUNT_DECISION_OPTIONS;
   public readonly finesMacRoutes = FINES_MAC_ROUTING_PATHS;
   public readonly decisionRejectConditionalId = 'fm_review_account_decision_reject';
+  protected readonly finesMacStore = inject(FinesMacStore);
   override fieldErrors: IFinesMacReviewAccountDecisionFieldErrors = FINES_MAC_REVIEW_ACCOUNT_DECISION_FIELD_ERRORS;
 
   /**
@@ -121,6 +123,24 @@ export class FinesMacReviewAccountDecisionFormComponent extends AbstractFormBase
     this.setupDecisionForm();
     this.setupDecisionListener();
     this.setInitialErrorMessages();
+  }
+
+  /**
+   * Navigates to the delete account confirmation page and records that the user
+   * came from the check account details screen, so the confirmation page can
+   * return them there when they cancel.
+   *
+   * @param event - The click event from the delete account link.
+   */
+  public handleDeleteAccount(event: Event): void {
+    event.preventDefault();
+    this.finesMacStore.setDeleteFromCheckAccount(true);
+    this.handleRoute(`${this.finesMacRoutes.children.deleteAccountConfirmation}/${this.accountId}`, {
+      event,
+      routeData: {
+        referrer: this.finesMacRoutes.children.reviewAccount,
+      },
+    });
   }
 
   /**

@@ -448,9 +448,14 @@ export class FinesMacReviewAccountComponent extends AbstractFormParentBaseCompon
         `${this.finesMacRoutes.children.deleteAccountConfirmation}/${this.accountId}`,
         nonRelative,
         event,
+        {
+          referrer: this.finesMacRoutes.children.reviewAccount,
+        },
       );
     } else {
-      this.routerNavigate(`${this.finesMacRoutes.children.deleteAccountConfirmation}`, nonRelative, event);
+      this.routerNavigate(`${this.finesMacRoutes.children.deleteAccountConfirmation}`, nonRelative, event, {
+        referrer: this.finesMacRoutes.children.reviewAccount,
+      });
     }
   }
 
