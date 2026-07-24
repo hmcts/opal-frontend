@@ -1,6 +1,8 @@
 import { describe, expect, it } from 'vitest';
+import { TitleResolver } from '@hmcts/opal-frontend-common/resolvers/title';
 import { routing } from './fines-reports.routes';
 import { FINES_REPORTS_ROUTING_PATHS } from './constants/fines-reports-routing-paths.constant';
+import { FINES_REPORTS_ROUTING_TITLES } from './constants/fines-reports-routing-titles.constant';
 import { finesReportsBusinessUnitsResolver } from './resolvers/fines-reports-business-units/fines-reports-business-units.resolver';
 
 describe('finesReports routes', () => {
@@ -24,8 +26,11 @@ describe('finesReports routes', () => {
     expect(createRoute).toEqual(
       expect.objectContaining({
         path: FINES_REPORTS_ROUTING_PATHS.children.create,
+        data: {
+          title: FINES_REPORTS_ROUTING_TITLES.children.create,
+        },
         resolve: expect.objectContaining({
-          title: expect.any(Function),
+          title: TitleResolver,
         }),
       }),
     );
@@ -41,8 +46,11 @@ describe('finesReports routes', () => {
     expect(reportSummaryRoute).toEqual(
       expect.objectContaining({
         path: `${FINES_REPORTS_ROUTING_PATHS.children.reportSummary}/:reportInstanceId`,
+        data: {
+          title: FINES_REPORTS_ROUTING_TITLES.children.reportSummary,
+        },
         resolve: expect.objectContaining({
-          title: expect.any(Function),
+          title: TitleResolver,
         }),
       }),
     );

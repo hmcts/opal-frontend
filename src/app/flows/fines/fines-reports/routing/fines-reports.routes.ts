@@ -1,6 +1,8 @@
 import { Routes } from '@angular/router';
 import { authGuard } from '@hmcts/opal-frontend-common/guards/auth';
+import { TitleResolver } from '@hmcts/opal-frontend-common/resolvers/title';
 import { FINES_REPORTS_ROUTING_PATHS } from './constants/fines-reports-routing-paths.constant';
+import { FINES_REPORTS_ROUTING_TITLES } from './constants/fines-reports-routing-titles.constant';
 import { finesReportsStateGuard } from './guards/fines-reports-state-guard/fines-reports-state.guard';
 import { FINES_ROUTING_PATHS } from '@app/flows/fines/routing/constants/fines-routing-paths.constant';
 import { FINES_DASHBOARD_ROUTING_PATHS } from '@app/flows/fines/constants/fines-dashboard-routing-paths.constant';
@@ -28,8 +30,11 @@ export const routing: Routes = [
         path: FINES_REPORTS_ROUTING_PATHS.children.create,
         loadComponent: () =>
           import('../fines-reports-create/fines-reports-create.component').then((c) => c.FinesReportsCreateComponent),
+        data: {
+          title: FINES_REPORTS_ROUTING_TITLES.children.create,
+        },
         resolve: {
-          title: finesReportsTitleResolver,
+          title: TitleResolver,
         },
       },
       {
@@ -38,8 +43,11 @@ export const routing: Routes = [
           import('../fines-reports-report-summary/fines-reports-report-summary.component').then(
             (c) => c.FinesReportsReportSummaryComponent,
           ),
+        data: {
+          title: FINES_REPORTS_ROUTING_TITLES.children.reportSummary,
+        },
         resolve: {
-          title: finesReportsTitleResolver,
+          title: TitleResolver,
         },
       },
       {

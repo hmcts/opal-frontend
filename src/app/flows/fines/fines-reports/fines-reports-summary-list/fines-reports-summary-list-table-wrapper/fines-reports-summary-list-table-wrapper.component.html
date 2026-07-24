@@ -95,4 +95,10 @@
     [limit]="itemsPerPageSignal()"
     (changePage)="onPageChange($event)"
   ></opal-lib-moj-pagination>
+} @else {
+  <div class="govuk-!-margin-top-3">
+    <p class="govuk-body">
+      Showing {{ sortedTableDataSignal().length }} result{{ sortedTableDataSignal().length === 1 ? '' : 's' }}
+    </p>
+  </div>
 }
