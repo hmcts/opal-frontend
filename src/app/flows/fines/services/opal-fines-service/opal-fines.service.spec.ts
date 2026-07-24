@@ -69,6 +69,8 @@ import { FINES_ACC_MAJOR_CREDITOR_DETAILS_HEADER_MOCK } from '../../fines-acc/fi
 import { OPAL_FINES_ACCOUNT_MAJOR_CREDITOR_AT_A_GLANCE_MOCK } from './mocks/opal-fines-account-major-creditor-at-a-glance-with-defendant.mock';
 import { OPAL_FINES_ACCOUNT_MINOR_CREDITOR_DETAILS_HISTORY_AND_NOTES_TAB_REF_DATA_MOCK } from './mocks/opal-fines-account-minor-creditor-details-history-and-notes-tab-ref-data.mock';
 import { OPAL_FINES_MINOR_CREDITOR_ACCOUNT_HISTORY_PARAMS_MOCK } from './mocks/opal-fines-minor-creditor-account-history-params.mock';
+import { IOpalFinesReport } from './interfaces/opal-fines-report.interface';
+import { IOpalFinesReportInstancesResponse } from './interfaces/opal-fines-report-instances-response.interface';
 
 describe('OpalFines', () => {
   let service: OpalFines;
@@ -313,6 +315,64 @@ describe('OpalFines', () => {
       expect(response).toEqual(mockBusinessUnits);
     });
     httpMock.expectNone(expectedUrl);
+  });
+
+  it('should send a GET request to report metadata API and cache the response', () => {
+    const reportId = 'operational_report_enforcement';
+    const mockReport: IOpalFinesReport = {
+      report_id: reportId,
+      report_title: 'Operational reports (by enforcement)',
+      can_manually_create: true,
+    };
+    const expectedUrl = `${OPAL_FINES_PATHS.reports}/${reportId}`;
+
+    service.getReport(reportId).subscribe((response) => {
+      expect(response).toEqual(mockReport);
+    });
+
+    const req = httpMock.expectOne(expectedUrl);
+    expect(req.request.method).toBe('GET');
+    req.flush(mockReport);
+
+    service.getReport(reportId).subscribe((response) => {
+      expect(response).toEqual(mockReport);
+    });
+
+    httpMock.expectNone(expectedUrl);
+  });
+
+  it('should send a GET request to report instances API with query params and not cache the response', () => {
+    const mockResponse: IOpalFinesReportInstancesResponse = {
+      report_instances: [],
+      count: 0,
+    };
+
+    service
+      .getReportInstances({
+        report_id: 'operational_report_enforcement',
+        from_date: '2026-06-02',
+        to_date: '2026-06-08',
+        business_units: [1],
+      })
+      .subscribe((response) => {
+        expect(response).toEqual(mockResponse);
+      });
+
+    const req = httpMock.expectOne((request) => request.url === OPAL_FINES_PATHS.reportInstances);
+    expect(req.request.method).toBe('GET');
+    expect(req.request.params.get('report_id')).toBe('operational_report_enforcement');
+    expect(req.request.params.get('from_date')).toBe('2026-06-02');
+    expect(req.request.params.get('to_date')).toBe('2026-06-08');
+    expect(req.request.params.getAll('business_units')).toEqual(['1']);
+    req.flush(mockResponse);
+
+    service.getReportInstances({ report_id: 'operational_report_enforcement' }).subscribe((response) => {
+      expect(response).toEqual(mockResponse);
+    });
+
+    const secondReq = httpMock.expectOne((request) => request.url === OPAL_FINES_PATHS.reportInstances);
+    expect(secondReq.request.method).toBe('GET');
+    secondReq.flush(mockResponse);
   });
 
   it('should send a GET request to court ref data API', () => {
@@ -1589,6 +1649,10 @@ describe('OpalFines', () => {
     service['cache']['businessUnitsCache$'] = of(OPAL_FINES_BUSINESS_UNIT_REF_DATA_MOCK);
     service['cache']['localJusticeAreasLjaTypeCache$']['adult'] = of(OPAL_FINES_LOCAL_JUSTICE_AREA_REF_DATA_MOCK);
     service['cache']['offenceCodesCache$']['code'] = of(OPAL_FINES_OFFENCES_REF_DATA_MOCK);
+    service['cache']['reportsCache$']['operational_report_enforcement'] = of({
+      report_id: 'operational_report_enforcement',
+      report_title: 'Operational reports (by enforcement)',
+    });
 
     service.clearAllCaches();
 
@@ -1598,6 +1662,7 @@ describe('OpalFines', () => {
     expect(service['cache']['businessUnitsCache$']).toBeNull();
     expect(service['cache']['localJusticeAreasLjaTypeCache$']).toEqual({});
     expect(service['cache']['offenceCodesCache$']).toEqual({});
+    expect(service['cache']['reportsCache$']).toEqual({});
   });
 
   it('should send a POST request to search defendant accounts API with correct body', () => {
