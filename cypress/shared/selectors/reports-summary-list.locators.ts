@@ -22,6 +22,7 @@ export const ReportsSummaryListLocators = {
 
   table: {
     root: 'opal-lib-moj-sortable-table',
+    resultsCount: 'app-fines-reports-summary-list-table-wrapper p.govuk-body',
     rows: 'opal-lib-moj-sortable-table tbody tr',
     headings: 'opal-lib-moj-sortable-table th',
     dateTime: (rowIndex: number) => `#reportInstanceDateTime-${rowIndex}`,

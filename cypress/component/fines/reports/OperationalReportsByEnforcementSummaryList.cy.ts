@@ -105,6 +105,12 @@ describe(
       },
     );
 
+    it('AC1c: shows the number of listed reports', { tags: ['@JIRA-STORY:PO-2307', '@JIRA-EPIC:PO-2248'] }, () => {
+      setupComponent();
+
+      cy.get(L.table.resultsCount).should('contain.text', 'Showing 3 results');
+    });
+
     it(
       'AC2: shows report date and time, title, business unit, creator and status',
       { tags: ['@JIRA-STORY:PO-2307', '@JIRA-EPIC:PO-2248'] },
