@@ -39,7 +39,9 @@
             summaryListRowId="dob"
           >
             <ng-container name>Date of birth</ng-container>
-            @if (individualDetails.date_of_birth; as dob) {
+            @let dob = individualDetails.date_of_birth;
+
+            @if (dob && dob !== 'null') {
               <ng-container value>{{ dob | dateFormat: 'dd/MM/yyyy' : 'dd MMMM yyyy' }}</ng-container>
             } @else {
               <ng-container value><app-fines-not-provided></app-fines-not-provided></ng-container>
