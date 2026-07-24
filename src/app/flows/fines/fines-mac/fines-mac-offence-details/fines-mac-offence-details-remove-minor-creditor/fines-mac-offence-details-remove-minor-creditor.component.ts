@@ -4,6 +4,7 @@ import { IFinesMacOffenceDetailsMinorCreditorForm } from '../fines-mac-offence-d
 import { FINES_MAC_OFFENCE_DETAILS_ROUTING_PATHS } from '../routing/constants/fines-mac-offence-details-routing-paths.constant';
 import { FinesMacOffenceDetailsMinorCreditorInformationComponent } from '../fines-mac-offence-details-minor-creditor-information/fines-mac-offence-details-minor-creditor-information.component';
 import { FinesMacOffenceDetailsStore } from '../stores/fines-mac-offence-details.store';
+import { FinesMacStore } from '../../stores/fines-mac.store';
 import { GovukButtonComponent } from '@hmcts/opal-frontend-common/components/govuk/govuk-button';
 import { GovukCancelLinkComponent } from '@hmcts/opal-frontend-common/components/govuk/govuk-cancel-link';
 
@@ -18,6 +19,7 @@ export class FinesMacOffenceDetailsRemoveMinorCreditorComponent
   implements OnInit
 {
   private readonly finesMacOffenceDetailsStore = inject(FinesMacOffenceDetailsStore);
+  private readonly finesMacStore = inject(FinesMacStore);
   protected readonly fineMacOffenceDetailsRoutingPaths = FINES_MAC_OFFENCE_DETAILS_ROUTING_PATHS;
   public minorCreditor!: IFinesMacOffenceDetailsMinorCreditorForm;
 
@@ -70,6 +72,8 @@ export class FinesMacOffenceDetailsRemoveMinorCreditorComponent
     if (index !== -1) {
       offenceDetailsDraft.childFormData!.splice(index, 1);
       this.finesMacOffenceDetailsStore.setOffenceDetailsDraft([offenceDetailsDraft]);
+      this.finesMacOffenceDetailsStore.setOffenceDetailsDraftDirty(true);
+      this.finesMacStore.setUnsavedChanges(true);
     }
 
     this.handleRoute(this.fineMacOffenceDetailsRoutingPaths.children.addOffence);
