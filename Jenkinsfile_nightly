@@ -99,13 +99,7 @@ String failureResult = 'FAILURE'
 @Field String legacyGatewayUrlDev = 'https://opal-legacy-db-stub.staging.platform.hmcts.net/opal'
 @Field String launchDarklyApiVersion = '20240415'
 @Field String launchDarklyEnvironmentKey = 'demo'
-@Field String launchDarklyFlagKey = 'app-mode'
-@Field String launchDarklyOpalVariationName = opalName
-@Field String launchDarklyLegacyVariationName = 'legacy'
-@Field List<String> launchDarklyVariationOrder = [
-  launchDarklyLegacyVariationName,
-  launchDarklyOpalVariationName,
-]
+@Field String launchDarklyFlagKey = 'is-legacy-mode'
 @Field String uatTechnicalTagFilter = '(@UAT-Technical) and not @skip'
 @Field int uatHealthCheckIntervalSeconds = 5
 @Field int uatHealthCheckTimeoutMinutes = 1
@@ -343,23 +337,11 @@ void runNightlyStage(
   }
 }
 
-// Resolve the LaunchDarkly variation index for the requested app-mode variation.
-int resolveLaunchDarklyVariationIndex(String variationName) {
-  int variationIndex = launchDarklyVariationOrder.indexOf(variationName)
-  if (variationIndex < zeroIndex) {
-    error "Unsupported LaunchDarkly variation name '${variationName}'. Expected one of ${launchDarklyVariationOrder}."
-  }
-  return variationIndex
-}
-
-// Patch the LaunchDarkly app-mode flag for nightly legacy-mode demo checks.
-void patchLaunchDarklyFlagState(boolean enabled, String variationName, String actionMessage) {
-  int variationIndex = resolveLaunchDarklyVariationIndex(variationName)
+// Patch the LaunchDarkly boolean legacy-mode flag for nightly demo checks.
+void patchLaunchDarklyFlagState(boolean legacyModeEnabled, String actionMessage) {
   String patchPayload =
     '{"patch":[' +
-    "{\"op\":\"replace\",\"path\":\"/environments/${launchDarklyEnvironmentKey}/on\",\"value\":${enabled}}," +
-    "{\"op\":\"replace\",\"path\":\"/environments/${launchDarklyEnvironmentKey}/fallthrough/variation\"," +
-    "\"value\":${variationIndex}}" +
+    "{\"op\":\"replace\",\"path\":\"/environments/${launchDarklyEnvironmentKey}/on\",\"value\":${legacyModeEnabled}}" +
     ']}'
 
   sh """
@@ -422,7 +404,7 @@ boolean shouldRunLegacyHealthCheck() {
   return params.LEGACY_URL == legacyUrlPreProdChoice
 }
 
-// Patch LaunchDarkly app mode only when running demo legacy checks against pre-prod.
+// Patch LaunchDarkly legacy mode only when running demo legacy checks against pre-prod.
 boolean shouldPatchLaunchDarklyForDemoLegacyStage() {
   return params.LEGACY_URL == legacyUrlPreProdChoice
 }
@@ -560,12 +542,11 @@ void runDemoLegacyStage(Map<String, Object> stageConfig, Closure runCommand) {
       if (shouldPatchLaunchDarklyForDemoLegacyStage()) {
         patchLaunchDarklyFlagState(
           true,
-          launchDarklyLegacyVariationName,
           "Setting LaunchDarkly flag to legacy for demo (${stageName})..."
         )
         launchDarklyFlagPatched = true
       } else {
-        echo "Skipping LaunchDarkly app-mode patch because LEGACY_URL=${params.LEGACY_URL}."
+        echo "Skipping LaunchDarkly legacy-mode patch because LEGACY_URL=${params.LEGACY_URL}."
       }
       waitForLegacyHealthCheck()
       sh 'echo "Waiting 30s for system warmup..." ; sleep 30'
@@ -593,8 +574,7 @@ void runDemoLegacyStage(Map<String, Object> stageConfig, Closure runCommand) {
       )
       if (launchDarklyFlagPatched && testUrl != nightlyTestUrlDemo) {
         patchLaunchDarklyFlagState(
-          true,
-          launchDarklyOpalVariationName,
+          false,
           "Restoring LaunchDarkly flag to opal for demo (${stageName})..."
         )
       }
