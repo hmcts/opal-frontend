@@ -605,6 +605,11 @@ export class AccountEnquiryFlow {
     this.enforcement.selectDifferentEnforcementCourt('originalEnforcementCourt', 'selectedEnforcementCourt');
     this.enforcement.submitChangeEnforcementCourt();
 
+    cy.location('pathname', { timeout: AccountEnquiryFlow.DETAILS_NAV_WAIT_MS }).should(
+      'match',
+      /\/fines\/account\/(?:defendant|company)\/\d+\/details$/,
+    );
+    this.detailsNav.goToEnforcementTab();
     this.detailsNav.assertEnforcementTabIsActive();
     this.enforcement.assertEnforcementTabVisible();
   }
@@ -629,6 +634,11 @@ export class AccountEnquiryFlow {
     this.enforcement.selectEnforcementCourtFromAlias('selectedEnforcementCourt');
     this.enforcement.submitChangeEnforcementCourt();
 
+    cy.location('pathname', { timeout: AccountEnquiryFlow.DETAILS_NAV_WAIT_MS }).should(
+      'match',
+      /\/fines\/account\/(?:defendant|company)\/\d+\/details$/,
+    );
+    this.detailsNav.goToEnforcementTab();
     this.detailsNav.assertEnforcementTabIsActive();
     this.enforcement.assertEnforcementTabVisible();
   }
@@ -653,6 +663,11 @@ export class AccountEnquiryFlow {
       }
     });
 
+    cy.location('pathname', { timeout: AccountEnquiryFlow.DETAILS_NAV_WAIT_MS }).should(
+      'match',
+      /\/fines\/account\/(?:defendant|company)\/\d+\/details$/,
+    );
+    this.detailsNav.goToEnforcementTab();
     this.detailsNav.assertEnforcementTabIsActive();
     this.enforcement.assertEnforcementTabVisible();
   }
