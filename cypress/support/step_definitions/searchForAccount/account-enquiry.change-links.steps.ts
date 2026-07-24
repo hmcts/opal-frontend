@@ -97,12 +97,14 @@ Then(
 Then('I should only see one Change link inside the Payment terms panel', () => {
   log('assert', 'Asserting Payment terms Change link is scoped to the panel');
 
-  cy.get(PT.tabRoot, { timeout: 10_000 }).should('be.visible').within(() => {
-    cy.contains('a', 'Change').should('be.visible');
-    cy.get('a')
-      .filter((_, link) => link.textContent?.trim() === 'Change')
-      .should('have.length', 1);
-  });
+  cy.get(PT.tabRoot, { timeout: 10_000 })
+    .should('be.visible')
+    .within(() => {
+      cy.contains('a', 'Change').should('be.visible');
+      cy.get('a')
+        .filter((_, link) => link.textContent?.trim() === 'Change')
+        .should('have.length', 1);
+    });
 
   cy.get('main', { timeout: 10_000 })
     .find('a')

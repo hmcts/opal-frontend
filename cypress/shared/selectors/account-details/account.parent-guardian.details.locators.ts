@@ -63,8 +63,7 @@ export const AccountParentOrGuardianDetailsLocators = {
     /** “Parent or guardian details” section heading within the tab. */
     title: 'app-fines-acc-defendant-details-parent-or-guardian-tab h2.govuk-heading-s',
     /** Right-aligned “Change” link for the Parent or guardian details section. */
-    changeLink:
-      'app-fines-acc-defendant-details-parent-or-guardian-tab .govuk-grid-column-one-third .govuk-link',
+    changeLink: 'app-fines-acc-defendant-details-parent-or-guardian-tab .govuk-grid-column-one-third .govuk-link',
     /** Expected label for the header action link. */
     changeLinkLabel: 'Change',
   },
