@@ -42,6 +42,7 @@ import { FINES_ACC_MINOR_CREDITOR_HISTORY_AND_NOTES_DETAILS_TRANSFORMATION_CONFI
 import { FINES_ACC_MAJOR_CREDITOR_DETAILS_HISTORY_AND_NOTES_FILTER_FORM_MOCK } from '../fines-acc-major-creditor-details/fines-acc-major-creditor-details-history-and-notes-tab/mocks/fines-acc-major-creditor-details-history-and-notes-filter-form.mock';
 import { FINES_ACC_MAJOR_CREDITOR_DETAILS_HISTORY_AND_NOTES_FILTER_EMPTY_FORM_MOCK } from '../fines-acc-major-creditor-details/fines-acc-major-creditor-details-history-and-notes-tab/mocks/fines-acc-major-creditor-details-history-and-notes-filter-empty-form.mock';
 import { FINES_ACC_MAJOR_CREDITOR_DETAILS_HISTORY_AND_NOTES_FILTER_PAYLOAD_MOCK } from '../fines-acc-major-creditor-details/fines-acc-major-creditor-details-history-and-notes-tab/mocks/fines-acc-major-creditor-details-history-and-notes-filter-payload.mock';
+import { OPAL_FINES_NOTE_RECORD_TYPES } from '@services/fines/opal-fines-service/constants/opal-fines-note-record-types.constant';
 
 describe('FinesAccPayloadService', () => {
   let service: FinesAccPayloadService;
@@ -109,7 +110,7 @@ describe('FinesAccPayloadService', () => {
 
       expect(result).toEqual({
         activity_note: {
-          record_type: 'defendant_accounts',
+          record_type: OPAL_FINES_NOTE_RECORD_TYPES.defendantAccounts,
           record_id: 77,
           note_type: 'AA',
           note_text: 'Test note content',
@@ -141,6 +142,20 @@ describe('FinesAccPayloadService', () => {
       expect(result.activity_note.note_text).toBe(FINES_ACC_ADD_NOTE_FORM_MOCK.formData.facc_add_notes as string);
       expect(result.activity_note.note_type).toBe('AA');
       expect(result.activity_note.record_id).toBe(99);
+    });
+
+    it('should build a minor creditor note payload when minor creditor record type is supplied', () => {
+      mockFinesAccountStore.account_id.mockReturnValue(99000000000800);
+
+      const result = service.buildAddNotePayload(
+        FINES_ACC_ADD_NOTE_FORM_MOCK,
+        OPAL_FINES_NOTE_RECORD_TYPES.minorCreditorAccounts,
+      );
+
+      expect(result.activity_note.record_type).toBe('creditor_accounts');
+      expect(result.activity_note.record_id).toBe(99000000000800);
+      expect(result.activity_note.note_text).toBe(FINES_ACC_ADD_NOTE_FORM_MOCK.formData.facc_add_notes as string);
+      expect(result.activity_note.note_type).toBe('AA');
     });
 
     it('should handle null note text from form', () => {
