@@ -42,8 +42,8 @@ const ALPHANUMERIC_WITH_HYPHENS_SPACES_APOSTROPHES_DOT_PATTERN_VALIDATOR = patte
 export class FinesMacReviewAccountDecisionFormComponent extends AbstractFormBaseComponent implements OnInit {
   @Output() protected override formSubmit = new EventEmitter<IFinesMacReviewAccountDecisionForm>();
 
-  @Input({ required: true }) public accountId!: number;
   protected readonly finesMacStore = inject(FinesMacStore);
+  @Input({ required: true }) public accountId!: number;
   public readonly DECISION_OPTIONS = FINES_MAC_REVIEW_ACCOUNT_DECISION_OPTIONS;
   public readonly finesMacRoutes = FINES_MAC_ROUTING_PATHS;
   public readonly decisionRejectConditionalId = 'fm_review_account_decision_reject';
