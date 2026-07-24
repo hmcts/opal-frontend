@@ -17,6 +17,7 @@ import {
   RELEASE_1C_ENFORCEMENT_OPERATIONAL_REPORTING_FEATURE_FLAG,
   RELEASE_1C_WRITE_OFF_FEATURE_FLAG,
 } from '../constants/release-feature-flags.constant';
+import { FinesReportsStore } from '../fines-reports/stores/fines-reports.store';
 
 const {
   featureFlagRedirectGuardMock,
@@ -142,6 +143,7 @@ describe('fines routes', () => {
     expect(reportsRoute?.canActivate).toContain(release1cEnforcementOperationalReportingFeatureFlagGuard);
     expect(reportsRoute?.canActivate).toContain(finesSectionPermissionsGuard);
     expect(reportsRoute?.canActivateChild).toContain(release1cEnforcementOperationalReportingFeatureFlagGuard);
+    expect(reportsRoute?.providers).toContain(FinesReportsStore);
     expect(reportsRoute?.data).toEqual({
       sectionKey: FINES_DASHBOARD_ROUTING_PATHS.children.reports,
     });

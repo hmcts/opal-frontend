@@ -9,8 +9,8 @@ import { OpalUserService } from '@hmcts/opal-frontend-common/services/opal-user-
 import { beforeEach, describe, expect, it, vi } from 'vitest';
 import { of, throwError } from 'rxjs';
 import { ACCOUNTS_PERMISSIONS } from '@app/flows/fines/constants/accounts-permissions.constant';
-import { REPORTS_PERMISSIONS } from '@app/flows/fines/constants/reports-permissions.constant';
 import { SEARCH_PERMISSIONS } from '@app/flows/fines/constants/search-permissions.constant';
+import { REPORTS_PERMISSIONS } from '@app/flows/fines/constants/reports-permissions.constant';
 import {
   RELEASE_1A_FEATURE_FLAG,
   RELEASE_1C_ADMINISTRATION_FEATURE_FLAG,
@@ -326,7 +326,7 @@ describe('finesSectionPermissionsGuard', () => {
   it('should allow Reports when the user has at least one report permission', async () => {
     mockFeatureFlags(DEFAULT_RELEASE_FEATURE_FLAGS);
     mockOpalUserService.getLoggedInUserState.mockReturnValue(
-      of(createUserStateWithPermissions([REPORTS_PERMISSIONS[1]])),
+      of(createUserStateWithPermissions([REPORTS_PERMISSIONS[0]])),
     );
 
     const result = await runGuard({ sectionKey: FINES_DASHBOARD_ROUTING_PATHS.children.reports });

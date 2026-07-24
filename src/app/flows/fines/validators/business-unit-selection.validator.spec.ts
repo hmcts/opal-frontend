@@ -1,11 +1,11 @@
-import { FormControl, FormGroup, AbstractControl } from '@angular/forms';
+import { AbstractControl, FormControl, FormGroup } from '@angular/forms';
+import { describe, expect, it } from 'vitest';
 import {
   atLeastOneBusinessUnitSelectedRecordValidator,
   businessUnitSelectionRootMirrorValidator,
-} from './fines-sa-search-filter-business-unit-select-bu.validator';
-import { describe, expect, it } from 'vitest';
+} from './business-unit-selection.validator';
 
-describe('fines-sa-search-filter-business-unit validators', () => {
+describe('business unit selection validators', () => {
   describe('atLeastOneBusinessUnitSelectedRecordValidator', () => {
     const run = (value: unknown) => atLeastOneBusinessUnitSelectedRecordValidator(new FormControl(value));
 
@@ -34,31 +34,28 @@ describe('fines-sa-search-filter-business-unit validators', () => {
     });
 
     it('ignores non-boolean truthy/falsy by requiring strict boolean true', () => {
-      // Cast to satisfy type, validator still operates on runtime values
       const result = run({ '5': 1 as unknown as boolean, '8': false });
-      // No strict true boolean -> still required
+
       expect(result).toEqual({ required: true });
     });
   });
 
   describe('businessUnitSelectionRootMirrorValidator', () => {
-    const recordName = 'fsa_search_account_business_unit_ids';
+    const recordName = 'business_unit_ids';
     const mirror = businessUnitSelectionRootMirrorValidator(recordName);
 
-    const makeGroup = (recordCtrl?: AbstractControl) => {
-      return new FormGroup<Record<string, AbstractControl>>({
-        [recordName]: (recordCtrl ?? new FormControl({})) as AbstractControl,
-        // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      } as any);
-    };
+    const makeGroup = (recordControl?: AbstractControl) =>
+      new FormGroup<Record<string, AbstractControl>>({
+        [recordName]: recordControl ?? new FormControl({}),
+      });
 
-    it('returns null when group is not a FormGroup (defensive)', () => {
-      // Call with a naked control instead of a group
-      expect(mirror(new FormControl({}) as unknown as FormGroup)).toBeNull();
+    it('returns null when group is not a FormGroup', () => {
+      expect(mirror(new FormControl({}))).toBeNull();
     });
 
     it('returns null when record control is missing', () => {
       const group = new FormGroup({});
+
       expect(mirror(group)).toBeNull();
     });
 
@@ -81,6 +78,7 @@ describe('fines-sa-search-filter-business-unit validators', () => {
     it('returns null when child record has no errors at all', () => {
       const record = new FormControl({});
       const group = makeGroup(record);
+
       expect(mirror(group)).toBeNull();
     });
   });

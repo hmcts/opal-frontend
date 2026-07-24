@@ -1,0 +1,267 @@
+import { ComponentFixture, TestBed } from '@angular/core/testing';
+import { FormControl, FormRecord } from '@angular/forms';
+import { ActivatedRoute } from '@angular/router';
+import { OPAL_FINES_BUSINESS_UNIT_REF_DATA_MOCK } from '@services/fines/opal-fines-service/mocks/opal-fines-business-unit-ref-data.mock';
+import { beforeEach, describe, expect, it, vi } from 'vitest';
+import { FinesReportsSelectBusinessUnitsFormComponent } from './fines-reports-select-business-units-form.component';
+
+describe('FinesReportsSelectBusinessUnitsFormComponent', () => {
+  let component: FinesReportsSelectBusinessUnitsFormComponent;
+  let fixture: ComponentFixture<FinesReportsSelectBusinessUnitsFormComponent>;
+
+  const businessUnits = OPAL_FINES_BUSINESS_UNIT_REF_DATA_MOCK.refData.slice(0, 3);
+
+  const setup = async (units = businessUnits, initialSelectedBusinessUnitIds: number[] = []) => {
+    await TestBed.configureTestingModule({
+      imports: [FinesReportsSelectBusinessUnitsFormComponent],
+      providers: [
+        {
+          provide: ActivatedRoute,
+          useValue: {},
+        },
+      ],
+    }).compileComponents();
+
+    fixture = TestBed.createComponent(FinesReportsSelectBusinessUnitsFormComponent);
+    component = fixture.componentInstance;
+    component.businessUnits = units;
+    component.reportHeading = 'Operational reports (by enforcement)';
+    component.initialSelectedBusinessUnitIds = initialSelectedBusinessUnitIds;
+    fixture.detectChanges();
+
+    return { component, fixture };
+  };
+
+  beforeEach(() => {
+    TestBed.resetTestingModule();
+  });
+
+  it('should create one unchecked checkbox control per business unit', async () => {
+    const { component } = await setup();
+    const record = component['form'].get('fines_reports_select_business_unit_ids') as FormRecord<FormControl<boolean>>;
+    const selectAllControl = component['form'].get(
+      'fines_reports_select_business_unit_ids_select_all',
+    ) as FormControl<boolean>;
+
+    expect(Object.keys(record.controls)).toEqual(['61', '67', '68']);
+    expect(record.get('61')?.value).toBe(false);
+    expect(record.get('67')?.value).toBe(false);
+    expect(record.get('68')?.value).toBe(false);
+    expect(selectAllControl.value).toBe(false);
+  });
+
+  it('should mark the form invalid when no business unit is selected', async () => {
+    const { component } = await setup();
+    const record = component['form'].get('fines_reports_select_business_unit_ids') as FormRecord<FormControl<boolean>>;
+
+    expect(record.errors).toEqual({ required: true });
+    expect(component['form'].errors).toEqual({
+      fines_reports_select_business_unit_ids: {
+        required: true,
+      },
+    });
+    expect(component['form'].valid).toBe(false);
+  });
+
+  it('should mark the form valid when one business unit is selected', async () => {
+    const { component } = await setup();
+    const record = component['form'].get('fines_reports_select_business_unit_ids') as FormRecord<FormControl<boolean>>;
+
+    record.get('61')?.setValue(true);
+
+    expect(record.errors).toBeNull();
+    expect(component['form'].errors).toBeNull();
+    expect(component['form'].valid).toBe(true);
+  });
+
+  it('should render a master checkbox and one checkbox row per business unit', async () => {
+    const { component, fixture } = await setup();
+
+    expect(component.businessUnitRows).toHaveLength(3);
+    expect(Array.from(fixture.nativeElement.querySelectorAll('input[type="checkbox"]'))).toHaveLength(4);
+    expect(fixture.nativeElement.textContent).toContain('Historical Debt');
+    expect(fixture.nativeElement.textContent).toContain('London Central & South East');
+    expect(fixture.nativeElement.textContent).toContain('London Confiscation Orders');
+  });
+
+  it('should render the report and page headings', async () => {
+    const { component, fixture } = await setup();
+
+    expect(component.pageHeading).toBe('Select business units');
+    expect(fixture.nativeElement.querySelector('.govuk-caption-l')?.textContent?.trim()).toBe('Create report');
+    expect(fixture.nativeElement.querySelector('h1')?.textContent).toContain(component.reportHeading);
+    expect(fixture.nativeElement.querySelector('h2')?.textContent?.trim()).toBe('Select business units');
+  });
+
+  it('should restore previously selected business unit ids when provided', async () => {
+    const { component } = await setup(businessUnits, [61, 68]);
+    const record = component['form'].get('fines_reports_select_business_unit_ids') as FormRecord<FormControl<boolean>>;
+
+    expect(record.get('61')?.value).toBe(true);
+    expect(record.get('67')?.value).toBe(false);
+    expect(record.get('68')?.value).toBe(true);
+    expect(component.allBusinessUnitsControl.value).toBe(false);
+  });
+
+  it('should select the master checkbox when every restored business unit is selected', async () => {
+    const { component } = await setup(businessUnits, [61, 67, 68]);
+    const record = component['form'].get('fines_reports_select_business_unit_ids') as FormRecord<FormControl<boolean>>;
+
+    expect(record.get('61')?.value).toBe(true);
+    expect(record.get('67')?.value).toBe(true);
+    expect(record.get('68')?.value).toBe(true);
+    expect(component.allBusinessUnitsControl.value).toBe(true);
+  });
+
+  it('should keep the master checkbox deselected when checkbox values change but not every business unit is selected', async () => {
+    const { component } = await setup();
+    const record = component['form'].get('fines_reports_select_business_unit_ids') as FormRecord<FormControl<boolean>>;
+
+    record.get('61')?.setValue(true);
+    record.get('68')?.setValue(true);
+
+    expect(record.get('61')?.value).toBe(true);
+    expect(record.get('67')?.value).toBe(false);
+    expect(record.get('68')?.value).toBe(true);
+    expect(component.allBusinessUnitsControl.value).toBe(false);
+  });
+
+  it('should select every business unit when the master checkbox is selected', async () => {
+    const { component } = await setup();
+    const record = component['form'].get('fines_reports_select_business_unit_ids') as FormRecord<FormControl<boolean>>;
+
+    component.allBusinessUnitsControl.setValue(true);
+
+    expect(record.get('61')?.value).toBe(true);
+    expect(record.get('67')?.value).toBe(true);
+    expect(record.get('68')?.value).toBe(true);
+    expect(component.allBusinessUnitsControl.value).toBe(true);
+  });
+
+  it('should deselect every business unit when the master checkbox is deselected', async () => {
+    const { component } = await setup();
+    const record = component['form'].get('fines_reports_select_business_unit_ids') as FormRecord<FormControl<boolean>>;
+
+    component.allBusinessUnitsControl.setValue(true);
+    component.allBusinessUnitsControl.setValue(false);
+
+    expect(record.get('61')?.value).toBe(false);
+    expect(record.get('67')?.value).toBe(false);
+    expect(record.get('68')?.value).toBe(false);
+    expect(component.allBusinessUnitsControl.value).toBe(false);
+    expect(record.errors).toEqual({ required: true });
+    expect(component['form'].valid).toBe(false);
+  });
+
+  it('should keep the master checkbox deselected when only some business units are selected', async () => {
+    const { component } = await setup();
+    const record = component['form'].get('fines_reports_select_business_unit_ids') as FormRecord<FormControl<boolean>>;
+
+    record.get('61')?.setValue(true);
+    record.get('68')?.setValue(true);
+
+    expect(component.allBusinessUnitsControl.value).toBe(false);
+  });
+
+  it('should select the master checkbox when every business unit is selected individually', async () => {
+    const { component } = await setup();
+    const record = component['form'].get('fines_reports_select_business_unit_ids') as FormRecord<FormControl<boolean>>;
+
+    record.get('61')?.setValue(true);
+    record.get('67')?.setValue(true);
+    record.get('68')?.setValue(true);
+
+    expect(component.allBusinessUnitsControl.value).toBe(true);
+  });
+
+  it('should show a single business unit as read-only information', async () => {
+    const singleBusinessUnit = [OPAL_FINES_BUSINESS_UNIT_REF_DATA_MOCK.refData[0]];
+    const { component, fixture } = await setup(singleBusinessUnit);
+
+    expect(component.businessUnitRows).toEqual([]);
+    expect(component['form'].valid).toBe(true);
+    expect(fixture.nativeElement.querySelector('input[type="checkbox"]')).toBeNull();
+    expect(fixture.nativeElement.textContent).toContain('Historical Debt');
+  });
+
+  it('should prevent submission when no business units are available', async () => {
+    const { component } = await setup([]);
+    const submitSpy = vi.spyOn(component['formSubmit'], 'emit');
+
+    component.handleFormSubmit({ submitter: null } as SubmitEvent);
+
+    expect(component['form'].valid).toBe(false);
+    expect(component['form'].errors).toEqual({
+      fines_reports_select_business_unit_ids: {
+        required: true,
+      },
+    });
+    expect(submitSpy).not.toHaveBeenCalled();
+  });
+
+  it('should emit cancelSelection when cancel is selected', async () => {
+    const { component, fixture } = await setup();
+    const cancelSpy = vi.spyOn(component.cancelSelection, 'emit');
+    const cancelLink = fixture.nativeElement.querySelector('a.govuk-link') as HTMLAnchorElement;
+
+    cancelLink.click();
+
+    expect(cancelSpy).toHaveBeenCalled();
+  });
+
+  it('should render the cancel link after the continue button', async () => {
+    const { fixture } = await setup();
+    const continueButton = fixture.nativeElement.querySelector('#continue-create-report') as HTMLButtonElement;
+    const cancelLink = fixture.nativeElement.querySelector('a.govuk-link') as HTMLAnchorElement;
+    const buttonGroupText = fixture.nativeElement.querySelector('.govuk-button-group')?.textContent ?? '';
+
+    expect(continueButton.textContent?.trim()).toBe('Continue');
+    expect(cancelLink.textContent?.trim()).toBe('Cancel');
+    expect(buttonGroupText.indexOf('Continue')).toBeLessThan(buttonGroupText.indexOf('Cancel'));
+  });
+
+  it('should render an enabled continue button', async () => {
+    const { fixture } = await setup();
+    const continueButton = fixture.nativeElement.querySelector('#continue-create-report') as HTMLButtonElement;
+
+    expect(continueButton.disabled).toBe(false);
+  });
+
+  it('should show the required error when continuing without a business unit selection', async () => {
+    const { component, fixture } = await setup();
+    const submitSpy = vi.spyOn(component['formSubmit'], 'emit');
+
+    component.handleFormSubmit({ submitter: null } as SubmitEvent);
+    fixture.detectChanges();
+
+    expect(submitSpy).not.toHaveBeenCalled();
+    expect(component.formErrorSummaryMessage).toEqual([
+      {
+        fieldId: 'fines_reports_select_business_unit_ids',
+        message: 'Select 1 or more business unit',
+      },
+    ]);
+    expect(fixture.nativeElement.textContent).toContain('Select 1 or more business unit');
+  });
+
+  it('should emit the submitted form when continuing with a business unit selection', async () => {
+    const { component } = await setup();
+    const record = component['form'].get('fines_reports_select_business_unit_ids') as FormRecord<FormControl<boolean>>;
+    const submitSpy = vi.spyOn(component['formSubmit'], 'emit');
+
+    record.get('61')?.setValue(true);
+    component.handleFormSubmit({ submitter: null } as SubmitEvent);
+
+    expect(submitSpy).toHaveBeenCalledWith({
+      formData: {
+        fines_reports_select_business_unit_ids: {
+          '61': true,
+          '67': false,
+          '68': false,
+        },
+        fines_reports_select_business_unit_ids_select_all: false,
+      },
+      nestedFlow: false,
+    });
+  });
+});

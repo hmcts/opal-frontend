@@ -29,8 +29,8 @@ import { FINES_DASHBOARD_ROUTING_PATHS } from './flows/fines/constants/fines-das
 import { FINES_ROUTING_PATHS } from './flows/fines/routing/constants/fines-routing-paths.constant';
 import { FINES_DRAFT_ROUTING_PATHS } from './flows/fines/fines-draft/routing/constants/fines-draft-routing-paths.constant';
 import { ACCOUNTS_PERMISSIONS } from './flows/fines/constants/accounts-permissions.constant';
-import { REPORTS_PERMISSIONS } from './flows/fines/constants/reports-permissions.constant';
 import { SEARCH_PERMISSIONS } from './flows/fines/constants/search-permissions.constant';
+import { REPORTS_PERMISSIONS } from './flows/fines/constants/reports-permissions.constant';
 import {
   RELEASE_1A_FEATURE_FLAG,
   RELEASE_1C_ADMINISTRATION_FEATURE_FLAG,

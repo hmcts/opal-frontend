@@ -1,0 +1,10 @@
+<div class="govuk-grid-column-two-thirds">
+  <app-fines-reports-select-business-units-form
+    [businessUnits]="businessUnits"
+    [reportHeading]="reportHeading"
+    [initialSelectedBusinessUnitIds]="selectedBusinessUnitIds()"
+    (cancelSelection)="handleCancel()"
+    (unsavedChanges)="handleUnsavedChanges($event)"
+    (formSubmit)="handleContinue($event)"
+  ></app-fines-reports-select-business-units-form>
+</div>

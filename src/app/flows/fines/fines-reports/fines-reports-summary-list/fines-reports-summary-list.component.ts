@@ -1,29 +1,80 @@
 import { ChangeDetectionStrategy, Component, inject } from '@angular/core';
 import { toSignal } from '@angular/core/rxjs-interop';
-import { ReactiveFormsModule } from '@angular/forms';
-import { ActivatedRoute } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import { map } from 'rxjs';
 import { FINES_REPORT_SUMMARY_LIST_REPORT_CONFIGURATION } from './constants/fines-reports-summary-list-report-configuration.constant';
+import { GovukButtonDirective } from '@hmcts/opal-frontend-common/directives/govuk-button';
+import { FINES_REPORTS_SUMMARY_LIST_ROUTING_PATHS } from './routing/constants/fines-reports-summary-list-routing-paths.constant';
+import { FINES_REPORTS_ROUTING_PATHS } from '../routing/constants/fines-reports-routing-paths.constant';
+import { IOpalFinesReport } from '@services/fines/opal-fines-service/interfaces/opal-fines-report.interface';
+import { FinesReportsStore } from '../stores/fines-reports.store';
+import { FINES_REPORTS_CREATE_ROUTING_PATHS } from '../routing/constants/fines-reports-create-routing-paths.constant';
 
 @Component({
   selector: 'app-fines-reports-summary-list',
-  imports: [ReactiveFormsModule],
+  imports: [GovukButtonDirective],
   templateUrl: './fines-reports-summary-list.component.html',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class FinesReportsSummaryListComponent {
   private readonly activatedRoute = inject(ActivatedRoute);
-  private readonly routeWithReportId = this.activatedRoute.parent ?? this.activatedRoute;
-  private readonly reportId = toSignal(
-    this.routeWithReportId.paramMap.pipe(map((paramMap) => paramMap.get('reportId') ?? '')),
+  private readonly finesReportsStore = inject(FinesReportsStore);
+  private readonly router = inject(Router);
+  private readonly routeWithReportTypeId = this.activatedRoute.parent ?? this.activatedRoute;
+  private readonly reportTypeId = toSignal(
+    this.routeWithReportTypeId.paramMap.pipe(map((paramMap) => paramMap.get('reportTypeId') ?? '')),
     {
-      initialValue: this.routeWithReportId.snapshot.paramMap.get('reportId') ?? '',
+      initialValue: this.routeWithReportTypeId.snapshot.paramMap.get('reportTypeId') ?? '',
     },
   );
 
+  /**
+   * Reactive signal containing the resolved report metadata for the current summary list route.
+   */
+  private readonly report = toSignal(
+    this.activatedRoute.data.pipe(map((routeData) => routeData['report'] as IOpalFinesReport | null | undefined)),
+    {
+      initialValue: this.activatedRoute.snapshot.data['report'] as IOpalFinesReport | null | undefined,
+    },
+  );
+
+  /**
+   * Returns the main page heading for the current report summary list.
+   *
+   * @returns The configured heading for the current report.
+   */
   public get pageHeading(): string {
     return (
-      FINES_REPORT_SUMMARY_LIST_REPORT_CONFIGURATION.find((config) => config.id === this.reportId())?.heading ?? ''
+      FINES_REPORT_SUMMARY_LIST_REPORT_CONFIGURATION.find((config) => config.id === this.reportTypeId())?.heading ?? ''
+    );
+  }
+
+  /**
+   * Determines whether the current report summary supports creating a report, using API report metadata when available.
+   *
+   * @returns True for operational reports by enforcement or payments; otherwise false.
+   */
+  public get canCreateReport(): boolean {
+    const supportsCreateJourney = [
+      FINES_REPORTS_SUMMARY_LIST_ROUTING_PATHS.children.operationalReportsByEnforcement,
+      FINES_REPORTS_SUMMARY_LIST_ROUTING_PATHS.children.operationalReportsByPayments,
+    ].includes(this.reportTypeId());
+
+    return supportsCreateJourney && (this.report()?.can_manually_create ?? true);
+  }
+
+  /**
+   * Navigates from the current report summary to the select business units route.
+   */
+  public handleCreateReport(): void {
+    this.finesReportsStore.clearSelectedBusinessUnitIds();
+    this.router.navigate(
+      [
+        `../${FINES_REPORTS_ROUTING_PATHS.children.create}/${FINES_REPORTS_CREATE_ROUTING_PATHS.children.selectBusinessUnits}`,
+      ],
+      {
+        relativeTo: this.activatedRoute,
+      },
     );
   }
 }
