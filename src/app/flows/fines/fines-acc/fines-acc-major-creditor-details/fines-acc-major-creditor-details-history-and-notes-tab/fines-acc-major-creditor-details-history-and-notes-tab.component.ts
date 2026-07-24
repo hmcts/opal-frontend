@@ -4,7 +4,6 @@ import { FinesAccHistoryAndNotesFilterFormComponent } from '../../fines-acc-hist
 import { FINES_ACC_SUMMARY_TABS_CONTENT_STYLES } from '../../constants/fines-acc-summary-tabs-content-styles.constant';
 import { IFinesAccSummaryTabsContentStyles } from '../../fines-acc-defendant-details/interfaces/fines-acc-summary-tabs-content-styles.interface';
 import { IFinesAccHistoryAndNotesFilterForm } from '../../fines-acc-history-and-notes/interfaces/fines-acc-history-and-notes-filter-form.interface';
-import { FINES_ACC_MAJOR_CREDITOR_DETAILS_HISTORY_AND_NOTES_FILTER_CATEGORIES } from './constants/fines-acc-major-creditor-details-history-and-notes-filter-categories.constant';
 import { FINES_ACC_MAJOR_CREDITOR_DETAILS_HISTORY_AND_NOTES_FILTER_FIELD_ERRORS } from './constants/fines-acc-major-creditor-details-history-and-notes-filter-field-errors.constant';
 import { FINES_ACC_MAJOR_CREDITOR_DETAILS_HISTORY_AND_NOTES_FILTER_SUMMARY_TEXT } from './constants/fines-acc-major-creditor-details-history-and-notes-filter-summary-text.constant';
 import { IOpalFinesAccountMajorCreditorDetailsHistoryAndNotesTabRefData } from '@services/fines/opal-fines-service/interfaces/opal-fines-account-major-creditor-details-history-and-notes-tab-ref-data.interface';
@@ -30,7 +29,6 @@ export class FinesAccMajorCreditorDetailsHistoryAndNotesTabComponent implements 
   public tabData$: Observable<IOpalFinesAccountMajorCreditorDetailsHistoryAndNotesTabRefData> = EMPTY;
   @Input() public style: IFinesAccSummaryTabsContentStyles = FINES_ACC_SUMMARY_TABS_CONTENT_STYLES;
 
-  public readonly categories = FINES_ACC_MAJOR_CREDITOR_DETAILS_HISTORY_AND_NOTES_FILTER_CATEGORIES;
   public readonly fieldErrors = FINES_ACC_MAJOR_CREDITOR_DETAILS_HISTORY_AND_NOTES_FILTER_FIELD_ERRORS;
   public readonly summaryText = FINES_ACC_MAJOR_CREDITOR_DETAILS_HISTORY_AND_NOTES_FILTER_SUMMARY_TEXT;
 
