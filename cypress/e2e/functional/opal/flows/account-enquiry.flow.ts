@@ -758,6 +758,34 @@ export class AccountEnquiryFlow {
   }
 
   /**
+   * Verifies the remove enforcement hold form is visible.
+   */
+  public assertRemoveEnforcementHoldFormVisible(): void {
+    logAE('method', 'assertRemoveEnforcementHoldFormVisible()');
+    this.enforcement.assertRemoveEnforcementHoldFormVisible();
+  }
+
+  /**
+   * Enters a reason on the remove enforcement hold form.
+   *
+   * @param reason - Reason text.
+   */
+  public enterRemoveEnforcementHoldReason(reason: string): void {
+    logAE('method', 'enterRemoveEnforcementHoldReason()', { reason });
+    this.enforcement.enterRemoveEnforcementHoldReason(reason);
+  }
+
+  /**
+   * Clicks a button on the remove enforcement hold form by visible text.
+   *
+   * @param buttonText - Exact button label.
+   */
+  public clickRemoveEnforcementHoldButton(buttonText: string): void {
+    logAE('method', 'clickRemoveEnforcementHoldButton()', { buttonText });
+    this.enforcement.clickRemoveEnforcementHoldButton(buttonText);
+  }
+
+  /**
    * Asserts the remove enforcement hold account identifier.
    *
    * @param expected - Expected account identifier caption text.
@@ -2124,7 +2152,7 @@ export class AccountEnquiryFlow {
    */
   public openAddAccountNoteAndVerifyHeader(): void {
     logAE('method', 'openAddAccountNoteAndVerifyHeader()');
-    cy.location('pathname').then((pathname) => {
+    cy.location('pathname', this.common.getTimeoutOptions()).then((pathname) => {
       const alreadyOnAddAccountNotePage = pathname.includes('/note/add');
 
       if (alreadyOnAddAccountNotePage) {
@@ -2132,6 +2160,9 @@ export class AccountEnquiryFlow {
         return;
       }
 
+      expect(pathname, 'current pathname before opening Add account note').to.match(
+        /\/fines\/account\/defendant\/\d+\/details$/,
+      );
       logAE('navigate', 'Opening "Add account note" screen');
       this.detailsNav.clickAddAccountNoteButton();
     });
@@ -2368,6 +2399,34 @@ export class AccountEnquiryFlow {
     this.comments.confirmLeaveAndReturnToSummary();
 
     cy.location('pathname', { timeout: 15000 }).should('match', /\/fines\/account\/defendant\/\d+\/details$/);
+  }
+
+  /**
+   * Cancels from the Comments page, confirms leaving, and waits for the summary page.
+   */
+  public cancelCommentsWithConfirmationAndReturnToSummary(): void {
+    logAE('method', 'cancelCommentsWithConfirmationAndReturnToSummary()');
+    this.comments.confirmLeaveAndReturnToSummary();
+  }
+
+  /**
+   * Intercepts the minor creditor header summary and overrides the awarded value.
+   *
+   * @param awardedValue - Numeric awarded value to return.
+   */
+  public stubMinorCreditorHeaderSummaryAwardedValue(awardedValue: number): void {
+    logAE('method', 'stubMinorCreditorHeaderSummaryAwardedValue()', { awardedValue });
+    this.minorCreditorDetails.stubHeaderSummaryAwardedValue(awardedValue);
+  }
+
+  /**
+   * Asserts the awarded value returned by the intercepted minor creditor header summary call.
+   *
+   * @param awardedValue - Expected numeric awarded value.
+   */
+  public assertMinorCreditorHeaderSummaryAwardedValue(awardedValue: number): void {
+    logAE('method', 'assertMinorCreditorHeaderSummaryAwardedValue()', { awardedValue });
+    this.minorCreditorDetails.assertHeaderSummaryAwardedValue(awardedValue);
   }
 
   /**
