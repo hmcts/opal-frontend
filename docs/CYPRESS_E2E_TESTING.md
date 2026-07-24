@@ -14,6 +14,14 @@ Use this guide when writing or updating Cypress E2E tests and Cucumber feature f
 - Tag scenarios with `@functional`, `@smoke`, and Jira IDs so suites can target subsets.
 - Keep legacy suites in `cypress/e2e/Old_functional_E2E_Tests`; new scenarios should follow the `opal` layout.
 
+### Release Folder Rules
+
+- Keep release-specific feature files under the matching release folder.
+- `features/release1a/**` should contain only `@R1A` or `@R1AOff` scenarios and examples.
+- `features/release1b/**` should contain only `@R1B` or `@R1BOff` scenarios and examples.
+- `features/release1c/**` should contain only `@R1C...` scenarios and examples.
+- When a feature file mixes release tags, split the scenarios into separate release-specific files rather than keeping cross-release examples in one file.
+
 ### Journey-Based Organisation
 
 - Keep each feature file focused on one user journey or closely related behaviour. Do not combine unrelated account types or user journeys solely because they use the same screen.

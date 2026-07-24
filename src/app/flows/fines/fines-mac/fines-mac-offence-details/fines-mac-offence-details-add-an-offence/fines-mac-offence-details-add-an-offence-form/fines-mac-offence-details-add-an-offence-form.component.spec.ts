@@ -47,6 +47,39 @@ describe('FinesMacOffenceDetailsAddAnOffenceFormComponent', () => {
   let originalConfigureDatePicker: () => void;
   let originalInitOuterRadios: () => void;
 
+  const createInitializedComponent = (
+    configureStore?: (store: FinesMacOffenceDetailsStoreType, macStore: FinesMacStoreType) => void,
+  ) => {
+    const freshFixture = TestBed.createComponent(FinesMacOffenceDetailsAddAnOffenceFormComponent);
+    const freshComponent = freshFixture.componentInstance;
+    const freshFinesMacStore = TestBed.inject(FinesMacStore);
+    const freshFinesMacOffenceDetailsStore = TestBed.inject(FinesMacOffenceDetailsStore);
+
+    freshFinesMacStore.setFinesMacStore(FINES_MAC_STATE_MOCK);
+    freshFinesMacOffenceDetailsStore.setOffenceDetailsDraft(
+      FINES_MAC_OFFENCE_DETAILS_DRAFT_STATE_MOCK.offenceDetailsDraft,
+    );
+    freshFinesMacOffenceDetailsStore.setRowIndex(0);
+    freshFinesMacOffenceDetailsStore.setRemoveMinorCreditor(
+      FINES_MAC_OFFENCE_DETAILS_DRAFT_STATE_MOCK.removeMinorCreditor,
+    );
+
+    configureStore?.(freshFinesMacOffenceDetailsStore, freshFinesMacStore);
+
+    freshComponent.resultCodeItems = OPAL_FINES_RESULTS_AUTOCOMPLETE_ITEMS_MOCK;
+    freshComponent.fcompMajorCreditorItems = OPAL_FINES_MAJOR_CREDITOR_AUTOCOMPLETE_ITEMS_MOCK;
+    freshComponent.fcostMajorCreditorItems = OPAL_FINES_MAJOR_CREDITOR_AUTOCOMPLETE_ITEMS_MOCK;
+
+    freshFixture.detectChanges();
+
+    return {
+      fixture: freshFixture,
+      component: freshComponent,
+      finesMacStore: freshFinesMacStore,
+      finesMacOffenceDetailsStore: freshFinesMacOffenceDetailsStore,
+    };
+  };
+
   beforeAll(() => {
     originalConfigureDatePicker = MojDatePickerComponent.prototype.configureDatePicker;
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -680,6 +713,45 @@ describe('FinesMacOffenceDetailsAddAnOffenceFormComponent', () => {
     expect(component.today).toBe('01/01/2022');
   });
 
+  it('should keep the add offence form dirty when returning from a saved minor creditor', () => {
+    fixture.destroy();
+    const { component: freshComponent, finesMacStore: freshFinesMacStore } = createInitializedComponent((store) => {
+      store.setOffenceDetailsDraftDirty(true);
+    });
+
+    expect(freshComponent.form.dirty).toBe(true);
+    expect(freshComponent['hasUnsavedChanges']()).toBe(true);
+    expect(freshFinesMacStore.unsavedChanges()).toBe(true);
+  });
+
+  it('should emit unsaved changes on cancel when returning from a saved minor creditor', () => {
+    fixture.destroy();
+    const { component: freshComponent } = createInitializedComponent((store) => {
+      store.setOffenceDetailsDraftDirty(true);
+      store.setEmptyOffences(true);
+    });
+    const unsavedChangesEmitSpy = vi.spyOn(freshComponent['unsavedChanges'], 'emit');
+
+    freshComponent.cancelLink();
+
+    expect(unsavedChangesEmitSpy).toHaveBeenCalledWith(true);
+  });
+
+  it('should clear offence draft dirty when the offence form is submitted successfully', () => {
+    finesMacOffenceDetailsStore.setOffenceDetailsDraftDirty(true);
+    component.form = new FormGroup({});
+    component.form.setErrors(null);
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    vi.spyOn<any, any>(component, 'checkImpositionMinorCreditors').mockImplementation(() => {});
+    vi.spyOn(component['offenceDetailsService'], 'enforceOffenceCodeValidationBeforeSubmit').mockImplementation(
+      () => {},
+    );
+
+    component.handleFormSubmit(new SubmitEvent('submit'));
+
+    expect(finesMacOffenceDetailsStore.offenceDetailsDraftDirty()).toBe(false);
+  });
+
   it('should update removeMinorCreditor in finesMacOffenceDetailsDraftState and call updateOffenceDetailsDraft and handleRoute', () => {
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     const routerSpy = vi.spyOn<any, any>(component['router'], 'navigate');
@@ -706,6 +778,15 @@ describe('FinesMacOffenceDetailsAddAnOffenceFormComponent', () => {
     expect(routerSpy).toHaveBeenCalledWith([FINES_MAC_OFFENCE_DETAILS_ROUTING_PATHS.children.addMinorCreditor], {
       relativeTo: component['activatedRoute'].parent,
     });
+  });
+
+  it('should persist offence draft dirty state when a dirty parent offence form enters the minor creditor route', () => {
+    finesMacOffenceDetailsStore.setOffenceDetailsDraftDirty(false);
+    component.form.markAsDirty();
+
+    component.goToMinorCreditor(0);
+
+    expect(finesMacOffenceDetailsStore.offenceDetailsDraftDirty()).toBe(true);
   });
 
   it('should refresh rendered errors when offence validation state changes after submit', () => {

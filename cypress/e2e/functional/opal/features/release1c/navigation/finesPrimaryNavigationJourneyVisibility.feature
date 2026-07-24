@@ -66,4 +66,3 @@ Feature: Fines primary navigation visibility through journeys
     When I cancel the Add account note journey
     Then I should see the account summary header contains "PRIMARYNAVCANCEL{uniqUpper}"
     And I see the Fines primary navigation
-
