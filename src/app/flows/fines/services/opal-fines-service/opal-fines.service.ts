@@ -255,20 +255,23 @@ export class OpalFines {
     return this.cache.businessUnitsCache$;
   }
 
+  // TODO: Use this.retrySafeReadOptions() for this request.
   /**
    * Retrieves a report definition by report id and caches it for later route transitions.
    *
    * @param reportId - The report id to fetch from the reports API.
    * @returns An observable containing the report definition.
    */
-  public getReport(reportId: string): Observable<IOpalFinesReport> {
-    if (!this.cache.reportsCache$[reportId]) {
-      this.cache.reportsCache$[reportId] = this.http
-        .get<IOpalFinesReport>(`${OPAL_FINES_PATHS.reports}/${encodeURIComponent(reportId)}`)
+  public getReport(reportId: string | number): Observable<IOpalFinesReport> {
+    const cacheKey = reportId.toString();
+
+    if (!this.cache.reportsCache$[cacheKey]) {
+      this.cache.reportsCache$[cacheKey] = this.http
+        .get<IOpalFinesReport>(`${OPAL_FINES_PATHS.reports}/${reportId}`)
         .pipe(shareReplay(1));
     }
 
-    return this.cache.reportsCache$[reportId];
+    return this.cache.reportsCache$[cacheKey];
   }
 
   /**
