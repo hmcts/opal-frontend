@@ -65,6 +65,7 @@ import { IOpalFinesRemoveEnforcementHoldPayload } from './interfaces/opal-fines-
 import { IOpalFinesAccountMinorCreditorCreditor } from './interfaces/opal-fines-account-minor-creditor-creditor.interface';
 import { IOpalFinesDraftAccountPatchRequestPayload } from '@services/fines/opal-fines-service/types/opal-fines-draft-account-patch-request-payload.type';
 import { IOpalFinesDeleteDefendantAccountPartyPayload } from './interfaces/opal-fines-delete-defendant-account-party-payload.interface';
+import { IOpalFinesCentralFund } from './interfaces/opal-fines-account-central-fund.interface';
 import { IOpalFinesAccountMajorCreditorDetailsHeader } from '../../fines-acc/fines-acc-major-creditor-details/interfaces/fines-acc-major-creditor-details-header.interface';
 import { IOpalFinesAccountMajorCreditorAtAGlance } from './interfaces/opal-fines-account-major-creditor-at-a-glance.interface';
 
@@ -449,7 +450,9 @@ export class OpalFines {
    * @returns The pretty name of the major creditor.
    */
   public getMajorCreditorPrettyName(majorCreditor: IOpalFinesMajorCreditor): string {
-    return `${majorCreditor.name} (${majorCreditor.major_creditor_code})`;
+    return majorCreditor.major_creditor_code
+      ? `${majorCreditor.name} (${majorCreditor.major_creditor_code})`
+      : (majorCreditor.name ?? '');
   }
 
   /**
@@ -1390,6 +1393,17 @@ export class OpalFines {
         );
     }
     return this.cache.minorCreditorAccountCreditorCache$;
+  }
+
+  /**
+   * Retrieves the central fund details for a specific business unit.
+   *
+   * @param busunessUnitId - The ID of the business unit.
+   * @returns An Observable that emits the central fund details.
+   */
+  public getCentralFund(busunessUnitId: number): Observable<IOpalFinesCentralFund> {
+    const url = `${OPAL_FINES_PATHS.centralFunds}/${busunessUnitId}`;
+    return this.http.get<IOpalFinesCentralFund>(url);
   }
 
   /**
