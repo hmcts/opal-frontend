@@ -2254,7 +2254,10 @@ describe('OpalFines', () => {
       const apiUrl = `${OPAL_FINES_PATHS.majorCreditorAccounts}/${account_id}/history`;
 
       service
-        .getMajorCreditorAccountHistoryAndNotesTabData(account_id, OPAL_FINES_MAJOR_CREDITOR_ACCOUNT_HISTORY_PARAMS_MOCK)
+        .getMajorCreditorAccountHistoryAndNotesTabData(
+          account_id,
+          OPAL_FINES_MAJOR_CREDITOR_ACCOUNT_HISTORY_PARAMS_MOCK,
+        )
         .subscribe((response) => {
           expect(response).toEqual(OPAL_FINES_ACCOUNT_MAJOR_CREDITOR_DETAILS_HISTORY_AND_NOTES_TAB_REF_DATA_MOCK);
         });

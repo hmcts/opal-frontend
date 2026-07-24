@@ -58,7 +58,9 @@ describe('FinesAccMajorCreditorDetailsComponent', () => {
         .mockReturnValue(of(structuredClone(OPAL_FINES_ACCOUNT_MAJOR_CREDITOR_AT_A_GLANCE_MOCK))),
       getMajorCreditorAccountHistoryAndNotesTabData: vi
         .fn()
-        .mockReturnValue(of(structuredClone(OPAL_FINES_ACCOUNT_MAJOR_CREDITOR_DETAILS_HISTORY_AND_NOTES_TAB_REF_DATA_MOCK))),
+        .mockReturnValue(
+          of(structuredClone(OPAL_FINES_ACCOUNT_MAJOR_CREDITOR_DETAILS_HISTORY_AND_NOTES_TAB_REF_DATA_MOCK)),
+        ),
       clearCache: vi.fn(),
       getResult: vi.fn(),
     };
