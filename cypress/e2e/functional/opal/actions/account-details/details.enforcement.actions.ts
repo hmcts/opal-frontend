@@ -39,8 +39,9 @@ export class AccountDetailsEnforcementActions {
   private selectAutocompleteOption(selector: string, query: string, optionText: string): void {
     cy.get(selector, { timeout: AccountDetailsEnforcementActions.DEFAULT_TIMEOUT })
       .should('be.visible')
+      .and('not.be.disabled')
       .click()
-      .type('{selectall}{backspace}', { force: true })
+      .type('{selectall}{backspace}')
       .type(query, { delay: 0 });
 
     cy.contains(ENF_OVR.dropdownOptions, optionText, {
@@ -203,9 +204,9 @@ export class AccountDetailsEnforcementActions {
     cy.get(ENF_OVR.title, { timeout: AccountDetailsEnforcementActions.DEFAULT_TIMEOUT })
       .should('be.visible')
       .and('contain.text', 'Add enforcement override');
-    cy.get(ENF_OVR.enfOverrideDropdown, { timeout: AccountDetailsEnforcementActions.DEFAULT_TIMEOUT }).should(
-      'be.visible',
-    );
+    cy.get(ENF_OVR.enfOverrideDropdown, { timeout: AccountDetailsEnforcementActions.DEFAULT_TIMEOUT })
+      .should('be.visible')
+      .and('not.be.disabled');
   }
 
   /**
@@ -318,7 +319,9 @@ export class AccountDetailsEnforcementActions {
       .and('contain.text', 'Change enforcement court');
     cy.get(ENF_COURT_CHANGE.enforcementCourtInput, {
       timeout: AccountDetailsEnforcementActions.DEFAULT_TIMEOUT,
-    }).should('be.visible');
+    })
+      .should('be.visible')
+      .and('not.be.disabled');
   }
 
   /**
