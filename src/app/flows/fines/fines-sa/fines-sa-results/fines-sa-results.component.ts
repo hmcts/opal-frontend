@@ -15,6 +15,7 @@ import { GovukBackLinkComponent } from '@hmcts/opal-frontend-common/components/g
 import { Subject, takeUntil } from 'rxjs';
 import { FinesSaSearchAccountTab } from '../fines-sa-search/fines-sa-search-account/types/fines-sa-search-account-tab.type';
 import { FinesSaResultsTabsType } from './types/fines-sa-results-tabs.type';
+import { FinesSaResultsAccountType } from './types/fines-sa-results-account-type.type';
 import { FINES_ROUTING_PATHS } from '@routing/fines/constants/fines-routing-paths.constant';
 import { FINES_ACC_ROUTING_PATHS } from '../../fines-acc/routing/constants/fines-acc-routing-paths.constant';
 import { FINES_SA_RESULTS_DEFENDANT_TABLE_WRAPPER_TABLE_DATA_EMPTY } from './fines-sa-results-defendant-table-wrapper/constants/fines-sa-result-default-table-wrapper-table-data-empty.constant';
@@ -28,6 +29,7 @@ import { FINES_SA_RESULTS_MINOR_CREDITOR_TABLE_WRAPPER_TABLE_SORT_DEFAULT } from
 import { FINES_SA_RESULTS_MINOR_CREDITOR_TABLE_WRAPPER_TABLE_DATA_EMPTY } from './fines-sa-results-minor-creditor-table-wrapper/constants/fines-sa-result-minor-creditor-table-wrapper-table-data-empty.constant';
 import { FINES_ACC_MINOR_CREDITOR_ROUTING_PATHS } from '../../fines-acc/routing/constants/fines-acc-minor-creditor-routing-paths.constant';
 import { FINES_DASHBOARD_ROUTING_PATHS } from '../../constants/fines-dashboard-routing-paths.constant';
+import { FINES_SA_RESULTS_ACCOUNT_TYPE } from './constants/accountType.constant';
 
 @Component({
   selector: 'app-fines-sa-results',
@@ -52,6 +54,7 @@ export class FinesSaResultsComponent implements OnInit, OnDestroy {
 
   public readonly defendantsSort = FINES_SA_RESULTS_DEFENDANT_TABLE_WRAPPER_TABLE_SORT_DEFAULT;
   public readonly minorCreditorsSort = FINES_SA_RESULTS_MINOR_CREDITOR_TABLE_WRAPPER_TABLE_SORT_DEFAULT;
+  public readonly accountType = FINES_SA_RESULTS_ACCOUNT_TYPE;
   public individualsData = [] as IFinesSaResultsDefendantTableWrapperTableData[];
   public companiesData = [] as IFinesSaResultsDefendantTableWrapperTableData[];
   public minorCreditorsData = [] as IFinesSaResultsMinorCreditorTableWrapperTableData[];
@@ -393,14 +396,17 @@ export class FinesSaResultsComponent implements OnInit, OnDestroy {
    *
    * @param accountId - The account ID to navigate to.
    */
-  public onAccountIdClick(accountId: number): void {
+  public onAccountIdClick(
+    accountId: number,
+    accountType: FinesSaResultsAccountType = FINES_SA_RESULTS_ACCOUNT_TYPE.defendant,
+  ): void {
     const url = this.router.serializeUrl(
       this.router.createUrlTree([
         FINES_ROUTING_PATHS.root,
         FINES_ACC_ROUTING_PATHS.root,
-        this.getAccountTypePathSegment(),
+        this.getAccountTypePathSegment(accountType),
         accountId,
-        FINES_ACC_DEFENDANT_ROUTING_PATHS.children.details,
+        this.getAccountDetailsPathSegment(accountType),
       ]),
     );
     window.open(url, '_blank');
@@ -411,14 +417,22 @@ export class FinesSaResultsComponent implements OnInit, OnDestroy {
    *
    * @returns The path segment string for either defendant or minor creditor accounts.
    */
-  public getAccountTypePathSegment(): string {
-    // Default to defendant path segment
-    let accountTypePathSegment = FINES_ACC_ROUTING_PATHS.children.defendant;
-    // Switch to minor creditor path segment if applicable
-    if (this.finesSaStore.getSearchType() === 'minorCreditors') {
-      accountTypePathSegment = FINES_ACC_MINOR_CREDITOR_ROUTING_PATHS.root;
-    }
-    return accountTypePathSegment;
+  public getAccountTypePathSegment(accountType: FinesSaResultsAccountType): string {
+    return accountType === FINES_SA_RESULTS_ACCOUNT_TYPE.minorCreditor
+      ? FINES_ACC_MINOR_CREDITOR_ROUTING_PATHS.root
+      : FINES_ACC_ROUTING_PATHS.children.defendant;
+  }
+
+  /**
+   * Determines the details path segment for the selected account type.
+   *
+   * @param accountType - The account type being opened.
+   * @returns The details child path segment for either defendant or minor creditor accounts.
+   */
+  public getAccountDetailsPathSegment(accountType: FinesSaResultsAccountType): string {
+    return accountType === FINES_SA_RESULTS_ACCOUNT_TYPE.minorCreditor
+      ? FINES_ACC_MINOR_CREDITOR_ROUTING_PATHS.children.details
+      : FINES_ACC_DEFENDANT_ROUTING_PATHS.children.details;
   }
 
   /**

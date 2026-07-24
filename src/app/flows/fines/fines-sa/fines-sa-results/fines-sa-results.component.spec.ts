@@ -12,6 +12,9 @@ import { FINES_ACC_MINOR_CREDITOR_ROUTING_PATHS } from '../../fines-acc/routing/
 import { beforeEach, describe, expect, it, vi } from 'vitest';
 import { FINES_ROUTING_PATHS } from '@routing/fines/constants/fines-routing-paths.constant';
 import { FINES_DASHBOARD_ROUTING_PATHS } from '../../constants/fines-dashboard-routing-paths.constant';
+import { FINES_ACC_ROUTING_PATHS } from '../../fines-acc/routing/constants/fines-acc-routing-paths.constant';
+import { FINES_ACC_DEFENDANT_ROUTING_PATHS } from '../../fines-acc/routing/constants/fines-acc-defendant-routing-paths.constant';
+import { FINES_SA_RESULTS_ACCOUNT_TYPE } from './constants/accountType.constant';
 
 describe('FinesSaResultsComponent', () => {
   let component: FinesSaResultsComponent;
@@ -135,16 +138,41 @@ describe('FinesSaResultsComponent', () => {
     expect(component.minorCreditorsData.length).toEqual(1);
   });
 
-  it('should open account details in a new tab', () => {
+  it('should open defendant account details in a new tab', () => {
     const mockUrl = '/fines/account/ACC123/details';
     router.serializeUrl.mockReturnValue(mockUrl);
 
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    vi.spyOn<any, any>(globalThis, 'open');
-    component.onAccountIdClick(1);
+    const openSpy = vi.spyOn<any, any>(globalThis, 'open').mockImplementation(() => null);
+    component.onAccountIdClick(1, FINES_SA_RESULTS_ACCOUNT_TYPE.defendant);
 
-    expect(router.serializeUrl).toHaveBeenCalled();
-    expect(window.open).toHaveBeenCalledWith(mockUrl, '_blank');
+    expect(router.createUrlTree).toHaveBeenCalledWith([
+      FINES_ROUTING_PATHS.root,
+      FINES_ACC_ROUTING_PATHS.root,
+      FINES_ACC_ROUTING_PATHS.children.defendant,
+      1,
+      FINES_ACC_DEFENDANT_ROUTING_PATHS.children.details,
+    ]);
+    expect(openSpy).toHaveBeenCalledWith(mockUrl, '_blank');
+  });
+
+  it('should open minor creditor account details in a new tab for account number results', () => {
+    const mockUrl = '/fines/account/minor-creditor/123/details';
+    router.serializeUrl.mockReturnValue(mockUrl);
+    vi.spyOn(finesSaStore, 'getSearchType').mockReturnValue('accountNumber');
+
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    const openSpy = vi.spyOn<any, any>(globalThis, 'open').mockImplementation(() => null);
+    component.onAccountIdClick(123, FINES_SA_RESULTS_ACCOUNT_TYPE.minorCreditor);
+
+    expect(router.createUrlTree).toHaveBeenCalledWith([
+      FINES_ROUTING_PATHS.root,
+      FINES_ACC_ROUTING_PATHS.root,
+      FINES_ACC_MINOR_CREDITOR_ROUTING_PATHS.root,
+      123,
+      FINES_ACC_MINOR_CREDITOR_ROUTING_PATHS.children.details,
+    ]);
+    expect(openSpy).toHaveBeenCalledWith(mockUrl, '_blank');
   });
 
   it('should default fragment to "companies" when individuals are empty and companies are not', () => {
@@ -736,8 +764,15 @@ describe('FinesSaResultsComponent', () => {
     expect(row['Parent or guardian']).toBeNull();
   });
 
-  it('should return minor creditor path segment when search type is minorCreditors', () => {
-    vi.spyOn(finesSaStore, 'getSearchType').mockReturnValue('minorCreditors');
-    expect(component.getAccountTypePathSegment()).toBe(FINES_ACC_MINOR_CREDITOR_ROUTING_PATHS.root);
+  it('should return minor creditor path segment for minor creditor accounts', () => {
+    expect(component.getAccountTypePathSegment(FINES_SA_RESULTS_ACCOUNT_TYPE.minorCreditor)).toBe(
+      FINES_ACC_MINOR_CREDITOR_ROUTING_PATHS.root,
+    );
+  });
+
+  it('should return defendant path segment for defendant accounts', () => {
+    expect(component.getAccountTypePathSegment(FINES_SA_RESULTS_ACCOUNT_TYPE.defendant)).toBe(
+      FINES_ACC_ROUTING_PATHS.children.defendant,
+    );
   });
 });
