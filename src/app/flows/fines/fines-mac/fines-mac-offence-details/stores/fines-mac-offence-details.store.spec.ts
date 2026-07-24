@@ -21,6 +21,7 @@ describe('FinesMacOffenceDetailsStore', () => {
     expect(store.emptyOffences()).toBe(false);
     expect(store.addedOffenceCode()).toEqual('');
     expect(store.minorCreditorAdded()).toBe(false);
+    expect(store.offenceDetailsDraftDirty()).toBe(false);
     expect(store.offenceRemoved()).toBe(false);
     expect(store.offenceCodeMessage()).toEqual('');
   });
@@ -39,6 +40,11 @@ describe('FinesMacOffenceDetailsStore', () => {
   it('should update minor creditor added', () => {
     store.setMinorCreditorAdded(true);
     expect(store.minorCreditorAdded()).toBe(true);
+  });
+
+  it('should update offence details draft dirty', () => {
+    store.setOffenceDetailsDraftDirty(true);
+    expect(store.offenceDetailsDraftDirty()).toBe(true);
   });
 
   it('should update added offence code', () => {
@@ -91,11 +97,13 @@ describe('FinesMacOffenceDetailsStore', () => {
   });
 
   it('should reset store draft imposition minor', () => {
+    store.setOffenceDetailsDraftDirty(true);
     store.resetStoreDraftImpositionMinor();
     expect(store.offenceDetailsDraft()).toEqual([]);
     expect(store.rowIndex()).toBeNull();
     expect(store.formArrayControls()).toEqual([]);
     expect(store.removeMinorCreditor()).toBeNull();
+    expect(store.offenceDetailsDraftDirty()).toBe(false);
   });
 
   it('should reset offence code message', () => {
@@ -114,6 +122,7 @@ describe('FinesMacOffenceDetailsStore', () => {
     expect(store.emptyOffences()).toBe(false);
     expect(store.addedOffenceCode()).toEqual('');
     expect(store.minorCreditorAdded()).toBe(false);
+    expect(store.offenceDetailsDraftDirty()).toBe(false);
     expect(store.offenceRemoved()).toBe(false);
     expect(store.offenceCodeMessage()).toEqual('');
   });
