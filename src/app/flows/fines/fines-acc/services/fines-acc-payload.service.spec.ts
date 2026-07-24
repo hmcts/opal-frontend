@@ -196,11 +196,7 @@ describe('FinesAccPayloadService', () => {
         FINES_ACC_MINOR_CREDITOR_DETAILS_HISTORY_AND_NOTES_FILTER_ALL_FORM_MOCK,
       );
 
-      expect(result).toEqual({
-        ...OPAL_FINES_MINOR_CREDITOR_ACCOUNT_HISTORY_PARAMS_MOCK,
-        dateFrom: '2024-01-01T00:00:00.000Z',
-        dateTo: '2024-01-31T00:00:00.000Z',
-      });
+      expect(result).toEqual(OPAL_FINES_MINOR_CREDITOR_ACCOUNT_HISTORY_PARAMS_MOCK);
     });
 
     it('should omit empty minor creditor history filter params', () => {

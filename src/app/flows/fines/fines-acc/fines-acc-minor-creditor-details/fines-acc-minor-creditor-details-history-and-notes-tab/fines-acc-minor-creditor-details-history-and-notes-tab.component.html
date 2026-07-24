@@ -8,4 +8,10 @@
     (filterApplied)="handleFilterApplied($event)"
     (filterOpenChange)="handleFilterOpenChange($event)"
   ></app-fines-acc-minor-creditor-details-history-and-notes-filter>
+
+  @if (historyAndNotesTabData$ | async; as historyAndNotesTabData) {
+    <app-fines-acc-minor-creditor-details-history-and-notes-table
+      [tabData]="historyAndNotesTabData"
+    ></app-fines-acc-minor-creditor-details-history-and-notes-table>
+  }
 </div>
