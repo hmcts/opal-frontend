@@ -2,7 +2,7 @@ import { describe, expect, it } from 'vitest';
 import { buildMajorCreditorHistoryFilterPayload } from './fines-acc-payload-build-major-creditor-history-filter.utils';
 import { FINES_ACC_MAJOR_CREDITOR_DETAILS_HISTORY_AND_NOTES_FILTER_FORM_MOCK } from '../../fines-acc-major-creditor-details/fines-acc-major-creditor-details-history-and-notes-tab/mocks/fines-acc-major-creditor-details-history-and-notes-filter-form.mock';
 import { FINES_ACC_MAJOR_CREDITOR_DETAILS_HISTORY_AND_NOTES_FILTER_EMPTY_FORM_MOCK } from '../../fines-acc-major-creditor-details/fines-acc-major-creditor-details-history-and-notes-tab/mocks/fines-acc-major-creditor-details-history-and-notes-filter-empty-form.mock';
-import { FINES_ACC_MAJOR_CREDITOR_DETAILS_HISTORY_AND_NOTES_FILTER_RAW_PAYLOAD_MOCK } from '../../fines-acc-major-creditor-details/fines-acc-major-creditor-details-history-and-notes-tab/mocks/fines-acc-major-creditor-details-history-and-notes-filter-raw-payload.mock';
+import { FINES_ACC_MAJOR_CREDITOR_DETAILS_HISTORY_AND_NOTES_FILTER_PAYLOAD_MOCK } from '../../fines-acc-major-creditor-details/fines-acc-major-creditor-details-history-and-notes-tab/mocks/fines-acc-major-creditor-details-history-and-notes-filter-payload.mock';
 
 describe('buildMajorCreditorHistoryFilterPayload', () => {
   it('should build raw major creditor history filter query params from submitted dates', () => {
@@ -10,10 +10,7 @@ describe('buildMajorCreditorHistoryFilterPayload', () => {
       FINES_ACC_MAJOR_CREDITOR_DETAILS_HISTORY_AND_NOTES_FILTER_FORM_MOCK,
     );
 
-    expect(result).toEqual({
-      dateFrom: '2024-01-01T00:00:00.000Z',
-      dateTo: '2024-01-31T00:00:00.000Z',
-    });
+    expect(result).toEqual(FINES_ACC_MAJOR_CREDITOR_DETAILS_HISTORY_AND_NOTES_FILTER_PAYLOAD_MOCK);
   });
 
   it('should omit empty major creditor history filter params', () => {

@@ -1,5 +1,5 @@
-import { IOpalFinesMajorCreditorAccountHistoryParams } from '@services/fines/opal-fines-service/interfaces/opal-fines-major-creditor-account-history-params.interface';
 import { IFinesAccHistoryAndNotesFilterForm } from '../../fines-acc-history-and-notes/interfaces/fines-acc-history-and-notes-filter-form.interface';
+import { IFinesAccMajorCreditorDetailsHistoryAndNotesFilterPayload } from '../../fines-acc-major-creditor-details/fines-acc-major-creditor-details-history-and-notes-tab/interfaces/fines-acc-major-creditor-details-history-and-notes-filter-payload.interface';
 import { finesAccDateToRfc3339UtcTimestamp } from './fines-acc-date-to-rfc3339-utc-timestamp.utils';
 
 /**
@@ -12,7 +12,7 @@ import { finesAccDateToRfc3339UtcTimestamp } from './fines-acc-date-to-rfc3339-u
  */
 export function buildMajorCreditorHistoryFilterPayload(
   form: IFinesAccHistoryAndNotesFilterForm,
-): IOpalFinesMajorCreditorAccountHistoryParams {
+): IFinesAccMajorCreditorDetailsHistoryAndNotesFilterPayload {
   const { dateFrom, dateTo } = form.formData;
 
   return {
