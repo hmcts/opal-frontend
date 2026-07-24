@@ -81,6 +81,10 @@ export function getRoutesConfig(): {
 export function configureApiProxyRoutes(app: Express, proxyConfiguration: ProxyConfiguration): void {
   const ipLoggingEnabled = config.get('features.ip-logging.enabled') as boolean;
 
+  if (proxyConfiguration.timeoutInMilliseconds === null) {
+    throw new Error('Missing opal-api.timeoutInMilliseconds configuration.');
+  }
+
   if (proxyConfiguration.opalFinesServiceUrl) {
     app.use(
       '/opal-fines-service',
