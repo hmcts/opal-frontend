@@ -291,19 +291,19 @@ describe('finesReportsStateGuard', () => {
     ]);
   });
 
-  it('should propagate static permission lookup failures', async () => {
+  it('should return false when static permission lookup fails', async () => {
     mockOpalUserService.getLoggedInUserState.mockReturnValue(throwError(() => new Error('permission lookup failed')));
 
-    await expect(
-      runGuard(FINES_REPORTS_SUMMARY_LIST_ROUTING_PATHS.children.operationalReportsByPayments),
-    ).rejects.toThrow('permission lookup failed');
+    const result = await runGuard(FINES_REPORTS_SUMMARY_LIST_ROUTING_PATHS.children.operationalReportsByPayments);
+
+    expect(result).toBe(false);
   });
 
-  it('should propagate report metadata lookup failures', async () => {
+  it('should return false when report metadata lookup fails', async () => {
     mockOpalFinesService.getReport.mockReturnValue(throwError(() => new Error('report lookup failed')));
 
-    await expect(
-      runGuard(FINES_REPORTS_SUMMARY_LIST_ROUTING_PATHS.children.operationalReportsByPayments),
-    ).rejects.toThrow('report lookup failed');
+    const result = await runGuard(FINES_REPORTS_SUMMARY_LIST_ROUTING_PATHS.children.operationalReportsByPayments);
+
+    expect(result).toBe(false);
   });
 });
