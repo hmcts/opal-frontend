@@ -12,7 +12,7 @@ import {
 } from '@angular/core';
 import { takeUntilDestroyed, toSignal } from '@angular/core/rxjs-interop';
 import { FormControl, FormGroup, ReactiveFormsModule } from '@angular/forms';
-import { ActivatedRoute, RouterLink } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import { EMPTY, Observable, Subject, catchError, distinctUntilChanged, map, switchMap, takeUntil } from 'rxjs';
 import { GovukErrorSummaryComponent } from '@hmcts/opal-frontend-common/components/govuk/govuk-error-summary';
 import {
@@ -52,6 +52,8 @@ import {
   mapReportInstancesToTableData,
 } from './utils/fines-reports-summary-list-table.utils';
 import { FINES_REPORTS_ROUTING_PATHS } from '../routing/constants/fines-reports-routing-paths.constant';
+import { FINES_REPORTS_CREATE_ROUTING_PATHS } from '../routing/constants/fines-reports-create-routing-paths.constant';
+import { FinesReportsStore } from '../stores/fines-reports.store';
 
 type FinesReportsSummaryListFilterForm = FormGroup<{
   businessUnit: FormControl<string | null>;
@@ -73,7 +75,6 @@ type FinesReportsSummaryListFilterForm = FormGroup<{
     MojDatePickerComponent,
     CustomPageHeaderComponent,
     FinesReportsSummaryListTableWrapperComponent,
-    RouterLink,
   ],
   templateUrl: './fines-reports-summary-list.component.html',
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -83,6 +84,8 @@ export class FinesReportsSummaryListComponent
   implements OnInit
 {
   private readonly activatedRoute = inject(ActivatedRoute);
+  private readonly finesReportsStore = inject(FinesReportsStore);
+  private readonly router = inject(Router);
   private readonly opalFinesService = inject(OpalFines);
   private readonly globalStore = inject(GlobalStore);
   private readonly store = inject(FinesReportsSummaryListStore);
@@ -126,7 +129,6 @@ export class FinesReportsSummaryListComponent
   };
 
   public readonly tableSort = FINES_REPORTS_SUMMARY_LIST_TABLE_WRAPPER_TABLE_SORT_DEFAULT;
-  public readonly createReportRoutingPath = `../${FINES_REPORTS_ROUTING_PATHS.children.create}`;
   public readonly loading = signal(false);
   public readonly loadError = signal(this.reportInstancesResponse()?.loadError ?? false);
   public readonly filtersForm: FinesReportsSummaryListFilterForm = new FormGroup({
@@ -187,6 +189,19 @@ export class FinesReportsSummaryListComponent
     );
 
     return this.reportMetadata()?.can_manually_create ?? reportConfiguration?.canCreate ?? false;
+  }
+
+  /**
+   * Clears a previous report selection and opens the select-business-unit step for the current report type.
+   */
+  public handleCreateReport(): void {
+    this.finesReportsStore.clearSelectedBusinessUnitIds();
+    this.router.navigate(
+      [
+        `../${FINES_REPORTS_ROUTING_PATHS.children.create}/${FINES_REPORTS_CREATE_ROUTING_PATHS.children.selectBusinessUnits}`,
+      ],
+      { relativeTo: this.activatedRoute },
+    );
   }
 
   /**
