@@ -1,12 +1,13 @@
 import { ChangeDetectionStrategy, Component, computed, inject } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
+import { GovukCancelLinkComponent } from '@hmcts/opal-frontend-common/components/govuk/govuk-cancel-link';
+import { GovukButtonDirective } from '@hmcts/opal-frontend-common/directives/govuk-button';
 import { FINES_REPORTS_CREATE_ROUTING_PATHS } from '../routing/constants/fines-reports-create-routing-paths.constant';
 import { FinesReportsStore } from '../stores/fines-reports.store';
-import { FinesReportsBusinessUnitWarningContentComponent } from './fines-reports-business-unit-warning-content/fines-reports-business-unit-warning-content.component';
 
 @Component({
   selector: 'app-fines-reports-business-unit-warning',
-  imports: [FinesReportsBusinessUnitWarningContentComponent],
+  imports: [GovukButtonDirective, GovukCancelLinkComponent],
   templateUrl: './fines-reports-business-unit-warning.component.html',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
