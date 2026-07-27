@@ -9901,7 +9901,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"chalk@npm:4.1.2, chalk@npm:^4.1.0, chalk@npm:^4.1.2":
+"chalk@npm:4.1.2, chalk@npm:^4.0.0, chalk@npm:^4.1.0, chalk@npm:^4.1.2":
   version: 4.1.2
   resolution: "chalk@npm:4.1.2"
   dependencies:
@@ -10328,7 +10328,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"compare-versions@npm:6.1.1":
+"compare-versions@npm:6.1.1, compare-versions@npm:^6.1.1":
   version: 6.1.1
   resolution: "compare-versions@npm:6.1.1"
   checksum: 10/9325c0fadfba81afa0ec17e6fc2ef823ba785c693089698b8d9374e5460509f1916a88591644d4cb4045c9a58e47fafbcc0724fe8bf446d2a875a3d6eeddf165
@@ -10794,6 +10794,19 @@ __metadata:
   bin:
     cypress-parallel: cli.js
   checksum: 10/8d4468eef967790d28e03919014eca2ee9ac6057c9cef65e71d3db17ae08ed70f2e5fd5d8f20ffd26006eacf3d7b3238886ea0766eac910b15adf352f99abf7b
+  languageName: node
+  linkType: hard
+
+"cypress-terminal-report@npm:^7.3.3":
+  version: 7.3.3
+  resolution: "cypress-terminal-report@npm:7.3.3"
+  dependencies:
+    chalk: "npm:^4.0.0"
+    compare-versions: "npm:^6.1.1"
+    superstruct: "npm:0.14.2"
+  peerDependencies:
+    cypress: ">=10.0.0"
+  checksum: 10/5c8a9a64f39bec3befc96d84d8c424d1786bd48daeae541b67698c9a95a7d25036466859c8a754e69f7cedf21d68780a67e6b6aecf09cb49e921771e66e87fdc
   languageName: node
   linkType: hard
 
@@ -16702,6 +16715,7 @@ __metadata:
     cypress-mochawesome-reporter: "npm:^4.0.0"
     cypress-multi-reporters: "npm:^2.0.0"
     cypress-parallel: "npm:^0.15.0"
+    cypress-terminal-report: "npm:^7.3.3"
     domino-ext: "npm:^2.1.4"
     eslint: "npm:^10.0.0"
     eslint-plugin-jsdoc: "npm:^63.0.0"
@@ -19830,6 +19844,13 @@ __metadata:
     mime: "npm:2.6.0"
     qs: "npm:^6.11.0"
   checksum: 10/e89ae49163df0db50e6a77316a7304a16640df11a8d2219bef11e69f59c74e54c16670ec250c2ab59f06887f71bb5d6e5933f735b931cbdbe34ba490d78b5d70
+  languageName: node
+  linkType: hard
+
+"superstruct@npm:0.14.2":
+  version: 0.14.2
+  resolution: "superstruct@npm:0.14.2"
+  checksum: 10/81eb2af08f2a5b1c3d4c9a7815fe0decd4eddc305dbd74471b2c29496910dfb1188e54c4bfc8c5b5e64c0f69cd303af554332d1f9d7967eff39144d1a4c4d2e2
   languageName: node
   linkType: hard
 
