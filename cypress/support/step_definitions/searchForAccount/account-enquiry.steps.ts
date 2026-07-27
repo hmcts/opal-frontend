@@ -473,11 +473,27 @@ Given('the History and notes API is stubbed with standard tab data', () => {
 });
 
 /**
+ * @step Presents the current account as a master account with a consolidated child account.
+ */
+Given('I am viewing a master account with a consolidated child account', () => {
+  log('step', 'Prepare master account with consolidated child account');
+  flow().prepareMasterAccountWithConsolidatedChildAccount();
+});
+
+/**
  * @step Navigates to the History and notes tab.
  */
 When('I go to the History and notes tab', () => {
   log('step', 'Navigate to History and notes tab');
   flow().goToHistoryAndNotesTab();
+});
+
+/**
+ * @step Navigates to the Consolidated accounts tab.
+ */
+When('I go to the Consolidated accounts tab', () => {
+  log('step', 'Navigate to Consolidated accounts tab');
+  flow().goToConsolidatedAccountsTab();
 });
 
 /**
@@ -510,6 +526,14 @@ Then('I should only see Note items in History and notes', () => {
 When('I open the first History and notes account link in a new tab', () => {
   log('step', 'Open first History and notes account link in a new tab');
   flow().openHistoryAndNotesAccountLinkInNewTab();
+});
+
+/**
+ * @step Opens the first consolidated account link and verifies the At a glance route.
+ */
+When('I open the first Consolidated accounts link at the At a glance view', () => {
+  log('step', 'Open first Consolidated accounts link at the At a glance view');
+  flow().openFirstConsolidatedAccountLinkAtAGlance();
 });
 
 /**

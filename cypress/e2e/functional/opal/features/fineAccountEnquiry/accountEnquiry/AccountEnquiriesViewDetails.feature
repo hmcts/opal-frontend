@@ -213,6 +213,12 @@ Feature: Account Enquiries – View Account Details
       When I go to the History and notes tab
       And I open the first History and notes account link in a new tab
 
+    @R1B @JIRA-STORY:PO-2391 @JIRA-EPIC:PO-2332
+    Scenario: Consolidated account links open the child account At a glance view
+      Given I am viewing a master account with a consolidated child account
+      When I go to the Consolidated accounts tab
+      And I open the first Consolidated accounts link at the At a glance view
+
   Rule: Non-paying defendant account baseline
     Background:
       # AC1 – Account setup
