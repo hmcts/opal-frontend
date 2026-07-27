@@ -15,6 +15,9 @@ import { OPAL_FINES_MAJOR_CREDITOR_PRETTY_NAME_MOCK } from '@services/fines/opal
 import { FINES_MAC_OFFENCE_DETAILS_REMOVE_IMPOSITION_DEFAULTS } from './constants/fines-mac-offence-details-remove-imposition-defaults';
 import { FinesMacOffenceDetailsStoreType } from '../stores/types/fines-mac-offence-details.type';
 import { FinesMacOffenceDetailsStore } from '../stores/fines-mac-offence-details.store';
+import { FinesMacStoreType } from '../../stores/types/fines-mac-store.type';
+import { FinesMacStore } from '../../stores/fines-mac.store';
+import { FINES_MAC_STATE_MOCK } from '../../mocks/fines-mac-state.mock';
 import { FINES_MAC_OFFENCE_DETAILS_FORM_MOCK } from '../mocks/fines-mac-offence-details-form.mock';
 import { UtilsService } from '@hmcts/opal-frontend-common/services/utils-service';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
@@ -28,6 +31,7 @@ describe('FinesMacOffenceDetailsRemoveImpositionComponent', () => {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   let mockUtilsService: any;
   let finesMacOffenceDetailsStore: FinesMacOffenceDetailsStoreType;
+  let finesMacStore: FinesMacStoreType;
 
   beforeEach(async () => {
     mockOpalFinesService = {
@@ -64,6 +68,8 @@ describe('FinesMacOffenceDetailsRemoveImpositionComponent', () => {
     component = fixture.componentInstance;
 
     finesMacOffenceDetailsStore = TestBed.inject(FinesMacOffenceDetailsStore);
+    finesMacStore = TestBed.inject(FinesMacStore);
+    finesMacStore.setFinesMacStore(FINES_MAC_STATE_MOCK);
     finesMacOffenceDetailsStore.setOffenceDetailsDraft(FINES_MAC_OFFENCE_DETAILS_DRAFT_STATE_MOCK.offenceDetailsDraft);
     finesMacOffenceDetailsStore.setRowIndex(0);
     finesMacOffenceDetailsStore.setRemoveMinorCreditor(FINES_MAC_OFFENCE_DETAILS_DRAFT_STATE_MOCK.removeMinorCreditor);
@@ -122,6 +128,8 @@ describe('FinesMacOffenceDetailsRemoveImpositionComponent', () => {
     finesMacOffenceDetailsStore.setOffenceDetailsDraft(offenceWithMinorCreditor);
     component.confirmRemoval();
 
+    expect(finesMacOffenceDetailsStore.offenceDetailsDraftDirty()).toBe(true);
+    expect(finesMacStore.unsavedChanges()).toBe(true);
     expect(component.handleRoute).toHaveBeenCalledWith(FINES_MAC_OFFENCE_DETAILS_ROUTING_PATHS.children.addOffence);
   });
 

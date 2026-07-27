@@ -1187,4 +1187,28 @@ describe('FinesAccPartyAddAmendConvert - View and Amend Parent or Guardian', () 
       });
     },
   );
+  it(
+    'Alias remove link should describe which alias it will remove to screen reader users',
+    { tags: ['@JIRA-STORY:PO-2782', '@JIRA-EPIC:PO-8248'] },
+    () => {
+      setupComponent('parentGuardian', minimalMock);
+      cy.get(DOM_ELEMENTS.aliasCheckbox).check({ force: true }).should('be.checked');
+      cy.get(DOM_ELEMENTS.aliasSection).should('exist');
+
+      for (let i = 2; i <= 5; i++) {
+        cy.get(DOM_ELEMENTS.addAliasButton).click();
+        cy.contains('legend', `Alias ${i}`).should('exist');
+      }
+      cy.get(DOM_ELEMENTS.addAliasButton).should('not.exist');
+
+      // Verify that the remove link has the correct hidden span text for each alias
+      for (let aliasNumber = 5; aliasNumber >= 2; aliasNumber--) {
+        cy.get(DOM_ELEMENTS.removeAliasLink)
+          .within(() => {
+            cy.get('span').should('contain.text', `alias ${aliasNumber}`);
+          })
+          .click();
+      }
+    },
+  );
 });

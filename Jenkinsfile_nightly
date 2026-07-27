@@ -8,11 +8,15 @@ import java.time.ZonedDateTime
 @Field String legacyUrlPreProdChoice = 'PRE-PROD'
 @Field String legacyDemoSuiteR1aChoice = 'R1A'
 @Field String legacyDemoSuiteR1abChoice = 'R1A_AND_R1B'
-@Field String legacyDemoSuiteAllFlagsOffChoice = 'ALL_FLAGS_OFF'
+@Field String legacyDemoSuiteR1bOffChoice = 'R1B_OFF'
+@Field String legacyDemoSuiteR1aOffChoice = 'R1A_OFF'
+@Field String legacyDemoSuiteR1abOffChoice = 'R1A_AND_R1B_OFF'
 @Field String legacyDemoSuiteNoneChoice = 'NONE'
 @Field String functionalR1aCommand = 'test:functional:r1a'
 @Field String functionalR1abCommand = 'test:functional:r1ab'
-@Field String functionalAllFlagsOffCommand = 'test:functional:all_flags_off'
+@Field String functionalR1bOffCommand = 'test:functional:r1bOff'
+@Field String functionalR1aOffCommand = 'test:functional:r1aOff'
+@Field String functionalR1abOffCommand = 'test:functional:r1aboff'
 
 properties([
     // H allow predefined but random minute see https://en.wikipedia.org/wiki/Cron#Non-standard_characters
@@ -46,10 +50,12 @@ properties([
       choices: [
         legacyDemoSuiteR1aChoice,
         legacyDemoSuiteR1abChoice,
-        legacyDemoSuiteAllFlagsOffChoice,
+        legacyDemoSuiteR1bOffChoice,
+        legacyDemoSuiteR1aOffChoice,
+        legacyDemoSuiteR1abOffChoice,
         legacyDemoSuiteNoneChoice,
       ],
-      description: 'Select the optional legacy demo suite to run. R1A is the default.'
+      description: 'Select the optional legacy demo suite to run.'
     ),
     booleanParam(
       name: 'RunUatTech',
@@ -86,7 +92,9 @@ String failureResult = 'FAILURE'
 @Field String demoStageUatTechnicalDirName = 'uat-technical'
 @Field String demoStageR1aDirName = 'r1a-legacy-demo'
 @Field String demoStageR1abDirName = 'r1ab-legacy-demo'
-@Field String demoStageAllFlagsOffDirName = 'all-flags-off-legacy-demo'
+@Field String demoStageR1bOffDirName = 'r1b-off-legacy-demo'
+@Field String demoStageR1aOffDirName = 'r1a-off-legacy-demo'
+@Field String demoStageR1abOffDirName = 'r1ab-off-legacy-demo'
 @Field String legacyGatewayUrlPreProd = 'https://cloudgobgateway.test.platform.hmcts.net/opal'
 @Field String legacyGatewayUrlDev = 'https://opal-legacy-db-stub.staging.platform.hmcts.net/opal'
 @Field String launchDarklyApiVersion = '20240415'
@@ -677,9 +685,61 @@ void runR1aLegacyDemoStage(
   }
 }
 
+// Run the nightly R1A-off legacy demo checks and publish a dedicated report.
+void runR1aOffLegacyDemoStage(
+  boolean enabled,
+  String failureResultValue,
+  uk.gov.hmcts.contino.YarnBuilder builder,
+  boolean shouldRunWithZephyr,
+  String browserToRun
+) {
+  String r1aOffCommand =
+    shouldRunWithZephyr ? 'zephyr:test:r1aOff_legacy_demo' : functionalR1aOffCommand
+  runDemoLegacyStage([
+    enabled           : enabled,
+    stageName         : 'R1A Off Legacy Demo',
+    failureResultValue: failureResultValue,
+    failureMessage    : 'R1A Off Legacy Demo failed',
+    startMessage      :
+      "Running R1A-off legacy demo scenarios against ${nightlyTestUrlDemo} " +
+      "with yarn ${r1aOffCommand}",
+    outputDirName     : demoStageR1aOffDirName,
+    reportName        : "R1A Off Legacy Demo Functional Test Report (${browserToRun})",
+    browserToRun      : browserToRun,
+  ]) {
+    builder.yarn(r1aOffCommand)
+  }
+}
+
 // Check whether the selected nightly legacy demo suite matches the requested option.
 boolean isSelectedLegacyDemoSuite(String suiteChoice) {
   return params.LEGACY_DEMO_SUITE == suiteChoice
+}
+
+// Run the nightly R1B-off legacy demo checks and publish a dedicated report.
+void runR1bOffLegacyDemoStage(
+  boolean enabled,
+  String failureResultValue,
+  uk.gov.hmcts.contino.YarnBuilder builder,
+  boolean shouldRunWithZephyr,
+  String browserToRun
+) {
+  String r1bOffCommand =
+    shouldRunWithZephyr ? 'zephyr:test:r1bOff_legacy_demo' : functionalR1bOffCommand
+  runDemoLegacyStage([
+    enabled           : enabled,
+    stageName         : 'R1B Off Legacy Demo',
+    failureResultValue: failureResultValue,
+    failureMessage    : 'R1B Off Legacy Demo failed',
+    startMessage      :
+      "Running R1B-off legacy demo scenarios against ${nightlyTestUrlDemo} " +
+      "with yarn ${r1bOffCommand}",
+    outputDirName     : demoStageR1bOffDirName,
+    reportName        : "R1B Off Legacy Demo Functional Test Report (${browserToRun})",
+    browserToRun      : browserToRun,
+  ]) {
+    builder.yarn(r1bOffCommand)
+  }
 }
 
 // Run the nightly R1A and R1B legacy demo checks and publish a dedicated report.
@@ -707,29 +767,29 @@ void runR1aAndR1bLegacyDemoStage(
   }
 }
 
-// Run the optional all-flags-off legacy demo checks and publish a dedicated report.
-void runAllFlagsOffLegacyDemoStage(
+// Run the nightly R1A-off and R1B-off legacy demo checks and publish a dedicated report.
+void runR1aAndR1bOffLegacyDemoStage(
   boolean enabled,
   String failureResultValue,
   uk.gov.hmcts.contino.YarnBuilder builder,
   boolean shouldRunWithZephyr,
   String browserToRun
 ) {
-  String allFlagsOffCommand =
-    shouldRunWithZephyr ? 'zephyr:test:r1a_off_legacy_demo' : functionalAllFlagsOffCommand
+  String r1abOffCommand =
+    shouldRunWithZephyr ? 'zephyr:test:r1aboff_legacy_demo' : functionalR1abOffCommand
   runDemoLegacyStage([
     enabled           : enabled,
-    stageName         : 'All Flags Off Legacy Demo',
+    stageName         : 'R1A and R1B Off Legacy Demo',
     failureResultValue: failureResultValue,
-    failureMessage    : 'All Flags Off Legacy Demo failed',
+    failureMessage    : 'R1A and R1B Off Legacy Demo failed',
     startMessage      :
-      "Running all flags off legacy demo scenarios against ${nightlyTestUrlDemo} " +
-      "with yarn ${allFlagsOffCommand}",
-    outputDirName     : demoStageAllFlagsOffDirName,
-    reportName        : "All Flags Off Legacy Demo Functional Test Report (${browserToRun})",
+      "Running R1A-off and R1B-off legacy demo scenarios against ${nightlyTestUrlDemo} " +
+      "with yarn ${r1abOffCommand}",
+    outputDirName     : demoStageR1abOffDirName,
+    reportName        : "R1A and R1B Off Legacy Demo Functional Test Report (${browserToRun})",
     browserToRun      : browserToRun,
   ]) {
-    builder.yarn(allFlagsOffCommand)
+    builder.yarn(r1abOffCommand)
   }
 }
 
@@ -967,8 +1027,22 @@ Description: ${env.EXECUTION_CYCLE_DESCRIPTION}
       shouldRunWithZephyr,
       browserToRun
     )
-    runAllFlagsOffLegacyDemoStage(
-      isSelectedLegacyDemoSuite(legacyDemoSuiteAllFlagsOffChoice),
+    runR1bOffLegacyDemoStage(
+      isSelectedLegacyDemoSuite(legacyDemoSuiteR1bOffChoice),
+      failureResult,
+      yarnBuilder,
+      shouldRunWithZephyr,
+      browserToRun
+    )
+    runR1aOffLegacyDemoStage(
+      isSelectedLegacyDemoSuite(legacyDemoSuiteR1aOffChoice),
+      failureResult,
+      yarnBuilder,
+      shouldRunWithZephyr,
+      browserToRun
+    )
+    runR1aAndR1bOffLegacyDemoStage(
+      isSelectedLegacyDemoSuite(legacyDemoSuiteR1abOffChoice),
       failureResult,
       yarnBuilder,
       shouldRunWithZephyr,
