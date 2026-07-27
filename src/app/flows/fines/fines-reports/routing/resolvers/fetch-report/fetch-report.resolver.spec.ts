@@ -31,9 +31,13 @@ describe('fetchReportResolver', () => {
   const withApiBackedReportConfig = async (testFn: () => Promise<void>) => {
     FINES_REPORT_SUMMARY_LIST_REPORT_CONFIGURATION.push({
       id: API_BACKED_REPORT_ID,
+      reportTypeId: API_BACKED_REPORT_ID,
       heading: 'API backed report',
       title: 'API backed report',
       requiresReportMetadata: true,
+      permissionIds: [],
+      canCreate: true,
+      isYourReports: false,
     });
 
     try {

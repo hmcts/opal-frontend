@@ -1,12 +1,12 @@
-import { describe, expect, it } from 'vitest';
-import { routing } from './fines-reports.routes';
-import { FINES_REPORTS_ROUTING_PATHS } from './constants/fines-reports-routing-paths.constant';
-import { FINES_REPORTS_CREATE_ROUTING_PATHS } from './constants/fines-reports-create-routing-paths.constant';
 import { canDeactivateGuard } from '@hmcts/opal-frontend-common/guards/can-deactivate';
 import { TitleResolver } from '@hmcts/opal-frontend-common/resolvers/title';
-import { fetchBusinessUnitsResolver } from '@routing/fines/resolvers/fetch-business-units-resolver/fetch-business-units.resolver';
+import { describe, expect, it } from 'vitest';
+import { routing } from './fines-reports.routes';
+import { FINES_REPORTS_CREATE_ROUTING_PATHS } from './constants/fines-reports-create-routing-paths.constant';
+import { FINES_REPORTS_ROUTING_PATHS } from './constants/fines-reports-routing-paths.constant';
 import { FINES_REPORTS_ROUTING_TITLES } from './constants/fines-reports-routing-titles.constant';
 import { finesReportsStateGuard } from './guards/fines-reports-state-guard/fines-reports-state.guard';
+import { finesReportsBusinessUnitsResolver } from './resolvers/fines-reports-business-units/fines-reports-business-units.resolver';
 import { finesReportsReportHeadingResolver } from './resolvers/fines-reports-report-heading/fines-reports-report-heading.resolver';
 import { fetchReportResolver } from './resolvers/fetch-report/fetch-report.resolver';
 
@@ -44,7 +44,7 @@ describe('finesReports routes', () => {
         title: TitleResolver,
         report: fetchReportResolver,
         reportHeading: finesReportsReportHeadingResolver,
-        businessUnits: fetchBusinessUnitsResolver,
+        businessUnits: finesReportsBusinessUnitsResolver,
       },
     });
   });
@@ -70,5 +70,41 @@ describe('finesReports routes', () => {
         title: TitleResolver,
       },
     });
+  });
+
+  it('should expose a report summary route', () => {
+    const reportRoute = routing.find((route) => route.path === ':reportTypeId');
+    const reportSummaryRoute = reportRoute?.children?.find(
+      (route) => route.path === `${FINES_REPORTS_ROUTING_PATHS.children.reportSummary}/:reportInstanceId`,
+    );
+
+    expect(reportSummaryRoute).toEqual(
+      expect.objectContaining({
+        path: `${FINES_REPORTS_ROUTING_PATHS.children.reportSummary}/:reportInstanceId`,
+        data: {
+          title: FINES_REPORTS_ROUTING_TITLES.children.reportSummary,
+        },
+        resolve: expect.objectContaining({
+          title: TitleResolver,
+        }),
+      }),
+    );
+    expect(reportSummaryRoute?.loadComponent).toEqual(expect.any(Function));
+  });
+
+  it('should resolve summary list and Select business unit business units using report permissions', () => {
+    const reportRoute = routing.find((route) => route.path === ':reportTypeId');
+    const summaryListRoute = reportRoute?.children?.find(
+      (route) => route.path === FINES_REPORTS_ROUTING_PATHS.children.summaryList,
+    );
+    const createRoute = reportRoute?.children?.find(
+      (route) => route.path === FINES_REPORTS_ROUTING_PATHS.children.create,
+    );
+    const selectBusinessUnitsRoute = createRoute?.children?.find(
+      (route) => route.path === FINES_REPORTS_CREATE_ROUTING_PATHS.children.selectBusinessUnits,
+    );
+
+    expect(summaryListRoute?.resolve?.['businessUnits']).toBe(finesReportsBusinessUnitsResolver);
+    expect(selectBusinessUnitsRoute?.resolve?.['businessUnits']).toBe(finesReportsBusinessUnitsResolver);
   });
 });

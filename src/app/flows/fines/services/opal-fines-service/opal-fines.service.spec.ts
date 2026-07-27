@@ -1,6 +1,7 @@
 import { TestBed } from '@angular/core/testing';
 import { HttpTestingController, provideHttpClientTesting } from '@angular/common/http/testing';
-import { HttpResponse, provideHttpClient, withInterceptorsFromDi } from '@angular/common/http';
+import { HttpResponse, provideHttpClient, withInterceptors, withInterceptorsFromDi } from '@angular/common/http';
+import { httpRetryInterceptor } from '@hmcts/opal-frontend-common/interceptors/http-retry';
 import { IOpalFinesCourt } from '@services/fines/opal-fines-service/interfaces/opal-fines-court.interface';
 import { IOpalFinesCourtRefData } from '@services/fines/opal-fines-service/interfaces/opal-fines-court-ref-data.interface';
 import { IOpalFinesLocalJusticeArea } from '@services/fines/opal-fines-service/interfaces/opal-fines-local-justice-area.interface';
@@ -69,6 +70,7 @@ import { FINES_ACC_MAJOR_CREDITOR_DETAILS_HEADER_MOCK } from '../../fines-acc/fi
 import { OPAL_FINES_ACCOUNT_MAJOR_CREDITOR_AT_A_GLANCE_MOCK } from './mocks/opal-fines-account-major-creditor-at-a-glance-with-defendant.mock';
 import { OPAL_FINES_ACCOUNT_MINOR_CREDITOR_DETAILS_HISTORY_AND_NOTES_TAB_REF_DATA_MOCK } from './mocks/opal-fines-account-minor-creditor-details-history-and-notes-tab-ref-data.mock';
 import { OPAL_FINES_MINOR_CREDITOR_ACCOUNT_HISTORY_PARAMS_MOCK } from './mocks/opal-fines-minor-creditor-account-history-params.mock';
+import { IOpalFinesReportInstancesResponse } from './interfaces/opal-fines-report-instances-response.interface';
 
 describe('OpalFines', () => {
   let service: OpalFines;
@@ -86,7 +88,11 @@ describe('OpalFines', () => {
 
   beforeEach(() => {
     TestBed.configureTestingModule({
-      providers: [OpalFines, provideHttpClient(withInterceptorsFromDi()), provideHttpClientTesting()],
+      providers: [
+        OpalFines,
+        provideHttpClient(withInterceptors([httpRetryInterceptor]), withInterceptorsFromDi()),
+        provideHttpClientTesting(),
+      ],
     });
     service = TestBed.inject(OpalFines);
     httpMock = TestBed.inject(HttpTestingController);
@@ -98,6 +104,146 @@ describe('OpalFines', () => {
 
   it('should be created', () => {
     expect(service).toBeTruthy();
+  });
+
+  it('should retry selected safe retrieval-only GET calls after transient timeout failures', () => {
+    const next = vi.fn();
+    const error = vi.fn();
+
+    service.getBusinessUnits().subscribe({ next, error });
+
+    const firstRequest = httpMock.expectOne(OPAL_FINES_PATHS.businessUnitRefData);
+    expect(firstRequest.request.method).toBe('GET');
+    firstRequest.flush({ message: 'timed out' }, { status: 504, statusText: 'Gateway Timeout' });
+
+    const retryRequest = httpMock.expectOne(OPAL_FINES_PATHS.businessUnitRefData);
+    expect(retryRequest.request.method).toBe('GET');
+    retryRequest.flush(OPAL_FINES_BUSINESS_UNIT_REF_DATA_MOCK);
+
+    expect(next).toHaveBeenCalledWith(OPAL_FINES_BUSINESS_UNIT_REF_DATA_MOCK);
+    expect(error).not.toHaveBeenCalled();
+  });
+
+  it('should retry selected account detail reads after transient timeout failures', () => {
+    const defendantAccountId = 456;
+    const minorCreditorAccountId = 77;
+    const majorCreditorAccountId = 10770000000085;
+
+    service.getDefendantAccountHeadingData(defendantAccountId).subscribe();
+    const firstHeadingRequest = httpMock.expectOne(
+      `${OPAL_FINES_PATHS.defendantAccounts}/${defendantAccountId}/header-summary`,
+    );
+    expect(firstHeadingRequest.request.method).toBe('GET');
+    firstHeadingRequest.flush({ message: 'timed out' }, { status: 504, statusText: 'Gateway Timeout' });
+
+    const retriedHeadingRequest = httpMock.expectOne(
+      `${OPAL_FINES_PATHS.defendantAccounts}/${defendantAccountId}/header-summary`,
+    );
+    retriedHeadingRequest.flush(FINES_ACC_DEFENDANT_DETAILS_HEADER_MOCK);
+
+    service.getMinorCreditorAccount(minorCreditorAccountId).subscribe();
+    const firstMinorCreditorRequest = httpMock.expectOne(
+      `${OPAL_FINES_PATHS.minorCreditorAccounts}/${minorCreditorAccountId}`,
+    );
+    expect(firstMinorCreditorRequest.request.method).toBe('GET');
+    firstMinorCreditorRequest.flush({ message: 'timed out' }, { status: 504, statusText: 'Gateway Timeout' });
+
+    const retriedMinorCreditorRequest = httpMock.expectOne(
+      `${OPAL_FINES_PATHS.minorCreditorAccounts}/${minorCreditorAccountId}`,
+    );
+    retriedMinorCreditorRequest.flush(OPAL_FINES_ACCOUNT_MINOR_CREDITOR_CREDITOR_MOCK);
+
+    service.getMajorCreditorAccountHeadingData(majorCreditorAccountId).subscribe();
+    const firstMajorCreditorHeadingRequest = httpMock.expectOne(
+      `${OPAL_FINES_PATHS.majorCreditorAccounts}/${majorCreditorAccountId}/header-summary`,
+    );
+    expect(firstMajorCreditorHeadingRequest.request.method).toBe('GET');
+    firstMajorCreditorHeadingRequest.flush({ message: 'timed out' }, { status: 504, statusText: 'Gateway Timeout' });
+
+    const retriedMajorCreditorHeadingRequest = httpMock.expectOne(
+      `${OPAL_FINES_PATHS.majorCreditorAccounts}/${majorCreditorAccountId}/header-summary`,
+    );
+    retriedMajorCreditorHeadingRequest.flush(FINES_ACC_MAJOR_CREDITOR_DETAILS_HEADER_MOCK);
+
+    service.getMajorCreditorAccountAtAGlance(majorCreditorAccountId).subscribe();
+    const firstMajorCreditorAtAGlanceRequest = httpMock.expectOne(
+      `${OPAL_FINES_PATHS.majorCreditorAccounts}/${majorCreditorAccountId}/at-a-glance`,
+    );
+    expect(firstMajorCreditorAtAGlanceRequest.request.method).toBe('GET');
+    firstMajorCreditorAtAGlanceRequest.flush({ message: 'timed out' }, { status: 504, statusText: 'Gateway Timeout' });
+
+    const retriedMajorCreditorAtAGlanceRequest = httpMock.expectOne(
+      `${OPAL_FINES_PATHS.majorCreditorAccounts}/${majorCreditorAccountId}/at-a-glance`,
+    );
+    retriedMajorCreditorAtAGlanceRequest.flush(OPAL_FINES_ACCOUNT_MAJOR_CREDITOR_AT_A_GLANCE_MOCK);
+  });
+
+  it('should not retry POST search APIs after transient timeout failures', () => {
+    const searchOffencesError = vi.fn();
+    const defendantSearchError = vi.fn();
+    const minorCreditorSearchError = vi.fn();
+
+    service
+      .searchOffences(structuredClone(OPAL_FINES_SEARCH_OFFENCES_PARAMS_MOCK))
+      .subscribe({ error: searchOffencesError });
+    const searchOffencesRequest = httpMock.expectOne(OPAL_FINES_PATHS.searchOffences);
+    expect(searchOffencesRequest.request.method).toBe('POST');
+    searchOffencesRequest.flush({ message: 'timed out' }, { status: 504, statusText: 'Gateway Timeout' });
+    httpMock.expectNone(OPAL_FINES_PATHS.searchOffences);
+    expect(searchOffencesError).toHaveBeenCalledTimes(1);
+
+    service.getDefendantAccounts(OPAL_FINES_DEFENDANT_ACCOUNT_SEARCH_PARAMS_INDIVIDUAL_MOCK).subscribe({
+      error: defendantSearchError,
+    });
+    const defendantSearchRequest = httpMock.expectOne(OPAL_FINES_PATHS.searchDefendantAccounts);
+    expect(defendantSearchRequest.request.method).toBe('POST');
+    defendantSearchRequest.flush({ message: 'timed out' }, { status: 504, statusText: 'Gateway Timeout' });
+    httpMock.expectNone(OPAL_FINES_PATHS.searchDefendantAccounts);
+    expect(defendantSearchError).toHaveBeenCalledTimes(1);
+
+    service.getMinorCreditorAccounts(OPAL_FINES_CREDITOR_ACCOUNT_SEARCH_PARAMS_INDIVIDUAL_MOCK).subscribe({
+      error: minorCreditorSearchError,
+    });
+    const minorCreditorSearchRequest = httpMock.expectOne(OPAL_FINES_PATHS.searchMinorCreditorAccounts);
+    expect(minorCreditorSearchRequest.request.method).toBe('POST');
+    minorCreditorSearchRequest.flush({ message: 'timed out' }, { status: 504, statusText: 'Gateway Timeout' });
+    httpMock.expectNone(OPAL_FINES_PATHS.searchMinorCreditorAccounts);
+    expect(minorCreditorSearchError).toHaveBeenCalledTimes(1);
+  });
+
+  it('should not retry mutation calls after transient timeout failures', () => {
+    const error = vi.fn();
+    const businessUnitId = '61';
+
+    service.addNote(OPAL_FINES_ADD_NOTE_PAYLOAD_MOCK, '1', businessUnitId).subscribe({ error });
+
+    const request = httpMock.expectOne(OPAL_FINES_PATHS.notes);
+    expect(request.request.method).toBe('POST');
+    expect(request.request.headers.get('If-Match')).toBe('1');
+    expect(request.request.headers.get('Business-Unit-Id')).toBe(businessUnitId);
+    request.flush({ message: 'timed out' }, { status: 504, statusText: 'Gateway Timeout' });
+
+    httpMock.expectNone(OPAL_FINES_PATHS.notes);
+    expect(error).toHaveBeenCalledTimes(1);
+  });
+
+  it('should not retry versioned If-Match mutations after transient timeout failures', () => {
+    const error = vi.fn();
+    const body = {
+      ...removeTimelineData(FINES_MAC_PAYLOAD_ADD_ACCOUNT),
+      version: '1',
+    } as IFinesMacAddAccountRequestPayload;
+    const apiUrl = `${OPAL_FINES_PATHS.draftAccounts}/${body.draft_account_id}`;
+
+    service.putDraftAddAccountPayload(body).subscribe({ error });
+
+    const request = httpMock.expectOne(apiUrl);
+    expect(request.request.method).toBe('PUT');
+    expect(request.request.headers.get('If-Match')).toBe('1');
+    request.flush({ message: 'timed out' }, { status: 504, statusText: 'Gateway Timeout' });
+
+    httpMock.expectNone(apiUrl);
+    expect(error).toHaveBeenCalledTimes(1);
   });
 
   it('should send a GET request to business unit ref data API', () => {
@@ -171,23 +317,11 @@ describe('OpalFines', () => {
     httpMock.expectNone(expectedUrl);
   });
 
-  it('should send a GET request to the report definition API', () => {
-    const expectedUrl = `${OPAL_FINES_PATHS.reports}/${OPAL_FINES_REPORT_MOCK.report_id}`;
+  it('should send a GET request to report metadata API and cache the response', () => {
+    const reportId = OPAL_FINES_REPORT_MOCK.report_id;
+    const expectedUrl = `${OPAL_FINES_PATHS.reports}/${reportId}`;
 
-    service.getReport(OPAL_FINES_REPORT_MOCK.report_id).subscribe((response) => {
-      expect(response).toEqual(OPAL_FINES_REPORT_MOCK);
-    });
-
-    const req = httpMock.expectOne(expectedUrl);
-    expect(req.request.method).toBe('GET');
-
-    req.flush(OPAL_FINES_REPORT_MOCK);
-  });
-
-  it('should return cached response for the same report definition', () => {
-    const expectedUrl = `${OPAL_FINES_PATHS.reports}/${OPAL_FINES_REPORT_MOCK.report_id}`;
-
-    service.getReport(OPAL_FINES_REPORT_MOCK.report_id).subscribe((response) => {
+    service.getReport(reportId).subscribe((response) => {
       expect(response).toEqual(OPAL_FINES_REPORT_MOCK);
     });
 
@@ -195,13 +329,46 @@ describe('OpalFines', () => {
     expect(req.request.method).toBe('GET');
     req.flush(OPAL_FINES_REPORT_MOCK);
 
-    service.getReport(OPAL_FINES_REPORT_MOCK.report_id).subscribe((response) => {
+    service.getReport(reportId).subscribe((response) => {
       expect(response).toEqual(OPAL_FINES_REPORT_MOCK);
     });
 
     httpMock.expectNone(expectedUrl);
   });
 
+  it('should send a GET request to report instances API with query params and not cache the response', () => {
+    const mockResponse: IOpalFinesReportInstancesResponse = {
+      report_instances: [],
+      count: 0,
+    };
+
+    service
+      .getReportInstances({
+        report_id: 'operational_report_enforcement',
+        from_date: '2026-06-02',
+        to_date: '2026-06-08',
+        business_units: [1],
+      })
+      .subscribe((response) => {
+        expect(response).toEqual(mockResponse);
+      });
+
+    const req = httpMock.expectOne((request) => request.url === OPAL_FINES_PATHS.reportInstances);
+    expect(req.request.method).toBe('GET');
+    expect(req.request.params.get('report_id')).toBe('operational_report_enforcement');
+    expect(req.request.params.get('from_date')).toBe('2026-06-02');
+    expect(req.request.params.get('to_date')).toBe('2026-06-08');
+    expect(req.request.params.getAll('business_units')).toEqual(['1']);
+    req.flush(mockResponse);
+
+    service.getReportInstances({ report_id: 'operational_report_enforcement' }).subscribe((response) => {
+      expect(response).toEqual(mockResponse);
+    });
+
+    const secondReq = httpMock.expectOne((request) => request.url === OPAL_FINES_PATHS.reportInstances);
+    expect(secondReq.request.method).toBe('GET');
+    secondReq.flush(mockResponse);
+  });
   it('should send a GET request to court ref data API', () => {
     const businessUnit = 1;
     const mockCourts: IOpalFinesCourtRefData = OPAL_FINES_COURT_REF_DATA_MOCK;
@@ -1314,9 +1481,10 @@ describe('OpalFines', () => {
   it('should send a POST request to add note API with correct payload and return mock response', () => {
     const payload: IOpalFinesAddNotePayload = OPAL_FINES_ADD_NOTE_PAYLOAD_MOCK;
     const version = '1';
+    const businessUnitId = '78';
     const expectedUrl = OPAL_FINES_PATHS.notes;
 
-    service.addNote(payload, version).subscribe((response) => {
+    service.addNote(payload, version, businessUnitId).subscribe((response) => {
       expect(response.note_id).toBeGreaterThan(0);
       expect(response.note_id).toBeLessThanOrEqual(100000);
     });
@@ -1325,31 +1493,36 @@ describe('OpalFines', () => {
     expect(req.request.method).toBe('POST');
     expect(req.request.body).toEqual(payload);
     expect(req.request.headers.get('If-Match')).toBe(version);
+    expect(req.request.headers.get('Business-Unit-Id')).toBe(businessUnitId);
     req.flush(OPAL_FINES_ADD_NOTE_RESPONSE_MOCK);
   });
 
   it('should return a response with server-generated fields when using real API', () => {
     const payload: IOpalFinesAddNotePayload = OPAL_FINES_ADD_NOTE_PAYLOAD_MOCK;
     const version = '1';
+    const businessUnitId = '78';
     const mockResponse = OPAL_FINES_ADD_NOTE_RESPONSE_MOCK;
 
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     const httpPostSpy = vi.spyOn<any, any>(service['http'], 'post').mockReturnValue(of(mockResponse));
 
-    service.addNote(payload, version).subscribe((response) => {
+    service.addNote(payload, version, businessUnitId).subscribe((response) => {
       expect(response).toEqual(mockResponse);
     });
 
-    expect(httpPostSpy).toHaveBeenCalledWith(OPAL_FINES_PATHS.notes, payload, { headers: { 'If-Match': version } });
+    expect(httpPostSpy).toHaveBeenCalledWith(OPAL_FINES_PATHS.notes, payload, {
+      headers: { 'If-Match': version, 'Business-Unit-Id': businessUnitId },
+    });
   });
 
   it('should generate random note_id and current timestamp in mock response', () => {
     const payload: IOpalFinesAddNotePayload = OPAL_FINES_ADD_NOTE_PAYLOAD_MOCK;
     const version = '1';
+    const businessUnitId = '78';
 
     const responses: number[] = [];
     for (let i = 0; i < 5; i++) {
-      service.addNote(payload, version).subscribe((response) => {
+      service.addNote(payload, version, businessUnitId).subscribe((response) => {
         responses.push(response.note_id);
         expect(response.note_id).toBeGreaterThan(0);
         expect(response.note_id).toBeLessThanOrEqual(100000);
@@ -1358,6 +1531,7 @@ describe('OpalFines', () => {
       const req = httpMock.expectOne(OPAL_FINES_PATHS.notes);
       expect(req.request.method).toBe('POST');
       expect(req.request.headers.get('If-Match')).toBe(version);
+      expect(req.request.headers.get('Business-Unit-Id')).toBe(businessUnitId);
       req.flush(OPAL_FINES_ADD_NOTE_RESPONSE_MOCK);
     }
 
@@ -1375,8 +1549,9 @@ describe('OpalFines', () => {
       },
     };
     const version = '42';
+    const businessUnitId = '78';
 
-    service.addNote(payload, version).subscribe((response) => {
+    service.addNote(payload, version, businessUnitId).subscribe((response) => {
       expect(response.note_id).toBeDefined();
     });
 
@@ -1384,6 +1559,7 @@ describe('OpalFines', () => {
     expect(req.request.method).toBe('POST');
     expect(req.request.body).toEqual(payload);
     expect(req.request.headers.get('If-Match')).toBe(version);
+    expect(req.request.headers.get('Business-Unit-Id')).toBe(businessUnitId);
     req.flush(OPAL_FINES_ADD_NOTE_RESPONSE_MOCK);
   });
 

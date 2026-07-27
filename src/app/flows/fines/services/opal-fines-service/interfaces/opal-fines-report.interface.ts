@@ -1,17 +1,20 @@
 import { IOpalFinesReportParameters } from './opal-fines-report-parameters.interface';
-import { TOpalFinesSupportedFileType } from '../types/opal-fines-supported-file-type.type';
+import { OpalFinesReportSupportedFileType } from '../types/opal-fines-report-supported-file-type.type';
 
 export interface IOpalFinesReport {
-  report_id: string;
+  report_id: string | number;
   report_title: string;
-  report_group: string;
-  supported_file_types: TOpalFinesSupportedFileType[];
-  audited_report: boolean;
+  report_group?: string;
+  audited_report?: boolean;
   report_parameters?: IOpalFinesReportParameters;
-  supports_multiple_business_units: boolean;
-  is_bespoke_journey: boolean;
-  shown_as_worklist: boolean;
+  supports_multiple_business_units?: boolean;
+  supports_multi_bu?: boolean;
+  is_bespoke_journey?: boolean;
+  generic_parameters?: unknown;
+  shown_as_worklist?: boolean;
   retention_period?: string;
-  permission?: string | null;
-  can_manually_create: boolean;
+  can_manually_create?: boolean;
+  report_permission?: string;
+  permission?: string;
+  supported_file_types?: OpalFinesReportSupportedFileType[];
 }

@@ -3,6 +3,8 @@ import { IFinesReportsRoutingTitles } from '../interfaces/fines-reports-routing-
 export const FINES_REPORTS_ROUTING_TITLES: IFinesReportsRoutingTitles = {
   root: 'Reports',
   children: {
+    create: 'Create report',
+    reportSummary: 'Report summary',
     summaryList: 'Summary List',
     selectBusinessUnits: 'Select business units',
     businessUnitWarning: 'Business unit warning',
