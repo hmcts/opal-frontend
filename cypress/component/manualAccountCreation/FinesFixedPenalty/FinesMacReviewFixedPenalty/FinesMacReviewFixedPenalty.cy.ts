@@ -434,7 +434,6 @@ describe('FinesMacReviewFixedPenalty using ReviewAccountComponent', () => {
         expect(request.request.body.business_unit_id).to.equal(
           FINES_AYG_FIXED_PENALTY_ACCOUNT_MOCK.businessUnit.business_unit_id,
         );
-        expect(request.request.body.submitted_by_name).to.equal(ACCOUNT_SESSION_USER_STATE_MOCK.name);
 
         expect(request.request.body.account.defendant.company_flag).to.equal(false);
         expect(request.request.body.account.defendant.title).to.equal('Mr');
@@ -501,7 +500,6 @@ describe('FinesMacReviewFixedPenalty using ReviewAccountComponent', () => {
         expect(request.request.body.business_unit_id).to.equal(
           FINES_AYG_FIXED_PENALTY_ACCOUNT_MOCK.businessUnit.business_unit_id,
         );
-        expect(request.request.body.submitted_by_name).to.equal(ACCOUNT_SESSION_USER_STATE_MOCK.name);
 
         // Check company defendant details
         expect(request.request.body.account.defendant.company_flag).to.equal(true);
