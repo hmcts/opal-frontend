@@ -34,6 +34,15 @@ describe('FinesMacDefaultDaysComponent', () => {
     expect(component.daysInDefaultCalculated).toBe(449);
   });
 
+  it('should mark the calculated days panel as a live region', () => {
+    const liveRegion = fixture.nativeElement.querySelector(
+      '.govuk-grid-column-one-half[aria-live="polite"]',
+    ) as HTMLElement | null;
+
+    expect(liveRegion).toBeTruthy();
+    expect(liveRegion?.getAttribute('aria-atomic')).toBe('true');
+  });
+
   it('should not calculate days in default if date is invalid', () => {
     component.date = 'invalid-date';
     component.daysInDefaultCalculatorForm.setValue({
