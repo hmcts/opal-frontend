@@ -12,15 +12,14 @@
     </ng-container>
     <ng-container pageHeaderButtons>
       @if (showCreateReportButton) {
-        <button
+        <a
           class="govuk-button"
           id="create-report-button"
-          type="button"
+          [routerLink]="createReportRoutingPath"
           data-module="govuk-button"
-          (click)="handleCreateReport()"
         >
           Create report
-        </button>
+        </a>
       }
     </ng-container>
   </opal-lib-custom-page-header>

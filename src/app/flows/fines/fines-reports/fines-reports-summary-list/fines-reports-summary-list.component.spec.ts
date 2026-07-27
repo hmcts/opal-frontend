@@ -1,6 +1,6 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { By } from '@angular/platform-browser';
-import { ActivatedRoute, convertToParamMap, provideRouter, Router } from '@angular/router';
+import { ActivatedRoute, convertToParamMap, provideRouter } from '@angular/router';
 import { BehaviorSubject, Subject, of, throwError } from 'rxjs';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
 import { FinesReportsSummaryListComponent } from './fines-reports-summary-list.component';
@@ -18,9 +18,7 @@ import { FinesReportsSummaryListStore } from './stores/fines-reports-summary-lis
 import { IOpalUserState } from '@hmcts/opal-frontend-common/services/opal-user-service/interfaces';
 import { IOpalFinesBusinessUnitRefData } from '@services/fines/opal-fines-service/interfaces/opal-fines-business-unit-ref-data.interface';
 import type { FinesReportsReportInstancesResolverData } from '../routing/resolvers/fines-reports-report-instances/fines-reports-report-instances.resolver';
-import { FINES_REPORTS_CREATE_ROUTING_PATHS } from '../routing/constants/fines-reports-create-routing-paths.constant';
 import { FINES_REPORTS_ROUTING_PATHS } from '../routing/constants/fines-reports-routing-paths.constant';
-import { FinesReportsStore } from '../stores/fines-reports.store';
 
 type MockActivatedRoute = {
   snapshot: {
@@ -119,10 +117,6 @@ describe('FinesReportsSummaryListComponent', () => {
   let mockOpalFines: any;
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   let globalStore: any;
-  const router = {
-    navigate: vi.fn(),
-  };
-
   const setup = async (
     currentReportId: string = reportId,
     reportInstances: FinesReportsReportInstancesResolverData | undefined = mockReportInstances,
@@ -141,7 +135,6 @@ describe('FinesReportsSummaryListComponent', () => {
     component: FinesReportsSummaryListComponent;
     fixture: ComponentFixture<FinesReportsSummaryListComponent>;
     activatedRoute: MockActivatedRoute;
-    finesReportsStore: InstanceType<typeof FinesReportsStore>;
   }> => {
     const parentParamName = options.parentParamName ?? 'reportTypeId';
     const childParamName = options.childParamName ?? 'reportTypeId';
@@ -196,30 +189,23 @@ describe('FinesReportsSummaryListComponent', () => {
           provide: OpalFines,
           useValue: mockOpalFines,
         },
-        {
-          provide: Router,
-          useValue: router,
-        },
-        FinesReportsStore,
       ],
     }).compileComponents();
 
     globalStore = TestBed.inject(GlobalStore);
     globalStore.setUserState(createUserState());
     const store = TestBed.inject(FinesReportsSummaryListStore);
-    const finesReportsStore = TestBed.inject(FinesReportsStore);
     store.resetFilters();
     configureStore?.(store);
 
     const fixture = TestBed.createComponent(FinesReportsSummaryListComponent);
     const component = fixture.componentInstance;
     fixture.detectChanges();
-    return { component, fixture, activatedRoute, finesReportsStore };
+    return { component, fixture, activatedRoute };
   };
 
   beforeEach(() => {
     TestBed.resetTestingModule();
-    router.navigate.mockReset();
   });
 
   it('should create', async () => {
@@ -263,21 +249,13 @@ describe('FinesReportsSummaryListComponent', () => {
     expect(fixture.nativeElement.querySelector('#create-report-button')?.textContent?.trim()).toBe('Create report');
   });
 
-  it('should clear selected business units and navigate to Select business unit when Create report is selected', async () => {
-    const { component, fixture, finesReportsStore } = await setup();
-    finesReportsStore.setSelectedBusinessUnitIds(reportId, [61, 68]);
+  it('should link Create report to the PO-2307 create stub', async () => {
+    const { component, fixture } = await setup();
     const createReportButton = fixture.nativeElement.querySelector('#create-report-button') as HTMLButtonElement | null;
 
     expect(createReportButton).toBeTruthy();
-    createReportButton!.click();
-
-    expect(finesReportsStore.selectedBusinessUnitIds()).toEqual([]);
-    expect(router.navigate).toHaveBeenCalledWith(
-      [
-        `../${FINES_REPORTS_ROUTING_PATHS.children.create}/${FINES_REPORTS_CREATE_ROUTING_PATHS.children.selectBusinessUnits}`,
-      ],
-      { relativeTo: component['activatedRoute'] },
-    );
+    expect(createReportButton?.tagName).toBe('A');
+    expect(component.createReportRoutingPath).toBe('../create');
   });
 
   it('should render report instances returned in the backend DTO shape', async () => {
