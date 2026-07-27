@@ -8,7 +8,6 @@
 // ***********************************************************
 
 // Import commands.js using ES2015 syntax:
-import './commands';
 import 'cypress-axe';
 import {
   getCurrentScenarioStartedAt,
@@ -20,11 +19,28 @@ import {
   setCurrentScenarioFeaturePath,
   setCurrentScenarioTitle,
 } from './utils/scenarioContext';
+import { registerRequestDigestCommand } from './commands';
+const installLogsCollector = require('cypress-terminal-report/src/installLogsCollector');
 
 // Simple marker so we can confirm in CI logs this file is actually loaded
 
 console.log('*** Cypress e2e support file loaded ***');
-
+registerRequestDigestCommand();
+installLogsCollector({
+  collectTypes: [
+    'cons:log',
+    'cons:info',
+    'cons:warn',
+    'cons:error',
+    'cy:log',
+    'cy:command',
+    'cy:xhr',
+    'cy:intercept',
+    //  Including cy.request breaks the overwrite of cy.request in commands.ts,
+    //  we are using this to add content digest headers to requests, so need the overwrite to work.
+    // 'cy:request'
+  ],
+});
 export const isLegacy: boolean = Cypress.env('LEGACY_ENABLED');
 console.log(`Legacy mode is ${isLegacy ? 'ENABLED' : 'DISABLED'}`);
 
