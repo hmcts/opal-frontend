@@ -667,7 +667,7 @@ describe('FinesMacReviewAccountComponent', () => {
       finesMacState.accountDetails.formData.fm_create_account_defendant_type = 'pgToPay';
 
       [
-        'Defendant details',
+        'Personal details',
         'Contact details',
         'Employer details',
         'Offences and impositions',
