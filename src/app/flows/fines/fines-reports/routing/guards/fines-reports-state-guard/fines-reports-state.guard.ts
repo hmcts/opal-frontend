@@ -5,7 +5,7 @@ import { FINES_ROUTING_PATHS } from '@app/flows/fines/routing/constants/fines-ro
 import { PAGES_ROUTING_PATHS as COMMON_PAGES_ROUTING_PATHS } from '@hmcts/opal-frontend-common/pages/routing/constants';
 import { OpalUserService } from '@hmcts/opal-frontend-common/services/opal-user-service';
 import { PermissionsService } from '@hmcts/opal-frontend-common/services/permissions-service';
-import { catchError, map, of, switchMap } from 'rxjs';
+import { map, of, switchMap } from 'rxjs';
 import { OpalFines } from '@services/fines/opal-fines-service/opal-fines.service';
 import { FINES_REPORT_SUMMARY_LIST_REPORT_CONFIGURATION } from '../../../fines-reports-summary-list/constants/fines-reports-summary-list-report-configuration.constant';
 import { FinesReportsStore } from '../../../stores/fines-reports.store';
@@ -122,6 +122,5 @@ export const finesReportsStateGuard: CanActivateChildFn = (route) => {
         }),
       );
     }),
-    catchError(() => of(false)),
   );
 };
