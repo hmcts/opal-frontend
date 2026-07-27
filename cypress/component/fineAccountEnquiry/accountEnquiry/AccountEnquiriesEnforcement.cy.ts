@@ -124,7 +124,7 @@ describe('Account Enquiry Enforcement Status', () => {
     hasEnterEnforcementPermission = false,
     isCompanyAccount = false,
   }: EnforcementTabMountOptions = {}) => {
-    mount(FinesAccDefendantDetailsEnforcementTab, {
+    return mount(FinesAccDefendantDetailsEnforcementTab, {
       componentProperties: {
         tabData: enforcement,
         hasAccountMaintenancePermission,
@@ -208,7 +208,7 @@ describe('Account Enquiry Enforcement Status', () => {
     () => {
       const restrictedStatuses = ['CS', 'WO', 'TA', 'TS', 'TO'] as const;
 
-      cy.wrap(restrictedStatuses).each((accountStatusCode) => {
+      cy.wrap(restrictedStatuses).each((accountStatusCode: (typeof restrictedStatuses)[number]) => {
         const enforcementMock = buildEnforcementMock();
         if (enforcementMock.enforcement_override) {
           enforcementMock.enforcement_override.enforcement_override_result.enforcement_override_result_id = 'ABDC';
@@ -221,10 +221,10 @@ describe('Account Enquiry Enforcement Status', () => {
           enforcement: enforcementMock,
           hasAccountMaintenancePermission: true,
           hasEnterEnforcementPermission: true,
+        }).then(({ fixture }) => {
+          fixture.componentRef.setInput('accountStatusCode', accountStatusCode);
+          fixture.detectChanges();
         });
-
-        fixture.componentRef.setInput('accountStatusCode', accountStatusCode);
-        fixture.detectChanges();
 
         cy.contains('h2', 'Actions').parent().contains('a', 'Add enforcement action').should('not.exist');
         cy.contains('h2', 'Actions').parent().contains('a', 'Add enforcement override').should('not.exist');
@@ -260,10 +260,10 @@ describe('Account Enquiry Enforcement Status', () => {
       mountEnforcementTab({
         hasAccountMaintenancePermission: true,
         hasEnterEnforcementPermission: true,
+      }).then(({ fixture }) => {
+        fixture.componentRef.setInput('accountBalance', 0);
+        fixture.detectChanges();
       });
-
-      fixture.componentRef.setInput('accountBalance', 0);
-      fixture.detectChanges();
 
       cy.contains('h2', 'Actions').parent().contains('a', 'Add enforcement action').should('not.exist');
       cy.contains('h2', 'Actions').parent().contains('a', 'Request an HMRC check').should('not.exist');
