@@ -51,7 +51,10 @@ describe('Account Enquiry consolidated accounts tab', () => {
       cy.get(AccountNavDetailsLocators.subNav.consolidatedAccountsTab).should('exist');
 
       cy.get(AccountNavDetailsLocators.subNav.allTabLinks).then(($tabs) => {
-        const labels = [...$tabs].map((tab) => tab.textContent?.trim());
+        const labels = [...$tabs].map((tab) => tab.textContent?.trim()).filter((label): label is string => !!label);
+
+        expect(labels).to.include('History and notes');
+        expect(labels).to.include('Consolidated accounts');
         expect(labels.indexOf('History and notes')).to.be.lessThan(labels.indexOf('Consolidated accounts'));
       });
 
