@@ -451,10 +451,7 @@ export class AccountDetailsEnforcementActions {
           .map((option) => this.normalize(option.textContent ?? ''))
           .find(
             (option) =>
-              option &&
-              option !== normalizedCurrentValue &&
-              !/^select\b/i.test(option) &&
-              !/^choose\b/i.test(option),
+              option && option !== normalizedCurrentValue && !/^select\b/i.test(option) && !/^choose\b/i.test(option),
           );
 
         expect(selectedValue, 'different enforcement court option').to.be.a('string').and.not.be.empty;
