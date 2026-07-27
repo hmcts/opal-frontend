@@ -177,33 +177,6 @@ export class FinesReportsSummaryListComponent
   public readonly overLimit = computed(() => isReportInstancesOverLimit(this.reportInstancesResponse()));
   public readonly resultLimit = computed(() => getReportInstancesLimitFromResponse(this.reportInstancesResponse()));
 
-  public get pageHeading(): string {
-    return (
-      FINES_REPORT_SUMMARY_LIST_REPORT_CONFIGURATION.find((config) => config.id === this.reportId())?.heading ?? ''
-    );
-  }
-
-  public get showCreateReportButton(): boolean {
-    const reportConfiguration = FINES_REPORT_SUMMARY_LIST_REPORT_CONFIGURATION.find(
-      (config) => config.id === this.reportId(),
-    );
-
-    return this.reportMetadata()?.can_manually_create ?? reportConfiguration?.canCreate ?? false;
-  }
-
-  /**
-   * Clears a previous report selection and opens the select-business-unit step for the current report type.
-   */
-  public handleCreateReport(): void {
-    this.finesReportsStore.clearSelectedBusinessUnitIds();
-    this.router.navigate(
-      [
-        `../${FINES_REPORTS_ROUTING_PATHS.children.create}/${FINES_REPORTS_CREATE_ROUTING_PATHS.children.selectBusinessUnits}`,
-      ],
-      { relativeTo: this.activatedRoute },
-    );
-  }
-
   /**
    * Resets filter state when the selected report type route changes.
    */
@@ -402,6 +375,33 @@ export class FinesReportsSummaryListComponent
       dateFrom: filtersForm.controls.dateFrom.value ?? '',
       dateTo: filtersForm.controls.dateTo.value ?? '',
     };
+  }
+
+  public get pageHeading(): string {
+    return (
+      FINES_REPORT_SUMMARY_LIST_REPORT_CONFIGURATION.find((config) => config.id === this.reportId())?.heading ?? ''
+    );
+  }
+
+  public get showCreateReportButton(): boolean {
+    const reportConfiguration = FINES_REPORT_SUMMARY_LIST_REPORT_CONFIGURATION.find(
+      (config) => config.id === this.reportId(),
+    );
+
+    return this.reportMetadata()?.can_manually_create ?? reportConfiguration?.canCreate ?? false;
+  }
+
+  /**
+   * Clears a previous report selection and opens the select-business-unit step for the current report type.
+   */
+  public handleCreateReport(): void {
+    this.finesReportsStore.clearSelectedBusinessUnitIds();
+    this.router.navigate(
+      [
+        `../${FINES_REPORTS_ROUTING_PATHS.children.create}/${FINES_REPORTS_CREATE_ROUTING_PATHS.children.selectBusinessUnits}`,
+      ],
+      { relativeTo: this.activatedRoute },
+    );
   }
 
   /**
