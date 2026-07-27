@@ -1997,6 +1997,16 @@ export class ManualAccountCreationFlow {
   }
 
   /**
+   * Returns to Account details from offence review and asserts no unsaved-changes warning appears.
+   */
+  returnToAccountDetailsFromReviewWithoutWarning(): void {
+    log('flow', 'Returning to Account details from offence review without unsaved-changes warning');
+    this.offenceReview.assertOnReviewPage();
+    this.offenceReview.returnToAccountDetailsWithoutUnsavedChangesWarning();
+    this.accountDetails.assertOnAccountDetailsPage();
+  }
+
+  /**
    * Adds another offence from the review page and asserts the form is shown.
    */
   addAnotherOffenceFromReview(): void {

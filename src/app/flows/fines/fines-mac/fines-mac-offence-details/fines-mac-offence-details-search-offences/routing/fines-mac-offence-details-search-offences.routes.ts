@@ -24,10 +24,6 @@ export const routing: Routes = [
         (c) => c.FinesMacOffenceDetailsSearchOffencesResultsComponent,
       ),
     canActivate: [finesMacOffenceDetailsSearchOffencesFlowStateGuard],
-    data: { title: FINES_MAC_OFFENCE_DETAILS_SEARCH_OFFENCES_ROUTING_TITLES.children.searchOffencesResults },
-    resolve: {
-      title: TitleResolver,
-      searchResults: finesMacOffenceDetailsSearchOffencesResolver,
-    },
+    resolve: { searchResults: finesMacOffenceDetailsSearchOffencesResolver },
   },
 ];
