@@ -6,7 +6,8 @@ nodejs:
     opal:
       secrets:
         - app-insights-connection-string
-        - redis-connection-string
+        - name: managed-redis-connection-string
+          alias: REDIS_CONNECTION_STRING
         - name: launch-darkly-client-id-dev
           alias: launch-darkly-client-id
   environment:
