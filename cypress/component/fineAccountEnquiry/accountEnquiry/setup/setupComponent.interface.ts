@@ -22,6 +22,7 @@ export interface IComponentProperties {
     | 'enforcement'
     | 'impositions'
     | 'history-and-notes'
+    | 'consolidated-accounts'
     | 'fixed-penalty'
     | 'payment-terms'
     | undefined;
