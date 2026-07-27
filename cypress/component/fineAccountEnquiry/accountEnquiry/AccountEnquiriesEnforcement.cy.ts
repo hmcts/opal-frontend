@@ -228,9 +228,10 @@ describe('Account Enquiry Enforcement Status', () => {
 
         cy.contains('h2', 'Actions').parent().contains('a', 'Add enforcement action').should('not.exist');
         cy.contains('h2', 'Actions').parent().contains('a', 'Add enforcement override').should('not.exist');
-        cy.contains('h2', 'Actions').parent().contains('a', 'Request an HMRC check').should(
-          accountStatusCode === 'TO' ? 'exist' : 'not.exist',
-        );
+        cy.contains('h2', 'Actions')
+          .parent()
+          .contains('a', 'Request an HMRC check')
+          .should(accountStatusCode === 'TO' ? 'exist' : 'not.exist');
 
         cy.get('#enforcementOverviewDetailsCollection_order_statusActions a').should('not.exist');
         cy.get('#enforcementOverviewDetailsEnforcement_courtActions a').should('not.exist');
