@@ -669,7 +669,10 @@ withPipeline(type, product, component) {
     // Inject KeyVault secrets required for login/setup
     loadVaultSecrets(secrets)
 
-    // Configure PR-only deployment knobs before helm installs run
+  enableSlackNotifications('#opal-builds')
+
+
+  // Configure PR-only deployment knobs before helm installs run
     before('akschartsinstall') {
         onPR {
             determineDevEnvironmentDeployment()
