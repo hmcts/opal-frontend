@@ -9,6 +9,8 @@ import { IOpalFinesAccountMinorCreditorAtAGlance } from 'src/app/flows/fines/ser
 import { IOpalFinesAccountMinorCreditorCreditor } from 'src/app/flows/fines/services/opal-fines-service/interfaces/opal-fines-account-minor-creditor-creditor.interface';
 import { IOpalFinesAccountDefendantDetailsHeader } from 'src/app/flows/fines/fines-acc/fines-acc-defendant-details/interfaces/fines-acc-defendant-details-header.interface';
 import { IOpalFinesAccountMinorCreditorDetailsHeader } from 'src/app/flows/fines/fines-acc/fines-acc-minor-creditor-details/interfaces/fines-acc-minor-creditor-details-header.interface';
+import { IOpalFinesAccountMajorCreditorDetailsHeader } from 'src/app/flows/fines/fines-acc/fines-acc-major-creditor-details/interfaces/fines-acc-major-creditor-details-header.interface';
+import { IOpalFinesAccountMajorCreditorAtAGlance } from 'src/app/flows/fines/services/opal-fines-service/interfaces/opal-fines-account-major-creditor-at-a-glance.interface';
 
 /**
  * Intercepts the POST request to the `/opal-fines-service/notes/add` endpoint during Cypress tests.
@@ -52,6 +54,28 @@ export function interceptAtAGlance(
       body: mockData,
     })
     .as('getAtAGlance');
+}
+
+/**
+ * Intercepts the GET request to the major creditor accounts "at-a-glance" endpoint and mocks the response.
+ *
+ * @param accountId - The unique identifier for the major creditor account.
+ * @param mockData - The mock data to be returned in the response body.
+ * @param respHeaderEtag - The value to set for the ETag response header.
+ * @returns Cypress chainable object with the intercepted request aliased as 'getMajorCreditorAtAGlance'.
+ */
+export function interceptMajorCreditorAtAGlance(
+  accountId: number,
+  mockData: IOpalFinesAccountMajorCreditorAtAGlance,
+  respHeaderEtag: string,
+) {
+  return cy
+    .intercept('GET', `**/major-creditor-accounts/${accountId}/at-a-glance`, {
+      statusCode: 200,
+      headers: { ETag: respHeaderEtag },
+      body: mockData,
+    })
+    .as('getMajorCreditorAtAGlance');
 }
 
 /**
@@ -273,6 +297,32 @@ export const interceptMinorCreditorHeader = (
     })
     .as('getMinorCreditorHeaderSummary');
 };
+
+/**
+ * Intercepts the GET request for the major creditor header summary in Cypress tests,
+ * returning a mocked response with the provided header details and ETag header.
+ *
+ * @param accountId - The unique identifier for the major creditor account.
+ * @param majorCreditorHeaderMock - The mock data for the major creditor header summary.
+ * @param respHeaderEtag - The ETag value to be returned in the response headers.
+ * @returns Cypress chainable object with the alias 'getMajorCreditorHeaderSummary'.
+ */
+export const interceptMajorCreditorHeader = (
+  accountId: string | number,
+  majorCreditorHeaderMock: IOpalFinesAccountMajorCreditorDetailsHeader,
+  respHeaderEtag: string,
+) => {
+  return cy
+    .intercept('GET', `/opal-fines-service/major-creditor-accounts/${accountId}/header-summary`, {
+      statusCode: 200,
+      body: majorCreditorHeaderMock,
+      headers: {
+        ETag: respHeaderEtag,
+      },
+    })
+    .as('getMajorCreditorHeaderSummary');
+};
+
 /**
  * Intercepts the network request for fetching defendant account party details
  * and mocks the response with provided data and headers.

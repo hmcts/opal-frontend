@@ -35,7 +35,6 @@ import { IGovUkRadioOptions } from '@hmcts/opal-frontend-common/components/govuk
 import { IFinesMacAccountTypeDefendantTypes } from '../../interfaces/fines-mac-account-type-defendant-types.interface';
 import { FINES_ACCOUNT_TYPES } from '../../../constants/fines-account-types.constant';
 import { IFinesAccountTypes } from '../../../interfaces/fines-account-types.interface';
-import { GovukBackLinkComponent } from '@hmcts/opal-frontend-common/components/govuk/govuk-back-link';
 import { FINES_ORIGINATOR_TYPES } from '@app/flows/fines/constants/fines-originator-types.constant';
 import { FINES_MAC_DRAFT_CREATE_AND_MANAGE_TABS_ROUTE } from '../../constants/fines-mac-draft-create-and-manage-tabs-route.constant';
 @Component({
@@ -51,7 +50,6 @@ import { FINES_MAC_DRAFT_CREATE_AND_MANAGE_TABS_ROUTE } from '../../constants/fi
     GovukCancelLinkComponent,
     GovukErrorSummaryComponent,
     AlphagovAccessibleAutocompleteComponent,
-    GovukBackLinkComponent,
   ],
   templateUrl: './fines-mac-create-account-form.component.html',
   changeDetection: ChangeDetectionStrategy.OnPush,

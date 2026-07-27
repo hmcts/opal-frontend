@@ -196,11 +196,11 @@ function mountRemoveEnforcementOverride(expectedCaption: string) {
 
 describe(
   'Remove Enforcement Override - Individual',
-  { tags: ['@JIRA-STORY:PO-1851', '@JIRA-EPIC:PO-1675', '@JIRA-LABEL:account-enquiry'] },
+  { tags: ['@JIRA-STORY:PO-1851', '@JIRA-EPIC:PO-1675', '@JIRA-LABEL:account-enquiry', '@R1B'] },
   () => {
     it(
       'AC1. Selecting Remove from the Enforcement tab navigates to the remove screen',
-      { tags: ['@JIRA-TEST-KEY:PO-4461'] },
+      { tags: ['@JIRA-TEST-KEY:PO-4461', '@R1B'] },
       () => {
         const { accountId } = registerRemoveEnforcementOverrideIntercepts(buildIndividualHeaderMock());
 
@@ -216,7 +216,7 @@ describe(
 
     it(
       'AC1a, AC1b, AC1c. Should render the remove screen with the individual account identifier and override value',
-      { tags: ['@JIRA-TEST-KEY:PO-4462'] },
+      { tags: ['@JIRA-TEST-KEY:PO-4462', '@R1B'] },
       () => {
         individualSetup();
 
@@ -227,7 +227,7 @@ describe(
 
     it(
       'AC2, AC2a, AC2b, AC2c. Yes - remove should clear the override, return to Enforcement and show a success banner',
-      { tags: ['@JIRA-TEST-KEY:PO-4463'] },
+      { tags: ['@JIRA-TEST-KEY:PO-4463', '@R1B'] },
       () => {
         const { accountId } = individualSetup();
         const updatedEnforcementMock = buildRemovedEnforcementOverrideMock();
@@ -253,7 +253,7 @@ describe(
 
     it(
       'AC3, AC3a. No - cancel should return to the Enforcement tab without removing the override',
-      { tags: ['@JIRA-TEST-KEY:PO-4464'] },
+      { tags: ['@JIRA-TEST-KEY:PO-4464', '@R1B'] },
       () => {
         const { navigateSpy } = mountRemoveEnforcementOverride('177A - Mr Robert THOMSON');
 
@@ -269,11 +269,11 @@ describe(
 
 describe(
   'Remove Enforcement Override - Company',
-  { tags: ['@JIRA-STORY:PO-1865', '@JIRA-EPIC:PO-1675', '@JIRA-LABEL:account-enquiry'] },
+  { tags: ['@JIRA-STORY:PO-1865', '@JIRA-EPIC:PO-1675', '@JIRA-LABEL:account-enquiry', '@R1B'] },
   () => {
     it(
       'AC1b. Should render the remove screen with the company account identifier',
-      { tags: ['@JIRA-TEST-KEY:PO-4465'] },
+      { tags: ['@JIRA-TEST-KEY:PO-4465', '@R1B'] },
       () => {
         companySetup();
 
@@ -286,11 +286,11 @@ describe(
 
 describe(
   'Remove Enforcement Override - Parent/Guardian',
-  { tags: ['@JIRA-STORY:PO-1864', '@JIRA-EPIC:PO-1675', '@JIRA-LABEL:account-enquiry'] },
+  { tags: ['@JIRA-STORY:PO-1864', '@JIRA-EPIC:PO-1675', '@JIRA-LABEL:account-enquiry', '@R1B'] },
   () => {
     it(
       'AC1b. Should render the remove screen with the parent or guardian account identifier',
-      { tags: ['@JIRA-TEST-KEY:PO-4466'] },
+      { tags: ['@JIRA-TEST-KEY:PO-4466', '@R1B'] },
       () => {
         parentGuardianSetup();
 

@@ -19,7 +19,7 @@ import { FIXED_PENALTY_FAILED_DRAFT_COMPANY_MOCK } from '../../FinesFixedPenalty
 
 const MANUAL_ACCOUNT_CREATION_JIRA_LABEL = '@JIRA-LABEL:manual-account-creation';
 
-const buildTags = (...tags: string[]) => [...tags, MANUAL_ACCOUNT_CREATION_JIRA_LABEL];
+const buildTags = (...tags: string[]) => [...tags, '@R1A', MANUAL_ACCOUNT_CREATION_JIRA_LABEL];
 
 describe('Fixed Penalty failed- Review Account Details', () => {
   beforeEach(() => {

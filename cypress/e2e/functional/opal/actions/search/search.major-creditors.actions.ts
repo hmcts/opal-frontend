@@ -10,6 +10,7 @@
 
 import { AccountSearchMajorCreditorsLocators as L } from '../../../../../shared/selectors/account-search/account.search.major-creditors.locators';
 import { CommonActions } from '../common/common.actions';
+import { typeAndSelectAutocompleteOption } from '../common/autocomplete.helper';
 
 /** Actions for the Major Creditors panel within Account Search. */
 export class AccountSearchMajorCreditorsActions {
@@ -22,5 +23,20 @@ export class AccountSearchMajorCreditorsActions {
     const sel = L.panel?.root;
     if (!sel) throw new TypeError('assertOnSearchPage: Locator L.panel.root is required but missing.');
     cy.get(sel, this.commonActions.getTimeoutOptions()).should('be.visible');
+  }
+
+  /**
+   * Types into the major creditor autocomplete and selects the matching option.
+   *
+   * @param value - The visible major creditor value to select from the autocomplete.
+   */
+  public setMajorCreditor(value: string): void {
+    typeAndSelectAutocompleteOption({
+      inputSelector: L.autocomplete.input,
+      listboxSelector: L.autocomplete.listbox,
+      value,
+      label: 'Major creditor',
+      timeoutOptions: this.commonActions.getTimeoutOptions(),
+    });
   }
 }

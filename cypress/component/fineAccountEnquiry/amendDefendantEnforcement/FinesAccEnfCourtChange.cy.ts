@@ -25,7 +25,7 @@ import { FinesAccEnfCourtChangeFormComponent } from 'src/app/flows/fines/fines-a
 const ACCOUNT_ENQUIRY_JIRA_LABEL = '@JIRA-LABEL:account-enquiry';
 const JIRA_EPIC = '@JIRA-EPIC:PO-1675';
 
-const buildTags = (...tags: string[]): string[] => [...tags, JIRA_EPIC, ACCOUNT_ENQUIRY_JIRA_LABEL];
+const buildTags = (...tags: string[]): string[] => [...tags, JIRA_EPIC, ACCOUNT_ENQUIRY_JIRA_LABEL, '@R1B'];
 
 const ADULT_OR_YOUTH_TAGS = buildTags('@JIRA-STORY:PO-1849', '@JIRA-STORY:PO-3729');
 const PARENT_GUARDIAN_TAGS = buildTags('@JIRA-STORY:PO-1862', '@JIRA-STORY:PO-3729');

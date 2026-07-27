@@ -21,7 +21,7 @@ import { FINES_ACCOUNT_TYPES } from 'src/app/flows/fines/constants/fines-account
 
 const MANUAL_ACCOUNT_CREATION_JIRA_LABEL = '@JIRA-LABEL:manual-account-creation';
 
-const buildTags = (...tags: string[]) => [...tags, MANUAL_ACCOUNT_CREATION_JIRA_LABEL];
+const buildTags = (...tags: string[]) => [...tags, '@R1A', MANUAL_ACCOUNT_CREATION_JIRA_LABEL];
 
 describe('FinesMacReviewAccountComponent - Rejected Account view', () => {
   let finesMacState = structuredClone(FINES_AYG_CHECK_ACCOUNT_MOCK);

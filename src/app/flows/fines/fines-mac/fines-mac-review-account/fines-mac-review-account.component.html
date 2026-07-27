@@ -37,7 +37,7 @@
     [prosecutorsData]="prosecutors"
     [localJusticeAreasData]="localJusticeAreas"
     [isReadOnly]="isReadOnly"
-    (emitChangeCourtDetails)="change()"
+    (emitChangeCourtDetails)="change(finesMacRoutes.children.courtDetails)"
   ></app-fines-mac-review-account-court-details>
 
   @if (
@@ -51,7 +51,7 @@
       [accountType]="accountType"
       [companyDetails]="finesMacStore.companyDetails().formData"
       [isReadOnly]="isReadOnly"
-      (emitChangeCompanyDetails)="change()"
+      (emitChangeCompanyDetails)="change(finesMacRoutes.children.companyDetails)"
       [isReadOnly]="isReadOnly"
     >
     </app-fines-mac-review-account-company-details>
@@ -61,7 +61,7 @@
     <app-fines-mac-review-account-contact-details
       [contactDetails]="finesMacStore.contactDetails().formData"
       [isReadOnly]="isReadOnly"
-      (emitChangeContactDetails)="change()"
+      (emitChangeContactDetails)="change(finesMacRoutes.children.contactDetails)"
       [isReadOnly]="isReadOnly"
     ></app-fines-mac-review-account-contact-details>
   }
@@ -77,7 +77,7 @@
     <app-fines-mac-review-account-employer-details
       [employerDetails]="finesMacStore.employerDetails().formData"
       [isReadOnly]="isReadOnly"
-      (emitChangeEmployerDetails)="change()"
+      (emitChangeEmployerDetails)="change(finesMacRoutes.children.employerDetails)"
       [isReadOnly]="isReadOnly"
     ></app-fines-mac-review-account-employer-details>
   }
@@ -91,7 +91,7 @@
     ></app-fines-mac-review-account-fixed-penalty-offence-details>
   } @else {
     <app-fines-mac-review-account-offence-details
-      (emitChangeOffenceDetails)="change()"
+      (emitChangeOffenceDetails)="change(finesMacRoutes.children.offenceDetails)"
       [isReadOnly]="isReadOnly"
       [results]="results"
       [majorCreditors]="majorCreditors"
@@ -102,7 +102,7 @@
       [businessUnit]="finesMacStore.businessUnit()"
       [defendantType]="finesMacStore.accountDetails().formData.fm_create_account_defendant_type!"
       [isReadOnly]="isReadOnly"
-      (emitChangePaymentTerms)="change()"
+      (emitChangePaymentTerms)="change(finesMacRoutes.children.paymentTerms)"
       [isReadOnly]="isReadOnly"
     ></app-fines-mac-review-account-payment-terms>
   }
@@ -110,7 +110,7 @@
   <app-fines-mac-review-account-account-comments-and-notes
     [accountCommentsAndNotes]="finesMacStore.accountCommentsNotes().formData"
     [isReadOnly]="isReadOnly"
-    (emitChangeAccountCommentsAndNotesDetails)="change()"
+    (emitChangeAccountCommentsAndNotesDetails)="change(finesMacRoutes.children.accountCommentsNotes)"
     [isReadOnly]="isReadOnly"
   ></app-fines-mac-review-account-account-comments-and-notes>
 
@@ -145,7 +145,7 @@
   <app-fines-mac-review-account-parent-guardian-details
     [parentGuardianDetails]="finesMacStore.parentGuardianDetails().formData"
     [isReadOnly]="isReadOnly"
-    (emitChangeParentGuardianDetails)="change()"
+    (emitChangeParentGuardianDetails)="change(finesMacRoutes.children.parentGuardianDetails)"
   ></app-fines-mac-review-account-parent-guardian-details>
 </ng-template>
 
@@ -157,6 +157,6 @@
       finesMacStore.accountDetails().formData.fm_create_account_defendant_type === defendantTypesKeys.adultOrYouthOnly
     "
     [isReadOnly]="isReadOnly"
-    (emitChangePersonalDetails)="change()"
+    (emitChangePersonalDetails)="change(finesMacRoutes.children.personalDetails)"
   ></app-fines-mac-review-account-personal-details>
 </ng-template>

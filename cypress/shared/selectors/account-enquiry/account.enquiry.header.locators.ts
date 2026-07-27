@@ -87,4 +87,8 @@ export const ACCOUNT_ENQUIRY_HEADER_ELEMENTS = {
   // Minor creditor info fields
   minorCreditorAccountType: '#minor-creditor-account-type',
   minorCreditorBusinessUnit: '#minor-creditor-business-unit',
+
+  // Major creditor info fields
+  majorCreditorAccountType: '#major-creditor-account-type',
+  majorCreditorBusinessUnit: '#major-creditor-business-unit',
 } as const;

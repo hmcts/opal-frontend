@@ -19,15 +19,21 @@ import { MojButtonMenuComponent } from '@hmcts/opal-frontend-common/components/m
 })
 export class FinesAccSummaryHeaderComponent {
   @Input({ required: true }) accountStore!: FinesAccountStoreType;
-  @Input({ required: true }) hasAddAccountActivityNotePermission!: boolean;
+  @Input({ required: true }) showAddAccountNoteButton!: boolean;
   @Input() id = 'acc-summary-header';
   @Output() refreshPage = new EventEmitter<void>();
   @Output() navigateToAddAccountNotePage = new EventEmitter<void>();
 
+  /**
+   * Emits the page refresh request to the parent account summary component.
+   */
   public handleRefreshPage(): void {
     this.refreshPage.emit();
   }
 
+  /**
+   * Emits the request to navigate to the add account note page.
+   */
   public handleNavigateToAddAccountNotePage(): void {
     this.navigateToAddAccountNotePage.emit();
   }

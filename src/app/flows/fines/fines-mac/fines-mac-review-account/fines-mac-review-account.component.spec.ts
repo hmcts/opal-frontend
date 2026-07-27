@@ -585,6 +585,19 @@ describe('FinesMacReviewAccountComponent', () => {
       });
     });
 
+    it('should route to the passed path when change() is called from a fine account', () => {
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      const routerSpy = vi.spyOn<any, any>(component['router'], 'navigate');
+      const path = component['finesMacRoutes'].children.courtDetails;
+      component.accountType = FINES_ACCOUNT_TYPES['Fine'];
+
+      component.change(path);
+
+      expect(routerSpy).toHaveBeenCalledWith([path], {
+        relativeTo: component['activatedRoute'].parent,
+      });
+    });
+
     it('should route to the fixed penalty details form when change() is called from a fixed penalty account', () => {
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
       const routerSpy = vi.spyOn<any, any>(component['router'], 'navigate');

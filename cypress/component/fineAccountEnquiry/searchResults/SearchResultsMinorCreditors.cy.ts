@@ -22,7 +22,7 @@ const ResultsHeaderLocators = ResultsLocators.headerCells;
 const ResultsCellLocators = ResultsLocators.cols;
 const ResultsPaginationLocators = ResultsLocators.pagination;
 
-const buildTags = (...tags: string[]): string[] => [...tags, ACCOUNT_ENQUIRY_JIRA_LABEL];
+const buildTags = (...tags: string[]): string[] => [...tags, ACCOUNT_ENQUIRY_JIRA_LABEL, '@R1B'];
 
 describe('FinesSaResultsComponent - Minor Creditors', () => {
   const createSearchResultState = () => ({

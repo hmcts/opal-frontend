@@ -10,7 +10,7 @@ const MinorTypeLocators = MinorCreditorsLocators.type;
 const MinorIndividualLocators = MinorCreditorsLocators.individual;
 const MinorCompanyLocators = MinorCreditorsLocators.company;
 
-const buildTags = (...tags: string[]): string[] => [...tags, ACCOUNT_ENQUIRY_JIRA_LABEL];
+const buildTags = (...tags: string[]): string[] => [...tags, ACCOUNT_ENQUIRY_JIRA_LABEL, '@R1B'];
 
 describe('Search Account Component - Minor Creditors', () => {
   type MinorCreditorsSearchState = typeof MINOR_CREDITORS_SEARCH_STATE_MOCK;

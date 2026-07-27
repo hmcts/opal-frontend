@@ -15,7 +15,7 @@ const ResultsTabLocators = ResultsLocators.tabs;
 const ResultsHeaderCellLocators = ResultsLocators.headerCells;
 const ResultsCellLocators = ResultsLocators.cols;
 
-const buildTags = (...tags: string[]): string[] => [...tags, ACCOUNT_ENQUIRY_JIRA_LABEL];
+const buildTags = (...tags: string[]): string[] => [...tags, ACCOUNT_ENQUIRY_JIRA_LABEL, '@R1B'];
 
 describe('FinesSaResultsComponent - All Account Types', () => {
   let fragmentSubject: BehaviorSubject<string>;

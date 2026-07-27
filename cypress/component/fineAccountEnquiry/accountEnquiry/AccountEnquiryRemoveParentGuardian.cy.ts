@@ -21,7 +21,7 @@ const ACCOUNT_ENQUIRY_JIRA_LABEL = '@JIRA-LABEL:account-enquiry';
 const STORY_TAG = '@JIRA-STORY:PO-1878';
 const EPIC_TAG = '@JIRA-EPIC:PO-1875';
 
-const buildTags = (...tags: string[]): string[] => [...tags, ACCOUNT_ENQUIRY_JIRA_LABEL];
+const buildTags = (...tags: string[]): string[] => [...tags, ACCOUNT_ENQUIRY_JIRA_LABEL, '@R1B'];
 
 const mountRemoveParentGuardianComponent = (partyName: string) => {
   const navigateSpy = Cypress.sinon.stub();

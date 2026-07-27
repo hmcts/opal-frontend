@@ -411,11 +411,14 @@ export class FinesMacReviewAccountComponent extends AbstractFormParentBaseCompon
   /**
    * Redirects to the relevant page to change the account details.
    * If the account type is fixed penalty, it navigates to the fixed penalty details page
-   * otherwise, it navigates back to the account details page.
+   * otherwise, it navigates back to specified path or the account details page.
+   * @param path - Optional path to navigate to. If provided, it will navigate to that path instead of the default.
    */
-  public change(): void {
+  public change(path?: string): void {
     if (this.accountType === this.accountTypesKeys['Fixed Penalty']) {
       this.routerNavigate(this.finesMacRoutes.children.fixedPenaltyDetails);
+    } else if (path) {
+      this.routerNavigate(path);
     } else {
       this.routerNavigate(this.finesMacRoutes.children.accountDetails);
     }

@@ -20,7 +20,7 @@ const ACCOUNT_ENQUIRY_JIRA_LABEL = '@JIRA-LABEL:account-enquiry';
 const IMPOSITIONS_STORY_TAG = '@JIRA-STORY:PO-2079';
 const IMPOSITIONS_EPIC_TAG = '@JIRA-EPIC:PO-979';
 
-const buildTags = (...tags: string[]): string[] => [...tags, ACCOUNT_ENQUIRY_JIRA_LABEL];
+const buildTags = (...tags: string[]): string[] => [...tags, ACCOUNT_ENQUIRY_JIRA_LABEL, '@R1B'];
 
 const componentProperties: IComponentProperties = {
   accountId: '77',

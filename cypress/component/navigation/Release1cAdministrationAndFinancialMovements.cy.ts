@@ -122,7 +122,7 @@ describe(
   () => {
     it(
       'shows Administration and Finance in the primary navigation when both flags are enabled',
-      { tags: ['@JIRA-TEST-KEY:PO-8351'] },
+      { tags: ['@R1CAdministration', '@JIRA-TEST-KEY:PO-8351'] },
       () => {
         setupAppComponent({});
 
@@ -134,7 +134,7 @@ describe(
 
     it(
       'hides Administration and Finance from the primary navigation when both flags are disabled',
-      { tags: ['@JIRA-TEST-KEY:PO-8352'] },
+      { tags: ['@R1CAdministrationOff', '@JIRA-TEST-KEY:PO-8352'] },
       () => {
         setupAppComponent({
           [RELEASE_1C_ADMINISTRATION_FEATURE_FLAG]: false,
@@ -149,7 +149,7 @@ describe(
 
     it(
       'shows the Administration dashboard placeholder when release-1c-administration is enabled',
-      { tags: ['@JIRA-TEST-KEY:PO-8353'] },
+      { tags: ['@R1CAdministration', '@JIRA-TEST-KEY:PO-8353'] },
       () => {
         setupDashboardComponent(FINES_DASHBOARD_ROUTING_PATHS.children.administration, {});
 
@@ -161,7 +161,7 @@ describe(
 
     it(
       'hides Administration dashboard content when release-1c-administration is disabled',
-      { tags: ['@JIRA-TEST-KEY:PO-8354'] },
+      { tags: ['@R1CAdministrationOff', '@JIRA-TEST-KEY:PO-8354'] },
       () => {
         setupDashboardComponent(FINES_DASHBOARD_ROUTING_PATHS.children.administration, {
           [RELEASE_1C_ADMINISTRATION_FEATURE_FLAG]: false,
@@ -175,7 +175,7 @@ describe(
 
     it(
       'shows the Finance dashboard placeholder when release-1c-financial-movements is enabled',
-      { tags: ['@JIRA-TEST-KEY:PO-8355'] },
+      { tags: ['@R1CFinancialMovements', '@JIRA-TEST-KEY:PO-8355'] },
       () => {
         setupDashboardComponent(FINES_DASHBOARD_ROUTING_PATHS.children.finance, {});
 
@@ -187,7 +187,7 @@ describe(
 
     it(
       'hides Finance dashboard content when release-1c-financial-movements is disabled',
-      { tags: ['@JIRA-TEST-KEY:PO-8356'] },
+      { tags: ['@R1CFinancialMovementsOff', '@JIRA-TEST-KEY:PO-8356'] },
       () => {
         setupDashboardComponent(FINES_DASHBOARD_ROUTING_PATHS.children.finance, {
           [RELEASE_1C_FINANCIAL_MOVEMENTS_FEATURE_FLAG]: false,

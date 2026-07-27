@@ -14,7 +14,7 @@ import { MacOffenceDetailsRemoveImpositionLocators as DOM_ELEMENTS } from '../..
 
 const MANUAL_ACCOUNT_CREATION_JIRA_LABEL = '@JIRA-LABEL:manual-account-creation';
 
-const buildTags = (...tags: string[]) => [...tags, MANUAL_ACCOUNT_CREATION_JIRA_LABEL];
+const buildTags = (...tags: string[]) => [...tags, '@R1A', MANUAL_ACCOUNT_CREATION_JIRA_LABEL];
 
 describe('FinesRemoveImpositionComponent', () => {
   let finesMacStateTemplate = structuredClone(FINES_MAC_STATE_MOCK);

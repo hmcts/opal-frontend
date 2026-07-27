@@ -13,7 +13,7 @@
     "originator_name": "Aberdeen Sheriff Court District",
     "originator_id": 9701,
     "prosecutor_case_reference": null,
-    "enforcement_court_id": 7700000000,
+    "enforcement_court_id": 780000000001,
     "collection_order_made": null,
     "collection_order_made_today": null,
     "collection_order_date": null,
@@ -88,7 +88,7 @@
     ],
     "fp_ticket_detail": {
       "notice_number": "12345",
-      "date_of_issue": "2025-11-13",
+      "date_of_issue": "2025-11-32",
       "time_of_issue": "05:00",
       "fp_registration_number": "FV53TCO",
       "notice_to_owner_hirer": "123343",

@@ -20,7 +20,12 @@
  * @see {@link PrimaryNavigationActions}
  */
 
-import { assertSignOutLinkVisible, performLogin } from '../actions/login.actions';
+import {
+  assertAuthenticatedEndpointStatus,
+  assertSignOutLinkVisible,
+  performLogin,
+  performLoginWithoutShellAssertions,
+} from '../actions/login.actions';
 import { PrimaryNavigationActions } from '../actions/primary-navigation.actions';
 
 /**
@@ -53,4 +58,23 @@ export function loginAndVerifyDashboardLanding(email: string): void {
 export function loginAndAuthenticate(email: string): void {
   performLogin(email);
   assertSignOutLinkVisible();
+}
+
+/**
+ * Starts sign-in for a protected route without asserting that authentication succeeds.
+ *
+ * @param email - The email address of the user attempting to authenticate.
+ * @param landingPath - Protected route to open before starting sign-in.
+ */
+export function loginWithoutShellAssertions(email: string, landingPath: string = '/'): void {
+  performLoginWithoutShellAssertions(email, landingPath);
+}
+
+/**
+ * Asserts the status returned by the frontend authenticated endpoint.
+ *
+ * @param expectedStatus - Expected status code from `/sso/authenticated`.
+ */
+export function assertAuthenticatedEndpointReturnedStatus(expectedStatus: number): void {
+  assertAuthenticatedEndpointStatus(expectedStatus);
 }

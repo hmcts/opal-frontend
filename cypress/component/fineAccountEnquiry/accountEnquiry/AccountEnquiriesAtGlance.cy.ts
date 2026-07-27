@@ -20,7 +20,7 @@ import { FinesAccDefendantDetailsAtAGlanceTabComponent } from 'src/app/flows/fin
 const ACCOUNT_ENQUIRY_JIRA_LABEL = '@JIRA-LABEL:account-enquiry';
 type AtAGlanceMock = typeof OPAL_FINES_ACCOUNT_DEFENDANT_AT_A_GLANCE_MOCK;
 
-const buildTags = (...tags: string[]): string[] => [...tags, ACCOUNT_ENQUIRY_JIRA_LABEL];
+const buildTags = (...tags: string[]): string[] => [...tags, ACCOUNT_ENQUIRY_JIRA_LABEL, '@R1B'];
 
 describe('Defendant Account Summary - At a Glance Tab', () => {
   const mountAtAGlanceTab = ({
@@ -490,9 +490,8 @@ describe('Defendant Account Summary - At a Glance Tab', () => {
       interceptAtAGlance(77, mockDataNoComments, '1');
 
       setupAccountEnquiryComponent(componentProperties);
-      cy.get(DOM.linkText).should('be.visible').and('contain.text', 'Change');
-
-      cy.get(DOM.linkText).click();
+      cy.contains(DOM.linkText, 'Change').should('be.visible');
+      cy.contains(DOM.linkText, 'Change').first().click();
 
       cy.get('app-fines-acc-comments-add-form').should('exist');
       cy.contains('opal-lib-govuk-heading-with-caption, h1, h2', 'Comments').should('be.visible');
@@ -550,7 +549,7 @@ describe('Defendant Account Summary - At a Glance Tab', () => {
         ...componentProperties,
         interceptedRoutes: componentProperties.interceptedRoutes?.filter((route) => route !== '/access-denied'),
       });
-      cy.contains(DOM.linkText, 'Change').should('be.visible').click();
+      cy.contains(DOM.linkText, 'Change').should('be.visible').first().click();
 
       cy.get('@routerNavigate').should('have.been.called');
 
@@ -764,6 +763,273 @@ describe('Defendant Account Summary - At a Glance Tab', () => {
         .contains(/collection order/i)
         .should('not.exist');
       cy.get('h2').contains('Enforcement status').should('be.visible');
+    },
+  );
+
+  it(
+    'AC1: displays only the Add comments link and navigates to the Comments screen when no Account Comment or Free Text Notes exist',
+    {
+      tags: [...buildTags('@JIRA-STORY:PO-8934'), '@JIRA-EPIC:PO-8248'],
+    },
+    () => {
+      const mockDataNoComments = structuredClone(OPAL_FINES_ACCOUNT_DEFENDANT_AT_A_GLANCE_MOCK);
+      mockDataNoComments.comments_and_notes = {
+        account_comment: null,
+        free_text_note_1: null,
+        free_text_note_2: null,
+        free_text_note_3: null,
+      };
+
+      interceptUserState(USER_STATE_MOCK_PERMISSION_BU77);
+      interceptDefendantHeader(77, createDefendantHeaderMockWithName('Robert', 'Thomson'), '1');
+      interceptAtAGlance(77, mockDataNoComments, '1');
+
+      setupAccountEnquiryComponent(componentProperties);
+
+      cy.get('h3').contains('Comment').should('not.exist');
+      cy.get('h3').contains('Free text notes').should('not.exist');
+      cy.get(DOM.linkText).should('have.length', 1);
+      cy.contains(DOM.linkText, 'Add comments').should('be.visible').click();
+
+      cy.get('app-fines-acc-comments-add-form').should('exist');
+      cy.contains('opal-lib-govuk-heading-with-caption, h1, h2', 'Comments').should('be.visible');
+    },
+  );
+
+  it(
+    'AC2: displays the Account Comment and Free text notes sections with Change links beneath each section, and navigates to the Comments screen when selected',
+    {
+      tags: [...buildTags('@JIRA-STORY:PO-8934'), '@JIRA-EPIC:PO-8248'],
+    },
+    () => {
+      const mockDataCommentOnly = structuredClone(OPAL_FINES_ACCOUNT_DEFENDANT_AT_A_GLANCE_MOCK);
+      mockDataCommentOnly.comments_and_notes = {
+        account_comment: 'Test account comment',
+        free_text_note_1: null,
+        free_text_note_2: null,
+        free_text_note_3: null,
+      };
+
+      interceptUserState(USER_STATE_MOCK_PERMISSION_BU77);
+      interceptDefendantHeader(77, createDefendantHeaderMockWithName('Robert', 'Thomson'), '1');
+      interceptAtAGlance(77, mockDataCommentOnly, '1');
+
+      setupAccountEnquiryComponent(componentProperties);
+
+      cy.contains('h2', 'Comments')
+        .parent()
+        .within(() => {
+          cy.contains('h3', 'Comment')
+            .next('p')
+            .should('have.text', 'Test account comment')
+            .next('p')
+            .find(DOM.linkText)
+            .should('have.text', 'Change');
+
+          cy.contains('h3', 'Free text notes')
+            .next('p')
+            .should('have.text', '—')
+            .next('p')
+            .find(DOM.linkText)
+            .should('have.text', 'Change')
+            .click();
+        });
+
+      cy.get('app-fines-acc-comments-add-form').should('exist');
+      cy.contains('opal-lib-govuk-heading-with-caption, h1, h2', 'Comments').should('be.visible');
+    },
+  );
+
+  it(
+    'AC2e: selecting the Change link beneath the Comment section navigates to the Comments screen',
+    {
+      tags: [...buildTags('@JIRA-STORY:PO-8934'), '@JIRA-EPIC:PO-8248'],
+    },
+    () => {
+      const mockDataCommentOnly = structuredClone(OPAL_FINES_ACCOUNT_DEFENDANT_AT_A_GLANCE_MOCK);
+      mockDataCommentOnly.comments_and_notes = {
+        account_comment: 'Test account comment',
+        free_text_note_1: null,
+        free_text_note_2: null,
+        free_text_note_3: null,
+      };
+
+      interceptUserState(USER_STATE_MOCK_PERMISSION_BU77);
+      interceptDefendantHeader(77, createDefendantHeaderMockWithName('Robert', 'Thomson'), '1');
+      interceptAtAGlance(77, mockDataCommentOnly, '1');
+
+      setupAccountEnquiryComponent(componentProperties);
+
+      cy.contains('h2', 'Comments')
+        .parent()
+        .within(() => {
+          cy.contains('h3', 'Comment').next('p').next('p').find(DOM.linkText).should('have.text', 'Change').click();
+        });
+
+      cy.get('app-fines-acc-comments-add-form').should('exist');
+      cy.contains('opal-lib-govuk-heading-with-caption, h1, h2', 'Comments').should('be.visible');
+    },
+  );
+
+  it(
+    'AC3: displays a dash for Comment, shows Free text notes in ascending order, and displays Change links beneath each section',
+    {
+      tags: [...buildTags('@JIRA-STORY:PO-8934'), '@JIRA-EPIC:PO-8248'],
+    },
+    () => {
+      const mockDataNotesOnly = structuredClone(OPAL_FINES_ACCOUNT_DEFENDANT_AT_A_GLANCE_MOCK);
+      mockDataNotesOnly.comments_and_notes = {
+        account_comment: null,
+        free_text_note_1: 'Line 1 note',
+        free_text_note_2: 'Line 2 note',
+        free_text_note_3: 'Line 3 note',
+      };
+
+      interceptUserState(USER_STATE_MOCK_PERMISSION_BU77);
+      interceptDefendantHeader(77, createDefendantHeaderMockWithName('Robert', 'Thomson'), '1');
+      interceptAtAGlance(77, mockDataNotesOnly, '1');
+
+      setupAccountEnquiryComponent(componentProperties);
+
+      cy.contains('h2', 'Comments')
+        .parent()
+        .within(() => {
+          cy.contains('h3', 'Comment')
+            .next('p')
+            .should('have.text', '-')
+            .next('p')
+            .find(DOM.linkText)
+            .should('have.text', 'Change');
+
+          cy.contains('h3', 'Free text notes')
+            .next('p')
+            .invoke('text')
+            .then((notesText) => {
+              expect(notesText, 'free text notes order').to.match(/Line 1 note[\s\S]*Line 2 note[\s\S]*Line 3 note/);
+            });
+
+          cy.contains('h3', 'Free text notes')
+            .next('p')
+            .next('p')
+            .find(DOM.linkText)
+            .should('have.text', 'Change')
+            .click();
+        });
+
+      cy.get('app-fines-acc-comments-add-form').should('exist');
+      cy.contains('opal-lib-govuk-heading-with-caption, h1, h2', 'Comments').should('be.visible');
+    },
+  );
+
+  it(
+    'AC3e: selecting the Change link beneath the Comment section navigates to the Comments screen when only Free text notes exist',
+    {
+      tags: [...buildTags('@JIRA-STORY:PO-8934'), '@JIRA-EPIC:PO-8248'],
+    },
+    () => {
+      const mockDataNotesOnly = structuredClone(OPAL_FINES_ACCOUNT_DEFENDANT_AT_A_GLANCE_MOCK);
+      mockDataNotesOnly.comments_and_notes = {
+        account_comment: null,
+        free_text_note_1: 'Line 1 note',
+        free_text_note_2: 'Line 2 note',
+        free_text_note_3: 'Line 3 note',
+      };
+
+      interceptUserState(USER_STATE_MOCK_PERMISSION_BU77);
+      interceptDefendantHeader(77, createDefendantHeaderMockWithName('Robert', 'Thomson'), '1');
+      interceptAtAGlance(77, mockDataNotesOnly, '1');
+
+      setupAccountEnquiryComponent(componentProperties);
+
+      cy.contains('h2', 'Comments')
+        .parent()
+        .within(() => {
+          cy.contains('h3', 'Comment').next('p').next('p').find(DOM.linkText).should('have.text', 'Change').click();
+        });
+
+      cy.get('app-fines-acc-comments-add-form').should('exist');
+      cy.contains('opal-lib-govuk-heading-with-caption, h1, h2', 'Comments').should('be.visible');
+    },
+  );
+
+  it(
+    'AC4: displays the Account Comment and Free text notes in ascending order, with Change links beneath each section',
+    {
+      tags: [...buildTags('@JIRA-STORY:PO-8934'), '@JIRA-EPIC:PO-8248'],
+    },
+    () => {
+      const mockDataCommentAndNotes = structuredClone(OPAL_FINES_ACCOUNT_DEFENDANT_AT_A_GLANCE_MOCK);
+      mockDataCommentAndNotes.comments_and_notes = {
+        account_comment: 'Test account comment',
+        free_text_note_1: 'Line 1 note',
+        free_text_note_2: 'Line 2 note',
+        free_text_note_3: 'Line 3 note',
+      };
+
+      interceptUserState(USER_STATE_MOCK_PERMISSION_BU77);
+      interceptDefendantHeader(77, createDefendantHeaderMockWithName('Robert', 'Thomson'), '1');
+      interceptAtAGlance(77, mockDataCommentAndNotes, '1');
+
+      setupAccountEnquiryComponent(componentProperties);
+
+      cy.contains('h2', 'Comments')
+        .parent()
+        .within(() => {
+          cy.contains('h3', 'Comment')
+            .next('p')
+            .should('have.text', 'Test account comment')
+            .next('p')
+            .find(DOM.linkText)
+            .should('have.text', 'Change');
+
+          cy.contains('h3', 'Free text notes')
+            .next('p')
+            .invoke('text')
+            .then((notesText) => {
+              expect(notesText, 'free text notes order').to.match(/Line 1 note[\s\S]*Line 2 note[\s\S]*Line 3 note/);
+            });
+
+          cy.contains('h3', 'Free text notes')
+            .next('p')
+            .next('p')
+            .find(DOM.linkText)
+            .should('have.text', 'Change')
+            .click();
+        });
+
+      cy.get('app-fines-acc-comments-add-form').should('exist');
+      cy.contains('opal-lib-govuk-heading-with-caption, h1, h2', 'Comments').should('be.visible');
+    },
+  );
+
+  it(
+    'AC4e: selecting the Change link beneath the Comment section navigates to the Comments screen when both an Account Comment and Free text notes exist',
+    {
+      tags: [...buildTags('@JIRA-STORY:PO-8934'), '@JIRA-EPIC:PO-8248'],
+    },
+    () => {
+      const mockDataCommentAndNotes = structuredClone(OPAL_FINES_ACCOUNT_DEFENDANT_AT_A_GLANCE_MOCK);
+      mockDataCommentAndNotes.comments_and_notes = {
+        account_comment: 'Test account comment',
+        free_text_note_1: 'Line 1 note',
+        free_text_note_2: 'Line 2 note',
+        free_text_note_3: 'Line 3 note',
+      };
+
+      interceptUserState(USER_STATE_MOCK_PERMISSION_BU77);
+      interceptDefendantHeader(77, createDefendantHeaderMockWithName('Robert', 'Thomson'), '1');
+      interceptAtAGlance(77, mockDataCommentAndNotes, '1');
+
+      setupAccountEnquiryComponent(componentProperties);
+
+      cy.contains('h2', 'Comments')
+        .parent()
+        .within(() => {
+          cy.contains('h3', 'Comment').next('p').next('p').find(DOM.linkText).should('have.text', 'Change').click();
+        });
+
+      cy.get('app-fines-acc-comments-add-form').should('exist');
+      cy.contains('opal-lib-govuk-heading-with-caption, h1, h2', 'Comments').should('be.visible');
     },
   );
 });

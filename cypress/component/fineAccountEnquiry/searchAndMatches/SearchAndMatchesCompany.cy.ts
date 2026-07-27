@@ -7,7 +7,7 @@ import { mountSearchAccount } from './support/mountSearchAccount';
 
 const ACCOUNT_ENQUIRY_JIRA_LABEL = '@JIRA-LABEL:account-enquiry';
 
-const buildTags = (...tags: string[]): string[] => [...tags, ACCOUNT_ENQUIRY_JIRA_LABEL];
+const buildTags = (...tags: string[]): string[] => [...tags, ACCOUNT_ENQUIRY_JIRA_LABEL, '@R1B'];
 
 describe('Search Account Component - Company', () => {
   type CompanySearchState = typeof COMPANY_SEARCH_STATE_MOCK;

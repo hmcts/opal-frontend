@@ -1,0 +1,71 @@
+@JIRA-LABEL:manual-account-creation
+@JIRA-NFR:PO-2322
+Feature: Accessibility Tests for Check and Validate Screens
+  # This feature file ensures that all screens in the Check and Validate flow meet accessibility standards using Axe-Core.
+
+  Background:
+    Given I am logged in with email "opal-test@dev.platform.hmcts.net"
+    And I open Create and Manage Draft Accounts
+
+  @R1A @JIRA-STORY:PO-2762 @JIRA-EPIC:PO-2472 @JIRA-TEST-KEY:PO-5562
+  Scenario: Create and Manage landing page passes accessibility checks
+    Then I check the page for accessibility
+
+  @R1A @JIRA-STORY:PO-605 @JIRA-EPIC:PO-2472 @JIRA-TEST-KEY:PO-5563
+  Scenario: Rejected tab is accessible for rejected draft account
+    Given I create a "pgToPay" draft account with the following details and set status "Rejected":
+      | account.defendant.forenames | Accessibility |
+      | account.defendant.surname   | TEST{uniq}    |
+    And I open Create and Manage Draft Accounts
+
+    When I view the "Rejected" tab on the Create and Manage Draft Accounts page
+    Then I see the following text "TEST{uniq}, Accessibility"
+    And I check the page for accessibility
+
+  @R1A @JIRA-STORY:PO-607 @JIRA-EPIC:PO-2472 @JIRA-TEST-KEY:PO-5564
+  Scenario: Approved tab is accessible
+    When I view the "Approved" tab on the Create and Manage Draft Accounts page
+    Then I check the page for accessibility
+
+  @R1A @JIRA-STORY:PO-609 @JIRA-EPIC:PO-2472 @JIRA-TEST-KEY:PO-5565
+  Scenario: Deleted tab is accessible
+    When I view the "Deleted" tab on the Create and Manage Draft Accounts page
+    Then I check the page for accessibility
+
+  @R1A @JIRA-STORY:PO-640 @JIRA-EPIC:PO-2472 @JIRA-TEST-KEY:PO-5566
+  Scenario: Check and submit task list is accessible for rejected draft
+    Given I create a "pgToPay" draft account with the following details and set status "Rejected":
+      | account.defendant.forenames | Accessibility |
+      | account.defendant.surname   | TEST{uniq}    |
+    And I open Create and Manage Draft Accounts
+
+    When I view the "Rejected" tab on the Create and Manage Draft Accounts page
+    And I open the draft account for defendant "TEST{uniqUpper}, Accessibility"
+    Then I see the following text on the page "Check and submit"
+    And I check the page for accessibility
+
+  @R1A @JIRA-STORY:PO-640 @JIRA-EPIC:PO-2472 @JIRA-TEST-KEY:PO-5567
+  Scenario: Check account details page is accessible for rejected draft
+    Given I create a "pgToPay" draft account with the following details and set status "Rejected":
+      | account.defendant.forenames | Accessibility |
+      | account.defendant.surname   | TEST{uniq}    |
+    And I open Create and Manage Draft Accounts
+
+    When I view the "Rejected" tab on the Create and Manage Draft Accounts page
+    And I open the draft account for defendant "TEST{uniqUpper}, Accessibility"
+    And I check the manual account details for account header "Miss Accessibility TEST{uniqUpper}"
+    And I check the page for accessibility
+
+  @R1A @JIRA-STORY:PO-640 @JIRA-EPIC:PO-2472 @JIRA-TEST-KEY:PO-5568
+  Scenario: Submitting a rejected draft for review shows confirmation
+    Given I create a "pgToPay" draft account with the following details and set status "Rejected":
+      | account.defendant.forenames | Accessibility |
+      | account.defendant.surname   | TEST{uniq}    |
+    And I open Create and Manage Draft Accounts
+
+    When I view the "Rejected" tab on the Create and Manage Draft Accounts page
+    And I open the draft account for defendant "TEST{uniqUpper}, Accessibility"
+    And I check the manual account details for account header "Miss Accessibility TEST{uniqUpper}"
+    When I submit the manual account for review
+    Then I see the following text on the page "You have submitted Accessibility TEST{uniq}'s account for review"
+    And I check the page for accessibility

@@ -8,7 +8,7 @@ const CONSOLIDATION_JIRA_LABEL = '@JIRA-LABEL:consolidation';
 const CONSOLIDATION_STORY_LABEL = '@JIRA-STORY:PO-2417';
 
 const ERROR_PAGE_TAGS = [CONSOLIDATION_STORY_LABEL];
-const buildTags = (...tags: string[]): string[] => [...tags, CONSOLIDATION_JIRA_LABEL];
+const buildTags = (...tags: string[]): string[] => [...tags, CONSOLIDATION_JIRA_LABEL, '@R1CWriteOff'];
 
 describe('FinesConSearchErrorComponent', () => {
   const setupComponent = (defendantType: 'individual' | 'company') => {

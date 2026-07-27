@@ -3,7 +3,7 @@
   [errors]="formErrorSummaryMessage"
   (errorClick)="scrollTo($event)"
 ></opal-lib-govuk-error-summary>
-<form (submit)="handleFormSubmit($event)" [formGroup]="form">
+<form autocomplete="off" (submit)="handleFormSubmit($event)" [formGroup]="form">
   <opal-lib-govuk-text-input
     labelText="First names"
     inputId="fm_parent_guardian_details_forenames"

@@ -5,7 +5,7 @@ export const OPAL_FINES_PROSECUTOR_REF_DATA_MOCK: IOpalFinesProsecutorRefData = 
   ref_data: [
     {
       prosecutor_id: 1865,
-      prosecutor_name: 'Central ticket office',
+      name: 'Central ticket office',
       prosecutor_code: '998',
       address_line_1: null,
       address_line_2: null,
@@ -17,7 +17,7 @@ export const OPAL_FINES_PROSECUTOR_REF_DATA_MOCK: IOpalFinesProsecutorRefData = 
     },
     {
       prosecutor_id: 1223,
-      prosecutor_name: 'Police force',
+      name: 'Police force',
       prosecutor_code: '123',
       address_line_1: null,
       address_line_2: null,
@@ -29,7 +29,7 @@ export const OPAL_FINES_PROSECUTOR_REF_DATA_MOCK: IOpalFinesProsecutorRefData = 
     },
     {
       prosecutor_id: 3523,
-      prosecutor_name: 'Other',
+      name: 'Other',
       prosecutor_code: '433',
       address_line_1: null,
       address_line_2: null,
