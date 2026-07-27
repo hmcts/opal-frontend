@@ -6,14 +6,5 @@ import { addGdsBodyClass } from '@hmcts/opal-frontend-common/components/govuk/he
 registerCypressGrep();
 
 beforeEach(function () {
-  const test = this.currentTest;
-
-  // @ts-expect-error Cypress test metadata is untyped here
-  const tags = test?._testConfig.unverifiedTestConfig.tags;
-
-  if (tags && tags.length > 0) {
-    test.title = `${test.title} [${tags.join(', ')}]`;
-  }
-
   addGdsBodyClass();
 });
