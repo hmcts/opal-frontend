@@ -94,4 +94,9 @@ describe('FinesMacContactDetailsFormComponent', () => {
     expect(homeTelephoneControl?.hasError('phoneNumberPattern')).toBe(false);
     expect(workTelephoneControl?.hasError('phoneNumberPattern')).toBe(false);
   });
+
+  it('should set autocomplete="off" on the form', () => {
+    fixture.detectChanges();
+    expect(fixture.nativeElement.querySelector('form')?.getAttribute('autocomplete')).toBe('off');
+  });
 });
