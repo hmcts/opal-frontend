@@ -1,12 +1,14 @@
 @if (!party.party_details.organisation_flag && party.party_details.individual_details; as individualDetails) {
   <opal-lib-govuk-summary-card-list [cardTitle]="cardTitle" [summaryCardListId]="summaryCardListId">
     <ng-container actions>
-      <a
-        class="govuk-link govuk-link--no-visited-state"
-        [routerLink]="sectionChangeLink()"
-        [fragment]="sectionChangeFragment(sectionFragments.partyDetails)"
-        >Change</a
-      >
+      <li class="govuk-summary-card__action">
+        <a
+          class="govuk-link govuk-link--no-visited-state"
+          [routerLink]="sectionChangeLink()"
+          [fragment]="sectionChangeFragment(sectionFragments.partyDetails)"
+          >Change</a
+        >
+      </li>
     </ng-container>
     <ng-container content>
       <opal-lib-govuk-summary-list [summaryListId]="summaryListId">
@@ -97,12 +99,14 @@
   <ng-container content>
     <opal-lib-govuk-summary-card-list cardTitle="Company details" summaryCardListId="company">
       <ng-container actions>
-        <a
-          class="govuk-link govuk-link--no-visited-state"
-          [routerLink]="sectionChangeLink()"
-          [fragment]="sectionChangeFragment(sectionFragments.partyDetails)"
-          >Change</a
-        >
+        <li class="govuk-summary-card__action">
+          <a
+            class="govuk-link govuk-link--no-visited-state"
+            [routerLink]="sectionChangeLink()"
+            [fragment]="sectionChangeFragment(sectionFragments.partyDetails)"
+            >Change</a
+          >
+        </li>
       </ng-container>
       <ng-container content>
         <opal-lib-govuk-summary-list summaryListId="companyDetails">
@@ -161,12 +165,14 @@
 @if (showContactDetails && party.contact_details; as contact_details) {
   <opal-lib-govuk-summary-card-list cardTitle="Contact details" summaryCardListId="contact">
     <ng-container actions>
-      <a
-        class="govuk-link govuk-link--no-visited-state"
-        [routerLink]="sectionChangeLink()"
-        [fragment]="sectionChangeFragment(sectionFragments.contactDetails)"
-        >Change</a
-      >
+      <li class="govuk-summary-card__action">
+        <a
+          class="govuk-link govuk-link--no-visited-state"
+          [routerLink]="sectionChangeLink()"
+          [fragment]="sectionChangeFragment(sectionFragments.contactDetails)"
+          >Change</a
+        >
+      </li>
     </ng-container>
     <ng-container content>
       <opal-lib-govuk-summary-list summaryListId="contactDetails">
@@ -282,12 +288,14 @@
 @if (showEmployerDetails && party.employer_details; as employer_details) {
   <opal-lib-govuk-summary-card-list cardTitle="Employer details" summaryCardListId="employer">
     <ng-container actions>
-      <a
-        class="govuk-link govuk-link--no-visited-state"
-        [routerLink]="sectionChangeLink()"
-        [fragment]="sectionChangeFragment(sectionFragments.employmentDetails)"
-        >Change</a
-      >
+      <li class="govuk-summary-card__action">
+        <a
+          class="govuk-link govuk-link--no-visited-state"
+          [routerLink]="sectionChangeLink()"
+          [fragment]="sectionChangeFragment(sectionFragments.employmentDetails)"
+          >Change</a
+        >
+      </li>
     </ng-container>
     <ng-container content>
       <opal-lib-govuk-summary-list summaryListId="employerDetails">

@@ -9,12 +9,14 @@
     <opal-lib-govuk-summary-card-list [cardTitle]="cardTitle()" summaryCardListId="payment-terms">
       @if (hasAmendPaymentTermsPermission) {
         <ng-container actions>
-          <a
-            class="govuk-link govuk-link--no-visited-state"
-            [routerLink]="changePaymentTermsLink()"
-            [fragment]="changePaymentTermsFragment()"
-            >Change</a
-          >
+          <li class="govuk-summary-card__action">
+            <a
+              class="govuk-link govuk-link--no-visited-state"
+              [routerLink]="changePaymentTermsLink()"
+              [fragment]="changePaymentTermsFragment()"
+              >Change</a
+            >
+          </li>
         </ng-container>
       }
       <ng-container content>
