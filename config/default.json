@@ -74,7 +74,7 @@
   },
   "secrets": {
     "opal": {
-      "redis-connection-string": "redis://localhost:6379",
+      "managed-redis-connection-string": "redis://localhost:6379",
       "opal-frontend-session-secret": "supersecret",
       "opal-frontend-cookie-secret": "supersecret",
       "opal-frontend-csrf-secret": "supersecret",

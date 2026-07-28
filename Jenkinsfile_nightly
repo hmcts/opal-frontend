@@ -295,6 +295,24 @@ void copyZephyrReports(String sourceOutputDir, String targetOutputDir) {
   """
 }
 
+// Copy Cypress logs into the output tree belonging to the current test stage.
+void prepareStageLogs(String browserToRun, String targetOutputDir) {
+  sh """
+    SOURCE_LOG_DIR='${functionalOutputRoot}/logs/${browserToRun}'
+    TARGET_LOG_DIR='${targetOutputDir}/logs'
+
+    if [ -d "\$SOURCE_LOG_DIR" ]; then
+      mkdir -p "\$TARGET_LOG_DIR"
+      cp -R "\$SOURCE_LOG_DIR/." "\$TARGET_LOG_DIR/"
+    fi
+  """
+}
+
+// Remove logs from an earlier stage before the next E2E run starts.
+void resetStageLogs(String browserToRun) {
+  sh "rm -rf ${functionalOutputRoot}/logs/${browserToRun}"
+}
+
 // Publish an HTML report directory with Jenkins HTML Publisher when the report exists.
 void publishHtmlReport(String dir, String files, String name) {
   String normalizedDir = dir.endsWith('/') ? dir[zeroIndex..-2] : dir
@@ -577,15 +595,17 @@ void runDemoLegacyStage(Map<String, Object> stageConfig, Closure runCommand) {
         runCommand.call()
       }
     } finally {
+      String stageOutputDir = "${functionalOutputRoot}/prod/${browserToRun}/${outputDirName}"
       prepareLegacyDemoArtifacts(browserToRun, outputDirName, reportFilePrefix)
+      prepareStageLogs(browserToRun, stageOutputDir)
       archiveArtifact(functionalProdArtifactsPath)
       if (archiveAccountEvidence) {
         archiveArtifact("${functionalOutputRoot}/account_evidence/created-accounts.json")
         archiveArtifact("${functionalOutputRoot}/account_evidence/**")
       }
       archiveArtifact("${functionalOutputRoot}/screenshots/${browserToRun}/**")
-      archiveArtifact("${functionalOutputRoot}/prod/${browserToRun}/${outputDirName}/**")
-      archiveZephyrReports("${functionalOutputRoot}/prod/${browserToRun}/${outputDirName}")
+      archiveArtifact("${stageOutputDir}/**")
+      archiveZephyrReports(stageOutputDir)
       publishHtmlReport(
         "${functionalOutputRoot}/prod/${browserToRun}/${outputDirName}/cucumber/",
         "${reportFilePrefix}-report.html",
@@ -802,11 +822,14 @@ void runSmokeStage(
 ) {
   runNightlyStage(enabled, smokeStageName, failureResultValue, 'Smoke tests failed') {
     try {
+      resetStageLogs(browserToRun)
       builder.yarn('test:smoke')
     } finally {
       copyZephyrReports(smokeOutputRoot, "${smokeOutputRoot}/prod/${browserToRun}")
+      prepareStageLogs(browserToRun, "${smokeOutputRoot}")
       archiveArtifact("${smokeOutputRoot}/prod/**")
       archiveArtifact("${smokeOutputRoot}/screenshots/${browserToRun}/**")
+      archiveArtifact("${smokeOutputRoot}/logs/${browserToRun}/**")
       archiveZephyrReports("${smokeOutputRoot}/prod/${browserToRun}")
       publishHtmlReport(
         "${smokeOutputRoot}/prod/${browserToRun}/cucumber/",
@@ -829,11 +852,15 @@ void runFunctionalStage(
     String functionalCommand = shouldRunWithZephyr ? 'zephyr:test:functional' : 'test:functional'
 
     try {
+      resetStageLogs(browserToRun)
       builder.yarn(functionalCommand)
     } finally {
       copyZephyrReports(functionalOutputRoot, "${functionalOutputRoot}/prod/${browserToRun}")
+      prepareStageLogs(browserToRun, "${functionalOutputRoot}/prod/${browserToRun}")
       archiveArtifact(functionalProdArtifactsPath)
       archiveArtifact("${functionalOutputRoot}/screenshots/${browserToRun}/**")
+      archiveArtifact("${functionalOutputRoot}/prod/${browserToRun}/logs/**")
+      archiveZephyrReports("${functionalOutputRoot}/prod/${browserToRun}")
       archiveZephyrReports("${functionalOutputRoot}/prod/${browserToRun}")
       publishHtmlReport(
         "${functionalOutputRoot}/prod/${browserToRun}/cucumber/",
@@ -857,11 +884,14 @@ void runLegacyStage(
     String legacyCommand = shouldRunWithZephyr ? 'zephyr:test:legacy' : 'test:functional --mode=legacy'
 
     try {
+      resetStageLogs(browserToRun)
       builder.yarn(legacyCommand)
     } finally {
       copyZephyrReports(functionalOutputRoot, "${functionalOutputRoot}/prod/${browserToRun}/legacy")
+      prepareStageLogs(browserToRun, "${functionalOutputRoot}/prod/${browserToRun}/legacy")
       archiveArtifact("${functionalOutputRoot}/prod/${browserToRun}/legacy/**")
       archiveArtifact("${functionalOutputRoot}/screenshots/${browserToRun}/legacy/**")
+      archiveArtifact("${functionalOutputRoot}/prod/${browserToRun}/legacy/logs/**")
       archiveZephyrReports("${functionalOutputRoot}/prod/${browserToRun}/legacy")
       publishHtmlReport(
         "${functionalOutputRoot}/prod/${browserToRun}/legacy/cucumber/",
@@ -950,6 +980,10 @@ withNightlyPipeline(type, product, component) {
   loadVaultSecrets(nightlySecrets())
   env.TEST_URL = nightlyTestUrlStaging
   configureStagingLegacyGatewayUrl()
+
+  onMaster {
+    enableSlackNotifications('#opal-nightly-builds')
+  }
 
   before('akschartsinstall') {
     onPR {
