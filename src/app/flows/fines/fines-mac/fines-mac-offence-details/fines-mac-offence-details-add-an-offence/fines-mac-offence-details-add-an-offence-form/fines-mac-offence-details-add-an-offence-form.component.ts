@@ -176,6 +176,7 @@ export class FinesMacOffenceDetailsAddAnOffenceFormComponent
   private initialAddAnOffenceDetailsSetup(): void {
     const offenceDetailsDraft = structuredClone(this.finesMacOffenceDetailsStore.offenceDetailsDraft());
     const hasOffenceDetailsDraft = offenceDetailsDraft.length > 0;
+    const hasSavedDraftChanges = hasOffenceDetailsDraft && this.finesMacOffenceDetailsStore.offenceDetailsDraftDirty();
     const impositionsKey = 'fm_offence_details_impositions';
     let formData;
 
@@ -228,6 +229,14 @@ export class FinesMacOffenceDetailsAddAnOffenceFormComponent
         this.setupResultCodeListener(index);
       }
     }
+
+    // Returning from the nested minor-creditor flow should still count as unsaved work
+    // until the offence itself is saved or reviewed.
+    if (hasSavedDraftChanges) {
+      this.form.markAsDirty();
+      this.finesMacStore.setUnsavedChanges(true);
+    }
+
     this.today = this.dateService.toFormat(this.dateService.getDateNow(), 'dd/MM/yyyy');
   }
 
@@ -428,6 +437,7 @@ export class FinesMacOffenceDetailsAddAnOffenceFormComponent
   private updateOffenceDetailsDraft(formData: IFinesMacOffenceDetailsState): void {
     const offenceDetailsFineMacStore = structuredClone(this.finesMacStore.offenceDetails());
     const draftOffenceDetails = structuredClone(this.finesMacOffenceDetailsStore.offenceDetailsDraft());
+    const offenceDetailsDraftDirty = this.finesMacOffenceDetailsStore.offenceDetailsDraftDirty();
 
     const offenceDetailsIndex = this.form.get('fm_offence_details_id')!.value;
 
@@ -447,6 +457,7 @@ export class FinesMacOffenceDetailsAddAnOffenceFormComponent
     }
 
     this.finesMacOffenceDetailsStore.setOffenceDetailsDraft(draftOffenceDetails);
+    this.finesMacOffenceDetailsStore.setOffenceDetailsDraftDirty(offenceDetailsDraftDirty || this.hasUnsavedChanges());
   }
 
   /**
@@ -652,6 +663,9 @@ export class FinesMacOffenceDetailsAddAnOffenceFormComponent
       'fm_offence_details_offence_id',
       this.retryOffenceCodeLookup,
     );
+    if (this.form.valid) {
+      this.finesMacOffenceDetailsStore.setOffenceDetailsDraftDirty(false);
+    }
     super.handleFormSubmit(event);
   }
 

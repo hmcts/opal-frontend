@@ -419,7 +419,7 @@ describe('Defendant Account Summary - At a Glance Tab', () => {
       setupAccountEnquiryComponent(componentProperties);
       cy.contains(DOM.linkText, 'Change').should('be.visible');
 
-      cy.contains(DOM.linkText, 'Change').click();
+      cy.contains(DOM.linkText, 'Change').first().click();
 
       // Verify navigation to the Comments screen
       cy.get('app-fines-acc-comments-add-form').should('exist');
@@ -479,7 +479,7 @@ describe('Defendant Account Summary - At a Glance Tab', () => {
         interceptedRoutes: componentProperties.interceptedRoutes?.filter((route) => route !== '/access-denied'),
       });
       cy.contains(DOM.linkText, 'Change').should('be.visible');
-      cy.contains(DOM.linkText, 'Change').click();
+      cy.contains(DOM.linkText, 'Change').first().click();
 
       // Verify navigation was triggered and the live component resolves the denied destination
       cy.get('@routerNavigate').should('have.been.called');
