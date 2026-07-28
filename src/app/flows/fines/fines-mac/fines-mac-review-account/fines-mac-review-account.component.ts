@@ -441,18 +441,14 @@ export class FinesMacReviewAccountComponent extends AbstractFormParentBaseCompon
    * If true, the route will be treated as an absolute path.
    */
   public handleDeleteAccount(event: Event, nonRelative = false): void {
-          window.alert('in delete alert');
     event.preventDefault();
     this.finesMacStore.setDeleteFromCheckAccount(true);
-    if (this.accountId > 0) {
-      window.alert(this.accountId);
-      const route =
-        this.accountId > 0
-          ? `${this.finesMacRoutes.children.deleteAccountConfirmation}/${this.accountId}`
-          : this.finesMacRoutes.children.deleteAccountConfirmation;
+    const route =
+      this.accountId > 0
+        ? `${this.finesMacRoutes.children.deleteAccountConfirmation}/${this.accountId}`
+        : this.finesMacRoutes.children.deleteAccountConfirmation;
 
-      this.routerNavigate(route, nonRelative, event);
-    }
+    this.routerNavigate(route, nonRelative, event);
   }
 
   public ngOnDestroy(): void {
