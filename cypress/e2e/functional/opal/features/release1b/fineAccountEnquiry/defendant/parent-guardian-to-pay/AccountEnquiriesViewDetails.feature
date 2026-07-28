@@ -64,15 +64,15 @@ Feature: Defendant - Parent or guardian to pay - Account Enquiries – View Acco
   Rule: Youth-only account with parent or guardian details
     Background:
       Given I create a "adultOrYouthOnly" draft account with the following details and set status "Publishing Pending" using user "opal-test-10@dev.platform.hmcts.net":
-        | Account_status                      | Submitted            |
-        | account.defendant.forenames         | Jamie                |
-        | account.defendant.surname           | RemovePgYouth{uniq}  |
-        | account.account_type                | Fine                 |
-        | account.prosecutor_case_reference   | PCR-AUTO-017         |
-        | account.collection_order_made       | false                |
-        | account.collection_order_made_today | false                |
-        | account.payment_card_request        | false                |
-        | account.defendant.dob               | 2010-05-15           |
+        | Account_status                      | Submitted           |
+        | account.defendant.forenames         | Jamie               |
+        | account.defendant.surname           | RemovePgYouth{uniq} |
+        | account.account_type                | Fine                |
+        | account.prosecutor_case_reference   | PCR-AUTO-017        |
+        | account.collection_order_made       | false               |
+        | account.collection_order_made_today | false               |
+        | account.payment_card_request        | false               |
+        | account.defendant.dob               | 2010-05-15          |
       When I search for the account by last name "RemovePgYouth{uniq}" and open the latest result
       Then I should see the page header contains "REMOVEPGYOUTH{uniqUpper}"
       When I go to the Defendant details section and the header is "Defendant details"
@@ -127,7 +127,7 @@ Feature: Defendant - Parent or guardian to pay - Account Enquiries – View Acco
       # AC3 – Navigate to Parent or guardian details
       When I go to the Parent or guardian details section and the header is "Parent or guardian details"
 
-    @R1B @JIRA-STORY:PO-2671 @JIRA-EPIC:PO-8248
+    @R1B @JIRA-STORY:PO-2671 @JIRA-EPIC:PO-8248 @only
     Scenario Outline: AC3a-AC3e Parent or guardian tab Change links open the correct amend screens
       # AC3a – the heading Change link is removed
       # AC3b – section Change links are shown for Parent or guardian details, Contact details, and Employer details
