@@ -326,12 +326,12 @@ describe('Minor Creditor Account Enquiry - History and notes tab', () => {
         .within(() => {
           cy.get('input, select, textarea, button').should('not.exist');
         });
-      cy.get(HISTORY_AND_NOTES_TAB.tableRows).find('a, button, input, select, textarea').should('not.exist');
+      cy.get(HISTORY_AND_NOTES_TAB.tableRows).find('input, select, textarea').should('not.exist');
     },
   );
 
   it(
-    'AC4 and AC7. renders details fragments with pipes, hyphens, bold link text, line2, and account link events',
+    'AC3. renders details fragments with pipes, hyphens, bold link text, link events, and line2',
     { tags: buildTags(MINOR_CREDITOR_HISTORY_STORY_TAG, MINOR_CREDITOR_HISTORY_EPIC_TAG) },
     () => {
       mountMinorCreditorHistoryTable(
@@ -389,7 +389,7 @@ describe('Minor Creditor Account Enquiry - History and notes tab', () => {
   );
 
   it(
-    'AC5. renders representative minor creditor amendments, notes, financial details, and special characters',
+    'AC6. renders representative minor creditor amendments, notes, financial details, and special characters',
     { tags: buildTags(MINOR_CREDITOR_HISTORY_STORY_TAG, MINOR_CREDITOR_HISTORY_EPIC_TAG) },
     () => {
       setupMinorCreditorHistoryAndNotesScreenWithTabData(
@@ -475,7 +475,7 @@ describe('Minor Creditor Account Enquiry - History and notes tab', () => {
   );
 
   it(
-    'AC8. renders several hundred history items in one scrollable table without pagination',
+    'AC6. renders several hundred history items in one scrollable table without pagination',
     { tags: buildTags(MINOR_CREDITOR_HISTORY_STORY_TAG, MINOR_CREDITOR_HISTORY_EPIC_TAG) },
     () => {
       setupMinorCreditorHistoryAndNotesScreenWithTabData(
