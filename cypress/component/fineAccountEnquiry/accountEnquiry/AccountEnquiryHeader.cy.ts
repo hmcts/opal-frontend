@@ -189,9 +189,6 @@ describe('Account Enquiry - Defendant Header', () => {
     'AC2: shows ONLY "Youth Account" when youth=true, debtor=Defendant, and no Parent/Guardian',
     { tags: [...buildTags('@JIRA-STORY:PO-1593'), '@JIRA-EPIC:PO-812', '@JIRA-TEST-KEY:PO-4208'] },
     () => {
-      const dateOfBirth = new Date();
-      dateOfBirth.setFullYear(dateOfBirth.getFullYear() - 15); // 15 years old
-
       const header = structuredClone(DEFENDANT_HEADER_YOUTH_MOCK);
       header.is_youth = true;
       header.debtor_type = 'Defendant';
@@ -207,8 +204,6 @@ describe('Account Enquiry - Defendant Header', () => {
       interceptAtAGlance(77, OPAL_FINES_ACCOUNT_DEFENDANT_AT_A_GLANCE_MOCK, '1');
 
       setupAccountEnquiryComponent(componentProperties);
-
-      cy.log('header', header);
 
       cy.get(DOM.statusTag).should('exist').and('contain.text', 'Youth Account');
     },
