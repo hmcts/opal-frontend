@@ -5,6 +5,8 @@ const log = createScopedLogger('AccountDetailsMinorCreditorActions');
 
 /** Actions for the Creditor tab summary on a minor creditor account. */
 export class AccountDetailsMinorCreditorActions {
+  private static readonly HEADER_SUMMARY_OVERRIDE_ALIAS = 'minorCreditorHeaderSummaryOverride';
+
   /**
    * Clicks the Creditor tab "Change" link and optionally waits for the amend form to appear.
    *
@@ -45,5 +47,40 @@ export class AccountDetailsMinorCreditorActions {
       .should('be.visible')
       .invoke('text')
       .then((text) => expect(text.trim().toLowerCase()).to.contain(expected.trim().toLowerCase()));
+  }
+
+  /**
+   * Intercepts the minor creditor header summary response and overrides the awarded value.
+   *
+   * @param awardedValue - Numeric awarded value to return from the stubbed response.
+   */
+  public stubHeaderSummaryAwardedValue(awardedValue: number): void {
+    log('intercept', 'Overriding minor creditor header summary awarded value', { awardedValue });
+
+    cy.intercept('GET', '**/minor-creditor-accounts/*/header-summary', (req) => {
+      req.continue((res) => {
+        const body = res.body as { financials?: { awarded?: number } };
+
+        if (!body?.financials) {
+          throw new Error('Expected minor creditor header summary response to include financials');
+        }
+
+        body.financials.awarded = awardedValue;
+        res.send({ body });
+      });
+    }).as(AccountDetailsMinorCreditorActions.HEADER_SUMMARY_OVERRIDE_ALIAS);
+  }
+
+  /**
+   * Asserts the awarded value returned by the intercepted minor creditor header summary call.
+   *
+   * @param expectedAwardedValue - Expected numeric awarded value.
+   */
+  public assertHeaderSummaryAwardedValue(expectedAwardedValue: number): void {
+    log('assert', 'Asserting minor creditor header summary awarded value', { awardedValue: expectedAwardedValue });
+
+    cy.wait(`@${AccountDetailsMinorCreditorActions.HEADER_SUMMARY_OVERRIDE_ALIAS}`)
+      .its('response.body.financials.awarded')
+      .should('eq', expectedAwardedValue);
   }
 }
