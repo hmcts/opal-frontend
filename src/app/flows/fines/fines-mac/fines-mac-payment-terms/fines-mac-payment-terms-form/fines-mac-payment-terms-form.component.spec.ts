@@ -103,7 +103,7 @@ describe('FinesMacPaymentTermsFormComponent', () => {
     expect(component).toBeTruthy();
   });
 
-  it('should emit form submit event with form value', () => {
+  it('should emit nested flow form submit event with form value', () => {
     const event = { submitter: { className: 'nested-flow' } } as SubmitEvent;
     formSubmit.nestedFlow = true;
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -116,7 +116,7 @@ describe('FinesMacPaymentTermsFormComponent', () => {
     expect(component['formSubmit'].emit).toHaveBeenCalled();
   });
 
-  it('should emit form submit event with form value', () => {
+  it('should emit standard flow form submit event with form value', () => {
     const event = {} as SubmitEvent;
     formSubmit.nestedFlow = false;
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -287,7 +287,7 @@ describe('FinesMacPaymentTermsFormComponent', () => {
     expect(component.dateInPast).toBe(false);
   });
 
-  it('should update form controls based on selected payment term', () => {
+  it('should update form controls based on pay in full payment term', () => {
     const paymentTermsControl = component.form.controls['fm_payment_terms_payment_terms'];
     const selectedTerm = 'payInFull';
 
@@ -299,7 +299,7 @@ describe('FinesMacPaymentTermsFormComponent', () => {
     expect(removeControlsSpy).toHaveBeenCalled();
   });
 
-  it('should update form controls based on selected payment term', () => {
+  it('should update form controls based on instalments only payment term', () => {
     const paymentTermsControl = component.form.controls['fm_payment_terms_payment_terms'];
     const selectedTerm = 'instalmentsOnly';
 
@@ -349,7 +349,7 @@ describe('FinesMacPaymentTermsFormComponent', () => {
     expect(mockDateService.calculateAge).toHaveBeenCalledWith(dob);
   });
 
-  it('should set accessDefaultDates to true defendant type parent or guardian to pay', () => {
+  it('should set accessDefaultDates to true for parent or guardian to pay defendant type', () => {
     component.defendantType = FINES_MAC_DEFENDANT_TYPES_KEYS.pgToPay;
 
     component['determineAccess']();
@@ -358,7 +358,7 @@ describe('FinesMacPaymentTermsFormComponent', () => {
     expect(component.accessCollectionOrder).toBe(true);
   });
 
-  it('should set accessDefaultDates to true defendant type parent or guardian to pay', () => {
+  it('should set accessDefaultDates to false for company defendant type', () => {
     component.defendantType = FINES_MAC_DEFENDANT_TYPES_KEYS.company;
 
     component['determineAccess']();
@@ -582,7 +582,7 @@ describe('FinesMacPaymentTermsFormComponent', () => {
     expect(component.permissions[FINES_PERMISSIONS['collection-order']]).toBeTruthy();
   });
 
-  it('should update form controls based on selected enforcement action', () => {
+  it('should update form controls based on PRIS enforcement action', () => {
     component.defendantType = FINES_MAC_DEFENDANT_TYPES_KEYS.adultOrYouthOnly;
     component['addEnforcementFields']();
     const addEnforcementActionControl = component.form.controls['fm_payment_terms_add_enforcement_action'];
@@ -602,7 +602,7 @@ describe('FinesMacPaymentTermsFormComponent', () => {
     expect(removeControlsSpy).toHaveBeenCalledTimes(4);
   });
 
-  it('should update form controls based on selected enforcement action', () => {
+  it('should update form controls based on NOENF enforcement action', () => {
     component.defendantType = FINES_MAC_DEFENDANT_TYPES_KEYS.adultOrYouthOnly;
     component['addEnforcementFields']();
     const addEnforcementActionControl = component.form.controls['fm_payment_terms_add_enforcement_action'];

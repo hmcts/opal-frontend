@@ -658,7 +658,7 @@ describe('FinesAccPayloadService', () => {
       expect(result.facc_party_add_amend_convert_employer_post_code).toBe('BU5 1NE');
     });
 
-    it('should transform payload using the transformation service', () => {
+    it('should transform defendant payload using the transformation service', () => {
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
       vi.spyOn<any, any>(service['transformationService'], 'transformObjectValues').mockImplementation(
         // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -831,7 +831,7 @@ describe('FinesAccPayloadService', () => {
         });
       });
 
-      it('should transform payload using the transformation service', () => {
+      it('should transform comments payload using the transformation service', () => {
         // eslint-disable-next-line @typescript-eslint/no-explicit-any
         vi.spyOn<any, any>(service['transformationService'], 'transformObjectValues').mockImplementation(
           // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -850,7 +850,7 @@ describe('FinesAccPayloadService', () => {
         expect(result).toEqual(inputPayload);
       });
 
-      it('should transform payload using the transformation service', () => {
+      it('should transform collection order payload using the transformation service', () => {
         // eslint-disable-next-line @typescript-eslint/no-explicit-any
         vi.spyOn<any, any>(service['transformationService'], 'transformObjectValues').mockImplementation(
           // eslint-disable-next-line @typescript-eslint/no-explicit-any

@@ -106,7 +106,7 @@ describe('transformPaymentTermsData', () => {
     expect(result.facc_payment_terms_default_days_in_jail).toBeNull();
   });
 
-  it('should map prevent_payment_card from resultData when present', () => {
+  it('should map prevent_payment_card from resultData when present for payment terms', () => {
     const result = transformPaymentTermsData(
       FINES_ACC_BASE_PAYMENT_TERMS_DATA,
       MOCK_RESULT_DATA_WITH_PREVENT_PAYMENT_CARD,
@@ -115,19 +115,19 @@ describe('transformPaymentTermsData', () => {
     expect(result.facc_payment_terms_prevent_payment_card).toBe(true);
   });
 
-  it('should map prevent_payment_card as false when resultData has prevent_payment_card false', () => {
+  it('should map prevent_payment_card as false for payment terms when resultData has prevent_payment_card false', () => {
     const result = transformPaymentTermsData(FINES_ACC_BASE_PAYMENT_TERMS_DATA, MOCK_RESULT_DATA);
 
     expect(result.facc_payment_terms_prevent_payment_card).toBe(false);
   });
 
-  it('should set prevent_payment_card as null when resultData is null', () => {
+  it('should set prevent_payment_card as null for payment terms when resultData is null', () => {
     const result = transformPaymentTermsData(FINES_ACC_BASE_PAYMENT_TERMS_DATA, null);
 
     expect(result.facc_payment_terms_prevent_payment_card).toBeNull();
   });
 
-  it('should map prevent_payment_card from resultData when present', () => {
+  it('should map prevent_payment_card from resultData when present for payment terms without collection order', () => {
     const result = transformPaymentTermsData(
       FINES_ACC_BASE_PAYMENT_TERMS_DATA,
       MOCK_RESULT_DATA_WITH_PREVENT_PAYMENT_CARD,
@@ -136,13 +136,13 @@ describe('transformPaymentTermsData', () => {
     expect(result.facc_payment_terms_prevent_payment_card).toBe(true);
   });
 
-  it('should map prevent_payment_card as false when resultData has prevent_payment_card false', () => {
+  it('should map prevent_payment_card as false for payment terms without collection order when resultData has prevent_payment_card false', () => {
     const result = transformPaymentTermsData(FINES_ACC_BASE_PAYMENT_TERMS_DATA, MOCK_RESULT_DATA);
 
     expect(result.facc_payment_terms_prevent_payment_card).toBe(false);
   });
 
-  it('should set prevent_payment_card as null when resultData is null', () => {
+  it('should set prevent_payment_card as null for payment terms without collection order when resultData is null', () => {
     const result = transformPaymentTermsData(FINES_ACC_BASE_PAYMENT_TERMS_DATA, null);
 
     expect(result.facc_payment_terms_prevent_payment_card).toBeNull();
@@ -269,7 +269,7 @@ describe('transformPaymentTermsData', () => {
     expect(result).toEqual(expectedResult);
   });
 
-  it('should map prevent_payment_card from resultData when present', () => {
+  it('should map prevent_payment_card from resultData when present after complete lump sum plus instalments', () => {
     const result = transformPaymentTermsData(
       FINES_ACC_BASE_PAYMENT_TERMS_DATA,
       MOCK_RESULT_DATA_WITH_PREVENT_PAYMENT_CARD,
@@ -278,13 +278,13 @@ describe('transformPaymentTermsData', () => {
     expect(result.facc_payment_terms_prevent_payment_card).toBe(true);
   });
 
-  it('should map prevent_payment_card as false when resultData has prevent_payment_card false', () => {
+  it('should map prevent_payment_card as false after complete lump sum plus instalments when resultData has prevent_payment_card false', () => {
     const result = transformPaymentTermsData(FINES_ACC_BASE_PAYMENT_TERMS_DATA, MOCK_RESULT_DATA);
 
     expect(result.facc_payment_terms_prevent_payment_card).toBe(false);
   });
 
-  it('should set prevent_payment_card as null when resultData is null', () => {
+  it('should set prevent_payment_card as null after complete lump sum plus instalments when resultData is null', () => {
     const result = transformPaymentTermsData(FINES_ACC_BASE_PAYMENT_TERMS_DATA, null);
 
     expect(result.facc_payment_terms_prevent_payment_card).toBeNull();

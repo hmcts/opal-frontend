@@ -94,7 +94,7 @@ describe('FinesMacOffenceDetailsAddAnOffenceComponent', () => {
     expect(component).toBeTruthy();
   });
 
-  it('should handle form submission and navigate to account details', () => {
+  it('should handle standard form submission and navigate to account details', () => {
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     const routerSpy = vi.spyOn<any, any>(component['router'], 'navigate');
     const finesMacState = structuredClone(FINES_MAC_STATE_MOCK);
@@ -111,7 +111,7 @@ describe('FinesMacOffenceDetailsAddAnOffenceComponent', () => {
     });
   });
 
-  it('should handle form submission and navigate to next route', () => {
+  it('should handle nested form submission and stay on the offence details route', () => {
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     const routerSpy = vi.spyOn<any, any>(component['router'], 'navigate');
     const finesMacState = structuredClone(FINES_MAC_STATE_MOCK);
@@ -140,7 +140,7 @@ describe('FinesMacOffenceDetailsAddAnOffenceComponent', () => {
     expect(component.stateUnsavedChanges).toBeFalsy();
   });
 
-  it('should update offence details index when form exists in the state', () => {
+  it('should update offence details index when form exists in the state with null child form data', () => {
     const form = structuredClone(FINES_MAC_OFFENCE_DETAILS_FORM_MOCK);
 
     const existingForm = structuredClone(FINES_MAC_OFFENCE_DETAILS_FORM_MOCK);
@@ -202,7 +202,7 @@ describe('FinesMacOffenceDetailsAddAnOffenceComponent', () => {
     expect(finesMacStore.offenceDetails()[0].childFormData).toBeNull();
   });
 
-  it('should add offence details form to the state when form does not exist', () => {
+  it('should add offence details form with imposition data to the state when form does not exist', () => {
     const form = {
       ...structuredClone(FINES_MAC_OFFENCE_DETAILS_FORM_MOCK),
       formData: {
@@ -227,7 +227,7 @@ describe('FinesMacOffenceDetailsAddAnOffenceComponent', () => {
     expect(finesMacStore.offenceDetails()[0]).toEqual(form);
   });
 
-  it('should add offence details form to the state when form does not exist', () => {
+  it('should add offence details form with draft minor creditor data to the state when form does not exist', () => {
     const form = structuredClone(FINES_MAC_OFFENCE_DETAILS_FORM_MOCK);
     const offenceWithMinorCreditor = structuredClone(FINES_MAC_OFFENCE_DETAILS_DRAFT_STATE_MOCK.offenceDetailsDraft);
     offenceWithMinorCreditor[0].childFormData = [structuredClone(FINES_MAC_OFFENCE_DETAILS_MINOR_CREDITOR_FORM_MOCK)];
@@ -272,7 +272,7 @@ describe('FinesMacOffenceDetailsAddAnOffenceComponent', () => {
     expect(fcostResults[0].name).toBe(OPAL_FINES_MAJOR_CREDITOR_PRETTY_NAME_MOCK);
   });
 
-  it('should update offence details index when form exists in the state', () => {
+  it('should update offence details index when existing form has null child form data', () => {
     const form = structuredClone(FINES_MAC_OFFENCE_DETAILS_FORM_MOCK);
 
     const existingForm = structuredClone(FINES_MAC_OFFENCE_DETAILS_FORM_MOCK);
@@ -289,7 +289,7 @@ describe('FinesMacOffenceDetailsAddAnOffenceComponent', () => {
     expect(finesMacStore.offenceDetails()[0].childFormData).toBeNull();
   });
 
-  it('should add offence details form to the state when form does not exist', () => {
+  it('should add offence details form without draft data to the state when form does not exist', () => {
     const form = structuredClone(FINES_MAC_OFFENCE_DETAILS_FORM_MOCK);
 
     const finesMacState = structuredClone(FINES_MAC_STATE_MOCK);
@@ -324,7 +324,7 @@ describe('FinesMacOffenceDetailsAddAnOffenceComponent', () => {
     expect(component.offenceIndex).toBe(1);
   });
 
-  it('should handle form submission and navigate to account details', () => {
+  it('should handle repeated standard form submission and navigate to account details', () => {
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     const routerSpy = vi.spyOn<any, any>(component['router'], 'navigate');
     const finesMacState = structuredClone(FINES_MAC_STATE_MOCK);
@@ -341,7 +341,7 @@ describe('FinesMacOffenceDetailsAddAnOffenceComponent', () => {
     });
   });
 
-  it('should handle form submission and navigate to next route', () => {
+  it('should handle repeated nested form submission and stay on the offence details route', () => {
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     const routerSpy = vi.spyOn<any, any>(component['router'], 'navigate');
     const finesMacState = structuredClone(FINES_MAC_STATE_MOCK);

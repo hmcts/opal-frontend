@@ -217,14 +217,14 @@ describe('FinesDraftStore', () => {
     expect(store.bannerMessage()).toEqual('');
   });
 
-  it('should get defendant name from account', () => {
+  it('should get individual defendant name from account', () => {
     const account = structuredClone(FINES_MAC_PAYLOAD_ADD_ACCOUNT.account);
     store.setAccount(account);
     const defendantName = store.getDefendantName();
     expect(defendantName).toEqual('Alice Williams');
   });
 
-  it('should get defendant name from account', () => {
+  it('should get company defendant name from account', () => {
     const account = structuredClone(FINES_MAC_PAYLOAD_ADD_ACCOUNT.account);
     account.defendant_type = FINES_MAC_DEFENDANT_TYPES_KEYS.company;
     account.defendant.company_name = 'Tech Innovations Ltd.';

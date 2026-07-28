@@ -270,7 +270,7 @@ describe('FinesSaSearchAccountFormComponent', () => {
     expect(Object.keys(component.searchCriteriaForm.controls)).toEqual([]);
   });
 
-  it('should call super.handleFormSubmit when only account number is used', () => {
+  it('should call super.handleFormSubmit when only account number is used in the current form', () => {
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     const superSubmitSpy = vi.spyOn<any, any>(FinesSaSearchAccountFormComponent.prototype, 'handleFormSubmit');
 
@@ -283,7 +283,7 @@ describe('FinesSaSearchAccountFormComponent', () => {
     expect(superSubmitSpy).toHaveBeenCalled();
   });
 
-  it('should call super.handleFormSubmit when only account number is used', () => {
+  it('should call super.handleFormSubmit when stored individual criteria is present', () => {
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     const superSubmitSpy = vi.spyOn<any, any>(FinesSaSearchAccountFormComponent.prototype, 'handleFormSubmit');
 
