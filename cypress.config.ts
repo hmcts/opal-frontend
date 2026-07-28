@@ -25,6 +25,8 @@ import {
 } from './cypress/support/tasks/accountCaptureTask';
 import { cleanupEmptyScreenshotDirs, registerScreenshotTasks } from './cypress/support/tasks/screenshotTask';
 
+const installLogsPrinter = require('cypress-terminal-report/src/installLogsPrinter');
+
 // eslint-disable-next-line @typescript-eslint/no-var-requires
 const webpackPreprocessor = require('@cypress/webpack-preprocessor');
 
@@ -276,6 +278,15 @@ async function setupNodeEvents(
       `${process.env.TEST_STAGE}-output/prod/${browserToRun}/legacy/cucumber/` +
       `${process.env.TEST_MODE}-report-${process.env.CYPRESS_THREAD}.ndjson`;
   }
+
+  installLogsPrinter(on, {
+    printLogsToFile: 'onFail',
+    outputRoot: `functional-output/logs/${resolvedBrowserToRun}`,
+    specRoot: 'cypress/e2e',
+    outputTarget: {
+      'cypress-terminal|txt': 'txt',
+    },
+  });
 
   return config;
 }

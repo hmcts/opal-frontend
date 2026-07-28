@@ -8,21 +8,7 @@ Feature: Defendant - Company - Account Enquiries - Add Enforcement Override
     Given I am logged in with email "opal-test@dev.platform.hmcts.net"
     And I clear all approved accounts
 
-  Rule: Adult or youth account
-    Background:
-      Given I create a "adultOrYouthOnly" draft account with the following details and set status "Publishing Pending" using user "opal-test-10@dev.platform.hmcts.net":
-        | Account_status                                  | Submitted                    |
-        | account.defendant.forenames                     | Evan                         |
-        | account.defendant.surname                       | AddEnfOverride{uniq}         |
-        | account.defendant.email_address_1               | evan.override{uniq}@test.com |
-        | account.defendant.telephone_number_home         | 02078259316                  |
-        | account.account_type                            | Fine                         |
-        | account.prosecutor_case_reference               | PCR-AUTO-019                 |
-        | account.collection_order_made                   | false                        |
-        | account.collection_order_made_today             | false                        |
-        | account.payment_card_request                    | false                        |
-        | account.defendant.dob                           | 2002-05-15                   |
-        | account.payment_terms.enforcements[0].result_id | PRIS                         |
+  Rule: Company account on NOENF
     @R1B @JIRA-STORY:PO-1843 @JIRA-EPIC:PO-1675 @JIRA-LABEL:account-enquiry @JIRA-TEST-KEY:PO-8008
     Scenario: Company removing enforcement hold returns to add additional enforcement action
       Given I create a "company" draft account with the following details and set status "Publishing Pending" using user "opal-test-10@dev.platform.hmcts.net":
@@ -44,21 +30,8 @@ Feature: Defendant - Company - Account Enquiries - Add Enforcement Override
       And I press the "Remove" button
       Then I should see the add new enforcement action page
       And the enforcement hold success banner is "Enforcement hold removed"
-  Rule: Adult or youth account
-    Background:
-      Given I create a "adultOrYouthOnly" draft account with the following details and set status "Publishing Pending" using user "opal-test-10@dev.platform.hmcts.net":
-        | Account_status                                  | Submitted                    |
-        | account.defendant.forenames                     | Evan                         |
-        | account.defendant.surname                       | AddEnfOverride{uniq}         |
-        | account.defendant.email_address_1               | evan.override{uniq}@test.com |
-        | account.defendant.telephone_number_home         | 02078259316                  |
-        | account.account_type                            | Fine                         |
-        | account.prosecutor_case_reference               | PCR-AUTO-019                 |
-        | account.collection_order_made                   | false                        |
-        | account.collection_order_made_today             | false                        |
-        | account.payment_card_request                    | false                        |
-        | account.defendant.dob                           | 2002-05-15                   |
-        | account.payment_terms.enforcements[0].result_id | PRIS                         |
+
+  Rule: Company account on NOENF
     @R1B @JIRA-STORY:PO-1843 @JIRA-EPIC:PO-1675 @JIRA-LABEL:account-enquiry @JIRA-TEST-KEY:PO-8010
     Scenario: Remove enforcement hold page is displayed for a company account on NOENF
       Given I create a "company" draft account with the following details and set status "Publishing Pending" using user "opal-test-10@dev.platform.hmcts.net":
@@ -91,11 +64,11 @@ Feature: Defendant - Company - Account Enquiries - Add Enforcement Override
         | account.collection_order_made_today             | false                               |
         | account.payment_card_request                    | false                               |
         | account.payment_terms.enforcements[0].result_id | PRIS                                |
-
-    @R1B @JIRA-STORY:PO-1867 @JIRA-STORY:PO-1863 @JIRA-EPIC:PO-1675 @JIRA-TEST-KEY:PO-5298
-    Scenario: Company save an enforcement override and return to the Enforcement tab
       When I open the company account details for "Add Override Company{uniq}"
       And I go to the Enforcement tab
+
+    @R1B @JIRA-STORY:PO-1867 @JIRA-STORY:PO-1863 @JIRA-EPIC:PO-1675 @JIRA-TEST-KEY:PO-5298
+    Scenario: Saving a company enforcement override returns to the Enforcement tab with the new summary value
       And I open the add enforcement override form
       When I add the enforcement override "ABDC" with the enforcer "The DWP (3)"
       Then I should return to the Enforcement tab
@@ -105,31 +78,48 @@ Feature: Defendant - Company - Account Enquiries - Add Enforcement Override
         | enforcer id                    | 770000000003 |
       And the enforcement override summary shows:
         | enforcement override | Application made for Benefit Deductions (ABDC) |
-      # AC4a/AC4b/AC4c - Change the enforcement court to a different value and verify the Enforcement tab, new value, and success banner
+
+    @R1B @JIRA-STORY:PO-1863 @JIRA-EPIC:PO-1675
+    Scenario: Changing an existing company enforcement court returns to the Enforcement tab with a success banner
+      Given the enforcement court summary shows an existing value
       When I change the enforcement court to a different value
       Then I should return to the Enforcement tab
       And the enforcement court summary shows the selected value
       And the enforcement court success banner is "Enforcement court changed"
-      # AC4ci - Save the same enforcement court value again and verify no success banner is shown
+
+    @R1B @JIRA-STORY:PO-1863 @JIRA-EPIC:PO-1675
+    Scenario: Saving the same changed company enforcement court again does not display a success banner
+      Given the enforcement court summary shows an existing value
+      When I change the enforcement court to a different value
+      Then I should return to the Enforcement tab
+      And the enforcement court summary shows the selected value
+      And the enforcement court success banner is "Enforcement court changed"
       When I save the same enforcement court value again
       Then I should return to the Enforcement tab
       And the enforcement court summary shows the selected value
       And the enforcement success banner is not displayed
-      # AC5a - Cancel without selecting a value returns to the Enforcement tab without confirmation
+
+    @R1B @JIRA-STORY:PO-1863 @JIRA-EPIC:PO-1675
+    Scenario: Cancelling company enforcement court change without edits returns to the Enforcement tab
+      Given the enforcement court summary shows an existing value
       When I open the change enforcement court form
       And I cancel without entering data
       Then I should return to the Enforcement tab
+      And the enforcement court summary still shows the original value
+
+    @R1B @JIRA-STORY:PO-1863 @JIRA-EPIC:PO-1675
+    Scenario: Discarding an edited company enforcement court change keeps the changed value on the Enforcement tab
+      Given the enforcement court summary shows an existing value
+      When I change the enforcement court to a different value
+      Then I should return to the Enforcement tab
       And the enforcement court summary shows the selected value
-      # AC5b - Cancel after selecting a value shows the route guard confirmation before returning to the Enforcement tab
       When I open the change enforcement court form
       And I cancel the change enforcement court form after selecting a value and discarding changes
       Then I should return to the Enforcement tab
       And the enforcement court summary shows the selected value
 
     @R1B @JIRA-STORY:PO-1843 @JIRA-EPIC:PO-1675 @JIRA-TEST-KEY:PO-8013
-    Scenario: Company save an enforcement action that directs to additional enforcement action
-      When I open the company account details for "Add Override Company{uniq}"
-      And I go to the Enforcement tab
+    Scenario: Saving a withdrawn company enforcement action takes the user to add another enforcement action
       And I open the add enforcement action form
       And I choose the enforcement action "Withdrawn (WDN)"
       And I continue to the confirm enforcement action page
@@ -137,4 +127,3 @@ Feature: Defendant - Company - Account Enquiries - Add Enforcement Override
       And I add the enforcement action
       And the enforcement action added success banner is "Enforcement action added"
       Then I should see the add new enforcement action page
-
