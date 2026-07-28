@@ -129,4 +129,11 @@ export class AccountSearchNavActions {
   public verifyMinorCreditorsTabActive(): void {
     this.verifyTabSelected(Nav.minorCreditorsTab, 'Minor Creditors');
   }
+
+  /** Verifies the Major Creditors tab is not available. */
+  public assertMajorCreditorsTabNotVisible(): void {
+    log('assert', 'Major Creditors tab is not visible');
+    cy.get(Nav.tabsContainer, { timeout: 10_000 }).should('be.visible');
+    cy.get(Nav.majorCreditorsTab).should('not.exist');
+  }
 }
