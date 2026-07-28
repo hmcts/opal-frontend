@@ -57,7 +57,7 @@ describe('Account Enquiry - Defendant Header', () => {
       interceptDefendantHeader(77, DEFENDANT_HEADER_MOCK, '1');
       interceptAtAGlance(77, OPAL_FINES_ACCOUNT_DEFENDANT_AT_A_GLANCE_MOCK, '1');
 
-      setupAccountEnquiryComponent(minorCreditorComponentProperties);
+      setupAccountEnquiryComponent(componentProperties);
 
       cy.get(DOM.pageHeader).should('exist');
       cy.get(DOM.headingWithCaption).should('exist');

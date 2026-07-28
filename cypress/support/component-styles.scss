@@ -1,5 +1,2 @@
 @use '@ministryofjustice/frontend/moj/all' as moj;
 @use 'govuk-frontend/dist/govuk/index' as *;
-
-// Import the shared stylesheet directly so component tests use the same global styles.
-@use '../../src/styles.scss';
