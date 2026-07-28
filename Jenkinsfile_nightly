@@ -981,6 +981,10 @@ withNightlyPipeline(type, product, component) {
   env.TEST_URL = nightlyTestUrlStaging
   configureStagingLegacyGatewayUrl()
 
+  onMaster {
+    enableSlackNotifications('#opal-nightly-builds')
+  }
+
   before('akschartsinstall') {
     onPR {
       env.DEV_ENABLE_OPAL_FINES_SERVICE = true
