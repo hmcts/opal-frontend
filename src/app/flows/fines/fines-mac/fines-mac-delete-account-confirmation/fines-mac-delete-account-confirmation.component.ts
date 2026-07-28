@@ -22,10 +22,7 @@ import { IOpalFinesDraftAccountPatchRequestPayload } from '@services/fines/opal-
   templateUrl: './fines-mac-delete-account-confirmation.component.html',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class FinesMacDeleteAccountConfirmationComponent
-  extends AbstractFormParentBaseComponent
-  implements OnInit, OnDestroy
-{
+export class FinesMacDeleteAccountConfirmationComponent extends AbstractFormParentBaseComponent implements OnInit, OnDestroy {
   private readonly ngUnsubscribe = new Subject<void>();
   private readonly route = inject(ActivatedRoute);
   private readonly utilsService = inject(UtilsService);
