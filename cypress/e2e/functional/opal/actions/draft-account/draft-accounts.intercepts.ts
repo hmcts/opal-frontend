@@ -19,11 +19,31 @@ type DraftAccountSummary = {
 };
 
 const approvedDraftListings: DraftAccountSummary[] = [];
+let approvedDraftListingsAttemptKey = '';
 
 /**
  * Network stubs for draft account API calls used in E2E specs.
  */
 export class DraftAccountsInterceptActions {
+  /**
+   * Resets approved stub state when Cypress starts a new scenario attempt, including retries.
+   */
+  private resetApprovedListingsForNewAttempt(): void {
+    const attemptKey = String(Cypress.env('currentScenarioUniq') || '').trim();
+    if (!attemptKey || approvedDraftListingsAttemptKey === attemptKey) {
+      return;
+    }
+
+    log('intercept', 'Resetting approved draft listings for new scenario attempt', {
+      previousAttemptKey: approvedDraftListingsAttemptKey || 'none',
+      attemptKey,
+    });
+
+    approvedDraftListings.length = 0;
+    approvedDraftListingsAttemptKey = attemptKey;
+    Cypress.env('approvedListingsCache', []);
+  }
+
   /**
    * Stubs draft account listings to return fixed penalty summaries filtered by status.
    */
@@ -90,6 +110,7 @@ export class DraftAccountsInterceptActions {
    */
   createApprovedAccount(accountType: DraftPayloadType, table: DataTable): void {
     log('intercept', 'Creating approved account stub', { accountType });
+    this.resetApprovedListingsForNewAttempt();
     const overrides = convertDataTableToNestedObject(table);
     const payloadFile = this.resolveApprovedPayloadFile(accountType);
 
@@ -122,6 +143,7 @@ export class DraftAccountsInterceptActions {
    */
   clearApprovedListings(): void {
     log('intercept', 'Clearing approved draft listings stub');
+    approvedDraftListingsAttemptKey = String(Cypress.env('currentScenarioUniq') || '').trim();
     approvedDraftListings.length = 0;
     Cypress.env('approvedListingsCache', []);
     this.stubApprovedDraftListings([]);

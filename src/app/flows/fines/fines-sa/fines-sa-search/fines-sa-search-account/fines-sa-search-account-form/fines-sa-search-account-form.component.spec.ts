@@ -340,4 +340,9 @@ describe('FinesSaSearchAccountFormComponent', () => {
       expect(component.formErrorSummaryMessage).toEqual([]);
     });
   });
+
+  it('should set autocomplete="off" on the form', () => {
+    fixture.detectChanges();
+    expect(fixture.nativeElement.querySelector('form')?.getAttribute('autocomplete')).toBe('off');
+  });
 });
