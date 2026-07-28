@@ -6,16 +6,12 @@ import { beforeEach, describe, expect, it, vi } from 'vitest';
 import { FinesReportsSummaryListComponent } from './fines-reports-summary-list.component';
 import { FINES_REPORTS_SUMMARY_LIST_ROUTING_PATHS } from './routing/constants/fines-reports-summary-list-routing-paths.constant';
 import { FINES_REPORT_SUMMARY_LIST_REPORT_CONFIGURATION } from './constants/fines-reports-summary-list-report-configuration.constant';
-import { FINES_PERMISSIONS } from '@app/constants/fines-permissions.constant';
 import { OPAL_FINES_BUSINESS_UNIT_REF_DATA_MOCK } from '@services/fines/opal-fines-service/mocks/opal-fines-business-unit-ref-data.mock';
 import { OpalFines } from '@services/fines/opal-fines-service/opal-fines.service';
-import { GlobalStore } from '@hmcts/opal-frontend-common/stores/global';
 import { AlphagovAccessibleAutocompleteComponent } from '@hmcts/opal-frontend-common/components/alphagov/alphagov-accessible-autocomplete';
-import { OPAL_USER_STATE_MOCK } from '@hmcts/opal-frontend-common/services/opal-user-service/mocks';
 import { IOpalFinesReportInstancesResponse } from '@services/fines/opal-fines-service/interfaces/opal-fines-report-instances-response.interface';
 import { IOpalFinesReport } from '@services/fines/opal-fines-service/interfaces/opal-fines-report.interface';
 import { FinesReportsSummaryListStore } from './stores/fines-reports-summary-list.store';
-import { IOpalUserState } from '@hmcts/opal-frontend-common/services/opal-user-service/interfaces';
 import { IOpalFinesBusinessUnitRefData } from '@services/fines/opal-fines-service/interfaces/opal-fines-business-unit-ref-data.interface';
 import type { FinesReportsReportInstancesResolverData } from '../routing/resolvers/fines-reports-report-instances/fines-reports-report-instances.resolver';
 
@@ -38,6 +34,7 @@ type MockActivatedRoute = {
 describe('FinesReportsSummaryListComponent', () => {
   const reportId = FINES_REPORTS_SUMMARY_LIST_ROUTING_PATHS.children.operationalReportsByEnforcement;
   const paymentsReportId = FINES_REPORTS_SUMMARY_LIST_ROUTING_PATHS.children.operationalReportsByPayments;
+  const yourReportsId = FINES_REPORTS_SUMMARY_LIST_ROUTING_PATHS.children.yourReports;
   const mockReportMetadata: IOpalFinesReport = {
     report_id: reportId,
     report_title: 'Operational reports (by enforcement)',
@@ -86,36 +83,8 @@ describe('FinesReportsSummaryListComponent', () => {
     count: 3,
   };
 
-  const createUserState = (): IOpalUserState => {
-    const userState = structuredClone(OPAL_USER_STATE_MOCK);
-    const enforcementPermissionId = FINES_PERMISSIONS['operational-report-by-enforcement'];
-    const paymentsPermissionId = FINES_PERMISSIONS['operational-report-by-payments'];
-
-    userState.business_unit_users = [
-      {
-        ...userState.business_unit_users[0],
-        business_unit_user_id: '99000000008000',
-        business_unit_id: 67,
-        permissions: [
-          {
-            permission_id: enforcementPermissionId,
-            permission_name: 'Operational report by enforcement',
-          },
-          {
-            permission_id: paymentsPermissionId,
-            permission_name: 'Operational report by payments',
-          },
-        ],
-      },
-    ];
-
-    return userState;
-  };
-
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   let mockOpalFines: any;
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  let globalStore: any;
 
   const setup = async (
     currentReportId: string = reportId,
@@ -192,8 +161,6 @@ describe('FinesReportsSummaryListComponent', () => {
       ],
     }).compileComponents();
 
-    globalStore = TestBed.inject(GlobalStore);
-    globalStore.setUserState(createUserState());
     const store = TestBed.inject(FinesReportsSummaryListStore);
     store.resetFilters();
     configureStore?.(store);
@@ -220,6 +187,15 @@ describe('FinesReportsSummaryListComponent', () => {
 
     expect(component['reportId']()).toBe(reportId);
     expect(component.pageHeading).toBe(heading);
+    expect(fixture.nativeElement.querySelector('h1')?.textContent?.trim()).toBe(heading);
+  });
+
+  it('should render the static Your reports content', async () => {
+    const { fixture } = await setup(yourReportsId);
+    const heading = FINES_REPORT_SUMMARY_LIST_REPORT_CONFIGURATION.find(
+      (config) => config.id === yourReportsId,
+    )?.heading;
+
     expect(fixture.nativeElement.querySelector('h1')?.textContent?.trim()).toBe(heading);
   });
 
@@ -403,28 +379,6 @@ describe('FinesReportsSummaryListComponent', () => {
         report_id: paymentsReportId,
       }),
     );
-  });
-
-  it('should request current user report instances for Your reports', async () => {
-    const { component, fixture, activatedRoute } = await setup(
-      FINES_REPORTS_SUMMARY_LIST_ROUTING_PATHS.children.yourReports,
-    );
-
-    activatedRoute.data.next({
-      businessUnits: OPAL_FINES_BUSINESS_UNIT_REF_DATA_MOCK,
-      reportMetadata: null,
-      reportInstances: mockReportInstances,
-    });
-    fixture.detectChanges();
-
-    component.onRefresh();
-
-    expect(mockOpalFines.getReportInstances).toHaveBeenCalledWith(
-      expect.objectContaining({
-        user_id: OPAL_USER_STATE_MOCK.user_id,
-      }),
-    );
-    expect(mockOpalFines.getReportInstances.mock.calls[0][0]).not.toHaveProperty('report_id');
   });
 
   it('should fall back to configured create report visibility when metadata is unavailable', async () => {

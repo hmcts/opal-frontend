@@ -60,7 +60,7 @@ describe('finesReportsReportMetadataResolver', () => {
     expect(result).toEqual(response);
   });
 
-  it('should return null for your reports and unknown report routes', async () => {
+  it('should return null for Your reports and unknown report routes', async () => {
     expect(await runResolver(buildRoute(FINES_REPORTS_SUMMARY_LIST_ROUTING_PATHS.children.yourReports))).toBeNull();
     expect(await runResolver(buildRoute('unknown-report'))).toBeNull();
     expect(mockOpalFines.getReport).not.toHaveBeenCalled();

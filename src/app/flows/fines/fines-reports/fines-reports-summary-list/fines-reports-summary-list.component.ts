@@ -22,7 +22,6 @@ import {
 import { AlphagovAccessibleAutocompleteComponent } from '@hmcts/opal-frontend-common/components/alphagov/alphagov-accessible-autocomplete';
 import { IAlphagovAccessibleAutocompleteItem } from '@hmcts/opal-frontend-common/components/alphagov/alphagov-accessible-autocomplete/interfaces';
 import { MojDatePickerComponent } from '@hmcts/opal-frontend-common/components/moj/moj-date-picker';
-import { GlobalStore } from '@hmcts/opal-frontend-common/stores/global';
 import { CustomPageHeaderComponent } from '@hmcts/opal-frontend-common/components/custom/custom-page-header';
 import { AbstractReportSummaryListBaseComponent } from '@hmcts/opal-frontend-common/components/abstract/abstract-report-summary-list-base';
 import {
@@ -39,6 +38,7 @@ import { IOpalFinesReportInstancesResponse } from '@services/fines/opal-fines-se
 import type { FinesReportsReportInstancesResolverData } from '../routing/resolvers/fines-reports-report-instances/fines-reports-report-instances.resolver';
 import { FINES_REPORTS_SUMMARY_LIST_ALL_BUSINESS_UNITS } from './constants/fines-reports-summary-list-state.constant';
 import { FINES_REPORT_SUMMARY_LIST_REPORT_CONFIGURATION } from './constants/fines-reports-summary-list-report-configuration.constant';
+import { FINES_REPORTS_SUMMARY_LIST_ROUTING_PATHS } from './routing/constants/fines-reports-summary-list-routing-paths.constant';
 import { FINES_REPORTS_SUMMARY_LIST_TABLE_WRAPPER_TABLE_SORT_DEFAULT } from './fines-reports-summary-list-table-wrapper/constants/fines-reports-summary-list-table-wrapper-table-sort-default.constant';
 import { FinesReportsSummaryListTableWrapperComponent } from './fines-reports-summary-list-table-wrapper/fines-reports-summary-list-table-wrapper.component';
 import { IFinesReportsSummaryListFilterState } from './interfaces/fines-reports-summary-list-filter-state.interface';
@@ -84,7 +84,6 @@ export class FinesReportsSummaryListComponent
 {
   private readonly activatedRoute = inject(ActivatedRoute);
   private readonly opalFinesService = inject(OpalFines);
-  private readonly globalStore = inject(GlobalStore);
   private readonly store = inject(FinesReportsSummaryListStore);
   private readonly document = inject(DOCUMENT);
   private readonly destroyRef = inject(DestroyRef);
@@ -127,6 +126,9 @@ export class FinesReportsSummaryListComponent
 
   public readonly tableSort = FINES_REPORTS_SUMMARY_LIST_TABLE_WRAPPER_TABLE_SORT_DEFAULT;
   public readonly createReportRoutingPath = `../${FINES_REPORTS_ROUTING_PATHS.children.create}`;
+  public readonly isYourReportsPlaceholder = computed(
+    () => this.reportId() === FINES_REPORTS_SUMMARY_LIST_ROUTING_PATHS.children.yourReports,
+  );
   public readonly loading = signal(false);
   public readonly loadError = signal(this.reportInstancesResponse()?.loadError ?? false);
   public readonly filtersForm: FinesReportsSummaryListFilterForm = new FormGroup({
@@ -331,24 +333,16 @@ export class FinesReportsSummaryListComponent
     query: IFinesReportsSummaryListQueryState,
   ): Observable<IOpalFinesReportInstancesResponse> {
     const reportConfiguration = this.getReportConfiguration();
-    const userState = this.globalStore.userState();
     const params = {
       from_date: query.fromDate,
       to_date: query.toDate,
       business_units: query.businessUnit ? [query.businessUnit] : undefined,
     };
 
-    const request$ = reportConfiguration?.isYourReports
-      ? this.opalFinesService.getReportInstances({
-          ...params,
-          user_id: userState.user_id,
-        })
-      : this.opalFinesService.getReportInstances({
-          ...params,
-          report_id: reportConfiguration?.reportTypeId ?? this.reportId(),
-        });
-
-    return request$;
+    return this.opalFinesService.getReportInstances({
+      ...params,
+      report_id: reportConfiguration?.reportTypeId ?? this.reportId(),
+    });
   }
 
   /**

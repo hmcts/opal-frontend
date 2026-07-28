@@ -11,7 +11,6 @@ export const FINES_REPORT_SUMMARY_LIST_REPORT_CONFIGURATION: IFinesReportSummary
     title: FINES_REPORTS_SUMMARY_LIST_ROUTING_TITLES.children.yourReports,
     permissionIds: [],
     canCreate: false,
-    isYourReports: true,
   },
   {
     id: FINES_REPORTS_SUMMARY_LIST_ROUTING_PATHS.children.operationalReportsByEnforcement,
@@ -20,7 +19,6 @@ export const FINES_REPORT_SUMMARY_LIST_REPORT_CONFIGURATION: IFinesReportSummary
     title: FINES_REPORTS_SUMMARY_LIST_ROUTING_TITLES.children.operationalReportsByEnforcement,
     permissionIds: [FINES_PERMISSIONS['operational-report-by-enforcement']],
     canCreate: true,
-    isYourReports: false,
   },
   {
     id: FINES_REPORTS_SUMMARY_LIST_ROUTING_PATHS.children.operationalReportsByPayments,
@@ -29,6 +27,5 @@ export const FINES_REPORT_SUMMARY_LIST_REPORT_CONFIGURATION: IFinesReportSummary
     title: FINES_REPORTS_SUMMARY_LIST_ROUTING_TITLES.children.operationalReportsByPayments,
     permissionIds: [FINES_PERMISSIONS['operational-report-by-payments']],
     canCreate: true,
-    isYourReports: false,
   },
 ];

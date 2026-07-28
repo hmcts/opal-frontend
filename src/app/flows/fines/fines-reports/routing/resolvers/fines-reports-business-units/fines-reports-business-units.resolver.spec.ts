@@ -71,10 +71,24 @@ describe('finesReportsBusinessUnitsResolver', () => {
     expect(mockOpalFinesService.getBusinessUnitsByPermission).not.toHaveBeenCalled();
   });
 
-  it('should resolve all business units for Your reports because it has no single report permission', async () => {
-    await runResolver(FINES_REPORTS_SUMMARY_LIST_ROUTING_PATHS.children.yourReports);
+  it('should fall back to all business units when the report route is not configured', async () => {
+    const result = await runResolver('unknown-report');
 
     expect(mockOpalFinesService.getReport).not.toHaveBeenCalled();
     expect(mockOpalFinesService.getBusinessUnits).toHaveBeenCalled();
+    expect(mockOpalFinesService.getBusinessUnitsByPermission).not.toHaveBeenCalled();
+    expect(result).toEqual(OPAL_FINES_BUSINESS_UNIT_REF_DATA_MOCK);
+  });
+
+  it('should return no business units without making a request for Your reports', async () => {
+    const result = await runResolver(FINES_REPORTS_SUMMARY_LIST_ROUTING_PATHS.children.yourReports);
+
+    expect(mockOpalFinesService.getReport).not.toHaveBeenCalled();
+    expect(mockOpalFinesService.getBusinessUnits).not.toHaveBeenCalled();
+    expect(mockOpalFinesService.getBusinessUnitsByPermission).not.toHaveBeenCalled();
+    expect(result).toEqual({
+      count: 0,
+      refData: [],
+    });
   });
 });

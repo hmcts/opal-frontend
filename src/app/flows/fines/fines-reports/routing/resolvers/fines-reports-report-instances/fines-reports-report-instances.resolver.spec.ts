@@ -2,35 +2,11 @@ import { TestBed } from '@angular/core/testing';
 import { ActivatedRouteSnapshot, convertToParamMap, ResolveFn } from '@angular/router';
 import { isObservable, lastValueFrom, of, throwError } from 'rxjs';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
-import { GlobalStore } from '@hmcts/opal-frontend-common/stores/global';
-import { OPAL_USER_STATE_MOCK } from '@hmcts/opal-frontend-common/services/opal-user-service/mocks';
-import { FINES_PERMISSIONS } from '@app/constants/fines-permissions.constant';
 import { OpalFines } from '@services/fines/opal-fines-service/opal-fines.service';
 import { IOpalFinesReportInstancesResponse } from '@services/fines/opal-fines-service/interfaces/opal-fines-report-instances-response.interface';
 import { FINES_REPORTS_SUMMARY_LIST_ROUTING_PATHS } from '../../../fines-reports-summary-list/routing/constants/fines-reports-summary-list-routing-paths.constant';
 import { FinesReportsSummaryListStore } from '../../../fines-reports-summary-list/stores/fines-reports-summary-list.store';
 import { finesReportsReportInstancesResolver } from './fines-reports-report-instances.resolver';
-
-const createUserState = () => {
-  const userState = structuredClone(OPAL_USER_STATE_MOCK);
-  const enforcementPermissionId = FINES_PERMISSIONS['operational-report-by-enforcement'];
-
-  userState.business_unit_users = [
-    {
-      ...userState.business_unit_users[0],
-      business_unit_user_id: '99000000008000',
-      business_unit_id: 67,
-      permissions: [
-        {
-          permission_id: enforcementPermissionId,
-          permission_name: 'Operational report by enforcement',
-        },
-      ],
-    },
-  ];
-
-  return userState;
-};
 
 describe('finesReportsReportInstancesResolver', () => {
   type ResolverResult = Awaited<ReturnType<typeof finesReportsReportInstancesResolver>>;
@@ -38,12 +14,9 @@ describe('finesReportsReportInstancesResolver', () => {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   let mockOpalFines: any;
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  let globalStore: any;
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   let store: any;
 
   const reportId = FINES_REPORTS_SUMMARY_LIST_ROUTING_PATHS.children.operationalReportsByEnforcement;
-  const yourReportsId = FINES_REPORTS_SUMMARY_LIST_ROUTING_PATHS.children.yourReports;
 
   const executeResolver =
     () =>
@@ -64,11 +37,9 @@ describe('finesReportsReportInstancesResolver', () => {
     };
 
     TestBed.configureTestingModule({
-      providers: [GlobalStore, FinesReportsSummaryListStore, { provide: OpalFines, useValue: mockOpalFines }],
+      providers: [FinesReportsSummaryListStore, { provide: OpalFines, useValue: mockOpalFines }],
     });
 
-    globalStore = TestBed.inject(GlobalStore);
-    globalStore.setUserState(createUserState());
     store = TestBed.inject(FinesReportsSummaryListStore);
     store.resetFilters();
   });
@@ -110,35 +81,21 @@ describe('finesReportsReportInstancesResolver', () => {
     expect(result).toEqual(response);
   });
 
-  it('should request user report instances for the your reports route', async () => {
-    const response: IOpalFinesReportInstancesResponse = {
-      report_instances: [],
-      count: 0,
-    };
-    mockOpalFines.getReportInstances.mockReturnValue(of(response));
-
+  it('should return empty report instances without making a request for Your reports', async () => {
     const route = {
-      paramMap: convertToParamMap({ reportTypeId: yourReportsId }),
+      paramMap: convertToParamMap({
+        reportTypeId: FINES_REPORTS_SUMMARY_LIST_ROUTING_PATHS.children.yourReports,
+      }),
       parent: null,
     } as ActivatedRouteSnapshot;
 
-    store.setFilters({
-      businessUnit: 'all',
-      dateFilter: 'last7Days',
-      days: '',
-      dateFrom: '',
-      dateTo: '',
-    });
-
     const result = await runResolver(route);
 
-    expect(mockOpalFines.getReportInstances).toHaveBeenCalledWith(
-      expect.objectContaining({
-        user_id: OPAL_USER_STATE_MOCK.user_id,
-        business_units: undefined,
-      }),
-    );
-    expect(result).toEqual(response);
+    expect(mockOpalFines.getReportInstances).not.toHaveBeenCalled();
+    expect(result).toEqual({
+      report_instances: [],
+      count: 0,
+    });
   });
 
   it('should request report instances with a null report id for unknown report routes', async () => {

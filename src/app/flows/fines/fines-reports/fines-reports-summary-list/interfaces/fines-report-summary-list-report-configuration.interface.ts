@@ -5,5 +5,4 @@ export interface IFinesReportSummaryListReportConfiguration {
   title: string;
   permissionIds: number[];
   canCreate: boolean;
-  isYourReports: boolean;
 }

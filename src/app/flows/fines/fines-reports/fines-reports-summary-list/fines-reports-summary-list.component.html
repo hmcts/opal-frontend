@@ -1,4 +1,10 @@
-<div class="govuk-grid-column-full">
+@if (isYourReportsPlaceholder()) {
+  <div class="govuk-grid-column-full">
+    <h1 class="govuk-heading-l">{{ pageHeading }}</h1>
+  </div>
+}
+
+<div class="govuk-grid-column-full" [hidden]="isYourReportsPlaceholder()">
   <div #errorSummary>
     <opal-lib-govuk-error-summary
       [errors]="errorSummaryMessages()"
