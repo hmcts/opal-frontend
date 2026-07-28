@@ -155,7 +155,7 @@ describe('FinesMacOffenceDetailsAddAnOffenceComponent', () => {
 
     component['updateOffenceDetailsIndex'](form);
 
-    expect(finesMacStore.offenceDetails().length).toBe(1);
+    expect(finesMacStore.offenceDetails()).toHaveLength(1);
     expect(finesMacStore.offenceDetails()[0].formData).toEqual(form.formData);
     expect(finesMacStore.offenceDetails()[0].childFormData).toBeNull();
   });
@@ -197,7 +197,7 @@ describe('FinesMacOffenceDetailsAddAnOffenceComponent', () => {
 
     component['updateOffenceDetailsIndex'](form);
 
-    expect(finesMacStore.offenceDetails().length).toBe(1);
+    expect(finesMacStore.offenceDetails()).toHaveLength(1);
     expect(finesMacStore.offenceDetails()[0].formData).toEqual(form.formData);
     expect(finesMacStore.offenceDetails()[0].childFormData).toBeNull();
   });
@@ -223,7 +223,7 @@ describe('FinesMacOffenceDetailsAddAnOffenceComponent', () => {
 
     component['updateOffenceDetailsIndex'](form);
 
-    expect(finesMacStore.offenceDetails().length).toBe(1);
+    expect(finesMacStore.offenceDetails()).toHaveLength(1);
     expect(finesMacStore.offenceDetails()[0]).toEqual(form);
   });
 
@@ -238,7 +238,7 @@ describe('FinesMacOffenceDetailsAddAnOffenceComponent', () => {
 
     component['updateOffenceDetailsIndex'](form);
 
-    expect(finesMacStore.offenceDetails().length).toBe(1);
+    expect(finesMacStore.offenceDetails()).toHaveLength(1);
     expect(finesMacStore.offenceDetails()[0]).toEqual(form);
   });
 
@@ -255,7 +255,7 @@ describe('FinesMacOffenceDetailsAddAnOffenceComponent', () => {
   it('should create autocomplete items for results', () => {
     const response = OPAL_FINES_RESULTS_REF_DATA_MOCK;
     const result = component['createAutoCompleteItemsResults'](response);
-    expect(result.length).toBe(response.refData.length);
+    expect(result).toHaveLength(response.refData.length);
     expect(result[0].value).toBe(response.refData[0].result_id);
     expect(result[0].name).toBe(OPAL_FINES_RESULT_PRETTY_NAME_MOCK);
   });
@@ -264,10 +264,10 @@ describe('FinesMacOffenceDetailsAddAnOffenceComponent', () => {
     const response = OPAL_FINES_MAJOR_CREDITOR_REF_DATA_MOCK;
     const fcompResults = component['createAutoCompleteItemsMajorCreditors'](response, true);
     const fcostResults = component['createAutoCompleteItemsMajorCreditors'](response, false);
-    expect(fcompResults.length).toBe(response.refData.length);
+    expect(fcompResults).toHaveLength(response.refData.length);
     expect(fcompResults[0].value).toBe(response.refData[0].major_creditor_id!);
     expect(fcompResults[0].name).toBe(OPAL_FINES_MAJOR_CREDITOR_PRETTY_NAME_MOCK);
-    expect(fcostResults.length).toBe(response.refData.filter((x) => x.prosecution_service === false).length);
+    expect(fcostResults).toHaveLength(response.refData.filter((x) => x.prosecution_service === false).length);
     expect(fcostResults[0].value).toBe(response.refData[1].major_creditor_id!);
     expect(fcostResults[0].name).toBe(OPAL_FINES_MAJOR_CREDITOR_PRETTY_NAME_MOCK);
   });
@@ -284,7 +284,7 @@ describe('FinesMacOffenceDetailsAddAnOffenceComponent', () => {
 
     component['updateOffenceDetailsIndex'](form);
 
-    expect(finesMacStore.offenceDetails().length).toBe(1);
+    expect(finesMacStore.offenceDetails()).toHaveLength(1);
     expect(finesMacStore.offenceDetails()[0].formData).toEqual(form.formData);
     expect(finesMacStore.offenceDetails()[0].childFormData).toBeNull();
   });
@@ -298,7 +298,7 @@ describe('FinesMacOffenceDetailsAddAnOffenceComponent', () => {
 
     component['updateOffenceDetailsIndex'](form);
 
-    expect(finesMacStore.offenceDetails().length).toBe(1);
+    expect(finesMacStore.offenceDetails()).toHaveLength(1);
     expect(finesMacStore.offenceDetails()[0]).toEqual(form);
   });
 

@@ -874,7 +874,7 @@ describe('FinesMacOffenceDetailsAddAnOffenceFormComponent', () => {
 
     component['removeMinorCreditorData'](0);
 
-    expect(finesMacOffenceDetailsStore.offenceDetailsDraft()[0].childFormData!.length).toBe(1);
+    expect(finesMacOffenceDetailsStore.offenceDetailsDraft()[0].childFormData).toHaveLength(1);
   });
 
   it('should remove the minor creditor at the specified index', () => {
