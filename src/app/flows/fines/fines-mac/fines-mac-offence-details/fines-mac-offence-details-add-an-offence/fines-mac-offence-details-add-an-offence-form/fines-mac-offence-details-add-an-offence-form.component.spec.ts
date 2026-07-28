@@ -193,6 +193,20 @@ describe('FinesMacOffenceDetailsAddAnOffenceFormComponent', () => {
     expect(templateFunction).not.toContain('keyup.enter');
   });
 
+  it('should render legends as direct children of their fieldsets', () => {
+    const { fixture: freshFixture } = createInitializedComponent();
+    const element = freshFixture.nativeElement as HTMLElement;
+    const legends = Array.from(element.querySelectorAll('fieldset > legend'));
+    const legendText = legends.map((legend) => legend.textContent?.trim());
+
+    expect(legendText).toContain('Offence details');
+    expect(element.querySelector('h2')?.textContent?.trim()).toBe('Offence details');
+    expect(element.querySelectorAll('h2')[1]?.textContent?.trim()).toBe('Impositions');
+    expect(
+      Array.from(element.querySelectorAll('legend')).every((legend) => legend.parentElement?.tagName === 'FIELDSET'),
+    ).toBe(true);
+  });
+
   it('should set needsCreditorControl value to true when result_code is compensation', () => {
     finesMacOffenceDetailsStore.setOffenceDetailsDraft([]);
     component.ngOnInit();
