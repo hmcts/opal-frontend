@@ -433,8 +433,8 @@ export class FinesMacReviewAccountComponent extends AbstractFormParentBaseCompon
   }
 
   /** * Handles the deletion of an account.
-   * If the account ID is greater than 0, it sets the delete flag in the finesMacStore
-   * and navigates to the delete account confirmation route with the account ID.
+   * It sets the delete flag in the finesMacStore
+   * If the account ID is greater than 0, it navigates to the delete account confirmation route with the account ID.
    * If the account ID is not greater than 0, it navigates to the delete account confirmation route without an ID.
    * @param event - The event that triggered the deletion.
    * @param nonRelative - Optional flag to indicate whether the route is non-relative.
