@@ -2,12 +2,11 @@ import { IOpalFinesMinorCreditorAccountHistoryParams } from '@services/fines/opa
 import { IFinesAccMinorCreditorDetailsHistoryAndNotesFilterForm } from '../../fines-acc-minor-creditor-details/fines-acc-minor-creditor-details-history-and-notes-tab/interfaces/fines-acc-minor-creditor-details-history-and-notes-filter-form.interface';
 import { TFinesAccMinorCreditorDetailsHistoryAndNotesFilterCategory } from '../../fines-acc-minor-creditor-details/fines-acc-minor-creditor-details-history-and-notes-tab/types/fines-acc-minor-creditor-details-history-and-notes-filter-category.type';
 import { FINES_ACC_MINOR_CREDITOR_HISTORY_FILTER_ITEM_TYPE_MAP } from '../constants/fines-acc-minor-creditor-history-filter-item-type-map.constant';
-import { finesAccDateToRfc3339UtcTimestamp } from './fines-acc-date-to-rfc3339-utc-timestamp.utils';
 
 /**
  * Builds the raw minor creditor account history filter query params from the submitted form.
  *
- * Date values are converted to RFC3339 UTC timestamps here so the service can pass them through unchanged.
+ * Date values remain in form format here and are transformed by `FinesAccPayloadService`.
  *
  * @param form - The submitted history and notes filter form.
  * @returns The untransformed minor creditor history filter query params.
@@ -27,8 +26,8 @@ export function buildMinorCreditorHistoryFilterPayload(
     .filter((itemType): itemType is string => !!itemType);
 
   return {
-    ...(dateFrom ? { dateFrom: finesAccDateToRfc3339UtcTimestamp(dateFrom) } : {}),
-    ...(dateTo ? { dateTo: finesAccDateToRfc3339UtcTimestamp(dateTo) } : {}),
+    ...(dateFrom ? { dateFrom } : {}),
+    ...(dateTo ? { dateTo } : {}),
     ...(itemTypes.length ? { itemTypes: itemTypes.join(',') } : {}),
   };
 }
