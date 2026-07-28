@@ -14,6 +14,7 @@ import { AccountSearchCompanyActions } from '../../..//e2e/functional/opal/actio
 import { AccountSearchMinorCreditorsActions } from '../../..//e2e/functional/opal/actions/search/search.minor-creditors.actions';
 import { AccountSearchCommonActions } from '../../..//e2e/functional/opal/actions/search/search.common.actions';
 import { AccountSearchProblemActions } from '../../..//e2e/functional/opal/actions/search/search.problem.actions';
+import { AccountSearchNavActions } from '../../..//e2e/functional/opal/actions/search/search.nav.actions';
 import { ResultsActions } from '../../..//e2e/functional/opal/actions/search/search.results.actions';
 import { CommonActions } from '../../..//e2e/functional/opal/actions/common/common.actions';
 import { PrimaryNavigationActions } from '../../..//e2e/functional/opal/actions/primary-navigation.actions';
@@ -29,6 +30,7 @@ const searchCompanyActions = () => new AccountSearchCompanyActions();
 const searchMinorCreditorsActions = () => new AccountSearchMinorCreditorsActions();
 const searchCommonActions = () => new AccountSearchCommonActions();
 const searchProblemActions = () => new AccountSearchProblemActions();
+const searchNavActions = () => new AccountSearchNavActions();
 const commonActions = () => new CommonActions();
 const primaryNavigationActions = () => new PrimaryNavigationActions();
 const resultsActions = () => new ResultsActions();
@@ -193,7 +195,7 @@ When('I search for the major creditor {string}', (majorCreditor: string) => {
  */
 Then('I should not see the Major Creditors search form', () => {
   log('assert', 'Major Creditors search form is not visible');
-  cy.get('#tab-major-creditors').should('not.exist');
+  searchNavActions().assertMajorCreditorsTabNotVisible();
 });
 
 /**
