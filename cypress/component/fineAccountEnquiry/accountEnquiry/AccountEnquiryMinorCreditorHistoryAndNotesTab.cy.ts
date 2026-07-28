@@ -1,4 +1,5 @@
 import { provideRouter } from '@angular/router';
+import { By } from '@angular/platform-browser';
 import { FINES_ROUTING_PATHS } from '@routing/fines/constants/fines-routing-paths.constant';
 import { IOpalFinesAccountMinorCreditorDetailsHistoryAndNotesTabRefData } from '@services/fines/opal-fines-service/interfaces/opal-fines-account-minor-creditor-details-history-and-notes-tab-ref-data.interface';
 import { mount } from 'cypress/angular';
@@ -7,6 +8,7 @@ import { USER_STATE_MOCK_PERMISSION_BU77 } from '../../CommonIntercepts/CommonUs
 import { ACCOUNT_ENQUIRY_HISTORY_AND_NOTES_ELEMENTS as HISTORY_AND_NOTES_TAB } from '../../../shared/selectors/account-enquiry/account.enquiry.history-and-notes.locators';
 import { FINES_ACC_DEFENDANT_ROUTING_PATHS } from 'src/app/flows/fines/fines-acc/routing/constants/fines-acc-defendant-routing-paths.constant';
 import { FINES_ACC_ROUTING_PATHS } from 'src/app/flows/fines/fines-acc/routing/constants/fines-acc-routing-paths.constant';
+import { FinesAccountHistoryTableComponent } from 'src/app/flows/fines/fines-acc/fines-account-history-table/fines-account-history-table.component';
 import { FinesAccMinorCreditorDetailsHistoryAndNotesTableComponent } from 'src/app/flows/fines/fines-acc/fines-acc-minor-creditor-details/fines-acc-minor-creditor-details-history-and-notes-tab/fines-acc-minor-creditor-details-history-and-notes-table/fines-acc-minor-creditor-details-history-and-notes-table.component';
 import {
   interceptMinorCreditorHeader,
@@ -83,7 +85,7 @@ const mountMinorCreditorHistoryTable = (tabData: IOpalFinesAccountMinorCreditorD
 
 describe('Minor Creditor Account Enquiry - History and notes tab', () => {
   it(
-    'AC1. sends the initial unfiltered history request and renders the returned table rows',
+    'AC6a. sends the initial unfiltered history request and renders the returned table rows',
     { tags: buildTags(MINOR_CREDITOR_HISTORY_STORY_TAG, MINOR_CREDITOR_HISTORY_EPIC_TAG) },
     () => {
       setupMinorCreditorHistoryAndNotesScreenWithTabData(
@@ -122,7 +124,7 @@ describe('Minor Creditor Account Enquiry - History and notes tab', () => {
   );
 
   it(
-    'AC2. maps a Date from filter to the expected query parameter and keeps the value visible',
+    'AC6a. maps a Date from filter to the expected query parameter and keeps the value visible',
     { tags: buildTags(MINOR_CREDITOR_HISTORY_STORY_TAG, MINOR_CREDITOR_HISTORY_EPIC_TAG) },
     () => {
       setupMinorCreditorHistoryAndNotesScreenWithTabData(
@@ -147,7 +149,7 @@ describe('Minor Creditor Account Enquiry - History and notes tab', () => {
   );
 
   it(
-    'AC2. maps a Date to filter to the expected query parameter and keeps the value visible',
+    'AC6a. maps a Date to filter to the expected query parameter and keeps the value visible',
     { tags: buildTags(MINOR_CREDITOR_HISTORY_STORY_TAG, MINOR_CREDITOR_HISTORY_EPIC_TAG) },
     () => {
       setupMinorCreditorHistoryAndNotesScreenWithTabData(
@@ -172,7 +174,7 @@ describe('Minor Creditor Account Enquiry - History and notes tab', () => {
   );
 
   it(
-    'AC2. sends date range and category itemTypes when filters are applied',
+    'AC6a. sends date range and category itemTypes when filters are applied',
     { tags: buildTags(MINOR_CREDITOR_HISTORY_STORY_TAG, MINOR_CREDITOR_HISTORY_EPIC_TAG) },
     () => {
       setupMinorCreditorHistoryAndNotesScreenWithTabDataSequence([
@@ -207,7 +209,7 @@ describe('Minor Creditor Account Enquiry - History and notes tab', () => {
   );
 
   it(
-    'AC2. maps multiple selected categories to the expected comma-separated itemTypes value',
+    'AC6a. maps multiple selected categories to the expected comma-separated itemTypes value',
     { tags: buildTags(MINOR_CREDITOR_HISTORY_STORY_TAG, MINOR_CREDITOR_HISTORY_EPIC_TAG) },
     () => {
       setupMinorCreditorHistoryAndNotesScreenWithTabData(
@@ -233,7 +235,7 @@ describe('Minor Creditor Account Enquiry - History and notes tab', () => {
   );
 
   it(
-    'AC2. shows the standard no-results state while keeping selected filters visible',
+    'AC2c. shows the standard no-results state while keeping selected filters visible',
     { tags: buildTags(MINOR_CREDITOR_HISTORY_STORY_TAG, MINOR_CREDITOR_HISTORY_EPIC_TAG) },
     () => {
       setupMinorCreditorHistoryAndNotesScreenWithTabDataSequence([
@@ -304,7 +306,7 @@ describe('Minor Creditor Account Enquiry - History and notes tab', () => {
   );
 
   it(
-    'AC3. renders the read-only table columns with no inline editing or action controls',
+    'AC2a. renders the read-only table columns with no inline editing or actions outside allowed Details links',
     { tags: buildTags(MINOR_CREDITOR_HISTORY_STORY_TAG, MINOR_CREDITOR_HISTORY_EPIC_TAG) },
     () => {
       setupMinorCreditorHistoryAndNotesScreenWithTabData(
@@ -321,12 +323,11 @@ describe('Minor Creditor Account Enquiry - History and notes tab', () => {
         });
 
       cy.get(HISTORY_AND_NOTES_TAB.tableRows).should('have.length', 2);
-      cy.get(HISTORY_AND_NOTES_TAB.firstUserCell)
-        .closest('tr')
-        .within(() => {
-          cy.get('input, select, textarea, button').should('not.exist');
-        });
       cy.get(HISTORY_AND_NOTES_TAB.tableRows).find('input, select, textarea').should('not.exist');
+      cy.get(HISTORY_AND_NOTES_TAB.tableRows)
+        .find('td:not([id^="history-and-notes-details-"]) a, td:not([id^="history-and-notes-details-"]) button')
+        .should('not.exist');
+      cy.get(HISTORY_AND_NOTES_TAB.detailsLinks).should('have.length', 1).and('contain.text', '2500000BV');
     },
   );
 
@@ -336,11 +337,11 @@ describe('Minor Creditor Account Enquiry - History and notes tab', () => {
     () => {
       mountMinorCreditorHistoryTable(
         structuredClone(ACCOUNT_ENQUIRY_MINOR_CREDITOR_HISTORY_AND_NOTES_TRANSFORMED_DETAILS_MOCK),
-      ).then(({ component }) => {
-        cy.spy(component, 'handleHistoryLinkClicked').as('historyLinkClicked');
-      });
-      cy.window().then((win) => {
-        cy.stub(win, 'open').as('windowOpen');
+      ).then(({ fixture }) => {
+        const historyTableComponent = fixture.debugElement.query(By.directive(FinesAccountHistoryTableComponent))
+          .componentInstance as FinesAccountHistoryTableComponent;
+
+        cy.stub(historyTableComponent.historyLinkClicked, 'emit').as('historyLinkClicked');
       });
 
       cy.get(HISTORY_AND_NOTES_TAB.firstDetailsCell).within(() => {
@@ -353,7 +354,13 @@ describe('Minor Creditor Account Enquiry - History and notes tab', () => {
             expect(normalized).not.to.match(/^\|/);
             expect(normalized).not.to.match(/\|$/);
           });
-        cy.get(HISTORY_AND_NOTES_TAB.detailsLine2).should('contain.text', 'Additional repayment note');
+        cy.get(HISTORY_AND_NOTES_TAB.detailsLine2)
+          .invoke('text')
+          .then((text) => {
+            const normalized = normaliseText(text);
+            expect(normalized).to.equal('Additional repayment note');
+            expect(normalized).not.to.match(/^\|/);
+          });
         cy.get('a')
           .should('have.length', 1)
           .and('have.class', 'govuk-link')
@@ -377,19 +384,54 @@ describe('Minor Creditor Account Enquiry - History and notes tab', () => {
       });
 
       cy.get(HISTORY_AND_NOTES_TAB.detailsLinks).click();
-      const expectedAccountUrl = `/${FINES_ROUTING_PATHS.root}/${FINES_ACC_ROUTING_PATHS.root}/${FINES_ACC_ROUTING_PATHS.children.defendant}/123123/${FINES_ACC_DEFENDANT_ROUTING_PATHS.children.details}`;
 
+      cy.get('@historyLinkClicked').should('have.been.calledOnce');
       cy.get('@historyLinkClicked').should('have.been.calledWithMatch', {
         emit: '123123',
         rowId: 'history-and-notes-row-0',
         type: 'account',
       });
+    },
+  );
+
+  it(
+    'AC4a. opens account-linked details fragments in a new browser tab using the emitted account identifier',
+    { tags: buildTags(MINOR_CREDITOR_HISTORY_STORY_TAG, MINOR_CREDITOR_HISTORY_EPIC_TAG) },
+    () => {
+      setupMinorCreditorHistoryAndNotesScreenWithTabData(
+        structuredClone(ACCOUNT_ENQUIRY_MINOR_CREDITOR_HISTORY_AND_NOTES_INITIAL_MOCK),
+      );
+
+      cy.wait('@getHistoryAndNotes');
+      cy.window().then((win) => {
+        cy.stub(win, 'open').as('windowOpen');
+      });
+
+      const expectedAccountUrl = `/${FINES_ROUTING_PATHS.root}/${FINES_ACC_ROUTING_PATHS.root}/${FINES_ACC_ROUTING_PATHS.children.defendant}/123123/${FINES_ACC_DEFENDANT_ROUTING_PATHS.children.details}`;
+
+      cy.get(HISTORY_AND_NOTES_TAB.detailsLinks).should('have.length', 1).and('contain.text', '2500000BV').click();
+
       cy.get('@windowOpen').should('have.been.calledOnceWith', expectedAccountUrl, '_blank');
     },
   );
 
   it(
-    'AC6. renders representative minor creditor amendments, notes, financial details, and special characters',
+    'AC4b. renders non-linked details fragments as non-interactive text',
+    { tags: buildTags(MINOR_CREDITOR_HISTORY_STORY_TAG, MINOR_CREDITOR_HISTORY_EPIC_TAG) },
+    () => {
+      mountMinorCreditorHistoryTable(
+        structuredClone(ACCOUNT_ENQUIRY_MINOR_CREDITOR_HISTORY_AND_NOTES_TRANSFORMED_DETAILS_MOCK),
+      );
+
+      cy.get(HISTORY_AND_NOTES_TAB.secondDetailsCell).within(() => {
+        cy.get('a, button').should('not.exist');
+        cy.get('.govuk-link').should('not.exist');
+      });
+    },
+  );
+
+  it(
+    'AC6a. covers representative minor creditor amendments, notes, financial details, and special characters',
     { tags: buildTags(MINOR_CREDITOR_HISTORY_STORY_TAG, MINOR_CREDITOR_HISTORY_EPIC_TAG) },
     () => {
       setupMinorCreditorHistoryAndNotesScreenWithTabData(
@@ -475,7 +517,7 @@ describe('Minor Creditor Account Enquiry - History and notes tab', () => {
   );
 
   it(
-    'AC2. renders several hundred history items in one scrollable table without pagination',
+    'AC2b. renders several hundred history items in one scrollable table without pagination',
     { tags: buildTags(MINOR_CREDITOR_HISTORY_STORY_TAG, MINOR_CREDITOR_HISTORY_EPIC_TAG) },
     () => {
       setupMinorCreditorHistoryAndNotesScreenWithTabData(
