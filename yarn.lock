@@ -4007,9 +4007,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@hmcts/opal-frontend-common@npm:^0.0.93":
-  version: 0.0.93
-  resolution: "@hmcts/opal-frontend-common@npm:0.0.93"
+"@hmcts/opal-frontend-common@npm:^0.0.95":
+  version: 0.0.95
+  resolution: "@hmcts/opal-frontend-common@npm:0.0.95"
   dependencies:
     "@microsoft/applicationinsights-web": "npm:^3.3.6"
     "@ministryofjustice/frontend": "npm:^10.0.0"
@@ -4031,7 +4031,7 @@ __metadata:
   peerDependenciesMeta:
     "@ngrx/signals":
       optional: true
-  checksum: 10/b0b02747072905866188bd5bdf8a461a8451e2932369594b8a66152872313a66f4aee47c11088ff7a82d3a3227202e85ce93201ca6f00a51a8a241947a38bbe4
+  checksum: 10/62fbbd6d7b4e12ab1005ab188476ff5202f9e3fa2ca5ce9b40a19b35fe0966b22a73e9fbcb4572563f152d59f6bc6b9cdcdf6f40ed3dd4b6a93a8df69a1ec2f0
   languageName: node
   linkType: hard
 
@@ -5030,16 +5030,6 @@ __metadata:
     govuk-frontend: ^6.0.0
     moment: 2.30.1
   checksum: 10/9f13971cbf071fbe5fe29eb09e980322413b220d3d1ec8be3e1326f953af48db2f1a2d94cd4a633676b441dead6360ecffa32538335a45212025668b03e8d602
-  languageName: node
-  linkType: hard
-
-"@ministryofjustice/frontend@npm:^9.0.0":
-  version: 9.0.0
-  resolution: "@ministryofjustice/frontend@npm:9.0.0"
-  peerDependencies:
-    govuk-frontend: ^6.0.0
-    moment: 2.30.1
-  checksum: 10/91402390dcbf26558684be9200c9b2ae47c77267fd074ae889bd907ec94e3c29072f40d1aebed8aae3cd2ae771806f8e90d57f03dcaf7de0f4fb470f3219a9a1
   languageName: node
   linkType: hard
 
@@ -16509,13 +16499,13 @@ __metadata:
     "@hmcts/info-provider": "npm:^1.1.0"
     "@hmcts/nodejs-healthcheck": "npm:^1.8.5"
     "@hmcts/nodejs-logging": "npm:^4.0.4"
-    "@hmcts/opal-frontend-common": "npm:^0.0.93"
+    "@hmcts/opal-frontend-common": "npm:^0.0.95"
     "@hmcts/opal-frontend-common-cypress": "npm:^0.0.3"
     "@hmcts/opal-frontend-common-node": "npm:^0.0.39"
     "@hmcts/properties-volume": "npm:^1.1.0"
     "@hmcts/zephyr-automation-nodejs": "npm:0.0.7"
     "@microsoft/applicationinsights-web": "npm:^3.3.5"
-    "@ministryofjustice/frontend": "npm:^9.0.0"
+    "@ministryofjustice/frontend": "npm:^10.0.0"
     "@ngrx/signals": "npm:^21.0.0"
     "@openapitools/openapi-generator-cli": "npm:^2.25.0"
     "@types/config": "npm:^4.0.0"
