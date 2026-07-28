@@ -26,18 +26,18 @@ Feature: Defendant - Parent or guardian to pay - Account Enquiries – View Acco
       Then I should see the add parent or guardian details action
 
     @R1B @JIRA-STORY:PO-1877 @JIRA-EPIC:PO-1875 @JIRA-TEST-KEY:PO-5530
-    Scenario: Cancelling add parent or guardian details without changes and after confirming discard returns to the Defendant tab
-      # AC2 – Cancel with no entered data returns directly to the Defendant tab
+    Scenario: Cancelling add parent or guardian details without changes returns to the Defendant tab
       When I start adding parent or guardian details
       Then I should be on the add parent or guardian details page
       When I cancel adding parent or guardian details without making changes
       Then I should return to the account details page Defendant tab
       And I should see the add parent or guardian details action
 
+    @R1B @JIRA-STORY:PO-1877 @JIRA-EPIC:PO-1875
+    Scenario: Discarding entered parent or guardian details clears the add form
       When I start adding parent or guardian details
       Then I should be on the add parent or guardian details page
       When I enter "Jamie" into the parent or guardian first name field
-      # AC2a, AC2ai – Cancel with entered data shows a warning and confirming discards unsaved changes
       And I attempt to cancel adding parent or guardian details and choose OK on the confirmation dialog
       Then I should return to the account details page Defendant tab
       And I should see the add parent or guardian details action
@@ -61,8 +61,22 @@ Feature: Defendant - Parent or guardian to pay - Account Enquiries – View Acco
       And I should see the parent or guardian add error summary contains "Enter parent or guardian last name"
       And I should see the parent or guardian add error summary contains "Enter address line 1, typically the building and street"
 
-    @R1B @JIRA-STORY:PO-1878 @JIRA-EPIC:PO-1875 @JIRA-TEST-KEY:PO-6355
-    Scenario: Cancelling and then confirming removal of a non-paying parent or guardian returns to the correct tabs
+  Rule: Youth-only account with parent or guardian details
+    Background:
+      Given I create a "adultOrYouthOnly" draft account with the following details and set status "Publishing Pending" using user "opal-test-10@dev.platform.hmcts.net":
+        | Account_status                      | Submitted            |
+        | account.defendant.forenames         | Jamie                |
+        | account.defendant.surname           | RemovePgYouth{uniq}  |
+        | account.account_type                | Fine                 |
+        | account.prosecutor_case_reference   | PCR-AUTO-017         |
+        | account.collection_order_made       | false                |
+        | account.collection_order_made_today | false                |
+        | account.payment_card_request        | false                |
+        | account.defendant.dob               | 2010-05-15           |
+      When I search for the account by last name "RemovePgYouth{uniq}" and open the latest result
+      Then I should see the page header contains "REMOVEPGYOUTH{uniqUpper}"
+      When I go to the Defendant details section and the header is "Defendant details"
+      Then I should see the add parent or guardian details action
       When I start adding parent or guardian details
       Then I should be on the add parent or guardian details page
       When I enter "Pat" into the parent or guardian first name field
@@ -71,17 +85,20 @@ Feature: Defendant - Parent or guardian to pay - Account Enquiries – View Acco
       And I save the parent or guardian details
       Then I should return to the account details page Parent or guardian tab
       And I should see the remove parent or guardian details action
-      # AC1a, AC1b – Remove confirmation screen shows the expected title and account identifier
+
+    @R1B @JIRA-STORY:PO-1878 @JIRA-EPIC:PO-1875 @JIRA-TEST-KEY:PO-6355
+    Scenario: Cancelling parent or guardian removal keeps the parent or guardian details on the account
       When I start removing parent or guardian details
-      Then I should be on the remove parent or guardian details page for "ADDPGYOUTH{uniqUpper}"
-      # AC3, AC3a – No - cancel returns to the Parent or guardian tab without removing the parent/guardian
+      Then I should be on the remove parent or guardian details page for "REMOVEPGYOUTH{uniqUpper}"
       When I cancel removing parent or guardian details
       Then I should return to the account details page Parent or guardian tab
       And I should see the parent or guardian name contains "Pat GUARDIANREMOVE{uniqUpper}"
       And I should see the remove parent or guardian details action
-      # AC2, AC2a, AC2b, AC2c – Yes - remove deletes the party, returns to Defendant, and shows success
+
+    @R1B @JIRA-STORY:PO-1878 @JIRA-EPIC:PO-1875
+    Scenario: Confirming parent or guardian removal returns to the Defendant tab with a success message
       When I start removing parent or guardian details
-      Then I should be on the remove parent or guardian details page for "ADDPGYOUTH{uniqUpper}"
+      Then I should be on the remove parent or guardian details page for "REMOVEPGYOUTH{uniqUpper}"
       When I confirm removing parent or guardian details
       Then I should return to the account details page Defendant tab
       And I should see the add parent or guardian details action
@@ -171,15 +188,14 @@ Feature: Defendant - Parent or guardian to pay - Account Enquiries – View Acco
       And I should see the parent or guardian name contains "Pat GUARDIANAMEND{uniqUpper}"
 
     @R1B @JIRA-STORY:PO-3915 @JIRA-EPIC:PO-1875 @JIRA-TEST-KEY:PO-6356
-    Scenario: Non-paying parent or guardian change can be cancelled, discarded, and then saved successfully
-      # AC1, AC1a, AC1b – Change opens the reduced parent or guardian details screen with the information banner
-      # AC2 – Cancel with no changes returns to the Defendant tab
+    Scenario: Cancelling parent or guardian changes without edits returns to the Defendant tab
       When I start changing the non-paying parent or guardian details
       Then I should be on the amend parent or guardian details page
       When I cancel changing parent or guardian details without making changes
       Then I should return to the account details page Defendant tab
 
-      # AC2a, AC2ai – Cancel with entered data warns and confirming discards changes
+    @R1B @JIRA-STORY:PO-3915 @JIRA-EPIC:PO-1875
+    Scenario: Discarding entered parent or guardian changes keeps the saved name on the account
       When I go to the Parent or guardian details section and the header is "Parent or guardian details"
       And I start changing the non-paying parent or guardian details
       Then I should be on the amend parent or guardian details page
@@ -188,7 +204,9 @@ Feature: Defendant - Parent or guardian to pay - Account Enquiries – View Acco
       Then I should return to the account details page Defendant tab
       When I go to the Parent or guardian details section and the header is "Parent or guardian details"
       Then I should see the parent or guardian name contains "Pat GUARDIANAMEND{uniqUpper}"
-      # AC3, AC3a – Saving valid changes returns to the Parent or guardian tab with updated information
+
+    @R1B @JIRA-STORY:PO-3915 @JIRA-EPIC:PO-1875
+    Scenario: Saving parent or guardian changes updates the Parent or guardian tab and audit trail
       When I start changing the non-paying parent or guardian details
       Then I should be on the amend parent or guardian details page
       When I enter "Updated" into the amend parent or guardian first name field

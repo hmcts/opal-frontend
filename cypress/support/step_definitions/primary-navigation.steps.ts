@@ -71,7 +71,7 @@ When('I start the Add account note journey for {string}', (surname: string) => {
   accountSearch().navigateAndVerifySearchFromDashboard();
   primaryNavigation().assertVisible();
 
-  accountEnquiry().searchBySurname(surnameWithUniq);
+  accountEnquiry().searchByLastName(surnameWithUniq);
   primaryNavigation().assertVisible();
 
   accountEnquiry().openMostRecentFromResults();
