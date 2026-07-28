@@ -506,12 +506,11 @@ describe('FinesMacReviewAccountComponent', () => {
       expect(submitPayloadSpy).toHaveBeenCalled();
     });
 
-    it('should call router.navigate with relative route when handleDeleteAccount is called and account id is 0', () => {
+    it('should set deleteFromCheckAccount and not navigate when handleDeleteAccount is called and account id is 0', () => {
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
       const routerSpy = vi.spyOn<any, any>(component['router'], 'navigate');
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
       vi.spyOn<any, any>(component['finesMacStore'], 'setDeleteFromCheckAccount').mockImplementation(() => {});
-      const route = component['finesMacRoutes'].children.deleteAccountConfirmation;
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
       const mockEvent: any = {
         preventDefault: vi.fn().mockName('Event.preventDefault'),
@@ -520,9 +519,9 @@ describe('FinesMacReviewAccountComponent', () => {
 
       component.handleDeleteAccount(mockEvent);
 
-      expect(routerSpy).toHaveBeenCalledWith([route], { relativeTo: component['activatedRoute'].parent });
+      expect(routerSpy).not.toHaveBeenCalled();
       expect(mockEvent.preventDefault).toHaveBeenCalled();
-      expect(component['finesMacStore'].setDeleteFromCheckAccount).toHaveBeenCalledTimes(0);
+      expect(component['finesMacStore'].setDeleteFromCheckAccount).toHaveBeenCalledWith(true);
     });
 
     it('should call router.navigate with relative route when handleDeleteAccount is called and account id is > 0', () => {
@@ -541,7 +540,7 @@ describe('FinesMacReviewAccountComponent', () => {
 
       expect(routerSpy).toHaveBeenCalledWith([route], { relativeTo: component['activatedRoute'].parent });
       expect(mockEvent.preventDefault).toHaveBeenCalled();
-      expect(component['finesMacStore'].setDeleteFromCheckAccount).toHaveBeenCalledTimes(1);
+      expect(component['finesMacStore'].setDeleteFromCheckAccount).toHaveBeenCalledWith(true);
     });
 
     it('should click delete account link and prevent default via the passed template event', () => {
