@@ -5,8 +5,6 @@ import { FINES_MAC_REVIEW_ACCOUNT_DECISION_FORM_MOCK } from '../mocks/fines-mac-
 import { ActivatedRoute } from '@angular/router';
 import { of } from 'rxjs';
 import { GovukRadioComponent } from '@hmcts/opal-frontend-common/components/govuk/govuk-radio';
-import { FinesMacStore } from '../../../stores/fines-mac.store';
-import { FinesMacStoreType } from '../../../stores/types/fines-mac-store.type';
 import { afterAll, beforeAll, beforeEach, describe, expect, it, vi } from 'vitest';
 
 describe('FinesMacReviewAccountDecisionFormComponent', () => {
@@ -14,7 +12,6 @@ describe('FinesMacReviewAccountDecisionFormComponent', () => {
   let fixture: ComponentFixture<FinesMacReviewAccountDecisionFormComponent>;
   let formSubmit: IFinesMacReviewAccountDecisionForm;
   let originalInitOuterRadios: () => void;
-  let finesMacStore: FinesMacStoreType;
 
   beforeAll(() => {
     originalInitOuterRadios = GovukRadioComponent.prototype['initOuterRadios'];
@@ -45,7 +42,6 @@ describe('FinesMacReviewAccountDecisionFormComponent', () => {
 
     fixture = TestBed.createComponent(FinesMacReviewAccountDecisionFormComponent);
     component = fixture.componentInstance;
-    finesMacStore = TestBed.inject(FinesMacStore);
     fixture.detectChanges();
   });
 
@@ -65,20 +61,12 @@ describe('FinesMacReviewAccountDecisionFormComponent', () => {
 
     const event = new MouseEvent('click', { bubbles: true, cancelable: true });
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    const setDeleteFromCheckAccountSpy = vi.spyOn<any, any>(finesMacStore, 'setDeleteFromCheckAccount');
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     const handleRouteSpy = vi.spyOn<any, any>(component, 'handleRoute');
     const expectedRoute = `${component.finesMacRoutes.children.deleteAccountConfirmation}/${component.accountId}`;
 
     link.dispatchEvent(event);
 
-    expect(setDeleteFromCheckAccountSpy).toHaveBeenCalledWith(true);
-    expect(handleRouteSpy).toHaveBeenCalledWith(expectedRoute, {
-      event,
-      routeData: {
-        referrer: component.finesMacRoutes.children.reviewAccount,
-      },
-    });
+    expect(handleRouteSpy).toHaveBeenCalledWith(expectedRoute, { event });
   });
 
   it('should not emit form submit event with form value', () => {

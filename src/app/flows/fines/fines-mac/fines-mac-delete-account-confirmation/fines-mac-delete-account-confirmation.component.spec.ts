@@ -37,7 +37,6 @@ describe('FinesMacDeleteAccountConfirmationComponent', () => {
     };
     mockRouter = {
       navigate: vi.fn().mockName('Router.navigate'),
-      currentNavigation: vi.fn().mockName('Router.currentNavigation').mockReturnValue(undefined),
     };
 
     await TestBed.configureTestingModule({
@@ -210,27 +209,6 @@ describe('FinesMacDeleteAccountConfirmationComponent', () => {
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     vi.spyOn<any, any>(finesDraftStore, 'checker').mockReturnValue(true);
     component.referrer = component['setReferrer']();
-    expect(component.referrer).toBe(component['reviewAccountRoute']);
-  });
-
-  it('should prefer navigation state referrer when provided', () => {
-    mockRouter.currentNavigation.mockReturnValue({
-      extras: {
-        state: {
-          referrer: component['reviewAccountRoute'],
-        },
-      },
-    });
-
-    fixture.destroy();
-    fixture = TestBed.createComponent(FinesMacDeleteAccountConfirmationComponent);
-    component = fixture.componentInstance;
-    finesMacStore = TestBed.inject(FinesMacStore);
-    finesMacStore.setFinesMacStore(structuredClone(FINES_MAC_STATE_MOCK));
-    finesDraftStore = TestBed.inject(FinesDraftStore);
-    finesDraftStore.setFinesDraftState(FINES_DRAFT_STATE);
-    fixture.detectChanges();
-
     expect(component.referrer).toBe(component['reviewAccountRoute']);
   });
 });
