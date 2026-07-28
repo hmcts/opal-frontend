@@ -120,6 +120,30 @@ export class OpalFines {
   }
 
   /**
+   * Builds retry-safe HTTP response options for history reads and appends any defined query params.
+   *
+   * @param params - Optional history query params to add to the request.
+   * @returns HTTP options configured for safe-read retries.
+   */
+  private buildHistoryReadOptions(params?: Record<string, string>): {
+    observe: 'response';
+    params?: Record<string, string>;
+    context: ReturnType<typeof withHttpRetry>;
+  } {
+    const options: {
+      observe: 'response';
+      params?: Record<string, string>;
+      context: ReturnType<typeof withHttpRetry>;
+    } = this.withRetrySafeReadOptions({ observe: 'response' as const });
+
+    if (params) {
+      options.params = params;
+    }
+
+    return options;
+  }
+
+  /**
    * Generates a unique cache key string for draft accounts based on the provided filter parameters.
    * The key is created by serializing a normalized object containing sorted arrays of filter values,
    * ensuring consistent key generation regardless of input order.
@@ -1409,16 +1433,14 @@ export class OpalFines {
     filterParams?: IOpalFinesMinorCreditorAccountHistoryParams,
   ): Observable<IOpalFinesAccountMinorCreditorDetailsHistoryAndNotesTabRefData> {
     const url = `${OPAL_FINES_PATHS.minorCreditorAccounts}/${account_id}/history`;
-    const options: {
-      observe: 'response';
-      params?: Record<string, string>;
-    } = this.withRetrySafeReadOptions({ observe: 'response' as const });
-
-    if (filterParams) {
-      options.params = Object.fromEntries(
-        Object.entries(filterParams).filter(([, value]) => value !== undefined),
-      ) as Record<string, string>;
-    }
+    const options = this.buildHistoryReadOptions(
+      filterParams
+        ? (Object.fromEntries(Object.entries(filterParams).filter(([, value]) => value !== undefined)) as Record<
+            string,
+            string
+          >)
+        : undefined,
+    );
 
     const request$ = this.http.get<IOpalFinesAccountMinorCreditorDetailsHistoryAndNotesTabRefData>(url, options).pipe(
       map((response: HttpResponse<IOpalFinesAccountMinorCreditorDetailsHistoryAndNotesTabRefData>) => {
@@ -1513,16 +1535,14 @@ export class OpalFines {
     filterParams?: IOpalFinesMajorCreditorAccountHistoryParams,
   ): Observable<IOpalFinesAccountMajorCreditorDetailsHistoryAndNotesTabRefData> {
     const url = `${OPAL_FINES_PATHS.majorCreditorAccounts}/${account_id}/history`;
-    const options: {
-      observe: 'response';
-      params?: Record<string, string>;
-    } = { observe: 'response' };
-
-    if (filterParams) {
-      options.params = Object.fromEntries(
-        Object.entries(filterParams).filter(([, value]) => value !== undefined),
-      ) as Record<string, string>;
-    }
+    const options = this.buildHistoryReadOptions(
+      filterParams
+        ? (Object.fromEntries(Object.entries(filterParams).filter(([, value]) => value !== undefined)) as Record<
+            string,
+            string
+          >)
+        : undefined,
+    );
 
     const request$ = this.http.get<IOpalFinesAccountMajorCreditorDetailsHistoryAndNotesTabRefData>(url, options).pipe(
       map((response: HttpResponse<IOpalFinesAccountMajorCreditorDetailsHistoryAndNotesTabRefData>) => {

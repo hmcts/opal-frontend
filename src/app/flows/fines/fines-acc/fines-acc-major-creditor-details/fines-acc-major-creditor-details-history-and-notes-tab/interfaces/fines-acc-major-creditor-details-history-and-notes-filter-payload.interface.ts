@@ -1,4 +1,4 @@
 export interface IFinesAccMajorCreditorDetailsHistoryAndNotesFilterPayload {
-  dateFrom?: string;
-  dateTo?: string;
+  dateFrom?: string | null;
+  dateTo?: string | null;
 }
