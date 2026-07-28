@@ -1626,7 +1626,7 @@ export class AccountEnquiryFlow {
       }
 
       expect(pathname, 'current pathname before opening Add account note').to.match(
-        /\/fines\/account\/defendant\/\d+\/details$/,
+        /\/fines\/account\/(?:defendant|company|minor-creditor)\/\d+\/details$/,
       );
       logAE('navigate', 'Opening "Add account note" screen');
       this.detailsNav.clickAddAccountNoteButton();
