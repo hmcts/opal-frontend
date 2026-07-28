@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, Component, inject, OnDestroy, OnInit } from '@angular/core';
+import { ChangeDetectionStrategy, Component, inject, OnDestroy } from '@angular/core';
 import { FINES_MAC_ROUTING_PATHS } from '../routing/constants/fines-mac-routing-paths.constant';
 import { FinesMacStore } from '../stores/fines-mac.store';
 import { AbstractFormParentBaseComponent } from '@hmcts/opal-frontend-common/components/abstract/abstract-form-parent-base';
@@ -22,7 +22,7 @@ import { IOpalFinesDraftAccountPatchRequestPayload } from '@services/fines/opal-
   templateUrl: './fines-mac-delete-account-confirmation.component.html',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class FinesMacDeleteAccountConfirmationComponent extends AbstractFormParentBaseComponent implements OnInit, OnDestroy {
+export class FinesMacDeleteAccountConfirmationComponent extends AbstractFormParentBaseComponent implements OnDestroy {
   private readonly ngUnsubscribe = new Subject<void>();
   private readonly route = inject(ActivatedRoute);
   private readonly utilsService = inject(UtilsService);

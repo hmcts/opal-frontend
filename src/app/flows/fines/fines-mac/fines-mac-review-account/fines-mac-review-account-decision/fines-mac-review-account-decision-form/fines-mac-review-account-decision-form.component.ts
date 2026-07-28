@@ -43,10 +43,10 @@ export class FinesMacReviewAccountDecisionFormComponent extends AbstractFormBase
   @Output() protected override formSubmit = new EventEmitter<IFinesMacReviewAccountDecisionForm>();
 
   @Input({ required: true }) public accountId!: number;
-  protected readonly finesMacStore = inject(FinesMacStore);
   public readonly DECISION_OPTIONS = FINES_MAC_REVIEW_ACCOUNT_DECISION_OPTIONS;
   public readonly finesMacRoutes = FINES_MAC_ROUTING_PATHS;
   public readonly decisionRejectConditionalId = 'fm_review_account_decision_reject';
+  protected readonly finesMacStore = inject(FinesMacStore);
   override fieldErrors: IFinesMacReviewAccountDecisionFieldErrors = FINES_MAC_REVIEW_ACCOUNT_DECISION_FIELD_ERRORS;
 
   /**
