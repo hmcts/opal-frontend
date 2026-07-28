@@ -75,6 +75,7 @@ export class FinesAccDefendantDetailsHistoryAndNotesTableComponent {
       FINES_ACC_DEFENDANT_DETAILS_HISTORY_AND_NOTES_TABLE_DISPLAY.fieldPathSeparator,
     );
     const rowId = `${FINES_ACCOUNT_HISTORY_TABLE_DISPLAY.rowIdPrefix}${index}`;
+    const amountDirection = this.getAmountDirection(amount);
 
     return {
       id: rowId,
@@ -103,20 +104,30 @@ export class FinesAccDefendantDetailsHistoryAndNotesTableComponent {
       Amount: amount,
       absoluteAmount: amount === null ? null : Math.abs(amount),
       amountAriaId: `${rowId}${FINES_ACCOUNT_HISTORY_TABLE_DISPLAY.amountDirectionSuffix}`,
-      amountDescription:
-        amount === null || amount === FINES_ACC_DEFENDANT_DETAILS_HISTORY_AND_NOTES_TABLE_DISPLAY.zeroAmount
-          ? null
-          : amount > FINES_ACC_DEFENDANT_DETAILS_HISTORY_AND_NOTES_TABLE_DISPLAY.zeroAmount
-            ? FINES_ACCOUNT_HISTORY_TABLE_DISPLAY.amountDescriptions.credit
-            : FINES_ACCOUNT_HISTORY_TABLE_DISPLAY.amountDescriptions.debit,
-      amountTag:
-        amount === null || amount === FINES_ACC_DEFENDANT_DETAILS_HISTORY_AND_NOTES_TABLE_DISPLAY.zeroAmount
-          ? null
-          : amount > FINES_ACC_DEFENDANT_DETAILS_HISTORY_AND_NOTES_TABLE_DISPLAY.zeroAmount
-            ? FINES_ACCOUNT_HISTORY_TABLE_DISPLAY.amountTags.credit
-            : FINES_ACCOUNT_HISTORY_TABLE_DISPLAY.amountTags.debit,
+      amountDescription: amountDirection
+        ? FINES_ACCOUNT_HISTORY_TABLE_DISPLAY.amountDescriptions[amountDirection]
+        : null,
+      amountTag: amountDirection ? FINES_ACCOUNT_HISTORY_TABLE_DISPLAY.amountTags[amountDirection] : null,
       details,
     };
+  }
+
+  /**
+   * Classifies amount values for display labels.
+   *
+   * @param amount - The parsed row amount.
+   * @returns The amount direction, or null for zero and absent amounts.
+   */
+  private getAmountDirection(amount: number | null): 'credit' | 'debit' | null {
+    if (amount === null || amount === FINES_ACC_DEFENDANT_DETAILS_HISTORY_AND_NOTES_TABLE_DISPLAY.zeroAmount) {
+      return null;
+    }
+
+    if (amount > FINES_ACC_DEFENDANT_DETAILS_HISTORY_AND_NOTES_TABLE_DISPLAY.zeroAmount) {
+      return 'credit';
+    }
+
+    return 'debit';
   }
 
   /**
