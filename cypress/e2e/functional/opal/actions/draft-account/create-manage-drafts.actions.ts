@@ -90,9 +90,25 @@ export class CreateManageDraftsActions extends DraftAccountsCommonActions {
       cy.wait('@getRejectedDraftAccounts', this.common.getTimeoutOptions()).then((result) => {
         const count = result?.response?.body?.count;
         log('debug', 'Rejected drafts response received', { count, url: result?.request?.url });
+        if (count === 0) {
+          cy.contains('You have no rejected accounts.', this.common.getTimeoutOptions()).should('be.visible');
+          cy.contains(
+            'To resubmit accounts for other team members, you can view all rejected accounts.',
+            this.common.getTimeoutOptions(),
+          ).should('be.visible');
+        }
+        if (count > 25) {
+          // If there are more than 25 rejected drafts, the table will be paginated, so we cannot assert the exact count of rows. But can check for presence of pagination element.
+          cy.get(L.rows, this.common.getTimeoutOptions()).should('have.length', 25);
+          cy.get(L.nextPageButton, this.common.getTimeoutOptions()).should('be.visible');
+        } else {
+          cy.get(L.rows, this.common.getTimeoutOptions())
+            .should('have.length', count)
+            .then(($rows) => {
+              log('debug', 'Rejected drafts table rows found', { count: $rows.length });
+            });
+        }
       });
-      // Give the table a moment to render the new rows before assertions/search.
-      cy.get(L.rows, this.common.getTimeoutOptions()).should('have.length.at.least', 1);
     }
   }
 
