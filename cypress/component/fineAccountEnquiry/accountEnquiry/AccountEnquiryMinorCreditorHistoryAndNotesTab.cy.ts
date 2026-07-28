@@ -429,7 +429,7 @@ describe('Minor Creditor Account Enquiry - History and notes tab', () => {
   );
 
   it(
-    'AC6. renders CR and DR amounts accessibly and keeps the visual tags non-focusable',
+    'AC5. renders CR and DR amounts accessibly and keeps the visual tags non-focusable',
     { tags: buildTags(MINOR_CREDITOR_HISTORY_STORY_TAG, MINOR_CREDITOR_HISTORY_EPIC_TAG) },
     () => {
       setupMinorCreditorHistoryAndNotesScreenWithTabData(
@@ -475,7 +475,7 @@ describe('Minor Creditor Account Enquiry - History and notes tab', () => {
   );
 
   it(
-    'AC6. renders several hundred history items in one scrollable table without pagination',
+    'AC2. renders several hundred history items in one scrollable table without pagination',
     { tags: buildTags(MINOR_CREDITOR_HISTORY_STORY_TAG, MINOR_CREDITOR_HISTORY_EPIC_TAG) },
     () => {
       setupMinorCreditorHistoryAndNotesScreenWithTabData(
