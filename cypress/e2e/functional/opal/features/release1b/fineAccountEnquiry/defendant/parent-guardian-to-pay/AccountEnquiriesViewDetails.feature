@@ -127,7 +127,7 @@ Feature: Defendant - Parent or guardian to pay - Account Enquiries – View Acco
       # AC3 – Navigate to Parent or guardian details
       When I go to the Parent or guardian details section and the header is "Parent or guardian details"
 
-    @R1B @JIRA-STORY:PO-2671 @JIRA-EPIC:PO-8248 @only
+    @R1B @JIRA-STORY:PO-2671 @JIRA-EPIC:PO-8248
     Scenario Outline: AC3a-AC3e Parent or guardian tab Change links open the correct amend screens
       # AC3a – the heading Change link is removed
       # AC3b – section Change links are shown for Parent or guardian details, Contact details, and Employer details
