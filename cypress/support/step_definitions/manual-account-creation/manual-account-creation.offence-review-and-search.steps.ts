@@ -414,6 +414,7 @@ Then('I see no offences messaging', () => {
   log('assert', 'Asserting no offences messaging');
   cy.contains('There are no offences').should('exist');
   cy.contains('Add an offence').should('exist');
+  cy.contains('Add another offence').should('not.exist');
   cy.contains('Return to account details').should('exist');
 });
 
