@@ -194,17 +194,6 @@ export class AccountEnquiryFlow {
   }
 
   /**
-   * Convenience flow: search by surname (no automatic click).
-   *
-   * @param surname - Surname to search for.
-   */
-  public searchBySurname(surname: string): void {
-    logAE('method', 'searchBySurname()');
-    logAE('flow', 'Search by surname', { surname });
-    this.searchByLastName(surname);
-  }
-
-  /**
    * Convenience flow: search by surname then open the latest matching account.
    *
    * @param surname - Surname to search for.
@@ -212,7 +201,7 @@ export class AccountEnquiryFlow {
   public searchAndClickLatestBySurnameOpenLatestResult(surname: string): void {
     logAE('method', 'searchAndClickLatestBySurnameOpenLatestResult()');
     logAE('flow', 'Search and open latest by surname', { surname });
-    this.searchBySurname(surname);
+    this.searchByLastName(surname);
     this.clickLatestPublishedFromResultsOrAcrossPages();
   }
 
@@ -223,7 +212,7 @@ export class AccountEnquiryFlow {
    */
   public searchOpenLatestAndAssertHeader(surname: string, expectedHeader: string): void {
     logAE('method', 'searchOpenLatestAndAssertHeader()', { surname, expectedHeader });
-    this.searchBySurname(surname);
+    this.searchByLastName(surname);
     this.openLatestAndAssertHeader(expectedHeader);
   }
 
@@ -288,46 +277,6 @@ export class AccountEnquiryFlow {
   }
 
   /**
-   * Asserts the Defendant tab shows the convert-to-company action.
-   */
-  public assertConvertToCompanyActionVisible(): void {
-    logAE('method', 'assertConvertToCompanyActionVisible()');
-    this.defendantDetails.assertConvertToCompanyActionVisible();
-  }
-
-  /**
-   * Asserts the Defendant tab shows the convert-to-individual action.
-   */
-  public assertConvertToIndividualActionVisible(): void {
-    logAE('method', 'assertConvertToIndividualActionVisible()');
-    this.defendantDetails.assertConvertToIndividualActionVisible();
-  }
-
-  /**
-   * Asserts the Defendant tab shows the add parent or guardian action.
-   */
-  public assertAddParentGuardianActionVisible(): void {
-    logAE('method', 'assertAddParentGuardianActionVisible()');
-    this.defendantDetails.assertAddParentGuardianActionVisible();
-  }
-
-  /**
-   * Asserts the Defendant tab does not show the convert-to-company action.
-   */
-  public assertConvertToCompanyActionNotPresent(): void {
-    logAE('method', 'assertConvertToCompanyActionNotPresent()');
-    this.defendantDetails.assertConvertToCompanyActionNotPresent();
-  }
-
-  /**
-   * Asserts the visible convert action is not the company-convert label.
-   */
-  public assertConvertToCompanyActionTextNotPresent(): void {
-    logAE('method', 'assertConvertToCompanyActionTextNotPresent()');
-    this.defendantDetails.assertConvertToCompanyActionTextNotPresent();
-  }
-
-  /**
    * Opens the convert-to-company confirmation page from the Defendant tab.
    */
   public openConvertToCompanyConfirmation(): void {
@@ -366,94 +315,6 @@ export class AccountEnquiryFlow {
   }
 
   /**
-   * Asserts the convert-to-company confirmation page.
-   *
-   * @param expectedCaptionName - Expected defendant name shown in the caption.
-   */
-  public assertOnConvertToCompanyConfirmation(expectedCaptionName: string): void {
-    logAE('method', 'assertOnConvertToCompanyConfirmation()', { expectedCaptionName });
-    this.accountConvert.assertOnConvertToCompanyConfirmation(expectedCaptionName);
-  }
-
-  /**
-   * Confirms the convert-to-company action.
-   */
-  public confirmConvertToCompanyAccount(): void {
-    logAE('method', 'confirmConvertToCompanyAccount()');
-    this.accountConvert.confirmConvertToCompany();
-  }
-
-  /**
-   * Cancels the convert-to-company action.
-   */
-  public cancelConvertToCompanyAccount(): void {
-    logAE('method', 'cancelConvertToCompanyAccount()');
-    this.accountConvert.cancelConvertToCompany();
-  }
-
-  /**
-   * Asserts the convert-to-individual confirmation page.
-   *
-   * @param expectedCaptionName - Expected company name shown in the caption.
-   */
-  public assertOnConvertToIndividualConfirmation(expectedCaptionName: string): void {
-    logAE('method', 'assertOnConvertToIndividualConfirmation()', { expectedCaptionName });
-    this.accountConvert.assertOnConvertToIndividualConfirmation(expectedCaptionName);
-  }
-
-  /**
-   * Confirms the convert-to-individual action.
-   */
-  public confirmConvertToIndividualAccount(): void {
-    logAE('method', 'confirmConvertToIndividualAccount()');
-    this.accountConvert.confirmConvertToIndividual();
-  }
-
-  /**
-   * Cancels the convert-to-individual action.
-   */
-  public cancelConvertToIndividualAccount(): void {
-    logAE('method', 'cancelConvertToIndividualAccount()');
-    this.accountConvert.cancelConvertToIndividual();
-  }
-
-  /**
-   * Asserts the Company details form contains the expected pre-populated values.
-   *
-   * @param expectedFieldValues - Key/value map of ticket field labels to expected values.
-   */
-  public assertCompanyDetailsPrefilledValues(expectedFieldValues: Record<string, string>): void {
-    logAE('method', 'assertCompanyDetailsPrefilledValues()', expectedFieldValues);
-    this.editCompanyDetailsActions.assertPrefilledFieldValues(expectedFieldValues);
-  }
-
-  /**
-   * Asserts the convert flow lands on the Company details convert route.
-   */
-  public assertOnCompanyDetailsConvertRoute(): void {
-    logAE('method', 'assertOnCompanyDetailsConvertRoute()');
-    this.editCompanyDetailsActions.assertOnConvertRoute();
-  }
-
-  /**
-   * Asserts the convert flow lands on the Defendant details convert route.
-   */
-  public assertOnDefendantDetailsConvertRoute(): void {
-    logAE('method', 'assertOnDefendantDetailsConvertRoute()');
-    this.editDefendantDetailsActions.assertOnConvertRoute();
-  }
-
-  /**
-   * Asserts the Defendant details form contains the expected pre-populated values.
-   *
-   * @param expectedFieldValues - Key/value map of ticket field labels to expected values.
-   */
-  public assertDefendantDetailsPrefilledValues(expectedFieldValues: Record<string, string>): void {
-    logAE('method', 'assertDefendantDetailsPrefilledValues()', expectedFieldValues);
-    this.editDefendantDetailsActions.assertPrefilledFieldValues(expectedFieldValues);
-  }
-
-  /**
    * Completes the convert-to-company form by providing a company name and saving the form.
    *
    * @param companyName - Company name to use for the converted account.
@@ -478,58 +339,6 @@ export class AccountEnquiryFlow {
     this.editDefendantDetailsActions.updateFirstName(details.firstName);
     this.editDefendantDetailsActions.updateSurname(details.lastName);
     this.editDefendantDetailsActions.saveChanges();
-  }
-
-  /**
-   * Asserts the account details success banner contains the expected conversion message.
-   *
-   * @param expected - Expected banner text.
-   */
-  public assertAccountConversionSuccessMessage(expected: string): void {
-    logAE('method', 'assertAccountConversionSuccessMessage()', { expected });
-    this.detailsNav.assertSuccessBannerText(expected);
-  }
-
-  /**
-   * Asserts the company summary card is visible in the Defendant tab.
-   */
-  public assertCompanySummaryVisible(): void {
-    logAE('method', 'assertCompanySummaryVisible()');
-    this.editCompanyDetailsActions.assertCompanySummaryVisible();
-  }
-
-  /**
-   * Asserts the company summary card is not visible in the Defendant tab.
-   */
-  public assertCompanySummaryNotPresent(): void {
-    logAE('method', 'assertCompanySummaryNotPresent()');
-    this.editCompanyDetailsActions.assertCompanySummaryNotPresent();
-  }
-
-  /**
-   * Asserts the defendant summary card is visible in the Defendant tab.
-   */
-  public assertDefendantSummaryVisible(): void {
-    logAE('method', 'assertDefendantSummaryVisible()');
-    this.defendantDetails.assertDefendantSummaryVisible();
-  }
-
-  /**
-   * Asserts the defendant summary card is not visible in the Defendant tab.
-   */
-  public assertDefendantSummaryNotPresent(): void {
-    logAE('method', 'assertDefendantSummaryNotPresent()');
-    this.defendantDetails.assertDefendantSummaryNotPresent();
-  }
-
-  /**
-   * Asserts the primary email address shown in the contact card contains the expected value.
-   *
-   * @param expected - Expected email text.
-   */
-  public assertPrimaryEmailContains(expected: string): void {
-    logAE('method', 'assertPrimaryEmailContains()', { expected });
-    this.defendantDetails.assertPrimaryEmailContains(expected);
   }
 
   /**
@@ -564,15 +373,6 @@ export class AccountEnquiryFlow {
     this.parentGuardianDetails.assertRemoveParentGuardianActionVisible();
   }
 
-  /**
-   * Asserts the remove parent or guardian confirmation page is visible.
-   *
-   * @param expectedIdentifierText - Expected account identifier text fragment.
-   */
-  public assertOnRemoveParentGuardianPage(expectedIdentifierText: string): void {
-    logAE('method', 'assertOnRemoveParentGuardianPage()', { expectedIdentifierText });
-    this.removeParentGuardian.assertOnRemoveParentGuardianConfirmation(expectedIdentifierText);
-  }
   /**
    * Asserts the amend parent or guardian route is active and the information banner is shown.
    */
@@ -635,22 +435,6 @@ export class AccountEnquiryFlow {
   }
 
   /**
-   * Asserts the amend minor creditor route is active and the form heading is shown.
-   */
-  public assertOnAmendMinorCreditorDetailsPage(): void {
-    logAE('method', 'assertOnAmendMinorCreditorDetailsPage()');
-    this.editMinorCreditorActions.assertHeader({ route: 'amend' });
-  }
-
-  /**
-   * Asserts the Payment terms tab is active.
-   */
-  public assertPaymentTermsTabIsActive(): void {
-    logAE('method', 'assertPaymentTermsTabIsActive()');
-    this.detailsNav.assertPaymentTermsTabIsActive();
-  }
-
-  /**
    * Opens the amend payment terms form from the Payment terms tab.
    */
   public openPaymentTermsAmendForm(): void {
@@ -679,30 +463,6 @@ export class AccountEnquiryFlow {
     this.detailsNav.goToHistoryAndNotesTab();
     this.detailsNav.assertHistoryAndNotesTabIsActive();
     this.historyAndNotes.assertHistoryAndNotesTabLoaded();
-  }
-
-  /**
-   * Asserts the initial History and notes rows have been rendered.
-   */
-  public assertHistoryAndNotesItemsLoaded(): void {
-    logAE('method', 'assertHistoryAndNotesItemsLoaded()');
-    this.historyAndNotes.assertHistoryAndNotesRowsLoaded(2);
-  }
-
-  /**
-   * Applies the Notes filter to the History and notes tab.
-   */
-  public filterHistoryAndNotesToNotes(): void {
-    logAE('method', 'filterHistoryAndNotesToNotes()');
-    this.historyAndNotes.applyNotesFilter();
-  }
-
-  /**
-   * Asserts the History and notes table only shows Note rows after filtering.
-   */
-  public assertHistoryAndNotesFilteredToNotes(): void {
-    logAE('method', 'assertHistoryAndNotesFilteredToNotes()');
-    this.historyAndNotes.assertHistoryAndNotesFilteredToNotes();
   }
 
   /**
@@ -741,90 +501,12 @@ export class AccountEnquiryFlow {
   }
 
   /**
-   * Asserts the add enforcement action form is visible.
-   */
-  public assertAddEnforcementActionFormVisible(): void {
-    logAE('method', 'assertAddEnforcementActionFormVisible()');
-    this.enforcement.assertAddEnforcementActionFormVisible();
-  }
-
-  /**
-   * Asserts the add enforcement action form is visible.
-   */
-  public assertAddNewEnforcementActionFormVisible(): void {
-    logAE('method', 'assertAddNewEnforcementActionFormVisible()');
-    this.enforcement.assertAddNewEnforcementActionFormVisible();
-  }
-
-  /**
    * Opens the remove enforcement hold form from the Enforcement tab.
    */
   public openRemoveEnforcementHoldForm(): void {
     logAE('method', 'openRemoveEnforcementHoldForm()');
     this.enforcement.openRemoveEnforcementHoldForm();
     this.enforcement.assertRemoveEnforcementHoldFormVisible();
-  }
-
-  /**
-   * Asserts the remove enforcement hold account identifier.
-   *
-   * @param expected - Expected account identifier caption text.
-   */
-  public assertRemoveEnforcementHoldAccountIdentifier(expected: string): void {
-    logAE('method', 'assertRemoveEnforcementHoldAccountIdentifier()', { expected });
-    this.enforcement.assertRemoveEnforcementHoldAccountIdentifier(expected);
-  }
-
-  /**
-   * Submits the add enforcement action form.
-   */
-  public submitAddEnforcementActionForm(): void {
-    logAE('method', 'submitAddEnforcementActionForm()');
-    this.enforcement.submitAddEnforcementActionForm();
-  }
-
-  /**
-   * Opens the Change Collection Order status form from the Enforcement tab.
-   */
-  public openChangeCollectionOrderForm(): void {
-    logAE('method', 'openChangeCollectionOrderForm()');
-    this.enforcement.openChangeCollectionOrderForm();
-  }
-
-  /**
-   * Asserts the Change Collection Order status form is visible.
-   */
-  public assertChangeCollectionOrderFormVisible(): void {
-    logAE('method', 'assertChangeCollectionOrderFormVisible()');
-    this.enforcement.assertChangeCollectionOrderFormVisible();
-  }
-
-  /**
-   * Asserts the account identifier shown on the Change Collection Order status page.
-   *
-   * @param expected - Expected account identifier text.
-   */
-  public assertChangeCollectionOrderAccountIdentifier(expected: string): void {
-    logAE('method', 'assertChangeCollectionOrderAccountIdentifier()', { expected });
-    this.enforcement.assertChangeCollectionOrderAccountIdentifier(expected);
-  }
-
-  /**
-   * Selects a Collection Order status option on the change form.
-   *
-   * @param option - Visible radio label to select.
-   */
-  public selectChangeCollectionOrderStatus(option: string): void {
-    logAE('method', 'selectChangeCollectionOrderStatus()', { option });
-    this.enforcement.selectCollectionOrderStatus(option);
-  }
-
-  /**
-   * Submits the Change Collection Order status form.
-   */
-  public submitChangeCollectionOrderForm(): void {
-    logAE('method', 'submitChangeCollectionOrderForm()');
-    this.enforcement.submitChangeCollectionOrderForm();
   }
 
   /**
@@ -848,96 +530,6 @@ export class AccountEnquiryFlow {
   }
 
   /**
-   * Asserts the Collection Order success banner text.
-   *
-   * @param expected - Expected success banner message.
-   */
-  public assertCollectionOrderSuccessBanner(expected: string): void {
-    logAE('method', 'assertCollectionOrderSuccessBanner()', { expected });
-    this.enforcement.assertCollectionOrderSuccessBannerText(expected);
-  }
-
-  /**
-   * Asserts the Collection Order summary value on the Enforcement tab.
-   *
-   * @param expected - Expected Collection Order summary value.
-   */
-  public assertCollectionOrderSummary(expected: string): void {
-    logAE('method', 'assertCollectionOrderSummary()', { expected });
-    this.enforcement.assertCollectionOrderSummary(expected);
-  }
-
-  /**
-   * Selects an enforcement override code on the add form.
-   *
-   * @param resultCode - Enforcement override result code.
-   */
-  public selectEnforcementOverride(resultCode: string): void {
-    logAE('method', 'selectEnforcementOverride()', { resultCode });
-    this.enforcement.selectEnforcementOverride(resultCode);
-  }
-
-  /**
-   * Selects an enforcement action code on the add form.
-   *
-   * @param resultCode - Enforcement action result code.
-   */
-  public selectEnforcementAction(resultCode: string): void {
-    logAE('method', 'selectEnforcementAction()', { resultCode });
-    this.enforcement.selectEnforcementAction(resultCode);
-  }
-
-  /**
-   * Enters a reason on the add enforcement action details form.
-   *
-   * @param reason - Enforcement action reason text.
-   */
-  public enterEnforcementActionReason(reason: string): void {
-    logAE('method', 'enterEnforcementActionReason()', { reason });
-    this.enforcement.enterEnforcementActionReason(reason);
-  }
-
-  /**
-   * Chooses whether to change existing payment terms on the add enforcement action details form.
-   *
-   * @param option - Visible option text, usually "Yes" or "No".
-   */
-  public chooseChangeExistingPaymentTerms(option: string): void {
-    logAE('method', 'chooseChangeExistingPaymentTerms()', { option });
-    this.enforcement.chooseChangeExistingPaymentTerms(option);
-  }
-
-  /**
-   * Asserts the enforcement action added success banner text.
-   *
-   * @param expected - Expected success banner message.
-   */
-  public assertEnforcementActionSuccessBanner(expected: string): void {
-    logAE('method', 'assertEnforcementActionSuccessBanner()', { expected });
-    this.enforcement.assertSuccessBannerText(expected);
-  }
-
-  /**
-   * Selects a Local Justice Area on the add form.
-   *
-   * @param localJusticeArea - Visible LJA option text.
-   */
-  public selectEnforcementOverrideLocalJusticeArea(localJusticeArea: string): void {
-    logAE('method', 'selectEnforcementOverrideLocalJusticeArea()', { localJusticeArea });
-    this.enforcement.selectLocalJusticeArea(localJusticeArea);
-  }
-
-  /**
-   * Selects an enforcer on the add form.
-   *
-   * @param enforcer - Visible enforcer option text.
-   */
-  public selectEnforcementOverrideEnforcer(enforcer: string): void {
-    logAE('method', 'selectEnforcementOverrideEnforcer()', { enforcer });
-    this.enforcement.selectEnforcer(enforcer);
-  }
-
-  /**
    * Submits the add enforcement override form and stores the request body for later assertions.
    */
   public submitAddEnforcementOverride(): void {
@@ -952,6 +544,32 @@ export class AccountEnquiryFlow {
 
     this.detailsNav.assertEnforcementTabIsActive();
     this.enforcement.assertEnforcementTabVisible();
+  }
+
+  /**
+   * Completes the add enforcement override form with a Local Justice Area and submits it.
+   *
+   * @param resultCode - Enforcement override result code.
+   * @param localJusticeArea - Visible LJA option text.
+   */
+  public addEnforcementOverrideWithLocalJusticeArea(resultCode: string, localJusticeArea: string): void {
+    logAE('method', 'addEnforcementOverrideWithLocalJusticeArea()', { resultCode, localJusticeArea });
+    this.enforcement.selectEnforcementOverride(resultCode);
+    this.enforcement.selectLocalJusticeArea(localJusticeArea);
+    this.submitAddEnforcementOverride();
+  }
+
+  /**
+   * Completes the add enforcement override form with an enforcer and submits it.
+   *
+   * @param resultCode - Enforcement override result code.
+   * @param enforcer - Visible enforcer option text.
+   */
+  public addEnforcementOverrideWithEnforcer(resultCode: string, enforcer: string): void {
+    logAE('method', 'addEnforcementOverrideWithEnforcer()', { resultCode, enforcer });
+    this.enforcement.selectEnforcementOverride(resultCode);
+    this.enforcement.selectEnforcer(enforcer);
+    this.submitAddEnforcementOverride();
   }
 
   /**
@@ -976,26 +594,6 @@ export class AccountEnquiryFlow {
   }
 
   /**
-   * Asserts the enforcement override success banner text.
-   *
-   * @param expected - Expected success banner message.
-   */
-  public assertEnforcementOverrideSuccessBanner(expected: string): void {
-    logAE('method', 'assertEnforcementOverrideSuccessBanner()', { expected });
-    this.enforcement.assertSuccessBannerText(expected);
-  }
-
-  /**
-   * Asserts the enforcement hold success banner text.
-   *
-   * @param expected - Expected success banner message.
-   */
-  public assertEnforcementHoldSuccessBanner(expected: string): void {
-    logAE('method', 'assertEnforcementHoldSuccessBanner()', { expected });
-    this.enforcement.assertSuccessBannerText(expected);
-  }
-
-  /**
    * Opens the change enforcement court form from the Enforcement tab.
    */
   public openChangeEnforcementCourtForm(): void {
@@ -1015,8 +613,22 @@ export class AccountEnquiryFlow {
     this.enforcement.selectDifferentEnforcementCourt('originalEnforcementCourt', 'selectedEnforcementCourt');
     this.enforcement.submitChangeEnforcementCourt();
 
+    cy.location('pathname', { timeout: AccountEnquiryFlow.DETAILS_NAV_WAIT_MS }).should(
+      'match',
+      /\/fines\/account\/(?:defendant|company)\/\d+\/details$/,
+    );
+    this.detailsNav.goToEnforcementTab();
     this.detailsNav.assertEnforcementTabIsActive();
     this.enforcement.assertEnforcementTabVisible();
+  }
+
+  /**
+   * Stores and asserts the currently displayed enforcement court summary value.
+   */
+  public captureCurrentEnforcementCourtSummary(): void {
+    logAE('method', 'captureCurrentEnforcementCourtSummary()');
+    this.enforcement.storeCurrentEnforcementCourtValue('originalEnforcementCourt');
+    this.enforcement.assertEnforcementCourtMatchesAlias('originalEnforcementCourt');
   }
 
   /**
@@ -1030,6 +642,11 @@ export class AccountEnquiryFlow {
     this.enforcement.selectEnforcementCourtFromAlias('selectedEnforcementCourt');
     this.enforcement.submitChangeEnforcementCourt();
 
+    cy.location('pathname', { timeout: AccountEnquiryFlow.DETAILS_NAV_WAIT_MS }).should(
+      'match',
+      /\/fines\/account\/(?:defendant|company)\/\d+\/details$/,
+    );
+    this.detailsNav.goToEnforcementTab();
     this.detailsNav.assertEnforcementTabIsActive();
     this.enforcement.assertEnforcementTabVisible();
   }
@@ -1054,34 +671,13 @@ export class AccountEnquiryFlow {
       }
     });
 
+    cy.location('pathname', { timeout: AccountEnquiryFlow.DETAILS_NAV_WAIT_MS }).should(
+      'match',
+      /\/fines\/account\/(?:defendant|company)\/\d+\/details$/,
+    );
+    this.detailsNav.goToEnforcementTab();
     this.detailsNav.assertEnforcementTabIsActive();
     this.enforcement.assertEnforcementTabVisible();
-  }
-
-  /**
-   * Asserts the enforcement court summary matches the selected value stored during the test.
-   */
-  public assertSelectedEnforcementCourtSummary(): void {
-    logAE('method', 'assertSelectedEnforcementCourtSummary()');
-    this.enforcement.assertEnforcementCourtMatchesAlias('selectedEnforcementCourt');
-  }
-
-  /**
-   * Asserts the enforcement court success banner text.
-   *
-   * @param expected - Expected success banner message.
-   */
-  public assertEnforcementCourtSuccessBanner(expected: string): void {
-    logAE('method', 'assertEnforcementCourtSuccessBanner()', { expected });
-    this.enforcement.assertSuccessBannerText(expected);
-  }
-
-  /**
-   * Asserts the enforcement success banner is not displayed.
-   */
-  public assertEnforcementSuccessBannerNotVisible(): void {
-    logAE('method', 'assertEnforcementSuccessBannerNotVisible()');
-    this.enforcement.assertSuccessBannerNotVisible();
   }
 
   /**
@@ -1115,29 +711,6 @@ export class AccountEnquiryFlow {
         expect(String(body?.enforcement_override?.enforcer?.enforcer_id)).to.eq(expected.enforcerId);
       }
     });
-  }
-
-  /**
-   * Asserts the enforcement override summary card values.
-   *
-   * @param expected - Expected summary values.
-   * @param expected.override - Expected enforcement override display text.
-   * @param expected.enforcer - Expected enforcer display text.
-   * @param expected.lja - Expected LJA display text.
-   */
-  public assertEnforcementOverrideSummary(expected: { override?: string; enforcer?: string; lja?: string }): void {
-    logAE('method', 'assertEnforcementOverrideSummary()', expected);
-    this.enforcement.assertEnforcementOverrideSummary(expected);
-  }
-
-  /**
-   * Asserts the last enforcement action summary value shown on the Enforcement tab.
-   *
-   * @param expected - Expected enforcement action text.
-   */
-  public assertEnforcementActionSummary(expected: string): void {
-    logAE('method', 'assertEnforcementActionSummary()', { expected });
-    this.enforcement.assertEnforcementActionSummary(expected);
   }
 
   /**
@@ -1189,39 +762,6 @@ export class AccountEnquiryFlow {
 
     this.detailsNav.assertPaymentTermsTabIsActive();
     cy.get('@paymentTermsSave.all').should('have.length', 0);
-  }
-
-  /**
-   * Asserts payment terms summary values for instalments-only payments.
-   * @param expected - Expected summary values.
-   * @param expected.amount - Instalment amount.
-   * @param expected.frequency - Instalment frequency.
-   * @param expected.startDate - Instalment start date.
-   */
-  public assertPaymentTermsInstalmentsSummary(expected: {
-    amount: string;
-    frequency: string;
-    startDate: string;
-  }): void {
-    logAE('method', 'assertPaymentTermsInstalmentsSummary()', expected);
-    this.paymentTerms.assertInstalmentSummary(expected);
-  }
-
-  /**
-   * Asserts the pay by date value on the payment terms tab.
-   * @param expected - Expected pay by date value.
-   */
-  public assertPaymentTermsPayByDate(expected: string): void {
-    logAE('method', 'assertPaymentTermsPayByDate()', { expected });
-    this.paymentTerms.assertPayByDate(expected);
-  }
-
-  /**
-   * Asserts that instalment rows are not present on the payment terms tab.
-   */
-  public assertPaymentTermsInstalmentsAbsent(): void {
-    logAE('method', 'assertPaymentTermsInstalmentsAbsent()');
-    this.paymentTerms.assertInstalmentRowsNotPresent();
   }
 
   /**
@@ -1323,7 +863,7 @@ export class AccountEnquiryFlow {
     this.detailsNav.goToCreditorTab();
     this.minorCreditorDetails.assertSectionHeader('Creditor Details');
     this.minorCreditorDetails.change({ formSelector: MINOR_CREDITOR_AMEND_ELEMENTS.form });
-    this.assertOnAmendMinorCreditorDetailsPage();
+    this.editMinorCreditorActions.assertHeader({ route: 'amend' });
   }
 
   /**
@@ -1366,7 +906,7 @@ export class AccountEnquiryFlow {
    */
   public enterAmendMinorCreditorFirstName(value: string): void {
     logAE('method', 'enterAmendMinorCreditorFirstName()', { value });
-    this.assertOnAmendMinorCreditorDetailsPage();
+    this.editMinorCreditorActions.assertHeader({ route: 'amend' });
     this.editMinorCreditorActions.editFirstNames(value);
   }
 
@@ -1413,19 +953,9 @@ export class AccountEnquiryFlow {
    */
   public attemptToSaveCurrentMinorCreditorAmendFormWithFirstName(value: string): void {
     logAE('method', 'attemptToSaveCurrentMinorCreditorAmendFormWithFirstName()', { value });
-    this.assertOnAmendMinorCreditorDetailsPage();
+    this.editMinorCreditorActions.assertHeader({ route: 'amend' });
     this.editMinorCreditorActions.editFirstNames(value);
     this.editMinorCreditorActions.saveChanges();
-  }
-
-  /**
-   * Enters a last name on the parent or guardian form.
-   *
-   * @param value - New last name value.
-   */
-  public enterParentGuardianLastName(value: string): void {
-    logAE('method', 'enterParentGuardianLastName()', { value });
-    this.editParentGuardianActions.editLastName(value);
   }
 
   /**
@@ -1436,16 +966,6 @@ export class AccountEnquiryFlow {
   public enterAddParentGuardianAddressLine1(value: string): void {
     logAE('method', 'enterAddParentGuardianAddressLine1()', { value });
     this.editParentGuardianActions.assertHeader({ route: 'add' });
-    this.editParentGuardianActions.editAddressLine1(value);
-  }
-
-  /**
-   * Enters address line 1 on the parent or guardian form.
-   *
-   * @param value - New address line 1 value.
-   */
-  public enterParentGuardianAddressLine1(value: string): void {
-    logAE('method', 'enterParentGuardianAddressLine1()', { value });
     this.editParentGuardianActions.editAddressLine1(value);
   }
 
@@ -1513,14 +1033,6 @@ export class AccountEnquiryFlow {
   }
 
   /**
-   * Saves the minor creditor details after editing.
-   */
-  public saveMinorCreditorDetails(): void {
-    logAE('method', 'saveMinorCreditorDetails()');
-    this.editMinorCreditorActions.saveChanges();
-  }
-
-  /**
    * Asserts the defendant summary name contains the expected value.
    * @param expected text expected in name field
    */
@@ -1569,15 +1081,6 @@ export class AccountEnquiryFlow {
     logAE('cancel', 'Cancelling edit and staying on edit page');
     this.common.cancelEditing(false);
     this.editDefendantDetailsActions.assertStillOnEditPage();
-  }
-
-  /**
-   * Cancels the edit operation
-   */
-  public cancelEditAndLeave(): void {
-    logAE('method', 'cancelEditAndLeave()');
-    logAE('cancel', 'Cancelling edit and returning to details page');
-    this.common.cancelEditing(true);
   }
 
   /**
@@ -1651,7 +1154,7 @@ export class AccountEnquiryFlow {
    */
   public cancelAmendMinorCreditorAndLeave(): void {
     logAE('method', 'cancelAmendMinorCreditorAndLeave()');
-    this.assertOnAmendMinorCreditorDetailsPage();
+    this.editMinorCreditorActions.assertHeader({ route: 'amend' });
     this.common.cancelEditing(true);
   }
 
@@ -1716,16 +1219,6 @@ export class AccountEnquiryFlow {
   }
 
   /**
-   * Asserts the account details success banner text.
-   *
-   * @param expected - Expected success message.
-   */
-  public assertAccountDetailsSuccessBanner(expected: string): void {
-    logAE('method', 'assertAccountDetailsSuccessBanner()', { expected });
-    this.detailsNav.assertSuccessBannerText(expected);
-  }
-
-  /**
    * Verifies the non-paying parent or guardian has been removed from the account via API.
    */
   public verifyParentGuardianRemovedViaApi(): void {
@@ -1760,7 +1253,7 @@ export class AccountEnquiryFlow {
    */
   public assertAmendMinorCreditorFirstName(expected: string): void {
     logAE('method', 'assertAmendMinorCreditorFirstName()', { expected });
-    this.assertOnAmendMinorCreditorDetailsPage();
+    this.editMinorCreditorActions.assertHeader({ route: 'amend' });
     this.editMinorCreditorActions.verifyFirstName(expected);
   }
 
@@ -1782,7 +1275,7 @@ export class AccountEnquiryFlow {
    */
   public assertAmendMinorCreditorErrorSummaryContains(expected: string): void {
     logAE('method', 'assertAmendMinorCreditorErrorSummaryContains()', { expected });
-    this.assertOnAmendMinorCreditorDetailsPage();
+    this.editMinorCreditorActions.assertHeader({ route: 'amend' });
     this.editMinorCreditorActions.assertErrorSummaryContains(expected);
   }
 
@@ -2132,16 +1625,17 @@ export class AccountEnquiryFlow {
    */
   public openAddAccountNoteAndVerifyHeader(): void {
     logAE('method', 'openAddAccountNoteAndVerifyHeader()');
-    cy.location('pathname').then((pathname) => {
-      const alreadyOnAddAccountNotePage = /\/fines\/account\/(?:defendant|minor-creditor)\/\d+\/note\/add$/.test(
-        pathname,
-      );
+    cy.location('pathname', this.common.getTimeoutOptions()).then((pathname) => {
+      const alreadyOnAddAccountNotePage = pathname.includes('/note/add');
 
       if (alreadyOnAddAccountNotePage) {
         logAE('navigate', 'Already on "Add account note" screen');
         return;
       }
 
+      expect(pathname, 'current pathname before opening Add account note').to.match(
+        /\/fines\/account\/defendant\/\d+\/details$/,
+      );
       logAE('navigate', 'Opening "Add account note" screen');
       this.detailsNav.clickAddAccountNoteButton();
     });

@@ -353,7 +353,7 @@ Feature: Account Search and Matches
 
 
   @R1B @JIRA-STORY:PO-709
-  Scenario: Verify search works for all reference types - <reference_type>
+  Scenario Outline: Verify search works for all reference types - <reference_type>
     #AC6
     Given I create a "company" draft account with the following details and set status "Publishing Pending" using user "opal-test-10@dev.platform.hmcts.net":
       | Account_status                      | Submitted         |
