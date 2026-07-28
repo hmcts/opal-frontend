@@ -45,7 +45,7 @@ describe('FinesAccMinorCreditorDetailsHistoryAndNotesTableComponent', () => {
   });
 
   it('should map minor creditor account history items to shared history table rows', () => {
-    const rows = component.getHistoryRows(
+    const rows = component.historyTableAdapter.getRows(
       structuredClone(FINES_ACC_MINOR_CREDITOR_DETAILS_HISTORY_AND_NOTES_TABLE_MAP_TAB_DATA_MOCK),
     );
 
@@ -68,7 +68,7 @@ describe('FinesAccMinorCreditorDetailsHistoryAndNotesTableComponent', () => {
 
   it('should preserve API timestamp values including milliseconds as date sort values', () => {
     const timestamp = '2026-06-25T10:30:15.123Z';
-    const rows = component.getHistoryRows({
+    const rows = component.historyTableAdapter.getRows({
       version: null,
       historyItems: [
         {
@@ -95,7 +95,7 @@ describe('FinesAccMinorCreditorDetailsHistoryAndNotesTableComponent', () => {
 
   it('should map supported minor creditor date field paths', () => {
     const timestamp = '2026-06-25T10:30:15.123Z';
-    const rows = component.getHistoryRows({
+    const rows = component.historyTableAdapter.getRows({
       version: null,
       historyItems: [
         {
@@ -123,7 +123,7 @@ describe('FinesAccMinorCreditorDetailsHistoryAndNotesTableComponent', () => {
     tabData['history_items'] = tabData['historyItems'];
     delete tabData['historyItems'];
 
-    const rows = component.getHistoryRows(tabData);
+    const rows = component.historyTableAdapter.getRows(tabData);
 
     expect(rows).toEqual([
       expect.objectContaining({
@@ -136,7 +136,7 @@ describe('FinesAccMinorCreditorDetailsHistoryAndNotesTableComponent', () => {
   });
 
   it('should map optional history item fields and amount branches to shared table rows', () => {
-    const rows = component.getHistoryRows(
+    const rows = component.historyTableAdapter.getRows(
       structuredClone(FINES_ACC_MINOR_CREDITOR_DETAILS_HISTORY_AND_NOTES_TABLE_BRANCH_TAB_DATA_MOCK),
     );
 
@@ -420,7 +420,9 @@ describe('FinesAccMinorCreditorDetailsHistoryAndNotesTableComponent', () => {
     const expectedUrl = `/${FINES_ROUTING_PATHS.root}/${FINES_ACC_ROUTING_PATHS.root}/${FINES_ACC_ROUTING_PATHS.children.defendant}/${accountId}/${FINES_ACC_DEFENDANT_ROUTING_PATHS.children.details}`;
 
     fixture.detectChanges();
-    component.handleHistoryLinkClicked(FINES_ACC_MINOR_CREDITOR_DETAILS_HISTORY_AND_NOTES_TABLE_ACCOUNT_LINK_MOCK);
+    component.historyTableAdapter.openHistoryLink(
+      FINES_ACC_MINOR_CREDITOR_DETAILS_HISTORY_AND_NOTES_TABLE_ACCOUNT_LINK_MOCK,
+    );
 
     expect(windowOpenSpy).toHaveBeenCalledWith(
       expectedUrl,
@@ -431,7 +433,9 @@ describe('FinesAccMinorCreditorDetailsHistoryAndNotesTableComponent', () => {
   it('should ignore unsupported history link types', () => {
     const windowOpenSpy = vi.spyOn(window, 'open').mockImplementation(() => null);
 
-    component.handleHistoryLinkClicked(FINES_ACC_MINOR_CREDITOR_DETAILS_HISTORY_AND_NOTES_TABLE_UNSUPPORTED_LINK_MOCK);
+    component.historyTableAdapter.openHistoryLink(
+      FINES_ACC_MINOR_CREDITOR_DETAILS_HISTORY_AND_NOTES_TABLE_UNSUPPORTED_LINK_MOCK,
+    );
 
     expect(windowOpenSpy).not.toHaveBeenCalled();
   });
@@ -439,7 +443,7 @@ describe('FinesAccMinorCreditorDetailsHistoryAndNotesTableComponent', () => {
   it('should ignore account history links without a finite account id', () => {
     const windowOpenSpy = vi.spyOn(window, 'open').mockImplementation(() => null);
 
-    component.handleHistoryLinkClicked(
+    component.historyTableAdapter.openHistoryLink(
       FINES_ACC_MINOR_CREDITOR_DETAILS_HISTORY_AND_NOTES_TABLE_INVALID_ACCOUNT_LINK_MOCK,
     );
 
