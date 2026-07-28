@@ -180,7 +180,7 @@ describe('FinesSaSearchFilterBusinessUnitForm', () => {
 
     // No child controls in the record
     const record = cmp['form'].get('fsa_search_account_business_unit_ids') as FormRecord<FormControl<boolean>>;
-    expect(Object.keys(record.controls).length).toBe(0);
+    expect(Object.keys(record.controls)).toHaveLength(0);
 
     // Header checkboxes should be false
     expect(cmp['form'].get('fsa_search_account_business_unit_ids_fines_select_all')?.value).toBe(false);

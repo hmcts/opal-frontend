@@ -266,7 +266,7 @@ describe('FinesSaSearchAccountFormComponent', () => {
 
   it('should return an empty FormGroup when switching to an unknown tab', () => {
     component['switchTab']('unknown');
-    expect(component.searchCriteriaForm instanceof FormGroup).toBe(true);
+    expect(component.searchCriteriaForm).toBeInstanceOf(FormGroup);
     expect(Object.keys(component.searchCriteriaForm.controls)).toEqual([]);
   });
 

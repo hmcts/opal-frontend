@@ -421,7 +421,7 @@ describe('FinesSaResultsComponent', () => {
     };
 
     const result = component['mapDefendantAccounts'](mockData, 'individual');
-    expect(result.length).toBe(1);
+    expect(result).toHaveLength(1);
     expect(result[0]).toEqual(
       expect.objectContaining({
         Account: 'ACC123',
@@ -477,7 +477,7 @@ describe('FinesSaResultsComponent', () => {
       ],
     };
     const result = component['mapDefendantAccounts'](mockData, 'company');
-    expect(result.length).toBe(1);
+    expect(result).toHaveLength(1);
     expect(result[0]).toEqual(
       expect.objectContaining({
         Account: 'ACC999',
@@ -520,7 +520,7 @@ describe('FinesSaResultsComponent', () => {
     };
 
     const result = component['mapCreditorAccounts'](mockData);
-    expect(result.length).toBe(1);
+    expect(result).toHaveLength(1);
     expect(result[0]).toEqual(
       expect.objectContaining({
         Account: 'ACC123',
@@ -561,7 +561,7 @@ describe('FinesSaResultsComponent', () => {
     };
 
     const result = component['mapCreditorAccounts'](mockData);
-    expect(result.length).toBe(1);
+    expect(result).toHaveLength(1);
     expect(result[0]).toEqual(
       expect.objectContaining({
         Account: 'ACC123',
