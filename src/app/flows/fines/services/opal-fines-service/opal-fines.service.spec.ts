@@ -1033,24 +1033,23 @@ describe('OpalFines', () => {
     expect(result).toEqual(expectedPrettyName);
   });
 
-  it('should return the numeric value when ETag header is a quoted number', () => {
-    const headers = mockHeaders((name) => (name === 'ETag' ? '"123"' : null));
-    expect(service['extractEtagVersion'](headers)).toBe('"123"');
-  });
-
-  it('should return the numeric value when Etag header is an unquoted number', () => {
-    const headers = mockHeaders((name) => (name === 'Etag' ? '456' : null));
-    expect(service['extractEtagVersion'](headers)).toBe('456');
+  it.each([
+    { caseName: 'quoted ETag header', headerName: 'ETag', headerValue: '"123"', expectedVersion: '"123"' },
+    { caseName: 'unquoted Etag header', headerName: 'Etag', headerValue: '456', expectedVersion: '456' },
+    {
+      caseName: 'ETag header with multiple quotes',
+      headerName: 'ETag',
+      headerValue: '""789""',
+      expectedVersion: '""789""',
+    },
+  ] as const)('should return the numeric value for a $caseName', ({ headerName, headerValue, expectedVersion }) => {
+    const headers = mockHeaders((name) => (name === headerName ? headerValue : null));
+    expect(service['extractEtagVersion'](headers)).toBe(expectedVersion);
   });
 
   it('should return null if ETag header is not present', () => {
     const headers = mockHeaders(() => null);
     expect(service['extractEtagVersion'](headers)).toBeNull();
-  });
-
-  it('should handle ETag header with multiple quotes', () => {
-    const headers = mockHeaders((name) => (name === 'ETag' ? '""789""' : null));
-    expect(service['extractEtagVersion'](headers)).toBe('""789""');
   });
 
   it('should prefer ETag over Etag if both are present', () => {

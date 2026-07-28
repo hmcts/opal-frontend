@@ -200,53 +200,61 @@ describe('FinesSaResultsComponent', () => {
   });
 
   describe('computeDefaultFragment', () => {
-    it('returns empty string when all buckets are zero', () => {
-      component.individualsData = [];
-      component.companiesData = [];
-      component.minorCreditorsData = [];
-      const result = component['computeDefaultFragment']();
-      expect(result).toBe('');
-    });
+    it.each([
+      {
+        caseName: 'all buckets are zero',
+        individualsCount: 0,
+        companiesCount: 0,
+        minorCreditorsCount: 0,
+        expectedFragment: '',
+      },
+      {
+        caseName: 'any bucket is >= 100',
+        individualsCount: 100,
+        companiesCount: 0,
+        minorCreditorsCount: 0,
+        expectedFragment: '',
+      },
+      {
+        caseName: 'individuals are 1-99',
+        individualsCount: 1,
+        companiesCount: 50,
+        minorCreditorsCount: 50,
+        expectedFragment: 'individuals',
+      },
+      {
+        caseName: 'all buckets are oversize',
+        individualsCount: 100,
+        companiesCount: 100,
+        minorCreditorsCount: 100,
+        expectedFragment: '',
+      },
+      {
+        caseName: 'individuals are 0 and companies are 1-99',
+        individualsCount: 0,
+        companiesCount: 1,
+        minorCreditorsCount: 0,
+        expectedFragment: 'companies',
+      },
+      {
+        caseName: 'individuals and companies are 0 and minorCreditors are 1-99',
+        individualsCount: 0,
+        companiesCount: 0,
+        minorCreditorsCount: 1,
+        expectedFragment: 'minorCreditors',
+      },
+    ] as const)(
+      'returns the default fragment when $caseName',
+      ({ individualsCount, companiesCount, minorCreditorsCount, expectedFragment }) => {
+        component.individualsData.length = individualsCount;
+        component.companiesData.length = companiesCount;
+        component.minorCreditorsData.length = minorCreditorsCount;
 
-    it('returns empty string when any bucket is >= 100', () => {
-      component.individualsData.length = 100;
-      component.companiesData.length = 0;
-      component.minorCreditorsData.length = 0;
-      const result = component['computeDefaultFragment']();
-      expect(result).toBe('');
-    });
+        const result = component['computeDefaultFragment']();
 
-    it('prefers individuals when 1–99', () => {
-      component.individualsData.length = 1;
-      component.companiesData.length = 50;
-      component.minorCreditorsData.length = 50;
-      const result = component['computeDefaultFragment']();
-      expect(result).toBe('individuals');
-    });
-
-    it('returns blank when all buckets are oversize (>= 100)', () => {
-      component.individualsData.length = 100;
-      component.companiesData.length = 100;
-      component.minorCreditorsData.length = 100;
-      const result = component['computeDefaultFragment']();
-      expect(result).toBe('');
-    });
-
-    it('falls back to companies when individuals are 0 and companies are 1–99', () => {
-      component.individualsData.length = 0;
-      component.companiesData.length = 1;
-      component.minorCreditorsData.length = 0;
-      const result = component['computeDefaultFragment']();
-      expect(result).toBe('companies');
-    });
-
-    it('falls back to minorCreditors when individuals and companies are 0 and minorCreditors are 1–99', () => {
-      component.individualsData.length = 0;
-      component.companiesData.length = 0;
-      component.minorCreditorsData.length = 1;
-      const result = component['computeDefaultFragment']();
-      expect(result).toBe('minorCreditors');
-    });
+        expect(result).toBe(expectedFragment);
+      },
+    );
 
     it('hits the fallback branch for unexpected lengths (guards against impossible states)', () => {
       // Simulate an impossible runtime state by replacing arrays with objects

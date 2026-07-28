@@ -191,24 +191,14 @@ describe('FinesDraftStore', () => {
     expect(store.checker()).toEqual(false);
   });
 
-  it('should set banner message by type - submitted', () => {
-    store.setBannerMessageByType('submitted', 'Test Name');
-    expect(store.bannerMessage()).toEqual("You have submitted Test Name's account for review.");
-  });
-
-  it('should set banner message by type - deleted', () => {
-    store.setBannerMessageByType('deleted', 'Test Name');
-    expect(store.bannerMessage()).toEqual("You have deleted Test Name's account.");
-  });
-
-  it('should set banner message by type - rejected', () => {
-    store.setBannerMessageByType('rejected', 'Test Name');
-    expect(store.bannerMessage()).toEqual("You have rejected Test Name's account.");
-  });
-
-  it('should set banner message by type - approved', () => {
-    store.setBannerMessageByType('approved', 'Test Name');
-    expect(store.bannerMessage()).toEqual("You have approved Test Name's account.");
+  it.each([
+    { type: 'submitted', expectedMessage: "You have submitted Test Name's account for review." },
+    { type: 'deleted', expectedMessage: "You have deleted Test Name's account." },
+    { type: 'rejected', expectedMessage: "You have rejected Test Name's account." },
+    { type: 'approved', expectedMessage: "You have approved Test Name's account." },
+  ] as const)('should set banner message by type - $type', ({ type, expectedMessage }) => {
+    store.setBannerMessageByType(type, 'Test Name');
+    expect(store.bannerMessage()).toEqual(expectedMessage);
   });
 
   it('should not set banner message if type does not exist', () => {

@@ -229,25 +229,13 @@ describe('FinesSaSearchAccountFormComponent', () => {
     expect(restoredComponent.searchCriteriaForm.get('fsa_search_account_individuals_last_name')?.value).toBe('Smith');
   });
 
-  it('should return companies FormGroup when activeTab is companies', () => {
-    component.finesSaStore.setActiveTab('companies');
-    expect(component.searchCriteriaForm).toBe(
-      component.form.get('fsa_search_account_companies_search_criteria') as FormGroup,
-    );
-  });
-
-  it('should return minorCreditors FormGroup when activeTab is minorCreditors', () => {
-    component.finesSaStore.setActiveTab('minorCreditors');
-    expect(component.searchCriteriaForm).toBe(
-      component.form.get('fsa_search_account_minor_creditors_search_criteria') as FormGroup,
-    );
-  });
-
-  it('should return majorCreditors FormGroup when activeTab is majorCreditors', () => {
-    component.finesSaStore.setActiveTab('majorCreditors');
-    expect(component.searchCriteriaForm).toBe(
-      component.form.get('fsa_search_account_major_creditors_search_criteria') as FormGroup,
-    );
+  it.each([
+    { activeTab: 'companies', controlName: 'fsa_search_account_companies_search_criteria' },
+    { activeTab: 'minorCreditors', controlName: 'fsa_search_account_minor_creditors_search_criteria' },
+    { activeTab: 'majorCreditors', controlName: 'fsa_search_account_major_creditors_search_criteria' },
+  ] as const)('should return $activeTab FormGroup when activeTab is $activeTab', ({ activeTab, controlName }) => {
+    component.finesSaStore.setActiveTab(activeTab);
+    expect(component.searchCriteriaForm).toBe(component.form.get(controlName) as FormGroup);
   });
 
   it('should return empty FormGroup for unknown tab', () => {

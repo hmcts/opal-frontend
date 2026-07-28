@@ -582,45 +582,28 @@ describe('FinesMacPaymentTermsFormComponent', () => {
     expect(component.permissions[FINES_PERMISSIONS['collection-order']]).toBeTruthy();
   });
 
-  it('should update form controls based on PRIS enforcement action', () => {
-    component.defendantType = FINES_MAC_DEFENDANT_TYPES_KEYS.adultOrYouthOnly;
-    component['addEnforcementFields']();
-    const addEnforcementActionControl = component.form.controls['fm_payment_terms_add_enforcement_action'];
-    component['addEnforcementActionListener']();
-    addEnforcementActionControl.setValue(true);
-    const enforcementActionsControl = component.form.controls['fm_payment_terms_enforcement_action'];
+  it.each([{ enforcementAction: 'PRIS' }, { enforcementAction: 'NOENF' }] as const)(
+    'should update form controls based on $enforcementAction enforcement action',
+    ({ enforcementAction }) => {
+      component.defendantType = FINES_MAC_DEFENDANT_TYPES_KEYS.adultOrYouthOnly;
+      component['addEnforcementFields']();
+      const addEnforcementActionControl = component.form.controls['fm_payment_terms_add_enforcement_action'];
+      component['addEnforcementActionListener']();
+      addEnforcementActionControl.setValue(true);
+      const enforcementActionsControl = component.form.controls['fm_payment_terms_enforcement_action'];
 
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    const addControlsSpy = vi.spyOn<any, any>(component, 'addControls');
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    const removeControlsSpy = vi.spyOn<any, any>(component, 'removeControls');
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      const addControlsSpy = vi.spyOn<any, any>(component, 'addControls');
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      const removeControlsSpy = vi.spyOn<any, any>(component, 'removeControls');
 
-    component['enforcementActionsListener']();
-    enforcementActionsControl.setValue('PRIS');
+      component['enforcementActionsListener']();
+      enforcementActionsControl.setValue(enforcementAction);
 
-    expect(addControlsSpy).toHaveBeenCalledTimes(4);
-    expect(removeControlsSpy).toHaveBeenCalledTimes(4);
-  });
-
-  it('should update form controls based on NOENF enforcement action', () => {
-    component.defendantType = FINES_MAC_DEFENDANT_TYPES_KEYS.adultOrYouthOnly;
-    component['addEnforcementFields']();
-    const addEnforcementActionControl = component.form.controls['fm_payment_terms_add_enforcement_action'];
-    component['addEnforcementActionListener']();
-    addEnforcementActionControl.setValue(true);
-    const enforcementActionsControl = component.form.controls['fm_payment_terms_enforcement_action'];
-
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    const addControlsSpy = vi.spyOn<any, any>(component, 'addControls');
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    const removeControlsSpy = vi.spyOn<any, any>(component, 'removeControls');
-
-    component['enforcementActionsListener']();
-    enforcementActionsControl.setValue('NOENF');
-
-    expect(addControlsSpy).toHaveBeenCalledTimes(4);
-    expect(removeControlsSpy).toHaveBeenCalledTimes(4);
-  });
+      expect(addControlsSpy).toHaveBeenCalledTimes(4);
+      expect(removeControlsSpy).toHaveBeenCalledTimes(4);
+    },
+  );
 
   it('should add controls', () => {
     const controlsToAdd = [
