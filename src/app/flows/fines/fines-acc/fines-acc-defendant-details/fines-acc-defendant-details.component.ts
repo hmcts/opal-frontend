@@ -95,6 +95,7 @@ export class FinesAccDefendantDetailsComponent
     noCollectionOrder: 'Account has no Collection Order.',
     youthCollectionOrder: 'Account has a Collection Order but is a youth account.',
     companyCollectionOrder: 'Account has a Collection Order but is a company account.',
+    conditionalCautionCollectionOrder: 'Account has a Collection Order but is a conditional caution account.',
   } as const;
   private readonly opalFinesService = inject(OpalFines);
   private readonly payloadService = inject(FinesAccPayloadService);
@@ -124,21 +125,30 @@ export class FinesAccDefendantDetailsComponent
    * Derives the permanent Collection Order banner copy from the header summary data.
    */
   private setCollectionOrderMessage(header: IOpalFinesAccountDefendantDetailsHeader): void {
-    const { collection_order, is_youth, party_details } = header;
+    const { account_type, collection_order, debtor_type, is_youth, party_details } = header;
     const isCompany = party_details.organisation_flag;
+    const isParentGuardianToPay = debtor_type === this.debtorTypes.parentGuardian;
+    const isConditionalCaution = account_type === this.accountTypes['Conditional Caution'];
+    const isAdult = !isCompany && !isConditionalCaution && (!is_youth || isParentGuardianToPay);
+    const isYouth = is_youth && !isParentGuardianToPay;
 
-    if (collection_order === false && !is_youth && !isCompany) {
+    if (collection_order === false && isAdult) {
       this.collectionOrderMessage = this.collectionOrderBannerMessages.noCollectionOrder;
       return;
     }
 
-    if (collection_order === true && is_youth) {
-      this.collectionOrderMessage = this.collectionOrderBannerMessages.youthCollectionOrder;
+    if (collection_order === true && isConditionalCaution) {
+      this.collectionOrderMessage = this.collectionOrderBannerMessages.conditionalCautionCollectionOrder;
       return;
     }
 
     if (collection_order === true && isCompany) {
       this.collectionOrderMessage = this.collectionOrderBannerMessages.companyCollectionOrder;
+      return;
+    }
+
+    if (collection_order === true && isYouth) {
+      this.collectionOrderMessage = this.collectionOrderBannerMessages.youthCollectionOrder;
       return;
     }
 

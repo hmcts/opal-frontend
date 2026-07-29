@@ -21,6 +21,7 @@ import { FINES_ACC_DEFENDANT_ROUTING_PATHS } from '../routing/constants/fines-ac
 import { OPAL_FINES_ACCOUNT_DEFENDANT_DETAILS_PARENT_OR_GUARDIAN_TAB_REF_DATA_MOCK } from '@services/fines/opal-fines-service/mocks/opal-fines-account-defendant-details-parent-or-guardian-tab-ref-data.mock';
 import { OPAL_FINES_ACCOUNT_DEFENDANT_DETAILS_FIXED_PENALTY_MOCK } from '@services/fines/opal-fines-service/mocks/opal-fines-account-defendant-details-fixed-penalty.mock';
 import { OPAL_FINES_RESULT_REF_DATA_MOCK } from '@services/fines/opal-fines-service/mocks/opal-fines-result-ref-data.mock';
+import { FINES_ACCOUNT_TYPES } from '../../constants/fines-account-types.constant';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
 
 describe('FinesAccDefendantDetailsComponent', () => {
@@ -155,11 +156,38 @@ describe('FinesAccDefendantDetailsComponent', () => {
       ...structuredClone(FINES_ACC_DEFENDANT_DETAILS_HEADER_MOCK),
       collection_order: true,
       is_youth: true,
+      debtor_type: component.debtorTypes.defendant,
     };
 
     component['getHeaderDataFromRoute']();
 
     expect(component.collectionOrderMessage).toBe('Account has a Collection Order but is a youth account.');
+  });
+
+  it('should treat a youth defendant with a paying parent or guardian as an adult account', () => {
+    activatedRouteStub.snapshot!.data['defendantAccountHeadingData'] = {
+      ...structuredClone(FINES_ACC_DEFENDANT_DETAILS_HEADER_MOCK),
+      collection_order: false,
+      is_youth: true,
+      debtor_type: component.debtorTypes.parentGuardian,
+    };
+
+    component['getHeaderDataFromRoute']();
+
+    expect(component.collectionOrderMessage).toBe('Account has no Collection Order.');
+  });
+
+  it('should not set a collection order banner when a paying parent or guardian has a collection order', () => {
+    activatedRouteStub.snapshot!.data['defendantAccountHeadingData'] = {
+      ...structuredClone(FINES_ACC_DEFENDANT_DETAILS_HEADER_MOCK),
+      collection_order: true,
+      is_youth: true,
+      debtor_type: component.debtorTypes.parentGuardian,
+    };
+
+    component['getHeaderDataFromRoute']();
+
+    expect(component.collectionOrderMessage).toBeNull();
   });
 
   it('should set the company collection order banner when a company account has a collection order', () => {
@@ -175,6 +203,32 @@ describe('FinesAccDefendantDetailsComponent', () => {
     component['getHeaderDataFromRoute']();
 
     expect(component.collectionOrderMessage).toBe('Account has a Collection Order but is a company account.');
+  });
+
+  it('should set the conditional caution collection order banner when a Conditional Caution account has a collection order', () => {
+    activatedRouteStub.snapshot!.data['defendantAccountHeadingData'] = {
+      ...structuredClone(FINES_ACC_DEFENDANT_DETAILS_HEADER_MOCK),
+      account_type: FINES_ACCOUNT_TYPES['Conditional Caution'],
+      collection_order: true,
+    };
+
+    component['getHeaderDataFromRoute']();
+
+    expect(component.collectionOrderMessage).toBe(
+      'Account has a Collection Order but is a conditional caution account.',
+    );
+  });
+
+  it('should not set a collection order banner when a Conditional Caution account has no collection order', () => {
+    activatedRouteStub.snapshot!.data['defendantAccountHeadingData'] = {
+      ...structuredClone(FINES_ACC_DEFENDANT_DETAILS_HEADER_MOCK),
+      account_type: FINES_ACCOUNT_TYPES['Conditional Caution'],
+      collection_order: false,
+    };
+
+    component['getHeaderDataFromRoute']();
+
+    expect(component.collectionOrderMessage).toBeNull();
   });
 
   it('should not set a collection order banner when the account state is valid', () => {

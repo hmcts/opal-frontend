@@ -3,6 +3,7 @@ import { OPAL_FINES_ACCOUNT_DEFENDANT_ACCOUNT_PARTY_MOCK } from '@services/fines
 import { OPAL_FINES_ACCOUNT_DEFENDANT_DETAILS_ENFORCEMENT_TAB_REF_DATA_MOCK } from '@services/fines/opal-fines-service/mocks/opal-fines-account-defendant-details-enforcement-tab-ref-data.mock';
 import { OPAL_FINES_ACCOUNT_DEFENDANT_DETAILS_HISTORY_AND_NOTES_TAB_REF_DATA_MOCK } from '@services/fines/opal-fines-service/mocks/opal-fines-account-defendant-details-history-and-notes-tab-ref-data.mock';
 import { OPAL_FINES_ACCOUNT_DEFENDANT_DETAILS_PAYMENT_TERMS_LATEST_MOCK } from '@services/fines/opal-fines-service/mocks/opal-fines-account-defendant-details-payment-terms-latest.mock';
+import { FINES_ACCOUNT_TYPES } from '../../../../src/app/flows/fines/constants/fines-account-types.constant';
 import { ACCOUNT_ENQUIRY_HEADER_ELEMENTS as HEADER } from '../../../shared/selectors/account-enquiry/account.enquiry.header.locators';
 import { DOM_ELEMENTS } from '../../../shared/selectors/account-enquiry/account.enquiry.version-control.locators';
 import {
@@ -103,5 +104,30 @@ describe('Account Enquiry Collection Order Banner', () => {
       'contain.text',
       'Account has a Collection Order but is a company account.',
     );
+  });
+
+  it('Shows the conditional caution collection order banner', { tags: [...buildTags()] }, () => {
+    setupAccountDetails({
+      ...structuredClone(DEFENDANT_HEADER_MOCK),
+      account_type: FINES_ACCOUNT_TYPES['Conditional Caution'],
+      collection_order: true,
+    });
+
+    cy.get(DOM_ELEMENTS.collectionOrderBannerText).should(
+      'contain.text',
+      'Account has a Collection Order but is a conditional caution account.',
+    );
+  });
+
+  it('Does not show a banner for a youth defendant with a paying parent or guardian and a collection order', {
+    tags: [...buildTags()],
+  }, () => {
+    setupAccountDetails({
+      ...structuredClone(DEFENDANT_HEADER_YOUTH_MOCK),
+      collection_order: true,
+      debtor_type: 'Parent/Guardian',
+    });
+
+    cy.get(DOM_ELEMENTS.collectionOrderBanner).should('not.exist');
   });
 });
