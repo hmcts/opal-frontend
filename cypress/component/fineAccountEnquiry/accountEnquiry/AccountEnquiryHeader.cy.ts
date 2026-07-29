@@ -57,7 +57,7 @@ describe('Account Enquiry - Defendant Header', () => {
       interceptDefendantHeader(77, DEFENDANT_HEADER_MOCK, '1');
       interceptAtAGlance(77, OPAL_FINES_ACCOUNT_DEFENDANT_AT_A_GLANCE_MOCK, '1');
 
-      setupAccountEnquiryComponent(minorCreditorComponentProperties);
+      setupAccountEnquiryComponent(componentProperties);
 
       cy.get(DOM.pageHeader).should('exist');
       cy.get(DOM.headingWithCaption).should('exist');
@@ -444,6 +444,42 @@ describe('Account Enquiry - Defendant Header', () => {
       cy.get(DOM.addNoteButton).should('not.exist');
     },
   );
+
+  it(
+    'AC1, AC2, AC3, AC4, AC5, AC7, AC8, AC9, AC10: reflows the Account Details header at narrow widths with long names',
+    { tags: [...buildTags('@JIRA-STORY:PO-2673'), '@JIRA-EPIC:PO-2673', '@JIRA-TEST-KEY:PO-2673'] },
+    () => {
+      cy.viewport(375, 900);
+
+      const longHeader = createDefendantHeaderMockWithName(
+        'A very long defendant forename that should wrap cleanly',
+        'A very long defendant surname that should also wrap cleanly',
+      );
+
+      interceptUserState(USER_STATE_MOCK_PERMISSION_BU77);
+      interceptDefendantHeader(77, longHeader, '1');
+      interceptAtAGlance(77, OPAL_FINES_ACCOUNT_DEFENDANT_AT_A_GLANCE_MOCK, '1');
+
+      setupAccountEnquiryComponent(componentProperties);
+
+      cy.get(DOM.pageHeader).should('be.visible');
+      cy.get(DOM.headingWithCaption).should('be.visible');
+      cy.get(DOM.headingName).should('contain.text', 'A very long defendant forename');
+      cy.get(DOM.accountInfo).should('be.visible');
+      cy.get(DOM.summaryMetricBar).should('be.visible');
+      cy.get(DOM.subnav).should('be.visible');
+      cy.get(DOM.addNoteButton).should('be.visible');
+
+      cy.window().then((win) => {
+        const { documentElement, body } = win.document;
+
+        expect(documentElement.scrollWidth, 'document should not overflow viewport').to.be.at.most(
+          documentElement.clientWidth + 1,
+        );
+        expect(body.scrollWidth, 'body should not overflow viewport').to.be.at.most(body.clientWidth + 1);
+      });
+    },
+  );
 });
 
 describe('Account Enquiry - Minor Creditor Header', () => {
@@ -580,42 +616,6 @@ describe('Account Enquiry - Minor Creditor Header', () => {
       setupAccountEnquiryComponent(minorCreditorComponentProperties);
 
       cy.get(DOM.minorCreditorAddNoteButton).should('not.exist');
-    },
-  );
-
-  it(
-    'AC1, AC2, AC3, AC4, AC5, AC7, AC8, AC9, AC10: reflows the Account Details header at narrow widths with long names',
-    { tags: [...buildTags('@JIRA-STORY:PO-2673'), '@JIRA-EPIC:PO-2673', '@JIRA-TEST-KEY:PO-2673'] },
-    () => {
-      cy.viewport(375, 900);
-
-      const longHeader = createDefendantHeaderMockWithName(
-        'A very long defendant forename that should wrap cleanly',
-        'A very long defendant surname that should also wrap cleanly',
-      );
-
-      interceptUserState(USER_STATE_MOCK_PERMISSION_BU77);
-      interceptDefendantHeader(77, longHeader, '1');
-      interceptAtAGlance(77, OPAL_FINES_ACCOUNT_DEFENDANT_AT_A_GLANCE_MOCK, '1');
-
-      setupAccountEnquiryComponent(componentProperties);
-
-      cy.get(DOM.pageHeader).should('be.visible');
-      cy.get(DOM.headingWithCaption).should('be.visible');
-      cy.get(DOM.headingName).should('contain.text', 'A very long defendant forename');
-      cy.get(DOM.accountInfo).should('be.visible');
-      cy.get(DOM.summaryMetricBar).should('be.visible');
-      cy.get(DOM.subnav).should('be.visible');
-      cy.get(DOM.minorCreditorAddNoteButton).should('be.visible');
-
-      cy.window().then((win) => {
-        const { documentElement, body } = win.document;
-
-        expect(documentElement.scrollWidth, 'document should not overflow viewport').to.be.at.most(
-          documentElement.clientWidth + 1,
-        );
-        expect(body.scrollWidth, 'body should not overflow viewport').to.be.at.most(body.clientWidth + 1);
-      });
     },
   );
 });
