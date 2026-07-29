@@ -35,3 +35,24 @@ Feature: Defendant - Adult or youth - View Defendant Account Summary - Add Comme
       | Line 2  | Line2 Test   |
       | Line 3  | Line3 Test   |
     Then I check the page for accessibility
+
+  @R1B @JIRA-STORY:PO-2673 @JIRA-EPIC:PO-2673 @JIRA-TEST-KEY:PO-2675
+  Scenario: Account details reflows without horizontal overflow at narrow viewport
+    Given I create a "adultOrYouthOnly" draft account with the following details and set status "Publishing Pending" using user "opal-test-10@dev.platform.hmcts.net":
+      | Account_status                          | Submitted                                                      |
+      | account.defendant.forenames             | A very long first name that should wrap cleanly               |
+      | account.defendant.surname               | A very long surname that should also wrap cleanly             |
+      | account.defendant.email_address_1       | John.AccDetailSurname{uniq}@test.com                          |
+      | account.defendant.telephone_number_home | 02078259314                                                   |
+      | account.account_type                    | Fine                                                           |
+      | account.prosecutor_case_reference       | PCR-AUTO-002                                                   |
+      | account.collection_order_made           | false                                                          |
+      | account.collection_order_made_today     | false                                                          |
+      | account.payment_card_request            | false                                                          |
+      | account.defendant.dob                   | 2002-05-15                                                     |
+    And I search for the account by last name "surname that should also wrap cleanly" and open the latest result
+    And I set the browser viewport to 375 by 900
+    Then the account details page should not horizontally overflow
+    And the account details summary columns should stack below the primary content
+    And I should see the page header contains "A very long first name that should wrap cleanly"
+    And I check the page for accessibility

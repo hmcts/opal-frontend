@@ -483,6 +483,106 @@ describe('Account Enquiry - Defendant Header', () => {
       });
     },
   );
+
+  it(
+    'AC1, AC2, AC3, AC4, AC5, AC7, AC8, AC9, AC10: keeps the header readable for a long company name at narrow widths',
+    { tags: [...buildTags('@JIRA-STORY:PO-2673'), '@JIRA-EPIC:PO-2673', '@JIRA-TEST-KEY:PO-2674'] },
+    () => {
+      cy.viewport(375, 900);
+
+      const longCompanyHeader = structuredClone(DEFENDANT_HEADER_ORG_MOCK);
+      longCompanyHeader.party_details.organisation_details = {
+        ...longCompanyHeader.party_details.organisation_details!,
+        organisation_name:
+          'A very long company name that should wrap cleanly without pushing the action buttons out of view',
+      };
+
+      interceptUserState(USER_STATE_MOCK_PERMISSION_BU77);
+      interceptDefendantHeader(77, longCompanyHeader, '1');
+      interceptAtAGlance(77, OPAL_FINES_ACCOUNT_DEFENDANT_AT_A_GLANCE_MOCK, '1');
+
+      setupAccountEnquiryComponent(componentProperties);
+
+      cy.get(DOM.pageHeader).should('be.visible');
+      cy.get(DOM.headingWithCaption).should('be.visible');
+      cy.get(DOM.headingName)
+        .should('be.visible')
+        .and('contain.text', 'A very long company name that should wrap cleanly');
+      cy.get(DOM.accountInfo).should('be.visible');
+      cy.get(DOM.summaryMetricBar).should('be.visible');
+      cy.get(DOM.subnav).should('be.visible');
+      cy.get(DOM.addNoteButton).should('be.visible');
+
+      cy.window().then((win) => {
+        const { documentElement, body } = win.document;
+
+        expect(documentElement.scrollWidth, 'document should not overflow viewport').to.be.at.most(
+          documentElement.clientWidth + 1,
+        );
+        expect(body.scrollWidth, 'body should not overflow viewport').to.be.at.most(body.clientWidth + 1);
+      });
+    },
+  );
+
+  it(
+    'AC6: wraps the status chip content cleanly at narrow widths',
+    { tags: [...buildTags('@JIRA-STORY:PO-2673'), '@JIRA-EPIC:PO-2673', '@JIRA-TEST-KEY:PO-2676'] },
+    () => {
+      cy.viewport(375, 900);
+
+      const parentGuardianHeader = structuredClone(DEFENDANT_HEADER_MOCK);
+      parentGuardianHeader.debtor_type = 'Parent/Guardian';
+      parentGuardianHeader.parent_guardian_party_id = '99';
+
+      interceptUserState(USER_STATE_MOCK_PERMISSION_BU77);
+      interceptDefendantHeader(77, parentGuardianHeader, '1');
+      interceptAtAGlance(77, OPAL_FINES_ACCOUNT_DEFENDANT_AT_A_GLANCE_MOCK, '1');
+
+      setupAccountEnquiryComponent(componentProperties);
+
+      cy.get(DOM.statusTag)
+        .should('be.visible')
+        .and('contain.text', 'Parent or Guardian to pay')
+        .then(($tag) => {
+          const el = $tag[0] as HTMLElement;
+          expect(el.scrollWidth, 'status tag should not overflow its box').to.be.at.most(el.clientWidth + 1);
+        });
+    },
+  );
+
+  it(
+    'AC8: stacks the summary columns below the primary content at narrow widths',
+    { tags: [...buildTags('@JIRA-STORY:PO-2673'), '@JIRA-EPIC:PO-2673', '@JIRA-TEST-KEY:PO-2677'] },
+    () => {
+      cy.viewport(375, 900);
+
+      const longHeader = structuredClone(DEFENDANT_HEADER_MOCK);
+      longHeader.party_details.individual_details = {
+        ...longHeader.party_details.individual_details!,
+        forenames: 'A very long first name that should wrap cleanly',
+        surname: 'A very long surname that should also wrap cleanly',
+      };
+      longHeader.debtor_type = 'Defendant';
+
+      interceptUserState(USER_STATE_MOCK_PERMISSION_BU77);
+      interceptDefendantHeader(77, longHeader, '1');
+      interceptAtAGlance(77, OPAL_FINES_ACCOUNT_DEFENDANT_AT_A_GLANCE_MOCK, '1');
+
+      setupAccountEnquiryComponent(componentProperties);
+
+      cy.get(DOM.accountInfo).should('be.visible');
+      cy.get(DOM.summaryMetricBar).should('be.visible');
+      cy.get(DOM.subnav).should('be.visible');
+
+      cy.get('div.govuk-grid-column-one-third').then(($columns) => {
+        expect($columns.length, 'expected three summary columns').to.be.gte(3);
+
+        const tops = [...$columns].slice(0, 3).map((column) => (column as HTMLElement).getBoundingClientRect().top);
+        expect(tops[1], 'middle column should stack below the first column').to.be.greaterThan(tops[0] - 1);
+        expect(tops[2], 'right column should stack below the first column').to.be.greaterThan(tops[0] - 1);
+      });
+    },
+  );
 });
 
 describe('Account Enquiry - Minor Creditor Header', () => {

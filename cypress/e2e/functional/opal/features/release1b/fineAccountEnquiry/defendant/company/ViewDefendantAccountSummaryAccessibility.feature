@@ -33,3 +33,22 @@ Feature: Defendant - Company - View Defendant Account Summary - Add Comments Acc
       | Line 2  | Company Line2   |
       | Line 3  | Company Line3   |
     Then I check the page for accessibility
+
+  @R1B @JIRA-STORY:PO-2673 @JIRA-EPIC:PO-2673 @JIRA-TEST-KEY:PO-2678
+  Scenario: Company account details reflows without horizontal overflow at narrow viewport
+    Given I create a "company" draft account with the following details and set status "Publishing Pending" using user "opal-test-10@dev.platform.hmcts.net":
+      | Account_status                      | Submitted                                                        |
+      | account.defendant.company_name      | A very long company name that should wrap cleanly without issue |
+      | account.defendant.email_address_1   | Accdetailcomp{uniq}@test.com                                     |
+      | account.defendant.post_code         | AB23 4RN                                                         |
+      | account.account_type                | Fine                                                             |
+      | account.prosecutor_case_reference   | PCR-AUTO-003                                                     |
+      | account.collection_order_made       | false                                                            |
+      | account.collection_order_made_today | false                                                            |
+      | account.payment_card_request        | false                                                            |
+    When I open the company account details for "A very long company name that should wrap cleanly without issue"
+    And I set the browser viewport to 375 by 900
+    Then the account details page should not horizontally overflow
+    And the account details summary columns should stack below the primary content
+    And I should see the page header contains "A very long company name that should wrap cleanly without issue"
+    And I check the page for accessibility

@@ -127,6 +127,14 @@ When('I open the latest matching result from the Companies search results', () =
 });
 
 /**
+ * @step Sets the browser viewport to a specific size for reflow and responsive checks.
+ */
+When('I set the browser viewport to {int} by {int}', (width: number, height: number) => {
+  log('step', 'Setting browser viewport', { width, height });
+  cy.viewport(width, height);
+});
+
+/**
  * @step Navigates directly to the most recently created published account details route.
  */
 When('I navigate directly to the last created published account details', () => {
@@ -215,6 +223,37 @@ Then('I should see the add parent or guardian details action', () => {
 Then('I should see the remove parent or guardian details action', () => {
   log('assert', 'Remove parent or guardian details action is visible');
   accountEnquiryFlow().assertRemoveParentGuardianActionVisible();
+});
+
+/**
+ * @step Asserts the account details page fits within the current viewport without horizontal overflow.
+ */
+Then('the account details page should not horizontally overflow', () => {
+  log('assert', 'Checking account details page does not horizontally overflow');
+
+  cy.window().then((win) => {
+    const { documentElement, body } = win.document;
+
+    expect(documentElement.scrollWidth, 'document should not overflow viewport').to.be.at.most(
+      documentElement.clientWidth + 1,
+    );
+    expect(body.scrollWidth, 'body should not overflow viewport').to.be.at.most(body.clientWidth + 1);
+  });
+});
+
+/**
+ * @step Asserts the account details summary columns stack beneath the primary content.
+ */
+Then('the account details summary columns should stack below the primary content', () => {
+  log('assert', 'Checking account details summary columns stack below the primary content');
+
+  cy.get('div.govuk-grid-column-one-third').then(($columns) => {
+    expect($columns.length, 'expected three summary columns').to.be.gte(3);
+
+    const tops = [...$columns].slice(0, 3).map((column) => (column as HTMLElement).getBoundingClientRect().top);
+    expect(tops[1], 'middle column should stack below the first column').to.be.greaterThan(tops[0] - 1);
+    expect(tops[2], 'right column should stack below the first column').to.be.greaterThan(tops[0] - 1);
+  });
 });
 
 Then('I should not see the convert to company account action', () => {
