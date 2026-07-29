@@ -4,6 +4,7 @@ import { AccountSearchNavLocators as NavLocators } from '../../../shared/selecto
 import { MAJOR_CREDITORS_SEARCH_STATE_MOCK } from './mocks/search_and_matches_major_creditors_mock';
 import { OPAL_FINES_BUSINESS_UNIT_REF_DATA_MOCK } from '@services/fines/opal-fines-service/mocks/opal-fines-business-unit-ref-data.mock';
 import { OPAL_FINES_MAJOR_CREDITOR_REF_DATA_MOCK } from '@services/fines/opal-fines-service/mocks/opal-fines-major-creditor-ref-data.mock';
+import { IOpalFinesMajorCreditor } from '@services/fines/opal-fines-service/interfaces/opal-fines-major-creditor.interface';
 import { BehaviorSubject } from 'rxjs';
 import { mountSearchAccount } from './support/mountSearchAccount';
 
@@ -203,6 +204,56 @@ describe('Search Account Component - Major Creditors', () => {
       cy.get('@urlTree').should('have.been.calledWithMatch', [`fines/account/major-creditor/${accountId}/details`]);
 
       cy.get('@windowOpen').should('have.been.calledWithMatch', Cypress.sinon.match.string, '_blank');
+    },
+  );
+
+  it(
+    'AC1. Single BU filtered shows Central Fund in major creditor search',
+    { tags: [...buildTags('@JIRA-STORY:PO-2350'), '@JIRA-EPIC:PO-1286'] },
+    () => {
+      const centralFundMajorCreditor: IOpalFinesMajorCreditor = {
+        account_number: 'CF-73-0001',
+        business_unit_id: 73,
+        creditor_account_id: 770000000001,
+        creditor_account_type: 'CF',
+        from_suspense: null,
+        hold_payout: null,
+        last_changed_date: null,
+        major_creditor_code: null,
+        major_creditor_id: 770000000001,
+        major_creditor_party_id: null,
+        name: 'Central Fund',
+        postcode: null,
+        prosecution_service: false,
+      };
+
+      mountSearchAccount({
+        activeTab: 'majorCreditors',
+        fragment$,
+        initialState: buildMajorCreditorsSearchState(),
+        routeSnapshotData: {
+          businessUnits: OPAL_FINES_BUSINESS_UNIT_REF_DATA_MOCK,
+          majorCreditors: {
+            count: OPAL_FINES_MAJOR_CREDITOR_REF_DATA_MOCK.count + 1,
+            refData: [...OPAL_FINES_MAJOR_CREDITOR_REF_DATA_MOCK.refData, centralFundMajorCreditor],
+          },
+        },
+        useSpyRouter: true,
+      });
+
+      cy.get(MajorRequirementLocators.message).should('not.exist');
+      cy.get(MajorAutocompleteLocators.input).should('exist');
+      cy.get(MajorAutocompleteLocators.input).click().type('Central');
+      cy.get(MajorAutocompleteLocators.listbox).find('li').should('contain', 'Central Fund');
+      cy.get(MajorAutocompleteLocators.listbox).find('li').contains('Central Fund').click();
+      cy.get(MajorAutocompleteLocators.input).should('have.value', 'Central Fund');
+
+      cy.get(CommonLocators.searchButton).click();
+
+      cy.get('@urlTree').should('have.been.calledWithMatch', [
+        `fines/account/${centralFundMajorCreditor.major_creditor_id}/defendant`,
+      ]);
+      cy.get('@windowOpen').should('have.been.calledOnce');
     },
   );
 });
