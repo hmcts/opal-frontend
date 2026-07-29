@@ -53,6 +53,29 @@ export class AccountDetailsParentGuardianActions {
   }
 
   /**
+   * Asserts the Change action is visible on the Parent or guardian tab.
+   */
+  public assertChangeActionVisible(): void {
+    cy.get(L.parentOrGuardianTabHeader.changeLink, { timeout: 10_000 })
+      .should('be.visible')
+      .and('contain.text', L.parentOrGuardianTabHeader.changeLinkLabel);
+  }
+
+  /**
+   * Asserts the Change action is not rendered on the Parent or guardian tab.
+   */
+  public assertChangeActionNotPresent(): void {
+    cy.get(L.parentOrGuardianTabHeader.changeLink, { timeout: 10_000 }).should('not.exist');
+  }
+
+  /**
+   * Asserts the remove parent or guardian action is not rendered on the Parent or guardian tab.
+   */
+  public assertRemoveParentGuardianActionNotPresent(): void {
+    cy.get(L.actions.removeParentOrGuardian, { timeout: 10_000 }).should('not.exist');
+  }
+
+  /**
    * Clicks the remove parent or guardian action on the Parent or guardian tab.
    */
   public startRemoveParentGuardianDetails(): void {

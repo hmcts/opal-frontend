@@ -217,6 +217,26 @@ Then('I should see the remove parent or guardian details action', () => {
   accountEnquiryFlow().assertRemoveParentGuardianActionVisible();
 });
 
+Then('I should see the change parent or guardian details action', () => {
+  log('assert', 'Change parent or guardian details action is visible');
+  accountEnquiryFlow().assertChangeParentGuardianActionVisible();
+});
+
+Given('I stub the defendant header summary account status code to {string}', (statusCode: string) => {
+  log('intercept', 'Stub defendant header summary restricted status', { statusCode });
+  accountEnquiryFlow().stubRestrictedParentGuardianStatusCode(statusCode);
+});
+
+Then('I do not see the change parent or guardian details action', () => {
+  log('assert', 'Change parent or guardian details action is absent');
+  accountEnquiryFlow().assertChangeParentGuardianActionNotVisible();
+});
+
+Then('I do not see the remove parent or guardian details action', () => {
+  log('assert', 'Remove parent or guardian details action is absent');
+  accountEnquiryFlow().assertRemoveParentGuardianActionNotVisible();
+});
+
 Then('I should not see the convert to company account action', () => {
   log('assert', 'Convert to company account action is absent');
   defendantDetails().assertConvertToCompanyActionNotPresent();

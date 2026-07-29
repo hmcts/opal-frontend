@@ -126,6 +126,7 @@ describe('Account Enquiry Parent or Guardian Component', () => {
       setupParentGuardianShell({ headerMock, pgDetailsMock, fragments: 'parent-or-guardian' });
 
       cy.get(TABS.parentGuardianTab).should('be.visible');
+      cy.get(DOM.changeLink).should('be.visible').and('contain.text', 'Change');
       cy.get(DOM.removeParentGuardianLink)
         .should('be.visible')
         .and('contain.text', 'Remove Parent or guardian details');
@@ -134,20 +135,28 @@ describe('Account Enquiry Parent or Guardian Component', () => {
 
   FINES_ACC_RESTRICTED_ACCOUNT_STATUS_CODES.forEach((statusCode) => {
     it(
-      `AC1c, AC2c: should hide the Change and Remove actions when the account status is ${statusCode}`,
+      `AC1c, AC2c: should display the Parent or guardian tab and hide the Change and Remove actions when the account status is ${statusCode}`,
       {
         tags: [...buildTags('@JIRA-STORY:PO-5749'), '@JIRA-EPIC:PO-2990'],
       },
       () => {
+        const headerMock = structuredClone(DEFENDANT_HEADER_YOUTH_MOCK);
+        headerMock.parent_guardian_party_id = '1770000001';
+        headerMock.debtor_type = 'Defendant';
+        headerMock.account_status_reference.account_status_code = statusCode;
+
         const restrictedPgDetailsMock = structuredClone(OPAL_FINES_ACCOUNT_PARENT_GUARDIAN_PARTY_MOCK);
+        restrictedPgDetailsMock.defendant_account_party.party_details.party_id = headerMock.parent_guardian_party_id;
         restrictedPgDetailsMock.defendant_account_party.is_debtor = false;
 
-        mountParentGuardianTab({
+        setupParentGuardianShell({
+          headerMock,
           pgDetailsMock: restrictedPgDetailsMock,
-          hasAccountMaintenencePermission: true,
-          accountStatusCode: statusCode,
+          fragments: 'parent-or-guardian',
         });
 
+        cy.get(TABS.parentGuardianTab).should('be.visible');
+        cy.get('h2').contains('Parent or guardian details').should('be.visible');
         cy.get(DOM.changeLink).should('not.exist');
         cy.get(DOM.removeParentGuardianLink).should('not.exist');
       },
@@ -155,8 +164,32 @@ describe('Account Enquiry Parent or Guardian Component', () => {
   });
 
   it(
-    'AC3: should not display the remove action for an adult or youth account with parent or guardian to pay',
-    { tags: [...buildTags('@JIRA-STORY:PO-5749'), '@JIRA-EPIC:PO-2990', '@JIRA-TEST-KEY:PO-5749'] },
+    'AC3, AC4: should keep the existing Change and Remove actions visible for a youth-only account with a non-paying parent or guardian',
+    { tags: [...buildTags('@JIRA-STORY:PO-5749'), '@JIRA-EPIC:PO-2990'] },
+    () => {
+      // AC3 – Existing action eligibility rules still show both actions for a youth-only account with a non-paying parent or guardian
+      // AC4 – The visible actions keep their existing navigation and behaviour
+      const headerMock = structuredClone(DEFENDANT_HEADER_YOUTH_MOCK);
+      headerMock.parent_guardian_party_id = '1770000001';
+      headerMock.debtor_type = 'Defendant';
+
+      const pgDetailsMock = structuredClone(OPAL_FINES_ACCOUNT_PARENT_GUARDIAN_PARTY_MOCK);
+      pgDetailsMock.defendant_account_party.party_details.party_id = headerMock.parent_guardian_party_id;
+      pgDetailsMock.defendant_account_party.is_debtor = false;
+
+      setupParentGuardianShell({ headerMock, pgDetailsMock, fragments: 'parent-or-guardian' });
+
+      cy.get(TABS.parentGuardianTab).should('be.visible');
+      cy.get(DOM.changeLink).should('be.visible').and('contain.text', 'Change');
+      cy.get(DOM.removeParentGuardianLink)
+        .should('be.visible')
+        .and('contain.text', 'Remove Parent or guardian details');
+    },
+  );
+
+  it(
+    'AC3: should not display the remove action when the parent or guardian is the debtor',
+    { tags: [...buildTags('@JIRA-STORY:PO-5749'), '@JIRA-EPIC:PO-2990'] },
     () => {
       const headerMock = structuredClone(createDefendantHeaderMockWithName('Robert', 'Thomson'));
       headerMock.parent_guardian_party_id = '1770000001';
