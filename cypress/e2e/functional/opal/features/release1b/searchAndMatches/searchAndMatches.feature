@@ -71,7 +71,7 @@ Feature: Account Search and Matches
       | individual last name     | Smith    |
     Then I see an page containing "There is a problem"
     And I see the validation message "Reference data and account information cannot be entered together when searching for an account. Search using either:"
-    And I see the listed options "account number, reference or case number, selected tab"
+    And I see the listed options "account number, selected tab"
 
   @JIRA-EPIC:PO-704 @R1B @JIRA-STORY:PO-705 @JIRA-TEST-KEY:PO-5426
   Scenario: Back returns to search with data intact after all-3-fields error
@@ -92,7 +92,7 @@ Feature: Account Search and Matches
       | reference or case number | <reference>     |
       | individual last name     | <lastName>      |
     And I see the validation message "Reference data and account information cannot be entered together when searching for an account. Search using either:"
-    And I see the listed options "account number, reference or case number, selected tab"
+    And I see the listed options "account number, selected tab"
     @R1B @JIRA-EPIC:PO-704 @JIRA-TEST-KEY:PO-5427
     Examples: Account number and reference
       | validation_case              | accountNumber | reference | lastName |
@@ -114,7 +114,7 @@ Feature: Account Search and Matches
       | company name             | CompanyOne |
     Then I see an page containing "There is a problem"
     And I see the validation message "Reference data and account information cannot be entered together when searching for an account. Search using either:"
-    And I see the listed options "account number, reference or case number, selected tab"
+    And I see the listed options "account number, selected tab"
     And I go back from the problem page
     Then I see the "Search for an account" page for companies with the following details:
       | account number           | 12345678   |
@@ -130,7 +130,7 @@ Feature: Account Search and Matches
       | company name             | <companyName>   |
     Then I see an page containing "There is a problem"
     And I see the validation message "Reference data and account information cannot be entered together when searching for an account. Search using either:"
-    And I see the listed options "account number, reference or case number, selected tab"
+    And I see the listed options "account number, selected tab"
     And I go back from the problem page
     Then I see the "Search for an account" page for companies with the following details:
       | account number           | <accountNumber> |
