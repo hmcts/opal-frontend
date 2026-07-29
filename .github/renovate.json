@@ -7,5 +7,19 @@
       "allowedVersions": "<=10",
       "description": "https://canary.discord.com/channels/226791405589233664/1019534554073157642 and https://github.com/webpack-contrib/copy-webpack-plugin/issues/643 doesn't work even though issue closed"
     }
+  ],
+  "description": "Run Renovate out of hours only (UK time).",
+  "timezone": "Europe/London",
+  "updateNotScheduled": false,
+  "platformAutomerge": false,
+  "schedule": [
+    "* 17-23 * * 1-5",
+    "* 0-8 * * 1-5",
+    "* * * * 0,6"
+  ],
+  "automergeSchedule": [
+    "* 17-23 * * 1-5",
+    "* 0-8 * * 1-5",
+    "* * * * 0,6"
   ]
 }
