@@ -1,6 +1,6 @@
 @JIRA-LABEL:account-enquiry
 @JIRA-NFR:PO-2322
-Feature: Search and Matches Accessibility
+Feature: Search And Matches Accessibility
 
   Background:
     Given I am logged in with email "opal-test@dev.platform.hmcts.net"

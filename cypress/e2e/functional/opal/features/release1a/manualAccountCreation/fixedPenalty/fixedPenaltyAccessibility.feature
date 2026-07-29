@@ -1,6 +1,6 @@
 @JIRA-LABEL:manual-account-creation
 @JIRA-NFR:PO-2322
-Feature: Accessibility Tests for Fixed Penalty Screens
+Feature: Fixed Penalty Accessibility
   # This feature file ensures that all screens related to fixed penalty account creation meet accessibility standards using Axe-Core.
 
   ## Review account screen is covered in the Populate and Submit accessibility tests.
