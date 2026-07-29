@@ -1,5 +1,7 @@
+import { AsyncPipe } from '@angular/common';
 import { ChangeDetectionStrategy, Component, Input, OnChanges, OnInit, SimpleChanges, inject } from '@angular/core';
 import { FinesAccMinorCreditorDetailsHistoryAndNotesFilterComponent } from './fines-acc-minor-creditor-details-history-and-notes-filter/fines-acc-minor-creditor-details-history-and-notes-filter.component';
+import { FinesAccMinorCreditorDetailsHistoryAndNotesTableComponent } from './fines-acc-minor-creditor-details-history-and-notes-table/fines-acc-minor-creditor-details-history-and-notes-table.component';
 import { FINES_ACC_SUMMARY_TABS_CONTENT_STYLES } from '../../constants/fines-acc-summary-tabs-content-styles.constant';
 import { IFinesAccSummaryTabsContentStyles } from '../../fines-acc-defendant-details/interfaces/fines-acc-summary-tabs-content-styles.interface';
 import { IFinesAccMinorCreditorDetailsHistoryAndNotesFilterForm } from './interfaces/fines-acc-minor-creditor-details-history-and-notes-filter-form.interface';
@@ -17,7 +19,11 @@ import { FINES_ACC_MINOR_CREDITOR_HISTORY_AND_NOTES_DETAILS_TRANSFORMATION_CONFI
 
 @Component({
   selector: 'app-fines-acc-minor-creditor-details-history-and-notes-tab',
-  imports: [FinesAccMinorCreditorDetailsHistoryAndNotesFilterComponent],
+  imports: [
+    AsyncPipe,
+    FinesAccMinorCreditorDetailsHistoryAndNotesFilterComponent,
+    FinesAccMinorCreditorDetailsHistoryAndNotesTableComponent,
+  ],
   templateUrl: './fines-acc-minor-creditor-details-history-and-notes-tab.component.html',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
