@@ -98,6 +98,32 @@ describe('FinesMacOffenceDetailsReviewSummaryComponent', () => {
     expect(result).toBe(0);
   });
 
+  it('should show Add an offence when there are no offences', () => {
+    finesMacOffenceDetailsStore.setOffenceRemoved(true);
+
+    fixture = TestBed.createComponent(FinesMacOffenceDetailsReviewSummaryComponent);
+    component = fixture.componentInstance;
+
+    component.impositionRefData = OPAL_FINES_RESULTS_REF_DATA_MOCK;
+    component.majorCreditorRefData = OPAL_FINES_MAJOR_CREDITOR_REF_DATA_MOCK;
+    component.offencesImpositions = [];
+
+    finesMacStore.setFinesMacStore(structuredClone(FINES_MAC_STATE_MOCK));
+    mockUtilsService.getFormStatus.mockReturnValue(FINES_MAC_STATUS.PROVIDED);
+
+    fixture.detectChanges();
+
+    expect(fixture.nativeElement.textContent).toContain('Add an offence');
+    expect(fixture.nativeElement.textContent).not.toContain('Add another offence');
+  });
+
+  it('should show Add another offence when there is an existing offence', () => {
+    fixture.detectChanges();
+
+    expect(fixture.nativeElement.textContent).toContain('Add another offence');
+    expect(fixture.nativeElement.textContent).not.toContain('Add an offence');
+  });
+
   it('should ignore offences with a null offence id when building the hidden map', () => {
     component.offencesImpositions = [
       {
