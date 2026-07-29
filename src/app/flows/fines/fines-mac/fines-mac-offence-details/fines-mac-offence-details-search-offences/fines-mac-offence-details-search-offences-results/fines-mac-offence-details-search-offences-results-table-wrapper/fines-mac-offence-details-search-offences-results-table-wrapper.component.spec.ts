@@ -23,7 +23,10 @@ describe('FinesMacOffenceDetailsSearchOffencesResultsTableWrapperComponent', () 
 
     fixture = TestBed.createComponent(FinesMacOffenceDetailsSearchOffencesResultsTableWrapperComponent);
     component = fixture.componentInstance;
-    fixture.componentRef.setInput('tableData', FINES_MAC_OFFENCE_DETAILS_SEARCH_OFFENCES_RESULTS_TABLE_WRAPPER_TABLE_DATA_MOCK);
+    fixture.componentRef.setInput(
+      'tableData',
+      FINES_MAC_OFFENCE_DETAILS_SEARCH_OFFENCES_RESULTS_TABLE_WRAPPER_TABLE_DATA_MOCK,
+    );
     fixture.componentRef.setInput('existingSortState', null);
     fixture.detectChanges();
   });
@@ -42,7 +45,9 @@ describe('FinesMacOffenceDetailsSearchOffencesResultsTableWrapperComponent', () 
     const buttons = fixture.nativeElement.querySelectorAll('button.copy-code-button');
     const firstButton = buttons[0];
 
-    expect(buttons).toHaveLength(FINES_MAC_OFFENCE_DETAILS_SEARCH_OFFENCES_RESULTS_TABLE_WRAPPER_TABLE_DATA_MOCK.length);
+    expect(buttons).toHaveLength(
+      FINES_MAC_OFFENCE_DETAILS_SEARCH_OFFENCES_RESULTS_TABLE_WRAPPER_TABLE_DATA_MOCK.length,
+    );
     expect(fixture.nativeElement.querySelectorAll('a.govuk-link.govuk-link--no-visited-state')).toHaveLength(0);
     expect(firstButton.getAttribute('type')).toBe('button');
     expect(firstButton.textContent).toContain(
