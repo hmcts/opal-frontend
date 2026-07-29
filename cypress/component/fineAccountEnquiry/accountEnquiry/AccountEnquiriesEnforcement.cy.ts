@@ -16,6 +16,7 @@ import { mount } from 'cypress/angular';
 import { IComponentProperties } from './setup/setupComponent.interface';
 import { setupAccountEnquiryComponent } from './setup/SetupComponent';
 import { FinesAccDefendantDetailsEnforcementTab } from 'src/app/flows/fines/fines-acc/fines-acc-defendant-details/fines-acc-defendant-details-enforcement-tab/fines-acc-defendant-details-enforcement-tab.component';
+import 'cypress-axe';
 
 const ACCOUNT_ENQUIRY_JIRA_LABEL = '@JIRA-LABEL:account-enquiry';
 const NO_EDITABLE_FIELDS_SELECTOR = 'input, textarea, select, [contenteditable="true"]';
@@ -123,7 +124,7 @@ describe('Account Enquiry Enforcement Status', () => {
     hasEnterEnforcementPermission = false,
     isCompanyAccount = false,
   }: EnforcementTabMountOptions = {}) => {
-    mount(FinesAccDefendantDetailsEnforcementTab, {
+    return mount(FinesAccDefendantDetailsEnforcementTab, {
       componentProperties: {
         tabData: enforcement,
         hasAccountMaintenancePermission,
@@ -202,6 +203,46 @@ describe('Account Enquiry Enforcement Status', () => {
   );
 
   it(
+    'AC2, AC2a, AC3: restricted statuses hide restricted enforcement actions while TFO Out S/NI keeps HMRC check visible',
+    { tags: [...buildTags('@JIRA-STORY:PO-5754'), '@JIRA-EPIC:PO-978', '@JIRA-TEST-KEY:PO-5754'] },
+    () => {
+      const restrictedStatuses = ['CS', 'WO', 'TA', 'TS', 'TO'] as const;
+
+      cy.wrap(restrictedStatuses).each((accountStatusCode: (typeof restrictedStatuses)[number]) => {
+        const enforcementMock = buildEnforcementMock();
+        if (enforcementMock.enforcement_override) {
+          enforcementMock.enforcement_override.enforcement_override_result.enforcement_override_result_id = 'ABDC';
+        }
+        if (enforcementMock.last_enforcement_action) {
+          enforcementMock.last_enforcement_action.enforcement_action.result_id = 'NOENF';
+        }
+
+        mountEnforcementTab({
+          enforcement: enforcementMock,
+          hasAccountMaintenancePermission: true,
+          hasEnterEnforcementPermission: true,
+        }).then(({ fixture }) => {
+          fixture.componentRef.setInput('accountStatusCode', accountStatusCode);
+          fixture.detectChanges();
+        });
+
+        cy.contains('h2', 'Actions').parent().contains('a', 'Add enforcement action').should('not.exist');
+        cy.contains('h2', 'Actions').parent().contains('a', 'Add enforcement override').should('not.exist');
+        cy.contains('h2', 'Actions')
+          .parent()
+          .contains('a', 'Request an HMRC check')
+          .should(accountStatusCode === 'TO' ? 'exist' : 'not.exist');
+
+        cy.get('#enforcementOverviewDetailsCollection_order_statusActions a').should('not.exist');
+        cy.get('#enforcementOverviewDetailsEnforcement_courtActions a').should('not.exist');
+        cy.get('#lastEnforcementActionDetailsEnforcement_actionActions a').should('not.exist');
+        cy.get('#enforcementOverrideDetailsEnforcement_overrideActions a').should('not.exist');
+        cy.get('#enforcement-override-summary-card-list .govuk-summary-card__action a').should('not.exist');
+      });
+    },
+  );
+
+  it(
     'AC2: Action column displayed when user has Account Maintenance permission and add enforcement action link not visible',
     { tags: [...buildTags('@JIRA-STORY:PO-1647'), '@JIRA-EPIC:PO-978', '@JIRA-TEST-KEY:PO-4067'] },
     () => {
@@ -209,6 +250,23 @@ describe('Account Enquiry Enforcement Status', () => {
 
       assertOverviewCardVisible();
       cy.contains('h2', 'Actions').parent().contains('a', 'Add enforcement action').should('not.exist');
+    },
+  );
+
+  it(
+    'AC2: actions are hidden for zero balance accounts',
+    { tags: [...buildTags('@JIRA-STORY:PO-5754'), '@JIRA-EPIC:PO-978', '@JIRA-TEST-KEY:PO-5754-ZERO'] },
+    () => {
+      mountEnforcementTab({
+        hasAccountMaintenancePermission: true,
+        hasEnterEnforcementPermission: true,
+      }).then(({ fixture }) => {
+        fixture.componentRef.setInput('accountBalance', 0);
+        fixture.detectChanges();
+      });
+
+      cy.contains('h2', 'Actions').parent().contains('a', 'Add enforcement action').should('not.exist');
+      cy.contains('h2', 'Actions').parent().contains('a', 'Request an HMRC check').should('not.exist');
     },
   );
 
@@ -416,6 +474,22 @@ describe('Account Enquiry Enforcement Status', () => {
         .next()
         .should('contain.text', 'Test Court (456)');
       cy.contains('a', 'Change').should('not.exist');
+    },
+  );
+
+  it(
+    'AC1, AC2, AC3: enforcement tab passes Axe-Core checks',
+    { tags: [...buildTags('@JIRA-STORY:PO-5754'), '@JIRA-EPIC:PO-978', '@JIRA-TEST-KEY:PO-5754-AXE'] },
+    () => {
+      mountEnforcementTab({
+        hasAccountMaintenancePermission: true,
+        hasEnterEnforcementPermission: true,
+      });
+
+      cy.injectAxe();
+      cy.checkA11y(undefined, {
+        includedImpacts: ['critical', 'serious', 'moderate'],
+      });
     },
   );
 

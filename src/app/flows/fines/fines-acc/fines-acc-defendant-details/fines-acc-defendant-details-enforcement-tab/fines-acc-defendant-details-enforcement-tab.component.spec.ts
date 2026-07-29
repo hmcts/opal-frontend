@@ -12,6 +12,12 @@ import { FINES_ACC_ENF_COURT_CHANGE_ROUTING_PATHS } from '../../fines-acc-enf-co
 describe('FinesAccDefendantDetailsEnforcementTab', () => {
   let component: FinesAccDefendantDetailsEnforcementTab;
   let fixture: ComponentFixture<FinesAccDefendantDetailsEnforcementTab>;
+  const restrictedAccountStatusCodes = ['CS', 'WO', 'TA', 'TS', 'TO'];
+
+  const actionLinks = (): HTMLAnchorElement[] =>
+    Array.from(fixture.nativeElement.querySelectorAll('div.govuk-grid-column-one-third p > a.govuk-link'));
+
+  const actionLinkTexts = (): string[] => actionLinks().map((link) => link.textContent?.trim() ?? '');
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
@@ -23,6 +29,7 @@ describe('FinesAccDefendantDetailsEnforcementTab', () => {
     component = fixture.componentInstance;
     component.tabData = structuredClone(OPAL_FINES_ACCOUNT_DEFENDANT_DETAILS_ENFORCEMENT_TAB_REF_DATA_MOCK);
     component.accountStatusCode = 'L';
+    component.accountBalance = 500.58;
     fixture.detectChanges();
   });
 
@@ -91,24 +98,6 @@ describe('FinesAccDefendantDetailsEnforcementTab', () => {
     );
   });
 
-  it('should route add enforcement action to account-status denied when blocked by account status', () => {
-    component.hasEnterEnforcementPermission = true;
-    component.accountStatusCode = 'CS';
-
-    expect(component.addEnforcementActionRoute).toBe(
-      `../${FINES_ACC_DEFENDANT_ROUTING_PATHS.children.enforcement}/${FINES_ACC_ENF_ACTION_ROUTING_PATHS.root}/${FINES_ACC_ENF_ACTION_ROUTING_PATHS.children.denied}/${FINES_ACC_ENF_ACTION_DENIED_TYPES.accountStatus}`,
-    );
-  });
-
-  it('should route add enforcement action to account-status denied when account status is transferred out', () => {
-    component.hasEnterEnforcementPermission = true;
-    component.accountStatusCode = 'TO';
-
-    expect(component.addEnforcementActionRoute).toBe(
-      `../${FINES_ACC_DEFENDANT_ROUTING_PATHS.children.enforcement}/${FINES_ACC_ENF_ACTION_ROUTING_PATHS.root}/${FINES_ACC_ENF_ACTION_ROUTING_PATHS.children.denied}/${FINES_ACC_ENF_ACTION_DENIED_TYPES.accountStatus}`,
-    );
-  });
-
   it('should route add enforcement action to enforcement-hold denied when last enforcement is NOENF', () => {
     component.hasEnterEnforcementPermission = true;
     component.tabData.last_enforcement_action = {
@@ -152,11 +141,109 @@ describe('FinesAccDefendantDetailsEnforcementTab', () => {
     );
   });
 
+  it.each(restrictedAccountStatusCodes)(
+    'should not render add enforcement action when account status is restricted: %s',
+    (accountStatusCode) => {
+      fixture.componentRef.setInput('hasEnterEnforcementPermission', true);
+      fixture.componentRef.setInput('accountStatusCode', accountStatusCode);
+      fixture.detectChanges();
+
+      expect(actionLinkTexts()).not.toContain('Add enforcement action');
+    },
+  );
+
+  it('should not render add enforcement action when the account balance is zero', () => {
+    fixture.componentRef.setInput('hasEnterEnforcementPermission', true);
+    fixture.componentRef.setInput('accountBalance', 0);
+    fixture.detectChanges();
+
+    expect(actionLinkTexts()).not.toContain('Add enforcement action');
+  });
+
+  it.each(['CS', 'WO', 'TA', 'TS'])(
+    'should not render request HMRC check when account status is restricted: %s',
+    (accountStatusCode) => {
+      fixture.componentRef.setInput('hasEnterEnforcementPermission', true);
+      fixture.componentRef.setInput('accountStatusCode', accountStatusCode);
+      fixture.detectChanges();
+
+      expect(actionLinkTexts()).not.toContain('Request an HMRC check');
+    },
+  );
+
+  it('should render request HMRC check when account status is TFO Out S/NI', () => {
+    fixture.componentRef.setInput('hasEnterEnforcementPermission', true);
+    fixture.componentRef.setInput('accountStatusCode', 'TO');
+    fixture.detectChanges();
+
+    expect(actionLinkTexts()).toContain('Request an HMRC check');
+  });
+
+  it('should not render request HMRC check when the account balance is zero', () => {
+    fixture.componentRef.setInput('hasEnterEnforcementPermission', true);
+    fixture.componentRef.setInput('accountBalance', 0);
+    fixture.detectChanges();
+
+    expect(actionLinkTexts()).not.toContain('Request an HMRC check');
+  });
+
   it('should return the add enforcement override route', () => {
     expect(component.addEnforcementOverrideLink()).toBe(
       `../${FINES_ACC_DEFENDANT_ROUTING_PATHS.children.enforcement}/${FINES_ACC_ENF_OVERRIDE_ADD_CHANGE_ROUTING_PATHS.root}/${FINES_ACC_ENF_OVERRIDE_ADD_CHANGE_ROUTING_PATHS.children.add}`,
     );
   });
+
+  it.each(restrictedAccountStatusCodes)(
+    'should not render add enforcement override when account status is restricted: %s',
+    (accountStatusCode) => {
+      const tabData = structuredClone(OPAL_FINES_ACCOUNT_DEFENDANT_DETAILS_ENFORCEMENT_TAB_REF_DATA_MOCK);
+      tabData.enforcement_override = null;
+
+      fixture.componentRef.setInput('tabData', tabData);
+      fixture.componentRef.setInput('hasAccountMaintenancePermission', true);
+      fixture.componentRef.setInput('accountStatusCode', accountStatusCode);
+      fixture.detectChanges();
+
+      expect(actionLinkTexts()).not.toContain('Add enforcement override');
+    },
+  );
+
+  it.each(restrictedAccountStatusCodes)(
+    'should not render account maintenance summary actions when account status is restricted: %s',
+    (accountStatusCode) => {
+      fixture.componentRef.setInput('hasAccountMaintenancePermission', true);
+      fixture.componentRef.setInput('accountStatusCode', accountStatusCode);
+      fixture.detectChanges();
+
+      expect(
+        fixture.nativeElement.querySelector('#enforcementOverviewDetailsCollection_order_statusActions a'),
+      ).toBeNull();
+      expect(fixture.nativeElement.querySelector('#enforcementOverviewDetailsEnforcement_courtActions a')).toBeNull();
+      expect(
+        fixture.nativeElement.querySelector('#enforcementOverrideDetailsEnforcement_overrideActions a'),
+      ).toBeNull();
+      expect(
+        fixture.nativeElement.querySelector('#enforcement-override-summary-card-list .govuk-summary-card__action a'),
+      ).toBeNull();
+    },
+  );
+
+  it.each(restrictedAccountStatusCodes)(
+    'should not render remove NOENF when account status is restricted: %s',
+    (accountStatusCode) => {
+      const tabData = structuredClone(OPAL_FINES_ACCOUNT_DEFENDANT_DETAILS_ENFORCEMENT_TAB_REF_DATA_MOCK);
+      tabData.last_enforcement_action!.enforcement_action.result_id = 'NOENF';
+
+      fixture.componentRef.setInput('tabData', tabData);
+      fixture.componentRef.setInput('hasEnterEnforcementPermission', true);
+      fixture.componentRef.setInput('accountStatusCode', accountStatusCode);
+      fixture.detectChanges();
+
+      expect(
+        fixture.nativeElement.querySelector('#lastEnforcementActionDetailsEnforcement_actionActions a'),
+      ).toBeNull();
+    },
+  );
 
   it('should navigate to the change enforcement override route', () => {
     const router = TestBed.inject(Router);
