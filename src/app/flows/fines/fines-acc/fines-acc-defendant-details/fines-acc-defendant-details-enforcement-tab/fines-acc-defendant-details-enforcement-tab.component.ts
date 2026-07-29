@@ -16,7 +16,6 @@ import { FinesNotProvidedComponent } from '../../../components/fines-not-provide
 import { DatePipe, TitleCasePipe } from '@angular/common';
 import { GovukTagComponent } from '@hmcts/opal-frontend-common/components/govuk/govuk-tag';
 import { GovukDetailsComponent } from '@hmcts/opal-frontend-common/components/govuk/govuk-details';
-import { FINES_ACC_ENF_ACTION_DENIED_ACCOUNT_STATUS_MAP } from '../../fines-acc-enf-action-denied/constants/fines-acc-enf-action-denied-account-status-map.constant';
 import { FINES_ACC_ENF_ACTION_DENIED_TYPES } from '../../fines-acc-enf-action-denied/constants/fines-acc-enf-action-denied-types.constant';
 import { TFinesAccEnfActionDeniedType } from '../../fines-acc-enf-action-denied/types/fines-acc-enf-action-denied-type.type';
 import { FINES_ACC_DEFENDANT_ROUTING_PATHS } from '../../routing/constants/fines-acc-defendant-routing-paths.constant';
@@ -24,6 +23,12 @@ import { FINES_ACC_ENF_ACTION_ROUTING_PATHS } from '../../fines-acc-enf-action-s
 import { FINES_ACC_ENF_OVERRIDE_ADD_CHANGE_ROUTING_PATHS } from '../../fines-acc-enf-override-add-change/constants/fines-acc-enf-override-add-change-routing-paths.constant';
 import { FINES_ACC_ENF_COURT_CHANGE_ROUTING_PATHS } from '../../fines-acc-enf-court-change/constants/fines-acc-enf-court-change-routing-paths.constant';
 import { getNextPermittedActionIds } from '../../fines-acc-enf-action-select/utils/fines-acc-enf-action-next-permitted-actions.utils';
+import { FINES_ACC_RESTRICTED_ACCOUNT_STATUS_CODES } from '../../constants/fines-acc-restricted-account-status-codes.constant';
+
+const FINES_ACC_HMRC_CHECK_RESTRICTED_ACCOUNT_STATUS_CODES = FINES_ACC_RESTRICTED_ACCOUNT_STATUS_CODES.filter(
+  (accountStatusCode) => accountStatusCode !== 'TO',
+);
+
 @Component({
   selector: 'app-fines-acc-defendant-details-enforcement-tab',
   imports: [
@@ -52,21 +57,94 @@ export class FinesAccDefendantDetailsEnforcementTab {
   @Input() hasAccountMaintenancePermission: boolean = false;
   @Input() hasEnterEnforcementPermission: boolean = false;
   @Input({ required: true }) accountStatusCode!: string;
+  @Input({ required: true }) accountBalance!: number;
+
+  /**
+   * Checks whether the account status restricts enforcement actions.
+   */
+  public get hasRestrictedAccountStatus(): boolean {
+    return FINES_ACC_RESTRICTED_ACCOUNT_STATUS_CODES.includes(this.accountStatusCode);
+  }
+
+  /**
+   * Checks whether the account status restricts HMRC check requests.
+   */
+  public get hasHmrcCheckRestrictedAccountStatus(): boolean {
+    return FINES_ACC_HMRC_CHECK_RESTRICTED_ACCOUNT_STATUS_CODES.includes(this.accountStatusCode);
+  }
+
+  /**
+   * Checks whether the account balance is zero.
+   */
+  public get hasZeroAccountBalance(): boolean {
+    return this.accountBalance === 0;
+  }
+
+  /**
+   * Determines whether the add enforcement action link can be displayed.
+   */
+  public get canDisplayAddEnforcementAction(): boolean {
+    return this.hasEnterEnforcementPermission && !this.hasRestrictedAccountStatus && !this.hasZeroAccountBalance;
+  }
+
+  /**
+   * Determines whether the add enforcement override link can be displayed.
+   */
+  public get canDisplayAddEnforcementOverride(): boolean {
+    return (
+      this.hasAccountMaintenancePermission &&
+      !this.hasRestrictedAccountStatus &&
+      !this.tabData.enforcement_override?.enforcement_override_result?.enforcement_override_result_id
+    );
+  }
+
+  /**
+   * Determines whether the request HMRC check link can be displayed.
+   */
+  public get canDisplayRequestHmrcCheck(): boolean {
+    return (
+      (this.hasAccountMaintenancePermission || this.hasEnterEnforcementPermission) &&
+      !this.hasHmrcCheckRestrictedAccountStatus &&
+      !this.hasZeroAccountBalance
+    );
+  }
+
+  /**
+   * Determines whether the actions column can be displayed.
+   */
+  public get canDisplayActionsColumn(): boolean {
+    return (
+      this.canDisplayAddEnforcementAction || this.canDisplayAddEnforcementOverride || this.canDisplayRequestHmrcCheck
+    );
+  }
+
+  /**
+   * Determines whether account maintenance actions can be displayed.
+   */
+  public get canDisplayAccountMaintenanceAction(): boolean {
+    return this.hasAccountMaintenancePermission && !this.hasRestrictedAccountStatus;
+  }
+
+  /**
+   * Determines whether the remove enforcement hold action can be displayed.
+   */
+  public get canDisplayRemoveEnforcementHold(): boolean {
+    return (
+      this.tabData.last_enforcement_action?.enforcement_action.result_id === 'NOENF' &&
+      this.hasEnterEnforcementPermission &&
+      !this.hasRestrictedAccountStatus
+    );
+  }
 
   /**
    * Computes the denied reason for adding an enforcement action.
    */
   private getAddEnforcementActionDeniedType(): TFinesAccEnfActionDeniedType | null {
-    const invalidAccountStatuses = Object.keys(FINES_ACC_ENF_ACTION_DENIED_ACCOUNT_STATUS_MAP);
     const lastEnforcementActionId = this.tabData.last_enforcement_action?.enforcement_action.result_id ?? null;
     const nextPermittedActions = getNextPermittedActionIds(this.tabData.next_enforcement_action_data) as string[];
 
     if (!this.hasEnterEnforcementPermission) {
       return FINES_ACC_ENF_ACTION_DENIED_TYPES.permission;
-    }
-
-    if (invalidAccountStatuses.includes(this.accountStatusCode)) {
-      return FINES_ACC_ENF_ACTION_DENIED_TYPES.accountStatus;
     }
 
     if (lastEnforcementActionId === 'NOENF') {
