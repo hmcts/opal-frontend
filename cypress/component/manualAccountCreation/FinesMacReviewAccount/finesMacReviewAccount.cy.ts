@@ -35,6 +35,7 @@ describe('FinesMacReviewAccountComponent', () => {
   let finesMacState = structuredClone(baseFinesMacState);
   let finesDraftState = structuredClone(baseFinesDraftState);
   let finesAccountPayload = structuredClone(baseFinesAccountPayload);
+  let mountedFinesMacStore: FinesMacStore;
 
   /**
    * Mount the Review Account component with the three stores and a minimal ActivatedRoute.
@@ -45,6 +46,7 @@ describe('FinesMacReviewAccountComponent', () => {
     activatedRouteMock: any = null,
     amend: boolean = true,
     checker: boolean = false,
+    draftAccountId: string | null = '42',
   ) => {
     finesDraftStateMock = structuredClone(finesDraftStateMock);
     activatedRouteMock = activatedRouteMock ? structuredClone(activatedRouteMock) : null;
@@ -91,6 +93,7 @@ describe('FinesMacReviewAccountComponent', () => {
           useFactory: () => {
             let store = new FinesMacStore();
             store.setFinesMacStore(finesMacState);
+            mountedFinesMacStore = store;
             return store;
           },
         },
@@ -111,7 +114,7 @@ describe('FinesMacReviewAccountComponent', () => {
           useValue: {
             snapshot: {
               paramMap: {
-                get: (key: string) => (key === 'draftAccountId' ? '42' : null),
+                get: (key: string) => (key === 'draftAccountId' ? draftAccountId : null),
               },
               data: {
                 reviewAccountFetchMap,
@@ -187,6 +190,24 @@ describe('FinesMacReviewAccountComponent', () => {
           expect(account.originator_id).to.equal('9985');
           expect(account.originator_name).to.equal('Asylum & Immigration Tribunal');
         });
+    },
+  );
+
+  it(
+    'navigates to delete account confirmation without an account id and marks the journey as coming from check account',
+    { tags: [...buildTags('@JIRA-STORY:PO-9113')] },
+    () => {
+      setupComponent(finesDraftState, null, true, false, null);
+
+      cy.get(DOM_ELEMENTS.deleteLink).click();
+
+      cy.get('@routerNavigate').should((stub) => {
+        expect(stub).to.have.been.calledOnce;
+        expect(stub.getCall(0).args[0]).to.deep.equal(['delete-account-confirmation']);
+      });
+      cy.then(() => {
+        expect(mountedFinesMacStore.deleteFromCheckAccount()).to.equal(true);
+      });
     },
   );
 
