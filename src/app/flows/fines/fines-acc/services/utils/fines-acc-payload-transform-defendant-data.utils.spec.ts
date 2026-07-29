@@ -70,7 +70,7 @@ describe('transformDefendantAccountPartyPayload', () => {
       true,
     );
 
-    expect(result.facc_party_add_amend_convert_individual_aliases.length).toBe(2);
+    expect(result.facc_party_add_amend_convert_individual_aliases).toHaveLength(2);
 
     // Test first alias (using mock data values)
     expect(result.facc_party_add_amend_convert_individual_aliases[0]).toEqual({
@@ -143,7 +143,7 @@ describe('transformDefendantAccountPartyPayload', () => {
     );
 
     // Should only have 5 aliases
-    expect(result.facc_party_add_amend_convert_individual_aliases.length).toBe(5);
+    expect(result.facc_party_add_amend_convert_individual_aliases).toHaveLength(5);
 
     // Test that the correct indices are used
     expect(result.facc_party_add_amend_convert_individual_aliases[0]).toEqual({
@@ -184,7 +184,7 @@ describe('transformDefendantAccountPartyPayload', () => {
       true,
     );
 
-    expect(result.facc_party_add_amend_convert_individual_aliases.length).toBe(2);
+    expect(result.facc_party_add_amend_convert_individual_aliases).toHaveLength(2);
     expect(result.facc_party_add_amend_convert_individual_aliases[0]).toEqual({
       facc_party_add_amend_convert_alias_forenames_0: 'John',
       facc_party_add_amend_convert_alias_surname_0: 'Smith',
@@ -221,7 +221,7 @@ describe('transformDefendantAccountPartyPayload', () => {
       true,
     );
 
-    expect(result.facc_party_add_amend_convert_individual_aliases.length).toBe(2);
+    expect(result.facc_party_add_amend_convert_individual_aliases).toHaveLength(2);
     expect(result.facc_party_add_amend_convert_individual_aliases[0]).toEqual({
       facc_party_add_amend_convert_alias_forenames_0: 'John',
       facc_party_add_amend_convert_alias_surname_0: 'Smith',
@@ -271,7 +271,7 @@ describe('transformDefendantAccountPartyPayload', () => {
       true,
     );
 
-    expect(result.facc_party_add_amend_convert_individual_aliases.length).toBe(4);
+    expect(result.facc_party_add_amend_convert_individual_aliases).toHaveLength(4);
     expect(result.facc_party_add_amend_convert_individual_aliases[0].facc_party_add_amend_convert_alias_id_0).toBe(
       '99000000001031',
     );
@@ -439,7 +439,7 @@ describe('transformDefendantAccountPartyPayload', () => {
       true,
     );
 
-    expect(result.facc_party_add_amend_convert_organisation_aliases.length).toBe(2);
+    expect(result.facc_party_add_amend_convert_organisation_aliases).toHaveLength(2);
     expect(result.facc_party_add_amend_convert_organisation_aliases[0]).toEqual({
       facc_party_add_amend_convert_alias_organisation_name_0: 'Test Corp',
       facc_party_add_amend_convert_alias_id_0: 'ORG-ALIAS-1',
@@ -475,7 +475,7 @@ describe('transformDefendantAccountPartyPayload', () => {
       true,
     );
 
-    expect(result.facc_party_add_amend_convert_organisation_aliases.length).toBe(0);
+    expect(result.facc_party_add_amend_convert_organisation_aliases).toHaveLength(0);
     expect(result.facc_party_add_amend_convert_add_alias).toBe(false);
   });
 
@@ -546,7 +546,7 @@ describe('transformDefendantAccountPartyPayload', () => {
     );
 
     // Should only have 5 aliases
-    expect(result.facc_party_add_amend_convert_organisation_aliases.length).toBe(5);
+    expect(result.facc_party_add_amend_convert_organisation_aliases).toHaveLength(5);
 
     // Test that the correct indices are used
     expect(result.facc_party_add_amend_convert_organisation_aliases[0]).toEqual({
@@ -595,7 +595,7 @@ describe('transformDefendantAccountPartyPayload', () => {
       true,
     );
 
-    expect(result.facc_party_add_amend_convert_organisation_aliases.length).toBe(2);
+    expect(result.facc_party_add_amend_convert_organisation_aliases).toHaveLength(2);
     // Empty string becomes null due to || null logic in the function
     expect(
       result.facc_party_add_amend_convert_organisation_aliases[0]
@@ -641,7 +641,7 @@ describe('transformDefendantAccountPartyPayload', () => {
       true,
     );
 
-    expect(result.facc_party_add_amend_convert_organisation_aliases.length).toBe(1);
+    expect(result.facc_party_add_amend_convert_organisation_aliases).toHaveLength(1);
     expect(result.facc_party_add_amend_convert_organisation_aliases[0]).toEqual({
       facc_party_add_amend_convert_alias_organisation_name_0: 'Test Alias',
       facc_party_add_amend_convert_alias_id_0: 'ORG-ALIAS-1',
@@ -685,7 +685,7 @@ describe('transformDefendantAccountPartyPayload', () => {
       true,
     );
 
-    expect(result.facc_party_add_amend_convert_organisation_aliases.length).toBe(2);
+    expect(result.facc_party_add_amend_convert_organisation_aliases).toHaveLength(2);
     // Empty string should become null due to the `|| null` logic in the function
     expect(
       result.facc_party_add_amend_convert_organisation_aliases[0]
@@ -761,7 +761,7 @@ describe('transformDefendantAccountPartyPayload', () => {
 
       // Company-specific fields should be populated
       expect(result.facc_party_add_amend_convert_organisation_name).toBe('Test Company Ltd');
-      expect(result.facc_party_add_amend_convert_organisation_aliases.length).toBe(1);
+      expect(result.facc_party_add_amend_convert_organisation_aliases).toHaveLength(1);
       expect(result.facc_party_add_amend_convert_add_alias).toBe(true);
 
       // Individual-specific fields should be null
@@ -790,7 +790,7 @@ describe('transformDefendantAccountPartyPayload', () => {
       expect(result.facc_party_add_amend_convert_surname).toBe('Thompson');
       expect(result.facc_party_add_amend_convert_dob).toBe('12/04/1988');
       expect(result.facc_party_add_amend_convert_national_insurance_number).toBe('QQ123456C');
-      expect(result.facc_party_add_amend_convert_individual_aliases.length).toBe(2);
+      expect(result.facc_party_add_amend_convert_individual_aliases).toHaveLength(2);
       expect(result.facc_party_add_amend_convert_add_alias).toBe(true);
 
       // Employer fields should be populated for individuals
@@ -815,7 +815,7 @@ describe('transformDefendantAccountPartyPayload', () => {
       expect(result.facc_party_add_amend_convert_surname).toBe('Thompson');
       expect(result.facc_party_add_amend_convert_dob).toBe('12/04/1988');
       expect(result.facc_party_add_amend_convert_national_insurance_number).toBe('QQ123456C');
-      expect(result.facc_party_add_amend_convert_individual_aliases.length).toBe(2);
+      expect(result.facc_party_add_amend_convert_individual_aliases).toHaveLength(2);
 
       // Employer fields should be populated for parent/guardian
       expect(result.facc_party_add_amend_convert_employer_company_name).toBe('Tech Solutions Ltd');
@@ -849,7 +849,7 @@ describe('transformDefendantAccountPartyPayload', () => {
       expect(result.facc_party_add_amend_convert_title).toBeNull(); // Individual fields should be null for company
       expect(result.facc_party_add_amend_convert_forenames).toBeNull(); // Individual fields should be null for company
       // Aliases are based on organisation_flag, not partyType, so individual aliases won't be processed when org flag is true
-      expect(result.facc_party_add_amend_convert_individual_aliases.length).toBe(0);
+      expect(result.facc_party_add_amend_convert_individual_aliases).toHaveLength(0);
     });
 
     it('should return limited fields for individual party type when not a debtor (isIndividual && !isDebtor)', () => {
@@ -861,7 +861,7 @@ describe('transformDefendantAccountPartyPayload', () => {
       expect(result.facc_party_add_amend_convert_surname).toBe('Thompson');
       expect(result.facc_party_add_amend_convert_dob).toBe('12/04/1988');
       expect(result.facc_party_add_amend_convert_national_insurance_number).toBe('QQ123456C');
-      expect(result.facc_party_add_amend_convert_individual_aliases.length).toBe(2);
+      expect(result.facc_party_add_amend_convert_individual_aliases).toHaveLength(2);
       expect(result.facc_party_add_amend_convert_add_alias).toBe(true);
 
       // Address fields should be populated

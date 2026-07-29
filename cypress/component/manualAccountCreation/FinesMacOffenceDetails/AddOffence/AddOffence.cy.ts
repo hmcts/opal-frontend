@@ -1156,8 +1156,7 @@ describe('FinesMacAddOffenceComponent', () => {
 
       cy.log('assert', 'Asserting each imposition is wrapped in its own fieldset');
 
-      cy.contains(DOM_ELEMENTS.legend, /^Impositions$/)
-        .closest('h2')
+      cy.contains('h2', /^Impositions$/)
         .nextUntil(DOM_ELEMENTS.addImpositionButton, DOM_ELEMENTS.fieldset) // only fieldsets
         .then(($fieldsets) => {
           const fieldsetCount = $fieldsets.length;
