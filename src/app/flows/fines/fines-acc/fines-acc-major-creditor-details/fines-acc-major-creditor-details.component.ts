@@ -114,8 +114,12 @@ export class FinesAccMajorCreditorDetailsComponent
     const { account_id } = this.accountStore.getAccountState();
 
     fragment$.pipe(takeUntil(this.destroy$)).subscribe((tab) => {
-      if (tab === FINES_ACC_MAJOR_CREDITOR_DETAILS_TABS_KEYS['at-a-glance']) {
-        this.tabAtAGlance$ = this.fetchTabDataTyped(this.opalFinesService.getMajorCreditorAccountAtAGlance(account_id));
+      switch (tab) {
+        case FINES_ACC_MAJOR_CREDITOR_DETAILS_TABS_KEYS['at-a-glance']:
+          this.tabAtAGlance$ = this.fetchTabDataTyped(
+            this.opalFinesService.getMajorCreditorAccountAtAGlance(account_id),
+          );
+          break;
       }
     });
   }
