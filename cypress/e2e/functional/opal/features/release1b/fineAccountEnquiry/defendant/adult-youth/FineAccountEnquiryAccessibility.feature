@@ -93,7 +93,7 @@ Feature: Defendant - Adult or youth - Account Enquiries - Enforcement Accessibil
     And I continue to the confirm enforcement action page
     Then I check the page for accessibility
 
-  @R1B @JIRA-STORY:PO-1785 @JIRA-EPIC:PO-1675 @JIRA-TEST-KEY:PO-5466
+  @R1B @JIRA-STORY:PO-1785 @JIRA-EPIC:PO-1675
   Scenario: Remove enforcement hold page accessibility
     Given I create a "adultOrYouthOnly" draft account with the following details and set status "Publishing Pending" using user "opal-test-10@dev.platform.hmcts.net":
       | Account_status                                  | Submitted                           |
