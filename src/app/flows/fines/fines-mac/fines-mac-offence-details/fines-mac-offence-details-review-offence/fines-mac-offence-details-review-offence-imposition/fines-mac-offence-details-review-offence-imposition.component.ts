@@ -236,6 +236,7 @@ export class FinesMacOffenceDetailsReviewOffenceImpositionComponent implements O
 
       return {
         impositionId: imposition.fm_offence_details_imposition_id!,
+        impositionResultId: resultCodeImposition.result_id,
         impositionDescription: resultCodeImposition.result_title,
         creditor: this.getCreditorInformation(
           imposition.fm_offence_details_creditor,

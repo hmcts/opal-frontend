@@ -141,6 +141,7 @@ describe('FinesMacOffenceDetailsReviewOffenceImpositionComponent', () => {
         impositionDescription: OPAL_FINES_RESULTS_REF_DATA_MOCK.refData.find(
           (result) => result.result_id === imposition.fm_offence_details_result_id!,
         )!.result_title,
+        impositionResultId: 'FCC',
         creditor: 'HM Courts & Tribunals Service (HMCTS)',
         minorCreditor: {
           address: ['Test Address'],

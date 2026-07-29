@@ -3,6 +3,7 @@ import { IFinesMacOffenceDetailsReviewSummaryMinorCreditorTableData } from './fi
 export interface IFinesMacOffenceDetailsReviewSummaryImpositionTableData {
   impositionId: number;
   impositionDescription: string;
+  impositionResultId: string;
   creditor: string;
   minorCreditor: IFinesMacOffenceDetailsReviewSummaryMinorCreditorTableData | null;
   showMinorCreditorData: boolean;
