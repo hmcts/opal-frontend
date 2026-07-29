@@ -4,10 +4,7 @@ import { DEFENDANT_HEADER_MOCK } from './mocks/defendant_details_mock';
 import { OPAL_FINES_ACCOUNT_DEFENDANT_ACCOUNT_PARTY_MOCK } from '@services/fines/opal-fines-service/mocks/opal-fines-account-defendant-account-party.mock';
 import { OPAL_FINES_ACCOUNT_DEFENDANT_AT_A_GLANCE_MOCK } from '@services/fines/opal-fines-service/mocks/opal-fines-account-defendant-at-a-glance.mock';
 import { USER_STATE_MOCK_PERMISSION_BU77 } from '../../CommonIntercepts/CommonUserState.mocks';
-import {
-  interceptAuthenticatedUser,
-  interceptUserState,
-} from 'cypress/component/CommonIntercepts/CommonIntercepts';
+import { interceptAuthenticatedUser, interceptUserState } from 'cypress/component/CommonIntercepts/CommonIntercepts';
 import {
   interceptDefendantDetails,
   interceptDefendantHeader,
