@@ -77,7 +77,9 @@ describe('FinesMacOffenceDetailsSearchOffencesResultsTableWrapperComponent', () 
       'td#code a.govuk-link.govuk-link--no-visited-state',
     ) as HTMLAnchorElement;
     const hiddenCodeElement = linkElement.querySelector('.govuk-visually-hidden') as HTMLSpanElement;
-    const liveRegion = fixture.nativeElement.querySelector('td#code > span.govuk-visually-hidden[aria-live]') as HTMLSpanElement;
+    const liveRegion = fixture.nativeElement.querySelector(
+      'td#code > span.govuk-visually-hidden[aria-live]',
+    ) as HTMLSpanElement;
 
     linkElement.click();
     fixture.detectChanges();
