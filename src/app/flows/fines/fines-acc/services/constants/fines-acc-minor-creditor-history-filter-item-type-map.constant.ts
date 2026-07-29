@@ -4,7 +4,7 @@ export const FINES_ACC_MINOR_CREDITOR_HISTORY_FILTER_ITEM_TYPE_MAP: Record<
   TFinesAccMinorCreditorDetailsHistoryAndNotesFilterCategory,
   string
 > = {
-  amendments: 'amendments',
-  notes: 'notes',
-  financial: 'transactions',
+  amendments: 'amendment',
+  notes: 'note',
+  financial: 'financial',
 };
