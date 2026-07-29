@@ -170,6 +170,30 @@ describe('FinesMacDeleteAccountConfirmationComponent', () => {
     expect(component.referrer).toBe(component['accountDetailsRoute']);
   });
 
+  it('should set referrer to accountDetailsRoute when the account comes from account creation with an accountId', () => {
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    vi.spyOn<any, any>(finesDraftStore, 'checker').mockReturnValue(false);
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    vi.spyOn<any, any>(finesMacStore, 'deleteFromCheckAccount').mockReturnValue(false);
+
+    component.accountId = 42;
+    component.referrer = component['setReferrer']();
+
+    expect(component.referrer).toBe(component['accountDetailsRoute']);
+  });
+
+  it('should set referrer to reviewAccountRoute when the checker deletes an account without an accountId', () => {
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    vi.spyOn<any, any>(finesDraftStore, 'checker').mockReturnValue(true);
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    vi.spyOn<any, any>(finesMacStore, 'deleteFromCheckAccount').mockReturnValue(false);
+
+    component.accountId = null;
+    component.referrer = component['setReferrer']();
+
+    expect(component.referrer).toBe(component['reviewAccountRoute']);
+  });
+
   it('should create a patch payload', () => {
     const form = {
       ...FINES_MAC_DELETE_ACCOUNT_CONFIRMATION_FORM,

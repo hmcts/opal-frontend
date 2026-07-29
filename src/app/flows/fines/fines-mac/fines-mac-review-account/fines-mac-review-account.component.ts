@@ -429,8 +429,8 @@ export class FinesMacReviewAccountComponent extends AbstractFormParentBaseCompon
   }
 
   /** * Handles the deletion of an account.
-   * If the account ID is greater than 0, it sets the delete flag in the finesMacStore
-   * and navigates to the delete account confirmation route with the account ID.
+   * It sets the delete flag in the finesMacStore
+   * If the account ID is greater than 0, it navigates to the delete account confirmation route with the account ID.
    * If the account ID is not greater than 0, it navigates to the delete account confirmation route without an ID.
    * @param event - The event that triggered the deletion.
    * @param nonRelative - Optional flag to indicate whether the route is non-relative.
@@ -438,16 +438,13 @@ export class FinesMacReviewAccountComponent extends AbstractFormParentBaseCompon
    */
   public handleDeleteAccount(event: Event, nonRelative = false): void {
     event.preventDefault();
-    if (this.accountId > 0) {
-      this.finesMacStore.setDeleteFromCheckAccount(true);
-      this.routerNavigate(
-        `${this.finesMacRoutes.children.deleteAccountConfirmation}/${this.accountId}`,
-        nonRelative,
-        event,
-      );
-    } else {
-      this.routerNavigate(`${this.finesMacRoutes.children.deleteAccountConfirmation}`, nonRelative, event);
-    }
+    this.finesMacStore.setDeleteFromCheckAccount(true);
+    const route =
+      this.accountId > 0
+        ? `${this.finesMacRoutes.children.deleteAccountConfirmation}/${this.accountId}`
+        : this.finesMacRoutes.children.deleteAccountConfirmation;
+
+    this.routerNavigate(route, nonRelative, event);
   }
 
   public ngOnDestroy(): void {
