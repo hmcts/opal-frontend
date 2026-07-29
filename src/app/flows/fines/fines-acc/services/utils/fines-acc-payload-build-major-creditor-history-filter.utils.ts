@@ -1,5 +1,5 @@
 import { IFinesAccHistoryAndNotesFilterForm } from '../../fines-acc-history-and-notes/interfaces/fines-acc-history-and-notes-filter-form.interface';
-import { IFinesAccMajorCreditorDetailsHistoryAndNotesFilterPayload } from '../../fines-acc-major-creditor-details/fines-acc-major-creditor-details-history-and-notes-tab/interfaces/fines-acc-major-creditor-details-history-and-notes-filter-payload.interface';
+import { IOpalFinesMajorCreditorAccountHistoryParams } from '@services/fines/opal-fines-service/interfaces/opal-fines-major-creditor-account-history-params.interface';
 
 /**
  * Builds the raw major creditor account history filter query params from the submitted form.
@@ -11,7 +11,7 @@ import { IFinesAccMajorCreditorDetailsHistoryAndNotesFilterPayload } from '../..
  */
 export function buildMajorCreditorHistoryFilterPayload(
   form: IFinesAccHistoryAndNotesFilterForm,
-): IFinesAccMajorCreditorDetailsHistoryAndNotesFilterPayload {
+): IOpalFinesMajorCreditorAccountHistoryParams {
   const { dateFrom, dateTo } = form.formData;
 
   return {

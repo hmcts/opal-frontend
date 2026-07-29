@@ -90,14 +90,8 @@ export class FinesAccMajorCreditorDetailsHistoryAndNotesTabComponent implements 
 
     const filterParams = this.payloadService.buildMajorCreditorHistoryFilterPayload(filter);
 
-    const requestParams = {
-      ...filterParams,
-      dateFrom: filterParams.dateFrom ?? undefined,
-      dateTo: filterParams.dateTo ?? undefined,
-    };
-
     const filteredTabData$ = this.opalFinesService
-      .getMajorCreditorAccountHistoryAndNotesTabData(this.accountId, requestParams)
+      .getMajorCreditorAccountHistoryAndNotesTabData(this.accountId, filterParams)
       .pipe(tap((data) => this.accountStore.compareVersion(data.version)));
 
     this.historyAndNotesTabData$ = this.keepLatestTabData(filteredTabData$);
