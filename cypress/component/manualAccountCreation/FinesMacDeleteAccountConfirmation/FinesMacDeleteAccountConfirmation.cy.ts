@@ -94,7 +94,7 @@ describe('FinesMacDeleteAccountConfirmation', () => {
 
   it(
     'returns to account details when an inputter cancels deletion from account details',
-    { tags: [...buildTags('@JIRA-DEFECT:PO-9113', '@JIRA-STORY:PO-9113')] },
+    { tags: [...buildTags('@JIRA-DEFECT:PO-9113', '@JIRA-STORY:PO-9113'), '@JIRA-EPIC:PO-545'] },
     () => {
       setupComponent('42');
 
@@ -109,7 +109,7 @@ describe('FinesMacDeleteAccountConfirmation', () => {
 
   it(
     'returns to check account when an inputter cancels deletion from check account without an account id',
-    { tags: [...buildTags('@JIRA-DEFECT:PO-9113', '@JIRA-STORY:PO-9113')] },
+    { tags: [...buildTags('@JIRA-DEFECT:PO-9113', '@JIRA-STORY:PO-9113'), '@JIRA-EPIC:PO-545'] },
     () => {
       setupComponent(null, true);
 
