@@ -2,17 +2,22 @@ import {
   createHistoryDetails,
   createHistoryDetailsPart,
   createHistoryFragment,
+  createHistoryLink,
   createHistoryTextPart,
   formatHistoryDate,
   getHistoryString,
   IHistoryDetails as IFinesAccHistoryAndNotesDetails,
+  IHistoryDetailsFragment as IFinesAccHistoryAndNotesDetailsFragment,
+  IHistoryDetailsLink as IFinesAccHistoryAndNotesDetailsLink,
   IHistoryDetailsPart as IFinesAccHistoryAndNotesDetailsPart,
+  IHistoryFragmentOptions as IFinesAccHistoryAndNotesFragmentOptions,
   normaliseHistoryTransactionType,
   THistoryDetailsRawItem as TFinesAccHistoryAndNotesRawItem,
 } from '@hmcts/opal-frontend-common/services/history-transformation-service';
 import { FINES_ACC_HISTORY_AND_NOTES_DETAILS_ALIAS_PATH_PREFIXES } from '../constants/fines-acc-history-and-notes-details-alias-path-prefixes.constant';
 import { FINES_ACC_HISTORY_AND_NOTES_DETAILS_DATE_FORMAT } from '../constants/fines-acc-history-and-notes-details-date-format.constant';
 import { FINES_ACC_HISTORY_AND_NOTES_DETAILS_EMPTY_VALUES } from '../constants/fines-acc-history-and-notes-details-empty-values.constant';
+import { FINES_ACC_HISTORY_AND_NOTES_DETAILS_LINK_TYPES } from '../constants/fines-acc-history-and-notes-details-link-types.constant';
 import { FINES_ACC_MINOR_CREDITOR_HISTORY_AND_NOTES_DETAILS_FIELD_ALIASES } from '../constants/fines-acc-minor-creditor-history-and-notes-details-field-aliases.constant';
 import { FINES_ACC_MINOR_CREDITOR_HISTORY_AND_NOTES_ORDER_AND_NOTICE_TEMPLATES } from '../constants/fines-acc-minor-creditor-history-and-notes-order-and-notice-templates.constant';
 import { FINES_ACC_MINOR_CREDITOR_HISTORY_AND_NOTES_TRANSACTION_TEMPLATES } from '../constants/fines-acc-minor-creditor-history-and-notes-transaction-templates.constant';
@@ -85,7 +90,7 @@ export function transformMinorCreditorTransactionDetails(
   }
 
   if (defendantAccountTemplate) {
-    return createDetails([textPart(defendantAccountTemplate), textPart(defendantAccountNumber(item))]);
+    return createDetails([textPart(defendantAccountTemplate), defendantAccountNumberPart(item)]);
   }
 
   if (creditorAccountTemplate) {
@@ -97,7 +102,7 @@ export function transformMinorCreditorTransactionDetails(
   }
 
   if (associatedValueTemplate) {
-    return createDetails([textPart(associatedValueTemplate), textPart(suspenseTransferAssociatedValue(item))]);
+    return createDetails([textPart(associatedValueTemplate), suspenseTransferAssociatedValuePart(item)]);
   }
 
   return createDetails([
@@ -164,9 +169,7 @@ function boldTextPart(text: string | null): IFinesAccHistoryAndNotesDetailsPart 
  * @returns The label-value part or null.
  */
 function labelBoldValuePart(label: string, value: string | null): IFinesAccHistoryAndNotesDetailsPart | null {
-  return value
-    ? createHistoryDetailsPart([createHistoryFragment(label), createHistoryFragment(value, { bold: true })])
-    : null;
+  return value ? part([fragment(label), fragment(value, { bold: true })]) : null;
 }
 
 /**
@@ -177,7 +180,7 @@ function labelBoldValuePart(label: string, value: string | null): IFinesAccHisto
  * @returns The label-value part or null.
  */
 function labelValuePart(label: string, value: string | null): IFinesAccHistoryAndNotesDetailsPart | null {
-  return value ? createHistoryDetailsPart([createHistoryFragment(label), createHistoryFragment(value)]) : null;
+  return value ? part([fragment(label), fragment(value)]) : null;
 }
 
 /**
@@ -231,7 +234,9 @@ function chequeStatusPart(item: TFinesAccHistoryAndNotesRawItem): IFinesAccHisto
  * @param item - The raw minor creditor transaction history item.
  * @returns The associated display value or null.
  */
-function suspenseTransferAssociatedValue(item: TFinesAccHistoryAndNotesRawItem): string | null {
+function suspenseTransferAssociatedValuePart(
+  item: TFinesAccHistoryAndNotesRawItem,
+): IFinesAccHistoryAndNotesDetailsPart | null {
   const associatedRecordTypes = FINES_ACC_MINOR_CREDITOR_HISTORY_AND_NOTES_TRANSACTION_TEMPLATES.associatedRecordTypes;
   const associatedRecordType = getString(
     item,
@@ -240,14 +245,35 @@ function suspenseTransferAssociatedValue(item: TFinesAccHistoryAndNotesRawItem):
 
   switch (associatedRecordType) {
     case associatedRecordTypes.suspenseItem:
-      return associatedRecordId(item);
+      return textPart(associatedRecordId(item));
     case associatedRecordTypes.defendantTransaction:
-      return defendantAccountNumber(item);
+      return defendantAccountNumberPart(item);
     case associatedRecordTypes.creditorAccounts:
-      return creditorAccountNumber(item);
+      return textPart(creditorAccountNumber(item));
     default:
-      return associatedRecordId(item) ?? defendantAccountNumber(item) ?? creditorAccountNumber(item);
+      return (
+        textPart(associatedRecordId(item)) ?? defendantAccountNumberPart(item) ?? textPart(creditorAccountNumber(item))
+      );
   }
+}
+
+/**
+ * Builds a defendant account number part with account-link metadata when a defendant account id is present.
+ *
+ * @param item - The raw minor creditor transaction history item.
+ * @returns The defendant account number part or null.
+ */
+function defendantAccountNumberPart(item: TFinesAccHistoryAndNotesRawItem): IFinesAccHistoryAndNotesDetailsPart | null {
+  const accountNumber = defendantAccountNumber(item);
+  const emit = defendantAccountId(item);
+
+  return accountNumber
+    ? part([
+        fragment(accountNumber, {
+          link: emit ? createLink(FINES_ACC_HISTORY_AND_NOTES_DETAILS_LINK_TYPES.account, emit) : null,
+        }),
+      ])
+    : null;
 }
 
 /**
@@ -285,6 +311,16 @@ function associatedRecordId(item: TFinesAccHistoryAndNotesRawItem): string | nul
 }
 
 /**
+ * Gets the defendant account id used for linked account navigation.
+ *
+ * @param item - The raw minor creditor transaction history item.
+ * @returns The defendant account id or null.
+ */
+function defendantAccountId(item: TFinesAccHistoryAndNotesRawItem): string | null {
+  return getString(item, FINES_ACC_MINOR_CREDITOR_HISTORY_AND_NOTES_DETAILS_FIELD_ALIASES.defendantAccountId);
+}
+
+/**
  * Gets the creditor account number.
  *
  * @param item - The raw minor creditor transaction history item.
@@ -302,6 +338,41 @@ function creditorAccountNumber(item: TFinesAccHistoryAndNotesRawItem): string | 
  */
 function defendantAccountNumber(item: TFinesAccHistoryAndNotesRawItem): string | null {
   return getString(item, FINES_ACC_MINOR_CREDITOR_HISTORY_AND_NOTES_DETAILS_FIELD_ALIASES.defendantAccountNumber);
+}
+
+/**
+ * Creates a part after removing empty fragments.
+ *
+ * @param fragments - The fragments for the part.
+ * @returns The part or null.
+ */
+function part(fragments: IFinesAccHistoryAndNotesDetailsFragment[]): IFinesAccHistoryAndNotesDetailsPart | null {
+  return createHistoryDetailsPart(fragments);
+}
+
+/**
+ * Creates a details fragment with default styling flags.
+ *
+ * @param text - The fragment text.
+ * @param options - Optional fragment styling and link data.
+ * @returns The details fragment.
+ */
+function fragment(
+  text: string,
+  options: IFinesAccHistoryAndNotesFragmentOptions = {},
+): IFinesAccHistoryAndNotesDetailsFragment {
+  return createHistoryFragment(text, options);
+}
+
+/**
+ * Creates link metadata for a fragment.
+ *
+ * @param type - The link type emitted by the UI.
+ * @param emit - The emitted linked entity identifier.
+ * @returns The fragment link metadata.
+ */
+function createLink(type: string, emit: string): IFinesAccHistoryAndNotesDetailsLink {
+  return createHistoryLink(type, emit);
 }
 
 /**
