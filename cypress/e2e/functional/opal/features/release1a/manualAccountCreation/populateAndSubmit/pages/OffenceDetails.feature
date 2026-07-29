@@ -578,7 +578,7 @@ Feature: Manual account creation - Offence Details
       | Amount paid    | £500.00  |
       | Balance        | £500.00  |
 
-  @R1A @JIRA-EPIC:PO-545 @JIRA-STORY:PO-416 @JIRA-STORY:PO-682 @JIRA-STORY:PO-680 @JIRA-TEST-KEY:PO-5369
+  @R1A @JIRA-EPIC:PO-545 @JIRA-STORY:PO-416 @JIRA-STORY:PO-682 @JIRA-STORY:PO-680 @JIRA-DEFECT:PO-9111 @JIRA-TEST-KEY:PO-5369
   Scenario: User can add multiple offences and remove all offences
     When I provide offence details for offence code "TP11003" with a sentence date 9 weeks in the past
     And I record imposition financial details:
