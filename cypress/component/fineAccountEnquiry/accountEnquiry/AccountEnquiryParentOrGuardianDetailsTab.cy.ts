@@ -23,6 +23,7 @@ import { IComponentProperties } from './setup/setupComponent.interface';
 import { FinesAccDefendantDetailsParentOrGuardianTabComponent } from 'src/app/flows/fines/fines-acc/fines-acc-defendant-details/fines-acc-defendant-details-parent-or-guardian-tab/fines-acc-defendant-details-parent-or-guardian-tab.component';
 import { OPAL_FINES_ACCOUNT_DEFENDANT_AT_A_GLANCE_MOCK } from './mocks/defendant_details_at_glance_mock';
 import { DEFENDANT_HEADER_YOUTH_MOCK } from './mocks/defendant_details_mock';
+import { FINES_ACC_RESTRICTED_ACCOUNT_STATUS_CODES } from 'src/app/flows/fines/fines-acc/constants/fines-acc-restricted-account-status-codes.constant';
 
 const ACCOUNT_ENQUIRY_JIRA_LABEL = '@JIRA-LABEL:account-enquiry';
 type ParentGuardianDetailsMock = typeof OPAL_FINES_ACCOUNT_PARENT_GUARDIAN_PARTY_MOCK;
@@ -45,14 +46,17 @@ describe('Account Enquiry Parent or Guardian Component', () => {
   const mountParentGuardianTab = ({
     pgDetailsMock,
     hasAccountMaintenencePermission = false,
+    accountStatusCode = 'L',
   }: {
     pgDetailsMock: ParentGuardianDetailsMock;
     hasAccountMaintenencePermission?: boolean;
+    accountStatusCode?: string;
   }) => {
     mount(FinesAccDefendantDetailsParentOrGuardianTabComponent, {
       componentProperties: {
         tabData: pgDetailsMock,
         hasAccountMaintenencePermission,
+        accountStatusCode,
       },
     });
   };
@@ -128,9 +132,31 @@ describe('Account Enquiry Parent or Guardian Component', () => {
     },
   );
 
+  FINES_ACC_RESTRICTED_ACCOUNT_STATUS_CODES.forEach((statusCode) => {
+    it(
+      `AC1c, AC2c: should hide the Change and Remove actions when the account status is ${statusCode}`,
+      {
+        tags: [...buildTags('@JIRA-STORY:PO-5749'), '@JIRA-EPIC:PO-2990'],
+      },
+      () => {
+        const restrictedPgDetailsMock = structuredClone(OPAL_FINES_ACCOUNT_PARENT_GUARDIAN_PARTY_MOCK);
+        restrictedPgDetailsMock.defendant_account_party.is_debtor = false;
+
+        mountParentGuardianTab({
+          pgDetailsMock: restrictedPgDetailsMock,
+          hasAccountMaintenencePermission: true,
+          accountStatusCode: statusCode,
+        });
+
+        cy.get(DOM.changeLink).should('not.exist');
+        cy.get(DOM.removeParentGuardianLink).should('not.exist');
+      },
+    );
+  });
+
   it(
     'AC3: should not display the remove action for an adult or youth account with parent or guardian to pay',
-    { tags: [...buildTags('@JIRA-STORY:PO-1876'), '@JIRA-EPIC:PO-1875', '@JIRA-TEST-KEY:PO-6336'] },
+    { tags: [...buildTags('@JIRA-STORY:PO-5749'), '@JIRA-EPIC:PO-2990', '@JIRA-TEST-KEY:PO-5749'] },
     () => {
       const headerMock = structuredClone(createDefendantHeaderMockWithName('Robert', 'Thomson'));
       headerMock.parent_guardian_party_id = '1770000001';

@@ -7,6 +7,7 @@ import { FinesAccPartyDetails } from '../fines-acc-party-details/fines-acc-party
 import { RouterLink } from '@angular/router';
 import { FINES_ACC_DEFENDANT_ROUTING_PATHS } from '../../routing/constants/fines-acc-defendant-routing-paths.constant';
 import { FINES_ACC_REMOVE_NON_PAYING_PG_ROUTING_PATHS } from '../../fines-acc-remove-non-paying-pg/constants/fines-acc-remove-non-paying-pg-routing-paths.constant';
+import { FINES_ACC_RESTRICTED_ACCOUNT_STATUS_CODES } from '../../constants/fines-acc-restricted-account-status-codes.constant';
 
 @Component({
   selector: 'app-fines-acc-defendant-details-parent-or-guardian-tab',
@@ -18,13 +19,32 @@ export class FinesAccDefendantDetailsParentOrGuardianTabComponent {
   @Input({ required: true }) tabData!: IOpalFinesAccountDefendantAccountParty | null;
   @Input() hasAccountMaintenencePermission: boolean = false;
   @Input() hasAccountMaintenancePermissionInBU: boolean = false;
+  @Input() accountStatusCode: string = '';
   @Input() style: IFinesAccSummaryTabsContentStyles = FINES_ACC_SUMMARY_TABS_CONTENT_STYLES;
+
+  /**
+   * Determines whether the parent or guardian account status supports actions.
+   */
+  public get accountStatusAllowsActions(): boolean {
+    return !FINES_ACC_RESTRICTED_ACCOUNT_STATUS_CODES.includes(this.accountStatusCode);
+  }
+
+  /**
+   * Determines whether the change parent or guardian action should be available.
+   */
+  public get changeParentOrGuardianAction(): boolean {
+    return this.hasAccountMaintenencePermission && this.accountStatusAllowsActions;
+  }
 
   /**
    * Determines whether the remove parent or guardian action should be available.
    */
   public get removeParentOrGuardianAction(): boolean {
-    return this.hasAccountMaintenencePermission && this.tabData?.defendant_account_party.is_debtor === false;
+    return (
+      this.hasAccountMaintenencePermission &&
+      this.accountStatusAllowsActions &&
+      this.tabData?.defendant_account_party.is_debtor === false
+    );
   }
 
   /**

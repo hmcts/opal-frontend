@@ -172,6 +172,7 @@
         [tabData]="tabData"
         [hasAccountMaintenencePermission]="hasPermission(finesPermissions['account-maintenance'])"
         [hasAccountMaintenancePermissionInBU]="hasBusinessUnitPermissionKey('account-maintenance')"
+        [accountStatusCode]="accountData.account_status_reference.account_status_code"
         [style]="tabContentStyles"
       ></app-fines-acc-defendant-details-parent-or-guardian-tab>
     }
