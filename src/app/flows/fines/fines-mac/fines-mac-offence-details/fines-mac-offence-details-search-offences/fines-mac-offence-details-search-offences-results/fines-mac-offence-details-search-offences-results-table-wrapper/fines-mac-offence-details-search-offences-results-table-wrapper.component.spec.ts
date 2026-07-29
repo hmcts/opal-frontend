@@ -41,76 +41,81 @@ describe('FinesMacOffenceDetailsSearchOffencesResultsTableWrapperComponent', () 
     expect(component).toBeTruthy();
   });
 
-  it('should render copy code as a button with row-specific hidden text', () => {
-    const buttons = fixture.nativeElement.querySelectorAll('button.copy-code-button');
-    const firstButton = buttons[0];
+  it('should render a unique visually hidden code for each copy link', () => {
+    const copyLinks = fixture.nativeElement.querySelectorAll('td#code a.govuk-link.govuk-link--no-visited-state');
 
-    expect(buttons).toHaveLength(
+    expect(copyLinks).toHaveLength(
       FINES_MAC_OFFENCE_DETAILS_SEARCH_OFFENCES_RESULTS_TABLE_WRAPPER_TABLE_DATA_MOCK.length,
     );
-    expect(fixture.nativeElement.querySelectorAll('a.govuk-link.govuk-link--no-visited-state')).toHaveLength(0);
-    expect(firstButton.getAttribute('type')).toBe('button');
-    expect(firstButton.textContent).toContain(
-      FINES_MAC_OFFENCE_DETAILS_SEARCH_OFFENCES_RESULTS_TABLE_WRAPPER_LINK_DEFAULTS.COPY_CODE_TO_CLIPBOARD,
-    );
-    expect(firstButton.querySelector('.govuk-visually-hidden')?.textContent?.trim()).toBe(
-      FINES_MAC_OFFENCE_DETAILS_SEARCH_OFFENCES_RESULTS_TABLE_WRAPPER_TABLE_DATA_MOCK[0].Code,
-    );
+
+    copyLinks.forEach((link: HTMLAnchorElement, index: number) => {
+      expect(link.textContent).toContain(
+        FINES_MAC_OFFENCE_DETAILS_SEARCH_OFFENCES_RESULTS_TABLE_WRAPPER_LINK_DEFAULTS.COPY_CODE_TO_CLIPBOARD,
+      );
+      expect(link.querySelector('.govuk-visually-hidden')?.textContent?.trim()).toBe(
+        FINES_MAC_OFFENCE_DETAILS_SEARCH_OFFENCES_RESULTS_TABLE_WRAPPER_TABLE_DATA_MOCK[index].Code,
+      );
+    });
   });
 
-  it('should copy the code and expose copied feedback for the selected row', () => {
+  it('should prevent default and copy to clipboard when copyCodeToClipboard is called with an event', () => {
+    const event = new Event('click');
+    const preventDefaultSpy = vi.spyOn(event, 'preventDefault');
+    const linkElement = document.createElement('a');
+    const liveRegion = document.createElement('span');
+
+    component.copyCodeToClipboard(linkElement, liveRegion, '1234', event);
+
+    expect(preventDefaultSpy).toHaveBeenCalled();
+    expect(utilsService.copyToClipboard).toHaveBeenCalledWith('1234');
+  });
+
+  it('should update link and live region, then revert after timeout', () => {
     vi.useFakeTimers();
+    const linkElement = document.createElement('a');
+    const liveRegion = document.createElement('span');
+    linkElement.innerText =
+      FINES_MAC_OFFENCE_DETAILS_SEARCH_OFFENCES_RESULTS_TABLE_WRAPPER_LINK_DEFAULTS.COPY_CODE_TO_CLIPBOARD;
 
-    const button = fixture.nativeElement.querySelectorAll('button.copy-code-button')[0] as HTMLButtonElement;
-    const liveRegion = fixture.nativeElement.querySelectorAll('td#code .govuk-visually-hidden')[1] as HTMLSpanElement;
+    component.copyCodeToClipboard(linkElement, liveRegion, '1234');
 
-    button.click();
-    fixture.detectChanges();
-
-    expect(utilsService.copyToClipboard).toHaveBeenCalledWith(
-      FINES_MAC_OFFENCE_DETAILS_SEARCH_OFFENCES_RESULTS_TABLE_WRAPPER_TABLE_DATA_MOCK[0].Code,
-    );
-    expect(component.copiedCodeSignal()).toBe(
-      FINES_MAC_OFFENCE_DETAILS_SEARCH_OFFENCES_RESULTS_TABLE_WRAPPER_TABLE_DATA_MOCK[0].Code,
-    );
-    expect(button.textContent).toContain(
+    expect(utilsService.copyToClipboard).toHaveBeenCalledWith('1234');
+    expect(linkElement.innerText).toBe(
       FINES_MAC_OFFENCE_DETAILS_SEARCH_OFFENCES_RESULTS_TABLE_WRAPPER_LINK_DEFAULTS.COPIED_CODE_TO_CLIPBOARD,
     );
-    expect(liveRegion.textContent?.trim()).toBe(
-      `${FINES_MAC_OFFENCE_DETAILS_SEARCH_OFFENCES_RESULTS_TABLE_WRAPPER_LINK_DEFAULTS.COPIED_CODE_TO_CLIPBOARD} ${FINES_MAC_OFFENCE_DETAILS_SEARCH_OFFENCES_RESULTS_TABLE_WRAPPER_TABLE_DATA_MOCK[0].Code}`,
+    expect(linkElement.getAttribute('aria-live')).toBe('assertive');
+    expect(liveRegion.textContent).toBe(
+      FINES_MAC_OFFENCE_DETAILS_SEARCH_OFFENCES_RESULTS_TABLE_WRAPPER_LINK_DEFAULTS.COPIED_CODE_TO_CLIPBOARD,
     );
 
     vi.advanceTimersByTime(
       FINES_MAC_OFFENCE_DETAILS_SEARCH_OFFENCES_RESULTS_TABLE_WRAPPER_LINK_DEFAULTS.COPY_CODE_TO_CLIPBOARD_TIMEOUT,
     );
-    fixture.detectChanges();
 
-    expect(component.copiedCodeSignal()).toBeNull();
-    expect(button.textContent).toContain(
+    expect(linkElement.innerText).toBe(
       FINES_MAC_OFFENCE_DETAILS_SEARCH_OFFENCES_RESULTS_TABLE_WRAPPER_LINK_DEFAULTS.COPY_CODE_TO_CLIPBOARD,
     );
-    expect(liveRegion.textContent?.trim()).toBe('');
+    expect(linkElement.hasAttribute('aria-live')).toBe(false);
+    expect(liveRegion.textContent).toBe('');
   });
 
-  it('should replace any existing reset timer when another code is copied', () => {
+  it('should restore original aria-live if it was present', () => {
     vi.useFakeTimers();
+    const linkElement = document.createElement('a');
+    const liveRegion = document.createElement('span');
+    linkElement.innerText =
+      FINES_MAC_OFFENCE_DETAILS_SEARCH_OFFENCES_RESULTS_TABLE_WRAPPER_LINK_DEFAULTS.COPY_CODE_TO_CLIPBOARD;
+    linkElement.setAttribute('aria-live', 'polite');
 
-    component.copyCodeToClipboard('1234');
-    component.copyCodeToClipboard('5678');
+    component.copyCodeToClipboard(linkElement, liveRegion, '5678');
 
-    expect(utilsService.copyToClipboard).toHaveBeenNthCalledWith(1, '1234');
-    expect(utilsService.copyToClipboard).toHaveBeenNthCalledWith(2, '5678');
-    expect(component.copiedCodeSignal()).toBe('5678');
+    expect(linkElement.getAttribute('aria-live')).toBe('assertive');
 
     vi.advanceTimersByTime(
       FINES_MAC_OFFENCE_DETAILS_SEARCH_OFFENCES_RESULTS_TABLE_WRAPPER_LINK_DEFAULTS.COPY_CODE_TO_CLIPBOARD_TIMEOUT,
     );
 
-    expect(component.copiedCodeSignal()).toBeNull();
-  });
-
-  it('should return a screen reader announcement that includes the copied code', () => {
-    expect(component.getCopyCodeAnnouncement('HY80120')).toBe('Code copied HY80120');
+    expect(linkElement.getAttribute('aria-live')).toBe('polite');
   });
 
   it('should clear the copyCodeTimeoutId on ngOnDestroy if timeout is set', () => {
