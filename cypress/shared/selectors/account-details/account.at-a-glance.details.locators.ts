@@ -42,7 +42,7 @@ export const AccountAtAGlanceLocators = {
 
   accountSummary: {
     /** Visible row that contains the account header summary values below the page title. */
-    root: 'opal-lib-custom-account-information > .govuk-grid-row',
+    root: 'opal-lib-custom-account-information',
 
     /** Account type value shown in the summary strip. */
     accountTypeValue: '#defendant-account-type',

@@ -18,6 +18,7 @@ import {
   USER_STATE_MOCK_PERMISSION_BU17,
   USER_STATE_MOCK_PERMISSION_BU77,
 } from '../../CommonIntercepts/CommonUserState.mocks';
+import { AccountAtAGlanceLocators as A } from '../../../shared/selectors/account-details/account.at-a-glance.details.locators';
 
 import { FINES_ACC_MINOR_CREDITOR_DETAILS_HEADER_MOCK } from 'src/app/flows/fines/fines-acc/fines-acc-minor-creditor-details/mocks/fines-acc-minor-creditor-details-header.mock';
 
@@ -63,6 +64,7 @@ describe('Account Enquiry - Defendant Header', () => {
       cy.get(DOM.headingWithCaption).should('exist');
       cy.get(DOM.headingName).should('exist').and('contain.text', 'Mr Anna GRAHAM');
       cy.get(DOM.accountInfo).should('exist');
+      cy.get(A.accountSummary.root).should('be.visible');
       cy.get(DOM.summaryMetricBar).should('exist');
       cy.get(DOM.subnav).should('exist');
       cy.get(DOM.atAGlanceTabComponent).should('exist');
@@ -83,6 +85,7 @@ describe('Account Enquiry - Defendant Header', () => {
       cy.get(DOM.headingWithCaption).should('exist');
       cy.get(DOM.headingName).should('exist').and('contain.text', 'Sainsco');
       cy.get(DOM.accountInfo).should('exist');
+      cy.get(A.accountSummary.root).should('be.visible');
       cy.get(DOM.summaryMetricBar).should('exist');
       cy.get(DOM.subnav).should('exist');
       cy.get(DOM.atAGlanceTabComponent).should('exist');
