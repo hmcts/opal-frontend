@@ -119,15 +119,19 @@ describe('Account Enquiry Collection Order Banner', () => {
     );
   });
 
-  it('Does not show a banner for a youth defendant with a paying parent or guardian and a collection order', {
-    tags: [...buildTags()],
-  }, () => {
-    setupAccountDetails({
-      ...structuredClone(DEFENDANT_HEADER_YOUTH_MOCK),
-      collection_order: true,
-      debtor_type: 'Parent/Guardian',
-    });
+  it(
+    'Does not show a banner for a youth defendant with a paying parent or guardian and a collection order',
+    {
+      tags: [...buildTags()],
+    },
+    () => {
+      setupAccountDetails({
+        ...structuredClone(DEFENDANT_HEADER_YOUTH_MOCK),
+        collection_order: true,
+        debtor_type: 'Parent/Guardian',
+      });
 
-    cy.get(DOM_ELEMENTS.collectionOrderBanner).should('not.exist');
-  });
+      cy.get(DOM_ELEMENTS.collectionOrderBanner).should('not.exist');
+    },
+  );
 });
