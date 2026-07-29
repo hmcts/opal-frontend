@@ -223,7 +223,7 @@ describe('fines-section-permissions.utils', () => {
       expect(isFinesPrimaryNavigationSectionEnabled('administration', release1cAdministrationEnabled)).toBe(true);
     });
 
-    it('should deny Administration when release-1c administration is disabled', () => {
+    it('should deny Administration navigation visibility when release-1c administration is disabled', () => {
       expect(isFinesPrimaryNavigationSectionEnabled('administration', release1cAdministrationDisabled)).toBe(false);
     });
 
@@ -231,7 +231,7 @@ describe('fines-section-permissions.utils', () => {
       expect(isFinesPrimaryNavigationSectionEnabled('finance', release1cFinancialMovementsEnabled)).toBe(true);
     });
 
-    it('should deny Finance when release-1c financial movements is disabled', () => {
+    it('should deny Finance navigation visibility when release-1c financial movements is disabled', () => {
       expect(isFinesPrimaryNavigationSectionEnabled('finance', release1cFinancialMovementsDisabled)).toBe(false);
     });
   });
@@ -331,7 +331,7 @@ describe('fines-section-permissions.utils', () => {
       expect(canAccessFinesPrimaryNavigationSection('administration', null, release1cAdministrationEnabled)).toBe(true);
     });
 
-    it('should deny Administration when release-1c administration is disabled', () => {
+    it('should deny Administration access when release-1c administration is disabled', () => {
       expect(
         canAccessFinesPrimaryNavigationSection(
           'administration',
@@ -345,7 +345,7 @@ describe('fines-section-permissions.utils', () => {
       expect(canAccessFinesPrimaryNavigationSection('finance', null, release1cFinancialMovementsEnabled)).toBe(true);
     });
 
-    it('should deny Finance when release-1c financial movements is disabled', () => {
+    it('should deny Finance access when release-1c financial movements is disabled', () => {
       expect(
         canAccessFinesPrimaryNavigationSection(
           'finance',
