@@ -212,6 +212,11 @@ Then('I should see the add parent or guardian details action', () => {
   defendantDetails().assertAddParentGuardianActionVisible();
 });
 
+Then('I do not see the add parent or guardian details action', () => {
+  log('assert', 'Add parent or guardian details action is absent');
+  defendantDetails().assertAddParentGuardianActionNotPresent();
+});
+
 Then('I should see the remove parent or guardian details action', () => {
   log('assert', 'Remove parent or guardian details action is visible');
   accountEnquiryFlow().assertRemoveParentGuardianActionVisible();

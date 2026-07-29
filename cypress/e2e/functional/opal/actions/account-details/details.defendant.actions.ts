@@ -114,6 +114,17 @@ export class AccountDetailsDefendantActions {
   }
 
   /**
+   * Asserts that the add parent/guardian action is not rendered in the Defendant tab.
+   */
+  assertAddParentGuardianActionNotPresent(): void {
+    cy.contains(
+      L.actions.addParentGuardianActionLink,
+      L.actions.addParentGuardianActionLabel,
+      this.common.getTimeoutOptions(),
+    ).should('not.exist');
+  }
+
+  /**
    * Asserts that the visible convert action does not contain the company label.
    */
   assertConvertToCompanyActionTextNotPresent(): void {

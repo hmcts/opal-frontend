@@ -97,6 +97,56 @@ Feature: Defendant - Adult or youth - Account Enquiries – View Account Details
       Then I should return to the account details page Defendant tab
       And I should see the convert to company account action
 
+  Rule: Youth-only add parent or guardian visibility
+    @R1B @JIRA-STORY:PO-5751 @JIRA-EPIC:PO-2990
+    Scenario: Youth-only account shows the Add parent or guardian details action
+      # AC2 – Existing youth-only eligibility rules still show the Add parent or guardian details action
+      # AC3 – The visible action keeps its existing navigation and behaviour
+      Given a published adult or youth defendant account exists:
+        | first name                | Jamie              |
+        | last name                 | AddPgVisible{uniq} |
+        | prosecutor case reference | PCR-AUTO-003       |
+        | date of birth             | 2010-05-15         |
+      When I search for the account by last name "AddPgVisible{uniq}" and open the latest result
+      Then I should see the page header contains "Mr Jamie ADDPGVISIBLE{uniqUpper}"
+      When I go to the Defendant details section and the header is "Defendant details"
+      Then I should see the add parent or guardian details action
+
+    @R1B @JIRA-STORY:PO-5751 @JIRA-EPIC:PO-2990
+    Scenario Outline: Youth-only account hides the Add parent or guardian details action for restricted account statuses
+      # AC1 – A youth-only account does not show the Add parent or guardian details action for restricted account statuses
+      Given I stub the defendant header summary account status code to "<status>"
+      And a published adult or youth defendant account exists:
+        | first name                | Jamie                 |
+        | last name                 | AddPgRestricted{uniq} |
+        | prosecutor case reference | PCR-AUTO-003          |
+        | date of birth             | 2010-05-15            |
+      When I search for the account by last name "AddPgRestricted{uniq}" and open the latest result
+      Then I should see the page header contains "Mr Jamie ADDPGRESTRICTED{uniqUpper}"
+      When I go to the Defendant details section and the header is "Defendant details"
+      Then I do not see the add parent or guardian details action
+
+      Examples:
+        | status |
+        | CS     |
+        | WO     |
+        | TO     |
+        | TS     |
+        | TA     |
+
+    @R1B @JIRA-STORY:PO-5751 @JIRA-EPIC:PO-2990
+    Scenario: Youth-only account navigates to the Add parent or guardian details page
+      # AC3 – The visible action keeps its existing navigation and behaviour
+      Given a published adult or youth defendant account exists:
+        | first name                | Jamie               |
+        | last name                 | AddPgNavigate{uniq} |
+        | prosecutor case reference | PCR-AUTO-003        |
+        | date of birth             | 2010-05-15          |
+      When I search for the account by last name "AddPgNavigate{uniq}" and open the latest result
+      Then I should see the page header contains "Mr Jamie ADDPGNAVIGATE{uniqUpper}"
+      When I go to the Defendant details section and the header is "Defendant details"
+      And I start adding parent or guardian details
+      Then I should be on the add parent or guardian details page
   Rule: History and notes tab
     Background:
       Given I create a "adultOrYouthOnly" draft account with the following details and set status "Publishing Pending" using user "opal-test-10@dev.platform.hmcts.net":
@@ -127,4 +177,3 @@ Feature: Defendant - Adult or youth - Account Enquiries – View Account Details
     Scenario: History and notes account links open the correct record in a new tab
       When I go to the History and notes tab
       And I open the first History and notes account link in a new tab
-
