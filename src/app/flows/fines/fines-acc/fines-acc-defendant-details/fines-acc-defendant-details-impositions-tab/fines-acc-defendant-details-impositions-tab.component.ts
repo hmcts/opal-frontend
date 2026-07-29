@@ -1,7 +1,6 @@
 import { NgTemplateOutlet } from '@angular/common';
 import { ChangeDetectionStrategy, Component, computed, Input, signal } from '@angular/core';
 import { RouterLink } from '@angular/router';
-import { AbstractSortableTablePaginationComponent } from '@hmcts/opal-frontend-common/components/abstract/abstract-sortable-table-pagination';
 import { CustomHorizontalScrollPaneComponent } from '@hmcts/opal-frontend-common/components/custom/custom-horizontal-scroll-pane';
 import { MojPaginationComponent } from '@hmcts/opal-frontend-common/components/moj/moj-pagination';
 import {
@@ -23,6 +22,7 @@ import { FINES_ACC_MINOR_CREDITOR_ROUTING_PATHS } from '../../routing/constants/
 import { FINES_ACC_MAJOR_CREDITOR_ROUTING_PATHS } from '../../routing/constants/fines-acc-major-creditor-routing-paths.constant';
 import { IFinesAccSummaryTabsContentStyles } from '../interfaces/fines-acc-summary-tabs-content-styles.interface';
 import { IAccountEnquiryImpositionTabTableRow } from '../interfaces/account-enquiry-imposition-tab-table-row.interface';
+import { AbstractSortableTablePaginationAccessibilityComponent } from '@app/flows/fines/components/abstract/abstract-sortable-table-pagination-accessibility/abstract-sortable-table-pagination-accessibility.component';
 
 @Component({
   selector: 'app-fines-acc-defendant-details-impositions-tab',
@@ -43,10 +43,11 @@ import { IAccountEnquiryImpositionTabTableRow } from '../interfaces/account-enqu
   templateUrl: './fines-acc-defendant-details-impositions-tab.component.html',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class FinesAccDefendantDetailsImpositionsTabComponent extends AbstractSortableTablePaginationComponent {
+export class FinesAccDefendantDetailsImpositionsTabComponent extends AbstractSortableTablePaginationAccessibilityComponent {
   protected readonly DATE_INPUT_FORMAT = 'yyyy-MM-dd';
   protected readonly DATE_OUTPUT_FORMAT = 'dd MMM yyyy';
   protected readonly zeroBalanceRowClass = 'govuk-light-grey-background-colour';
+  public readonly paginationTopElementId = 'fines-acc-defendant-details-impositions-tab-top';
 
   @Input({ required: true }) public set tabData(tabData: IOpalFinesAccountDefendantDetailsImpositionsTabRefData) {
     this.setTableData(tabData.impositions.map((imposition) => this.mapImpositionToTableRow(imposition)));

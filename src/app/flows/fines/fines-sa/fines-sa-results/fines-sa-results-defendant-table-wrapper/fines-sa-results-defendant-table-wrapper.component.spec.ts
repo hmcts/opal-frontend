@@ -3,15 +3,23 @@ import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { FinesSaResultsDefendantTableWrapperComponent } from './fines-sa-results-defendant-table-wrapper.component';
 import { FINES_SA_RESULTS_DEFENDANT_TABLE_WRAPPER_TABLE_SORT_DEFAULT } from './constants/fines-sa-results-defendant-table-wrapper-table-sort-default.constant';
 import { GENERATE_FINES_SA_DEFENDANT_TABLE_WRAPPER_TABLE_DATA_MOCKS } from './mock/fines-sa-results-defendant-table-wrapper-table-data.mock';
+import { UtilsService } from '@hmcts/opal-frontend-common/services/utils-service';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
 
 describe('FinesSaResultsDefendantTableWrapperComponent', () => {
   let component: FinesSaResultsDefendantTableWrapperComponent;
   let fixture: ComponentFixture<FinesSaResultsDefendantTableWrapperComponent>;
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  let utilsService: any;
 
   beforeEach(async () => {
+    utilsService = {
+      scrollToTop: vi.fn().mockName('UtilsService.scrollToTop'),
+    };
+
     await TestBed.configureTestingModule({
       imports: [FinesSaResultsDefendantTableWrapperComponent],
+      providers: [{ provide: UtilsService, useValue: utilsService }],
     }).compileComponents();
 
     fixture = TestBed.createComponent(FinesSaResultsDefendantTableWrapperComponent);
@@ -106,5 +114,42 @@ describe('FinesSaResultsDefendantTableWrapperComponent', () => {
     expect(handlerSpy.mock.calls[0][0]).toBe(1);
     expect(handlerSpy.mock.calls[0][1]).toBe(event);
     expect(event.defaultPrevented).toBe(true);
+  });
+
+  it('should announce page changes, keep the active page marked current, and move focus to the top', () => {
+    const paginationFixture = TestBed.createComponent(FinesSaResultsDefendantTableWrapperComponent);
+    const paginationComponent = paginationFixture.componentInstance;
+    paginationFixture.componentRef.setInput(
+      'tableData',
+      GENERATE_FINES_SA_DEFENDANT_TABLE_WRAPPER_TABLE_DATA_MOCKS(26),
+    );
+    paginationFixture.componentRef.setInput(
+      'existingSortState',
+      FINES_SA_RESULTS_DEFENDANT_TABLE_WRAPPER_TABLE_SORT_DEFAULT,
+    );
+    paginationFixture.detectChanges();
+
+    const topAnchor = paginationFixture.nativeElement.querySelector(
+      '#fines-sa-results-defendant-table-wrapper-top',
+    ) as HTMLDivElement | null;
+
+    expect(topAnchor).toBeTruthy();
+    if (!topAnchor) {
+      throw new Error('Top anchor not found');
+    }
+
+    const focusSpy = vi.spyOn(topAnchor, 'focus');
+
+    expect(paginationFixture.nativeElement.querySelector('a[aria-current="page"]')?.textContent?.trim()).toBe('1');
+    expect(paginationFixture.nativeElement.querySelector('[role="status"]')?.textContent).toContain('Page 1 loaded');
+
+    paginationComponent.onPageChange(2);
+    paginationFixture.detectChanges();
+
+    expect(paginationComponent.currentPageSignal()).toBe(2);
+    expect(paginationFixture.nativeElement.querySelector('a[aria-current="page"]')?.textContent?.trim()).toBe('2');
+    expect(paginationFixture.nativeElement.querySelector('[role="status"]')?.textContent).toContain('Page 2 loaded');
+    expect(utilsService.scrollToTop).toHaveBeenCalled();
+    expect(focusSpy).toHaveBeenCalled();
   });
 });

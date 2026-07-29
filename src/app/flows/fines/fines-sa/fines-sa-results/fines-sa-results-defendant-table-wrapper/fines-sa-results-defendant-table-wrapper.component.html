@@ -1,3 +1,5 @@
+<div [id]="paginationTopElementId" class="govuk-visually-hidden" tabindex="-1"></div>
+
 <opal-lib-custom-horizontal-scroll-pane>
   <opal-lib-moj-sortable-table>
     <ng-container head>
@@ -223,6 +225,9 @@
   </opal-lib-moj-sortable-table>
 </opal-lib-custom-horizontal-scroll-pane>
 @if (filteredTableDataSignal().length > this.paginatedTableDataComputed().length) {
+  <span class="govuk-visually-hidden" role="status" aria-atomic="true">
+    {{ paginationStatusMessageComputed() }}
+  </span>
   <opal-lib-moj-pagination
     id="defendant-table-wrapper-pagination"
     [currentPage]="currentPageSignal()"

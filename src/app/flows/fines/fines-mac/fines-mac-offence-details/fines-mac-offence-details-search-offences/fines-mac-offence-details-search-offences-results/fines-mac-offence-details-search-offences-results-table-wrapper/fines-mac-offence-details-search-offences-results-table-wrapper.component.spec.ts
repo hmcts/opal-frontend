@@ -2,7 +2,22 @@ import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { FinesMacOffenceDetailsSearchOffencesResultsTableWrapperComponent } from './fines-mac-offence-details-search-offences-results-table-wrapper.component';
 import { UtilsService } from '@hmcts/opal-frontend-common/services/utils-service';
 import { FINES_MAC_OFFENCE_DETAILS_SEARCH_OFFENCES_RESULTS_TABLE_WRAPPER_LINK_DEFAULTS } from './constants/fines-mac-offence-details-search-offences-results-table-wrapper-link-defaults.constant';
+import { FINES_MAC_OFFENCE_DETAILS_SEARCH_OFFENCES_RESULTS_TABLE_WRAPPER_SORT_DEFAULT } from './constants/fines-mac-offence-details-search-offences-results-table-wrapper-sort-defaults.constant';
+import { FINES_MAC_OFFENCE_DETAILS_SEARCH_OFFENCES_RESULTS_TABLE_WRAPPER_TABLE_DATA_MOCK } from './mocks/fines-mac-offence-details-search-offences-results-table-wrapper-table-data.mock';
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
+
+const buildTableData = (count: number) =>
+  Array.from({ length: count }, (_, index) => {
+    const template = FINES_MAC_OFFENCE_DETAILS_SEARCH_OFFENCES_RESULTS_TABLE_WRAPPER_TABLE_DATA_MOCK[index % 3];
+    const suffix = index + 1;
+
+    return {
+      ...template,
+      Code: `${template.Code}-${suffix}`,
+      'Short title': `${template['Short title']} ${suffix}`,
+      'Act and section': `${template['Act and section']} ${suffix}`,
+    };
+  });
 
 describe('FinesMacOffenceDetailsSearchOffencesResultsTableWrapperComponent', () => {
   let component: FinesMacOffenceDetailsSearchOffencesResultsTableWrapperComponent;
@@ -13,6 +28,7 @@ describe('FinesMacOffenceDetailsSearchOffencesResultsTableWrapperComponent', () 
   beforeEach(async () => {
     utilsService = {
       copyToClipboard: vi.fn().mockName('UtilsService.copyToClipboard'),
+      scrollToTop: vi.fn().mockName('UtilsService.scrollToTop'),
     };
 
     await TestBed.configureTestingModule({
@@ -147,5 +163,39 @@ describe('FinesMacOffenceDetailsSearchOffencesResultsTableWrapperComponent', () 
     vi.spyOn<any, any>(window, 'clearTimeout');
     component.ngOnDestroy();
     expect(window.clearTimeout).not.toHaveBeenCalled();
+  });
+
+  it('should announce page changes, keep the active page marked current, and move focus to the top', () => {
+    const paginationFixture = TestBed.createComponent(FinesMacOffenceDetailsSearchOffencesResultsTableWrapperComponent);
+    const paginationComponent = paginationFixture.componentInstance;
+    paginationFixture.componentRef.setInput('tableData', buildTableData(26));
+    paginationFixture.componentRef.setInput(
+      'existingSortState',
+      FINES_MAC_OFFENCE_DETAILS_SEARCH_OFFENCES_RESULTS_TABLE_WRAPPER_SORT_DEFAULT,
+    );
+    paginationFixture.detectChanges();
+
+    const topAnchor = paginationFixture.nativeElement.querySelector(
+      '#search-offences-results-top',
+    ) as HTMLDivElement | null;
+
+    expect(topAnchor).toBeTruthy();
+    if (!topAnchor) {
+      throw new Error('Top anchor not found');
+    }
+
+    const focusSpy = vi.spyOn(topAnchor, 'focus');
+
+    expect(paginationFixture.nativeElement.querySelector('a[aria-current="page"]')?.textContent?.trim()).toBe('1');
+    expect(paginationFixture.nativeElement.querySelector('[role="status"]')?.textContent).toContain('Page 1 loaded');
+
+    paginationComponent.onPageChange(2);
+    paginationFixture.detectChanges();
+
+    expect(paginationComponent.currentPageSignal()).toBe(2);
+    expect(paginationFixture.nativeElement.querySelector('a[aria-current="page"]')?.textContent?.trim()).toBe('2');
+    expect(paginationFixture.nativeElement.querySelector('[role="status"]')?.textContent).toContain('Page 2 loaded');
+    expect(utilsService.scrollToTop).toHaveBeenCalled();
+    expect(focusSpy).toHaveBeenCalled();
   });
 });

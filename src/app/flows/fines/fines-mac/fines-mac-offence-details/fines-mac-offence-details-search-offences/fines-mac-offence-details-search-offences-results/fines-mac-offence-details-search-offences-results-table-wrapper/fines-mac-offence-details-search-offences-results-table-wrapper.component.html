@@ -1,3 +1,5 @@
+<div [id]="paginationTopElementId" class="govuk-visually-hidden" tabindex="-1"></div>
+
 <opal-lib-moj-sortable-table>
   <ng-container head>
     <th
@@ -89,6 +91,9 @@
 </opal-lib-moj-sortable-table>
 
 @if (displayTableDataSignal()!.length > this.paginatedTableDataComputed().length) {
+  <span class="govuk-visually-hidden" role="status" aria-atomic="true">
+    {{ paginationStatusMessageComputed() }}
+  </span>
   <opal-lib-moj-pagination
     id="fines-draft-table-pagination"
     [currentPage]="currentPageSignal()"

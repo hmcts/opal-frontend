@@ -4,15 +4,40 @@ import { IFinesDraftTableWrapperTableData } from './interfaces/fines-draft-table
 import { IFinesDraftTableWrapperTableSort } from './interfaces/fines-draft-table-wrapper-table-sort.interface';
 import { FINES_DRAFT_TABLE_WRAPPER_SORT_DEFAULT } from './constants/fines-draft-table-wrapper-table-sort.constants';
 import { FINES_DRAFT_TABLE_WRAPPER_TABLE_DATA_MOCK } from './mocks/fines-draft-table-wrapper-table-data.mock';
+import { UtilsService } from '@hmcts/opal-frontend-common/services/utils-service';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
+
+const buildTableData = (count: number) =>
+  Array.from({ length: count }, (_, index) => {
+    const template =
+      FINES_DRAFT_TABLE_WRAPPER_TABLE_DATA_MOCK[index % FINES_DRAFT_TABLE_WRAPPER_TABLE_DATA_MOCK.length];
+    const suffix = index + 1;
+
+    return {
+      ...template,
+      Account: `${template.Account}-${suffix}`,
+      'Account id': 1000 + suffix,
+      'Defendant id': 2000 + suffix,
+      Defendant: `${template.Defendant} ${suffix}`,
+      CreatedDate: `${template.CreatedDate}`,
+      ChangedDate: `${template.ChangedDate}`,
+    };
+  });
 
 describe('FinesDraftTableWrapperComponent', () => {
   let component: FinesDraftTableWrapperComponent;
   let fixture: ComponentFixture<FinesDraftTableWrapperComponent>;
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  let utilsService: any;
 
   beforeEach(async () => {
+    utilsService = {
+      scrollToTop: vi.fn().mockName('UtilsService.scrollToTop'),
+    };
+
     await TestBed.configureTestingModule({
       imports: [FinesDraftTableWrapperComponent],
+      providers: [{ provide: UtilsService, useValue: utilsService }],
     }).compileComponents();
 
     fixture = TestBed.createComponent(FinesDraftTableWrapperComponent);
@@ -161,6 +186,37 @@ describe('FinesDraftTableWrapperComponent', () => {
 
     expect(accountCell?.textContent?.trim()).toBe(accountNumber);
     expect(accountLinks.some((anchor) => anchor.textContent?.trim() === accountNumber)).toBe(false);
+  });
+
+  it('should announce page changes, keep the active page marked current, and move focus to the top', () => {
+    const paginationFixture = TestBed.createComponent(FinesDraftTableWrapperComponent);
+    const paginationComponent = paginationFixture.componentInstance;
+    paginationFixture.componentRef.setInput('tableData', buildTableData(26));
+    paginationFixture.componentRef.setInput('existingSortState', FINES_DRAFT_TABLE_WRAPPER_SORT_DEFAULT);
+    paginationFixture.detectChanges();
+
+    const topAnchor = paginationFixture.nativeElement.querySelector(
+      '#fines-draft-table-wrapper-top',
+    ) as HTMLDivElement | null;
+
+    expect(topAnchor).toBeTruthy();
+    if (!topAnchor) {
+      throw new Error('Top anchor not found');
+    }
+
+    const focusSpy = vi.spyOn(topAnchor, 'focus');
+
+    expect(paginationFixture.nativeElement.querySelector('a[aria-current="page"]')?.textContent?.trim()).toBe('1');
+    expect(paginationFixture.nativeElement.querySelector('[role="status"]')?.textContent).toContain('Page 1 loaded');
+
+    paginationComponent.onPageChange(2);
+    paginationFixture.detectChanges();
+
+    expect(paginationComponent.currentPageSignal()).toBe(2);
+    expect(paginationFixture.nativeElement.querySelector('a[aria-current="page"]')?.textContent?.trim()).toBe('2');
+    expect(paginationFixture.nativeElement.querySelector('[role="status"]')?.textContent).toContain('Page 2 loaded');
+    expect(utilsService.scrollToTop).toHaveBeenCalled();
+    expect(focusSpy).toHaveBeenCalled();
   });
 
   it('should prevent default and emit accountClicked when onAccountClick is called with an event', () => {

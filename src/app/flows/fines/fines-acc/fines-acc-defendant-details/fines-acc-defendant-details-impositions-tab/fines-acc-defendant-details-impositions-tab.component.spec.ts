@@ -1,14 +1,28 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { provideRouter } from '@angular/router';
 import { OPAL_FINES_ACCOUNT_DEFENDANT_DETAILS_IMPOSITIONS_TAB_REF_DATA_MOCK } from '@services/fines/opal-fines-service/mocks/opal-fines-account-defendant-details-impositions.mock';
-import { beforeEach, describe, expect, it } from 'vitest';
+import { UtilsService } from '@hmcts/opal-frontend-common/services/utils-service';
+import { beforeEach, describe, expect, it, vi } from 'vitest';
 import { FinesAccDefendantDetailsImpositionsTabComponent } from './fines-acc-defendant-details-impositions-tab.component';
 
 describe('FinesAccDefendantDetailsImpositionsTabComponent', () => {
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  let utilsService: any;
+
   beforeEach(async () => {
+    utilsService = {
+      convertToMonetaryString: vi.fn().mockImplementation((amount: number) => {
+        const numericAmount = Number(amount);
+        const formattedAmount = Math.abs(numericAmount).toFixed(2);
+
+        return numericAmount < 0 ? `-£${formattedAmount}` : `£${formattedAmount}`;
+      }),
+      scrollToTop: vi.fn().mockName('UtilsService.scrollToTop'),
+    };
+
     await TestBed.configureTestingModule({
       imports: [FinesAccDefendantDetailsImpositionsTabComponent],
-      providers: [provideRouter([])],
+      providers: [provideRouter([]), { provide: UtilsService, useValue: utilsService }],
     }).compileComponents();
   });
 
@@ -161,6 +175,33 @@ describe('FinesAccDefendantDetailsImpositionsTabComponent', () => {
     expect(component.paginatedTableDataComputed()).toHaveLength(8);
     expect(fixture.nativeElement.textContent).toContain('Major Creditor 23');
     expect(fixture.nativeElement.textContent).not.toContain('Central Funds');
+  });
+
+  it('should announce page changes, keep the active page marked current, and move focus to the top', () => {
+    const { component, fixture } = setupComponent();
+
+    const topAnchor = fixture.nativeElement.querySelector(
+      '#fines-acc-defendant-details-impositions-tab-top',
+    ) as HTMLDivElement | null;
+
+    expect(topAnchor).toBeTruthy();
+    if (!topAnchor) {
+      throw new Error('Top anchor not found');
+    }
+
+    const focusSpy = vi.spyOn(topAnchor, 'focus');
+
+    expect(fixture.nativeElement.querySelector('a[aria-current="page"]')?.textContent?.trim()).toBe('1');
+    expect(fixture.nativeElement.querySelector('[role="status"]')?.textContent).toContain('Page 1 loaded');
+
+    component.onPageChange(2);
+    fixture.detectChanges();
+
+    expect(component.currentPageSignal()).toBe(2);
+    expect(fixture.nativeElement.querySelector('a[aria-current="page"]')?.textContent?.trim()).toBe('2');
+    expect(fixture.nativeElement.querySelector('[role="status"]')?.textContent).toContain('Page 2 loaded');
+    expect(utilsService.scrollToTop).toHaveBeenCalled();
+    expect(focusSpy).toHaveBeenCalled();
   });
 
   it('should not render pagination when there are 25 or fewer imposition rows', () => {

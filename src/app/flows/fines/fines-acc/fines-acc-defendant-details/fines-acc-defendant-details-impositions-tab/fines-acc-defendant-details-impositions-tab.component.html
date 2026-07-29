@@ -1,3 +1,5 @@
+<div [id]="paginationTopElementId" class="govuk-visually-hidden" tabindex="-1"></div>
+
 <div class="govuk-grid-column-full">
   <h2 [class]="style.heading">Impositions</h2>
   <hr [class]="style.hr" />
@@ -178,6 +180,9 @@
       </opal-lib-moj-sortable-table>
     </opal-lib-custom-horizontal-scroll-pane>
     @if (filteredTableDataSignal().length > this.paginatedTableDataComputed().length) {
+      <span class="govuk-visually-hidden" role="status" aria-atomic="true">
+        {{ paginationStatusMessageComputed() }}
+      </span>
       <opal-lib-moj-pagination
         id="fines-acc-defendant-details-impositions-pagination"
         [currentPage]="currentPageSignal()"

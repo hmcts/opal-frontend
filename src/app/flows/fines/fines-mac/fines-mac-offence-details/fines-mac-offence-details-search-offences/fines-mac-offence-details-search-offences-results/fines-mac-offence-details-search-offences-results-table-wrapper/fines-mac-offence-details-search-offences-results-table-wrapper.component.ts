@@ -1,5 +1,4 @@
-import { ChangeDetectionStrategy, Component, inject, Input, OnDestroy, signal, Signal } from '@angular/core';
-import { AbstractSortableTablePaginationComponent } from '@hmcts/opal-frontend-common/components/abstract/abstract-sortable-table-pagination';
+import { ChangeDetectionStrategy, Component, Input, OnDestroy, signal, Signal } from '@angular/core';
 import {
   MojSortableTableComponent,
   MojSortableTableHeaderComponent,
@@ -10,9 +9,9 @@ import {
 import { DateFormatPipe } from '@hmcts/opal-frontend-common/pipes/date-format';
 import { IFinesMacOffenceDetailsSearchOffencesResultsTableWrapperTableData } from './interfaces/fines-mac-offence-details-search-offences-results-table-wrapper-table-data.interface';
 import { IFinesMacOffenceDetailsSearchOffencesResultsTableWrapperTableSort } from './interfaces/fines-mac-offence-details-search-offences-results-table-wrapper-table-sort.interface';
-import { UtilsService } from '@hmcts/opal-frontend-common/services/utils-service';
 import { FINES_MAC_OFFENCE_DETAILS_SEARCH_OFFENCES_RESULTS_TABLE_WRAPPER_LINK_DEFAULTS } from './constants/fines-mac-offence-details-search-offences-results-table-wrapper-link-defaults.constant';
 import { MojPaginationComponent } from '@hmcts/opal-frontend-common/components/moj/moj-pagination';
+import { AbstractSortableTablePaginationAccessibilityComponent } from '@app/flows/fines/components/abstract/abstract-sortable-table-pagination-accessibility/abstract-sortable-table-pagination-accessibility.component';
 
 @Component({
   selector: 'app-fines-mac-offence-details-search-offences-results-table-wrapper',
@@ -30,14 +29,14 @@ import { MojPaginationComponent } from '@hmcts/opal-frontend-common/components/m
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class FinesMacOffenceDetailsSearchOffencesResultsTableWrapperComponent
-  extends AbstractSortableTablePaginationComponent
+  extends AbstractSortableTablePaginationAccessibilityComponent
   implements OnDestroy
 {
   private copyCodeTimeoutId: ReturnType<typeof setTimeout> | null = null;
 
-  protected readonly utilsService = inject(UtilsService);
   protected readonly DATE_INPUT_FORMAT = `yyyy-MM-dd'T'HH:mm:ss'Z'`;
   protected readonly DATE_OUTPUT_FORMAT = 'dd MMM yyyy';
+  public readonly paginationTopElementId = 'search-offences-results-top';
 
   public override displayTableDataSignal = signal<IFinesMacOffenceDetailsSearchOffencesResultsTableWrapperTableData[]>(
     [],
