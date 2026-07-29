@@ -7,7 +7,7 @@
   [errors]="formErrorSummaryMessage"
   (errorClick)="scrollTo($event)"
 ></opal-lib-govuk-error-summary>
-<form (submit)="handleFormSubmit($event)" [formGroup]="form">
+<form autocomplete="off" (submit)="handleFormSubmit($event)" [formGroup]="form">
   <opal-lib-govuk-radio
     fieldSetId="facc_payment_terms_payment_terms"
     legendText="Select payment terms"

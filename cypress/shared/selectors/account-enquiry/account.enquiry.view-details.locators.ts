@@ -99,6 +99,7 @@ export const DOM_ELEMENTS = {
   aliasForenamesInput4: 'input[id="facc_party_add_amend_convert_alias_forenames_4"]',
   addAliasButton: '#addAlias',
   removeAliasButton: '.remove-alias-button',
+  removeAliasLink: '#facc_party_add_amend_convert_add_alias-conditional > div > a.govuk-link',
 
   // Form labels
   titleLabel: 'label[for="facc_party_add_amend_convert_title"]',

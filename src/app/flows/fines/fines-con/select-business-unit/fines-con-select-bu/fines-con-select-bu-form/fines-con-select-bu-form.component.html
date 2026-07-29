@@ -3,7 +3,7 @@
   [errors]="formErrorSummaryMessage"
   (errorClick)="scrollTo($event)"
 ></opal-lib-govuk-error-summary>
-<form (submit)="handleFormSubmit($event)" [formGroup]="form">
+<form autocomplete="off" (submit)="handleFormSubmit($event)" [formGroup]="form">
   @if (autoCompleteItems.length === 1) {
     <p class="govuk-body">The consolidation will be processed in {{ autoCompleteItems[0].name }}</p>
   } @else {
