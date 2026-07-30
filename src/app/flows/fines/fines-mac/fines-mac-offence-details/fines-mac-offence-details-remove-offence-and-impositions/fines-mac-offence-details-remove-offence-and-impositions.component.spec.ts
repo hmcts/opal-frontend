@@ -16,6 +16,7 @@ import { FinesMacStore } from '../../stores/fines-mac.store';
 import { FinesMacOffenceDetailsStoreType } from '../stores/types/fines-mac-offence-details.type';
 import { FinesMacOffenceDetailsStore } from '../stores/fines-mac-offence-details.store';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
+import { OPAL_FINES_RESULT_PRETTY_NAME_MOCK } from '../../../services/opal-fines-service/mocks/opal-fines-result-pretty-name.mock';
 
 describe('FinesMacOffenceDetailsRemoveOffenceAndImpositionsComponent', () => {
   let component: FinesMacOffenceDetailsRemoveOffenceAndImpositionsComponent;
@@ -27,6 +28,7 @@ describe('FinesMacOffenceDetailsRemoveOffenceAndImpositionsComponent', () => {
   beforeEach(async () => {
     mockOpalFinesService = {
       getOffenceByCjsCode: vi.fn().mockReturnValue(of(OPAL_FINES_OFFENCES_REF_DATA_MOCK)),
+      getResultPrettyName: vi.fn().mockReturnValue(OPAL_FINES_RESULT_PRETTY_NAME_MOCK),
     };
 
     await TestBed.configureTestingModule({

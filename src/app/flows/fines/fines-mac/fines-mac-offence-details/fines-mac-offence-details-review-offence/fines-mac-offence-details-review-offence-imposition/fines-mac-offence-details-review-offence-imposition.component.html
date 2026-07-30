@@ -10,7 +10,7 @@
     @for (imposition of impositionTableData; track imposition.impositionId) {
       <tr opal-lib-govuk-table-body-row>
         <td opal-lib-govuk-table-body-row-data id="imposition">
-          {{ imposition.impositionDescription }} ({{ imposition.impositionResultId }})
+          {{ imposition.impositionDescription }}
         </td>
         <td opal-lib-govuk-table-body-row-data id="creditor">
           @if (imposition.minorCreditor) {

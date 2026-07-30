@@ -24,6 +24,7 @@ import { UtilsService } from '@hmcts/opal-frontend-common/services/utils-service
 import { beforeEach, describe, expect, it, vi } from 'vitest';
 
 import { createSpyObj } from '@app/testing/create-spy-obj.helper';
+import { OPAL_FINES_RESULT_PRETTY_NAME_MOCK } from '../../../services/opal-fines-service/mocks/opal-fines-result-pretty-name.mock';
 
 describe('FinesMacOffenceDetailsReviewComponent', () => {
   let component: FinesMacOffenceDetailsReviewComponent;
@@ -40,6 +41,7 @@ describe('FinesMacOffenceDetailsReviewComponent', () => {
       getMajorCreditors: vi.fn().mockReturnValue(of(OPAL_FINES_MAJOR_CREDITOR_REF_DATA_MOCK)),
       getMajorCreditorPrettyName: vi.fn().mockReturnValue(OPAL_FINES_MAJOR_CREDITOR_PRETTY_NAME_MOCK),
       getOffenceByCjsCode: vi.fn().mockReturnValue(of(OPAL_FINES_OFFENCES_REF_DATA_MOCK)),
+      getResultPrettyName: vi.fn().mockReturnValue(OPAL_FINES_RESULT_PRETTY_NAME_MOCK),
     };
     mockDateService = createSpyObj(DateService, ['getFromFormat']);
 

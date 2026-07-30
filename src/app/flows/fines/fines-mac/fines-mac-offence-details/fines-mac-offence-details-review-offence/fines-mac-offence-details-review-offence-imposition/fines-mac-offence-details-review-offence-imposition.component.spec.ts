@@ -21,6 +21,7 @@ import { UtilsService } from '@hmcts/opal-frontend-common/services/utils-service
 import { beforeEach, describe, expect, it, vi } from 'vitest';
 
 import { createSpyObj } from '@app/testing/create-spy-obj.helper';
+import { OPAL_FINES_RESULT_PRETTY_NAME_MOCK } from 'src/app/flows/fines/services/opal-fines-service/mocks/opal-fines-result-pretty-name.mock';
 
 describe('FinesMacOffenceDetailsReviewOffenceImpositionComponent', () => {
   let component: FinesMacOffenceDetailsReviewOffenceImpositionComponent;
@@ -32,6 +33,7 @@ describe('FinesMacOffenceDetailsReviewOffenceImpositionComponent', () => {
 
   beforeEach(async () => {
     mockOpalFinesService = {
+      getResultPrettyName: vi.fn().mockReturnValue(OPAL_FINES_RESULT_PRETTY_NAME_MOCK),
       getMajorCreditorPrettyName: vi.fn().mockReturnValue(OPAL_FINES_MAJOR_CREDITOR_PRETTY_NAME_MOCK),
     };
 
@@ -138,10 +140,7 @@ describe('FinesMacOffenceDetailsReviewOffenceImpositionComponent', () => {
     const expectedImpositionTableData: IFinesMacOffenceDetailsReviewSummaryImpositionTableData[] = [
       {
         impositionId: 0,
-        impositionDescription: OPAL_FINES_RESULTS_REF_DATA_MOCK.refData.find(
-          (result) => result.result_id === imposition.fm_offence_details_result_id!,
-        )!.result_title,
-        impositionResultId: 'FCC',
+        impositionDescription: 'Criminal Courts Charge (FCC)',
         creditor: 'HM Courts & Tribunals Service (HMCTS)',
         minorCreditor: {
           address: ['Test Address'],
