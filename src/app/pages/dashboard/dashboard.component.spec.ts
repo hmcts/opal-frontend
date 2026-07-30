@@ -125,7 +125,7 @@ describe('DashboardComponent', () => {
     expect(component.resolvedConfig().groups.map((group) => group.id)).not.toContain('account-management');
   });
 
-  it('should remove reports content when release-1c enforcement operational reporting is disabled', () => {
+  it('should remove reports content for the reports dashboard when release-1c enforcement operational reporting is disabled', () => {
     globalStoreMock.featureFlags.mockReturnValue({
       ...DEFAULT_RELEASE_FEATURE_FLAGS,
       [RELEASE_1C_ENFORCEMENT_OPERATIONAL_REPORTING_FEATURE_FLAG]: false,
@@ -149,7 +149,7 @@ describe('DashboardComponent', () => {
     expect(component.resolvedConfig().groups.map((group) => group.id)).not.toContain('account-management');
   });
 
-  it('should remove reports content when release-1c enforcement operational reporting is disabled', () => {
+  it('should remove reports config from the reports dashboard when release-1c enforcement operational reporting is disabled', () => {
     globalStoreMock.featureFlags.mockReturnValue({
       ...DEFAULT_RELEASE_FEATURE_FLAGS,
       [RELEASE_1C_ENFORCEMENT_OPERATIONAL_REPORTING_FEATURE_FLAG]: false,

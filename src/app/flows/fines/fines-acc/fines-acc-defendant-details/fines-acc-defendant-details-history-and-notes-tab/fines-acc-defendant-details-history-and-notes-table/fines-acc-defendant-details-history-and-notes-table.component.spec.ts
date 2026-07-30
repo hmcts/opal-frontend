@@ -40,7 +40,7 @@ describe('FinesAccDefendantDetailsHistoryAndNotesTableComponent', () => {
   });
 
   it('should map defendant account history items to shared history table rows', () => {
-    const rows = component.getHistoryRows(
+    const rows = component.historyTableAdapter.getRows(
       structuredClone(FINES_ACC_DEFENDANT_DETAILS_HISTORY_AND_NOTES_TABLE_MAP_TAB_DATA_MOCK),
     );
 
@@ -66,7 +66,7 @@ describe('FinesAccDefendantDetailsHistoryAndNotesTableComponent', () => {
     tabData['history_items'] = tabData['historyItems'];
     delete tabData['historyItems'];
 
-    const rows = component.getHistoryRows(tabData);
+    const rows = component.historyTableAdapter.getRows(tabData);
 
     expect(rows).toEqual([
       expect.objectContaining({
@@ -79,7 +79,7 @@ describe('FinesAccDefendantDetailsHistoryAndNotesTableComponent', () => {
   });
 
   it('should map optional history item fields and amount branches to shared table rows', () => {
-    const rows = component.getHistoryRows(
+    const rows = component.historyTableAdapter.getRows(
       structuredClone(FINES_ACC_DEFENDANT_DETAILS_HISTORY_AND_NOTES_TABLE_BRANCH_TAB_DATA_MOCK),
     );
 
@@ -155,7 +155,9 @@ describe('FinesAccDefendantDetailsHistoryAndNotesTableComponent', () => {
     const expectedUrl = `/${FINES_ROUTING_PATHS.root}/${FINES_ACC_ROUTING_PATHS.root}/${FINES_ACC_ROUTING_PATHS.children.defendant}/${accountId}/${FINES_ACC_DEFENDANT_ROUTING_PATHS.children.details}`;
 
     fixture.detectChanges();
-    component.handleHistoryLinkClicked(FINES_ACC_DEFENDANT_DETAILS_HISTORY_AND_NOTES_TABLE_ACCOUNT_LINK_MOCK);
+    component.historyTableAdapter.openHistoryLink(
+      FINES_ACC_DEFENDANT_DETAILS_HISTORY_AND_NOTES_TABLE_ACCOUNT_LINK_MOCK,
+    );
 
     expect(windowOpenSpy).toHaveBeenCalledWith(
       expectedUrl,
@@ -166,7 +168,9 @@ describe('FinesAccDefendantDetailsHistoryAndNotesTableComponent', () => {
   it('should ignore unsupported history link types', () => {
     const windowOpenSpy = vi.spyOn(window, 'open').mockImplementation(() => null);
 
-    component.handleHistoryLinkClicked(FINES_ACC_DEFENDANT_DETAILS_HISTORY_AND_NOTES_TABLE_UNSUPPORTED_LINK_MOCK);
+    component.historyTableAdapter.openHistoryLink(
+      FINES_ACC_DEFENDANT_DETAILS_HISTORY_AND_NOTES_TABLE_UNSUPPORTED_LINK_MOCK,
+    );
 
     expect(windowOpenSpy).not.toHaveBeenCalled();
   });
@@ -174,7 +178,9 @@ describe('FinesAccDefendantDetailsHistoryAndNotesTableComponent', () => {
   it('should ignore account history links without a finite account id', () => {
     const windowOpenSpy = vi.spyOn(window, 'open').mockImplementation(() => null);
 
-    component.handleHistoryLinkClicked(FINES_ACC_DEFENDANT_DETAILS_HISTORY_AND_NOTES_TABLE_INVALID_ACCOUNT_LINK_MOCK);
+    component.historyTableAdapter.openHistoryLink(
+      FINES_ACC_DEFENDANT_DETAILS_HISTORY_AND_NOTES_TABLE_INVALID_ACCOUNT_LINK_MOCK,
+    );
 
     expect(windowOpenSpy).not.toHaveBeenCalled();
   });
