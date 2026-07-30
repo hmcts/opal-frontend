@@ -479,7 +479,7 @@ Given('the History and notes API is stubbed with standard tab data', () => {
  */
 Given('I am viewing a master account with a consolidated child account', () => {
   log('step', 'Prepare master account with consolidated child account');
-  flow().prepareMasterAccountWithConsolidatedChildAccount();
+  accountEnquiryFlow().prepareMasterAccountWithConsolidatedChildAccount();
 });
 
 /**
@@ -495,7 +495,7 @@ When('I go to the History and notes tab', () => {
  */
 When('I view the Consolidated accounts tab', () => {
   log('step', 'View Consolidated accounts tab');
-  flow().goToConsolidatedAccountsTab();
+  accountEnquiryFlow().goToConsolidatedAccountsTab();
 });
 
 /**
@@ -503,7 +503,7 @@ When('I view the Consolidated accounts tab', () => {
  */
 Then('I can see a table containing the child accounts', () => {
   log('assert', 'Consolidated accounts table contains child account rows');
-  flow().assertConsolidatedAccountsTableVisible();
+  accountEnquiryFlow().assertConsolidatedAccountsTableVisible();
 });
 
 /**
@@ -511,7 +511,7 @@ Then('I can see a table containing the child accounts', () => {
  */
 When('I view the first child account record', () => {
   log('step', 'View first child account record');
-  flow().openFirstConsolidatedAccountLinkAtAGlance();
+  accountEnquiryFlow().openFirstConsolidatedAccountLinkAtAGlance();
 });
 
 /**
@@ -519,7 +519,7 @@ When('I view the first child account record', () => {
  */
 Then('I am presented with the details of the selected child account', () => {
   log('assert', 'Selected child account details are displayed');
-  flow().assertSelectedChildAccountDetailsVisible();
+  accountEnquiryFlow().assertSelectedChildAccountDetailsVisible();
 });
 
 /**
