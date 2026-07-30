@@ -52,3 +52,36 @@ Feature: Minor creditor - Account Enquiries – View Account Details
       Then I should remain on the amend minor creditor details page
       And I should see the minor creditor amend error summary contains "Enter minor creditor’s first name"
 
+  Rule: Minor creditor History and notes tab
+    Background:
+      Given a published account exists with an individual minor creditor:
+        | prosecutor case reference | PCRMINHIST{uniqUpper} |
+        | title                     | Mr                    |
+        | first name                | Harper                |
+        | last name                 | HistMinor{uniq}       |
+        | address line 1            | 1 Test Street         |
+        | postcode                  | AB1 2CD               |
+      And the History and notes API is stubbed with standard tab data
+      And I am on the Account Search page - Individuals form displayed by default
+      When I view the Minor creditors search form
+      And I search using the following inputs:
+        | minor creditor type  | Individual      |
+        | individual last name | HistMinor{uniq} |
+        | first names          | Harper          |
+        | address line 1       | 1 Test Street   |
+        | postcode             | AB1 2CD         |
+      Then I see the Search results page
+      When I open the latest matching result from the search results
+      Then I should see the account header contains "Mr Harper HISTMINOR{uniqUpper}"
+
+    @R1B @JIRA-STORY:PO-2640 @JIRA-EPIC:PO-2653
+    Scenario: Minor creditor History and notes items load and can be filtered
+      When I go to the History and notes tab
+      Then I should see the History and notes items load
+      When I filter the History and notes results to Notes
+      Then I should only see Note items in History and notes
+
+    @R1B @JIRA-STORY:PO-2640 @JIRA-EPIC:PO-2653
+    Scenario: History and notes account links open the associated defendant record in a new tab
+      When I go to the History and notes tab
+      And I open the first History and notes account link in a new tab

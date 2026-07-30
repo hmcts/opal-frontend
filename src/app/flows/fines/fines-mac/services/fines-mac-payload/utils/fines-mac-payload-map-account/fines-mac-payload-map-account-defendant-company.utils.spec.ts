@@ -65,7 +65,7 @@ describe('finesMacPayloadMapAccountDefendantCompanyPayload', () => {
 
     const result = finesMacPayloadMapAccountDefendantCompanyPayload(initialState, payload);
 
-    expect(result.companyDetails.formData.fm_company_details_add_alias).toBe(null);
+    expect(result.companyDetails.formData.fm_company_details_add_alias).toBeNull();
     expect(result.companyDetails.formData.fm_company_details_aliases).toEqual([]);
 
     expect(result.languagePreferences.formData).toEqual({
