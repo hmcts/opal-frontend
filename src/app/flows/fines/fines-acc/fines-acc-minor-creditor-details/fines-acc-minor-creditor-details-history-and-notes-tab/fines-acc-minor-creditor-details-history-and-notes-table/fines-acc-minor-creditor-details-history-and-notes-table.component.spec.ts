@@ -4,12 +4,12 @@ import { provideRouter } from '@angular/router';
 import { FINES_ROUTING_PATHS } from '@routing/fines/constants/fines-routing-paths.constant';
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import { FINES_ACCOUNT_HISTORY_TABLE_DISPLAY } from '../../../fines-account-history-table/constants/fines-account-history-table-display.constant';
+import { FINES_ACCOUNT_HISTORY_TABLE_MAPPING_DISPLAY } from '../../../fines-account-history-table/constants/fines-account-history-table-mapping-display.constant';
 import { FINES_ACCOUNT_HISTORY_TABLE_SORT_DIRECTIONS } from '../../../fines-account-history-table/constants/fines-account-history-table-sort-directions.constant';
 import { FinesAccountHistoryTableComponent } from '../../../fines-account-history-table/fines-account-history-table.component';
 import { FINES_ACC_DEFENDANT_ROUTING_PATHS } from '../../../routing/constants/fines-acc-defendant-routing-paths.constant';
 import { FINES_ACC_ROUTING_PATHS } from '../../../routing/constants/fines-acc-routing-paths.constant';
 import { FinesAccMinorCreditorDetailsHistoryAndNotesTableComponent } from './fines-acc-minor-creditor-details-history-and-notes-table.component';
-import { FINES_ACC_MINOR_CREDITOR_DETAILS_HISTORY_AND_NOTES_TABLE_DISPLAY } from './constants/fines-acc-minor-creditor-details-history-and-notes-table-display.constant';
 import { FINES_ACC_MINOR_CREDITOR_DETAILS_HISTORY_AND_NOTES_TABLE_ACCOUNT_LINK_MOCK } from './mocks/fines-acc-minor-creditor-details-history-and-notes-table-account-link.mock';
 import { FINES_ACC_MINOR_CREDITOR_DETAILS_HISTORY_AND_NOTES_TABLE_BRANCH_TAB_DATA_MOCK } from './mocks/fines-acc-minor-creditor-details-history-and-notes-table-branch-tab-data.mock';
 import { FINES_ACC_MINOR_CREDITOR_DETAILS_HISTORY_AND_NOTES_TABLE_INVALID_ACCOUNT_LINK_MOCK } from './mocks/fines-acc-minor-creditor-details-history-and-notes-table-invalid-account-link.mock';
@@ -424,10 +424,7 @@ describe('FinesAccMinorCreditorDetailsHistoryAndNotesTableComponent', () => {
       FINES_ACC_MINOR_CREDITOR_DETAILS_HISTORY_AND_NOTES_TABLE_ACCOUNT_LINK_MOCK,
     );
 
-    expect(windowOpenSpy).toHaveBeenCalledWith(
-      expectedUrl,
-      FINES_ACC_MINOR_CREDITOR_DETAILS_HISTORY_AND_NOTES_TABLE_DISPLAY.windowTarget,
-    );
+    expect(windowOpenSpy).toHaveBeenCalledWith(expectedUrl, FINES_ACCOUNT_HISTORY_TABLE_MAPPING_DISPLAY.windowTarget);
   });
 
   it('should ignore unsupported history link types', () => {
