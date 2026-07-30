@@ -218,7 +218,7 @@ describe('FinesMacOffenceDetailsReviewSummaryComponent', () => {
     expect(addAnotherOffenceSpy).toHaveBeenCalled();
   });
 
-  it('should return the value of finesService.finesMacState.personalDetails.status when isAdultOrYouthOnly returns true', () => {
+  it('should return the personal details status when defendant type is adult or youth only', () => {
     const finesMacState = structuredClone(FINES_MAC_STATE_MOCK);
     finesMacState.accountDetails = {
       ...structuredClone(FINES_MAC_STATE_MOCK.accountDetails),
@@ -237,7 +237,7 @@ describe('FinesMacOffenceDetailsReviewSummaryComponent', () => {
     expect(result).toBe(true);
   });
 
-  it('should return the value of finesService.finesMacState.personalDetails.status when isAdultOrYouthOnly returns true', () => {
+  it('should return the sub-navigation status when defendant type is parent or guardian to pay', () => {
     const finesMacState = structuredClone(FINES_MAC_STATE_MOCK);
     finesMacState.accountDetails = {
       ...structuredClone(FINES_MAC_STATE_MOCK.accountDetails),

@@ -798,7 +798,7 @@ describe('FinesAccPartyAddAmendConvertFormComponent', () => {
       ) as FormArray;
 
       expect(organisationAliasesFormArray).toBeDefined();
-      expect(organisationAliasesFormArray.length).toBe(0);
+      expect(organisationAliasesFormArray).toHaveLength(0);
     });
 
     it('should not have individual aliases form array for company party type', () => {
@@ -1049,7 +1049,7 @@ describe('FinesAccPartyAddAmendConvertFormComponent', () => {
 
     const aliasesControl = baseForm.get('facc_party_add_amend_convert_individual_aliases') as FormArray;
     expect(aliasesControl).toBeDefined();
-    expect(aliasesControl.length).toBe(0);
+    expect(aliasesControl).toHaveLength(0);
   });
 
   it('should add company-specific form controls to base form', () => {
@@ -1085,7 +1085,7 @@ describe('FinesAccPartyAddAmendConvertFormComponent', () => {
 
     const aliasesControl = baseForm.get('facc_party_add_amend_convert_organisation_aliases') as FormArray;
     expect(aliasesControl).toBeDefined();
-    expect(aliasesControl.length).toBe(0);
+    expect(aliasesControl).toHaveLength(0);
   });
 
   it('should create form with individual controls for individual party type', () => {
