@@ -6,7 +6,19 @@ import {
   transformMinorCreditorTransactionDetails,
 } from './fines-acc-payload-transform-minor-creditor-history-and-notes.utils';
 
-const fragment = (text: string, bold = false) => ({ text, bold, hyphen: false });
+const fragment = (
+  text: string,
+  options: boolean | { bold?: boolean; hyphen?: boolean; link?: { type: string; emit: string } } = {},
+) => {
+  const resolvedOptions = typeof options === 'boolean' ? { bold: options } : options;
+
+  return {
+    text,
+    bold: resolvedOptions.bold ?? false,
+    hyphen: resolvedOptions.hyphen ?? false,
+    ...(resolvedOptions.link ? { link: resolvedOptions.link } : {}),
+  };
+};
 const part = (...fragments: ReturnType<typeof fragment>[]) => ({ fragments });
 const details = (...line1: ReturnType<typeof part>[]) => ({ line1, line2: null });
 
@@ -243,13 +255,26 @@ describe('transformMinorCreditorTransactionDetails', () => {
         transaction_type: 'XFER',
         associated_record_type: 'defendant_transaction',
         defendant_account_number: 'DA12345',
+        defendant_account_id: '12345',
       },
     });
 
     expect(result).toEqual({
       line1: [
         { fragments: [{ text: 'Suspense transfer', bold: false, hyphen: false }] },
-        { fragments: [{ text: 'DA12345', bold: false, hyphen: false }] },
+        {
+          fragments: [
+            {
+              text: 'DA12345',
+              bold: false,
+              hyphen: false,
+              link: {
+                type: 'account',
+                emit: '12345',
+              },
+            },
+          ],
+        },
       ],
       line2: null,
     });
@@ -384,6 +409,26 @@ describe('transformMinorCreditorTransactionDetails', () => {
     });
 
     expect(result).toEqual(details(part(fragment('Manual adjustment')), part(fragment('250000123M'))));
+  });
+
+  it('should transform payment received details with a linked defendant account number', () => {
+    const result = transformMinorCreditorTransactionDetails({
+      details: {
+        transactionType: {
+          transactionType: 'PAYMNT',
+          transactionTypeDisplayName: 'PAYMNT',
+        },
+        defendantAccountNumber: '250000123M',
+        defendantAccountId: '123123',
+      },
+    });
+
+    expect(result).toEqual(
+      details(
+        part(fragment('Payment received')),
+        part(fragment('250000123M', { link: { type: 'account', emit: '123123' } })),
+      ),
+    );
   });
 
   it('should transform payment received details when defendant account number is omitted', () => {

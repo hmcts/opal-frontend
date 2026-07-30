@@ -206,7 +206,7 @@ describe('FinesMacReviewAccountComponent', () => {
       expect(reviewAccountFetchedMappedPayloadSpy).toHaveBeenCalled();
     });
 
-    it('should handle submitPayload failure', () => {
+    it('should handle put request submitPayload failure', () => {
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
       const handleRequestErrorSpy = vi.spyOn<any, any>(component, 'handleRequestError');
       mockOpalFinesService.putDraftAddAccountPayload = vi
@@ -225,7 +225,7 @@ describe('FinesMacReviewAccountComponent', () => {
       });
     });
 
-    it('should handle submitPayload failure', () => {
+    it('should handle post request submitPayload failure', () => {
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
       const handleRequestErrorSpy = vi.spyOn<any, any>(component, 'handleRequestError');
       mockOpalFinesService.postDraftAddAccountPayload = vi
@@ -418,7 +418,7 @@ describe('FinesMacReviewAccountComponent', () => {
       expect(routerSpy).toHaveBeenCalledWith([component['createAndManageTabs']], { fragment: 'test-fragment' });
     });
 
-    it('should navigate back to view-all-rejected on navigateBack when isReadOnly is true and viewAllAccounts is true', () => {
+    it('should navigate back to view-all-rejected with review fragment on navigateBack when isReadOnly is true and viewAllAccounts is true', () => {
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
       const routerSpy = vi.spyOn<any, any>(component['router'], 'navigate');
       finesDraftStore.setFragment('review');
@@ -440,7 +440,7 @@ describe('FinesMacReviewAccountComponent', () => {
       expect(routerSpy).toHaveBeenCalledWith([component['checkAndValidateTabs']], { fragment: 'in-review' });
     });
 
-    it('should navigate back to view-all-rejected on navigateBack when isReadOnly is true and viewAllAccounts is true', () => {
+    it('should navigate back to view-all-rejected without fragment on navigateBack when isReadOnly is true and viewAllAccounts is true', () => {
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
       const routerSpy = vi.spyOn<any, any>(component['router'], 'navigate');
       finesDraftStore.setViewAllAccounts(true);
@@ -506,23 +506,25 @@ describe('FinesMacReviewAccountComponent', () => {
       expect(submitPayloadSpy).toHaveBeenCalled();
     });
 
-    it('should call router.navigate with relative route when handleDeleteAccount is called and account id is 0', () => {
+    it('should set deleteFromCheckAccount and navigate without an account ID', () => {
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
       const routerSpy = vi.spyOn<any, any>(component['router'], 'navigate');
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      vi.spyOn<any, any>(component['finesMacStore'], 'setDeleteFromCheckAccount').mockImplementation(() => {});
-      const route = component['finesMacRoutes'].children.deleteAccountConfirmation;
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      const mockEvent: any = {
+      vi.spyOn<any, any>(component['finesMacStore'], 'setDeleteFromCheckAccount');
+
+      const mockEvent = {
         preventDefault: vi.fn().mockName('Event.preventDefault'),
-      };
-      component.accountId = 0; // Set accountId to 0 to simulate the condition
+      } as unknown as Event;
+
+      component.accountId = 0;
 
       component.handleDeleteAccount(mockEvent);
 
-      expect(routerSpy).toHaveBeenCalledWith([route], { relativeTo: component['activatedRoute'].parent });
+      expect(component['finesMacStore'].setDeleteFromCheckAccount).toHaveBeenCalledWith(true);
+      expect(routerSpy).toHaveBeenCalledWith([component['finesMacRoutes'].children.deleteAccountConfirmation], {
+        relativeTo: component['activatedRoute'].parent,
+      });
       expect(mockEvent.preventDefault).toHaveBeenCalled();
-      expect(component['finesMacStore'].setDeleteFromCheckAccount).toHaveBeenCalledTimes(0);
     });
 
     it('should call router.navigate with relative route when handleDeleteAccount is called and account id is > 0', () => {
@@ -541,7 +543,7 @@ describe('FinesMacReviewAccountComponent', () => {
 
       expect(routerSpy).toHaveBeenCalledWith([route], { relativeTo: component['activatedRoute'].parent });
       expect(mockEvent.preventDefault).toHaveBeenCalled();
-      expect(component['finesMacStore'].setDeleteFromCheckAccount).toHaveBeenCalledTimes(1);
+      expect(component['finesMacStore'].setDeleteFromCheckAccount).toHaveBeenCalledWith(true);
     });
 
     it('should click delete account link and prevent default via the passed template event', () => {

@@ -40,7 +40,7 @@ describe('finesSaSearchFetchMajorCreditorsResolver', () => {
     expect(result).toEqual({ count: 0, refData: [] } as IOpalFinesMajorCreditorRefData);
   });
 
-  it('should return {} when business unit ids is in store', async () => {
+  it('should return empty major creditor ref data when multiple business unit ids are in store', async () => {
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     mockFinesSaStore.setBusinessUnitIds([1, 2, 3]);
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -53,7 +53,7 @@ describe('finesSaSearchFetchMajorCreditorsResolver', () => {
     expect(result).toEqual({ count: 0, refData: [] } as IOpalFinesMajorCreditorRefData);
   });
 
-  it('should return {} when business unit ids is in store', async () => {
+  it('should return empty major creditor ref data when a single business unit id is in store', async () => {
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     mockFinesSaStore.setBusinessUnitIds([1]);
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
