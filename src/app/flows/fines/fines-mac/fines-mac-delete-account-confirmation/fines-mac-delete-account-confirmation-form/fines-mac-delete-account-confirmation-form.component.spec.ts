@@ -121,6 +121,48 @@ describe('FinesMacDeleteAccountConfirmationFormComponent', () => {
     expect(component['router'].navigate).toHaveBeenCalled();
   });
 
+  it('should route back to account details with the accountId when the referrer is account details', () => {
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    vi.spyOn<any, any>(component['router'], 'navigate');
+    component.referrer = component['fineMacRoutingPaths'].children.accountDetails;
+    component.accountId = 123;
+
+    component.handleRoute(component.referrer);
+
+    expect(component['router'].navigate).toHaveBeenCalledWith(
+      [component['fineMacRoutingPaths'].children.accountDetails + '/123'],
+      { relativeTo: component['activatedRoute'].parent },
+    );
+  });
+
+  it('should route back to check account without an accountId when the referrer is check account', () => {
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    vi.spyOn<any, any>(component['router'], 'navigate');
+    component.referrer = component['fineMacRoutingPaths'].children.reviewAccount;
+    component.accountId = null;
+
+    component.handleRoute(component.referrer);
+
+    expect(component['router'].navigate).toHaveBeenCalledWith(
+      [component['fineMacRoutingPaths'].children.reviewAccount],
+      { relativeTo: component['activatedRoute'].parent },
+    );
+  });
+
+  it('should route back to check account with the accountId when the referrer is check account', () => {
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    vi.spyOn<any, any>(component['router'], 'navigate');
+    component.referrer = component['fineMacRoutingPaths'].children.reviewAccount;
+    component.accountId = 123;
+
+    component.handleRoute(component.referrer);
+
+    expect(component['router'].navigate).toHaveBeenCalledWith(
+      [component['fineMacRoutingPaths'].children.reviewAccount + '/123'],
+      { relativeTo: component['activatedRoute'].parent },
+    );
+  });
+
   it('should return true from hasUnsavedChanges if form is dirty, reason has value, and form is not submitted', () => {
     component.form.controls['fm_delete_account_confirmation_reason'].setValue('Valid reason');
     component.form.markAsDirty();
@@ -151,5 +193,10 @@ describe('FinesMacDeleteAccountConfirmationFormComponent', () => {
     component['formSubmitted'] = true;
 
     expect(component['hasUnsavedChanges']()).toBe(false);
+  });
+
+  it('should set autocomplete="off" on the form', () => {
+    fixture.detectChanges();
+    expect(fixture.nativeElement.querySelector('form')?.getAttribute('autocomplete')).toBe('off');
   });
 });

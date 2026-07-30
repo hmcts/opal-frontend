@@ -804,7 +804,7 @@ describe('FinesAccPaymentTermsAmendFormComponent', () => {
 
         // Verify error exists
         expect(paymentCardControl?.errors?.['payInFullRestriction']).toBeTruthy();
-        expect(Object.keys(paymentCardControl?.errors || {}).length).toBe(1);
+        expect(Object.keys(paymentCardControl?.errors || {})).toHaveLength(1);
 
         // Remove the payInFullRestriction error condition by unchecking payment card
         form.get('facc_payment_terms_payment_card_request')?.setValue(false);
@@ -1235,7 +1235,7 @@ describe('FinesAccPaymentTermsAmendFormComponent', () => {
 
         // Verify error exists
         expect(changeLetterControl?.errors?.['noChangesMade']).toBeTruthy();
-        expect(Object.keys(changeLetterControl?.errors || {}).length).toBe(1);
+        expect(Object.keys(changeLetterControl?.errors || {})).toHaveLength(1);
 
         // Remove the noChangesMade error condition by making a form change
         form.get('facc_payment_terms_payment_terms')?.setValue('instalmentsOnly');
@@ -1422,5 +1422,10 @@ describe('FinesAccPaymentTermsAmendFormComponent', () => {
         expect(defaultDaysInJailControl!.updateValueAndValidity).toHaveBeenCalled();
       });
     });
+  });
+
+  it('should set autocomplete="off" on the form', () => {
+    fixture.detectChanges();
+    expect(fixture.nativeElement.querySelector('form')?.getAttribute('autocomplete')).toBe('off');
   });
 });

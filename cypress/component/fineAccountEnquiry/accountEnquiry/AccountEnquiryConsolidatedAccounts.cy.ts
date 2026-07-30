@@ -1,3 +1,4 @@
+import { AccountNavDetailsLocators } from '../../../shared/selectors/account-details/account.nav.details.locators';
 import { OPAL_FINES_ACCOUNT_DEFENDANT_DETAILS_CONSOLIDATED_ACCOUNTS_MOCK } from '@services/fines/opal-fines-service/mocks/opal-fines-account-defendant-details-consolidated-accounts.mock';
 import { interceptAuthenticatedUser, interceptUserState } from 'cypress/component/CommonIntercepts/CommonIntercepts';
 import { USER_STATE_MOCK_PERMISSION_BU77 } from '../../CommonIntercepts/CommonUserState.mocks';
@@ -58,10 +59,13 @@ const consolidatedAccountsMock: ConsolidatedAccountsMock = {
   ],
 };
 
-const setupConsolidatedAccountsScreen = (mockData: ConsolidatedAccountsMock = consolidatedAccountsMock) => {
+const setupConsolidatedAccountsScreen = (
+  hasConsolidatedAccounts: boolean = true,
+  mockData: ConsolidatedAccountsMock = consolidatedAccountsMock,
+) => {
   const headerMock = {
     ...structuredClone(DEFENDANT_HEADER_MOCK),
-    has_consolidated_accounts: true,
+    has_consolidated_accounts: hasConsolidatedAccounts,
   };
   const accountId = headerMock.defendant_account_party_id;
 
@@ -75,6 +79,42 @@ const setupConsolidatedAccountsScreen = (mockData: ConsolidatedAccountsMock = co
 };
 
 describe('Account Enquiry Consolidated Accounts Tab', () => {
+  it(
+    "AC1a. should display 'Consolidated accounts' to the right of 'History and notes' when consolidated accounts exist",
+    { tags: [...buildTags('@JIRA-STORY:PO-2389'), '@JIRA-EPIC:PO-976'] },
+    () => {
+      setupConsolidatedAccountsScreen(true);
+
+      cy.get(AccountNavDetailsLocators.subNav.historyAndNotesTab).should('exist');
+      cy.get(AccountNavDetailsLocators.subNav.consolidatedAccountsTab).should('exist');
+
+      cy.get(AccountNavDetailsLocators.subNav.allTabLinks).then(($tabs) => {
+        const labels = [...$tabs].map((tab) => tab.textContent?.trim()).filter((label): label is string => !!label);
+
+        expect(labels).to.include('History and notes');
+        expect(labels).to.include('Consolidated accounts');
+        expect(labels.indexOf('History and notes')).to.be.lessThan(labels.indexOf('Consolidated accounts'));
+      });
+
+      cy.injectAxe();
+      cy.checkA11y(AccountNavDetailsLocators.subNav.root);
+    },
+  );
+
+  it(
+    "AC2a. should not display 'Consolidated accounts' when no consolidated accounts exist",
+    { tags: [...buildTags('@JIRA-STORY:PO-2389'), '@JIRA-EPIC:PO-976'] },
+    () => {
+      setupConsolidatedAccountsScreen(false);
+
+      cy.get(AccountNavDetailsLocators.subNav.historyAndNotesTab).should('exist');
+      cy.get(AccountNavDetailsLocators.subNav.consolidatedAccountsTab).should('not.exist');
+
+      cy.injectAxe();
+      cy.checkA11y(AccountNavDetailsLocators.subNav.root);
+    },
+  );
+
   it(
     'AC1a, AC1b, AC1c, AC1d, AC1e, AC1f: fetches consolidated child accounts and renders the read-only table',
     {

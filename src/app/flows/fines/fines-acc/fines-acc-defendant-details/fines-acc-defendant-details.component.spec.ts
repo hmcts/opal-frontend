@@ -219,6 +219,24 @@ describe('FinesAccDefendantDetailsComponent', () => {
     expect(component.hasParentOrGuardianDetails).toBe(false);
   });
 
+  it('should show consolidated accounts when the account has consolidated accounts', () => {
+    component.accountData = {
+      ...structuredClone(FINES_ACC_DEFENDANT_DETAILS_HEADER_MOCK),
+      has_consolidated_accounts: true,
+    };
+
+    expect(component.hasConsolidatedAccounts()).toBe(true);
+  });
+
+  it('should hide consolidated accounts when the account has no consolidated accounts', () => {
+    component.accountData = {
+      ...structuredClone(FINES_ACC_DEFENDANT_DETAILS_HEADER_MOCK),
+      has_consolidated_accounts: false,
+    };
+
+    expect(component.hasConsolidatedAccounts()).toBe(false);
+  });
+
   it('should handle tab switch', () => {
     component.handleTabSwitch('details');
     expect(component.activeTab).toBe('details');
