@@ -97,6 +97,19 @@ Feature: Defendant - Adult or youth - Account Enquiries – View Account Details
       Then I should return to the account details page Defendant tab
       And I should see the convert to company account action
 
+    @R1B @JIRA-STORY:PO-2671 @JIRA-EPIC:PO-8248
+    Scenario Outline: AC1c-AC1e Individual Defendant tab Change links open the correct amend screens
+      # AC1a – the heading Change link is removed
+      # AC1b – section Change links are shown for Defendant details, Contact details, and Employer details
+      When I open the "<section>" Change link on the Defendant tab
+      Then I should be on the "individual" amend route with fragment "<fragment>"
+
+      Examples:
+        | section           | fragment           |
+        | Defendant details | party-details      |
+        | Contact details   | contact-details    |
+        | Employer details  | employment-details |
+
   Rule: History and notes tab
     Background:
       Given I create a "adultOrYouthOnly" draft account with the following details and set status "Publishing Pending" using user "opal-test-10@dev.platform.hmcts.net":
@@ -127,4 +140,3 @@ Feature: Defendant - Adult or youth - Account Enquiries – View Account Details
     Scenario: History and notes account links open the correct record in a new tab
       When I go to the History and notes tab
       And I open the first History and notes account link in a new tab
-
