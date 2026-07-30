@@ -182,7 +182,7 @@ describe('FinesMacOffenceDetailsReviewOffenceImpositionComponent', () => {
     expect(actualCreditorText).toBe(expectedCreditorText);
   });
 
-  it('should return minor creditor no title or forenames - Any resultCodeCreditor', () => {
+  it('should return minor creditor surname when there is no title or forenames and resultCodeCreditor is Any', () => {
     const finesMacState = structuredClone(finesMacStore.getFinesMacStore());
     finesMacState.offenceDetails[0].childFormData = [
       {
@@ -205,7 +205,7 @@ describe('FinesMacOffenceDetailsReviewOffenceImpositionComponent', () => {
     expect(actualCreditorText).toBe(expectedCreditorText);
   });
 
-  it('should return minor creditor no title or forenames - Any resultCodeCreditor', () => {
+  it('should return minor creditor company name when there is no personal name and resultCodeCreditor is Any', () => {
     const finesMacState = structuredClone(finesMacStore.getFinesMacStore());
     finesMacState.offenceDetails[0].childFormData = [
       {

@@ -315,7 +315,11 @@ export class FinesAccEnfActionAddService {
    * Checks whether a control value contains meaningful content.
    */
   private hasValue(value: unknown): boolean {
-    return value !== null && value !== undefined && value.toString().trim() !== '';
+    if (typeof value === 'string') {
+      return value.trim() !== '';
+    }
+
+    return typeof value === 'number' || typeof value === 'boolean';
   }
 
   /**

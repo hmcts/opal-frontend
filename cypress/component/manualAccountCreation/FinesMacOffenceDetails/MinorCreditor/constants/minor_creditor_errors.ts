@@ -13,7 +13,7 @@ export const LENGTH_CHECK = {
 };
 
 export const FORMAT_CHECK = {
-  bankAccountRefAlphabeticalTextPattern: 'Payment reference must only contain letters',
+  bankAccountRefAlphaNumericTextPattern: 'Payment reference must only contain letters and numbers',
   bankAccountNumberNumericalTextPattern: 'Account number must only contain numbers',
   bankSortCodeNumericalTextPattern: 'Sort code must only contain numbers',
   surnameRequired: `Enter last name`,

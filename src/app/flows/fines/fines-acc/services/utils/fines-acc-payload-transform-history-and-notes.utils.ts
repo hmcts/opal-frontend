@@ -553,15 +553,20 @@ function originatorName(item: TFinesAccHistoryAndNotesRawItem): string | null {
  */
 function xferReason(item: TFinesAccHistoryAndNotesRawItem): string | null {
   const associatedRecordType = getString(item, FINES_ACC_HISTORY_AND_NOTES_DETAILS_FIELD_ALIASES.associatedRecordType);
-  const normalisedAssociatedRecordType = associatedRecordType ? toSnakeCase(associatedRecordType) : null;
 
-  return associatedRecordType
-    ? (FINES_ACC_HISTORY_AND_NOTES_DETAILS_XFER_REASON_LABELS[associatedRecordType] ??
-        (normalisedAssociatedRecordType
-          ? FINES_ACC_HISTORY_AND_NOTES_DETAILS_XFER_REASON_LABELS[normalisedAssociatedRecordType]
-          : null) ??
-        additionalInformation(item))
-    : additionalInformation(item);
+  if (!associatedRecordType) {
+    return additionalInformation(item);
+  }
+
+  const exactLabel = FINES_ACC_HISTORY_AND_NOTES_DETAILS_XFER_REASON_LABELS[associatedRecordType];
+
+  if (exactLabel) {
+    return exactLabel;
+  }
+
+  const normalisedLabel = FINES_ACC_HISTORY_AND_NOTES_DETAILS_XFER_REASON_LABELS[toSnakeCase(associatedRecordType)];
+
+  return normalisedLabel ?? additionalInformation(item);
 }
 
 /**

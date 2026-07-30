@@ -42,20 +42,15 @@ describe('FinesSaSearchAccountFormCompaniesComponent', () => {
     );
   });
 
-  it('should require company name if exact match is set to true and company name is empty', () => {
+  it.each([
+    {
+      caseName: 'exact match is set to true',
+      flagControlName: 'fsa_search_account_companies_company_name_exact_match',
+    },
+    { caseName: 'include aliases is set to true', flagControlName: 'fsa_search_account_companies_include_aliases' },
+  ] as const)('should require company name if $caseName and company name is empty', ({ flagControlName }) => {
     component.form.get('fsa_search_account_companies_company_name')?.setValue('');
-    component.form.get('fsa_search_account_companies_company_name_exact_match')?.setValue(true);
-    component.form.get('fsa_search_account_companies_company_name')?.setValue('');
-    component.form.get('fsa_search_account_companies_company_name')?.updateValueAndValidity();
-
-    expect(component.form.get('fsa_search_account_companies_company_name')?.hasValidator(Validators.required)).toBe(
-      true,
-    );
-  });
-
-  it('should require company name if add aliases is set to true', () => {
-    component.form.get('fsa_search_account_companies_company_name')?.setValue('');
-    component.form.get('fsa_search_account_companies_include_aliases')?.setValue(true);
+    component.form.get(flagControlName)?.setValue(true);
     component.form.get('fsa_search_account_companies_company_name')?.setValue('');
     component.form.get('fsa_search_account_companies_company_name')?.updateValueAndValidity();
 

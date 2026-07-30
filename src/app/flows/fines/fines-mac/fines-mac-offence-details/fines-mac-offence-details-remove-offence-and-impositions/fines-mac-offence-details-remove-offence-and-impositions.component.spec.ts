@@ -74,7 +74,7 @@ describe('FinesMacOffenceDetailsRemoveOffenceAndImpositionsComponent', () => {
 
   it('should remove the offence and set offenceRemoved to true', () => {
     component.confirmOffenceRemoval();
-    expect(finesMacStore.offenceDetails().length).toBe(0);
+    expect(finesMacStore.offenceDetails()).toHaveLength(0);
     expect(finesMacOffenceDetailsStore.offenceRemoved()).toBe(true);
   });
 
@@ -98,7 +98,7 @@ describe('FinesMacOffenceDetailsRemoveOffenceAndImpositionsComponent', () => {
 
     component.confirmOffenceRemoval();
 
-    expect(finesMacStore.offenceDetails().length).toBe(1);
+    expect(finesMacStore.offenceDetails()).toHaveLength(1);
   });
 
   it('should leave offences without an id unchanged when reindexing after removal', () => {
