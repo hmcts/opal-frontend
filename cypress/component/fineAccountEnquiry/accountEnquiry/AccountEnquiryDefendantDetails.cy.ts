@@ -536,6 +536,9 @@ describe('Account Enquiry Defendant Details Tab', () => {
       mountDefendantTab({ defendantDetailsMock });
 
       cy.get('h2').contains('Defendant Details').should('be.visible');
+      cy.contains('h2', 'Defendant Details').closest('.govuk-grid-row').within(() => {
+        cy.contains('a', 'Change').should('not.exist');
+      });
       cy.contains('.govuk-summary-card__title', 'Defendant details')
         .parent()
         .parent()
@@ -578,6 +581,9 @@ describe('Account Enquiry Defendant Details Tab', () => {
 
       cy.get('h2').contains('Company Details').should('be.visible');
       cy.get(DEFENDANT_DETAILS.defendantChange).should('not.exist');
+      cy.contains('h2', 'Company Details').closest('.govuk-grid-row').within(() => {
+        cy.contains('a', 'Change').should('not.exist');
+      });
       cy.get(DEFENDANT_DETAILS.companyChange).should('exist');
       cy.get('#company-summary-card-list').within(() => {
         cy.contains('.govuk-summary-card__title', 'Company details').should('be.visible');
