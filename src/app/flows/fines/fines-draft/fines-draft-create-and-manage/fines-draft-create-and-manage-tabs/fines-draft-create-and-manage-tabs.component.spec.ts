@@ -27,6 +27,9 @@ import { beforeEach, describe, expect, it, vi } from 'vitest';
 import { FINES_MAC_ROUTING_PATHS } from '@app/flows/fines/fines-mac/routing/constants/fines-mac-routing-paths.constant';
 import { FINES_PERMISSIONS } from '@app/constants/fines-permissions.constant';
 import { type IOpalUserState } from '@hmcts/opal-frontend-common/services/opal-user-service/interfaces';
+import { FINES_DRAFT_TAB_FRAGMENT } from '../../constants/fines-draft-tab-fragments.constant';
+import { FINES_DRAFT_ROUTE_DATA_KEYS } from '../../constants/fines-draft-route-data-keys.constant';
+import { OPAL_FINES_DRAFT_ACCOUNT_STATUSES } from '@services/fines/opal-fines-service/constants/opal-fines-draft-account-statues.constant';
 
 const createUserStateWithPermissions = (permissionIds: readonly number[]): IOpalUserState => {
   const userState = structuredClone(OPAL_USER_STATE_MOCK);
@@ -103,9 +106,10 @@ describe('FinesDraftCreateAndManageTabsComponent', () => {
         {
           provide: ActivatedRoute,
           useValue: {
-            fragment: of('review'),
+            fragment: of(FINES_DRAFT_TAB_FRAGMENT.review),
             snapshot: {
-              fragment: 'review',
+              fragment: FINES_DRAFT_TAB_FRAGMENT.review,
+              data: {},
             },
           },
         },
@@ -139,9 +143,9 @@ describe('FinesDraftCreateAndManageTabsComponent', () => {
   it('should handle tab switch', () => {
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     vi.spyOn<any, any>(component as any, 'handleTabSwitch');
-    component.handleTabSwitch('review');
+    component.handleTabSwitch(FINES_DRAFT_TAB_FRAGMENT.review);
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    expect((component as any).handleTabSwitch).toHaveBeenCalledWith('review');
+    expect((component as any).handleTabSwitch).toHaveBeenCalledWith(FINES_DRAFT_TAB_FRAGMENT.review);
   });
 
   it('should initialize with default state', () => {
@@ -166,9 +170,9 @@ describe('FinesDraftCreateAndManageTabsComponent', () => {
 
   it('should handle route navigation correctly', () => {
     const route = 'some/route';
-    component.activeTab = 'review';
+    component.activeTab = FINES_DRAFT_TAB_FRAGMENT.review;
     component.handleRoute(route);
-    expect(finesDraftStore.fragment()).toEqual('review');
+    expect(finesDraftStore.fragment()).toEqual(FINES_DRAFT_TAB_FRAGMENT.review);
     expect(mockRouter.navigate).toHaveBeenCalledWith([route], { relativeTo: component['activatedRoute'].parent });
   });
 
@@ -176,12 +180,12 @@ describe('FinesDraftCreateAndManageTabsComponent', () => {
     const route = 'some/route';
     const event = new Event('click');
     const preventDefaultSpy = vi.spyOn(event, 'preventDefault');
-    component.activeTab = 'review';
+    component.activeTab = FINES_DRAFT_TAB_FRAGMENT.review;
 
     component.handleRoute(route, event);
 
     expect(preventDefaultSpy).toHaveBeenCalled();
-    expect(finesDraftStore.fragment()).toEqual('review');
+    expect(finesDraftStore.fragment()).toEqual(FINES_DRAFT_TAB_FRAGMENT.review);
     expect(mockRouter.navigate).toHaveBeenCalledWith([route], { relativeTo: component['activatedRoute'].parent });
   });
 
@@ -228,34 +232,71 @@ describe('FinesDraftCreateAndManageTabsComponent', () => {
     expect(rejectedCount).toBe('99+');
   });
 
-  it('should fetch tab data via API in setupTabDataStream when fragment does not match initial tab', async () => {
+  it('should use resolved tab data and rejected count on initial load without extra API calls', async () => {
     finesDraftService.populateTableData.mockReturnValue(FINES_DRAFT_TABLE_WRAPPER_TABLE_DATA_MOCK);
-    activatedRoute.fragment = of('rejected');
+    activatedRoute.fragment = of(FINES_DRAFT_TAB_FRAGMENT.review);
     activatedRoute.snapshot.data = {
-      draftAccounts: OPAL_FINES_DRAFT_ACCOUNTS_MOCK,
-      rejectedCount: 2,
+      [FINES_DRAFT_ROUTE_DATA_KEYS.draftAccounts]: OPAL_FINES_DRAFT_ACCOUNTS_MOCK,
+      [FINES_DRAFT_ROUTE_DATA_KEYS.rejectedCount]: 100,
     };
 
-    mockOpalFinesService.getDraftAccounts.mockReturnValue(of(OPAL_FINES_DRAFT_ACCOUNTS_MOCK));
+    mockOpalFinesService.getDraftAccounts.mockClear();
 
     fixture = TestBed.createComponent(FinesDraftCreateAndManageTabsComponent);
     component = fixture.componentInstance;
-    fixture.detectChanges();
-
-    component.activeTab = 'review';
-
     component.ngOnInit();
 
     const tabData = await firstValueFrom(component.tabData$);
-    expect(mockOpalFinesService.getDraftAccounts).toHaveBeenCalled();
+    const rejectedCount = await firstValueFrom(component.rejectedCount$);
 
     expect(tabData).toEqual(FINES_DRAFT_TABLE_WRAPPER_TABLE_DATA_MOCK);
+    expect(rejectedCount).toBe('99+');
+    expect(finesDraftService.populateTableData).toHaveBeenCalledWith(OPAL_FINES_DRAFT_ACCOUNTS_MOCK);
+    expect(mockOpalFinesService.getDraftAccounts).not.toHaveBeenCalled();
+  });
+
+  it('should fetch only the selected tab data on tab change', () => {
+    const fragmentSubject = new Subject<string | null>();
+    finesDraftService.populateTableData.mockReturnValue(FINES_DRAFT_TABLE_WRAPPER_TABLE_DATA_MOCK);
+    activatedRoute.fragment = fragmentSubject.asObservable();
+    activatedRoute.snapshot.fragment = FINES_DRAFT_TAB_FRAGMENT.review;
+    activatedRoute.snapshot.data = {
+      [FINES_DRAFT_ROUTE_DATA_KEYS.draftAccounts]: OPAL_FINES_DRAFT_ACCOUNTS_MOCK,
+      [FINES_DRAFT_ROUTE_DATA_KEYS.rejectedCount]: 2,
+    };
+
+    mockOpalFinesService.getDraftAccounts.mockReturnValue(of(OPAL_FINES_DRAFT_ACCOUNTS_MOCK));
+    mockOpalFinesService.getDraftAccounts.mockClear();
+    mockOpalFinesService.clearCache.mockClear();
+
+    fixture = TestBed.createComponent(FinesDraftCreateAndManageTabsComponent);
+    component = fixture.componentInstance;
+    component.ngOnInit();
+
+    const subscription = component.tabData$.subscribe();
+    const countSubscription = component.rejectedCount$.subscribe();
+    mockOpalFinesService.getDraftAccounts.mockClear();
+
+    fragmentSubject.next(FINES_DRAFT_TAB_FRAGMENT.approved);
+
+    expect(mockOpalFinesService.getDraftAccounts).toHaveBeenCalledTimes(1);
+    expect(mockOpalFinesService.getDraftAccounts).toHaveBeenCalledWith({
+      businessUnitIds: OPAL_USER_STATE_MOCK.business_unit_users.map((u) => u.business_unit_id),
+      statuses: [OPAL_FINES_DRAFT_ACCOUNT_STATUSES.approved],
+      submittedBy: OPAL_USER_STATE_MOCK.business_unit_users.map((u) => u.business_unit_user_id),
+      accountStatusDateFrom: ['2023-01-01'],
+      accountStatusDateTo: ['2023-01-07'],
+    });
+    expect(mockOpalFinesService.clearCache).not.toHaveBeenCalled();
+
+    subscription.unsubscribe();
+    countSubscription.unsubscribe();
   });
 
   it('should call setFragmentAndAmend and onDefendantClick with PATH_REVIEW_ACCOUNT when activeTab is not "rejected"', () => {
-    component.activeTab = 'review';
+    component.activeTab = FINES_DRAFT_TAB_FRAGMENT.review;
     component.onDefendantClick(FINES_DRAFT_TABLE_WRAPPER_TABLE_DATA_MOCK[0]);
-    expect(finesDraftStore.fragment()).toEqual('review');
+    expect(finesDraftStore.fragment()).toEqual(FINES_DRAFT_TAB_FRAGMENT.review);
     expect(finesDraftStore.amend()).toBeFalsy();
     expect(finesDraftService.onDefendantClick).toHaveBeenCalledWith(
       FINES_DRAFT_TABLE_WRAPPER_TABLE_DATA_MOCK[0]['Defendant id'],
@@ -264,9 +305,9 @@ describe('FinesDraftCreateAndManageTabsComponent', () => {
   });
 
   it('should call setFragmentAndAmend and onDefendantClick with PATH_AMEND_ACCOUNT when activeTab is "rejected"', () => {
-    component.activeTab = 'rejected';
+    component.activeTab = FINES_DRAFT_TAB_FRAGMENT.rejected;
     component.onDefendantClick(FINES_DRAFT_TABLE_WRAPPER_TABLE_DATA_MOCK[0]);
-    expect(finesDraftStore.fragment()).toEqual('rejected');
+    expect(finesDraftStore.fragment()).toEqual(FINES_DRAFT_TAB_FRAGMENT.rejected);
     expect(finesDraftStore.amend()).toBeTruthy();
     expect(finesDraftService.onDefendantClick).toHaveBeenCalledWith(
       FINES_DRAFT_TABLE_WRAPPER_TABLE_DATA_MOCK[0]['Defendant id'],
@@ -276,10 +317,9 @@ describe('FinesDraftCreateAndManageTabsComponent', () => {
 
   it('should pass additional params for historicWindowInDays if set on this tab', async () => {
     finesDraftService.populateTableData.mockReturnValue(FINES_DRAFT_TABLE_WRAPPER_TABLE_DATA_MOCK);
-    activatedRoute.fragment = of('deleted');
+    activatedRoute.fragment = of(FINES_DRAFT_TAB_FRAGMENT.deleted);
     activatedRoute.snapshot.data = {
-      draftAccounts: OPAL_FINES_DRAFT_ACCOUNTS_MOCK,
-      deletedCount: 2,
+      [FINES_DRAFT_ROUTE_DATA_KEYS.draftAccounts]: OPAL_FINES_DRAFT_ACCOUNTS_MOCK,
     };
 
     mockOpalFinesService.getDraftAccounts.mockReturnValue(of(OPAL_FINES_DRAFT_ACCOUNTS_MOCK));
@@ -293,7 +333,7 @@ describe('FinesDraftCreateAndManageTabsComponent', () => {
     const tabData = await firstValueFrom(component.tabData$);
     expect(mockOpalFinesService.getDraftAccounts).toHaveBeenCalledWith({
       businessUnitIds: OPAL_USER_STATE_MOCK.business_unit_users.map((u) => u.business_unit_id),
-      statuses: ['Deleted'],
+      statuses: [OPAL_FINES_DRAFT_ACCOUNT_STATUSES.deleted],
       submittedBy: OPAL_USER_STATE_MOCK.business_unit_users.map((u) => u.business_unit_user_id),
       accountStatusDateFrom: ['2023-01-01'],
       accountStatusDateTo: ['2023-01-07'],
@@ -333,7 +373,7 @@ describe('FinesDraftCreateAndManageTabsComponent', () => {
   });
 
   it('should use the relevant table sorting based when the active tab is APPROVED', () => {
-    activatedRoute.fragment = of('approved');
+    activatedRoute.fragment = of(FINES_DRAFT_TAB_FRAGMENT.approved);
     fixture = TestBed.createComponent(FinesDraftCreateAndManageTabsComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
@@ -342,7 +382,7 @@ describe('FinesDraftCreateAndManageTabsComponent', () => {
   });
 
   it('should use the relevant table sorting based when the active tab is DELETED', () => {
-    activatedRoute.fragment = of('deleted');
+    activatedRoute.fragment = of(FINES_DRAFT_TAB_FRAGMENT.deleted);
     fixture = TestBed.createComponent(FinesDraftCreateAndManageTabsComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
@@ -351,7 +391,7 @@ describe('FinesDraftCreateAndManageTabsComponent', () => {
   });
 
   it('should use the relevant table sorting based when the active tab is IN REVIEW', () => {
-    activatedRoute.fragment = of('in review');
+    activatedRoute.fragment = of(FINES_DRAFT_TAB_FRAGMENT.review);
     fixture = TestBed.createComponent(FinesDraftCreateAndManageTabsComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();

@@ -13,6 +13,7 @@ import { IOpalFinesDraftAccountsResponse } from '@services/fines/opal-fines-serv
 import { IFinesDraftTabStatuses } from '../../interfaces/fines-draft-tab-statuses.interface';
 import { DateService } from '@hmcts/opal-frontend-common/services/date-service';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
+import { FINES_DRAFT_TAB_FRAGMENT } from '../../constants/fines-draft-tab-fragments.constant';
 
 describe('finesDraftTabResolver', () => {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -98,6 +99,23 @@ describe('finesDraftTabResolver', () => {
     expect(opalFinesServiceMock.getDraftAccounts).not.toHaveBeenCalled();
   });
 
+  it('should use defaultTab when fragment is null and useFragmentForStatuses is true', async () => {
+    opalFinesServiceMock.getDraftAccounts.mockReturnValue(of(structuredClone(OPAL_FINES_DRAFT_ACCOUNTS_MOCK)));
+
+    const tab = FINES_DRAFT_TAB_STATUSES[0];
+    const result = await runResolverWithOptions(
+      { useFragmentForStatuses: true, defaultTab: tab.tab, includeSubmittedBy: true },
+      null,
+    );
+
+    expect(opalFinesServiceMock.getDraftAccounts).toHaveBeenCalledWith({
+      businessUnitIds: OPAL_USER_STATE_MOCK.business_unit_users.map((u) => u.business_unit_id),
+      statuses: tab.statuses,
+      submittedBy: OPAL_USER_STATE_MOCK.business_unit_users.map((u) => u.business_unit_user_id),
+    });
+    expect(result).toEqual(OPAL_FINES_DRAFT_ACCOUNTS_MOCK);
+  });
+
   it('should return empty response when no statuses are resolved and no default provided', async () => {
     const result = await runResolverWithOptions({ useFragmentForStatuses: false }, null);
 
@@ -120,7 +138,9 @@ describe('finesDraftTabResolver', () => {
 
   it('should include accountStatusDateFrom and accountStatusDateTo if historicWindowInDays is set', async () => {
     // Find a tab and set historicWindowInDays for this test
-    const tab = FINES_DRAFT_TAB_STATUSES.find((t) => t.tab === 'deleted') as IFinesDraftTabStatuses;
+    const tab = FINES_DRAFT_TAB_STATUSES.find(
+      (t) => t.tab === FINES_DRAFT_TAB_FRAGMENT.deleted,
+    ) as IFinesDraftTabStatuses;
     const originalHistoricWindow = tab.historicWindowInDays;
     tab.historicWindowInDays = 7;
 

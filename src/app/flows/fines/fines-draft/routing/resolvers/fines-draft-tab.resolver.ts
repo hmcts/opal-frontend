@@ -10,10 +10,17 @@ import { FinesDraftResolverOptions } from './interfaces/fines-draft-resolver-opt
 import { FINES_DRAFT_RESOLVER_EMPTY_RESPONSE } from './constants/fines-draft-resolver-empty-response.constant';
 import { DateService } from '@hmcts/opal-frontend-common/services/date-service';
 import { IDateRange } from '@hmcts/opal-frontend-common/services/date-service/interfaces';
+import { buildFinesDraftAccountParams } from '../../utils/fines-draft-account-params.utils';
 
+/**
+ * Resolves draft accounts for the active or default draft tab.
+ *
+ * @param options - Controls which statuses and user filters are applied to the resolver request.
+ * @returns A resolver that fetches the active tab response or an empty response when no statuses can be resolved.
+ */
 export function finesDraftTabResolver(options: FinesDraftResolverOptions): ResolveFn<IOpalFinesDraftAccountsResponse> {
   return (route: ActivatedRouteSnapshot) => {
-    const fragment = route.fragment;
+    const fragment = route.fragment ?? options.defaultTab;
     const tab = FINES_DRAFT_TAB_STATUSES.find((_tab) => _tab.tab === fragment);
     const statuses =
       options.useFragmentForStatuses && fragment ? (tab?.statuses ?? null) : (options.defaultStatuses ?? null);
@@ -24,23 +31,12 @@ export function finesDraftTabResolver(options: FinesDraftResolverOptions): Resol
 
     const opalFinesService = inject(OpalFines);
     const globalStore = inject(GlobalStore);
-    const userState = globalStore.userState();
     const dateService = inject(DateService);
-    const businessUnitIds = userState.business_unit_users.map((u) => u.business_unit_id);
-    const businessUnitUserIds = userState.business_unit_users.map((u) => u.business_unit_user_id);
 
-    const params: IOpalFinesDraftAccountParams = {
-      businessUnitIds,
+    const params: IOpalFinesDraftAccountParams = buildFinesDraftAccountParams(globalStore.userState(), {
+      ...options,
       statuses,
-    };
-
-    if (options.includeSubmittedBy) {
-      params.submittedBy = businessUnitUserIds;
-    }
-
-    if (options.includeNotSubmittedBy) {
-      params.notSubmittedBy = businessUnitUserIds;
-    }
+    });
 
     // If the tab has a historic window, set and add the date range to params
     if (tab?.historicWindowInDays) {

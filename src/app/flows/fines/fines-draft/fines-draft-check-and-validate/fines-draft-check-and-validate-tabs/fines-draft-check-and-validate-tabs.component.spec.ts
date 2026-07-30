@@ -3,7 +3,7 @@ import { FinesDraftCheckAndValidateTabsComponent } from './fines-draft-check-and
 import { ActivatedRoute } from '@angular/router';
 import { GlobalStoreType } from '@hmcts/opal-frontend-common/stores/global/types';
 import { OpalFines } from '@services/fines/opal-fines-service/opal-fines.service';
-import { firstValueFrom, of, take } from 'rxjs';
+import { firstValueFrom, of, Subject, take } from 'rxjs';
 import { FinesDraftService } from '../../services/fines-draft.service';
 import { OPAL_FINES_DRAFT_ACCOUNTS_MOCK } from '@services/fines/opal-fines-service/mocks/opal-fines-draft-accounts.mock';
 import { FinesMacPayloadService } from '../../../fines-mac/services/fines-mac-payload/fines-mac-payload.service';
@@ -17,6 +17,9 @@ import { FINES_ROUTING_PATHS } from '@routing/fines/constants/fines-routing-path
 import { FINES_ACC_DEFENDANT_ROUTING_PATHS } from '../../../fines-acc/routing/constants/fines-acc-defendant-routing-paths.constant';
 import { OPAL_USER_STATE_MOCK } from '@hmcts/opal-frontend-common/services/opal-user-service/mocks';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
+import { OPAL_FINES_DRAFT_ACCOUNT_STATUSES } from '@services/fines/opal-fines-service/constants/opal-fines-draft-account-statues.constant';
+import { FINES_DRAFT_TAB_FRAGMENT } from '../../constants/fines-draft-tab-fragments.constant';
+import { FINES_DRAFT_ROUTE_DATA_KEYS } from '../../constants/fines-draft-route-data-keys.constant';
 
 describe('FinesDraftCheckAndValidateTabsComponent', () => {
   let component: FinesDraftCheckAndValidateTabsComponent;
@@ -68,9 +71,10 @@ describe('FinesDraftCheckAndValidateTabsComponent', () => {
         {
           provide: ActivatedRoute,
           useValue: {
-            fragment: of('review'),
+            fragment: of(FINES_DRAFT_TAB_FRAGMENT.toReview),
             snapshot: {
-              fragment: 'to-review',
+              fragment: FINES_DRAFT_TAB_FRAGMENT.toReview,
+              data: {},
             },
           },
         },
@@ -105,12 +109,71 @@ describe('FinesDraftCheckAndValidateTabsComponent', () => {
     });
   });
 
+  it('should use resolved tab data and failed count on initial load without extra API calls', async () => {
+    finesDraftService.populateTableData.mockReturnValue(FINES_DRAFT_TABLE_WRAPPER_TABLE_DATA_MOCK);
+    component.activatedRoute.fragment = of(FINES_DRAFT_TAB_FRAGMENT.toReview);
+    component.activatedRoute.snapshot.fragment = FINES_DRAFT_TAB_FRAGMENT.toReview;
+    component.activatedRoute.snapshot.data = {
+      [FINES_DRAFT_ROUTE_DATA_KEYS.draftAccounts]: OPAL_FINES_DRAFT_ACCOUNTS_MOCK,
+      [FINES_DRAFT_ROUTE_DATA_KEYS.failedCount]: 100,
+    };
+
+    mockOpalFinesService.getDraftAccounts.mockClear();
+
+    fixture = TestBed.createComponent(FinesDraftCheckAndValidateTabsComponent);
+    component = fixture.componentInstance;
+    component.ngOnInit();
+
+    const tabData = await firstValueFrom(component.tabData$);
+    const failedCount = await firstValueFrom(component.failedCount$);
+
+    expect(tabData).toEqual(FINES_DRAFT_TABLE_WRAPPER_TABLE_DATA_MOCK);
+    expect(failedCount).toBe('99+');
+    expect(finesDraftService.populateTableData).toHaveBeenCalledWith(OPAL_FINES_DRAFT_ACCOUNTS_MOCK);
+    expect(mockOpalFinesService.getDraftAccounts).not.toHaveBeenCalled();
+  });
+
+  it('should fetch only the selected tab data on tab change', () => {
+    const fragmentSubject = new Subject<string | null>();
+    finesDraftService.populateTableData.mockReturnValue(FINES_DRAFT_TABLE_WRAPPER_TABLE_DATA_MOCK);
+    component.activatedRoute.fragment = fragmentSubject.asObservable();
+    component.activatedRoute.snapshot.fragment = FINES_DRAFT_TAB_FRAGMENT.toReview;
+    component.activatedRoute.snapshot.data = {
+      [FINES_DRAFT_ROUTE_DATA_KEYS.draftAccounts]: OPAL_FINES_DRAFT_ACCOUNTS_MOCK,
+      [FINES_DRAFT_ROUTE_DATA_KEYS.failedCount]: 2,
+    };
+
+    mockOpalFinesService.getDraftAccounts.mockReturnValue(of(OPAL_FINES_DRAFT_ACCOUNTS_MOCK));
+    mockOpalFinesService.getDraftAccounts.mockClear();
+    mockOpalFinesService.clearCache.mockClear();
+
+    fixture = TestBed.createComponent(FinesDraftCheckAndValidateTabsComponent);
+    component = fixture.componentInstance;
+    component.ngOnInit();
+
+    const subscription = component.tabData$.subscribe();
+    const countSubscription = component.failedCount$.subscribe();
+    mockOpalFinesService.getDraftAccounts.mockClear();
+
+    fragmentSubject.next(FINES_DRAFT_TAB_FRAGMENT.failed);
+
+    expect(mockOpalFinesService.getDraftAccounts).toHaveBeenCalledTimes(1);
+    expect(mockOpalFinesService.getDraftAccounts).toHaveBeenCalledWith({
+      businessUnitIds: OPAL_USER_STATE_MOCK.business_unit_users.map((u) => u.business_unit_id),
+      statuses: [OPAL_FINES_DRAFT_ACCOUNT_STATUSES.publishFailed],
+      notSubmittedBy: OPAL_USER_STATE_MOCK.business_unit_users.map((u) => u.business_unit_user_id),
+    });
+    expect(mockOpalFinesService.clearCache).not.toHaveBeenCalled();
+
+    subscription.unsubscribe();
+    countSubscription.unsubscribe();
+  });
+
   it('should pass additional params for historicWindowInDays if set on this tab', async () => {
     finesDraftService.populateTableData.mockReturnValue(FINES_DRAFT_TABLE_WRAPPER_TABLE_DATA_MOCK);
-    component.activatedRoute.fragment = of('deleted');
+    component.activatedRoute.fragment = of(FINES_DRAFT_TAB_FRAGMENT.deleted);
     component.activatedRoute.snapshot.data = {
-      draftAccounts: OPAL_FINES_DRAFT_ACCOUNTS_MOCK,
-      deletedCount: 2,
+      [FINES_DRAFT_ROUTE_DATA_KEYS.draftAccounts]: OPAL_FINES_DRAFT_ACCOUNTS_MOCK,
     };
 
     mockOpalFinesService.getDraftAccounts.mockReturnValue(of(OPAL_FINES_DRAFT_ACCOUNTS_MOCK));
@@ -124,7 +187,7 @@ describe('FinesDraftCheckAndValidateTabsComponent', () => {
     const tabData = await firstValueFrom(component.tabData$);
     expect(mockOpalFinesService.getDraftAccounts).toHaveBeenCalledWith({
       businessUnitIds: OPAL_USER_STATE_MOCK.business_unit_users.map((u) => u.business_unit_id),
-      statuses: ['Deleted'],
+      statuses: [OPAL_FINES_DRAFT_ACCOUNT_STATUSES.deleted],
       notSubmittedBy: OPAL_USER_STATE_MOCK.business_unit_users.map((u) => u.business_unit_user_id),
       accountStatusDateFrom: ['2023-01-01'],
       accountStatusDateTo: ['2023-01-07'],
@@ -134,11 +197,11 @@ describe('FinesDraftCheckAndValidateTabsComponent', () => {
   });
 
   it('should test onDefendantClick and set fragment and checker and call onDefendantClick with PATH_REVIEW_ACCOUNT when activeTab is "to-review"', () => {
-    component.activeTab = 'to-review';
+    component.activeTab = FINES_DRAFT_TAB_FRAGMENT.toReview;
 
     component.onDefendantClick(FINES_DRAFT_TABLE_WRAPPER_TABLE_DATA_MOCK[0]);
 
-    expect(finesDraftStore.fragment()).toEqual('to-review');
+    expect(finesDraftStore.fragment()).toEqual(FINES_DRAFT_TAB_FRAGMENT.toReview);
     expect(finesDraftStore.checker()).toBeTruthy();
     expect(finesDraftService.onDefendantClick).toHaveBeenCalledWith(
       FINES_DRAFT_TABLE_WRAPPER_TABLE_DATA_MOCK[0]['Defendant id'],

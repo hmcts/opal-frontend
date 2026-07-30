@@ -4,7 +4,7 @@ import {
   MojSubNavigationItemComponent,
 } from '@hmcts/opal-frontend-common/components/moj/moj-sub-navigation';
 import { FinesDraftTableWrapperComponent } from '../../fines-draft-table-wrapper/fines-draft-table-wrapper.component';
-import { Observable, Subject } from 'rxjs';
+import { map, Observable, of, shareReplay, Subject } from 'rxjs';
 import { GlobalStore } from '@hmcts/opal-frontend-common/stores/global';
 import { FINES_DRAFT_CHECK_AND_VALIDATE_ROUTING_PATHS } from '../routing/constants/fines-draft-check-and-validate-routing-paths.constant';
 import {
@@ -33,6 +33,11 @@ import { FINES_ACC_ROUTING_PATHS } from '../../../fines-acc/routing/constants/fi
 import { FINES_ROUTING_PATHS } from '@routing/fines/constants/fines-routing-paths.constant';
 import { MojNotificationBadgeComponent } from '@hmcts/opal-frontend-common/components/moj/moj-notification-badge';
 import { FINES_ACC_DEFENDANT_ROUTING_PATHS } from '../../../fines-acc/routing/constants/fines-acc-defendant-routing-paths.constant';
+import { FINES_DRAFT_TAB_FRAGMENT } from '../../constants/fines-draft-tab-fragments.constant';
+import { FINES_DRAFT_ROUTE_DATA_KEYS } from '../../constants/fines-draft-route-data-keys.constant';
+import { getResolvedDraftAccounts, getResolvedOrFetchDraftCount } from '../../utils/fines-draft-route-data.utils';
+import { FINES_DRAFT_COUNT_DISPLAY } from '../../constants/fines-draft-count-display.constant';
+import { buildFinesDraftAccountParams } from '../../utils/fines-draft-account-params.utils';
 
 @Component({
   selector: 'app-fines-draft-check-and-validate-tabs',
@@ -56,15 +61,11 @@ export class FinesDraftCheckAndValidateTabsComponent extends AbstractTabData imp
   private readonly opalFinesService = inject(OpalFines);
   private readonly dateService = inject(DateService);
   private readonly userState = this.globalStore.userState();
-  private readonly businessUnitIds = this.userState.business_unit_users.map(
-    (business_unit_users) => business_unit_users.business_unit_id,
-  );
-  private readonly businessUnitUserIds = this.userState.business_unit_users.map(
-    (business_unit_users) => business_unit_users.business_unit_user_id,
-  );
 
   protected readonly finesDraftStore = inject(FinesDraftStore);
   protected readonly finesDraftCheckAndValidateRoutingPaths = FINES_DRAFT_CHECK_AND_VALIDATE_ROUTING_PATHS;
+  protected readonly finesDraftCountDisplay = FINES_DRAFT_COUNT_DISPLAY;
+  protected readonly finesDraftTabFragment = FINES_DRAFT_TAB_FRAGMENT;
 
   public readonly finesDraftService = inject(FinesDraftService);
   public tabData$!: Observable<IFinesDraftTableWrapperTableData[]>;
@@ -80,14 +81,14 @@ export class FinesDraftCheckAndValidateTabsComponent extends AbstractTabData imp
    *
    */
   private setupTabDataStream(): void {
-    const fragment$ = this.clearCacheOnTabChange(this.getFragmentStream('to-review', this.destroy$), () =>
-      this.opalFinesService.clearCache('draftAccountsCache$'),
-    );
+    const fragment$ = this.getFragmentStream(FINES_DRAFT_TAB_FRAGMENT.toReview, this.destroy$);
+    const resolvedDraftAccounts = getResolvedDraftAccounts(this.activatedRoute);
+    let useResolvedDraftAccounts = !!resolvedDraftAccounts;
 
     this.tabData$ = this.createTabDataStream<IOpalFinesDraftAccountsResponse, IFinesDraftTableWrapperTableData[]>(
       fragment$,
       (tab) => {
-        if (tab === 'deleted' || tab === 'failed') {
+        if (tab === FINES_DRAFT_TAB_FRAGMENT.deleted || tab === FINES_DRAFT_TAB_FRAGMENT.failed) {
           this.tableSort = FINES_DRAFT_TABLE_WRAPPER_SORT_DELETED;
         } else {
           this.tableSort = FINES_DRAFT_TABLE_WRAPPER_SORT_DEFAULT;
@@ -95,11 +96,10 @@ export class FinesDraftCheckAndValidateTabsComponent extends AbstractTabData imp
 
         const currentTab = FINES_DRAFT_TAB_STATUSES.find((t) => t.tab === tab);
 
-        const params: IOpalFinesDraftAccountParams = {
-          businessUnitIds: this.businessUnitIds,
+        const params: IOpalFinesDraftAccountParams = buildFinesDraftAccountParams(this.userState, {
           statuses: currentTab?.statuses,
-          notSubmittedBy: this.businessUnitUserIds,
-        };
+          includeNotSubmittedBy: true,
+        });
 
         if (currentTab?.historicWindowInDays) {
           const { from, to } = this.dateService.getDateRange(currentTab.historicWindowInDays, 0);
@@ -109,16 +109,23 @@ export class FinesDraftCheckAndValidateTabsComponent extends AbstractTabData imp
 
         return params;
       },
-      (params) => this.opalFinesService.getDraftAccounts(params),
+      (params) => {
+        if (useResolvedDraftAccounts && resolvedDraftAccounts) {
+          useResolvedDraftAccounts = false;
+          return of(resolvedDraftAccounts);
+        }
+
+        return this.opalFinesService.getDraftAccounts(params);
+      },
       (res) => this.finesDraftService.populateTableData(res),
-    );
+    ).pipe(shareReplay({ bufferSize: 1, refCount: true }));
   }
 
   /**
    * Initializes the `failedCount$` observable stream to track the number of draft accounts
    * with a "publishFailed" status. This method sets up the stream to:
-   * - Listen for tab changes and clear the draft accounts cache when the "to-review" fragment is active.
-   * - Fetch the count of draft accounts matching the specified business unit IDs, user IDs, and status.
+   * - Use the resolved failed count when route data is available.
+   * - Fall back to fetching the count matching the specified business unit IDs, user IDs, and status.
    * - Format the resulting count with a cap defined by `FINES_DRAFT_MAX_REJECTED`.
    *
    * The stream is automatically cleaned up when the component is destroyed.
@@ -126,20 +133,21 @@ export class FinesDraftCheckAndValidateTabsComponent extends AbstractTabData imp
    * @private
    */
   private setupFailedCountStream(): void {
-    const fragment$ = this.clearCacheOnTabChange(this.getFragmentStream('to-review', this.destroy$), () =>
-      this.opalFinesService.clearCache('draftAccountsCache$'),
+    const failedCount$ = getResolvedOrFetchDraftCount(
+      this.activatedRoute,
+      FINES_DRAFT_ROUTE_DATA_KEYS.failedCount,
+      () =>
+        this.opalFinesService.getDraftAccounts(
+          buildFinesDraftAccountParams(this.userState, {
+            statuses: [OPAL_FINES_DRAFT_ACCOUNT_STATUSES.publishFailed],
+            includeNotSubmittedBy: true,
+          }),
+        ),
     );
 
-    this.failedCount$ = this.createCountStream(
-      fragment$,
-      () => ({
-        businessUnitIds: this.businessUnitIds,
-        notSubmittedBy: this.businessUnitUserIds,
-        statuses: [OPAL_FINES_DRAFT_ACCOUNT_STATUSES.publishFailed],
-      }),
-      (params) => this.opalFinesService.getDraftAccounts(params),
-      (res) => res.count,
-      (count) => this.formatCountWithCap(count, FINES_DRAFT_MAX_REJECTED),
+    this.failedCount$ = failedCount$.pipe(
+      map((count) => this.formatCountWithCap(count, FINES_DRAFT_MAX_REJECTED)),
+      shareReplay({ bufferSize: 1, refCount: true }),
     );
   }
 
@@ -175,6 +183,9 @@ export class FinesDraftCheckAndValidateTabsComponent extends AbstractTabData imp
     ]);
   }
 
+  /**
+   * Resets draft state and initializes the tab data and failed count streams.
+   */
   public ngOnInit(): void {
     this.finesDraftStore.resetFineDraftState();
     this.finesDraftStore.resetFragmentAndChecker();
@@ -182,6 +193,9 @@ export class FinesDraftCheckAndValidateTabsComponent extends AbstractTabData imp
     this.setupFailedCountStream();
   }
 
+  /**
+   * Completes the component teardown stream used by route fragment subscriptions.
+   */
   public ngOnDestroy(): void {
     this.destroy$.next();
     this.destroy$.complete();
