@@ -131,7 +131,7 @@ When('I open the latest matching result from the Companies search results', () =
  */
 When('I set the browser viewport to {int} by {int}', (width: number, height: number) => {
   log('step', 'Setting browser viewport', { width, height });
-  cy.viewport(width, height);
+  accountEnquiryFlow().setResponsiveViewport(width, height);
 });
 
 /**
@@ -230,16 +230,7 @@ Then('I should see the remove parent or guardian details action', () => {
  */
 Then('the account details page should not horizontally overflow', () => {
   log('assert', 'Checking account details page does not horizontally overflow');
-
-  cy.window().then((win) => {
-    const { documentElement, body } = win.document;
-    const overflowTolerance = 25;
-
-    expect(documentElement.scrollWidth, 'document should not overflow viewport').to.be.at.most(
-      documentElement.clientWidth + overflowTolerance,
-    );
-    expect(body.scrollWidth, 'body should not overflow viewport').to.be.at.most(body.clientWidth + overflowTolerance);
-  });
+  accountEnquiryFlow().assertNoHorizontalOverflow();
 });
 
 /**
@@ -247,14 +238,12 @@ Then('the account details page should not horizontally overflow', () => {
  */
 Then('the account details summary columns should stack below the primary content', () => {
   log('assert', 'Checking account details summary columns stack below the primary content');
+  accountEnquiryFlow().assertAtAGlanceColumnsStacked();
+});
 
-  cy.get('div.govuk-grid-column-one-third').then(($columns) => {
-    expect($columns.length, 'expected three summary columns').to.be.gte(3);
-
-    const tops = [...$columns].slice(0, 3).map((column) => (column as HTMLElement).getBoundingClientRect().top);
-    expect(tops[1], 'middle column should stack below the first column').to.be.greaterThan(tops[0] - 1);
-    expect(tops[2], 'right column should stack below the first column').to.be.greaterThan(tops[0] - 1);
-  });
+Then('the account details header action should reflow below the account name', () => {
+  log('assert', 'Checking account details header action reflows below the account name');
+  accountEnquiryFlow().assertHeaderActionReflowsBelowTitle();
 });
 
 Then('I should not see the convert to company account action', () => {

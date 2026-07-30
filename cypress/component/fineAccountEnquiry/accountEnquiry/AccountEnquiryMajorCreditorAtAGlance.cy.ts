@@ -9,6 +9,8 @@ import { setupAccountEnquiryComponent } from './setup/SetupComponent';
 
 const ACCOUNT_ENQUIRY_JIRA_LABEL = '@JIRA-LABEL:account-enquiry';
 const MAJOR_CREDITOR_AT_A_GLANCE_COMPONENT = 'app-fines-acc-major-creditor-details-at-a-glance-tab';
+const MAJOR_CREDITOR_COLUMN = `${MAJOR_CREDITOR_AT_A_GLANCE_COMPONENT} .govuk-grid-column-one-third:has(h2.govuk-heading-s:contains("Major creditor"))`;
+const PAYOUT_STATUS_COLUMN = `${MAJOR_CREDITOR_AT_A_GLANCE_COMPONENT} .govuk-grid-column-one-third:has(h2.govuk-heading-s:contains("Payout status"))`;
 
 const buildTags = (...tags: string[]): string[] => [...tags, ACCOUNT_ENQUIRY_JIRA_LABEL, '@R1B'];
 
@@ -70,6 +72,50 @@ describe('Major Creditor Account Summary - At a Glance Tab', () => {
       cy.contains(DOM.sectionHeading, 'Major creditor').should('be.visible');
       cy.contains(DOM.sectionHeading, 'Payout status').should('be.visible');
       cy.get(DOM.readOnlyFields).should('not.exist');
+    },
+  );
+
+  it(
+    'AC1, AC2, AC3, AC7, AC8, AC9, AC10: reflows long major creditor content at 320px',
+    { tags: [...buildTags('@JIRA-STORY:PO-2673'), '@JIRA-EPIC:PO-2673'] },
+    () => {
+      cy.viewport(320, 900);
+
+      const header = structuredClone(FINES_ACC_MAJOR_CREDITOR_DETAILS_HEADER_MOCK);
+      const atAGlance = structuredClone(OPAL_FINES_ACCOUNT_MAJOR_CREDITOR_AT_A_GLANCE_MOCK);
+      const longName = 'A very long major creditor name that should wrap cleanly without clipping account details';
+
+      header.major_creditor.name = longName;
+      atAGlance.major_creditor.name = longName;
+      atAGlance.major_creditor.address.line_1 =
+        'A very long address line that should wrap cleanly without horizontal scrolling';
+
+      setupMajorCreditorAtAGlance(header, atAGlance);
+
+      cy.get(DOM.headingName).should('be.visible').and('contain.text', longName);
+      cy.get(DOM.accountInfo).should('be.visible');
+      cy.get(DOM.summaryMetricBar).should('be.visible');
+      cy.get(MAJOR_CREDITOR_AT_A_GLANCE_COMPONENT).should('be.visible');
+
+      cy.window().then((win) => {
+        const { body, documentElement } = win.document;
+
+        expect(documentElement.scrollWidth, 'document should not overflow viewport').to.be.at.most(
+          documentElement.clientWidth + 1,
+        );
+        expect(body.scrollWidth, 'body should not overflow viewport').to.be.at.most(body.clientWidth + 1);
+      });
+
+      cy.get(MAJOR_CREDITOR_COLUMN).then(($majorCreditorColumn) => {
+        const majorCreditorBottom = $majorCreditorColumn[0].getBoundingClientRect().bottom;
+
+        cy.get(PAYOUT_STATUS_COLUMN).then(($payoutStatusColumn) => {
+          expect(
+            $payoutStatusColumn[0].getBoundingClientRect().top,
+            'payout status should stack below major creditor',
+          ).to.be.at.least(majorCreditorBottom);
+        });
+      });
     },
   );
 

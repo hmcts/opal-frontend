@@ -86,6 +86,15 @@ export const AccountAtAGlanceLocators = {
       'app-fines-acc-defendant-details-at-a-glance-tab h2.govuk-heading-s:contains("Language preferences")',
   },
 
+  layout: {
+    defendantColumn:
+      'app-fines-acc-defendant-details-at-a-glance-tab .govuk-grid-column-one-third:has(h2.govuk-heading-s:contains("Defendant"))',
+    paymentTermsColumn:
+      'app-fines-acc-defendant-details-at-a-glance-tab .govuk-grid-column-one-third:has(h2.govuk-heading-s:contains("Payment terms"))',
+    enforcementStatusColumn:
+      'app-fines-acc-defendant-details-at-a-glance-tab .govuk-grid-column-one-third:has(h2.govuk-heading-s:contains("Enforcement status"))',
+  },
+
   // ──────────────────────────────
   // At a glance — Fields
   // ──────────────────────────────

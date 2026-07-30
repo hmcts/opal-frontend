@@ -31,6 +31,67 @@ const ACCOUNT_ENQUIRY_JIRA_LABEL = '@JIRA-LABEL:account-enquiry';
 
 const buildTags = (...tags: string[]): string[] => [...tags, ACCOUNT_ENQUIRY_JIRA_LABEL, '@R1B'];
 
+const assertHeaderActionsReflow = (): void => {
+  cy.get(DOM.headingName).then(($heading) => {
+    const headingBounds = $heading[0].getBoundingClientRect();
+
+    cy.get(DOM.headingCaption).then(($caption) => {
+      const captionBounds = $caption[0].getBoundingClientRect();
+      expect(captionBounds.left, 'account number caption should align with the account name').to.be.closeTo(
+        headingBounds.left,
+        1,
+      );
+
+      cy.get(DOM.addNoteButton).then(($button) => {
+        const buttonBounds = $button[0].getBoundingClientRect();
+
+        cy.get(DOM.moreOptionsButton).then(($moreOptionsButton) => {
+          const moreOptionsBounds = $moreOptionsButton[0].getBoundingClientRect();
+          const actionsOverlap =
+            buttonBounds.left < moreOptionsBounds.right &&
+            buttonBounds.right > moreOptionsBounds.left &&
+            buttonBounds.top < moreOptionsBounds.bottom &&
+            buttonBounds.bottom > moreOptionsBounds.top;
+
+          expect(buttonBounds.top, 'add account note button should be below the account name').to.be.at.least(
+            headingBounds.bottom,
+          );
+          expect(moreOptionsBounds.top, 'more options button should be below the account name').to.be.at.least(
+            headingBounds.bottom,
+          );
+          expect(buttonBounds.right, 'add account note button should be fully visible').to.be.at.most(320);
+          expect(moreOptionsBounds.right, 'more options button should be fully visible').to.be.at.most(320);
+          expect(actionsOverlap, 'header actions should not overlap').to.equal(false);
+
+          cy.get(DOM.accountInfo).then(($accountInfo) => {
+            const accountInfoBounds = $accountInfo[0].getBoundingClientRect();
+            const headerContentBottom = Math.max(headingBounds.bottom, buttonBounds.bottom, moreOptionsBounds.bottom);
+
+            expect(accountInfoBounds.top, 'account information should start below the complete header').to.be.at.least(
+              headerContentBottom,
+            );
+
+            cy.get(DOM.summaryMetricBar).then(($summaryMetricBar) => {
+              const summaryMetricBarBounds = $summaryMetricBar[0].getBoundingClientRect();
+              expect(
+                summaryMetricBarBounds.top,
+                'summary metrics should start below account information',
+              ).to.be.at.least(accountInfoBounds.bottom);
+
+              cy.get(DOM.subnav).then(($subnav) => {
+                expect(
+                  $subnav[0].getBoundingClientRect().top,
+                  'navigation should start below summary metrics',
+                ).to.be.at.least(summaryMetricBarBounds.bottom);
+              });
+            });
+          });
+        });
+      });
+    });
+  });
+};
+
 describe('Account Enquiry - Defendant Header', () => {
   beforeEach(() => {
     interceptAuthenticatedUser();
@@ -452,7 +513,7 @@ describe('Account Enquiry - Defendant Header', () => {
     'AC1, AC2, AC3, AC4, AC5, AC7, AC8, AC9, AC10: reflows the Account Details header at narrow widths with long names',
     { tags: [...buildTags('@JIRA-STORY:PO-2673'), '@JIRA-EPIC:PO-2673', '@JIRA-TEST-KEY:PO-2673'] },
     () => {
-      cy.viewport(375, 900);
+      cy.viewport(320, 900);
 
       const longHeader = createDefendantHeaderMockWithName(
         'A very long defendant forename that should wrap cleanly',
@@ -481,6 +542,8 @@ describe('Account Enquiry - Defendant Header', () => {
         );
         expect(body.scrollWidth, 'body should not overflow viewport').to.be.at.most(body.clientWidth + 1);
       });
+
+      assertHeaderActionsReflow();
     },
   );
 
@@ -488,7 +551,7 @@ describe('Account Enquiry - Defendant Header', () => {
     'AC1, AC2, AC3, AC4, AC5, AC7, AC8, AC9, AC10: keeps the header readable for a long company name at narrow widths',
     { tags: [...buildTags('@JIRA-STORY:PO-2673'), '@JIRA-EPIC:PO-2673', '@JIRA-TEST-KEY:PO-2674'] },
     () => {
-      cy.viewport(375, 900);
+      cy.viewport(320, 900);
 
       const longCompanyHeader = structuredClone(DEFENDANT_HEADER_ORG_MOCK);
       longCompanyHeader.party_details.organisation_details = {
@@ -521,6 +584,8 @@ describe('Account Enquiry - Defendant Header', () => {
         );
         expect(body.scrollWidth, 'body should not overflow viewport').to.be.at.most(body.clientWidth + 1);
       });
+
+      assertHeaderActionsReflow();
     },
   );
 
@@ -528,7 +593,7 @@ describe('Account Enquiry - Defendant Header', () => {
     'AC6: wraps the status chip content cleanly at narrow widths',
     { tags: [...buildTags('@JIRA-STORY:PO-2673'), '@JIRA-EPIC:PO-2673', '@JIRA-TEST-KEY:PO-2676'] },
     () => {
-      cy.viewport(375, 900);
+      cy.viewport(320, 900);
 
       const parentGuardianHeader = structuredClone(DEFENDANT_HEADER_MOCK);
       parentGuardianHeader.debtor_type = 'Parent/Guardian';
@@ -545,7 +610,17 @@ describe('Account Enquiry - Defendant Header', () => {
         .and('contain.text', 'Parent or Guardian to pay')
         .then(($tag) => {
           const el = $tag[0] as HTMLElement;
+          const tagBounds = el.getBoundingClientRect();
+          const containingRow = el.closest('.govuk-grid-column-full') as HTMLElement;
+
+          expect(el.innerText.trim(), 'status tag should render its complete label').to.equal(
+            'Parent or Guardian to pay',
+          );
           expect(el.scrollWidth, 'status tag should not overflow its box').to.be.at.most(el.clientWidth + 1);
+          expect(containingRow, 'status tag should have a containing row').to.exist;
+          expect(tagBounds.right, 'status tag should not overflow its containing row').to.be.at.most(
+            containingRow.getBoundingClientRect().right,
+          );
         });
     },
   );
@@ -554,7 +629,7 @@ describe('Account Enquiry - Defendant Header', () => {
     'AC8: stacks the summary columns below the primary content at narrow widths',
     { tags: [...buildTags('@JIRA-STORY:PO-2673'), '@JIRA-EPIC:PO-2673', '@JIRA-TEST-KEY:PO-2677'] },
     () => {
-      cy.viewport(375, 900);
+      cy.viewport(320, 900);
 
       const longHeader = structuredClone(DEFENDANT_HEADER_MOCK);
       longHeader.party_details.individual_details = {
@@ -574,12 +649,22 @@ describe('Account Enquiry - Defendant Header', () => {
       cy.get(DOM.summaryMetricBar).should('be.visible');
       cy.get(DOM.subnav).should('be.visible');
 
-      cy.get('div.govuk-grid-column-one-third').then(($columns) => {
-        expect($columns.length, 'expected three summary columns').to.be.gte(3);
+      cy.get(A.layout.defendantColumn).then(($defendantColumn) => {
+        const defendantBottom = $defendantColumn[0].getBoundingClientRect().bottom;
 
-        const tops = [...$columns].slice(0, 3).map((column) => (column as HTMLElement).getBoundingClientRect().top);
-        expect(tops[1], 'middle column should stack below the first column').to.be.greaterThan(tops[0] - 1);
-        expect(tops[2], 'right column should stack below the first column').to.be.greaterThan(tops[0] - 1);
+        cy.get(A.layout.paymentTermsColumn).then(($paymentTermsColumn) => {
+          const paymentTermsBounds = $paymentTermsColumn[0].getBoundingClientRect();
+          expect(paymentTermsBounds.top, 'payment terms should start below defendant details').to.be.at.least(
+            defendantBottom,
+          );
+
+          cy.get(A.layout.enforcementStatusColumn).then(($enforcementStatusColumn) => {
+            expect(
+              $enforcementStatusColumn[0].getBoundingClientRect().top,
+              'enforcement status should start below payment terms',
+            ).to.be.at.least(paymentTermsBounds.bottom);
+          });
+        });
       });
     },
   );

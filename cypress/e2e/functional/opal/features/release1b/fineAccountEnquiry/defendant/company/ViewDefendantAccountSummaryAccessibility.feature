@@ -47,8 +47,9 @@ Feature: Defendant - Company - View Defendant Account Summary - Add Comments Acc
       | account.collection_order_made_today | false                                                            |
       | account.payment_card_request        | false                                                            |
     When I open the company account details for "A very long company name that should wrap cleanly without issue"
-    And I set the browser viewport to 375 by 900
+    And I set the browser viewport to 320 by 900
     Then the account details page should not horizontally overflow
     And the account details summary columns should stack below the primary content
+    And the account details header action should reflow below the account name
     And I should see the page header contains "A very long company name that should wrap cleanly without issue"
     And I check the page for accessibility

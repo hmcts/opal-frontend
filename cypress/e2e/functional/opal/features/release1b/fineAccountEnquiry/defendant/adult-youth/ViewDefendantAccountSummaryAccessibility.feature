@@ -51,8 +51,9 @@ Feature: Defendant - Adult or youth - View Defendant Account Summary - Add Comme
       | account.payment_card_request            | false                                                          |
       | account.defendant.dob                   | 2002-05-15                                                     |
     And I search for the account by last name "WrapCleanly{uniq}" and open the latest result
-    And I set the browser viewport to 375 by 900
+    And I set the browser viewport to 320 by 900
     Then the account details page should not horizontally overflow
     And the account details summary columns should stack below the primary content
+    And the account details header action should reflow below the account name
     And I should see the page header contains "A very long first name that should wrap cleanly"
     And I check the page for accessibility

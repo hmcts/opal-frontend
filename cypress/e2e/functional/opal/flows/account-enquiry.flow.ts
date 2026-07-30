@@ -13,6 +13,7 @@ import { AccountDetailsMinorCreditorActions } from '../actions/account-details/d
 import { AccountDetailsPaymentTermsActions } from '../actions/account-details/details.payment-terms.actions';
 import { AccountDetailsFixedPenaltyActions } from '../actions/account-details/details.fixed-penalty.actions';
 import { AccountDetailsHistoryActions } from '../actions/account-details/details.history.actions';
+import { AccountDetailsResponsiveLayoutActions } from '../actions/account-details/details.responsive-layout.actions';
 import { AccountSearchIndividualsLocators as L } from '../../../../shared/selectors/account-search/account.search.individuals.locators';
 import { AccountSearchCompaniesLocators as C } from '../../../../shared/selectors/account-search/account.search.companies.locators';
 import { ForceSingleTabNavigation } from '../../../../support/utils/navigation';
@@ -95,6 +96,7 @@ export class AccountEnquiryFlow {
   private readonly enforcement = new AccountDetailsEnforcementActions();
   private readonly removeParentGuardian = new RemoveParentGuardianActions();
   private readonly historyAndNotes = new AccountDetailsHistoryActions();
+  private readonly responsiveLayout = new AccountDetailsResponsiveLayoutActions();
 
   /**
    * Ensures the test is on the Individuals Account Search page.
@@ -254,6 +256,31 @@ export class AccountEnquiryFlow {
       logAE('navigate', 'Visiting published account details directly', { accountId, path });
       cy.visit(path);
     });
+  }
+
+  /**
+   * Sets the browser viewport used for Account Details responsive checks.
+   *
+   * @param width - Viewport width in CSS pixels.
+   * @param height - Viewport height in CSS pixels.
+   */
+  public setResponsiveViewport(width: number, height: number): void {
+    this.responsiveLayout.setViewport(width, height);
+  }
+
+  /** Asserts that Account Details has no horizontal overflow at the current viewport. */
+  public assertNoHorizontalOverflow(): void {
+    this.responsiveLayout.assertNoHorizontalOverflow();
+  }
+
+  /** Asserts that the header action reflows below the account title. */
+  public assertHeaderActionReflowsBelowTitle(): void {
+    this.responsiveLayout.assertHeaderActionReflowsBelowTitle();
+  }
+
+  /** Asserts that the At a glance content columns stack vertically. */
+  public assertAtAGlanceColumnsStacked(): void {
+    this.responsiveLayout.assertAtAGlanceColumnsStacked();
   }
 
   /**
