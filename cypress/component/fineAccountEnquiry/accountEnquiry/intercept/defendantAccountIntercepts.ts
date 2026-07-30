@@ -5,6 +5,7 @@ import { IOpalFinesAccountDefendantDetailsFixedPenaltyTabRefData } from '@servic
 import { IOpalFinesAccountDefendantDetailsHistoryAndNotesTabRefData } from '@services/fines/opal-fines-service/interfaces/opal-fines-account-defendant-details-history-and-notes-tab-ref-data.interface';
 import { IOpalFinesAccountDefendantDetailsImpositionsTabRefData } from '@services/fines/opal-fines-service/interfaces/opal-fines-account-defendant-details-impositions-tab-ref-data.interface';
 import { IOpalFinesAccountDefendantDetailsPaymentTermsLatest } from '@services/fines/opal-fines-service/interfaces/opal-fines-account-defendant-details-payment-terms-latest.interface';
+import { IOpalFinesAccountDefendantDetailsConsolidatedAccount } from 'src/app/flows/fines/services/opal-fines-service/interfaces/opal-fines-account-defendant-account-consolidated-account.interface';
 import { IOpalFinesAccountMinorCreditorAtAGlance } from 'src/app/flows/fines/services/opal-fines-service/interfaces/opal-fines-account-minor-creditor-at-a-glance.interface';
 import { IOpalFinesAccountMinorCreditorCreditor } from 'src/app/flows/fines/services/opal-fines-service/interfaces/opal-fines-account-minor-creditor-creditor.interface';
 import { IOpalFinesAccountDefendantDetailsHeader } from 'src/app/flows/fines/fines-acc/fines-acc-defendant-details/interfaces/fines-acc-defendant-details-header.interface';
@@ -29,19 +30,27 @@ export function interceptAddNotes() {
 }
 
 /**
- * Intercepts the GET request to the defendant accounts "at-a-glance" endpoint and mocks the response.
+ * Intercepts the GET request to the defendant accounts "consolidated-accounts" endpoint and mocks the response.
  *
  * @param accountId - The unique identifier for the account.
- * @param mockData - The mock data to be returned in the response body.
+ * @param consolidatedAccounts - The consolidated accounts to be returned in the response body.
  * @param respHeaderEtag - The value to set for the ETag response header.
- * @returns Cypress chainable object with the intercepted request aliased as 'getAtAGlance'.
- * @example
- * ```typescript
- * const mockAtAGlance: IOpalFinesAccountDefendantAtAGlance = structuredClone(OPAL_FINES_ACCOUNT_DEFENDANT_AT_A_GLANCE_MOCK);
- * interceptAtAGlance(mockAtAGlance, 'W/"123456"');
- * cy.wait('@getAtAGlance');
- * ```
+ * @returns Cypress chainable object with the intercepted request aliased as 'getConsolidatedAccounts'.
  */
+export function interceptConsolidatedAccounts(
+  accountId: string | number,
+  consolidatedAccounts: IOpalFinesAccountDefendantDetailsConsolidatedAccount[],
+  respHeaderEtag: string,
+) {
+  return cy
+    .intercept('GET', `**/defendant-accounts/${accountId}/consolidated-accounts`, {
+      statusCode: 200,
+      headers: { ETag: respHeaderEtag },
+      body: consolidatedAccounts,
+    })
+    .as('getConsolidatedAccounts');
+}
+
 export function interceptAtAGlance(
   accountId: number,
   mockData: IOpalFinesAccountDefendantAtAGlance,

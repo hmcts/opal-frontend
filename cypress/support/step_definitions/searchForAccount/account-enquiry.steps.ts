@@ -489,11 +489,35 @@ When('I go to the History and notes tab', () => {
 });
 
 /**
- * @step Navigates to the Consolidated accounts tab.
+ * @step Views the Consolidated accounts tab.
  */
-When('I go to the Consolidated accounts tab', () => {
-  log('step', 'Navigate to Consolidated accounts tab');
+When('I view the Consolidated accounts tab', () => {
+  log('step', 'View Consolidated accounts tab');
   flow().goToConsolidatedAccountsTab();
+});
+
+/**
+ * @step Verifies the consolidated accounts table shows child account rows.
+ */
+Then('I can see a table containing the child accounts', () => {
+  log('assert', 'Consolidated accounts table contains child account rows');
+  flow().assertConsolidatedAccountsTableVisible();
+});
+
+/**
+ * @step Views the first child account record from the consolidated accounts table.
+ */
+When('I view the first child account record', () => {
+  log('step', 'View first child account record');
+  flow().openFirstConsolidatedAccountLinkAtAGlance();
+});
+
+/**
+ * @step Verifies the selected child account details are displayed.
+ */
+Then('I am presented with the details of the selected child account', () => {
+  log('assert', 'Selected child account details are displayed');
+  flow().assertSelectedChildAccountDetailsVisible();
 });
 
 /**
@@ -526,14 +550,6 @@ Then('I should only see Note items in History and notes', () => {
 When('I open the first History and notes account link in a new tab', () => {
   log('step', 'Open first History and notes account link in a new tab');
   flow().openHistoryAndNotesAccountLinkInNewTab();
-});
-
-/**
- * @step Opens the first consolidated account link and verifies the At a glance route.
- */
-When('I open the first Consolidated accounts link at the At a glance view', () => {
-  log('step', 'Open first Consolidated accounts link at the At a glance view');
-  flow().openFirstConsolidatedAccountLinkAtAGlance();
 });
 
 /**

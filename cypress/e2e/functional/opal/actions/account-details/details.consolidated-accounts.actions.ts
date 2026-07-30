@@ -1,8 +1,7 @@
+import { ConsolidatedAccountsLocators } from '../../../../../shared/selectors/account-details/account.consolidated-accounts.locators';
 import { createScopedLogger } from '../../../../../support/utils/log.helper';
 
 const log = createScopedLogger('AccountDetailsConsolidatedAccountsActions');
-
-const accountCaptionSelector = 'opal-lib-govuk-heading-with-caption .govuk-caption-l';
 
 const CHILD_ACCOUNT = {
   account_id: 99000000990002,
@@ -19,7 +18,6 @@ const CHILD_ACCOUNT = {
  */
 export class AccountDetailsConsolidatedAccountsActions {
   private static readonly WAIT_MS = 15_000;
-  private static readonly tab = 'app-fines-acc-defendant-details-consolidated-accounts-tab';
 
   /**
    * Presents the supplied account as a master account with one consolidated child account.
@@ -113,24 +111,41 @@ export class AccountDetailsConsolidatedAccountsActions {
   }
 
   /**
+   * Asserts the consolidated accounts table is visible and contains child account rows.
+   */
+  public assertChildAccountsTableVisible(): void {
+    log('assert', 'Checking consolidated accounts table is visible');
+
+    cy.get(ConsolidatedAccountsLocators.tabRoot, {
+      timeout: AccountDetailsConsolidatedAccountsActions.WAIT_MS,
+    }).should('be.visible');
+    cy.get(ConsolidatedAccountsLocators.tableRows, {
+      timeout: AccountDetailsConsolidatedAccountsActions.WAIT_MS,
+    }).should('have.length.at.least', 1);
+    cy.get(ConsolidatedAccountsLocators.firstChildAccountLink(0))
+      .should('be.visible')
+      .and('contain.text', CHILD_ACCOUNT.account_number);
+  }
+
+  /**
    * Opens the Consolidated accounts tab and waits for its table payload.
    */
   public openTab(): void {
     log('navigate', 'Opening Consolidated accounts tab');
 
-    cy.get('li[subnavitemid="consolidated-accounts-tab"] > a.moj-sub-navigation__link', {
+    cy.get(ConsolidatedAccountsLocators.tabLink, {
       timeout: AccountDetailsConsolidatedAccountsActions.WAIT_MS,
     })
       .should('be.visible')
       .click();
 
-    cy.get('a.moj-sub-navigation__link[aria-current="page"]')
+    cy.get(ConsolidatedAccountsLocators.activeTabLink)
       .should('be.visible')
       .and('contain.text', 'Consolidated accounts');
     cy.wait('@consolidatedAccounts', { timeout: AccountDetailsConsolidatedAccountsActions.WAIT_MS })
       .its('response.statusCode')
       .should('eq', 200);
-    cy.get(AccountDetailsConsolidatedAccountsActions.tab, {
+    cy.get(ConsolidatedAccountsLocators.tabRoot, {
       timeout: AccountDetailsConsolidatedAccountsActions.WAIT_MS,
     }).should('be.visible');
   }
@@ -141,7 +156,9 @@ export class AccountDetailsConsolidatedAccountsActions {
   public openFirstChildAtAGlance(): void {
     log('open', 'Opening first consolidated child account at At a glance');
 
-    cy.get('#consolidated-account-number-0 a', { timeout: AccountDetailsConsolidatedAccountsActions.WAIT_MS })
+    cy.get(ConsolidatedAccountsLocators.firstChildAccountLink(0), {
+      timeout: AccountDetailsConsolidatedAccountsActions.WAIT_MS,
+    })
       .should('be.visible')
       .and('contain.text', CHILD_ACCOUNT.account_number)
       .and(($link) => {
@@ -161,7 +178,18 @@ export class AccountDetailsConsolidatedAccountsActions {
     cy.wait('@consolidatedChildAtAGlance', { timeout: AccountDetailsConsolidatedAccountsActions.WAIT_MS })
       .its('response.statusCode')
       .should('eq', 200);
-    cy.get(accountCaptionSelector, { timeout: AccountDetailsConsolidatedAccountsActions.WAIT_MS })
+    cy.get(ConsolidatedAccountsLocators.headerCaption, { timeout: AccountDetailsConsolidatedAccountsActions.WAIT_MS })
+      .should('be.visible')
+      .and('contain.text', CHILD_ACCOUNT.account_number);
+  }
+
+  /**
+   * Asserts the selected child account details are shown for the opened record.
+   */
+  public assertSelectedChildAccountDetailsVisible(): void {
+    log('assert', 'Checking selected child account details are visible');
+
+    cy.get(ConsolidatedAccountsLocators.headerCaption, { timeout: AccountDetailsConsolidatedAccountsActions.WAIT_MS })
       .should('be.visible')
       .and('contain.text', CHILD_ACCOUNT.account_number);
   }

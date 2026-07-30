@@ -693,6 +693,14 @@ export class AccountEnquiryFlow {
   }
 
   /**
+   * Asserts the consolidated accounts table is visible.
+   */
+  public assertConsolidatedAccountsTableVisible(): void {
+    logAE('method', 'assertConsolidatedAccountsTableVisible()');
+    this.consolidatedAccounts.assertChildAccountsTableVisible();
+  }
+
+  /**
    * Navigates to the Consolidated accounts tab and asserts it has loaded.
    */
   public goToConsolidatedAccountsTab(): void {
@@ -707,6 +715,14 @@ export class AccountEnquiryFlow {
     logAE('method', 'openFirstConsolidatedAccountLinkAtAGlance()');
     this.consolidatedAccounts.openFirstChildAtAGlance();
     this.detailsNav.assertAtAGlanceTabIsActive();
+  }
+
+  /**
+   * Asserts the selected child account details are displayed.
+   */
+  public assertSelectedChildAccountDetailsVisible(): void {
+    logAE('method', 'assertSelectedChildAccountDetailsVisible()');
+    this.consolidatedAccounts.assertSelectedChildAccountDetailsVisible();
   }
 
   /**

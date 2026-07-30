@@ -1,8 +1,9 @@
 import { OPAL_FINES_ACCOUNT_DEFENDANT_DETAILS_CONSOLIDATED_ACCOUNTS_MOCK } from '@services/fines/opal-fines-service/mocks/opal-fines-account-defendant-details-consolidated-accounts.mock';
 import { interceptAuthenticatedUser, interceptUserState } from 'cypress/component/CommonIntercepts/CommonIntercepts';
 import { USER_STATE_MOCK_PERMISSION_BU77 } from '../../CommonIntercepts/CommonUserState.mocks';
+import { ConsolidatedAccountsLocators } from '../../../shared/selectors/account-details/account.consolidated-accounts.locators';
 import { DEFENDANT_HEADER_MOCK } from './mocks/defendant_details_mock';
-import { interceptDefendantHeader } from './intercept/defendantAccountIntercepts';
+import { interceptConsolidatedAccounts, interceptDefendantHeader } from './intercept/defendantAccountIntercepts';
 import { IComponentProperties } from './setup/setupComponent.interface';
 import { setupAccountEnquiryComponent } from './setup/SetupComponent';
 
@@ -16,11 +17,9 @@ const componentProperties: IComponentProperties = {
   interceptedRoutes: ['/access-denied'],
 };
 
-const tab = 'app-fines-acc-defendant-details-consolidated-accounts-tab';
-const rows = `${tab} tbody tr.govuk-table__row`;
 type ConsolidatedAccountsMock = typeof OPAL_FINES_ACCOUNT_DEFENDANT_DETAILS_CONSOLIDATED_ACCOUNTS_MOCK;
 
-const cell = (columnKey: string, rowIndex: number): string => `#consolidated-account-${columnKey}-${rowIndex}`;
+const cell = (columnKey: string, rowIndex: number): string => ConsolidatedAccountsLocators.cell(columnKey, rowIndex);
 const normaliseText = (value: string): string =>
   value
     .replace(/\u00A0/g, ' ')
@@ -69,11 +68,7 @@ const setupConsolidatedAccountsScreen = (mockData: ConsolidatedAccountsMock = co
   interceptAuthenticatedUser();
   interceptUserState(USER_STATE_MOCK_PERMISSION_BU77);
   interceptDefendantHeader(accountId, headerMock, '123');
-  cy.intercept('GET', `/opal-fines-service/defendant-accounts/${accountId}/consolidated-accounts`, {
-    statusCode: 200,
-    headers: { ETag: '123' },
-    body: mockData.consolidated_accounts,
-  }).as('getConsolidatedAccounts');
+  interceptConsolidatedAccounts(accountId, mockData.consolidated_accounts, '123');
 
   setupAccountEnquiryComponent({ ...componentProperties, accountId });
   cy.wait('@getConsolidatedAccounts').its('response.body').should('have.length', 2);
@@ -88,11 +83,11 @@ describe('Account Enquiry Consolidated Accounts Tab', () => {
     () => {
       setupConsolidatedAccountsScreen();
 
-      cy.get('[subnavitemid="consolidated-accounts-tab"] > .moj-sub-navigation__link')
+      cy.get(ConsolidatedAccountsLocators.tabLink)
         .should('have.attr', 'aria-current', 'page')
         .and('contain.text', 'Consolidated accounts');
-      cy.get(`${tab} h2`).should('contain.text', 'Consolidated accounts');
-      cy.get(`${tab} th.govuk-table__header`).then((headers) => {
+      cy.get(ConsolidatedAccountsLocators.heading).should('contain.text', 'Consolidated accounts');
+      cy.get(`${ConsolidatedAccountsLocators.tabRoot} th.govuk-table__header`).then((headers) => {
         expect([...headers].map((header) => normaliseText(header.textContent ?? ''))).to.deep.eq([
           'Account',
           'Name',
@@ -101,8 +96,8 @@ describe('Account Enquiry Consolidated Accounts Tab', () => {
           'Reference',
         ]);
       });
-      cy.get(rows).should('have.length', 2);
-      cy.get(tab).within(() => {
+      cy.get(ConsolidatedAccountsLocators.tableRows).should('have.length', 2);
+      cy.get(ConsolidatedAccountsLocators.tabRoot).within(() => {
         cy.get('input, textarea, select, button, [contenteditable="true"]').should('not.exist');
       });
 
