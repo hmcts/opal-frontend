@@ -243,7 +243,7 @@ describe('FinesMacStore', () => {
     ];
     store.setFinesMacStore(finesMacState);
 
-    expect(store.getEarliestDateOfSentence()).toEqual(null);
+    expect(store.getEarliestDateOfSentence()).toBeNull();
   });
 
   it('should test earliest date of sentence return a null (empty offence details)', () => {
@@ -251,7 +251,7 @@ describe('FinesMacStore', () => {
     finesMacState.offenceDetails = [];
     store.setFinesMacStore(finesMacState);
 
-    expect(store.getEarliestDateOfSentence()).toEqual(null);
+    expect(store.getEarliestDateOfSentence()).toBeNull();
   });
 
   it('should return company name', () => {

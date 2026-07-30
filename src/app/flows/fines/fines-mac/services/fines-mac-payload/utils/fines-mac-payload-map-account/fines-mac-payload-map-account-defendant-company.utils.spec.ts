@@ -86,7 +86,7 @@ describe('finesMacPayloadMapAccountDefendantCompanyPayload', () => {
 
     const result = finesMacPayloadMapAccountDefendantCompanyPayload(initialState, payload);
     expect(result.companyDetails.formData.fm_company_details_add_alias).toBe(true);
-    expect(result.companyDetails.formData.fm_company_details_aliases.length).toEqual(1);
+    expect(result.companyDetails.formData.fm_company_details_aliases).toHaveLength(1);
   });
 
   it('should map the payload and return an empty array if aliases has no len', () => {
