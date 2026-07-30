@@ -66,7 +66,6 @@
     ></app-fines-mac-review-account-contact-details>
   }
 
-
   @if (
     finesMacStore.accountDetails().formData.fm_create_account_defendant_type !== defendantTypesKeys.company &&
     accountType !== accountTypesKeys['Fixed Penalty']
@@ -79,7 +78,7 @@
     ></app-fines-mac-review-account-employer-details>
   }
 
-    @if (finesMacStore.accountDetails().formData.fm_create_account_defendant_type === defendantTypesKeys.pgToPay) {
+  @if (finesMacStore.accountDetails().formData.fm_create_account_defendant_type === defendantTypesKeys.pgToPay) {
     <ng-container *ngTemplateOutlet="personalDetails"></ng-container>
   }
 
