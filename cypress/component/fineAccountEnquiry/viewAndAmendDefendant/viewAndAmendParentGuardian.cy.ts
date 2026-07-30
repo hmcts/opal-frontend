@@ -1187,10 +1187,7 @@ describe('FinesAccPartyAddAmendConvert - View and Amend Parent or Guardian', () 
       });
     },
   );
-  it(
-    'Alias remove link should describe which alias it will remove to screen reader users',
-    { tags: ['@JIRA-STORY:PO-2782', '@JIRA-EPIC:PO-8248'] },
-    () => {
+  it('Alias remove link should describe which alias it will remove to screen reader users', { tags: ['@JIRA-STORY:PO-2782', '@JIRA-EPIC:PO-8248', '@JIRA-TEST-KEY:PO-9650'] }, () => {
       setupComponent('parentGuardian', minimalMock);
       cy.get(DOM_ELEMENTS.aliasCheckbox).check({ force: true }).should('be.checked');
       cy.get(DOM_ELEMENTS.aliasSection).should('exist');
@@ -1209,6 +1206,5 @@ describe('FinesAccPartyAddAmendConvert - View and Amend Parent or Guardian', () 
           })
           .click();
       }
-    },
-  );
+    });
 });
