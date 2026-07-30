@@ -14,6 +14,7 @@ import { MonetaryPipe } from '@hmcts/opal-frontend-common/pipes/monetary';
 import { DatePipe } from '@angular/common';
 import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 import { FINES_ACC_DEFENDANT_ROUTING_PATHS } from '../../routing/constants/fines-acc-defendant-routing-paths.constant';
+import { FINES_ACC_PAYMENT_TERMS_AMEND_FRAGMENTS } from '../../fines-acc-payment-terms-amend/constants/fines-acc-payment-terms-amend-fragments.constant';
 @Component({
   selector: 'app-fines-acc-defendant-details-payment-terms-tab',
   imports: [
@@ -41,6 +42,7 @@ export class FinesAccDefendantDetailsPaymentTermsTabComponent {
   @Input() requestPaymentCardDeniedType: string = 'permission';
   @Input() style: IFinesAccSummaryTabsContentStyles = FINES_ACC_SUMMARY_TABS_CONTENT_STYLES;
   public readonly languages = FINES_MAC_LANGUAGE_PREFERENCES_OPTIONS;
+  public readonly selectPaymentTermsFragment = FINES_ACC_PAYMENT_TERMS_AMEND_FRAGMENTS.selectPaymentTerms;
 
   /**
    * Determines the card title based on the payment terms type and lump sum amount.
@@ -66,6 +68,13 @@ export class FinesAccDefendantDetailsPaymentTermsTabComponent {
     return this.canAmendPaymentTerms
       ? `../${FINES_ACC_DEFENDANT_ROUTING_PATHS.children['payment-terms']}/amend`
       : `../${FINES_ACC_DEFENDANT_ROUTING_PATHS.children['payment-terms']}/denied/${this.amendPaymentTermsDeniedType}`;
+  }
+
+  /**
+   * Resolves the fragment for the change payment terms action when the amend route is allowed.
+   */
+  public changePaymentTermsFragment(): string | undefined {
+    return this.canAmendPaymentTerms ? this.selectPaymentTermsFragment : undefined;
   }
 
   /**
