@@ -144,7 +144,7 @@ export const FINES_MAC_OFFENCE_DETAILS_MINOR_CREDITOR_FIELD_ERRORS: IAbstractFor
       priority: 2,
     },
     alphanumericTextPattern: {
-      message: 'Payment reference must only contain letters',
+      message: 'Payment reference must only contain letters and numbers',
       priority: 3,
     },
   },
