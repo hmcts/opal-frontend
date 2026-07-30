@@ -360,6 +360,67 @@ describe('FinesAccDefendantDetailsComponent', () => {
     });
   });
 
+  describe('should get the correct response from canAmendPaymentTerms', () => {
+    it('when the account can amend payment terms should return true', () => {
+      component.lastEnforcement = structuredClone(OPAL_FINES_RESULT_REF_DATA_MOCK);
+      component.lastEnforcement.extend_ttp_disallow = false;
+      component.accountData.account_status_reference.account_status_code = 'L';
+      component.accountData.payment_state_summary.account_balance = 500.58;
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      vi.spyOn<any, any>(component['permissionsService'], 'hasBusinessUnitPermissionAccess').mockReturnValue(true);
+
+      const canAmend = component.canAmendPaymentTerms();
+
+      expect(canAmend).toBe(true);
+    });
+
+    it('when the last enforcement disallows extended time to pay should return false', () => {
+      component.lastEnforcement = structuredClone(OPAL_FINES_RESULT_REF_DATA_MOCK);
+      component.lastEnforcement.extend_ttp_disallow = true;
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      vi.spyOn<any, any>(component['permissionsService'], 'hasBusinessUnitPermissionAccess').mockReturnValue(true);
+
+      const canAmend = component.canAmendPaymentTerms();
+
+      expect(canAmend).toBe(false);
+    });
+
+    it.each(['CS', 'WO', 'TO', 'TS', 'TA'])(
+      'when the account status code is %s should return false',
+      (accountStatusCode) => {
+        component.lastEnforcement = structuredClone(OPAL_FINES_RESULT_REF_DATA_MOCK);
+        component.accountData.account_status_reference.account_status_code = accountStatusCode;
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        vi.spyOn<any, any>(component['permissionsService'], 'hasBusinessUnitPermissionAccess').mockReturnValue(true);
+
+        const canAmend = component.canAmendPaymentTerms();
+
+        expect(canAmend).toBe(false);
+      },
+    );
+
+    it('when the user does not have amend-payment-terms permission should return false', () => {
+      component.lastEnforcement = structuredClone(OPAL_FINES_RESULT_REF_DATA_MOCK);
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      vi.spyOn<any, any>(component['permissionsService'], 'hasBusinessUnitPermissionAccess').mockReturnValue(false);
+
+      const canAmend = component.canAmendPaymentTerms();
+
+      expect(canAmend).toBe(false);
+    });
+
+    it('when the account balance is not greater than 0 should return false', () => {
+      component.lastEnforcement = structuredClone(OPAL_FINES_RESULT_REF_DATA_MOCK);
+      component.accountData.payment_state_summary.account_balance = 0;
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      vi.spyOn<any, any>(component['permissionsService'], 'hasBusinessUnitPermissionAccess').mockReturnValue(true);
+
+      const canAmend = component.canAmendPaymentTerms();
+
+      expect(canAmend).toBe(false);
+    });
+  });
+
   describe('should get the correct response from canRequestPaymentCard', () => {
     it('when the user has amend-payment-terms permisson and the prevent_payment_card flag is set to false', () => {
       component.lastEnforcement = structuredClone(OPAL_FINES_RESULT_REF_DATA_MOCK);

@@ -214,7 +214,7 @@ describe('FinesMacFixedPenaltyDetailsComponent', () => {
 
   it('should create autocomplete court items', () => {
     const autocompleteItems = component['createAutoCompleteItemsCourts'](OPAL_FINES_COURT_REF_DATA_MOCK);
-    expect(autocompleteItems.length).toBe(OPAL_FINES_COURT_REF_DATA_MOCK.refData.length);
+    expect(autocompleteItems).toHaveLength(OPAL_FINES_COURT_REF_DATA_MOCK.refData.length);
   });
 
   it('should create autocomplete issuina authority items', () => {
@@ -222,7 +222,7 @@ describe('FinesMacFixedPenaltyDetailsComponent', () => {
       OPAL_FINES_PROSECUTOR_REF_DATA_MOCK,
       OPAL_FINES_LOCAL_JUSTICE_AREA_REF_DATA_MOCK,
     );
-    expect(autocompleteItems.length).toBe(
+    expect(autocompleteItems).toHaveLength(
       OPAL_FINES_PROSECUTOR_REF_DATA_MOCK.ref_data.length + OPAL_FINES_LOCAL_JUSTICE_AREA_REF_DATA_MOCK.refData.length,
     );
   });
