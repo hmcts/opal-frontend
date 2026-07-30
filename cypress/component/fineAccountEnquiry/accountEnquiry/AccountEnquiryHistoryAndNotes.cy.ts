@@ -302,10 +302,7 @@ describe('Account Enquiry History and notes', () => {
     },
   );
 
-  it(
-    'AC1a-AC1d. should treat API dates as UTC RFC3339 timestamps, display them as LTZ dates, and default sort newest first using milliseconds',
-    { tags: [...buildTags('@JIRA-STORY:PO-2635', '@JIRA-EPIC:PO-2621')] },
-    () => {
+  it('AC1a-AC1d. should treat API dates as UTC RFC3339 timestamps, display them as LTZ dates, and default sort newest first using milliseconds', { tags: [...buildTags('@JIRA-STORY:PO-2635', '@JIRA-EPIC:PO-2621'), '@JIRA-TEST-KEY:PO-9579'] }, () => {
       setupHistoryAndNotesScreenWithTabData(
         structuredClone(DEFENDANT_HEADER_MOCK),
         structuredClone(ACCOUNT_ENQUIRY_HISTORY_AND_NOTES_DATE_SORTING_MOCK),
@@ -323,13 +320,9 @@ describe('Account Enquiry History and notes', () => {
       cy.get(HISTORY_AND_NOTES_TAB.firstUserCell).should('contain.text', 'Newest milliseconds user');
       cy.get(HISTORY_AND_NOTES_TAB.secondUserCell).should('contain.text', 'Older milliseconds user');
       cy.get(HISTORY_AND_NOTES_TAB.thirdUserCell).should('contain.text', 'Oldest day user');
-    },
-  );
+    });
 
-  it(
-    'AC1e. should toggle the Date column sort direction using the timestamp sort key',
-    { tags: [...buildTags('@JIRA-STORY:PO-2635', '@JIRA-EPIC:PO-2621')] },
-    () => {
+  it('AC1e. should toggle the Date column sort direction using the timestamp sort key', { tags: [...buildTags('@JIRA-STORY:PO-2635', '@JIRA-EPIC:PO-2621'), '@JIRA-TEST-KEY:PO-9580'] }, () => {
       setupHistoryAndNotesScreenWithTabData(
         structuredClone(DEFENDANT_HEADER_MOCK),
         structuredClone(ACCOUNT_ENQUIRY_HISTORY_AND_NOTES_DATE_SORTING_MOCK),
@@ -351,13 +344,9 @@ describe('Account Enquiry History and notes', () => {
       cy.get(HISTORY_AND_NOTES_TAB.firstUserCell).should('contain.text', 'Newest milliseconds user');
       cy.get(HISTORY_AND_NOTES_TAB.secondUserCell).should('contain.text', 'Older milliseconds user');
       cy.get(HISTORY_AND_NOTES_TAB.thirdUserCell).should('contain.text', 'Oldest day user');
-    },
-  );
+    });
 
-  it(
-    'AC2a. should render the read-only history table columns with no inline editing actions',
-    { tags: [...buildTags('@JIRA-STORY:PO-2635', '@JIRA-EPIC:PO-2621')] },
-    () => {
+  it('AC2a. should render the read-only history table columns with no inline editing actions', { tags: [...buildTags('@JIRA-STORY:PO-2635', '@JIRA-EPIC:PO-2621'), '@JIRA-TEST-KEY:PO-9581'] }, () => {
       setupHistoryAndNotesScreenWithTabData(
         structuredClone(DEFENDANT_HEADER_MOCK),
         structuredClone(ACCOUNT_ENQUIRY_HISTORY_AND_NOTES_TABLE_CONTENT_MOCK),
@@ -382,13 +371,9 @@ describe('Account Enquiry History and notes', () => {
           cy.get('button').should('not.exist');
         });
       cy.get(HISTORY_AND_NOTES_TAB.detailsLinks).should('have.length', 1).and('contain.text', '2500000BV');
-    },
-  );
+    });
 
-  it(
-    'AC2b. should render several hundred history items in a single scrollable table with no pagination controls',
-    { tags: [...buildTags('@JIRA-STORY:PO-2635', '@JIRA-EPIC:PO-2621')] },
-    () => {
+  it('AC2b. should render several hundred history items in a single scrollable table with no pagination controls', { tags: [...buildTags('@JIRA-STORY:PO-2635', '@JIRA-EPIC:PO-2621'), '@JIRA-TEST-KEY:PO-9582'] }, () => {
       setupHistoryAndNotesScreenWithTabData(
         structuredClone(DEFENDANT_HEADER_MOCK),
         structuredClone(ACCOUNT_ENQUIRY_HISTORY_AND_NOTES_LARGE_RESULTS_MOCK),
@@ -401,13 +386,9 @@ describe('Account Enquiry History and notes', () => {
       cy.get(HISTORY_AND_NOTES_TAB.tableRows).should('have.length', 250);
       cy.get(HISTORY_AND_NOTES_TAB.firstUserCell).should('contain.text', 'Bulk user 250');
       cy.get('#history-and-notes-user-249').scrollIntoView().should('contain.text', 'Bulk user 1');
-    },
-  );
+    });
 
-  it(
-    'AC2c. should show the standard no results message and keep filter values visible after an empty filtered response',
-    { tags: [...buildTags('@JIRA-STORY:PO-2635', '@JIRA-EPIC:PO-2621')] },
-    () => {
+  it('AC2c. should show the standard no results message and keep filter values visible after an empty filtered response', { tags: [...buildTags('@JIRA-STORY:PO-2635', '@JIRA-EPIC:PO-2621'), '@JIRA-TEST-KEY:PO-9583'] }, () => {
       setupHistoryAndNotesScreenWithTabDataSequence(structuredClone(DEFENDANT_HEADER_MOCK), [
         structuredClone(ACCOUNT_ENQUIRY_HISTORY_AND_NOTES_TABLE_CONTENT_MOCK),
         structuredClone(ACCOUNT_ENQUIRY_HISTORY_AND_NOTES_EMPTY_RESULTS_MOCK),
@@ -428,13 +409,9 @@ describe('Account Enquiry History and notes', () => {
       cy.get(HISTORY_AND_NOTES_TAB.dateFromInput).should('have.value', '01/01/2024');
       cy.get(HISTORY_AND_NOTES_TAB.dateToInput).should('have.value', '31/01/2024');
       cy.get(HISTORY_AND_NOTES_TAB.notesCheckbox).should('be.checked');
-    },
-  );
+    });
 
-  it(
-    'AC3b, AC3c, AC3d, AC3e, AC3f. should render details fragments with pipes, hyphens, bold text, links, and line2 on a new line',
-    { tags: [...buildTags('@JIRA-STORY:PO-2635', '@JIRA-EPIC:PO-2621')] },
-    () => {
+  it('AC3b, AC3c, AC3d, AC3e, AC3f. should render details fragments with pipes, hyphens, bold text, links, and line2 on a new line', { tags: [...buildTags('@JIRA-STORY:PO-2635', '@JIRA-EPIC:PO-2621'), '@JIRA-TEST-KEY:PO-9584'] }, () => {
       setupHistoryAndNotesScreenWithTabData(
         structuredClone(DEFENDANT_HEADER_MOCK),
         structuredClone(ACCOUNT_ENQUIRY_HISTORY_AND_NOTES_DETAILS_RENDERING_MOCK),
@@ -481,13 +458,9 @@ describe('Account Enquiry History and notes', () => {
         cy.get('strong').eq(1).should('contain.text', 'John');
         cy.get('strong').eq(2).should('contain.text', 'Johnny');
       });
-    },
-  );
+    });
 
-  it(
-    'AC3 edge cases. should render large amendment values and literal special characters without breaking the details output',
-    { tags: [...buildTags('@JIRA-STORY:PO-2635', '@JIRA-EPIC:PO-2621')] },
-    () => {
+  it('AC3 edge cases. should render large amendment values and literal special characters without breaking the details output', { tags: [...buildTags('@JIRA-STORY:PO-2635', '@JIRA-EPIC:PO-2621'), '@JIRA-TEST-KEY:PO-9585'] }, () => {
       setupHistoryAndNotesScreenWithTabData(
         structuredClone(DEFENDANT_HEADER_MOCK),
         structuredClone(ACCOUNT_ENQUIRY_HISTORY_AND_NOTES_EDGE_CASE_RENDERING_MOCK),
@@ -522,13 +495,9 @@ describe('Account Enquiry History and notes', () => {
             expect(normaliseText(text)).to.equal(`Defendant said "can't pay" & requested <review>`);
           });
       });
-    },
-  );
+    });
 
-  it(
-    'AC4a. should open account-linked details fragments in a new browser tab using the emitted account identifier',
-    { tags: [...buildTags('@JIRA-STORY:PO-2635', '@JIRA-EPIC:PO-2621')] },
-    () => {
+  it('AC4a. should open account-linked details fragments in a new browser tab using the emitted account identifier', { tags: [...buildTags('@JIRA-STORY:PO-2635', '@JIRA-EPIC:PO-2621'), '@JIRA-TEST-KEY:PO-9586'] }, () => {
       setupHistoryAndNotesScreenWithTabData(
         structuredClone(DEFENDANT_HEADER_MOCK),
         structuredClone(ACCOUNT_ENQUIRY_HISTORY_AND_NOTES_DETAILS_RENDERING_MOCK),
@@ -548,13 +517,9 @@ describe('Account Enquiry History and notes', () => {
         .click();
 
       cy.get('@windowOpen').should('have.been.calledOnceWith', expectedAccountUrl, '_blank');
-    },
-  );
+    });
 
-  it(
-    'AC4b. should render non-linked details fragments as non-interactive text with no link or button styling',
-    { tags: [...buildTags('@JIRA-STORY:PO-2635', '@JIRA-EPIC:PO-2621')] },
-    () => {
+  it('AC4b. should render non-linked details fragments as non-interactive text with no link or button styling', { tags: [...buildTags('@JIRA-STORY:PO-2635', '@JIRA-EPIC:PO-2621'), '@JIRA-TEST-KEY:PO-9587'] }, () => {
       setupHistoryAndNotesScreenWithTabData(
         structuredClone(DEFENDANT_HEADER_MOCK),
         structuredClone(ACCOUNT_ENQUIRY_HISTORY_AND_NOTES_DETAILS_RENDERING_MOCK),
@@ -571,13 +536,9 @@ describe('Account Enquiry History and notes', () => {
         cy.get('a, button').should('not.exist');
         cy.get('.govuk-link').should('not.exist');
       });
-    },
-  );
+    });
 
-  it(
-    'AC5a, AC5b, AC5c. should render CR/DR amounts accessibly and keep tags non-focusable',
-    { tags: [...buildTags('@JIRA-STORY:PO-2635', '@JIRA-EPIC:PO-2621')] },
-    () => {
+  it('AC5a, AC5b, AC5c. should render CR/DR amounts accessibly and keep tags non-focusable', { tags: [...buildTags('@JIRA-STORY:PO-2635', '@JIRA-EPIC:PO-2621'), '@JIRA-TEST-KEY:PO-9588'] }, () => {
       setupHistoryAndNotesScreenWithTabData(
         structuredClone(DEFENDANT_HEADER_MOCK),
         structuredClone(ACCOUNT_ENQUIRY_HISTORY_AND_NOTES_AMOUNT_ACCESSIBILITY_MOCK),
@@ -618,6 +579,5 @@ describe('Account Enquiry History and notes', () => {
         cy.get('strong').should('not.exist');
         cy.get('.govuk-visually-hidden').should('not.exist');
       });
-    },
-  );
+    });
 });
