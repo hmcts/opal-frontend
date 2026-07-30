@@ -136,7 +136,6 @@ describe('FinesMacOffenceDetailsReviewOffenceImpositionComponent', () => {
   it('should set impositionTableData with correct values', () => {
     const expectedTotal = '£100.00';
     mockUtilsService.convertToMonetaryString.mockReturnValue(expectedTotal);
-    const imposition = { ...FINES_MAC_OFFENCE_DETAILS_STATE_IMPOSITIONS_MOCK[0] };
     const expectedImpositionTableData: IFinesMacOffenceDetailsReviewSummaryImpositionTableData[] = [
       {
         impositionId: 0,
