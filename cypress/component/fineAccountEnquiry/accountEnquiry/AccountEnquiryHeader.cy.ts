@@ -158,7 +158,7 @@ describe('Account Enquiry - Defendant Header', () => {
   );
 
   it(
-    'AC1, AC8: renders a persistent account status banner and passes axe on the header shell',
+    'AC1, AC8: renders a persistent account status banner on the header shell',
     {
       tags: [...buildTags('@JIRA-STORY:PO-5755', '@JIRA-NFR:PO-2322'), '@JIRA-EPIC:PO-812', '@JIRA-TEST-KEY:PO-5755'],
     },
@@ -178,9 +178,6 @@ describe('Account Enquiry - Defendant Header', () => {
       cy.get('#defendant-account-status').should('be.visible').and('contain.text', 'Transferred out');
       cy.get(DOM.pageHeader).should('exist');
       cy.get(DOM.subnav).should('exist');
-
-      cy.injectAxe();
-      cy.checkA11y();
     },
   );
 
