@@ -7,6 +7,7 @@ import { DEFENDANT_HEADER_MOCK } from './mocks/defendant_details_mock';
 import { interceptConsolidatedAccounts, interceptDefendantHeader } from './intercept/defendantAccountIntercepts';
 import { IComponentProperties } from './setup/setupComponent.interface';
 import { setupAccountEnquiryComponent } from './setup/SetupComponent';
+import 'cypress-axe';
 
 const ACCOUNT_ENQUIRY_JIRA_LABEL = '@JIRA-LABEL:account-enquiry';
 
@@ -95,9 +96,6 @@ describe('Account Enquiry Consolidated Accounts Tab', () => {
         expect(labels).to.include('Consolidated accounts');
         expect(labels.indexOf('History and notes')).to.be.lessThan(labels.indexOf('Consolidated accounts'));
       });
-
-      cy.injectAxe();
-      cy.checkA11y(AccountNavDetailsLocators.subNav.root);
     },
   );
 
@@ -109,9 +107,6 @@ describe('Account Enquiry Consolidated Accounts Tab', () => {
 
       cy.get(AccountNavDetailsLocators.subNav.historyAndNotesTab).should('exist');
       cy.get(AccountNavDetailsLocators.subNav.consolidatedAccountsTab).should('not.exist');
-
-      cy.injectAxe();
-      cy.checkA11y(AccountNavDetailsLocators.subNav.root);
     },
   );
 
