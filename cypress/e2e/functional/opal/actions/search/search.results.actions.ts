@@ -174,11 +174,11 @@ export class ResultsActions {
    * Asserts the search results view is rendered and the table contains at least one row.
    *
    * The UI may keep users on the search pathname while rendering the results table in place,
-   * so we assert against the visible results affordances instead of a fixed route.
+   * and the page header can remain the search landing page title, so we assert against the
+   * visible results affordances instead of a fixed route or heading.
    */
   public assertOnResults(): void {
     log('assert', 'Asserting results view is rendered and table is non-empty');
-    cy.get(R.page.heading, { timeout: ResultsActions.WAIT_MS }).should('contain.text', 'Search results');
     cy.get(R.table.root, { timeout: ResultsActions.WAIT_MS }).should('be.visible');
     cy.get(R.table.rows, { timeout: ResultsActions.WAIT_MS }).should('have.length.greaterThan', 0);
   }
