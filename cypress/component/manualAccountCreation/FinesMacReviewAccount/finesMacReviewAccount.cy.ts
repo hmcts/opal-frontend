@@ -686,17 +686,19 @@ describe('FinesMacReviewAccountComponent', () => {
     { tags: [...buildTags('@JIRA-STORY:PO-662', '@JIRA-STORY:PO-657'), '@JIRA-EPIC:PO-344', '@JIRA-TEST-KEY:PO-5221'] },
     () => {
       finesMacState.accountDetails.formData.fm_create_account_defendant_type = 'pgToPay';
+      setupComponent();
 
       [
-        'Personal details',
-        'Contact details',
-        'Employer details',
-        'Offences and impositions',
-        'Parent or guardian details',
-        'Payment terms',
-        'Account comments and notes',
-      ].forEach((sectionTitle) => {
-        cy.contains(DOM_ELEMENTS.summaryCard, sectionTitle).should('contain', 'Change');
+        '#court-details-summary-card-list',
+        '#parent-guardian-details-summary-card-list',
+        '#defendant-details-summary-card-list',
+        '#contact-details-summary-card-list',
+        '#employer-details-summary-card-list',
+        '#offences-and-imposition-summary-card-list',
+        '#payment-terms-summary-card-list',
+        '#account-comments-and-notes-summary-card-list',
+      ].forEach((summaryCardSelector) => {
+        cy.get(summaryCardSelector).should('contain.text', 'Change');
       });
     },
   );

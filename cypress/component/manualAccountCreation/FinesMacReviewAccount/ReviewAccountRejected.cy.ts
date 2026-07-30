@@ -125,7 +125,7 @@ describe('FinesMacReviewAccountComponent - Rejected Account view', () => {
 
         expect(request.body).to.have.property('draft_account_id', 123);
         expect(request.body).to.have.property('business_unit_id', 61);
-        expect(request.body).to.have.property('submitted_by_name', 'Timmy Tester');
+        expect(request.body).not.to.have.property('submitted_by_name');
 
         //Checking a few of the values in the account object are correct
         expect(request.body).to.have.property('account');
@@ -167,8 +167,8 @@ describe('FinesMacReviewAccountComponent - Rejected Account view', () => {
         // AC4a
         expect(request.body).to.have.property('business_unit_id', 61);
 
-        // AC4b
-        expect(request.body).to.have.property('submitted_by_name', 'Timmy Tester');
+        // AC4b - submitter details are not part of the draft update request contract.
+        expect(request.body).not.to.have.property('submitted_by_name');
 
         // AC4c
         expect(request.body).to.have.property('account');
