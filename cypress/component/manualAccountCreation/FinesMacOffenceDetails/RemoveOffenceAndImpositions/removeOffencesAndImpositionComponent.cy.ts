@@ -89,7 +89,7 @@ describe('RemoveOffenceAndImpositionsComponent', () => {
     '(AC.1) should render component',
     {
       tags: [
-        ...buildTags('@JIRA-STORY:PO-416', '@JIRA-STORY:PO-682', '@JIRA-STORY:PO-680'),
+        ...buildTags('@JIRA-STORY:PO-416', '@JIRA-STORY:PO-682', '@JIRA-STORY:PO-680', '@JIRA-DEFECT:PO-9110'),
         '@JIRA-EPIC:PO-545',
         '@JIRA-TEST-KEY:PO-5051',
       ],
@@ -103,7 +103,7 @@ describe('RemoveOffenceAndImpositionsComponent', () => {
     '(AC.1) should load all elements on the page',
     {
       tags: [
-        ...buildTags('@JIRA-STORY:PO-416', '@JIRA-STORY:PO-682', '@JIRA-STORY:PO-680'),
+        ...buildTags('@JIRA-STORY:PO-416', '@JIRA-STORY:PO-682', '@JIRA-STORY:PO-680', '@JIRA-DEFECT:PO-9110'),
         '@JIRA-EPIC:PO-545',
         '@JIRA-TEST-KEY:PO-5052',
       ],
@@ -133,7 +133,7 @@ describe('RemoveOffenceAndImpositionsComponent', () => {
     '(AC.2, AC.3) should have appropriate text for each element',
     {
       tags: [
-        ...buildTags('@JIRA-STORY:PO-416', '@JIRA-STORY:PO-682', '@JIRA-STORY:PO-680'),
+        ...buildTags('@JIRA-STORY:PO-416', '@JIRA-STORY:PO-682', '@JIRA-STORY:PO-680', '@JIRA-DEFECT:PO-9110'),
         '@JIRA-EPIC:PO-545',
         '@JIRA-TEST-KEY:PO-5053',
       ],
@@ -153,7 +153,7 @@ describe('RemoveOffenceAndImpositionsComponent', () => {
       cy.get(DOM_ELEMENTS.tableHeadings).should('contain', 'Amount paid');
       cy.get(DOM_ELEMENTS.tableHeadings).should('contain', 'Balance remaining');
 
-      cy.get(DOM_ELEMENTS.impositionType).should('contain', 'Criminal Courts Charge');
+      cy.get(DOM_ELEMENTS.impositionType).should('contain', 'Criminal Courts Charge (FCC)');
       cy.get(DOM_ELEMENTS.creditor).should('contain', 'HM Courts & Tribunals Service (HMCTS)');
       cy.get(DOM_ELEMENTS.amountImposed).should('contain', '£200.00');
       cy.get(DOM_ELEMENTS.amountPaid).should('contain', '£50.00');
