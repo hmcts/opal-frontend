@@ -133,9 +133,9 @@ describe('FinesSaResultsComponent', () => {
 
     component['loadDefendantDataFromRouteSnapshot']();
 
-    expect(component.individualsData.length).toEqual(1);
-    expect(component.companiesData.length).toEqual(1);
-    expect(component.minorCreditorsData.length).toEqual(1);
+    expect(component.individualsData).toHaveLength(1);
+    expect(component.companiesData).toHaveLength(1);
+    expect(component.minorCreditorsData).toHaveLength(1);
   });
 
   it('should open defendant account details in a new tab', () => {
