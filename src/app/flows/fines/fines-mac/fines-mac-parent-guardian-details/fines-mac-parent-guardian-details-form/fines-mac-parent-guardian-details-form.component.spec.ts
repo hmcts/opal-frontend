@@ -126,7 +126,7 @@ describe('FinesMacParentGuardianDetailsFormComponent', () => {
     expect(removeAliasSpy).toHaveBeenCalledWith(expectedIndex, 'fm_parent_guardian_details_aliases', event);
   });
 
-  it('should emit form submit event with form value', () => {
+  it('should emit nested flow form submit event with form value', () => {
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     vi.spyOn<any, any>(component['formSubmit'], 'emit');
     const event = { submitter: { className: 'nested-flow' } } as SubmitEvent;
@@ -144,7 +144,7 @@ describe('FinesMacParentGuardianDetailsFormComponent', () => {
     );
   });
 
-  it('should emit form submit event with form value', () => {
+  it('should emit standard flow form submit event with form value', () => {
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     vi.spyOn<any, any>(component['formSubmit'], 'emit');
     const event = {} as SubmitEvent;
