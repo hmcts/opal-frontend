@@ -70,7 +70,7 @@ describe('FinesMacOffenceDetailsMinorCreditorComponent', () => {
     component.handleMinorCreditorFormSubmit(formSubmit);
     fixture.detectChanges();
 
-    expect(finesMacOffenceDetailsStore.offenceDetailsDraft()[0].childFormData!.length).toEqual(1);
+    expect(finesMacOffenceDetailsStore.offenceDetailsDraft()[0].childFormData!).toHaveLength(1);
     expect(finesMacOffenceDetailsStore.offenceDetailsDraftDirty()).toBe(true);
     expect(finesMacStore.unsavedChanges()).toBe(true);
     expect(routerSpy).toHaveBeenCalledWith([FINES_MAC_OFFENCE_DETAILS_ROUTING_PATHS.children.addOffence], {
@@ -164,7 +164,7 @@ describe('FinesMacOffenceDetailsMinorCreditorComponent', () => {
     component.handleMinorCreditorFormSubmit(formSubmit);
     fixture.detectChanges();
 
-    expect(finesMacOffenceDetailsStore.offenceDetailsDraft()[0].childFormData!.length).toEqual(2);
+    expect(finesMacOffenceDetailsStore.offenceDetailsDraft()[0].childFormData!).toHaveLength(2);
     expect(routerSpy).toHaveBeenCalledWith([FINES_MAC_OFFENCE_DETAILS_ROUTING_PATHS.children.addOffence], {
       relativeTo: component['activatedRoute'].parent,
     });
@@ -185,7 +185,7 @@ describe('FinesMacOffenceDetailsMinorCreditorComponent', () => {
     component.handleMinorCreditorFormSubmit(formSubmit);
     fixture.detectChanges();
 
-    expect(finesMacOffenceDetailsStore.offenceDetailsDraft().length).toEqual(1);
+    expect(finesMacOffenceDetailsStore.offenceDetailsDraft()).toHaveLength(1);
     expect(routerSpy).toHaveBeenCalledWith([FINES_MAC_OFFENCE_DETAILS_ROUTING_PATHS.children.addOffence], {
       relativeTo: component['activatedRoute'].parent,
     });

@@ -4,6 +4,7 @@
  * Supports both individual and company account contexts.
  */
 import { AccountDefendantDetailsLocators as L } from '../../../../../shared/selectors/account-details/account.defendant.details.locators';
+import { AccountCompanyDetailsLocators as C } from '../../../../../shared/selectors/account-details/account.company.details.locators';
 import { CommonActions } from '../common/common.actions';
 
 /** Actions and assertions for the Defendant tab on Account Details. */
@@ -40,12 +41,19 @@ export class AccountDetailsDefendantActions {
     // Make sure we're on the Defendant tab and its header is visible
     cy.get(L.defendantTabHeader.title, { timeout }).should('be.visible');
 
-    // Click the "Change" link in the Defendant tab header
-    cy.get(L.defendantTabHeader.changeLink, { timeout })
-      .contains('Change')
-      .should('be.visible')
-      .scrollIntoView()
-      .click({ force: true });
+    cy.get(L.defendantTabHeader.title, { timeout })
+      .invoke('text')
+      .then((titleText) => {
+        const isCompanyDetails = titleText.toLowerCase().includes('company');
+        const changeLinkSelector = isCompanyDetails ? C.cardActions : L.defendant.cardActions;
+
+        // Click the "Change" link in the relevant summary card header
+        cy.get(changeLinkSelector, { timeout })
+          .contains('Change')
+          .should('be.visible')
+          .scrollIntoView()
+          .click({ force: true });
+      });
 
     // Optionally wait for the edit form to appear
     if (opts?.formSelector) {
