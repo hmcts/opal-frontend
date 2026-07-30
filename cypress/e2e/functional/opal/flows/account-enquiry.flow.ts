@@ -283,6 +283,11 @@ export class AccountEnquiryFlow {
     this.responsiveLayout.assertAtAGlanceColumnsStacked();
   }
 
+  /** Asserts that account information and summary metrics remain readable at the current viewport. */
+  public assertSummaryContentReadable(): void {
+    this.responsiveLayout.assertSummaryContentReadable();
+  }
+
   /**
    * Navigates to the Defendant tab and asserts a specific section header.
    *

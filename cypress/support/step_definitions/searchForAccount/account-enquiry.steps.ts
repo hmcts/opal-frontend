@@ -241,6 +241,11 @@ Then('the account details summary columns should stack below the primary content
   accountEnquiryFlow().assertAtAGlanceColumnsStacked();
 });
 
+Then('the account information and summary metrics should remain readable', () => {
+  log('assert', 'Checking account information and summary metrics remain readable');
+  accountEnquiryFlow().assertSummaryContentReadable();
+});
+
 Then('the account details header action should reflow below the account name', () => {
   log('assert', 'Checking account details header action reflows below the account name');
   accountEnquiryFlow().assertHeaderActionReflowsBelowTitle();

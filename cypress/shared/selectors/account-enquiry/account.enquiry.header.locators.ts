@@ -34,6 +34,7 @@ export const ACCOUNT_ENQUIRY_HEADER_ELEMENTS = {
   accountBalanceValue:
     'opal-lib-custom-summary-metric-bar-item:nth-child(4) p[opal-lib-custom-summary-metric-bar-item-value]',
   accountInfo: 'opal-lib-custom-account-information',
+  accountInfoItem: 'opal-lib-custom-account-information-item',
   sectionHeading: 'h2',
   fieldHeading: 'h3',
   fieldValue: 'p',

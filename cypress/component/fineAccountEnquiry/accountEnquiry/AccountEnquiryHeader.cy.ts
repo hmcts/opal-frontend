@@ -31,6 +31,37 @@ const ACCOUNT_ENQUIRY_JIRA_LABEL = '@JIRA-LABEL:account-enquiry';
 
 const buildTags = (...tags: string[]): string[] => [...tags, ACCOUNT_ENQUIRY_JIRA_LABEL, '@R1B'];
 
+const assertElementsFitWithoutOverlap = (selector: string, label: string): void => {
+  cy.get(selector)
+    .should('have.length.greaterThan', 0)
+    .then(($elements) => {
+      const elements = [...$elements] as HTMLElement[];
+      const bounds = elements.map((element) => element.getBoundingClientRect());
+
+      elements.forEach((element, index) => {
+        expect(element.scrollWidth, `${label} ${index + 1} should not clip content`).to.be.at.most(
+          element.clientWidth + 1,
+        );
+        expect(bounds[index].left, `${label} ${index + 1} should not extend left of the viewport`).to.be.at.least(0);
+        expect(bounds[index].right, `${label} ${index + 1} should not extend past the viewport`).to.be.at.most(320);
+      });
+
+      bounds.forEach((current, index) => {
+        bounds.slice(index + 1).forEach((next, nextIndex) => {
+          const overlaps =
+            current.left < next.right &&
+            current.right > next.left &&
+            current.top < next.bottom &&
+            current.bottom > next.top;
+
+          expect(overlaps, `${label} ${index + 1} should not overlap ${label} ${index + nextIndex + 2}`).to.equal(
+            false,
+          );
+        });
+      });
+    });
+};
+
 const assertHeaderActionsReflow = (): void => {
   cy.get(DOM.headingName).then(($heading) => {
     const headingBounds = $heading[0].getBoundingClientRect();
@@ -92,6 +123,48 @@ const assertHeaderActionsReflow = (): void => {
   });
 };
 
+const assertDesktopHeaderLayout = (): void => {
+  cy.get(DOM.headingName).then(($heading) => {
+    const headingBounds = $heading[0].getBoundingClientRect();
+
+    cy.get(DOM.headingCaption).then(($caption) => {
+      expect(
+        $caption[0].getBoundingClientRect().left,
+        'account number caption should align with the account name',
+      ).to.be.closeTo(headingBounds.left, 1);
+
+      cy.get(DOM.addNoteButton).then(($button) => {
+        const buttonBounds = $button[0].getBoundingClientRect();
+
+        cy.get(DOM.moreOptionsButton).then(($moreOptionsButton) => {
+          const moreOptionsBounds = $moreOptionsButton[0].getBoundingClientRect();
+          const addNoteOverlapsName =
+            buttonBounds.left < headingBounds.right &&
+            buttonBounds.right > headingBounds.left &&
+            buttonBounds.top < headingBounds.bottom &&
+            buttonBounds.bottom > headingBounds.top;
+          const moreOptionsOverlapsName =
+            moreOptionsBounds.left < headingBounds.right &&
+            moreOptionsBounds.right > headingBounds.left &&
+            moreOptionsBounds.top < headingBounds.bottom &&
+            moreOptionsBounds.bottom > headingBounds.top;
+          const actionsOverlap =
+            buttonBounds.left < moreOptionsBounds.right &&
+            buttonBounds.right > moreOptionsBounds.left &&
+            buttonBounds.top < moreOptionsBounds.bottom &&
+            buttonBounds.bottom > moreOptionsBounds.top;
+
+          expect(addNoteOverlapsName, 'add account note button should not overlap the account name').to.equal(false);
+          expect(moreOptionsOverlapsName, 'more options button should not overlap the account name').to.equal(false);
+          expect(actionsOverlap, 'header actions should not overlap').to.equal(false);
+          expect(buttonBounds.right, 'add account note button should be fully visible').to.be.at.most(1280);
+          expect(moreOptionsBounds.right, 'more options button should be fully visible').to.be.at.most(1280);
+        });
+      });
+    });
+  });
+};
+
 describe('Account Enquiry - Defendant Header', () => {
   beforeEach(() => {
     interceptAuthenticatedUser();
@@ -108,6 +181,29 @@ describe('Account Enquiry - Defendant Header', () => {
       // Add more routes here as needed
     ],
   };
+
+  it(
+    'AC1, AC5, AC7, AC9: keeps top account content aligned and unobscured at desktop width',
+    { tags: [...buildTags('@JIRA-STORY:PO-2673'), '@JIRA-EPIC:PO-2673'] },
+    () => {
+      cy.viewport(1280, 900);
+
+      interceptUserState(USER_STATE_MOCK_PERMISSION_BU77);
+      interceptDefendantHeader(77, DEFENDANT_HEADER_MOCK, '1');
+      interceptAtAGlance(77, OPAL_FINES_ACCOUNT_DEFENDANT_AT_A_GLANCE_MOCK, '1');
+
+      setupAccountEnquiryComponent(componentProperties);
+
+      cy.get(DOM.pageHeader).should('be.visible');
+      cy.get(DOM.accountInfo).should('be.visible');
+      cy.get(DOM.summaryMetricBar).should('be.visible');
+      cy.get(DOM.subnav).should('be.visible');
+
+      assertDesktopHeaderLayout();
+      assertElementsFitWithoutOverlap(DOM.accountInfoItem, 'account information item');
+      assertElementsFitWithoutOverlap(DOM.summaryMetricBarItem, 'summary metric card');
+    },
+  );
 
   it(
     'AC1a: renders the Defendant Account Header Summary',
@@ -544,6 +640,8 @@ describe('Account Enquiry - Defendant Header', () => {
       });
 
       assertHeaderActionsReflow();
+      assertElementsFitWithoutOverlap(DOM.accountInfoItem, 'account information item');
+      assertElementsFitWithoutOverlap(DOM.summaryMetricBarItem, 'summary metric card');
     },
   );
 
@@ -586,6 +684,8 @@ describe('Account Enquiry - Defendant Header', () => {
       });
 
       assertHeaderActionsReflow();
+      assertElementsFitWithoutOverlap(DOM.accountInfoItem, 'account information item');
+      assertElementsFitWithoutOverlap(DOM.summaryMetricBarItem, 'summary metric card');
     },
   );
 

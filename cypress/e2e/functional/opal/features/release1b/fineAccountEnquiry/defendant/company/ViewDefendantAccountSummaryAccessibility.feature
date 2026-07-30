@@ -50,6 +50,7 @@ Feature: Defendant - Company - View Defendant Account Summary - Add Comments Acc
     And I set the browser viewport to 320 by 900
     Then the account details page should not horizontally overflow
     And the account details summary columns should stack below the primary content
+    And the account information and summary metrics should remain readable
     And the account details header action should reflow below the account name
     And I should see the page header contains "A very long company name that should wrap cleanly without issue"
     And I check the page for accessibility

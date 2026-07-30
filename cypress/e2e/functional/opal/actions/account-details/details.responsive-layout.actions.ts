@@ -7,6 +7,46 @@ const log = createScopedLogger('AccountDetailsResponsiveLayoutActions');
 /** Responsive layout assertions for the Account Details page. */
 export class AccountDetailsResponsiveLayoutActions {
   /**
+   * Asserts that every element matching a selector is fully visible and does not overlap a peer.
+   *
+   * @param selector - Stable selector for the repeated layout elements.
+   * @param label - Human-readable label used in assertion output.
+   */
+  private assertElementsFitWithoutOverlap(selector: string, label: string): void {
+    cy.get(selector, { timeout: 15_000 })
+      .should('have.length.greaterThan', 0)
+      .then(($elements) => {
+        const viewportWidth = Cypress.config('viewportWidth');
+        const elements = [...$elements] as HTMLElement[];
+        const bounds = elements.map((element) => element.getBoundingClientRect());
+
+        elements.forEach((element, index) => {
+          expect(element.scrollWidth, `${label} ${index + 1} should not clip content`).to.be.at.most(
+            element.clientWidth + 1,
+          );
+          expect(bounds[index].left, `${label} ${index + 1} should not extend left of the viewport`).to.be.at.least(0);
+          expect(bounds[index].right, `${label} ${index + 1} should not extend past the viewport`).to.be.at.most(
+            viewportWidth,
+          );
+        });
+
+        bounds.forEach((current, index) => {
+          bounds.slice(index + 1).forEach((next, nextIndex) => {
+            const overlaps =
+              current.left < next.right &&
+              current.right > next.left &&
+              current.top < next.bottom &&
+              current.bottom > next.top;
+
+            expect(overlaps, `${label} ${index + 1} should not overlap ${label} ${index + nextIndex + 2}`).to.equal(
+              false,
+            );
+          });
+        });
+      });
+  }
+
+  /**
    * Sets the viewport used for responsive layout checks.
    *
    * @param width - Viewport width in CSS pixels.
@@ -80,5 +120,11 @@ export class AccountDetailsResponsiveLayoutActions {
         });
       });
     });
+  }
+
+  /** Asserts that account information and summary metric cards remain readable and unobscured. */
+  public assertSummaryContentReadable(): void {
+    this.assertElementsFitWithoutOverlap(H.accountInfoItem, 'account information item');
+    this.assertElementsFitWithoutOverlap(H.summaryMetricBarItem, 'summary metric card');
   }
 }
