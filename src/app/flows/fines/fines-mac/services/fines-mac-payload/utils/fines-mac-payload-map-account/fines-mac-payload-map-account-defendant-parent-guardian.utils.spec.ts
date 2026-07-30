@@ -117,7 +117,7 @@ describe('finesMacPayloadMapAccountDefendantParentGuardianPayload', () => {
 
     const result = finesMacPayloadMapAccountDefendantParentGuardianPayload(initialState, payload);
     expect(result.parentGuardianDetails.formData.fm_parent_guardian_details_add_alias).toBe(true);
-    expect(result.parentGuardianDetails.formData.fm_parent_guardian_details_aliases.length).toEqual(1);
+    expect(result.parentGuardianDetails.formData.fm_parent_guardian_details_aliases).toHaveLength(1);
   });
 
   it('should map parent/guardian details if present in payload, if aliases has no len return empty array', () => {

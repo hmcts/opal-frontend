@@ -37,3 +37,9 @@ Feature: Minor Creditor Account Enquiries View Details Accessibility
       Then I should remain on the amend minor creditor details page
       And I should see the minor creditor amend error summary contains "Enter minor creditor’s first name"
       And I check the page for accessibility
+
+    @R1B @JIRA-STORY:PO-2640 @JIRA-EPIC:PO-2653
+    Scenario: History and notes tab is accessible
+      Given the History and notes API is stubbed with standard tab data
+      When I go to the History and notes tab
+      Then I check the page for accessibility

@@ -93,3 +93,14 @@ Feature: Company Account Enquiries View Details
       And I should see the convert to individual account action
       And I should not see the convert to company account text
 
+    @R1B @JIRA-STORY:PO-2671 @JIRA-EPIC:PO-8248
+    Scenario Outline: AC2c-AC2d Company Defendant tab Change links open the correct amend screens
+      # AC2a – the heading Change link is removed
+      # AC2b – section Change links are shown for Company details and Contact details
+      When I open the "<section>" Change link on the Defendant tab
+      Then I should be on the "company" amend route with fragment "<fragment>"
+
+      Examples:
+        | section         | fragment        |
+        | Company details | party-details   |
+        | Contact details | contact-details |

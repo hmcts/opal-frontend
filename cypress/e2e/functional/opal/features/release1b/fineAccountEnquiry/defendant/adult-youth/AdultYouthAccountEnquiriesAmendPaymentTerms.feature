@@ -51,3 +51,10 @@ Feature: Adult Youth Account Enquiries Amend Payment Terms
       And the payment terms pay by date is "30 May 2025"
       And the payment terms instalment rows are not shown
 
+    @R1B @JIRA-STORY:PO-2671 @JIRA-EPIC:PO-8248
+    Scenario: AC4a, AC4b Payment terms tab keeps the Change link inside the panel and opens the amend screen
+      When I search for the account by last name "AmendPayTerms{uniq}" and open the latest result
+      And I go to the Payment terms tab
+      Then I should only see one Change link inside the Payment terms panel
+      When I open the amend payment terms form
+      Then I should be on the Payment terms amend screen

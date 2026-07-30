@@ -1,4 +1,6 @@
-export const FINES_ACC_DEFENDANT_DETAILS_HISTORY_AND_NOTES_TABLE_DISPLAY = {
+import { IFinesAccountHistoryTableMappingDisplay } from '../interfaces/fines-account-history-table-mapping-display.interface';
+
+export const FINES_ACCOUNT_HISTORY_TABLE_MAPPING_DISPLAY: IFinesAccountHistoryTableMappingDisplay = {
   currencySanitisePattern: /[£,]/g,
   dateFormat: {
     input: 'dd/MM/yyyy',
@@ -11,4 +13,4 @@ export const FINES_ACC_DEFENDANT_DETAILS_HISTORY_AND_NOTES_TABLE_DISPLAY = {
   zeroAmount: 0,
   partSeparator: ' | ',
   windowTarget: '_blank',
-} as const;
+};
