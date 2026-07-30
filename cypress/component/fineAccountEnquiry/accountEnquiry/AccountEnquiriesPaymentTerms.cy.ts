@@ -1113,4 +1113,59 @@ describe('Account Enquiry Payment Terms', () => {
       cy.contains(PAYMENT_TERMS_TAB.paymentTermsLink, 'Request payment card').should('not.exist');
     },
   );
+
+  it(
+    'AC4a. Payment terms Change link is repositioned within the payment terms panel - Adult or youth only',
+    { tags: [...buildTags('@JIRA-STORY:PO-2671'), '@JIRA-EPIC:PO-8248', '@JIRA-TEST-KEY:PO-4237'] },
+    () => {
+      let headerMock = structuredClone(createDefendantHeaderMockWithName('Robert', 'Thomson'));
+      headerMock.debtor_type = 'individual';
+      let paymentTermsMock = structuredClone(OPAL_FINES_ACCOUNT_DEFENDANT_DETAILS_PAYMENT_TERMS_LATEST_MOCK);
+      paymentTermsMock.payment_terms.payment_terms_type.payment_terms_type_code = 'P';
+      paymentTermsMock.payment_terms.lump_sum_amount = 200.0;
+      paymentTermsMock.payment_terms.instalment_amount = 0.0;
+
+      setupPaymentTermsScreen(headerMock, paymentTermsMock);
+
+      cy.contains('h2', 'Payment terms').should('be.visible');
+      cy.get('#payment-terms-summary-card-list').should('be.visible');
+      cy.get('#payment-terms-summary-card-list').within(() => {
+        cy.contains('.govuk-summary-card__title', 'Pay in full').should('be.visible');
+        cy.get('.govuk-summary-card__actions').within(() => {
+          cy.contains('a', 'Change').should('be.visible');
+        });
+      });
+      cy.get('body')
+        .find('a')
+        .filter((_, link) => link.textContent?.trim() === 'Change')
+        .should('have.length', 1);
+    },
+  );
+
+  it(
+    'AC4b. Payment terms Change link resolves the amend route and fragment - Adult or youth only',
+    { tags: [...buildTags('@JIRA-STORY:PO-2671'), '@JIRA-EPIC:PO-8248', '@JIRA-TEST-KEY:PO-4238'] },
+    () => {
+      let headerMock = structuredClone(createDefendantHeaderMockWithName('Robert', 'Thomson'));
+      headerMock.debtor_type = 'individual';
+      let paymentTermsMock = structuredClone(OPAL_FINES_ACCOUNT_DEFENDANT_DETAILS_PAYMENT_TERMS_LATEST_MOCK);
+      paymentTermsMock.payment_terms.payment_terms_type.payment_terms_type_code = 'P';
+      paymentTermsMock.payment_terms.lump_sum_amount = 200.0;
+      paymentTermsMock.payment_terms.instalment_amount = 0.0;
+
+      setupPaymentTermsScreen(headerMock, paymentTermsMock);
+
+      cy.get('app-fines-acc-defendant-details-payment-terms-tab').then(($host) => {
+        cy.window().then((win) => {
+          const component = (win as any).ng.getComponent($host[0]) as {
+            changePaymentTermsLink: () => string;
+            changePaymentTermsFragment: () => string | undefined;
+          };
+
+          expect(component.changePaymentTermsLink()).to.eq('../payment-terms/amend');
+          expect(component.changePaymentTermsFragment()).to.eq('select-payment-terms');
+        });
+      });
+    },
+  );
 });
