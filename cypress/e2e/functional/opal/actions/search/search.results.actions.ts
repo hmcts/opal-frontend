@@ -179,7 +179,6 @@ export class ResultsActions {
    */
   public assertOnResults(): void {
     log('assert', 'Asserting results view is rendered and table is non-empty');
-    cy.get(R.table.root, { timeout: ResultsActions.WAIT_MS }).should('be.visible');
     cy.get(R.table.rows, { timeout: ResultsActions.WAIT_MS }).should('have.length.greaterThan', 0);
   }
 

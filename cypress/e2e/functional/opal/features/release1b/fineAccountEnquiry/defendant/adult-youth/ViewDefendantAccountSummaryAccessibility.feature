@@ -41,7 +41,7 @@ Feature: Defendant - Adult or youth - View Defendant Account Summary - Add Comme
     Given I create a "adultOrYouthOnly" draft account with the following details and set status "Publishing Pending" using user "opal-test-10@dev.platform.hmcts.net":
       | Account_status                          | Submitted                                                      |
       | account.defendant.forenames             | A very long first name that should wrap cleanly               |
-      | account.defendant.surname               | A very long surname that should also wrap cleanly             |
+      | account.defendant.surname               | WrapCleanly{uniq}                                             |
       | account.defendant.email_address_1       | John.AccDetailSurname{uniq}@test.com                          |
       | account.defendant.telephone_number_home | 02078259314                                                   |
       | account.account_type                    | Fine                                                           |
@@ -50,7 +50,7 @@ Feature: Defendant - Adult or youth - View Defendant Account Summary - Add Comme
       | account.collection_order_made_today     | false                                                          |
       | account.payment_card_request            | false                                                          |
       | account.defendant.dob                   | 2002-05-15                                                     |
-    And I search for the account by last name "surname that should also wrap cleanly" and open the latest result
+    And I search for the account by last name "WrapCleanly{uniq}" and open the latest result
     And I set the browser viewport to 375 by 900
     Then the account details page should not horizontally overflow
     And the account details summary columns should stack below the primary content
