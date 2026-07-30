@@ -422,37 +422,49 @@ describe('FinesAccDefendantDetailsComponent', () => {
   });
 
   describe('should get the correct response from canRequestPaymentCard', () => {
-    it('when the user has amend-payment-terms permisson and the prevent_payment_card flag is set to false', () => {
-      component.lastEnforcement = structuredClone(OPAL_FINES_RESULT_REF_DATA_MOCK);
-      component.lastEnforcement.prevent_payment_card = false;
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      vi.spyOn<any, any>(component['permissionsService'], 'hasBusinessUnitPermissionAccess').mockReturnValue(true);
-      const canRequest = component['canRequestPaymentCard']();
-      expect(canRequest).toBe(true);
-    });
-    it('when the user has amend-payment-terms permisson and the prevent_payment_card flag is set to true', () => {
-      component.lastEnforcement = structuredClone(OPAL_FINES_RESULT_REF_DATA_MOCK);
-      component.lastEnforcement.prevent_payment_card = true;
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      vi.spyOn<any, any>(component['permissionsService'], 'hasBusinessUnitPermissionAccess').mockReturnValue(true);
-      const canRequest = component['canRequestPaymentCard']();
-      expect(canRequest).toBe(false);
-    });
-    it('when the user does not have amend-payment-terms permisson and the prevent_payment_card flag is set to true', () => {
-      component.lastEnforcement = structuredClone(OPAL_FINES_RESULT_REF_DATA_MOCK);
-      component.lastEnforcement.prevent_payment_card = true;
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      vi.spyOn<any, any>(component['permissionsService'], 'hasBusinessUnitPermissionAccess').mockReturnValue(false);
-      const canRequest = component['canRequestPaymentCard']();
-      expect(canRequest).toBe(false);
-    });
-    it('when the user does not have amend-payment-terms permisson and the prevent_payment_card flag is set to false', () => {
-      component.lastEnforcement = structuredClone(OPAL_FINES_RESULT_REF_DATA_MOCK);
-      component.lastEnforcement.prevent_payment_card = false;
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      vi.spyOn<any, any>(component['permissionsService'], 'hasBusinessUnitPermissionAccess').mockReturnValue(false);
-      const canRequest = component['canRequestPaymentCard']();
-      expect(canRequest).toBe(false);
-    });
+    it.each([
+      {
+        description:
+          'when the user has amend-payment-terms permission and the prevent_payment_card flag is set to false',
+        hasPermission: true,
+        preventPaymentCard: false,
+        expectedCanRequest: true,
+      },
+      {
+        description:
+          'when the user has amend-payment-terms permission and the prevent_payment_card flag is set to true',
+        hasPermission: true,
+        preventPaymentCard: true,
+        expectedCanRequest: false,
+      },
+      {
+        description:
+          'when the user does not have amend-payment-terms permission and the prevent_payment_card flag is set to true',
+        hasPermission: false,
+        preventPaymentCard: true,
+        expectedCanRequest: false,
+      },
+      {
+        description:
+          'when the user does not have amend-payment-terms permission and the prevent_payment_card flag is set to false',
+        hasPermission: false,
+        preventPaymentCard: false,
+        expectedCanRequest: false,
+      },
+    ])(
+      'should return $expectedCanRequest $description',
+      ({ hasPermission, preventPaymentCard, expectedCanRequest }) => {
+        component.lastEnforcement = structuredClone(OPAL_FINES_RESULT_REF_DATA_MOCK);
+        component.lastEnforcement.prevent_payment_card = preventPaymentCard;
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        vi.spyOn<any, any>(component['permissionsService'], 'hasBusinessUnitPermissionAccess').mockReturnValue(
+          hasPermission,
+        );
+
+        const canRequest = component['canRequestPaymentCard']();
+
+        expect(canRequest).toBe(expectedCanRequest);
+      },
+    );
   });
 });
