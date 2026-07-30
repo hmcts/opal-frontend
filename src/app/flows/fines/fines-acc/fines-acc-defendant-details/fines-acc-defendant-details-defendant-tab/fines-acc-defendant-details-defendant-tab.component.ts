@@ -49,19 +49,6 @@ export class FinesAccDefendantDetailsDefendantTabComponent {
   }
 
   /**
-   * Determines the target URL for the "Change" link based on the user's BU permission.
-   */
-  public changeDefendantDetailsLink(): string {
-    const partyType = this.tabData.defendant_account_party.party_details.organisation_flag
-      ? FINES_ACC_PARTY_ADD_AMEND_CONVERT_PARTY_TYPES.COMPANY
-      : FINES_ACC_PARTY_ADD_AMEND_CONVERT_PARTY_TYPES.INDIVIDUAL;
-
-    return this.hasAccountMaintenancePermissionInBU
-      ? `../${FINES_ACC_DEFENDANT_ROUTING_PATHS.children.party}/${partyType}/amend`
-      : '/access-denied';
-  }
-
-  /**
    * Determines the target URL for the convert action based on the user's BU permission.
    */
   public convertAccountLink(): string {
