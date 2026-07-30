@@ -114,10 +114,10 @@ describe('FinesSaSearchAccountComponent', () => {
 
     component.ngOnInit();
 
-    expect(component.businessUnitRefData.map((b) => b.business_unit_id).length).toEqual(7);
+    expect(component.businessUnitRefData.map((b) => b.business_unit_id)).toHaveLength(7);
 
     // Store should be initialised with those ids when missing
-    expect(mockFinesSaStore.searchAccount().fsa_search_account_business_unit_ids?.length).toEqual(7);
+    expect(mockFinesSaStore.searchAccount().fsa_search_account_business_unit_ids).toHaveLength(7);
   });
 
   it('ngOnInit should NOT overwrite store ids if already present', () => {
