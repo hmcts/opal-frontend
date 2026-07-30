@@ -17,6 +17,7 @@ import { OpalFines } from '@services/fines/opal-fines-service/opal-fines.service
 import { OPAL_FINES_BUSINESS_UNIT_NON_SNAKE_CASE_MOCK } from '@services/fines/opal-fines-service/mocks/opal-fines-business-unit-non-snake-case.mock';
 import { payInFullPaymentCardValidator } from '../validators/fines-acc-payment-terms-pay-in-full.validator';
 import { changeLetterWithoutChangesValidator } from '../validators/fines-acc-payment-terms-change-letter.validator';
+import { FINES_ACC_PAYMENT_TERMS_AMEND_FRAGMENTS } from '../constants/fines-acc-payment-terms-amend-fragments.constant';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
 
 import { createSpyObj } from '@app/testing/create-spy-obj.helper';
@@ -40,7 +41,7 @@ describe('FinesAccPaymentTermsAmendFormComponent', () => {
   beforeEach(async () => {
     mockRouter = createSpyObj('Router', ['navigate']);
     mockActivatedRoute = {
-      snapshot: { data: {} },
+      snapshot: { data: {}, fragment: null },
       params: of({}),
       queryParams: of({}),
       data: of({}),
@@ -285,6 +286,15 @@ describe('FinesAccPaymentTermsAmendFormComponent', () => {
         relativeTo: mockActivatedRoute,
         fragment: 'payment-terms',
       });
+    });
+
+    it('should render the shared payment terms fragment target id', () => {
+      component.ngOnInit();
+      fixture.detectChanges();
+
+      expect(
+        fixture.nativeElement.querySelector(`#${FINES_ACC_PAYMENT_TERMS_AMEND_FRAGMENTS.selectPaymentTerms}`),
+      ).toBeTruthy();
     });
   });
 
@@ -966,21 +976,6 @@ describe('FinesAccPaymentTermsAmendFormComponent', () => {
         expect(form.get('facc_payment_terms_change_letter')?.errors?.['noChangesMade']).toBeTruthy();
       });
 
-      it('should not add error when change letter is selected and form changes are made', () => {
-        const form = component.form;
-
-        // Make a change to the form and request change letter
-        form.get('facc_payment_terms_payment_terms')?.setValue('instalmentsOnly');
-        form.get('facc_payment_terms_change_letter')?.setValue(true);
-
-        // Trigger validation
-        form.updateValueAndValidity();
-
-        // Check that there's no validation error
-        expect(form.errors?.['noChangesMade']).toBeFalsy();
-        expect(form.get('facc_payment_terms_change_letter')?.errors?.['noChangesMade']).toBeFalsy();
-      });
-
       it('should not add error when change letter is not selected', () => {
         const form = component.form;
 
@@ -995,47 +990,40 @@ describe('FinesAccPaymentTermsAmendFormComponent', () => {
         expect(form.get('facc_payment_terms_change_letter')?.errors?.['noChangesMade']).toBeFalsy();
       });
 
-      it('should detect changes in payment terms field', () => {
-        const form = component.form;
+      it.each([
+        {
+          description: 'payment terms field',
+          controlName: 'facc_payment_terms_payment_terms',
+          value: 'instalmentsOnly',
+        },
+        {
+          description: 'payment terms field with a different value',
+          controlName: 'facc_payment_terms_payment_terms',
+          value: 'lumpSumPlusInstalments',
+        },
+        {
+          description: 'pay by date field',
+          controlName: 'facc_payment_terms_pay_by_date',
+          value: '2025-01-15',
+        },
+        {
+          description: 'reason for change field',
+          controlName: 'facc_payment_terms_reason_for_change',
+          value: 'Updated reason',
+        },
+      ])(
+        'should not add error when change letter is selected and the $description changes',
+        ({ controlName, value }) => {
+          const form = component.form;
 
-        // Change payment terms and request change letter
-        form.get('facc_payment_terms_payment_terms')?.setValue('lumpSumPlusInstalments');
-        form.get('facc_payment_terms_change_letter')?.setValue(true);
+          form.get(controlName)?.setValue(value);
+          form.get('facc_payment_terms_change_letter')?.setValue(true);
+          form.updateValueAndValidity();
 
-        // Trigger validation
-        form.updateValueAndValidity();
-
-        // Should not have error because changes were made
-        expect(form.errors?.['noChangesMade']).toBeFalsy();
-      });
-
-      it('should detect changes in pay by date field', () => {
-        const form = component.form;
-
-        // Change pay by date and request change letter
-        form.get('facc_payment_terms_pay_by_date')?.setValue('2025-01-15');
-        form.get('facc_payment_terms_change_letter')?.setValue(true);
-
-        // Trigger validation
-        form.updateValueAndValidity();
-
-        // Should not have error because changes were made
-        expect(form.errors?.['noChangesMade']).toBeFalsy();
-      });
-
-      it('should detect changes in reason for change field', () => {
-        const form = component.form;
-
-        // Change reason for change and request change letter
-        form.get('facc_payment_terms_reason_for_change')?.setValue('Updated reason');
-        form.get('facc_payment_terms_change_letter')?.setValue(true);
-
-        // Trigger validation
-        form.updateValueAndValidity();
-
-        // Should not have error because changes were made
-        expect(form.errors?.['noChangesMade']).toBeFalsy();
-      });
+          expect(form.errors?.['noChangesMade']).toBeFalsy();
+          expect(form.get('facc_payment_terms_change_letter')?.errors?.['noChangesMade']).toBeFalsy();
+        },
+      );
 
       it('should handle null and empty string values correctly', () => {
         const form = component.form;
