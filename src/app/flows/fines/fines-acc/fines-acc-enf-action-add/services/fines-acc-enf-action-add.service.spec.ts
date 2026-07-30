@@ -196,6 +196,29 @@ describe('FinesAccEnfActionAddService', () => {
     expect(form.get('welsh')?.hasError('pairedLanguage')).toBe(false);
   });
 
+  it.each([
+    { description: 'null', value: null, expectsWelshError: false },
+    { description: 'undefined', value: undefined, expectsWelshError: false },
+    { description: 'empty string', value: '', expectsWelshError: false },
+    { description: 'whitespace-only string', value: '   ', expectsWelshError: false },
+    { description: 'non-empty string', value: 'English reason', expectsWelshError: true },
+    { description: 'zero', value: 0, expectsWelshError: true },
+    { description: 'false', value: false, expectsWelshError: true },
+    { description: 'object', value: { text: 'English reason' }, expectsWelshError: false },
+  ])('sets paired-language errors only for meaningful English values: $description', ({ value, expectsWelshError }) => {
+    const form = new FormGroup(
+      {
+        english: new FormControl<unknown>(value),
+        welsh: new FormControl<string | null>(null),
+      },
+      service.pairedLanguageValidator('english', 'welsh'),
+    );
+
+    form.updateValueAndValidity();
+
+    expect(form.get('welsh')?.hasError('pairedLanguage')).toBe(expectsWelshError);
+  });
+
   it('handles missing and cleared paired language controls', () => {
     const setPairError = (
       service as unknown as {

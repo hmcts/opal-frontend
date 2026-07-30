@@ -46,7 +46,7 @@ describe('FinesMacParentGuardianDetailsComponent', () => {
     expect(component).toBeTruthy();
   });
 
-  it('should handle form submission and navigate', () => {
+  it('should handle standard form submission and navigate', () => {
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     const routerSpy = vi.spyOn<any, any>(component['router'], 'navigate');
 
@@ -59,7 +59,7 @@ describe('FinesMacParentGuardianDetailsComponent', () => {
     });
   });
 
-  it('should handle form submission and navigate', () => {
+  it('should handle nested parent or guardian form submission and navigate', () => {
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     const routerSpy = vi.spyOn<any, any>(component['router'], 'navigate');
     component.defendantType = FINES_MAC_DEFENDANT_TYPES_KEYS.pgToPay;
