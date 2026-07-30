@@ -1,1 +1,0 @@
-export { FINES_ACCOUNT_HISTORY_TABLE_MAPPING_DISPLAY as FINES_ACC_DEFENDANT_DETAILS_HISTORY_AND_NOTES_TABLE_DISPLAY } from '../../../../fines-account-history-table/constants/fines-account-history-table-mapping-display.constant';
