@@ -35,7 +35,7 @@ describe('FinesMacReviewAccountComponent', () => {
   let finesMacState = structuredClone(baseFinesMacState);
   let finesDraftState = structuredClone(baseFinesDraftState);
   let finesAccountPayload = structuredClone(baseFinesAccountPayload);
-  let mountedFinesMacStore: FinesMacStore;
+  let mountedFinesMacStore: InstanceType<typeof FinesMacStore>;
 
   /**
    * Mount the Review Account component with the three stores and a minimal ActivatedRoute.
