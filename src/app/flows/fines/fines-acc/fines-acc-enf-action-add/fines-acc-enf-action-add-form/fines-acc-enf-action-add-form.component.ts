@@ -289,7 +289,8 @@ export class FinesAccEnfActionAddFormComponent extends AbstractFormBaseComponent
   private checkboxSelectionCountValidator(field: IFinesAccEnfActionAddFormField): ValidatorFn {
     return () => {
       const selectedCount = this.selectedCheckboxOptions(field).length;
-      const min = typeof field.min === 'number' ? field.min : field.required ? 1 : 0;
+      const requiredMinimum = field.required ? 1 : 0;
+      const min = typeof field.min === 'number' ? field.min : requiredMinimum;
       const max = typeof field.max === 'number' ? field.max : undefined;
 
       if (selectedCount < min) return { required: true };
