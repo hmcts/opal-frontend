@@ -232,4 +232,12 @@
       [style]="tabContentStyles"
     ></app-fines-acc-defendant-details-history-and-notes-tab>
   }
+  @case ('consolidated-accounts') {
+    @if (tabConsolidatedAccounts$ | async; as tabData) {
+      <app-fines-acc-defendant-details-consolidated-accounts-tab
+        [tabData]="tabData"
+        [style]="tabContentStyles"
+      ></app-fines-acc-defendant-details-consolidated-accounts-tab>
+    }
+  }
 }

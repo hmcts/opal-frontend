@@ -1,4 +1,5 @@
 import { Observable } from 'rxjs';
+import { IOpalFinesAccountDefendantDetailsConsolidatedAccounts } from './opal-fines-account-defendant-account-consolidated-accounts.interface';
 import { IOpalFinesCourtRefData } from './opal-fines-court-ref-data.interface';
 import { IOpalFinesBusinessUnitRefData } from './opal-fines-business-unit-ref-data.interface';
 import { IOpalFinesLocalJusticeAreaRefData } from './opal-fines-local-justice-area-ref-data.interface';
@@ -38,6 +39,7 @@ export interface IOpalFinesCache {
   defendantAccountParentOrGuardianAccountPartyCache$: Observable<IOpalFinesAccountDefendantAccountParty> | null;
   defendantAccountEnforcementCache$: Observable<IOpalFinesAccountDefendantDetailsEnforcementTabRefData> | null;
   defendantAccountImpositionsCache$: Observable<IOpalFinesAccountDefendantDetailsImpositionsTabRefData> | null;
+  defendantAccountConsolidatedAccountsCache$: Observable<IOpalFinesAccountDefendantDetailsConsolidatedAccounts> | null;
   defendantAccountHistoryAndNotesCache$: Observable<IOpalFinesAccountDefendantDetailsHistoryAndNotesTabRefData> | null;
   defendantAccountPaymentTermsLatestCache$: Observable<IOpalFinesAccountDefendantDetailsPaymentTermsLatest> | null;
   defendantAccountFixedPenaltyCache$: Observable<IOpalFinesAccountDefendantDetailsFixedPenaltyTabRefData> | null;

@@ -56,6 +56,8 @@ import { AbstractAccountSummaryBaseComponent } from '@hmcts/opal-frontend-common
 import { IOpalFinesVersion } from '../../services/opal-fines-service/interfaces/opal-fines-version.interface';
 import { FINES_ACC_BANNER_MESSAGES } from '../stores/constants/fines-acc-store-banner-messages.constant';
 import { FinesAccDefendantDetailsHistoryAndNotesTabComponent } from './fines-acc-defendant-details-history-and-notes-tab/fines-acc-defendant-details-history-and-notes-tab.component';
+import { IOpalFinesAccountDefendantDetailsConsolidatedAccounts } from '@services/fines/opal-fines-service/interfaces/opal-fines-account-defendant-account-consolidated-accounts.interface';
+import { FinesAccDefendantDetailsConsolidatedAccountsTabComponent } from './fines-acc-defendant-details-consolidated-accounts-tab/fines-acc-defendant-details-consolidated-accounts-tab.component';
 
 @Component({
   selector: 'app-fines-acc-defendant-details',
@@ -83,6 +85,7 @@ import { FinesAccDefendantDetailsHistoryAndNotesTabComponent } from './fines-acc
     MonetaryPipe,
     FinesAccSummaryHeaderComponent,
     FinesAccDefendantDetailsHistoryAndNotesTabComponent,
+    FinesAccDefendantDetailsConsolidatedAccountsTabComponent,
   ],
   templateUrl: './fines-acc-defendant-details.component.html',
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -106,6 +109,7 @@ export class FinesAccDefendantDetailsComponent
   public tabImpositions$: Observable<IOpalFinesAccountDefendantDetailsImpositionsTabRefData> = EMPTY;
   public tabHistoryAndNotes$: Observable<IOpalFinesAccountDefendantDetailsHistoryAndNotesTabRefData> = EMPTY;
   public tabFixedPenalty$: Observable<IOpalFinesAccountDefendantDetailsFixedPenaltyTabRefData> = EMPTY;
+  public tabConsolidatedAccounts$: Observable<IOpalFinesAccountDefendantDetailsConsolidatedAccounts> = EMPTY;
   public debtorTypes = FINES_ACC_DEBTOR_TYPES;
   public accountTypes = FINES_ACCOUNT_TYPES;
   public lastEnforcement: IOpalFinesResultRefData | null = null;
@@ -187,6 +191,11 @@ export class FinesAccDefendantDetailsComponent
         case 'history-and-notes':
           this.tabHistoryAndNotes$ = this.fetchTabDataTyped(
             this.opalFinesService.getDefendantAccountHistoryAndNotesTabData(account_id),
+          );
+          break;
+        case 'consolidated-accounts':
+          this.tabConsolidatedAccounts$ = this.fetchTabDataTyped(
+            this.opalFinesService.getDefendantAccountConsolidatedAccounts(account_id),
           );
           break;
       }

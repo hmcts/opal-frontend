@@ -5,6 +5,7 @@ import { IOpalFinesAccountDefendantDetailsFixedPenaltyTabRefData } from '@servic
 import { IOpalFinesAccountDefendantDetailsHistoryAndNotesTabRefData } from '@services/fines/opal-fines-service/interfaces/opal-fines-account-defendant-details-history-and-notes-tab-ref-data.interface';
 import { IOpalFinesAccountDefendantDetailsImpositionsTabRefData } from '@services/fines/opal-fines-service/interfaces/opal-fines-account-defendant-details-impositions-tab-ref-data.interface';
 import { IOpalFinesAccountDefendantDetailsPaymentTermsLatest } from '@services/fines/opal-fines-service/interfaces/opal-fines-account-defendant-details-payment-terms-latest.interface';
+import { IOpalFinesAccountDefendantDetailsConsolidatedAccount } from 'src/app/flows/fines/services/opal-fines-service/interfaces/opal-fines-account-defendant-account-consolidated-account.interface';
 import { IOpalFinesAccountMinorCreditorAtAGlance } from 'src/app/flows/fines/services/opal-fines-service/interfaces/opal-fines-account-minor-creditor-at-a-glance.interface';
 import { IOpalFinesAccountMinorCreditorCreditor } from 'src/app/flows/fines/services/opal-fines-service/interfaces/opal-fines-account-minor-creditor-creditor.interface';
 import { IOpalFinesAccountMinorCreditorDetailsHistoryAndNotesTabRefData } from 'src/app/flows/fines/services/opal-fines-service/interfaces/opal-fines-account-minor-creditor-details-history-and-notes-tab-ref-data.interface';
@@ -27,6 +28,28 @@ export function interceptAddNotes() {
       body: {},
     })
     .as('postAddNotes');
+}
+
+/**
+ * Intercepts the GET request to the defendant accounts "consolidated-accounts" endpoint and mocks the response.
+ *
+ * @param accountId - The unique identifier for the account.
+ * @param consolidatedAccounts - The consolidated accounts to be returned in the response body.
+ * @param respHeaderEtag - The value to set for the ETag response header.
+ * @returns Cypress chainable object with the intercepted request aliased as 'getConsolidatedAccounts'.
+ */
+export function interceptConsolidatedAccounts(
+  accountId: string | number,
+  consolidatedAccounts: IOpalFinesAccountDefendantDetailsConsolidatedAccount[],
+  respHeaderEtag: string,
+) {
+  return cy
+    .intercept('GET', `**/defendant-accounts/${accountId}/consolidated-accounts`, {
+      statusCode: 200,
+      headers: { ETag: respHeaderEtag },
+      body: consolidatedAccounts,
+    })
+    .as('getConsolidatedAccounts');
 }
 
 /**
