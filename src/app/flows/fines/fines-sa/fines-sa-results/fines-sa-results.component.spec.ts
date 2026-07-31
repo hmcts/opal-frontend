@@ -12,6 +12,9 @@ import { FINES_ACC_MINOR_CREDITOR_ROUTING_PATHS } from '../../fines-acc/routing/
 import { beforeEach, describe, expect, it, vi } from 'vitest';
 import { FINES_ROUTING_PATHS } from '@routing/fines/constants/fines-routing-paths.constant';
 import { FINES_DASHBOARD_ROUTING_PATHS } from '../../constants/fines-dashboard-routing-paths.constant';
+import { FINES_ACC_ROUTING_PATHS } from '../../fines-acc/routing/constants/fines-acc-routing-paths.constant';
+import { FINES_ACC_DEFENDANT_ROUTING_PATHS } from '../../fines-acc/routing/constants/fines-acc-defendant-routing-paths.constant';
+import { FINES_SA_RESULTS_ACCOUNT_TYPE } from './constants/accountType.constant';
 
 describe('FinesSaResultsComponent', () => {
   let component: FinesSaResultsComponent;
@@ -130,21 +133,46 @@ describe('FinesSaResultsComponent', () => {
 
     component['loadDefendantDataFromRouteSnapshot']();
 
-    expect(component.individualsData.length).toEqual(1);
-    expect(component.companiesData.length).toEqual(1);
-    expect(component.minorCreditorsData.length).toEqual(1);
+    expect(component.individualsData).toHaveLength(1);
+    expect(component.companiesData).toHaveLength(1);
+    expect(component.minorCreditorsData).toHaveLength(1);
   });
 
-  it('should open account details in a new tab', () => {
+  it('should open defendant account details in a new tab', () => {
     const mockUrl = '/fines/account/ACC123/details';
     router.serializeUrl.mockReturnValue(mockUrl);
 
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    vi.spyOn<any, any>(globalThis, 'open');
-    component.onAccountIdClick(1);
+    const openSpy = vi.spyOn<any, any>(globalThis, 'open').mockImplementation(() => null);
+    component.onAccountIdClick(1, FINES_SA_RESULTS_ACCOUNT_TYPE.defendant);
 
-    expect(router.serializeUrl).toHaveBeenCalled();
-    expect(window.open).toHaveBeenCalledWith(mockUrl, '_blank');
+    expect(router.createUrlTree).toHaveBeenCalledWith([
+      FINES_ROUTING_PATHS.root,
+      FINES_ACC_ROUTING_PATHS.root,
+      FINES_ACC_ROUTING_PATHS.children.defendant,
+      1,
+      FINES_ACC_DEFENDANT_ROUTING_PATHS.children.details,
+    ]);
+    expect(openSpy).toHaveBeenCalledWith(mockUrl, '_blank');
+  });
+
+  it('should open minor creditor account details in a new tab for account number results', () => {
+    const mockUrl = '/fines/account/minor-creditor/123/details';
+    router.serializeUrl.mockReturnValue(mockUrl);
+    vi.spyOn(finesSaStore, 'getSearchType').mockReturnValue('accountNumber');
+
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    const openSpy = vi.spyOn<any, any>(globalThis, 'open').mockImplementation(() => null);
+    component.onAccountIdClick(123, FINES_SA_RESULTS_ACCOUNT_TYPE.minorCreditor);
+
+    expect(router.createUrlTree).toHaveBeenCalledWith([
+      FINES_ROUTING_PATHS.root,
+      FINES_ACC_ROUTING_PATHS.root,
+      FINES_ACC_MINOR_CREDITOR_ROUTING_PATHS.root,
+      123,
+      FINES_ACC_MINOR_CREDITOR_ROUTING_PATHS.children.details,
+    ]);
+    expect(openSpy).toHaveBeenCalledWith(mockUrl, '_blank');
   });
 
   it('should default fragment to "companies" when individuals are empty and companies are not', () => {
@@ -172,53 +200,61 @@ describe('FinesSaResultsComponent', () => {
   });
 
   describe('computeDefaultFragment', () => {
-    it('returns empty string when all buckets are zero', () => {
-      component.individualsData = [];
-      component.companiesData = [];
-      component.minorCreditorsData = [];
-      const result = component['computeDefaultFragment']();
-      expect(result).toBe('');
-    });
+    it.each([
+      {
+        caseName: 'all buckets are zero',
+        individualsCount: 0,
+        companiesCount: 0,
+        minorCreditorsCount: 0,
+        expectedFragment: '',
+      },
+      {
+        caseName: 'any bucket is >= 100',
+        individualsCount: 100,
+        companiesCount: 0,
+        minorCreditorsCount: 0,
+        expectedFragment: '',
+      },
+      {
+        caseName: 'individuals are 1-99',
+        individualsCount: 1,
+        companiesCount: 50,
+        minorCreditorsCount: 50,
+        expectedFragment: 'individuals',
+      },
+      {
+        caseName: 'all buckets are oversize',
+        individualsCount: 100,
+        companiesCount: 100,
+        minorCreditorsCount: 100,
+        expectedFragment: '',
+      },
+      {
+        caseName: 'individuals are 0 and companies are 1-99',
+        individualsCount: 0,
+        companiesCount: 1,
+        minorCreditorsCount: 0,
+        expectedFragment: 'companies',
+      },
+      {
+        caseName: 'individuals and companies are 0 and minorCreditors are 1-99',
+        individualsCount: 0,
+        companiesCount: 0,
+        minorCreditorsCount: 1,
+        expectedFragment: 'minorCreditors',
+      },
+    ] as const)(
+      'returns the default fragment when $caseName',
+      ({ individualsCount, companiesCount, minorCreditorsCount, expectedFragment }) => {
+        component.individualsData.length = individualsCount;
+        component.companiesData.length = companiesCount;
+        component.minorCreditorsData.length = minorCreditorsCount;
 
-    it('returns empty string when any bucket is >= 100', () => {
-      component.individualsData.length = 100;
-      component.companiesData.length = 0;
-      component.minorCreditorsData.length = 0;
-      const result = component['computeDefaultFragment']();
-      expect(result).toBe('');
-    });
+        const result = component['computeDefaultFragment']();
 
-    it('prefers individuals when 1–99', () => {
-      component.individualsData.length = 1;
-      component.companiesData.length = 50;
-      component.minorCreditorsData.length = 50;
-      const result = component['computeDefaultFragment']();
-      expect(result).toBe('individuals');
-    });
-
-    it('returns blank when all buckets are oversize (>= 100)', () => {
-      component.individualsData.length = 100;
-      component.companiesData.length = 100;
-      component.minorCreditorsData.length = 100;
-      const result = component['computeDefaultFragment']();
-      expect(result).toBe('');
-    });
-
-    it('falls back to companies when individuals are 0 and companies are 1–99', () => {
-      component.individualsData.length = 0;
-      component.companiesData.length = 1;
-      component.minorCreditorsData.length = 0;
-      const result = component['computeDefaultFragment']();
-      expect(result).toBe('companies');
-    });
-
-    it('falls back to minorCreditors when individuals and companies are 0 and minorCreditors are 1–99', () => {
-      component.individualsData.length = 0;
-      component.companiesData.length = 0;
-      component.minorCreditorsData.length = 1;
-      const result = component['computeDefaultFragment']();
-      expect(result).toBe('minorCreditors');
-    });
+        expect(result).toBe(expectedFragment);
+      },
+    );
 
     it('hits the fallback branch for unexpected lengths (guards against impossible states)', () => {
       // Simulate an impossible runtime state by replacing arrays with objects
@@ -393,7 +429,7 @@ describe('FinesSaResultsComponent', () => {
     };
 
     const result = component['mapDefendantAccounts'](mockData, 'individual');
-    expect(result.length).toBe(1);
+    expect(result).toHaveLength(1);
     expect(result[0]).toEqual(
       expect.objectContaining({
         Account: 'ACC123',
@@ -449,7 +485,7 @@ describe('FinesSaResultsComponent', () => {
       ],
     };
     const result = component['mapDefendantAccounts'](mockData, 'company');
-    expect(result.length).toBe(1);
+    expect(result).toHaveLength(1);
     expect(result[0]).toEqual(
       expect.objectContaining({
         Account: 'ACC999',
@@ -492,7 +528,7 @@ describe('FinesSaResultsComponent', () => {
     };
 
     const result = component['mapCreditorAccounts'](mockData);
-    expect(result.length).toBe(1);
+    expect(result).toHaveLength(1);
     expect(result[0]).toEqual(
       expect.objectContaining({
         Account: 'ACC123',
@@ -533,7 +569,7 @@ describe('FinesSaResultsComponent', () => {
     };
 
     const result = component['mapCreditorAccounts'](mockData);
-    expect(result.length).toBe(1);
+    expect(result).toHaveLength(1);
     expect(result[0]).toEqual(
       expect.objectContaining({
         Account: 'ACC123',
@@ -736,8 +772,15 @@ describe('FinesSaResultsComponent', () => {
     expect(row['Parent or guardian']).toBeNull();
   });
 
-  it('should return minor creditor path segment when search type is minorCreditors', () => {
-    vi.spyOn(finesSaStore, 'getSearchType').mockReturnValue('minorCreditors');
-    expect(component.getAccountTypePathSegment()).toBe(FINES_ACC_MINOR_CREDITOR_ROUTING_PATHS.root);
+  it('should return minor creditor path segment for minor creditor accounts', () => {
+    expect(component.getAccountTypePathSegment(FINES_SA_RESULTS_ACCOUNT_TYPE.minorCreditor)).toBe(
+      FINES_ACC_MINOR_CREDITOR_ROUTING_PATHS.root,
+    );
+  });
+
+  it('should return defendant path segment for defendant accounts', () => {
+    expect(component.getAccountTypePathSegment(FINES_SA_RESULTS_ACCOUNT_TYPE.defendant)).toBe(
+      FINES_ACC_ROUTING_PATHS.children.defendant,
+    );
   });
 });

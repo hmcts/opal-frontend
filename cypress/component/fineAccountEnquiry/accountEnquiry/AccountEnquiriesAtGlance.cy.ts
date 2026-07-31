@@ -769,7 +769,7 @@ describe('Defendant Account Summary - At a Glance Tab', () => {
   it(
     'AC1: displays only the Add comments link and navigates to the Comments screen when no Account Comment or Free Text Notes exist',
     {
-      tags: [...buildTags('@JIRA-STORY:PO-8934'), '@JIRA-EPIC:PO-8248'],
+      tags: [...buildTags('@JIRA-STORY:PO-8934'), '@JIRA-EPIC:PO-8248', '@JIRA-TEST-KEY:PO-9570'],
     },
     () => {
       const mockDataNoComments = structuredClone(OPAL_FINES_ACCOUNT_DEFENDANT_AT_A_GLANCE_MOCK);
@@ -799,7 +799,7 @@ describe('Defendant Account Summary - At a Glance Tab', () => {
   it(
     'AC2: displays the Account Comment and Free text notes sections with Change links beneath each section, and navigates to the Comments screen when selected',
     {
-      tags: [...buildTags('@JIRA-STORY:PO-8934'), '@JIRA-EPIC:PO-8248'],
+      tags: [...buildTags('@JIRA-STORY:PO-8934'), '@JIRA-EPIC:PO-8248', '@JIRA-TEST-KEY:PO-9571'],
     },
     () => {
       const mockDataCommentOnly = structuredClone(OPAL_FINES_ACCOUNT_DEFENDANT_AT_A_GLANCE_MOCK);
@@ -843,7 +843,7 @@ describe('Defendant Account Summary - At a Glance Tab', () => {
   it(
     'AC2e: selecting the Change link beneath the Comment section navigates to the Comments screen',
     {
-      tags: [...buildTags('@JIRA-STORY:PO-8934'), '@JIRA-EPIC:PO-8248'],
+      tags: [...buildTags('@JIRA-STORY:PO-8934'), '@JIRA-EPIC:PO-8248', '@JIRA-TEST-KEY:PO-9572'],
     },
     () => {
       const mockDataCommentOnly = structuredClone(OPAL_FINES_ACCOUNT_DEFENDANT_AT_A_GLANCE_MOCK);
@@ -874,7 +874,7 @@ describe('Defendant Account Summary - At a Glance Tab', () => {
   it(
     'AC3: displays a dash for Comment, shows Free text notes in ascending order, and displays Change links beneath each section',
     {
-      tags: [...buildTags('@JIRA-STORY:PO-8934'), '@JIRA-EPIC:PO-8248'],
+      tags: [...buildTags('@JIRA-STORY:PO-8934'), '@JIRA-EPIC:PO-8248', '@JIRA-TEST-KEY:PO-9573'],
     },
     () => {
       const mockDataNotesOnly = structuredClone(OPAL_FINES_ACCOUNT_DEFENDANT_AT_A_GLANCE_MOCK);
@@ -924,7 +924,7 @@ describe('Defendant Account Summary - At a Glance Tab', () => {
   it(
     'AC3e: selecting the Change link beneath the Comment section navigates to the Comments screen when only Free text notes exist',
     {
-      tags: [...buildTags('@JIRA-STORY:PO-8934'), '@JIRA-EPIC:PO-8248'],
+      tags: [...buildTags('@JIRA-STORY:PO-8934'), '@JIRA-EPIC:PO-8248', '@JIRA-TEST-KEY:PO-9574'],
     },
     () => {
       const mockDataNotesOnly = structuredClone(OPAL_FINES_ACCOUNT_DEFENDANT_AT_A_GLANCE_MOCK);
@@ -955,7 +955,7 @@ describe('Defendant Account Summary - At a Glance Tab', () => {
   it(
     'AC4: displays the Account Comment and Free text notes in ascending order, with Change links beneath each section',
     {
-      tags: [...buildTags('@JIRA-STORY:PO-8934'), '@JIRA-EPIC:PO-8248'],
+      tags: [...buildTags('@JIRA-STORY:PO-8934'), '@JIRA-EPIC:PO-8248', '@JIRA-TEST-KEY:PO-9575'],
     },
     () => {
       const mockDataCommentAndNotes = structuredClone(OPAL_FINES_ACCOUNT_DEFENDANT_AT_A_GLANCE_MOCK);
@@ -1005,7 +1005,7 @@ describe('Defendant Account Summary - At a Glance Tab', () => {
   it(
     'AC4e: selecting the Change link beneath the Comment section navigates to the Comments screen when both an Account Comment and Free text notes exist',
     {
-      tags: [...buildTags('@JIRA-STORY:PO-8934'), '@JIRA-EPIC:PO-8248'],
+      tags: [...buildTags('@JIRA-STORY:PO-8934'), '@JIRA-EPIC:PO-8248', '@JIRA-TEST-KEY:PO-9576'],
     },
     () => {
       const mockDataCommentAndNotes = structuredClone(OPAL_FINES_ACCOUNT_DEFENDANT_AT_A_GLANCE_MOCK);

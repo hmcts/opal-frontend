@@ -10,7 +10,7 @@
 >
 </opal-lib-govuk-heading-with-caption>
 
-<form (submit)="handleFormSubmit($event)" [formGroup]="form" class="govuk-form">
+<form autocomplete="off" (submit)="handleFormSubmit($event)" [formGroup]="form" class="govuk-form">
   <opal-lib-govuk-radio
     fieldSetId="facc_minor_creditor_creditor_type"
     legendText="Select creditor type"

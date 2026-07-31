@@ -233,25 +233,13 @@ describe('FinesSaSearchAccountFormComponent', () => {
     expect(restoredComponent.searchCriteriaForm.get('fsa_search_account_individuals_last_name')?.value).toBe('Smith');
   });
 
-  it('should return companies FormGroup when activeTab is companies', () => {
-    component.finesSaStore.setActiveTab('companies');
-    expect(component.searchCriteriaForm).toBe(
-      component.form.get('fsa_search_account_companies_search_criteria') as FormGroup,
-    );
-  });
-
-  it('should return minorCreditors FormGroup when activeTab is minorCreditors', () => {
-    component.finesSaStore.setActiveTab('minorCreditors');
-    expect(component.searchCriteriaForm).toBe(
-      component.form.get('fsa_search_account_minor_creditors_search_criteria') as FormGroup,
-    );
-  });
-
-  it('should return majorCreditors FormGroup when activeTab is majorCreditors', () => {
-    component.finesSaStore.setActiveTab('majorCreditors');
-    expect(component.searchCriteriaForm).toBe(
-      component.form.get('fsa_search_account_major_creditors_search_criteria') as FormGroup,
-    );
+  it.each([
+    { activeTab: 'companies', controlName: 'fsa_search_account_companies_search_criteria' },
+    { activeTab: 'minorCreditors', controlName: 'fsa_search_account_minor_creditors_search_criteria' },
+    { activeTab: 'majorCreditors', controlName: 'fsa_search_account_major_creditors_search_criteria' },
+  ] as const)('should return $activeTab FormGroup when activeTab is $activeTab', ({ activeTab, controlName }) => {
+    component.finesSaStore.setActiveTab(activeTab);
+    expect(component.searchCriteriaForm).toBe(component.form.get(controlName) as FormGroup);
   });
 
   it('should return empty FormGroup for unknown tab', () => {
@@ -270,11 +258,11 @@ describe('FinesSaSearchAccountFormComponent', () => {
 
   it('should return an empty FormGroup when switching to an unknown tab', () => {
     component['switchTab']('unknown');
-    expect(component.searchCriteriaForm instanceof FormGroup).toBe(true);
+    expect(component.searchCriteriaForm).toBeInstanceOf(FormGroup);
     expect(Object.keys(component.searchCriteriaForm.controls)).toEqual([]);
   });
 
-  it('should call super.handleFormSubmit when only account number is used', () => {
+  it('should call super.handleFormSubmit when only account number is used in the current form', () => {
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     const superSubmitSpy = vi.spyOn<any, any>(FinesSaSearchAccountFormComponent.prototype, 'handleFormSubmit');
 
@@ -287,7 +275,7 @@ describe('FinesSaSearchAccountFormComponent', () => {
     expect(superSubmitSpy).toHaveBeenCalled();
   });
 
-  it('should call super.handleFormSubmit when only account number is used', () => {
+  it('should call super.handleFormSubmit when stored individual criteria is present', () => {
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     const superSubmitSpy = vi.spyOn<any, any>(FinesSaSearchAccountFormComponent.prototype, 'handleFormSubmit');
 
@@ -343,5 +331,10 @@ describe('FinesSaSearchAccountFormComponent', () => {
       component.updateFormErrorSummaryMessages([]);
       expect(component.formErrorSummaryMessage).toEqual([]);
     });
+  });
+
+  it('should set autocomplete="off" on the form', () => {
+    fixture.detectChanges();
+    expect(fixture.nativeElement.querySelector('form')?.getAttribute('autocomplete')).toBe('off');
   });
 });
