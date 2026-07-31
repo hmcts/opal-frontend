@@ -397,7 +397,10 @@ export class AccountDetailsEnforcementActions {
    */
   public chooseChangeExistingPaymentTerms(option: string): void {
     log('action', 'Choosing change existing payment terms option', { option });
-    cy.contains('label', option, { timeout: AccountDetailsEnforcementActions.DEFAULT_TIMEOUT }).click();
+    cy.contains('legend', 'Do you want to change the existing payment terms?')
+      .parent()
+      .contains('label', option)
+      .click();
   }
 
   /**
