@@ -129,14 +129,16 @@ Feature: Defendant - Adult or youth - Account Enquiries – View Account Details
       When I search for the account by last name "HistoryNotes{uniq}" and open the latest result
       Then I should see the page header contains "Ms Harriet HISTORYNOTES{uniqUpper}"
 
-    @R1B @JIRA-STORY:PO-2635 @JIRA-EPIC:PO-2621
+    @R1B @JIRA-STORY:PO-2635 @JIRA-EPIC:PO-2621 @JIRA-TEST-KEY:PO-9568
+
     Scenario: History and notes items load and can be filtered
       When I go to the History and notes tab
       Then I should see the History and notes items load
       When I filter the History and notes results to Notes
       Then I should only see Note items in History and notes
 
-    @R1B @JIRA-STORY:PO-2635 @JIRA-EPIC:PO-2621
+    @R1B @JIRA-STORY:PO-2635 @JIRA-EPIC:PO-2621 @JIRA-TEST-KEY:PO-9569
+
     Scenario: History and notes account links open the correct record in a new tab
       When I go to the History and notes tab
       And I open the first History and notes account link in a new tab
