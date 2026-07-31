@@ -235,7 +235,7 @@ describe('FinesMacFixedPenaltyDetailsComponent', () => {
 
     expect(component['courts']).toEqual(OPAL_FINES_COURT_REF_DATA_MOCK);
     expect(component['createAutoCompleteItemsCourts']).toHaveBeenCalledWith(OPAL_FINES_COURT_REF_DATA_MOCK);
-    expect(component['enforcementCourtData'].length).toEqual(OPAL_FINES_COURT_REF_DATA_MOCK.refData.length);
+    expect(component['enforcementCourtData']).toHaveLength(OPAL_FINES_COURT_REF_DATA_MOCK.refData.length);
   });
 
   it('should set issuing authories data onInit', () => {
@@ -250,7 +250,7 @@ describe('FinesMacFixedPenaltyDetailsComponent', () => {
       OPAL_FINES_PROSECUTOR_REF_DATA_MOCK,
       OPAL_FINES_LOCAL_JUSTICE_AREA_REF_DATA_MOCK,
     );
-    expect(component['issuingAuthoritiesData'].length).toEqual(
+    expect(component['issuingAuthoritiesData']).toHaveLength(
       OPAL_FINES_PROSECUTOR_REF_DATA_MOCK.ref_data.length + OPAL_FINES_LOCAL_JUSTICE_AREA_REF_DATA_MOCK.refData.length,
     );
   });
@@ -263,10 +263,10 @@ describe('FinesMacFixedPenaltyDetailsComponent', () => {
 
     expect(component['createAutoCompleteData']).toHaveBeenCalled();
     expect(component['courts']).toEqual(OPAL_FINES_COURT_REF_DATA_MOCK);
-    expect(component.enforcementCourtData.length).toEqual(OPAL_FINES_COURT_REF_DATA_MOCK.refData.length);
+    expect(component.enforcementCourtData).toHaveLength(OPAL_FINES_COURT_REF_DATA_MOCK.refData.length);
     expect(component['prosecutors']).toEqual(OPAL_FINES_PROSECUTOR_REF_DATA_MOCK);
     expect(component['localJusticeAreas']).toEqual(OPAL_FINES_LOCAL_JUSTICE_AREA_REF_DATA_MOCK);
-    expect(component.issuingAuthoritiesData.length).toEqual(
+    expect(component.issuingAuthoritiesData).toHaveLength(
       OPAL_FINES_PROSECUTOR_REF_DATA_MOCK.ref_data.length + OPAL_FINES_LOCAL_JUSTICE_AREA_REF_DATA_MOCK.refData.length,
     );
   });

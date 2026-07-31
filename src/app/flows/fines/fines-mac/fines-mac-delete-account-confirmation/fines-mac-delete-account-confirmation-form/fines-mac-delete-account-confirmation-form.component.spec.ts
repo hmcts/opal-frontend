@@ -163,29 +163,42 @@ describe('FinesMacDeleteAccountConfirmationFormComponent', () => {
     );
   });
 
-  it('should return true from hasUnsavedChanges if form is dirty, reason has value, and form is not submitted', () => {
-    component.form.controls['fm_delete_account_confirmation_reason'].setValue('Valid reason');
-    component.form.markAsDirty();
-    component['formSubmitted'] = false;
+  it.each([
+    {
+      description: 'form is dirty, reason has value, and form is not submitted',
+      reason: 'Valid reason',
+      isDirty: true,
+      isSubmitted: false,
+      expectedHasUnsavedChanges: true,
+    },
+    {
+      description: 'form is pristine',
+      reason: 'Valid reason',
+      isDirty: false,
+      isSubmitted: false,
+      expectedHasUnsavedChanges: false,
+    },
+    {
+      description: 'reason is empty',
+      reason: '',
+      isDirty: true,
+      isSubmitted: false,
+      expectedHasUnsavedChanges: false,
+    },
+  ])(
+    'should return $expectedHasUnsavedChanges from hasUnsavedChanges if $description',
+    ({ reason, isDirty, isSubmitted, expectedHasUnsavedChanges }) => {
+      component.form.controls['fm_delete_account_confirmation_reason'].setValue(reason);
+      if (isDirty) {
+        component.form.markAsDirty();
+      } else {
+        component.form.markAsPristine();
+      }
+      component['formSubmitted'] = isSubmitted;
 
-    expect(component['hasUnsavedChanges']()).toBe(true);
-  });
-
-  it('should return false from hasUnsavedChanges if form is pristine', () => {
-    component.form.controls['fm_delete_account_confirmation_reason'].setValue('Valid reason');
-    component.form.markAsPristine();
-    component['formSubmitted'] = false;
-
-    expect(component['hasUnsavedChanges']()).toBe(false);
-  });
-
-  it('should return false from hasUnsavedChanges if reason is empty', () => {
-    component.form.controls['fm_delete_account_confirmation_reason'].setValue('');
-    component.form.markAsDirty();
-    component['formSubmitted'] = false;
-
-    expect(component['hasUnsavedChanges']()).toBe(false);
-  });
+      expect(component['hasUnsavedChanges']()).toBe(expectedHasUnsavedChanges);
+    },
+  );
 
   it('should return false from hasUnsavedChanges if form is submitted', () => {
     component.form.controls['fm_delete_account_confirmation_reason'].setValue('Some reason');
