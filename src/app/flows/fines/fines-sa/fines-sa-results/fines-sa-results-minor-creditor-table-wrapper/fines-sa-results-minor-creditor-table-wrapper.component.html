@@ -110,11 +110,11 @@
           </td>
           <td opal-lib-moj-sortable-table-row-data id="minorCreditorDefendant">
             @if (row['Defendant'] !== null) {
-              @if (row['Creditor account id'] !== null) {
+              @if (row['Defendant account id'] !== null) {
                 <a
                   class="govuk-link govuk-link--no-visited-state"
                   href=""
-                  (click)="goToDefendantAccount(row['Creditor account id'], $event)"
+                  (click)="goToDefendantAccount(row['Defendant account id']!, $event)"
                   >{{ row['Defendant'] }}</a
                 >
               } @else {
