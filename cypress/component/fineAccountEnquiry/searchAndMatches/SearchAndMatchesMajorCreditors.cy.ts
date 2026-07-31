@@ -186,7 +186,10 @@ describe('Search Account Component - Major Creditors', () => {
   );
 
   // PO-2181 Navigation to the Account Enquiry (Details) screen for a Major Creditor Account
-  it('AC1a: navigates to the major creditor account enquiry details screen when a major creditor account is selected', { tags: [...buildTags('@JIRA-STORY:PO-2128'), '@JIRA-EPIC:PO-1286', '@JIRA-TEST-KEY:PO-9649'] }, () => {
+  it(
+    'AC1a: navigates to the major creditor account enquiry details screen when a major creditor account is selected',
+    { tags: [...buildTags('@JIRA-STORY:PO-2128'), '@JIRA-EPIC:PO-1286', '@JIRA-TEST-KEY:PO-9649'] },
+    () => {
       setupComponent();
 
       cy.get(MajorAutocompleteLocators.input).click();
@@ -200,5 +203,6 @@ describe('Search Account Component - Major Creditors', () => {
       cy.get('@urlTree').should('have.been.calledWithMatch', [`fines/account/major-creditor/${accountId}/details`]);
 
       cy.get('@windowOpen').should('have.been.calledWithMatch', Cypress.sinon.match.string, '_blank');
-    });
+    },
+  );
 });

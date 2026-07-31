@@ -24,7 +24,10 @@ describe('Account Enquiry - Major Creditor Header', () => {
     interceptedRoutes: ['/access-denied', '../note/add'],
   };
 
-  it('AC1b: displays the Major Creditor Account Header Summary in line with the design artefact', { tags: [...buildTags('@JIRA-STORY:PO-2128'), '@JIRA-EPIC:PO-1286', '@JIRA-TEST-KEY:PO-9593'] }, () => {
+  it(
+    'AC1b: displays the Major Creditor Account Header Summary in line with the design artefact',
+    { tags: [...buildTags('@JIRA-STORY:PO-2128'), '@JIRA-EPIC:PO-1286', '@JIRA-TEST-KEY:PO-9593'] },
+    () => {
       const header = structuredClone(FINES_ACC_MAJOR_CREDITOR_DETAILS_HEADER_MOCK);
 
       interceptUserState(USER_STATE_MOCK_PERMISSION_BU77);
@@ -39,9 +42,13 @@ describe('Account Enquiry - Major Creditor Header', () => {
       cy.get(DOM.accountInfo).should('exist');
       cy.get(DOM.summaryMetricBar).should('exist');
       cy.get(DOM.subnav).should('exist');
-    });
+    },
+  );
 
-  it('AC1c: displays header field values using the major creditor account data rules', { tags: [...buildTags('@JIRA-STORY:PO-2128'), '@JIRA-EPIC:PO-1286', '@JIRA-TEST-KEY:PO-9594'] }, () => {
+  it(
+    'AC1c: displays header field values using the major creditor account data rules',
+    { tags: [...buildTags('@JIRA-STORY:PO-2128'), '@JIRA-EPIC:PO-1286', '@JIRA-TEST-KEY:PO-9594'] },
+    () => {
       const header = structuredClone(FINES_ACC_MAJOR_CREDITOR_DETAILS_HEADER_MOCK);
       header.major_creditor.account_number = '12345678X';
       header.major_creditor.name = 'Test Major Creditor Account';
@@ -67,9 +74,13 @@ describe('Account Enquiry - Major Creditor Header', () => {
           .closest(DOM.summaryMetricBarItem)
           .should('contain.text', '£123.45');
       });
-    });
+    },
+  );
 
-  it('AC1c: displays Central Fund as the account type when the header data identifies a Central Fund account', { tags: [...buildTags('@JIRA-STORY:PO-2128'), '@JIRA-EPIC:PO-1286', '@JIRA-TEST-KEY:PO-9595'] }, () => {
+  it(
+    'AC1c: displays Central Fund as the account type when the header data identifies a Central Fund account',
+    { tags: [...buildTags('@JIRA-STORY:PO-2128'), '@JIRA-EPIC:PO-1286', '@JIRA-TEST-KEY:PO-9595'] },
+    () => {
       const header = structuredClone(FINES_ACC_MAJOR_CREDITOR_DETAILS_HEADER_MOCK);
       header.major_creditor.account_number = '00000009C';
       header.major_creditor.account_reference.account_type = 'CFA';
@@ -90,5 +101,6 @@ describe('Account Enquiry - Major Creditor Header', () => {
       cy.get(DOM.subnav).should('exist');
 
       cy.get(DOM.majorCreditorAccountType).should('contain.text', 'Central Fund');
-    });
+    },
+  );
 });
