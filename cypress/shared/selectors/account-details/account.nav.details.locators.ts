@@ -103,6 +103,9 @@ export const AccountNavDetailsLocators = {
     /** Tab link for “History and notes.” */
     historyAndNotesTab: 'li[subnavitemid="history-and-notes-tab"] a.moj-sub-navigation__link',
 
+    /** Tab link for “Consolidated accounts.” */
+    consolidatedAccountsTab: 'li[subnavitemid="consolidated-accounts-tab"] > a.moj-sub-navigation__link',
+
     /** Currently active tab link (has `aria-current="page"`). */
     currentTab: 'a.moj-sub-navigation__link[aria-current="page"]',
 
