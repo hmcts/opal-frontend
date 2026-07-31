@@ -15,7 +15,8 @@ function amountToPence(value: unknown): bigint | null {
 
   const match = String(value).match(/^(-?)(\d+)(?:\.(\d{0,2}))?$/);
   if (!match) {
-    return null;
+    const numericAmountInPence = Math.round(Number(value) * 100);
+    return Number.isFinite(numericAmountInPence) ? BigInt(numericAmountInPence) : null;
   }
 
   const [, sign, pounds, pence = ''] = match;
