@@ -26,7 +26,7 @@ export class FinesDraftCreateAndManageViewAllRejectedComponent implements OnInit
   public rejectedAccounts!: IFinesDraftTableWrapperTableData[];
 
   public onDefendantClick(row: IFinesDraftTableWrapperTableData): void {
-    const { 'Defendant id': draftAccountId } = row;
+    const draftAccountId = +row['Defendant id'];
     this.finesDraftStore.setViewAllAccounts(true);
     this.finesDraftStore.setAmend(true);
 
