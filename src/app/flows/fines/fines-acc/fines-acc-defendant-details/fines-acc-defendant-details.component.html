@@ -149,6 +149,15 @@
       subNavItemFragment="history-and-notes"
       [subNavItemText]="tabs['history-and-notes']"
     ></li>
+    @if (hasConsolidatedAccounts()) {
+      <li
+        opal-lib-moj-sub-navigation-item
+        subNavItemId="consolidated-accounts-tab"
+        [activeSubNavItemFragment]="activeTab"
+        subNavItemFragment="consolidated-accounts"
+        [subNavItemText]="tabs['consolidated-accounts']"
+      ></li>
+    }
   </opal-lib-moj-sub-navigation>
 </div>
 
@@ -230,5 +239,13 @@
       [tabData$]="tabHistoryAndNotes$"
       [style]="tabContentStyles"
     ></app-fines-acc-defendant-details-history-and-notes-tab>
+  }
+  @case ('consolidated-accounts') {
+    @if (tabConsolidatedAccounts$ | async; as tabData) {
+      <app-fines-acc-defendant-details-consolidated-accounts-tab
+        [tabData]="tabData"
+        [style]="tabContentStyles"
+      ></app-fines-acc-defendant-details-consolidated-accounts-tab>
+    }
   }
 }

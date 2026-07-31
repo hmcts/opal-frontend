@@ -246,10 +246,7 @@ describe('FinesMacDeleteAccountConfirmation - Checker Delete account', () => {
     },
   );
 
-  it(
-    'returns to the same check account route when a checker cancels deletion',
-    { tags: [...buildTags('@JIRA-DEFECT:PO-9113', '@JIRA-STORY:PO-9113'), '@JIRA-EPIC:PO-2220'] },
-    () => {
+  it('returns to the same check account route when a checker cancels deletion', { tags: [...buildTags('@JIRA-DEFECT:PO-9113', '@JIRA-STORY:PO-9113'), '@JIRA-EPIC:PO-2220', '@JIRA-TEST-KEY:PO-9651'] }, () => {
       setupComponent(finesAccountPayload, finesAccountPayload, true, true);
 
       cy.get(DOM_ELEMENTS.cancelLink).click();
@@ -258,6 +255,5 @@ describe('FinesMacDeleteAccountConfirmation - Checker Delete account', () => {
         expect(stub).to.have.been.calledOnce;
         expect(stub.getCall(0).args[0]).to.deep.equal(['review-account/42']);
       });
-    },
-  );
+    });
 });
