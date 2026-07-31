@@ -522,7 +522,10 @@ describe('Account Enquiry Defendant Details Tab', () => {
     },
   );
 
-  it('AC1a, AC1b. Individual Defendant tab removes the heading Change link and shows section Change links', { tags: buildTags('@JIRA-STORY:PO-2671', '@JIRA-EPIC:PO-8248') }, () => {
+  it(
+    'AC1a, AC1b. Individual Defendant tab removes the heading Change link and shows section Change links',
+    { tags: buildTags('@JIRA-STORY:PO-2671', '@JIRA-EPIC:PO-8248') },
+    () => {
       const defendantDetailsMock = structuredClone(OPAL_FINES_ACCOUNT_DEFENDANT_ACCOUNT_PARTY_MOCK);
       defendantDetailsMock.defendant_account_party.party_details.organisation_flag = false;
       defendantDetailsMock.defendant_account_party.is_debtor = true;
@@ -556,9 +559,13 @@ describe('Account Enquiry Defendant Details Tab', () => {
         .within(() => {
           cy.contains('a', 'Change').should('be.visible');
         });
-    });
+    },
+  );
 
-  it('AC2a, AC2b. Company Defendant tab removes the heading Change link and shows section Change links', { tags: buildTags('@JIRA-STORY:PO-2671', '@JIRA-EPIC:PO-8248') }, () => {
+  it(
+    'AC2a, AC2b. Company Defendant tab removes the heading Change link and shows section Change links',
+    { tags: buildTags('@JIRA-STORY:PO-2671', '@JIRA-EPIC:PO-8248') },
+    () => {
       const headerMock = structuredClone(DEFENDANT_HEADER_MOCK);
       const defendantDetailsMock = structuredClone(OPAL_FINES_ACCOUNT_DEFENDANT_ACCOUNT_PARTY_MOCK);
       defendantDetailsMock.defendant_account_party.party_details.organisation_flag = true;
@@ -591,5 +598,6 @@ describe('Account Enquiry Defendant Details Tab', () => {
         cy.contains('a', 'Change').should('be.visible');
       });
       cy.contains('.govuk-summary-card__title', 'Employer details').should('not.exist');
-    });
+    },
+  );
 });
