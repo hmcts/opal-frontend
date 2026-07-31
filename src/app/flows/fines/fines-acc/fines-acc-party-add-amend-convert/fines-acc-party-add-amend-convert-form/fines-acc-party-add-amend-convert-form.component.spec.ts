@@ -11,6 +11,7 @@ import { MOCK_FINES_ACC_PARTY_ADD_AMEND_CONVERT_FORM_DATA_WITH_ALIASES } from '.
 import { FINES_ACC_PARTY_ADD_AMEND_CONVERT_FORM } from '../constants/fines-acc-party-add-amend-convert-form.constant';
 import { FINES_ACC_DEFENDANT_DETAILS_TABS_KEYS } from '../../fines-acc-defendant-details/constants/fines-acc-defendant-details-tabs-keys.constant';
 import { FINES_ACC_PARTY_ADD_AMEND_CONVERT_MODES } from '../constants/fines-acc-party-add-amend-convert-modes.constant';
+import { FINES_ACC_PARTY_ADD_AMEND_CONVERT_SECTION_FRAGMENTS } from '../constants/fines-acc-party-add-amend-convert-fragments.constant';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
 
 describe('FinesAccPartyAddAmendConvertFormComponent', () => {
@@ -41,6 +42,9 @@ describe('FinesAccPartyAddAmendConvertFormComponent', () => {
     };
     mockActivatedRoute = {
       data: of({}),
+      snapshot: {
+        fragment: null,
+      },
     };
 
     mockFinesAccountStore = {
@@ -289,6 +293,22 @@ describe('FinesAccPartyAddAmendConvertFormComponent', () => {
 
     expect(component.isAddParentGuardianMode).toBe(true);
     expect(component.routeFragment).toBe(FINES_ACC_DEFENDANT_DETAILS_TABS_KEYS.defendant);
+  });
+
+  it('should render matching section ids for fragment navigation', () => {
+    component.partyType = 'individual';
+    component.isDebtor = true;
+    fixture.detectChanges();
+
+    expect(
+      fixture.nativeElement.querySelector(`#${FINES_ACC_PARTY_ADD_AMEND_CONVERT_SECTION_FRAGMENTS.partyDetails}`),
+    ).toBeTruthy();
+    expect(
+      fixture.nativeElement.querySelector(`#${FINES_ACC_PARTY_ADD_AMEND_CONVERT_SECTION_FRAGMENTS.contactDetails}`),
+    ).toBeTruthy();
+    expect(
+      fixture.nativeElement.querySelector(`#${FINES_ACC_PARTY_ADD_AMEND_CONVERT_SECTION_FRAGMENTS.employmentDetails}`),
+    ).toBeTruthy();
   });
 
   it('should show contact details for reduced parent guardian mode', () => {
@@ -778,7 +798,7 @@ describe('FinesAccPartyAddAmendConvertFormComponent', () => {
       ) as FormArray;
 
       expect(organisationAliasesFormArray).toBeDefined();
-      expect(organisationAliasesFormArray.length).toBe(0);
+      expect(organisationAliasesFormArray).toHaveLength(0);
     });
 
     it('should not have individual aliases form array for company party type', () => {
@@ -1029,7 +1049,7 @@ describe('FinesAccPartyAddAmendConvertFormComponent', () => {
 
     const aliasesControl = baseForm.get('facc_party_add_amend_convert_individual_aliases') as FormArray;
     expect(aliasesControl).toBeDefined();
-    expect(aliasesControl.length).toBe(0);
+    expect(aliasesControl).toHaveLength(0);
   });
 
   it('should add company-specific form controls to base form', () => {
@@ -1065,7 +1085,7 @@ describe('FinesAccPartyAddAmendConvertFormComponent', () => {
 
     const aliasesControl = baseForm.get('facc_party_add_amend_convert_organisation_aliases') as FormArray;
     expect(aliasesControl).toBeDefined();
-    expect(aliasesControl.length).toBe(0);
+    expect(aliasesControl).toHaveLength(0);
   });
 
   it('should create form with individual controls for individual party type', () => {
@@ -1153,5 +1173,10 @@ describe('FinesAccPartyAddAmendConvertFormComponent', () => {
 
     expect(component.age).toBe(0);
     expect(component.ageLabel).toBe('');
+  });
+
+  it('should set autocomplete="off" on the form', () => {
+    fixture.detectChanges();
+    expect(fixture.nativeElement.querySelector('form')?.getAttribute('autocomplete')).toBe('off');
   });
 });

@@ -136,7 +136,7 @@ describe('FinesMacPersonalDetailsFormComponent', () => {
     expect(removeAliasSpy).toHaveBeenCalledWith(expectedIndex, 'fm_personal_details_aliases', event);
   });
 
-  it('should emit form submit event with form value', () => {
+  it('should emit nested flow form submit event with form value', () => {
     const event = { submitter: { className: 'nested-flow' } } as SubmitEvent;
     formSubmit.nestedFlow = true;
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -153,7 +153,7 @@ describe('FinesMacPersonalDetailsFormComponent', () => {
     );
   });
 
-  it('should emit form submit event with form value', () => {
+  it('should emit standard flow form submit event with form value', () => {
     const event = {} as SubmitEvent;
     formSubmit.nestedFlow = false;
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -192,7 +192,7 @@ describe('FinesMacPersonalDetailsFormComponent', () => {
     expect(component.aliasControlsValidation).toEqual(FINES_MAC_PERSONAL_DETAILS_ALIAS);
   });
 
-  it('should call dateOfBirthListener on DOB value changes Adult', () => {
+  it('should call dateOfBirthListener on DOB value changes for an adult form update', () => {
     const dateOfBirth = '01/01/1990';
     mockDateService.isValidDate.mockReturnValue(true);
     mockDateService.calculateAge.mockReturnValue(34);
@@ -225,7 +225,7 @@ describe('FinesMacPersonalDetailsFormComponent', () => {
     expect(paymentTermsFormData.fm_payment_terms_suspended_committal_date).toBeNull();
   });
 
-  it('should call dateOfBirthListener on DOB value changes Adult', () => {
+  it('should call dateOfBirthListener on DOB value changes for an adult explicit listener run', () => {
     const dateOfBirth = '01/01/1990';
     component.form.controls['fm_personal_details_dob'].setValue(dateOfBirth);
     mockDateService.isValidDate.mockReturnValue(true);
@@ -326,5 +326,10 @@ describe('FinesMacPersonalDetailsFormComponent', () => {
     FM_PERSONAL_DETAILS_VEHICLE_DETAILS_FIELDS.forEach((control) => {
       expect(component.form.get(control.controlName)).toBeTruthy();
     });
+  });
+
+  it('should set autocomplete="off" on the form', () => {
+    fixture.detectChanges();
+    expect(fixture.nativeElement.querySelector('form')?.getAttribute('autocomplete')).toBe('off');
   });
 });

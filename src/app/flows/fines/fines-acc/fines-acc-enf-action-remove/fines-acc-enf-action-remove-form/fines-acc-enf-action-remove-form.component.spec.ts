@@ -78,4 +78,9 @@ describe('FinesAccEnfActionRemoveFormComponent', () => {
 
     expect(component.form.get('facc_enf_action_remove_reason')?.dirty).toBe(true);
   });
+
+  it('should set autocomplete="off" on the form', () => {
+    fixture.detectChanges();
+    expect(fixture.nativeElement.querySelector('form')?.getAttribute('autocomplete')).toBe('off');
+  });
 });

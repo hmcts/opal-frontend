@@ -3,7 +3,7 @@
   [errors]="formErrorSummaryMessage"
   (errorClick)="scrollTo($event)"
 ></opal-lib-govuk-error-summary>
-<form (submit)="handleFormSubmit($event)" [formGroup]="form">
+<form autocomplete="off" (submit)="handleFormSubmit($event)" [formGroup]="form">
   @if (accessCollectionOrder) {
     <opal-lib-govuk-radio
       fieldSetId="fm_payment_terms_collection_order_made"

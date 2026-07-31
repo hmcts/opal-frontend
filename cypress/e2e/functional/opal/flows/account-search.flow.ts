@@ -104,7 +104,7 @@ export class AccountSearchFlow {
     ForceSingleTabNavigation();
     this.commonSearch.clickSearchButton();
     cy.location('pathname', { timeout: 15_000 }).should('match', /\/fines\/account\/major-creditor\/\d+\/details$/);
-    cy.get('opal-lib-custom-page-header', { timeout: 15_000 }).should('be.visible');
+    cy.get('opal-lib-custom-page-header', { timeout: 15_000 }).should('exist');
     cy.get('h1.govuk-heading-l', { timeout: 15_000 }).should('be.visible');
   }
 

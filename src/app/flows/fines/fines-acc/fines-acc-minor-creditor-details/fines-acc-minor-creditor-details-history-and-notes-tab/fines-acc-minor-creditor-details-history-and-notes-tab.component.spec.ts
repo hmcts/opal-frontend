@@ -1,10 +1,11 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { SimpleChange } from '@angular/core';
+import { By } from '@angular/platform-browser';
 import { ActivatedRoute, provideRouter } from '@angular/router';
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import { FinesAccMinorCreditorDetailsHistoryAndNotesTabComponent } from './fines-acc-minor-creditor-details-history-and-notes-tab.component';
 import { OPAL_FINES_ACCOUNT_MINOR_CREDITOR_DETAILS_HISTORY_AND_NOTES_TAB_REF_DATA_MOCK } from '@services/fines/opal-fines-service/mocks/opal-fines-account-minor-creditor-details-history-and-notes-tab-ref-data.mock';
-import { of } from 'rxjs';
+import { Subject, of, throwError } from 'rxjs';
 import { FINES_ACC_MINOR_CREDITOR_DETAILS_HISTORY_AND_NOTES_FILTER_FORM_MOCK } from './mocks/fines-acc-minor-creditor-details-history-and-notes-filter-form.mock';
 import { FINES_ACC_MINOR_CREDITOR_DETAILS_HISTORY_AND_NOTES_FILTER_FORM_PAYLOAD_MOCK } from './mocks/fines-acc-minor-creditor-details-history-and-notes-filter-form-payload.mock';
 import { OpalFines } from '@services/fines/opal-fines-service/opal-fines.service';
@@ -15,6 +16,8 @@ import { FINES_ACC_MINOR_CREDITOR_DETAILS_HISTORY_AND_NOTES_FILTERED_TAB_DATA_MO
 import { IOpalFinesAccountMinorCreditorDetailsHistoryAndNotesTabRefData } from '@services/fines/opal-fines-service/interfaces/opal-fines-account-minor-creditor-details-history-and-notes-tab-ref-data.interface';
 import { FINES_ACC_MINOR_CREDITOR_HISTORY_AND_NOTES_DETAILS_TRANSFORMATION_CONFIG } from '../../services/constants/fines-acc-minor-creditor-history-and-notes-details-transformation-config.constant';
 import { THistoryDetailsRawItem as TFinesAccHistoryAndNotesRawItem } from '@hmcts/opal-frontend-common/services/history-transformation-service';
+import { FinesAccMinorCreditorDetailsHistoryAndNotesTableComponent } from './fines-acc-minor-creditor-details-history-and-notes-table/fines-acc-minor-creditor-details-history-and-notes-table.component';
+import { FinesAccMinorCreditorDetailsHistoryAndNotesFilterComponent } from './fines-acc-minor-creditor-details-history-and-notes-filter/fines-acc-minor-creditor-details-history-and-notes-filter.component';
 
 describe('FinesAccMinorCreditorDetailsHistoryAndNotesTabComponent', () => {
   let component: FinesAccMinorCreditorDetailsHistoryAndNotesTabComponent;
@@ -35,6 +38,12 @@ describe('FinesAccMinorCreditorDetailsHistoryAndNotesTabComponent', () => {
       details: { line1: [{ fragments: [{ text: 'Transformed detail', bold: false, hyphen: false }] }], line2: null },
     })),
   };
+  const getRenderedFilterComponent = (): FinesAccMinorCreditorDetailsHistoryAndNotesFilterComponent =>
+    fixture.debugElement.query(By.directive(FinesAccMinorCreditorDetailsHistoryAndNotesFilterComponent))
+      .componentInstance as FinesAccMinorCreditorDetailsHistoryAndNotesFilterComponent;
+  const getRenderedTableComponent = (): FinesAccMinorCreditorDetailsHistoryAndNotesTableComponent =>
+    fixture.debugElement.query(By.directive(FinesAccMinorCreditorDetailsHistoryAndNotesTableComponent))
+      .componentInstance as FinesAccMinorCreditorDetailsHistoryAndNotesTableComponent;
 
   beforeEach(async () => {
     mockOpalFinesService = {
@@ -107,6 +116,15 @@ describe('FinesAccMinorCreditorDetailsHistoryAndNotesTabComponent', () => {
     expect(emitted).toEqual([transformedBaseTabData]);
   });
 
+  it('should render the history and notes table with transformed tab data', () => {
+    fixture.detectChanges();
+
+    const historyTable = getRenderedTableComponent();
+
+    expect(historyTable).toBeTruthy();
+    expect(historyTable.tabData).toEqual(transformedBaseTabData);
+  });
+
   it('should rebind the display stream when parent tab data stream changes', () => {
     const refreshedTabData = { version: 'refreshed-version' };
     const emitted: unknown[] = [];
@@ -176,6 +194,72 @@ describe('FinesAccMinorCreditorDetailsHistoryAndNotesTabComponent', () => {
       transformedBaseTabData,
       FINES_ACC_MINOR_CREDITOR_DETAILS_HISTORY_AND_NOTES_FILTERED_TAB_DATA_MOCK,
     ]);
+  });
+
+  it('should fetch filtered tab data only when the rendered filter component applies filter values', () => {
+    mockOpalFinesService.getMinorCreditorAccountHistoryAndNotesTabData.mockReturnValue(
+      of(FINES_ACC_MINOR_CREDITOR_DETAILS_HISTORY_AND_NOTES_FILTERED_TAB_DATA_MOCK),
+    );
+
+    fixture.detectChanges();
+
+    const filterComponent = getRenderedFilterComponent();
+
+    expect(mockOpalFinesService.getMinorCreditorAccountHistoryAndNotesTabData).not.toHaveBeenCalled();
+
+    filterComponent.filterApplied.emit(FINES_ACC_MINOR_CREDITOR_DETAILS_HISTORY_AND_NOTES_FILTER_FORM_MOCK);
+    fixture.detectChanges();
+
+    expect(mockPayloadService.buildMinorCreditorHistoryFilterPayload).toHaveBeenCalledWith(
+      FINES_ACC_MINOR_CREDITOR_DETAILS_HISTORY_AND_NOTES_FILTER_FORM_MOCK,
+    );
+    expect(mockOpalFinesService.getMinorCreditorAccountHistoryAndNotesTabData).toHaveBeenCalledWith(
+      FINES_ACC_MINOR_CREDITOR_DETAILS_HISTORY_AND_NOTES_ACCOUNT_ID_MOCK,
+      FINES_ACC_MINOR_CREDITOR_DETAILS_HISTORY_AND_NOTES_FILTER_FORM_PAYLOAD_MOCK,
+    );
+    expect(filterComponent.filterForm).toEqual(FINES_ACC_MINOR_CREDITOR_DETAILS_HISTORY_AND_NOTES_FILTER_FORM_MOCK);
+    expect(filterComponent.filterOpen).toBe(true);
+  });
+
+  it('should keep the existing table rows while a filtered request is pending', () => {
+    const filteredTabData$ = new Subject<IOpalFinesAccountMinorCreditorDetailsHistoryAndNotesTabRefData>();
+    mockOpalFinesService.getMinorCreditorAccountHistoryAndNotesTabData.mockReturnValue(filteredTabData$);
+
+    fixture.detectChanges();
+
+    const filterComponent = getRenderedFilterComponent();
+
+    filterComponent.filterApplied.emit(FINES_ACC_MINOR_CREDITOR_DETAILS_HISTORY_AND_NOTES_FILTER_FORM_MOCK);
+    fixture.detectChanges();
+
+    const historyTable = getRenderedTableComponent();
+
+    expect(historyTable.tabData).toEqual(transformedBaseTabData);
+
+    filteredTabData$.next(FINES_ACC_MINOR_CREDITOR_DETAILS_HISTORY_AND_NOTES_FILTERED_TAB_DATA_MOCK);
+    filteredTabData$.complete();
+    fixture.detectChanges();
+
+    expect(historyTable.tabData).toEqual(FINES_ACC_MINOR_CREDITOR_DETAILS_HISTORY_AND_NOTES_FILTERED_TAB_DATA_MOCK);
+  });
+
+  it('should keep the latest tab data when a filtered request fails', () => {
+    const emitted: unknown[] = [];
+    mockOpalFinesService.getMinorCreditorAccountHistoryAndNotesTabData.mockReturnValue(
+      throwError(() => new Error('Filtered request failed')),
+    );
+
+    fixture.detectChanges();
+    component.historyAndNotesTabData$.subscribe();
+    component.handleFilterApplied(FINES_ACC_MINOR_CREDITOR_DETAILS_HISTORY_AND_NOTES_FILTER_FORM_MOCK);
+    component.historyAndNotesTabData$.subscribe((data) => emitted.push(data));
+
+    expect(emitted).toEqual([transformedBaseTabData, transformedBaseTabData]);
+    expect(mockPayloadService.transformPayload).not.toHaveBeenCalledWith(
+      FINES_ACC_MINOR_CREDITOR_DETAILS_HISTORY_AND_NOTES_FILTERED_TAB_DATA_MOCK,
+      expect.any(Array),
+    );
+    expect(mockAccountStore.compareVersion).not.toHaveBeenCalled();
   });
 
   it('should transform filtered history items into the history and notes details format', () => {

@@ -2,7 +2,6 @@ import { ChangeDetectionStrategy, Component, Input } from '@angular/core';
 import { IFinesAccSummaryTabsContentStyles } from '../interfaces/fines-acc-summary-tabs-content-styles.interface';
 import { FINES_ACC_SUMMARY_TABS_CONTENT_STYLES } from '../../constants/fines-acc-summary-tabs-content-styles.constant';
 import { IOpalFinesAccountDefendantAccountParty } from '@services/fines/opal-fines-service/interfaces/opal-fines-account-defendant-account-party.interface';
-import { FINES_ACC_PARTY_ADD_AMEND_CONVERT_PARTY_TYPES } from '../../fines-acc-party-add-amend-convert/constants/fines-acc-party-add-amend-convert-party-types.constant';
 import { FinesAccPartyDetails } from '../fines-acc-party-details/fines-acc-party-details.component';
 import { RouterLink } from '@angular/router';
 import { FINES_ACC_DEFENDANT_ROUTING_PATHS } from '../../routing/constants/fines-acc-defendant-routing-paths.constant';
@@ -25,15 +24,6 @@ export class FinesAccDefendantDetailsParentOrGuardianTabComponent {
    */
   public get removeParentOrGuardianAction(): boolean {
     return this.hasAccountMaintenencePermission && this.tabData?.defendant_account_party.is_debtor === false;
-  }
-
-  /**
-   * Determines the target URL for the "Change" link based on the user's BU permission.
-   */
-  public changeParentOrGuardianDetailsLink(): string {
-    return this.hasAccountMaintenancePermissionInBU
-      ? `../${FINES_ACC_DEFENDANT_ROUTING_PATHS.children.party}/${FINES_ACC_PARTY_ADD_AMEND_CONVERT_PARTY_TYPES.PARENT_GUARDIAN}/amend`
-      : '/access-denied';
   }
 
   /**

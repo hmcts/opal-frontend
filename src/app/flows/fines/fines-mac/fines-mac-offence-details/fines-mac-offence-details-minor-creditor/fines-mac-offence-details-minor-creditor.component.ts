@@ -20,6 +20,24 @@ export class FinesMacOffenceDetailsMinorCreditorComponent
   private readonly finesMacStore = inject(FinesMacStore);
 
   /**
+   * Determines whether the submitted minor creditor differs from the existing stored creditor.
+   *
+   * @param existingCreditor - The currently stored minor creditor for the imposition, if one exists.
+   * @param submittedCreditor - The minor creditor submitted from the child form.
+   * @returns `true` when the creditor is new or the submitted form data differs from the stored data.
+   */
+  private creditorFormChanged(
+    existingCreditor: IFinesMacOffenceDetailsMinorCreditorForm | undefined,
+    submittedCreditor: IFinesMacOffenceDetailsMinorCreditorForm,
+  ): boolean {
+    if (!existingCreditor) {
+      return true;
+    }
+
+    return JSON.stringify(existingCreditor.formData) !== JSON.stringify(submittedCreditor.formData);
+  }
+
+  /**
    * Handles the submission of the minor creditor form.
    *
    * @param {IFinesMacOffenceDetailsMinorCreditorForm} form - The form data for the minor creditor.
@@ -32,16 +50,20 @@ export class FinesMacOffenceDetailsMinorCreditorComponent
     // Update the imposition position in the form data
     const removeMinorCreditor = this.finesMacOffenceDetailsStore.removeMinorCreditor();
     const offenceDetailsDraft = structuredClone(this.finesMacOffenceDetailsStore.offenceDetailsDraft());
+    const offenceDetailsDraftDirty = this.finesMacOffenceDetailsStore.offenceDetailsDraftDirty();
+    const unsavedChanges = this.finesMacStore.unsavedChanges();
     form.formData.fm_offence_details_imposition_position =
       removeMinorCreditor ?? this.finesMacOffenceDetailsStore.rowIndex();
 
     // If childFormData exists and has at least one item in
     const { childFormData } = offenceDetailsDraft[0];
+    let hasCreditorChanges = true;
 
     if (childFormData && childFormData.length > 0) {
       const minorCreditor = childFormData.find(
         (childFormData) => childFormData.formData.fm_offence_details_imposition_position === removeMinorCreditor,
       );
+      hasCreditorChanges = this.creditorFormChanged(minorCreditor, form);
       if (minorCreditor) {
         minorCreditor.formData = form.formData;
       } else {
@@ -53,6 +75,8 @@ export class FinesMacOffenceDetailsMinorCreditorComponent
 
     this.finesMacOffenceDetailsStore.setOffenceDetailsDraft(offenceDetailsDraft);
     this.finesMacOffenceDetailsStore.setMinorCreditorAdded(true);
+    this.finesMacOffenceDetailsStore.setOffenceDetailsDraftDirty(offenceDetailsDraftDirty || hasCreditorChanges);
+    this.finesMacStore.setUnsavedChanges(offenceDetailsDraftDirty || unsavedChanges || hasCreditorChanges);
 
     this.routerNavigate(FINES_MAC_OFFENCE_DETAILS_ROUTING_PATHS.children.addOffence);
   }
