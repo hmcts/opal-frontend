@@ -26,11 +26,11 @@ export class FinesDraftCreateAndManageViewAllRejectedComponent implements OnInit
   public rejectedAccounts!: IFinesDraftTableWrapperTableData[];
 
   public onDefendantClick(row: IFinesDraftTableWrapperTableData): void {
-    const {'Defendant id': draftAccountId } = row;
+    const { 'Defendant id': draftAccountId } = row;
     this.finesDraftStore.setViewAllAccounts(true);
     this.finesDraftStore.setAmend(true);
 
-    const route = this.finesDraftService.PATH_AMEND_ACCOUNT
+    const route = this.finesDraftService.PATH_AMEND_ACCOUNT;
 
     this.finesDraftService.onDefendantClick(draftAccountId, route);
   }
