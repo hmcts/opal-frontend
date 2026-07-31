@@ -702,6 +702,14 @@ When('I enter {string} for the enforcement action reason', (reason: string) => {
 });
 
 /**
+ * @step Chooses the collection type on the add enforcement action details form.
+ */
+When('I choose {string} for collection type', (option: string) => {
+  log('step', 'Choose collection type option', { option });
+  enforcementActions().chooseCollectionType(option);
+});
+
+/**
  * @step Chooses whether to change existing payment terms on the add enforcement action details form.
  */
 When('I choose {string} for changing existing payment terms', (option: string) => {

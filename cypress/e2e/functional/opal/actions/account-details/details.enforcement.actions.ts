@@ -380,6 +380,17 @@ export class AccountDetailsEnforcementActions {
   }
 
   /**
+   * Chooses the collection type on the add enforcement action details form.
+   *
+   * @param option - The collection type option to select.
+   */
+  public chooseCollectionType(option: string): void {
+    log('action', 'Choosing collection type option', { option });
+
+    cy.contains('legend', 'Collection type').parent().contains('label', option).click();
+  }
+
+  /**
    * Chooses whether to change existing payment terms on the add enforcement action details form.
    *
    * @param option - Visible option text, usually "Yes" or "No".
