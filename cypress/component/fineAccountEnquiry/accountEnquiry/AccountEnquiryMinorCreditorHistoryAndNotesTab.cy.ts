@@ -84,7 +84,10 @@ const mountMinorCreditorHistoryTable = (tabData: IOpalFinesAccountMinorCreditorD
 };
 
 describe('Minor Creditor Account Enquiry - History and notes tab', () => {
-  it('AC6a. sends the initial unfiltered history request and renders the returned table rows', { tags: buildTags(MINOR_CREDITOR_HISTORY_STORY_TAG, MINOR_CREDITOR_HISTORY_EPIC_TAG) }, () => {
+  it(
+    'AC6a. sends the initial unfiltered history request and renders the returned table rows',
+    { tags: buildTags(MINOR_CREDITOR_HISTORY_STORY_TAG, MINOR_CREDITOR_HISTORY_EPIC_TAG) },
+    () => {
       setupMinorCreditorHistoryAndNotesScreenWithTabData(
         structuredClone(ACCOUNT_ENQUIRY_MINOR_CREDITOR_HISTORY_AND_NOTES_INITIAL_MOCK),
       );
@@ -117,9 +120,13 @@ describe('Minor Creditor Account Enquiry - History and notes tab', () => {
       cy.get(HISTORY_AND_NOTES_TAB.financialCheckbox).should('exist');
       cy.get(HISTORY_AND_NOTES_TAB.enforcementActionsCheckbox).should('not.exist');
       cy.get(HISTORY_AND_NOTES_TAB.paymentTermsCheckbox).should('not.exist');
-    });
+    },
+  );
 
-  it('AC6a. maps a Date from filter to the expected query parameter and keeps the value visible', { tags: buildTags(MINOR_CREDITOR_HISTORY_STORY_TAG, MINOR_CREDITOR_HISTORY_EPIC_TAG) }, () => {
+  it(
+    'AC6a. maps a Date from filter to the expected query parameter and keeps the value visible',
+    { tags: buildTags(MINOR_CREDITOR_HISTORY_STORY_TAG, MINOR_CREDITOR_HISTORY_EPIC_TAG) },
+    () => {
       setupMinorCreditorHistoryAndNotesScreenWithTabData(
         structuredClone(ACCOUNT_ENQUIRY_MINOR_CREDITOR_HISTORY_AND_NOTES_INITIAL_MOCK),
       );
@@ -138,9 +145,13 @@ describe('Minor Creditor Account Enquiry - History and notes tab', () => {
         expect(request.query['itemTypes']).to.be.undefined;
       });
       cy.get(HISTORY_AND_NOTES_TAB.dateFromInput).should('have.value', '01/01/2024');
-    });
+    },
+  );
 
-  it('AC6a. maps a Date to filter to the expected query parameter and keeps the value visible', { tags: buildTags(MINOR_CREDITOR_HISTORY_STORY_TAG, MINOR_CREDITOR_HISTORY_EPIC_TAG) }, () => {
+  it(
+    'AC6a. maps a Date to filter to the expected query parameter and keeps the value visible',
+    { tags: buildTags(MINOR_CREDITOR_HISTORY_STORY_TAG, MINOR_CREDITOR_HISTORY_EPIC_TAG) },
+    () => {
       setupMinorCreditorHistoryAndNotesScreenWithTabData(
         structuredClone(ACCOUNT_ENQUIRY_MINOR_CREDITOR_HISTORY_AND_NOTES_INITIAL_MOCK),
       );
@@ -159,9 +170,13 @@ describe('Minor Creditor Account Enquiry - History and notes tab', () => {
         expect(request.query['itemTypes']).to.be.undefined;
       });
       cy.get(HISTORY_AND_NOTES_TAB.dateToInput).should('have.value', '31/01/2024');
-    });
+    },
+  );
 
-  it('AC6a. sends date range and category itemTypes when filters are applied', { tags: buildTags(MINOR_CREDITOR_HISTORY_STORY_TAG, MINOR_CREDITOR_HISTORY_EPIC_TAG) }, () => {
+  it(
+    'AC6a. sends date range and category itemTypes when filters are applied',
+    { tags: buildTags(MINOR_CREDITOR_HISTORY_STORY_TAG, MINOR_CREDITOR_HISTORY_EPIC_TAG) },
+    () => {
       setupMinorCreditorHistoryAndNotesScreenWithTabDataSequence([
         structuredClone(ACCOUNT_ENQUIRY_MINOR_CREDITOR_HISTORY_AND_NOTES_INITIAL_MOCK),
         structuredClone(ACCOUNT_ENQUIRY_MINOR_CREDITOR_HISTORY_AND_NOTES_FILTERED_NOTES_MOCK),
@@ -190,9 +205,13 @@ describe('Minor Creditor Account Enquiry - History and notes tab', () => {
       cy.get(HISTORY_AND_NOTES_TAB.dateFromInput).should('have.value', '01/01/2024');
       cy.get(HISTORY_AND_NOTES_TAB.dateToInput).should('have.value', '31/01/2024');
       cy.get(HISTORY_AND_NOTES_TAB.notesCheckbox).should('be.checked');
-    });
+    },
+  );
 
-  it('AC6a. maps multiple selected categories to the expected comma-separated itemTypes value', { tags: buildTags(MINOR_CREDITOR_HISTORY_STORY_TAG, MINOR_CREDITOR_HISTORY_EPIC_TAG) }, () => {
+  it(
+    'AC6a. maps multiple selected categories to the expected comma-separated itemTypes value',
+    { tags: buildTags(MINOR_CREDITOR_HISTORY_STORY_TAG, MINOR_CREDITOR_HISTORY_EPIC_TAG) },
+    () => {
       setupMinorCreditorHistoryAndNotesScreenWithTabData(
         structuredClone(ACCOUNT_ENQUIRY_MINOR_CREDITOR_HISTORY_AND_NOTES_INITIAL_MOCK),
       );
@@ -212,9 +231,13 @@ describe('Minor Creditor Account Enquiry - History and notes tab', () => {
         expect(request.query['dateTo']).to.be.undefined;
         expect(request.query['itemTypes']).to.equal('amendment,note,financial');
       });
-    });
+    },
+  );
 
-  it('AC2c. shows the standard no-results state while keeping selected filters visible', { tags: buildTags(MINOR_CREDITOR_HISTORY_STORY_TAG, MINOR_CREDITOR_HISTORY_EPIC_TAG) }, () => {
+  it(
+    'AC2c. shows the standard no-results state while keeping selected filters visible',
+    { tags: buildTags(MINOR_CREDITOR_HISTORY_STORY_TAG, MINOR_CREDITOR_HISTORY_EPIC_TAG) },
+    () => {
       setupMinorCreditorHistoryAndNotesScreenWithTabDataSequence([
         structuredClone(ACCOUNT_ENQUIRY_MINOR_CREDITOR_HISTORY_AND_NOTES_INITIAL_MOCK),
         structuredClone(ACCOUNT_ENQUIRY_MINOR_CREDITOR_HISTORY_AND_NOTES_EMPTY_RESULTS_MOCK),
@@ -234,9 +257,13 @@ describe('Minor Creditor Account Enquiry - History and notes tab', () => {
       cy.get(HISTORY_AND_NOTES_TAB.filterDetails).should('be.visible');
       cy.get(HISTORY_AND_NOTES_TAB.dateFromInput).should('have.value', '01/01/2024');
       cy.get(HISTORY_AND_NOTES_TAB.notesCheckbox).should('be.checked');
-    });
+    },
+  );
 
-  it('AC1. displays LTZ-formatted dates and sorts newest first using millisecond timestamps', { tags: buildTags(MINOR_CREDITOR_HISTORY_STORY_TAG, MINOR_CREDITOR_HISTORY_EPIC_TAG) }, () => {
+  it(
+    'AC1. displays LTZ-formatted dates and sorts newest first using millisecond timestamps',
+    { tags: buildTags(MINOR_CREDITOR_HISTORY_STORY_TAG, MINOR_CREDITOR_HISTORY_EPIC_TAG) },
+    () => {
       setupMinorCreditorHistoryAndNotesScreenWithTabData(
         structuredClone(ACCOUNT_ENQUIRY_MINOR_CREDITOR_HISTORY_AND_NOTES_DATE_SORTING_MOCK),
       );
@@ -251,9 +278,13 @@ describe('Minor Creditor Account Enquiry - History and notes tab', () => {
       cy.get(HISTORY_AND_NOTES_TAB.firstDetailsCell).should('contain.text', 'Newest same-day note');
       cy.get(HISTORY_AND_NOTES_TAB.secondDetailsCell).should('contain.text', 'Older same-day note');
       cy.get(HISTORY_AND_NOTES_TAB.thirdDetailsCell).should('contain.text', 'Oldest day note');
-    });
+    },
+  );
 
-  it('AC1. toggles Date sorting using the underlying timestamp rather than the displayed date text', { tags: buildTags(MINOR_CREDITOR_HISTORY_STORY_TAG, MINOR_CREDITOR_HISTORY_EPIC_TAG) }, () => {
+  it(
+    'AC1. toggles Date sorting using the underlying timestamp rather than the displayed date text',
+    { tags: buildTags(MINOR_CREDITOR_HISTORY_STORY_TAG, MINOR_CREDITOR_HISTORY_EPIC_TAG) },
+    () => {
       setupMinorCreditorHistoryAndNotesScreenWithTabData(
         structuredClone(ACCOUNT_ENQUIRY_MINOR_CREDITOR_HISTORY_AND_NOTES_DATE_SORTING_MOCK),
       );
@@ -271,9 +302,13 @@ describe('Minor Creditor Account Enquiry - History and notes tab', () => {
       cy.get(HISTORY_AND_NOTES_TAB.firstDetailsCell).should('contain.text', 'Newest same-day note');
       cy.get(HISTORY_AND_NOTES_TAB.secondDetailsCell).should('contain.text', 'Older same-day note');
       cy.get(HISTORY_AND_NOTES_TAB.thirdDetailsCell).should('contain.text', 'Oldest day note');
-    });
+    },
+  );
 
-  it('AC2a. renders the read-only table columns with no inline editing or actions outside allowed Details links', { tags: buildTags(MINOR_CREDITOR_HISTORY_STORY_TAG, MINOR_CREDITOR_HISTORY_EPIC_TAG) }, () => {
+  it(
+    'AC2a. renders the read-only table columns with no inline editing or actions outside allowed Details links',
+    { tags: buildTags(MINOR_CREDITOR_HISTORY_STORY_TAG, MINOR_CREDITOR_HISTORY_EPIC_TAG) },
+    () => {
       setupMinorCreditorHistoryAndNotesScreenWithTabData(
         structuredClone(ACCOUNT_ENQUIRY_MINOR_CREDITOR_HISTORY_AND_NOTES_INITIAL_MOCK),
       );
@@ -293,9 +328,13 @@ describe('Minor Creditor Account Enquiry - History and notes tab', () => {
         .find('td:not([id^="history-and-notes-details-"]) a, td:not([id^="history-and-notes-details-"]) button')
         .should('not.exist');
       cy.get(HISTORY_AND_NOTES_TAB.detailsLinks).should('have.length', 1).and('contain.text', '2500000BV');
-    });
+    },
+  );
 
-  it('AC3. renders details fragments with pipes, hyphens, bold link text, link events, and line2', { tags: buildTags(MINOR_CREDITOR_HISTORY_STORY_TAG, MINOR_CREDITOR_HISTORY_EPIC_TAG) }, () => {
+  it(
+    'AC3. renders details fragments with pipes, hyphens, bold link text, link events, and line2',
+    { tags: buildTags(MINOR_CREDITOR_HISTORY_STORY_TAG, MINOR_CREDITOR_HISTORY_EPIC_TAG) },
+    () => {
       mountMinorCreditorHistoryTable(
         structuredClone(ACCOUNT_ENQUIRY_MINOR_CREDITOR_HISTORY_AND_NOTES_TRANSFORMED_DETAILS_MOCK),
       ).then(({ fixture }) => {
@@ -352,9 +391,13 @@ describe('Minor Creditor Account Enquiry - History and notes tab', () => {
         rowId: 'history-and-notes-row-0',
         type: 'account',
       });
-    });
+    },
+  );
 
-  it('AC4a. opens account-linked details fragments in a new browser tab using the emitted account identifier', { tags: buildTags(MINOR_CREDITOR_HISTORY_STORY_TAG, MINOR_CREDITOR_HISTORY_EPIC_TAG) }, () => {
+  it(
+    'AC4a. opens account-linked details fragments in a new browser tab using the emitted account identifier',
+    { tags: buildTags(MINOR_CREDITOR_HISTORY_STORY_TAG, MINOR_CREDITOR_HISTORY_EPIC_TAG) },
+    () => {
       setupMinorCreditorHistoryAndNotesScreenWithTabData(
         structuredClone(ACCOUNT_ENQUIRY_MINOR_CREDITOR_HISTORY_AND_NOTES_INITIAL_MOCK),
       );
@@ -369,9 +412,13 @@ describe('Minor Creditor Account Enquiry - History and notes tab', () => {
       cy.get(HISTORY_AND_NOTES_TAB.detailsLinks).should('have.length', 1).and('contain.text', '2500000BV').click();
 
       cy.get('@windowOpen').should('have.been.calledOnceWith', expectedAccountUrl, '_blank');
-    });
+    },
+  );
 
-  it('AC4b. renders non-linked details fragments as non-interactive text', { tags: buildTags(MINOR_CREDITOR_HISTORY_STORY_TAG, MINOR_CREDITOR_HISTORY_EPIC_TAG) }, () => {
+  it(
+    'AC4b. renders non-linked details fragments as non-interactive text',
+    { tags: buildTags(MINOR_CREDITOR_HISTORY_STORY_TAG, MINOR_CREDITOR_HISTORY_EPIC_TAG) },
+    () => {
       mountMinorCreditorHistoryTable(
         structuredClone(ACCOUNT_ENQUIRY_MINOR_CREDITOR_HISTORY_AND_NOTES_TRANSFORMED_DETAILS_MOCK),
       );
@@ -380,9 +427,13 @@ describe('Minor Creditor Account Enquiry - History and notes tab', () => {
         cy.get('a, button').should('not.exist');
         cy.get('.govuk-link').should('not.exist');
       });
-    });
+    },
+  );
 
-  it('AC6a. covers representative minor creditor amendments, notes, financial details, and special characters', { tags: buildTags(MINOR_CREDITOR_HISTORY_STORY_TAG, MINOR_CREDITOR_HISTORY_EPIC_TAG) }, () => {
+  it(
+    'AC6a. covers representative minor creditor amendments, notes, financial details, and special characters',
+    { tags: buildTags(MINOR_CREDITOR_HISTORY_STORY_TAG, MINOR_CREDITOR_HISTORY_EPIC_TAG) },
+    () => {
       setupMinorCreditorHistoryAndNotesScreenWithTabData(
         structuredClone(ACCOUNT_ENQUIRY_MINOR_CREDITOR_HISTORY_AND_NOTES_EDGE_CASE_RENDERING_MOCK),
       );
@@ -416,9 +467,13 @@ describe('Minor Creditor Account Enquiry - History and notes tab', () => {
         .then((text) => {
           expect(normaliseText(text)).to.equal('BACS payment | Payment reference: BACS123');
         });
-    });
+    },
+  );
 
-  it('AC5. renders CR and DR amounts accessibly and keeps the visual tags non-focusable', { tags: buildTags(MINOR_CREDITOR_HISTORY_STORY_TAG, MINOR_CREDITOR_HISTORY_EPIC_TAG) }, () => {
+  it(
+    'AC5. renders CR and DR amounts accessibly and keeps the visual tags non-focusable',
+    { tags: buildTags(MINOR_CREDITOR_HISTORY_STORY_TAG, MINOR_CREDITOR_HISTORY_EPIC_TAG) },
+    () => {
       setupMinorCreditorHistoryAndNotesScreenWithTabData(
         structuredClone(ACCOUNT_ENQUIRY_MINOR_CREDITOR_HISTORY_AND_NOTES_AMOUNT_ACCESSIBILITY_MOCK),
       );
@@ -458,9 +513,13 @@ describe('Minor Creditor Account Enquiry - History and notes tab', () => {
         cy.get('strong').should('not.exist');
         cy.get('.govuk-visually-hidden').should('not.exist');
       });
-    });
+    },
+  );
 
-  it('AC2b. renders several hundred history items in one scrollable table without pagination', { tags: buildTags(MINOR_CREDITOR_HISTORY_STORY_TAG, MINOR_CREDITOR_HISTORY_EPIC_TAG) }, () => {
+  it(
+    'AC2b. renders several hundred history items in one scrollable table without pagination',
+    { tags: buildTags(MINOR_CREDITOR_HISTORY_STORY_TAG, MINOR_CREDITOR_HISTORY_EPIC_TAG) },
+    () => {
       setupMinorCreditorHistoryAndNotesScreenWithTabData(
         structuredClone(ACCOUNT_ENQUIRY_MINOR_CREDITOR_HISTORY_AND_NOTES_LARGE_RESULTS_MOCK),
       );
@@ -472,5 +531,6 @@ describe('Minor Creditor Account Enquiry - History and notes tab', () => {
       cy.get(HISTORY_AND_NOTES_TAB.tableRows).should('have.length', 250);
       cy.get(HISTORY_AND_NOTES_TAB.firstUserCell).should('contain.text', 'Bulk user 250');
       cy.get('#history-and-notes-user-249').scrollIntoView().should('contain.text', 'Bulk user 1');
-    });
+    },
+  );
 });

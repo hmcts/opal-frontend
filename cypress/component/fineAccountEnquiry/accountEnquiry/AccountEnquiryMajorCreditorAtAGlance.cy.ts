@@ -42,7 +42,10 @@ describe('Major Creditor Account Summary - At a Glance Tab', () => {
     setupAccountEnquiryComponent(componentProperties);
   };
 
-  it('AC1a: builds the major creditor at a glance tab in line with the design artefact', { tags: [...buildTags('@JIRA-STORY:PO-2129'), '@JIRA-EPIC:PO-1286', '@JIRA-TEST-KEY:PO-9589'] }, () => {
+  it(
+    'AC1a: builds the major creditor at a glance tab in line with the design artefact',
+    { tags: [...buildTags('@JIRA-STORY:PO-2129'), '@JIRA-EPIC:PO-1286', '@JIRA-TEST-KEY:PO-9589'] },
+    () => {
       const header = structuredClone(FINES_ACC_MAJOR_CREDITOR_DETAILS_HEADER_MOCK);
       const atAGlance = structuredClone(OPAL_FINES_ACCOUNT_MAJOR_CREDITOR_AT_A_GLANCE_MOCK);
 
@@ -67,9 +70,13 @@ describe('Major Creditor Account Summary - At a Glance Tab', () => {
       cy.contains(DOM.sectionHeading, 'Major creditor').should('be.visible');
       cy.contains(DOM.sectionHeading, 'Payout status').should('be.visible');
       cy.get(DOM.readOnlyFields).should('not.exist');
-    });
+    },
+  );
 
-  it('AC1b, AC2a: displays the configured major creditor details and shows BACS details as provided', { tags: [...buildTags('@JIRA-STORY:PO-2129'), '@JIRA-EPIC:PO-1286', '@JIRA-TEST-KEY:PO-9590'] }, () => {
+  it(
+    'AC1b, AC2a: displays the configured major creditor details and shows BACS details as provided',
+    { tags: [...buildTags('@JIRA-STORY:PO-2129'), '@JIRA-EPIC:PO-1286', '@JIRA-TEST-KEY:PO-9590'] },
+    () => {
       const atAGlance = structuredClone(OPAL_FINES_ACCOUNT_MAJOR_CREDITOR_AT_A_GLANCE_MOCK);
 
       atAGlance.major_creditor.name = 'CPS Crown Prosecution Service';
@@ -101,9 +108,13 @@ describe('Major Creditor Account Summary - At a Glance Tab', () => {
       });
 
       cy.get(DOM.badgeBlue).should('contain.text', DOM.labelProvided).and('have.class', 'moj-badge--blue');
-    });
+    },
+  );
 
-  it('AC2a: displays BACS details as not provided when pay by bacs is false', { tags: [...buildTags('@JIRA-STORY:PO-2129'), '@JIRA-EPIC:PO-1286', '@JIRA-TEST-KEY:PO-9591'] }, () => {
+  it(
+    'AC2a: displays BACS details as not provided when pay by bacs is false',
+    { tags: [...buildTags('@JIRA-STORY:PO-2129'), '@JIRA-EPIC:PO-1286', '@JIRA-TEST-KEY:PO-9591'] },
+    () => {
       const atAGlance = structuredClone(OPAL_FINES_ACCOUNT_MAJOR_CREDITOR_AT_A_GLANCE_MOCK);
 
       atAGlance.major_creditor.pay_by_bacs = false;
@@ -112,9 +123,13 @@ describe('Major Creditor Account Summary - At a Glance Tab', () => {
 
       cy.contains(DOM.fieldHeading, DOM.labelBacsDetails).should('be.visible');
       cy.get(DOM.badgeRed).should('contain.text', DOM.labelNotProvided).and('have.class', 'moj-badge--red');
-    });
+    },
+  );
 
-  it('AC1b: hides the code, postcode, and payout status section for a central fund account', { tags: [...buildTags('@JIRA-STORY:PO-2129'), '@JIRA-EPIC:PO-1286', '@JIRA-TEST-KEY:PO-9592'] }, () => {
+  it(
+    'AC1b: hides the code, postcode, and payout status section for a central fund account',
+    { tags: [...buildTags('@JIRA-STORY:PO-2129'), '@JIRA-EPIC:PO-1286', '@JIRA-TEST-KEY:PO-9592'] },
+    () => {
       const header = structuredClone(FINES_ACC_MAJOR_CREDITOR_DETAILS_HEADER_MOCK);
       const atAGlance = structuredClone(OPAL_FINES_ACCOUNT_MAJOR_CREDITOR_AT_A_GLANCE_MOCK);
 
@@ -149,5 +164,6 @@ describe('Major Creditor Account Summary - At a Glance Tab', () => {
           expect(normalizeText(text)).to.eq('1 Test Road Suite 2 Hertford');
           expect(normalizeText(text)).not.to.contain('SG13 8DQ');
         });
-    });
+    },
+  );
 });

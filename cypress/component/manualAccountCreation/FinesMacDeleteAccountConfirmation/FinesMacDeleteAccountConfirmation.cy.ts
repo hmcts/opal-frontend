@@ -92,7 +92,16 @@ describe('FinesMacDeleteAccountConfirmation', () => {
     },
   );
 
-  it('returns to account details when an inputter cancels deletion from account details', { tags: [...buildTags('@JIRA-DEFECT:PO-9113', '@JIRA-STORY:PO-9113'), '@JIRA-EPIC:PO-545', '@JIRA-TEST-KEY:PO-9652'] }, () => {
+  it(
+    'returns to account details when an inputter cancels deletion from account details',
+    {
+      tags: [
+        ...buildTags('@JIRA-DEFECT:PO-9113', '@JIRA-STORY:PO-9113'),
+        '@JIRA-EPIC:PO-545',
+        '@JIRA-TEST-KEY:PO-9652',
+      ],
+    },
+    () => {
       setupComponent('42');
 
       cy.contains('a', 'No - cancel').click();
@@ -101,9 +110,19 @@ describe('FinesMacDeleteAccountConfirmation', () => {
         expect(stub).to.have.been.calledOnce;
         expect(stub.getCall(0).args[0]).to.deep.equal(['account-details/42']);
       });
-    });
+    },
+  );
 
-  it('returns to check account when an inputter cancels deletion from check account without an account id', { tags: [...buildTags('@JIRA-DEFECT:PO-9113', '@JIRA-STORY:PO-9113'), '@JIRA-EPIC:PO-545', '@JIRA-TEST-KEY:PO-9653'] }, () => {
+  it(
+    'returns to check account when an inputter cancels deletion from check account without an account id',
+    {
+      tags: [
+        ...buildTags('@JIRA-DEFECT:PO-9113', '@JIRA-STORY:PO-9113'),
+        '@JIRA-EPIC:PO-545',
+        '@JIRA-TEST-KEY:PO-9653',
+      ],
+    },
+    () => {
       setupComponent(null, true);
 
       cy.contains('a', 'No - cancel').click();
@@ -112,5 +131,6 @@ describe('FinesMacDeleteAccountConfirmation', () => {
         expect(stub).to.have.been.calledOnce;
         expect(stub.getCall(0).args[0]).to.deep.equal(['review-account']);
       });
-    });
+    },
+  );
 });
