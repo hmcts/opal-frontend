@@ -32,6 +32,7 @@ export const ACCOUNT_ENQUIRY_HEADER_ELEMENTS = {
   accountBalanceValue:
     'opal-lib-custom-summary-metric-bar-item:nth-child(4) p[opal-lib-custom-summary-metric-bar-item-value]',
   accountInfo: 'opal-lib-custom-account-information',
+  receivedFrom: '#defendant-received-from',
   sectionHeading: 'h2',
   fieldHeading: 'h3',
   fieldValue: 'p',
@@ -41,6 +42,7 @@ export const ACCOUNT_ENQUIRY_HEADER_ELEMENTS = {
   labelAccountType: 'Account type:',
   labelCaseNumber: 'PCR or case number:',
   labelBusinessUnit: 'Business Unit:',
+  labelReceivedFrom: 'Received from:',
   labelImposed: 'Imposed:',
   labelArrears: 'Arrears:',
   labelAwarded: 'Awarded:',

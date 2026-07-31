@@ -113,7 +113,7 @@ describe('FinesSaStore', () => {
   it('should reset search criteria only', () => {
     store.setSearchAccount({ ...FINES_SA_SEARCH_ACCOUNT_STATE, fsa_search_account_number: 'reset-me' });
     store.resetDefendantSearchCriteria();
-    expect(store.searchAccount().fsa_search_account_individuals_search_criteria).toEqual(null);
+    expect(store.searchAccount().fsa_search_account_individuals_search_criteria).toBeNull();
   });
 
   it('should reset only the searchAccount object', () => {

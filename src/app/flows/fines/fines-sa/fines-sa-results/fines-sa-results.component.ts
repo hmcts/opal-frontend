@@ -196,7 +196,7 @@ export class FinesSaResultsComponent implements OnInit, OnDestroy {
       'Address line 1': account.address_line_1,
       Postcode: account.postcode,
       'Business unit': account.business_unit_name,
-      'Defendant account id': account.defendant?.defendant_account_id ?? null,
+      'Defendant account id': account.defendant ? account.defendant.defendant_account_id : null,
       Defendant: this.buildDefendantName(account.defendant),
       Balance: account.account_balance,
     };

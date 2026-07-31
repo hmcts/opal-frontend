@@ -12,4 +12,5 @@ export const FINES_ACC_DEFENDANT_DETAILS_TABS_KEYS: Record<
   enforcement: 'enforcement',
   impositions: 'impositions',
   'history-and-notes': 'history-and-notes',
+  'consolidated-accounts': 'consolidated-accounts',
 };

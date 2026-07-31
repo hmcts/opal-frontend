@@ -69,6 +69,19 @@ export function mapFinesAccountHistoryItemToRow(
     display.fieldPathSeparator,
   );
   const rowId = `${FINES_ACCOUNT_HISTORY_TABLE_DISPLAY.rowIdPrefix}${index}`;
+  const hasDisplayableAmount = amount !== null && amount !== display.zeroAmount;
+  const isCreditAmount = hasDisplayableAmount && amount > display.zeroAmount;
+  let amountDescription: IFinesAccountHistoryTableRow['amountDescription'] = null;
+  let amountTag: IFinesAccountHistoryTableRow['amountTag'] = null;
+
+  if (hasDisplayableAmount) {
+    amountDescription = isCreditAmount
+      ? FINES_ACCOUNT_HISTORY_TABLE_DISPLAY.amountDescriptions.credit
+      : FINES_ACCOUNT_HISTORY_TABLE_DISPLAY.amountDescriptions.debit;
+    amountTag = isCreditAmount
+      ? FINES_ACCOUNT_HISTORY_TABLE_DISPLAY.amountTags.credit
+      : FINES_ACCOUNT_HISTORY_TABLE_DISPLAY.amountTags.debit;
+  }
 
   return {
     id: rowId,
@@ -89,18 +102,8 @@ export function mapFinesAccountHistoryItemToRow(
     Amount: amount,
     absoluteAmount: amount === null ? null : Math.abs(amount),
     amountAriaId: `${rowId}${FINES_ACCOUNT_HISTORY_TABLE_DISPLAY.amountDirectionSuffix}`,
-    amountDescription:
-      amount === null || amount === display.zeroAmount
-        ? null
-        : amount > display.zeroAmount
-          ? FINES_ACCOUNT_HISTORY_TABLE_DISPLAY.amountDescriptions.credit
-          : FINES_ACCOUNT_HISTORY_TABLE_DISPLAY.amountDescriptions.debit,
-    amountTag:
-      amount === null || amount === display.zeroAmount
-        ? null
-        : amount > display.zeroAmount
-          ? FINES_ACCOUNT_HISTORY_TABLE_DISPLAY.amountTags.credit
-          : FINES_ACCOUNT_HISTORY_TABLE_DISPLAY.amountTags.debit,
+    amountDescription,
+    amountTag,
     details,
   };
 }
