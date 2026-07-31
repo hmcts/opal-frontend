@@ -7,4 +7,5 @@ export interface IFinesAccDefendantAccountTabsCacheMap {
   enforcement: 'defendantAccountEnforcementCache$';
   impositions: 'defendantAccountImpositionsCache$';
   'history-and-notes': 'defendantAccountHistoryAndNotesCache$';
+  'consolidated-accounts': 'defendantAccountConsolidatedAccountsCache$';
 }
