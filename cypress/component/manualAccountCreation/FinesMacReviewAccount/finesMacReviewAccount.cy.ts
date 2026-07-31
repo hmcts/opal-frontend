@@ -193,10 +193,7 @@ describe('FinesMacReviewAccountComponent', () => {
     },
   );
 
-  it(
-    'navigates to delete account confirmation without an account id and marks the journey as coming from check account',
-    { tags: [...buildTags('@JIRA-STORY:PO-9113'), '@JIRA-EPIC:PO-2220'] },
-    () => {
+  it('navigates to delete account confirmation without an account id and marks the journey as coming from check account', { tags: [...buildTags('@JIRA-STORY:PO-9113'), '@JIRA-EPIC:PO-2220', '@JIRA-TEST-KEY:PO-9656'] }, () => {
       setupComponent(finesDraftState, null, true, false, null);
 
       cy.get(DOM_ELEMENTS.deleteLink).click();
@@ -208,8 +205,7 @@ describe('FinesMacReviewAccountComponent', () => {
       cy.then(() => {
         expect(mountedFinesMacStore.deleteFromCheckAccount()).to.equal(true);
       });
-    },
-  );
+    });
 
   it(
     '(AC.1a)should render court details and offence details for all defendant types',

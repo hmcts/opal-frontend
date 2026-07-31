@@ -13,6 +13,7 @@ import { AccountDetailsMinorCreditorActions } from '../actions/account-details/d
 import { AccountDetailsPaymentTermsActions } from '../actions/account-details/details.payment-terms.actions';
 import { AccountDetailsFixedPenaltyActions } from '../actions/account-details/details.fixed-penalty.actions';
 import { AccountDetailsHistoryActions } from '../actions/account-details/details.history.actions';
+import { AccountDetailsConsolidatedAccountsActions } from '../actions/account-details/details.consolidated-accounts.actions';
 import { AccountSearchIndividualsLocators as L } from '../../../../shared/selectors/account-search/account.search.individuals.locators';
 import { AccountSearchCompaniesLocators as C } from '../../../../shared/selectors/account-search/account.search.companies.locators';
 import { ForceSingleTabNavigation } from '../../../../support/utils/navigation';
@@ -95,6 +96,7 @@ export class AccountEnquiryFlow {
   private readonly enforcement = new AccountDetailsEnforcementActions();
   private readonly removeParentGuardian = new RemoveParentGuardianActions();
   private readonly historyAndNotes = new AccountDetailsHistoryActions();
+  private readonly consolidatedAccounts = new AccountDetailsConsolidatedAccountsActions();
 
   /**
    * Ensures the test is on the Individuals Account Search page.
@@ -455,6 +457,80 @@ export class AccountEnquiryFlow {
     this.detailsNav.goToHistoryAndNotesTab();
     this.detailsNav.assertHistoryAndNotesTabIsActive();
     this.historyAndNotes.assertHistoryAndNotesTabLoaded();
+  }
+
+  /**
+   * Presents the current account as a master account with one consolidated child account.
+   */
+  public prepareMasterAccountWithConsolidatedChildAccount(): void {
+    logAE('method', 'prepareMasterAccountWithConsolidatedChildAccount()');
+
+    this.extractDefendantAccountIdFromUrl().then((accountId) => {
+      this.fetchHeaderSummary(accountId).then((header) => {
+        this.consolidatedAccounts.stubMasterAccountWithChild(accountId, header);
+        cy.reload();
+        cy.wait('@consolidatedHeaderSummary', { timeout: AccountEnquiryFlow.WAIT_MS })
+          .its('response.statusCode')
+          .should('eq', 200);
+      });
+    });
+  }
+
+  /**
+   * Asserts the consolidated accounts table is visible.
+   */
+  public assertConsolidatedAccountsTableVisible(): void {
+    logAE('method', 'assertConsolidatedAccountsTableVisible()');
+    this.consolidatedAccounts.assertChildAccountsTableVisible();
+  }
+
+  /**
+   * Navigates to the Consolidated accounts tab and asserts it has loaded.
+   */
+  public goToConsolidatedAccountsTab(): void {
+    logAE('method', 'goToConsolidatedAccountsTab()');
+    this.consolidatedAccounts.openTab();
+  }
+
+  /**
+   * Opens the first Consolidated accounts child account link and asserts the At a glance route.
+   */
+  public openFirstConsolidatedAccountLinkAtAGlance(): void {
+    logAE('method', 'openFirstConsolidatedAccountLinkAtAGlance()');
+    this.consolidatedAccounts.openFirstChildAtAGlance();
+    this.detailsNav.assertAtAGlanceTabIsActive();
+  }
+
+  /**
+   * Asserts the selected child account details are displayed.
+   */
+  public assertSelectedChildAccountDetailsVisible(): void {
+    logAE('method', 'assertSelectedChildAccountDetailsVisible()');
+    this.consolidatedAccounts.assertSelectedChildAccountDetailsVisible();
+  }
+
+  /**
+   * Asserts the initial History and notes rows have been rendered.
+   */
+  public assertHistoryAndNotesItemsLoaded(): void {
+    logAE('method', 'assertHistoryAndNotesItemsLoaded()');
+    this.historyAndNotes.assertHistoryAndNotesRowsLoaded(2);
+  }
+
+  /**
+   * Applies the Notes filter to the History and notes tab.
+   */
+  public filterHistoryAndNotesToNotes(): void {
+    logAE('method', 'filterHistoryAndNotesToNotes()');
+    this.historyAndNotes.applyNotesFilter();
+  }
+
+  /**
+   * Asserts the History and notes table only shows Note rows after filtering.
+   */
+  public assertHistoryAndNotesFilteredToNotes(): void {
+    logAE('method', 'assertHistoryAndNotesFilteredToNotes()');
+    this.historyAndNotes.assertHistoryAndNotesFilteredToNotes();
   }
 
   /**
