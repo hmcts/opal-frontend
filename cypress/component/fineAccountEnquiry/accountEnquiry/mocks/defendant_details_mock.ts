@@ -20,6 +20,7 @@ export const DEFENDANT_HEADER_MOCK: IOpalFinesAccountDefendantDetailsHeader = {
     account_status_display_name: 'Live',
   },
   account_type: 'Fine',
+  originator_name: "Bedfordshire Magistrates' Court",
   prosecutor_case_reference: '090A',
   fixed_penalty_ticket_number: '888',
   business_unit_summary: {
