@@ -8,8 +8,6 @@ import { FINES_DRAFT_TABLE_WRAPPER_SORT_DEFAULT } from '../../fines-draft-table-
 import { IOpalFinesDraftAccountsResponse } from '@services/fines/opal-fines-service/interfaces/opal-fines-draft-account-data.interface';
 import { IFinesDraftTableWrapperTableData } from '../../fines-draft-table-wrapper/interfaces/fines-draft-table-wrapper-table-data.interface';
 import { FinesDraftService } from '../../services/fines-draft.service';
-import { FINES_ROUTING_PATHS } from '@routing/fines/constants/fines-routing-paths.constant';
-import { FINES_MAC_ROUTING_PATHS } from '../../../fines-mac/routing/constants/fines-mac-routing-paths.constant';
 
 @Component({
   selector: 'app-fines-draft-create-and-manage-view-all-rejected',
@@ -27,14 +25,14 @@ export class FinesDraftCreateAndManageViewAllRejectedComponent implements OnInit
   public tableSort = FINES_DRAFT_TABLE_WRAPPER_SORT_DEFAULT;
   public rejectedAccounts!: IFinesDraftTableWrapperTableData[];
 
-  public readonly PATH_REVIEW_ACCOUNT = `${FINES_ROUTING_PATHS.root}/${FINES_MAC_ROUTING_PATHS.root}/${FINES_MAC_ROUTING_PATHS.children.reviewAccount}`;
-
   public onDefendantClick(row: IFinesDraftTableWrapperTableData): void {
-    const draftAccountId = +row['Defendant id'];
+    const {'Defendant id': draftAccountId } = row;
     this.finesDraftStore.setViewAllAccounts(true);
-    this.finesDraftStore.setAmend(false);
+    this.finesDraftStore.setAmend(true);
 
-    this.finesDraftService.onDefendantClick(draftAccountId, this.PATH_REVIEW_ACCOUNT);
+    const route = this.finesDraftService.PATH_AMEND_ACCOUNT
+
+    this.finesDraftService.onDefendantClick(draftAccountId, route);
   }
 
   /**

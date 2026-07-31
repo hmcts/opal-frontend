@@ -27,6 +27,7 @@ describe('FinesDraftCreateAndManageViewAllRejectedComponent', () => {
     finesDraftService = {
       onDefendantClick: vi.fn().mockName('FinesDraftService.onDefendantClick'),
       populateTableData: vi.fn().mockName('FinesDraftService.populateTableData'),
+      PATH_AMEND_ACCOUNT: '/fines/manual-account-creation/account-details',
     };
     finesDraftService.populateTableData.mockReturnValue(FINES_DRAFT_TABLE_WRAPPER_TABLE_DATA_MOCK);
 
@@ -72,13 +73,13 @@ describe('FinesDraftCreateAndManageViewAllRejectedComponent', () => {
     });
   });
 
-  it('should call viewAllAccounts and amend then call onDefendantClick with PATH_REVIEW_ACCOUNT', () => {
+  it('should call viewAllAccounts and amend then call onDefendantClick with PATH_AMEND_ACCOUNT', () => {
     component.onDefendantClick(FINES_DRAFT_TABLE_WRAPPER_TABLE_DATA_MOCK[0]);
     expect(finesDraftStore.viewAllAccounts()).toBeTruthy();
-    expect(finesDraftStore.amend()).toBeFalsy();
+    expect(finesDraftStore.amend()).toBeTruthy();
     expect(finesDraftService.onDefendantClick).toHaveBeenCalledWith(
       FINES_DRAFT_TABLE_WRAPPER_TABLE_DATA_MOCK[0]['Defendant id'],
-      component.PATH_REVIEW_ACCOUNT,
+      finesDraftService.PATH_AMEND_ACCOUNT,
     );
   });
 });
