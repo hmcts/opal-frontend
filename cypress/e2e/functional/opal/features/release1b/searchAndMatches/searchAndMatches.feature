@@ -72,7 +72,6 @@ Feature: Account Search and Matches
     Then I see an page containing "There is a problem"
     And I see the validation message "Reference data and account information cannot be entered together when searching for an account. Search using either:"
     And I see the listed options "account number, reference or case number, National Insurance number, advanced search"
-    And I see the listed options "account number, reference or case number, National Insurance number, advanced search"
 
   @JIRA-EPIC:PO-704 @R1B @JIRA-STORY:PO-705 @JIRA-TEST-KEY:PO-5426
   Scenario: Back returns to search with data intact after all-3-fields error
@@ -116,7 +115,6 @@ Feature: Account Search and Matches
     Then I see an page containing "There is a problem"
     And I see the validation message "Reference data and account information cannot be entered together when searching for an account. Search using either:"
     And I see the listed options "account number, reference or case number, National Insurance number, advanced search"
-    And I see the listed options "account number, reference or case number, National Insurance number, advanced search"
     And I go back from the problem page
     Then I see the "Search for an account" page for companies with the following details:
       | account number           | 12345678   |
@@ -132,7 +130,6 @@ Feature: Account Search and Matches
       | company name             | <companyName>   |
     Then I see an page containing "There is a problem"
     And I see the validation message "Reference data and account information cannot be entered together when searching for an account. Search using either:"
-    And I see the listed options "account number, reference or case number, National Insurance number, advanced search"
     And I see the listed options "account number, reference or case number, National Insurance number, advanced search"
     And I go back from the problem page
     Then I see the "Search for an account" page for companies with the following details:
@@ -162,7 +159,6 @@ Feature: Account Search and Matches
     Then I see an page containing "There is a problem"
     And I see the validation message "Reference data and account information cannot be entered together when searching for an account. Search using either:"
     And I see the listed options "account number, reference or case number, National Insurance number, advanced search"
-    And I see the listed options "account number, reference or case number, National Insurance number, advanced search"
     And I go back from the problem page
     Then I see the "Search for an account" page for minor creditors - company with the following details:
       | minor creditor type      | Company    |
@@ -181,7 +177,6 @@ Feature: Account Search and Matches
       | company name             | <companyName>   |
     Then I see an page containing "There is a problem"
     And I see the validation message "Reference data and account information cannot be entered together when searching for an account. Search using either:"
-    And I see the listed options "account number, reference or case number, National Insurance number, advanced search"
     And I see the listed options "account number, reference or case number, National Insurance number, advanced search"
     And I go back from the problem page
     Then I see the "Search for an account" page for minor creditors - company with the following details:
@@ -462,8 +457,7 @@ Feature: Account Search and Matches
       | organisation_name             | null            |
       | exact_match_organisation_name | null            |
 
-  @JIRA-EPIC:PO-2630
-  @JIRA-STORY:PO-2953 @JIRA-EPIC:PO-2630
+  @JIRA-EPIC:PO-2630 @JIRA-STORY:PO-2953
   Scenario: Verify National Insurance search cannot be combined with account number
     #AC6, AC9, AC9a
     When I search using the following inputs:
@@ -472,10 +466,21 @@ Feature: Account Search and Matches
     Then I see an page containing "There is a problem"
     And I see the validation message "Reference data and account information cannot be entered together when searching for an account. Search using either:"
     And I see the listed options "account number, reference or case number, National Insurance number, advanced search"
+    # Returning from the error screen retains the entered search values.
     And I go back from the problem page
     Then I see the "Search for an account" page for individuals with the following details:
       | account number            | 12345678  |
       | National Insurance number | AB123456C |
+
+  @JIRA-STORY:PO-2953 @JIRA-EPIC:PO-2630 @R1B
+  Scenario: Verify National Insurance search cannot be combined with reference or case number
+    # AC6, AC9
+    When I search using the following inputs:
+      | reference or case number  | REF123    |
+      | National Insurance number | AB123456C |
+    Then I see an page containing "There is a problem"
+    And I see the validation message "Reference data and account information cannot be entered together when searching for an account. Search using either:"
+    And I see the listed options "account number, reference or case number, National Insurance number, advanced search"
 
   @JIRA-EPIC:PO-2630
   @JIRA-STORY:PO-2953 @JIRA-EPIC:PO-2630

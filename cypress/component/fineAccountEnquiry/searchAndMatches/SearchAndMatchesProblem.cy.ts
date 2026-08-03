@@ -67,7 +67,7 @@ describe('Search Account Problem Component', { tags: [ACCOUNT_ENQUIRY_JIRA_LABEL
   );
 
   it(
-    'should navigate back to the search form with the current tab fragment',
+    'AC9. should navigate back to the search form with the current tab fragment',
     { tags: ['@JIRA-STORY:PO-2953', '@JIRA-EPIC:PO-2630'] },
     () => {
       setupComponent();
