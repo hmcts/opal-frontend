@@ -44,6 +44,35 @@ export const routing: Routes = [
             },
             resolve: {
               title: TitleResolver,
+              report: finesReportsReportMetadataResolver,
+              reportHeading: finesReportsReportHeadingResolver,
+              businessUnits: finesReportsBusinessUnitsResolver,
+            },
+          },
+          {
+            path: FINES_REPORTS_CREATE_ROUTING_PATHS.children.businessUnitWarning,
+            loadComponent: () =>
+              import('../fines-reports-business-unit-warning/fines-reports-business-unit-warning.component').then(
+                (c) => c.FinesReportsBusinessUnitWarningComponent,
+              ),
+            data: {
+              title: 'Business unit warning',
+            },
+            resolve: {
+              title: TitleResolver,
+            },
+          },
+          {
+            path: FINES_REPORTS_CREATE_ROUTING_PATHS.children.reportParameters,
+            loadComponent: () =>
+              import('../fines-reports-parameters/fines-reports-parameters.component').then(
+                (c) => c.FinesReportsParametersComponent,
+              ),
+            data: {
+              title: 'Parameters',
+            },
+            resolve: {
+              title: TitleResolver,
               reportHeading: finesReportsReportHeadingResolver,
               businessUnits: finesReportsBusinessUnitsResolver,
             },

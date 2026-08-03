@@ -4,6 +4,7 @@
     [reportHeading]="reportHeading"
     [initialSelectedBusinessUnitIds]="selectedBusinessUnitIds()"
     (unsavedChanges)="handleUnsavedChanges($event)"
+    (cancelSelection)="handleCancel()"
     (formSubmit)="handleContinue($event)"
   ></app-fines-reports-select-business-units-form>
 </div>

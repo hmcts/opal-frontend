@@ -7,6 +7,7 @@ import { FINES_REPORTS_ROUTING_PATHS } from './constants/fines-reports-routing-p
 import { FINES_REPORTS_ROUTING_TITLES } from './constants/fines-reports-routing-titles.constant';
 import { finesReportsBusinessUnitsResolver } from './resolvers/fines-reports-business-units/fines-reports-business-units.resolver';
 import { finesReportsReportHeadingResolver } from './resolvers/fines-reports-report-heading/fines-reports-report-heading.resolver';
+import { finesReportsReportMetadataResolver } from './resolvers/fines-reports-report-metadata/fines-reports-report-metadata.resolver';
 
 describe('finesReports routes', () => {
   it('should redirect bare report routes to the summary list', () => {
@@ -35,6 +36,43 @@ describe('finesReports routes', () => {
       canDeactivate: [canDeactivateGuard],
       data: {
         title: 'Select business units',
+      },
+      resolve: {
+        title: TitleResolver,
+        report: finesReportsReportMetadataResolver,
+        reportHeading: finesReportsReportHeadingResolver,
+        businessUnits: finesReportsBusinessUnitsResolver,
+      },
+    });
+  });
+
+  it('should load the Business unit warning and report parameters routes', () => {
+    const reportRoute = routing.find((route) => route.path === ':reportTypeId');
+    const createRoute = reportRoute?.children?.find(
+      (route) => route.path === FINES_REPORTS_ROUTING_PATHS.children.create,
+    );
+    const businessUnitWarningRoute = createRoute?.children?.find(
+      (route) => route.path === FINES_REPORTS_CREATE_ROUTING_PATHS.children.businessUnitWarning,
+    );
+    const reportParametersRoute = createRoute?.children?.find(
+      (route) => route.path === FINES_REPORTS_CREATE_ROUTING_PATHS.children.reportParameters,
+    );
+
+    expect(businessUnitWarningRoute).toEqual({
+      path: FINES_REPORTS_CREATE_ROUTING_PATHS.children.businessUnitWarning,
+      loadComponent: expect.any(Function),
+      data: {
+        title: 'Business unit warning',
+      },
+      resolve: {
+        title: TitleResolver,
+      },
+    });
+    expect(reportParametersRoute).toEqual({
+      path: FINES_REPORTS_CREATE_ROUTING_PATHS.children.reportParameters,
+      loadComponent: expect.any(Function),
+      data: {
+        title: 'Parameters',
       },
       resolve: {
         title: TitleResolver,
