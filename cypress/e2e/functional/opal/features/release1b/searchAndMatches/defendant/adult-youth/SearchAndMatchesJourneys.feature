@@ -8,7 +8,7 @@ Feature: Defendant - Adult or youth search and matches journeys
     Given I am logged in with email "opal-test@dev.platform.hmcts.net"
     And I clear all approved accounts
 
-  #  Re-enable this scenario when PO-2970 is merged in
+  #  Re-enable this scenario when PO-2953 is merged in
   @skip @R1B @JIRA-STORY:PO-705 @JIRA-STORY:PO-706 @JIRA-STORY:PO-717 @JIRA-DEFECT:PO-3541 @JIRA-EPIC:PO-704 @JIRA-TEST-KEY:PO-5290
   Scenario: Search for an individual defendant account and open the matching record
     Given I create a "adultOrYouthOnly" draft account with the following details and set status "Publishing Pending" using user "opal-test-10@dev.platform.hmcts.net":
