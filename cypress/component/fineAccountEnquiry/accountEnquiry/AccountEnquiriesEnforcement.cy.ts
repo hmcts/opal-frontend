@@ -208,10 +208,10 @@ describe('Account Enquiry Enforcement Status', () => {
   );
 
   it(
-    'AC2, AC2a, AC3: restricted statuses hide restricted enforcement actions while TFO Out S/NI keeps HMRC check visible',
+    'AC2, AC2a: restricted statuses hide restricted enforcement actions',
     { tags: [...buildTags('@JIRA-STORY:PO-5754'), '@JIRA-EPIC:PO-978', '@JIRA-TEST-KEY:PO-5754'] },
     () => {
-      const restrictedStatuses = ['CS', 'WO', 'TA', 'TS', 'TO'] as const;
+      const restrictedStatuses = ['CS', 'WO', 'TA', 'TO'] as const;
 
       cy.wrap(restrictedStatuses).each((accountStatusCode: (typeof restrictedStatuses)[number]) => {
         const enforcementMock = buildEnforcementMock();
@@ -231,7 +231,7 @@ describe('Account Enquiry Enforcement Status', () => {
 
         cy.get(ENFORCEMENT_STATUS_TAB.addEnforcementActionLink).should('not.exist');
         cy.get(ENFORCEMENT_STATUS_TAB.addEnforcementOverrideLink).should('not.exist');
-        cy.get(ENFORCEMENT_STATUS_TAB.requestHmrcCheckLink).should(accountStatusCode === 'TS' ? 'exist' : 'not.exist');
+        cy.get(ENFORCEMENT_STATUS_TAB.requestHmrcCheckLink).should('not.exist');
 
         cy.get('#enforcementOverviewDetailsCollection_order_statusActions a').should('not.exist');
         cy.get('#enforcementOverviewDetailsEnforcement_courtActions a').should('not.exist');
@@ -239,6 +239,37 @@ describe('Account Enquiry Enforcement Status', () => {
         cy.get('#enforcementOverrideDetailsEnforcement_overrideActions a').should('not.exist');
         cy.get('#enforcement-override-summary-card-list .govuk-summary-card__action a').should('not.exist');
       });
+    },
+  );
+
+  it(
+    'AC3: TFO Out S/NI keeps the Request an HMRC check action available',
+    { tags: [...buildTags('@JIRA-STORY:PO-5754'), '@JIRA-EPIC:PO-978', '@JIRA-TEST-KEY:PO-5754'] },
+    () => {
+      const enforcementMock = buildEnforcementMock();
+      if (enforcementMock.enforcement_override) {
+        enforcementMock.enforcement_override.enforcement_override_result.enforcement_override_result_id = 'ABDC';
+      }
+      if (enforcementMock.last_enforcement_action) {
+        enforcementMock.last_enforcement_action.enforcement_action.result_id = 'NOENF';
+      }
+
+      mountEnforcementTab({
+        enforcement: enforcementMock,
+        hasAccountMaintenancePermission: true,
+        hasEnterEnforcementPermission: true,
+        accountStatusCode: 'TS',
+      });
+
+      cy.get(ENFORCEMENT_STATUS_TAB.addEnforcementActionLink).should('not.exist');
+      cy.get(ENFORCEMENT_STATUS_TAB.addEnforcementOverrideLink).should('not.exist');
+      cy.get(ENFORCEMENT_STATUS_TAB.requestHmrcCheckLink).should('exist');
+
+      cy.get('#enforcementOverviewDetailsCollection_order_statusActions a').should('not.exist');
+      cy.get('#enforcementOverviewDetailsEnforcement_courtActions a').should('not.exist');
+      cy.get('#lastEnforcementActionDetailsEnforcement_actionActions a').should('not.exist');
+      cy.get('#enforcementOverrideDetailsEnforcement_overrideActions a').should('not.exist');
+      cy.get('#enforcement-override-summary-card-list .govuk-summary-card__action a').should('not.exist');
     },
   );
 
@@ -484,7 +515,7 @@ describe('Account Enquiry Enforcement Status', () => {
         hasEnterEnforcementPermission: true,
       });
 
-      cy.injectAxe();
+      cy.injectAxe({ axeCorePath: 'node_modules/axe-core/axe.min.js' });
       cy.checkA11y(undefined, {
         includedImpacts: ['critical', 'serious', 'moderate'],
       });
