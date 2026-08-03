@@ -91,7 +91,11 @@ describe('Account Enquiry - Defendant Header', () => {
   it(
     'AC1b: applies field rules (PCR uppercase, BU formatting, summary labels)',
     {
-      tags: [...buildTags('@JIRA-STORY:PO-1593', '@JIRA-STORY:PO-866'), '@JIRA-EPIC:PO-812', '@JIRA-TEST-KEY:PO-4206'],
+      tags: [
+        ...buildTags('@JIRA-STORY:PO-1593', '@JIRA-STORY:PO-866', '@JIRA-STORY:PO-2949'),
+        '@JIRA-EPIC:PO-812',
+        '@JIRA-TEST-KEY:PO-4206',
+      ],
     },
     () => {
       const header = structuredClone(DEFENDANT_HEADER_MOCK);
@@ -112,6 +116,9 @@ describe('Account Enquiry - Defendant Header', () => {
         cy.contains(DOM.labelBusinessUnit).should('be.visible');
         cy.contains(header.business_unit_summary.business_unit_name).should('be.visible');
         cy.contains(`(${header.business_unit_summary.business_unit_id})`).should('be.visible');
+
+        cy.contains(DOM.labelReceivedFrom).should('be.visible');
+        cy.get(DOM.receivedFrom).should('be.visible').and('have.contain', header.originator_name);
       });
 
       cy.get(DOM.summaryMetricBar).within(() => {
@@ -125,7 +132,11 @@ describe('Account Enquiry - Defendant Header', () => {
   it(
     'AC1b: applies field rules (PCR uppercase, BU formatting, summary labels) - Company',
     {
-      tags: [...buildTags('@JIRA-STORY:PO-1593', '@JIRA-STORY:PO-866'), '@JIRA-EPIC:PO-812', '@JIRA-TEST-KEY:PO-4207'],
+      tags: [
+        ...buildTags('@JIRA-STORY:PO-1593', '@JIRA-STORY:PO-866', '@JIRA-STORY:PO-2949'),
+        '@JIRA-EPIC:PO-812',
+        '@JIRA-TEST-KEY:PO-4207',
+      ],
     },
     () => {
       const header = structuredClone(DEFENDANT_HEADER_ORG_MOCK);
@@ -147,6 +158,9 @@ describe('Account Enquiry - Defendant Header', () => {
         cy.contains(DOM.labelBusinessUnit).should('be.visible');
         cy.contains(header.business_unit_summary.business_unit_name).should('be.visible');
         cy.contains(`(${header.business_unit_summary.business_unit_id})`).should('be.visible');
+
+        cy.contains(DOM.labelReceivedFrom).should('be.visible');
+        cy.get(DOM.receivedFrom).should('be.visible').and('have.contain', header.originator_name);
       });
 
       cy.get(DOM.summaryMetricBar).within(() => {
