@@ -66,10 +66,6 @@
     ></app-fines-mac-review-account-contact-details>
   }
 
-  @if (finesMacStore.accountDetails().formData.fm_create_account_defendant_type === defendantTypesKeys.pgToPay) {
-    <ng-container *ngTemplateOutlet="personalDetails"></ng-container>
-  }
-
   @if (
     finesMacStore.accountDetails().formData.fm_create_account_defendant_type !== defendantTypesKeys.company &&
     accountType !== accountTypesKeys['Fixed Penalty']
@@ -80,6 +76,10 @@
       (emitChangeEmployerDetails)="change(finesMacRoutes.children.employerDetails)"
       [isReadOnly]="isReadOnly"
     ></app-fines-mac-review-account-employer-details>
+  }
+
+  @if (finesMacStore.accountDetails().formData.fm_create_account_defendant_type === defendantTypesKeys.pgToPay) {
+    <ng-container *ngTemplateOutlet="personalDetails"></ng-container>
   }
 
   @if (accountType === accountTypesKeys['Fixed Penalty']) {
