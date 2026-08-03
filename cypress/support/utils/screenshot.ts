@@ -60,11 +60,13 @@ export function captureScenarioScreenshot(
           capturedPath ? { from: capturedPath, evidencePath } : { filename: targetFileName, evidencePath },
           { log: false },
         )
-        .then((savedPath) => {
-          if (!savedPath) return undefined;
-          return cy.readFile(savedPath as string, 'base64').then((base64) => {
-            attach(base64, { mediaType: 'base64:image/png', fileName: targetFileName });
-          });
+        .then((savedEvidence) => {
+          if (!savedEvidence || typeof savedEvidence !== 'object' || !('base64' in savedEvidence)) {
+            return undefined;
+          }
+
+          attach(savedEvidence.base64, { mediaType: 'base64:image/png', fileName: targetFileName });
+          return undefined;
         }),
     )
     .then(() => undefined) as Cypress.Chainable<void>;

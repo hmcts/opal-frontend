@@ -1,5 +1,6 @@
-import { ChangeDetectionStrategy, Component } from '@angular/core';
+import { ChangeDetectionStrategy, Component, OnDestroy, inject } from '@angular/core';
 import { RouterOutlet } from '@angular/router';
+import { FinesReportsSummaryListStore } from './fines-reports-summary-list/stores/fines-reports-summary-list.store';
 
 @Component({
   selector: 'app-fines-reports',
@@ -7,4 +8,13 @@ import { RouterOutlet } from '@angular/router';
   templateUrl: './fines-reports.component.html',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class FinesReportsComponent {}
+export class FinesReportsComponent implements OnDestroy {
+  private readonly finesReportsSummaryListStore = inject(FinesReportsSummaryListStore);
+
+  /**
+   * Resets report summary list filters when the reports flow is destroyed.
+   */
+  public ngOnDestroy(): void {
+    this.finesReportsSummaryListStore.resetFilters();
+  }
+}

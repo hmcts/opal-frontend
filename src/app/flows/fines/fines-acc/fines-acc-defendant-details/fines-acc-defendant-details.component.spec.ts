@@ -1,4 +1,5 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
+import { By } from '@angular/platform-browser';
 import { FinesAccDefendantDetailsComponent } from './fines-acc-defendant-details.component';
 import { Router, ActivatedRoute, ActivatedRouteSnapshot, convertToParamMap } from '@angular/router';
 import { FinesAccDefendantDetailsAtAGlanceTabComponent } from './fines-acc-defendant-details-at-a-glance-tab/fines-acc-defendant-details-at-a-glance-tab.component';
@@ -21,7 +22,10 @@ import { FINES_ACC_DEFENDANT_ROUTING_PATHS } from '../routing/constants/fines-ac
 import { OPAL_FINES_ACCOUNT_DEFENDANT_DETAILS_PARENT_OR_GUARDIAN_TAB_REF_DATA_MOCK } from '@services/fines/opal-fines-service/mocks/opal-fines-account-defendant-details-parent-or-guardian-tab-ref-data.mock';
 import { OPAL_FINES_ACCOUNT_DEFENDANT_DETAILS_FIXED_PENALTY_MOCK } from '@services/fines/opal-fines-service/mocks/opal-fines-account-defendant-details-fixed-penalty.mock';
 import { OPAL_FINES_RESULT_REF_DATA_MOCK } from '@services/fines/opal-fines-service/mocks/opal-fines-result-ref-data.mock';
+import { OPAL_FINES_ACCOUNT_DEFENDANT_DETAILS_CONSOLIDATED_ACCOUNTS_MOCK } from '@services/fines/opal-fines-service/mocks/opal-fines-account-defendant-details-consolidated-accounts.mock';
+import { FINES_ACC_DEFENDANT_ACCOUNT_TABS_CACHE_MAP } from './constants/fines-acc-defendant-account-tabs-cache-map.constant';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
+import { FinesAccSummaryHeaderComponent } from '../fines-acc-summary-header/fines-acc-summary-header.component';
 
 describe('FinesAccDefendantDetailsComponent', () => {
   let component: FinesAccDefendantDetailsComponent;
@@ -77,6 +81,7 @@ describe('FinesAccDefendantDetailsComponent', () => {
       clearCache: vi.fn().mockName('OpalFines.clearCache'),
       getResult: vi.fn().mockName('OpalFines.getResult'),
       getDefendantAccountFixedPenalty: vi.fn().mockName('OpalFines.getDefendantAccountFixedPenalty'),
+      getDefendantAccountConsolidatedAccounts: vi.fn().mockName('OpalFines.getDefendantAccountConsolidatedAccounts'),
     };
     mockOpalFinesService.getDefendantAccountHeadingData.mockReturnValue(of(FINES_ACC_DEFENDANT_DETAILS_HEADER_MOCK));
     mockOpalFinesService.getDefendantAccountAtAGlance.mockReturnValue(
@@ -100,6 +105,9 @@ describe('FinesAccDefendantDetailsComponent', () => {
     );
     mockOpalFinesService.getDefendantAccountImpositionsTabData.mockReturnValue(
       of(OPAL_FINES_ACCOUNT_DEFENDANT_DETAILS_IMPOSITIONS_TAB_REF_DATA_MOCK),
+    );
+    mockOpalFinesService.getDefendantAccountConsolidatedAccounts.mockReturnValue(
+      of(OPAL_FINES_ACCOUNT_DEFENDANT_DETAILS_CONSOLIDATED_ACCOUNTS_MOCK),
     );
     mockOpalFinesService.getResult.mockReturnValue(of(OPAL_FINES_RESULT_REF_DATA_MOCK));
 
@@ -137,6 +145,40 @@ describe('FinesAccDefendantDetailsComponent', () => {
   it('should initialize accountData and activeTab from route data', () => {
     expect(component.accountData).toEqual(FINES_ACC_DEFENDANT_DETAILS_HEADER_MOCK);
     expect(component.activeTab).toBe('at-a-glance');
+  });
+
+  it('should pass the account status code to the summary header', () => {
+    const summaryHeader = fixture.debugElement.query(By.directive(FinesAccSummaryHeaderComponent));
+
+    expect(summaryHeader.componentInstance.accountStatusCode).toBe('L');
+  });
+
+  it('should display the account status banner when the active tab is not the default tab', () => {
+    fixture.destroy();
+
+    const headingData = {
+      ...structuredClone(FINES_ACC_DEFENDANT_DETAILS_HEADER_MOCK),
+      account_status_reference: {
+        account_status_code: 'TA',
+        account_status_display_name: 'TFO Out Acknowledged (E/W)',
+      },
+    };
+
+    activatedRouteStub.fragment = of('payment-terms');
+    activatedRouteStub.snapshot = {
+      ...activatedRouteStub.snapshot,
+      data: {
+        defendantAccountHeadingData: headingData,
+      },
+      fragment: 'payment-terms',
+    } as unknown as ActivatedRouteSnapshot;
+
+    fixture = TestBed.createComponent(FinesAccDefendantDetailsComponent);
+    component = fixture.componentInstance;
+    fixture.detectChanges();
+
+    const banner = fixture.debugElement.query(By.css('#defendant-account-status'));
+    expect(banner.nativeElement.textContent).toContain('Transferred out');
   });
 
   it('should allow adding parent or guardian details for a youth debtor account with no parent guardian', () => {
@@ -211,6 +253,24 @@ describe('FinesAccDefendantDetailsComponent', () => {
     };
 
     expect(component.hasParentOrGuardianDetails).toBe(false);
+  });
+
+  it('should show consolidated accounts when the account has consolidated accounts', () => {
+    component.accountData = {
+      ...structuredClone(FINES_ACC_DEFENDANT_DETAILS_HEADER_MOCK),
+      has_consolidated_accounts: true,
+    };
+
+    expect(component.hasConsolidatedAccounts()).toBe(true);
+  });
+
+  it('should hide consolidated accounts when the account has no consolidated accounts', () => {
+    component.accountData = {
+      ...structuredClone(FINES_ACC_DEFENDANT_DETAILS_HEADER_MOCK),
+      has_consolidated_accounts: false,
+    };
+
+    expect(component.hasConsolidatedAccounts()).toBe(false);
   });
 
   it('should handle tab switch', () => {
@@ -299,6 +359,22 @@ describe('FinesAccDefendantDetailsComponent', () => {
     );
   });
 
+  it('should fetch the consolidated accounts tab data when fragment is changed to consolidated-accounts', () => {
+    component['refreshFragment$'].next('consolidated-accounts');
+    component.tabConsolidatedAccounts$.subscribe();
+
+    expect(mockOpalFinesService.getDefendantAccountConsolidatedAccounts).toHaveBeenCalledWith(
+      MOCK_FINES_ACCOUNT_STATE.account_id,
+    );
+    expect(mockPayloadService.transformPayload).toHaveBeenCalled();
+  });
+
+  it('should map the consolidated accounts tab to its service cache key', () => {
+    expect(FINES_ACC_DEFENDANT_ACCOUNT_TABS_CACHE_MAP['consolidated-accounts']).toBe(
+      'defendantAccountConsolidatedAccountsCache$',
+    );
+  });
+
   it('should refresh the data for the header and current tab when refreshPage is called', () => {
     component.accountStore.setAccountState(MOCK_FINES_ACCOUNT_STATE);
     component.refreshPage();
@@ -361,11 +437,11 @@ describe('FinesAccDefendantDetailsComponent', () => {
   });
 
   describe('should get the correct response from canAmendPaymentTerms', () => {
-    it('when the account can amend payment terms should return true', () => {
+    it('when the user has amend-payment-terms permission, no disallowing enforcement, a valid status and positive balance', () => {
       component.lastEnforcement = structuredClone(OPAL_FINES_RESULT_REF_DATA_MOCK);
       component.lastEnforcement.extend_ttp_disallow = false;
       component.accountData.account_status_reference.account_status_code = 'L';
-      component.accountData.payment_state_summary.account_balance = 500.58;
+      component.accountData.payment_state_summary.account_balance = 100;
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
       vi.spyOn<any, any>(component['permissionsService'], 'hasBusinessUnitPermissionAccess').mockReturnValue(true);
 
@@ -374,9 +450,11 @@ describe('FinesAccDefendantDetailsComponent', () => {
       expect(canAmend).toBe(true);
     });
 
-    it('when the last enforcement disallows extended time to pay should return false', () => {
+    it('when the last enforcement disallows extending TTP', () => {
       component.lastEnforcement = structuredClone(OPAL_FINES_RESULT_REF_DATA_MOCK);
       component.lastEnforcement.extend_ttp_disallow = true;
+      component.accountData.account_status_reference.account_status_code = 'L';
+      component.accountData.payment_state_summary.account_balance = 100;
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
       vi.spyOn<any, any>(component['permissionsService'], 'hasBusinessUnitPermissionAccess').mockReturnValue(true);
 
@@ -385,22 +463,24 @@ describe('FinesAccDefendantDetailsComponent', () => {
       expect(canAmend).toBe(false);
     });
 
-    it.each(['CS', 'WO', 'TO', 'TS', 'TA'])(
-      'when the account status code is %s should return false',
-      (accountStatusCode) => {
-        component.lastEnforcement = structuredClone(OPAL_FINES_RESULT_REF_DATA_MOCK);
-        component.accountData.account_status_reference.account_status_code = accountStatusCode;
-        // eslint-disable-next-line @typescript-eslint/no-explicit-any
-        vi.spyOn<any, any>(component['permissionsService'], 'hasBusinessUnitPermissionAccess').mockReturnValue(true);
-
-        const canAmend = component.canAmendPaymentTerms();
-
-        expect(canAmend).toBe(false);
-      },
-    );
-
-    it('when the user does not have amend-payment-terms permission should return false', () => {
+    it.each(['CS', 'WO', 'TO', 'TS', 'TA'])('when account status is %s', (accountStatusCode) => {
       component.lastEnforcement = structuredClone(OPAL_FINES_RESULT_REF_DATA_MOCK);
+      component.lastEnforcement.extend_ttp_disallow = false;
+      component.accountData.account_status_reference.account_status_code = accountStatusCode;
+      component.accountData.payment_state_summary.account_balance = 100;
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      vi.spyOn<any, any>(component['permissionsService'], 'hasBusinessUnitPermissionAccess').mockReturnValue(true);
+
+      const canAmend = component.canAmendPaymentTerms();
+
+      expect(canAmend).toBe(false);
+    });
+
+    it('when the user does not have amend-payment-terms permission', () => {
+      component.lastEnforcement = structuredClone(OPAL_FINES_RESULT_REF_DATA_MOCK);
+      component.lastEnforcement.extend_ttp_disallow = false;
+      component.accountData.account_status_reference.account_status_code = 'L';
+      component.accountData.payment_state_summary.account_balance = 100;
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
       vi.spyOn<any, any>(component['permissionsService'], 'hasBusinessUnitPermissionAccess').mockReturnValue(false);
 
@@ -409,8 +489,10 @@ describe('FinesAccDefendantDetailsComponent', () => {
       expect(canAmend).toBe(false);
     });
 
-    it('when the account balance is not greater than 0 should return false', () => {
+    it('when the account balance is 0', () => {
       component.lastEnforcement = structuredClone(OPAL_FINES_RESULT_REF_DATA_MOCK);
+      component.lastEnforcement.extend_ttp_disallow = false;
+      component.accountData.account_status_reference.account_status_code = 'L';
       component.accountData.payment_state_summary.account_balance = 0;
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
       vi.spyOn<any, any>(component['permissionsService'], 'hasBusinessUnitPermissionAccess').mockReturnValue(true);
