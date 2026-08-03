@@ -4,7 +4,19 @@ import {
   MojSubNavigationItemComponent,
 } from '@hmcts/opal-frontend-common/components/moj/moj-sub-navigation';
 import { FinesDraftTableWrapperComponent } from '../../fines-draft-table-wrapper/fines-draft-table-wrapper.component';
-import { map, Observable, of, shareReplay, Subject } from 'rxjs';
+import {
+  distinctUntilChanged,
+  EMPTY,
+  filter,
+  map,
+  merge,
+  Observable,
+  of,
+  shareReplay,
+  Subject,
+  switchMap,
+  tap,
+} from 'rxjs';
 import { GlobalStore } from '@hmcts/opal-frontend-common/stores/global';
 import { FINES_DRAFT_CHECK_AND_VALIDATE_ROUTING_PATHS } from '../routing/constants/fines-draft-check-and-validate-routing-paths.constant';
 import {
@@ -35,9 +47,14 @@ import { MojNotificationBadgeComponent } from '@hmcts/opal-frontend-common/compo
 import { FINES_ACC_DEFENDANT_ROUTING_PATHS } from '../../../fines-acc/routing/constants/fines-acc-defendant-routing-paths.constant';
 import { FINES_DRAFT_TAB_FRAGMENT } from '../../constants/fines-draft-tab-fragments.constant';
 import { FINES_DRAFT_ROUTE_DATA_KEYS } from '../../constants/fines-draft-route-data-keys.constant';
-import { getResolvedDraftAccounts, getResolvedOrFetchDraftCount } from '../../utils/fines-draft-route-data.utils';
-import { FINES_DRAFT_COUNT_DISPLAY } from '../../constants/fines-draft-count-display.constant';
+import { getResolvedDraftAccounts, getResolvedDraftCount } from '../../utils/fines-draft-route-data.utils';
 import { buildFinesDraftAccountParams } from '../../utils/fines-draft-account-params.utils';
+import { FINES_DRAFT_RESOLVER_EMPTY_RESPONSE } from '../../routing/resolvers/constants/fines-draft-resolver-empty-response.constant';
+
+interface IFinesDraftTabAccounts {
+  tab: string;
+  response: IOpalFinesDraftAccountsResponse;
+}
 
 @Component({
   selector: 'app-fines-draft-check-and-validate-tabs',
@@ -64,7 +81,6 @@ export class FinesDraftCheckAndValidateTabsComponent extends AbstractTabData imp
 
   protected readonly finesDraftStore = inject(FinesDraftStore);
   protected readonly finesDraftCheckAndValidateRoutingPaths = FINES_DRAFT_CHECK_AND_VALIDATE_ROUTING_PATHS;
-  protected readonly finesDraftCountDisplay = FINES_DRAFT_COUNT_DISPLAY;
   protected readonly finesDraftTabFragment = FINES_DRAFT_TAB_FRAGMENT;
 
   public readonly finesDraftService = inject(FinesDraftService);
@@ -80,14 +96,13 @@ export class FinesDraftCheckAndValidateTabsComponent extends AbstractTabData imp
    * and constructs the necessary parameters for fetching and populating the tab's table data.
    *
    */
-  private setupTabDataStream(): void {
-    const fragment$ = this.getFragmentStream(FINES_DRAFT_TAB_FRAGMENT.toReview, this.destroy$);
+  private setupTabDataStream(): Observable<IFinesDraftTabAccounts> {
+    const fragment$ = this.createFragmentStream();
     const resolvedDraftAccounts = getResolvedDraftAccounts(this.activatedRoute);
     let useResolvedDraftAccounts = !!resolvedDraftAccounts;
 
-    this.tabData$ = this.createTabDataStream<IOpalFinesDraftAccountsResponse, IFinesDraftTableWrapperTableData[]>(
-      fragment$,
-      (tab) => {
+    const draftAccounts$: Observable<IFinesDraftTabAccounts> = fragment$.pipe(
+      switchMap((tab) => {
         if (tab === FINES_DRAFT_TAB_FRAGMENT.deleted || tab === FINES_DRAFT_TAB_FRAGMENT.failed) {
           this.tableSort = FINES_DRAFT_TABLE_WRAPPER_SORT_DELETED;
         } else {
@@ -95,9 +110,13 @@ export class FinesDraftCheckAndValidateTabsComponent extends AbstractTabData imp
         }
 
         const currentTab = FINES_DRAFT_TAB_STATUSES.find((t) => t.tab === tab);
+        if (!currentTab) {
+          return of({ tab, response: FINES_DRAFT_RESOLVER_EMPTY_RESPONSE });
+        }
 
         const params: IOpalFinesDraftAccountParams = buildFinesDraftAccountParams(this.userState, {
-          statuses: currentTab?.statuses,
+          statuses: currentTab.statuses,
+          includeSubmittedBy: false,
           includeNotSubmittedBy: true,
         });
 
@@ -107,18 +126,39 @@ export class FinesDraftCheckAndValidateTabsComponent extends AbstractTabData imp
           params.accountStatusDateTo = [to];
         }
 
-        return params;
-      },
-      (params) => {
         if (useResolvedDraftAccounts && resolvedDraftAccounts) {
           useResolvedDraftAccounts = false;
-          return of(resolvedDraftAccounts);
+          return of({ tab, response: resolvedDraftAccounts });
         }
 
-        return this.opalFinesService.getDraftAccounts(params);
-      },
-      (res) => this.finesDraftService.populateTableData(res),
-    ).pipe(shareReplay({ bufferSize: 1, refCount: true }));
+        return this.opalFinesService.getDraftAccounts(params).pipe(map((response) => ({ tab, response })));
+      }),
+      shareReplay({ bufferSize: 1, refCount: true }),
+    );
+
+    this.tabData$ = draftAccounts$.pipe(map(({ response }) => this.finesDraftService.populateTableData(response)));
+
+    return draftAccounts$;
+  }
+
+  /**
+   * Creates the shared fragment stream and clears the draft account cache once per tab change before fetching.
+   *
+   * @returns The shared fragment stream for the active draft tab.
+   */
+  private createFragmentStream(): Observable<string> {
+    let isInitialFragment = true;
+
+    return this.getFragmentStream(FINES_DRAFT_TAB_FRAGMENT.toReview, this.destroy$).pipe(
+      tap(() => {
+        if (isInitialFragment) {
+          isInitialFragment = false;
+          return;
+        }
+
+        this.opalFinesService.clearCache('draftAccountsCache$');
+      }),
+    );
   }
 
   /**
@@ -132,23 +172,46 @@ export class FinesDraftCheckAndValidateTabsComponent extends AbstractTabData imp
    *
    * @private
    */
-  private setupFailedCountStream(): void {
-    const failedCount$ = getResolvedOrFetchDraftCount(
-      this.activatedRoute,
-      FINES_DRAFT_ROUTE_DATA_KEYS.failedCount,
-      () =>
-        this.opalFinesService.getDraftAccounts(
-          buildFinesDraftAccountParams(this.userState, {
-            statuses: [OPAL_FINES_DRAFT_ACCOUNT_STATUSES.publishFailed],
-            includeNotSubmittedBy: true,
-          }),
-        ),
+  private setupFailedCountStream(draftAccounts$: Observable<IFinesDraftTabAccounts>): void {
+    const failedCount$ = merge(
+      this.getInitialFailedCountStream(),
+      draftAccounts$.pipe(
+        filter(({ tab }) => tab === FINES_DRAFT_TAB_FRAGMENT.failed),
+        map(({ response }) => response.count),
+      ),
     );
 
     this.failedCount$ = failedCount$.pipe(
       map((count) => this.formatCountWithCap(count, FINES_DRAFT_MAX_REJECTED)),
-      shareReplay({ bufferSize: 1, refCount: true }),
+      distinctUntilChanged(),
     );
+  }
+
+  /**
+   * Uses the resolved failed count when available, otherwise fetches it unless the failed tab response is already active.
+   *
+   * @returns The initial failed count stream.
+   */
+  private getInitialFailedCountStream(): Observable<number> {
+    const resolvedCount = getResolvedDraftCount(this.activatedRoute, FINES_DRAFT_ROUTE_DATA_KEYS.failedCount);
+    if (resolvedCount !== null) {
+      return of(resolvedCount);
+    }
+
+    const initialTab = this.activatedRoute.snapshot.fragment ?? FINES_DRAFT_TAB_FRAGMENT.toReview;
+    if (initialTab === FINES_DRAFT_TAB_FRAGMENT.failed) {
+      return EMPTY;
+    }
+
+    return this.opalFinesService
+      .getDraftAccounts(
+        buildFinesDraftAccountParams(this.userState, {
+          statuses: [OPAL_FINES_DRAFT_ACCOUNT_STATUSES.publishFailed],
+          includeSubmittedBy: false,
+          includeNotSubmittedBy: true,
+        }),
+      )
+      .pipe(map((response) => response.count));
   }
 
   /**
@@ -189,8 +252,8 @@ export class FinesDraftCheckAndValidateTabsComponent extends AbstractTabData imp
   public ngOnInit(): void {
     this.finesDraftStore.resetFineDraftState();
     this.finesDraftStore.resetFragmentAndChecker();
-    this.setupTabDataStream();
-    this.setupFailedCountStream();
+    const draftAccounts$ = this.setupTabDataStream();
+    this.setupFailedCountStream(draftAccounts$);
   }
 
   /**

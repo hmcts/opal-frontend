@@ -26,6 +26,7 @@ export const finesDraftCreateAndManageViewAllRejectedResolver: ResolveFn<IOpalFi
 
   const params = buildFinesDraftAccountParams(globalStore.userState(), {
     statuses,
+    includeSubmittedBy: false,
     includeNotSubmittedBy: true,
   });
 

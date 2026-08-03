@@ -35,7 +35,7 @@
         [subNavItemFragment]="finesDraftTabFragment.rejected"
         subNavItemText="Rejected"
       >
-        @if (rejectedCount !== finesDraftCountDisplay.zero) {
+        @if (rejectedCount !== '0') {
           <opal-lib-moj-notification-badge badge badgeId="inputter-rejected-tab-rejected-count">
             {{ rejectedCount }}
           </opal-lib-moj-notification-badge>

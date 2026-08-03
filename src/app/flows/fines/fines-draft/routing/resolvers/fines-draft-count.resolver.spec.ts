@@ -38,6 +38,7 @@ describe('finesDraftCountResolver', () => {
     const resolver = executeResolver({
       statuses: [OPAL_FINES_DRAFT_ACCOUNT_STATUSES.rejected],
       includeSubmittedBy: true,
+      includeNotSubmittedBy: false,
     });
     const route = {} as ActivatedRouteSnapshot;
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -54,6 +55,7 @@ describe('finesDraftCountResolver', () => {
   it('should resolve a not-submitted-by count', async () => {
     const resolver = executeResolver({
       statuses: [OPAL_FINES_DRAFT_ACCOUNT_STATUSES.publishFailed],
+      includeSubmittedBy: false,
       includeNotSubmittedBy: true,
     });
     const route = {} as ActivatedRouteSnapshot;
@@ -70,7 +72,7 @@ describe('finesDraftCountResolver', () => {
 
   it('should resolve a count without a submitter filter', async () => {
     const statuses = [OPAL_FINES_DRAFT_ACCOUNT_STATUSES.submitted];
-    const resolver = executeResolver({ statuses });
+    const resolver = executeResolver({ statuses, includeSubmittedBy: false, includeNotSubmittedBy: false });
     const route = {} as ActivatedRouteSnapshot;
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     const result = await lastValueFrom(resolver(route, {} as any) as Observable<number | RedirectCommand>);

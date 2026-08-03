@@ -38,7 +38,7 @@
         [subNavItemFragment]="finesDraftTabFragment.failed"
         subNavItemText="Failed"
       >
-        @if (failedCount !== finesDraftCountDisplay.zero) {
+        @if (failedCount !== '0') {
           <opal-lib-moj-notification-badge badge badgeId="checker-failed-tab-failed-count">
             {{ failedCount }}
           </opal-lib-moj-notification-badge>

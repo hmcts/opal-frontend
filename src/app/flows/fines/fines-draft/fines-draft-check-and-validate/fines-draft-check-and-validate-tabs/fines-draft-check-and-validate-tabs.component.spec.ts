@@ -133,8 +133,10 @@ describe('FinesDraftCheckAndValidateTabsComponent', () => {
     expect(mockOpalFinesService.getDraftAccounts).not.toHaveBeenCalled();
   });
 
-  it('should fetch only the selected tab data on tab change', () => {
+  it('should fetch only the selected tab data and refresh failed count on tab change', () => {
     const fragmentSubject = new Subject<string | null>();
+    const failedTabResponse = { ...OPAL_FINES_DRAFT_ACCOUNTS_MOCK, count: 3 };
+    const failedCounts: string[] = [];
     finesDraftService.populateTableData.mockReturnValue(FINES_DRAFT_TABLE_WRAPPER_TABLE_DATA_MOCK);
     component.activatedRoute.fragment = fragmentSubject.asObservable();
     component.activatedRoute.snapshot.fragment = FINES_DRAFT_TAB_FRAGMENT.toReview;
@@ -143,7 +145,7 @@ describe('FinesDraftCheckAndValidateTabsComponent', () => {
       [FINES_DRAFT_ROUTE_DATA_KEYS.failedCount]: 2,
     };
 
-    mockOpalFinesService.getDraftAccounts.mockReturnValue(of(OPAL_FINES_DRAFT_ACCOUNTS_MOCK));
+    mockOpalFinesService.getDraftAccounts.mockReturnValue(of(failedTabResponse));
     mockOpalFinesService.getDraftAccounts.mockClear();
     mockOpalFinesService.clearCache.mockClear();
 
@@ -152,7 +154,7 @@ describe('FinesDraftCheckAndValidateTabsComponent', () => {
     component.ngOnInit();
 
     const subscription = component.tabData$.subscribe();
-    const countSubscription = component.failedCount$.subscribe();
+    const countSubscription = component.failedCount$.subscribe((count) => failedCounts.push(count));
     mockOpalFinesService.getDraftAccounts.mockClear();
 
     fragmentSubject.next(FINES_DRAFT_TAB_FRAGMENT.failed);
@@ -163,7 +165,9 @@ describe('FinesDraftCheckAndValidateTabsComponent', () => {
       statuses: [OPAL_FINES_DRAFT_ACCOUNT_STATUSES.publishFailed],
       notSubmittedBy: OPAL_USER_STATE_MOCK.business_unit_users.map((u) => u.business_unit_user_id),
     });
-    expect(mockOpalFinesService.clearCache).not.toHaveBeenCalled();
+    expect(mockOpalFinesService.clearCache).toHaveBeenCalledTimes(1);
+    expect(mockOpalFinesService.clearCache).toHaveBeenCalledWith('draftAccountsCache$');
+    expect(failedCounts).toEqual(['2', '3']);
 
     subscription.unsubscribe();
     countSubscription.unsubscribe();

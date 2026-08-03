@@ -1,5 +1,4 @@
 import { ActivatedRoute } from '@angular/router';
-import { map, Observable, of } from 'rxjs';
 import { IOpalFinesDraftAccountsResponse } from '@services/fines/opal-fines-service/interfaces/opal-fines-draft-account-data.interface';
 import { FINES_DRAFT_ROUTE_DATA_KEYS } from '../constants/fines-draft-route-data-keys.constant';
 import { FinesDraftCountRouteDataKey } from '../types/fines-draft-count-route-data-key.type';
@@ -58,21 +57,4 @@ export function getResolvedDraftCount(
 ): number | null {
   const count = activatedRoute.snapshot.data?.[dataKey];
   return typeof count === 'number' ? count : null;
-}
-
-/**
- * Uses a resolved count when available, otherwise fetches the count from a draft accounts response.
- *
- * @param activatedRoute - The route containing resolver snapshot data.
- * @param dataKey - The route-data key for the count resolver.
- * @param fetchDraftAccounts - Factory for the fallback API request.
- * @returns An observable of the resolved or fetched count.
- */
-export function getResolvedOrFetchDraftCount(
-  activatedRoute: ActivatedRoute,
-  dataKey: FinesDraftCountRouteDataKey,
-  fetchDraftAccounts: () => Observable<IOpalFinesDraftAccountsResponse>,
-): Observable<number> {
-  const resolvedCount = getResolvedDraftCount(activatedRoute, dataKey);
-  return resolvedCount !== null ? of(resolvedCount) : fetchDraftAccounts().pipe(map((res) => res.count));
 }

@@ -1,13 +1,11 @@
 import { ActivatedRoute } from '@angular/router';
 import { OPAL_FINES_DRAFT_ACCOUNTS_MOCK } from '@services/fines/opal-fines-service/mocks/opal-fines-draft-accounts.mock';
-import { firstValueFrom, of } from 'rxjs';
-import { describe, expect, it, vi } from 'vitest';
+import { describe, expect, it } from 'vitest';
 import { FINES_DRAFT_ROUTE_DATA_KEYS } from '../constants/fines-draft-route-data-keys.constant';
 import {
   getResolvedDraftAccountsByKey,
   getResolvedDraftAccounts,
   getResolvedDraftCount,
-  getResolvedOrFetchDraftCount,
   isFinesDraftAccountsResponse,
 } from './fines-draft-route-data.utils';
 
@@ -57,31 +55,5 @@ describe('finesDraftRouteDataUtils', () => {
     });
 
     expect(getResolvedDraftCount(activatedRoute, FINES_DRAFT_ROUTE_DATA_KEYS.rejectedCount)).toBe(5);
-  });
-
-  it('should use resolved count before falling back to an API request', async () => {
-    const activatedRoute = createActivatedRoute({
-      [FINES_DRAFT_ROUTE_DATA_KEYS.failedCount]: 7,
-    });
-    const fetchDraftAccounts = vi.fn().mockReturnValue(of({ count: 1, summaries: [] }));
-
-    const count = await firstValueFrom(
-      getResolvedOrFetchDraftCount(activatedRoute, FINES_DRAFT_ROUTE_DATA_KEYS.failedCount, fetchDraftAccounts),
-    );
-
-    expect(count).toBe(7);
-    expect(fetchDraftAccounts).not.toHaveBeenCalled();
-  });
-
-  it('should fetch count when route data does not contain a resolved count', async () => {
-    const activatedRoute = createActivatedRoute({});
-    const fetchDraftAccounts = vi.fn().mockReturnValue(of({ count: 3, summaries: [] }));
-
-    const count = await firstValueFrom(
-      getResolvedOrFetchDraftCount(activatedRoute, FINES_DRAFT_ROUTE_DATA_KEYS.rejectedCount, fetchDraftAccounts),
-    );
-
-    expect(count).toBe(3);
-    expect(fetchDraftAccounts).toHaveBeenCalledOnce();
   });
 });

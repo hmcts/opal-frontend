@@ -287,7 +287,48 @@ describe('FinesDraftCreateAndManageTabsComponent', () => {
       accountStatusDateFrom: ['2023-01-01'],
       accountStatusDateTo: ['2023-01-07'],
     });
-    expect(mockOpalFinesService.clearCache).not.toHaveBeenCalled();
+    expect(mockOpalFinesService.clearCache).toHaveBeenCalledTimes(1);
+    expect(mockOpalFinesService.clearCache).toHaveBeenCalledWith('draftAccountsCache$');
+
+    subscription.unsubscribe();
+    countSubscription.unsubscribe();
+  });
+
+  it('should refresh rejected count from the selected tab data without an extra request', () => {
+    const fragmentSubject = new Subject<string | null>();
+    const rejectedTabResponse = { ...OPAL_FINES_DRAFT_ACCOUNTS_MOCK, count: 3 };
+    const rejectedCounts: string[] = [];
+    finesDraftService.populateTableData.mockReturnValue(FINES_DRAFT_TABLE_WRAPPER_TABLE_DATA_MOCK);
+    activatedRoute.fragment = fragmentSubject.asObservable();
+    activatedRoute.snapshot.fragment = FINES_DRAFT_TAB_FRAGMENT.review;
+    activatedRoute.snapshot.data = {
+      [FINES_DRAFT_ROUTE_DATA_KEYS.draftAccounts]: OPAL_FINES_DRAFT_ACCOUNTS_MOCK,
+      [FINES_DRAFT_ROUTE_DATA_KEYS.rejectedCount]: 2,
+    };
+
+    mockOpalFinesService.getDraftAccounts.mockReturnValue(of(rejectedTabResponse));
+    mockOpalFinesService.getDraftAccounts.mockClear();
+    mockOpalFinesService.clearCache.mockClear();
+
+    fixture = TestBed.createComponent(FinesDraftCreateAndManageTabsComponent);
+    component = fixture.componentInstance;
+    component.ngOnInit();
+
+    const subscription = component.tabData$.subscribe();
+    const countSubscription = component.rejectedCount$.subscribe((count) => rejectedCounts.push(count));
+    mockOpalFinesService.getDraftAccounts.mockClear();
+
+    fragmentSubject.next(FINES_DRAFT_TAB_FRAGMENT.rejected);
+
+    expect(mockOpalFinesService.getDraftAccounts).toHaveBeenCalledTimes(1);
+    expect(mockOpalFinesService.getDraftAccounts).toHaveBeenCalledWith({
+      businessUnitIds: OPAL_USER_STATE_MOCK.business_unit_users.map((u) => u.business_unit_id),
+      statuses: [OPAL_FINES_DRAFT_ACCOUNT_STATUSES.rejected],
+      submittedBy: OPAL_USER_STATE_MOCK.business_unit_users.map((u) => u.business_unit_user_id),
+    });
+    expect(mockOpalFinesService.clearCache).toHaveBeenCalledTimes(1);
+    expect(mockOpalFinesService.clearCache).toHaveBeenCalledWith('draftAccountsCache$');
+    expect(rejectedCounts).toEqual(['2', '3']);
 
     subscription.unsubscribe();
     countSubscription.unsubscribe();

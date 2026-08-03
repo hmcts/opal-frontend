@@ -34,12 +34,13 @@ export const routing: Routes = [
     resolve: {
       title: TitleResolver,
       [FINES_DRAFT_ROUTE_DATA_KEYS.draftAccounts]: finesDraftTabResolver({
-        useFragmentForStatuses: true,
         defaultTab: FINES_DRAFT_TAB_FRAGMENT.toReview,
+        includeSubmittedBy: false,
         includeNotSubmittedBy: true,
       }),
       [FINES_DRAFT_ROUTE_DATA_KEYS.failedCount]: finesDraftCountResolver({
         statuses: [OPAL_FINES_DRAFT_ACCOUNT_STATUSES.publishFailed],
+        includeSubmittedBy: false,
         includeNotSubmittedBy: true,
       }),
     },
