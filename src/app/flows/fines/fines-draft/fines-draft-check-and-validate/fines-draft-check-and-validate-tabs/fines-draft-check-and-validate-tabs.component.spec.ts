@@ -134,6 +134,52 @@ describe('FinesDraftCheckAndValidateTabsComponent', () => {
     expect(mockOpalFinesService.getDraftAccounts).not.toHaveBeenCalled();
   });
 
+  it('should fetch the failed count when the initial fragment is missing', async () => {
+    const failedTabResponse = { ...OPAL_FINES_DRAFT_ACCOUNTS_MOCK, count: 4 };
+    component.activatedRoute.fragment = of(null);
+    component.activatedRoute.snapshot.fragment = null;
+    component.activatedRoute.snapshot.data = {};
+    mockOpalFinesService.getDraftAccounts.mockReturnValue(of(failedTabResponse));
+    mockOpalFinesService.getDraftAccounts.mockClear();
+
+    fixture = TestBed.createComponent(FinesDraftCheckAndValidateTabsComponent);
+    component = fixture.componentInstance;
+    component.ngOnInit();
+
+    const failedCount = await firstValueFrom(component.failedCount$);
+
+    expect(failedCount).toBe('4');
+    expect(mockOpalFinesService.getDraftAccounts).toHaveBeenCalledTimes(1);
+    expect(mockOpalFinesService.getDraftAccounts).toHaveBeenCalledWith({
+      businessUnitIds: OPAL_USER_STATE_MOCK.business_unit_users.map((u) => u.business_unit_id),
+      statuses: [OPAL_FINES_DRAFT_ACCOUNT_STATUSES.publishFailed],
+      notSubmittedBy: OPAL_USER_STATE_MOCK.business_unit_users.map((u) => u.business_unit_user_id),
+    });
+  });
+
+  it('should use the active failed tab response for the initial failed count without an extra API call', async () => {
+    const failedTabResponse = { ...OPAL_FINES_DRAFT_ACCOUNTS_MOCK, count: 3 };
+    component.activatedRoute.fragment = of(FINES_DRAFT_TAB_FRAGMENT.failed);
+    component.activatedRoute.snapshot.fragment = FINES_DRAFT_TAB_FRAGMENT.failed;
+    component.activatedRoute.snapshot.data = {};
+    mockOpalFinesService.getDraftAccounts.mockReturnValue(of(failedTabResponse));
+    mockOpalFinesService.getDraftAccounts.mockClear();
+
+    fixture = TestBed.createComponent(FinesDraftCheckAndValidateTabsComponent);
+    component = fixture.componentInstance;
+    component.ngOnInit();
+
+    const failedCount = await firstValueFrom(component.failedCount$);
+
+    expect(failedCount).toBe('3');
+    expect(mockOpalFinesService.getDraftAccounts).toHaveBeenCalledTimes(1);
+    expect(mockOpalFinesService.getDraftAccounts).toHaveBeenCalledWith({
+      businessUnitIds: OPAL_USER_STATE_MOCK.business_unit_users.map((u) => u.business_unit_id),
+      statuses: [OPAL_FINES_DRAFT_ACCOUNT_STATUSES.publishFailed],
+      notSubmittedBy: OPAL_USER_STATE_MOCK.business_unit_users.map((u) => u.business_unit_user_id),
+    });
+  });
+
   it('should fetch the selected tab after consuming resolved data for an invalid initial fragment', () => {
     const fragmentSubject = new Subject<string | null>();
     component.activatedRoute.fragment = fragmentSubject.asObservable();

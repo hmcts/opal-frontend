@@ -154,19 +154,59 @@ describe('FinesDraftCreateAndManageTabsComponent', () => {
     expect(finesDraftStore.getFinesDraftState()).toEqual(FINES_DRAFT_STATE);
   });
 
-  it('should initialise tab data using default fragment when fragment is null', async () => {
+  it('should fetch tab data and rejected count using the default fragment when the initial fragment is missing', async () => {
+    const draftAccountsResponse = { ...OPAL_FINES_DRAFT_ACCOUNTS_MOCK, count: 4 };
     finesDraftService.populateTableData.mockReturnValue(FINES_DRAFT_TABLE_WRAPPER_TABLE_DATA_MOCK);
-
     activatedRoute.snapshot.fragment = null;
-    activatedRoute.fragment = of(null); // simulate fallback to default
+    activatedRoute.snapshot.data = {};
+    activatedRoute.fragment = of(null);
+    mockOpalFinesService.getDraftAccounts.mockReturnValue(of(draftAccountsResponse));
+    mockOpalFinesService.getDraftAccounts.mockClear();
 
+    fixture = TestBed.createComponent(FinesDraftCreateAndManageTabsComponent);
+    component = fixture.componentInstance;
     component.ngOnInit();
 
-    const result = await firstValueFrom(component.tabData$);
+    const rejectedCount = await firstValueFrom(component.rejectedCount$);
+    const tabData = await firstValueFrom(component.tabData$);
 
-    expect(mockOpalFinesService.getDraftAccounts).toHaveBeenCalled();
-    expect(finesDraftService.populateTableData).toHaveBeenCalledWith(OPAL_FINES_DRAFT_ACCOUNTS_MOCK);
-    expect(result).toEqual(FINES_DRAFT_TABLE_WRAPPER_TABLE_DATA_MOCK);
+    expect(rejectedCount).toBe('4');
+    expect(tabData).toEqual(FINES_DRAFT_TABLE_WRAPPER_TABLE_DATA_MOCK);
+    expect(mockOpalFinesService.getDraftAccounts).toHaveBeenCalledTimes(2);
+    expect(mockOpalFinesService.getDraftAccounts).toHaveBeenNthCalledWith(1, {
+      businessUnitIds: OPAL_USER_STATE_MOCK.business_unit_users.map((u) => u.business_unit_id),
+      statuses: [OPAL_FINES_DRAFT_ACCOUNT_STATUSES.rejected],
+      submittedBy: OPAL_USER_STATE_MOCK.business_unit_users.map((u) => u.business_unit_user_id),
+    });
+    expect(mockOpalFinesService.getDraftAccounts).toHaveBeenNthCalledWith(2, {
+      businessUnitIds: OPAL_USER_STATE_MOCK.business_unit_users.map((u) => u.business_unit_id),
+      statuses: [OPAL_FINES_DRAFT_ACCOUNT_STATUSES.submitted, OPAL_FINES_DRAFT_ACCOUNT_STATUSES.resubmitted],
+      submittedBy: OPAL_USER_STATE_MOCK.business_unit_users.map((u) => u.business_unit_user_id),
+    });
+    expect(finesDraftService.populateTableData).toHaveBeenCalledWith(draftAccountsResponse);
+  });
+
+  it('should use the active rejected tab response for the initial rejected count without an extra API call', async () => {
+    const rejectedTabResponse = { ...OPAL_FINES_DRAFT_ACCOUNTS_MOCK, count: 3 };
+    activatedRoute.fragment = of(FINES_DRAFT_TAB_FRAGMENT.rejected);
+    activatedRoute.snapshot.fragment = FINES_DRAFT_TAB_FRAGMENT.rejected;
+    activatedRoute.snapshot.data = {};
+    mockOpalFinesService.getDraftAccounts.mockReturnValue(of(rejectedTabResponse));
+    mockOpalFinesService.getDraftAccounts.mockClear();
+
+    fixture = TestBed.createComponent(FinesDraftCreateAndManageTabsComponent);
+    component = fixture.componentInstance;
+    component.ngOnInit();
+
+    const rejectedCount = await firstValueFrom(component.rejectedCount$);
+
+    expect(rejectedCount).toBe('3');
+    expect(mockOpalFinesService.getDraftAccounts).toHaveBeenCalledTimes(1);
+    expect(mockOpalFinesService.getDraftAccounts).toHaveBeenCalledWith({
+      businessUnitIds: OPAL_USER_STATE_MOCK.business_unit_users.map((u) => u.business_unit_id),
+      statuses: [OPAL_FINES_DRAFT_ACCOUNT_STATUSES.rejected],
+      submittedBy: OPAL_USER_STATE_MOCK.business_unit_users.map((u) => u.business_unit_user_id),
+    });
   });
 
   it('should handle route navigation correctly', () => {

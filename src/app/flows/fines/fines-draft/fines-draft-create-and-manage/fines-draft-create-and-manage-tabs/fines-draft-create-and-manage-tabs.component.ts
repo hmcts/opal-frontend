@@ -20,15 +20,13 @@ import {
 } from '@hmcts/opal-frontend-common/components/moj/moj-sub-navigation';
 import { MojNotificationBadgeComponent } from '@hmcts/opal-frontend-common/components/moj/moj-notification-badge';
 import { FINES_DRAFT_CREATE_AND_MANAGE_ROUTING_PATHS } from '../routing/constants/fines-draft-create-and-manage-routing-paths.constant';
-import { distinctUntilChanged, EMPTY, filter, map, merge, Observable, of, shareReplay, Subject, switchMap } from 'rxjs';
-import { FINES_DRAFT_TAB_STATUSES } from '../../constants/fines-draft-tab-statuses.constant';
+import { Observable, Subject } from 'rxjs';
 import { GlobalStore } from '@hmcts/opal-frontend-common/stores/global';
 import { FinesDraftService } from '../../services/fines-draft.service';
 import { FINES_ROUTING_PATHS } from '@routing/fines/constants/fines-routing-paths.constant';
 import { FINES_MAC_ROUTING_PATHS } from '../../../fines-mac/routing/constants/fines-mac-routing-paths.constant';
 import { OPAL_FINES_DRAFT_ACCOUNT_STATUSES } from '@services/fines/opal-fines-service/constants/opal-fines-draft-account-statues.constant';
 import { DateService } from '@hmcts/opal-frontend-common/services/date-service';
-import { IOpalFinesDraftAccountParams } from '@services/fines/opal-fines-service/interfaces/opal-fines-draft-account-params.interface';
 import { AbstractTabData } from '@hmcts/opal-frontend-common/components/abstract/abstract-tab-data';
 import { OpalFines } from '@services/fines/opal-fines-service/opal-fines.service';
 import { FINES_DRAFT_MAX_REJECTED } from '../../constants/fines-draft-max-rejected.constant';
@@ -43,11 +41,8 @@ import { RELEASE_1B_FEATURE_FLAG } from '@app/flows/fines/constants/release-feat
 import { getFeatureFlagReleaseState } from '@app/flows/fines/utils/fines-section-permissions.utils';
 import { FINES_DRAFT_TAB_FRAGMENT } from '../../constants/fines-draft-tab-fragments.constant';
 import { FINES_DRAFT_ROUTE_DATA_KEYS } from '../../constants/fines-draft-route-data-keys.constant';
-import { getResolvedDraftAccounts, getResolvedDraftCount } from '../../utils/fines-draft-route-data.utils';
-import { buildFinesDraftAccountParams } from '../../utils/fines-draft-account-params.utils';
-import { FINES_DRAFT_RESOLVER_EMPTY_RESPONSE } from '../../routing/resolvers/constants/fines-draft-resolver-empty-response.constant';
 import { IFinesDraftTabAccounts } from '../../interfaces/fines-draft-tab-accounts.interface';
-import { createDraftFragmentStream } from '../../utils/fines-draft-fragment-stream.utils';
+import { createDraftTabCountStream, createDraftTabDataStreams } from '../../utils/fines-draft-shared.utils';
 
 @Component({
   selector: 'app-fines-draft-create-and-manage-tabs',
@@ -98,17 +93,19 @@ export class FinesDraftCreateAndManageTabsComponent extends AbstractTabData impl
    * @returns {void}
    */
   private setupTabDataStream(): Observable<IFinesDraftTabAccounts> {
-    const fragment$ = createDraftFragmentStream(
-      this.getFragmentStream(FINES_DRAFT_TAB_FRAGMENT.review, this.destroy$),
-      () => this.opalFinesService.clearCache('draftAccountsCache$'),
-    );
-    let pendingResolvedDraftAccounts = getResolvedDraftAccounts(this.activatedRoute);
-
-    const draftAccounts$: Observable<IFinesDraftTabAccounts> = fragment$.pipe(
-      switchMap((tab) => {
-        const resolvedDraftAccounts = pendingResolvedDraftAccounts;
-        pendingResolvedDraftAccounts = null;
-
+    const { draftAccounts$, tabData$ } = createDraftTabDataStreams({
+      fragment$: this.getFragmentStream(FINES_DRAFT_TAB_FRAGMENT.review, this.destroy$),
+      activatedRoute: this.activatedRoute,
+      userState: this.userState,
+      accountParamOptions: {
+        includeSubmittedBy: true,
+        includeNotSubmittedBy: false,
+      },
+      clearCache: () => this.opalFinesService.clearCache('draftAccountsCache$'),
+      getDateRange: (historicWindowInDays) => this.dateService.getDateRange(historicWindowInDays, 0),
+      getDraftAccounts: (params) => this.opalFinesService.getDraftAccounts(params),
+      populateTableData: (response) => this.finesDraftService.populateTableData(response),
+      onTabChange: (tab) => {
         switch (tab) {
           case FINES_DRAFT_TAB_FRAGMENT.approved:
             this.tableSort = FINES_DRAFT_TABLE_WRAPPER_SORT_APPROVED;
@@ -120,34 +117,10 @@ export class FinesDraftCreateAndManageTabsComponent extends AbstractTabData impl
             this.tableSort = FINES_DRAFT_TABLE_WRAPPER_SORT_DEFAULT;
             break;
         }
+      },
+    });
 
-        const currentTab = FINES_DRAFT_TAB_STATUSES.find((t) => t.tab === tab);
-        if (!currentTab) {
-          return of({ tab, response: FINES_DRAFT_RESOLVER_EMPTY_RESPONSE });
-        }
-
-        const params: IOpalFinesDraftAccountParams = buildFinesDraftAccountParams(this.userState, {
-          statuses: currentTab.statuses,
-          includeSubmittedBy: true,
-          includeNotSubmittedBy: false,
-        });
-
-        if (currentTab?.historicWindowInDays) {
-          const { from, to } = this.dateService.getDateRange(currentTab.historicWindowInDays, 0);
-          params.accountStatusDateFrom = [from];
-          params.accountStatusDateTo = [to];
-        }
-
-        if (resolvedDraftAccounts) {
-          return of({ tab, response: resolvedDraftAccounts });
-        }
-
-        return this.opalFinesService.getDraftAccounts(params).pipe(map((response) => ({ tab, response })));
-      }),
-      shareReplay({ bufferSize: 1, refCount: true }),
-    );
-
-    this.tabData$ = draftAccounts$.pipe(map(({ response }) => this.finesDraftService.populateTableData(response)));
+    this.tabData$ = tabData$;
 
     return draftAccounts$;
   }
@@ -163,45 +136,21 @@ export class FinesDraftCreateAndManageTabsComponent extends AbstractTabData impl
    * @private
    */
   private setupRejectedCountStream(draftAccounts$: Observable<IFinesDraftTabAccounts>): void {
-    const rejectedCount$ = merge(
-      this.getInitialRejectedCountStream(),
-      draftAccounts$.pipe(
-        filter(({ tab }) => tab === FINES_DRAFT_TAB_FRAGMENT.rejected),
-        map(({ response }) => response.count),
-      ),
-    );
-
-    this.rejectedCount$ = rejectedCount$.pipe(
-      map((count) => this.formatCountWithCap(count, FINES_DRAFT_MAX_REJECTED)),
-      distinctUntilChanged(),
-    );
-  }
-
-  /**
-   * Uses the resolved rejected count when available, otherwise fetches it unless the rejected tab response is active.
-   *
-   * @returns The initial rejected count stream.
-   */
-  private getInitialRejectedCountStream(): Observable<number> {
-    const resolvedCount = getResolvedDraftCount(this.activatedRoute, FINES_DRAFT_ROUTE_DATA_KEYS.rejectedCount);
-    if (resolvedCount !== null) {
-      return of(resolvedCount);
-    }
-
-    const initialTab = this.activatedRoute.snapshot.fragment ?? FINES_DRAFT_TAB_FRAGMENT.review;
-    if (initialTab === FINES_DRAFT_TAB_FRAGMENT.rejected) {
-      return EMPTY;
-    }
-
-    return this.opalFinesService
-      .getDraftAccounts(
-        buildFinesDraftAccountParams(this.userState, {
-          statuses: [OPAL_FINES_DRAFT_ACCOUNT_STATUSES.rejected],
-          includeSubmittedBy: true,
-          includeNotSubmittedBy: false,
-        }),
-      )
-      .pipe(map((response) => response.count));
+    this.rejectedCount$ = createDraftTabCountStream({
+      activatedRoute: this.activatedRoute,
+      draftAccounts$,
+      routeDataKey: FINES_DRAFT_ROUTE_DATA_KEYS.rejectedCount,
+      defaultTab: FINES_DRAFT_TAB_FRAGMENT.review,
+      countTab: FINES_DRAFT_TAB_FRAGMENT.rejected,
+      userState: this.userState,
+      accountParamOptions: {
+        statuses: [OPAL_FINES_DRAFT_ACCOUNT_STATUSES.rejected],
+        includeSubmittedBy: true,
+        includeNotSubmittedBy: false,
+      },
+      getDraftAccounts: (params) => this.opalFinesService.getDraftAccounts(params),
+      formatCount: (count) => this.formatCountWithCap(count, FINES_DRAFT_MAX_REJECTED),
+    });
   }
 
   /**
