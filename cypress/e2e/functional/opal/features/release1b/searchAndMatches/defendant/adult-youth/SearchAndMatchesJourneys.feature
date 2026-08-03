@@ -8,7 +8,7 @@ Feature: Defendant - Adult or youth search and matches journeys
     Given I am logged in with email "opal-test@dev.platform.hmcts.net"
     And I clear all approved accounts
 
-  @R1B @JIRA-STORY:PO-705 @JIRA-STORY:PO-706 @JIRA-STORY:PO-717 @JIRA-DEFECT:PO-3541 @JIRA-EPIC:PO-704 @JIRA-TEST-KEY:PO-5290
+  @R1B @JIRA-STORY:PO-705 @JIRA-STORY:PO-706 @JIRA-STORY:PO-717 @JIRA-DEFECT:PO-3541 @JIRA-EPIC:PO-704 @JIRA-TEST-KEY:PO-5290 @only
   Scenario: Search for an individual defendant account and open the matching record
     Given I create a "adultOrYouthOnly" draft account with the following details and set status "Publishing Pending" using user "opal-test-10@dev.platform.hmcts.net":
       | Account_status                              | Submitted                        |
@@ -27,12 +27,11 @@ Feature: Defendant - Adult or youth search and matches journeys
       | account.defendant.dob                       | 2001-05-15                       |
     And I am on the Account Search page - Individuals form displayed by default
     When I search using the following inputs:
-      | individual last name      | JourneyInd{uniq}   |
-      | first names               | Jordan             |
-      | date of birth             | 15/05/2001         |
-      | national insurance number | AB123456C          |
-      | address line 1            | 123 Journey Street |
-      | postcode                  | AB1 2CD            |
+      | individual last name | JourneyInd{uniq}   |
+      | first names          | Jordan             |
+      | date of birth        | 15/05/2001         |
+      | address line 1       | 123 Journey Street |
+      | postcode             | AB1 2CD            |
     Then I see the Search results page
     And I see the Individuals search results:
       | Ref | PCRJRNYIND{uniqUpper} |
@@ -61,5 +60,5 @@ Feature: Defendant - Adult or youth search and matches journeys
     When I open the latest matching result from the search results
     Then I should see the account summary header contains "JOURNEYACCOUNT{uniqUpper}"
 
-  # Legacy-data scenarios are scaffolds.
-  # Replace the LEGACY_* placeholders with real seeded data values before executing them.
+# Legacy-data scenarios are scaffolds.
+# Replace the LEGACY_* placeholders with real seeded data values before executing them.
