@@ -20,7 +20,7 @@ import { IFinesReportsSelectBusinessUnitsFormState } from './interfaces/fines-re
 export class FinesReportsSelectBusinessUnitsComponent extends AbstractFormParentBaseComponent implements OnInit {
   private readonly finesReportsStore = inject(FinesReportsStore);
   private readonly route = inject(ActivatedRoute);
-  private readonly router = inject(Router);
+  private readonly routerService = inject(Router);
   private readonly reportTypeId = this.route.parent?.snapshot.paramMap.get('reportTypeId') ?? '';
   private readonly report = this.route.snapshot.data['report'] as IOpalFinesReport | null | undefined;
 
@@ -75,7 +75,7 @@ export class FinesReportsSelectBusinessUnitsComponent extends AbstractFormParent
    * Opens the warning screen for a large business unit selection.
    */
   private navigateToBusinessUnitWarning(): void {
-    this.router.navigate([`../${FINES_REPORTS_CREATE_ROUTING_PATHS.children.businessUnitWarning}`], {
+    this.routerService.navigate([`../${FINES_REPORTS_CREATE_ROUTING_PATHS.children.businessUnitWarning}`], {
       relativeTo: this.route,
     });
   }
@@ -84,7 +84,7 @@ export class FinesReportsSelectBusinessUnitsComponent extends AbstractFormParent
    * Opens the report parameters screen.
    */
   private navigateToReportParameters(): void {
-    this.router.navigate([`../${FINES_REPORTS_CREATE_ROUTING_PATHS.children.reportParameters}`], {
+    this.routerService.navigate([`../${FINES_REPORTS_CREATE_ROUTING_PATHS.children.reportParameters}`], {
       relativeTo: this.route,
     });
   }
@@ -94,7 +94,7 @@ export class FinesReportsSelectBusinessUnitsComponent extends AbstractFormParent
    */
   public handleCancel(): void {
     this.finesReportsStore.clearSelectedBusinessUnitIds();
-    this.router.navigate([`../../${FINES_REPORTS_ROUTING_PATHS.children.summaryList}`], {
+    this.routerService.navigate([`../../${FINES_REPORTS_ROUTING_PATHS.children.summaryList}`], {
       relativeTo: this.route,
     });
   }
