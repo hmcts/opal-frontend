@@ -2,8 +2,11 @@ import { AbstractControl, ValidationErrors, ValidatorFn } from '@angular/forms';
 
 const NATIONAL_INSURANCE_NUMBER_MAX_LENGTH = 9;
 
-export const normalizeNationalInsuranceNumber = (nationalInsuranceNumber: string | null): string | null =>
-  nationalInsuranceNumber?.replace(/\s+/g, '').toUpperCase() ?? null;
+export function normalizeNationalInsuranceNumber(nationalInsuranceNumber: string): string;
+export function normalizeNationalInsuranceNumber(nationalInsuranceNumber: null): null;
+export function normalizeNationalInsuranceNumber(nationalInsuranceNumber: string | null): string | null {
+  return nationalInsuranceNumber?.replace(/\s+/g, '').toUpperCase() ?? null;
+}
 
 export const nationalInsuranceNumberMaxLengthValidator: ValidatorFn = (
   control: AbstractControl,
@@ -14,7 +17,7 @@ export const nationalInsuranceNumberMaxLengthValidator: ValidatorFn = (
     return null;
   }
 
-  const normalizedValue = normalizeNationalInsuranceNumber(value) ?? '';
+  const normalizedValue = normalizeNationalInsuranceNumber(value);
 
   return normalizedValue.length > NATIONAL_INSURANCE_NUMBER_MAX_LENGTH
     ? {

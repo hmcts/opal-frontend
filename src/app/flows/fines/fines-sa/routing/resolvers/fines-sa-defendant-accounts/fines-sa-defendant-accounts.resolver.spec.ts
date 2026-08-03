@@ -164,6 +164,7 @@ describe('finesSaDefendantAccountsResolver (store-driven)', () => {
     finesSaStore.setSearchAccount({
       ...FINES_SA_SEARCH_ACCOUNT_STATE,
       fsa_search_account_business_unit_ids: [65, 66, 73, 77, 80, 78],
+      fsa_search_account_active_accounts_only: null,
       fsa_search_account_individuals_search_criteria: {
         fsa_search_account_individuals_national_insurance_number: 'qq 12 34 56 c',
       } as never,
@@ -191,6 +192,31 @@ describe('finesSaDefendantAccountsResolver (store-driven)', () => {
           forenames: null,
           exact_match_forenames: null,
           birth_date: null,
+          national_insurance_number: 'QQ123456C',
+        }),
+      }),
+    );
+  });
+
+  it('preserves active_accounts_only false when searching by national insurance number', async () => {
+    finesSaStore.setSearchAccount({
+      ...FINES_SA_SEARCH_ACCOUNT_STATE,
+      fsa_search_account_business_unit_ids: [65, 66, 73, 77, 80, 78],
+      fsa_search_account_active_accounts_only: false,
+      fsa_search_account_individuals_search_criteria: {
+        fsa_search_account_individuals_national_insurance_number: 'QQ123456C',
+      } as never,
+    });
+    finesSaStore.setActiveTab('individuals');
+    opalFines.getDefendantAccounts.mockReturnValue(of({ count: 1, defendant_accounts: [] }));
+
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    await lastValueFrom(execIndividuals(undefined as any, undefined as any) as Observable<any>);
+
+    expect(opalFines.getDefendantAccounts).toHaveBeenCalledWith(
+      expect.objectContaining({
+        active_accounts_only: false,
+        defendant: expect.objectContaining({
           national_insurance_number: 'QQ123456C',
         }),
       }),
