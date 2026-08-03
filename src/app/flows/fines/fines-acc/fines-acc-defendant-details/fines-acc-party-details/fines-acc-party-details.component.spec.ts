@@ -1,5 +1,6 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { UpperCasePipe } from '@angular/common';
+import { provideRouter } from '@angular/router';
 import { FinesAccPartyDetails } from './fines-acc-party-details.component';
 import { FinesNotProvidedComponent } from '../../../components/fines-not-provided/fines-not-provided.component';
 import { GovukSummaryCardListComponent } from '@hmcts/opal-frontend-common/components/govuk/govuk-summary-card-list';
@@ -11,6 +12,7 @@ import type { IOpalFinesAccountPartyDetails } from '@services/fines/opal-fines-s
 import type { IOpalFinesDefendantAccountLanguagePreference } from '@services/fines/opal-fines-service/interfaces/opal-fines-defendant-account-language-preference.interface';
 import { OPAL_FINES_ACCOUNT_DEFENDANT_AT_A_GLANCE_MOCK } from '@services/fines/opal-fines-service/mocks/opal-fines-account-defendant-at-a-glance.mock';
 import { OPAL_FINES_ACCOUNT_DEFENDANT_ACCOUNT_PARTY_MOCK } from '@services/fines/opal-fines-service/mocks/opal-fines-account-defendant-account-party.mock';
+import { FINES_ACC_PARTY_ADD_AMEND_CONVERT_SECTION_FRAGMENTS } from '../../fines-acc-party-add-amend-convert/constants/fines-acc-party-add-amend-convert-fragments.constant';
 import { beforeEach, describe, expect, it } from 'vitest';
 
 const ENGLISH_LANGUAGE_PREFERENCE_MOCK = OPAL_FINES_ACCOUNT_DEFENDANT_AT_A_GLANCE_MOCK.language_preferences!
@@ -33,6 +35,7 @@ describe('FinesAccPartyDetails', () => {
         GovukSummaryListComponent,
         GovukSummaryListRowComponent,
       ],
+      providers: [provideRouter([])],
     }).compileComponents();
 
     fixture = TestBed.createComponent(FinesAccPartyDetails);
@@ -43,12 +46,14 @@ describe('FinesAccPartyDetails', () => {
   const setupComponent = (
     party: IOpalFinesAccountPartyDetails = mockPartyDetails,
     isParentGuardianAccount: boolean = false,
+    hasAccountMaintenancePermissionInBU: boolean = false,
   ) => {
     fixture.componentRef.setInput('party', party);
     fixture.componentRef.setInput('cardTitle', 'Party Details');
     fixture.componentRef.setInput('summaryCardListId', 'party-card');
     fixture.componentRef.setInput('summaryListId', 'party-list');
     fixture.componentRef.setInput('isParentGuardianAccount', isParentGuardianAccount);
+    fixture.componentRef.setInput('hasAccountMaintenancePermissionInBU', hasAccountMaintenancePermissionInBU);
     fixture.detectChanges();
   };
 
@@ -165,5 +170,52 @@ describe('FinesAccPartyDetails', () => {
     setupComponent();
 
     expect(component.showLanguagePreferences).toBe(false);
+  });
+
+  it('should resolve the parent guardian amend route when viewing a parent guardian account', () => {
+    setupComponent(mockPartyDetails, true);
+
+    expect(component.setLinkPartyType).toBe(component.partyTypes.PARENT_GUARDIAN);
+  });
+
+  it('should resolve the individual amend route when viewing a defendant account', () => {
+    setupComponent();
+
+    expect(component.setLinkPartyType).toBe(component.partyTypes.INDIVIDUAL);
+  });
+
+  it('should resolve the company amend route when viewing a company defendant account', () => {
+    mockPartyDetails.party_details.organisation_flag = true;
+    mockPartyDetails.party_details.organisation_details = {
+      organisation_name: 'Test Company Ltd',
+      organisation_aliases: [],
+    };
+    setupComponent(mockPartyDetails);
+
+    expect(component.setLinkPartyType).toBe(component.partyTypes.COMPANY);
+  });
+
+  it('should route employer details to access denied when BU permission is missing', () => {
+    setupComponent();
+
+    expect(component.sectionChangeLink()).toBe('/access-denied');
+  });
+
+  it('should route employer details to the amend page when BU permission is present', () => {
+    setupComponent(mockPartyDetails, true, true);
+
+    expect(component.sectionChangeLink()).toBe('../party/parentGuardian/amend');
+  });
+
+  it('should only return a section fragment when BU permission is present', () => {
+    setupComponent();
+
+    expect(component.sectionChangeFragment(component.sectionFragments.partyDetails)).toBeUndefined();
+
+    setupComponent(mockPartyDetails, false, true);
+
+    expect(component.sectionChangeFragment(component.sectionFragments.partyDetails)).toBe(
+      FINES_ACC_PARTY_ADD_AMEND_CONVERT_SECTION_FRAGMENTS.partyDetails,
+    );
   });
 });

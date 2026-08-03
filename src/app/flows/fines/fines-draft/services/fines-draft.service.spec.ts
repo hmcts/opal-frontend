@@ -36,7 +36,7 @@ describe('FinesDraftService', () => {
   it('should populate table data correctly', () => {
     const response = OPAL_FINES_DRAFT_ACCOUNTS_MOCK;
     const tableData = service['populateTableData'](response);
-    expect(tableData.length).toEqual(response.summaries.length);
+    expect(tableData).toHaveLength(response.summaries.length);
     expect(tableData[0]['Defendant id']).toEqual(response.summaries[0].draft_account_id);
   });
 

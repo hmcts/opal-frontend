@@ -1,6 +1,7 @@
 <app-fines-acc-summary-header
   [accountStore]="accountStore"
   id="defendant"
+  [accountStatusCode]="accountData.account_status_reference.account_status_code"
   [showAddAccountNoteButton]="hasPermission(finesPermissions['add-account-activity-notes'])"
   (refreshPage)="refreshPage()"
   (navigateToAddAccountNotePage)="navigateToAddAccountNotePage()"
@@ -43,6 +44,12 @@
         {{ accountData.business_unit_summary.business_unit_name }} ({{
           accountData.business_unit_summary.business_unit_id
         }})
+      </p>
+    </opal-lib-custom-account-information-item>
+    <opal-lib-custom-account-information-item itemClasses="govuk-grid-column-one-quarter">
+      <h2 opal-lib-custom-account-information-item-label>Received from:</h2>
+      <p opal-lib-custom-account-information-item-value id="defendant-received-from">
+        {{ accountData.originator_name }}
       </p>
     </opal-lib-custom-account-information-item>
   </opal-lib-custom-account-information>
@@ -141,6 +148,15 @@
       subNavItemFragment="history-and-notes"
       [subNavItemText]="tabs['history-and-notes']"
     ></li>
+    @if (hasConsolidatedAccounts()) {
+      <li
+        opal-lib-moj-sub-navigation-item
+        subNavItemId="consolidated-accounts-tab"
+        [activeSubNavItemFragment]="activeTab"
+        subNavItemFragment="consolidated-accounts"
+        [subNavItemText]="tabs['consolidated-accounts']"
+      ></li>
+    }
   </opal-lib-moj-sub-navigation>
 </div>
 
@@ -224,5 +240,13 @@
       [tabData$]="tabHistoryAndNotes$"
       [style]="tabContentStyles"
     ></app-fines-acc-defendant-details-history-and-notes-tab>
+  }
+  @case ('consolidated-accounts') {
+    @if (tabConsolidatedAccounts$ | async; as tabData) {
+      <app-fines-acc-defendant-details-consolidated-accounts-tab
+        [tabData]="tabData"
+        [style]="tabContentStyles"
+      ></app-fines-acc-defendant-details-consolidated-accounts-tab>
+    }
   }
 }

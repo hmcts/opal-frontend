@@ -7,6 +7,7 @@ export const FINES_ACC_DEFENDANT_DETAILS_HEADER_MOCK: IOpalFinesAccountDefendant
   defendant_account_party_id: '77',
   parent_guardian_party_id: '77',
   account_type: 'Fine',
+  originator_name: 'Asylum & Immigration Tribunal',
   prosecutor_case_reference: '090A',
   fixed_penalty_ticket_number: '888',
   account_status_reference: {
@@ -43,4 +44,5 @@ export const FINES_ACC_DEFENDANT_DETAILS_HEADER_MOCK: IOpalFinesAccountDefendant
   },
   is_youth: false,
   debtor_type: 'Parent/Guardian',
+  has_consolidated_accounts: true,
 };
