@@ -100,8 +100,7 @@ Feature: Defendant - Adult or youth - Account Enquiries – View Account Details
   Rule: Youth-only add parent or guardian visibility
     @R1B @JIRA-STORY:PO-5751 @JIRA-EPIC:PO-2990
     Scenario: Youth-only account shows the Add parent or guardian details action
-      # AC2 – Existing youth-only eligibility rules still show the Add parent or guardian details action
-      # AC3 – The visible action keeps its existing navigation and behaviour
+      # AC2 – Existing youth-only eligibility rules still show the Add parent or guardian details action.
       Given a published adult or youth defendant account exists:
         | first name                | Jamie              |
         | last name                 | AddPgVisible{uniq} |

@@ -31,6 +31,7 @@ Feature: Defendant - Parent or guardian to pay - Fine Account Enquiry Accessibil
 
   @R1B @JIRA-STORY:PO-5749 @JIRA-EPIC:PO-2990
   Scenario: Restricted Parent or guardian details tab accessibility
+    # AC5 – Axe-Core coverage for the restricted Parent or guardian details tab.
     Given I stub the defendant header summary account status code to "CS"
     And I create a "pgToPay" draft account with the following details and set status "Publishing Pending" using user "opal-test-10@dev.platform.hmcts.net":
       | Account_status                          | Submitted                         |

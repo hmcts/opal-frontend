@@ -34,7 +34,7 @@ Feature: Defendant - Adult or youth - Account Enquiries - View Account Details A
 
   @R1B @JIRA-STORY:PO-5751 @JIRA-EPIC:PO-2990
   Scenario: Check Account Details View Accessibility with Axe-Core for the youth-only add parent or guardian details action
-    # AC4 – Add Axe-Core coverage for the youth-only Add parent or guardian details action
+    # AC4 – Axe-Core coverage for the youth-only Defendant tab with the Add parent or guardian details action.
     Given I create a "adultOrYouthOnly" draft account with the following details and set status "Publishing Pending" using user "opal-test-10@dev.platform.hmcts.net":
       | Account_status                          | Submitted                        |
       | account.defendant.forenames             | Jamie                            |

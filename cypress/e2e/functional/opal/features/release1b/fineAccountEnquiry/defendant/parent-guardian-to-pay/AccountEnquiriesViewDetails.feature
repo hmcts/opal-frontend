@@ -88,10 +88,22 @@ Feature: Defendant - Parent or guardian to pay - Account Enquiries – View Acco
 
     @R1B @JIRA-STORY:PO-5749 @JIRA-EPIC:PO-2990
     Scenario: Youth-only account with non-paying parent or guardian shows the remove link
-      # AC3 – Existing eligibility rules still show the actions for a non-paying parent or guardian
-      # AC4 – The visible actions keep their existing navigation and behaviour
+      # AC3 – Existing eligibility rules still show the actions for a non-paying parent or guardian.
       Then I should see the remove parent or guardian details action
       And I should see the parent or guardian details Change actions
+
+    @R1B @JIRA-STORY:PO-5749 @JIRA-EPIC:PO-2990
+    Scenario: Parent or guardian actions keep their existing navigation when displayed
+      # AC4 – Change and Remove actions keep their existing navigation and behaviour when displayed.
+      When I start changing the non-paying parent or guardian details
+      Then I should be on the amend parent or guardian details page
+      When I cancel changing parent or guardian details without making changes
+      Then I should return to the account details page Defendant tab
+      When I go to the Parent or guardian details section and the header is "Parent or guardian details"
+      And I start removing parent or guardian details
+      Then I should be on the remove parent or guardian details page for "REMOVEPGYOUTH{uniqUpper}"
+      When I cancel removing parent or guardian details
+      Then I should return to the account details page Parent or guardian tab
 
     @R1B @JIRA-STORY:PO-1878 @JIRA-EPIC:PO-1875 @JIRA-TEST-KEY:PO-6355
     Scenario: Cancelling parent or guardian removal keeps the parent or guardian details on the account
@@ -295,6 +307,8 @@ Feature: Defendant - Parent or guardian to pay - Account Enquiries – View Acco
 
     @R1B @JIRA-STORY:PO-5749 @JIRA-EPIC:PO-2990
     Scenario Outline: Restricted account statuses hide Parent or guardian actions on the summary tab
+      # AC1 – Remove parent or guardian details is hidden for restricted account statuses.
+      # AC2 – All Parent or guardian Change actions are hidden for restricted account statuses.
       Given I stub the defendant header summary account status code to "<status>"
       And I create a "pgToPay" draft account with the following details and set status "Publishing Pending" using user "opal-test-10@dev.platform.hmcts.net":
         | Account_status                          | Submitted                           |
@@ -311,9 +325,7 @@ Feature: Defendant - Parent or guardian to pay - Account Enquiries – View Acco
         | account.defendant.parent_guardian.dob   | 1980-02-15                          |
       When I search for the account by last name "PgPayRestricted{uniq}" and verify the page header is "Alex PGPAYRESTRICTED{uniqUpper}"
       And I go to the Parent or guardian details section and the header is "Parent or guardian details"
-      # AC2 – Change actions are hidden for restricted account statuses
       Then I do not see any parent or guardian details Change actions
-      # AC1 – Remove parent or guardian details is hidden for restricted account statuses
       And I do not see the remove parent or guardian details action
 
       Examples:

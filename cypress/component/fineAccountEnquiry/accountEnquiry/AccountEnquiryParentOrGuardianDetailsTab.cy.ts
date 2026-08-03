@@ -137,7 +137,7 @@ describe('Account Enquiry Parent or Guardian Component', () => {
 
   FINES_ACC_RESTRICTED_ACCOUNT_STATUS_CODES.forEach((statusCode) => {
     it(
-      `AC1c, AC2c: should display the Parent or guardian tab and hide the Change and Remove actions when the account status is ${statusCode}`,
+      `AC1, AC2: should hide the Change and Remove actions when the account status is ${statusCode}`,
       {
         tags: [...buildTags('@JIRA-STORY:PO-5749'), '@JIRA-EPIC:PO-2990'],
       },
@@ -166,11 +166,10 @@ describe('Account Enquiry Parent or Guardian Component', () => {
   });
 
   it(
-    'AC3, AC4: should keep the existing Change and Remove actions visible for a youth-only account with a non-paying parent or guardian',
+    'AC3: should keep the existing Change and Remove actions visible for a youth-only account with a non-paying parent or guardian',
     { tags: [...buildTags('@JIRA-STORY:PO-5749'), '@JIRA-EPIC:PO-2990'] },
     () => {
-      // AC3 – Existing action eligibility rules still show both actions for a youth-only account with a non-paying parent or guardian
-      // AC4 – The visible actions keep their existing navigation and behaviour
+      // AC3 – Existing action eligibility rules still show both actions for a youth-only account with a non-paying parent or guardian.
       const headerMock = structuredClone(DEFENDANT_HEADER_YOUTH_MOCK);
       headerMock.parent_guardian_party_id = '1770000001';
       headerMock.debtor_type = 'Defendant';
