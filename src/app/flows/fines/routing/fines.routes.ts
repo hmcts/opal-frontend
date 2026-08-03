@@ -25,6 +25,7 @@ import { finesSaMinorCreditorAccountsResolver } from '../fines-sa/routing/resolv
 import { dashboardLandingGuard } from './guards/dashboard-landing/dashboard-landing.guard';
 import { finesSectionPermissionsGuard } from './guards/fines-section-permissions/fines-section-permissions.guard';
 import { PRIMARY_NAV_HIDDEN_ROUTE_DATA } from '@app/constants/route-data.constant';
+import { FinesReportsStore } from '../fines-reports/stores/fines-reports.store';
 import {
   RELEASE_1A_FEATURE_FLAG,
   RELEASE_1B_FEATURE_FLAG,
@@ -152,6 +153,7 @@ export const finesRouting: Routes = [
         path: FINES_ROUTING_PATHS.children.reports.root,
         loadComponent: () => import('../fines-reports/fines-reports.component').then((c) => c.FinesReportsComponent),
         children: reportingRouting,
+        providers: [FinesReportsStore],
         canActivate: [
           authGuard,
           release1cEnforcementOperationalReportingFeatureFlagGuard,
