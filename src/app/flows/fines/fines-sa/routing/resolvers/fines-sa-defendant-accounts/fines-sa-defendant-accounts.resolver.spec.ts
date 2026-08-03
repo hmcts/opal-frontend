@@ -165,7 +165,7 @@ describe('finesSaDefendantAccountsResolver (store-driven)', () => {
       ...FINES_SA_SEARCH_ACCOUNT_STATE,
       fsa_search_account_business_unit_ids: [65, 66, 73, 77, 80, 78],
       fsa_search_account_individuals_search_criteria: {
-        fsa_search_account_individuals_national_insurance_number: 'QQ123456C',
+        fsa_search_account_individuals_national_insurance_number: 'qq 12 34 56 c',
       } as never,
     });
     finesSaStore.setActiveTab('companies');

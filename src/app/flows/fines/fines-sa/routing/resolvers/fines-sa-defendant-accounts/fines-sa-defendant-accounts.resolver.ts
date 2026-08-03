@@ -10,6 +10,9 @@ import { of } from 'rxjs';
 import { FinesSaPayloadService } from '../../../services/fines-sa-payload.service';
 import { FINES_SA_BUILD_TRANSFORM_ITEMS_CONFIG } from '../../../services/constants/fines-sa-transform-items-config.constant';
 
+const normalizeNationalInsuranceNumber = (nationalInsuranceNumber: string | null): string | null =>
+  nationalInsuranceNumber?.replace(/\s+/g, '').toUpperCase() ?? null;
+
 /**
  * Resolver that retrieves defendant accounts based on current search criteria in the Fines SA flow.
  *
@@ -38,8 +41,9 @@ export const finesSaDefendantAccountsResolver =
     const hasReference = !!state.fsa_search_account_reference_case_number;
     const individualCriteria = state.fsa_search_account_individuals_search_criteria;
     const companyCriteria = state.fsa_search_account_companies_search_criteria;
-    const nationalInsuranceNumber =
-      individualCriteria?.fsa_search_account_individuals_national_insurance_number ?? null;
+    const nationalInsuranceNumber = normalizeNationalInsuranceNumber(
+      individualCriteria?.fsa_search_account_individuals_national_insurance_number ?? null,
+    );
     const hasNationalInsuranceNumber = !!nationalInsuranceNumber?.trim();
 
     // Build shared base params once

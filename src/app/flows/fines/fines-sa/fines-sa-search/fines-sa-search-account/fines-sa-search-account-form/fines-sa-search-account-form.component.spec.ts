@@ -163,6 +163,17 @@ describe('FinesSaSearchAccountFormComponent', () => {
     expect(component.form.valid).toBe(true);
   });
 
+  it('should normalize National Insurance number input before submit', () => {
+    const nationalInsuranceControl = component.form.get(
+      'fsa_search_account_individuals_search_criteria.fsa_search_account_individuals_national_insurance_number',
+    );
+    nationalInsuranceControl?.setValue('ab 12 34 56 c');
+
+    component.handleFormSubmit(new SubmitEvent('submit', { bubbles: true, cancelable: true }));
+
+    expect(nationalInsuranceControl?.value).toBe('AB123456C');
+  });
+
   it('should populate major creditor autocomplete values from major creditor codes', () => {
     component['populateMajorCreditors']();
 

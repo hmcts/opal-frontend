@@ -2,7 +2,16 @@ import { ChangeDetectionStrategy, Component, EventEmitter, inject, Input, Output
 import { AbstractFormBaseComponent } from '@hmcts/opal-frontend-common/components/abstract/abstract-form-base';
 import { IFinesSaSearchAccountForm } from '../interfaces/fines-sa-search-account-form.interface';
 import { FinesSaStore } from '../../../stores/fines-sa.store';
-import { FormControl, FormGroup, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
+import {
+  AbstractControl,
+  FormControl,
+  FormGroup,
+  FormsModule,
+  ReactiveFormsModule,
+  ValidationErrors,
+  ValidatorFn,
+  Validators,
+} from '@angular/forms';
 import { GovukTextInputComponent } from '@hmcts/opal-frontend-common/components/govuk/govuk-text-input';
 import { GovukButtonComponent } from '@hmcts/opal-frontend-common/components/govuk/govuk-button';
 import {
@@ -46,6 +55,29 @@ const ALPHANUMERIC_WITH_SPACES_PATTERN_VALIDATOR = patternValidator(
 );
 const NATIONAL_INSURANCE_CONTROL = 'fsa_search_account_individuals_national_insurance_number';
 const INDIVIDUALS_CRITERIA_GROUP = 'fsa_search_account_individuals_search_criteria';
+const NATIONAL_INSURANCE_NUMBER_MAX_LENGTH = 9;
+
+const normalizeNationalInsuranceNumber = (nationalInsuranceNumber: string | null): string | null =>
+  nationalInsuranceNumber?.replace(/\s+/g, '').toUpperCase() ?? null;
+
+const nationalInsuranceNumberMaxLengthValidator: ValidatorFn = (control: AbstractControl): ValidationErrors | null => {
+  const value = control.value;
+
+  if (typeof value !== 'string') {
+    return null;
+  }
+
+  const normalizedValue = normalizeNationalInsuranceNumber(value) ?? '';
+
+  return normalizedValue.length > NATIONAL_INSURANCE_NUMBER_MAX_LENGTH
+    ? {
+        maxlength: {
+          requiredLength: NATIONAL_INSURANCE_NUMBER_MAX_LENGTH,
+          actualLength: normalizedValue.length,
+        },
+      }
+    : null;
+};
 
 /**
  * Parent form for “Search Account” with tabbed sub-forms (Individuals, Companies, Minor Creditors, Major Creditors).
@@ -187,7 +219,10 @@ export class FinesSaSearchAccountFormComponent extends AbstractFormBaseComponent
    * @returns A FormControl configured with alphanumeric-with-spaces and length validation.
    */
   private buildNationalInsuranceControl(value: string | null = null): FormControl<string | null> {
-    return new FormControl<string | null>(value, [ALPHANUMERIC_WITH_SPACES_PATTERN_VALIDATOR, Validators.maxLength(9)]);
+    return new FormControl<string | null>(value, [
+      ALPHANUMERIC_WITH_SPACES_PATTERN_VALIDATOR,
+      nationalInsuranceNumberMaxLengthValidator,
+    ]);
   }
 
   /**
@@ -200,6 +235,25 @@ export class FinesSaSearchAccountFormComponent extends AbstractFormBaseComponent
     return new FormGroup({
       [NATIONAL_INSURANCE_CONTROL]: this.buildNationalInsuranceControl(nationalInsuranceNumber),
     });
+  }
+
+  /**
+   * Normalises the quick-search National Insurance input in-place so the visible value
+   * and submitted form state use the same canonical format as the API payload.
+   */
+  private normalizeNationalInsuranceInput(): void {
+    const nationalInsuranceControl = this.form.get(`${INDIVIDUALS_CRITERIA_GROUP}.${NATIONAL_INSURANCE_CONTROL}`);
+    const nationalInsuranceNumber = nationalInsuranceControl?.value as string | null | undefined;
+
+    if (typeof nationalInsuranceNumber !== 'string') {
+      return;
+    }
+
+    const normalizedNationalInsuranceNumber = normalizeNationalInsuranceNumber(nationalInsuranceNumber);
+
+    if (normalizedNationalInsuranceNumber !== nationalInsuranceNumber) {
+      nationalInsuranceControl?.setValue(normalizedNationalInsuranceNumber);
+    }
   }
 
   /**
@@ -363,6 +417,7 @@ export class FinesSaSearchAccountFormComponent extends AbstractFormBaseComponent
    * Runs pre-submit guards, then delegates to the base `handleFormSubmit` implementation.
    */
   public override handleFormSubmit(event: SubmitEvent): void {
+    this.normalizeNationalInsuranceInput();
     this.handleFormSubmission();
     super.handleFormSubmit(event);
   }
