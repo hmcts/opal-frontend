@@ -4,19 +4,7 @@ import {
   MojSubNavigationItemComponent,
 } from '@hmcts/opal-frontend-common/components/moj/moj-sub-navigation';
 import { FinesDraftTableWrapperComponent } from '../../fines-draft-table-wrapper/fines-draft-table-wrapper.component';
-import {
-  distinctUntilChanged,
-  EMPTY,
-  filter,
-  map,
-  merge,
-  Observable,
-  of,
-  shareReplay,
-  Subject,
-  switchMap,
-  tap,
-} from 'rxjs';
+import { distinctUntilChanged, EMPTY, filter, map, merge, Observable, of, shareReplay, Subject, switchMap } from 'rxjs';
 import { GlobalStore } from '@hmcts/opal-frontend-common/stores/global';
 import { FINES_DRAFT_CHECK_AND_VALIDATE_ROUTING_PATHS } from '../routing/constants/fines-draft-check-and-validate-routing-paths.constant';
 import {
@@ -25,7 +13,6 @@ import {
 } from '../../fines-draft-table-wrapper/constants/fines-draft-table-wrapper-table-sort.constants';
 import { CommonModule } from '@angular/common';
 import { IFinesDraftTableWrapperTableData } from '../../fines-draft-table-wrapper/interfaces/fines-draft-table-wrapper-table-data.interface';
-import { IOpalFinesDraftAccountsResponse } from '@services/fines/opal-fines-service/interfaces/opal-fines-draft-account-data.interface';
 import { FINES_DRAFT_TAB_STATUSES } from '../../constants/fines-draft-tab-statuses.constant';
 import { FinesDraftService } from '../../services/fines-draft.service';
 import { OpalFines } from '@services/fines/opal-fines-service/opal-fines.service';
@@ -50,11 +37,8 @@ import { FINES_DRAFT_ROUTE_DATA_KEYS } from '../../constants/fines-draft-route-d
 import { getResolvedDraftAccounts, getResolvedDraftCount } from '../../utils/fines-draft-route-data.utils';
 import { buildFinesDraftAccountParams } from '../../utils/fines-draft-account-params.utils';
 import { FINES_DRAFT_RESOLVER_EMPTY_RESPONSE } from '../../routing/resolvers/constants/fines-draft-resolver-empty-response.constant';
-
-interface IFinesDraftTabAccounts {
-  tab: string;
-  response: IOpalFinesDraftAccountsResponse;
-}
+import { IFinesDraftTabAccounts } from '../../interfaces/fines-draft-tab-accounts.interface';
+import { createDraftFragmentStream } from '../../utils/fines-draft-fragment-stream.utils';
 
 @Component({
   selector: 'app-fines-draft-check-and-validate-tabs',
@@ -97,12 +81,17 @@ export class FinesDraftCheckAndValidateTabsComponent extends AbstractTabData imp
    *
    */
   private setupTabDataStream(): Observable<IFinesDraftTabAccounts> {
-    const fragment$ = this.createFragmentStream();
-    const resolvedDraftAccounts = getResolvedDraftAccounts(this.activatedRoute);
-    let useResolvedDraftAccounts = !!resolvedDraftAccounts;
+    const fragment$ = createDraftFragmentStream(
+      this.getFragmentStream(FINES_DRAFT_TAB_FRAGMENT.toReview, this.destroy$),
+      () => this.opalFinesService.clearCache('draftAccountsCache$'),
+    );
+    let pendingResolvedDraftAccounts = getResolvedDraftAccounts(this.activatedRoute);
 
     const draftAccounts$: Observable<IFinesDraftTabAccounts> = fragment$.pipe(
       switchMap((tab) => {
+        const resolvedDraftAccounts = pendingResolvedDraftAccounts;
+        pendingResolvedDraftAccounts = null;
+
         if (tab === FINES_DRAFT_TAB_FRAGMENT.deleted || tab === FINES_DRAFT_TAB_FRAGMENT.failed) {
           this.tableSort = FINES_DRAFT_TABLE_WRAPPER_SORT_DELETED;
         } else {
@@ -126,8 +115,7 @@ export class FinesDraftCheckAndValidateTabsComponent extends AbstractTabData imp
           params.accountStatusDateTo = [to];
         }
 
-        if (useResolvedDraftAccounts && resolvedDraftAccounts) {
-          useResolvedDraftAccounts = false;
+        if (resolvedDraftAccounts) {
           return of({ tab, response: resolvedDraftAccounts });
         }
 
@@ -139,26 +127,6 @@ export class FinesDraftCheckAndValidateTabsComponent extends AbstractTabData imp
     this.tabData$ = draftAccounts$.pipe(map(({ response }) => this.finesDraftService.populateTableData(response)));
 
     return draftAccounts$;
-  }
-
-  /**
-   * Creates the shared fragment stream and clears the draft account cache once per tab change before fetching.
-   *
-   * @returns The shared fragment stream for the active draft tab.
-   */
-  private createFragmentStream(): Observable<string> {
-    let isInitialFragment = true;
-
-    return this.getFragmentStream(FINES_DRAFT_TAB_FRAGMENT.toReview, this.destroy$).pipe(
-      tap(() => {
-        if (isInitialFragment) {
-          isInitialFragment = false;
-          return;
-        }
-
-        this.opalFinesService.clearCache('draftAccountsCache$');
-      }),
-    );
   }
 
   /**

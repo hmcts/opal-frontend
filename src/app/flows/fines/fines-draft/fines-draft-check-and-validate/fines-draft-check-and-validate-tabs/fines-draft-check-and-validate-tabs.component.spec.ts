@@ -20,6 +20,7 @@ import { beforeEach, describe, expect, it, vi } from 'vitest';
 import { OPAL_FINES_DRAFT_ACCOUNT_STATUSES } from '@services/fines/opal-fines-service/constants/opal-fines-draft-account-statues.constant';
 import { FINES_DRAFT_TAB_FRAGMENT } from '../../constants/fines-draft-tab-fragments.constant';
 import { FINES_DRAFT_ROUTE_DATA_KEYS } from '../../constants/fines-draft-route-data-keys.constant';
+import { FINES_DRAFT_RESOLVER_EMPTY_RESPONSE } from '../../routing/resolvers/constants/fines-draft-resolver-empty-response.constant';
 
 describe('FinesDraftCheckAndValidateTabsComponent', () => {
   let component: FinesDraftCheckAndValidateTabsComponent;
@@ -131,6 +132,35 @@ describe('FinesDraftCheckAndValidateTabsComponent', () => {
     expect(failedCount).toBe('99+');
     expect(finesDraftService.populateTableData).toHaveBeenCalledWith(OPAL_FINES_DRAFT_ACCOUNTS_MOCK);
     expect(mockOpalFinesService.getDraftAccounts).not.toHaveBeenCalled();
+  });
+
+  it('should fetch the selected tab after consuming resolved data for an invalid initial fragment', () => {
+    const fragmentSubject = new Subject<string | null>();
+    component.activatedRoute.fragment = fragmentSubject.asObservable();
+    component.activatedRoute.snapshot.fragment = 'invalid';
+    component.activatedRoute.snapshot.data = {
+      [FINES_DRAFT_ROUTE_DATA_KEYS.draftAccounts]: FINES_DRAFT_RESOLVER_EMPTY_RESPONSE,
+      [FINES_DRAFT_ROUTE_DATA_KEYS.failedCount]: 0,
+    };
+
+    mockOpalFinesService.getDraftAccounts.mockReturnValue(of(OPAL_FINES_DRAFT_ACCOUNTS_MOCK));
+    mockOpalFinesService.getDraftAccounts.mockClear();
+
+    fixture = TestBed.createComponent(FinesDraftCheckAndValidateTabsComponent);
+    component = fixture.componentInstance;
+    component.ngOnInit();
+
+    const subscription = component.tabData$.subscribe();
+    fragmentSubject.next(FINES_DRAFT_TAB_FRAGMENT.toReview);
+
+    expect(mockOpalFinesService.getDraftAccounts).toHaveBeenCalledTimes(1);
+    expect(mockOpalFinesService.getDraftAccounts).toHaveBeenCalledWith({
+      businessUnitIds: OPAL_USER_STATE_MOCK.business_unit_users.map((u) => u.business_unit_id),
+      statuses: [OPAL_FINES_DRAFT_ACCOUNT_STATUSES.submitted, OPAL_FINES_DRAFT_ACCOUNT_STATUSES.resubmitted],
+      notSubmittedBy: OPAL_USER_STATE_MOCK.business_unit_users.map((u) => u.business_unit_user_id),
+    });
+
+    subscription.unsubscribe();
   });
 
   it('should fetch only the selected tab data and refresh failed count on tab change', () => {
