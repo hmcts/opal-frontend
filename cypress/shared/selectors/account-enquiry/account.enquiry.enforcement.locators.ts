@@ -26,6 +26,7 @@ export const ACCOUNT_ENQUIRY_ENFORCEMENT_STATUS_ELEMENTS = {
   enforcementStatusLink: '.govuk-link',
   addEnforcementActionLink: '.govuk-link:contains("Add enforcement action")',
   addEnforcementOverrideLink: '.govuk-link:contains("Add enforcement override")',
+  requestHmrcCheckLink: '.govuk-link:contains("Request an HMRC check")',
   detailsLink: '.govuk-details__summary-text',
 
   tableTitle: '.govuk-summary-card__title',

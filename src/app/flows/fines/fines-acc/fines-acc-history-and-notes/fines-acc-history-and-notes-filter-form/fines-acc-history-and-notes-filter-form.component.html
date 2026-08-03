@@ -4,7 +4,7 @@
     (errorClick)="scrollTo($event)"
   ></opal-lib-govuk-error-summary>
 
-  <form [formGroup]="form" (submit)="handleFormSubmit($event)">
+  <form autocomplete="off" [formGroup]="form" (submit)="handleFormSubmit($event)">
     <div class="govuk-grid-row">
       <div class="govuk-grid-column-one-third">
         <opal-lib-moj-date-picker

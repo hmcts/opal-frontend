@@ -28,9 +28,14 @@ const MANUAL_ACCOUNT_CREATION_JIRA_LABEL = '@JIRA-LABEL:manual-account-creation'
 const buildTags = (...tags: string[]) => [...tags, '@R1A', MANUAL_ACCOUNT_CREATION_JIRA_LABEL];
 
 describe('FinesMacReviewAccountComponent', () => {
-  let finesMacState = structuredClone(FINES_AYG_CHECK_ACCOUNT_MOCK);
-  let finesDraftState = structuredClone(FINES_DRAFT_STATE);
-  let finesAccountPayload = FINES_MAC_PAYLOAD_ADD_ACCOUNT;
+  const baseFinesMacState = structuredClone(FINES_AYG_CHECK_ACCOUNT_MOCK);
+  const baseFinesDraftState = structuredClone(FINES_DRAFT_STATE);
+  const baseFinesAccountPayload = structuredClone(FINES_MAC_PAYLOAD_ADD_ACCOUNT);
+
+  let finesMacState = structuredClone(baseFinesMacState);
+  let finesDraftState = structuredClone(baseFinesDraftState);
+  let finesAccountPayload = structuredClone(baseFinesAccountPayload);
+  let mountedFinesMacStore: FinesMacStore;
 
   /**
    * Mount the Review Account component with the three stores and a minimal ActivatedRoute.
@@ -41,10 +46,8 @@ describe('FinesMacReviewAccountComponent', () => {
     activatedRouteMock: any = null,
     amend: boolean = true,
     checker: boolean = false,
+    draftAccountId: string | null = '42',
   ) => {
-    finesMacState = structuredClone(finesMacState);
-    finesDraftState = structuredClone(finesDraftState);
-    finesAccountPayload = structuredClone(finesAccountPayload);
     finesDraftStateMock = structuredClone(finesDraftStateMock);
     activatedRouteMock = activatedRouteMock ? structuredClone(activatedRouteMock) : null;
 
@@ -90,6 +93,7 @@ describe('FinesMacReviewAccountComponent', () => {
           useFactory: () => {
             let store = new FinesMacStore();
             store.setFinesMacStore(finesMacState);
+            mountedFinesMacStore = store;
             return store;
           },
         },
@@ -110,7 +114,7 @@ describe('FinesMacReviewAccountComponent', () => {
           useValue: {
             snapshot: {
               paramMap: {
-                get: (key: string) => (key === 'draftAccountId' ? '42' : null),
+                get: (key: string) => (key === 'draftAccountId' ? draftAccountId : null),
               },
               data: {
                 reviewAccountFetchMap,
@@ -148,11 +152,9 @@ describe('FinesMacReviewAccountComponent', () => {
     }).as('getDraftAccounts');
   });
   beforeEach(() => {
-    cy.then(() => {
-      finesMacState = structuredClone(FINES_AYG_CHECK_ACCOUNT_MOCK);
-      finesDraftState = structuredClone(FINES_DRAFT_STATE);
-      finesAccountPayload = FINES_MAC_PAYLOAD_ADD_ACCOUNT;
-    });
+    finesMacState = structuredClone(baseFinesMacState);
+    finesDraftState = structuredClone(baseFinesDraftState);
+    finesAccountPayload = structuredClone(baseFinesAccountPayload);
   });
 
   it(
@@ -188,6 +190,24 @@ describe('FinesMacReviewAccountComponent', () => {
           expect(account.originator_id).to.equal('9985');
           expect(account.originator_name).to.equal('Asylum & Immigration Tribunal');
         });
+    },
+  );
+
+  it(
+    'navigates to delete account confirmation without an account id and marks the journey as coming from check account',
+    { tags: [...buildTags('@JIRA-STORY:PO-9113'), '@JIRA-EPIC:PO-2220', '@JIRA-TEST-KEY:PO-9656'] },
+    () => {
+      setupComponent(finesDraftState, null, true, false, null);
+
+      cy.get(DOM_ELEMENTS.deleteLink).click();
+
+      cy.get('@routerNavigate').should((stub) => {
+        expect(stub).to.have.been.calledOnce;
+        expect(stub.getCall(0).args[0]).to.deep.equal(['delete-account-confirmation']);
+      });
+      cy.then(() => {
+        expect(mountedFinesMacStore.deleteFromCheckAccount()).to.equal(true);
+      });
     },
   );
 

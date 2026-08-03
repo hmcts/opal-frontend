@@ -58,7 +58,7 @@ describe('FinesMacCourtDetailsFormComponent', () => {
     expect(component).toBeTruthy();
   });
 
-  it('should emit form submit event with form value', () => {
+  it('should emit standard flow form submit event with form value', () => {
     const event = {} as SubmitEvent;
     formSubmit.nestedFlow = false;
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -76,7 +76,7 @@ describe('FinesMacCourtDetailsFormComponent', () => {
     );
   });
 
-  it('should emit form submit event with form value', () => {
+  it('should emit nested flow form submit event with form value', () => {
     const event = { submitter: { className: 'nested-flow' } } as SubmitEvent;
     formSubmit.nestedFlow = true;
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -214,5 +214,10 @@ describe('FinesMacCourtDetailsFormComponent', () => {
     expect(copy).toEqual(
       FINES_MAC_COURT_DETAILS_COPY_BY_ACCOUNT_TYPE[FINES_ACCOUNT_TYPES['Fine'] as keyof typeof FINES_ACCOUNT_TYPES],
     );
+  });
+
+  it('should set autocomplete="off" on the form', () => {
+    fixture.detectChanges();
+    expect(fixture.nativeElement.querySelector('form')?.getAttribute('autocomplete')).toBe('off');
   });
 });

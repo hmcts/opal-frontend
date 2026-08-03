@@ -413,7 +413,8 @@ Then('I see the offences ordered by sentence date:', (table: DataTable) => {
 Then('I see no offences messaging', () => {
   log('assert', 'Asserting no offences messaging');
   cy.contains('There are no offences').should('exist');
-  cy.contains('Add another offence').should('exist');
+  cy.contains('Add an offence').should('exist');
+  cy.contains('Add another offence').should('not.exist');
   cy.contains('Return to account details').should('exist');
 });
 
@@ -432,6 +433,16 @@ When('I return to account details from offence details', () => {
     }
     offenceDetails().clickReturnToAccountDetails();
   });
+});
+
+/**
+ * @step Return to Account details from offence review and assert no unsaved-changes warning appears.
+ * @description Uses the review CTA and verifies the shared route guard does not prompt after the offence is saved.
+ *
+ * @example When I return to account details from offence review without an unsaved changes warning
+ */
+When('I return to account details from offence review without an unsaved changes warning', () => {
+  flow().returnToAccountDetailsFromReviewWithoutWarning();
 });
 
 /**

@@ -62,24 +62,31 @@ export class FinesMacOffenceDetailsSearchOffencesResultsTableWrapperComponent
   /**
    * Copies the provided value to the clipboard and provides visual and screen reader feedback.
    *
-   * This method updates the given link element's text to indicate that the code has been copied,
+   * This method updates the given label element's text to indicate that the code has been copied,
    * and updates a live region for screen readers to announce the action. After a timeout,
    * it restores the original text and ARIA attributes.
    *
-   * @param linkElement - The HTML element whose label will be temporarily changed to indicate the copy action.
+   * @param linkElement - The HTML element that owns the copied state and ARIA attributes.
+   * @param labelElement - The HTML element whose visible label will be temporarily changed.
    * @param liveRegion - The HTML element used as a live region for screen readers to announce the copy action.
    * @param value - The string value to be copied to the clipboard.
    * @param event - The optional DOM event that triggered the copy action.
    */
-  public copyCodeToClipboard(linkElement: HTMLElement, liveRegion: HTMLElement, value: string, event?: Event): void {
+  public copyCodeToClipboard(
+    linkElement: HTMLElement,
+    labelElement: HTMLElement,
+    liveRegion: HTMLElement,
+    value: string,
+    event?: Event,
+  ): void {
     event?.preventDefault();
     this.utilsService.copyToClipboard(value);
 
-    const originalText = linkElement.innerText;
+    const originalText = labelElement.innerText;
     const originalAriaLive = linkElement.getAttribute('aria-live');
 
     // Update visual label
-    linkElement.innerText =
+    labelElement.innerText =
       FINES_MAC_OFFENCE_DETAILS_SEARCH_OFFENCES_RESULTS_TABLE_WRAPPER_LINK_DEFAULTS.COPIED_CODE_TO_CLIPBOARD;
     // Update screen reader span
     liveRegion.textContent =
@@ -88,7 +95,7 @@ export class FinesMacOffenceDetailsSearchOffencesResultsTableWrapperComponent
     linkElement.setAttribute('aria-live', 'assertive');
 
     this.copyCodeTimeoutId = setTimeout(() => {
-      linkElement.innerText = originalText;
+      labelElement.innerText = originalText;
       if (originalAriaLive) {
         linkElement.setAttribute('aria-live', originalAriaLive);
       } else {

@@ -11,25 +11,25 @@ export const DEFENDANT_DETAILS = {
   // Defendant details table
   detailsTitle: '.govuk-summary-card__title',
   defendantName: '#defendantDetailsNameValue',
-  defendantAlias: '[summaryListRowId="aliases"]',
-  defendantDOB: '[summaryListRowId="dob"]',
-  defendantNI: '[summaryListRowId="national_insurance_number"]',
+  defendantAlias: '#defendantDetailsAliasesValue',
+  defendantDOB: '#defendantDetailsDobValue',
+  defendantNI: '#defendantDetailsNational_insurance_numberValue',
   defendantAddress: '#defendantDetailsAddressValue',
-  vehicle: '[summaryListRowId="vehicle_make_and_model"]',
-  vehicleReg: '[summaryListRowId="vehicle_registration"]',
+  vehicle: '#defendantDetailsVehicle_make_and_modelValue',
+  vehicleReg: '#defendantDetailsVehicle_registrationValue',
 
   // Defendant contact details table
-  primaryEmail: '[summaryListRowId="primary_email_address"]',
-  secondaryEmail: '[summaryListRowId="secondary_email_address"]',
-  mobilePhone: '[summaryListRowId="mobile_telephone_number"]',
-  homePhone: '[summaryListRowId="home_telephone_number"]',
-  workPhone: '[summaryListRowId="work_telephone_number"]',
+  primaryEmail: '#contactDetailsPrimary_email_addressValue',
+  secondaryEmail: '#contactDetailsSecondary_email_addressValue',
+  mobilePhone: '#contactDetailsMobile_telephone_numberValue',
+  homePhone: '#contactDetailsHome_telephone_numberValue',
+  workPhone: '#contactDetailsWork_telephone_numberValue',
 
   // Defendant employer details table
-  defendantEmployerName: '[summaryListRowId="employer_name"]',
-  defendantEmployerReference: '[summaryListRowId="employer_reference"]',
-  defendantEmployerEmail: '[summaryListRowId="employer_email_address"]',
-  defendantEmployerPhone: '[summaryListRowId="employer_telephone_number"]',
+  defendantEmployerName: '#employerDetailsEmployer_nameValue',
+  defendantEmployerReference: '#employerDetailsEmployer_referenceValue',
+  defendantEmployerEmail: '#employerDetailsEmployer_email_addressValue',
+  defendantEmployerPhone: '#employerDetailsEmployer_telephone_numberValue',
   defendantEmployerAddress: '#employerDetailsEmployer_addressValue',
 
   // Parent/Guardian details table
@@ -50,6 +50,8 @@ export const DEFENDANT_DETAILS = {
   companyName: '#companyDetailsNameValue',
   companyAlias: '#companyDetailsAliasesValue',
   companyAddress: '#companyDetailsAddressValue',
+  companyVehicle: '#companyDetailsVehicle_make_and_modelValue',
+  companyVehicleReg: '#companyDetailsVehicle_registrationValue',
 
   // Company contact details table
 
@@ -66,5 +68,7 @@ export const DEFENDANT_DETAILS = {
   courtHearingLanguage: '#languagePreferencesHearing_languageValue',
 
   // Links
-  defendantChange: 'a.govuk-link.govuk-\\!-margin-bottom-0',
+  convertActionLink: '#defendant-convert-action-link',
+  defendantChange: '#defendant-summary-card-list .govuk-summary-card__actions a',
+  companyChange: '#company-summary-card-list .govuk-summary-card__actions a',
 } as const;
