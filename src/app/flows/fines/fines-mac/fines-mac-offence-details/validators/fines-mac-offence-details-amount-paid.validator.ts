@@ -1,6 +1,7 @@
 import { AbstractControl, ValidationErrors, ValidatorFn } from '@angular/forms';
 
 const AMOUNT_IMPOSED_CONTROL_PREFIX = 'fm_offence_details_amount_imposed_';
+const AMOUNT_PATTERN = /^(-?)(\d+)(?:\.(\d{0,2}))?$/;
 
 /**
  * Converts a valid monetary value to pence without losing precision for large amounts.
@@ -13,7 +14,11 @@ function amountToPence(value: unknown): bigint | null {
     return null;
   }
 
-  const match = String(value).match(/^(-?)(\d+)(?:\.(\d{0,2}))?$/);
+  if (typeof value !== 'string' && typeof value !== 'number') {
+    return null;
+  }
+
+  const match = AMOUNT_PATTERN.exec(value.toString());
   if (!match) {
     const numericAmountInPence = Math.round(Number(value) * 100);
     return Number.isFinite(numericAmountInPence) ? BigInt(numericAmountInPence) : null;

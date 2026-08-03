@@ -42,6 +42,7 @@ describe('finesMacOffenceDetailsAmountPaidValidator', () => {
     expect(createAmountPaidControl('100', null).errors).toBeNull();
     expect(createAmountPaidControl('invalid', '10').errors).toBeNull();
     expect(createAmountPaidControl('100', 'invalid').errors).toBeNull();
+    expect(createAmountPaidControl('100', {}).errors).toBeNull();
   });
 
   it('should return null before the control has a parent', () => {
