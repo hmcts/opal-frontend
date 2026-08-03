@@ -26,7 +26,7 @@ import { getNextPermittedActionIds } from '../../fines-acc-enf-action-select/uti
 import { FINES_ACC_RESTRICTED_ACCOUNT_STATUS_CODES } from '../../constants/fines-acc-restricted-account-status-codes.constant';
 
 const FINES_ACC_HMRC_CHECK_RESTRICTED_ACCOUNT_STATUS_CODES = FINES_ACC_RESTRICTED_ACCOUNT_STATUS_CODES.filter(
-  (accountStatusCode) => accountStatusCode !== 'TO',
+  (accountStatusCode) => accountStatusCode !== 'TS',
 );
 
 @Component({

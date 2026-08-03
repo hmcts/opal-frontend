@@ -45,6 +45,8 @@ interface EnforcementTabMountOptions {
   hasAccountMaintenancePermission?: boolean;
   hasEnterEnforcementPermission?: boolean;
   isCompanyAccount?: boolean;
+  accountStatusCode?: string;
+  accountBalance?: number;
 }
 
 const buildIndividualHeader = (): HeaderMock => {
@@ -123,6 +125,8 @@ describe('Account Enquiry Enforcement Status', () => {
     hasAccountMaintenancePermission = false,
     hasEnterEnforcementPermission = false,
     isCompanyAccount = false,
+    accountStatusCode = 'L',
+    accountBalance = 500.58,
   }: EnforcementTabMountOptions = {}) => {
     return mount(FinesAccDefendantDetailsEnforcementTab, {
       componentProperties: {
@@ -130,7 +134,8 @@ describe('Account Enquiry Enforcement Status', () => {
         hasAccountMaintenancePermission,
         hasEnterEnforcementPermission,
         isCompanyAccount,
-        accountStatusCode: 'L',
+        accountStatusCode,
+        accountBalance,
       },
       providers: [provideRouter([]), { provide: ActivatedRoute, useValue: activatedRouteMock }],
     });
@@ -221,17 +226,12 @@ describe('Account Enquiry Enforcement Status', () => {
           enforcement: enforcementMock,
           hasAccountMaintenancePermission: true,
           hasEnterEnforcementPermission: true,
-        }).then(({ fixture }) => {
-          fixture.componentRef.setInput('accountStatusCode', accountStatusCode);
-          fixture.detectChanges();
+          accountStatusCode,
         });
 
-        cy.contains('h2', 'Actions').parent().contains('a', 'Add enforcement action').should('not.exist');
-        cy.contains('h2', 'Actions').parent().contains('a', 'Add enforcement override').should('not.exist');
-        cy.contains('h2', 'Actions')
-          .parent()
-          .contains('a', 'Request an HMRC check')
-          .should(accountStatusCode === 'TO' ? 'exist' : 'not.exist');
+        cy.get(ENFORCEMENT_STATUS_TAB.addEnforcementActionLink).should('not.exist');
+        cy.get(ENFORCEMENT_STATUS_TAB.addEnforcementOverrideLink).should('not.exist');
+        cy.get(ENFORCEMENT_STATUS_TAB.requestHmrcCheckLink).should(accountStatusCode === 'TS' ? 'exist' : 'not.exist');
 
         cy.get('#enforcementOverviewDetailsCollection_order_statusActions a').should('not.exist');
         cy.get('#enforcementOverviewDetailsEnforcement_courtActions a').should('not.exist');
@@ -260,13 +260,11 @@ describe('Account Enquiry Enforcement Status', () => {
       mountEnforcementTab({
         hasAccountMaintenancePermission: true,
         hasEnterEnforcementPermission: true,
-      }).then(({ fixture }) => {
-        fixture.componentRef.setInput('accountBalance', 0);
-        fixture.detectChanges();
+        accountBalance: 0,
       });
 
-      cy.contains('h2', 'Actions').parent().contains('a', 'Add enforcement action').should('not.exist');
-      cy.contains('h2', 'Actions').parent().contains('a', 'Request an HMRC check').should('not.exist');
+      cy.get(ENFORCEMENT_STATUS_TAB.addEnforcementActionLink).should('not.exist');
+      cy.get(ENFORCEMENT_STATUS_TAB.requestHmrcCheckLink).should('not.exist');
     },
   );
 

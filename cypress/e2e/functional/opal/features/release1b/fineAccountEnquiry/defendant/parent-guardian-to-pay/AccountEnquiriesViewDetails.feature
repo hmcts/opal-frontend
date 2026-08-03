@@ -91,7 +91,7 @@ Feature: Defendant - Parent or guardian to pay - Account Enquiries – View Acco
       # AC3 – Existing eligibility rules still show the actions for a non-paying parent or guardian
       # AC4 – The visible actions keep their existing navigation and behaviour
       Then I should see the remove parent or guardian details action
-      And I should see the change parent or guardian details action
+      And I should see the parent or guardian details Change actions
 
     @R1B @JIRA-STORY:PO-1878 @JIRA-EPIC:PO-1875 @JIRA-TEST-KEY:PO-6355
     Scenario: Cancelling parent or guardian removal keeps the parent or guardian details on the account
@@ -312,7 +312,7 @@ Feature: Defendant - Parent or guardian to pay - Account Enquiries – View Acco
       When I search for the account by last name "PgPayRestricted{uniq}" and verify the page header is "Alex PGPAYRESTRICTED{uniqUpper}"
       And I go to the Parent or guardian details section and the header is "Parent or guardian details"
       # AC2 – Change actions are hidden for restricted account statuses
-      Then I do not see the change parent or guardian details action
+      Then I do not see any parent or guardian details Change actions
       # AC1 – Remove parent or guardian details is hidden for restricted account statuses
       And I do not see the remove parent or guardian details action
 

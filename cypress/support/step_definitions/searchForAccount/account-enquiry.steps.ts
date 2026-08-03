@@ -222,9 +222,9 @@ Then('I should see the remove parent or guardian details action', () => {
   accountEnquiryFlow().assertRemoveParentGuardianActionVisible();
 });
 
-Then('I should see the change parent or guardian details action', () => {
-  log('assert', 'Change parent or guardian details action is visible');
-  accountEnquiryFlow().assertChangeParentGuardianActionVisible();
+Then('I should see the parent or guardian details Change actions', () => {
+  log('assert', 'Parent or guardian details Change actions are visible');
+  accountEnquiryFlow().assertChangeParentGuardianActionsVisible();
 });
 
 Given('I stub the defendant header summary account status code to {string}', (statusCode: string) => {
@@ -232,9 +232,9 @@ Given('I stub the defendant header summary account status code to {string}', (st
   accountEnquiryFlow().stubRestrictedParentGuardianStatusCode(statusCode);
 });
 
-Then('I do not see the change parent or guardian details action', () => {
-  log('assert', 'Change parent or guardian details action is absent');
-  accountEnquiryFlow().assertChangeParentGuardianActionNotVisible();
+Then('I do not see any parent or guardian details Change actions', () => {
+  log('assert', 'Parent or guardian details Change actions are absent');
+  accountEnquiryFlow().assertChangeParentGuardianActionsNotVisible();
 });
 
 Then('I do not see the remove parent or guardian details action', () => {

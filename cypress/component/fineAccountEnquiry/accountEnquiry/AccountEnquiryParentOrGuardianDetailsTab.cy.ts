@@ -128,7 +128,7 @@ describe('Account Enquiry Parent or Guardian Component', () => {
       setupParentGuardianShell({ headerMock, pgDetailsMock, fragments: 'parent-or-guardian' });
 
       cy.get(TABS.parentGuardianTab).should('be.visible');
-      cy.get(DOM.changeLink).should('be.visible').and('contain.text', 'Change');
+      cy.get(DOM.sectionChangeLinks).should('have.length', 2).and('contain.text', 'Change');
       cy.get(DOM.removeParentGuardianLink)
         .should('be.visible')
         .and('contain.text', 'Remove Parent or guardian details');
@@ -159,7 +159,7 @@ describe('Account Enquiry Parent or Guardian Component', () => {
 
         cy.get(TABS.parentGuardianTab).should('be.visible');
         cy.get('h2').contains('Parent or guardian details').should('be.visible');
-        cy.get(DOM.changeLink).should('not.exist');
+        cy.get(DOM.sectionChangeLinks).should('not.exist');
         cy.get(DOM.removeParentGuardianLink).should('not.exist');
       },
     );
@@ -182,7 +182,7 @@ describe('Account Enquiry Parent or Guardian Component', () => {
       setupParentGuardianShell({ headerMock, pgDetailsMock, fragments: 'parent-or-guardian' });
 
       cy.get(TABS.parentGuardianTab).should('be.visible');
-      cy.get(DOM.changeLink).should('be.visible').and('contain.text', 'Change');
+      cy.get(DOM.sectionChangeLinks).should('have.length', 2).and('contain.text', 'Change');
       cy.get(DOM.removeParentGuardianLink)
         .should('be.visible')
         .and('contain.text', 'Remove Parent or guardian details');

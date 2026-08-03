@@ -160,7 +160,7 @@ describe('FinesAccDefendantDetailsEnforcementTab', () => {
     expect(actionLinkTexts()).not.toContain('Add enforcement action');
   });
 
-  it.each(['CS', 'WO', 'TA', 'TS'])(
+  it.each(['CS', 'WO', 'TA', 'TO'])(
     'should not render request HMRC check when account status is restricted: %s',
     (accountStatusCode) => {
       fixture.componentRef.setInput('hasEnterEnforcementPermission', true);
@@ -173,7 +173,7 @@ describe('FinesAccDefendantDetailsEnforcementTab', () => {
 
   it('should render request HMRC check when account status is TFO Out S/NI', () => {
     fixture.componentRef.setInput('hasEnterEnforcementPermission', true);
-    fixture.componentRef.setInput('accountStatusCode', 'TO');
+    fixture.componentRef.setInput('accountStatusCode', 'TS');
     fixture.detectChanges();
 
     expect(actionLinkTexts()).toContain('Request an HMRC check');

@@ -368,12 +368,12 @@ export class AccountEnquiryFlow {
   }
 
   /**
-   * Asserts the Change action is visible on the Parent or guardian tab.
+   * Asserts the Change actions are visible on the Parent or guardian tab.
    */
-  public assertChangeParentGuardianActionVisible(): void {
-    logAE('method', 'assertChangeParentGuardianActionVisible()');
+  public assertChangeParentGuardianActionsVisible(): void {
+    logAE('method', 'assertChangeParentGuardianActionsVisible()');
     this.detailsNav.goToParentGuardianTab();
-    this.parentGuardianDetails.assertChangeActionVisible();
+    this.parentGuardianDetails.assertChangeActionsVisible();
   }
 
   /**
@@ -399,12 +399,12 @@ export class AccountEnquiryFlow {
   }
 
   /**
-   * Asserts the Change action is hidden on the Parent or guardian tab.
+   * Asserts the Change actions are hidden on the Parent or guardian tab.
    */
-  public assertChangeParentGuardianActionNotVisible(): void {
-    logAE('method', 'assertChangeParentGuardianActionNotVisible()');
+  public assertChangeParentGuardianActionsNotVisible(): void {
+    logAE('method', 'assertChangeParentGuardianActionsNotVisible()');
     this.detailsNav.goToParentGuardianTab();
-    this.parentGuardianDetails.assertChangeActionNotPresent();
+    this.parentGuardianDetails.assertChangeActionsNotPresent();
   }
 
   /**

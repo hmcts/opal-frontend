@@ -12,6 +12,9 @@ describe('FinesAccDefendantDetailsParentOrGuardianTabComponent', () => {
   let component: FinesAccDefendantDetailsParentOrGuardianTabComponent;
   let fixture: ComponentFixture<FinesAccDefendantDetailsParentOrGuardianTabComponent>;
 
+  const getChangeLinks = (): HTMLAnchorElement[] =>
+    Array.from(fixture.nativeElement.querySelectorAll('.govuk-summary-card__actions a')) as HTMLAnchorElement[];
+
   beforeEach(async () => {
     await TestBed.configureTestingModule({
       imports: [FinesAccDefendantDetailsParentOrGuardianTabComponent],
@@ -28,47 +31,21 @@ describe('FinesAccDefendantDetailsParentOrGuardianTabComponent', () => {
     expect(component).toBeTruthy();
   });
 
-  it('should return the amend route when the user has account maintenance permission in the BU', () => {
-    component.hasAccountMaintenancePermissionInBU = true;
-
-    expect(component.changeParentOrGuardianDetailsLink()).toBe(
-      `../${FINES_ACC_DEFENDANT_ROUTING_PATHS.children.party}/${FINES_ACC_PARTY_ADD_AMEND_CONVERT_PARTY_TYPES.PARENT_GUARDIAN}/amend`,
-    );
-  });
-
-  it('should return the access denied route for change when the user lacks account maintenance permission in the BU', () => {
-    component.hasAccountMaintenancePermissionInBU = false;
-
-    expect(component.changeParentOrGuardianDetailsLink()).toBe('/access-denied');
-  });
-
-  it('should make change parent or guardian action available when user has permission and account status is unrestricted', () => {
-    fixture.componentRef.setInput('hasAccountMaintenencePermission', true);
-    fixture.componentRef.setInput('accountStatusCode', 'L');
-    fixture.detectChanges();
-
-    expect(component.changeParentOrGuardianAction).toBe(true);
-  });
-
-  it.each(FINES_ACC_RESTRICTED_ACCOUNT_STATUS_CODES)(
-    'should not make change parent or guardian action available for restricted account status %s',
-    (statusCode) => {
-      fixture.componentRef.setInput('hasAccountMaintenencePermission', true);
-      fixture.componentRef.setInput('accountStatusCode', statusCode);
-      fixture.detectChanges();
-
-      const compiled = fixture.nativeElement as HTMLElement;
-
-      expect(component.changeParentOrGuardianAction).toBe(false);
-      expect(compiled.textContent).not.toContain('Change');
-    },
-  );
-
   it('should make remove parent or guardian action available when user has permission and party is not the debtor', () => {
     fixture.componentRef.setInput('hasAccountMaintenencePermission', true);
     fixture.detectChanges();
 
     expect(component.removeParentOrGuardianAction).toBe(true);
+  });
+
+  it('should display parent or guardian Change actions when the account status is unrestricted', () => {
+    fixture.componentRef.setInput('accountStatusCode', 'L');
+    fixture.detectChanges();
+
+    const changeLinks = getChangeLinks();
+
+    expect(changeLinks).toHaveLength(2);
+    changeLinks.forEach((link) => expect(link.textContent?.trim()).toBe('Change'));
   });
 
   it('should not make remove parent or guardian action available when user does not have permission', () => {
@@ -93,6 +70,16 @@ describe('FinesAccDefendantDetailsParentOrGuardianTabComponent', () => {
 
     expect(component.removeParentOrGuardianAction).toBe(false);
   });
+
+  it.each(FINES_ACC_RESTRICTED_ACCOUNT_STATUS_CODES)(
+    'should hide all parent or guardian Change actions for restricted account status %s',
+    (statusCode) => {
+      fixture.componentRef.setInput('accountStatusCode', statusCode);
+      fixture.detectChanges();
+
+      expect(getChangeLinks()).toHaveLength(0);
+    },
+  );
 
   it.each(FINES_ACC_RESTRICTED_ACCOUNT_STATUS_CODES)(
     'should not make remove parent or guardian action available for restricted account status %s',

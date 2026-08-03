@@ -29,13 +29,6 @@ export class FinesAccDefendantDetailsParentOrGuardianTabComponent {
   }
 
   /**
-   * Determines whether the change parent or guardian action should be available.
-   */
-  public get changeParentOrGuardianAction(): boolean {
-    return this.hasAccountMaintenencePermission && this.accountStatusAllowsActions;
-  }
-
-  /**
    * Determines whether the remove parent or guardian action should be available.
    */
   public get removeParentOrGuardianAction(): boolean {
