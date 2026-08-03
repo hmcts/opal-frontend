@@ -4,6 +4,7 @@ const NATIONAL_INSURANCE_NUMBER_MAX_LENGTH = 9;
 
 export function normalizeNationalInsuranceNumber(nationalInsuranceNumber: string): string;
 export function normalizeNationalInsuranceNumber(nationalInsuranceNumber: null): null;
+export function normalizeNationalInsuranceNumber(nationalInsuranceNumber: string | null): string | null;
 export function normalizeNationalInsuranceNumber(nationalInsuranceNumber: string | null): string | null {
   return nationalInsuranceNumber?.replace(/\s+/g, '').toUpperCase() ?? null;
 }
