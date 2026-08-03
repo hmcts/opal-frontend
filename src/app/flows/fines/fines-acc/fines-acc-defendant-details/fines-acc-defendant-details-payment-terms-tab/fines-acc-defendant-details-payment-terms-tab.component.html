@@ -7,7 +7,7 @@
   <hr [class]="style.hr" />
   <ng-container content>
     <opal-lib-govuk-summary-card-list [cardTitle]="cardTitle()" summaryCardListId="payment-terms">
-      @if (hasAmendPaymentTermsPermission) {
+      @if (hasAmendPaymentTermsPermission && accountAllowsPaymentTermsActions) {
         <ng-container actions>
           <li class="govuk-summary-card__action">
             <a

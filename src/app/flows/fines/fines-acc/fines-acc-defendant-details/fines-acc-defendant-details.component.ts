@@ -252,6 +252,9 @@ export class FinesAccDefendantDetailsComponent
    */
   public get accountAllowsPaymentTermsActions(): boolean {
     return this.accountStatusAllowsPaymentTermsActions && this.accountHasOutstandingBalance;
+  }
+
+  /**
    * Checks if the current account has consolidated accounts.
    * @returns boolean value indicating whether this account contains consolidated accounts.
    */
