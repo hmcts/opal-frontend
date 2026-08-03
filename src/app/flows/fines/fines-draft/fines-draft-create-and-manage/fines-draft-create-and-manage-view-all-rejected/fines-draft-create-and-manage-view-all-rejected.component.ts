@@ -8,6 +8,7 @@ import { FINES_DRAFT_TABLE_WRAPPER_SORT_DEFAULT } from '../../fines-draft-table-
 import { IOpalFinesDraftAccountsResponse } from '@services/fines/opal-fines-service/interfaces/opal-fines-draft-account-data.interface';
 import { IFinesDraftTableWrapperTableData } from '../../fines-draft-table-wrapper/interfaces/fines-draft-table-wrapper-table-data.interface';
 import { FinesDraftService } from '../../services/fines-draft.service';
+import { FINES_ACCOUNT_TYPES } from '../../../constants/fines-account-types.constant';
 
 @Component({
   selector: 'app-fines-draft-create-and-manage-view-all-rejected',
@@ -27,10 +28,17 @@ export class FinesDraftCreateAndManageViewAllRejectedComponent implements OnInit
 
   public onDefendantClick(row: IFinesDraftTableWrapperTableData): void {
     const draftAccountId = +row['Defendant id'];
+    const accountType = row['Account type'];
+
     this.finesDraftStore.setViewAllAccounts(true);
     this.finesDraftStore.setAmend(true);
 
-    this.finesDraftService.onDefendantClick(draftAccountId, this.finesDraftService.PATH_AMEND_ACCOUNT);
+    const route =
+      accountType === FINES_ACCOUNT_TYPES['Fixed Penalty']
+        ? this.finesDraftService.PATH_REVIEW_ACCOUNT
+        : this.finesDraftService.PATH_AMEND_ACCOUNT;
+
+    this.finesDraftService.onDefendantClick(draftAccountId, route);
   }
   /**
    * Navigates back to the inputter route within the fines draft routing paths.
