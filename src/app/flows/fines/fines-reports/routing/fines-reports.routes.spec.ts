@@ -8,6 +8,7 @@ import { FINES_REPORTS_ROUTING_TITLES } from './constants/fines-reports-routing-
 import { finesReportsBusinessUnitsResolver } from './resolvers/fines-reports-business-units/fines-reports-business-units.resolver';
 import { finesReportsReportHeadingResolver } from './resolvers/fines-reports-report-heading/fines-reports-report-heading.resolver';
 import { finesReportsReportMetadataResolver } from './resolvers/fines-reports-report-metadata/fines-reports-report-metadata.resolver';
+import { finesReportsCreateStateGuard } from './guards/fines-reports-create-state-guard/fines-reports-create-state.guard';
 
 describe('finesReports routes', () => {
   it('should redirect bare report routes to the summary list', () => {
@@ -34,6 +35,7 @@ describe('finesReports routes', () => {
       path: FINES_REPORTS_CREATE_ROUTING_PATHS.children.selectBusinessUnits,
       loadComponent: expect.any(Function),
       canDeactivate: [canDeactivateGuard],
+      canActivate: [finesReportsCreateStateGuard],
       data: {
         title: 'Select business units',
       },
@@ -61,8 +63,10 @@ describe('finesReports routes', () => {
     expect(businessUnitWarningRoute).toEqual({
       path: FINES_REPORTS_CREATE_ROUTING_PATHS.children.businessUnitWarning,
       loadComponent: expect.any(Function),
+      canActivate: [finesReportsCreateStateGuard],
       data: {
         title: 'Business unit warning',
+        requiresSelectedBusinessUnits: true,
       },
       resolve: {
         title: TitleResolver,
@@ -71,8 +75,10 @@ describe('finesReports routes', () => {
     expect(reportParametersRoute).toEqual({
       path: FINES_REPORTS_CREATE_ROUTING_PATHS.children.reportParameters,
       loadComponent: expect.any(Function),
+      canActivate: [finesReportsCreateStateGuard],
       data: {
         title: 'Parameters',
+        requiresSelectedBusinessUnits: true,
       },
       resolve: {
         title: TitleResolver,

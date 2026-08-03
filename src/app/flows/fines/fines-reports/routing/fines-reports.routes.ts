@@ -13,6 +13,7 @@ import { finesReportsReportMetadataResolver } from './resolvers/fines-reports-re
 import { finesReportsReportInstancesResolver } from './resolvers/fines-reports-report-instances/fines-reports-report-instances.resolver';
 import { finesReportsBusinessUnitsResolver } from './resolvers/fines-reports-business-units/fines-reports-business-units.resolver';
 import { finesReportsReportHeadingResolver } from './resolvers/fines-reports-report-heading/fines-reports-report-heading.resolver';
+import { finesReportsCreateStateGuard } from './guards/fines-reports-create-state-guard/fines-reports-create-state.guard';
 
 export const routing: Routes = [
   {
@@ -39,6 +40,7 @@ export const routing: Routes = [
                 (c) => c.FinesReportsSelectBusinessUnitsComponent,
               ),
             canDeactivate: [canDeactivateGuard],
+            canActivate: [finesReportsCreateStateGuard],
             data: {
               title: 'Select business units',
             },
@@ -57,7 +59,9 @@ export const routing: Routes = [
               ),
             data: {
               title: 'Business unit warning',
+              requiresSelectedBusinessUnits: true,
             },
+            canActivate: [finesReportsCreateStateGuard],
             resolve: {
               title: TitleResolver,
             },
@@ -70,7 +74,9 @@ export const routing: Routes = [
               ),
             data: {
               title: 'Parameters',
+              requiresSelectedBusinessUnits: true,
             },
+            canActivate: [finesReportsCreateStateGuard],
             resolve: {
               title: TitleResolver,
               reportHeading: finesReportsReportHeadingResolver,
