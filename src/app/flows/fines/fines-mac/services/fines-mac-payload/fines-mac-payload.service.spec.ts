@@ -29,11 +29,18 @@ describe('FinesMacPayloadService', () => {
   let finesMacPayloadAddAccount: IFinesMacAddAccountPayload | null;
   let finesMacPayloadAddAccountFixedPenalty: IFinesMacAddAccountPayload;
 
-  const removeTimelineData = (payload: IFinesMacAddAccountPayload): IFinesMacAddAccountRequestPayload => {
-    const requestPayload = structuredClone(payload) as Partial<IFinesMacAddAccountPayload>;
-    delete requestPayload.timeline_data;
-    return requestPayload as IFinesMacAddAccountRequestPayload;
-  };
+  const toRequestPayload = (payload: IFinesMacAddAccountPayload): IFinesMacAddAccountRequestPayload => ({
+    draft_account_id: payload.draft_account_id,
+    created_at: payload.created_at,
+    account_snapshot: payload.account_snapshot,
+    account_status_date: payload.account_status_date,
+    business_unit_id: payload.business_unit_id,
+    account: payload.account,
+    account_type: payload.account_type,
+    account_status: payload.account_status,
+    account_status_message: payload.account_status_message,
+    version: payload.version,
+  });
 
   beforeEach(() => {
     TestBed.configureTestingModule({});
@@ -62,9 +69,9 @@ describe('FinesMacPayloadService', () => {
       return;
     }
 
-    const result = service.buildAddAccountPayload(finesMacState, sessionUserState);
+    const result = service.buildAddAccountPayload(finesMacState);
     finesMacPayloadAddAccount.account.defendant.parent_guardian = null;
-    expect(result).toEqual(removeTimelineData(finesMacPayloadAddAccount));
+    expect(result).toEqual(toRequestPayload(finesMacPayloadAddAccount));
     expect(result).not.toHaveProperty('timeline_data');
   });
 
@@ -75,11 +82,11 @@ describe('FinesMacPayloadService', () => {
     }
 
     finesMacState.offenceDetails = structuredClone([FINES_MAC_PAYLOAD_OFFENCE_DETAILS_MINOR_CREDITOR_STATE]);
-    const result = service.buildAddAccountPayload(finesMacState, sessionUserState);
+    const result = service.buildAddAccountPayload(finesMacState);
 
     finesMacPayloadAddAccount.account.offences = FINES_MAC_PAYLOAD_ACCOUNT_OFFENCES_WITH_MINOR_CREDITOR;
     finesMacPayloadAddAccount.account.defendant.parent_guardian = null;
-    expect(result).toEqual(removeTimelineData(finesMacPayloadAddAccount));
+    expect(result).toEqual(toRequestPayload(finesMacPayloadAddAccount));
     expect(result).not.toHaveProperty('timeline_data');
   });
 
@@ -94,9 +101,9 @@ describe('FinesMacPayloadService', () => {
     finesMacState.fixedPenaltyDetails.formData = structuredClone(FINES_MAC_PAYLOAD_FIXED_PENALTY_DETAILS_STATE_MOCK);
     finesMacState.paymentTerms = structuredClone(FINES_MAC_PAYMENT_TERMS_FORM);
 
-    const result = service.buildAddAccountPayload(finesMacState, sessionUserState);
+    const result = service.buildAddAccountPayload(finesMacState);
 
-    expect(result).toEqual(removeTimelineData(finesMacPayloadAddAccountFixedPenalty));
+    expect(result).toEqual(toRequestPayload(finesMacPayloadAddAccountFixedPenalty));
     expect(result).not.toHaveProperty('timeline_data');
   });
 
@@ -108,9 +115,9 @@ describe('FinesMacPayloadService', () => {
 
     finesMacPayloadAddAccount.account_status = FINES_MAC_PAYLOAD_STATUSES.resubmitted;
 
-    const result = service.buildReplaceAccountPayload(finesMacState, finesMacPayloadAddAccount, sessionUserState);
+    const result = service.buildReplaceAccountPayload(finesMacState, finesMacPayloadAddAccount);
     finesMacPayloadAddAccount.account.defendant.parent_guardian = null;
-    expect(result).toEqual(removeTimelineData(finesMacPayloadAddAccount));
+    expect(result).toEqual(toRequestPayload(finesMacPayloadAddAccount));
     expect(result).not.toHaveProperty('timeline_data');
   });
 
@@ -184,14 +191,12 @@ describe('FinesMacPayloadService', () => {
     const status = 'Rejected';
     const reasonText = 'Some reason';
 
-    const result = service.buildPatchAccountPayload(finesMacPayloadAddAccount, status, reasonText, sessionUserState);
+    const result = service.buildPatchAccountPayload(finesMacPayloadAddAccount, status, reasonText);
 
     expect(result).toEqual({
       account_status: status,
       business_unit_id: finesMacPayloadAddAccount.business_unit_id!,
       reason_text: reasonText,
-      validated_by: null,
-      validated_by_name: null,
       version: finesMacPayloadAddAccount.version!,
     });
     expect(result).not.toHaveProperty('timeline_data');
@@ -206,17 +211,12 @@ describe('FinesMacPayloadService', () => {
     const status = FINES_MAC_PAYLOAD_STATUSES.resubmitted;
     const reasonText = null;
 
-    const result = service.buildPatchAccountPayload(finesMacPayloadAddAccount, status, reasonText, sessionUserState);
+    const result = service.buildPatchAccountPayload(finesMacPayloadAddAccount, status, reasonText);
 
     expect(result).toEqual({
       account_status: status,
       business_unit_id: finesMacPayloadAddAccount.business_unit_id!,
       reason_text: reasonText,
-      validated_by: service['getBusinessUnitBusinessUserId'](
-        finesMacPayloadAddAccount.business_unit_id!,
-        sessionUserState,
-      )!,
-      validated_by_name: sessionUserState['name'],
       version: finesMacPayloadAddAccount.version!,
     });
     expect(result).not.toHaveProperty('timeline_data');

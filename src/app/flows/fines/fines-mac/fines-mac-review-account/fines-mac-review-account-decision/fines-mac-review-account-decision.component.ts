@@ -29,7 +29,6 @@ export class FinesMacReviewAccountDecisionComponent extends AbstractFormParentBa
   private readonly finesMacStore = inject(FinesMacStore);
   private readonly finesDraftStore = inject(FinesDraftStore);
   private readonly utilsService = inject(UtilsService);
-  private readonly userState = this.globalStore.userState();
   private readonly finesRoutes = FINES_ROUTING_PATHS;
   private readonly finesDraftRoutes = FINES_DRAFT_ROUTING_PATHS;
   private readonly finesDraftCheckAndValidateRoutes = FINES_DRAFT_CHECK_AND_VALIDATE_ROUTING_PATHS;
@@ -54,7 +53,6 @@ export class FinesMacReviewAccountDecisionComponent extends AbstractFormParentBa
       this.finesDraftStore.getFinesDraftState(),
       status,
       form.formData.fm_review_account_decision_reason ?? null,
-      this.userState,
     );
 
     this.opalFinesService
