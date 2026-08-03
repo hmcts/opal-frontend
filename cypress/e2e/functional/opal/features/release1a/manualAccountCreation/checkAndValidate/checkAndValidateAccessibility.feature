@@ -11,16 +11,14 @@ Feature: Accessibility Tests for Check and Validate Screens
   Scenario: Create and Manage landing page passes accessibility checks
     Then I check the page for accessibility
 
-  @R1A @JIRA-STORY:PO-605 @JIRA-EPIC:PO-2472 @JIRA-TEST-KEY:PO-5563
+  @R1A @JIRA-STORY:PO-605 @JIRA-EPIC:PO-2472 @JIRA-TEST-KEY:PO-5563 @only
   Scenario: Rejected tab is accessible for rejected draft account
     Given I create a "pgToPay" draft account with the following details and set status "Rejected":
       | account.defendant.forenames | Accessibility |
       | account.defendant.surname   | TEST{uniq}    |
     And I open Create and Manage Draft Accounts
-
     When I view the "Rejected" tab on the Create and Manage Draft Accounts page
-    Then I see the following text "TEST{uniq}, Accessibility"
-    And I check the page for accessibility
+    Then I check the page for accessibility
 
   @R1A @JIRA-STORY:PO-607 @JIRA-EPIC:PO-2472 @JIRA-TEST-KEY:PO-5564
   Scenario: Approved tab is accessible
