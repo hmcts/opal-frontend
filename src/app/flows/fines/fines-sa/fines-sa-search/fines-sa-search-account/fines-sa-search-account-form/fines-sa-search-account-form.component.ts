@@ -2,16 +2,7 @@ import { ChangeDetectionStrategy, Component, EventEmitter, inject, Input, Output
 import { AbstractFormBaseComponent } from '@hmcts/opal-frontend-common/components/abstract/abstract-form-base';
 import { IFinesSaSearchAccountForm } from '../interfaces/fines-sa-search-account-form.interface';
 import { FinesSaStore } from '../../../stores/fines-sa.store';
-import {
-  AbstractControl,
-  FormControl,
-  FormGroup,
-  FormsModule,
-  ReactiveFormsModule,
-  ValidationErrors,
-  ValidatorFn,
-  Validators,
-} from '@angular/forms';
+import { FormControl, FormGroup, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
 import { GovukTextInputComponent } from '@hmcts/opal-frontend-common/components/govuk/govuk-text-input';
 import { GovukButtonComponent } from '@hmcts/opal-frontend-common/components/govuk/govuk-button';
 import {
@@ -48,6 +39,10 @@ import { IAlphagovAccessibleAutocompleteItem } from '@hmcts/opal-frontend-common
 import { OpalFines } from '@services/fines/opal-fines-service/opal-fines.service';
 import { IOpalFinesMajorCreditor } from '@services/fines/opal-fines-service/interfaces/opal-fines-major-creditor.interface';
 import { FINES_SA_SEARCH_ACCOUNT_FORM_MAJOR_CREDITORS_FIELD_ERRORS } from './fines-sa-search-account-form-major-creditors/constants/fines-sa-search-account-form-major-creditors-field-errors.constants';
+import {
+  nationalInsuranceNumberMaxLengthValidator,
+  normalizeNationalInsuranceNumber,
+} from '../../../utils/national-insurance-number.utils';
 
 const ALPHANUMERIC_WITH_SPACES_PATTERN_VALIDATOR = patternValidator(
   ALPHANUMERIC_WITH_SPACES_PATTERN,
@@ -55,29 +50,6 @@ const ALPHANUMERIC_WITH_SPACES_PATTERN_VALIDATOR = patternValidator(
 );
 const NATIONAL_INSURANCE_CONTROL = 'fsa_search_account_individuals_national_insurance_number';
 const INDIVIDUALS_CRITERIA_GROUP = 'fsa_search_account_individuals_search_criteria';
-const NATIONAL_INSURANCE_NUMBER_MAX_LENGTH = 9;
-
-const normalizeNationalInsuranceNumber = (nationalInsuranceNumber: string | null): string | null =>
-  nationalInsuranceNumber?.replace(/\s+/g, '').toUpperCase() ?? null;
-
-const nationalInsuranceNumberMaxLengthValidator: ValidatorFn = (control: AbstractControl): ValidationErrors | null => {
-  const value = control.value;
-
-  if (typeof value !== 'string') {
-    return null;
-  }
-
-  const normalizedValue = normalizeNationalInsuranceNumber(value) ?? '';
-
-  return normalizedValue.length > NATIONAL_INSURANCE_NUMBER_MAX_LENGTH
-    ? {
-        maxlength: {
-          requiredLength: NATIONAL_INSURANCE_NUMBER_MAX_LENGTH,
-          actualLength: normalizedValue.length,
-        },
-      }
-    : null;
-};
 
 /**
  * Parent form for “Search Account” with tabbed sub-forms (Individuals, Companies, Minor Creditors, Major Creditors).

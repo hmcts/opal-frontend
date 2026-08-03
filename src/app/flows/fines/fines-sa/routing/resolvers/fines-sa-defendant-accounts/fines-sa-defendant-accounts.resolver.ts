@@ -9,9 +9,7 @@ import { OPAL_FINES_DEFENDANT_ACCOUNT_SEARCH_PARAMS_REFERENCE_DEFAULTS } from '@
 import { of } from 'rxjs';
 import { FinesSaPayloadService } from '../../../services/fines-sa-payload.service';
 import { FINES_SA_BUILD_TRANSFORM_ITEMS_CONFIG } from '../../../services/constants/fines-sa-transform-items-config.constant';
-
-const normalizeNationalInsuranceNumber = (nationalInsuranceNumber: string | null): string | null =>
-  nationalInsuranceNumber?.replace(/\s+/g, '').toUpperCase() ?? null;
+import { normalizeNationalInsuranceNumber } from '../../../utils/national-insurance-number.utils';
 
 /**
  * Resolver that retrieves defendant accounts based on current search criteria in the Fines SA flow.
