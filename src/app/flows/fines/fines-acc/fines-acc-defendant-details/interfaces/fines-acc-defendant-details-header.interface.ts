@@ -18,6 +18,7 @@ export interface IOpalFinesAccountDefendantDetailsHeader extends IOpalFinesVersi
   };
   business_unit_summary: {
     business_unit_id: string;
+    business_unit_code: string;
     business_unit_name: string;
     welsh_speaking: string;
   };
