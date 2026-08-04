@@ -28,6 +28,7 @@ import { RemoveParentGuardianActions } from '../actions/account-details/remove.p
 import { createScopedLogger, createScopedSyncLogger } from '../../../../support/utils/log.helper';
 import { EtagUpdate } from '../actions/draft-account/draft-account.api';
 import { MINOR_CREDITOR_AMEND_ELEMENTS } from '../../../../shared/selectors/account-enquiry/account.enquiry.minor-creditor-amend.locators';
+import { AccountDetailsResponsiveLayoutActions } from '../actions/account-details/details.responsive-layout.actions';
 
 const logAE = createScopedLogger('AccountEnquiryFlow');
 const logAESync = createScopedSyncLogger('AccountEnquiryFlow');
@@ -97,6 +98,7 @@ export class AccountEnquiryFlow {
   private readonly removeParentGuardian = new RemoveParentGuardianActions();
   private readonly historyAndNotes = new AccountDetailsHistoryActions();
   private readonly consolidatedAccounts = new AccountDetailsConsolidatedAccountsActions();
+  private readonly responsiveLayout = new AccountDetailsResponsiveLayoutActions();
 
   /**
    * Ensures the test is on the Individuals Account Search page.
