@@ -8,6 +8,10 @@ import { GovukCheckboxesItemComponent } from '@hmcts/opal-frontend-common/compon
 import { GovukErrorSummaryComponent } from '@hmcts/opal-frontend-common/components/govuk/govuk-error-summary';
 import { GovukHeadingWithCaptionComponent } from '@hmcts/opal-frontend-common/components/govuk/govuk-heading-with-caption';
 import {
+  GovukSummaryListComponent,
+  GovukSummaryListRowComponent,
+} from '@hmcts/opal-frontend-common/components/govuk/govuk-summary-list';
+import {
   GovukTableBodyRowComponent,
   GovukTableBodyRowDataComponent,
   GovukTableComponent,
@@ -36,6 +40,8 @@ import { IFinesReportsSelectBusinessUnitRow } from './interfaces/fines-reports-s
     GovukCancelLinkComponent,
     GovukErrorSummaryComponent,
     GovukHeadingWithCaptionComponent,
+    GovukSummaryListComponent,
+    GovukSummaryListRowComponent,
     GovukButtonDirective,
   ],
   templateUrl: './fines-reports-select-business-units-form.component.html',

@@ -176,10 +176,14 @@ describe('FinesReportsSelectBusinessUnitsFormComponent', () => {
   it('should show a single business unit as read-only information', async () => {
     const singleBusinessUnit = [OPAL_FINES_BUSINESS_UNIT_REF_DATA_MOCK.refData[0]];
     const { component, fixture } = await setup(singleBusinessUnit);
+    const summaryRows = fixture.nativeElement.querySelectorAll('.govuk-summary-list__row');
 
     expect(component.businessUnitRows).toEqual([]);
     expect(component['form'].valid).toBe(true);
     expect(fixture.nativeElement.querySelector('input[type="checkbox"]')).toBeNull();
+    expect(fixture.nativeElement.querySelector('h2')).toBeNull();
+    expect(summaryRows).toHaveLength(1);
+    expect(summaryRows[0].textContent).toContain('Business unit');
     expect(fixture.nativeElement.textContent).toContain('Historical Debt');
   });
 
