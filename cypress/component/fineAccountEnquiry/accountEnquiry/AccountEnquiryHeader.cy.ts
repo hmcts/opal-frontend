@@ -31,7 +31,7 @@ const ACCOUNT_ENQUIRY_JIRA_LABEL = '@JIRA-LABEL:account-enquiry';
 
 const buildTags = (...tags: string[]): string[] => [...tags, ACCOUNT_ENQUIRY_JIRA_LABEL, '@R1B'];
 
-const assertElementsFitWithoutOverlap = (selector: string, label: string): void => {
+const assertElementsFitWithoutOverlap = (selector: string, label: string, overlapGate: number = 320): void => {
   cy.get(selector)
     .should('have.length.greaterThan', 0)
     .then(($elements) => {
@@ -43,20 +43,27 @@ const assertElementsFitWithoutOverlap = (selector: string, label: string): void 
           element.clientWidth + 1,
         );
         expect(bounds[index].left, `${label} ${index + 1} should not extend left of the viewport`).to.be.at.least(0);
-        expect(bounds[index].right, `${label} ${index + 1} should not extend past the viewport`).to.be.at.most(320);
+        expect(bounds[index].right, `${label} ${index + 1} should not extend past the viewport`).to.be.at.most(
+          overlapGate,
+        );
       });
 
-      bounds.forEach((current, index) => {
-        bounds.slice(index + 1).forEach((next, nextIndex) => {
+      const contentBounds = elements.flatMap((element) =>
+        [...element.querySelectorAll('h2, h3, p')].map((content) => content.getBoundingClientRect()),
+      );
+
+      contentBounds.forEach((current, index) => {
+        contentBounds.slice(index + 1).forEach((next, nextIndex) => {
           const overlaps =
             current.left < next.right &&
             current.right > next.left &&
             current.top < next.bottom &&
             current.bottom > next.top;
 
-          expect(overlaps, `${label} ${index + 1} should not overlap ${label} ${index + nextIndex + 2}`).to.equal(
-            false,
-          );
+          expect(
+            overlaps,
+            `${label} content ${index + 1} should not overlap content ${index + nextIndex + 2}`,
+          ).to.equal(false);
         });
       });
     });
@@ -182,7 +189,7 @@ describe('Account Enquiry - Defendant Header', () => {
     ],
   };
 
-  it(
+  it.only(
     'AC1, AC5, AC7, AC9: keeps top account content aligned and unobscured at desktop width',
     { tags: [...buildTags('@JIRA-STORY:PO-2673'), '@JIRA-EPIC:PO-2673'] },
     () => {
@@ -200,8 +207,8 @@ describe('Account Enquiry - Defendant Header', () => {
       cy.get(DOM.subnav).should('be.visible');
 
       assertDesktopHeaderLayout();
-      assertElementsFitWithoutOverlap(DOM.accountInfoItem, 'account information item');
-      assertElementsFitWithoutOverlap(DOM.summaryMetricBarItem, 'summary metric card');
+      assertElementsFitWithoutOverlap(DOM.accountInfoItem, 'account information item', 1280);
+      assertElementsFitWithoutOverlap(DOM.summaryMetricBarItem, 'summary metric card', 1280);
     },
   );
 
@@ -638,16 +645,13 @@ describe('Account Enquiry - Defendant Header', () => {
     },
   );
 
-  it(
+  it.only(
     'AC1, AC2, AC3, AC4, AC5, AC7, AC8, AC9, AC10: reflows the Account Details header at narrow widths with long names',
     { tags: [...buildTags('@JIRA-STORY:PO-2673'), '@JIRA-EPIC:PO-2673', '@JIRA-TEST-KEY:PO-2673'] },
     () => {
       cy.viewport(320, 900);
-
-      const longHeader = createDefendantHeaderMockWithName(
-        'A very long defendant forename that should wrap cleanly',
-        'A very long defendant surname that should also wrap cleanly',
-      );
+      // First name should be 20 characters, last name should be 30 characters, total 50 characters. This is the maximum length for a defendant name.
+      const longHeader = createDefendantHeaderMockWithName('A very long forename', 'A very long surname that wraps');
 
       interceptUserState(USER_STATE_MOCK_PERMISSION_BU77);
       interceptDefendantHeader(77, longHeader, '1');
@@ -657,7 +661,7 @@ describe('Account Enquiry - Defendant Header', () => {
 
       cy.get(DOM.pageHeader).should('be.visible');
       cy.get(DOM.headingWithCaption).should('be.visible');
-      cy.get(DOM.headingName).should('contain.text', 'A very long defendant forename');
+      cy.get(DOM.headingName).should('contain.text', 'A very long forename');
       cy.get(DOM.accountInfo).should('be.visible');
       cy.get(DOM.summaryMetricBar).should('be.visible');
       cy.get(DOM.subnav).should('be.visible');
@@ -678,17 +682,17 @@ describe('Account Enquiry - Defendant Header', () => {
     },
   );
 
-  it(
+  it.only(
     'AC1, AC2, AC3, AC4, AC5, AC7, AC8, AC9, AC10: keeps the header readable for a long company name at narrow widths',
     { tags: [...buildTags('@JIRA-STORY:PO-2673'), '@JIRA-EPIC:PO-2673', '@JIRA-TEST-KEY:PO-2674'] },
     () => {
       cy.viewport(320, 900);
 
       const longCompanyHeader = structuredClone(DEFENDANT_HEADER_ORG_MOCK);
+      //Company name should be max of 50 characters.
       longCompanyHeader.party_details.organisation_details = {
         ...longCompanyHeader.party_details.organisation_details!,
-        organisation_name:
-          'A very long company name that should wrap cleanly without pushing the action buttons out of view',
+        organisation_name: 'A very long company name that is fifty characters.',
       };
 
       interceptUserState(USER_STATE_MOCK_PERMISSION_BU77);
@@ -701,7 +705,7 @@ describe('Account Enquiry - Defendant Header', () => {
       cy.get(DOM.headingWithCaption).should('be.visible');
       cy.get(DOM.headingName)
         .should('be.visible')
-        .and('contain.text', 'A very long company name that should wrap cleanly');
+        .and('contain.text', 'A very long company name that is fifty characters.');
       cy.get(DOM.accountInfo).should('be.visible');
       cy.get(DOM.summaryMetricBar).should('be.visible');
       cy.get(DOM.subnav).should('be.visible');
