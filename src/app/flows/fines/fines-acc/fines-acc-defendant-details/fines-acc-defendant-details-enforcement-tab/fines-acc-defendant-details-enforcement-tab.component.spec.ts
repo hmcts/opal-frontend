@@ -277,19 +277,18 @@ describe('FinesAccDefendantDetailsEnforcementTab', () => {
     );
   });
 
-  it('should navigate to the remove enforcement override route', () => {
-    const router = TestBed.inject(Router);
-    const routerNavigateSpy = vi.spyOn(router, 'navigate');
+  it('should render the remove enforcement override summary card action as a link', () => {
+    fixture.componentRef.setInput('hasAccountMaintenancePermission', true);
+    fixture.detectChanges();
 
-    component.handleRemoveEnforcementOverride(component.removeEnforcementOverrideLink());
+    const removeLink = fixture.nativeElement.querySelector(
+      '#enforcement-override-summary-card-list .govuk-summary-card__action a',
+    ) as HTMLAnchorElement;
 
-    expect(routerNavigateSpy).toHaveBeenCalledWith(
-      [
-        `../${FINES_ACC_DEFENDANT_ROUTING_PATHS.children.enforcement}/${FINES_ACC_ENF_OVERRIDE_ADD_CHANGE_ROUTING_PATHS.root}/${FINES_ACC_ENF_OVERRIDE_ADD_CHANGE_ROUTING_PATHS.children.remove}`,
-      ],
-      {
-        relativeTo: component['activatedRoute'],
-      },
+    expect(removeLink.textContent?.trim()).toBe('Remove');
+    expect(removeLink.classList.contains('govuk-link--no-visited-state')).toBe(true);
+    expect(removeLink.getAttribute('href')).toBe(
+      `/${FINES_ACC_DEFENDANT_ROUTING_PATHS.children.enforcement}/${FINES_ACC_ENF_OVERRIDE_ADD_CHANGE_ROUTING_PATHS.root}/${FINES_ACC_ENF_OVERRIDE_ADD_CHANGE_ROUTING_PATHS.children.remove}`,
     );
   });
 
