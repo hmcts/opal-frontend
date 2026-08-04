@@ -510,10 +510,19 @@ describe('Account Enquiry Enforcement Status', () => {
     'AC1, AC2, AC3: enforcement tab passes Axe-Core checks',
     { tags: [...buildTags('@JIRA-STORY:PO-5754'), '@JIRA-EPIC:PO-978', '@JIRA-TEST-KEY:PO-5754-AXE'] },
     () => {
-      mountEnforcementTab({
-        hasAccountMaintenancePermission: true,
-        hasEnterEnforcementPermission: true,
+      renderEnforcementShell({
+        header: buildIndividualHeader(),
       });
+
+      cy.document().then((document) => {
+        document.documentElement.lang = 'en';
+      });
+      cy.get('app-fines-acc-defendant-details').then(($accountEnquiry) => {
+        $accountEnquiry.wrap('<main id="component-test-main"></main>');
+      });
+
+      cy.get('#component-test-main').should('contain', 'Enforcement status');
+      cy.get('#component-test-main h1').should('exist');
 
       cy.injectAxe({ axeCorePath: 'node_modules/axe-core/axe.min.js' });
       cy.checkA11y(undefined, {
