@@ -26,48 +26,13 @@ import { setupAccountEnquiryComponent } from './setup/SetupComponent';
 import { IComponentProperties } from './setup/setupComponent.interface';
 import { interceptAuthenticatedUser, interceptUserState } from 'cypress/component/CommonIntercepts/CommonIntercepts';
 import { OPAL_FINES_ACCOUNT_DEFENDANT_AT_A_GLANCE_MOCK } from './mocks/defendant_details_at_glance_mock';
+import { AccountDetailsResponsiveLayoutActions } from '../../../e2e/functional/opal/actions/account-details/details.responsive-layout.actions';
 
 const ACCOUNT_ENQUIRY_JIRA_LABEL = '@JIRA-LABEL:account-enquiry';
 
 const buildTags = (...tags: string[]): string[] => [...tags, ACCOUNT_ENQUIRY_JIRA_LABEL, '@R1B'];
 
-const assertElementsFitWithoutOverlap = (selector: string, label: string, overlapGate: number = 320): void => {
-  cy.get(selector)
-    .should('have.length.greaterThan', 0)
-    .then(($elements) => {
-      const elements = [...$elements] as HTMLElement[];
-      const bounds = elements.map((element) => element.getBoundingClientRect());
-
-      elements.forEach((element, index) => {
-        expect(element.scrollWidth, `${label} ${index + 1} should not clip content`).to.be.at.most(
-          element.clientWidth + 1,
-        );
-        expect(bounds[index].left, `${label} ${index + 1} should not extend left of the viewport`).to.be.at.least(0);
-        expect(bounds[index].right, `${label} ${index + 1} should not extend past the viewport`).to.be.at.most(
-          overlapGate,
-        );
-      });
-
-      const contentBounds = elements.flatMap((element) =>
-        [...element.querySelectorAll('h2, h3, p')].map((content) => content.getBoundingClientRect()),
-      );
-
-      contentBounds.forEach((current, index) => {
-        contentBounds.slice(index + 1).forEach((next, nextIndex) => {
-          const overlaps =
-            current.left < next.right &&
-            current.right > next.left &&
-            current.top < next.bottom &&
-            current.bottom > next.top;
-
-          expect(
-            overlaps,
-            `${label} content ${index + 1} should not overlap content ${index + nextIndex + 2}`,
-          ).to.equal(false);
-        });
-      });
-    });
-};
+const responsiveLayoutActions = new AccountDetailsResponsiveLayoutActions();
 
 const assertHeaderActionsReflow = (): void => {
   cy.get(DOM.headingName).then(($heading) => {
@@ -189,7 +154,7 @@ describe('Account Enquiry - Defendant Header', () => {
     ],
   };
 
-  it.only(
+  it(
     'AC1, AC5, AC7, AC9: keeps top account content aligned and unobscured at desktop width',
     { tags: [...buildTags('@JIRA-STORY:PO-2673'), '@JIRA-EPIC:PO-2673'] },
     () => {
@@ -207,8 +172,7 @@ describe('Account Enquiry - Defendant Header', () => {
       cy.get(DOM.subnav).should('be.visible');
 
       assertDesktopHeaderLayout();
-      assertElementsFitWithoutOverlap(DOM.accountInfoItem, 'account information item', 1280);
-      assertElementsFitWithoutOverlap(DOM.summaryMetricBarItem, 'summary metric card', 1280);
+      responsiveLayoutActions.assertSummaryContentReadable(1280);
     },
   );
 
@@ -645,7 +609,7 @@ describe('Account Enquiry - Defendant Header', () => {
     },
   );
 
-  it.only(
+  it(
     'AC1, AC2, AC3, AC4, AC5, AC7, AC8, AC9, AC10: reflows the Account Details header at narrow widths with long names',
     { tags: [...buildTags('@JIRA-STORY:PO-2673'), '@JIRA-EPIC:PO-2673', '@JIRA-TEST-KEY:PO-2673'] },
     () => {
@@ -677,12 +641,11 @@ describe('Account Enquiry - Defendant Header', () => {
       });
 
       assertHeaderActionsReflow();
-      assertElementsFitWithoutOverlap(DOM.accountInfoItem, 'account information item');
-      assertElementsFitWithoutOverlap(DOM.summaryMetricBarItem, 'summary metric card');
+      responsiveLayoutActions.assertSummaryContentReadable();
     },
   );
 
-  it.only(
+  it(
     'AC1, AC2, AC3, AC4, AC5, AC7, AC8, AC9, AC10: keeps the header readable for a long company name at narrow widths',
     { tags: [...buildTags('@JIRA-STORY:PO-2673'), '@JIRA-EPIC:PO-2673', '@JIRA-TEST-KEY:PO-2674'] },
     () => {
@@ -721,8 +684,7 @@ describe('Account Enquiry - Defendant Header', () => {
       });
 
       assertHeaderActionsReflow();
-      assertElementsFitWithoutOverlap(DOM.accountInfoItem, 'account information item');
-      assertElementsFitWithoutOverlap(DOM.summaryMetricBarItem, 'summary metric card');
+      responsiveLayoutActions.assertSummaryContentReadable();
     },
   );
 

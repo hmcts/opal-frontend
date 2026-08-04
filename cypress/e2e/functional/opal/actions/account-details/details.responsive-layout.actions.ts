@@ -7,16 +7,20 @@ const log = createScopedLogger('AccountDetailsResponsiveLayoutActions');
 /** Responsive layout assertions for the Account Details page. */
 export class AccountDetailsResponsiveLayoutActions {
   /**
-   * Asserts that every element matching a selector is fully visible and does not overlap a peer.
+   * Asserts that every element matching a selector is fully visible and its content does not overlap peer content.
    *
    * @param selector - Stable selector for the repeated layout elements.
    * @param label - Human-readable label used in assertion output.
+   * @param overlapGate - Optional viewport width threshold for overlap assertions. Defaults to the current viewport width.
    */
-  private assertElementsFitWithoutOverlap(selector: string, label: string): void {
+  private assertElementsFitWithoutOverlap(
+    selector: string,
+    label: string,
+    overlapGate: number = Cypress.config('viewportWidth'),
+  ): void {
     cy.get(selector, { timeout: 15_000 })
       .should('have.length.greaterThan', 0)
       .then(($elements) => {
-        const viewportWidth = Cypress.config('viewportWidth');
         const elements = [...$elements] as HTMLElement[];
         const bounds = elements.map((element) => element.getBoundingClientRect());
 
@@ -26,21 +30,26 @@ export class AccountDetailsResponsiveLayoutActions {
           );
           expect(bounds[index].left, `${label} ${index + 1} should not extend left of the viewport`).to.be.at.least(0);
           expect(bounds[index].right, `${label} ${index + 1} should not extend past the viewport`).to.be.at.most(
-            viewportWidth,
+            overlapGate,
           );
         });
 
-        bounds.forEach((current, index) => {
-          bounds.slice(index + 1).forEach((next, nextIndex) => {
+        const contentBounds = elements.flatMap((element) =>
+          [...element.querySelectorAll('h2, h3, p')].map((content) => content.getBoundingClientRect()),
+        );
+
+        contentBounds.forEach((current, index) => {
+          contentBounds.slice(index + 1).forEach((next, nextIndex) => {
             const overlaps =
               current.left < next.right &&
               current.right > next.left &&
               current.top < next.bottom &&
               current.bottom > next.top;
 
-            expect(overlaps, `${label} ${index + 1} should not overlap ${label} ${index + nextIndex + 2}`).to.equal(
-              false,
-            );
+            expect(
+              overlaps,
+              `${label} content ${index + 1} should not overlap content ${index + nextIndex + 2}`,
+            ).to.equal(false);
           });
         });
       });
@@ -122,9 +131,12 @@ export class AccountDetailsResponsiveLayoutActions {
     });
   }
 
-  /** Asserts that account information and summary metric cards remain readable and unobscured. */
-  public assertSummaryContentReadable(): void {
-    this.assertElementsFitWithoutOverlap(H.accountInfoItem, 'account information item');
-    this.assertElementsFitWithoutOverlap(H.summaryMetricBarItem, 'summary metric card');
+  /**
+   * Asserts that account information and summary metric cards remain readable and unobscured.
+   * @param overlapGate
+   */
+  public assertSummaryContentReadable(overlapGate?: number): void {
+    this.assertElementsFitWithoutOverlap(H.accountInfoItem, 'account information item', overlapGate);
+    this.assertElementsFitWithoutOverlap(H.summaryMetricBarItem, 'summary metric card', overlapGate);
   }
 }
