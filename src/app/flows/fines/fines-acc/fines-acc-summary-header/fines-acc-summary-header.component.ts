@@ -41,6 +41,9 @@ export class FinesAccSummaryHeaderComponent {
     this._accountStatusCode = accountStatusCode ?? null;
   }
 
+  /**
+   * Gets the account status code for the fines account.
+   */
   public get accountStatusCode(): string | null {
     return this._accountStatusCode;
   }
@@ -50,6 +53,9 @@ export class FinesAccSummaryHeaderComponent {
   @Output() navigateToAddAccountNotePage = new EventEmitter<void>();
   public accountStatusBannerContent: FinesAccountStatusBanner | null = null;
 
+  /**
+   * Gets the account status banner aria label for the fines account.
+   */
   public get accountStatusBannerAriaLabel(): string {
     return [this.accountStatusBannerContent?.heading, this.accountStatusBannerContent?.label]
       .filter(Boolean)
