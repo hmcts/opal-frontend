@@ -77,31 +77,34 @@ export const AccountNavDetailsLocators = {
     root: 'opal-lib-moj-sub-navigation#account-details-tabs, nav.moj-sub-navigation#account-details-tabs',
 
     /** Tab link for “At a glance.” */
-    atAGlanceTab: 'li[subnavitemid="at-a-glance-tab"] > a.moj-sub-navigation__link',
+    atAGlanceTab: 'li[subnavitemid="at-a-glance-tab"] a.moj-sub-navigation__link',
 
     /** Tab link for “Defendant.” */
-    defendantTab: 'li[subnavitemid="defendant-tab"] > a.moj-sub-navigation__link',
+    defendantTab: 'li[subnavitemid="defendant-tab"] a.moj-sub-navigation__link',
 
     /** Tab link for “Parent or guardian.” */
-    parentOrGuardianTab: 'li[subnavitemid="parent-or-guardian-tab"] > a.moj-sub-navigation__link',
+    parentOrGuardianTab: 'li[subnavitemid="parent-or-guardian-tab"] a.moj-sub-navigation__link',
 
     /** Tab link for “Fixed penalty.” */
-    fixedPenaltyTab: 'li[subnavitemid="fixed-penalty-tab"] > a.moj-sub-navigation__link',
+    fixedPenaltyTab: 'li[subnavitemid="fixed-penalty-tab"] a.moj-sub-navigation__link',
 
     /** Tab link for “Payment terms.” */
-    paymentTermsTab: 'li[subnavitemid="payment-terms-tab"] > a.moj-sub-navigation__link',
+    paymentTermsTab: 'li[subnavitemid="payment-terms-tab"] a.moj-sub-navigation__link',
 
     /** Tab link for “Creditor.” */
-    creditorTab: 'li[subnavitemid="creditor-tab"] > a.moj-sub-navigation__link',
+    creditorTab: 'li[subnavitemid="creditor-tab"] a.moj-sub-navigation__link',
 
     /** Tab link for “Enforcement.” */
-    enforcementTab: 'li[subnavitemid="enforcement-tab"] > a.moj-sub-navigation__link',
+    enforcementTab: 'li[subnavitemid="enforcement-tab"] a.moj-sub-navigation__link',
 
     /** Tab link for “Impositions.” */
-    impositionsTab: 'li[subnavitemid="impositions-tab"] > a.moj-sub-navigation__link',
+    impositionsTab: 'li[subnavitemid="impositions-tab"] a.moj-sub-navigation__link',
 
     /** Tab link for “History and notes.” */
-    historyAndNotesTab: 'li[subnavitemid="history-and-notes-tab"] > a.moj-sub-navigation__link',
+    historyAndNotesTab: 'li[subnavitemid="history-and-notes-tab"] a.moj-sub-navigation__link',
+
+    /** Tab link for “Consolidated accounts.” */
+    consolidatedAccountsTab: 'li[subnavitemid="consolidated-accounts-tab"] > a.moj-sub-navigation__link',
 
     /** Currently active tab link (has `aria-current="page"`). */
     currentTab: 'a.moj-sub-navigation__link[aria-current="page"]',

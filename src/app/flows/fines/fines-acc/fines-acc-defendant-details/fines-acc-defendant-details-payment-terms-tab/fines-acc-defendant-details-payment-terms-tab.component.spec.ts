@@ -3,6 +3,7 @@ import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { FinesAccDefendantDetailsPaymentTermsTabComponent } from './fines-acc-defendant-details-payment-terms-tab.component';
 import { OPAL_FINES_ACCOUNT_DEFENDANT_DETAILS_PAYMENT_TERMS_LATEST_MOCK } from '@services/fines/opal-fines-service/mocks/opal-fines-account-defendant-details-payment-terms-latest.mock';
 import { FINES_ACC_DEFENDANT_ROUTING_PATHS } from '../../routing/constants/fines-acc-defendant-routing-paths.constant';
+import { FINES_ACC_PAYMENT_TERMS_AMEND_FRAGMENTS } from '../../fines-acc-payment-terms-amend/constants/fines-acc-payment-terms-amend-fragments.constant';
 import { provideRouter, Router } from '@angular/router';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
 
@@ -25,50 +26,63 @@ describe('FinesAccPaymentTermsAmendComponent', () => {
     expect(component).toBeTruthy();
   });
 
-  it('should return the correct card title for Pay in full', () => {
-    component.tabData.payment_terms.lump_sum_amount = 50.0;
-    component.tabData.payment_terms.instalment_amount = 0.0;
-    fixture.detectChanges();
-    expect(component.cardTitle()).toBe('Pay in full');
-  });
+  it.each([
+    {
+      caseName: 'Pay in full',
+      lumpSumAmount: 50.0,
+      instalmentAmount: 0.0,
+      paymentTermsTypeCode: undefined,
+      expectedTitle: 'Pay in full',
+    },
+    {
+      caseName: 'Lump sum and instalments',
+      lumpSumAmount: 50.0,
+      instalmentAmount: 50.0,
+      paymentTermsTypeCode: undefined,
+      expectedTitle: 'Lump sum plus instalments',
+    },
+    {
+      caseName: 'Instalments only',
+      lumpSumAmount: 0.0,
+      instalmentAmount: 50.0,
+      paymentTermsTypeCode: undefined,
+      expectedTitle: 'Instalments only',
+    },
+    {
+      caseName: 'Pay by date with no instalment or lump sum values',
+      lumpSumAmount: 0.0,
+      instalmentAmount: 0.0,
+      paymentTermsTypeCode: 'B',
+      expectedTitle: 'Pay in full',
+    },
+    {
+      caseName: 'Paid with no instalment or lump sum values and code P',
+      lumpSumAmount: 0.0,
+      instalmentAmount: 0.0,
+      paymentTermsTypeCode: 'P',
+      expectedTitle: 'Paid',
+    },
+    {
+      caseName: 'Paid with no instalment or lump sum values and another code',
+      lumpSumAmount: 0.0,
+      instalmentAmount: 0.0,
+      paymentTermsTypeCode: 'I',
+      expectedTitle: 'Paid',
+    },
+  ] as const)(
+    'should return the correct card title for $caseName',
+    ({ lumpSumAmount, instalmentAmount, paymentTermsTypeCode, expectedTitle }) => {
+      component.tabData.payment_terms.lump_sum_amount = lumpSumAmount;
+      component.tabData.payment_terms.instalment_amount = instalmentAmount;
+      if (paymentTermsTypeCode) {
+        component.tabData.payment_terms.payment_terms_type.payment_terms_type_code = paymentTermsTypeCode;
+      }
 
-  it('should return the correct card title for Lump sum and instalments', () => {
-    component.tabData.payment_terms.lump_sum_amount = 50.0;
-    component.tabData.payment_terms.instalment_amount = 50.0;
-    fixture.detectChanges();
-    expect(component.cardTitle()).toBe('Lump sum plus instalments');
-  });
+      fixture.detectChanges();
 
-  it('should return the correct card title for Installments only', () => {
-    component.tabData.payment_terms.instalment_amount = 50.0;
-    component.tabData.payment_terms.lump_sum_amount = 0.0;
-    fixture.detectChanges();
-    expect(component.cardTitle()).toBe('Instalments only');
-  });
-
-  it('should return the correct card title for Pay by date even if there are no values in installment_amount or lump_sum_amount', () => {
-    component.tabData.payment_terms.instalment_amount = 0.0;
-    component.tabData.payment_terms.lump_sum_amount = 0.0;
-    component.tabData.payment_terms.payment_terms_type.payment_terms_type_code = 'B';
-    fixture.detectChanges();
-    expect(component.cardTitle()).toBe('Pay in full');
-  });
-
-  it('should return the correct card title for Paid when there are no values in installment_amount or lump_sum_amount and the code is P', () => {
-    component.tabData.payment_terms.instalment_amount = 0.0;
-    component.tabData.payment_terms.lump_sum_amount = 0.0;
-    component.tabData.payment_terms.payment_terms_type.payment_terms_type_code = 'P';
-    fixture.detectChanges();
-    expect(component.cardTitle()).toBe('Paid');
-  });
-
-  it('should return the correct card title for Paid when there are no values in installment_amount or lump_sum_amount and the code is not P of B', () => {
-    component.tabData.payment_terms.instalment_amount = 0.0;
-    component.tabData.payment_terms.lump_sum_amount = 0.0;
-    component.tabData.payment_terms.payment_terms_type.payment_terms_type_code = 'I';
-    fixture.detectChanges();
-    expect(component.cardTitle()).toBe('Paid');
-  });
+      expect(component.cardTitle()).toBe(expectedTitle);
+    },
+  );
 
   it('should return the amend payment terms route when the action is allowed', () => {
     component.canAmendPaymentTerms = true;
@@ -85,6 +99,12 @@ describe('FinesAccPaymentTermsAmendComponent', () => {
     expect(component.changePaymentTermsLink()).toBe(
       `../${FINES_ACC_DEFENDANT_ROUTING_PATHS.children['payment-terms']}/denied/balance`,
     );
+  });
+
+  it('should return the shared payment terms fragment when the action is allowed', () => {
+    component.canAmendPaymentTerms = true;
+
+    expect(component.changePaymentTermsFragment()).toBe(FINES_ACC_PAYMENT_TERMS_AMEND_FRAGMENTS.selectPaymentTerms);
   });
 
   it('should return the request payment card route when the action is allowed', () => {

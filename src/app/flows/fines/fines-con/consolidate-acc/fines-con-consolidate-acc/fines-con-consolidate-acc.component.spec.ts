@@ -176,7 +176,7 @@ describe('FinesConConsolidateAccComponent', () => {
     component.ngOnInit();
 
     expect(component['businessUnitRefData']).toBeDefined();
-    expect(component['businessUnitRefData'].length).toBe(OPAL_FINES_BUSINESS_UNIT_REF_DATA_MOCK.refData.length);
+    expect(component['businessUnitRefData']).toHaveLength(OPAL_FINES_BUSINESS_UNIT_REF_DATA_MOCK.refData.length);
     expect(component['businessUnitRefData'][0].business_unit_name).toBe(
       OPAL_FINES_BUSINESS_UNIT_REF_DATA_MOCK.refData[0].business_unit_name,
     );
@@ -190,7 +190,7 @@ describe('FinesConConsolidateAccComponent', () => {
       component['getBusinessUnits']();
 
       expect(component['businessUnitRefData']).toBeDefined();
-      expect(component['businessUnitRefData'].length).toBe(OPAL_FINES_BUSINESS_UNIT_REF_DATA_MOCK.refData.length);
+      expect(component['businessUnitRefData']).toHaveLength(OPAL_FINES_BUSINESS_UNIT_REF_DATA_MOCK.refData.length);
       expect(component['businessUnitRefData'][0].business_unit_name).toBe(
         OPAL_FINES_BUSINESS_UNIT_REF_DATA_MOCK.refData[0].business_unit_name,
       );

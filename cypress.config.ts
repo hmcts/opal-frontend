@@ -25,7 +25,28 @@ import {
 } from './cypress/support/tasks/accountCaptureTask';
 import { cleanupEmptyScreenshotDirs, registerScreenshotTasks } from './cypress/support/tasks/screenshotTask';
 
-const installLogsPrinter = require('cypress-terminal-report/src/installLogsPrinter');
+type InstallLogsPrinter = (
+  on: Cypress.PluginEvents,
+  options: {
+    printLogsToFile: string;
+    outputRoot: string;
+    specRoot: string;
+    outputTarget: Record<string, string>;
+  },
+) => void;
+
+let installLogsPrinter: InstallLogsPrinter | null = null;
+
+try {
+  // eslint-disable-next-line @typescript-eslint/no-var-requires
+  installLogsPrinter = require('cypress-terminal-report/src/installLogsPrinter') as InstallLogsPrinter;
+} catch (error) {
+  // eslint-disable-next-line no-console
+  console.warn(
+    'cypress-terminal-report is unavailable; continuing without terminal log file output.',
+    error instanceof Error ? error.message : error,
+  );
+}
 
 // eslint-disable-next-line @typescript-eslint/no-var-requires
 const webpackPreprocessor = require('@cypress/webpack-preprocessor');
@@ -279,14 +300,16 @@ async function setupNodeEvents(
       `${process.env.TEST_MODE}-report-${process.env.CYPRESS_THREAD}.ndjson`;
   }
 
-  installLogsPrinter(on, {
-    printLogsToFile: 'onFail',
-    outputRoot: `functional-output/logs/${resolvedBrowserToRun}`,
-    specRoot: 'cypress/e2e',
-    outputTarget: {
-      'cypress-terminal|txt': 'txt',
-    },
-  });
+  if (installLogsPrinter) {
+    installLogsPrinter(on, {
+      printLogsToFile: 'onFail',
+      outputRoot: `functional-output/logs/${resolvedBrowserToRun}`,
+      specRoot: 'cypress/e2e',
+      outputTarget: {
+        'cypress-terminal|txt': 'txt',
+      },
+    });
+  }
 
   return config;
 }

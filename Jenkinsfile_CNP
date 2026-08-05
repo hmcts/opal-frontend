@@ -3,7 +3,7 @@
 import groovy.transform.Field
 import uk.gov.hmcts.contino.GithubAPI
 
-@Library('Infrastructure')
+@Library('Infrastructure@2.4.4')
 
 // Pipeline identifiers
 String opalName = 'opal'
@@ -669,7 +669,12 @@ withPipeline(type, product, component) {
     // Inject KeyVault secrets required for login/setup
     loadVaultSecrets(secrets)
 
-    // Configure PR-only deployment knobs before helm installs run
+    // master fails we want a notification on slack
+    onMaster {
+      enableSlackNotifications('#opal-builds')
+    }
+
+  // Configure PR-only deployment knobs before helm installs run
     before('akschartsinstall') {
         onPR {
             determineDevEnvironmentDeployment()

@@ -13,6 +13,7 @@ import { AccountDetailsMinorCreditorActions } from '../actions/account-details/d
 import { AccountDetailsPaymentTermsActions } from '../actions/account-details/details.payment-terms.actions';
 import { AccountDetailsFixedPenaltyActions } from '../actions/account-details/details.fixed-penalty.actions';
 import { AccountDetailsHistoryActions } from '../actions/account-details/details.history.actions';
+import { AccountDetailsConsolidatedAccountsActions } from '../actions/account-details/details.consolidated-accounts.actions';
 import { AccountSearchIndividualsLocators as L } from '../../../../shared/selectors/account-search/account.search.individuals.locators';
 import { AccountSearchCompaniesLocators as C } from '../../../../shared/selectors/account-search/account.search.companies.locators';
 import { ForceSingleTabNavigation } from '../../../../support/utils/navigation';
@@ -27,6 +28,7 @@ import { RemoveParentGuardianActions } from '../actions/account-details/remove.p
 import { createScopedLogger, createScopedSyncLogger } from '../../../../support/utils/log.helper';
 import { EtagUpdate } from '../actions/draft-account/draft-account.api';
 import { MINOR_CREDITOR_AMEND_ELEMENTS } from '../../../../shared/selectors/account-enquiry/account.enquiry.minor-creditor-amend.locators';
+import { AccountDetailsResponsiveLayoutActions } from '../actions/account-details/details.responsive-layout.actions';
 
 const logAE = createScopedLogger('AccountEnquiryFlow');
 const logAESync = createScopedSyncLogger('AccountEnquiryFlow');
@@ -95,6 +97,8 @@ export class AccountEnquiryFlow {
   private readonly enforcement = new AccountDetailsEnforcementActions();
   private readonly removeParentGuardian = new RemoveParentGuardianActions();
   private readonly historyAndNotes = new AccountDetailsHistoryActions();
+  private readonly consolidatedAccounts = new AccountDetailsConsolidatedAccountsActions();
+  private readonly responsiveLayout = new AccountDetailsResponsiveLayoutActions();
 
   /**
    * Ensures the test is on the Individuals Account Search page.
@@ -254,6 +258,36 @@ export class AccountEnquiryFlow {
       logAE('navigate', 'Visiting published account details directly', { accountId, path });
       cy.visit(path);
     });
+  }
+
+  /**
+   * Sets the browser viewport used for Account Details responsive checks.
+   *
+   * @param width - Viewport width in CSS pixels.
+   * @param height - Viewport height in CSS pixels.
+   */
+  public setResponsiveViewport(width: number, height: number): void {
+    this.responsiveLayout.setViewport(width, height);
+  }
+
+  /** Asserts that Account Details has no horizontal overflow at the current viewport. */
+  public assertNoHorizontalOverflow(): void {
+    this.responsiveLayout.assertNoHorizontalOverflow();
+  }
+
+  /** Asserts that the header action reflows below the account title. */
+  public assertHeaderActionReflowsBelowTitle(): void {
+    this.responsiveLayout.assertHeaderActionReflowsBelowTitle();
+  }
+
+  /** Asserts that the At a glance content columns stack vertically. */
+  public assertAtAGlanceColumnsStacked(): void {
+    this.responsiveLayout.assertAtAGlanceColumnsStacked();
+  }
+
+  /** Asserts that account information and summary metrics remain readable at the current viewport. */
+  public assertSummaryContentReadable(): void {
+    this.responsiveLayout.assertSummaryContentReadable();
   }
 
   /**
@@ -455,6 +489,80 @@ export class AccountEnquiryFlow {
     this.detailsNav.goToHistoryAndNotesTab();
     this.detailsNav.assertHistoryAndNotesTabIsActive();
     this.historyAndNotes.assertHistoryAndNotesTabLoaded();
+  }
+
+  /**
+   * Presents the current account as a master account with one consolidated child account.
+   */
+  public prepareMasterAccountWithConsolidatedChildAccount(): void {
+    logAE('method', 'prepareMasterAccountWithConsolidatedChildAccount()');
+
+    this.extractDefendantAccountIdFromUrl().then((accountId) => {
+      this.fetchHeaderSummary(accountId).then((header) => {
+        this.consolidatedAccounts.stubMasterAccountWithChild(accountId, header);
+        cy.reload();
+        cy.wait('@consolidatedHeaderSummary', { timeout: AccountEnquiryFlow.WAIT_MS })
+          .its('response.statusCode')
+          .should('eq', 200);
+      });
+    });
+  }
+
+  /**
+   * Asserts the consolidated accounts table is visible.
+   */
+  public assertConsolidatedAccountsTableVisible(): void {
+    logAE('method', 'assertConsolidatedAccountsTableVisible()');
+    this.consolidatedAccounts.assertChildAccountsTableVisible();
+  }
+
+  /**
+   * Navigates to the Consolidated accounts tab and asserts it has loaded.
+   */
+  public goToConsolidatedAccountsTab(): void {
+    logAE('method', 'goToConsolidatedAccountsTab()');
+    this.consolidatedAccounts.openTab();
+  }
+
+  /**
+   * Opens the first Consolidated accounts child account link and asserts the At a glance route.
+   */
+  public openFirstConsolidatedAccountLinkAtAGlance(): void {
+    logAE('method', 'openFirstConsolidatedAccountLinkAtAGlance()');
+    this.consolidatedAccounts.openFirstChildAtAGlance();
+    this.detailsNav.assertAtAGlanceTabIsActive();
+  }
+
+  /**
+   * Asserts the selected child account details are displayed.
+   */
+  public assertSelectedChildAccountDetailsVisible(): void {
+    logAE('method', 'assertSelectedChildAccountDetailsVisible()');
+    this.consolidatedAccounts.assertSelectedChildAccountDetailsVisible();
+  }
+
+  /**
+   * Asserts the initial History and notes rows have been rendered.
+   */
+  public assertHistoryAndNotesItemsLoaded(): void {
+    logAE('method', 'assertHistoryAndNotesItemsLoaded()');
+    this.historyAndNotes.assertHistoryAndNotesRowsLoaded(2);
+  }
+
+  /**
+   * Applies the Notes filter to the History and notes tab.
+   */
+  public filterHistoryAndNotesToNotes(): void {
+    logAE('method', 'filterHistoryAndNotesToNotes()');
+    this.historyAndNotes.applyNotesFilter();
+  }
+
+  /**
+   * Asserts the History and notes table only shows Note rows after filtering.
+   */
+  public assertHistoryAndNotesFilteredToNotes(): void {
+    logAE('method', 'assertHistoryAndNotesFilteredToNotes()');
+    this.historyAndNotes.assertHistoryAndNotesFilteredToNotes();
   }
 
   /**
@@ -1626,7 +1734,7 @@ export class AccountEnquiryFlow {
       }
 
       expect(pathname, 'current pathname before opening Add account note').to.match(
-        /\/fines\/account\/defendant\/\d+\/details$/,
+        /\/fines\/account\/(?:defendant|company|minor-creditor)\/\d+\/details$/,
       );
       logAE('navigate', 'Opening "Add account note" screen');
       this.detailsNav.clickAddAccountNoteButton();

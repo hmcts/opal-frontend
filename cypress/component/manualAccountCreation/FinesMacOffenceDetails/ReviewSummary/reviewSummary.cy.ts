@@ -11,7 +11,6 @@ import { OPAL_FINES_RESULTS_REF_DATA_MOCK } from '@services/fines/opal-fines-ser
 import { FINES_REVIEW_SUMMARY_OFFENCE_MOCK } from './mocks/review_summary_offence_mock';
 import { MacOffenceDetailsReviewSummaryLocators as DOM_ELEMENTS } from '../../../../shared/selectors/manual-account-creation/mac.offence-details.locators';
 import { interceptOffences } from 'cypress/component/CommonIntercepts/CommonIntercepts';
-import { FINES_ACCOUNT_TYPES } from 'src/app/flows/fines/constants/fines-account-types.constant';
 
 const MANUAL_ACCOUNT_CREATION_JIRA_LABEL = '@JIRA-LABEL:manual-account-creation';
 
@@ -65,7 +64,7 @@ describe('ReviewSummaryComponent', () => {
     '(AC.1)should render component',
     {
       tags: [
-        ...buildTags('@JIRA-STORY:PO-417', '@JIRA-STORY:PO-676', '@JIRA-STORY:PO-679'),
+        ...buildTags('@JIRA-STORY:PO-417', '@JIRA-STORY:PO-676', '@JIRA-STORY:PO-679', '@JIRA-DEFECT:PO-9110'),
         '@JIRA-EPIC:PO-545',
         '@JIRA-TEST-KEY:PO-5059',
       ],
@@ -86,6 +85,7 @@ describe('ReviewSummaryComponent', () => {
           '@JIRA-STORY:PO-662',
           '@JIRA-STORY:PO-663',
           '@JIRA-STORY:PO-560',
+          '@JIRA-DEFECT:PO-9110',
         ),
         '@JIRA-EPIC:PO-545',
         '@JIRA-TEST-KEY:PO-5060',
@@ -128,6 +128,7 @@ describe('ReviewSummaryComponent', () => {
           '@JIRA-STORY:PO-662',
           '@JIRA-STORY:PO-663',
           '@JIRA-STORY:PO-560',
+          '@JIRA-DEFECT:PO-9110',
         ),
         '@JIRA-EPIC:PO-545',
         '@JIRA-TEST-KEY:PO-5061',
@@ -145,7 +146,7 @@ describe('ReviewSummaryComponent', () => {
       cy.get(DOM_ELEMENTS.tableHeadings).should('contain', 'Amount paid');
       cy.get(DOM_ELEMENTS.tableHeadings).should('contain', 'Balance remaining');
 
-      cy.get(DOM_ELEMENTS.impositionType).should('contain', 'Criminal Courts Charge');
+      cy.get(DOM_ELEMENTS.impositionType).should('contain', 'Criminal Courts Charge (FCC)');
       cy.get(DOM_ELEMENTS.creditor).should('contain', 'HM Courts & Tribunals Service (HMCTS)');
       cy.get(DOM_ELEMENTS.amountImposed).should('contain', '£200.00');
       cy.get(DOM_ELEMENTS.amountPaid).should('contain', '£50.00');
@@ -156,7 +157,7 @@ describe('ReviewSummaryComponent', () => {
       cy.get(DOM_ELEMENTS.totalAmountPaid).should('contain', '£50.00');
       cy.get(DOM_ELEMENTS.totalBalanceRemaining).should('contain', '£150.00');
 
-      cy.get(DOM_ELEMENTS.impositionType).should('contain', FINES_ACCOUNT_TYPES.Fine);
+      cy.get(DOM_ELEMENTS.impositionType).should('contain', 'Fine (FO)');
       cy.get(DOM_ELEMENTS.creditor).should('contain', 'HM Courts & Tribunals Service (HMCTS)');
       cy.get(DOM_ELEMENTS.amountImposed).should('contain', '£300.00');
       cy.get(DOM_ELEMENTS.amountPaid).should('contain', '£20.00');
@@ -189,6 +190,7 @@ describe('ReviewSummaryComponent', () => {
           '@JIRA-STORY:PO-662',
           '@JIRA-STORY:PO-663',
           '@JIRA-STORY:PO-560',
+          '@JIRA-DEFECT:PO-9110',
         ),
         '@JIRA-EPIC:PO-545',
         '@JIRA-TEST-KEY:PO-5062',
@@ -223,7 +225,7 @@ describe('ReviewSummaryComponent', () => {
         },
       ];
 
-      cy.get(DOM_ELEMENTS.impositionType).should('contain', 'Compensation');
+      cy.get(DOM_ELEMENTS.impositionType).should('contain', 'Compensation (FCOMP)');
       cy.get(DOM_ELEMENTS.creditor).should('contain', 'Aldi Stores Ltd (ALDI)');
       cy.get(DOM_ELEMENTS.amountImposed).should('contain', '£400.00');
       cy.get(DOM_ELEMENTS.amountPaid).should('contain', '£100.00');
@@ -234,7 +236,7 @@ describe('ReviewSummaryComponent', () => {
       cy.get(DOM_ELEMENTS.totalAmountPaid).should('contain', '£100.00');
       cy.get(DOM_ELEMENTS.totalBalanceRemaining).should('contain', '£300.00');
 
-      cy.get(DOM_ELEMENTS.impositionType).should('contain', FINES_ACCOUNT_TYPES.Fine);
+      cy.get(DOM_ELEMENTS.impositionType).should('contain', 'Fine (FO)');
       cy.get(DOM_ELEMENTS.creditor).should('contain', 'HM Courts & Tribunals Service (HMCTS)');
       cy.get(DOM_ELEMENTS.amountImposed).should('contain', '£600.00');
       cy.get(DOM_ELEMENTS.amountPaid).should('contain', '£200.00');
@@ -265,6 +267,7 @@ describe('ReviewSummaryComponent', () => {
           '@JIRA-STORY:PO-662',
           '@JIRA-STORY:PO-663',
           '@JIRA-STORY:PO-560',
+          '@JIRA-DEFECT:PO-9110',
         ),
         '@JIRA-EPIC:PO-545',
         '@JIRA-TEST-KEY:PO-5063',
@@ -319,13 +322,13 @@ describe('ReviewSummaryComponent', () => {
         },
       ];
 
-      cy.get(DOM_ELEMENTS.impositionType).should('contain', 'Compensation');
+      cy.get(DOM_ELEMENTS.impositionType).should('contain', 'Compensation (FCOMP)');
       cy.get(DOM_ELEMENTS.creditor).should('contain', 'Aldi Stores Ltd (ALDI)');
       cy.get(DOM_ELEMENTS.amountImposed).should('contain', '£400.00');
       cy.get(DOM_ELEMENTS.amountPaid).should('contain', '£100.00');
       cy.get(DOM_ELEMENTS.balanceRemaining).should('contain', '£300.00');
 
-      cy.get(DOM_ELEMENTS.impositionType).should('contain', 'FORFEITED RECOGNISANCE');
+      cy.get(DOM_ELEMENTS.impositionType).should('contain', 'FORFEITED RECOGNISANCE (FFR)');
       cy.get(DOM_ELEMENTS.creditor).should('contain', 'HM Courts & Tribunals Service (HMCTS)');
       cy.get(DOM_ELEMENTS.amountImposed).should('contain', '£2000.00');
       cy.get(DOM_ELEMENTS.amountPaid).should('contain', '£200.00');
@@ -336,13 +339,13 @@ describe('ReviewSummaryComponent', () => {
       cy.get(DOM_ELEMENTS.totalAmountPaid).should('contain', '£300.00');
       cy.get(DOM_ELEMENTS.totalBalanceRemaining).should('contain', '£2100.00');
 
-      cy.get(DOM_ELEMENTS.impositionType).should('contain', FINES_ACCOUNT_TYPES.Fine);
+      cy.get(DOM_ELEMENTS.impositionType).should('contain', 'Fine (FO)');
       cy.get(DOM_ELEMENTS.creditor).should('contain', 'HM Courts & Tribunals Service (HMCTS)');
       cy.get(DOM_ELEMENTS.amountImposed).should('contain', '£600.00');
       cy.get(DOM_ELEMENTS.amountPaid).should('contain', '£200.00');
       cy.get(DOM_ELEMENTS.balanceRemaining).should('contain', '£400.00');
 
-      cy.get(DOM_ELEMENTS.impositionType).should('contain', 'FORFEITED RECOGNISANCE');
+      cy.get(DOM_ELEMENTS.impositionType).should('contain', 'FORFEITED RECOGNISANCE (FFR)');
       cy.get(DOM_ELEMENTS.creditor).should('contain', 'HM Courts & Tribunals Service (HMCTS)');
       cy.get(DOM_ELEMENTS.amountImposed).should('contain', '£1000.00');
       cy.get(DOM_ELEMENTS.amountPaid).should('contain', '£100.00');

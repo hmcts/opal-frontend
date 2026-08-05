@@ -71,7 +71,7 @@ properties([
   ])
 ])
 
-@Library('Infrastructure')
+@Library('Infrastructure@2.4.4')
 
 String type = 'angular'
 @Field String opalName = 'opal'
@@ -980,6 +980,10 @@ withNightlyPipeline(type, product, component) {
   loadVaultSecrets(nightlySecrets())
   env.TEST_URL = nightlyTestUrlStaging
   configureStagingLegacyGatewayUrl()
+
+  onMaster {
+    enableSlackNotifications('#opal-nightly-builds')
+  }
 
   before('akschartsinstall') {
     onPR {
