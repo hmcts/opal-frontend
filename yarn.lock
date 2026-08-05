@@ -3979,9 +3979,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@hmcts/opal-frontend-common-node@npm:^0.0.39":
-  version: 0.0.39
-  resolution: "@hmcts/opal-frontend-common-node@npm:0.0.39"
+"@hmcts/opal-frontend-common-node@file:packages/hmcts-opal-frontend-common-node-0.0.43.1.tgz::locator=opal-frontend%40workspace%3A.":
+  version: 0.0.43
+  resolution: "@hmcts/opal-frontend-common-node@file:packages/hmcts-opal-frontend-common-node-0.0.43.1.tgz#packages/hmcts-opal-frontend-common-node-0.0.43.1.tgz::hash=d600a9&locator=opal-frontend%40workspace%3A."
   dependencies:
     "@azure/msal-browser": "npm:^5.0.0"
     "@hmcts/info-provider": "npm:^1.1.0"
@@ -3992,7 +3992,7 @@ __metadata:
     axios: "npm:^1.6.2"
     body-parser: "npm:^2.0.0"
     config: "npm:^4.0.0"
-    connect-redis: "npm:^9.0.0"
+    connect-redis: "npm:^10.0.0"
     cookie-parser: "npm:^1.4.6"
     csrf-csrf: "npm:^4.0.0"
     express: "npm:^5.0.0"
@@ -4003,7 +4003,7 @@ __metadata:
     redis: "npm:^6.0.0"
     session-file-store: "npm:^1.5.0"
     xml2js: "npm:^0.6.2"
-  checksum: 10/b04750516296dffc985868bafb64aff68defca45380ddad1064504d327f2a20a90f4b2aa49c66613211bc5c362e505d8eecf3143f35ca29fb062c37f1e384c41
+  checksum: 10/1397a48fecbc4f05f5b13e03fcd91831595b5fe17e923653ad2ffd3f8d6f0b04c5b451d88b93d5f6ee298258d1793dcd87ebb3052ec13906b872d1d865c50803
   languageName: node
   linkType: hard
 
@@ -10239,6 +10239,16 @@ __metadata:
   version: 2.0.0
   resolution: "connect-history-api-fallback@npm:2.0.0"
   checksum: 10/3b26bf4041fdb33deacdcb3af9ae11e9a0b413fb14c95844d74a460b55e407625b364955dcf965c654605cde9d24ad5dad423c489aa430825aab2035859aba0c
+  languageName: node
+  linkType: hard
+
+"connect-redis@npm:^10.0.0":
+  version: 10.0.0
+  resolution: "connect-redis@npm:10.0.0"
+  peerDependencies:
+    express-session: ">=1"
+    redis: ">=5"
+  checksum: 10/6263130357f9fb29e612e181137bce3493d7a57a2f25481cb737d62020401007d934da99e4ccdded7b4401ba8431d5df38a9abd4356342d498afc704b12c0991
   languageName: node
   linkType: hard
 
@@ -16501,7 +16511,7 @@ __metadata:
     "@hmcts/nodejs-logging": "npm:^4.0.4"
     "@hmcts/opal-frontend-common": "npm:^0.0.91"
     "@hmcts/opal-frontend-common-cypress": "npm:^0.0.3"
-    "@hmcts/opal-frontend-common-node": "npm:^0.0.39"
+    "@hmcts/opal-frontend-common-node": "file:packages/hmcts-opal-frontend-common-node-0.0.43.1.tgz"
     "@hmcts/properties-volume": "npm:^1.1.0"
     "@hmcts/zephyr-automation-nodejs": "npm:0.0.7"
     "@microsoft/applicationinsights-web": "npm:^3.3.5"
