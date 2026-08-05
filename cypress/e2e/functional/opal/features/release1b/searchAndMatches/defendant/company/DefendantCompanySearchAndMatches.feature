@@ -31,7 +31,7 @@ Feature: Defendant Company Search And Matches
       | company name             | CompanyOne |
     Then I see an page containing "There is a problem"
     And I see the validation message "Reference data and account information cannot be entered together when searching for an account. Search using either:"
-    And I see the listed options "account number, reference or case number, selected tab"
+    And I see the listed options "account number, reference or case number, National Insurance number, advanced search"
     And I go back from the problem page
     Then I see the "Search for an account" page for companies with the following details:
       | account number           | 12345678   |
@@ -47,7 +47,7 @@ Feature: Defendant Company Search And Matches
       | company name             | <companyName>   |
     Then I see an page containing "There is a problem"
     And I see the validation message "Reference data and account information cannot be entered together when searching for an account. Search using either:"
-    And I see the listed options "account number, reference or case number, selected tab"
+    And I see the listed options "account number, reference or case number, National Insurance number, advanced search"
     And I go back from the problem page
     Then I see the "Search for an account" page for companies with the following details:
       | account number           | <accountNumber> |

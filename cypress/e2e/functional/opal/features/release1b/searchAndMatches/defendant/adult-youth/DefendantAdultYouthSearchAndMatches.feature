@@ -28,7 +28,7 @@ Feature: Defendant Adult Youth Search And Matches
       | individual last name     | Smith    |
     Then I see an page containing "There is a problem"
     And I see the validation message "Reference data and account information cannot be entered together when searching for an account. Search using either:"
-    And I see the listed options "account number, reference or case number, selected tab"
+    And I see the listed options "account number, reference or case number, National Insurance number, advanced search"
 
   @JIRA-EPIC:PO-704 @R1B @JIRA-STORY:PO-705 @JIRA-TEST-KEY:PO-5426
   Scenario: Back returns to search with data intact after all-3-fields error
@@ -49,7 +49,7 @@ Feature: Defendant Adult Youth Search And Matches
       | reference or case number | <reference>     |
       | individual last name     | <lastName>      |
     And I see the validation message "Reference data and account information cannot be entered together when searching for an account. Search using either:"
-    And I see the listed options "account number, reference or case number, selected tab"
+    And I see the listed options "account number, reference or case number, National Insurance number, advanced search"
     @R1B @JIRA-EPIC:PO-704 @JIRA-TEST-KEY:PO-5427
     Examples: Account number and reference
       | validation_case              | accountNumber | reference | lastName |
@@ -87,15 +87,14 @@ Feature: Defendant Adult Youth Search And Matches
     #AC1
     When I intercept the "defendant" account search API
     And I search using the following inputs:
-      | individual last name      | Smith           |
-      | first names               | John            |
-      | Date of birth             | 15/05/1980      |
-      | National Insurance number | AB123456C       |
-      | Address line 1            | 123 Test Street |
-      | Postcode                  | SW1A 1AA        |
-      | Last name exact match     | Yes             |
-      | First names exact match   | No              |
-      | Include aliases           | Yes             |
+      | individual last name    | Smith           |
+      | first names             | John            |
+      | Date of birth           | 15/05/1980      |
+      | Address line 1          | 123 Test Street |
+      | Postcode                | SW1A 1AA        |
+      | Last name exact match   | Yes             |
+      | First names exact match | No              |
+      | Include aliases         | Yes             |
     Then the intercepted "defendant" account search API call will contain the following parameters:
       | surname                       | Smith           |
       | exact_match_surname           | true            |
@@ -103,7 +102,6 @@ Feature: Defendant Adult Youth Search And Matches
       | exact_match_forenames         | false           |
       | include_aliases               | true            |
       | birth_date                    | 1980-05-15      |
-      | national_insurance_number     | AB123456C       |
       | address_line_1                | 123 Test Street |
       | postcode                      | SW1A 1AA        |
       | organisation_name             | null            |
@@ -117,7 +115,7 @@ Feature: Defendant Adult Youth Search And Matches
       | National Insurance number | AB123456C |
     Then I see an page containing "There is a problem"
     And I see the validation message "Reference data and account information cannot be entered together when searching for an account. Search using either:"
-    And I see the listed options "account number, reference or case number, selected tab"
+    And I see the listed options "account number, reference or case number, National Insurance number, advanced search"
     And I go back from the problem page
     Then I see the "Search for an account" page for individuals with the following details:
       | account number            | 12345678  |
@@ -131,7 +129,7 @@ Feature: Defendant Adult Youth Search And Matches
       | National Insurance number | AB123456C |
     Then I see an page containing "There is a problem"
     And I see the validation message "Reference data and account information cannot be entered together when searching for an account. Search using either:"
-    And I see the listed options "account number, reference or case number, selected tab"
+    And I see the listed options "account number, reference or case number, National Insurance number, advanced search"
 
   @JIRA-STORY:PO-2953 @JIRA-EPIC:PO-2630 @R1B
   Scenario: Verify National Insurance search cannot be combined with individual search fields
@@ -141,7 +139,7 @@ Feature: Defendant Adult Youth Search And Matches
       | individual last name      | Smith     |
     Then I see an page containing "There is a problem"
     And I see the validation message "Reference data and account information cannot be entered together when searching for an account. Search using either:"
-    And I see the listed options "account number, reference or case number, selected tab"
+    And I see the listed options "account number, reference or case number, National Insurance number, advanced search"
 
   @JIRA-EPIC:PO-704 @R1B @JIRA-STORY:PO-717 @JIRA-TEST-KEY:PO-5451
   Scenario: Verify API call parameters for Individual search with only last name populated
