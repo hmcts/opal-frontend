@@ -103,4 +103,24 @@ describe('FinesMacEmployerDetailsFormComponent', () => {
     fixture.detectChanges();
     expect(fixture.nativeElement.querySelector('form')?.getAttribute('autocomplete')).toBe('off');
   });
+
+  it('should validate postcode format using alphanumericTextPattern', () => {
+    const postcodeControl = component.form.get('fm_employer_details_employer_post_code');
+
+    postcodeControl?.setValue('SW1A 1AA');
+    expect(postcodeControl?.hasError('alphanumericTextPattern')).toBe(false);
+
+    postcodeControl?.setValue('SW1A-1AA');
+    expect(postcodeControl?.hasError('alphanumericTextPattern')).toBe(true);
+  });
+
+  it('should validate postcode max length after stripping whitespace', () => {
+    const postcodeControl = component.form.get('fm_employer_details_employer_post_code');
+
+    postcodeControl?.setValue('SW1A 1AA');
+    expect(postcodeControl?.hasError('maxlength')).toBe(false);
+
+    postcodeControl?.setValue('SW1A 1AAAA');
+    expect(postcodeControl?.hasError('maxlength')).toBe(true);
+  });
 });

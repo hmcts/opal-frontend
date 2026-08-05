@@ -18,6 +18,10 @@ import { optionalValidDateValidator } from '@hmcts/opal-frontend-common/validato
 import { dateOfBirthValidator } from '@hmcts/opal-frontend-common/validators/date-of-birth';
 import { FinesConStore } from '../../../../stores/fines-con.store';
 import { finesConSearchAccountFormIndividualsValidator } from './validators/fines-con-search-account-form-individuals.validator';
+import {
+  postcodeMaxLengthValidator,
+  postcodePatternValidator,
+} from '../../../../../validators/utils/postcode-validator.util';
 
 const LETTERS_WITH_SPACES_PATTERN_VALIDATOR = patternValidator(LETTERS_WITH_SPACES_PATTERN, 'lettersWithSpacesPattern');
 const ALPHANUMERIC_WITH_HYPHENS_SPACES_APOSTROPHES_DOT_VALIDATOR = patternValidator(
@@ -87,8 +91,8 @@ export class FinesConSearchAccountFormIndividualsComponent extends AbstractNeste
         Validators.maxLength(30),
       ]),
       fcon_search_account_individuals_post_code: new FormControl<string | null>(null, [
-        ALPHANUMERIC_WITH_HYPHENS_SPACES_APOSTROPHES_DOT_VALIDATOR,
-        Validators.maxLength(8),
+        postcodeMaxLengthValidator(),
+        postcodePatternValidator('alphanumericTextPattern'),
       ]),
     });
   }

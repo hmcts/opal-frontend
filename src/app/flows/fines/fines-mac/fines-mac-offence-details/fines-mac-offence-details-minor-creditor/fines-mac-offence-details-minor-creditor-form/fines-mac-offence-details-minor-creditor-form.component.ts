@@ -36,6 +36,10 @@ import {
   NUMERIC_PATTERN,
   SINGLE_ASCII_CHARACTERS,
 } from '@hmcts/opal-frontend-common/constants';
+import {
+  postcodeMaxLengthValidator,
+  postcodePatternValidator,
+} from '../../../../validators/utils/postcode-validator.util';
 
 const LETTERS_WITH_SPACES_PATTERN_VALIDATOR = patternValidator(LETTERS_WITH_SPACES_PATTERN, 'lettersWithSpacesPattern');
 const ALPHANUMERIC_WITH_HYPHENS_SPACES_APOSTROPHES_DOT_PATTERN_VALIDATOR = patternValidator(
@@ -121,7 +125,10 @@ export class FinesMacOffenceDetailsMinorCreditorFormComponent extends AbstractFo
         Validators.maxLength(16),
         ALPHANUMERIC_WITH_SPACES_PATTERN_VALIDATOR,
       ]),
-      fm_offence_details_minor_creditor_post_code: new FormControl(null, [Validators.maxLength(8)]),
+      fm_offence_details_minor_creditor_post_code: new FormControl(null, [
+        postcodeMaxLengthValidator(),
+        postcodePatternValidator('alphanumericTextPattern'),
+      ]),
       fm_offence_details_minor_creditor_pay_by_bacs: new FormControl(null),
       fm_offence_details_minor_creditor_bank_account_name: new FormControl(null),
       fm_offence_details_minor_creditor_bank_sort_code: new FormControl(null),

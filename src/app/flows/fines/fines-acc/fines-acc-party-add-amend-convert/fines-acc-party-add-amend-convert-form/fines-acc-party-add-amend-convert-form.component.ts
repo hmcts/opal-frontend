@@ -62,6 +62,10 @@ import { FINES_ACC_SUMMARY_TABS_CONTENT_STYLES } from '../../constants/fines-acc
 import { FINES_ACC_PARTY_ADD_AMEND_CONVERT_MODES } from '../constants/fines-acc-party-add-amend-convert-modes.constant';
 import { FINES_ACC_PARTY_ADD_AMEND_CONVERT_SECTION_FRAGMENTS } from '../constants/fines-acc-party-add-amend-convert-fragments.constant';
 import {
+  postcodeMaxLengthValidator,
+  postcodePatternValidator,
+} from '../../../validators/utils/postcode-validator.util';
+import {
   MojAlertComponent,
   MojAlertContentComponent,
   MojAlertIconComponent,
@@ -159,8 +163,8 @@ export class FinesAccPartyAddAmendConvertFormComponent
         SINGLE_ASCII_CHARACTERS_ALPHANUMERIC_WITH_SPECIAL_CHARACTERS_PATTERN_VALIDATOR,
       ]),
       facc_party_add_amend_convert_post_code: new FormControl(null, [
-        optionalMaxLengthValidator(8),
-        ALPHANUMERIC_WITH_SPACES_PATTERN_VALIDATOR,
+        postcodeMaxLengthValidator(),
+        postcodePatternValidator('alphanumericTextPattern'),
       ]),
       facc_party_add_amend_convert_contact_email_address_1: new FormControl(null, [
         optionalMaxLengthValidator(76),
@@ -277,7 +281,7 @@ export class FinesAccPartyAddAmendConvertFormComponent
     );
     formGroup.addControl(
       'facc_party_add_amend_convert_employer_post_code',
-      new FormControl(null, [optionalMaxLengthValidator(8), ALPHANUMERIC_WITH_SPACES_PATTERN_VALIDATOR]),
+      new FormControl(null, [postcodeMaxLengthValidator(), postcodePatternValidator('alphanumericTextPattern')]),
     );
   }
 

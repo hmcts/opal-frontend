@@ -112,6 +112,26 @@ describe('FinesSaSearchAccountFormCompaniesComponent', () => {
     expect(component.form.get('fsa_search_account_companies_company_name')?.hasError('required')).toBe(false);
   });
 
+  it('should validate postcode pattern with alphanumericTextPattern', () => {
+    const postcodeControl = component.form.get('fsa_search_account_companies_post_code');
+
+    postcodeControl?.setValue('SW1A 1AA');
+    expect(postcodeControl?.hasError('alphanumericTextPattern')).toBe(false);
+
+    postcodeControl?.setValue('SW1A@1AA');
+    expect(postcodeControl?.hasError('alphanumericTextPattern')).toBe(true);
+  });
+
+  it('should validate postcode max length after stripping whitespace', () => {
+    const postcodeControl = component.form.get('fsa_search_account_companies_post_code');
+
+    postcodeControl?.setValue('SW1A 1AA');
+    expect(postcodeControl?.hasError('maxlength')).toBe(false);
+
+    postcodeControl?.setValue('SW1A 1AAAA');
+    expect(postcodeControl?.hasError('maxlength')).toBe(true);
+  });
+
   it('should install its controls into the provided FormGroup on init', () => {
     const names = [
       'fsa_search_account_companies_company_name',

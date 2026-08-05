@@ -198,15 +198,15 @@ describe('FinesConSearchAccountFormCompaniesComponent', () => {
 
   it.each([
     {
-      caseName: 'alphanumeric hyphens apostrophes and spaces pattern',
+      caseName: 'alphanumeric and spaces pattern',
       validValue: 'SW1A 1AA',
-      invalidValue: 'SW1A@1AA',
+      invalidValue: 'SW1A-1AA',
       errorName: 'alphanumericTextPattern',
     },
     {
-      caseName: 'max length of 8 characters',
+      caseName: 'max length of 8 characters after stripping whitespace',
       validValue: 'SW1A1AA',
-      invalidValue: 'SW1A 1AAA',
+      invalidValue: 'SW1A 1AAAA',
       errorName: 'maxlength',
     },
   ] as const)('should validate postcode $caseName', ({ validValue, invalidValue, errorName }) => {

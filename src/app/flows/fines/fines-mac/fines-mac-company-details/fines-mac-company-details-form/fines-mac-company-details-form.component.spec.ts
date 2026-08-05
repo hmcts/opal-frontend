@@ -156,6 +156,26 @@ describe('FinesMacCompanyDetailsFormComponent', () => {
     expect(component.form.get('fm_company_details_postcode')).toBeTruthy();
   });
 
+  it('should validate postcode format using alphanumericTextPattern', () => {
+    const postcodeControl = component.form.get('fm_company_details_postcode');
+
+    postcodeControl?.setValue('SW1A 1AA');
+    expect(postcodeControl?.hasError('alphanumericTextPattern')).toBe(false);
+
+    postcodeControl?.setValue('SW1A-1AA');
+    expect(postcodeControl?.hasError('alphanumericTextPattern')).toBe(true);
+  });
+
+  it('should validate postcode max length after stripping whitespace', () => {
+    const postcodeControl = component.form.get('fm_company_details_postcode');
+
+    postcodeControl?.setValue('SW1A 1AA');
+    expect(postcodeControl?.hasError('maxlength')).toBe(false);
+
+    postcodeControl?.setValue('SW1A 1AAAA');
+    expect(postcodeControl?.hasError('maxlength')).toBe(true);
+  });
+
   it('should set up the alias configuration for the company details form', () => {
     component['setupAliasConfiguration']();
     expect(component.aliasFields).toEqual(FINES_MAC_COMPANY_DETAILS_ALIAS.map((item) => item.controlName));

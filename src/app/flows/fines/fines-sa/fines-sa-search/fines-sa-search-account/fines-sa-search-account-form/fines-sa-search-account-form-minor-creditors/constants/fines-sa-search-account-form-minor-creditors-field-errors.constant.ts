@@ -69,12 +69,12 @@ export const FINES_SA_SEARCH_ACCOUNT_FORM_MINOR_CREDITORS_FIELD_ERRORS: IFinesSa
       },
     },
     fsa_search_account_minor_creditors_individual_post_code: {
-      alphanumericWithSpacesPattern: {
-        message: 'Post code must only contain letters or numbers',
+      alphanumericTextPattern: {
+        message: 'Postcode must only contain letters or numbers',
         priority: 1,
       },
       maxlength: {
-        message: 'Post code must be 8 characters or fewer',
+        message: 'Postcode must be 8 characters or fewer',
         priority: 2,
       },
     },
@@ -89,7 +89,7 @@ export const FINES_SA_SEARCH_ACCOUNT_FORM_MINOR_CREDITORS_FIELD_ERRORS: IFinesSa
       },
     },
     fsa_search_account_minor_creditors_company_post_code: {
-      alphanumericWithSpacesPattern: {
+      alphanumericTextPattern: {
         message: 'Post code must only contain letters or numbers',
         priority: 1,
       },

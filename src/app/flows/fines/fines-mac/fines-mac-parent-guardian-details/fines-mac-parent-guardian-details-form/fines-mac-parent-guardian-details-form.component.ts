@@ -26,6 +26,10 @@ import { optionalValidDateValidator } from '@hmcts/opal-frontend-common/validato
 import { CapitalisationDirective } from '@hmcts/opal-frontend-common/directives/capitalisation';
 import { patternValidator } from '@hmcts/opal-frontend-common/validators/pattern-validator';
 import { ALPHANUMERIC_WITH_SPACES_PATTERN, SINGLE_ASCII_CHARACTERS } from '@hmcts/opal-frontend-common/constants';
+import {
+  postcodeMaxLengthValidator,
+  postcodePatternValidator,
+} from '../../../validators/utils/postcode-validator.util';
 
 // regex pattern validators for the form controls
 const SINGLE_ASCII_CHARACTERS_ALPHANUMERIC_WITH_SPECIAL_CHARACTERS_PATTERN_VALIDATOR = patternValidator(
@@ -103,7 +107,10 @@ export class FinesMacParentGuardianDetailsFormComponent
         optionalMaxLengthValidator(13),
         ALPHANUMERIC_WITH_SPACES_PATTERN_VALIDATOR,
       ]),
-      fm_parent_guardian_details_post_code: new FormControl(null, [optionalMaxLengthValidator(8)]),
+      fm_parent_guardian_details_post_code: new FormControl(null, [
+        postcodeMaxLengthValidator(),
+        postcodePatternValidator('alphanumericTextPattern'),
+      ]),
       fm_parent_guardian_details_vehicle_make: new FormControl(null, [optionalMaxLengthValidator(30)]),
       fm_parent_guardian_details_vehicle_registration_mark: new FormControl(null, [optionalMaxLengthValidator(10)]),
     });
