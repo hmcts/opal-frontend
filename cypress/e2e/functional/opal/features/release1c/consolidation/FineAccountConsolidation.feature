@@ -1,5 +1,5 @@
 @JIRA-LABEL:consolidation
-Feature: Fines Account Consolidation
+Feature: Fine Account Consolidation
   Validate consolidation navigation from select business unit to account search.
 
   Background:
