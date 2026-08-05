@@ -30,6 +30,7 @@ describe('Search Account Component - Minor Creditors', () => {
       resultsResolvers: {
         minorCreditorAccounts: finesSaMinorCreditorAccountsResolver,
       },
+      useSpyRouter: true,
     });
 
   it(
@@ -176,6 +177,25 @@ describe('Search Account Component - Minor Creditors', () => {
         'Post code must only contain letters or numbers',
       );
       cy.get(MinorCompanyLocators.companyPostcodeInput).clear();
+    },
+  );
+
+  it(
+    'AC6f. should route to problem screen when National Insurance number is combined with minor creditor criteria',
+    { tags: [...buildTags('@JIRA-STORY:PO-2953'), '@JIRA-EPIC:PO-2630'] },
+    () => {
+      setupComponent((searchState) => {
+        searchState.fsa_search_account_individuals_search_criteria!.fsa_search_account_individuals_national_insurance_number =
+          'AB123456C';
+        searchState.fsa_search_account_minor_creditors_search_criteria!.fsa_search_account_minor_creditors_company.fsa_search_account_minor_creditors_company_name =
+          'Minor Co';
+      });
+
+      cy.get(NavLocators.minorCreditorsTab).click();
+      cy.get(MinorTypeLocators.companyRadio).click();
+      cy.get(CommonLocators.searchButton).click();
+
+      cy.get('@routerNavigate').should('have.been.calledWithMatch', ['problem']);
     },
   );
 

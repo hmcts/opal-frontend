@@ -42,7 +42,7 @@ export const AccountAtAGlanceLocators = {
 
   accountSummary: {
     /** Visible row that contains the account header summary values below the page title. */
-    root: 'opal-lib-custom-account-information > .govuk-grid-row',
+    root: 'opal-lib-custom-account-information',
 
     /** Account type value shown in the summary strip. */
     accountTypeValue: '#defendant-account-type',
@@ -84,6 +84,15 @@ export const AccountAtAGlanceLocators = {
     /** Section header: Language preferences. */
     languagePreferences:
       'app-fines-acc-defendant-details-at-a-glance-tab h2.govuk-heading-s:contains("Language preferences")',
+  },
+
+  layout: {
+    defendantColumn:
+      'app-fines-acc-defendant-details-at-a-glance-tab .govuk-grid-column-one-third:has(h2.govuk-heading-s:contains("Defendant"))',
+    paymentTermsColumn:
+      'app-fines-acc-defendant-details-at-a-glance-tab .govuk-grid-column-one-third:has(h2.govuk-heading-s:contains("Payment terms"))',
+    enforcementStatusColumn:
+      'app-fines-acc-defendant-details-at-a-glance-tab .govuk-grid-column-one-third:has(h2.govuk-heading-s:contains("Enforcement status"))',
   },
 
   // ──────────────────────────────
