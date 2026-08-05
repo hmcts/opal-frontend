@@ -11,7 +11,6 @@ import { OPAL_FINES_RESULTS_REF_DATA_MOCK } from '@services/fines/opal-fines-ser
 import { OPAL_FINES_MAJOR_CREDITOR_REF_DATA_MOCK } from '@services/fines/opal-fines-service/mocks/opal-fines-major-creditor-ref-data.mock';
 import { FINES_MAC_OFFENCE_DETAILS_STATE_IMPOSITIONS_MOCK } from 'src/app/flows/fines/fines-mac/fines-mac-offence-details/mocks/fines-mac-offence-details-state-impositions.mock';
 import { of } from 'rxjs';
-import { FINES_ACCOUNT_TYPES } from 'src/app/flows/fines/constants/fines-account-types.constant';
 
 const MANUAL_ACCOUNT_CREATION_JIRA_LABEL = '@JIRA-LABEL:manual-account-creation';
 
@@ -65,7 +64,7 @@ describe('ReviewOffenceComponent', () => {
     'should render component',
     {
       tags: [
-        ...buildTags('@JIRA-STORY:PO-416', '@JIRA-STORY:PO-682', '@JIRA-STORY:PO-680'),
+        ...buildTags('@JIRA-STORY:PO-416', '@JIRA-STORY:PO-682', '@JIRA-STORY:PO-680', '@JIRA-DEFECT:PO-9110'),
         '@JIRA-EPIC:PO-545',
         '@JIRA-TEST-KEY:PO-5055',
       ],
@@ -81,7 +80,7 @@ describe('ReviewOffenceComponent', () => {
     'should load all elements on the screen correctly',
     {
       tags: [
-        ...buildTags('@JIRA-STORY:PO-416', '@JIRA-STORY:PO-682', '@JIRA-STORY:PO-680'),
+        ...buildTags('@JIRA-STORY:PO-416', '@JIRA-STORY:PO-682', '@JIRA-STORY:PO-680', '@JIRA-DEFECT:PO-9110'),
         '@JIRA-EPIC:PO-545',
         '@JIRA-TEST-KEY:PO-5056',
       ],
@@ -107,7 +106,7 @@ describe('ReviewOffenceComponent', () => {
     'should have correct values in the elements',
     {
       tags: [
-        ...buildTags('@JIRA-STORY:PO-416', '@JIRA-STORY:PO-682', '@JIRA-STORY:PO-680'),
+        ...buildTags('@JIRA-STORY:PO-416', '@JIRA-STORY:PO-682', '@JIRA-STORY:PO-680', '@JIRA-DEFECT:PO-9110'),
         '@JIRA-EPIC:PO-545',
         '@JIRA-TEST-KEY:PO-5057',
       ],
@@ -121,7 +120,7 @@ describe('ReviewOffenceComponent', () => {
       cy.get(DOM_ELEMENTS.tableHeadings).should('contain', 'Amount paid');
       cy.get(DOM_ELEMENTS.tableHeadings).should('contain', 'Balance remaining');
 
-      cy.get(DOM_ELEMENTS.impositionType).should('contain', 'Criminal Courts Charge');
+      cy.get(DOM_ELEMENTS.impositionType).should('contain', 'Criminal Courts Charge (FCC)');
       cy.get(DOM_ELEMENTS.creditor).should('contain', 'HM Courts & Tribunals Service (HMCTS)');
       cy.get(DOM_ELEMENTS.amountImposed).should('contain', '£200.00');
       cy.get(DOM_ELEMENTS.amountPaid).should('contain', '£50.00');
@@ -138,7 +137,7 @@ describe('ReviewOffenceComponent', () => {
     'should update value according to imposition type',
     {
       tags: [
-        ...buildTags('@JIRA-STORY:PO-416', '@JIRA-STORY:PO-682', '@JIRA-STORY:PO-680'),
+        ...buildTags('@JIRA-STORY:PO-416', '@JIRA-STORY:PO-682', '@JIRA-STORY:PO-680', '@JIRA-DEFECT:PO-9110'),
         '@JIRA-EPIC:PO-545',
         '@JIRA-TEST-KEY:PO-5058',
       ],
@@ -152,7 +151,7 @@ describe('ReviewOffenceComponent', () => {
       cy.get(DOM_ELEMENTS.tableHeadings).should('contain', 'Amount paid');
       cy.get(DOM_ELEMENTS.tableHeadings).should('contain', 'Balance remaining');
 
-      cy.get(DOM_ELEMENTS.impositionType).should('contain', FINES_ACCOUNT_TYPES.Fine);
+      cy.get(DOM_ELEMENTS.impositionType).should('contain', 'Fine (FO)');
       cy.get(DOM_ELEMENTS.creditor).should('contain', 'HM Courts & Tribunals Service (HMCTS)');
       cy.get(DOM_ELEMENTS.amountImposed).should('contain', '£0.0');
       cy.get(DOM_ELEMENTS.amountPaid).should('contain', '£0.0');
