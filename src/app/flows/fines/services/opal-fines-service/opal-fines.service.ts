@@ -69,6 +69,11 @@ import { IOpalFinesDraftAccountPatchRequestPayload } from '@services/fines/opal-
 import { IOpalFinesDeleteDefendantAccountPartyPayload } from './interfaces/opal-fines-delete-defendant-account-party-payload.interface';
 import { IOpalFinesAccountMajorCreditorDetailsHeader } from '../../fines-acc/fines-acc-major-creditor-details/interfaces/fines-acc-major-creditor-details-header.interface';
 import { IOpalFinesAccountMajorCreditorAtAGlance } from './interfaces/opal-fines-account-major-creditor-at-a-glance.interface';
+import { IOpalFinesAccountDefendantDetailsConsolidatedAccount } from './interfaces/opal-fines-account-defendant-account-consolidated-account.interface';
+import { IOpalFinesAccountDefendantDetailsConsolidatedAccounts } from './interfaces/opal-fines-account-defendant-account-consolidated-accounts.interface';
+import { IOpalFinesReport } from './interfaces/opal-fines-report.interface';
+import { IOpalFinesReportInstancesParams } from './interfaces/opal-fines-report-instances-params.interface';
+import { IOpalFinesReportInstancesResponse } from './interfaces/opal-fines-report-instances-response.interface';
 
 const SAFE_READ_RETRY_POLICY = {
   retryCount: 1,
@@ -88,6 +93,11 @@ export class OpalFines {
   private readonly PARAM_NOT_SUBMITTED_BY = 'not_submitted_by';
   private readonly PARAM_ACCOUNT_STATUS_DATE_FROM = 'account_status_date_from';
   private readonly PARAM_ACCOUNT_STATUS_DATE_TO = 'account_status_date_to';
+  private readonly PARAM_FROM_DATE = 'from_date';
+  private readonly PARAM_TO_DATE = 'to_date';
+  private readonly PARAM_BUSINESS_UNITS = 'business_units';
+  private readonly PARAM_USER_ID = 'user_id';
+  private readonly PARAM_REPORT_ID = 'report_id';
 
   private retrySafeReadOptions() {
     return { context: withHttpRetry(SAFE_READ_RETRY_POLICY) };
@@ -216,9 +226,40 @@ export class OpalFines {
       'offenceCodesCache$',
       'majorCreditorsCache$',
       'prosecutorDataCache$',
+      'reportsCache$',
     ];
 
     this.clearCaches(referenceCaches);
+  }
+
+  /**
+   * Builds HTTP query parameters for retrieving report instances.
+   *
+   * @param params - Report instance query parameters.
+   * @returns The HTTP query parameters for the request.
+   */
+  private getReportInstancesParams(params: IOpalFinesReportInstancesParams): HttpParams {
+    let httpParams = new HttpParams();
+
+    if (params.from_date) {
+      httpParams = httpParams.set(this.PARAM_FROM_DATE, params.from_date);
+    }
+
+    if (params.to_date) {
+      httpParams = httpParams.set(this.PARAM_TO_DATE, params.to_date);
+    }
+
+    if (params.report_id !== undefined && params.report_id !== null) {
+      httpParams = httpParams.set(this.PARAM_REPORT_ID, params.report_id.toString());
+    }
+
+    if (params.user_id !== undefined && params.user_id !== null) {
+      httpParams = httpParams.set(this.PARAM_USER_ID, params.user_id.toString());
+    }
+
+    httpParams = this.appendArrayParams(httpParams, this.PARAM_BUSINESS_UNITS, params.business_units);
+
+    return httpParams;
   }
 
   /**
@@ -302,6 +343,40 @@ export class OpalFines {
       .pipe(shareReplay(1));
 
     return this.cache.businessUnitsCache$;
+  }
+
+  /**
+   * Retrieves report metadata for a report type.
+   * Metadata is cached because report configuration is reference-like data.
+   *
+   * @param reportId - The report type identifier.
+   * @returns An observable of report metadata.
+   */
+  public getReport(reportId: string | number): Observable<IOpalFinesReport> {
+    const cacheKey = reportId.toString();
+
+    if (!this.cache.reportsCache$[cacheKey]) {
+      this.cache.reportsCache$[cacheKey] = this.http
+        .get<IOpalFinesReport>(`${OPAL_FINES_PATHS.reports}/${reportId}`)
+        .pipe(shareReplay(1));
+    }
+
+    return this.cache.reportsCache$[cacheKey];
+  }
+
+  /**
+   * Retrieves report instances for a report type, user, and optional filters.
+   * This call is intentionally not cached because report generation state changes frequently.
+   *
+   * @param params - Report instance query parameters.
+   * @returns An observable of report instances.
+   */
+  public getReportInstances(
+    params: IOpalFinesReportInstancesParams = {},
+  ): Observable<IOpalFinesReportInstancesResponse> {
+    return this.http.get<IOpalFinesReportInstancesResponse>(OPAL_FINES_PATHS.reportInstances, {
+      params: this.getReportInstancesParams(params),
+    });
   }
 
   /**
@@ -562,6 +637,7 @@ export class OpalFines {
       'defendantAccountHistoryAndNotesCache$',
       'defendantAccountPaymentTermsLatestCache$',
       'defendantAccountFixedPenaltyCache$',
+      'defendantAccountConsolidatedAccountsCache$',
       'minorCreditorAccountAtAGlanceCache$',
       'minorCreditorAccountCreditorCache$',
       'minorCreditorAccountHistoryAndNotesCache$',
@@ -1520,6 +1596,34 @@ export class OpalFines {
         );
     }
     return this.cache.majorCreditorAccountAtAGlanceCache$;
+  }
+
+  /**
+   * Retrieves the defendant account consolidated accounts data.
+   * If the account details for the specified tab are not already cached, it makes an HTTP request to fetch the data and caches it for future use.
+   *
+   * @param account_id - The ID of the defendant account.
+   * @returns An Observable that emits the account details for the consolidated accounts tab.
+   */
+  public getDefendantAccountConsolidatedAccounts(
+    account_id: number | null,
+  ): Observable<IOpalFinesAccountDefendantDetailsConsolidatedAccounts> {
+    if (!this.cache.defendantAccountConsolidatedAccountsCache$) {
+      const url = `${OPAL_FINES_PATHS.defendantAccounts}/${account_id}/consolidated-accounts`;
+      this.cache.defendantAccountConsolidatedAccountsCache$ = this.http
+        .get<IOpalFinesAccountDefendantDetailsConsolidatedAccount[]>(url, { observe: 'response' })
+        .pipe(
+          map((response: HttpResponse<IOpalFinesAccountDefendantDetailsConsolidatedAccount[]>) => {
+            const version = this.extractEtagVersion(response.headers);
+            return {
+              consolidated_accounts: response.body ?? [],
+              version,
+            };
+          }),
+          shareReplay(1),
+        );
+    }
+    return this.cache.defendantAccountConsolidatedAccountsCache$;
   }
 
   /**

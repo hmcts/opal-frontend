@@ -71,6 +71,9 @@ import { OPAL_FINES_ACCOUNT_MAJOR_CREDITOR_DETAILS_HISTORY_AND_NOTES_TAB_REF_DAT
 import { OPAL_FINES_MAJOR_CREDITOR_ACCOUNT_HISTORY_PARAMS_MOCK } from './mocks/opal-fines-major-creditor-account-history-params.mock';
 import { OPAL_FINES_ACCOUNT_MINOR_CREDITOR_DETAILS_HISTORY_AND_NOTES_TAB_REF_DATA_MOCK } from './mocks/opal-fines-account-minor-creditor-details-history-and-notes-tab-ref-data.mock';
 import { OPAL_FINES_MINOR_CREDITOR_ACCOUNT_HISTORY_PARAMS_MOCK } from './mocks/opal-fines-minor-creditor-account-history-params.mock';
+import { OPAL_FINES_ACCOUNT_DEFENDANT_DETAILS_CONSOLIDATED_ACCOUNTS_MOCK } from './mocks/opal-fines-account-defendant-details-consolidated-accounts.mock';
+import { IOpalFinesReport } from './interfaces/opal-fines-report.interface';
+import { IOpalFinesReportInstancesResponse } from './interfaces/opal-fines-report-instances-response.interface';
 
 describe('OpalFines', () => {
   let service: OpalFines;
@@ -261,7 +264,7 @@ describe('OpalFines', () => {
     req.flush(mockBusinessUnits);
   });
 
-  it('should return cached response for the same ref data search', () => {
+  it('should return cached response for the same business unit ref data search', () => {
     const permission = 'ACCOUNT_ENQUIRY';
     const mockBusinessUnits = OPAL_FINES_BUSINESS_UNIT_REF_DATA_MOCK;
     const expectedUrl = `${OPAL_FINES_PATHS.businessUnitRefData}?permission=${permission}`;
@@ -317,6 +320,64 @@ describe('OpalFines', () => {
     httpMock.expectNone(expectedUrl);
   });
 
+  it('should send a GET request to report metadata API and cache the response', () => {
+    const reportId = 'operational_report_enforcement';
+    const mockReport: IOpalFinesReport = {
+      report_id: reportId,
+      report_title: 'Operational reports (by enforcement)',
+      can_manually_create: true,
+    };
+    const expectedUrl = `${OPAL_FINES_PATHS.reports}/${reportId}`;
+
+    service.getReport(reportId).subscribe((response) => {
+      expect(response).toEqual(mockReport);
+    });
+
+    const req = httpMock.expectOne(expectedUrl);
+    expect(req.request.method).toBe('GET');
+    req.flush(mockReport);
+
+    service.getReport(reportId).subscribe((response) => {
+      expect(response).toEqual(mockReport);
+    });
+
+    httpMock.expectNone(expectedUrl);
+  });
+
+  it('should send a GET request to report instances API with query params and not cache the response', () => {
+    const mockResponse: IOpalFinesReportInstancesResponse = {
+      report_instances: [],
+      count: 0,
+    };
+
+    service
+      .getReportInstances({
+        report_id: 'operational_report_enforcement',
+        from_date: '2026-06-02',
+        to_date: '2026-06-08',
+        business_units: [1],
+      })
+      .subscribe((response) => {
+        expect(response).toEqual(mockResponse);
+      });
+
+    const req = httpMock.expectOne((request) => request.url === OPAL_FINES_PATHS.reportInstances);
+    expect(req.request.method).toBe('GET');
+    expect(req.request.params.get('report_id')).toBe('operational_report_enforcement');
+    expect(req.request.params.get('from_date')).toBe('2026-06-02');
+    expect(req.request.params.get('to_date')).toBe('2026-06-08');
+    expect(req.request.params.getAll('business_units')).toEqual(['1']);
+    req.flush(mockResponse);
+
+    service.getReportInstances({ report_id: 'operational_report_enforcement' }).subscribe((response) => {
+      expect(response).toEqual(mockResponse);
+    });
+
+    const secondReq = httpMock.expectOne((request) => request.url === OPAL_FINES_PATHS.reportInstances);
+    expect(secondReq.request.method).toBe('GET');
+    secondReq.flush(mockResponse);
+  });
+
   it('should send a GET request to court ref data API', () => {
     const businessUnit = 1;
     const mockCourts: IOpalFinesCourtRefData = OPAL_FINES_COURT_REF_DATA_MOCK;
@@ -332,7 +393,7 @@ describe('OpalFines', () => {
     req.flush(mockCourts);
   });
 
-  it('should return cached response for the same ref data search', () => {
+  it('should return cached response for the same court ref data search', () => {
     const businessUnit = 1;
     const mockCourts: IOpalFinesCourtRefData = OPAL_FINES_COURT_REF_DATA_MOCK;
     const expectedUrl = `${OPAL_FINES_PATHS.courtRefData}?business_unit=${businessUnit}`;
@@ -363,7 +424,7 @@ describe('OpalFines', () => {
     expect(result).toEqual(`${court.name} (${court.court_code})`);
   });
 
-  it('should send a GET request to court ref data API', () => {
+  it('should send a GET request to local justice area ref data API', () => {
     const mockLocalJusticeArea: IOpalFinesLocalJusticeAreaRefData = OPAL_FINES_LOCAL_JUSTICE_AREA_REF_DATA_MOCK;
     const expectedUrl = `${OPAL_FINES_PATHS.localJusticeAreaRefData}`;
 
@@ -377,7 +438,7 @@ describe('OpalFines', () => {
     req.flush(mockLocalJusticeArea);
   });
 
-  it('should return cached response for the same ref data search', () => {
+  it('should return cached response for the same local justice area ref data search', () => {
     const mockLocalJusticeArea: IOpalFinesLocalJusticeAreaRefData = OPAL_FINES_LOCAL_JUSTICE_AREA_REF_DATA_MOCK;
     const expectedUrl = `${OPAL_FINES_PATHS.localJusticeAreaRefData}`;
 
@@ -737,7 +798,7 @@ describe('OpalFines', () => {
     req.flush(mockMajorCreditor);
   });
 
-  it('should return cached response for the same ref data search', () => {
+  it('should return cached response for the same major creditor ref data search', () => {
     const businessUnit = 1;
     const mockMajorCreditor: IOpalFinesMajorCreditorRefData = OPAL_FINES_MAJOR_CREDITOR_REF_DATA_MOCK;
     const expectedUrl = `${OPAL_FINES_PATHS.majorCreditorRefData}?businessUnit=${businessUnit}`;
@@ -1035,24 +1096,23 @@ describe('OpalFines', () => {
     expect(result).toEqual(expectedPrettyName);
   });
 
-  it('should return the numeric value when ETag header is a quoted number', () => {
-    const headers = mockHeaders((name) => (name === 'ETag' ? '"123"' : null));
-    expect(service['extractEtagVersion'](headers)).toBe('"123"');
-  });
-
-  it('should return the numeric value when Etag header is an unquoted number', () => {
-    const headers = mockHeaders((name) => (name === 'Etag' ? '456' : null));
-    expect(service['extractEtagVersion'](headers)).toBe('456');
+  it.each([
+    { caseName: 'quoted ETag header', headerName: 'ETag', headerValue: '"123"', expectedVersion: '"123"' },
+    { caseName: 'unquoted Etag header', headerName: 'Etag', headerValue: '456', expectedVersion: '456' },
+    {
+      caseName: 'ETag header with multiple quotes',
+      headerName: 'ETag',
+      headerValue: '""789""',
+      expectedVersion: '""789""',
+    },
+  ] as const)('should return the numeric value for a $caseName', ({ headerName, headerValue, expectedVersion }) => {
+    const headers = mockHeaders((name) => (name === headerName ? headerValue : null));
+    expect(service['extractEtagVersion'](headers)).toBe(expectedVersion);
   });
 
   it('should return null if ETag header is not present', () => {
     const headers = mockHeaders(() => null);
     expect(service['extractEtagVersion'](headers)).toBeNull();
-  });
-
-  it('should handle ETag header with multiple quotes', () => {
-    const headers = mockHeaders((name) => (name === 'ETag' ? '""789""' : null));
-    expect(service['extractEtagVersion'](headers)).toBe('""789""');
   });
 
   it('should prefer ETag over Etag if both are present', () => {
@@ -1426,6 +1486,46 @@ describe('OpalFines', () => {
     req.flush(OPAL_FINES_ACCOUNT_DEFENDANT_DETAILS_HISTORY_AND_NOTES_TAB_REF_DATA_MOCK);
   });
 
+  it('should getDefendantAccountConsolidatedAccounts', () => {
+    const account_id = 77;
+    const apiUrl = `${OPAL_FINES_PATHS.defendantAccounts}/${account_id}/consolidated-accounts`;
+    const expectedResponse = {
+      ...OPAL_FINES_ACCOUNT_DEFENDANT_DETAILS_CONSOLIDATED_ACCOUNTS_MOCK,
+      version: '"123"',
+    };
+
+    service.getDefendantAccountConsolidatedAccounts(account_id).subscribe((response) => {
+      expect(response).toEqual(expectedResponse);
+    });
+
+    const req = httpMock.expectOne(apiUrl);
+    expect(req.request.method).toBe('GET');
+
+    req.flush(OPAL_FINES_ACCOUNT_DEFENDANT_DETAILS_CONSOLIDATED_ACCOUNTS_MOCK.consolidated_accounts, {
+      headers: { ETag: '"123"' },
+    });
+  });
+
+  it('should return cached defendant account consolidated accounts on repeated calls', () => {
+    const account_id = 77;
+    const apiUrl = `${OPAL_FINES_PATHS.defendantAccounts}/${account_id}/consolidated-accounts`;
+    const expectedResponse = {
+      ...OPAL_FINES_ACCOUNT_DEFENDANT_DETAILS_CONSOLIDATED_ACCOUNTS_MOCK,
+      version: null,
+    };
+
+    service.getDefendantAccountConsolidatedAccounts(account_id).subscribe();
+
+    const req = httpMock.expectOne(apiUrl);
+    req.flush(OPAL_FINES_ACCOUNT_DEFENDANT_DETAILS_CONSOLIDATED_ACCOUNTS_MOCK.consolidated_accounts);
+
+    service.getDefendantAccountConsolidatedAccounts(account_id).subscribe((response) => {
+      expect(response).toEqual(expectedResponse);
+    });
+
+    httpMock.expectNone(apiUrl);
+  });
+
   it('should send a POST request to add note API with correct payload and return mock response', () => {
     const payload: IOpalFinesAddNotePayload = OPAL_FINES_ADD_NOTE_PAYLOAD_MOCK;
     const version = '1';
@@ -1559,6 +1659,9 @@ describe('OpalFines', () => {
     service['cache']['defendantAccountFixedPenaltyCache$'] = of(
       OPAL_FINES_ACCOUNT_DEFENDANT_DETAILS_FIXED_PENALTY_MOCK,
     );
+    service['cache']['defendantAccountConsolidatedAccountsCache$'] = of(
+      OPAL_FINES_ACCOUNT_DEFENDANT_DETAILS_CONSOLIDATED_ACCOUNTS_MOCK,
+    );
     service['cache']['minorCreditorAccountAtAGlanceCache$'] = of(
       OPAL_FINES_ACCOUNT_MINOR_CREDITOR_AT_A_GLANCE_WITH_DEFENDANT_MOCK,
     );
@@ -1573,6 +1676,7 @@ describe('OpalFines', () => {
     expect(service['cache']['defendantAccountHistoryAndNotesCache$']).toBeNull();
     expect(service['cache']['defendantAccountPaymentTermsLatestCache$']).toBeNull();
     expect(service['cache']['defendantAccountFixedPenaltyCache$']).toBeNull();
+    expect(service['cache']['defendantAccountConsolidatedAccountsCache$']).toBeNull();
     expect(service['cache']['minorCreditorAccountAtAGlanceCache$']).toBeNull();
   });
 
@@ -1591,6 +1695,10 @@ describe('OpalFines', () => {
     service['cache']['businessUnitsCache$'] = of(OPAL_FINES_BUSINESS_UNIT_REF_DATA_MOCK);
     service['cache']['localJusticeAreasLjaTypeCache$']['adult'] = of(OPAL_FINES_LOCAL_JUSTICE_AREA_REF_DATA_MOCK);
     service['cache']['offenceCodesCache$']['code'] = of(OPAL_FINES_OFFENCES_REF_DATA_MOCK);
+    service['cache']['reportsCache$']['operational_report_enforcement'] = of({
+      report_id: 'operational_report_enforcement',
+      report_title: 'Operational reports (by enforcement)',
+    });
 
     service.clearAllCaches();
 
@@ -1600,6 +1708,7 @@ describe('OpalFines', () => {
     expect(service['cache']['businessUnitsCache$']).toBeNull();
     expect(service['cache']['localJusticeAreasLjaTypeCache$']).toEqual({});
     expect(service['cache']['offenceCodesCache$']).toEqual({});
+    expect(service['cache']['reportsCache$']).toEqual({});
   });
 
   it('should send a POST request to search defendant accounts API with correct body', () => {
@@ -2130,7 +2239,7 @@ describe('OpalFines', () => {
   });
 
   describe('getMinorCreditorAccountAtAGlance', () => {
-    it('should return cached data if available', () => {
+    it('should return cached minor creditor at-a-glance data if available', () => {
       const account_id: number = 77;
       const expectedResponse = OPAL_FINES_ACCOUNT_MINOR_CREDITOR_AT_A_GLANCE_WITH_DEFENDANT_MOCK;
       service['cache']['minorCreditorAccountAtAGlanceCache$'] = of(expectedResponse);
@@ -2142,7 +2251,7 @@ describe('OpalFines', () => {
       httpMock.expectNone(`${OPAL_FINES_PATHS.minorCreditorAccounts}/${account_id}/at-a-glance`);
     });
 
-    it('should make an API call if cache is not available', () => {
+    it('should make a minor creditor at-a-glance API call if cache is not available', () => {
       const account_id: number = 77;
       const expectedResponse = OPAL_FINES_ACCOUNT_MINOR_CREDITOR_AT_A_GLANCE_WITH_DEFENDANT_MOCK;
 
@@ -2157,7 +2266,7 @@ describe('OpalFines', () => {
   });
 
   describe('getMajorCreditorAccountAtAGlance', () => {
-    it('should return cached data if available', () => {
+    it('should return cached major creditor at-a-glance data if available', () => {
       const account_id: number = 77;
       const expectedResponse = OPAL_FINES_ACCOUNT_MAJOR_CREDITOR_AT_A_GLANCE_MOCK;
       service['cache']['majorCreditorAccountAtAGlanceCache$'] = of(expectedResponse);
@@ -2169,7 +2278,7 @@ describe('OpalFines', () => {
       httpMock.expectNone(`${OPAL_FINES_PATHS.majorCreditorAccounts}/${account_id}/at-a-glance`);
     });
 
-    it('should make an API call if cache is not available', () => {
+    it('should make a major creditor at-a-glance API call if cache is not available', () => {
       const account_id: number = 77;
       const expectedResponse = OPAL_FINES_ACCOUNT_MAJOR_CREDITOR_AT_A_GLANCE_MOCK;
 
@@ -2184,7 +2293,7 @@ describe('OpalFines', () => {
   });
 
   describe('getMinorCreditorAccount', () => {
-    it('should return cached data if available', () => {
+    it('should return cached minor creditor account data if available', () => {
       const account_id: number = 77;
       const expectedResponse = OPAL_FINES_ACCOUNT_MINOR_CREDITOR_CREDITOR_MOCK;
       service['cache']['minorCreditorAccountCreditorCache$'] = of(expectedResponse);
@@ -2196,7 +2305,7 @@ describe('OpalFines', () => {
       httpMock.expectNone(`${OPAL_FINES_PATHS.minorCreditorAccounts}/${account_id}`);
     });
 
-    it('should make an API call if cache is not available', () => {
+    it('should make a minor creditor account API call if cache is not available', () => {
       const account_id: number = 77;
       const expectedResponse = OPAL_FINES_ACCOUNT_MINOR_CREDITOR_CREDITOR_MOCK;
 

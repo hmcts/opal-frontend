@@ -106,46 +106,30 @@ describe('transformPaymentTermsData', () => {
     expect(result.facc_payment_terms_default_days_in_jail).toBeNull();
   });
 
-  it('should map prevent_payment_card from resultData when present', () => {
-    const result = transformPaymentTermsData(
-      FINES_ACC_BASE_PAYMENT_TERMS_DATA,
-      MOCK_RESULT_DATA_WITH_PREVENT_PAYMENT_CARD,
-    );
+  it.each([
+    {
+      caseName: 'when resultData has prevent_payment_card true',
+      resultData: MOCK_RESULT_DATA_WITH_PREVENT_PAYMENT_CARD,
+      expectedPreventPaymentCard: true,
+    },
+    {
+      caseName: 'when resultData has prevent_payment_card false',
+      resultData: MOCK_RESULT_DATA,
+      expectedPreventPaymentCard: false,
+    },
+    {
+      caseName: 'when resultData is null',
+      resultData: null,
+      expectedPreventPaymentCard: null,
+    },
+  ] as const)('should map prevent_payment_card $caseName', ({ resultData, expectedPreventPaymentCard }) => {
+    const result = transformPaymentTermsData(FINES_ACC_BASE_PAYMENT_TERMS_DATA, resultData);
 
-    expect(result.facc_payment_terms_prevent_payment_card).toBe(true);
-  });
-
-  it('should map prevent_payment_card as false when resultData has prevent_payment_card false', () => {
-    const result = transformPaymentTermsData(FINES_ACC_BASE_PAYMENT_TERMS_DATA, MOCK_RESULT_DATA);
-
-    expect(result.facc_payment_terms_prevent_payment_card).toBe(false);
-  });
-
-  it('should set prevent_payment_card as null when resultData is null', () => {
-    const result = transformPaymentTermsData(FINES_ACC_BASE_PAYMENT_TERMS_DATA, null);
-
-    expect(result.facc_payment_terms_prevent_payment_card).toBeNull();
-  });
-
-  it('should map prevent_payment_card from resultData when present', () => {
-    const result = transformPaymentTermsData(
-      FINES_ACC_BASE_PAYMENT_TERMS_DATA,
-      MOCK_RESULT_DATA_WITH_PREVENT_PAYMENT_CARD,
-    );
-
-    expect(result.facc_payment_terms_prevent_payment_card).toBe(true);
-  });
-
-  it('should map prevent_payment_card as false when resultData has prevent_payment_card false', () => {
-    const result = transformPaymentTermsData(FINES_ACC_BASE_PAYMENT_TERMS_DATA, MOCK_RESULT_DATA);
-
-    expect(result.facc_payment_terms_prevent_payment_card).toBe(false);
-  });
-
-  it('should set prevent_payment_card as null when resultData is null', () => {
-    const result = transformPaymentTermsData(FINES_ACC_BASE_PAYMENT_TERMS_DATA, null);
-
-    expect(result.facc_payment_terms_prevent_payment_card).toBeNull();
+    if (expectedPreventPaymentCard === null) {
+      expect(result.facc_payment_terms_prevent_payment_card).toBeNull();
+    } else {
+      expect(result.facc_payment_terms_prevent_payment_card).toBe(expectedPreventPaymentCard);
+    }
   });
 
   it('should always set amendment fields to null', () => {
@@ -267,26 +251,5 @@ describe('transformPaymentTermsData', () => {
     const result = transformPaymentTermsData(PAYMENT_TERMS_COMPLETE_LUMP_SUM_PLUS_INSTALMENTS_MOCK, MOCK_RESULT_DATA);
 
     expect(result).toEqual(expectedResult);
-  });
-
-  it('should map prevent_payment_card from resultData when present', () => {
-    const result = transformPaymentTermsData(
-      FINES_ACC_BASE_PAYMENT_TERMS_DATA,
-      MOCK_RESULT_DATA_WITH_PREVENT_PAYMENT_CARD,
-    );
-
-    expect(result.facc_payment_terms_prevent_payment_card).toBe(true);
-  });
-
-  it('should map prevent_payment_card as false when resultData has prevent_payment_card false', () => {
-    const result = transformPaymentTermsData(FINES_ACC_BASE_PAYMENT_TERMS_DATA, MOCK_RESULT_DATA);
-
-    expect(result.facc_payment_terms_prevent_payment_card).toBe(false);
-  });
-
-  it('should set prevent_payment_card as null when resultData is null', () => {
-    const result = transformPaymentTermsData(FINES_ACC_BASE_PAYMENT_TERMS_DATA, null);
-
-    expect(result.facc_payment_terms_prevent_payment_card).toBeNull();
   });
 });

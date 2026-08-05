@@ -32,6 +32,7 @@ import { FINES_ACCOUNT_TYPES } from '../../constants/fines-account-types.constan
 import { beforeEach, describe, expect, it, vi } from 'vitest';
 
 import { createSpyObj } from '@app/testing/create-spy-obj.helper';
+import { FINES_MAC_DEFENDANT_TYPES_KEYS } from '../constants/fines-mac-defendant-types-keys';
 
 // Shared factory for setting up the test module
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -158,6 +159,29 @@ describe('FinesMacReviewAccountComponent', () => {
       expect(component).toBeTruthy();
     });
 
+    it('should test Employer Details above Defendant Details when defendant is pgToPay', () => {
+      const finesMacState = structuredClone(FINES_MAC_STATE_MOCK);
+      finesMacState.accountDetails.formData.fm_create_account_defendant_type = FINES_MAC_DEFENDANT_TYPES_KEYS.pgToPay;
+
+      finesMacStore.setFinesMacStore(finesMacState);
+      fixture.detectChanges();
+
+      const employerDetails = fixture.nativeElement.querySelector(
+        '#employer-details-summary-card-list',
+      ) as HTMLElement | null;
+      const defendantDetails = fixture.nativeElement.querySelector(
+        '#defendant-details-summary-card-list',
+      ) as HTMLElement | null;
+
+      expect(employerDetails).toBeTruthy();
+      expect(defendantDetails).toBeTruthy();
+      if (!employerDetails || !defendantDetails) {
+        throw new Error('Expected employer and defendant details sections to render');
+      }
+
+      expect(employerDetails.compareDocumentPosition(defendantDetails) & Node.DOCUMENT_POSITION_FOLLOWING).toBeTruthy();
+    });
+
     it('should enforce current template link semantics for delete account link', () => {
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
       const templateConsts = ((FinesMacReviewAccountComponent as any).ɵcmp?.consts ?? []).filter((entry: unknown) =>
@@ -206,7 +230,7 @@ describe('FinesMacReviewAccountComponent', () => {
       expect(reviewAccountFetchedMappedPayloadSpy).toHaveBeenCalled();
     });
 
-    it('should handle submitPayload failure', () => {
+    it('should handle put request submitPayload failure', () => {
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
       const handleRequestErrorSpy = vi.spyOn<any, any>(component, 'handleRequestError');
       mockOpalFinesService.putDraftAddAccountPayload = vi
@@ -225,7 +249,7 @@ describe('FinesMacReviewAccountComponent', () => {
       });
     });
 
-    it('should handle submitPayload failure', () => {
+    it('should handle post request submitPayload failure', () => {
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
       const handleRequestErrorSpy = vi.spyOn<any, any>(component, 'handleRequestError');
       mockOpalFinesService.postDraftAddAccountPayload = vi
@@ -418,7 +442,7 @@ describe('FinesMacReviewAccountComponent', () => {
       expect(routerSpy).toHaveBeenCalledWith([component['createAndManageTabs']], { fragment: 'test-fragment' });
     });
 
-    it('should navigate back to view-all-rejected on navigateBack when isReadOnly is true and viewAllAccounts is true', () => {
+    it('should navigate back to view-all-rejected with review fragment on navigateBack when isReadOnly is true and viewAllAccounts is true', () => {
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
       const routerSpy = vi.spyOn<any, any>(component['router'], 'navigate');
       finesDraftStore.setFragment('review');
@@ -440,7 +464,7 @@ describe('FinesMacReviewAccountComponent', () => {
       expect(routerSpy).toHaveBeenCalledWith([component['checkAndValidateTabs']], { fragment: 'in-review' });
     });
 
-    it('should navigate back to view-all-rejected on navigateBack when isReadOnly is true and viewAllAccounts is true', () => {
+    it('should navigate back to view-all-rejected without fragment on navigateBack when isReadOnly is true and viewAllAccounts is true', () => {
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
       const routerSpy = vi.spyOn<any, any>(component['router'], 'navigate');
       finesDraftStore.setViewAllAccounts(true);

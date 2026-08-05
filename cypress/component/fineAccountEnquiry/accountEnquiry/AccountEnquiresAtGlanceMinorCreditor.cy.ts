@@ -117,6 +117,35 @@ describe('Minor Creditor Account Summary - At a Glance Tab', () => {
   );
 
   it(
+    'AC1, AC2, AC3, AC4, AC5, AC7, AC8, AC9, AC10: reflows the Minor Creditor at a Glance header at narrow widths',
+    { tags: [...buildTags(MINOR_CREDITOR_SUMMARY_STORY_TAG), '@JIRA-EPIC:PO-2234', '@JIRA-TEST-KEY:PO-2674'] },
+    () => {
+      cy.viewport(375, 900);
+
+      const header = createMinorCreditorHeaderMock();
+      const atAGlance = createIndividualMinorCreditorAtAGlanceMock();
+
+      setupMinorCreditorAtAGlance(USER_STATE_MOCK_NO_PERMISSION, header, atAGlance);
+
+      cy.get(DOM.pageHeader).should('be.visible');
+      cy.get(DOM.headingWithCaption).should('be.visible');
+      cy.get(DOM.accountInfo).should('be.visible');
+      cy.get(DOM.summaryMetricBar).should('be.visible');
+      cy.get(DOM.subnav).should('be.visible');
+      cy.get(DOM.minorCreditorAtAGlanceTabComponent).should('be.visible');
+
+      cy.window().then((win) => {
+        const { documentElement, body } = win.document;
+
+        expect(documentElement.scrollWidth, 'document should not overflow viewport').to.be.at.most(
+          documentElement.clientWidth + 1,
+        );
+        expect(body.scrollWidth, 'body should not overflow viewport').to.be.at.most(body.clientWidth + 1);
+      });
+    },
+  );
+
+  it(
     'AC2b, AC4a: shows only the minor creditor and payout status sections when no defendant is associated, and shows BACS as not provided',
     {
       tags: [...buildTags(MINOR_CREDITOR_SUMMARY_STORY_TAG, MINOR_CREDITOR_SUMMARY_EPIC_TAG), '@JIRA-TEST-KEY:PO-4004'],
