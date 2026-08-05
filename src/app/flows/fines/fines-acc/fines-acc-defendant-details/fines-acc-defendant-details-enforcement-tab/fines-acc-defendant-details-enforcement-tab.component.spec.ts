@@ -91,23 +91,20 @@ describe('FinesAccDefendantDetailsEnforcementTab', () => {
     );
   });
 
-  it('should route add enforcement action to account-status denied when blocked by account status', () => {
-    component.hasEnterEnforcementPermission = true;
-    component.accountStatusCode = 'CS';
+  it.each([
+    { caseName: 'blocked by account status', accountStatusCode: 'CS' },
+    { caseName: 'account status is transferred out', accountStatusCode: 'TO' },
+  ] as const)(
+    'should route add enforcement action to account-status denied when $caseName',
+    ({ accountStatusCode }) => {
+      component.hasEnterEnforcementPermission = true;
+      component.accountStatusCode = accountStatusCode;
 
-    expect(component.addEnforcementActionRoute).toBe(
-      `../${FINES_ACC_DEFENDANT_ROUTING_PATHS.children.enforcement}/${FINES_ACC_ENF_ACTION_ROUTING_PATHS.root}/${FINES_ACC_ENF_ACTION_ROUTING_PATHS.children.denied}/${FINES_ACC_ENF_ACTION_DENIED_TYPES.accountStatus}`,
-    );
-  });
-
-  it('should route add enforcement action to account-status denied when account status is transferred out', () => {
-    component.hasEnterEnforcementPermission = true;
-    component.accountStatusCode = 'TO';
-
-    expect(component.addEnforcementActionRoute).toBe(
-      `../${FINES_ACC_DEFENDANT_ROUTING_PATHS.children.enforcement}/${FINES_ACC_ENF_ACTION_ROUTING_PATHS.root}/${FINES_ACC_ENF_ACTION_ROUTING_PATHS.children.denied}/${FINES_ACC_ENF_ACTION_DENIED_TYPES.accountStatus}`,
-    );
-  });
+      expect(component.addEnforcementActionRoute).toBe(
+        `../${FINES_ACC_DEFENDANT_ROUTING_PATHS.children.enforcement}/${FINES_ACC_ENF_ACTION_ROUTING_PATHS.root}/${FINES_ACC_ENF_ACTION_ROUTING_PATHS.children.denied}/${FINES_ACC_ENF_ACTION_DENIED_TYPES.accountStatus}`,
+      );
+    },
+  );
 
   it('should route add enforcement action to enforcement-hold denied when last enforcement is NOENF', () => {
     component.hasEnterEnforcementPermission = true;

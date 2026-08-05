@@ -427,38 +427,41 @@ describe('AppComponent - browser', () => {
     expect(primaryNavigation.useFragmentNavigation).toBe(false);
   });
 
-  it('should hide Reports in primary navigation when the user lacks all report permissions', () => {
+  it.each([
+    {
+      description: 'hide Reports in primary navigation when the user lacks all report permissions',
+      permissions: [],
+      featureFlags: DEFAULT_RELEASE_FEATURE_FLAGS,
+      expectedReportsVisible: false,
+    },
+    {
+      description: 'show Reports in primary navigation when the user has a report permission in any business unit',
+      permissions: [REPORTS_PERMISSIONS[0]],
+      featureFlags: DEFAULT_RELEASE_FEATURE_FLAGS,
+      expectedReportsVisible: true,
+    },
+    {
+      description: 'hide Reports in primary navigation when release-1c enforcement operational reporting is disabled',
+      permissions: [REPORTS_PERMISSIONS[0]],
+      featureFlags: {
+        ...DEFAULT_RELEASE_FEATURE_FLAGS,
+        [RELEASE_1C_ENFORCEMENT_OPERATIONAL_REPORTING_FEATURE_FLAG]: false,
+      },
+      expectedReportsVisible: false,
+    },
+  ])('should $description', ({ permissions, featureFlags, expectedReportsVisible }) => {
     globalStore.setAuthenticated(true);
-    globalStore.setUserState(createUserStateWithPermissions([]));
+    globalStore.setFeatureFlags(featureFlags);
+    globalStore.setUserState(createUserStateWithPermissions(permissions));
 
     const fixture = TestBed.createComponent(AppComponent);
     fixture.detectChanges();
 
-    expect(getPrimaryNavigationTexts(fixture)).not.toContain('Reports');
-  });
-
-  it('should show Reports in primary navigation when the user has a report permission in any business unit', () => {
-    globalStore.setAuthenticated(true);
-    globalStore.setUserState(createUserStateWithPermissions([REPORTS_PERMISSIONS[0]]));
-
-    const fixture = TestBed.createComponent(AppComponent);
-    fixture.detectChanges();
-
-    expect(getPrimaryNavigationTexts(fixture)).toContain('Reports');
-  });
-
-  it('should hide Reports in primary navigation when release-1c enforcement operational reporting is disabled', () => {
-    globalStore.setAuthenticated(true);
-    globalStore.setFeatureFlags({
-      ...DEFAULT_RELEASE_FEATURE_FLAGS,
-      [RELEASE_1C_ENFORCEMENT_OPERATIONAL_REPORTING_FEATURE_FLAG]: false,
-    });
-    globalStore.setUserState(createUserStateWithPermissions([REPORTS_PERMISSIONS[0]]));
-
-    const fixture = TestBed.createComponent(AppComponent);
-    fixture.detectChanges();
-
-    expect(getPrimaryNavigationTexts(fixture)).not.toContain('Reports');
+    if (expectedReportsVisible) {
+      expect(getPrimaryNavigationTexts(fixture)).toContain('Reports');
+    } else {
+      expect(getPrimaryNavigationTexts(fixture)).not.toContain('Reports');
+    }
   });
 
   it('should hide Search in primary navigation when the user lacks all search permissions', () => {

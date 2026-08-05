@@ -1,4 +1,5 @@
 import { Observable } from 'rxjs';
+import { IOpalFinesAccountDefendantDetailsConsolidatedAccounts } from './opal-fines-account-defendant-account-consolidated-accounts.interface';
 import { IOpalFinesCourtRefData } from './opal-fines-court-ref-data.interface';
 import { IOpalFinesBusinessUnitRefData } from './opal-fines-business-unit-ref-data.interface';
 import { IOpalFinesLocalJusticeAreaRefData } from './opal-fines-local-justice-area-ref-data.interface';
@@ -20,6 +21,7 @@ import { IOpalFinesEnforcersRefData } from './opal-fines-enforcers-ref-data.inte
 import { IOpalFinesAccountMinorCreditorCreditor } from './opal-fines-account-minor-creditor-creditor.interface';
 import { IOpalFinesAccountMajorCreditorAtAGlance } from './opal-fines-account-major-creditor-at-a-glance.interface';
 import { IOpalFinesAccountMinorCreditorDetailsHistoryAndNotesTabRefData } from './opal-fines-account-minor-creditor-details-history-and-notes-tab-ref-data.interface';
+import { IOpalFinesReport } from './opal-fines-report.interface';
 
 export interface IOpalFinesCache {
   courtRefDataCache$: { [key: string]: Observable<IOpalFinesCourtRefData> };
@@ -38,6 +40,7 @@ export interface IOpalFinesCache {
   defendantAccountParentOrGuardianAccountPartyCache$: Observable<IOpalFinesAccountDefendantAccountParty> | null;
   defendantAccountEnforcementCache$: Observable<IOpalFinesAccountDefendantDetailsEnforcementTabRefData> | null;
   defendantAccountImpositionsCache$: Observable<IOpalFinesAccountDefendantDetailsImpositionsTabRefData> | null;
+  defendantAccountConsolidatedAccountsCache$: Observable<IOpalFinesAccountDefendantDetailsConsolidatedAccounts> | null;
   defendantAccountHistoryAndNotesCache$: Observable<IOpalFinesAccountDefendantDetailsHistoryAndNotesTabRefData> | null;
   defendantAccountPaymentTermsLatestCache$: Observable<IOpalFinesAccountDefendantDetailsPaymentTermsLatest> | null;
   defendantAccountFixedPenaltyCache$: Observable<IOpalFinesAccountDefendantDetailsFixedPenaltyTabRefData> | null;
@@ -46,4 +49,5 @@ export interface IOpalFinesCache {
   majorCreditorAccountAtAGlanceCache$: Observable<IOpalFinesAccountMajorCreditorAtAGlance> | null;
   minorCreditorAccountHistoryAndNotesCache$: Observable<IOpalFinesAccountMinorCreditorDetailsHistoryAndNotesTabRefData> | null;
   enforcersCache$: Observable<IOpalFinesEnforcersRefData> | null;
+  reportsCache$: { [key: string]: Observable<IOpalFinesReport> };
 }
