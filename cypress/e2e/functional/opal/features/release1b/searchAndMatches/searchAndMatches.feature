@@ -457,7 +457,7 @@ Feature: Account Search and Matches
       | organisation_name             | null            |
       | exact_match_organisation_name | null            |
 
-  @JIRA-EPIC:PO-2630 @JIRA-STORY:PO-2953
+  @JIRA-EPIC:PO-2630 @JIRA-STORY:PO-2953 @R1B
   Scenario: Verify National Insurance search cannot be combined with account number
     #AC6, AC9, AC9a
     When I search using the following inputs:
@@ -483,7 +483,7 @@ Feature: Account Search and Matches
     And I see the listed options "account number, reference or case number, National Insurance number, advanced search"
 
   @JIRA-EPIC:PO-2630
-  @JIRA-STORY:PO-2953 @JIRA-EPIC:PO-2630
+  @JIRA-STORY:PO-2953 @JIRA-EPIC:PO-2630 @R1B
   Scenario: Verify National Insurance search cannot be combined with individual search fields
     #AC6, AC9
     When I search using the following inputs:
