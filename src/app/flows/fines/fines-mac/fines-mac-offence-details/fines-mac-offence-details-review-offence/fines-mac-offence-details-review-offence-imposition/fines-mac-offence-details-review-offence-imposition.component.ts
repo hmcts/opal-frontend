@@ -236,7 +236,7 @@ export class FinesMacOffenceDetailsReviewOffenceImpositionComponent implements O
 
       return {
         impositionId: imposition.fm_offence_details_imposition_id!,
-        impositionDescription: resultCodeImposition.result_title,
+        impositionDescription: this.opalFinesService.getResultPrettyName(resultCodeImposition),
         creditor: this.getCreditorInformation(
           imposition.fm_offence_details_creditor,
           imposition.fm_offence_details_major_creditor_id,
