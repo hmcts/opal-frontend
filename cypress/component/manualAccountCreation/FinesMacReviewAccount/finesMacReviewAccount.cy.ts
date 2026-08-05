@@ -195,7 +195,7 @@ describe('FinesMacReviewAccountComponent', () => {
 
   it(
     'navigates to delete account confirmation without an account id and marks the journey as coming from check account',
-    { tags: [...buildTags('@JIRA-STORY:PO-9113'), '@JIRA-EPIC:PO-2220'] },
+    { tags: [...buildTags('@JIRA-STORY:PO-9113'), '@JIRA-EPIC:PO-2220', '@JIRA-TEST-KEY:PO-9656'] },
     () => {
       setupComponent(finesDraftState, null, true, false, null);
 
