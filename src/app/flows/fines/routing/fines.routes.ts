@@ -5,7 +5,7 @@ import { routing as accRouting } from '../fines-acc/routing/fines-acc.routes';
 import { routing as saRouting } from '../fines-sa/routing/fines-sa.routes';
 import { routing as consolidationRouting } from '../fines-con/routing/fines-con.routes';
 import { routing as reportingRouting } from '../fines-reports/routing/fines-reports.routes';
-import { routing as extbankRouting } from '../fines-finance/routing/fines-finance.routes';
+import { routing as finesFinanceRouting } from '../fines-finance/routing/fines-finance.routes';
 import { FINES_ROUTING_PATHS } from '@routing/fines/constants/fines-routing-paths.constant';
 import { authGuard } from '@hmcts/opal-frontend-common/guards/auth';
 import { canDeactivateGuard } from '@hmcts/opal-frontend-common/guards/can-deactivate';
@@ -165,9 +165,9 @@ export const finesRouting: Routes = [
       },
       // new ext banking section
       {
-        path: FINES_ROUTING_PATHS.children.ext.root, // extbanking
+        path: FINES_ROUTING_PATHS.children.ext.root, //fines-finance
         loadComponent: () => import('../fines-finance/fines-finance.component').then((c) => c.FinesExtComponent ),
-        children: extbankRouting,
+        children: finesFinanceRouting,
         canActivate: [
           authGuard,
           finesSectionPermissionsGuard,
