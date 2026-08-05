@@ -1,18 +1,18 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { describe, it, expect, beforeEach} from 'vitest';
 
-import { FinesExtFinanceOutboundFiles } from './fines-ext-finance-outbound-files.component';
+import { FinesExtFinanceInboundFiles } from './fines-finance-inbound-files.component';
 
-describe('FinesExtFinanceOutboundFiles', () => {
-  let component: FinesExtFinanceOutboundFiles;
-  let fixture: ComponentFixture<FinesExtFinanceOutboundFiles>;
+describe('FinesExtFinanceInboundFiles', () => {
+  let component: FinesExtFinanceInboundFiles;
+  let fixture: ComponentFixture<FinesExtFinanceInboundFiles>;
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [FinesExtFinanceOutboundFiles],
+      imports: [FinesExtFinanceInboundFiles],
     }).compileComponents();
 
-    fixture = TestBed.createComponent(FinesExtFinanceOutboundFiles);
+    fixture = TestBed.createComponent(FinesExtFinanceInboundFiles);
     component = fixture.componentInstance;
     fixture.detectChanges();
   });

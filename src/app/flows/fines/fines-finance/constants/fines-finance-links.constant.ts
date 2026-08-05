@@ -1,5 +1,5 @@
 import { IDashboardPageConfigurationLink } from '@hmcts/opal-frontend-common/pages/dashboard-page/interfaces';
-import {FINES_EXTERNAL_BANKING_PATHS} from '@app/flows/fines/constants/fines-external-banking.constant';
+import {FINES_FINANCE_BANKING_PATHS} from 'src/app/flows/fines/constants/fines-finance.constant';
 
 export const FINES_EXTERNAL_BANKING_LINKS: IDashboardPageConfigurationLink[] = [
   {
@@ -7,10 +7,10 @@ export const FINES_EXTERNAL_BANKING_LINKS: IDashboardPageConfigurationLink[] = [
     text: 'Inbound files',
     routerLink: [
       '/',
-      FINES_EXTERNAL_BANKING_PATHS.root,
-      FINES_EXTERNAL_BANKING_PATHS.children.finance,
-      FINES_EXTERNAL_BANKING_PATHS.children.inbound,
-      FINES_EXTERNAL_BANKING_PATHS.children.search,
+      FINES_FINANCE_BANKING_PATHS.root,
+      FINES_FINANCE_BANKING_PATHS.children.finance,
+      FINES_FINANCE_BANKING_PATHS.children.inbound,
+      FINES_FINANCE_BANKING_PATHS.children.search,
       
     ],
     fragment: null,
@@ -23,10 +23,10 @@ export const FINES_EXTERNAL_BANKING_LINKS: IDashboardPageConfigurationLink[] = [
     text: 'Outbound files',
     routerLink: [
       '/',
-      FINES_EXTERNAL_BANKING_PATHS.root,
-      FINES_EXTERNAL_BANKING_PATHS.children.finance,
-      FINES_EXTERNAL_BANKING_PATHS.children.outbound,
-      FINES_EXTERNAL_BANKING_PATHS.children.search,
+      FINES_FINANCE_BANKING_PATHS.root,
+      FINES_FINANCE_BANKING_PATHS.children.finance,
+      FINES_FINANCE_BANKING_PATHS.children.outbound,
+      FINES_FINANCE_BANKING_PATHS.children.search,
     ],
     fragment: null,
     permissionIds: [],
@@ -38,10 +38,10 @@ export const FINES_EXTERNAL_BANKING_LINKS: IDashboardPageConfigurationLink[] = [
     text: 'Upload Variant banking files',
     routerLink: [
       '/',
-      FINES_EXTERNAL_BANKING_PATHS.root,
-      FINES_EXTERNAL_BANKING_PATHS.children.finance,
-      FINES_EXTERNAL_BANKING_PATHS.children.variantbankingfiles,
-      FINES_EXTERNAL_BANKING_PATHS.children.upload,
+      FINES_FINANCE_BANKING_PATHS.root,
+      FINES_FINANCE_BANKING_PATHS.children.finance,
+      FINES_FINANCE_BANKING_PATHS.children.variantbankingfiles,
+      FINES_FINANCE_BANKING_PATHS.children.upload,
     ],
     fragment: null,
     permissionIds: [],

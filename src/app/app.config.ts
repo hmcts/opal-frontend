@@ -7,7 +7,7 @@ import {
 } from '@angular/common/http';
 import { ApplicationConfig, inject, provideAppInitializer } from '@angular/core';
 import { provideClientHydration, withNoHttpTransferCache } from '@angular/platform-browser';
-import { provideRouter, withInMemoryScrolling, withRouterConfig } from '@angular/router';
+import { provideRouter, withInMemoryScrolling, withRouterConfig , withDebugTracing} from '@angular/router';
 import { routes } from './app.routes';
 import { AppInitializerService } from '@hmcts/opal-frontend-common/services/app-initializer-service';
 import { httpErrorInterceptor } from '@hmcts/opal-frontend-common/interceptors/http-error';
@@ -18,6 +18,7 @@ export const appConfig: ApplicationConfig = {
   providers: [
     provideRouter(
       routes,
+      withDebugTracing(),
       withRouterConfig({
         canceledNavigationResolution: 'computed',
       }),
