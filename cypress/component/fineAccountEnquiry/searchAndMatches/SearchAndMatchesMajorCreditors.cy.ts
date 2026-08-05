@@ -136,7 +136,9 @@ describe('Search Account Component - Major Creditors', () => {
       cy.get(MajorAutocompleteLocators.listbox).find('li').contains('Abellio Greater Anglia').click();
       cy.get(MajorAutocompleteLocators.input).should('have.value', 'Abellio Greater Anglia (AGAL)');
       cy.get(NavLocators.minorCreditorsTab).click();
+      fragment$.next('minorCreditors');
       cy.get(NavLocators.majorCreditorsTab).click();
+      fragment$.next('majorCreditors');
       cy.get(MajorAutocompleteLocators.input).should('have.value', '');
     },
   );

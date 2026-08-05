@@ -4,9 +4,9 @@ import { FinesAccBannerMessagesComponent } from '../fines-acc-banner-messages/fi
 import { getFinesAccAccountStatusBannerContent } from '../utils/fines-acc-account-status-banner.utils';
 import { type FinesAccountStatusBanner } from '../interfaces/fines-account-status-banner.interface';
 import { CustomPageHeaderComponent } from '@hmcts/opal-frontend-common/components/custom/custom-page-header';
-import { GovukHeadingWithCaptionComponent } from '@hmcts/opal-frontend-common/components/govuk/govuk-heading-with-caption';
 import { GovukButtonDirective } from '@hmcts/opal-frontend-common/directives/govuk-button';
 import { MojButtonMenuComponent } from '@hmcts/opal-frontend-common/components/moj/moj-button-menu';
+import { GovukHeadingWithCaptionComponent } from '@hmcts/opal-frontend-common/components/govuk/govuk-heading-with-caption';
 import {
   MojAlertComponent,
   MojAlertContentComponent,
