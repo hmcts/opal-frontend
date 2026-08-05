@@ -232,6 +232,21 @@ Given('I stub the defendant header summary account status code to {string}', (st
   accountEnquiryFlow().stubRestrictedParentGuardianStatusCode(statusCode);
 });
 
+Given('I stub the defendant header summary payment terms account status code to {string}', (statusCode: string) => {
+  log('intercept', 'Stub defendant header summary payment terms restricted status', { statusCode });
+  accountEnquiryFlow().stubPaymentTermsAccountStatusCode(statusCode);
+});
+
+Given('I stub the defendant header summary payment terms account balance to {int}', (balance: number) => {
+  log('intercept', 'Stub defendant header summary payment terms account balance', { balance });
+  accountEnquiryFlow().stubPaymentTermsAccountBalance(balance);
+});
+
+Then('I do not see the Payment terms Change or Request payment card actions', () => {
+  log('assert', 'Payment terms Change and Request payment card actions are absent');
+  accountEnquiryFlow().assertPaymentTermsActionsNotVisible();
+});
+
 Then('I do not see any parent or guardian details Change actions', () => {
   log('assert', 'Parent or guardian details Change actions are absent');
   accountEnquiryFlow().assertChangeParentGuardianActionsNotVisible();
