@@ -84,7 +84,7 @@ describe('Account Enquiry Payment Terms', () => {
   ];
 
   restrictedPaymentTermsAccountScenarios.forEach(({ description, accountStatusCode, accountBalance }) => {
-    it.only(
+    it(
       `AC1: Request payment card is not displayed when ${description}`,
       { tags: [...buildTags('@JIRA-STORY:PO-5753', '@JIRA-EPIC:PO-2990')] },
       () => {

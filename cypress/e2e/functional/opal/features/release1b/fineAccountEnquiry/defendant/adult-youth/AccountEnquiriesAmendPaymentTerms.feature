@@ -59,7 +59,7 @@ Feature: Defendant - Adult or youth - Account Enquiries - Amend Payment Terms
       When I open the amend payment terms form
       Then I should be on the Payment terms amend screen
 
-    @only @R1B @JIRA-STORY:PO-5753 @JIRA-EPIC:PO-2990
+    @R1B @JIRA-STORY:PO-5753 @JIRA-EPIC:PO-2990
     Scenario Outline: AC1, AC2 Payment terms actions are hidden for restricted account statuses
       Given I stub the defendant header summary payment terms account status code to "<status>"
       When I search for the account by last name "AmendPayTerms{uniq}" and open the latest result
