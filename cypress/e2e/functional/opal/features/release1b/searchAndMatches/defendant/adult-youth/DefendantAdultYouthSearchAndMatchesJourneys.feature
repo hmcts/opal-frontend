@@ -39,6 +39,60 @@ Feature: Defendant Adult Youth Search And Matches Journeys
     When I open the latest matching result from the search results
     Then I should see the account summary header contains "JOURNEYIND{uniqUpper}"
 
+  @R1B @JIRA-STORY:PO-2953 @JIRA-EPIC:PO-2630
+  Scenario: Search for an individual defendant account by National Insurance number and open the matching record
+    # PO-2953 - AC7
+    Given I create a "adultOrYouthOnly" draft account with the following details and set status "Publishing Pending" using user "opal-test-10@dev.platform.hmcts.net":
+      | Account_status                              | Submitted                       |
+      | account.defendant.forenames                 | Jordan                          |
+      | account.defendant.surname                   | JourneyNI{uniq}                 |
+      | account.defendant.email_address_1           | jordan.journeyni{uniq}@test.com |
+      | account.defendant.telephone_number_home     | 02078250021                     |
+      | account.defendant.national_insurance_number | QQ123456C                       |
+      | account.defendant.address_line_1            | 123 Journey Street              |
+      | account.defendant.post_code                 | AB1 2CD                         |
+      | account.account_type                        | Fine                            |
+      | account.prosecutor_case_reference           | PCRJRNYNI{uniqUpper}            |
+      | account.collection_order_made               | false                           |
+      | account.collection_order_made_today         | false                           |
+      | account.payment_card_request                | false                           |
+      | account.defendant.dob                       | 2001-05-15                      |
+    And I am on the Account Search page - Individuals form displayed by default
+    When I search using the following inputs:
+      | national insurance number | QQ123456C |
+    Then I see the Search results page
+    And I see the Individuals search results:
+      | Ref | PCRJRNYNI{uniqUpper} |
+    When I open the latest matching result from the search results
+    Then I should see the account summary header contains "JOURNEYNI{uniqUpper}"
+
+  @R1B @JIRA-STORY:PO-2953 @JIRA-EPIC:PO-2630
+  Scenario: Search for an individual defendant account by National Insurance number with spaces and open the matching record
+    # PO-2953 - AC8
+    Given I create a "adultOrYouthOnly" draft account with the following details and set status "Publishing Pending" using user "opal-test-10@dev.platform.hmcts.net":
+      | Account_status                              | Submitted                          |
+      | account.defendant.forenames                 | Nina                               |
+      | account.defendant.surname                   | JourneyNiSpace{uniq}               |
+      | account.defendant.email_address_1           | nina.journeynispace{uniq}@test.com |
+      | account.defendant.telephone_number_home     | 02078250052                        |
+      | account.defendant.national_insurance_number | AB123456C                          |
+      | account.defendant.address_line_1            | 789 NI Street                      |
+      | account.defendant.post_code                 | AB12 3CD                           |
+      | account.account_type                        | Fine                               |
+      | account.prosecutor_case_reference           | PCRJRNYNISPACE{uniqUpper}          |
+      | account.collection_order_made               | false                              |
+      | account.collection_order_made_today         | false                              |
+      | account.payment_card_request                | false                              |
+      | account.defendant.dob                       | 2002-09-21                         |
+    And I am on the Account Search page - Individuals form displayed by default
+    When I search using the following inputs:
+      | national insurance number | AB 12 34 56 C |
+    Then I see the Search results page
+    And I see the Individuals search results:
+      | Ref | PCRJRNYNISPACE{uniqUpper} |
+    When I open the latest matching result from the search results
+    Then I should see the account summary header contains "JOURNEYNISPACE{uniqUpper}"
+
 
   @JIRA-EPIC:PO-704 @R1BUatTechJCDE @JIRA-STORY:PO-706 @JIRA-TEST-KEY:PO-5295
   Scenario: Search by account number and open the matching record

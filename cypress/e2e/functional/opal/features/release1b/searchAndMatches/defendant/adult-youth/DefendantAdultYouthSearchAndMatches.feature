@@ -109,6 +109,40 @@ Feature: Defendant Adult Youth Search And Matches
       | organisation_name             | null            |
       | exact_match_organisation_name | null            |
 
+  @JIRA-EPIC:PO-2630 @JIRA-STORY:PO-2953
+  Scenario: Verify National Insurance search cannot be combined with account number
+    #AC6, AC9, AC9a
+    When I search using the following inputs:
+      | account number            | 12345678  |
+      | National Insurance number | AB123456C |
+    Then I see an page containing "There is a problem"
+    And I see the validation message "Reference data and account information cannot be entered together when searching for an account. Search using either:"
+    And I see the listed options "account number, reference or case number, selected tab"
+    And I go back from the problem page
+    Then I see the "Search for an account" page for individuals with the following details:
+      | account number            | 12345678  |
+      | National Insurance number | AB123456C |
+
+  @JIRA-STORY:PO-2953 @JIRA-EPIC:PO-2630 @R1B
+  Scenario: Verify National Insurance search cannot be combined with reference or case number
+    # AC6, AC9
+    When I search using the following inputs:
+      | reference or case number  | REF123    |
+      | National Insurance number | AB123456C |
+    Then I see an page containing "There is a problem"
+    And I see the validation message "Reference data and account information cannot be entered together when searching for an account. Search using either:"
+    And I see the listed options "account number, reference or case number, selected tab"
+
+  @JIRA-STORY:PO-2953 @JIRA-EPIC:PO-2630
+  Scenario: Verify National Insurance search cannot be combined with individual search fields
+    #AC6, AC9
+    When I search using the following inputs:
+      | National Insurance number | AB123456C |
+      | individual last name      | Smith     |
+    Then I see an page containing "There is a problem"
+    And I see the validation message "Reference data and account information cannot be entered together when searching for an account. Search using either:"
+    And I see the listed options "account number, reference or case number, selected tab"
+
   @JIRA-EPIC:PO-704 @R1B @JIRA-STORY:PO-717 @JIRA-TEST-KEY:PO-5451
   Scenario: Verify API call parameters for Individual search with only last name populated
     #AC1
