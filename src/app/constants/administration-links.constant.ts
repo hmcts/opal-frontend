@@ -17,4 +17,18 @@ export const ADMINISTRATION_LINKS: IDashboardPageConfigurationLink[] = [
     newTab: false,
     style: null,
   },
+  {
+    id: 'testAutoEnforcementLink',
+    text: 'Auto-enforcement configuration',
+    routerLink: [
+      '/',
+      FINES_ROUTING_PATHS.root,
+      FINES_ROUTING_PATHS.children.aec.root,
+      FINES_ROUTING_PATHS.children.aec.children['config'],
+    ],
+    fragment: null,
+    permissionIds: [],
+    newTab: false,
+    style: null,
+  },
 ];
