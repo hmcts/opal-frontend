@@ -163,9 +163,8 @@ export const finesRouting: Routes = [
           sectionKey: FINES_DASHBOARD_ROUTING_PATHS.children.reports,
         },
       },
-      // new ext banking section
       {
-        path: FINES_ROUTING_PATHS.children.ext.root, //fines-finance
+        path: FINES_ROUTING_PATHS.children.ext.root, //finance
         loadComponent: () => import('../fines-finance/fines-finance.component').then((c) => c.FinesExtComponent ),
         children: finesFinanceRouting,
         canActivate: [

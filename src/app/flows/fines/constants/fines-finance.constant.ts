@@ -1,7 +1,7 @@
 import {IFinesExternalBankingRoutingPaths} from '@app/flows/fines/interfaces/fines-external-banking.interface'
 
 export const FINES_FINANCE_BANKING_PATHS: IFinesExternalBankingRoutingPaths = {
-  root: 'fines-finance',
+  root: 'finance',
   children: {
     search: 'search',
     finance: 'finance',

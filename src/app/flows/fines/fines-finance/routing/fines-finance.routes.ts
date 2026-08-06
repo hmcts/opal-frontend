@@ -2,6 +2,7 @@ import { Routes } from '@angular/router';
 import { TitleResolver } from '@hmcts/opal-frontend-common/resolvers/title';
 import { FINES_FINANCE_BANKING_PATHS } from '../../constants/fines-finance.constant';
 import { PAGES_ROUTING_PATHS } from '@routing/pages/constants/routing-paths.constant';
+import { FINES_FINANCE_ROUTING_TITLES } from './constants/fines-finance-routing-titles.constant';
 
 
 export const routing: Routes = [
@@ -20,7 +21,7 @@ export const routing: Routes = [
     //canActivate: [authGuard, routePermissionsGuard],
     data: {
       //routePermissionId: [draftRootPermissionIds['create-and-manage-draft-accounts']],
-      title: 'INBOUND FILES HERE',
+      title: FINES_FINANCE_ROUTING_TITLES.children.inbound,
     },
     resolve: { title: TitleResolver },
   },
@@ -34,7 +35,7 @@ export const routing: Routes = [
     //canActivate: [authGuard, routePermissionsGuard],
     data: {
       //routePermissionId: [draftRootPermissionIds['create-and-manage-draft-accounts']],
-      title: 'OUTBOUND FILES HERE',
+      title: FINES_FINANCE_ROUTING_TITLES.children.outbound,
     },
     resolve: { title: TitleResolver },
   },
@@ -49,7 +50,7 @@ export const routing: Routes = [
     //canActivate: [authGuard, routePermissionsGuard],
     data: {
       //routePermissionId: [draftRootPermissionIds['create-and-manage-draft-accounts']],
-      title: 'FILE UPLOAD HERE',
+      title: FINES_FINANCE_ROUTING_TITLES.children.upload,
     },
     resolve: { title: TitleResolver },
   },
