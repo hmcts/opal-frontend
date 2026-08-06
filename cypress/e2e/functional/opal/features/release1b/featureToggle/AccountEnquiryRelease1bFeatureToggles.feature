@@ -1,5 +1,5 @@
 @JIRA-LABEL:account-enquiry
-Feature: Account Enquiry Release 1B Feature Toggles
+Feature: Account Enquiry Release1b Feature Toggles
 
   @R1BOff @JIRA-STORY:PO-3720 @JIRA-EPIC:PO-3685 @JIRA-TEST-KEY:PO-8017
   Scenario: Accounts is the default landing page when release 1b is disabled

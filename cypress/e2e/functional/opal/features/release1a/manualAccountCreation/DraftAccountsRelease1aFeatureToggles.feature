@@ -1,5 +1,5 @@
 @JIRA-LABEL:manual-account-creation
-Feature: Draft Accounts Release 1A Feature Toggles
+Feature: Draft Accounts Release1a Feature Toggles
 
   @R1A @JIRA-STORY:PO-3719 @JIRA-EPIC:PO-3685 @JIRA-TEST-KEY:PO-7560
   Scenario: Direct navigation to the Accounts dashboard is allowed when release 1a is enabled

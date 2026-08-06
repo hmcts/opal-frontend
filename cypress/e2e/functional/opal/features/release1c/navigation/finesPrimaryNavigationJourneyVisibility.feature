@@ -1,5 +1,5 @@
 @JIRA-LABEL:primary-nav-and-dashboards
-Feature: Fines primary navigation visibility through journeys
+Feature: Fines Primary Navigation Journey Visibility
 
   Background:
     Given I am logged in with email "opal-test@dev.platform.hmcts.net"

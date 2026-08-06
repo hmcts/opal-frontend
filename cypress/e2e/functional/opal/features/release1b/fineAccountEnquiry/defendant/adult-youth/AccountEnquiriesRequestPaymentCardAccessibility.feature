@@ -1,6 +1,6 @@
 @JIRA-LABEL:account-enquiry
 @JIRA-NFR:PO-2322
-Feature: Defendant - Adult or youth - Account Enquiries - Request Payment Card Accessibility
+Feature: Account Enquiries Request Payment Card Accessibility
 
   Background:
     Given I am logged in with email "opal-test@dev.platform.hmcts.net"
