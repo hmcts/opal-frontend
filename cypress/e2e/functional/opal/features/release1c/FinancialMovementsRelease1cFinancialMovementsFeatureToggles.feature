@@ -1,5 +1,5 @@
 @JIRA-LABEL:primary-nav-and-dashboards
-Feature: Financial Movements Release 1C Financial Movements Feature Toggles
+Feature: Financial Movements Release1c Financial Movements Feature Toggles
 
   @R1CFinancialMovements @JIRA-STORY:PO-7266 @JIRA-EPIC:PO-3685 @JIRA-TEST-KEY:PO-8358
   Scenario: Finance navigation and entry points are available when release 1c financial movements is enabled

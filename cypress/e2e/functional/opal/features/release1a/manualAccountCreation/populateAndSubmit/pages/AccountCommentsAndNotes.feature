@@ -1,6 +1,6 @@
 @JIRA-LABEL:manual-account-creation
 @ManualAccountCreation @AccountCommentsAndNotes @JIRA-EPIC:PO-272 @JIRA-STORY:PO-469 @JIRA-STORY:PO-499 @JIRA-STORY:PO-500
-Feature: Manual account creation - Account Comments and Notes
+Feature: Account Comments And Notes
   #This feature file contains tests for the Account Comments and Notes page of the Manual Account Creation journey that cannot be exercised in the component tests #
   #Validation tests are primarily contained in the AccountCommentsAndNotesComponent.cy.ts component tests
   #Tests for conditional rendering (different defendant types) are contained in the AccountCommentsAndNotesComponent.cy.ts component tests

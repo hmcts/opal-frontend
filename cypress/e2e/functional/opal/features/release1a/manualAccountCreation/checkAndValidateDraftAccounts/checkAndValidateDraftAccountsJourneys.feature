@@ -1,5 +1,5 @@
 @JIRA-LABEL:manual-account-creation
-Feature: Check and Validate Draft Accounts - E2E Technical Scenarios
+Feature: Check And Validate Draft Accounts Journeys
 
   Background:
     Given I am logged in with email "opal-test@dev.platform.hmcts.net"
