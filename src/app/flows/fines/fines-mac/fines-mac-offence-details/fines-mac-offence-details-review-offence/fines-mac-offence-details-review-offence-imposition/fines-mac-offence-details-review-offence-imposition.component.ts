@@ -1,5 +1,6 @@
 import { ChangeDetectionStrategy, Component, inject, Input, OnInit } from '@angular/core';
 import { IOpalFinesMajorCreditorRefData } from '@services/fines/opal-fines-service/interfaces/opal-fines-major-creditor-ref-data.interface';
+import { IOpalFinesOffencesRefData } from '@services/fines/opal-fines-service/interfaces/opal-fines-offences-ref-data.interface';
 import { IOpalFinesResultsRefData } from '@services/fines/opal-fines-service/interfaces/opal-fines-results-ref-data.interface';
 import { OpalFines } from '@services/fines/opal-fines-service/opal-fines.service';
 import { IFinesMacOffenceDetailsImpositionsState } from '../../interfaces/fines-mac-offence-details-impositions-state.interface';
@@ -21,6 +22,7 @@ import { FINES_MAC_OFFENCE_DETAILS_REVIEW_OFFENCE_IMPOSITION_DEFAULT_VALUES } fr
 import { FinesMacStore } from '../../../stores/fines-mac.store';
 import { UtilsService } from '@hmcts/opal-frontend-common/services/utils-service';
 import { FinesNotProvidedComponent } from '../../../../components/fines-not-provided/fines-not-provided.component';
+import { FinesMacOffenceDetailsService } from '../../services/fines-mac-offence-details.service';
 
 @Component({
   selector: 'app-fines-mac-offence-details-review-offence-imposition',
@@ -39,6 +41,7 @@ import { FinesNotProvidedComponent } from '../../../../components/fines-not-prov
 })
 export class FinesMacOffenceDetailsReviewOffenceImpositionComponent implements OnInit {
   private readonly opalFinesService = inject(OpalFines);
+  private readonly offenceDetailsService = inject(FinesMacOffenceDetailsService);
   private readonly finesMacStore = inject(FinesMacStore);
   private totalAmountImposed: number = 0;
   private totalAmountPaid: number = 0;
@@ -50,10 +53,13 @@ export class FinesMacOffenceDetailsReviewOffenceImpositionComponent implements O
   @Input({ required: true }) public majorCreditorRefData!: IOpalFinesMajorCreditorRefData;
   @Input({ required: true }) public impositions!: IFinesMacOffenceDetailsImpositionsState[];
   @Input({ required: true }) public offenceIndex!: number;
+  @Input({ required: true }) public offence!: string;
+  @Input({ required: false }) public offenceId: number | null = null;
   @Input({ required: false }) public isReadOnly!: boolean;
   public readonly utilsService = inject(UtilsService);
   public impositionTableData!: IFinesMacOffenceDetailsReviewSummaryImpositionTableData[];
   public impositionsTotalsData!: IFinesMacOffenceDetailsReviewSummaryImpositionTableRowTotalData;
+  public offenceCaption = '';
 
   /**
    * Sorts the impositions array based on the allocation order and result title.
@@ -267,6 +273,22 @@ export class FinesMacOffenceDetailsReviewOffenceImpositionComponent implements O
   }
 
   /**
+   * Retrieves the offence title and combines it with the offence code for the caption.
+   */
+  private getOffenceCaption(): void {
+    this.opalFinesService.getOffenceByCjsCode(this.offence).subscribe((offenceRefData) => {
+      const offenceRefDataTyped = offenceRefData as IOpalFinesOffencesRefData;
+      const offenceMatch = this.offenceDetailsService.findExactOffenceMatch(
+        offenceRefDataTyped,
+        this.offence,
+        this.offenceId,
+      );
+      const offenceTitle = offenceMatch?.offence_title ?? offenceRefDataTyped.refData[0]?.offence_title ?? '';
+      this.offenceCaption = `${offenceTitle} (${this.offence})`;
+    });
+  }
+
+  /**
    * Toggles the visibility of minor creditor details for the selected imposition.
    *
    * @param impositionId - The unique identifier of the imposition to update.
@@ -279,6 +301,7 @@ export class FinesMacOffenceDetailsReviewOffenceImpositionComponent implements O
   }
 
   public ngOnInit(): void {
+    this.getOffenceCaption();
     this.sortImpositionsByAllocationOrder();
     this.getImpositionData();
   }
