@@ -1,6 +1,8 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { ActivatedRoute, Router, convertToParamMap } from '@angular/router';
 import { OPAL_FINES_REPORT_INSTANCE_MOCK } from '@services/fines/opal-fines-service/mocks/opal-fines-report-instance.mock';
+import { DateService } from '@hmcts/opal-frontend-common/services/date-service';
+import { DateTime } from 'luxon';
 import { describe, expect, it, vi } from 'vitest';
 import { FINES_ROUTING_PATHS } from '../../routing/constants/fines-routing-paths.constant';
 import { FINES_REPORTS_SUMMARY_LIST_ROUTING_PATHS } from '../fines-reports-summary-list/routing/constants/fines-reports-summary-list-routing-paths.constant';
@@ -13,64 +15,83 @@ import { type IFinesReportsReportSummaryViewModel } from './interfaces/fines-rep
 import { mapFinesReportsReportInstanceToViewModel } from './utils/fines-reports-report-summary-map-view-model.utils';
 
 describe('FinesReportsReportSummaryComponent', () => {
+  const dateService = {
+    getFromIso: (value: string) => DateTime.fromISO(value),
+    toFormat: (value: DateTime, format: string) => value.toFormat(format),
+  } as DateService;
   const enforcementReportTypeId = FINES_REPORTS_SUMMARY_LIST_ROUTING_PATHS.children.operationalReportsByEnforcement;
   const paymentsReportTypeId = FINES_REPORTS_SUMMARY_LIST_ROUTING_PATHS.children.operationalReportsByPayments;
-  const enforcementReportSummary = mapFinesReportsReportInstanceToViewModel({
-    ...OPAL_FINES_REPORT_INSTANCE_MOCK,
-    name: 'Operational report (by enforcement) - ABDC',
-    requested_at: '2025-10-17T09:30:00',
-    status: {
-      code: FINES_REPORTS_REPORT_SUMMARY_STATUSES.requested,
-      display_name: FINES_REPORTS_REPORT_SUMMARY_STATUS_DISPLAY[FINES_REPORTS_REPORT_SUMMARY_STATUSES.requested],
-    },
-    business_units: [
-      { business_unit_id: 1, business_unit_name: 'West London', welsh_speaking: 'N' },
-      { business_unit_id: 2, business_unit_name: 'South London', welsh_speaking: 'N' },
-    ],
-    requested_by: {
-      user_id: 1,
-      name: 'jane.doe',
-    },
-    report_parameters: {
-      reportType: FINES_REPORTS_REPORT_SUMMARY_REPORT_TYPES.summary,
-      includeAdult: true,
-      includeYouth: true,
-      minBalance: '120.50',
-      maxBalance: '1000.00',
-    },
-  });
-  const paymentsReportSummary = mapFinesReportsReportInstanceToViewModel({
-    ...OPAL_FINES_REPORT_INSTANCE_MOCK,
-    name: 'Operational report (by payments) - PYMT',
-    number_of_records: 0,
-    report: {
-      ...OPAL_FINES_REPORT_INSTANCE_MOCK.report,
-      id: paymentsReportTypeId,
-    },
-    report_parameters: {
-      reportType: FINES_REPORTS_REPORT_SUMMARY_REPORT_TYPES.detailed,
-      includeAdult: true,
-      includeCompany: true,
-      accountStatus: 'CLOSED',
-      collectionOrderChoice: 'WITH',
-    },
-  });
-  const errorReportSummary = mapFinesReportsReportInstanceToViewModel({
-    ...OPAL_FINES_REPORT_INSTANCE_MOCK,
-    status: {
-      code: FINES_REPORTS_REPORT_SUMMARY_STATUSES.error,
-      display_name: FINES_REPORTS_REPORT_SUMMARY_STATUS_DISPLAY[FINES_REPORTS_REPORT_SUMMARY_STATUSES.error],
-    },
-    errors: [
-      {
-        report_generation_error: 'Legacy report timed out',
-        report_service: 'No response from reporting engine',
+  const enforcementReportSummary = mapFinesReportsReportInstanceToViewModel(
+    {
+      ...OPAL_FINES_REPORT_INSTANCE_MOCK,
+      name: 'Operational report (by enforcement) - ABDC',
+      requested_at: '2025-10-17T09:30:00',
+      status: {
+        code: FINES_REPORTS_REPORT_SUMMARY_STATUSES.requested,
+        display_name: FINES_REPORTS_REPORT_SUMMARY_STATUS_DISPLAY[FINES_REPORTS_REPORT_SUMMARY_STATUSES.requested],
       },
-      {
-        report_generation_error: 'Reporting service connection was reset',
+      business_units: [
+        { business_unit_id: 1, business_unit_name: 'West London', welsh_speaking: 'N' },
+        { business_unit_id: 2, business_unit_name: 'South London', welsh_speaking: 'N' },
+      ],
+      requested_by: {
+        user_id: 1,
+        name: 'jane.doe',
       },
-    ],
-  });
+      report_parameters: {
+        reportType: FINES_REPORTS_REPORT_SUMMARY_REPORT_TYPES.summary,
+        includeAdult: true,
+        includeYouth: true,
+        minBalance: '120.50',
+        maxBalance: '1000.00',
+      },
+    },
+    null,
+    '',
+    dateService,
+  );
+  const paymentsReportSummary = mapFinesReportsReportInstanceToViewModel(
+    {
+      ...OPAL_FINES_REPORT_INSTANCE_MOCK,
+      name: 'Operational report (by payments) - PYMT',
+      number_of_records: 0,
+      report: {
+        ...OPAL_FINES_REPORT_INSTANCE_MOCK.report,
+        id: paymentsReportTypeId,
+      },
+      report_parameters: {
+        reportType: FINES_REPORTS_REPORT_SUMMARY_REPORT_TYPES.detailed,
+        includeAdult: true,
+        includeCompany: true,
+        accountStatus: 'CLOSED',
+        collectionOrderChoice: 'WITH',
+      },
+    },
+    null,
+    '',
+    dateService,
+  );
+  const errorReportSummary = mapFinesReportsReportInstanceToViewModel(
+    {
+      ...OPAL_FINES_REPORT_INSTANCE_MOCK,
+      status: {
+        code: FINES_REPORTS_REPORT_SUMMARY_STATUSES.error,
+        display_name: FINES_REPORTS_REPORT_SUMMARY_STATUS_DISPLAY[FINES_REPORTS_REPORT_SUMMARY_STATUSES.error],
+      },
+      errors: [
+        {
+          report_generation_error: 'Legacy report timed out',
+          report_service: 'No response from reporting engine',
+        },
+        {
+          report_generation_error: 'Reporting service connection was reset',
+        },
+      ],
+    },
+    null,
+    '',
+    dateService,
+  );
 
   const setup = async (
     reportTypeId = enforcementReportTypeId,

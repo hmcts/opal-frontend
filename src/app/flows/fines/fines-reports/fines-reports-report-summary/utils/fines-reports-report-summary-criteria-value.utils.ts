@@ -1,6 +1,8 @@
 import { type IOpalFinesResultRefData } from '@services/fines/opal-fines-service/interfaces/opal-fines-result-ref-data.interface';
+import { DateService } from '@hmcts/opal-frontend-common/services/date-service';
 import { FINES_REPORTS_SUMMARY_LIST_ROUTING_PATHS } from '../../fines-reports-summary-list/routing/constants/fines-reports-summary-list-routing-paths.constant';
 import { FINES_REPORTS_REPORT_SUMMARY_CRITERIA_LABELS } from '../constants/fines-reports-report-summary-criteria-labels.constant';
+import { FINES_REPORTS_REPORT_SUMMARY_PARAMETER_KEYS } from '../constants/fines-reports-report-summary-parameter-keys.constant';
 import { FINES_REPORTS_REPORT_SUMMARY_REPORT_TYPES } from '../constants/fines-reports-report-summary-report-types.constant';
 import { type IFinesReportsReportSummaryViewModel } from '../interfaces/fines-reports-report-summary-view-model.interface';
 import { type FinesReportsReportSummaryNamedValue } from '../types/fines-reports-report-summary-named-value.type';
@@ -15,19 +17,29 @@ import {
  * Groups the account-type flags returned by the API into the labels displayed on one summary row.
  */
 const ACCOUNT_TYPE_PARAMETER_LABELS: Record<string, string> = {
-  includeAdult: 'Adult',
-  includeYouth: 'Youth',
-  includeCompany: 'Company',
-  onlyAccountsWithParentGuardian: 'Only accounts with parent or guardian to pay',
+  [FINES_REPORTS_REPORT_SUMMARY_PARAMETER_KEYS.includeAdult]: 'Adult',
+  [FINES_REPORTS_REPORT_SUMMARY_PARAMETER_KEYS.includeYouth]: 'Youth',
+  [FINES_REPORTS_REPORT_SUMMARY_PARAMETER_KEYS.includeCompany]: 'Company',
+  [FINES_REPORTS_REPORT_SUMMARY_PARAMETER_KEYS.onlyAccountsWithParentGuardian]:
+    'Only accounts with parent or guardian to pay',
 };
 
 /**
  * Identifies the paired API parameters that form one action-date row.
  */
 const DATE_RANGE_PARAMETER_CONFIGS = [
-  { fromKey: 'enforcementDateFrom', toKey: 'enforcementDateTo' },
-  { fromKey: 'lastActionDateFrom', toKey: 'lastActionDateTo' },
-  { fromKey: 'regfDateFrom', toKey: 'regfDateTo' },
+  {
+    fromKey: FINES_REPORTS_REPORT_SUMMARY_PARAMETER_KEYS.enforcementDateFrom,
+    toKey: FINES_REPORTS_REPORT_SUMMARY_PARAMETER_KEYS.enforcementDateTo,
+  },
+  {
+    fromKey: FINES_REPORTS_REPORT_SUMMARY_PARAMETER_KEYS.lastActionDateFrom,
+    toKey: FINES_REPORTS_REPORT_SUMMARY_PARAMETER_KEYS.lastActionDateTo,
+  },
+  {
+    fromKey: FINES_REPORTS_REPORT_SUMMARY_PARAMETER_KEYS.regfDateFrom,
+    toKey: FINES_REPORTS_REPORT_SUMMARY_PARAMETER_KEYS.regfDateTo,
+  },
 ] as const;
 
 /**
@@ -78,6 +90,16 @@ const CURRENCY_ROW_KEYS: readonly string[] = [
 ];
 
 /**
+ * Maps accepted API report-type values to the display labels used by the summary. `detail` is
+ * retained as a compatibility alias for existing report instances.
+ */
+const REPORT_TYPE_DISPLAY_BY_API_VALUE: Record<string, string> = {
+  summary: FINES_REPORTS_REPORT_SUMMARY_REPORT_TYPES.summary,
+  detailed: FINES_REPORTS_REPORT_SUMMARY_REPORT_TYPES.detailed,
+  detail: FINES_REPORTS_REPORT_SUMMARY_REPORT_TYPES.detailed,
+};
+
+/**
  * Resolves the display label for the API's supported report-type values. The route report id is
  * retained as the fallback because it is the authoritative report definition when an older
  * report instance contains an unrecognised reportType value.
@@ -85,17 +107,12 @@ const CURRENCY_ROW_KEYS: readonly string[] = [
 export const formatReportTypeDisplay = (value: unknown, reportId: string): string => {
   const normalised = typeof value === 'string' ? value.trim().toLowerCase() : '';
 
-  if (normalised === 'summary') {
-    return FINES_REPORTS_REPORT_SUMMARY_REPORT_TYPES.summary;
-  }
-
-  if (normalised === 'detailed' || normalised === 'detail') {
-    return FINES_REPORTS_REPORT_SUMMARY_REPORT_TYPES.detailed;
-  }
-
-  return reportId === FINES_REPORTS_SUMMARY_LIST_ROUTING_PATHS.children.operationalReportsByPayments
-    ? FINES_REPORTS_REPORT_SUMMARY_REPORT_TYPES.detailed
-    : FINES_REPORTS_REPORT_SUMMARY_REPORT_TYPES.summary;
+  return (
+    REPORT_TYPE_DISPLAY_BY_API_VALUE[normalised] ??
+    (reportId === FINES_REPORTS_SUMMARY_LIST_ROUTING_PATHS.children.operationalReportsByPayments
+      ? FINES_REPORTS_REPORT_SUMMARY_REPORT_TYPES.detailed
+      : FINES_REPORTS_REPORT_SUMMARY_REPORT_TYPES.summary)
+  );
 };
 
 /**
@@ -107,6 +124,7 @@ export const formatReportTypeDisplay = (value: unknown, reportId: string): strin
 export const buildActionDateRow = (
   reportParameters: Record<string, unknown>,
   parameterKey: string,
+  dateService: DateService,
 ): FinesReportsReportSummaryNamedValue | null => {
   const dateRangeConfig = DATE_RANGE_PARAMETER_CONFIGS.find(
     (config) => config.fromKey === parameterKey || config.toKey === parameterKey,
@@ -116,8 +134,8 @@ export const buildActionDateRow = (
     return null;
   }
 
-  const fromDisplay = getCriteriaDateDisplayValue(reportParameters[dateRangeConfig.fromKey]);
-  const toDisplay = getCriteriaDateDisplayValue(reportParameters[dateRangeConfig.toKey]);
+  const fromDisplay = getCriteriaDateDisplayValue(reportParameters[dateRangeConfig.fromKey], dateService);
+  const toDisplay = getCriteriaDateDisplayValue(reportParameters[dateRangeConfig.toKey], dateService);
 
   // Empty optional date properties must not create an incomplete "To " row.
   if (!fromDisplay && !toDisplay) {
@@ -196,59 +214,60 @@ export const mapOperationalReportParameter = (
   value: unknown,
   enforcementAction: IOpalFinesResultRefData | null,
   enforcementActionCode: unknown,
+  dateService: DateService,
 ): FinesReportsReportSummaryNamedValue | null => {
   const stringCode = typeof value === 'string' ? value : '';
 
   switch (key) {
-    case 'reportEnforcementMode':
+    case FINES_REPORTS_REPORT_SUMMARY_PARAMETER_KEYS.reportEnforcementMode:
       return {
         name: FINES_REPORTS_REPORT_SUMMARY_CRITERIA_LABELS.enforcement,
         value: getEnforcementDisplayValue(value, enforcementAction, enforcementActionCode),
       };
-    case 'accountStatus':
+    case FINES_REPORTS_REPORT_SUMMARY_PARAMETER_KEYS.accountStatus:
       return {
         name: FINES_REPORTS_REPORT_SUMMARY_CRITERIA_LABELS.accountStatus,
         value: ACCOUNT_STATUS_DISPLAY[stringCode] ?? stringCode,
         optional: true,
       };
-    case 'collectionOrderChoice':
+    case FINES_REPORTS_REPORT_SUMMARY_PARAMETER_KEYS.collectionOrderChoice:
       return {
         name: FINES_REPORTS_REPORT_SUMMARY_CRITERIA_LABELS.collectionOrder,
         value: COLLECTION_ORDER_DISPLAY[stringCode] ?? stringCode,
         optional: true,
       };
-    case 'minBalance':
+    case FINES_REPORTS_REPORT_SUMMARY_PARAMETER_KEYS.minBalance:
       return { name: FINES_REPORTS_REPORT_SUMMARY_CRITERIA_LABELS.minimumAccountBalance, value, optional: true };
-    case 'maxBalance':
+    case FINES_REPORTS_REPORT_SUMMARY_PARAMETER_KEYS.maxBalance:
       return { name: FINES_REPORTS_REPORT_SUMMARY_CRITERIA_LABELS.maximumAccountBalance, value, optional: true };
-    case 'lowerNameRange':
+    case FINES_REPORTS_REPORT_SUMMARY_PARAMETER_KEYS.lowerNameRange:
       return { name: FINES_REPORTS_REPORT_SUMMARY_CRITERIA_LABELS.lowerNameRange, value, optional: true };
-    case 'upperNameRange':
+    case FINES_REPORTS_REPORT_SUMMARY_PARAMETER_KEYS.upperNameRange:
       return { name: FINES_REPORTS_REPORT_SUMMARY_CRITERIA_LABELS.upperNameRange, value, optional: true };
-    case 'firstPaymentOrPayByInNext7Days':
+    case FINES_REPORTS_REPORT_SUMMARY_PARAMETER_KEYS.firstPaymentOrPayByInNext7Days:
       return value === true
         ? { name: FINES_REPORTS_REPORT_SUMMARY_CRITERIA_LABELS.firstPaymentOrPayByInNext7Days, value }
         : null;
-    case 'isPaymentMade':
+    case FINES_REPORTS_REPORT_SUMMARY_PARAMETER_KEYS.isPaymentMade:
       return {
         name: FINES_REPORTS_REPORT_SUMMARY_CRITERIA_LABELS.paymentsMade,
         value: value === true ? 'Yes' : value === false ? 'No' : value,
       };
-    case 'reportMode':
+    case FINES_REPORTS_REPORT_SUMMARY_PARAMETER_KEYS.reportMode:
       return {
         name: FINES_REPORTS_REPORT_SUMMARY_CRITERIA_LABELS.paymentReportMode,
         value: PAYMENT_REPORT_MODE_DISPLAY[stringCode] ?? stringCode,
       };
-    case 'sinceLastEnforcementAction':
+    case FINES_REPORTS_REPORT_SUMMARY_PARAMETER_KEYS.sinceLastEnforcementAction:
       return {
         name: FINES_REPORTS_REPORT_SUMMARY_CRITERIA_LABELS.sinceLastEnforcementAction,
         value,
         optional: true,
       };
-    case 'sinceDate':
+    case FINES_REPORTS_REPORT_SUMMARY_PARAMETER_KEYS.sinceDate:
       return {
         name: FINES_REPORTS_REPORT_SUMMARY_CRITERIA_LABELS.sinceDate,
-        value: getCriteriaDateDisplayValue(value),
+        value: getCriteriaDateDisplayValue(value, dateService),
         optional: true,
       };
     default:

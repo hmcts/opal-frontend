@@ -1,4 +1,4 @@
-import { formatDate } from '@angular/common';
+import { DateService } from '@hmcts/opal-frontend-common/services/date-service';
 
 /**
  * Identifies optional API values that should not create an empty row in the summary.
@@ -33,14 +33,15 @@ export const mapCurrencyValue = (value: unknown): number | string => {
 };
 
 /**
- * Formats an ISO date supplied in a report parameter for the summary screen.
+ * Formats an ISO date supplied in a report parameter through Opal's shared DateService. The
+ * service is supplied by the resolver in production; without it, the source value is retained.
  */
-export const getCriteriaDateDisplayValue = (value: unknown): string => {
+export const getCriteriaDateDisplayValue = (value: unknown, dateService: DateService): string => {
   if (typeof value !== 'string' || value.trim().length === 0) {
     return '';
   }
 
-  const date = Date.parse(value);
+  const date = dateService.getFromIso(value);
 
-  return Number.isNaN(date) ? value.trim() : formatDate(date, 'dd MMM yyyy', 'en-GB');
+  return date.isValid ? dateService.toFormat(date.setLocale('en-gb'), 'dd MMM yyyy') : value.trim();
 };

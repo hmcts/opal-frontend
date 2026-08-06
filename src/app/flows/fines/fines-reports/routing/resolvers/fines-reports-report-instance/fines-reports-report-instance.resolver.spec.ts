@@ -18,11 +18,11 @@ import { OPAL_FINES_RESULT_REF_DATA_MOCK } from '@services/fines/opal-fines-serv
 import { PAGES_ROUTING_PATHS as COMMON_PAGES_ROUTING_PATHS } from '@hmcts/opal-frontend-common/pages/routing/constants';
 import { FINES_REPORTS_SUMMARY_LIST_ROUTING_PATHS } from '../../../fines-reports-summary-list/routing/constants/fines-reports-summary-list-routing-paths.constant';
 import { FINES_REPORTS_ROUTING_PATHS } from '../../constants/fines-reports-routing-paths.constant';
-import { fetchReportInstanceResolver } from './fetch-report-instance.resolver';
+import { finesReportsReportInstanceResolver } from './fines-reports-report-instance.resolver';
 
-describe('fetchReportInstanceResolver', () => {
+describe('finesReportsReportInstanceResolver', () => {
   const executeResolver: ResolveFn<unknown> = (...resolverParameters) =>
-    TestBed.runInInjectionContext(() => fetchReportInstanceResolver(...resolverParameters));
+    TestBed.runInInjectionContext(() => finesReportsReportInstanceResolver(...resolverParameters));
 
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   let mockOpalFinesService: any;
@@ -121,7 +121,7 @@ describe('fetchReportInstanceResolver', () => {
     expect(mockOpalFinesService.getReportInstance).not.toHaveBeenCalled();
   });
 
-  it('should still resolve report summary data when selected last-enforcement action lookup fails', async () => {
+  it('should propagate selected last-enforcement action lookup failures', async () => {
     mockOpalFinesService.getReportInstance.mockReturnValue(
       of({
         ...OPAL_FINES_REPORT_INSTANCE_MOCK,
@@ -136,20 +136,13 @@ describe('fetchReportInstanceResolver', () => {
       throwError(() => new HttpErrorResponse({ status: 500, statusText: 'Internal Server Error' })),
     );
 
-    const result = await firstValueFrom(
-      executeResolver(
-        buildRoute('12345', FINES_REPORTS_SUMMARY_LIST_ROUTING_PATHS.children.operationalReportsByEnforcement),
-        {} as never,
-      ) as Observable<unknown>,
-    );
+    const result = executeResolver(
+      buildRoute('12345', FINES_REPORTS_SUMMARY_LIST_ROUTING_PATHS.children.operationalReportsByEnforcement),
+      {} as never,
+    ) as Observable<unknown>;
 
+    await expect(firstValueFrom(result)).rejects.toMatchObject({ status: 500 });
     expect(mockOpalFinesService.getResult).toHaveBeenCalledWith('BWTD');
-    expect(result).toMatchObject({
-      criteriaRows: [
-        { key: 'Report Type', value: 'Summary' },
-        { key: 'Enforcement', value: 'Last enforcement action (BWTD)' },
-      ],
-    });
   });
 
   it('should resolve the selected last-enforcement action for the summary display', async () => {

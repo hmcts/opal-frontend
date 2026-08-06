@@ -5,7 +5,7 @@ import { FINES_REPORTS_ROUTING_PATHS } from './constants/fines-reports-routing-p
 import { FINES_REPORTS_ROUTING_TITLES } from './constants/fines-reports-routing-titles.constant';
 import { finesReportsStateGuard } from './guards/fines-reports-state-guard/fines-reports-state.guard';
 import { finesReportsBusinessUnitsResolver } from './resolvers/fines-reports-business-units/fines-reports-business-units.resolver';
-import { fetchReportInstanceResolver } from './resolvers/fetch-report-instance/fetch-report-instance.resolver';
+import { finesReportsReportInstanceResolver } from './resolvers/fines-reports-report-instance/fines-reports-report-instance.resolver';
 import { finesReportsReportInstancesResolver } from './resolvers/fines-reports-report-instances/fines-reports-report-instances.resolver';
 import { finesReportsReportMetadataResolver } from './resolvers/fines-reports-report-metadata/fines-reports-report-metadata.resolver';
 import { finesReportsTitleResolver } from './resolvers/fines-reports-title/fines-reports-title.resolver';
@@ -51,7 +51,7 @@ describe('finesReports routes', () => {
       data: { title: FINES_REPORTS_ROUTING_TITLES.children.reportSummary },
       resolve: {
         title: TitleResolver,
-        reportSummary: fetchReportInstanceResolver,
+        reportSummary: finesReportsReportInstanceResolver,
       },
     });
   });

@@ -1,4 +1,5 @@
 import { type IOpalFinesReportInstanceDetail } from '@services/fines/opal-fines-service/interfaces/opal-fines-report-instance-detail.interface';
+import { DateService } from '@hmcts/opal-frontend-common/services/date-service';
 import { FINES_REPORTS_REPORT_SUMMARY_NO_CONTENT_STATUS_DISPLAY } from '../constants/fines-reports-report-summary-no-content-status-display.constant';
 import { FINES_REPORTS_REPORT_SUMMARY_RECORD_COUNT_DASH_STATUSES } from '../constants/fines-reports-report-summary-record-count-dash-statuses.constant';
 import { FINES_REPORTS_REPORT_SUMMARY_STATUS_DISPLAY } from '../constants/fines-reports-report-summary-status-display.constant';
@@ -12,14 +13,12 @@ import { type FinesReportsReportSummaryNormalisedStatus } from '../types/fines-r
  * Error so the UI never presents an unsupported lifecycle state as successful or in progress.
  */
 export const normaliseReportSummaryStatus = (status: string): FinesReportsReportSummaryNormalisedStatus => {
-  const normalisedStatus = status.trim().toLowerCase().replace(/\s+/g, '_');
-
-  switch (normalisedStatus) {
-    case 'requested':
+  switch (status) {
+    case FINES_REPORTS_REPORT_SUMMARY_STATUSES.requested:
       return FINES_REPORTS_REPORT_SUMMARY_STATUSES.requested;
-    case 'in_progress':
+    case FINES_REPORTS_REPORT_SUMMARY_STATUSES.inProgress:
       return FINES_REPORTS_REPORT_SUMMARY_STATUSES.inProgress;
-    case 'ready':
+    case FINES_REPORTS_REPORT_SUMMARY_STATUSES.ready:
       return FINES_REPORTS_REPORT_SUMMARY_STATUSES.ready;
     default:
       return FINES_REPORTS_REPORT_SUMMARY_STATUSES.error;
@@ -66,14 +65,14 @@ const getNumberOfRecordsDisplayValue = (
 };
 
 /**
- * Converts an API ISO date-time into the numeric value used by Angular's DatePipe. Returning
- * null for an invalid value lets the template show the standard missing-value state instead of
- * rendering an invalid date to the user.
+ * Converts an API ISO date-time into the numeric value used by Angular's DatePipe through Opal's
+ * shared DateService. Returning null for an invalid value lets the template show the standard
+ * missing-value state instead of rendering an invalid date to the user.
  */
-const getDateTimeDisplayValue = (value: string): number | null => {
-  const dateTime = Date.parse(value);
+const getDateTimeDisplayValue = (value: string, dateService: DateService): number | null => {
+  const dateTime = dateService.getFromIso(value);
 
-  return Number.isNaN(dateTime) ? null : dateTime;
+  return dateTime.isValid ? dateTime.toMillis() : null;
 };
 
 /**
@@ -82,12 +81,13 @@ const getDateTimeDisplayValue = (value: string): number | null => {
 export const mapReportSummaryGeneral = (
   reportInstance: IOpalFinesReportInstanceDetail,
   status: FinesReportsReportSummaryNormalisedStatus,
+  dateService: DateService,
 ): IFinesReportsReportSummaryViewModel['general'] => {
   const numberOfRecords = reportInstance.number_of_records ?? null;
 
   return {
     status: getStatusDisplay(status, numberOfRecords),
-    dateCreated: getDateTimeDisplayValue(reportInstance.requested_at),
+    dateCreated: getDateTimeDisplayValue(reportInstance.requested_at, dateService),
     businessUnits: getBusinessUnits(reportInstance).join(', ') || null,
     numberOfRecords: getNumberOfRecordsDisplayValue(status, numberOfRecords),
     createdBy: getCreatedBy(reportInstance) || null,
