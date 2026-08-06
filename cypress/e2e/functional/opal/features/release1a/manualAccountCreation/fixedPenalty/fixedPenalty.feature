@@ -1,5 +1,5 @@
 @JIRA-LABEL:manual-account-creation
-Feature: Manual fixed penalty account creation - Create Draft Account
+Feature: Fixed Penalty
 
   Rule: Adult or youth fixed penalty review
     Background:

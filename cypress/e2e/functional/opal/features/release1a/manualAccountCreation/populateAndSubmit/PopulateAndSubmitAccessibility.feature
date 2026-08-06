@@ -1,6 +1,6 @@
 @JIRA-LABEL:manual-account-creation
 @JIRA-NFR:PO-2322
-Feature: Accessibility Tests for Populate and Submit Screens
+Feature: Populate And Submit Accessibility
   # This feature file ensures that key populate and submit screens meet accessibility standards using Axe-Core.
 
   Background:

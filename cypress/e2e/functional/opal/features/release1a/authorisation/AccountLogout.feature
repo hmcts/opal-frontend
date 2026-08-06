@@ -1,5 +1,5 @@
 @JIRA-LABEL:manual-account-creation
-Feature: Multiple sign out
+Feature: Account Logout
   As a signed-in user
   I want to sign out from different entry points
   So that the application returns me to the sign-in page
