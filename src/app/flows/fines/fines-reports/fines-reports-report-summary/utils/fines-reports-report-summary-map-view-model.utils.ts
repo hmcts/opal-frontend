@@ -8,6 +8,8 @@ import { mapReportSummaryGeneral, normaliseReportSummaryStatus } from './fines-r
 
 /**
  * Maps a backend report instance response into the view model consumed by the report summary component.
+ * Status is normalised once here so the General and Errors sections apply the same lifecycle rule,
+ * while each section mapper remains responsible only for its own display data.
  */
 export const mapFinesReportsReportInstanceToViewModel = (
   reportInstance: IOpalFinesReportInstanceDetail,

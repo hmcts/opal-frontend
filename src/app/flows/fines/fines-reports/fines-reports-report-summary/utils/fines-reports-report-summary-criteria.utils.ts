@@ -4,58 +4,16 @@ import { type FinesReportsReportSummaryNamedValue } from '../types/fines-reports
 import {
   buildAccountTypeRow,
   buildActionDateRow,
+  isAccountTypeParameter,
   mapCriteriaRows,
   mapOperationalReportParameter,
 } from './fines-reports-report-summary-criteria-value.utils';
 
 /**
- * Sets the fixed screen order for criteria shared by both operational report types.
- */
-const OPERATIONAL_REPORT_COMMON_PARAMETER_KEYS = [
-  'accountStatus',
-  'collectionOrderChoice',
-  'minBalance',
-  'maxBalance',
-  'firstPaymentOrPayByInNext7Days',
-  'lowerNameRange',
-  'upperNameRange',
-] as const;
-
-/**
- * Sets the fixed screen order for criteria used by payment operational reports.
- */
-const OPERATIONAL_PAYMENT_PARAMETER_KEYS = [
-  'isPaymentMade',
-  'reportMode',
-  'sinceLastEnforcementAction',
-  'sinceDate',
-] as const;
-
-/**
- * Adds known criteria values to a row list in the order supplied by the caller.
- */
-const appendOperationalReportParameterRows = (
-  rows: FinesReportsReportSummaryNamedValue[],
-  reportParameters: Record<string, unknown>,
-  parameterKeys: readonly string[],
-  enforcementAction: IOpalFinesResultRefData | null,
-): void => {
-  for (const key of parameterKeys) {
-    const row = mapOperationalReportParameter(
-      key,
-      reportParameters[key],
-      enforcementAction,
-      reportParameters['enforcementAction'],
-    );
-
-    if (row) {
-      rows.push(row);
-    }
-  }
-};
-
-/**
- * Builds operational-report criteria in the fixed order shown in the report-summary design.
+ * Builds operational-report criteria in the order their source parameters are received from the API.
+ * Date-pair and account-type properties are the exceptions: each represents one combined design
+ * row, which is emitted once at the position of that group's first parameter. Unrecognised and
+ * technical supporting parameters do not produce a raw row.
  */
 export const mapReportSummaryCriteria = (
   reportParameters: Record<string, unknown> | null | undefined,
@@ -63,37 +21,42 @@ export const mapReportSummaryCriteria = (
   enforcementAction: IOpalFinesResultRefData | null,
 ) => {
   const parameters = reportParameters ?? {};
-  const rows: FinesReportsReportSummaryNamedValue[] = [
-    { name: FINES_REPORTS_REPORT_SUMMARY_CRITERIA_LABELS.reportType, value: reportType },
-  ];
-  const reportEnforcementMode = parameters['reportEnforcementMode'];
-  const enforcementModeRow =
-    typeof reportEnforcementMode === 'string' && reportEnforcementMode.trim().length > 0
-      ? mapOperationalReportParameter(
-          'reportEnforcementMode',
-          reportEnforcementMode,
-          enforcementAction,
-          parameters['enforcementAction'],
-        )
-      : null;
+  const enforcementActionCode = parameters['enforcementAction'];
+  const rows: FinesReportsReportSummaryNamedValue[] = [];
+  let hasAccountTypeRow = false;
+  let hasActionDateRow = false;
 
-  if (enforcementModeRow) {
-    rows.push(enforcementModeRow);
-
-    const actionDateRow = buildActionDateRow(parameters);
-    if (actionDateRow) {
-      rows.push(actionDateRow);
+  for (const [key, value] of Object.entries(parameters)) {
+    if (key === 'reportType') {
+      rows.push({ name: FINES_REPORTS_REPORT_SUMMARY_CRITERIA_LABELS.reportType, value: reportType });
+      continue;
     }
-  } else {
-    appendOperationalReportParameterRows(rows, parameters, OPERATIONAL_PAYMENT_PARAMETER_KEYS, enforcementAction);
-  }
 
-  const accountTypeRow = buildAccountTypeRow(parameters);
-  if (accountTypeRow) {
-    rows.push(accountTypeRow);
-  }
+    // A from/to pair is shown once, rather than as two implementation-detail rows.
+    if (!hasActionDateRow) {
+      const actionDateRow = buildActionDateRow(parameters, key);
+      if (actionDateRow) {
+        rows.push(actionDateRow);
+        hasActionDateRow = true;
+        continue;
+      }
+    }
 
-  appendOperationalReportParameterRows(rows, parameters, OPERATIONAL_REPORT_COMMON_PARAMETER_KEYS, enforcementAction);
+    // Several boolean flags form the single Account type row in the design.
+    if (!hasAccountTypeRow && isAccountTypeParameter(key)) {
+      const accountTypeRow = buildAccountTypeRow(parameters);
+      if (accountTypeRow) {
+        rows.push(accountTypeRow);
+        hasAccountTypeRow = true;
+      }
+      continue;
+    }
+
+    const row = mapOperationalReportParameter(key, value, enforcementAction, enforcementActionCode);
+    if (row) {
+      rows.push(row);
+    }
+  }
 
   return mapCriteriaRows(rows);
 };

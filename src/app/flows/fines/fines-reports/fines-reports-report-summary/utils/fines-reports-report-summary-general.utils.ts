@@ -7,7 +7,9 @@ import { type IFinesReportsReportSummaryViewModel } from '../interfaces/fines-re
 import { type FinesReportsReportSummaryNormalisedStatus } from '../types/fines-reports-report-summary-normalised-status.type';
 
 /**
- * Converts backend status codes into the status keys used by the summary screen.
+ * Converts backend status codes into the status keys used by the summary screen. Normalisation
+ * accepts the backend's space- and case-variant forms; an unknown value deliberately becomes
+ * Error so the UI never presents an unsupported lifecycle state as successful or in progress.
  */
 export const normaliseReportSummaryStatus = (status: string): FinesReportsReportSummaryNormalisedStatus => {
   const normalisedStatus = status.trim().toLowerCase().replace(/\s+/g, '_');
@@ -64,7 +66,9 @@ const getNumberOfRecordsDisplayValue = (
 };
 
 /**
- * Converts an API ISO date-time into the numeric value used by Angular's DatePipe.
+ * Converts an API ISO date-time into the numeric value used by Angular's DatePipe. Returning
+ * null for an invalid value lets the template show the standard missing-value state instead of
+ * rendering an invalid date to the user.
  */
 const getDateTimeDisplayValue = (value: string): number | null => {
   const dateTime = Date.parse(value);

@@ -16,19 +16,36 @@ describe('mapFinesReportsReportInstanceToViewModel', () => {
     });
   });
 
-  it('keeps report criteria in their fixed screen order', () => {
+  it('keeps visible report criteria in the received parameter order', () => {
     const result = mapFinesReportsReportInstanceToViewModel({
       ...OPAL_FINES_REPORT_INSTANCE_MOCK,
-      report_parameters: { minBalance: '120.50', includeAdult: true, reportType: 'SUMMARY' },
+      report_parameters: {
+        accountStatus: 'LIVE',
+        reportType: 'SUMMARY',
+        includeAdult: true,
+        minBalance: '120.50',
+      },
     });
 
     expect(result.criteriaRows).toEqual([
+      { key: 'Account status', value: 'Live' },
       { key: 'Report Type', value: 'Summary' },
-      { key: 'Payments made', value: '' },
-      { key: 'Payment report mode', value: '' },
       { key: 'Account type', value: 'Adult' },
       { key: 'Minimum account balance', value: 120.5, isCurrency: true },
     ]);
+  });
+
+  it('does not create an action-date row when both supplied date values are empty', () => {
+    const result = mapFinesReportsReportInstanceToViewModel({
+      ...OPAL_FINES_REPORT_INSTANCE_MOCK,
+      report_parameters: {
+        reportType: 'SUMMARY',
+        lastActionDateFrom: '',
+        lastActionDateTo: '',
+      },
+    });
+
+    expect(result.criteriaRows).toEqual([{ key: 'Report Type', value: 'Summary' }]);
   });
 
   it('uses the fixed General record count rule for in-progress reports', () => {

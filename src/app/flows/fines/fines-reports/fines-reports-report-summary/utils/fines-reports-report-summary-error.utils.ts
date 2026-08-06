@@ -23,7 +23,9 @@ const getErrorParameterLabel = (key: string): string => {
 };
 
 /**
- * Maps error values only when a report instance has the Error status.
+ * Maps error values only when a report instance has the Error status. Each API error is an object
+ * because one generation failure can carry several named values. Flattening those objects gives
+ * the template simple key/value rows while retaining the received error and property sequence.
  */
 export const mapReportSummaryErrors = (
   errors: Array<Record<string, unknown>> | null | undefined,

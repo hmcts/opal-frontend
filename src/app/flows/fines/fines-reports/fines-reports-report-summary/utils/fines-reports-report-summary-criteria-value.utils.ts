@@ -22,7 +22,7 @@ const ACCOUNT_TYPE_PARAMETER_LABELS: Record<string, string> = {
 };
 
 /**
- * Lists date-range pairs in the screen precedence used when an enforcement report supplies a range.
+ * Identifies the paired API parameters that form one action-date row.
  */
 const DATE_RANGE_PARAMETER_CONFIGS = [
   { fromKey: 'enforcementDateFrom', toKey: 'enforcementDateTo' },
@@ -78,7 +78,9 @@ const CURRENCY_ROW_KEYS: readonly string[] = [
 ];
 
 /**
- * Resolves the display label for the API's supported report-type values.
+ * Resolves the display label for the API's supported report-type values. The route report id is
+ * retained as the fallback because it is the authoritative report definition when an older
+ * report instance contains an unrecognised reportType value.
  */
 export const formatReportTypeDisplay = (value: unknown, reportId: string): string => {
   const normalised = typeof value === 'string' ? value.trim().toLowerCase() : '';
@@ -97,15 +99,17 @@ export const formatReportTypeDisplay = (value: unknown, reportId: string): strin
 };
 
 /**
- * Builds one action-date row from the first populated operational-report date range.
+ * Builds the one user-facing Action date row for the supplied date parameter. A report exposes
+ * each range as two API properties, but the design deliberately presents the pair as one row.
+ * The caller invokes this while walking the received properties, so the row takes the position
+ * of the first date property in that pair.
  */
 export const buildActionDateRow = (
   reportParameters: Record<string, unknown>,
+  parameterKey: string,
 ): FinesReportsReportSummaryNamedValue | null => {
   const dateRangeConfig = DATE_RANGE_PARAMETER_CONFIGS.find(
-    (config) =>
-      getCriteriaDateDisplayValue(reportParameters[config.fromKey]) ||
-      getCriteriaDateDisplayValue(reportParameters[config.toKey]),
+    (config) => config.fromKey === parameterKey || config.toKey === parameterKey,
   );
 
   if (!dateRangeConfig) {
@@ -114,6 +118,12 @@ export const buildActionDateRow = (
 
   const fromDisplay = getCriteriaDateDisplayValue(reportParameters[dateRangeConfig.fromKey]);
   const toDisplay = getCriteriaDateDisplayValue(reportParameters[dateRangeConfig.toKey]);
+
+  // Empty optional date properties must not create an incomplete "To " row.
+  if (!fromDisplay && !toDisplay) {
+    return null;
+  }
+
   const value =
     fromDisplay && toDisplay
       ? `From ${fromDisplay} to ${toDisplay}`
@@ -125,14 +135,15 @@ export const buildActionDateRow = (
 };
 
 /**
- * Maps the selected account-type flags to their one user-facing summary row.
+ * Maps selected account-type flags to their one user-facing summary row. Iterating the received
+ * parameters, rather than this label map, retains the order in which the API supplied selections.
  */
 export const buildAccountTypeRow = (
   reportParameters: Record<string, unknown>,
 ): FinesReportsReportSummaryNamedValue | null => {
-  const accountTypes = Object.entries(ACCOUNT_TYPE_PARAMETER_LABELS)
-    .filter(([key]) => reportParameters[key] === true)
-    .map(([, label]) => label);
+  const accountTypes = Object.entries(reportParameters)
+    .filter(([key, value]) => value === true && isAccountTypeParameter(key))
+    .map(([key]) => ACCOUNT_TYPE_PARAMETER_LABELS[key]);
 
   return accountTypes.length > 0
     ? {
@@ -144,7 +155,16 @@ export const buildAccountTypeRow = (
 };
 
 /**
+ * Identifies API parameters that contribute to the combined account-type display row.
+ */
+export const isAccountTypeParameter = (key: string): key is keyof typeof ACCOUNT_TYPE_PARAMETER_LABELS => {
+  return Object.hasOwn(ACCOUNT_TYPE_PARAMETER_LABELS, key);
+};
+
+/**
  * Combines a last-enforcement mode and result reference into the wording used by the design.
+ * LAST_ACTION needs the resolved reference-data title; when that optional lookup is unavailable,
+ * the original action code is still shown so the criterion is not silently lost.
  */
 const getEnforcementDisplayValue = (
   value: unknown,
@@ -167,7 +187,9 @@ const getEnforcementDisplayValue = (
 };
 
 /**
- * Maps a known operational-report parameter to its user-facing summary value.
+ * Maps a known operational-report parameter to its user-facing summary value. The API also
+ * contains technical partner values, such as enforcementAction and the individual account-type
+ * flags, which are intentionally represented by their combined display rows instead.
  */
 export const mapOperationalReportParameter = (
   key: string,
@@ -236,6 +258,8 @@ export const mapOperationalReportParameter = (
 
 /**
  * Removes unused optional criteria and marks money rows for the template's GBP currency pipe.
+ * Currency remains a number where possible so the shared template formatting is responsible for
+ * its final display, but invalid API values are retained as text rather than rendered as NaN.
  */
 export const mapCriteriaRows = (
   values: FinesReportsReportSummaryNamedValue[],
