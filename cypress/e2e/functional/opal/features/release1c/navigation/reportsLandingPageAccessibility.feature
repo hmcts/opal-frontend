@@ -1,6 +1,6 @@
 @JIRA-LABEL:navigation
 @JIRA-NFR:PO-2322
-Feature: Reports landing page navigation
+Feature: Reports Landing Page Accessibility
   Background:
     Given I am logged in on the Fines Search landing page with email "opal-test@dev.platform.hmcts.net"
 
