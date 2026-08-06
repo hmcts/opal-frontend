@@ -70,6 +70,7 @@ import { IOpalFinesAccountMajorCreditorAtAGlance } from './interfaces/opal-fines
 import { IOpalFinesAccountDefendantDetailsConsolidatedAccount } from './interfaces/opal-fines-account-defendant-account-consolidated-account.interface';
 import { IOpalFinesAccountDefendantDetailsConsolidatedAccounts } from './interfaces/opal-fines-account-defendant-account-consolidated-accounts.interface';
 import { IOpalFinesReport } from './interfaces/opal-fines-report.interface';
+import { IOpalFinesReportInstanceDetail } from './interfaces/opal-fines-report-instance-detail.interface';
 import { IOpalFinesReportInstancesParams } from './interfaces/opal-fines-report-instances-params.interface';
 import { IOpalFinesReportInstancesResponse } from './interfaces/opal-fines-report-instances-response.interface';
 
@@ -336,6 +337,21 @@ export class OpalFines {
     }
 
     return this.cache.reportsCache$[cacheKey];
+  }
+
+  /**
+   * Retrieves a report instance by its identifier without caching, so the displayed report status remains current.
+   *
+   * @param reportInstanceId - The report instance identifier to retrieve from the report-instances API.
+   * @returns An observable containing the report instance details.
+   */
+  public getReportInstance(reportInstanceId: string | number): Observable<IOpalFinesReportInstanceDetail> {
+    const reportInstanceIdPath = encodeURIComponent(reportInstanceId.toString());
+
+    return this.http.get<IOpalFinesReportInstanceDetail>(
+      `${OPAL_FINES_PATHS.reportInstances}/${reportInstanceIdPath}`,
+      this.retrySafeReadOptions(),
+    );
   }
 
   /**
