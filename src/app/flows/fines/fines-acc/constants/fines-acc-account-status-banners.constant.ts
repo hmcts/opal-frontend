@@ -2,9 +2,11 @@ import { FinesAccountStatusBanners } from '../types/fines-account-status-banners
 
 export const FINES_ACC_ACCOUNT_STATUS_BANNERS: FinesAccountStatusBanners = {
   TA: {
+    heading: null,
     label: 'Transferred out',
   },
   TS: {
+    heading: null,
     label: 'Transferred out to Scotland or Northern Ireland',
   },
   CS: {
@@ -12,9 +14,11 @@ export const FINES_ACC_ACCOUNT_STATUS_BANNERS: FinesAccountStatusBanners = {
     label: 'Account consolidated',
   },
   WO: {
+    heading: null,
     label: 'Account written off',
   },
   TO: {
+    heading: null,
     label: 'Transfer out in progress',
   },
 };

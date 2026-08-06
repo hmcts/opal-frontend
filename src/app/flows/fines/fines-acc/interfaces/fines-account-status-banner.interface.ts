@@ -1,4 +1,4 @@
 export interface FinesAccountStatusBanner {
   label: string;
-  heading?: string;
+  heading: string | null;
 }
