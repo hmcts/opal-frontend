@@ -1,5 +1,5 @@
 @JIRA-LABEL:global-api-interceptor
-Feature: Global API Interceptor shows error banner for all CEP error codes
+Feature: Global Api Interceptor
 
   Background:
     Given I am logged in with email "opal-test@dev.platform.hmcts.net"
