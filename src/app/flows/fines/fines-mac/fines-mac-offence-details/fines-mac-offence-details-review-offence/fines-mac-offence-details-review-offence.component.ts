@@ -18,9 +18,9 @@ import { ActivatedRoute } from '@angular/router';
 export class FinesMacOffenceDetailsReviewOffenceComponent implements OnInit {
   private readonly activatedRoute = inject(ActivatedRoute);
 
+  @Input({ required: true }) offence!: IFinesMacOffenceDetailsForm;
   @Input({ required: true }) impositionRefData!: IOpalFinesResultsRefData;
   @Input({ required: true }) majorCreditorRefData!: IOpalFinesMajorCreditorRefData;
-  @Input({ required: true }) offence!: IFinesMacOffenceDetailsForm;
   @Input({ required: false }) showActions!: boolean;
   @Input({ required: false }) showDetails: boolean = true;
   @Input({ required: false }) isReadOnly: boolean = false;
