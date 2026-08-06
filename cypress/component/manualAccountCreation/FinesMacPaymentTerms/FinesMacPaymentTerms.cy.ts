@@ -1417,6 +1417,22 @@ describe('FinesMacPaymentTermsComponent', () => {
   );
 
   it(
+    'should accept commas and full stops in the NOENF reason',
+    {
+      tags: [...buildTags('@JIRA-DEFECT:PO-9143')],
+    },
+    () => {
+      setupComponent('adultOrYouthOnly', null, (state) => {
+        state.paymentTerms.formData.fm_payment_terms_add_enforcement_action = true;
+        state.paymentTerms.formData.fm_payment_terms_enforcement_action = 'NOENF';
+      });
+      cy.get(DOM_ELEMENTS.reasonAccountIsOnNoenf).type("Reason, account-1. O'Neil", { delay: 0 });
+      cy.get(DOM_ELEMENTS.submitButton).click({ multiple: true });
+      cy.get(DOM_ELEMENTS.govukErrorMessage).should('not.exist');
+    },
+  );
+
+  it(
     '(AC.1,4,5a) correct system note for a leap-day collection order - AY',
     {
       tags: [...buildTags('@JIRA-STORY:PO-651'), '@JIRA-EPIC:PO-545', '@JIRA-NFR:PO-2325', '@JIRA-TEST-KEY:PO-6350'],
