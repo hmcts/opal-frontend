@@ -205,8 +205,7 @@ export const FINES_MAC_PERSONAL_DETAILS_FIELD_ERRORS: IFinesMacPersonalDetailsFi
       priority: 2,
     },
     alphanumericTextPattern: {
-      message:
-        "Address line 1 must only include letters, numbers, spaces and the characters ' - * ( ) _ , .",
+      message: "Address line 1 must only include letters, numbers, spaces and the characters ' - * ( ) _ , .",
       priority: 3,
     },
   },
@@ -216,8 +215,7 @@ export const FINES_MAC_PERSONAL_DETAILS_FIELD_ERRORS: IFinesMacPersonalDetailsFi
       priority: 1,
     },
     alphanumericTextPattern: {
-      message:
-        "Address line 2 must only include letters, numbers, spaces and the characters ' - * ( ) _ , .",
+      message: "Address line 2 must only include letters, numbers, spaces and the characters ' - * ( ) _ , .",
       priority: 2,
     },
   },
@@ -227,8 +225,7 @@ export const FINES_MAC_PERSONAL_DETAILS_FIELD_ERRORS: IFinesMacPersonalDetailsFi
       priority: 1,
     },
     alphanumericTextPattern: {
-      message:
-        "Address line 3 must only include letters, numbers, spaces and the characters ' - * ( ) _ , .",
+      message: "Address line 3 must only include letters, numbers, spaces and the characters ' - * ( ) _ , .",
       priority: 2,
     },
   },
