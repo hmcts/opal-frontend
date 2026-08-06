@@ -278,13 +278,11 @@ export class FinesMacOffenceDetailsReviewOffenceImpositionComponent implements O
   private getOffenceCaption(): void {
     this.opalFinesService.getOffenceByCjsCode(this.offence).subscribe((offenceRefData) => {
       const offenceRefDataTyped = offenceRefData as IOpalFinesOffencesRefData;
-      const offenceMatch = this.offenceDetailsService.findExactOffenceMatch(
+      this.offenceCaption = this.offenceDetailsService.formatTitleWithCode(
         offenceRefDataTyped,
         this.offence,
         this.offenceId,
       );
-      const offenceTitle = offenceMatch?.offence_title ?? offenceRefDataTyped.refData[0]?.offence_title ?? '';
-      this.offenceCaption = `${offenceTitle} (${this.offence})`;
     });
   }
 
