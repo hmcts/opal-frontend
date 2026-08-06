@@ -1,5 +1,5 @@
 @JIRA-LABEL:consolidation
-Feature: Write Off Release 1C Feature Toggles
+Feature: Write Off Release1c Feature Toggles
 
   @R1CWriteOff @JIRA-STORY:PO-3757 @JIRA-EPIC:PO-3685 @JIRA-TEST-KEY:PO-7563
   Scenario: Consolidate accounts is available through direct navigation when release 1c write off is enabled

@@ -27,6 +27,8 @@ describe('FinesDraftCreateAndManageViewAllRejectedComponent', () => {
     finesDraftService = {
       onDefendantClick: vi.fn().mockName('FinesDraftService.onDefendantClick'),
       populateTableData: vi.fn().mockName('FinesDraftService.populateTableData'),
+      PATH_AMEND_ACCOUNT: '/fines/manual-account-creation/account-details',
+      PATH_REVIEW_ACCOUNT: '/fines/manual-account-creation/review-account',
     };
     finesDraftService.populateTableData.mockReturnValue(FINES_DRAFT_TABLE_WRAPPER_TABLE_DATA_MOCK);
 
@@ -72,13 +74,35 @@ describe('FinesDraftCreateAndManageViewAllRejectedComponent', () => {
     });
   });
 
-  it('should call viewAllAccounts and amend then call onDefendantClick with PATH_REVIEW_ACCOUNT', () => {
-    component.onDefendantClick(FINES_DRAFT_TABLE_WRAPPER_TABLE_DATA_MOCK[0]);
+  it('should route a Fine row to PATH_AMEND_ACCOUNT and keep amend true', () => {
+    const fineRow = {
+      ...FINES_DRAFT_TABLE_WRAPPER_TABLE_DATA_MOCK[0],
+      'Account type': 'Fine',
+    };
+
+    component.onDefendantClick(fineRow);
+
     expect(finesDraftStore.viewAllAccounts()).toBeTruthy();
-    expect(finesDraftStore.amend()).toBeFalsy();
+    expect(finesDraftStore.amend()).toBeTruthy();
     expect(finesDraftService.onDefendantClick).toHaveBeenCalledWith(
-      FINES_DRAFT_TABLE_WRAPPER_TABLE_DATA_MOCK[0]['Defendant id'],
-      component.PATH_REVIEW_ACCOUNT,
+      fineRow['Defendant id'],
+      finesDraftService.PATH_AMEND_ACCOUNT,
+    );
+  });
+
+  it('should route a Fixed Penalty row to PATH_REVIEW_ACCOUNT and keep amend true', () => {
+    const fixedPenaltyRow = {
+      ...FINES_DRAFT_TABLE_WRAPPER_TABLE_DATA_MOCK[0],
+      'Account type': 'Fixed Penalty',
+    };
+
+    component.onDefendantClick(fixedPenaltyRow);
+
+    expect(finesDraftStore.viewAllAccounts()).toBeTruthy();
+    expect(finesDraftStore.amend()).toBeTruthy();
+    expect(finesDraftService.onDefendantClick).toHaveBeenCalledWith(
+      fixedPenaltyRow['Defendant id'],
+      finesDraftService.PATH_REVIEW_ACCOUNT,
     );
   });
 });

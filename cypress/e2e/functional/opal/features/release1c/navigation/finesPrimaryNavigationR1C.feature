@@ -1,4 +1,4 @@
-Feature: Fines primary navigation
+Feature: Fines Primary Navigation R1 C
 
   @JIRA-STORY:PO-2611 @JIRA-EPIC:PO-2627 @R1CFinancialMovements @JIRA-TEST-KEY:PO-5408
   Scenario: AC4a AC4b AC4c - Selecting the Finance top-level Fines area updates the active navigation item
