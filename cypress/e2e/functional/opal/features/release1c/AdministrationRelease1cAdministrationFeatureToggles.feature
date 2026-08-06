@@ -1,5 +1,5 @@
 @JIRA-LABEL:primary-nav-and-dashboards
-Feature: Administration Release 1C Administration Feature Toggles
+Feature: Administration Release1c Administration Feature Toggles
 
   @R1CAdministration @JIRA-STORY:PO-7266 @JIRA-EPIC:PO-3685 @JIRA-TEST-KEY:PO-8359
   Scenario: Administration navigation and entry points are available when release 1c administration is enabled

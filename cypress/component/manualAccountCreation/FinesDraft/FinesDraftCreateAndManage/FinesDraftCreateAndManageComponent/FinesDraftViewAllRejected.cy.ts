@@ -1,6 +1,6 @@
 import { mount } from 'cypress/angular';
 import { FinesDraftCreateAndManageViewAllRejectedComponent } from 'src/app/flows/fines/fines-draft/fines-draft-create-and-manage/fines-draft-create-and-manage-view-all-rejected/fines-draft-create-and-manage-view-all-rejected.component';
-import { ActivatedRoute } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import { FinesDraftStore } from 'src/app/flows/fines/fines-draft/stores/fines-draft.store';
 import { CreateManageDraftsLocators as DOM_ELEMENTS } from 'cypress/shared/selectors/create-manage-drafts.locators';
 import { OPAL_FINES_DRAFT_ACCOUNTS_MOCK } from './mocks/fines-draft-account.mock';
@@ -13,6 +13,8 @@ const buildTags = (...tags: string[]) => [...tags, '@R1A', MANUAL_ACCOUNT_CREATI
 
 describe('FinesDraftCreateAndManageViewAllRejectedComponent', () => {
   const setupComponent = (allRejectedAccountMock: any) => {
+    const routerNavigateStub = cy.stub().as('routerNavigate');
+
     mount(FinesDraftCreateAndManageViewAllRejectedComponent, {
       providers: [
         FinesDraftStore,
@@ -26,6 +28,12 @@ describe('FinesDraftCreateAndManageViewAllRejectedComponent', () => {
               },
               fragment: 'rejected',
             },
+          },
+        },
+        {
+          provide: Router,
+          useValue: {
+            navigate: routerNavigateStub,
           },
         },
       ],
@@ -42,6 +50,29 @@ describe('FinesDraftCreateAndManageViewAllRejectedComponent', () => {
 
       setupComponent(allRejectedMockData);
       cy.get(DOM_ELEMENTS.heading).should('exist').and('contain', 'All rejected accounts');
+    },
+  );
+
+  it(
+    '(AC.5) should route a rejected account click to the amend details page',
+    {
+      tags: [...buildTags('@JIRA-STORY:PO-9112'), '@JIRA-EPIC:PO-2220', '@JIRA-TEST-KEY:PO-9112'],
+    },
+    () => {
+      const allRejectedMockData = structuredClone(OPAL_FINES_DRAFT_ACCOUNTS_MOCK);
+
+      setupComponent(allRejectedMockData);
+
+      cy.get(DOM_ELEMENTS.tableRow).eq(1).find('a').should('contain', 'DOE, John').click();
+
+      cy.get('@routerNavigate').should('have.been.calledOnce');
+      cy.get('@routerNavigate').then((navigateStub) => {
+        const [call] = navigateStub.getCalls();
+        const [route, accountId] = call.args[0];
+
+        expect(route).to.equal('fines/manual-account-creation/account-details');
+        expect(accountId).to.equal(101);
+      });
     },
   );
 
