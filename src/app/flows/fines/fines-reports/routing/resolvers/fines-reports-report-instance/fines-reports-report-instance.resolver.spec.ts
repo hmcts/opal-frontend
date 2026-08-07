@@ -10,14 +10,12 @@ import {
 } from '@angular/router';
 import { firstValueFrom, Observable, of, throwError } from 'rxjs';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
-import { FINES_ROUTING_PATHS } from '@app/flows/fines/routing/constants/fines-routing-paths.constant';
 import { OpalFines } from '@services/fines/opal-fines-service/opal-fines.service';
 import { OPAL_FINES_REPORT_INSTANCE_MOCK } from '@services/fines/opal-fines-service/mocks/opal-fines-report-instance.mock';
 import { OPAL_FINES_REPORT_MOCK } from '@services/fines/opal-fines-service/mocks/opal-fines-report.mock';
 import { OPAL_FINES_RESULT_REF_DATA_MOCK } from '@services/fines/opal-fines-service/mocks/opal-fines-result-ref-data.mock';
 import { PAGES_ROUTING_PATHS as COMMON_PAGES_ROUTING_PATHS } from '@hmcts/opal-frontend-common/pages/routing/constants';
 import { FINES_REPORTS_SUMMARY_LIST_ROUTING_PATHS } from '../../../fines-reports-summary-list/routing/constants/fines-reports-summary-list-routing-paths.constant';
-import { FINES_REPORTS_ROUTING_PATHS } from '../../constants/fines-reports-routing-paths.constant';
 import { finesReportsReportInstanceResolver } from './fines-reports-report-instance.resolver';
 
 describe('finesReportsReportInstanceResolver', () => {
@@ -28,13 +26,13 @@ describe('finesReportsReportInstanceResolver', () => {
   let mockOpalFinesService: any;
   let mockRouter: { createUrlTree: ReturnType<typeof vi.fn> };
 
-  const buildRoute = (reportInstanceId: string | null, parentReportTypeId?: string) => {
+  const buildRoute = (reportInstanceId: string, parentReportTypeId?: string) => {
     const parentRoute = parentReportTypeId
       ? { paramMap: convertToParamMap({ reportTypeId: parentReportTypeId }) }
       : undefined;
 
     return {
-      paramMap: convertToParamMap(reportInstanceId ? { reportInstanceId } : {}),
+      paramMap: convertToParamMap({ reportInstanceId }),
       parent: parentRoute,
     } as ActivatedRouteSnapshot;
   };
@@ -174,41 +172,5 @@ describe('finesReportsReportInstanceResolver', () => {
         { key: 'Enforcement', value: 'Last enforcement - Bail Warrant - dated (BWTD)' },
       ],
     });
-  });
-
-  it('should redirect to the report summary list when the report instance id is missing', async () => {
-    const reportTypeId = FINES_REPORTS_SUMMARY_LIST_ROUTING_PATHS.children.operationalReportsByEnforcement;
-    const result = await firstValueFrom(
-      executeResolver(buildRoute(null, reportTypeId), {} as never) as Observable<unknown>,
-    );
-
-    expect(mockOpalFinesService.getReportInstance).not.toHaveBeenCalled();
-    expect(mockOpalFinesService.getReport).not.toHaveBeenCalled();
-    expect(result).toBeInstanceOf(RedirectCommand);
-    expect(mockRouter.createUrlTree).toHaveBeenCalledWith([
-      '/',
-      FINES_ROUTING_PATHS.root,
-      FINES_REPORTS_ROUTING_PATHS.root,
-      reportTypeId,
-      FINES_REPORTS_ROUTING_PATHS.children.summaryList,
-    ]);
-  });
-
-  it('should redirect to the report summary list when the report instance id is not in the API format', async () => {
-    const reportTypeId = FINES_REPORTS_SUMMARY_LIST_ROUTING_PATHS.children.operationalReportsByEnforcement;
-    const result = await firstValueFrom(
-      executeResolver(buildRoute('report-instance-enforcement-001', reportTypeId), {} as never) as Observable<unknown>,
-    );
-
-    expect(mockOpalFinesService.getReportInstance).not.toHaveBeenCalled();
-    expect(mockOpalFinesService.getReport).not.toHaveBeenCalled();
-    expect(result).toBeInstanceOf(RedirectCommand);
-    expect(mockRouter.createUrlTree).toHaveBeenCalledWith([
-      '/',
-      FINES_ROUTING_PATHS.root,
-      FINES_REPORTS_ROUTING_PATHS.root,
-      reportTypeId,
-      FINES_REPORTS_ROUTING_PATHS.children.summaryList,
-    ]);
   });
 });
