@@ -222,7 +222,7 @@ describe('DashboardComponent', () => {
 
     const renderedText = fixture.nativeElement.textContent as string;
 
-    expect(renderedText).toContain('Cash');
+    expect(renderedText).toContain('Payments in');
     expect(renderedText).toContain('Manual cash input');
   });
 
