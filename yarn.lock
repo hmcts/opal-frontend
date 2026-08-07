@@ -3979,9 +3979,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@hmcts/opal-frontend-common-node@file:packages/hmcts-opal-frontend-common-node-0.0.43.1.tgz::locator=opal-frontend%40workspace%3A.":
-  version: 0.0.43
-  resolution: "@hmcts/opal-frontend-common-node@file:packages/hmcts-opal-frontend-common-node-0.0.43.1.tgz#packages/hmcts-opal-frontend-common-node-0.0.43.1.tgz::hash=bd2775&locator=opal-frontend%40workspace%3A."
+"@hmcts/opal-frontend-common-node@file:packages/hmcts-opal-frontend-common-node-0.0.44.tgz::locator=opal-frontend%40workspace%3A.":
+  version: 0.0.44
+  resolution: "@hmcts/opal-frontend-common-node@file:packages/hmcts-opal-frontend-common-node-0.0.44.tgz#packages/hmcts-opal-frontend-common-node-0.0.44.tgz::hash=09f359&locator=opal-frontend%40workspace%3A."
   dependencies:
     "@azure/msal-browser": "npm:^5.0.0"
     "@hmcts/info-provider": "npm:^1.1.0"
@@ -4003,7 +4003,7 @@ __metadata:
     redis: "npm:^6.0.0"
     session-file-store: "npm:^1.5.0"
     xml2js: "npm:^0.6.2"
-  checksum: 10/3738e3dad36dcd1a79304f80ee52fa6f6dc0c48131d23c54e31e499a2aa87324723c18c6ce099c5fa462e6a643db9800b55951c5033a96d9eac7c7ae5b41a82e
+  checksum: 10/2ab39472cc9683c1685ff3d3106b9c0b0c3d17926a21510ecf68b81961a7847a1d3f2b48bbb148cacee5d6b822a6ea47c2c48d4794caca1bb43577a6a60bae6f
   languageName: node
   linkType: hard
 
@@ -16549,7 +16549,7 @@ __metadata:
     "@hmcts/nodejs-logging": "npm:^4.0.4"
     "@hmcts/opal-frontend-common": "npm:0.0.96"
     "@hmcts/opal-frontend-common-cypress": "npm:^0.0.3"
-    "@hmcts/opal-frontend-common-node": "file:packages/hmcts-opal-frontend-common-node-0.0.43.1.tgz"
+    "@hmcts/opal-frontend-common-node": "file:packages/hmcts-opal-frontend-common-node-0.0.44.tgz"
     "@hmcts/properties-volume": "npm:^1.1.0"
     "@hmcts/zephyr-automation-nodejs": "npm:0.0.7"
     "@microsoft/applicationinsights-web": "npm:^3.3.5"
