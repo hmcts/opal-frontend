@@ -220,9 +220,34 @@ Then('I should see the add parent or guardian details action', () => {
   defendantDetails().assertAddParentGuardianActionVisible();
 });
 
+Then('I do not see the add parent or guardian details action', () => {
+  log('assert', 'Add parent or guardian details action is absent');
+  defendantDetails().assertAddParentGuardianActionNotPresent();
+});
+
 Then('I should see the remove parent or guardian details action', () => {
   log('assert', 'Remove parent or guardian details action is visible');
   accountEnquiryFlow().assertRemoveParentGuardianActionVisible();
+});
+
+Then('I should see the parent or guardian details Change actions', () => {
+  log('assert', 'Parent or guardian details Change actions are visible');
+  accountEnquiryFlow().assertChangeParentGuardianActionsVisible();
+});
+
+Given('I stub the defendant header summary account status code to {string}', (statusCode: string) => {
+  log('intercept', 'Stub defendant header summary restricted status', { statusCode });
+  accountEnquiryFlow().stubRestrictedParentGuardianStatusCode(statusCode);
+});
+
+Then('I do not see any parent or guardian details Change actions', () => {
+  log('assert', 'Parent or guardian details Change actions are absent');
+  accountEnquiryFlow().assertChangeParentGuardianActionsNotVisible();
+});
+
+Then('I do not see the remove parent or guardian details action', () => {
+  log('assert', 'Remove parent or guardian details action is absent');
+  accountEnquiryFlow().assertRemoveParentGuardianActionNotVisible();
 });
 
 /**
