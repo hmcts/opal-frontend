@@ -2,4 +2,5 @@ import { IFinesAccMajorCreditorAccountTabsCacheMap } from '../interfaces/fines-a
 
 export const FINES_ACC_MAJOR_CREDITOR_ACCOUNT_TABS_CACHE_MAP: IFinesAccMajorCreditorAccountTabsCacheMap = {
   'at-a-glance': 'majorCreditorAccountAtAGlanceCache$',
+  'history-and-notes': 'majorCreditorAccountHistoryAndNotesCache$',
 };
