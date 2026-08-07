@@ -10,6 +10,7 @@ import {
   DEFENDANT_HEADER_MOCK,
   DEFENDANT_HEADER_YOUTH_MOCK,
   DEFENDANT_HEADER_ORG_MOCK,
+  createDefendantHeaderMockWithName,
 } from './mocks/defendant_details_mock';
 
 import {
@@ -17,6 +18,7 @@ import {
   USER_STATE_MOCK_PERMISSION_BU17,
   USER_STATE_MOCK_PERMISSION_BU77,
 } from '../../CommonIntercepts/CommonUserState.mocks';
+import { AccountAtAGlanceLocators as A } from '../../../shared/selectors/account-details/account.at-a-glance.details.locators';
 
 import { FINES_ACC_MINOR_CREDITOR_DETAILS_HEADER_MOCK } from 'src/app/flows/fines/fines-acc/fines-acc-minor-creditor-details/mocks/fines-acc-minor-creditor-details-header.mock';
 
@@ -24,10 +26,118 @@ import { setupAccountEnquiryComponent } from './setup/SetupComponent';
 import { IComponentProperties } from './setup/setupComponent.interface';
 import { interceptAuthenticatedUser, interceptUserState } from 'cypress/component/CommonIntercepts/CommonIntercepts';
 import { OPAL_FINES_ACCOUNT_DEFENDANT_AT_A_GLANCE_MOCK } from './mocks/defendant_details_at_glance_mock';
+import { AccountDetailsResponsiveLayoutActions } from '../../../e2e/functional/opal/actions/account-details/details.responsive-layout.actions';
+import { mount } from 'cypress/angular';
+import { FinesAccDefendantDetailsAtAGlanceTabComponent } from 'src/app/flows/fines/fines-acc/fines-acc-defendant-details/fines-acc-defendant-details-at-a-glance-tab/fines-acc-defendant-details-at-a-glance-tab.component';
 
 const ACCOUNT_ENQUIRY_JIRA_LABEL = '@JIRA-LABEL:account-enquiry';
 
 const buildTags = (...tags: string[]): string[] => [...tags, ACCOUNT_ENQUIRY_JIRA_LABEL, '@R1B'];
+
+const responsiveLayoutActions = new AccountDetailsResponsiveLayoutActions();
+
+const assertHeaderActionsReflow = (): void => {
+  cy.get(DOM.headingName).then(($heading) => {
+    const headingBounds = $heading[0].getBoundingClientRect();
+
+    cy.get(DOM.headingCaption).then(($caption) => {
+      const captionBounds = $caption[0].getBoundingClientRect();
+      expect(captionBounds.left, 'account number caption should align with the account name').to.be.closeTo(
+        headingBounds.left,
+        1,
+      );
+
+      cy.get(DOM.addNoteButton).then(($button) => {
+        const buttonBounds = $button[0].getBoundingClientRect();
+
+        cy.get(DOM.moreOptionsButton).then(($moreOptionsButton) => {
+          const moreOptionsBounds = $moreOptionsButton[0].getBoundingClientRect();
+          const actionsOverlap =
+            buttonBounds.left < moreOptionsBounds.right &&
+            buttonBounds.right > moreOptionsBounds.left &&
+            buttonBounds.top < moreOptionsBounds.bottom &&
+            buttonBounds.bottom > moreOptionsBounds.top;
+
+          expect(buttonBounds.top, 'add account note button should be below the account name').to.be.at.least(
+            headingBounds.bottom,
+          );
+          expect(moreOptionsBounds.top, 'more options button should be below the account name').to.be.at.least(
+            headingBounds.bottom,
+          );
+          expect(buttonBounds.right, 'add account note button should be fully visible').to.be.at.most(320);
+          expect(moreOptionsBounds.right, 'more options button should be fully visible').to.be.at.most(320);
+          expect(actionsOverlap, 'header actions should not overlap').to.equal(false);
+
+          cy.get(DOM.accountInfo).then(($accountInfo) => {
+            const accountInfoBounds = $accountInfo[0].getBoundingClientRect();
+            const headerContentBottom = Math.max(headingBounds.bottom, buttonBounds.bottom, moreOptionsBounds.bottom);
+
+            expect(accountInfoBounds.top, 'account information should start below the complete header').to.be.at.least(
+              headerContentBottom,
+            );
+
+            cy.get(DOM.summaryMetricBar).then(($summaryMetricBar) => {
+              const summaryMetricBarBounds = $summaryMetricBar[0].getBoundingClientRect();
+              expect(
+                summaryMetricBarBounds.top,
+                'summary metrics should start below account information',
+              ).to.be.at.least(accountInfoBounds.bottom);
+
+              cy.get(DOM.subnav).then(($subnav) => {
+                expect(
+                  $subnav[0].getBoundingClientRect().top,
+                  'navigation should start below summary metrics',
+                ).to.be.at.least(summaryMetricBarBounds.bottom);
+              });
+            });
+          });
+        });
+      });
+    });
+  });
+};
+
+const assertDesktopHeaderLayout = (): void => {
+  cy.get(DOM.headingName).then(($heading) => {
+    const headingBounds = $heading[0].getBoundingClientRect();
+
+    cy.get(DOM.headingCaption).then(($caption) => {
+      expect(
+        $caption[0].getBoundingClientRect().left,
+        'account number caption should align with the account name',
+      ).to.be.closeTo(headingBounds.left, 1);
+
+      cy.get(DOM.addNoteButton).then(($button) => {
+        const buttonBounds = $button[0].getBoundingClientRect();
+
+        cy.get(DOM.moreOptionsButton).then(($moreOptionsButton) => {
+          const moreOptionsBounds = $moreOptionsButton[0].getBoundingClientRect();
+          const addNoteOverlapsName =
+            buttonBounds.left < headingBounds.right &&
+            buttonBounds.right > headingBounds.left &&
+            buttonBounds.top < headingBounds.bottom &&
+            buttonBounds.bottom > headingBounds.top;
+          const moreOptionsOverlapsName =
+            moreOptionsBounds.left < headingBounds.right &&
+            moreOptionsBounds.right > headingBounds.left &&
+            moreOptionsBounds.top < headingBounds.bottom &&
+            moreOptionsBounds.bottom > headingBounds.top;
+          const actionsOverlap =
+            buttonBounds.left < moreOptionsBounds.right &&
+            buttonBounds.right > moreOptionsBounds.left &&
+            buttonBounds.top < moreOptionsBounds.bottom &&
+            buttonBounds.bottom > moreOptionsBounds.top;
+
+          expect(addNoteOverlapsName, 'add account note button should not overlap the account name').to.equal(false);
+          expect(moreOptionsOverlapsName, 'more options button should not overlap the account name').to.equal(false);
+          expect(actionsOverlap, 'header actions should not overlap').to.equal(false);
+          expect(buttonBounds.right, 'add account note button should be fully visible').to.be.at.most(1280);
+          expect(moreOptionsBounds.right, 'more options button should be fully visible').to.be.at.most(1280);
+        });
+      });
+    });
+  });
+};
 
 describe('Account Enquiry - Defendant Header', () => {
   beforeEach(() => {
@@ -47,6 +157,28 @@ describe('Account Enquiry - Defendant Header', () => {
   };
 
   it(
+    'AC1, AC5, AC7, AC9: keeps top account content aligned and unobscured at desktop width',
+    { tags: [...buildTags('@JIRA-STORY:PO-2673'), '@JIRA-EPIC:PO-2673'] },
+    () => {
+      cy.viewport(1280, 900);
+
+      interceptUserState(USER_STATE_MOCK_PERMISSION_BU77);
+      interceptDefendantHeader(77, DEFENDANT_HEADER_MOCK, '1');
+      interceptAtAGlance(77, OPAL_FINES_ACCOUNT_DEFENDANT_AT_A_GLANCE_MOCK, '1');
+
+      setupAccountEnquiryComponent(componentProperties);
+
+      cy.get(DOM.pageHeader).should('be.visible');
+      cy.get(DOM.accountInfo).should('be.visible');
+      cy.get(DOM.summaryMetricBar).should('be.visible');
+      cy.get(DOM.subnav).should('be.visible');
+
+      assertDesktopHeaderLayout();
+      responsiveLayoutActions.assertSummaryContentReadable(1280);
+    },
+  );
+
+  it(
     'AC1a: renders the Defendant Account Header Summary',
     {
       tags: [...buildTags('@JIRA-STORY:PO-1593', '@JIRA-STORY:PO-866'), '@JIRA-EPIC:PO-812', '@JIRA-TEST-KEY:PO-4204'],
@@ -62,6 +194,7 @@ describe('Account Enquiry - Defendant Header', () => {
       cy.get(DOM.headingWithCaption).should('exist');
       cy.get(DOM.headingName).should('exist').and('contain.text', 'Mr Anna GRAHAM');
       cy.get(DOM.accountInfo).should('exist');
+      cy.get(A.accountSummary.root).should('be.visible');
       cy.get(DOM.summaryMetricBar).should('exist');
       cy.get(DOM.subnav).should('exist');
       cy.get(DOM.atAGlanceTabComponent).should('exist');
@@ -82,6 +215,7 @@ describe('Account Enquiry - Defendant Header', () => {
       cy.get(DOM.headingWithCaption).should('exist');
       cy.get(DOM.headingName).should('exist').and('contain.text', 'Sainsco');
       cy.get(DOM.accountInfo).should('exist');
+      cy.get(A.accountSummary.root).should('be.visible');
       cy.get(DOM.summaryMetricBar).should('exist');
       cy.get(DOM.subnav).should('exist');
       cy.get(DOM.atAGlanceTabComponent).should('exist');
@@ -474,6 +608,164 @@ describe('Account Enquiry - Defendant Header', () => {
 
       setupAccountEnquiryComponent(componentProperties);
       cy.get(DOM.addNoteButton).should('not.exist');
+    },
+  );
+
+  it(
+    'AC1, AC2, AC3, AC4, AC5, AC7, AC8, AC9, AC10: reflows the Account Details header at narrow widths with long names',
+    { tags: [...buildTags('@JIRA-STORY:PO-2673'), '@JIRA-EPIC:PO-2673', '@JIRA-TEST-KEY:PO-2673'] },
+    () => {
+      cy.viewport(320, 900);
+      // First name should be 20 characters, last name should be 30 characters, total 50 characters. This is the maximum length for a defendant name.
+      const longHeader = createDefendantHeaderMockWithName('A very long forename', 'A very long surname that wraps');
+
+      interceptUserState(USER_STATE_MOCK_PERMISSION_BU77);
+      interceptDefendantHeader(77, longHeader, '1');
+      interceptAtAGlance(77, OPAL_FINES_ACCOUNT_DEFENDANT_AT_A_GLANCE_MOCK, '1');
+
+      setupAccountEnquiryComponent(componentProperties);
+
+      cy.get(DOM.pageHeader).should('be.visible');
+      cy.get(DOM.headingWithCaption).should('be.visible');
+      cy.get(DOM.headingName).should('contain.text', 'A very long forename');
+      cy.get(DOM.accountInfo).should('be.visible');
+      cy.get(DOM.summaryMetricBar).should('be.visible');
+      cy.get(DOM.subnav).should('be.visible');
+      cy.get(DOM.addNoteButton).should('be.visible');
+
+      cy.window().then((win) => {
+        const { documentElement, body } = win.document;
+
+        expect(documentElement.scrollWidth, 'document should not overflow viewport').to.be.at.most(
+          documentElement.clientWidth + 1,
+        );
+        expect(body.scrollWidth, 'body should not overflow viewport').to.be.at.most(body.clientWidth + 1);
+      });
+
+      assertHeaderActionsReflow();
+      responsiveLayoutActions.assertSummaryContentReadable();
+    },
+  );
+
+  it(
+    'AC1, AC2, AC3, AC4, AC5, AC7, AC8, AC9, AC10: keeps the header readable for a long company name at narrow widths',
+    { tags: [...buildTags('@JIRA-STORY:PO-2673'), '@JIRA-EPIC:PO-2673', '@JIRA-TEST-KEY:PO-2674'] },
+    () => {
+      cy.viewport(320, 900);
+
+      const longCompanyHeader = structuredClone(DEFENDANT_HEADER_ORG_MOCK);
+      //Company name should be max of 50 characters.
+      longCompanyHeader.party_details.organisation_details = {
+        ...longCompanyHeader.party_details.organisation_details!,
+        organisation_name: 'A very long company name that is fifty characters.',
+      };
+
+      interceptUserState(USER_STATE_MOCK_PERMISSION_BU77);
+      interceptDefendantHeader(77, longCompanyHeader, '1');
+      interceptAtAGlance(77, OPAL_FINES_ACCOUNT_DEFENDANT_AT_A_GLANCE_MOCK, '1');
+
+      setupAccountEnquiryComponent(componentProperties);
+
+      cy.get(DOM.pageHeader).should('be.visible');
+      cy.get(DOM.headingWithCaption).should('be.visible');
+      cy.get(DOM.headingName)
+        .should('be.visible')
+        .and('contain.text', 'A very long company name that is fifty characters.');
+      cy.get(DOM.accountInfo).should('be.visible');
+      cy.get(DOM.summaryMetricBar).should('be.visible');
+      cy.get(DOM.subnav).should('be.visible');
+      cy.get(DOM.addNoteButton).should('be.visible');
+
+      cy.window().then((win) => {
+        const { documentElement, body } = win.document;
+
+        expect(documentElement.scrollWidth, 'document should not overflow viewport').to.be.at.most(
+          documentElement.clientWidth + 1,
+        );
+        expect(body.scrollWidth, 'body should not overflow viewport').to.be.at.most(body.clientWidth + 1);
+      });
+
+      assertHeaderActionsReflow();
+      responsiveLayoutActions.assertSummaryContentReadable();
+    },
+  );
+
+  it(
+    'AC6: wraps the status chip content cleanly at narrow widths',
+    { tags: [...buildTags('@JIRA-STORY:PO-2673'), '@JIRA-EPIC:PO-2673', '@JIRA-TEST-KEY:PO-2676'] },
+    () => {
+      cy.viewport(320, 900);
+
+      const parentGuardianHeader = structuredClone(DEFENDANT_HEADER_MOCK);
+      parentGuardianHeader.debtor_type = 'Parent/Guardian';
+      parentGuardianHeader.parent_guardian_party_id = '99';
+
+      interceptUserState(USER_STATE_MOCK_PERMISSION_BU77);
+      interceptDefendantHeader(77, parentGuardianHeader, '1');
+      interceptAtAGlance(77, OPAL_FINES_ACCOUNT_DEFENDANT_AT_A_GLANCE_MOCK, '1');
+
+      setupAccountEnquiryComponent(componentProperties);
+
+      cy.get(DOM.statusTag)
+        .should('be.visible')
+        .and('contain.text', 'Parent or Guardian to pay')
+        .then(($tag) => {
+          const el = $tag[0] as HTMLElement;
+          const tagBounds = el.getBoundingClientRect();
+          const containingRow = el.closest('.govuk-grid-column-full') as HTMLElement;
+
+          expect(el.innerText.trim(), 'status tag should render its complete label').to.equal(
+            'Parent or Guardian to pay',
+          );
+          expect(el.scrollWidth, 'status tag should not overflow its box').to.be.at.most(el.clientWidth + 1);
+          expect(containingRow, 'status tag should have a containing row').to.exist;
+          expect(tagBounds.right, 'status tag should not overflow its containing row').to.be.at.most(
+            containingRow.getBoundingClientRect().right,
+          );
+        });
+    },
+  );
+
+  it(
+    'AC8: stacks the summary columns below the primary content at narrow widths',
+    { tags: [...buildTags('@JIRA-STORY:PO-2673'), '@JIRA-EPIC:PO-2673', '@JIRA-TEST-KEY:PO-2677'] },
+    () => {
+      cy.viewport(320, 900);
+
+      const atAGlanceData = structuredClone(OPAL_FINES_ACCOUNT_DEFENDANT_AT_A_GLANCE_MOCK);
+      atAGlanceData.party_details.individual_details = {
+        ...atAGlanceData.party_details.individual_details!,
+        forenames: 'A very long first name that should wrap cleanly',
+        surname: 'A very long surname that should also wrap cleanly',
+      };
+
+      mount(FinesAccDefendantDetailsAtAGlanceTabComponent, {
+        componentProperties: { tabData: atAGlanceData },
+      });
+
+      cy.contains('Defendant')
+        .closest('.govuk-grid-column-one-third')
+        .then(($defendantColumn) => {
+          const defendantBottom = $defendantColumn[0].getBoundingClientRect().bottom;
+
+          cy.contains('Payment terms')
+            .closest('.govuk-grid-column-one-third')
+            .then(($paymentTermsColumn) => {
+              const paymentTermsBounds = $paymentTermsColumn[0].getBoundingClientRect();
+              expect(paymentTermsBounds.top, 'payment terms should start below defendant details').to.be.at.least(
+                defendantBottom,
+              );
+
+              cy.contains('Enforcement status')
+                .closest('.govuk-grid-column-one-third')
+                .then(($enforcementStatusColumn) => {
+                  expect(
+                    $enforcementStatusColumn[0].getBoundingClientRect().top,
+                    'enforcement status should start below payment terms',
+                  ).to.be.at.least(paymentTermsBounds.bottom);
+                });
+            });
+        });
     },
   );
 });
