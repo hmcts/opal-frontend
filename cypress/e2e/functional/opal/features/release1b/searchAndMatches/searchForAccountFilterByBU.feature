@@ -1,5 +1,5 @@
 @JIRA-LABEL:account-enquiry
-Feature: Filter by Business Unit
+Feature: Search For Account Filter By BU
 
   Background:
     Given I am logged in with email "opal-test@dev.platform.hmcts.net"

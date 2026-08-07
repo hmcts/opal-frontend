@@ -11,10 +11,12 @@
 export const ACCOUNT_ENQUIRY_HEADER_ELEMENTS = {
   headingWithCaption: 'opal-lib-govuk-heading-with-caption',
   headingName: 'h1.govuk-heading-l',
+  headingCaption: 'opal-lib-govuk-heading-with-caption .govuk-caption-l',
   pageHeader: 'opal-lib-custom-page-header',
 
   // Buttons
   addNoteButton: 'button#defendant-addAccountNote',
+  moreOptionsButton: 'opal-lib-custom-page-header .moj-button-menu__toggle-button',
   minorCreditorAddNoteButton: 'button#minor-creditor-addAccountNote',
   addPaymentHoldButton: 'button#addPaymentHold',
   removePaymentHoldButton: 'button#removePaymentHold',
@@ -32,6 +34,7 @@ export const ACCOUNT_ENQUIRY_HEADER_ELEMENTS = {
   accountBalanceValue:
     'opal-lib-custom-summary-metric-bar-item:nth-child(4) p[opal-lib-custom-summary-metric-bar-item-value]',
   accountInfo: 'opal-lib-custom-account-information',
+  accountInfoItem: 'opal-lib-custom-account-information-item',
   receivedFrom: '#defendant-received-from',
   sectionHeading: 'h2',
   fieldHeading: 'h3',

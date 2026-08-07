@@ -1,6 +1,6 @@
 @JIRA-LABEL:manual-account-creation
 @ManualAccountCreation @PaymentTerms @JIRA-EPIC:PO-272 @JIRA-STORY:PO-429 @JIRA-STORY:PO-587 @JIRA-STORY:PO-592
-Feature: Manual account creation - Payment Terms
+Feature: Payment Terms
   #This feature file contains tests for the Payment Terms page of the Manual Account Creation journey that cannot be exercised in the component tests #
   #Validation tests are contained in the PaymentTermsComponent.cy.ts component tests
   #Tests for conditional rendering (different defendant types) are contained in the PaymentTermsComponent.cy.ts component tests
