@@ -80,7 +80,7 @@ export function getRoutesConfig(): {
 
 export function configureApiProxyRoutes(app: Express, proxyConfiguration: ProxyConfiguration): void {
   const ipLoggingEnabled = config.get('features.ip-logging.enabled') as boolean;
-  const proxyTimeoutInMilliseconds = (proxyConfiguration.timeoutInMilliseconds ?? 1000) - 1000;
+  const proxyTimeoutInMilliseconds = proxyConfiguration.timeoutInMilliseconds || undefined;
 
   if (proxyConfiguration.opalFinesServiceUrl) {
     app.use(
