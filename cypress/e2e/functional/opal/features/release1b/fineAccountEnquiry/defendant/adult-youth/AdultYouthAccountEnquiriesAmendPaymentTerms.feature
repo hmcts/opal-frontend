@@ -58,3 +58,25 @@ Feature: Adult Youth Account Enquiries Amend Payment Terms
       Then I should only see one Change link inside the Payment terms panel
       When I open the amend payment terms form
       Then I should be on the Payment terms amend screen
+
+    @R1B @JIRA-STORY:PO-5753 @JIRA-EPIC:PO-2990
+    Scenario Outline: AC1, AC2 Payment terms actions are hidden for restricted account statuses
+      Given I stub the defendant header summary payment terms account status code to "<status>"
+      When I search for the account by last name "AmendPayTerms{uniq}" and open the latest result
+      And I go to the Payment terms tab
+      Then I do not see the Payment terms Change or Request payment card actions
+
+      Examples:
+        | status |
+        | CS     |
+        | WO     |
+        | TA     |
+        | TS     |
+        | TO     |
+
+    @R1B @JIRA-STORY:PO-5753 @JIRA-EPIC:PO-2990
+    Scenario: AC1, AC2 Payment terms actions are hidden when the account balance is zero
+      Given I stub the defendant header summary payment terms account balance to 0
+      When I search for the account by last name "AmendPayTerms{uniq}" and open the latest result
+      And I go to the Payment terms tab
+      Then I do not see the Payment terms Change or Request payment card actions

@@ -431,6 +431,58 @@ export class AccountEnquiryFlow {
   }
 
   /**
+   * Stubs the defendant header-summary response with a payment-terms restricted status.
+   *
+   * @param statusCode Restricted account status code to inject into the response.
+   */
+  public stubPaymentTermsAccountStatusCode(statusCode: string): void {
+    logAE('intercept', 'Stubbing defendant header-summary payment terms account status', { statusCode });
+
+    cy.intercept('GET', '**/defendant-accounts/**/header-summary', (req) => {
+      req.continue((res) => {
+        const body = res.body as { account_status_reference?: { account_status_code?: string } };
+
+        if (!body?.account_status_reference) {
+          throw new Error('Expected defendant header-summary response to include account_status_reference.');
+        }
+
+        body.account_status_reference.account_status_code = statusCode;
+        res.send({ body });
+      });
+    }).as('restrictedPaymentTermsStatusHeaderSummary');
+  }
+
+  /**
+   * Stubs the defendant header-summary response with the supplied payment-terms account balance.
+   *
+   * @param balance Account balance to inject into the response.
+   */
+  public stubPaymentTermsAccountBalance(balance: number): void {
+    logAE('intercept', 'Stubbing defendant header-summary payment terms account balance', { balance });
+
+    cy.intercept('GET', '**/defendant-accounts/**/header-summary', (req) => {
+      req.continue((res) => {
+        const body = res.body as { payment_state_summary?: { account_balance?: number } };
+
+        if (!body?.payment_state_summary) {
+          throw new Error('Expected defendant header-summary response to include payment_state_summary.');
+        }
+
+        body.payment_state_summary.account_balance = balance;
+        res.send({ body });
+      });
+    }).as('restrictedPaymentTermsBalanceHeaderSummary');
+  }
+
+  /**
+   * Asserts that neither payment-terms action is displayed.
+   */
+  public assertPaymentTermsActionsNotVisible(): void {
+    logAE('assert', 'Payment terms Change and Request payment card actions are absent');
+    this.paymentTerms.assertPaymentTermsActionsNotPresent();
+  }
+
+  /**
    * Asserts the Change actions are hidden on the Parent or guardian tab.
    */
   public assertChangeParentGuardianActionsNotVisible(): void {

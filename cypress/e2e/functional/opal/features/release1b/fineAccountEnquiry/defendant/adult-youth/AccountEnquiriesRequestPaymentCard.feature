@@ -40,4 +40,3 @@ Feature: Account Enquiries Request Payment Card
       When I start a payment card request
       And I confirm the payment card request
       Then I should see the payment card request already exists error
-
