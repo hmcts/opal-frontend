@@ -47,7 +47,7 @@ export class AccountSearchProblemActions {
 
   /**
    * Assert the bullet list contains the expected CSV list of options (comma separated).
-   * Example expectedCSV: "account number, reference or case number, selected tab"
+   * Example expectedCSV: "account number, reference or case number, National Insurance number, advanced search"
    *
    * This method normalises whitespace and lowercases items to make assertions robust.
    * @param expectedCSV - Comma-separated list of expected bullet items.

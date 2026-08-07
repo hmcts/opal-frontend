@@ -1,6 +1,6 @@
 @JIRA-LABEL:account-enquiry
 @JIRA-NFR:PO-2322
-Feature: Defendant - Adult or youth - Account Enquiries - Amend Payment Terms Accessibility
+Feature: Account Enquiries Amend Payment Terms Accessibility
 
   Background:
     Given I am logged in with email "opal-test@dev.platform.hmcts.net"

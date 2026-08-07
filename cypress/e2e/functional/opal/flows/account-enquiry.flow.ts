@@ -28,6 +28,7 @@ import { RemoveParentGuardianActions } from '../actions/account-details/remove.p
 import { createScopedLogger, createScopedSyncLogger } from '../../../../support/utils/log.helper';
 import { EtagUpdate } from '../actions/draft-account/draft-account.api';
 import { MINOR_CREDITOR_AMEND_ELEMENTS } from '../../../../shared/selectors/account-enquiry/account.enquiry.minor-creditor-amend.locators';
+import { AccountDetailsResponsiveLayoutActions } from '../actions/account-details/details.responsive-layout.actions';
 
 const logAE = createScopedLogger('AccountEnquiryFlow');
 const logAESync = createScopedSyncLogger('AccountEnquiryFlow');
@@ -97,6 +98,7 @@ export class AccountEnquiryFlow {
   private readonly removeParentGuardian = new RemoveParentGuardianActions();
   private readonly historyAndNotes = new AccountDetailsHistoryActions();
   private readonly consolidatedAccounts = new AccountDetailsConsolidatedAccountsActions();
+  private readonly responsiveLayout = new AccountDetailsResponsiveLayoutActions();
 
   /**
    * Ensures the test is on the Individuals Account Search page.
@@ -256,6 +258,36 @@ export class AccountEnquiryFlow {
       logAE('navigate', 'Visiting published account details directly', { accountId, path });
       cy.visit(path);
     });
+  }
+
+  /**
+   * Sets the browser viewport used for Account Details responsive checks.
+   *
+   * @param width - Viewport width in CSS pixels.
+   * @param height - Viewport height in CSS pixels.
+   */
+  public setResponsiveViewport(width: number, height: number): void {
+    this.responsiveLayout.setViewport(width, height);
+  }
+
+  /** Asserts that Account Details has no horizontal overflow at the current viewport. */
+  public assertNoHorizontalOverflow(): void {
+    this.responsiveLayout.assertNoHorizontalOverflow();
+  }
+
+  /** Asserts that the header action reflows below the account title. */
+  public assertHeaderActionReflowsBelowTitle(): void {
+    this.responsiveLayout.assertHeaderActionReflowsBelowTitle();
+  }
+
+  /** Asserts that the At a glance content columns stack vertically. */
+  public assertAtAGlanceColumnsStacked(): void {
+    this.responsiveLayout.assertAtAGlanceColumnsStacked();
+  }
+
+  /** Asserts that account information and summary metrics remain readable at the current viewport. */
+  public assertSummaryContentReadable(): void {
+    this.responsiveLayout.assertSummaryContentReadable();
   }
 
   /**
@@ -1803,7 +1835,7 @@ export class AccountEnquiryFlow {
       }
 
       expect(pathname, 'current pathname before opening Add account note').to.match(
-        /\/fines\/account\/defendant\/\d+\/details$/,
+        /\/fines\/account\/(?:defendant|company|minor-creditor)\/\d+\/details$/,
       );
       logAE('navigate', 'Opening "Add account note" screen');
       this.detailsNav.clickAddAccountNoteButton();

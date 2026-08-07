@@ -127,6 +127,14 @@ When('I open the latest matching result from the Companies search results', () =
 });
 
 /**
+ * @step Sets the browser viewport to a specific size for reflow and responsive checks.
+ */
+When('I set the browser viewport to {int} by {int}', (width: number, height: number) => {
+  log('step', 'Setting browser viewport', { width, height });
+  accountEnquiryFlow().setResponsiveViewport(width, height);
+});
+
+/**
  * @step Navigates directly to the most recently created published account details route.
  */
 When('I navigate directly to the last created published account details', () => {
@@ -255,6 +263,32 @@ Then('I do not see any parent or guardian details Change actions', () => {
 Then('I do not see the remove parent or guardian details action', () => {
   log('assert', 'Remove parent or guardian details action is absent');
   accountEnquiryFlow().assertRemoveParentGuardianActionNotVisible();
+});
+
+/**
+ * @step Asserts the account details page fits within the current viewport without horizontal overflow.
+ */
+Then('the account details page should not horizontally overflow', () => {
+  log('assert', 'Checking account details page does not horizontally overflow');
+  accountEnquiryFlow().assertNoHorizontalOverflow();
+});
+
+/**
+ * @step Asserts the account details summary columns stack beneath the primary content.
+ */
+Then('the account details summary columns should stack below the primary content', () => {
+  log('assert', 'Checking account details summary columns stack below the primary content');
+  accountEnquiryFlow().assertAtAGlanceColumnsStacked();
+});
+
+Then('the account information and summary metrics should remain readable', () => {
+  log('assert', 'Checking account information and summary metrics remain readable');
+  accountEnquiryFlow().assertSummaryContentReadable();
+});
+
+Then('the account details header action should reflow below the account name', () => {
+  log('assert', 'Checking account details header action reflows below the account name');
+  accountEnquiryFlow().assertHeaderActionReflowsBelowTitle();
 });
 
 Then('I should not see the convert to company account action', () => {

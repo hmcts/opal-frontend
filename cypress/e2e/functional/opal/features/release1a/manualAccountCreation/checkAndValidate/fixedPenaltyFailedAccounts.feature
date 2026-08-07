@@ -1,5 +1,5 @@
 @JIRA-LABEL:manual-account-creation
-Feature: Fixed Penalty Failed Account Validation (PO-1816)
+Feature: Fixed Penalty Failed Accounts
   As a checker user
   I want to view and validate failed Fixed Penalty draft accounts
   So that I can ensure the Check and Validate journey works for Fixed Penalty accounts
