@@ -11,6 +11,8 @@ import {
 import { finesSectionPermissionsGuard } from './guards/fines-section-permissions/fines-section-permissions.guard';
 import { dashboardTypeGuard } from './guards/dashboard-type/dashboard-type.guard';
 import { PRIMARY_NAV_HIDDEN_ROUTE_DATA } from '@app/constants/route-data.constant';
+import { authGuard } from '@hmcts/opal-frontend-common/guards/auth';
+import { routing as aecRouting } from '../fines-aec/routing/fines-aec.routes';
 import {
   RELEASE_1A_FEATURE_FLAG,
   RELEASE_1B_FEATURE_FLAG,
@@ -144,6 +146,17 @@ describe('fines routes', () => {
     expect(reportsRoute?.canActivateChild).toContain(release1cEnforcementOperationalReportingFeatureFlagGuard);
     expect(reportsRoute?.data).toEqual({
       sectionKey: FINES_DASHBOARD_ROUTING_PATHS.children.reports,
+    });
+  });
+
+  it('should add Auto-Enforcement as an Administration section route', () => {
+    const autoEnforcementRoute = childRoutes.find((route) => route.path === FINES_ROUTING_PATHS.children.aec.root);
+
+    expect(autoEnforcementRoute?.children).toBe(aecRouting);
+    expect(autoEnforcementRoute?.canActivate).toEqual([authGuard]);
+    expect(autoEnforcementRoute?.canActivateChild).toEqual([]);
+    expect(autoEnforcementRoute?.data).toEqual({
+      sectionKey: FINES_DASHBOARD_ROUTING_PATHS.children.administration,
     });
   });
 });

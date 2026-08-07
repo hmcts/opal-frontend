@@ -1,11 +1,16 @@
+import { ɵresolveComponentResources as resolveComponentResources } from '@angular/core';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
-import { beforeEach, describe, expect, it, } from 'vitest';
+import { beforeAll, beforeEach, describe, expect, it } from 'vitest';
 
 import { FinesAecConfigComponent } from './fines-aec-config.component';
 
 describe('FinesAecConfig', () => {
   let component: FinesAecConfigComponent;
   let fixture: ComponentFixture<FinesAecConfigComponent>;
+
+  beforeAll(async () => {
+    await resolveComponentResources(() => Promise.resolve(''));
+  });
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
