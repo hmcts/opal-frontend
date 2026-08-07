@@ -104,6 +104,15 @@ describe('fines routes', () => {
     expect(dashboardRoute?.canActivate).toContain(finesSectionPermissionsGuard);
   });
 
+  it('should guard the manual cash input root as a Finance section entry route', () => {
+    const manualCashInputRoute = childRoutes.find((route) => route.path === FINES_ROUTING_PATHS.children.mci.root);
+
+    expect(manualCashInputRoute?.canActivate).toContain(finesSectionPermissionsGuard);
+    expect(manualCashInputRoute?.data).toEqual({
+      sectionKey: FINES_DASHBOARD_ROUTING_PATHS.children.finance,
+    });
+  });
+
   it('should guard the MAC journey root behind release-1a', () => {
     const macRoute = childRoutes.find((route) => route.path === FINES_ROUTING_PATHS.children.mac.root);
 
