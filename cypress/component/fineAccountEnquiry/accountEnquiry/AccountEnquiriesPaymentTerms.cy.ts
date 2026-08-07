@@ -425,7 +425,7 @@ describe('Account Enquiry Payment Terms', () => {
 
       cy.get(PAYMENT_TERMS_TAB.tabName).should('exist').and('contain.text', 'Payment terms');
       cy.get(PAYMENT_TERMS_TAB.tableTitle).should('exist').and('contain.text', 'Payment terms amendments');
-      cy.get(PAYMENT_TERMS_TAB.dateLastAmended).should('exist').and('contain.text', '20 October 2025');
+      cy.get(PAYMENT_TERMS_TAB.dateLastAmended).should('exist').and('contain.text', '21 October 2025');
       cy.get(PAYMENT_TERMS_TAB.lastAmendedBy).should('exist').and('contain.text', 'opal-test-2');
       cy.get(PAYMENT_TERMS_TAB.amendmentReason).should('exist').and('contain.text', 'Payment delay reason');
     },
@@ -628,7 +628,7 @@ describe('Account Enquiry Payment Terms', () => {
       cy.get(PAYMENT_TERMS_TAB.tabName).should('exist').and('contain.text', 'Payment terms');
       cy.get(PAYMENT_TERMS_TAB.parentGuardianTag).should('exist').and('contain.text', 'Parent or Guardian to pay');
       cy.get(PAYMENT_TERMS_TAB.tableTitle).should('exist').and('contain.text', 'Payment terms amendments');
-      cy.get(PAYMENT_TERMS_TAB.dateLastAmended).should('exist').and('contain.text', '20 October 2025');
+      cy.get(PAYMENT_TERMS_TAB.dateLastAmended).should('exist').and('contain.text', '21 October 2025');
       cy.get(PAYMENT_TERMS_TAB.lastAmendedBy).should('exist').and('contain.text', 'opal-test-2');
       cy.get(PAYMENT_TERMS_TAB.amendmentReason).should('exist').and('contain.text', 'Payment delay reason');
     },
@@ -848,7 +848,7 @@ describe('Account Enquiry Payment Terms', () => {
       cy.get(PAYMENT_TERMS_TAB.tabName).should('exist').and('contain.text', 'Payment terms');
       cy.get(PAYMENT_TERMS_TAB.headingName).should('exist').and('contain.text', 'Test Org Ltd');
       cy.get(PAYMENT_TERMS_TAB.tableTitle).should('exist').and('contain.text', 'Payment terms amendments');
-      cy.get(PAYMENT_TERMS_TAB.dateLastAmended).should('exist').and('contain.text', '20 October 2025');
+      cy.get(PAYMENT_TERMS_TAB.dateLastAmended).should('exist').and('contain.text', '21 October 2025');
       cy.get(PAYMENT_TERMS_TAB.lastAmendedBy).should('exist').and('contain.text', 'opal-test-2');
       cy.get(PAYMENT_TERMS_TAB.amendmentReason).should('exist').and('contain.text', 'Payment delay reason');
     },
