@@ -80,19 +80,26 @@ export function getRoutesConfig(): {
 
 export function configureApiProxyRoutes(app: Express, proxyConfiguration: ProxyConfiguration): void {
   const ipLoggingEnabled = config.get('features.ip-logging.enabled') as boolean;
-  const proxyTimeoutInMilliseconds = proxyConfiguration.timeoutInMilliseconds || undefined;
+  const opalUserServiceProxyTimeoutInMilliseconds =
+    Number(config.get('opal-user-service.timeoutInMilliseconds')) ?? undefined;
+  const opalFinesServiceProxyTimeoutInMilliseconds =
+    Number(config.get('opal-fines-service.timeoutInMilliseconds')) ?? undefined;
 
   if (proxyConfiguration.opalFinesServiceUrl) {
     app.use(
       '/opal-fines-service',
-      OpalApiProxy(proxyConfiguration.opalFinesServiceUrl, ipLoggingEnabled, proxyTimeoutInMilliseconds),
+      OpalApiProxy(
+        proxyConfiguration.opalFinesServiceUrl,
+        ipLoggingEnabled,
+        opalFinesServiceProxyTimeoutInMilliseconds,
+      ),
     );
   }
 
   if (proxyConfiguration.opalUserServiceUrl) {
     app.use(
       '/opal-user-service',
-      OpalApiProxy(proxyConfiguration.opalUserServiceUrl, ipLoggingEnabled, proxyTimeoutInMilliseconds),
+      OpalApiProxy(proxyConfiguration.opalUserServiceUrl, ipLoggingEnabled, opalUserServiceProxyTimeoutInMilliseconds),
     );
   }
 }

@@ -114,6 +114,11 @@
     "retryAttempts": 3,
     "retryDelayInMilliseconds": 200
   },
+  "opal-fines-service": {
+    "timeoutInMilliseconds": 10000,
+    "retryAttempts": 3,
+    "retryDelayInMilliseconds": 200
+  },
   "user-state": {
     "cacheKeyPrefix": "USER_STATE_",
     "routePath": "/api/user-state",
