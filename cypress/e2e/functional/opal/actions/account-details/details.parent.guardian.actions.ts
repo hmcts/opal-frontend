@@ -8,7 +8,7 @@ import { AccountParentOrGuardianDetailsLocators as L } from '../../../../../shar
 /** Actions for the Parent/Guardian section on Account Details. */
 export class AccountDetailsParentGuardianActions {
   /**
-   * Clicks the top-right "Change" link in the Parent or guardian tab header.
+   * Clicks the "Change" link in the Parent or guardian details summary card.
    *
    * Ensures the tab is active and its header is visible, scrolls the link into view,
    * then clicks it. Optionally waits for a supplied form selector to appear.
@@ -29,7 +29,7 @@ export class AccountDetailsParentGuardianActions {
     // Confirm the tab header is present (intent: we're at Parent/Guardian details)
     cy.get(L.parentOrGuardianTabHeader.title, { timeout }).should('be.visible');
 
-    // Click the "Change" link in the Parent or guardian tab header
+    // Click the "Change" link in the Parent or guardian details summary card
     cy.get(L.parentOrGuardianTabHeader.changeLink, { timeout })
       .should('be.visible')
       .and('contain.text', L.parentOrGuardianTabHeader.changeLinkLabel)
@@ -50,6 +50,31 @@ export class AccountDetailsParentGuardianActions {
     cy.get(L.actions.removeParentOrGuardian, { timeout: 10_000 })
       .should('be.visible')
       .and('contain.text', 'Remove Parent or guardian details');
+  }
+
+  /**
+   * Asserts all rendered Change actions are visible on the Parent or guardian tab.
+   */
+  public assertChangeActionsVisible(): void {
+    cy.get(L.sectionChangeLinks, { timeout: 10_000 })
+      .should('exist')
+      .each(($link) => {
+        cy.wrap($link).should('be.visible').and('have.text', L.parentOrGuardianTabHeader.changeLinkLabel);
+      });
+  }
+
+  /**
+   * Asserts no Change actions are rendered on the Parent or guardian tab.
+   */
+  public assertChangeActionsNotPresent(): void {
+    cy.get(L.sectionChangeLinks, { timeout: 10_000 }).should('not.exist');
+  }
+
+  /**
+   * Asserts the remove parent or guardian action is not rendered on the Parent or guardian tab.
+   */
+  public assertRemoveParentGuardianActionNotPresent(): void {
+    cy.get(L.actions.removeParentOrGuardian, { timeout: 10_000 }).should('not.exist');
   }
 
   /**

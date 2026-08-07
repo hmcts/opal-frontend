@@ -400,6 +400,55 @@ export class AccountEnquiryFlow {
   }
 
   /**
+   * Asserts the Change actions are visible on the Parent or guardian tab.
+   */
+  public assertChangeParentGuardianActionsVisible(): void {
+    logAE('method', 'assertChangeParentGuardianActionsVisible()');
+    this.detailsNav.goToParentGuardianTab();
+    this.parentGuardianDetails.assertChangeActionsVisible();
+  }
+
+  /**
+   * Stubs the defendant header-summary response so the account renders as a restricted status.
+   *
+   * @param statusCode Restricted account status code to inject into the response.
+   */
+  public stubRestrictedParentGuardianStatusCode(statusCode: string): void {
+    logAE('intercept', 'Stubbing defendant header-summary restricted account status', { statusCode });
+
+    cy.intercept('GET', '**/defendant-accounts/**/header-summary', (req) => {
+      req.continue((res) => {
+        const body = res.body as { account_status_reference?: { account_status_code?: string } };
+
+        if (!body?.account_status_reference) {
+          throw new Error('Expected defendant header-summary response to include account_status_reference.');
+        }
+
+        body.account_status_reference.account_status_code = statusCode;
+        res.send({ body });
+      });
+    }).as('restrictedParentGuardianHeaderSummary');
+  }
+
+  /**
+   * Asserts the Change actions are hidden on the Parent or guardian tab.
+   */
+  public assertChangeParentGuardianActionsNotVisible(): void {
+    logAE('method', 'assertChangeParentGuardianActionsNotVisible()');
+    this.detailsNav.goToParentGuardianTab();
+    this.parentGuardianDetails.assertChangeActionsNotPresent();
+  }
+
+  /**
+   * Asserts the remove parent or guardian action is hidden on the Parent or guardian tab.
+   */
+  public assertRemoveParentGuardianActionNotVisible(): void {
+    logAE('method', 'assertRemoveParentGuardianActionNotVisible()');
+    this.detailsNav.goToParentGuardianTab();
+    this.parentGuardianDetails.assertRemoveParentGuardianActionNotPresent();
+  }
+
+  /**
    * Asserts the amend parent or guardian route is active and the information banner is shown.
    */
   public assertOnAmendParentGuardianDetailsPage(): void {

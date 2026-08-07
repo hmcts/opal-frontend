@@ -133,7 +133,7 @@ export class AccountDetailsResponsiveLayoutActions {
 
   /**
    * Asserts that account information and summary metric cards remain readable and unobscured.
-   * @param overlapGate
+   * @param overlapGate - Optional vertical boundary used when checking for overlapping content.
    */
   public assertSummaryContentReadable(overlapGate?: number): void {
     this.assertElementsFitWithoutOverlap(H.accountInfoItem, 'account information item', overlapGate);

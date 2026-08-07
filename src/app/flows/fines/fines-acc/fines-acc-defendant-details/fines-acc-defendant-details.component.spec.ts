@@ -25,6 +25,7 @@ import { OPAL_FINES_RESULT_REF_DATA_MOCK } from '@services/fines/opal-fines-serv
 import { OPAL_FINES_ACCOUNT_DEFENDANT_DETAILS_CONSOLIDATED_ACCOUNTS_MOCK } from '@services/fines/opal-fines-service/mocks/opal-fines-account-defendant-details-consolidated-accounts.mock';
 import { FINES_ACC_DEFENDANT_ACCOUNT_TABS_CACHE_MAP } from './constants/fines-acc-defendant-account-tabs-cache-map.constant';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
+import { FINES_ACC_RESTRICTED_ACCOUNT_STATUS_CODES } from '../constants/fines-acc-restricted-account-status-codes.constant';
 import { FinesAccSummaryHeaderComponent } from '../fines-acc-summary-header/fines-acc-summary-header.component';
 
 describe('FinesAccDefendantDetailsComponent', () => {
@@ -191,6 +192,24 @@ describe('FinesAccDefendantDetailsComponent', () => {
 
     expect(component.canAddParentOrGuardianDetails).toBe(true);
   });
+
+  it.each(FINES_ACC_RESTRICTED_ACCOUNT_STATUS_CODES)(
+    'should not allow adding parent or guardian details for restricted account status %s',
+    (statusCode) => {
+      component.accountData = {
+        ...structuredClone(FINES_ACC_DEFENDANT_DETAILS_HEADER_MOCK),
+        account_status_reference: {
+          ...structuredClone(FINES_ACC_DEFENDANT_DETAILS_HEADER_MOCK.account_status_reference),
+          account_status_code: statusCode,
+        },
+        is_youth: true,
+        debtor_type: component.debtorTypes.defendant,
+        parent_guardian_party_id: null,
+      };
+
+      expect(component.canAddParentOrGuardianDetails).toBe(false);
+    },
+  );
 
   it('should not allow adding parent or guardian details when a parent guardian already exists', () => {
     component.accountData = {
