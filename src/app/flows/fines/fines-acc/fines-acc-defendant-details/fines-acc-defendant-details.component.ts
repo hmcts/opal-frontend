@@ -289,8 +289,8 @@ export class FinesAccDefendantDetailsComponent
   }
 
   /**
-   * Determines the type of denial for amending payment terms based on permission, balance and enforcement details.
-   * @returns A string representing the denial type: 'enforcement', 'permission' or 'balance'
+   * Determines the type of denial for amending payment terms based on permission, account status and enforcement details.
+   * @returns A string representing the denial type: 'enforcement', 'permission', 'balance' or 'account-status'
    */
   public getAmendPaymentTermsDeniedType(): string {
     if (this.lastEnforcement?.extend_ttp_disallow) {
@@ -299,7 +299,9 @@ export class FinesAccDefendantDetailsComponent
       return 'permission';
     } else if (this.accountData.payment_state_summary.account_balance <= 0) {
       return 'balance';
-    } else return 'permission';
+    } else {
+      return 'account-status';
+    }
   }
 
   /**

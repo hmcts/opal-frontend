@@ -2,10 +2,7 @@ import { ChangeDetectionStrategy, Component, inject, Input } from '@angular/core
 import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 import { IFinesAccSummaryTabsContentStyles } from '../interfaces/fines-acc-summary-tabs-content-styles.interface';
 import { FINES_ACC_SUMMARY_TABS_CONTENT_STYLES } from '../../constants/fines-acc-summary-tabs-content-styles.constant';
-import {
-  GovukSummaryCardListComponent,
-  GovukSummaryCardActionComponent,
-} from '@hmcts/opal-frontend-common/components/govuk/govuk-summary-card-list';
+import { GovukSummaryCardListComponent } from '@hmcts/opal-frontend-common/components/govuk/govuk-summary-card-list';
 import { IOpalFinesAccountDefendantDetailsEnforcementTabRefData } from '@services/fines/opal-fines-service/interfaces/opal-fines-account-defendant-details-enforcement-tab-ref-data.interface';
 import {
   GovukSummaryListComponent,
@@ -25,8 +22,8 @@ import { FINES_ACC_ENF_COURT_CHANGE_ROUTING_PATHS } from '../../fines-acc-enf-co
 import { getNextPermittedActionIds } from '../../fines-acc-enf-action-select/utils/fines-acc-enf-action-next-permitted-actions.utils';
 import { FINES_ACC_RESTRICTED_ACCOUNT_STATUS_CODES } from '../../constants/fines-acc-restricted-account-status-codes.constant';
 
-const FINES_ACC_HMRC_CHECK_RESTRICTED_ACCOUNT_STATUS_CODES = FINES_ACC_RESTRICTED_ACCOUNT_STATUS_CODES.filter(
-  (accountStatusCode) => accountStatusCode !== 'TS',
+const FINES_ACC_HMRC_CHECK_RESTRICTED_ACCOUNT_STATUS_CODES = new Set(
+  FINES_ACC_RESTRICTED_ACCOUNT_STATUS_CODES.filter((accountStatusCode) => accountStatusCode !== 'TS'),
 );
 
 @Component({
@@ -36,7 +33,6 @@ const FINES_ACC_HMRC_CHECK_RESTRICTED_ACCOUNT_STATUS_CODES = FINES_ACC_RESTRICTE
     GovukSummaryCardListComponent,
     GovukSummaryListComponent,
     GovukSummaryListRowComponent,
-    GovukSummaryCardActionComponent,
     MojBadgeComponent,
     FinesNotProvidedComponent,
     DatePipe,
@@ -70,7 +66,7 @@ export class FinesAccDefendantDetailsEnforcementTab {
    * Checks whether the account status restricts HMRC check requests.
    */
   public get hasHmrcCheckRestrictedAccountStatus(): boolean {
-    return FINES_ACC_HMRC_CHECK_RESTRICTED_ACCOUNT_STATUS_CODES.includes(this.accountStatusCode);
+    return FINES_ACC_HMRC_CHECK_RESTRICTED_ACCOUNT_STATUS_CODES.has(this.accountStatusCode);
   }
 
   /**
@@ -226,15 +222,6 @@ export class FinesAccDefendantDetailsEnforcementTab {
    */
   public handleChangeEnforcementCourt(): void {
     this.router.navigate([this.changeEnforcementCourtLink()], {
-      relativeTo: this.activatedRoute,
-    });
-  }
-
-  /**
-   * Navigates to the remove enforcement override page.
-   */
-  public handleRemoveEnforcementOverride(route: string = this.removeEnforcementOverrideLink()): void {
-    this.router.navigate([route], {
       relativeTo: this.activatedRoute,
     });
   }

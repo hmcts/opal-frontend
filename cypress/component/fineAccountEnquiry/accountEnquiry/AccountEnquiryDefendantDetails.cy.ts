@@ -446,7 +446,7 @@ describe('Account Enquiry Defendant Details Tab', () => {
   );
 
   it(
-    'AC2, AC3. Youth-only accounts show the Add parent or guardian details action',
+    'AC2. Youth-only accounts show the Add parent or guardian details action when no parent or guardian exists',
     {
       tags: [
         ...buildTags('@JIRA-STORY:PO-1874', '@JIRA-STORY:PO-5751'),
@@ -456,8 +456,7 @@ describe('Account Enquiry Defendant Details Tab', () => {
       ],
     },
     () => {
-      // AC2 – Existing youth-only eligibility rules remain unchanged
-      // AC3 – The visible add action keeps its existing navigation and behaviour
+      // AC2 – Existing youth-only eligibility rules remain unchanged.
       const headerMock = structuredClone(DEFENDANT_HEADER_YOUTH_MOCK);
       const defendantDetailsMock = structuredClone(OPAL_FINES_ACCOUNT_DEFENDANT_ACCOUNT_PARTY_MOCK);
       const { language_preferences } = defendantDetailsMock.defendant_account_party;
@@ -510,7 +509,7 @@ describe('Account Enquiry Defendant Details Tab', () => {
   });
 
   it(
-    'AC1. Youth-only accounts navigate to the add parent or guardian details screen',
+    'AC3. Youth-only accounts navigate to the add parent or guardian details screen',
     {
       tags: [
         ...buildTags('@JIRA-STORY:PO-1877', '@JIRA-STORY:PO-5751'),
@@ -520,6 +519,7 @@ describe('Account Enquiry Defendant Details Tab', () => {
       ],
     },
     () => {
+      // AC3 – The visible action keeps its existing navigation and behaviour.
       const headerMock = structuredClone(DEFENDANT_HEADER_YOUTH_MOCK);
       const defendantDetailsMock = structuredClone(OPAL_FINES_ACCOUNT_DEFENDANT_ACCOUNT_PARTY_MOCK);
       const { language_preferences } = defendantDetailsMock.defendant_account_party;
@@ -543,6 +543,7 @@ describe('Account Enquiry Defendant Details Tab', () => {
         ),
       });
 
+      cy.wait(['@getDefendantHeaderSummary', '@getDefendantDetails']);
       cy.contains('a', 'Add parent or guardian details').should('be.visible').click();
       cy.get('app-fines-acc-debtor-add-amend-form').should('exist');
     },
