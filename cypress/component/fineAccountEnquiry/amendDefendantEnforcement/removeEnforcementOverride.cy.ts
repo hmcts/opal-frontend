@@ -39,7 +39,6 @@ const COMPONENT_PROPERTIES: IComponentProperties = {
   ],
 };
 
-const REMOVE_ENFORCEMENT_OVERRIDE_ROUTE = '../enforcement/override/remove';
 const REMOVE_ENFORCEMENT_OVERRIDE_TITLE = 'Are you sure you want to remove this enforcement override?';
 const EXISTING_OVERRIDE_TEXT = 'Application made for Benefit Deductions (ABDC)';
 
@@ -207,9 +206,9 @@ describe(
         setupAccountEnquiryComponent({ ...COMPONENT_PROPERTIES, accountId });
 
         cy.get(ENF.enforcementOverrideValue).should('contain.text', 'Application made for Benefit Deductions (ABDC)');
+        cy.get(REMOVE_ENF_OVERRIDE.title).should('not.exist');
         cy.get(ENF.removeEnforcementOverrideLink).should('exist').and('contain.text', 'Remove').click();
 
-        cy.get('@routerNavigate').should('have.been.calledWithMatch', [REMOVE_ENFORCEMENT_OVERRIDE_ROUTE]);
         assertRemoveScreenShell();
       },
     );
