@@ -35,8 +35,7 @@ describe('FinesMacReviewAccountComponent', () => {
   let finesMacState = structuredClone(baseFinesMacState);
   let finesDraftState = structuredClone(baseFinesDraftState);
   let finesAccountPayload = structuredClone(baseFinesAccountPayload);
-  // @ts-expect-error -- FinesMacStore is provided as a runtime value, not a type
-  let mountedFinesMacStore: FinesMacStore;
+  let mountedFinesMacStore: InstanceType<typeof FinesMacStore>;
 
   /**
    * Mount the Review Account component with the three stores and a minimal ActivatedRoute.

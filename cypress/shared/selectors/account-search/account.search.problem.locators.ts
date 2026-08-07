@@ -26,13 +26,13 @@ export const AccountSearchProblemLocators = {
   root: 'app-fines-sa-search-problem',
 
   // Key content
-  heading: 'app-fines-sa-search-problem h1.govuk-heading-l',
-  description: 'app-fines-sa-search-problem p.govuk-body',
-  bulletList: 'app-fines-sa-search-problem ul.govuk-list.govuk-list--bullet',
+  heading: 'h1.govuk-heading-l',
+  description: 'p.govuk-body',
+  bulletList: 'ul.govuk-list.govuk-list--bullet',
 
   // Actions
   actions: {
-    backLink: 'app-fines-sa-search-problem a.govuk-link',
+    backLink: '#go-back',
   },
 } as const;
 
