@@ -26,6 +26,7 @@ import {
 import { FINES_ACC_ENF_ACTION_ADD_RESULT_MOCK } from '@app/flows/fines/fines-acc/fines-acc-enf-action-add/mocks/fines-acc-enf-action-add-result.mock';
 import { OPAL_FINES_ACCOUNT_DEFENDANT_DETAILS_ENFORCEMENT_TAB_REF_DATA_MOCK } from '@app/flows/fines/services/opal-fines-service/mocks/opal-fines-account-defendant-details-enforcement-tab-ref-data.mock';
 import { ADD_ENFORCEMENT_ACTION_ALL_FIELD_TYPES_RESULT_MOCK } from './mocks/add_enforcement_action_all_field_type_result.mock';
+import { FINES_ACC_RESTRICTED_ACCOUNT_STATUS_CODES } from '@app/flows/fines/fines-acc/constants/fines-acc-restricted-account-status-codes.constant';
 
 const finesAccountRoutes: Routes = [
   {
@@ -128,14 +129,6 @@ function reachAddAnotherEnforcementActionPrompt(
   cy.wait('@postAddEnforcementAction');
 }
 
-const statusScenarios = [
-  { code: 'CS', reason: 'Consolidated' },
-  { code: 'WO', reason: 'Written off' },
-  { code: 'TO', reason: 'Transferred out' },
-  { code: 'TS', reason: 'TFO Out Acknowledged' },
-  { code: 'TA', reason: 'TFO to be Acknowledged' },
-];
-
 const EMPLOYMENT_REQUIRED_ACTION = {
   result_id: 'AEOC',
   result_title: 'Attachment of Earnings Order',
@@ -212,10 +205,10 @@ describe(
       },
     );
 
-    statusScenarios.forEach(({ code, reason }) => {
+    FINES_ACC_RESTRICTED_ACCOUNT_STATUS_CODES.forEach((code) => {
       it(
-        `Negative test: account status ${code} shows correct error page`,
-        { tags: ['@JIRA-STORY:PO-1780', '@JIRA-STORY:PO-1824', '@JIRA-STORY:PO-1781', '@JIRA-STORY:PO-1825', '@R1B'] },
+        `AC1: Individual: Add enforcement action is hidden for restricted account status ${code}`,
+        { tags: ['@JIRA-STORY:PO-5754', '@JIRA-EPIC:PO-978', '@R1B'] },
         () => {
           let headerMock = structuredClone(createDefendantHeaderMockWithName('Robert', 'Thomson'));
 
@@ -234,24 +227,14 @@ describe(
           interceptUserState(USER_STATE_MOCK_PERMISSION_BU77);
           interceptDefendantHeader(accountId, headerMock, '123');
           interceptEnforcementStatus(accountId, enforcementMock, '123');
-          interceptNextPermittedEnforcementActionsEmpty();
 
           setupAccountEnquiryComponent({
             ...COMPONENT_PROPERTIES,
             accountId,
           });
 
-          cy.get(ENF.addEnforcementActionLink).should('exist').click();
-
-          cy.contains('Robert THOMSON').should('be.visible');
-
-          // common error text
-          cy.contains('You cannot add an enforcement action to an account that has a status of').should('be.visible');
-
-          // status-specific text
-          cy.contains(reason).should('be.visible');
-
-          cy.contains('Go back').click();
+          cy.get(ENF.tabName).should('be.visible').and('contain.text', 'Enforcement');
+          cy.get(ENF.addEnforcementActionLink).should('not.exist');
         },
       );
     });
@@ -762,10 +745,10 @@ describe(
       },
     );
 
-    statusScenarios.forEach(({ code, reason }) => {
+    FINES_ACC_RESTRICTED_ACCOUNT_STATUS_CODES.forEach((code) => {
       it(
-        `Negative test: status ${code} shows correct error screen for company`,
-        { tags: ['@JIRA-STORY:PO-1835', '@R1B'] },
+        `AC1: Company: Add enforcement action is hidden for restricted account status ${code}`,
+        { tags: ['@JIRA-STORY:PO-5754', '@JIRA-EPIC:PO-978', '@R1B'] },
         () => {
           let headerMock = structuredClone(DEFENDANT_HEADER_ORG_MOCK);
 
@@ -785,22 +768,14 @@ describe(
           interceptUserState(USER_STATE_MOCK_PERMISSION_BU77);
           interceptDefendantHeader(accountId, headerMock, '123');
           interceptEnforcementStatus(accountId, enforcementMock, '123');
-          interceptNextPermittedEnforcementActionsEmpty();
 
           setupAccountEnquiryComponent({
             ...COMPONENT_PROPERTIES,
             accountId,
           });
 
-          cy.get(ENF.addEnforcementActionLink).click();
-
-          cy.contains('You cannot add an enforcement action to an account that has a status of').should('be.visible');
-
-          cy.contains(reason).should('be.visible');
-
-          cy.contains('177A - Sainsco').should('be.visible');
-
-          cy.contains('Go back').click();
+          cy.get(ENF.tabName).should('be.visible').and('contain.text', 'Enforcement');
+          cy.get(ENF.addEnforcementActionLink).should('not.exist');
         },
       );
     });
