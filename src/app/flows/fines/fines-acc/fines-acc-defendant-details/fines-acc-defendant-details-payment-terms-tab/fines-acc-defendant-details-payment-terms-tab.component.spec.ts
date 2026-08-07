@@ -10,6 +10,12 @@ import { beforeEach, describe, expect, it, vi } from 'vitest';
 describe('FinesAccPaymentTermsAmendComponent', () => {
   let component: FinesAccDefendantDetailsPaymentTermsTabComponent;
   let fixture: ComponentFixture<FinesAccDefendantDetailsPaymentTermsTabComponent>;
+
+  const getLinkByText = (linkText: string): HTMLAnchorElement | undefined =>
+    Array.from<HTMLAnchorElement>(fixture.nativeElement.querySelectorAll('a.govuk-link')).find(
+      (link) => link.textContent?.trim() === linkText,
+    );
+
   beforeEach(async () => {
     await TestBed.configureTestingModule({
       imports: [FinesAccDefendantDetailsPaymentTermsTabComponent],
@@ -19,11 +25,62 @@ describe('FinesAccPaymentTermsAmendComponent', () => {
     fixture = TestBed.createComponent(FinesAccDefendantDetailsPaymentTermsTabComponent);
     component = fixture.componentInstance;
     component.tabData = structuredClone(OPAL_FINES_ACCOUNT_DEFENDANT_DETAILS_PAYMENT_TERMS_LATEST_MOCK);
-    fixture.detectChanges();
   });
 
   it('should create', () => {
+    fixture.detectChanges();
+
     expect(component).toBeTruthy();
+  });
+
+  it('should display Change in the payment terms summary card and Request payment card in its existing row when allowed', () => {
+    component.hasAmendPaymentTermsPermission = true;
+    component.accountAllowsPaymentTermsActions = true;
+
+    fixture.detectChanges();
+
+    const changeLink = getLinkByText('Change');
+    const requestPaymentCardLink = getLinkByText('Request payment card');
+
+    expect(changeLink).toBeTruthy();
+    expect(changeLink?.closest('.govuk-summary-card__actions')).toBeTruthy();
+    expect(requestPaymentCardLink).toBeTruthy();
+    expect(requestPaymentCardLink?.closest('#payment-termsPayment-card-last-requestedActions')).toBeTruthy();
+  });
+
+  it('should hide Change and Request payment card when the account status or balance prevents payment terms actions', () => {
+    component.hasAmendPaymentTermsPermission = true;
+    component.accountAllowsPaymentTermsActions = false;
+
+    fixture.detectChanges();
+
+    expect(getLinkByText('Change')).toBeUndefined();
+    expect(getLinkByText('Request payment card')).toBeUndefined();
+  });
+
+  it('should hide Change and Request payment card when amend payment terms permission is absent', () => {
+    component.hasAmendPaymentTermsPermission = false;
+    component.accountAllowsPaymentTermsActions = true;
+
+    fixture.detectChanges();
+
+    expect(getLinkByText('Change')).toBeUndefined();
+    expect(getLinkByText('Request payment card')).toBeUndefined();
+  });
+
+  it('should display Change when enforcement prevents amending so the user can follow the existing denied route', () => {
+    component.hasAmendPaymentTermsPermission = true;
+    component.accountAllowsPaymentTermsActions = true;
+    component.canAmendPaymentTerms = false;
+    component.amendPaymentTermsDeniedType = 'enforcement';
+
+    fixture.detectChanges();
+
+    const changeLink = getLinkByText('Change');
+
+    expect(changeLink).toBeTruthy();
+    expect(changeLink?.getAttribute('href')).toContain('/payment-terms/denied/enforcement');
+    expect(changeLink?.getAttribute('href')).not.toContain('#select-payment-terms');
   });
 
   it.each([
@@ -77,8 +134,6 @@ describe('FinesAccPaymentTermsAmendComponent', () => {
       if (paymentTermsTypeCode) {
         component.tabData.payment_terms.payment_terms_type.payment_terms_type_code = paymentTermsTypeCode;
       }
-
-      fixture.detectChanges();
 
       expect(component.cardTitle()).toBe(expectedTitle);
     },
