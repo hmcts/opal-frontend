@@ -19,11 +19,7 @@ import {
   ValidatorFn,
   Validators,
 } from '@angular/forms';
-import {
-  ALPHANUMERIC_WITH_SPACES_PATTERN,
-  NUMERIC_PATTERN,
-  SINGLE_ASCII_CHARACTERS,
-} from '@hmcts/opal-frontend-common/constants';
+import { NUMERIC_PATTERN, SINGLE_ASCII_CHARACTERS } from '@hmcts/opal-frontend-common/constants';
 import { IAbstractFormControlErrorMessage } from '@hmcts/opal-frontend-common/components/abstract/interfaces';
 import { AbstractNestedFormBaseComponent } from '@hmcts/opal-frontend-common/components/abstract/abstract-nested-form-base';
 import { GovukButtonComponent } from '@hmcts/opal-frontend-common/components/govuk/govuk-button';
@@ -56,12 +52,12 @@ import { FINES_ACC_MINOR_CREDITOR_ADD_AMEND_CONVERT_CONTROL_NAMES } from '../con
 import { FINES_ACC_MINOR_CREDITOR_ADD_AMEND_CONVERT_CREDITOR_TYPES } from '../constants/fines-acc-minor-creditor-add-amend-convert-creditor-types.constant';
 import { FINES_ACC_MINOR_CREDITOR_ADD_AMEND_CONVERT_INDIVIDUAL_CONTROL_NAMES } from '../constants/fines-acc-minor-creditor-add-amend-convert-control-names-individual.constant';
 import { FINES_ACC_MINOR_CREDITOR_ADD_AMEND_CONVERT_COMPANY_CONTROL_NAMES } from '../constants/fines-acc-minor-creditor-add-amend-convert-control-names-company.constant';
+import {
+  postcodeMaxLengthValidator,
+  postcodePatternValidator,
+} from '../../../validators/utils/postcode-validator.util';
 
 const SINGLE_ASCII_CHARACTERS_PATTERN_VALIDATOR = patternValidator(SINGLE_ASCII_CHARACTERS, 'singleAsciiCharacters');
-const ALPHANUMERIC_WITH_SPACES_PATTERN_VALIDATOR = patternValidator(
-  ALPHANUMERIC_WITH_SPACES_PATTERN,
-  'alphanumericTextPattern',
-);
 const NUMERIC_PATTERN_VALIDATOR = patternValidator(NUMERIC_PATTERN, 'numericalTextPattern');
 
 @Component({
@@ -350,8 +346,8 @@ export class FinesAccMinorCreditorAddAmendConvertFormComponent
         SINGLE_ASCII_CHARACTERS_PATTERN_VALIDATOR,
       ]),
       [this.controls.postCode]: this.createFormControl([
-        Validators.maxLength(8),
-        ALPHANUMERIC_WITH_SPACES_PATTERN_VALIDATOR,
+        postcodeMaxLengthValidator(),
+        postcodePatternValidator('alphanumericTextPattern'),
       ]),
       [this.controls.payByBacs]: new FormControl(formData.facc_minor_creditor_pay_by_bacs ?? false),
     });

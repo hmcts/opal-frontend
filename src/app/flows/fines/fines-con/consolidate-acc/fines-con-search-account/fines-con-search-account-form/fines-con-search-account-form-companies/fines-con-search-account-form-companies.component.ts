@@ -15,6 +15,10 @@ import {
   LETTERS_SPACES_HYPHENS_APOSTROPHES_DOT_PATTERN,
 } from '@hmcts/opal-frontend-common/constants';
 import { finesConSearchAccountFormCompaniesValidator } from './validators/fines-con-search-account-form-companies.validator';
+import {
+  postcodeMaxLengthValidator,
+  postcodePatternValidator,
+} from '../../../../../validators/utils/postcode-validator.util';
 
 const LETTERS_WITH_SPACES_HYPHENS_APOSTROPHES_VALIDATOR = patternValidator(
   LETTERS_SPACES_HYPHENS_APOSTROPHES_DOT_PATTERN,
@@ -78,8 +82,8 @@ export class FinesConSearchAccountFormCompaniesComponent extends AbstractNestedF
         Validators.maxLength(30),
       ]),
       fcon_search_account_companies_post_code: new FormControl<string | null>(null, [
-        ALPHANUMERIC_WITH_HYPHENS_APOSTROPHES_VALIDATOR,
-        Validators.maxLength(8),
+        postcodeMaxLengthValidator(),
+        postcodePatternValidator('alphanumericTextPattern'),
       ]),
     });
   }

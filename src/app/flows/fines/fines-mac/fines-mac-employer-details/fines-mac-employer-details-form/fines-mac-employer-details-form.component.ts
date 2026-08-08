@@ -30,6 +30,10 @@ import {
   EMAIL_ADDRESS_PATTERN,
   SINGLE_ASCII_CHARACTERS,
 } from '@hmcts/opal-frontend-common/constants';
+import {
+  postcodeMaxLengthValidator,
+  postcodePatternValidator,
+} from '../../../validators/utils/postcode-validator.util';
 
 //regex pattern validators for the form controls
 const EMAIL_ADDRESS_PATTERN_VALIDATOR = patternValidator(EMAIL_ADDRESS_PATTERN, 'emailPattern');
@@ -115,7 +119,10 @@ export class FinesMacEmployerDetailsFormComponent extends AbstractFormBaseCompon
         optionalMaxLengthValidator(30),
         ALPHANUMERIC_WITH_SPACES_PATTERN_VALIDATOR,
       ]),
-      fm_employer_details_employer_post_code: new FormControl(null, [optionalMaxLengthValidator(8)]),
+      fm_employer_details_employer_post_code: new FormControl(null, [
+        postcodeMaxLengthValidator(),
+        postcodePatternValidator('alphanumericTextPattern'),
+      ]),
     });
   }
 

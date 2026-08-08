@@ -295,8 +295,17 @@ describe('FinesAccMinorCreditorAddAmendConvertFormComponent', () => {
     getControl(component.controls.addressLine1).setValue('A'.repeat(31));
     expect(getControl(component.controls.addressLine1).hasError('maxlength')).toBe(true);
 
+    getControl(component.controls.postCode).setValue('AB12 3CD');
+    expect(getControl(component.controls.postCode).hasError('alphanumericTextPattern')).toBe(false);
+
+    getControl(component.controls.postCode).setValue('');
+    expect(getControl(component.controls.postCode).hasError('alphanumericTextPattern')).toBe(false);
+
     getControl(component.controls.postCode).setValue('AB12-3CD');
     expect(getControl(component.controls.postCode).hasError('alphanumericTextPattern')).toBe(true);
+
+    getControl(component.controls.postCode).setValue('AB12 3CDAQ');
+    expect(getControl(component.controls.postCode).hasError('maxlength')).toBe(true);
   });
 
   it('should set autocomplete="off" on the form', () => {

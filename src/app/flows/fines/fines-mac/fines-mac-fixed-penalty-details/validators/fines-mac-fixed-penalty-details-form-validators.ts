@@ -6,6 +6,10 @@ import { futureDateValidator } from '@hmcts/opal-frontend-common/validators/futu
 import { amountValidator } from '@hmcts/opal-frontend-common/validators/amount';
 import { patternValidator } from '@hmcts/opal-frontend-common/validators/pattern-validator';
 import {
+  postcodeMaxLengthValidator,
+  postcodePatternValidator,
+} from '../../../validators/utils/postcode-validator.util';
+import {
   ALPHANUMERIC_WITH_HYPHENS_SPACES_APOSTROPHES_DOT_PATTERN,
   ALPHANUMERIC_WITH_SPACES_PATTERN,
   DRIVING_LICENCE_NUMBER_PATTERN,
@@ -66,7 +70,7 @@ export const FINES_MAC_FIXED_PENALTY_DETAILS_FORM_VALIDATORS: IFinesMacFixedPena
   ],
   fm_fp_personal_details_address_line_2: [optionalMaxLengthValidator(30), ALPHANUMERIC_WITH_SPACES_PATTERN_VALIDATOR],
   fm_fp_personal_details_address_line_3: [optionalMaxLengthValidator(16), ALPHANUMERIC_WITH_SPACES_PATTERN_VALIDATOR],
-  fm_fp_personal_details_post_code: [optionalMaxLengthValidator(8), ALPHANUMERIC_WITH_SPACES_PATTERN_VALIDATOR],
+  fm_fp_personal_details_post_code: [postcodeMaxLengthValidator(), postcodePatternValidator('alphanumericTextPattern')],
   fm_fp_court_details_imposing_court_id: [Validators.required],
   fm_fp_court_details_originator_id: [
     Validators.required,
@@ -124,5 +128,5 @@ export const FINES_MAC_FIXED_PENALTY_DETAILS_FORM_VALIDATORS: IFinesMacFixedPena
   ],
   fm_fp_company_details_address_line_2: [optionalMaxLengthValidator(30), ALPHANUMERIC_WITH_SPACES_PATTERN_VALIDATOR],
   fm_fp_company_details_address_line_3: [optionalMaxLengthValidator(16), ALPHANUMERIC_WITH_SPACES_PATTERN_VALIDATOR],
-  fm_fp_company_details_postcode: [optionalMaxLengthValidator(8), ALPHANUMERIC_WITH_SPACES_PATTERN_VALIDATOR],
+  fm_fp_company_details_postcode: [postcodeMaxLengthValidator(), postcodePatternValidator('alphanumericTextPattern')],
 };

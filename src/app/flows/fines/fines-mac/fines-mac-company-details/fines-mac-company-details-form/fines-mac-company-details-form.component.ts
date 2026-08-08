@@ -30,6 +30,10 @@ import { optionalMaxLengthValidator } from '@hmcts/opal-frontend-common/validato
 import { CapitalisationDirective } from '@hmcts/opal-frontend-common/directives/capitalisation';
 import { patternValidator } from '@hmcts/opal-frontend-common/validators/pattern-validator';
 import { ALPHANUMERIC_WITH_SPACES_PATTERN, SINGLE_ASCII_CHARACTERS } from '@hmcts/opal-frontend-common/constants';
+import {
+  postcodeMaxLengthValidator,
+  postcodePatternValidator,
+} from '../../../validators/utils/postcode-validator.util';
 
 //regex pattern validators for the form controls
 const SINGLE_ASCII_CHARACTERS_ALPHANUMERIC_WITH_SPECIAL_CHARACTERS_PATTERN_VALIDATOR = patternValidator(
@@ -95,8 +99,8 @@ export class FinesMacCompanyDetailsFormComponent extends AbstractFormAliasBaseCo
         ALPHANUMERIC_WITH_SPACES_PATTERN_VALIDATOR,
       ]),
       fm_company_details_postcode: new FormControl(null, [
-        optionalMaxLengthValidator(8),
-        ALPHANUMERIC_WITH_SPACES_PATTERN_VALIDATOR,
+        postcodeMaxLengthValidator(),
+        postcodePatternValidator('alphanumericTextPattern'),
       ]),
     });
   }

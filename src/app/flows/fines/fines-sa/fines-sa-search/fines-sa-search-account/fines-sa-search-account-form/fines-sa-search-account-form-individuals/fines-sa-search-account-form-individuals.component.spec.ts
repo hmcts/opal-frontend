@@ -189,4 +189,24 @@ describe('FinesSaSearchAccountFormIndividualsComponent', () => {
     // parent still has the child group placeholder
     expect(parent.get('fsa_search_account_individuals_search_criteria')).toBe(child);
   });
+
+  it('should validate postcode pattern with alphanumericTextPattern', () => {
+    const postcodeControl = component.form.get('fsa_search_account_individuals_post_code');
+
+    postcodeControl?.setValue('SW1A 1AA');
+    expect(postcodeControl?.hasError('alphanumericTextPattern')).toBe(false);
+
+    postcodeControl?.setValue('SW1A@1AA');
+    expect(postcodeControl?.hasError('alphanumericTextPattern')).toBe(true);
+  });
+
+  it('should validate postcode max length after stripping whitespace', () => {
+    const postcodeControl = component.form.get('fsa_search_account_individuals_post_code');
+
+    postcodeControl?.setValue('SW1A 1AA');
+    expect(postcodeControl?.hasError('maxlength')).toBe(false);
+
+    postcodeControl?.setValue('SW1A 1AAAA');
+    expect(postcodeControl?.hasError('maxlength')).toBe(true);
+  });
 });

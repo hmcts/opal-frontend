@@ -129,6 +129,30 @@ describe('FinesConSearchAccountFormIndividualsComponent', () => {
     ).toBe(mockData.fcon_search_account_individuals_post_code);
   });
 
+  it('should validate postcode pattern on the individuals postcode control', () => {
+    const postcodeControl = component.form.get(
+      'fcon_search_account_individuals_search_criteria.fcon_search_account_individuals_post_code',
+    );
+
+    postcodeControl?.setValue('SW1A 1AA');
+    expect(postcodeControl?.hasError('alphanumericTextPattern')).toBe(false);
+
+    postcodeControl?.setValue('SW1A:1AA');
+    expect(postcodeControl?.hasError('alphanumericTextPattern')).toBe(true);
+  });
+
+  it('should validate postcode max length after stripping whitespace on the individuals postcode control', () => {
+    const postcodeControl = component.form.get(
+      'fcon_search_account_individuals_search_criteria.fcon_search_account_individuals_post_code',
+    );
+
+    postcodeControl?.setValue('SW1A 1AA');
+    expect(postcodeControl?.hasError('maxlength')).toBe(false);
+
+    postcodeControl?.setValue('SW1A 1AAAA');
+    expect(postcodeControl?.hasError('maxlength')).toBe(true);
+  });
+
   it('should require last name when first names are provided', () => {
     component.form
       .get('fcon_search_account_individuals_search_criteria.fcon_search_account_individuals_last_name')

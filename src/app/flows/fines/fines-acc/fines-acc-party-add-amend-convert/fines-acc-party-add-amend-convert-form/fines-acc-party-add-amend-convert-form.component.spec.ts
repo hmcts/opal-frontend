@@ -545,6 +545,39 @@ describe('FinesAccPartyAddAmendConvertFormComponent', () => {
     expect(emailControl?.hasError('emailPattern')).toBe(false);
   });
 
+  it.each([
+    {
+      controlName: 'facc_party_add_amend_convert_post_code',
+      validValue: 'SW1A 1AA',
+      invalidPatternValue: 'SW1A@1AA',
+      invalidLengthValue: 'SW1A 1AAAA',
+    },
+    {
+      controlName: 'facc_party_add_amend_convert_employer_post_code',
+      validValue: 'B12 3CD',
+      invalidPatternValue: 'B12@3CD',
+      invalidLengthValue: 'B12 3CDEFG',
+    },
+  ] as const)(
+    'should validate postcode control $controlName',
+    ({ controlName, validValue, invalidPatternValue, invalidLengthValue }) => {
+      component.partyType = 'individual';
+      fixture.detectChanges();
+
+      const postcodeControl = component.form.get(controlName);
+
+      postcodeControl?.setValue(validValue);
+      expect(postcodeControl?.hasError('alphanumericTextPattern')).toBe(false);
+      expect(postcodeControl?.hasError('maxlength')).toBe(false);
+
+      postcodeControl?.setValue(invalidPatternValue);
+      expect(postcodeControl?.hasError('alphanumericTextPattern')).toBe(true);
+
+      postcodeControl?.setValue(invalidLengthValue);
+      expect(postcodeControl?.hasError('maxlength')).toBe(true);
+    },
+  );
+
   it('should populate existing aliases on initialization', () => {
     component.partyType = 'individual';
     component.initialFormData = MOCK_FINES_ACC_PARTY_ADD_AMEND_CONVERT_FORM_DATA_WITH_ALIASES;

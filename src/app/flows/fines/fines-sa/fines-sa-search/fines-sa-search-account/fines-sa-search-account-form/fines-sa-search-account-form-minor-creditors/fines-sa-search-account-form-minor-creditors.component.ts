@@ -23,6 +23,10 @@ import {
 } from '@hmcts/opal-frontend-common/constants';
 import { patternValidator } from '@hmcts/opal-frontend-common/validators/pattern-validator';
 import {
+  postcodeMaxLengthValidator,
+  postcodePatternValidator,
+} from '../../../../../validators/utils/postcode-validator.util';
+import {
   IAbstractFormBaseFormErrorSummaryMessage,
   IAbstractFormControlErrorMessage,
 } from '@hmcts/opal-frontend-common/components/abstract/interfaces';
@@ -126,8 +130,8 @@ export class FinesSaSearchAccountFormMinorCreditorsComponent extends AbstractNes
           Validators.maxLength(30),
         ]),
         fsa_search_account_minor_creditors_individual_post_code: new FormControl<string | null>(null, [
-          ALPHANUMERIC_WITH_SPACES_PATTERN_VALIDATOR,
-          Validators.maxLength(8),
+          postcodeMaxLengthValidator(),
+          postcodePatternValidator('alphanumericTextPattern'),
         ]),
       }),
       fsa_search_account_minor_creditors_company: new FormGroup({
@@ -141,8 +145,8 @@ export class FinesSaSearchAccountFormMinorCreditorsComponent extends AbstractNes
           Validators.maxLength(30),
         ]),
         fsa_search_account_minor_creditors_company_post_code: new FormControl<string | null>(null, [
-          ALPHANUMERIC_WITH_SPACES_PATTERN_VALIDATOR,
-          Validators.maxLength(8),
+          postcodeMaxLengthValidator(),
+          postcodePatternValidator('alphanumericTextPattern'),
         ]),
       }),
     });

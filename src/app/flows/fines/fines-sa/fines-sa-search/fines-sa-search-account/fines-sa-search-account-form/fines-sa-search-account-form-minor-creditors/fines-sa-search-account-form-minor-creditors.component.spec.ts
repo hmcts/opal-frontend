@@ -112,6 +112,41 @@ describe('FinesSaSearchAccountFormMinorCreditorsComponent', () => {
     names.forEach((n) => expect(component.form.get(n), n).toBeTruthy());
   });
 
+  it.each([
+    {
+      controlName:
+        'fsa_search_account_minor_creditors_individual.fsa_search_account_minor_creditors_individual_post_code',
+      validValue: 'SW1A 1AA',
+      invalidPatternValue: 'SW1A@1AA',
+      invalidLengthValue: 'SW1A 1AAAA',
+    },
+    {
+      controlName: 'fsa_search_account_minor_creditors_company.fsa_search_account_minor_creditors_company_post_code',
+      validValue: 'B12 3CD',
+      invalidPatternValue: 'B12-3CD',
+      invalidLengthValue: 'B12 3CDEFG',
+    },
+  ] as const)(
+    'should validate postcode control $controlName',
+    ({ controlName, validValue, invalidPatternValue, invalidLengthValue }) => {
+      component.form
+        .get('fsa_search_account_minor_creditors_minor_creditor_type')
+        ?.setValue(controlName.includes('individual') ? 'individual' : 'company');
+
+      const postcodeControl = component.form.get(controlName);
+
+      postcodeControl?.setValue(validValue);
+      expect(postcodeControl?.hasError('alphanumericTextPattern')).toBe(false);
+      expect(postcodeControl?.hasError('maxlength')).toBe(false);
+
+      postcodeControl?.setValue(invalidPatternValue);
+      expect(postcodeControl?.hasError('alphanumericTextPattern')).toBe(true);
+
+      postcodeControl?.setValue(invalidLengthValue);
+      expect(postcodeControl?.hasError('maxlength')).toBe(true);
+    },
+  );
+
   it('should toggle conditional panels and enable the correct group', async () => {
     await fixture.whenStable();
     const individualConditional = fixture.nativeElement.querySelector(`#${component.individualConditionalId}`);

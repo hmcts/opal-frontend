@@ -15,6 +15,10 @@ import { FinesSaStore } from '../../../../stores/fines-sa.store';
 import { AbstractNestedFormBaseComponent } from '@hmcts/opal-frontend-common/components/abstract/abstract-nested-form-base';
 import { IAbstractFormControlErrorMessage } from '@hmcts/opal-frontend-common/components/abstract/interfaces';
 import { finesSaSearchAccountFormIndividualsValidator } from './validators/fines-sa-search-account-form-individuals.validator';
+import {
+  postcodeMaxLengthValidator,
+  postcodePatternValidator,
+} from '../../../../../validators/utils/postcode-validator.util';
 
 const ALPHANUMERIC_WITH_SPACES_PATTERN_VALIDATOR = patternValidator(
   ALPHANUMERIC_WITH_SPACES_PATTERN,
@@ -74,8 +78,8 @@ export class FinesSaSearchAccountFormIndividualsComponent extends AbstractNested
         Validators.maxLength(30),
       ]),
       fsa_search_account_individuals_post_code: new FormControl<string | null>(null, [
-        ALPHANUMERIC_WITH_SPACES_PATTERN_VALIDATOR,
-        Validators.maxLength(8),
+        postcodeMaxLengthValidator(),
+        postcodePatternValidator('alphanumericTextPattern'),
       ]),
     });
   }
