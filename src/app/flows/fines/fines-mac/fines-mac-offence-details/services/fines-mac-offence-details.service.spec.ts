@@ -196,6 +196,12 @@ describe('FinesMacOffenceDetailsService', () => {
     expect(result).toEqual(legacyCodeResponse.refData[0]);
   });
 
+  it('formatTitleWithCode - should use the exact match title when available', () => {
+    const result = service.formatTitleWithCode(OPAL_FINES_OFFENCES_REF_DATA_SINGULAR_MOCK, 'ak123456');
+
+    expect(result).toBe('ak test (ak123456)');
+  });
+
   describe('initOffenceListener', () => {
     let form: FormGroup;
     let destroy$: Subject<void>;
