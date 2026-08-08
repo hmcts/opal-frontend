@@ -41,12 +41,14 @@
         {{ accountData.financials.paid_out | monetary }}
       </p>
     </opal-lib-custom-summary-metric-bar-item>
-    <opal-lib-custom-summary-metric-bar-item backgroundColour="govuk-lighter-blue-background-colour">
-      <p opal-lib-custom-summary-metric-bar-item-label textColour="govuk-dark-blue-text-colour">Awaiting payout:</p>
-      <p opal-lib-custom-summary-metric-bar-item-value textColour="govuk-dark-blue-text-colour">
-        {{ accountData.financials.awaiting_payout | monetary }}
-      </p>
-    </opal-lib-custom-summary-metric-bar-item>
+    @if (accountData.creditor.has_associated_defendant) {
+      <opal-lib-custom-summary-metric-bar-item backgroundColour="govuk-lighter-blue-background-colour">
+        <p opal-lib-custom-summary-metric-bar-item-label textColour="govuk-dark-blue-text-colour">Awaiting payout:</p>
+        <p opal-lib-custom-summary-metric-bar-item-value textColour="govuk-dark-blue-text-colour">
+          {{ accountData.financials.awaiting_payout | monetary }}
+        </p>
+      </opal-lib-custom-summary-metric-bar-item>
+    }
     @if (accountData.creditor.has_associated_defendant) {
       <opal-lib-custom-summary-metric-bar-item backgroundColour="govuk-blue-background-colour">
         <p opal-lib-custom-summary-metric-bar-item-label textColour="govuk-white-text-colour">Outstanding:</p>

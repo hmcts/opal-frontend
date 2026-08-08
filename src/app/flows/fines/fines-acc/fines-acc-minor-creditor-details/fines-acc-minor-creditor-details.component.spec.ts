@@ -157,6 +157,36 @@ describe('FinesAccMinorCreditorDetailsComponent', () => {
     expect(textContent).not.toContain('-\u00a3123.45');
   });
 
+  it('should only display paid out when no defendant is associated', () => {
+    const repaymentHeader = {
+      ...structuredClone(FINES_ACC_MINOR_CREDITOR_DETAILS_HEADER_MOCK),
+      financials: {
+        ...FINES_ACC_MINOR_CREDITOR_DETAILS_HEADER_MOCK.financials,
+        paid_out: 50,
+        awaiting_payout: 100,
+        awarded: 200,
+        outstanding: 150,
+      },
+    };
+
+    fixture.destroy();
+    activatedRouteStub.snapshot!.data = {
+      minorCreditorAccountHeadingData: repaymentHeader,
+    };
+    fixture = TestBed.createComponent(FinesAccMinorCreditorDetailsComponent);
+    component = fixture.componentInstance;
+    fixture.detectChanges();
+
+    const compiled = fixture.nativeElement as HTMLElement;
+    const textContent = compiled.textContent ?? '';
+
+    expect(textContent).toContain('Paid out:');
+    expect(textContent).toContain('\u00a350.00');
+    expect(textContent).not.toContain('Awarded:');
+    expect(textContent).not.toContain('Awaiting payout:');
+    expect(textContent).not.toContain('Outstanding:');
+  });
+
   it('should call router.navigate when navigateToAddAccountNotePage is called', () => {
     vi.spyOn(component['permissionsService'], 'hasBusinessUnitPermissionAccess').mockReturnValue(true);
     component.navigateToAddAccountNotePage();
