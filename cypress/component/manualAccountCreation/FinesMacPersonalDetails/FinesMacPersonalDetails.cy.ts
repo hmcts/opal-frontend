@@ -120,19 +120,32 @@ describe('FinesMacPersonalDetailsComponent', () => {
   );
 
   it(
-    '(AC.1b) should not have any asterisks in address lines',
+    '(AC.1b) should allow supported punctuation in address lines',
     { tags: [...buildTags('@JIRA-STORY:PO-360'), '@JIRA-EPIC:PO-272', '@JIRA-TEST-KEY:PO-3974'] },
     () => {
       setupComponent(null, '', (finesMacState) => {
-        finesMacState.personalDetails.formData.fm_personal_details_address_line_1 = 'asja*';
-        finesMacState.personalDetails.formData.fm_personal_details_address_line_2 = 'asja*';
-        finesMacState.personalDetails.formData.fm_personal_details_address_line_3 = 'asja*';
+        finesMacState.personalDetails.formData.fm_personal_details_address_line_1 = `Flat 3, 10-12 O'Leary Street`;
+        finesMacState.personalDetails.formData.fm_personal_details_address_line_2 = 'Unit_4 (Rear Block)*.';
+        finesMacState.personalDetails.formData.fm_personal_details_address_line_3 = 'Area 51';
       });
       cy.get(DOM_ELEMENTS.submitButton).click();
 
-      for (let i = 1; i <= 3; i++) {
-        cy.get(DOM_ELEMENTS.errorSummary).should('contain', FORMAT_CHECK[`addressLine${i}ContainsSpecialCharacters`]);
-      }
+      cy.get(DOM_ELEMENTS.errorSummary).should('not.contain', FORMAT_CHECK.addressLine1ContainsSpecialCharacters);
+      cy.get(DOM_ELEMENTS.errorSummary).should('not.contain', FORMAT_CHECK.addressLine2ContainsSpecialCharacters);
+      cy.get(DOM_ELEMENTS.errorSummary).should('not.contain', FORMAT_CHECK.addressLine3ContainsSpecialCharacters);
+    },
+  );
+
+  it(
+    '(AC.1c) should reject unsupported punctuation in address lines',
+    { tags: [...buildTags('@JIRA-STORY:PO-360'), '@JIRA-EPIC:PO-272'] },
+    () => {
+      setupComponent(null, '', (finesMacState) => {
+        finesMacState.personalDetails.formData.fm_personal_details_address_line_1 = '12/14 King Street';
+      });
+      cy.get(DOM_ELEMENTS.submitButton).click();
+
+      cy.get(DOM_ELEMENTS.errorSummary).should('contain', FORMAT_CHECK.addressLine1ContainsSpecialCharacters);
     },
   );
 

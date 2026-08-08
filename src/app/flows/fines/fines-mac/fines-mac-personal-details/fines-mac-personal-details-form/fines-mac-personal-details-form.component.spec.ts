@@ -192,6 +192,24 @@ describe('FinesMacPersonalDetailsFormComponent', () => {
     expect(component.aliasControlsValidation).toEqual(FINES_MAC_PERSONAL_DETAILS_ALIAS);
   });
 
+  it('should allow supported address punctuation in personal details address lines', () => {
+    component.form.controls['fm_personal_details_address_line_1'].setValue(`Flat 3, 10-12 O'Leary Street`);
+    component.form.controls['fm_personal_details_address_line_2'].setValue('Unit_4 (Rear Block)*.');
+    component.form.controls['fm_personal_details_address_line_3'].setValue('Area 51');
+
+    expect(component.form.controls['fm_personal_details_address_line_1'].errors).toBeNull();
+    expect(component.form.controls['fm_personal_details_address_line_2'].errors).toBeNull();
+    expect(component.form.controls['fm_personal_details_address_line_3'].errors).toBeNull();
+  });
+
+  it('should reject unsupported characters in personal details address lines', () => {
+    component.form.controls['fm_personal_details_address_line_1'].setValue('12/14 King Street');
+
+    expect(component.form.controls['fm_personal_details_address_line_1'].errors).toEqual({
+      alphanumericTextPattern: true,
+    });
+  });
+
   it('should call dateOfBirthListener on DOB value changes for an adult form update', () => {
     const dateOfBirth = '01/01/1990';
     mockDateService.isValidDate.mockReturnValue(true);
