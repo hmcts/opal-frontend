@@ -1112,6 +1112,53 @@ describe('FinesMacOffenceDetailsAddAnOffenceFormComponent', () => {
     expect(formSubmitSpy).not.toHaveBeenCalled();
   });
 
+  it('should not emit form submission when amount paid is greater than amount imposed', () => {
+    const formSubmitSpy = vi.spyOn(component['formSubmit'], 'emit');
+    const amountImposedControl = component.form.get([
+      'fm_offence_details_impositions',
+      0,
+      'fm_offence_details_amount_imposed_0',
+    ]) as FormControl;
+    const amountPaidControl = component.form.get([
+      'fm_offence_details_impositions',
+      0,
+      'fm_offence_details_amount_paid_0',
+    ]) as FormControl;
+
+    amountImposedControl.setValue(100);
+    amountPaidControl.setValue(100.01);
+
+    component.handleFormSubmit(new SubmitEvent('submit'));
+
+    expect(amountPaidControl.errors).toEqual(expect.objectContaining({ amountPaidExceedsAmountImposed: true }));
+    expect(component.formControlErrorMessages['fm_offence_details_amount_paid_0']).toBe(
+      'Amount paid cannot be greater than amount imposed',
+    );
+    expect(component.form.invalid).toBe(true);
+    expect(formSubmitSpy).not.toHaveBeenCalled();
+  });
+
+  it('should revalidate amount paid when amount imposed changes', () => {
+    const amountImposedControl = component.form.get([
+      'fm_offence_details_impositions',
+      0,
+      'fm_offence_details_amount_imposed_0',
+    ]) as FormControl;
+    const amountPaidControl = component.form.get([
+      'fm_offence_details_impositions',
+      0,
+      'fm_offence_details_amount_paid_0',
+    ]) as FormControl;
+
+    amountImposedControl.setValue(100);
+    amountPaidControl.setValue(101);
+    expect(amountPaidControl.hasError('amountPaidExceedsAmountImposed')).toBe(true);
+
+    amountImposedControl.setValue(101);
+
+    expect(amountPaidControl.hasError('amountPaidExceedsAmountImposed')).toBe(false);
+  });
+
   it('should set offenceCodeValidationPending on submit when offence code length is valid and offence id is unresolved', () => {
     const offenceCodeControl = component.form.controls['fm_offence_details_offence_cjs_code'];
     const offenceIdControl = component.form.controls['fm_offence_details_offence_id'];

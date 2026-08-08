@@ -1264,4 +1264,125 @@ describe('FinesMacAddOffenceComponent', () => {
       cy.get(DOM_ELEMENTS.errorSummary).should('contain', IMPOSITION_ERROR_MESSAGES.invalidNegativeValue);
     },
   );
+
+  type AmountCase = {
+    imposed: number;
+
+    paid: number;
+  };
+
+  const buildImpositions = (cases: AmountCase[]) =>
+    cases.map((caseItem, index) => ({
+      fm_offence_details_imposition_id: index + 1,
+
+      fm_offence_details_result_id: 'FVS',
+
+      fm_offence_details_amount_imposed: caseItem.imposed,
+
+      fm_offence_details_amount_paid: caseItem.paid,
+
+      fm_offence_details_balance_remaining: Number((caseItem.imposed - caseItem.paid).toFixed(2)),
+
+      fm_offence_details_needs_creditor: false,
+
+      fm_offence_details_creditor: '',
+
+      fm_offence_details_major_creditor_id: 3856,
+    }));
+
+  const runAmountTest = (cases: AmountCase[]) => {
+    setupComponent(null);
+
+    const impositions = buildImpositions(cases);
+
+    finesMacState.offenceDetails[currentoffenceDetails].formData.fm_offence_details_date_of_sentence = '01/01/2021';
+
+    finesMacState.offenceDetails[currentoffenceDetails].formData.fm_offence_details_offence_cjs_code = 'AK123456';
+
+    finesMacState.offenceDetails[currentoffenceDetails].formData.fm_offence_details_offence_id = 52;
+
+    finesMacState.offenceDetails[currentoffenceDetails].formData.fm_offence_details_impositions =
+      structuredClone(impositions);
+
+    cy.get(DOM_ELEMENTS.submitButton).first().click();
+  };
+
+  it(
+    'Should show error message for invalid amount when £100.01 paid exceeds £100 imposed',
+
+    {
+      tags: [
+        '@JIRA-EPIC:PO-2219',
+        '@JIRA-STORY:PO-9140',
+        '@JIRA-DEFECT:PO-9140',
+        '@JIRA-LABEL:manual-account-creation',
+        '@R1A',
+      ],
+    },
+
+    () => {
+      runAmountTest([{ imposed: 100, paid: 100.01 }]);
+      cy.get(DOM_ELEMENTS.errorSummary).should(
+        'contain',
+        IMPOSITION_ERROR_MESSAGES.invalidAmountPaidGreaterThanImposed,
+      );
+    },
+  );
+  it(
+    'Should allow form submission with amount paid being equal to amount imposed',
+    {
+      tags: [
+        '@JIRA-EPIC:PO-2219',
+        '@JIRA-STORY:PO-9140',
+        '@JIRA-DEFECT:PO-9140',
+        '@JIRA-LABEL:manual-account-creation',
+        '@R1A',
+      ],
+    },
+    () => {
+      runAmountTest([{ imposed: 100.01, paid: 100.01 }]);
+
+      cy.get(DOM_ELEMENTS.errorSummary).should('not.exist');
+    },
+  );
+  it(
+    'Should allow form submission with amount paid being under the amount imposed',
+    {
+      tags: [
+        '@JIRA-EPIC:PO-2219',
+        '@JIRA-STORY:PO-9140',
+        '@JIRA-DEFECT:PO-9140',
+        '@JIRA-LABEL:manual-account-creation',
+        '@R1A',
+      ],
+    },
+    () => {
+      runAmountTest([{ imposed: 100.0, paid: 99.99 }]);
+
+      cy.get(DOM_ELEMENTS.errorSummary).should('not.exist');
+    },
+  );
+  it(
+    'Should show error when amount paid exceeds amount imposed on a subsequent imposition',
+    {
+      tags: [
+        '@JIRA-EPIC:PO-2219',
+        '@JIRA-STORY:PO-9140',
+        '@JIRA-DEFECT:PO-9140',
+        '@JIRA-LABEL:manual-account-creation',
+        '@R1A',
+      ],
+    },
+    () => {
+      runAmountTest([
+        { imposed: 100, paid: 50 },
+        { imposed: 200, paid: 200.01 },
+      ]);
+
+      cy.get(DOM_ELEMENTS.errorSummary).should(
+        'contain',
+        IMPOSITION_ERROR_MESSAGES.invalidAmountPaidGreaterThanImposed,
+      );
+    },
+  );
 });
