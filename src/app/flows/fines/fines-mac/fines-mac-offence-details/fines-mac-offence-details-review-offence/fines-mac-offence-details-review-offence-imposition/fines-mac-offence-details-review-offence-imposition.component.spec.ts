@@ -173,7 +173,9 @@ describe('FinesMacOffenceDetailsReviewOffenceImpositionComponent', () => {
 
     fixture.detectChanges();
 
-    const totalBalanceRemainingCell = fixture.nativeElement.querySelector('#totalBalanceRemaining') as HTMLTableCellElement;
+    const totalBalanceRemainingCell = fixture.nativeElement.querySelector(
+      '#totalBalanceRemaining',
+    ) as HTMLTableCellElement;
 
     expect(totalBalanceRemainingCell.querySelector('app-fines-accessible-monetary')).toBeTruthy();
   });
