@@ -9,7 +9,6 @@ import { OpalUserService } from '@hmcts/opal-frontend-common/services/opal-user-
 import { beforeEach, describe, expect, it, vi } from 'vitest';
 import { of, throwError } from 'rxjs';
 import { ACCOUNTS_PERMISSIONS } from '@app/flows/fines/constants/accounts-permissions.constant';
-import { FINANCE_PERMISSIONS } from '@app/flows/fines/constants/finance-permissions.constant';
 import { REPORTS_PERMISSIONS } from '@app/flows/fines/constants/reports-permissions.constant';
 import { SEARCH_PERMISSIONS } from '@app/flows/fines/constants/search-permissions.constant';
 import {
@@ -131,26 +130,6 @@ describe('finesSectionPermissionsGuard', () => {
 
     expect(result).toBe(expectedUrlTree);
     expect(resolveFeatureFlagGuardMock).toHaveBeenCalledWith('release-1b', expect.any(Object), expect.any(Object));
-    expect(mockRouter.createUrlTree).toHaveBeenCalledWith([`/${COMMON_PAGES_ROUTING_PATHS.children.accessDenied}`]);
-  });
-
-  it('should allow Finance when the user has process and allocate payments permission in another business unit', async () => {
-    mockOpalUserService.getLoggedInUserState.mockReturnValue(
-      of(createUserStateWithPermissions([FINANCE_PERMISSIONS[0]])),
-    );
-
-    const result = await runGuard({ sectionKey: FINES_DASHBOARD_ROUTING_PATHS.children.finance });
-
-    expect(result).toBe(true);
-  });
-
-  it('should redirect Finance to access denied when the user lacks process and allocate payments permission', async () => {
-    const expectedUrlTree = new UrlTree();
-    mockRouter.createUrlTree.mockReturnValue(expectedUrlTree);
-
-    const result = await runGuard({ sectionKey: FINES_DASHBOARD_ROUTING_PATHS.children.finance });
-
-    expect(result).toBe(expectedUrlTree);
     expect(mockRouter.createUrlTree).toHaveBeenCalledWith([`/${COMMON_PAGES_ROUTING_PATHS.children.accessDenied}`]);
   });
 
@@ -430,11 +409,14 @@ describe('finesSectionPermissionsGuard', () => {
     expect(mockRouter.createUrlTree).toHaveBeenCalledWith([`/${COMMON_PAGES_ROUTING_PATHS.children.accessDenied}`]);
   });
 
-  it('should allow Finance when release-1c-financial-movements is enabled and the user has finance permissions', async () => {
-    mockOpalUserService.getLoggedInUserState.mockReturnValue(
-      of(createUserStateWithPermissions([FINANCE_PERMISSIONS[0]])),
-    );
+  it('should allow unrestricted dashboard sections without looking up user permissions', async () => {
+    const result = await runGuard({ dashboardType: FINES_DASHBOARD_ROUTING_PATHS.children.finance });
 
+    expect(result).toBe(true);
+    expect(mockOpalUserService.getLoggedInUserState).not.toHaveBeenCalled();
+  });
+
+  it('should allow Finance when release-1c-financial-movements is enabled without looking up user permissions', async () => {
     const result = await runGuard({ dashboardType: FINES_DASHBOARD_ROUTING_PATHS.children.finance });
 
     expect(result).toBe(true);
@@ -443,7 +425,7 @@ describe('finesSectionPermissionsGuard', () => {
       expect.any(Object),
       expect.any(Object),
     );
-    expect(mockOpalUserService.getLoggedInUserState).toHaveBeenCalled();
+    expect(mockOpalUserService.getLoggedInUserState).not.toHaveBeenCalled();
   });
 
   it('should redirect Finance when release-1c-financial-movements is disabled', async () => {

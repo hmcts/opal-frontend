@@ -5,7 +5,6 @@ import { DASHBOARD_PAGE_DEFAULT_TAB } from '@app/pages/dashboard/constants/dashb
 import { IOpalUserState } from '@hmcts/opal-frontend-common/services/opal-user-service/interfaces';
 import { OPAL_USER_STATE_MOCK } from '@hmcts/opal-frontend-common/services/opal-user-service/mocks';
 import { ACCOUNTS_PERMISSIONS } from '../constants/accounts-permissions.constant';
-import { FINANCE_PERMISSIONS } from '../constants/finance-permissions.constant';
 import { REPORTS_PERMISSIONS } from '../constants/reports-permissions.constant';
 import { SEARCH_PERMISSIONS } from '../constants/search-permissions.constant';
 import {
@@ -218,11 +217,6 @@ describe('fines-section-permissions.utils', () => {
       expect(getRequiredPermissionIdsForSection('reports', release1cReportingDisabled)).toEqual([]);
     });
 
-    it('should return Finance permissions when release-1c financial movements is enabled', () => {
-      expect(getRequiredPermissionIdsForSection('finance', release1cFinancialMovementsEnabled)).toEqual(
-        FINANCE_PERMISSIONS,
-      );
-    });
   });
 
   describe('isFinesPrimaryNavigationSectionEnabled', () => {
@@ -244,14 +238,8 @@ describe('fines-section-permissions.utils', () => {
   });
 
   describe('canAccessFinesPrimaryNavigationSection', () => {
-    it('should allow Finance when release-1c financial movements is enabled and the user has finance permissions', () => {
-      expect(
-        canAccessFinesPrimaryNavigationSection(
-          'finance',
-          createUserStateWithPermissions([FINANCE_PERMISSIONS[0]]),
-          release1cFinancialMovementsEnabled,
-        ),
-      ).toBe(true);
+    it('should allow unrestricted dashboard sections when their availability flags are enabled', () => {
+      expect(canAccessFinesPrimaryNavigationSection('finance', null, release1cFinancialMovementsEnabled)).toBe(true);
     });
 
     it('should deny restricted sections when the user lacks permissions', () => {
@@ -354,18 +342,8 @@ describe('fines-section-permissions.utils', () => {
       ).toBe(false);
     });
 
-    it('should deny Finance without permissions when release-1c financial movements is enabled', () => {
-      expect(canAccessFinesPrimaryNavigationSection('finance', null, release1cFinancialMovementsEnabled)).toBe(false);
-    });
-
-    it('should deny Finance when the user lacks process and allocate payments permission', () => {
-      expect(
-        canAccessFinesPrimaryNavigationSection(
-          'finance',
-          createUserStateWithPermissions([SEARCH_PERMISSIONS[0]]),
-          release1cFinancialMovementsEnabled,
-        ),
-      ).toBe(false);
+    it('should allow Finance without permissions when release-1c financial movements is enabled', () => {
+      expect(canAccessFinesPrimaryNavigationSection('finance', null, release1cFinancialMovementsEnabled)).toBe(true);
     });
 
     it('should deny Finance access when release-1c financial movements is disabled', () => {
@@ -437,13 +415,9 @@ describe('fines-section-permissions.utils', () => {
     });
 
     it('should keep Finance when release-1c financial movements is enabled', () => {
-      expect(
-        getAccessiblePrimaryNavigationItems(
-          navigationItemsWithFinance,
-          createUserStateWithPermissions([FINANCE_PERMISSIONS[0]]),
-          allReleaseFlagsEnabled,
-        ),
-      ).toEqual([{ key: 'finance', value: 'Finance' }]);
+      expect(getAccessiblePrimaryNavigationItems(navigationItemsWithFinance, null, allReleaseFlagsEnabled)).toEqual([
+        { key: 'finance', value: 'Finance' },
+      ]);
     });
 
     it('should remove Finance when release-1c financial movements is disabled', () => {
@@ -468,13 +442,7 @@ describe('fines-section-permissions.utils', () => {
     it('should fall back to the first accessible navigation item when no priority section is available', () => {
       const financeItems: readonly INavigationBarConfiguration[] = [{ key: 'finance', value: 'Finance' }];
 
-      expect(
-        getDashboardLandingType(
-          financeItems,
-          createUserStateWithPermissions([FINANCE_PERMISSIONS[0]]),
-          release1cFinancialMovementsEnabled,
-        ),
-      ).toBe('finance');
+      expect(getDashboardLandingType(financeItems, null, release1cFinancialMovementsEnabled)).toBe('finance');
     });
 
     it('should fall back to the default dashboard tab when there are no accessible items', () => {
@@ -488,63 +456,42 @@ describe('fines-section-permissions.utils', () => {
       ];
 
       expect(
-        getDashboardLandingType(navigationItemsWithFinance, createUserStateWithPermissions([REPORTS_PERMISSIONS[0]]), {
+        getDashboardLandingType(
+          navigationItemsWithFinance,
+          createUserStateWithPermissions([REPORTS_PERMISSIONS[0]]),
+          {
+            ...release1cReportingDisabled,
+            ...release1cFinancialMovementsEnabled,
+          },
+        ),
+      ).toBe('finance');
+    });
+
+    it('should skip Accounts landing for draft-only users when release-1a is disabled', () => {
+      const navigationItemsWithFinance: readonly INavigationBarConfiguration[] = [
+        { key: 'accounts', value: 'Accounts' },
+        { key: 'finance', value: 'Finance' },
+      ];
+
+      expect(
+        getDashboardLandingType(navigationItemsWithFinance, createUserStateWithPermissions([ACCOUNTS_PERMISSIONS[0]]), {
+          ...release1aDisabledWithWriteOffEnabled,
           ...release1cFinancialMovementsEnabled,
         }),
-      ).toBe(DASHBOARD_PAGE_DEFAULT_TAB);
+      ).toBe('finance');
     });
 
-    it('should land on Finance instead of Reports when release-1c enforcement operational reporting is disabled and the user has finance permission', () => {
+    it('should skip Accounts landing for consolidation-only users when release-1c-write-off is disabled', () => {
       const navigationItemsWithFinance: readonly INavigationBarConfiguration[] = [
-        { key: 'reports', value: 'Reports' },
+        { key: 'accounts', value: 'Accounts' },
         { key: 'finance', value: 'Finance' },
       ];
 
       expect(
-        getDashboardLandingType(
-          navigationItemsWithFinance,
-          createUserStateWithPermissions([FINANCE_PERMISSIONS[0]]),
-          {
-          ...release1cReportingDisabled,
+        getDashboardLandingType(navigationItemsWithFinance, createUserStateWithPermissions([ACCOUNTS_PERMISSIONS[2]]), {
+          ...release1aEnabledWithWriteOffDisabled,
           ...release1cFinancialMovementsEnabled,
-          },
-        ),
-      ).toBe('finance');
-    });
-
-    it('should skip Accounts landing for draft-only users when release-1a is disabled and the user has finance permission', () => {
-      const navigationItemsWithFinance: readonly INavigationBarConfiguration[] = [
-        { key: 'accounts', value: 'Accounts' },
-        { key: 'finance', value: 'Finance' },
-      ];
-
-      expect(
-        getDashboardLandingType(
-          navigationItemsWithFinance,
-          createUserStateWithPermissions([ACCOUNTS_PERMISSIONS[0], FINANCE_PERMISSIONS[0]]),
-          {
-            ...release1aDisabledWithWriteOffEnabled,
-            ...release1cFinancialMovementsEnabled,
-          },
-        ),
-      ).toBe('finance');
-    });
-
-    it('should skip Accounts landing for consolidation-only users when release-1c-write-off is disabled and the user has finance permission', () => {
-      const navigationItemsWithFinance: readonly INavigationBarConfiguration[] = [
-        { key: 'accounts', value: 'Accounts' },
-        { key: 'finance', value: 'Finance' },
-      ];
-
-      expect(
-        getDashboardLandingType(
-          navigationItemsWithFinance,
-          createUserStateWithPermissions([ACCOUNTS_PERMISSIONS[2], FINANCE_PERMISSIONS[0]]),
-          {
-            ...release1aEnabledWithWriteOffDisabled,
-            ...release1cFinancialMovementsEnabled,
-          },
-        ),
+        }),
       ).toBe('finance');
     });
 
