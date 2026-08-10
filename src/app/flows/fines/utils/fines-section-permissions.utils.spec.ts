@@ -216,7 +216,6 @@ describe('fines-section-permissions.utils', () => {
     it('should remove Reports permissions when release-1c enforcement operational reporting is disabled', () => {
       expect(getRequiredPermissionIdsForSection('reports', release1cReportingDisabled)).toEqual([]);
     });
-
   });
 
   describe('isFinesPrimaryNavigationSectionEnabled', () => {
@@ -456,14 +455,10 @@ describe('fines-section-permissions.utils', () => {
       ];
 
       expect(
-        getDashboardLandingType(
-          navigationItemsWithFinance,
-          createUserStateWithPermissions([REPORTS_PERMISSIONS[0]]),
-          {
-            ...release1cReportingDisabled,
-            ...release1cFinancialMovementsEnabled,
-          },
-        ),
+        getDashboardLandingType(navigationItemsWithFinance, createUserStateWithPermissions([REPORTS_PERMISSIONS[0]]), {
+          ...release1cReportingDisabled,
+          ...release1cFinancialMovementsEnabled,
+        }),
       ).toBe('finance');
     });
 
