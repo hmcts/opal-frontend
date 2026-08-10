@@ -187,7 +187,7 @@
     "swagger-cli": "^4.0.4",
     "tsconfig-paths-webpack-plugin": "^4.2.0",
     "tsx": "^4.21.0",
-    "typescript": "~6.0.0",
+    "typescript": "~5.9.3",
     "vitest": "^4.0.8"
   },
   "packageManager": "yarn@4.17.1",
