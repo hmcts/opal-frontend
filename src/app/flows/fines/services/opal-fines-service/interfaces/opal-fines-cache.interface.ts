@@ -21,6 +21,8 @@ import { IOpalFinesEnforcersRefData } from './opal-fines-enforcers-ref-data.inte
 import { IOpalFinesAccountMinorCreditorCreditor } from './opal-fines-account-minor-creditor-creditor.interface';
 import { IOpalFinesAccountMajorCreditorAtAGlance } from './opal-fines-account-major-creditor-at-a-glance.interface';
 import { IOpalFinesAccountMinorCreditorDetailsHistoryAndNotesTabRefData } from './opal-fines-account-minor-creditor-details-history-and-notes-tab-ref-data.interface';
+import { IOpalFinesReport } from './opal-fines-report.interface';
+import { IOpalFinesAccountMajorCreditorDetailsHistoryAndNotesTabRefData } from './opal-fines-account-major-creditor-details-history-and-notes-tab-ref-data.interface';
 
 export interface IOpalFinesCache {
   courtRefDataCache$: { [key: string]: Observable<IOpalFinesCourtRefData> };
@@ -46,6 +48,8 @@ export interface IOpalFinesCache {
   minorCreditorAccountAtAGlanceCache$: Observable<IOpalFinesAccountMinorCreditorAtAGlance> | null;
   minorCreditorAccountCreditorCache$: Observable<IOpalFinesAccountMinorCreditorCreditor> | null;
   majorCreditorAccountAtAGlanceCache$: Observable<IOpalFinesAccountMajorCreditorAtAGlance> | null;
+  majorCreditorAccountHistoryAndNotesCache$: Observable<IOpalFinesAccountMajorCreditorDetailsHistoryAndNotesTabRefData> | null;
   minorCreditorAccountHistoryAndNotesCache$: Observable<IOpalFinesAccountMinorCreditorDetailsHistoryAndNotesTabRefData> | null;
   enforcersCache$: Observable<IOpalFinesEnforcersRefData> | null;
+  reportsCache$: { [key: string]: Observable<IOpalFinesReport> };
 }

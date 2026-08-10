@@ -12,11 +12,19 @@ import java.time.ZonedDateTime
 @Field String legacyDemoSuiteR1aOffChoice = 'R1A_OFF'
 @Field String legacyDemoSuiteR1abOffChoice = 'R1A_AND_R1B_OFF'
 @Field String legacyDemoSuiteNoneChoice = 'NONE'
+@Field String uatTechnicalSuiteR1aChoice = 'R1A'
+@Field String uatTechnicalSuiteR1bChoice = 'R1B'
 @Field String functionalR1aCommand = 'test:functional:r1a'
 @Field String functionalR1abCommand = 'test:functional:r1ab'
 @Field String functionalR1bOffCommand = 'test:functional:r1bOff'
 @Field String functionalR1aOffCommand = 'test:functional:r1aOff'
 @Field String functionalR1abOffCommand = 'test:functional:r1aboff'
+@Field String functionalUatTechnicalR1aCommand = 'test:functional:uat_legacy_r1a'
+@Field String functionalUatTechnicalR1bJcdeCommand = 'test:functional:uat_legacy_r1b_jcde'
+@Field String functionalUatTechnicalR1bPreProdCommand = 'test:functional:uat_legacy_r1b_preprod'
+@Field String zephyrUatTechnicalR1aCommand = 'zephyr:test:uat_technical_r1a'
+@Field String zephyrUatTechnicalR1bJcdeCommand = 'zephyr:test:uat_technical_r1b_jcde'
+@Field String zephyrUatTechnicalR1bPreProdCommand = 'zephyr:test:uat_technical_r1b_preprod'
 
 properties([
     // H allow predefined but random minute see https://en.wikipedia.org/wiki/Cron#Non-standard_characters
@@ -60,7 +68,12 @@ properties([
     booleanParam(
       name: 'RunUatTech',
       defaultValue: false,
-      description: 'Run UAT-Technical stage (demo -> selected legacy checks)'
+      description: 'Run the selected UAT-Technical stage against the demo legacy flow'
+    ),
+    choice(
+      name: 'UAT_TECHNICAL_SUITE',
+      choices: [uatTechnicalSuiteR1aChoice, uatTechnicalSuiteR1bChoice],
+      description: 'Select which UAT-Technical suite to run when RunUatTech=true.'
     ),
     booleanParam(name: 'ZephyrExecution', defaultValue: false, description: 'Create Zephyr Execution'),
     choice(
@@ -71,7 +84,7 @@ properties([
   ])
 ])
 
-@Library('Infrastructure')
+@Library('Infrastructure@2.4.4')
 
 String type = 'angular'
 @Field String opalName = 'opal'
@@ -89,7 +102,8 @@ String failureResult = 'FAILURE'
 @Field int zeroIndex = 0
 @Field String nightlyTestUrlStaging = 'https://opal-frontend.staging.apps.hmcts.net/'
 @Field String nightlyTestUrlDemo = 'https://opal-frontend.demo.apps.hmcts.net/'
-@Field String demoStageUatTechnicalDirName = 'uat-technical'
+@Field String demoStageUatTechnicalR1aDirName = 'uat-technical-r1a'
+@Field String demoStageUatTechnicalR1bDirName = 'uat-technical-r1b'
 @Field String demoStageR1aDirName = 'r1a-legacy-demo'
 @Field String demoStageR1abDirName = 'r1ab-legacy-demo'
 @Field String demoStageR1bOffDirName = 'r1b-off-legacy-demo'
@@ -106,7 +120,6 @@ String failureResult = 'FAILURE'
   launchDarklyLegacyVariationName,
   launchDarklyOpalVariationName,
 ]
-@Field String uatTechnicalTagFilter = '(@UAT-Technical) and not @skip'
 @Field int uatHealthCheckIntervalSeconds = 5
 @Field int uatHealthCheckTimeoutMinutes = 1
 @Field String legacyHealthCheckPayload = '{"name":"Steve","age":76,"gender":"Male","hobbies":["jogging","salsa"]}'
@@ -256,6 +269,18 @@ INSTALL ${browser.toUpperCase()} OR DISABLE THE ${browser.toUpperCase()} RUN
   }
 
   return browser
+}
+
+// Resolve the requested UAT-Technical suite for nightly legacy-mode checks.
+String selectedUatTechnicalSuite() {
+  String suite = (params.UAT_TECHNICAL_SUITE ?: uatTechnicalSuiteR1aChoice).trim().toUpperCase()
+  List<String> supportedSuites = [uatTechnicalSuiteR1aChoice, uatTechnicalSuiteR1bChoice]
+
+  if (!supportedSuites.contains(suite)) {
+    error "Unsupported UAT_TECHNICAL_SUITE value '${suite}'. Supported values: ${supportedSuites.join(', ')}"
+  }
+
+  return suite
 }
 
 // Check whether any files in the workspace match the provided glob.
@@ -660,19 +685,29 @@ void runUatTechnicalStage(
   boolean shouldRunWithZephyr,
   String browserToRun
 ) {
-  String uatCommand = shouldRunWithZephyr ? 'zephyr:test:uat_technical' : 'test:functional:uat_legacy'
+  String uatSuite = selectedUatTechnicalSuite()
+  boolean isR1bSuite = uatSuite == uatTechnicalSuiteR1bChoice
+  boolean usePreProdLegacyGateway = params.LEGACY_URL == legacyUrlPreProdChoice
+  String uatCommand = shouldRunWithZephyr
+    ? (isR1bSuite
+      ? (usePreProdLegacyGateway ? zephyrUatTechnicalR1bPreProdCommand : zephyrUatTechnicalR1bJcdeCommand)
+      : zephyrUatTechnicalR1aCommand)
+    : (isR1bSuite
+      ? (usePreProdLegacyGateway ? functionalUatTechnicalR1bPreProdCommand : functionalUatTechnicalR1bJcdeCommand)
+      : functionalUatTechnicalR1aCommand)
+  String stageName = "UAT-Technical ${uatSuite}"
   String startMessage =
-    "Running UAT-Technical scenarios against ${nightlyTestUrlDemo} " +
+    "Running ${stageName} scenarios against ${nightlyTestUrlDemo} " +
     "with yarn ${uatCommand}"
 
   runDemoLegacyStage([
     enabled           : enabled,
-    stageName         : 'UAT-Technical',
+    stageName         : stageName,
     failureResultValue: failureResultValue,
-    failureMessage    : 'UAT-Technical failed',
+    failureMessage    : "${stageName} failed",
     startMessage      : startMessage,
-    outputDirName     : demoStageUatTechnicalDirName,
-    reportName        : "UAT-Technical Functional Test Report (${browserToRun})",
+    outputDirName     : isR1bSuite ? demoStageUatTechnicalR1bDirName : demoStageUatTechnicalR1aDirName,
+    reportName        : "${stageName} Functional Test Report (${browserToRun})",
     browserToRun      : browserToRun,
     archiveAccountEvidence: true,
   ]) {
@@ -1012,6 +1047,7 @@ withNightlyPipeline(type, product, component) {
     echo 'RunFirefox:' + params.RunFirefox
     echo 'LegacyDemoSuite:' + params.LEGACY_DEMO_SUITE
     echo 'RunUatTech:' + params.RunUatTech
+    echo 'UatTechnicalSuite:' + params.UAT_TECHNICAL_SUITE
     echo 'LegacyUrl:' + params.LEGACY_URL
 
     DayOfWeek today = ZonedDateTime.now().dayOfWeek

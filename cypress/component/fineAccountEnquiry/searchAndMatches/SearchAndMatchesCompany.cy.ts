@@ -25,6 +25,7 @@ describe('Search Account Component - Company', () => {
       resultsResolvers: {
         companyAccounts: finesSaCompanyDefendantAccountsResolver,
       },
+      useSpyRouter: true,
     });
 
   it(
@@ -79,6 +80,24 @@ describe('Search Account Component - Company', () => {
         'Company name must only include letters a to z, numbers 0-9 and certain special characters (hyphens, spaces, apostrophes)',
       );
       cy.get(CompanyLocators.companyNameInput).clear();
+    },
+  );
+
+  it(
+    'AC6a. should route to problem screen when National Insurance number is combined with company criteria',
+    { tags: [...buildTags('@JIRA-STORY:PO-2953'), '@JIRA-EPIC:PO-2630'] },
+    () => {
+      setupComponent((searchState) => {
+        searchState.fsa_search_account_individuals_search_criteria!.fsa_search_account_individuals_national_insurance_number =
+          'AB123456C';
+        searchState.fsa_search_account_companies_search_criteria!.fsa_search_account_companies_company_name =
+          'CompanyOne';
+      });
+
+      cy.get(NavLocators.companiesTab).click();
+      cy.get(CommonLocators.searchButton).click();
+
+      cy.get('@routerNavigate').should('have.been.calledWithMatch', ['problem']);
     },
   );
 

@@ -1,6 +1,6 @@
 @JIRA-LABEL:manual-account-creation
 @ManualAccountCreation @CourtDetails
-Feature: Manual account creation - Local justice area filtering
+Feature: Local Justice Areas Filtering
   Verifies that local justice area requests include the correct lja_type filters by journey.
 
   Background:
