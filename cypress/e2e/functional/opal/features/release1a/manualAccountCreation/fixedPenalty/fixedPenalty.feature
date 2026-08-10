@@ -144,6 +144,32 @@ Feature: Fixed Penalty
       When I cancel fixed penalty details choosing "Cancel"
       Then I see a fixed penalty error "Enter a valid date of birth in the past" for "Date of birth"
 
+    @JIRA-EPIC:PO-855 @R1A @JIRA-STORY:PO-1144 @JIRA-STORY:PO-9696 @JIRA-TEST-KEY:PO-5331
+    Scenario: Negative amount imposed validation error is shown
+      Given I am logged in with email "opal-test@dev.platform.hmcts.net"
+      When I start a fixed penalty account for business unit "West London", defendant type "Adult or youth only" and originator type "New"
+      And I complete fixed penalty details:
+        | Section          | Field                  | Value                        |
+        | Court details    | Issuing Authority      | Lowestoft County Court (256) |
+        | Court details    | Enforcement court      | Aram Court (123)             |
+        | Personal details | Title                  | Mr                           |
+        | Personal details | First names            | John                         |
+        | Personal details | Last name              | Smith                        |
+        | Personal details | Date of birth          | 01/01/1980                   |
+        | Personal details | Address line 1         | 123 High Street              |
+        | Personal details | Postcode               | SW1A 1AA                     |
+        | Offence details  | Notice number          | FPN1234                      |
+        | Offence details  | Offence type           | Vehicle                      |
+        | Offence details  | Date of offence        | 01/01/2023                   |
+        | Offence details  | Offence code           | HY35014                      |
+        | Offence details  | Time of offence        | 14:30                        |
+        | Offence details  | Place of offence       | Oxford Street - London       |
+        | Offence details  | Amount imposed         | -500                         |
+        | Vehicle details  | Registration number    | AB12CDE                      |
+        | Vehicle details  | Driving licence number | SMITH010123JS9AB             |
+      And I attempt to review the fixed penalty account
+      Then I see a fixed penalty error "Amount imposed must be greater than zero" for "Amount imposed"
+
   Rule: Fixed penalty route guard when navigating back
     @JIRA-EPIC:PO-855 @R1A @JIRA-STORY:PO-857 @JIRA-TEST-KEY:PO-5321
     Scenario: Back navigation confirms leaving fixed penalty details
