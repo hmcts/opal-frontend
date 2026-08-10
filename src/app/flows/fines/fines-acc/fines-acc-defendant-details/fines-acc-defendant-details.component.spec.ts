@@ -447,11 +447,31 @@ describe('FinesAccDefendantDetailsComponent', () => {
       const deniedType = component['getAmendPaymentTermsDeniedType']();
       expect(deniedType).toBe('permission');
     });
+  });
 
-    it('for an invalid account status shouldreturn "account-status"', () => {
-      component.accountData.account_status_reference.account_status_code = 'REW';
-      const deniedType = component['getAmendPaymentTermsDeniedType']();
-      expect(deniedType).toBe('account-status');
+  describe('should get the correct response from accountAllowsPaymentTermsActions', () => {
+    it('when the account status is unrestricted and the account has a positive balance', () => {
+      component.accountData.account_status_reference.account_status_code = 'L';
+      component.accountData.payment_state_summary.account_balance = 500.58;
+
+      expect(component.accountAllowsPaymentTermsActions).toBe(true);
+    });
+
+    it.each(FINES_ACC_RESTRICTED_ACCOUNT_STATUS_CODES)(
+      'when the account status is restricted account status %s',
+      (statusCode) => {
+        component.accountData.account_status_reference.account_status_code = statusCode;
+        component.accountData.payment_state_summary.account_balance = 500.58;
+
+        expect(component.accountAllowsPaymentTermsActions).toBe(false);
+      },
+    );
+
+    it('when the account balance is zero', () => {
+      component.accountData.account_status_reference.account_status_code = 'L';
+      component.accountData.payment_state_summary.account_balance = 0;
+
+      expect(component.accountAllowsPaymentTermsActions).toBe(false);
     });
   });
 
@@ -508,6 +528,34 @@ describe('FinesAccDefendantDetailsComponent', () => {
       expect(canAmend).toBe(false);
     });
 
+    it.each(FINES_ACC_RESTRICTED_ACCOUNT_STATUS_CODES)(
+      'when the user has permission and the account status is restricted account status %s',
+      (statusCode) => {
+        component.accountData.account_status_reference.account_status_code = statusCode;
+        component.accountData.payment_state_summary.account_balance = 500.58;
+        component.lastEnforcement = structuredClone(OPAL_FINES_RESULT_REF_DATA_MOCK);
+        component.lastEnforcement.prevent_payment_card = false;
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        vi.spyOn<any, any>(component['permissionsService'], 'hasBusinessUnitPermissionAccess').mockReturnValue(true);
+
+        const canRequest = component['canRequestPaymentCard']();
+
+        expect(canRequest).toBe(false);
+      },
+    );
+
+    it('when the user has permission and the account balance is zero', () => {
+      component.accountData.account_status_reference.account_status_code = 'L';
+      component.accountData.payment_state_summary.account_balance = 0;
+      component.lastEnforcement = structuredClone(OPAL_FINES_RESULT_REF_DATA_MOCK);
+      component.lastEnforcement.prevent_payment_card = false;
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      vi.spyOn<any, any>(component['permissionsService'], 'hasBusinessUnitPermissionAccess').mockReturnValue(true);
+
+      const canRequest = component['canRequestPaymentCard']();
+
+      expect(canRequest).toBe(false);
+    });
     it('when the account balance is 0', () => {
       component.lastEnforcement = structuredClone(OPAL_FINES_RESULT_REF_DATA_MOCK);
       component.lastEnforcement.extend_ttp_disallow = false;
