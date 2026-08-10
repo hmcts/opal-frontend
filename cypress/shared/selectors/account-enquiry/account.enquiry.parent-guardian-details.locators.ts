@@ -8,6 +8,7 @@
  */
 type AccountEnquiryParentGuardianLocators = {
   changeLink: string;
+  sectionChangeLinks: string;
   removeParentGuardianLink: string;
   parentOrGuardianDetailsName: string;
   parentOrGuardianDetailsAliases: string;
@@ -36,6 +37,8 @@ type AccountEnquiryParentGuardianLocators = {
 export const DOM_ELEMENTS: AccountEnquiryParentGuardianLocators = {
   // Header actions
   changeLink: 'a.govuk-link.govuk-\\!-margin-bottom-0',
+  sectionChangeLinks:
+    'app-fines-acc-defendant-details-parent-or-guardian-tab .govuk-summary-card__actions a.govuk-link',
   removeParentGuardianLink: '.govuk-grid-column-one-third a.govuk-link.govuk-link--no-visited-state',
 
   // Personal Details

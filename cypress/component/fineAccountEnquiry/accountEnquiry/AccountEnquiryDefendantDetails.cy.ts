@@ -8,6 +8,7 @@ import {
   USER_STATE_MOCK_PERMISSION_BU77,
 } from '../../CommonIntercepts/CommonUserState.mocks';
 import { mount } from 'cypress/angular';
+import { ActivatedRoute, provideRouter } from '@angular/router';
 
 import { interceptDefendantHeader, interceptDefendantDetails } from './intercept/defendantAccountIntercepts';
 import { OPAL_FINES_ACCOUNT_DEFENDANT_ACCOUNT_PARTY_MOCK } from '@services/fines/opal-fines-service/mocks/opal-fines-account-defendant-account-party.mock';
@@ -15,6 +16,7 @@ import { IComponentProperties } from './setup/setupComponent.interface';
 import { setupAccountEnquiryComponent } from './setup/SetupComponent';
 import { setLanguagePref } from './Utils/SharedFunctions';
 import { FinesAccDefendantDetailsDefendantTabComponent } from 'src/app/flows/fines/fines-acc/fines-acc-defendant-details/fines-acc-defendant-details-defendant-tab/fines-acc-defendant-details-defendant-tab.component';
+import { FINES_ACC_RESTRICTED_ACCOUNT_STATUS_CODES } from 'src/app/flows/fines/fines-acc/constants/fines-acc-restricted-account-status-codes.constant';
 
 const ACCOUNT_ENQUIRY_JIRA_LABEL = '@JIRA-LABEL:account-enquiry';
 
@@ -60,6 +62,7 @@ describe('Account Enquiry Defendant Details Tab', () => {
         hasAccountMaintenencePermission,
         canAddParentOrGuardianDetails,
       },
+      providers: [provideRouter([]), { provide: ActivatedRoute, useValue: { snapshot: { params: {}, data: {} } } }],
     });
   };
 
@@ -152,7 +155,7 @@ describe('Account Enquiry Defendant Details Tab', () => {
 
       mountDefendantTab({ defendantDetailsMock });
 
-      cy.get(DEFENDANT_DETAILS.detailsTitle).should('exist').and('contain.text', 'Defendant details');
+      cy.contains('h2', 'Defendant Details').should('be.visible');
       cy.get(DEFENDANT_DETAILS.defendantName).should('exist').and('contain.text', 'Ms Sarah Jane THOMPSON');
       cy.get(DEFENDANT_DETAILS.defendantAlias).should('exist').and('contain.text', 'S. J. TAYLOR John PETERS');
       cy.get(DEFENDANT_DETAILS.defendantDOB).should('exist').and('contain.text', '12 April 1988');
@@ -260,10 +263,10 @@ describe('Account Enquiry Defendant Details Tab', () => {
       cy.get('app-fines-acc-defendant-details-defendant-tab').then(($host) => {
         cy.window().then((win) => {
           const component = (win as any).ng.getComponent($host[0]) as {
-            changeDefendantDetailsLink: () => string;
+            convertAccountLink: () => string;
           };
 
-          expect(component.changeDefendantDetailsLink()).to.eq('/access-denied');
+          expect(component.convertAccountLink()).to.eq('/access-denied');
         });
       });
     },
@@ -282,7 +285,7 @@ describe('Account Enquiry Defendant Details Tab', () => {
 
       mountDefendantTab({ defendantDetailsMock });
 
-      cy.get(DEFENDANT_DETAILS.defendantChange).should('not.exist');
+      cy.get(DEFENDANT_DETAILS.defendantChange).should('exist');
     },
   );
 
@@ -316,8 +319,8 @@ describe('Account Enquiry Defendant Details Tab', () => {
         .then((text) => {
           expect(text.trim().replace(/\s+/g, ' ')).to.eq('45 High Street Flat 2B AB1 2CD');
         });
-      cy.get(DEFENDANT_DETAILS.vehicle).should('exist').and('contain.text', 'Ford Focus');
-      cy.get(DEFENDANT_DETAILS.vehicleReg).should('exist').and('contain.text', 'XY21 ABC');
+      cy.get(DEFENDANT_DETAILS.companyVehicle).should('exist').and('contain.text', 'Ford Focus');
+      cy.get(DEFENDANT_DETAILS.companyVehicleReg).should('exist').and('contain.text', 'XY21 ABC');
 
       cy.get(DEFENDANT_DETAILS.primaryEmail).should('exist').and('contain.text', 'sarah.thompson@example.com');
       cy.get(DEFENDANT_DETAILS.secondaryEmail).should('exist').and('contain.text', 'sarah.t@example.com');
@@ -383,11 +386,13 @@ describe('Account Enquiry Defendant Details Tab', () => {
       setupAccountEnquiryComponent({
         ...componentProperties,
         accountId: accountId,
-        interceptedRoutes: componentProperties.interceptedRoutes?.filter((route) => route !== '../party/company/amend'),
       });
 
-      cy.get(DEFENDANT_DETAILS.defendantChange).should('exist').click();
-      cy.get('app-fines-acc-debtor-add-amend-form').should('exist');
+      cy.get(DEFENDANT_DETAILS.convertActionLink)
+        .should('exist')
+        .and('contain.text', 'Convert to an individual account')
+        .and('have.attr', 'href')
+        .and('include', '/convert/individual');
     },
   );
 
@@ -409,15 +414,15 @@ describe('Account Enquiry Defendant Details Tab', () => {
       interceptDefendantDetails(accountId, defendantDetailsMock, accountId);
       setupAccountEnquiryComponent({ ...componentProperties, accountId: accountId });
 
-      cy.get(DEFENDANT_DETAILS.defendantChange).should('exist').click();
+      cy.get(DEFENDANT_DETAILS.convertActionLink).should('exist').click();
       cy.get('@routerNavigate').should('have.been.called');
       cy.get('app-fines-acc-defendant-details-defendant-tab').then(($host) => {
         cy.window().then((win) => {
           const component = (win as any).ng.getComponent($host[0]) as {
-            changeDefendantDetailsLink: () => string;
+            convertAccountLink: () => string;
           };
 
-          expect(component.changeDefendantDetailsLink()).to.eq('/access-denied');
+          expect(component.convertAccountLink()).to.eq('/access-denied');
         });
       });
     },
@@ -436,14 +441,22 @@ describe('Account Enquiry Defendant Details Tab', () => {
 
       mountDefendantTab({ defendantDetailsMock });
 
-      cy.get(DEFENDANT_DETAILS.defendantChange).should('not.exist');
+      cy.get(DEFENDANT_DETAILS.convertActionLink).should('not.exist');
     },
   );
 
   it(
-    'AC1, AC1a, AC1b. Youth-only accounts show the Add parent or guardian details action',
-    { tags: [...buildTags('@JIRA-STORY:PO-1874'), '@JIRA-EPIC:PO-1875', '@JIRA-TEST-KEY:PO-4195'] },
+    'AC2. Youth-only accounts show the Add parent or guardian details action when no parent or guardian exists',
+    {
+      tags: [
+        ...buildTags('@JIRA-STORY:PO-1874', '@JIRA-STORY:PO-5751'),
+        '@JIRA-EPIC:PO-1875',
+        '@JIRA-EPIC:PO-2990',
+        '@JIRA-TEST-KEY:PO-4195',
+      ],
+    },
     () => {
+      // AC2 – Existing youth-only eligibility rules remain unchanged.
       const headerMock = structuredClone(DEFENDANT_HEADER_YOUTH_MOCK);
       const defendantDetailsMock = structuredClone(OPAL_FINES_ACCOUNT_DEFENDANT_ACCOUNT_PARTY_MOCK);
       const { language_preferences } = defendantDetailsMock.defendant_account_party;
@@ -465,10 +478,48 @@ describe('Account Enquiry Defendant Details Tab', () => {
     },
   );
 
+  FINES_ACC_RESTRICTED_ACCOUNT_STATUS_CODES.forEach((statusCode) => {
+    it(
+      `AC1: should hide the Add parent or guardian details action for a youth-only account when the account status is ${statusCode}`,
+      {
+        tags: [...buildTags('@JIRA-STORY:PO-5751'), '@JIRA-EPIC:PO-2990'],
+      },
+      () => {
+        const headerMock = structuredClone(DEFENDANT_HEADER_YOUTH_MOCK);
+        headerMock.parent_guardian_party_id = null;
+        headerMock.account_status_reference.account_status_code = statusCode;
+
+        const defendantDetailsMock = structuredClone(OPAL_FINES_ACCOUNT_DEFENDANT_ACCOUNT_PARTY_MOCK);
+        defendantDetailsMock.defendant_account_party.party_details.organisation_flag = false;
+        defendantDetailsMock.defendant_account_party.is_debtor = true;
+        const { language_preferences } = defendantDetailsMock.defendant_account_party;
+        const accountId = headerMock.defendant_account_party_id;
+        setLanguagePref(language_preferences!.document_language_preference);
+        setLanguagePref(language_preferences!.hearing_language_preference);
+
+        interceptAuthenticatedUser();
+        interceptUserState(USER_STATE_MOCK_PERMISSION_BU77);
+        interceptDefendantHeader(accountId, headerMock, accountId);
+        interceptDefendantDetails(accountId, defendantDetailsMock, accountId);
+        setupAccountEnquiryComponent({ ...componentProperties, accountId: accountId });
+
+        cy.contains('a', 'Add parent or guardian details').should('not.exist');
+      },
+    );
+  });
+
   it(
-    'AC1. Youth-only accounts navigate to the add parent or guardian details screen',
-    { tags: [...buildTags('@JIRA-STORY:PO-1877'), '@JIRA-EPIC:PO-1875', '@JIRA-TEST-KEY:PO-4196'] },
+    'AC3. Youth-only accounts navigate to the add parent or guardian details screen',
+    {
+      tags: [
+        ...buildTags('@JIRA-STORY:PO-1877', '@JIRA-STORY:PO-5751'),
+        '@JIRA-EPIC:PO-1875',
+        '@JIRA-EPIC:PO-2990',
+        '@JIRA-TEST-KEY:PO-4196',
+      ],
+    },
     () => {
+      // AC3 – The visible action keeps its existing navigation and behaviour.
       const headerMock = structuredClone(DEFENDANT_HEADER_YOUTH_MOCK);
       const defendantDetailsMock = structuredClone(OPAL_FINES_ACCOUNT_DEFENDANT_ACCOUNT_PARTY_MOCK);
       const { language_preferences } = defendantDetailsMock.defendant_account_party;
@@ -492,6 +543,7 @@ describe('Account Enquiry Defendant Details Tab', () => {
         ),
       });
 
+      cy.wait(['@getDefendantHeaderSummary', '@getDefendantDetails']);
       cy.contains('a', 'Add parent or guardian details').should('be.visible').click();
       cy.get('app-fines-acc-debtor-add-amend-form').should('exist');
     },
@@ -515,6 +567,85 @@ describe('Account Enquiry Defendant Details Tab', () => {
 
       mountDefendantTab({ defendantDetailsMock: companyDetailsMock });
       cy.contains(DEFENDANT_DETAILS.linkText, 'Add parent or guardian details').should('not.exist');
+    },
+  );
+
+  it(
+    'AC1a, AC1b. Individual Defendant tab removes the heading Change link and shows section Change links',
+    { tags: buildTags('@JIRA-STORY:PO-2671', '@JIRA-EPIC:PO-8248') },
+    () => {
+      const defendantDetailsMock = structuredClone(OPAL_FINES_ACCOUNT_DEFENDANT_ACCOUNT_PARTY_MOCK);
+      defendantDetailsMock.defendant_account_party.party_details.organisation_flag = false;
+      defendantDetailsMock.defendant_account_party.is_debtor = true;
+      const { language_preferences } = defendantDetailsMock.defendant_account_party;
+      setLanguagePref(language_preferences!.document_language_preference);
+      setLanguagePref(language_preferences!.hearing_language_preference);
+
+      mountDefendantTab({ defendantDetailsMock });
+
+      cy.get('h2').contains('Defendant Details').should('be.visible');
+      cy.contains('h2', 'Defendant Details')
+        .closest('.govuk-grid-row')
+        .within(() => {
+          cy.contains('a', 'Change').should('not.exist');
+        });
+      cy.contains('.govuk-summary-card__title', 'Defendant details')
+        .parent()
+        .parent()
+        .within(() => {
+          cy.contains('a', 'Change').should('be.visible');
+        });
+      cy.contains('.govuk-summary-card__title', 'Contact details')
+        .parent()
+        .parent()
+        .within(() => {
+          cy.contains('a', 'Change').should('be.visible');
+        });
+      cy.contains('.govuk-summary-card__title', 'Employer details')
+        .parent()
+        .parent()
+        .within(() => {
+          cy.contains('a', 'Change').should('be.visible');
+        });
+    },
+  );
+
+  it(
+    'AC2a, AC2b. Company Defendant tab removes the heading Change link and shows section Change links',
+    { tags: buildTags('@JIRA-STORY:PO-2671', '@JIRA-EPIC:PO-8248') },
+    () => {
+      const headerMock = structuredClone(DEFENDANT_HEADER_MOCK);
+      const defendantDetailsMock = structuredClone(OPAL_FINES_ACCOUNT_DEFENDANT_ACCOUNT_PARTY_MOCK);
+      defendantDetailsMock.defendant_account_party.party_details.organisation_flag = true;
+      defendantDetailsMock.defendant_account_party.is_debtor = true;
+      const { language_preferences } = defendantDetailsMock.defendant_account_party;
+      const accountId = headerMock.defendant_account_party_id;
+      setLanguagePref(language_preferences!.document_language_preference);
+      setLanguagePref(language_preferences!.hearing_language_preference);
+
+      interceptAuthenticatedUser();
+      interceptUserState(USER_STATE_MOCK_PERMISSION_BU77);
+      interceptDefendantHeader(accountId, headerMock, accountId);
+      interceptDefendantDetails(accountId, defendantDetailsMock, accountId);
+      setupAccountEnquiryComponent({ ...componentProperties, accountId });
+
+      cy.get('h2').contains('Company Details').should('be.visible');
+      cy.get(DEFENDANT_DETAILS.defendantChange).should('not.exist');
+      cy.contains('h2', 'Company Details')
+        .closest('.govuk-grid-row')
+        .within(() => {
+          cy.contains('a', 'Change').should('not.exist');
+        });
+      cy.get(DEFENDANT_DETAILS.companyChange).should('exist');
+      cy.get('#company-summary-card-list').within(() => {
+        cy.contains('.govuk-summary-card__title', 'Company details').should('be.visible');
+        cy.contains('a', 'Change').should('be.visible');
+      });
+      cy.get('#contact-summary-card-list').within(() => {
+        cy.contains('.govuk-summary-card__title', 'Contact details').should('be.visible');
+        cy.contains('a', 'Change').should('be.visible');
+      });
+      cy.contains('.govuk-summary-card__title', 'Employer details').should('not.exist');
     },
   );
 });

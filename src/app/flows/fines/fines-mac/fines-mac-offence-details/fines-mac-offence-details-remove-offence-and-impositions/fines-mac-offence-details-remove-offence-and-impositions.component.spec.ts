@@ -16,6 +16,7 @@ import { FinesMacStore } from '../../stores/fines-mac.store';
 import { FinesMacOffenceDetailsStoreType } from '../stores/types/fines-mac-offence-details.type';
 import { FinesMacOffenceDetailsStore } from '../stores/fines-mac-offence-details.store';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
+import { OPAL_FINES_RESULT_PRETTY_NAME_MOCK } from '../../../services/opal-fines-service/mocks/opal-fines-result-pretty-name.mock';
 
 describe('FinesMacOffenceDetailsRemoveOffenceAndImpositionsComponent', () => {
   let component: FinesMacOffenceDetailsRemoveOffenceAndImpositionsComponent;
@@ -27,6 +28,7 @@ describe('FinesMacOffenceDetailsRemoveOffenceAndImpositionsComponent', () => {
   beforeEach(async () => {
     mockOpalFinesService = {
       getOffenceByCjsCode: vi.fn().mockReturnValue(of(OPAL_FINES_OFFENCES_REF_DATA_MOCK)),
+      getResultPrettyName: vi.fn().mockReturnValue(OPAL_FINES_RESULT_PRETTY_NAME_MOCK),
     };
 
     await TestBed.configureTestingModule({
@@ -72,7 +74,7 @@ describe('FinesMacOffenceDetailsRemoveOffenceAndImpositionsComponent', () => {
 
   it('should remove the offence and set offenceRemoved to true', () => {
     component.confirmOffenceRemoval();
-    expect(finesMacStore.offenceDetails().length).toBe(0);
+    expect(finesMacStore.offenceDetails()).toHaveLength(0);
     expect(finesMacOffenceDetailsStore.offenceRemoved()).toBe(true);
   });
 
@@ -96,7 +98,7 @@ describe('FinesMacOffenceDetailsRemoveOffenceAndImpositionsComponent', () => {
 
     component.confirmOffenceRemoval();
 
-    expect(finesMacStore.offenceDetails().length).toBe(1);
+    expect(finesMacStore.offenceDetails()).toHaveLength(1);
   });
 
   it('should leave offences without an id unchanged when reindexing after removal', () => {
