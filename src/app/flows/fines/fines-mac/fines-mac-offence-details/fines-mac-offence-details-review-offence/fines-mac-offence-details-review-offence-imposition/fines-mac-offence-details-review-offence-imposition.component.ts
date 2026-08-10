@@ -21,6 +21,7 @@ import { FINES_MAC_OFFENCE_DETAILS_REVIEW_OFFENCE_IMPOSITION_DEFAULT_VALUES } fr
 import { FinesMacStore } from '../../../stores/fines-mac.store';
 import { UtilsService } from '@hmcts/opal-frontend-common/services/utils-service';
 import { FinesNotProvidedComponent } from '../../../../components/fines-not-provided/fines-not-provided.component';
+import { FinesAccessibleMonetaryComponent } from '../../../../components/fines-accessible-monetary/fines-accessible-monetary.component';
 
 @Component({
   selector: 'app-fines-mac-offence-details-review-offence-imposition',
@@ -33,6 +34,7 @@ import { FinesNotProvidedComponent } from '../../../../components/fines-not-prov
     GovukSummaryListComponent,
     GovukSummaryListRowComponent,
     FinesNotProvidedComponent,
+    FinesAccessibleMonetaryComponent,
   ],
   templateUrl: './fines-mac-offence-details-review-offence-imposition.component.html',
   changeDetection: ChangeDetectionStrategy.OnPush,

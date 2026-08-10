@@ -164,6 +164,20 @@ describe('FinesMacOffenceDetailsReviewOffenceImpositionComponent', () => {
     expect(component.impositionTableData).toEqual(expectedImpositionTableData);
   });
 
+  it('should expose accessible minus text for negative monetary values', () => {
+    component.impositionsTotalsData = {
+      totalAmountImposed: '-£17.00',
+      totalAmountPaid: '-£3.00',
+      totalBalanceRemaining: '-£14.00',
+    };
+
+    fixture.detectChanges();
+
+    const totalBalanceRemainingCell = fixture.nativeElement.querySelector('#totalBalanceRemaining') as HTMLTableCellElement;
+
+    expect(totalBalanceRemainingCell.querySelector('app-fines-accessible-monetary')).toBeTruthy();
+  });
+
   it('should return minor creditor - Any resultCodeCreditor', () => {
     const finesMacState = structuredClone(finesMacStore.getFinesMacStore());
     finesMacState.offenceDetails[0].childFormData = [

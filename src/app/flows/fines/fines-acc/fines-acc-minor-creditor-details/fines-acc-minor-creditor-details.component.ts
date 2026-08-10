@@ -19,7 +19,6 @@ import { CustomAccountInformationItemComponent } from '@hmcts/opal-frontend-comm
 import { CustomAccountInformationItemLabelComponent } from '@hmcts/opal-frontend-common/components/custom/custom-account-information/custom-account-information-item/custom-account-information-item-label';
 import { CustomAccountInformationItemValueComponent } from '@hmcts/opal-frontend-common/components/custom/custom-account-information/custom-account-information-item/custom-account-information-item-value';
 // Pipes & Directives
-import { MonetaryPipe } from '@hmcts/opal-frontend-common/pipes/monetary';
 // Constants
 import { FINES_ACC_MINOR_CREDITOR_DETAILS_TABS } from './constants/fines-acc-minor-creditor-details-tabs.constant';
 import { FINES_ACC_MINOR_CREDITOR_DETAILS_TABS_KEYS } from './constants/fines-acc-minor-creditor-details-tabs-keys.constant';
@@ -52,6 +51,7 @@ import { FinesAccMinorCreditorDetailsCreditorTab } from './fines-acc-minor-credi
 import { IOpalFinesAccountMinorCreditorCreditor } from '../../services/opal-fines-service/interfaces/opal-fines-account-minor-creditor-creditor.interface';
 import { FinesAccMinorCreditorDetailsHistoryAndNotesTabComponent } from './fines-acc-minor-creditor-details-history-and-notes-tab/fines-acc-minor-creditor-details-history-and-notes-tab.component';
 import { IOpalFinesAccountMinorCreditorDetailsHistoryAndNotesTabRefData } from '../../services/opal-fines-service/interfaces/opal-fines-account-minor-creditor-details-history-and-notes-tab-ref-data.interface';
+import { FinesAccessibleMonetaryComponent } from '../../components/fines-accessible-monetary/fines-accessible-monetary.component';
 
 @Component({
   selector: 'app-fines-acc-minor-creditor-details',
@@ -66,12 +66,12 @@ import { IOpalFinesAccountMinorCreditorDetailsHistoryAndNotesTabRefData } from '
     CustomAccountInformationItemComponent,
     CustomAccountInformationItemLabelComponent,
     CustomAccountInformationItemValueComponent,
-    MonetaryPipe,
     FinesAccSummaryHeaderComponent,
     FinesAccMinorCreditorDetailsAtAGlanceTabComponent,
     FinesAccMinorCreditorDetailsCreditorTab,
     FinesAccMinorCreditorDetailsHistoryAndNotesTabComponent,
     AsyncPipe,
+    FinesAccessibleMonetaryComponent,
   ],
   templateUrl: './fines-acc-minor-creditor-details.component.html',
   changeDetection: ChangeDetectionStrategy.OnPush,

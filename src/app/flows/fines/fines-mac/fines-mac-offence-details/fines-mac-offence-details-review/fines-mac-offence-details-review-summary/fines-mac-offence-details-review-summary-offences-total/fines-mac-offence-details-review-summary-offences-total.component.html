@@ -1,14 +1,14 @@
 <opal-lib-govuk-summary-list summaryListId="offencesTotal">
   <div opal-lib-govuk-summary-list-row summaryListId="offencesTotal" summaryListRowId="amountImposedTotals">
     <ng-container name>Amount imposed</ng-container>
-    <ng-container value>{{ totals.amountImposedTotal }}</ng-container>
+    <ng-container value><app-fines-accessible-monetary [value]="totals.amountImposedTotal" /></ng-container>
   </div>
   <div opal-lib-govuk-summary-list-row summaryListId="offencesTotal" summaryListRowId="amountPaidTotals">
     <ng-container name>Amount paid</ng-container>
-    <ng-container value>{{ totals.amountPaidTotal }}</ng-container>
+    <ng-container value><app-fines-accessible-monetary [value]="totals.amountPaidTotal" /></ng-container>
   </div>
   <div opal-lib-govuk-summary-list-row summaryListId="offencesTotal" summaryListRowId="balanceRemainingTotals">
     <ng-container name>Balance remaining</ng-container>
-    <ng-container value>{{ totals.balanceRemainingTotal }}</ng-container>
+    <ng-container value><app-fines-accessible-monetary [value]="totals.balanceRemainingTotal" /></ng-container>
   </div>
 </opal-lib-govuk-summary-list>

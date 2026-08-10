@@ -128,7 +128,7 @@
             @if (row['Balance'] === null) {
               <ng-container *ngTemplateOutlet="noData"></ng-container>
             } @else {
-              {{ row['Balance'] | currency: 'GBP' }}
+              <app-fines-accessible-monetary [value]="row['Balance']" />
             }
           </td>
         </tr>

@@ -34,6 +34,7 @@ import { IFinesConSearchResultAccountCheck } from '../interfaces/fines-con-searc
 import { IFinesConSearchResultDefendantTableWrapperTableData } from './interfaces/fines-con-search-result-defendant-table-wrapper-table-data.interface';
 import { IFinesConSearchResultDefendantTableWrapperTableSort } from './interfaces/fines-con-search-result-defendant-table-wrapper-table-sort.interface';
 import { FinesConDefendant } from '../../../types/fines-con-defendant.type';
+import { FinesAccessibleMonetaryComponent } from '../../../../components/fines-accessible-monetary/fines-accessible-monetary.component';
 
 @Component({
   selector: 'app-fines-con-search-result-defendant-table-wrapper',
@@ -54,6 +55,7 @@ import { FinesConDefendant } from '../../../types/fines-con-defendant.type';
     FinesNotProvidedComponent,
     MojAlertIconComponent,
     GovukErrorSummaryComponent,
+    FinesAccessibleMonetaryComponent,
   ],
   templateUrl: './fines-con-search-result-defendant-table-wrapper.component.html',
   styleUrls: ['./fines-con-search-result-defendant-table-wrapper.component.scss'],
