@@ -2,4 +2,5 @@ import { IFinesAccountMajorCreditorDetailsTabs } from '../interfaces/fines-acc-m
 
 export const FINES_ACC_MAJOR_CREDITOR_DETAILS_TABS: IFinesAccountMajorCreditorDetailsTabs = {
   'at-a-glance': 'At a glance',
+  'history-and-notes': 'History and notes',
 };
