@@ -20,7 +20,7 @@ Feature: Fixed Penalty
         | Offence details  | Date of offence        | 01/01/2023                            |
         | Offence details  | Offence code           | HY35014                               |
         | Offence details  | Time of offence        | 14:30                                 |
-        | Offence details  | Place of offence       | Oxford Street - London                |
+        | Offence details  | Place of offence       | First,Oxford Street - London          |
         | Offence details  | Amount imposed         | 150                                   |
         | Vehicle details  | Registration number    | AB12CDE                               |
         | Vehicle details  | Driving licence number | SMITH010123JS9AB                      |
@@ -46,7 +46,7 @@ Feature: Fixed Penalty
         | Offence Type     | Vehicle                                  |
         | Offence code     | Riding a bicycle on a footpath (HY35014) |
         | Time of offence  | 14:30                                    |
-        | Place of offence | Oxford Street - London                   |
+        | Place of offence | First,Oxford Street - London             |
         | Amount imposed   | £150.00                                  |
 
     @JIRA-EPIC:PO-855 @R1A @JIRA-STORY:PO-861 @JIRA-TEST-KEY:PO-5312
@@ -135,7 +135,7 @@ Feature: Fixed Penalty
         | Offence details  | Date of offence        | 01/01/2023                   |
         | Offence details  | Offence code           | HY35014                      |
         | Offence details  | Time of offence        | 14:30                        |
-        | Offence details  | Place of offence       | Oxford Street - London       |
+        | Offence details  | Place of offence       | First,Oxford Street - London |
         | Offence details  | Amount imposed         | 150                          |
         | Vehicle details  | Registration number    | AB12CDE                      |
         | Vehicle details  | Driving licence number | SMITH010123JS9AB             |

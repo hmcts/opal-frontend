@@ -19,6 +19,8 @@ Feature: Account Enquiries Request Payment Card Accessibility
       | account.collection_order_made_today     | false                              |
       | account.payment_card_request            | false                              |
       | account.defendant.dob                   | 2002-05-15                         |
+      | account.offences.0.impositions.0.amount_imposed | 250                       |
+      | account.offences.0.impositions.0.amount_paid    | 300                       |
     When I search for the account by last name "PayCardAccess{uniq}" and open the latest result
     And I go to the Payment terms section
     And I start a payment card request
