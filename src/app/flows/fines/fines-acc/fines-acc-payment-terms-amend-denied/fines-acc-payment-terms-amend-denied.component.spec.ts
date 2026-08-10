@@ -30,9 +30,9 @@ describe('FinesAccPaymentTermsAmendDeniedComponent', () => {
       paramMap: new Map([['type', 'permission']]) as any,
       data: {
         defendantAccountHeadingData: structuredClone(FINES_ACC_DEFENDANT_DETAILS_HEADER_MOCK),
-        defendantAccountPaymentTermsData: structuredClone(
-          OPAL_FINES_ACCOUNT_DEFENDANT_DETAILS_PAYMENT_TERMS_LATEST_MOCK,
-        ),
+        defendantAccountPaymentTermsData: {
+          paymentTermsData: structuredClone(OPAL_FINES_ACCOUNT_DEFENDANT_DETAILS_PAYMENT_TERMS_LATEST_MOCK),
+        },
       },
     } as unknown as ActivatedRoute['snapshot'];
 
@@ -51,6 +51,20 @@ describe('FinesAccPaymentTermsAmendDeniedComponent', () => {
 
   it('should create', () => {
     expect(component).toBeTruthy();
+  });
+
+  it('should display the enforcement denied notification without account status content', () => {
+    mockActivatedRoute.snapshot.paramMap = new Map([['type', 'enforcement']]);
+    fixture = TestBed.createComponent(FinesAccPaymentTermsAmendDeniedComponent);
+    component = fixture.componentInstance;
+    fixture.detectChanges();
+
+    const compiled = fixture.nativeElement as HTMLElement;
+
+    expect(compiled.textContent).toContain('You cannot amend the payment terms of this account');
+    expect(compiled.textContent).toContain('The last enforcement action prevents you from amending the payment terms.');
+    expect(compiled.textContent).toContain('REM');
+    expect(compiled.textContent).not.toContain('This account has been');
   });
 
   it('should enforce go back link template semantics', () => {

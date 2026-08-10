@@ -232,6 +232,29 @@ export class FinesAccDefendantDetailsComponent
   }
 
   /**
+   * Determines whether the account status supports payment terms actions.
+   */
+  private get accountStatusAllowsPaymentTermsActions(): boolean {
+    const accountStatusCode = this.accountData.account_status_reference.account_status_code;
+
+    return !FINES_ACC_RESTRICTED_ACCOUNT_STATUS_CODES.includes(accountStatusCode);
+  }
+
+  /**
+   * Determines whether the account has an outstanding balance.
+   */
+  private get accountHasOutstandingBalance(): boolean {
+    return this.accountData.payment_state_summary.account_balance > 0;
+  }
+
+  /**
+   * Determines whether payment terms actions should be displayed for the account status and balance.
+   */
+  public get accountAllowsPaymentTermsActions(): boolean {
+    return this.accountStatusAllowsPaymentTermsActions && this.accountHasOutstandingBalance;
+  }
+
+  /**
    * Checks if the current account has consolidated accounts.
    * @returns boolean value indicating whether this account contains consolidated accounts.
    */
@@ -241,27 +264,28 @@ export class FinesAccDefendantDetailsComponent
 
   /**
    *
-   * Calculates if the user can amend payment terms based on account status and permissions.
+   * Calculates if the user can amend payment terms based on account status, balance, permissions, and enforcement.
    * @returns boolean indicating if the user can amend payment terms
    */
   public canAmendPaymentTerms(): boolean {
-    const accountStatusCode = this.accountData.account_status_reference.account_status_code;
-
     return (
       !this.lastEnforcement?.extend_ttp_disallow &&
-      !FINES_ACC_RESTRICTED_ACCOUNT_STATUS_CODES.includes(accountStatusCode) &&
-      this.hasBusinessUnitPermissionKey('amend-payment-terms') &&
-      this.accountData.payment_state_summary.account_balance > 0
+      this.accountAllowsPaymentTermsActions &&
+      this.hasBusinessUnitPermissionKey('amend-payment-terms')
     );
   }
 
   /**
    *
-   * Calculates if the user can request a payment card based on account status and permissions.
+   * Calculates if the user can request a payment card based on account status, balance, permissions, and enforcement.
    * @returns boolean indicating if the user can request a payment card
    */
   public canRequestPaymentCard(): boolean {
-    return !this.lastEnforcement?.prevent_payment_card && this.hasBusinessUnitPermissionKey('amend-payment-terms');
+    return (
+      !this.lastEnforcement?.prevent_payment_card &&
+      this.accountAllowsPaymentTermsActions &&
+      this.hasBusinessUnitPermissionKey('amend-payment-terms')
+    );
   }
 
   /**
@@ -281,7 +305,7 @@ export class FinesAccDefendantDetailsComponent
   }
 
   /**
-   * Determines the type of denial for requesting a payment card based on permission, account status and enforcement details.
+   * Determines the type of denial for requesting a payment card based on permission and enforcement details.
    * @returns A string representing the denial type: 'enforcement' or 'permission'
    */
   public getRequestPaymentCardDeniedType(): string {
