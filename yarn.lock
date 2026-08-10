@@ -3979,9 +3979,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@hmcts/opal-frontend-common-node@file:packages/hmcts-opal-frontend-common-node-0.0.44.tgz::locator=opal-frontend%40workspace%3A.":
-  version: 0.0.44
-  resolution: "@hmcts/opal-frontend-common-node@file:packages/hmcts-opal-frontend-common-node-0.0.44.tgz#packages/hmcts-opal-frontend-common-node-0.0.44.tgz::hash=9a9123&locator=opal-frontend%40workspace%3A."
+"@hmcts/opal-frontend-common-node@file:packages/hmcts-opal-frontend-common-node-0.0.45.tgz::locator=opal-frontend%40workspace%3A.":
+  version: 0.0.45
+  resolution: "@hmcts/opal-frontend-common-node@file:packages/hmcts-opal-frontend-common-node-0.0.45.tgz#packages/hmcts-opal-frontend-common-node-0.0.45.tgz::hash=2aafde&locator=opal-frontend%40workspace%3A."
   dependencies:
     "@azure/msal-browser": "npm:^5.0.0"
     "@hmcts/info-provider": "npm:^1.1.0"
@@ -3991,7 +3991,7 @@ __metadata:
     applicationinsights: "npm:~2.9.6"
     axios: "npm:^1.6.2"
     body-parser: "npm:^2.0.0"
-    config: "npm:^4.0.0"
+    config: "npm:^5.0.0"
     connect-redis: "npm:^10.0.0"
     cookie-parser: "npm:^1.4.6"
     csrf-csrf: "npm:^4.0.0"
@@ -4003,7 +4003,7 @@ __metadata:
     redis: "npm:^6.0.0"
     session-file-store: "npm:^1.5.0"
     xml2js: "npm:^0.6.2"
-  checksum: 10/e25a4a644c5c234dcebab1f0760e63d9c47ca3fff867b97f2d1bdefbb0eab621814725cabf4a353b071daf3e95a1430e8cb1e8c8b1acaed910c91d25808f1432
+  checksum: 10/f13164543fe144dfbe170d6a4f7e34096841cc0bcfb879e3ecbe981d9e08c22462c08c7f871c9ed1c29352f3fb7c3f627f5ba03076a237994f9126a5955da853
   languageName: node
   linkType: hard
 
@@ -7369,15 +7369,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@types/config@npm:^4.0.0":
-  version: 4.4.0
-  resolution: "@types/config@npm:4.4.0"
-  dependencies:
-    config: "npm:*"
-  checksum: 10/2b5aaf0684516f63d0c96b6fe709a1164cd39994d015c9139c25d1241e4607adcabe00288ca4ec1951d91554d35b27015cd4ca7792bd55caf99c1bc5269a4102
-  languageName: node
-  linkType: hard
-
 "@types/connect-history-api-fallback@npm:^1.5.4":
   version: 1.5.4
   resolution: "@types/connect-history-api-fallback@npm:1.5.4"
@@ -10219,12 +10210,12 @@ __metadata:
   languageName: node
   linkType: hard
 
-"config@npm:*, config@npm:^4.0.0":
-  version: 4.4.2
-  resolution: "config@npm:4.4.2"
+"config@npm:^5.0.0":
+  version: 5.0.0
+  resolution: "config@npm:5.0.0"
   dependencies:
     json5: "npm:^2.2.3"
-  checksum: 10/57c321f94d8893f3748daefc62923b806d8d79f1da12f448f5ee190c25aa75aed5c6e31f206c3dd0ea7a8f2d11d6737d24f92019509a5d2f4773156ede16e7de
+  checksum: 10/317dc25a4ded70010cc5636fb92d35b845e94e49f54a52a4a5ecaa81f3b118b8e2bf5e56ce486ab9c8c5e5e8ef68668ca2a95ef8eb12ee382aadbe834f382c40
   languageName: node
   linkType: hard
 
@@ -16513,14 +16504,13 @@ __metadata:
     "@hmcts/nodejs-logging": "npm:^4.0.4"
     "@hmcts/opal-frontend-common": "npm:0.0.96"
     "@hmcts/opal-frontend-common-cypress": "npm:^0.0.3"
-    "@hmcts/opal-frontend-common-node": "file:packages/hmcts-opal-frontend-common-node-0.0.44.tgz"
+    "@hmcts/opal-frontend-common-node": "file:packages/hmcts-opal-frontend-common-node-0.0.45.tgz"
     "@hmcts/properties-volume": "npm:^1.1.0"
     "@hmcts/zephyr-automation-nodejs": "npm:0.0.7"
     "@microsoft/applicationinsights-web": "npm:^3.3.5"
     "@ministryofjustice/frontend": "npm:^10.0.0"
     "@ngrx/signals": "npm:^21.0.0"
     "@openapitools/openapi-generator-cli": "npm:^2.25.0"
-    "@types/config": "npm:^4.0.0"
     "@types/cookie-parser": "npm:^1.4.6"
     "@types/express": "npm:^5.0.0"
     "@types/express-session": "npm:^1.17.10"
@@ -16538,7 +16528,7 @@ __metadata:
     axios: "npm:^1.6.2"
     body-parser: "npm:^2.0.0"
     browser-sync: "npm:^3.0.2"
-    config: "npm:^4.0.0"
+    config: "npm:^5.0.0"
     connect-redis: "npm:^9.0.0"
     cookie-parser: "npm:^1.4.6"
     csrf-csrf: "npm:^4.0.0"
