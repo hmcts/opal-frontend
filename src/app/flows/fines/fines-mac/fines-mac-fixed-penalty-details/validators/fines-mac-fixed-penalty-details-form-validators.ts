@@ -6,7 +6,7 @@ import { futureDateValidator } from '@hmcts/opal-frontend-common/validators/futu
 import { amountValidator } from '@hmcts/opal-frontend-common/validators/amount';
 import { patternValidator } from '@hmcts/opal-frontend-common/validators/pattern-validator';
 import {
-  ALPHANUMERIC_WITH_HYPHENS_SPACES_APOSTROPHES_DOT_PATTERN,
+  ALPHANUMERIC_WITH_HYPHENS_SPACES_APOSTROPHES_COMMAS_DOT_PATTERN,
   ALPHANUMERIC_WITH_SPACES_PATTERN,
   DRIVING_LICENCE_NUMBER_PATTERN,
   SINGLE_ASCII_CHARACTERS,
@@ -37,9 +37,9 @@ const ALPHANUMERIC_WITH_SPACES_PATTERN_VALIDATOR = patternValidator(
   ALPHANUMERIC_WITH_SPACES_PATTERN,
   'alphanumericTextPattern',
 );
-const ALPHANUMERIC_WITH_HYPHENS_SPACES_APOSTROPHES_DOT_PATTERN_VALIDATOR = patternValidator(
-  ALPHANUMERIC_WITH_HYPHENS_SPACES_APOSTROPHES_DOT_PATTERN,
-  'alphanumericWithHyphensSpacesApostrophesDotPattern',
+const ALPHANUMERIC_WITH_HYPHENS_SPACES_APOSTROPHES_COMMAS_DOT_PATTERN_VALIDATOR = patternValidator(
+  ALPHANUMERIC_WITH_HYPHENS_SPACES_APOSTROPHES_COMMAS_DOT_PATTERN,
+  'alphanumericWithHyphensSpacesApostrophesCommasDotPattern',
 );
 const TIME_FORMAT_PATTERN_VALIDATOR = patternValidator(TIME_FORMAT_PATTERN, 'invalidTimeFormat');
 const DRIVING_LICENCE_NUMBER_PATTERN_VALIDATOR = patternValidator(
@@ -98,7 +98,7 @@ export const FINES_MAC_FIXED_PENALTY_DETAILS_FORM_VALIDATORS: IFinesMacFixedPena
   fm_fp_offence_details_place_of_offence: [
     Validators.required,
     Validators.maxLength(30),
-    ALPHANUMERIC_WITH_HYPHENS_SPACES_APOSTROPHES_DOT_PATTERN_VALIDATOR,
+    ALPHANUMERIC_WITH_HYPHENS_SPACES_APOSTROPHES_COMMAS_DOT_PATTERN_VALIDATOR,
   ],
   fm_fp_offence_details_amount_imposed: [
     Validators.required,

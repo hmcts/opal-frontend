@@ -87,8 +87,8 @@ export const FINES_MAC_FIXED_PENALTY_DETAILS_FIELD_ERRORS: IFinesMacFixedPenalty
       message: `Place of offence must be 30 characters or fewer`,
       priority: 2,
     },
-    alphanumericWithHyphensSpacesApostrophesDotPattern: {
-      message: `Place of offence must only include letters a to z, numbers 0-9 and certain special characters (hyphens, spaces, apostrophes)`,
+    alphanumericWithHyphensSpacesApostrophesCommasDotPattern: {
+      message: `Place of offence must only include letters a to z, numbers 0-9 and certain special characters (commas, full stops, hyphens, spaces, apostrophes)`,
       priority: 3,
     },
   },

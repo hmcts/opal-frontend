@@ -47,6 +47,7 @@ describe('FinesAccPartyDetails', () => {
     party: IOpalFinesAccountPartyDetails = mockPartyDetails,
     isParentGuardianAccount: boolean = false,
     hasAccountMaintenancePermissionInBU: boolean = false,
+    showChangeActions: boolean = true,
   ) => {
     fixture.componentRef.setInput('party', party);
     fixture.componentRef.setInput('cardTitle', 'Party Details');
@@ -54,8 +55,12 @@ describe('FinesAccPartyDetails', () => {
     fixture.componentRef.setInput('summaryListId', 'party-list');
     fixture.componentRef.setInput('isParentGuardianAccount', isParentGuardianAccount);
     fixture.componentRef.setInput('hasAccountMaintenancePermissionInBU', hasAccountMaintenancePermissionInBU);
+    fixture.componentRef.setInput('showChangeActions', showChangeActions);
     fixture.detectChanges();
   };
+
+  const getChangeLinks = (): HTMLAnchorElement[] =>
+    Array.from(fixture.nativeElement.querySelectorAll('.govuk-summary-card__actions a')) as HTMLAnchorElement[];
 
   const setLanguagePreferences = (
     documentLanguagePreference: IOpalFinesDefendantAccountLanguagePreference,
@@ -217,5 +222,20 @@ describe('FinesAccPartyDetails', () => {
     expect(component.sectionChangeFragment(component.sectionFragments.partyDetails)).toBe(
       FINES_ACC_PARTY_ADD_AMEND_CONVERT_SECTION_FRAGMENTS.partyDetails,
     );
+  });
+
+  it('should display section Change actions by default', () => {
+    setupComponent(mockPartyDetails, true);
+
+    const changeLinks = getChangeLinks();
+
+    expect(changeLinks.length).toBeGreaterThan(0);
+    changeLinks.forEach((link) => expect(link.textContent?.trim()).toBe('Change'));
+  });
+
+  it('should hide all section Change actions when they are disabled', () => {
+    setupComponent(mockPartyDetails, true, false, false);
+
+    expect(getChangeLinks()).toHaveLength(0);
   });
 });

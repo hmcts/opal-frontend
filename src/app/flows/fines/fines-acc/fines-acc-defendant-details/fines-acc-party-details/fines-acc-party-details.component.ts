@@ -37,6 +37,7 @@ export class FinesAccPartyDetails {
   @Input({ required: true }) summaryListId!: string;
   @Input({ required: false }) isParentGuardianAccount: boolean = false;
   @Input({ required: false }) hasAccountMaintenancePermissionInBU: boolean = false;
+  @Input({ required: false }) showChangeActions: boolean = true;
   public readonly languages = FINES_MAC_LANGUAGE_PREFERENCES_OPTIONS;
   public readonly finesDefendantRoutingPaths = FINES_ACC_DEFENDANT_ROUTING_PATHS;
   public readonly partyTypes = FINES_ACC_PARTY_ADD_AMEND_CONVERT_PARTY_TYPES;

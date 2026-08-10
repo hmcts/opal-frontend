@@ -219,6 +219,13 @@ describe('FinesMacFixedPenaltyFormComponent', () => {
 
     expect(amountImposedControl.hasError('invalidZeroAmount')).toBe(false);
     expect(amountImposedControl.hasError('invalidNegativeAmount')).toBe(false);
+  it('should accept commas and full stops in the place of offence field', () => {
+    const placeOfOffenceControl = component.form.controls['fm_fp_offence_details_place_of_offence'];
+
+    placeOfOffenceControl.setValue("High Street, St. O'Neil");
+
+    expect(placeOfOffenceControl.errors).toBeNull();
+    expect(placeOfOffenceControl.valid).toBe(true);
   });
 
   it('should prevent submission and show an error message for non-ASCII characters in the fixed penalty comment field', () => {
