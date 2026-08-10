@@ -222,6 +222,30 @@ Feature: Fixed Penalty
         | Vehicle details | Driving licence number | SMITH010123JS9AB                                 |
       And I review the fixed penalty account
 
+    @JIRA-EPIC:PO-855 @R1A @JIRA-STORY:PO-1144 @JIRA-STORY:PO-9696 @JIRA-TEST-KEY:PO-5332
+    Scenario: Company negative amount imposed validation error is shown
+      Given I am logged in with email "opal-test@dev.platform.hmcts.net"
+      When I start a fixed penalty account for business unit "West London", defendant type "Company" and originator type "New"
+      And I complete fixed penalty details:
+        | Section         | Field                  | Value                                            |
+        | Court details   | Issuing Authority      | Avon and Somerset Road Safety Support Unit (052) |
+        | Court details   | Enforcement court      | Johns Maintenance Court (249)                    |
+        | Company details | Company name           | Example Corp Ltd {uniq}                          |
+        | Company details | Address line 1         | 123 Business Park                                |
+        | Company details | Address line 2         | Commerce Way                                     |
+        | Company details | Postcode               | EC1A 1BB                                         |
+        | Offence details | Notice number          | CORP2025                                         |
+        | Offence details | Offence type           | Vehicle                                          |
+        | Offence details | Date of offence        | 05/07/2025                                       |
+        | Offence details | Offence code           | HY35014                                          |
+        | Offence details | Time of offence        | 10:15                                            |
+        | Offence details | Place of offence       | London Borough of Westminster                    |
+        | Offence details | Amount imposed         | -500                                             |
+        | Vehicle details | Registration number    | CP12COR                                          |
+        | Vehicle details | Driving licence number | SMITH010123JS9AB                                 |
+      And I attempt to review the fixed penalty account
+      Then I see a fixed penalty error "Amount imposed must be greater than zero" for "Amount imposed"
+
     @JIRA-EPIC:PO-855 @R1A @JIRA-STORY:PO-861 @JIRA-TEST-KEY:PO-5323
     Scenario: Review shows fixed penalty details for company
       Then the fixed penalty review "Court details" summary is:
