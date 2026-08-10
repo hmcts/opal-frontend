@@ -110,7 +110,7 @@
     "updateUserUrl": "/users"
   },
   "opal-user-service": {
-    "timeoutInMilliseconds": 29000,
+    "timeoutInMilliseconds": 5000,
     "retryAttempts": 3,
     "retryDelayInMilliseconds": 200
   },
