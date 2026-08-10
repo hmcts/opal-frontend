@@ -134,6 +134,12 @@
       "__format": "json"
     }
   },
+  "opal-fines-service": {
+    "timeoutInMilliseconds": {
+      "__name": "OPAL_FINES_SERVICE_TIMEOUT_IN_MILLISECONDS",
+      "__format": "json"
+    }
+  },
   "secrets": {
     "opal": {
       "app-insights-connection-string": "APP_INSIGHTS_CONNECTION_STRING",
