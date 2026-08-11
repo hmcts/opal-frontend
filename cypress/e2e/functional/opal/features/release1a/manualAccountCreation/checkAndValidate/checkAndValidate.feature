@@ -1,5 +1,5 @@
 @JIRA-LABEL:manual-account-creation
-Feature: Navigate and edit sections from task list
+Feature: Check And Validate
 
   Background:
     Given I am logged in with email "opal-test@dev.platform.hmcts.net"

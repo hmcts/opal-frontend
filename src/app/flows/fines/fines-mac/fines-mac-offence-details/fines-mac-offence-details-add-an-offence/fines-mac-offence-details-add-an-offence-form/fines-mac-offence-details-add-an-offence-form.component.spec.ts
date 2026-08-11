@@ -193,6 +193,20 @@ describe('FinesMacOffenceDetailsAddAnOffenceFormComponent', () => {
     expect(templateFunction).not.toContain('keyup.enter');
   });
 
+  it('should render legends as direct children of their fieldsets', () => {
+    const { fixture: freshFixture } = createInitializedComponent();
+    const element = freshFixture.nativeElement as HTMLElement;
+    const legends = Array.from(element.querySelectorAll('fieldset > legend'));
+    const legendText = legends.map((legend) => legend.textContent?.trim());
+
+    expect(legendText).toContain('Offence details');
+    expect(element.querySelector('h2')?.textContent?.trim()).toBe('Offence details');
+    expect(element.querySelectorAll('h2')[1]?.textContent?.trim()).toBe('Impositions');
+    expect(
+      Array.from(element.querySelectorAll('legend')).every((legend) => legend.parentElement?.tagName === 'FIELDSET'),
+    ).toBe(true);
+  });
+
   it('should set needsCreditorControl value to true when result_code is compensation', () => {
     finesMacOffenceDetailsStore.setOffenceDetailsDraft([]);
     component.ngOnInit();
@@ -860,7 +874,7 @@ describe('FinesMacOffenceDetailsAddAnOffenceFormComponent', () => {
 
     component['removeMinorCreditorData'](0);
 
-    expect(finesMacOffenceDetailsStore.offenceDetailsDraft()[0].childFormData!.length).toBe(1);
+    expect(finesMacOffenceDetailsStore.offenceDetailsDraft()[0].childFormData).toHaveLength(1);
   });
 
   it('should remove the minor creditor at the specified index', () => {
@@ -1096,6 +1110,53 @@ describe('FinesMacOffenceDetailsAddAnOffenceFormComponent', () => {
     expect(amountPaidControl.errors).toEqual(expect.objectContaining({ invalidNegativeAmount: true }));
     expect(component.form.invalid).toBe(true);
     expect(formSubmitSpy).not.toHaveBeenCalled();
+  });
+
+  it('should not emit form submission when amount paid is greater than amount imposed', () => {
+    const formSubmitSpy = vi.spyOn(component['formSubmit'], 'emit');
+    const amountImposedControl = component.form.get([
+      'fm_offence_details_impositions',
+      0,
+      'fm_offence_details_amount_imposed_0',
+    ]) as FormControl;
+    const amountPaidControl = component.form.get([
+      'fm_offence_details_impositions',
+      0,
+      'fm_offence_details_amount_paid_0',
+    ]) as FormControl;
+
+    amountImposedControl.setValue(100);
+    amountPaidControl.setValue(100.01);
+
+    component.handleFormSubmit(new SubmitEvent('submit'));
+
+    expect(amountPaidControl.errors).toEqual(expect.objectContaining({ amountPaidExceedsAmountImposed: true }));
+    expect(component.formControlErrorMessages['fm_offence_details_amount_paid_0']).toBe(
+      'Amount paid cannot be greater than amount imposed',
+    );
+    expect(component.form.invalid).toBe(true);
+    expect(formSubmitSpy).not.toHaveBeenCalled();
+  });
+
+  it('should revalidate amount paid when amount imposed changes', () => {
+    const amountImposedControl = component.form.get([
+      'fm_offence_details_impositions',
+      0,
+      'fm_offence_details_amount_imposed_0',
+    ]) as FormControl;
+    const amountPaidControl = component.form.get([
+      'fm_offence_details_impositions',
+      0,
+      'fm_offence_details_amount_paid_0',
+    ]) as FormControl;
+
+    amountImposedControl.setValue(100);
+    amountPaidControl.setValue(101);
+    expect(amountPaidControl.hasError('amountPaidExceedsAmountImposed')).toBe(true);
+
+    amountImposedControl.setValue(101);
+
+    expect(amountPaidControl.hasError('amountPaidExceedsAmountImposed')).toBe(false);
   });
 
   it('should set offenceCodeValidationPending on submit when offence code length is valid and offence id is unresolved', () => {

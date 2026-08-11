@@ -118,7 +118,7 @@ describe('FinesMacOffenceDetailsRemoveImpositionComponent', () => {
     expect(component.balanceString).toEqual('£0.00');
   });
 
-  it('should confirm removal and update form data', () => {
+  it('should confirm removal and update draft form data', () => {
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     vi.spyOn<any, any>(component, 'handleRoute');
 
@@ -143,7 +143,7 @@ describe('FinesMacOffenceDetailsRemoveImpositionComponent', () => {
     expect(component.handleRoute).not.toHaveBeenCalled();
   });
 
-  it('should confirm removal and update form data', () => {
+  it('should confirm removal and update imposition form data', () => {
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     vi.spyOn<any, any>(component, 'handleRoute');
     const offenceWithMinorCreditor = structuredClone(FINES_MAC_OFFENCE_DETAILS_FORM_MOCK);

@@ -1,5 +1,5 @@
 @JIRA-LABEL:primary-nav-and-dashboards
-Feature: Reports Release 1C Enforcement Operational Reporting Feature Toggles
+Feature: Reports Release1c Enforcement Operational Reporting Feature Toggles
 
   @R1CEnforcementOperationalReporting @JIRA-STORY:PO-3758 @JIRA-EPIC:PO-3685 @JIRA-TEST-KEY:PO-7557
   Scenario: Reports navigation and entry points are available when release 1c enforcement operational reporting is enabled

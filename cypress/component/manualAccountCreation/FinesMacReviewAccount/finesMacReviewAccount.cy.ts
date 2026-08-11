@@ -35,7 +35,7 @@ describe('FinesMacReviewAccountComponent', () => {
   let finesMacState = structuredClone(baseFinesMacState);
   let finesDraftState = structuredClone(baseFinesDraftState);
   let finesAccountPayload = structuredClone(baseFinesAccountPayload);
-  let mountedFinesMacStore: FinesMacStore;
+  let mountedFinesMacStore: InstanceType<typeof FinesMacStore>;
 
   /**
    * Mount the Review Account component with the three stores and a minimal ActivatedRoute.
@@ -195,7 +195,7 @@ describe('FinesMacReviewAccountComponent', () => {
 
   it(
     'navigates to delete account confirmation without an account id and marks the journey as coming from check account',
-    { tags: [...buildTags('@JIRA-STORY:PO-9113'), '@JIRA-EPIC:PO-2220'] },
+    { tags: [...buildTags('@JIRA-STORY:PO-9113'), '@JIRA-EPIC:PO-2220', '@JIRA-TEST-KEY:PO-9656'] },
     () => {
       setupComponent(finesDraftState, null, true, false, null);
 
@@ -1413,7 +1413,7 @@ describe('FinesMacReviewAccountComponent', () => {
       cy.get(DOM_ELEMENTS.heading).contains('Mr John DOE').should('exist');
       cy.get('p').should(
         'contain',
-        'Reason for rejection must only include letters a to z, numbers 0-9 and certain special characters (hyphens, spaces, apostrophes)',
+        'Reason for rejection must only include letters a to z, numbers 0-9 and certain special characters (commas, full stops, hyphens, spaces, apostrophes)',
       );
     },
   );

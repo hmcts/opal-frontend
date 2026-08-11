@@ -1,6 +1,6 @@
 @JIRA-LABEL:manual-account-creation
 @ManualAccountCreation @PersonalDetails @JIRA-EPIC:PO-272 @JIRA-STORY:PO-360 @JIRA-STORY:PO-369 @JIRA-STORY:PO-433 @JIRA-STORY:PO-502 @JIRA-STORY:PO-505
-Feature: Manual account creation - Personal Details
+Feature: Personal Details
   #This feature file contains tests for the Personal Details page of the Manual Account Creation journey that cannot be exercised in the component tests #
   #Validation tests are contained in the PersonalDetailsComponent.cy.ts component tests
   #Tests for conditional rendering (different defendant types) are contained in the PersonalDetailsComponent.cy.ts component tests

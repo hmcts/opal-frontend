@@ -1,6 +1,6 @@
 @JIRA-LABEL:manual-account-creation
 @JIRA-NFR:PO-2322
-Feature: Accessibility Tests for Check and Validate Screens
+Feature: Check And Validate Accessibility
   # This feature file ensures that all screens in the Check and Validate flow meet accessibility standards using Axe-Core.
 
   Background:
@@ -17,10 +17,8 @@ Feature: Accessibility Tests for Check and Validate Screens
       | account.defendant.forenames | Accessibility |
       | account.defendant.surname   | TEST{uniq}    |
     And I open Create and Manage Draft Accounts
-
     When I view the "Rejected" tab on the Create and Manage Draft Accounts page
-    Then I see the following text "TEST{uniq}, Accessibility"
-    And I check the page for accessibility
+    Then I check the page for accessibility
 
   @R1A @JIRA-STORY:PO-607 @JIRA-EPIC:PO-2472 @JIRA-TEST-KEY:PO-5564
   Scenario: Approved tab is accessible

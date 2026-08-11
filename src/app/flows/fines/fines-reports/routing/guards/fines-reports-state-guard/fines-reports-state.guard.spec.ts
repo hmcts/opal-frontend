@@ -20,9 +20,9 @@ describe('finesReportsStateGuard', () => {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   let mockOpalUserService: any;
 
-  const runGuard = async (reportId: string | null) => {
+  const runGuard = async (reportId: string | null, paramName: 'reportId' | 'reportTypeId' = 'reportId') => {
     const route = {
-      paramMap: convertToParamMap(reportId ? { reportId } : {}),
+      paramMap: convertToParamMap(reportId ? { [paramName]: reportId } : {}),
     } as ActivatedRouteSnapshot;
     const state = {} as RouterStateSnapshot;
     const result = TestBed.runInInjectionContext(() => finesReportsStateGuard(route, state));
@@ -61,6 +61,18 @@ describe('finesReportsStateGuard', () => {
     ]);
 
     const result = await runGuard(FINES_REPORTS_SUMMARY_LIST_ROUTING_PATHS.children.operationalReportsByEnforcement);
+
+    expect(result).toBe(true);
+    expect(mockOpalUserService.getLoggedInUserState).toHaveBeenCalled();
+  });
+
+  it('should allow operational reports by payments when the user has the required permission', async () => {
+    mockPermissionsService.getUniquePermissions.mockReturnValue([FINES_PERMISSIONS['operational-report-by-payments']]);
+
+    const result = await runGuard(
+      FINES_REPORTS_SUMMARY_LIST_ROUTING_PATHS.children.operationalReportsByPayments,
+      'reportTypeId',
+    );
 
     expect(result).toBe(true);
     expect(mockOpalUserService.getLoggedInUserState).toHaveBeenCalled();

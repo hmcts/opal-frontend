@@ -24,6 +24,7 @@ import { AsyncPipe, UpperCasePipe } from '@angular/common';
 import { MonetaryPipe } from '@hmcts/opal-frontend-common/pipes/monetary';
 // Constants
 import { FINES_PERMISSIONS } from '@constants/fines-permissions.constant';
+import { FINES_ACC_RESTRICTED_ACCOUNT_STATUS_CODES } from '../constants/fines-acc-restricted-account-status-codes.constant';
 import { FINES_ACC_DEFENDANT_ROUTING_PATHS } from '../routing/constants/fines-acc-defendant-routing-paths.constant';
 import { FINES_ACC_DEFENDANT_DETAILS_TABS } from './constants/fines-acc-defendant-details-tabs.constant';
 // Interfaces
@@ -56,6 +57,8 @@ import { AbstractAccountSummaryBaseComponent } from '@hmcts/opal-frontend-common
 import { IOpalFinesVersion } from '../../services/opal-fines-service/interfaces/opal-fines-version.interface';
 import { FINES_ACC_BANNER_MESSAGES } from '../stores/constants/fines-acc-store-banner-messages.constant';
 import { FinesAccDefendantDetailsHistoryAndNotesTabComponent } from './fines-acc-defendant-details-history-and-notes-tab/fines-acc-defendant-details-history-and-notes-tab.component';
+import { IOpalFinesAccountDefendantDetailsConsolidatedAccounts } from '@services/fines/opal-fines-service/interfaces/opal-fines-account-defendant-account-consolidated-accounts.interface';
+import { FinesAccDefendantDetailsConsolidatedAccountsTabComponent } from './fines-acc-defendant-details-consolidated-accounts-tab/fines-acc-defendant-details-consolidated-accounts-tab.component';
 
 @Component({
   selector: 'app-fines-acc-defendant-details',
@@ -83,6 +86,7 @@ import { FinesAccDefendantDetailsHistoryAndNotesTabComponent } from './fines-acc
     MonetaryPipe,
     FinesAccSummaryHeaderComponent,
     FinesAccDefendantDetailsHistoryAndNotesTabComponent,
+    FinesAccDefendantDetailsConsolidatedAccountsTabComponent,
   ],
   templateUrl: './fines-acc-defendant-details.component.html',
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -106,6 +110,7 @@ export class FinesAccDefendantDetailsComponent
   public tabImpositions$: Observable<IOpalFinesAccountDefendantDetailsImpositionsTabRefData> = EMPTY;
   public tabHistoryAndNotes$: Observable<IOpalFinesAccountDefendantDetailsHistoryAndNotesTabRefData> = EMPTY;
   public tabFixedPenalty$: Observable<IOpalFinesAccountDefendantDetailsFixedPenaltyTabRefData> = EMPTY;
+  public tabConsolidatedAccounts$: Observable<IOpalFinesAccountDefendantDetailsConsolidatedAccounts> = EMPTY;
   public debtorTypes = FINES_ACC_DEBTOR_TYPES;
   public accountTypes = FINES_ACCOUNT_TYPES;
   public lastEnforcement: IOpalFinesResultRefData | null = null;
@@ -189,6 +194,11 @@ export class FinesAccDefendantDetailsComponent
             this.opalFinesService.getDefendantAccountHistoryAndNotesTabData(account_id),
           );
           break;
+        case 'consolidated-accounts':
+          this.tabConsolidatedAccounts$ = this.fetchTabDataTyped(
+            this.opalFinesService.getDefendantAccountConsolidatedAccounts(account_id),
+          );
+          break;
       }
     });
   }
@@ -222,29 +232,60 @@ export class FinesAccDefendantDetailsComponent
   }
 
   /**
+   * Determines whether the account status supports payment terms actions.
+   */
+  private get accountStatusAllowsPaymentTermsActions(): boolean {
+    const accountStatusCode = this.accountData.account_status_reference.account_status_code;
+
+    return !FINES_ACC_RESTRICTED_ACCOUNT_STATUS_CODES.includes(accountStatusCode);
+  }
+
+  /**
+   * Determines whether the account has an outstanding balance.
+   */
+  private get accountHasOutstandingBalance(): boolean {
+    return this.accountData.payment_state_summary.account_balance > 0;
+  }
+
+  /**
+   * Determines whether payment terms actions should be displayed for the account status and balance.
+   */
+  public get accountAllowsPaymentTermsActions(): boolean {
+    return this.accountStatusAllowsPaymentTermsActions && this.accountHasOutstandingBalance;
+  }
+
+  /**
+   * Checks if the current account has consolidated accounts.
+   * @returns boolean value indicating whether this account contains consolidated accounts.
+   */
+  public hasConsolidatedAccounts(): boolean {
+    return this.accountData.has_consolidated_accounts;
+  }
+
+  /**
    *
-   * Calculates if the user can amend payment terms based on account status and permissions.
+   * Calculates if the user can amend payment terms based on account status, balance, permissions, and enforcement.
    * @returns boolean indicating if the user can amend payment terms
    */
   public canAmendPaymentTerms(): boolean {
-    const accountStatusCode = this.accountData.account_status_reference.account_status_code;
-    const invalidCodes = ['CS', 'WO', 'TO', 'TS', 'TA'];
-
     return (
       !this.lastEnforcement?.extend_ttp_disallow &&
-      !invalidCodes.includes(accountStatusCode) &&
-      this.hasBusinessUnitPermissionKey('amend-payment-terms') &&
-      this.accountData.payment_state_summary.account_balance > 0
+      this.accountAllowsPaymentTermsActions &&
+      this.hasBusinessUnitPermissionKey('amend-payment-terms')
     );
   }
 
   /**
    *
-   * Calculates if the user can request a payment card based on account status and permissions.
+   * Calculates if the user can request a payment card based on account status, balance, permissions, and enforcement.
    * @returns boolean indicating if the user can request a payment card
    */
   public canRequestPaymentCard(): boolean {
-    return !this.lastEnforcement?.prevent_payment_card && this.hasBusinessUnitPermissionKey('amend-payment-terms');
+    return (
+      !this.lastEnforcement?.prevent_payment_card &&
+      this.accountAllowsPaymentTermsActions &&
+      this.hasBusinessUnitPermissionKey('amend-payment-terms')
+    );
   }
 
   /**
@@ -264,7 +305,7 @@ export class FinesAccDefendantDetailsComponent
   }
 
   /**
-   * Determines the type of denial for requesting a payment card based on permission, account status and enforcement details.
+   * Determines the type of denial for requesting a payment card based on permission and enforcement details.
    * @returns A string representing the denial type: 'enforcement' or 'permission'
    */
   public getRequestPaymentCardDeniedType(): string {
@@ -329,13 +370,15 @@ export class FinesAccDefendantDetailsComponent
    * Determines whether the Defendant tab should show the add parent/guardian link.
    *
    * The link is only available for youth-only accounts where the defendant is the
-   * debtor and no parent or guardian party is currently attached to the account.
+   * debtor, no parent or guardian party is currently attached to the account,
+   * and the account status still supports the action.
    */
   public get canAddParentOrGuardianDetails(): boolean {
     return (
       this.accountData.is_youth &&
       this.accountData.debtor_type === this.debtorTypes.defendant &&
-      !this.accountData.parent_guardian_party_id
+      !this.accountData.parent_guardian_party_id &&
+      !FINES_ACC_RESTRICTED_ACCOUNT_STATUS_CODES.includes(this.accountData.account_status_reference.account_status_code)
     );
   }
 

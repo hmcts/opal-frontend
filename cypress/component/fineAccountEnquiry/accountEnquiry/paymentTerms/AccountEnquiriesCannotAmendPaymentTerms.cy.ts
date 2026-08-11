@@ -40,6 +40,22 @@ describe('Account Enquiry Payment Terms', () => {
     ],
   };
 
+  const assertPaymentTermsActionsAreHidden = () => {
+    cy.wait('@getPaymentTerms');
+    cy.get(PAYMENT_TERMS_TAB.paymentTermsLink).should('not.exist');
+  };
+
+  const openPaymentTermsChange = () => {
+    cy.wait('@getPaymentTerms');
+    cy.get(PAYMENT_TERMS_TAB.paymentTermsLink).contains('Change').click();
+  };
+
+  const assertEnforcementDeniedMessage = () => {
+    cy.get('h1').contains('You cannot amend the payment terms of this account').should('exist');
+    cy.get('p').contains('The last enforcement action prevents you from amending the payment terms.').should('exist');
+    cy.get('p').contains('DW').should('exist');
+  };
+
   it(
     'AC1: Display Change link for users with Amend Payment Terms permission and show error screen if extend_ttp_disallow is TRUE',
     { tags: [...buildTags('@JIRA-STORY:PO-1801'), '@JIRA-EPIC:PO-977', '@JIRA-TEST-KEY:PO-4361'] },
@@ -61,9 +77,8 @@ describe('Account Enquiry Payment Terms', () => {
       });
       cy.get('router-outlet').should('exist');
 
-      cy.get(PAYMENT_TERMS_TAB.paymentTermsLink).contains('Change').click();
-      cy.get('h1').contains(' You cannot amend the payment terms of this account.').should('exist');
-      cy.get('p').contains('This account has an enforcement action outstanding: DW.').should('exist');
+      openPaymentTermsChange();
+      assertEnforcementDeniedMessage();
     },
   );
 
@@ -84,9 +99,7 @@ describe('Account Enquiry Payment Terms', () => {
       interceptResultByCode('REM');
       setupAccountEnquiryComponent({ ...componentProperties, accountId: accountId });
       cy.get('router-outlet').should('exist');
-      cy.get(PAYMENT_TERMS_TAB.paymentTermsLink).contains('Change').click();
-      cy.get('h1').contains(' You cannot amend the payment terms of this account.').should('exist');
-      cy.get('p').contains('This account has been consolidated.').should('exist');
+      assertPaymentTermsActionsAreHidden();
     },
   );
 
@@ -107,9 +120,7 @@ describe('Account Enquiry Payment Terms', () => {
       interceptResultByCode('REM');
       setupAccountEnquiryComponent({ ...componentProperties, accountId: accountId });
       cy.get('router-outlet').should('exist');
-      cy.get(PAYMENT_TERMS_TAB.paymentTermsLink).contains('Change').click();
-      cy.get('h1').contains(' You cannot amend the payment terms of this account.').should('exist');
-      cy.get('p').contains('This account has been written-off.').should('exist');
+      assertPaymentTermsActionsAreHidden();
     },
   );
 
@@ -130,9 +141,7 @@ describe('Account Enquiry Payment Terms', () => {
       interceptResultByCode('REM');
       setupAccountEnquiryComponent({ ...componentProperties, accountId: accountId });
       cy.get('router-outlet').should('exist');
-      cy.get(PAYMENT_TERMS_TAB.paymentTermsLink).contains('Change').click();
-      cy.get('h1').contains(' You cannot amend the payment terms of this account.').should('exist');
-      cy.get('p').contains('This account has been transferred out.').should('exist');
+      assertPaymentTermsActionsAreHidden();
     },
   );
 
@@ -153,9 +162,7 @@ describe('Account Enquiry Payment Terms', () => {
       interceptResultByCode('REM');
       setupAccountEnquiryComponent({ ...componentProperties, accountId: accountId });
       cy.get('router-outlet').should('exist');
-      cy.get(PAYMENT_TERMS_TAB.paymentTermsLink).contains('Change').click();
-      cy.get('h1').contains(' You cannot amend the payment terms of this account.').should('exist');
-      cy.get('p').contains('This account has been transferred out.').should('exist');
+      assertPaymentTermsActionsAreHidden();
     },
   );
 
@@ -176,9 +183,7 @@ describe('Account Enquiry Payment Terms', () => {
       interceptResultByCode('REM');
       setupAccountEnquiryComponent({ ...componentProperties, accountId: accountId });
       cy.get('router-outlet').should('exist');
-      cy.get(PAYMENT_TERMS_TAB.paymentTermsLink).contains('Change').click();
-      cy.get('h1').contains(' You cannot amend the payment terms of this account.').should('exist');
-      cy.get('p').contains('This account has been transferred out.').should('exist');
+      assertPaymentTermsActionsAreHidden();
     },
   );
 
@@ -201,9 +206,7 @@ describe('Account Enquiry Payment Terms', () => {
       interceptResultByCode('REM');
       setupAccountEnquiryComponent({ ...componentProperties, accountId: accountId });
       cy.get('router-outlet').should('exist');
-      cy.get(PAYMENT_TERMS_TAB.paymentTermsLink).contains('Change').click();
-      cy.get('h1').contains(' You cannot amend the payment terms of this account.').should('exist');
-      cy.get('p').contains('The account has a zero balance.').should('exist');
+      assertPaymentTermsActionsAreHidden();
     },
   );
 
@@ -213,7 +216,7 @@ describe('Account Enquiry Payment Terms', () => {
     () => {
       let headerMock = structuredClone(createDefendantHeaderMockWithName('John', 'Smith'));
       headerMock.debtor_type = 'individual';
-      headerMock.account_status_reference.account_status_code = 'TA';
+      headerMock.account_status_reference.account_status_code = 'L';
       let paymentTermsMock = structuredClone(OPAL_FINES_ACCOUNT_DEFENDANT_DETAILS_PAYMENT_TERMS_LATEST_MOCK);
 
       const accountId = headerMock.defendant_account_party_id;
@@ -224,8 +227,8 @@ describe('Account Enquiry Payment Terms', () => {
       interceptResultByCode('REM');
       setupAccountEnquiryComponent({ ...componentProperties, accountId: accountId });
       cy.get('router-outlet').should('exist');
-      cy.get(PAYMENT_TERMS_TAB.paymentTermsLink).contains('Change').click();
-      cy.get('h1').contains(' You cannot amend the payment terms of this account.').should('exist');
+      openPaymentTermsChange();
+      cy.get('h1').contains('You cannot amend the payment terms of this account').should('exist');
       cy.get('p')
         .contains(
           'You do not have the required permissions to make changes to this account as it is outside your business unit.',
@@ -259,9 +262,8 @@ describe('Account Enquiry Payment Terms', () => {
       });
       cy.get('router-outlet').should('exist');
 
-      cy.get(PAYMENT_TERMS_TAB.paymentTermsLink).contains('Change').click();
-      cy.get('h1').contains(' You cannot amend the payment terms of this account.').should('exist');
-      cy.get('p').contains('This account has an enforcement action outstanding: DW.').should('exist');
+      openPaymentTermsChange();
+      assertEnforcementDeniedMessage();
     },
   );
 
@@ -285,9 +287,7 @@ describe('Account Enquiry Payment Terms', () => {
       interceptResultByCode('REM');
       setupAccountEnquiryComponent({ ...componentProperties, accountId: accountId });
       cy.get('router-outlet').should('exist');
-      cy.get(PAYMENT_TERMS_TAB.paymentTermsLink).contains('Change').click();
-      cy.get('h1').contains(' You cannot amend the payment terms of this account.').should('exist');
-      cy.get('p').contains('This account has been consolidated.').should('exist');
+      assertPaymentTermsActionsAreHidden();
     },
   );
 
@@ -311,9 +311,7 @@ describe('Account Enquiry Payment Terms', () => {
       interceptResultByCode('REM');
       setupAccountEnquiryComponent({ ...componentProperties, accountId: accountId });
       cy.get('router-outlet').should('exist');
-      cy.get(PAYMENT_TERMS_TAB.paymentTermsLink).contains('Change').click();
-      cy.get('h1').contains(' You cannot amend the payment terms of this account.').should('exist');
-      cy.get('p').contains('This account has been written-off.').should('exist');
+      assertPaymentTermsActionsAreHidden();
     },
   );
 
@@ -337,9 +335,7 @@ describe('Account Enquiry Payment Terms', () => {
       interceptResultByCode('REM');
       setupAccountEnquiryComponent({ ...componentProperties, accountId: accountId });
       cy.get('router-outlet').should('exist');
-      cy.get(PAYMENT_TERMS_TAB.paymentTermsLink).contains('Change').click();
-      cy.get('h1').contains(' You cannot amend the payment terms of this account.').should('exist');
-      cy.get('p').contains('This account has been transferred out.').should('exist');
+      assertPaymentTermsActionsAreHidden();
     },
   );
 
@@ -363,9 +359,7 @@ describe('Account Enquiry Payment Terms', () => {
       interceptResultByCode('REM');
       setupAccountEnquiryComponent({ ...componentProperties, accountId: accountId });
       cy.get('router-outlet').should('exist');
-      cy.get(PAYMENT_TERMS_TAB.paymentTermsLink).contains('Change').click();
-      cy.get('h1').contains(' You cannot amend the payment terms of this account.').should('exist');
-      cy.get('p').contains('This account has been transferred out.').should('exist');
+      assertPaymentTermsActionsAreHidden();
     },
   );
 
@@ -389,9 +383,7 @@ describe('Account Enquiry Payment Terms', () => {
       interceptResultByCode('REM');
       setupAccountEnquiryComponent({ ...componentProperties, accountId: accountId });
       cy.get('router-outlet').should('exist');
-      cy.get(PAYMENT_TERMS_TAB.paymentTermsLink).contains('Change').click();
-      cy.get('h1').contains(' You cannot amend the payment terms of this account.').should('exist');
-      cy.get('p').contains('This account has been transferred out.').should('exist');
+      assertPaymentTermsActionsAreHidden();
     },
   );
 
@@ -417,9 +409,7 @@ describe('Account Enquiry Payment Terms', () => {
       interceptResultByCode('REM');
       setupAccountEnquiryComponent({ ...componentProperties, accountId: accountId });
       cy.get('router-outlet').should('exist');
-      cy.get(PAYMENT_TERMS_TAB.paymentTermsLink).contains('Change').click();
-      cy.get('h1').contains(' You cannot amend the payment terms of this account.').should('exist');
-      cy.get('p').contains('The account has a zero balance.').should('exist');
+      assertPaymentTermsActionsAreHidden();
     },
   );
 
@@ -432,7 +422,7 @@ describe('Account Enquiry Payment Terms', () => {
         organisation_name: 'Acme Corporation',
         organisation_aliases: [],
       };
-      headerMock.account_status_reference.account_status_code = 'TA';
+      headerMock.account_status_reference.account_status_code = 'L';
       let paymentTermsMock = structuredClone(OPAL_FINES_ACCOUNT_DEFENDANT_DETAILS_PAYMENT_TERMS_LATEST_MOCK);
 
       const accountId = headerMock.defendant_account_party_id;
@@ -443,8 +433,8 @@ describe('Account Enquiry Payment Terms', () => {
       interceptResultByCode('REM');
       setupAccountEnquiryComponent({ ...componentProperties, accountId: accountId });
       cy.get('router-outlet').should('exist');
-      cy.get(PAYMENT_TERMS_TAB.paymentTermsLink).contains('Change').click();
-      cy.get('h1').contains(' You cannot amend the payment terms of this account.').should('exist');
+      openPaymentTermsChange();
+      cy.get('h1').contains('You cannot amend the payment terms of this account').should('exist');
       cy.get('p')
         .contains(
           'You do not have the required permissions to make changes to this account as it is outside your business unit.',
@@ -470,9 +460,8 @@ describe('Account Enquiry Payment Terms', () => {
       interceptResultByCode('DW');
       setupAccountEnquiryComponent({ ...componentProperties, accountId: accountId });
       cy.get('router-outlet').should('exist');
-      cy.get(PAYMENT_TERMS_TAB.paymentTermsLink).contains('Change').click();
-      cy.get('h1').contains(' You cannot amend the payment terms of this account.').should('exist');
-      cy.get('p').contains('This account has an enforcement action outstanding: DW.').should('exist');
+      openPaymentTermsChange();
+      assertEnforcementDeniedMessage();
     },
   );
 
@@ -493,9 +482,7 @@ describe('Account Enquiry Payment Terms', () => {
       interceptResultByCode('REM');
       setupAccountEnquiryComponent({ ...componentProperties, accountId: accountId });
       cy.get('router-outlet').should('exist');
-      cy.get(PAYMENT_TERMS_TAB.paymentTermsLink).contains('Change').click();
-      cy.get('h1').contains(' You cannot amend the payment terms of this account.').should('exist');
-      cy.get('p').contains('This account has been consolidated.').should('exist');
+      assertPaymentTermsActionsAreHidden();
     },
   );
 
@@ -516,9 +503,7 @@ describe('Account Enquiry Payment Terms', () => {
       interceptResultByCode('REM');
       setupAccountEnquiryComponent({ ...componentProperties, accountId: accountId });
       cy.get('router-outlet').should('exist');
-      cy.get(PAYMENT_TERMS_TAB.paymentTermsLink).contains('Change').click();
-      cy.get('h1').contains(' You cannot amend the payment terms of this account.').should('exist');
-      cy.get('p').contains('This account has been written-off.').should('exist');
+      assertPaymentTermsActionsAreHidden();
     },
   );
 
@@ -539,9 +524,7 @@ describe('Account Enquiry Payment Terms', () => {
       interceptResultByCode('REM');
       setupAccountEnquiryComponent({ ...componentProperties, accountId: accountId });
       cy.get('router-outlet').should('exist');
-      cy.get(PAYMENT_TERMS_TAB.paymentTermsLink).contains('Change').click();
-      cy.get('h1').contains(' You cannot amend the payment terms of this account.').should('exist');
-      cy.get('p').contains('This account has been transferred out.').should('exist');
+      assertPaymentTermsActionsAreHidden();
     },
   );
 
@@ -562,9 +545,7 @@ describe('Account Enquiry Payment Terms', () => {
       interceptResultByCode('REM');
       setupAccountEnquiryComponent({ ...componentProperties, accountId: accountId });
       cy.get('router-outlet').should('exist');
-      cy.get(PAYMENT_TERMS_TAB.paymentTermsLink).contains('Change').click();
-      cy.get('h1').contains(' You cannot amend the payment terms of this account.').should('exist');
-      cy.get('p').contains('This account has been transferred out.').should('exist');
+      assertPaymentTermsActionsAreHidden();
     },
   );
 
@@ -585,9 +566,7 @@ describe('Account Enquiry Payment Terms', () => {
       interceptResultByCode('REM');
       setupAccountEnquiryComponent({ ...componentProperties, accountId: accountId });
       cy.get('router-outlet').should('exist');
-      cy.get(PAYMENT_TERMS_TAB.paymentTermsLink).contains('Change').click();
-      cy.get('h1').contains(' You cannot amend the payment terms of this account.').should('exist');
-      cy.get('p').contains('This account has been transferred out.').should('exist');
+      assertPaymentTermsActionsAreHidden();
     },
   );
 
@@ -610,9 +589,7 @@ describe('Account Enquiry Payment Terms', () => {
       interceptResultByCode('REM');
       setupAccountEnquiryComponent({ ...componentProperties, accountId: accountId });
       cy.get('router-outlet').should('exist');
-      cy.get(PAYMENT_TERMS_TAB.paymentTermsLink).contains('Change').click();
-      cy.get('h1').contains(' You cannot amend the payment terms of this account.').should('exist');
-      cy.get('p').contains('The account has a zero balance.').should('exist');
+      assertPaymentTermsActionsAreHidden();
     },
   );
 
@@ -622,7 +599,7 @@ describe('Account Enquiry Payment Terms', () => {
     () => {
       let headerMock = structuredClone(createDefendantHeaderMockWithName('John', 'Smith'));
       headerMock.debtor_type = 'Parent/Guardian';
-      headerMock.account_status_reference.account_status_code = 'TA';
+      headerMock.account_status_reference.account_status_code = 'L';
       let paymentTermsMock = structuredClone(OPAL_FINES_ACCOUNT_DEFENDANT_DETAILS_PAYMENT_TERMS_LATEST_MOCK);
 
       const accountId = headerMock.defendant_account_party_id;
@@ -633,8 +610,8 @@ describe('Account Enquiry Payment Terms', () => {
       interceptResultByCode('REM');
       setupAccountEnquiryComponent({ ...componentProperties, accountId: accountId });
       cy.get('router-outlet').should('exist');
-      cy.get(PAYMENT_TERMS_TAB.paymentTermsLink).contains('Change').click();
-      cy.get('h1').contains(' You cannot amend the payment terms of this account.').should('exist');
+      openPaymentTermsChange();
+      cy.get('h1').contains('You cannot amend the payment terms of this account').should('exist');
       cy.get('p')
         .contains(
           'You do not have the required permissions to make changes to this account as it is outside your business unit.',
