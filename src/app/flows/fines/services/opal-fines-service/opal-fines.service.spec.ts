@@ -67,6 +67,8 @@ import { OPAL_FINES_ACCOUNT_MINOR_CREDITOR_CREDITOR_MOCK } from './mocks/opal-fi
 import { OPAL_FINES_DEFENDANT_ACCOUNT_HISTORY_PARAMS_MOCK } from './mocks/opal-fines-defendant-account-history-params.mock';
 import { FINES_ACC_MAJOR_CREDITOR_DETAILS_HEADER_MOCK } from '../../fines-acc/fines-acc-major-creditor-details/mocks/fines-acc-major-creditor-details-header.mock';
 import { OPAL_FINES_ACCOUNT_MAJOR_CREDITOR_AT_A_GLANCE_MOCK } from './mocks/opal-fines-account-major-creditor-at-a-glance-with-defendant.mock';
+import { OPAL_FINES_ACCOUNT_MAJOR_CREDITOR_DETAILS_HISTORY_AND_NOTES_TAB_REF_DATA_MOCK } from './mocks/opal-fines-account-major-creditor-details-history-and-notes-tab-ref-data.mock';
+import { OPAL_FINES_MAJOR_CREDITOR_ACCOUNT_HISTORY_PARAMS_MOCK } from './mocks/opal-fines-major-creditor-account-history-params.mock';
 import { OPAL_FINES_ACCOUNT_MINOR_CREDITOR_DETAILS_HISTORY_AND_NOTES_TAB_REF_DATA_MOCK } from './mocks/opal-fines-account-minor-creditor-details-history-and-notes-tab-ref-data.mock';
 import { OPAL_FINES_MINOR_CREDITOR_ACCOUNT_HISTORY_PARAMS_MOCK } from './mocks/opal-fines-minor-creditor-account-history-params.mock';
 import { OPAL_FINES_ACCOUNT_DEFENDANT_DETAILS_CONSOLIDATED_ACCOUNTS_MOCK } from './mocks/opal-fines-account-defendant-details-consolidated-accounts.mock';
@@ -2315,6 +2317,67 @@ describe('OpalFines', () => {
       const req = httpMock.expectOne(`${OPAL_FINES_PATHS.minorCreditorAccounts}/${account_id}`);
       expect(req.request.method).toBe('GET');
       req.flush(expectedResponse);
+    });
+  });
+
+  describe('getMajorCreditorAccountHistoryAndNotesTabData', () => {
+    it('should get major creditor account history and notes data without query params', () => {
+      const account_id: number = 77;
+      const apiUrl = `${OPAL_FINES_PATHS.majorCreditorAccounts}/${account_id}/history`;
+      const expectedResponse = {
+        ...OPAL_FINES_ACCOUNT_MAJOR_CREDITOR_DETAILS_HISTORY_AND_NOTES_TAB_REF_DATA_MOCK,
+        version: '"123"',
+      };
+
+      service.getMajorCreditorAccountHistoryAndNotesTabData(account_id).subscribe((response) => {
+        expect(response).toEqual(expectedResponse);
+      });
+
+      const req = httpMock.expectOne(apiUrl);
+      expect(req.request.method).toBe('GET');
+      expect(req.request.params.keys()).toEqual([]);
+
+      req.flush(OPAL_FINES_ACCOUNT_MAJOR_CREDITOR_DETAILS_HISTORY_AND_NOTES_TAB_REF_DATA_MOCK, {
+        headers: { ETag: '"123"' },
+      });
+    });
+
+    it('should return cached major creditor account history data on repeated unfiltered calls', () => {
+      const account_id = 77;
+      const apiUrl = `${OPAL_FINES_PATHS.majorCreditorAccounts}/${account_id}/history`;
+
+      service.getMajorCreditorAccountHistoryAndNotesTabData(account_id).subscribe();
+
+      const req = httpMock.expectOne(apiUrl);
+      req.flush(OPAL_FINES_ACCOUNT_MAJOR_CREDITOR_DETAILS_HISTORY_AND_NOTES_TAB_REF_DATA_MOCK);
+
+      service.getMajorCreditorAccountHistoryAndNotesTabData(account_id).subscribe((response) => {
+        expect(response).toEqual(OPAL_FINES_ACCOUNT_MAJOR_CREDITOR_DETAILS_HISTORY_AND_NOTES_TAB_REF_DATA_MOCK);
+      });
+
+      httpMock.expectNone(apiUrl);
+    });
+
+    it('should send a GET request to major creditor account history with filter query params', () => {
+      const account_id = 77;
+      const apiUrl = `${OPAL_FINES_PATHS.majorCreditorAccounts}/${account_id}/history`;
+
+      service
+        .getMajorCreditorAccountHistoryAndNotesTabData(
+          account_id,
+          OPAL_FINES_MAJOR_CREDITOR_ACCOUNT_HISTORY_PARAMS_MOCK,
+        )
+        .subscribe((response) => {
+          expect(response).toEqual(OPAL_FINES_ACCOUNT_MAJOR_CREDITOR_DETAILS_HISTORY_AND_NOTES_TAB_REF_DATA_MOCK);
+        });
+
+      const req = httpMock.expectOne((request) => request.url === apiUrl);
+      expect(req.request.method).toBe('GET');
+      expect(req.request.params.get('dateFrom')).toBe(OPAL_FINES_MAJOR_CREDITOR_ACCOUNT_HISTORY_PARAMS_MOCK.dateFrom);
+      expect(req.request.params.get('dateTo')).toBe(OPAL_FINES_MAJOR_CREDITOR_ACCOUNT_HISTORY_PARAMS_MOCK.dateTo);
+      expect(req.request.params.get('itemTypes')).toBeNull();
+
+      req.flush(OPAL_FINES_ACCOUNT_MAJOR_CREDITOR_DETAILS_HISTORY_AND_NOTES_TAB_REF_DATA_MOCK);
     });
   });
 
