@@ -3981,7 +3981,7 @@ __metadata:
 
 "@hmcts/opal-frontend-common-node@file:packages/hmcts-opal-frontend-common-node-0.0.45.tgz::locator=opal-frontend%40workspace%3A.":
   version: 0.0.45
-  resolution: "@hmcts/opal-frontend-common-node@file:packages/hmcts-opal-frontend-common-node-0.0.45.tgz#packages/hmcts-opal-frontend-common-node-0.0.45.tgz::hash=2aafde&locator=opal-frontend%40workspace%3A."
+  resolution: "@hmcts/opal-frontend-common-node@file:packages/hmcts-opal-frontend-common-node-0.0.45.tgz#packages/hmcts-opal-frontend-common-node-0.0.45.tgz::hash=4d8b2d&locator=opal-frontend%40workspace%3A."
   dependencies:
     "@azure/msal-browser": "npm:^5.0.0"
     "@hmcts/info-provider": "npm:^1.1.0"
@@ -4003,7 +4003,7 @@ __metadata:
     redis: "npm:^6.0.0"
     session-file-store: "npm:^1.5.0"
     xml2js: "npm:^0.6.2"
-  checksum: 10/f13164543fe144dfbe170d6a4f7e34096841cc0bcfb879e3ecbe981d9e08c22462c08c7f871c9ed1c29352f3fb7c3f627f5ba03076a237994f9126a5955da853
+  checksum: 10/57c1cd9f333f0dba7636ffd50030597eff93dddc42c245fcf9421aaad2d8a3bb4da9ccf5bc9046cc9201999bc0703cbbf46d1973e14f559b317ba5ff2c665dbf
   languageName: node
   linkType: hard
 
