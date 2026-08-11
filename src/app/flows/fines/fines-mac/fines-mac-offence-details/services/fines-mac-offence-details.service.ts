@@ -192,7 +192,7 @@ export class FinesMacOffenceDetailsService {
   }
 
   /**
-   * Formats an offence title together with its code for display captions.
+   * Formats an offence title together with its code.
    *
    * @param response - The offence lookup response.
    * @param offenceCode - The offence code entered by the user.
