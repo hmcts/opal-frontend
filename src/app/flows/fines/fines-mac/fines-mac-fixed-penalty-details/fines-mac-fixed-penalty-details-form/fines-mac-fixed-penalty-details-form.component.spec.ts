@@ -219,403 +219,405 @@ describe('FinesMacFixedPenaltyFormComponent', () => {
 
     expect(amountImposedControl.hasError('invalidZeroAmount')).toBe(false);
     expect(amountImposedControl.hasError('invalidNegativeAmount')).toBe(false);
-  it('should accept commas and full stops in the place of offence field', () => {
-    const placeOfOffenceControl = component.form.controls['fm_fp_offence_details_place_of_offence'];
+    it('should accept commas and full stops in the place of offence field', () => {
+      const placeOfOffenceControl = component.form.controls['fm_fp_offence_details_place_of_offence'];
 
-    placeOfOffenceControl.setValue("High Street, St. O'Neil");
+      placeOfOffenceControl.setValue("High Street, St. O'Neil");
 
-    expect(placeOfOffenceControl.errors).toBeNull();
-    expect(placeOfOffenceControl.valid).toBe(true);
-  });
-
-  it('should prevent submission and show an error message for non-ASCII characters in the fixed penalty comment field', () => {
-    const event = {} as SubmitEvent;
-    const commentsControl = component.form.controls['fm_fp_account_comments_notes_comments'];
-    const expectedErrorMessage =
-      FINES_MAC_FIXED_PENALTY_DETAILS_FIELD_ERRORS.fm_fp_account_comments_notes_comments['singleAsciiChatacters']
-        .message;
-
-    commentsControl.setValue('Invalidé');
-
-    expect(commentsControl.hasError('singleAsciiChatacters')).toBe(true);
-
-    component.handleFormSubmit(event);
-
-    expect(component.formControlErrorMessages['fm_fp_account_comments_notes_comments']).toBe(expectedErrorMessage);
-    expect(component.formErrorSummaryMessage).toContainEqual({
-      fieldId: 'fm_fp_account_comments_notes_comments',
-      message: expectedErrorMessage,
+      expect(placeOfOffenceControl.errors).toBeNull();
+      expect(placeOfOffenceControl.valid).toBe(true);
     });
-  });
 
-  it('should prevent submission and show an error message for non-ASCII characters in the fixed penalty notes field', () => {
-    const event = {} as SubmitEvent;
-    const notesControl = component.form.controls['fm_fp_account_comments_notes_notes'];
-    const expectedErrorMessage =
-      FINES_MAC_FIXED_PENALTY_DETAILS_FIELD_ERRORS.fm_fp_account_comments_notes_notes['singleAsciiChatacters'].message;
+    it('should prevent submission and show an error message for non-ASCII characters in the fixed penalty comment field', () => {
+      const event = {} as SubmitEvent;
+      const commentsControl = component.form.controls['fm_fp_account_comments_notes_comments'];
+      const expectedErrorMessage =
+        FINES_MAC_FIXED_PENALTY_DETAILS_FIELD_ERRORS.fm_fp_account_comments_notes_comments['singleAsciiChatacters']
+          .message;
 
-    notesControl.setValue('Invalidé');
+      commentsControl.setValue('Invalidé');
 
-    expect(notesControl.hasError('singleAsciiChatacters')).toBe(true);
+      expect(commentsControl.hasError('singleAsciiChatacters')).toBe(true);
 
-    component.handleFormSubmit(event);
+      component.handleFormSubmit(event);
 
-    expect(component.formControlErrorMessages['fm_fp_account_comments_notes_notes']).toBe(expectedErrorMessage);
-    expect(component.formErrorSummaryMessage).toContainEqual({
-      fieldId: 'fm_fp_account_comments_notes_notes',
-      message: expectedErrorMessage,
+      expect(component.formControlErrorMessages['fm_fp_account_comments_notes_comments']).toBe(expectedErrorMessage);
+      expect(component.formErrorSummaryMessage).toContainEqual({
+        fieldId: 'fm_fp_account_comments_notes_comments',
+        message: expectedErrorMessage,
+      });
     });
-  });
 
-  it('should ignore missing vehicle controls when updating offence validators', () => {
-    component['setupFixedPenaltyDetailsForm']();
-    component.form.removeControl('fm_fp_offence_details_nto_nth');
-    component.form.get('fm_fp_offence_details_offence_type')?.setValue('vehicle');
+    it('should prevent submission and show an error message for non-ASCII characters in the fixed penalty notes field', () => {
+      const event = {} as SubmitEvent;
+      const notesControl = component.form.controls['fm_fp_account_comments_notes_notes'];
+      const expectedErrorMessage =
+        FINES_MAC_FIXED_PENALTY_DETAILS_FIELD_ERRORS.fm_fp_account_comments_notes_notes['singleAsciiChatacters']
+          .message;
 
-    expect(() => component['updateOffenceControlValidators']()).not.toThrow();
-  });
+      notesControl.setValue('Invalidé');
 
-  it('should remove validators from the form controls', () => {
-    component['setupFixedPenaltyDetailsForm']();
-    component['offenceTypeListener']();
-    component.form.get('fm_fp_offence_details_offence_type')?.setValue('non-vehicle');
+      expect(notesControl.hasError('singleAsciiChatacters')).toBe(true);
 
-    expect(
-      component.form.get('fm_fp_offence_details_vehicle_registration_number')?.hasValidator(Validators.required),
-    ).toBe(false);
-    expect(component.form.get('fm_fp_offence_details_driving_licence_number')?.hasValidator(Validators.required)).toBe(
-      false,
-    );
-    expect(component.form.get('fm_fp_offence_details_vehicle_registration_number')?.disabled).toBe(true);
-    expect(component.form.get('fm_fp_offence_details_driving_licence_number')?.disabled).toBe(true);
-  });
+      component.handleFormSubmit(event);
 
-  it('should toggle the vehicle conditional panel and controls', async () => {
-    await fixture.whenStable();
-    const conditional = fixture.nativeElement.querySelector(`#${component.vehicleOffenceConditionalId}`);
-    expect(conditional.classList.contains('govuk-radios__conditional--hidden')).toBe(true);
+      expect(component.formControlErrorMessages['fm_fp_account_comments_notes_notes']).toBe(expectedErrorMessage);
+      expect(component.formErrorSummaryMessage).toContainEqual({
+        fieldId: 'fm_fp_account_comments_notes_notes',
+        message: expectedErrorMessage,
+      });
+    });
 
-    const vehicleInput = fixture.nativeElement.querySelector(
-      `input[aria-controls="${component.vehicleOffenceConditionalId}"]`,
-    );
-    vehicleInput.click();
-    fixture.detectChanges();
+    it('should ignore missing vehicle controls when updating offence validators', () => {
+      component['setupFixedPenaltyDetailsForm']();
+      component.form.removeControl('fm_fp_offence_details_nto_nth');
+      component.form.get('fm_fp_offence_details_offence_type')?.setValue('vehicle');
 
-    expect(component.form.get('fm_fp_offence_details_vehicle_registration_number')?.enabled).toBe(true);
-    expect(component.form.get('fm_fp_offence_details_driving_licence_number')?.enabled).toBe(true);
-  });
+      expect(() => component['updateOffenceControlValidators']()).not.toThrow();
+    });
 
-  it('should listen to changes in the dob and update the dateObject', () => {
-    mockDateService.getAgeObject.mockReturnValue({ value: 46, group: 'Adult' });
-    component['setupFixedPenaltyDetailsForm']();
-    component['dateOfBirthListener']();
-    const dobControl = component.form.controls['fm_fp_personal_details_dob'];
-    dobControl?.setValue('01-01-1979');
+    it('should remove validators from the form controls', () => {
+      component['setupFixedPenaltyDetailsForm']();
+      component['offenceTypeListener']();
+      component.form.get('fm_fp_offence_details_offence_type')?.setValue('non-vehicle');
 
-    expect(component.age).toEqual({ value: 46, group: 'Adult' });
-  });
+      expect(
+        component.form.get('fm_fp_offence_details_vehicle_registration_number')?.hasValidator(Validators.required),
+      ).toBe(false);
+      expect(
+        component.form.get('fm_fp_offence_details_driving_licence_number')?.hasValidator(Validators.required),
+      ).toBe(false);
+      expect(component.form.get('fm_fp_offence_details_vehicle_registration_number')?.disabled).toBe(true);
+      expect(component.form.get('fm_fp_offence_details_driving_licence_number')?.disabled).toBe(true);
+    });
 
-  it('should generate languageOptions from FINES_MAC_LANGUAGE_PREFERENCES_OPTIONS', () => {
-    const expectedOptions = [
-      { key: 'CY', value: 'Welsh and English' },
-      { key: 'EN', value: 'English only' },
-    ];
+    it('should toggle the vehicle conditional panel and controls', async () => {
+      await fixture.whenStable();
+      const conditional = fixture.nativeElement.querySelector(`#${component.vehicleOffenceConditionalId}`);
+      expect(conditional.classList.contains('govuk-radios__conditional--hidden')).toBe(true);
 
-    expect(component.languageOptions).toEqual(expectedOptions);
-  });
+      const vehicleInput = fixture.nativeElement.querySelector(
+        `input[aria-controls="${component.vehicleOffenceConditionalId}"]`,
+      );
+      vehicleInput.click();
+      fixture.detectChanges();
 
-  it('should perform the initial setup for the fixed penalty details form', () => {
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    vi.spyOn<any, any>(component, 'setupFixedPenaltyDetailsForm');
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    vi.spyOn<any, any>(component, 'setInitialErrorMessages');
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    vi.spyOn<any, any>(component, 'rePopulateForm');
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    vi.spyOn<any, any>(component, 'dateOfBirthListener');
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    vi.spyOn<any, any>(component, 'offenceTypeListener');
-    const setupOffenceCodeLookupSpy = vi.spyOn(component['offenceDetailsService'], 'setupOffenceCodeLookup');
+      expect(component.form.get('fm_fp_offence_details_vehicle_registration_number')?.enabled).toBe(true);
+      expect(component.form.get('fm_fp_offence_details_driving_licence_number')?.enabled).toBe(true);
+    });
 
-    component['initialFixedPenaltyDetailsSetup']();
+    it('should listen to changes in the dob and update the dateObject', () => {
+      mockDateService.getAgeObject.mockReturnValue({ value: 46, group: 'Adult' });
+      component['setupFixedPenaltyDetailsForm']();
+      component['dateOfBirthListener']();
+      const dobControl = component.form.controls['fm_fp_personal_details_dob'];
+      dobControl?.setValue('01-01-1979');
 
-    expect(component['transformationService']['replaceKeys']).toHaveBeenCalled();
-    expect(component['setupFixedPenaltyDetailsForm']).toHaveBeenCalled();
-    expect(component['setInitialErrorMessages']).toHaveBeenCalled();
-    expect(component['rePopulateForm']).toHaveBeenCalled();
-    expect(component['dateOfBirthListener']).toHaveBeenCalled();
-    expect(component['offenceTypeListener']).toHaveBeenCalled();
-    expect(setupOffenceCodeLookupSpy).toHaveBeenCalled();
-  });
+      expect(component.age).toEqual({ value: 46, group: 'Adult' });
+    });
 
-  it('should skip the date of birth listener during initial setup for company defendants', () => {
-    const freshFixture = TestBed.createComponent(FinesMacFixedPenaltyDetailsFormComponent);
-    const freshComponent = freshFixture.componentInstance;
-    freshComponent.defendantType = FINES_MAC_DEFENDANT_TYPES_KEYS.company;
-    freshComponent.enforcingCourtAutoCompleteItems = OPAL_FINES_COURT_AUTOCOMPLETE_ITEMS_MOCK;
-    freshComponent.issuingAuthorityAutoCompleteItems = OPAL_FINES_ISSUING_AUTHORITY_AUTOCOMPLETE_ITEMS_MOCK;
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    const dateOfBirthListenerSpy = vi.spyOn<any, any>(freshComponent, 'dateOfBirthListener');
-    const offenceTypeListenerSpy = vi.spyOn(freshComponent as never, 'offenceTypeListener');
+    it('should generate languageOptions from FINES_MAC_LANGUAGE_PREFERENCES_OPTIONS', () => {
+      const expectedOptions = [
+        { key: 'CY', value: 'Welsh and English' },
+        { key: 'EN', value: 'English only' },
+      ];
 
-    freshFixture.detectChanges();
+      expect(component.languageOptions).toEqual(expectedOptions);
+    });
 
-    expect(dateOfBirthListenerSpy).not.toHaveBeenCalled();
-    expect(offenceTypeListenerSpy).toHaveBeenCalled();
-  });
-
-  it('should update offenceCode$ and selectedOffenceConfirmation when callbacks are invoked', () => {
-    vi.useFakeTimers();
-    mockOpalFinesService.getOffenceByCjsCode.mockReturnValue(of(OPAL_FINES_OFFENCES_REF_DATA_MOCK));
-
-    component.form.get('fm_fp_offence_details_offence_cjs_code')?.setValue('AK123456');
-
-    vi.advanceTimersByTime(FINES_MAC_OFFENCE_DETAILS_DEFAULT_VALUES.defaultDebounceTime);
-
-    // Assert
-    let value: unknown;
-    component.offenceCode$.subscribe((v) => (value = v));
-    expect(value).toEqual(OPAL_FINES_OFFENCES_REF_DATA_MOCK);
-    expect(component.selectedOffenceConfirmation).toBe(true);
-    vi.useRealTimers();
-  });
-
-  it('should refresh rendered errors when offence validation state changes after submit', () => {
-    let confirmChangeCallback: (confirmed: boolean) => void = () => undefined;
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    vi.spyOn<any, any>(component['offenceDetailsService'], 'initOffenceCodeListener').mockImplementation(
+    it('should perform the initial setup for the fixed penalty details form', () => {
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      (...args: any[]) => {
-        confirmChangeCallback = args[6];
-      },
-    );
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    const handleErrorMessagesSpy = vi.spyOn<any, any>(component, 'handleErrorMessages');
+      vi.spyOn<any, any>(component, 'setupFixedPenaltyDetailsForm');
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      vi.spyOn<any, any>(component, 'setInitialErrorMessages');
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      vi.spyOn<any, any>(component, 'rePopulateForm');
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      vi.spyOn<any, any>(component, 'dateOfBirthListener');
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      vi.spyOn<any, any>(component, 'offenceTypeListener');
+      const setupOffenceCodeLookupSpy = vi.spyOn(component['offenceDetailsService'], 'setupOffenceCodeLookup');
 
-    component['initialFixedPenaltyDetailsSetup']();
-    component.handleFormSubmit(new SubmitEvent('submit'));
-    confirmChangeCallback(false);
+      component['initialFixedPenaltyDetailsSetup']();
 
-    expect(component.selectedOffenceConfirmation).toBe(false);
-    expect(handleErrorMessagesSpy).toHaveBeenCalled();
-  });
-
-  it('should set offenceCodeValidationPending immediately when lookup-length offence code changes', () => {
-    vi.useFakeTimers();
-    component.form.get('fm_fp_offence_details_offence_id')?.setValue(314441);
-
-    component.form.get('fm_fp_offence_details_offence_cjs_code')?.setValue('AK12345');
-
-    expect(component.form.get('fm_fp_offence_details_offence_id')?.value).toBeNull();
-    expect(component.form.get('fm_fp_offence_details_offence_cjs_code')?.errors).toEqual({
-      offenceCodeValidationPending: true,
+      expect(component['transformationService']['replaceKeys']).toHaveBeenCalled();
+      expect(component['setupFixedPenaltyDetailsForm']).toHaveBeenCalled();
+      expect(component['setInitialErrorMessages']).toHaveBeenCalled();
+      expect(component['rePopulateForm']).toHaveBeenCalled();
+      expect(component['dateOfBirthListener']).toHaveBeenCalled();
+      expect(component['offenceTypeListener']).toHaveBeenCalled();
+      expect(setupOffenceCodeLookupSpy).toHaveBeenCalled();
     });
-    vi.useRealTimers();
-  });
 
-  it('should set offenceCodeValidationPending on submit when offence code length is valid and offence id is unresolved', () => {
-    const offenceCodeControl = component.form.controls['fm_fp_offence_details_offence_cjs_code'];
-    const offenceIdControl = component.form.controls['fm_fp_offence_details_offence_id'];
+    it('should skip the date of birth listener during initial setup for company defendants', () => {
+      const freshFixture = TestBed.createComponent(FinesMacFixedPenaltyDetailsFormComponent);
+      const freshComponent = freshFixture.componentInstance;
+      freshComponent.defendantType = FINES_MAC_DEFENDANT_TYPES_KEYS.company;
+      freshComponent.enforcingCourtAutoCompleteItems = OPAL_FINES_COURT_AUTOCOMPLETE_ITEMS_MOCK;
+      freshComponent.issuingAuthorityAutoCompleteItems = OPAL_FINES_ISSUING_AUTHORITY_AUTOCOMPLETE_ITEMS_MOCK;
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      const dateOfBirthListenerSpy = vi.spyOn<any, any>(freshComponent, 'dateOfBirthListener');
+      const offenceTypeListenerSpy = vi.spyOn(freshComponent as never, 'offenceTypeListener');
 
-    offenceCodeControl.setValue('AK12345');
-    offenceCodeControl.setErrors(null);
-    offenceIdControl.setValue(null);
+      freshFixture.detectChanges();
 
-    component.handleFormSubmit(new SubmitEvent('submit'));
-
-    expect(offenceCodeControl.errors).toEqual(expect.objectContaining({ offenceCodeValidationPending: true }));
-  });
-
-  it('should preserve existing offence code errors when setting offenceCodeValidationPending', () => {
-    const offenceCodeControl = component.form.controls['fm_fp_offence_details_offence_cjs_code'];
-    const offenceIdControl = component.form.controls['fm_fp_offence_details_offence_id'];
-
-    offenceCodeControl.setValue('AK12345');
-    offenceCodeControl.setErrors({ customError: true });
-    offenceIdControl.setValue(null);
-
-    component['offenceDetailsService'].enforceOffenceCodeValidationBeforeSubmit(
-      component.form,
-      'fm_fp_offence_details_offence_cjs_code',
-      'fm_fp_offence_details_offence_id',
-      component['retryOffenceCodeLookup'],
-    );
-
-    expect(offenceCodeControl.errors).toEqual({
-      customError: true,
-      offenceCodeValidationPending: true,
+      expect(dateOfBirthListenerSpy).not.toHaveBeenCalled();
+      expect(offenceTypeListenerSpy).toHaveBeenCalled();
     });
-  });
 
-  it('should retry offence code lookup on submit when offence lookup previously failed', () => {
-    const offenceCodeControl = component.form.controls['fm_fp_offence_details_offence_cjs_code'];
-    const offenceIdControl = component.form.controls['fm_fp_offence_details_offence_id'];
-    const retryOffenceCodeLookupSpy = vi.fn();
+    it('should update offenceCode$ and selectedOffenceConfirmation when callbacks are invoked', () => {
+      vi.useFakeTimers();
+      mockOpalFinesService.getOffenceByCjsCode.mockReturnValue(of(OPAL_FINES_OFFENCES_REF_DATA_MOCK));
 
-    offenceCodeControl.setValue('AK12345');
-    offenceCodeControl.setErrors({ offenceCodeLookupFailed: true });
-    offenceIdControl.setValue(null);
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    component['retryOffenceCodeLookup'] = retryOffenceCodeLookupSpy;
+      component.form.get('fm_fp_offence_details_offence_cjs_code')?.setValue('AK123456');
 
-    component.handleFormSubmit(new SubmitEvent('submit'));
+      vi.advanceTimersByTime(FINES_MAC_OFFENCE_DETAILS_DEFAULT_VALUES.defaultDebounceTime);
 
-    expect(retryOffenceCodeLookupSpy).toHaveBeenCalledTimes(1);
-  });
-
-  it('should clear offenceCodeValidationPending on submit when offence id is set', () => {
-    const offenceCodeControl = component.form.controls['fm_fp_offence_details_offence_cjs_code'];
-    const offenceIdControl = component.form.controls['fm_fp_offence_details_offence_id'];
-
-    offenceCodeControl.setValue('AK12345');
-    offenceCodeControl.setErrors({ offenceCodeValidationPending: true });
-    offenceIdControl.setValue(314441);
-
-    component.handleFormSubmit(new SubmitEvent('submit'));
-
-    expect(offenceCodeControl.errors?.['offenceCodeValidationPending']).toBeUndefined();
-  });
-
-  it('should set initial value if dob value already exists', () => {
-    component['setupFixedPenaltyDetailsForm']();
-    component.form.get('fm_fp_personal_details_dob')?.setValue('01-01-1979');
-    component['dateOfBirthListener']();
-    expect(component.form.get('fm_fp_personal_details_dob')?.value).toBe('01-01-1979');
-  });
-
-  it('should add validators to the specified form control', () => {
-    // Arrange
-    component['setupFixedPenaltyDetailsForm']();
-    const controlName =
-      'fm_fp_offence_details_notice_number' as keyof typeof FINES_MAC_FIXED_PENALTY_DETAILS_FORM_VALIDATORS;
-    const control = component.form.controls[controlName];
-
-    // Precondition: Remove validators to ensure the test is valid
-    control.clearValidators();
-    control.updateValueAndValidity();
-
-    expect(control.validator).toBeNull();
-
-    // Act
-    component['addValidatorsToControl'](controlName);
-
-    // Assert
-    expect(control.validator).toBeDefined();
-  });
-
-  it('should do nothing if control does not exist when trying to add validators', () => {
-    // Arrange
-    const controlName = 'non_existent_control' as keyof typeof FINES_MAC_FIXED_PENALTY_DETAILS_FORM_VALIDATORS;
-
-    // Act & Assert (should not throw)
-    expect(() => component['addValidatorsToControl'](controlName)).not.toThrow();
-  });
-
-  it('should set validators to the correct fields when defendant type is adult or youth only', () => {
-    // Arrange
-    component.defendantType = FINES_MAC_DEFENDANT_TYPES_KEYS.adultOrYouthOnly;
-    const personalDetailsAddressLine1Control = component.form.get('fm_fp_personal_details_address_line_1');
-    const companyDetailsAddressLine1Control = component.form.get('fm_fp_company_details_address_line_1');
-    personalDetailsAddressLine1Control?.clearValidators();
-    personalDetailsAddressLine1Control?.updateValueAndValidity();
-    companyDetailsAddressLine1Control?.clearValidators();
-    companyDetailsAddressLine1Control?.updateValueAndValidity();
-
-    // Act
-    component['setValidators']();
-
-    // Assert
-    expect(personalDetailsAddressLine1Control?.hasValidator(Validators.required)).toBe(true);
-    expect(companyDetailsAddressLine1Control?.hasValidator(Validators.required)).toBe(false);
-  });
-
-  it('should set validators to the correct fields when defendant type is company', () => {
-    // Arrange
-    component.defendantType = FINES_MAC_DEFENDANT_TYPES_KEYS.company;
-    const personalDetailsAddressLine1Control = component.form.get('fm_fp_personal_details_address_line_1');
-    const companyDetailsAddressLine1Control = component.form.get('fm_fp_company_details_address_line_1');
-    personalDetailsAddressLine1Control?.clearValidators();
-    personalDetailsAddressLine1Control?.updateValueAndValidity();
-    companyDetailsAddressLine1Control?.clearValidators();
-    companyDetailsAddressLine1Control?.updateValueAndValidity();
-
-    // Act
-    component['setValidators']();
-
-    // Assert
-    expect(personalDetailsAddressLine1Control?.hasValidator(Validators.required)).toBe(false);
-    expect(companyDetailsAddressLine1Control?.hasValidator(Validators.required)).toBe(true);
-  });
-
-  it('should set prosecutor name when handleFormSubmit is called', () => {
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    vi.spyOn<any, any>(component, 'setProsecutorName');
-    const event = new SubmitEvent('submit');
-    component.handleFormSubmit(event);
-    expect(component['setProsecutorName']).toHaveBeenCalled();
-  });
-
-  it('should get prosecutor from supplied ID', () => {
-    const prosecutorId = '4821';
-    const expectedProsecutor = {
-      value: '4821',
-      name: 'Crown Prosecution Service (CPS)',
-    };
-    component.issuingAuthorityAutoCompleteItems = [expectedProsecutor];
-
-    const result = component['getProsecutorFromId'](prosecutorId);
-    expect(result).toEqual(expectedProsecutor);
-  });
-
-  it('should return null if no prosecutor found for the given ID', () => {
-    const prosecutorId = '9999'; // Non-existent ID
-    component.issuingAuthorityAutoCompleteItems = OPAL_FINES_ISSUING_AUTHORITY_AUTOCOMPLETE_ITEMS_MOCK;
-
-    const result = component['getProsecutorFromId'](prosecutorId);
-    expect(result).toBeNull();
-  });
-
-  it('should set the prosecutor name in the form control', () => {
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    vi.spyOn<any, any>(component, 'getProsecutorFromId').mockReturnValue({
-      value: '101',
-      name: 'Police force',
+      // Assert
+      let value: unknown;
+      component.offenceCode$.subscribe((v) => (value = v));
+      expect(value).toEqual(OPAL_FINES_OFFENCES_REF_DATA_MOCK);
+      expect(component.selectedOffenceConfirmation).toBe(true);
+      vi.useRealTimers();
     });
-    component.form.controls['fm_fp_court_details_originator_id'].setValue('101');
-    component.issuingAuthorityAutoCompleteItems = OPAL_FINES_ISSUING_AUTHORITY_AUTOCOMPLETE_ITEMS_MOCK;
 
-    // Call the method to set the prosecutor name
-    component['setProsecutorName']();
+    it('should refresh rendered errors when offence validation state changes after submit', () => {
+      let confirmChangeCallback: (confirmed: boolean) => void = () => undefined;
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      vi.spyOn<any, any>(component['offenceDetailsService'], 'initOffenceCodeListener').mockImplementation(
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        (...args: any[]) => {
+          confirmChangeCallback = args[6];
+        },
+      );
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      const handleErrorMessagesSpy = vi.spyOn<any, any>(component, 'handleErrorMessages');
 
-    expect(component.form.get('fm_fp_court_details_originator_name')?.value).toBe('Police force');
-  });
+      component['initialFixedPenaltyDetailsSetup']();
+      component.handleFormSubmit(new SubmitEvent('submit'));
+      confirmChangeCallback(false);
 
-  it('should clear the prosecutor name in the form control if the prosecutor is not found', () => {
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    vi.spyOn<any, any>(component, 'getProsecutorFromId').mockReturnValue(null);
-    component.form.controls['fm_fp_court_details_originator_id'].setValue('101');
-    component.issuingAuthorityAutoCompleteItems = OPAL_FINES_ISSUING_AUTHORITY_AUTOCOMPLETE_ITEMS_MOCK;
+      expect(component.selectedOffenceConfirmation).toBe(false);
+      expect(handleErrorMessagesSpy).toHaveBeenCalled();
+    });
 
-    // Call the method to set the prosecutor name
-    component['setProsecutorName']();
+    it('should set offenceCodeValidationPending immediately when lookup-length offence code changes', () => {
+      vi.useFakeTimers();
+      component.form.get('fm_fp_offence_details_offence_id')?.setValue(314441);
 
-    expect(component.form.get('fm_fp_court_details_originator_name')?.value).toBe('');
-  });
+      component.form.get('fm_fp_offence_details_offence_cjs_code')?.setValue('AK12345');
 
-  it('should clear the prosecutor name in the form control if the prosecutor id is not set', () => {
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    vi.spyOn<any, any>(component, 'getProsecutorFromId').mockReturnValue(null);
-    component.form.controls['fm_fp_court_details_originator_id'].setValue(null);
-    component.issuingAuthorityAutoCompleteItems = OPAL_FINES_ISSUING_AUTHORITY_AUTOCOMPLETE_ITEMS_MOCK;
+      expect(component.form.get('fm_fp_offence_details_offence_id')?.value).toBeNull();
+      expect(component.form.get('fm_fp_offence_details_offence_cjs_code')?.errors).toEqual({
+        offenceCodeValidationPending: true,
+      });
+      vi.useRealTimers();
+    });
 
-    // Call the method to set the prosecutor name
-    component['setProsecutorName']();
+    it('should set offenceCodeValidationPending on submit when offence code length is valid and offence id is unresolved', () => {
+      const offenceCodeControl = component.form.controls['fm_fp_offence_details_offence_cjs_code'];
+      const offenceIdControl = component.form.controls['fm_fp_offence_details_offence_id'];
 
-    expect(component.form.get('fm_fp_court_details_originator_name')?.value).toBe('');
-  });
+      offenceCodeControl.setValue('AK12345');
+      offenceCodeControl.setErrors(null);
+      offenceIdControl.setValue(null);
 
-  it('should set autocomplete="off" on the form', () => {
-    fixture.detectChanges();
-    expect(fixture.nativeElement.querySelector('form')?.getAttribute('autocomplete')).toBe('off');
+      component.handleFormSubmit(new SubmitEvent('submit'));
+
+      expect(offenceCodeControl.errors).toEqual(expect.objectContaining({ offenceCodeValidationPending: true }));
+    });
+
+    it('should preserve existing offence code errors when setting offenceCodeValidationPending', () => {
+      const offenceCodeControl = component.form.controls['fm_fp_offence_details_offence_cjs_code'];
+      const offenceIdControl = component.form.controls['fm_fp_offence_details_offence_id'];
+
+      offenceCodeControl.setValue('AK12345');
+      offenceCodeControl.setErrors({ customError: true });
+      offenceIdControl.setValue(null);
+
+      component['offenceDetailsService'].enforceOffenceCodeValidationBeforeSubmit(
+        component.form,
+        'fm_fp_offence_details_offence_cjs_code',
+        'fm_fp_offence_details_offence_id',
+        component['retryOffenceCodeLookup'],
+      );
+
+      expect(offenceCodeControl.errors).toEqual({
+        customError: true,
+        offenceCodeValidationPending: true,
+      });
+    });
+
+    it('should retry offence code lookup on submit when offence lookup previously failed', () => {
+      const offenceCodeControl = component.form.controls['fm_fp_offence_details_offence_cjs_code'];
+      const offenceIdControl = component.form.controls['fm_fp_offence_details_offence_id'];
+      const retryOffenceCodeLookupSpy = vi.fn();
+
+      offenceCodeControl.setValue('AK12345');
+      offenceCodeControl.setErrors({ offenceCodeLookupFailed: true });
+      offenceIdControl.setValue(null);
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      component['retryOffenceCodeLookup'] = retryOffenceCodeLookupSpy;
+
+      component.handleFormSubmit(new SubmitEvent('submit'));
+
+      expect(retryOffenceCodeLookupSpy).toHaveBeenCalledTimes(1);
+    });
+
+    it('should clear offenceCodeValidationPending on submit when offence id is set', () => {
+      const offenceCodeControl = component.form.controls['fm_fp_offence_details_offence_cjs_code'];
+      const offenceIdControl = component.form.controls['fm_fp_offence_details_offence_id'];
+
+      offenceCodeControl.setValue('AK12345');
+      offenceCodeControl.setErrors({ offenceCodeValidationPending: true });
+      offenceIdControl.setValue(314441);
+
+      component.handleFormSubmit(new SubmitEvent('submit'));
+
+      expect(offenceCodeControl.errors?.['offenceCodeValidationPending']).toBeUndefined();
+    });
+
+    it('should set initial value if dob value already exists', () => {
+      component['setupFixedPenaltyDetailsForm']();
+      component.form.get('fm_fp_personal_details_dob')?.setValue('01-01-1979');
+      component['dateOfBirthListener']();
+      expect(component.form.get('fm_fp_personal_details_dob')?.value).toBe('01-01-1979');
+    });
+
+    it('should add validators to the specified form control', () => {
+      // Arrange
+      component['setupFixedPenaltyDetailsForm']();
+      const controlName =
+        'fm_fp_offence_details_notice_number' as keyof typeof FINES_MAC_FIXED_PENALTY_DETAILS_FORM_VALIDATORS;
+      const control = component.form.controls[controlName];
+
+      // Precondition: Remove validators to ensure the test is valid
+      control.clearValidators();
+      control.updateValueAndValidity();
+
+      expect(control.validator).toBeNull();
+
+      // Act
+      component['addValidatorsToControl'](controlName);
+
+      // Assert
+      expect(control.validator).toBeDefined();
+    });
+
+    it('should do nothing if control does not exist when trying to add validators', () => {
+      // Arrange
+      const controlName = 'non_existent_control' as keyof typeof FINES_MAC_FIXED_PENALTY_DETAILS_FORM_VALIDATORS;
+
+      // Act & Assert (should not throw)
+      expect(() => component['addValidatorsToControl'](controlName)).not.toThrow();
+    });
+
+    it('should set validators to the correct fields when defendant type is adult or youth only', () => {
+      // Arrange
+      component.defendantType = FINES_MAC_DEFENDANT_TYPES_KEYS.adultOrYouthOnly;
+      const personalDetailsAddressLine1Control = component.form.get('fm_fp_personal_details_address_line_1');
+      const companyDetailsAddressLine1Control = component.form.get('fm_fp_company_details_address_line_1');
+      personalDetailsAddressLine1Control?.clearValidators();
+      personalDetailsAddressLine1Control?.updateValueAndValidity();
+      companyDetailsAddressLine1Control?.clearValidators();
+      companyDetailsAddressLine1Control?.updateValueAndValidity();
+
+      // Act
+      component['setValidators']();
+
+      // Assert
+      expect(personalDetailsAddressLine1Control?.hasValidator(Validators.required)).toBe(true);
+      expect(companyDetailsAddressLine1Control?.hasValidator(Validators.required)).toBe(false);
+    });
+
+    it('should set validators to the correct fields when defendant type is company', () => {
+      // Arrange
+      component.defendantType = FINES_MAC_DEFENDANT_TYPES_KEYS.company;
+      const personalDetailsAddressLine1Control = component.form.get('fm_fp_personal_details_address_line_1');
+      const companyDetailsAddressLine1Control = component.form.get('fm_fp_company_details_address_line_1');
+      personalDetailsAddressLine1Control?.clearValidators();
+      personalDetailsAddressLine1Control?.updateValueAndValidity();
+      companyDetailsAddressLine1Control?.clearValidators();
+      companyDetailsAddressLine1Control?.updateValueAndValidity();
+
+      // Act
+      component['setValidators']();
+
+      // Assert
+      expect(personalDetailsAddressLine1Control?.hasValidator(Validators.required)).toBe(false);
+      expect(companyDetailsAddressLine1Control?.hasValidator(Validators.required)).toBe(true);
+    });
+
+    it('should set prosecutor name when handleFormSubmit is called', () => {
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      vi.spyOn<any, any>(component, 'setProsecutorName');
+      const event = new SubmitEvent('submit');
+      component.handleFormSubmit(event);
+      expect(component['setProsecutorName']).toHaveBeenCalled();
+    });
+
+    it('should get prosecutor from supplied ID', () => {
+      const prosecutorId = '4821';
+      const expectedProsecutor = {
+        value: '4821',
+        name: 'Crown Prosecution Service (CPS)',
+      };
+      component.issuingAuthorityAutoCompleteItems = [expectedProsecutor];
+
+      const result = component['getProsecutorFromId'](prosecutorId);
+      expect(result).toEqual(expectedProsecutor);
+    });
+
+    it('should return null if no prosecutor found for the given ID', () => {
+      const prosecutorId = '9999'; // Non-existent ID
+      component.issuingAuthorityAutoCompleteItems = OPAL_FINES_ISSUING_AUTHORITY_AUTOCOMPLETE_ITEMS_MOCK;
+
+      const result = component['getProsecutorFromId'](prosecutorId);
+      expect(result).toBeNull();
+    });
+
+    it('should set the prosecutor name in the form control', () => {
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      vi.spyOn<any, any>(component, 'getProsecutorFromId').mockReturnValue({
+        value: '101',
+        name: 'Police force',
+      });
+      component.form.controls['fm_fp_court_details_originator_id'].setValue('101');
+      component.issuingAuthorityAutoCompleteItems = OPAL_FINES_ISSUING_AUTHORITY_AUTOCOMPLETE_ITEMS_MOCK;
+
+      // Call the method to set the prosecutor name
+      component['setProsecutorName']();
+
+      expect(component.form.get('fm_fp_court_details_originator_name')?.value).toBe('Police force');
+    });
+
+    it('should clear the prosecutor name in the form control if the prosecutor is not found', () => {
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      vi.spyOn<any, any>(component, 'getProsecutorFromId').mockReturnValue(null);
+      component.form.controls['fm_fp_court_details_originator_id'].setValue('101');
+      component.issuingAuthorityAutoCompleteItems = OPAL_FINES_ISSUING_AUTHORITY_AUTOCOMPLETE_ITEMS_MOCK;
+
+      // Call the method to set the prosecutor name
+      component['setProsecutorName']();
+
+      expect(component.form.get('fm_fp_court_details_originator_name')?.value).toBe('');
+    });
+
+    it('should clear the prosecutor name in the form control if the prosecutor id is not set', () => {
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      vi.spyOn<any, any>(component, 'getProsecutorFromId').mockReturnValue(null);
+      component.form.controls['fm_fp_court_details_originator_id'].setValue(null);
+      component.issuingAuthorityAutoCompleteItems = OPAL_FINES_ISSUING_AUTHORITY_AUTOCOMPLETE_ITEMS_MOCK;
+
+      // Call the method to set the prosecutor name
+      component['setProsecutorName']();
+
+      expect(component.form.get('fm_fp_court_details_originator_name')?.value).toBe('');
+    });
+
+    it('should set autocomplete="off" on the form', () => {
+      fixture.detectChanges();
+      expect(fixture.nativeElement.querySelector('form')?.getAttribute('autocomplete')).toBe('off');
+    });
   });
 });
