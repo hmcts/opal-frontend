@@ -21,6 +21,8 @@ type BusinessUnitsDetailsLike = {
   business_unit_name?: string;
 };
 
+type FinesReportInstancesResponse = IOpalFinesReportInstancesResponse | IOpalFinesReportInstance[] | null | undefined;
+
 const getCreatedDate = (instance: IOpalFinesReportInstance): string => {
   return (
     instance.created_at ??
@@ -129,9 +131,7 @@ const getStatusDisplayName = (instance: IOpalFinesReportInstance): string => {
   return typeof status === 'object' && status ? (status.displayName ?? status.display_name ?? '') : '';
 };
 
-export const getReportInstancesFromResponse = (
-  response: IOpalFinesReportInstancesResponse | IOpalFinesReportInstance[] | null | undefined,
-): IOpalFinesReportInstance[] => {
+export const getReportInstancesFromResponse = (response: FinesReportInstancesResponse): IOpalFinesReportInstance[] => {
   if (!response) {
     return [];
   }
@@ -149,9 +149,7 @@ export const getReportInstancesFromResponse = (
  * @param response - The report instance response to read.
  * @returns The total report instance count.
  */
-export const getReportInstancesCountFromResponse = (
-  response: IOpalFinesReportInstancesResponse | IOpalFinesReportInstance[] | null | undefined,
-): number => {
+export const getReportInstancesCountFromResponse = (response: FinesReportInstancesResponse): number => {
   if (!response || Array.isArray(response)) {
     return Array.isArray(response) ? response.length : 0;
   }
@@ -165,9 +163,7 @@ export const getReportInstancesCountFromResponse = (
  * @param response - The report instance response to read.
  * @returns The report instance result limit, or null when the response has no limit.
  */
-export const getReportInstancesLimitFromResponse = (
-  response: IOpalFinesReportInstancesResponse | IOpalFinesReportInstance[] | null | undefined,
-): number | null => {
+export const getReportInstancesLimitFromResponse = (response: FinesReportInstancesResponse): number | null => {
   if (!response || Array.isArray(response)) {
     return null;
   }
@@ -181,9 +177,7 @@ export const getReportInstancesLimitFromResponse = (
  * @param response - The report instance response to check.
  * @returns True when the response is over the result limit, otherwise false.
  */
-export const isReportInstancesOverLimit = (
-  response: IOpalFinesReportInstancesResponse | IOpalFinesReportInstance[] | null | undefined,
-): boolean => {
+export const isReportInstancesOverLimit = (response: FinesReportInstancesResponse): boolean => {
   if (!response || Array.isArray(response)) {
     return false;
   }
