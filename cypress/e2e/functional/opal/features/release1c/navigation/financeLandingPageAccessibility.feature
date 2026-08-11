@@ -7,4 +7,5 @@ Feature: Finance Landing Page Accessibility
   Scenario: Finance landing page accessibility
     When I select the Fines primary navigation item "Finance"
     Then I am taken to the "Finance" Fines landing page
+    And I see the following text on the page "Automatic Cash Input"
     Then I check the page for accessibility

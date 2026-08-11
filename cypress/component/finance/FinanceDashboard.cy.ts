@@ -4,14 +4,20 @@ import { setupFinancePageComponent } from './setup/SetupComponent';
 
 const FINANCE_JIRA_LABEL = '@JIRA-LABEL:Auto-Payments Processing Filess';
 const FINANCE_JIRA_EPIC = '@JIRA-EPIC:PO-2468';
+const FINANCE_RELEASE_TAG = '@R1CFinancialMovements';
 
-const buildTags = (...tags: string[]): string[] => [...tags, FINANCE_JIRA_EPIC, FINANCE_JIRA_LABEL];
+const buildTags = (...tags: string[]): string[] => [
+  ...tags,
+  FINANCE_JIRA_EPIC,
+  FINANCE_JIRA_LABEL,
+  FINANCE_RELEASE_TAG,
+];
 
 describe('Finance dashboard', () => {
   it(
     'AC1 navigates to Finance when the Finance primary-navigation item is selected',
     {
-      tags: [...buildTags('@JIRA-STORY:PO-2582', '@JIRA-EPIC:PO-2468')],
+      tags: [...buildTags('@JIRA-STORY:PO-2582')],
     },
     () => {
       setupFinancePageComponent();
@@ -24,7 +30,7 @@ describe('Finance dashboard', () => {
   it(
     '(AC1a) should display the Finance landing page',
     {
-      tags: [...buildTags('@JIRA-STORY:PO-2582', '@JIRA-EPIC:PO-2468')],
+      tags: [...buildTags('@JIRA-STORY:PO-2582')],
     },
     () => {
       setupFinancePageComponent({ dashboardType: FINES_DASHBOARD_ROUTING_PATHS.children.finance });
@@ -36,7 +42,7 @@ describe('Finance dashboard', () => {
   it(
     '(AC1b, AC1bi) should display Cash and Automatic Cash Input when the user has the payment permission in one business unit',
     {
-      tags: [...buildTags('@JIRA-STORY:PO-2582', '@JIRA-EPIC:PO-2468')],
+      tags: [...buildTags('@JIRA-STORY:PO-2582')],
     },
     () => {
       setupFinancePageComponent({ dashboardType: FINES_DASHBOARD_ROUTING_PATHS.children.finance });
@@ -49,7 +55,7 @@ describe('Finance dashboard', () => {
   it(
     '(AC1bii) should not display Automatic Cash Input when the user has no payment permission',
     {
-      tags: [...buildTags('@JIRA-STORY:PO-2582', '@JIRA-EPIC:PO-2468')],
+      tags: [...buildTags('@JIRA-STORY:PO-2582')],
     },
     () => {
       setupFinancePageComponent({
