@@ -21,7 +21,7 @@ describe('FinesSaSearchFilterBusinessUnitForm', () => {
           provide: ActivatedRoute,
           useValue: {
             parent: 'search',
-            fragment: of('individuals'),
+            fragment: of('fines'),
           },
         },
       ],
