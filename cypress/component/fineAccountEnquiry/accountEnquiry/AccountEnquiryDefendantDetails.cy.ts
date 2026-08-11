@@ -16,6 +16,7 @@ import { IComponentProperties } from './setup/setupComponent.interface';
 import { setupAccountEnquiryComponent } from './setup/SetupComponent';
 import { setLanguagePref } from './Utils/SharedFunctions';
 import { FinesAccDefendantDetailsDefendantTabComponent } from 'src/app/flows/fines/fines-acc/fines-acc-defendant-details/fines-acc-defendant-details-defendant-tab/fines-acc-defendant-details-defendant-tab.component';
+import { FINES_ACC_RESTRICTED_ACCOUNT_STATUS_CODES } from 'src/app/flows/fines/fines-acc/constants/fines-acc-restricted-account-status-codes.constant';
 
 const ACCOUNT_ENQUIRY_JIRA_LABEL = '@JIRA-LABEL:account-enquiry';
 
@@ -445,9 +446,17 @@ describe('Account Enquiry Defendant Details Tab', () => {
   );
 
   it(
-    'AC1, AC1a, AC1b. Youth-only accounts show the Add parent or guardian details action',
-    { tags: [...buildTags('@JIRA-STORY:PO-1874'), '@JIRA-EPIC:PO-1875', '@JIRA-TEST-KEY:PO-4195'] },
+    'AC2. Youth-only accounts show the Add parent or guardian details action when no parent or guardian exists',
+    {
+      tags: [
+        ...buildTags('@JIRA-STORY:PO-1874', '@JIRA-STORY:PO-5751'),
+        '@JIRA-EPIC:PO-1875',
+        '@JIRA-EPIC:PO-2990',
+        '@JIRA-TEST-KEY:PO-4195',
+      ],
+    },
     () => {
+      // AC2 – Existing youth-only eligibility rules remain unchanged.
       const headerMock = structuredClone(DEFENDANT_HEADER_YOUTH_MOCK);
       const defendantDetailsMock = structuredClone(OPAL_FINES_ACCOUNT_DEFENDANT_ACCOUNT_PARTY_MOCK);
       const { language_preferences } = defendantDetailsMock.defendant_account_party;
@@ -469,10 +478,48 @@ describe('Account Enquiry Defendant Details Tab', () => {
     },
   );
 
+  FINES_ACC_RESTRICTED_ACCOUNT_STATUS_CODES.forEach((statusCode) => {
+    it(
+      `AC1: should hide the Add parent or guardian details action for a youth-only account when the account status is ${statusCode}`,
+      {
+        tags: [...buildTags('@JIRA-STORY:PO-5751'), '@JIRA-EPIC:PO-2990'],
+      },
+      () => {
+        const headerMock = structuredClone(DEFENDANT_HEADER_YOUTH_MOCK);
+        headerMock.parent_guardian_party_id = null;
+        headerMock.account_status_reference.account_status_code = statusCode;
+
+        const defendantDetailsMock = structuredClone(OPAL_FINES_ACCOUNT_DEFENDANT_ACCOUNT_PARTY_MOCK);
+        defendantDetailsMock.defendant_account_party.party_details.organisation_flag = false;
+        defendantDetailsMock.defendant_account_party.is_debtor = true;
+        const { language_preferences } = defendantDetailsMock.defendant_account_party;
+        const accountId = headerMock.defendant_account_party_id;
+        setLanguagePref(language_preferences!.document_language_preference);
+        setLanguagePref(language_preferences!.hearing_language_preference);
+
+        interceptAuthenticatedUser();
+        interceptUserState(USER_STATE_MOCK_PERMISSION_BU77);
+        interceptDefendantHeader(accountId, headerMock, accountId);
+        interceptDefendantDetails(accountId, defendantDetailsMock, accountId);
+        setupAccountEnquiryComponent({ ...componentProperties, accountId: accountId });
+
+        cy.contains('a', 'Add parent or guardian details').should('not.exist');
+      },
+    );
+  });
+
   it(
-    'AC1. Youth-only accounts navigate to the add parent or guardian details screen',
-    { tags: [...buildTags('@JIRA-STORY:PO-1877'), '@JIRA-EPIC:PO-1875', '@JIRA-TEST-KEY:PO-4196'] },
+    'AC3. Youth-only accounts navigate to the add parent or guardian details screen',
+    {
+      tags: [
+        ...buildTags('@JIRA-STORY:PO-1877', '@JIRA-STORY:PO-5751'),
+        '@JIRA-EPIC:PO-1875',
+        '@JIRA-EPIC:PO-2990',
+        '@JIRA-TEST-KEY:PO-4196',
+      ],
+    },
     () => {
+      // AC3 – The visible action keeps its existing navigation and behaviour.
       const headerMock = structuredClone(DEFENDANT_HEADER_YOUTH_MOCK);
       const defendantDetailsMock = structuredClone(OPAL_FINES_ACCOUNT_DEFENDANT_ACCOUNT_PARTY_MOCK);
       const { language_preferences } = defendantDetailsMock.defendant_account_party;
@@ -496,6 +543,7 @@ describe('Account Enquiry Defendant Details Tab', () => {
         ),
       });
 
+      cy.wait(['@getDefendantHeaderSummary', '@getDefendantDetails']);
       cy.contains('a', 'Add parent or guardian details').should('be.visible').click();
       cy.get('app-fines-acc-debtor-add-amend-form').should('exist');
     },
