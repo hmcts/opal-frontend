@@ -199,7 +199,7 @@ export const FINES_MAC_PARENT_GUARDIAN_DETAILS_FIELD_ERRORS: IFinesMacParentGuar
       priority: 2,
     },
     alphanumericTextPattern: {
-      message: 'Address line 1 must only contain letters or numbers',
+      message: `Address line 1 must only include letters a to z, numbers, hyphens, spaces and apostrophes, and other basic punctuation marks like full stops commas and brackets`,
       priority: 3,
     },
   },
@@ -209,7 +209,7 @@ export const FINES_MAC_PARENT_GUARDIAN_DETAILS_FIELD_ERRORS: IFinesMacParentGuar
       priority: 1,
     },
     alphanumericTextPattern: {
-      message: 'Address line 2 must only contain letters or numbers',
+      message: `Address line 2 must only include letters a to z, numbers, hyphens, spaces and apostrophes, and other basic punctuation marks like full stops commas and brackets`,
       priority: 2,
     },
   },
@@ -219,7 +219,7 @@ export const FINES_MAC_PARENT_GUARDIAN_DETAILS_FIELD_ERRORS: IFinesMacParentGuar
       priority: 1,
     },
     alphanumericTextPattern: {
-      message: 'Address line 3 must only contain letters or numbers',
+      message: `Address line 3 must only include letters a to z, numbers, hyphens, spaces and apostrophes, and other basic punctuation marks like full stops commas and brackets`,
       priority: 2,
     },
   },

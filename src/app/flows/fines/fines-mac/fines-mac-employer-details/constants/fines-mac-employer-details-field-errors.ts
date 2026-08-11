@@ -61,7 +61,7 @@ export const FINES_MAC_EMPLOYER_DETAILS_FIELD_ERRORS: IFinesMacEmployerDetailsFi
       priority: 2,
     },
     alphanumericTextPattern: {
-      message: 'Address line 1 must only contain letters or numbers',
+      message: `Address line 1 must only include letters a to z, numbers, hyphens, spaces and apostrophes, and other basic punctuation marks like full stops commas and brackets`,
       priority: 3,
     },
   },
@@ -71,7 +71,7 @@ export const FINES_MAC_EMPLOYER_DETAILS_FIELD_ERRORS: IFinesMacEmployerDetailsFi
       priority: 1,
     },
     alphanumericTextPattern: {
-      message: 'Address line 2 must only contain letters or numbers',
+      message: `Address line 2 must only include letters a to z, numbers, hyphens, spaces and apostrophes, and other basic punctuation marks like full stops commas and brackets`,
       priority: 2,
     },
   },
@@ -81,7 +81,7 @@ export const FINES_MAC_EMPLOYER_DETAILS_FIELD_ERRORS: IFinesMacEmployerDetailsFi
       priority: 1,
     },
     alphanumericTextPattern: {
-      message: 'Address line 3 must only contain letters or numbers',
+      message: `Address line 3 must only include letters a to z, numbers, hyphens, spaces and apostrophes, and other basic punctuation marks like full stops commas and brackets`,
       priority: 2,
     },
   },
@@ -91,7 +91,7 @@ export const FINES_MAC_EMPLOYER_DETAILS_FIELD_ERRORS: IFinesMacEmployerDetailsFi
       priority: 1,
     },
     alphanumericTextPattern: {
-      message: 'Address line 4 must only contain letters or numbers',
+      message: `Address line 4 must only include letters a to z, numbers, hyphens, spaces and apostrophes, and other basic punctuation marks like full stops commas and brackets`,
       priority: 2,
     },
   },
@@ -101,7 +101,7 @@ export const FINES_MAC_EMPLOYER_DETAILS_FIELD_ERRORS: IFinesMacEmployerDetailsFi
       priority: 1,
     },
     alphanumericTextPattern: {
-      message: 'Address line 5 must only contain letters or numbers',
+      message: `Address line 5 must only include letters a to z, numbers, hyphens, spaces and apostrophes, and other basic punctuation marks like full stops commas and brackets`,
       priority: 2,
     },
   },
