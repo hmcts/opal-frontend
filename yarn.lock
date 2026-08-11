@@ -7362,15 +7362,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@types/config@npm:^4.0.0":
-  version: 4.4.0
-  resolution: "@types/config@npm:4.4.0"
-  dependencies:
-    config: "npm:*"
-  checksum: 10/2b5aaf0684516f63d0c96b6fe709a1164cd39994d015c9139c25d1241e4607adcabe00288ca4ec1951d91554d35b27015cd4ca7792bd55caf99c1bc5269a4102
-  languageName: node
-  linkType: hard
-
 "@types/connect-history-api-fallback@npm:^1.5.4":
   version: 1.5.4
   resolution: "@types/connect-history-api-fallback@npm:1.5.4"
@@ -10209,15 +10200,6 @@ __metadata:
     conc: dist/bin/index.js
     concurrently: dist/bin/index.js
   checksum: 10/609696fc32213917aa395d79cae085e83fb0a49ddd47fd635d9cfe7411f27d17b362cf81b4d6e3c0c18566d1974d9a1661ccb81ec213b2fa739cca73876eb6af
-  languageName: node
-  linkType: hard
-
-"config@npm:*, config@npm:^4.0.0":
-  version: 4.4.1
-  resolution: "config@npm:4.4.1"
-  dependencies:
-    json5: "npm:^2.2.3"
-  checksum: 10/b237298b107111f88f8b4226c6412298a93052642c8e67a352e36f64be02fb4644351890f57e518338d1491e83064c6fb8fe31f676c7355491ef969e174ec9f1
   languageName: node
   linkType: hard
 
@@ -16521,7 +16503,6 @@ __metadata:
     "@ministryofjustice/frontend": "npm:^10.0.0"
     "@ngrx/signals": "npm:^21.0.0"
     "@openapitools/openapi-generator-cli": "npm:^2.25.0"
-    "@types/config": "npm:^4.0.0"
     "@types/cookie-parser": "npm:^1.4.6"
     "@types/express": "npm:^5.0.0"
     "@types/express-session": "npm:^1.17.10"
@@ -16539,7 +16520,7 @@ __metadata:
     axios: "npm:^1.6.2"
     body-parser: "npm:^2.0.0"
     browser-sync: "npm:^3.0.2"
-    config: "npm:^4.0.0"
+    config: "npm:^5.0.0"
     connect-redis: "npm:^9.0.0"
     cookie-parser: "npm:^1.4.6"
     csrf-csrf: "npm:^4.0.0"
