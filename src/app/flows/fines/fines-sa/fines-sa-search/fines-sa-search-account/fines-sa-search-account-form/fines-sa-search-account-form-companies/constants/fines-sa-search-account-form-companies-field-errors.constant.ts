@@ -20,7 +20,8 @@ export const FINES_SA_SEARCH_ACCOUNT_FORM_COMPANIES_FIELD_ERRORS: IFinesSaSearch
   fsa_search_account_companies_include_aliases: {},
   fsa_search_account_companies_address_line_1: {
     alphanumericWithHyphensSpacesApostrophesDotPattern: {
-      message: `Address line 1 must only include letters a to z, numbers, hyphens, spaces and apostrophes, and other basic punctuation marks like full stops commas and brackets`,
+      message:
+        'Address line 1 must only include letters a to z, numbers, hyphens, spaces and apostrophes, and other basic punctuation marks like full stops commas and brackets',
       priority: 1,
     },
     maxlength: {
