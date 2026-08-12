@@ -5,6 +5,8 @@ import { FINES_MAC_OFFENCE_DETAILS_OFFENCES_FIELD_ERRORS } from '../../fines-mac
 import { FINES_MAC_PERSONAL_DETAILS_FIELD_ERRORS } from '../../fines-mac-personal-details/constants/fines-mac-personal-details-field-errors.constant';
 import { IFinesMacFixedPenaltyDetailsFieldErrors } from '../interfaces/fines-mac-fixed-penalty-details-field-errors.interface';
 
+const AMOUNT_IMPOSED_POSITIVE_MESSAGE = `Amount imposed must be greater than zero`;
+
 export const FINES_MAC_FIXED_PENALTY_DETAILS_FIELD_ERRORS: IFinesMacFixedPenaltyDetailsFieldErrors = {
   fm_fp_personal_details_title: FINES_MAC_PERSONAL_DETAILS_FIELD_ERRORS.fm_personal_details_title,
   fm_fp_personal_details_forenames: FINES_MAC_PERSONAL_DETAILS_FIELD_ERRORS.fm_personal_details_forenames,
@@ -99,9 +101,17 @@ export const FINES_MAC_FIXED_PENALTY_DETAILS_FIELD_ERRORS: IFinesMacFixedPenalty
       message: `Enter valid amount`,
       priority: 2,
     },
+    invalidNegativeAmount: {
+      message: AMOUNT_IMPOSED_POSITIVE_MESSAGE,
+      priority: 3,
+    },
+    invalidZeroAmount: {
+      message: AMOUNT_IMPOSED_POSITIVE_MESSAGE,
+      priority: 4,
+    },
     invalidAmount: {
       message: `Enter an amount with no more than 18 digits before the decimal and 2 or fewer after`,
-      priority: 3,
+      priority: 5,
     },
   },
   fm_fp_offence_details_vehicle_registration_number: {
