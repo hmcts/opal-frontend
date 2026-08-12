@@ -1,1 +1,6 @@
-export type OpalFinesReportInstanceStatus = 'REQUESTED' | 'IN_PROGRESS' | 'READY' | 'ERROR' | string;
+export type OpalFinesReportInstanceStatus =
+  | 'REQUESTED'
+  | 'IN_PROGRESS'
+  | 'READY'
+  | 'ERROR'
+  | (string & Record<never, never>);
