@@ -1419,7 +1419,7 @@ describe('FinesMacPaymentTermsComponent', () => {
   it(
     'should accept commas and full stops in the NOENF reason',
     {
-      tags: [...buildTags('@JIRA-DEFECT:PO-9143')],
+      tags: [...buildTags('@JIRA-DEFECT:PO-9143'), '@JIRA-EPIC:PO-545'],
     },
     () => {
       setupComponent('adultOrYouthOnly', null, (state) => {
