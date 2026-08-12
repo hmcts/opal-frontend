@@ -12,7 +12,7 @@ import { FormArray, FormControl, FormGroup, FormsModule, ReactiveFormsModule, Va
 import { AbstractFormAliasBaseComponent } from '@hmcts/opal-frontend-common/components/abstract/abstract-form-alias-base';
 import { IFinesMacPersonalDetailsFieldErrors } from '../interfaces/fines-mac-personal-details-field-errors.interface';
 import { IFinesMacPersonalDetailsForm } from '../interfaces/fines-mac-personal-details-form.interface';
-import { FINES_MAC_PERSONAL_DETAILS_FIELD_ERRORS } from '../constants/fines-mac-personal-details-field-errors';
+import { FINES_MAC_PERSONAL_DETAILS_FIELD_ERRORS } from '../constants/fines-mac-personal-details-field-errors.constant';
 import { FINES_MAC_PERSONAL_DETAILS_ALIAS } from '../constants/fines-mac-personal-details-alias';
 import { FINES_MAC_ROUTING_NESTED_ROUTES } from '../../routing/constants/fines-mac-routing-nested-routes.constant';
 import { FINES_MAC_ROUTING_PATHS } from '../../routing/constants/fines-mac-routing-paths.constant';
@@ -42,11 +42,10 @@ import { GovukTextInputComponent } from '@hmcts/opal-frontend-common/components/
 import { IGovUkSelectOptions } from '@hmcts/opal-frontend-common/components/govuk/govuk-select/interfaces';
 import { CapitalisationDirective } from '@hmcts/opal-frontend-common/directives/capitalisation';
 import { patternValidator } from '@hmcts/opal-frontend-common/validators/pattern-validator';
-import { SINGLE_ASCII_CHARACTERS } from '@hmcts/opal-frontend-common/constants';
+import { ADDRESS_LINE_PATTERN, SINGLE_ASCII_CHARACTERS } from '@hmcts/opal-frontend-common/constants';
 import { FINES_MAC_DEFENDANT_TYPES_KEYS } from '../../constants/fines-mac-defendant-types-keys';
 
 // regex pattern validators for the form controls
-const ADDRESS_LINE_PATTERN = /^[a-zA-Z0-9'*,()_ .-]*$/;
 const SINGLE_ASCII_CHARACTERS_ALPHANUMERIC_WITH_SPECIAL_CHARACTERS_PATTERN_VALIDATOR = patternValidator(
   SINGLE_ASCII_CHARACTERS,
   'singleAsciiChatacters',
