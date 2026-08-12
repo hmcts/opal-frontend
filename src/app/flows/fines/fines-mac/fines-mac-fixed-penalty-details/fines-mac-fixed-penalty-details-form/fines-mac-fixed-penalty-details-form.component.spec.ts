@@ -180,6 +180,47 @@ describe('FinesMacFixedPenaltyFormComponent', () => {
     expect(notesControl.valid).toBe(true);
   });
 
+  it.each([
+    ['adult or youth only', FINES_MAC_DEFENDANT_TYPES_KEYS.adultOrYouthOnly],
+    ['company', FINES_MAC_DEFENDANT_TYPES_KEYS.company],
+  ])('should reject zero and negative amounts imposed for %s fixed penalty accounts', (_label, defendantType) => {
+    component.defendantType = defendantType;
+    component['setValidators']();
+    const amountImposedControl = component.form.controls['fm_fp_offence_details_amount_imposed'];
+
+    amountImposedControl.setValue(0);
+    expect(amountImposedControl.hasError('invalidZeroAmount')).toBe(true);
+
+    amountImposedControl.setValue(-1);
+    expect(amountImposedControl.hasError('invalidNegativeAmount')).toBe(true);
+  });
+
+  it.each([0, -1, '0.000', '-0.001'])(
+    'should display the approved error message when amount imposed is %s',
+    (amountImposed) => {
+      const amountImposedControl = component.form.controls['fm_fp_offence_details_amount_imposed'];
+      const expectedErrorMessage = 'Amount imposed must be greater than zero';
+
+      amountImposedControl.setValue(amountImposed);
+      component.handleFormSubmit(new SubmitEvent('submit'));
+
+      expect(component.formControlErrorMessages['fm_fp_offence_details_amount_imposed']).toBe(expectedErrorMessage);
+      expect(component.formErrorSummaryMessage).toContainEqual({
+        fieldId: 'fm_fp_offence_details_amount_imposed',
+        message: expectedErrorMessage,
+      });
+    },
+  );
+
+  it('should allow a positive amount imposed for fixed penalty accounts', () => {
+    const amountImposedControl = component.form.controls['fm_fp_offence_details_amount_imposed'];
+
+    amountImposedControl.setValue(0.01);
+
+    expect(amountImposedControl.hasError('invalidZeroAmount')).toBe(false);
+    expect(amountImposedControl.hasError('invalidNegativeAmount')).toBe(false);
+  });
+
   it('should accept commas and full stops in the place of offence field', () => {
     const placeOfOffenceControl = component.form.controls['fm_fp_offence_details_place_of_offence'];
 
