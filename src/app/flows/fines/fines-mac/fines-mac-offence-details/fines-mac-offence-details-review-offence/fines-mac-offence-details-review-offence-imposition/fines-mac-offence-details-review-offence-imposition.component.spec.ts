@@ -177,7 +177,7 @@ describe('FinesMacOffenceDetailsReviewOffenceImpositionComponent', () => {
       '#totalBalanceRemaining',
     ) as HTMLTableCellElement;
 
-    expect(totalBalanceRemainingCell.querySelector('app-fines-accessible-monetary')).toBeTruthy();
+    expect(totalBalanceRemainingCell.querySelector('opal-lib-custom-accessible-monetary')).toBeTruthy();
   });
 
   it('should return minor creditor - Any resultCodeCreditor', () => {

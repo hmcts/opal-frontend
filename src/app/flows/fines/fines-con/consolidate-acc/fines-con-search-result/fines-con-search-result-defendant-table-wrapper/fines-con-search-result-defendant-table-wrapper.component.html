@@ -253,7 +253,7 @@
               @if (row['Balance'] === null) {
                 <ng-container *ngTemplateOutlet="noData"></ng-container>
               } @else {
-                <app-fines-accessible-monetary [value]="row['Balance']" />
+                <opal-lib-custom-accessible-monetary [value]="row['Balance']" />
               }
             </td>
             @if (defendantType === 'individual') {

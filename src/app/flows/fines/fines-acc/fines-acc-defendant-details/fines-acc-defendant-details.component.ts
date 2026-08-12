@@ -58,7 +58,7 @@ import { FINES_ACC_BANNER_MESSAGES } from '../stores/constants/fines-acc-store-b
 import { FinesAccDefendantDetailsHistoryAndNotesTabComponent } from './fines-acc-defendant-details-history-and-notes-tab/fines-acc-defendant-details-history-and-notes-tab.component';
 import { IOpalFinesAccountDefendantDetailsConsolidatedAccounts } from '@services/fines/opal-fines-service/interfaces/opal-fines-account-defendant-account-consolidated-accounts.interface';
 import { FinesAccDefendantDetailsConsolidatedAccountsTabComponent } from './fines-acc-defendant-details-consolidated-accounts-tab/fines-acc-defendant-details-consolidated-accounts-tab.component';
-import { FinesAccessibleMonetaryComponent } from '../../components/fines-accessible-monetary/fines-accessible-monetary.component';
+import { CustomAccessibleMonetaryComponent } from '@hmcts/opal-frontend-common/components/custom/custom-accessible-monetary';
 
 @Component({
   selector: 'app-fines-acc-defendant-details',
@@ -86,7 +86,7 @@ import { FinesAccessibleMonetaryComponent } from '../../components/fines-accessi
     FinesAccSummaryHeaderComponent,
     FinesAccDefendantDetailsHistoryAndNotesTabComponent,
     FinesAccDefendantDetailsConsolidatedAccountsTabComponent,
-    FinesAccessibleMonetaryComponent,
+    CustomAccessibleMonetaryComponent,
   ],
   templateUrl: './fines-acc-defendant-details.component.html',
   changeDetection: ChangeDetectionStrategy.OnPush,

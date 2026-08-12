@@ -6,11 +6,11 @@ import {
 import { IFinesMacOffenceDetailsReviewSummaryOffencesTotalTotals } from './interfaces/fines-mac-offence-details-review-summary-offences-total-totals.interface';
 import { IFinesMacOffenceDetailsReviewSummaryForm } from '../../interfaces/fines-mac-offence-details-review-summary-form.interface';
 import { UtilsService } from '@hmcts/opal-frontend-common/services/utils-service';
-import { FinesAccessibleMonetaryComponent } from '../../../../../components/fines-accessible-monetary/fines-accessible-monetary.component';
+import { CustomAccessibleMonetaryComponent } from '@hmcts/opal-frontend-common/components/custom/custom-accessible-monetary';
 
 @Component({
   selector: 'app-fines-mac-offence-details-review-summary-offences-total',
-  imports: [GovukSummaryListComponent, GovukSummaryListRowComponent, FinesAccessibleMonetaryComponent],
+  imports: [GovukSummaryListComponent, GovukSummaryListRowComponent, CustomAccessibleMonetaryComponent],
   templateUrl: './fines-mac-offence-details-review-summary-offences-total.component.html',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })

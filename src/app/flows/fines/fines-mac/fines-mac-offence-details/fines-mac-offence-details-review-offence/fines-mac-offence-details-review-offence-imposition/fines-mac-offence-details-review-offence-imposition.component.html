@@ -31,26 +31,26 @@
           }
         </td>
         <td opal-lib-govuk-table-body-row-data id="amountImposed">
-          <app-fines-accessible-monetary [value]="imposition.amountImposed" />
+          <opal-lib-custom-accessible-monetary [value]="imposition.amountImposed" />
         </td>
         <td opal-lib-govuk-table-body-row-data id="amountPaid">
-          <app-fines-accessible-monetary [value]="imposition.amountPaid" />
+          <opal-lib-custom-accessible-monetary [value]="imposition.amountPaid" />
         </td>
         <td opal-lib-govuk-table-body-row-data id="balanceRemaining">
-          <app-fines-accessible-monetary [value]="imposition.balanceRemaining" />
+          <opal-lib-custom-accessible-monetary [value]="imposition.balanceRemaining" />
         </td>
       </tr>
     }
     <tr opal-lib-govuk-table-body-row bodyRowClasses="govuk-light-grey-background-color">
       <th opal-lib-govuk-table-body-row-data colspan="2" id="totalsHeading"><strong>Totals</strong></th>
       <th opal-lib-govuk-table-body-row-data id="totalAmountImposed">
-        <app-fines-accessible-monetary [value]="impositionsTotalsData.totalAmountImposed" />
+        <opal-lib-custom-accessible-monetary [value]="impositionsTotalsData.totalAmountImposed" />
       </th>
       <th opal-lib-govuk-table-body-row-data id="totalAmountPaid">
-        <app-fines-accessible-monetary [value]="impositionsTotalsData.totalAmountPaid" />
+        <opal-lib-custom-accessible-monetary [value]="impositionsTotalsData.totalAmountPaid" />
       </th>
       <th opal-lib-govuk-table-body-row-data id="totalBalanceRemaining">
-        <app-fines-accessible-monetary [value]="impositionsTotalsData.totalBalanceRemaining" />
+        <opal-lib-custom-accessible-monetary [value]="impositionsTotalsData.totalBalanceRemaining" />
       </th>
     </tr>
   </ng-container>

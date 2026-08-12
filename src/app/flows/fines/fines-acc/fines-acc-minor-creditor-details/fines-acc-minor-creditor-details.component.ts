@@ -51,7 +51,7 @@ import { FinesAccMinorCreditorDetailsCreditorTab } from './fines-acc-minor-credi
 import { IOpalFinesAccountMinorCreditorCreditor } from '../../services/opal-fines-service/interfaces/opal-fines-account-minor-creditor-creditor.interface';
 import { FinesAccMinorCreditorDetailsHistoryAndNotesTabComponent } from './fines-acc-minor-creditor-details-history-and-notes-tab/fines-acc-minor-creditor-details-history-and-notes-tab.component';
 import { IOpalFinesAccountMinorCreditorDetailsHistoryAndNotesTabRefData } from '../../services/opal-fines-service/interfaces/opal-fines-account-minor-creditor-details-history-and-notes-tab-ref-data.interface';
-import { FinesAccessibleMonetaryComponent } from '../../components/fines-accessible-monetary/fines-accessible-monetary.component';
+import { CustomAccessibleMonetaryComponent } from '@hmcts/opal-frontend-common/components/custom/custom-accessible-monetary';
 
 @Component({
   selector: 'app-fines-acc-minor-creditor-details',
@@ -71,7 +71,7 @@ import { FinesAccessibleMonetaryComponent } from '../../components/fines-accessi
     FinesAccMinorCreditorDetailsCreditorTab,
     FinesAccMinorCreditorDetailsHistoryAndNotesTabComponent,
     AsyncPipe,
-    FinesAccessibleMonetaryComponent,
+    CustomAccessibleMonetaryComponent,
   ],
   templateUrl: './fines-acc-minor-creditor-details.component.html',
   changeDetection: ChangeDetectionStrategy.OnPush,

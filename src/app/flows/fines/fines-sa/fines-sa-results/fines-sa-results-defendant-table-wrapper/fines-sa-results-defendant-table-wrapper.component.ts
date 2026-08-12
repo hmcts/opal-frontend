@@ -16,7 +16,7 @@ import { FINES_DEFAULT_VALUES } from '../../../constants/fines-default-values.co
 import { CustomHorizontalScrollPaneComponent } from '@hmcts/opal-frontend-common/components/custom/custom-horizontal-scroll-pane';
 import { MojPaginationComponent } from '@hmcts/opal-frontend-common/components/moj/moj-pagination';
 import { FinesNotProvidedComponent } from '../../../components/fines-not-provided/fines-not-provided.component';
-import { FinesAccessibleMonetaryComponent } from '../../../components/fines-accessible-monetary/fines-accessible-monetary.component';
+import { CustomAccessibleMonetaryComponent } from '@hmcts/opal-frontend-common/components/custom/custom-accessible-monetary';
 
 @Component({
   selector: 'app-fines-sa-results-defendant-table-wrapper',
@@ -32,7 +32,7 @@ import { FinesAccessibleMonetaryComponent } from '../../../components/fines-acce
     NationalInsurancePipe,
     CustomHorizontalScrollPaneComponent,
     FinesNotProvidedComponent,
-    FinesAccessibleMonetaryComponent,
+    CustomAccessibleMonetaryComponent,
   ],
   templateUrl: './fines-sa-results-defendant-table-wrapper.component.html',
   changeDetection: ChangeDetectionStrategy.OnPush,

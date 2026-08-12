@@ -13,7 +13,7 @@ import { FINES_DEFAULT_VALUES } from '../../../constants/fines-default-values.co
 import { FinesNotProvidedComponent } from '../../../components/fines-not-provided/fines-not-provided.component';
 import { DateFormatPipe } from '@hmcts/opal-frontend-common/pipes/date-format';
 import { FinesMacOffenceDetailsService } from '../../fines-mac-offence-details/services/fines-mac-offence-details.service';
-import { FinesAccessibleMonetaryComponent } from '../../../components/fines-accessible-monetary/fines-accessible-monetary.component';
+import { CustomAccessibleMonetaryComponent } from '@hmcts/opal-frontend-common/components/custom/custom-accessible-monetary';
 
 @Component({
   selector: 'app-fines-mac-review-account-fixed-penalty-offence-details',
@@ -24,7 +24,7 @@ import { FinesAccessibleMonetaryComponent } from '../../../components/fines-acce
     FinesMacReviewAccountChangeLinkComponent,
     FinesNotProvidedComponent,
     DateFormatPipe,
-    FinesAccessibleMonetaryComponent,
+    CustomAccessibleMonetaryComponent,
   ],
   templateUrl: './fines-mac-review-account-fixed-penalty-offence-details.component.html',
   changeDetection: ChangeDetectionStrategy.OnPush,
