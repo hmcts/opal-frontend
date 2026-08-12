@@ -18,6 +18,6 @@ export const FINES_ROUTING_PATHS: IFinesRoutingPaths = {
     sa: FINES_SA_ROUTING_PATHS,
     con: FINES_CON_ROUTING_PATHS,
     reports: FINES_REPORTS_ROUTING_PATHS,
-    ext: FINES_FINANCE_BANKING_PATHS,
+    finance: FINES_FINANCE_BANKING_PATHS,
   },
 };

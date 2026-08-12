@@ -150,7 +150,7 @@ describe('fines routes', () => {
   });
 
   it('should add Finance as a Finance section entry route', () => {
-    const financeRoute = childRoutes.find((route) => route.path === FINES_ROUTING_PATHS.children.ext.root);
+    const financeRoute = childRoutes.find((route) => route.path === FINES_ROUTING_PATHS.children.finance.root);
 
     expect(financeRoute?.children).toBe(finesFinanceRouting);
     expect(financeRoute?.canActivate).toEqual([authGuard, finesSectionPermissionsGuard]);

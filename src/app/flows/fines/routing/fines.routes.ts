@@ -164,7 +164,7 @@ export const finesRouting: Routes = [
         },
       },
       {
-        path: FINES_ROUTING_PATHS.children.ext.root, //finance
+        path: FINES_ROUTING_PATHS.children.finance.root,
         loadComponent: () => import('../fines-finance/fines-finance.component').then((c) => c.FinesExtComponent),
         children: finesFinanceRouting,
         canActivate: [authGuard, finesSectionPermissionsGuard],
