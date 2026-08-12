@@ -4,13 +4,12 @@ import { FINES_FINANCE_BANKING_PATHS } from '../../constants/fines-finance.const
 import { PAGES_ROUTING_PATHS } from '@routing/pages/constants/routing-paths.constant';
 import { FINES_FINANCE_ROUTING_TITLES } from './constants/fines-finance-routing-titles.constant';
 
-
 export const routing: Routes = [
   {
-      path: FINES_FINANCE_BANKING_PATHS.root,
-      redirectTo: PAGES_ROUTING_PATHS.children.dashboard, // Redirect to dashboard
-      pathMatch: 'full',
-    },
+    path: FINES_FINANCE_BANKING_PATHS.root,
+    redirectTo: PAGES_ROUTING_PATHS.children.dashboard, // Redirect to dashboard
+    pathMatch: 'full',
+  },
   {
     path: `${FINES_FINANCE_BANKING_PATHS.children.inbound}/${FINES_FINANCE_BANKING_PATHS.children.search}`,
 
@@ -39,8 +38,7 @@ export const routing: Routes = [
     },
     resolve: { title: TitleResolver },
   },
-   {
-
+  {
     path: `${FINES_FINANCE_BANKING_PATHS.children.variantbankingfiles}/${FINES_FINANCE_BANKING_PATHS.children.upload}`,
 
     loadComponent: () =>
@@ -54,5 +52,4 @@ export const routing: Routes = [
     },
     resolve: { title: TitleResolver },
   },
-  
 ];

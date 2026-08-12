@@ -1,11 +1,16 @@
+import { ɵresolveComponentResources as resolveComponentResources } from '@angular/core';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
-import { describe, it, expect, beforeEach} from 'vitest';
+import { beforeAll, beforeEach, describe, expect, it } from 'vitest';
 
 import { FinesExtFinanceOutboundFiles } from './fines-finance-outbound-files.component';
 
 describe('FinesExtFinanceOutboundFiles', () => {
   let component: FinesExtFinanceOutboundFiles;
   let fixture: ComponentFixture<FinesExtFinanceOutboundFiles>;
+
+  beforeAll(async () => {
+    await resolveComponentResources(() => Promise.resolve(''));
+  });
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({

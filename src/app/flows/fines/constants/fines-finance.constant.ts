@@ -1,4 +1,4 @@
-import {IFinesExternalBankingRoutingPaths} from '@app/flows/fines/interfaces/fines-external-banking.interface'
+import { IFinesExternalBankingRoutingPaths } from '@app/flows/fines/interfaces/fines-external-banking.interface';
 
 export const FINES_FINANCE_BANKING_PATHS: IFinesExternalBankingRoutingPaths = {
   root: 'finance',

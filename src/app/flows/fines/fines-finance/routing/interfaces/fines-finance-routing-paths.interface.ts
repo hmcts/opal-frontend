@@ -4,6 +4,6 @@ export interface IFinesFinanceRoutingPaths extends IChildRoutingPaths {
   children: {
     inbound: string;
     outbound: string;
-    upload : string;
+    upload: string;
   };
 }

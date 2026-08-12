@@ -10,7 +10,6 @@ export const FINES_EXTERNAL_BANKING_LINKS: IDashboardPageConfigurationLink[] = [
       FINES_ROUTING_PATHS.children.ext.root,
       FINES_ROUTING_PATHS.children.ext.children['inbound'],
       FINES_ROUTING_PATHS.children.ext.children['search'],
-      
     ],
     fragment: null,
     permissionIds: [],
@@ -21,7 +20,7 @@ export const FINES_EXTERNAL_BANKING_LINKS: IDashboardPageConfigurationLink[] = [
     id: 'finesExternalBankingOutboundFilesLink',
     text: 'Outbound files',
     routerLink: [
-       '/',
+      '/',
       FINES_ROUTING_PATHS.root,
       FINES_ROUTING_PATHS.children.ext.root,
       FINES_ROUTING_PATHS.children.ext.children['outbound'],
@@ -36,7 +35,7 @@ export const FINES_EXTERNAL_BANKING_LINKS: IDashboardPageConfigurationLink[] = [
     id: 'finesExternalBankingUploadFilesLink',
     text: 'Upload Variant banking files',
     routerLink: [
-       '/',
+      '/',
       FINES_ROUTING_PATHS.root,
       FINES_ROUTING_PATHS.children.ext.root,
       FINES_ROUTING_PATHS.children.ext.children['variantbankingfiles'],
