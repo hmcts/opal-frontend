@@ -73,7 +73,7 @@ export class FinesDraftCreateAndManageTabsComponent extends AbstractTabData impl
   private readonly businessUnitUserIds = this.userState.business_unit_users.map(
     (business_unit_users) => business_unit_users.business_unit_user_id,
   );
-  private readonly BASE_PATH = `${FINES_ROUTING_PATHS.root}/${FINES_MAC_ROUTING_PATHS.root}/`;
+  private readonly BASE_PATH = `${FINES_ROUTING_PATHS.root}/${FINES_MAC_ROUTING_PATHS.root}`;
 
   protected readonly finesDraftCreateAndManageRoutingPaths = FINES_DRAFT_CREATE_AND_MANAGE_ROUTING_PATHS;
   protected readonly finesDraftStore = inject(FinesDraftStore);

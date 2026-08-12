@@ -1,6 +1,6 @@
 @JIRA-LABEL:account-enquiry
 @JIRA-NFR:PO-2322
-Feature: Search and Matches Accessibility
+Feature: Search And Matches Accessibility
 
   Background:
     Given I am logged in with email "opal-test@dev.platform.hmcts.net"
@@ -38,8 +38,8 @@ Feature: Search and Matches Accessibility
     Then I see the Search results page
     And I check the page for accessibility
 
-  @JIRA-STORY:PO-2953 @JIRA-EPIC:PO-2630
-  Scenario: AC10. Check Search and Matches Accessibility with Axe-Core for National Insurance quick search
+  @JIRA-STORY:PO-2953 @JIRA-EPIC:PO-2630 @R1B
+  Scenario: Check Search and Matches Accessibility with Axe-Core for National Insurance quick search
     ## Check Accessibility on National Insurance quick search
     When I search using the following inputs:
       | National Insurance number | * |
