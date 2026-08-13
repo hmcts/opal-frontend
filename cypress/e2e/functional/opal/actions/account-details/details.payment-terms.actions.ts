@@ -155,6 +155,15 @@ export class AccountDetailsPaymentTermsActions {
   }
 
   /**
+   * Asserts that the Change and Request payment card actions are not displayed.
+   */
+  public assertPaymentTermsActionsNotPresent(): void {
+    log('assert', 'Payment terms actions are absent');
+    cy.contains(`${L.tab.root} a.govuk-link`, 'Change').should('not.exist');
+    cy.get(L.tab.requestPaymentCardLink).should('not.exist');
+  }
+
+  /**
    * Clicks the "Request payment card" action link from the Payment terms tab.
    */
   public startPaymentCardRequest(): void {

@@ -27,3 +27,9 @@ Feature: Account Enquiries Amend Payment Terms Accessibility
     And I go to the Payment terms tab
     And I open the amend payment terms form
     Then I check the page for accessibility
+
+  @R1B @JIRA-STORY:PO-5753 @JIRA-EPIC:PO-2990
+  Scenario: AC6: Payment terms tab passes Axe-Core accessibility checks
+    When I search for the account by last name "AmendPayTerms{uniq}" and open the latest result
+    And I go to the Payment terms tab
+    Then I check the page for accessibility
