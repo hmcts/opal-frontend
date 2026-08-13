@@ -74,7 +74,7 @@ Feature: Defendant Adult Youth Search And Matches Journeys
       | account.defendant.surname                   | JourneyNiSpace{uniq}               |
       | account.defendant.email_address_1           | nina.journeynispace{uniq}@test.com |
       | account.defendant.telephone_number_home     | 02078250052                        |
-      | account.defendant.national_insurance_number | AB123456C                          |
+      | account.defendant.national_insurance_number | CD987654D                          |
       | account.defendant.address_line_1            | 789 NI Street                      |
       | account.defendant.post_code                 | AB12 3CD                           |
       | account.account_type                        | Fine                               |
@@ -85,7 +85,7 @@ Feature: Defendant Adult Youth Search And Matches Journeys
       | account.defendant.dob                       | 2002-09-21                         |
     And I am on the Account Search page - Individuals form displayed by default
     When I search using the following inputs:
-      | national insurance number | AB 12 34 56 C |
+      | national insurance number | CD 98 76 54 D |
     Then I see the Search results page
     And I see the Individuals search results:
       | Ref | PCRJRNYNISPACE{uniqUpper} |
