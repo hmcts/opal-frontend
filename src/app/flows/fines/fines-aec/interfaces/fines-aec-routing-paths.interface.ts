@@ -3,6 +3,5 @@ import { IChildRoutingPaths } from '@hmcts/opal-frontend-common/pages/routing/in
 export interface IFinesAutoEnforcementConfigRoutingPaths extends IChildRoutingPaths {
   children: {
     config: string;
-    tab: string;
   };
 }
