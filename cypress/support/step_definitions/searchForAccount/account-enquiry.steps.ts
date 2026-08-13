@@ -118,6 +118,12 @@ When('I open the latest matching result from the search results', () => {
   accountEnquiryFlow().openMostRecentFromResults();
 });
 
+/** Opens the Defendant-column link from the latest minor creditor result row. */
+When('I open the defendant linked from the latest minor creditor search result', () => {
+  log('step', 'Opening defendant linked from latest minor creditor search result');
+  accountEnquiryFlow().openLatestMinorCreditorDefendantFromResults();
+});
+
 /**
  * @step Opens the latest matching account from the Companies tab on the Search results page.
  */

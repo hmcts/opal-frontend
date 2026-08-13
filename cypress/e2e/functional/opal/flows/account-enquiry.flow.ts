@@ -232,6 +232,16 @@ export class AccountEnquiryFlow {
     this.results.openLatestPublished();
   }
 
+  /** Opens the associated defendant linked from the latest minor creditor result. */
+  public openLatestMinorCreditorDefendantFromResults(): void {
+    logAE('method', 'openLatestMinorCreditorDefendantFromResults()');
+    logAE('open', 'Opening associated defendant from latest minor creditor result');
+
+    ForceSingleTabNavigation();
+    this.results.waitForResultsTable();
+    this.results.openLatestMinorCreditorDefendant();
+  }
+
   /**
    * Opens the most recent account from the Companies results tab and asserts navigation.
    */
