@@ -1,4 +1,4 @@
-import { AfterViewInit, ChangeDetectionStrategy, ChangeDetectorRef, Component, OnDestroy, inject } from '@angular/core';
+import { ChangeDetectionStrategy, Component, afterNextRender, inject, signal } from '@angular/core';
 import { GovukBackLinkComponent } from '@hmcts/opal-frontend-common/components/govuk/govuk-back-link';
 import { ActivatedRoute, Router, RouterModule } from '@angular/router';
 import { CanDeactivateTypes } from '@hmcts/opal-frontend-common/guards/can-deactivate/types';
@@ -16,18 +16,28 @@ import { IOpalFinesSearchOffencesData } from '@services/fines/opal-fines-service
   templateUrl: './fines-mac-offence-details-search-offences-results.component.html',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class FinesMacOffenceDetailsSearchOffencesResultsComponent implements AfterViewInit, OnDestroy {
+export class FinesMacOffenceDetailsSearchOffencesResultsComponent {
   private readonly router = inject(Router);
   private readonly activatedRoute = inject(ActivatedRoute);
   private readonly finesMacOffenceDetailsSearchOffencesStore = inject(FinesMacOffenceDetailsSearchOffencesStore);
-  private readonly changeDetectorRef = inject(ChangeDetectorRef);
-  private announcementTimeoutId?: ReturnType<typeof setTimeout>;
+  private readonly NO_RESULTS_ANNOUNCEMENT = 'No results found';
 
   protected readonly searchOffencesData: IFinesMacOffenceDetailsSearchOffencesResultsTableWrapperTableData[] =
     this.mapSearchOffencesToTableData();
 
   public readonly tableSort = FINES_MAC_OFFENCE_DETAILS_SEARCH_OFFENCES_RESULTS_TABLE_WRAPPER_SORT_DEFAULT;
-  public announcementText: string = '';
+  public announcementText = signal('');
+
+  constructor() {
+    // Keep the live region empty on initial render so assistive technology can
+    // register it before its content changes. The short delay after rendering
+    // allows the subsequent update to be announced reliably by screen readers.
+    afterNextRender(() => {
+      setTimeout(() => {
+        this.announcementText.set(this.NO_RESULTS_ANNOUNCEMENT);
+      }, 100);
+    });
+  }
 
   /**
    * Maps search offences data retrieved from the activated route's snapshot
@@ -52,19 +62,6 @@ export class FinesMacOffenceDetailsSearchOffencesResultsComponent implements Aft
     }));
   }
 
-  public ngAfterViewInit(): void {
-    if (this.searchOffencesData.length !== 0) {
-      return;
-    }
-    if (this.announcementTimeoutId) {
-      clearTimeout(this.announcementTimeoutId);
-    }
-    this.announcementTimeoutId = setTimeout(() => {
-      this.announcementText = 'No results found';
-      this.changeDetectorRef.detectChanges();
-    });
-  }
-
   /**
    * Checks if the component can be deactivated.
    * @returns A boolean indicating whether the component can be deactivated.
@@ -79,11 +76,5 @@ export class FinesMacOffenceDetailsSearchOffencesResultsComponent implements Aft
    */
   public navigateBack(): void {
     this.router.navigate(['..'], { relativeTo: this.activatedRoute });
-  }
-
-  public ngOnDestroy(): void {
-    if (this.announcementTimeoutId) {
-      clearTimeout(this.announcementTimeoutId);
-    }
   }
 }

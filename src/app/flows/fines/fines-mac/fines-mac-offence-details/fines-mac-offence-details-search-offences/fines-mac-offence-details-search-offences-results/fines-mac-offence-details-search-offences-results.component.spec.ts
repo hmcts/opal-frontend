@@ -100,18 +100,20 @@ describe('FinesMacOffenceDetailsSearchOffencesResultsComponent when there are se
 describe('FinesMacOffenceDetailsSearchOffencesResultsComponent when there are no search results', () => {
   it('should add the no results live region after view init', async () => {
     vi.useFakeTimers();
+
     try {
       const { fixture: emptyFixture } = await createComponent({
         ...OPAL_FINES_SEARCH_OFFENCES_MOCK,
         searchData: [],
       });
-      const liveRegionSelector = '.govuk-visually-hidden[role="status"]';
-      const liveRegion = emptyFixture.nativeElement.querySelector(liveRegionSelector);
 
-      expect(liveRegion).toBeTruthy();
-      expect(liveRegion?.textContent?.trim()).toBe('');
+      const liveRegionSelector = '.govuk-visually-hidden[role="status"]';
+
+      expect(emptyFixture.nativeElement.querySelector(liveRegionSelector)?.textContent?.trim()).toBe('');
 
       vi.runOnlyPendingTimers();
+
+      emptyFixture.detectChanges();
 
       expect(emptyFixture.nativeElement.querySelector(liveRegionSelector)?.textContent?.trim()).toBe(
         'No results found',
