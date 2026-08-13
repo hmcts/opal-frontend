@@ -535,13 +535,7 @@ describe('Account Enquiry Defendant Details Tab', () => {
       interceptUserState(USER_STATE_MOCK_PERMISSION_BU77);
       interceptDefendantHeader(accountId, headerMock, accountId);
       interceptDefendantDetails(accountId, defendantDetailsMock, accountId);
-      setupAccountEnquiryComponent({
-        ...componentProperties,
-        accountId: accountId,
-        interceptedRoutes: componentProperties.interceptedRoutes?.filter(
-          (route) => route !== '../party/parentGuardian/add',
-        ),
-      });
+      setupAccountEnquiryComponent({ ...componentProperties, accountId: accountId });
 
       cy.wait(['@getDefendantHeaderSummary', '@getDefendantDetails']);
       cy.contains('a', 'Add parent or guardian details').should('be.visible').click();
