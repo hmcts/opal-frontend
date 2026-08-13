@@ -34,10 +34,7 @@ describe('Search Account Problem Component', { tags: [ACCOUNT_ENQUIRY_JIRA_LABEL
     });
   };
 
-  it(
-    'AC9a. should render the account search problem page with the updated standalone options',
-    { tags: ['@JIRA-STORY:PO-2953', '@JIRA-EPIC:PO-2630'] },
-    () => {
+  it('AC9a. should render the account search problem page with the updated standalone options', { tags: ['@JIRA-STORY:PO-2953', '@JIRA-EPIC:PO-2630', '@JIRA-TEST-KEY:PO-9916'] }, () => {
       setupComponent();
 
       cy.get(AccountSearchProblemLocators.heading).should('contain', 'There is a problem');
@@ -63,13 +60,9 @@ describe('Search Account Problem Component', { tags: [ACCOUNT_ENQUIRY_JIRA_LABEL
         });
 
       cy.get(AccountSearchProblemLocators.actions.backLink).should('contain', 'Go back');
-    },
-  );
+    });
 
-  it(
-    'AC9. should navigate back to the search form with the current tab fragment',
-    { tags: ['@JIRA-STORY:PO-2953', '@JIRA-EPIC:PO-2630'] },
-    () => {
+  it('AC9. should navigate back to the search form with the current tab fragment', { tags: ['@JIRA-STORY:PO-2953', '@JIRA-EPIC:PO-2630', '@JIRA-TEST-KEY:PO-9917'] }, () => {
       setupComponent();
 
       cy.get(AccountSearchProblemLocators.actions.backLink).click();
@@ -78,6 +71,5 @@ describe('Search Account Problem Component', { tags: [ACCOUNT_ENQUIRY_JIRA_LABEL
       cy.get('@routerNavigate').should('have.been.calledWithMatch', [FINES_SA_SEARCH_ROUTING_PATHS.root], {
         fragment: 'individuals',
       });
-    },
-  );
+    });
 });

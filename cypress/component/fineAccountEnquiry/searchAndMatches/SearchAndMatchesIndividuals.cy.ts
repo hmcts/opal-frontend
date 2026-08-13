@@ -96,10 +96,7 @@ describe('Search Account Component - Individuals', () => {
     },
   );
 
-  it(
-    'AC1-AC5. should render the NI quick search section',
-    { tags: [...buildTags('@JIRA-STORY:PO-2953'), '@JIRA-EPIC:PO-2630'] },
-    () => {
+  it('AC1-AC5. should render the NI quick search section', { tags: [...buildTags('@JIRA-STORY:PO-2953'), '@JIRA-EPIC:PO-2630', '@JIRA-TEST-KEY:PO-9909'] }, () => {
       setupComponent();
 
       cy.get(CommonLocators.pageHeader).should('contain', 'Search for an account');
@@ -146,8 +143,7 @@ describe('Search Account Component - Individuals', () => {
             ).to.equal(Node.DOCUMENT_POSITION_FOLLOWING);
           });
         });
-    },
-  );
+    });
 
   it(
     'AC3a. should validate input fields and show errors',
@@ -497,10 +493,7 @@ describe('Search Account Component - Individuals', () => {
     },
   );
 
-  it(
-    'AC7. should call the Individuals endpoint for National Insurance search',
-    { tags: [...buildTags('@JIRA-STORY:PO-2953'), '@JIRA-EPIC:PO-2630'] },
-    () => {
+  it('AC7. should call the Individuals endpoint for National Insurance search', { tags: [...buildTags('@JIRA-STORY:PO-2953'), '@JIRA-EPIC:PO-2630', '@JIRA-TEST-KEY:PO-9910'] }, () => {
       setupComponent(
         (searchState) => {
           searchState.fsa_search_account_individuals_search_criteria!.fsa_search_account_individuals_national_insurance_number =
@@ -525,13 +518,9 @@ describe('Search Account Component - Individuals', () => {
           expect(payload).to.have.property('active_accounts_only', true);
           expect(payload).to.have.nested.property('defendant.national_insurance_number', 'QQ123456C');
         });
-    },
-  );
+    });
 
-  it(
-    'AC6a. should route to the problem screen when National Insurance number is combined with a reference or case number',
-    { tags: [...buildTags('@JIRA-STORY:PO-2953'), '@JIRA-EPIC:PO-2630'] },
-    () => {
+  it('AC6a. should route to the problem screen when National Insurance number is combined with a reference or case number', { tags: [...buildTags('@JIRA-STORY:PO-2953'), '@JIRA-EPIC:PO-2630', '@JIRA-TEST-KEY:PO-9911'] }, () => {
       setupComponent((searchState) => {
         searchState.fsa_search_account_reference_case_number = 'REF123';
         searchState.fsa_search_account_individuals_search_criteria!.fsa_search_account_individuals_national_insurance_number =
@@ -541,13 +530,9 @@ describe('Search Account Component - Individuals', () => {
       cy.get(CommonLocators.searchButton).click();
 
       cy.get('@routerNavigate').should('have.been.calledWithMatch', ['problem']);
-    },
-  );
+    });
 
-  it(
-    'AC8. should preserve National Insurance number search behaviour after spaces are removed',
-    { tags: [...buildTags('@JIRA-STORY:PO-2953'), '@JIRA-EPIC:PO-2630'] },
-    () => {
+  it('AC8. should preserve National Insurance number search behaviour after spaces are removed', { tags: [...buildTags('@JIRA-STORY:PO-2953'), '@JIRA-EPIC:PO-2630', '@JIRA-TEST-KEY:PO-9912'] }, () => {
       setupComponent(
         (searchState) => {
           searchState.fsa_search_account_individuals_search_criteria!.fsa_search_account_individuals_national_insurance_number =
@@ -570,14 +555,10 @@ describe('Search Account Component - Individuals', () => {
         .should((payload) => {
           expect(payload).to.have.nested.property('defendant.national_insurance_number', 'AB123456C');
         });
-    },
-  );
+    });
 
   // Invalid characters must still be rejected after whitespace normalisation; this validates NI input rules, not AC8.
-  it(
-    'NI validation: should reject invalid characters after spaces are removed',
-    { tags: [...buildTags('@JIRA-STORY:PO-2953'), '@JIRA-EPIC:PO-2630'] },
-    () => {
+  it('NI validation: should reject invalid characters after spaces are removed', { tags: [...buildTags('@JIRA-STORY:PO-2953'), '@JIRA-EPIC:PO-2630', '@JIRA-TEST-KEY:PO-9913'] }, () => {
       setupComponent((searchState) => {
         searchState.fsa_search_account_individuals_search_criteria!.fsa_search_account_individuals_national_insurance_number =
           'AB 12 34 56 $';
@@ -591,8 +572,7 @@ describe('Search Account Component - Individuals', () => {
         .should('exist')
         .and('contain', 'National Insurance number must only contain letters or numbers');
       cy.get('@getDefendantAccounts').should('not.have.been.called');
-    },
-  );
+    });
 
   it(
     'AC4f. should validate Address Line 1 maximum field length',

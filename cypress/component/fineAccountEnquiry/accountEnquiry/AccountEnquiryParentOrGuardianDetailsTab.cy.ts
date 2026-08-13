@@ -165,10 +165,7 @@ describe('Account Enquiry Parent or Guardian Component', () => {
     );
   });
 
-  it(
-    'AC3: should keep the existing Change and Remove actions visible for a youth-only account with a non-paying parent or guardian',
-    { tags: [...buildTags('@JIRA-STORY:PO-5749'), '@JIRA-EPIC:PO-2990'] },
-    () => {
+  it('AC3: should keep the existing Change and Remove actions visible for a youth-only account with a non-paying parent or guardian', { tags: [...buildTags('@JIRA-STORY:PO-5749'), '@JIRA-EPIC:PO-2990', '@JIRA-TEST-KEY:PO-9868'] }, () => {
       // AC3 – Existing action eligibility rules still show both actions for a youth-only account with a non-paying parent or guardian.
       const headerMock = structuredClone(DEFENDANT_HEADER_YOUTH_MOCK);
       headerMock.parent_guardian_party_id = '1770000001';
@@ -185,13 +182,9 @@ describe('Account Enquiry Parent or Guardian Component', () => {
       cy.get(DOM.removeParentGuardianLink)
         .should('be.visible')
         .and('contain.text', 'Remove Parent or guardian details');
-    },
-  );
+    });
 
-  it(
-    'AC3: should not display the remove action when the parent or guardian is the debtor',
-    { tags: [...buildTags('@JIRA-STORY:PO-5749'), '@JIRA-EPIC:PO-2990'] },
-    () => {
+  it('AC3: should not display the remove action when the parent or guardian is the debtor', { tags: [...buildTags('@JIRA-STORY:PO-5749'), '@JIRA-EPIC:PO-2990', '@JIRA-TEST-KEY:PO-9869'] }, () => {
       const headerMock = structuredClone(createDefendantHeaderMockWithName('Robert', 'Thomson'));
       headerMock.parent_guardian_party_id = '1770000001';
       headerMock.debtor_type = 'Parent/Guardian';
@@ -204,8 +197,7 @@ describe('Account Enquiry Parent or Guardian Component', () => {
 
       cy.get(TABS.parentGuardianTab).should('be.visible');
       cy.get(DOM.removeParentGuardianLink).should('not.exist');
-    },
-  );
+    });
 
   it(
     'AC1,Ac1a, Ac1b,Ac1bi:should display "Parent or Guardian details" title and other fields when viewing Parent or Guardian tab',

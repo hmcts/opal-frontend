@@ -187,10 +187,7 @@ describe('Search Account Component - Major Creditors', () => {
     },
   );
 
-  it(
-    'AC6c. should route to problem screen when National Insurance number is combined with major creditor criteria',
-    { tags: [...buildTags('@JIRA-STORY:PO-2953'), '@JIRA-EPIC:PO-2630'] },
-    () => {
+  it('AC6c. should route to problem screen when National Insurance number is combined with major creditor criteria', { tags: [...buildTags('@JIRA-STORY:PO-2953'), '@JIRA-EPIC:PO-2630', '@JIRA-TEST-KEY:PO-9914'] }, () => {
       setupComponent((searchState) => {
         searchState.fsa_search_account_individuals_search_criteria!.fsa_search_account_individuals_national_insurance_number =
           'AB123456C';
@@ -201,8 +198,7 @@ describe('Search Account Component - Major Creditors', () => {
       cy.get(CommonLocators.searchButton).click();
 
       cy.get('@routerNavigate').should('have.been.calledWithMatch', ['problem']);
-    },
-  );
+    });
 
   // PO-2181 Navigation to the Account Enquiry (Details) screen for a Major Creditor Account
   it(

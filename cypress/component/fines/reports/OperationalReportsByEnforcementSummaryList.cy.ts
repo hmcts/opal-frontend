@@ -93,28 +93,21 @@ describe(
       });
     };
 
-    it(
-      'AC1a and AC1b: shows the Operational reports by enforcement summary list',
-      { tags: ['@JIRA-STORY:PO-2307', '@JIRA-EPIC:PO-2248'] },
-      () => {
+    it('AC1a and AC1b: shows the Operational reports by enforcement summary list', { tags: ['@JIRA-STORY:PO-2307', '@JIRA-EPIC:PO-2248', '@JIRA-TEST-KEY:PO-9918'] }, () => {
         setupComponent();
 
         cy.get(L.pageHeader).should('be.visible').and('have.text', 'Operational reports (by enforcement)');
         cy.get(L.table.root).should('be.visible');
         cy.get(L.table.rows).should('have.length', 3);
-      },
-    );
+      });
 
-    it('AC1c: shows the number of listed reports', { tags: ['@JIRA-STORY:PO-2307', '@JIRA-EPIC:PO-2248'] }, () => {
+    it('AC1c: shows the number of listed reports', { tags: ['@JIRA-STORY:PO-2307', '@JIRA-EPIC:PO-2248', '@JIRA-TEST-KEY:PO-9919'] }, () => {
       setupComponent();
 
       cy.get(L.table.resultsCount).should('contain.text', 'Showing 3 results');
     });
 
-    it(
-      'AC2: shows report date and time, title, business unit, creator and status',
-      { tags: ['@JIRA-STORY:PO-2307', '@JIRA-EPIC:PO-2248'] },
-      () => {
+    it('AC2: shows report date and time, title, business unit, creator and status', { tags: ['@JIRA-STORY:PO-2307', '@JIRA-EPIC:PO-2248', '@JIRA-TEST-KEY:PO-9920'] }, () => {
         setupComponent();
 
         cy.get(L.table.headings).then(($headings) => {
@@ -135,29 +128,21 @@ describe(
         cy.get(L.table.businessUnit(0)).should('contain.text', 'London Central & South East');
         cy.get(L.table.createdBy(0)).should('contain.text', 'Olivia Smith');
         cy.get(L.table.status(0)).should('contain.text', 'Ready');
-      },
-    );
+      });
 
-    it('AC3: shows a Requested report as In progress', { tags: ['@JIRA-STORY:PO-2307', '@JIRA-EPIC:PO-2248'] }, () => {
+    it('AC3: shows a Requested report as In progress', { tags: ['@JIRA-STORY:PO-2307', '@JIRA-EPIC:PO-2248', '@JIRA-TEST-KEY:PO-9921'] }, () => {
       setupComponent();
 
       cy.get(L.table.status(1)).should('contain.text', 'In progress');
     });
 
-    it(
-      'AC4: shows a Ready report with no records as No content',
-      { tags: ['@JIRA-STORY:PO-2307', '@JIRA-EPIC:PO-2248'] },
-      () => {
+    it('AC4: shows a Ready report with no records as No content', { tags: ['@JIRA-STORY:PO-2307', '@JIRA-EPIC:PO-2248', '@JIRA-TEST-KEY:PO-9922'] }, () => {
         setupComponent();
 
         cy.get(L.table.status(2)).should('contain.text', 'No content');
-      },
-    );
+      });
 
-    it(
-      'AC5 and AC5a: lists reports by newest date first and toggles to oldest first',
-      { tags: ['@JIRA-STORY:PO-2307', '@JIRA-EPIC:PO-2248'] },
-      () => {
+    it('AC5 and AC5a: lists reports by newest date first and toggles to oldest first', { tags: ['@JIRA-STORY:PO-2307', '@JIRA-EPIC:PO-2248', '@JIRA-TEST-KEY:PO-9923'] }, () => {
         setupComponent();
 
         assertColumnOrder(L.table.dateTime, ['21 Jul 2026 at', '20 Jul 2026 at', '19 Jul 2026 at']);
@@ -165,13 +150,9 @@ describe(
         sortBy('Date and time');
 
         assertColumnOrder(L.table.dateTime, ['19 Jul 2026 at', '20 Jul 2026 at', '21 Jul 2026 at']);
-      },
-    );
+      });
 
-    it(
-      'AC5b: sorts Title in ascending and descending order',
-      { tags: ['@JIRA-STORY:PO-2307', '@JIRA-EPIC:PO-2248'] },
-      () => {
+    it('AC5b: sorts Title in ascending and descending order', { tags: ['@JIRA-STORY:PO-2307', '@JIRA-EPIC:PO-2248', '@JIRA-TEST-KEY:PO-9924'] }, () => {
         setupComponent();
 
         sortBy('Title');
@@ -181,13 +162,9 @@ describe(
         sortBy('Title');
 
         assertColumnOrder(L.table.title, ['No actions', 'Empty', 'CLAMPO']);
-      },
-    );
+      });
 
-    it(
-      'AC5b: sorts Business unit in ascending and descending order',
-      { tags: ['@JIRA-STORY:PO-2307', '@JIRA-EPIC:PO-2248'] },
-      () => {
+    it('AC5b: sorts Business unit in ascending and descending order', { tags: ['@JIRA-STORY:PO-2307', '@JIRA-EPIC:PO-2248', '@JIRA-TEST-KEY:PO-9925'] }, () => {
         setupComponent();
 
         sortBy('Business unit');
@@ -197,13 +174,9 @@ describe(
         sortBy('Business unit');
 
         assertColumnOrder(L.table.businessUnit, ['Multiple', 'London North West', 'London Central & South East']);
-      },
-    );
+      });
 
-    it(
-      'AC5b: sorts Created by in ascending and descending order',
-      { tags: ['@JIRA-STORY:PO-2307', '@JIRA-EPIC:PO-2248'] },
-      () => {
+    it('AC5b: sorts Created by in ascending and descending order', { tags: ['@JIRA-STORY:PO-2307', '@JIRA-EPIC:PO-2248', '@JIRA-TEST-KEY:PO-9926'] }, () => {
         setupComponent();
 
         sortBy('Created by');
@@ -213,13 +186,9 @@ describe(
         sortBy('Created by');
 
         assertColumnOrder(L.table.createdBy, ['Sarah Johnson', 'Olivia Smith', 'James Brown']);
-      },
-    );
+      });
 
-    it(
-      'AC5b: sorts Status in ascending and descending order',
-      { tags: ['@JIRA-STORY:PO-2307', '@JIRA-EPIC:PO-2248'] },
-      () => {
+    it('AC5b: sorts Status in ascending and descending order', { tags: ['@JIRA-STORY:PO-2307', '@JIRA-EPIC:PO-2248', '@JIRA-TEST-KEY:PO-9927'] }, () => {
         setupComponent();
 
         sortBy('Status');
@@ -229,26 +198,18 @@ describe(
         sortBy('Status');
 
         assertColumnOrder(L.table.status, ['Ready', 'No content', 'In progress']);
-      },
-    );
+      });
 
     // AC6a–d require permission-filtered API data and will be covered by a follow-up E2E test.
-    it(
-      'AC6: defaults the business unit filter to All business units',
-      { tags: ['@JIRA-STORY:PO-2307', '@JIRA-EPIC:PO-2248'] },
-      () => {
+    it('AC6: defaults the business unit filter to All business units', { tags: ['@JIRA-STORY:PO-2307', '@JIRA-EPIC:PO-2248', '@JIRA-TEST-KEY:PO-9928'] }, () => {
         setupComponent();
 
         cy.get(L.filters.businessUnitAutocomplete).should('be.visible').and('have.value', 'All business units');
         cy.get(L.filters.businessUnit).should('have.value', 'all');
-      },
-    );
+      });
 
     // AC7a–b require API/E2E data to verify the returned results;
-    it(
-      'AC7: lists all resolved business units in the filter dropdown',
-      { tags: ['@JIRA-STORY:PO-2307', '@JIRA-EPIC:PO-2248'] },
-      () => {
+    it('AC7: lists all resolved business units in the filter dropdown', { tags: ['@JIRA-STORY:PO-2307', '@JIRA-EPIC:PO-2248', '@JIRA-TEST-KEY:PO-9929'] }, () => {
         setupComponent();
 
         cy.get(L.filters.businessUnitAutocomplete).clear().click();
@@ -261,14 +222,10 @@ describe(
         cy.contains(L.filters.businessUnitOptions, 'London North West').should('be.visible');
         cy.contains(L.filters.businessUnitOptions, 'London South West').should('be.visible');
         cy.contains(L.filters.businessUnitOptions, 'MBEC London').should('be.visible');
-      },
-    );
+      });
 
     // This test covers only that Refresh sends the selected BU ID, not the returned results from API
-    it(
-      'AC7c: applies the selected business unit when Refresh is selected',
-      { tags: ['@JIRA-STORY:PO-2307', '@JIRA-EPIC:PO-2248'] },
-      () => {
+    it('AC7c: applies the selected business unit when Refresh is selected', { tags: ['@JIRA-STORY:PO-2307', '@JIRA-EPIC:PO-2248', '@JIRA-TEST-KEY:PO-9930'] }, () => {
         setupComponent();
 
         cy.get(L.filters.businessUnitAutocomplete).clear().type('London Central & South East');
@@ -284,14 +241,10 @@ describe(
             report_id: REPORT_ID,
             business_units: ['67'],
           });
-      },
-    );
+      });
 
     // AC8a requires API/E2E data to verify returned reports; this test covers the default selection and date-range request.
-    it(
-      'AC8: defaults to Last 7 days and requests an inclusive date-only seven-day range on Refresh',
-      { tags: ['@JIRA-STORY:PO-2307', '@JIRA-EPIC:PO-2248'] },
-      () => {
+    it('AC8: defaults to Last 7 days and requests an inclusive date-only seven-day range on Refresh', { tags: ['@JIRA-STORY:PO-2307', '@JIRA-EPIC:PO-2248', '@JIRA-TEST-KEY:PO-9931'] }, () => {
         cy.clock(Date.UTC(2026, 6, 24, 12));
         setupComponent();
 
@@ -304,13 +257,9 @@ describe(
           from_date: '2026-07-18',
           to_date: '2026-07-24',
         });
-      },
-    );
+      });
 
-    it(
-      'AC9a, AC9b and AC9d: shows Days and validates numeric and required values',
-      { tags: ['@JIRA-STORY:PO-2307', '@JIRA-EPIC:PO-2248'] },
-      () => {
+    it('AC9a, AC9b and AC9d: shows Days and validates numeric and required values', { tags: ['@JIRA-STORY:PO-2307', '@JIRA-EPIC:PO-2248', '@JIRA-TEST-KEY:PO-9932'] }, () => {
         setupComponent();
 
         cy.get(L.filters.customDays).click();
@@ -323,14 +272,10 @@ describe(
         cy.get(L.filters.days).clear();
         cy.get(L.filters.refreshButton).click();
         cy.contains(L.filters.form, 'Enter number of days').should('be.visible');
-      },
-    );
+      });
 
     // AC9c requires API/E2E data to verify returned reports; this test covers the inclusive date-only request range.
-    it(
-      'AC9c: requests the selected number of inclusive days on Refresh',
-      { tags: ['@JIRA-STORY:PO-2307', '@JIRA-EPIC:PO-2248'] },
-      () => {
+    it('AC9c: requests the selected number of inclusive days on Refresh', { tags: ['@JIRA-STORY:PO-2307', '@JIRA-EPIC:PO-2248', '@JIRA-TEST-KEY:PO-9933'] }, () => {
         setupComponent();
 
         cy.get(L.filters.customDays).check();
@@ -344,13 +289,9 @@ describe(
           from_date: '2026-07-22',
           to_date: '2026-07-24',
         });
-      },
-    );
+      });
 
-    it(
-      'AC9e: hides and clears Days when a different date filter is selected',
-      { tags: ['@JIRA-STORY:PO-2307', '@JIRA-EPIC:PO-2248'] },
-      () => {
+    it('AC9e: hides and clears Days when a different date filter is selected', { tags: ['@JIRA-STORY:PO-2307', '@JIRA-EPIC:PO-2248', '@JIRA-TEST-KEY:PO-9934'] }, () => {
         setupComponent();
 
         cy.get(L.filters.customDays).click();
@@ -361,13 +302,9 @@ describe(
 
         cy.get(L.filters.customDays).click();
         cy.get(L.filters.days).should('have.value', '');
-      },
-    );
+      });
 
-    it(
-      'AC10a and AC10b: shows date fields and allows a date to be entered or selected using the calendar',
-      { tags: ['@JIRA-STORY:PO-2307', '@JIRA-EPIC:PO-2248'] },
-      () => {
+    it('AC10a and AC10b: shows date fields and allows a date to be entered or selected using the calendar', { tags: ['@JIRA-STORY:PO-2307', '@JIRA-EPIC:PO-2248', '@JIRA-TEST-KEY:PO-9935'] }, () => {
         setupComponent();
 
         cy.get(L.filters.dateRange).check();
@@ -378,14 +315,10 @@ describe(
         cy.get(L.filters.dateFrom).closest('.moj-datepicker').find(L.filters.datePickerButton).click();
 
         cy.get(L.filters.datePickerDialogHeader).should('be.visible');
-      },
-    );
+      });
 
     // AC10c requires API/E2E data to verify returned reports; this test covers the frontend request range.
-    it(
-      'AC10c: sends the entered date range when Refresh is selected',
-      { tags: ['@JIRA-STORY:PO-2307', '@JIRA-EPIC:PO-2248'] },
-      () => {
+    it('AC10c: sends the entered date range when Refresh is selected', { tags: ['@JIRA-STORY:PO-2307', '@JIRA-EPIC:PO-2248', '@JIRA-TEST-KEY:PO-9936'] }, () => {
         setupComponent();
 
         cy.get(L.filters.dateRange).check();
@@ -398,14 +331,10 @@ describe(
           from_date: '2026-07-01',
           to_date: '2026-07-03',
         });
-      },
-    );
+      });
 
     // AC10d requires API/E2E data to verify all past reports are returned; this test covers the open start-date request.
-    it(
-      'AC10d: sends no from date when only date to is entered',
-      { tags: ['@JIRA-STORY:PO-2307', '@JIRA-EPIC:PO-2248'] },
-      () => {
+    it('AC10d: sends no from date when only date to is entered', { tags: ['@JIRA-STORY:PO-2307', '@JIRA-EPIC:PO-2248', '@JIRA-TEST-KEY:PO-9937'] }, () => {
         setupComponent();
 
         cy.get(L.filters.dateRange).check();
@@ -417,14 +346,10 @@ describe(
           from_date: null,
           to_date: '2026-07-03',
         });
-      },
-    );
+      });
 
     // AC10e requires API/E2E data to verify all future reports are returned; this test covers the open end-date request.
-    it(
-      'AC10e: sends no to date when only date from is entered',
-      { tags: ['@JIRA-STORY:PO-2307', '@JIRA-EPIC:PO-2248'] },
-      () => {
+    it('AC10e: sends no to date when only date from is entered', { tags: ['@JIRA-STORY:PO-2307', '@JIRA-EPIC:PO-2248', '@JIRA-TEST-KEY:PO-9938'] }, () => {
         setupComponent();
 
         cy.get(L.filters.dateRange).check();
@@ -436,13 +361,9 @@ describe(
           from_date: '2026-07-01',
           to_date: null,
         });
-      },
-    );
+      });
 
-    it(
-      'AC10f: shows an error when neither date is entered',
-      { tags: ['@JIRA-STORY:PO-2307', '@JIRA-EPIC:PO-2248'] },
-      () => {
+    it('AC10f: shows an error when neither date is entered', { tags: ['@JIRA-STORY:PO-2307', '@JIRA-EPIC:PO-2248', '@JIRA-TEST-KEY:PO-9939'] }, () => {
         setupComponent();
 
         cy.get(L.filters.dateRange).check();
@@ -450,13 +371,9 @@ describe(
 
         cy.contains(L.filters.form, 'You must enter at least 1 of date from or date to').should('be.visible');
         cy.get('@getReportInstances').should('not.have.been.called');
-      },
-    );
+      });
 
-    it(
-      'AC10g: shows an error when Date from is after Date to',
-      { tags: ['@JIRA-STORY:PO-2307', '@JIRA-EPIC:PO-2248'] },
-      () => {
+    it('AC10g: shows an error when Date from is after Date to', { tags: ['@JIRA-STORY:PO-2307', '@JIRA-EPIC:PO-2248', '@JIRA-TEST-KEY:PO-9940'] }, () => {
         setupComponent();
 
         cy.get(L.filters.dateRange).check();
@@ -465,13 +382,9 @@ describe(
         cy.get(L.filters.refreshButton).click();
         cy.contains(L.filters.form, 'The Date from cannot be after the Date to').should('be.visible');
         cy.get('@getReportInstances').should('not.have.been.called');
-      },
-    );
+      });
 
-    it(
-      'AC10h: shows an error for an invalid date format',
-      { tags: ['@JIRA-STORY:PO-2307', '@JIRA-EPIC:PO-2248'] },
-      () => {
+    it('AC10h: shows an error for an invalid date format', { tags: ['@JIRA-STORY:PO-2307', '@JIRA-EPIC:PO-2248', '@JIRA-TEST-KEY:PO-9941'] }, () => {
         setupComponent();
 
         cy.get(L.filters.dateRange).check();
@@ -480,10 +393,9 @@ describe(
 
         cy.contains(L.filters.form, 'Date must be in the format DD/MM/YYYY').should('be.visible');
         cy.get('@getReportInstances').should('not.have.been.called');
-      },
-    );
+      });
 
-    it('AC10i: shows an error for a future date', { tags: ['@JIRA-STORY:PO-2307', '@JIRA-EPIC:PO-2248'] }, () => {
+    it('AC10i: shows an error for a future date', { tags: ['@JIRA-STORY:PO-2307', '@JIRA-EPIC:PO-2248', '@JIRA-TEST-KEY:PO-9942'] }, () => {
       setupComponent();
 
       cy.get(L.filters.dateRange).check();
@@ -494,10 +406,7 @@ describe(
       cy.get('@getReportInstances').should('not.have.been.called');
     });
 
-    it(
-      'AC10j: hides and clears date fields when a different date filter is selected',
-      { tags: ['@JIRA-STORY:PO-2307', '@JIRA-EPIC:PO-2248'] },
-      () => {
+    it('AC10j: hides and clears date fields when a different date filter is selected', { tags: ['@JIRA-STORY:PO-2307', '@JIRA-EPIC:PO-2248', '@JIRA-TEST-KEY:PO-9943'] }, () => {
         setupComponent();
 
         cy.get(L.filters.dateRange).check();
@@ -511,13 +420,9 @@ describe(
         cy.get(L.filters.dateRange).check();
         cy.get(L.filters.dateFrom).should('have.value', '');
         cy.get(L.filters.dateTo).should('have.value', '');
-      },
-    );
+      });
 
-    it(
-      'AC11: shows 25 reports per page and provides pagination for further reports',
-      { tags: ['@JIRA-STORY:PO-2307', '@JIRA-EPIC:PO-2248'] },
-      () => {
+    it('AC11: shows 25 reports per page and provides pagination for further reports', { tags: ['@JIRA-STORY:PO-2307', '@JIRA-EPIC:PO-2248', '@JIRA-TEST-KEY:PO-9944'] }, () => {
         setupComponent(OPERATIONAL_REPORT_BY_ENFORCEMENT_PAGINATED_INSTANCES_MOCK);
 
         cy.get(L.table.rows).should('have.length', 25);
@@ -528,40 +433,27 @@ describe(
 
         cy.get(L.table.rows).should('have.length', 1);
         cy.get(L.paginationResults).should('have.text', 'Showing 26 to 26 of 26 total results');
-      },
-    );
+      });
 
-    it(
-      'AC12: shows No reports found when there are no reports',
-      { tags: ['@JIRA-STORY:PO-2307', '@JIRA-EPIC:PO-2248'] },
-      () => {
+    it('AC12: shows No reports found when there are no reports', { tags: ['@JIRA-STORY:PO-2307', '@JIRA-EPIC:PO-2248', '@JIRA-TEST-KEY:PO-9945'] }, () => {
         setupComponent(OPERATIONAL_REPORT_BY_ENFORCEMENT_NO_INSTANCES_MOCK);
 
         cy.get(L.noReportsFound).should('be.visible').and('have.text', 'No reports found');
         cy.get(L.table.root).should('not.exist');
-      },
-    );
+      });
 
-    it(
-      'AC13: shows the result-limit message when more reports exist than the configured maximum',
-      { tags: ['@JIRA-STORY:PO-2307', '@JIRA-EPIC:PO-2248'] },
-      () => {
+    it('AC13: shows the result-limit message when more reports exist than the configured maximum', { tags: ['@JIRA-STORY:PO-2307', '@JIRA-EPIC:PO-2248', '@JIRA-TEST-KEY:PO-9946'] }, () => {
         setupComponent(OPERATIONAL_REPORT_BY_ENFORCEMENT_OVER_LIMIT_MOCK);
 
         cy.get(L.resultLimitHeading).should('be.visible').and('have.text', 'There are more than 100 reports');
         cy.contains(L.page, 'Use the filters to reduce the number of results.').should('be.visible');
         cy.get(L.table.root).should('not.exist');
-      },
-    );
+      });
 
-    it(
-      'AC14: gives Refresh the required accessible name',
-      { tags: ['@JIRA-STORY:PO-2307', '@JIRA-EPIC:PO-2248'] },
-      () => {
+    it('AC14: gives Refresh the required accessible name', { tags: ['@JIRA-STORY:PO-2307', '@JIRA-EPIC:PO-2248', '@JIRA-TEST-KEY:PO-9947'] }, () => {
         setupComponent();
 
         cy.get(L.filters.refreshButton).should('have.attr', 'aria-label', 'Apply filters and refresh');
-      },
-    );
+      });
   },
 );
