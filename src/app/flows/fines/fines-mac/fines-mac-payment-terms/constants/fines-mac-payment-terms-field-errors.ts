@@ -150,10 +150,6 @@ export const FINES_MAC_PAYMENT_TERMS_FIELD_ERRORS: IFinesMacPaymentTermsFieldErr
       message: `Enter a valid date`,
       priority: 3,
     },
-    invalidPastDate: {
-      message: `Date must be in the future`,
-      priority: 4,
-    },
   },
   fm_payment_terms_prison_and_prison_number: {
     maxlength: {
