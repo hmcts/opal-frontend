@@ -133,7 +133,10 @@ describe('Account Enquiry Payment Terms', () => {
     );
   });
 
-  it('AC3: Change navigation remains unchanged for an eligible account', { tags: [...buildTags('@JIRA-STORY:PO-5753', '@JIRA-EPIC:PO-2990'), '@JIRA-TEST-KEY:PO-9835'] }, () => {
+  it(
+    'AC3: Change navigation remains unchanged for an eligible account',
+    { tags: [...buildTags('@JIRA-STORY:PO-5753', '@JIRA-EPIC:PO-2990'), '@JIRA-TEST-KEY:PO-9835'] },
+    () => {
       const headerMock = structuredClone(createDefendantHeaderMockWithName('Robert', 'Thomson'));
       headerMock.debtor_type = 'individual';
       const paymentTermsMock = structuredClone(OPAL_FINES_ACCOUNT_DEFENDANT_DETAILS_PAYMENT_TERMS_LATEST_MOCK);
@@ -152,9 +155,13 @@ describe('Account Enquiry Payment Terms', () => {
 
       cy.contains(PAYMENT_TERMS_TAB.paymentTermsLink, 'Change').click();
       cy.get('app-fines-acc-payment-terms-amend-form').should('exist');
-    });
+    },
+  );
 
-  it('AC3: Request payment card navigation remains unchanged for an eligible account', { tags: [...buildTags('@JIRA-STORY:PO-5753', '@JIRA-EPIC:PO-2990'), '@JIRA-TEST-KEY:PO-9836'] }, () => {
+  it(
+    'AC3: Request payment card navigation remains unchanged for an eligible account',
+    { tags: [...buildTags('@JIRA-STORY:PO-5753', '@JIRA-EPIC:PO-2990'), '@JIRA-TEST-KEY:PO-9836'] },
+    () => {
       const headerMock = structuredClone(createDefendantHeaderMockWithName('Robert', 'Thomson'));
       headerMock.debtor_type = 'individual';
       const paymentTermsMock = structuredClone(OPAL_FINES_ACCOUNT_DEFENDANT_DETAILS_PAYMENT_TERMS_LATEST_MOCK);
@@ -163,9 +170,13 @@ describe('Account Enquiry Payment Terms', () => {
 
       cy.contains(PAYMENT_TERMS_TAB.paymentTermsLink, 'Request payment card').click();
       cy.get('@routerNavigate').should('have.been.calledWithMatch', ['../payment-card/request']);
-    });
+    },
+  );
 
-  it('AC3, AC4, AC5: Enforcement validation navigates to the amended payment terms error notification', { tags: [...buildTags('@JIRA-STORY:PO-5753', '@JIRA-EPIC:PO-2990'), '@JIRA-TEST-KEY:PO-9837'] }, () => {
+  it(
+    'AC3, AC4, AC5: Enforcement validation navigates to the amended payment terms error notification',
+    { tags: [...buildTags('@JIRA-STORY:PO-5753', '@JIRA-EPIC:PO-2990'), '@JIRA-TEST-KEY:PO-9837'] },
+    () => {
       const headerMock = structuredClone(createDefendantHeaderMockWithName('Robert', 'Thomson'));
       headerMock.debtor_type = 'individual';
       const paymentTermsMock = structuredClone(OPAL_FINES_ACCOUNT_DEFENDANT_DETAILS_PAYMENT_TERMS_LATEST_MOCK);
@@ -191,7 +202,8 @@ describe('Account Enquiry Payment Terms', () => {
       ].forEach((retiredMessage) => {
         cy.get('app-fines-acc-payment-terms-amend-denied').should('not.contain.text', retiredMessage);
       });
-    });
+    },
+  );
 
   it(
     'AC1: The Payment Terms tab is built as per the design artefact for pay in full - Adult or youth only',

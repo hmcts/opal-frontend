@@ -1307,48 +1307,75 @@ describe('FinesMacAddOffenceComponent', () => {
     cy.get(DOM_ELEMENTS.submitButton).first().click();
   };
 
-  it('Should show error message for invalid amount when £100.01 paid exceeds £100 imposed', {
-      tags: ['@JIRA-EPIC:PO-2219',
+  it(
+    'Should show error message for invalid amount when £100.01 paid exceeds £100 imposed',
+    {
+      tags: [
+        '@JIRA-EPIC:PO-2219',
         '@JIRA-STORY:PO-9140',
         '@JIRA-DEFECT:PO-9140',
         '@JIRA-LABEL:manual-account-creation',
-        '@R1A',, '@JIRA-TEST-KEY:PO-9977'],
-    }, () => {
+        '@R1A',
+        '@JIRA-TEST-KEY:PO-9977',
+      ],
+    },
+    () => {
       runAmountTest([{ imposed: 100, paid: 100.01 }]);
       cy.get(DOM_ELEMENTS.errorSummary).should(
         'contain',
         IMPOSITION_ERROR_MESSAGES.invalidAmountPaidGreaterThanImposed,
       );
-    });
-  it('Should allow form submission with amount paid being equal to amount imposed', {
-      tags: ['@JIRA-EPIC:PO-2219',
+    },
+  );
+  it(
+    'Should allow form submission with amount paid being equal to amount imposed',
+    {
+      tags: [
+        '@JIRA-EPIC:PO-2219',
         '@JIRA-STORY:PO-9140',
         '@JIRA-DEFECT:PO-9140',
         '@JIRA-LABEL:manual-account-creation',
-        '@R1A',, '@JIRA-TEST-KEY:PO-9978'],
-    }, () => {
+        '@R1A',
+        '@JIRA-TEST-KEY:PO-9978',
+      ],
+    },
+    () => {
       runAmountTest([{ imposed: 100.01, paid: 100.01 }]);
 
       cy.get(DOM_ELEMENTS.errorSummary).should('not.exist');
-    });
-  it('Should allow form submission with amount paid being under the amount imposed', {
-      tags: ['@JIRA-EPIC:PO-2219',
+    },
+  );
+  it(
+    'Should allow form submission with amount paid being under the amount imposed',
+    {
+      tags: [
+        '@JIRA-EPIC:PO-2219',
         '@JIRA-STORY:PO-9140',
         '@JIRA-DEFECT:PO-9140',
         '@JIRA-LABEL:manual-account-creation',
-        '@R1A',, '@JIRA-TEST-KEY:PO-9979'],
-    }, () => {
+        '@R1A',
+        '@JIRA-TEST-KEY:PO-9979',
+      ],
+    },
+    () => {
       runAmountTest([{ imposed: 100.0, paid: 99.99 }]);
 
       cy.get(DOM_ELEMENTS.errorSummary).should('not.exist');
-    });
-  it('Should show error when amount paid exceeds amount imposed on a subsequent imposition', {
-      tags: ['@JIRA-EPIC:PO-2219',
+    },
+  );
+  it(
+    'Should show error when amount paid exceeds amount imposed on a subsequent imposition',
+    {
+      tags: [
+        '@JIRA-EPIC:PO-2219',
         '@JIRA-STORY:PO-9140',
         '@JIRA-DEFECT:PO-9140',
         '@JIRA-LABEL:manual-account-creation',
-        '@R1A',, '@JIRA-TEST-KEY:PO-9980'],
-    }, () => {
+        '@R1A',
+        '@JIRA-TEST-KEY:PO-9980',
+      ],
+    },
+    () => {
       runAmountTest([
         { imposed: 100, paid: 50 },
         { imposed: 200, paid: 200.01 },
@@ -1358,5 +1385,6 @@ describe('FinesMacAddOffenceComponent', () => {
         'contain',
         IMPOSITION_ERROR_MESSAGES.invalidAmountPaidGreaterThanImposed,
       );
-    });
+    },
+  );
 });

@@ -110,9 +110,12 @@ describe('Account Enquiry Consolidated Accounts Tab', () => {
     },
   );
 
-  it('AC1a, AC1b, AC1c, AC1d, AC1e, AC1f: fetches consolidated child accounts and renders the read-only table', {
+  it(
+    'AC1a, AC1b, AC1c, AC1d, AC1e, AC1f: fetches consolidated child accounts and renders the read-only table',
+    {
       tags: [...buildTags('@JIRA-STORY:PO-2391'), '@JIRA-EPIC:PO-2332', '@JIRA-TEST-KEY:PO-9840'],
-    }, () => {
+    },
+    () => {
       setupConsolidatedAccountsScreen();
 
       cy.get(ConsolidatedAccountsLocators.tabLink)
@@ -149,5 +152,6 @@ describe('Account Enquiry Consolidated Accounts Tab', () => {
         })
         .and('have.attr', 'href', '/fines/account/defendant/99000000990002/details#at-a-glance')
         .and('have.attr', 'target', '_blank');
-    });
+    },
+  );
 });
