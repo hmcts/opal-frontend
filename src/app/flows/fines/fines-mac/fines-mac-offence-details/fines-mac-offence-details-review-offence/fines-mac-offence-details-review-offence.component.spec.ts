@@ -1,18 +1,22 @@
-import { ComponentFixture, TestBed } from '@angular/core/testing';
-import { FinesMacOffenceDetailsReviewOffenceComponent } from './fines-mac-offence-details-review-offence.component';
 import { provideHttpClient, withInterceptorsFromDi } from '@angular/common/http';
 import { provideHttpClientTesting } from '@angular/common/http/testing';
-import { provideRouter, ActivatedRoute } from '@angular/router';
-import { of } from 'rxjs';
-import { FINES_MAC_OFFENCE_DETAILS_FORM_MOCK } from '../mocks/fines-mac-offence-details-form.mock';
-import { OPAL_FINES_RESULTS_REF_DATA_MOCK } from '@services/fines/opal-fines-service/mocks/opal-fines-results-ref-data.mock';
+import { ComponentFixture, TestBed } from '@angular/core/testing';
+import { ActivatedRoute, provideRouter } from '@angular/router';
 import { OPAL_FINES_MAJOR_CREDITOR_REF_DATA_MOCK } from '@services/fines/opal-fines-service/mocks/opal-fines-major-creditor-ref-data.mock';
-import { FINES_MAC_OFFENCE_DETAILS_STATE_IMPOSITIONS_MOCK } from '../mocks/fines-mac-offence-details-state-impositions.mock';
+import { OPAL_FINES_OFFENCES_REF_DATA_SINGULAR_MOCK } from '@services/fines/opal-fines-service/mocks/opal-fines-offences-ref-data-singular.mock';
+import { OPAL_FINES_RESULTS_REF_DATA_MOCK } from '@services/fines/opal-fines-service/mocks/opal-fines-results-ref-data.mock';
+import { OpalFines } from '@services/fines/opal-fines-service/opal-fines.service';
+import { firstValueFrom, of } from 'rxjs';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
+import { OPAL_FINES_RESULT_PRETTY_NAME_MOCK } from '../../../services/opal-fines-service/mocks/opal-fines-result-pretty-name.mock';
+import { FINES_MAC_OFFENCE_DETAILS_FORM_MOCK } from '../mocks/fines-mac-offence-details-form.mock';
+import { FINES_MAC_OFFENCE_DETAILS_STATE_IMPOSITIONS_MOCK } from '../mocks/fines-mac-offence-details-state-impositions.mock';
+import { FinesMacOffenceDetailsReviewOffenceComponent } from './fines-mac-offence-details-review-offence.component';
 
 describe('FinesMacOffenceDetailsReviewOffenceComponent', () => {
   let component: FinesMacOffenceDetailsReviewOffenceComponent;
   let fixture: ComponentFixture<FinesMacOffenceDetailsReviewOffenceComponent>;
+  let mockOpalFinesService: Partial<OpalFines>;
   const activatedRouteMock = {
     parent: of('offence-details'),
     snapshot: {
@@ -24,9 +28,15 @@ describe('FinesMacOffenceDetailsReviewOffenceComponent', () => {
   };
 
   beforeEach(async () => {
+    mockOpalFinesService = {
+      getOffenceByCjsCode: vi.fn().mockReturnValue(of(OPAL_FINES_OFFENCES_REF_DATA_SINGULAR_MOCK)),
+      getResultPrettyName: vi.fn().mockReturnValue(OPAL_FINES_RESULT_PRETTY_NAME_MOCK),
+    };
+
     await TestBed.configureTestingModule({
       imports: [FinesMacOffenceDetailsReviewOffenceComponent],
       providers: [
+        { provide: OpalFines, useValue: mockOpalFinesService },
         provideRouter([]),
         provideHttpClient(withInterceptorsFromDi()),
         provideHttpClientTesting(),
@@ -90,5 +100,22 @@ describe('FinesMacOffenceDetailsReviewOffenceComponent', () => {
 
     expect(component.impositionRefData).toEqual(existingResults);
     expect(component.majorCreditorRefData).toEqual(existingMajorCreditors);
+  });
+
+  it('should expose offenceDetails with offenceTitle and offenceCaption', async () => {
+    const existingResults = structuredClone(OPAL_FINES_RESULTS_REF_DATA_MOCK);
+    activatedRouteMock.snapshot.data = {} as never;
+    component.impositionRefData = existingResults;
+
+    component.ngOnInit();
+
+    expect(component.offenceDetails$).toBeDefined();
+
+    const offenceDetails = await firstValueFrom(component.offenceDetails$);
+
+    expect(offenceDetails).toEqual({
+      offenceTitle: 'ak test',
+      offenceCaption: 'ak test (OFF123)',
+    });
   });
 });

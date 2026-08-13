@@ -1,3 +1,4 @@
+import { CommonModule } from '@angular/common';
 import { ChangeDetectionStrategy, Component, EventEmitter, inject, Input, OnInit, Output } from '@angular/core';
 import { FinesMacOffenceDetailsReviewOffenceHeadingComponent } from './fines-mac-offence-details-review-offence-heading/fines-mac-offence-details-review-offence-heading.component';
 import { FinesMacOffenceDetailsReviewOffenceImpositionComponent } from './fines-mac-offence-details-review-offence-imposition/fines-mac-offence-details-review-offence-imposition.component';
@@ -5,10 +6,15 @@ import { IFinesMacOffenceDetailsForm } from '../interfaces/fines-mac-offence-det
 import { IOpalFinesResultsRefData } from '@services/fines/opal-fines-service/interfaces/opal-fines-results-ref-data.interface';
 import { IOpalFinesMajorCreditorRefData } from '@services/fines/opal-fines-service/interfaces/opal-fines-major-creditor-ref-data.interface';
 import { ActivatedRoute } from '@angular/router';
+import { Observable, map } from 'rxjs';
+import { OpalFines } from '@services/fines/opal-fines-service/opal-fines.service';
+import { FinesMacOffenceDetailsService } from '../services/fines-mac-offence-details.service';
+import { IOpalFinesOffencesRefData } from '@services/fines/opal-fines-service/interfaces/opal-fines-offences-ref-data.interface';
 
 @Component({
   selector: 'app-fines-mac-offence-details-review-offence',
   imports: [
+    CommonModule,
     FinesMacOffenceDetailsReviewOffenceHeadingComponent,
     FinesMacOffenceDetailsReviewOffenceImpositionComponent,
   ],
@@ -17,6 +23,8 @@ import { ActivatedRoute } from '@angular/router';
 })
 export class FinesMacOffenceDetailsReviewOffenceComponent implements OnInit {
   private readonly activatedRoute = inject(ActivatedRoute);
+  private readonly opalFinesService = inject(OpalFines);
+  private readonly offenceDetailsService = inject(FinesMacOffenceDetailsService);
 
   @Input({ required: true }) offence!: IFinesMacOffenceDetailsForm;
   @Input({ required: true }) impositionRefData!: IOpalFinesResultsRefData;
@@ -25,6 +33,7 @@ export class FinesMacOffenceDetailsReviewOffenceComponent implements OnInit {
   @Input({ required: false }) showDetails: boolean = true;
   @Input({ required: false }) isReadOnly: boolean = false;
   @Output() public actionClicked = new EventEmitter<{ actionName: string; offenceId: number }>();
+  public offenceDetails$!: Observable<{ offenceTitle: string; offenceCaption: string }>;
 
   /**
    * Emits an action event with the specified action name and offence ID.
@@ -38,6 +47,24 @@ export class FinesMacOffenceDetailsReviewOffenceComponent implements OnInit {
     this.actionClicked.emit(event);
   }
 
+  private getOffenceDetails(): void {
+    const offenceCode = this.offence.formData.fm_offence_details_offence_cjs_code!;
+    const offenceId = this.offence.formData.fm_offence_details_offence_id;
+
+    this.offenceDetails$ = this.opalFinesService.getOffenceByCjsCode(offenceCode).pipe(
+      map((response) => {
+        const offenceRefData = response as IOpalFinesOffencesRefData;
+        const exactMatch = this.offenceDetailsService.findExactOffenceMatch(offenceRefData, offenceCode, offenceId);
+        const offenceTitle = exactMatch?.offence_title ?? offenceRefData.refData[0]?.offence_title ?? '';
+
+        return {
+          offenceTitle,
+          offenceCaption: `${offenceTitle} (${offenceCode})`,
+        };
+      }),
+    );
+  }
+
   public ngOnInit(): void {
     if (this.activatedRoute.snapshot.data['results']) {
       this.impositionRefData = this.activatedRoute.snapshot.data['results'];
@@ -45,5 +72,6 @@ export class FinesMacOffenceDetailsReviewOffenceComponent implements OnInit {
     if (this.activatedRoute.snapshot.data['majorCreditors']) {
       this.majorCreditorRefData = this.activatedRoute.snapshot.data['majorCreditors'];
     }
+    this.getOffenceDetails();
   }
 }

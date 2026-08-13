@@ -192,24 +192,6 @@ export class FinesMacOffenceDetailsService {
   }
 
   /**
-   * Formats an offence title together with its code.
-   *
-   * @param response - The offence lookup response.
-   * @param offenceCode - The offence code entered by the user.
-   * @param offenceId - Optional saved offence ID used to disambiguate duplicate exact-code matches.
-   * @returns The offence title followed by the offence code in parentheses.
-   */
-  public formatTitleWithCode(
-    response: IOpalFinesOffencesRefData | null | undefined,
-    offenceCode: string | null | undefined,
-    offenceId?: number | null,
-  ): string {
-    const exactMatch = this.findExactOffenceMatch(response, offenceCode, offenceId);
-    const offenceTitle = exactMatch?.offence_title ?? response?.refData[0]?.offence_title ?? '';
-    return `${offenceTitle} (${offenceCode ?? ''})`;
-  }
-
-  /**
    * Wires offence-code lookup state into a form using a single options object.
    * The lookup behaviour is unchanged from the old positional-parameter version,
    * but the named configuration makes each dependency explicit and keeps the

@@ -23,7 +23,7 @@ import { beforeEach, describe, expect, it, vi } from 'vitest';
 import { of } from 'rxjs';
 
 import { createSpyObj } from '@app/testing/create-spy-obj.helper';
-import { OPAL_FINES_RESULT_PRETTY_NAME_MOCK } from 'src/app/flows/fines/services/opal-fines-service/mocks/opal-fines-result-pretty-name.mock';
+import { OPAL_FINES_RESULT_PRETTY_NAME_MOCK } from '@services/fines/opal-fines-service/mocks/opal-fines-result-pretty-name.mock';
 
 describe('FinesMacOffenceDetailsReviewOffenceImpositionComponent', () => {
   let component: FinesMacOffenceDetailsReviewOffenceImpositionComponent;
@@ -73,8 +73,7 @@ describe('FinesMacOffenceDetailsReviewOffenceImpositionComponent', () => {
     component.majorCreditorRefData = OPAL_FINES_MAJOR_CREDITOR_REF_DATA_MOCK;
     component.impositions = [structuredClone(FINES_MAC_OFFENCE_DETAILS_STATE_IMPOSITIONS_MOCK[0])];
     component.offenceIndex = 0;
-    component.offence = OPAL_FINES_OFFENCES_REF_DATA_MOCK.refData[0].get_cjs_code;
-    component.offenceId = OPAL_FINES_OFFENCES_REF_DATA_MOCK.refData[0].offence_id;
+    component.offenceCaption = 'Criminal Courts Charge (FCC)';
     component.isReadOnly = false;
 
     const finesMacState = structuredClone(FINES_MAC_STATE_MOCK);
@@ -92,6 +91,7 @@ describe('FinesMacOffenceDetailsReviewOffenceImpositionComponent', () => {
     component.impositionRefData = OPAL_FINES_RESULTS_REF_DATA_MOCK;
     component.majorCreditorRefData = OPAL_FINES_MAJOR_CREDITOR_REF_DATA_MOCK;
     component.impositions = [structuredClone(FINES_MAC_OFFENCE_DETAILS_STATE_IMPOSITIONS_MOCK[0])];
+    component.offenceCaption = 'Criminal Courts Charge (FCC)';
   });
 
   it('should create', () => {
@@ -361,7 +361,7 @@ describe('FinesMacOffenceDetailsReviewOffenceImpositionComponent', () => {
     const caption = fixture.nativeElement.querySelector('caption') as HTMLTableCaptionElement | null;
 
     expect(caption).toBeTruthy();
-    expect(caption?.textContent?.trim()).toBe('Offence: ak test (AK123456)');
+    expect(caption?.textContent?.trim()).toBe('Offence: Criminal Courts Charge (FCC)');
     expect(caption?.classList.contains('govuk-visually-hidden')).toBe(true);
   });
 });

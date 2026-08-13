@@ -1,11 +1,9 @@
-@if (offenceRefData$ | async; as offenceRefData) {
-  <app-fines-mac-offence-details-review-offence-heading-title
-    [offenceCode]="offenceCode"
-    [offenceId]="offenceRefId"
-    [offenceRefData]="offenceRefData"
-    [showActions]="showActions"
-    [showDetails]="showDetails"
-    [isReadOnly]="isReadOnly"
-    (actionClicked)="onActionClick($event)"
-  ></app-fines-mac-offence-details-review-offence-heading-title>
-}
+<app-fines-mac-offence-details-review-offence-heading-title
+  [offenceCode]="offenceCode"
+  [offenceId]="offenceRefId"
+  [offenceTitle]="offenceTitle"
+  [showActions]="showActions"
+  [showDetails]="showDetails"
+  [isReadOnly]="isReadOnly"
+  (actionClicked)="onActionClick($event)"
+></app-fines-mac-offence-details-review-offence-heading-title>
