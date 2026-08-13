@@ -1046,7 +1046,7 @@ describe('FinesMacManualFixedPenalty', () => {
       cy.get(DOM_ELEMENTS.submitButton).click();
       cy.get(DOM_ELEMENTS.errorSummaryList).should(
         'contain',
-        'Place of offence must only include letters a to z, numbers 0-9 and certain special characters (hyphens, spaces, apostrophes)',
+        'Place of offence must only include letters a to z, numbers 0-9 and certain special characters (commas, full stops, hyphens, spaces, apostrophes)',
       );
     },
   );

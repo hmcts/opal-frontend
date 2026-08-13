@@ -40,6 +40,8 @@ import { IOpalFinesAccountDefendantDetailsHistoryAndNotesTabRefData } from './in
 import { IOpalFinesDefendantAccountHistoryParams } from './interfaces/opal-fines-defendant-account-history-params.interface';
 import { IOpalFinesAccountMinorCreditorDetailsHistoryAndNotesTabRefData } from './interfaces/opal-fines-account-minor-creditor-details-history-and-notes-tab-ref-data.interface';
 import { IOpalFinesMinorCreditorAccountHistoryParams } from './interfaces/opal-fines-minor-creditor-account-history-params.interface';
+import { IOpalFinesAccountMajorCreditorDetailsHistoryAndNotesTabRefData } from './interfaces/opal-fines-account-major-creditor-details-history-and-notes-tab-ref-data.interface';
+import { IOpalFinesMajorCreditorAccountHistoryParams } from './interfaces/opal-fines-major-creditor-account-history-params.interface';
 import { IOpalFinesAmendPaymentTermsPayload } from './interfaces/opal-fines-amend-payment-terms-payload.interface';
 import { IOpalFinesAccountDefendantDetailsImpositionsTabRefData } from './interfaces/opal-fines-account-defendant-details-impositions-tab-ref-data.interface';
 import { IOpalFinesAddNotePayload } from './interfaces/opal-fines-add-note.interface';
@@ -126,6 +128,30 @@ export class OpalFines {
       }
     }
     return params;
+  }
+
+  /**
+   * Builds retry-safe HTTP response options for history reads and appends any defined query params.
+   *
+   * @param params - Optional history query params to add to the request.
+   * @returns HTTP options configured for safe-read retries.
+   */
+  private buildHistoryReadOptions(params?: Record<string, string>): {
+    observe: 'response';
+    params?: Record<string, string>;
+    context: ReturnType<typeof withHttpRetry>;
+  } {
+    const options: {
+      observe: 'response';
+      params?: Record<string, string>;
+      context: ReturnType<typeof withHttpRetry>;
+    } = this.withRetrySafeReadOptions({ observe: 'response' as const });
+
+    if (params) {
+      options.params = params;
+    }
+
+    return options;
   }
 
   /**
@@ -631,6 +657,8 @@ export class OpalFines {
       'minorCreditorAccountAtAGlanceCache$',
       'minorCreditorAccountCreditorCache$',
       'minorCreditorAccountHistoryAndNotesCache$',
+      'majorCreditorAccountAtAGlanceCache$',
+      'majorCreditorAccountHistoryAndNotesCache$',
     ];
 
     this.clearCaches(accountCaches);
@@ -1497,16 +1525,14 @@ export class OpalFines {
     filterParams?: IOpalFinesMinorCreditorAccountHistoryParams,
   ): Observable<IOpalFinesAccountMinorCreditorDetailsHistoryAndNotesTabRefData> {
     const url = `${OPAL_FINES_PATHS.minorCreditorAccounts}/${account_id}/history`;
-    const options: {
-      observe: 'response';
-      params?: Record<string, string>;
-    } = this.withRetrySafeReadOptions({ observe: 'response' as const });
-
-    if (filterParams) {
-      options.params = Object.fromEntries(
-        Object.entries(filterParams).filter(([, value]) => value !== undefined),
-      ) as Record<string, string>;
-    }
+    const options = this.buildHistoryReadOptions(
+      filterParams
+        ? (Object.fromEntries(Object.entries(filterParams).filter(([, value]) => value !== undefined)) as Record<
+            string,
+            string
+          >)
+        : undefined,
+    );
 
     const request$ = this.http.get<IOpalFinesAccountMinorCreditorDetailsHistoryAndNotesTabRefData>(url, options).pipe(
       map((response: HttpResponse<IOpalFinesAccountMinorCreditorDetailsHistoryAndNotesTabRefData>) => {
@@ -1614,5 +1640,47 @@ export class OpalFines {
         );
     }
     return this.cache.defendantAccountConsolidatedAccountsCache$;
+  }
+
+  /**
+   * Retrieves the major creditor account history and notes tab data.
+   * Unfiltered history uses the tab cache. Filtered history always makes a new request with the submitted query params.
+   *
+   * @param account_id - The ID of the major creditor account.
+   * @param filterParams - Optional query parameters for filtering account history.
+   * @returns An Observable that emits the account history data.
+   */
+  public getMajorCreditorAccountHistoryAndNotesTabData(
+    account_id: number | null,
+    filterParams?: IOpalFinesMajorCreditorAccountHistoryParams,
+  ): Observable<IOpalFinesAccountMajorCreditorDetailsHistoryAndNotesTabRefData> {
+    const url = `${OPAL_FINES_PATHS.majorCreditorAccounts}/${account_id}/history`;
+    const options = this.buildHistoryReadOptions(
+      filterParams
+        ? (Object.fromEntries(Object.entries(filterParams).filter(([, value]) => value !== undefined)) as Record<
+            string,
+            string
+          >)
+        : undefined,
+    );
+
+    const request$ = this.http.get<IOpalFinesAccountMajorCreditorDetailsHistoryAndNotesTabRefData>(url, options).pipe(
+      map((response: HttpResponse<IOpalFinesAccountMajorCreditorDetailsHistoryAndNotesTabRefData>) => {
+        const version = this.extractEtagVersion(response.headers);
+        const payload = response.body as IOpalFinesAccountMajorCreditorDetailsHistoryAndNotesTabRefData;
+        return {
+          ...payload,
+          version,
+        };
+      }),
+      shareReplay(1),
+    );
+
+    if (filterParams) {
+      return request$;
+    }
+
+    this.cache.majorCreditorAccountHistoryAndNotesCache$ ??= request$;
+    return this.cache.majorCreditorAccountHistoryAndNotesCache$;
   }
 }

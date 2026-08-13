@@ -12,6 +12,7 @@ export const IMPOSITION_ERROR_MESSAGES = {
   requiredAmountImposed: 'Enter amount imposed',
   invalidAmountValue: 'Enter a valid amount',
   invalidAmount: 'Enter an amount with no more than 18 digits before the decimal and 2 or fewer after',
+  invalidAmountPaidGreaterThanImposed: 'Amount paid cannot be greater than amount imposed',
   invalidZeroValue: 'Amount cannot be zero',
   invalidNegativeValue: 'Amount cannot be a negative value',
   requiredCreditor: 'Select whether major or minor creditor',
