@@ -170,8 +170,7 @@ export const finesRouting: Routes = [
         children: aecRouting,
         canActivate: [
           authGuard,
-          //release1cEnforcementOperationalReportingFeatureFlagGuard,
-          //finesSectionPermissionsGuard,
+          finesSectionPermissionsGuard,
         ],
         canActivateChild: [],
         data: {

@@ -1,16 +1,10 @@
-import { ɵresolveComponentResources as resolveComponentResources } from '@angular/core';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
-import { beforeAll, beforeEach, describe, expect, it } from 'vitest';
-
+import { beforeEach, describe, expect, it } from 'vitest';
 import { FinesAecConfigComponent } from './fines-aec-config.component';
 
 describe('FinesAecConfig', () => {
   let component: FinesAecConfigComponent;
   let fixture: ComponentFixture<FinesAecConfigComponent>;
-
-  beforeAll(async () => {
-    await resolveComponentResources(() => Promise.resolve(''));
-  });
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
@@ -25,4 +19,10 @@ describe('FinesAecConfig', () => {
   it('should create', () => {
     expect(component).toBeTruthy();
   });
+ 
+  it('should render a placeholder container page', () => {
+    const text = fixture.nativeElement.textContent;
+    expect(text).toContain('This will act as the Container for Auto-enforcement tabbed pages');
+  }); 
+
 });

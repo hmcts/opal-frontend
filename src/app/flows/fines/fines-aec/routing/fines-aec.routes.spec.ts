@@ -7,10 +7,11 @@ import { FinesAecConfigComponent } from '../fines-aec-config/fines-aec-config.co
 import { FINES_AEC_ROUTING_PATHS } from './fines-aec-routing-paths.constant';
 import { FINES_AEC_ROUTING_TITLES } from './fines-aec-routing-titles.constant';
 import { routing } from './fines-aec.routes';
+import { FINES_PERMISSIONS } from 'src/app/constants/fines-permissions.constant';  
 
 describe('fines aec routes', () => {
   it('should redirect the Auto-Enforcement root to the dashboard', () => {
-    const rootRoute = routing.find((route) => route.path === FINES_AEC_ROUTING_PATHS.root);
+    const rootRoute = routing.find((route) => route.path === '');
 
     expect(rootRoute?.redirectTo).toBe(PAGES_ROUTING_PATHS.children.dashboard);
     expect(rootRoute?.pathMatch).toBe('full');
@@ -20,7 +21,10 @@ describe('fines aec routes', () => {
     const configRoute = routing.find((route) => route.path === FINES_AEC_ROUTING_PATHS.children.config);
 
     expect(configRoute?.canActivate).toEqual([authGuard, routePermissionsGuard]);
-    expect(configRoute?.data).toEqual({ title: FINES_AEC_ROUTING_TITLES.children.config });
+    expect(configRoute?.data).toEqual({
+          routePermissionId: [FINES_PERMISSIONS['auto-enforcement']],
+          title: FINES_AEC_ROUTING_TITLES.children.config,
+        });
     expect(configRoute?.resolve).toEqual({ title: TitleResolver });
   });
 

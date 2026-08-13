@@ -153,7 +153,9 @@ describe('fines routes', () => {
     const autoEnforcementRoute = childRoutes.find((route) => route.path === FINES_ROUTING_PATHS.children.aec.root);
 
     expect(autoEnforcementRoute?.children).toBe(aecRouting);
-    expect(autoEnforcementRoute?.canActivate).toEqual([authGuard]);
+    expect(autoEnforcementRoute?.canActivate).toContain(authGuard);
+    expect(autoEnforcementRoute?.canActivate).toContain(finesSectionPermissionsGuard);
+    
     expect(autoEnforcementRoute?.canActivateChild).toEqual([]);
     expect(autoEnforcementRoute?.data).toEqual({
       sectionKey: FINES_DASHBOARD_ROUTING_PATHS.children.administration,
