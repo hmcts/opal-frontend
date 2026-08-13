@@ -7,7 +7,7 @@
   <hr [class]="style.hr" />
   <ng-container content>
     <opal-lib-govuk-summary-card-list [cardTitle]="cardTitle()" summaryCardListId="payment-terms">
-      @if (hasAmendPaymentTermsPermission) {
+      @if (hasAmendPaymentTermsPermission && accountAllowsPaymentTermsActions) {
         <ng-container actions>
           <li class="govuk-summary-card__action">
             <a
@@ -117,7 +117,7 @@
             class="govuk-summary-list__row"
             summaryListId="payment-terms"
             summaryListRowId="payment-card-last-requested"
-            [actionEnabled]="hasAmendPaymentTermsPermission ? true : false"
+            [actionEnabled]="hasAmendPaymentTermsPermission && accountAllowsPaymentTermsActions"
             (actionClick)="handleRequestPaymentCard()"
           >
             <ng-container name>Payment card last requested</ng-container>
@@ -128,7 +128,7 @@
             } @else {
               <ng-container value><app-fines-not-provided></app-fines-not-provided></ng-container>
             }
-            @if (hasAmendPaymentTermsPermission) {
+            @if (hasAmendPaymentTermsPermission && accountAllowsPaymentTermsActions) {
               <ng-container action>Request payment card</ng-container>
             }
           </div>

@@ -102,6 +102,7 @@ export class FinesMacOffenceDetailsAddAnOffenceFormComponent
   private readonly opalFinesService = inject(OpalFines);
   private readonly finesMacStore = inject(FinesMacStore);
   private readonly creditorListenerControls = new WeakSet<object>();
+  private readonly amountImposedListenerControls = new WeakSet<object>();
 
   @Output() protected override formSubmit = new EventEmitter<IFinesMacOffenceDetailsForm>();
   protected readonly dateService = inject(DateService);
@@ -260,10 +261,39 @@ export class FinesMacOffenceDetailsAddAnOffenceFormComponent
    */
   private setupResultCodeListener(index: number): void {
     this.resultCodeListener(index);
+    this.amountImposedListener(index);
     this.fieldErrors = {
       ...this.fieldErrors,
       ...FINES_MAC_OFFENCE_DETAILS_IMPOSITIONS_FIELD_ERRORS(index),
     };
+  }
+
+  /**
+   * Revalidates amount paid when amount imposed changes in the same imposition row.
+   *
+   * @param index - The index of the impositions form group.
+   */
+  private amountImposedListener(index: number): void {
+    const impositionsFormGroup = this.getFormArrayFormGroup(index, 'fm_offence_details_impositions');
+    const amountImposedControl = this.getFormArrayFormGroupControl(
+      impositionsFormGroup,
+      'fm_offence_details_amount_imposed',
+      index,
+    );
+    const amountPaidControl = this.getFormArrayFormGroupControl(
+      impositionsFormGroup,
+      'fm_offence_details_amount_paid',
+      index,
+    );
+
+    if (this.amountImposedListenerControls.has(amountImposedControl)) {
+      return;
+    }
+
+    this.amountImposedListenerControls.add(amountImposedControl);
+    amountImposedControl.valueChanges.pipe(takeUntil(this['ngUnsubscribe'])).subscribe(() => {
+      amountPaidControl.updateValueAndValidity({ onlySelf: true, emitEvent: false });
+    });
   }
 
   /**

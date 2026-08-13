@@ -44,14 +44,33 @@ describe('FinesSaStore', () => {
     expect(store.getSearchType()).toBe('referenceCaseNumber');
   });
 
+  it('should patch searchAccount state with national insurance number', () => {
+    const newState = {
+      ...FINES_SA_SEARCH_ACCOUNT_STATE,
+      fsa_search_account_individuals_search_criteria: {
+        ...FINES_SA_SEARCH_ACCOUNT_FORM_INDIVIDUALS_STATE,
+        fsa_search_account_individuals_national_insurance_number: 'QQ123456C',
+      },
+    };
+    store.setSearchAccount(newState as IFinesSaSearchAccountState);
+    expect(
+      store.searchAccount().fsa_search_account_individuals_search_criteria
+        ?.fsa_search_account_individuals_national_insurance_number,
+    ).toBe('QQ123456C');
+    expect(store.getSearchType()).toBe('nationalInsuranceNumber');
+  });
+
   it('should patch searchAccount state with individual search criteria', () => {
     const newState = {
       ...FINES_SA_SEARCH_ACCOUNT_STATE,
-      fsa_search_account_individuals_search_criteria: FINES_SA_SEARCH_ACCOUNT_FORM_INDIVIDUALS_STATE_MOCK,
+      fsa_search_account_individuals_search_criteria: {
+        ...FINES_SA_SEARCH_ACCOUNT_FORM_INDIVIDUALS_STATE_MOCK,
+        fsa_search_account_individuals_national_insurance_number: null,
+      },
     };
     store.setSearchAccount(newState as IFinesSaSearchAccountState);
     expect(store.searchAccount().fsa_search_account_individuals_search_criteria).toEqual(
-      FINES_SA_SEARCH_ACCOUNT_FORM_INDIVIDUALS_STATE_MOCK,
+      newState.fsa_search_account_individuals_search_criteria,
     );
     expect(store.getSearchType()).toBe('individuals');
   });

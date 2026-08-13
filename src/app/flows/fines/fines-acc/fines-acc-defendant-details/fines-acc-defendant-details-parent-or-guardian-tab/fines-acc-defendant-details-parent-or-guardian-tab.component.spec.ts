@@ -6,10 +6,14 @@ import { FINES_ACC_DEFENDANT_ROUTING_PATHS } from '../../routing/constants/fines
 import { FINES_ACC_REMOVE_NON_PAYING_PG_ROUTING_PATHS } from '../../fines-acc-remove-non-paying-pg/constants/fines-acc-remove-non-paying-pg-routing-paths.constant';
 import { provideRouter } from '@angular/router';
 import { beforeEach, describe, expect, it } from 'vitest';
+import { FINES_ACC_RESTRICTED_ACCOUNT_STATUS_CODES } from '../../constants/fines-acc-restricted-account-status-codes.constant';
 
 describe('FinesAccDefendantDetailsParentOrGuardianTabComponent', () => {
   let component: FinesAccDefendantDetailsParentOrGuardianTabComponent;
   let fixture: ComponentFixture<FinesAccDefendantDetailsParentOrGuardianTabComponent>;
+
+  const getChangeLinks = (): HTMLAnchorElement[] =>
+    Array.from(fixture.nativeElement.querySelectorAll('.govuk-summary-card__actions a')) as HTMLAnchorElement[];
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
@@ -34,6 +38,16 @@ describe('FinesAccDefendantDetailsParentOrGuardianTabComponent', () => {
     expect(component.removeParentOrGuardianAction).toBe(true);
   });
 
+  it('should display parent or guardian Change actions when the account status is unrestricted', () => {
+    fixture.componentRef.setInput('accountStatusCode', 'L');
+    fixture.detectChanges();
+
+    const changeLinks = getChangeLinks();
+
+    expect(changeLinks).toHaveLength(2);
+    changeLinks.forEach((link) => expect(link.textContent?.trim()).toBe('Change'));
+  });
+
   it('should not make remove parent or guardian action available when user does not have permission', () => {
     fixture.componentRef.setInput('hasAccountMaintenencePermission', false);
     fixture.detectChanges();
@@ -56,6 +70,30 @@ describe('FinesAccDefendantDetailsParentOrGuardianTabComponent', () => {
 
     expect(component.removeParentOrGuardianAction).toBe(false);
   });
+
+  it.each(FINES_ACC_RESTRICTED_ACCOUNT_STATUS_CODES)(
+    'should hide all parent or guardian Change actions for restricted account status %s',
+    (statusCode) => {
+      fixture.componentRef.setInput('accountStatusCode', statusCode);
+      fixture.detectChanges();
+
+      expect(getChangeLinks()).toHaveLength(0);
+    },
+  );
+
+  it.each(FINES_ACC_RESTRICTED_ACCOUNT_STATUS_CODES)(
+    'should not make remove parent or guardian action available for restricted account status %s',
+    (statusCode) => {
+      fixture.componentRef.setInput('hasAccountMaintenencePermission', true);
+      fixture.componentRef.setInput('accountStatusCode', statusCode);
+      fixture.detectChanges();
+
+      const compiled = fixture.nativeElement as HTMLElement;
+
+      expect(component.removeParentOrGuardianAction).toBe(false);
+      expect(compiled.textContent).not.toContain('Remove Parent or guardian details');
+    },
+  );
 
   it('should return the remove route when the user has account maintenance permission in the BU and the action is available', () => {
     component.hasAccountMaintenencePermission = true;

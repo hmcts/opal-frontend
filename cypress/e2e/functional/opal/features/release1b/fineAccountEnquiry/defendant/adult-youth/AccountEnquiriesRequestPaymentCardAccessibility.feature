@@ -1,6 +1,6 @@
 @JIRA-LABEL:account-enquiry
 @JIRA-NFR:PO-2322
-Feature: Defendant - Adult or youth - Account Enquiries - Request Payment Card Accessibility
+Feature: Account Enquiries Request Payment Card Accessibility
 
   Background:
     Given I am logged in with email "opal-test@dev.platform.hmcts.net"
@@ -19,6 +19,8 @@ Feature: Defendant - Adult or youth - Account Enquiries - Request Payment Card A
       | account.collection_order_made_today     | false                              |
       | account.payment_card_request            | false                              |
       | account.defendant.dob                   | 2002-05-15                         |
+      | account.offences.0.impositions.0.amount_imposed | 250                       |
+      | account.offences.0.impositions.0.amount_paid    | 300                       |
     When I search for the account by last name "PayCardAccess{uniq}" and open the latest result
     And I go to the Payment terms section
     And I start a payment card request

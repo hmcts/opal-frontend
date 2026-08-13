@@ -1,5 +1,5 @@
 @JIRA-LABEL:manual-account-creation
-Feature: Manual fixed penalty account creation - Create Draft Account
+Feature: Fixed Penalty
 
   Rule: Adult or youth fixed penalty review
     Background:
@@ -20,7 +20,7 @@ Feature: Manual fixed penalty account creation - Create Draft Account
         | Offence details  | Date of offence        | 01/01/2023                            |
         | Offence details  | Offence code           | HY35014                               |
         | Offence details  | Time of offence        | 14:30                                 |
-        | Offence details  | Place of offence       | Oxford Street - London                |
+        | Offence details  | Place of offence       | First,Oxford Street - London          |
         | Offence details  | Amount imposed         | 150                                   |
         | Vehicle details  | Registration number    | AB12CDE                               |
         | Vehicle details  | Driving licence number | SMITH010123JS9AB                      |
@@ -46,7 +46,7 @@ Feature: Manual fixed penalty account creation - Create Draft Account
         | Offence Type     | Vehicle                                  |
         | Offence code     | Riding a bicycle on a footpath (HY35014) |
         | Time of offence  | 14:30                                    |
-        | Place of offence | Oxford Street - London                   |
+        | Place of offence | First,Oxford Street - London             |
         | Amount imposed   | £150.00                                  |
 
     @JIRA-EPIC:PO-855 @R1A @JIRA-STORY:PO-861 @JIRA-TEST-KEY:PO-5312
@@ -135,7 +135,7 @@ Feature: Manual fixed penalty account creation - Create Draft Account
         | Offence details  | Date of offence        | 01/01/2023                   |
         | Offence details  | Offence code           | HY35014                      |
         | Offence details  | Time of offence        | 14:30                        |
-        | Offence details  | Place of offence       | Oxford Street - London       |
+        | Offence details  | Place of offence       | First,Oxford Street - London |
         | Offence details  | Amount imposed         | 150                          |
         | Vehicle details  | Registration number    | AB12CDE                      |
         | Vehicle details  | Driving licence number | SMITH010123JS9AB             |
@@ -143,6 +143,32 @@ Feature: Manual fixed penalty account creation - Create Draft Account
       Then I see a fixed penalty error "Enter a valid date of birth in the past" for "Date of birth"
       When I cancel fixed penalty details choosing "Cancel"
       Then I see a fixed penalty error "Enter a valid date of birth in the past" for "Date of birth"
+
+    @JIRA-EPIC:PO-855 @R1A @JIRA-STORY:PO-1144 @JIRA-STORY:PO-9696 @JIRA-TEST-KEY:PO-5331
+    Scenario: Negative amount imposed validation error is shown
+      Given I am logged in with email "opal-test@dev.platform.hmcts.net"
+      When I start a fixed penalty account for business unit "West London", defendant type "Adult or youth only" and originator type "New"
+      And I complete fixed penalty details:
+        | Section          | Field                  | Value                        |
+        | Court details    | Issuing Authority      | Lowestoft County Court (256) |
+        | Court details    | Enforcement court      | Aram Court (123)             |
+        | Personal details | Title                  | Mr                           |
+        | Personal details | First names            | John                         |
+        | Personal details | Last name              | Smith                        |
+        | Personal details | Date of birth          | 01/01/1980                   |
+        | Personal details | Address line 1         | 123 High Street              |
+        | Personal details | Postcode               | SW1A 1AA                     |
+        | Offence details  | Notice number          | FPN1234                      |
+        | Offence details  | Offence type           | Vehicle                      |
+        | Offence details  | Date of offence        | 01/01/2023                   |
+        | Offence details  | Offence code           | HY35014                      |
+        | Offence details  | Time of offence        | 14:30                        |
+        | Offence details  | Place of offence       | Oxford Street - London       |
+        | Offence details  | Amount imposed         | -500                         |
+        | Vehicle details  | Registration number    | AB12CDE                      |
+        | Vehicle details  | Driving licence number | SMITH010123JS9AB             |
+      And I attempt to review the fixed penalty account
+      Then I see a fixed penalty error "Amount imposed must be greater than zero" for "Amount imposed"
 
   Rule: Fixed penalty route guard when navigating back
     @JIRA-EPIC:PO-855 @R1A @JIRA-STORY:PO-857 @JIRA-TEST-KEY:PO-5321
@@ -195,6 +221,30 @@ Feature: Manual fixed penalty account creation - Create Draft Account
         | Vehicle details | Registration number    | CP12COR                                          |
         | Vehicle details | Driving licence number | SMITH010123JS9AB                                 |
       And I review the fixed penalty account
+
+    @JIRA-EPIC:PO-855 @R1A @JIRA-STORY:PO-1144 @JIRA-STORY:PO-9696 @JIRA-TEST-KEY:PO-5332
+    Scenario: Company negative amount imposed validation error is shown
+      Given I am logged in with email "opal-test@dev.platform.hmcts.net"
+      When I start a fixed penalty account for business unit "West London", defendant type "Company" and originator type "New"
+      And I complete fixed penalty details:
+        | Section         | Field                  | Value                                            |
+        | Court details   | Issuing Authority      | Avon and Somerset Road Safety Support Unit (052) |
+        | Court details   | Enforcement court      | Johns Maintenance Court (249)                    |
+        | Company details | Company name           | Example Corp Ltd {uniq}                          |
+        | Company details | Address line 1         | 123 Business Park                                |
+        | Company details | Address line 2         | Commerce Way                                     |
+        | Company details | Postcode               | EC1A 1BB                                         |
+        | Offence details | Notice number          | CORP2025                                         |
+        | Offence details | Offence type           | Vehicle                                          |
+        | Offence details | Date of offence        | 05/07/2025                                       |
+        | Offence details | Offence code           | HY35014                                          |
+        | Offence details | Time of offence        | 10:15                                            |
+        | Offence details | Place of offence       | London Borough of Westminster                    |
+        | Offence details | Amount imposed         | -500                                             |
+        | Vehicle details | Registration number    | CP12COR                                          |
+        | Vehicle details | Driving licence number | SMITH010123JS9AB                                 |
+      And I attempt to review the fixed penalty account
+      Then I see a fixed penalty error "Amount imposed must be greater than zero" for "Amount imposed"
 
     @JIRA-EPIC:PO-855 @R1A @JIRA-STORY:PO-861 @JIRA-TEST-KEY:PO-5323
     Scenario: Review shows fixed penalty details for company
