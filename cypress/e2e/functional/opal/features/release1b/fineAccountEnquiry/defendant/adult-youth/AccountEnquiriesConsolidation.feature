@@ -15,7 +15,7 @@ Feature: Defendant - Adult or youth - Account Enquiries - Consolidation
     When I search for the account by last name "ConsolidatedAccount{uniq}" and open the latest result
 
 
-  @R1B @JIRA-STORY:PO-2391 @JIRA-EPIC:PO-2332
+  @R1B @JIRA-STORY:PO-2391 @JIRA-EPIC:PO-2332 @JIRA-TEST-KEY:PO-10012
   Scenario: Consolidated account links open the child account At a glance view
     # The consolidated-account response is mocked in the test harness because consolidation
     # behaviour is not available end-to-end in the live environment yet.
