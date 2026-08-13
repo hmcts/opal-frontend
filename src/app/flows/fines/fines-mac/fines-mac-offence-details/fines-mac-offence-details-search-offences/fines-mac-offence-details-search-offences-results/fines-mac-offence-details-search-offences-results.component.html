@@ -2,6 +2,7 @@
   <opal-lib-govuk-back-link (clickEvent)="navigateBack()"></opal-lib-govuk-back-link>
   <h1 class="govuk-heading-l">Search results</h1>
   @if (searchOffencesData.length === 0) {
+    <span class="govuk-visually-hidden" role="status">{{ announcementText }}</span>
     <p>There are no matching results.</p>
     <p>Check your search and try again.</p>
   } @else {

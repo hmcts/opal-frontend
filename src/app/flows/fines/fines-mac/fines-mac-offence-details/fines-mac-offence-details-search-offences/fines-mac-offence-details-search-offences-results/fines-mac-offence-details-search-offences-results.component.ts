@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, Component, inject } from '@angular/core';
+import { AfterViewInit, ChangeDetectionStrategy, ChangeDetectorRef, Component, inject } from '@angular/core';
 import { GovukBackLinkComponent } from '@hmcts/opal-frontend-common/components/govuk/govuk-back-link';
 import { ActivatedRoute, Router, RouterModule } from '@angular/router';
 import { CanDeactivateTypes } from '@hmcts/opal-frontend-common/guards/can-deactivate/types';
@@ -16,15 +16,19 @@ import { IOpalFinesSearchOffencesData } from '@services/fines/opal-fines-service
   templateUrl: './fines-mac-offence-details-search-offences-results.component.html',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class FinesMacOffenceDetailsSearchOffencesResultsComponent {
+export class FinesMacOffenceDetailsSearchOffencesResultsComponent implements AfterViewInit {
   private readonly router = inject(Router);
   private readonly activatedRoute = inject(ActivatedRoute);
   private readonly finesMacOffenceDetailsSearchOffencesStore = inject(FinesMacOffenceDetailsSearchOffencesStore);
+  private readonly changeDetectorRef = inject(ChangeDetectorRef);
+  private announcementTimeoutId?: ReturnType<typeof setTimeout>;
 
   protected readonly searchOffencesData: IFinesMacOffenceDetailsSearchOffencesResultsTableWrapperTableData[] =
     this.mapSearchOffencesToTableData();
 
   public readonly tableSort = FINES_MAC_OFFENCE_DETAILS_SEARCH_OFFENCES_RESULTS_TABLE_WRAPPER_SORT_DEFAULT;
+  public announcementText: string = '';
+
   /**
    * Maps search offences data retrieved from the activated route's snapshot
    * to a format suitable for table display.
@@ -48,6 +52,19 @@ export class FinesMacOffenceDetailsSearchOffencesResultsComponent {
     }));
   }
 
+  public ngAfterViewInit(): void {
+    if (this.searchOffencesData.length !== 0) {
+      return;
+    }
+    if (this.announcementTimeoutId) {
+      clearTimeout(this.announcementTimeoutId);
+    }
+    this.announcementTimeoutId = setTimeout(() => {
+      this.announcementText = 'No results found';
+      this.changeDetectorRef.detectChanges();
+    });
+  }
+
   /**
    * Checks if the component can be deactivated.
    * @returns A boolean indicating whether the component can be deactivated.
@@ -62,5 +79,11 @@ export class FinesMacOffenceDetailsSearchOffencesResultsComponent {
    */
   public navigateBack(): void {
     this.router.navigate(['..'], { relativeTo: this.activatedRoute });
+  }
+
+  public ngOnDestroy(): void {
+    if (this.announcementTimeoutId) {
+      clearTimeout(this.announcementTimeoutId);
+    }
   }
 }
