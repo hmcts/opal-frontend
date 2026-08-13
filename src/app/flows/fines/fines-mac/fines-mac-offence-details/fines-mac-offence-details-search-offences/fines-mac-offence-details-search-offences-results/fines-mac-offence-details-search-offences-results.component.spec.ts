@@ -1,4 +1,4 @@
-import { ComponentFixture, TestBed } from '@angular/core/testing';
+import { TestBed } from '@angular/core/testing';
 import { FinesMacOffenceDetailsSearchOffencesResultsComponent } from './fines-mac-offence-details-search-offences-results.component';
 import { ActivatedRoute, provideRouter } from '@angular/router';
 import { FinesMacOffenceDetailsSearchOffencesStore } from '../stores/fines-mac-offence-details-search-offences.store';
@@ -47,13 +47,10 @@ const createComponent = async (searchResults: IOpalFinesSearchOffencesData) => {
 
 describe('FinesMacOffenceDetailsSearchOffencesResultsComponent', () => {
   let component: FinesMacOffenceDetailsSearchOffencesResultsComponent;
-  let fixture: ComponentFixture<FinesMacOffenceDetailsSearchOffencesResultsComponent>;
   let finesMacOffenceDetailsSearchOffencesStore: FinesMacOffenceDetailsSearchOffencesStoreType;
 
   beforeEach(async () => {
-    ({ component, finesMacOffenceDetailsSearchOffencesStore, fixture } = await createComponent(
-      OPAL_FINES_SEARCH_OFFENCES_MOCK,
-    ));
+    ({ component, finesMacOffenceDetailsSearchOffencesStore } = await createComponent(OPAL_FINES_SEARCH_OFFENCES_MOCK));
   });
 
   it('should create', () => {

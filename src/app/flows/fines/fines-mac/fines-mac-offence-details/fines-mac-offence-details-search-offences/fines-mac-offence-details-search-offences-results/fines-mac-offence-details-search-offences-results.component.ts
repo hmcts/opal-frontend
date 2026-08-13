@@ -1,4 +1,4 @@
-import { AfterViewInit, ChangeDetectionStrategy, ChangeDetectorRef, Component, inject } from '@angular/core';
+import { AfterViewInit, ChangeDetectionStrategy, ChangeDetectorRef, Component, OnDestroy, inject } from '@angular/core';
 import { GovukBackLinkComponent } from '@hmcts/opal-frontend-common/components/govuk/govuk-back-link';
 import { ActivatedRoute, Router, RouterModule } from '@angular/router';
 import { CanDeactivateTypes } from '@hmcts/opal-frontend-common/guards/can-deactivate/types';
@@ -16,7 +16,7 @@ import { IOpalFinesSearchOffencesData } from '@services/fines/opal-fines-service
   templateUrl: './fines-mac-offence-details-search-offences-results.component.html',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class FinesMacOffenceDetailsSearchOffencesResultsComponent implements AfterViewInit {
+export class FinesMacOffenceDetailsSearchOffencesResultsComponent implements AfterViewInit, OnDestroy {
   private readonly router = inject(Router);
   private readonly activatedRoute = inject(ActivatedRoute);
   private readonly finesMacOffenceDetailsSearchOffencesStore = inject(FinesMacOffenceDetailsSearchOffencesStore);
