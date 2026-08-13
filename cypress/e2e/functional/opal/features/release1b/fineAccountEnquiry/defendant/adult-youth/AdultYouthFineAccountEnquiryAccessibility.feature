@@ -114,7 +114,7 @@ Feature: Adult Youth Fine Account Enquiry Accessibility
     And I open the remove enforcement hold screen
     Then I check the page for accessibility
 
-  @R1B @JIRA-STORY:PO-2635 @JIRA-EPIC:PO-2621
+  @R1B @JIRA-STORY:PO-2635 @JIRA-EPIC:PO-2621 @JIRA-TEST-KEY:PO-9563
   Scenario: History and notes tab accessibility
     Given I create a "adultOrYouthOnly" draft account with the following details and set status "Publishing Pending" using user "opal-test-10@dev.platform.hmcts.net":
       | Account_status                          | Submitted                           |
