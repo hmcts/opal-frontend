@@ -5,7 +5,9 @@ import { FINES_PERMISSIONS } from 'src/app/constants/fines-permissions.constant'
 
 describe('ADMINISTRATION_LINKS', () => {
   it('should include the Auto-Enforcement configuration link', () => {
-    const autoEnforcementConfigLink = ADMINISTRATION_LINKS.find((link) => link.id === 'autoEnforcementConfigurationLink');
+    const autoEnforcementConfigLink = ADMINISTRATION_LINKS.find(
+      (link) => link.id === 'autoEnforcementConfigurationLink',
+    );
 
     expect(autoEnforcementConfigLink).toEqual({
       id: 'autoEnforcementConfigurationLink',

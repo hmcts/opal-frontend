@@ -5,7 +5,7 @@ import { TitleResolver } from '@hmcts/opal-frontend-common/resolvers/title';
 import { PAGES_ROUTING_PATHS } from '@routing/pages/constants/routing-paths.constant';
 import { FINES_AEC_ROUTING_PATHS } from './fines-aec-routing-paths.constant';
 import { FINES_AEC_ROUTING_TITLES } from './fines-aec-routing-titles.constant';
-import { FINES_PERMISSIONS } from 'src/app/constants/fines-permissions.constant';  
+import { FINES_PERMISSIONS } from 'src/app/constants/fines-permissions.constant';
 
 export const routing: Routes = [
   {

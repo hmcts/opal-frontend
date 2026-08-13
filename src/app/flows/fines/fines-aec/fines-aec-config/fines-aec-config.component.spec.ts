@@ -19,10 +19,9 @@ describe('FinesAecConfig', () => {
   it('should create', () => {
     expect(component).toBeTruthy();
   });
- 
+
   it('should render a placeholder container page', () => {
     const text = fixture.nativeElement.textContent;
     expect(text).toContain('This will act as the Container for Auto-enforcement tabbed pages');
-  }); 
-
+  });
 });

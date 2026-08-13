@@ -155,7 +155,7 @@ describe('fines routes', () => {
     expect(autoEnforcementRoute?.children).toBe(aecRouting);
     expect(autoEnforcementRoute?.canActivate).toContain(authGuard);
     expect(autoEnforcementRoute?.canActivate).toContain(finesSectionPermissionsGuard);
-    
+
     expect(autoEnforcementRoute?.canActivateChild).toEqual([]);
     expect(autoEnforcementRoute?.data).toEqual({
       sectionKey: FINES_DASHBOARD_ROUTING_PATHS.children.administration,
