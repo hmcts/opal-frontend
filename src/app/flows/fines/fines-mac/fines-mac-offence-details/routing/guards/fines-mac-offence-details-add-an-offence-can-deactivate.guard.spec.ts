@@ -11,19 +11,22 @@ describe('finesMacOffenceDetailsAddAnOffenceCanDeactivateGuard', () => {
     component.canDeactivate.mockReset();
   });
 
-  it('allows navigation to the minor creditor form without an unsaved changes warning', () => {
-    const nextState = { url: '/fines/mac/offence-details/add-minor-creditor' } as RouterStateSnapshot;
+  it.each(['add-minor-creditor', 'remove-imposition', 'remove-minor-creditor', 'remove-offence'])(
+    'allows navigation to %s without an unsaved changes warning',
+    (route) => {
+      const nextState = { url: `/fines/mac/offence-details/${route}` } as RouterStateSnapshot;
 
-    const result = finesMacOffenceDetailsAddAnOffenceCanDeactivateGuard(
-      component,
-      currentRoute,
-      currentState,
-      nextState,
-    );
+      const result = finesMacOffenceDetailsAddAnOffenceCanDeactivateGuard(
+        component,
+        currentRoute,
+        currentState,
+        nextState,
+      );
 
-    expect(result).toBe(true);
-    expect(component.canDeactivate).not.toHaveBeenCalled();
-  });
+      expect(result).toBe(true);
+      expect(component.canDeactivate).not.toHaveBeenCalled();
+    },
+  );
 
   it('uses the shared unsaved changes guard when leaving the offence form', () => {
     component.canDeactivate.mockReturnValue(false);
