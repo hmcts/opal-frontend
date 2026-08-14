@@ -167,7 +167,7 @@ describe('Account Enquiry Parent or Guardian Component', () => {
 
   it(
     'AC3: should keep the existing Change and Remove actions visible for a youth-only account with a non-paying parent or guardian',
-    { tags: [...buildTags('@JIRA-STORY:PO-5749'), '@JIRA-EPIC:PO-2990'] },
+    { tags: [...buildTags('@JIRA-STORY:PO-5749'), '@JIRA-EPIC:PO-2990', '@JIRA-TEST-KEY:PO-9868'] },
     () => {
       // AC3 – Existing action eligibility rules still show both actions for a youth-only account with a non-paying parent or guardian.
       const headerMock = structuredClone(DEFENDANT_HEADER_YOUTH_MOCK);
@@ -190,7 +190,7 @@ describe('Account Enquiry Parent or Guardian Component', () => {
 
   it(
     'AC3: should not display the remove action when the parent or guardian is the debtor',
-    { tags: [...buildTags('@JIRA-STORY:PO-5749'), '@JIRA-EPIC:PO-2990'] },
+    { tags: [...buildTags('@JIRA-STORY:PO-5749'), '@JIRA-EPIC:PO-2990', '@JIRA-TEST-KEY:PO-9869'] },
     () => {
       const headerMock = structuredClone(createDefendantHeaderMockWithName('Robert', 'Thomson'));
       headerMock.parent_guardian_party_id = '1770000001';
