@@ -38,7 +38,7 @@ Feature: Defendant Adult Youth Search And Matches Journeys
     When I open the latest matching result from the search results
     Then I should see the account summary header contains "JOURNEYIND{uniqUpper}"
 
-  @R1B @JIRA-STORY:PO-2953 @JIRA-EPIC:PO-2630
+  @R1B @JIRA-STORY:PO-2953 @JIRA-EPIC:PO-2630 @JIRA-TEST-KEY:PO-10014
   Scenario: Search for an individual defendant account by National Insurance number and open the matching record
     # PO-2953 - AC7
     Given I create a "adultOrYouthOnly" draft account with the following details and set status "Publishing Pending" using user "opal-test-10@dev.platform.hmcts.net":
@@ -65,7 +65,7 @@ Feature: Defendant Adult Youth Search And Matches Journeys
     When I open the latest matching result from the search results
     Then I should see the account summary header contains "JOURNEYNI{uniqUpper}"
 
-  @R1B @JIRA-STORY:PO-2953 @JIRA-EPIC:PO-2630
+  @R1B @JIRA-STORY:PO-2953 @JIRA-EPIC:PO-2630 @JIRA-TEST-KEY:PO-10015
   Scenario: Search for an individual defendant account by National Insurance number with spaces and open the matching record
     # PO-2953 - AC8
     Given I create a "adultOrYouthOnly" draft account with the following details and set status "Publishing Pending" using user "opal-test-10@dev.platform.hmcts.net":
