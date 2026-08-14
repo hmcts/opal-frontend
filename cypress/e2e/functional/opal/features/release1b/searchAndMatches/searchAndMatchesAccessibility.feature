@@ -38,7 +38,7 @@ Feature: Search And Matches Accessibility
     Then I see the Search results page
     And I check the page for accessibility
 
-  @JIRA-STORY:PO-2953 @JIRA-EPIC:PO-2630 @R1B
+  @JIRA-STORY:PO-2953 @JIRA-EPIC:PO-2630 @R1B @JIRA-TEST-KEY:PO-10019
   Scenario: Check Search and Matches Accessibility with Axe-Core for National Insurance quick search
     ## Check Accessibility on National Insurance quick search
     When I search using the following inputs:
