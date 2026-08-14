@@ -1309,7 +1309,6 @@ describe('FinesMacAddOffenceComponent', () => {
 
   it(
     'Should show error message for invalid amount when £100.01 paid exceeds £100 imposed',
-
     {
       tags: [
         '@JIRA-EPIC:PO-2219',
@@ -1317,9 +1316,9 @@ describe('FinesMacAddOffenceComponent', () => {
         '@JIRA-DEFECT:PO-9140',
         '@JIRA-LABEL:manual-account-creation',
         '@R1A',
+        '@JIRA-TEST-KEY:PO-9977',
       ],
     },
-
     () => {
       runAmountTest([{ imposed: 100, paid: 100.01 }]);
       cy.get(DOM_ELEMENTS.errorSummary).should(
@@ -1337,6 +1336,7 @@ describe('FinesMacAddOffenceComponent', () => {
         '@JIRA-DEFECT:PO-9140',
         '@JIRA-LABEL:manual-account-creation',
         '@R1A',
+        '@JIRA-TEST-KEY:PO-9978',
       ],
     },
     () => {
@@ -1354,6 +1354,7 @@ describe('FinesMacAddOffenceComponent', () => {
         '@JIRA-DEFECT:PO-9140',
         '@JIRA-LABEL:manual-account-creation',
         '@R1A',
+        '@JIRA-TEST-KEY:PO-9979',
       ],
     },
     () => {
@@ -1371,6 +1372,7 @@ describe('FinesMacAddOffenceComponent', () => {
         '@JIRA-DEFECT:PO-9140',
         '@JIRA-LABEL:manual-account-creation',
         '@R1A',
+        '@JIRA-TEST-KEY:PO-9980',
       ],
     },
     () => {
