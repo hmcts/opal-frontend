@@ -10,8 +10,8 @@ describe('FINANCE_DASHBOARD_CONFIG', () => {
       highlights: [],
       groups: [
         {
-          id: 'finance-placeholder',
-          title: 'Pending development',
+          id: 'cash',
+          title: 'Cash',
           links: FINANCE_LINKS,
         },
         {
