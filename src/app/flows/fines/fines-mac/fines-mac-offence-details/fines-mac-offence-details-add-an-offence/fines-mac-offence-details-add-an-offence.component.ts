@@ -13,6 +13,7 @@ import { FinesMacStore } from '../../stores/fines-mac.store';
 import { FinesMacOffenceDetailsStore } from '../stores/fines-mac-offence-details.store';
 import { DateService } from '@hmcts/opal-frontend-common/services/date-service';
 import { OpalFines } from '@services/fines/opal-fines-service/opal-fines.service';
+import { CanDeactivateTypes } from '@hmcts/opal-frontend-common/guards/can-deactivate/types';
 
 @Component({
   selector: 'app-fines-mac-offence-details-add-an-offence',
@@ -260,6 +261,15 @@ export class FinesMacOffenceDetailsAddAnOffenceComponent
   public handleUnsavedChanges(unsavedChanges: boolean): void {
     this.finesMacStore.setUnsavedChanges(unsavedChanges);
     this.stateUnsavedChanges = unsavedChanges;
+  }
+
+  /**
+   * Determines whether the form can be left without an unsaved-changes warning.
+   *
+   * @returns Whether navigation can proceed.
+   */
+  public override canDeactivate(): CanDeactivateTypes {
+    return super.canDeactivate();
   }
 
   public ngOnInit(): void {
