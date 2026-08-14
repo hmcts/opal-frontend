@@ -8,10 +8,6 @@ describe('FinesExtFinanceOutboundFiles', () => {
   let component: FinesExtFinanceOutboundFiles;
   let fixture: ComponentFixture<FinesExtFinanceOutboundFiles>;
 
-  beforeAll(async () => {
-    await resolveComponentResources(() => Promise.resolve(''));
-  });
-
   beforeEach(async () => {
     await TestBed.configureTestingModule({
       imports: [FinesExtFinanceOutboundFiles],
@@ -24,5 +20,10 @@ describe('FinesExtFinanceOutboundFiles', () => {
 
   it('should create', () => {
     expect(component).toBeTruthy();
+  });
+
+  it('should render a placeholder container page for outbound files', () => {
+    const text = fixture.nativeElement.textContent;
+    expect(text).toContain('Placeholder for Outbound Files');
   });
 });

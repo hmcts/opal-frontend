@@ -8,10 +8,6 @@ describe('FinesExtFinanceUploadVariantBankingFiles', () => {
   let component: FinesExtFinanceUploadVariantBankingFiles;
   let fixture: ComponentFixture<FinesExtFinanceUploadVariantBankingFiles>;
 
-  beforeAll(async () => {
-    await resolveComponentResources(() => Promise.resolve(''));
-  });
-
   beforeEach(async () => {
     await TestBed.configureTestingModule({
       imports: [FinesExtFinanceUploadVariantBankingFiles],
@@ -24,5 +20,10 @@ describe('FinesExtFinanceUploadVariantBankingFiles', () => {
 
   it('should create', () => {
     expect(component).toBeTruthy();
+  });
+
+  it('should render a placeholder container page for file upload', () => {
+    const text = fixture.nativeElement.textContent;
+    expect(text).toContain('Placeholder for File Upload');
   });
 });
