@@ -86,7 +86,9 @@ const mountMinorCreditorHistoryTable = (tabData: IOpalFinesAccountMinorCreditorD
 describe('Minor Creditor Account Enquiry - History and notes tab', () => {
   it(
     'AC6a. sends the initial unfiltered history request and renders the returned table rows',
-    { tags: buildTags(MINOR_CREDITOR_HISTORY_STORY_TAG, MINOR_CREDITOR_HISTORY_EPIC_TAG) },
+    {
+      tags: [...buildTags(MINOR_CREDITOR_HISTORY_STORY_TAG, MINOR_CREDITOR_HISTORY_EPIC_TAG), '@JIRA-TEST-KEY:PO-9848'],
+    },
     () => {
       setupMinorCreditorHistoryAndNotesScreenWithTabData(
         structuredClone(ACCOUNT_ENQUIRY_MINOR_CREDITOR_HISTORY_AND_NOTES_INITIAL_MOCK),
@@ -125,7 +127,9 @@ describe('Minor Creditor Account Enquiry - History and notes tab', () => {
 
   it(
     'AC6a. maps a Date from filter to the expected query parameter and keeps the value visible',
-    { tags: buildTags(MINOR_CREDITOR_HISTORY_STORY_TAG, MINOR_CREDITOR_HISTORY_EPIC_TAG) },
+    {
+      tags: [...buildTags(MINOR_CREDITOR_HISTORY_STORY_TAG, MINOR_CREDITOR_HISTORY_EPIC_TAG), '@JIRA-TEST-KEY:PO-9849'],
+    },
     () => {
       setupMinorCreditorHistoryAndNotesScreenWithTabData(
         structuredClone(ACCOUNT_ENQUIRY_MINOR_CREDITOR_HISTORY_AND_NOTES_INITIAL_MOCK),
@@ -150,7 +154,9 @@ describe('Minor Creditor Account Enquiry - History and notes tab', () => {
 
   it(
     'AC6a. maps a Date to filter to the expected query parameter and keeps the value visible',
-    { tags: buildTags(MINOR_CREDITOR_HISTORY_STORY_TAG, MINOR_CREDITOR_HISTORY_EPIC_TAG) },
+    {
+      tags: [...buildTags(MINOR_CREDITOR_HISTORY_STORY_TAG, MINOR_CREDITOR_HISTORY_EPIC_TAG), '@JIRA-TEST-KEY:PO-9850'],
+    },
     () => {
       setupMinorCreditorHistoryAndNotesScreenWithTabData(
         structuredClone(ACCOUNT_ENQUIRY_MINOR_CREDITOR_HISTORY_AND_NOTES_INITIAL_MOCK),
@@ -175,7 +181,9 @@ describe('Minor Creditor Account Enquiry - History and notes tab', () => {
 
   it(
     'AC6a. sends date range and category itemTypes when filters are applied',
-    { tags: buildTags(MINOR_CREDITOR_HISTORY_STORY_TAG, MINOR_CREDITOR_HISTORY_EPIC_TAG) },
+    {
+      tags: [...buildTags(MINOR_CREDITOR_HISTORY_STORY_TAG, MINOR_CREDITOR_HISTORY_EPIC_TAG), '@JIRA-TEST-KEY:PO-9851'],
+    },
     () => {
       setupMinorCreditorHistoryAndNotesScreenWithTabDataSequence([
         structuredClone(ACCOUNT_ENQUIRY_MINOR_CREDITOR_HISTORY_AND_NOTES_INITIAL_MOCK),
@@ -210,7 +218,9 @@ describe('Minor Creditor Account Enquiry - History and notes tab', () => {
 
   it(
     'AC6a. maps multiple selected categories to the expected comma-separated itemTypes value',
-    { tags: buildTags(MINOR_CREDITOR_HISTORY_STORY_TAG, MINOR_CREDITOR_HISTORY_EPIC_TAG) },
+    {
+      tags: [...buildTags(MINOR_CREDITOR_HISTORY_STORY_TAG, MINOR_CREDITOR_HISTORY_EPIC_TAG), '@JIRA-TEST-KEY:PO-9852'],
+    },
     () => {
       setupMinorCreditorHistoryAndNotesScreenWithTabData(
         structuredClone(ACCOUNT_ENQUIRY_MINOR_CREDITOR_HISTORY_AND_NOTES_INITIAL_MOCK),
@@ -236,7 +246,9 @@ describe('Minor Creditor Account Enquiry - History and notes tab', () => {
 
   it(
     'AC2c. shows the standard no-results state while keeping selected filters visible',
-    { tags: buildTags(MINOR_CREDITOR_HISTORY_STORY_TAG, MINOR_CREDITOR_HISTORY_EPIC_TAG) },
+    {
+      tags: [...buildTags(MINOR_CREDITOR_HISTORY_STORY_TAG, MINOR_CREDITOR_HISTORY_EPIC_TAG), '@JIRA-TEST-KEY:PO-9853'],
+    },
     () => {
       setupMinorCreditorHistoryAndNotesScreenWithTabDataSequence([
         structuredClone(ACCOUNT_ENQUIRY_MINOR_CREDITOR_HISTORY_AND_NOTES_INITIAL_MOCK),
@@ -262,7 +274,9 @@ describe('Minor Creditor Account Enquiry - History and notes tab', () => {
 
   it(
     'AC1. displays LTZ-formatted dates and sorts newest first using millisecond timestamps',
-    { tags: buildTags(MINOR_CREDITOR_HISTORY_STORY_TAG, MINOR_CREDITOR_HISTORY_EPIC_TAG) },
+    {
+      tags: [...buildTags(MINOR_CREDITOR_HISTORY_STORY_TAG, MINOR_CREDITOR_HISTORY_EPIC_TAG), '@JIRA-TEST-KEY:PO-9854'],
+    },
     () => {
       setupMinorCreditorHistoryAndNotesScreenWithTabData(
         structuredClone(ACCOUNT_ENQUIRY_MINOR_CREDITOR_HISTORY_AND_NOTES_DATE_SORTING_MOCK),
@@ -283,7 +297,9 @@ describe('Minor Creditor Account Enquiry - History and notes tab', () => {
 
   it(
     'AC1. toggles Date sorting using the underlying timestamp rather than the displayed date text',
-    { tags: buildTags(MINOR_CREDITOR_HISTORY_STORY_TAG, MINOR_CREDITOR_HISTORY_EPIC_TAG) },
+    {
+      tags: [...buildTags(MINOR_CREDITOR_HISTORY_STORY_TAG, MINOR_CREDITOR_HISTORY_EPIC_TAG), '@JIRA-TEST-KEY:PO-9855'],
+    },
     () => {
       setupMinorCreditorHistoryAndNotesScreenWithTabData(
         structuredClone(ACCOUNT_ENQUIRY_MINOR_CREDITOR_HISTORY_AND_NOTES_DATE_SORTING_MOCK),
@@ -307,7 +323,9 @@ describe('Minor Creditor Account Enquiry - History and notes tab', () => {
 
   it(
     'AC2a. renders the read-only table columns with no inline editing or actions outside allowed Details links',
-    { tags: buildTags(MINOR_CREDITOR_HISTORY_STORY_TAG, MINOR_CREDITOR_HISTORY_EPIC_TAG) },
+    {
+      tags: [...buildTags(MINOR_CREDITOR_HISTORY_STORY_TAG, MINOR_CREDITOR_HISTORY_EPIC_TAG), '@JIRA-TEST-KEY:PO-9856'],
+    },
     () => {
       setupMinorCreditorHistoryAndNotesScreenWithTabData(
         structuredClone(ACCOUNT_ENQUIRY_MINOR_CREDITOR_HISTORY_AND_NOTES_INITIAL_MOCK),
@@ -333,7 +351,9 @@ describe('Minor Creditor Account Enquiry - History and notes tab', () => {
 
   it(
     'AC3. renders details fragments with pipes, hyphens, bold link text, link events, and line2',
-    { tags: buildTags(MINOR_CREDITOR_HISTORY_STORY_TAG, MINOR_CREDITOR_HISTORY_EPIC_TAG) },
+    {
+      tags: [...buildTags(MINOR_CREDITOR_HISTORY_STORY_TAG, MINOR_CREDITOR_HISTORY_EPIC_TAG), '@JIRA-TEST-KEY:PO-9857'],
+    },
     () => {
       mountMinorCreditorHistoryTable(
         structuredClone(ACCOUNT_ENQUIRY_MINOR_CREDITOR_HISTORY_AND_NOTES_TRANSFORMED_DETAILS_MOCK),
@@ -396,7 +416,9 @@ describe('Minor Creditor Account Enquiry - History and notes tab', () => {
 
   it(
     'AC4a. opens account-linked details fragments in a new browser tab using the emitted account identifier',
-    { tags: buildTags(MINOR_CREDITOR_HISTORY_STORY_TAG, MINOR_CREDITOR_HISTORY_EPIC_TAG) },
+    {
+      tags: [...buildTags(MINOR_CREDITOR_HISTORY_STORY_TAG, MINOR_CREDITOR_HISTORY_EPIC_TAG), '@JIRA-TEST-KEY:PO-9858'],
+    },
     () => {
       setupMinorCreditorHistoryAndNotesScreenWithTabData(
         structuredClone(ACCOUNT_ENQUIRY_MINOR_CREDITOR_HISTORY_AND_NOTES_INITIAL_MOCK),
@@ -417,7 +439,9 @@ describe('Minor Creditor Account Enquiry - History and notes tab', () => {
 
   it(
     'AC4b. renders non-linked details fragments as non-interactive text',
-    { tags: buildTags(MINOR_CREDITOR_HISTORY_STORY_TAG, MINOR_CREDITOR_HISTORY_EPIC_TAG) },
+    {
+      tags: [...buildTags(MINOR_CREDITOR_HISTORY_STORY_TAG, MINOR_CREDITOR_HISTORY_EPIC_TAG), '@JIRA-TEST-KEY:PO-9859'],
+    },
     () => {
       mountMinorCreditorHistoryTable(
         structuredClone(ACCOUNT_ENQUIRY_MINOR_CREDITOR_HISTORY_AND_NOTES_TRANSFORMED_DETAILS_MOCK),
@@ -432,7 +456,9 @@ describe('Minor Creditor Account Enquiry - History and notes tab', () => {
 
   it(
     'AC6a. covers representative minor creditor amendments, notes, financial details, and special characters',
-    { tags: buildTags(MINOR_CREDITOR_HISTORY_STORY_TAG, MINOR_CREDITOR_HISTORY_EPIC_TAG) },
+    {
+      tags: [...buildTags(MINOR_CREDITOR_HISTORY_STORY_TAG, MINOR_CREDITOR_HISTORY_EPIC_TAG), '@JIRA-TEST-KEY:PO-9860'],
+    },
     () => {
       setupMinorCreditorHistoryAndNotesScreenWithTabData(
         structuredClone(ACCOUNT_ENQUIRY_MINOR_CREDITOR_HISTORY_AND_NOTES_EDGE_CASE_RENDERING_MOCK),
@@ -472,7 +498,9 @@ describe('Minor Creditor Account Enquiry - History and notes tab', () => {
 
   it(
     'AC5. renders CR and DR amounts accessibly and keeps the visual tags non-focusable',
-    { tags: buildTags(MINOR_CREDITOR_HISTORY_STORY_TAG, MINOR_CREDITOR_HISTORY_EPIC_TAG) },
+    {
+      tags: [...buildTags(MINOR_CREDITOR_HISTORY_STORY_TAG, MINOR_CREDITOR_HISTORY_EPIC_TAG), '@JIRA-TEST-KEY:PO-9861'],
+    },
     () => {
       setupMinorCreditorHistoryAndNotesScreenWithTabData(
         structuredClone(ACCOUNT_ENQUIRY_MINOR_CREDITOR_HISTORY_AND_NOTES_AMOUNT_ACCESSIBILITY_MOCK),
@@ -518,7 +546,9 @@ describe('Minor Creditor Account Enquiry - History and notes tab', () => {
 
   it(
     'AC2b. renders several hundred history items in one scrollable table without pagination',
-    { tags: buildTags(MINOR_CREDITOR_HISTORY_STORY_TAG, MINOR_CREDITOR_HISTORY_EPIC_TAG) },
+    {
+      tags: [...buildTags(MINOR_CREDITOR_HISTORY_STORY_TAG, MINOR_CREDITOR_HISTORY_EPIC_TAG), '@JIRA-TEST-KEY:PO-9862'],
+    },
     () => {
       setupMinorCreditorHistoryAndNotesScreenWithTabData(
         structuredClone(ACCOUNT_ENQUIRY_MINOR_CREDITOR_HISTORY_AND_NOTES_LARGE_RESULTS_MOCK),
