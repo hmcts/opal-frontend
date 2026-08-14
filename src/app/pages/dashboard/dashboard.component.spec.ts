@@ -195,7 +195,7 @@ describe('DashboardComponent', () => {
     fixture.detectChanges();
 
     expect(component.resolvedConfig()).toEqual(DASHBOARD_PAGE_CONFIGURATION_MAP.finance);
-    expect(component.resolvedConfig().groups.map((group) => group.id)).toContain('finance-placeholder');
+    expect(component.resolvedConfig().groups.map((group) => group.id)).toContain('cash');
   });
 
   it('should remove finance content when release-1c-financial-movements is disabled', () => {
