@@ -100,7 +100,11 @@ Feature: Company Account Enquiries View Details
       When I open the "<section>" Change link on the Defendant tab
       Then I should be on the "company" amend route with fragment "<fragment>"
 
+      @JIRA-TEST-KEY:PO-9995
       Examples:
         | section         | fragment        |
         | Company details | party-details   |
+      @JIRA-TEST-KEY:PO-9996
+      Examples:
+        | section         | fragment        |
         | Contact details | contact-details |

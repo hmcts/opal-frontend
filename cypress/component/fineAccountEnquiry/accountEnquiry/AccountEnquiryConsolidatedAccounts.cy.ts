@@ -113,7 +113,7 @@ describe('Account Enquiry Consolidated Accounts Tab', () => {
   it(
     'AC1a, AC1b, AC1c, AC1d, AC1e, AC1f: fetches consolidated child accounts and renders the read-only table',
     {
-      tags: [...buildTags('@JIRA-STORY:PO-2391'), '@JIRA-EPIC:PO-2332'],
+      tags: [...buildTags('@JIRA-STORY:PO-2391'), '@JIRA-EPIC:PO-2332', '@JIRA-TEST-KEY:PO-9840'],
     },
     () => {
       setupConsolidatedAccountsScreen();
