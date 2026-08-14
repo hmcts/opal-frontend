@@ -35,18 +35,6 @@ export class FinesMacOffenceDetailsReviewOffenceComponent implements OnInit {
   @Output() public actionClicked = new EventEmitter<{ actionName: string; offenceId: number }>();
   public offenceDetails$!: Observable<{ offenceTitle: string; offenceCaption: string }>;
 
-  /**
-   * Emits an action event with the specified action name and offence ID.
-   *
-   * @param event - An object containing the action name and offence ID.
-   * @param event.actionName - The name of the action to be emitted.
-   * @param event.offenceId - The ID of the offence related to the action.
-   * @returns void
-   */
-  public emitAction(event: { actionName: string; offenceId: number }): void {
-    this.actionClicked.emit(event);
-  }
-
   private getOffenceDetails(): void {
     const offenceCode = this.offence.formData.fm_offence_details_offence_cjs_code!;
     const offenceId = this.offence.formData.fm_offence_details_offence_id;
@@ -63,6 +51,18 @@ export class FinesMacOffenceDetailsReviewOffenceComponent implements OnInit {
         };
       }),
     );
+  }
+
+  /**
+   * Emits an action event with the specified action name and offence ID.
+   *
+   * @param event - An object containing the action name and offence ID.
+   * @param event.actionName - The name of the action to be emitted.
+   * @param event.offenceId - The ID of the offence related to the action.
+   * @returns void
+   */
+  public emitAction(event: { actionName: string; offenceId: number }): void {
+    this.actionClicked.emit(event);
   }
 
   public ngOnInit(): void {
