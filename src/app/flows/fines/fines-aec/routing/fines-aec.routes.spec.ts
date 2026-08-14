@@ -1,7 +1,6 @@
 import { authGuard } from '@hmcts/opal-frontend-common/guards/auth';
 import { routePermissionsGuard } from '@hmcts/opal-frontend-common/guards/route-permissions';
 import { TitleResolver } from '@hmcts/opal-frontend-common/resolvers/title';
-import { PAGES_ROUTING_PATHS } from '@routing/pages/constants/routing-paths.constant';
 import { describe, expect, it } from 'vitest';
 import { FinesAecConfigComponent } from '../fines-aec-config/fines-aec-config.component';
 import { FINES_AEC_ROUTING_PATHS } from './fines-aec-routing-paths.constant';
