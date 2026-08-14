@@ -2,7 +2,6 @@ import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { FinesMacOffenceDetailsReviewOffenceImpositionComponent } from './fines-mac-offence-details-review-offence-imposition.component';
 import { provideHttpClient, withInterceptorsFromDi } from '@angular/common/http';
 import { provideHttpClientTesting } from '@angular/common/http/testing';
-import { By } from '@angular/platform-browser';
 import { provideRouter } from '@angular/router';
 import { OPAL_FINES_MAJOR_CREDITOR_PRETTY_NAME_MOCK } from '@services/fines/opal-fines-service/mocks/opal-fines-major-creditor-pretty-name.mock';
 import { OPAL_FINES_MAJOR_CREDITOR_REF_DATA_MOCK } from '@services/fines/opal-fines-service/mocks/opal-fines-major-creditor-ref-data.mock';
@@ -184,15 +183,6 @@ describe('FinesMacOffenceDetailsReviewOffenceImpositionComponent', () => {
 
       return `£${value}.00`;
     });
-
-    // Use numeric values here so the shared monetary component exercises the
-    // negative-value formatting path directly rather than relying on preformatted strings.
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    component.impositionsTotalsData = {
-      totalAmountImposed: -17,
-      totalAmountPaid: -3,
-      totalBalanceRemaining: -14,
-    } as any;
 
     fixture.detectChanges();
     await fixture.whenStable();
