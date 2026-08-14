@@ -13,7 +13,7 @@ describe('fines aec routes', () => {
   it('should redirect the Auto-Enforcement root to the dashboard', () => {
     const rootRoute = routing.find((route) => route.path === '');
 
-    expect(rootRoute?.redirectTo).toBe(PAGES_ROUTING_PATHS.children.dashboard);
+    expect(rootRoute?.redirectTo).toBe(FINES_AEC_ROUTING_PATHS.children.config);
     expect(rootRoute?.pathMatch).toBe('full');
   });
 
