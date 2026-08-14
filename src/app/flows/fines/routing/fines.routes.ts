@@ -163,13 +163,11 @@ export const finesRouting: Routes = [
           sectionKey: FINES_DASHBOARD_ROUTING_PATHS.children.reports,
         },
       },
-      // Auto enforcement Config
       {
         path: FINES_ROUTING_PATHS.children.aec.root,
         loadComponent: () => import('../fines-aec/fines-aec.component').then((c) => c.FinesAecComponent),
         children: aecRouting,
         canActivate: [authGuard, finesSectionPermissionsGuard],
-        canActivateChild: [],
         data: {
           sectionKey: FINES_DASHBOARD_ROUTING_PATHS.children.administration,
         },
