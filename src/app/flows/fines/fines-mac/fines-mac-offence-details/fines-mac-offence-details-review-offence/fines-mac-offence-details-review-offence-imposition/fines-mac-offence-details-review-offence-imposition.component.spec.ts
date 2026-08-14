@@ -22,12 +22,10 @@ import { beforeEach, describe, expect, it, vi } from 'vitest';
 
 import { createSpyObj } from '@app/testing/create-spy-obj.helper';
 import { OPAL_FINES_RESULT_PRETTY_NAME_MOCK } from 'src/app/flows/fines/services/opal-fines-service/mocks/opal-fines-result-pretty-name.mock';
-import { CustomAccessibleMonetaryComponent } from '@hmcts/opal-frontend-common/components/custom/custom-accessible-monetary';
 
 describe('FinesMacOffenceDetailsReviewOffenceImpositionComponent', () => {
   let component: FinesMacOffenceDetailsReviewOffenceImpositionComponent;
   let fixture: ComponentFixture<FinesMacOffenceDetailsReviewOffenceImpositionComponent>;
-  let accessibleMonetaryFixture: ComponentFixture<CustomAccessibleMonetaryComponent>;
   let mockOpalFinesService: Partial<OpalFines>;
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   let mockUtilsService: any;
@@ -51,7 +49,7 @@ describe('FinesMacOffenceDetailsReviewOffenceImpositionComponent', () => {
     mockUtilsService.formatSortCode.mockReturnValue('12-34-56');
 
     await TestBed.configureTestingModule({
-      imports: [FinesMacOffenceDetailsReviewOffenceImpositionComponent, CustomAccessibleMonetaryComponent],
+      imports: [FinesMacOffenceDetailsReviewOffenceImpositionComponent],
       providers: [
         { provide: OpalFines, useValue: mockOpalFinesService },
         { provide: UtilsService, useValue: mockUtilsService },
@@ -66,7 +64,6 @@ describe('FinesMacOffenceDetailsReviewOffenceImpositionComponent', () => {
     }).compileComponents();
 
     fixture = TestBed.createComponent(FinesMacOffenceDetailsReviewOffenceImpositionComponent);
-    accessibleMonetaryFixture = TestBed.createComponent(CustomAccessibleMonetaryComponent);
     component = fixture.componentInstance;
 
     component.impositionRefData = OPAL_FINES_RESULTS_REF_DATA_MOCK;
@@ -167,7 +164,7 @@ describe('FinesMacOffenceDetailsReviewOffenceImpositionComponent', () => {
     expect(component.impositionTableData).toEqual(expectedImpositionTableData);
   });
 
-  it('should expose accessible minus text for negative monetary values', async () => {
+  it('should expose accessible minus text for negative monetary values', () => {
     mockUtilsService.convertToMonetaryString.mockImplementation((value: number | string) => {
       if (value === -17) {
         return '-£17.00';
@@ -184,23 +181,33 @@ describe('FinesMacOffenceDetailsReviewOffenceImpositionComponent', () => {
       return `£${value}.00`;
     });
 
-    fixture.detectChanges();
-    await fixture.whenStable();
-    fixture.detectChanges();
+    const hostFixture = TestBed.createComponent(FinesMacOffenceDetailsReviewOffenceImpositionComponent);
+    const hostComponent = hostFixture.componentInstance;
+    const negativeImpositions = [
+      {
+        ...structuredClone(FINES_MAC_OFFENCE_DETAILS_STATE_IMPOSITIONS_MOCK[0]),
+        fm_offence_details_amount_imposed: -17,
+        fm_offence_details_amount_paid: -3,
+        fm_offence_details_balance_remaining: -14,
+      },
+    ];
 
-    const totalBalanceRemainingCell = fixture.nativeElement.querySelector(
+    hostComponent.impositionRefData = OPAL_FINES_RESULTS_REF_DATA_MOCK;
+    hostComponent.majorCreditorRefData = OPAL_FINES_MAJOR_CREDITOR_REF_DATA_MOCK;
+    hostComponent.impositions = negativeImpositions;
+    hostComponent.offenceIndex = 0;
+    hostComponent.isReadOnly = false;
+
+    hostFixture.detectChanges();
+
+    const totalBalanceRemainingCell = hostFixture.nativeElement.querySelector(
       '#totalBalanceRemaining',
     ) as HTMLTableCellElement;
     const accessibleMonetaryComponent = totalBalanceRemainingCell.querySelector('opal-lib-custom-accessible-monetary');
+    const visibleAmount = totalBalanceRemainingCell.querySelector('[aria-hidden="true"]');
+    const hiddenAmount = totalBalanceRemainingCell.querySelector('.govuk-visually-hidden');
 
     expect(accessibleMonetaryComponent).toBeTruthy();
-
-    accessibleMonetaryFixture.componentRef.setInput('value', -14);
-    accessibleMonetaryFixture.detectChanges();
-
-    const visibleAmount = accessibleMonetaryFixture.nativeElement.querySelector('[aria-hidden="true"]');
-    const hiddenAmount = accessibleMonetaryFixture.nativeElement.querySelector('.govuk-visually-hidden');
-
     expect(visibleAmount?.textContent?.trim()).toBe('-£14.00');
     expect(hiddenAmount?.textContent?.trim()).toBe('minus £14.00');
   });
