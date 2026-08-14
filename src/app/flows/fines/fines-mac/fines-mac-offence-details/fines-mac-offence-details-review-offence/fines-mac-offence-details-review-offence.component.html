@@ -1,9 +1,9 @@
-@if (offenceDetails$ | async; as offenceDetails) {
+@if (offenceTitle$ | async; as offenceTitle) {
   <app-fines-mac-offence-details-review-offence-heading
     [offenceId]="offence.formData.fm_offence_details_id"
     [offenceRefId]="offence.formData.fm_offence_details_offence_id"
     [offenceCode]="offence.formData.fm_offence_details_offence_cjs_code!"
-    [offenceTitle]="offenceDetails.offenceTitle"
+    [offenceTitle]="offenceTitle"
     [showActions]="showActions"
     [showDetails]="showDetails"
     [isReadOnly]="isReadOnly"
@@ -16,7 +16,7 @@
       [majorCreditorRefData]="majorCreditorRefData"
       [impositions]="offence.formData.fm_offence_details_impositions"
       [offenceIndex]="offence.formData.fm_offence_details_id"
-      [offenceCaption]="offenceDetails.offenceCaption"
+      [offenceCaption]="offenceTitle + ' (' + offence.formData.fm_offence_details_offence_cjs_code! + ')'"
       [isReadOnly]="isReadOnly"
     >
     </app-fines-mac-offence-details-review-offence-imposition>

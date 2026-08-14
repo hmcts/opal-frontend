@@ -33,22 +33,16 @@ export class FinesMacOffenceDetailsReviewOffenceComponent implements OnInit {
   @Input({ required: false }) showDetails: boolean = true;
   @Input({ required: false }) isReadOnly: boolean = false;
   @Output() public actionClicked = new EventEmitter<{ actionName: string; offenceId: number }>();
-  public offenceDetails$!: Observable<{ offenceTitle: string; offenceCaption: string }>;
+  public offenceTitle$!: Observable<string>;
 
-  private getOffenceDetails(): void {
+  private getOffenceTitle(): Observable<string> {
     const offenceCode = this.offence.formData.fm_offence_details_offence_cjs_code!;
     const offenceId = this.offence.formData.fm_offence_details_offence_id;
 
-    this.offenceDetails$ = this.opalFinesService.getOffenceByCjsCode(offenceCode).pipe(
-      map((response) => {
-        const offenceRefData = response as IOpalFinesOffencesRefData;
-        const exactMatch = this.offenceDetailsService.findExactOffenceMatch(offenceRefData, offenceCode, offenceId);
-        const offenceTitle = exactMatch?.offence_title ?? offenceRefData.refData[0]?.offence_title ?? '';
-
-        return {
-          offenceTitle,
-          offenceCaption: `${offenceTitle} (${offenceCode})`,
-        };
+    return this.opalFinesService.getOffenceByCjsCode(offenceCode).pipe(
+      map((response: IOpalFinesOffencesRefData) => {
+        const exactMatch = this.offenceDetailsService.findExactOffenceMatch(response, offenceCode, offenceId);
+        return exactMatch?.offence_title ?? response.refData[0]?.offence_title ?? '';
       }),
     );
   }
@@ -72,6 +66,6 @@ export class FinesMacOffenceDetailsReviewOffenceComponent implements OnInit {
     if (this.activatedRoute.snapshot.data['majorCreditors']) {
       this.majorCreditorRefData = this.activatedRoute.snapshot.data['majorCreditors'];
     }
-    this.getOffenceDetails();
+    this.offenceTitle$ = this.getOffenceTitle();
   }
 }
