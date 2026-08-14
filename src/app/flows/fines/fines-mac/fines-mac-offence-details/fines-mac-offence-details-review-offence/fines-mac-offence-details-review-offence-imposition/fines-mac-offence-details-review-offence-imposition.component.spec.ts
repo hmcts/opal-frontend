@@ -2,6 +2,7 @@ import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { FinesMacOffenceDetailsReviewOffenceImpositionComponent } from './fines-mac-offence-details-review-offence-imposition.component';
 import { provideHttpClient, withInterceptorsFromDi } from '@angular/common/http';
 import { provideHttpClientTesting } from '@angular/common/http/testing';
+import { By } from '@angular/platform-browser';
 import { provideRouter } from '@angular/router';
 import { OPAL_FINES_MAJOR_CREDITOR_PRETTY_NAME_MOCK } from '@services/fines/opal-fines-service/mocks/opal-fines-major-creditor-pretty-name.mock';
 import { OPAL_FINES_MAJOR_CREDITOR_REF_DATA_MOCK } from '@services/fines/opal-fines-service/mocks/opal-fines-major-creditor-ref-data.mock';
@@ -22,10 +23,12 @@ import { beforeEach, describe, expect, it, vi } from 'vitest';
 
 import { createSpyObj } from '@app/testing/create-spy-obj.helper';
 import { OPAL_FINES_RESULT_PRETTY_NAME_MOCK } from 'src/app/flows/fines/services/opal-fines-service/mocks/opal-fines-result-pretty-name.mock';
+import { CustomAccessibleMonetaryComponent } from '@hmcts/opal-frontend-common/components/custom/custom-accessible-monetary';
 
 describe('FinesMacOffenceDetailsReviewOffenceImpositionComponent', () => {
   let component: FinesMacOffenceDetailsReviewOffenceImpositionComponent;
   let fixture: ComponentFixture<FinesMacOffenceDetailsReviewOffenceImpositionComponent>;
+  let accessibleMonetaryFixture: ComponentFixture<CustomAccessibleMonetaryComponent>;
   let mockOpalFinesService: Partial<OpalFines>;
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   let mockUtilsService: any;
@@ -49,7 +52,7 @@ describe('FinesMacOffenceDetailsReviewOffenceImpositionComponent', () => {
     mockUtilsService.formatSortCode.mockReturnValue('12-34-56');
 
     await TestBed.configureTestingModule({
-      imports: [FinesMacOffenceDetailsReviewOffenceImpositionComponent],
+      imports: [FinesMacOffenceDetailsReviewOffenceImpositionComponent, CustomAccessibleMonetaryComponent],
       providers: [
         { provide: OpalFines, useValue: mockOpalFinesService },
         { provide: UtilsService, useValue: mockUtilsService },
@@ -64,6 +67,7 @@ describe('FinesMacOffenceDetailsReviewOffenceImpositionComponent', () => {
     }).compileComponents();
 
     fixture = TestBed.createComponent(FinesMacOffenceDetailsReviewOffenceImpositionComponent);
+    accessibleMonetaryFixture = TestBed.createComponent(CustomAccessibleMonetaryComponent);
     component = fixture.componentInstance;
 
     component.impositionRefData = OPAL_FINES_RESULTS_REF_DATA_MOCK;
@@ -164,20 +168,51 @@ describe('FinesMacOffenceDetailsReviewOffenceImpositionComponent', () => {
     expect(component.impositionTableData).toEqual(expectedImpositionTableData);
   });
 
-  it('should expose accessible minus text for negative monetary values', () => {
-    component.impositionsTotalsData = {
-      totalAmountImposed: '-£17.00',
-      totalAmountPaid: '-£3.00',
-      totalBalanceRemaining: '-£14.00',
-    };
+  it('should expose accessible minus text for negative monetary values', async () => {
+    mockUtilsService.convertToMonetaryString.mockImplementation((value: number | string) => {
+      if (value === -17) {
+        return '-£17.00';
+      }
 
+      if (value === -3) {
+        return '-£3.00';
+      }
+
+      if (value === -14) {
+        return '-£14.00';
+      }
+
+      return `£${value}.00`;
+    });
+
+    // Use numeric values here so the shared monetary component exercises the
+    // negative-value formatting path directly rather than relying on preformatted strings.
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    component.impositionsTotalsData = {
+      totalAmountImposed: -17,
+      totalAmountPaid: -3,
+      totalBalanceRemaining: -14,
+    } as any;
+
+    fixture.detectChanges();
+    await fixture.whenStable();
     fixture.detectChanges();
 
     const totalBalanceRemainingCell = fixture.nativeElement.querySelector(
       '#totalBalanceRemaining',
     ) as HTMLTableCellElement;
+    const accessibleMonetaryComponent = totalBalanceRemainingCell.querySelector('opal-lib-custom-accessible-monetary');
 
-    expect(totalBalanceRemainingCell.querySelector('opal-lib-custom-accessible-monetary')).toBeTruthy();
+    expect(accessibleMonetaryComponent).toBeTruthy();
+
+    accessibleMonetaryFixture.componentRef.setInput('value', -14);
+    accessibleMonetaryFixture.detectChanges();
+
+    const visibleAmount = accessibleMonetaryFixture.nativeElement.querySelector('[aria-hidden="true"]');
+    const hiddenAmount = accessibleMonetaryFixture.nativeElement.querySelector('.govuk-visually-hidden');
+
+    expect(visibleAmount?.textContent?.trim()).toBe('-£14.00');
+    expect(hiddenAmount?.textContent?.trim()).toBe('minus £14.00');
   });
 
   it('should return minor creditor - Any resultCodeCreditor', () => {
