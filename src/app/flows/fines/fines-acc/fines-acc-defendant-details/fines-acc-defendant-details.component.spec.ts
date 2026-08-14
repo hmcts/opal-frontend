@@ -25,6 +25,7 @@ import { OPAL_FINES_RESULT_REF_DATA_MOCK } from '@services/fines/opal-fines-serv
 import { OPAL_FINES_ACCOUNT_DEFENDANT_DETAILS_CONSOLIDATED_ACCOUNTS_MOCK } from '@services/fines/opal-fines-service/mocks/opal-fines-account-defendant-details-consolidated-accounts.mock';
 import { FINES_ACC_DEFENDANT_ACCOUNT_TABS_CACHE_MAP } from './constants/fines-acc-defendant-account-tabs-cache-map.constant';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
+import { FINES_ACC_RESTRICTED_ACCOUNT_STATUS_CODES } from '../constants/fines-acc-restricted-account-status-codes.constant';
 import { FinesAccSummaryHeaderComponent } from '../fines-acc-summary-header/fines-acc-summary-header.component';
 
 describe('FinesAccDefendantDetailsComponent', () => {
@@ -191,6 +192,24 @@ describe('FinesAccDefendantDetailsComponent', () => {
 
     expect(component.canAddParentOrGuardianDetails).toBe(true);
   });
+
+  it.each(FINES_ACC_RESTRICTED_ACCOUNT_STATUS_CODES)(
+    'should not allow adding parent or guardian details for restricted account status %s',
+    (statusCode) => {
+      component.accountData = {
+        ...structuredClone(FINES_ACC_DEFENDANT_DETAILS_HEADER_MOCK),
+        account_status_reference: {
+          ...structuredClone(FINES_ACC_DEFENDANT_DETAILS_HEADER_MOCK.account_status_reference),
+          account_status_code: statusCode,
+        },
+        is_youth: true,
+        debtor_type: component.debtorTypes.defendant,
+        parent_guardian_party_id: null,
+      };
+
+      expect(component.canAddParentOrGuardianDetails).toBe(false);
+    },
+  );
 
   it('should not allow adding parent or guardian details when a parent guardian already exists', () => {
     component.accountData = {
@@ -428,78 +447,122 @@ describe('FinesAccDefendantDetailsComponent', () => {
       const deniedType = component['getAmendPaymentTermsDeniedType']();
       expect(deniedType).toBe('permission');
     });
+  });
 
-    it('for an invalid account status shouldreturn "account-status"', () => {
-      component.accountData.account_status_reference.account_status_code = 'REW';
-      const deniedType = component['getAmendPaymentTermsDeniedType']();
-      expect(deniedType).toBe('account-status');
+  describe('should get the correct response from accountAllowsPaymentTermsActions', () => {
+    it('when the account status is unrestricted and the account has a positive balance', () => {
+      component.accountData.account_status_reference.account_status_code = 'L';
+      component.accountData.payment_state_summary.account_balance = 500.58;
+
+      expect(component.accountAllowsPaymentTermsActions).toBe(true);
+    });
+
+    it.each(FINES_ACC_RESTRICTED_ACCOUNT_STATUS_CODES)(
+      'when the account status is restricted account status %s',
+      (statusCode) => {
+        component.accountData.account_status_reference.account_status_code = statusCode;
+        component.accountData.payment_state_summary.account_balance = 500.58;
+
+        expect(component.accountAllowsPaymentTermsActions).toBe(false);
+      },
+    );
+
+    it('when the account balance is zero', () => {
+      component.accountData.account_status_reference.account_status_code = 'L';
+      component.accountData.payment_state_summary.account_balance = 0;
+
+      expect(component.accountAllowsPaymentTermsActions).toBe(false);
     });
   });
 
   describe('should get the correct response from canAmendPaymentTerms', () => {
-    it('when the user has amend-payment-terms permission, no disallowing enforcement, a valid status and positive balance', () => {
-      component.lastEnforcement = structuredClone(OPAL_FINES_RESULT_REF_DATA_MOCK);
-      component.lastEnforcement.extend_ttp_disallow = false;
-      component.accountData.account_status_reference.account_status_code = 'L';
-      component.accountData.payment_state_summary.account_balance = 100;
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      vi.spyOn<any, any>(component['permissionsService'], 'hasBusinessUnitPermissionAccess').mockReturnValue(true);
+    it.each([
+      {
+        description:
+          'when the user has amend-payment-terms permission, no disallowing enforcement, a valid status and positive balance',
+        extendTtpDisallow: false,
+        accountStatusCode: 'L',
+        accountBalance: 100,
+        hasPermission: true,
+        expectedCanAmend: true,
+      },
+      {
+        description: 'when the last enforcement disallows extending TTP',
+        extendTtpDisallow: true,
+        accountStatusCode: 'L',
+        accountBalance: 100,
+        hasPermission: true,
+        expectedCanAmend: false,
+      },
+      ...['CS', 'WO', 'TO', 'TS', 'TA'].map((accountStatusCode) => ({
+        description: `when account status is ${accountStatusCode}`,
+        extendTtpDisallow: false,
+        accountStatusCode,
+        accountBalance: 100,
+        hasPermission: true,
+        expectedCanAmend: false,
+      })),
+      {
+        description: 'when the user does not have amend-payment-terms permission',
+        extendTtpDisallow: false,
+        accountStatusCode: 'L',
+        accountBalance: 100,
+        hasPermission: false,
+        expectedCanAmend: false,
+      },
+      {
+        description: 'when the account balance is 0',
+        extendTtpDisallow: false,
+        accountStatusCode: 'L',
+        accountBalance: 0,
+        hasPermission: true,
+        expectedCanAmend: false,
+      },
+    ])(
+      'should return $expectedCanAmend $description',
+      ({ extendTtpDisallow, accountStatusCode, accountBalance, hasPermission, expectedCanAmend }) => {
+        component.lastEnforcement = structuredClone(OPAL_FINES_RESULT_REF_DATA_MOCK);
+        component.lastEnforcement.extend_ttp_disallow = extendTtpDisallow;
+        component.accountData.account_status_reference.account_status_code = accountStatusCode;
+        component.accountData.payment_state_summary.account_balance = accountBalance;
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        vi.spyOn<any, any>(component['permissionsService'], 'hasBusinessUnitPermissionAccess').mockReturnValue(
+          hasPermission,
+        );
 
-      const canAmend = component.canAmendPaymentTerms();
+        const canAmend = component.canAmendPaymentTerms();
 
-      expect(canAmend).toBe(true);
-    });
+        expect(canAmend).toBe(expectedCanAmend);
+      },
+    );
 
-    it('when the last enforcement disallows extending TTP', () => {
-      component.lastEnforcement = structuredClone(OPAL_FINES_RESULT_REF_DATA_MOCK);
-      component.lastEnforcement.extend_ttp_disallow = true;
-      component.accountData.account_status_reference.account_status_code = 'L';
-      component.accountData.payment_state_summary.account_balance = 100;
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      vi.spyOn<any, any>(component['permissionsService'], 'hasBusinessUnitPermissionAccess').mockReturnValue(true);
+    it.each(FINES_ACC_RESTRICTED_ACCOUNT_STATUS_CODES)(
+      'when the user has permission and the account status is restricted account status %s',
+      (statusCode) => {
+        component.accountData.account_status_reference.account_status_code = statusCode;
+        component.accountData.payment_state_summary.account_balance = 500.58;
+        component.lastEnforcement = structuredClone(OPAL_FINES_RESULT_REF_DATA_MOCK);
+        component.lastEnforcement.prevent_payment_card = false;
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        vi.spyOn<any, any>(component['permissionsService'], 'hasBusinessUnitPermissionAccess').mockReturnValue(true);
 
-      const canAmend = component.canAmendPaymentTerms();
+        const canRequest = component['canRequestPaymentCard']();
 
-      expect(canAmend).toBe(false);
-    });
+        expect(canRequest).toBe(false);
+      },
+    );
 
-    it.each(['CS', 'WO', 'TO', 'TS', 'TA'])('when account status is %s', (accountStatusCode) => {
-      component.lastEnforcement = structuredClone(OPAL_FINES_RESULT_REF_DATA_MOCK);
-      component.lastEnforcement.extend_ttp_disallow = false;
-      component.accountData.account_status_reference.account_status_code = accountStatusCode;
-      component.accountData.payment_state_summary.account_balance = 100;
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      vi.spyOn<any, any>(component['permissionsService'], 'hasBusinessUnitPermissionAccess').mockReturnValue(true);
-
-      const canAmend = component.canAmendPaymentTerms();
-
-      expect(canAmend).toBe(false);
-    });
-
-    it('when the user does not have amend-payment-terms permission', () => {
-      component.lastEnforcement = structuredClone(OPAL_FINES_RESULT_REF_DATA_MOCK);
-      component.lastEnforcement.extend_ttp_disallow = false;
-      component.accountData.account_status_reference.account_status_code = 'L';
-      component.accountData.payment_state_summary.account_balance = 100;
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      vi.spyOn<any, any>(component['permissionsService'], 'hasBusinessUnitPermissionAccess').mockReturnValue(false);
-
-      const canAmend = component.canAmendPaymentTerms();
-
-      expect(canAmend).toBe(false);
-    });
-
-    it('when the account balance is 0', () => {
-      component.lastEnforcement = structuredClone(OPAL_FINES_RESULT_REF_DATA_MOCK);
-      component.lastEnforcement.extend_ttp_disallow = false;
+    it('when the user has permission and the account balance is zero', () => {
       component.accountData.account_status_reference.account_status_code = 'L';
       component.accountData.payment_state_summary.account_balance = 0;
+      component.lastEnforcement = structuredClone(OPAL_FINES_RESULT_REF_DATA_MOCK);
+      component.lastEnforcement.prevent_payment_card = false;
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
       vi.spyOn<any, any>(component['permissionsService'], 'hasBusinessUnitPermissionAccess').mockReturnValue(true);
 
-      const canAmend = component.canAmendPaymentTerms();
+      const canRequest = component['canRequestPaymentCard']();
 
-      expect(canAmend).toBe(false);
+      expect(canRequest).toBe(false);
     });
   });
 

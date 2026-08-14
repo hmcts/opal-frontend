@@ -9,7 +9,6 @@ export interface IOpalFinesMinorCreditorAccount {
   business_unit_name: string | null;
   business_unit_id: string;
   defendant: IOpalFinesMinorCreditorDefendant | null;
-  defendant_account_id: number | null;
   account_balance: number | null;
   firstnames: string | null;
   surname: string | null;

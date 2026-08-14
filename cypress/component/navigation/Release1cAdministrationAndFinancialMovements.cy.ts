@@ -83,7 +83,11 @@ const setupAppComponent = (featureFlags: FeatureFlags) =>
     ],
   });
 
-const setupDashboardComponent = (dashboardType: string, featureFlags: FeatureFlags) => {
+const setupDashboardComponent = (
+  dashboardType: string,
+  featureFlags: FeatureFlags,
+  permissionIds = [FINES_PERMISSIONS['operational-report-by-enforcement']],
+) => {
   const dashboardTypeParamMapSubject = new BehaviorSubject(convertToParamMap({ dashboardType }));
 
   return mount(DashboardComponent, {
@@ -98,7 +102,7 @@ const setupDashboardComponent = (dashboardType: string, featureFlags: FeatureFla
       {
         provide: PermissionsService,
         useValue: {
-          getUniquePermissions: () => [FINES_PERMISSIONS['operational-report-by-enforcement']],
+          getUniquePermissions: () => permissionIds,
         },
       },
       {
@@ -174,14 +178,16 @@ describe(
     );
 
     it(
-      'shows the Finance dashboard placeholder when release-1c-financial-movements is enabled',
+      'shows the Finance dashboard content when release-1c-financial-movements is enabled',
       { tags: ['@R1CFinancialMovements', '@JIRA-TEST-KEY:PO-8355'] },
       () => {
-        setupDashboardComponent(FINES_DASHBOARD_ROUTING_PATHS.children.finance, {});
+        setupDashboardComponent(FINES_DASHBOARD_ROUTING_PATHS.children.finance, {}, [
+          FINES_PERMISSIONS['process-and-allocate-payments'],
+        ]);
 
         cy.contains('h1', 'Finance').should('be.visible');
-        cy.contains('h2', 'Pending development').should('be.visible');
-        cy.get('#testFinanceLink').should('be.visible').and('contain.text', 'Test Finance Link');
+        cy.contains('h2', 'Cash').should('be.visible');
+        cy.get('#automaticCashInputLink').should('be.visible').and('contain.text', 'Automatic Cash Input');
       },
     );
 
@@ -194,8 +200,8 @@ describe(
         });
 
         cy.contains('h1', 'Finance').should('be.visible');
-        cy.contains('h2', 'Pending development').should('not.exist');
-        cy.get('#testFinanceLink').should('not.exist');
+        cy.contains('h2', 'Cash').should('not.exist');
+        cy.get('#automaticCashInputLink').should('not.exist');
       },
     );
   },

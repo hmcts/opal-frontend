@@ -1,6 +1,6 @@
 @JIRA-LABEL:manual-account-creation
 @ManualAccountCreation @OffenceDetails @JIRA-STORY:PO-412 @JIRA-STORY:PO-668 @JIRA-STORY:PO-669 @JIRA-STORY:PO-413 @JIRA-STORY:PO-817 @JIRA-STORY:PO-818 @JIRA-STORY:PO-414 @JIRA-STORY:PO-670 @JIRA-STORY:PO-671 @JIRA-STORY:PO-686 @JIRA-STORY:PO-696 @JIRA-STORY:PO-411 @JIRA-STORY:PO-681 @JIRA-STORY:PO-684 @JIRA-STORY:PO-815 @JIRA-STORY:PO-417 @JIRA-STORY:PO-676 @JIRA-STORY:PO-679 @JIRA-STORY:PO-416 @JIRA-STORY:PO-682 @JIRA-STORY:PO-680 @JIRA-STORY:PO-1395 @JIRA-STORY:PO-987
-Feature: Manual account creation - Offence Details
+Feature: Offence Details
   #This feature file contains tests for the Offence details pages of the Manual Account Creation journey that cannot be exercised in the component tests #
   #Validation tests are contained in the Offence screens component tests
 
@@ -287,7 +287,7 @@ Feature: Manual account creation - Offence Details
     # Only one imposition left – cannot remove
     And I do not see the "Remove imposition" link for imposition 1
 
-  @R1A @JIRA-EPIC:PO-2219 @JIRA-STORY:PO-2127 @JIRA-DEFECT:PO-8265
+  @R1A @JIRA-EPIC:PO-2219 @JIRA-STORY:PO-2127 @JIRA-DEFECT:PO-8265 @JIRA-TEST-KEY:PO-10038
   Scenario: Changing an imposition from FCOMP to FCOST clears major creditor selection and re-filters creditor options
     When I provide offence details for offence code "TP11003" with a sentence date 9 weeks in the past
 

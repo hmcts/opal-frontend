@@ -118,12 +118,26 @@ When('I open the latest matching result from the search results', () => {
   accountEnquiryFlow().openMostRecentFromResults();
 });
 
+/** Opens the Defendant-column link from the latest minor creditor result row. */
+When('I open the defendant linked from the latest minor creditor search result', () => {
+  log('step', 'Opening defendant linked from latest minor creditor search result');
+  accountEnquiryFlow().openLatestMinorCreditorDefendantFromResults();
+});
+
 /**
  * @step Opens the latest matching account from the Companies tab on the Search results page.
  */
 When('I open the latest matching result from the Companies search results', () => {
   log('step', 'Opening latest matching result from Companies search results');
   accountEnquiryFlow().openMostRecentFromCompaniesResults();
+});
+
+/**
+ * @step Sets the browser viewport to a specific size for reflow and responsive checks.
+ */
+When('I set the browser viewport to {int} by {int}', (width: number, height: number) => {
+  log('step', 'Setting browser viewport', { width, height });
+  accountEnquiryFlow().setResponsiveViewport(width, height);
 });
 
 /**
@@ -212,9 +226,75 @@ Then('I should see the add parent or guardian details action', () => {
   defendantDetails().assertAddParentGuardianActionVisible();
 });
 
+Then('I do not see the add parent or guardian details action', () => {
+  log('assert', 'Add parent or guardian details action is absent');
+  defendantDetails().assertAddParentGuardianActionNotPresent();
+});
+
 Then('I should see the remove parent or guardian details action', () => {
   log('assert', 'Remove parent or guardian details action is visible');
   accountEnquiryFlow().assertRemoveParentGuardianActionVisible();
+});
+
+Then('I should see the parent or guardian details Change actions', () => {
+  log('assert', 'Parent or guardian details Change actions are visible');
+  accountEnquiryFlow().assertChangeParentGuardianActionsVisible();
+});
+
+Given('I stub the defendant header summary account status code to {string}', (statusCode: string) => {
+  log('intercept', 'Stub defendant header summary restricted status', { statusCode });
+  accountEnquiryFlow().stubRestrictedParentGuardianStatusCode(statusCode);
+});
+
+Given('I stub the defendant header summary payment terms account status code to {string}', (statusCode: string) => {
+  log('intercept', 'Stub defendant header summary payment terms restricted status', { statusCode });
+  accountEnquiryFlow().stubPaymentTermsAccountStatusCode(statusCode);
+});
+
+Given('I stub the defendant header summary payment terms account balance to {int}', (balance: number) => {
+  log('intercept', 'Stub defendant header summary payment terms account balance', { balance });
+  accountEnquiryFlow().stubPaymentTermsAccountBalance(balance);
+});
+
+Then('I do not see the Payment terms Change or Request payment card actions', () => {
+  log('assert', 'Payment terms Change and Request payment card actions are absent');
+  accountEnquiryFlow().assertPaymentTermsActionsNotVisible();
+});
+
+Then('I do not see any parent or guardian details Change actions', () => {
+  log('assert', 'Parent or guardian details Change actions are absent');
+  accountEnquiryFlow().assertChangeParentGuardianActionsNotVisible();
+});
+
+Then('I do not see the remove parent or guardian details action', () => {
+  log('assert', 'Remove parent or guardian details action is absent');
+  accountEnquiryFlow().assertRemoveParentGuardianActionNotVisible();
+});
+
+/**
+ * @step Asserts the account details page fits within the current viewport without horizontal overflow.
+ */
+Then('the account details page should not horizontally overflow', () => {
+  log('assert', 'Checking account details page does not horizontally overflow');
+  accountEnquiryFlow().assertNoHorizontalOverflow();
+});
+
+/**
+ * @step Asserts the account details summary columns stack beneath the primary content.
+ */
+Then('the account details summary columns should stack below the primary content', () => {
+  log('assert', 'Checking account details summary columns stack below the primary content');
+  accountEnquiryFlow().assertAtAGlanceColumnsStacked();
+});
+
+Then('the account information and summary metrics should remain readable', () => {
+  log('assert', 'Checking account information and summary metrics remain readable');
+  accountEnquiryFlow().assertSummaryContentReadable();
+});
+
+Then('the account details header action should reflow below the account name', () => {
+  log('assert', 'Checking account details header action reflows below the account name');
+  accountEnquiryFlow().assertHeaderActionReflowsBelowTitle();
 });
 
 Then('I should not see the convert to company account action', () => {

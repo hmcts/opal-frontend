@@ -1,5 +1,5 @@
 @JIRA-LABEL:manual-account-creation
-Feature: Manual account creation - Create Draft Account
+Feature: Populate And Submit
 
   Background:
     Given I am logged in with email "opal-test@dev.platform.hmcts.net"

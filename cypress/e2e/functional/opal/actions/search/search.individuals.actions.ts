@@ -275,7 +275,6 @@ export class AccountSearchIndividualsActions {
       lastName: '',
       firstNames: '',
       dob: '',
-      niNumber: '',
       addressLine1: '',
       postcode: '',
     });
@@ -297,7 +296,6 @@ export class AccountSearchIndividualsActions {
       lastName: '',
       firstNames: '',
       dob: '',
-      niNumber: '',
       addressLine1: '',
       postcode: '',
     });
