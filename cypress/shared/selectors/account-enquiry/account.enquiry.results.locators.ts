@@ -206,6 +206,9 @@ export const AccountEnquiryResultsLocators = {
     /** Minor creditor clickable account link cell (anchors only). */
     minorCreditorAccountLink: 'td#minorCreditorAccountNumber a.govuk-link',
 
+    /** Linked defendant account anchor in a minor creditor result row. */
+    minorCreditorDefendantLink: 'td#minorCreditorDefendant a.govuk-link',
+
     /** TD element for the minor creditor account cell, if text extraction is needed. */
     minorCreditorAccountCell: 'td#minorCreditorAccountNumber',
 

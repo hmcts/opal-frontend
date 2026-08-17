@@ -30,6 +30,26 @@ Feature: Minor Creditor Search And Matches Journeys
       | Name           | JourneyMinor{uniq}, Mina |
       | Address line 1 | 1 High Street            |
 
+  @R1B @JIRA-DEFECT:PO-9149 @JIRA-EPIC:PO-2821
+  Scenario: Open the defendant linked from a minor creditor search result
+    Given a published account exists with an individual minor creditor:
+      | prosecutor case reference | PCRMINDEFLINK{uniqUpper} |
+      | first name                | Mina                     |
+      | last name                 | DefendantLink{uniq}      |
+      | address line 1            | 1 High Street            |
+      | postcode                  | MC1 1AA                  |
+    And I am on the Account Search page - Individuals form displayed by default
+    When I view the Minor creditors search form
+    And I search using the following inputs:
+      | minor creditor type  | Individual          |
+      | individual last name | DefendantLink{uniq} |
+      | first names          | Mina                |
+      | address line 1       | 1 High Street       |
+      | postcode             | MC1 1AA             |
+    Then I see the Search results page
+    When I open the defendant linked from the latest minor creditor search result
+    Then I should see the account header contains "Minor Creditor Seed DefendantLink{uniqUpper}"
+
 
   @R1BUatTechJCDE @JIRA-STORY:PO-715 @JIRA-STORY:PO-706 @JIRA-STORY:PO-708 @JIRA-EPIC:PO-704 @JIRA-TEST-KEY:PO-5293
   Scenario: Search for a company minor creditor account and review the matching results
