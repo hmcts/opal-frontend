@@ -542,6 +542,14 @@ export class AccountEnquiryFlow {
   }
 
   /**
+   * Asserts the selected consolidated child account displays the closed account banner.
+   */
+  public assertSelectedChildAccountStatusBannerVisible(): void {
+    logAE('method', 'assertSelectedChildAccountStatusBannerVisible()');
+    this.consolidatedAccounts.assertSelectedChildAccountStatusBannerVisible();
+  }
+
+  /**
    * Asserts the initial History and notes rows have been rendered.
    */
   public assertHistoryAndNotesItemsLoaded(): void {

@@ -1,7 +1,12 @@
 import {
   interceptAtAGlance,
   interceptDefendantHeader,
+  interceptDefendantDetails,
+  interceptEnforcementStatus,
+  interceptHistoryAndNotes,
+  interceptImpositions,
   interceptMinorCreditorHeader,
+  interceptPaymentTerms,
 } from './intercept/defendantAccountIntercepts';
 
 // constants + mocks
@@ -19,20 +24,39 @@ import {
   USER_STATE_MOCK_PERMISSION_BU77,
 } from '../../CommonIntercepts/CommonUserState.mocks';
 import { AccountAtAGlanceLocators as A } from '../../../shared/selectors/account-details/account.at-a-glance.details.locators';
+import { AccountNavDetailsLocators } from '../../../shared/selectors/account-details/account.nav.details.locators';
 
 import { FINES_ACC_MINOR_CREDITOR_DETAILS_HEADER_MOCK } from 'src/app/flows/fines/fines-acc/fines-acc-minor-creditor-details/mocks/fines-acc-minor-creditor-details-header.mock';
 
 import { setupAccountEnquiryComponent } from './setup/SetupComponent';
 import { IComponentProperties } from './setup/setupComponent.interface';
-import { interceptAuthenticatedUser, interceptUserState } from 'cypress/component/CommonIntercepts/CommonIntercepts';
+import {
+  interceptAuthenticatedUser,
+  interceptResultByCode,
+  interceptUserState,
+} from 'cypress/component/CommonIntercepts/CommonIntercepts';
 import { OPAL_FINES_ACCOUNT_DEFENDANT_AT_A_GLANCE_MOCK } from './mocks/defendant_details_at_glance_mock';
 import { AccountDetailsResponsiveLayoutActions } from '../../../e2e/functional/opal/actions/account-details/details.responsive-layout.actions';
+import { OPAL_FINES_ACCOUNT_DEFENDANT_ACCOUNT_PARTY_MOCK } from '@services/fines/opal-fines-service/mocks/opal-fines-account-defendant-account-party.mock';
+import { OPAL_FINES_ACCOUNT_DEFENDANT_DETAILS_PAYMENT_TERMS_LATEST_MOCK } from '@services/fines/opal-fines-service/mocks/opal-fines-account-defendant-details-payment-terms-latest.mock';
+import { OPAL_FINES_ACCOUNT_DEFENDANT_DETAILS_ENFORCEMENT_TAB_REF_DATA_MOCK } from '@services/fines/opal-fines-service/mocks/opal-fines-account-defendant-details-enforcement-tab-ref-data.mock';
+import { OPAL_FINES_ACCOUNT_DEFENDANT_DETAILS_IMPOSITIONS_TAB_REF_DATA_MOCK } from '@services/fines/opal-fines-service/mocks/opal-fines-account-defendant-details-impositions.mock';
+import { OPAL_FINES_ACCOUNT_DEFENDANT_DETAILS_HISTORY_AND_NOTES_TAB_REF_DATA_MOCK } from '@services/fines/opal-fines-service/mocks/opal-fines-account-defendant-details-history-and-notes-tab-ref-data.mock';
+import { only } from 'node:test';
 
 const ACCOUNT_ENQUIRY_JIRA_LABEL = '@JIRA-LABEL:account-enquiry';
 
 const buildTags = (...tags: string[]): string[] => [...tags, ACCOUNT_ENQUIRY_JIRA_LABEL, '@R1B'];
 
 const responsiveLayoutActions = new AccountDetailsResponsiveLayoutActions();
+
+const assertConsolidatedAccountStatusBanner = (): void => {
+  cy.get(DOM.accountStatusBanner)
+    .should('be.visible')
+    .and('contain.text', 'Account closed')
+    .and('contain.text', 'Account consolidated');
+  cy.get(DOM.accountStatusBannerAlert).should('be.visible');
+};
 
 const assertHeaderActionsReflow = (): void => {
   cy.get(DOM.headingName).then(($heading) => {
@@ -324,6 +348,56 @@ describe('Account Enquiry - Defendant Header', () => {
       cy.get('#defendant-account-status').should('be.visible').and('contain.text', 'Transferred out');
       cy.get(DOM.pageHeader).should('exist');
       cy.get(DOM.subnav).should('exist');
+    },
+  );
+
+  it(
+    'AC1, AC1a, AC1b, AC1c, AC1d: displays the consolidated child account banner across account tabs',
+    {
+      tags: [...buildTags('@JIRA-STORY:PO-2392', '@JIRA-STORY:PO-2332'), '@JIRA-EPIC:PO-2332'],
+    },
+    () => {
+      const header = structuredClone(DEFENDANT_HEADER_MOCK);
+      header.has_consolidated_accounts = false;
+      header.account_status_reference = {
+        account_status_code: 'CS',
+        account_status_display_name: 'Consolidated',
+      };
+
+      interceptUserState(USER_STATE_MOCK_PERMISSION_BU77);
+      interceptDefendantHeader(77, header, '1');
+      interceptAtAGlance(77, OPAL_FINES_ACCOUNT_DEFENDANT_AT_A_GLANCE_MOCK, '1');
+      interceptDefendantDetails(
+        77,
+        {
+          version: DEFENDANT_HEADER_MOCK.version,
+          defendant_account_party: OPAL_FINES_ACCOUNT_DEFENDANT_ACCOUNT_PARTY_MOCK.defendant_account_party,
+        },
+        '1',
+      );
+      interceptPaymentTerms(77, OPAL_FINES_ACCOUNT_DEFENDANT_DETAILS_PAYMENT_TERMS_LATEST_MOCK, '1');
+      interceptResultByCode('REM');
+      interceptEnforcementStatus(77, OPAL_FINES_ACCOUNT_DEFENDANT_DETAILS_ENFORCEMENT_TAB_REF_DATA_MOCK, '1');
+      interceptImpositions(77, OPAL_FINES_ACCOUNT_DEFENDANT_DETAILS_IMPOSITIONS_TAB_REF_DATA_MOCK, '1');
+      interceptHistoryAndNotes(77, OPAL_FINES_ACCOUNT_DEFENDANT_DETAILS_HISTORY_AND_NOTES_TAB_REF_DATA_MOCK, '1');
+
+      setupAccountEnquiryComponent(componentProperties);
+
+      assertConsolidatedAccountStatusBanner();
+
+      [
+        AccountNavDetailsLocators.subNav.defendantTab,
+        AccountNavDetailsLocators.subNav.paymentTermsTab,
+        AccountNavDetailsLocators.subNav.enforcementTab,
+        AccountNavDetailsLocators.subNav.impositionsTab,
+        AccountNavDetailsLocators.subNav.historyAndNotesTab,
+      ].forEach((tabLink) => {
+        cy.get(tabLink).click();
+        assertConsolidatedAccountStatusBanner();
+      });
+
+      cy.get(AccountNavDetailsLocators.subNav.atAGlanceTab).click();
+      assertConsolidatedAccountStatusBanner();
     },
   );
 

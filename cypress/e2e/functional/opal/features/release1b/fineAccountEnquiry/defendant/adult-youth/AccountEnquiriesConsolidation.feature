@@ -15,7 +15,7 @@ Feature: Defendant - Adult or youth - Account Enquiries - Consolidation
     When I search for the account by last name "ConsolidatedAccount{uniq}" and open the latest result
 
 
-  @R1B @JIRA-STORY:PO-2391 @JIRA-EPIC:PO-2332
+  @R1B @JIRA-STORY:PO-2391 @JIRA-STORY:PO-2392 @JIRA-EPIC:PO-2332
   Scenario: Consolidated account links open the child account At a glance view
     # The consolidated-account response is mocked in the test harness because consolidation
     # behaviour is not available end-to-end in the live environment yet.
@@ -24,3 +24,4 @@ Feature: Defendant - Adult or youth - Account Enquiries - Consolidation
     Then I can see a table containing the child accounts
     When I view the first child account record
     Then I am presented with the details of the selected child account
+    And I am notified that the selected child account is closed because it was consolidated

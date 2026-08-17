@@ -557,6 +557,14 @@ Then('I am presented with the details of the selected child account', () => {
 });
 
 /**
+ * @step Verifies the selected child account displays the closed account banner.
+ */
+Then('I am notified that the selected child account is closed because it was consolidated', () => {
+  log('assert', 'Selected child account consolidated status banner is displayed');
+  accountEnquiryFlow().assertSelectedChildAccountStatusBannerVisible();
+});
+
+/**
  * @step Verifies History and notes rows loaded.
  */
 Then('I should see the History and notes items load', () => {
