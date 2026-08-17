@@ -196,7 +196,7 @@ describe('DashboardComponent', () => {
     fixture.detectChanges();
 
     expect(component.resolvedConfig()).toEqual(DASHBOARD_PAGE_CONFIGURATION_MAP.finance);
-    expect(component.resolvedConfig().groups.map((group) => group.id)).toContain('payments-in');
+    expect(component.resolvedConfig().groups.map((group) => group.id)).toContain('cash');
   });
 
   it('should remove finance content when release-1c-financial-movements is disabled', () => {
@@ -222,7 +222,8 @@ describe('DashboardComponent', () => {
 
     const renderedText = fixture.nativeElement.textContent as string;
 
-    expect(renderedText).toContain('Payments in');
+    expect(renderedText).toContain('Cash');
+    expect(renderedText).toContain('Automatic Cash Input');
     expect(renderedText).toContain('Manual cash input');
   });
 
@@ -234,6 +235,7 @@ describe('DashboardComponent', () => {
 
     const renderedText = fixture.nativeElement.textContent as string;
 
+    expect(renderedText).not.toContain('Automatic Cash Input');
     expect(renderedText).not.toContain('Manual cash input');
   });
 

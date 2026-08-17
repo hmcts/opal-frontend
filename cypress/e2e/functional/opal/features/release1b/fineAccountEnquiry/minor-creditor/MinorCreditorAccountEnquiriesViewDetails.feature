@@ -74,14 +74,14 @@ Feature: Minor Creditor Account Enquiries View Details
       When I open the latest matching result from the search results
       Then I should see the account header contains "Mr Harper HISTMINOR{uniqUpper}"
 
-    @R1B @JIRA-STORY:PO-2640 @JIRA-EPIC:PO-2653
+    @R1B @JIRA-STORY:PO-2640 @JIRA-EPIC:PO-2653 @JIRA-TEST-KEY:PO-10039
     Scenario: Minor creditor History and notes items load and can be filtered
       When I go to the History and notes tab
       Then I should see the History and notes items load
       When I filter the History and notes results to Notes
       Then I should only see Note items in History and notes
 
-    @R1B @JIRA-STORY:PO-2640 @JIRA-EPIC:PO-2653
+    @R1B @JIRA-STORY:PO-2640 @JIRA-EPIC:PO-2653 @JIRA-TEST-KEY:PO-10040
     Scenario: History and notes account links open the associated defendant record in a new tab
       When I go to the History and notes tab
       And I open the first History and notes account link in a new tab

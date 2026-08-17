@@ -52,7 +52,7 @@ export interface IOpalFinesReportInstance {
   status?:
     | OpalFinesReportInstanceStatus
     | {
-        code?: OpalFinesReportInstanceStatus | string;
+        code?: OpalFinesReportInstanceStatus;
         displayName?: string;
         display_name?: string;
       };

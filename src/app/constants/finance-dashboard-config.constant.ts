@@ -6,8 +6,8 @@ export const FINANCE_DASHBOARD_CONFIG: IDashboardPageConfiguration = {
   highlights: [],
   groups: [
     {
-      id: 'payments-in',
-      title: 'Payments in',
+      id: 'cash',
+      title: 'Cash',
       links: FINANCE_LINKS,
     },
   ],

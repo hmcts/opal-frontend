@@ -29,7 +29,7 @@ Feature: Parent Guardian To Pay Fine Account Enquiry Accessibility
     And I open the change enforcement court form
     And I check the page for accessibility
 
-  @R1B @JIRA-STORY:PO-5749 @JIRA-EPIC:PO-2990
+  @R1B @JIRA-STORY:PO-5749 @JIRA-EPIC:PO-2990 @JIRA-TEST-KEY:PO-10024
   Scenario: Restricted Parent or guardian details tab accessibility
     # AC5 – Axe-Core coverage for the restricted Parent or guardian details tab.
     Given I stub the defendant header summary account status code to "CS"
