@@ -42,7 +42,6 @@ import { OPAL_FINES_ACCOUNT_DEFENDANT_DETAILS_PAYMENT_TERMS_LATEST_MOCK } from '
 import { OPAL_FINES_ACCOUNT_DEFENDANT_DETAILS_ENFORCEMENT_TAB_REF_DATA_MOCK } from '@services/fines/opal-fines-service/mocks/opal-fines-account-defendant-details-enforcement-tab-ref-data.mock';
 import { OPAL_FINES_ACCOUNT_DEFENDANT_DETAILS_IMPOSITIONS_TAB_REF_DATA_MOCK } from '@services/fines/opal-fines-service/mocks/opal-fines-account-defendant-details-impositions.mock';
 import { OPAL_FINES_ACCOUNT_DEFENDANT_DETAILS_HISTORY_AND_NOTES_TAB_REF_DATA_MOCK } from '@services/fines/opal-fines-service/mocks/opal-fines-account-defendant-details-history-and-notes-tab-ref-data.mock';
-import { only } from 'node:test';
 
 const ACCOUNT_ENQUIRY_JIRA_LABEL = '@JIRA-LABEL:account-enquiry';
 
@@ -354,7 +353,7 @@ describe('Account Enquiry - Defendant Header', () => {
   it(
     'AC1, AC1a, AC1b, AC1c, AC1d: displays the consolidated child account banner across account tabs',
     {
-      tags: [...buildTags('@JIRA-STORY:PO-2392', '@JIRA-STORY:PO-2332'), '@JIRA-EPIC:PO-2332'],
+      tags: [...buildTags('@JIRA-STORY:PO-2392'), '@JIRA-EPIC:PO-2332'],
     },
     () => {
       const header = structuredClone(DEFENDANT_HEADER_MOCK);
