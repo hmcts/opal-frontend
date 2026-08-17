@@ -85,7 +85,7 @@ describe('Search Account Component - Company', () => {
 
   it(
     'AC6a. should route to problem screen when National Insurance number is combined with company criteria',
-    { tags: [...buildTags('@JIRA-STORY:PO-2953'), '@JIRA-EPIC:PO-2630'] },
+    { tags: [...buildTags('@JIRA-STORY:PO-2953'), '@JIRA-EPIC:PO-2630', '@JIRA-TEST-KEY:PO-9908'] },
     () => {
       setupComponent((searchState) => {
         searchState.fsa_search_account_individuals_search_criteria!.fsa_search_account_individuals_national_insurance_number =

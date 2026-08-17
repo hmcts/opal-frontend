@@ -32,7 +32,7 @@ Feature: Adult Youth Account Enquiries View Details Accessibility
     Then I should see the convert to company confirmation screen for defendant "Mr John ACCDETAILSURNAME{uniqUpper}"
     And I check the page for accessibility
 
-  @R1B @JIRA-STORY:PO-5751 @JIRA-EPIC:PO-2990
+  @R1B @JIRA-STORY:PO-5751 @JIRA-EPIC:PO-2990 @JIRA-TEST-KEY:PO-10001
   Scenario: Check Account Details View Accessibility with Axe-Core for the youth-only add parent or guardian details action
     # AC4 – Axe-Core coverage for the youth-only Defendant tab with the Add parent or guardian details action.
     Given I create a "adultOrYouthOnly" draft account with the following details and set status "Publishing Pending" using user "opal-test-10@dev.platform.hmcts.net":
