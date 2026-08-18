@@ -22,7 +22,7 @@ export const routing: Routes = [
       import('../fines-finance-inbound-files/fines-finance-inbound-files.component').then(
         (c) => c.FinesExtFinanceInboundFiles,
       ),
-      canActivate: [authGuard, routePermissionsGuard],
+    canActivate: [authGuard, routePermissionsGuard],
     data: {
       routePermissionId: [draftRootPermissionIds['View Interface Files']],
       title: FINES_FINANCE_ROUTING_TITLES.children.inbound,
@@ -52,7 +52,7 @@ export const routing: Routes = [
       ),
     canActivate: [authGuard, routePermissionsGuard],
     data: {
-      routePermissionId: [draftRootPermissionIds['Upload Variant Banking Files']],  
+      routePermissionId: [draftRootPermissionIds['Upload Variant Banking Files']],
       title: FINES_FINANCE_ROUTING_TITLES.children.upload,
     },
     resolve: { title: TitleResolver },
