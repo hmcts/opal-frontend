@@ -18,4 +18,7 @@ export const FINES_PERMISSIONS: IFinesPermissions = {
   'operational-report-by-payments': 15,
   'process-and-allocate-payments': 16,
   'auto-enforcement': 17,
+  'View Interface Files':18,
+  'Create Interface Files':19,
+  'Upload Variant Banking Files':20,
 };
