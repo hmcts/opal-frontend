@@ -118,6 +118,12 @@ When('I open the latest matching result from the search results', () => {
   accountEnquiryFlow().openMostRecentFromResults();
 });
 
+/** Opens the single result matching all supplied result-table column values. */
+When('I open the matching result from the search results:', (table: DataTable) => {
+  log('step', 'Opening result matching supplied column values');
+  accountEnquiryFlow().openMatchingResultFromResults(table);
+});
+
 /** Opens the Defendant-column link from the latest minor creditor result row. */
 When('I open the defendant linked from the latest minor creditor search result', () => {
   log('step', 'Opening defendant linked from latest minor creditor search result');
