@@ -10,6 +10,7 @@ import { Observable, map } from 'rxjs';
 import { OpalFines } from '@services/fines/opal-fines-service/opal-fines.service';
 import { FinesMacOffenceDetailsService } from '../services/fines-mac-offence-details.service';
 import { IOpalFinesOffencesRefData } from '@services/fines/opal-fines-service/interfaces/opal-fines-offences-ref-data.interface';
+import { IOpalFinesOffences } from '../../../services/opal-fines-service/interfaces/opal-fines-offences.interface';
 
 @Component({
   selector: 'app-fines-mac-offence-details-review-offence',
@@ -33,18 +34,22 @@ export class FinesMacOffenceDetailsReviewOffenceComponent implements OnInit {
   @Input({ required: false }) showDetails: boolean = true;
   @Input({ required: false }) isReadOnly: boolean = false;
   @Output() public actionClicked = new EventEmitter<{ actionName: string; offenceId: number }>();
-  public offenceTitle$!: Observable<string>;
+  public offenceDetails$!: Observable<IOpalFinesOffences | null>;
 
-  private getOffenceTitle(): Observable<string> {
+  private getOffenceDetails(): Observable<IOpalFinesOffences | null> {
     const offenceCode = this.offence.formData.fm_offence_details_offence_cjs_code!;
     const offenceId = this.offence.formData.fm_offence_details_offence_id;
 
-    return this.opalFinesService.getOffenceByCjsCode(offenceCode).pipe(
-      map((response: IOpalFinesOffencesRefData) => {
-        const exactMatch = this.offenceDetailsService.findExactOffenceMatch(response, offenceCode, offenceId);
-        return exactMatch?.offence_title ?? response.refData[0]?.offence_title ?? '';
-      }),
-    );
+    return this.opalFinesService
+      .getOffenceByCjsCode(offenceCode)
+      .pipe(
+        map(
+          (response: IOpalFinesOffencesRefData) =>
+            this.offenceDetailsService.findExactOffenceMatch(response, offenceCode, offenceId) ??
+            response.refData[0] ??
+            null,
+        ),
+      );
   }
 
   /**
@@ -59,6 +64,16 @@ export class FinesMacOffenceDetailsReviewOffenceComponent implements OnInit {
     this.actionClicked.emit(event);
   }
 
+  /**
+   * Returns the formatted caption for the provided offence details.
+   *
+   * @param offenceDetails - The offence details used to generate the caption.
+   * @returns The formatted offence title and CJS code.
+   */
+  public getOffenceCaption(offenceDetails: IOpalFinesOffences): string {
+    return this.offenceDetailsService.getFormattedTitleAndCode(offenceDetails);
+  }
+
   public ngOnInit(): void {
     if (this.activatedRoute.snapshot.data['results']) {
       this.impositionRefData = this.activatedRoute.snapshot.data['results'];
@@ -66,6 +81,6 @@ export class FinesMacOffenceDetailsReviewOffenceComponent implements OnInit {
     if (this.activatedRoute.snapshot.data['majorCreditors']) {
       this.majorCreditorRefData = this.activatedRoute.snapshot.data['majorCreditors'];
     }
-    this.offenceTitle$ = this.getOffenceTitle();
+    this.offenceDetails$ = this.getOffenceDetails();
   }
 }

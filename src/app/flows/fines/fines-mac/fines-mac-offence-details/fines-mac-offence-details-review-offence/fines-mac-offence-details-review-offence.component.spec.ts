@@ -108,25 +108,34 @@ describe('FinesMacOffenceDetailsReviewOffenceComponent', () => {
     expect(component.majorCreditorRefData).toEqual(existingMajorCreditors);
   });
 
-  describe('offenceTitle$', () => {
-    it('should expose and render the exact matched offence title and code', async () => {
+  describe('offenceDetails$', () => {
+    it('should expose and render the exact matched offence details', async () => {
       vi.mocked(mockOpalFinesService.getOffenceByCjsCode!).mockReturnValue(of(OPAL_FINES_OFFENCES_REF_DATA_MOCK));
       component.offence.formData.fm_offence_details_offence_cjs_code = 'CA03010D';
       component.offence.formData.fm_offence_details_offence_id = 314683;
       fixture.detectChanges();
 
-      const offenceTitle = await firstValueFrom(component.offenceTitle$);
+      const offenceDetails = await firstValueFrom(component.offenceDetails$);
 
-      expect(offenceTitle).toBe('No Televison Licence');
-      fixture.detectChanges();
+      expect(offenceDetails).toEqual(
+        expect.objectContaining({
+          offence_id: 314683,
+          offence_title: 'No Televison Licence',
+        }),
+      );
     });
 
-    it('should use the first offence title when no exact match is found', async () => {
+    it('should use the first offence details when no exact match is found', async () => {
       vi.spyOn(offenceDetailsService, 'findExactOffenceMatch').mockReturnValue(undefined);
       fixture.detectChanges();
-      const offenceTitle = await firstValueFrom(component.offenceTitle$);
+      const offenceDetails = await firstValueFrom(component.offenceDetails$);
 
-      expect(offenceTitle).toBe('ak test');
+      expect(offenceDetails).toEqual(
+        expect.objectContaining({
+          offence_title: 'ak test',
+          offence_id: 314441,
+        }),
+      );
     });
 
     it('should use the saved offence id when duplicate code matches are returned', async () => {
@@ -139,12 +148,17 @@ describe('FinesMacOffenceDetailsReviewOffenceComponent', () => {
 
       fixture.detectChanges();
 
-      const offenceTitle = await firstValueFrom(component.offenceTitle$);
+      const offenceDetails = await firstValueFrom(component.offenceDetails$);
 
-      expect(offenceTitle).toBe('Duplicate offence title B');
+      expect(offenceDetails).toEqual(
+        expect.objectContaining({
+          offence_id: 41800,
+          offence_title: 'Duplicate offence title B',
+        }),
+      );
     });
 
-    it('should return an empty string when no exact match is found and refData is empty', async () => {
+    it('should return null when no exact match is found and refData is empty', async () => {
       vi.spyOn(offenceDetailsService, 'findExactOffenceMatch').mockReturnValue(undefined);
 
       vi.mocked(mockOpalFinesService.getOffenceByCjsCode!).mockReturnValue(
@@ -154,22 +168,35 @@ describe('FinesMacOffenceDetailsReviewOffenceComponent', () => {
       );
 
       fixture.detectChanges();
-      const offenceTitle = await firstValueFrom(component.offenceTitle$);
+      const offenceDetails = await firstValueFrom(component.offenceDetails$);
 
-      expect(offenceTitle).toBe('');
+      expect(offenceDetails).toBe(null);
     });
 
     it('should call findExactOffenceMatch with the offence code and offence id', async () => {
       const findExactOffenceMatchSpy = vi.spyOn(offenceDetailsService, 'findExactOffenceMatch');
 
       fixture.detectChanges();
-      await firstValueFrom(component.offenceTitle$);
+      await firstValueFrom(component.offenceDetails$);
 
       expect(findExactOffenceMatchSpy).toHaveBeenCalledWith(
         OPAL_FINES_OFFENCES_REF_DATA_SINGULAR_MOCK,
         component.offence.formData.fm_offence_details_offence_cjs_code,
         component.offence.formData.fm_offence_details_offence_id,
       );
+    });
+  });
+
+  describe('getOffenceCaption', () => {
+    it('should return the formatted offence title and code', () => {
+      const offenceDetails = OPAL_FINES_OFFENCES_REF_DATA_MOCK.refData[0];
+
+      vi.spyOn(offenceDetailsService, 'getFormattedTitleAndCode').mockReturnValue('No Televison Licence (CA03010D)');
+
+      const result = component.getOffenceCaption(offenceDetails);
+
+      expect(offenceDetailsService.getFormattedTitleAndCode).toHaveBeenCalledWith(offenceDetails);
+      expect(result).toBe('No Televison Licence (CA03010D)');
     });
   });
 });

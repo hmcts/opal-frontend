@@ -391,4 +391,16 @@ export class FinesMacOffenceDetailsService {
       populateHint(code);
     };
   }
+
+  /**
+   * Returns the offence title formatted with its CJS code, when available.
+   *
+   * @param offence - The offence containing the title and CJS code.
+   * @returns The formatted offence title and CJS code, or the offence title if no CJS code is available.
+   */
+  public getFormattedTitleAndCode(offence: IOpalFinesOffences): string {
+    const offenceCode = this.getOffenceCode(offence);
+
+    return offenceCode ? `${offence.offence_title} (${offenceCode})` : offence.offence_title;
+  }
 }
