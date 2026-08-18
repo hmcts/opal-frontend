@@ -1,7 +1,6 @@
 @if (offenceTitle$ | async; as offenceTitle) {
   <app-fines-mac-offence-details-review-offence-heading
     [offenceId]="offence.formData.fm_offence_details_id"
-    [offenceRefId]="offence.formData.fm_offence_details_offence_id"
     [offenceCode]="offence.formData.fm_offence_details_offence_cjs_code!"
     [offenceTitle]="offenceTitle"
     [showActions]="showActions"

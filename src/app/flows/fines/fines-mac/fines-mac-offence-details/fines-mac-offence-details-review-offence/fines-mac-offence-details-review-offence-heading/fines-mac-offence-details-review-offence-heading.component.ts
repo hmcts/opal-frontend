@@ -10,7 +10,6 @@ import { FinesMacOffenceDetailsReviewOffenceHeadingTitleComponent } from './fine
 })
 export class FinesMacOffenceDetailsReviewOffenceHeadingComponent {
   @Input({ required: true }) public offenceId!: number;
-  @Input({ required: false }) public offenceRefId: number | null = null;
   @Input({ required: true }) public offenceCode!: string;
   @Input({ required: true }) public offenceTitle!: string;
   @Input({ required: false }) public showActions!: boolean;
