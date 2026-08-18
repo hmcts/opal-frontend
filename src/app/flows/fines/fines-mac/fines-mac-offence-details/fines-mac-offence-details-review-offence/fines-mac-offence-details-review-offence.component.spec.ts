@@ -170,7 +170,7 @@ describe('FinesMacOffenceDetailsReviewOffenceComponent', () => {
       fixture.detectChanges();
       const offenceDetails = await firstValueFrom(component.offenceDetails$);
 
-      expect(offenceDetails).toBeNull;
+      expect(offenceDetails).toBeNull();
     });
 
     it('should call findExactOffenceMatch with the offence code and offence id', async () => {
