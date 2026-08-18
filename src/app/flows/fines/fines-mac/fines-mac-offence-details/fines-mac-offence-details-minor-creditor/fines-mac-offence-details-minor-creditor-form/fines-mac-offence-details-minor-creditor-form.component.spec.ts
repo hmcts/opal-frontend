@@ -149,9 +149,9 @@ describe('FinesMacOffenceDetailsMinorCreditorFormComponent', () => {
 
     // Test non-ASCII characters are rejected in company names
     companyNameControl.setValue('InvalidéName');
-    expect(companyNameControl.errors?.['singleAsciiChatacters']).toBeTruthy();
+    expect(companyNameControl.errors?.['singleAsciiCharacters']).toBeTruthy();
     expect(
-      component.fieldErrors['fm_offence_details_minor_creditor_company_name']['singleAsciiChatacters'].message,
+      component.fieldErrors['fm_offence_details_minor_creditor_company_name']['singleAsciiCharacters'].message,
     ).toBe(
       'Company name must only include letters a to z, numbers 0-9 and certain special characters (such as hyphens, spaces, apostrophes and commas)',
     );
@@ -172,7 +172,7 @@ describe('FinesMacOffenceDetailsMinorCreditorFormComponent', () => {
     expect(nameOnAccountControl.errors?.['maxlength']).toBeTruthy();
 
     nameOnAccountControl.setValue('InvalidéName'); // Invalid characters
-    expect(nameOnAccountControl.errors?.['singleAsciiChatacters']).toBeTruthy();
+    expect(nameOnAccountControl.errors?.['singleAsciiCharacters']).toBeTruthy();
 
     nameOnAccountControl.setValue('Valid@Name'); // Valid input
     expect(nameOnAccountControl.valid).toBeTruthy();
