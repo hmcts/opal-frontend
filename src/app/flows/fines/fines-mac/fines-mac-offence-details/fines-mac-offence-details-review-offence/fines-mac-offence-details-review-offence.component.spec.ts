@@ -15,6 +15,7 @@ import { FinesMacOffenceDetailsReviewOffenceComponent } from './fines-mac-offenc
 import { FinesMacOffenceDetailsService } from '../services/fines-mac-offence-details.service';
 import { IOpalFinesOffencesRefData } from '../../../services/opal-fines-service/interfaces/opal-fines-offences-ref-data.interface';
 import { OPAL_FINES_OFFENCES_REF_DATA_DUPLICATE_CODE_MOCK } from '../../../services/opal-fines-service/mocks/opal-fines-offences-ref-data-duplicate-code.mock';
+import { OPAL_FINES_OFFENCES_REF_DATA_MOCK } from '../../../services/opal-fines-service/mocks/opal-fines-offences-ref-data.mock';
 
 describe('FinesMacOffenceDetailsReviewOffenceComponent', () => {
   let component: FinesMacOffenceDetailsReviewOffenceComponent;
@@ -108,13 +109,16 @@ describe('FinesMacOffenceDetailsReviewOffenceComponent', () => {
   });
 
   describe('offenceTitle$', () => {
-    it('should expose the exact matched offence title', async () => {
+    it('should expose and render the exact matched offence title and code', async () => {
+      vi.mocked(mockOpalFinesService.getOffenceByCjsCode!).mockReturnValue(of(OPAL_FINES_OFFENCES_REF_DATA_MOCK));
+      component.offence.formData.fm_offence_details_offence_cjs_code = 'CA03010D';
+      component.offence.formData.fm_offence_details_offence_id = 314683;
       fixture.detectChanges();
-      expect(component.offenceTitle$).toBeDefined();
 
       const offenceTitle = await firstValueFrom(component.offenceTitle$);
 
-      expect(offenceTitle).toBe('ak test');
+      expect(offenceTitle).toBe('No Televison Licence');
+      fixture.detectChanges();
     });
 
     it('should use the first offence title when no exact match is found', async () => {
