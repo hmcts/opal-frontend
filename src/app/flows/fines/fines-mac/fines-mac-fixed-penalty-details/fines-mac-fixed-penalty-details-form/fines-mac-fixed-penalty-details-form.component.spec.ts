@@ -128,18 +128,35 @@ describe('FinesMacFixedPenaltyFormComponent', () => {
 
   it('should render the search offence list link with the required classes and attributes', () => {
     const link = fixture.nativeElement.querySelector(
-      'a.govuk-link.govuk-link--no-visited-state',
+      'a[href*="search-offences"].govuk-link.govuk-link--no-visited-state',
     ) as HTMLAnchorElement | null;
+    const guidance = fixture.nativeElement.querySelector(
+      '#fm_fp_offence_details_offence_cjs_code-guidance',
+    ) as HTMLElement | null;
+    const offenceCodeInput = fixture.nativeElement.querySelector(
+      '#fm_fp_offence_details_offence_cjs_code',
+    ) as HTMLInputElement | null;
 
     expect(link).toBeTruthy();
     if (!link) throw new Error('Search offence list link not found');
+    expect(guidance).toBeTruthy();
+    if (!guidance) throw new Error('Offence code guidance not found');
+    expect(offenceCodeInput).toBeTruthy();
+    if (!offenceCodeInput) throw new Error('Offence code input not found');
 
-    expect(link.textContent?.trim()).toBe('search the offence list');
+    expect(guidance.textContent).toContain("If you don't know the offence code, you can");
+    expect(link.textContent?.replace(/\s+/g, ' ').trim()).toBe(
+      "If you don't know the offence code, you can search the offence list (opens in a new tab)",
+    );
+    expect(link.querySelector('span.govuk-visually-hidden')?.textContent?.trim()).toBe(
+      "If you don't know the offence code, you can",
+    );
     expect(link.classList.contains('govuk-link')).toBe(true);
     expect(link.classList.contains('govuk-link--no-visited-state')).toBe(true);
     expect(link.getAttribute('href')).toBe(component.searchOffenceUrl);
     expect(link.getAttribute('target')).toBe('_blank');
     expect(link.getAttribute('rel')).toBe('noopener noreferrer');
+    expect(offenceCodeInput.compareDocumentPosition(guidance) & Node.DOCUMENT_POSITION_FOLLOWING).toBeTruthy();
   });
 
   it('should create the form with the correct controls', () => {
