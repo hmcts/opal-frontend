@@ -1,0 +1,16 @@
+<div class="govuk-grid-column-full">
+  <h2 [class]="style.heading">History and notes</h2>
+  <hr [class]="style.hr" />
+  @if (historyAndNotesTabData$ | async; as historyAndNotesTabData) {
+    <ng-container></ng-container>
+  }
+
+  <app-fines-acc-history-and-notes-filter-form
+    [filterFieldErrors]="fieldErrors"
+    [filterForm]="filterForm"
+    [filterOpen]="filterOpen"
+    [filterSummaryText]="summaryText"
+    (formSubmit)="handleFilterApplied($event)"
+    (filterOpenChange)="handleFilterOpenChange($event)"
+  ></app-fines-acc-history-and-notes-filter-form>
+</div>

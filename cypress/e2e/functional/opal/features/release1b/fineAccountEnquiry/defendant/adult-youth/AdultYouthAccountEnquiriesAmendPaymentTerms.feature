@@ -51,10 +51,45 @@ Feature: Adult Youth Account Enquiries Amend Payment Terms
       And the payment terms pay by date is "30 May 2025"
       And the payment terms instalment rows are not shown
 
-    @R1B @JIRA-STORY:PO-2671 @JIRA-EPIC:PO-8248
+    @R1B @JIRA-STORY:PO-2671 @JIRA-EPIC:PO-8248 @JIRA-TEST-KEY:PO-10030
     Scenario: AC4a, AC4b Payment terms tab keeps the Change link inside the panel and opens the amend screen
       When I search for the account by last name "AmendPayTerms{uniq}" and open the latest result
       And I go to the Payment terms tab
       Then I should only see one Change link inside the Payment terms panel
       When I open the amend payment terms form
       Then I should be on the Payment terms amend screen
+
+    @R1B @JIRA-STORY:PO-5753 @JIRA-EPIC:PO-2990
+    Scenario Outline: AC1, AC2 Payment terms actions are hidden for restricted account statuses
+      Given I stub the defendant header summary payment terms account status code to "<status>"
+      When I search for the account by last name "AmendPayTerms{uniq}" and open the latest result
+      And I go to the Payment terms tab
+      Then I do not see the Payment terms Change or Request payment card actions
+
+      @JIRA-TEST-KEY:PO-10031
+      Examples:
+        | status |
+        | CS     |
+      @JIRA-TEST-KEY:PO-10032
+      Examples:
+        | status |
+        | WO     |
+      @JIRA-TEST-KEY:PO-10033
+      Examples:
+        | status |
+        | TA     |
+      @JIRA-TEST-KEY:PO-10034
+      Examples:
+        | status |
+        | TS     |
+      @JIRA-TEST-KEY:PO-10035
+      Examples:
+        | status |
+        | TO     |
+
+    @R1B @JIRA-STORY:PO-5753 @JIRA-EPIC:PO-2990 @JIRA-TEST-KEY:PO-10036
+    Scenario: AC1, AC2 Payment terms actions are hidden when the account balance is zero
+      Given I stub the defendant header summary payment terms account balance to 0
+      When I search for the account by last name "AmendPayTerms{uniq}" and open the latest result
+      And I go to the Payment terms tab
+      Then I do not see the Payment terms Change or Request payment card actions

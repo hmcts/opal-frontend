@@ -58,11 +58,15 @@ export const AccountParentOrGuardianDetailsLocators = {
   /** Root element for content rendered when the Parent or guardian tab is active. */
   parentOrGuardianTabRoot: 'app-fines-acc-defendant-details-parent-or-guardian-tab',
 
+  /** All Change links rendered in summary cards within the Parent or guardian tab. */
+  sectionChangeLinks:
+    'app-fines-acc-defendant-details-parent-or-guardian-tab .govuk-summary-card__actions a.govuk-link',
+
   /** Heading and in-tab action area at the top of the Parent or guardian tab. */
   parentOrGuardianTabHeader: {
     /** “Parent or guardian details” section heading within the tab. */
     title: 'app-fines-acc-defendant-details-parent-or-guardian-tab h2.govuk-heading-s',
-    /** “Change” link in the Parent or guardian details summary card header. */
+    /** Primary “Change” link in the Parent or guardian details summary card header. */
     changeLink: '#parent-or-guardian-details-summary-card-list .govuk-summary-card__actions a',
     /** Expected label for the header action link. */
     changeLinkLabel: 'Change',

@@ -32,3 +32,23 @@ Feature: Adult Youth Account Enquiries View Details Accessibility
     Then I should see the convert to company confirmation screen for defendant "Mr John ACCDETAILSURNAME{uniqUpper}"
     And I check the page for accessibility
 
+  @R1B @JIRA-STORY:PO-5751 @JIRA-EPIC:PO-2990 @JIRA-TEST-KEY:PO-10001
+  Scenario: Check Account Details View Accessibility with Axe-Core for the youth-only add parent or guardian details action
+    # AC4 – Axe-Core coverage for the youth-only Defendant tab with the Add parent or guardian details action.
+    Given I create a "adultOrYouthOnly" draft account with the following details and set status "Publishing Pending" using user "opal-test-10@dev.platform.hmcts.net":
+      | Account_status                          | Submitted                        |
+      | account.defendant.forenames             | Jamie                            |
+      | account.defendant.surname               | AddPgAccess{uniq}                |
+      | account.defendant.email_address_1       | Jamie.AddPgAccess{uniq}@test.com |
+      | account.defendant.telephone_number_home | 02078259314                      |
+      | account.account_type                    | Fine                             |
+      | account.prosecutor_case_reference       | PCR-AUTO-003                     |
+      | account.collection_order_made           | false                            |
+      | account.collection_order_made_today     | false                            |
+      | account.payment_card_request            | false                            |
+      | account.defendant.dob                   | 2010-05-15                       |
+    When I search for the account by last name "AddPgAccess{uniq}" and open the latest result
+    Then I should see the page header contains "Mr Jamie ADDPGACCESS{uniqUpper}"
+    When I go to the Defendant details section and the header is "Defendant details"
+    Then I should see the add parent or guardian details action
+    And I check the page for accessibility

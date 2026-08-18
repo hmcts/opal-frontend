@@ -33,7 +33,7 @@ Feature: Parent Guardian To Pay Account Enquiries View Details
       Then I should return to the account details page Defendant tab
       And I should see the add parent or guardian details action
 
-    @R1B @JIRA-STORY:PO-1877 @JIRA-EPIC:PO-1875
+    @R1B @JIRA-STORY:PO-1877 @JIRA-EPIC:PO-1875 @JIRA-TEST-KEY:PO-9981
     Scenario: Discarding entered parent or guardian details clears the add form
       When I start adding parent or guardian details
       Then I should be on the add parent or guardian details page
@@ -86,6 +86,25 @@ Feature: Parent Guardian To Pay Account Enquiries View Details
       Then I should return to the account details page Parent or guardian tab
       And I should see the remove parent or guardian details action
 
+    @R1B @JIRA-STORY:PO-5749 @JIRA-EPIC:PO-2990 @JIRA-TEST-KEY:PO-9982
+    Scenario: Youth-only account with non-paying parent or guardian shows the remove link
+      # AC3 – Existing eligibility rules still show the actions for a non-paying parent or guardian.
+      Then I should see the remove parent or guardian details action
+      And I should see the parent or guardian details Change actions
+
+    @R1B @JIRA-STORY:PO-5749 @JIRA-EPIC:PO-2990 @JIRA-TEST-KEY:PO-9983
+    Scenario: Parent or guardian actions keep their existing navigation when displayed
+      # AC4 – Change and Remove actions keep their existing navigation and behaviour when displayed.
+      When I start changing the non-paying parent or guardian details
+      Then I should be on the amend parent or guardian details page
+      When I cancel changing parent or guardian details without making changes
+      Then I should return to the account details page Defendant tab
+      When I go to the Parent or guardian details section and the header is "Parent or guardian details"
+      And I start removing parent or guardian details
+      Then I should be on the remove parent or guardian details page for "REMOVEPGYOUTH{uniqUpper}"
+      When I cancel removing parent or guardian details
+      Then I should return to the account details page Parent or guardian tab
+
     @R1B @JIRA-STORY:PO-1878 @JIRA-EPIC:PO-1875 @JIRA-TEST-KEY:PO-6355
     Scenario: Cancelling parent or guardian removal keeps the parent or guardian details on the account
       When I start removing parent or guardian details
@@ -95,7 +114,7 @@ Feature: Parent Guardian To Pay Account Enquiries View Details
       And I should see the parent or guardian name contains "Pat GUARDIANREMOVE{uniqUpper}"
       And I should see the remove parent or guardian details action
 
-    @R1B @JIRA-STORY:PO-1878 @JIRA-EPIC:PO-1875
+    @R1B @JIRA-STORY:PO-1878 @JIRA-EPIC:PO-1875 @JIRA-TEST-KEY:PO-9984
     Scenario: Confirming parent or guardian removal returns to the Defendant tab with a success message
       When I start removing parent or guardian details
       Then I should be on the remove parent or guardian details page for "REMOVEPGYOUTH{uniqUpper}"
@@ -134,10 +153,17 @@ Feature: Parent Guardian To Pay Account Enquiries View Details
       When I open the "<section>" Change link on the Parent or guardian tab
       Then I should be on the "parentGuardian" amend route with fragment "<fragment>"
 
+      @JIRA-TEST-KEY:PO-9985
       Examples:
         | section                    | fragment           |
         | Parent or guardian details | party-details      |
+      @JIRA-TEST-KEY:PO-9986
+      Examples:
+        | section                    | fragment           |
         | Contact details            | contact-details    |
+      @JIRA-TEST-KEY:PO-9987
+      Examples:
+        | section                    | fragment           |
         | Employer details           | employment-details |
 
     @JIRA-EPIC:PO-976 @R1B @JIRA-STORY:PO-1129 @JIRA-TEST-KEY:PO-5532
@@ -194,7 +220,7 @@ Feature: Parent Guardian To Pay Account Enquiries View Details
       When I cancel changing parent or guardian details without making changes
       Then I should return to the account details page Defendant tab
 
-    @R1B @JIRA-STORY:PO-3915 @JIRA-EPIC:PO-1875
+    @R1B @JIRA-STORY:PO-3915 @JIRA-EPIC:PO-1875 @JIRA-TEST-KEY:PO-9988
     Scenario: Discarding entered parent or guardian changes keeps the saved name on the account
       When I go to the Parent or guardian details section and the header is "Parent or guardian details"
       And I start changing the non-paying parent or guardian details
@@ -205,7 +231,7 @@ Feature: Parent Guardian To Pay Account Enquiries View Details
       When I go to the Parent or guardian details section and the header is "Parent or guardian details"
       Then I should see the parent or guardian name contains "Pat GUARDIANAMEND{uniqUpper}"
 
-    @R1B @JIRA-STORY:PO-3915 @JIRA-EPIC:PO-1875
+    @R1B @JIRA-STORY:PO-3915 @JIRA-EPIC:PO-1875 @JIRA-TEST-KEY:PO-9989
     Scenario: Saving parent or guardian changes updates the Parent or guardian tab and audit trail
       When I start changing the non-paying parent or guardian details
       Then I should be on the amend parent or guardian details page
@@ -285,3 +311,47 @@ Feature: Parent Guardian To Pay Account Enquiries View Details
       Then I should return to the account details page Defendant tab
       And I should see the account header contains "Miss Updated TESTNONPAYEE{uniqUpper}"
       And I verify no amendments were created via API
+
+    @R1B @JIRA-STORY:PO-5749 @JIRA-EPIC:PO-2990
+    Scenario Outline: Restricted account statuses hide Parent or guardian actions on the summary tab
+      # AC1 – Remove parent or guardian details is hidden for restricted account statuses.
+      # AC2 – All Parent or guardian Change actions are hidden for restricted account statuses.
+      Given I stub the defendant header summary account status code to "<status>"
+      And I create a "pgToPay" draft account with the following details and set status "Publishing Pending" using user "opal-test-10@dev.platform.hmcts.net":
+        | Account_status                          | Submitted                           |
+        | account.defendant.forenames             | Alex                                |
+        | account.defendant.surname               | PgPayRestricted{uniq}               |
+        | account.defendant.email_address_1       | Alex.PgPayRestricted{uniq}@test.com |
+        | account.defendant.telephone_number_home | 02078250011                         |
+        | account.account_type                    | Fine                                |
+        | account.prosecutor_case_reference       | PCR-AUTO-028                        |
+        | account.collection_order_made           | false                               |
+        | account.collection_order_made_today     | false                               |
+        | account.payment_card_request            | false                               |
+        | account.defendant.dob                   | 2010-11-10                          |
+        | account.defendant.parent_guardian.dob   | 1980-02-15                          |
+      When I search for the account by last name "PgPayRestricted{uniq}" and verify the page header is "Alex PGPAYRESTRICTED{uniqUpper}"
+      And I go to the Parent or guardian details section and the header is "Parent or guardian details"
+      Then I do not see any parent or guardian details Change actions
+      And I do not see the remove parent or guardian details action
+
+      @JIRA-TEST-KEY:PO-9990
+      Examples:
+        | status |
+        | CS     |
+      @JIRA-TEST-KEY:PO-9991
+      Examples:
+        | status |
+        | WO     |
+      @JIRA-TEST-KEY:PO-9992
+      Examples:
+        | status |
+        | TA     |
+      @JIRA-TEST-KEY:PO-9993
+      Examples:
+        | status |
+        | TS     |
+      @JIRA-TEST-KEY:PO-9994
+      Examples:
+        | status |
+        | TO     |

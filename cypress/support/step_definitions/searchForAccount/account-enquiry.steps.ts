@@ -118,6 +118,12 @@ When('I open the latest matching result from the search results', () => {
   accountEnquiryFlow().openMostRecentFromResults();
 });
 
+/** Opens the Defendant-column link from the latest minor creditor result row. */
+When('I open the defendant linked from the latest minor creditor search result', () => {
+  log('step', 'Opening defendant linked from latest minor creditor search result');
+  accountEnquiryFlow().openLatestMinorCreditorDefendantFromResults();
+});
+
 /**
  * @step Opens the latest matching account from the Companies tab on the Search results page.
  */
@@ -220,9 +226,49 @@ Then('I should see the add parent or guardian details action', () => {
   defendantDetails().assertAddParentGuardianActionVisible();
 });
 
+Then('I do not see the add parent or guardian details action', () => {
+  log('assert', 'Add parent or guardian details action is absent');
+  defendantDetails().assertAddParentGuardianActionNotPresent();
+});
+
 Then('I should see the remove parent or guardian details action', () => {
   log('assert', 'Remove parent or guardian details action is visible');
   accountEnquiryFlow().assertRemoveParentGuardianActionVisible();
+});
+
+Then('I should see the parent or guardian details Change actions', () => {
+  log('assert', 'Parent or guardian details Change actions are visible');
+  accountEnquiryFlow().assertChangeParentGuardianActionsVisible();
+});
+
+Given('I stub the defendant header summary account status code to {string}', (statusCode: string) => {
+  log('intercept', 'Stub defendant header summary restricted status', { statusCode });
+  accountEnquiryFlow().stubRestrictedParentGuardianStatusCode(statusCode);
+});
+
+Given('I stub the defendant header summary payment terms account status code to {string}', (statusCode: string) => {
+  log('intercept', 'Stub defendant header summary payment terms restricted status', { statusCode });
+  accountEnquiryFlow().stubPaymentTermsAccountStatusCode(statusCode);
+});
+
+Given('I stub the defendant header summary payment terms account balance to {int}', (balance: number) => {
+  log('intercept', 'Stub defendant header summary payment terms account balance', { balance });
+  accountEnquiryFlow().stubPaymentTermsAccountBalance(balance);
+});
+
+Then('I do not see the Payment terms Change or Request payment card actions', () => {
+  log('assert', 'Payment terms Change and Request payment card actions are absent');
+  accountEnquiryFlow().assertPaymentTermsActionsNotVisible();
+});
+
+Then('I do not see any parent or guardian details Change actions', () => {
+  log('assert', 'Parent or guardian details Change actions are absent');
+  accountEnquiryFlow().assertChangeParentGuardianActionsNotVisible();
+});
+
+Then('I do not see the remove parent or guardian details action', () => {
+  log('assert', 'Remove parent or guardian details action is absent');
+  accountEnquiryFlow().assertRemoveParentGuardianActionNotVisible();
 });
 
 /**

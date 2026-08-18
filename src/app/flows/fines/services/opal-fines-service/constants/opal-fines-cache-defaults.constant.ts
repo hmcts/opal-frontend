@@ -24,6 +24,7 @@ export const OPAL_FINES_CACHE_DEFAULTS: IOpalFinesCache = {
   minorCreditorAccountAtAGlanceCache$: null,
   minorCreditorAccountCreditorCache$: null,
   majorCreditorAccountAtAGlanceCache$: null,
+  majorCreditorAccountHistoryAndNotesCache$: null,
   minorCreditorAccountHistoryAndNotesCache$: null,
   enforcersCache$: null,
   reportsCache$: {},

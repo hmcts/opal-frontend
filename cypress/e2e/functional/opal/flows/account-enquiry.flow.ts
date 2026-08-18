@@ -234,6 +234,16 @@ export class AccountEnquiryFlow {
     this.results.openLatestPublished();
   }
 
+  /** Opens the associated defendant linked from the latest minor creditor result. */
+  public openLatestMinorCreditorDefendantFromResults(): void {
+    logAE('method', 'openLatestMinorCreditorDefendantFromResults()');
+    logAE('open', 'Opening associated defendant from latest minor creditor result');
+
+    ForceSingleTabNavigation();
+    this.results.waitForResultsTable();
+    this.results.openLatestMinorCreditorDefendant();
+  }
+
   /**
    * Opens the most recent account from the Companies results tab and asserts navigation.
    */
@@ -397,6 +407,107 @@ export class AccountEnquiryFlow {
     logAE('method', 'assertRemoveParentGuardianActionVisible()');
     this.detailsNav.goToParentGuardianTab();
     this.parentGuardianDetails.assertRemoveParentGuardianActionVisible();
+  }
+
+  /**
+   * Asserts the Change actions are visible on the Parent or guardian tab.
+   */
+  public assertChangeParentGuardianActionsVisible(): void {
+    logAE('method', 'assertChangeParentGuardianActionsVisible()');
+    this.detailsNav.goToParentGuardianTab();
+    this.parentGuardianDetails.assertChangeActionsVisible();
+  }
+
+  /**
+   * Stubs the defendant header-summary response so the account renders as a restricted status.
+   *
+   * @param statusCode Restricted account status code to inject into the response.
+   */
+  public stubRestrictedParentGuardianStatusCode(statusCode: string): void {
+    logAE('intercept', 'Stubbing defendant header-summary restricted account status', { statusCode });
+
+    cy.intercept('GET', '**/defendant-accounts/**/header-summary', (req) => {
+      req.continue((res) => {
+        const body = res.body as { account_status_reference?: { account_status_code?: string } };
+
+        if (!body?.account_status_reference) {
+          throw new Error('Expected defendant header-summary response to include account_status_reference.');
+        }
+
+        body.account_status_reference.account_status_code = statusCode;
+        res.send({ body });
+      });
+    }).as('restrictedParentGuardianHeaderSummary');
+  }
+
+  /**
+   * Stubs the defendant header-summary response with a payment-terms restricted status.
+   *
+   * @param statusCode Restricted account status code to inject into the response.
+   */
+  public stubPaymentTermsAccountStatusCode(statusCode: string): void {
+    logAE('intercept', 'Stubbing defendant header-summary payment terms account status', { statusCode });
+
+    cy.intercept('GET', '**/defendant-accounts/**/header-summary', (req) => {
+      req.continue((res) => {
+        const body = res.body as { account_status_reference?: { account_status_code?: string } };
+
+        if (!body?.account_status_reference) {
+          throw new Error('Expected defendant header-summary response to include account_status_reference.');
+        }
+
+        body.account_status_reference.account_status_code = statusCode;
+        res.send({ body });
+      });
+    }).as('restrictedPaymentTermsStatusHeaderSummary');
+  }
+
+  /**
+   * Stubs the defendant header-summary response with the supplied payment-terms account balance.
+   *
+   * @param balance Account balance to inject into the response.
+   */
+  public stubPaymentTermsAccountBalance(balance: number): void {
+    logAE('intercept', 'Stubbing defendant header-summary payment terms account balance', { balance });
+
+    cy.intercept('GET', '**/defendant-accounts/**/header-summary', (req) => {
+      req.continue((res) => {
+        const body = res.body as { payment_state_summary?: { account_balance?: number } };
+
+        if (!body?.payment_state_summary) {
+          throw new Error('Expected defendant header-summary response to include payment_state_summary.');
+        }
+
+        body.payment_state_summary.account_balance = balance;
+        res.send({ body });
+      });
+    }).as('restrictedPaymentTermsBalanceHeaderSummary');
+  }
+
+  /**
+   * Asserts that neither payment-terms action is displayed.
+   */
+  public assertPaymentTermsActionsNotVisible(): void {
+    logAE('assert', 'Payment terms Change and Request payment card actions are absent');
+    this.paymentTerms.assertPaymentTermsActionsNotPresent();
+  }
+
+  /**
+   * Asserts the Change actions are hidden on the Parent or guardian tab.
+   */
+  public assertChangeParentGuardianActionsNotVisible(): void {
+    logAE('method', 'assertChangeParentGuardianActionsNotVisible()');
+    this.detailsNav.goToParentGuardianTab();
+    this.parentGuardianDetails.assertChangeActionsNotPresent();
+  }
+
+  /**
+   * Asserts the remove parent or guardian action is hidden on the Parent or guardian tab.
+   */
+  public assertRemoveParentGuardianActionNotVisible(): void {
+    logAE('method', 'assertRemoveParentGuardianActionNotVisible()');
+    this.detailsNav.goToParentGuardianTab();
+    this.parentGuardianDetails.assertRemoveParentGuardianActionNotPresent();
   }
 
   /**

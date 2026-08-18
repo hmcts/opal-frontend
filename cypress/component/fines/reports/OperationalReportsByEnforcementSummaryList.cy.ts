@@ -95,7 +95,7 @@ describe(
 
     it(
       'AC1a and AC1b: shows the Operational reports by enforcement summary list',
-      { tags: ['@JIRA-STORY:PO-2307', '@JIRA-EPIC:PO-2248'] },
+      { tags: ['@JIRA-STORY:PO-2307', '@JIRA-EPIC:PO-2248', '@JIRA-TEST-KEY:PO-9918'] },
       () => {
         setupComponent();
 
@@ -105,15 +105,19 @@ describe(
       },
     );
 
-    it('AC1c: shows the number of listed reports', { tags: ['@JIRA-STORY:PO-2307', '@JIRA-EPIC:PO-2248'] }, () => {
-      setupComponent();
+    it(
+      'AC1c: shows the number of listed reports',
+      { tags: ['@JIRA-STORY:PO-2307', '@JIRA-EPIC:PO-2248', '@JIRA-TEST-KEY:PO-9919'] },
+      () => {
+        setupComponent();
 
-      cy.get(L.table.resultsCount).should('contain.text', 'Showing 3 results');
-    });
+        cy.get(L.table.resultsCount).should('contain.text', 'Showing 3 results');
+      },
+    );
 
     it(
       'AC2: shows report date and time, title, business unit, creator and status',
-      { tags: ['@JIRA-STORY:PO-2307', '@JIRA-EPIC:PO-2248'] },
+      { tags: ['@JIRA-STORY:PO-2307', '@JIRA-EPIC:PO-2248', '@JIRA-TEST-KEY:PO-9920'] },
       () => {
         setupComponent();
 
@@ -138,15 +142,19 @@ describe(
       },
     );
 
-    it('AC3: shows a Requested report as In progress', { tags: ['@JIRA-STORY:PO-2307', '@JIRA-EPIC:PO-2248'] }, () => {
-      setupComponent();
+    it(
+      'AC3: shows a Requested report as In progress',
+      { tags: ['@JIRA-STORY:PO-2307', '@JIRA-EPIC:PO-2248', '@JIRA-TEST-KEY:PO-9921'] },
+      () => {
+        setupComponent();
 
-      cy.get(L.table.status(1)).should('contain.text', 'In progress');
-    });
+        cy.get(L.table.status(1)).should('contain.text', 'In progress');
+      },
+    );
 
     it(
       'AC4: shows a Ready report with no records as No content',
-      { tags: ['@JIRA-STORY:PO-2307', '@JIRA-EPIC:PO-2248'] },
+      { tags: ['@JIRA-STORY:PO-2307', '@JIRA-EPIC:PO-2248', '@JIRA-TEST-KEY:PO-9922'] },
       () => {
         setupComponent();
 
@@ -156,7 +164,7 @@ describe(
 
     it(
       'AC5 and AC5a: lists reports by newest date first and toggles to oldest first',
-      { tags: ['@JIRA-STORY:PO-2307', '@JIRA-EPIC:PO-2248'] },
+      { tags: ['@JIRA-STORY:PO-2307', '@JIRA-EPIC:PO-2248', '@JIRA-TEST-KEY:PO-9923'] },
       () => {
         setupComponent();
 
@@ -170,7 +178,7 @@ describe(
 
     it(
       'AC5b: sorts Title in ascending and descending order',
-      { tags: ['@JIRA-STORY:PO-2307', '@JIRA-EPIC:PO-2248'] },
+      { tags: ['@JIRA-STORY:PO-2307', '@JIRA-EPIC:PO-2248', '@JIRA-TEST-KEY:PO-9924'] },
       () => {
         setupComponent();
 
@@ -186,7 +194,7 @@ describe(
 
     it(
       'AC5b: sorts Business unit in ascending and descending order',
-      { tags: ['@JIRA-STORY:PO-2307', '@JIRA-EPIC:PO-2248'] },
+      { tags: ['@JIRA-STORY:PO-2307', '@JIRA-EPIC:PO-2248', '@JIRA-TEST-KEY:PO-9925'] },
       () => {
         setupComponent();
 
@@ -202,7 +210,7 @@ describe(
 
     it(
       'AC5b: sorts Created by in ascending and descending order',
-      { tags: ['@JIRA-STORY:PO-2307', '@JIRA-EPIC:PO-2248'] },
+      { tags: ['@JIRA-STORY:PO-2307', '@JIRA-EPIC:PO-2248', '@JIRA-TEST-KEY:PO-9926'] },
       () => {
         setupComponent();
 
@@ -218,7 +226,7 @@ describe(
 
     it(
       'AC5b: sorts Status in ascending and descending order',
-      { tags: ['@JIRA-STORY:PO-2307', '@JIRA-EPIC:PO-2248'] },
+      { tags: ['@JIRA-STORY:PO-2307', '@JIRA-EPIC:PO-2248', '@JIRA-TEST-KEY:PO-9927'] },
       () => {
         setupComponent();
 
@@ -235,7 +243,7 @@ describe(
     // AC6a–d require permission-filtered API data and will be covered by a follow-up E2E test.
     it(
       'AC6: defaults the business unit filter to All business units',
-      { tags: ['@JIRA-STORY:PO-2307', '@JIRA-EPIC:PO-2248'] },
+      { tags: ['@JIRA-STORY:PO-2307', '@JIRA-EPIC:PO-2248', '@JIRA-TEST-KEY:PO-9928'] },
       () => {
         setupComponent();
 
@@ -247,7 +255,7 @@ describe(
     // AC7a–b require API/E2E data to verify the returned results;
     it(
       'AC7: lists all resolved business units in the filter dropdown',
-      { tags: ['@JIRA-STORY:PO-2307', '@JIRA-EPIC:PO-2248'] },
+      { tags: ['@JIRA-STORY:PO-2307', '@JIRA-EPIC:PO-2248', '@JIRA-TEST-KEY:PO-9929'] },
       () => {
         setupComponent();
 
@@ -267,7 +275,7 @@ describe(
     // This test covers only that Refresh sends the selected BU ID, not the returned results from API
     it(
       'AC7c: applies the selected business unit when Refresh is selected',
-      { tags: ['@JIRA-STORY:PO-2307', '@JIRA-EPIC:PO-2248'] },
+      { tags: ['@JIRA-STORY:PO-2307', '@JIRA-EPIC:PO-2248', '@JIRA-TEST-KEY:PO-9930'] },
       () => {
         setupComponent();
 
@@ -290,7 +298,7 @@ describe(
     // AC8a requires API/E2E data to verify returned reports; this test covers the default selection and date-range request.
     it(
       'AC8: defaults to Last 7 days and requests an inclusive date-only seven-day range on Refresh',
-      { tags: ['@JIRA-STORY:PO-2307', '@JIRA-EPIC:PO-2248'] },
+      { tags: ['@JIRA-STORY:PO-2307', '@JIRA-EPIC:PO-2248', '@JIRA-TEST-KEY:PO-9931'] },
       () => {
         cy.clock(Date.UTC(2026, 6, 24, 12));
         setupComponent();
@@ -309,7 +317,7 @@ describe(
 
     it(
       'AC9a, AC9b and AC9d: shows Days and validates numeric and required values',
-      { tags: ['@JIRA-STORY:PO-2307', '@JIRA-EPIC:PO-2248'] },
+      { tags: ['@JIRA-STORY:PO-2307', '@JIRA-EPIC:PO-2248', '@JIRA-TEST-KEY:PO-9932'] },
       () => {
         setupComponent();
 
@@ -329,7 +337,7 @@ describe(
     // AC9c requires API/E2E data to verify returned reports; this test covers the inclusive date-only request range.
     it(
       'AC9c: requests the selected number of inclusive days on Refresh',
-      { tags: ['@JIRA-STORY:PO-2307', '@JIRA-EPIC:PO-2248'] },
+      { tags: ['@JIRA-STORY:PO-2307', '@JIRA-EPIC:PO-2248', '@JIRA-TEST-KEY:PO-9933'] },
       () => {
         setupComponent();
 
@@ -349,7 +357,7 @@ describe(
 
     it(
       'AC9e: hides and clears Days when a different date filter is selected',
-      { tags: ['@JIRA-STORY:PO-2307', '@JIRA-EPIC:PO-2248'] },
+      { tags: ['@JIRA-STORY:PO-2307', '@JIRA-EPIC:PO-2248', '@JIRA-TEST-KEY:PO-9934'] },
       () => {
         setupComponent();
 
@@ -366,7 +374,7 @@ describe(
 
     it(
       'AC10a and AC10b: shows date fields and allows a date to be entered or selected using the calendar',
-      { tags: ['@JIRA-STORY:PO-2307', '@JIRA-EPIC:PO-2248'] },
+      { tags: ['@JIRA-STORY:PO-2307', '@JIRA-EPIC:PO-2248', '@JIRA-TEST-KEY:PO-9935'] },
       () => {
         setupComponent();
 
@@ -384,7 +392,7 @@ describe(
     // AC10c requires API/E2E data to verify returned reports; this test covers the frontend request range.
     it(
       'AC10c: sends the entered date range when Refresh is selected',
-      { tags: ['@JIRA-STORY:PO-2307', '@JIRA-EPIC:PO-2248'] },
+      { tags: ['@JIRA-STORY:PO-2307', '@JIRA-EPIC:PO-2248', '@JIRA-TEST-KEY:PO-9936'] },
       () => {
         setupComponent();
 
@@ -404,7 +412,7 @@ describe(
     // AC10d requires API/E2E data to verify all past reports are returned; this test covers the open start-date request.
     it(
       'AC10d: sends no from date when only date to is entered',
-      { tags: ['@JIRA-STORY:PO-2307', '@JIRA-EPIC:PO-2248'] },
+      { tags: ['@JIRA-STORY:PO-2307', '@JIRA-EPIC:PO-2248', '@JIRA-TEST-KEY:PO-9937'] },
       () => {
         setupComponent();
 
@@ -423,7 +431,7 @@ describe(
     // AC10e requires API/E2E data to verify all future reports are returned; this test covers the open end-date request.
     it(
       'AC10e: sends no to date when only date from is entered',
-      { tags: ['@JIRA-STORY:PO-2307', '@JIRA-EPIC:PO-2248'] },
+      { tags: ['@JIRA-STORY:PO-2307', '@JIRA-EPIC:PO-2248', '@JIRA-TEST-KEY:PO-9938'] },
       () => {
         setupComponent();
 
@@ -441,7 +449,7 @@ describe(
 
     it(
       'AC10f: shows an error when neither date is entered',
-      { tags: ['@JIRA-STORY:PO-2307', '@JIRA-EPIC:PO-2248'] },
+      { tags: ['@JIRA-STORY:PO-2307', '@JIRA-EPIC:PO-2248', '@JIRA-TEST-KEY:PO-9939'] },
       () => {
         setupComponent();
 
@@ -455,7 +463,7 @@ describe(
 
     it(
       'AC10g: shows an error when Date from is after Date to',
-      { tags: ['@JIRA-STORY:PO-2307', '@JIRA-EPIC:PO-2248'] },
+      { tags: ['@JIRA-STORY:PO-2307', '@JIRA-EPIC:PO-2248', '@JIRA-TEST-KEY:PO-9940'] },
       () => {
         setupComponent();
 
@@ -470,7 +478,7 @@ describe(
 
     it(
       'AC10h: shows an error for an invalid date format',
-      { tags: ['@JIRA-STORY:PO-2307', '@JIRA-EPIC:PO-2248'] },
+      { tags: ['@JIRA-STORY:PO-2307', '@JIRA-EPIC:PO-2248', '@JIRA-TEST-KEY:PO-9941'] },
       () => {
         setupComponent();
 
@@ -483,20 +491,24 @@ describe(
       },
     );
 
-    it('AC10i: shows an error for a future date', { tags: ['@JIRA-STORY:PO-2307', '@JIRA-EPIC:PO-2248'] }, () => {
-      setupComponent();
+    it(
+      'AC10i: shows an error for a future date',
+      { tags: ['@JIRA-STORY:PO-2307', '@JIRA-EPIC:PO-2248', '@JIRA-TEST-KEY:PO-9942'] },
+      () => {
+        setupComponent();
 
-      cy.get(L.filters.dateRange).check();
-      cy.get(L.filters.dateFrom).type('31/12/2099');
-      cy.get(L.filters.refreshButton).click();
+        cy.get(L.filters.dateRange).check();
+        cy.get(L.filters.dateFrom).type('31/12/2099');
+        cy.get(L.filters.refreshButton).click();
 
-      cy.contains(L.filters.form, 'Date cannot be in the future').should('be.visible');
-      cy.get('@getReportInstances').should('not.have.been.called');
-    });
+        cy.contains(L.filters.form, 'Date cannot be in the future').should('be.visible');
+        cy.get('@getReportInstances').should('not.have.been.called');
+      },
+    );
 
     it(
       'AC10j: hides and clears date fields when a different date filter is selected',
-      { tags: ['@JIRA-STORY:PO-2307', '@JIRA-EPIC:PO-2248'] },
+      { tags: ['@JIRA-STORY:PO-2307', '@JIRA-EPIC:PO-2248', '@JIRA-TEST-KEY:PO-9943'] },
       () => {
         setupComponent();
 
@@ -516,7 +528,7 @@ describe(
 
     it(
       'AC11: shows 25 reports per page and provides pagination for further reports',
-      { tags: ['@JIRA-STORY:PO-2307', '@JIRA-EPIC:PO-2248'] },
+      { tags: ['@JIRA-STORY:PO-2307', '@JIRA-EPIC:PO-2248', '@JIRA-TEST-KEY:PO-9944'] },
       () => {
         setupComponent(OPERATIONAL_REPORT_BY_ENFORCEMENT_PAGINATED_INSTANCES_MOCK);
 
@@ -533,7 +545,7 @@ describe(
 
     it(
       'AC12: shows No reports found when there are no reports',
-      { tags: ['@JIRA-STORY:PO-2307', '@JIRA-EPIC:PO-2248'] },
+      { tags: ['@JIRA-STORY:PO-2307', '@JIRA-EPIC:PO-2248', '@JIRA-TEST-KEY:PO-9945'] },
       () => {
         setupComponent(OPERATIONAL_REPORT_BY_ENFORCEMENT_NO_INSTANCES_MOCK);
 
@@ -544,7 +556,7 @@ describe(
 
     it(
       'AC13: shows the result-limit message when more reports exist than the configured maximum',
-      { tags: ['@JIRA-STORY:PO-2307', '@JIRA-EPIC:PO-2248'] },
+      { tags: ['@JIRA-STORY:PO-2307', '@JIRA-EPIC:PO-2248', '@JIRA-TEST-KEY:PO-9946'] },
       () => {
         setupComponent(OPERATIONAL_REPORT_BY_ENFORCEMENT_OVER_LIMIT_MOCK);
 
@@ -556,7 +568,7 @@ describe(
 
     it(
       'AC14: gives Refresh the required accessible name',
-      { tags: ['@JIRA-STORY:PO-2307', '@JIRA-EPIC:PO-2248'] },
+      { tags: ['@JIRA-STORY:PO-2307', '@JIRA-EPIC:PO-2248', '@JIRA-TEST-KEY:PO-9947'] },
       () => {
         setupComponent();
 

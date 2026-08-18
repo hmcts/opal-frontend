@@ -27,19 +27,18 @@ Feature: Defendant Adult Youth Search And Matches Journeys
       | account.defendant.dob                       | 2001-05-15                       |
     And I am on the Account Search page - Individuals form displayed by default
     When I search using the following inputs:
-      | individual last name      | JourneyInd{uniq}   |
-      | first names               | Jordan             |
-      | date of birth             | 15/05/2001         |
-      | national insurance number | AB123456C          |
-      | address line 1            | 123 Journey Street |
-      | postcode                  | AB1 2CD            |
+      | individual last name | JourneyInd{uniq}   |
+      | first names          | Jordan             |
+      | date of birth        | 15/05/2001         |
+      | address line 1       | 123 Journey Street |
+      | postcode             | AB1 2CD            |
     Then I see the Search results page
     And I see the Individuals search results:
       | Ref | PCRJRNYIND{uniqUpper} |
     When I open the latest matching result from the search results
     Then I should see the account summary header contains "JOURNEYIND{uniqUpper}"
 
-  @R1B @JIRA-STORY:PO-2953 @JIRA-EPIC:PO-2630
+  @R1B @JIRA-STORY:PO-2953 @JIRA-EPIC:PO-2630 @JIRA-TEST-KEY:PO-10014
   Scenario: Search for an individual defendant account by National Insurance number and open the matching record
     # PO-2953 - AC7
     Given I create a "adultOrYouthOnly" draft account with the following details and set status "Publishing Pending" using user "opal-test-10@dev.platform.hmcts.net":
@@ -66,7 +65,7 @@ Feature: Defendant Adult Youth Search And Matches Journeys
     When I open the latest matching result from the search results
     Then I should see the account summary header contains "JOURNEYNI{uniqUpper}"
 
-  @R1B @JIRA-STORY:PO-2953 @JIRA-EPIC:PO-2630
+  @R1B @JIRA-STORY:PO-2953 @JIRA-EPIC:PO-2630 @JIRA-TEST-KEY:PO-10015
   Scenario: Search for an individual defendant account by National Insurance number with spaces and open the matching record
     # PO-2953 - AC8
     Given I create a "adultOrYouthOnly" draft account with the following details and set status "Publishing Pending" using user "opal-test-10@dev.platform.hmcts.net":
@@ -75,7 +74,7 @@ Feature: Defendant Adult Youth Search And Matches Journeys
       | account.defendant.surname                   | JourneyNiSpace{uniq}               |
       | account.defendant.email_address_1           | nina.journeynispace{uniq}@test.com |
       | account.defendant.telephone_number_home     | 02078250052                        |
-      | account.defendant.national_insurance_number | AB123456C                          |
+      | account.defendant.national_insurance_number | CD987654D                          |
       | account.defendant.address_line_1            | 789 NI Street                      |
       | account.defendant.post_code                 | AB12 3CD                           |
       | account.account_type                        | Fine                               |
@@ -86,7 +85,7 @@ Feature: Defendant Adult Youth Search And Matches Journeys
       | account.defendant.dob                       | 2002-09-21                         |
     And I am on the Account Search page - Individuals form displayed by default
     When I search using the following inputs:
-      | national insurance number | AB 12 34 56 C |
+      | national insurance number | CD 98 76 54 D |
     Then I see the Search results page
     And I see the Individuals search results:
       | Ref | PCRJRNYNISPACE{uniqUpper} |

@@ -74,6 +74,137 @@ describe('Account Enquiry Payment Terms', () => {
     return headerMock;
   };
 
+  const restrictedPaymentTermsAccountScenarios = [
+    { description: 'account status is Consolidated', accountStatusCode: 'CS' },
+    { description: 'account status is Written Off', accountStatusCode: 'WO' },
+    { description: 'account status is TFO to be acknowledged', accountStatusCode: 'TA' },
+    { description: 'account status is TFO Out Acknowledged', accountStatusCode: 'TS' },
+    { description: 'account status is TFO Out S/NI', accountStatusCode: 'TO' },
+    { description: 'account balance is zero', accountBalance: 0 },
+  ];
+
+  restrictedPaymentTermsAccountScenarios.forEach(({ description, accountStatusCode, accountBalance }) => {
+    it(
+      `AC1: Request payment card is not displayed when ${description}`,
+      { tags: [...buildTags('@JIRA-STORY:PO-5753', '@JIRA-EPIC:PO-2990')] },
+      () => {
+        const headerMock = structuredClone(createDefendantHeaderMockWithName('Robert', 'Thomson'));
+        headerMock.debtor_type = 'individual';
+
+        if (accountStatusCode) {
+          headerMock.account_status_reference.account_status_code = accountStatusCode;
+        }
+
+        if (accountBalance !== undefined) {
+          headerMock.payment_state_summary.account_balance = accountBalance;
+        }
+
+        const paymentTermsMock = structuredClone(OPAL_FINES_ACCOUNT_DEFENDANT_DETAILS_PAYMENT_TERMS_LATEST_MOCK);
+
+        setupPaymentTermsScreen(headerMock, paymentTermsMock);
+
+        cy.contains(PAYMENT_TERMS_TAB.paymentTermsLink, 'Request payment card').should('not.exist');
+      },
+    );
+  });
+
+  restrictedPaymentTermsAccountScenarios.forEach(({ description, accountStatusCode, accountBalance }) => {
+    it(
+      `AC2: Change is not displayed when ${description}`,
+      { tags: [...buildTags('@JIRA-STORY:PO-5753', '@JIRA-EPIC:PO-2990')] },
+      () => {
+        const headerMock = structuredClone(createDefendantHeaderMockWithName('Robert', 'Thomson'));
+        headerMock.debtor_type = 'individual';
+
+        if (accountStatusCode) {
+          headerMock.account_status_reference.account_status_code = accountStatusCode;
+        }
+
+        if (accountBalance !== undefined) {
+          headerMock.payment_state_summary.account_balance = accountBalance;
+        }
+
+        const paymentTermsMock = structuredClone(OPAL_FINES_ACCOUNT_DEFENDANT_DETAILS_PAYMENT_TERMS_LATEST_MOCK);
+
+        setupPaymentTermsScreen(headerMock, paymentTermsMock);
+
+        cy.contains(PAYMENT_TERMS_TAB.paymentTermsLink, 'Change').should('not.exist');
+      },
+    );
+  });
+
+  it(
+    'AC3: Change navigation remains unchanged for an eligible account',
+    { tags: [...buildTags('@JIRA-STORY:PO-5753', '@JIRA-EPIC:PO-2990'), '@JIRA-TEST-KEY:PO-9835'] },
+    () => {
+      const headerMock = structuredClone(createDefendantHeaderMockWithName('Robert', 'Thomson'));
+      headerMock.debtor_type = 'individual';
+      const paymentTermsMock = structuredClone(OPAL_FINES_ACCOUNT_DEFENDANT_DETAILS_PAYMENT_TERMS_LATEST_MOCK);
+      const accountId = headerMock.defendant_account_party_id;
+
+      interceptUserState(USER_STATE_MOCK_PERMISSION_BU77);
+      interceptDefendantHeader(accountId, headerMock, '123');
+      interceptPaymentTerms(accountId, paymentTermsMock, '123');
+      interceptResultByCode('REM');
+      setupAccountEnquiryComponent({
+        ...componentProperties,
+        accountId,
+        interceptedRoutes: componentProperties.interceptedRoutes?.filter((route) => route !== '../payment-terms/amend'),
+      });
+      cy.get('router-outlet').should('exist');
+
+      cy.contains(PAYMENT_TERMS_TAB.paymentTermsLink, 'Change').click();
+      cy.get('app-fines-acc-payment-terms-amend-form').should('exist');
+    },
+  );
+
+  it(
+    'AC3: Request payment card navigation remains unchanged for an eligible account',
+    { tags: [...buildTags('@JIRA-STORY:PO-5753', '@JIRA-EPIC:PO-2990'), '@JIRA-TEST-KEY:PO-9836'] },
+    () => {
+      const headerMock = structuredClone(createDefendantHeaderMockWithName('Robert', 'Thomson'));
+      headerMock.debtor_type = 'individual';
+      const paymentTermsMock = structuredClone(OPAL_FINES_ACCOUNT_DEFENDANT_DETAILS_PAYMENT_TERMS_LATEST_MOCK);
+
+      setupPaymentTermsScreen(headerMock, paymentTermsMock);
+
+      cy.contains(PAYMENT_TERMS_TAB.paymentTermsLink, 'Request payment card').click();
+      cy.get('@routerNavigate').should('have.been.calledWithMatch', ['../payment-card/request']);
+    },
+  );
+
+  it(
+    'AC3, AC4, AC5: Enforcement validation navigates to the amended payment terms error notification',
+    { tags: [...buildTags('@JIRA-STORY:PO-5753', '@JIRA-EPIC:PO-2990'), '@JIRA-TEST-KEY:PO-9837'] },
+    () => {
+      const headerMock = structuredClone(createDefendantHeaderMockWithName('Robert', 'Thomson'));
+      headerMock.debtor_type = 'individual';
+      const paymentTermsMock = structuredClone(OPAL_FINES_ACCOUNT_DEFENDANT_DETAILS_PAYMENT_TERMS_LATEST_MOCK);
+      paymentTermsMock.last_enforcement = 'DW';
+      const accountId = headerMock.defendant_account_party_id;
+
+      interceptUserState(USER_STATE_MOCK_PERMISSION_BU77);
+      interceptDefendantHeader(accountId, headerMock, '123');
+      interceptPaymentTerms(accountId, paymentTermsMock, '123');
+      interceptResultByCode('DW');
+      setupAccountEnquiryComponent({ ...componentProperties, accountId });
+      cy.get('router-outlet').should('exist');
+
+      cy.contains(PAYMENT_TERMS_TAB.paymentTermsLink, 'Change').click();
+      cy.get('app-fines-acc-payment-terms-amend-denied').should('exist').and('contain.text', 'DW');
+      cy.get('h1').should('contain.text', 'You cannot amend the payment terms of this account');
+      cy.get('p').should('contain.text', 'The last enforcement action prevents you from amending the payment terms.');
+      [
+        'This account has been consolidated.',
+        'This account has been written-off.',
+        'This account has been transferred out.',
+        'The account has a zero balance.',
+      ].forEach((retiredMessage) => {
+        cy.get('app-fines-acc-payment-terms-amend-denied').should('not.contain.text', retiredMessage);
+      });
+    },
+  );
+
   it(
     'AC1: The Payment Terms tab is built as per the design artefact for pay in full - Adult or youth only',
     { tags: [...buildTags('@JIRA-STORY:PO-1146'), '@JIRA-EPIC:PO-977', '@JIRA-TEST-KEY:PO-4128'] },
@@ -192,7 +323,7 @@ describe('Account Enquiry Payment Terms', () => {
   );
 
   it(
-    'AC2: User with permission to amend payment terms in different BU, no change link - Adult or youth only',
+    'AC2: User with permission to amend payment terms in a different BU is routed to the denial screen - Adult or youth only',
     { tags: [...buildTags('@JIRA-STORY:PO-1146'), '@JIRA-EPIC:PO-977', '@JIRA-TEST-KEY:PO-4132'] },
     () => {
       let headerMock = structuredClone(createDefendantHeaderMockWithName('Robert', 'Thomson'));
@@ -213,7 +344,7 @@ describe('Account Enquiry Payment Terms', () => {
       cy.get('app-fines-acc-payment-terms-amend-denied').should('exist');
       cy.contains(
         'opal-lib-govuk-heading-with-caption, h1, h2',
-        'You cannot amend the payment terms of this account.',
+        'You cannot amend the payment terms of this account',
       ).should('be.visible');
       cy.contains(
         'You do not have the required permissions to make changes to this account as it is outside your business unit.',
@@ -273,184 +404,10 @@ describe('Account Enquiry Payment Terms', () => {
       cy.get('app-fines-acc-payment-terms-amend-denied').should('exist');
       cy.contains(
         'opal-lib-govuk-heading-with-caption, h1, h2',
-        'You cannot amend the payment terms of this account.',
+        'You cannot amend the payment terms of this account',
       ).should('be.visible');
-      cy.contains('This account has an enforcement action outstanding: DW.').should('be.visible');
-    },
-  );
-
-  it(
-    'AC2: User with permission to amend payment terms, but cannot make amendments - account status CS',
-    { tags: [...buildTags('@JIRA-STORY:PO-1146'), '@JIRA-EPIC:PO-977', '@JIRA-TEST-KEY:PO-4135'] },
-    () => {
-      let headerMock = structuredClone(createDefendantHeaderMockWithName('Robert', 'Thomson'));
-      headerMock.debtor_type = 'individual';
-      headerMock.account_status_reference.account_status_code = 'CS';
-      let paymentTermsMock = structuredClone(OPAL_FINES_ACCOUNT_DEFENDANT_DETAILS_PAYMENT_TERMS_LATEST_MOCK);
-
-      const accountId = headerMock.defendant_account_party_id;
-      interceptAuthenticatedUser();
-      interceptUserState(USER_STATE_MOCK_PERMISSION_BU77);
-      interceptDefendantHeader(accountId, headerMock, '123');
-      interceptPaymentTerms(accountId, paymentTermsMock, '123');
-      interceptResultByCode('REM');
-      setupAccountEnquiryComponent({ ...componentProperties, accountId: accountId });
-      cy.get('router-outlet').should('exist');
-
-      cy.get(PAYMENT_TERMS_TAB.tabName).should('exist').and('contain.text', 'Payment terms');
-      cy.get(PAYMENT_TERMS_TAB.paymentTermsLink).contains('Change').click();
-      cy.get('app-fines-acc-payment-terms-amend-denied').should('exist');
-      cy.contains(
-        'opal-lib-govuk-heading-with-caption, h1, h2',
-        'You cannot amend the payment terms of this account.',
-      ).should('be.visible');
-      cy.contains('This account has been consolidated.').should('be.visible');
-    },
-  );
-
-  it(
-    'AC2: User with permission to amend payment terms, but cannot make amendments - account status WO',
-    { tags: [...buildTags('@JIRA-STORY:PO-1146'), '@JIRA-EPIC:PO-977', '@JIRA-TEST-KEY:PO-4136'] },
-    () => {
-      let headerMock = structuredClone(createDefendantHeaderMockWithName('Robert', 'Thomson'));
-      headerMock.debtor_type = 'individual';
-      headerMock.account_status_reference.account_status_code = 'WO';
-      let paymentTermsMock = structuredClone(OPAL_FINES_ACCOUNT_DEFENDANT_DETAILS_PAYMENT_TERMS_LATEST_MOCK);
-
-      const accountId = headerMock.defendant_account_party_id;
-      interceptAuthenticatedUser();
-      interceptUserState(USER_STATE_MOCK_PERMISSION_BU77);
-      interceptDefendantHeader(accountId, headerMock, '123');
-      interceptPaymentTerms(accountId, paymentTermsMock, '123');
-      interceptResultByCode('REM');
-      setupAccountEnquiryComponent({ ...componentProperties, accountId: accountId });
-      cy.get('router-outlet').should('exist');
-
-      cy.get(PAYMENT_TERMS_TAB.tabName).should('exist').and('contain.text', 'Payment terms');
-      cy.get(PAYMENT_TERMS_TAB.paymentTermsLink).contains('Change').click();
-      cy.get('app-fines-acc-payment-terms-amend-denied').should('exist');
-      cy.contains(
-        'opal-lib-govuk-heading-with-caption, h1, h2',
-        'You cannot amend the payment terms of this account.',
-      ).should('be.visible');
-      cy.contains('This account has been written-off.').should('be.visible');
-    },
-  );
-
-  it(
-    'AC2: User with permission to amend payment terms, but cannot make amendments - account status TO',
-    { tags: [...buildTags('@JIRA-STORY:PO-1146'), '@JIRA-EPIC:PO-977', '@JIRA-TEST-KEY:PO-4137'] },
-    () => {
-      let headerMock = structuredClone(createDefendantHeaderMockWithName('Robert', 'Thomson'));
-      headerMock.debtor_type = 'individual';
-      headerMock.account_status_reference.account_status_code = 'TO';
-      let paymentTermsMock = structuredClone(OPAL_FINES_ACCOUNT_DEFENDANT_DETAILS_PAYMENT_TERMS_LATEST_MOCK);
-
-      const accountId = headerMock.defendant_account_party_id;
-      interceptAuthenticatedUser();
-      interceptUserState(USER_STATE_MOCK_PERMISSION_BU77);
-      interceptDefendantHeader(accountId, headerMock, '123');
-      interceptPaymentTerms(accountId, paymentTermsMock, '123');
-      interceptResultByCode('REM');
-      setupAccountEnquiryComponent({ ...componentProperties, accountId: accountId });
-      cy.get('router-outlet').should('exist');
-
-      cy.get(PAYMENT_TERMS_TAB.tabName).should('exist').and('contain.text', 'Payment terms');
-      cy.get(PAYMENT_TERMS_TAB.paymentTermsLink).contains('Change').click();
-      cy.get('app-fines-acc-payment-terms-amend-denied').should('exist');
-      cy.contains(
-        'opal-lib-govuk-heading-with-caption, h1, h2',
-        'You cannot amend the payment terms of this account.',
-      ).should('be.visible');
-      cy.contains('This account has been transferred out.').should('be.visible');
-    },
-  );
-
-  it(
-    'AC2: User with permission to amend payment terms, but cannot make amendments - account status TS',
-    { tags: [...buildTags('@JIRA-STORY:PO-1146'), '@JIRA-EPIC:PO-977', '@JIRA-TEST-KEY:PO-4138'] },
-    () => {
-      let headerMock = structuredClone(createDefendantHeaderMockWithName('Robert', 'Thomson'));
-      headerMock.debtor_type = 'individual';
-      headerMock.account_status_reference.account_status_code = 'TS';
-      let paymentTermsMock = structuredClone(OPAL_FINES_ACCOUNT_DEFENDANT_DETAILS_PAYMENT_TERMS_LATEST_MOCK);
-
-      const accountId = headerMock.defendant_account_party_id;
-      interceptAuthenticatedUser();
-      interceptUserState(USER_STATE_MOCK_PERMISSION_BU77);
-      interceptDefendantHeader(accountId, headerMock, '123');
-      interceptPaymentTerms(accountId, paymentTermsMock, '123');
-      interceptResultByCode('REM');
-      setupAccountEnquiryComponent({ ...componentProperties, accountId: accountId });
-      cy.get('router-outlet').should('exist');
-
-      cy.get(PAYMENT_TERMS_TAB.tabName).should('exist').and('contain.text', 'Payment terms');
-      cy.get(PAYMENT_TERMS_TAB.paymentTermsLink).contains('Change').click();
-      cy.get('app-fines-acc-payment-terms-amend-denied').should('exist');
-      cy.contains(
-        'opal-lib-govuk-heading-with-caption, h1, h2',
-        'You cannot amend the payment terms of this account.',
-      ).should('be.visible');
-      cy.contains('This account has been transferred out.').should('be.visible');
-    },
-  );
-
-  it(
-    'AC2: User with permission to amend payment terms, but cannot make amendments - account status TA',
-    { tags: [...buildTags('@JIRA-STORY:PO-1146'), '@JIRA-EPIC:PO-977', '@JIRA-TEST-KEY:PO-4139'] },
-    () => {
-      let headerMock = structuredClone(createDefendantHeaderMockWithName('Robert', 'Thomson'));
-      headerMock.debtor_type = 'individual';
-      headerMock.account_status_reference.account_status_code = 'TA';
-      let paymentTermsMock = structuredClone(OPAL_FINES_ACCOUNT_DEFENDANT_DETAILS_PAYMENT_TERMS_LATEST_MOCK);
-
-      const accountId = headerMock.defendant_account_party_id;
-      interceptAuthenticatedUser();
-      interceptUserState(USER_STATE_MOCK_PERMISSION_BU77);
-      interceptDefendantHeader(accountId, headerMock, '123');
-      interceptPaymentTerms(accountId, paymentTermsMock, '123');
-      interceptResultByCode('REM');
-      setupAccountEnquiryComponent({ ...componentProperties, accountId: accountId });
-      cy.get('router-outlet').should('exist');
-
-      cy.get(PAYMENT_TERMS_TAB.tabName).should('exist').and('contain.text', 'Payment terms');
-      cy.get(PAYMENT_TERMS_TAB.paymentTermsLink).contains('Change').click();
-      cy.get('app-fines-acc-payment-terms-amend-denied').should('exist');
-      cy.contains(
-        'opal-lib-govuk-heading-with-caption, h1, h2',
-        'You cannot amend the payment terms of this account.',
-      ).should('be.visible');
-      cy.contains('This account has been transferred out.').should('be.visible');
-    },
-  );
-
-  it(
-    'AC2: User with permission to amend payment terms, but cannot make amendments - extend_ttp_disallow true and account status CS',
-    { tags: [...buildTags('@JIRA-STORY:PO-1146'), '@JIRA-EPIC:PO-977', '@JIRA-TEST-KEY:PO-4140'] },
-    () => {
-      let headerMock = structuredClone(createDefendantHeaderMockWithName('Robert', 'Thomson'));
-      headerMock.debtor_type = 'individual';
-      headerMock.account_status_reference.account_status_code = 'CS';
-      let paymentTermsMock = structuredClone(OPAL_FINES_ACCOUNT_DEFENDANT_DETAILS_PAYMENT_TERMS_LATEST_MOCK);
-      paymentTermsMock.last_enforcement = 'DW';
-
-      const accountId = headerMock.defendant_account_party_id;
-      interceptAuthenticatedUser();
-      interceptUserState(USER_STATE_MOCK_PERMISSION_BU77);
-      interceptDefendantHeader(accountId, headerMock, '123');
-      interceptPaymentTerms(accountId, paymentTermsMock, '123');
-      interceptResultByCode('DW');
-      setupAccountEnquiryComponent({ ...componentProperties, accountId: accountId });
-      cy.get('router-outlet').should('exist');
-
-      cy.get(PAYMENT_TERMS_TAB.tabName).should('exist').and('contain.text', 'Payment terms');
-      cy.get(PAYMENT_TERMS_TAB.paymentTermsLink).contains('Change').click();
-      cy.get('app-fines-acc-payment-terms-amend-denied').should('exist');
-      cy.contains(
-        'opal-lib-govuk-heading-with-caption, h1, h2',
-        'You cannot amend the payment terms of this account.',
-      ).should('be.visible');
-      cy.contains('This account has an enforcement action outstanding: DW.').should('be.visible');
+      cy.contains('The last enforcement action prevents you from amending the payment terms.').should('be.visible');
+      cy.contains('DW').should('be.visible');
     },
   );
 
@@ -618,7 +575,7 @@ describe('Account Enquiry Payment Terms', () => {
       cy.get('app-fines-acc-payment-terms-amend-denied').should('exist');
       cy.contains(
         'opal-lib-govuk-heading-with-caption, h1, h2',
-        'You cannot amend the payment terms of this account.',
+        'You cannot amend the payment terms of this account',
       ).should('be.visible');
       cy.contains(
         'You do not have the required permissions to make changes to this account as it is outside your business unit.',
@@ -834,7 +791,7 @@ describe('Account Enquiry Payment Terms', () => {
       cy.get('app-fines-acc-payment-terms-amend-denied').should('exist');
       cy.contains(
         'opal-lib-govuk-heading-with-caption, h1, h2',
-        'You cannot amend the payment terms of this account.',
+        'You cannot amend the payment terms of this account',
       ).should('be.visible');
       cy.contains(
         'You do not have the required permissions to make changes to this account as it is outside your business unit.',

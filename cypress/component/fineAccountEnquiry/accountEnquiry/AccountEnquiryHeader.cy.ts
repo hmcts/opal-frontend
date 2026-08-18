@@ -42,6 +42,8 @@ import { OPAL_FINES_ACCOUNT_DEFENDANT_DETAILS_PAYMENT_TERMS_LATEST_MOCK } from '
 import { OPAL_FINES_ACCOUNT_DEFENDANT_DETAILS_ENFORCEMENT_TAB_REF_DATA_MOCK } from '@services/fines/opal-fines-service/mocks/opal-fines-account-defendant-details-enforcement-tab-ref-data.mock';
 import { OPAL_FINES_ACCOUNT_DEFENDANT_DETAILS_IMPOSITIONS_TAB_REF_DATA_MOCK } from '@services/fines/opal-fines-service/mocks/opal-fines-account-defendant-details-impositions.mock';
 import { OPAL_FINES_ACCOUNT_DEFENDANT_DETAILS_HISTORY_AND_NOTES_TAB_REF_DATA_MOCK } from '@services/fines/opal-fines-service/mocks/opal-fines-account-defendant-details-history-and-notes-tab-ref-data.mock';
+import { mount } from 'cypress/angular';
+import { FinesAccDefendantDetailsAtAGlanceTabComponent } from 'src/app/flows/fines/fines-acc/fines-acc-defendant-details/fines-acc-defendant-details-at-a-glance-tab/fines-acc-defendant-details-at-a-glance-tab.component';
 
 const ACCOUNT_ENQUIRY_JIRA_LABEL = '@JIRA-LABEL:account-enquiry';
 
@@ -803,41 +805,40 @@ describe('Account Enquiry - Defendant Header', () => {
     () => {
       cy.viewport(320, 900);
 
-      const longHeader = structuredClone(DEFENDANT_HEADER_MOCK);
-      longHeader.party_details.individual_details = {
-        ...longHeader.party_details.individual_details!,
+      const atAGlanceData = structuredClone(OPAL_FINES_ACCOUNT_DEFENDANT_AT_A_GLANCE_MOCK);
+      atAGlanceData.party_details.individual_details = {
+        ...atAGlanceData.party_details.individual_details!,
         forenames: 'A very long first name that should wrap cleanly',
         surname: 'A very long surname that should also wrap cleanly',
       };
-      longHeader.debtor_type = 'Defendant';
 
-      interceptUserState(USER_STATE_MOCK_PERMISSION_BU77);
-      interceptDefendantHeader(77, longHeader, '1');
-      interceptAtAGlance(77, OPAL_FINES_ACCOUNT_DEFENDANT_AT_A_GLANCE_MOCK, '1');
-
-      setupAccountEnquiryComponent(componentProperties);
-
-      cy.get(DOM.accountInfo).should('be.visible');
-      cy.get(DOM.summaryMetricBar).should('be.visible');
-      cy.get(DOM.subnav).should('be.visible');
-
-      cy.get(A.layout.defendantColumn).then(($defendantColumn) => {
-        const defendantBottom = $defendantColumn[0].getBoundingClientRect().bottom;
-
-        cy.get(A.layout.paymentTermsColumn).then(($paymentTermsColumn) => {
-          const paymentTermsBounds = $paymentTermsColumn[0].getBoundingClientRect();
-          expect(paymentTermsBounds.top, 'payment terms should start below defendant details').to.be.at.least(
-            defendantBottom,
-          );
-
-          cy.get(A.layout.enforcementStatusColumn).then(($enforcementStatusColumn) => {
-            expect(
-              $enforcementStatusColumn[0].getBoundingClientRect().top,
-              'enforcement status should start below payment terms',
-            ).to.be.at.least(paymentTermsBounds.bottom);
-          });
-        });
+      mount(FinesAccDefendantDetailsAtAGlanceTabComponent, {
+        componentProperties: { tabData: atAGlanceData },
       });
+
+      cy.contains('Defendant')
+        .closest('.govuk-grid-column-one-third')
+        .then(($defendantColumn) => {
+          const defendantBottom = $defendantColumn[0].getBoundingClientRect().bottom;
+
+          cy.contains('Payment terms')
+            .closest('.govuk-grid-column-one-third')
+            .then(($paymentTermsColumn) => {
+              const paymentTermsBounds = $paymentTermsColumn[0].getBoundingClientRect();
+              expect(paymentTermsBounds.top, 'payment terms should start below defendant details').to.be.at.least(
+                defendantBottom,
+              );
+
+              cy.contains('Enforcement status')
+                .closest('.govuk-grid-column-one-third')
+                .then(($enforcementStatusColumn) => {
+                  expect(
+                    $enforcementStatusColumn[0].getBoundingClientRect().top,
+                    'enforcement status should start below payment terms',
+                  ).to.be.at.least(paymentTermsBounds.bottom);
+                });
+            });
+        });
     },
   );
 });

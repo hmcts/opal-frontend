@@ -104,12 +104,81 @@ Feature: Adult Youth Account Enquiries View Details
       When I open the "<section>" Change link on the Defendant tab
       Then I should be on the "individual" amend route with fragment "<fragment>"
 
+      @JIRA-TEST-KEY:PO-10002
       Examples:
         | section           | fragment           |
         | Defendant details | party-details      |
+      @JIRA-TEST-KEY:PO-10003
+      Examples:
+        | section           | fragment           |
         | Contact details   | contact-details    |
+      @JIRA-TEST-KEY:PO-10004
+      Examples:
+        | section           | fragment           |
         | Employer details  | employment-details |
 
+  Rule: Youth-only add parent or guardian visibility
+    @R1B @JIRA-STORY:PO-5751 @JIRA-EPIC:PO-2990 @JIRA-TEST-KEY:PO-10005
+    Scenario: Youth-only account shows the Add parent or guardian details action
+      # AC2 – Existing youth-only eligibility rules still show the Add parent or guardian details action.
+      Given a published adult or youth defendant account exists:
+        | first name                | Jamie              |
+        | last name                 | AddPgVisible{uniq} |
+        | prosecutor case reference | PCR-AUTO-003       |
+        | date of birth             | 2010-05-15         |
+      When I search for the account by last name "AddPgVisible{uniq}" and open the latest result
+      Then I should see the page header contains "Mr Jamie ADDPGVISIBLE{uniqUpper}"
+      When I go to the Defendant details section and the header is "Defendant details"
+      Then I should see the add parent or guardian details action
+
+    @R1B @JIRA-STORY:PO-5751 @JIRA-EPIC:PO-2990
+    Scenario Outline: Youth-only account hides the Add parent or guardian details action for restricted account statuses
+      # AC1 – A youth-only account does not show the Add parent or guardian details action for restricted account statuses
+      Given I stub the defendant header summary account status code to "<status>"
+      And a published adult or youth defendant account exists:
+        | first name                | Jamie                 |
+        | last name                 | AddPgRestricted{uniq} |
+        | prosecutor case reference | PCR-AUTO-003          |
+        | date of birth             | 2010-05-15            |
+      When I search for the account by last name "AddPgRestricted{uniq}" and open the latest result
+      Then I should see the page header contains "Mr Jamie ADDPGRESTRICTED{uniqUpper}"
+      When I go to the Defendant details section and the header is "Defendant details"
+      Then I do not see the add parent or guardian details action
+
+      @JIRA-TEST-KEY:PO-10006
+      Examples:
+        | status |
+        | CS     |
+      @JIRA-TEST-KEY:PO-10007
+      Examples:
+        | status |
+        | WO     |
+      @JIRA-TEST-KEY:PO-10008
+      Examples:
+        | status |
+        | TO     |
+      @JIRA-TEST-KEY:PO-10009
+      Examples:
+        | status |
+        | TS     |
+      @JIRA-TEST-KEY:PO-10010
+      Examples:
+        | status |
+        | TA     |
+
+    @R1B @JIRA-STORY:PO-5751 @JIRA-EPIC:PO-2990 @JIRA-TEST-KEY:PO-10011
+    Scenario: Youth-only account navigates to the Add parent or guardian details page
+      # AC3 – The visible action keeps its existing navigation and behaviour
+      Given a published adult or youth defendant account exists:
+        | first name                | Jamie               |
+        | last name                 | AddPgNavigate{uniq} |
+        | prosecutor case reference | PCR-AUTO-003        |
+        | date of birth             | 2010-05-15          |
+      When I search for the account by last name "AddPgNavigate{uniq}" and open the latest result
+      Then I should see the page header contains "Mr Jamie ADDPGNAVIGATE{uniqUpper}"
+      When I go to the Defendant details section and the header is "Defendant details"
+      And I start adding parent or guardian details
+      Then I should be on the add parent or guardian details page
   Rule: History and notes tab
     Background:
       Given I create a "adultOrYouthOnly" draft account with the following details and set status "Publishing Pending" using user "opal-test-10@dev.platform.hmcts.net":
