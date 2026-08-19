@@ -3,7 +3,7 @@ import { ChangeDetectionStrategy, Component } from '@angular/core';
 @Component({
   selector: 'app-fines-ext-finance-upload-variant-banking-files',
   imports: [],
-  templateUrl: './fines-finance-upload-variant-banking-files.html',
+  templateUrl: './fines-finance-upload-variant-banking-files.component.html',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class FinesFinanceUploadVariantBankingFilesComponent {}

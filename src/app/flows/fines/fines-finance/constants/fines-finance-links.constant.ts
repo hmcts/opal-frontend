@@ -1,5 +1,6 @@
 import { IDashboardPageConfigurationLink } from '@hmcts/opal-frontend-common/pages/dashboard-page/interfaces';
 import { FINES_ROUTING_PATHS } from '../../routing/constants/fines-routing-paths.constant';
+
 export const FINES_FINANCE_LINKS: IDashboardPageConfigurationLink[] = [
   {
     id: 'finesFinanceInboundFilesLink',
@@ -38,7 +39,7 @@ export const FINES_FINANCE_LINKS: IDashboardPageConfigurationLink[] = [
       '/',
       FINES_ROUTING_PATHS.root,
       FINES_ROUTING_PATHS.children.finance.root,
-      FINES_ROUTING_PATHS.children.finance.children['variantbankingfiles'],
+      FINES_ROUTING_PATHS.children.finance.children['variantBankingFiles'],
       FINES_ROUTING_PATHS.children.finance.children['upload'],
     ],
     fragment: null,

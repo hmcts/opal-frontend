@@ -1,6 +1,6 @@
-import { IFinesExternalBankingRoutingPaths } from '@app/flows/fines/interfaces/fines-external-banking.interface';
+import { IFinesFinanceRoutingPaths } from 'src/app/flows/fines/interfaces/fines-finance.interface';
 
-export const FINES_FINANCE_ROUTING_PATHS: IFinesExternalBankingRoutingPaths = {
+export const FINES_FINANCE_ROUTING_PATHS: IFinesFinanceRoutingPaths = {
   root: 'finance',
   children: {
     search: 'search',
