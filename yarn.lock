@@ -3779,7 +3779,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@hmcts/opal-frontend-common-node@npm:0.0.45":
+"@hmcts/opal-frontend-common-node@npm:^0.0.45":
   version: 0.0.45
   resolution: "@hmcts/opal-frontend-common-node@npm:0.0.45"
   dependencies:
@@ -15526,7 +15526,7 @@ __metadata:
     "@hmcts/nodejs-logging": "npm:^4.0.4"
     "@hmcts/opal-frontend-common": "npm:0.0.96"
     "@hmcts/opal-frontend-common-cypress": "npm:^0.0.3"
-    "@hmcts/opal-frontend-common-node": "npm:0.0.45"
+    "@hmcts/opal-frontend-common-node": "npm:^0.0.45"
     "@hmcts/properties-volume": "npm:^1.1.0"
     "@hmcts/zephyr-automation-nodejs": "npm:0.0.8"
     "@microsoft/applicationinsights-web": "npm:^3.3.5"
