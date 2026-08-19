@@ -112,7 +112,7 @@ export class CheckAndValidateReviewActions {
   /**
    * Asserts a timeline entry by position with expected title/description.
    * @param position - 1-based timeline position.
-   * @param expectations - Map of expected fields (title, description).
+   * @param expectations - Map of expected fields (title, date, description).
    */
   assertTimelineEntry(position: number, expectations: Record<string, string>): void {
     if (position < 1) {
@@ -124,9 +124,16 @@ export class CheckAndValidateReviewActions {
       .eq(position - 1)
       .scrollIntoView()
       .within(() => {
-        const { title, description } = normalizeExpectations(expectations);
+        const { title, date, description } = normalizeExpectations(expectations);
         if (title) {
           cy.get(L.timeline.title, this.common.getTimeoutOptions()).should('contain.text', title);
+        }
+        if (date) {
+          const expectedDate =
+            date.toLowerCase() === 'today'
+              ? new Date().toLocaleDateString('en-GB', { day: '2-digit', month: 'long', year: 'numeric' })
+              : date;
+          cy.get(L.timeline.date, this.common.getTimeoutOptions()).should('contain.text', expectedDate);
         }
         if (description) {
           cy.get(L.timeline.description, this.common.getTimeoutOptions()).should('contain.text', description);
@@ -216,13 +223,18 @@ export class CheckAndValidateReviewActions {
 /**
  * Normalises expectation keys to lower case for matching.
  * @param expectations - Key/value map of expectation labels.
- * @returns Normalised expectation object with `title`/`description` keys.
+ * @returns Normalised expectation object with `title`/`date`/`description` keys.
  */
-function normalizeExpectations(expectations: Record<string, string>): { title?: string; description?: string } {
+function normalizeExpectations(expectations: Record<string, string>): {
+  title?: string;
+  date?: string;
+  description?: string;
+} {
   const entries = Object.entries(expectations).map(([key, value]) => [key.trim().toLowerCase(), value.trim()]);
   const map = Object.fromEntries(entries);
   return {
     title: map['title'],
+    date: map['date'],
     description: map['description'],
   };
 }
