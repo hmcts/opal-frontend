@@ -31,7 +31,7 @@ describe('fines finance routes', () => {
       component: FinesExtFinanceOutboundFiles,
     },
     {
-      path: `${FINES_FINANCE_BANKING_PATHS.children.variantbankingfiles}/${FINES_FINANCE_BANKING_PATHS.children.upload}`,
+      path: `${FINES_FINANCE_BANKING_PATHS.children.variantBankingFiles}/${FINES_FINANCE_BANKING_PATHS.children.upload}`,
       title: FINES_FINANCE_ROUTING_TITLES.children.upload,
       routePermissionId: FINES_PERMISSIONS['upload-variant-banking-files'],
       component: FinesExtFinanceUploadVariantBankingFiles,

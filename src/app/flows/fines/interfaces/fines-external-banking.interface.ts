@@ -6,7 +6,7 @@ export interface IFinesExternalBankingRoutingPaths extends IChildRoutingPaths {
     finance: string;
     inbound: string;
     outbound: string;
-    variantbankingfiles: string;
+    variantBankingFiles: string;
     upload: string;
   };
 }

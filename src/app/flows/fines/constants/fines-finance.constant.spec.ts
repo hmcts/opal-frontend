@@ -10,7 +10,7 @@ describe('FINES_FINANCE_BANKING_PATHS', () => {
         finance: 'finance',
         inbound: 'inbound-files',
         outbound: 'outbound-files',
-        variantbankingfiles: 'variant-banking-files',
+        variantBankingFiles: 'variant-banking-files',
         upload: 'upload',
       },
     });

@@ -7,7 +7,7 @@ import { FINES_PERMISSIONS } from '../../../../constants/fines-permissions.const
 import { routePermissionsGuard } from '@hmcts/opal-frontend-common/guards/route-permissions';
 import { authGuard } from '@hmcts/opal-frontend-common/guards/auth';
 
-const draftRootPermissionIds = FINES_PERMISSIONS;
+const financeRootPermissionIds = FINES_PERMISSIONS;
 
 export const routing: Routes = [
   {
@@ -24,7 +24,7 @@ export const routing: Routes = [
       ),
     canActivate: [authGuard, routePermissionsGuard],
     data: {
-      routePermissionId: [draftRootPermissionIds['view-interface-files']],
+      routePermissionId: [financeRootPermissionIds['view-interface-files']],
       title: FINES_FINANCE_ROUTING_TITLES.children.inbound,
     },
     resolve: { title: TitleResolver },
@@ -38,13 +38,13 @@ export const routing: Routes = [
       ),
     canActivate: [authGuard, routePermissionsGuard],
     data: {
-      routePermissionId: [draftRootPermissionIds['create-interface-files']],
+      routePermissionId: [financeRootPermissionIds['create-interface-files']],
       title: FINES_FINANCE_ROUTING_TITLES.children.outbound,
     },
     resolve: { title: TitleResolver },
   },
   {
-    path: `${FINES_FINANCE_BANKING_PATHS.children.variantbankingfiles}/${FINES_FINANCE_BANKING_PATHS.children.upload}`,
+    path: `${FINES_FINANCE_BANKING_PATHS.children.variantBankingFiles}/${FINES_FINANCE_BANKING_PATHS.children.upload}`,
 
     loadComponent: () =>
       import('../fines-finance-upload-variant-banking-files/fines-finance-upload-variant-banking-files.component').then(
@@ -52,7 +52,7 @@ export const routing: Routes = [
       ),
     canActivate: [authGuard, routePermissionsGuard],
     data: {
-      routePermissionId: [draftRootPermissionIds['upload-variant-banking-files']],
+      routePermissionId: [financeRootPermissionIds['upload-variant-banking-files']],
       title: FINES_FINANCE_ROUTING_TITLES.children.upload,
     },
     resolve: { title: TitleResolver },
