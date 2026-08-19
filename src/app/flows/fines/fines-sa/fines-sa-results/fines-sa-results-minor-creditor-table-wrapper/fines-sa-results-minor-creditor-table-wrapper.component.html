@@ -1,3 +1,5 @@
+<output aria-atomic="true" class="govuk-visually-hidden">{{ pageChangeAnnouncement() }}</output>
+
 <opal-lib-custom-horizontal-scroll-pane>
   <opal-lib-moj-sortable-table>
     <ng-container head>
@@ -68,7 +70,7 @@
     <ng-container row>
       @for (row of paginatedTableDataComputed(); track row['Account']) {
         <tr opal-lib-moj-sortable-table-row>
-          <td opal-lib-moj-sortable-table-row-data id="minorCreditorAccountNumber">
+          <td #paginationFocusTarget opal-lib-moj-sortable-table-row-data id="minorCreditorAccountNumber">
             @if (row['Account'] === null) {
               <ng-container *ngTemplateOutlet="noData"></ng-container>
             } @else {

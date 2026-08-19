@@ -1,3 +1,5 @@
+<output aria-atomic="true" class="govuk-visually-hidden">{{ pageChangeAnnouncement() }}</output>
+
 <div class="govuk-grid-column-full">
   <h2 [class]="style.heading">Impositions</h2>
   <hr [class]="style.hr" />
@@ -104,7 +106,11 @@
             let rowIndex = $index
           ) {
             <tr opal-lib-moj-sortable-table-row [bodyRowClasses]="impositionTableRow.rowClasses">
-              <td opal-lib-moj-sortable-table-row-data [id]="'imposition-date-added-' + rowIndex">
+              <td
+                #paginationFocusTarget
+                opal-lib-moj-sortable-table-row-data
+                [id]="'imposition-date-added-' + rowIndex"
+              >
                 @if (impositionTableRow['Date added']; as postedDate) {
                   {{ postedDate | dateFormat: DATE_INPUT_FORMAT : DATE_OUTPUT_FORMAT }}
                 } @else {

@@ -1,3 +1,5 @@
+<output aria-atomic="true" class="govuk-visually-hidden">{{ pageChangeAnnouncement() }}</output>
+
 <opal-lib-moj-sortable-table>
   <ng-container head>
     <th
@@ -49,7 +51,7 @@
   <ng-container row>
     @for (row of paginatedTableDataComputed(); track row['Code']) {
       <tr opal-lib-moj-sortable-table-row>
-        <td opal-lib-moj-sortable-table-row-data id="code">
+        <td #paginationFocusTarget opal-lib-moj-sortable-table-row-data id="code">
           {{ row['Code'] }}
           <a
             class="govuk-link govuk-link--no-visited-state"
