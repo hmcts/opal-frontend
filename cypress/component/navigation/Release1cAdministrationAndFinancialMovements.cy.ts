@@ -17,10 +17,12 @@ import {
 } from '@app/flows/fines/constants/release-feature-flags.constant';
 import { FINES_PERMISSIONS } from 'src/app/constants/fines-permissions.constant';
 import { FINES_DASHBOARD_ROUTING_PATHS } from 'src/app/flows/fines/constants/fines-dashboard-routing-paths.constant';
+import { FINES_ROUTING_PATHS } from 'src/app/flows/fines/routing/constants/fines-routing-paths.constant';
 
 const NAVIGATION_JIRA_LABEL = '@JIRA-LABEL:primary-nav-and-dashboards';
 const RELEASE_1C_STORY_TAG = '@JIRA-STORY:PO-7266';
 const RELEASE_1C_EPIC_TAG = '@JIRA-EPIC:PO-3685';
+const AUTO_ENFORCEMENT_CONFIGURATION_LINK = '#autoEnforcementConfigurationLink';
 
 type FeatureFlags = Record<string, boolean>;
 
@@ -160,6 +162,37 @@ describe(
         cy.contains('h1', 'Administration').should('be.visible');
         cy.contains('h2', 'Pending development').should('be.visible');
         cy.get('#testAdministrationLink').should('be.visible').and('contain.text', 'Test Administration Link');
+      },
+    );
+
+    it(
+      'shows a single Auto-enforcement configuration link for users with Auto-enforcement permission',
+      { tags: ['@R1CAdministration', '@JIRA-STORY:PO-2460'] },
+      () => {
+        setupDashboardComponent(FINES_DASHBOARD_ROUTING_PATHS.children.administration, {}, [
+          FINES_PERMISSIONS['auto-enforcement'],
+        ]);
+
+        cy.get(AUTO_ENFORCEMENT_CONFIGURATION_LINK)
+          .should('have.length', 1)
+          .and('be.visible')
+          .and('contain.text', 'Auto-enforcement configuration')
+          .and(
+            'have.attr',
+            'href',
+            `/${FINES_ROUTING_PATHS.root}/${FINES_ROUTING_PATHS.children.aec.root}/${FINES_ROUTING_PATHS.children.aec.children['config']}`,
+          );
+      },
+    );
+
+    it(
+      'hides the Auto-enforcement configuration link when the user does not have Auto-enforcement permission',
+      { tags: ['@R1CAdministration', '@JIRA-STORY:PO-2460'] },
+      () => {
+        setupDashboardComponent(FINES_DASHBOARD_ROUTING_PATHS.children.administration, {}, []);
+
+        cy.get(AUTO_ENFORCEMENT_CONFIGURATION_LINK).should('not.exist');
+        cy.contains('a', 'Auto-enforcement configuration').should('not.exist');
       },
     );
 
