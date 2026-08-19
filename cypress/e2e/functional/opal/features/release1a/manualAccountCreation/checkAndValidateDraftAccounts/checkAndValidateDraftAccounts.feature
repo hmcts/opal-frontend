@@ -97,7 +97,7 @@ Feature: Check And Validate Draft Accounts
 
 
 
-  @R1A @JIRA-STORY:PO-597 @JIRA-STORY:PO-616 @JIRA-EPIC:PO-2220 @JIRA-TEST-KEY:PO-5334 @JIRA-NFR:PO-2506
+  @R1A @JIRA-STORY:PO-597 @JIRA-STORY:PO-616 @JIRA-DEFECT:PO-1858 @JIRA-EPIC:PO-2220 @JIRA-TEST-KEY:PO-5334 @JIRA-NFR:PO-2506
   Scenario: Delete an in-review draft account and verify it on the Deleted tab
     Given a "adultOrYouthOnly" draft account exists with:
       | Account_status                          | Submitted                    |
@@ -119,6 +119,7 @@ Feature: Check And Validate Draft Accounts
     And the draft account status tag is "Deleted"
     And the draft review history item 1 is:
       | title       | Deleted            |
+      | date        | Today              |
       | description | test reason YXZ123 |
     When I go back to Check and Validate Draft Accounts
     Then I should see the checker header "Review accounts" and status heading "Deleted"
