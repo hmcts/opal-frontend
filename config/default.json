@@ -6,7 +6,8 @@
   },
   "opal-api": {
     "opal-fines-service": "http://localhost:4550",
-    "opal-user-service": "http://localhost:4555"
+    "opal-user-service": "http://localhost:4555",
+    "timeoutInMilliseconds": 30000
   },
   "features": {
     "redis": {
