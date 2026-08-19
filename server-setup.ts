@@ -40,6 +40,7 @@ export function getRoutesConfig(): {
     ...DEFAULT_PROXY_CONFIG,
     opalFinesServiceUrl: config.get('opal-api.opal-fines-service'),
     opalUserServiceUrl: config.get('opal-api.opal-user-service'),
+    timeoutInMilliseconds: config.get('opal-api.timeoutInMilliseconds'),
   };
 
   const routesConfiguration: RoutesConfiguration = {
@@ -81,6 +82,10 @@ export function configureApiProxyRoutes(app: Express, proxyConfiguration: ProxyC
   const ipLoggingEnabled = config.get('features.ip-logging.enabled') as boolean;
   const opalUserServiceProxyTimeoutInMilliseconds = config.get<number>('opal-user-service.timeoutInMilliseconds');
   const opalFinesServiceProxyTimeoutInMilliseconds = config.get<number>('opal-fines-service.timeoutInMilliseconds');
+
+  if (proxyConfiguration.timeoutInMilliseconds === null) {
+    throw new Error('Missing opal-api.timeoutInMilliseconds configuration.');
+  }
 
   if (proxyConfiguration.opalFinesServiceUrl) {
     app.use(

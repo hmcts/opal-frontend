@@ -13,6 +13,7 @@ import {
   SINGLE_ASCII_CHARACTERS_WITH_POUND,
   TIME_FORMAT_PATTERN,
 } from '@hmcts/opal-frontend-common/constants';
+import { finesMacOffenceDetailsPositiveAmountValidator } from '../../fines-mac-offence-details/validators/fines-mac-offence-details-positive-amount.validator';
 import { IFinesMacFixedPenaltyDetailsState } from '../interfaces/fines-mac-fixed-penalty-details-state.interface';
 
 type IFinesMacFixedPenaltyDetailsFormValidators = {
@@ -99,7 +100,11 @@ export const FINES_MAC_FIXED_PENALTY_DETAILS_FORM_VALIDATORS: IFinesMacFixedPena
     Validators.maxLength(30),
     ALPHANUMERIC_WITH_HYPHENS_SPACES_APOSTROPHES_COMMAS_DOT_PATTERN_VALIDATOR,
   ],
-  fm_fp_offence_details_amount_imposed: [Validators.required, amountValidator(18, 2)],
+  fm_fp_offence_details_amount_imposed: [
+    Validators.required,
+    amountValidator(18, 2),
+    finesMacOffenceDetailsPositiveAmountValidator({ allowZero: false }),
+  ],
   fm_fp_offence_details_vehicle_registration_number: [
     Validators.required,
     Validators.maxLength(7),

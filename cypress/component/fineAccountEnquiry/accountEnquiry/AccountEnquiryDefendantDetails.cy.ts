@@ -535,13 +535,7 @@ describe('Account Enquiry Defendant Details Tab', () => {
       interceptUserState(USER_STATE_MOCK_PERMISSION_BU77);
       interceptDefendantHeader(accountId, headerMock, accountId);
       interceptDefendantDetails(accountId, defendantDetailsMock, accountId);
-      setupAccountEnquiryComponent({
-        ...componentProperties,
-        accountId: accountId,
-        interceptedRoutes: componentProperties.interceptedRoutes?.filter(
-          (route) => route !== '../party/parentGuardian/add',
-        ),
-      });
+      setupAccountEnquiryComponent({ ...componentProperties, accountId: accountId });
 
       cy.wait(['@getDefendantHeaderSummary', '@getDefendantDetails']);
       cy.contains('a', 'Add parent or guardian details').should('be.visible').click();
@@ -572,7 +566,7 @@ describe('Account Enquiry Defendant Details Tab', () => {
 
   it(
     'AC1a, AC1b. Individual Defendant tab removes the heading Change link and shows section Change links',
-    { tags: buildTags('@JIRA-STORY:PO-2671', '@JIRA-EPIC:PO-8248') },
+    { tags: [...buildTags('@JIRA-STORY:PO-2671', '@JIRA-EPIC:PO-8248'), '@JIRA-TEST-KEY:PO-9846'] },
     () => {
       const defendantDetailsMock = structuredClone(OPAL_FINES_ACCOUNT_DEFENDANT_ACCOUNT_PARTY_MOCK);
       defendantDetailsMock.defendant_account_party.party_details.organisation_flag = false;
@@ -612,7 +606,7 @@ describe('Account Enquiry Defendant Details Tab', () => {
 
   it(
     'AC2a, AC2b. Company Defendant tab removes the heading Change link and shows section Change links',
-    { tags: buildTags('@JIRA-STORY:PO-2671', '@JIRA-EPIC:PO-8248') },
+    { tags: [...buildTags('@JIRA-STORY:PO-2671', '@JIRA-EPIC:PO-8248'), '@JIRA-TEST-KEY:PO-9847'] },
     () => {
       const headerMock = structuredClone(DEFENDANT_HEADER_MOCK);
       const defendantDetailsMock = structuredClone(OPAL_FINES_ACCOUNT_DEFENDANT_ACCOUNT_PARTY_MOCK);
