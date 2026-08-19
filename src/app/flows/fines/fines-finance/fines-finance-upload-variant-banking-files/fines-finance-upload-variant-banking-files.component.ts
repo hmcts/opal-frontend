@@ -6,4 +6,4 @@ import { ChangeDetectionStrategy, Component } from '@angular/core';
   templateUrl: './fines-finance-upload-variant-banking-files.html',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class FinesExtFinanceUploadVariantBankingFiles {}
+export class FinesFinanceUploadVariantBankingFilesComponent {}

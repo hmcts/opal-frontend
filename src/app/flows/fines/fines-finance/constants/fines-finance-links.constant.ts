@@ -1,8 +1,8 @@
 import { IDashboardPageConfigurationLink } from '@hmcts/opal-frontend-common/pages/dashboard-page/interfaces';
 import { FINES_ROUTING_PATHS } from '../../routing/constants/fines-routing-paths.constant';
-export const FINES_EXTERNAL_BANKING_LINKS: IDashboardPageConfigurationLink[] = [
+export const FINES_FINANCE_LINKS: IDashboardPageConfigurationLink[] = [
   {
-    id: 'finesExternalBankingInboundFilesLink',
+    id: 'finesFinanceInboundFilesLink',
     text: 'Inbound files',
     routerLink: [
       '/',
@@ -17,7 +17,7 @@ export const FINES_EXTERNAL_BANKING_LINKS: IDashboardPageConfigurationLink[] = [
     style: 'guidance-panel-blue',
   },
   {
-    id: 'finesExternalBankingOutboundFilesLink',
+    id: 'finesFinanceOutboundFilesLink',
     text: 'Outbound files',
     routerLink: [
       '/',
@@ -32,7 +32,7 @@ export const FINES_EXTERNAL_BANKING_LINKS: IDashboardPageConfigurationLink[] = [
     style: 'guidance-panel-blue',
   },
   {
-    id: 'finesExternalBankingUploadFilesLink',
+    id: 'finesFinanceUploadVariantBankingFilesLink',
     text: 'Upload Variant banking files',
     routerLink: [
       '/',

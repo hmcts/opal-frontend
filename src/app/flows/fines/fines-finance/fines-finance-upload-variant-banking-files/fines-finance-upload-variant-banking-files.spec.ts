@@ -1,18 +1,18 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { beforeEach, describe, expect, it } from 'vitest';
 
-import { FinesExtFinanceUploadVariantBankingFiles } from './fines-finance-upload-variant-banking-files.component';
+import { FinesFinanceUploadVariantBankingFilesComponent } from './fines-finance-upload-variant-banking-files.component';
 
-describe('FinesExtFinanceUploadVariantBankingFiles', () => {
-  let component: FinesExtFinanceUploadVariantBankingFiles;
-  let fixture: ComponentFixture<FinesExtFinanceUploadVariantBankingFiles>;
+describe('FinesFinanceUploadVariantBankingFiles', () => {
+  let component: FinesFinanceUploadVariantBankingFilesComponent;
+  let fixture: ComponentFixture<FinesFinanceUploadVariantBankingFilesComponent>;
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [FinesExtFinanceUploadVariantBankingFiles],
+      imports: [FinesFinanceUploadVariantBankingFilesComponent],
     }).compileComponents();
 
-    fixture = TestBed.createComponent(FinesExtFinanceUploadVariantBankingFiles);
+    fixture = TestBed.createComponent(FinesFinanceUploadVariantBankingFilesComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
   });
