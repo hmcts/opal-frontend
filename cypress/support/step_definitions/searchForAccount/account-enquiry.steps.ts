@@ -33,6 +33,7 @@ import { AccountDetailsCommentsActions } from '../../..//e2e/functional/opal/act
 import { AccountConvertActions } from '../../..//e2e/functional/opal/actions/account-details/convert.account.actions';
 import { EditParentGuardianDetailsActions } from '../../..//e2e/functional/opal/actions/account-details/edit.parent-guardian-details.actions';
 import { AccountDetailsFixedPenaltyActions } from '../../..//e2e/functional/opal/actions/account-details/details.fixed-penalty.actions';
+import { AccountDetailsImpositionsActions } from '../../..//e2e/functional/opal/actions/account-details/details.impositions.actions';
 import { RemoveParentGuardianActions } from '../../..//e2e/functional/opal/actions/account-details/remove.parent-guardian.actions';
 import { EditMinorCreditorDetailsActions } from '../../..//e2e/functional/opal/actions/account-details/edit.minor-creditor-details.actions';
 import { log } from '../../utils/log.helper';
@@ -52,6 +53,7 @@ const convertActions = () => new AccountConvertActions();
 const editParentGuardianDetails = () => new EditParentGuardianDetailsActions();
 const editMinorCreditorDetails = () => new EditMinorCreditorDetailsActions();
 const fixedPenaltyDetails = () => new AccountDetailsFixedPenaltyActions();
+const impositionsDetails = () => new AccountDetailsImpositionsActions();
 const navActions = () => new AccountDetailsNavActions();
 const enforcementActions = () => new AccountDetailsEnforcementActions();
 const paymentTermsActions = () => new AccountDetailsPaymentTermsActions();
@@ -1025,6 +1027,12 @@ Then('I should return to the Enforcement tab', () => {
 When('I go to the Impositions tab', () => {
   log('step', 'Navigate to Impositions tab');
   navActions().goToImpositionsTab();
+});
+
+/** @step Asserts the rendered defendant account imposition rows. */
+Then('I should see the defendant account impositions load with the following values:', (table: DataTable) => {
+  log('assert', 'Verify defendant account impositions load');
+  impositionsDetails().assertDefendantAccountImpositionsLoaded(table.raw());
 });
 
 /**
