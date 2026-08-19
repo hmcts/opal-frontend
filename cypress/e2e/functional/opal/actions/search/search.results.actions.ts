@@ -271,6 +271,26 @@ export class ResultsActions {
     this.assertNavigatedToDetails();
   }
 
+  /**
+   * Opens the associated defendant from the first minor creditor result row.
+   *
+   * This deliberately targets the Defendant-column link rather than the minor
+   * creditor account-number link.
+   */
+  public openLatestMinorCreditorDefendant(): void {
+    log('open', 'Opening associated defendant from latest minor creditor result');
+
+    cy.get(R.table.rows, { timeout: ResultsActions.WAIT_MS })
+      .should('have.length.greaterThan', 0)
+      .first()
+      .find(R.cols.minorCreditorDefendantLink, { timeout: ResultsActions.WAIT_MS })
+      .should('be.visible')
+      .scrollIntoView()
+      .click({ force: true });
+
+    this.assertNavigatedToDetails();
+  }
+
   /********this should be in flow ******** */
   /**
    * Opens a specific account **by account number** from the results table.

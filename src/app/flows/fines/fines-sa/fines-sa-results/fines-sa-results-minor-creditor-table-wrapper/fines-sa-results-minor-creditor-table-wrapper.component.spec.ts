@@ -160,8 +160,8 @@ describe('FinesSaResultsMinorCreditorTableWrapperComponent', () => {
 
     link.dispatchEvent(event);
 
-    expect(handlerSpy).toHaveBeenCalledWith(0, event);
+    expect(handlerSpy).toHaveBeenCalledWith(100, event);
     expect(event.defaultPrevented).toBe(true);
-    expect(emitSpy).toHaveBeenCalledWith(0);
+    expect(emitSpy).toHaveBeenCalledWith(100);
   });
 });
