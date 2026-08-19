@@ -4007,7 +4007,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@hmcts/opal-frontend-common@npm:0.0.102":
+"@hmcts/opal-frontend-common@npm:^0.0.102":
   version: 0.0.102
   resolution: "@hmcts/opal-frontend-common@npm:0.0.102"
   dependencies:
@@ -16494,7 +16494,7 @@ __metadata:
     "@hmcts/info-provider": "npm:^1.1.0"
     "@hmcts/nodejs-healthcheck": "npm:^1.8.5"
     "@hmcts/nodejs-logging": "npm:^4.0.4"
-    "@hmcts/opal-frontend-common": "npm:0.0.102"
+    "@hmcts/opal-frontend-common": "npm:^0.0.102"
     "@hmcts/opal-frontend-common-cypress": "npm:^0.0.3"
     "@hmcts/opal-frontend-common-node": "npm:^0.0.44"
     "@hmcts/properties-volume": "npm:^1.1.0"
