@@ -24,7 +24,7 @@ export const routing: Routes = [
       ),
     canActivate: [authGuard, routePermissionsGuard],
     data: {
-      routePermissionId: [draftRootPermissionIds['View Interface Files']],
+      routePermissionId: [draftRootPermissionIds['view-interface-files']],
       title: FINES_FINANCE_ROUTING_TITLES.children.inbound,
     },
     resolve: { title: TitleResolver },
@@ -38,7 +38,7 @@ export const routing: Routes = [
       ),
     canActivate: [authGuard, routePermissionsGuard],
     data: {
-      routePermissionId: [draftRootPermissionIds['View Interface Files']],
+      routePermissionId: [draftRootPermissionIds['create-interface-files']],
       title: FINES_FINANCE_ROUTING_TITLES.children.outbound,
     },
     resolve: { title: TitleResolver },
@@ -52,7 +52,7 @@ export const routing: Routes = [
       ),
     canActivate: [authGuard, routePermissionsGuard],
     data: {
-      routePermissionId: [draftRootPermissionIds['Upload Variant Banking Files']],
+      routePermissionId: [draftRootPermissionIds['upload-variant-banking-files']],
       title: FINES_FINANCE_ROUTING_TITLES.children.upload,
     },
     resolve: { title: TitleResolver },

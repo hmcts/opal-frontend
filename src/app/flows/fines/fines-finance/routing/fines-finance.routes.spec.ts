@@ -7,6 +7,7 @@ import { FinesExtFinanceOutboundFiles } from '../fines-finance-outbound-files/fi
 import { FinesExtFinanceUploadVariantBankingFiles } from '../fines-finance-upload-variant-banking-files/fines-finance-upload-variant-banking-files.component';
 import { FINES_FINANCE_ROUTING_TITLES } from './constants/fines-finance-routing-titles.constant';
 import { routing } from './fines-finance.routes';
+import { FINES_PERMISSIONS } from '../../../../constants/fines-permissions.constant';
 
 describe('fines finance routes', () => {
   it('should redirect the Finance root to the dashboard', () => {
@@ -20,22 +21,25 @@ describe('fines finance routes', () => {
     {
       path: `${FINES_FINANCE_BANKING_PATHS.children.inbound}/${FINES_FINANCE_BANKING_PATHS.children.search}`,
       title: FINES_FINANCE_ROUTING_TITLES.children.inbound,
+      routePermissionId: FINES_PERMISSIONS['view-interface-files'],
       component: FinesExtFinanceInboundFiles,
     },
     {
       path: `${FINES_FINANCE_BANKING_PATHS.children.outbound}/${FINES_FINANCE_BANKING_PATHS.children.search}`,
       title: FINES_FINANCE_ROUTING_TITLES.children.outbound,
+      routePermissionId: FINES_PERMISSIONS['create-interface-files'],
       component: FinesExtFinanceOutboundFiles,
     },
     {
       path: `${FINES_FINANCE_BANKING_PATHS.children.variantbankingfiles}/${FINES_FINANCE_BANKING_PATHS.children.upload}`,
       title: FINES_FINANCE_ROUTING_TITLES.children.upload,
+      routePermissionId: FINES_PERMISSIONS['upload-variant-banking-files'],
       component: FinesExtFinanceUploadVariantBankingFiles,
     },
-  ])('should title and lazy-load the $title route', async ({ path, title, component }) => {
+  ])('should title and lazy-load the $title route', async ({ path, title, routePermissionId, component }) => {
     const route = routing.find((routeItem) => routeItem.path === path);
 
-    expect(route?.data).toEqual({ title });
+    expect(route?.data).toEqual({ title, routePermissionId: [routePermissionId] });
     expect(route?.resolve).toEqual({ title: TitleResolver });
     await expect(route?.loadComponent?.()).resolves.toBe(component);
   });
