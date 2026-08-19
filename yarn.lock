@@ -3979,9 +3979,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@hmcts/opal-frontend-common-node@npm:0.0.42":
-  version: 0.0.42
-  resolution: "@hmcts/opal-frontend-common-node@npm:0.0.42"
+"@hmcts/opal-frontend-common-node@npm:^0.0.44":
+  version: 0.0.44
+  resolution: "@hmcts/opal-frontend-common-node@npm:0.0.44"
   dependencies:
     "@azure/msal-browser": "npm:^5.0.0"
     "@hmcts/info-provider": "npm:^1.1.0"
@@ -3991,8 +3991,8 @@ __metadata:
     applicationinsights: "npm:~2.9.6"
     axios: "npm:^1.6.2"
     body-parser: "npm:^2.0.0"
-    config: "npm:^4.0.0"
-    connect-redis: "npm:^9.0.0"
+    config: "npm:^5.0.0"
+    connect-redis: "npm:^10.0.0"
     cookie-parser: "npm:^1.4.6"
     csrf-csrf: "npm:^4.0.0"
     express: "npm:^5.0.0"
@@ -4003,7 +4003,7 @@ __metadata:
     redis: "npm:^6.0.0"
     session-file-store: "npm:^1.5.0"
     xml2js: "npm:^0.6.2"
-  checksum: 10/9f21eea042c59a807e75b3755b60e1fdeae837aadda47674819ad152a6fbe8e747a2fe01f2a0f1421e6430cfc77a23b4ed274418e988f91d792642704713f638
+  checksum: 10/f727acb773dc07c5f9c5011bc9e04398bfbb0a4df98ded34510934d72b9db5fde1eda8fa6f9633f653c189c29ef03af2f9016fbec43406fc40a4199acf028cfb
   languageName: node
   linkType: hard
 
@@ -7362,15 +7362,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@types/config@npm:^4.0.0":
-  version: 4.4.0
-  resolution: "@types/config@npm:4.4.0"
-  dependencies:
-    config: "npm:*"
-  checksum: 10/2b5aaf0684516f63d0c96b6fe709a1164cd39994d015c9139c25d1241e4607adcabe00288ca4ec1951d91554d35b27015cd4ca7792bd55caf99c1bc5269a4102
-  languageName: node
-  linkType: hard
-
 "@types/connect-history-api-fallback@npm:^1.5.4":
   version: 1.5.4
   resolution: "@types/connect-history-api-fallback@npm:1.5.4"
@@ -10212,12 +10203,12 @@ __metadata:
   languageName: node
   linkType: hard
 
-"config@npm:*, config@npm:^4.0.0":
-  version: 4.4.1
-  resolution: "config@npm:4.4.1"
+"config@npm:^5.0.0":
+  version: 5.0.0
+  resolution: "config@npm:5.0.0"
   dependencies:
     json5: "npm:^2.2.3"
-  checksum: 10/b237298b107111f88f8b4226c6412298a93052642c8e67a352e36f64be02fb4644351890f57e518338d1491e83064c6fb8fe31f676c7355491ef969e174ec9f1
+  checksum: 10/317dc25a4ded70010cc5636fb92d35b845e94e49f54a52a4a5ecaa81f3b118b8e2bf5e56ce486ab9c8c5e5e8ef68668ca2a95ef8eb12ee382aadbe834f382c40
   languageName: node
   linkType: hard
 
@@ -10232,6 +10223,16 @@ __metadata:
   version: 2.0.0
   resolution: "connect-history-api-fallback@npm:2.0.0"
   checksum: 10/3b26bf4041fdb33deacdcb3af9ae11e9a0b413fb14c95844d74a460b55e407625b364955dcf965c654605cde9d24ad5dad423c489aa430825aab2035859aba0c
+  languageName: node
+  linkType: hard
+
+"connect-redis@npm:^10.0.0":
+  version: 10.0.0
+  resolution: "connect-redis@npm:10.0.0"
+  peerDependencies:
+    express-session: ">=1"
+    redis: ">=5"
+  checksum: 10/6263130357f9fb29e612e181137bce3493d7a57a2f25481cb737d62020401007d934da99e4ccdded7b4401ba8431d5df38a9abd4356342d498afc704b12c0991
   languageName: node
   linkType: hard
 
@@ -16495,14 +16496,13 @@ __metadata:
     "@hmcts/nodejs-logging": "npm:^4.0.4"
     "@hmcts/opal-frontend-common": "npm:0.0.101"
     "@hmcts/opal-frontend-common-cypress": "npm:^0.0.3"
-    "@hmcts/opal-frontend-common-node": "npm:0.0.42"
+    "@hmcts/opal-frontend-common-node": "npm:^0.0.44"
     "@hmcts/properties-volume": "npm:^1.1.0"
     "@hmcts/zephyr-automation-nodejs": "npm:0.0.8"
     "@microsoft/applicationinsights-web": "npm:^3.3.5"
     "@ministryofjustice/frontend": "npm:^10.0.0"
     "@ngrx/signals": "npm:^21.0.0"
     "@openapitools/openapi-generator-cli": "npm:^2.25.0"
-    "@types/config": "npm:^4.0.0"
     "@types/cookie-parser": "npm:^1.4.6"
     "@types/express": "npm:^5.0.0"
     "@types/express-session": "npm:^1.17.10"
@@ -16520,7 +16520,7 @@ __metadata:
     axios: "npm:^1.6.2"
     body-parser: "npm:^2.0.0"
     browser-sync: "npm:^3.0.2"
-    config: "npm:^4.0.0"
+    config: "npm:^5.0.0"
     connect-redis: "npm:^9.0.0"
     cookie-parser: "npm:^1.4.6"
     csrf-csrf: "npm:^4.0.0"
@@ -16563,7 +16563,7 @@ __metadata:
     tsconfig-paths-webpack-plugin: "npm:^4.2.0"
     tslib: "npm:^2.3.0"
     tsx: "npm:^4.21.0"
-    typescript: "npm:~6.0.0"
+    typescript: "npm:~5.9.3"
     vitest: "npm:^4.0.8"
     webpack: "npm:^5.93.0"
     xml2js: "npm:^0.6.2"
@@ -20399,7 +20399,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"typescript@npm:^5.4.4, typescript@npm:^5.4.5, typescript@npm:^5.5.4":
+"typescript@npm:^5.4.4, typescript@npm:^5.4.5, typescript@npm:^5.5.4, typescript@npm:~5.9.3":
   version: 5.9.3
   resolution: "typescript@npm:5.9.3"
   bin:
@@ -20409,33 +20409,13 @@ __metadata:
   languageName: node
   linkType: hard
 
-"typescript@npm:~6.0.0":
-  version: 6.0.3
-  resolution: "typescript@npm:6.0.3"
-  bin:
-    tsc: bin/tsc
-    tsserver: bin/tsserver
-  checksum: 10/0ef2357a4cffd916b52b683a021cdab0f81eea4e9aa35f2d254581c9a5106da02224e3392e1b0ed42b7a48f80c966e5f52b8e1a27941fa0523c1705a9c2e0330
-  languageName: node
-  linkType: hard
-
-"typescript@patch:typescript@npm%3A^5.4.4#optional!builtin<compat/typescript>, typescript@patch:typescript@npm%3A^5.4.5#optional!builtin<compat/typescript>, typescript@patch:typescript@npm%3A^5.5.4#optional!builtin<compat/typescript>":
+"typescript@patch:typescript@npm%3A^5.4.4#optional!builtin<compat/typescript>, typescript@patch:typescript@npm%3A^5.4.5#optional!builtin<compat/typescript>, typescript@patch:typescript@npm%3A^5.5.4#optional!builtin<compat/typescript>, typescript@patch:typescript@npm%3A~5.9.3#optional!builtin<compat/typescript>":
   version: 5.9.3
   resolution: "typescript@patch:typescript@npm%3A5.9.3#optional!builtin<compat/typescript>::version=5.9.3&hash=5786d5"
   bin:
     tsc: bin/tsc
     tsserver: bin/tsserver
   checksum: 10/696e1b017bc2635f4e0c94eb4435357701008e2f272f553d06e35b494b8ddc60aa221145e286c28ace0c89ee32827a28c2040e3a69bdc108b1a5dc8fb40b72e3
-  languageName: node
-  linkType: hard
-
-"typescript@patch:typescript@npm%3A~6.0.0#optional!builtin<compat/typescript>":
-  version: 6.0.3
-  resolution: "typescript@patch:typescript@npm%3A6.0.3#optional!builtin<compat/typescript>::version=6.0.3&hash=5786d5"
-  bin:
-    tsc: bin/tsc
-    tsserver: bin/tsserver
-  checksum: 10/22b67a18dafedf9b1468b64ca20d9aa02ea61d449b65413d8aa6552aeb63f52ef369e86beb25b6b4c91a803d9726ee5c196f391a9b64201263263410a4223ee6
   languageName: node
   linkType: hard
 
