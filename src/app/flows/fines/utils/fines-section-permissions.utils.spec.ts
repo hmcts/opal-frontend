@@ -582,7 +582,7 @@ describe('fines-section-permissions.utils', () => {
         ),
       ).toEqual({
         ...DASHBOARD_PAGE_CONFIGURATION_MAP.finance,
-        groups: [FINANCE_DASHBOARD_CONFIG.groups.find((group) => group.id === 'banking-placeholder')!],
+        groups: [FINANCE_DASHBOARD_CONFIG.groups.find((group) => group.id === 'bankingInterfaces')!],
       });
     });
   });
