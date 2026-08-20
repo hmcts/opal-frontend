@@ -145,12 +145,8 @@ describe('FinesMacFixedPenaltyFormComponent', () => {
     if (!offenceCodeInput) throw new Error('Offence code input not found');
 
     expect(guidance.textContent).toContain("If you don't know the offence code, you can");
-    expect(link.textContent?.replace(/\s+/g, ' ').trim()).toBe(
-      "If you don't know the offence code, you can search the offence list (opens in a new tab)",
-    );
-    expect(link.querySelector('span.govuk-visually-hidden')?.textContent?.trim()).toBe(
-      "If you don't know the offence code, you can",
-    );
+    expect(link.textContent?.replace(/\s+/g, ' ').trim()).toBe('search the offence list (opens in a new tab)');
+    expect(link.querySelector('span.govuk-visually-hidden')).toBeNull();
     expect(link.classList.contains('govuk-link')).toBe(true);
     expect(link.classList.contains('govuk-link--no-visited-state')).toBe(true);
     expect(link.getAttribute('href')).toBe(component.searchOffenceUrl);
