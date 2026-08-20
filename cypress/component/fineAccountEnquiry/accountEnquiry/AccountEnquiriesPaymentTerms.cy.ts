@@ -135,7 +135,7 @@ describe('Account Enquiry Payment Terms', () => {
 
   it(
     'AC3: Change navigation remains unchanged for an eligible account',
-    { tags: [...buildTags('@JIRA-STORY:PO-5753', '@JIRA-EPIC:PO-2990')] },
+    { tags: [...buildTags('@JIRA-STORY:PO-5753', '@JIRA-EPIC:PO-2990'), '@JIRA-TEST-KEY:PO-9835'] },
     () => {
       const headerMock = structuredClone(createDefendantHeaderMockWithName('Robert', 'Thomson'));
       headerMock.debtor_type = 'individual';
@@ -160,7 +160,7 @@ describe('Account Enquiry Payment Terms', () => {
 
   it(
     'AC3: Request payment card navigation remains unchanged for an eligible account',
-    { tags: [...buildTags('@JIRA-STORY:PO-5753', '@JIRA-EPIC:PO-2990')] },
+    { tags: [...buildTags('@JIRA-STORY:PO-5753', '@JIRA-EPIC:PO-2990'), '@JIRA-TEST-KEY:PO-9836'] },
     () => {
       const headerMock = structuredClone(createDefendantHeaderMockWithName('Robert', 'Thomson'));
       headerMock.debtor_type = 'individual';
@@ -175,7 +175,7 @@ describe('Account Enquiry Payment Terms', () => {
 
   it(
     'AC3, AC4, AC5: Enforcement validation navigates to the amended payment terms error notification',
-    { tags: [...buildTags('@JIRA-STORY:PO-5753', '@JIRA-EPIC:PO-2990')] },
+    { tags: [...buildTags('@JIRA-STORY:PO-5753', '@JIRA-EPIC:PO-2990'), '@JIRA-TEST-KEY:PO-9837'] },
     () => {
       const headerMock = structuredClone(createDefendantHeaderMockWithName('Robert', 'Thomson'));
       headerMock.debtor_type = 'individual';

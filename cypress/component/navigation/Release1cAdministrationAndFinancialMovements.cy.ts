@@ -17,10 +17,12 @@ import {
 } from '@app/flows/fines/constants/release-feature-flags.constant';
 import { FINES_PERMISSIONS } from 'src/app/constants/fines-permissions.constant';
 import { FINES_DASHBOARD_ROUTING_PATHS } from 'src/app/flows/fines/constants/fines-dashboard-routing-paths.constant';
+import { FINES_ROUTING_PATHS } from 'src/app/flows/fines/routing/constants/fines-routing-paths.constant';
 
 const NAVIGATION_JIRA_LABEL = '@JIRA-LABEL:primary-nav-and-dashboards';
 const RELEASE_1C_STORY_TAG = '@JIRA-STORY:PO-7266';
 const RELEASE_1C_EPIC_TAG = '@JIRA-EPIC:PO-3685';
+const AUTO_ENFORCEMENT_CONFIGURATION_LINK = '#autoEnforcementConfigurationLink';
 
 type FeatureFlags = Record<string, boolean>;
 
@@ -83,7 +85,11 @@ const setupAppComponent = (featureFlags: FeatureFlags) =>
     ],
   });
 
-const setupDashboardComponent = (dashboardType: string, featureFlags: FeatureFlags) => {
+const setupDashboardComponent = (
+  dashboardType: string,
+  featureFlags: FeatureFlags,
+  permissionIds = [FINES_PERMISSIONS['operational-report-by-enforcement']],
+) => {
   const dashboardTypeParamMapSubject = new BehaviorSubject(convertToParamMap({ dashboardType }));
 
   return mount(DashboardComponent, {
@@ -98,7 +104,7 @@ const setupDashboardComponent = (dashboardType: string, featureFlags: FeatureFla
       {
         provide: PermissionsService,
         useValue: {
-          getUniquePermissions: () => [FINES_PERMISSIONS['operational-report-by-enforcement']],
+          getUniquePermissions: () => permissionIds,
         },
       },
       {
@@ -160,6 +166,37 @@ describe(
     );
 
     it(
+      'shows a single Auto-enforcement configuration link for users with Auto-enforcement permission',
+      { tags: ['@R1CAdministration', '@JIRA-STORY:PO-2460'] },
+      () => {
+        setupDashboardComponent(FINES_DASHBOARD_ROUTING_PATHS.children.administration, {}, [
+          FINES_PERMISSIONS['auto-enforcement'],
+        ]);
+
+        cy.get(AUTO_ENFORCEMENT_CONFIGURATION_LINK)
+          .should('have.length', 1)
+          .and('be.visible')
+          .and('contain.text', 'Auto-enforcement configuration')
+          .and(
+            'have.attr',
+            'href',
+            `/${FINES_ROUTING_PATHS.root}/${FINES_ROUTING_PATHS.children.aec.root}/${FINES_ROUTING_PATHS.children.aec.children['config']}`,
+          );
+      },
+    );
+
+    it(
+      'hides the Auto-enforcement configuration link when the user does not have Auto-enforcement permission',
+      { tags: ['@R1CAdministration', '@JIRA-STORY:PO-2460'] },
+      () => {
+        setupDashboardComponent(FINES_DASHBOARD_ROUTING_PATHS.children.administration, {}, []);
+
+        cy.get(AUTO_ENFORCEMENT_CONFIGURATION_LINK).should('not.exist');
+        cy.contains('a', 'Auto-enforcement configuration').should('not.exist');
+      },
+    );
+
+    it(
       'hides Administration dashboard content when release-1c-administration is disabled',
       { tags: ['@R1CAdministrationOff', '@JIRA-TEST-KEY:PO-8354'] },
       () => {
@@ -174,14 +211,16 @@ describe(
     );
 
     it(
-      'shows the Finance dashboard placeholder when release-1c-financial-movements is enabled',
+      'shows the Finance dashboard content when release-1c-financial-movements is enabled',
       { tags: ['@R1CFinancialMovements', '@JIRA-TEST-KEY:PO-8355'] },
       () => {
-        setupDashboardComponent(FINES_DASHBOARD_ROUTING_PATHS.children.finance, {});
+        setupDashboardComponent(FINES_DASHBOARD_ROUTING_PATHS.children.finance, {}, [
+          FINES_PERMISSIONS['process-and-allocate-payments'],
+        ]);
 
         cy.contains('h1', 'Finance').should('be.visible');
-        cy.contains('h2', 'Pending development').should('be.visible');
-        cy.get('#testFinanceLink').should('be.visible').and('contain.text', 'Test Finance Link');
+        cy.contains('h2', 'Cash').should('be.visible');
+        cy.get('#automaticCashInputLink').should('be.visible').and('contain.text', 'Automatic Cash Input');
       },
     );
 
@@ -194,8 +233,8 @@ describe(
         });
 
         cy.contains('h1', 'Finance').should('be.visible');
-        cy.contains('h2', 'Pending development').should('not.exist');
-        cy.get('#testFinanceLink').should('not.exist');
+        cy.contains('h2', 'Cash').should('not.exist');
+        cy.get('#automaticCashInputLink').should('not.exist');
       },
     );
   },
