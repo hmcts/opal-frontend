@@ -28,7 +28,10 @@ export class FinesMacOffenceDetailsReviewSummaryOffencesTotalComponent implement
   private getTotals(): void {
     for (const offence of this.offences) {
       for (const imposition of offence.formData.fm_offence_details_impositions) {
-        if (imposition.fm_offence_details_amount_imposed && imposition.fm_offence_details_balance_remaining) {
+        if (
+          imposition.fm_offence_details_amount_imposed !== null &&
+          imposition.fm_offence_details_balance_remaining !== null
+        ) {
           const amountImposed: number = +imposition.fm_offence_details_amount_imposed;
           const amountPaid: number = +imposition.fm_offence_details_amount_paid!;
           const balanceRemaining: number = +imposition.fm_offence_details_balance_remaining;
