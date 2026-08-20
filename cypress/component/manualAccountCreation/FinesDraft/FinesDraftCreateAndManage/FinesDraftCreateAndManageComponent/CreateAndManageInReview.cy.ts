@@ -140,6 +140,51 @@ describe('FinesDraftCreateAndManageInReviewComponent', () => {
     },
   );
 
+  it.only(
+    'Accessibility Observation 8: keeps sortable header icons visible when the Create Accounts table reflows',
+    { tags: [...buildTags('@JIRA-DEFECT:PO-9135'), '@JIRA-STORY:PO-584', '@JIRA-EPIC:PO-2220'] },
+    () => {
+      cy.viewport(320, 900);
+
+      interceptGetRejectedAccounts(200, { count: 0, summaries: [] });
+      interceptGetInReviewAccounts(200, structuredClone(OPAL_FINES_DRAFT_ACCOUNTS_MOCK));
+
+      setupComponent();
+      cy.get(DOM_ELEMENTS.navigationLinks).contains('In review').click();
+
+      // AC1 and AC3: at 400% zoom equivalent, each wrapping column heading retains a fully visible sort icon.
+      cy.get(DOM_ELEMENTS.tableHeadings).each(($header) => {
+        const header = $header[0];
+        const button = header.querySelector(DOM_ELEMENTS.sortableHeaderButton);
+        const icon = header.querySelector(DOM_ELEMENTS.sortableHeaderIcon);
+
+        expect(button, 'sortable header button').to.not.be.null;
+        expect(icon, 'sortable header icon').to.not.be.null;
+
+        const headerBounds = header.getBoundingClientRect();
+        const buttonBounds = button!.getBoundingClientRect();
+        const iconBounds = icon!.getBoundingClientRect();
+
+        expect(icon!.getAttribute('viewBox'), 'sort icon view box').to.equal('0 0 22 22');
+        expect(iconBounds.width, 'sort icon width').to.be.greaterThan(0);
+        expect(iconBounds.height, 'sort icon height').to.be.greaterThan(0);
+        expect(iconBounds.left, 'sort icon should remain within its button').to.be.at.least(buttonBounds.left);
+        expect(iconBounds.right, 'sort icon should remain within its button').to.be.at.most(buttonBounds.right);
+        expect(iconBounds.top, 'sort icon should remain within its table header').to.be.at.least(headerBounds.top);
+        expect(iconBounds.bottom, 'sort icon should remain within its table header').to.be.at.most(headerBounds.bottom);
+      });
+
+      // AC2: the selected sort state remains visible and programmatically communicated after reflow.
+      cy.get(DOM_ELEMENTS.tableHeadings).contains('th', 'Created').should('have.attr', 'aria-sort', 'ascending');
+      cy.get(DOM_ELEMENTS.tableHeadings).contains('Created').click();
+      cy.get(DOM_ELEMENTS.tableHeadings).contains('th', 'Created').should('have.attr', 'aria-sort', 'descending');
+      cy.get(DOM_ELEMENTS.tableHeadings)
+        .contains('th', 'Created')
+        .find(DOM_ELEMENTS.sortableHeaderIcon)
+        .should('be.visible');
+    },
+  );
+
   it(
     '(AC.4a) The table should have the correct default ordering',
     {
