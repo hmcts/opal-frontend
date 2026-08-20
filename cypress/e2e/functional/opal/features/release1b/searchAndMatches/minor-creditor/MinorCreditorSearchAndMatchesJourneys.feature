@@ -73,7 +73,7 @@ Feature: Minor Creditor Search And Matches Journeys
   # Legacy-data scenarios are scaffolds.
   # Replace the LEGACY_* placeholders with real seeded data values before executing them.
 
-  @only @LegacyData @R1BUatTechJCDE @JIRA-STORY:PO-715 @JIRA-STORY:PO-706 @JIRA-STORY:PO-708 @JIRA-EPIC:PO-704
+  @LegacyData @JIRA-STORY:PO-715 @JIRA-STORY:PO-706 @JIRA-STORY:PO-708 @JIRA-EPIC:PO-704
   # Minimum data set required: one individual minor creditor with last name LEGACY_MINOR_CREDITOR_LAST_NAME, display name LEGACY_MINOR_CREDITOR_NAME, and address line 1 LEGACY_MINOR_CREDITOR_ADDRESS_LINE_1.
   Scenario: Search for a minor creditor account from legacy data and review the matching results
     Given I am on the Account Search page - Individuals form displayed by default
@@ -86,11 +86,11 @@ Feature: Minor Creditor Search And Matches Journeys
     And I see the Minor creditors search results:
       | Name           | <LEGACY_MINOR_CREDITOR_NAME>           |
       | Address line 1 | <LEGACY_MINOR_CREDITOR_ADDRESS_LINE_1> |
-    @JCDE
+    @R1BUatTechJCDE
     Examples:
       | LEGACY_MINOR_CREDITOR_LAST_NAME | LEGACY_MINOR_CREDITOR_NAME | LEGACY_MINOR_CREDITOR_ADDRESS_LINE_1 |
       | MinCredAccUniB                  | placeholder                | Unique MinCred CT                    |
-    @PRE-PROD @skip
+    @R1BUatTechPRE-PROD @skip
     Examples:
       | LEGACY_MINOR_CREDITOR_LAST_NAME | LEGACY_MINOR_CREDITOR_NAME | LEGACY_MINOR_CREDITOR_ADDRESS_LINE_1 |
       | placeholder                     | placeholder                | placeholder                          |

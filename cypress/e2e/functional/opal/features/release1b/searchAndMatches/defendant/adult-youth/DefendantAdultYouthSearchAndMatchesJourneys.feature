@@ -117,7 +117,7 @@ Feature: Defendant Adult Youth Search And Matches Journeys
   # Legacy-data scenarios are scaffolds.
   # Replace the LEGACY_* placeholders with real seeded data values before executing them.
 
-  @skip @LegacyData @R1BUatTechJCDE @JIRA-STORY:PO-705 @JIRA-STORY:PO-706 @JIRA-STORY:PO-717 @JIRA-EPIC:PO-704
+  @LegacyData @JIRA-STORY:PO-705 @JIRA-STORY:PO-706 @JIRA-STORY:PO-717 @JIRA-EPIC:PO-704
   # Minimum data set required: one individual defendant account with searchable surname LEGACY_INDIVIDUAL_LAST_NAME, prosecutor case reference LEGACY_INDIVIDUAL_REFERENCE, and summary header text LEGACY_INDIVIDUAL_SUMMARY_HEADER.
   Scenario Outline: Search for an individual defendant account from legacy data and open the matching record
     Given I am on the Account Search page - Individuals form displayed by default
@@ -129,16 +129,16 @@ Feature: Defendant Adult Youth Search And Matches Journeys
     When I open the matching result from the search results:
       | Business unit | <BUSINESS_UNIT> |
     Then I should see the account summary header contains "<LEGACY_INDIVIDUAL_SUMMARY_HEADER>"
-    @JCDE
+    @R1BUatTechJCDE
     Examples:
       | LEGACY_INDIVIDUAL_LAST_NAME | LEGACY_INDIVIDUAL_ACCOUNT_NUMBER | LEGACY_INDIVIDUAL_SUMMARY_HEADER | BUSINESS_UNIT |
       | AdultOpenPaidWO             | 25000184C                        | Mr Arne ADULTOPENPAIDWO          | West London   |
-    @PRE-PROD @skip
+    @R1BUatTechPRE-PROD @skip
     Examples:
       | LEGACY_INDIVIDUAL_LAST_NAME | LEGACY_INDIVIDUAL_ACCOUNT_NUMBER | LEGACY_INDIVIDUAL_SUMMARY_HEADER | BUSINESS_UNIT |
       | Jones                       | 25000185D                        | LEGACY JONES                     | West London   |
 
-  @skip @LegacyData @R1BUatTechJCDE @JIRA-STORY:PO-705 @JIRA-STORY:PO-706 @JIRA-STORY:PO-717 @JIRA-EPIC:PO-704
+  @LegacyData @JIRA-STORY:PO-705 @JIRA-STORY:PO-706 @JIRA-STORY:PO-717 @JIRA-EPIC:PO-704
   # Minimum data set required: one individual defendant account with a unique searchable date of birth LEGACY_INDIVIDUAL_DATE_OF_BIRTH (DD/MM/YYYY), prosecutor case reference LEGACY_INDIVIDUAL_DOB_REFERENCE, and summary header text LEGACY_INDIVIDUAL_DOB_SUMMARY_HEADER.
   # Application requires last name when individual search form is used, so this is included in the search criteria.
   Scenario Outline: Search for an individual defendant account from legacy data by date of birth and open the matching record
@@ -153,16 +153,16 @@ Feature: Defendant Adult Youth Search And Matches Journeys
     When I open the matching result from the search results:
       | Business unit | <BUSINESS_UNIT> |
     Then I should see the account summary header contains "<LEGACY_INDIVIDUAL_DOB_SUMMARY_HEADER>"
-    @JCDE
+    @R1BUatTechJCDE
     Examples:
       | LEGACY_INDIVIDUAL_LAST_NAME_PARTIAL | LEGACY_INDIVIDUAL_DATE_OF_BIRTH | LEGACY_INDIVIDUAL_ACCOUNT_NUMBER | LEGACY_INDIVIDUAL_DOB_SUMMARY_HEADER | BUSINESS_UNIT |
       | AdultO                              | 09/09/1999                      | 25000184C                        | Mr Arne ADULTOPENPAIDWO              | West London   |
-    @PRE-PROD @skip
+    @R1BUatTechPRE-PROD @skip
     Examples:
       | LEGACY_INDIVIDUAL_LAST_NAME_PARTIAL | LEGACY_INDIVIDUAL_DATE_OF_BIRTH | LEGACY_INDIVIDUAL_ACCOUNT_NUMBER | LEGACY_INDIVIDUAL_DOB_SUMMARY_HEADER | BUSINESS_UNIT |
       | Adult                               | 01/01/1990                      | 25000185D                        | LEGACY JONES                         | West London   |
 
-  @skip @LegacyData @R1BUatTechJCDE @JIRA-STORY:PO-705 @JIRA-STORY:PO-706 @JIRA-STORY:PO-717 @JIRA-EPIC:PO-704
+  @LegacyData @JIRA-STORY:PO-705 @JIRA-STORY:PO-706 @JIRA-STORY:PO-717 @JIRA-EPIC:PO-704
   # Minimum data set required: one individual defendant account with searchable national insurance number LEGACY_INDIVIDUAL_NI_NUMBER, prosecutor case reference LEGACY_INDIVIDUAL_NI_REFERENCE, and summary header text LEGACY_INDIVIDUAL_NI_SUMMARY_HEADER.
   Scenario Outline: Search for an individual defendant account from legacy data by national insurance number and open the matching record
     Given I am on the Account Search page - Individuals form displayed by default
@@ -175,16 +175,16 @@ Feature: Defendant Adult Youth Search And Matches Journeys
     When I open the matching result from the search results:
       | Business unit | <BUSINESS_UNIT> |
     Then I should see the account summary header contains "<LEGACY_INDIVIDUAL_NI_SUMMARY_HEADER>"
-    @JCDE
+    @R1BUatTechJCDE
     Examples:
       | LEGACY_INDIVIDUAL_NI_NUMBER | LEGACY_INDIVIDUAL_ACCOUNT_NUMBER | LEGACY_INDIVIDUAL_NI_SUMMARY_HEADER | BUSINESS_UNIT |
       | NI 19 99 09 A               | 25000184C                        | Mr Arne ADULTOPENPAIDWO             | West London   |
-    @PRE-PROD @skip
+    @R1BUatTechPRE-PROD @skip
     Examples:
       | LEGACY_INDIVIDUAL_NI_NUMBER | LEGACY_INDIVIDUAL_NI_REFERENCE | LEGACY_INDIVIDUAL_NI_SUMMARY_HEADER | BUSINESS_UNIT |
       | QQ123456C                   | LEGACY NI REFERENCE            | LEGACY NI SUMMARY HEADER            | West London   |
 
-  @skip @LegacyData @R1BUatTechJCDE @JIRA-STORY:PO-705 @JIRA-STORY:PO-706 @JIRA-STORY:PO-717 @JIRA-EPIC:PO-704
+  @LegacyData @JIRA-STORY:PO-705 @JIRA-STORY:PO-706 @JIRA-STORY:PO-717 @JIRA-EPIC:PO-704
   # Minimum data set required: one individual defendant account with a unique searchable postcode LEGACY_INDIVIDUAL_POSTCODE, prosecutor case reference LEGACY_INDIVIDUAL_POSTCODE_REFERENCE, and summary header text LEGACY_INDIVIDUAL_POSTCODE_SUMMARY_HEADER.
   Scenario Outline: Search for an individual defendant account from legacy data by postcode and open the matching record
     Given I am on the Account Search page - Individuals form displayed by default
@@ -197,15 +197,15 @@ Feature: Defendant Adult Youth Search And Matches Journeys
     When I open the matching result from the search results:
       | Business unit | <BUSINESS_UNIT> |
     Then I should see the account summary header contains "<LEGACY_INDIVIDUAL_POSTCODE_SUMMARY_HEADER>"
-    @JCDE
+    @R1BUatTechJCDE
     Examples:
       | LEGACY_INDIVIDUAL_LAST_NAME_PARTIAL | LEGACY_INDIVIDUAL_POSTCODE | LEGACY_INDIVIDUAL_POSTCODE_REFERENCE | LEGACY_INDIVIDUAL_POSTCODE_SUMMARY_HEADER | BUSINESS_UNIT |
       | A                                   | UN2 1QE                    | PCRJRNYINDPOSTCODE                   | Mr Brod ADULTACCUNIQUEB                   | West London   |
-    @PRE-PROD @skip
+    @R1BUatTechPRE-PROD @skip
     Examples:
       | LEGACY_INDIVIDUAL_LAST_NAME_PARTIAL | LEGACY_INDIVIDUAL_POSTCODE | LEGACY_INDIVIDUAL_POSTCODE_REFERENCE | LEGACY_INDIVIDUAL_POSTCODE_SUMMARY_HEADER | BUSINESS_UNIT |
       |                                     | AB1 2CD                    | LEGACY POSTCODE REFERENCE            | LEGACY POSTCODE SUMMARY HEADER            | West London   |
-  @skip @LegacyData @R1BUatTechJCDE @JIRA-STORY:PO-706 @JIRA-EPIC:PO-704
+  @LegacyData @JIRA-STORY:PO-706 @JIRA-EPIC:PO-704
   # Minimum data set required: one individual defendant account with account number LEGACY_ACCOUNT_NUMBER and summary header text LEGACY_ACCOUNT_SUMMARY_HEADER.
   Scenario: Search by account number in legacy data and open the matching record
     Given I am on the Account Search page - Individuals form displayed by default
@@ -217,16 +217,16 @@ Feature: Defendant Adult Youth Search And Matches Journeys
     When I open the matching result from the search results:
       | Business unit | <BUSINESS_UNIT> |
     Then I should see the account summary header contains "<LEGACY_ACCOUNT_SUMMARY_HEADER>"
-    @JCDE
+    @R1BUatTechJCDE
     Examples:
       | LEGACY_ACCOUNT_NUMBER | LEGACY_ACCOUNT_SUMMARY_HEADER | BUSINESS_UNIT |
       | 25000180S             | Mr Brod ADULTACCUNIQUEB       | West London   |
-    @PRE-PROD @skip
+    @R1BUatTechPRE-PROD @skip
     Examples:
       | LEGACY_ACCOUNT_NUMBER | LEGACY_ACCOUNT_SUMMARY_HEADER | BUSINESS_UNIT |
       | 25000185D             | LEGACY JONES                  | West London   |
 
-  @skip @LegacyData @R1BUatTechJCDE @JIRA-STORY:PO-706 @JIRA-EPIC:PO-704
+  @LegacyData @JIRA-STORY:PO-706 @JIRA-EPIC:PO-704
   Scenario: Search for a individual defendant account from legacy data and validate the matching record
     Given I am on the Account Search page - Individuals form displayed by default
     When I view the Individuals search form
@@ -244,11 +244,11 @@ Feature: Defendant Adult Youth Search And Matches Journeys
       | Parent or guardian | <LEGACY_INDIVIDUAL_PARENT_GUARDIAN> |
       | Balance            | <LEGACY_INDIVIDUAL_BALANCE>         |
 
-    @JCDE
+    @R1BUatTechJCDE
     Examples:
       | LEGACY_INDIVIDUAL_ACCOUNT_NUMBER | LEGACY_INDIVIDUAL_NAME           | LEGACY_INDIVIDUAL_ALIASES | LEGACY_INDIVIDUAL_DOB | LEGACY_INDIVIDUAL_ADR_LINE_1 | LEGACY_INDIVIDUAL_POSTCODE | LEGACY_INDIVIDUAL_NI_NUMBER | LEGACY_INDIVIDUAL_PARENT_GUARDIAN | LEGACY_INDIVIDUAL_BALANCE |
       | 15000055L                        | EDTTEMPLATESTWENTYONE, TWENTYONE | Alias, Alice              | 01 Jan 1998           | 123 ASDF ASD                 | EN5 8QQ                    | NI 12 34 56 A               | TWENTYONE PARENTTWENTYONE         | -£200.00                  |
-    @PRE-PROD @skip
+    @R1BUatTechPRE-PROD @skip
     Examples:
       | LEGACY_INDIVIDUAL_ACCOUNT_NUMBER | LEGACY_INDIVIDUAL_NAME | LEGACY_INDIVIDUAL_ALIASES | LEGACY_INDIVIDUAL_DOB | LEGACY_INDIVIDUAL_ADR_LINE_1 | LEGACY_INDIVIDUAL_POSTCODE | LEGACY_INDIVIDUAL_NI_NUMBER | LEGACY_INDIVIDUAL_PARENT_GUARDIAN | LEGACY_INDIVIDUAL_BALANCE |
       | placeholder                      | placeholder            | placeholder               | placeholder           | placeholder                  | placeholder                | placeholder                 | placeholder                       | placeholder               |

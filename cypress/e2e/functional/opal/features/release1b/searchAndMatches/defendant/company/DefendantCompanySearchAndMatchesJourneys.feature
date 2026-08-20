@@ -37,7 +37,7 @@ Feature: Defendant Company Search And Matches Journeys
   # Legacy-data scenarios are scaffolds.
   # Replace the LEGACY_* placeholders with real seeded data values before executing them.
 
-  @skip @LegacyData @R1BUatTechJCDE @JIRA-STORY:PO-712 @JIRA-STORY:PO-706 @JIRA-STORY:PO-707 @JIRA-EPIC:PO-704
+  @LegacyData @JIRA-STORY:PO-712 @JIRA-STORY:PO-706 @JIRA-STORY:PO-707 @JIRA-EPIC:PO-704
   # Minimum data set required: one company defendant account with company name LEGACY_COMPANY_NAME, prosecutor case reference LEGACY_COMPANY_REFERENCE, and account header text LEGACY_COMPANY_HEADER.
   Scenario: Search for a company defendant account from legacy data and open the matching record
     Given I am on the Account Search page - Individuals form displayed by default
@@ -49,16 +49,16 @@ Feature: Defendant Company Search And Matches Journeys
       | Account | <LEGACY_COMPANY_ACCOUNT_NUMBER> |
     When I open the latest matching result from the search results
     Then I should see the account header contains "<LEGACY_COMPANY_NAME>"
-    @JCDE
+    @R1BUatTechJCDE
     Examples:
       | LEGACY_COMPANY_NAME | LEGACY_COMPANY_ACCOUNT_NUMBER |
       | OPALTEST            | 26000471W                     |
-    @PRE-PROD @skip
+    @R1BUatTechPRE-PROD @skip
     Examples:
       | LEGACY_COMPANY_NAME | LEGACY_COMPANY_REFERENCE |
       | Journey Co          | PCRJRNYCO1234            |
 
-  @skip @LegacyData @R1BUatTechJCDE @JIRA-STORY:PO-712 @JIRA-STORY:PO-706 @JIRA-STORY:PO-707 @JIRA-EPIC:PO-704 @JIRA-DEFECT:PO-10245
+  @LegacyData @JIRA-STORY:PO-712 @JIRA-STORY:PO-706 @JIRA-STORY:PO-707 @JIRA-EPIC:PO-704 @JIRA-DEFECT:PO-10245
   Scenario: Search for a company defendant account from legacy data and validate the matching record
     Given I am on the Account Search page - Individuals form displayed by default
     When I view the Companies search form
@@ -76,11 +76,11 @@ Feature: Defendant Company Search And Matches Journeys
       | Balance        | <LEGACY_COMPANY_BALANCE>        |
     When I open the latest matching result from the search results
     Then I should see the account header contains "<LEGACY_COMPANY_NAME>"
-    @JCDE
+    @R1BUatTechJCDE
     Examples:
       | LEGACY_COMPANY_ACCOUNT_NUMBER | LEGACY_COMPANY_NAME         | LEGACY_COMPANY_ALIASES                                                                              | LEGACY_COMPANY_ADR_LINE_1 | LEGACY_COMPANY_POSTCODE | BUSINESS_UNIT | LEGACY_COMPANY_REF    | LEGACY_COMPANY_ENF | LEGACY_COMPANY_BALANCE |
       | 24000050E                     | Company A Chocolate Limited | The Alias Company A The Alias Company B The Alias Company C The Alias Company D The Alias Company E | Company address line 001  | EN51 1RL                | West London   | CA-Company-Master1-1A | NOENF              | -£600.01               |
-    @PRE-PROD @skip
+    @R1BUatTechPRE-PROD @skip
     Examples:
       | LEGACY_COMPANY_ACCOUNT_NUMBER | LEGACY_COMPANY_NAME | LEGACY_COMPANY_ALIASES | LEGACY_COMPANY_ADR_LINE_1 | LEGACY_COMPANY_POSTCODE | BUSINESS_UNIT | LEGACY_COMPANY_REF | LEGACY_COMPANY_ENF | LEGACY_COMPANY_BALANCE |
       | placeholder                   | placeholder         | placeholder            | placeholder               | placeholder             | placeholder   | placeholder        | placeholder        | placeholder            |

@@ -46,7 +46,7 @@ Feature: Defendant Shared Search And Matches Journeys
   # Legacy-data scenarios are scaffolds.
   # Replace the LEGACY_* placeholders with real seeded data values before executing them.
 
-  @skip @LegacyData @R1BUatTechJCDE @JIRA-STORY:PO-709 @JIRA-STORY:PO-706 @JIRA-EPIC:PO-704
+  @LegacyData @JIRA-STORY:PO-709 @JIRA-STORY:PO-706 @JIRA-EPIC:PO-704
   # Minimum data set required: one individual defendant account and one company defendant account sharing prosecutor case reference LEGACY_SHARED_REFERENCE, with the company account header text LEGACY_SHARED_REFERENCE_COMPANY_HEADER.
   Scenario Outline: Search by prosecutor case reference in legacy data and review results across defendant tabs
     Given I am on the Account Search page - Individuals form displayed by default
@@ -61,11 +61,11 @@ Feature: Defendant Shared Search And Matches Journeys
       | Company | <LEGACY_SHARED_COMPANY_NAME>   |
     When I open the latest matching result from the Companies search results
     Then I should see the account header contains "<LEGACY_SHARED_COMPANY_NAME>"
-    @JCDE
+    @R1BUatTechJCDE
     Examples:
       | LEGACY_SHARED_ACCOUNT_NUMBER | LEGACY_SHARED_COMPANY_NAME | LEGACY_SHARED_INDIVIDUAL_NAME |
       | 26000471W                    | OPALTEST                   | EnfPgAccessyeyjkqsje, Alex    |
-    @PRE-PROD @skip
+    @R1BUatTechPRE-PROD @skip
     Examples:
       | LEGACY_SHARED_ACCOUNT_NUMBER | LEGACY_SHARED_COMPANY_NAME | LEGACY_SHARED_INDIVIDUAL_NAME |
       | 26000471W                    | —                          | EnfPgAccessyeyjkqsje, Alex    |
