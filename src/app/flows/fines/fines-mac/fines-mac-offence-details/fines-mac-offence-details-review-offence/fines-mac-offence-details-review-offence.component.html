@@ -1,7 +1,7 @@
 @if (offenceDetails$ | async; as offenceDetails) {
   <app-fines-mac-offence-details-review-offence-heading
     [offenceId]="offence.formData.fm_offence_details_id"
-    [offenceCode]="offence.formData.fm_offence_details_offence_cjs_code!"
+    [offenceCode]="offenceDetails.cjs_code"
     [offenceTitle]="offenceDetails.offence_title"
     [showActions]="showActions"
     [showDetails]="showDetails"
@@ -15,7 +15,7 @@
       [majorCreditorRefData]="majorCreditorRefData"
       [impositions]="offence.formData.fm_offence_details_impositions"
       [offenceIndex]="offence.formData.fm_offence_details_id"
-      [offenceCaption]="getOffenceCaption(offenceDetails)"
+      [offenceCaption]="offenceDetails.offence_title + ' (' + offenceDetails.cjs_code + ')'"
       [isReadOnly]="isReadOnly"
     >
     </app-fines-mac-offence-details-review-offence-imposition>

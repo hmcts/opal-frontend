@@ -186,17 +186,4 @@ describe('FinesMacOffenceDetailsReviewOffenceComponent', () => {
       );
     });
   });
-
-  describe('getOffenceCaption', () => {
-    it('should return the formatted offence title and code', () => {
-      const offenceDetails = OPAL_FINES_OFFENCES_REF_DATA_MOCK.refData[0];
-
-      vi.spyOn(offenceDetailsService, 'getFormattedTitleAndCode').mockReturnValue('No Televison Licence (CA03010D)');
-
-      const result = component.getOffenceCaption(offenceDetails);
-
-      expect(offenceDetailsService.getFormattedTitleAndCode).toHaveBeenCalledWith(offenceDetails);
-      expect(result).toBe('No Televison Licence (CA03010D)');
-    });
-  });
 });

@@ -64,16 +64,6 @@ export class FinesMacOffenceDetailsReviewOffenceComponent implements OnInit {
     this.actionClicked.emit(event);
   }
 
-  /**
-   * Returns the formatted caption for the provided offence details.
-   *
-   * @param offenceDetails - The offence details used to generate the caption.
-   * @returns The formatted offence title and CJS code.
-   */
-  public getOffenceCaption(offenceDetails: IOpalFinesOffences): string {
-    return this.offenceDetailsService.getFormattedTitleAndCode(offenceDetails);
-  }
-
   public ngOnInit(): void {
     if (this.activatedRoute.snapshot.data['results']) {
       this.impositionRefData = this.activatedRoute.snapshot.data['results'];
