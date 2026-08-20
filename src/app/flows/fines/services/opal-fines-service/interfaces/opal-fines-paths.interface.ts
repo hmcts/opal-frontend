@@ -17,4 +17,6 @@ export interface IOpalFinesPaths {
   minorCreditorAccounts: string;
   enforcersRefData: string;
   centralFunds: string;
+  reports: string;
+  reportInstances: string;
 }

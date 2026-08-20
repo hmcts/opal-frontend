@@ -21,7 +21,7 @@ export class AccountDetailsHistoryActions {
    * @param accountNumber - Defendant account number to render in linked details fragments.
    * @returns Synthetic History and notes API response.
    */
-  private buildHistoryAndNotesResponse(accountId: number, accountNumber: string): HistoryAndNotesResponse {
+  private buildDefendantHistoryAndNotesResponse(accountId: number, accountNumber: string): HistoryAndNotesResponse {
     return {
       version: 'e2e-history-and-notes',
       history_items: [
@@ -55,6 +55,44 @@ export class AccountDetailsHistoryActions {
   }
 
   /**
+   * Builds the deterministic Minor creditor History and notes API payload used by E2E tests.
+   *
+   * @param accountId - Associated defendant account id emitted by the synthetic transaction.
+   * @param accountNumber - Associated defendant account number displayed in transaction details.
+   * @returns Synthetic Minor creditor History and notes API response.
+   */
+  private buildMinorCreditorHistoryAndNotesResponse(accountId: number, accountNumber: string): HistoryAndNotesResponse {
+    return {
+      version: 'e2e-minor-creditor-history-and-notes',
+      history_items: [
+        {
+          type: 'Financial',
+          amount: '50',
+          postedDetails: {
+            posted_by_name: 'Finance officer',
+            posted_date: '2025-03-12T08:30:00.124Z',
+          },
+          details: {
+            transaction_type: 'PAYMNT',
+            defendant_account_number: accountNumber,
+            defendant_account_id: String(accountId),
+          },
+        },
+        {
+          type: 'Notes',
+          postedDetails: {
+            posted_by_name: 'History note user',
+            posted_date: '2025-03-11T09:15:00.000Z',
+          },
+          details: {
+            note_text: 'History note for E2E filter coverage.',
+          },
+        },
+      ],
+    };
+  }
+
+  /**
    * Stubs the History and notes endpoint for the current account, returning either
    * the full dataset or the note-only filtered dataset based on the request query.
    *
@@ -62,21 +100,41 @@ export class AccountDetailsHistoryActions {
    * @param accountNumber - Defendant account number to render in linked details fragments.
    */
   public stubHistoryAndNotesForCurrentAccount(accountId: number, accountNumber: string): void {
-    const fullResponse = this.buildHistoryAndNotesResponse(accountId, accountNumber);
-    const noteOnlyResponse: HistoryAndNotesResponse = {
-      ...fullResponse,
-      history_items: fullResponse.history_items.filter((item) => item.type === 'Note'),
-    };
+    const defendantResponse = this.buildDefendantHistoryAndNotesResponse(accountId, accountNumber);
+    const minorCreditorResponse = this.buildMinorCreditorHistoryAndNotesResponse(accountId, accountNumber);
+    const buildFilteredResponse = (response: HistoryAndNotesResponse): HistoryAndNotesResponse => ({
+      ...response,
+      history_items: response.history_items.filter((item) => String(item.type).toLowerCase().startsWith('note')),
+    });
 
     log('intercept', 'Stubbing History and notes API response', { accountId, accountNumber });
 
-    cy.intercept('GET', '**/defendant-accounts/*/history*', (req) => {
-      const itemTypes = String(req.query['itemTypes'] ?? '').toLowerCase();
-      req.reply({
-        statusCode: 200,
-        body: itemTypes === 'note' ? noteOnlyResponse : fullResponse,
+    cy.intercept(
+      'GET',
+      /\/opal-fines-service\/(?:defendant-accounts|minor-creditor-accounts)\/[^/]+\/history(?:\?.*)?$/,
+      (req) => {
+        const fullResponse = req.url.includes('/minor-creditor-accounts/') ? minorCreditorResponse : defendantResponse;
+        const noteOnlyResponse = buildFilteredResponse(fullResponse);
+
+        const itemTypes = String(req.query['itemTypes'] ?? '').toLowerCase();
+        req.reply({
+          statusCode: 200,
+          body: itemTypes === 'note' ? noteOnlyResponse : fullResponse,
+        });
+      },
+    ).as('historyAndNotes');
+  }
+
+  /**
+   * Asserts the shared History and notes table columns are visible.
+   */
+  private assertHistoryAndNotesColumnsVisible(): void {
+    cy.get(L.tableHeadings, { timeout: AccountDetailsHistoryActions.DEFAULT_TIMEOUT })
+      .find('th')
+      .then(($headers) => {
+        const headers = [...$headers].map((header) => header.textContent?.replace(/\s+/g, ' ').trim() ?? '');
+        expect(headers).to.deep.equal(['Date', 'User', 'Type', 'Details', 'Amount']);
       });
-    }).as('historyAndNotes');
   }
 
   /**
@@ -100,6 +158,7 @@ export class AccountDetailsHistoryActions {
   public assertHistoryAndNotesRowsLoaded(expectedRows: number): void {
     log('assert', 'Asserting History and notes rows loaded', { expectedRows });
 
+    this.assertHistoryAndNotesColumnsVisible();
     cy.get(L.tableRows, { timeout: AccountDetailsHistoryActions.DEFAULT_TIMEOUT }).should('have.length', expectedRows);
   }
 

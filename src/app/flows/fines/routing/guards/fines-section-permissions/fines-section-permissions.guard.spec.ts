@@ -147,7 +147,7 @@ describe('finesSectionPermissionsGuard', () => {
     expect(result).toBe(true);
   });
 
-  it('should redirect Accounts when release-1c-write-off is disabled and the user only has consolidation permission', async () => {
+  it('should redirect Accounts dashboard when release-1c-write-off is disabled and the user only has consolidation permission', async () => {
     const expectedUrlTree = new UrlTree();
     mockFeatureFlags({
       ...DEFAULT_RELEASE_FEATURE_FLAGS,
@@ -164,7 +164,7 @@ describe('finesSectionPermissionsGuard', () => {
     expect(mockRouter.createUrlTree).toHaveBeenCalledWith([`/${COMMON_PAGES_ROUTING_PATHS.children.accessDenied}`]);
   });
 
-  it('should allow consolidation section access when release-1c-write-off is enabled and the user has consolidation permission', async () => {
+  it('should allow consolidation dashboard access when release-1c-write-off is enabled and the user has consolidation permission', async () => {
     mockOpalUserService.getLoggedInUserState.mockReturnValue(
       of(createUserStateWithPermissions([ACCOUNTS_PERMISSIONS[2]])),
     );
@@ -194,7 +194,7 @@ describe('finesSectionPermissionsGuard', () => {
     expect(result).toBe(true);
   });
 
-  it('should redirect Accounts when release-1c-write-off is disabled and the user only has consolidation permission', async () => {
+  it('should redirect Accounts section when release-1c-write-off is disabled and the user only has consolidation permission', async () => {
     const expectedUrlTree = new UrlTree();
     mockFeatureFlags({
       ...DEFAULT_RELEASE_FEATURE_FLAGS,
@@ -211,7 +211,7 @@ describe('finesSectionPermissionsGuard', () => {
     expect(mockRouter.createUrlTree).toHaveBeenCalledWith([`/${COMMON_PAGES_ROUTING_PATHS.children.accessDenied}`]);
   });
 
-  it('should allow consolidation section access when release-1c-write-off is enabled and the user has consolidation permission', async () => {
+  it('should allow consolidation section-key access when release-1c-write-off is enabled and the user has consolidation permission', async () => {
     mockOpalUserService.getLoggedInUserState.mockReturnValue(
       of(createUserStateWithPermissions([ACCOUNTS_PERMISSIONS[2]])),
     );
@@ -377,13 +377,6 @@ describe('finesSectionPermissionsGuard', () => {
     expect(mockRouter.createUrlTree).toHaveBeenCalledWith([`/${COMMON_PAGES_ROUTING_PATHS.children.accessDenied}`]);
   });
 
-  it('should allow unrestricted dashboard sections without looking up user permissions', async () => {
-    const result = await runGuard({ dashboardType: FINES_DASHBOARD_ROUTING_PATHS.children.finance });
-
-    expect(result).toBe(true);
-    expect(mockOpalUserService.getLoggedInUserState).not.toHaveBeenCalled();
-  });
-
   it('should allow Administration when release-1c-administration is enabled without looking up user permissions', async () => {
     const result = await runGuard({ dashboardType: FINES_DASHBOARD_ROUTING_PATHS.children.administration });
 
@@ -414,6 +407,13 @@ describe('finesSectionPermissionsGuard', () => {
     );
     expect(mockOpalUserService.getLoggedInUserState).not.toHaveBeenCalled();
     expect(mockRouter.createUrlTree).toHaveBeenCalledWith([`/${COMMON_PAGES_ROUTING_PATHS.children.accessDenied}`]);
+  });
+
+  it('should allow unrestricted dashboard sections without looking up user permissions', async () => {
+    const result = await runGuard({ dashboardType: FINES_DASHBOARD_ROUTING_PATHS.children.finance });
+
+    expect(result).toBe(true);
+    expect(mockOpalUserService.getLoggedInUserState).not.toHaveBeenCalled();
   });
 
   it('should allow Finance when release-1c-financial-movements is enabled without looking up user permissions', async () => {

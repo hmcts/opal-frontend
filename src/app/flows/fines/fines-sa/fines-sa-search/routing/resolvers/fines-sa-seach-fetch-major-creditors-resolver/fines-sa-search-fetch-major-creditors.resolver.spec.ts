@@ -72,7 +72,7 @@ describe('finesSaSearchFetchMajorCreditorsResolver', () => {
     expect(mockOpalFinesService.getCentralFund).not.toHaveBeenCalled();
   });
 
-  it('should return {} when business unit ids is in store', async () => {
+  it('should return empty major creditor ref data when multiple business unit ids are in store', async () => {
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     mockFinesSaStore.setBusinessUnitIds([1, 2, 3]);
     // eslint-disable-next-line @typescript-eslint/no-explicit-any

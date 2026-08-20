@@ -214,6 +214,17 @@ export class ManualOffenceReviewActions {
   }
 
   /**
+   * Returns to Account details from review and asserts no unsaved-changes dialog appears.
+   */
+  returnToAccountDetailsWithoutUnsavedChangesWarning(): void {
+    log('navigate', 'Returning to account details from review without unsaved-changes warning');
+    const confirmSpy = cy.stub().returns(true);
+    cy.on('window:confirm', confirmSpy);
+    this.returnToAccountDetails();
+    cy.wrap(confirmSpy).should('not.have.been.called');
+  }
+
+  /**
    * Clicks Add payment terms from the review page.
    */
   clickAddPaymentTerms(): void {

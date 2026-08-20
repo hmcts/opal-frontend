@@ -24,22 +24,40 @@ import { CommonActions } from '../../..//e2e/functional/opal/actions/common/comm
 import { EditDefendantDetailsActions } from '../../..//e2e/functional/opal/actions/account-details/edit.defendant-details.actions';
 import { EditCompanyDetailsActions } from '../../..//e2e/functional/opal/actions/account-details/edit.company-details.actions';
 import { AccountDetailsNavActions } from '../../..//e2e/functional/opal/actions/account-details/details.nav.actions';
+import { AccountDetailsDefendantActions } from '../../..//e2e/functional/opal/actions/account-details/details.defendant.actions';
+import { AccountDetailsMinorCreditorActions } from '../../..//e2e/functional/opal/actions/account-details/details.minor-creditor.actions';
+import { AccountDetailsEnforcementActions } from '../../..//e2e/functional/opal/actions/account-details/details.enforcement.actions';
+import { AccountDetailsPaymentTermsActions } from '../../..//e2e/functional/opal/actions/account-details/details.payment-terms.actions';
+import { AccountDetailsHistoryActions } from '../../..//e2e/functional/opal/actions/account-details/details.history.actions';
+import { AccountDetailsCommentsActions } from '../../..//e2e/functional/opal/actions/account-details/details.comments.actions';
+import { AccountConvertActions } from '../../..//e2e/functional/opal/actions/account-details/convert.account.actions';
 import { EditParentGuardianDetailsActions } from '../../..//e2e/functional/opal/actions/account-details/edit.parent-guardian-details.actions';
 import { AccountDetailsFixedPenaltyActions } from '../../..//e2e/functional/opal/actions/account-details/details.fixed-penalty.actions';
+import { RemoveParentGuardianActions } from '../../..//e2e/functional/opal/actions/account-details/remove.parent-guardian.actions';
+import { EditMinorCreditorDetailsActions } from '../../..//e2e/functional/opal/actions/account-details/edit.minor-creditor-details.actions';
 import { log } from '../../utils/log.helper';
 import { applyUniqPlaceholder } from '../../utils/stringUtils';
 import { normalizeHash, normalizeTableRows } from '../../utils/cucumberHelpers';
 
 // Factory functions so each step gets a fresh instance with its own Cypress chain
-const flow = () => new AccountEnquiryFlow();
+const accountEnquiryFlow = () => new AccountEnquiryFlow();
 const commonFlow = () => new CommonFlow();
 const atAGlanceDetails = () => new AccountDetailsAtAGlanceActions();
 const common = () => new CommonActions();
 const editDefendantDetails = () => new EditDefendantDetailsActions();
 const editCompanyDetails = () => new EditCompanyDetailsActions();
+const defendantDetails = () => new AccountDetailsDefendantActions();
+const minorCreditorDetails = () => new AccountDetailsMinorCreditorActions();
+const convertActions = () => new AccountConvertActions();
 const editParentGuardianDetails = () => new EditParentGuardianDetailsActions();
+const editMinorCreditorDetails = () => new EditMinorCreditorDetailsActions();
 const fixedPenaltyDetails = () => new AccountDetailsFixedPenaltyActions();
 const navActions = () => new AccountDetailsNavActions();
+const enforcementActions = () => new AccountDetailsEnforcementActions();
+const paymentTermsActions = () => new AccountDetailsPaymentTermsActions();
+const historyAndNotesActions = () => new AccountDetailsHistoryActions();
+const commentsActions = () => new AccountDetailsCommentsActions();
+const removeParentGuardianActions = () => new RemoveParentGuardianActions();
 
 type CommentRow = { [key: string]: string };
 
@@ -51,7 +69,7 @@ import { rowsHashSafe } from '../../utils/table';
 When('I select the latest published account and verify the header is {string}', (header: string) => {
   const resolvedHeader = applyUniqPlaceholder(header);
   log('step', 'Selecting latest published account', { expectedHeader: resolvedHeader });
-  flow().openLatestAndAssertHeader(resolvedHeader);
+  accountEnquiryFlow().openLatestAndAssertHeader(resolvedHeader);
 });
 
 /**
@@ -60,7 +78,7 @@ When('I select the latest published account and verify the header is {string}', 
 When('I search for the account by last name {string}', (surname: string) => {
   const surnameWithUniq = applyUniqPlaceholder(surname);
   log('step', 'Searching by surname', { surname: surnameWithUniq });
-  flow().searchBySurname(surnameWithUniq);
+  accountEnquiryFlow().searchByLastName(surnameWithUniq);
 });
 
 /**
@@ -74,7 +92,7 @@ When(
     const surnameWithUniq = applyUniqPlaceholder(surname);
     const headerWithUniq = applyUniqPlaceholder(header);
     log('step', 'Search by surname and verify header', { surname: surnameWithUniq, expectedHeader: headerWithUniq });
-    flow().searchOpenLatestAndAssertHeader(surnameWithUniq, headerWithUniq);
+    accountEnquiryFlow().searchOpenLatestAndAssertHeader(surnameWithUniq, headerWithUniq);
   },
 );
 
@@ -85,7 +103,7 @@ When(
 When('I search for the account by last name {string} and open the latest result', (surname: string) => {
   const surnameWithUniq = applyUniqPlaceholder(surname);
   log('step', 'Search by surname and open latest result', { surname: surnameWithUniq });
-  flow().searchAndClickLatestBySurnameOpenLatestResult(surnameWithUniq);
+  accountEnquiryFlow().searchAndClickLatestBySurnameOpenLatestResult(surnameWithUniq);
 });
 
 /**
@@ -97,7 +115,13 @@ When('I search for the account by last name {string} and open the latest result'
  */
 When('I open the latest matching result from the search results', () => {
   log('step', 'Opening latest matching result from search results');
-  flow().openMostRecentFromResults();
+  accountEnquiryFlow().openMostRecentFromResults();
+});
+
+/** Opens the Defendant-column link from the latest minor creditor result row. */
+When('I open the defendant linked from the latest minor creditor search result', () => {
+  log('step', 'Opening defendant linked from latest minor creditor search result');
+  accountEnquiryFlow().openLatestMinorCreditorDefendantFromResults();
 });
 
 /**
@@ -105,7 +129,15 @@ When('I open the latest matching result from the search results', () => {
  */
 When('I open the latest matching result from the Companies search results', () => {
   log('step', 'Opening latest matching result from Companies search results');
-  flow().openMostRecentFromCompaniesResults();
+  accountEnquiryFlow().openMostRecentFromCompaniesResults();
+});
+
+/**
+ * @step Sets the browser viewport to a specific size for reflow and responsive checks.
+ */
+When('I set the browser viewport to {int} by {int}', (width: number, height: number) => {
+  log('step', 'Setting browser viewport', { width, height });
+  accountEnquiryFlow().setResponsiveViewport(width, height);
 });
 
 /**
@@ -113,7 +145,7 @@ When('I open the latest matching result from the Companies search results', () =
  */
 When('I navigate directly to the last created published account details', () => {
   log('step', 'Navigating directly to the last created published account details');
-  flow().visitLastCreatedPublishedAccountDetails();
+  accountEnquiryFlow().visitLastCreatedPublishedAccountDetails();
 });
 
 /**
@@ -130,19 +162,7 @@ When('the minor creditor header summary API returns awarded value {string}', (aw
   log('intercept', 'Overriding minor creditor header summary awarded value', {
     awardedValue: numericAwardedValue,
   });
-
-  cy.intercept('GET', '**/minor-creditor-accounts/*/header-summary', (req) => {
-    req.continue((res) => {
-      const body = res.body as { financials?: { awarded?: number } };
-
-      if (!body?.financials) {
-        throw new Error('Expected minor creditor header summary response to include financials');
-      }
-
-      body.financials.awarded = numericAwardedValue;
-      res.send({ body });
-    });
-  }).as('minorCreditorHeaderSummaryOverride');
+  minorCreditorDetails().stubHeaderSummaryAwardedValue(numericAwardedValue);
 });
 
 /**
@@ -177,10 +197,7 @@ Then('the intercepted minor creditor header summary awarded value is {string}', 
   log('assert', 'Asserting intercepted minor creditor header summary awarded value', {
     awardedValue: numericExpectedAwardedValue,
   });
-
-  cy.wait('@minorCreditorHeaderSummaryOverride')
-    .its('response.body.financials.awarded')
-    .should('eq', numericExpectedAwardedValue);
+  minorCreditorDetails().assertHeaderSummaryAwardedValue(numericExpectedAwardedValue);
 });
 
 /**
@@ -191,49 +208,115 @@ Then('the intercepted minor creditor header summary awarded value is {string}', 
 When('I go to the Defendant details section and the header is {string}', (expected: string) => {
   const expectedWithUniq = applyUniqPlaceholder(expected);
   log('step', 'Navigate to Defendant details', { expected: expectedWithUniq });
-  flow().goToDefendantDetailsAndAssert(expectedWithUniq);
+  accountEnquiryFlow().goToDefendantDetailsAndAssert(expectedWithUniq);
 });
 
 Then('I should see the convert to company account action', () => {
   log('assert', 'Convert to company account action is visible');
-  flow().assertConvertToCompanyActionVisible();
+  defendantDetails().assertConvertToCompanyActionVisible();
 });
 
 Then('I should see the convert to individual account action', () => {
   log('assert', 'Convert to individual account action is visible');
-  flow().assertConvertToIndividualActionVisible();
+  defendantDetails().assertConvertToIndividualActionVisible();
 });
 
 Then('I should see the add parent or guardian details action', () => {
   log('assert', 'Add parent or guardian details action is visible');
-  flow().assertAddParentGuardianActionVisible();
+  defendantDetails().assertAddParentGuardianActionVisible();
+});
+
+Then('I do not see the add parent or guardian details action', () => {
+  log('assert', 'Add parent or guardian details action is absent');
+  defendantDetails().assertAddParentGuardianActionNotPresent();
 });
 
 Then('I should see the remove parent or guardian details action', () => {
   log('assert', 'Remove parent or guardian details action is visible');
-  flow().assertRemoveParentGuardianActionVisible();
+  accountEnquiryFlow().assertRemoveParentGuardianActionVisible();
+});
+
+Then('I should see the parent or guardian details Change actions', () => {
+  log('assert', 'Parent or guardian details Change actions are visible');
+  accountEnquiryFlow().assertChangeParentGuardianActionsVisible();
+});
+
+Given('I stub the defendant header summary account status code to {string}', (statusCode: string) => {
+  log('intercept', 'Stub defendant header summary restricted status', { statusCode });
+  accountEnquiryFlow().stubRestrictedParentGuardianStatusCode(statusCode);
+});
+
+Given('I stub the defendant header summary payment terms account status code to {string}', (statusCode: string) => {
+  log('intercept', 'Stub defendant header summary payment terms restricted status', { statusCode });
+  accountEnquiryFlow().stubPaymentTermsAccountStatusCode(statusCode);
+});
+
+Given('I stub the defendant header summary payment terms account balance to {int}', (balance: number) => {
+  log('intercept', 'Stub defendant header summary payment terms account balance', { balance });
+  accountEnquiryFlow().stubPaymentTermsAccountBalance(balance);
+});
+
+Then('I do not see the Payment terms Change or Request payment card actions', () => {
+  log('assert', 'Payment terms Change and Request payment card actions are absent');
+  accountEnquiryFlow().assertPaymentTermsActionsNotVisible();
+});
+
+Then('I do not see any parent or guardian details Change actions', () => {
+  log('assert', 'Parent or guardian details Change actions are absent');
+  accountEnquiryFlow().assertChangeParentGuardianActionsNotVisible();
+});
+
+Then('I do not see the remove parent or guardian details action', () => {
+  log('assert', 'Remove parent or guardian details action is absent');
+  accountEnquiryFlow().assertRemoveParentGuardianActionNotVisible();
+});
+
+/**
+ * @step Asserts the account details page fits within the current viewport without horizontal overflow.
+ */
+Then('the account details page should not horizontally overflow', () => {
+  log('assert', 'Checking account details page does not horizontally overflow');
+  accountEnquiryFlow().assertNoHorizontalOverflow();
+});
+
+/**
+ * @step Asserts the account details summary columns stack beneath the primary content.
+ */
+Then('the account details summary columns should stack below the primary content', () => {
+  log('assert', 'Checking account details summary columns stack below the primary content');
+  accountEnquiryFlow().assertAtAGlanceColumnsStacked();
+});
+
+Then('the account information and summary metrics should remain readable', () => {
+  log('assert', 'Checking account information and summary metrics remain readable');
+  accountEnquiryFlow().assertSummaryContentReadable();
+});
+
+Then('the account details header action should reflow below the account name', () => {
+  log('assert', 'Checking account details header action reflows below the account name');
+  accountEnquiryFlow().assertHeaderActionReflowsBelowTitle();
 });
 
 Then('I should not see the convert to company account action', () => {
   log('assert', 'Convert to company account action is absent');
-  flow().assertConvertToCompanyActionNotPresent();
+  defendantDetails().assertConvertToCompanyActionNotPresent();
 });
 
 When('I open the remove enforcement hold screen', () => {
   log('step', 'Open remove enforcement hold screen');
-  flow().openRemoveEnforcementHoldForm();
+  accountEnquiryFlow().openRemoveEnforcementHoldForm();
 });
 
 When('I enter {string} in the "Reason" field', (reason: string) => {
   const resolvedReason = applyUniqPlaceholder(reason);
   log('step', 'Enter reason on remove enforcement hold screen', { reason: resolvedReason });
-  cy.get('#facc_enf_action_remove_reason').clear().type(resolvedReason);
+  enforcementActions().enterRemoveEnforcementHoldReason(resolvedReason);
 });
 
 When('I press the {string} button', (buttonText: string) => {
   const resolvedButtonText = applyUniqPlaceholder(buttonText);
   log('step', 'Press button', { buttonText: resolvedButtonText });
-  cy.contains('button', resolvedButtonText).click();
+  enforcementActions().clickRemoveEnforcementHoldButton(resolvedButtonText);
 });
 
 When('I cancel the remove enforcement hold screen and confirm leaving', () => {
@@ -243,39 +326,38 @@ When('I cancel the remove enforcement hold screen and confirm leaving', () => {
 
 Then('I should see the remove enforcement hold page', () => {
   log('assert', 'Remove enforcement hold page is visible');
-  cy.contains('h1.govuk-heading-l', 'Remove enforcement hold').should('be.visible');
-  cy.get('#facc_enf_action_remove_reason').should('be.visible');
+  enforcementActions().assertRemoveEnforcementHoldFormVisible();
 });
 
 Then('I should see the remove enforcement hold account identifier {string}', (expected: string) => {
   const expectedWithUniq = applyUniqPlaceholder(expected);
   log('assert', 'Remove enforcement hold account identifier', { expected: expectedWithUniq });
-  flow().assertRemoveEnforcementHoldAccountIdentifier(expectedWithUniq);
+  enforcementActions().assertRemoveEnforcementHoldAccountIdentifier(expectedWithUniq);
 });
 
 Then('I should see the add enforcement action page', () => {
   log('assert', 'Add enforcement action page is visible');
-  flow().assertAddEnforcementActionFormVisible();
+  enforcementActions().assertAddEnforcementActionFormVisible();
 });
 
 Then('I should see the add new enforcement action page', () => {
   log('assert', 'Add new enforcement action page is visible');
-  flow().assertAddNewEnforcementActionFormVisible();
+  enforcementActions().assertAddNewEnforcementActionFormVisible();
 });
 
 Then('the enforcement hold success banner is {string}', (expected: string) => {
   log('assert', 'Enforcement hold success banner text', { expected });
-  flow().assertEnforcementHoldSuccessBanner(expected);
+  enforcementActions().assertSuccessBannerText(expected);
 });
 
 Then('I should not see the convert to company account text', () => {
   log('assert', 'Convert to company account text is absent from the visible action');
-  flow().assertConvertToCompanyActionTextNotPresent();
+  defendantDetails().assertConvertToCompanyActionTextNotPresent();
 });
 
 When('I start converting the account to a company account', () => {
   log('step', 'Start converting account to company');
-  flow().openConvertToCompanyConfirmation();
+  accountEnquiryFlow().openConvertToCompanyConfirmation();
 });
 
 Then(
@@ -285,23 +367,23 @@ Then(
     log('assert', 'Convert to company confirmation screen is visible', {
       expectedCaptionName: expectedCaptionNameWithUniq,
     });
-    flow().assertOnConvertToCompanyConfirmation(expectedCaptionNameWithUniq);
+    convertActions().assertOnConvertToCompanyConfirmation(expectedCaptionNameWithUniq);
   },
 );
 
 When('I continue converting the account to a company account', () => {
   log('step', 'Continue converting account to company');
-  flow().confirmConvertToCompanyAccount();
+  convertActions().confirmConvertToCompany();
 });
 
 Then('I should be on the Company details convert route', () => {
   log('assert', 'Company details convert route is active');
-  flow().assertOnCompanyDetailsConvertRoute();
+  editCompanyDetails().assertOnConvertRoute();
 });
 
 When('I cancel converting the account to a company account', () => {
   log('step', 'Cancel converting account to company');
-  flow().cancelConvertToCompanyAccount();
+  convertActions().cancelConvertToCompany();
 });
 
 Then('the Company details form should be pre-populated with:', (table: DataTable) => {
@@ -309,22 +391,22 @@ Then('the Company details form should be pre-populated with:', (table: DataTable
     Object.entries(rowsHashSafe(table)).map(([fieldName, fieldValue]) => [fieldName, applyUniqPlaceholder(fieldValue)]),
   );
   log('assert', 'Company details form is pre-populated', expectedFieldValues);
-  flow().assertCompanyDetailsPrefilledValues(expectedFieldValues);
+  editCompanyDetails().assertPrefilledFieldValues(expectedFieldValues);
 });
 
 When('I start converting the account to an individual account', () => {
   log('step', 'Start converting account to individual');
-  flow().openConvertToIndividualConfirmation();
+  accountEnquiryFlow().openConvertToIndividualConfirmation();
 });
 
 When('I start adding parent or guardian details', () => {
   log('step', 'Start adding parent or guardian details');
-  flow().openAddParentGuardianDetails();
+  accountEnquiryFlow().openAddParentGuardianDetails();
 });
 
 When('I start removing parent or guardian details', () => {
   log('step', 'Start removing parent or guardian details');
-  flow().openRemoveParentGuardianDetails();
+  accountEnquiryFlow().openRemoveParentGuardianDetails();
 });
 
 Then(
@@ -334,23 +416,23 @@ Then(
     log('assert', 'Convert to individual confirmation screen is visible', {
       expectedCaptionName: expectedCaptionNameWithUniq,
     });
-    flow().assertOnConvertToIndividualConfirmation(expectedCaptionNameWithUniq);
+    convertActions().assertOnConvertToIndividualConfirmation(expectedCaptionNameWithUniq);
   },
 );
 
 When('I continue converting the account to an individual account', () => {
   log('step', 'Continue converting account to individual');
-  flow().confirmConvertToIndividualAccount();
+  convertActions().confirmConvertToIndividual();
 });
 
 Then('I should be on the Defendant details convert route', () => {
   log('assert', 'Defendant details convert route is active');
-  flow().assertOnDefendantDetailsConvertRoute();
+  editDefendantDetails().assertOnConvertRoute();
 });
 
 When('I cancel converting the account to an individual account', () => {
   log('step', 'Cancel converting account to individual');
-  flow().cancelConvertToIndividualAccount();
+  convertActions().cancelConvertToIndividual();
 });
 
 Then('the Defendant details form should be pre-populated with:', (table: DataTable) => {
@@ -358,13 +440,13 @@ Then('the Defendant details form should be pre-populated with:', (table: DataTab
     Object.entries(rowsHashSafe(table)).map(([fieldName, fieldValue]) => [fieldName, applyUniqPlaceholder(fieldValue)]),
   );
   log('assert', 'Defendant details form is pre-populated', expectedFieldValues);
-  flow().assertDefendantDetailsPrefilledValues(expectedFieldValues);
+  editDefendantDetails().assertPrefilledFieldValues(expectedFieldValues);
 });
 
 When('I complete converting the account to a company with company name {string}', (companyName: string) => {
   const companyNameWithUniq = applyUniqPlaceholder(companyName);
   log('step', 'Complete converting account to company', { companyName: companyNameWithUniq });
-  flow().completeConvertToCompany(companyNameWithUniq);
+  accountEnquiryFlow().completeConvertToCompany(companyNameWithUniq);
 });
 
 When(
@@ -377,7 +459,7 @@ When(
       firstName: firstNameWithUniq,
       lastName: lastNameWithUniq,
     });
-    flow().completeConvertToIndividual({
+    accountEnquiryFlow().completeConvertToIndividual({
       title,
       firstName: firstNameWithUniq,
       lastName: lastNameWithUniq,
@@ -387,33 +469,33 @@ When(
 
 Then('I should see the account conversion success message {string}', (expected: string) => {
   log('assert', 'Account conversion success message is visible', { expected });
-  flow().assertAccountConversionSuccessMessage(expected);
+  navActions().assertSuccessBannerText(expected);
 });
 
 Then('I should see the company summary card', () => {
   log('assert', 'Company summary card is visible');
-  flow().assertCompanySummaryVisible();
+  editCompanyDetails().assertCompanySummaryVisible();
 });
 
 Then('I should not see the company summary card', () => {
   log('assert', 'Company summary card is absent');
-  flow().assertCompanySummaryNotPresent();
+  editCompanyDetails().assertCompanySummaryNotPresent();
 });
 
 Then('I should see the defendant summary card', () => {
   log('assert', 'Defendant summary card is visible');
-  flow().assertDefendantSummaryVisible();
+  defendantDetails().assertDefendantSummaryVisible();
 });
 
 Then('I should not see the defendant summary card', () => {
   log('assert', 'Defendant summary card is absent');
-  flow().assertDefendantSummaryNotPresent();
+  defendantDetails().assertDefendantSummaryNotPresent();
 });
 
 Then('I should see the primary email address contains {string}', (expected: string) => {
   const expectedWithUniq = applyUniqPlaceholder(expected);
   log('assert', 'Primary email address contains', { expected: expectedWithUniq });
-  flow().assertPrimaryEmailContains(expectedWithUniq);
+  defendantDetails().assertPrimaryEmailContains(expectedWithUniq);
 });
 
 /**
@@ -423,18 +505,18 @@ Then('I should see the primary email address contains {string}', (expected: stri
  */
 When('I go to the Parent or guardian details section and the header is {string}', (expected: string) => {
   log('step', 'Navigate to Parent/Guardian details', { expected });
-  flow().goToParentGuardianDetailsAndAssert(expected);
+  accountEnquiryFlow().goToParentGuardianDetailsAndAssert(expected);
 });
 
 Then('I should be on the add parent or guardian details page', () => {
   log('assert', 'Add parent or guardian details page is visible');
-  flow().assertOnAddParentGuardianDetailsPage();
+  accountEnquiryFlow().assertOnAddParentGuardianDetailsPage();
 });
 
 Then('I should be on the remove parent or guardian details page for {string}', (expected: string) => {
   const expectedWithUniq = applyUniqPlaceholder(expected);
   log('assert', 'Remove parent or guardian details page is visible', { expected: expectedWithUniq });
-  flow().assertOnRemoveParentGuardianPage(expectedWithUniq);
+  removeParentGuardianActions().assertOnRemoveParentGuardianConfirmation(expectedWithUniq);
 });
 
 /**
@@ -445,7 +527,7 @@ Then('I should be on the remove parent or guardian details page for {string}', (
 When('I go to the Fixed penalty section and the header is {string}', (expected: string) => {
   const expectedWithUniq = applyUniqPlaceholder(expected);
   log('step', 'Navigate to Fixed penalty details', { expected: expectedWithUniq });
-  flow().goToFixedPenaltyDetailsAndAssert(expectedWithUniq);
+  accountEnquiryFlow().goToFixedPenaltyDetailsAndAssert(expectedWithUniq);
 });
 
 /**
@@ -453,7 +535,7 @@ When('I go to the Fixed penalty section and the header is {string}', (expected: 
  */
 When('I go to the Payment terms tab', () => {
   log('step', 'Navigate to Payment terms tab');
-  flow().goToPaymentTermsTab();
+  accountEnquiryFlow().goToPaymentTermsTab();
 });
 
 /**
@@ -461,7 +543,7 @@ When('I go to the Payment terms tab', () => {
  */
 When('I go to the Creditor tab', () => {
   log('step', 'Navigate to Creditor tab');
-  flow().goToCreditorTab();
+  accountEnquiryFlow().goToCreditorTab();
 });
 
 /**
@@ -469,7 +551,15 @@ When('I go to the Creditor tab', () => {
  */
 Given('the History and notes API is stubbed with standard tab data', () => {
   log('step', 'Stub History and notes API with standard tab data');
-  flow().stubHistoryAndNotesTabData();
+  accountEnquiryFlow().stubHistoryAndNotesTabData();
+});
+
+/**
+ * @step Presents the current account as a master account with a consolidated child account.
+ */
+Given('I am viewing a master account with a consolidated child account', () => {
+  log('step', 'Prepare master account with consolidated child account');
+  accountEnquiryFlow().prepareMasterAccountWithConsolidatedChildAccount();
 });
 
 /**
@@ -477,7 +567,47 @@ Given('the History and notes API is stubbed with standard tab data', () => {
  */
 When('I go to the History and notes tab', () => {
   log('step', 'Navigate to History and notes tab');
-  flow().goToHistoryAndNotesTab();
+  accountEnquiryFlow().goToHistoryAndNotesTab();
+});
+
+/**
+ * @step Views the Consolidated accounts tab.
+ */
+When('I view the Consolidated accounts tab', () => {
+  log('step', 'View Consolidated accounts tab');
+  accountEnquiryFlow().goToConsolidatedAccountsTab();
+});
+
+/**
+ * @step Verifies the consolidated accounts table shows child account rows.
+ */
+Then('I can see a table containing the child accounts', () => {
+  log('assert', 'Consolidated accounts table contains child account rows');
+  accountEnquiryFlow().assertConsolidatedAccountsTableVisible();
+});
+
+/**
+ * @step Views the first child account record from the consolidated accounts table.
+ */
+When('I view the first child account record', () => {
+  log('step', 'View first child account record');
+  accountEnquiryFlow().openFirstConsolidatedAccountLinkAtAGlance();
+});
+
+/**
+ * @step Verifies the selected child account details are displayed.
+ */
+Then('I am presented with the details of the selected child account', () => {
+  log('assert', 'Selected child account details are displayed');
+  accountEnquiryFlow().assertSelectedChildAccountDetailsVisible();
+});
+
+/**
+ * @step Verifies the selected child account displays the closed account banner.
+ */
+Then('I am notified that the selected child account is closed because it was consolidated', () => {
+  log('assert', 'Selected child account consolidated status banner is displayed');
+  accountEnquiryFlow().assertSelectedChildAccountStatusBannerVisible();
 });
 
 /**
@@ -485,7 +615,7 @@ When('I go to the History and notes tab', () => {
  */
 Then('I should see the History and notes items load', () => {
   log('assert', 'History and notes items are loaded');
-  flow().assertHistoryAndNotesItemsLoaded();
+  historyAndNotesActions().assertHistoryAndNotesRowsLoaded(2);
 });
 
 /**
@@ -493,7 +623,7 @@ Then('I should see the History and notes items load', () => {
  */
 When('I filter the History and notes results to Notes', () => {
   log('step', 'Filter History and notes results to Notes');
-  flow().filterHistoryAndNotesToNotes();
+  historyAndNotesActions().applyNotesFilter();
 });
 
 /**
@@ -501,7 +631,7 @@ When('I filter the History and notes results to Notes', () => {
  */
 Then('I should only see Note items in History and notes', () => {
   log('assert', 'History and notes results only show Note rows');
-  flow().assertHistoryAndNotesFilteredToNotes();
+  historyAndNotesActions().assertHistoryAndNotesFilteredToNotes();
 });
 
 /**
@@ -509,7 +639,7 @@ Then('I should only see Note items in History and notes', () => {
  */
 When('I open the first History and notes account link in a new tab', () => {
   log('step', 'Open first History and notes account link in a new tab');
-  flow().openHistoryAndNotesAccountLinkInNewTab();
+  accountEnquiryFlow().openHistoryAndNotesAccountLinkInNewTab();
 });
 
 /**
@@ -517,7 +647,7 @@ When('I open the first History and notes account link in a new tab', () => {
  */
 When('I open the amend payment terms form', () => {
   log('step', 'Open amend payment terms form');
-  flow().openPaymentTermsAmendForm();
+  accountEnquiryFlow().openPaymentTermsAmendForm();
 });
 
 /**
@@ -525,7 +655,7 @@ When('I open the amend payment terms form', () => {
  */
 When('I go to the Enforcement tab', () => {
   log('step', 'Navigate to Enforcement tab');
-  flow().goToEnforcementTab();
+  accountEnquiryFlow().goToEnforcementTab();
 });
 
 /**
@@ -533,7 +663,7 @@ When('I go to the Enforcement tab', () => {
  */
 When('I open the add enforcement override form', () => {
   log('step', 'Open add enforcement override form');
-  flow().openAddEnforcementOverrideForm();
+  accountEnquiryFlow().openAddEnforcementOverrideForm();
 });
 
 /**
@@ -541,7 +671,7 @@ When('I open the add enforcement override form', () => {
  */
 When('I open the add enforcement action form', () => {
   log('step', 'Open add enforcement action form');
-  flow().openAddEnforcementActionForm();
+  accountEnquiryFlow().openAddEnforcementActionForm();
 });
 
 /**
@@ -549,7 +679,7 @@ When('I open the add enforcement action form', () => {
  */
 When('I open the Change Collection Order status form', () => {
   log('step', 'Open Change Collection Order status form');
-  flow().openChangeCollectionOrderForm();
+  enforcementActions().openChangeCollectionOrderForm();
 });
 
 /**
@@ -557,7 +687,7 @@ When('I open the Change Collection Order status form', () => {
  */
 Then('I should see the Change Collection Order status page', () => {
   log('assert', 'Change Collection Order status page is visible');
-  flow().assertChangeCollectionOrderFormVisible();
+  enforcementActions().assertChangeCollectionOrderFormVisible();
 });
 
 /**
@@ -566,7 +696,7 @@ Then('I should see the Change Collection Order status page', () => {
 Then('I should see the account identifier {string}', (expected: string) => {
   const expectedWithUniq = applyUniqPlaceholder(expected);
   log('assert', 'Change Collection Order account identifier', { expected: expectedWithUniq });
-  flow().assertChangeCollectionOrderAccountIdentifier(expectedWithUniq);
+  enforcementActions().assertChangeCollectionOrderAccountIdentifier(expectedWithUniq);
 });
 
 /**
@@ -574,7 +704,7 @@ Then('I should see the account identifier {string}', (expected: string) => {
  */
 When('I select {string} for Collection Order status', (option: string) => {
   log('step', 'Select Collection Order status', { option });
-  flow().selectChangeCollectionOrderStatus(option);
+  enforcementActions().selectCollectionOrderStatus(option);
 });
 
 /**
@@ -582,7 +712,7 @@ When('I select {string} for Collection Order status', (option: string) => {
  */
 When('I submit the Change Collection Order status form', () => {
   log('step', 'Submit Change Collection Order status form');
-  flow().submitChangeCollectionOrderForm();
+  enforcementActions().submitChangeCollectionOrderForm();
 });
 
 /**
@@ -590,7 +720,7 @@ When('I submit the Change Collection Order status form', () => {
  */
 When('I cancel the Change Collection Order status form without making changes', () => {
   log('step', 'Cancel Change Collection Order status form without changes');
-  flow().cancelChangeCollectionOrderFormWithoutChanges();
+  accountEnquiryFlow().cancelChangeCollectionOrderFormWithoutChanges();
 });
 
 /**
@@ -598,7 +728,7 @@ When('I cancel the Change Collection Order status form without making changes', 
  */
 When('I cancel the Change Collection Order status form and choose to stay', () => {
   log('step', 'Cancel Change Collection Order status form and choose to stay');
-  flow().cancelChangeCollectionOrderFormAndStay();
+  accountEnquiryFlow().cancelChangeCollectionOrderFormAndStay();
 });
 
 /**
@@ -607,7 +737,7 @@ When('I cancel the Change Collection Order status form and choose to stay', () =
 Then('I should see the collection order success banner {string}', (expected: string) => {
   const expectedWithUniq = applyUniqPlaceholder(expected);
   log('assert', 'Collection Order success banner text', { expected: expectedWithUniq });
-  flow().assertCollectionOrderSuccessBanner(expectedWithUniq);
+  enforcementActions().assertCollectionOrderSuccessBannerText(expectedWithUniq);
 });
 
 /**
@@ -616,7 +746,7 @@ Then('I should see the collection order success banner {string}', (expected: str
 Then('the collection order summary should show {string}', (expected: string) => {
   const expectedWithUniq = applyUniqPlaceholder(expected);
   log('assert', 'Collection Order summary value', { expected: expectedWithUniq });
-  flow().assertCollectionOrderSummary(expectedWithUniq);
+  enforcementActions().assertCollectionOrderSummary(expectedWithUniq);
 });
 
 /**
@@ -624,7 +754,7 @@ Then('the collection order summary should show {string}', (expected: string) => 
  */
 Then('I should remain on the Change Collection Order status page', () => {
   log('assert', 'Remain on Change Collection Order status page');
-  flow().assertChangeCollectionOrderFormVisible();
+  enforcementActions().assertChangeCollectionOrderFormVisible();
 });
 
 /**
@@ -632,7 +762,7 @@ Then('I should remain on the Change Collection Order status page', () => {
  */
 When('I choose the enforcement override {string}', (resultCode: string) => {
   log('step', 'Choose enforcement override', { resultCode });
-  flow().selectEnforcementOverride(resultCode);
+  enforcementActions().selectEnforcementOverride(resultCode);
 });
 
 /**
@@ -640,7 +770,7 @@ When('I choose the enforcement override {string}', (resultCode: string) => {
  */
 When('I choose the enforcement action {string}', (resultCode: string) => {
   log('step', 'Choose enforcement action', { resultCode });
-  flow().selectEnforcementAction(resultCode);
+  enforcementActions().selectEnforcementAction(resultCode);
 });
 
 /**
@@ -648,7 +778,7 @@ When('I choose the enforcement action {string}', (resultCode: string) => {
  */
 When('I continue to the confirm enforcement action page', () => {
   log('step', 'Continue to confirm enforcement action page');
-  flow().submitAddEnforcementActionForm();
+  enforcementActions().submitAddEnforcementActionForm();
 });
 
 /**
@@ -656,7 +786,7 @@ When('I continue to the confirm enforcement action page', () => {
  */
 When('I enter {string} for the enforcement action reason', (reason: string) => {
   log('step', 'Enter enforcement action reason', { reason });
-  flow().enterEnforcementActionReason(reason);
+  enforcementActions().enterEnforcementActionReason(reason);
 });
 
 /**
@@ -664,7 +794,7 @@ When('I enter {string} for the enforcement action reason', (reason: string) => {
  */
 When('I choose {string} for changing existing payment terms', (option: string) => {
   log('step', 'Choose change existing payment terms option', { option });
-  flow().chooseChangeExistingPaymentTerms(option);
+  enforcementActions().chooseChangeExistingPaymentTerms(option);
 });
 
 /**
@@ -672,7 +802,7 @@ When('I choose {string} for changing existing payment terms', (option: string) =
  */
 When('I add the enforcement action', () => {
   log('step', 'Add enforcement action');
-  flow().submitAddEnforcementActionForm();
+  enforcementActions().submitAddEnforcementActionForm();
 });
 
 /**
@@ -680,7 +810,7 @@ When('I add the enforcement action', () => {
  */
 Then('the enforcement action added success banner is {string}', (expected: string) => {
   log('assert', 'Enforcement action success banner text', { expected });
-  flow().assertEnforcementActionSuccessBanner(expected);
+  enforcementActions().assertSuccessBannerText(expected);
 });
 
 /**
@@ -688,7 +818,7 @@ Then('the enforcement action added success banner is {string}', (expected: strin
  */
 When('I choose the Local Justice Area {string}', (localJusticeArea: string) => {
   log('step', 'Choose Local Justice Area', { localJusticeArea });
-  flow().selectEnforcementOverrideLocalJusticeArea(localJusticeArea);
+  enforcementActions().selectLocalJusticeArea(localJusticeArea);
 });
 
 /**
@@ -696,7 +826,7 @@ When('I choose the Local Justice Area {string}', (localJusticeArea: string) => {
  */
 When('I choose the enforcer {string}', (enforcer: string) => {
   log('step', 'Choose enforcer', { enforcer });
-  flow().selectEnforcementOverrideEnforcer(enforcer);
+  enforcementActions().selectEnforcer(enforcer);
 });
 
 /**
@@ -704,7 +834,7 @@ When('I choose the enforcer {string}', (enforcer: string) => {
  */
 When('I add the enforcement override', () => {
   log('step', 'Submit add enforcement override form');
-  flow().submitAddEnforcementOverride();
+  accountEnquiryFlow().submitAddEnforcementOverride();
 });
 
 /**
@@ -714,9 +844,7 @@ When(
   'I add the enforcement override {string} with the Local Justice Area {string}',
   (resultCode: string, lja: string) => {
     log('step', 'Add enforcement override with Local Justice Area', { resultCode, lja });
-    flow().selectEnforcementOverride(resultCode);
-    flow().selectEnforcementOverrideLocalJusticeArea(lja);
-    flow().submitAddEnforcementOverride();
+    accountEnquiryFlow().addEnforcementOverrideWithLocalJusticeArea(resultCode, lja);
   },
 );
 
@@ -725,9 +853,7 @@ When(
  */
 When('I add the enforcement override {string} with the enforcer {string}', (resultCode: string, enforcer: string) => {
   log('step', 'Add enforcement override with enforcer', { resultCode, enforcer });
-  flow().selectEnforcementOverride(resultCode);
-  flow().selectEnforcementOverrideEnforcer(enforcer);
-  flow().submitAddEnforcementOverride();
+  accountEnquiryFlow().addEnforcementOverrideWithEnforcer(resultCode, enforcer);
 });
 
 /**
@@ -735,7 +861,7 @@ When('I add the enforcement override {string} with the enforcer {string}', (resu
  */
 When('I open the change enforcement court form', () => {
   log('step', 'Open change enforcement court form');
-  flow().openChangeEnforcementCourtForm();
+  accountEnquiryFlow().openChangeEnforcementCourtForm();
 });
 
 /**
@@ -743,7 +869,7 @@ When('I open the change enforcement court form', () => {
  */
 When('I change the enforcement court to a different value', () => {
   log('step', 'Change enforcement court to a different value');
-  flow().changeEnforcementCourtToDifferentValue();
+  accountEnquiryFlow().changeEnforcementCourtToDifferentValue();
 });
 
 /**
@@ -751,7 +877,7 @@ When('I change the enforcement court to a different value', () => {
  */
 When('I save the same enforcement court value again', () => {
   log('step', 'Save the same enforcement court value again');
-  flow().saveSameEnforcementCourtValueAgain();
+  accountEnquiryFlow().saveSameEnforcementCourtValueAgain();
 });
 
 /**
@@ -759,7 +885,7 @@ When('I save the same enforcement court value again', () => {
  */
 When('I cancel the change enforcement court form after selecting a value and discarding changes', () => {
   log('step', 'Cancel dirty change enforcement court form and discard changes');
-  flow().cancelDirtyChangeEnforcementCourtAndDiscardChanges();
+  accountEnquiryFlow().cancelDirtyChangeEnforcementCourtAndDiscardChanges();
 });
 
 /**
@@ -767,7 +893,7 @@ When('I cancel the change enforcement court form after selecting a value and dis
  */
 When('I cancel the add enforcement override form and discard changes', () => {
   log('step', 'Cancel add enforcement override form and discard changes');
-  flow().cancelAddEnforcementOverrideAndDiscardChanges();
+  accountEnquiryFlow().cancelAddEnforcementOverrideAndDiscardChanges();
 });
 
 /**
@@ -775,7 +901,7 @@ When('I cancel the add enforcement override form and discard changes', () => {
  */
 When('I submit instalments only payment terms with a payment card request', () => {
   log('step', 'Submit instalments-only payment terms with card request');
-  flow().submitInstalmentsOnlyPaymentTermsWithCardRequest();
+  accountEnquiryFlow().submitInstalmentsOnlyPaymentTermsWithCardRequest();
 });
 
 /**
@@ -783,7 +909,7 @@ When('I submit instalments only payment terms with a payment card request', () =
  */
 When('I cancel payment terms amendments', () => {
   log('step', 'Cancel payment terms amendments');
-  flow().cancelPaymentTermsAmendment();
+  accountEnquiryFlow().cancelPaymentTermsAmendment();
 });
 
 /**
@@ -876,7 +1002,7 @@ Then('I should see the following minor creditor summary metric values:', (table:
  */
 Then('I should return to the Payment terms tab', () => {
   log('assert', 'Payment terms tab is active');
-  flow().assertPaymentTermsTabIsActive();
+  navActions().assertPaymentTermsTabIsActive();
 });
 
 /**
@@ -884,7 +1010,7 @@ Then('I should return to the Payment terms tab', () => {
  */
 Then('I should return to the Enforcement tab', () => {
   log('assert', 'Enforcement tab is active');
-  flow().assertEnforcementTabIsActive();
+  accountEnquiryFlow().assertEnforcementTabIsActive();
 });
 
 /**
@@ -904,11 +1030,19 @@ Then('I should return to the Impositions tab', () => {
 });
 
 /**
+ * @step Stores and asserts the current enforcement court summary value.
+ */
+Given('the enforcement court summary shows an existing value', () => {
+  log('assert', 'Enforcement court summary shows an existing value');
+  accountEnquiryFlow().captureCurrentEnforcementCourtSummary();
+});
+
+/**
  * @step Asserts the enforcement override success banner text.
  */
 Then('the enforcement override success banner is {string}', (expected: string) => {
   log('assert', 'Enforcement override success banner text', { expected });
-  flow().assertEnforcementOverrideSuccessBanner(expected);
+  enforcementActions().assertSuccessBannerText(expected);
 });
 
 /**
@@ -916,7 +1050,7 @@ Then('the enforcement override success banner is {string}', (expected: string) =
  */
 Then('the enforcement court success banner is {string}', (expected: string) => {
   log('assert', 'Enforcement court success banner text', { expected });
-  flow().assertEnforcementCourtSuccessBanner(expected);
+  enforcementActions().assertSuccessBannerText(expected);
 });
 
 /**
@@ -924,7 +1058,15 @@ Then('the enforcement court success banner is {string}', (expected: string) => {
  */
 Then('the enforcement court summary shows the selected value', () => {
   log('assert', 'Selected enforcement court summary value');
-  flow().assertSelectedEnforcementCourtSummary();
+  enforcementActions().assertEnforcementCourtMatchesAlias('selectedEnforcementCourt');
+});
+
+/**
+ * @step Asserts the enforcement court summary still matches the original stored value.
+ */
+Then('the enforcement court summary still shows the original value', () => {
+  log('assert', 'Original enforcement court summary value');
+  enforcementActions().assertEnforcementCourtMatchesAlias('originalEnforcementCourt');
 });
 
 /**
@@ -932,7 +1074,7 @@ Then('the enforcement court summary shows the selected value', () => {
  */
 Then('the enforcement success banner is not displayed', () => {
   log('assert', 'Enforcement success banner is not displayed');
-  flow().assertEnforcementSuccessBannerNotVisible();
+  enforcementActions().assertSuccessBannerNotVisible();
 });
 
 /**
@@ -946,7 +1088,7 @@ Then('the enforcement override save request shows:', (table: DataTable) => {
   const ljaId = rows['lja id'] ?? rows['local justice area id'] ?? '';
 
   log('assert', 'Enforcement override save request payload', { overrideId, enforcerId, ljaId });
-  flow().assertEnforcementOverrideSaveRequest({ overrideId, enforcerId, ljaId });
+  accountEnquiryFlow().assertEnforcementOverrideSaveRequest({ overrideId, enforcerId, ljaId });
 });
 
 /**
@@ -959,7 +1101,7 @@ Then('the enforcement override summary shows:', (table: DataTable) => {
   const lja = rows['local justice area'] ?? rows['local justice area (lja)'] ?? '';
 
   log('assert', 'Enforcement override summary values', { override, enforcer, lja });
-  flow().assertEnforcementOverrideSummary({ override, enforcer, lja });
+  enforcementActions().assertEnforcementOverrideSummary({ override, enforcer, lja });
 });
 
 /**
@@ -968,7 +1110,7 @@ Then('the enforcement override summary shows:', (table: DataTable) => {
 Then('the enforcement action summary shows {string}', (expected: string) => {
   const expectedWithUniq = applyUniqPlaceholder(expected);
   log('assert', 'Enforcement action summary value', { expected: expectedWithUniq });
-  flow().assertEnforcementActionSummary(expectedWithUniq);
+  enforcementActions().assertEnforcementActionSummary(expectedWithUniq);
 });
 
 /**
@@ -981,7 +1123,7 @@ Then('the payment terms summary shows instalments:', (table: DataTable) => {
   const startDate = rows['start date'] ?? '';
 
   log('assert', 'Asserting payment terms instalment summary', { amount, frequency, startDate });
-  flow().assertPaymentTermsInstalmentsSummary({ amount, frequency, startDate });
+  paymentTermsActions().assertInstalmentSummary({ amount, frequency, startDate });
 });
 
 /**
@@ -989,7 +1131,7 @@ Then('the payment terms summary shows instalments:', (table: DataTable) => {
  */
 Then('the payment terms pay by date is {string}', (expected: string) => {
   log('assert', 'Asserting payment terms pay by date', { expected });
-  flow().assertPaymentTermsPayByDate(expected);
+  paymentTermsActions().assertPayByDate(expected);
 });
 
 /**
@@ -997,7 +1139,7 @@ Then('the payment terms pay by date is {string}', (expected: string) => {
  */
 Then('the payment terms instalment rows are not shown', () => {
   log('assert', 'Asserting payment terms instalment rows absent');
-  flow().assertPaymentTermsInstalmentsAbsent();
+  paymentTermsActions().assertInstalmentRowsNotPresent();
 });
 
 /**
@@ -1005,7 +1147,7 @@ Then('the payment terms instalment rows are not shown', () => {
  */
 Then('the payment terms save request should include a payment card request', () => {
   log('assert', 'Asserting payment terms save request includes card request');
-  flow().assertPaymentTermsSaveRequestedPaymentCard();
+  accountEnquiryFlow().assertPaymentTermsSaveRequestedPaymentCard();
 });
 
 /**
@@ -1013,7 +1155,7 @@ Then('the payment terms save request should include a payment card request', () 
  */
 Then('the payment terms last enforcement is cleared', () => {
   log('assert', 'Verifying payment terms last enforcement cleared');
-  flow().verifyPaymentTermsLastEnforcementCleared();
+  accountEnquiryFlow().verifyPaymentTermsLastEnforcementCleared();
 });
 
 /**
@@ -1023,7 +1165,7 @@ Then('the payment terms last enforcement is cleared', () => {
  */
 When('I edit the Defendant details and change the First name to {string}', (value: string) => {
   log('step', 'Edit Defendant first name', { value });
-  flow().editDefendantAndChangeFirstName(value);
+  accountEnquiryFlow().editDefendantAndChangeFirstName(value);
 });
 
 /**
@@ -1031,7 +1173,7 @@ When('I edit the Defendant details and change the First name to {string}', (valu
  */
 When('I edit the Defendant details without making changes', () => {
   log('step', 'Edit Defendant details without making changes');
-  flow().editDefendantWithoutChanges();
+  accountEnquiryFlow().editDefendantWithoutChanges();
 });
 
 /**
@@ -1041,7 +1183,7 @@ When('I edit the Defendant details without making changes', () => {
  */
 When('I edit the Parent or guardian details and change the First name to {string}', (value: string) => {
   log('step', 'Edit Parent/Guardian first name', { value });
-  flow().editParentGuardianAndChangeFirstName(value);
+  accountEnquiryFlow().editParentGuardianAndChangeFirstName(value);
 });
 
 /**
@@ -1049,31 +1191,31 @@ When('I edit the Parent or guardian details and change the First name to {string
  */
 When('I edit the Parent or guardian details without making changes', () => {
   log('step', 'Edit Parent or guardian details without making changes');
-  flow().editParentGuardianDetailsWithoutChanges();
+  accountEnquiryFlow().editParentGuardianDetailsWithoutChanges();
 });
 
 When('I enter {string} into the parent or guardian first name field', (value: string) => {
   const valueWithUniq = applyUniqPlaceholder(value);
   log('step', 'Enter parent or guardian first name', { value: valueWithUniq });
-  flow().enterAddParentGuardianFirstName(valueWithUniq);
+  editParentGuardianDetails().editFirstNames(valueWithUniq);
 });
 
 When('I enter {string} into the amend parent or guardian first name field', (value: string) => {
   const valueWithUniq = applyUniqPlaceholder(value);
   log('step', 'Enter amend parent or guardian first name', { value: valueWithUniq });
-  flow().enterAmendParentGuardianFirstName(valueWithUniq);
+  editParentGuardianDetails().editFirstNames(valueWithUniq);
 });
 
 When('I enter {string} into the parent or guardian last name field', (value: string) => {
   const valueWithUniq = applyUniqPlaceholder(value);
   log('step', 'Enter parent or guardian last name', { value: valueWithUniq });
-  flow().enterParentGuardianLastName(valueWithUniq);
+  editParentGuardianDetails().editLastName(valueWithUniq);
 });
 
 When('I enter {string} into the parent or guardian address line 1 field', (value: string) => {
   const valueWithUniq = applyUniqPlaceholder(value);
   log('step', 'Enter parent or guardian address line 1', { value: valueWithUniq });
-  flow().enterAddParentGuardianAddressLine1(valueWithUniq);
+  editParentGuardianDetails().editAddressLine1(valueWithUniq);
 });
 
 /**
@@ -1084,7 +1226,7 @@ When('I enter {string} into the parent or guardian address line 1 field', (value
 When('I edit the Company details and change the Company name to {string}', (value: string) => {
   const valueWithUniq = applyUniqPlaceholder(value);
   log('step', 'Edit Company name', { value: valueWithUniq });
-  flow().editCompanyDetailsAndChangeName(valueWithUniq);
+  accountEnquiryFlow().editCompanyDetailsAndChangeName(valueWithUniq);
 });
 
 /**
@@ -1092,7 +1234,7 @@ When('I edit the Company details and change the Company name to {string}', (valu
  */
 When('I edit the Company details without making changes', () => {
   log('step', 'Edit Company details without making changes');
-  flow().editCompanyDetailsWithoutChanges();
+  accountEnquiryFlow().editCompanyDetailsWithoutChanges();
 });
 
 /**
@@ -1100,7 +1242,7 @@ When('I edit the Company details without making changes', () => {
  */
 When('I save the defendant details', () => {
   log('step', 'Save defendant details');
-  flow().saveDefendantDetails();
+  accountEnquiryFlow().saveDefendantDetails();
 });
 
 /**
@@ -1108,7 +1250,7 @@ When('I save the defendant details', () => {
  */
 When('I save the parent or guardian details', () => {
   log('step', 'Save parent or guardian details');
-  flow().saveParentGuardianDetails();
+  accountEnquiryFlow().saveParentGuardianDetails();
 });
 
 /**
@@ -1116,7 +1258,7 @@ When('I save the parent or guardian details', () => {
  */
 When('I save the company details', () => {
   log('step', 'Save company details');
-  flow().saveCompanyDetails();
+  accountEnquiryFlow().saveCompanyDetails();
 });
 
 /**
@@ -1125,7 +1267,7 @@ When('I save the company details', () => {
  */
 When('I attempt to cancel editing and choose Cancel on the confirmation dialog', () => {
   log('step', 'Cancel edit and choose Stay');
-  flow().cancelEditAndStay();
+  accountEnquiryFlow().cancelEditAndStay();
 });
 
 /**
@@ -1149,81 +1291,81 @@ When('I attempt to cancel editing and choose OK on the confirmation dialog', () 
 
 When('I cancel adding parent or guardian details without making changes', () => {
   log('step', 'Cancel add parent or guardian details without making changes');
-  flow().cancelAddParentGuardianWithoutChanges();
+  accountEnquiryFlow().cancelAddParentGuardianWithoutChanges();
 });
 
 When('I attempt to cancel adding parent or guardian details and choose Cancel on the confirmation dialog', () => {
   log('step', 'Cancel add parent or guardian details and stay on page');
-  flow().cancelAddParentGuardianAndStay();
+  accountEnquiryFlow().cancelAddParentGuardianAndStay();
 });
 
 When('I attempt to cancel adding parent or guardian details and choose OK on the confirmation dialog', () => {
   log('step', 'Cancel add parent or guardian details and leave page');
-  flow().cancelAddParentGuardianAndLeave();
+  accountEnquiryFlow().cancelAddParentGuardianAndLeave();
 });
 
 When('I cancel removing parent or guardian details', () => {
   log('step', 'Cancel removing parent or guardian details');
-  flow().cancelRemoveParentGuardianDetails();
+  accountEnquiryFlow().cancelRemoveParentGuardianDetails();
 });
 
 When('I confirm removing parent or guardian details', () => {
   log('step', 'Confirm removing parent or guardian details');
-  flow().confirmRemoveParentGuardianDetails();
+  accountEnquiryFlow().confirmRemoveParentGuardianDetails();
 });
 
 When('I start changing the non-paying parent or guardian details', () => {
   log('step', 'Start changing non-paying parent or guardian details');
-  flow().openNonPayingParentGuardianChangeForm();
+  accountEnquiryFlow().openNonPayingParentGuardianChangeForm();
 });
 
 When('I view the amend minor creditor details form', () => {
   log('step', 'View amend minor creditor details form');
-  flow().openMinorCreditorChangeForm();
+  accountEnquiryFlow().openMinorCreditorChangeForm();
 });
 
 When('I cancel changing parent or guardian details without making changes', () => {
   log('step', 'Cancel amend parent or guardian details without making changes');
-  flow().cancelAmendParentGuardianWithoutChanges();
+  accountEnquiryFlow().cancelAmendParentGuardianWithoutChanges();
 });
 
 When('I attempt to cancel changing parent or guardian details and choose Cancel on the confirmation dialog', () => {
   log('step', 'Cancel amend parent or guardian details and stay on page');
-  flow().cancelAmendParentGuardianAndStay();
+  accountEnquiryFlow().cancelAmendParentGuardianAndStay();
 });
 
 When('I attempt to cancel changing parent or guardian details and choose OK on the confirmation dialog', () => {
   log('step', 'Cancel amend parent or guardian details and leave page');
-  flow().cancelAmendParentGuardianAndLeave();
+  accountEnquiryFlow().cancelAmendParentGuardianAndLeave();
 });
 
 When('I attempt to cancel changing minor creditor details and choose OK on the confirmation dialog', () => {
   log('step', 'Cancel amend minor creditor details and leave page');
-  flow().cancelAmendMinorCreditorAndLeave();
+  accountEnquiryFlow().cancelAmendMinorCreditorAndLeave();
 });
 
 When('I amend the minor creditor first name to {string} and discard the changes', (value: string) => {
   const valueWithUniq = applyUniqPlaceholder(value);
   log('step', 'Amend minor creditor first name and discard changes', { value: valueWithUniq });
-  flow().amendMinorCreditorFirstNameAndDiscard(valueWithUniq);
+  accountEnquiryFlow().amendMinorCreditorFirstNameAndDiscard(valueWithUniq);
 });
 
 When('I amend the minor creditor first name to {string} and save', (value: string) => {
   const valueWithUniq = applyUniqPlaceholder(value);
   log('step', 'Amend minor creditor first name and save', { value: valueWithUniq });
-  flow().amendMinorCreditorFirstNameAndSave(valueWithUniq);
+  accountEnquiryFlow().amendMinorCreditorFirstNameAndSave(valueWithUniq);
 });
 
 When('I attempt to amend the minor creditor first name to {string} and save', (value: string) => {
   const valueWithUniq = applyUniqPlaceholder(value);
   log('step', 'Attempt to amend minor creditor first name and save', { value: valueWithUniq });
-  flow().attemptToAmendMinorCreditorFirstNameAndSave(valueWithUniq);
+  accountEnquiryFlow().attemptToAmendMinorCreditorFirstNameAndSave(valueWithUniq);
 });
 
 When('I attempt to save the amend minor creditor details with first name {string}', (value: string) => {
   const valueWithUniq = applyUniqPlaceholder(value);
   log('step', 'Attempt to save current amend minor creditor details with first name', { value: valueWithUniq });
-  flow().attemptToSaveCurrentMinorCreditorAmendFormWithFirstName(valueWithUniq);
+  accountEnquiryFlow().attemptToSaveCurrentMinorCreditorAmendFormWithFirstName(valueWithUniq);
 });
 
 /**
@@ -1236,27 +1378,27 @@ Then('I should remain on the defendant edit page', () => {
 
 Then('I should remain on the add parent or guardian details page', () => {
   log('assert', 'Remain on add parent or guardian details page');
-  flow().assertOnAddParentGuardianDetailsPage();
+  accountEnquiryFlow().assertOnAddParentGuardianDetailsPage();
 });
 
 Then('I should be on the amend parent or guardian details page', () => {
   log('assert', 'Amend parent or guardian details page is visible');
-  flow().assertOnAmendParentGuardianDetailsPage();
+  accountEnquiryFlow().assertOnAmendParentGuardianDetailsPage();
 });
 
 Then('I should remain on the amend parent or guardian details page', () => {
   log('assert', 'Remain on amend parent or guardian details page');
-  flow().assertOnAmendParentGuardianDetailsPage();
+  accountEnquiryFlow().assertOnAmendParentGuardianDetailsPage();
 });
 
 Then('I should be on the amend minor creditor details page', () => {
   log('assert', 'Amend minor creditor details page is visible');
-  flow().assertOnAmendMinorCreditorDetailsPage();
+  editMinorCreditorDetails().assertHeader({ route: 'amend' });
 });
 
 Then('I should remain on the amend minor creditor details page', () => {
   log('assert', 'Remain on amend minor creditor details page');
-  flow().assertOnAmendMinorCreditorDetailsPage();
+  editMinorCreditorDetails().assertHeader({ route: 'amend' });
 });
 
 /**
@@ -1264,7 +1406,7 @@ Then('I should remain on the amend minor creditor details page', () => {
  */
 When('I cancel the company edit and choose to stay', () => {
   log('step', 'Cancel company edit and stay on form');
-  flow().cancelCompanyEditAndStay();
+  accountEnquiryFlow().cancelCompanyEditAndStay();
 });
 
 /**
@@ -1275,7 +1417,7 @@ When('I cancel the company edit and choose to stay', () => {
 When('I discard the company edit changes and expect the header {string}', (expectedHeader: string) => {
   const headerWithUniq = applyUniqPlaceholder(expectedHeader);
   log('step', 'Discard company edits', { expectedHeader: headerWithUniq });
-  flow().discardCompanyEditAndReturn(headerWithUniq);
+  accountEnquiryFlow().discardCompanyEditAndReturn(headerWithUniq);
 });
 
 /**
@@ -1298,7 +1440,7 @@ Then('I should see the company name field contains {string}', (expected: string)
 
 Then('I should see the account details success message {string}', (expected: string) => {
   log('assert', 'Account details success message is visible', { expected });
-  flow().assertAccountDetailsSuccessBanner(expected);
+  navActions().assertSuccessBannerText(expected);
 });
 
 /**
@@ -1326,7 +1468,7 @@ Then('I should return to the account details page Creditor tab', () => {
  */
 Then('I should see the defendant name contains {string}', (expected: string) => {
   log('assert', 'Defendant name contains', { expected });
-  flow().assertDefendantNameContains(expected);
+  accountEnquiryFlow().assertDefendantNameContains(expected);
 });
 
 /**
@@ -1337,31 +1479,31 @@ Then('I should see the defendant name contains {string}', (expected: string) => 
 Then('I should see the parent or guardian name contains {string}', (expected: string) => {
   const expectedWithUniq = applyUniqPlaceholder(expected);
   log('assert', 'Parent or guardian name contains', { expected: expectedWithUniq });
-  flow().assertParentGuardianNameContains(expectedWithUniq);
+  accountEnquiryFlow().assertParentGuardianNameContains(expectedWithUniq);
 });
 
 Then('I should see the minor creditor name contains {string}', (expected: string) => {
   const expectedWithUniq = applyUniqPlaceholder(expected);
   log('assert', 'Minor creditor name contains', { expected: expectedWithUniq });
-  flow().assertMinorCreditorNameContains(expectedWithUniq);
+  accountEnquiryFlow().assertMinorCreditorNameContains(expectedWithUniq);
 });
 
 Then('I should see the parent or guardian first name field contains {string}', (expected: string) => {
   const expectedWithUniq = applyUniqPlaceholder(expected);
   log('assert', 'Parent or guardian first name field contains', { expected: expectedWithUniq });
-  flow().assertAddParentGuardianFirstName(expectedWithUniq);
+  accountEnquiryFlow().assertAddParentGuardianFirstName(expectedWithUniq);
 });
 
 Then('I should see the amend parent or guardian first name field contains {string}', (expected: string) => {
   const expectedWithUniq = applyUniqPlaceholder(expected);
   log('assert', 'Amend parent or guardian first name field contains', { expected: expectedWithUniq });
-  flow().assertAmendParentGuardianFirstName(expectedWithUniq);
+  accountEnquiryFlow().assertAmendParentGuardianFirstName(expectedWithUniq);
 });
 
 When('I enter {string} into the amend minor creditor first name field', (value: string) => {
   const valueWithUniq = applyUniqPlaceholder(value);
   log('step', 'Enter amend minor creditor first name', { value: valueWithUniq });
-  flow().enterAmendMinorCreditorFirstName(valueWithUniq);
+  accountEnquiryFlow().enterAmendMinorCreditorFirstName(valueWithUniq);
 });
 
 /**
@@ -1372,7 +1514,7 @@ When('I enter {string} into the amend minor creditor first name field', (value: 
 Then('I should see the company name contains {string}', (expected: string) => {
   const expectedWithUniq = applyUniqPlaceholder(expected);
   log('assert', 'Company name contains', { expected: expectedWithUniq });
-  flow().assertCompanyNameContains(expectedWithUniq);
+  accountEnquiryFlow().assertCompanyNameContains(expectedWithUniq);
 });
 
 /**
@@ -1382,7 +1524,7 @@ Then('I should see the company name contains {string}', (expected: string) => {
  */
 When('I establish a defendant amendment baseline with first name {string}', (updatedFirstName: string) => {
   log('step', 'Establish defendant amendment baseline', { updatedFirstName });
-  flow().establishDefendantAmendmentBaseline(updatedFirstName);
+  accountEnquiryFlow().establishDefendantAmendmentBaseline(updatedFirstName);
 });
 
 /**
@@ -1393,7 +1535,7 @@ When('I establish a defendant amendment baseline with first name {string}', (upd
 When('I establish a company amendment baseline with company name {string}', (updatedCompanyName: string) => {
   const companyWithUniq = applyUniqPlaceholder(updatedCompanyName);
   log('step', 'Establish company amendment baseline', { updatedCompanyName: companyWithUniq });
-  flow().establishCompanyAmendmentBaseline(companyWithUniq);
+  accountEnquiryFlow().establishCompanyAmendmentBaseline(companyWithUniq);
 });
 
 /**
@@ -1403,7 +1545,7 @@ When('I establish a company amendment baseline with company name {string}', (upd
  */
 When('I establish a parent or guardian amendment baseline with first name {string}', (updatedFirstName: string) => {
   log('step', 'Establish parent/guardian amendment baseline', { updatedFirstName });
-  flow().establishParentGuardianAmendmentBaseline(updatedFirstName);
+  accountEnquiryFlow().establishParentGuardianAmendmentBaseline(updatedFirstName);
 });
 
 /**
@@ -1413,7 +1555,7 @@ When('I establish a parent or guardian amendment baseline with first name {strin
  */
 Then('I verify defendant amendments via API for first name {string}', (expectedForename: string) => {
   log('step', 'Verify defendant amendments via API', { expectedForename });
-  flow().verifyDefendantAmendmentsViaApi(expectedForename);
+  accountEnquiryFlow().verifyDefendantAmendmentsViaApi(expectedForename);
 });
 
 /**
@@ -1424,7 +1566,7 @@ Then('I verify defendant amendments via API for first name {string}', (expectedF
 Then('I verify Company amendments via API for company name {string}', (expectedCompanyName: string) => {
   const companyWithUniq = applyUniqPlaceholder(expectedCompanyName);
   log('assert', 'Verify company amendments via API', { expectedCompanyName: companyWithUniq });
-  flow().verifyCompanyAmendmentsViaApi(companyWithUniq);
+  accountEnquiryFlow().verifyCompanyAmendmentsViaApi(companyWithUniq);
 });
 
 /**
@@ -1434,13 +1576,13 @@ Then('I verify Company amendments via API for company name {string}', (expectedC
  */
 Then('I verify parent or guardian amendments via API for guardian name {string}', (expectedGuardianName: string) => {
   log('assert', 'Verify parent/guardian amendments via API', { expectedGuardianName });
-  flow().verifyParentGuardianAmendmentsViaApi(expectedGuardianName);
+  accountEnquiryFlow().verifyParentGuardianAmendmentsViaApi(expectedGuardianName);
 });
 
 Then('I verify minor creditor amendments via API for first name {string}', (expectedForename: string) => {
   const expectedWithUniq = applyUniqPlaceholder(expectedForename);
   log('assert', 'Verify minor creditor amendments via API', { expectedForename: expectedWithUniq });
-  flow().verifyMinorCreditorAmendmentsViaApi(expectedWithUniq);
+  accountEnquiryFlow().verifyMinorCreditorAmendmentsViaApi(expectedWithUniq);
 });
 
 /**
@@ -1448,7 +1590,7 @@ Then('I verify minor creditor amendments via API for first name {string}', (expe
  */
 Then('I verify no amendments were created via API', () => {
   log('assert', 'Verify no amendments were created via API');
-  flow().verifyNoDefendantAmendments();
+  accountEnquiryFlow().verifyNoDefendantAmendments();
 });
 
 /**
@@ -1456,7 +1598,7 @@ Then('I verify no amendments were created via API', () => {
  */
 Then('I verify no amendments were created via API for company details', () => {
   log('assert', 'Verify no amendments were created via API for company details');
-  flow().verifyNoCompanyAmendments();
+  accountEnquiryFlow().verifyNoCompanyAmendments();
 });
 
 /**
@@ -1464,42 +1606,42 @@ Then('I verify no amendments were created via API for company details', () => {
  */
 Then('I verify no amendments were created via API for parent or guardian details', () => {
   log('assert', 'Verify no amendments were created via API for parent or guardian details');
-  flow().verifyNoParentGuardianAmendments();
+  accountEnquiryFlow().verifyNoParentGuardianAmendments();
 });
 
 Then('I verify the parent or guardian has been removed via API', () => {
   log('assert', 'Verify parent or guardian removal via API');
-  flow().verifyParentGuardianRemovedViaApi();
+  accountEnquiryFlow().verifyParentGuardianRemovedViaApi();
 });
 
 When('I attempt to save the parent or guardian add details', () => {
   log('step', 'Attempt to save add parent or guardian details');
-  flow().attemptSaveAddParentGuardianDetails();
+  accountEnquiryFlow().attemptSaveAddParentGuardianDetails();
 });
 
 Then('I should see the parent or guardian add error summary contains {string}', (expected: string) => {
   log('assert', 'Parent or guardian add error summary contains', { expected });
-  flow().assertAddParentGuardianErrorSummaryContains(expected);
+  accountEnquiryFlow().assertAddParentGuardianErrorSummaryContains(expected);
 });
 
 When('I attempt to save the parent or guardian amend details', () => {
   log('step', 'Attempt to save amend parent or guardian details');
-  flow().attemptSaveAmendParentGuardianDetails();
+  accountEnquiryFlow().attemptSaveAmendParentGuardianDetails();
 });
 
 Then('I should see the parent or guardian amend error summary contains {string}', (expected: string) => {
   log('assert', 'Parent or guardian amend error summary contains', { expected });
-  flow().assertAmendParentGuardianErrorSummaryContains(expected);
+  accountEnquiryFlow().assertAmendParentGuardianErrorSummaryContains(expected);
 });
 
 When('I save the minor creditor amend details', () => {
   log('step', 'Save amend minor creditor details');
-  flow().saveMinorCreditorDetails();
+  editMinorCreditorDetails().saveChanges();
 });
 
 Then('I should see the minor creditor amend error summary contains {string}', (expected: string) => {
   log('assert', 'Minor creditor amend error summary contains', { expected });
-  flow().assertAmendMinorCreditorErrorSummaryContains(expected);
+  accountEnquiryFlow().assertAmendMinorCreditorErrorSummaryContains(expected);
 });
 
 /**
@@ -1510,7 +1652,7 @@ Then('I should see the minor creditor amend error summary contains {string}', (e
 When('I search for the account by company name {string}', (companyName: string) => {
   const companyWithUniq = applyUniqPlaceholder(companyName);
   log('step', 'Search by company name', { companyName: companyWithUniq });
-  flow().searchByCompanyName(companyWithUniq);
+  accountEnquiryFlow().searchByCompanyName(companyWithUniq);
 });
 
 /**
@@ -1521,7 +1663,7 @@ When('I search for the account by company name {string}', (companyName: string) 
 When('I open the company account details for {string}', (companyName: string) => {
   const companyWithUniq = applyUniqPlaceholder(companyName);
   log('step', 'Open company account details', { companyName: companyWithUniq });
-  flow().openCompanyAccountDetailsByNameAndSelectLatest(companyWithUniq);
+  accountEnquiryFlow().openCompanyAccountDetailsByNameAndSelectLatest(companyWithUniq);
 });
 
 /**
@@ -1532,8 +1674,7 @@ When('I open the company account details for {string}', (companyName: string) =>
  */
 When('I open the Add account note screen and verify the header is Add account note', () => {
   log('step', 'Open Add account note screen');
-  cy.location('pathname', common().getTimeoutOptions()).should('match', /\/fines\/account\/defendant\/\d+\/details$/);
-  flow().openAddAccountNoteAndVerifyHeader();
+  accountEnquiryFlow().openAddAccountNoteAndVerifyHeader();
 });
 
 /**
@@ -1545,7 +1686,7 @@ When('I open the Add account note screen and verify the header is Add account no
  */
 When('I enter {string} into the notes field and save the note', (note: string) => {
   log('step', 'Enter and save note', { note });
-  flow().enterAndSaveNote(note);
+  accountEnquiryFlow().enterAndSaveNote(note);
 });
 
 /**
@@ -1557,7 +1698,7 @@ When('I enter {string} into the notes field and save the note', (note: string) =
  */
 When('I record an account note {string}', (noteText: string) => {
   log('step', 'Record account note and return to details', { noteText });
-  flow().openAccountNoteEnterNoteAndSave(noteText);
+  accountEnquiryFlow().openAccountNoteEnterNoteAndSave(noteText);
 });
 
 /**
@@ -1568,7 +1709,7 @@ When('I record an account note {string}', (noteText: string) => {
  */
 When('I start an account note and cancel without saving', () => {
   log('step', 'Start account note then cancel without input');
-  flow().cancelAccountNoteWithoutEntering();
+  accountEnquiryFlow().cancelAccountNoteWithoutEntering();
 });
 
 /**
@@ -1580,7 +1721,7 @@ When('I start an account note and cancel without saving', () => {
  */
 When('I start an account note with {string} and cancel', (noteText: string) => {
   log('step', 'Start account note, enter text, cancel', { noteText });
-  flow().openNotesScreenEnterTextAndCancel(noteText);
+  accountEnquiryFlow().openNotesScreenEnterTextAndCancel(noteText);
 });
 
 /**
@@ -1602,7 +1743,7 @@ When(
     const texts = rows.map((r) => (r['text'] ?? '').trim()).filter((t) => t.length > 0);
 
     log('step', 'Save comments and verify header', { expectedHeader: headerWithUniq });
-    flow().saveCommentsReturnAndAssertHeader(texts, headerWithUniq);
+    accountEnquiryFlow().saveCommentsReturnAndAssertHeader(texts, headerWithUniq);
   },
 );
 
@@ -1616,7 +1757,7 @@ When(
  */
 When('I start an account note with {string} and confirm browser back', (noteText: string) => {
   log('step', 'Start account note, enter text, confirm back navigation', { noteText });
-  flow().openScreenEnterTextAndNavigateBackWithConfirmation(noteText);
+  accountEnquiryFlow().openScreenEnterTextAndNavigateBackWithConfirmation(noteText);
 });
 
 /**
@@ -1624,7 +1765,7 @@ When('I start an account note with {string} and confirm browser back', (noteText
  */
 When('I open the Comments page from the defendant summary and verify the page contents', () => {
   log('step', 'Open Comments from summary');
-  flow().openCommentsFromSummaryAndVerifyPageDetails();
+  accountEnquiryFlow().openCommentsFromSummaryAndVerifyPageDetails();
 });
 
 /**
@@ -1632,13 +1773,7 @@ When('I open the Comments page from the defendant summary and verify the page co
  */
 When('I cancel with confirmation on the Comments page', () => {
   log('step', 'Cancel Comments and confirm leave');
-
-  // Click Cancel and confirm the unsaved-changes dialog
-  // comments().clickCancelLink();
-  common().cancelEditing(true);
-
-  // Optional defensive check: ensure the Comments page has closed before the summary assertion runs
-  cy.location('pathname', common().getTimeoutOptions()).should('match', /\/fines\/account\/defendant\/\d+\/details$/);
+  commentsActions().confirmLeaveAndReturnToSummary();
 });
 
 /**
@@ -1653,7 +1788,7 @@ When('I cancel with confirmation on the Comments page', () => {
  */
 When('I verify route guard behaviour when cancelling comments with {string}', (noteText: string) => {
   log('step', 'Verify Comments route guard', { noteText });
-  flow().verifyRouteGuardBehaviourOnComments(noteText);
+  accountEnquiryFlow().verifyRouteGuardBehaviourOnComments(noteText);
 });
 
 /**
@@ -1689,7 +1824,7 @@ Then('I should see the following values on the Comments form:', (table: DataTabl
   } as const;
 
   log('assert', 'Verify Comments form prefill', expected);
-  flow().verifyPrefilledComments(expected);
+  accountEnquiryFlow().verifyPrefilledComments(expected);
 });
 
 /**
@@ -1699,7 +1834,7 @@ Then('I should see the following values on the Comments form:', (table: DataTabl
  */
 When('I verify route guard behaviour when cancelling Parent or guardian edits', () => {
   log('step', 'Verify Parent/Guardian route guard');
-  flow().verifyParentGuardianRouteGuardBehaviour('Miss Catherine GREEN', 'FNAMECHANGE');
+  accountEnquiryFlow().verifyParentGuardianRouteGuardBehaviour('Miss Catherine GREEN', 'FNAMECHANGE');
 });
 
 /**
@@ -1708,7 +1843,7 @@ When('I verify route guard behaviour when cancelling Parent or guardian edits', 
  */
 When('I edit Parent or guardian details but cancel without saving', () => {
   log('step', 'Edit Parent/Guardian → cancel without saving');
-  flow().cancelParentGuardianEditWithoutSaving();
+  accountEnquiryFlow().cancelParentGuardianEditWithoutSaving();
 });
 
 /**
@@ -1717,7 +1852,7 @@ When('I edit Parent or guardian details but cancel without saving', () => {
  */
 When('I partially edit Parent or guardian details and choose to stay on the page', () => {
   log('step', 'Partially edit Parent/Guardian → stay on page');
-  flow().cancelParentGuardianEditButStayOnPage();
+  accountEnquiryFlow().cancelParentGuardianEditButStayOnPage();
 });
 
 /**

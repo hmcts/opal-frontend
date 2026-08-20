@@ -52,16 +52,28 @@ export class FinesSaResultsMinorCreditorTableWrapperComponent extends AbstractSo
   public override itemsPerPageSignal = signal(25);
   public readonly finesDefaultValues = FINES_DEFAULT_VALUES;
 
-  @Output() public accountIdClicked = new EventEmitter<number>();
+  @Output() public minorCreditorAccountIdClicked = new EventEmitter<number>();
+  @Output() public defendantAccountIdClicked = new EventEmitter<number>();
 
   /**
-   * Emits an event when an account ID is clicked, passing the selected account ID.
+   * Emits an event when a minor creditor account ID is clicked.
    *
    * @param accountId - The account ID that was clicked.
    * @param event - The DOM event that triggered the click.
    */
-  public goToAccount(accountId: number, event?: Event): void {
+  public goToMinorCreditorAccount(accountId: number, event?: Event): void {
     event?.preventDefault();
-    this.accountIdClicked.emit(accountId);
+    this.minorCreditorAccountIdClicked.emit(accountId);
+  }
+
+  /**
+   * Emits an event when an associated defendant account ID is clicked.
+   *
+   * @param accountId - The account ID that was clicked.
+   * @param event - The DOM event that triggered the click.
+   */
+  public goToDefendantAccount(accountId: number, event?: Event): void {
+    event?.preventDefault();
+    this.defendantAccountIdClicked.emit(accountId);
   }
 }

@@ -168,4 +168,12 @@ describe('FinesAccHistoryAndNotesFilterFormComponent', () => {
 
     expect(getDateFromFormatSpy).not.toHaveBeenCalled();
   });
+
+  it('should hide the categories section when no categories are provided', () => {
+    component.categories = [];
+
+    fixture.detectChanges();
+
+    expect(fixture.nativeElement.textContent).not.toContain('Categories');
+  });
 });

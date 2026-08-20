@@ -3,6 +3,7 @@ import { By } from '@angular/platform-browser';
 import { FinesAccSummaryHeaderComponent } from './fines-acc-summary-header.component';
 import { FinesAccBannerMessagesComponent } from '../fines-acc-banner-messages/fines-acc-banner-messages.component';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
+import { FINES_ACC_ACCOUNT_STATUS_BANNERS } from '../constants/fines-acc-account-status-banners.constant';
 
 describe('FinesAccSummaryHeaderComponent', () => {
   let component: FinesAccSummaryHeaderComponent;
@@ -56,6 +57,31 @@ describe('FinesAccSummaryHeaderComponent', () => {
     const banner = fixture.debugElement.query(By.directive(FinesAccBannerMessagesComponent));
     expect(banner.componentInstance.hasVersionMismatch).toBe(true);
     expect(banner.componentInstance.successMessage).toBe('Saved');
+  });
+
+  it.each(Object.entries(FINES_ACC_ACCOUNT_STATUS_BANNERS))(
+    'should render the account status banner for status %s',
+    (statusCode, bannerContent) => {
+      component.accountStatusCode = statusCode;
+      fixture.detectChanges();
+
+      const bannerText = fixture.debugElement.query(By.css('#acc-summary-header-account-status'))?.nativeElement
+        ?.textContent;
+      const banners = fixture.debugElement.queryAll(By.css('opal-lib-moj-alert'));
+
+      expect(bannerText).toContain(bannerContent.heading ?? '');
+      if (bannerContent.label) {
+        expect(bannerText).toContain(bannerContent.label);
+      }
+      expect(banners).toHaveLength(1);
+    },
+  );
+
+  it('should not render the account status banner when the status code is not configured', () => {
+    component.accountStatusCode = 'L';
+    fixture.detectChanges();
+
+    expect(fixture.debugElement.query(By.css('#acc-summary-header-account-status'))).toBeNull();
   });
 
   it('should clear success message when banner emits clearSuccessMessage', () => {

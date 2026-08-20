@@ -70,9 +70,7 @@ describe('finesMacPayloadMapAccountOffences', () => {
 
     const result = finesMacPayloadMapAccountOffences(initialState, payload, null);
 
-    expect(result.offenceDetails[0].formData.fm_offence_details_impositions[0].fm_offence_details_creditor).toEqual(
-      null,
-    );
+    expect(result.offenceDetails[0].formData.fm_offence_details_impositions[0].fm_offence_details_creditor).toBeNull();
   });
 
   it('should return balance remaining of 0 if amount imposed and paid if null', () => {

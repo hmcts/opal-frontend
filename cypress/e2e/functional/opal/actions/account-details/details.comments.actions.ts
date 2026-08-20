@@ -3,6 +3,8 @@
  * @description Actions and assertions for the Account Details comments page (add/edit).
  */
 import { AccountCommentsAddLocators as L } from '../../../../../shared/selectors/account-details/account.comments.details.locators';
+import { AccountAtAGlanceLocators as N } from '../../../../../shared/selectors/account-details/account.at-a-glance.details.locators';
+import { UNSAVED_CHANGES_WARNING } from '../../../../../shared/constants/confirmation-messages';
 import { createScopedLogger } from '../../../../../support/utils/log.helper';
 
 const log = createScopedLogger('AccountDetailsCommentsActions');
@@ -132,7 +134,7 @@ export class AccountDetailsCommentsActions {
     // Prepare native confirm: click OK (accept)
     cy.once('window:confirm', (msg) => {
       const normalized = String(msg).replace(/\s+/g, ' ');
-      expect(normalized, 'Confirm prompt message').to.match(/unsaved changes/i);
+      expect(normalized, 'Confirm prompt message').to.equal(UNSAVED_CHANGES_WARNING);
       return true; // OK = leave
     });
 
@@ -144,18 +146,9 @@ export class AccountDetailsCommentsActions {
       .its('readyState')
       .should('match', /interactive|complete/);
 
-    // If still on /comments/(add|edit), explicitly go back to Details by deriving the URL
-    cy.location('pathname', { timeout: 10_000 }).then((path) => {
-      if (/\/comments\/(add|edit)$/.test(path)) {
-        cy.location('href').then((href) => {
-          const detailsUrl = href.replace(/\/comments\/(add|edit)(?:#.*)?$/, '/details#at-a-glance');
-          cy.visit(detailsUrl);
-        });
-      }
-    });
-
-    // Final assertion: we’re back on Details
+    // Final assertion: we’re back on Details and the summary shell has rendered.
     cy.location('pathname', { timeout: 15_000 }).should('match', /\/fines\/account\/defendant\/\d+\/details$/);
+    cy.get(N.accountSummary.root, { timeout: 15_000 }).should('be.visible');
   }
 
   /**
