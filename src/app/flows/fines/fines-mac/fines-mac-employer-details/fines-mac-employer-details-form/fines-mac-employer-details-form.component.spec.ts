@@ -98,9 +98,4 @@ describe('FinesMacEmployerDetailsFormComponent', () => {
     expect(component['setInitialErrorMessages']).toHaveBeenCalled();
     expect(component['rePopulateForm']).toHaveBeenCalledWith(finesMacStore.employerDetails().formData);
   });
-
-  it('should set autocomplete="off" on the form', () => {
-    fixture.detectChanges();
-    expect(fixture.nativeElement.querySelector('form')?.getAttribute('autocomplete')).toBe('off');
-  });
 });

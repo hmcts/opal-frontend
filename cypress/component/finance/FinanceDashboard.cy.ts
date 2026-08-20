@@ -1,5 +1,6 @@
 import { FINES_DASHBOARD_ROUTING_PATHS } from 'src/app/flows/fines/constants/fines-dashboard-routing-paths.constant';
 import { PrimaryNavigationLocators as PrimaryNav } from '../../shared/selectors/primary-navigation.locators';
+import { FinanceLocators } from '../../shared/selectors/finance.locators';
 import { setupFinancePageComponent } from './setup/SetupComponent';
 
 const FINANCE_JIRA_LABEL = '@JIRA-LABEL:Auto-Payments Processing Filess';
@@ -10,6 +11,13 @@ const buildTags = (...tags: string[]): string[] => [
   ...tags,
   FINANCE_JIRA_EPIC,
   FINANCE_JIRA_LABEL,
+  FINANCE_RELEASE_TAG,
+];
+
+const buildManualCashInputTags = (...tags: string[]): string[] => [
+  ...tags,
+  '@JIRA-LABEL:navigation',
+  '@JIRA-EPIC:PO-2439',
   FINANCE_RELEASE_TAG,
 ];
 
@@ -47,8 +55,10 @@ describe('Finance dashboard', () => {
     () => {
       setupFinancePageComponent({ dashboardType: FINES_DASHBOARD_ROUTING_PATHS.children.finance });
 
-      cy.contains('h2', 'Cash').should('be.visible');
-      cy.get('#automaticCashInputLink').should('be.visible').and('contain.text', 'Automatic Cash Input');
+      cy.contains(FinanceLocators.cashHeading, FinanceLocators.labels.cash).should('be.visible');
+      cy.get(FinanceLocators.automaticCashInputLink)
+        .should('be.visible')
+        .and('contain.text', FinanceLocators.labels.automaticCashInput);
     },
   );
 
@@ -63,7 +73,42 @@ describe('Finance dashboard', () => {
         paymentPermissionBusinessUnitIds: [],
       });
 
-      cy.get('#automaticCashInputLink').should('not.exist');
+      cy.get(FinanceLocators.automaticCashInputLink).should('not.exist');
+    },
+  );
+
+  it(
+    '(AC1, AC1a, AC1b) displays Manual cash input under Cash when the user has the payment permission in any business unit',
+    {
+      tags: [...buildManualCashInputTags('@JIRA-STORY:PO-3480')],
+    },
+    () => {
+      setupFinancePageComponent({
+        dashboardType: FINES_DASHBOARD_ROUTING_PATHS.children.finance,
+        paymentPermissionBusinessUnitIds: [16],
+      });
+
+      cy.contains(FinanceLocators.cashHeading, FinanceLocators.labels.cash)
+        .should('be.visible')
+        .next('ul')
+        .find(FinanceLocators.manualCashInputLink)
+        .should('be.visible')
+        .and('contain.text', FinanceLocators.labels.manualCashInput);
+    },
+  );
+
+  it(
+    '(AC1ai) does not display Manual cash input when the user has no payment permission in any business unit',
+    {
+      tags: [...buildManualCashInputTags('@JIRA-STORY:PO-3480')],
+    },
+    () => {
+      setupFinancePageComponent({
+        dashboardType: FINES_DASHBOARD_ROUTING_PATHS.children.finance,
+        paymentPermissionBusinessUnitIds: [],
+      });
+
+      cy.get(FinanceLocators.manualCashInputLink).should('not.exist');
     },
   );
 });
