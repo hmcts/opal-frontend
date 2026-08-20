@@ -377,13 +377,6 @@ describe('finesSectionPermissionsGuard', () => {
     expect(mockRouter.createUrlTree).toHaveBeenCalledWith([`/${COMMON_PAGES_ROUTING_PATHS.children.accessDenied}`]);
   });
 
-  it('should allow unrestricted dashboard sections without looking up user permissions', async () => {
-    const result = await runGuard({ dashboardType: FINES_DASHBOARD_ROUTING_PATHS.children.finance });
-
-    expect(result).toBe(true);
-    expect(mockOpalUserService.getLoggedInUserState).not.toHaveBeenCalled();
-  });
-
   it('should allow Administration when release-1c-administration is enabled without looking up user permissions', async () => {
     const result = await runGuard({ dashboardType: FINES_DASHBOARD_ROUTING_PATHS.children.administration });
 
@@ -414,6 +407,13 @@ describe('finesSectionPermissionsGuard', () => {
     );
     expect(mockOpalUserService.getLoggedInUserState).not.toHaveBeenCalled();
     expect(mockRouter.createUrlTree).toHaveBeenCalledWith([`/${COMMON_PAGES_ROUTING_PATHS.children.accessDenied}`]);
+  });
+
+  it('should allow unrestricted dashboard sections without looking up user permissions', async () => {
+    const result = await runGuard({ dashboardType: FINES_DASHBOARD_ROUTING_PATHS.children.finance });
+
+    expect(result).toBe(true);
+    expect(mockOpalUserService.getLoggedInUserState).not.toHaveBeenCalled();
   });
 
   it('should allow Finance when release-1c-financial-movements is enabled without looking up user permissions', async () => {

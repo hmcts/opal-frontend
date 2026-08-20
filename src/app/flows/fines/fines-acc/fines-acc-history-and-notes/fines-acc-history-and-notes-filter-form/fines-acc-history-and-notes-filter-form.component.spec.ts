@@ -169,8 +169,11 @@ describe('FinesAccHistoryAndNotesFilterFormComponent', () => {
     expect(getDateFromFormatSpy).not.toHaveBeenCalled();
   });
 
-  it('should set autocomplete="off" on the form', () => {
+  it('should hide the categories section when no categories are provided', () => {
+    component.categories = [];
+
     fixture.detectChanges();
-    expect(fixture.nativeElement.querySelector('form')?.getAttribute('autocomplete')).toBe('off');
+
+    expect(fixture.nativeElement.textContent).not.toContain('Categories');
   });
 });

@@ -136,7 +136,9 @@ describe('Search Account Component - Major Creditors', () => {
       cy.get(MajorAutocompleteLocators.listbox).find('li').contains('Abellio Greater Anglia').click();
       cy.get(MajorAutocompleteLocators.input).should('have.value', 'Abellio Greater Anglia (AGAL)');
       cy.get(NavLocators.minorCreditorsTab).click();
+      fragment$.next('minorCreditors');
       cy.get(NavLocators.majorCreditorsTab).click();
+      fragment$.next('majorCreditors');
       cy.get(MajorAutocompleteLocators.input).should('have.value', '');
     },
   );
@@ -187,7 +189,7 @@ describe('Search Account Component - Major Creditors', () => {
 
   it(
     'AC6c. should route to problem screen when National Insurance number is combined with major creditor criteria',
-    { tags: [...buildTags('@JIRA-STORY:PO-2953'), '@JIRA-EPIC:PO-2630'] },
+    { tags: [...buildTags('@JIRA-STORY:PO-2953'), '@JIRA-EPIC:PO-2630', '@JIRA-TEST-KEY:PO-9914'] },
     () => {
       setupComponent((searchState) => {
         searchState.fsa_search_account_individuals_search_criteria!.fsa_search_account_individuals_national_insurance_number =

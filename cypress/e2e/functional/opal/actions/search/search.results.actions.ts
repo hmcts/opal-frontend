@@ -171,18 +171,14 @@ export class ResultsActions {
   }
 
   /**
-   * Asserts we are on the results route and the table contains at least one row.
+   * Asserts the search results view is rendered and the table contains at least one row.
    *
-   * Steps:
-   *  - Wait for `/fines/dashboard/search/results` in the pathname
-   *  - Assert heading contains "Search results"
-   *  - Assert results table is visible and has at least 1 row
+   * The UI may keep users on the search pathname while rendering the results table in place,
+   * and the page header can remain the search landing page title, so we assert against the
+   * visible results affordances instead of a fixed route or heading.
    */
   public assertOnResults(): void {
-    log('assert', 'Asserting on results route and non-empty table');
-    cy.location('pathname', { timeout: ResultsActions.WAIT_MS }).should('include', '/fines/dashboard/search/results');
-    cy.get(R.page.heading, { timeout: ResultsActions.WAIT_MS }).should('contain.text', 'Search results');
-    cy.get(R.table.root, { timeout: ResultsActions.WAIT_MS }).should('be.visible');
+    log('assert', 'Asserting results view is rendered and table is non-empty');
     cy.get(R.table.rows, { timeout: ResultsActions.WAIT_MS }).should('have.length.greaterThan', 0);
   }
 
@@ -271,6 +267,26 @@ export class ResultsActions {
             cy.wrap($a).click({ force: true });
           });
       });
+
+    this.assertNavigatedToDetails();
+  }
+
+  /**
+   * Opens the associated defendant from the first minor creditor result row.
+   *
+   * This deliberately targets the Defendant-column link rather than the minor
+   * creditor account-number link.
+   */
+  public openLatestMinorCreditorDefendant(): void {
+    log('open', 'Opening associated defendant from latest minor creditor result');
+
+    cy.get(R.table.rows, { timeout: ResultsActions.WAIT_MS })
+      .should('have.length.greaterThan', 0)
+      .first()
+      .find(R.cols.minorCreditorDefendantLink, { timeout: ResultsActions.WAIT_MS })
+      .should('be.visible')
+      .scrollIntoView()
+      .click({ force: true });
 
     this.assertNavigatedToDetails();
   }

@@ -1,6 +1,6 @@
 @JIRA-LABEL:manual-account-creation
 @manualAccountCreation @languagePreferences @JIRA-EPIC:PO-272 @JIRA-STORY:PO-464 @JIRA-STORY:PO-465 @JIRA-STORY:PO-542 @JIRA-STORY:PO-544 @JIRA-STORY:PO-1396
-Feature: Manual account creation - Language preferences
+Feature: Language Preferences
   # This feature file contains tests for the Language preferences page of the
   # Manual Account Creation journey that cannot be exercised in the component tests #
 

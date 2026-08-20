@@ -1,6 +1,6 @@
 @JIRA-LABEL:account-enquiry
 @JIRA-NFR:PO-2322
-Feature: Defendant - Adult or youth - Account Enquiries - Amend Payment Terms Accessibility
+Feature: Account Enquiries Amend Payment Terms Accessibility
 
   Background:
     Given I am logged in with email "opal-test@dev.platform.hmcts.net"
@@ -26,4 +26,10 @@ Feature: Defendant - Adult or youth - Account Enquiries - Amend Payment Terms Ac
     When I search for the account by last name "AmendPayTerms{uniq}" and open the latest result
     And I go to the Payment terms tab
     And I open the amend payment terms form
+    Then I check the page for accessibility
+
+  @R1B @JIRA-STORY:PO-5753 @JIRA-EPIC:PO-2990 @JIRA-TEST-KEY:PO-10013
+  Scenario: AC6: Payment terms tab passes Axe-Core accessibility checks
+    When I search for the account by last name "AmendPayTerms{uniq}" and open the latest result
+    And I go to the Payment terms tab
     Then I check the page for accessibility
