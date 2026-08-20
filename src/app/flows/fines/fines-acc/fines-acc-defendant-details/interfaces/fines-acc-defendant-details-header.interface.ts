@@ -5,6 +5,7 @@ export interface IOpalFinesAccountDefendantDetailsHeader extends IOpalFinesVersi
   defendant_account_id: string;
   debtor_type: string;
   is_youth: boolean;
+  collection_order: boolean | null;
   account_number: string;
   defendant_account_party_id: string;
   parent_guardian_party_id: string | null;
