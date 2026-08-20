@@ -90,7 +90,7 @@ Feature: Minor Creditor Search And Matches Journeys
     Examples:
       | LEGACY_MINOR_CREDITOR_LAST_NAME | LEGACY_MINOR_CREDITOR_NAME | LEGACY_MINOR_CREDITOR_ADDRESS_LINE_1 |
       | MinCredAccUniB                  | placeholder                | Unique MinCred CT                    |
-    @R1BUatTechPRE-PROD @skip
+    @R1BUatTechPreprod @skip
     Examples:
       | LEGACY_MINOR_CREDITOR_LAST_NAME | LEGACY_MINOR_CREDITOR_NAME | LEGACY_MINOR_CREDITOR_ADDRESS_LINE_1 |
       | placeholder                     | placeholder                | placeholder                          |

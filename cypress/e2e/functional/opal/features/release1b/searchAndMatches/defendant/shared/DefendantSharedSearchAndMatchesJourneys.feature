@@ -65,7 +65,7 @@ Feature: Defendant Shared Search And Matches Journeys
     Examples:
       | LEGACY_SHARED_ACCOUNT_NUMBER | LEGACY_SHARED_COMPANY_NAME | LEGACY_SHARED_INDIVIDUAL_NAME |
       | 26000471W                    | OPALTEST                   | EnfPgAccessyeyjkqsje, Alex    |
-    @R1BUatTechPRE-PROD @skip
+    @R1BUatTechPreprod @skip
     Examples:
       | LEGACY_SHARED_ACCOUNT_NUMBER | LEGACY_SHARED_COMPANY_NAME | LEGACY_SHARED_INDIVIDUAL_NAME |
       | 26000471W                    | —                          | EnfPgAccessyeyjkqsje, Alex    |
