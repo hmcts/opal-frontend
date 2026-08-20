@@ -404,7 +404,7 @@ describe('FinesMacAddOffenceComponent', () => {
         'contain',
         "For example, HY35014. If you don't know the offence code, you can",
       );
-      cy.get(DOM_ELEMENTS.offenceLink).should('contain', 'search the offence list');
+      cy.get(DOM_ELEMENTS.offenceLink).should('contain', ' search the offence list');
       cy.get(imposition_1.resultCodeLabel).should('contain', 'Result code');
       cy.get(imposition_1.amountImposedLabel).should('contain', 'Amount imposed');
       cy.get(imposition_1.amountPaidLabel).should('contain', 'Amount paid');

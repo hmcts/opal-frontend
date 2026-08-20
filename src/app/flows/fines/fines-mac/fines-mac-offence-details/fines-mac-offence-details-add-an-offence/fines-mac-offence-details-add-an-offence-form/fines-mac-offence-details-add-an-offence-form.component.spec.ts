@@ -195,8 +195,12 @@ describe('FinesMacOffenceDetailsAddAnOffenceFormComponent', () => {
     expect(guidance).toBeTruthy();
     expect(offenceCodeInput).toBeTruthy();
     expect(guidance?.textContent).toContain("If you don't know the offence code, you can");
-    expect(searchLink?.textContent?.replace(/\s+/g, ' ').trim()).toBe('search the offence list (opens in a new tab)');
-    expect(searchLink?.querySelector('span.govuk-visually-hidden')).toBeNull();
+    expect(searchLink?.textContent?.replace(/\s+/g, ' ').trim()).toBe(
+      "If you don't know the offence code, you can search the offence list (opens in a new tab)",
+    );
+    expect(searchLink?.querySelector('span.govuk-visually-hidden')?.textContent?.trim()).toBe(
+      "If you don't know the offence code, you can",
+    );
     expect(searchLink?.classList.contains('govuk-link--no-visited-state')).toBe(true);
     expect(searchLink?.getAttribute('href')).toBe(component.searchOffenceUrl);
     expect(searchLink?.getAttribute('target')).toBe('_blank');
