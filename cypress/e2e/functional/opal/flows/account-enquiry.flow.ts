@@ -234,6 +234,16 @@ export class AccountEnquiryFlow {
     this.results.openLatestPublished();
   }
 
+  /** Opens the associated defendant linked from the latest minor creditor result. */
+  public openLatestMinorCreditorDefendantFromResults(): void {
+    logAE('method', 'openLatestMinorCreditorDefendantFromResults()');
+    logAE('open', 'Opening associated defendant from latest minor creditor result');
+
+    ForceSingleTabNavigation();
+    this.results.waitForResultsTable();
+    this.results.openLatestMinorCreditorDefendant();
+  }
+
   /**
    * Opens the most recent account from the Companies results tab and asserts navigation.
    */
@@ -640,6 +650,14 @@ export class AccountEnquiryFlow {
   public assertSelectedChildAccountDetailsVisible(): void {
     logAE('method', 'assertSelectedChildAccountDetailsVisible()');
     this.consolidatedAccounts.assertSelectedChildAccountDetailsVisible();
+  }
+
+  /**
+   * Asserts the selected consolidated child account displays the closed account banner.
+   */
+  public assertSelectedChildAccountStatusBannerVisible(): void {
+    logAE('method', 'assertSelectedChildAccountStatusBannerVisible()');
+    this.consolidatedAccounts.assertSelectedChildAccountStatusBannerVisible();
   }
 
   /**

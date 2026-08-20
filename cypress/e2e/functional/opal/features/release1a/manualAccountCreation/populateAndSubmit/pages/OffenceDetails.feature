@@ -287,7 +287,7 @@ Feature: Offence Details
     # Only one imposition left – cannot remove
     And I do not see the "Remove imposition" link for imposition 1
 
-  @R1A @JIRA-EPIC:PO-2219 @JIRA-STORY:PO-2127 @JIRA-DEFECT:PO-8265
+  @R1A @JIRA-EPIC:PO-2219 @JIRA-STORY:PO-2127 @JIRA-DEFECT:PO-8265 @JIRA-TEST-KEY:PO-10038
   Scenario: Changing an imposition from FCOMP to FCOST clears major creditor selection and re-filters creditor options
     When I provide offence details for offence code "TP11003" with a sentence date 9 weeks in the past
 
