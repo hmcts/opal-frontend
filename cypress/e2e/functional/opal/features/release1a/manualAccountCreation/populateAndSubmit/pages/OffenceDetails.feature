@@ -897,7 +897,7 @@ Feature: Offence Details
     Then I am viewing offence results with active offences only
 
 
-  @only @R1A @JIRA-DEFECT:PO-9788
+  @R1A @JIRA-DEFECT:PO-9788
   Scenario: Show warning message when amending imposition amount is cancelled
     When I provide offence details for offence code "TP11003" with a sentence date 9 weeks in the past
     And I record impositions with creditor types:
