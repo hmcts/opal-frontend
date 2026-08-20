@@ -1,5 +1,6 @@
 import { DOM_ELEMENTS as ENF_OVR } from '../../../shared/selectors/account-enquiry/account.enquiry.enforcement-override-add.locators';
 import { ACCOUNT_ENQUIRY_ENFORCEMENT_STATUS_ELEMENTS as ENF } from '../../../shared/selectors/account-enquiry/account.enquiry.enforcement.locators';
+import { UNSAVED_CHANGES_WARNING } from '../../../shared/constants/confirmation-messages';
 import { DOM_ELEMENTS as VERSION_CONTROL } from '../../../shared/selectors/account-enquiry/account.enquiry.version-control.locators';
 import { mount } from 'cypress/angular';
 import { setupAccountEnquiryComponent } from '../accountEnquiry/setup/SetupComponent';
@@ -399,7 +400,7 @@ describe(
         cy.window().then((win) => {
           cy.stub(win, 'confirm')
             .callsFake((message: string) => {
-              expect(message.replace(/\s+/g, ' ')).to.match(/unsaved changes/i);
+              expect(message.replace(/\s+/g, ' ')).to.equal(UNSAVED_CHANGES_WARNING);
               return true;
             })
             .as('confirm');
@@ -428,7 +429,7 @@ describe(
         cy.window().then((win) => {
           cy.stub(win, 'confirm')
             .callsFake((message: string) => {
-              expect(message.replace(/\s+/g, ' ')).to.match(/unsaved changes/i);
+              expect(message.replace(/\s+/g, ' ')).to.equal(UNSAVED_CHANGES_WARNING);
               return false;
             })
             .as('confirm');
@@ -745,7 +746,7 @@ describe(
         cy.window().then((win) => {
           cy.stub(win, 'confirm')
             .callsFake((message: string) => {
-              expect(message.replace(/\s+/g, ' ')).to.match(/unsaved changes/i);
+              expect(message.replace(/\s+/g, ' ')).to.equal(UNSAVED_CHANGES_WARNING);
               return true;
             })
             .as('confirm');
@@ -774,7 +775,7 @@ describe(
         cy.window().then((win) => {
           cy.stub(win, 'confirm')
             .callsFake((message: string) => {
-              expect(message.replace(/\s+/g, ' ')).to.match(/unsaved changes/i);
+              expect(message.replace(/\s+/g, ' ')).to.equal(UNSAVED_CHANGES_WARNING);
               return false;
             })
             .as('confirm');
