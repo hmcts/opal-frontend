@@ -897,6 +897,29 @@ Feature: Offence Details
     Then I am viewing offence results with active offences only
 
 
+  @only @R1A @JIRA-DEFECT:PO-9788
+  Scenario: Show warning message when amending imposition amount is cancelled
+    When I provide offence details for offence code "TP11003" with a sentence date 9 weeks in the past
+    And I record impositions with creditor types:
+      | Imposition | Result code          | Amount imposed | Amount paid | Creditor type | Creditor search |
+      | 1          | Compensation (FCOMP) | 200            | 100         | Minor         |                 |
+    And I maintain individual minor creditor with BACS details for imposition 1:
+      | Title | First name | Last name | Address line 1 | Address line 2 | Address line 3 | Postcode | Account name | Sort code | Account number | Payment reference |
+      | Mr    | FNAME      | LNAME     | Addr1          | Addr2          | Addr3          | TE12 3ST | F LNAME      | 123456    | 12345678       | REF               |
+
+    When I review the offence
+    And I choose to amend offence with offence code "TP11003"
+    And I enter "250" into the "Amount imposed" field for imposition 1 in the MAC flow
+    And I cancel offence details choosing "Cancel" in the unsaved changes warning
+    Then I see the offence details page with header "Add an offence" and text "Offence details"
+    And I see "250" in the "Amount imposed" field for imposition 1 in the MAC flow
+
+    When I cancel offence details choosing "Ok" in the unsaved changes warning
+    Then the offence review table for offence code "TP11003" contains:
+      | Imposition   | Creditor    | Amount imposed | Amount paid | Balance remaining |
+      | Compensation | FNAME LNAME | £200.00        | £100.00     | £100.00           |
+      | Totals       |             | £200.00        | £100.00     | £100.00           |
+
   @R1A @JIRA-STORY:PO-2432 @JIRA-EPIC:PO-245 @JIRA-TEST-KEY:PO-5382
   Scenario: Minor creditor details persist after repeated offence review and change [PO-2432]
     When I provide offence details for offence code "TP11003" with a sentence date 9 weeks in the past
