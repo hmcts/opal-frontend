@@ -267,7 +267,7 @@ describe('ReviewSummaryComponent', () => {
   it(
     'should display correct total figures on the Review offences screen when more than one offence is entered',
     {
-      tags: [...buildTags('@JIRA-STORY:PO-417', '@JIRA-DEFECT:PO-10197')],
+      tags: [...buildTags('@JIRA-STORY:PO-417', '@JIRA-DEFECT:PO-10197'), '@JIRA-EPIC:PO-545'],
     },
     () => {
       finesMacStateTemplate.offenceDetails[0].formData.fm_offence_details_impositions = [
