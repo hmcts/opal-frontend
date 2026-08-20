@@ -140,7 +140,7 @@ describe('FinesDraftCreateAndManageInReviewComponent', () => {
     },
   );
 
-  it.only(
+  it(
     'Accessibility Observation 8: keeps sortable header icons visible when the Create Accounts table reflows',
     { tags: [...buildTags('@JIRA-DEFECT:PO-9135'), '@JIRA-STORY:PO-584', '@JIRA-EPIC:PO-2220'] },
     () => {
