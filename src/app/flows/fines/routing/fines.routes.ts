@@ -3,8 +3,10 @@ import { routing as macRouting } from '../fines-mac/routing/fines-mac.routes';
 import { routing as draftRouting } from '../fines-draft/routing/fines-draft.routes';
 import { routing as accRouting } from '../fines-acc/routing/fines-acc.routes';
 import { routing as saRouting } from '../fines-sa/routing/fines-sa.routes';
+import { routing as aecRouting } from '../fines-aec/routing/fines-aec.routes';
 import { routing as consolidationRouting } from '../fines-con/routing/fines-con.routes';
 import { routing as reportingRouting } from '../fines-reports/routing/fines-reports.routes';
+import { routing as manualCashInputRouting } from '../fines-mci/routing/fines-mci.routes';
 import { FINES_ROUTING_PATHS } from '@routing/fines/constants/fines-routing-paths.constant';
 import { authGuard } from '@hmcts/opal-frontend-common/guards/auth';
 import { canDeactivateGuard } from '@hmcts/opal-frontend-common/guards/can-deactivate';
@@ -101,6 +103,14 @@ export const finesRouting: Routes = [
         canActivate: [authGuard, dashboardTypeGuard, finesSectionPermissionsGuard],
       },
       {
+        path: FINES_ROUTING_PATHS.children.mci.root,
+        children: manualCashInputRouting,
+        canActivate: [authGuard, finesSectionPermissionsGuard],
+        data: {
+          sectionKey: FINES_DASHBOARD_ROUTING_PATHS.children.finance,
+        },
+      },
+      {
         path: FINES_ROUTING_PATHS.children.mac.root,
         loadComponent: () => import('../fines-mac/fines-mac.component').then((c) => c.FinesMacComponent),
         children: macRouting,
@@ -160,6 +170,15 @@ export const finesRouting: Routes = [
         canActivateChild: [release1cEnforcementOperationalReportingFeatureFlagGuard],
         data: {
           sectionKey: FINES_DASHBOARD_ROUTING_PATHS.children.reports,
+        },
+      },
+      {
+        path: FINES_ROUTING_PATHS.children.aec.root,
+        loadComponent: () => import('../fines-aec/fines-aec.component').then((c) => c.FinesAecComponent),
+        children: aecRouting,
+        canActivate: [authGuard, finesSectionPermissionsGuard],
+        data: {
+          sectionKey: FINES_DASHBOARD_ROUTING_PATHS.children.administration,
         },
       },
     ],

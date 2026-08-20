@@ -1,4 +1,5 @@
 import { ConsolidatedAccountsLocators } from '../../../../../shared/selectors/account-details/account.consolidated-accounts.locators';
+import { AccountNavDetailsLocators } from '../../../../../shared/selectors/account-details/account.nav.details.locators';
 import { createScopedLogger } from '../../../../../support/utils/log.helper';
 
 const log = createScopedLogger('AccountDetailsConsolidatedAccountsActions');
@@ -48,6 +49,10 @@ export class AccountDetailsConsolidatedAccountsActions {
         account_number: CHILD_ACCOUNT.account_number,
         defendant_account_id: String(CHILD_ACCOUNT.account_id),
         defendant_account_party_id: String(CHILD_ACCOUNT.account_id),
+        account_status_reference: {
+          account_status_code: 'CS',
+          account_status_display_name: 'Consolidated',
+        },
         has_consolidated_accounts: false,
         party_details: {
           party_id: String(CHILD_ACCOUNT.account_id),
@@ -192,5 +197,20 @@ export class AccountDetailsConsolidatedAccountsActions {
     cy.get(ConsolidatedAccountsLocators.headerCaption, { timeout: AccountDetailsConsolidatedAccountsActions.WAIT_MS })
       .should('be.visible')
       .and('contain.text', CHILD_ACCOUNT.account_number);
+  }
+
+  /**
+   * Asserts the selected consolidated child account displays the closed account banner.
+   */
+  public assertSelectedChildAccountStatusBannerVisible(): void {
+    log('assert', 'Checking selected child account closed banner is visible');
+
+    cy.get(AccountNavDetailsLocators.banners.accountStatus, {
+      timeout: AccountDetailsConsolidatedAccountsActions.WAIT_MS,
+    })
+      .should('be.visible')
+      .and('contain.text', 'Account closed')
+      .and('contain.text', 'Account consolidated');
+    cy.get(AccountNavDetailsLocators.banners.accountStatusInformationAlert).should('be.visible');
   }
 }
