@@ -99,7 +99,9 @@ describe('FinesMacPaymentTermsComponent', () => {
           useFactory: () => {
             const store = new FinesMacStore();
             store.setFinesMacStore(finesMacState);
-            store.setAccountCommentsNotes = mockSetAccountCommentsNote;
+            if (mockSetAccountCommentsNote) {
+              store.setAccountCommentsNotes = mockSetAccountCommentsNote;
+            }
             return store;
           },
         },
@@ -1413,6 +1415,24 @@ describe('FinesMacPaymentTermsComponent', () => {
           cy.get(DOM_ELEMENTS.govukErrorMessage).should('contain', ERROR_MESSAGES.noenfTypeCheck);
         });
       }
+    },
+  );
+
+  it(
+    'should accept commas and full stops in the NOENF reason',
+    {
+      tags: [...buildTags('@JIRA-DEFECT:PO-9143'), '@JIRA-EPIC:PO-545'],
+    },
+    () => {
+      setupComponent('adultOrYouthOnly', null, (state) => {
+        state.paymentTerms.formData.fm_payment_terms_add_enforcement_action = true;
+        state.paymentTerms.formData.fm_payment_terms_enforcement_action = 'NOENF';
+        setCollectionOrderMadeToday(state);
+        setPayInFull(state, '01/01/2033');
+      });
+      cy.get(DOM_ELEMENTS.reasonAccountIsOnNoenf).type("Reason, account-1. O'Neil", { delay: 0 });
+      cy.get(DOM_ELEMENTS.submitButton).click({ multiple: true });
+      cy.get(DOM_ELEMENTS.govukErrorMessage).should('not.exist');
     },
   );
 
