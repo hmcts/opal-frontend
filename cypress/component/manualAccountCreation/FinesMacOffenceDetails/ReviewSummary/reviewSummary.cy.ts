@@ -288,7 +288,7 @@ describe('ReviewSummaryComponent', () => {
           fm_offence_details_imposition_id: 1,
           fm_offence_details_result_id: 'FO',
           fm_offence_details_amount_imposed: 100,
-          fm_offence_details_amount_paid: 341,
+          fm_offence_details_amount_paid: 100,
           fm_offence_details_balance_remaining: 0,
           fm_offence_details_needs_creditor: false,
           fm_offence_details_creditor: null,
@@ -302,7 +302,7 @@ describe('ReviewSummaryComponent', () => {
       cy.get(DOM_ELEMENTS.impositionType).should('have.length', 2);
 
       assertSummaryListValue(DOM_ELEMENTS.GrandtotalAmountImposed, 'Amount imposed', '£441.00');
-      assertSummaryListValue(DOM_ELEMENTS.GrandtotalAmountPaid, 'Amount paid', '£341.00');
+      assertSummaryListValue(DOM_ELEMENTS.GrandtotalAmountPaid, 'Amount paid', '£100.00');
       assertSummaryListValue(DOM_ELEMENTS.GrandtotalRemainingBalance, 'Balance remaining', '£341.00');
     },
   );
