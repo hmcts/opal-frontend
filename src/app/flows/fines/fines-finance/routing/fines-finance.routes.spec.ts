@@ -1,7 +1,7 @@
 import { TitleResolver } from '@hmcts/opal-frontend-common/resolvers/title';
 import { PAGES_ROUTING_PATHS } from '@routing/pages/constants/routing-paths.constant';
 import { describe, expect, it } from 'vitest';
-import { FINES_FINANCE_ROUTING_PATHS } from '../../constants/fines-finance.constant';
+import { FINES_FINANCE_ROUTING_PATHS } from './fines-finance-routing-paths.constant';
 import { FinesFinanceInboundFilesComponent } from '../fines-finance-inbound-files/fines-finance-inbound-files.component';
 import { FinesFinanceOutboundFilesComponent } from '../fines-finance-outbound-files/fines-finance-outbound-files.component';
 import { FinesFinanceUploadVariantBankingFilesComponent } from '../fines-finance-upload-variant-banking-files/fines-finance-upload-variant-banking-files.component';

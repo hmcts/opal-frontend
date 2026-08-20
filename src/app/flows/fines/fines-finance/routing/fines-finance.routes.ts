@@ -1,6 +1,6 @@
 import { Routes } from '@angular/router';
 import { TitleResolver } from '@hmcts/opal-frontend-common/resolvers/title';
-import { FINES_FINANCE_ROUTING_PATHS } from '../../constants/fines-finance.constant';
+import { FINES_FINANCE_ROUTING_PATHS } from './fines-finance-routing-paths.constant';
 import { PAGES_ROUTING_PATHS } from '@routing/pages/constants/routing-paths.constant';
 import { FINES_FINANCE_ROUTING_TITLES } from './constants/fines-finance-routing-titles.constant';
 import { FINES_PERMISSIONS } from '../../../../constants/fines-permissions.constant';

@@ -34,7 +34,7 @@ export const FINES_FINANCE_LINKS: IDashboardPageConfigurationLink[] = [
   },
   {
     id: 'finesFinanceUploadVariantBankingFilesLink',
-    text: 'Upload Variant banking files',
+    text: 'Upload variant banking files',
     routerLink: [
       '/',
       FINES_ROUTING_PATHS.root,
