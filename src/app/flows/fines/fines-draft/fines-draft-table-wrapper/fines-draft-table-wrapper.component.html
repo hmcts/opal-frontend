@@ -1,5 +1,3 @@
-<output aria-atomic="true" class="govuk-visually-hidden">{{ pageChangeAnnouncement() }}</output>
-
 <opal-lib-moj-sortable-table>
   <ng-container head>
     @if (activeTab === 'approved') {
@@ -135,6 +133,7 @@
     }
   </ng-container>
   <ng-container status>
+    <output aria-atomic="true" class="govuk-visually-hidden">{{ pageChangeAnnouncement() }}</output>
     <opal-lib-moj-sortable-table-status
       [columnTitle]="sortedColumnTitleSignal()"
       [sortDirection]="sortedColumnDirectionSignal()"
