@@ -21,7 +21,6 @@ import { CustomAccountInformationItemValueComponent } from '@hmcts/opal-frontend
 import { GovukTagComponent } from '@hmcts/opal-frontend-common/components/govuk/govuk-tag';
 // Pipes & Directives
 import { AsyncPipe, UpperCasePipe } from '@angular/common';
-import { MonetaryPipe } from '@hmcts/opal-frontend-common/pipes/monetary';
 // Constants
 import { FINES_PERMISSIONS } from '@constants/fines-permissions.constant';
 import { FINES_ACC_RESTRICTED_ACCOUNT_STATUS_CODES } from '../constants/fines-acc-restricted-account-status-codes.constant';
@@ -60,6 +59,7 @@ import { FinesAccDefendantDetailsHistoryAndNotesTabComponent } from './fines-acc
 import { IOpalFinesAccountDefendantDetailsConsolidatedAccounts } from '@services/fines/opal-fines-service/interfaces/opal-fines-account-defendant-account-consolidated-accounts.interface';
 import { FinesAccDefendantDetailsConsolidatedAccountsTabComponent } from './fines-acc-defendant-details-consolidated-accounts-tab/fines-acc-defendant-details-consolidated-accounts-tab.component';
 import { getFinesAccCollectionOrderBannerMessage } from '../utils/fines-acc-collection-order-banner.utils';
+import { CustomAccessibleMonetaryComponent } from '@hmcts/opal-frontend-common/components/custom/custom-accessible-monetary';
 
 @Component({
   selector: 'app-fines-acc-defendant-details',
@@ -84,10 +84,10 @@ import { getFinesAccCollectionOrderBannerMessage } from '../utils/fines-acc-coll
     UpperCasePipe,
     FinesAccDefendantDetailsEnforcementTab,
     FinesAccDefendantDetailsImpositionsTabComponent,
-    MonetaryPipe,
     FinesAccSummaryHeaderComponent,
     FinesAccDefendantDetailsHistoryAndNotesTabComponent,
     FinesAccDefendantDetailsConsolidatedAccountsTabComponent,
+    CustomAccessibleMonetaryComponent,
   ],
   templateUrl: './fines-acc-defendant-details.component.html',
   changeDetection: ChangeDetectionStrategy.OnPush,
