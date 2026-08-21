@@ -6,6 +6,7 @@ import {
   MacOffenceDetailsLocators as L,
   MacOffenceDetailsMinorCreditorInformationLocators as MinorCreditorInfo,
 } from '../../../../../shared/selectors/manual-account-creation/mac.offence-details.locators';
+import { UNSAVED_CHANGES_WARNING } from '../../../../../shared/constants/confirmation-messages';
 import { createScopedLogger } from '../../../../../support/utils/log.helper';
 import { CommonActions } from '../common/common.actions';
 import { typeAndSelectAutocompleteOption } from '../common/autocomplete.helper';
@@ -405,7 +406,7 @@ export class ManualOffenceDetailsActions {
       .click({ force: true });
 
     cy.then(() => {
-      expect(warningMessage, 'unsaved-changes warning message').to.match(/unsaved changes/i);
+      expect(warningMessage, 'unsaved-changes warning message').to.equal(UNSAVED_CHANGES_WARNING);
     });
   }
 
