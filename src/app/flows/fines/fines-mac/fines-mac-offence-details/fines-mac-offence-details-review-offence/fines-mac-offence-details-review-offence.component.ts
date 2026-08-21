@@ -34,22 +34,23 @@ export class FinesMacOffenceDetailsReviewOffenceComponent implements OnInit {
   @Input({ required: false }) showDetails: boolean = true;
   @Input({ required: false }) isReadOnly: boolean = false;
   @Output() public actionClicked = new EventEmitter<{ actionName: string; offenceId: number }>();
-  public offenceDetails$!: Observable<IOpalFinesOffences | null>;
+  public offenceDetails$!: Observable<IOpalFinesOffences>;
 
-  private getOffenceDetails(): Observable<IOpalFinesOffences | null> {
+  private getOffenceDetails(): Observable<IOpalFinesOffences> {
     const offenceCode = this.offence.formData.fm_offence_details_offence_cjs_code!;
     const offenceId = this.offence.formData.fm_offence_details_offence_id;
 
-    return this.opalFinesService
-      .getOffenceByCjsCode(offenceCode)
-      .pipe(
-        map(
-          (response: IOpalFinesOffencesRefData) =>
-            this.offenceDetailsService.findExactOffenceMatch(response, offenceCode, offenceId) ??
-            response.refData[0] ??
-            null,
-        ),
-      );
+    return this.opalFinesService.getOffenceByCjsCode(offenceCode).pipe(
+      map((response: IOpalFinesOffencesRefData) => {
+        const match = this.offenceDetailsService.findExactOffenceMatch(response, offenceCode, offenceId);
+
+        return {
+          ...match,
+          cjs_code: match?.cjs_code ?? offenceCode,
+          offence_title: match?.offence_title ?? '',
+        } as IOpalFinesOffences;
+      }),
+    );
   }
 
   /**

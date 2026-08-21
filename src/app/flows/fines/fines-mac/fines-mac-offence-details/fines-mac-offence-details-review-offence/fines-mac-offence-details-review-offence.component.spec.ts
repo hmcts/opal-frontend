@@ -16,6 +16,9 @@ import { FinesMacOffenceDetailsService } from '../services/fines-mac-offence-det
 import { IOpalFinesOffencesRefData } from '../../../services/opal-fines-service/interfaces/opal-fines-offences-ref-data.interface';
 import { OPAL_FINES_OFFENCES_REF_DATA_DUPLICATE_CODE_MOCK } from '../../../services/opal-fines-service/mocks/opal-fines-offences-ref-data-duplicate-code.mock';
 import { OPAL_FINES_OFFENCES_REF_DATA_MOCK } from '../../../services/opal-fines-service/mocks/opal-fines-offences-ref-data.mock';
+import { FinesMacOffenceDetailsReviewOffenceHeadingComponent } from './fines-mac-offence-details-review-offence-heading/fines-mac-offence-details-review-offence-heading.component';
+import { By } from '@angular/platform-browser';
+import { FinesMacOffenceDetailsReviewOffenceImpositionComponent } from './fines-mac-offence-details-review-offence-imposition/fines-mac-offence-details-review-offence-imposition.component';
 
 describe('FinesMacOffenceDetailsReviewOffenceComponent', () => {
   let component: FinesMacOffenceDetailsReviewOffenceComponent;
@@ -125,15 +128,19 @@ describe('FinesMacOffenceDetailsReviewOffenceComponent', () => {
       );
     });
 
-    it('should use the first offence details when no exact match is found', async () => {
+    it('should use the saved offence code when no exact match is found', async () => {
       vi.spyOn(offenceDetailsService, 'findExactOffenceMatch').mockReturnValue(undefined);
+
+      const savedOffenceCode = component.offence.formData.fm_offence_details_offence_cjs_code;
+
       fixture.detectChanges();
+
       const offenceDetails = await firstValueFrom(component.offenceDetails$);
 
       expect(offenceDetails).toEqual(
         expect.objectContaining({
-          offence_title: 'ak test',
-          offence_id: 314441,
+          cjs_code: savedOffenceCode,
+          offence_title: '',
         }),
       );
     });
@@ -158,21 +165,6 @@ describe('FinesMacOffenceDetailsReviewOffenceComponent', () => {
       );
     });
 
-    it('should return null when no exact match is found and refData is empty', async () => {
-      vi.spyOn(offenceDetailsService, 'findExactOffenceMatch').mockReturnValue(undefined);
-
-      vi.mocked(mockOpalFinesService.getOffenceByCjsCode!).mockReturnValue(
-        of({
-          refData: [],
-        } as unknown as IOpalFinesOffencesRefData),
-      );
-
-      fixture.detectChanges();
-      const offenceDetails = await firstValueFrom(component.offenceDetails$);
-
-      expect(offenceDetails).toBeNull();
-    });
-
     it('should call findExactOffenceMatch with the offence code and offence id', async () => {
       const findExactOffenceMatchSpy = vi.spyOn(offenceDetailsService, 'findExactOffenceMatch');
 
@@ -185,5 +177,34 @@ describe('FinesMacOffenceDetailsReviewOffenceComponent', () => {
         component.offence.formData.fm_offence_details_offence_id,
       );
     });
+  });
+  it('should render the saved offence and impositions when refData is empty', async () => {
+    vi.spyOn(offenceDetailsService, 'findExactOffenceMatch').mockReturnValue(undefined);
+
+    vi.mocked(mockOpalFinesService.getOffenceByCjsCode!).mockReturnValue(
+      of({
+        refData: [],
+      } as unknown as IOpalFinesOffencesRefData),
+    );
+
+    const savedOffenceCode = component.offence.formData.fm_offence_details_offence_cjs_code;
+    const savedImpositions = component.offence.formData.fm_offence_details_impositions;
+
+    component.showDetails = true;
+
+    fixture.detectChanges();
+    await fixture.whenStable();
+    fixture.detectChanges();
+
+    const heading = fixture.debugElement.query(By.directive(FinesMacOffenceDetailsReviewOffenceHeadingComponent));
+
+    const imposition = fixture.debugElement.query(By.directive(FinesMacOffenceDetailsReviewOffenceImpositionComponent));
+
+    expect(heading).toBeTruthy();
+    expect(imposition).toBeTruthy();
+
+    expect(heading.componentInstance.offenceCode).toBe(savedOffenceCode);
+    expect(heading.componentInstance.offenceTitle).toBe('');
+    expect(imposition.componentInstance.impositions).toEqual(savedImpositions);
   });
 });
