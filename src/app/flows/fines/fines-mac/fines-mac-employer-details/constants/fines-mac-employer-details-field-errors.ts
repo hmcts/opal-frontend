@@ -110,5 +110,9 @@ export const FINES_MAC_EMPLOYER_DETAILS_FIELD_ERRORS: IFinesMacEmployerDetailsFi
       message: 'Postcode must be 8 characters or fewer',
       priority: 1,
     },
+    alphanumericTextPattern: {
+      message: 'The postcode must only contain letters or numbers',
+      priority: 2,
+    },
   },
 };
