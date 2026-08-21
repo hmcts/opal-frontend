@@ -41,6 +41,7 @@ import { GovukSelectComponent } from '@hmcts/opal-frontend-common/components/gov
 import { GovukTextInputComponent } from '@hmcts/opal-frontend-common/components/govuk/govuk-text-input';
 import { IGovUkSelectOptions } from '@hmcts/opal-frontend-common/components/govuk/govuk-select/interfaces';
 import { CapitalisationDirective } from '@hmcts/opal-frontend-common/directives/capitalisation';
+import { TrimLeadingTrailingWhitespaceDirective } from '@hmcts/opal-frontend-common/directives/trim-leading-trailing-whitespace';
 import { patternValidator } from '@hmcts/opal-frontend-common/validators/pattern-validator';
 import { ALPHANUMERIC_WITH_SPACES_PATTERN, SINGLE_ASCII_CHARACTERS } from '@hmcts/opal-frontend-common/constants';
 import { FINES_MAC_DEFENDANT_TYPES_KEYS } from '../../constants/fines-mac-defendant-types-keys';
@@ -71,6 +72,7 @@ const ALPHANUMERIC_WITH_SPACES_PATTERN_VALIDATOR = patternValidator(
     MojTicketPanelComponent,
     MojDatePickerComponent,
     CapitalisationDirective,
+    TrimLeadingTrailingWhitespaceDirective,
   ],
   templateUrl: './fines-mac-personal-details-form.component.html',
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -126,7 +128,10 @@ export class FinesMacPersonalDetailsFormComponent extends AbstractFormAliasBaseC
         optionalMaxLengthValidator(16),
         ALPHANUMERIC_WITH_SPACES_PATTERN_VALIDATOR,
       ]),
-      fm_personal_details_post_code: new FormControl(null, [optionalMaxLengthValidator(8)]),
+      fm_personal_details_post_code: new FormControl(null, [
+        optionalMaxLengthValidator(8),
+        ALPHANUMERIC_WITH_SPACES_PATTERN_VALIDATOR,
+      ]),
     });
   }
 

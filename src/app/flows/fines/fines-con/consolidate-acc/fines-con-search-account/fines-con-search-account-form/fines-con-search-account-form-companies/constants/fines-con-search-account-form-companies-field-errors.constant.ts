@@ -32,7 +32,7 @@ export const FINES_CON_SEARCH_ACCOUNT_FORM_COMPANIES_FIELD_ERRORS: IFinesConSear
   },
   fcon_search_account_companies_post_code: {
     alphanumericTextPattern: {
-      message: 'Postcode must only include letters a to z, numbers, hyphens, spaces and apostrophes',
+      message: 'Postcode must only include letters or numbers',
       priority: 1,
     },
     maxlength: {
