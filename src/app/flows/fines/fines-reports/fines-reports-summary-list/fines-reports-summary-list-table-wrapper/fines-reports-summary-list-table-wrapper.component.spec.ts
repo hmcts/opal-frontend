@@ -3,6 +3,7 @@ import { provideRouter } from '@angular/router';
 import { beforeEach, describe, expect, it } from 'vitest';
 import { FinesReportsSummaryListTableWrapperComponent } from './fines-reports-summary-list-table-wrapper.component';
 import { FINES_REPORTS_SUMMARY_LIST_TABLE_WRAPPER_TABLE_SORT_DEFAULT } from './constants/fines-reports-summary-list-table-wrapper-table-sort-default.constant';
+import { IFinesReportsSummaryListTableData } from '../interfaces/fines-reports-summary-list-table-data.interface';
 
 describe('FinesReportsSummaryListTableWrapperComponent', () => {
   let component: FinesReportsSummaryListTableWrapperComponent;
@@ -35,6 +36,41 @@ describe('FinesReportsSummaryListTableWrapperComponent', () => {
   it('should use the Fines report page size and default sort state', () => {
     expect(component.itemsPerPageSignal()).toBe(25);
     expect(component.sortStateSignal()).toEqual(FINES_REPORTS_SUMMARY_LIST_TABLE_WRAPPER_TABLE_SORT_DEFAULT);
+  });
+
+  it('should announce the new page and focus its first date cell after rendering', async () => {
+    component.tableData = [
+      ...(component.sortedTableDataSignal() as IFinesReportsSummaryListTableData[]),
+      {
+        'Date and time': 2,
+        Title: 'Report 2',
+        'Business unit': 'London Central & South East',
+        'Created by': 'Olivia Smith',
+        Status: 'Ready',
+        instanceId: '2',
+        dateTimeDisplay: '09 Jun 2026 at 09:15',
+        isDownloadable: true,
+        supportsCsv: true,
+      },
+    ];
+    fixture.componentRef.setInput('paginationPageTitle', 'Template search and retrieve');
+    component.itemsPerPageSignal.set(1);
+    fixture.detectChanges();
+    const previousFirstCell = fixture.nativeElement.querySelector(
+      'td#reportInstanceDateTime-0',
+    ) as HTMLTableCellElement;
+
+    component.onPageChange(2);
+    fixture.detectChanges();
+    await fixture.whenStable();
+
+    const firstCell = fixture.nativeElement.querySelector('td#reportInstanceDateTime-0') as HTMLTableCellElement;
+    const status = fixture.nativeElement.querySelector('output') as HTMLOutputElement;
+    expect(firstCell).not.toBe(previousFirstCell);
+    expect(firstCell.textContent).toContain('08 Jun 2026 at 09:15');
+    expect(firstCell.getAttribute('tabindex')).toBe('-1');
+    expect(document.activeElement).toBe(firstCell);
+    expect(status.textContent?.trim()).toBe('Template search and retrieve, page 2 of 2');
   });
 
   it('should apply an existing sort state input', () => {
