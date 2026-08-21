@@ -14,10 +14,26 @@ describe('FinesMacReviewAccountHistoryComponent', () => {
 
     fixture = TestBed.createComponent(FinesMacReviewAccountHistoryComponent);
     component = fixture.componentInstance;
+    component.defendantName = 'John Smith';
+    component.accountStatus = 'Rejected';
+    component.timelineData = [];
     fixture.detectChanges();
   });
 
   it('should create', () => {
     expect(component).toBeTruthy();
+  });
+
+  it('should display API timeline statuses using the review history labels', () => {
+    component.timelineData = [
+      { status: 'Submitted', username: 'User One', status_date: '2026-08-01', reason_text: null },
+      { status: 'Resubmitted', username: 'User Two', status_date: '2026-08-02', reason_text: null },
+      { status: 'Rejected', username: 'User Three', status_date: '2026-08-03', reason_text: 'Reason' },
+    ];
+
+    fixture.detectChanges();
+
+    const timelineTitles = Array.from<HTMLElement>(fixture.nativeElement.querySelectorAll('.moj-timeline__title'));
+    expect(timelineTitles.map(({ textContent }) => textContent?.trim())).toEqual(['Created', 'Submitted', 'Rejected']);
   });
 });
