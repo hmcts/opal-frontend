@@ -19,6 +19,7 @@ import {
   RELEASE_1C_ENFORCEMENT_OPERATIONAL_REPORTING_FEATURE_FLAG,
   RELEASE_1C_FINANCIAL_MOVEMENTS_FEATURE_FLAG,
 } from '@app/flows/fines/constants/release-feature-flags.constant';
+import { FINANCE_DASHBOARD_CONFIG } from '@app/constants/finance-dashboard-config.constant';
 
 describe('DashboardComponent', () => {
   let component: DashboardComponent;
@@ -210,7 +211,7 @@ describe('DashboardComponent', () => {
 
     expect(component.resolvedConfig()).toEqual({
       ...DASHBOARD_PAGE_CONFIGURATION_MAP.finance,
-      groups: [],
+      groups: [FINANCE_DASHBOARD_CONFIG.groups.find((group) => group.id === 'bankingInterfaces')!],
     });
   });
 

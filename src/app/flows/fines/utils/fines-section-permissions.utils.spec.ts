@@ -27,6 +27,7 @@ import {
   hasAnyPermission,
   isFinesPrimaryNavigationSectionEnabled,
 } from './fines-section-permissions.utils';
+import { FINANCE_DASHBOARD_CONFIG } from 'src/app/constants/finance-dashboard-config.constant';
 
 const createUserStateWithPermissions = (permissionIds: readonly number[]): IOpalUserState => {
   const userState = structuredClone(OPAL_USER_STATE_MOCK);
@@ -581,7 +582,7 @@ describe('fines-section-permissions.utils', () => {
         ),
       ).toEqual({
         ...DASHBOARD_PAGE_CONFIGURATION_MAP.finance,
-        groups: [],
+        groups: [FINANCE_DASHBOARD_CONFIG.groups.find((group) => group.id === 'bankingInterfaces')!],
       });
     });
   });
