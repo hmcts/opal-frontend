@@ -21,6 +21,8 @@ import { OPAL_FINES_ISSUING_AUTHORITY_AUTOCOMPLETE_ITEMS_MOCK } from '@services/
 import { MojDatePickerComponent } from '@hmcts/opal-frontend-common/components/moj/moj-date-picker';
 import { GovukRadioComponent } from '@hmcts/opal-frontend-common/components/govuk/govuk-radio';
 import { AbstractFormAliasBaseComponent } from '@hmcts/opal-frontend-common/components/abstract/abstract-form-alias-base';
+import { TrimLeadingTrailingWhitespaceDirective } from '@hmcts/opal-frontend-common/directives/trim-leading-trailing-whitespace';
+import { By } from '@angular/platform-browser';
 import { afterAll, afterEach, beforeAll, beforeEach, describe, expect, it, vi } from 'vitest';
 import { FINES_MAC_FIXED_PENALTY_DETAILS_FIELD_ERRORS } from '../constants/fines-mac-fixed-penalty-details-field-errors';
 
@@ -114,6 +116,46 @@ describe('FinesMacFixedPenaltyFormComponent', () => {
 
   it('should create the component', () => {
     expect(component).toBeTruthy();
+  });
+
+  it('should trim only surrounding whitespace from the personal postcode input on focusout', () => {
+    component.defendantType = FINES_MAC_DEFENDANT_TYPES_KEYS.adultOrYouthOnly;
+    fixture.detectChanges();
+
+    const postcodeDirectiveDebugElement = fixture.debugElement.query(
+      By.directive(TrimLeadingTrailingWhitespaceDirective),
+    );
+    if (!postcodeDirectiveDebugElement) throw new Error('Postcode input not found');
+
+    const postcodeControl = component.form.get('fm_fp_personal_details_post_code');
+    postcodeControl?.setValue('  AB1  3CD ');
+
+    const postcodeDirective = postcodeDirectiveDebugElement.injector.get(TrimLeadingTrailingWhitespaceDirective);
+    postcodeDirective.onFocusOut();
+    fixture.detectChanges();
+
+    expect(postcodeControl?.value).toBe('AB1  3CD');
+    expect(postcodeControl?.hasError('maxlength')).toBe(false);
+  });
+
+  it('should trim surrounding whitespace from the company postcode input on focusout', () => {
+    component.defendantType = FINES_MAC_DEFENDANT_TYPES_KEYS.company;
+    fixture.detectChanges();
+
+    const postcodeDirectiveDebugElement = fixture.debugElement.query(
+      By.directive(TrimLeadingTrailingWhitespaceDirective),
+    );
+    if (!postcodeDirectiveDebugElement) throw new Error('Postcode input not found');
+
+    const postcodeControl = component.form.get('fm_fp_company_details_postcode');
+    postcodeControl?.setValue('  AB1  3CD ');
+
+    const postcodeDirective = postcodeDirectiveDebugElement.injector.get(TrimLeadingTrailingWhitespaceDirective);
+    postcodeDirective.onFocusOut();
+    fixture.detectChanges();
+
+    expect(postcodeControl?.value).toBe('AB1  3CD');
+    expect(postcodeControl?.hasError('maxlength')).toBe(false);
   });
 
   it('should allow the default retryOffenceCodeLookup callback to be invoked before listener setup', () => {

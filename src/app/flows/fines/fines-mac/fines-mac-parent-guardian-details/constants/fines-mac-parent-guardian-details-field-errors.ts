@@ -228,6 +228,10 @@ export const FINES_MAC_PARENT_GUARDIAN_DETAILS_FIELD_ERRORS: IFinesMacParentGuar
       message: `Postcode must be 8 characters or fewer`,
       priority: 1,
     },
+    alphanumericTextPattern: {
+      message: 'Postcode must only contain letters or numbers',
+      priority: 2,
+    },
   },
   fm_parent_guardian_details_vehicle_make: {
     maxlength: {
