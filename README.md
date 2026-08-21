@@ -19,6 +19,7 @@ This is an [Angular SSR](https://angular.dev/guide/ssr) application. There are t
 - [OpenAPI reference models](#openapi-reference-models)
 - [OpenAPI docs](#openapi-docs)
 
+
 ## Getting Started
 
 ### Prerequisites
