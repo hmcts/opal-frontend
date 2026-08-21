@@ -136,16 +136,19 @@
                 }
               </td>
               <td opal-lib-moj-sortable-table-row-data [id]="'imposition-imposed-amount-' + rowIndex">
-                {{ impositionTableRow.Imposed | monetary: 'remove-minus-symbol' }}
+                <opal-lib-custom-accessible-monetary
+                  [value]="impositionTableRow.Imposed"
+                  format="remove-minus-symbol"
+                />
               </td>
               <td opal-lib-moj-sortable-table-row-data [id]="'imposition-paid-amount-' + rowIndex">
-                {{ impositionTableRow['Paid/Written off'] | monetary }}
+                <opal-lib-custom-accessible-monetary [value]="impositionTableRow['Paid/Written off']" />
               </td>
               <td opal-lib-moj-sortable-table-row-data [id]="'imposition-balance-' + rowIndex">
                 @if (impositionTableRow.hasZeroBalance) {
                   <ng-container *ngTemplateOutlet="notProvided"></ng-container>
                 } @else {
-                  {{ impositionTableRow.Balance | monetary }}
+                  <opal-lib-custom-accessible-monetary [value]="impositionTableRow.Balance" />
                 }
               </td>
               <td opal-lib-moj-sortable-table-row-data [id]="'imposition-date-imposed-' + rowIndex">
