@@ -3,11 +3,11 @@ export const FORMAT_CHECK: { [key: string]: string } = {
   dateOfBirthInvalid: 'Enter date of birth in the format DD/MM/YYYY',
   dateOfBirthNotValid: 'Enter a valid date of birth',
   addressLine1ContainsSpecialCharacters:
-    'Address line 1 must only include letters a to z, numbers, hyphens, spaces and apostrophes, and other basic punctuation marks like full stops commas and brackets',
+    'Address line 1 must only include letters a to z, numbers 0-9 and certain special characters (such as hyphens, spaces, apostrophes and commas)',
   addressLine2ContainsSpecialCharacters:
-    'Address line 2 must only include letters a to z, numbers, hyphens, spaces and apostrophes, and other basic punctuation marks like full stops commas and brackets',
+    'Address line 2 must only include letters a to z, numbers 0-9 and certain special characters (such as hyphens, spaces, apostrophes and commas)',
   addressLine3ContainsSpecialCharacters:
-    'Address line 3 must only include letters a to z, numbers, hyphens, spaces and apostrophes, and other basic punctuation marks like full stops commas and brackets',
+    'Address line 3 must only include letters a to z, numbers 0-9 and certain special characters (such as hyphens, spaces, apostrophes and commas)',
   validNationalInsuranceNumber: 'Enter a National Insurance number in the format AANNNNNNA',
 };
 
@@ -71,7 +71,7 @@ export const CORRECTION_TEST_MESSAGES = {
   firstNameTooLong: "Defendant's first name(s) must be 20 characters or fewer",
   lastNameTooLong: "Defendant's last name must be 30 characters or fewer",
   addressLine1ContainsSpecialCharacters:
-    'Address line 1 must only include letters a to z, numbers, hyphens, spaces and apostrophes, and other basic punctuation marks like full stops commas and brackets',
+    'Address line 1 must only include letters a to z, numbers 0-9 and certain special characters (such as hyphens, spaces, apostrophes and commas)',
 };
 
 export const VEHICLE_DETAILS_ERRORS = {

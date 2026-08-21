@@ -121,7 +121,9 @@ describe('FinesMacPersonalDetailsComponent', () => {
 
   it(
     '(AC.1b) should allow supported punctuation in address lines',
-    { tags: [...buildTags('@JIRA-STORY:PO-360'), '@JIRA-EPIC:PO-272', '@JIRA-TEST-KEY:PO-3974'] },
+    {
+      tags: [...buildTags('@JIRA-STORY:PO-360', '@JIRA-DEFECT:PO-9144'), '@JIRA-EPIC:PO-272', '@JIRA-TEST-KEY:PO-3974'],
+    },
     () => {
       setupComponent(null, '', (finesMacState) => {
         finesMacState.personalDetails.formData.fm_personal_details_address_line_1 = `Flat 3, 10-12 O'Leary Street`;
@@ -133,6 +135,28 @@ describe('FinesMacPersonalDetailsComponent', () => {
       cy.get(DOM_ELEMENTS.errorSummary).should('not.contain', FORMAT_CHECK.addressLine1ContainsSpecialCharacters);
       cy.get(DOM_ELEMENTS.errorSummary).should('not.contain', FORMAT_CHECK.addressLine2ContainsSpecialCharacters);
       cy.get(DOM_ELEMENTS.errorSummary).should('not.contain', FORMAT_CHECK.addressLine3ContainsSpecialCharacters);
+    },
+  );
+
+  it(
+    '(PO-9144) should allow staff to complete personal details with GOB-supported address characters',
+    { tags: [...buildTags('@JIRA-DEFECT:PO-9144'), '@JIRA-EPIC:PO-272'] },
+    () => {
+      const formSubmitSpy = Cypress.sinon.spy();
+
+      setupComponent(formSubmitSpy, 'adultOrYouthOnly');
+
+      cy.get(DOM_ELEMENTS.titleSelect).select('Mr');
+      cy.get(DOM_ELEMENTS.firstNamesInput).clear().type('John', { delay: 0 });
+      cy.get(DOM_ELEMENTS.lastNameInput).clear().type("O'Leary", { delay: 0 });
+      cy.get(DOM_ELEMENTS.addressLine1Input).clear().type("Flat 3, 10-12 O'Leary St", { delay: 0 });
+      cy.get(DOM_ELEMENTS.addressLine2Input).clear().type('Unit_4 (Rear)*.', { delay: 0 });
+      cy.get(DOM_ELEMENTS.addressLine3Input).clear().type('Area 51', { delay: 0 });
+
+      cy.get(DOM_ELEMENTS.submitButton).contains('Add contact details').click();
+
+      cy.get(DOM_ELEMENTS.errorSummary).should('not.exist');
+      cy.wrap(formSubmitSpy).should('have.been.calledOnce');
     },
   );
 
@@ -442,7 +466,7 @@ describe('FinesMacPersonalDetailsComponent', () => {
           'Stuart Philips aarogyam Guuci Coach VII';
         finesMacState.personalDetails.formData.fm_personal_details_surname =
           'Chicago bulls Burberry RedBull 2445 PizzaHut';
-        finesMacState.personalDetails.formData.fm_personal_details_address_line_1 = 'test Road *12';
+        finesMacState.personalDetails.formData.fm_personal_details_address_line_1 = 'test Road /12';
       });
 
       cy.get(DOM_ELEMENTS.submitButton).contains('Return to account details').click();

@@ -19,9 +19,12 @@ export const FORMAT_CHECK = {
   surnameRequired: `Enter last name`,
   bankAccountNameAlphabeticalTextPattern:
     'Name on account must only include letters a to z, numbers 0-9 and certain special characters (such as hyphens, spaces, apostrophes and commas)',
-  addressLine1SpecialCharactersPattern: 'Address line 1 must only contain letters or numbers',
-  addressLine2SpecialCharactersPattern: 'Address line 2 must only contain letters or numbers',
-  addressLine3SpecialCharactersPattern: 'Address line 3 must only contain letters or numbers',
+  addressLine1SpecialCharactersPattern:
+    'Address line 1 must only include letters a to z, numbers 0-9 and certain special characters (such as hyphens, spaces, apostrophes and commas)',
+  addressLine2SpecialCharactersPattern:
+    'Address line 2 must only include letters a to z, numbers 0-9 and certain special characters (such as hyphens, spaces, apostrophes and commas)',
+  addressLine3SpecialCharactersPattern:
+    'Address line 3 must only include letters a to z, numbers 0-9 and certain special characters (such as hyphens, spaces, apostrophes and commas)',
   companyNameAlphabeticalTextPattern: `Company name must only include letters a to z, numbers 0-9 and certain special characters (hyphens, spaces, apostrophes)`,
   surnameAlphabeticalTextPattern: `Last name must only contain letters`,
   forenamesAlphabeticalTextPattern: `First name(s) must only contain letters`,
