@@ -256,6 +256,46 @@ export class FinesMacOffenceDetailsAddAnOffenceFormComponent
   }
 
   /**
+   * Focuses an element by ID, or observes the DOM until the element is rendered.
+   * This supports the accessible autocomplete input, which is created asynchronously by the child component.
+   *
+   * @param elementId - The ID of the focusable element.
+   */
+  private focusElementWhenAvailable(elementId: string): void {
+    const focusElement = (): boolean => {
+      const element = this.document.getElementById(elementId);
+      element?.focus();
+      return !!element;
+    };
+
+    if (focusElement() || typeof MutationObserver === 'undefined' || !this.document.body) {
+      return;
+    }
+
+    const observer = new MutationObserver(() => {
+      if (focusElement()) {
+        observer.disconnect();
+      }
+    });
+    observer.observe(this.document.body, { childList: true, subtree: true });
+  }
+
+  /**
+   * Moves focus to the visible result-code autocomplete input for an imposition row.
+   *
+   * @param index - The index of the imposition row to focus.
+   */
+  private focusImpositionResultCode(index: number): void {
+    const resultCodeInputId = this.formArrayControls[index]?.['fm_offence_details_result_id']?.inputId;
+
+    if (!resultCodeInputId) {
+      return;
+    }
+
+    this.focusElementWhenAvailable(`${resultCodeInputId}-autocomplete`);
+  }
+
+  /**
    * Sets up a result code listener for the specified index and form array name.
    * This method invokes the `resultCodeListener` and updates the `fieldErrors` object
    * with the field errors specific to the given index.
@@ -712,46 +752,6 @@ export class FinesMacOffenceDetailsAddAnOffenceFormComponent
   public override addControlsToFormArray(index: number, formArrayName: string): void {
     super.addControlsToFormArray(index, formArrayName);
     this.setupResultCodeListener(index);
-  }
-
-  /**
-   * Focuses an element by ID, or observes the DOM until the element is rendered.
-   * This supports the accessible autocomplete input, which is created asynchronously by the child component.
-   *
-   * @param elementId - The ID of the focusable element.
-   */
-  private focusElementWhenAvailable(elementId: string): void {
-    const focusElement = (): boolean => {
-      const element = this.document.getElementById(elementId);
-      element?.focus();
-      return !!element;
-    };
-
-    if (focusElement() || typeof MutationObserver === 'undefined' || !this.document.body) {
-      return;
-    }
-
-    const observer = new MutationObserver(() => {
-      if (focusElement()) {
-        observer.disconnect();
-      }
-    });
-    observer.observe(this.document.body, { childList: true, subtree: true });
-  }
-
-  /**
-   * Moves focus to the visible result-code autocomplete input for an imposition row.
-   *
-   * @param index - The index of the imposition row to focus.
-   */
-  private focusImpositionResultCode(index: number): void {
-    const resultCodeInputId = this.formArrayControls[index]?.['fm_offence_details_result_id']?.inputId;
-
-    if (!resultCodeInputId) {
-      return;
-    }
-
-    this.focusElementWhenAvailable(`${resultCodeInputId}-autocomplete`);
   }
 
   /**
