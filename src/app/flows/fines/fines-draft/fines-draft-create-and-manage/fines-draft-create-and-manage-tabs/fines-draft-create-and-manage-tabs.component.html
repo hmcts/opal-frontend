@@ -97,6 +97,7 @@
           [approvedAccountLinkEnabled]="hasApprovedAccountLinkAccess()"
           (linkClicked)="onDefendantClick($event)"
           (accountClicked)="onAccountClick($event)"
+          paginationPageTitle="Create accounts"
         ></app-fines-draft-table-wrapper>
       } @else {
         @switch (activeTab) {

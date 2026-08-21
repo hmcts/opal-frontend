@@ -28,6 +28,25 @@ describe('FinesDraftTableWrapperComponent', () => {
     expect(component).toBeTruthy();
   });
 
+  it('should announce the new page and focus its first cell after rendering', async () => {
+    component.itemsPerPageSignal.set(1);
+    fixture.componentRef.setInput('paginationPageTitle', 'Review accounts');
+    fixture.detectChanges();
+    const previousFirstCell = fixture.nativeElement.querySelector('td#defendant') as HTMLTableCellElement;
+
+    component.onPageChange(2);
+    fixture.detectChanges();
+    await fixture.whenStable();
+
+    const firstCell = fixture.nativeElement.querySelector('td#defendant') as HTMLTableCellElement;
+    const status = fixture.nativeElement.querySelector('output') as HTMLOutputElement;
+    expect(firstCell).not.toBe(previousFirstCell);
+    expect(firstCell.textContent).toContain('Jane Smith');
+    expect(firstCell.getAttribute('tabindex')).toBe('-1');
+    expect(document.activeElement).toBe(firstCell);
+    expect(status.textContent?.trim()).toBe('Review accounts, page 2 of 2');
+  });
+
   it('should set displayTableDataSignal when tableData input is provided', () => {
     const testData: IFinesDraftTableWrapperTableData[] = FINES_DRAFT_TABLE_WRAPPER_TABLE_DATA_MOCK;
     component.tableData = testData;
