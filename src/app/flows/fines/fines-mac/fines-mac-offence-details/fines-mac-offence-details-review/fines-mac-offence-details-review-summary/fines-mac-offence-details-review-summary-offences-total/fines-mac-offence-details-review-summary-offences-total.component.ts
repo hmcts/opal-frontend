@@ -6,10 +6,11 @@ import {
 import { IFinesMacOffenceDetailsReviewSummaryOffencesTotalTotals } from './interfaces/fines-mac-offence-details-review-summary-offences-total-totals.interface';
 import { IFinesMacOffenceDetailsReviewSummaryForm } from '../../interfaces/fines-mac-offence-details-review-summary-form.interface';
 import { UtilsService } from '@hmcts/opal-frontend-common/services/utils-service';
+import { CustomAccessibleMonetaryComponent } from '@hmcts/opal-frontend-common/components/custom/custom-accessible-monetary';
 
 @Component({
   selector: 'app-fines-mac-offence-details-review-summary-offences-total',
-  imports: [GovukSummaryListComponent, GovukSummaryListRowComponent],
+  imports: [GovukSummaryListComponent, GovukSummaryListRowComponent, CustomAccessibleMonetaryComponent],
   templateUrl: './fines-mac-offence-details-review-summary-offences-total.component.html',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
@@ -28,7 +29,10 @@ export class FinesMacOffenceDetailsReviewSummaryOffencesTotalComponent implement
   private getTotals(): void {
     for (const offence of this.offences) {
       for (const imposition of offence.formData.fm_offence_details_impositions) {
-        if (imposition.fm_offence_details_amount_imposed && imposition.fm_offence_details_balance_remaining) {
+        if (
+          imposition.fm_offence_details_amount_imposed !== null &&
+          imposition.fm_offence_details_balance_remaining !== null
+        ) {
           const amountImposed: number = +imposition.fm_offence_details_amount_imposed;
           const amountPaid: number = +imposition.fm_offence_details_amount_paid!;
           const balanceRemaining: number = +imposition.fm_offence_details_balance_remaining;
