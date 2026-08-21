@@ -730,8 +730,9 @@ describe('FinesMacOffenceDetailsAddAnOffenceFormComponent', () => {
   it('should focus the new imposition result-code input after adding another imposition', async () => {
     const newRowIndex = component.formArrayControls.length;
     const expectedInputId = `fm_offence_details_result_id_${newRowIndex}-autocomplete`;
+    const addImpositionButton = fixture.nativeElement.querySelector('#addImposition') as HTMLButtonElement;
 
-    component.addAnotherImposition();
+    addImpositionButton.click();
     fixture.detectChanges();
     await fixture.whenStable();
 
