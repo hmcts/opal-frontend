@@ -129,6 +129,51 @@ describe('FinesConSearchAccountFormIndividualsComponent', () => {
     ).toBe(mockData.fcon_search_account_individuals_post_code);
   });
 
+  it('should validate postcode pattern on the individuals postcode control', () => {
+    const postcodeControl = component.form.get(
+      'fcon_search_account_individuals_search_criteria.fcon_search_account_individuals_post_code',
+    );
+
+    postcodeControl?.setValue('SW1A 1AA');
+    expect(postcodeControl?.hasError('alphanumericTextPattern')).toBe(false);
+
+    postcodeControl?.setValue('SW1A:1AA');
+    expect(postcodeControl?.hasError('alphanumericTextPattern')).toBe(true);
+  });
+
+  it('should validate postcode max length after stripping whitespace on the individuals postcode control', () => {
+    const postcodeControl = component.form.get(
+      'fcon_search_account_individuals_search_criteria.fcon_search_account_individuals_post_code',
+    );
+
+    postcodeControl?.setValue('SW1A 1AA');
+    expect(postcodeControl?.hasError('maxlength')).toBe(false);
+
+    postcodeControl?.setValue('AB12 3CD');
+    expect(postcodeControl?.hasError('maxlength')).toBe(false);
+
+    postcodeControl?.setValue('AB12 3CDA');
+    expect(postcodeControl?.hasError('maxlength')).toBe(true);
+  });
+
+  it('should trim only surrounding whitespace from the postcode input on focusout', () => {
+    const postcodeInput = fixture.nativeElement.querySelector(
+      'input[name="fcon_search_account_individuals_post_code"]',
+    ) as HTMLInputElement | null;
+    if (!postcodeInput) throw new Error('Postcode input not found');
+
+    const postcodeControl = component.form.get(
+      'fcon_search_account_individuals_search_criteria.fcon_search_account_individuals_post_code',
+    );
+
+    postcodeControl?.setValue('  AB1  3CD ');
+    postcodeInput.dispatchEvent(new FocusEvent('focusout', { bubbles: true }));
+    fixture.detectChanges();
+
+    expect(postcodeControl?.value).toBe('AB1  3CD');
+    expect(postcodeControl?.hasError('maxlength')).toBe(false);
+  });
+
   it('should require last name when first names are provided', () => {
     component.form
       .get('fcon_search_account_individuals_search_criteria.fcon_search_account_individuals_last_name')
