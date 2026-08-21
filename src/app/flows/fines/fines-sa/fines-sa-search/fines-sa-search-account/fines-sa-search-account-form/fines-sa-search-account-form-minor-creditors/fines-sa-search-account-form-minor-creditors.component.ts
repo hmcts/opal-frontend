@@ -26,6 +26,7 @@ import {
   IAbstractFormBaseFormErrorSummaryMessage,
   IAbstractFormControlErrorMessage,
 } from '@hmcts/opal-frontend-common/components/abstract/interfaces';
+import { TrimLeadingTrailingWhitespaceDirective } from '@hmcts/opal-frontend-common/directives/trim-leading-trailing-whitespace';
 
 const ALPHANUMERIC_WITH_HYPHENS_SPACES_APOSTROPHES_DOT_PATTERN_VALIDATOR = patternValidator(
   ALPHANUMERIC_WITH_HYPHENS_SPACES_APOSTROPHES_DOT_PATTERN,
@@ -33,7 +34,7 @@ const ALPHANUMERIC_WITH_HYPHENS_SPACES_APOSTROPHES_DOT_PATTERN_VALIDATOR = patte
 );
 const ALPHANUMERIC_WITH_SPACES_PATTERN_VALIDATOR = patternValidator(
   ALPHANUMERIC_WITH_SPACES_PATTERN,
-  'alphanumericWithSpacesPattern',
+  'alphanumericTextPattern',
 );
 const LETTERS_WITH_SPACES_PATTERN_VALIDATOR = patternValidator(LETTERS_WITH_SPACES_PATTERN, 'lettersWithSpacesPattern');
 
@@ -58,6 +59,7 @@ const LETTERS_WITH_SPACES_PATTERN_VALIDATOR = patternValidator(LETTERS_WITH_SPAC
     GovukCheckboxesComponent,
     GovukCheckboxesItemComponent,
     GovukTextInputComponent,
+    TrimLeadingTrailingWhitespaceDirective,
   ],
   templateUrl: './fines-sa-search-account-form-minor-creditors.component.html',
   changeDetection: ChangeDetectionStrategy.OnPush,
