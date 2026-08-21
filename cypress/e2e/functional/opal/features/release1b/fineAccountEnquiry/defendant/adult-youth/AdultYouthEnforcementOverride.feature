@@ -38,7 +38,7 @@ Feature: Adult Youth Enforcement Override
       And the enforcement override summary shows:
         | enforcement override | Application made for Benefit Deductions (ABDC) |
 
-    @R1B @JIRA-STORY:PO-1849 @JIRA-EPIC:PO-1675
+    @R1B @JIRA-STORY:PO-1849 @JIRA-EPIC:PO-1675 @JIRA-TEST-KEY:PO-9997
     Scenario: Changing the existing enforcement court returns to the Enforcement tab with a success banner
       Given the enforcement court summary shows an existing value
       When I change the enforcement court to a different value
@@ -46,7 +46,7 @@ Feature: Adult Youth Enforcement Override
       And the enforcement court summary shows the selected value
       And the enforcement court success banner is "Enforcement court changed"
 
-    @R1B @JIRA-STORY:PO-1849 @JIRA-EPIC:PO-1675
+    @R1B @JIRA-STORY:PO-1849 @JIRA-EPIC:PO-1675 @JIRA-TEST-KEY:PO-9998
     Scenario: Saving the same changed enforcement court again does not display a success banner
       Given the enforcement court summary shows an existing value
       When I change the enforcement court to a different value
@@ -58,7 +58,7 @@ Feature: Adult Youth Enforcement Override
       And the enforcement court summary shows the selected value
       And the enforcement success banner is not displayed
 
-    @R1B @JIRA-STORY:PO-1849 @JIRA-EPIC:PO-1675
+    @R1B @JIRA-STORY:PO-1849 @JIRA-EPIC:PO-1675 @JIRA-TEST-KEY:PO-9999
     Scenario: Cancelling enforcement court change without edits returns to the Enforcement tab
       Given the enforcement court summary shows an existing value
       When I open the change enforcement court form
@@ -66,7 +66,7 @@ Feature: Adult Youth Enforcement Override
       Then I should return to the Enforcement tab
       And the enforcement court summary still shows the original value
 
-    @R1B @JIRA-STORY:PO-1849 @JIRA-EPIC:PO-1675
+    @R1B @JIRA-STORY:PO-1849 @JIRA-EPIC:PO-1675 @JIRA-TEST-KEY:PO-10000
     Scenario: Discarding an edited enforcement court change keeps the changed value on the Enforcement tab
       Given the enforcement court summary shows an existing value
       When I change the enforcement court to a different value

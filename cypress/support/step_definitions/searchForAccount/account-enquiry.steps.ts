@@ -118,6 +118,12 @@ When('I open the latest matching result from the search results', () => {
   accountEnquiryFlow().openMostRecentFromResults();
 });
 
+/** Opens the Defendant-column link from the latest minor creditor result row. */
+When('I open the defendant linked from the latest minor creditor search result', () => {
+  log('step', 'Opening defendant linked from latest minor creditor search result');
+  accountEnquiryFlow().openLatestMinorCreditorDefendantFromResults();
+});
+
 /**
  * @step Opens the latest matching account from the Companies tab on the Search results page.
  */
@@ -594,6 +600,14 @@ When('I view the first child account record', () => {
 Then('I am presented with the details of the selected child account', () => {
   log('assert', 'Selected child account details are displayed');
   accountEnquiryFlow().assertSelectedChildAccountDetailsVisible();
+});
+
+/**
+ * @step Verifies the selected child account displays the closed account banner.
+ */
+Then('I am notified that the selected child account is closed because it was consolidated', () => {
+  log('assert', 'Selected child account consolidated status banner is displayed');
+  accountEnquiryFlow().assertSelectedChildAccountStatusBannerVisible();
 });
 
 /**

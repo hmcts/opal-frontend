@@ -136,6 +136,8 @@ export const AccountNavDetailsLocators = {
 
   /** Page-level banner messages rendered above the account details header. */
   banners: {
+    accountStatus: '#defendant-account-status',
+    accountStatusInformationAlert: '#defendant-account-status opal-lib-moj-alert[type="information"]',
     success: 'opal-lib-moj-alert[type="success"]',
     successText: 'opal-lib-moj-alert-content-text',
   },
