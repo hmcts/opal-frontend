@@ -52,11 +52,13 @@ describe('FinesAccSummaryHeaderComponent', () => {
   it('should pass banner inputs from accountStore', () => {
     vi.spyOn(component.accountStore, 'hasVersionMismatch').mockReturnValue(true);
     vi.spyOn(component.accountStore, 'successMessage').mockReturnValue('Saved');
+    component.collectionOrderBannerMessage = 'Account has no Collection Order.';
     fixture.detectChanges();
 
     const banner = fixture.debugElement.query(By.directive(FinesAccBannerMessagesComponent));
     expect(banner.componentInstance.hasVersionMismatch).toBe(true);
     expect(banner.componentInstance.successMessage).toBe('Saved');
+    expect(banner.componentInstance.collectionOrderBannerMessage).toBe('Account has no Collection Order.');
   });
 
   it.each(Object.entries(FINES_ACC_ACCOUNT_STATUS_BANNERS))(

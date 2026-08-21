@@ -15,7 +15,9 @@ describe('FinesAccBannerMessagesComponent', () => {
     fixture = TestBed.createComponent(FinesAccBannerMessagesComponent);
     component = fixture.componentInstance;
     component.hasVersionMismatch = false;
+    component.hasPaymentHold = false;
     component.successMessage = null;
+    component.collectionOrderBannerMessage = null;
   });
 
   it('should create', () => {
@@ -56,5 +58,25 @@ describe('FinesAccBannerMessagesComponent', () => {
     const bannerText = fixture.debugElement.query(By.css('opal-lib-moj-alert-content-text'))?.nativeElement
       ?.textContent;
     expect(bannerText).toContain('Saved');
+  });
+
+  it('should render the Collection Order warning banner when collectionOrderBannerMessage is provided', () => {
+    component.collectionOrderBannerMessage = 'Account has no Collection Order.';
+    fixture.detectChanges();
+
+    const banner = fixture.debugElement.query(By.css('#acc-summary-header-banners-collection-order'));
+    const bannerText = banner.query(By.css('opal-lib-moj-alert-content-text'))?.nativeElement?.textContent;
+    const alert = banner.query(By.css('opal-lib-moj-alert'));
+
+    expect(bannerText).toContain('Account has no Collection Order.');
+    expect(alert.attributes['type']).toBe('warning');
+    expect(alert.attributes['showDismiss']).toBeUndefined();
+  });
+
+  it('should not render the Collection Order warning banner when collectionOrderBannerMessage is null', () => {
+    component.collectionOrderBannerMessage = null;
+    fixture.detectChanges();
+
+    expect(fixture.debugElement.query(By.css('#acc-summary-header-banners-collection-order'))).toBeNull();
   });
 });
