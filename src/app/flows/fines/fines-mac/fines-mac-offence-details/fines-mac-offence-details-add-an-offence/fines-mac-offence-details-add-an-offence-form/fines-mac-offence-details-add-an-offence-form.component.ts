@@ -3,6 +3,7 @@ import {
   ChangeDetectionStrategy,
   ChangeDetectorRef,
   Component,
+  DestroyRef,
   EventEmitter,
   Injector,
   Input,
@@ -105,8 +106,10 @@ export class FinesMacOffenceDetailsAddAnOffenceFormComponent
   private readonly finesMacStore = inject(FinesMacStore);
   private readonly document = inject(DOCUMENT);
   private readonly injector = inject(Injector);
+  private readonly destroyRef = inject(DestroyRef);
   private readonly creditorListenerControls = new WeakSet<object>();
   private readonly amountImposedListenerControls = new WeakSet<object>();
+  private focusObserver: MutationObserver | null = null;
 
   @Output() protected override formSubmit = new EventEmitter<IFinesMacOffenceDetailsForm>();
   protected readonly dateService = inject(DateService);
@@ -256,6 +259,14 @@ export class FinesMacOffenceDetailsAddAnOffenceFormComponent
   }
 
   /**
+   * Disconnects any pending focus observer used while waiting for an autocomplete input to render.
+   */
+  private disconnectFocusObserver(): void {
+    this.focusObserver?.disconnect();
+    this.focusObserver = null;
+  }
+
+  /**
    * Focuses an element by ID, or observes the DOM until the element is rendered.
    * This supports the accessible autocomplete input, which is created asynchronously by the child component.
    *
@@ -272,12 +283,15 @@ export class FinesMacOffenceDetailsAddAnOffenceFormComponent
       return;
     }
 
-    const observer = new MutationObserver(() => {
+    this.disconnectFocusObserver();
+
+    this.focusObserver = new MutationObserver(() => {
       if (focusElement()) {
-        observer.disconnect();
+        this.disconnectFocusObserver();
       }
     });
-    observer.observe(this.document.body, { childList: true, subtree: true });
+    this.focusObserver.observe(this.document.body, { childList: true, subtree: true });
+    this.destroyRef.onDestroy(() => this.disconnectFocusObserver());
   }
 
   /**
