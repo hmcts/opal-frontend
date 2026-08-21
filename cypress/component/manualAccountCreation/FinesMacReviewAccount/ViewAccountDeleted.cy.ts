@@ -152,7 +152,7 @@ describe('FinesMacReviewAccountComponent - View Deleted Account', () => {
 
       cy.get(DOM_ELEMENTS.timelineAuthor).eq(0).should('contain.text', 'User.testone');
       cy.get(DOM_ELEMENTS.timelineDate).eq(0).should('contain.text', '02 January 2025');
-      cy.get(DOM_ELEMENTS.timeLineTitle).eq(0).should('contain.text', 'Resubmitted');
+      cy.get(DOM_ELEMENTS.timeLineTitle).eq(0).should('contain.text', 'Submitted');
       cy.get(DOM_ELEMENTS.timelineDescription).eq(0).should('contain.text', '');
 
       cy.get(DOM_ELEMENTS.timelineAuthor).eq(1).should('contain.text', 'Admin.testone');
@@ -162,7 +162,7 @@ describe('FinesMacReviewAccountComponent - View Deleted Account', () => {
 
       cy.get(DOM_ELEMENTS.timelineAuthor).eq(2).should('contain.text', 'User.testone');
       cy.get(DOM_ELEMENTS.timelineDate).eq(2).should('contain.text', '01 January 2025');
-      cy.get(DOM_ELEMENTS.timeLineTitle).eq(2).should('contain.text', 'Submitted');
+      cy.get(DOM_ELEMENTS.timeLineTitle).eq(2).should('contain.text', 'Created');
       cy.get(DOM_ELEMENTS.timelineDescription).eq(2).should('contain.text', '');
     },
   );
