@@ -73,6 +73,7 @@ import { OPAL_FINES_ACCOUNT_MINOR_CREDITOR_DETAILS_HISTORY_AND_NOTES_TAB_REF_DAT
 import { OPAL_FINES_MINOR_CREDITOR_ACCOUNT_HISTORY_PARAMS_MOCK } from './mocks/opal-fines-minor-creditor-account-history-params.mock';
 import { OPAL_FINES_ACCOUNT_DEFENDANT_DETAILS_CONSOLIDATED_ACCOUNTS_MOCK } from './mocks/opal-fines-account-defendant-details-consolidated-accounts.mock';
 import { IOpalFinesReport } from './interfaces/opal-fines-report.interface';
+import { OPAL_FINES_REPORT_INSTANCE_MOCK } from './mocks/opal-fines-report-instance.mock';
 import { IOpalFinesReportInstancesResponse } from './interfaces/opal-fines-report-instances-response.interface';
 
 describe('OpalFines', () => {
@@ -342,6 +343,26 @@ describe('OpalFines', () => {
     });
 
     httpMock.expectNone(expectedUrl);
+  });
+
+  it('should send a fresh GET request for each report instance read', () => {
+    const expectedUrl = `${OPAL_FINES_PATHS.reportInstances}/${OPAL_FINES_REPORT_INSTANCE_MOCK.instance_id}`;
+
+    service.getReportInstance(OPAL_FINES_REPORT_INSTANCE_MOCK.instance_id).subscribe((response) => {
+      expect(response).toEqual(OPAL_FINES_REPORT_INSTANCE_MOCK);
+    });
+
+    const request = httpMock.expectOne(expectedUrl);
+    expect(request.request.method).toBe('GET');
+    request.flush(OPAL_FINES_REPORT_INSTANCE_MOCK);
+
+    service.getReportInstance(OPAL_FINES_REPORT_INSTANCE_MOCK.instance_id).subscribe((response) => {
+      expect(response).toEqual(OPAL_FINES_REPORT_INSTANCE_MOCK);
+    });
+
+    const secondRequest = httpMock.expectOne(expectedUrl);
+    expect(secondRequest.request.method).toBe('GET');
+    secondRequest.flush(OPAL_FINES_REPORT_INSTANCE_MOCK);
   });
 
   it('should send a GET request to report instances API with query params and not cache the response', () => {
