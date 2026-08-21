@@ -1,57 +1,71 @@
-import { TestBed } from '@angular/core/testing';
-import { FinesMacOffenceDetailsSearchOffencesResultsComponent } from './fines-mac-offence-details-search-offences-results.component';
-import { ActivatedRoute, provideRouter } from '@angular/router';
-import { FinesMacOffenceDetailsSearchOffencesStore } from '../stores/fines-mac-offence-details-search-offences.store';
-import { FinesMacOffenceDetailsSearchOffencesStoreType } from '../stores/types/fines-mac-offence-details-search-offences-store.type';
 import { provideHttpClient, withInterceptorsFromDi } from '@angular/common/http';
 import { provideHttpClientTesting } from '@angular/common/http/testing';
-import { of } from 'rxjs';
+import { ComponentFixture, TestBed } from '@angular/core/testing';
+import { By } from '@angular/platform-browser';
+import { ActivatedRoute, provideRouter } from '@angular/router';
+import { CustomDeferredLiveRegionAnnouncement } from '@hmcts/opal-frontend-common/components/custom/custom-deferred-live-region-announcement';
 import { OPAL_FINES_SEARCH_OFFENCES_MOCK } from '@services/fines/opal-fines-service/mocks/opal-fines-search-offences.mock';
+import { of } from 'rxjs';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
-import { IOpalFinesSearchOffencesData } from '@services/fines/opal-fines-service/interfaces/opal-fines-search-offences.interface';
-
-const createComponent = async (searchResults: IOpalFinesSearchOffencesData) => {
-  await TestBed.configureTestingModule({
-    imports: [FinesMacOffenceDetailsSearchOffencesResultsComponent],
-    providers: [
-      provideRouter([]),
-      provideHttpClient(withInterceptorsFromDi()),
-      provideHttpClientTesting(),
-      {
-        provide: ActivatedRoute,
-        useValue: {
-          parent: of('search-offences'),
-          snapshot: {
-            data: {
-              searchResults,
-            },
-          },
-        },
-      },
-    ],
-  }).compileComponents();
-
-  const fixture = TestBed.createComponent(FinesMacOffenceDetailsSearchOffencesResultsComponent);
-  const component = fixture.componentInstance;
-  const finesMacOffenceDetailsSearchOffencesStore = TestBed.inject(FinesMacOffenceDetailsSearchOffencesStore);
-
-  finesMacOffenceDetailsSearchOffencesStore.resetSearchOffencesStore();
-  fixture.detectChanges();
-
-  return {
-    component,
-    finesMacOffenceDetailsSearchOffencesStore,
-    fixture,
-  };
-};
+import { FinesMacOffenceDetailsSearchOffencesStore } from '../stores/fines-mac-offence-details-search-offences.store';
+import { FinesMacOffenceDetailsSearchOffencesStoreType } from '../stores/types/fines-mac-offence-details-search-offences-store.type';
+import { FinesMacOffenceDetailsSearchOffencesResultsComponent } from './fines-mac-offence-details-search-offences-results.component';
 
 describe('FinesMacOffenceDetailsSearchOffencesResultsComponent', () => {
   let component: FinesMacOffenceDetailsSearchOffencesResultsComponent;
+  let fixture: ComponentFixture<FinesMacOffenceDetailsSearchOffencesResultsComponent>;
   let finesMacOffenceDetailsSearchOffencesStore: FinesMacOffenceDetailsSearchOffencesStoreType;
 
+  const activatedRoute = {
+    parent: of('search-offences'),
+    snapshot: {
+      data: {
+        searchResults: OPAL_FINES_SEARCH_OFFENCES_MOCK,
+      },
+    },
+  };
+
   beforeEach(async () => {
-    ({ component, finesMacOffenceDetailsSearchOffencesStore } = await createComponent(OPAL_FINES_SEARCH_OFFENCES_MOCK));
+    activatedRoute.snapshot.data.searchResults = OPAL_FINES_SEARCH_OFFENCES_MOCK;
+
+    await TestBed.configureTestingModule({
+      imports: [FinesMacOffenceDetailsSearchOffencesResultsComponent],
+      providers: [
+        provideRouter([]),
+        provideHttpClient(withInterceptorsFromDi()),
+        provideHttpClientTesting(),
+        {
+          provide: ActivatedRoute,
+          useValue: activatedRoute,
+        },
+      ],
+    }).compileComponents();
+
+    fixture = TestBed.createComponent(FinesMacOffenceDetailsSearchOffencesResultsComponent);
+    component = fixture.componentInstance;
+
+    finesMacOffenceDetailsSearchOffencesStore = TestBed.inject(FinesMacOffenceDetailsSearchOffencesStore);
+    finesMacOffenceDetailsSearchOffencesStore.resetSearchOffencesStore();
+
+    fixture.detectChanges();
   });
+
+  const createFixtureWithNoSearchResults = (): void => {
+    fixture.destroy();
+
+    activatedRoute.snapshot.data.searchResults = {
+      ...OPAL_FINES_SEARCH_OFFENCES_MOCK,
+      searchData: [],
+    };
+
+    fixture = TestBed.createComponent(FinesMacOffenceDetailsSearchOffencesResultsComponent);
+    component = fixture.componentInstance;
+
+    fixture.detectChanges();
+  };
+
+  const getDeferredLiveRegionAnnouncement = () =>
+    fixture.debugElement.query(By.directive(CustomDeferredLiveRegionAnnouncement));
 
   it('should create', () => {
     expect(component).toBeTruthy();
@@ -73,53 +87,22 @@ describe('FinesMacOffenceDetailsSearchOffencesResultsComponent', () => {
     component.navigateBack();
     expect(routerSpy).toHaveBeenCalledWith(['..'], { relativeTo: component['activatedRoute'] });
   });
-});
-
-describe('FinesMacOffenceDetailsSearchOffencesResultsComponent when there are search results', () => {
-  it('should not add the no results live region after view init', async () => {
-    const { fixture: resultsFixture } = await createComponent(OPAL_FINES_SEARCH_OFFENCES_MOCK);
-    vi.useFakeTimers();
-    try {
-      const liveRegionSelector = '.govuk-visually-hidden[role="status"]';
-      const resultsTable = resultsFixture.nativeElement.querySelector(
-        'app-fines-mac-offence-details-search-offences-results-table-wrapper',
-      );
-
-      expect(resultsTable).toBeTruthy();
-      expect(resultsFixture.nativeElement.querySelector(liveRegionSelector)).toBeNull();
-
-      vi.runOnlyPendingTimers();
-
-      expect(resultsFixture.nativeElement.querySelector(liveRegionSelector)).toBeNull();
-    } finally {
-      vi.useRealTimers();
-    }
+  it('should display the deferred live region announcement when there are no search results', () => {
+    createFixtureWithNoSearchResults();
+    expect(getDeferredLiveRegionAnnouncement()).toBeTruthy();
   });
-});
 
-describe('FinesMacOffenceDetailsSearchOffencesResultsComponent when there are no search results', () => {
-  it('should add the no results live region after view init', async () => {
-    vi.useFakeTimers();
+  it('should pass the no results announcement message to the deferred live region announcement', () => {
+    createFixtureWithNoSearchResults();
 
-    try {
-      const { fixture: emptyFixture } = await createComponent({
-        ...OPAL_FINES_SEARCH_OFFENCES_MOCK,
-        searchData: [],
-      });
+    const announcement = getDeferredLiveRegionAnnouncement();
+    const announcementComponent = announcement.componentInstance as CustomDeferredLiveRegionAnnouncement;
 
-      const liveRegionSelector = '.govuk-visually-hidden[role="status"]';
+    expect(announcementComponent.message).toBe(component.noResultsAnnouncement);
+    expect(announcementComponent.role).toBe('status');
+  });
 
-      expect(emptyFixture.nativeElement.querySelector(liveRegionSelector)?.textContent?.trim()).toBe('');
-
-      vi.runOnlyPendingTimers();
-
-      emptyFixture.detectChanges();
-
-      expect(emptyFixture.nativeElement.querySelector(liveRegionSelector)?.textContent?.trim()).toBe(
-        'No results found',
-      );
-    } finally {
-      vi.useRealTimers();
-    }
+  it('should not display the deferred live region announcement when there are search results', () => {
+    expect(getDeferredLiveRegionAnnouncement()).toBeNull();
   });
 });
