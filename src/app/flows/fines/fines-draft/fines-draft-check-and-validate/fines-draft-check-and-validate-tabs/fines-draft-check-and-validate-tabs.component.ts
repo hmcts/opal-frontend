@@ -13,12 +13,9 @@ import {
 } from '../../fines-draft-table-wrapper/constants/fines-draft-table-wrapper-table-sort.constants';
 import { CommonModule } from '@angular/common';
 import { IFinesDraftTableWrapperTableData } from '../../fines-draft-table-wrapper/interfaces/fines-draft-table-wrapper-table-data.interface';
-import { IOpalFinesDraftAccountsResponse } from '@services/fines/opal-fines-service/interfaces/opal-fines-draft-account-data.interface';
-import { FINES_DRAFT_TAB_STATUSES } from '../../constants/fines-draft-tab-statuses.constant';
 import { FinesDraftService } from '../../services/fines-draft.service';
 import { OpalFines } from '@services/fines/opal-fines-service/opal-fines.service';
 import { AbstractTabData } from '@hmcts/opal-frontend-common/components/abstract/abstract-tab-data';
-import { IOpalFinesDraftAccountParams } from '@services/fines/opal-fines-service/interfaces/opal-fines-draft-account-params.interface';
 import { DateService } from '@hmcts/opal-frontend-common/services/date-service';
 import { FinesDraftStore } from '../../stores/fines-draft.store';
 import {
@@ -33,6 +30,10 @@ import { FINES_ACC_ROUTING_PATHS } from '../../../fines-acc/routing/constants/fi
 import { FINES_ROUTING_PATHS } from '@routing/fines/constants/fines-routing-paths.constant';
 import { MojNotificationBadgeComponent } from '@hmcts/opal-frontend-common/components/moj/moj-notification-badge';
 import { FINES_ACC_DEFENDANT_ROUTING_PATHS } from '../../../fines-acc/routing/constants/fines-acc-defendant-routing-paths.constant';
+import { FINES_DRAFT_TAB_FRAGMENT } from '../../constants/fines-draft-tab-fragments.constant';
+import { FINES_DRAFT_ROUTE_DATA_KEYS } from '../../constants/fines-draft-route-data-keys.constant';
+import { IFinesDraftTabAccounts } from '../../interfaces/fines-draft-tab-accounts.interface';
+import { createDraftTabCountStream, createDraftTabDataStreams } from '../../utils/fines-draft-shared.utils';
 
 @Component({
   selector: 'app-fines-draft-check-and-validate-tabs',
@@ -56,15 +57,10 @@ export class FinesDraftCheckAndValidateTabsComponent extends AbstractTabData imp
   private readonly opalFinesService = inject(OpalFines);
   private readonly dateService = inject(DateService);
   private readonly userState = this.globalStore.userState();
-  private readonly businessUnitIds = this.userState.business_unit_users.map(
-    (business_unit_users) => business_unit_users.business_unit_id,
-  );
-  private readonly businessUnitUserIds = this.userState.business_unit_users.map(
-    (business_unit_users) => business_unit_users.business_unit_user_id,
-  );
 
   protected readonly finesDraftStore = inject(FinesDraftStore);
   protected readonly finesDraftCheckAndValidateRoutingPaths = FINES_DRAFT_CHECK_AND_VALIDATE_ROUTING_PATHS;
+  protected readonly finesDraftTabFragment = FINES_DRAFT_TAB_FRAGMENT;
 
   public readonly finesDraftService = inject(FinesDraftService);
   public tabData$!: Observable<IFinesDraftTableWrapperTableData[]>;
@@ -79,68 +75,60 @@ export class FinesDraftCheckAndValidateTabsComponent extends AbstractTabData imp
    * and constructs the necessary parameters for fetching and populating the tab's table data.
    *
    */
-  private setupTabDataStream(): void {
-    const fragment$ = this.clearCacheOnTabChange(this.getFragmentStream('to-review', this.destroy$), () =>
-      this.opalFinesService.clearCache('draftAccountsCache$'),
-    );
-
-    this.tabData$ = this.createTabDataStream<IOpalFinesDraftAccountsResponse, IFinesDraftTableWrapperTableData[]>(
-      fragment$,
-      (tab) => {
-        if (tab === 'deleted' || tab === 'failed') {
+  private setupTabDataStream(): Observable<IFinesDraftTabAccounts> {
+    const { draftAccounts$, tabData$ } = createDraftTabDataStreams({
+      fragment$: this.getFragmentStream(FINES_DRAFT_TAB_FRAGMENT.toReview, this.destroy$),
+      activatedRoute: this.activatedRoute,
+      userState: this.userState,
+      accountParamOptions: {
+        includeSubmittedBy: false,
+        includeNotSubmittedBy: true,
+      },
+      clearCache: () => this.opalFinesService.clearCache('draftAccountsCache$'),
+      getDateRange: (historicWindowInDays) => this.dateService.getDateRange(historicWindowInDays, 0),
+      getDraftAccounts: (params) => this.opalFinesService.getDraftAccounts(params),
+      populateTableData: (response) => this.finesDraftService.populateTableData(response),
+      onTabChange: (tab) => {
+        if (tab === FINES_DRAFT_TAB_FRAGMENT.deleted || tab === FINES_DRAFT_TAB_FRAGMENT.failed) {
           this.tableSort = FINES_DRAFT_TABLE_WRAPPER_SORT_DELETED;
         } else {
           this.tableSort = FINES_DRAFT_TABLE_WRAPPER_SORT_DEFAULT;
         }
-
-        const currentTab = FINES_DRAFT_TAB_STATUSES.find((t) => t.tab === tab);
-
-        const params: IOpalFinesDraftAccountParams = {
-          businessUnitIds: this.businessUnitIds,
-          statuses: currentTab?.statuses,
-          notSubmittedBy: this.businessUnitUserIds,
-        };
-
-        if (currentTab?.historicWindowInDays) {
-          const { from, to } = this.dateService.getDateRange(currentTab.historicWindowInDays, 0);
-          params.accountStatusDateFrom = [from];
-          params.accountStatusDateTo = [to];
-        }
-
-        return params;
       },
-      (params) => this.opalFinesService.getDraftAccounts(params),
-      (res) => this.finesDraftService.populateTableData(res),
-    );
+    });
+
+    this.tabData$ = tabData$;
+
+    return draftAccounts$;
   }
 
   /**
    * Initializes the `failedCount$` observable stream to track the number of draft accounts
    * with a "publishFailed" status. This method sets up the stream to:
-   * - Listen for tab changes and clear the draft accounts cache when the "to-review" fragment is active.
-   * - Fetch the count of draft accounts matching the specified business unit IDs, user IDs, and status.
+   * - Use the resolved failed count when route data is available.
+   * - Fall back to fetching the count matching the specified business unit IDs, user IDs, and status.
    * - Format the resulting count with a cap defined by `FINES_DRAFT_MAX_REJECTED`.
    *
    * The stream is automatically cleaned up when the component is destroyed.
    *
    * @private
    */
-  private setupFailedCountStream(): void {
-    const fragment$ = this.clearCacheOnTabChange(this.getFragmentStream('to-review', this.destroy$), () =>
-      this.opalFinesService.clearCache('draftAccountsCache$'),
-    );
-
-    this.failedCount$ = this.createCountStream(
-      fragment$,
-      () => ({
-        businessUnitIds: this.businessUnitIds,
-        notSubmittedBy: this.businessUnitUserIds,
+  private setupFailedCountStream(draftAccounts$: Observable<IFinesDraftTabAccounts>): void {
+    this.failedCount$ = createDraftTabCountStream({
+      activatedRoute: this.activatedRoute,
+      draftAccounts$,
+      routeDataKey: FINES_DRAFT_ROUTE_DATA_KEYS.failedCount,
+      defaultTab: FINES_DRAFT_TAB_FRAGMENT.toReview,
+      countTab: FINES_DRAFT_TAB_FRAGMENT.failed,
+      userState: this.userState,
+      accountParamOptions: {
         statuses: [OPAL_FINES_DRAFT_ACCOUNT_STATUSES.publishFailed],
-      }),
-      (params) => this.opalFinesService.getDraftAccounts(params),
-      (res) => res.count,
-      (count) => this.formatCountWithCap(count, FINES_DRAFT_MAX_REJECTED),
-    );
+        includeSubmittedBy: false,
+        includeNotSubmittedBy: true,
+      },
+      getDraftAccounts: (params) => this.opalFinesService.getDraftAccounts(params),
+      formatCount: (count) => this.formatCountWithCap(count, FINES_DRAFT_MAX_REJECTED),
+    });
   }
 
   /**
@@ -175,13 +163,19 @@ export class FinesDraftCheckAndValidateTabsComponent extends AbstractTabData imp
     ]);
   }
 
+  /**
+   * Resets draft state and initializes the tab data and failed count streams.
+   */
   public ngOnInit(): void {
     this.finesDraftStore.resetFineDraftState();
     this.finesDraftStore.resetFragmentAndChecker();
-    this.setupTabDataStream();
-    this.setupFailedCountStream();
+    const draftAccounts$ = this.setupTabDataStream();
+    this.setupFailedCountStream(draftAccounts$);
   }
 
+  /**
+   * Completes the component teardown stream used by route fragment subscriptions.
+   */
   public ngOnDestroy(): void {
     this.destroy$.next();
     this.destroy$.complete();
