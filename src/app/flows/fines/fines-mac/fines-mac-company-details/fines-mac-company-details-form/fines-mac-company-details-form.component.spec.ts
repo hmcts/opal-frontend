@@ -156,6 +156,42 @@ describe('FinesMacCompanyDetailsFormComponent', () => {
     expect(component.form.get('fm_company_details_postcode')).toBeTruthy();
   });
 
+  it('should validate postcode format using alphanumericTextPattern', () => {
+    const postcodeControl = component.form.get('fm_company_details_postcode');
+
+    postcodeControl?.setValue('SW1A 1AA');
+    expect(postcodeControl?.hasError('alphanumericTextPattern')).toBe(false);
+
+    postcodeControl?.setValue('SW1A-1AA');
+    expect(postcodeControl?.hasError('alphanumericTextPattern')).toBe(true);
+  });
+
+  it('should validate postcode max length', () => {
+    const postcodeControl = component.form.get('fm_company_details_postcode');
+
+    postcodeControl?.setValue('SW1A 1AA');
+    expect(postcodeControl?.hasError('maxlength')).toBe(false);
+
+    postcodeControl?.setValue('SW1A 1AAA');
+    expect(postcodeControl?.hasError('maxlength')).toBe(true);
+  });
+
+  it('should trim only surrounding whitespace from the postcode input on focusout', () => {
+    const postcodeInput = fixture.nativeElement.querySelector(
+      'input[name="fm_company_details_postcode"]',
+    ) as HTMLInputElement | null;
+    if (!postcodeInput) throw new Error('Postcode input not found');
+
+    const postcodeControl = component.form.get('fm_company_details_postcode');
+
+    postcodeControl?.setValue('  AB1  3CD ');
+    postcodeInput.dispatchEvent(new FocusEvent('focusout', { bubbles: true }));
+    fixture.detectChanges();
+
+    expect(postcodeControl?.value).toBe('AB1  3CD');
+    expect(postcodeControl?.hasError('maxlength')).toBe(false);
+  });
+
   it('should set up the alias configuration for the company details form', () => {
     component['setupAliasConfiguration']();
     expect(component.aliasFields).toEqual(FINES_MAC_COMPANY_DETAILS_ALIAS.map((item) => item.controlName));
