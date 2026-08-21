@@ -27,7 +27,7 @@ Feature: Adult Youth Account Enquiries Amend Payment Terms
         | account.payment_terms.payment_terms_type_code   | B                         |
         | account.payment_terms.effective_date            | 2025-05-30                |
 
-    @JIRA-EPIC:PO-977 @R1B @JIRA-STORY:PO-1149 @JIRA-TEST-KEY:PO-5303 @only
+    @JIRA-EPIC:PO-977 @R1B @JIRA-STORY:PO-1149 @JIRA-TEST-KEY:PO-5303
     Scenario: Save payment terms changes and return to Payment terms tab
       When I search for the account by last name "AmendPayTerms{uniq}" and open the latest result
       And I go to the Payment terms tab
