@@ -256,7 +256,7 @@ describe('ReviewSummaryComponent', () => {
       cy.get(DOM_ELEMENTS.totalBalanceRemaining).should('contain', '£400.00');
 
       cy.get(DOM_ELEMENTS.headingMedium).should('contain', 'Totals');
-      cy.get(DOM_ELEMENTS.GrandtotalAmountImposed).should('contain', '£1000.00').should('contain', 'Amount imposed');
+      cy.get(DOM_ELEMENTS.GrandtotalAmountImposed).should('contain', '£1,000.00').should('contain', 'Amount imposed');
       cy.get(DOM_ELEMENTS.GrandtotalAmountPaid).should('contain', '£300.00').should('contain', 'Amount paid');
       cy.get(DOM_ELEMENTS.GrandtotalRemainingBalance)
         .should('contain', '£700.00')
@@ -381,14 +381,14 @@ describe('ReviewSummaryComponent', () => {
 
       cy.get(DOM_ELEMENTS.impositionType).should('contain', 'FORFEITED RECOGNISANCE (FFR)');
       cy.get(DOM_ELEMENTS.creditor).should('contain', 'HM Courts & Tribunals Service (HMCTS)');
-      cy.get(DOM_ELEMENTS.amountImposed).should('contain', '£2000.00');
+      cy.get(DOM_ELEMENTS.amountImposed).should('contain', '£2,000.00');
       cy.get(DOM_ELEMENTS.amountPaid).should('contain', '£200.00');
-      cy.get(DOM_ELEMENTS.balanceRemaining).should('contain', '£1800.00');
+      cy.get(DOM_ELEMENTS.balanceRemaining).should('contain', '£1,800.00');
 
       cy.get(DOM_ELEMENTS.totalHeading).should('contain', 'Totals');
-      cy.get(DOM_ELEMENTS.totalAmountImposed).should('contain', '£2400.00');
+      cy.get(DOM_ELEMENTS.totalAmountImposed).should('contain', '£2,400.00');
       cy.get(DOM_ELEMENTS.totalAmountPaid).should('contain', '£300.00');
-      cy.get(DOM_ELEMENTS.totalBalanceRemaining).should('contain', '£2100.00');
+      cy.get(DOM_ELEMENTS.totalBalanceRemaining).should('contain', '£2,100.00');
 
       cy.get(DOM_ELEMENTS.impositionType).should('contain', 'Fine (FO)');
       cy.get(DOM_ELEMENTS.creditor).should('contain', 'HM Courts & Tribunals Service (HMCTS)');
@@ -398,20 +398,20 @@ describe('ReviewSummaryComponent', () => {
 
       cy.get(DOM_ELEMENTS.impositionType).should('contain', 'FORFEITED RECOGNISANCE (FFR)');
       cy.get(DOM_ELEMENTS.creditor).should('contain', 'HM Courts & Tribunals Service (HMCTS)');
-      cy.get(DOM_ELEMENTS.amountImposed).should('contain', '£1000.00');
+      cy.get(DOM_ELEMENTS.amountImposed).should('contain', '£1,000.00');
       cy.get(DOM_ELEMENTS.amountPaid).should('contain', '£100.00');
       cy.get(DOM_ELEMENTS.balanceRemaining).should('contain', '£900.00');
 
       cy.get(DOM_ELEMENTS.totalHeading).should('contain', 'Totals');
-      cy.get(DOM_ELEMENTS.totalAmountImposed).should('contain', '£1600.00');
+      cy.get(DOM_ELEMENTS.totalAmountImposed).should('contain', '£1,600.00');
       cy.get(DOM_ELEMENTS.totalAmountPaid).should('contain', '£300.00');
-      cy.get(DOM_ELEMENTS.totalBalanceRemaining).should('contain', '£1300.00');
+      cy.get(DOM_ELEMENTS.totalBalanceRemaining).should('contain', '£1,300.00');
 
       cy.get(DOM_ELEMENTS.headingMedium).should('contain', 'Totals');
-      cy.get(DOM_ELEMENTS.GrandtotalAmountImposed).should('contain', '£4000.00').should('contain', 'Amount imposed');
+      cy.get(DOM_ELEMENTS.GrandtotalAmountImposed).should('contain', '£4,000.00').should('contain', 'Amount imposed');
       cy.get(DOM_ELEMENTS.GrandtotalAmountPaid).should('contain', '£600.00').should('contain', 'Amount paid');
       cy.get(DOM_ELEMENTS.GrandtotalRemainingBalance)
-        .should('contain', '£3400.00')
+        .should('contain', '£3,400.00')
         .should('contain', 'Balance remaining');
     },
   );
