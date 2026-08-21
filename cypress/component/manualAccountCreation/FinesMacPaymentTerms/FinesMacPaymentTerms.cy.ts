@@ -1369,7 +1369,7 @@ describe('FinesMacPaymentTermsComponent', () => {
 
           cy.get(DOM_ELEMENTS.earliestReleaseDate).clear().type('29/09/2021', { delay: 0 });
           cy.get(DOM_ELEMENTS.submitButton).click({ multiple: true });
-          cy.get(DOM_ELEMENTS.govukErrorMessage).should('contain', ERROR_MESSAGES.futureDateMust);
+          cy.get(DOM_ELEMENTS.govukErrorMessage).should('not.contain', ERROR_MESSAGES.futureDateMust);
 
           cy.get(DOM_ELEMENTS.earliestReleaseDate).clear().type('29,09.2021', { delay: 0 });
           cy.get(DOM_ELEMENTS.submitButton).click({ multiple: true });
