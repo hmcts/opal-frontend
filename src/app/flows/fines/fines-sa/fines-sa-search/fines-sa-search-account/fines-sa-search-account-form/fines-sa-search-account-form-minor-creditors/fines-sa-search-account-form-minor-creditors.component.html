@@ -92,6 +92,9 @@
             inputClasses="govuk-input--width-10"
             [control]="individualGroup.get('fsa_search_account_minor_creditors_individual_post_code')"
             [errors]="formControlErrorMessages['fsa_search_account_minor_creditors_individual_post_code']"
+            [opalLibTrimLeadingTrailingWhitespace]="
+              individualGroup.get('fsa_search_account_minor_creditors_individual_post_code')!
+            "
           ></opal-lib-govuk-text-input>
         </div>
       </opal-lib-govuk-radios-conditional>
@@ -143,6 +146,9 @@
             inputClasses="govuk-input--width-10"
             [control]="companyGroup.get('fsa_search_account_minor_creditors_company_post_code')"
             [errors]="formControlErrorMessages['fsa_search_account_minor_creditors_company_post_code']"
+            [opalLibTrimLeadingTrailingWhitespace]="
+              companyGroup.get('fsa_search_account_minor_creditors_company_post_code')!
+            "
           ></opal-lib-govuk-text-input>
         </div>
       </opal-lib-govuk-radios-conditional>

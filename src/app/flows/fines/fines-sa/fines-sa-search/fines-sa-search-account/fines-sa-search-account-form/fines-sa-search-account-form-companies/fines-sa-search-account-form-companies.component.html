@@ -47,4 +47,5 @@
   inputClasses="govuk-input--width-10"
   [control]="form.get('fsa_search_account_companies_post_code')"
   [errors]="formControlErrorMessages['fsa_search_account_companies_post_code']"
+  [opalLibTrimLeadingTrailingWhitespace]="form.get('fsa_search_account_companies_post_code')!"
 ></opal-lib-govuk-text-input>
