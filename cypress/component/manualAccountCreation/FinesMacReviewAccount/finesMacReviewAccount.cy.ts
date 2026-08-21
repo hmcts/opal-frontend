@@ -920,7 +920,7 @@ describe('FinesMacReviewAccountComponent', () => {
       cy.get(DOM_ELEMENTS.status).contains('In review').should('exist');
       cy.get(DOM_ELEMENTS.sectionHeading).contains('Review history').should('exist');
       cy.get(DOM_ELEMENTS.timeLine).should('exist');
-      cy.get(DOM_ELEMENTS.timeLineTitle).contains('Submitted').should('exist');
+      cy.get(DOM_ELEMENTS.timeLineTitle).contains('Created').should('exist');
       cy.get(DOM_ELEMENTS.timelineAuthor).contains('by Timmy Test').should('exist');
       cy.get(DOM_ELEMENTS.timelineDate).contains('03 July 2023').should('exist');
     },
@@ -952,7 +952,7 @@ describe('FinesMacReviewAccountComponent', () => {
       });
       finesAccountPayload.timeline_data.push({
         username: 'Timmy Test',
-        status: 'Submitted',
+        status: 'Resubmitted',
         status_date: '2023-07-07',
         reason_text: null,
       });
@@ -961,7 +961,7 @@ describe('FinesMacReviewAccountComponent', () => {
 
       cy.get(DOM_ELEMENTS.timeLine).should('exist');
       const timelineEntries = [
-        { title: 'Submitted', author: 'by Timmy Test', date: '03 July 2023' },
+        { title: 'Created', author: 'by Timmy Test', date: '03 July 2023' },
         { title: 'Rejected', author: 'by Timmy Test', date: '05 July 2023' },
         { title: 'Submitted', author: 'by Timmy Test', date: '07 July 2023' },
       ];
