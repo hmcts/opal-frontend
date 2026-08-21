@@ -1,5 +1,4 @@
 import { optionalValidDateValidator } from '@hmcts/opal-frontend-common/validators/optional-valid-date';
-import { pastDateValidator } from '@hmcts/opal-frontend-common/validators/past-date';
 import { IFinesMacPaymentTermsEnforcementActionsOptionsControlValidation } from '../interfaces/fines-mac-payment-terms-enforcment-actions-options-control-validation.interface';
 import { Validators } from '@angular/forms';
 import { patternValidator } from '@hmcts/opal-frontend-common/validators/pattern-validator';
@@ -23,7 +22,7 @@ export const FINES_MAC_PAYMENT_TERMS_ENFORCEMENT_ACTION_OPTIONS_CONTROL_VALIDATI
       fieldsToAdd: [
         {
           controlName: 'fm_payment_terms_earliest_release_date',
-          validators: [optionalValidDateValidator(), pastDateValidator()],
+          validators: [optionalValidDateValidator()],
         },
         {
           controlName: 'fm_payment_terms_prison_and_prison_number',
@@ -55,7 +54,7 @@ export const FINES_MAC_PAYMENT_TERMS_ENFORCEMENT_ACTION_OPTIONS_CONTROL_VALIDATI
       fieldsToRemove: [
         {
           controlName: 'fm_payment_terms_earliest_release_date',
-          validators: [optionalValidDateValidator(), pastDateValidator()],
+          validators: [optionalValidDateValidator()],
         },
         {
           controlName: 'fm_payment_terms_prison_and_prison_number',

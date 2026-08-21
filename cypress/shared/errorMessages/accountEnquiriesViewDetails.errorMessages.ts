@@ -78,7 +78,7 @@ export const ERROR_MESSAGES = {
     'Address line 2 must only include letters a to z, numbers 0-9 and certain special characters (such as hyphens, spaces, apostrophes and commas)',
   DATA_TYPE_ADDRESS_LINE_3:
     'Address line 3 must only include letters a to z, numbers 0-9 and certain special characters (such as hyphens, spaces, apostrophes and commas)',
-  DATA_TYPE_POSTCODE: 'Postcode must only include letters a to z, numbers, hyphens, spaces and apostrophes',
+  DATA_TYPE_POSTCODE: 'Postcode must only include letters and numbers',
   DATA_TYPE_VEHICLE_MAKE:
     'Vehicle make and model must only include letters a to z, numbers, hyphens, spaces and apostrophes',
   DATA_TYPE_VEHICLE_REGISTRATION:
@@ -96,8 +96,7 @@ export const ERROR_MESSAGES = {
     'Employer address line 4 must only include letters a to z, numbers, hyphens, spaces and apostrophes',
   DATA_TYPE_EMPLOYER_ADDRESS_LINE_5:
     'Employer address line 5 must only include letters a to z, numbers, hyphens, spaces and apostrophes',
-  DATA_TYPE_EMPLOYER_POSTCODE:
-    'Employer postcode must only include letters a to z, numbers, hyphens, spaces and apostrophes',
+  DATA_TYPE_EMPLOYER_POSTCODE: 'Employer postcode must only include letters and number',
 
   // Company errors
   REQUIRED_COMPANY_NAME: 'Enter company name',

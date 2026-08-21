@@ -249,6 +249,7 @@
       <app-fines-acc-defendant-details-impositions-tab
         [tabData]="tabData"
         [style]="tabContentStyles"
+        [paginationPageTitle]="accountStore.party_name() ?? ''"
       ></app-fines-acc-defendant-details-impositions-tab>
     }
   }
