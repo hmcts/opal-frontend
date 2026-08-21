@@ -10,7 +10,9 @@ import { Observable, map } from 'rxjs';
 import { OpalFines } from '@services/fines/opal-fines-service/opal-fines.service';
 import { FinesMacOffenceDetailsService } from '../services/fines-mac-offence-details.service';
 import { IOpalFinesOffencesRefData } from '@services/fines/opal-fines-service/interfaces/opal-fines-offences-ref-data.interface';
-import { IOpalFinesOffences } from '../../../services/opal-fines-service/interfaces/opal-fines-offences.interface';
+import { IOpalFinesOffences } from '@services/fines/opal-fines-service/interfaces/opal-fines-offences.interface';
+
+type OffenceDisplayDetails = Pick<IOpalFinesOffences, 'cjs_code' | 'offence_title'>;
 
 @Component({
   selector: 'app-fines-mac-offence-details-review-offence',
@@ -34,9 +36,9 @@ export class FinesMacOffenceDetailsReviewOffenceComponent implements OnInit {
   @Input({ required: false }) showDetails: boolean = true;
   @Input({ required: false }) isReadOnly: boolean = false;
   @Output() public actionClicked = new EventEmitter<{ actionName: string; offenceId: number }>();
-  public offenceDetails$!: Observable<IOpalFinesOffences>;
+  public offenceDetails$!: Observable<OffenceDisplayDetails>;
 
-  private getOffenceDetails(): Observable<IOpalFinesOffences> {
+  private getOffenceDetails(): Observable<OffenceDisplayDetails> {
     const offenceCode = this.offence.formData.fm_offence_details_offence_cjs_code!;
     const offenceId = this.offence.formData.fm_offence_details_offence_id;
 
@@ -45,10 +47,9 @@ export class FinesMacOffenceDetailsReviewOffenceComponent implements OnInit {
         const match = this.offenceDetailsService.findExactOffenceMatch(response, offenceCode, offenceId);
 
         return {
-          ...match,
           cjs_code: match?.cjs_code ?? offenceCode,
           offence_title: match?.offence_title ?? '',
-        } as IOpalFinesOffences;
+        };
       }),
     );
   }

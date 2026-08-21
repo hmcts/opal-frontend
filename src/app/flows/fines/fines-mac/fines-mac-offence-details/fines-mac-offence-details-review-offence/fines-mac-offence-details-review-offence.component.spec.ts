@@ -122,7 +122,7 @@ describe('FinesMacOffenceDetailsReviewOffenceComponent', () => {
 
       expect(offenceDetails).toEqual(
         expect.objectContaining({
-          offence_id: 314683,
+          cjs_code: 'CA03010D',
           offence_title: 'No Televison Licence',
         }),
       );
@@ -159,7 +159,7 @@ describe('FinesMacOffenceDetailsReviewOffenceComponent', () => {
 
       expect(offenceDetails).toEqual(
         expect.objectContaining({
-          offence_id: 41800,
+          cjs_code: 'GMMET001',
           offence_title: 'Duplicate offence title B',
         }),
       );
