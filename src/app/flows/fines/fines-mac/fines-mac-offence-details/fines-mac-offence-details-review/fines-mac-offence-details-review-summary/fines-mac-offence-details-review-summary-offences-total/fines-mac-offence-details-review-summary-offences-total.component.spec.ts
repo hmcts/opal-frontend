@@ -36,7 +36,34 @@ describe('FinesMacOffenceDetailsReviewSummaryOffencesTotalComponent', () => {
     expect(component.totals.balanceRemainingTotal).toEqual(expectedBalanceRemainingTotal);
   });
 
-  it('should ignore impositions without both imposed and remaining balances', () => {
+  it('should include a fully paid imposition when calculating totals across offences', () => {
+    const fullyPaidFixture = TestBed.createComponent(FinesMacOffenceDetailsReviewSummaryOffencesTotalComponent);
+    const fullyPaidComponent = fullyPaidFixture.componentInstance;
+    fullyPaidComponent.offences = structuredClone(FINES_MAC_OFFENCE_DETAILS_REVIEW_SUMMARY_FORM_MOCK).map(
+      (offence, index) => ({
+        ...offence,
+        formData: {
+          ...offence.formData,
+          fm_offence_details_impositions: [
+            {
+              ...offence.formData.fm_offence_details_impositions[0],
+              fm_offence_details_amount_imposed: index === 0 ? 341 : 100,
+              fm_offence_details_amount_paid: index === 0 ? 0 : 100,
+              fm_offence_details_balance_remaining: index === 0 ? 341 : 0,
+            },
+          ],
+        },
+      }),
+    );
+
+    fullyPaidFixture.detectChanges();
+
+    expect(fullyPaidComponent.totals.amountImposedTotal).toEqual('£441.00');
+    expect(fullyPaidComponent.totals.amountPaidTotal).toEqual('£100.00');
+    expect(fullyPaidComponent.totals.balanceRemainingTotal).toEqual('£341.00');
+  });
+
+  it('should ignore impositions without imposed or remaining amounts', () => {
     const skippedFixture = TestBed.createComponent(FinesMacOffenceDetailsReviewSummaryOffencesTotalComponent);
     const skippedComponent = skippedFixture.componentInstance;
     skippedComponent.offences = [
@@ -49,7 +76,7 @@ describe('FinesMacOffenceDetailsReviewSummaryOffencesTotalComponent', () => {
               ...structuredClone(
                 FINES_MAC_OFFENCE_DETAILS_REVIEW_SUMMARY_FORM_MOCK[0].formData.fm_offence_details_impositions[0],
               ),
-              fm_offence_details_amount_imposed: 0,
+              fm_offence_details_amount_imposed: null,
               fm_offence_details_amount_paid: 10,
               fm_offence_details_balance_remaining: 5,
             },
