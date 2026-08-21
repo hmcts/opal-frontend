@@ -29,6 +29,8 @@ import { createScopedLogger, createScopedSyncLogger } from '../../../../support/
 import { EtagUpdate } from '../actions/draft-account/draft-account.api';
 import { MINOR_CREDITOR_AMEND_ELEMENTS } from '../../../../shared/selectors/account-enquiry/account.enquiry.minor-creditor-amend.locators';
 import { AccountDetailsResponsiveLayoutActions } from '../actions/account-details/details.responsive-layout.actions';
+import type { DataTable } from '@badeball/cypress-cucumber-preprocessor';
+import { applyUniqPlaceholder } from '../../../../support/utils/stringUtils';
 
 const logAE = createScopedLogger('AccountEnquiryFlow');
 const logAESync = createScopedSyncLogger('AccountEnquiryFlow');
@@ -232,6 +234,23 @@ export class AccountEnquiryFlow {
     ForceSingleTabNavigation();
     this.results.waitForResultsTable();
     this.results.openLatestPublished();
+  }
+
+  /**
+   * Opens the single result matching all supplied result-table values.
+   * @param table Two-column table of optional result column/value pairs.
+   */
+  public openMatchingResultFromResults(table: DataTable): void {
+    const expectations = Object.fromEntries(
+      Object.entries(table.rowsHash()).map(([key, value]) => [key.trim(), applyUniqPlaceholder(String(value).trim())]),
+    );
+
+    logAE('method', 'openMatchingResultFromResults()', { expectations });
+    logAE('open', 'Opening result matching supplied column values');
+
+    ForceSingleTabNavigation();
+    this.results.waitForResultsTable();
+    this.results.openByColumnValues(expectations);
   }
 
   /** Opens the associated defendant linked from the latest minor creditor result. */

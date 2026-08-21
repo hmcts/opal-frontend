@@ -106,16 +106,16 @@ Feature: Adult Youth Account Enquiries View Details
 
       @JIRA-TEST-KEY:PO-10002
       Examples:
-        | section           | fragment           |
-        | Defendant details | party-details      |
+        | section           | fragment      |
+        | Defendant details | party-details |
       @JIRA-TEST-KEY:PO-10003
       Examples:
-        | section           | fragment           |
-        | Contact details   | contact-details    |
+        | section         | fragment        |
+        | Contact details | contact-details |
       @JIRA-TEST-KEY:PO-10004
       Examples:
-        | section           | fragment           |
-        | Employer details  | employment-details |
+        | section          | fragment           |
+        | Employer details | employment-details |
 
   Rule: Youth-only add parent or guardian visibility
     @R1B @JIRA-STORY:PO-5751 @JIRA-EPIC:PO-2990 @JIRA-TEST-KEY:PO-10005
