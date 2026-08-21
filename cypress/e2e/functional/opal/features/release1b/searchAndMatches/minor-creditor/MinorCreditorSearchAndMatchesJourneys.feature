@@ -86,7 +86,7 @@ Feature: Minor Creditor Search And Matches Journeys
     And I see the Minor creditors search results:
       | Name           | <LEGACY_MINOR_CREDITOR_NAME>           |
       | Address line 1 | <LEGACY_MINOR_CREDITOR_ADDRESS_LINE_1> |
-    @R1BUatTechJCDE
+    @R1BUatTechJCDE @JIRA-TEST-KEY:PO-10327
     Examples:
       | LEGACY_MINOR_CREDITOR_LAST_NAME | LEGACY_MINOR_CREDITOR_NAME | LEGACY_MINOR_CREDITOR_ADDRESS_LINE_1 |
       | MinCredAccUniB                  | placeholder                | Unique MinCred CT                    |
