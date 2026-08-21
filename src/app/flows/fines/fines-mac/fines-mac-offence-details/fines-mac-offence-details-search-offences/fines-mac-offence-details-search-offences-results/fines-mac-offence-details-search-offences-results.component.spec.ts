@@ -10,6 +10,8 @@ import { beforeEach, describe, expect, it, vi } from 'vitest';
 import { FinesMacOffenceDetailsSearchOffencesStore } from '../stores/fines-mac-offence-details-search-offences.store';
 import { FinesMacOffenceDetailsSearchOffencesStoreType } from '../stores/types/fines-mac-offence-details-search-offences-store.type';
 import { FinesMacOffenceDetailsSearchOffencesResultsComponent } from './fines-mac-offence-details-search-offences-results.component';
+import { By } from '@angular/platform-browser';
+import { FinesMacOffenceDetailsSearchOffencesResultsTableWrapperComponent } from './fines-mac-offence-details-search-offences-results-table-wrapper/fines-mac-offence-details-search-offences-results-table-wrapper.component';
 
 describe('FinesMacOffenceDetailsSearchOffencesResultsComponent', () => {
   let component: FinesMacOffenceDetailsSearchOffencesResultsComponent;
@@ -63,6 +65,14 @@ describe('FinesMacOffenceDetailsSearchOffencesResultsComponent', () => {
   it('should create', () => {
     createComponent();
     expect(component).toBeTruthy();
+  });
+
+  it('should provide the page title for pagination announcements', () => {
+    const tableWrapper = fixture.debugElement.query(
+      By.directive(FinesMacOffenceDetailsSearchOffencesResultsTableWrapperComponent),
+    ).componentInstance as FinesMacOffenceDetailsSearchOffencesResultsTableWrapperComponent;
+
+    expect(tableWrapper.paginationPageTitle).toBe('Search results');
   });
 
   it('should return false from canDeactivate if there are unsaved changes', () => {
