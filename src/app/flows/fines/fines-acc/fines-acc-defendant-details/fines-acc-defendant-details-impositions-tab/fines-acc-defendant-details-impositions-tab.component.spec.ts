@@ -78,8 +78,28 @@ describe('FinesAccDefendantDetailsImpositionsTabComponent', () => {
     const balanceCell = fixture.nativeElement.querySelector('#imposition-balance-0') as HTMLTableCellElement;
 
     expect(imposedAmountCell.textContent?.trim()).toBe('£200.00');
-    expect(paidAmountCell.textContent?.trim()).toBe('-£50.00');
-    expect(balanceCell.textContent?.trim()).toBe('-£150.00');
+    expect(paidAmountCell.querySelector('[aria-hidden="true"]')?.textContent?.trim()).toBe('-£50.00');
+    expect(balanceCell.querySelector('[aria-hidden="true"]')?.textContent?.trim()).toBe('-£150.00');
+  });
+
+  it('should expose accessible minus text for negative paid and balance amounts', () => {
+    const tabData = structuredClone(OPAL_FINES_ACCOUNT_DEFENDANT_DETAILS_IMPOSITIONS_TAB_REF_DATA_MOCK);
+    tabData.impositions[0].paid_amount = -50;
+    tabData.impositions[0].balance = -150;
+
+    const { fixture } = setupComponent(tabData);
+
+    const paidAmountCell = fixture.nativeElement.querySelector('#imposition-paid-amount-0') as HTMLTableCellElement;
+    const balanceCell = fixture.nativeElement.querySelector('#imposition-balance-0') as HTMLTableCellElement;
+    const paidVisibleAmount = paidAmountCell.querySelector('[aria-hidden="true"]') as HTMLSpanElement;
+    const balanceVisibleAmount = balanceCell.querySelector('[aria-hidden="true"]') as HTMLSpanElement;
+    const paidAccessibleAmount = paidAmountCell.querySelector('.govuk-visually-hidden') as HTMLSpanElement;
+    const balanceAccessibleAmount = balanceCell.querySelector('.govuk-visually-hidden') as HTMLSpanElement;
+
+    expect(paidVisibleAmount.textContent?.trim()).toBe('-£50.00');
+    expect(balanceVisibleAmount.textContent?.trim()).toBe('-£150.00');
+    expect(paidAccessibleAmount.textContent?.trim()).toBe('minus £50.00');
+    expect(balanceAccessibleAmount.textContent?.trim()).toBe('minus £150.00');
   });
 
   it('should sort rows when a sortable header is clicked', () => {
