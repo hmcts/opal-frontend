@@ -1,3 +1,4 @@
+import { IOpalFinesReportParameters } from './opal-fines-report-parameters.interface';
 import { OpalFinesReportSupportedFileType } from '../types/opal-fines-report-supported-file-type.type';
 
 export interface IOpalFinesReport {
@@ -5,7 +6,7 @@ export interface IOpalFinesReport {
   report_title: string;
   report_group?: string;
   audited_report?: boolean;
-  report_parameters?: unknown;
+  report_parameters?: IOpalFinesReportParameters;
   supports_multiple_business_units?: boolean;
   supports_multi_bu?: boolean;
   is_bespoke_journey?: boolean;

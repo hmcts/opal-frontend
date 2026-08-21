@@ -1,0 +1,66 @@
+<opal-lib-govuk-error-summary
+  [errors]="formErrorSummaryMessage"
+  (errorClick)="scrollTo($event)"
+></opal-lib-govuk-error-summary>
+
+<opal-lib-govuk-heading-with-caption
+  captionText="Create report"
+  [headingText]="reportHeading"
+></opal-lib-govuk-heading-with-caption>
+
+<form autocomplete="off" (submit)="handleFormSubmit($event)" [formGroup]="form">
+  @if (businessUnits.length === 1) {
+    <opal-lib-govuk-summary-list summaryListId="reportBusinessUnit">
+      <div
+        opal-lib-govuk-summary-list-row
+        class="govuk-summary-list__row govuk-summary-list__row--no-actions"
+        summaryListId="reportBusinessUnit"
+        summaryListRowId="businessUnit"
+      >
+        <ng-container name>Business unit</ng-container>
+        <ng-container value>{{ businessUnits[0].business_unit_name }}</ng-container>
+      </div>
+    </opal-lib-govuk-summary-list>
+  } @else {
+    <h2 class="govuk-heading-m">Select business units</h2>
+
+    <opal-lib-govuk-table>
+      <ng-container head>
+        <th opal-lib-govuk-table-heading>
+          <div
+            class="govuk-checkboxes--small"
+            opal-lib-govuk-checkboxes-item
+            labelText="Business unit"
+            labelClasses="govuk-!-font-weight-bold"
+            [inputId]="allBusinessUnitsInputId"
+            [inputName]="allBusinessUnitsInputName"
+            [control]="allBusinessUnitsControl"
+          ></div>
+        </th>
+      </ng-container>
+      <ng-container body>
+        @if (businessUnitRows.length > 0) {
+          @for (row of businessUnitRows; track row.businessUnit.business_unit_id) {
+            <tr opal-lib-govuk-table-body-row>
+              <td id="business-unit-{{ row.businessUnit.business_unit_id }}" opal-lib-govuk-table-body-row-data>
+                <div
+                  class="govuk-checkboxes--small"
+                  opal-lib-govuk-checkboxes-item
+                  [labelText]="row.businessUnit.business_unit_name"
+                  [inputId]="row.inputId"
+                  [inputName]="row.inputName"
+                  [control]="row.control"
+                ></div>
+              </td>
+            </tr>
+          }
+        }
+      </ng-container>
+    </opal-lib-govuk-table>
+  }
+
+  <div class="govuk-button-group">
+    <button buttonId="continue-create-report" opalLibGovukButton type="submit">Continue</button>
+    <opal-lib-govuk-cancel-link (linkClickEvent)="handleCancel()"></opal-lib-govuk-cancel-link>
+  </div>
+</form>

@@ -1,7 +1,9 @@
 import { Routes } from '@angular/router';
 import { authGuard } from '@hmcts/opal-frontend-common/guards/auth';
+import { canDeactivateGuard } from '@hmcts/opal-frontend-common/guards/can-deactivate';
 import { TitleResolver } from '@hmcts/opal-frontend-common/resolvers/title';
 import { FINES_REPORTS_ROUTING_PATHS } from './constants/fines-reports-routing-paths.constant';
+import { FINES_REPORTS_CREATE_ROUTING_PATHS } from './constants/fines-reports-create-routing-paths.constant';
 import { FINES_REPORTS_ROUTING_TITLES } from './constants/fines-reports-routing-titles.constant';
 import { finesReportsStateGuard } from './guards/fines-reports-state-guard/fines-reports-state.guard';
 import { FINES_ROUTING_PATHS } from '@app/flows/fines/routing/constants/fines-routing-paths.constant';
@@ -10,6 +12,8 @@ import { finesReportsTitleResolver } from './resolvers/fines-reports-title/fines
 import { finesReportsReportMetadataResolver } from './resolvers/fines-reports-report-metadata/fines-reports-report-metadata.resolver';
 import { finesReportsReportInstancesResolver } from './resolvers/fines-reports-report-instances/fines-reports-report-instances.resolver';
 import { finesReportsBusinessUnitsResolver } from './resolvers/fines-reports-business-units/fines-reports-business-units.resolver';
+import { finesReportsReportHeadingResolver } from './resolvers/fines-reports-report-heading/fines-reports-report-heading.resolver';
+import { finesReportsCreateStateGuard } from './guards/fines-reports-create-state-guard/fines-reports-create-state.guard';
 
 export const routing: Routes = [
   {
@@ -28,14 +32,58 @@ export const routing: Routes = [
       },
       {
         path: FINES_REPORTS_ROUTING_PATHS.children.create,
-        loadComponent: () =>
-          import('../fines-reports-create/fines-reports-create.component').then((c) => c.FinesReportsCreateComponent),
-        data: {
-          title: FINES_REPORTS_ROUTING_TITLES.children.create,
-        },
-        resolve: {
-          title: TitleResolver,
-        },
+        children: [
+          {
+            path: FINES_REPORTS_CREATE_ROUTING_PATHS.children.selectBusinessUnits,
+            loadComponent: () =>
+              import('../fines-reports-select-business-units/fines-reports-select-business-units.component').then(
+                (c) => c.FinesReportsSelectBusinessUnitsComponent,
+              ),
+            canDeactivate: [canDeactivateGuard],
+            canActivate: [finesReportsCreateStateGuard],
+            data: {
+              title: 'Select business units',
+            },
+            resolve: {
+              title: TitleResolver,
+              report: finesReportsReportMetadataResolver,
+              reportHeading: finesReportsReportHeadingResolver,
+              businessUnits: finesReportsBusinessUnitsResolver,
+            },
+          },
+          {
+            path: FINES_REPORTS_CREATE_ROUTING_PATHS.children.businessUnitWarning,
+            loadComponent: () =>
+              import('../fines-reports-business-unit-warning/fines-reports-business-unit-warning.component').then(
+                (c) => c.FinesReportsBusinessUnitWarningComponent,
+              ),
+            data: {
+              title: 'Business unit warning',
+              requiresSelectedBusinessUnits: true,
+            },
+            canActivate: [finesReportsCreateStateGuard],
+            resolve: {
+              title: TitleResolver,
+            },
+          },
+          {
+            path: FINES_REPORTS_CREATE_ROUTING_PATHS.children.reportParameters,
+            loadComponent: () =>
+              import('../fines-reports-parameters/fines-reports-parameters.component').then(
+                (c) => c.FinesReportsParametersComponent,
+              ),
+            data: {
+              title: 'Parameters',
+              requiresSelectedBusinessUnits: true,
+            },
+            canActivate: [finesReportsCreateStateGuard],
+            resolve: {
+              title: TitleResolver,
+              reportHeading: finesReportsReportHeadingResolver,
+              businessUnits: finesReportsBusinessUnitsResolver,
+            },
+          },
+        ],
       },
       {
         path: `${FINES_REPORTS_ROUTING_PATHS.children.reportSummary}/:reportInstanceId`,
