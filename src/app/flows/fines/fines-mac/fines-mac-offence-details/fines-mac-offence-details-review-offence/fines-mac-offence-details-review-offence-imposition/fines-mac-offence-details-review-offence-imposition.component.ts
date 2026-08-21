@@ -52,6 +52,7 @@ export class FinesMacOffenceDetailsReviewOffenceImpositionComponent implements O
   @Input({ required: true }) public majorCreditorRefData!: IOpalFinesMajorCreditorRefData;
   @Input({ required: true }) public impositions!: IFinesMacOffenceDetailsImpositionsState[];
   @Input({ required: true }) public offenceIndex!: number;
+  @Input({ required: true }) public offenceCaption!: string;
   @Input({ required: false }) public isReadOnly!: boolean;
   public readonly utilsService = inject(UtilsService);
   public impositionTableData!: IFinesMacOffenceDetailsReviewSummaryImpositionTableData[];
