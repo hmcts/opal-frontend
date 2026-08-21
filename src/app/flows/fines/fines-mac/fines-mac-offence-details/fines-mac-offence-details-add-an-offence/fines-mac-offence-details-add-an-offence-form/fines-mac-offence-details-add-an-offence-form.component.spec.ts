@@ -727,6 +727,21 @@ describe('FinesMacOffenceDetailsAddAnOffenceFormComponent', () => {
     expect(component.today).toBe('01/01/2022');
   });
 
+  it('should focus the new imposition result-code input after adding another imposition', async () => {
+    const newRowIndex = component.formArrayControls.length;
+    const expectedInputId = `fm_offence_details_result_id_${newRowIndex}-autocomplete`;
+
+    component.addAnotherImposition();
+    fixture.detectChanges();
+    await fixture.whenStable();
+
+    expect(component.formArrayControls).toHaveLength(newRowIndex + 1);
+    await vi.waitFor(() => {
+      expect(document.getElementById(expectedInputId)).toBeTruthy();
+      expect(document.activeElement?.id).toBe(expectedInputId);
+    });
+  });
+
   it('should keep the add offence form dirty when returning from a saved minor creditor', () => {
     fixture.destroy();
     const { component: freshComponent, finesMacStore: freshFinesMacStore } = createInitializedComponent((store) => {
