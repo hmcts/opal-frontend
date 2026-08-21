@@ -675,7 +675,7 @@ describe('Defendant Account Summary - At a Glance Tab', () => {
 
       setupAccountEnquiryComponent(componentProperties);
 
-      cy.get(DOM.imposedAmountValue).should('contain.text', '£1234.56');
+      cy.get(DOM.imposedAmountValue).should('contain.text', '£1,234.56');
       cy.get(DOM.arrearsAmountValue).should('contain.text', '£200.00');
       cy.get(DOM.paidWrittenOffValue).should('contain.text', '£100.00');
       cy.get(DOM.accountBalanceValue).should('contain.text', '£934.56');
@@ -706,7 +706,7 @@ describe('Defendant Account Summary - At a Glance Tab', () => {
 
       setupAccountEnquiryComponent(componentProperties);
 
-      cy.get(DOM.imposedAmountValue).should('contain.text', '£1234.56');
+      cy.get(DOM.imposedAmountValue).should('contain.text', '£1,234.56');
       cy.get(DOM.arrearsAmountValue).should('contain.text', '£200.00');
       cy.get(DOM.paidWrittenOffValue).should('contain.text', '£100.00');
       cy.get(DOM.accountBalanceValue).should('contain.text', '-£934.56');
