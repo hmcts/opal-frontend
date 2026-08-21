@@ -59,7 +59,7 @@ Feature: Populate And Submit
       | Compensation     | FNAME LNAME                           | £200.00        | £100.00     | £100.00           |
       | Compensation     | Temporary Creditor (TEMP)             | £300.00        | £100.00     | £200.00           |
       | Victim Surcharge | HM Courts & Tribunals Service (HMCTS) | £500.00        | £250.00     | £250.00           |
-      | Totals           |                                       | £1,000.00       | £450.00     | £550.00           |
+      | Totals           |                                       | £1,000.00      | £450.00     | £550.00           |
     And the summary list should contain the following information:
       | Amount imposed    | £1,000.00 |
       | Amount paid       | £450.00  |
