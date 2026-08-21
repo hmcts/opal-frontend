@@ -13,6 +13,7 @@ export const FINES_ACC_MINOR_CREDITOR_DETAILS_HEADER_MOCK: IOpalFinesAccountMino
   },
   business_unit: {
     business_unit_id: '77',
+    business_unit_code: '0046',
     business_unit_name: 'Camberwell Green',
     welsh_speaking: 'N',
   },
