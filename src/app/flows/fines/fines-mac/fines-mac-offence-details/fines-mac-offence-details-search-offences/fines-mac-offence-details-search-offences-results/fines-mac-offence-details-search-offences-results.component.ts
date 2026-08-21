@@ -10,7 +10,7 @@ import { FINES_MAC_OFFENCE_DETAILS_SEARCH_OFFENCES_RESULTS_TABLE_WRAPPER_SORT_DE
 import { IFinesMacOffenceDetailsSearchOffencesResultsTableWrapperTableData } from './fines-mac-offence-details-search-offences-results-table-wrapper/interfaces/fines-mac-offence-details-search-offences-results-table-wrapper-table-data.interface';
 import { IOpalFinesSearchOffences } from '@services/fines/opal-fines-service/interfaces/opal-fines-search-offence.interface';
 import { IOpalFinesSearchOffencesData } from '@services/fines/opal-fines-service/interfaces/opal-fines-search-offences.interface';
-import { FINES_MAC_OFFENCE_DETAILS_SEARCH_OFFENCES_RESULTS_NO_RESULTS_ANNOUNCEMENT } from './constants/fines-mac-offence-details-search-offences-results.constant';
+import { FINES_MAC_OFFENCE_DETAILS_SEARCH_OFFENCES_RESULTS_NO_RESULTS_ANNOUNCEMENT } from './constants/fines-mac-offence-details-search-offences-results-no-results-announcement.constant';
 
 @Component({
   selector: 'app-fines-mac-offence-details-search-offences-results',

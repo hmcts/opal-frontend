@@ -25,9 +25,24 @@ describe('FinesMacOffenceDetailsSearchOffencesResultsComponent', () => {
     },
   };
 
-  beforeEach(async () => {
-    activatedRoute.snapshot.data.searchResults = OPAL_FINES_SEARCH_OFFENCES_MOCK;
+  const noSearchResults = {
+    ...OPAL_FINES_SEARCH_OFFENCES_MOCK,
+    searchData: [],
+  };
 
+  const createComponent = (searchResults = OPAL_FINES_SEARCH_OFFENCES_MOCK): void => {
+    activatedRoute.snapshot.data.searchResults = searchResults;
+
+    fixture = TestBed.createComponent(FinesMacOffenceDetailsSearchOffencesResultsComponent);
+    component = fixture.componentInstance;
+
+    fixture.detectChanges();
+  };
+
+  const getDeferredLiveRegionAnnouncement = () =>
+    fixture.debugElement.query(By.directive(CustomDeferredLiveRegionAnnouncement));
+
+  beforeEach(async () => {
     await TestBed.configureTestingModule({
       imports: [FinesMacOffenceDetailsSearchOffencesResultsComponent],
       providers: [
@@ -41,59 +56,42 @@ describe('FinesMacOffenceDetailsSearchOffencesResultsComponent', () => {
       ],
     }).compileComponents();
 
-    fixture = TestBed.createComponent(FinesMacOffenceDetailsSearchOffencesResultsComponent);
-    component = fixture.componentInstance;
-
     finesMacOffenceDetailsSearchOffencesStore = TestBed.inject(FinesMacOffenceDetailsSearchOffencesStore);
     finesMacOffenceDetailsSearchOffencesStore.resetSearchOffencesStore();
-
-    fixture.detectChanges();
   });
 
-  const createFixtureWithNoSearchResults = (): void => {
-    fixture.destroy();
-
-    activatedRoute.snapshot.data.searchResults = {
-      ...OPAL_FINES_SEARCH_OFFENCES_MOCK,
-      searchData: [],
-    };
-
-    fixture = TestBed.createComponent(FinesMacOffenceDetailsSearchOffencesResultsComponent);
-    component = fixture.componentInstance;
-
-    fixture.detectChanges();
-  };
-
-  const getDeferredLiveRegionAnnouncement = () =>
-    fixture.debugElement.query(By.directive(CustomDeferredLiveRegionAnnouncement));
-
   it('should create', () => {
+    createComponent();
     expect(component).toBeTruthy();
   });
 
   it('should return false from canDeactivate if there are unsaved changes', () => {
+    createComponent();
     finesMacOffenceDetailsSearchOffencesStore.setUnsavedChanges(true);
     expect(component.canDeactivate()).toBe(false);
   });
 
   it('should return true from canDeactivate if there are no unsaved changes', () => {
+    createComponent();
     finesMacOffenceDetailsSearchOffencesStore.setUnsavedChanges(false);
     expect(component.canDeactivate()).toBe(true);
   });
 
   it('should navigate back one level up on navigateBack', () => {
+    createComponent();
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     const routerSpy = vi.spyOn<any, any>(component['router'], 'navigate');
     component.navigateBack();
     expect(routerSpy).toHaveBeenCalledWith(['..'], { relativeTo: component['activatedRoute'] });
   });
+
   it('should display the deferred live region announcement when there are no search results', () => {
-    createFixtureWithNoSearchResults();
+    createComponent(noSearchResults);
     expect(getDeferredLiveRegionAnnouncement()).toBeTruthy();
   });
 
   it('should pass the no results announcement message to the deferred live region announcement', () => {
-    createFixtureWithNoSearchResults();
+    createComponent(noSearchResults);
 
     const announcement = getDeferredLiveRegionAnnouncement();
     const announcementComponent = announcement.componentInstance as CustomDeferredLiveRegionAnnouncement;
@@ -103,6 +101,7 @@ describe('FinesMacOffenceDetailsSearchOffencesResultsComponent', () => {
   });
 
   it('should not display the deferred live region announcement when there are search results', () => {
+    createComponent();
     expect(getDeferredLiveRegionAnnouncement()).toBeNull();
   });
 });
