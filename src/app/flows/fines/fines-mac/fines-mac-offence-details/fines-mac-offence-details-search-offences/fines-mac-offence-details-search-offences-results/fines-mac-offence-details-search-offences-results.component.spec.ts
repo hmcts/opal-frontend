@@ -8,6 +8,8 @@ import { provideHttpClientTesting } from '@angular/common/http/testing';
 import { of } from 'rxjs';
 import { OPAL_FINES_SEARCH_OFFENCES_MOCK } from '@services/fines/opal-fines-service/mocks/opal-fines-search-offences.mock';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
+import { By } from '@angular/platform-browser';
+import { FinesMacOffenceDetailsSearchOffencesResultsTableWrapperComponent } from './fines-mac-offence-details-search-offences-results-table-wrapper/fines-mac-offence-details-search-offences-results-table-wrapper.component';
 
 describe('FinesMacOffenceDetailsSearchOffencesResultsComponent', () => {
   let component: FinesMacOffenceDetailsSearchOffencesResultsComponent;
@@ -46,6 +48,14 @@ describe('FinesMacOffenceDetailsSearchOffencesResultsComponent', () => {
 
   it('should create', () => {
     expect(component).toBeTruthy();
+  });
+
+  it('should provide the page title for pagination announcements', () => {
+    const tableWrapper = fixture.debugElement.query(
+      By.directive(FinesMacOffenceDetailsSearchOffencesResultsTableWrapperComponent),
+    ).componentInstance as FinesMacOffenceDetailsSearchOffencesResultsTableWrapperComponent;
+
+    expect(tableWrapper.paginationPageTitle).toBe('Search results');
   });
 
   it('should return false from canDeactivate if there are unsaved changes', () => {

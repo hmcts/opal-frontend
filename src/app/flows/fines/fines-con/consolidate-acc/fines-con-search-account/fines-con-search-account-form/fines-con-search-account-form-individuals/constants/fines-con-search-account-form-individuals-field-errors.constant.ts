@@ -62,7 +62,7 @@ export const FINES_CON_SEARCH_ACCOUNT_FORM_INDIVIDUALS_FIELD_ERRORS: IFinesConSe
     },
     fcon_search_account_individuals_post_code: {
       alphanumericTextPattern: {
-        message: 'Postcode must only include letters a to z, numbers, hyphens, spaces and apostrophes',
+        message: 'Postcode must only include letters or numbers',
         priority: 1,
       },
       maxlength: {
