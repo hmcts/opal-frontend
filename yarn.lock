@@ -9402,11 +9402,11 @@ __metadata:
   linkType: hard
 
 "config@npm:^5.0.0":
-  version: 5.0.0
-  resolution: "config@npm:5.0.0"
+  version: 5.0.1
+  resolution: "config@npm:5.0.1"
   dependencies:
     json5: "npm:^2.2.3"
-  checksum: 10/317dc25a4ded70010cc5636fb92d35b845e94e49f54a52a4a5ecaa81f3b118b8e2bf5e56ce486ab9c8c5e5e8ef68668ca2a95ef8eb12ee382aadbe834f382c40
+  checksum: 10/20920c671a4b49e4da2a64c53806f37d787e806abf7c5e205b2a22abef74a82cdd7336c66d78c92b585b1bd2320300df40e55a70c644ebae73a391865bcc377b
   languageName: node
   linkType: hard
 
