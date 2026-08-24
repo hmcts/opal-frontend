@@ -45,7 +45,7 @@ describe('FinesMacAddOffenceComponent', () => {
       (req) => {
         const requestedCjsCode = req.query['q'];
         const matchedOffences = OPAL_FINES_OFFENCES_REF_DATA_MOCK.refData.filter(
-          (offence) => offence.get_cjs_code === requestedCjsCode,
+          (offence) => offence.cjs_code === requestedCjsCode,
         );
         req.reply({
           count: matchedOffences.length,
@@ -262,9 +262,9 @@ describe('FinesMacAddOffenceComponent', () => {
       cy.wait('@getExactMatchMultiResultOffence').then(({ response }) => {
         expect(response?.body.count).to.be.greaterThan(1);
         expect(response?.body.refData).to.have.length.greaterThan(1);
-        expect(
-          response?.body.refData.some((offence: { get_cjs_code: string }) => offence.get_cjs_code === 'CD71039'),
-        ).to.equal(true);
+        expect(response?.body.refData.some((offence: { cjs_code: string }) => offence.cjs_code === 'CD71039')).to.equal(
+          true,
+        );
       });
 
       cy.get(DOM_ELEMENTS.successPanel).should('contain', 'Offence found');
@@ -322,7 +322,7 @@ describe('FinesMacAddOffenceComponent', () => {
             refData: OPAL_FINES_OFFENCES_REF_DATA_DUPLICATE_CODE_MOCK.refData.map((offence, index) => ({
               ...offence,
               offence_id: offence.offence_id + index,
-              get_cjs_code: `CD71039${String.fromCharCode(65 + index)}`,
+              cjs_code: `CD71039${String.fromCharCode(65 + index)}`,
             })),
           },
         },
@@ -334,7 +334,7 @@ describe('FinesMacAddOffenceComponent', () => {
         expect(response?.body.count).to.be.greaterThan(1);
         expect(response?.body.refData).to.have.length.greaterThan(1);
         expect(
-          response?.body.refData.some((offence: { get_cjs_code: string }) => offence.get_cjs_code === 'CD71039D'),
+          response?.body.refData.some((offence: { cjs_code: string }) => offence.cjs_code === 'CD71039D'),
         ).to.equal(false);
       });
 
