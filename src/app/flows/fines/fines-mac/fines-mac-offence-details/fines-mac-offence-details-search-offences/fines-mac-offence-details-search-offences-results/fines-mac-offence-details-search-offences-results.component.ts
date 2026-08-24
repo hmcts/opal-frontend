@@ -1,6 +1,7 @@
 import { ChangeDetectionStrategy, Component, inject } from '@angular/core';
 import { GovukBackLinkComponent } from '@hmcts/opal-frontend-common/components/govuk/govuk-back-link';
 import { ActivatedRoute, Router, RouterModule } from '@angular/router';
+import { CustomDeferredLiveRegionAnnouncement } from '@hmcts/opal-frontend-common/components/custom/custom-deferred-live-region-announcement';
 import { CanDeactivateTypes } from '@hmcts/opal-frontend-common/guards/can-deactivate/types';
 import { FinesMacOffenceDetailsSearchOffencesStore } from '../stores/fines-mac-offence-details-search-offences.store';
 
@@ -9,10 +10,16 @@ import { FINES_MAC_OFFENCE_DETAILS_SEARCH_OFFENCES_RESULTS_TABLE_WRAPPER_SORT_DE
 import { IFinesMacOffenceDetailsSearchOffencesResultsTableWrapperTableData } from './fines-mac-offence-details-search-offences-results-table-wrapper/interfaces/fines-mac-offence-details-search-offences-results-table-wrapper-table-data.interface';
 import { IOpalFinesSearchOffences } from '@services/fines/opal-fines-service/interfaces/opal-fines-search-offence.interface';
 import { IOpalFinesSearchOffencesData } from '@services/fines/opal-fines-service/interfaces/opal-fines-search-offences.interface';
+import { FINES_MAC_OFFENCE_DETAILS_SEARCH_OFFENCES_RESULTS_NO_RESULTS_ANNOUNCEMENT } from './constants/fines-mac-offence-details-search-offences-results-no-results-announcement.constant';
 
 @Component({
   selector: 'app-fines-mac-offence-details-search-offences-results',
-  imports: [RouterModule, GovukBackLinkComponent, FinesMacOffenceDetailsSearchOffencesResultsTableWrapperComponent],
+  imports: [
+    RouterModule,
+    GovukBackLinkComponent,
+    FinesMacOffenceDetailsSearchOffencesResultsTableWrapperComponent,
+    CustomDeferredLiveRegionAnnouncement,
+  ],
   templateUrl: './fines-mac-offence-details-search-offences-results.component.html',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
@@ -25,6 +32,7 @@ export class FinesMacOffenceDetailsSearchOffencesResultsComponent {
     this.mapSearchOffencesToTableData();
 
   public readonly tableSort = FINES_MAC_OFFENCE_DETAILS_SEARCH_OFFENCES_RESULTS_TABLE_WRAPPER_SORT_DEFAULT;
+  public readonly noResultsAnnouncement = FINES_MAC_OFFENCE_DETAILS_SEARCH_OFFENCES_RESULTS_NO_RESULTS_ANNOUNCEMENT;
   /**
    * Maps search offences data retrieved from the activated route's snapshot
    * to a format suitable for table display.
