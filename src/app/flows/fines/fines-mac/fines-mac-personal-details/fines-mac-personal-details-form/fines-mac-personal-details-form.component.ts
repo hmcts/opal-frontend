@@ -43,7 +43,11 @@ import { IGovUkSelectOptions } from '@hmcts/opal-frontend-common/components/govu
 import { CapitalisationDirective } from '@hmcts/opal-frontend-common/directives/capitalisation';
 import { TrimLeadingTrailingWhitespaceDirective } from '@hmcts/opal-frontend-common/directives/trim-leading-trailing-whitespace';
 import { patternValidator } from '@hmcts/opal-frontend-common/validators/pattern-validator';
-import { ADDRESS_LINE_PATTERN, SINGLE_ASCII_CHARACTERS } from '@hmcts/opal-frontend-common/constants';
+import {
+  ADDRESS_LINE_PATTERN,
+  SINGLE_ASCII_CHARACTERS,
+  ALPHANUMERIC_WITH_SPACES_PATTERN,
+} from '@hmcts/opal-frontend-common/constants';
 import { FINES_MAC_DEFENDANT_TYPES_KEYS } from '../../constants/fines-mac-defendant-types-keys';
 
 // regex pattern validators for the form controls
@@ -51,8 +55,13 @@ const SINGLE_ASCII_CHARACTERS_ALPHANUMERIC_WITH_SPECIAL_CHARACTERS_PATTERN_VALID
   SINGLE_ASCII_CHARACTERS,
   'singleAsciiChatacters',
 );
+
 const ADDRESS_LINE_PATTERN_VALIDATOR = patternValidator(ADDRESS_LINE_PATTERN, 'alphanumericTextPattern');
 
+const ALPHANUMERIC_WITH_SPACES_PATTERN_VALIDATOR = patternValidator(
+  ALPHANUMERIC_WITH_SPACES_PATTERN,
+  'alphanumericTextPattern',
+);
 @Component({
   selector: 'app-fines-mac-personal-details-form',
   imports: [
