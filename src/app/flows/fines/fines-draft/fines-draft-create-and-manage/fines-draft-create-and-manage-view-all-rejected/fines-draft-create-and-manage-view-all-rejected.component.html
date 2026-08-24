@@ -5,7 +5,8 @@
     <app-fines-draft-table-wrapper
       [tableData]="rejectedAccounts"
       [existingSortState]="tableSort"
-      [activeTab]="finesDraftTabFragment.rejected"
+      activeTab="rejected"
+      paginationPageTitle="All rejected accounts"
       (linkClicked)="onDefendantClick($event)"
     ></app-fines-draft-table-wrapper>
   } @else {

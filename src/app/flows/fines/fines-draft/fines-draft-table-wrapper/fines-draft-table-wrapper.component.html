@@ -93,8 +93,8 @@
   <ng-container row>
     @for (row of paginatedTableDataComputed(); track row['Defendant id']) {
       <tr opal-lib-moj-sortable-table-row>
-        @if (activeTab === finesDraftTabFragment.approved) {
-          <td opal-lib-moj-sortable-table-row-data id="account">
+        @if (activeTab === 'approved') {
+          <td #paginationFocusTarget opal-lib-moj-sortable-table-row-data id="account">
             @if (approvedAccountLinkEnabled) {
               <a
                 class="govuk-link govuk-link--no-visited-state"
@@ -107,8 +107,8 @@
             }
           </td>
         }
-        <td opal-lib-moj-sortable-table-row-data id="defendant">
-          @if (activeTab === finesDraftTabFragment.approved) {
+        <td #paginationFocusTarget opal-lib-moj-sortable-table-row-data id="defendant">
+          @if (activeTab === 'approved') {
             {{ row['Defendant'] }}
           } @else {
             <a class="govuk-link govuk-link--no-visited-state" href="" (click)="onDefendantClick(row, $event)">{{
@@ -133,6 +133,7 @@
     }
   </ng-container>
   <ng-container status>
+    <output aria-atomic="true" class="govuk-visually-hidden">{{ pageChangeAnnouncement() }}</output>
     <opal-lib-moj-sortable-table-status
       [columnTitle]="sortedColumnTitleSignal()"
       [sortDirection]="sortedColumnDirectionSignal()"

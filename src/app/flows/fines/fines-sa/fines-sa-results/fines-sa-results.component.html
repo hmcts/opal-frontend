@@ -97,6 +97,7 @@
     <app-fines-sa-results-defendant-table-wrapper
       [tableData]="individualsData"
       [existingSortState]="defendantsSort"
+      paginationPageTitle="Search results"
       (accountIdClicked)="onAccountIdClick($event, accountType.defendant)"
     >
     </app-fines-sa-results-defendant-table-wrapper>
@@ -112,6 +113,7 @@
       [tableData]="companiesData"
       [existingSortState]="defendantsSort"
       [isCompany]="true"
+      paginationPageTitle="Search results"
       (accountIdClicked)="onAccountIdClick($event, accountType.defendant)"
     >
     </app-fines-sa-results-defendant-table-wrapper>
@@ -126,6 +128,7 @@
     <app-fines-sa-results-minor-creditor-table-wrapper
       [tableData]="minorCreditorsData"
       [existingSortState]="minorCreditorsSort"
+      paginationPageTitle="Search results"
       (minorCreditorAccountIdClicked)="onAccountIdClick($event, accountType.minorCreditor)"
       (defendantAccountIdClicked)="onAccountIdClick($event, accountType.defendant)"
     >
