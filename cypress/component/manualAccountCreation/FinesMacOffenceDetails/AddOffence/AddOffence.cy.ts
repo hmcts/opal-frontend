@@ -400,10 +400,8 @@ describe('FinesMacAddOffenceComponent', () => {
       cy.get(DOM_ELEMENTS.dateOfSentenceLabel).should('contain', 'Date of sentence');
       cy.get(DOM_ELEMENTS.dateHint).should('contain', 'For example, 31/01/2023');
       cy.get(DOM_ELEMENTS.offenceCodeLabel).should('contain', 'Offence code');
-      cy.get(DOM_ELEMENTS.offenceCodeHint).should(
-        'contain',
-        "For example, HY35014. If you don't know the offence code, you can",
-      );
+      cy.get(DOM_ELEMENTS.offenceCodeHint).should('contain', 'For example, HY35014.');
+      cy.get(DOM_ELEMENTS.offenceCodeGuidance).should('contain', "If you don't know the offence code, you can");
       cy.get(DOM_ELEMENTS.offenceLink).should('contain', 'search the offence list');
       cy.get(imposition_1.resultCodeLabel).should('contain', 'Result code');
       cy.get(imposition_1.amountImposedLabel).should('contain', 'Amount imposed');
@@ -576,11 +574,13 @@ describe('FinesMacAddOffenceComponent', () => {
       const imposition_1 = impositionSelectors(0);
 
       impositionResultCodelist.forEach((resultCode) => {
+        const resultCodeValue = resultCode.match(/\(([^)]+)\)$/)?.[1] ?? resultCode;
+
         if (resultCode === 'Compensation (FCOMP)' || resultCode === 'Costs (FCOST)') {
           cy.get(imposition_1.resultCodeInput).click();
           cy.get(imposition_1.resultCodeAutoComplete).find('li').should('have.length.greaterThan', 0);
-          cy.get(imposition_1.resultCodeInput).clear().type(`${resultCode}`, { delay: 0, force: true });
-          cy.get(imposition_1.resultCodeLabel).click();
+          cy.get(imposition_1.resultCodeInput).clear().type(resultCodeValue, { delay: 0, force: true });
+          cy.get(imposition_1.resultCodeAutoComplete).contains('li', resultCode).click();
           cy.get(imposition_1.majorCreditor).should('exist');
           cy.get(imposition_1.minorCreditor).should('exist');
           cy.get(imposition_1.majorCreditorLabel).should('contain', 'Major creditor');
@@ -588,8 +588,8 @@ describe('FinesMacAddOffenceComponent', () => {
         } else {
           cy.get(imposition_1.resultCodeInput).click();
           cy.get(imposition_1.resultCodeAutoComplete).find('li').should('have.length.greaterThan', 0);
-          cy.get(imposition_1.resultCodeInput).clear().type(`${resultCode}`, { delay: 0, force: true });
-          cy.get(imposition_1.resultCodeLabel).click();
+          cy.get(imposition_1.resultCodeInput).clear().type(resultCodeValue, { delay: 0, force: true });
+          cy.get(imposition_1.resultCodeAutoComplete).contains('li', resultCode).click();
 
           cy.get(imposition_1.majorCreditor).should('not.exist');
           cy.get(imposition_1.minorCreditor).should('not.exist');
