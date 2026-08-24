@@ -93,6 +93,10 @@ export const FINES_MAC_OFFENCE_DETAILS_MINOR_CREDITOR_FIELD_ERRORS: IAbstractFor
       message: `Postcode must be 8 characters or fewer`,
       priority: 1,
     },
+    alphanumericTextPattern: {
+      message: 'Postcode must only contain letters or numbers',
+      priority: 2,
+    },
   },
   fm_offence_details_minor_creditor_bank_account_name: {
     required: {

@@ -128,7 +128,7 @@ export const FINES_MAC_COMPANY_DETAILS_FIELD_ERRORS: IFinesMacCompanyDetailsFiel
       priority: 1,
     },
     alphanumericTextPattern: {
-      message: `The postcode must only contain letters or numbers`,
+      message: `Postcode must only contain letters or numbers`,
       priority: 2,
     },
   },

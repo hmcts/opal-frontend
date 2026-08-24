@@ -30,7 +30,7 @@ export const FINES_SA_SEARCH_ACCOUNT_FORM_COMPANIES_FIELD_ERRORS: IFinesSaSearch
     },
   },
   fsa_search_account_companies_post_code: {
-    alphanumericWithHyphensSpacesApostrophesDotPattern: {
+    alphanumericTextPattern: {
       message: 'Post code must only contain letters or numbers',
       priority: 1,
     },
