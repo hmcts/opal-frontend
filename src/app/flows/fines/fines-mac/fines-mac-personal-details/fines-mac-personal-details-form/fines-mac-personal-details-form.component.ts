@@ -55,13 +55,12 @@ const SINGLE_ASCII_CHARACTERS_ALPHANUMERIC_WITH_SPECIAL_CHARACTERS_PATTERN_VALID
   SINGLE_ASCII_CHARACTERS,
   'singleAsciiChatacters',
 );
-
 const ADDRESS_LINE_PATTERN_VALIDATOR = patternValidator(ADDRESS_LINE_PATTERN, 'alphanumericTextPattern');
-
 const ALPHANUMERIC_WITH_SPACES_PATTERN_VALIDATOR = patternValidator(
   ALPHANUMERIC_WITH_SPACES_PATTERN,
   'alphanumericTextPattern',
 );
+
 @Component({
   selector: 'app-fines-mac-personal-details-form',
   imports: [
