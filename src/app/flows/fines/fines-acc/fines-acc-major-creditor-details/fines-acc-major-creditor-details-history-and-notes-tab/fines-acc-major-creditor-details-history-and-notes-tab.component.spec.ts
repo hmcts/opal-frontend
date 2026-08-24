@@ -10,6 +10,7 @@ import { of } from 'rxjs';
 import { beforeEach, describe, expect, it } from 'vitest';
 import { FinesAccMajorCreditorDetailsHistoryAndNotesTabComponent } from './fines-acc-major-creditor-details-history-and-notes-tab.component';
 import { vi } from 'vitest';
+import { FINES_ACC_MAJOR_CREDITOR_HISTORY_AND_NOTES_DETAILS_TRANSFORMATION_CONFIG } from '../../services/constants/fines-acc-major-creditor-history-and-notes-details-transformation-config.constant';
 
 describe('FinesAccMajorCreditorDetailsHistoryAndNotesTabComponent', () => {
   let component: FinesAccMajorCreditorDetailsHistoryAndNotesTabComponent;
@@ -27,6 +28,7 @@ describe('FinesAccMajorCreditorDetailsHistoryAndNotesTabComponent', () => {
     };
     mockPayloadService = {
       buildMajorCreditorHistoryFilterPayload: vi.fn(),
+      transformHistoryAndNotesItems: vi.fn(),
     };
     mockAccountStore = {
       compareVersion: vi.fn(),
@@ -38,6 +40,7 @@ describe('FinesAccMajorCreditorDetailsHistoryAndNotesTabComponent', () => {
     mockPayloadService.buildMajorCreditorHistoryFilterPayload.mockReturnValue(
       FINES_ACC_MAJOR_CREDITOR_DETAILS_HISTORY_AND_NOTES_FILTER_PAYLOAD_MOCK,
     );
+    mockPayloadService.transformHistoryAndNotesItems.mockReturnValue([]);
 
     await TestBed.configureTestingModule({
       imports: [FinesAccMajorCreditorDetailsHistoryAndNotesTabComponent],
@@ -98,6 +101,15 @@ describe('FinesAccMajorCreditorDetailsHistoryAndNotesTabComponent', () => {
     component.historyAndNotesTabData$.subscribe((data) => emitted.push(data));
 
     expect(emitted).toEqual([OPAL_FINES_ACCOUNT_MAJOR_CREDITOR_DETAILS_HISTORY_AND_NOTES_TAB_REF_DATA_MOCK]);
+  });
+
+  it('should temporarily transform history items for the PO-2657 browser preview', () => {
+    component.historyAndNotesTabData$.subscribe();
+
+    expect(mockPayloadService.transformHistoryAndNotesItems).toHaveBeenCalledWith(
+      OPAL_FINES_ACCOUNT_MAJOR_CREDITOR_DETAILS_HISTORY_AND_NOTES_TAB_REF_DATA_MOCK['historyItems'],
+      FINES_ACC_MAJOR_CREDITOR_HISTORY_AND_NOTES_DETAILS_TRANSFORMATION_CONFIG,
+    );
   });
 
   it('should fetch filtered tab data when filter values are applied', () => {
