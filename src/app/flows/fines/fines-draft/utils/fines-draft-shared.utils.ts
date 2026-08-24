@@ -3,7 +3,19 @@ import { type IOpalUserState } from '@hmcts/opal-frontend-common/services/opal-u
 import { IDateRange } from '@hmcts/opal-frontend-common/services/date-service/interfaces';
 import { IOpalFinesDraftAccountsResponse } from '@services/fines/opal-fines-service/interfaces/opal-fines-draft-account-data.interface';
 import { IOpalFinesDraftAccountParams } from '@services/fines/opal-fines-service/interfaces/opal-fines-draft-account-params.interface';
-import { distinctUntilChanged, EMPTY, filter, map, merge, Observable, of, shareReplay, switchMap, tap } from 'rxjs';
+import {
+  combineLatest,
+  distinctUntilChanged,
+  EMPTY,
+  filter,
+  map,
+  merge,
+  Observable,
+  of,
+  shareReplay,
+  switchMap,
+  tap,
+} from 'rxjs';
 import { FINES_DRAFT_TAB_STATUSES } from '../constants/fines-draft-tab-statuses.constant';
 import { IFinesDraftTableWrapperTableData } from '../fines-draft-table-wrapper/interfaces/fines-draft-table-wrapper-table-data.interface';
 import { IFinesDraftAccountParamOptions } from '../interfaces/fines-draft-account-param-options.interface';
@@ -31,7 +43,7 @@ export interface IFinesDraftTabDataStreamsOptions {
 
 export interface IFinesDraftTabDataStreams {
   draftAccounts$: Observable<IFinesDraftTabAccounts>;
-  tabData$: Observable<IFinesDraftTableWrapperTableData[]>;
+  tabData$: Observable<IFinesDraftTableWrapperTableData[] | null>;
 }
 
 export interface IFinesDraftTabCountStreamOptions {
@@ -72,10 +84,12 @@ export function createDraftFragmentStream(fragment$: Observable<string>, clearCa
  * Creates the shared resolver-backed draft account stream used by the draft tab pages.
  *
  * @param options - Route, request, cache, date, and flow-specific tab configuration.
- * @returns The shared account-response stream and its table-data projection.
+ * @returns The shared account-response stream and a table projection that is hidden while a different tab is loading.
  */
 export function createDraftTabDataStreams(options: IFinesDraftTabDataStreamsOptions): IFinesDraftTabDataStreams {
-  const fragment$ = createDraftFragmentStream(options.fragment$, options.clearCache);
+  const fragment$ = createDraftFragmentStream(options.fragment$, options.clearCache).pipe(
+    shareReplay({ bufferSize: 1, refCount: true }),
+  );
   let pendingResolvedDraftAccounts = getResolvedDraftAccounts(options.activatedRoute);
 
   const draftAccounts$ = fragment$.pipe(
@@ -111,7 +125,9 @@ export function createDraftTabDataStreams(options: IFinesDraftTabDataStreamsOpti
 
   return {
     draftAccounts$,
-    tabData$: draftAccounts$.pipe(map(({ response }) => options.populateTableData(response))),
+    tabData$: combineLatest([fragment$, draftAccounts$]).pipe(
+      map(([activeTab, { tab, response }]) => (activeTab === tab ? options.populateTableData(response) : null)),
+    ),
   };
 }
 

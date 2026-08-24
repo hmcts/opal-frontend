@@ -63,7 +63,7 @@ export class FinesDraftCheckAndValidateTabsComponent extends AbstractTabData imp
   protected readonly finesDraftTabFragment = FINES_DRAFT_TAB_FRAGMENT;
 
   public readonly finesDraftService = inject(FinesDraftService);
-  public tabData$!: Observable<IFinesDraftTableWrapperTableData[]>;
+  public tabData$!: Observable<IFinesDraftTableWrapperTableData[] | null>;
   public failedCount$!: Observable<string>;
   public tableSort = FINES_DRAFT_TABLE_WRAPPER_SORT_DEFAULT;
 

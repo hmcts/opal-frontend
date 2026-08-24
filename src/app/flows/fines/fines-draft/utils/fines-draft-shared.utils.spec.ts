@@ -5,6 +5,7 @@ import { firstValueFrom, of, Subject, toArray } from 'rxjs';
 import { describe, expect, it, vi } from 'vitest';
 import { FINES_DRAFT_ROUTE_DATA_KEYS } from '../constants/fines-draft-route-data-keys.constant';
 import { FINES_DRAFT_TAB_FRAGMENT } from '../constants/fines-draft-tab-fragments.constant';
+import { IFinesDraftTableWrapperTableData } from '../fines-draft-table-wrapper/interfaces/fines-draft-table-wrapper-table-data.interface';
 import { FINES_DRAFT_RESOLVER_EMPTY_RESPONSE } from '../routing/resolvers/constants/fines-draft-resolver-empty-response.constant';
 import {
   createDraftFragmentStream,
@@ -50,7 +51,7 @@ describe('createDraftTabDataStreams', () => {
     const onTabChange = vi.fn();
     const populateTableData = vi.fn(() => []);
     const accountCounts: number[] = [];
-    const tableDataLengths: number[] = [];
+    const tableDataLengths: Array<number | null> = [];
 
     const { draftAccounts$, tabData$ } = createDraftTabDataStreams({
       fragment$: fragmentSubject.asObservable(),
@@ -70,13 +71,13 @@ describe('createDraftTabDataStreams', () => {
     });
 
     const accountSubscription = draftAccounts$.subscribe(({ response }) => accountCounts.push(response.count));
-    const tableDataSubscription = tabData$.subscribe((tableData) => tableDataLengths.push(tableData.length));
+    const tableDataSubscription = tabData$.subscribe((tableData) => tableDataLengths.push(tableData?.length ?? null));
 
     fragmentSubject.next(FINES_DRAFT_TAB_FRAGMENT.review);
     fragmentSubject.next(FINES_DRAFT_TAB_FRAGMENT.approved);
 
     expect(accountCounts).toEqual([1, 2]);
-    expect(tableDataLengths).toEqual([0, 0]);
+    expect(tableDataLengths).toEqual([0, null, 0]);
     expect(onTabChange).toHaveBeenNthCalledWith(1, FINES_DRAFT_TAB_FRAGMENT.review);
     expect(onTabChange).toHaveBeenNthCalledWith(2, FINES_DRAFT_TAB_FRAGMENT.approved);
     expect(clearCache).toHaveBeenCalledTimes(1);
@@ -119,6 +120,48 @@ describe('createDraftTabDataStreams', () => {
       response: FINES_DRAFT_RESOLVER_EMPTY_RESPONSE,
     });
     expect(getDraftAccounts).not.toHaveBeenCalled();
+  });
+
+  it('should hide the previous tab data while the selected tab request is pending', () => {
+    const resolvedResponse = { count: 1, summaries: [] };
+    const fetchedResponse = { count: 1, summaries: [] };
+    const reviewTableData = [{ tab: FINES_DRAFT_TAB_FRAGMENT.review }] as unknown as IFinesDraftTableWrapperTableData[];
+    const rejectedTableData = [
+      { tab: FINES_DRAFT_TAB_FRAGMENT.rejected },
+    ] as unknown as IFinesDraftTableWrapperTableData[];
+    const fragmentSubject = new Subject<string>();
+    const fetchedResponseSubject = new Subject<typeof fetchedResponse>();
+    const emittedTableData: unknown[] = [];
+
+    const { tabData$ } = createDraftTabDataStreams({
+      fragment$: fragmentSubject.asObservable(),
+      activatedRoute: createActivatedRoute(FINES_DRAFT_TAB_FRAGMENT.review, {
+        [FINES_DRAFT_ROUTE_DATA_KEYS.draftAccounts]: resolvedResponse,
+      }),
+      userState: OPAL_USER_STATE_MOCK,
+      accountParamOptions: {
+        includeSubmittedBy: true,
+        includeNotSubmittedBy: false,
+      },
+      clearCache: vi.fn(),
+      getDateRange: vi.fn(),
+      getDraftAccounts: vi.fn(() => fetchedResponseSubject.asObservable()),
+      onTabChange: vi.fn(),
+      populateTableData: vi.fn((response) => (response === resolvedResponse ? reviewTableData : rejectedTableData)),
+    });
+
+    const subscription = tabData$.subscribe((tableData) => emittedTableData.push(tableData));
+
+    fragmentSubject.next(FINES_DRAFT_TAB_FRAGMENT.review);
+    fragmentSubject.next(FINES_DRAFT_TAB_FRAGMENT.rejected);
+
+    expect(emittedTableData).toEqual([reviewTableData, null]);
+
+    fetchedResponseSubject.next(fetchedResponse);
+
+    expect(emittedTableData).toEqual([reviewTableData, null, rejectedTableData]);
+
+    subscription.unsubscribe();
   });
 });
 

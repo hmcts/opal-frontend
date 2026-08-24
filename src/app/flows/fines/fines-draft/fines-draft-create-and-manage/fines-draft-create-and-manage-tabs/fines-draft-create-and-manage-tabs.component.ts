@@ -75,7 +75,7 @@ export class FinesDraftCreateAndManageTabsComponent extends AbstractTabData impl
   protected readonly finesDraftStore = inject(FinesDraftStore);
   protected readonly finesDraftTabFragment = FINES_DRAFT_TAB_FRAGMENT;
 
-  public tabData$!: Observable<IFinesDraftTableWrapperTableData[]>;
+  public tabData$!: Observable<IFinesDraftTableWrapperTableData[] | null>;
   public rejectedCount$!: Observable<string>;
   public tableSort = FINES_DRAFT_TABLE_WRAPPER_SORT_DEFAULT;
   public readonly finesDraftService = inject(FinesDraftService);
