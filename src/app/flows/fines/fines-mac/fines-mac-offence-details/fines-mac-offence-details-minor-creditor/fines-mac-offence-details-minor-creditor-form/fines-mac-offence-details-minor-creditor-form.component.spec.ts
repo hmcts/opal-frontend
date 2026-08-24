@@ -143,9 +143,18 @@ describe('FinesMacOffenceDetailsMinorCreditorFormComponent', () => {
     companyNameControl.setValue('A very long company name exceeding fifty characters');
     expect(companyNameControl.errors?.['maxlength']).toBeTruthy();
 
-    // Test alphanumeric text pattern validator on company name
-    companyNameControl.setValue('/$£');
-    expect(companyNameControl.errors?.['alphanumericWithHyphensSpacesApostrophesDotPattern']).toBeTruthy();
+    // Test single-byte ASCII characters are accepted in company names
+    companyNameControl.setValue('Company & Sons');
+    expect(companyNameControl.valid).toBe(true);
+
+    // Test non-ASCII characters are rejected in company names
+    companyNameControl.setValue('InvalidéName');
+    expect(companyNameControl.errors?.['singleAsciiCharacters']).toBeTruthy();
+    expect(
+      component.fieldErrors['fm_offence_details_minor_creditor_company_name']['singleAsciiCharacters'].message,
+    ).toBe(
+      'Company name must only include letters a to z, numbers 0-9 and certain special characters (such as hyphens, spaces, apostrophes and commas)',
+    );
   });
 
   it('should set validators for payment detail controls', () => {
@@ -163,7 +172,7 @@ describe('FinesMacOffenceDetailsMinorCreditorFormComponent', () => {
     expect(nameOnAccountControl.errors?.['maxlength']).toBeTruthy();
 
     nameOnAccountControl.setValue('InvalidéName'); // Invalid characters
-    expect(nameOnAccountControl.errors?.['singleAsciiChatacters']).toBeTruthy();
+    expect(nameOnAccountControl.errors?.['singleAsciiCharacters']).toBeTruthy();
 
     nameOnAccountControl.setValue('Valid@Name'); // Valid input
     expect(nameOnAccountControl.valid).toBeTruthy();
