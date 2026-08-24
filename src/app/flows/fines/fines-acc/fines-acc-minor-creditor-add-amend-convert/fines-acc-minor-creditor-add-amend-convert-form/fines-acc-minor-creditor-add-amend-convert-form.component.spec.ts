@@ -295,7 +295,27 @@ describe('FinesAccMinorCreditorAddAmendConvertFormComponent', () => {
     getControl(component.controls.addressLine1).setValue('A'.repeat(31));
     expect(getControl(component.controls.addressLine1).hasError('maxlength')).toBe(true);
 
+    getControl(component.controls.postCode).setValue('AB12 3CD');
+    expect(getControl(component.controls.postCode).hasError('alphanumericTextPattern')).toBe(false);
+
+    getControl(component.controls.postCode).setValue('');
+    expect(getControl(component.controls.postCode).hasError('alphanumericTextPattern')).toBe(false);
+
     getControl(component.controls.postCode).setValue('AB12-3CD');
     expect(getControl(component.controls.postCode).hasError('alphanumericTextPattern')).toBe(true);
+
+    const postcodeInput = fixture.nativeElement.querySelector(
+      `input[name="${component.controls.postCode}"]`,
+    ) as HTMLInputElement | null;
+    if (!postcodeInput) throw new Error('Postcode input not found');
+
+    getControl(component.controls.postCode).setValue('  AB1  3CD ');
+    postcodeInput.dispatchEvent(new FocusEvent('focusout', { bubbles: true }));
+    fixture.detectChanges();
+    expect(getControl(component.controls.postCode).value).toBe('AB1  3CD');
+    expect(getControl(component.controls.postCode).hasError('maxlength')).toBe(false);
+
+    getControl(component.controls.postCode).setValue('AB12 3CDA');
+    expect(getControl(component.controls.postCode).hasError('maxlength')).toBe(true);
   });
 });
