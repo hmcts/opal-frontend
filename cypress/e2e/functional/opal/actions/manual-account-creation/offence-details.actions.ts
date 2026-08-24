@@ -6,6 +6,7 @@ import {
   MacOffenceDetailsLocators as L,
   MacOffenceDetailsMinorCreditorInformationLocators as MinorCreditorInfo,
 } from '../../../../../shared/selectors/manual-account-creation/mac.offence-details.locators';
+import { UNSAVED_CHANGES_WARNING } from '../../../../../shared/constants/confirmation-messages';
 import { createScopedLogger } from '../../../../../support/utils/log.helper';
 import { CommonActions } from '../common/common.actions';
 import { typeAndSelectAutocompleteOption } from '../common/autocomplete.helper';
@@ -382,6 +383,31 @@ export class ManualOffenceDetailsActions {
       .should('exist')
       .scrollIntoView()
       .click({ force: true });
+  }
+
+  /**
+   * Cancels editing offence details and verifies that the unsaved-changes warning is displayed.
+   * @param choice - Confirmation choice (Cancel/Ok/Stay/Leave).
+   */
+  cancelOffenceDetailsAndAssertUnsavedChangesWarning(choice: 'Cancel' | 'Ok' | 'Stay' | 'Leave'): void {
+    const accept = /ok|leave/i.test(choice);
+    log('cancel', 'Cancelling offence details and asserting unsaved-changes warning', { choice, accept });
+
+    let warningMessage: string | undefined;
+    cy.once('window:confirm', (message) => {
+      warningMessage = String(message);
+      return accept;
+    });
+
+    cy.get(L.cancelLink, this.common.getTimeoutOptions())
+      .first()
+      .should('exist')
+      .scrollIntoView()
+      .click({ force: true });
+
+    cy.then(() => {
+      expect(warningMessage, 'unsaved-changes warning message').to.equal(UNSAVED_CHANGES_WARNING);
+    });
   }
 
   /**
