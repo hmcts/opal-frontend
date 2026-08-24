@@ -1,5 +1,6 @@
 import { IDashboardPageConfigurationLink } from '@hmcts/opal-frontend-common/pages/dashboard-page/interfaces';
 import { FINES_ROUTING_PATHS } from '../../routing/constants/fines-routing-paths.constant';
+import { FINES_PERMISSIONS } from 'src/app/constants/fines-permissions.constant';
 
 export const FINES_FINANCE_LINKS: IDashboardPageConfigurationLink[] = [
   {
@@ -13,7 +14,7 @@ export const FINES_FINANCE_LINKS: IDashboardPageConfigurationLink[] = [
       FINES_ROUTING_PATHS.children.finance.children['search'],
     ],
     fragment: null,
-    permissionIds: [],
+    permissionIds: [FINES_PERMISSIONS['view-interface-files']],
     newTab: false,
     style: 'guidance-panel-blue',
   },
@@ -28,7 +29,7 @@ export const FINES_FINANCE_LINKS: IDashboardPageConfigurationLink[] = [
       FINES_ROUTING_PATHS.children.finance.children['search'],
     ],
     fragment: null,
-    permissionIds: [],
+    permissionIds: [FINES_PERMISSIONS['view-interface-files']],
     newTab: false,
     style: 'guidance-panel-blue',
   },
@@ -43,7 +44,7 @@ export const FINES_FINANCE_LINKS: IDashboardPageConfigurationLink[] = [
       FINES_ROUTING_PATHS.children.finance.children['upload'],
     ],
     fragment: null,
-    permissionIds: [],
+    permissionIds: [FINES_PERMISSIONS['upload-variant-banking-files']],
     newTab: false,
     style: 'guidance-panel-blue',
   },

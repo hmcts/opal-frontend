@@ -11,7 +11,7 @@ const financeRootPermissionIds = FINES_PERMISSIONS;
 
 export const routing: Routes = [
   {
-    path: FINES_FINANCE_ROUTING_PATHS.root,
+    path: '',
     redirectTo: PAGES_ROUTING_PATHS.children.dashboard, // Redirect to dashboard
     pathMatch: 'full',
   },
@@ -38,7 +38,7 @@ export const routing: Routes = [
       ),
     canActivate: [authGuard, routePermissionsGuard],
     data: {
-      routePermissionId: [financeRootPermissionIds['create-interface-files']],
+      routePermissionId: [financeRootPermissionIds['view-interface-files']],
       title: FINES_FINANCE_ROUTING_TITLES.children.outbound,
     },
     resolve: { title: TitleResolver },

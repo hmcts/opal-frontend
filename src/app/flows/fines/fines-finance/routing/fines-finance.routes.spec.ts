@@ -8,11 +8,12 @@ import { FinesFinanceUploadVariantBankingFilesComponent } from '../fines-finance
 import { FINES_FINANCE_ROUTING_TITLES } from './constants/fines-finance-routing-titles.constant';
 import { routing } from './fines-finance.routes';
 import { FINES_PERMISSIONS } from '../../../../constants/fines-permissions.constant';
+import { authGuard } from '@hmcts/opal-frontend-common/guards/auth';
+import { routePermissionsGuard } from '@hmcts/opal-frontend-common/guards/route-permissions';
 
 describe('fines finance routes', () => {
   it('should redirect the Finance root to the dashboard', () => {
-    const rootRoute = routing.find((route) => route.path === FINES_FINANCE_ROUTING_PATHS.root);
-
+    const rootRoute = routing.find((route) => route.path === '');
     expect(rootRoute?.redirectTo).toBe(PAGES_ROUTING_PATHS.children.dashboard);
     expect(rootRoute?.pathMatch).toBe('full');
   });
@@ -27,7 +28,7 @@ describe('fines finance routes', () => {
     {
       path: `${FINES_FINANCE_ROUTING_PATHS.children.outbound}/${FINES_FINANCE_ROUTING_PATHS.children.search}`,
       title: FINES_FINANCE_ROUTING_TITLES.children.outbound,
-      routePermissionId: FINES_PERMISSIONS['create-interface-files'],
+      routePermissionId: FINES_PERMISSIONS['view-interface-files'],
       component: FinesFinanceOutboundFilesComponent,
     },
     {
@@ -41,6 +42,7 @@ describe('fines finance routes', () => {
 
     expect(route?.data).toEqual({ title, routePermissionId: [routePermissionId] });
     expect(route?.resolve).toEqual({ title: TitleResolver });
+    expect(route?.canActivate).toEqual([authGuard, routePermissionsGuard]);
     await expect(route?.loadComponent?.()).resolves.toBe(component);
   });
 });
