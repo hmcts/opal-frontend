@@ -53,12 +53,12 @@ Feature: Offence Details
       | Compensation     | FNAME LNAME                           | £200.00        | £100.00     | £100.00           |
       | Compensation     | Temporary Creditor (TEMP)             | £300.00        | £100.00     | £200.00           |
       | Victim Surcharge | HM Courts & Tribunals Service (HMCTS) | £500.00        | £250.00     | £250.00           |
-      | Totals           |                                       | £1,000.00       | £450.00     | £550.00           |
+      | Totals           |                                       | £1,000.00      | £450.00     | £550.00           |
 
     And the review summary table contains:
       | Amount imposed    | £1,000.00 |
-      | Amount paid       | £450.00  |
-      | Balance remaining | £550.00  |
+      | Amount paid       | £450.00   |
+      | Balance remaining | £550.00   |
 
     When I return to account details from offence details
     Then I return to the top of the page
@@ -356,7 +356,7 @@ Feature: Offence Details
       | Victim Surcharge | HM Courts & Tribunals Service (HMCTS) | £500.00        | £250.00     | £250.00           |
       | Costs            | CNAME3                                | £200.00        | £100.00     | £100.00           |
       | Costs to Crown   | Crown Prosecution Service (CPS)       | £500.00        | £250.00     | £250.00           |
-      | Totals           |                                       | £1,500.00       | £700.00     | £800.00           |
+      | Totals           |                                       | £1,500.00      | £700.00     | £800.00           |
 
   @R1A @JIRA-EPIC:PO-272 @JIRA-TEST-KEY:PO-5366
   Scenario: User can update remaining impositions and add a new one after removals
@@ -399,9 +399,9 @@ Feature: Offence Details
       | Compensation                       | Temporary Creditor (TEMP)             | £900.00        | £134.00     | £766.00           |
       | Costs to Crown Prosecution Service | Crown Prosecution Service (CPS)       | £500.00        | £250.00     | £250.00           |
       | Vehicle Excise Back Duty           | HM Courts & Tribunals Service (HMCTS) | £100.00        | £50.00      | £50.00            |
-      | Totals                             |                                       | £1,500.00       | £434.00     | £1,066.00          |
+      | Totals                             |                                       | £1,500.00      | £434.00     | £1,066.00         |
 
-  @R1A @JIRA-EPIC:PO-272 @JIRA-TEST-KEY:PO-5367
+  @R1A @JIRA-EPIC:PO-272 @JIRA-DEFECT:PO-9139 @JIRA-TEST-KEY:PO-5367
   Scenario: (AC.2, AC.7, AC.8) User can add multiple offences and see them ordered with correct totals [@PO-272, @PO-344, @PO-345, @PO-545, @PO-815, @PO-417, @PO-676, @PO-679, @PO-416, @PO-682, @PO-680, @PO-1395]
     # Offence 1
     When I provide offence details for offence code "TP11003" with a sentence date 9 weeks in the past
@@ -458,8 +458,8 @@ Feature: Offence Details
 
     And the summary list contains:
       | Amount imposed | £1,200.00 |
-      | Amount paid    | £600.00  |
-      | Balance        | £600.00  |
+      | Amount paid    | £600.00   |
+      | Balance        | £600.00   |
 
   @R1A @JIRA-EPIC:PO-272 @JIRA-TEST-KEY:PO-5368
   Scenario: (AC.2, AC.7, AC.8) User can change an offence and remove another offence when multiple offences exist [@PO-272, @PO-344, @PO-345, @PO-545, @PO-815, @PO-417, @PO-676, @PO-679, @PO-416, @PO-682, @PO-680, @PO-1395]
@@ -509,8 +509,8 @@ Feature: Offence Details
 
     And the summary list contains:
       | Amount imposed | £1,200.00 |
-      | Amount paid    | £600.00  |
-      | Balance        | £600.00  |
+      | Amount paid    | £600.00   |
+      | Balance        | £600.00   |
 
     # Remove offence TH68001B (Offence 3) – cancel then confirm
     When I choose to remove offence with offence code "TH68001B"
@@ -539,8 +539,8 @@ Feature: Offence Details
 
     And the summary list contains:
       | Amount imposed | £1,200.00 |
-      | Amount paid    | £600.00  |
-      | Balance        | £600.00  |
+      | Amount paid    | £600.00   |
+      | Balance        | £600.00   |
 
     When I choose to remove offence with offence code "TH68001B"
     Then I am asked to confirm removing offence with offence code "TH68001B"
@@ -575,8 +575,8 @@ Feature: Offence Details
 
     And the summary list contains:
       | Amount imposed | £1,000.00 |
-      | Amount paid    | £500.00  |
-      | Balance        | £500.00  |
+      | Amount paid    | £500.00   |
+      | Balance        | £500.00   |
 
   @R1A @JIRA-EPIC:PO-545 @JIRA-STORY:PO-416 @JIRA-STORY:PO-682 @JIRA-STORY:PO-680 @JIRA-DEFECT:PO-9111 @JIRA-TEST-KEY:PO-5369
   Scenario: User can add multiple offences and remove all offences
