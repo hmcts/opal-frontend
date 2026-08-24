@@ -27,6 +27,7 @@ describe('FinesAccMajorCreditorDetailsHistoryAndNotesTabComponent', () => {
     };
     mockPayloadService = {
       buildMajorCreditorHistoryFilterPayload: vi.fn(),
+      transformHistoryAndNotesItems: vi.fn(),
     };
     mockAccountStore = {
       compareVersion: vi.fn(),
@@ -38,6 +39,7 @@ describe('FinesAccMajorCreditorDetailsHistoryAndNotesTabComponent', () => {
     mockPayloadService.buildMajorCreditorHistoryFilterPayload.mockReturnValue(
       FINES_ACC_MAJOR_CREDITOR_DETAILS_HISTORY_AND_NOTES_FILTER_PAYLOAD_MOCK,
     );
+    mockPayloadService.transformHistoryAndNotesItems.mockImplementation((historyItems: unknown[]) => historyItems);
 
     await TestBed.configureTestingModule({
       imports: [FinesAccMajorCreditorDetailsHistoryAndNotesTabComponent],

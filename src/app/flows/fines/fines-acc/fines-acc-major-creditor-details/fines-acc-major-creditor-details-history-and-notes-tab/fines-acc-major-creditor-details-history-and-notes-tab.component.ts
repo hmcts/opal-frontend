@@ -11,6 +11,8 @@ import { EMPTY, Observable, startWith, tap } from 'rxjs';
 import { OpalFines } from '@services/fines/opal-fines-service/opal-fines.service';
 import { FinesAccPayloadService } from '../../services/fines-acc-payload.service';
 import { FinesAccountStore } from '../../stores/fines-acc.store';
+import { FINES_ACC_MAJOR_CREDITOR_HISTORY_AND_NOTES_DETAILS_TRANSFORMATION_CONFIG } from '../../services/constants/fines-acc-major-creditor-history-and-notes-details-transformation-config.constant';
+import { THistoryDetailsRawItem as TFinesAccHistoryAndNotesRawItem } from '@hmcts/opal-frontend-common/services/history-transformation-service';
 
 @Component({
   selector: 'app-fines-acc-major-creditor-details-history-and-notes-tab',
@@ -48,10 +50,43 @@ export class FinesAccMajorCreditorDetailsHistoryAndNotesTabComponent implements 
     const displayTabData$ = tabData$.pipe(
       tap((data) => {
         this.latestTabData = data;
+        this.setTemporaryHistoryPreview(data);
       }),
     );
 
     return this.latestTabData ? displayTabData$.pipe(startWith(this.latestTabData)) : displayTabData$;
+  }
+
+  /**
+   * Temporarily transforms and logs major-creditor history items for PO-2657 browser verification.
+   *
+   * TODO: Delete this preview when the permanent History table integration is implemented.
+   *
+   * @param data - The raw history and notes response emitted for this tab.
+   */
+  private setTemporaryHistoryPreview(data: IOpalFinesAccountMajorCreditorDetailsHistoryAndNotesTabRefData): void {
+    const rawHistoryItems = data['historyItems'];
+
+    if (!Array.isArray(rawHistoryItems)) {
+      return;
+    }
+
+    const historyItems = this.payloadService.transformHistoryAndNotesItems(
+      rawHistoryItems.filter(this.isHistoryItem),
+      FINES_ACC_MAJOR_CREDITOR_HISTORY_AND_NOTES_DETAILS_TRANSFORMATION_CONFIG,
+    );
+
+    console.log('PO-2657 major-creditor transformed history items', historyItems);
+  }
+
+  /**
+   * Checks whether a value can be transformed as a raw history item.
+   *
+   * @param value - A value from the history items array.
+   * @returns True when the value is an object record.
+   */
+  private isHistoryItem(value: unknown): value is TFinesAccHistoryAndNotesRawItem {
+    return typeof value === 'object' && value !== null;
   }
 
   /**
