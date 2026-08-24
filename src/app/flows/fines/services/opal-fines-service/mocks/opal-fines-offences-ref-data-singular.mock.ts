@@ -5,7 +5,7 @@ export const OPAL_FINES_OFFENCES_REF_DATA_SINGULAR_MOCK: IOpalFinesOffencesRefDa
   refData: [
     {
       offence_id: 314441,
-      get_cjs_code: 'AK123456',
+      cjs_code: 'AK123456',
       business_unit_id: 52,
       offence_title: 'ak test',
       offence_title_cy: null,
