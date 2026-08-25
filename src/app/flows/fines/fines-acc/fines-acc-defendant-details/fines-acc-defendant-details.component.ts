@@ -287,7 +287,11 @@ export class FinesAccDefendantDetailsComponent
       this.hasBusinessUnitPermissionKey('amend-payment-terms')
     );
   }
-
+  /**
+   * Determines whether the account was transferred in from another originator.
+   *
+   * @returns `true` when the normalized originator type is `TFO`; otherwise, `false`.
+   */
   public get isTransferredIn(): boolean {
     return this.accountData.originator_type?.trim().toUpperCase() === 'TFO';
   }
