@@ -81,6 +81,7 @@
         [control]="form.controls['fm_fp_company_details_postcode']"
         [errors]="formControlErrorMessages['fm_fp_company_details_postcode']"
         [opalLibCapitaliseAllCharacters]="form.controls['fm_fp_company_details_postcode']"
+        [opalLibTrimLeadingTrailingWhitespace]="form.controls['fm_fp_company_details_postcode']"
       ></opal-lib-govuk-text-input>
     </fieldset>
   } @else {
@@ -178,6 +179,7 @@
         [control]="form.controls['fm_fp_personal_details_post_code']"
         [errors]="formControlErrorMessages['fm_fp_personal_details_post_code']"
         [opalLibCapitaliseAllCharacters]="form.controls['fm_fp_personal_details_post_code']"
+        [opalLibTrimLeadingTrailingWhitespace]="form.controls['fm_fp_personal_details_post_code']"
       ></opal-lib-govuk-text-input>
     </fieldset>
   }

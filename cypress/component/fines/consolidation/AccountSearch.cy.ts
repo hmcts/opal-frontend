@@ -285,7 +285,7 @@ describe('FinesConConsolidateAccComponent - Account & Company Search', () => {
           selector: AccountSearchLocators.addressLine1Error,
         },
         {
-          message: 'Postcode must only include letters a to z, numbers, hyphens, spaces and apostrophes',
+          message: 'Postcode must only include letters or numbers',
           selector: AccountSearchLocators.postCodeError,
         },
       ];
@@ -784,7 +784,7 @@ describe('FinesConConsolidateAccComponent - Account & Company Search', () => {
         },
         {
           //AC3d. User enters non-alphanumeric and the following error is produced
-          message: 'Postcode must only include letters a to z, numbers, hyphens, spaces and apostrophes',
+          message: 'Postcode must only include letters or numbers',
           selector: AccountSearchLocators.companyPostCodeError,
         },
       ];
