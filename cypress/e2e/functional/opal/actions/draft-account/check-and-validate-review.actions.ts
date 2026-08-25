@@ -142,6 +142,23 @@ export class CheckAndValidateReviewActions {
   }
 
   /**
+   * Asserts that a status is present in the rendered review history.
+   * @param expectedStatus - Exact user-facing status expected in the timeline.
+   */
+  assertTimelineContainsStatus(expectedStatus: string): void {
+    const expected = expectedStatus.trim();
+
+    log('assert', 'Checking review timeline contains status', { expectedStatus: expected });
+    cy.get(L.timeline.title, this.common.getTimeoutOptions()).should(($titles) => {
+      const statuses = [...$titles]
+        .map((title) => title.textContent?.trim())
+        .filter((status): status is string => Boolean(status));
+
+      expect(statuses, 'Rendered review history statuses').to.include(expected);
+    });
+  }
+
+  /**
    * Asserts a success banner message is visible.
    * @param message - Expected banner text.
    */
