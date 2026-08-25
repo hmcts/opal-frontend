@@ -46,41 +46,71 @@ export function transformMajorCreditorTransactionDetails(item: THistoryDetailsRa
     ]);
   }
 
-  // CHEQUE history items show the issue status, cheque number, and an optional status/date part.
-  if (transactionType === transactionTypes.cheque) {
-    const chequeNumber = getHistoryString(
-      item,
-      FINES_ACC_HISTORY_AND_NOTES_DETAILS_FIELD_ALIASES.paymentReference,
-      [],
-      FINES_ACC_HISTORY_AND_NOTES_DETAILS_EMPTY_VALUES,
-    );
-    const status = getHistoryString(
-      item,
-      FINES_ACC_HISTORY_AND_NOTES_DETAILS_FIELD_ALIASES.status,
-      [],
-      FINES_ACC_HISTORY_AND_NOTES_DETAILS_EMPTY_VALUES,
-    );
-    const statusLabel = status ? FINES_ACC_HISTORY_AND_NOTES_DETAILS_CHEQUE_STATUS_LABELS[status] : null;
-    const statusDate = formatHistoryDate(
-      getHistoryString(
-        item,
-        FINES_ACC_HISTORY_AND_NOTES_DETAILS_FIELD_ALIASES.statusDate,
-        [],
-        FINES_ACC_HISTORY_AND_NOTES_DETAILS_EMPTY_VALUES,
-      ),
-      FINES_ACC_HISTORY_AND_NOTES_DETAILS_DATE_FORMAT,
-    );
-
+  if (transactionType === transactionTypes.cancelledCheque) {
     return createHistoryDetails([
-      createHistoryTextPart(FINES_ACC_HISTORY_AND_NOTES_DETAILS_LABELS.chequeIssued),
+      createHistoryTextPart(FINES_ACC_HISTORY_AND_NOTES_DETAILS_LABELS.chequeCancelled),
       createHistoryLabelValuePart(
         FINES_ACC_HISTORY_AND_NOTES_DETAILS_LABELS.chequeNumber,
-        chequeNumber ?? FINES_ACC_HISTORY_AND_NOTES_DETAILS_LABELS.notYetWritten,
+        getHistoryString(
+          item,
+          FINES_ACC_HISTORY_AND_NOTES_DETAILS_FIELD_ALIASES.paymentReference,
+          [],
+          FINES_ACC_HISTORY_AND_NOTES_DETAILS_EMPTY_VALUES,
+        ),
       ),
-      statusLabel ? createHistoryTextPart([statusLabel, statusDate].filter(Boolean).join(' ')) : null,
     ]);
+  }
+
+  if (transactionType === transactionTypes.cheque || transactionType === transactionTypes.reissuedCheque) {
+    return transformMajorCreditorChequeDetails(
+      item,
+      transactionType === transactionTypes.cheque
+        ? FINES_ACC_HISTORY_AND_NOTES_DETAILS_LABELS.chequeIssued
+        : FINES_ACC_HISTORY_AND_NOTES_DETAILS_LABELS.chequeReissued,
+    );
   }
 
   // Other financial items currently display their transaction type as one text part.
   return createHistoryDetails([createHistoryTextPart(transactionType)]);
+}
+
+/**
+ * Transforms issued and reissued cheques, which have the same cheque-number and optional status rule.
+ *
+ * @param item - The raw major-creditor history item returned by the API.
+ * @param title - The ticket-defined cheque action label.
+ * @returns The fragment-based details model for a future history-table component.
+ */
+function transformMajorCreditorChequeDetails(item: THistoryDetailsRawItem, title: string): IHistoryDetails {
+  const chequeNumber = getHistoryString(
+    item,
+    FINES_ACC_HISTORY_AND_NOTES_DETAILS_FIELD_ALIASES.paymentReference,
+    [],
+    FINES_ACC_HISTORY_AND_NOTES_DETAILS_EMPTY_VALUES,
+  );
+  const status = getHistoryString(
+    item,
+    FINES_ACC_HISTORY_AND_NOTES_DETAILS_FIELD_ALIASES.status,
+    [],
+    FINES_ACC_HISTORY_AND_NOTES_DETAILS_EMPTY_VALUES,
+  );
+  const statusLabel = status ? FINES_ACC_HISTORY_AND_NOTES_DETAILS_CHEQUE_STATUS_LABELS[status] : null;
+  const statusDate = formatHistoryDate(
+    getHistoryString(
+      item,
+      FINES_ACC_HISTORY_AND_NOTES_DETAILS_FIELD_ALIASES.statusDate,
+      [],
+      FINES_ACC_HISTORY_AND_NOTES_DETAILS_EMPTY_VALUES,
+    ),
+    FINES_ACC_HISTORY_AND_NOTES_DETAILS_DATE_FORMAT,
+  );
+
+  return createHistoryDetails([
+    createHistoryTextPart(title),
+    createHistoryLabelValuePart(
+      FINES_ACC_HISTORY_AND_NOTES_DETAILS_LABELS.chequeNumber,
+      chequeNumber ?? FINES_ACC_HISTORY_AND_NOTES_DETAILS_LABELS.notYetWritten,
+    ),
+    statusLabel ? createHistoryTextPart([statusLabel, statusDate].filter(Boolean).join(' ')) : null,
+  ]);
 }
