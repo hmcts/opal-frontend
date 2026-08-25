@@ -65,7 +65,7 @@ describe('Account Enquiry - Major Creditor Header', () => {
 
       cy.get(DOM.majorCreditorBusinessUnit).should(
         'contain.text',
-        `${header.business_unit_details.business_unit_name} (${header.business_unit_details.business_unit_id})`,
+        `${header.business_unit_details.business_unit_name} (${header.business_unit_details.business_unit_code})`,
       );
 
       cy.get(DOM.summaryMetricBar).within(() => {
