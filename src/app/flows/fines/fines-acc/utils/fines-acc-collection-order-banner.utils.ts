@@ -1,6 +1,7 @@
 import { FINES_ACCOUNT_TYPES } from '../../constants/fines-account-types.constant';
 import { IOpalFinesAccountDefendantDetailsHeader } from '../fines-acc-defendant-details/interfaces/fines-acc-defendant-details-header.interface';
 import { FINES_ACC_DEBTOR_TYPES } from '../constants/fines-acc-debtor-types.constant';
+import { FINES_ACC_COLLECTION_ORDER_BANNER_MESSAGES } from '../constants/fines-acc-collection-order-banner-messages.constant';
 
 /**
  * Gets the Collection Order warning banner message for a defendant account header.
@@ -20,7 +21,7 @@ export const getFinesAccCollectionOrderBannerMessage = (
   const isAdult = !isCompany && !isConditionalCaution && (isParentOrGuardianToPay || !header.is_youth);
 
   if (hasNoCollectionOrder && isAdult) {
-    return 'Account has no Collection Order.';
+    return FINES_ACC_COLLECTION_ORDER_BANNER_MESSAGES.noCollectionOrder;
   }
 
   if (!hasCollectionOrder) {
@@ -28,15 +29,15 @@ export const getFinesAccCollectionOrderBannerMessage = (
   }
 
   if (isConditionalCaution) {
-    return 'Account has a Collection Order but is a conditional caution account.';
+    return FINES_ACC_COLLECTION_ORDER_BANNER_MESSAGES.conditionalCautionWithCollectionOrder;
   }
 
   if (isCompany) {
-    return 'Account has a Collection Order but is a company account.';
+    return FINES_ACC_COLLECTION_ORDER_BANNER_MESSAGES.companyWithCollectionOrder;
   }
 
   if (isYouth) {
-    return 'Account has a Collection Order but is a youth account.';
+    return FINES_ACC_COLLECTION_ORDER_BANNER_MESSAGES.youthWithCollectionOrder;
   }
 
   return null;

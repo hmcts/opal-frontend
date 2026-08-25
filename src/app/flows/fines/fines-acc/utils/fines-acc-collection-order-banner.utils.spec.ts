@@ -4,6 +4,7 @@ import { FINES_ACC_DEBTOR_TYPES } from '../constants/fines-acc-debtor-types.cons
 import { FINES_ACC_DEFENDANT_DETAILS_HEADER_MOCK } from '../fines-acc-defendant-details/mocks/fines-acc-defendant-details-header.mock';
 import { getFinesAccCollectionOrderBannerMessage } from './fines-acc-collection-order-banner.utils';
 import { IOpalFinesAccountDefendantDetailsHeader } from '../fines-acc-defendant-details/interfaces/fines-acc-defendant-details-header.interface';
+import { FINES_ACC_COLLECTION_ORDER_BANNER_MESSAGES } from '../constants/fines-acc-collection-order-banner-messages.constant';
 
 /**
  * Builds a defendant account header test fixture with adult account defaults.
@@ -31,7 +32,9 @@ describe('getFinesAccCollectionOrderBannerMessage', () => {
   it('should return B09 when an adult account has no Collection Order', () => {
     const header = buildHeader({ collection_order: false });
 
-    expect(getFinesAccCollectionOrderBannerMessage(header)).toBe('Account has no Collection Order.');
+    expect(getFinesAccCollectionOrderBannerMessage(header)).toBe(
+      FINES_ACC_COLLECTION_ORDER_BANNER_MESSAGES.noCollectionOrder,
+    );
   });
 
   it('should return B09 when a Parent or Guardian to pay account has no Collection Order', () => {
@@ -41,7 +44,9 @@ describe('getFinesAccCollectionOrderBannerMessage', () => {
       is_youth: true,
     });
 
-    expect(getFinesAccCollectionOrderBannerMessage(header)).toBe('Account has no Collection Order.');
+    expect(getFinesAccCollectionOrderBannerMessage(header)).toBe(
+      FINES_ACC_COLLECTION_ORDER_BANNER_MESSAGES.noCollectionOrder,
+    );
   });
 
   it('should return B10 when a youth account has a Collection Order', () => {
@@ -51,7 +56,7 @@ describe('getFinesAccCollectionOrderBannerMessage', () => {
     });
 
     expect(getFinesAccCollectionOrderBannerMessage(header)).toBe(
-      'Account has a Collection Order but is a youth account.',
+      FINES_ACC_COLLECTION_ORDER_BANNER_MESSAGES.youthWithCollectionOrder,
     );
   });
 
@@ -65,7 +70,7 @@ describe('getFinesAccCollectionOrderBannerMessage', () => {
     });
 
     expect(getFinesAccCollectionOrderBannerMessage(header)).toBe(
-      'Account has a Collection Order but is a company account.',
+      FINES_ACC_COLLECTION_ORDER_BANNER_MESSAGES.companyWithCollectionOrder,
     );
   });
 
@@ -76,7 +81,7 @@ describe('getFinesAccCollectionOrderBannerMessage', () => {
     });
 
     expect(getFinesAccCollectionOrderBannerMessage(header)).toBe(
-      'Account has a Collection Order but is a conditional caution account.',
+      FINES_ACC_COLLECTION_ORDER_BANNER_MESSAGES.conditionalCautionWithCollectionOrder,
     );
   });
 

@@ -4,6 +4,7 @@ import { FinesAccSummaryHeaderComponent } from './fines-acc-summary-header.compo
 import { FinesAccBannerMessagesComponent } from '../fines-acc-banner-messages/fines-acc-banner-messages.component';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
 import { FINES_ACC_ACCOUNT_STATUS_BANNERS } from '../constants/fines-acc-account-status-banners.constant';
+import { FINES_ACC_COLLECTION_ORDER_BANNER_MESSAGES } from '../constants/fines-acc-collection-order-banner-messages.constant';
 
 describe('FinesAccSummaryHeaderComponent', () => {
   let component: FinesAccSummaryHeaderComponent;
@@ -52,13 +53,15 @@ describe('FinesAccSummaryHeaderComponent', () => {
   it('should pass banner inputs from accountStore', () => {
     vi.spyOn(component.accountStore, 'hasVersionMismatch').mockReturnValue(true);
     vi.spyOn(component.accountStore, 'successMessage').mockReturnValue('Saved');
-    component.collectionOrderBannerMessage = 'Account has no Collection Order.';
+    component.collectionOrderBannerMessage = FINES_ACC_COLLECTION_ORDER_BANNER_MESSAGES.noCollectionOrder;
     fixture.detectChanges();
 
     const banner = fixture.debugElement.query(By.directive(FinesAccBannerMessagesComponent));
     expect(banner.componentInstance.hasVersionMismatch).toBe(true);
     expect(banner.componentInstance.successMessage).toBe('Saved');
-    expect(banner.componentInstance.collectionOrderBannerMessage).toBe('Account has no Collection Order.');
+    expect(banner.componentInstance.collectionOrderBannerMessage).toBe(
+      FINES_ACC_COLLECTION_ORDER_BANNER_MESSAGES.noCollectionOrder,
+    );
   });
 
   it.each(Object.entries(FINES_ACC_ACCOUNT_STATUS_BANNERS))(

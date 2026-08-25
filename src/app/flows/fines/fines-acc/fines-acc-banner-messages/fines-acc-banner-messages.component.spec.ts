@@ -2,6 +2,7 @@ import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { By } from '@angular/platform-browser';
 import { FinesAccBannerMessagesComponent } from './fines-acc-banner-messages.component';
 import { describe, it, expect, beforeEach, vi } from 'vitest';
+import { FINES_ACC_COLLECTION_ORDER_BANNER_MESSAGES } from '../constants/fines-acc-collection-order-banner-messages.constant';
 
 describe('FinesAccBannerMessagesComponent', () => {
   let component: FinesAccBannerMessagesComponent;
@@ -61,14 +62,14 @@ describe('FinesAccBannerMessagesComponent', () => {
   });
 
   it('should render the Collection Order warning banner when collectionOrderBannerMessage is provided', () => {
-    component.collectionOrderBannerMessage = 'Account has no Collection Order.';
+    component.collectionOrderBannerMessage = FINES_ACC_COLLECTION_ORDER_BANNER_MESSAGES.noCollectionOrder;
     fixture.detectChanges();
 
     const banner = fixture.debugElement.query(By.css('#acc-summary-header-banners-collection-order'));
     const bannerText = banner.query(By.css('opal-lib-moj-alert-content-text'))?.nativeElement?.textContent;
     const alert = banner.query(By.css('opal-lib-moj-alert'));
 
-    expect(bannerText).toContain('Account has no Collection Order.');
+    expect(bannerText).toContain(FINES_ACC_COLLECTION_ORDER_BANNER_MESSAGES.noCollectionOrder);
     expect(alert.attributes['type']).toBe('warning');
     expect(alert.attributes['showDismiss']).toBeUndefined();
   });
