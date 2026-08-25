@@ -177,6 +177,12 @@ describe('FinesMacOffenceDetailsAddAnOffenceFormComponent', () => {
     const searchLink = Array.from(
       fixture.nativeElement.querySelectorAll('a.govuk-link') as NodeListOf<HTMLAnchorElement>,
     ).find((link) => link.textContent?.includes('search the offence list'));
+    const guidance = fixture.nativeElement.querySelector(
+      '#fm_offence_details_offence_cjs_code-guidance',
+    ) as HTMLElement | null;
+    const offenceCodeInput = fixture.nativeElement.querySelector(
+      '#fm_offence_details_offence_cjs_code',
+    ) as HTMLInputElement | null;
 
     expect(actionLinkConsts.length).toBeGreaterThanOrEqual(1);
     actionLinkConsts.forEach((entry) => {
@@ -186,9 +192,25 @@ describe('FinesMacOffenceDetailsAddAnOffenceFormComponent', () => {
     });
 
     expect(searchLink).toBeTruthy();
+    expect(guidance).toBeTruthy();
+    expect(offenceCodeInput).toBeTruthy();
+    expect(guidance?.textContent).toContain("If you don't know the offence code, you can");
+    expect(searchLink?.textContent?.replace(/\s+/g, ' ').trim()).toBe(
+      "If you don't know the offence code, you can search the offence list (opens in a new tab)",
+    );
+    expect(searchLink?.querySelector('span.govuk-visually-hidden')?.textContent?.trim()).toBe(
+      "If you don't know the offence code, you can",
+    );
     expect(searchLink?.classList.contains('govuk-link--no-visited-state')).toBe(true);
     expect(searchLink?.getAttribute('href')).toBe(component.searchOffenceUrl);
+    expect(searchLink?.getAttribute('target')).toBe('_blank');
+    expect(searchLink?.getAttribute('rel')).toBe('noopener noreferrer');
     expect(searchLink?.getAttribute('tabindex')).toBeNull();
+    expect(
+      offenceCodeInput && guidance
+        ? offenceCodeInput.compareDocumentPosition(guidance) & Node.DOCUMENT_POSITION_FOLLOWING
+        : 0,
+    ).toBeTruthy();
     expect(templateFunction).not.toContain('keydown.enter');
     expect(templateFunction).not.toContain('keyup.enter');
   });

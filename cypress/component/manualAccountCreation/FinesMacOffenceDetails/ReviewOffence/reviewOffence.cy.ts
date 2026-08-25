@@ -1,8 +1,7 @@
 import { mount } from 'cypress/angular';
 import { FinesMacOffenceDetailsReviewOffenceComponent } from 'src/app/flows/fines/fines-mac/fines-mac-offence-details/fines-mac-offence-details-review-offence/fines-mac-offence-details-review-offence.component';
 import { ActivatedRoute } from '@angular/router';
-import { provideHttpClientTesting } from '@angular/common/http/testing';
-import { provideHttpClient, withInterceptorsFromDi } from '@angular/common/http';
+import { provideHttpClient } from '@angular/common/http';
 import { MacOffenceDetailsReviewOffenceLocators as DOM_ELEMENTS } from '../../../../shared/selectors/manual-account-creation/mac.offence-details.locators';
 import { FinesMacOffenceDetailsStore } from 'src/app/flows/fines/fines-mac/fines-mac-offence-details/stores/fines-mac-offence-details.store';
 import { FINES_MAC_OFFENCE_DETAILS_DRAFT_STATE_MOCK } from 'src/app/flows/fines/fines-mac/fines-mac-offence-details/mocks/fines-mac-offence-details-draft-state.mock';
@@ -11,6 +10,7 @@ import { OPAL_FINES_RESULTS_REF_DATA_MOCK } from '@services/fines/opal-fines-ser
 import { OPAL_FINES_MAJOR_CREDITOR_REF_DATA_MOCK } from '@services/fines/opal-fines-service/mocks/opal-fines-major-creditor-ref-data.mock';
 import { FINES_MAC_OFFENCE_DETAILS_STATE_IMPOSITIONS_MOCK } from 'src/app/flows/fines/fines-mac/fines-mac-offence-details/mocks/fines-mac-offence-details-state-impositions.mock';
 import { of } from 'rxjs';
+import { interceptOffences } from 'cypress/component/CommonIntercepts/CommonIntercepts';
 
 const MANUAL_ACCOUNT_CREATION_JIRA_LABEL = '@JIRA-LABEL:manual-account-creation';
 
@@ -21,11 +21,14 @@ describe('ReviewOffenceComponent', () => {
     ...FINES_MAC_OFFENCE_DETAILS_DRAFT_STATE_MOCK,
   };
 
+  beforeEach(() => {
+    interceptOffences();
+  });
+
   const setupComponent = (impositionCounter: number = 0) => {
     mount(FinesMacOffenceDetailsReviewOffenceComponent, {
       providers: [
-        provideHttpClient(withInterceptorsFromDi()),
-        provideHttpClientTesting(),
+        provideHttpClient(),
         {
           provide: FinesMacOffenceDetailsStore,
           useFactory: () => {
@@ -64,7 +67,13 @@ describe('ReviewOffenceComponent', () => {
     'should render component',
     {
       tags: [
-        ...buildTags('@JIRA-STORY:PO-416', '@JIRA-STORY:PO-682', '@JIRA-STORY:PO-680', '@JIRA-DEFECT:PO-9110'),
+        ...buildTags(
+          '@JIRA-STORY:PO-416',
+          '@JIRA-STORY:PO-682',
+          '@JIRA-STORY:PO-680',
+          '@JIRA-DEFECT:PO-9110',
+          '@JIRA-DEFECT:PO-9139',
+        ),
         '@JIRA-EPIC:PO-545',
         '@JIRA-TEST-KEY:PO-5055',
       ],
@@ -80,7 +89,13 @@ describe('ReviewOffenceComponent', () => {
     'should load all elements on the screen correctly',
     {
       tags: [
-        ...buildTags('@JIRA-STORY:PO-416', '@JIRA-STORY:PO-682', '@JIRA-STORY:PO-680', '@JIRA-DEFECT:PO-9110'),
+        ...buildTags(
+          '@JIRA-STORY:PO-416',
+          '@JIRA-STORY:PO-682',
+          '@JIRA-STORY:PO-680',
+          '@JIRA-DEFECT:PO-9110',
+          '@JIRA-DEFECT:PO-9139',
+        ),
         '@JIRA-EPIC:PO-545',
         '@JIRA-TEST-KEY:PO-5056',
       ],
@@ -106,7 +121,13 @@ describe('ReviewOffenceComponent', () => {
     'should have correct values in the elements',
     {
       tags: [
-        ...buildTags('@JIRA-STORY:PO-416', '@JIRA-STORY:PO-682', '@JIRA-STORY:PO-680', '@JIRA-DEFECT:PO-9110'),
+        ...buildTags(
+          '@JIRA-STORY:PO-416',
+          '@JIRA-STORY:PO-682',
+          '@JIRA-STORY:PO-680',
+          '@JIRA-DEFECT:PO-9110',
+          '@JIRA-DEFECT:PO-9139',
+        ),
         '@JIRA-EPIC:PO-545',
         '@JIRA-TEST-KEY:PO-5057',
       ],
@@ -137,7 +158,13 @@ describe('ReviewOffenceComponent', () => {
     'should update value according to imposition type',
     {
       tags: [
-        ...buildTags('@JIRA-STORY:PO-416', '@JIRA-STORY:PO-682', '@JIRA-STORY:PO-680', '@JIRA-DEFECT:PO-9110'),
+        ...buildTags(
+          '@JIRA-STORY:PO-416',
+          '@JIRA-STORY:PO-682',
+          '@JIRA-STORY:PO-680',
+          '@JIRA-DEFECT:PO-9110',
+          '@JIRA-DEFECT:PO-9139',
+        ),
         '@JIRA-EPIC:PO-545',
         '@JIRA-TEST-KEY:PO-5058',
       ],
