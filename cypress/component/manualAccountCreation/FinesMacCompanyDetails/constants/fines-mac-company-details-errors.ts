@@ -37,7 +37,10 @@ export const ALPHABETICAL_TEXT_PATTERN_VALIDATION = {
 };
 
 export const SPECIAL_CHARACTERS_PATTERN_VALIDATION = {
-  specialCharactersPatternAddressLine1: 'Address line 1 must only contain letters or numbers',
-  specialCharactersPatternAddressLine2: 'Address line 2 must only contain letters or numbers',
-  specialCharactersPatternAddressLine3: 'Address line 3 must only contain letters or numbers',
+  specialCharactersPatternAddressLine1:
+    'Address line 1 must only include letters a to z, numbers 0-9 and certain special characters (such as hyphens, spaces, apostrophes and commas)',
+  specialCharactersPatternAddressLine2:
+    'Address line 2 must only include letters a to z, numbers 0-9 and certain special characters (such as hyphens, spaces, apostrophes and commas)',
+  specialCharactersPatternAddressLine3:
+    'Address line 3 must only include letters a to z, numbers 0-9 and certain special characters (such as hyphens, spaces, apostrophes and commas)',
 };

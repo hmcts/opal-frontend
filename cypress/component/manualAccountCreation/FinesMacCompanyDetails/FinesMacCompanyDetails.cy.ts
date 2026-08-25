@@ -486,14 +486,14 @@ describe('FinesMacCompanyDetailsComponent', () => {
   );
 
   it(
-    '(AC.1) should show errors when address line fields contain asterisks (*)',
+    '(AC.1) should show errors when address line fields contain unsupported punctuation',
     { tags: [...buildTags('@JIRA-STORY:PO-365'), '@JIRA-EPIC:PO-345', '@JIRA-TEST-KEY:PO-4902'] },
     () => {
       setupComponent(null, 'company');
 
-      finesMacState.companyDetails.formData.fm_company_details_address_line_1 = '123 Fake Street*';
-      finesMacState.companyDetails.formData.fm_company_details_address_line_2 = '123 Fake Street*';
-      finesMacState.companyDetails.formData.fm_company_details_address_line_3 = '123 Fake Street*';
+      finesMacState.companyDetails.formData.fm_company_details_address_line_1 = '123/Fake Street';
+      finesMacState.companyDetails.formData.fm_company_details_address_line_2 = '123/Fake Street';
+      finesMacState.companyDetails.formData.fm_company_details_address_line_3 = '123/Fake Street';
 
       cy.get(L.submitButton).first().click();
 

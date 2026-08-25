@@ -369,10 +369,16 @@ describe('Search Account Component - Individuals', () => {
 
       cy.get(CommonLocators.errorSummary)
         .should('exist')
-        .and('contain', 'Address line 1 must only contain letters or numbers');
+        .and(
+          'contain',
+          'Address line 1 must only include letters a to z, numbers 0-9 and certain special characters (such as hyphens, spaces, apostrophes and commas)',
+        );
       cy.get(IndividualsLocators.addressLine1Error)
         .should('exist')
-        .and('contain', 'Address line 1 must only contain letters or numbers');
+        .and(
+          'contain',
+          'Address line 1 must only include letters a to z, numbers 0-9 and certain special characters (such as hyphens, spaces, apostrophes and commas)',
+        );
 
       cy.get(IndividualsLocators.addressLine1Input).clear();
     },
