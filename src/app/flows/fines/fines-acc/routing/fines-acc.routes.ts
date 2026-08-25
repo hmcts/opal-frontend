@@ -565,7 +565,7 @@ export const routing: Routes = [
         canActivate: [authGuard, businessUnitRoutePermissionsGuard, finesAccStateGuard],
         canDeactivate: [canDeactivateGuard],
         data: {
-          routePermissionId: [accRootPermissionIds['account-maintenance']],
+          routePermissionId: [accRootPermissionIds['account-maintenance-minor-creditor']],
           title: FINES_ACC_MINOR_CREDITOR_ROUTING_TITLES.children.amend,
         },
         resolve: {
