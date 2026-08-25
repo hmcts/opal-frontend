@@ -1,19 +1,12 @@
 <opal-lib-govuk-summary-card-list
   [cardTitle]="name"
-  [contentHidden]="isDetailsHidden"
+  [contentHidden]="false"
   summaryCardListId="minor-creditor-information"
   [headingLevel]="headingLevel"
   [classes]="getClasses"
 >
   @if (showActions) {
     <ng-container actions>
-      <li
-        opal-lib-govuk-summary-card-action
-        [actionText]="isDetailsHidden ? 'Show details' : 'Hide details'"
-        actionRoute="showHideDetails"
-        [visuallyHiddenText]="name"
-        (clickEvent)="summaryListActionClick($event)"
-      ></li>
       <li
         opal-lib-govuk-summary-card-action
         class="govuk-!-padding-left-2"

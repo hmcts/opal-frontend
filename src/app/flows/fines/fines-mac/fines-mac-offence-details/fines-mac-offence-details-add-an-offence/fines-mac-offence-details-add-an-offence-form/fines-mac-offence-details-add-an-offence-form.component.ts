@@ -40,7 +40,6 @@ import { FINES_MAC_ROUTING_PATHS } from '../../../routing/constants/fines-mac-ro
 import { IFinesMacOffenceDetailsAddAnOffenceFormMinorCreditor } from './interfaces/fines-mac-offence-details-add-an-offence-form-minor-creditor.interface';
 import { FinesMacOffenceDetailsMinorCreditorInformationComponent } from '../../fines-mac-offence-details-minor-creditor-information/fines-mac-offence-details-minor-creditor-information.component';
 import { IFinesMacOffenceDetailsMinorCreditorForm } from '../../fines-mac-offence-details-minor-creditor/interfaces/fines-mac-offence-details-minor-creditor-form.interface';
-import { IFinesMacOffenceDetailsAddAnOffenceFormMinorCreditorHidden } from './interfaces/fines-mac-offence-details-add-an-offence-form-minor-creditor-hidden.interface';
 import { FinesMacStore } from '../../../stores/fines-mac.store';
 import { FinesMacOffenceDetailsStore } from '../../stores/fines-mac-offence-details.store';
 import { GovukTextInputComponent } from '@hmcts/opal-frontend-common/components/govuk/govuk-text-input';
@@ -131,7 +130,6 @@ export class FinesMacOffenceDetailsAddAnOffenceFormComponent
   public offenceCode$: Observable<IOpalFinesOffencesRefData> = EMPTY;
   public creditorOptions = FINES_MAC_OFFENCE_DETAILS_CREDITOR_OPTIONS;
   public minorCreditors!: IFinesMacOffenceDetailsAddAnOffenceFormMinorCreditor;
-  public minorCreditorsHidden!: IFinesMacOffenceDetailsAddAnOffenceFormMinorCreditorHidden;
   public readonly searchOffenceUrl = `${FINES_ROUTING_PATHS.root}/${FINES_MAC_ROUTING_PATHS.root}/${FINES_MAC_OFFENCE_DETAILS_ROUTING_PATHS.root}/${FINES_MAC_OFFENCE_DETAILS_SEARCH_OFFENCES_ROUTING_PATHS.root}`;
   override fieldErrors: IAbstractFormBaseFieldErrors = {
     ...FINES_MAC_OFFENCE_DETAILS_OFFENCES_FIELD_ERRORS,
@@ -625,8 +623,6 @@ export class FinesMacOffenceDetailsAddAnOffenceFormComponent
           ? this.fineMacOffenceDetailsRoutingPaths.children.removeMinorCreditor
           : this.fineMacOffenceDetailsRoutingPaths.children.addMinorCreditor,
       );
-    } else if (event.action === 'showHideDetails') {
-      this.minorCreditorsHidden[event.index] = !this.minorCreditorsHidden[event.index];
     }
   }
 
@@ -664,16 +660,6 @@ export class FinesMacOffenceDetailsAddAnOffenceFormComponent
 
       return acc;
     }, {} as IFinesMacOffenceDetailsAddAnOffenceFormMinorCreditor);
-
-    this.minorCreditorsHidden = minorCreditorsArray.reduce((acc, creditor) => {
-      const position = creditor.formData.fm_offence_details_imposition_position;
-
-      if (position != null) {
-        acc[position] = true;
-      }
-
-      return acc;
-    }, {} as IFinesMacOffenceDetailsAddAnOffenceFormMinorCreditorHidden);
   }
 
   /**
