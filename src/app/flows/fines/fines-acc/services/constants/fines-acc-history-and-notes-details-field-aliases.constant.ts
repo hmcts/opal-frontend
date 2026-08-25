@@ -8,6 +8,7 @@ export const FINES_ACC_HISTORY_AND_NOTES_DETAILS_FIELD_ALIASES = {
   caseReference: ['details.caseNumber'],
   creditorAccountNumber: ['details.accountNumber'],
   daysInDefault: ['details.daysInDefault', 'details.days_in_default'],
+  defendantAccountId: ['details.defendantAccountId'],
   defendantAccountNumber: ['details.defendantAccountNumber'],
   effectiveDate: ['details.effective_date'],
   enforcementAction: ['details.enforcementAction'],

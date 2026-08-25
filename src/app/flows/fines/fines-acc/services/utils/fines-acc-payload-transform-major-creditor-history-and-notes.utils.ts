@@ -1,6 +1,9 @@
 import {
   createHistoryDetails,
+  createHistoryDetailsPart,
+  createHistoryFragment,
   createHistoryLabelValuePart,
+  createHistoryLink,
   createHistoryTextPart,
   formatHistoryDate,
   getHistoryString,
@@ -13,6 +16,7 @@ import { FINES_ACC_HISTORY_AND_NOTES_DETAILS_DATE_FORMAT } from '../constants/fi
 import { FINES_ACC_HISTORY_AND_NOTES_DETAILS_EMPTY_VALUES } from '../constants/fines-acc-history-and-notes-details-empty-values.constant';
 import { FINES_ACC_HISTORY_AND_NOTES_DETAILS_FIELD_ALIASES } from '../constants/fines-acc-history-and-notes-details-field-aliases.constant';
 import { FINES_ACC_HISTORY_AND_NOTES_DETAILS_LABELS } from '../constants/fines-acc-history-and-notes-details-labels.constant';
+import { FINES_ACC_HISTORY_AND_NOTES_DETAILS_LINK_TYPES } from '../constants/fines-acc-history-and-notes-details-link-types.constant';
 import { FINES_ACC_HISTORY_AND_NOTES_DETAILS_SIMPLE_TRANSACTION_LABELS } from '../constants/fines-acc-history-and-notes-details-simple-transaction-labels.constant';
 import { FINES_ACC_HISTORY_AND_NOTES_DETAILS_TRANSACTION_TYPE_ALIASES } from '../constants/fines-acc-history-and-notes-details-transaction-type-aliases.constant';
 import { FINES_ACC_HISTORY_AND_NOTES_DETAILS_TRANSACTION_TYPES } from '../constants/fines-acc-history-and-notes-details-transaction-types.constant';
@@ -67,18 +71,22 @@ export function transformMajorCreditorTransactionDetails(item: THistoryDetailsRa
 
   // Manual adjustments, payments, and repayments all append the same optional defendant account number.
   if (defendantAccountTitle) {
-    return transformMajorCreditorAccountMovementDetails(
+    return transformMajorCreditorLinkedAccountMovementDetails(
       item,
       defendantAccountTitle,
       FIELD_ALIASES.defendantAccountNumber,
+      FINES_ACC_HISTORY_AND_NOTES_DETAILS_LINK_TYPES.account,
+      FIELD_ALIASES.defendantAccountId,
     );
   }
 
   // Repayments from suspense use the associated suspense transaction, not a defendant account number.
   if (transactionType === transactionTypes.repaymentFromSuspense) {
-    return transformMajorCreditorAccountMovementDetails(
+    return transformMajorCreditorLinkedAccountMovementDetails(
       item,
       LABELS.repaymentFromSuspense,
+      FIELD_ALIASES.associatedRecordId,
+      FINES_ACC_HISTORY_AND_NOTES_DETAILS_LINK_TYPES.suspenseTransaction,
       FIELD_ALIASES.associatedRecordId,
     );
   }
@@ -173,25 +181,48 @@ function transformMajorCreditorChequeDetails(item: THistoryDetailsRawItem, title
 }
 
 /**
- * Transforms a movement with the same optional second fragment: an associated account or suspense value.
+ * Transforms a movement with an optional linked account or suspense value.
  *
  * @param item - The raw major-creditor history item returned by the API.
  * @param title - The ticket-defined movement label.
- * @param valueAliases - The API field containing the optional associated value.
+ * @param valueAliases - The API field containing the optional visible value.
+ * @param linkType - The type of record the visible value opens.
+ * @param linkEmitAliases - The API field containing the linked record identifier.
  * @returns The fragment-based details model for a future history-table component.
  */
-function transformMajorCreditorAccountMovementDetails(
+function transformMajorCreditorLinkedAccountMovementDetails(
   item: THistoryDetailsRawItem,
   title: string,
   valueAliases: string[],
+  linkType: string,
+  linkEmitAliases: string[],
 ): IHistoryDetails {
-  const associatedValue = getHistoryString(item, valueAliases, [], EMPTY_VALUES);
+  const visibleValue = getHistoryString(item, valueAliases, [], EMPTY_VALUES);
+  const linkEmit = getHistoryString(item, linkEmitAliases, [], EMPTY_VALUES);
 
   return createHistoryDetails([
     createHistoryTextPart(title),
-    // The shared service omits this part when Confluence marks the associated value as optional and it is absent.
-    createHistoryTextPart(associatedValue),
+    // Confluence underlines this value as a link; omit the optional part when no visible value is supplied.
+    createMajorCreditorLinkedTextPart(visibleValue, linkType, linkEmit),
   ]);
+}
+
+/**
+ * Creates a text part with link metadata when the API supplies a target record ID.
+ *
+ * @param text - The optional value displayed in the history item.
+ * @param linkType - The type of record the value opens.
+ * @param linkEmit - The optional linked record identifier.
+ * @returns A visible part with a link when possible, or null when there is no text to display.
+ */
+function createMajorCreditorLinkedTextPart(text: string | null, linkType: string, linkEmit: string | null) {
+  return text
+    ? createHistoryDetailsPart([
+        createHistoryFragment(text, {
+          link: linkEmit ? createHistoryLink(linkType, linkEmit) : null,
+        }),
+      ])
+    : null;
 }
 
 /**
@@ -207,24 +238,34 @@ function transformMajorCreditorSuspenseTransferDetails(item: THistoryDetailsRawI
 
   // A suspense item uses the linked suspense transaction identifier.
   if (associatedRecordType === associatedRecordTypes.suspenseItem) {
-    return transformMajorCreditorAccountMovementDetails(item, suspenseTransferLabel, FIELD_ALIASES.associatedRecordId);
+    return transformMajorCreditorLinkedAccountMovementDetails(
+      item,
+      suspenseTransferLabel,
+      FIELD_ALIASES.associatedRecordId,
+      FINES_ACC_HISTORY_AND_NOTES_DETAILS_LINK_TYPES.suspenseTransaction,
+      FIELD_ALIASES.associatedRecordId,
+    );
   }
 
   // A defendant transaction uses the defendant account number.
   if (associatedRecordType === associatedRecordTypes.defendantTransaction) {
-    return transformMajorCreditorAccountMovementDetails(
+    return transformMajorCreditorLinkedAccountMovementDetails(
       item,
       suspenseTransferLabel,
       FIELD_ALIASES.defendantAccountNumber,
+      FINES_ACC_HISTORY_AND_NOTES_DETAILS_LINK_TYPES.account,
+      FIELD_ALIASES.defendantAccountId,
     );
   }
 
   // A creditor account uses the creditor account number.
   if (associatedRecordType === associatedRecordTypes.creditorAccounts) {
-    return transformMajorCreditorAccountMovementDetails(
+    return transformMajorCreditorLinkedAccountMovementDetails(
       item,
       suspenseTransferLabel,
       FIELD_ALIASES.creditorAccountNumber,
+      FINES_ACC_HISTORY_AND_NOTES_DETAILS_LINK_TYPES.account,
+      FIELD_ALIASES.associatedRecordId,
     );
   }
 
