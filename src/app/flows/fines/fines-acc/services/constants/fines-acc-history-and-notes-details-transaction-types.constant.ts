@@ -9,6 +9,8 @@ export const FINES_ACC_HISTORY_AND_NOTES_DETAILS_TRANSACTION_TYPES = {
   repaymentFromSuspense: 'REPSUS',
   reversedPayment: 'REVPAY',
   reissuedCheque: 'RICHEQ',
+  reissuedBacs: 'RIBACS',
+  returnedBacs: 'RTBACS',
   reversedWriteOff: 'RVWOFF',
   suspenseTransfer: 'XFER',
   transferFromSuspense: 'FR-SUS',
