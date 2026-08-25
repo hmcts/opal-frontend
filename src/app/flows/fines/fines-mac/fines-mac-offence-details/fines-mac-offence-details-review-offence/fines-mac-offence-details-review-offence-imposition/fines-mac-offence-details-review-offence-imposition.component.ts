@@ -21,6 +21,7 @@ import { FINES_MAC_OFFENCE_DETAILS_REVIEW_OFFENCE_IMPOSITION_DEFAULT_VALUES } fr
 import { FinesMacStore } from '../../../stores/fines-mac.store';
 import { UtilsService } from '@hmcts/opal-frontend-common/services/utils-service';
 import { FinesNotProvidedComponent } from '../../../../components/fines-not-provided/fines-not-provided.component';
+import { CustomAccessibleMonetaryComponent } from '@hmcts/opal-frontend-common/components/custom/custom-accessible-monetary';
 
 @Component({
   selector: 'app-fines-mac-offence-details-review-offence-imposition',
@@ -33,6 +34,7 @@ import { FinesNotProvidedComponent } from '../../../../components/fines-not-prov
     GovukSummaryListComponent,
     GovukSummaryListRowComponent,
     FinesNotProvidedComponent,
+    CustomAccessibleMonetaryComponent,
   ],
   templateUrl: './fines-mac-offence-details-review-offence-imposition.component.html',
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -50,6 +52,7 @@ export class FinesMacOffenceDetailsReviewOffenceImpositionComponent implements O
   @Input({ required: true }) public majorCreditorRefData!: IOpalFinesMajorCreditorRefData;
   @Input({ required: true }) public impositions!: IFinesMacOffenceDetailsImpositionsState[];
   @Input({ required: true }) public offenceIndex!: number;
+  @Input({ required: true }) public offenceCaption!: string;
   @Input({ required: false }) public isReadOnly!: boolean;
   public readonly utilsService = inject(UtilsService);
   public impositionTableData!: IFinesMacOffenceDetailsReviewSummaryImpositionTableData[];
@@ -236,7 +239,7 @@ export class FinesMacOffenceDetailsReviewOffenceImpositionComponent implements O
 
       return {
         impositionId: imposition.fm_offence_details_imposition_id!,
-        impositionDescription: resultCodeImposition.result_title,
+        impositionDescription: this.opalFinesService.getResultPrettyName(resultCodeImposition),
         creditor: this.getCreditorInformation(
           imposition.fm_offence_details_creditor,
           imposition.fm_offence_details_major_creditor_id,

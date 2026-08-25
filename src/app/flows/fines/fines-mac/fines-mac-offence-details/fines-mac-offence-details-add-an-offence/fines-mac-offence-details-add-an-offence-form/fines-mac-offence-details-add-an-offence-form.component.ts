@@ -102,6 +102,7 @@ export class FinesMacOffenceDetailsAddAnOffenceFormComponent
   private readonly opalFinesService = inject(OpalFines);
   private readonly finesMacStore = inject(FinesMacStore);
   private readonly creditorListenerControls = new WeakSet<object>();
+  private readonly amountImposedListenerControls = new WeakSet<object>();
 
   @Output() protected override formSubmit = new EventEmitter<IFinesMacOffenceDetailsForm>();
   protected readonly dateService = inject(DateService);
@@ -176,6 +177,7 @@ export class FinesMacOffenceDetailsAddAnOffenceFormComponent
   private initialAddAnOffenceDetailsSetup(): void {
     const offenceDetailsDraft = structuredClone(this.finesMacOffenceDetailsStore.offenceDetailsDraft());
     const hasOffenceDetailsDraft = offenceDetailsDraft.length > 0;
+    const hasSavedDraftChanges = hasOffenceDetailsDraft && this.finesMacOffenceDetailsStore.offenceDetailsDraftDirty();
     const impositionsKey = 'fm_offence_details_impositions';
     let formData;
 
@@ -228,6 +230,14 @@ export class FinesMacOffenceDetailsAddAnOffenceFormComponent
         this.setupResultCodeListener(index);
       }
     }
+
+    // Returning from the nested minor-creditor flow should still count as unsaved work
+    // until the offence itself is saved or reviewed.
+    if (hasSavedDraftChanges) {
+      this.form.markAsDirty();
+      this.finesMacStore.setUnsavedChanges(true);
+    }
+
     this.today = this.dateService.toFormat(this.dateService.getDateNow(), 'dd/MM/yyyy');
   }
 
@@ -251,10 +261,39 @@ export class FinesMacOffenceDetailsAddAnOffenceFormComponent
    */
   private setupResultCodeListener(index: number): void {
     this.resultCodeListener(index);
+    this.amountImposedListener(index);
     this.fieldErrors = {
       ...this.fieldErrors,
       ...FINES_MAC_OFFENCE_DETAILS_IMPOSITIONS_FIELD_ERRORS(index),
     };
+  }
+
+  /**
+   * Revalidates amount paid when amount imposed changes in the same imposition row.
+   *
+   * @param index - The index of the impositions form group.
+   */
+  private amountImposedListener(index: number): void {
+    const impositionsFormGroup = this.getFormArrayFormGroup(index, 'fm_offence_details_impositions');
+    const amountImposedControl = this.getFormArrayFormGroupControl(
+      impositionsFormGroup,
+      'fm_offence_details_amount_imposed',
+      index,
+    );
+    const amountPaidControl = this.getFormArrayFormGroupControl(
+      impositionsFormGroup,
+      'fm_offence_details_amount_paid',
+      index,
+    );
+
+    if (this.amountImposedListenerControls.has(amountImposedControl)) {
+      return;
+    }
+
+    this.amountImposedListenerControls.add(amountImposedControl);
+    amountImposedControl.valueChanges.pipe(takeUntil(this['ngUnsubscribe'])).subscribe(() => {
+      amountPaidControl.updateValueAndValidity({ onlySelf: true, emitEvent: false });
+    });
   }
 
   /**
@@ -428,6 +467,7 @@ export class FinesMacOffenceDetailsAddAnOffenceFormComponent
   private updateOffenceDetailsDraft(formData: IFinesMacOffenceDetailsState): void {
     const offenceDetailsFineMacStore = structuredClone(this.finesMacStore.offenceDetails());
     const draftOffenceDetails = structuredClone(this.finesMacOffenceDetailsStore.offenceDetailsDraft());
+    const offenceDetailsDraftDirty = this.finesMacOffenceDetailsStore.offenceDetailsDraftDirty();
 
     const offenceDetailsIndex = this.form.get('fm_offence_details_id')!.value;
 
@@ -447,6 +487,7 @@ export class FinesMacOffenceDetailsAddAnOffenceFormComponent
     }
 
     this.finesMacOffenceDetailsStore.setOffenceDetailsDraft(draftOffenceDetails);
+    this.finesMacOffenceDetailsStore.setOffenceDetailsDraftDirty(offenceDetailsDraftDirty || this.hasUnsavedChanges());
   }
 
   /**
@@ -652,6 +693,9 @@ export class FinesMacOffenceDetailsAddAnOffenceFormComponent
       'fm_offence_details_offence_id',
       this.retryOffenceCodeLookup,
     );
+    if (this.form.valid) {
+      this.finesMacOffenceDetailsStore.setOffenceDetailsDraftDirty(false);
+    }
     super.handleFormSubmit(event);
   }
 

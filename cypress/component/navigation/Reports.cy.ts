@@ -2,8 +2,10 @@ import { ActivatedRoute, Router, convertToParamMap, provideRouter } from '@angul
 import { mount } from 'cypress/angular';
 import { PermissionsService } from '@hmcts/opal-frontend-common/services/permissions-service';
 import { GlobalStore } from '@hmcts/opal-frontend-common/stores/global';
-import { BehaviorSubject } from 'rxjs';
+import { BehaviorSubject, of } from 'rxjs';
+import { OpalUserService } from '@hmcts/opal-frontend-common/services/opal-user-service';
 import { FINES_PERMISSIONS } from 'src/app/constants/fines-permissions.constant';
+import { OpalFines } from 'src/app/flows/fines/services/opal-fines-service/opal-fines.service';
 import { FinesReportsSummaryListComponent } from 'src/app/flows/fines/fines-reports/fines-reports-summary-list/fines-reports-summary-list.component';
 import { FINES_REPORTS_SUMMARY_LIST_ROUTING_PATHS } from 'src/app/flows/fines/fines-reports/fines-reports-summary-list/routing/constants/fines-reports-summary-list-routing-paths.constant';
 import { FINES_REPORTS_ROUTING_PATHS } from 'src/app/flows/fines/fines-reports/routing/constants/fines-reports-routing-paths.constant';
@@ -24,6 +26,10 @@ const REPORTS_STORY_TAG = '@JIRA-STORY:PO-2613';
 const REPORTS_EPIC_TAG = '@JIRA-EPIC:PO-2627';
 const RELEASE_1C_STORY_TAG = '@JIRA-STORY:PO-3758';
 const RELEASE_1C_EPIC_TAG = '@JIRA-EPIC:PO-3685';
+const buildTags = (...tags: string[]) => [
+  ...tags,
+  ...(tags.includes('@R1CEnforcementOperationalReportingOff') ? [] : ['@R1CEnforcementOperationalReporting']),
+];
 const DEFAULT_RELEASE_FEATURE_FLAGS = {
   [RELEASE_1A_FEATURE_FLAG]: true,
   [RELEASE_1C_WRITE_OFF_FEATURE_FLAG]: true,
@@ -45,8 +51,10 @@ interface ISummaryListComponentProperties {
 type MockActivatedRoute = {
   snapshot: {
     paramMap: ReturnType<typeof convertToParamMap>;
+    data: typeof summaryListRouteData;
   };
   paramMap: BehaviorSubject<ReturnType<typeof convertToParamMap>>;
+  data: BehaviorSubject<typeof summaryListRouteData>;
   parent: {
     snapshot: {
       paramMap: ReturnType<typeof convertToParamMap>;
@@ -68,6 +76,21 @@ const componentProperties: IComponentProperties = {
 
 const summaryListComponentProperties: ISummaryListComponentProperties = {
   reportId: FINES_REPORTS_SUMMARY_LIST_ROUTING_PATHS.children.yourReports,
+};
+
+const summaryListRouteData = {
+  businessUnits: {
+    refData: [],
+  },
+  reportMetadata: {
+    report_id: FINES_REPORTS_SUMMARY_LIST_ROUTING_PATHS.children.operationalReportsByEnforcement,
+    report_title: 'Operational reports (by enforcement)',
+    can_manually_create: true,
+  },
+  reportInstances: {
+    report_instances: [],
+    count: 0,
+  },
 };
 
 const reportsSummaryListPath = (reportId: string) =>
@@ -123,13 +146,15 @@ describe(
       const activatedRoute: MockActivatedRoute = {
         snapshot: {
           paramMap: convertToParamMap({}),
+          data: summaryListRouteData,
         },
         paramMap: new BehaviorSubject(convertToParamMap({})),
+        data: new BehaviorSubject(summaryListRouteData),
         parent: {
           snapshot: {
-            paramMap: convertToParamMap({ reportId: props.reportId }),
+            paramMap: convertToParamMap({ reportTypeId: props.reportId }),
           },
-          paramMap: new BehaviorSubject(convertToParamMap({ reportId: props.reportId })),
+          paramMap: new BehaviorSubject(convertToParamMap({ reportTypeId: props.reportId })),
         },
       };
 
@@ -138,6 +163,18 @@ describe(
           {
             provide: ActivatedRoute,
             useValue: activatedRoute,
+          },
+          {
+            provide: OpalFines,
+            useValue: {
+              getReportInstances: cy.stub().returns(of(summaryListRouteData.reportInstances)),
+            },
+          },
+          {
+            provide: OpalUserService,
+            useValue: {
+              getLoggedInUserState: cy.stub().returns(of({ user_id: 123 })),
+            },
           },
         ],
       });
@@ -198,7 +235,7 @@ describe(
 
     it(
       'AC1a AC1b AC1d AC2a AC2b AC2c AC2d shows the Your reports panel and Operational reports links in the correct order',
-      { tags: ['@JIRA-TEST-KEY:PO-5251'] },
+      { tags: buildTags('@JIRA-TEST-KEY:PO-5251') },
       () => {
         commonSetup();
 
@@ -224,7 +261,7 @@ describe(
 
     it(
       'AC1c routes View all your reports to the Your reports summary list screen',
-      { tags: ['@JIRA-TEST-KEY:PO-5252'] },
+      { tags: buildTags('@JIRA-TEST-KEY:PO-5252') },
       () => {
         commonSetup();
 
@@ -236,7 +273,7 @@ describe(
 
     it(
       'AC3a routes Operational reports by enforcement to the correct summary list screen',
-      { tags: ['@JIRA-TEST-KEY:PO-5253'] },
+      { tags: buildTags('@JIRA-TEST-KEY:PO-5253') },
       () => {
         commonSetup();
 
@@ -250,7 +287,7 @@ describe(
 
     it(
       'AC3b routes Operational reports by payments to the correct summary list screen',
-      { tags: ['@JIRA-TEST-KEY:PO-5254'] },
+      { tags: buildTags('@JIRA-TEST-KEY:PO-5254') },
       () => {
         commonSetup();
 
@@ -262,7 +299,7 @@ describe(
       },
     );
 
-    it('AC1c renders the Your reports summary list heading', { tags: ['@JIRA-TEST-KEY:PO-5255'] }, () => {
+    it('AC1c renders the Your reports summary list heading', { tags: buildTags('@JIRA-TEST-KEY:PO-5255') }, () => {
       yourReportsSummaryListSetup();
 
       cy.contains(L.pageHeader, 'Your reports').should('be.visible');
@@ -270,7 +307,7 @@ describe(
 
     it(
       'AC3a renders the Operational reports by enforcement summary list heading',
-      { tags: ['@JIRA-TEST-KEY:PO-5256'] },
+      { tags: buildTags('@JIRA-TEST-KEY:PO-5256') },
       () => {
         operationalReportsByEnforcementSummaryListSetup();
 
@@ -280,7 +317,7 @@ describe(
 
     it(
       'AC3b renders the Operational reports by payments summary list heading',
-      { tags: ['@JIRA-TEST-KEY:PO-5257'] },
+      { tags: buildTags('@JIRA-TEST-KEY:PO-5257') },
       () => {
         operationalReportsByPaymentsSummaryListSetup();
 
@@ -290,7 +327,7 @@ describe(
 
     it(
       'AC4d hides the Operational reports group when the user has no operational report permissions',
-      { tags: ['@JIRA-TEST-KEY:PO-5258'] },
+      { tags: buildTags('@JIRA-TEST-KEY:PO-5258') },
       () => {
         noOperationalPermissionsSetup();
 
@@ -304,7 +341,14 @@ describe(
 
     it(
       'hides the Reports dashboard entry points when release-1c enforcement operational reporting is disabled',
-      { tags: ['@JIRA-STORY:PO-3758', '@JIRA-EPIC:PO-3685', '@JIRA-TEST-KEY:PO-8680'] },
+      {
+        tags: buildTags(
+          '@JIRA-STORY:PO-3758',
+          '@JIRA-EPIC:PO-3685',
+          '@R1CEnforcementOperationalReportingOff',
+          '@JIRA-TEST-KEY:PO-8680',
+        ),
+      },
       () => {
         featureFlagDisabledSetup();
 
@@ -318,7 +362,7 @@ describe(
 
     it(
       'shows the Reports dashboard entry points when release-1c enforcement operational reporting is enabled',
-      { tags: ['@JIRA-TEST-KEY:PO-8681'] },
+      { tags: buildTags('@JIRA-TEST-KEY:PO-8681') },
       () => {
         commonSetup();
 
@@ -336,7 +380,7 @@ describe(
 
     it(
       'navigates to the operational reports by enforcement summary list when release-1c enforcement operational reporting is enabled',
-      { tags: ['@JIRA-TEST-KEY:PO-8682'] },
+      { tags: buildTags('@JIRA-TEST-KEY:PO-8682') },
       () => {
         commonSetup();
 
@@ -349,7 +393,7 @@ describe(
 
     it(
       'navigates to the operational reports by payments summary list when release-1c enforcement operational reporting is enabled',
-      { tags: ['@JIRA-TEST-KEY:PO-8683'] },
+      { tags: buildTags('@JIRA-TEST-KEY:PO-8683') },
       () => {
         commonSetup();
 
@@ -362,7 +406,7 @@ describe(
 
     it(
       'AC4a AC4c shows only the enforcement link and keeps the Operational reports heading visible',
-      { tags: ['@JIRA-TEST-KEY:PO-5259'] },
+      { tags: buildTags('@JIRA-TEST-KEY:PO-5259') },
       () => {
         enforcementPermissionSetup();
 
@@ -376,7 +420,7 @@ describe(
 
     it(
       'AC4b AC4c shows only the payments link and keeps the Operational reports heading visible',
-      { tags: ['@JIRA-TEST-KEY:PO-5260'] },
+      { tags: buildTags('@JIRA-TEST-KEY:PO-5260') },
       () => {
         paymentsPermissionSetup();
 

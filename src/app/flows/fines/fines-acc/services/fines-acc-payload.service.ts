@@ -49,6 +49,9 @@ import { buildHistoryFilterPayload } from './utils/fines-acc-payload-build-histo
 import { IFinesAccMinorCreditorDetailsHistoryAndNotesFilterForm } from '../fines-acc-minor-creditor-details/fines-acc-minor-creditor-details-history-and-notes-tab/interfaces/fines-acc-minor-creditor-details-history-and-notes-filter-form.interface';
 import { IOpalFinesMinorCreditorAccountHistoryParams } from '@services/fines/opal-fines-service/interfaces/opal-fines-minor-creditor-account-history-params.interface';
 import { buildMinorCreditorHistoryFilterPayload } from './utils/fines-acc-payload-build-minor-creditor-history-filter.utils';
+import { IFinesAccHistoryAndNotesFilterForm } from '../fines-acc-history-and-notes/interfaces/fines-acc-history-and-notes-filter-form.interface';
+import { IOpalFinesMajorCreditorAccountHistoryParams } from '@services/fines/opal-fines-service/interfaces/opal-fines-major-creditor-account-history-params.interface';
+import { buildMajorCreditorHistoryFilterPayload } from './utils/fines-acc-payload-build-major-creditor-history-filter.utils';
 import {
   HistoryTransformationService,
   IHistoryDetails as IFinesAccHistoryAndNotesDetails,
@@ -56,6 +59,7 @@ import {
   THistoryDetailsRawItem as TFinesAccHistoryAndNotesRawItem,
 } from '@hmcts/opal-frontend-common/services/history-transformation-service';
 import { FINES_ACC_HISTORY_AND_NOTES_DETAILS_TRANSFORMATION_CONFIG } from './constants/fines-acc-history-and-notes-details-transformation-config.constant';
+import { OPAL_FINES_NOTE_RECORD_TYPES } from '@services/fines/opal-fines-service/constants/opal-fines-note-record-types.constant';
 
 @Injectable({
   providedIn: 'root',
@@ -68,19 +72,23 @@ export class FinesAccPayloadService {
   private readonly historyDetailsTransformationService = inject(HistoryTransformationService);
 
   /**
-   * Constructs the payload for adding a note.
+   * Constructs the payload for adding a note against the requested account record type.
    *
    * This method collects necessary data from the finesAccStore as well as the form input to build the
-   * payload required for adding a new note to the account. It gathers the account version, the associated
-   * record's type and ID, the note type (hardcoded as 'AA'), and the note text from the form data.
+   * payload required for adding a new note to the account. It gathers the associated record's type and ID,
+   * the note type (hardcoded as 'AA'), and the note text from the form data.
    *
    * @param form - The form containing note data for the fines account.
+   * @param recordType - The associated account record type for the note.
    * @returns The payload object conforming to the IOpalFinesAddNotePayload interface.
    */
-  public buildAddNotePayload(form: IFinesAccAddNoteForm): IOpalFinesAddNotePayload {
+  public buildAddNotePayload(
+    form: IFinesAccAddNoteForm,
+    recordType: IOpalFinesAddNotePayload['activity_note']['record_type'] = OPAL_FINES_NOTE_RECORD_TYPES.defendantAccounts,
+  ): IOpalFinesAddNotePayload {
     return {
       activity_note: {
-        record_type: 'defendant_accounts',
+        record_type: recordType,
         record_id: this.finesAccStore.account_id()!,
         note_text: form.formData.facc_add_notes!,
         note_type: 'AA',
@@ -116,6 +124,21 @@ export class FinesAccPayloadService {
       buildMinorCreditorHistoryFilterPayload(form),
       FINES_ACC_BUILD_TRANSFORM_ITEMS_CONFIG,
     ) as IOpalFinesMinorCreditorAccountHistoryParams;
+  }
+
+  /**
+   * Builds query parameters for filtering major creditor account history.
+   *
+   * @param form - The submitted history and notes filter form.
+   * @returns The query parameters expected by the major creditor account history API.
+   */
+  public buildMajorCreditorHistoryFilterPayload(
+    form: IFinesAccHistoryAndNotesFilterForm,
+  ): IOpalFinesMajorCreditorAccountHistoryParams {
+    return this.transformPayload(
+      buildMajorCreditorHistoryFilterPayload(form),
+      FINES_ACC_BUILD_TRANSFORM_ITEMS_CONFIG,
+    ) as IOpalFinesMajorCreditorAccountHistoryParams;
   }
 
   /**

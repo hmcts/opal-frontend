@@ -9,8 +9,10 @@ import { setupAccountEnquiryComponent } from './setup/SetupComponent';
 
 const ACCOUNT_ENQUIRY_JIRA_LABEL = '@JIRA-LABEL:account-enquiry';
 const MAJOR_CREDITOR_AT_A_GLANCE_COMPONENT = 'app-fines-acc-major-creditor-details-at-a-glance-tab';
+const MAJOR_CREDITOR_COLUMN = `${MAJOR_CREDITOR_AT_A_GLANCE_COMPONENT} .govuk-grid-column-one-third:has(h2.govuk-heading-s:contains("Major creditor"))`;
+const PAYOUT_STATUS_COLUMN = `${MAJOR_CREDITOR_AT_A_GLANCE_COMPONENT} .govuk-grid-column-one-third:has(h2.govuk-heading-s:contains("Payout status"))`;
 
-const buildTags = (...tags: string[]): string[] => [...tags, ACCOUNT_ENQUIRY_JIRA_LABEL];
+const buildTags = (...tags: string[]): string[] => [...tags, ACCOUNT_ENQUIRY_JIRA_LABEL, '@R1B'];
 
 const normalizeText = (text: string): string =>
   text
@@ -44,7 +46,7 @@ describe('Major Creditor Account Summary - At a Glance Tab', () => {
 
   it(
     'AC1a: builds the major creditor at a glance tab in line with the design artefact',
-    { tags: [...buildTags('@JIRA-STORY:PO-2129'), '@JIRA-EPIC:PO-1286'] },
+    { tags: [...buildTags('@JIRA-STORY:PO-2129'), '@JIRA-EPIC:PO-1286', '@JIRA-TEST-KEY:PO-9589'] },
     () => {
       const header = structuredClone(FINES_ACC_MAJOR_CREDITOR_DETAILS_HEADER_MOCK);
       const atAGlance = structuredClone(OPAL_FINES_ACCOUNT_MAJOR_CREDITOR_AT_A_GLANCE_MOCK);
@@ -75,7 +77,7 @@ describe('Major Creditor Account Summary - At a Glance Tab', () => {
 
   it(
     'AC1b, AC2a: displays the configured major creditor details and shows BACS details as provided',
-    { tags: [...buildTags('@JIRA-STORY:PO-2129'), '@JIRA-EPIC:PO-1286'] },
+    { tags: [...buildTags('@JIRA-STORY:PO-2129'), '@JIRA-EPIC:PO-1286', '@JIRA-TEST-KEY:PO-9590'] },
     () => {
       const atAGlance = structuredClone(OPAL_FINES_ACCOUNT_MAJOR_CREDITOR_AT_A_GLANCE_MOCK);
 
@@ -113,7 +115,7 @@ describe('Major Creditor Account Summary - At a Glance Tab', () => {
 
   it(
     'AC2a: displays BACS details as not provided when pay by bacs is false',
-    { tags: [...buildTags('@JIRA-STORY:PO-2129'), '@JIRA-EPIC:PO-1286'] },
+    { tags: [...buildTags('@JIRA-STORY:PO-2129'), '@JIRA-EPIC:PO-1286', '@JIRA-TEST-KEY:PO-9591'] },
     () => {
       const atAGlance = structuredClone(OPAL_FINES_ACCOUNT_MAJOR_CREDITOR_AT_A_GLANCE_MOCK);
 
@@ -128,7 +130,7 @@ describe('Major Creditor Account Summary - At a Glance Tab', () => {
 
   it(
     'AC1b: hides the code, postcode, and payout status section for a central fund account',
-    { tags: [...buildTags('@JIRA-STORY:PO-2129'), '@JIRA-EPIC:PO-1286'] },
+    { tags: [...buildTags('@JIRA-STORY:PO-2129'), '@JIRA-EPIC:PO-1286', '@JIRA-TEST-KEY:PO-9592'] },
     () => {
       const header = structuredClone(FINES_ACC_MAJOR_CREDITOR_DETAILS_HEADER_MOCK);
       const atAGlance = structuredClone(OPAL_FINES_ACCOUNT_MAJOR_CREDITOR_AT_A_GLANCE_MOCK);

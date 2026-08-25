@@ -1,6 +1,7 @@
 import { DOM_ELEMENTS as ENF_ACTION_SELECT } from '../../../shared/selectors/account-enquiry/account.enquiry.enforcement-action-select.locators';
 import { DOM_ELEMENTS as ENF_ACTION_ADD } from '../accountEnquiry/locators/account.enquiry.enforcement-action-add.locators';
 import { ACCOUNT_ENQUIRY_ENFORCEMENT_STATUS_ELEMENTS as ENF } from '../../../shared/selectors/account-enquiry/account.enquiry.enforcement.locators';
+import { UNSAVED_CHANGES_WARNING } from '../../../shared/constants/confirmation-messages';
 import { setupAccountEnquiryComponent } from '../accountEnquiry/setup/SetupComponent';
 import { buildSeededAccountStore, buildSeededGlobalStore } from '../accountEnquiry/setup/SeededStores';
 import { IComponentProperties } from '../accountEnquiry/setup/setupComponent.interface';
@@ -26,6 +27,7 @@ import {
 import { FINES_ACC_ENF_ACTION_ADD_RESULT_MOCK } from '@app/flows/fines/fines-acc/fines-acc-enf-action-add/mocks/fines-acc-enf-action-add-result.mock';
 import { OPAL_FINES_ACCOUNT_DEFENDANT_DETAILS_ENFORCEMENT_TAB_REF_DATA_MOCK } from '@app/flows/fines/services/opal-fines-service/mocks/opal-fines-account-defendant-details-enforcement-tab-ref-data.mock';
 import { ADD_ENFORCEMENT_ACTION_ALL_FIELD_TYPES_RESULT_MOCK } from './mocks/add_enforcement_action_all_field_type_result.mock';
+import { FINES_ACC_RESTRICTED_ACCOUNT_STATUS_CODES } from '@app/flows/fines/fines-acc/constants/fines-acc-restricted-account-status-codes.constant';
 
 const finesAccountRoutes: Routes = [
   {
@@ -128,14 +130,6 @@ function reachAddAnotherEnforcementActionPrompt(
   cy.wait('@postAddEnforcementAction');
 }
 
-const statusScenarios = [
-  { code: 'CS', reason: 'Consolidated' },
-  { code: 'WO', reason: 'Written off' },
-  { code: 'TO', reason: 'Transferred out' },
-  { code: 'TS', reason: 'TFO Out Acknowledged' },
-  { code: 'TA', reason: 'TFO to be Acknowledged' },
-];
-
 const EMPLOYMENT_REQUIRED_ACTION = {
   result_id: 'AEOC',
   result_title: 'Attachment of Earnings Order',
@@ -180,12 +174,12 @@ const interceptEmploymentRequiredAction = () => {
 describe(
   'Add enforcement action in enforcement tab',
   {
-    tags: ['@JIRA-EPIC:PO-1674', '@JIRA-LABEL:Add_and_Remove_Defendant_Enforcement_Actions'],
+    tags: ['@JIRA-EPIC:PO-1674', '@JIRA-LABEL:Add_and_Remove_Defendant_Enforcement_Actions', '@R1B'],
   },
   () => {
     it(
       'AC1,1a, AC2,2a,2b. Individual: navigates to the select enforcement action screen and displays the form incl details',
-      { tags: ['@JIRA-STORY:PO-1780', '@JIRA-STORY:PO-1824', '@JIRA-EPIC:PO-1674', '@JIRA-TEST-KEY:PO-4439'] },
+      { tags: ['@JIRA-STORY:PO-1780', '@JIRA-STORY:PO-1824', '@JIRA-EPIC:PO-1674', '@JIRA-TEST-KEY:PO-4439', '@R1B'] },
       () => {
         let headerMock = structuredClone(createDefendantHeaderMockWithName('Robert', 'Thomson'));
         headerMock.debtor_type = 'Defendant';
@@ -212,10 +206,10 @@ describe(
       },
     );
 
-    statusScenarios.forEach(({ code, reason }) => {
+    FINES_ACC_RESTRICTED_ACCOUNT_STATUS_CODES.forEach((code) => {
       it(
-        `Negative test: account status ${code} shows correct error page`,
-        { tags: ['@JIRA-STORY:PO-1780', '@JIRA-STORY:PO-1824', '@JIRA-STORY:PO-1781', '@JIRA-STORY:PO-1825'] },
+        `AC1: Individual: Add enforcement action is hidden for restricted account status ${code}`,
+        { tags: ['@JIRA-STORY:PO-5754', '@JIRA-EPIC:PO-978', '@R1B'] },
         () => {
           let headerMock = structuredClone(createDefendantHeaderMockWithName('Robert', 'Thomson'));
 
@@ -234,31 +228,21 @@ describe(
           interceptUserState(USER_STATE_MOCK_PERMISSION_BU77);
           interceptDefendantHeader(accountId, headerMock, '123');
           interceptEnforcementStatus(accountId, enforcementMock, '123');
-          interceptNextPermittedEnforcementActionsEmpty();
 
           setupAccountEnquiryComponent({
             ...COMPONENT_PROPERTIES,
             accountId,
           });
 
-          cy.get(ENF.addEnforcementActionLink).should('exist').click();
-
-          cy.contains('Robert THOMSON').should('be.visible');
-
-          // common error text
-          cy.contains('You cannot add an enforcement action to an account that has a status of').should('be.visible');
-
-          // status-specific text
-          cy.contains(reason).should('be.visible');
-
-          cy.contains('Go back').click();
+          cy.get(ENF.tabName).should('be.visible').and('contain.text', 'Enforcement');
+          cy.get(ENF.addEnforcementActionLink).should('not.exist');
         },
       );
     });
 
     it(
       'Negative test: NOENF with no next permitted actions shows error screen and Go back returns to enforcement tab',
-      { tags: ['@JIRA-STORY:PO-1781', '@JIRA-STORY:PO-1825', '@JIRA-TEST-KEY:PO-7500'] },
+      { tags: ['@JIRA-STORY:PO-1781', '@JIRA-STORY:PO-1825', '@JIRA-TEST-KEY:PO-7500', '@R1B'] },
       () => {
         let headerMock = structuredClone(createDefendantHeaderMockWithName('Robert', 'Thomson'));
 
@@ -304,7 +288,7 @@ describe(
 
     it(
       'Negative test: last enforcement has no next permitted actions shows error screen',
-      { tags: ['@JIRA-STORY:PO-1781', '@JIRA-STORY:PO-1825', '@JIRA-TEST-KEY:PO-7501'] },
+      { tags: ['@JIRA-STORY:PO-1781', '@JIRA-STORY:PO-1825', '@JIRA-TEST-KEY:PO-7501', '@R1B'] },
       () => {
         let headerMock = structuredClone(createDefendantHeaderMockWithName('Robert', 'Thomson'));
 
@@ -357,7 +341,7 @@ describe(
 
     it(
       'AC1,1a. Individual: Negative testing, result ID is DW so without NOENF the add enf action button does not appear.',
-      { tags: ['@JIRA-STORY:PO-1780', '@JIRA-STORY:PO-1824', '@JIRA-EPIC:PO-1674', '@JIRA-TEST-KEY:PO-4440'] },
+      { tags: ['@JIRA-STORY:PO-1780', '@JIRA-STORY:PO-1824', '@JIRA-EPIC:PO-1674', '@JIRA-TEST-KEY:PO-4440', '@R1B'] },
       () => {
         let headerMock = structuredClone(createDefendantHeaderMockWithName('Robert', 'Thomson'));
         headerMock.debtor_type = 'Defendant';
@@ -381,7 +365,7 @@ describe(
 
     // it(
     //   'AC1,1a. Individual: Negative testing, action data is populated so hits error page.',
-    //   { tags: ['@JIRA-STORY:PO-1780', '@JIRA-STORY:PO-1824'] },
+    //   { tags: ['@JIRA-STORY:PO-1780', '@JIRA-STORY:PO-1824', '@R1B'] },
     //   () => {
     //     let headerMock = structuredClone(createDefendantHeaderMockWithName('Robert', 'Thomson'));
     //     headerMock.debtor_type = 'Defendant';
@@ -410,7 +394,7 @@ describe(
 
     it(
       'AC3,a,b,d, Individual: Account meets conditions to cause info banner update',
-      { tags: ['@JIRA-STORY:PO-1780', '@JIRA-STORY:PO-1824', '@JIRA-EPIC:PO-1674', '@JIRA-TEST-KEY:PO-4441'] },
+      { tags: ['@JIRA-STORY:PO-1780', '@JIRA-STORY:PO-1824', '@JIRA-EPIC:PO-1674', '@JIRA-TEST-KEY:PO-4441', '@R1B'] },
       () => {
         let headerMock = structuredClone(createDefendantHeaderMockWithName('Robert', 'Thomson'));
         headerMock.debtor_type = 'Defendant';
@@ -456,7 +440,7 @@ describe(
 
     it(
       'AC4,a,ai,aii, AC5,a,c Individual: Enforcement actions dropdown confirmation',
-      { tags: ['@JIRA-STORY:PO-1780', '@JIRA-STORY:PO-1824', '@JIRA-EPIC:PO-1674', '@JIRA-TEST-KEY:PO-4442'] },
+      { tags: ['@JIRA-STORY:PO-1780', '@JIRA-STORY:PO-1824', '@JIRA-EPIC:PO-1674', '@JIRA-TEST-KEY:PO-4442', '@R1B'] },
       () => {
         let headerMock = structuredClone(createDefendantHeaderMockWithName('Robert', 'Thomson'));
         headerMock.debtor_type = 'Defendant';
@@ -522,7 +506,7 @@ describe(
 
     it(
       'AC1,1a,2a,2b,2c,3. Individual: displays the employment details denied screen when the selected action requires employment data and Go back returns to select enforcement action',
-      { tags: ['@JIRA-STORY:PO-1782', '@JIRA-EPIC:PO-1674'] },
+      { tags: ['@JIRA-STORY:PO-1782', '@JIRA-EPIC:PO-1674', '@R1B'] },
       () => {
         let headerMock = structuredClone(createDefendantHeaderMockWithName('Robert', 'Thomson'));
         headerMock.debtor_type = 'Defendant';
@@ -563,7 +547,7 @@ describe(
 
     it(
       'AC1,1a,2a,2b,2c,3. Parent/Guardian: displays the employment details denied screen when the selected action requires employment data and Go back returns to select enforcement action',
-      { tags: ['@JIRA-STORY:PO-1831', '@JIRA-EPIC:PO-1674'] },
+      { tags: ['@JIRA-STORY:PO-1831', '@JIRA-EPIC:PO-1674', '@R1B'] },
       () => {
         let headerMock = structuredClone(createParentGuardianHeaderMockWithName('Pat', 'Taylor'));
         headerMock.account_status_reference.account_status_code = 'L';
@@ -610,6 +594,7 @@ describe(
           '@JIRA-STORY:PO-1824',
           '@JIRA-EPIC:PO-1674',
           '@JIRA-TEST-KEY:PO-4443',
+          '@R1B',
         ],
       },
       () => {
@@ -648,6 +633,7 @@ describe(
           '@JIRA-STORY:PO-1824',
           '@JIRA-EPIC:PO-1674',
           '@JIRA-TEST-KEY:PO-4444',
+          '@R1B',
         ],
       },
       () => {
@@ -677,7 +663,7 @@ describe(
         cy.window().then((win) => {
           cy.stub(win, 'confirm')
             .callsFake((message: string) => {
-              expect(message.replace(/\s+/g, ' ')).to.match(/unsaved changes/i);
+              expect(message.replace(/\s+/g, ' ')).to.equal(UNSAVED_CHANGES_WARNING);
               return false;
             })
             .as('confirmDismiss');
@@ -692,7 +678,7 @@ describe(
 
     it(
       'AC2b, 3c. Company: navigates to the select enforcement action screen and displays the form incl details',
-      { tags: ['@JIRA-STORY:PO-1834', '@JIRA-EPIC:PO-1674', '@JIRA-TEST-KEY:PO-4445'] },
+      { tags: ['@JIRA-STORY:PO-1834', '@JIRA-EPIC:PO-1674', '@JIRA-TEST-KEY:PO-4445', '@R1B'] },
       () => {
         let headerMock = structuredClone(DEFENDANT_HEADER_ORG_MOCK);
         headerMock.debtor_type = 'Defendant';
@@ -721,7 +707,7 @@ describe(
 
     it(
       'AC1,1a,2a,2b,2c,3. Company: displays the employment details denied screen when the selected action requires employment data and Go back returns to select enforcement action',
-      { tags: ['@JIRA-STORY:PO-1841', '@JIRA-EPIC:PO-1674'] },
+      { tags: ['@JIRA-STORY:PO-1841', '@JIRA-EPIC:PO-1674', '@R1B'] },
       () => {
         let headerMock = structuredClone(DEFENDANT_HEADER_ORG_MOCK);
         headerMock.debtor_type = 'Defendant';
@@ -760,10 +746,10 @@ describe(
       },
     );
 
-    statusScenarios.forEach(({ code, reason }) => {
+    FINES_ACC_RESTRICTED_ACCOUNT_STATUS_CODES.forEach((code) => {
       it(
-        `Negative test: status ${code} shows correct error screen for company`,
-        { tags: ['@JIRA-STORY:PO-1835'] },
+        `AC1: Company: Add enforcement action is hidden for restricted account status ${code}`,
+        { tags: ['@JIRA-STORY:PO-5754', '@JIRA-EPIC:PO-978', '@R1B'] },
         () => {
           let headerMock = structuredClone(DEFENDANT_HEADER_ORG_MOCK);
 
@@ -783,62 +769,58 @@ describe(
           interceptUserState(USER_STATE_MOCK_PERMISSION_BU77);
           interceptDefendantHeader(accountId, headerMock, '123');
           interceptEnforcementStatus(accountId, enforcementMock, '123');
-          interceptNextPermittedEnforcementActionsEmpty();
 
           setupAccountEnquiryComponent({
             ...COMPONENT_PROPERTIES,
             accountId,
           });
 
-          cy.get(ENF.addEnforcementActionLink).click();
-
-          cy.contains('You cannot add an enforcement action to an account that has a status of').should('be.visible');
-
-          cy.contains(reason).should('be.visible');
-
-          cy.contains('177A - Sainsco').should('be.visible');
-
-          cy.contains('Go back').click();
+          cy.get(ENF.tabName).should('be.visible').and('contain.text', 'Enforcement');
+          cy.get(ENF.addEnforcementActionLink).should('not.exist');
         },
       );
     });
 
-    it('Negative test: NOENF shows remove hold error screen for company', { tags: ['@JIRA-STORY:PO-1835'] }, () => {
-      let headerMock = structuredClone(DEFENDANT_HEADER_ORG_MOCK);
+    it(
+      'Negative test: NOENF shows remove hold error screen for company',
+      { tags: ['@JIRA-STORY:PO-1835', '@R1B'] },
+      () => {
+        let headerMock = structuredClone(DEFENDANT_HEADER_ORG_MOCK);
 
-      headerMock.debtor_type = 'company';
+        headerMock.debtor_type = 'company';
 
-      const enforcementMock = structuredClone(OPAL_FINES_ACCOUNT_DEFENDANT_DETAILS_ENFORCEMENT_TAB_REF_DATA_MOCK);
+        const enforcementMock = structuredClone(OPAL_FINES_ACCOUNT_DEFENDANT_DETAILS_ENFORCEMENT_TAB_REF_DATA_MOCK);
 
-      enforcementMock.last_enforcement_action!.enforcement_action.result_id = 'NOENF';
+        enforcementMock.last_enforcement_action!.enforcement_action.result_id = 'NOENF';
 
-      enforcementMock.next_enforcement_action_data = null;
+        enforcementMock.next_enforcement_action_data = null;
 
-      const accountId = headerMock.defendant_account_party_id;
+        const accountId = headerMock.defendant_account_party_id;
 
-      interceptAuthenticatedUser();
-      interceptUserState(USER_STATE_MOCK_PERMISSION_BU77);
-      interceptDefendantHeader(accountId, headerMock, '123');
-      interceptEnforcementStatus(accountId, enforcementMock, '123');
-      interceptNextPermittedEnforcementActionsEmpty();
+        interceptAuthenticatedUser();
+        interceptUserState(USER_STATE_MOCK_PERMISSION_BU77);
+        interceptDefendantHeader(accountId, headerMock, '123');
+        interceptEnforcementStatus(accountId, enforcementMock, '123');
+        interceptNextPermittedEnforcementActionsEmpty();
 
-      setupAccountEnquiryComponent({
-        ...COMPONENT_PROPERTIES,
-        accountId,
-      });
+        setupAccountEnquiryComponent({
+          ...COMPONENT_PROPERTIES,
+          accountId,
+        });
 
-      cy.get(ENF.addEnforcementActionLink).click();
+        cy.get(ENF.addEnforcementActionLink).click();
 
-      cy.contains('You must first remove the enforcement hold on the account.').should('be.visible');
+        cy.contains('You must first remove the enforcement hold on the account.').should('be.visible');
 
-      cy.contains('177A - Sainsco').should('be.visible');
+        cy.contains('177A - Sainsco').should('be.visible');
 
-      cy.contains('Go back').click();
-    });
+        cy.contains('Go back').click();
+      },
+    );
 
     it(
       'Negative test: No next permitted actions shows error screen for company',
-      { tags: ['@JIRA-STORY:PO-1835'] },
+      { tags: ['@JIRA-STORY:PO-1835', '@R1B'] },
       () => {
         let headerMock = structuredClone(DEFENDANT_HEADER_ORG_MOCK);
 
@@ -881,7 +863,7 @@ describe(
 
     it(
       'AC1, AC1a. Selected enforcement action continues to the add enforcement action details screen',
-      { tags: ['@JIRA-STORY:PO-1782', '@JIRA-EPIC:PO-2630'] },
+      { tags: ['@JIRA-STORY:PO-1782', '@JIRA-EPIC:PO-2630', '@R1B'] },
       () => {
         let headerMock = structuredClone(createDefendantHeaderMockWithName('Robert', 'Thomson'));
         headerMock.debtor_type = 'Defendant';
@@ -931,7 +913,7 @@ describe(
 
     it(
       'AC2a, AC2b. Add enforcement action details screen shows the correct title and account identifier',
-      { tags: ['@JIRA-STORY:PO-1782', '@JIRA-EPIC:PO-2630'] },
+      { tags: ['@JIRA-STORY:PO-1782', '@JIRA-EPIC:PO-2630', '@R1B'] },
       () => {
         let headerMock = structuredClone(createDefendantHeaderMockWithName('Robert', 'Thomson'));
         headerMock.debtor_type = 'Defendant';
@@ -975,7 +957,7 @@ describe(
 
     it(
       'AC2a, AC2b. Company add enforcement action details screen shows the correct title and account identifier',
-      { tags: ['@JIRA-STORY:PO-1782', '@JIRA-EPIC:PO-2630'] },
+      { tags: ['@JIRA-STORY:PO-1782', '@JIRA-EPIC:PO-2630', '@R1B'] },
       () => {
         let headerMock = structuredClone(DEFENDANT_HEADER_ORG_MOCK);
         headerMock.debtor_type = 'company';
@@ -1019,7 +1001,7 @@ describe(
 
     it(
       'AC2d, AC2di. COLLO add enforcement action details screen displays payment terms section and days in default fields',
-      { tags: ['@JIRA-STORY:PO-1782', '@JIRA-EPIC:PO-2630'] },
+      { tags: ['@JIRA-STORY:PO-1782', '@JIRA-EPIC:PO-2630', '@R1B'] },
       () => {
         let headerMock = structuredClone(createDefendantHeaderMockWithName('Robert', 'Thomson'));
         headerMock.debtor_type = 'Defendant';
@@ -1074,7 +1056,7 @@ describe(
 
     it(
       'AC2c. Add enforcement action details screen renders hint text, menu option copy and required versus optional behaviour from result parameters',
-      { tags: ['@JIRA-STORY:PO-1782', '@JIRA-EPIC:PO-2630'] },
+      { tags: ['@JIRA-STORY:PO-1782', '@JIRA-EPIC:PO-2630', '@R1B'] },
       () => {
         let headerMock = structuredClone(createDefendantHeaderMockWithName('Robert', 'Thomson'));
         headerMock.debtor_type = 'Defendant';
@@ -1133,7 +1115,7 @@ describe(
 
     it(
       'AC3, AC3a, AC3ai. English and Welsh account shows Welsh companion field and Welsh hint text',
-      { tags: ['@JIRA-STORY:PO-1782', '@JIRA-EPIC:PO-2630'] },
+      { tags: ['@JIRA-STORY:PO-1782', '@JIRA-EPIC:PO-2630', '@R1B'] },
       () => {
         let headerMock = structuredClone(createDefendantHeaderMockWithName('Robert', 'Thomson'));
         headerMock.debtor_type = 'Defendant';
@@ -1187,7 +1169,7 @@ describe(
 
     it(
       'AC3b, AC3bi, AC10a. If the English field is populated and the Welsh field is blank, the Welsh paired-field error is shown',
-      { tags: ['@JIRA-STORY:PO-1782', '@JIRA-EPIC:PO-2630'] },
+      { tags: ['@JIRA-STORY:PO-1782', '@JIRA-EPIC:PO-2630', '@R1B'] },
       () => {
         let headerMock = structuredClone(createDefendantHeaderMockWithName('Robert', 'Thomson'));
         headerMock.debtor_type = 'Defendant';
@@ -1240,7 +1222,7 @@ describe(
 
     it(
       'AC3b, AC3bii, AC10a. If the Welsh field is populated and the English field is blank, the English paired-field error is shown',
-      { tags: ['@JIRA-STORY:PO-1782', '@JIRA-EPIC:PO-2630'] },
+      { tags: ['@JIRA-STORY:PO-1782', '@JIRA-EPIC:PO-2630', '@R1B'] },
       () => {
         let headerMock = structuredClone(createDefendantHeaderMockWithName('Robert', 'Thomson'));
         headerMock.debtor_type = 'Defendant';
@@ -1295,7 +1277,7 @@ describe(
 
     it(
       'AC4, AC4a, AC4d, AC10a. If the English & Welsh fields are blank, the English and Welsh field errors are shown',
-      { tags: ['@JIRA-STORY:PO-1782', '@JIRA-EPIC:PO-2630'] },
+      { tags: ['@JIRA-STORY:PO-1782', '@JIRA-EPIC:PO-2630', '@R1B'] },
       () => {
         let headerMock = structuredClone(createDefendantHeaderMockWithName('Robert', 'Thomson'));
         headerMock.debtor_type = 'Defendant';
@@ -1346,7 +1328,7 @@ describe(
 
     it(
       'AC4b., AC4c, AC10a. If the user enters too many characters or invalid alpha/numerical',
-      { tags: ['@JIRA-STORY:PO-1782', '@JIRA-EPIC:PO-2630'] },
+      { tags: ['@JIRA-STORY:PO-1782', '@JIRA-EPIC:PO-2630', '@R1B'] },
       () => {
         let headerMock = structuredClone(createDefendantHeaderMockWithName('Robert', 'Thomson'));
         headerMock.debtor_type = 'Defendant';
@@ -1418,7 +1400,7 @@ describe(
 
     it(
       'AC5, AC5a, AC5b, AC5c, AC10a. If the user leaves the field blank, enters a invalid or incorrect format decimal value',
-      { tags: ['@JIRA-STORY:PO-1782', '@JIRA-EPIC:PO-2630'] },
+      { tags: ['@JIRA-STORY:PO-1782', '@JIRA-EPIC:PO-2630', '@R1B'] },
       () => {
         let headerMock = structuredClone(createDefendantHeaderMockWithName('Robert', 'Thomson'));
         headerMock.debtor_type = 'Defendant';
@@ -1474,7 +1456,7 @@ describe(
 
     it(
       'AC6, AC6a, AC6b, AC6c, AC10a. If the user leaves the field blank, enters a invalid or incorrect format date',
-      { tags: ['@JIRA-STORY:PO-1782', '@JIRA-EPIC:PO-2630'] },
+      { tags: ['@JIRA-STORY:PO-1782', '@JIRA-EPIC:PO-2630', '@R1B'] },
       () => {
         let headerMock = structuredClone(createDefendantHeaderMockWithName('Robert', 'Thomson'));
         headerMock.debtor_type = 'Defendant';
@@ -1542,7 +1524,7 @@ describe(
 
     it(
       'AC7, AC7a, AC10a. If the user leaves the field blank in a integer field it returns a error',
-      { tags: ['@JIRA-STORY:PO-1782', '@JIRA-EPIC:PO-2630'] },
+      { tags: ['@JIRA-STORY:PO-1782', '@JIRA-EPIC:PO-2630', '@R1B'] },
       () => {
         let headerMock = structuredClone(createDefendantHeaderMockWithName('Robert', 'Thomson'));
         headerMock.debtor_type = 'Defendant';
@@ -1590,7 +1572,7 @@ describe(
 
     it(
       'AC7, AC7b, AC10a. If the user enteres a invalid input in the integer field it returns a error',
-      { tags: ['@JIRA-STORY:PO-1782', '@JIRA-EPIC:PO-2630'] },
+      { tags: ['@JIRA-STORY:PO-1782', '@JIRA-EPIC:PO-2630', '@R1B'] },
       () => {
         let headerMock = structuredClone(createDefendantHeaderMockWithName('Robert', 'Thomson'));
         headerMock.debtor_type = 'Defendant';
@@ -1639,7 +1621,7 @@ describe(
 
     it(
       'AC8, AC8a If the user leaves the field blank in a menu data type it returns a error',
-      { tags: ['@JIRA-STORY:PO-1782', '@JIRA-EPIC:PO-2630'] },
+      { tags: ['@JIRA-STORY:PO-1782', '@JIRA-EPIC:PO-2630', '@R1B'] },
       () => {
         let headerMock = structuredClone(createDefendantHeaderMockWithName('Robert', 'Thomson'));
         headerMock.debtor_type = 'Defendant';
@@ -1687,7 +1669,7 @@ describe(
 
     it(
       'AC9, AC9a If the user does not select whether to change payment terms or not a error is raised',
-      { tags: ['@JIRA-STORY:PO-1782', '@JIRA-EPIC:PO-2630'] },
+      { tags: ['@JIRA-STORY:PO-1782', '@JIRA-EPIC:PO-2630', '@R1B'] },
       () => {
         let headerMock = structuredClone(createDefendantHeaderMockWithName('Robert', 'Thomson'));
         headerMock.debtor_type = 'Defendant';
@@ -1741,7 +1723,7 @@ describe(
 
     it(
       'AC11, AC11a. Add enforcement action details screen cancel with no entered values returns to the Enforcement tab without confirmation',
-      { tags: ['@JIRA-STORY:PO-1782', '@JIRA-EPIC:PO-2630'] },
+      { tags: ['@JIRA-STORY:PO-1782', '@JIRA-EPIC:PO-2630', '@R1B'] },
       () => {
         let headerMock = structuredClone(createDefendantHeaderMockWithName('Robert', 'Thomson'));
         headerMock.debtor_type = 'Defendant';
@@ -1792,7 +1774,7 @@ describe(
 
     it(
       'AC11, AC11b. Add enforcement action details screen cancel with entered values shows confirmation before navigating away',
-      { tags: ['@JIRA-STORY:PO-1782', '@JIRA-EPIC:PO-2630'] },
+      { tags: ['@JIRA-STORY:PO-1782', '@JIRA-EPIC:PO-2630', '@R1B'] },
       () => {
         let headerMock = structuredClone(createDefendantHeaderMockWithName('Robert', 'Thomson'));
         headerMock.debtor_type = 'Defendant';
@@ -1834,7 +1816,7 @@ describe(
         cy.window().then((win) => {
           cy.stub(win, 'confirm')
             .callsFake((message: string) => {
-              expect(message.replace(/\s+/g, ' ')).to.match(/unsaved changes/i);
+              expect(message.replace(/\s+/g, ' ')).to.equal(UNSAVED_CHANGES_WARNING);
               return true;
             })
             .as('confirmLeave');
@@ -1849,7 +1831,7 @@ describe(
 
     it(
       'AC1a, AC2a, AC2b, AC2ci, AC3a. Individual: displays the add new enforcement action prompt after adding an action that allows an additional action',
-      { tags: ['@JIRA-STORY:PO-1786', '@JIRA-STORY:PO-1833', '@JIRA-STORY:PO-1843', '@JIRA-EPIC:PO-1674'] },
+      { tags: ['@JIRA-STORY:PO-1786', '@JIRA-STORY:PO-1833', '@JIRA-STORY:PO-1843', '@JIRA-EPIC:PO-1674', '@R1B'] },
       () => {
         const headerMock = structuredClone(createDefendantHeaderMockWithName('Robert', 'Thomson'));
         headerMock.debtor_type = 'Defendant';
@@ -1878,7 +1860,7 @@ describe(
 
     it(
       'AC2b. Company: displays the add new enforcement action prompt and account identifier',
-      { tags: ['@JIRA-STORY:PO-1843', '@JIRA-EPIC:PO-1674'] },
+      { tags: ['@JIRA-STORY:PO-1843', '@JIRA-EPIC:PO-1674', '@R1B'] },
       () => {
         const headerMock = structuredClone(DEFENDANT_HEADER_ORG_MOCK);
         headerMock.debtor_type = 'company';
@@ -1907,7 +1889,7 @@ describe(
 
     it(
       'AC3b. Continue without selecting an option shows validation',
-      { tags: ['@JIRA-STORY:PO-1786', '@JIRA-STORY:PO-1833', '@JIRA-STORY:PO-1843', '@JIRA-EPIC:PO-1674'] },
+      { tags: ['@JIRA-STORY:PO-1786', '@JIRA-STORY:PO-1833', '@JIRA-STORY:PO-1843', '@JIRA-EPIC:PO-1674', '@R1B'] },
       () => {
         const headerMock = structuredClone(createDefendantHeaderMockWithName('Robert', 'Thomson'));
         headerMock.debtor_type = 'Defendant';
@@ -1939,7 +1921,7 @@ describe(
 
     it(
       'AC4a. Selecting Yes continues to the Select enforcement action screen',
-      { tags: ['@JIRA-STORY:PO-1786', '@JIRA-STORY:PO-1833', '@JIRA-STORY:PO-1843', '@JIRA-EPIC:PO-1674'] },
+      { tags: ['@JIRA-STORY:PO-1786', '@JIRA-STORY:PO-1833', '@JIRA-STORY:PO-1843', '@JIRA-EPIC:PO-1674', '@R1B'] },
       () => {
         const headerMock = structuredClone(createDefendantHeaderMockWithName('Robert', 'Thomson'));
         headerMock.debtor_type = 'Defendant';
@@ -1963,7 +1945,7 @@ describe(
 
     it(
       'AC4b. Selecting No returns to the Enforcement tab',
-      { tags: ['@JIRA-STORY:PO-1786', '@JIRA-STORY:PO-1833', '@JIRA-STORY:PO-1843', '@JIRA-EPIC:PO-1674'] },
+      { tags: ['@JIRA-STORY:PO-1786', '@JIRA-STORY:PO-1833', '@JIRA-STORY:PO-1843', '@JIRA-EPIC:PO-1674', '@R1B'] },
       () => {
         const headerMock = structuredClone(createDefendantHeaderMockWithName('Robert', 'Thomson'));
         headerMock.debtor_type = 'Defendant';

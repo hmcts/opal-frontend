@@ -11,6 +11,8 @@ import {
 import { finesSectionPermissionsGuard } from './guards/fines-section-permissions/fines-section-permissions.guard';
 import { dashboardTypeGuard } from './guards/dashboard-type/dashboard-type.guard';
 import { PRIMARY_NAV_HIDDEN_ROUTE_DATA } from '@app/constants/route-data.constant';
+import { authGuard } from '@hmcts/opal-frontend-common/guards/auth';
+import { routing as aecRouting } from '../fines-aec/routing/fines-aec.routes';
 import {
   RELEASE_1A_FEATURE_FLAG,
   RELEASE_1B_FEATURE_FLAG,
@@ -24,25 +26,31 @@ const {
   release1bFeatureFlagGuardMock,
   release1cWriteOffFeatureFlagGuardMock,
   release1cEnforcementOperationalReportingFeatureFlagGuardMock,
+  release1aFeatureFlagName,
+  release1bFeatureFlagName,
+  release1cWriteOffFeatureFlagName,
 } = vi.hoisted(() => ({
   featureFlagRedirectGuardMock: vi.fn(),
   release1aFeatureFlagGuardMock: vi.fn(),
   release1bFeatureFlagGuardMock: vi.fn(),
   release1cWriteOffFeatureFlagGuardMock: vi.fn(),
   release1cEnforcementOperationalReportingFeatureFlagGuardMock: vi.fn(),
+  release1aFeatureFlagName: 'release-1a',
+  release1bFeatureFlagName: 'release-1b',
+  release1cWriteOffFeatureFlagName: 'release-1c-write-off',
 }));
 
 vi.mock('@hmcts/opal-frontend-common/guards/feature-flag', () => ({
   featureFlagRedirectGuard: featureFlagRedirectGuardMock.mockImplementation((featureFlagName: string) => {
-    if (featureFlagName === RELEASE_1A_FEATURE_FLAG) {
+    if (featureFlagName === release1aFeatureFlagName) {
       return release1aFeatureFlagGuardMock;
     }
 
-    if (featureFlagName === RELEASE_1B_FEATURE_FLAG) {
+    if (featureFlagName === release1bFeatureFlagName) {
       return release1bFeatureFlagGuardMock;
     }
 
-    if (featureFlagName === RELEASE_1C_WRITE_OFF_FEATURE_FLAG) {
+    if (featureFlagName === release1cWriteOffFeatureFlagName) {
       return release1cWriteOffFeatureFlagGuardMock;
     }
 
@@ -98,6 +106,15 @@ describe('fines routes', () => {
     expect(dashboardRoute?.canActivate).toContain(finesSectionPermissionsGuard);
   });
 
+  it('should guard the manual cash input root as a Finance section entry route', () => {
+    const manualCashInputRoute = childRoutes.find((route) => route.path === FINES_ROUTING_PATHS.children.mci.root);
+
+    expect(manualCashInputRoute?.canActivate).toContain(finesSectionPermissionsGuard);
+    expect(manualCashInputRoute?.data).toEqual({
+      sectionKey: FINES_DASHBOARD_ROUTING_PATHS.children.finance,
+    });
+  });
+
   it('should guard the MAC journey root behind release-1a', () => {
     const macRoute = childRoutes.find((route) => route.path === FINES_ROUTING_PATHS.children.mac.root);
 
@@ -138,6 +155,17 @@ describe('fines routes', () => {
     expect(reportsRoute?.canActivateChild).toContain(release1cEnforcementOperationalReportingFeatureFlagGuard);
     expect(reportsRoute?.data).toEqual({
       sectionKey: FINES_DASHBOARD_ROUTING_PATHS.children.reports,
+    });
+  });
+
+  it('should add Auto-Enforcement as an Administration section route', () => {
+    const autoEnforcementRoute = childRoutes.find((route) => route.path === FINES_ROUTING_PATHS.children.aec.root);
+
+    expect(autoEnforcementRoute?.children).toBe(aecRouting);
+    expect(autoEnforcementRoute?.canActivate).toContain(authGuard);
+    expect(autoEnforcementRoute?.canActivate).toContain(finesSectionPermissionsGuard);
+    expect(autoEnforcementRoute?.data).toEqual({
+      sectionKey: FINES_DASHBOARD_ROUTING_PATHS.children.administration,
     });
   });
 });

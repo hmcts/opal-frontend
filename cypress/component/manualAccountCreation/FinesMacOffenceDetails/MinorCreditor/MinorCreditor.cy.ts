@@ -15,7 +15,7 @@ import { of } from 'rxjs';
 
 const MANUAL_ACCOUNT_CREATION_JIRA_LABEL = '@JIRA-LABEL:manual-account-creation';
 
-const buildTags = (...tags: string[]) => [...tags, MANUAL_ACCOUNT_CREATION_JIRA_LABEL];
+const buildTags = (...tags: string[]) => [...tags, '@R1A', MANUAL_ACCOUNT_CREATION_JIRA_LABEL];
 
 describe('FinesMacMinorCreditor', () => {
   let formData: any;
@@ -250,11 +250,7 @@ describe('FinesMacMinorCreditor', () => {
       cy.get(DOM_ELEMENTS.submitButton).click();
 
       for (const [, value] of Object.entries(FORMAT_CHECK)) {
-        if (
-          value !=
-            'Company name must only include letters a to z, numbers 0-9 and certain special characters (hyphens, spaces, apostrophes)' &&
-          value != 'Enter last name'
-        ) {
+        if (value != FORMAT_CHECK.companyNameAlphabeticalTextPattern && value != 'Enter last name') {
           cy.get(DOM_ELEMENTS.errorSummary).should('contain', value);
         }
       }
@@ -305,18 +301,20 @@ describe('FinesMacMinorCreditor', () => {
     '(AC.2) should have Format check in place for company creditor types',
     {
       tags: [
-        ...buildTags('@JIRA-STORY:PO-412', '@JIRA-STORY:PO-668', '@JIRA-STORY:PO-669'),
+        ...buildTags('@JIRA-STORY:PO-412', '@JIRA-STORY:PO-668', '@JIRA-STORY:PO-669', '@JIRA-DEFECT:PO-10198'),
         '@JIRA-EPIC:PO-545',
         '@JIRA-TEST-KEY:PO-5027',
       ],
     },
     () => {
-      setupComponent(null);
+      const formSubmitSpy = Cypress.sinon.spy();
+      setupComponent(formSubmitSpy);
 
       formData[0].formData.fm_offence_details_minor_creditor_creditor_type = 'company';
-      formData[0].formData.fm_offence_details_minor_creditor_company_name = '123@*';
+      formData[0].formData.fm_offence_details_minor_creditor_company_name = 'InvalidéName';
       cy.get(DOM_ELEMENTS.submitButton).click();
       cy.get(DOM_ELEMENTS.errorSummary).should('contain', FORMAT_CHECK.companyNameAlphabeticalTextPattern);
+      cy.wrap(formSubmitSpy).should('not.have.been.called');
     },
   );
 
@@ -453,7 +451,7 @@ describe('FinesMacMinorCreditor', () => {
     '(AC.11) should allow form submission with valid data for company creditor',
     {
       tags: [
-        ...buildTags('@JIRA-STORY:PO-412', '@JIRA-STORY:PO-668', '@JIRA-STORY:PO-669'),
+        ...buildTags('@JIRA-STORY:PO-412', '@JIRA-STORY:PO-668', '@JIRA-STORY:PO-669', '@JIRA-DEFECT:PO-10198'),
         '@JIRA-EPIC:PO-545',
         '@JIRA-TEST-KEY:PO-5033',
       ],
@@ -463,7 +461,7 @@ describe('FinesMacMinorCreditor', () => {
       setupComponent(formSubmitSpy);
 
       formData[0].formData.fm_offence_details_minor_creditor_creditor_type = 'company';
-      formData[0].formData.fm_offence_details_minor_creditor_company_name = 'Test Company';
+      formData[0].formData.fm_offence_details_minor_creditor_company_name = `AZ09 !"#%&'()*+,-./:;<=>?@[\\]^_\`{|}~`;
       formData[0].formData.fm_offence_details_minor_creditor_address_line_1 = '1 Testing Lane';
       formData[0].formData.fm_offence_details_minor_creditor_address_line_2 = 'Test Town';
       formData[0].formData.fm_offence_details_minor_creditor_address_line_3 = 'Testing';
@@ -476,6 +474,11 @@ describe('FinesMacMinorCreditor', () => {
 
       cy.get(DOM_ELEMENTS.submitButton).click();
       cy.wrap(formSubmitSpy).should('have.been.calledOnce');
+      cy.wrap(formSubmitSpy).then((spy) => {
+        expect(spy.firstCall.args[0].formData.fm_offence_details_minor_creditor_company_name).to.equal(
+          `AZ09 !"#%&'()*+,-./:;<=>?@[\\]^_\`{|}~`,
+        );
+      });
     },
   );
   it(

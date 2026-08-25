@@ -114,28 +114,14 @@ describe('FinesConSearchAccountFormCompaniesComponent', () => {
     ).toBe(mockData.fcon_search_account_companies_post_code);
   });
 
-  it('should require company name when exact match flag is set', () => {
+  it.each([
+    { caseName: 'exact match flag', flagControlName: 'fcon_search_account_companies_company_name_exact_match' },
+    { caseName: 'include aliases flag', flagControlName: 'fcon_search_account_companies_include_aliases' },
+  ] as const)('should require company name when $caseName is set', ({ flagControlName }) => {
     component.form
       .get('fcon_search_account_companies_search_criteria.fcon_search_account_companies_company_name')
       ?.setValue(null);
-    component.form
-      .get('fcon_search_account_companies_search_criteria.fcon_search_account_companies_company_name_exact_match')
-      ?.setValue(true);
-
-    expect(
-      component.form
-        .get('fcon_search_account_companies_search_criteria.fcon_search_account_companies_company_name')
-        ?.hasError('required'),
-    ).toBe(true);
-  });
-
-  it('should require company name when include aliases flag is set', () => {
-    component.form
-      .get('fcon_search_account_companies_search_criteria.fcon_search_account_companies_company_name')
-      ?.setValue(null);
-    component.form
-      .get('fcon_search_account_companies_search_criteria.fcon_search_account_companies_include_aliases')
-      ?.setValue(true);
+    component.form.get(`fcon_search_account_companies_search_criteria.${flagControlName}`)?.setValue(true);
 
     expect(
       component.form
@@ -210,28 +196,47 @@ describe('FinesConSearchAccountFormCompaniesComponent', () => {
     expect(addressControl?.hasError('maxlength')).toBe(true);
   });
 
-  it('should validate postcode with alphanumeric hyphens apostrophes and spaces pattern', () => {
+  it.each([
+    {
+      caseName: 'alphanumeric and spaces pattern',
+      validValue: 'SW1A 1AA',
+      invalidValue: 'SW1A-1AA',
+      errorName: 'alphanumericTextPattern',
+    },
+    {
+      caseName: 'max length of 8 characters after stripping whitespace',
+      validValue: 'SW1A1AAA',
+      invalidValue: 'SW1A1AAAA',
+      errorName: 'maxlength',
+    },
+  ] as const)('should validate postcode $caseName', ({ validValue, invalidValue, errorName }) => {
     const postcodeControl = component.form.get(
       'fcon_search_account_companies_search_criteria.fcon_search_account_companies_post_code',
     );
 
-    postcodeControl?.setValue('SW1A 1AA');
-    expect(postcodeControl?.hasError('alphanumericTextPattern')).toBe(false);
+    postcodeControl?.setValue(validValue);
+    expect(postcodeControl?.hasError(errorName)).toBe(false);
 
-    postcodeControl?.setValue('SW1A@1AA');
-    expect(postcodeControl?.hasError('alphanumericTextPattern')).toBe(true);
+    postcodeControl?.setValue(invalidValue);
+    expect(postcodeControl?.hasError(errorName)).toBe(true);
   });
 
-  it('should validate postcode max length of 8 characters', () => {
+  it('should trim only surrounding whitespace from the postcode input on focusout', () => {
+    const postcodeInput = fixture.nativeElement.querySelector(
+      'input[name="fcon_search_account_companies_post_code"]',
+    ) as HTMLInputElement | null;
+    if (!postcodeInput) throw new Error('Postcode input not found');
+
     const postcodeControl = component.form.get(
       'fcon_search_account_companies_search_criteria.fcon_search_account_companies_post_code',
     );
 
-    postcodeControl?.setValue('SW1A1AA');
-    expect(postcodeControl?.hasError('maxlength')).toBe(false);
+    postcodeControl?.setValue('  AB1  3CD ');
+    postcodeInput.dispatchEvent(new FocusEvent('focusout', { bubbles: true }));
+    fixture.detectChanges();
 
-    postcodeControl?.setValue('SW1A 1AAA');
-    expect(postcodeControl?.hasError('maxlength')).toBe(true);
+    expect(postcodeControl?.value).toBe('AB1  3CD');
+    expect(postcodeControl?.hasError('maxlength')).toBe(false);
   });
 
   it('should set input value and trigger conditional validation for nested control path', () => {

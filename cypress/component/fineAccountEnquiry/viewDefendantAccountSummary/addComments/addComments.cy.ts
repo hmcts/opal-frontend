@@ -27,7 +27,7 @@ const FREE_TEXT_2_ALLOWED_CHARACTERS_ERROR =
 const FREE_TEXT_3_ALLOWED_CHARACTERS_ERROR =
   'Free text 3 must only include letters a to z, numbers 0-9 and certain special characters (commas, full stops, hyphens, spaces, apostrophes)';
 
-const buildTags = (...tags: string[]): string[] => [...tags, ACCOUNT_ENQUIRY_JIRA_LABEL];
+const buildTags = (...tags: string[]): string[] => [...tags, ACCOUNT_ENQUIRY_JIRA_LABEL, '@R1B'];
 const CommentFields = AccountCommentsAddLocators.fields;
 const CommentErrors = AccountCommentsAddLocators.errors;
 const CommentCharacterCounts = AccountCommentsAddLocators.characterCounts;

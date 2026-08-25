@@ -21,6 +21,7 @@ import { UtilsService } from '@hmcts/opal-frontend-common/services/utils-service
 import { beforeEach, describe, expect, it, vi } from 'vitest';
 
 import { createSpyObj } from '@app/testing/create-spy-obj.helper';
+import { OPAL_FINES_RESULT_PRETTY_NAME_MOCK } from '@services/fines/opal-fines-service/mocks/opal-fines-result-pretty-name.mock';
 
 describe('FinesMacOffenceDetailsReviewOffenceImpositionComponent', () => {
   let component: FinesMacOffenceDetailsReviewOffenceImpositionComponent;
@@ -32,6 +33,7 @@ describe('FinesMacOffenceDetailsReviewOffenceImpositionComponent', () => {
 
   beforeEach(async () => {
     mockOpalFinesService = {
+      getResultPrettyName: vi.fn().mockReturnValue(OPAL_FINES_RESULT_PRETTY_NAME_MOCK),
       getMajorCreditorPrettyName: vi.fn().mockReturnValue(OPAL_FINES_MAJOR_CREDITOR_PRETTY_NAME_MOCK),
     };
 
@@ -68,6 +70,7 @@ describe('FinesMacOffenceDetailsReviewOffenceImpositionComponent', () => {
     component.majorCreditorRefData = OPAL_FINES_MAJOR_CREDITOR_REF_DATA_MOCK;
     component.impositions = [structuredClone(FINES_MAC_OFFENCE_DETAILS_STATE_IMPOSITIONS_MOCK[0])];
     component.offenceIndex = 0;
+    component.offenceCaption = 'Criminal Courts Charge (FCC)';
     component.isReadOnly = false;
 
     const finesMacState = structuredClone(FINES_MAC_STATE_MOCK);
@@ -85,7 +88,7 @@ describe('FinesMacOffenceDetailsReviewOffenceImpositionComponent', () => {
     component.impositionRefData = OPAL_FINES_RESULTS_REF_DATA_MOCK;
     component.majorCreditorRefData = OPAL_FINES_MAJOR_CREDITOR_REF_DATA_MOCK;
     component.impositions = [structuredClone(FINES_MAC_OFFENCE_DETAILS_STATE_IMPOSITIONS_MOCK[0])];
-    component.offenceIndex = 0;
+    component.offenceCaption = 'Criminal Courts Charge (FCC)';
   });
 
   it('should create', () => {
@@ -134,13 +137,10 @@ describe('FinesMacOffenceDetailsReviewOffenceImpositionComponent', () => {
   it('should set impositionTableData with correct values', () => {
     const expectedTotal = '£100.00';
     mockUtilsService.convertToMonetaryString.mockReturnValue(expectedTotal);
-    const imposition = { ...FINES_MAC_OFFENCE_DETAILS_STATE_IMPOSITIONS_MOCK[0] };
     const expectedImpositionTableData: IFinesMacOffenceDetailsReviewSummaryImpositionTableData[] = [
       {
         impositionId: 0,
-        impositionDescription: OPAL_FINES_RESULTS_REF_DATA_MOCK.refData.find(
-          (result) => result.result_id === imposition.fm_offence_details_result_id!,
-        )!.result_title,
+        impositionDescription: 'Criminal Courts Charge (FCC)',
         creditor: 'HM Courts & Tribunals Service (HMCTS)',
         minorCreditor: {
           address: ['Test Address'],
@@ -165,6 +165,54 @@ describe('FinesMacOffenceDetailsReviewOffenceImpositionComponent', () => {
     expect(component.impositionTableData).toEqual(expectedImpositionTableData);
   });
 
+  it('should expose accessible minus text for negative monetary values', () => {
+    mockUtilsService.convertToMonetaryString.mockImplementation((value: number | string) => {
+      if (value === -17) {
+        return '-£17.00';
+      }
+
+      if (value === -3) {
+        return '-£3.00';
+      }
+
+      if (value === -14) {
+        return '-£14.00';
+      }
+
+      return `£${value}.00`;
+    });
+
+    const hostFixture = TestBed.createComponent(FinesMacOffenceDetailsReviewOffenceImpositionComponent);
+    const hostComponent = hostFixture.componentInstance;
+    const negativeImpositions = [
+      {
+        ...structuredClone(FINES_MAC_OFFENCE_DETAILS_STATE_IMPOSITIONS_MOCK[0]),
+        fm_offence_details_amount_imposed: -17,
+        fm_offence_details_amount_paid: -3,
+        fm_offence_details_balance_remaining: -14,
+      },
+    ];
+
+    hostComponent.impositionRefData = OPAL_FINES_RESULTS_REF_DATA_MOCK;
+    hostComponent.majorCreditorRefData = OPAL_FINES_MAJOR_CREDITOR_REF_DATA_MOCK;
+    hostComponent.impositions = negativeImpositions;
+    hostComponent.offenceIndex = 0;
+    hostComponent.isReadOnly = false;
+
+    hostFixture.detectChanges();
+
+    const totalBalanceRemainingCell = hostFixture.nativeElement.querySelector(
+      '#totalBalanceRemaining',
+    ) as HTMLTableCellElement;
+    const accessibleMonetaryComponent = totalBalanceRemainingCell.querySelector('opal-lib-custom-accessible-monetary');
+    const visibleAmount = totalBalanceRemainingCell.querySelector('[aria-hidden="true"]');
+    const hiddenAmount = totalBalanceRemainingCell.querySelector('.govuk-visually-hidden');
+
+    expect(accessibleMonetaryComponent).toBeTruthy();
+    expect(visibleAmount?.textContent?.trim()).toBe('-£14.00');
+    expect(hiddenAmount?.textContent?.trim()).toBe('minus £14.00');
+  });
+
   it('should return minor creditor - Any resultCodeCreditor', () => {
     const finesMacState = structuredClone(finesMacStore.getFinesMacStore());
     finesMacState.offenceDetails[0].childFormData = [
@@ -183,7 +231,7 @@ describe('FinesMacOffenceDetailsReviewOffenceImpositionComponent', () => {
     expect(actualCreditorText).toBe(expectedCreditorText);
   });
 
-  it('should return minor creditor no title or forenames - Any resultCodeCreditor', () => {
+  it('should return minor creditor surname when there is no title or forenames and resultCodeCreditor is Any', () => {
     const finesMacState = structuredClone(finesMacStore.getFinesMacStore());
     finesMacState.offenceDetails[0].childFormData = [
       {
@@ -206,7 +254,7 @@ describe('FinesMacOffenceDetailsReviewOffenceImpositionComponent', () => {
     expect(actualCreditorText).toBe(expectedCreditorText);
   });
 
-  it('should return minor creditor no title or forenames - Any resultCodeCreditor', () => {
+  it('should return minor creditor company name when there is no personal name and resultCodeCreditor is Any', () => {
     const finesMacState = structuredClone(finesMacStore.getFinesMacStore());
     finesMacState.offenceDetails[0].childFormData = [
       {
@@ -352,5 +400,13 @@ describe('FinesMacOffenceDetailsReviewOffenceImpositionComponent', () => {
 
   it('should return null as no minor creditor exists', () => {
     expect(component['getMinorCreditorData'](99)).toBeNull();
+  });
+
+  it('should render a visually hidden caption for the offence table', () => {
+    const caption = fixture.nativeElement.querySelector('caption') as HTMLTableCaptionElement | null;
+
+    expect(caption).toBeTruthy();
+    expect(caption?.textContent?.trim()).toBe('Offence: Criminal Courts Charge (FCC)');
+    expect(caption?.classList.contains('govuk-visually-hidden')).toBe(true);
   });
 });

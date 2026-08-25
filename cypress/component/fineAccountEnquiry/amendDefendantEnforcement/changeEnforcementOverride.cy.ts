@@ -1,5 +1,6 @@
 import { DOM_ELEMENTS as ENF_OVR } from '../../../shared/selectors/account-enquiry/account.enquiry.enforcement-override-add.locators';
 import { ACCOUNT_ENQUIRY_ENFORCEMENT_STATUS_ELEMENTS as ENF } from '../../../shared/selectors/account-enquiry/account.enquiry.enforcement.locators';
+import { UNSAVED_CHANGES_WARNING } from '../../../shared/constants/confirmation-messages';
 import { setupAccountEnquiryComponent } from '../accountEnquiry/setup/SetupComponent';
 import { IComponentProperties } from '../accountEnquiry/setup/setupComponent.interface';
 import { DOM_ELEMENTS as VERSION_CONTROL } from '../../../shared/selectors/account-enquiry/account.enquiry.version-control.locators';
@@ -230,10 +231,10 @@ function parentGuardianSetup() {
   return setupChangeEnforcementOverride(buildParentGuardianHeaderMock());
 }
 
-describe('Change Enforcement Override - Parent/Guardian', { tags: ['@JIRA-STORY:PO-1870'] }, () => {
+describe('Change Enforcement Override - Parent/Guardian', { tags: ['@JIRA-STORY:PO-1870', '@R1B'] }, () => {
   it(
     'AC1. Parent/Guardian: selecting Change enforcement override on the Enforcement tab navigates to the change screen',
-    { tags: ['@JIRA-EPIC:PO-1675', '@JIRA-TEST-KEY:PO-4446'] },
+    { tags: ['@JIRA-EPIC:PO-1675', '@JIRA-TEST-KEY:PO-4446', '@R1B'] },
     () => {
       const { accountId } = registerChangeEnforcementOverrideIntercepts(buildParentGuardianHeaderMock());
       setupAccountEnquiryComponent({ ...componentProperties, accountId });
@@ -249,7 +250,7 @@ describe('Change Enforcement Override - Parent/Guardian', { tags: ['@JIRA-STORY:
 
   it(
     'AC1a, AC1b. Parent/Guardian: should render the change enforcement override form with the individual account identifier',
-    { tags: ['@JIRA-EPIC:PO-1675', '@JIRA-TEST-KEY:PO-4447'] },
+    { tags: ['@JIRA-EPIC:PO-1675', '@JIRA-TEST-KEY:PO-4447', '@R1B'] },
     () => {
       mountChangeEnforcementOverrideForm('177A - Mr Robert THOMSON');
 
@@ -260,7 +261,7 @@ describe('Change Enforcement Override - Parent/Guardian', { tags: ['@JIRA-STORY:
 
   it(
     'AC1c, AC1ci, AC1d. Parent/Guardian: should display the override dropdown, results reference data, add override button and cancel link',
-    { tags: ['@JIRA-EPIC:PO-1675', '@JIRA-TEST-KEY:PO-4448'] },
+    { tags: ['@JIRA-EPIC:PO-1675', '@JIRA-TEST-KEY:PO-4448', '@R1B'] },
     () => {
       mountChangeEnforcementOverrideForm('177A - Mr Robert THOMSON');
 
@@ -289,7 +290,7 @@ describe('Change Enforcement Override - Parent/Guardian', { tags: ['@JIRA-STORY:
 
   it(
     'AC2, AC2a, AC2ai. Parent/Guardian: enforcer dropdown displays dynamically for overrides that require an enforcer',
-    { tags: ['@JIRA-EPIC:PO-1675', '@JIRA-TEST-KEY:PO-4449'] },
+    { tags: ['@JIRA-EPIC:PO-1675', '@JIRA-TEST-KEY:PO-4449', '@R1B'] },
     () => {
       mountChangeEnforcementOverrideForm('177A - Mr Robert THOMSON');
 
@@ -325,7 +326,7 @@ describe('Change Enforcement Override - Parent/Guardian', { tags: ['@JIRA-STORY:
 
   it(
     'AC3, AC3a, AC3ai. Parent/Guardian: LJA dropdown displays dynamically for overrides that require a Local Justice Area',
-    { tags: ['@JIRA-EPIC:PO-1675', '@JIRA-TEST-KEY:PO-4450'] },
+    { tags: ['@JIRA-EPIC:PO-1675', '@JIRA-TEST-KEY:PO-4450', '@R1B'] },
     () => {
       parentGuardianSetup();
 
@@ -347,7 +348,7 @@ describe('Change Enforcement Override - Parent/Guardian', { tags: ['@JIRA-STORY:
 
   it(
     'AC4a. Parent/Guardian: error when no enforcement override is selected',
-    { tags: ['@JIRA-EPIC:PO-1675', '@JIRA-TEST-KEY:PO-4451'] },
+    { tags: ['@JIRA-EPIC:PO-1675', '@JIRA-TEST-KEY:PO-4451', '@R1B'] },
     () => {
       mountChangeEnforcementOverrideForm('177A - Mr Robert THOMSON');
 
@@ -364,7 +365,7 @@ describe('Change Enforcement Override - Parent/Guardian', { tags: ['@JIRA-STORY:
 
   it(
     'AC4b. Parent/Guardian: error when no enforcer is selected for an override that requires one',
-    { tags: ['@JIRA-EPIC:PO-1675', '@JIRA-TEST-KEY:PO-4452'] },
+    { tags: ['@JIRA-EPIC:PO-1675', '@JIRA-TEST-KEY:PO-4452', '@R1B'] },
     () => {
       parentGuardianSetup();
 
@@ -389,7 +390,7 @@ describe('Change Enforcement Override - Parent/Guardian', { tags: ['@JIRA-STORY:
 
   it(
     'AC4c. Parent/Guardian: error when no Local Justice Area is selected for an override that requires one',
-    { tags: ['@JIRA-EPIC:PO-1675', '@JIRA-TEST-KEY:PO-4453'] },
+    { tags: ['@JIRA-EPIC:PO-1675', '@JIRA-TEST-KEY:PO-4453', '@R1B'] },
     () => {
       parentGuardianSetup();
 
@@ -412,7 +413,7 @@ describe('Change Enforcement Override - Parent/Guardian', { tags: ['@JIRA-STORY:
 
   it(
     'AC5. Parent/Guardian: valid submission returns to Enforcement tab with success banner and updated override panel',
-    { tags: ['@JIRA-EPIC:PO-1675', '@JIRA-TEST-KEY:PO-4454'] },
+    { tags: ['@JIRA-EPIC:PO-1675', '@JIRA-TEST-KEY:PO-4454', '@R1B'] },
     () => {
       const { accountId } = parentGuardianSetup();
       const updatedEnforcementMock = structuredClone(
@@ -478,7 +479,7 @@ describe('Change Enforcement Override - Parent/Guardian', { tags: ['@JIRA-STORY:
 
   it(
     'AC6a. Parent/Guardian: cancel without changes returns to the Enforcement tab without confirmation',
-    { tags: ['@JIRA-EPIC:PO-1675', '@JIRA-TEST-KEY:PO-4455'] },
+    { tags: ['@JIRA-EPIC:PO-1675', '@JIRA-TEST-KEY:PO-4455', '@R1B'] },
     () => {
       parentGuardianSetup();
 
@@ -500,7 +501,7 @@ describe('Change Enforcement Override - Parent/Guardian', { tags: ['@JIRA-STORY:
 
   it(
     'AC6b. Parent/Guardian: cancel after selecting a value shows confirmation before navigating away',
-    { tags: ['@JIRA-EPIC:PO-1675', '@JIRA-TEST-KEY:PO-4456'] },
+    { tags: ['@JIRA-EPIC:PO-1675', '@JIRA-TEST-KEY:PO-4456', '@R1B'] },
     () => {
       parentGuardianSetup();
 
@@ -513,7 +514,7 @@ describe('Change Enforcement Override - Parent/Guardian', { tags: ['@JIRA-STORY:
       cy.window().then((win) => {
         cy.stub(win, 'confirm')
           .callsFake((message: string) => {
-            expect(message.replace(/\s+/g, ' ')).to.match(/unsaved changes/i);
+            expect(message.replace(/\s+/g, ' ')).to.equal(UNSAVED_CHANGES_WARNING);
             return true;
           })
           .as('confirm');
@@ -529,10 +530,10 @@ describe('Change Enforcement Override - Parent/Guardian', { tags: ['@JIRA-STORY:
   );
 });
 
-describe('Change Enforcement Override - Company', { tags: ['@JIRA-STORY:PO-1871'] }, () => {
+describe('Change Enforcement Override - Company', { tags: ['@JIRA-STORY:PO-1871', '@R1B'] }, () => {
   it(
     'AC1. Company: selecting Change enforcement override on the company Enforcement tab navigates to the change screen',
-    { tags: ['@JIRA-EPIC:PO-1675', '@JIRA-TEST-KEY:PO-4457'] },
+    { tags: ['@JIRA-EPIC:PO-1675', '@JIRA-TEST-KEY:PO-4457', '@R1B'] },
     () => {
       const { accountId } = registerChangeEnforcementOverrideIntercepts(buildCompanyHeaderMock());
       setupAccountEnquiryComponent({ ...componentProperties, accountId });
@@ -548,7 +549,7 @@ describe('Change Enforcement Override - Company', { tags: ['@JIRA-STORY:PO-1871'
 
   it(
     'AC1a, AC1b. Company: should render the change enforcement override form with the company account identifier',
-    { tags: ['@JIRA-EPIC:PO-1675', '@JIRA-TEST-KEY:PO-4458'] },
+    { tags: ['@JIRA-EPIC:PO-1675', '@JIRA-TEST-KEY:PO-4458', '@R1B'] },
     () => {
       mountChangeEnforcementOverrideForm('177A - Test Org Ltd');
 
@@ -559,10 +560,10 @@ describe('Change Enforcement Override - Company', { tags: ['@JIRA-STORY:PO-1871'
   );
 });
 
-describe('Change Enforcement Override - Adult or youth only', { tags: ['@JIRA-STORY:PO-1869'] }, () => {
+describe('Change Enforcement Override - Adult or youth only', { tags: ['@JIRA-STORY:PO-1869', '@R1B'] }, () => {
   it(
     'AC1. Adult or youth only: selecting Change enforcement override on the Enforcement tab navigates to the change screen',
-    { tags: ['@JIRA-EPIC:PO-1675', '@JIRA-TEST-KEY:PO-4459'] },
+    { tags: ['@JIRA-EPIC:PO-1675', '@JIRA-TEST-KEY:PO-4459', '@R1B'] },
     () => {
       const { accountId } = registerChangeEnforcementOverrideIntercepts(buildAdultOrYouthHeaderMock());
       setupAccountEnquiryComponent({ ...componentProperties, accountId });
@@ -578,7 +579,7 @@ describe('Change Enforcement Override - Adult or youth only', { tags: ['@JIRA-ST
 
   it(
     'AC1a, AC1b. Adult or youth only: should render the change enforcement override form with the adult or youth only account identifier',
-    { tags: ['@JIRA-EPIC:PO-1675', '@JIRA-TEST-KEY:PO-4460'] },
+    { tags: ['@JIRA-EPIC:PO-1675', '@JIRA-TEST-KEY:PO-4460', '@R1B'] },
     () => {
       mountChangeEnforcementOverrideForm('177A - Mr Robert THOMSON');
 

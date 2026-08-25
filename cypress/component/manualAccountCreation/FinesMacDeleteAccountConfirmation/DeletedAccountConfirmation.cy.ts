@@ -23,7 +23,7 @@ import { GLOBAL_ERROR_STATE } from '@hmcts/opal-frontend-common/stores/global/co
 
 const MANUAL_ACCOUNT_CREATION_JIRA_LABEL = '@JIRA-LABEL:manual-account-creation';
 
-const buildTags = (...tags: string[]) => [...tags, MANUAL_ACCOUNT_CREATION_JIRA_LABEL];
+const buildTags = (...tags: string[]) => [...tags, '@R1A', MANUAL_ACCOUNT_CREATION_JIRA_LABEL];
 
 describe('FinesMacDeleteAccountConfirmation - Checker Delete account', () => {
   let finesMacState = structuredClone(FINES_AYG_CHECK_ACCOUNT_MOCK);
@@ -48,7 +48,13 @@ describe('FinesMacDeleteAccountConfirmation - Checker Delete account', () => {
         OpalFines,
         UtilsService,
         FinesMacPayloadService,
-        Router,
+        {
+          provide: Router,
+          useValue: {
+            navigate: cy.stub().as('routerNavigate'),
+            navigateByUrl: cy.stub().as('routerNavigateByUrl'),
+          },
+        },
         {
           provide: GlobalStore,
           useFactory: () => {
@@ -209,7 +215,7 @@ describe('FinesMacDeleteAccountConfirmation - Checker Delete account', () => {
 
       setupComponent(finesAccountPayload, finesAccountPayload, true);
 
-      cy.get(DOM_ELEMENTS.commentInput).clear().type("AaBbCc123..--''  ,,", { delay: 0 });
+      cy.get(DOM_ELEMENTS.commentInput).clear().type("AaBbCc123..--''  ,", { delay: 0 });
       cy.get(DOM_ELEMENTS.confirmDeleteButton).click();
 
       cy.wait('@patchDraftAccount').its('request.method').should('eq', 'PATCH');
@@ -229,7 +235,7 @@ describe('FinesMacDeleteAccountConfirmation - Checker Delete account', () => {
     () => {
       setupComponent(finesAccountPayload, finesAccountPayload, true);
 
-      cy.get(DOM_ELEMENTS.commentInput).clear().type("AaBbCc123..--''  ,,@@%%", { delay: 0 });
+      cy.get(DOM_ELEMENTS.commentInput).clear().type("AaBbCc123..--''  ,@@%%", { delay: 0 });
       cy.get(DOM_ELEMENTS.confirmDeleteButton).should('exist').click();
 
       cy.get(DOM_ELEMENTS.fieldError)
@@ -237,6 +243,27 @@ describe('FinesMacDeleteAccountConfirmation - Checker Delete account', () => {
         .contains(
           'Reason must only include letters a to z, numbers 0-9 and certain special characters (commas, full stops, hyphens, spaces and apostrophes)',
         );
+    },
+  );
+
+  it(
+    'returns to the same check account route when a checker cancels deletion',
+    {
+      tags: [
+        ...buildTags('@JIRA-DEFECT:PO-9113', '@JIRA-STORY:PO-9113'),
+        '@JIRA-EPIC:PO-2220',
+        '@JIRA-TEST-KEY:PO-9651',
+      ],
+    },
+    () => {
+      setupComponent(finesAccountPayload, finesAccountPayload, true, true);
+
+      cy.get(DOM_ELEMENTS.cancelLink).click();
+
+      cy.get('@routerNavigate').should((stub) => {
+        expect(stub).to.have.been.calledOnce;
+        expect(stub.getCall(0).args[0]).to.deep.equal(['review-account/42']);
+      });
     },
   );
 });

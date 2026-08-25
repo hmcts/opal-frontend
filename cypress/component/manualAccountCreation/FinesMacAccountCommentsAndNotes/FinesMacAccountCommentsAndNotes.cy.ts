@@ -18,12 +18,12 @@ const ADD_COMMENT_ALLOWED_CHARACTERS_ERROR =
   'Add comment must only include letters a to z, numbers 0-9 and certain special characters (such as hyphens, spaces, apostrophes and commas)';
 const ADD_ACCOUNT_NOTE_ALLOWED_CHARACTERS_ERROR =
   'Add account note must only include letters a to z, numbers 0-9 and certain special characters (such as hyphens, spaces, apostrophes and commas)';
-const VALID_COMMENTS_AND_NOTES_CHARACTERS = "AaBbCc123..--''  ,,££@@%%";
+const VALID_COMMENTS_AND_NOTES_CHARACTERS = "AaBbCc123..--''  ,££@@%%";
 const INVALID_COMMENTS_AND_NOTES_CHARACTERS = `${VALID_COMMENTS_AND_NOTES_CHARACTERS}©µ±ö€`;
 const VALID_COMMENT_WITH_COMMAS_AND_FULL_STOPS = "O'Neil, comment-1.";
 const VALID_NOTE_WITH_COMMAS_AND_FULL_STOPS = "Account, note-1. O'Neil ok";
 
-const buildTags = (...tags: string[]) => [...tags, MANUAL_ACCOUNT_CREATION_JIRA_LABEL];
+const buildTags = (...tags: string[]) => [...tags, '@R1A', MANUAL_ACCOUNT_CREATION_JIRA_LABEL];
 
 describe('FinesMacAccountCommentsAndNotesComponent', () => {
   const setupComponent = (formSubmit: any, defendantTypeMock: string = '', finesMacStateMock: IFinesMacState) => {

@@ -23,9 +23,9 @@
 ></opal-lib-govuk-error-summary>
 <form (submit)="handleAddAnOffenceSubmit($event)" [formGroup]="form">
   <fieldset class="govuk-fieldset">
-    <h2 class="govuk-label-wrapper">
-      <legend class="govuk-fieldset__legend govuk-fieldset__legend--m">Offence details</legend>
-    </h2>
+    <legend class="govuk-fieldset__legend govuk-fieldset__legend--m">
+      <h2 class="govuk-fieldset__heading">Offence details</h2>
+    </legend>
     <opal-lib-moj-date-picker
       labelText="Date of sentence"
       labelClasses="govuk-label--s"
@@ -44,20 +44,22 @@
       inputId="fm_offence_details_offence_cjs_code"
       inputName="fm_offence_details_offence_cjs_code"
       inputClasses="govuk-input--width-10"
-      [hintHtml]="true"
+      hintText="For example, HY35014."
       [errors]="formControlErrorMessages['fm_offence_details_offence_cjs_code']"
       [control]="form.get('fm_offence_details_offence_cjs_code')"
-    >
-      For example, HY35014. If you don't know the offence code, you can
+    ></opal-lib-govuk-text-input>
+    <div class="govuk-hint" id="fm_offence_details_offence_cjs_code-guidance">
+      If you don't know the offence code, you can
       <a
-        class="govuk-link govuk-task-list_link govuk-link--no-visited-state"
+        class="govuk-link govuk-link--no-visited-state"
         [href]="searchOffenceUrl"
         target="_blank"
         rel="noopener noreferrer"
       >
-        search the offence list
-      </a></opal-lib-govuk-text-input
-    >
+        <span class="govuk-visually-hidden">If you don't know the offence code, you can </span>
+        search the offence list (opens in a new tab)
+      </a>
+    </div>
     @if (offenceCode$ | async; as offenceCode) {
       <app-fines-mac-offence-code-hint
         [offenceCode]="offenceCode"
@@ -68,9 +70,7 @@
     }
   </fieldset>
   <hr class="govuk-section-break govuk-section-break--m govuk-section-break--visible" />
-  <h2 class="govuk-label-wrapper">
-    <legend class="govuk-fieldset__legend govuk-fieldset__legend--m">Impositions</legend>
-  </h2>
+  <h2 class="govuk-heading-m">Impositions</h2>
   @for (formArrayControl of formArrayControls; let rowIndex = $index; track rowIndex) {
     <fieldset class="govuk-fieldset govuk-!-margin-bottom-4">
       <legend class="govuk-fieldset__legend govuk-visually-hidden">Imposition {{ rowIndex + 1 }}</legend>
@@ -145,9 +145,9 @@
             <div class="govuk-grid-column-full">
               @if (minorCreditors[rowIndex]) {
                 <fieldset class="govuk-fieldset">
-                  <h3 class="govuk-label-wrapper">
-                    <legend class="govuk-fieldset__legend govuk-fieldset__legend--s">Minor creditor</legend>
-                  </h3>
+                  <legend class="govuk-fieldset__legend govuk-fieldset__legend--s">
+                    <h3 class="govuk-fieldset__heading">Minor creditor</h3>
+                  </legend>
                   <app-fines-mac-offence-details-minor-creditor-information
                     [minorCreditor]="minorCreditors[rowIndex]!"
                     [showActions]="true"

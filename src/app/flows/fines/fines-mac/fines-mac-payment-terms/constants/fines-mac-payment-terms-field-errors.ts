@@ -130,8 +130,8 @@ export const FINES_MAC_PAYMENT_TERMS_FIELD_ERRORS: IFinesMacPaymentTermsFieldErr
       message: `Reason must be 28 characters or fewer`,
       priority: 2,
     },
-    alphanumericWithHyphensSpacesApostrophesDotPattern: {
-      message: `Reason must only include letters a to z, numbers 0-9 and certain special characters (hyphens, spaces, apostrophes)`,
+    alphanumericWithHyphensSpacesApostrophesCommasDotPattern: {
+      message: `Reason must only include letters a to z, numbers 0-9 and certain special characters (commas, full stops, hyphens, spaces, apostrophes)`,
       priority: 3,
     },
   },
@@ -149,10 +149,6 @@ export const FINES_MAC_PAYMENT_TERMS_FIELD_ERRORS: IFinesMacPaymentTermsFieldErr
     invalidDate: {
       message: `Enter a valid date`,
       priority: 3,
-    },
-    invalidPastDate: {
-      message: `Date must be in the future`,
-      priority: 4,
     },
   },
   fm_payment_terms_prison_and_prison_number: {

@@ -13,7 +13,7 @@ export const LENGTH_CHECK = {
 };
 
 export const FORMAT_CHECK = {
-  bankAccountRefAlphabeticalTextPattern: 'Payment reference must only contain letters',
+  bankAccountRefAlphaNumericTextPattern: 'Payment reference must only contain letters and numbers',
   bankAccountNumberNumericalTextPattern: 'Account number must only contain numbers',
   bankSortCodeNumericalTextPattern: 'Sort code must only contain numbers',
   surnameRequired: `Enter last name`,
@@ -22,7 +22,7 @@ export const FORMAT_CHECK = {
   addressLine1SpecialCharactersPattern: 'Address line 1 must only contain letters or numbers',
   addressLine2SpecialCharactersPattern: 'Address line 2 must only contain letters or numbers',
   addressLine3SpecialCharactersPattern: 'Address line 3 must only contain letters or numbers',
-  companyNameAlphabeticalTextPattern: `Company name must only include letters a to z, numbers 0-9 and certain special characters (hyphens, spaces, apostrophes)`,
+  companyNameAlphabeticalTextPattern: `Company name must only include letters a to z, numbers 0-9 and certain special characters (such as hyphens, spaces, apostrophes and commas)`,
   surnameAlphabeticalTextPattern: `Last name must only contain letters`,
   forenamesAlphabeticalTextPattern: `First name(s) must only contain letters`,
 };

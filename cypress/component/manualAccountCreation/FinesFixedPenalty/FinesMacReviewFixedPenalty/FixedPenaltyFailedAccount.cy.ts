@@ -19,7 +19,7 @@ import { FIXED_PENALTY_FAILED_DRAFT_COMPANY_MOCK } from '../../FinesFixedPenalty
 
 const MANUAL_ACCOUNT_CREATION_JIRA_LABEL = '@JIRA-LABEL:manual-account-creation';
 
-const buildTags = (...tags: string[]) => [...tags, MANUAL_ACCOUNT_CREATION_JIRA_LABEL];
+const buildTags = (...tags: string[]) => [...tags, '@R1A', MANUAL_ACCOUNT_CREATION_JIRA_LABEL];
 
 describe('Fixed Penalty failed- Review Account Details', () => {
   beforeEach(() => {
@@ -94,7 +94,7 @@ describe('Fixed Penalty failed- Review Account Details', () => {
       cy.get(DOM_ELEMENTS.dateOfOffence).should('contain', '01 November 2025');
       cy.get(DOM_ELEMENTS.timeOfOffence).should('contain', '05:00');
       cy.get(DOM_ELEMENTS.placeOfOffence).should('contain', 'William Street');
-      cy.get(DOM_ELEMENTS.amountImposed).should('contain', '£2000.00');
+      cy.get(DOM_ELEMENTS.amountImposed).should('contain', '£2,000.00');
 
       // Ac4f - Account comments and notes
       cy.get(DOM_ELEMENTS.accountComment).should('contain', 'Add comment');

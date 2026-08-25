@@ -23,7 +23,7 @@ import { DateTime } from 'luxon';
 
 const MANUAL_ACCOUNT_CREATION_JIRA_LABEL = '@JIRA-LABEL:manual-account-creation';
 
-const buildTags = (...tags: string[]) => [...tags, MANUAL_ACCOUNT_CREATION_JIRA_LABEL];
+const buildTags = (...tags: string[]) => [...tags, '@R1A', MANUAL_ACCOUNT_CREATION_JIRA_LABEL];
 const getUtcTimestampForLocalDay = (daysOffset: number, minutesAfterMidnight: number = 30) =>
   DateTime.local().plus({ days: daysOffset }).startOf('day').plus({ minutes: minutesAfterMidnight }).toUTC().toISO()!;
 
@@ -233,8 +233,14 @@ describe('FinesDraftCheckAndValidateToReviewComponent', () => {
   );
 
   it(
-    '(AC.4b) should have pagination for over 25 accounts (FinesDraftCheckAndValidateToReviewComponent)',
-    { tags: [...buildTags('@JIRA-STORY:PO-593'), '@JIRA-EPIC:PO-2220', '@JIRA-TEST-KEY:PO-4723'] },
+    '(AC.4b) should announce, focus, and identify the current page when paginating over 25 accounts',
+    {
+      tags: [
+        ...buildTags('@JIRA-STORY:PO-593', '@JIRA-DEFECT:PO-9047'),
+        '@JIRA-EPIC:PO-2220',
+        '@JIRA-TEST-KEY:PO-4723',
+      ],
+    },
     () => {
       const toReviewMockData = structuredClone(OPAL_FINES_VALIDATE_OVER_25_DRAFT_ACCOUNTS_MOCK);
       interceptCAVGetRejectedAccounts(200, { count: 0, summaries: [] });
@@ -247,15 +253,19 @@ describe('FinesDraftCheckAndValidateToReviewComponent', () => {
       cy.get(DOM_ELEMENTS.navigationLinks).contains('To review').click();
 
       cy.get(DOM_ELEMENTS.tableCaption).contains('Showing 1 to 25 of 50 total results').should('exist');
-      cy.get(DOM_ELEMENTS.paginationPageNumber(1)).should('exist');
-      cy.get(DOM_ELEMENTS.paginationPageNumber(2)).should('exist');
+      cy.get(DOM_ELEMENTS.paginationPageLink(1)).should('have.attr', 'aria-current', 'page');
+      cy.get(DOM_ELEMENTS.paginationPageLink(2)).should('not.have.attr', 'aria-current');
       cy.get(DOM_ELEMENTS.paginationLinksNext).contains('Next').should('exist');
       cy.get(DOM_ELEMENTS.defendant).eq(24).contains('Robert Brown').should('exist');
 
-      cy.get(DOM_ELEMENTS.paginationLinksNext).contains('Next').click({ force: true });
+      cy.get(DOM_ELEMENTS.paginationPageLink(2)).click();
       cy.get(DOM_ELEMENTS.tableCaption).contains('Showing 26 to 50 of 50 total results').should('exist');
 
       cy.get(DOM_ELEMENTS.defendant).eq(24).contains('Emma Gonzalez').should('exist');
+      cy.get(DOM_ELEMENTS.defendant).first().should('be.focused');
+      cy.get(DOM_ELEMENTS.paginationAnnouncement).should('have.text', 'Review accounts, page 2 of 2');
+      cy.get(DOM_ELEMENTS.paginationPageLink(1)).should('not.have.attr', 'aria-current');
+      cy.get(DOM_ELEMENTS.paginationPageLink(2)).should('have.attr', 'aria-current', 'page');
       cy.get(DOM_ELEMENTS.paginationLinksPrevious).contains('Previous').should('exist');
 
       cy.get(DOM_ELEMENTS.defendant)

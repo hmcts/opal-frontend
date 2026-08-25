@@ -45,7 +45,7 @@ describe('FinesMacAddOffenceComponent', () => {
       (req) => {
         const requestedCjsCode = req.query['q'];
         const matchedOffences = OPAL_FINES_OFFENCES_REF_DATA_MOCK.refData.filter(
-          (offence) => offence.get_cjs_code === requestedCjsCode,
+          (offence) => offence.cjs_code === requestedCjsCode,
         );
         req.reply({
           count: matchedOffences.length,
@@ -125,6 +125,7 @@ describe('FinesMacAddOffenceComponent', () => {
         '@JIRA-LABEL:manual-account-creation',
         '@JIRA-EPIC:PO-2219',
         '@JIRA-TEST-KEY:PO-4991',
+        '@R1A',
       ],
     },
     () => {
@@ -177,6 +178,7 @@ describe('FinesMacAddOffenceComponent', () => {
         '@JIRA-EPIC:PO-2219',
         '@JIRA-NFR:PO-2329',
         '@JIRA-TEST-KEY:PO-4992',
+        '@R1A',
       ],
     },
     () => {
@@ -230,6 +232,7 @@ describe('FinesMacAddOffenceComponent', () => {
         '@JIRA-EPIC:PO-2219',
         '@JIRA-NFR:PO-2329',
         '@JIRA-TEST-KEY:PO-4993',
+        '@R1A',
       ],
     },
     () => {
@@ -259,9 +262,9 @@ describe('FinesMacAddOffenceComponent', () => {
       cy.wait('@getExactMatchMultiResultOffence').then(({ response }) => {
         expect(response?.body.count).to.be.greaterThan(1);
         expect(response?.body.refData).to.have.length.greaterThan(1);
-        expect(
-          response?.body.refData.some((offence: { get_cjs_code: string }) => offence.get_cjs_code === 'CD71039'),
-        ).to.equal(true);
+        expect(response?.body.refData.some((offence: { cjs_code: string }) => offence.cjs_code === 'CD71039')).to.equal(
+          true,
+        );
       });
 
       cy.get(DOM_ELEMENTS.successPanel).should('contain', 'Offence found');
@@ -293,6 +296,7 @@ describe('FinesMacAddOffenceComponent', () => {
         '@JIRA-EPIC:PO-2219',
         '@JIRA-NFR:PO-2329',
         '@JIRA-TEST-KEY:PO-4994',
+        '@R1A',
       ],
     },
     () => {
@@ -318,7 +322,7 @@ describe('FinesMacAddOffenceComponent', () => {
             refData: OPAL_FINES_OFFENCES_REF_DATA_DUPLICATE_CODE_MOCK.refData.map((offence, index) => ({
               ...offence,
               offence_id: offence.offence_id + index,
-              get_cjs_code: `CD71039${String.fromCharCode(65 + index)}`,
+              cjs_code: `CD71039${String.fromCharCode(65 + index)}`,
             })),
           },
         },
@@ -330,7 +334,7 @@ describe('FinesMacAddOffenceComponent', () => {
         expect(response?.body.count).to.be.greaterThan(1);
         expect(response?.body.refData).to.have.length.greaterThan(1);
         expect(
-          response?.body.refData.some((offence: { get_cjs_code: string }) => offence.get_cjs_code === 'CD71039D'),
+          response?.body.refData.some((offence: { cjs_code: string }) => offence.cjs_code === 'CD71039D'),
         ).to.equal(false);
       });
 
@@ -353,6 +357,7 @@ describe('FinesMacAddOffenceComponent', () => {
         '@JIRA-EPIC:PO-545',
         '@JIRA-LABEL:manual-account-creation',
         '@JIRA-TEST-KEY:PO-4995',
+        '@R1A',
       ],
     },
     () => {
@@ -372,6 +377,7 @@ describe('FinesMacAddOffenceComponent', () => {
         '@JIRA-EPIC:PO-545',
         '@JIRA-LABEL:manual-account-creation',
         '@JIRA-TEST-KEY:PO-4996',
+        '@R1A',
       ],
     },
     () => {
@@ -394,11 +400,9 @@ describe('FinesMacAddOffenceComponent', () => {
       cy.get(DOM_ELEMENTS.dateOfSentenceLabel).should('contain', 'Date of sentence');
       cy.get(DOM_ELEMENTS.dateHint).should('contain', 'For example, 31/01/2023');
       cy.get(DOM_ELEMENTS.offenceCodeLabel).should('contain', 'Offence code');
-      cy.get(DOM_ELEMENTS.offenceCodeHint).should(
-        'contain',
-        "For example, HY35014. If you don't know the offence code, you can",
-      );
-      cy.get(DOM_ELEMENTS.offenceLink).should('contain', ' search the offence list');
+      cy.get(DOM_ELEMENTS.offenceCodeHint).should('contain', 'For example, HY35014.');
+      cy.get(DOM_ELEMENTS.offenceCodeGuidance).should('contain', "If you don't know the offence code, you can");
+      cy.get(DOM_ELEMENTS.offenceLink).should('contain', 'search the offence list');
       cy.get(imposition_1.resultCodeLabel).should('contain', 'Result code');
       cy.get(imposition_1.amountImposedLabel).should('contain', 'Amount imposed');
       cy.get(imposition_1.amountPaidLabel).should('contain', 'Amount paid');
@@ -417,6 +421,7 @@ describe('FinesMacAddOffenceComponent', () => {
         '@JIRA-EPIC:PO-545',
         '@JIRA-LABEL:manual-account-creation',
         '@JIRA-TEST-KEY:PO-4997',
+        '@R1A',
       ],
     },
     () => {
@@ -442,6 +447,7 @@ describe('FinesMacAddOffenceComponent', () => {
         '@JIRA-EPIC:PO-545',
         '@JIRA-LABEL:manual-account-creation',
         '@JIRA-TEST-KEY:PO-4998',
+        '@R1A',
       ],
     },
     () => {
@@ -468,6 +474,7 @@ describe('FinesMacAddOffenceComponent', () => {
         '@JIRA-LABEL:manual-account-creation',
         '@JIRA-NFR:PO-2325',
         '@JIRA-TEST-KEY:PO-6346',
+        '@R1A',
       ],
     },
     () => {
@@ -487,58 +494,66 @@ describe('FinesMacAddOffenceComponent', () => {
     },
   );
 
-  it('Verify major creditor options for FCOMP', { tags: ['@JIRA-STORY:PO-2127', '@JIRA-EPIC:PO-2219'] }, () => {
-    setupComponent(null);
+  it(
+    'Verify major creditor options for FCOMP',
+    { tags: ['@JIRA-STORY:PO-2127', '@JIRA-EPIC:PO-2219', '@R1A', '@JIRA-TEST-KEY:PO-9654'] },
+    () => {
+      setupComponent(null);
 
-    const imposition_1 = impositionSelectors(0);
-    const expectedOptions = [
-      'Abellio Greater Anglia (AGAL)',
-      'Aberdeen JP Court (ABJP)',
-      'Aldi Stores Ltd (ALDI)',
-      'Arriva Rail North (ARVA)',
-    ];
+      const imposition_1 = impositionSelectors(0);
+      const expectedOptions = [
+        'Abellio Greater Anglia (AGAL)',
+        'Aberdeen JP Court (ABJP)',
+        'Aldi Stores Ltd (ALDI)',
+        'Arriva Rail North (ARVA)',
+      ];
 
-    cy.get(imposition_1.resultCodeInput).click();
-    cy.get(imposition_1.resultCodeAutoComplete).find('li').should('have.length.greaterThan', 0);
-    cy.get(imposition_1.resultCodeInput).clear().type(`FCOMP`, { delay: 0, force: true });
-    cy.get(imposition_1.resultCodeAutoCompleteValues).click();
-    cy.get(imposition_1.majorCreditor).should('exist');
-    cy.get(imposition_1.majorCreditorLabel).should('contain', 'Major creditor');
-    cy.get(imposition_1.majorCreditor).should('exist');
-    cy.get(imposition_1.majorCreditor).click();
-    cy.get(imposition_1.majorCreditorDropdown).should('exist');
-    cy.get(imposition_1.majorCreditorDropdown).click();
-    cy.get('li[id^="fm_offence_details_major_creditor_id_0-autocomplete__option--"]')
-      .should('have.length', expectedOptions.length)
-      .then((items) => {
-        const actual = [...items].map((i) => i.textContent?.trim());
-        expect(actual).to.deep.equal(expectedOptions);
-      });
-  });
+      cy.get(imposition_1.resultCodeInput).click();
+      cy.get(imposition_1.resultCodeAutoComplete).find('li').should('have.length.greaterThan', 0);
+      cy.get(imposition_1.resultCodeInput).clear().type(`FCOMP`, { delay: 0, force: true });
+      cy.get(imposition_1.resultCodeAutoCompleteValues).click();
+      cy.get(imposition_1.majorCreditor).should('exist');
+      cy.get(imposition_1.majorCreditorLabel).should('contain', 'Major creditor');
+      cy.get(imposition_1.majorCreditor).should('exist');
+      cy.get(imposition_1.majorCreditor).click();
+      cy.get(imposition_1.majorCreditorDropdown).should('exist');
+      cy.get(imposition_1.majorCreditorDropdown).click();
+      cy.get('li[id^="fm_offence_details_major_creditor_id_0-autocomplete__option--"]')
+        .should('have.length', expectedOptions.length)
+        .then((items) => {
+          const actual = [...items].map((i) => i.textContent?.trim());
+          expect(actual).to.deep.equal(expectedOptions);
+        });
+    },
+  );
 
-  it('Verify major creditor options for FCOST', { tags: ['@JIRA-STORY:PO-2127', '@JIRA-EPIC:PO-2219'] }, () => {
-    setupComponent(null);
+  it(
+    'Verify major creditor options for FCOST',
+    { tags: ['@JIRA-STORY:PO-2127', '@JIRA-EPIC:PO-2219', '@R1A', '@JIRA-TEST-KEY:PO-9655'] },
+    () => {
+      setupComponent(null);
 
-    const imposition_1 = impositionSelectors(0);
-    const expectedOptions = ['Aberdeen JP Court (ABJP)', 'Aldi Stores Ltd (ALDI)', 'Arriva Rail North (ARVA)'];
+      const imposition_1 = impositionSelectors(0);
+      const expectedOptions = ['Aberdeen JP Court (ABJP)', 'Aldi Stores Ltd (ALDI)', 'Arriva Rail North (ARVA)'];
 
-    cy.get(imposition_1.resultCodeInput).click();
-    cy.get(imposition_1.resultCodeAutoComplete).find('li').should('have.length.greaterThan', 0);
-    cy.get(imposition_1.resultCodeInput).clear().type(`FCOST`, { delay: 0, force: true });
-    cy.get(imposition_1.resultCodeAutoCompleteValues).click();
-    cy.get(imposition_1.majorCreditor).should('exist');
-    cy.get(imposition_1.majorCreditorLabel).should('contain', 'Major creditor');
-    cy.get(imposition_1.majorCreditor).should('exist');
-    cy.get(imposition_1.majorCreditor).click();
-    cy.get(imposition_1.majorCreditorDropdown).should('exist');
-    cy.get(imposition_1.majorCreditorDropdown).click();
-    cy.get('li[id^="fm_offence_details_major_creditor_id_0-autocomplete__option--"]')
-      .should('have.length', expectedOptions.length)
-      .then((items) => {
-        const actual = [...items].map((i) => i.textContent?.trim());
-        expect(actual).to.deep.equal(expectedOptions);
-      });
-  });
+      cy.get(imposition_1.resultCodeInput).click();
+      cy.get(imposition_1.resultCodeAutoComplete).find('li').should('have.length.greaterThan', 0);
+      cy.get(imposition_1.resultCodeInput).clear().type(`FCOST`, { delay: 0, force: true });
+      cy.get(imposition_1.resultCodeAutoCompleteValues).click();
+      cy.get(imposition_1.majorCreditor).should('exist');
+      cy.get(imposition_1.majorCreditorLabel).should('contain', 'Major creditor');
+      cy.get(imposition_1.majorCreditor).should('exist');
+      cy.get(imposition_1.majorCreditor).click();
+      cy.get(imposition_1.majorCreditorDropdown).should('exist');
+      cy.get(imposition_1.majorCreditorDropdown).click();
+      cy.get('li[id^="fm_offence_details_major_creditor_id_0-autocomplete__option--"]')
+        .should('have.length', expectedOptions.length)
+        .then((items) => {
+          const actual = [...items].map((i) => i.textContent?.trim());
+          expect(actual).to.deep.equal(expectedOptions);
+        });
+    },
+  );
 
   it(
     '(AC.4b,AC.4bi,AC,4c) should show minor,major creditor fields for (FCOMP,FCOST) Only',
@@ -550,6 +565,7 @@ describe('FinesMacAddOffenceComponent', () => {
         '@JIRA-EPIC:PO-545',
         '@JIRA-LABEL:manual-account-creation',
         '@JIRA-TEST-KEY:PO-5000',
+        '@R1A',
       ],
     },
     () => {
@@ -558,11 +574,13 @@ describe('FinesMacAddOffenceComponent', () => {
       const imposition_1 = impositionSelectors(0);
 
       impositionResultCodelist.forEach((resultCode) => {
+        const resultCodeValue = resultCode.match(/\(([^)]+)\)$/)?.[1] ?? resultCode;
+
         if (resultCode === 'Compensation (FCOMP)' || resultCode === 'Costs (FCOST)') {
           cy.get(imposition_1.resultCodeInput).click();
           cy.get(imposition_1.resultCodeAutoComplete).find('li').should('have.length.greaterThan', 0);
-          cy.get(imposition_1.resultCodeInput).clear().type(`${resultCode}`, { delay: 0, force: true });
-          cy.get(imposition_1.resultCodeLabel).click();
+          cy.get(imposition_1.resultCodeInput).clear().type(resultCodeValue, { delay: 0, force: true });
+          cy.get(imposition_1.resultCodeAutoComplete).contains('li', resultCode).click();
           cy.get(imposition_1.majorCreditor).should('exist');
           cy.get(imposition_1.minorCreditor).should('exist');
           cy.get(imposition_1.majorCreditorLabel).should('contain', 'Major creditor');
@@ -570,8 +588,8 @@ describe('FinesMacAddOffenceComponent', () => {
         } else {
           cy.get(imposition_1.resultCodeInput).click();
           cy.get(imposition_1.resultCodeAutoComplete).find('li').should('have.length.greaterThan', 0);
-          cy.get(imposition_1.resultCodeInput).clear().type(`${resultCode}`, { delay: 0, force: true });
-          cy.get(imposition_1.resultCodeLabel).click();
+          cy.get(imposition_1.resultCodeInput).clear().type(resultCodeValue, { delay: 0, force: true });
+          cy.get(imposition_1.resultCodeAutoComplete).contains('li', resultCode).click();
 
           cy.get(imposition_1.majorCreditor).should('not.exist');
           cy.get(imposition_1.minorCreditor).should('not.exist');
@@ -592,6 +610,7 @@ describe('FinesMacAddOffenceComponent', () => {
         '@JIRA-EPIC:PO-545',
         '@JIRA-LABEL:manual-account-creation',
         '@JIRA-TEST-KEY:PO-5001',
+        '@R1A',
       ],
     },
     () => {
@@ -623,6 +642,7 @@ describe('FinesMacAddOffenceComponent', () => {
         '@JIRA-EPIC:PO-545',
         '@JIRA-LABEL:manual-account-creation',
         '@JIRA-TEST-KEY:PO-5002',
+        '@R1A',
       ],
     },
     () => {
@@ -642,6 +662,7 @@ describe('FinesMacAddOffenceComponent', () => {
         '@JIRA-EPIC:PO-545',
         '@JIRA-LABEL:manual-account-creation',
         '@JIRA-TEST-KEY:PO-5003',
+        '@R1A',
       ],
     },
     () => {
@@ -678,6 +699,7 @@ describe('FinesMacAddOffenceComponent', () => {
         '@JIRA-EPIC:PO-545',
         '@JIRA-LABEL:manual-account-creation',
         '@JIRA-TEST-KEY:PO-5004',
+        '@R1A',
       ],
     },
     () => {
@@ -711,6 +733,7 @@ describe('FinesMacAddOffenceComponent', () => {
         '@JIRA-EPIC:PO-545',
         '@JIRA-LABEL:manual-account-creation',
         '@JIRA-TEST-KEY:PO-5005',
+        '@R1A',
       ],
     },
     () => {
@@ -744,6 +767,7 @@ describe('FinesMacAddOffenceComponent', () => {
         '@JIRA-EPIC:PO-545',
         '@JIRA-LABEL:manual-account-creation',
         '@JIRA-TEST-KEY:PO-5006',
+        '@R1A',
       ],
     },
     () => {
@@ -766,6 +790,7 @@ describe('FinesMacAddOffenceComponent', () => {
         '@JIRA-EPIC:PO-545',
         '@JIRA-LABEL:manual-account-creation',
         '@JIRA-TEST-KEY:PO-5007',
+        '@R1A',
       ],
     },
     () => {
@@ -789,6 +814,7 @@ describe('FinesMacAddOffenceComponent', () => {
         '@JIRA-EPIC:PO-545',
         '@JIRA-LABEL:manual-account-creation',
         '@JIRA-TEST-KEY:PO-5008',
+        '@R1A',
       ],
     },
     () => {
@@ -817,6 +843,7 @@ describe('FinesMacAddOffenceComponent', () => {
         '@JIRA-EPIC:PO-545',
         '@JIRA-LABEL:manual-account-creation',
         '@JIRA-TEST-KEY:PO-5009',
+        '@R1A',
       ],
     },
     () => {
@@ -851,6 +878,7 @@ describe('FinesMacAddOffenceComponent', () => {
         '@JIRA-EPIC:PO-545',
         '@JIRA-LABEL:manual-account-creation',
         '@JIRA-TEST-KEY:PO-5010',
+        '@R1A',
       ],
     },
     () => {
@@ -885,6 +913,7 @@ describe('FinesMacAddOffenceComponent', () => {
         '@JIRA-EPIC:PO-545',
         '@JIRA-LABEL:manual-account-creation',
         '@JIRA-TEST-KEY:PO-5011',
+        '@R1A',
       ],
     },
     () => {
@@ -910,6 +939,7 @@ describe('FinesMacAddOffenceComponent', () => {
         '@JIRA-EPIC:PO-545',
         '@JIRA-LABEL:manual-account-creation',
         '@JIRA-TEST-KEY:PO-5012',
+        '@R1A',
       ],
     },
     () => {
@@ -935,6 +965,7 @@ describe('FinesMacAddOffenceComponent', () => {
         '@JIRA-EPIC:PO-545',
         '@JIRA-LABEL:manual-account-creation',
         '@JIRA-TEST-KEY:PO-5013',
+        '@R1A',
       ],
     },
     () => {
@@ -962,6 +993,7 @@ describe('FinesMacAddOffenceComponent', () => {
         '@JIRA-EPIC:PO-545',
         '@JIRA-LABEL:manual-account-creation',
         '@JIRA-TEST-KEY:PO-5014',
+        '@R1A',
       ],
     },
     () => {
@@ -1011,6 +1043,7 @@ describe('FinesMacAddOffenceComponent', () => {
         '@JIRA-LABEL:manual-account-creation',
         '@JIRA-EPIC:PO-2219',
         '@JIRA-TEST-KEY:PO-5015',
+        '@R1A',
       ],
     },
     () => {
@@ -1043,6 +1076,7 @@ describe('FinesMacAddOffenceComponent', () => {
         '@JIRA-LABEL:manual-account-creation',
         '@JIRA-EPIC:PO-2219',
         '@JIRA-TEST-KEY:PO-5016',
+        '@R1A',
       ],
     },
     () => {
@@ -1075,6 +1109,7 @@ describe('FinesMacAddOffenceComponent', () => {
         '@JIRA-LABEL:manual-account-creation',
         '@JIRA-EPIC:PO-2219',
         '@JIRA-TEST-KEY:PO-5017',
+        '@R1A',
       ],
     },
     () => {
@@ -1107,6 +1142,7 @@ describe('FinesMacAddOffenceComponent', () => {
         '@JIRA-LABEL:manual-account-creation',
         '@JIRA-EPIC:PO-2807',
         '@JIRA-TEST-KEY:PO-5018',
+        '@R1A',
       ],
     },
     () => {
@@ -1128,8 +1164,7 @@ describe('FinesMacAddOffenceComponent', () => {
 
       cy.log('assert', 'Asserting each imposition is wrapped in its own fieldset');
 
-      cy.contains(DOM_ELEMENTS.legend, /^Impositions$/)
-        .closest('h2')
+      cy.contains('h2', /^Impositions$/)
         .nextUntil(DOM_ELEMENTS.addImpositionButton, DOM_ELEMENTS.fieldset) // only fieldsets
         .then(($fieldsets) => {
           const fieldsetCount = $fieldsets.length;
@@ -1152,6 +1187,7 @@ describe('FinesMacAddOffenceComponent', () => {
         '@JIRA-STORY:PO-3550',
         '@JIRA-LABEL:manual-account-creation',
         '@JIRA-TEST-KEY:PO-5019',
+        '@R1A',
       ],
     },
     () => {
@@ -1180,6 +1216,7 @@ describe('FinesMacAddOffenceComponent', () => {
         '@JIRA-STORY:PO-3550',
         '@JIRA-LABEL:manual-account-creation',
         '@JIRA-TEST-KEY:PO-5020',
+        '@R1A',
       ],
     },
     () => {
@@ -1207,6 +1244,7 @@ describe('FinesMacAddOffenceComponent', () => {
         '@JIRA-STORY:PO-8046',
         '@JIRA-LABEL:manual-account-creation',
         '@JIRA-TEST-KEY:PO-8350',
+        '@R1A',
       ],
     },
     () => {
@@ -1224,6 +1262,129 @@ describe('FinesMacAddOffenceComponent', () => {
       cy.get(DOM_ELEMENTS.submitButton).first().click();
 
       cy.get(DOM_ELEMENTS.errorSummary).should('contain', IMPOSITION_ERROR_MESSAGES.invalidNegativeValue);
+    },
+  );
+
+  type AmountCase = {
+    imposed: number;
+
+    paid: number;
+  };
+
+  const buildImpositions = (cases: AmountCase[]) =>
+    cases.map((caseItem, index) => ({
+      fm_offence_details_imposition_id: index + 1,
+
+      fm_offence_details_result_id: 'FVS',
+
+      fm_offence_details_amount_imposed: caseItem.imposed,
+
+      fm_offence_details_amount_paid: caseItem.paid,
+
+      fm_offence_details_balance_remaining: Number((caseItem.imposed - caseItem.paid).toFixed(2)),
+
+      fm_offence_details_needs_creditor: false,
+
+      fm_offence_details_creditor: '',
+
+      fm_offence_details_major_creditor_id: 3856,
+    }));
+
+  const runAmountTest = (cases: AmountCase[]) => {
+    setupComponent(null);
+
+    const impositions = buildImpositions(cases);
+
+    finesMacState.offenceDetails[currentoffenceDetails].formData.fm_offence_details_date_of_sentence = '01/01/2021';
+
+    finesMacState.offenceDetails[currentoffenceDetails].formData.fm_offence_details_offence_cjs_code = 'AK123456';
+
+    finesMacState.offenceDetails[currentoffenceDetails].formData.fm_offence_details_offence_id = 52;
+
+    finesMacState.offenceDetails[currentoffenceDetails].formData.fm_offence_details_impositions =
+      structuredClone(impositions);
+
+    cy.get(DOM_ELEMENTS.submitButton).first().click();
+  };
+
+  it(
+    'Should show error message for invalid amount when £100.01 paid exceeds £100 imposed',
+    {
+      tags: [
+        '@JIRA-EPIC:PO-2219',
+        '@JIRA-STORY:PO-9140',
+        '@JIRA-DEFECT:PO-9140',
+        '@JIRA-LABEL:manual-account-creation',
+        '@R1A',
+        '@JIRA-TEST-KEY:PO-9977',
+      ],
+    },
+    () => {
+      runAmountTest([{ imposed: 100, paid: 100.01 }]);
+      cy.get(DOM_ELEMENTS.errorSummary).should(
+        'contain',
+        IMPOSITION_ERROR_MESSAGES.invalidAmountPaidGreaterThanImposed,
+      );
+    },
+  );
+  it(
+    'Should allow form submission with amount paid being equal to amount imposed',
+    {
+      tags: [
+        '@JIRA-EPIC:PO-2219',
+        '@JIRA-STORY:PO-9140',
+        '@JIRA-DEFECT:PO-9140',
+        '@JIRA-LABEL:manual-account-creation',
+        '@R1A',
+        '@JIRA-TEST-KEY:PO-9978',
+      ],
+    },
+    () => {
+      runAmountTest([{ imposed: 100.01, paid: 100.01 }]);
+
+      cy.get(DOM_ELEMENTS.errorSummary).should('not.exist');
+    },
+  );
+  it(
+    'Should allow form submission with amount paid being under the amount imposed',
+    {
+      tags: [
+        '@JIRA-EPIC:PO-2219',
+        '@JIRA-STORY:PO-9140',
+        '@JIRA-DEFECT:PO-9140',
+        '@JIRA-LABEL:manual-account-creation',
+        '@R1A',
+        '@JIRA-TEST-KEY:PO-9979',
+      ],
+    },
+    () => {
+      runAmountTest([{ imposed: 100.0, paid: 99.99 }]);
+
+      cy.get(DOM_ELEMENTS.errorSummary).should('not.exist');
+    },
+  );
+  it(
+    'Should show error when amount paid exceeds amount imposed on a subsequent imposition',
+    {
+      tags: [
+        '@JIRA-EPIC:PO-2219',
+        '@JIRA-STORY:PO-9140',
+        '@JIRA-DEFECT:PO-9140',
+        '@JIRA-LABEL:manual-account-creation',
+        '@R1A',
+        '@JIRA-TEST-KEY:PO-9980',
+      ],
+    },
+    () => {
+      runAmountTest([
+        { imposed: 100, paid: 50 },
+        { imposed: 200, paid: 200.01 },
+      ]);
+
+      cy.get(DOM_ELEMENTS.errorSummary).should(
+        'contain',
+        IMPOSITION_ERROR_MESSAGES.invalidAmountPaidGreaterThanImposed,
+      );
     },
   );
 });

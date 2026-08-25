@@ -25,7 +25,7 @@ import { GLOBAL_ERROR_STATE } from '@hmcts/opal-frontend-common/stores/global/co
 
 const MANUAL_ACCOUNT_CREATION_JIRA_LABEL = '@JIRA-LABEL:manual-account-creation';
 
-const buildTags = (...tags: string[]) => [...tags, MANUAL_ACCOUNT_CREATION_JIRA_LABEL];
+const buildTags = (...tags: string[]) => [...tags, '@R1A', MANUAL_ACCOUNT_CREATION_JIRA_LABEL];
 
 describe('ReviewAccountRejectedApproveComponent', () => {
   let finesMacState = structuredClone(FINES_AYG_CHECK_ACCOUNT_MOCK);
@@ -587,8 +587,36 @@ describe('ReviewAccountRejectedApproveComponent', () => {
       cy.get(DOM_ELEMENTS.heading).contains('Mr John DOE').should('exist');
       cy.get('p').should(
         'contain',
-        'Reason for rejection must only include letters a to z, numbers 0-9 and certain special characters (hyphens, spaces, apostrophes)',
+        'Reason for rejection must only include letters a to z, numbers 0-9 and certain special characters (commas, full stops, hyphens, spaces, apostrophes)',
       );
+    },
+  );
+
+  it(
+    'AC.8d user enters a comma in rejection reason and it should be accepted',
+    { tags: [...buildTags('@JIRA-STORY:PO-594'), '@JIRA-EPIC:PO-2220', '@JIRA-TEST-KEY:PO-5180'] },
+    () => {
+      cy.intercept('PATCH', '**/opal-fines-service/draft-accounts/**', { statusCode: 200 }).as('patchDraftAccount');
+      let payload = structuredClone(finesAccountPayload);
+      payload.draft_account_id = 342;
+      setupComponent(finesAccountPayload, payload, false, true);
+
+      cy.get(DOM_ELEMENTS.rejectRadioButton).should('exist').click();
+      cy.get(DOM_ELEMENTS.rejectionText).type('I have rejected this account, because the surname is incorrect');
+      cy.get(DOM_ELEMENTS.continue).click();
+
+      cy.wait('@patchDraftAccount').then(({ request }) => {
+        expect(request.body).to.exist;
+        expect(request.url).to.include('/opal-fines-service/draft-accounts/342');
+        expect(request.method).to.equal('PATCH');
+
+        expect(request.body).to.have.property('account_status', 'Rejected');
+        expect(request.body).to.have.property(
+          'reason_text',
+          'I have rejected this account, because the surname is incorrect',
+        );
+        expect(request.body).not.to.have.property('timeline_data');
+      });
     },
   );
 

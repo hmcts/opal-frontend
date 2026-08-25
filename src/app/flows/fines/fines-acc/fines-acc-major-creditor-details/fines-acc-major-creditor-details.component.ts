@@ -19,7 +19,6 @@ import { CustomAccountInformationItemComponent } from '@hmcts/opal-frontend-comm
 import { CustomAccountInformationItemLabelComponent } from '@hmcts/opal-frontend-common/components/custom/custom-account-information/custom-account-information-item/custom-account-information-item-label';
 import { CustomAccountInformationItemValueComponent } from '@hmcts/opal-frontend-common/components/custom/custom-account-information/custom-account-information-item/custom-account-information-item-value';
 // Pipes & Directives
-import { MonetaryPipe } from '@hmcts/opal-frontend-common/pipes/monetary';
 // Constants
 import { FINES_PERMISSIONS } from '@app/constants/fines-permissions.constant';
 import { FINES_ACC_SUMMARY_TABS_CONTENT_STYLES } from '../constants/fines-acc-summary-tabs-content-styles.constant';
@@ -45,6 +44,9 @@ import { IOpalFinesAccountMajorCreditorAtAGlance } from '../../services/opal-fin
 import { FinesAccMajorCreditorDetailsAtAGlanceTabComponent } from './fines-acc-major-creditor-details-at-a-glance-tab/fines-acc-major-creditor-details-at-a-glance-tab.component';
 import { AsyncPipe } from '@angular/common';
 import { FINES_ACC_MAJOR_CREDITOR_ACCOUNT_TYPES } from './constants/fines-acc-major-creditor-account-types.constant';
+import { CustomAccessibleMonetaryComponent } from '@hmcts/opal-frontend-common/components/custom/custom-accessible-monetary';
+import { FinesAccMajorCreditorDetailsHistoryAndNotesTabComponent } from './fines-acc-major-creditor-details-history-and-notes-tab/fines-acc-major-creditor-details-history-and-notes-tab.component';
+import { IOpalFinesAccountMajorCreditorDetailsHistoryAndNotesTabRefData } from '../../services/opal-fines-service/interfaces/opal-fines-account-major-creditor-details-history-and-notes-tab-ref-data.interface';
 
 @Component({
   selector: 'app-fines-acc-major-creditor-details',
@@ -59,10 +61,11 @@ import { FINES_ACC_MAJOR_CREDITOR_ACCOUNT_TYPES } from './constants/fines-acc-ma
     CustomAccountInformationItemComponent,
     CustomAccountInformationItemLabelComponent,
     CustomAccountInformationItemValueComponent,
-    MonetaryPipe,
     AsyncPipe,
     FinesAccSummaryHeaderComponent,
     FinesAccMajorCreditorDetailsAtAGlanceTabComponent,
+    CustomAccessibleMonetaryComponent,
+    FinesAccMajorCreditorDetailsHistoryAndNotesTabComponent,
   ],
   templateUrl: './fines-acc-major-creditor-details.component.html',
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -88,6 +91,7 @@ export class FinesAccMajorCreditorDetailsComponent
   public lastEnforcement: IOpalFinesResultRefData | null = null;
   public finesPermissions = FINES_PERMISSIONS;
   public tabAtAGlance$: Observable<IOpalFinesAccountMajorCreditorAtAGlance> = EMPTY;
+  public tabHistoryAndNotes$: Observable<IOpalFinesAccountMajorCreditorDetailsHistoryAndNotesTabRefData> = EMPTY;
   public majorCreditorAccountTypes = FINES_ACC_MAJOR_CREDITOR_ACCOUNT_TYPES;
 
   /**
@@ -101,13 +105,16 @@ export class FinesAccMajorCreditorDetailsComponent
    */
   protected override setupTabDataStream(): void {
     const fragment$ = merge(
-      this.clearCacheOnTabChange(this.getFragmentStream(this.defaultActiveTab, this.destroy$), () =>
-        this.opalFinesService.clearCache(
+      this.clearCacheOnTabChange(this.getFragmentStream(this.defaultActiveTab, this.destroy$), () => {
+        const cacheKey =
           FINES_ACC_MAJOR_CREDITOR_ACCOUNT_TABS_CACHE_MAP[
             this.activeTab as keyof IFinesAccMajorCreditorAccountTabsCacheMap
-          ],
-        ),
-      ),
+          ];
+
+        if (cacheKey) {
+          this.opalFinesService.clearCache(cacheKey);
+        }
+      }),
       this.refreshFragment$,
     );
 
@@ -118,6 +125,11 @@ export class FinesAccMajorCreditorDetailsComponent
         case FINES_ACC_MAJOR_CREDITOR_DETAILS_TABS_KEYS['at-a-glance']:
           this.tabAtAGlance$ = this.fetchTabDataTyped(
             this.opalFinesService.getMajorCreditorAccountAtAGlance(account_id),
+          );
+          break;
+        case FINES_ACC_MAJOR_CREDITOR_DETAILS_TABS_KEYS['history-and-notes']:
+          this.tabHistoryAndNotes$ = this.fetchTabDataTyped(
+            this.opalFinesService.getMajorCreditorAccountHistoryAndNotesTabData(account_id),
           );
           break;
       }

@@ -25,7 +25,7 @@ import { setupAccountEnquiryComponent } from './setup/SetupComponent';
 
 const ACCOUNT_ENQUIRY_JIRA_LABEL = '@JIRA-LABEL:account-enquiry';
 
-const buildTags = (...tags: string[]): string[] => [...tags, ACCOUNT_ENQUIRY_JIRA_LABEL];
+const buildTags = (...tags: string[]): string[] => [...tags, ACCOUNT_ENQUIRY_JIRA_LABEL, '@R1B'];
 
 describe('Account Enquiry History and notes', () => {
   const componentProperties: IComponentProperties = {
@@ -304,7 +304,7 @@ describe('Account Enquiry History and notes', () => {
 
   it(
     'AC1a-AC1d. should treat API dates as UTC RFC3339 timestamps, display them as LTZ dates, and default sort newest first using milliseconds',
-    { tags: [...buildTags('@JIRA-STORY:PO-2635', '@JIRA-EPIC:PO-2621')] },
+    { tags: [...buildTags('@JIRA-STORY:PO-2635', '@JIRA-EPIC:PO-2621'), '@JIRA-TEST-KEY:PO-9579'] },
     () => {
       setupHistoryAndNotesScreenWithTabData(
         structuredClone(DEFENDANT_HEADER_MOCK),
@@ -328,7 +328,7 @@ describe('Account Enquiry History and notes', () => {
 
   it(
     'AC1e. should toggle the Date column sort direction using the timestamp sort key',
-    { tags: [...buildTags('@JIRA-STORY:PO-2635', '@JIRA-EPIC:PO-2621')] },
+    { tags: [...buildTags('@JIRA-STORY:PO-2635', '@JIRA-EPIC:PO-2621'), '@JIRA-TEST-KEY:PO-9580'] },
     () => {
       setupHistoryAndNotesScreenWithTabData(
         structuredClone(DEFENDANT_HEADER_MOCK),
@@ -356,7 +356,7 @@ describe('Account Enquiry History and notes', () => {
 
   it(
     'AC2a. should render the read-only history table columns with no inline editing actions',
-    { tags: [...buildTags('@JIRA-STORY:PO-2635', '@JIRA-EPIC:PO-2621')] },
+    { tags: [...buildTags('@JIRA-STORY:PO-2635', '@JIRA-EPIC:PO-2621'), '@JIRA-TEST-KEY:PO-9581'] },
     () => {
       setupHistoryAndNotesScreenWithTabData(
         structuredClone(DEFENDANT_HEADER_MOCK),
@@ -387,7 +387,7 @@ describe('Account Enquiry History and notes', () => {
 
   it(
     'AC2b. should render several hundred history items in a single scrollable table with no pagination controls',
-    { tags: [...buildTags('@JIRA-STORY:PO-2635', '@JIRA-EPIC:PO-2621')] },
+    { tags: [...buildTags('@JIRA-STORY:PO-2635', '@JIRA-EPIC:PO-2621'), '@JIRA-TEST-KEY:PO-9582'] },
     () => {
       setupHistoryAndNotesScreenWithTabData(
         structuredClone(DEFENDANT_HEADER_MOCK),
@@ -406,7 +406,7 @@ describe('Account Enquiry History and notes', () => {
 
   it(
     'AC2c. should show the standard no results message and keep filter values visible after an empty filtered response',
-    { tags: [...buildTags('@JIRA-STORY:PO-2635', '@JIRA-EPIC:PO-2621')] },
+    { tags: [...buildTags('@JIRA-STORY:PO-2635', '@JIRA-EPIC:PO-2621'), '@JIRA-TEST-KEY:PO-9583'] },
     () => {
       setupHistoryAndNotesScreenWithTabDataSequence(structuredClone(DEFENDANT_HEADER_MOCK), [
         structuredClone(ACCOUNT_ENQUIRY_HISTORY_AND_NOTES_TABLE_CONTENT_MOCK),
@@ -433,7 +433,7 @@ describe('Account Enquiry History and notes', () => {
 
   it(
     'AC3b, AC3c, AC3d, AC3e, AC3f. should render details fragments with pipes, hyphens, bold text, links, and line2 on a new line',
-    { tags: [...buildTags('@JIRA-STORY:PO-2635', '@JIRA-EPIC:PO-2621')] },
+    { tags: [...buildTags('@JIRA-STORY:PO-2635', '@JIRA-EPIC:PO-2621'), '@JIRA-TEST-KEY:PO-9584'] },
     () => {
       setupHistoryAndNotesScreenWithTabData(
         structuredClone(DEFENDANT_HEADER_MOCK),
@@ -486,7 +486,7 @@ describe('Account Enquiry History and notes', () => {
 
   it(
     'AC3 edge cases. should render large amendment values and literal special characters without breaking the details output',
-    { tags: [...buildTags('@JIRA-STORY:PO-2635', '@JIRA-EPIC:PO-2621')] },
+    { tags: [...buildTags('@JIRA-STORY:PO-2635', '@JIRA-EPIC:PO-2621'), '@JIRA-TEST-KEY:PO-9585'] },
     () => {
       setupHistoryAndNotesScreenWithTabData(
         structuredClone(DEFENDANT_HEADER_MOCK),
@@ -527,7 +527,7 @@ describe('Account Enquiry History and notes', () => {
 
   it(
     'AC4a. should open account-linked details fragments in a new browser tab using the emitted account identifier',
-    { tags: [...buildTags('@JIRA-STORY:PO-2635', '@JIRA-EPIC:PO-2621')] },
+    { tags: [...buildTags('@JIRA-STORY:PO-2635', '@JIRA-EPIC:PO-2621'), '@JIRA-TEST-KEY:PO-9586'] },
     () => {
       setupHistoryAndNotesScreenWithTabData(
         structuredClone(DEFENDANT_HEADER_MOCK),
@@ -553,7 +553,7 @@ describe('Account Enquiry History and notes', () => {
 
   it(
     'AC4b. should render non-linked details fragments as non-interactive text with no link or button styling',
-    { tags: [...buildTags('@JIRA-STORY:PO-2635', '@JIRA-EPIC:PO-2621')] },
+    { tags: [...buildTags('@JIRA-STORY:PO-2635', '@JIRA-EPIC:PO-2621'), '@JIRA-TEST-KEY:PO-9587'] },
     () => {
       setupHistoryAndNotesScreenWithTabData(
         structuredClone(DEFENDANT_HEADER_MOCK),
@@ -576,7 +576,7 @@ describe('Account Enquiry History and notes', () => {
 
   it(
     'AC5a, AC5b, AC5c. should render CR/DR amounts accessibly and keep tags non-focusable',
-    { tags: [...buildTags('@JIRA-STORY:PO-2635', '@JIRA-EPIC:PO-2621')] },
+    { tags: [...buildTags('@JIRA-STORY:PO-2635', '@JIRA-EPIC:PO-2621'), '@JIRA-TEST-KEY:PO-9588'] },
     () => {
       setupHistoryAndNotesScreenWithTabData(
         structuredClone(DEFENDANT_HEADER_MOCK),

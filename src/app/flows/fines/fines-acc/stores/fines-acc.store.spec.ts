@@ -23,13 +23,13 @@ describe('FinesAccountStore', () => {
   });
 
   it('should initialize with empty strings', () => {
-    expect(store.account_number()).toBe(null);
-    expect(store.party_id()).toBe(null);
-    expect(store.party_name()).toBe(null);
-    expect(store.party_type()).toBe(null);
-    expect(store.base_version()).toBe(null);
-    expect(store.business_unit_user_id()).toBe(null);
-    expect(store.originator_type()).toBe(null);
+    expect(store.account_number()).toBeNull();
+    expect(store.party_id()).toBeNull();
+    expect(store.party_name()).toBeNull();
+    expect(store.party_type()).toBeNull();
+    expect(store.base_version()).toBeNull();
+    expect(store.business_unit_user_id()).toBeNull();
+    expect(store.originator_type()).toBeNull();
   });
 
   it('setAccountState should set all fields at once', () => {
@@ -128,7 +128,7 @@ describe('FinesAccountStore', () => {
     store.setSuccessMessage('Success');
     expect(store.successMessage()).toBe('Success');
     store.clearSuccessMessage();
-    expect(store.successMessage()).toBe(null);
+    expect(store.successMessage()).toBeNull();
   });
 
   it('should set hasVersionMismatch to true if versions do not match', () => {

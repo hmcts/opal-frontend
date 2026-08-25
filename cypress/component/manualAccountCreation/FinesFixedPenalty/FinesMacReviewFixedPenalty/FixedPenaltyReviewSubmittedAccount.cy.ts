@@ -18,7 +18,7 @@ import { MacFixedPenaltyReviewLocators as DOM_ELEMENTS } from '../../../../share
 
 const MANUAL_ACCOUNT_CREATION_JIRA_LABEL = '@JIRA-LABEL:manual-account-creation';
 
-const buildTags = (...tags: string[]) => [...tags, MANUAL_ACCOUNT_CREATION_JIRA_LABEL];
+const buildTags = (...tags: string[]) => [...tags, '@R1A', MANUAL_ACCOUNT_CREATION_JIRA_LABEL];
 
 describe('Fixed Penalty - Review Account Details', () => {
   beforeEach(() => {
@@ -86,7 +86,7 @@ describe('Fixed Penalty - Review Account Details', () => {
       cy.get(DOM_ELEMENTS.dateOfOffence).should('contain', '01 August 2025');
       cy.get(DOM_ELEMENTS.timeOfOffence).should('contain', '11:35');
       cy.get(DOM_ELEMENTS.placeOfOffence).should('contain', 'Camberwell Green');
-      cy.get(DOM_ELEMENTS.amountImposed).should('contain', '£3002.00');
+      cy.get(DOM_ELEMENTS.amountImposed).should('contain', '£3,002.00');
 
       // Section 5 - Account comments and notes
       cy.get(DOM_ELEMENTS.accountComment).should('contain', 'Scenario 10 account comment');
@@ -331,7 +331,7 @@ describe('Fixed Penalty - Review Account Details', () => {
       cy.get(DOM_ELEMENTS.dateOfOffence).should('contain', '01 August 2025');
       cy.get(DOM_ELEMENTS.timeOfOffence).should('contain', '11:35');
       cy.get(DOM_ELEMENTS.placeOfOffence).should('contain', 'Camberwell Green');
-      cy.get(DOM_ELEMENTS.amountImposed).should('contain', '£3002.00');
+      cy.get(DOM_ELEMENTS.amountImposed).should('contain', '£3,002.00');
 
       // Section 5 - Account comments and notes
       cy.get(DOM_ELEMENTS.accountComment).should('contain', 'Company to review scenario account comment');

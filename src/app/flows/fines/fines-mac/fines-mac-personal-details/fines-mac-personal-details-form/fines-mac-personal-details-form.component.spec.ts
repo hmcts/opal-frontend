@@ -136,7 +136,7 @@ describe('FinesMacPersonalDetailsFormComponent', () => {
     expect(removeAliasSpy).toHaveBeenCalledWith(expectedIndex, 'fm_personal_details_aliases', event);
   });
 
-  it('should emit form submit event with form value', () => {
+  it('should emit nested flow form submit event with form value', () => {
     const event = { submitter: { className: 'nested-flow' } } as SubmitEvent;
     formSubmit.nestedFlow = true;
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -153,7 +153,7 @@ describe('FinesMacPersonalDetailsFormComponent', () => {
     );
   });
 
-  it('should emit form submit event with form value', () => {
+  it('should emit standard flow form submit event with form value', () => {
     const event = {} as SubmitEvent;
     formSubmit.nestedFlow = false;
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -192,7 +192,7 @@ describe('FinesMacPersonalDetailsFormComponent', () => {
     expect(component.aliasControlsValidation).toEqual(FINES_MAC_PERSONAL_DETAILS_ALIAS);
   });
 
-  it('should call dateOfBirthListener on DOB value changes Adult', () => {
+  it('should call dateOfBirthListener on DOB value changes for an adult form update', () => {
     const dateOfBirth = '01/01/1990';
     mockDateService.isValidDate.mockReturnValue(true);
     mockDateService.calculateAge.mockReturnValue(34);
@@ -225,7 +225,7 @@ describe('FinesMacPersonalDetailsFormComponent', () => {
     expect(paymentTermsFormData.fm_payment_terms_suspended_committal_date).toBeNull();
   });
 
-  it('should call dateOfBirthListener on DOB value changes Adult', () => {
+  it('should call dateOfBirthListener on DOB value changes for an adult explicit listener run', () => {
     const dateOfBirth = '01/01/1990';
     component.form.controls['fm_personal_details_dob'].setValue(dateOfBirth);
     mockDateService.isValidDate.mockReturnValue(true);
@@ -326,5 +326,41 @@ describe('FinesMacPersonalDetailsFormComponent', () => {
     FM_PERSONAL_DETAILS_VEHICLE_DETAILS_FIELDS.forEach((control) => {
       expect(component.form.get(control.controlName)).toBeTruthy();
     });
+  });
+
+  it('should validate postcode format using alphanumericTextPattern', () => {
+    const postcodeControl = component.form.get('fm_personal_details_post_code');
+
+    postcodeControl?.setValue('SW1A 1AA');
+    expect(postcodeControl?.hasError('alphanumericTextPattern')).toBe(false);
+
+    postcodeControl?.setValue('SW1A-1AA');
+    expect(postcodeControl?.hasError('alphanumericTextPattern')).toBe(true);
+  });
+
+  it('should validate postcode max length', () => {
+    const postcodeControl = component.form.get('fm_personal_details_post_code');
+
+    postcodeControl?.setValue('SW1A 1AA');
+    expect(postcodeControl?.hasError('maxlength')).toBe(false);
+
+    postcodeControl?.setValue('SW1A 1AAA');
+    expect(postcodeControl?.hasError('maxlength')).toBe(true);
+  });
+
+  it('should trim surrounding whitespace from the postcode input on focusout', () => {
+    const postcodeInput = fixture.nativeElement.querySelector(
+      'input[name="fm_personal_details_post_code"]',
+    ) as HTMLInputElement | null;
+    if (!postcodeInput) throw new Error('Postcode input not found');
+
+    const postcodeControl = component.form.get('fm_personal_details_post_code');
+
+    postcodeControl?.setValue('  AB1  3CD ');
+    postcodeInput.dispatchEvent(new FocusEvent('focusout', { bubbles: true }));
+    fixture.detectChanges();
+
+    expect(postcodeControl?.value).toBe('AB1  3CD');
+    expect(postcodeControl?.hasError('maxlength')).toBe(false);
   });
 });

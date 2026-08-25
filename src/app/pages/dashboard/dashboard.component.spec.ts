@@ -11,6 +11,7 @@ import { DASHBOARD_PAGE_DEFAULT_TAB } from './constants/dashboard-config-default
 import { PermissionsService } from '@hmcts/opal-frontend-common/services/permissions-service';
 import { GlobalStore } from '@hmcts/opal-frontend-common/stores/global';
 import { createSpyObj } from '@app/testing/create-spy-obj.helper';
+import { FINES_PERMISSIONS } from '@app/constants/fines-permissions.constant';
 import {
   RELEASE_1A_FEATURE_FLAG,
   RELEASE_1C_ADMINISTRATION_FEATURE_FLAG,
@@ -125,7 +126,7 @@ describe('DashboardComponent', () => {
     expect(component.resolvedConfig().groups.map((group) => group.id)).not.toContain('account-management');
   });
 
-  it('should remove reports content when release-1c enforcement operational reporting is disabled', () => {
+  it('should remove reports content for the reports dashboard when release-1c enforcement operational reporting is disabled', () => {
     globalStoreMock.featureFlags.mockReturnValue({
       ...DEFAULT_RELEASE_FEATURE_FLAGS,
       [RELEASE_1C_ENFORCEMENT_OPERATIONAL_REPORTING_FEATURE_FLAG]: false,
@@ -149,7 +150,7 @@ describe('DashboardComponent', () => {
     expect(component.resolvedConfig().groups.map((group) => group.id)).not.toContain('account-management');
   });
 
-  it('should remove reports content when release-1c enforcement operational reporting is disabled', () => {
+  it('should remove reports config from the reports dashboard when release-1c enforcement operational reporting is disabled', () => {
     globalStoreMock.featureFlags.mockReturnValue({
       ...DEFAULT_RELEASE_FEATURE_FLAGS,
       [RELEASE_1C_ENFORCEMENT_OPERATIONAL_REPORTING_FEATURE_FLAG]: false,
@@ -195,7 +196,7 @@ describe('DashboardComponent', () => {
     fixture.detectChanges();
 
     expect(component.resolvedConfig()).toEqual(DASHBOARD_PAGE_CONFIGURATION_MAP.finance);
-    expect(component.resolvedConfig().groups.map((group) => group.id)).toContain('finance-placeholder');
+    expect(component.resolvedConfig().groups.map((group) => group.id)).toContain('cash');
   });
 
   it('should remove finance content when release-1c-financial-movements is disabled', () => {
@@ -211,6 +212,31 @@ describe('DashboardComponent', () => {
       ...DASHBOARD_PAGE_CONFIGURATION_MAP.finance,
       groups: [],
     });
+  });
+
+  it('should render the manual cash input link when the user has process and allocate payments permission', () => {
+    permissionsServiceMock.getUniquePermissions.mockReturnValue([FINES_PERMISSIONS['process-and-allocate-payments']]);
+    setupComponent();
+    dashboardTypeParamMapSubject.next(convertToParamMap({ dashboardType: 'finance' }));
+    fixture.detectChanges();
+
+    const renderedText = fixture.nativeElement.textContent as string;
+
+    expect(renderedText).toContain('Cash');
+    expect(renderedText).toContain('Automatic Cash Input');
+    expect(renderedText).toContain('Manual cash input');
+  });
+
+  it('should hide the manual cash input link when the user lacks process and allocate payments permission', () => {
+    permissionsServiceMock.getUniquePermissions.mockReturnValue([]);
+    setupComponent();
+    dashboardTypeParamMapSubject.next(convertToParamMap({ dashboardType: 'finance' }));
+    fixture.detectChanges();
+
+    const renderedText = fixture.nativeElement.textContent as string;
+
+    expect(renderedText).not.toContain('Automatic Cash Input');
+    expect(renderedText).not.toContain('Manual cash input');
   });
 
   it('should fall back to the default config for an unknown dashboard type', () => {

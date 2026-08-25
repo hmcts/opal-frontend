@@ -50,8 +50,8 @@ export const FINES_MAC_OFFENCE_DETAILS_MINOR_CREDITOR_FIELD_ERRORS: IAbstractFor
       message: `Company name must be 50 characters or fewer`,
       priority: 2,
     },
-    alphanumericWithHyphensSpacesApostrophesDotPattern: {
-      message: `Company name must only include letters a to z, numbers 0-9 and certain special characters (hyphens, spaces, apostrophes)`,
+    singleAsciiCharacters: {
+      message: `Company name must only include letters a to z, numbers 0-9 and certain special characters (such as hyphens, spaces, apostrophes and commas)`,
       priority: 3,
     },
   },
@@ -90,6 +90,10 @@ export const FINES_MAC_OFFENCE_DETAILS_MINOR_CREDITOR_FIELD_ERRORS: IAbstractFor
       message: `Postcode must be 8 characters or fewer`,
       priority: 1,
     },
+    alphanumericTextPattern: {
+      message: 'Postcode must only contain letters or numbers',
+      priority: 2,
+    },
   },
   fm_offence_details_minor_creditor_bank_account_name: {
     required: {
@@ -100,7 +104,7 @@ export const FINES_MAC_OFFENCE_DETAILS_MINOR_CREDITOR_FIELD_ERRORS: IAbstractFor
       message: 'Name on the account must be 18 characters or fewer',
       priority: 2,
     },
-    singleAsciiChatacters: {
+    singleAsciiCharacters: {
       message:
         'Name on account must only include letters a to z, numbers 0-9 and certain special characters (such as hyphens, spaces, apostrophes and commas)',
       priority: 3,
@@ -144,7 +148,7 @@ export const FINES_MAC_OFFENCE_DETAILS_MINOR_CREDITOR_FIELD_ERRORS: IAbstractFor
       priority: 2,
     },
     alphanumericTextPattern: {
-      message: 'Payment reference must only contain letters',
+      message: 'Payment reference must only contain letters and numbers',
       priority: 3,
     },
   },

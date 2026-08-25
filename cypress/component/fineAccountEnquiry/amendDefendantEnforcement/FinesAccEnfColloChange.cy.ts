@@ -1,5 +1,6 @@
 import { COLLECTION_ORDER_CHANGE_ELEMENTS as COLLECTION_ORDER_CHANGE } from '../../../shared/selectors/account-enquiry/account.enquiry.collection-order-change.locators';
 import { ACCOUNT_ENQUIRY_ENFORCEMENT_STATUS_ELEMENTS as ENFORCEMENT_STATUS_TAB } from '../../../shared/selectors/account-enquiry/account.enquiry.enforcement.locators';
+import { UNSAVED_CHANGES_WARNING } from '../../../shared/constants/confirmation-messages';
 import { setupAccountEnquiryComponent } from '../accountEnquiry/setup/SetupComponent';
 import { IComponentProperties } from '../accountEnquiry/setup/setupComponent.interface';
 import { mount } from 'cypress/angular';
@@ -24,7 +25,7 @@ import { FinesAccEnfColloChangeFormComponent } from 'src/app/flows/fines/fines-a
 const ACCOUNT_ENQUIRY_JIRA_LABEL = '@JIRA-LABEL:account-enquiry';
 const JIRA_EPIC = '@JIRA-EPIC:PO-1675';
 
-const buildTags = (...tags: string[]): string[] => [...tags, JIRA_EPIC, ACCOUNT_ENQUIRY_JIRA_LABEL];
+const buildTags = (...tags: string[]): string[] => [...tags, JIRA_EPIC, ACCOUNT_ENQUIRY_JIRA_LABEL, '@R1B'];
 
 const ADULT_OR_YOUTH_TAGS = buildTags('@JIRA-STORY:PO-1848', '@JIRA-STORY:PO-3729');
 const PARENT_GUARDIAN_TAGS = buildTags('@JIRA-STORY:PO-1860', '@JIRA-STORY:PO-3729');
@@ -261,7 +262,7 @@ function assertCancelAfterSelectionShowsConfirmation(
   cy.window().then((win) => {
     cy.stub(win, 'confirm')
       .callsFake((message: string) => {
-        expect(message.replace(/\s+/g, ' ')).to.match(/unsaved changes/i);
+        expect(message.replace(/\s+/g, ' ')).to.equal(UNSAVED_CHANGES_WARNING);
         return true;
       })
       .as('confirm');
@@ -285,7 +286,7 @@ function assertDismissingCancelConfirmationKeepsUserOnPage(
   cy.window().then((win) => {
     cy.stub(win, 'confirm')
       .callsFake((message: string) => {
-        expect(message.replace(/\s+/g, ' ')).to.match(/unsaved changes/i);
+        expect(message.replace(/\s+/g, ' ')).to.equal(UNSAVED_CHANGES_WARNING);
         return false;
       })
       .as('confirm');

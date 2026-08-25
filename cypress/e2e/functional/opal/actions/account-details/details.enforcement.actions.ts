@@ -6,6 +6,7 @@ import { ACCOUNT_ENQUIRY_ENFORCEMENT_STATUS_ELEMENTS as ENF } from '../../../../
 import { DOM_ELEMENTS as ENF_COURT_CHANGE } from '../../../../../shared/selectors/account-enquiry/account.enquiry.enforcement-court-change.locators';
 import { DOM_ELEMENTS as ENF_OVR } from '../../../../../shared/selectors/account-enquiry/account.enquiry.enforcement-override-add.locators';
 import { DOM_ELEMENTS as ENF_ACT } from '../../../../../shared/selectors/account-enquiry/account.enquiry.enforcement-action-select.locators';
+import { REMOVE_ENFORCEMENT_HOLD_ELEMENTS as ENF_REMOVE_HOLD } from '../../../../../shared/selectors/account-enquiry/account.enquiry.enforcement-hold-remove.locators';
 import { DOM_ELEMENTS as ENF_ACTION_ADD } from '../../../../../component/fineAccountEnquiry/accountEnquiry/locators/account.enquiry.enforcement-action-add.locators';
 import { COLLECTION_ORDER_CHANGE_ELEMENTS as COLLO } from '../../../../../shared/selectors/account-enquiry/account.enquiry.collection-order-change.locators';
 import { createScopedLogger } from '../../../../../support/utils/log.helper';
@@ -38,8 +39,9 @@ export class AccountDetailsEnforcementActions {
   private selectAutocompleteOption(selector: string, query: string, optionText: string): void {
     cy.get(selector, { timeout: AccountDetailsEnforcementActions.DEFAULT_TIMEOUT })
       .should('be.visible')
+      .and('not.be.disabled')
       .click()
-      .type('{selectall}{backspace}', { force: true })
+      .type('{selectall}{backspace}')
       .type(query, { delay: 0 });
 
     cy.contains(ENF_OVR.dropdownOptions, optionText, {
@@ -202,9 +204,9 @@ export class AccountDetailsEnforcementActions {
     cy.get(ENF_OVR.title, { timeout: AccountDetailsEnforcementActions.DEFAULT_TIMEOUT })
       .should('be.visible')
       .and('contain.text', 'Add enforcement override');
-    cy.get(ENF_OVR.enfOverrideDropdown, { timeout: AccountDetailsEnforcementActions.DEFAULT_TIMEOUT }).should(
-      'be.visible',
-    );
+    cy.get(ENF_OVR.enfOverrideDropdown, { timeout: AccountDetailsEnforcementActions.DEFAULT_TIMEOUT })
+      .should('be.visible')
+      .and('not.be.disabled');
   }
 
   /**
@@ -236,13 +238,13 @@ export class AccountDetailsEnforcementActions {
    */
   public assertRemoveEnforcementHoldFormVisible(): void {
     log('assert', 'Remove enforcement hold form is visible');
-    cy.get('h1.govuk-heading-l', { timeout: AccountDetailsEnforcementActions.DEFAULT_TIMEOUT })
+    cy.get(ENF_REMOVE_HOLD.pageHeading, { timeout: AccountDetailsEnforcementActions.DEFAULT_TIMEOUT })
       .should('be.visible')
       .and('contain.text', 'Remove enforcement hold');
-    cy.get('opal-lib-govuk-heading-with-caption', { timeout: AccountDetailsEnforcementActions.DEFAULT_TIMEOUT })
+    cy.get(ENF_REMOVE_HOLD.headingWithCaption, { timeout: AccountDetailsEnforcementActions.DEFAULT_TIMEOUT })
       .should('be.visible')
       .and('contain.text', '–');
-    cy.get('#facc_enf_action_remove_reason', { timeout: AccountDetailsEnforcementActions.DEFAULT_TIMEOUT }).should(
+    cy.get(ENF_REMOVE_HOLD.reasonInput, { timeout: AccountDetailsEnforcementActions.DEFAULT_TIMEOUT }).should(
       'be.visible',
     );
   }
@@ -254,7 +256,7 @@ export class AccountDetailsEnforcementActions {
    */
   public assertRemoveEnforcementHoldAccountIdentifier(expected: string): void {
     log('assert', 'Remove enforcement hold account identifier', { expected });
-    cy.get('opal-lib-govuk-heading-with-caption', { timeout: AccountDetailsEnforcementActions.DEFAULT_TIMEOUT })
+    cy.get(ENF_REMOVE_HOLD.headingWithCaption, { timeout: AccountDetailsEnforcementActions.DEFAULT_TIMEOUT })
       .should('be.visible')
       .invoke('text')
       .then((text) => {
@@ -267,6 +269,34 @@ export class AccountDetailsEnforcementActions {
         expect(actualBody, 'remove enforcement hold caption').to.contain(expectedBody);
         expect(actual, 'remove enforcement hold caption').to.contain('Remove enforcement hold');
       });
+  }
+
+  /**
+   * Enters a reason on the remove enforcement hold form.
+   *
+   * @param reason - Text to enter into the reason field.
+   */
+  public enterRemoveEnforcementHoldReason(reason: string): void {
+    log('action', 'Entering remove enforcement hold reason', { reason });
+    cy.get(ENF_REMOVE_HOLD.reasonInput, { timeout: AccountDetailsEnforcementActions.DEFAULT_TIMEOUT })
+      .should('be.visible')
+      .clear()
+      .type(reason, { delay: 0 });
+  }
+
+  /**
+   * Clicks a button on the remove enforcement hold form by visible text.
+   *
+   * @param buttonText - Exact button label to click.
+   */
+  public clickRemoveEnforcementHoldButton(buttonText: string): void {
+    log('action', 'Clicking remove enforcement hold button', { buttonText });
+    cy.contains(ENF_REMOVE_HOLD.actionButtons, new RegExp(`^${Cypress._.escapeRegExp(buttonText)}$`), {
+      timeout: AccountDetailsEnforcementActions.DEFAULT_TIMEOUT,
+    })
+      .should('be.visible')
+      .and('not.be.disabled')
+      .click();
   }
 
   /**
@@ -289,7 +319,9 @@ export class AccountDetailsEnforcementActions {
       .and('contain.text', 'Change enforcement court');
     cy.get(ENF_COURT_CHANGE.enforcementCourtInput, {
       timeout: AccountDetailsEnforcementActions.DEFAULT_TIMEOUT,
-    }).should('be.visible');
+    })
+      .should('be.visible')
+      .and('not.be.disabled');
   }
 
   /**
@@ -417,7 +449,10 @@ export class AccountDetailsEnforcementActions {
       }).then(($options) => {
         const selectedValue = [...$options]
           .map((option) => this.normalize(option.textContent ?? ''))
-          .find((option) => option && option !== normalizedCurrentValue);
+          .find(
+            (option) =>
+              option && option !== normalizedCurrentValue && !/^select\b/i.test(option) && !/^choose\b/i.test(option),
+          );
 
         expect(selectedValue, 'different enforcement court option').to.be.a('string').and.not.be.empty;
 

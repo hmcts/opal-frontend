@@ -9,8 +9,10 @@ import { AbstractNestedFormBaseComponent } from '@hmcts/opal-frontend-common/com
 import { FinesSaStore } from '../../../../stores/fines-sa.store';
 import {
   ALPHANUMERIC_WITH_HYPHENS_SPACES_APOSTROPHES_DOT_PATTERN,
+  ALPHANUMERIC_WITH_SPACES_PATTERN,
   LETTERS_SPACES_HYPHENS_APOSTROPHES_DOT_PATTERN,
 } from '@hmcts/opal-frontend-common/constants';
+import { TrimLeadingTrailingWhitespaceDirective } from '@hmcts/opal-frontend-common/directives/trim-leading-trailing-whitespace';
 import { patternValidator } from '@hmcts/opal-frontend-common/validators/pattern-validator';
 import { IAbstractFormControlErrorMessage } from '@hmcts/opal-frontend-common/components/abstract/interfaces';
 import { finesSaSearchAccountFormCompaniesValidator } from './validators/fines-sa-search-account-form-companies.validator';
@@ -22,6 +24,10 @@ const ALPHANUMERIC_WITH_HYPHENS_SPACES_APOSTROPHES_DOT_PATTERN_VALIDATOR = patte
 const LETTERS_SPACES_HYPHENS_APOSTROPHES_DOT_PATTERN_VALIDATOR = patternValidator(
   LETTERS_SPACES_HYPHENS_APOSTROPHES_DOT_PATTERN,
   'lettersSpacesHyphensApostrophesDotPattern',
+);
+const ALPHANUMERIC_WITH_SPACES_PATTERN_VALIDATOR = patternValidator(
+  ALPHANUMERIC_WITH_SPACES_PATTERN,
+  'alphanumericTextPattern',
 );
 
 /**
@@ -38,7 +44,12 @@ const LETTERS_SPACES_HYPHENS_APOSTROPHES_DOT_PATTERN_VALIDATOR = patternValidato
  */
 @Component({
   selector: 'app-fines-sa-search-account-form-companies',
-  imports: [GovukTextInputComponent, GovukCheckboxesComponent, GovukCheckboxesItemComponent],
+  imports: [
+    GovukTextInputComponent,
+    GovukCheckboxesComponent,
+    GovukCheckboxesItemComponent,
+    TrimLeadingTrailingWhitespaceDirective,
+  ],
   templateUrl: './fines-sa-search-account-form-companies.component.html',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
@@ -65,7 +76,7 @@ export class FinesSaSearchAccountFormCompaniesComponent extends AbstractNestedFo
         Validators.maxLength(30),
       ]),
       fsa_search_account_companies_post_code: new FormControl<string | null>(null, [
-        ALPHANUMERIC_WITH_HYPHENS_SPACES_APOSTROPHES_DOT_PATTERN_VALIDATOR,
+        ALPHANUMERIC_WITH_SPACES_PATTERN_VALIDATOR,
         Validators.maxLength(8),
       ]),
     });

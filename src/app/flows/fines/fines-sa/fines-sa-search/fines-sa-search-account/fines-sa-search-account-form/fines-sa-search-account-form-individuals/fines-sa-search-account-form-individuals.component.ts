@@ -11,6 +11,7 @@ import { ALPHANUMERIC_WITH_SPACES_PATTERN, LETTERS_WITH_SPACES_PATTERN } from '@
 import { patternValidator } from '@hmcts/opal-frontend-common/validators/pattern-validator';
 import { dateOfBirthValidator } from '@hmcts/opal-frontend-common/validators/date-of-birth';
 import { optionalValidDateValidator } from '@hmcts/opal-frontend-common/validators/optional-valid-date';
+import { TrimLeadingTrailingWhitespaceDirective } from '@hmcts/opal-frontend-common/directives/trim-leading-trailing-whitespace';
 import { FinesSaStore } from '../../../../stores/fines-sa.store';
 import { AbstractNestedFormBaseComponent } from '@hmcts/opal-frontend-common/components/abstract/abstract-nested-form-base';
 import { IAbstractFormControlErrorMessage } from '@hmcts/opal-frontend-common/components/abstract/interfaces';
@@ -36,7 +37,13 @@ const LETTERS_WITH_SPACES_PATTERN_VALIDATOR = patternValidator(LETTERS_WITH_SPAC
  */
 @Component({
   selector: 'app-fines-sa-search-account-form-individuals',
-  imports: [GovukTextInputComponent, GovukCheckboxesComponent, GovukCheckboxesItemComponent, MojDatePickerComponent],
+  imports: [
+    GovukTextInputComponent,
+    GovukCheckboxesComponent,
+    GovukCheckboxesItemComponent,
+    MojDatePickerComponent,
+    TrimLeadingTrailingWhitespaceDirective,
+  ],
   templateUrl: './fines-sa-search-account-form-individuals.component.html',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
@@ -68,10 +75,6 @@ export class FinesSaSearchAccountFormIndividualsComponent extends AbstractNested
       fsa_search_account_individuals_date_of_birth: new FormControl<string | null>(null, [
         optionalValidDateValidator(),
         dateOfBirthValidator(),
-      ]),
-      fsa_search_account_individuals_national_insurance_number: new FormControl<string | null>(null, [
-        ALPHANUMERIC_WITH_SPACES_PATTERN_VALIDATOR,
-        Validators.maxLength(9),
       ]),
       fsa_search_account_individuals_address_line_1: new FormControl<string | null>(null, [
         ALPHANUMERIC_WITH_SPACES_PATTERN_VALIDATOR,

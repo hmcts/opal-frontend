@@ -138,7 +138,11 @@ describe('FinesSaSearchAccountFormComponent', () => {
     tabKeys.forEach((key) => {
       const group = component.form.get(key) as FormGroup;
       expect(group.get('dummy')).toBeNull();
-      expect(Object.keys(group.controls)).toEqual([]);
+      expect(Object.keys(group.controls)).toEqual(
+        key === 'fsa_search_account_individuals_search_criteria'
+          ? ['fsa_search_account_individuals_national_insurance_number']
+          : [],
+      );
     });
 
     expect(component.formControlErrorMessages).toEqual({});
@@ -157,6 +161,17 @@ describe('FinesSaSearchAccountFormComponent', () => {
 
     expect(component.form.errors).toBeNull();
     expect(component.form.valid).toBe(true);
+  });
+
+  it('should normalize National Insurance number input before submit', () => {
+    const nationalInsuranceControl = component.form.get(
+      'fsa_search_account_individuals_search_criteria.fsa_search_account_individuals_national_insurance_number',
+    );
+    nationalInsuranceControl?.setValue('ab 12 34 56 c');
+
+    component.handleFormSubmit(new SubmitEvent('submit', { bubbles: true, cancelable: true }));
+
+    expect(nationalInsuranceControl?.value).toBe('AB123456C');
   });
 
   it('should populate major creditor autocomplete values from major creditor codes', () => {
@@ -229,25 +244,13 @@ describe('FinesSaSearchAccountFormComponent', () => {
     expect(restoredComponent.searchCriteriaForm.get('fsa_search_account_individuals_last_name')?.value).toBe('Smith');
   });
 
-  it('should return companies FormGroup when activeTab is companies', () => {
-    component.finesSaStore.setActiveTab('companies');
-    expect(component.searchCriteriaForm).toBe(
-      component.form.get('fsa_search_account_companies_search_criteria') as FormGroup,
-    );
-  });
-
-  it('should return minorCreditors FormGroup when activeTab is minorCreditors', () => {
-    component.finesSaStore.setActiveTab('minorCreditors');
-    expect(component.searchCriteriaForm).toBe(
-      component.form.get('fsa_search_account_minor_creditors_search_criteria') as FormGroup,
-    );
-  });
-
-  it('should return majorCreditors FormGroup when activeTab is majorCreditors', () => {
-    component.finesSaStore.setActiveTab('majorCreditors');
-    expect(component.searchCriteriaForm).toBe(
-      component.form.get('fsa_search_account_major_creditors_search_criteria') as FormGroup,
-    );
+  it.each([
+    { activeTab: 'companies', controlName: 'fsa_search_account_companies_search_criteria' },
+    { activeTab: 'minorCreditors', controlName: 'fsa_search_account_minor_creditors_search_criteria' },
+    { activeTab: 'majorCreditors', controlName: 'fsa_search_account_major_creditors_search_criteria' },
+  ] as const)('should return $activeTab FormGroup when activeTab is $activeTab', ({ activeTab, controlName }) => {
+    component.finesSaStore.setActiveTab(activeTab);
+    expect(component.searchCriteriaForm).toBe(component.form.get(controlName) as FormGroup);
   });
 
   it('should return empty FormGroup for unknown tab', () => {
@@ -266,11 +269,11 @@ describe('FinesSaSearchAccountFormComponent', () => {
 
   it('should return an empty FormGroup when switching to an unknown tab', () => {
     component['switchTab']('unknown');
-    expect(component.searchCriteriaForm instanceof FormGroup).toBe(true);
+    expect(component.searchCriteriaForm).toBeInstanceOf(FormGroup);
     expect(Object.keys(component.searchCriteriaForm.controls)).toEqual([]);
   });
 
-  it('should call super.handleFormSubmit when only account number is used', () => {
+  it('should call super.handleFormSubmit when only account number is used in the current form', () => {
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     const superSubmitSpy = vi.spyOn<any, any>(FinesSaSearchAccountFormComponent.prototype, 'handleFormSubmit');
 
@@ -283,7 +286,7 @@ describe('FinesSaSearchAccountFormComponent', () => {
     expect(superSubmitSpy).toHaveBeenCalled();
   });
 
-  it('should call super.handleFormSubmit when only account number is used', () => {
+  it('should call super.handleFormSubmit when stored individual criteria is present', () => {
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     const superSubmitSpy = vi.spyOn<any, any>(FinesSaSearchAccountFormComponent.prototype, 'handleFormSubmit');
 

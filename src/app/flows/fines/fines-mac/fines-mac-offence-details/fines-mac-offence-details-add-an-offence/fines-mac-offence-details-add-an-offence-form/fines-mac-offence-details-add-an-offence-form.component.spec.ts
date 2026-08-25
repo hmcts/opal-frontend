@@ -47,6 +47,39 @@ describe('FinesMacOffenceDetailsAddAnOffenceFormComponent', () => {
   let originalConfigureDatePicker: () => void;
   let originalInitOuterRadios: () => void;
 
+  const createInitializedComponent = (
+    configureStore?: (store: FinesMacOffenceDetailsStoreType, macStore: FinesMacStoreType) => void,
+  ) => {
+    const freshFixture = TestBed.createComponent(FinesMacOffenceDetailsAddAnOffenceFormComponent);
+    const freshComponent = freshFixture.componentInstance;
+    const freshFinesMacStore = TestBed.inject(FinesMacStore);
+    const freshFinesMacOffenceDetailsStore = TestBed.inject(FinesMacOffenceDetailsStore);
+
+    freshFinesMacStore.setFinesMacStore(FINES_MAC_STATE_MOCK);
+    freshFinesMacOffenceDetailsStore.setOffenceDetailsDraft(
+      FINES_MAC_OFFENCE_DETAILS_DRAFT_STATE_MOCK.offenceDetailsDraft,
+    );
+    freshFinesMacOffenceDetailsStore.setRowIndex(0);
+    freshFinesMacOffenceDetailsStore.setRemoveMinorCreditor(
+      FINES_MAC_OFFENCE_DETAILS_DRAFT_STATE_MOCK.removeMinorCreditor,
+    );
+
+    configureStore?.(freshFinesMacOffenceDetailsStore, freshFinesMacStore);
+
+    freshComponent.resultCodeItems = OPAL_FINES_RESULTS_AUTOCOMPLETE_ITEMS_MOCK;
+    freshComponent.fcompMajorCreditorItems = OPAL_FINES_MAJOR_CREDITOR_AUTOCOMPLETE_ITEMS_MOCK;
+    freshComponent.fcostMajorCreditorItems = OPAL_FINES_MAJOR_CREDITOR_AUTOCOMPLETE_ITEMS_MOCK;
+
+    freshFixture.detectChanges();
+
+    return {
+      fixture: freshFixture,
+      component: freshComponent,
+      finesMacStore: freshFinesMacStore,
+      finesMacOffenceDetailsStore: freshFinesMacOffenceDetailsStore,
+    };
+  };
+
   beforeAll(() => {
     originalConfigureDatePicker = MojDatePickerComponent.prototype.configureDatePicker;
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -144,6 +177,12 @@ describe('FinesMacOffenceDetailsAddAnOffenceFormComponent', () => {
     const searchLink = Array.from(
       fixture.nativeElement.querySelectorAll('a.govuk-link') as NodeListOf<HTMLAnchorElement>,
     ).find((link) => link.textContent?.includes('search the offence list'));
+    const guidance = fixture.nativeElement.querySelector(
+      '#fm_offence_details_offence_cjs_code-guidance',
+    ) as HTMLElement | null;
+    const offenceCodeInput = fixture.nativeElement.querySelector(
+      '#fm_offence_details_offence_cjs_code',
+    ) as HTMLInputElement | null;
 
     expect(actionLinkConsts.length).toBeGreaterThanOrEqual(1);
     actionLinkConsts.forEach((entry) => {
@@ -153,11 +192,41 @@ describe('FinesMacOffenceDetailsAddAnOffenceFormComponent', () => {
     });
 
     expect(searchLink).toBeTruthy();
+    expect(guidance).toBeTruthy();
+    expect(offenceCodeInput).toBeTruthy();
+    expect(guidance?.textContent).toContain("If you don't know the offence code, you can");
+    expect(searchLink?.textContent?.replace(/\s+/g, ' ').trim()).toBe(
+      "If you don't know the offence code, you can search the offence list (opens in a new tab)",
+    );
+    expect(searchLink?.querySelector('span.govuk-visually-hidden')?.textContent?.trim()).toBe(
+      "If you don't know the offence code, you can",
+    );
     expect(searchLink?.classList.contains('govuk-link--no-visited-state')).toBe(true);
     expect(searchLink?.getAttribute('href')).toBe(component.searchOffenceUrl);
+    expect(searchLink?.getAttribute('target')).toBe('_blank');
+    expect(searchLink?.getAttribute('rel')).toBe('noopener noreferrer');
     expect(searchLink?.getAttribute('tabindex')).toBeNull();
+    expect(
+      offenceCodeInput && guidance
+        ? offenceCodeInput.compareDocumentPosition(guidance) & Node.DOCUMENT_POSITION_FOLLOWING
+        : 0,
+    ).toBeTruthy();
     expect(templateFunction).not.toContain('keydown.enter');
     expect(templateFunction).not.toContain('keyup.enter');
+  });
+
+  it('should render legends as direct children of their fieldsets', () => {
+    const { fixture: freshFixture } = createInitializedComponent();
+    const element = freshFixture.nativeElement as HTMLElement;
+    const legends = Array.from(element.querySelectorAll('fieldset > legend'));
+    const legendText = legends.map((legend) => legend.textContent?.trim());
+
+    expect(legendText).toContain('Offence details');
+    expect(element.querySelector('h2')?.textContent?.trim()).toBe('Offence details');
+    expect(element.querySelectorAll('h2')[1]?.textContent?.trim()).toBe('Impositions');
+    expect(
+      Array.from(element.querySelectorAll('legend')).every((legend) => legend.parentElement?.tagName === 'FIELDSET'),
+    ).toBe(true);
   });
 
   it('should set needsCreditorControl value to true when result_code is compensation', () => {
@@ -680,6 +749,45 @@ describe('FinesMacOffenceDetailsAddAnOffenceFormComponent', () => {
     expect(component.today).toBe('01/01/2022');
   });
 
+  it('should keep the add offence form dirty when returning from a saved minor creditor', () => {
+    fixture.destroy();
+    const { component: freshComponent, finesMacStore: freshFinesMacStore } = createInitializedComponent((store) => {
+      store.setOffenceDetailsDraftDirty(true);
+    });
+
+    expect(freshComponent.form.dirty).toBe(true);
+    expect(freshComponent['hasUnsavedChanges']()).toBe(true);
+    expect(freshFinesMacStore.unsavedChanges()).toBe(true);
+  });
+
+  it('should emit unsaved changes on cancel when returning from a saved minor creditor', () => {
+    fixture.destroy();
+    const { component: freshComponent } = createInitializedComponent((store) => {
+      store.setOffenceDetailsDraftDirty(true);
+      store.setEmptyOffences(true);
+    });
+    const unsavedChangesEmitSpy = vi.spyOn(freshComponent['unsavedChanges'], 'emit');
+
+    freshComponent.cancelLink();
+
+    expect(unsavedChangesEmitSpy).toHaveBeenCalledWith(true);
+  });
+
+  it('should clear offence draft dirty when the offence form is submitted successfully', () => {
+    finesMacOffenceDetailsStore.setOffenceDetailsDraftDirty(true);
+    component.form = new FormGroup({});
+    component.form.setErrors(null);
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    vi.spyOn<any, any>(component, 'checkImpositionMinorCreditors').mockImplementation(() => {});
+    vi.spyOn(component['offenceDetailsService'], 'enforceOffenceCodeValidationBeforeSubmit').mockImplementation(
+      () => {},
+    );
+
+    component.handleFormSubmit(new SubmitEvent('submit'));
+
+    expect(finesMacOffenceDetailsStore.offenceDetailsDraftDirty()).toBe(false);
+  });
+
   it('should update removeMinorCreditor in finesMacOffenceDetailsDraftState and call updateOffenceDetailsDraft and handleRoute', () => {
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     const routerSpy = vi.spyOn<any, any>(component['router'], 'navigate');
@@ -706,6 +814,15 @@ describe('FinesMacOffenceDetailsAddAnOffenceFormComponent', () => {
     expect(routerSpy).toHaveBeenCalledWith([FINES_MAC_OFFENCE_DETAILS_ROUTING_PATHS.children.addMinorCreditor], {
       relativeTo: component['activatedRoute'].parent,
     });
+  });
+
+  it('should persist offence draft dirty state when a dirty parent offence form enters the minor creditor route', () => {
+    finesMacOffenceDetailsStore.setOffenceDetailsDraftDirty(false);
+    component.form.markAsDirty();
+
+    component.goToMinorCreditor(0);
+
+    expect(finesMacOffenceDetailsStore.offenceDetailsDraftDirty()).toBe(true);
   });
 
   it('should refresh rendered errors when offence validation state changes after submit', () => {
@@ -779,7 +896,7 @@ describe('FinesMacOffenceDetailsAddAnOffenceFormComponent', () => {
 
     component['removeMinorCreditorData'](0);
 
-    expect(finesMacOffenceDetailsStore.offenceDetailsDraft()[0].childFormData!.length).toBe(1);
+    expect(finesMacOffenceDetailsStore.offenceDetailsDraft()[0].childFormData).toHaveLength(1);
   });
 
   it('should remove the minor creditor at the specified index', () => {
@@ -1015,6 +1132,53 @@ describe('FinesMacOffenceDetailsAddAnOffenceFormComponent', () => {
     expect(amountPaidControl.errors).toEqual(expect.objectContaining({ invalidNegativeAmount: true }));
     expect(component.form.invalid).toBe(true);
     expect(formSubmitSpy).not.toHaveBeenCalled();
+  });
+
+  it('should not emit form submission when amount paid is greater than amount imposed', () => {
+    const formSubmitSpy = vi.spyOn(component['formSubmit'], 'emit');
+    const amountImposedControl = component.form.get([
+      'fm_offence_details_impositions',
+      0,
+      'fm_offence_details_amount_imposed_0',
+    ]) as FormControl;
+    const amountPaidControl = component.form.get([
+      'fm_offence_details_impositions',
+      0,
+      'fm_offence_details_amount_paid_0',
+    ]) as FormControl;
+
+    amountImposedControl.setValue(100);
+    amountPaidControl.setValue(100.01);
+
+    component.handleFormSubmit(new SubmitEvent('submit'));
+
+    expect(amountPaidControl.errors).toEqual(expect.objectContaining({ amountPaidExceedsAmountImposed: true }));
+    expect(component.formControlErrorMessages['fm_offence_details_amount_paid_0']).toBe(
+      'Amount paid cannot be greater than amount imposed',
+    );
+    expect(component.form.invalid).toBe(true);
+    expect(formSubmitSpy).not.toHaveBeenCalled();
+  });
+
+  it('should revalidate amount paid when amount imposed changes', () => {
+    const amountImposedControl = component.form.get([
+      'fm_offence_details_impositions',
+      0,
+      'fm_offence_details_amount_imposed_0',
+    ]) as FormControl;
+    const amountPaidControl = component.form.get([
+      'fm_offence_details_impositions',
+      0,
+      'fm_offence_details_amount_paid_0',
+    ]) as FormControl;
+
+    amountImposedControl.setValue(100);
+    amountPaidControl.setValue(101);
+    expect(amountPaidControl.hasError('amountPaidExceedsAmountImposed')).toBe(true);
+
+    amountImposedControl.setValue(101);
+
+    expect(amountPaidControl.hasError('amountPaidExceedsAmountImposed')).toBe(false);
   });
 
   it('should set offenceCodeValidationPending on submit when offence code length is valid and offence id is unresolved', () => {

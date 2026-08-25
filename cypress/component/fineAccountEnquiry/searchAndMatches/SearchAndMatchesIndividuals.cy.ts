@@ -3,12 +3,14 @@ import { AccountSearchIndividualsLocators as IndividualsLocators } from '../../.
 import { AccountSearchNavLocators as NavLocators } from '../../../shared/selectors/account-search/account.search.nav.locators';
 import { INDIVIDUAL_SEARCH_STATE_MOCK } from './mocks/search_and_matches_individual_mock';
 import { finesSaIndividualDefendantAccountsResolver } from 'src/app/flows/fines/fines-sa/routing/resolvers/fines-sa-defendant-accounts/fines-sa-defendant-accounts.resolver';
+import { OpalFines } from '@services/fines/opal-fines-service/opal-fines.service';
 import { getCurrentMonth, getFirstDayOfPreviousMonth, getPreviousMonth } from '../../../support/utils/dateUtils';
+import { of } from 'rxjs';
 import { mountSearchAccount } from './support/mountSearchAccount';
 
 const ACCOUNT_ENQUIRY_JIRA_LABEL = '@JIRA-LABEL:account-enquiry';
 
-const buildTags = (...tags: string[]): string[] => [...tags, ACCOUNT_ENQUIRY_JIRA_LABEL];
+const buildTags = (...tags: string[]): string[] => [...tags, ACCOUNT_ENQUIRY_JIRA_LABEL, '@R1B'];
 const getDobDateGridButtonSelector = (dmy: string): string => {
   const [day, month, year] = dmy.split('/');
   const unpaddedDate = `${Number(day)}/${Number(month)}/${year}`;
@@ -27,13 +29,17 @@ describe('Search Account Component - Individuals', () => {
     return searchState;
   };
 
-  const setupComponent = (configure?: (searchState: IndividualSearchState) => void) =>
+  const setupComponent = (
+    configure?: (searchState: IndividualSearchState) => void,
+    { useSpyRouter = true }: { useSpyRouter?: boolean } = {},
+  ) =>
     mountSearchAccount({
       activeTab: 'individuals',
       initialState: buildIndividualSearchState(configure),
       resultsResolvers: {
         individualAccounts: finesSaIndividualDefendantAccountsResolver,
       },
+      useSpyRouter,
     });
 
   it(
@@ -55,9 +61,23 @@ describe('Search Account Component - Individuals', () => {
       cy.get(CommonLocators.businessUnitSummaryList).should('exist');
       cy.get(CommonLocators.businessUnitFilterChangeLink).should('exist').contains('Change');
       cy.get(CommonLocators.businessUnitFilterChangeLink).click();
+      cy.get(CommonLocators.quickSearchHint)
+        .invoke('text')
+        .should((text) => {
+          expect(text.replace(/\s+/g, ' ').trim()).to.equal(
+            'Use quick search to search by either account number, or reference or case number, or National Insurance number, or use advanced search.',
+          );
+        });
+      cy.get(CommonLocators.quickSearchHeading).should('contain', 'Quick search');
       cy.get(CommonLocators.accountNumberLabel).should('exist').and('contain', 'Account number');
       cy.get(CommonLocators.referenceOrCaseNumberLabel).should('exist').and('contain', 'Reference or case number');
       cy.get(CommonLocators.referenceOrCaseNumberInput).should('exist');
+      cy.get(CommonLocators.nationalInsuranceNumberLabel).should('exist').and('contain', 'National Insurance number');
+      cy.get(CommonLocators.nationalInsuranceNumberInput).should('exist');
+      cy.get(IndividualsLocators.individualsPanel)
+        .find(CommonLocators.nationalInsuranceNumberInput)
+        .should('not.exist');
+      cy.get(CommonLocators.advancedSearchHeading).should('contain', 'Advanced search');
       cy.get(IndividualsLocators.lastNameLabel).should('exist').and('contain', 'Last name');
       cy.get(IndividualsLocators.lastNameInput).should('exist');
       cy.get(IndividualsLocators.lastNameExactMatchCheckbox).should('exist').and('not.be.checked');
@@ -67,14 +87,65 @@ describe('Search Account Component - Individuals', () => {
       cy.get(IndividualsLocators.includeAliasesCheckbox).should('exist').and('not.be.checked');
       cy.get(IndividualsLocators.dobLabel).should('exist').and('contain', 'Date of birth');
       cy.get(IndividualsLocators.dobInput).should('exist');
-      cy.get(IndividualsLocators.niNumberLabel).should('exist').and('contain', 'National Insurance number');
-      cy.get(IndividualsLocators.niNumberInput).should('exist');
       cy.get(IndividualsLocators.addressLine1Label).should('exist').and('contain', 'Address line 1');
       cy.get(IndividualsLocators.addressLine1Input).should('exist');
       cy.get(IndividualsLocators.postcodeLabel).should('exist').and('contain', 'Postcode');
       cy.get(IndividualsLocators.postcodeInput).should('exist');
       cy.get(CommonLocators.activeAccountsOnlyCheckbox).should('be.checked');
       cy.get(CommonLocators.searchButton).should('exist').and('contain', 'Search');
+    },
+  );
+
+  it(
+    'AC1-AC5. should render the NI quick search section',
+    { tags: [...buildTags('@JIRA-STORY:PO-2953'), '@JIRA-EPIC:PO-2630', '@JIRA-TEST-KEY:PO-9909'] },
+    () => {
+      setupComponent();
+
+      cy.get(CommonLocators.pageHeader).should('contain', 'Search for an account');
+
+      // AC5: The hint below the page title explains the Quick and Advanced search options.
+      cy.get(CommonLocators.quickSearchHint)
+        .invoke('text')
+        .should((text) => {
+          expect(text.replace(/\s+/g, ' ').trim()).to.equal(
+            'Use quick search to search by either account number, or reference or case number, or National Insurance number, or use advanced search.',
+          );
+        });
+
+      // AC3: Quick search groups Account number, Reference or case number, and National Insurance number.
+      cy.get(CommonLocators.quickSearchHeading).should('contain', 'Quick search');
+      cy.get(CommonLocators.accountNumberLabel).should('exist').and('contain', 'Account number');
+      cy.get(CommonLocators.referenceOrCaseNumberLabel).should('exist').and('contain', 'Reference or case number');
+
+      // AC1: National Insurance number is available in Quick search, above the Advanced search tabs.
+      cy.get(CommonLocators.nationalInsuranceNumberLabel).should('exist').and('contain', 'National Insurance number');
+      cy.get(CommonLocators.nationalInsuranceNumberInput)
+        .should('exist')
+        .then(($nationalInsuranceInput) => {
+          cy.get(CommonLocators.advancedSearchHeading).then(($advancedSearchHeading) => {
+            expect(
+              $nationalInsuranceInput[0].compareDocumentPosition($advancedSearchHeading[0]) &
+                Node.DOCUMENT_POSITION_FOLLOWING,
+            ).to.equal(Node.DOCUMENT_POSITION_FOLLOWING);
+          });
+        });
+
+      // AC2: National Insurance number is not duplicated in the Individuals Advanced search tab.
+      cy.get(IndividualsLocators.individualsPanel)
+        .find(CommonLocators.nationalInsuranceNumberInput)
+        .should('not.exist');
+
+      // AC4: Advanced search is clearly labelled above the tabbed search area.
+      cy.get(CommonLocators.advancedSearchHeading)
+        .should('contain', 'Advanced search')
+        .then(($advancedSearchHeading) => {
+          cy.get(NavLocators.tabsContainer).then(($tabsContainer) => {
+            expect(
+              $advancedSearchHeading[0].compareDocumentPosition($tabsContainer[0]) & Node.DOCUMENT_POSITION_FOLLOWING,
+            ).to.equal(Node.DOCUMENT_POSITION_FOLLOWING);
+          });
+        });
     },
   );
 
@@ -271,17 +342,17 @@ describe('Search Account Component - Individuals', () => {
           'AB123$%^C';
       });
 
-      cy.get(IndividualsLocators.niNumberInput).should('have.value', 'AB123$%^C');
+      cy.get(CommonLocators.nationalInsuranceNumberInput).should('have.value', 'AB123$%^C');
       cy.get(CommonLocators.searchButton).click();
 
       cy.get(CommonLocators.errorSummary)
         .should('exist')
         .and('contain', 'National Insurance number must only contain letters or numbers');
-      cy.get(IndividualsLocators.niNumberError)
+      cy.get(CommonLocators.nationalInsuranceNumberError)
         .should('exist')
         .and('contain', 'National Insurance number must only contain letters or numbers');
 
-      cy.get(IndividualsLocators.niNumberInput).clear();
+      cy.get(CommonLocators.nationalInsuranceNumberInput).clear();
     },
   );
   it(
@@ -416,13 +487,110 @@ describe('Search Account Component - Individuals', () => {
           'AB123456CD';
       });
 
-      cy.get(IndividualsLocators.niNumberInput).should('have.value', 'AB123456CD');
+      cy.get(CommonLocators.nationalInsuranceNumberInput).should('have.value', 'AB123456CD');
       cy.get(CommonLocators.searchButton).click();
 
       cy.get(CommonLocators.errorSummary).should('exist');
-      cy.get(IndividualsLocators.niNumberError)
+      cy.get(CommonLocators.nationalInsuranceNumberError)
         .should('exist')
         .and('contain', 'National Insurance number must be 9 characters or fewer');
+    },
+  );
+
+  it(
+    'AC7. should call the Individuals endpoint for National Insurance search',
+    { tags: [...buildTags('@JIRA-STORY:PO-2953'), '@JIRA-EPIC:PO-2630', '@JIRA-TEST-KEY:PO-9910'] },
+    () => {
+      setupComponent(
+        (searchState) => {
+          searchState.fsa_search_account_individuals_search_criteria!.fsa_search_account_individuals_national_insurance_number =
+            'QQ123456C';
+        },
+        { useSpyRouter: false },
+      ).then(({ fixture }) => {
+        cy.stub(fixture.componentRef.injector.get(OpalFines), 'getDefendantAccounts')
+          .returns(of({ count: 0, defendant_accounts: [] }))
+          .as('getDefendantAccounts');
+      });
+
+      cy.get(CommonLocators.nationalInsuranceNumberInput).should('have.value', 'QQ123456C');
+      cy.get(IndividualsLocators.firstNamesExactMatchCheckbox).uncheck().should('not.be.checked');
+      cy.get(CommonLocators.searchButton).click();
+
+      cy.get('@getDefendantAccounts').should('have.been.calledOnce');
+      cy.get('@getDefendantAccounts')
+        .its('firstCall.args.0')
+        .should((payload) => {
+          expect(payload).to.have.property('reference_number', null);
+          expect(payload).to.have.property('active_accounts_only', true);
+          expect(payload).to.have.nested.property('defendant.national_insurance_number', 'QQ123456C');
+        });
+    },
+  );
+
+  it(
+    'AC6a. should route to the problem screen when National Insurance number is combined with a reference or case number',
+    { tags: [...buildTags('@JIRA-STORY:PO-2953'), '@JIRA-EPIC:PO-2630', '@JIRA-TEST-KEY:PO-9911'] },
+    () => {
+      setupComponent((searchState) => {
+        searchState.fsa_search_account_reference_case_number = 'REF123';
+        searchState.fsa_search_account_individuals_search_criteria!.fsa_search_account_individuals_national_insurance_number =
+          'AB123456C';
+      });
+
+      cy.get(CommonLocators.searchButton).click();
+
+      cy.get('@routerNavigate').should('have.been.calledWithMatch', ['problem']);
+    },
+  );
+
+  it(
+    'AC8. should preserve National Insurance number search behaviour after spaces are removed',
+    { tags: [...buildTags('@JIRA-STORY:PO-2953'), '@JIRA-EPIC:PO-2630', '@JIRA-TEST-KEY:PO-9912'] },
+    () => {
+      setupComponent(
+        (searchState) => {
+          searchState.fsa_search_account_individuals_search_criteria!.fsa_search_account_individuals_national_insurance_number =
+            'AB 12 34 56 C';
+        },
+        { useSpyRouter: false },
+      ).then(({ fixture }) => {
+        cy.stub(fixture.componentRef.injector.get(OpalFines), 'getDefendantAccounts')
+          .returns(of({ count: 0, defendant_accounts: [] }))
+          .as('getDefendantAccounts');
+      });
+
+      cy.get(CommonLocators.nationalInsuranceNumberInput).should('have.value', 'AB 12 34 56 C');
+      cy.get(IndividualsLocators.firstNamesExactMatchCheckbox).uncheck().should('not.be.checked');
+      cy.get(CommonLocators.searchButton).click();
+
+      cy.get('@getDefendantAccounts').should('have.been.calledOnce');
+      cy.get('@getDefendantAccounts')
+        .its('firstCall.args.0')
+        .should((payload) => {
+          expect(payload).to.have.nested.property('defendant.national_insurance_number', 'AB123456C');
+        });
+    },
+  );
+
+  // Invalid characters must still be rejected after whitespace normalisation; this validates NI input rules, not AC8.
+  it(
+    'NI validation: should reject invalid characters after spaces are removed',
+    { tags: [...buildTags('@JIRA-STORY:PO-2953'), '@JIRA-EPIC:PO-2630', '@JIRA-TEST-KEY:PO-9913'] },
+    () => {
+      setupComponent((searchState) => {
+        searchState.fsa_search_account_individuals_search_criteria!.fsa_search_account_individuals_national_insurance_number =
+          'AB 12 34 56 $';
+      }).then(({ fixture }) => {
+        cy.spy(fixture.componentRef.injector.get(OpalFines), 'getDefendantAccounts').as('getDefendantAccounts');
+      });
+
+      cy.get(CommonLocators.searchButton).click();
+
+      cy.get(CommonLocators.nationalInsuranceNumberError)
+        .should('exist')
+        .and('contain', 'National Insurance number must only contain letters or numbers');
+      cy.get('@getDefendantAccounts').should('not.have.been.called');
     },
   );
 

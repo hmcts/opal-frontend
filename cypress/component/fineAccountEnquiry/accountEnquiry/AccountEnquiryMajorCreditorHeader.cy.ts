@@ -8,7 +8,7 @@ import { interceptMajorCreditorHeader } from './intercept/defendantAccountInterc
 
 const ACCOUNT_ENQUIRY_JIRA_LABEL = '@JIRA-LABEL:account-enquiry';
 
-const buildTags = (...tags: string[]): string[] => [...tags, ACCOUNT_ENQUIRY_JIRA_LABEL];
+const buildTags = (...tags: string[]): string[] => [...tags, ACCOUNT_ENQUIRY_JIRA_LABEL, '@R1B'];
 
 describe('Account Enquiry - Major Creditor Header', () => {
   beforeEach(() => {
@@ -26,7 +26,7 @@ describe('Account Enquiry - Major Creditor Header', () => {
 
   it(
     'AC1b: displays the Major Creditor Account Header Summary in line with the design artefact',
-    { tags: [...buildTags('@JIRA-STORY:PO-2128'), '@JIRA-EPIC:PO-1286'] },
+    { tags: [...buildTags('@JIRA-STORY:PO-2128'), '@JIRA-EPIC:PO-1286', '@JIRA-TEST-KEY:PO-9593'] },
     () => {
       const header = structuredClone(FINES_ACC_MAJOR_CREDITOR_DETAILS_HEADER_MOCK);
 
@@ -47,7 +47,7 @@ describe('Account Enquiry - Major Creditor Header', () => {
 
   it(
     'AC1c: displays header field values using the major creditor account data rules',
-    { tags: [...buildTags('@JIRA-STORY:PO-2128'), '@JIRA-EPIC:PO-1286'] },
+    { tags: [...buildTags('@JIRA-STORY:PO-2128'), '@JIRA-EPIC:PO-1286', '@JIRA-TEST-KEY:PO-9594'] },
     () => {
       const header = structuredClone(FINES_ACC_MAJOR_CREDITOR_DETAILS_HEADER_MOCK);
       header.major_creditor.account_number = '12345678X';
@@ -79,7 +79,7 @@ describe('Account Enquiry - Major Creditor Header', () => {
 
   it(
     'AC1c: displays Central Fund as the account type when the header data identifies a Central Fund account',
-    { tags: [...buildTags('@JIRA-STORY:PO-2128'), '@JIRA-EPIC:PO-1286'] },
+    { tags: [...buildTags('@JIRA-STORY:PO-2128'), '@JIRA-EPIC:PO-1286', '@JIRA-TEST-KEY:PO-9595'] },
     () => {
       const header = structuredClone(FINES_ACC_MAJOR_CREDITOR_DETAILS_HEADER_MOCK);
       header.major_creditor.account_number = '00000009C';

@@ -53,6 +53,8 @@ import { applyUniqPlaceholder } from '../../utils/stringUtils';
 import { installDraftAccountCleanup } from 'cypress/support/draftAccounts';
 import { AccountSearchIndividualsActions } from '../../../e2e/functional/opal/actions/search/search.individuals.actions';
 import { PrimaryNavigationActions } from '../../../e2e/functional/opal/actions/primary-navigation.actions';
+// import { log } from '../../utils/log.helper';
+import { assertPageAtTop } from '../../utils/page.utils';
 const flow = () => new ManualAccountCreationFlow();
 const comments = () => new ManualAccountCommentsNotesActions();
 const employerDetails = () => new ManualEmployerDetailsActions();
@@ -1513,4 +1515,13 @@ Then(
  */
 Then('the latest draft account create response should include UTC timestamps', () => {
   flow().assertLatestDraftAccountCreateResponseIncludesUtcTimestamps();
+});
+
+/**
+ * @step Asserts the page is scrolled to the top.
+ * @description Validates the page has been scrolled to the top.
+ */
+
+Then('I return to the top of the page', () => {
+  assertPageAtTop();
 });

@@ -6,7 +6,8 @@
   },
   "opal-api": {
     "opal-fines-service": "http://localhost:4550",
-    "opal-user-service": "http://localhost:4555"
+    "opal-user-service": "http://localhost:4555",
+    "timeoutInMilliseconds": 30000
   },
   "features": {
     "redis": {
@@ -73,7 +74,7 @@
   },
   "secrets": {
     "opal": {
-      "redis-connection-string": "redis://localhost:6379",
+      "managed-redis-connection-string": "redis://localhost:6379",
       "opal-frontend-session-secret": "supersecret",
       "opal-frontend-cookie-secret": "supersecret",
       "opal-frontend-csrf-secret": "supersecret",
@@ -111,6 +112,11 @@
   },
   "opal-user-service": {
     "timeoutInMilliseconds": 5000,
+    "retryAttempts": 3,
+    "retryDelayInMilliseconds": 200
+  },
+  "opal-fines-service": {
+    "timeoutInMilliseconds": 29000,
     "retryAttempts": 3,
     "retryDelayInMilliseconds": 200
   },

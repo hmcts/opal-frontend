@@ -1,18 +1,31 @@
-import { ComponentFixture, TestBed } from '@angular/core/testing';
-import { FinesMacOffenceDetailsReviewOffenceComponent } from './fines-mac-offence-details-review-offence.component';
 import { provideHttpClient, withInterceptorsFromDi } from '@angular/common/http';
 import { provideHttpClientTesting } from '@angular/common/http/testing';
-import { provideRouter, ActivatedRoute } from '@angular/router';
-import { of } from 'rxjs';
-import { FINES_MAC_OFFENCE_DETAILS_FORM_MOCK } from '../mocks/fines-mac-offence-details-form.mock';
-import { OPAL_FINES_RESULTS_REF_DATA_MOCK } from '@services/fines/opal-fines-service/mocks/opal-fines-results-ref-data.mock';
+import { ComponentFixture, TestBed } from '@angular/core/testing';
+import { ActivatedRoute, provideRouter } from '@angular/router';
 import { OPAL_FINES_MAJOR_CREDITOR_REF_DATA_MOCK } from '@services/fines/opal-fines-service/mocks/opal-fines-major-creditor-ref-data.mock';
-import { FINES_MAC_OFFENCE_DETAILS_STATE_IMPOSITIONS_MOCK } from '../mocks/fines-mac-offence-details-state-impositions.mock';
+import { OPAL_FINES_OFFENCES_REF_DATA_SINGULAR_MOCK } from '@services/fines/opal-fines-service/mocks/opal-fines-offences-ref-data-singular.mock';
+import { OPAL_FINES_RESULTS_REF_DATA_MOCK } from '@services/fines/opal-fines-service/mocks/opal-fines-results-ref-data.mock';
+import { OpalFines } from '@services/fines/opal-fines-service/opal-fines.service';
+import { firstValueFrom, of } from 'rxjs';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
+import { OPAL_FINES_RESULT_PRETTY_NAME_MOCK } from '../../../services/opal-fines-service/mocks/opal-fines-result-pretty-name.mock';
+import { FINES_MAC_OFFENCE_DETAILS_FORM_MOCK } from '../mocks/fines-mac-offence-details-form.mock';
+import { FINES_MAC_OFFENCE_DETAILS_STATE_IMPOSITIONS_MOCK } from '../mocks/fines-mac-offence-details-state-impositions.mock';
+import { FinesMacOffenceDetailsReviewOffenceComponent } from './fines-mac-offence-details-review-offence.component';
+import { FinesMacOffenceDetailsService } from '../services/fines-mac-offence-details.service';
+import { IOpalFinesOffencesRefData } from '../../../services/opal-fines-service/interfaces/opal-fines-offences-ref-data.interface';
+import { OPAL_FINES_OFFENCES_REF_DATA_DUPLICATE_CODE_MOCK } from '../../../services/opal-fines-service/mocks/opal-fines-offences-ref-data-duplicate-code.mock';
+import { OPAL_FINES_OFFENCES_REF_DATA_MOCK } from '../../../services/opal-fines-service/mocks/opal-fines-offences-ref-data.mock';
+import { FinesMacOffenceDetailsReviewOffenceHeadingComponent } from './fines-mac-offence-details-review-offence-heading/fines-mac-offence-details-review-offence-heading.component';
+import { By } from '@angular/platform-browser';
+import { FinesMacOffenceDetailsReviewOffenceImpositionComponent } from './fines-mac-offence-details-review-offence-imposition/fines-mac-offence-details-review-offence-imposition.component';
 
 describe('FinesMacOffenceDetailsReviewOffenceComponent', () => {
   let component: FinesMacOffenceDetailsReviewOffenceComponent;
   let fixture: ComponentFixture<FinesMacOffenceDetailsReviewOffenceComponent>;
+  let mockOpalFinesService: Partial<OpalFines>;
+  let offenceDetailsService: FinesMacOffenceDetailsService;
+
   const activatedRouteMock = {
     parent: of('offence-details'),
     snapshot: {
@@ -24,9 +37,15 @@ describe('FinesMacOffenceDetailsReviewOffenceComponent', () => {
   };
 
   beforeEach(async () => {
+    mockOpalFinesService = {
+      getOffenceByCjsCode: vi.fn().mockReturnValue(of(OPAL_FINES_OFFENCES_REF_DATA_SINGULAR_MOCK)),
+      getResultPrettyName: vi.fn().mockReturnValue(OPAL_FINES_RESULT_PRETTY_NAME_MOCK),
+    };
+
     await TestBed.configureTestingModule({
       imports: [FinesMacOffenceDetailsReviewOffenceComponent],
       providers: [
+        { provide: OpalFines, useValue: mockOpalFinesService },
         provideRouter([]),
         provideHttpClient(withInterceptorsFromDi()),
         provideHttpClientTesting(),
@@ -40,6 +59,8 @@ describe('FinesMacOffenceDetailsReviewOffenceComponent', () => {
     fixture = TestBed.createComponent(FinesMacOffenceDetailsReviewOffenceComponent);
     component = fixture.componentInstance;
 
+    offenceDetailsService = TestBed.inject(FinesMacOffenceDetailsService);
+
     component.offence = {
       ...structuredClone(FINES_MAC_OFFENCE_DETAILS_FORM_MOCK),
       formData: {
@@ -50,8 +71,6 @@ describe('FinesMacOffenceDetailsReviewOffenceComponent', () => {
     component.impositionRefData = OPAL_FINES_RESULTS_REF_DATA_MOCK;
     component.majorCreditorRefData = OPAL_FINES_MAJOR_CREDITOR_REF_DATA_MOCK;
     component.showActions = false;
-
-    fixture.detectChanges();
   });
 
   beforeEach(() => {
@@ -90,5 +109,102 @@ describe('FinesMacOffenceDetailsReviewOffenceComponent', () => {
 
     expect(component.impositionRefData).toEqual(existingResults);
     expect(component.majorCreditorRefData).toEqual(existingMajorCreditors);
+  });
+
+  describe('offenceDetails$', () => {
+    it('should expose and render the exact matched offence details', async () => {
+      vi.mocked(mockOpalFinesService.getOffenceByCjsCode!).mockReturnValue(of(OPAL_FINES_OFFENCES_REF_DATA_MOCK));
+      component.offence.formData.fm_offence_details_offence_cjs_code = 'CA03010D';
+      component.offence.formData.fm_offence_details_offence_id = 314683;
+      fixture.detectChanges();
+
+      const offenceDetails = await firstValueFrom(component.offenceDetails$);
+
+      expect(offenceDetails).toEqual(
+        expect.objectContaining({
+          cjs_code: 'CA03010D',
+          offence_title: 'No Televison Licence',
+        }),
+      );
+    });
+
+    it('should use the saved offence code when no exact match is found', async () => {
+      vi.spyOn(offenceDetailsService, 'findExactOffenceMatch').mockReturnValue(undefined);
+
+      const savedOffenceCode = component.offence.formData.fm_offence_details_offence_cjs_code;
+
+      fixture.detectChanges();
+
+      const offenceDetails = await firstValueFrom(component.offenceDetails$);
+
+      expect(offenceDetails).toEqual(
+        expect.objectContaining({
+          cjs_code: savedOffenceCode,
+          offence_title: '',
+        }),
+      );
+    });
+
+    it('should use the saved offence id when duplicate code matches are returned', async () => {
+      vi.mocked(mockOpalFinesService.getOffenceByCjsCode!).mockReturnValue(
+        of(OPAL_FINES_OFFENCES_REF_DATA_DUPLICATE_CODE_MOCK),
+      );
+
+      component.offence.formData.fm_offence_details_offence_cjs_code = 'GMMET001';
+      component.offence.formData.fm_offence_details_offence_id = 41800;
+
+      fixture.detectChanges();
+
+      const offenceDetails = await firstValueFrom(component.offenceDetails$);
+
+      expect(offenceDetails).toEqual(
+        expect.objectContaining({
+          cjs_code: 'GMMET001',
+          offence_title: 'Duplicate offence title B',
+        }),
+      );
+    });
+
+    it('should call findExactOffenceMatch with the offence code and offence id', async () => {
+      const findExactOffenceMatchSpy = vi.spyOn(offenceDetailsService, 'findExactOffenceMatch');
+
+      fixture.detectChanges();
+      await firstValueFrom(component.offenceDetails$);
+
+      expect(findExactOffenceMatchSpy).toHaveBeenCalledWith(
+        OPAL_FINES_OFFENCES_REF_DATA_SINGULAR_MOCK,
+        component.offence.formData.fm_offence_details_offence_cjs_code,
+        component.offence.formData.fm_offence_details_offence_id,
+      );
+    });
+  });
+  it('should render the saved offence and impositions when refData is empty', async () => {
+    vi.spyOn(offenceDetailsService, 'findExactOffenceMatch').mockReturnValue(undefined);
+
+    vi.mocked(mockOpalFinesService.getOffenceByCjsCode!).mockReturnValue(
+      of({
+        refData: [],
+      } as unknown as IOpalFinesOffencesRefData),
+    );
+
+    const savedOffenceCode = component.offence.formData.fm_offence_details_offence_cjs_code;
+    const savedImpositions = component.offence.formData.fm_offence_details_impositions;
+
+    component.showDetails = true;
+
+    fixture.detectChanges();
+    await fixture.whenStable();
+    fixture.detectChanges();
+
+    const heading = fixture.debugElement.query(By.directive(FinesMacOffenceDetailsReviewOffenceHeadingComponent));
+
+    const imposition = fixture.debugElement.query(By.directive(FinesMacOffenceDetailsReviewOffenceImpositionComponent));
+
+    expect(heading).toBeTruthy();
+    expect(imposition).toBeTruthy();
+
+    expect(heading.componentInstance.offenceCode).toBe(savedOffenceCode);
+    expect(heading.componentInstance.offenceTitle).toBe('');
+    expect(imposition.componentInstance.impositions).toEqual(savedImpositions);
   });
 });

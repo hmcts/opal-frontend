@@ -51,6 +51,12 @@ export class ManualOffenceReviewActions {
     this.getOffenceComponent(offenceCode)
       .find(L.review.impositionTable)
       .within(() => {
+        cy.get('caption')
+          .should('have.length', 1)
+          .and('have.class', 'govuk-visually-hidden')
+          .and('contain.text', 'Offence:')
+          .and('contain.text', offenceCode);
+
         cy.get('thead th')
           .then(($headers) => Array.from($headers, (el) => el.textContent?.trim() ?? ''))
           .should((actualHeaders) => {
@@ -211,6 +217,17 @@ export class ManualOffenceReviewActions {
       .should('exist')
       .scrollIntoView()
       .click({ force: true });
+  }
+
+  /**
+   * Returns to Account details from review and asserts no unsaved-changes dialog appears.
+   */
+  returnToAccountDetailsWithoutUnsavedChangesWarning(): void {
+    log('navigate', 'Returning to account details from review without unsaved-changes warning');
+    const confirmSpy = cy.stub().returns(true);
+    cy.on('window:confirm', confirmSpy);
+    this.returnToAccountDetails();
+    cy.wrap(confirmSpy).should('not.have.been.called');
   }
 
   /**

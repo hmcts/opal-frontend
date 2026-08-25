@@ -39,7 +39,6 @@ const COMPONENT_PROPERTIES: IComponentProperties = {
   ],
 };
 
-const REMOVE_ENFORCEMENT_OVERRIDE_ROUTE = '../enforcement/override/remove';
 const REMOVE_ENFORCEMENT_OVERRIDE_TITLE = 'Are you sure you want to remove this enforcement override?';
 const EXISTING_OVERRIDE_TEXT = 'Application made for Benefit Deductions (ABDC)';
 
@@ -196,27 +195,27 @@ function mountRemoveEnforcementOverride(expectedCaption: string) {
 
 describe(
   'Remove Enforcement Override - Individual',
-  { tags: ['@JIRA-STORY:PO-1851', '@JIRA-EPIC:PO-1675', '@JIRA-LABEL:account-enquiry'] },
+  { tags: ['@JIRA-STORY:PO-1851', '@JIRA-EPIC:PO-1675', '@JIRA-LABEL:account-enquiry', '@R1B'] },
   () => {
     it(
       'AC1. Selecting Remove from the Enforcement tab navigates to the remove screen',
-      { tags: ['@JIRA-TEST-KEY:PO-4461'] },
+      { tags: ['@JIRA-TEST-KEY:PO-4461', '@R1B'] },
       () => {
         const { accountId } = registerRemoveEnforcementOverrideIntercepts(buildIndividualHeaderMock());
 
         setupAccountEnquiryComponent({ ...COMPONENT_PROPERTIES, accountId });
 
         cy.get(ENF.enforcementOverrideValue).should('contain.text', 'Application made for Benefit Deductions (ABDC)');
+        cy.get(REMOVE_ENF_OVERRIDE.title).should('not.contain.text', REMOVE_ENFORCEMENT_OVERRIDE_TITLE);
         cy.get(ENF.removeEnforcementOverrideLink).should('exist').and('contain.text', 'Remove').click();
 
-        cy.get('@routerNavigate').should('have.been.calledWithMatch', [REMOVE_ENFORCEMENT_OVERRIDE_ROUTE]);
         assertRemoveScreenShell();
       },
     );
 
     it(
       'AC1a, AC1b, AC1c. Should render the remove screen with the individual account identifier and override value',
-      { tags: ['@JIRA-TEST-KEY:PO-4462'] },
+      { tags: ['@JIRA-TEST-KEY:PO-4462', '@R1B'] },
       () => {
         individualSetup();
 
@@ -227,7 +226,7 @@ describe(
 
     it(
       'AC2, AC2a, AC2b, AC2c. Yes - remove should clear the override, return to Enforcement and show a success banner',
-      { tags: ['@JIRA-TEST-KEY:PO-4463'] },
+      { tags: ['@JIRA-TEST-KEY:PO-4463', '@R1B'] },
       () => {
         const { accountId } = individualSetup();
         const updatedEnforcementMock = buildRemovedEnforcementOverrideMock();
@@ -253,7 +252,7 @@ describe(
 
     it(
       'AC3, AC3a. No - cancel should return to the Enforcement tab without removing the override',
-      { tags: ['@JIRA-TEST-KEY:PO-4464'] },
+      { tags: ['@JIRA-TEST-KEY:PO-4464', '@R1B'] },
       () => {
         const { navigateSpy } = mountRemoveEnforcementOverride('177A - Mr Robert THOMSON');
 
@@ -269,11 +268,11 @@ describe(
 
 describe(
   'Remove Enforcement Override - Company',
-  { tags: ['@JIRA-STORY:PO-1865', '@JIRA-EPIC:PO-1675', '@JIRA-LABEL:account-enquiry'] },
+  { tags: ['@JIRA-STORY:PO-1865', '@JIRA-EPIC:PO-1675', '@JIRA-LABEL:account-enquiry', '@R1B'] },
   () => {
     it(
       'AC1b. Should render the remove screen with the company account identifier',
-      { tags: ['@JIRA-TEST-KEY:PO-4465'] },
+      { tags: ['@JIRA-TEST-KEY:PO-4465', '@R1B'] },
       () => {
         companySetup();
 
@@ -286,11 +285,11 @@ describe(
 
 describe(
   'Remove Enforcement Override - Parent/Guardian',
-  { tags: ['@JIRA-STORY:PO-1864', '@JIRA-EPIC:PO-1675', '@JIRA-LABEL:account-enquiry'] },
+  { tags: ['@JIRA-STORY:PO-1864', '@JIRA-EPIC:PO-1675', '@JIRA-LABEL:account-enquiry', '@R1B'] },
   () => {
     it(
       'AC1b. Should render the remove screen with the parent or guardian account identifier',
-      { tags: ['@JIRA-TEST-KEY:PO-4466'] },
+      { tags: ['@JIRA-TEST-KEY:PO-4466', '@R1B'] },
       () => {
         parentGuardianSetup();
 
