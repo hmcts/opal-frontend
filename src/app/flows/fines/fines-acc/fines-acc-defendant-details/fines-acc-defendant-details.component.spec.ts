@@ -154,6 +154,8 @@ describe('FinesAccDefendantDetailsComponent', () => {
 
     expect(component.isTransferredIn).toBe(true);
     expect(bannerText).toContain('Account transferred in');
+  });
+
   it('should pass the account status code to the summary header', () => {
     const summaryHeader = fixture.debugElement.query(By.directive(FinesAccSummaryHeaderComponent));
 
