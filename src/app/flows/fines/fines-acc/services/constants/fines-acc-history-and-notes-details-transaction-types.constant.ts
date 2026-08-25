@@ -1,4 +1,5 @@
 export const FINES_ACC_HISTORY_AND_NOTES_DETAILS_TRANSACTION_TYPES = {
+  bacs: 'BACS',
   cancelledCheque: 'CANCHQ',
   cheque: 'CHEQUE',
   consolidation: 'CONSOL',
@@ -14,4 +15,4 @@ export const FINES_ACC_HISTORY_AND_NOTES_DETAILS_TRANSACTION_TYPES = {
   tfoIn: 'TFOIN',
   tfoOut: 'TFO',
   writeOff: 'WRTOFF',
-};
+} as const;

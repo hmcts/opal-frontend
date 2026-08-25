@@ -1,6 +1,7 @@
 export const FINES_ACC_HISTORY_AND_NOTES_DETAILS_LABELS = {
   accountConsolidated: 'Account consolidated',
   amountCreditedToMasterAccount: 'Amount credited to master account',
+  bacsPayment: 'BACS payment',
   case: 'Case:',
   chequeCancelled: 'Cheque cancelled',
   chequeDishonoured: 'Cheque dishonoured',
@@ -21,6 +22,7 @@ export const FINES_ACC_HISTORY_AND_NOTES_DETAILS_LABELS = {
   old: 'Old:',
   new: 'New:',
   paid: 'Paid:',
+  paymentReference: 'Payment reference:',
   paymentReceived: 'Payment received',
   paymentReversed: 'Payment reversed',
   receivedFrom: 'Received from:',

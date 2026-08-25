@@ -1,3 +1,5 @@
+import { FINES_ACC_HISTORY_AND_NOTES_DETAILS_LABELS } from './fines-acc-history-and-notes-details-labels.constant';
+
 export const FINES_ACC_MINOR_CREDITOR_HISTORY_AND_NOTES_TRANSACTION_TEMPLATES = {
   simple: {
     CFEES: 'Court Fee',
@@ -6,8 +8,8 @@ export const FINES_ACC_MINOR_CREDITOR_HISTORY_AND_NOTES_TRANSACTION_TEMPLATES = 
   },
   labelledReference: {
     BACS: {
-      label: 'BACS payment',
-      referenceLabel: 'Payment reference:',
+      label: FINES_ACC_HISTORY_AND_NOTES_DETAILS_LABELS.bacsPayment,
+      referenceLabel: FINES_ACC_HISTORY_AND_NOTES_DETAILS_LABELS.paymentReference,
     },
     CANCHQ: {
       label: 'Cheque cancelled',
@@ -15,15 +17,15 @@ export const FINES_ACC_MINOR_CREDITOR_HISTORY_AND_NOTES_TRANSACTION_TEMPLATES = 
     },
     RIBACS: {
       label: 'BACS payment reissued',
-      referenceLabel: 'Payment reference:',
+      referenceLabel: FINES_ACC_HISTORY_AND_NOTES_DETAILS_LABELS.paymentReference,
     },
     RTBACS: {
       label: 'BACS payment cancelled',
-      referenceLabel: 'Payment reference:',
+      referenceLabel: FINES_ACC_HISTORY_AND_NOTES_DETAILS_LABELS.paymentReference,
     },
   },
   cheque: {
-    CHEQUE: 'Cheque issued',
+    CHEQUE: FINES_ACC_HISTORY_AND_NOTES_DETAILS_LABELS.chequeIssued,
     RICHEQ: 'Cheque reissued',
   },
   defendantAccount: {
