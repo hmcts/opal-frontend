@@ -14,6 +14,7 @@ import {
 import { FINES_ACC_HISTORY_AND_NOTES_DETAILS_ALIAS_PATH_PREFIXES } from '../constants/fines-acc-history-and-notes-details-alias-path-prefixes.constant';
 import { FINES_ACC_HISTORY_AND_NOTES_DETAILS_EMPTY_VALUES } from '../constants/fines-acc-history-and-notes-details-empty-values.constant';
 import { FINES_ACC_HISTORY_AND_NOTES_DETAILS_LINK_TYPES } from '../constants/fines-acc-history-and-notes-details-link-types.constant';
+import { FINES_ACC_HISTORY_AND_NOTES_DETAILS_ASSOCIATED_RECORD_TYPES } from '../constants/fines-acc-history-and-notes-details-associated-record-types.constant';
 import { FINES_ACC_MINOR_CREDITOR_HISTORY_AND_NOTES_DETAILS_FIELD_ALIASES } from '../constants/fines-acc-minor-creditor-history-and-notes-details-field-aliases.constant';
 import { FINES_ACC_MINOR_CREDITOR_HISTORY_AND_NOTES_ORDER_AND_NOTICE_TEMPLATES } from '../constants/fines-acc-minor-creditor-history-and-notes-order-and-notice-templates.constant';
 import { FINES_ACC_MINOR_CREDITOR_HISTORY_AND_NOTES_TRANSACTION_TEMPLATES } from '../constants/fines-acc-minor-creditor-history-and-notes-transaction-templates.constant';
@@ -212,7 +213,7 @@ function chequeDetails(title: string, item: TFinesAccHistoryAndNotesRawItem): IF
 function suspenseTransferAssociatedValuePart(
   item: TFinesAccHistoryAndNotesRawItem,
 ): IFinesAccHistoryAndNotesDetailsPart | null {
-  const associatedRecordTypes = FINES_ACC_MINOR_CREDITOR_HISTORY_AND_NOTES_TRANSACTION_TEMPLATES.associatedRecordTypes;
+  const associatedRecordTypes = FINES_ACC_HISTORY_AND_NOTES_DETAILS_ASSOCIATED_RECORD_TYPES;
   const associatedRecordType = getString(
     item,
     FINES_ACC_MINOR_CREDITOR_HISTORY_AND_NOTES_DETAILS_FIELD_ALIASES.associatedRecordType,

@@ -1,7 +1,5 @@
 import { FINES_ACC_HISTORY_AND_NOTES_DETAILS_LABELS } from './fines-acc-history-and-notes-details-labels.constant';
 
-import { FINES_ACC_HISTORY_AND_NOTES_DETAILS_ASSOCIATED_RECORD_TYPES } from './fines-acc-history-and-notes-details-associated-record-types.constant';
-
 export const FINES_ACC_MINOR_CREDITOR_HISTORY_AND_NOTES_TRANSACTION_TEMPLATES = {
   simple: {
     CFEES: 'Court Fee',
@@ -48,6 +46,5 @@ export const FINES_ACC_MINOR_CREDITOR_HISTORY_AND_NOTES_TRANSACTION_TEMPLATES = 
   associatedValue: {
     XFER: 'Suspense transfer',
   },
-  associatedRecordTypes: FINES_ACC_HISTORY_AND_NOTES_DETAILS_ASSOCIATED_RECORD_TYPES,
   fallbackReferenceLabel: 'Reference:',
 } as const;
