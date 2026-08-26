@@ -13,7 +13,7 @@ import { FormGroup, FormControl, Validators, FormArray, FormsModule, ReactiveFor
 import { IFinesMacCompanyDetailsForm } from '../interfaces/fines-mac-company-details-form.interface';
 import { IFinesMacCompanyDetailsFieldErrors } from '../interfaces/fines-mac-company-details-field-errors.interface';
 import { FINES_MAC_COMPANY_DETAILS_ALIAS } from '../constants/fines-mac-company-details-alias';
-import { FINES_MAC_COMPANY_DETAILS_FIELD_ERRORS } from '../constants/fines-mac-company-details-field-errors';
+import { FINES_MAC_COMPANY_DETAILS_FIELD_ERRORS } from '../constants/fines-mac-company-details-field-errors.constant';
 import { FINES_MAC_ROUTING_NESTED_ROUTES } from '../../routing/constants/fines-mac-routing-nested-routes.constant';
 import { FINES_MAC_ROUTING_PATHS } from '../../routing/constants/fines-mac-routing-paths.constant';
 import { FinesMacStore } from '../../stores/fines-mac.store';
