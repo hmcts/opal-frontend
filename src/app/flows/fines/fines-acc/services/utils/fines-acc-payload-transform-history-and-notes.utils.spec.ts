@@ -1,6 +1,7 @@
 import { describe, expect, it } from 'vitest';
 import {
   createHistoryChequeDetails,
+  createHistoryTextPartWithOptionalLink,
   getHistoryTransactionTemplateValue,
   transformHistoryAndNotesDetails,
 } from './fines-acc-payload-transform-history-and-notes.utils';
@@ -93,6 +94,18 @@ describe('createHistoryChequeDetails', () => {
       ],
       line2: null,
     });
+  });
+});
+
+describe('createHistoryTextPartWithOptionalLink', () => {
+  it('should add link metadata when a target record identifier is supplied', () => {
+    expect(createHistoryTextPartWithOptionalLink('250000123M', 'account', '123123')).toEqual(
+      part(fragment('250000123M', { link: { type: 'account', emit: '123123' } })),
+    );
+  });
+
+  it('should return plain text when a target record identifier is absent', () => {
+    expect(createHistoryTextPartWithOptionalLink('250000123M', 'account', null)).toEqual(part(fragment('250000123M')));
   });
 });
 

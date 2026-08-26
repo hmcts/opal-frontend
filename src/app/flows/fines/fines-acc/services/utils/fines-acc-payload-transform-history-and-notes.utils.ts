@@ -118,6 +118,28 @@ export function createHistoryPlainLabelValuePart(
 }
 
 /**
+ * Creates a text details part with link metadata when a target record identifier is available.
+ *
+ * @param text - The optional text displayed to the user.
+ * @param linkType - The type of record the text opens.
+ * @param linkEmit - The optional target record identifier emitted by the UI.
+ * @returns The text part, with link metadata when possible, or null when there is no text to display.
+ */
+export function createHistoryTextPartWithOptionalLink(
+  text: string | null,
+  linkType: string,
+  linkEmit: string | null,
+): IFinesAccHistoryAndNotesDetailsPart | null {
+  return text
+    ? createHistoryDetailsPart([
+        createHistoryFragment(text, {
+          link: linkEmit ? createHistoryLink(linkType, linkEmit) : null,
+        }),
+      ])
+    : null;
+}
+
+/**
  * Transforms amendment history details into changed-field parts.
  *
  * @param item - The raw amendment history item.

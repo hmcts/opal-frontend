@@ -2,12 +2,10 @@ import {
   createHistoryDetails,
   createHistoryDetailsPart,
   createHistoryFragment,
-  createHistoryLink,
   createHistoryTextPart,
   getHistoryString,
   IHistoryDetails as IFinesAccHistoryAndNotesDetails,
   IHistoryDetailsFragment as IFinesAccHistoryAndNotesDetailsFragment,
-  IHistoryDetailsLink as IFinesAccHistoryAndNotesDetailsLink,
   IHistoryDetailsPart as IFinesAccHistoryAndNotesDetailsPart,
   IHistoryFragmentOptions as IFinesAccHistoryAndNotesFragmentOptions,
   normaliseHistoryTransactionType,
@@ -21,6 +19,7 @@ import { FINES_ACC_MINOR_CREDITOR_HISTORY_AND_NOTES_ORDER_AND_NOTICE_TEMPLATES }
 import { FINES_ACC_MINOR_CREDITOR_HISTORY_AND_NOTES_TRANSACTION_TEMPLATES } from '../constants/fines-acc-minor-creditor-history-and-notes-transaction-templates.constant';
 import {
   createHistoryChequeDetails,
+  createHistoryTextPartWithOptionalLink,
   getHistoryTransactionTemplateValue,
 } from './fines-acc-payload-transform-history-and-notes.utils';
 
@@ -242,13 +241,11 @@ function defendantAccountNumberPart(item: TFinesAccHistoryAndNotesRawItem): IFin
   const accountNumber = defendantAccountNumber(item);
   const emit = defendantAccountId(item);
 
-  return accountNumber
-    ? part([
-        fragment(accountNumber, {
-          link: emit ? createLink(FINES_ACC_HISTORY_AND_NOTES_DETAILS_LINK_TYPES.account, emit) : null,
-        }),
-      ])
-    : null;
+  return createHistoryTextPartWithOptionalLink(
+    accountNumber,
+    FINES_ACC_HISTORY_AND_NOTES_DETAILS_LINK_TYPES.account,
+    emit,
+  );
 }
 
 /**
@@ -323,17 +320,6 @@ function fragment(
   options: IFinesAccHistoryAndNotesFragmentOptions = {},
 ): IFinesAccHistoryAndNotesDetailsFragment {
   return createHistoryFragment(text, options);
-}
-
-/**
- * Creates link metadata for a fragment.
- *
- * @param type - The link type emitted by the UI.
- * @param emit - The emitted linked entity identifier.
- * @returns The fragment link metadata.
- */
-function createLink(type: string, emit: string): IFinesAccHistoryAndNotesDetailsLink {
-  return createHistoryLink(type, emit);
 }
 
 /**

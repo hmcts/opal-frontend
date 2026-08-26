@@ -1,8 +1,5 @@
 import {
   createHistoryDetails,
-  createHistoryDetailsPart,
-  createHistoryFragment,
-  createHistoryLink,
   createHistoryTextPart,
   getHistoryString,
   IHistoryDetails,
@@ -21,6 +18,7 @@ import { FINES_ACC_MAJOR_CREDITOR_HISTORY_AND_NOTES_TRANSACTION_TEMPLATES } from
 import {
   createHistoryChequeDetails,
   createHistoryPlainLabelValuePart,
+  createHistoryTextPartWithOptionalLink,
   getHistoryTransactionTemplateValue,
 } from './fines-acc-payload-transform-history-and-notes.utils';
 
@@ -172,26 +170,8 @@ function transformMajorCreditorLinkedAccountMovementDetails(
 
   return createHistoryDetails([
     createHistoryTextPart(title),
-    createMajorCreditorLinkedTextPart(visibleValue, linkType, linkEmit),
+    createHistoryTextPartWithOptionalLink(visibleValue, linkType, linkEmit),
   ]);
-}
-
-/**
- * Creates a text part with link metadata when the API supplies a target record ID.
- *
- * @param text - The optional value displayed in the history item.
- * @param linkType - The type of record the value opens.
- * @param linkEmit - The optional linked record identifier.
- * @returns A visible part with a link when possible, or null when there is no text to display.
- */
-function createMajorCreditorLinkedTextPart(text: string | null, linkType: string, linkEmit: string | null) {
-  return text
-    ? createHistoryDetailsPart([
-        createHistoryFragment(text, {
-          link: linkEmit ? createHistoryLink(linkType, linkEmit) : null,
-        }),
-      ])
-    : null;
 }
 
 /**
