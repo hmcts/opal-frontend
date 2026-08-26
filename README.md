@@ -14,6 +14,7 @@ This is an [Angular SSR](https://angular.dev/guide/ssr) application. There are t
 - [Production Server](#5-production-server)
 - [Running Unit Tests](#running-unit-tests)
 - [Running End-to-End Tests](#running-end-to-end-tests)
+- [Running Tests Against JCDE Payloads](#running-tests-against-jcde-payloads)
 - [Accessibility Tests](#running-accessibility-tests)
 - [Switching Between Local and Published Common Libraries](#switching-between-local-and-published-common-libraries)
 - [OpenAPI reference models](#openapi-reference-models)
@@ -325,6 +326,26 @@ TAGS=@R1BUatTechPreprod yarn test:functional:tags
 ```
 
 Run `yarn test:component` to execute the Cypress component suite.
+
+### Running Tests Against JCDE Payloads
+
+Some test environments require a different draft-account payload for JCDE. Set
+`JCDE_OVERRIDE=true` to make the Cypress draft-account helpers load payloads
+from `cypress/fixtures/draftAccounts/jcde/` instead of the default fixture
+directory:
+
+```bash
+
+JCDE_OVERRIDE=true yarn test:functional
+
+```
+
+The override is disabled by default. It applies to draft-account payloads
+resolved by `getDraftPayloadFile`; approved-account fixtures and other Cypress
+fixtures are unchanged. Add a matching file under
+`cypress/fixtures/draftAccounts/jcde/` when a payload needs a JCDE-specific
+version. For example, the current `adultOrYouthOnly` payload is available at
+`cypress/fixtures/draftAccounts/jcde/adultOrYouthOnlyPayload.json`.
 
 #### Release-scoped runners
 
