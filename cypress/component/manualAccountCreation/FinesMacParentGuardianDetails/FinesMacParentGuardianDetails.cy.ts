@@ -612,11 +612,11 @@ describe('FinesMacParentGuardianDetailsComponent', () => {
   );
 
   it(
-    '(AC.1) should not permit asterisks in address line 1',
+    '(AC.1) should not permit unsupported punctuation in address line 1',
     { tags: [...buildTags('@JIRA-STORY:PO-364'), '@JIRA-EPIC:PO-344', '@JIRA-TEST-KEY:PO-5102'] },
     () => {
       setupComponent(null, 'pgToPay');
-      finesMacState.parentGuardianDetails.formData.fm_parent_guardian_details_address_line_1 = 'addr1*';
+      finesMacState.parentGuardianDetails.formData.fm_parent_guardian_details_address_line_1 = 'addr/1';
 
       cy.get(DOM_ELEMENTS.returnToAccountDetailsButton).click();
       cy.get(DOM_ELEMENTS.errorSummary).should('contain', FORMAT_CHECK.addressLine1ContainsSpecialCharacters);
@@ -635,11 +635,11 @@ describe('FinesMacParentGuardianDetailsComponent', () => {
   );
 
   it(
-    '(AC.1) should not permit asterisks in address line 2',
+    '(AC.1) should not permit unsupported punctuation in address line 2',
     { tags: [...buildTags('@JIRA-STORY:PO-364'), '@JIRA-EPIC:PO-344', '@JIRA-TEST-KEY:PO-5104'] },
     () => {
       setupComponent(null, 'pgToPay');
-      finesMacState.parentGuardianDetails.formData.fm_parent_guardian_details_address_line_2 = 'addr2*';
+      finesMacState.parentGuardianDetails.formData.fm_parent_guardian_details_address_line_2 = 'addr/2';
 
       cy.get(DOM_ELEMENTS.returnToAccountDetailsButton).click();
       cy.get(DOM_ELEMENTS.errorSummary).should('contain', FORMAT_CHECK.addressLine2ContainsSpecialCharacters);
@@ -658,11 +658,11 @@ describe('FinesMacParentGuardianDetailsComponent', () => {
   );
 
   it(
-    '(AC.1) should not permit asterisks in address line 3',
+    '(AC.1) should not permit unsupported punctuation in address line 3',
     { tags: [...buildTags('@JIRA-STORY:PO-436'), '@JIRA-EPIC:PO-344', '@JIRA-TEST-KEY:PO-5106'] },
     () => {
       setupComponent(null, 'pgToPay');
-      finesMacState.parentGuardianDetails.formData.fm_parent_guardian_details_address_line_3 = 'addr3*';
+      finesMacState.parentGuardianDetails.formData.fm_parent_guardian_details_address_line_3 = 'addr/3';
 
       cy.get(DOM_ELEMENTS.returnToAccountDetailsButton).click();
       cy.get(DOM_ELEMENTS.errorSummary).should('contain', FORMAT_CHECK.addressLine3ContainsSpecialCharacters);

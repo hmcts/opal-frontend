@@ -3,7 +3,7 @@ import { By } from '@angular/platform-browser';
 import { FinesAccSummaryHeaderComponent } from './fines-acc-summary-header.component';
 import { FinesAccBannerMessagesComponent } from '../fines-acc-banner-messages/fines-acc-banner-messages.component';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
-import { FINES_ACC_ACCOUNT_STATUS_BANNER_LABELS } from '../constants/fines-acc-account-status-banner-labels.constant';
+import { FINES_ACC_ACCOUNT_STATUS_BANNERS } from '../constants/fines-acc-account-status-banners.constant';
 
 describe('FinesAccSummaryHeaderComponent', () => {
   let component: FinesAccSummaryHeaderComponent;
@@ -59,9 +59,9 @@ describe('FinesAccSummaryHeaderComponent', () => {
     expect(banner.componentInstance.successMessage).toBe('Saved');
   });
 
-  it.each(Object.entries(FINES_ACC_ACCOUNT_STATUS_BANNER_LABELS))(
+  it.each(Object.entries(FINES_ACC_ACCOUNT_STATUS_BANNERS))(
     'should render the account status banner for status %s',
-    (statusCode, bannerLabel) => {
+    (statusCode, bannerContent) => {
       component.accountStatusCode = statusCode;
       fixture.detectChanges();
 
@@ -69,7 +69,10 @@ describe('FinesAccSummaryHeaderComponent', () => {
         ?.textContent;
       const banners = fixture.debugElement.queryAll(By.css('opal-lib-moj-alert'));
 
-      expect(bannerText).toContain(bannerLabel);
+      expect(bannerText).toContain(bannerContent.heading ?? '');
+      if (bannerContent.label) {
+        expect(bannerText).toContain(bannerContent.label);
+      }
       expect(banners).toHaveLength(1);
     },
   );

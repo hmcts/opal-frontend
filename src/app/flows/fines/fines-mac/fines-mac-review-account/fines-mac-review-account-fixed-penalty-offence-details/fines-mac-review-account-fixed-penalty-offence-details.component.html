@@ -169,7 +169,7 @@
         <ng-container name>Amount imposed</ng-container>
         <ng-container value>
           @if (offenceDetails.fm_offence_details_amount_imposed) {
-            {{ offenceDetails.fm_offence_details_amount_imposed | monetary }}
+            <opal-lib-custom-accessible-monetary [value]="offenceDetails.fm_offence_details_amount_imposed" />
           } @else {
             <app-fines-not-provided></app-fines-not-provided>
           }

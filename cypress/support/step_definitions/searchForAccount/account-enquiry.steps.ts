@@ -33,6 +33,7 @@ import { AccountDetailsCommentsActions } from '../../..//e2e/functional/opal/act
 import { AccountConvertActions } from '../../..//e2e/functional/opal/actions/account-details/convert.account.actions';
 import { EditParentGuardianDetailsActions } from '../../..//e2e/functional/opal/actions/account-details/edit.parent-guardian-details.actions';
 import { AccountDetailsFixedPenaltyActions } from '../../..//e2e/functional/opal/actions/account-details/details.fixed-penalty.actions';
+import { AccountDetailsImpositionsActions } from '../../..//e2e/functional/opal/actions/account-details/details.impositions.actions';
 import { RemoveParentGuardianActions } from '../../..//e2e/functional/opal/actions/account-details/remove.parent-guardian.actions';
 import { EditMinorCreditorDetailsActions } from '../../..//e2e/functional/opal/actions/account-details/edit.minor-creditor-details.actions';
 import { log } from '../../utils/log.helper';
@@ -52,6 +53,7 @@ const convertActions = () => new AccountConvertActions();
 const editParentGuardianDetails = () => new EditParentGuardianDetailsActions();
 const editMinorCreditorDetails = () => new EditMinorCreditorDetailsActions();
 const fixedPenaltyDetails = () => new AccountDetailsFixedPenaltyActions();
+const impositionsDetails = () => new AccountDetailsImpositionsActions();
 const navActions = () => new AccountDetailsNavActions();
 const enforcementActions = () => new AccountDetailsEnforcementActions();
 const paymentTermsActions = () => new AccountDetailsPaymentTermsActions();
@@ -116,6 +118,12 @@ When('I search for the account by last name {string} and open the latest result'
 When('I open the latest matching result from the search results', () => {
   log('step', 'Opening latest matching result from search results');
   accountEnquiryFlow().openMostRecentFromResults();
+});
+
+/** Opens the single result matching all supplied result-table column values. */
+When('I open the matching result from the search results:', (table: DataTable) => {
+  log('step', 'Opening result matching supplied column values');
+  accountEnquiryFlow().openMatchingResultFromResults(table);
 });
 
 /** Opens the Defendant-column link from the latest minor creditor result row. */
@@ -603,6 +611,14 @@ Then('I am presented with the details of the selected child account', () => {
 });
 
 /**
+ * @step Verifies the selected child account displays the closed account banner.
+ */
+Then('I am notified that the selected child account is closed because it was consolidated', () => {
+  log('assert', 'Selected child account consolidated status banner is displayed');
+  accountEnquiryFlow().assertSelectedChildAccountStatusBannerVisible();
+});
+
+/**
  * @step Verifies History and notes rows loaded.
  */
 Then('I should see the History and notes items load', () => {
@@ -779,6 +795,14 @@ When('I continue to the confirm enforcement action page', () => {
 When('I enter {string} for the enforcement action reason', (reason: string) => {
   log('step', 'Enter enforcement action reason', { reason });
   enforcementActions().enterEnforcementActionReason(reason);
+});
+
+/**
+ * @step Chooses the collection type on the add enforcement action details form.
+ */
+When('I choose {string} for collection type', (option: string) => {
+  log('step', 'Choose collection type option', { option });
+  enforcementActions().chooseCollectionType(option);
 });
 
 /**
@@ -1011,6 +1035,12 @@ Then('I should return to the Enforcement tab', () => {
 When('I go to the Impositions tab', () => {
   log('step', 'Navigate to Impositions tab');
   navActions().goToImpositionsTab();
+});
+
+/** @step Asserts the rendered defendant account imposition rows. */
+Then('I should see the defendant account impositions load with the following values:', (table: DataTable) => {
+  log('assert', 'Verify defendant account impositions load');
+  impositionsDetails().assertDefendantAccountImpositionsLoaded(table.raw());
 });
 
 /**
