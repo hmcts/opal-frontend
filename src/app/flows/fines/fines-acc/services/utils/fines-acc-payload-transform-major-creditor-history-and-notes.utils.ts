@@ -8,6 +8,7 @@ import {
   formatHistoryDate,
   getHistoryString,
   IHistoryDetails,
+  normaliseHistoryTransactionType,
   THistoryDetailsRawItem,
 } from '@hmcts/opal-frontend-common/services/history-transformation-service';
 import { FINES_ACC_HISTORY_AND_NOTES_DETAILS_ASSOCIATED_RECORD_TYPES } from '../constants/fines-acc-history-and-notes-details-associated-record-types.constant';
@@ -35,11 +36,8 @@ const LABELS = FINES_ACC_HISTORY_AND_NOTES_DETAILS_LABELS;
 export function transformMajorCreditorTransactionDetails(item: THistoryDetailsRawItem): IHistoryDetails {
   const transactionTemplates = FINES_ACC_MAJOR_CREDITOR_HISTORY_AND_NOTES_TRANSACTION_TEMPLATES;
   const transactionTypes = FINES_ACC_HISTORY_AND_NOTES_DETAILS_TRANSACTION_TYPES;
-  const transactionType = getHistoryString(
-    item,
-    FINES_ACC_HISTORY_AND_NOTES_DETAILS_TRANSACTION_TYPE_ALIASES,
-    [],
-    EMPTY_VALUES,
+  const transactionType = normaliseHistoryTransactionType(
+    getHistoryString(item, FINES_ACC_HISTORY_AND_NOTES_DETAILS_TRANSACTION_TYPE_ALIASES, [], EMPTY_VALUES),
   );
   const bacsPaymentTitle = getTransactionLabel(transactionTemplates.bacsPayment, transactionType);
 

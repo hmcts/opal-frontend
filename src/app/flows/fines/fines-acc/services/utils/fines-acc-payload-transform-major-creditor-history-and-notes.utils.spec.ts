@@ -18,6 +18,8 @@ const labelValuePart = (label: string, value: string) =>
 describe('transformMajorCreditorTransactionDetails', () => {
   it.each([
     ['BACS', 'BACS payment'],
+    ['bacs', 'BACS payment'],
+    [' BACS ', 'BACS payment'],
     ['RTBACS', 'BACS payment returned'],
     ['RIBACS', 'BACS payment reissued'],
   ])('should transform %s with its payment reference', (transactionType, title) => {
