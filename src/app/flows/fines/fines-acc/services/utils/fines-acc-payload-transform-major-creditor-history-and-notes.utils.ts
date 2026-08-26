@@ -163,11 +163,7 @@ function transformMajorCreditorChequeDetails(item: THistoryDetailsRawItem, title
 
   return createHistoryDetails([
     createHistoryTextPart(title),
-    createHistoryLabelValuePart(
-      LABELS.chequeNumber,
-      // Confluence explicitly requires this wording when the cheque number is null.
-      chequeNumber ?? LABELS.notYetWritten,
-    ),
+    createHistoryLabelValuePart(LABELS.chequeNumber, chequeNumber ?? LABELS.notYetWritten),
     // Only cancelled and dishonoured statuses create a third details part.
     statusLabel
       ? createHistoryTextPart(
@@ -202,7 +198,6 @@ function transformMajorCreditorLinkedAccountMovementDetails(
 
   return createHistoryDetails([
     createHistoryTextPart(title),
-    // Confluence underlines this value as a link; omit the optional part when no visible value is supplied.
     createMajorCreditorLinkedTextPart(visibleValue, linkType, linkEmit),
   ]);
 }
@@ -269,6 +264,6 @@ function transformMajorCreditorSuspenseTransferDetails(item: THistoryDetailsRawI
     );
   }
 
-  // The documented optional transfer value is omitted when the record type supplies no recognised value.
+  // No documented record type matched, so retain the readable XFER heading without inventing a second value.
   return createHistoryDetails([createHistoryTextPart(suspenseTransferLabel)]);
 }

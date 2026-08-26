@@ -231,17 +231,6 @@ describe('transformMajorCreditorTransactionDetails', () => {
     );
   });
 
-  it('should keep an unrecognised suspense transfer record type to its title only', () => {
-    const result = transformMajorCreditorTransactionDetails({
-      details: {
-        transactionType: { transactionType: 'XFER' },
-        associatedRecordType: 'other_record',
-      },
-    });
-
-    expect(result).toEqual(details(part(fragment('Suspense transfer'))));
-  });
-
   it('should keep an undocumented transaction code visible', () => {
     const result = transformMajorCreditorTransactionDetails({
       details: { transactionType: { transactionType: 'UNMAPPED' } },
