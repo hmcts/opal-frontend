@@ -109,6 +109,8 @@ Feature: Check And Validate Draft Accounts
     When I open Check and Validate Draft Accounts
     Then I open the draft account for "Barnes{uniq}, Peter" and see header "Mr Peter Barnes{uniq}"
     And the draft account status tag is "In review"
+    And the draft review history item 1 is:
+      | title | Created |
     When I delete the draft account from review and see the confirmation page
     And I confirm draft deletion with reason:
       | Reason | test reason YXZ123 |
