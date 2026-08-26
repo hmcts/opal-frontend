@@ -53,6 +53,12 @@ describe('Account Enquiry Payment Terms', () => {
     interceptResultByCode('REM');
     setupAccountEnquiryComponent({ ...componentProperties, accountId });
     cy.get('router-outlet').should('exist');
+    waitForPaymentTermsTabLoad();
+  };
+
+  const waitForPaymentTermsTabLoad = () => {
+    cy.wait('@getPaymentTerms');
+    cy.wait('@getResultByCode');
   };
 
   const buildParentGuardianHeaderMock = () => {
@@ -152,6 +158,7 @@ describe('Account Enquiry Payment Terms', () => {
         interceptedRoutes: componentProperties.interceptedRoutes?.filter((route) => route !== '../payment-terms/amend'),
       });
       cy.get('router-outlet').should('exist');
+      waitForPaymentTermsTabLoad();
 
       cy.contains(PAYMENT_TERMS_TAB.paymentTermsLink, 'Change').click();
       cy.get('app-fines-acc-payment-terms-amend-form').should('exist');
@@ -871,6 +878,7 @@ describe('Account Enquiry Payment Terms', () => {
       interceptResultByCode('REM');
       setupAccountEnquiryComponent({ ...componentProperties, accountId: accountId });
       cy.get('router-outlet').should('exist');
+      waitForPaymentTermsTabLoad();
 
       cy.contains(PAYMENT_TERMS_TAB.paymentTermsLink, 'Request payment card').click();
       cy.get('@routerNavigate').should('have.been.calledWithMatch', ['../payment-card/request']);

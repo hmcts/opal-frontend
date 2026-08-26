@@ -1,8 +1,8 @@
 import { FINES_MAC_ACCOUNT_COMMENTS_NOTES_FIELD_ERRORS } from '../../fines-mac-account-comments-notes/constants/fines-mac-account-comments-notes-field-errors.constant';
-import { FINES_MAC_COMPANY_DETAILS_FIELD_ERRORS } from '../../fines-mac-company-details/constants/fines-mac-company-details-field-errors';
+import { FINES_MAC_COMPANY_DETAILS_FIELD_ERRORS } from '../../fines-mac-company-details/constants/fines-mac-company-details-field-errors.constant';
 import { FINES_MAC_COURT_DETAILS_FIELD_ERRORS } from '../../fines-mac-court-details/constants/fines-mac-court-details-field-errors';
 import { FINES_MAC_OFFENCE_DETAILS_OFFENCES_FIELD_ERRORS } from '../../fines-mac-offence-details/constants/fines-mac-offence-details-offences-field-errors.constant';
-import { FINES_MAC_PERSONAL_DETAILS_FIELD_ERRORS } from '../../fines-mac-personal-details/constants/fines-mac-personal-details-field-errors';
+import { FINES_MAC_PERSONAL_DETAILS_FIELD_ERRORS } from '../../fines-mac-personal-details/constants/fines-mac-personal-details-field-errors.constant';
 import { IFinesMacFixedPenaltyDetailsFieldErrors } from '../interfaces/fines-mac-fixed-penalty-details-field-errors.interface';
 
 const AMOUNT_IMPOSED_POSITIVE_MESSAGE = `Amount imposed must be greater than zero`;

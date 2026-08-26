@@ -111,10 +111,13 @@ describe('Search Account Component - Company', () => {
       });
 
       cy.get(CommonLocators.searchButton).click();
-      cy.get(CommonLocators.errorSummary).should('contain', 'Address line 1 must only contain letters or numbers');
+      cy.get(CommonLocators.errorSummary).should(
+        'contain',
+        'Address line 1 must only include letters a to z, numbers 0-9 and certain special characters (such as hyphens, spaces, apostrophes and commas)',
+      );
       cy.get(CompanyLocators.addressLine1Error).should(
         'contain',
-        'Address line 1 must only contain letters or numbers',
+        'Address line 1 must only include letters a to z, numbers 0-9 and certain special characters (such as hyphens, spaces, apostrophes and commas)',
       );
       cy.get(CompanyLocators.addressLine1Input).clear();
     },
