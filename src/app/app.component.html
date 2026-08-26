@@ -34,8 +34,13 @@
         @if (minutesRemaining$ | async; as minutes) {
           @if (thresholdInMinutes >= minutes && minutes > 0) {
             <div>
+              <opal-lib-custom-deferred-live-region-announcement
+                message="Warning: Your session will expire soon."
+                role="alert"
+              ></opal-lib-custom-deferred-live-region-announcement>
+
               @let minutesText = minutes === 1 ? 'minute' : 'minutes';
-              <div opal-lib-moj-alert ariaLabel="Your session will expire" type="warning">
+              <div opal-lib-moj-alert type="warning" [enableLiveAnnouncement]="false">
                 <opal-lib-moj-alert-icon icon type="warning"></opal-lib-moj-alert-icon>
                 <opal-lib-moj-alert-content content
                   ><opal-lib-moj-alert-content-text
