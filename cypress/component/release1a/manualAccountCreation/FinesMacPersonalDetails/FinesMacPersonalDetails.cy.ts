@@ -1,5 +1,5 @@
-import { FinesMacPersonalDetailsComponent } from '../../../../src/app/flows/fines/fines-mac/fines-mac-personal-details/fines-mac-personal-details.component';
-import { FINES_MAC_STATE_MOCK } from '../../../../src/app/flows/fines/fines-mac/mocks/fines-mac-state.mock';
+import { FinesMacPersonalDetailsComponent } from '../../../../../src/app/flows/fines/fines-mac/fines-mac-personal-details/fines-mac-personal-details.component';
+import { FINES_MAC_STATE_MOCK } from '../../../../../src/app/flows/fines/fines-mac/mocks/fines-mac-state.mock';
 import {
   FORMAT_CHECK,
   MAIN_PERSONAL_DETAILS,
@@ -13,7 +13,7 @@ import {
   MacPersonalDetailsLocators as DOM_ELEMENTS,
   getAliasFirstName,
   getAliasLastName,
-} from '../../../shared/selectors/manual-account-creation/mac.personal-details.locators';
+} from '../../../../shared/selectors/manual-account-creation/mac.personal-details.locators';
 import { calculateDOB } from 'cypress/support/utils/dateUtils';
 import { mountMacStoreComponent } from '../support/mountMacStoreComponent';
 

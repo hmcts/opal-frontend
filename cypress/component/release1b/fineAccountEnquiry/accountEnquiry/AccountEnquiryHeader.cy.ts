@@ -10,7 +10,7 @@ import {
 } from './intercept/defendantAccountIntercepts';
 
 // constants + mocks
-import { ACCOUNT_ENQUIRY_HEADER_ELEMENTS as DOM } from '../../../shared/selectors/account-enquiry/account.enquiry.header.locators';
+import { ACCOUNT_ENQUIRY_HEADER_ELEMENTS as DOM } from '../../../../shared/selectors/account-enquiry/account.enquiry.header.locators';
 import {
   DEFENDANT_HEADER_MOCK,
   DEFENDANT_HEADER_YOUTH_MOCK,
@@ -22,9 +22,9 @@ import {
   USER_STATE_MOCK_NO_PERMISSION,
   USER_STATE_MOCK_PERMISSION_BU17,
   USER_STATE_MOCK_PERMISSION_BU77,
-} from '../../CommonIntercepts/CommonUserState.mocks';
-import { AccountAtAGlanceLocators as A } from '../../../shared/selectors/account-details/account.at-a-glance.details.locators';
-import { AccountNavDetailsLocators } from '../../../shared/selectors/account-details/account.nav.details.locators';
+} from '../../../CommonIntercepts/CommonUserState.mocks';
+import { AccountAtAGlanceLocators as A } from '../../../../shared/selectors/account-details/account.at-a-glance.details.locators';
+import { AccountNavDetailsLocators } from '../../../../shared/selectors/account-details/account.nav.details.locators';
 
 import { FINES_ACC_MINOR_CREDITOR_DETAILS_HEADER_MOCK } from 'src/app/flows/fines/fines-acc/fines-acc-minor-creditor-details/mocks/fines-acc-minor-creditor-details-header.mock';
 
@@ -36,7 +36,7 @@ import {
   interceptUserState,
 } from 'cypress/component/CommonIntercepts/CommonIntercepts';
 import { OPAL_FINES_ACCOUNT_DEFENDANT_AT_A_GLANCE_MOCK } from './mocks/defendant_details_at_glance_mock';
-import { AccountDetailsResponsiveLayoutActions } from '../../../e2e/functional/opal/actions/account-details/details.responsive-layout.actions';
+import { AccountDetailsResponsiveLayoutActions } from '../../../../e2e/functional/opal/actions/account-details/details.responsive-layout.actions';
 import { OPAL_FINES_ACCOUNT_DEFENDANT_ACCOUNT_PARTY_MOCK } from '@services/fines/opal-fines-service/mocks/opal-fines-account-defendant-account-party.mock';
 import { OPAL_FINES_ACCOUNT_DEFENDANT_DETAILS_PAYMENT_TERMS_LATEST_MOCK } from '@services/fines/opal-fines-service/mocks/opal-fines-account-defendant-details-payment-terms-latest.mock';
 import { OPAL_FINES_ACCOUNT_DEFENDANT_DETAILS_ENFORCEMENT_TAB_REF_DATA_MOCK } from '@services/fines/opal-fines-service/mocks/opal-fines-account-defendant-details-enforcement-tab-ref-data.mock';

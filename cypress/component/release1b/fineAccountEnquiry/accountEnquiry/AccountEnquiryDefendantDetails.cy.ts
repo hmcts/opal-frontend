@@ -1,12 +1,12 @@
 import { interceptAuthenticatedUser, interceptUserState } from 'cypress/component/CommonIntercepts/CommonIntercepts';
 import { DEFENDANT_HEADER_MOCK, DEFENDANT_HEADER_YOUTH_MOCK } from './mocks/defendant_details_mock';
-import { ACCOUNT_ENQUIRY_HEADER_ELEMENTS as HEADER } from '../../../shared/selectors/account-enquiry/account.enquiry.header.locators';
-import { DEFENDANT_DETAILS } from '../../../shared/selectors/account-enquiry/account.enquiry.defendant-details.locators';
+import { ACCOUNT_ENQUIRY_HEADER_ELEMENTS as HEADER } from '../../../../shared/selectors/account-enquiry/account.enquiry.header.locators';
+import { DEFENDANT_DETAILS } from '../../../../shared/selectors/account-enquiry/account.enquiry.defendant-details.locators';
 
 import {
   USER_STATE_MOCK_PERMISSION_BU17,
   USER_STATE_MOCK_PERMISSION_BU77,
-} from '../../CommonIntercepts/CommonUserState.mocks';
+} from '../../../CommonIntercepts/CommonUserState.mocks';
 import { mount } from 'cypress/angular';
 import { ActivatedRoute, provideRouter } from '@angular/router';
 

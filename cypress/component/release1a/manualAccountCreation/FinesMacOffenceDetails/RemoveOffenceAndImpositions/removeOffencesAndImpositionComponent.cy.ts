@@ -1,6 +1,6 @@
 import { mount } from 'cypress/angular';
 import { FinesMacOffenceDetailsRemoveOffenceAndImpositionsComponent } from 'src/app/flows/fines/fines-mac/fines-mac-offence-details/fines-mac-offence-details-remove-offence-and-impositions/fines-mac-offence-details-remove-offence-and-impositions.component';
-import { OpalFines } from '../../../../../src/app/flows/fines/services/opal-fines-service/opal-fines.service';
+import { OpalFines } from '../../../../../../src/app/flows/fines/services/opal-fines-service/opal-fines.service';
 import { ActivatedRoute } from '@angular/router';
 import { FinesMacStore } from 'src/app/flows/fines/fines-mac/stores/fines-mac.store';
 import { FinesMacOffenceDetailsStore } from 'src/app/flows/fines/fines-mac/fines-mac-offence-details/stores/fines-mac-offence-details.store';
@@ -9,7 +9,7 @@ import { FINES_MAC_OFFENCE_DETAILS_DRAFT_STATE_MOCK } from 'src/app/flows/fines/
 import { OPAL_FINES_MAJOR_CREDITOR_REF_DATA_MOCK } from '@services/fines/opal-fines-service/mocks/opal-fines-major-creditor-ref-data.mock';
 import { OPAL_FINES_OFFENCES_REF_DATA_MOCK } from '@services/fines/opal-fines-service/mocks/opal-fines-offences-ref-data.mock';
 import { OPAL_FINES_RESULTS_REF_DATA_MOCK } from '@services/fines/opal-fines-service/mocks/opal-fines-results-ref-data.mock';
-import { MacOffenceDetailsRemoveOffenceAndImpositionsLocators as DOM_ELEMENTS } from '../../../../shared/selectors/manual-account-creation/mac.offence-details.locators';
+import { MacOffenceDetailsRemoveOffenceAndImpositionsLocators as DOM_ELEMENTS } from '../../../../../shared/selectors/manual-account-creation/mac.offence-details.locators';
 import { FINES_MAC_OFFENCE_DETAILS_FORM_MOCK } from './mocks/fines-mac-offence-details-form.mock';
 import { FINES_MAC_STATE_MOCK } from 'src/app/flows/fines/fines-mac/mocks/fines-mac-state.mock';
 

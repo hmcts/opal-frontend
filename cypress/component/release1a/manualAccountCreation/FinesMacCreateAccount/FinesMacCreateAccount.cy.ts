@@ -1,5 +1,5 @@
-import { FinesMacCreateAccountComponent } from '../../../../src/app/flows/fines/fines-mac/fines-mac-create-account/fines-mac-create-account.component';
-import { MacCreateAccountLocators as L } from '../../../../cypress/shared/selectors/manual-account-creation/mac.create-account.locators';
+import { FinesMacCreateAccountComponent } from '../../../../../src/app/flows/fines/fines-mac/fines-mac-create-account/fines-mac-create-account.component';
+import { MacCreateAccountLocators as L } from '../../../../shared/selectors/manual-account-creation/mac.create-account.locators';
 import { ERROR_MESSAGES } from './constants/fines_mac_create_account_errors';
 import { provideHttpClient } from '@angular/common/http';
 import { FINES_CREATE_ACCOUNT_MOCK } from './mocks/fines_mac_create_account_mock';

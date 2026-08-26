@@ -1,9 +1,9 @@
 import { mount } from 'cypress/angular';
-import { FinesMacLanguagePreferencesComponent } from '../../../../src/app/flows/fines/fines-mac/fines-mac-language-preferences/fines-mac-language-preferences.component';
-import { OpalFines } from '../../../../src/app/flows/fines/services/opal-fines-service/opal-fines.service';
+import { FinesMacLanguagePreferencesComponent } from '../../../../../src/app/flows/fines/fines-mac/fines-mac-language-preferences/fines-mac-language-preferences.component';
+import { OpalFines } from '../../../../../src/app/flows/fines/services/opal-fines-service/opal-fines.service';
 import { ActivatedRoute } from '@angular/router';
-import { FINES_MAC_STATE_MOCK } from '../../../../src/app/flows/fines/fines-mac/mocks/fines-mac-state.mock';
-import { MacLanguagePreferencesLocators as L } from '../../../shared/selectors/manual-account-creation/mac.language-preferences.locators';
+import { FINES_MAC_STATE_MOCK } from '../../../../../src/app/flows/fines/fines-mac/mocks/fines-mac-state.mock';
+import { MacLanguagePreferencesLocators as L } from '../../../../shared/selectors/manual-account-creation/mac.language-preferences.locators';
 import { of } from 'rxjs';
 
 const MANUAL_ACCOUNT_CREATION_JIRA_LABEL = '@JIRA-LABEL:manual-account-creation';

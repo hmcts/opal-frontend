@@ -1,13 +1,13 @@
 import { mount } from 'cypress/angular';
 import { FinesMacOffenceDetailsMinorCreditorInformationComponent } from 'src/app/flows/fines/fines-mac/fines-mac-offence-details/fines-mac-offence-details-minor-creditor-information/fines-mac-offence-details-minor-creditor-information.component';
-import { OpalFines } from '../../../../../src/app/flows/fines/services/opal-fines-service/opal-fines.service';
+import { OpalFines } from '../../../../../../src/app/flows/fines/services/opal-fines-service/opal-fines.service';
 import { ActivatedRoute } from '@angular/router';
 import { FINES_MINOR_CREDITOR_MOCK } from './mocks/minor_creditor_information_mocks';
 import { FinesMacStore } from 'src/app/flows/fines/fines-mac/stores/fines-mac.store';
 import { provideHttpClient } from '@angular/common/http';
 import { UtilsService } from '@hmcts/opal-frontend-common/services/utils-service';
 import { FINES_MAC_OFFENCE_DETAILS_MINOR_CREDITOR_STATE_MOCK } from 'src/app/flows/fines/fines-mac/fines-mac-offence-details/fines-mac-offence-details-minor-creditor/mocks/fines-mac-offence-details-minor-creditor-state.mock';
-import { MacOffenceDetailsMinorCreditorInformationLocators as DOM_ELEMENTS } from '../../../../shared/selectors/manual-account-creation/mac.offence-details.locators';
+import { MacOffenceDetailsMinorCreditorInformationLocators as DOM_ELEMENTS } from '../../../../../shared/selectors/manual-account-creation/mac.offence-details.locators';
 import { of } from 'rxjs';
 
 const MANUAL_ACCOUNT_CREATION_JIRA_LABEL = '@JIRA-LABEL:manual-account-creation';

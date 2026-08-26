@@ -1,8 +1,8 @@
 import { mount } from 'cypress/angular';
-import { FinesMacAccountCommentsNotesComponent } from '../../../../src/app/flows/fines/fines-mac/fines-mac-account-comments-notes/fines-mac-account-comments-notes.component';
+import { FinesMacAccountCommentsNotesComponent } from '../../../../../src/app/flows/fines/fines-mac/fines-mac-account-comments-notes/fines-mac-account-comments-notes.component';
 import { ActivatedRoute } from '@angular/router';
-import { FINES_MAC_STATE_MOCK } from '../../../../src/app/flows/fines/fines-mac/mocks/fines-mac-state.mock';
-import { MacAccountCommentsNotesLocators as L } from '../../../shared/selectors/manual-account-creation/mac.account-comments-notes.locators';
+import { FINES_MAC_STATE_MOCK } from '../../../../../src/app/flows/fines/fines-mac/mocks/fines-mac-state.mock';
+import { MacAccountCommentsNotesLocators as L } from '../../../../shared/selectors/manual-account-creation/mac.account-comments-notes.locators';
 import { IFinesMacState } from 'src/app/flows/fines/fines-mac/interfaces/fines-mac-state.interface';
 import { FinesMacStore } from 'src/app/flows/fines/fines-mac/stores/fines-mac.store';
 import { FINES_COMMENT_AND_NOTES_AY_MANDATORY_COMPLETED_MOCK } from './mocks/fines_mac_account_comments_and_notes_AY_mandatory_completed_mock';

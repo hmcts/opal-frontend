@@ -1,4 +1,4 @@
-import { ACCOUNT_ENQUIRY_HEADER_ELEMENTS as DOM } from '../../../shared/selectors/account-enquiry/account.enquiry.header.locators';
+import { ACCOUNT_ENQUIRY_HEADER_ELEMENTS as DOM } from '../../../../shared/selectors/account-enquiry/account.enquiry.header.locators';
 import {
   createParentGuardianHeaderMockWithName,
   DEFENDANT_HEADER_PARENT_GUARDIAN_MOCK,
@@ -7,7 +7,7 @@ import {
 import {
   USER_STATE_MOCK_PERMISSION_BU17,
   USER_STATE_MOCK_PERMISSION_BU77,
-} from '../../CommonIntercepts/CommonUserState.mocks';
+} from '../../../CommonIntercepts/CommonUserState.mocks';
 
 import {
   OPAL_FINES_ACCOUNT_ORG_AT_A_GLANCE_MOCK,
@@ -18,7 +18,7 @@ import { interceptAtAGlance, interceptDefendantHeader } from './intercept/defend
 import { interceptAuthenticatedUser, interceptUserState } from 'cypress/component/CommonIntercepts/CommonIntercepts';
 import { IComponentProperties } from './setup/setupComponent.interface';
 import { setupAccountEnquiryComponent } from './setup/SetupComponent';
-import { DEFENDANT_DETAILS } from '../../../shared/selectors/account-enquiry/account.enquiry.defendant-details.locators';
+import { DEFENDANT_DETAILS } from '../../../../shared/selectors/account-enquiry/account.enquiry.defendant-details.locators';
 import { setLanguagePref } from './Utils/SharedFunctions';
 import { FinesAccDefendantDetailsAtAGlanceTabComponent } from 'src/app/flows/fines/fines-acc/fines-acc-defendant-details/fines-acc-defendant-details-at-a-glance-tab/fines-acc-defendant-details-at-a-glance-tab.component';
 

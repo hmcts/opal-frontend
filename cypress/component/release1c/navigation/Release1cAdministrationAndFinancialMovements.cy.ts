@@ -10,7 +10,7 @@ import { AppInsightsService } from '@hmcts/opal-frontend-common/services/app-ins
 import { LaunchDarklyService } from '@hmcts/opal-frontend-common/services/launch-darkly-service';
 import { PermissionsService } from '@hmcts/opal-frontend-common/services/permissions-service';
 import { DashboardComponent } from 'src/app/pages/dashboard/dashboard.component';
-import { PrimaryNavigationLocators as PrimaryNav } from '../../shared/selectors/primary-navigation.locators';
+import { PrimaryNavigationLocators as PrimaryNav } from '../../../shared/selectors/primary-navigation.locators';
 import {
   RELEASE_1C_ADMINISTRATION_FEATURE_FLAG,
   RELEASE_1C_FINANCIAL_MOVEMENTS_FEATURE_FLAG,

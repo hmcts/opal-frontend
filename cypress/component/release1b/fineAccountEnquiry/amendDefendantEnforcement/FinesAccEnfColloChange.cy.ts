@@ -1,12 +1,12 @@
-import { COLLECTION_ORDER_CHANGE_ELEMENTS as COLLECTION_ORDER_CHANGE } from '../../../shared/selectors/account-enquiry/account.enquiry.collection-order-change.locators';
-import { ACCOUNT_ENQUIRY_ENFORCEMENT_STATUS_ELEMENTS as ENFORCEMENT_STATUS_TAB } from '../../../shared/selectors/account-enquiry/account.enquiry.enforcement.locators';
-import { UNSAVED_CHANGES_WARNING } from '../../../shared/constants/confirmation-messages';
+import { COLLECTION_ORDER_CHANGE_ELEMENTS as COLLECTION_ORDER_CHANGE } from '../../../../shared/selectors/account-enquiry/account.enquiry.collection-order-change.locators';
+import { ACCOUNT_ENQUIRY_ENFORCEMENT_STATUS_ELEMENTS as ENFORCEMENT_STATUS_TAB } from '../../../../shared/selectors/account-enquiry/account.enquiry.enforcement.locators';
+import { UNSAVED_CHANGES_WARNING } from '../../../../shared/constants/confirmation-messages';
 import { setupAccountEnquiryComponent } from '../accountEnquiry/setup/SetupComponent';
 import { IComponentProperties } from '../accountEnquiry/setup/setupComponent.interface';
 import { mount } from 'cypress/angular';
 import { interceptAuthenticatedUser, interceptUserState } from 'cypress/component/CommonIntercepts/CommonIntercepts';
 import { USER_STATE_MOCK_PERMISSION_BU77 } from 'cypress/component/CommonIntercepts/CommonUserState.mocks';
-import { DOM_ELEMENTS as VERSION_CONTROL } from '../../../shared/selectors/account-enquiry/account.enquiry.version-control.locators';
+import { DOM_ELEMENTS as VERSION_CONTROL } from '../../../../shared/selectors/account-enquiry/account.enquiry.version-control.locators';
 import {
   interceptDefendantHeader,
   interceptEnforcementStatus,

@@ -1,4 +1,4 @@
-import { IOpalFinesAccountDefendantAccountParty } from '../../../../../src/app/flows/fines/services/opal-fines-service/interfaces/opal-fines-account-defendant-account-party.interface';
+import { IOpalFinesAccountDefendantAccountParty } from '../../../../../../src/app/flows/fines/services/opal-fines-service/interfaces/opal-fines-account-defendant-account-party.interface';
 
 /**
  * Company/organisation defendant mock with full data

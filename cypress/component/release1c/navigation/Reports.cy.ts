@@ -12,7 +12,7 @@ import { FINES_REPORTS_ROUTING_PATHS } from 'src/app/flows/fines/fines-reports/r
 import { FINES_DASHBOARD_ROUTING_PATHS } from 'src/app/flows/fines/constants/fines-dashboard-routing-paths.constant';
 import { FINES_ROUTING_PATHS } from 'src/app/flows/fines/routing/constants/fines-routing-paths.constant';
 import { DashboardComponent } from 'src/app/pages/dashboard/dashboard.component';
-import { ReportsLocators as L } from '../../shared/selectors/reports.locators';
+import { ReportsLocators as L } from '../../../shared/selectors/reports.locators';
 import {
   RELEASE_1A_FEATURE_FLAG,
   RELEASE_1C_WRITE_OFF_FEATURE_FLAG,

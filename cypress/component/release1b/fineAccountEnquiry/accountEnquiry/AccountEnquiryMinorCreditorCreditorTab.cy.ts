@@ -1,11 +1,11 @@
-import { ACCOUNT_ENQUIRY_HEADER_ELEMENTS as HEADER } from '../../../shared/selectors/account-enquiry/account.enquiry.header.locators';
-import { MINOR_CREDITOR_CREDITOR_DETAILS as CREDITOR_TAB } from '../../../shared/selectors/account-enquiry/account.enquiry.minor-creditor-creditor.locators';
+import { ACCOUNT_ENQUIRY_HEADER_ELEMENTS as HEADER } from '../../../../shared/selectors/account-enquiry/account.enquiry.header.locators';
+import { MINOR_CREDITOR_CREDITOR_DETAILS as CREDITOR_TAB } from '../../../../shared/selectors/account-enquiry/account.enquiry.minor-creditor-creditor.locators';
 import {
   USER_STATE_MOCK_NO_PERMISSION,
   USER_STATE_MOCK_PERMISSION_BU17,
   USER_STATE_MOCK_PERMISSION_BU77,
-} from '../../CommonIntercepts/CommonUserState.mocks';
-import { interceptAuthenticatedUser, interceptUserState } from '../../CommonIntercepts/CommonIntercepts';
+} from '../../../CommonIntercepts/CommonUserState.mocks';
+import { interceptAuthenticatedUser, interceptUserState } from '../../../CommonIntercepts/CommonIntercepts';
 import { interceptMinorCreditorCreditor, interceptMinorCreditorHeader } from './intercept/defendantAccountIntercepts';
 import { setupAccountEnquiryComponent } from './setup/SetupComponent';
 import { IComponentProperties } from './setup/setupComponent.interface';

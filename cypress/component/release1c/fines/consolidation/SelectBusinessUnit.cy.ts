@@ -2,7 +2,7 @@ import { mount } from 'cypress/angular';
 import { FinesConSelectBuFormComponent } from 'src/app/flows/fines/fines-con/select-business-unit/fines-con-select-bu/fines-con-select-bu-form/fines-con-select-bu-form.component';
 import { of } from 'rxjs';
 import { ActivatedRoute } from '@angular/router';
-import { OpalFines } from '../../../../src/app/flows/fines/services/opal-fines-service/opal-fines.service';
+import { OpalFines } from '../../../../../src/app/flows/fines/services/opal-fines-service/opal-fines.service';
 import { provideHttpClient } from '@angular/common/http';
 import { FinesConStore } from 'src/app/flows/fines/fines-con/stores/fines-con.store';
 import { FINES_CON_SELECT_BU_FORM_DATA_MOCK } from 'src/app/flows/fines/fines-con/select-business-unit/fines-con-select-bu/mocks/fines-con-select-bu-form-data.mock';
@@ -10,7 +10,7 @@ import { OPAL_FINES_BUSINESS_UNIT_REF_DATA_MOCK } from '@services/fines/opal-fin
 import { OPAL_FINES_BUSINESS_UNIT_AUTOCOMPLETE_ITEMS_MOCK } from '@services/fines/opal-fines-service/mocks/opal-fines-business-unit-autocomplete-items.mock';
 import { FINES_CON_DEFENDANT_TYPES } from 'src/app/flows/fines/fines-con/select-business-unit/fines-con-select-bu/constants/fines-con-defendant-types.constant';
 import { SelectBusinessUnitLocators } from 'cypress/shared/selectors/consolidation/SelectBusinessUnit.locators';
-import { USER_STATE_MOCK_PERMISSION_BU77 } from '../../CommonIntercepts/CommonUserState.mocks';
+import { USER_STATE_MOCK_PERMISSION_BU77 } from '../../../CommonIntercepts/CommonUserState.mocks';
 import { interceptUserState } from 'cypress/component/CommonIntercepts/CommonIntercepts';
 
 describe('FinesConSelectBuFormComponent', () => {

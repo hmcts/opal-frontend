@@ -1,5 +1,5 @@
 import { mount } from 'cypress/angular';
-import { FinesMacPaymentTermsComponent } from '../../../../src/app/flows/fines/fines-mac/fines-mac-payment-terms/fines-mac-payment-terms.component';
+import { FinesMacPaymentTermsComponent } from '../../../../../src/app/flows/fines/fines-mac/fines-mac-payment-terms/fines-mac-payment-terms.component';
 import { ActivatedRoute } from '@angular/router';
 import { FINES_PAYMENT_TERMS_MOCK } from './mocks/fines-payment-terms-mock';
 import {
@@ -8,9 +8,9 @@ import {
   INSTALMENT_ERRORS,
   ENFORCEMENT_ERRORS,
 } from './constants/fines_mac_payment_terms_errors';
-import { MacPaymentTermsLocators as DOM_ELEMENTS } from '../../../shared/selectors/manual-account-creation/mac.payment-terms.locators';
+import { MacPaymentTermsLocators as DOM_ELEMENTS } from '../../../../shared/selectors/manual-account-creation/mac.payment-terms.locators';
 import { FinesMacStore } from 'src/app/flows/fines/fines-mac/stores/fines-mac.store';
-import { OpalFines } from '../../../../src/app/flows/fines/services/opal-fines-service/opal-fines.service';
+import { OpalFines } from '../../../../../src/app/flows/fines/services/opal-fines-service/opal-fines.service';
 import { PermissionsService } from '@hmcts/opal-frontend-common/services/permissions-service';
 import { PAYMENT_TERMS_SESSION_USER_STATE_MOCK } from './mocks/fines-payment-terms-session-user-mock';
 import { GlobalStore } from '@hmcts/opal-frontend-common/stores/global';

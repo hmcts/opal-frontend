@@ -1,9 +1,9 @@
-import { DOM_ELEMENTS as ENF_OVR } from '../../../shared/selectors/account-enquiry/account.enquiry.enforcement-override-add.locators';
-import { ACCOUNT_ENQUIRY_ENFORCEMENT_STATUS_ELEMENTS as ENF } from '../../../shared/selectors/account-enquiry/account.enquiry.enforcement.locators';
-import { UNSAVED_CHANGES_WARNING } from '../../../shared/constants/confirmation-messages';
+import { DOM_ELEMENTS as ENF_OVR } from '../../../../shared/selectors/account-enquiry/account.enquiry.enforcement-override-add.locators';
+import { ACCOUNT_ENQUIRY_ENFORCEMENT_STATUS_ELEMENTS as ENF } from '../../../../shared/selectors/account-enquiry/account.enquiry.enforcement.locators';
+import { UNSAVED_CHANGES_WARNING } from '../../../../shared/constants/confirmation-messages';
 import { setupAccountEnquiryComponent } from '../accountEnquiry/setup/SetupComponent';
 import { IComponentProperties } from '../accountEnquiry/setup/setupComponent.interface';
-import { DOM_ELEMENTS as VERSION_CONTROL } from '../../../shared/selectors/account-enquiry/account.enquiry.version-control.locators';
+import { DOM_ELEMENTS as VERSION_CONTROL } from '../../../../shared/selectors/account-enquiry/account.enquiry.version-control.locators';
 import { mount } from 'cypress/angular';
 import {
   interceptAuthenticatedUser,
@@ -14,9 +14,9 @@ import {
   interceptEnforcers,
 } from 'cypress/component/CommonIntercepts/CommonIntercepts';
 import { USER_STATE_MOCK_PERMISSION_BU77 } from 'cypress/component/CommonIntercepts/CommonUserState.mocks';
-import { OPAL_FINES_ENF_OVERRIDE_RESULT_REF_DATA_MOCK } from '../../CommonIntercepts/referenceData/results/EnforcementOverrideResultsIntercept.mocks';
-import { OPAL_FINES_ENFORCER_REF_DATA_MOCK } from '../../CommonIntercepts/referenceData/enforcers/EnforcersIntercept.mocks';
-import { OPAL_FINES_LOCAL_JUSTICE_AREA_REF_DATA_MOCK } from '../../CommonIntercepts/referenceData/localJusticeAreas/LocalJusticeAreasIntercept.mocks';
+import { OPAL_FINES_ENF_OVERRIDE_RESULT_REF_DATA_MOCK } from '../../../CommonIntercepts/referenceData/results/EnforcementOverrideResultsIntercept.mocks';
+import { OPAL_FINES_ENFORCER_REF_DATA_MOCK } from '../../../CommonIntercepts/referenceData/enforcers/EnforcersIntercept.mocks';
+import { OPAL_FINES_LOCAL_JUSTICE_AREA_REF_DATA_MOCK } from '../../../CommonIntercepts/referenceData/localJusticeAreas/LocalJusticeAreasIntercept.mocks';
 import {
   interceptDefendantHeader,
   interceptEnforcementStatus,

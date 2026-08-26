@@ -1,6 +1,6 @@
 import { mount } from 'cypress/angular';
 import { ActivatedRoute } from '@angular/router';
-import { AccountDetailsNotesLocators as L } from '../../../shared/selectors/account-details/account.notes.details.locators';
+import { AccountDetailsNotesLocators as L } from '../../../../shared/selectors/account-details/account.notes.details.locators';
 import { OpalFines } from '@services/fines/opal-fines-service/opal-fines.service';
 import { FinesAccNoteAddComponent } from 'src/app/flows/fines/fines-acc/fines-acc-note-add/fines-acc-note-add.component';
 import { FinesAccPayloadService } from 'src/app/flows/fines/fines-acc/services/fines-acc-payload.service';

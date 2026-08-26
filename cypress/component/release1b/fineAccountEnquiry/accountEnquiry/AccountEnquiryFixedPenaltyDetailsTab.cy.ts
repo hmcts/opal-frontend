@@ -1,12 +1,12 @@
-import { interceptAuthenticatedUser, interceptUserState } from '../../CommonIntercepts/CommonIntercepts';
+import { interceptAuthenticatedUser, interceptUserState } from '../../../CommonIntercepts/CommonIntercepts';
 import { DEFENDANT_HEADER_ORG_MOCK, createDefendantHeaderMockWithName } from './mocks/defendant_details_mock';
 
-import { USER_STATE_MOCK_PERMISSION_BU77 } from '../../CommonIntercepts/CommonUserState.mocks';
+import { USER_STATE_MOCK_PERMISSION_BU77 } from '../../../CommonIntercepts/CommonUserState.mocks';
 import { mount } from 'cypress/angular';
 
 import { interceptDefendantHeader, interceptFixedPenaltyDetails } from './intercept/defendantAccountIntercepts';
 import { OPAL_FINES_ACCOUNT_DEFENDANT_DETAILS_FIXED_PENALTY_MOCK } from '@services/fines/opal-fines-service/mocks/opal-fines-account-defendant-details-fixed-penalty.mock';
-import { ACCOUNT_ENQUIRY_FIXED_PENALTY_ELEMENTS as FIXED_PENALTY_TAB } from '../../../shared/selectors/account-enquiry/account.enquiry.fixed-penalty.locators';
+import { ACCOUNT_ENQUIRY_FIXED_PENALTY_ELEMENTS as FIXED_PENALTY_TAB } from '../../../../shared/selectors/account-enquiry/account.enquiry.fixed-penalty.locators';
 import { setupAccountEnquiryComponent } from './setup/SetupComponent';
 import { IComponentProperties } from './setup/setupComponent.interface';
 import { FinesAccDefendantDetailsFixedPenaltyTabComponent } from 'src/app/flows/fines/fines-acc/fines-acc-defendant-details/fines-acc-defendant-details-fixed-penalty-tab/fines-acc-defendant-details-fixed-penalty-tab.component';

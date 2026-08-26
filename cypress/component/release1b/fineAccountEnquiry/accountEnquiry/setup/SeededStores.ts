@@ -1,10 +1,10 @@
 import { GlobalStore } from '@hmcts/opal-frontend-common/stores/global';
 import { FinesAccountStore } from 'src/app/flows/fines/fines-acc/stores/fines-acc.store';
-import { DEFAULT_USER_STATE_DOMAIN } from '../../../CommonIntercepts/CommonIntercepts';
+import { DEFAULT_USER_STATE_DOMAIN } from '../../../../CommonIntercepts/CommonIntercepts';
 import {
   USER_STATE_MOCK_PERMISSION_BU77,
   USER_STATE_MOCK_NO_PERMISSION,
-} from '../../../CommonIntercepts/CommonUserState.mocks';
+} from '../../../../CommonIntercepts/CommonUserState.mocks';
 
 export const buildSeededAccountStore = (
   accountId: number | string,

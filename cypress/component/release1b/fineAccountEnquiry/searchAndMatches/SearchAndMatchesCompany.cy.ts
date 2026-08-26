@@ -1,6 +1,6 @@
-import { AccountSearchCommonLocators as CommonLocators } from '../../../shared/selectors/account-search/account.search.common.locators';
-import { AccountSearchCompaniesLocators as CompanyLocators } from '../../../shared/selectors/account-search/account.search.companies.locators';
-import { AccountSearchNavLocators as NavLocators } from '../../../shared/selectors/account-search/account.search.nav.locators';
+import { AccountSearchCommonLocators as CommonLocators } from '../../../../shared/selectors/account-search/account.search.common.locators';
+import { AccountSearchCompaniesLocators as CompanyLocators } from '../../../../shared/selectors/account-search/account.search.companies.locators';
+import { AccountSearchNavLocators as NavLocators } from '../../../../shared/selectors/account-search/account.search.nav.locators';
 import { COMPANY_SEARCH_STATE_MOCK } from './mocks/search_and_matches_company_mock';
 import { finesSaCompanyDefendantAccountsResolver } from 'src/app/flows/fines/fines-sa/routing/resolvers/fines-sa-defendant-accounts/fines-sa-defendant-accounts.resolver';
 import { mountSearchAccount } from './support/mountSearchAccount';

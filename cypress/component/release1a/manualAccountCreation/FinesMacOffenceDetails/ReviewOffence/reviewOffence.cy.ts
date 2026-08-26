@@ -2,7 +2,7 @@ import { mount } from 'cypress/angular';
 import { FinesMacOffenceDetailsReviewOffenceComponent } from 'src/app/flows/fines/fines-mac/fines-mac-offence-details/fines-mac-offence-details-review-offence/fines-mac-offence-details-review-offence.component';
 import { ActivatedRoute } from '@angular/router';
 import { provideHttpClient } from '@angular/common/http';
-import { MacOffenceDetailsReviewOffenceLocators as DOM_ELEMENTS } from '../../../../shared/selectors/manual-account-creation/mac.offence-details.locators';
+import { MacOffenceDetailsReviewOffenceLocators as DOM_ELEMENTS } from '../../../../../shared/selectors/manual-account-creation/mac.offence-details.locators';
 import { FinesMacOffenceDetailsStore } from 'src/app/flows/fines/fines-mac/fines-mac-offence-details/stores/fines-mac-offence-details.store';
 import { FINES_MAC_OFFENCE_DETAILS_DRAFT_STATE_MOCK } from 'src/app/flows/fines/fines-mac/fines-mac-offence-details/mocks/fines-mac-offence-details-draft-state.mock';
 import { FINES_MAC_OFFENCE_DETAILS_FORM_MOCK } from './mocks/review_offence_mock';

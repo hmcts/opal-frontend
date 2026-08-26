@@ -1,4 +1,4 @@
-import { AccountSearchLocators } from '../../../shared/selectors/consolidation/AccountSearch.locators';
+import { AccountSearchLocators } from '../../../../shared/selectors/consolidation/AccountSearch.locators';
 import { FINES_CON_SEARCH_ACCOUNT_FORM_EMPTY_MOCK } from 'src/app/flows/fines/fines-con/consolidate-acc/fines-con-search-account/mocks/fines-con-search-account-form-empty.mock';
 import { IFinesConSearchAccountState } from 'src/app/flows/fines/fines-con/consolidate-acc/fines-con-search-account/interfaces/fines-con-search-account-state.interface';
 import { FINES_CON_ROUTING_PATHS } from 'src/app/flows/fines/fines-con/routing/constants/fines-con-routing-paths.constant';

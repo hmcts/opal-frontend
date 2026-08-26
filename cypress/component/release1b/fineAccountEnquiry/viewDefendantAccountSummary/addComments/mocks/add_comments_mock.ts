@@ -1,4 +1,4 @@
-import { IFinesAccAddCommentsFormState } from '../../../../../../src/app/flows/fines/fines-acc/fines-acc-comments-add/interfaces/fines-acc-comments-add-form-state.interface';
+import { IFinesAccAddCommentsFormState } from '../../../../../../../src/app/flows/fines/fines-acc/fines-acc-comments-add/interfaces/fines-acc-comments-add-form-state.interface';
 
 export const ADD_COMMENTS_FORM_STATE_MOCK: IFinesAccAddCommentsFormState = {
   facc_add_comment: null,

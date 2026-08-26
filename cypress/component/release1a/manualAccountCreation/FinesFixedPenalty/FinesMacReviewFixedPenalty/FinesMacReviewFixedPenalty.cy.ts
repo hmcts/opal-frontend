@@ -1,11 +1,11 @@
 import { mount } from 'cypress/angular';
 import { ActivatedRoute, Router } from '@angular/router';
 import { provideHttpClient } from '@angular/common/http';
-import { OpalFines } from '../../../../../src/app/flows/fines/services/opal-fines-service/opal-fines.service';
-import { FinesMacStore } from '../../../../../src/app/flows/fines/fines-mac/stores/fines-mac.store';
-import { FinesMacReviewAccountComponent } from '../../../../../src/app/flows/fines/fines-mac/fines-mac-review-account/fines-mac-review-account.component';
-import { OPAL_FINES_COURT_REF_DATA_MOCK } from '../../../../../src/app/flows/fines/services/opal-fines-service/mocks/opal-fines-court-ref-data.mock';
-import { OPAL_FINES_LOCAL_JUSTICE_AREA_REF_DATA_MOCK } from '../../../../../src/app/flows/fines/services/opal-fines-service/mocks/opal-fines-local-justice-area-ref-data.mock';
+import { OpalFines } from '../../../../../../src/app/flows/fines/services/opal-fines-service/opal-fines.service';
+import { FinesMacStore } from '../../../../../../src/app/flows/fines/fines-mac/stores/fines-mac.store';
+import { FinesMacReviewAccountComponent } from '../../../../../../src/app/flows/fines/fines-mac/fines-mac-review-account/fines-mac-review-account.component';
+import { OPAL_FINES_COURT_REF_DATA_MOCK } from '../../../../../../src/app/flows/fines/services/opal-fines-service/mocks/opal-fines-court-ref-data.mock';
+import { OPAL_FINES_LOCAL_JUSTICE_AREA_REF_DATA_MOCK } from '../../../../../../src/app/flows/fines/services/opal-fines-service/mocks/opal-fines-local-justice-area-ref-data.mock';
 import { FINES_AYG_FIXED_PENALTY_ACCOUNT_MOCK } from './mocks/fines_mac_review_fixed_penalty_data_mock';
 import { FINES_COMPANY_FIXED_PENALTY_ACCOUNT_MOCK } from './mocks/fines_mac_review_fixed_penalty_company_data_mock';
 import { UtilsService } from '@hmcts/opal-frontend-common/services/utils-service';
@@ -17,8 +17,8 @@ import { OPAL_FINES_DRAFT_ADD_ACCOUNT_PAYLOAD_MOCK } from '@services/fines/opal-
 import { OPAL_FINES_PROSECUTOR_REF_DATA_MOCK } from '@services/fines/opal-fines-service/mocks/opal-fines-prosecutor-ref-data.mock';
 import { FinesDraftStore } from 'src/app/flows/fines/fines-draft/stores/fines-draft.store';
 import { FINES_DRAFT_STATE } from 'src/app/flows/fines/fines-draft/constants/fines-draft-state.constant';
-import { MacFixedPenaltyReviewLocators as DOM_ELEMENTS } from '../../../../shared/selectors/manual-account-creation/mac.fixed-penalty.review.locators';
-import { IFinesMacState } from '../../../../../src/app/flows/fines/fines-mac/interfaces/fines-mac-state.interface';
+import { MacFixedPenaltyReviewLocators as DOM_ELEMENTS } from '../../../../../shared/selectors/manual-account-creation/mac.fixed-penalty.review.locators';
+import { IFinesMacState } from '../../../../../../src/app/flows/fines/fines-mac/interfaces/fines-mac-state.interface';
 import { interceptOffences } from 'cypress/component/CommonIntercepts/CommonIntercepts';
 import { ACCOUNT_SESSION_USER_STATE_MOCK } from '../mocks/user_state_mock';
 import { FINES_DEFAULT_VALUES } from 'src/app/flows/fines/constants/fines-default-values.constant';

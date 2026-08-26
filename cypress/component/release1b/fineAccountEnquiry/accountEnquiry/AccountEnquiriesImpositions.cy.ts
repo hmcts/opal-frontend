@@ -3,9 +3,9 @@ import {
   ACCOUNT_ENQUIRY_IMPOSITIONS_ELEMENTS as IMPOSITIONS,
   getImpositionsCell,
   getImpositionsPaginationItem,
-} from '../../../shared/selectors/account-enquiry/account.enquiry.impositions.locators';
+} from '../../../../shared/selectors/account-enquiry/account.enquiry.impositions.locators';
 import { interceptAuthenticatedUser, interceptUserState } from 'cypress/component/CommonIntercepts/CommonIntercepts';
-import { USER_STATE_MOCK_PERMISSION_BU77 } from '../../CommonIntercepts/CommonUserState.mocks';
+import { USER_STATE_MOCK_PERMISSION_BU77 } from '../../../CommonIntercepts/CommonUserState.mocks';
 import { OPAL_FINES_ACCOUNT_DEFENDANT_AT_A_GLANCE_MOCK } from './mocks/defendant_details_at_glance_mock';
 import { DEFENDANT_HEADER_MOCK } from './mocks/defendant_details_mock';
 import {

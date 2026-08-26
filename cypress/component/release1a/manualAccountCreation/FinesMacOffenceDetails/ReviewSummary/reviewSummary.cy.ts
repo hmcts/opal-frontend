@@ -1,6 +1,6 @@
 import { mount } from 'cypress/angular';
 import { FinesMacOffenceDetailsReviewComponent } from 'src/app/flows/fines/fines-mac/fines-mac-offence-details/fines-mac-offence-details-review/fines-mac-offence-details-review.component';
-import { OpalFines } from '../../../../../src/app/flows/fines/services/opal-fines-service/opal-fines.service';
+import { OpalFines } from '../../../../../../src/app/flows/fines/services/opal-fines-service/opal-fines.service';
 import { ActivatedRoute } from '@angular/router';
 import { FinesMacStore } from 'src/app/flows/fines/fines-mac/stores/fines-mac.store';
 import { FinesMacOffenceDetailsStore } from 'src/app/flows/fines/fines-mac/fines-mac-offence-details/stores/fines-mac-offence-details.store';
@@ -9,7 +9,7 @@ import { DateService } from '@hmcts/opal-frontend-common/services/date-service';
 import { OPAL_FINES_MAJOR_CREDITOR_REF_DATA_MOCK } from '@services/fines/opal-fines-service/mocks/opal-fines-major-creditor-ref-data.mock';
 import { OPAL_FINES_RESULTS_REF_DATA_MOCK } from '@services/fines/opal-fines-service/mocks/opal-fines-results-ref-data.mock';
 import { FINES_REVIEW_SUMMARY_OFFENCE_MOCK } from './mocks/review_summary_offence_mock';
-import { MacOffenceDetailsReviewSummaryLocators as DOM_ELEMENTS } from '../../../../shared/selectors/manual-account-creation/mac.offence-details.locators';
+import { MacOffenceDetailsReviewSummaryLocators as DOM_ELEMENTS } from '../../../../../shared/selectors/manual-account-creation/mac.offence-details.locators';
 import { interceptOffences } from 'cypress/component/CommonIntercepts/CommonIntercepts';
 
 const MANUAL_ACCOUNT_CREATION_JIRA_LABEL = '@JIRA-LABEL:manual-account-creation';

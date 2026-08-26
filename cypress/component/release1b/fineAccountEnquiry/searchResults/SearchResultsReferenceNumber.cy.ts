@@ -1,12 +1,12 @@
 import { mount } from 'cypress/angular';
-import { FinesSaResultsComponent } from '../../../../src/app/flows/fines/fines-sa/fines-sa-results/fines-sa-results.component';
-import { FinesSaStore } from '../../../../src/app/flows/fines/fines-sa/stores/fines-sa.store';
+import { FinesSaResultsComponent } from '../../../../../src/app/flows/fines/fines-sa/fines-sa-results/fines-sa-results.component';
+import { FinesSaStore } from '../../../../../src/app/flows/fines/fines-sa/stores/fines-sa.store';
 import { ActivatedRoute } from '@angular/router';
 import { provideHttpClient } from '@angular/common/http';
-import { AccountEnquiryResultsLocators as ResultsLocators } from '../../../shared/selectors/account-enquiry/account.enquiry.results.locators';
+import { AccountEnquiryResultsLocators as ResultsLocators } from '../../../../shared/selectors/account-enquiry/account.enquiry.results.locators';
 import { UNIFIED_SEARCH_RESULTS_MOCK, getAllAccountTypes } from './mocks/search_results_account_mock';
 import { INDIVIDUAL_SEARCH_STATE_MOCK } from '../searchAndMatches/mocks/search_and_matches_individual_mock';
-import { OpalFines } from '../../../../src/app/flows/fines/services/opal-fines-service/opal-fines.service';
+import { OpalFines } from '../../../../../src/app/flows/fines/services/opal-fines-service/opal-fines.service';
 import { BehaviorSubject } from 'rxjs';
 
 const ACCOUNT_ENQUIRY_JIRA_LABEL = '@JIRA-LABEL:account-enquiry';

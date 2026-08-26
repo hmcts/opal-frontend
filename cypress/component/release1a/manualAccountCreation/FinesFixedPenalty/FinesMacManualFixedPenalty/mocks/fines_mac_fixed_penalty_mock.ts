@@ -1,4 +1,4 @@
-import { FINES_MAC_STATE_MOCK } from '../../../../../../src/app/flows/fines/fines-mac/mocks/fines-mac-state.mock';
+import { FINES_MAC_STATE_MOCK } from '../../../../../../../src/app/flows/fines/fines-mac/mocks/fines-mac-state.mock';
 
 export const FINES_FIXED_PENALTY_MOCK = {
   // Include all properties from FINES_MAC_STATE_MOCK as the base structure

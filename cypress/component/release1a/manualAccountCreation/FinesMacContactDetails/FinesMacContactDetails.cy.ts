@@ -1,7 +1,7 @@
-import { FinesMacContactDetailsComponent } from '../../../../src/app/flows/fines/fines-mac/fines-mac-contact-details/fines-mac-contact-details.component';
-import { FINES_MAC_STATE_MOCK } from '../../../../src/app/flows/fines/fines-mac/mocks/fines-mac-state.mock';
+import { FinesMacContactDetailsComponent } from '../../../../../src/app/flows/fines/fines-mac/fines-mac-contact-details/fines-mac-contact-details.component';
+import { FINES_MAC_STATE_MOCK } from '../../../../../src/app/flows/fines/fines-mac/mocks/fines-mac-state.mock';
 import { INVALID_DETAILS } from './constants/fines_mac_contact_details_errors';
-import { MacContactDetailsLocators as L } from '../../../shared/selectors/manual-account-creation/mac.contact-details.locators';
+import { MacContactDetailsLocators as L } from '../../../../shared/selectors/manual-account-creation/mac.contact-details.locators';
 import { mountMacStoreComponent } from '../support/mountMacStoreComponent';
 
 const MANUAL_ACCOUNT_CREATION_JIRA_LABEL = '@JIRA-LABEL:manual-account-creation';

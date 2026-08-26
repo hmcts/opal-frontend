@@ -1,8 +1,8 @@
-import { ACCOUNT_ENQUIRY_HEADER_ELEMENTS as DOM } from '../../../shared/selectors/account-enquiry/account.enquiry.header.locators';
+import { ACCOUNT_ENQUIRY_HEADER_ELEMENTS as DOM } from '../../../../shared/selectors/account-enquiry/account.enquiry.header.locators';
 import { FINES_ACC_MAJOR_CREDITOR_DETAILS_HEADER_MOCK } from 'src/app/flows/fines/fines-acc/fines-acc-major-creditor-details/mocks/fines-acc-major-creditor-details-header.mock';
 import { OPAL_FINES_ACCOUNT_MAJOR_CREDITOR_AT_A_GLANCE_MOCK } from 'src/app/flows/fines/services/opal-fines-service/mocks/opal-fines-account-major-creditor-at-a-glance-with-defendant.mock';
 import { interceptAuthenticatedUser, interceptUserState } from 'cypress/component/CommonIntercepts/CommonIntercepts';
-import { USER_STATE_MOCK_NO_PERMISSION } from '../../CommonIntercepts/CommonUserState.mocks';
+import { USER_STATE_MOCK_NO_PERMISSION } from '../../../CommonIntercepts/CommonUserState.mocks';
 import { interceptMajorCreditorAtAGlance, interceptMajorCreditorHeader } from './intercept/defendantAccountIntercepts';
 import { IComponentProperties } from './setup/setupComponent.interface';
 import { setupAccountEnquiryComponent } from './setup/SetupComponent';

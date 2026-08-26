@@ -2,7 +2,7 @@ import {
   interceptAuthenticatedUser,
   interceptBusinessUnits,
   interceptUserState,
-} from '../../CommonIntercepts/CommonIntercepts';
+} from '../../../CommonIntercepts/CommonIntercepts';
 import { USER_STATE_MOCK_PERMISSION_BU77 } from 'cypress/component/CommonIntercepts/CommonUserState.mocks';
 import { setupFinesMacRouteComponent } from 'cypress/component/CommonSetup/FinesMac/FinesMacSetup';
 

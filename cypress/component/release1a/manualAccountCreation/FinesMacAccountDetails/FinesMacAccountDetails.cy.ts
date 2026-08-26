@@ -1,7 +1,7 @@
-import { FinesMacAccountDetailsComponent } from '../../../../src/app/flows/fines/fines-mac/fines-mac-account-details/fines-mac-account-details.component';
+import { FinesMacAccountDetailsComponent } from '../../../../../src/app/flows/fines/fines-mac/fines-mac-account-details/fines-mac-account-details.component';
 import { FINES_CHECK_ACCOUNT_MOCK } from './mocks/fines_mac_check_account_mock';
-import { MacAccountDetailsLocators as L } from '../../../shared/selectors/manual-account-creation/mac.account-details.locators';
-import { IFinesMacState } from '../../../../src/app/flows/fines/fines-mac/interfaces/fines-mac-state.interface';
+import { MacAccountDetailsLocators as L } from '../../../../shared/selectors/manual-account-creation/mac.account-details.locators';
+import { IFinesMacState } from '../../../../../src/app/flows/fines/fines-mac/interfaces/fines-mac-state.interface';
 import { FINES_AYG_CHECK_ACCOUNT_MOCK } from './mocks/fines_mac_ayg_check_account_mock';
 import { FINES_AYPG_CHECK_ACCOUNT_MOCK } from './mocks/fines_mac_aypg_check_account_mock';
 import { FINES_COMP_CHECK_ACCOUNT_MOCK } from './mocks/fines_mac_comp_check_account_mock';

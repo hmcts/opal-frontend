@@ -7,8 +7,8 @@ import { SessionService } from '@hmcts/opal-frontend-common/services/session-ser
 import { GlobalStore } from '@hmcts/opal-frontend-common/stores/global';
 import { mount } from 'cypress/angular';
 import { NEVER } from 'rxjs';
-import { USER_STATE_MOCK_NO_PERMISSION } from '../CommonIntercepts/CommonUserState.mocks';
-import { PrimaryNavigationLocators as L } from '../../shared/selectors/primary-navigation.locators';
+import { USER_STATE_MOCK_NO_PERMISSION } from '../../CommonIntercepts/CommonUserState.mocks';
+import { PrimaryNavigationLocators as L } from '../../../shared/selectors/primary-navigation.locators';
 import { FINES_PERMISSIONS } from 'src/app/constants/fines-permissions.constant';
 import { AppComponent } from 'src/app/app.component';
 import {

@@ -1,5 +1,5 @@
-import { USER_STATE_MOCK_PERMISSION_BU77 } from '../../CommonIntercepts/CommonUserState.mocks';
-import { interceptAuthenticatedUser, interceptUserState } from '../../CommonIntercepts/CommonIntercepts';
+import { USER_STATE_MOCK_PERMISSION_BU77 } from '../../../CommonIntercepts/CommonUserState.mocks';
+import { interceptAuthenticatedUser, interceptUserState } from '../../../CommonIntercepts/CommonIntercepts';
 import {
   interceptMinorCreditorCreditor,
   interceptMinorCreditorHeader,
@@ -18,7 +18,7 @@ import { MINOR_CREDITOR_ACCOUNT_ID } from './mocks/minor_creditor_at_a_glance.mo
 import { buildSeededAccountStore } from './setup/SeededStores';
 import { setupAccountEnquiryComponent } from './setup/SetupComponent';
 import { IComponentProperties } from './setup/setupComponent.interface';
-import { MINOR_CREDITOR_AMEND_ELEMENTS as AMEND } from '../../../shared/selectors/account-enquiry/account.enquiry.minor-creditor-amend.locators';
+import { MINOR_CREDITOR_AMEND_ELEMENTS as AMEND } from '../../../../shared/selectors/account-enquiry/account.enquiry.minor-creditor-amend.locators';
 import { mount } from 'cypress/angular';
 import { provideHttpClient } from '@angular/common/http';
 import { provideRouter } from '@angular/router';

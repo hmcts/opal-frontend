@@ -2,7 +2,7 @@ import {
   USER_STATE_MOCK_NO_PERMISSION,
   USER_STATE_MOCK_PERMISSION_BU17,
   USER_STATE_MOCK_PERMISSION_BU77,
-} from '../../../CommonIntercepts/CommonUserState.mocks';
+} from '../../../../CommonIntercepts/CommonUserState.mocks';
 import { FINES_ACC_MINOR_CREDITOR_DETAILS_HEADER_MOCK } from 'src/app/flows/fines/fines-acc/fines-acc-minor-creditor-details/mocks/fines-acc-minor-creditor-details-header.mock';
 import { OPAL_FINES_ACCOUNT_MINOR_CREDITOR_AT_A_GLANCE_WITH_DEFENDANT_MOCK } from 'src/app/flows/fines/services/opal-fines-service/mocks/opal-fines-account-minor-creditor-at-a-glance-with-defendant.mock';
 import { OPAL_FINES_ACCOUNT_MINOR_CREDITOR_AT_A_GLANCE_WITHOUT_DEFENDANT_MOCK } from 'src/app/flows/fines/services/opal-fines-service/mocks/opal-fines-account-minor-creditor-at-a-glance-without-defendant.mock';

@@ -1,5 +1,5 @@
-import { DOM_ELEMENTS as ENF_COURT_CHANGE } from '../../../shared/selectors/account-enquiry/account.enquiry.enforcement-court-change.locators';
-import { ACCOUNT_ENQUIRY_ENFORCEMENT_STATUS_ELEMENTS as ENF } from '../../../shared/selectors/account-enquiry/account.enquiry.enforcement.locators';
+import { DOM_ELEMENTS as ENF_COURT_CHANGE } from '../../../../shared/selectors/account-enquiry/account.enquiry.enforcement-court-change.locators';
+import { ACCOUNT_ENQUIRY_ENFORCEMENT_STATUS_ELEMENTS as ENF } from '../../../../shared/selectors/account-enquiry/account.enquiry.enforcement.locators';
 import { setupAccountEnquiryComponent } from '../accountEnquiry/setup/SetupComponent';
 import { IComponentProperties } from '../accountEnquiry/setup/setupComponent.interface';
 import { mount } from 'cypress/angular';

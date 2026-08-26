@@ -1,12 +1,12 @@
 import { mount } from 'cypress/angular';
 import { ActivatedRoute, Router } from '@angular/router';
 import { of } from 'rxjs';
-import { FinesAccCommentsAddComponent } from '../../../../../src/app/flows/fines/fines-acc/fines-acc-comments-add/fines-acc-comments-add.component';
-import { FinesAccountStore } from '../../../../../src/app/flows/fines/fines-acc/stores/fines-acc.store';
-import { FinesAccPayloadService } from '../../../../../src/app/flows/fines/fines-acc/services/fines-acc-payload.service';
-import { OpalFines } from '../../../../../src/app/flows/fines/services/opal-fines-service/opal-fines.service';
+import { FinesAccCommentsAddComponent } from '../../../../../../src/app/flows/fines/fines-acc/fines-acc-comments-add/fines-acc-comments-add.component';
+import { FinesAccountStore } from '../../../../../../src/app/flows/fines/fines-acc/stores/fines-acc.store';
+import { FinesAccPayloadService } from '../../../../../../src/app/flows/fines/fines-acc/services/fines-acc-payload.service';
+import { OpalFines } from '../../../../../../src/app/flows/fines/services/opal-fines-service/opal-fines.service';
 import { UtilsService } from '@hmcts/opal-frontend-common/services/utils-service';
-import { AccountCommentsAddLocators } from '../../../../shared/selectors/account-details/account.comments.details.locators';
+import { AccountCommentsAddLocators } from '../../../../../shared/selectors/account-details/account.comments.details.locators';
 import {
   ADD_COMMENTS_FORM_STATE_MOCK,
   MOCK_ACCOUNT_STATE,

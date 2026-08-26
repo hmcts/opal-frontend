@@ -1,7 +1,7 @@
 import { mount } from 'cypress/angular';
-import { OpalFines } from '../../../../src/app/flows/fines/services/opal-fines-service/opal-fines.service';
+import { OpalFines } from '../../../../../src/app/flows/fines/services/opal-fines-service/opal-fines.service';
 import { ActivatedRoute } from '@angular/router';
-import { FinesMacCompanyDetailsComponent } from '../../../../src/app/flows/fines/fines-mac/fines-mac-company-details/fines-mac-company-details.component';
+import { FinesMacCompanyDetailsComponent } from '../../../../../src/app/flows/fines/fines-mac/fines-mac-company-details/fines-mac-company-details.component';
 import { FinesMacStore } from 'src/app/flows/fines/fines-mac/stores/fines-mac.store';
 import { FINES_COMPANY_DETAILS_MOCK } from './mocks/fines-mac-company-details-mock';
 import {
@@ -10,7 +10,7 @@ import {
   MAX_LENGTH_VALIDATION,
   ALPHABETICAL_TEXT_PATTERN_VALIDATION,
 } from './constants/fines-mac-company-details-errors';
-import { MacCompanyDetailsLocators as L } from '../../../shared/selectors/manual-account-creation/mac.company-details.locators';
+import { MacCompanyDetailsLocators as L } from '../../../../shared/selectors/manual-account-creation/mac.company-details.locators';
 import { of } from 'rxjs';
 
 const MANUAL_ACCOUNT_CREATION_JIRA_LABEL = '@JIRA-LABEL:manual-account-creation';

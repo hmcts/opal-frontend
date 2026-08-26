@@ -1,8 +1,8 @@
-import { AccountNavDetailsLocators } from '../../../shared/selectors/account-details/account.nav.details.locators';
+import { AccountNavDetailsLocators } from '../../../../shared/selectors/account-details/account.nav.details.locators';
 import { OPAL_FINES_ACCOUNT_DEFENDANT_DETAILS_CONSOLIDATED_ACCOUNTS_MOCK } from '@services/fines/opal-fines-service/mocks/opal-fines-account-defendant-details-consolidated-accounts.mock';
 import { interceptAuthenticatedUser, interceptUserState } from 'cypress/component/CommonIntercepts/CommonIntercepts';
-import { USER_STATE_MOCK_PERMISSION_BU77 } from '../../CommonIntercepts/CommonUserState.mocks';
-import { ConsolidatedAccountsLocators } from '../../../shared/selectors/account-details/account.consolidated-accounts.locators';
+import { USER_STATE_MOCK_PERMISSION_BU77 } from '../../../CommonIntercepts/CommonUserState.mocks';
+import { ConsolidatedAccountsLocators } from '../../../../shared/selectors/account-details/account.consolidated-accounts.locators';
 import { DEFENDANT_HEADER_MOCK } from './mocks/defendant_details_mock';
 import { interceptConsolidatedAccounts, interceptDefendantHeader } from './intercept/defendantAccountIntercepts';
 import { IComponentProperties } from './setup/setupComponent.interface';

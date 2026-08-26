@@ -10,11 +10,11 @@ import {
   interceptUserState,
 } from 'cypress/component/CommonIntercepts/CommonIntercepts';
 import { USER_STATE_MOCK_PERMISSION_BU77 } from 'cypress/component/CommonIntercepts/CommonUserState.mocks';
-import { interceptGetDraftAccountById } from 'cypress/component/manualAccountCreation/setup/FineAccount.intercepts';
-import { FIXED_PENALTY_AY_MOCK } from 'cypress/component/manualAccountCreation/FinesFixedPenalty/FinesMacReviewFixedPenalty/mocks/fixedPenalty.api.mock';
-import { FIXED_PENALTY_DEFENDANT_MOCK } from 'cypress/component/manualAccountCreation/FinesFixedPenalty/FinesMacReviewFixedPenalty/mocks/fixedPenaltyDefendant.api.mock';
+import { interceptGetDraftAccountById } from 'cypress/component/release1a/manualAccountCreation/setup/FineAccount.intercepts';
+import { FIXED_PENALTY_AY_MOCK } from 'cypress/component/release1a/manualAccountCreation/FinesFixedPenalty/FinesMacReviewFixedPenalty/mocks/fixedPenalty.api.mock';
+import { FIXED_PENALTY_DEFENDANT_MOCK } from 'cypress/component/release1a/manualAccountCreation/FinesFixedPenalty/FinesMacReviewFixedPenalty/mocks/fixedPenaltyDefendant.api.mock';
 import { BUSINESS_UNIT_77_MOCK } from 'cypress/component/CommonIntercepts/referenceData/businessUnits/BusinessUnit.mocks';
-import { MacFixedPenaltyReviewLocators as DOM_ELEMENTS } from '../../../../shared/selectors/manual-account-creation/mac.fixed-penalty.review.locators';
+import { MacFixedPenaltyReviewLocators as DOM_ELEMENTS } from '../../../../../shared/selectors/manual-account-creation/mac.fixed-penalty.review.locators';
 
 const MANUAL_ACCOUNT_CREATION_JIRA_LABEL = '@JIRA-LABEL:manual-account-creation';
 

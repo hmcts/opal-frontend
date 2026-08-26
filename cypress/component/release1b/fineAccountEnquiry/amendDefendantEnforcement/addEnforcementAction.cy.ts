@@ -1,7 +1,7 @@
-import { DOM_ELEMENTS as ENF_ACTION_SELECT } from '../../../shared/selectors/account-enquiry/account.enquiry.enforcement-action-select.locators';
+import { DOM_ELEMENTS as ENF_ACTION_SELECT } from '../../../../shared/selectors/account-enquiry/account.enquiry.enforcement-action-select.locators';
 import { DOM_ELEMENTS as ENF_ACTION_ADD } from '../accountEnquiry/locators/account.enquiry.enforcement-action-add.locators';
-import { ACCOUNT_ENQUIRY_ENFORCEMENT_STATUS_ELEMENTS as ENF } from '../../../shared/selectors/account-enquiry/account.enquiry.enforcement.locators';
-import { UNSAVED_CHANGES_WARNING } from '../../../shared/constants/confirmation-messages';
+import { ACCOUNT_ENQUIRY_ENFORCEMENT_STATUS_ELEMENTS as ENF } from '../../../../shared/selectors/account-enquiry/account.enquiry.enforcement.locators';
+import { UNSAVED_CHANGES_WARNING } from '../../../../shared/constants/confirmation-messages';
 import { setupAccountEnquiryComponent } from '../accountEnquiry/setup/SetupComponent';
 import { buildSeededAccountStore, buildSeededGlobalStore } from '../accountEnquiry/setup/SeededStores';
 import { IComponentProperties } from '../accountEnquiry/setup/setupComponent.interface';

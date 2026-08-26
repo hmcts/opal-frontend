@@ -15,14 +15,14 @@ import { FinesDraftCreateAndManageTabsComponent } from 'src/app/flows/fines/fine
 import { FinesDraftStore } from 'src/app/flows/fines/fines-draft/stores/fines-draft.store';
 import { FinesMacPayloadService } from 'src/app/flows/fines/fines-mac/services/fines-mac-payload/fines-mac-payload.service';
 import { OpalFines } from 'src/app/flows/fines/services/opal-fines-service/opal-fines.service';
-import { PrimaryNavigationLocators as PrimaryNav } from '../../shared/selectors/primary-navigation.locators';
-import { DraftAccountsTableLocators as Table } from '../../shared/selectors/draft-accounts-table.locators';
-import { OPAL_FINES_DRAFT_ACCOUNTS_MOCK } from '../manualAccountCreation/FinesDraft/FinesDraftCreateAndManage/FinesDraftCreateAndManageComponent/mocks/fines-draft-account.mock';
-import { DRAFT_SESSION_USER_STATE_MOCK } from '../manualAccountCreation/FinesDraft/FinesDraftCreateAndManage/FinesDraftCreateAndManageComponent/mocks/fines-draft-session-mock';
+import { PrimaryNavigationLocators as PrimaryNav } from '../../../shared/selectors/primary-navigation.locators';
+import { DraftAccountsTableLocators as Table } from '../../../shared/selectors/draft-accounts-table.locators';
+import { OPAL_FINES_DRAFT_ACCOUNTS_MOCK } from '../../release1a/manualAccountCreation/FinesDraft/FinesDraftCreateAndManage/FinesDraftCreateAndManageComponent/mocks/fines-draft-account.mock';
+import { DRAFT_SESSION_USER_STATE_MOCK } from '../../release1a/manualAccountCreation/FinesDraft/FinesDraftCreateAndManage/FinesDraftCreateAndManageComponent/mocks/fines-draft-session-mock';
 import {
   interceptGetApprovedAccounts,
   interceptGetRejectedAccounts,
-} from '../manualAccountCreation/FinesDraft/FinesDraftCreateAndManage/FinesDraftCreateAndManageComponent/mocks/create-and-manage-intercepts';
+} from '../../release1a/manualAccountCreation/FinesDraft/FinesDraftCreateAndManage/FinesDraftCreateAndManageComponent/mocks/create-and-manage-intercepts';
 
 const MANUAL_ACCOUNT_CREATION_JIRA_LABEL = '@JIRA-LABEL:manual-account-creation';
 const RELEASE_1B_STORY_TAG = '@JIRA-STORY:PO-3720';

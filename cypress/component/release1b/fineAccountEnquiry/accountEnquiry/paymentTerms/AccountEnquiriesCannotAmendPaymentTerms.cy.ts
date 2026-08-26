@@ -1,20 +1,20 @@
-import { createDefendantHeaderMockWithName } from '.././mocks/defendant_details_mock';
+import { createDefendantHeaderMockWithName } from '../mocks/defendant_details_mock';
 import {
   USER_STATE_MOCK_PERMISSION_BU17,
   USER_STATE_MOCK_PERMISSION_BU77,
 } from 'cypress/component/CommonIntercepts/CommonUserState.mocks';
 
 import { OPAL_FINES_ACCOUNT_DEFENDANT_DETAILS_PAYMENT_TERMS_LATEST_MOCK } from '@services/fines/opal-fines-service/mocks/opal-fines-account-defendant-details-payment-terms-latest.mock';
-import { ACCOUNT_ENQUIRY_PAYMENT_TERMS_ELEMENTS as PAYMENT_TERMS_TAB } from '../../../../shared/selectors/account-enquiry/account.enquiry.payment-terms.locators';
-import { interceptDefendantHeader, interceptPaymentTerms } from '.././intercept/defendantAccountIntercepts';
+import { ACCOUNT_ENQUIRY_PAYMENT_TERMS_ELEMENTS as PAYMENT_TERMS_TAB } from '../../../../../shared/selectors/account-enquiry/account.enquiry.payment-terms.locators';
+import { interceptDefendantHeader, interceptPaymentTerms } from '../intercept/defendantAccountIntercepts';
 import {
   interceptAuthenticatedUser,
   interceptResultByCode,
   interceptUserState,
 } from 'cypress/component/CommonIntercepts/CommonIntercepts';
-import { IComponentProperties } from '.././setup/setupComponent.interface';
-import { setupAccountEnquiryComponent } from '.././setup/SetupComponent';
-import { DEFENDANT_HEADER_ORG_MOCK } from '.././mocks/defendant_details_mock';
+import { IComponentProperties } from '../setup/setupComponent.interface';
+import { setupAccountEnquiryComponent } from '../setup/SetupComponent';
+import { DEFENDANT_HEADER_ORG_MOCK } from '../mocks/defendant_details_mock';
 
 const ACCOUNT_ENQUIRY_JIRA_LABEL = '@JIRA-LABEL:account-enquiry';
 

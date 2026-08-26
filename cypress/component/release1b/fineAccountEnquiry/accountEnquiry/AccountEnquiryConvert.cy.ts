@@ -7,7 +7,7 @@ import { routing } from 'src/app/flows/fines/fines-acc/routing/fines-acc.routes'
 import {
   USER_STATE_MOCK_PERMISSION_BU77,
   USER_STATE_MOCK_NO_PERMISSION,
-} from '../../CommonIntercepts/CommonUserState.mocks';
+} from '../../../CommonIntercepts/CommonUserState.mocks';
 import { AccountConvertLocators } from 'cypress/shared/selectors/account-details/account.convert.locators';
 import { AccountDefendantDetailsLocators } from 'cypress/shared/selectors/account-details/account.defendant.details.locators';
 import { DOM_ELEMENTS } from 'cypress/shared/selectors/account-enquiry/account.enquiry.view-details.locators';

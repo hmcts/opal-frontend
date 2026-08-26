@@ -1,4 +1,4 @@
-import { IOpalFinesDraftAccountsResponse } from '../../../../../../../src/app/flows/fines/services/opal-fines-service/interfaces/opal-fines-draft-account-data.interface';
+import { IOpalFinesDraftAccountsResponse } from '../../../../../../../../src/app/flows/fines/services/opal-fines-service/interfaces/opal-fines-draft-account-data.interface';
 import { FINES_ACCOUNT_TYPES } from 'src/app/flows/fines/constants/fines-account-types.constant';
 
 export const OPAL_FINES_VALIDATE_OVER_25_DRAFT_ACCOUNTS_MOCK: IOpalFinesDraftAccountsResponse = {

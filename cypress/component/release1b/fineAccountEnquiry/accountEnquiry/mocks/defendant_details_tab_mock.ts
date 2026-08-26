@@ -1,6 +1,6 @@
 import { IOpalFinesAccountDefendantAtAGlance } from '@services/fines/opal-fines-service/interfaces/opal-fines-account-defendant-at-a-glance.interface';
-import { IFinesAccountState } from '../../../../../src/app/flows/fines/fines-acc/interfaces/fines-acc-state-interface';
-import { IOpalFinesDefendantAccountIndividualAlias } from '../../../../../src/app/flows/fines/services/opal-fines-service/interfaces/opal-fines-defendant-account-individual-alias.interface';
+import { IFinesAccountState } from '../../../../../../src/app/flows/fines/fines-acc/interfaces/fines-acc-state-interface';
+import { IOpalFinesDefendantAccountIndividualAlias } from '../../../../../../src/app/flows/fines/services/opal-fines-service/interfaces/opal-fines-defendant-account-individual-alias.interface';
 const INDIVIDUAL_ALIASES: IOpalFinesDefendantAccountIndividualAlias[] = [
   { alias_id: '2', sequence_number: 1, surname: 'Smith', forenames: 'B' },
   { alias_id: '1', sequence_number: 2, surname: 'Graham', forenames: 'A' },

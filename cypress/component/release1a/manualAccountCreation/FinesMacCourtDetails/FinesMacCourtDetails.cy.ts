@@ -1,13 +1,13 @@
 import { FINES_COURTS_DETAILS_MOCK } from './mocks/fines-mac-court-details-mock';
-import { FinesMacCourtDetailsComponent } from '../../../../src/app/flows/fines/fines-mac/fines-mac-court-details/fines-mac-court-details.component';
-import { OPAL_FINES_LOCAL_JUSTICE_AREA_REF_DATA_MOCK } from '../../../../src/app/flows/fines/services/opal-fines-service/mocks/opal-fines-local-justice-area-ref-data.mock';
-import { OPAL_FINES_COURT_REF_DATA_MOCK } from '../../../../src/app/flows/fines/services/opal-fines-service/mocks/opal-fines-court-ref-data.mock';
-import { MacCourtDetailsLocators as L } from '../../../shared/selectors/manual-account-creation/mac.court-details.locators';
+import { FinesMacCourtDetailsComponent } from '../../../../../src/app/flows/fines/fines-mac/fines-mac-court-details/fines-mac-court-details.component';
+import { OPAL_FINES_LOCAL_JUSTICE_AREA_REF_DATA_MOCK } from '../../../../../src/app/flows/fines/services/opal-fines-service/mocks/opal-fines-local-justice-area-ref-data.mock';
+import { OPAL_FINES_COURT_REF_DATA_MOCK } from '../../../../../src/app/flows/fines/services/opal-fines-service/mocks/opal-fines-court-ref-data.mock';
+import { MacCourtDetailsLocators as L } from '../../../../shared/selectors/manual-account-creation/mac.court-details.locators';
 import { INVALID_ERRORS, MISSING_ERRORS } from './constants/fines_mac_court_details_errors';
 import { provideHttpClient } from '@angular/common/http';
 import { UtilsService } from '@hmcts/opal-frontend-common/services/utils-service';
 import { DateService } from '@hmcts/opal-frontend-common/services/date-service';
-import { IOpalFinesLocalJusticeAreaRefData } from '../../../../src/app/flows/fines/services/opal-fines-service/interfaces/opal-fines-local-justice-area-ref-data.interface';
+import { IOpalFinesLocalJusticeAreaRefData } from '../../../../../src/app/flows/fines/services/opal-fines-service/interfaces/opal-fines-local-justice-area-ref-data.interface';
 import { mountMacStoreComponent } from '../support/mountMacStoreComponent';
 
 const MANUAL_ACCOUNT_CREATION_JIRA_LABEL = '@JIRA-LABEL:manual-account-creation';

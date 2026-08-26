@@ -24,7 +24,7 @@
       "stream": true
     },
     "feature-flags": {
-      "override": false,
+      "override": true,
       "releases": {
         "release-1a": true,
         "release-1b": true,

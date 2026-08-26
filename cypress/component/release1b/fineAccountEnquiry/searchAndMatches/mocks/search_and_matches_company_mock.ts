@@ -1,4 +1,4 @@
-import { IFinesSaSearchAccountState } from '../../../../../src/app/flows/fines/fines-sa/fines-sa-search/fines-sa-search-account/interfaces/fines-sa-search-account-state.interface';
+import { IFinesSaSearchAccountState } from '../../../../../../src/app/flows/fines/fines-sa/fines-sa-search/fines-sa-search-account/interfaces/fines-sa-search-account-state.interface';
 
 export const COMPANY_SEARCH_STATE_MOCK: IFinesSaSearchAccountState = {
   fsa_search_account_business_unit_ids: [77],

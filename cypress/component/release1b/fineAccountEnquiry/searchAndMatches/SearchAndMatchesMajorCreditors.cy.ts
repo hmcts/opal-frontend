@@ -1,6 +1,6 @@
-import { AccountSearchCommonLocators as CommonLocators } from '../../../shared/selectors/account-search/account.search.common.locators';
-import { AccountSearchMajorCreditorsLocators as MajorCreditorsLocators } from '../../../shared/selectors/account-search/account.search.major-creditors.locators';
-import { AccountSearchNavLocators as NavLocators } from '../../../shared/selectors/account-search/account.search.nav.locators';
+import { AccountSearchCommonLocators as CommonLocators } from '../../../../shared/selectors/account-search/account.search.common.locators';
+import { AccountSearchMajorCreditorsLocators as MajorCreditorsLocators } from '../../../../shared/selectors/account-search/account.search.major-creditors.locators';
+import { AccountSearchNavLocators as NavLocators } from '../../../../shared/selectors/account-search/account.search.nav.locators';
 import { MAJOR_CREDITORS_SEARCH_STATE_MOCK } from './mocks/search_and_matches_major_creditors_mock';
 import { OPAL_FINES_BUSINESS_UNIT_REF_DATA_MOCK } from '@services/fines/opal-fines-service/mocks/opal-fines-business-unit-ref-data.mock';
 import { OPAL_FINES_MAJOR_CREDITOR_REF_DATA_MOCK } from '@services/fines/opal-fines-service/mocks/opal-fines-major-creditor-ref-data.mock';

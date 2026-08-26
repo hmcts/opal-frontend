@@ -1,5 +1,5 @@
-import { AccountSearchLocators } from '../../../shared/selectors/consolidation/AccountSearch.locators';
-import { AccountResultsLocators } from '../../../shared/selectors/consolidation/AccountResults.locators';
+import { AccountSearchLocators } from '../../../../shared/selectors/consolidation/AccountSearch.locators';
+import { AccountResultsLocators } from '../../../../shared/selectors/consolidation/AccountResults.locators';
 import { FINES_CON_SEARCH_RESULT_DEFENDANT_ACCOUNTS_COMPANY_FORMATTING_MOCK } from 'src/app/flows/fines/fines-con/consolidate-acc/fines-con-search-result/mocks/fines-con-search-result-defendant-accounts-company-formatting.mock';
 import { FINES_CON_SEARCH_RESULT_DEFENDANT_ACCOUNTS_FORMATTING_MOCK } from 'src/app/flows/fines/fines-con/consolidate-acc/fines-con-search-result/mocks/fines-con-search-result-defendant-accounts-formatting.mock';
 import { IFinesConSearchResultDefendantAccount } from 'src/app/flows/fines/fines-con/consolidate-acc/fines-con-search-result/interfaces/fines-con-search-result-defendant-account.interface';

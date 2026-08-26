@@ -1,4 +1,4 @@
-import { IFinesMacOffenceDetailsImpositionsState } from '../../../../../../src/app/flows/fines/fines-mac/fines-mac-offence-details/interfaces/fines-mac-offence-details-impositions-state.interface';
+import { IFinesMacOffenceDetailsImpositionsState } from '../../../../../../../src/app/flows/fines/fines-mac/fines-mac-offence-details/interfaces/fines-mac-offence-details-impositions-state.interface';
 
 export const FINES_MAC_OFFENCE_DETAILS_STATE_IMPOSITIONS_MOCK: IFinesMacOffenceDetailsImpositionsState[] = [
   {

@@ -1,10 +1,10 @@
-import { AccountSearchCommonLocators as CommonLocators } from '../../../shared/selectors/account-search/account.search.common.locators';
-import { AccountSearchIndividualsLocators as IndividualsLocators } from '../../../shared/selectors/account-search/account.search.individuals.locators';
-import { AccountSearchNavLocators as NavLocators } from '../../../shared/selectors/account-search/account.search.nav.locators';
+import { AccountSearchCommonLocators as CommonLocators } from '../../../../shared/selectors/account-search/account.search.common.locators';
+import { AccountSearchIndividualsLocators as IndividualsLocators } from '../../../../shared/selectors/account-search/account.search.individuals.locators';
+import { AccountSearchNavLocators as NavLocators } from '../../../../shared/selectors/account-search/account.search.nav.locators';
 import { INDIVIDUAL_SEARCH_STATE_MOCK } from './mocks/search_and_matches_individual_mock';
 import { finesSaIndividualDefendantAccountsResolver } from 'src/app/flows/fines/fines-sa/routing/resolvers/fines-sa-defendant-accounts/fines-sa-defendant-accounts.resolver';
 import { OpalFines } from '@services/fines/opal-fines-service/opal-fines.service';
-import { getCurrentMonth, getFirstDayOfPreviousMonth, getPreviousMonth } from '../../../support/utils/dateUtils';
+import { getCurrentMonth, getFirstDayOfPreviousMonth, getPreviousMonth } from '../../../../support/utils/dateUtils';
 import { of } from 'rxjs';
 import { mountSearchAccount } from './support/mountSearchAccount';
 

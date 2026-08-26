@@ -2,7 +2,7 @@ import { signal } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { mount } from 'cypress/angular';
 import { of } from 'rxjs';
-import { DOM_ELEMENTS as REMOVE_PARENT_GUARDIAN } from '../../../shared/selectors/account-enquiry/account.enquiry.remove-parent-guardian.locators';
+import { DOM_ELEMENTS as REMOVE_PARENT_GUARDIAN } from '../../../../shared/selectors/account-enquiry/account.enquiry.remove-parent-guardian.locators';
 import {
   REMOVE_PARENT_GUARDIAN_ACCOUNT_ID,
   REMOVE_PARENT_GUARDIAN_ACCOUNT_NUMBER,

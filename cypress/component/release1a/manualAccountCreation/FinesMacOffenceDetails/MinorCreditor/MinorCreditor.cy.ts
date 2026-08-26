@@ -1,6 +1,6 @@
 import { mount } from 'cypress/angular';
 import { FinesMacOffenceDetailsMinorCreditorComponent } from 'src/app/flows/fines/fines-mac/fines-mac-offence-details/fines-mac-offence-details-minor-creditor/fines-mac-offence-details-minor-creditor.component';
-import { OpalFines } from '../../../../../src/app/flows/fines/services/opal-fines-service/opal-fines.service';
+import { OpalFines } from '../../../../../../src/app/flows/fines/services/opal-fines-service/opal-fines.service';
 import { ActivatedRoute } from '@angular/router';
 import { FINES_MINOR_CREDITOR_MOCK } from './mocks/minor_creditor_fines_service_mock';
 import { FinesMacStore } from 'src/app/flows/fines/fines-mac/stores/fines-mac.store';
@@ -9,7 +9,7 @@ import { provideHttpClient } from '@angular/common/http';
 import { DateService } from '@hmcts/opal-frontend-common/services/date-service';
 import { FINES_MAC_OFFENCE_DETAILS_MINOR_CREDITOR_FORM_MOCK } from 'src/app/flows/fines/fines-mac/fines-mac-offence-details/fines-mac-offence-details-minor-creditor/mocks/fines-mac-offence-details-minor-creditor-form.mock';
 import { FINES_MAC_OFFENCE_DETAILS_DRAFT_STATE_MOCK } from 'src/app/flows/fines/fines-mac/fines-mac-offence-details/mocks/fines-mac-offence-details-draft-state.mock';
-import { MacOffenceDetailsMinorCreditorLocators as DOM_ELEMENTS } from '../../../../shared/selectors/manual-account-creation/mac.offence-details.locators';
+import { MacOffenceDetailsMinorCreditorLocators as DOM_ELEMENTS } from '../../../../../shared/selectors/manual-account-creation/mac.offence-details.locators';
 import { REQUIRED_FIELDS, FORMAT_CHECK, LENGTH_CHECK } from './constants/minor_creditor_errors';
 import { of } from 'rxjs';
 

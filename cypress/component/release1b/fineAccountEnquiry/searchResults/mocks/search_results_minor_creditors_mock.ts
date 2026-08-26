@@ -1,4 +1,4 @@
-import { IOpalFinesCreditorAccountResponse } from '../../../../../src/app/flows/fines/services/opal-fines-service/interfaces/opal-fines-creditor-accounts.interface';
+import { IOpalFinesCreditorAccountResponse } from '../../../../../../src/app/flows/fines/services/opal-fines-service/interfaces/opal-fines-creditor-accounts.interface';
 
 // Mock for empty search results (no results scenario)
 export const EMPTY_SEARCH_RESULTS_MOCK: IOpalFinesCreditorAccountResponse = {

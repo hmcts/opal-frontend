@@ -1,13 +1,13 @@
 import { mount } from 'cypress/angular';
-import { OpalFines } from '../../../../src/app/flows/fines/services/opal-fines-service/opal-fines.service';
+import { OpalFines } from '../../../../../src/app/flows/fines/services/opal-fines-service/opal-fines.service';
 import { ActivatedRoute } from '@angular/router';
-import { FinesMacEmployerDetailsComponent } from '../../../../src/app/flows/fines/fines-mac/fines-mac-employer-details/fines-mac-employer-details.component';
+import { FinesMacEmployerDetailsComponent } from '../../../../../src/app/flows/fines/fines-mac/fines-mac-employer-details/fines-mac-employer-details.component';
 import {
   LENGTH_VALIDATION,
   FORMAT_VALIDATION,
   REQUIRED_FIELDS_VALIDATION,
 } from './constants/fines_mac_employer_details_error';
-import { MacEmployerDetailsLocators as L } from '../../../shared/selectors/manual-account-creation/mac.employer-details.locators';
+import { MacEmployerDetailsLocators as L } from '../../../../shared/selectors/manual-account-creation/mac.employer-details.locators';
 import { FinesMacStore } from 'src/app/flows/fines/fines-mac/stores/fines-mac.store';
 import { FINES_EMPLOYER_DETAILS_MOCK } from './mocks/fines-employer-details-mock';
 import { of } from 'rxjs';

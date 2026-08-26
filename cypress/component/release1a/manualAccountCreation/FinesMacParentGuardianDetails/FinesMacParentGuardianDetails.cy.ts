@@ -1,13 +1,13 @@
 import { mount } from 'cypress/angular';
-import { OpalFines } from '../../../../src/app/flows/fines/services/opal-fines-service/opal-fines.service';
+import { OpalFines } from '../../../../../src/app/flows/fines/services/opal-fines-service/opal-fines.service';
 import { ActivatedRoute } from '@angular/router';
-import { FINES_MAC_STATE_MOCK } from '../../../../src/app/flows/fines/fines-mac/mocks/fines-mac-state.mock';
-import { FinesMacParentGuardianDetailsComponent } from '../../../../src/app/flows/fines/fines-mac/fines-mac-parent-guardian-details/fines-mac-parent-guardian-details.component';
+import { FINES_MAC_STATE_MOCK } from '../../../../../src/app/flows/fines/fines-mac/mocks/fines-mac-state.mock';
+import { FinesMacParentGuardianDetailsComponent } from '../../../../../src/app/flows/fines/fines-mac/fines-mac-parent-guardian-details/fines-mac-parent-guardian-details.component';
 import {
   MacParentGuardianDetailsLocators as DOM_ELEMENTS,
   getAliasFirstName,
   getAliasLastName,
-} from '../../../shared/selectors/manual-account-creation/mac.parent-guardian-details.locators';
+} from '../../../../shared/selectors/manual-account-creation/mac.parent-guardian-details.locators';
 import {
   MAIN_PERSONAL_DETAILS,
   ALIAS_PERSONAL_DETAILS,

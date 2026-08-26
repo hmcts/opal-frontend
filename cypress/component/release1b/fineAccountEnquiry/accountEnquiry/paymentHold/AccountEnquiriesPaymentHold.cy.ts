@@ -1,6 +1,6 @@
-import { ACCOUNT_ENQUIRY_HEADER_ELEMENTS as DOM } from '../../../../shared/selectors/account-enquiry/account.enquiry.header.locators';
-import { DOM_ELEMENTS as VERSION_CONTROL } from '../../../../shared/selectors/account-enquiry/account.enquiry.version-control.locators';
-import { USER_STATE_MOCK_NO_PERMISSION } from '../../../CommonIntercepts/CommonUserState.mocks';
+import { ACCOUNT_ENQUIRY_HEADER_ELEMENTS as DOM } from '../../../../../shared/selectors/account-enquiry/account.enquiry.header.locators';
+import { DOM_ELEMENTS as VERSION_CONTROL } from '../../../../../shared/selectors/account-enquiry/account.enquiry.version-control.locators';
+import { USER_STATE_MOCK_NO_PERMISSION } from '../../../../CommonIntercepts/CommonUserState.mocks';
 import { interceptAuthenticatedUser, interceptUserState } from 'cypress/component/CommonIntercepts/CommonIntercepts';
 import {
   interceptMinorCreditorAtAGlance,

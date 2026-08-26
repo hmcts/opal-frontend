@@ -1,6 +1,6 @@
 import { FINES_DASHBOARD_ROUTING_PATHS } from 'src/app/flows/fines/constants/fines-dashboard-routing-paths.constant';
-import { PrimaryNavigationLocators as PrimaryNav } from '../../shared/selectors/primary-navigation.locators';
-import { FinanceLocators } from '../../shared/selectors/finance.locators';
+import { PrimaryNavigationLocators as PrimaryNav } from '../../../shared/selectors/primary-navigation.locators';
+import { FinanceLocators } from '../../../shared/selectors/finance.locators';
 import { setupFinancePageComponent } from './setup/SetupComponent';
 
 const FINANCE_JIRA_LABEL = '@JIRA-LABEL:Auto-Payments Processing Filess';

@@ -1,7 +1,7 @@
 import { OPAL_FINES_ACCOUNT_DEFENDANT_DETAILS_HISTORY_AND_NOTES_TAB_REF_DATA_MOCK } from '@services/fines/opal-fines-service/mocks/opal-fines-account-defendant-details-history-and-notes-tab-ref-data.mock';
-import { ACCOUNT_ENQUIRY_HISTORY_AND_NOTES_ELEMENTS as HISTORY_AND_NOTES_TAB } from '../../../shared/selectors/account-enquiry/account.enquiry.history-and-notes.locators';
+import { ACCOUNT_ENQUIRY_HISTORY_AND_NOTES_ELEMENTS as HISTORY_AND_NOTES_TAB } from '../../../../shared/selectors/account-enquiry/account.enquiry.history-and-notes.locators';
 import { interceptAuthenticatedUser, interceptUserState } from 'cypress/component/CommonIntercepts/CommonIntercepts';
-import { USER_STATE_MOCK_PERMISSION_BU77 } from '../../CommonIntercepts/CommonUserState.mocks';
+import { USER_STATE_MOCK_PERMISSION_BU77 } from '../../../CommonIntercepts/CommonUserState.mocks';
 import { DEFENDANT_HEADER_MOCK } from './mocks/defendant_details_mock';
 import { FINES_ROUTING_PATHS } from '@routing/fines/constants/fines-routing-paths.constant';
 import { FINES_ACC_ROUTING_PATHS } from 'src/app/flows/fines/fines-acc/routing/constants/fines-acc-routing-paths.constant';

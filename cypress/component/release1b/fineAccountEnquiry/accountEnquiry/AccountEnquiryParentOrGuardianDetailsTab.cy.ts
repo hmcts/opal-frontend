@@ -1,4 +1,4 @@
-import { interceptAuthenticatedUser, interceptUserState } from '../../CommonIntercepts/CommonIntercepts';
+import { interceptAuthenticatedUser, interceptUserState } from '../../../CommonIntercepts/CommonIntercepts';
 import { createDefendantHeaderMockWithName } from './mocks/defendant_details_mock';
 import { mount } from 'cypress/angular';
 import { ActivatedRoute, provideRouter } from '@angular/router';
@@ -7,7 +7,7 @@ import {
   USER_STATE_MOCK_NO_PERMISSION,
   USER_STATE_MOCK_PERMISSION_BU17,
   USER_STATE_MOCK_PERMISSION_BU77,
-} from '../../CommonIntercepts/CommonUserState.mocks';
+} from '../../../CommonIntercepts/CommonUserState.mocks';
 
 import {
   interceptAddNotes,
@@ -17,8 +17,8 @@ import {
 } from './intercept/defendantAccountIntercepts';
 import { OPAL_FINES_ACCOUNT_DEFENDANT_ACCOUNT_PARTY_MOCK } from '@services/fines/opal-fines-service/mocks/opal-fines-account-defendant-account-party.mock';
 import { OPAL_FINES_ACCOUNT_PARENT_GUARDIAN_PARTY_MOCK } from './mocks/parentGuardianDebtor.mock';
-import { DOM_ELEMENTS as DOM } from '../../../shared/selectors/account-enquiry/account.enquiry.parent-guardian-details.locators';
-import { DOM_ELEMENTS as TABS } from '../../../shared/selectors/account-enquiry/account.enquiry.version-control.locators';
+import { DOM_ELEMENTS as DOM } from '../../../../shared/selectors/account-enquiry/account.enquiry.parent-guardian-details.locators';
+import { DOM_ELEMENTS as TABS } from '../../../../shared/selectors/account-enquiry/account.enquiry.version-control.locators';
 import { setupAccountEnquiryComponent } from './setup/SetupComponent';
 import { IComponentProperties } from './setup/setupComponent.interface';
 import { FinesAccDefendantDetailsParentOrGuardianTabComponent } from 'src/app/flows/fines/fines-acc/fines-acc-defendant-details/fines-acc-defendant-details-parent-or-guardian-tab/fines-acc-defendant-details-parent-or-guardian-tab.component';

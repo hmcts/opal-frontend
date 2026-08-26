@@ -9,7 +9,7 @@ import {
   DOM_ELEMENTS,
   getAliasForenamesInput,
   getAliasSurnameInput,
-} from '../../../shared/selectors/account-enquiry/account.enquiry.view-details.locators';
+} from '../../../../shared/selectors/account-enquiry/account.enquiry.view-details.locators';
 import {
   ERROR_MESSAGES,
   INDIVIDUAL_REQUIRED_MESSAGES,
@@ -20,7 +20,7 @@ import {
   COMPANY_ALL_DATA_TYPE_ERRORS,
   NON_PAYING_MAX_LENGTH_ERRORS,
   NON_PAYING_ALL_DATA_TYPE_ERRORS,
-} from '../../../shared/errorMessages/accountEnquiriesViewDetails.errorMessages';
+} from '../../../../shared/errorMessages/accountEnquiriesViewDetails.errorMessages';
 import { VIEW_AND_AMEND_DEFENDANT_COMPANY_FULL_MOCK } from './mocks/view-and-amend-defendant-company-full.mock';
 import { VIEW_AND_AMEND_DEFENDANT_INDIVIDUAL_FULL_MOCK } from './mocks/view-and-amend-defendant-individual-full.mock';
 import { VIEW_AND_AMEND_DEFENDANT_INDIVIDUAL_MINIMAL_MOCK } from './mocks/view-and-amend-defendant-individual-minimal.mock';

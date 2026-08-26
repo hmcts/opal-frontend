@@ -1,8 +1,8 @@
-import { AccountSearchCommonLocators as CommonLocators } from '../../../shared/selectors/account-search/account.search.common.locators';
-import { AccountSearchMinorCreditorsLocators as MinorCreditorsLocators } from '../../../shared/selectors/account-search/account.search.minor-creditors.locators';
-import { AccountSearchNavLocators as NavLocators } from '../../../shared/selectors/account-search/account.search.nav.locators';
+import { AccountSearchCommonLocators as CommonLocators } from '../../../../shared/selectors/account-search/account.search.common.locators';
+import { AccountSearchMinorCreditorsLocators as MinorCreditorsLocators } from '../../../../shared/selectors/account-search/account.search.minor-creditors.locators';
+import { AccountSearchNavLocators as NavLocators } from '../../../../shared/selectors/account-search/account.search.nav.locators';
 import { MINOR_CREDITORS_SEARCH_STATE_MOCK } from './mocks/search_and_matches_minor_creditors_mock';
-import { finesSaMinorCreditorAccountsResolver } from '../../../../src/app/flows/fines/fines-sa/routing/resolvers/fines-sa-minor-creditor-accounts/fines-sa-minor-creditor-accounts.resolver';
+import { finesSaMinorCreditorAccountsResolver } from '../../../../../src/app/flows/fines/fines-sa/routing/resolvers/fines-sa-minor-creditor-accounts/fines-sa-minor-creditor-accounts.resolver';
 import { mountSearchAccount } from './support/mountSearchAccount';
 
 const ACCOUNT_ENQUIRY_JIRA_LABEL = '@JIRA-LABEL:account-enquiry';

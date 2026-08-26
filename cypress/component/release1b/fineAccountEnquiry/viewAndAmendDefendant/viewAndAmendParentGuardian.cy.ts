@@ -16,12 +16,12 @@ import {
   DOM_ELEMENTS,
   getAliasForenamesInput,
   getAliasSurnameInput,
-} from '../../../shared/selectors/account-enquiry/account.enquiry.view-details.locators';
+} from '../../../../shared/selectors/account-enquiry/account.enquiry.view-details.locators';
 import {
   coreRequiredMessages,
   expectedErrors,
   allExpectedErrors,
-} from '../../../shared/errorMessages/accountEnquiriesViewDetails.errorMessages';
+} from '../../../../shared/errorMessages/accountEnquiriesViewDetails.errorMessages';
 import { VIEW_AND_AMEND_DEFENDANT_INDIVIDUAL_FULL_MOCK } from './mocks/view-and-amend-defendant-individual-full.mock';
 import { VIEW_AND_AMEND_DEFENDANT_INDIVIDUAL_MINIMAL_MOCK } from './mocks/view-and-amend-defendant-individual-minimal.mock';
 import { VIEW_AND_AMEND_PARENT_GUARDIAN_ADD_FORM_MOCK } from './mocks/view-and-amend-parent-guardian-add-form.mock';

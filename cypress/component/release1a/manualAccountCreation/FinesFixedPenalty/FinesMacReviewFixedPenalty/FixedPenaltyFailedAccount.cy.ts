@@ -10,12 +10,12 @@ import {
   interceptUserState,
 } from 'cypress/component/CommonIntercepts/CommonIntercepts';
 import { USER_STATE_MOCK_PERMISSION_BU77 } from 'cypress/component/CommonIntercepts/CommonUserState.mocks';
-import { interceptGetDraftAccountById } from 'cypress/component/manualAccountCreation/setup/FineAccount.intercepts';
-import { FIXED_PENALTY_FAILED_DEFENDANT_MOCK } from 'cypress/component/manualAccountCreation/FinesFixedPenalty/FinesMacReviewFixedPenalty/mocks/fines_mac_failed_account_mock';
+import { interceptGetDraftAccountById } from 'cypress/component/release1a/manualAccountCreation/setup/FineAccount.intercepts';
+import { FIXED_PENALTY_FAILED_DEFENDANT_MOCK } from 'cypress/component/release1a/manualAccountCreation/FinesFixedPenalty/FinesMacReviewFixedPenalty/mocks/fines_mac_failed_account_mock';
 import { BUSINESS_UNIT_77_MOCK } from 'cypress/component/CommonIntercepts/referenceData/businessUnits/BusinessUnit.mocks';
-import { MacFixedPenaltyReviewLocators as DOM_ELEMENTS } from '../../../../shared/selectors/manual-account-creation/mac.fixed-penalty.review.locators';
+import { MacFixedPenaltyReviewLocators as DOM_ELEMENTS } from '../../../../../shared/selectors/manual-account-creation/mac.fixed-penalty.review.locators';
 import { interceptCourtsByBU } from 'cypress/component/CommonIntercepts/CommonIntercepts';
-import { FIXED_PENALTY_FAILED_DRAFT_COMPANY_MOCK } from '../../FinesFixedPenalty/FinesMacReviewFixedPenalty/mocks/fines_mac_failed_company_mock';
+import { FIXED_PENALTY_FAILED_DRAFT_COMPANY_MOCK } from './mocks/fines_mac_failed_company_mock';
 
 const MANUAL_ACCOUNT_CREATION_JIRA_LABEL = '@JIRA-LABEL:manual-account-creation';
 

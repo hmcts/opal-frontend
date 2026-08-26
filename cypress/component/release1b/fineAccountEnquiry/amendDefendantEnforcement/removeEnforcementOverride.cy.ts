@@ -1,10 +1,10 @@
-import { ACCOUNT_ENQUIRY_ENFORCEMENT_STATUS_ELEMENTS as ENF } from '../../../shared/selectors/account-enquiry/account.enquiry.enforcement.locators';
-import { DOM_ELEMENTS as REMOVE_ENF_OVERRIDE } from '../../../shared/selectors/account-enquiry/account.enquiry.enforcement-override-remove.locators';
+import { ACCOUNT_ENQUIRY_ENFORCEMENT_STATUS_ELEMENTS as ENF } from '../../../../shared/selectors/account-enquiry/account.enquiry.enforcement.locators';
+import { DOM_ELEMENTS as REMOVE_ENF_OVERRIDE } from '../../../../shared/selectors/account-enquiry/account.enquiry.enforcement-override-remove.locators';
 import { setupAccountEnquiryComponent } from '../accountEnquiry/setup/SetupComponent';
 import { IComponentProperties } from '../accountEnquiry/setup/setupComponent.interface';
 import { signal } from '@angular/core';
 import { mount } from 'cypress/angular';
-import { DOM_ELEMENTS as VERSION_CONTROL } from '../../../shared/selectors/account-enquiry/account.enquiry.version-control.locators';
+import { DOM_ELEMENTS as VERSION_CONTROL } from '../../../../shared/selectors/account-enquiry/account.enquiry.version-control.locators';
 import { interceptAuthenticatedUser, interceptUserState } from 'cypress/component/CommonIntercepts/CommonIntercepts';
 import { USER_STATE_MOCK_PERMISSION_BU77 } from 'cypress/component/CommonIntercepts/CommonUserState.mocks';
 import {

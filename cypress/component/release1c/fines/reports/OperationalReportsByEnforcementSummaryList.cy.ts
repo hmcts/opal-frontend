@@ -5,7 +5,7 @@ import { BehaviorSubject, of } from 'rxjs';
 import { FinesReportsSummaryListComponent } from 'src/app/flows/fines/fines-reports/fines-reports-summary-list/fines-reports-summary-list.component';
 import { OpalFines } from 'src/app/flows/fines/services/opal-fines-service/opal-fines.service';
 import { GlobalStore } from '@hmcts/opal-frontend-common/stores/global';
-import { ReportsSummaryListLocators as L } from '../../../shared/selectors/reports-summary-list.locators';
+import { ReportsSummaryListLocators as L } from '../../../../shared/selectors/reports-summary-list.locators';
 import { OPAL_USER_STATE_MOCK } from '@hmcts/opal-frontend-common/services/opal-user-service/mocks';
 import { OPAL_FINES_BUSINESS_UNIT_REF_DATA_MOCK } from 'src/app/flows/fines/services/opal-fines-service/mocks/opal-fines-business-unit-ref-data.mock';
 import {

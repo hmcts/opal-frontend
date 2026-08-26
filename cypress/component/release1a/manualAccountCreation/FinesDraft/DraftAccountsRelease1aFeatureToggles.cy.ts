@@ -23,8 +23,8 @@ import {
   interceptGetApprovedAccounts,
   interceptGetRejectedAccounts,
 } from './FinesDraftCreateAndManage/FinesDraftCreateAndManageComponent/mocks/create-and-manage-intercepts';
-import { PrimaryNavigationLocators as PrimaryNav } from '../../../shared/selectors/primary-navigation.locators';
-import { DraftAccountsTableLocators as Table } from '../../../shared/selectors/draft-accounts-table.locators';
+import { PrimaryNavigationLocators as PrimaryNav } from '../../../../shared/selectors/primary-navigation.locators';
+import { DraftAccountsTableLocators as Table } from '../../../../shared/selectors/draft-accounts-table.locators';
 
 const MANUAL_ACCOUNT_CREATION_JIRA_LABEL = '@JIRA-LABEL:manual-account-creation';
 const RELEASE_1A_STORY_TAG = '@JIRA-STORY:PO-3719';

@@ -1,4 +1,4 @@
-import { IFinesMacAddAccountPayload } from '../../../../../src/app/flows/fines/fines-mac/services/fines-mac-payload/interfaces/fines-mac-payload-add-account.interfaces';
+import { IFinesMacAddAccountPayload } from '../../../../../../src/app/flows/fines/fines-mac/services/fines-mac-payload/interfaces/fines-mac-payload-add-account.interfaces';
 
 export const MOCK_FINES_DRAFT_STATE_DELETE: IFinesMacAddAccountPayload = {
   draft_account_id: 123,
