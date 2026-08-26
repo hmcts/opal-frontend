@@ -13,7 +13,7 @@ const part = (...fragments: ReturnType<typeof fragment>[]) => ({ fragments });
 const details = (...line1: ReturnType<typeof part>[]) => ({ line1, line2: null });
 
 const labelValuePart = (label: string, value: string) =>
-  part({ text: label, bold: true, hyphen: false }, { text: value, bold: false, hyphen: false });
+  part({ text: label, bold: false, hyphen: false }, { text: value, bold: false, hyphen: false });
 
 describe('transformMajorCreditorTransactionDetails', () => {
   it.each([

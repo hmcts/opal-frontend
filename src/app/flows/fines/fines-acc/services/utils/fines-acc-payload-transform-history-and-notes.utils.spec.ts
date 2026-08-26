@@ -1,5 +1,6 @@
 import { describe, expect, it } from 'vitest';
 import {
+  createHistoryChequeDetails,
   getHistoryTransactionTemplateValue,
   transformHistoryAndNotesDetails,
 } from './fines-acc-payload-transform-history-and-notes.utils';
@@ -69,6 +70,29 @@ describe('getHistoryTransactionTemplateValue', () => {
 
   it('should return null when the transaction type is not configured', () => {
     expect(getHistoryTransactionTemplateValue(templates, 'UNKNOWN')).toBeNull();
+  });
+});
+
+describe('createHistoryChequeDetails', () => {
+  it('should use the documented default when the cheque number is absent', () => {
+    expect(createHistoryChequeDetails('Cheque issued', null, null, null)).toEqual({
+      line1: [
+        part(fragment('Cheque issued')),
+        part({ text: 'Cheque number:', bold: false, hyphen: false }, fragment('Not yet written')),
+      ],
+      line2: null,
+    });
+  });
+
+  it('should append the documented cancelled status and date', () => {
+    expect(createHistoryChequeDetails('Cheque issued', '524589', 'X', '2026-06-20')).toEqual({
+      line1: [
+        part(fragment('Cheque issued')),
+        part({ text: 'Cheque number:', bold: false, hyphen: false }, fragment('524589')),
+        part(fragment('Cheque cancelled 20/06/2026')),
+      ],
+      line2: null,
+    });
   });
 });
 

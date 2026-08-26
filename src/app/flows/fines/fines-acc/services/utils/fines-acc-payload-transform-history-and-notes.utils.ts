@@ -74,6 +74,50 @@ export function getHistoryTransactionTemplateValue<T extends Record<string, unkn
 }
 
 /**
+ * Creates the shared display details for an issued or reissued cheque.
+ *
+ * @param title - The creditor-specific cheque title.
+ * @param chequeNumber - The payment reference used as the cheque number.
+ * @param status - The raw cheque status code.
+ * @param statusDate - The date on which the status was recorded.
+ * @returns The display-ready cheque details.
+ */
+export function createHistoryChequeDetails(
+  title: string,
+  chequeNumber: string | null,
+  status: string | null,
+  statusDate: string | null,
+): IFinesAccHistoryAndNotesDetails {
+  const statusLabel = status ? FINES_ACC_HISTORY_AND_NOTES_DETAILS_CHEQUE_STATUS_LABELS[status] : null;
+  const chequeNumberText = chequeNumber ?? FINES_ACC_HISTORY_AND_NOTES_DETAILS_LABELS.notYetWritten;
+  const statusText = statusLabel
+    ? [statusLabel, formatHistoryDate(statusDate, FINES_ACC_HISTORY_AND_NOTES_DETAILS_DATE_FORMAT)]
+        .filter(Boolean)
+        .join(' ')
+    : null;
+
+  return createHistoryDetails([
+    createHistoryTextPart(title),
+    createHistoryPlainLabelValuePart(FINES_ACC_HISTORY_AND_NOTES_DETAILS_LABELS.chequeNumber, chequeNumberText),
+    createHistoryTextPart(statusText),
+  ]);
+}
+
+/**
+ * Creates a plain label and value details part.
+ *
+ * @param label - The label text.
+ * @param value - The value text.
+ * @returns The plain labelled details part or null when the value is absent.
+ */
+export function createHistoryPlainLabelValuePart(
+  label: string,
+  value: string | null,
+): IFinesAccHistoryAndNotesDetailsPart | null {
+  return value ? createHistoryDetailsPart([createHistoryFragment(label), createHistoryFragment(value)]) : null;
+}
+
+/**
  * Transforms amendment history details into changed-field parts.
  *
  * @param item - The raw amendment history item.

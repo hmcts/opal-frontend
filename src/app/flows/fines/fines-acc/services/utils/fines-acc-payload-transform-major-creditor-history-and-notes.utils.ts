@@ -2,18 +2,14 @@ import {
   createHistoryDetails,
   createHistoryDetailsPart,
   createHistoryFragment,
-  createHistoryLabelValuePart,
   createHistoryLink,
   createHistoryTextPart,
-  formatHistoryDate,
   getHistoryString,
   IHistoryDetails,
   normaliseHistoryTransactionType,
   THistoryDetailsRawItem,
 } from '@hmcts/opal-frontend-common/services/history-transformation-service';
 import { FINES_ACC_HISTORY_AND_NOTES_DETAILS_ASSOCIATED_RECORD_TYPES } from '../constants/fines-acc-history-and-notes-details-associated-record-types.constant';
-import { FINES_ACC_HISTORY_AND_NOTES_DETAILS_CHEQUE_STATUS_LABELS } from '../constants/fines-acc-history-and-notes-details-cheque-status-labels.constant';
-import { FINES_ACC_HISTORY_AND_NOTES_DETAILS_DATE_FORMAT } from '../constants/fines-acc-history-and-notes-details-date-format.constant';
 import { FINES_ACC_HISTORY_AND_NOTES_DETAILS_EMPTY_VALUES } from '../constants/fines-acc-history-and-notes-details-empty-values.constant';
 import { FINES_ACC_HISTORY_AND_NOTES_DETAILS_FIELD_ALIASES } from '../constants/fines-acc-history-and-notes-details-field-aliases.constant';
 import { FINES_ACC_HISTORY_AND_NOTES_DETAILS_LABELS } from '../constants/fines-acc-history-and-notes-details-labels.constant';
@@ -22,7 +18,11 @@ import { FINES_ACC_HISTORY_AND_NOTES_DETAILS_SIMPLE_TRANSACTION_LABELS } from '.
 import { FINES_ACC_HISTORY_AND_NOTES_DETAILS_TRANSACTION_TYPE_ALIASES } from '../constants/fines-acc-history-and-notes-details-transaction-type-aliases.constant';
 import { FINES_ACC_HISTORY_AND_NOTES_DETAILS_TRANSACTION_TYPES } from '../constants/fines-acc-history-and-notes-details-transaction-types.constant';
 import { FINES_ACC_MAJOR_CREDITOR_HISTORY_AND_NOTES_TRANSACTION_TEMPLATES } from '../constants/fines-acc-major-creditor-history-and-notes-transaction-templates.constant';
-import { getHistoryTransactionTemplateValue } from './fines-acc-payload-transform-history-and-notes.utils';
+import {
+  createHistoryChequeDetails,
+  createHistoryPlainLabelValuePart,
+  getHistoryTransactionTemplateValue,
+} from './fines-acc-payload-transform-history-and-notes.utils';
 
 const EMPTY_VALUES = FINES_ACC_HISTORY_AND_NOTES_DETAILS_EMPTY_VALUES;
 const FIELD_ALIASES = FINES_ACC_HISTORY_AND_NOTES_DETAILS_FIELD_ALIASES;
@@ -51,7 +51,7 @@ export function transformMajorCreditorTransactionDetails(item: THistoryDetailsRa
   if (transactionType === transactionTypes.cancelledCheque) {
     return createHistoryDetails([
       createHistoryTextPart(LABELS.chequeCancelled),
-      createHistoryLabelValuePart(
+      createHistoryPlainLabelValuePart(
         LABELS.chequeNumber,
         getHistoryString(item, FIELD_ALIASES.paymentReference, [], EMPTY_VALUES),
       ),
@@ -127,7 +127,7 @@ function transformMajorCreditorBacsDetails(item: THistoryDetailsRawItem, title: 
 
   return createHistoryDetails([
     createHistoryTextPart(title),
-    createHistoryLabelValuePart(
+    createHistoryPlainLabelValuePart(
       paymentReferenceLabel,
       getHistoryString(item, paymentReferenceAliases, [], EMPTY_VALUES),
     ),
@@ -142,25 +142,12 @@ function transformMajorCreditorBacsDetails(item: THistoryDetailsRawItem, title: 
  * @returns The fragment-based details model for a future history-table component.
  */
 function transformMajorCreditorChequeDetails(item: THistoryDetailsRawItem, title: string): IHistoryDetails {
-  const chequeStatusLabels = FINES_ACC_HISTORY_AND_NOTES_DETAILS_CHEQUE_STATUS_LABELS;
-  const dateFormat = FINES_ACC_HISTORY_AND_NOTES_DETAILS_DATE_FORMAT;
-  const chequeNumber = getHistoryString(item, FIELD_ALIASES.paymentReference, [], EMPTY_VALUES);
-  const status = getHistoryString(item, FIELD_ALIASES.status, [], EMPTY_VALUES);
-  const statusLabel = status ? chequeStatusLabels[status] : null;
-
-  return createHistoryDetails([
-    createHistoryTextPart(title),
-    createHistoryLabelValuePart(LABELS.chequeNumber, chequeNumber ?? LABELS.notYetWritten),
-    // Only cancelled and dishonoured statuses create a third details part.
-    statusLabel
-      ? createHistoryTextPart(
-          `${statusLabel} ${formatHistoryDate(
-            getHistoryString(item, FIELD_ALIASES.statusDate, [], EMPTY_VALUES),
-            dateFormat,
-          )}`,
-        )
-      : null,
-  ]);
+  return createHistoryChequeDetails(
+    title,
+    getHistoryString(item, FIELD_ALIASES.paymentReference, [], EMPTY_VALUES),
+    getHistoryString(item, FIELD_ALIASES.status, [], EMPTY_VALUES),
+    getHistoryString(item, FIELD_ALIASES.statusDate, [], EMPTY_VALUES),
+  );
 }
 
 /**

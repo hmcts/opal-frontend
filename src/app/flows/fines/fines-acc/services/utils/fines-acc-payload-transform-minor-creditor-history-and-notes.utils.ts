@@ -4,7 +4,6 @@ import {
   createHistoryFragment,
   createHistoryLink,
   createHistoryTextPart,
-  formatHistoryDate,
   getHistoryString,
   IHistoryDetails as IFinesAccHistoryAndNotesDetails,
   IHistoryDetailsFragment as IFinesAccHistoryAndNotesDetailsFragment,
@@ -15,13 +14,15 @@ import {
   THistoryDetailsRawItem as TFinesAccHistoryAndNotesRawItem,
 } from '@hmcts/opal-frontend-common/services/history-transformation-service';
 import { FINES_ACC_HISTORY_AND_NOTES_DETAILS_ALIAS_PATH_PREFIXES } from '../constants/fines-acc-history-and-notes-details-alias-path-prefixes.constant';
-import { FINES_ACC_HISTORY_AND_NOTES_DETAILS_DATE_FORMAT } from '../constants/fines-acc-history-and-notes-details-date-format.constant';
 import { FINES_ACC_HISTORY_AND_NOTES_DETAILS_EMPTY_VALUES } from '../constants/fines-acc-history-and-notes-details-empty-values.constant';
 import { FINES_ACC_HISTORY_AND_NOTES_DETAILS_LINK_TYPES } from '../constants/fines-acc-history-and-notes-details-link-types.constant';
 import { FINES_ACC_MINOR_CREDITOR_HISTORY_AND_NOTES_DETAILS_FIELD_ALIASES } from '../constants/fines-acc-minor-creditor-history-and-notes-details-field-aliases.constant';
 import { FINES_ACC_MINOR_CREDITOR_HISTORY_AND_NOTES_ORDER_AND_NOTICE_TEMPLATES } from '../constants/fines-acc-minor-creditor-history-and-notes-order-and-notice-templates.constant';
 import { FINES_ACC_MINOR_CREDITOR_HISTORY_AND_NOTES_TRANSACTION_TEMPLATES } from '../constants/fines-acc-minor-creditor-history-and-notes-transaction-templates.constant';
-import { getHistoryTransactionTemplateValue } from './fines-acc-payload-transform-history-and-notes.utils';
+import {
+  createHistoryChequeDetails,
+  getHistoryTransactionTemplateValue,
+} from './fines-acc-payload-transform-history-and-notes.utils';
 
 /**
  * Transforms a minor creditor amendment history item.
@@ -192,40 +193,13 @@ function labelValuePart(label: string, value: string | null): IFinesAccHistoryAn
  * @returns The structured cheque details.
  */
 function chequeDetails(title: string, item: TFinesAccHistoryAndNotesRawItem): IFinesAccHistoryAndNotesDetails {
-  const templates = FINES_ACC_MINOR_CREDITOR_HISTORY_AND_NOTES_TRANSACTION_TEMPLATES;
+  const aliases = FINES_ACC_MINOR_CREDITOR_HISTORY_AND_NOTES_DETAILS_FIELD_ALIASES;
 
-  return createDetails([
-    textPart(title),
-    labelValuePart(templates.chequeNumberLabel, paymentReference(item) ?? templates.defaultChequeNumber),
-    chequeStatusPart(item),
-  ]);
-}
-
-/**
- * Builds the optional cheque status part.
- *
- * @param item - The raw minor creditor transaction history item.
- * @returns The status part or null.
- */
-function chequeStatusPart(item: TFinesAccHistoryAndNotesRawItem): IFinesAccHistoryAndNotesDetailsPart | null {
-  const status = getString(item, FINES_ACC_MINOR_CREDITOR_HISTORY_AND_NOTES_DETAILS_FIELD_ALIASES.status);
-  const statusLabel = status
-    ? FINES_ACC_MINOR_CREDITOR_HISTORY_AND_NOTES_TRANSACTION_TEMPLATES.statusLabels[
-        status as keyof typeof FINES_ACC_MINOR_CREDITOR_HISTORY_AND_NOTES_TRANSACTION_TEMPLATES.statusLabels
-      ]
-    : null;
-
-  if (!statusLabel) {
-    return null;
-  }
-
-  return textPart(
-    [
-      statusLabel,
-      formatDate(getString(item, FINES_ACC_MINOR_CREDITOR_HISTORY_AND_NOTES_DETAILS_FIELD_ALIASES.statusDate)),
-    ]
-      .filter(Boolean)
-      .join(' '),
+  return createHistoryChequeDetails(
+    title,
+    paymentReference(item),
+    getString(item, aliases.status),
+    getString(item, aliases.statusDate),
   );
 }
 
@@ -370,16 +344,6 @@ function createLink(type: string, emit: string): IFinesAccHistoryAndNotesDetails
  */
 function normaliseTransactionType(value: string | null): string | null {
   return normaliseHistoryTransactionType(value);
-}
-
-/**
- * Formats ISO dates as DD/MM/YYYY while leaving unknown formats unchanged.
- *
- * @param value - The raw date value.
- * @returns The formatted date or null.
- */
-function formatDate(value: string | null): string | null {
-  return formatHistoryDate(value, FINES_ACC_HISTORY_AND_NOTES_DETAILS_DATE_FORMAT);
 }
 
 /**

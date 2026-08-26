@@ -49,11 +49,5 @@ export const FINES_ACC_MINOR_CREDITOR_HISTORY_AND_NOTES_TRANSACTION_TEMPLATES = 
     XFER: 'Suspense transfer',
   },
   associatedRecordTypes: FINES_ACC_HISTORY_AND_NOTES_DETAILS_ASSOCIATED_RECORD_TYPES,
-  chequeNumberLabel: 'Cheque number:',
-  defaultChequeNumber: 'Not yet written',
   fallbackReferenceLabel: 'Reference:',
-  statusLabels: {
-    D: 'Cheque dishonoured',
-    X: 'Cheque cancelled',
-  },
 } as const;

@@ -343,7 +343,7 @@ describe('FinesAccPayloadService', () => {
           { fragments: [{ text: 'BACS payment', bold: false, hyphen: false }] },
           {
             fragments: [
-              { text: 'Payment reference:', bold: true, hyphen: false },
+              { text: 'Payment reference:', bold: false, hyphen: false },
               { text: 'MJH0000004', bold: false, hyphen: false },
             ],
           },
