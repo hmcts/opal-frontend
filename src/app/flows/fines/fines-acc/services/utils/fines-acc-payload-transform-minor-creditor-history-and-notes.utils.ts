@@ -21,6 +21,7 @@ import { FINES_ACC_HISTORY_AND_NOTES_DETAILS_LINK_TYPES } from '../constants/fin
 import { FINES_ACC_MINOR_CREDITOR_HISTORY_AND_NOTES_DETAILS_FIELD_ALIASES } from '../constants/fines-acc-minor-creditor-history-and-notes-details-field-aliases.constant';
 import { FINES_ACC_MINOR_CREDITOR_HISTORY_AND_NOTES_ORDER_AND_NOTICE_TEMPLATES } from '../constants/fines-acc-minor-creditor-history-and-notes-order-and-notice-templates.constant';
 import { FINES_ACC_MINOR_CREDITOR_HISTORY_AND_NOTES_TRANSACTION_TEMPLATES } from '../constants/fines-acc-minor-creditor-history-and-notes-transaction-templates.constant';
+import { getHistoryTransactionTemplateValue } from './fines-acc-payload-transform-history-and-notes.utils';
 
 /**
  * Transforms a minor creditor amendment history item.
@@ -66,13 +67,13 @@ export function transformMinorCreditorTransactionDetails(
   const aliases = FINES_ACC_MINOR_CREDITOR_HISTORY_AND_NOTES_DETAILS_FIELD_ALIASES;
   const transactionType = normaliseTransactionType(getString(item, aliases.transactionType));
   const templates = FINES_ACC_MINOR_CREDITOR_HISTORY_AND_NOTES_TRANSACTION_TEMPLATES;
-  const simpleTemplate = getTemplateValue(templates.simple, transactionType);
-  const labelledReferenceTemplate = getTemplateValue(templates.labelledReference, transactionType);
-  const chequeTemplate = getTemplateValue(templates.cheque, transactionType);
-  const defendantAccountTemplate = getTemplateValue(templates.defendantAccount, transactionType);
-  const creditorAccountTemplate = getTemplateValue(templates.creditorAccount, transactionType);
-  const associatedRecordTemplate = getTemplateValue(templates.associatedRecord, transactionType);
-  const associatedValueTemplate = getTemplateValue(templates.associatedValue, transactionType);
+  const simpleTemplate = getHistoryTransactionTemplateValue(templates.simple, transactionType);
+  const labelledReferenceTemplate = getHistoryTransactionTemplateValue(templates.labelledReference, transactionType);
+  const chequeTemplate = getHistoryTransactionTemplateValue(templates.cheque, transactionType);
+  const defendantAccountTemplate = getHistoryTransactionTemplateValue(templates.defendantAccount, transactionType);
+  const creditorAccountTemplate = getHistoryTransactionTemplateValue(templates.creditorAccount, transactionType);
+  const associatedRecordTemplate = getHistoryTransactionTemplateValue(templates.associatedRecord, transactionType);
+  const associatedValueTemplate = getHistoryTransactionTemplateValue(templates.associatedValue, transactionType);
 
   if (simpleTemplate) {
     return createDetails([textPart(simpleTemplate)]);
@@ -274,20 +275,6 @@ function defendantAccountNumberPart(item: TFinesAccHistoryAndNotesRawItem): IFin
         }),
       ])
     : null;
-}
-
-/**
- * Gets a template value for a transaction type.
- *
- * @param templates - The template record.
- * @param transactionType - The normalised transaction type or null.
- * @returns The matching template value or null.
- */
-function getTemplateValue<T extends Record<string, unknown>>(
-  templates: T,
-  transactionType: string | null,
-): T[keyof T] | null {
-  return transactionType && transactionType in templates ? templates[transactionType as keyof T] : null;
 }
 
 /**

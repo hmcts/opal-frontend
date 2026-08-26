@@ -22,6 +22,7 @@ import { FINES_ACC_HISTORY_AND_NOTES_DETAILS_SIMPLE_TRANSACTION_LABELS } from '.
 import { FINES_ACC_HISTORY_AND_NOTES_DETAILS_TRANSACTION_TYPE_ALIASES } from '../constants/fines-acc-history-and-notes-details-transaction-type-aliases.constant';
 import { FINES_ACC_HISTORY_AND_NOTES_DETAILS_TRANSACTION_TYPES } from '../constants/fines-acc-history-and-notes-details-transaction-types.constant';
 import { FINES_ACC_MAJOR_CREDITOR_HISTORY_AND_NOTES_TRANSACTION_TEMPLATES } from '../constants/fines-acc-major-creditor-history-and-notes-transaction-templates.constant';
+import { getHistoryTransactionTemplateValue } from './fines-acc-payload-transform-history-and-notes.utils';
 
 const EMPTY_VALUES = FINES_ACC_HISTORY_AND_NOTES_DETAILS_EMPTY_VALUES;
 const FIELD_ALIASES = FINES_ACC_HISTORY_AND_NOTES_DETAILS_FIELD_ALIASES;
@@ -39,7 +40,7 @@ export function transformMajorCreditorTransactionDetails(item: THistoryDetailsRa
   const transactionType = normaliseHistoryTransactionType(
     getHistoryString(item, FINES_ACC_HISTORY_AND_NOTES_DETAILS_TRANSACTION_TYPE_ALIASES, [], EMPTY_VALUES),
   );
-  const bacsPaymentTitle = getTransactionLabel(transactionTemplates.bacsPayment, transactionType);
+  const bacsPaymentTitle = getHistoryTransactionTemplateValue(transactionTemplates.bacsPayment, transactionType);
 
   // BACS, returned BACS, and reissued BACS all use the same payment-reference layout.
   if (bacsPaymentTitle) {
@@ -65,7 +66,10 @@ export function transformMajorCreditorTransactionDetails(item: THistoryDetailsRa
     );
   }
 
-  const defendantAccountTitle = getTransactionLabel(transactionTemplates.defendantAccount, transactionType);
+  const defendantAccountTitle = getHistoryTransactionTemplateValue(
+    transactionTemplates.defendantAccount,
+    transactionType,
+  );
 
   // Manual adjustments, payments, and repayments all append the same optional defendant account number.
   if (defendantAccountTitle) {
@@ -108,21 +112,6 @@ export function transformMajorCreditorTransactionDetails(item: THistoryDetailsRa
 
   // Keep an undocumented transaction code visible instead of guessing a user-facing sentence.
   return createHistoryDetails([createHistoryTextPart(transactionType)]);
-}
-
-/**
- * Gets the documented display label for a transaction type from a template group.
- *
- * @param transactionLabels - The documented transaction-code-to-label mapping.
- * @param transactionType - The transaction code returned by the API.
- * @returns The matching label or null when the transaction is not in this template group.
- */
-function getTransactionLabel<T extends Record<string, string>>(
-  transactionLabels: T,
-  transactionType: string | null,
-): string | null {
-  // A missing template is not an error: the caller continues to the next documented rule.
-  return transactionType && transactionType in transactionLabels ? transactionLabels[transactionType as keyof T] : null;
 }
 
 /**

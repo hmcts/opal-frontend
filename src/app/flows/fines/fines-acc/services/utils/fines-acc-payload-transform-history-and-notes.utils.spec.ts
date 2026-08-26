@@ -1,5 +1,8 @@
 import { describe, expect, it } from 'vitest';
-import { transformHistoryAndNotesDetails } from './fines-acc-payload-transform-history-and-notes.utils';
+import {
+  getHistoryTransactionTemplateValue,
+  transformHistoryAndNotesDetails,
+} from './fines-acc-payload-transform-history-and-notes.utils';
 import { FINES_ACC_HISTORY_AND_NOTES_DETAILS_TRANSFORMERS } from '../constants/fines-acc-history-and-notes-details-transformers.constant';
 import { FINES_ACC_HISTORY_AND_NOTES_DETAILS_PAYMENT_TERMS_TYPE_CODES } from '../constants/fines-acc-history-and-notes-details-payment-terms-type-codes.constant';
 import { FINES_ACC_HISTORY_AND_NOTES_DETAILS_TRANSACTION_TYPES } from '../constants/fines-acc-history-and-notes-details-transaction-types.constant';
@@ -53,6 +56,21 @@ const fragment = (
 });
 
 const part = (...fragments: ReturnType<typeof fragment>[]) => ({ fragments });
+
+describe('getHistoryTransactionTemplateValue', () => {
+  const templates = {
+    BACS: 'BACS payment',
+    CHEQUE: 'Cheque issued',
+  };
+
+  it('should return the configured template for a matching transaction type', () => {
+    expect(getHistoryTransactionTemplateValue(templates, 'BACS')).toBe('BACS payment');
+  });
+
+  it('should return null when the transaction type is not configured', () => {
+    expect(getHistoryTransactionTemplateValue(templates, 'UNKNOWN')).toBeNull();
+  });
+});
 
 describe('transformHistoryAndNotesDetails', () => {
   it('should transform amendment details into pipe-separated parts with bold attribute and values', () => {

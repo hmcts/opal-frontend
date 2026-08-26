@@ -60,6 +60,20 @@ export function transformHistoryAndNotesDetails(
 }
 
 /**
+ * Gets a configured transaction template for a normalised transaction type.
+ *
+ * @param templates - The transaction-code-to-template mapping.
+ * @param transactionType - The normalised transaction type returned by the API.
+ * @returns The matching template or null when the transaction type is not configured.
+ */
+export function getHistoryTransactionTemplateValue<T extends Record<string, unknown>>(
+  templates: T,
+  transactionType: string | null,
+): T[keyof T] | null {
+  return transactionType && transactionType in templates ? templates[transactionType as keyof T] : null;
+}
+
+/**
  * Transforms amendment history details into changed-field parts.
  *
  * @param item - The raw amendment history item.
