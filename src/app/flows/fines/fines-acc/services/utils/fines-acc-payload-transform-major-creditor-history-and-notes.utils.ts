@@ -18,6 +18,7 @@ import { FINES_ACC_MAJOR_CREDITOR_HISTORY_AND_NOTES_TRANSACTION_TEMPLATES } from
 import {
   createHistoryChequeDetails,
   createHistoryPlainLabelValuePart,
+  createHistorySuspenseTransferAssociatedRecordPart,
   createHistoryTextPartWithOptionalLink,
   getHistoryTransactionTemplateValue,
 } from './fines-acc-payload-transform-history-and-notes.utils';
@@ -183,41 +184,16 @@ function transformMajorCreditorLinkedAccountMovementDetails(
 function transformMajorCreditorSuspenseTransferDetails(item: THistoryDetailsRawItem): IHistoryDetails {
   const associatedRecordTypes = FINES_ACC_HISTORY_AND_NOTES_DETAILS_ASSOCIATED_RECORD_TYPES;
   const suspenseTransferLabel = LABELS.suspenseTransfer;
-  const associatedRecordType = getHistoryString(item, FIELD_ALIASES.associatedRecordType, [], EMPTY_VALUES);
+  const associatedRecordPart = createHistorySuspenseTransferAssociatedRecordPart(
+    {
+      associatedRecordType: getHistoryString(item, FIELD_ALIASES.associatedRecordType, [], EMPTY_VALUES),
+      associatedRecordId: getHistoryString(item, FIELD_ALIASES.associatedRecordId, [], EMPTY_VALUES),
+      defendantAccountNumber: getHistoryString(item, FIELD_ALIASES.defendantAccountNumber, [], EMPTY_VALUES),
+      defendantAccountId: getHistoryString(item, FIELD_ALIASES.defendantAccountId, [], EMPTY_VALUES),
+      creditorAccountNumber: getHistoryString(item, FIELD_ALIASES.creditorAccountNumber, [], EMPTY_VALUES),
+    },
+    Object.values(associatedRecordTypes),
+  );
 
-  // A suspense item uses the linked suspense transaction identifier.
-  if (associatedRecordType === associatedRecordTypes.suspenseItem) {
-    return transformMajorCreditorLinkedAccountMovementDetails(
-      item,
-      suspenseTransferLabel,
-      FIELD_ALIASES.associatedRecordId,
-      FINES_ACC_HISTORY_AND_NOTES_DETAILS_LINK_TYPES.suspenseTransaction,
-      FIELD_ALIASES.associatedRecordId,
-    );
-  }
-
-  // A defendant transaction uses the defendant account number.
-  if (associatedRecordType === associatedRecordTypes.defendantTransaction) {
-    return transformMajorCreditorLinkedAccountMovementDetails(
-      item,
-      suspenseTransferLabel,
-      FIELD_ALIASES.defendantAccountNumber,
-      FINES_ACC_HISTORY_AND_NOTES_DETAILS_LINK_TYPES.account,
-      FIELD_ALIASES.defendantAccountId,
-    );
-  }
-
-  // A creditor account uses the creditor account number.
-  if (associatedRecordType === associatedRecordTypes.creditorAccounts) {
-    return transformMajorCreditorLinkedAccountMovementDetails(
-      item,
-      suspenseTransferLabel,
-      FIELD_ALIASES.creditorAccountNumber,
-      FINES_ACC_HISTORY_AND_NOTES_DETAILS_LINK_TYPES.account,
-      FIELD_ALIASES.associatedRecordId,
-    );
-  }
-
-  // No documented record type matched, so retain the readable XFER heading without inventing a second value.
-  return createHistoryDetails([createHistoryTextPart(suspenseTransferLabel)]);
+  return createHistoryDetails([createHistoryTextPart(suspenseTransferLabel), associatedRecordPart]);
 }

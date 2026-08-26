@@ -22,6 +22,7 @@ import {
   transformHistoryDetails,
 } from '@hmcts/opal-frontend-common/services/history-transformation-service';
 import { FINES_ACC_HISTORY_AND_NOTES_DETAILS_ALIAS_PATH_PREFIXES } from '../constants/fines-acc-history-and-notes-details-alias-path-prefixes.constant';
+import { FINES_ACC_HISTORY_AND_NOTES_DETAILS_ASSOCIATED_RECORD_TYPES } from '../constants/fines-acc-history-and-notes-details-associated-record-types.constant';
 import { FINES_ACC_HISTORY_AND_NOTES_DETAILS_CHEQUE_STATUS_LABELS } from '../constants/fines-acc-history-and-notes-details-cheque-status-labels.constant';
 import { FINES_ACC_HISTORY_AND_NOTES_DETAILS_CURRENCY_PREFIX } from '../constants/fines-acc-history-and-notes-details-currency-prefix.constant';
 import { FINES_ACC_HISTORY_AND_NOTES_DETAILS_DATE_FORMAT } from '../constants/fines-acc-history-and-notes-details-date-format.constant';
@@ -37,6 +38,7 @@ import { FINES_ACC_HISTORY_AND_NOTES_DETAILS_PAYMENT_TERMS_TYPE_CODES } from '..
 import { FINES_ACC_HISTORY_AND_NOTES_DETAILS_TRANSACTION_TYPE_ALIASES } from '../constants/fines-acc-history-and-notes-details-transaction-type-aliases.constant';
 import { FINES_ACC_HISTORY_AND_NOTES_DETAILS_TRANSACTION_TYPES } from '../constants/fines-acc-history-and-notes-details-transaction-types.constant';
 import { FINES_ACC_HISTORY_AND_NOTES_DETAILS_XFER_REASON_LABELS } from '../constants/fines-acc-history-and-notes-details-xfer-reason-labels.constant';
+import { IFinesAccHistoryAndNotesSuspenseTransferValues } from '../../fines-acc-history-and-notes/interfaces/fines-acc-history-and-notes-suspense-transfer-values.interface';
 
 /**
  * Transforms a raw history item into the structured details model.
@@ -137,6 +139,67 @@ export function createHistoryTextPartWithOptionalLink(
         }),
       ])
     : null;
+}
+
+/**
+ * Creates the optional associated-record part for a suspense transfer.
+ *
+ * @param values - The raw values needed by the three documented associated-record types.
+ * @param linkedRecordTypes - The associated-record types that should include link metadata for this creditor flow.
+ * @returns The selected associated-record part, or null when the record type is not recognised or has no display value.
+ */
+export function createHistorySuspenseTransferAssociatedRecordPart(
+  values: IFinesAccHistoryAndNotesSuspenseTransferValues,
+  linkedRecordTypes: readonly string[],
+): IFinesAccHistoryAndNotesDetailsPart | null {
+  const associatedRecordTypes = FINES_ACC_HISTORY_AND_NOTES_DETAILS_ASSOCIATED_RECORD_TYPES;
+
+  if (values.associatedRecordType === associatedRecordTypes.suspenseItem) {
+    return createHistorySuspenseTransferRecordPart(
+      values.associatedRecordId,
+      FINES_ACC_HISTORY_AND_NOTES_DETAILS_LINK_TYPES.suspenseTransaction,
+      values.associatedRecordId,
+      linkedRecordTypes.includes(associatedRecordTypes.suspenseItem),
+    );
+  }
+
+  if (values.associatedRecordType === associatedRecordTypes.defendantTransaction) {
+    return createHistorySuspenseTransferRecordPart(
+      values.defendantAccountNumber,
+      FINES_ACC_HISTORY_AND_NOTES_DETAILS_LINK_TYPES.account,
+      values.defendantAccountId,
+      linkedRecordTypes.includes(associatedRecordTypes.defendantTransaction),
+    );
+  }
+
+  if (values.associatedRecordType === associatedRecordTypes.creditorAccounts) {
+    return createHistorySuspenseTransferRecordPart(
+      values.creditorAccountNumber,
+      FINES_ACC_HISTORY_AND_NOTES_DETAILS_LINK_TYPES.account,
+      values.associatedRecordId,
+      linkedRecordTypes.includes(associatedRecordTypes.creditorAccounts),
+    );
+  }
+
+  return null;
+}
+
+/**
+ * Creates a suspense-transfer value as either plain text or an optional link, according to the creditor flow.
+ *
+ * @param text - The optional value displayed in the history item.
+ * @param linkType - The type of record the value opens when linked.
+ * @param linkEmit - The optional target record identifier.
+ * @param shouldLink - Whether the creditor mapping requires a link for this record type.
+ * @returns The display-ready history details part or null when the value is absent.
+ */
+function createHistorySuspenseTransferRecordPart(
+  text: string | null,
+  linkType: string,
+  linkEmit: string | null,
+  shouldLink: boolean,
+): IFinesAccHistoryAndNotesDetailsPart | null {
+  return shouldLink ? createHistoryTextPartWithOptionalLink(text, linkType, linkEmit) : createHistoryTextPart(text);
 }
 
 /**

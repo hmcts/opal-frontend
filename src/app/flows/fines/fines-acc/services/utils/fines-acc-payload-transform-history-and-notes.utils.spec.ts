@@ -1,6 +1,7 @@
 import { describe, expect, it } from 'vitest';
 import {
   createHistoryChequeDetails,
+  createHistorySuspenseTransferAssociatedRecordPart,
   createHistoryTextPartWithOptionalLink,
   getHistoryTransactionTemplateValue,
   transformHistoryAndNotesDetails,
@@ -106,6 +107,38 @@ describe('createHistoryTextPartWithOptionalLink', () => {
 
   it('should return plain text when a target record identifier is absent', () => {
     expect(createHistoryTextPartWithOptionalLink('250000123M', 'account', null)).toEqual(part(fragment('250000123M')));
+  });
+});
+
+describe('createHistorySuspenseTransferAssociatedRecordPart', () => {
+  it('should create a linked suspense transaction part when the mapping requires it', () => {
+    expect(
+      createHistorySuspenseTransferAssociatedRecordPart(
+        {
+          associatedRecordType: 'suspense_item',
+          associatedRecordId: 'SUSP-123',
+          defendantAccountNumber: null,
+          defendantAccountId: null,
+          creditorAccountNumber: null,
+        },
+        ['suspense_item'],
+      ),
+    ).toEqual(part(fragment('SUSP-123', { link: { type: 'suspenseTransaction', emit: 'SUSP-123' } })));
+  });
+
+  it('should create a plain creditor-account part when the mapping does not require a link', () => {
+    expect(
+      createHistorySuspenseTransferAssociatedRecordPart(
+        {
+          associatedRecordType: 'creditor_accounts',
+          associatedRecordId: '456',
+          defendantAccountNumber: null,
+          defendantAccountId: null,
+          creditorAccountNumber: 'MC12345',
+        },
+        [],
+      ),
+    ).toEqual(part(fragment('MC12345')));
   });
 });
 

@@ -19,6 +19,7 @@ import { FINES_ACC_MINOR_CREDITOR_HISTORY_AND_NOTES_ORDER_AND_NOTICE_TEMPLATES }
 import { FINES_ACC_MINOR_CREDITOR_HISTORY_AND_NOTES_TRANSACTION_TEMPLATES } from '../constants/fines-acc-minor-creditor-history-and-notes-transaction-templates.constant';
 import {
   createHistoryChequeDetails,
+  createHistorySuspenseTransferAssociatedRecordPart,
   createHistoryTextPartWithOptionalLink,
   getHistoryTransactionTemplateValue,
 } from './fines-acc-payload-transform-history-and-notes.utils';
@@ -216,19 +217,28 @@ function suspenseTransferAssociatedValuePart(
     item,
     FINES_ACC_MINOR_CREDITOR_HISTORY_AND_NOTES_DETAILS_FIELD_ALIASES.associatedRecordType,
   );
+  const associatedRecordPart = createHistorySuspenseTransferAssociatedRecordPart(
+    {
+      associatedRecordType,
+      associatedRecordId: associatedRecordId(item),
+      defendantAccountNumber: defendantAccountNumber(item),
+      defendantAccountId: defendantAccountId(item),
+      creditorAccountNumber: creditorAccountNumber(item),
+    },
+    [associatedRecordTypes.defendantTransaction],
+  );
 
-  switch (associatedRecordType) {
-    case associatedRecordTypes.suspenseItem:
-      return textPart(associatedRecordId(item));
-    case associatedRecordTypes.defendantTransaction:
-      return defendantAccountNumberPart(item);
-    case associatedRecordTypes.creditorAccounts:
-      return textPart(creditorAccountNumber(item));
-    default:
-      return (
-        textPart(associatedRecordId(item)) ?? defendantAccountNumberPart(item) ?? textPart(creditorAccountNumber(item))
-      );
+  if (
+    associatedRecordType === associatedRecordTypes.suspenseItem ||
+    associatedRecordType === associatedRecordTypes.defendantTransaction ||
+    associatedRecordType === associatedRecordTypes.creditorAccounts
+  ) {
+    return associatedRecordPart;
   }
+
+  return (
+    textPart(associatedRecordId(item)) ?? defendantAccountNumberPart(item) ?? textPart(creditorAccountNumber(item))
+  );
 }
 
 /**
