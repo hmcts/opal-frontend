@@ -6,11 +6,16 @@ export const FORMAT_VALIDATION = {
   employer_email_pattern: 'Enter employer email address in the correct format, like name@example.com',
   employer_phone_pattern:
     'Enter a valid employer telephone number in the correct format, like 07700 900 982 or 01263 766122',
-  employer_address1_special_chars: 'Address line 1 must only contain letters or numbers',
-  employer_address2_special_chars: 'Address line 2 must only contain letters or numbers',
-  employer_address3_special_chars: 'Address line 3 must only contain letters or numbers',
-  employer_address4_special_chars: 'Address line 4 must only contain letters or numbers',
-  employer_address5_special_chars: 'Address line 5 must only contain letters or numbers',
+  employer_address1_special_chars:
+    'Address line 1 must only include letters a to z, numbers 0-9 and certain special characters (such as hyphens, spaces, apostrophes and commas)',
+  employer_address2_special_chars:
+    'Address line 2 must only include letters a to z, numbers 0-9 and certain special characters (such as hyphens, spaces, apostrophes and commas)',
+  employer_address3_special_chars:
+    'Address line 3 must only include letters a to z, numbers 0-9 and certain special characters (such as hyphens, spaces, apostrophes and commas)',
+  employer_address4_special_chars:
+    'Address line 4 must only include letters a to z, numbers 0-9 and certain special characters (such as hyphens, spaces, apostrophes and commas)',
+  employer_address5_special_chars:
+    'Address line 5 must only include letters a to z, numbers 0-9 and certain special characters (such as hyphens, spaces, apostrophes and commas)',
 };
 
 export const REQUIRED_FIELDS_VALIDATION = {

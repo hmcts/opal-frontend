@@ -6,9 +6,12 @@ export const FORMAT_CHECK = {
   dateOfBirthInFuture: 'Enter a valid date of birth in the past',
   dateOfBirthInvalid: 'Enter date of birth in the format DD/MM/YYYY',
   dateOfBirthNotValid: 'Enter a valid date of birth',
-  addressLine1ContainsSpecialCharacters: 'Address line 1 must only contain letters or numbers',
-  addressLine2ContainsSpecialCharacters: 'Address line 2 must only contain letters or numbers',
-  addressLine3ContainsSpecialCharacters: 'Address line 3 must only contain letters or numbers',
+  addressLine1ContainsSpecialCharacters:
+    'Address line 1 must only include letters a to z, numbers 0-9 and certain special characters (such as hyphens, spaces, apostrophes and commas)',
+  addressLine2ContainsSpecialCharacters:
+    'Address line 2 must only include letters a to z, numbers 0-9 and certain special characters (such as hyphens, spaces, apostrophes and commas)',
+  addressLine3ContainsSpecialCharacters:
+    'Address line 3 must only include letters a to z, numbers 0-9 and certain special characters (such as hyphens, spaces, apostrophes and commas)',
   validNationalInsuranceNumber: 'Enter a National Insurance number in the format AANNNNNNA',
 };
 
@@ -81,5 +84,6 @@ export const LENGTH_VALIDATION = {
 export const CORRECTION_TEST_MESSAGES = {
   firstNameTooLong: "Parent or guardian's first name(s) must be 20 characters or fewer",
   lastNameTooLong: "Parent or guardian's last name must be 30 characters or fewer",
-  addressLine1ContainsSpecialCharacters: 'Address line 1 must only contain letters or numbers',
+  addressLine1ContainsSpecialCharacters:
+    'Address line 1 must only include letters a to z, numbers 0-9 and certain special characters (such as hyphens, spaces, apostrophes and commas)',
 };
