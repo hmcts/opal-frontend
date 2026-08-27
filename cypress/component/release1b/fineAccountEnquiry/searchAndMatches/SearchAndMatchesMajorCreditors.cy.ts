@@ -263,13 +263,8 @@ describe('Search Account Component - Major Creditors', () => {
       cy.get(MajorRequirementLocators.message).should('not.exist');
       cy.get(MajorAutocompleteLocators.input).should('exist');
       cy.get(MajorAutocompleteLocators.input).click().type('HM Courts');
-      cy.get(MajorAutocompleteLocators.listbox)
-        .find('li')
-        .should('contain', 'HM Courts & Tribunals Service');
-      cy.get(MajorAutocompleteLocators.listbox)
-        .find('li')
-        .contains('HM Courts & Tribunals Service')
-        .click();
+      cy.get(MajorAutocompleteLocators.listbox).find('li').should('contain', 'HM Courts & Tribunals Service');
+      cy.get(MajorAutocompleteLocators.listbox).find('li').contains('HM Courts & Tribunals Service').click();
       cy.get(MajorAutocompleteLocators.input).should('have.value', 'HM Courts & Tribunals Service');
 
       cy.get(CommonLocators.searchButton).click();
