@@ -361,7 +361,7 @@ Use these functional scripts when you need a release-aligned run locally or in a
 - `yarn test:functional:r1ab`: current `R1A` + `R1B` positive coverage only
 - `yarn test:functional:all_flags_off`: technical disabled scenarios for `R1A`, `R1B`, `R1CWriteOff`, `R1CEnforcementOperationalReporting`, `R1CAdministration`, and `R1CFinancialMovements`
 
-Use `yarn test:component` for all component coverage. Component tests mock responses, so they can run in any release environment without release-specific runners.
+Use `yarn test:component` for all component coverage. Component tests mock responses, so they can run in any release environment. To run the component coverage for a single release, use `yarn test:component:r1a`, `yarn test:component:r1b`, or `yarn test:component:r1c`.
 
 All three top-level runners accept:
 
@@ -378,6 +378,7 @@ yarn test:smoke --mode=legacy --serial
 yarn test:functional --browser=firefox --mode=opal --parallel
 yarn test:functional:r1ab --browser=chrome
 yarn test:component --browser=edge
+yarn test:component:r1b --browser=chrome
 
 ```
 
