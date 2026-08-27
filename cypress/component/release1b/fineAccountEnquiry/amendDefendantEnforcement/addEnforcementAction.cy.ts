@@ -807,6 +807,7 @@ describe(
           ...COMPONENT_PROPERTIES,
           accountId,
         });
+        cy.wait(['@getUserState', '@getDefendantHeaderSummary', '@getEnforcementStatus']);
 
         cy.get(ENF.addEnforcementActionLink).click();
 

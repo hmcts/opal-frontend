@@ -52,6 +52,7 @@ describe('Account Enquiry Payment Terms', () => {
     interceptPaymentTerms(accountId, paymentTermsMock, '123');
     interceptResultByCode('REM');
     setupAccountEnquiryComponent({ ...componentProperties, accountId });
+    cy.wait(['@getUserState', '@getDefendantHeaderSummary', '@getPaymentTerms']);
     cy.get('router-outlet').should('exist');
     waitForPaymentTermsTabLoad();
   };
@@ -157,6 +158,7 @@ describe('Account Enquiry Payment Terms', () => {
         accountId,
         interceptedRoutes: componentProperties.interceptedRoutes?.filter((route) => route !== '../payment-terms/amend'),
       });
+      cy.wait(['@getUserState', '@getDefendantHeaderSummary', '@getPaymentTerms']);
       cy.get('router-outlet').should('exist');
       waitForPaymentTermsTabLoad();
 
@@ -229,6 +231,7 @@ describe('Account Enquiry Payment Terms', () => {
       interceptPaymentTerms(accountId, paymentTermsMock, '123');
       interceptResultByCode('REM');
       setupAccountEnquiryComponent({ ...componentProperties, accountId: accountId });
+      cy.wait(['@getUserState', '@getDefendantHeaderSummary', '@getPaymentTerms']);
       cy.get('router-outlet').should('exist');
 
       cy.get(PAYMENT_TERMS_TAB.pageHeader).should('exist');
@@ -344,6 +347,7 @@ describe('Account Enquiry Payment Terms', () => {
       interceptPaymentTerms(accountId, paymentTermsMock, '123');
       interceptResultByCode('REM');
       setupAccountEnquiryComponent({ ...componentProperties, accountId: accountId });
+      cy.wait(['@getUserState', '@getDefendantHeaderSummary', '@getPaymentTerms']);
       cy.get('router-outlet').should('exist');
 
       cy.get(PAYMENT_TERMS_TAB.tabName).should('exist').and('contain.text', 'Payment terms');
@@ -877,6 +881,7 @@ describe('Account Enquiry Payment Terms', () => {
       interceptPaymentTerms(accountId, paymentTermsMock, '123');
       interceptResultByCode('REM');
       setupAccountEnquiryComponent({ ...componentProperties, accountId: accountId });
+      cy.wait(['@getUserState', '@getDefendantHeaderSummary', '@getPaymentTerms']);
       cy.get('router-outlet').should('exist');
       waitForPaymentTermsTabLoad();
 
@@ -947,6 +952,7 @@ describe('Account Enquiry Payment Terms', () => {
       interceptPaymentTerms(accountId, paymentTermsMock, '123');
       interceptResultByCode('REM');
       setupAccountEnquiryComponent({ ...componentProperties, accountId: accountId });
+      cy.wait(['@getUserState', '@getDefendantHeaderSummary', '@getPaymentTerms']);
       cy.get('router-outlet').should('exist');
 
       cy.contains(PAYMENT_TERMS_TAB.paymentTermsLink, 'Request payment card').click();
@@ -1021,6 +1027,7 @@ describe('Account Enquiry Payment Terms', () => {
       interceptPaymentTerms(accountId, paymentTermsMock, '123');
       interceptResultByCode('REM');
       setupAccountEnquiryComponent({ ...componentProperties, accountId: accountId });
+      cy.wait(['@getUserState', '@getDefendantHeaderSummary', '@getPaymentTerms']);
       cy.get('router-outlet').should('exist');
 
       cy.contains(PAYMENT_TERMS_TAB.paymentTermsLink, 'Request payment card').click();
