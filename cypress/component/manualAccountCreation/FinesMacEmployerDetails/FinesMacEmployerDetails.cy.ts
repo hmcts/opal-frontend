@@ -204,16 +204,16 @@ describe('FinesMacEmployerDetailsComponent', () => {
   );
 
   it(
-    '(AC.1) should not allow asterisks in the address line fields',
+    '(AC.1) should not allow unsupported punctuation in the address line fields',
     { tags: [...buildTags('@JIRA-STORY:PO-280'), '@JIRA-EPIC:PO-272', '@JIRA-TEST-KEY:PO-4975'] },
     () => {
       setupComponent(null, 'adultOrYouthOnly');
-      finesMacState.employerDetails.formData.fm_employer_details_employer_address_line_1 = 'addr1*';
-      finesMacState.employerDetails.formData.fm_employer_details_employer_address_line_2 = 'addr2*';
-      finesMacState.employerDetails.formData.fm_employer_details_employer_address_line_3 = 'addr3*';
-      finesMacState.employerDetails.formData.fm_employer_details_employer_address_line_4 = 'addr4*';
-      finesMacState.employerDetails.formData.fm_employer_details_employer_address_line_5 = 'addr5*';
-      cy.get(L.addressLine1Input).should('have.value', 'addr1*');
+      finesMacState.employerDetails.formData.fm_employer_details_employer_address_line_1 = 'addr/1';
+      finesMacState.employerDetails.formData.fm_employer_details_employer_address_line_2 = 'addr/2';
+      finesMacState.employerDetails.formData.fm_employer_details_employer_address_line_3 = 'addr/3';
+      finesMacState.employerDetails.formData.fm_employer_details_employer_address_line_4 = 'addr/4';
+      finesMacState.employerDetails.formData.fm_employer_details_employer_address_line_5 = 'addr/5';
+      cy.get(L.addressLine1Input).should('have.value', 'addr/1');
       cy.get(L.submitButton).contains('Return to account details').click();
 
       cy.get(L.errorSummary).should('contain', FORMAT_VALIDATION.employer_address1_special_chars);

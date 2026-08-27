@@ -1,8 +1,11 @@
 import {
+  afterNextRender,
   ChangeDetectionStrategy,
   ChangeDetectorRef,
   Component,
+  DestroyRef,
   EventEmitter,
+  Injector,
   Input,
   OnDestroy,
   OnInit,
@@ -33,7 +36,7 @@ import {
   MojAlertTextComponent,
   MojAlertIconComponent,
 } from '@hmcts/opal-frontend-common/components/moj/moj-alert';
-import { CommonModule } from '@angular/common';
+import { CommonModule, DOCUMENT } from '@angular/common';
 import { FINES_MAC_OFFENCE_DETAILS_STATE } from '../../constants/fines-mac-offence-details-state.constant';
 import { FINES_ROUTING_PATHS } from '@routing/fines/constants/fines-routing-paths.constant';
 import { FINES_MAC_ROUTING_PATHS } from '../../../routing/constants/fines-mac-routing-paths.constant';
@@ -100,8 +103,12 @@ export class FinesMacOffenceDetailsAddAnOffenceFormComponent
   private readonly changeDetector: ChangeDetectorRef = inject(ChangeDetectorRef);
   private readonly opalFinesService = inject(OpalFines);
   private readonly finesMacStore = inject(FinesMacStore);
+  private readonly document = inject(DOCUMENT);
+  private readonly injector = inject(Injector);
+  private readonly destroyRef = inject(DestroyRef);
   private readonly creditorListenerControls = new WeakSet<object>();
   private readonly amountImposedListenerControls = new WeakSet<object>();
+  private focusObserver: MutationObserver | null = null;
 
   @Output() protected override formSubmit = new EventEmitter<IFinesMacOffenceDetailsForm>();
   protected readonly dateService = inject(DateService);
@@ -247,6 +254,57 @@ export class FinesMacOffenceDetailsAddAnOffenceFormComponent
   private setupImpositionsConfiguration(): void {
     this.formArrayFields = FINES_MAC_OFFENCE_DETAILS_IMPOSITIONS.map((item) => item.controlName);
     this.formArrayControlsValidation = FINES_MAC_OFFENCE_DETAILS_IMPOSITIONS;
+  }
+
+  /**
+   * Disconnects any pending focus observer used while waiting for an autocomplete input to render.
+   */
+  private disconnectFocusObserver(): void {
+    this.focusObserver?.disconnect();
+    this.focusObserver = null;
+  }
+
+  /**
+   * Focuses an element by ID, or observes the DOM until the element is rendered.
+   * This supports the accessible autocomplete input, which is created asynchronously by the child component.
+   *
+   * @param elementId - The ID of the focusable element.
+   */
+  private focusElementWhenAvailable(elementId: string): void {
+    const focusElement = (): boolean => {
+      const element = this.document.getElementById(elementId);
+      element?.focus();
+      return !!element;
+    };
+
+    if (focusElement() || typeof MutationObserver === 'undefined' || !this.document.body) {
+      return;
+    }
+
+    this.disconnectFocusObserver();
+
+    this.focusObserver = new MutationObserver(() => {
+      if (focusElement()) {
+        this.disconnectFocusObserver();
+      }
+    });
+    this.focusObserver.observe(this.document.body, { childList: true, subtree: true });
+    this.destroyRef.onDestroy(() => this.disconnectFocusObserver());
+  }
+
+  /**
+   * Moves focus to the visible result-code autocomplete input for an imposition row.
+   *
+   * @param index - The index of the imposition row to focus.
+   */
+  private focusImpositionResultCode(index: number): void {
+    const resultCodeInputId = this.formArrayControls[index]?.['fm_offence_details_result_id']?.inputId;
+
+    if (!resultCodeInputId) {
+      return;
+    }
+
+    this.focusElementWhenAvailable(`${resultCodeInputId}-autocomplete`);
   }
 
   /**
@@ -694,6 +752,22 @@ export class FinesMacOffenceDetailsAddAnOffenceFormComponent
   public override addControlsToFormArray(index: number, formArrayName: string): void {
     super.addControlsToFormArray(index, formArrayName);
     this.setupResultCodeListener(index);
+  }
+
+  /**
+   * Adds another imposition row and moves focus to its first field once the row has rendered.
+   */
+  public addAnotherImposition(): void {
+    const newRowIndex = this.formArrayControls.length;
+
+    this.addControlsToFormArray(newRowIndex, 'fm_offence_details_impositions');
+
+    afterNextRender(
+      () => {
+        this.focusImpositionResultCode(newRowIndex);
+      },
+      { injector: this.injector },
+    );
   }
 
   public override ngOnInit(): void {

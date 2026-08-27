@@ -380,13 +380,27 @@ export class AccountDetailsEnforcementActions {
   }
 
   /**
+   * Chooses the collection type on the add enforcement action details form.
+   *
+   * @param option - The collection type option to select.
+   */
+  public chooseCollectionType(option: string): void {
+    log('action', 'Choosing collection type option', { option });
+
+    cy.contains('legend', 'Collection type').parent().contains('label', option).click();
+  }
+
+  /**
    * Chooses whether to change existing payment terms on the add enforcement action details form.
    *
    * @param option - Visible option text, usually "Yes" or "No".
    */
   public chooseChangeExistingPaymentTerms(option: string): void {
     log('action', 'Choosing change existing payment terms option', { option });
-    cy.contains('label', option, { timeout: AccountDetailsEnforcementActions.DEFAULT_TIMEOUT }).click();
+    cy.contains('legend', 'Do you want to change the existing payment terms?')
+      .parent()
+      .contains('label', option)
+      .click();
   }
 
   /**
