@@ -7,7 +7,7 @@
   </opal-lib-moj-alert>
 }
 @if (finesMacOffenceDetailsStore.offenceCodeMessage().length > 0) {
-  <opal-lib-moj-alert type="success" ariaLabel="Offence code message">
+  <opal-lib-moj-alert type="success" [ariaLabel]="finesMacOffenceDetailsStore.offenceCodeMessage()">
     <opal-lib-moj-alert-icon icon type="success"></opal-lib-moj-alert-icon>
     <opal-lib-moj-alert-content content>
       <opal-lib-moj-alert-content-text>{{
