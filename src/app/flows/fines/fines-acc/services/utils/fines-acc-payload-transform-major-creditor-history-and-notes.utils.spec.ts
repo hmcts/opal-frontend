@@ -35,6 +35,22 @@ describe('transformMajorCreditorTransactionDetails', () => {
     );
   });
 
+  it.each([{ transaction_type: { transaction_type: 'BACS' } }, { transaction_type: 'BACS' }])(
+    'should transform a snake_case BACS transaction type with its payment reference',
+    (transactionType) => {
+      const result = transformMajorCreditorTransactionDetails({
+        details: {
+          ...transactionType,
+          payment_reference: 'MJS0000001',
+        },
+      });
+
+      expect(result).toEqual(
+        details(part(fragment('BACS payment')), labelValuePart('Payment reference:', 'MJS0000001')),
+      );
+    },
+  );
+
   it('should transform a cancelled cheque with its cheque number', () => {
     const result = transformMajorCreditorTransactionDetails({
       details: {
@@ -72,6 +88,25 @@ describe('transformMajorCreditorTransactionDetails', () => {
       );
     },
   );
+
+  it('should transform snake_case cheque status fields', () => {
+    const result = transformMajorCreditorTransactionDetails({
+      details: {
+        transaction_type: { transaction_type: 'CHEQUE' },
+        payment_reference: '524589',
+        status: { creditor_transaction_status: 'X' },
+        status_date: '2026-06-20T09:00:00',
+      },
+    });
+
+    expect(result).toEqual(
+      details(
+        part(fragment('Cheque issued')),
+        labelValuePart('Cheque number:', '524589'),
+        part(fragment('Cheque cancelled 20/06/2026')),
+      ),
+    );
+  });
 
   it.each([
     ['CFEES', 'Court Fee'],
@@ -138,6 +173,20 @@ describe('transformMajorCreditorTransactionDetails', () => {
         transactionType: { transactionType: 'PAYMNT' },
         defendantAccountNumber: '250000123M',
         defendantAccountId: '123123',
+      },
+    });
+
+    expect(result).toEqual(
+      details(part(fragment('Payment received')), part(fragment('250000123M', { type: 'account', emit: '123123' }))),
+    );
+  });
+
+  it('should link a snake_case payment received defendant account number when an account ID is supplied', () => {
+    const result = transformMajorCreditorTransactionDetails({
+      details: {
+        transaction_type: { transaction_type: 'PAYMNT' },
+        defendant_account_number: '250000123M',
+        defendant_account_id: '123123',
       },
     });
 
@@ -232,6 +281,47 @@ describe('transformMajorCreditorTransactionDetails', () => {
       details(part(fragment('Suspense transfer')), part(fragment('99000000000850', { type: 'account', emit: '850' }))),
     );
   });
+
+  it.each([
+    [
+      'defendant transaction',
+      {
+        associated_record_type: 'defendant_transaction',
+        defendant_account_number: '250000123M',
+        defendant_account_id: '123123',
+      },
+      part(fragment('250000123M', { type: 'account', emit: '123123' })),
+    ],
+    [
+      'suspense item',
+      {
+        associated_record_type: 'suspense_item',
+        associated_record_id: 'SUSP-123',
+      },
+      part(fragment('SUSP-123', { type: 'suspenseTransaction', emit: 'SUSP-123' })),
+    ],
+    [
+      'creditor account',
+      {
+        associated_record_type: 'creditor_accounts',
+        account_number: '99000000000850',
+        associated_record_id: '850',
+      },
+      part(fragment('99000000000850', { type: 'account', emit: '850' })),
+    ],
+  ])(
+    'should transform snake_case suspense transfer values for a %s',
+    (_recordType, transactionDetails, expectedPart) => {
+      const result = transformMajorCreditorTransactionDetails({
+        details: {
+          transaction_type: { transaction_type: 'XFER' },
+          ...transactionDetails,
+        },
+      });
+
+      expect(result).toEqual(details(part(fragment('Suspense transfer')), expectedPart));
+    },
+  );
 
   it('should keep an undocumented transaction code visible', () => {
     const result = transformMajorCreditorTransactionDetails({
