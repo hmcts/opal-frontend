@@ -18,6 +18,7 @@ import {
   RELEASE_1C_WRITE_OFF_FEATURE_FLAG,
   RELEASE_1C_ENFORCEMENT_OPERATIONAL_REPORTING_FEATURE_FLAG,
   RELEASE_1C_FINANCIAL_MOVEMENTS_FEATURE_FLAG,
+  RELEASE_1C_BANKING_INTERFACES_FEATURE_FLAG,
 } from '@app/flows/fines/constants/release-feature-flags.constant';
 
 describe('DashboardComponent', () => {
@@ -35,6 +36,7 @@ describe('DashboardComponent', () => {
     [RELEASE_1C_ENFORCEMENT_OPERATIONAL_REPORTING_FEATURE_FLAG]: true,
     [RELEASE_1C_ADMINISTRATION_FEATURE_FLAG]: true,
     [RELEASE_1C_FINANCIAL_MOVEMENTS_FEATURE_FLAG]: true,
+    [RELEASE_1C_BANKING_INTERFACES_FEATURE_FLAG]: true,
   };
 
   const setupComponent = () => {
@@ -209,10 +211,36 @@ describe('DashboardComponent', () => {
     dashboardTypeParamMapSubject.next(convertToParamMap({ dashboardType: 'finance' }));
     fixture.detectChanges();
 
-    expect(component.resolvedConfig()).toEqual({
+     expect(component.resolvedConfig()).toEqual({
       ...DASHBOARD_PAGE_CONFIGURATION_MAP.finance,
-      groups: [],
+      groups: DASHBOARD_PAGE_CONFIGURATION_MAP.finance.groups.filter((group) => group.id !== 'cash'),
     });
+    expect(component.resolvedConfig().groups.map((group) => group.id)).not.toContain('cash');
+  });
+
+  it('should remove banking interfaces content when release-1c-banking-interfaces is disabled', () => {
+    globalStoreMock.featureFlags.mockReturnValue({
+      ...DEFAULT_RELEASE_FEATURE_FLAGS,
+      [RELEASE_1C_BANKING_INTERFACES_FEATURE_FLAG]: false,
+    });
+    setupComponent();
+    dashboardTypeParamMapSubject.next(convertToParamMap({ dashboardType: 'finance' }));
+    fixture.detectChanges();
+
+     expect(component.resolvedConfig()).toEqual({
+      ...DASHBOARD_PAGE_CONFIGURATION_MAP.finance,
+      groups: DASHBOARD_PAGE_CONFIGURATION_MAP.finance.groups.filter((group) => group.id !== 'bankingInterfaces'),
+    });
+    expect(component.resolvedConfig().groups.map((group) => group.id)).not.toContain('bankingInterfaces');
+  });
+
+  it('should resolve the banking interfaces config when release-1c-banking-interfaces is enabled', () => {
+    setupComponent();
+    dashboardTypeParamMapSubject.next(convertToParamMap({ dashboardType: 'finance' }));
+    fixture.detectChanges();
+
+    expect(component.resolvedConfig()).toEqual(DASHBOARD_PAGE_CONFIGURATION_MAP.finance);
+    expect(component.resolvedConfig().groups.map((group) => group.id)).toContain('bankingInterfaces');
   });
 
   it('should render the manual cash input link when the user has process and allocate payments permission', () => {

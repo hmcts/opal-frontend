@@ -44,7 +44,7 @@ export const FINES_FINANCE_LINKS: IDashboardPageConfigurationLink[] = [
       FINES_ROUTING_PATHS.children.finance.children['upload'],
     ],
     fragment: null,
-    permissionIds: [FINES_PERMISSIONS['upload-variant-banking-files']],
+    permissionIds: [FINES_PERMISSIONS['create-interface-files']],
     newTab: false,
     style: 'guidance-panel-blue',
   },

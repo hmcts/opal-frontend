@@ -20,5 +20,4 @@ export const FINES_PERMISSIONS: IFinesPermissions = {
   'auto-enforcement': 17,
   'view-interface-files': 18,
   'create-interface-files': 19,
-  'upload-variant-banking-files': 20,
 };

@@ -52,7 +52,7 @@ export const routing: Routes = [
       ),
     canActivate: [authGuard, routePermissionsGuard],
     data: {
-      routePermissionId: [financeRootPermissionIds['upload-variant-banking-files']],
+      routePermissionId: [financeRootPermissionIds['create-interface-files']],
       title: FINES_FINANCE_ROUTING_TITLES.children.upload,
     },
     resolve: { title: TitleResolver },

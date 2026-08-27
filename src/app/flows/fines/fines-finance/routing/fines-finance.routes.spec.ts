@@ -34,7 +34,7 @@ describe('fines finance routes', () => {
     {
       path: `${FINES_FINANCE_ROUTING_PATHS.children.variantBankingFiles}/${FINES_FINANCE_ROUTING_PATHS.children.upload}`,
       title: FINES_FINANCE_ROUTING_TITLES.children.upload,
-      routePermissionId: FINES_PERMISSIONS['upload-variant-banking-files'],
+      routePermissionId: FINES_PERMISSIONS['create-interface-files'],
       component: FinesFinanceUploadVariantBankingFilesComponent,
     },
   ])('should title and lazy-load the $title route', async ({ path, title, routePermissionId, component }) => {
