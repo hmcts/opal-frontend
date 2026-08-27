@@ -12,7 +12,7 @@ import { FormControl, FormGroup, FormsModule, ReactiveFormsModule, Validators } 
 import { AbstractFormBaseComponent } from '@hmcts/opal-frontend-common/components/abstract/abstract-form-base';
 import { IAbstractFormBaseFieldErrors } from '@hmcts/opal-frontend-common/components/abstract/abstract-form-base/interfaces';
 import { IFinesMacEmployerDetailsForm } from '../interfaces/fines-mac-employer-details-form.interface';
-import { FINES_MAC_EMPLOYER_DETAILS_FIELD_ERRORS } from '../constants/fines-mac-employer-details-field-errors';
+import { FINES_MAC_EMPLOYER_DETAILS_FIELD_ERRORS } from '../constants/fines-mac-employer-details-field-errors.constant';
 import { FINES_MAC_ROUTING_NESTED_ROUTES } from '../../routing/constants/fines-mac-routing-nested-routes.constant';
 import { FINES_MAC_ROUTING_PATHS } from '../../routing/constants/fines-mac-routing-paths.constant';
 import { FinesMacStore } from '../../stores/fines-mac.store';
@@ -23,6 +23,7 @@ import { GovukErrorSummaryComponent } from '@hmcts/opal-frontend-common/componen
 import { optionalMaxLengthValidator } from '@hmcts/opal-frontend-common/validators/optional-max-length';
 import { optionalPhoneNumberValidator } from '@hmcts/opal-frontend-common/validators/optional-valid-telephone';
 import { CapitalisationDirective } from '@hmcts/opal-frontend-common/directives/capitalisation';
+import { TrimLeadingTrailingWhitespaceDirective } from '@hmcts/opal-frontend-common/directives/trim-leading-trailing-whitespace';
 import { patternValidator } from '@hmcts/opal-frontend-common/validators/pattern-validator';
 import {
   ALPHANUMERIC_WITH_HYPHENS_SPACES_APOSTROPHES_DOT_PATTERN,
@@ -57,6 +58,7 @@ const ALPHANUMERIC_WITH_HYPHENS_SPACES_APOSTROPHES_DOT_PATTERN_VALIDATOR = patte
     GovukCancelLinkComponent,
     GovukTextInputComponent,
     CapitalisationDirective,
+    TrimLeadingTrailingWhitespaceDirective,
   ],
   templateUrl: './fines-mac-employer-details-form.component.html',
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -115,7 +117,10 @@ export class FinesMacEmployerDetailsFormComponent extends AbstractFormBaseCompon
         optionalMaxLengthValidator(30),
         ALPHANUMERIC_WITH_SPACES_PATTERN_VALIDATOR,
       ]),
-      fm_employer_details_employer_post_code: new FormControl(null, [optionalMaxLengthValidator(8)]),
+      fm_employer_details_employer_post_code: new FormControl(null, [
+        optionalMaxLengthValidator(8),
+        ALPHANUMERIC_WITH_SPACES_PATTERN_VALIDATOR,
+      ]),
     });
   }
 
