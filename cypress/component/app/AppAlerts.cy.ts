@@ -7,7 +7,7 @@ const assertLiveAlert = (message: string): void => {
   cy.get(LIVE_ALERT).should('contain.text', message);
 };
 
-describe('Global alerts', { tags: ['@JIRA-STORY:PO-9041'] }, () => {
+describe('Global alerts', { tags: ['@JIRA-STORY:PO-9041', '@JIRA-EPIC:PO-2472'] }, () => {
   it('announces the session expiry warning', () => {
     setupAppComponent().then(({ fixture }) => {
       fixture.componentInstance.thresholdInMinutes = 5;
