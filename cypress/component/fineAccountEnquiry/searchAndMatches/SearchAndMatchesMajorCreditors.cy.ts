@@ -231,17 +231,17 @@ describe('Search Account Component - Major Creditors', () => {
     { tags: [...buildTags('@JIRA-STORY:PO-2350'), '@JIRA-EPIC:PO-1286'] },
     () => {
       const centralFundMajorCreditor: IOpalFinesMajorCreditor = {
-        account_number: 'CF-73-0001',
-        business_unit_id: 73,
-        creditor_account_id: 770000000001,
+        account_number: '00002000J',
+        business_unit_id: 77,
+        creditor_account_id: 77,
         creditor_account_type: 'CF',
         from_suspense: null,
         hold_payout: null,
         last_changed_date: null,
         major_creditor_code: null,
-        major_creditor_id: 770000000001,
+        major_creditor_id: 77,
         major_creditor_party_id: null,
-        name: 'Central Fund',
+        name: 'HM Courts & Tribunals Service',
         postcode: null,
         prosecution_service: false,
       };
@@ -262,15 +262,20 @@ describe('Search Account Component - Major Creditors', () => {
 
       cy.get(MajorRequirementLocators.message).should('not.exist');
       cy.get(MajorAutocompleteLocators.input).should('exist');
-      cy.get(MajorAutocompleteLocators.input).click().type('Central');
-      cy.get(MajorAutocompleteLocators.listbox).find('li').should('contain', 'Central Fund');
-      cy.get(MajorAutocompleteLocators.listbox).find('li').contains('Central Fund').click();
-      cy.get(MajorAutocompleteLocators.input).should('have.value', 'Central Fund');
+      cy.get(MajorAutocompleteLocators.input).click().type('HM Courts');
+      cy.get(MajorAutocompleteLocators.listbox)
+        .find('li')
+        .should('contain', 'HM Courts & Tribunals Service');
+      cy.get(MajorAutocompleteLocators.listbox)
+        .find('li')
+        .contains('HM Courts & Tribunals Service')
+        .click();
+      cy.get(MajorAutocompleteLocators.input).should('have.value', 'HM Courts & Tribunals Service');
 
       cy.get(CommonLocators.searchButton).click();
 
       cy.get('@urlTree').should('have.been.calledWithMatch', [
-        `fines/account/${centralFundMajorCreditor.major_creditor_id}/defendant`,
+        `fines/account/major-creditor/${centralFundMajorCreditor.major_creditor_id}/details`,
       ]);
       cy.get('@windowOpen').should('have.been.calledOnce');
     },
