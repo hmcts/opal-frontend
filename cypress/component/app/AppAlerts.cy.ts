@@ -15,7 +15,9 @@ describe('Global alerts', { tags: ['@JIRA-STORY:PO-9041', '@JIRA-EPIC:PO-2472'] 
       fixture.detectChanges();
     });
 
-    assertLiveAlert('warning : Your session will expire');
+    assertLiveAlert(
+      'warning : Your session will expire. Please save your work and log out, then log back in to continue.',
+    );
   });
 
   it('announces the session expired warning', () => {
@@ -24,7 +26,7 @@ describe('Global alerts', { tags: ['@JIRA-STORY:PO-9041', '@JIRA-EPIC:PO-2472'] 
       fixture.detectChanges();
     });
 
-    assertLiveAlert('warning : Your session has expired');
+    assertLiveAlert('warning : Your session has expired. Please log back in.');
   });
 
   it('announces the global error banner', () => {

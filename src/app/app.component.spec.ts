@@ -357,7 +357,9 @@ describe('AppComponent - browser', () => {
     const liveRegion = liveRegionDebugElement.componentInstance as CustomDeferredLiveRegionAnnouncement;
     const alert = alertDebugElement.componentInstance as MojAlertComponent;
 
-    expect(liveRegion.message).toBe('Warning: Your session will expire soon.');
+    expect(liveRegion.message).toBe(
+      'Warning: Your session will expire soon. Please save your work and log out, then log back in to continue.',
+    );
     expect(liveRegion.role).toBe('alert');
     expect(alert.enableLiveAnnouncement).toBe(false);
   });

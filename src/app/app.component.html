@@ -35,7 +35,7 @@
           @if (thresholdInMinutes >= minutes && minutes > 0) {
             <div>
               <opal-lib-custom-deferred-live-region-announcement
-                message="Warning: Your session will expire soon."
+                message="Warning: Your session will expire soon. Please save your work and log out, then log back in to continue."
                 role="alert"
               ></opal-lib-custom-deferred-live-region-announcement>
 
@@ -54,7 +54,7 @@
         }
 
         @if (showExpiredWarning) {
-          <div opal-lib-moj-alert ariaLabel="Your session has expired" type="warning">
+          <div opal-lib-moj-alert ariaLabel="Your session has expired Please log back in." type="warning">
             <opal-lib-moj-alert-icon icon type="warning"></opal-lib-moj-alert-icon>
             <opal-lib-moj-alert-content content
               ><opal-lib-moj-alert-content-text
