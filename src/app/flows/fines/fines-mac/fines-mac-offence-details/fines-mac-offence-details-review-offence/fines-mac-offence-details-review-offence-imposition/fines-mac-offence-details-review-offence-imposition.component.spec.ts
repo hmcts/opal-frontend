@@ -103,7 +103,9 @@ describe('FinesMacOffenceDetailsReviewOffenceImpositionComponent', () => {
     const detailsText = details?.querySelector('.govuk-details__text');
 
     expect(details).toBeTruthy();
-    expect(summary?.textContent?.trim()).toBe('Show details');
+    expect(summary?.textContent?.trim()).toBe(
+      FINES_MAC_OFFENCE_DETAILS_REVIEW_OFFENCE_IMPOSITION_DETAILS_SUMMARY_TEXT.show,
+    );
     expect(detailsText?.textContent).toContain('Address');
     expect(detailsText?.textContent).toContain('Payment method');
   });
@@ -116,12 +118,16 @@ describe('FinesMacOffenceDetailsReviewOffenceImpositionComponent', () => {
     details.open = true;
     details.dispatchEvent(new Event('toggle'));
 
-    expect(details.querySelector('.govuk-details__summary-text')?.textContent?.trim()).toBe('Hide details');
+    expect(details.querySelector('.govuk-details__summary-text')?.textContent?.trim()).toBe(
+      FINES_MAC_OFFENCE_DETAILS_REVIEW_OFFENCE_IMPOSITION_DETAILS_SUMMARY_TEXT.hide,
+    );
 
     details.open = false;
     details.dispatchEvent(new Event('toggle'));
 
-    expect(details.querySelector('.govuk-details__summary-text')?.textContent?.trim()).toBe('Show details');
+    expect(details.querySelector('.govuk-details__summary-text')?.textContent?.trim()).toBe(
+      FINES_MAC_OFFENCE_DETAILS_REVIEW_OFFENCE_IMPOSITION_DETAILS_SUMMARY_TEXT.show,
+    );
   });
 
   it('should skip details toggle listener setup when the details element is not available', () => {
