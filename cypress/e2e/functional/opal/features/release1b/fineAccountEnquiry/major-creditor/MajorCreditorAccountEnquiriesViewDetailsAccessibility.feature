@@ -23,3 +23,17 @@ Feature: Major Creditor Account Enquiries View Details Accessibility
       When I search for the major creditor "Crown Prosecution Service (DPP)"
       Then I check the page for accessibility
 
+    @R1B @JIRA-STORY:PO-2350 @JIRA-EPIC:PO-1286
+    Scenario: Check Central Fund account accessibility with Axe-Core
+      Given I am on the Account Search page - Individuals form displayed by default
+      And I open the business unit filter from the search page
+      And I clear all selected business units on the "Fines" tab
+      And I clear all selected business units on the "Confiscation" tab
+      When I select the following business units:
+        | tab   | businessUnit     |
+        | Fines | Camberwell Green |
+      And I save the selected business units and the filter summary is "Camberwell Green"
+      And I view the Major Creditors search form
+      Then I check the page for accessibility
+      When I search for the major creditor "HM Courts & Tribunals Service"
+      Then I check the page for accessibility
