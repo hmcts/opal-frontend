@@ -100,9 +100,8 @@ describe('fines-section-permissions.utils', () => {
   const release1cAdministrationDisabled = { [RELEASE_1C_ADMINISTRATION_FEATURE_FLAG]: false };
   const release1cFinancialMovementsEnabled = { [RELEASE_1C_FINANCIAL_MOVEMENTS_FEATURE_FLAG]: true };
   const release1cFinancialMovementsDisabled = { [RELEASE_1C_FINANCIAL_MOVEMENTS_FEATURE_FLAG]: false };
-  const release1cBankingInterfacesEnabled = { [RELEASE_1C_BANKING_INTERFACES_FEATURE_FLAG]: true }; 
+  const release1cBankingInterfacesEnabled = { [RELEASE_1C_BANKING_INTERFACES_FEATURE_FLAG]: true };
   const release1cBankingInterfacesDisabled = { [RELEASE_1C_BANKING_INTERFACES_FEATURE_FLAG]: false };
-
 
   describe('getUserPermissionIds', () => {
     it('should deduplicate permission ids across business units', () => {
@@ -170,7 +169,6 @@ describe('fines-section-permissions.utils', () => {
         [RELEASE_1C_ADMINISTRATION_FEATURE_FLAG]: true,
         [RELEASE_1C_FINANCIAL_MOVEMENTS_FEATURE_FLAG]: false,
         [RELEASE_1C_BANKING_INTERFACES_FEATURE_FLAG]: false,
-    
       });
 
       expect(getFeatureFlagReleaseState(release1cFinancialMovementsEnabled)).toEqual({
@@ -256,7 +254,6 @@ describe('fines-section-permissions.utils', () => {
     it('should deny Finance navigation visibility when release-1c financial movements is disabled', () => {
       expect(isFinesPrimaryNavigationSectionEnabled('finance', release1cFinancialMovementsDisabled)).toBe(false);
     });
-
   });
 
   describe('canAccessFinesPrimaryNavigationSection', () => {
@@ -589,12 +586,10 @@ describe('fines-section-permissions.utils', () => {
 
     it('should keep Finance dashboard content when release-1c financial movements is enabled', () => {
       expect(
-        filterDashboardConfigByFeatureFlags(
-          DASHBOARD_PAGE_CONFIGURATION_MAP.finance, {
-            ...release1cFinancialMovementsEnabled,
-            ...release1cBankingInterfacesEnabled
-          }
-        ),
+        filterDashboardConfigByFeatureFlags(DASHBOARD_PAGE_CONFIGURATION_MAP.finance, {
+          ...release1cFinancialMovementsEnabled,
+          ...release1cBankingInterfacesEnabled,
+        }),
       ).toEqual(DASHBOARD_PAGE_CONFIGURATION_MAP.finance);
     });
 

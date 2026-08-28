@@ -200,7 +200,6 @@ describe('DashboardComponent', () => {
     expect(component.resolvedConfig()).toEqual(DASHBOARD_PAGE_CONFIGURATION_MAP.finance);
     expect(component.resolvedConfig().groups.map((group) => group.id)).toContain('cash');
     expect(component.resolvedConfig().groups.map((group) => group.id)).toContain('bankingInterfaces');
-
   });
 
   it('should remove finance content when release-1c-financial-movements is disabled', () => {
@@ -212,7 +211,7 @@ describe('DashboardComponent', () => {
     dashboardTypeParamMapSubject.next(convertToParamMap({ dashboardType: 'finance' }));
     fixture.detectChanges();
 
-     expect(component.resolvedConfig()).toEqual({
+    expect(component.resolvedConfig()).toEqual({
       ...DASHBOARD_PAGE_CONFIGURATION_MAP.finance,
       groups: DASHBOARD_PAGE_CONFIGURATION_MAP.finance.groups.filter((group) => group.id !== 'cash'),
     });
@@ -228,7 +227,7 @@ describe('DashboardComponent', () => {
     dashboardTypeParamMapSubject.next(convertToParamMap({ dashboardType: 'finance' }));
     fixture.detectChanges();
 
-     expect(component.resolvedConfig()).toEqual({
+    expect(component.resolvedConfig()).toEqual({
       ...DASHBOARD_PAGE_CONFIGURATION_MAP.finance,
       groups: DASHBOARD_PAGE_CONFIGURATION_MAP.finance.groups.filter((group) => group.id !== 'bankingInterfaces'),
     });
