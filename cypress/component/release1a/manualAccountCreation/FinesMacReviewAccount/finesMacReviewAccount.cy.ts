@@ -980,7 +980,7 @@ describe('FinesMacReviewAccountComponent', () => {
       tags: [...buildTags('@JIRA-STORY:PO-610', '@JIRA-STORY:PO-584'), '@JIRA-EPIC:PO-2220', '@JIRA-TEST-KEY:PO-5231'],
     },
     () => {
-      setupComponent(finesAccountPayload, finesAccountPayload);
+      setupComponent();
 
       cy.get(DOM_ELEMENTS.heading).should('exist');
       cy.get(DOM_ELEMENTS.backLink).should('exist');
@@ -1100,7 +1100,7 @@ describe('FinesMacReviewAccountComponent', () => {
       tags: [...buildTags('@JIRA-STORY:PO-610', '@JIRA-STORY:PO-584'), '@JIRA-EPIC:PO-2220', '@JIRA-TEST-KEY:PO-5232'],
     },
     () => {
-      setupComponent(finesAccountPayload, finesAccountPayload);
+      setupComponent();
       finesMacState.accountDetails.formData.fm_create_account_defendant_type = 'pgToPay';
       cy.get(DOM_ELEMENTS.heading).should('exist');
       cy.get(DOM_ELEMENTS.backLink).should('exist');
@@ -1249,7 +1249,7 @@ describe('FinesMacReviewAccountComponent', () => {
       tags: [...buildTags('@JIRA-STORY:PO-610', '@JIRA-STORY:PO-584'), '@JIRA-EPIC:PO-2220', '@JIRA-TEST-KEY:PO-5233'],
     },
     () => {
-      setupComponent(finesAccountPayload, finesAccountPayload);
+      setupComponent();
       finesMacState.accountDetails.formData.fm_create_account_defendant_type = 'company';
 
       cy.get(DOM_ELEMENTS.heading).should('exist');
