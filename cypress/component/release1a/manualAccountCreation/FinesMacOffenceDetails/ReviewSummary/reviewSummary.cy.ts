@@ -11,6 +11,7 @@ import { OPAL_FINES_RESULTS_REF_DATA_MOCK } from '@services/fines/opal-fines-ser
 import { FINES_REVIEW_SUMMARY_OFFENCE_MOCK } from './mocks/review_summary_offence_mock';
 import { MacOffenceDetailsReviewSummaryLocators as DOM_ELEMENTS } from '../../../../../shared/selectors/manual-account-creation/mac.offence-details.locators';
 import { interceptOffences } from 'cypress/component/CommonIntercepts/CommonIntercepts';
+import { FINES_MAC_OFFENCE_DETAILS_MINOR_CREDITOR_FORM_MOCK } from 'src/app/flows/fines/fines-mac/fines-mac-offence-details/fines-mac-offence-details-minor-creditor/mocks/fines-mac-offence-details-minor-creditor-form.mock';
 
 const MANUAL_ACCOUNT_CREATION_JIRA_LABEL = '@JIRA-LABEL:manual-account-creation';
 
@@ -417,7 +418,7 @@ describe('ReviewSummaryComponent', () => {
   );
 
   it(
-    '(AC.7a,AC.4b,AC.4c)should be able to hide and show impositions',
+    '(AC.7a,AC.4b,AC.4c)should be able to show and hide minor creditor details',
     {
       tags: [
         ...buildTags(
@@ -433,23 +434,14 @@ describe('ReviewSummaryComponent', () => {
       ],
     },
     () => {
+      finesMacState.offenceDetails[0].childFormData = [
+        structuredClone(FINES_MAC_OFFENCE_DETAILS_MINOR_CREDITOR_FORM_MOCK),
+      ];
       setupComponent();
 
-      cy.get(DOM_ELEMENTS.hideLink, { timeout: 10000 }).should('contain', 'Hide');
-      cy.get(DOM_ELEMENTS.hideLink).first().click();
-
-      cy.get(DOM_ELEMENTS.hideLink).click();
-
-      cy.get(DOM_ELEMENTS.impositionType).should('not.exist');
-      cy.get(DOM_ELEMENTS.creditor).should('not.exist');
-      cy.get(DOM_ELEMENTS.amountImposed).should('not.exist');
-      cy.get(DOM_ELEMENTS.amountPaid).should('not.exist');
-      cy.get(DOM_ELEMENTS.balanceRemaining).should('not.exist');
-
-      cy.get(DOM_ELEMENTS.totalHeading).should('not.exist');
-      cy.get(DOM_ELEMENTS.totalAmountImposed).should('not.exist');
-      cy.get(DOM_ELEMENTS.totalAmountPaid).should('not.exist');
-      cy.get(DOM_ELEMENTS.totalBalanceRemaining).should('not.exist');
+      cy.get(DOM_ELEMENTS.hideLink, { timeout: 10000 }).should('contain', 'Show details').click();
+      cy.get(DOM_ELEMENTS.hideLink).should('contain', 'Hide details').click();
+      cy.get(DOM_ELEMENTS.hideLink).should('contain', 'Show details');
     },
   );
 });
