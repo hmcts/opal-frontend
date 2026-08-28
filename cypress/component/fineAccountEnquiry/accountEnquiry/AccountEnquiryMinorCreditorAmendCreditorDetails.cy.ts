@@ -26,12 +26,23 @@ import { FinesAccountStore } from 'src/app/flows/fines/fines-acc/stores/fines-ac
 import { FinesAccMinorCreditorAddAmendConvertFormComponent } from 'src/app/flows/fines/fines-acc/fines-acc-minor-creditor-add-amend-convert/fines-acc-minor-creditor-add-amend-convert-form/fines-acc-minor-creditor-add-amend-convert-form.component';
 import { FINES_ACC_MINOR_CREDITOR_ADD_AMEND_CONVERT_FORM } from 'src/app/flows/fines/fines-acc/fines-acc-minor-creditor-add-amend-convert/constants/fines-acc-minor-creditor-add-amend-convert-form.constant';
 import { IFinesAccMinorCreditorAddAmendConvertState } from 'src/app/flows/fines/fines-acc/fines-acc-minor-creditor-add-amend-convert/interfaces/fines-acc-minor-creditor-add-amend-convert-state.interface';
+import { FINES_PERMISSIONS } from 'src/app/constants/fines-permissions.constant';
 
 const ACCOUNT_ENQUIRY_JIRA_LABEL = '@JIRA-LABEL:account-enquiry';
 const AMEND_MINOR_CREDITOR_STORY_TAG = '@JIRA-STORY:PO-1984';
 const AMEND_MINOR_CREDITOR_EPIC_TAG = '@JIRA-EPIC:PO-1285';
 
 const buildTags = (...tags: string[]): string[] => [...tags, ACCOUNT_ENQUIRY_JIRA_LABEL, '@R1B'];
+const createUserStateWithMinorCreditorMaintenancePermission = () => {
+  const userState = structuredClone(USER_STATE_MOCK_PERMISSION_BU77);
+
+  userState.business_unit_users[0].permissions.push({
+    permission_id: FINES_PERMISSIONS['account-maintenance-minor-creditor'],
+    permission_name: 'Account Maintenance - Minor Creditor',
+  });
+
+  return userState;
+};
 
 const componentProperties: IComponentProperties = {
   accountId: MINOR_CREDITOR_ACCOUNT_ID.toString(),
@@ -43,7 +54,7 @@ const componentProperties: IComponentProperties = {
 const setupMinorCreditorAmendScreen = (creditorData = createMinorCreditorAmendCreditorMock(true)) => {
   const header = createMinorCreditorAmendHeaderMock();
 
-  interceptUserState(USER_STATE_MOCK_PERMISSION_BU77);
+  interceptUserState(createUserStateWithMinorCreditorMaintenancePermission());
   interceptMinorCreditorCreditor(MINOR_CREDITOR_ACCOUNT_ID, creditorData, '1');
 
   setupAccountEnquiryComponent({
@@ -71,7 +82,7 @@ const setupMinorCreditorAmendCompanyScreen = () => {
   header.party.organisation_details = { organisation_name: 'Amend Minor Co Ltd', organisation_aliases: null };
   header.party.individual_details = undefined;
 
-  interceptUserState(USER_STATE_MOCK_PERMISSION_BU77);
+  interceptUserState(createUserStateWithMinorCreditorMaintenancePermission());
   interceptMinorCreditorCreditor(MINOR_CREDITOR_ACCOUNT_ID, creditorData, '1');
   interceptMinorCreditorHeader(MINOR_CREDITOR_ACCOUNT_ID, header, '1');
   interceptPatchMinorCreditorAccount(MINOR_CREDITOR_ACCOUNT_ID);
