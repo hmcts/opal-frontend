@@ -21,6 +21,7 @@ import { FINES_MAC_DEFENDANT_TYPES_KEYS } from '../../../constants/fines-mac-def
 import { beforeEach, describe, expect, it, vi } from 'vitest';
 
 import { createSpyObj } from '@app/testing/create-spy-obj.helper';
+import { By } from '@angular/platform-browser';
 
 describe('FinesMacOffenceDetailsReviewSummaryComponent', () => {
   let component: FinesMacOffenceDetailsReviewSummaryComponent;
@@ -233,5 +234,17 @@ describe('FinesMacOffenceDetailsReviewSummaryComponent', () => {
     const result = component.checkSubNavigationButton();
 
     expect(result).toBe(true);
+  });
+
+  it('should announce the offence code message in the success alert', () => {
+    finesMacOffenceDetailsStore.setOffenceCodeMessage('Offence HY35014 added');
+
+    fixture.detectChanges();
+
+    const alert = fixture.debugElement.query(By.css('opal-lib-moj-alert'));
+
+    expect(alert).toBeTruthy();
+    expect(alert.componentInstance.ariaLabel).toBe('Offence HY35014 added');
+    expect(alert.componentInstance.announcementMessage).toBe('success: Offence HY35014 added');
   });
 });

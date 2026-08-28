@@ -33,6 +33,7 @@ import { GovukRadioComponent } from '@hmcts/opal-frontend-common/components/govu
 import { afterAll, beforeAll, beforeEach, describe, expect, it, vi } from 'vitest';
 
 import { createSpyObj } from '@app/testing/create-spy-obj.helper';
+import { By } from '@angular/platform-browser';
 
 describe('FinesMacOffenceDetailsAddAnOffenceFormComponent', () => {
   let component: FinesMacOffenceDetailsAddAnOffenceFormComponent;
@@ -958,6 +959,16 @@ describe('FinesMacOffenceDetailsAddAnOffenceFormComponent', () => {
     component.handleFormSubmit(new SubmitEvent('submit'));
 
     expect(finesMacOffenceDetailsStore.offenceDetailsDraftDirty()).toBe(false);
+  });
+
+  it('should announce the offence code message when offence is successfully added', () => {
+    finesMacOffenceDetailsStore.setOffenceCodeMessage('Offence HY35014 added');
+    fixture.detectChanges();
+
+    const alert = fixture.debugElement.query(By.css('opal-lib-moj-alert'));
+
+    expect(alert.componentInstance.ariaLabel).toBe('Offence HY35014 added');
+    expect(alert.componentInstance.announcementMessage).toBe('success: Offence HY35014 added');
   });
 
   it('should update removeMinorCreditor in finesMacOffenceDetailsDraftState and call updateOffenceDetailsDraft and handleRoute', () => {

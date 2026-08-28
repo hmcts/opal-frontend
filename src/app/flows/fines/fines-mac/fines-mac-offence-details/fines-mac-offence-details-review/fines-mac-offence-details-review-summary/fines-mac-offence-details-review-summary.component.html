@@ -7,7 +7,7 @@
         finesMacOffenceDetailsStore.offenceCodeMessage() && finesMacOffenceDetailsStore.offenceCodeMessage().length > 0
       ) {
         <div class="govuk-grid-column-full">
-          <opal-lib-moj-alert type="success" ariaLabel="offenceCodeMessage">
+          <opal-lib-moj-alert type="success" [ariaLabel]="finesMacOffenceDetailsStore.offenceCodeMessage()">
             <opal-lib-moj-alert-icon icon type="success"></opal-lib-moj-alert-icon>
             <opal-lib-moj-alert-content content>
               <opal-lib-moj-alert-content-text>{{
