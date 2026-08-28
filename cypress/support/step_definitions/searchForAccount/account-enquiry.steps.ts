@@ -264,6 +264,11 @@ Given('I stub the defendant header summary payment terms account balance to {int
   accountEnquiryFlow().stubPaymentTermsAccountBalance(balance);
 });
 
+Given('I stub the defendant header summary business unit code to {string}', (businessUnitCode: string) => {
+  log('intercept', 'Stub defendant header summary business unit code', { businessUnitCode });
+  accountEnquiryFlow().stubHeaderSummaryBusinessUnitCode(businessUnitCode);
+});
+
 Then('I do not see the Payment terms Change or Request payment card actions', () => {
   log('assert', 'Payment terms Change and Request payment card actions are absent');
   accountEnquiryFlow().assertPaymentTermsActionsNotVisible();
