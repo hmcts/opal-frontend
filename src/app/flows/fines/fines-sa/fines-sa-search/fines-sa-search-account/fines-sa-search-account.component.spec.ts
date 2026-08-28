@@ -16,6 +16,7 @@ import { OPAL_FINES_MAJOR_CREDITOR_REF_DATA_MOCK } from '@services/fines/opal-fi
 import { beforeEach, describe, expect, it, vi } from 'vitest';
 import { FINES_DASHBOARD_ROUTING_PATHS } from '@app/flows/fines/constants/fines-dashboard-routing-paths.constant';
 import { FINES_ACC_MAJOR_CREDITOR_ROUTING_PATHS } from '../../../fines-acc/routing/constants/fines-acc-major-creditor-routing-paths.constant';
+import { OPAL_FINES_CENTRAL_FUND_RESPONSE_MOCK } from '@services/fines/opal-fines-service/mocks/opal-fines-central-funds-response.mock';
 
 describe('FinesSaSearchAccountComponent', () => {
   let component: FinesSaSearchAccountComponent;
@@ -84,7 +85,7 @@ describe('FinesSaSearchAccountComponent', () => {
       formData: {
         ...FINES_SA_SEARCH_ACCOUNT_FORM_MOCK.formData,
         fsa_search_account_major_creditors_search_criteria: {
-          fsa_search_account_major_creditors_major_creditor_id: selectedMajorCreditor.major_creditor_code!,
+          fsa_search_account_major_creditors_major_creditor_id: creditorAccountId,
         },
       },
     };
@@ -248,41 +249,25 @@ describe('FinesSaSearchAccountComponent', () => {
     expect(result).toEqual(expectedUrl);
   });
 
-  it('getCreditorAccountId should return the creditor account id for a matching major creditor code', () => {
-    const majorCreditor = OPAL_FINES_MAJOR_CREDITOR_REF_DATA_MOCK.refData[0];
-    component.majorCreditorsRefData = OPAL_FINES_MAJOR_CREDITOR_REF_DATA_MOCK.refData;
-
+  it('should handle form submit when central fund is selected as a major creditor', () => {
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    const result = (component as any).getCreditorAccountId(majorCreditor.major_creditor_code);
-
-    expect(result).toBe(majorCreditor.creditor_account_id);
-  });
-
-  it('getCreditorAccountId should throw an error when no major creditor code matches', () => {
-    component.majorCreditorsRefData = OPAL_FINES_MAJOR_CREDITOR_REF_DATA_MOCK.refData;
-
-    expect(() => {
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      (component as any).getCreditorAccountId('UNKNOWN');
-    }).toThrow('Major creditor account ID could not be found for code: UNKNOWN');
-  });
-
-  it('handleSearchAccountSubmit should throw an error when selected major creditor code has no account ID', () => {
+    vi.spyOn<any, any>(component, 'navigateToMajorCreditor');
+    const creditorAccountId = OPAL_FINES_CENTRAL_FUND_RESPONSE_MOCK.major_creditor.creditor_account_id;
     const mockForm = {
       ...FINES_SA_SEARCH_ACCOUNT_FORM_MOCK,
       formData: {
         ...FINES_SA_SEARCH_ACCOUNT_FORM_MOCK.formData,
         fsa_search_account_major_creditors_search_criteria: {
-          fsa_search_account_major_creditors_major_creditor_id: 'UNKNOWN',
+          fsa_search_account_major_creditors_major_creditor_id: creditorAccountId,
         },
       },
     };
-    component.majorCreditorsRefData = OPAL_FINES_MAJOR_CREDITOR_REF_DATA_MOCK.refData;
     mockFinesSaStore.setActiveTab('majorCreditors');
 
-    expect(() => component.handleSearchAccountSubmit(mockForm)).toThrow(
-      'Major creditor account ID could not be found for code: UNKNOWN',
-    );
+    component.handleSearchAccountSubmit(mockForm);
+
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    expect((component as any).navigateToMajorCreditor).toHaveBeenCalledWith(creditorAccountId);
   });
 
   it('navigateToMajorCreditor should open a new tab with the correct URL', () => {
