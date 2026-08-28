@@ -590,8 +590,10 @@ describe('fines-section-permissions.utils', () => {
     it('should keep Finance dashboard content when release-1c financial movements is enabled', () => {
       expect(
         filterDashboardConfigByFeatureFlags(
-          DASHBOARD_PAGE_CONFIGURATION_MAP.finance,
-          release1cFinancialMovementsEnabled,
+          DASHBOARD_PAGE_CONFIGURATION_MAP.finance, {
+            ...release1cFinancialMovementsEnabled,
+            ...release1cBankingInterfacesEnabled
+          }
         ),
       ).toEqual(DASHBOARD_PAGE_CONFIGURATION_MAP.finance);
     });
