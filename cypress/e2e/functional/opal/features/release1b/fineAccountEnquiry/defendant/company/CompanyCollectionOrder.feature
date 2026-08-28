@@ -48,3 +48,17 @@ Feature: Company Collection Order
       And I select "Yes" for Collection Order status
       And I cancel the Change Collection Order status form and choose to stay
       Then I should remain on the Change Collection Order status page
+
+    @R1B @JIRA-STORY:PO-3395 @JIRA-EPIC:PO-2630
+    Scenario: AC2, AC3, AC4 - Company account with a Collection Order displays a permanent warning
+      Given I create a "company" draft account with the following details and set status "Publishing Pending" using user "opal-test-10@dev.platform.hmcts.net":
+        | Account_status                    | Submitted                      |
+        | account.defendant.company_name    | CompanyOrderWarning{uniq}      |
+        | account.defendant.email_address_1 | Company.Warning{uniq}@test.com |
+        | account.defendant.post_code       | AB23 4RN                       |
+        | account.account_type              | Fine                           |
+        | account.collection_order_made     | false                          |
+      And I stub the defendant header summary for the "Company" Collection Order warning scenario
+      When I open the company account details for "CompanyOrderWarning{uniq}"
+      Then I should be on the FAE account details page
+      And I should see the permanent Collection Order warning "Account has a Collection Order but is a company account."
