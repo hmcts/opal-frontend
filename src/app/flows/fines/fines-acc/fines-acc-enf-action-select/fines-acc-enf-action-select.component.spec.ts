@@ -37,6 +37,7 @@ describe('FinesAccEnfActionSelectComponent', () => {
     getAccountNumber: signal<string | null>('123456'),
     party_name: signal<string | null>('Test Company Ltd'),
     successMessage: signal<string | null>(null),
+    isTransferredIn: vi.fn().mockReturnValue(false),
     clearSuccessMessage: vi.fn(),
   };
 

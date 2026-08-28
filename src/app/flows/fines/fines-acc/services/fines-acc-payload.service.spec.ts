@@ -323,9 +323,10 @@ describe('FinesAccPayloadService', () => {
     });
   });
 
-  it('should transform defendant account header for store for an individual', () => {
+  it('should transform defendant account header for store for an individual transferred in account', () => {
     const header: IOpalFinesAccountDefendantDetailsHeader = structuredClone(FINES_ACC_DEFENDANT_DETAILS_HEADER_MOCK);
     header.party_details.organisation_flag = false;
+    header.originator_type = 'TFO';
     const account_id = 77;
 
     const result: IFinesAccountState = service.transformDefendantAccountHeaderForStore(account_id, header);
@@ -346,6 +347,7 @@ describe('FinesAccPayloadService', () => {
       business_unit_id: header.business_unit_summary.business_unit_id,
       business_unit_user_id: header.business_unit_summary.business_unit_id,
       welsh_speaking: header.business_unit_summary.welsh_speaking,
+      originator_type: header.originator_type,
     });
 
     expect(mockMacPayloadService.getBusinessUnitBusinessUserId).toHaveBeenCalledWith(
@@ -373,6 +375,7 @@ describe('FinesAccPayloadService', () => {
       business_unit_id: header.business_unit_summary.business_unit_id,
       business_unit_user_id: header.business_unit_summary.business_unit_id,
       welsh_speaking: header.business_unit_summary.welsh_speaking,
+      originator_type: header.originator_type,
     });
 
     expect(mockMacPayloadService.getBusinessUnitBusinessUserId).toHaveBeenCalledWith(
@@ -433,6 +436,7 @@ describe('FinesAccPayloadService', () => {
       business_unit_id: header.business_unit.business_unit_id,
       business_unit_user_id: header.business_unit.business_unit_id,
       welsh_speaking: header.business_unit.welsh_speaking,
+      originator_type: null,
     });
 
     expect(mockMacPayloadService.getBusinessUnitBusinessUserId).toHaveBeenCalledWith(
@@ -462,6 +466,7 @@ describe('FinesAccPayloadService', () => {
       business_unit_id: header.business_unit_details.business_unit_id,
       business_unit_user_id: header.business_unit_details.business_unit_id,
       welsh_speaking: header.business_unit_details.welsh_speaking,
+      originator_type: null,
     });
 
     expect(mockMacPayloadService.getBusinessUnitBusinessUserId).toHaveBeenCalledWith(
@@ -505,6 +510,7 @@ describe('FinesAccPayloadService', () => {
       business_unit_id: header.business_unit.business_unit_id,
       business_unit_user_id: header.business_unit.business_unit_id,
       welsh_speaking: header.business_unit.welsh_speaking,
+      originator_type: null,
     });
 
     expect(mockMacPayloadService.getBusinessUnitBusinessUserId).toHaveBeenCalledWith(

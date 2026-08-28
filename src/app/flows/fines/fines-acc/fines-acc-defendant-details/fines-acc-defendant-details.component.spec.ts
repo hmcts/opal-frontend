@@ -148,6 +148,14 @@ describe('FinesAccDefendantDetailsComponent', () => {
     expect(component.activeTab).toBe('at-a-glance');
   });
 
+  it('should display the transferred in banner when accountData originator_type is TFO', () => {
+    const bannerText = fixture.debugElement.query(By.css('#defendant-banners-transferred-in'))?.nativeElement
+      ?.textContent;
+
+    expect(component.isTransferredIn).toBe(true);
+    expect(bannerText).toContain('Account transferred in');
+  });
+
   it('should pass the account status code to the summary header', () => {
     const summaryHeader = fixture.debugElement.query(By.directive(FinesAccSummaryHeaderComponent));
 
