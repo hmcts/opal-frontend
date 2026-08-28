@@ -406,6 +406,27 @@ describe('AppComponent - browser', () => {
     expect(liveRegion).toBeNull();
   });
 
+  it('should include the banner error title and message in the alert aria-label', () => {
+    globalStore.setAuthenticated(true);
+    globalStore.setBannerError({
+      error: true,
+      title: 'Something went wrong',
+      message: 'Unable to load case details',
+      operationId: '123456',
+    });
+
+    const fixture = TestBed.createComponent(AppComponent);
+    fixture.detectChanges();
+
+    const alertDebugElement = fixture.debugElement.query(By.directive(MojAlertComponent));
+
+    expect(alertDebugElement).toBeTruthy();
+
+    const alert = alertDebugElement.componentInstance as MojAlertComponent;
+
+    expect(alert.ariaLabel).toBe('Something went wrong. Unable to load case details');
+  });
+
   it('should track page views on navigation end', () => {
     globalStore.setAuthenticated(true);
 

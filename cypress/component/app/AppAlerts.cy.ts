@@ -16,7 +16,7 @@ describe('Global alerts', { tags: ['@JIRA-STORY:PO-9041', '@JIRA-EPIC:PO-2472'] 
     });
 
     assertLiveAlert(
-      'warning : Your session will expire. Please save your work and log out, then log back in to continue.',
+      'Warning: Your session will expire. Please save your work and log out, then log back in to continue.',
     );
   });
 
@@ -26,7 +26,7 @@ describe('Global alerts', { tags: ['@JIRA-STORY:PO-9041', '@JIRA-EPIC:PO-2472'] 
       fixture.detectChanges();
     });
 
-    assertLiveAlert('warning : Your session has expired. Please log back in.');
+    assertLiveAlert('warning: Your session has expired. Please log back in.');
   });
 
   it('announces the global error banner', () => {
@@ -41,6 +41,6 @@ describe('Global alerts', { tags: ['@JIRA-STORY:PO-9041', '@JIRA-EPIC:PO-2472'] 
       fixture.detectChanges();
     });
 
-    assertLiveAlert('error : Error Message');
+    assertLiveAlert('error: There is a problem. The service is unavailable.');
   });
 });

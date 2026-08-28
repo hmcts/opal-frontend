@@ -65,7 +65,11 @@
         }
 
         @if (globalStore.authenticated() && globalStore.bannerError().error) {
-          <div opal-lib-moj-alert ariaLabel="Error Message" type="error">
+          <div
+            opal-lib-moj-alert
+            [ariaLabel]="globalStore.bannerError().title + '. ' + globalStore.bannerError().message"
+            type="error"
+          >
             <opal-lib-moj-alert-icon icon type="error"></opal-lib-moj-alert-icon>
             <opal-lib-moj-alert-content content>
               <opal-lib-moj-alert-content-heading>{{
