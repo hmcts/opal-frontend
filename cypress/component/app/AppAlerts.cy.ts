@@ -16,7 +16,7 @@ describe('Global alerts', { tags: ['@JIRA-STORY:PO-9041', '@JIRA-EPIC:PO-2472'] 
     });
 
     assertLiveAlert(
-      'Warning: Your session will expire. Please save your work and log out, then log back in to continue.',
+      'Warning: Your session will expire soon. Please save your work and log out, then log back in to continue.',
     );
   });
 
