@@ -1,8 +1,8 @@
 import { FINES_ACCOUNT_TYPES } from 'src/app/flows/fines/constants/fines-account-types.constant';
 import { FINES_ACC_DEBTOR_TYPES } from 'src/app/flows/fines/fines-acc/constants/fines-acc-debtor-types.constant';
-import { ACCOUNT_ENQUIRY_HEADER_ELEMENTS as H } from '../../../shared/selectors/account-enquiry/account.enquiry.header.locators';
+import { ACCOUNT_ENQUIRY_HEADER_ELEMENTS as H } from '../../../../shared/selectors/account-enquiry/account.enquiry.header.locators';
 import { interceptAuthenticatedUser, interceptUserState } from 'cypress/component/CommonIntercepts/CommonIntercepts';
-import { USER_STATE_MOCK_PERMISSION_BU77 } from '../../CommonIntercepts/CommonUserState.mocks';
+import { USER_STATE_MOCK_PERMISSION_BU77 } from '../../../CommonIntercepts/CommonUserState.mocks';
 import { interceptAtAGlance, interceptDefendantHeader } from './intercept/defendantAccountIntercepts';
 import { DEFENDANT_HEADER_MOCK } from './mocks/defendant_details_mock';
 import { OPAL_FINES_ACCOUNT_DEFENDANT_AT_A_GLANCE_MOCK } from './mocks/defendant_details_at_glance_mock';
