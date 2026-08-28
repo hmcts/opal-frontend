@@ -25,6 +25,7 @@ import {
   MojPrimaryNavigationComponent,
   MojPrimaryNavigationItemComponent,
 } from '@hmcts/opal-frontend-common/components/moj/moj-primary-navigation';
+import { CustomDeferredLiveRegionAnnouncement } from '@hmcts/opal-frontend-common/components/custom/custom-deferred-live-region-announcement';
 import { GovukFooterComponent } from '@hmcts/opal-frontend-common/components/govuk/govuk-footer';
 import { HEADER_LINKS, FOOTER_LINKS } from '@hmcts/opal-frontend-common/constants';
 import { SSO_ENDPOINTS } from '@hmcts/opal-frontend-common/services/auth-service/constants';
@@ -65,6 +66,7 @@ import { FINES_ACC_MINOR_CREDITOR_ROUTING_PATHS } from './flows/fines/fines-acc/
     GovukFooterComponent,
     MojPrimaryNavigationComponent,
     MojPrimaryNavigationItemComponent,
+    CustomDeferredLiveRegionAnnouncement,
   ],
   templateUrl: './app.component.html',
 })
