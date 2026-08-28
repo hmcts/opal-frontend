@@ -68,7 +68,7 @@
     <ng-container row>
       @for (row of paginatedTableDataComputed(); track row['Account']) {
         <tr opal-lib-moj-sortable-table-row>
-          <td opal-lib-moj-sortable-table-row-data id="minorCreditorAccountNumber">
+          <td #paginationFocusTarget opal-lib-moj-sortable-table-row-data id="minorCreditorAccountNumber">
             @if (row['Account'] === null) {
               <ng-container *ngTemplateOutlet="noData"></ng-container>
             } @else {
@@ -128,13 +128,14 @@
             @if (row['Balance'] === null) {
               <ng-container *ngTemplateOutlet="noData"></ng-container>
             } @else {
-              {{ row['Balance'] | currency: 'GBP' }}
+              <opal-lib-custom-accessible-monetary [value]="row['Balance']" />
             }
           </td>
         </tr>
       }
     </ng-container>
     <ng-container status>
+      <output aria-atomic="true" class="govuk-visually-hidden">{{ pageChangeAnnouncement() }}</output>
       <opal-lib-moj-sortable-table-status
         class="minor-creditor-table-status"
         [columnTitle]="sortedColumnTitleSignal()"

@@ -37,15 +37,50 @@ Feature: Defendant Company Search And Matches Journeys
   # Legacy-data scenarios are scaffolds.
   # Replace the LEGACY_* placeholders with real seeded data values before executing them.
 
-  @skip @LegacyData @R1BUatTechJCDE @JIRA-STORY:PO-712 @JIRA-STORY:PO-706 @JIRA-STORY:PO-707 @JIRA-EPIC:PO-704
+  @LegacyData @JIRA-STORY:PO-712 @JIRA-STORY:PO-706 @JIRA-STORY:PO-707 @JIRA-EPIC:PO-704
   # Minimum data set required: one company defendant account with company name LEGACY_COMPANY_NAME, prosecutor case reference LEGACY_COMPANY_REFERENCE, and account header text LEGACY_COMPANY_HEADER.
   Scenario: Search for a company defendant account from legacy data and open the matching record
     Given I am on the Account Search page - Individuals form displayed by default
     When I view the Companies search form
     And I search using the following inputs:
-      | company name | LEGACY_COMPANY_NAME |
+      | company name | <LEGACY_COMPANY_NAME> |
     Then I see the Search results page
     And I see the Companies search results:
-      | Ref | LEGACY_COMPANY_REFERENCE |
+      | Account | <LEGACY_COMPANY_ACCOUNT_NUMBER> |
     When I open the latest matching result from the search results
-    Then I should see the account header contains "LEGACY_COMPANY_HEADER"
+    Then I should see the account header contains "<LEGACY_COMPANY_NAME>"
+    @R1BUatTechJCDE @JIRA-TEST-KEY:PO-10325
+    Examples:
+      | LEGACY_COMPANY_NAME | LEGACY_COMPANY_ACCOUNT_NUMBER |
+      | OPALTEST            | 26000471W                     |
+    @R1BUatTechPreprod @skip
+    Examples:
+      | LEGACY_COMPANY_NAME | LEGACY_COMPANY_REFERENCE |
+      | Journey Co          | PCRJRNYCO1234            |
+
+  @LegacyData @JIRA-STORY:PO-712 @JIRA-STORY:PO-706 @JIRA-STORY:PO-707 @JIRA-EPIC:PO-704 @JIRA-DEFECT:PO-10245
+  Scenario: Search for a company defendant account from legacy data and validate the matching record
+    Given I am on the Account Search page - Individuals form displayed by default
+    When I view the Companies search form
+    And I search using the following inputs:
+      | account number | <LEGACY_COMPANY_ACCOUNT_NUMBER> |
+    Then I see the Search results page
+    And I see the Companies search results:
+      | Account        | <LEGACY_COMPANY_ACCOUNT_NUMBER> |
+      | Company        | <LEGACY_COMPANY_NAME>           |
+      | Address line 1 | <LEGACY_COMPANY_ADR_LINE_1>     |
+      | Postcode       | <LEGACY_COMPANY_POSTCODE>       |
+      | Business unit  | <BUSINESS_UNIT>                 |
+      | Ref            | <LEGACY_COMPANY_REF>            |
+      | Enf            | <LEGACY_COMPANY_ENF>            |
+      | Balance        | <LEGACY_COMPANY_BALANCE>        |
+    When I open the latest matching result from the search results
+    Then I should see the account header contains "<LEGACY_COMPANY_NAME>"
+    @R1BUatTechJCDE @JIRA-TEST-KEY:PO-10326
+    Examples:
+      | LEGACY_COMPANY_ACCOUNT_NUMBER | LEGACY_COMPANY_NAME         | LEGACY_COMPANY_ALIASES                                                                              | LEGACY_COMPANY_ADR_LINE_1 | LEGACY_COMPANY_POSTCODE | BUSINESS_UNIT | LEGACY_COMPANY_REF    | LEGACY_COMPANY_ENF | LEGACY_COMPANY_BALANCE |
+      | 24000050E                     | Company A Chocolate Limited | The Alias Company A The Alias Company B The Alias Company C The Alias Company D The Alias Company E | Company address line 001  | EN51 1RL                | West London   | CA-Company-Master1-1A | NOENF              | -£600.01               |
+    @R1BUatTechPreprod @skip
+    Examples:
+      | LEGACY_COMPANY_ACCOUNT_NUMBER | LEGACY_COMPANY_NAME | LEGACY_COMPANY_ALIASES | LEGACY_COMPANY_ADR_LINE_1 | LEGACY_COMPANY_POSTCODE | BUSINESS_UNIT | LEGACY_COMPANY_REF | LEGACY_COMPANY_ENF | LEGACY_COMPANY_BALANCE |
+      | placeholder                   | placeholder         | placeholder            | placeholder               | placeholder             | placeholder   | placeholder        | placeholder        | placeholder            |

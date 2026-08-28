@@ -44,20 +44,22 @@
       inputId="fm_offence_details_offence_cjs_code"
       inputName="fm_offence_details_offence_cjs_code"
       inputClasses="govuk-input--width-10"
-      [hintHtml]="true"
+      hintText="For example, HY35014."
       [errors]="formControlErrorMessages['fm_offence_details_offence_cjs_code']"
       [control]="form.get('fm_offence_details_offence_cjs_code')"
-    >
-      For example, HY35014. If you don't know the offence code, you can
+    ></opal-lib-govuk-text-input>
+    <div class="govuk-hint" id="fm_offence_details_offence_cjs_code-guidance">
+      If you don't know the offence code, you can
       <a
-        class="govuk-link govuk-task-list_link govuk-link--no-visited-state"
+        class="govuk-link govuk-link--no-visited-state"
         [href]="searchOffenceUrl"
         target="_blank"
         rel="noopener noreferrer"
       >
-        search the offence list
-      </a></opal-lib-govuk-text-input
-    >
+        <span class="govuk-visually-hidden">If you don't know the offence code, you can </span>
+        search the offence list (opens in a new tab)
+      </a>
+    </div>
     @if (offenceCode$ | async; as offenceCode) {
       <app-fines-mac-offence-code-hint
         [offenceCode]="offenceCode"
@@ -259,7 +261,7 @@
     buttonId="addImposition"
     buttonClasses="govuk-button--secondary govuk-!-margin-bottom-0"
     type="button"
-    (buttonClickEvent)="addControlsToFormArray(formArrayControls.length, 'fm_offence_details_impositions')"
+    (buttonClickEvent)="addAnotherImposition()"
     >Add another imposition</opal-lib-govuk-button
   >
   <hr class="govuk-section-break govuk-section-break--m govuk-section-break--visible" />
