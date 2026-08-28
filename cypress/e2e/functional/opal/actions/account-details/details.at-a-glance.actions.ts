@@ -14,6 +14,12 @@ const log = createScopedLogger('AccountDetailsAtAGlanceActions');
 export class AccountDetailsAtAGlanceActions {
   private readonly common = new CommonActions();
 
+  /** Asserts that the FAE At a glance account-details view has rendered. */
+  public assertAtAGlancePageVisible(): void {
+    cy.get(N.header.title, this.common.getPathTimeoutOptions()).should('be.visible');
+    cy.get(N.sections.atAGlanceTabRoot, this.common.getPathTimeoutOptions()).should('be.visible');
+  }
+
   /**
    * Asserts that the expected read-only section headings are visible on the At a glance tab.
    *
