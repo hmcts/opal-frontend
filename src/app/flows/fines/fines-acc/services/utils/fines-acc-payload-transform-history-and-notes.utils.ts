@@ -155,51 +155,62 @@ export function createHistorySuspenseTransferAssociatedRecordPart(
   const associatedRecordTypes = FINES_ACC_HISTORY_AND_NOTES_DETAILS_ASSOCIATED_RECORD_TYPES;
 
   if (values.associatedRecordType === associatedRecordTypes.suspenseItem) {
-    return createHistorySuspenseTransferRecordPart(
-      values.associatedRecordId,
-      FINES_ACC_HISTORY_AND_NOTES_DETAILS_LINK_TYPES.suspenseTransaction,
-      values.associatedRecordId,
-      linkedRecordTypes.includes(associatedRecordTypes.suspenseItem),
-    );
+    return linkedRecordTypes.includes(associatedRecordTypes.suspenseItem)
+      ? createHistorySuspenseTransferLinkedRecordPart(
+          values.associatedRecordId,
+          FINES_ACC_HISTORY_AND_NOTES_DETAILS_LINK_TYPES.suspenseTransaction,
+          values.associatedRecordId,
+        )
+      : createHistorySuspenseTransferPlainRecordPart(values.associatedRecordId);
   }
 
   if (values.associatedRecordType === associatedRecordTypes.defendantTransaction) {
-    return createHistorySuspenseTransferRecordPart(
-      values.defendantAccountNumber,
-      FINES_ACC_HISTORY_AND_NOTES_DETAILS_LINK_TYPES.account,
-      values.defendantAccountId,
-      linkedRecordTypes.includes(associatedRecordTypes.defendantTransaction),
-    );
+    return linkedRecordTypes.includes(associatedRecordTypes.defendantTransaction)
+      ? createHistorySuspenseTransferLinkedRecordPart(
+          values.defendantAccountNumber,
+          FINES_ACC_HISTORY_AND_NOTES_DETAILS_LINK_TYPES.account,
+          values.defendantAccountId,
+        )
+      : createHistorySuspenseTransferPlainRecordPart(values.defendantAccountNumber);
   }
 
   if (values.associatedRecordType === associatedRecordTypes.creditorAccounts) {
-    return createHistorySuspenseTransferRecordPart(
-      values.creditorAccountNumber,
-      FINES_ACC_HISTORY_AND_NOTES_DETAILS_LINK_TYPES.account,
-      values.associatedRecordId,
-      linkedRecordTypes.includes(associatedRecordTypes.creditorAccounts),
-    );
+    return linkedRecordTypes.includes(associatedRecordTypes.creditorAccounts)
+      ? createHistorySuspenseTransferLinkedRecordPart(
+          values.creditorAccountNumber,
+          FINES_ACC_HISTORY_AND_NOTES_DETAILS_LINK_TYPES.account,
+          values.associatedRecordId,
+        )
+      : createHistorySuspenseTransferPlainRecordPart(values.creditorAccountNumber);
   }
 
   return null;
 }
 
 /**
- * Creates a suspense-transfer value as either plain text or an optional link, according to the creditor flow.
+ * Creates a plain suspense-transfer record part.
+ *
+ * @param text - The optional value displayed in the history item.
+ * @returns The display-ready history details part or null when the value is absent.
+ */
+function createHistorySuspenseTransferPlainRecordPart(text: string | null): IFinesAccHistoryAndNotesDetailsPart | null {
+  return createHistoryTextPart(text);
+}
+
+/**
+ * Creates a linked suspense-transfer record part.
  *
  * @param text - The optional value displayed in the history item.
  * @param linkType - The type of record the value opens when linked.
  * @param linkEmit - The optional target record identifier.
- * @param shouldLink - Whether the creditor mapping requires a link for this record type.
  * @returns The display-ready history details part or null when the value is absent.
  */
-function createHistorySuspenseTransferRecordPart(
+function createHistorySuspenseTransferLinkedRecordPart(
   text: string | null,
   linkType: string,
   linkEmit: string | null,
-  shouldLink: boolean,
 ): IFinesAccHistoryAndNotesDetailsPart | null {
-  return shouldLink ? createHistoryTextPartWithOptionalLink(text, linkType, linkEmit) : createHistoryTextPart(text);
+  return createHistoryTextPartWithOptionalLink(text, linkType, linkEmit);
 }
 
 /**
