@@ -77,6 +77,7 @@ describe('FinesAccMajorCreditorDetailsHistoryAndNotesTabComponent', () => {
     expect(textContent).toContain('Date to');
     expect(textContent).toContain('Filter');
     expect(textContent).not.toContain('Categories');
+    expect(fixture.nativeElement.querySelector('hr')).toBeNull();
   });
 
   it('should render the major creditor history table with the parent tab data', () => {
