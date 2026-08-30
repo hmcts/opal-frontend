@@ -5,20 +5,26 @@ import { IFinesReportSummaryListReportConfiguration } from '../fines-reports-sum
 /**
  * Gets the report type ID from a fines reports route.
  *
- * The current route is checked first, followed by the parent route, so child routes can reuse the report type from
- * the parent `:reportTypeId` or `:reportId` route parameter.
+ * The current route and each ancestor are checked, so child routes can reuse a `:reportTypeId` or `:reportId`
+ * route parameter declared by any parent route.
  *
  * @param route - The activated route snapshot to read the report ID from.
  * @returns The report type ID, or null when no report ID exists on the route tree.
  */
 export const getFinesReportsRouteReportTypeId = (route: ActivatedRouteSnapshot): string | null => {
-  return (
-    route.paramMap.get('reportTypeId') ??
-    route.paramMap.get('reportId') ??
-    route.parent?.paramMap.get('reportTypeId') ??
-    route.parent?.paramMap.get('reportId') ??
-    null
-  );
+  let currentRoute: ActivatedRouteSnapshot | null = route;
+
+  while (currentRoute) {
+    const reportTypeId = currentRoute.paramMap.get('reportTypeId') ?? currentRoute.paramMap.get('reportId');
+
+    if (reportTypeId) {
+      return reportTypeId;
+    }
+
+    currentRoute = currentRoute.parent;
+  }
+
+  return null;
 };
 
 /**

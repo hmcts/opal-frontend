@@ -42,7 +42,7 @@
         @if (businessUnitRows.length > 0) {
           @for (row of businessUnitRows; track row.businessUnit.business_unit_id) {
             <tr opal-lib-govuk-table-body-row>
-              <td id="business-unit-{{ row.businessUnit.business_unit_id }}" opal-lib-govuk-table-body-row-data>
+              <td id="business-unit-cell-{{ row.businessUnit.business_unit_id }}" opal-lib-govuk-table-body-row-data>
                 <div
                   class="govuk-checkboxes--small"
                   opal-lib-govuk-checkboxes-item

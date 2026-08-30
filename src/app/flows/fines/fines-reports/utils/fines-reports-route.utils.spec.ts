@@ -7,23 +7,33 @@ describe('fines-reports-route.utils', () => {
   const buildRoute = (
     params: Record<string, string> = {},
     parentParams?: Record<string, string>,
+    grandparentParams?: Record<string, string>,
   ): ActivatedRouteSnapshot =>
     ({
       paramMap: convertToParamMap(params),
       parent: parentParams
         ? {
             paramMap: convertToParamMap(parentParams),
+            parent: grandparentParams
+              ? {
+                  paramMap: convertToParamMap(grandparentParams),
+                  parent: null,
+                }
+              : null,
           }
         : null,
     }) as ActivatedRouteSnapshot;
 
-  it('should read the report type id from the current or parent route', () => {
+  it('should read the report type id from the current route or an ancestor', () => {
     expect(getFinesReportsRouteReportTypeId(buildRoute({ reportTypeId: 'report-type-id' }))).toBe('report-type-id');
     expect(getFinesReportsRouteReportTypeId(buildRoute({ reportId: 'report-id' }))).toBe('report-id');
     expect(getFinesReportsRouteReportTypeId(buildRoute({}, { reportTypeId: 'parent-report-type-id' }))).toBe(
       'parent-report-type-id',
     );
     expect(getFinesReportsRouteReportTypeId(buildRoute({}, { reportId: 'parent-report-id' }))).toBe('parent-report-id');
+    expect(getFinesReportsRouteReportTypeId(buildRoute({}, {}, { reportTypeId: 'grandparent-report-type-id' }))).toBe(
+      'grandparent-report-type-id',
+    );
     expect(getFinesReportsRouteReportTypeId(buildRoute())).toBeNull();
   });
 

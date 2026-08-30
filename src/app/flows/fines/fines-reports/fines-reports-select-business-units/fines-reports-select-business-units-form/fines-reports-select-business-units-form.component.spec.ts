@@ -84,6 +84,18 @@ describe('FinesReportsSelectBusinessUnitsFormComponent', () => {
     expect(fixture.nativeElement.textContent).toContain('London Confiscation Orders');
   });
 
+  it('should associate each business unit label with its checkbox', async () => {
+    const { fixture } = await setup();
+    const labels = Array.from(
+      fixture.nativeElement.querySelectorAll('label[for^="business-unit-"]'),
+    ) as HTMLLabelElement[];
+
+    expect(labels).toHaveLength(businessUnits.length);
+    labels.forEach((label) => {
+      expect(label.control?.id).toBe(label.htmlFor);
+    });
+  });
+
   it('should render the report and page headings', async () => {
     const { component, fixture } = await setup();
 
@@ -100,6 +112,7 @@ describe('FinesReportsSelectBusinessUnitsFormComponent', () => {
     expect(record.get('67')?.value).toBe(false);
     expect(record.get('68')?.value).toBe(true);
     expect(component.allBusinessUnitsControl.value).toBe(false);
+    expect(component['form'].dirty).toBe(true);
   });
 
   it('should select the master checkbox when every restored business unit is selected', async () => {

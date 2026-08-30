@@ -192,13 +192,12 @@ export class FinesReportsSelectBusinessUnitsFormComponent extends AbstractFormBa
   }
 
   /**
-   * Refreshes the business unit record and parent form validation state.
+   * Refreshes the business unit record validation state.
    *
    * @param record - The business unit form record to validate.
    */
   private refreshFormValidation(record: FormRecord<FormControl<boolean>>): void {
     record.updateValueAndValidity({ emitEvent: false });
-    this.form.updateValueAndValidity({ emitEvent: false });
   }
 
   /**
@@ -243,6 +242,18 @@ export class FinesReportsSelectBusinessUnitsFormComponent extends AbstractFormBa
   }
 
   /**
+   * Marks restored selections as unsaved so cancelling after returning from the warning page is confirmed.
+   */
+  private markRestoredSelectionsAsUnsaved(): void {
+    if (this.initialSelectedBusinessUnitIds.length === 0) {
+      return;
+    }
+
+    this.form.markAsDirty();
+    this.unsavedChanges.emit(this.hasUnsavedChanges());
+  }
+
+  /**
    * Emits the cancel event to the parent page component.
    */
   public handleCancel(): void {
@@ -255,5 +266,6 @@ export class FinesReportsSelectBusinessUnitsFormComponent extends AbstractFormBa
   public override ngOnInit(): void {
     this.initialiseBusinessUnitForm();
     super.ngOnInit();
+    this.markRestoredSelectionsAsUnsaved();
   }
 }

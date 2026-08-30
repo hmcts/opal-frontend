@@ -22,11 +22,11 @@ describe('finesReportsReportHeadingResolver', () => {
   it.each([
     [
       FINES_REPORTS_SUMMARY_LIST_ROUTING_PATHS.children.operationalReportsByEnforcement,
-      'Operational reports (by enforcement)',
+      'Operational report (by enforcement)',
     ],
     [
       FINES_REPORTS_SUMMARY_LIST_ROUTING_PATHS.children.operationalReportsByPayments,
-      'Operational reports (by payments)',
+      'Operational report (by payments)',
     ],
   ])('should resolve the report heading for %s', (reportTypeId, expectedHeading) => {
     const result = executeResolver(buildRoute(reportTypeId), {} as never);
@@ -40,7 +40,7 @@ describe('finesReportsReportHeadingResolver', () => {
       {} as never,
     );
 
-    expect(result).toBe('Operational reports (by payments)');
+    expect(result).toBe('Operational report (by payments)');
   });
 
   it('should return an empty heading when the report type id is unknown', () => {

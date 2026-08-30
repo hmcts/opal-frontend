@@ -92,11 +92,14 @@ export class FinesReportsSelectBusinessUnitsComponent extends AbstractFormParent
   /**
    * Clears the current selection and returns to the report summary list.
    */
-  public handleCancel(): void {
-    this.finesReportsStore.clearSelectedBusinessUnitIds();
-    this.routerService.navigate([`../../${FINES_REPORTS_ROUTING_PATHS.children.summaryList}`], {
+  public async handleCancel(): Promise<void> {
+    const navigated = await this.routerService.navigate([`../../${FINES_REPORTS_ROUTING_PATHS.children.summaryList}`], {
       relativeTo: this.route,
     });
+
+    if (navigated) {
+      this.finesReportsStore.clearSelectedBusinessUnitIds();
+    }
   }
 
   /**

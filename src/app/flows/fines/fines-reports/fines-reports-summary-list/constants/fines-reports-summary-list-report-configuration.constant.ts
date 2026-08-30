@@ -15,6 +15,7 @@ export const FINES_REPORT_SUMMARY_LIST_REPORT_CONFIGURATION: IFinesReportSummary
   {
     id: FINES_REPORTS_SUMMARY_LIST_ROUTING_PATHS.children.operationalReportsByEnforcement,
     reportTypeId: FINES_REPORTS_SUMMARY_LIST_ROUTING_PATHS.children.operationalReportsByEnforcement,
+    createHeading: 'Operational report (by enforcement)',
     heading: FINES_REPORTS_SUMMARY_LIST_ROUTING_TITLES.children.operationalReportsByEnforcement,
     title: FINES_REPORTS_SUMMARY_LIST_ROUTING_TITLES.children.operationalReportsByEnforcement,
     permissionIds: [FINES_PERMISSIONS['operational-report-by-enforcement']],
@@ -23,6 +24,7 @@ export const FINES_REPORT_SUMMARY_LIST_REPORT_CONFIGURATION: IFinesReportSummary
   {
     id: FINES_REPORTS_SUMMARY_LIST_ROUTING_PATHS.children.operationalReportsByPayments,
     reportTypeId: FINES_REPORTS_SUMMARY_LIST_ROUTING_PATHS.children.operationalReportsByPayments,
+    createHeading: 'Operational report (by payments)',
     heading: FINES_REPORTS_SUMMARY_LIST_ROUTING_TITLES.children.operationalReportsByPayments,
     title: FINES_REPORTS_SUMMARY_LIST_ROUTING_TITLES.children.operationalReportsByPayments,
     permissionIds: [FINES_PERMISSIONS['operational-report-by-payments']],

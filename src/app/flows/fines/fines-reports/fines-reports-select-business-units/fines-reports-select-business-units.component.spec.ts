@@ -24,7 +24,7 @@ describe('FinesReportsSelectBusinessUnitsComponent', () => {
     selectedBusinessUnitIds: number[] = [],
     threshold: number | undefined = businessUnitWarningThreshold,
   ) => {
-    const router = { navigate: vi.fn() };
+    const router = { navigate: vi.fn().mockResolvedValue(true) };
     const report: IOpalFinesReport = {
       report_id: reportTypeId,
       report_title: reportHeading,
@@ -178,7 +178,7 @@ describe('FinesReportsSelectBusinessUnitsComponent', () => {
   it('should clear the stored selection and return to the summary list when cancelled', async () => {
     const { component, finesReportsStore, router } = await setup(businessUnits, [61, 68]);
 
-    component.handleCancel();
+    await component.handleCancel();
 
     expect(finesReportsStore.selectedBusinessUnitIds()).toEqual([]);
     expect(router.navigate).toHaveBeenCalledWith([`../../${FINES_REPORTS_ROUTING_PATHS.children.summaryList}`], {
@@ -186,10 +186,20 @@ describe('FinesReportsSelectBusinessUnitsComponent', () => {
     });
   });
 
-  it('should restore selected business unit ids from the reports store', async () => {
+  it('should retain the stored selection when cancelling navigation is rejected', async () => {
+    const { component, finesReportsStore, router } = await setup(businessUnits, [61, 68]);
+    router.navigate.mockResolvedValue(false);
+
+    await component.handleCancel();
+
+    expect(finesReportsStore.selectedBusinessUnitIds()).toEqual([61, 68]);
+  });
+
+  it('should restore selected business unit ids from the reports store and require cancellation confirmation', async () => {
     const { component } = await setup(businessUnits, [61, 68]);
 
     expect(component.selectedBusinessUnitIds()).toEqual([61, 68]);
+    expect(component['canDeactivate']()).toBe(false);
   });
 
   it('should update canDeactivate state from child unsaved changes', async () => {
