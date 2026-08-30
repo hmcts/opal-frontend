@@ -1,13 +1,17 @@
 import { TestBed } from '@angular/core/testing';
 import { ActivatedRoute, Router, convertToParamMap } from '@angular/router';
+import { By } from '@angular/platform-browser';
 import { describe, expect, it, vi } from 'vitest';
+import { BehaviorSubject } from 'rxjs';
 import { IOpalFinesBusinessUnit } from '@services/fines/opal-fines-service/interfaces/opal-fines-business-unit.interface';
 import { OPAL_FINES_BUSINESS_UNIT_REF_DATA_MOCK } from '@services/fines/opal-fines-service/mocks/opal-fines-business-unit-ref-data.mock';
 import { IOpalFinesReport } from '@services/fines/opal-fines-service/interfaces/opal-fines-report.interface';
 import { FINES_REPORTS_CREATE_ROUTING_PATHS } from '../routing/constants/fines-reports-create-routing-paths.constant';
 import { FINES_REPORTS_ROUTING_PATHS } from '../routing/constants/fines-reports-routing-paths.constant';
+import { FINES_REPORTS_SUMMARY_LIST_ROUTING_PATHS } from '../fines-reports-summary-list/routing/constants/fines-reports-summary-list-routing-paths.constant';
 import { FinesReportsStore } from '../stores/fines-reports.store';
 import { FinesReportsSelectBusinessUnitsComponent } from './fines-reports-select-business-units.component';
+import { FinesReportsSelectBusinessUnitsFormComponent } from './fines-reports-select-business-units-form/fines-reports-select-business-units-form.component';
 
 describe('FinesReportsSelectBusinessUnitsComponent', () => {
   const reportTypeId = 'operational_report_enforcement';
@@ -18,6 +22,41 @@ describe('FinesReportsSelectBusinessUnitsComponent', () => {
     OPAL_FINES_BUSINESS_UNIT_REF_DATA_MOCK.refData[1],
   ];
   const businessUnitWarningThreshold = 3;
+  const paymentReportTypeId = FINES_REPORTS_SUMMARY_LIST_ROUTING_PATHS.children.operationalReportsByPayments;
+  const paymentReportHeading = 'Operational report (by payments)';
+  const paymentBusinessUnits: IOpalFinesBusinessUnit[] = [
+    {
+      ...businessUnits[0],
+      business_unit_id: 92,
+      business_unit_name: 'Payments South',
+    },
+    {
+      ...businessUnits[1],
+      business_unit_id: 91,
+      business_unit_name: 'Payments North',
+    },
+  ];
+
+  const createRouteData = (
+    resolvedBusinessUnits: IOpalFinesBusinessUnit[],
+    resolvedReportTypeId: string,
+    resolvedReportHeading: string,
+    threshold: number | undefined,
+  ) => {
+    const report: IOpalFinesReport = {
+      report_id: resolvedReportTypeId,
+      report_title: resolvedReportHeading,
+      report_parameters: threshold === undefined ? {} : { business_unit_warning_threshold: threshold },
+    };
+
+    return {
+      businessUnits: {
+        refData: resolvedBusinessUnits,
+      },
+      report,
+      reportHeading: resolvedReportHeading,
+    };
+  };
 
   const setup = async (
     resolvedBusinessUnits = businessUnits,
@@ -25,26 +64,17 @@ describe('FinesReportsSelectBusinessUnitsComponent', () => {
     threshold: number | undefined = businessUnitWarningThreshold,
   ) => {
     const router = { navigate: vi.fn().mockResolvedValue(true) };
-    const report: IOpalFinesReport = {
-      report_id: reportTypeId,
-      report_title: reportHeading,
-      report_parameters: threshold === undefined ? {} : { business_unit_warning_threshold: threshold },
-    };
+    const routeData = createRouteData(resolvedBusinessUnits, reportTypeId, reportHeading, threshold);
     const activatedRoute = {
       snapshot: {
-        data: {
-          businessUnits: {
-            refData: resolvedBusinessUnits,
-          },
-          report,
-          reportHeading,
-        },
-      },
-      parent: {
-        snapshot: {
+        data: routeData,
+        paramMap: convertToParamMap({}),
+        parent: {
           paramMap: convertToParamMap({ reportTypeId }),
+          parent: null,
         },
       },
+      data: new BehaviorSubject(routeData),
     };
 
     await TestBed.configureTestingModule({
@@ -69,7 +99,7 @@ describe('FinesReportsSelectBusinessUnitsComponent', () => {
     const component = fixture.componentInstance;
     fixture.detectChanges();
 
-    return { component, fixture, finesReportsStore, router };
+    return { activatedRoute, component, fixture, finesReportsStore, router };
   };
 
   it('should render the report heading', async () => {
@@ -210,5 +240,49 @@ describe('FinesReportsSelectBusinessUnitsComponent', () => {
 
     component.handleUnsavedChanges(false);
     expect(component['canDeactivate']()).toBe(true);
+  });
+
+  it('should rebuild the form with the new report data when the route is reused', async () => {
+    const { activatedRoute, component, fixture, finesReportsStore, router } = await setup();
+    const enforcementForm = fixture.debugElement.query(
+      By.directive(FinesReportsSelectBusinessUnitsFormComponent),
+    ).componentInstance;
+    const paymentRouteData = createRouteData(paymentBusinessUnits, paymentReportTypeId, paymentReportHeading, 1);
+
+    component.handleUnsavedChanges(true);
+    activatedRoute.snapshot.parent.paramMap = convertToParamMap({ reportTypeId: paymentReportTypeId });
+    activatedRoute.snapshot.data = paymentRouteData;
+    activatedRoute.data.next(paymentRouteData);
+    fixture.detectChanges();
+
+    const paymentsForm = fixture.debugElement.query(
+      By.directive(FinesReportsSelectBusinessUnitsFormComponent),
+    ).componentInstance;
+
+    expect(paymentsForm).not.toBe(enforcementForm);
+    expect(component.businessUnits.map((businessUnit) => businessUnit.business_unit_name)).toEqual([
+      'Payments North',
+      'Payments South',
+    ]);
+    expect(component['canDeactivate']()).toBe(true);
+    expect(fixture.nativeElement.querySelector('h1')?.textContent).toContain(paymentReportHeading);
+
+    component.handleContinue({
+      formData: {
+        fines_reports_select_business_unit_ids: {
+          '91': true,
+          '92': true,
+        },
+        fines_reports_select_business_unit_ids_select_all: false,
+      },
+      nestedFlow: false,
+    });
+
+    expect(finesReportsStore.getSelectedBusinessUnitIdsForReport(paymentReportTypeId)).toEqual([91, 92]);
+    expect(finesReportsStore.getSelectedBusinessUnitIdsForReport(reportTypeId)).toEqual([]);
+    expect(router.navigate).toHaveBeenCalledWith(
+      [`../${FINES_REPORTS_CREATE_ROUTING_PATHS.children.businessUnitWarning}`],
+      { relativeTo: expect.any(Object) },
+    );
   });
 });

@@ -207,7 +207,6 @@ export class FinesReportsSelectBusinessUnitsFormComponent extends AbstractFormBa
    */
   private subscribeToBusinessUnitChanges(record: FormRecord<FormControl<boolean>>): void {
     record.valueChanges.pipe(takeUntil(this.ngUnsubscribe)).subscribe(() => {
-      this.refreshFormValidation(record);
       this.updateAllBusinessUnitsControlFromRecord(record);
     });
   }
