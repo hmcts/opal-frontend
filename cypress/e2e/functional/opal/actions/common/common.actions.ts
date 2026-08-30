@@ -4,6 +4,7 @@
  * text presence, dialog handling, and other cross-cutting UI utilities used by flows/actions.
  */
 import { CommonLocators as L } from '../../../../../shared/selectors/common.locators';
+import { UNSAVED_CHANGES_WARNING } from '../../../../../shared/constants/confirmation-messages';
 import { createScopedLogger } from '../../../../../support/utils/log.helper';
 
 const log = createScopedLogger('CommonActions');
@@ -133,7 +134,7 @@ export class CommonActions {
 
     cy.once('window:confirm', (msg) => {
       const normalized = msg.replace(/\s+/g, ' ');
-      expect(normalized, 'Confirm prompt message').to.match(/unsaved changes/i);
+      expect(normalized, 'Confirm prompt message').to.equal(UNSAVED_CHANGES_WARNING);
       return confirmLeave;
     });
 
@@ -149,7 +150,7 @@ export class CommonActions {
    * @param accept - Whether to accept (`true`) or cancel (`false`) the dialog.
    * @param expected - Expected dialog text or regex matcher.
    */
-  public confirmNextUnsavedChanges(accept: boolean, expected: RegExp | string = /unsaved changes/i): void {
+  public confirmNextUnsavedChanges(accept: boolean, expected: RegExp | string = UNSAVED_CHANGES_WARNING): void {
     cy.once('window:confirm', (msg) => {
       const normalized = String(msg).replace(/\s+/g, ' ');
       if (expected instanceof RegExp) {

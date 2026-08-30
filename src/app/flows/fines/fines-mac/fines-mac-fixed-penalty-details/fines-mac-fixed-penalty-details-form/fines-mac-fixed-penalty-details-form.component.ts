@@ -29,6 +29,7 @@ import { GovukTextInputComponent } from '@hmcts/opal-frontend-common/components/
 import { GovukTextAreaComponent } from '@hmcts/opal-frontend-common/components/govuk/govuk-text-area';
 import { IGovUkSelectOptions } from '@hmcts/opal-frontend-common/components/govuk/govuk-select/interfaces';
 import { CapitalisationDirective } from '@hmcts/opal-frontend-common/directives/capitalisation';
+import { TrimLeadingTrailingWhitespaceDirective } from '@hmcts/opal-frontend-common/directives/trim-leading-trailing-whitespace';
 import { IFinesMacFixedPenaltyDetailsFieldErrors } from '../interfaces/fines-mac-fixed-penalty-details-field-errors.interface';
 import { FINES_MAC_FIXED_PENALTY_DETAILS_FIELD_ERRORS } from '../constants/fines-mac-fixed-penalty-details-field-errors';
 import { IAlphagovAccessibleAutocompleteItem } from '@hmcts/opal-frontend-common/components/alphagov/alphagov-accessible-autocomplete/interfaces';
@@ -74,6 +75,7 @@ import { FinesMacOffenceCodeHintComponent } from '../../components/fines-mac-off
     MojTicketPanelComponent,
     MojDatePickerComponent,
     CapitalisationDirective,
+    TrimLeadingTrailingWhitespaceDirective,
     AlphagovAccessibleAutocompleteComponent,
     GovukBackLinkComponent,
     FinesMacOffenceCodeHintComponent,

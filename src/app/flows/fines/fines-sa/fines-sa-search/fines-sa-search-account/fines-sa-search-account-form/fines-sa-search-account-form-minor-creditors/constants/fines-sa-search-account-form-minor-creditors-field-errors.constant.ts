@@ -59,8 +59,9 @@ export const FINES_SA_SEARCH_ACCOUNT_FORM_MINOR_CREDITORS_FIELD_ERRORS: IFinesSa
     },
     fsa_search_account_minor_creditors_company_name_exact_match: {},
     fsa_search_account_minor_creditors_individual_address_line_1: {
-      alphanumericWithSpacesPattern: {
-        message: 'Address line 1 must only contain letters or numbers',
+      alphanumericTextPattern: {
+        message:
+          'Address line 1 must only include letters a to z, numbers 0-9 and certain special characters (such as hyphens, spaces, apostrophes and commas)',
         priority: 1,
       },
       maxlength: {
@@ -69,18 +70,19 @@ export const FINES_SA_SEARCH_ACCOUNT_FORM_MINOR_CREDITORS_FIELD_ERRORS: IFinesSa
       },
     },
     fsa_search_account_minor_creditors_individual_post_code: {
-      alphanumericWithSpacesPattern: {
-        message: 'Post code must only contain letters or numbers',
+      alphanumericTextPattern: {
+        message: 'Postcode must only contain letters or numbers',
         priority: 1,
       },
       maxlength: {
-        message: 'Post code must be 8 characters or fewer',
+        message: 'Postcode must be 8 characters or fewer',
         priority: 2,
       },
     },
     fsa_search_account_minor_creditors_company_address_line_1: {
       alphanumericWithSpacesPattern: {
-        message: 'Address line 1 must only contain letters or numbers',
+        message:
+          'Address line 1 must only include letters a to z, numbers 0-9 and certain special characters (such as hyphens, spaces, apostrophes and commas)',
         priority: 1,
       },
       maxlength: {
@@ -89,7 +91,7 @@ export const FINES_SA_SEARCH_ACCOUNT_FORM_MINOR_CREDITORS_FIELD_ERRORS: IFinesSa
       },
     },
     fsa_search_account_minor_creditors_company_post_code: {
-      alphanumericWithSpacesPattern: {
+      alphanumericTextPattern: {
         message: 'Post code must only contain letters or numbers',
         priority: 1,
       },

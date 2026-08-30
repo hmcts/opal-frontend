@@ -350,7 +350,7 @@ export const FINES_ACC_PARTY_ADD_AMEND_CONVERT_FIELD_ERRORS: IFinesAccPartyAddAm
       priority: 1,
     },
     alphanumericTextPattern: {
-      message: 'Postcode must only include letters a to z, numbers, hyphens, spaces and apostrophes',
+      message: 'Postcode must only include letters and numbers',
       priority: 2,
     },
   },
@@ -534,7 +534,7 @@ export const FINES_ACC_PARTY_ADD_AMEND_CONVERT_FIELD_ERRORS: IFinesAccPartyAddAm
       priority: 1,
     },
     alphanumericTextPattern: {
-      message: 'Employer postcode must only include letters a to z, numbers, hyphens, spaces and apostrophes',
+      message: 'Employer postcode must only include letters and number',
       priority: 2,
     },
   },

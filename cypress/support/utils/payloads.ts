@@ -19,7 +19,8 @@ export type DraftPayloadType =
   | 'opalE2ECompany'
   | 'opalE2EFixedPenaltyAdult'
   | 'opalE2EFixedPenaltyYouth'
-  | 'opalE2EFixedPenaltyCompany';
+  | 'opalE2EFixedPenaltyCompany'
+  | 'ayMultiOffenceMultiImposition';
 
 /** Defendant type options used by account creation/setup steps. */
 export type DefendantTypes = 'company' | 'adultOrYouthOnly' | 'pgToPay';
@@ -51,7 +52,11 @@ export function getDraftPayloadFile(type: DraftPayloadType): string {
     opalE2EFixedPenaltyAdult: 'opalE2EFixedPenaltyAdultPayload.json',
     opalE2EFixedPenaltyYouth: 'opalE2EFixedPenaltyYouthPayload.json',
     opalE2EFixedPenaltyCompany: 'opalE2EFixedPenaltyCompanyPayload.json',
+    ayMultiOffenceMultiImposition: 'ayMultiOffenceMultiImpositionPayload.json',
   };
+  if (Cypress.env('JCDE_OVERRIDE') === 'true') {
+    return `jcde/` + map[type];
+  }
   return map[type];
 }
 

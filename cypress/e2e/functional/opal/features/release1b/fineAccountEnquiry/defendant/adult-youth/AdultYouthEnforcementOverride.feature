@@ -218,6 +218,7 @@ Feature: Adult Youth Enforcement Override
       And I choose the enforcement action "Collection order (COLLO)"
       And I continue to the confirm enforcement action page
       And I enter "Test reason" for the enforcement action reason
+      And I choose "Not applicable" for collection type
       And I choose "No" for changing existing payment terms
       And I add the enforcement action
       Then I should return to the Enforcement tab

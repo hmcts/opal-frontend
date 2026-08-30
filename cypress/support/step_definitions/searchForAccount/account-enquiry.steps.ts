@@ -33,6 +33,7 @@ import { AccountDetailsCommentsActions } from '../../..//e2e/functional/opal/act
 import { AccountConvertActions } from '../../..//e2e/functional/opal/actions/account-details/convert.account.actions';
 import { EditParentGuardianDetailsActions } from '../../..//e2e/functional/opal/actions/account-details/edit.parent-guardian-details.actions';
 import { AccountDetailsFixedPenaltyActions } from '../../..//e2e/functional/opal/actions/account-details/details.fixed-penalty.actions';
+import { AccountDetailsImpositionsActions } from '../../..//e2e/functional/opal/actions/account-details/details.impositions.actions';
 import { RemoveParentGuardianActions } from '../../..//e2e/functional/opal/actions/account-details/remove.parent-guardian.actions';
 import { EditMinorCreditorDetailsActions } from '../../..//e2e/functional/opal/actions/account-details/edit.minor-creditor-details.actions';
 import { log } from '../../utils/log.helper';
@@ -52,6 +53,7 @@ const convertActions = () => new AccountConvertActions();
 const editParentGuardianDetails = () => new EditParentGuardianDetailsActions();
 const editMinorCreditorDetails = () => new EditMinorCreditorDetailsActions();
 const fixedPenaltyDetails = () => new AccountDetailsFixedPenaltyActions();
+const impositionsDetails = () => new AccountDetailsImpositionsActions();
 const navActions = () => new AccountDetailsNavActions();
 const enforcementActions = () => new AccountDetailsEnforcementActions();
 const paymentTermsActions = () => new AccountDetailsPaymentTermsActions();
@@ -106,6 +108,11 @@ When('I search for the account by last name {string} and open the latest result'
   accountEnquiryFlow().searchAndClickLatestBySurnameOpenLatestResult(surnameWithUniq);
 });
 
+Then('I should be on the FAE account details page', () => {
+  log('assert', 'FAE defendant account details page is visible');
+  accountEnquiryFlow().assertOnDefendantAccountDetailsPage();
+});
+
 /**
  * @step Opens the latest matching account from the current Search results page.
  *
@@ -116,6 +123,12 @@ When('I search for the account by last name {string} and open the latest result'
 When('I open the latest matching result from the search results', () => {
   log('step', 'Opening latest matching result from search results');
   accountEnquiryFlow().openMostRecentFromResults();
+});
+
+/** Opens the single result matching all supplied result-table column values. */
+When('I open the matching result from the search results:', (table: DataTable) => {
+  log('step', 'Opening result matching supplied column values');
+  accountEnquiryFlow().openMatchingResultFromResults(table);
 });
 
 /** Opens the Defendant-column link from the latest minor creditor result row. */
@@ -254,6 +267,24 @@ Given('I stub the defendant header summary payment terms account status code to 
 Given('I stub the defendant header summary payment terms account balance to {int}', (balance: number) => {
   log('intercept', 'Stub defendant header summary payment terms account balance', { balance });
   accountEnquiryFlow().stubPaymentTermsAccountBalance(balance);
+});
+
+Given(
+  'I stub the defendant header summary for the {string} Collection Order warning scenario',
+  (category: 'Adult' | 'Youth' | 'Company' | 'Conditional Caution') => {
+    log('intercept', 'Stub Collection Order warning header scenario', { category });
+    accountEnquiryFlow().stubCollectionOrderWarningScenario(category);
+  },
+);
+
+Then('I should see the permanent Collection Order warning {string}', (message: string) => {
+  log('assert', 'Collection Order warning is visible and permanent', { message });
+  accountEnquiryFlow().assertCollectionOrderWarning(message);
+});
+
+Then('I should not see a Collection Order warning', () => {
+  log('assert', 'Collection Order warning is absent');
+  accountEnquiryFlow().assertCollectionOrderWarningNotPresent();
 });
 
 Then('I do not see the Payment terms Change or Request payment card actions', () => {
@@ -603,6 +634,14 @@ Then('I am presented with the details of the selected child account', () => {
 });
 
 /**
+ * @step Verifies the selected child account displays the closed account banner.
+ */
+Then('I am notified that the selected child account is closed because it was consolidated', () => {
+  log('assert', 'Selected child account consolidated status banner is displayed');
+  accountEnquiryFlow().assertSelectedChildAccountStatusBannerVisible();
+});
+
+/**
  * @step Verifies History and notes rows loaded.
  */
 Then('I should see the History and notes items load', () => {
@@ -779,6 +818,14 @@ When('I continue to the confirm enforcement action page', () => {
 When('I enter {string} for the enforcement action reason', (reason: string) => {
   log('step', 'Enter enforcement action reason', { reason });
   enforcementActions().enterEnforcementActionReason(reason);
+});
+
+/**
+ * @step Chooses the collection type on the add enforcement action details form.
+ */
+When('I choose {string} for collection type', (option: string) => {
+  log('step', 'Choose collection type option', { option });
+  enforcementActions().chooseCollectionType(option);
 });
 
 /**
@@ -1011,6 +1058,12 @@ Then('I should return to the Enforcement tab', () => {
 When('I go to the Impositions tab', () => {
   log('step', 'Navigate to Impositions tab');
   navActions().goToImpositionsTab();
+});
+
+/** @step Asserts the rendered defendant account imposition rows. */
+Then('I should see the defendant account impositions load with the following values:', (table: DataTable) => {
+  log('assert', 'Verify defendant account impositions load');
+  impositionsDetails().assertDefendantAccountImpositionsLoaded(table.raw());
 });
 
 /**

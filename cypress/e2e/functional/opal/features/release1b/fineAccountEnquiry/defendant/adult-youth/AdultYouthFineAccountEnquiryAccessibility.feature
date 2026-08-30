@@ -6,6 +6,22 @@ Feature: Adult Youth Fine Account Enquiry Accessibility
     Given I am logged in with email "opal-test@dev.platform.hmcts.net"
     And I clear all approved accounts
 
+  @R1B @JIRA-STORY:PO-3395 @JIRA-EPIC:PO-2630
+  Scenario: AC6 - Adult Collection Order warning is accessible
+    Given I create a "adultOrYouthOnly" draft account with the following details and set status "Publishing Pending" using user "opal-test-10@dev.platform.hmcts.net":
+      | Account_status                      | Submitted                   |
+      | account.defendant.forenames         | Alex                        |
+      | account.defendant.surname           | WarningAccess{uniq}         |
+      | account.defendant.email_address_1   | Alex.Warning{uniq}@test.com |
+      | account.defendant.dob               | 2001-05-15                  |
+      | account.account_type                | Fine                        |
+      | account.collection_order_made       | false                       |
+      | account.collection_order_made_today | false                       |
+    When I search for the account by last name "WarningAccess{uniq}" and open the latest result
+    Then I should be on the FAE account details page
+    And I should see the permanent Collection Order warning "Account has no Collection Order."
+    And I check the page for accessibility
+
   @R1B @JIRA-STORY:PO-1849 @JIRA-STORY:PO-3729 @JIRA-EPIC:PO-2472 @JIRA-TEST-KEY:PO-5459
   Scenario: Enforcement tab accessibility
     Given I create a "adultOrYouthOnly" draft account with the following details and set status "Publishing Pending" using user "opal-test-10@dev.platform.hmcts.net":
