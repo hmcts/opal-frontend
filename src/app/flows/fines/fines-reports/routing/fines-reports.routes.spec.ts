@@ -22,7 +22,7 @@ describe('finesReports routes', () => {
     });
   });
 
-  it('should load the Select business units route', () => {
+  it('should load the Select business units route without the create-state guard', () => {
     const reportRoute = routing.find((route) => route.path === ':reportTypeId');
     const createRoute = reportRoute?.children?.find(
       (route) => route.path === FINES_REPORTS_ROUTING_PATHS.children.create,
@@ -35,7 +35,6 @@ describe('finesReports routes', () => {
       path: FINES_REPORTS_CREATE_ROUTING_PATHS.children.selectBusinessUnits,
       loadComponent: expect.any(Function),
       canDeactivate: [canDeactivateGuard],
-      canActivate: [finesReportsCreateStateGuard],
       data: {
         title: 'Select business units',
       },

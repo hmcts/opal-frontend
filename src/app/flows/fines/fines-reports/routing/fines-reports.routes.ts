@@ -40,7 +40,6 @@ export const routing: Routes = [
                 (c) => c.FinesReportsSelectBusinessUnitsComponent,
               ),
             canDeactivate: [canDeactivateGuard],
-            canActivate: [finesReportsCreateStateGuard],
             data: {
               title: 'Select business units',
             },
