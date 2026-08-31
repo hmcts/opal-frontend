@@ -51,4 +51,38 @@ Feature: Adult Youth Collection Order
       And I cancel the Change Collection Order status form and choose to stay
       Then I should remain on the Change Collection Order status page
 
-    @JIRA-STORY:PO-1860
+    @R1B @JIRA-STORY:PO-3395 @JIRA-EPIC:PO-2630
+    Scenario: AC1, AC3, AC4 - Adult account without a Collection Order displays a permanent warning
+      Given I create a "adultOrYouthOnly" draft account with the following details and set status "Publishing Pending" using user "opal-test-10@dev.platform.hmcts.net":
+        | Account_status                          | Submitted                    |
+        | account.defendant.forenames             | Casey                        |
+        | account.defendant.surname               | NoOrderWarning{uniq}         |
+        | account.defendant.email_address_1       | Casey.NoOrder{uniq}@test.com |
+        | account.defendant.telephone_number_home | 02078259314                  |
+        | account.defendant.dob                   | 2001-05-15                   |
+        | account.account_type                    | Fine                         |
+        | account.prosecutor_case_reference       | PCR-COLLO-{uniqUpper}        |
+        | account.collection_order_made           | false                        |
+        | account.collection_order_made_today     | false                        |
+      When I search for the account by last name "NoOrderWarning{uniq}" and open the latest result
+      Then I should be on the FAE account details page
+      And I should see the permanent Collection Order warning "Account has no Collection Order."
+
+    @R1B @JIRA-STORY:PO-3395 @JIRA-EPIC:PO-2630
+    Scenario Outline: AC2, AC3, AC4 - Header API data for youth and Conditional Caution accounts displays the matching permanent warning
+      Given I create a "adultOrYouthOnly" draft account with the following details and set status "Publishing Pending" using user "opal-test-10@dev.platform.hmcts.net":
+        | Account_status                    | Submitted                     |
+        | account.defendant.forenames       | Jordan                        |
+        | account.defendant.surname         | CollectionWarning{uniq}       |
+        | account.defendant.email_address_1 | Jordan.Warning{uniq}@test.com |
+        | account.account_type              | Fine                          |
+        | account.collection_order_made     | false                         |
+      And I stub the defendant header summary for the "<account type>" Collection Order warning scenario
+      When I search for the account by last name "CollectionWarning{uniq}" and open the latest result
+      Then I should be on the FAE account details page
+      And I should see the permanent Collection Order warning "<warning>"
+
+      Examples:
+        | account type        | warning                                                              |
+        | Youth               | Account has a Collection Order but is a youth account.               |
+        | Conditional Caution | Account has a Collection Order but is a conditional caution account. |

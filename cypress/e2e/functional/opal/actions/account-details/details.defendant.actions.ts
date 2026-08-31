@@ -5,6 +5,7 @@
  */
 import { AccountDefendantDetailsLocators as L } from '../../../../../shared/selectors/account-details/account.defendant.details.locators';
 import { AccountCompanyDetailsLocators as C } from '../../../../../shared/selectors/account-details/account.company.details.locators';
+import { ACCOUNT_ENQUIRY_HEADER_ELEMENTS as H } from '../../../../../shared/selectors/account-enquiry/account.enquiry.header.locators';
 import { CommonActions } from '../common/common.actions';
 
 /** Actions and assertions for the Defendant tab on Account Details. */
@@ -23,6 +24,23 @@ export class AccountDetailsDefendantActions {
         const exp = expected.trim().toLowerCase();
         expect(actual).to.contain(exp);
       });
+  }
+
+  /**
+   * Asserts the permanent Collection Order data-quality warning in the account header.
+   * @param message - Warning text expected in the account header.
+   */
+  assertCollectionOrderWarning(message: string): void {
+    cy.get(H.collectionOrderWarningBanner, this.common.getTimeoutOptions())
+      .should('be.visible')
+      .and('contain.text', message);
+    cy.get(H.collectionOrderWarningAlert).should('be.visible');
+    cy.get(H.collectionOrderWarningBanner).find('button').should('not.exist');
+  }
+
+  /** Asserts that Collection Order data is aligned and no warning is rendered. */
+  assertCollectionOrderWarningNotPresent(): void {
+    cy.get(H.collectionOrderWarningBanner).should('not.exist');
   }
 
   /**
