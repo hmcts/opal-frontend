@@ -2,10 +2,36 @@ import { inject } from '@angular/core';
 import { ActivatedRouteSnapshot, RedirectCommand, ResolveFn, Router } from '@angular/router';
 import { PAGES_ROUTING_PATHS as COMMON_PAGES_ROUTING_PATHS } from '@hmcts/opal-frontend-common/pages/routing/constants';
 import { DateService } from '@hmcts/opal-frontend-common/services/date-service';
+import { type IOpalFinesReportInstanceDetail } from '@services/fines/opal-fines-service/interfaces/opal-fines-report-instance-detail.interface';
 import { OpalFines } from '@services/fines/opal-fines-service/opal-fines.service';
 import { map, of, switchMap } from 'rxjs';
+import { FINES_REPORTS_REPORT_SUMMARY_PARAMETER_KEYS } from '../../../fines-reports-report-summary/constants/fines-reports-report-summary-parameter-keys.constant';
 import { IFinesReportsReportSummaryViewModel } from '../../../fines-reports-report-summary/interfaces/fines-reports-report-summary-view-model.interface';
 import { mapFinesReportsReportInstanceToViewModel } from '../../../fines-reports-report-summary/utils/fines-reports-report-summary-map-view-model.utils';
+
+/**
+ * Loads the action reference data when a report uses it, then maps the instance for the summary page.
+ */
+const resolveReportSummaryViewModel = (
+  reportInstance: IOpalFinesReportInstanceDetail,
+  reportTitle: string,
+  opalFinesService: OpalFines,
+  dateService: DateService,
+) => {
+  // The instance contains only the action code. Reference data supplies the readable action title for the summary.
+  const enforcementAction =
+    reportInstance.report_parameters?.[FINES_REPORTS_REPORT_SUMMARY_PARAMETER_KEYS.enforcementAction];
+
+  // Reports without an action criterion can be mapped without an additional API call.
+  if (typeof enforcementAction !== 'string' || enforcementAction.trim().length === 0) {
+    return of(mapFinesReportsReportInstanceToViewModel(reportInstance, null, reportTitle, dateService));
+  }
+
+  // Let a failed lookup stop navigation: the Enforcement criterion could not otherwise be rendered accurately.
+  return opalFinesService
+    .getResult(enforcementAction)
+    .pipe(map((result) => mapFinesReportsReportInstanceToViewModel(reportInstance, result, reportTitle, dateService)));
+};
 
 export const finesReportsReportInstanceResolver: ResolveFn<IFinesReportsReportSummaryViewModel | RedirectCommand> = (
   route: ActivatedRouteSnapshot,
@@ -16,54 +42,24 @@ export const finesReportsReportInstanceResolver: ResolveFn<IFinesReportsReportSu
   const reportInstanceId = route.paramMap.get('reportInstanceId') ?? '';
   const reportTypeId = route.parent?.paramMap.get('reportTypeId') ?? route.paramMap.get('reportTypeId') ?? '';
 
-  // First API call: loads the permission-gated report definition for the report type in the URL. Its ID verifies
-  // that the returned report instance belongs to this route, and its title supplies the summary page heading.
+  // Load the permission-gated definition first. It validates the report type in the URL and supplies the page heading.
   return opalFinesService.getReport(reportTypeId).pipe(
     switchMap((reportDefinition) =>
-      // Second API call: loads the selected instance after the route's report definition has been retrieved.
-      // The comparison below prevents an instance from being viewed under a different report-type URL.
       opalFinesService.getReportInstance(reportInstanceId).pipe(
         switchMap((reportInstance) => {
-          const reportDefinitionId = reportDefinition.report_id.toString();
-
-          if (reportDefinitionId !== reportInstance.report.id.toString()) {
+          // Do not allow an instance to be displayed under a different report type's URL.
+          if (reportDefinition.report_id.toString() !== reportInstance.report.id.toString()) {
             return of(
               new RedirectCommand(router.createUrlTree([`/${COMMON_PAGES_ROUTING_PATHS.children.accessDenied}`])),
             );
           }
 
-          // The report-instance response supplies an enforcement-action code, such as BWTD, rather than the
-          // readable action title needed for the Enforcement criterion. Reports without this parameter do not
-          // need a reference-data lookup and can be mapped immediately.
-          const enforcementAction = reportInstance.report_parameters?.['enforcementAction'];
-
-          if (typeof enforcementAction !== 'string' || enforcementAction.trim().length === 0) {
-            return of(
-              mapFinesReportsReportInstanceToViewModel(
-                reportInstance,
-                null,
-                reportDefinition.report_title,
-                dateService,
-              ),
-            );
-          }
-
-          // Additional conditional API call: resolves the action code to reference data containing its readable
-          // title. This lets the mapper display, for example, "Last enforcement - Bail Warrant - dated (BWTD)"
-          // instead of only "Last enforcement action (BWTD)". API failures deliberately propagate to Opal's
-          // global error handling because the agreed readable Enforcement value cannot then be fully resolved.
-          return opalFinesService
-            .getResult(enforcementAction)
-            .pipe(
-              map((result) =>
-                mapFinesReportsReportInstanceToViewModel(
-                  reportInstance,
-                  result,
-                  reportDefinition.report_title,
-                  dateService,
-                ),
-              ),
-            );
+          return resolveReportSummaryViewModel(
+            reportInstance,
+            reportDefinition.report_title,
+            opalFinesService,
+            dateService,
+          );
         }),
       ),
     ),

@@ -1,28 +1,24 @@
 import { type IOpalFinesReportInstanceDetail } from '@services/fines/opal-fines-service/interfaces/opal-fines-report-instance-detail.interface';
 import { DateService } from '@hmcts/opal-frontend-common/services/date-service';
 import { FINES_REPORTS_REPORT_SUMMARY_NO_CONTENT_STATUS_DISPLAY } from '../constants/fines-reports-report-summary-no-content-status-display.constant';
-import { FINES_REPORTS_REPORT_SUMMARY_RECORD_COUNT_DASH_STATUSES } from '../constants/fines-reports-report-summary-record-count-dash-statuses.constant';
-import { FINES_REPORTS_REPORT_SUMMARY_STATUS_DISPLAY } from '../constants/fines-reports-report-summary-status-display.constant';
 import { FINES_REPORTS_REPORT_SUMMARY_STATUSES } from '../constants/fines-reports-report-summary-statuses.constant';
 import { type IFinesReportsReportSummaryViewModel } from '../interfaces/fines-reports-report-summary-view-model.interface';
 import { type FinesReportsReportSummaryNormalisedStatus } from '../types/fines-reports-report-summary-normalised-status.type';
 
 /**
- * Converts backend status codes into the status keys used by the summary screen. Normalisation
- * accepts the backend's space- and case-variant forms; an unknown value deliberately becomes
- * Error so the UI never presents an unsupported lifecycle state as successful or in progress.
+ * Allows only recognised backend status codes through to the summary screen. An unknown value
+ * deliberately becomes Error so the UI never presents an unsupported lifecycle state as successful or in progress.
  */
 export const normaliseReportSummaryStatus = (status: string): FinesReportsReportSummaryNormalisedStatus => {
-  switch (status) {
-    case FINES_REPORTS_REPORT_SUMMARY_STATUSES.requested:
-      return FINES_REPORTS_REPORT_SUMMARY_STATUSES.requested;
-    case FINES_REPORTS_REPORT_SUMMARY_STATUSES.inProgress:
-      return FINES_REPORTS_REPORT_SUMMARY_STATUSES.inProgress;
-    case FINES_REPORTS_REPORT_SUMMARY_STATUSES.ready:
-      return FINES_REPORTS_REPORT_SUMMARY_STATUSES.ready;
-    default:
-      return FINES_REPORTS_REPORT_SUMMARY_STATUSES.error;
+  if (
+    status === FINES_REPORTS_REPORT_SUMMARY_STATUSES.requested ||
+    status === FINES_REPORTS_REPORT_SUMMARY_STATUSES.inProgress ||
+    status === FINES_REPORTS_REPORT_SUMMARY_STATUSES.ready
+  ) {
+    return status;
   }
+
+  return FINES_REPORTS_REPORT_SUMMARY_STATUSES.error;
 };
 
 /**
@@ -49,7 +45,11 @@ const getStatusDisplay = (status: FinesReportsReportSummaryNormalisedStatus, rec
     return FINES_REPORTS_REPORT_SUMMARY_NO_CONTENT_STATUS_DISPLAY;
   }
 
-  return FINES_REPORTS_REPORT_SUMMARY_STATUS_DISPLAY[status];
+  if (status === FINES_REPORTS_REPORT_SUMMARY_STATUSES.error) {
+    return 'Error';
+  }
+
+  return status === FINES_REPORTS_REPORT_SUMMARY_STATUSES.ready ? 'Ready' : 'In progress';
 };
 
 /**
@@ -59,9 +59,7 @@ const getNumberOfRecordsDisplayValue = (
   status: FinesReportsReportSummaryNormalisedStatus,
   numberOfRecords: number | null,
 ): number | null => {
-  return FINES_REPORTS_REPORT_SUMMARY_RECORD_COUNT_DASH_STATUSES.some((dashStatus) => dashStatus === status)
-    ? null
-    : numberOfRecords;
+  return status === FINES_REPORTS_REPORT_SUMMARY_STATUSES.ready ? numberOfRecords : null;
 };
 
 /**

@@ -8,7 +8,6 @@ import { FINES_ROUTING_PATHS } from '../../routing/constants/fines-routing-paths
 import { FINES_REPORTS_SUMMARY_LIST_ROUTING_PATHS } from '../fines-reports-summary-list/routing/constants/fines-reports-summary-list-routing-paths.constant';
 import { FINES_REPORTS_ROUTING_PATHS } from '../routing/constants/fines-reports-routing-paths.constant';
 import { FINES_REPORTS_REPORT_SUMMARY_REPORT_TYPES } from './constants/fines-reports-report-summary-report-types.constant';
-import { FINES_REPORTS_REPORT_SUMMARY_STATUS_DISPLAY } from './constants/fines-reports-report-summary-status-display.constant';
 import { FINES_REPORTS_REPORT_SUMMARY_STATUSES } from './constants/fines-reports-report-summary-statuses.constant';
 import { FinesReportsReportSummaryComponent } from './fines-reports-report-summary.component';
 import { type IFinesReportsReportSummaryViewModel } from './interfaces/fines-reports-report-summary-view-model.interface';
@@ -28,7 +27,7 @@ describe('FinesReportsReportSummaryComponent', () => {
       requested_at: '2025-10-17T09:30:00',
       status: {
         code: FINES_REPORTS_REPORT_SUMMARY_STATUSES.requested,
-        display_name: FINES_REPORTS_REPORT_SUMMARY_STATUS_DISPLAY[FINES_REPORTS_REPORT_SUMMARY_STATUSES.requested],
+        display_name: 'Requested',
       },
       business_units: [
         { business_unit_id: 1, business_unit_name: 'West London', welsh_speaking: 'N' },
@@ -76,7 +75,7 @@ describe('FinesReportsReportSummaryComponent', () => {
       ...OPAL_FINES_REPORT_INSTANCE_MOCK,
       status: {
         code: FINES_REPORTS_REPORT_SUMMARY_STATUSES.error,
-        display_name: FINES_REPORTS_REPORT_SUMMARY_STATUS_DISPLAY[FINES_REPORTS_REPORT_SUMMARY_STATUSES.error],
+        display_name: 'Error',
       },
       errors: [
         {

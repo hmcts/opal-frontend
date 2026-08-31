@@ -1,4 +1,3 @@
-import { FINES_REPORTS_REPORT_SUMMARY_ERROR_LABELS } from '../constants/fines-reports-report-summary-error-labels.constant';
 import { FINES_REPORTS_REPORT_SUMMARY_STATUSES } from '../constants/fines-reports-report-summary-statuses.constant';
 import { type IFinesReportsReportSummaryViewModel } from '../interfaces/fines-reports-report-summary-view-model.interface';
 import { type FinesReportsReportSummaryNormalisedStatus } from '../types/fines-reports-report-summary-normalised-status.type';
@@ -8,11 +7,11 @@ import { isUnusedOptionalValue, mapDisplayText } from './fines-reports-report-su
  * Gives backend error keys the user-facing labels agreed for the Errors section.
  */
 const ERROR_PARAMETER_LABEL_OVERRIDES: Record<string, string> = {
-  error: FINES_REPORTS_REPORT_SUMMARY_ERROR_LABELS.errorDescription,
-  error_description: FINES_REPORTS_REPORT_SUMMARY_ERROR_LABELS.errorDescription,
-  operationId: FINES_REPORTS_REPORT_SUMMARY_ERROR_LABELS.operationId,
-  report_generation_error: FINES_REPORTS_REPORT_SUMMARY_ERROR_LABELS.reportGenerationError,
-  report_service: FINES_REPORTS_REPORT_SUMMARY_ERROR_LABELS.reportService,
+  error: 'Error description',
+  error_description: 'Error description',
+  operationId: 'Operation ID',
+  report_generation_error: 'Report generation error',
+  report_service: 'Report service',
 };
 
 /**
