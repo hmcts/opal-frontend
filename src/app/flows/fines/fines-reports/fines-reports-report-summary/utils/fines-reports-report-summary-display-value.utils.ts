@@ -19,7 +19,11 @@ export const mapDisplayText = (value: unknown): string => {
     return value ? 'TRUE' : 'FALSE';
   }
 
-  return value && typeof value === 'object' ? JSON.stringify(value) : String(value ?? '');
+  if (value !== null && typeof value === 'object') {
+    return JSON.stringify(value);
+  }
+
+  return value === null || value === undefined ? '' : String(value);
 };
 
 /**

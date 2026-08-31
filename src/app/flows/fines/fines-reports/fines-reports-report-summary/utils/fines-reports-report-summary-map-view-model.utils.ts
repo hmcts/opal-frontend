@@ -15,8 +15,8 @@ import { mapReportSummaryGeneral, normaliseReportSummaryStatus } from './fines-r
  */
 export const mapFinesReportsReportInstanceToViewModel = (
   reportInstance: IOpalFinesReportInstanceDetail,
-  enforcementAction: IOpalFinesResultRefData | null = null,
-  reportTitle = '',
+  enforcementAction: IOpalFinesResultRefData | null,
+  reportTitle: string,
   dateService: DateService,
 ): IFinesReportsReportSummaryViewModel => {
   const status = normaliseReportSummaryStatus(reportInstance.status.code);

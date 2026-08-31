@@ -11,6 +11,68 @@ import {
   mapOperationalReportParameter,
 } from './fines-reports-report-summary-criteria-value.utils';
 
+type CombinedCriteriaState = {
+  hasAccountTypeRow: boolean;
+  hasActionDateRow: boolean;
+};
+
+const getReportTypeRow = (key: string, reportType: string): FinesReportsReportSummaryNamedValue | null => {
+  return key === FINES_REPORTS_REPORT_SUMMARY_PARAMETER_KEYS.reportType
+    ? { name: FINES_REPORTS_REPORT_SUMMARY_CRITERIA_LABELS.reportType, value: reportType }
+    : null;
+};
+
+/**
+ * Creates rows that are formed from multiple API parameters, ensuring each combined row is shown once.
+ */
+const getCombinedCriteriaRow = (
+  reportParameters: Record<string, unknown>,
+  key: string,
+  dateService: DateService,
+  state: CombinedCriteriaState,
+): FinesReportsReportSummaryNamedValue | null => {
+  if (!state.hasActionDateRow) {
+    const actionDateRow = buildActionDateRow(reportParameters, key, dateService);
+
+    if (actionDateRow) {
+      state.hasActionDateRow = true;
+      return actionDateRow;
+    }
+  }
+
+  if (!state.hasAccountTypeRow && isAccountTypeParameter(key)) {
+    const accountTypeRow = buildAccountTypeRow(reportParameters);
+
+    if (accountTypeRow) {
+      state.hasAccountTypeRow = true;
+    }
+
+    return accountTypeRow;
+  }
+
+  return null;
+};
+
+/**
+ * Maps one report parameter, handling the combined display rows before regular one-to-one mappings.
+ */
+const mapCriteriaParameter = (
+  reportParameters: Record<string, unknown>,
+  key: string,
+  value: unknown,
+  reportType: string,
+  enforcementAction: IOpalFinesResultRefData | null,
+  enforcementActionCode: unknown,
+  dateService: DateService,
+  combinedCriteriaState: CombinedCriteriaState,
+): FinesReportsReportSummaryNamedValue | null => {
+  return (
+    getReportTypeRow(key, reportType) ??
+    getCombinedCriteriaRow(reportParameters, key, dateService, combinedCriteriaState) ??
+    mapOperationalReportParameter(key, value, enforcementAction, enforcementActionCode, dateService)
+  );
+};
+
 /**
  * Builds operational-report criteria in the order their source parameters are received from the API.
  * Date-pair and account-type properties are the exceptions: each represents one combined design
@@ -26,36 +88,23 @@ export const mapReportSummaryCriteria = (
   const parameters = reportParameters ?? {};
   const enforcementActionCode = parameters[FINES_REPORTS_REPORT_SUMMARY_PARAMETER_KEYS.enforcementAction];
   const rows: FinesReportsReportSummaryNamedValue[] = [];
-  let hasAccountTypeRow = false;
-  let hasActionDateRow = false;
+  const combinedCriteriaState: CombinedCriteriaState = {
+    hasAccountTypeRow: false,
+    hasActionDateRow: false,
+  };
 
   for (const [key, value] of Object.entries(parameters)) {
-    if (key === FINES_REPORTS_REPORT_SUMMARY_PARAMETER_KEYS.reportType) {
-      rows.push({ name: FINES_REPORTS_REPORT_SUMMARY_CRITERIA_LABELS.reportType, value: reportType });
-      continue;
-    }
+    const row = mapCriteriaParameter(
+      parameters,
+      key,
+      value,
+      reportType,
+      enforcementAction,
+      enforcementActionCode,
+      dateService,
+      combinedCriteriaState,
+    );
 
-    // A from/to pair is shown once, rather than as two implementation-detail rows.
-    if (!hasActionDateRow) {
-      const actionDateRow = buildActionDateRow(parameters, key, dateService);
-      if (actionDateRow) {
-        rows.push(actionDateRow);
-        hasActionDateRow = true;
-        continue;
-      }
-    }
-
-    // Several boolean flags form the single Account type row in the design.
-    if (!hasAccountTypeRow && isAccountTypeParameter(key)) {
-      const accountTypeRow = buildAccountTypeRow(parameters);
-      if (accountTypeRow) {
-        rows.push(accountTypeRow);
-        hasAccountTypeRow = true;
-      }
-      continue;
-    }
-
-    const row = mapOperationalReportParameter(key, value, enforcementAction, enforcementActionCode, dateService);
     if (row) {
       rows.push(row);
     }

@@ -82,12 +82,12 @@ const PAYMENT_REPORT_MODE_DISPLAY: Record<string, string> = {
 /**
  * Identifies the criteria whose numeric values the template renders with Angular's GBP currency pipe.
  */
-const CURRENCY_ROW_KEYS: readonly string[] = [
+const CURRENCY_ROW_KEYS = new Set<string>([
   FINES_REPORTS_REPORT_SUMMARY_CRITERIA_LABELS.minimumAccountBalance,
   FINES_REPORTS_REPORT_SUMMARY_CRITERIA_LABELS.maximumAccountBalance,
   FINES_REPORTS_REPORT_SUMMARY_CRITERIA_LABELS.minimumPaymentAmount,
   FINES_REPORTS_REPORT_SUMMARY_CRITERIA_LABELS.maximumPaymentAmount,
-];
+]);
 
 /**
  * Maps accepted API report-type values to the display labels used by the summary. `detail` is
@@ -142,14 +142,18 @@ export const buildActionDateRow = (
     return null;
   }
 
-  const value =
-    fromDisplay && toDisplay
-      ? `From ${fromDisplay} to ${toDisplay}`
-      : fromDisplay
-        ? `From ${fromDisplay}`
-        : `To ${toDisplay}`;
+  if (fromDisplay && toDisplay) {
+    return {
+      name: FINES_REPORTS_REPORT_SUMMARY_CRITERIA_LABELS.actionDate,
+      value: `From ${fromDisplay} to ${toDisplay}`,
+    };
+  }
 
-  return { name: FINES_REPORTS_REPORT_SUMMARY_CRITERIA_LABELS.actionDate, value };
+  if (fromDisplay) {
+    return { name: FINES_REPORTS_REPORT_SUMMARY_CRITERIA_LABELS.actionDate, value: `From ${fromDisplay}` };
+  }
+
+  return { name: FINES_REPORTS_REPORT_SUMMARY_CRITERIA_LABELS.actionDate, value: `To ${toDisplay}` };
 };
 
 /**
@@ -205,6 +209,21 @@ const getEnforcementDisplayValue = (
 };
 
 /**
+ * Converts a payment-made boolean to the wording required by the report criteria section.
+ */
+const getPaymentMadeDisplayValue = (value: unknown): unknown => {
+  if (value === true) {
+    return 'Yes';
+  }
+
+  if (value === false) {
+    return 'No';
+  }
+
+  return value;
+};
+
+/**
  * Maps a known operational-report parameter to its user-facing summary value. The API also
  * contains technical partner values, such as enforcementAction and the individual account-type
  * flags, which are intentionally represented by their combined display rows instead.
@@ -251,7 +270,7 @@ export const mapOperationalReportParameter = (
     case FINES_REPORTS_REPORT_SUMMARY_PARAMETER_KEYS.isPaymentMade:
       return {
         name: FINES_REPORTS_REPORT_SUMMARY_CRITERIA_LABELS.paymentsMade,
-        value: value === true ? 'Yes' : value === false ? 'No' : value,
+        value: getPaymentMadeDisplayValue(value),
       };
     case FINES_REPORTS_REPORT_SUMMARY_PARAMETER_KEYS.reportMode:
       return {
@@ -286,7 +305,7 @@ export const mapCriteriaRows = (
   return values
     .filter((row) => !row.optional || !isUnusedOptionalValue(row.value))
     .map((row) => {
-      const isCurrency = CURRENCY_ROW_KEYS.includes(row.name);
+      const isCurrency = CURRENCY_ROW_KEYS.has(row.name);
 
       return {
         key: row.name,
