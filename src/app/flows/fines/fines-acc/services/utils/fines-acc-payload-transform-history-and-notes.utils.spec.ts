@@ -1,6 +1,7 @@
 import { describe, expect, it } from 'vitest';
 import {
   createHistoryChequeDetails,
+  createHistoryPlainLabelValuePart,
   createHistorySuspenseTransferAssociatedRecordPart,
   createHistoryTextPartWithOptionalLink,
   getHistoryTransactionTemplateValue,
@@ -98,6 +99,12 @@ describe('createHistoryChequeDetails', () => {
   });
 });
 
+describe('createHistoryPlainLabelValuePart', () => {
+  it('should return null when the value is absent', () => {
+    expect(createHistoryPlainLabelValuePart('Cheque number:', null)).toBeNull();
+  });
+});
+
 describe('createHistoryTextPartWithOptionalLink', () => {
   it('should add link metadata when a target record identifier is supplied', () => {
     expect(createHistoryTextPartWithOptionalLink('250000123M', 'account', '123123')).toEqual(
@@ -139,6 +146,21 @@ describe('createHistorySuspenseTransferAssociatedRecordPart', () => {
         [],
       ),
     ).toEqual(part(fragment('MC12345')));
+  });
+
+  it('should create a plain defendant-account part when the mapping does not require a link', () => {
+    expect(
+      createHistorySuspenseTransferAssociatedRecordPart(
+        {
+          associatedRecordType: 'defendant_transaction',
+          associatedRecordId: null,
+          defendantAccountNumber: '250000123M',
+          defendantAccountId: '123123',
+          creditorAccountNumber: null,
+        },
+        [],
+      ),
+    ).toEqual(part(fragment('250000123M')));
   });
 });
 
