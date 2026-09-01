@@ -52,7 +52,7 @@ describe('Account Enquiry Payment Terms', () => {
     interceptPaymentTerms(accountId, paymentTermsMock, '123');
     interceptResultByCode('REM');
     setupAccountEnquiryComponent({ ...componentProperties, accountId });
-    cy.wait(['@getUserState', '@getDefendantHeaderSummary', '@getPaymentTerms']);
+    cy.wait(['@getUserState', '@getDefendantHeaderSummary']);
     cy.get('router-outlet').should('exist');
     waitForPaymentTermsTabLoad();
   };
@@ -158,7 +158,7 @@ describe('Account Enquiry Payment Terms', () => {
         accountId,
         interceptedRoutes: componentProperties.interceptedRoutes?.filter((route) => route !== '../payment-terms/amend'),
       });
-      cy.wait(['@getUserState', '@getDefendantHeaderSummary', '@getPaymentTerms']);
+      cy.wait(['@getUserState', '@getDefendantHeaderSummary']);
       cy.get('router-outlet').should('exist');
       waitForPaymentTermsTabLoad();
 
@@ -881,7 +881,7 @@ describe('Account Enquiry Payment Terms', () => {
       interceptPaymentTerms(accountId, paymentTermsMock, '123');
       interceptResultByCode('REM');
       setupAccountEnquiryComponent({ ...componentProperties, accountId: accountId });
-      cy.wait(['@getUserState', '@getDefendantHeaderSummary', '@getPaymentTerms']);
+      cy.wait(['@getUserState', '@getDefendantHeaderSummary']);
       cy.get('router-outlet').should('exist');
       waitForPaymentTermsTabLoad();
 
