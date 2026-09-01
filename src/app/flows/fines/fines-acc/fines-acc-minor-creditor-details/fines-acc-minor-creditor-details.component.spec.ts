@@ -157,9 +157,14 @@ describe('FinesAccMinorCreditorDetailsComponent', () => {
     expect(textContent).not.toContain('-\u00a3123.45');
   });
 
-  it('should only display paid out when no defendant is associated', () => {
+  it('should only display paid out when the account is a repayment', () => {
     const repaymentHeader = {
       ...structuredClone(FINES_ACC_MINOR_CREDITOR_DETAILS_HEADER_MOCK),
+      repayment: true,
+      creditor: {
+        ...FINES_ACC_MINOR_CREDITOR_DETAILS_HEADER_MOCK.creditor,
+        has_associated_defendant: true,
+      },
       financials: {
         ...FINES_ACC_MINOR_CREDITOR_DETAILS_HEADER_MOCK.financials,
         paid_out: 50,
@@ -185,6 +190,37 @@ describe('FinesAccMinorCreditorDetailsComponent', () => {
     expect(textContent).not.toContain('Awarded:');
     expect(textContent).not.toContain('Awaiting payout:');
     expect(textContent).not.toContain('Outstanding:');
+  });
+
+  it('should display all financial tiles for a non-repayment account without an associated defendant', () => {
+    const header = {
+      ...structuredClone(FINES_ACC_MINOR_CREDITOR_DETAILS_HEADER_MOCK),
+      repayment: false,
+      creditor: {
+        ...FINES_ACC_MINOR_CREDITOR_DETAILS_HEADER_MOCK.creditor,
+        has_associated_defendant: false,
+      },
+      financials: {
+        awarded: 200,
+        paid_out: 50,
+        awaiting_payout: 100,
+        outstanding: 150,
+      },
+    };
+
+    fixture.destroy();
+    activatedRouteStub.snapshot!.data = {
+      minorCreditorAccountHeadingData: header,
+    };
+    fixture = TestBed.createComponent(FinesAccMinorCreditorDetailsComponent);
+    fixture.detectChanges();
+
+    const textContent = (fixture.nativeElement as HTMLElement).textContent ?? '';
+
+    expect(textContent).toContain('Awarded:');
+    expect(textContent).toContain('Paid out:');
+    expect(textContent).toContain('Awaiting payout:');
+    expect(textContent).toContain('Outstanding:');
   });
 
   it('should call router.navigate when navigateToAddAccountNotePage is called', () => {
