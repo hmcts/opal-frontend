@@ -741,9 +741,9 @@ describe('OpalFines', () => {
       count: 1,
       refData: [refData],
     };
-    const expectedUrl = `${OPAL_FINES_PATHS.offencesRefData}?q=${refData.get_cjs_code}`;
+    const expectedUrl = `${OPAL_FINES_PATHS.offencesRefData}?q=${refData.cjs_code}`;
 
-    service.getOffenceByCjsCode(refData.get_cjs_code).subscribe((response) => {
+    service.getOffenceByCjsCode(refData.cjs_code).subscribe((response) => {
       expect(response).toEqual(expectedResponse);
     });
 
@@ -758,11 +758,11 @@ describe('OpalFines', () => {
       count: 1,
       refData: [refData],
     };
-    const expectedUrl = `${OPAL_FINES_PATHS.offencesRefData}?q=${refData.get_cjs_code}`;
+    const expectedUrl = `${OPAL_FINES_PATHS.offencesRefData}?q=${refData.cjs_code}`;
     const firstError = vi.fn();
     const secondNext = vi.fn();
 
-    service.getOffenceByCjsCode(refData.get_cjs_code).subscribe({
+    service.getOffenceByCjsCode(refData.cjs_code).subscribe({
       error: firstError,
     });
 
@@ -772,7 +772,7 @@ describe('OpalFines', () => {
 
     expect(firstError).toHaveBeenCalledTimes(1);
 
-    service.getOffenceByCjsCode(refData.get_cjs_code).subscribe({
+    service.getOffenceByCjsCode(refData.cjs_code).subscribe({
       next: secondNext,
     });
 

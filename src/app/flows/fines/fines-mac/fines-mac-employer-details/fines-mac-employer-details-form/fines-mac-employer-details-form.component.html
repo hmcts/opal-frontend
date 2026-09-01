@@ -3,7 +3,7 @@
   [errors]="formErrorSummaryMessage"
   (errorClick)="scrollTo($event)"
 ></opal-lib-govuk-error-summary>
-<form autocomplete="off" (submit)="handleFormSubmit($event)" [formGroup]="form">
+<form (submit)="handleFormSubmit($event)" [formGroup]="form">
   <opal-lib-govuk-text-input
     labelText="Employer name"
     inputId="fm_employer_details_employer_company_name"
@@ -88,6 +88,7 @@
       [control]="form.get('fm_employer_details_employer_post_code')"
       [errors]="formControlErrorMessages['fm_employer_details_employer_post_code']"
       [opalLibCapitaliseAllCharacters]="form.get('fm_employer_details_employer_post_code')!"
+      [opalLibTrimLeadingTrailingWhitespace]="form.get('fm_employer_details_employer_post_code')!"
     ></opal-lib-govuk-text-input>
   </fieldset>
   <div class="govuk-grid-row">

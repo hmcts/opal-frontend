@@ -545,6 +545,56 @@ describe('FinesAccPartyAddAmendConvertFormComponent', () => {
     expect(emailControl?.hasError('emailPattern')).toBe(false);
   });
 
+  it.each([
+    {
+      controlName: 'facc_party_add_amend_convert_post_code',
+      validValue: 'SW1A 1AA',
+      invalidPatternValue: 'SW1A@1AA',
+      invalidLengthValue: 'SW1A 1AAAA',
+    },
+    {
+      controlName: 'facc_party_add_amend_convert_employer_post_code',
+      validValue: 'B12 3CD',
+      invalidPatternValue: 'B12@3CD',
+      invalidLengthValue: 'BQ12 3CDE',
+    },
+  ] as const)(
+    'should validate postcode control $controlName',
+    ({ controlName, validValue, invalidPatternValue, invalidLengthValue }) => {
+      component.partyType = 'individual';
+      fixture.detectChanges();
+
+      const postcodeControl = component.form.get(controlName);
+
+      postcodeControl?.setValue(validValue);
+      expect(postcodeControl?.hasError('alphanumericTextPattern')).toBe(false);
+      expect(postcodeControl?.hasError('maxlength')).toBe(false);
+
+      postcodeControl?.setValue(invalidPatternValue);
+      expect(postcodeControl?.hasError('alphanumericTextPattern')).toBe(true);
+
+      postcodeControl?.setValue(invalidLengthValue);
+      expect(postcodeControl?.hasError('maxlength')).toBe(true);
+    },
+  );
+
+  it('should trim only surrounding whitespace from the individual postcode input on focusout', () => {
+    component.partyType = 'individual';
+    fixture.detectChanges();
+
+    const postcodeInput = fixture.nativeElement.querySelector(
+      'input[name="facc_party_add_amend_convert_post_code"]',
+    ) as HTMLInputElement | null;
+    if (!postcodeInput) throw new Error('Postcode input not found');
+
+    component.form.get('facc_party_add_amend_convert_post_code')?.setValue('  AB1  3CD ');
+    postcodeInput.dispatchEvent(new FocusEvent('focusout', { bubbles: true }));
+    fixture.detectChanges();
+
+    expect(component.form.get('facc_party_add_amend_convert_post_code')?.value).toBe('AB1  3CD');
+    expect(component.form.get('facc_party_add_amend_convert_post_code')?.hasError('maxlength')).toBe(false);
+  });
+
   it('should populate existing aliases on initialization', () => {
     component.partyType = 'individual';
     component.initialFormData = MOCK_FINES_ACC_PARTY_ADD_AMEND_CONVERT_FORM_DATA_WITH_ALIASES;
@@ -740,6 +790,24 @@ describe('FinesAccPartyAddAmendConvertFormComponent', () => {
 
       expect(companyNameControl?.hasError('required')).toBe(true);
       expect(referenceControl?.hasError('required')).toBe(true);
+    });
+
+    it('should trim surrounding whitespace from the employer postcode input on focusout', () => {
+      component.partyType = 'individual';
+      component.isDebtor = true;
+      fixture.detectChanges();
+
+      const postcodeInput = fixture.nativeElement.querySelector(
+        'input[name="facc_party_add_amend_convert_employer_post_code"]',
+      ) as HTMLInputElement | null;
+      if (!postcodeInput) throw new Error('Postcode input not found');
+
+      component.form.get('facc_party_add_amend_convert_employer_post_code')?.setValue('  AB1  3CD ');
+      postcodeInput.dispatchEvent(new FocusEvent('focusout', { bubbles: true }));
+      fixture.detectChanges();
+
+      expect(component.form.get('facc_party_add_amend_convert_employer_post_code')?.value).toBe('AB1  3CD');
+      expect(component.form.get('facc_party_add_amend_convert_employer_post_code')?.hasError('maxlength')).toBe(false);
     });
 
     it('should require employer address line 1 when other employer fields are provided but address line 1 is empty', () => {
@@ -1173,10 +1241,5 @@ describe('FinesAccPartyAddAmendConvertFormComponent', () => {
 
     expect(component.age).toBe(0);
     expect(component.ageLabel).toBe('');
-  });
-
-  it('should set autocomplete="off" on the form', () => {
-    fixture.detectChanges();
-    expect(fixture.nativeElement.querySelector('form')?.getAttribute('autocomplete')).toBe('off');
   });
 });

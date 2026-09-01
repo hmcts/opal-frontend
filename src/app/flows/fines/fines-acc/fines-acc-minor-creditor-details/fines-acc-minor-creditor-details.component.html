@@ -31,29 +31,27 @@
       <opal-lib-custom-summary-metric-bar-item>
         <p opal-lib-custom-summary-metric-bar-item-label>Awarded:</p>
         <p opal-lib-custom-summary-metric-bar-item-value>
-          {{ accountData.financials.awarded | monetary: 'remove-minus-symbol' }}
+          <opal-lib-custom-accessible-monetary [value]="accountData.financials.awarded" format="remove-minus-symbol" />
         </p>
       </opal-lib-custom-summary-metric-bar-item>
     }
     <opal-lib-custom-summary-metric-bar-item backgroundColour="govuk-lighter-blue-background-colour">
       <p opal-lib-custom-summary-metric-bar-item-label textColour="govuk-dark-blue-text-colour">Paid out:</p>
       <p opal-lib-custom-summary-metric-bar-item-value textColour="govuk-dark-blue-text-colour">
-        {{ accountData.financials.paid_out | monetary }}
+        <opal-lib-custom-accessible-monetary [value]="accountData.financials.paid_out" />
       </p>
     </opal-lib-custom-summary-metric-bar-item>
-    @if (accountData.creditor.has_associated_defendant) {
-      <opal-lib-custom-summary-metric-bar-item backgroundColour="govuk-lighter-blue-background-colour">
-        <p opal-lib-custom-summary-metric-bar-item-label textColour="govuk-dark-blue-text-colour">Awaiting payout:</p>
-        <p opal-lib-custom-summary-metric-bar-item-value textColour="govuk-dark-blue-text-colour">
-          {{ accountData.financials.awaiting_payout | monetary }}
-        </p>
-      </opal-lib-custom-summary-metric-bar-item>
-    }
+    <opal-lib-custom-summary-metric-bar-item backgroundColour="govuk-lighter-blue-background-colour">
+      <p opal-lib-custom-summary-metric-bar-item-label textColour="govuk-dark-blue-text-colour">Awaiting payout:</p>
+      <p opal-lib-custom-summary-metric-bar-item-value textColour="govuk-dark-blue-text-colour">
+        <opal-lib-custom-accessible-monetary [value]="accountData.financials.awaiting_payout" />
+      </p>
+    </opal-lib-custom-summary-metric-bar-item>
     @if (accountData.creditor.has_associated_defendant) {
       <opal-lib-custom-summary-metric-bar-item backgroundColour="govuk-blue-background-colour">
         <p opal-lib-custom-summary-metric-bar-item-label textColour="govuk-white-text-colour">Outstanding:</p>
         <p opal-lib-custom-summary-metric-bar-item-value textColour="govuk-white-text-colour">
-          {{ accountData.financials.outstanding | monetary }}
+          <opal-lib-custom-accessible-monetary [value]="accountData.financials.outstanding" />
         </p>
       </opal-lib-custom-summary-metric-bar-item>
     }

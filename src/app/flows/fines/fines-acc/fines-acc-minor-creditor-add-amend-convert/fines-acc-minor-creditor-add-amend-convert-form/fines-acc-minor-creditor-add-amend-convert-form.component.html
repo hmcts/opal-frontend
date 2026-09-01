@@ -10,7 +10,7 @@
 >
 </opal-lib-govuk-heading-with-caption>
 
-<form autocomplete="off" (submit)="handleFormSubmit($event)" [formGroup]="form" class="govuk-form">
+<form (submit)="handleFormSubmit($event)" [formGroup]="form" class="govuk-form">
   <opal-lib-govuk-radio
     fieldSetId="facc_minor_creditor_creditor_type"
     legendText="Select creditor type"
@@ -157,6 +157,7 @@
       [control]="form.get(controls.postCode)"
       [errors]="formControlErrorMessages[controls.postCode]"
       [opalLibCapitaliseAllCharacters]="form.get(controls.postCode)!"
+      [opalLibTrimLeadingTrailingWhitespace]="form.get(controls.postCode)!"
     ></opal-lib-govuk-text-input>
   </fieldset>
 

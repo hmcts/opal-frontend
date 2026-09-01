@@ -53,6 +53,12 @@ describe('Account Enquiry Payment Terms', () => {
     interceptResultByCode('REM');
     setupAccountEnquiryComponent({ ...componentProperties, accountId });
     cy.get('router-outlet').should('exist');
+    waitForPaymentTermsTabLoad();
+  };
+
+  const waitForPaymentTermsTabLoad = () => {
+    cy.wait('@getPaymentTerms');
+    cy.wait('@getResultByCode');
   };
 
   const buildParentGuardianHeaderMock = () => {
@@ -135,7 +141,7 @@ describe('Account Enquiry Payment Terms', () => {
 
   it(
     'AC3: Change navigation remains unchanged for an eligible account',
-    { tags: [...buildTags('@JIRA-STORY:PO-5753', '@JIRA-EPIC:PO-2990')] },
+    { tags: [...buildTags('@JIRA-STORY:PO-5753', '@JIRA-EPIC:PO-2990'), '@JIRA-TEST-KEY:PO-9835'] },
     () => {
       const headerMock = structuredClone(createDefendantHeaderMockWithName('Robert', 'Thomson'));
       headerMock.debtor_type = 'individual';
@@ -152,6 +158,7 @@ describe('Account Enquiry Payment Terms', () => {
         interceptedRoutes: componentProperties.interceptedRoutes?.filter((route) => route !== '../payment-terms/amend'),
       });
       cy.get('router-outlet').should('exist');
+      waitForPaymentTermsTabLoad();
 
       cy.contains(PAYMENT_TERMS_TAB.paymentTermsLink, 'Change').click();
       cy.get('app-fines-acc-payment-terms-amend-form').should('exist');
@@ -160,7 +167,7 @@ describe('Account Enquiry Payment Terms', () => {
 
   it(
     'AC3: Request payment card navigation remains unchanged for an eligible account',
-    { tags: [...buildTags('@JIRA-STORY:PO-5753', '@JIRA-EPIC:PO-2990')] },
+    { tags: [...buildTags('@JIRA-STORY:PO-5753', '@JIRA-EPIC:PO-2990'), '@JIRA-TEST-KEY:PO-9836'] },
     () => {
       const headerMock = structuredClone(createDefendantHeaderMockWithName('Robert', 'Thomson'));
       headerMock.debtor_type = 'individual';
@@ -175,7 +182,7 @@ describe('Account Enquiry Payment Terms', () => {
 
   it(
     'AC3, AC4, AC5: Enforcement validation navigates to the amended payment terms error notification',
-    { tags: [...buildTags('@JIRA-STORY:PO-5753', '@JIRA-EPIC:PO-2990')] },
+    { tags: [...buildTags('@JIRA-STORY:PO-5753', '@JIRA-EPIC:PO-2990'), '@JIRA-TEST-KEY:PO-9837'] },
     () => {
       const headerMock = structuredClone(createDefendantHeaderMockWithName('Robert', 'Thomson'));
       headerMock.debtor_type = 'individual';
@@ -871,6 +878,7 @@ describe('Account Enquiry Payment Terms', () => {
       interceptResultByCode('REM');
       setupAccountEnquiryComponent({ ...componentProperties, accountId: accountId });
       cy.get('router-outlet').should('exist');
+      waitForPaymentTermsTabLoad();
 
       cy.contains(PAYMENT_TERMS_TAB.paymentTermsLink, 'Request payment card').click();
       cy.get('@routerNavigate').should('have.been.calledWithMatch', ['../payment-card/request']);

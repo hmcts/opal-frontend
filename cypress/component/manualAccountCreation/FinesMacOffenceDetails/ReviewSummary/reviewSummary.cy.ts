@@ -16,6 +16,14 @@ const MANUAL_ACCOUNT_CREATION_JIRA_LABEL = '@JIRA-LABEL:manual-account-creation'
 
 const buildTags = (...tags: string[]) => [...tags, '@R1A', MANUAL_ACCOUNT_CREATION_JIRA_LABEL];
 
+const assertSummaryListValue = (selector: string, label: string, value: string) => {
+  cy.get(selector).should(($element) => {
+    const text = $element.text().replace(/\s+/g, ' ').trim();
+    expect(text).to.contain(label);
+    expect(text).to.contain(value);
+  });
+};
+
 describe('ReviewSummaryComponent', () => {
   let finesMacStateTemplate = structuredClone(FINES_REVIEW_SUMMARY_OFFENCE_MOCK);
   let finesMacState = finesMacStateTemplate;
@@ -248,11 +256,54 @@ describe('ReviewSummaryComponent', () => {
       cy.get(DOM_ELEMENTS.totalBalanceRemaining).should('contain', '£400.00');
 
       cy.get(DOM_ELEMENTS.headingMedium).should('contain', 'Totals');
-      cy.get(DOM_ELEMENTS.GrandtotalAmountImposed).should('contain', '£1000.00').should('contain', 'Amount imposed');
+      cy.get(DOM_ELEMENTS.GrandtotalAmountImposed).should('contain', '£1,000.00').should('contain', 'Amount imposed');
       cy.get(DOM_ELEMENTS.GrandtotalAmountPaid).should('contain', '£300.00').should('contain', 'Amount paid');
       cy.get(DOM_ELEMENTS.GrandtotalRemainingBalance)
         .should('contain', '£700.00')
         .should('contain', 'Balance remaining');
+    },
+  );
+
+  it(
+    'should display correct total figures on the Review offences screen when more than one offence is entered',
+    {
+      tags: [...buildTags('@JIRA-STORY:PO-417', '@JIRA-DEFECT:PO-10197'), '@JIRA-EPIC:PO-545'],
+    },
+    () => {
+      finesMacStateTemplate.offenceDetails[0].formData.fm_offence_details_impositions = [
+        {
+          fm_offence_details_imposition_id: 0,
+          fm_offence_details_result_id: 'FO',
+          fm_offence_details_amount_imposed: 341,
+          fm_offence_details_amount_paid: 0,
+          fm_offence_details_balance_remaining: 341,
+          fm_offence_details_needs_creditor: false,
+          fm_offence_details_creditor: null,
+          fm_offence_details_major_creditor_id: null,
+        },
+      ];
+
+      finesMacStateTemplate.offenceDetails[1].formData.fm_offence_details_impositions = [
+        {
+          fm_offence_details_imposition_id: 1,
+          fm_offence_details_result_id: 'FO',
+          fm_offence_details_amount_imposed: 100,
+          fm_offence_details_amount_paid: 100,
+          fm_offence_details_balance_remaining: 0,
+          fm_offence_details_needs_creditor: false,
+          fm_offence_details_creditor: null,
+          fm_offence_details_major_creditor_id: null,
+        },
+      ];
+
+      setupComponent();
+
+      cy.get(DOM_ELEMENTS.headingLarge).should('contain', 'Offences and impositions');
+      cy.get(DOM_ELEMENTS.impositionType).should('have.length', 2);
+
+      assertSummaryListValue(DOM_ELEMENTS.GrandtotalAmountImposed, 'Amount imposed', '£441.00');
+      assertSummaryListValue(DOM_ELEMENTS.GrandtotalAmountPaid, 'Amount paid', '£100.00');
+      assertSummaryListValue(DOM_ELEMENTS.GrandtotalRemainingBalance, 'Balance remaining', '£341.00');
     },
   );
 
@@ -330,14 +381,14 @@ describe('ReviewSummaryComponent', () => {
 
       cy.get(DOM_ELEMENTS.impositionType).should('contain', 'FORFEITED RECOGNISANCE (FFR)');
       cy.get(DOM_ELEMENTS.creditor).should('contain', 'HM Courts & Tribunals Service (HMCTS)');
-      cy.get(DOM_ELEMENTS.amountImposed).should('contain', '£2000.00');
+      cy.get(DOM_ELEMENTS.amountImposed).should('contain', '£2,000.00');
       cy.get(DOM_ELEMENTS.amountPaid).should('contain', '£200.00');
-      cy.get(DOM_ELEMENTS.balanceRemaining).should('contain', '£1800.00');
+      cy.get(DOM_ELEMENTS.balanceRemaining).should('contain', '£1,800.00');
 
       cy.get(DOM_ELEMENTS.totalHeading).should('contain', 'Totals');
-      cy.get(DOM_ELEMENTS.totalAmountImposed).should('contain', '£2400.00');
+      cy.get(DOM_ELEMENTS.totalAmountImposed).should('contain', '£2,400.00');
       cy.get(DOM_ELEMENTS.totalAmountPaid).should('contain', '£300.00');
-      cy.get(DOM_ELEMENTS.totalBalanceRemaining).should('contain', '£2100.00');
+      cy.get(DOM_ELEMENTS.totalBalanceRemaining).should('contain', '£2,100.00');
 
       cy.get(DOM_ELEMENTS.impositionType).should('contain', 'Fine (FO)');
       cy.get(DOM_ELEMENTS.creditor).should('contain', 'HM Courts & Tribunals Service (HMCTS)');
@@ -347,20 +398,20 @@ describe('ReviewSummaryComponent', () => {
 
       cy.get(DOM_ELEMENTS.impositionType).should('contain', 'FORFEITED RECOGNISANCE (FFR)');
       cy.get(DOM_ELEMENTS.creditor).should('contain', 'HM Courts & Tribunals Service (HMCTS)');
-      cy.get(DOM_ELEMENTS.amountImposed).should('contain', '£1000.00');
+      cy.get(DOM_ELEMENTS.amountImposed).should('contain', '£1,000.00');
       cy.get(DOM_ELEMENTS.amountPaid).should('contain', '£100.00');
       cy.get(DOM_ELEMENTS.balanceRemaining).should('contain', '£900.00');
 
       cy.get(DOM_ELEMENTS.totalHeading).should('contain', 'Totals');
-      cy.get(DOM_ELEMENTS.totalAmountImposed).should('contain', '1600.00');
+      cy.get(DOM_ELEMENTS.totalAmountImposed).should('contain', '£1,600.00');
       cy.get(DOM_ELEMENTS.totalAmountPaid).should('contain', '£300.00');
-      cy.get(DOM_ELEMENTS.totalBalanceRemaining).should('contain', '£1300.00');
+      cy.get(DOM_ELEMENTS.totalBalanceRemaining).should('contain', '£1,300.00');
 
       cy.get(DOM_ELEMENTS.headingMedium).should('contain', 'Totals');
-      cy.get(DOM_ELEMENTS.GrandtotalAmountImposed).should('contain', '£4000.00').should('contain', 'Amount imposed');
+      cy.get(DOM_ELEMENTS.GrandtotalAmountImposed).should('contain', '£4,000.00').should('contain', 'Amount imposed');
       cy.get(DOM_ELEMENTS.GrandtotalAmountPaid).should('contain', '£600.00').should('contain', 'Amount paid');
       cy.get(DOM_ELEMENTS.GrandtotalRemainingBalance)
-        .should('contain', '£3400.00')
+        .should('contain', '£3,400.00')
         .should('contain', 'Balance remaining');
     },
   );

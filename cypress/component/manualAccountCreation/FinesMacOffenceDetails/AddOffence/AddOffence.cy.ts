@@ -45,7 +45,7 @@ describe('FinesMacAddOffenceComponent', () => {
       (req) => {
         const requestedCjsCode = req.query['q'];
         const matchedOffences = OPAL_FINES_OFFENCES_REF_DATA_MOCK.refData.filter(
-          (offence) => offence.get_cjs_code === requestedCjsCode,
+          (offence) => offence.cjs_code === requestedCjsCode,
         );
         req.reply({
           count: matchedOffences.length,
@@ -262,9 +262,9 @@ describe('FinesMacAddOffenceComponent', () => {
       cy.wait('@getExactMatchMultiResultOffence').then(({ response }) => {
         expect(response?.body.count).to.be.greaterThan(1);
         expect(response?.body.refData).to.have.length.greaterThan(1);
-        expect(
-          response?.body.refData.some((offence: { get_cjs_code: string }) => offence.get_cjs_code === 'CD71039'),
-        ).to.equal(true);
+        expect(response?.body.refData.some((offence: { cjs_code: string }) => offence.cjs_code === 'CD71039')).to.equal(
+          true,
+        );
       });
 
       cy.get(DOM_ELEMENTS.successPanel).should('contain', 'Offence found');
@@ -322,7 +322,7 @@ describe('FinesMacAddOffenceComponent', () => {
             refData: OPAL_FINES_OFFENCES_REF_DATA_DUPLICATE_CODE_MOCK.refData.map((offence, index) => ({
               ...offence,
               offence_id: offence.offence_id + index,
-              get_cjs_code: `CD71039${String.fromCharCode(65 + index)}`,
+              cjs_code: `CD71039${String.fromCharCode(65 + index)}`,
             })),
           },
         },
@@ -334,7 +334,7 @@ describe('FinesMacAddOffenceComponent', () => {
         expect(response?.body.count).to.be.greaterThan(1);
         expect(response?.body.refData).to.have.length.greaterThan(1);
         expect(
-          response?.body.refData.some((offence: { get_cjs_code: string }) => offence.get_cjs_code === 'CD71039D'),
+          response?.body.refData.some((offence: { cjs_code: string }) => offence.cjs_code === 'CD71039D'),
         ).to.equal(false);
       });
 
@@ -400,11 +400,9 @@ describe('FinesMacAddOffenceComponent', () => {
       cy.get(DOM_ELEMENTS.dateOfSentenceLabel).should('contain', 'Date of sentence');
       cy.get(DOM_ELEMENTS.dateHint).should('contain', 'For example, 31/01/2023');
       cy.get(DOM_ELEMENTS.offenceCodeLabel).should('contain', 'Offence code');
-      cy.get(DOM_ELEMENTS.offenceCodeHint).should(
-        'contain',
-        "For example, HY35014. If you don't know the offence code, you can",
-      );
-      cy.get(DOM_ELEMENTS.offenceLink).should('contain', ' search the offence list');
+      cy.get(DOM_ELEMENTS.offenceCodeHint).should('contain', 'For example, HY35014.');
+      cy.get(DOM_ELEMENTS.offenceCodeGuidance).should('contain', "If you don't know the offence code, you can");
+      cy.get(DOM_ELEMENTS.offenceLink).should('contain', 'search the offence list');
       cy.get(imposition_1.resultCodeLabel).should('contain', 'Result code');
       cy.get(imposition_1.amountImposedLabel).should('contain', 'Amount imposed');
       cy.get(imposition_1.amountPaidLabel).should('contain', 'Amount paid');
@@ -576,11 +574,13 @@ describe('FinesMacAddOffenceComponent', () => {
       const imposition_1 = impositionSelectors(0);
 
       impositionResultCodelist.forEach((resultCode) => {
+        const resultCodeValue = resultCode.match(/\(([^)]+)\)$/)?.[1] ?? resultCode;
+
         if (resultCode === 'Compensation (FCOMP)' || resultCode === 'Costs (FCOST)') {
           cy.get(imposition_1.resultCodeInput).click();
           cy.get(imposition_1.resultCodeAutoComplete).find('li').should('have.length.greaterThan', 0);
-          cy.get(imposition_1.resultCodeInput).clear().type(`${resultCode}`, { delay: 0, force: true });
-          cy.get(imposition_1.resultCodeLabel).click();
+          cy.get(imposition_1.resultCodeInput).clear().type(resultCodeValue, { delay: 0, force: true });
+          cy.get(imposition_1.resultCodeAutoComplete).contains('li', resultCode).click();
           cy.get(imposition_1.majorCreditor).should('exist');
           cy.get(imposition_1.minorCreditor).should('exist');
           cy.get(imposition_1.majorCreditorLabel).should('contain', 'Major creditor');
@@ -588,8 +588,8 @@ describe('FinesMacAddOffenceComponent', () => {
         } else {
           cy.get(imposition_1.resultCodeInput).click();
           cy.get(imposition_1.resultCodeAutoComplete).find('li').should('have.length.greaterThan', 0);
-          cy.get(imposition_1.resultCodeInput).clear().type(`${resultCode}`, { delay: 0, force: true });
-          cy.get(imposition_1.resultCodeLabel).click();
+          cy.get(imposition_1.resultCodeInput).clear().type(resultCodeValue, { delay: 0, force: true });
+          cy.get(imposition_1.resultCodeAutoComplete).contains('li', resultCode).click();
 
           cy.get(imposition_1.majorCreditor).should('not.exist');
           cy.get(imposition_1.minorCreditor).should('not.exist');
@@ -1262,6 +1262,129 @@ describe('FinesMacAddOffenceComponent', () => {
       cy.get(DOM_ELEMENTS.submitButton).first().click();
 
       cy.get(DOM_ELEMENTS.errorSummary).should('contain', IMPOSITION_ERROR_MESSAGES.invalidNegativeValue);
+    },
+  );
+
+  type AmountCase = {
+    imposed: number;
+
+    paid: number;
+  };
+
+  const buildImpositions = (cases: AmountCase[]) =>
+    cases.map((caseItem, index) => ({
+      fm_offence_details_imposition_id: index + 1,
+
+      fm_offence_details_result_id: 'FVS',
+
+      fm_offence_details_amount_imposed: caseItem.imposed,
+
+      fm_offence_details_amount_paid: caseItem.paid,
+
+      fm_offence_details_balance_remaining: Number((caseItem.imposed - caseItem.paid).toFixed(2)),
+
+      fm_offence_details_needs_creditor: false,
+
+      fm_offence_details_creditor: '',
+
+      fm_offence_details_major_creditor_id: 3856,
+    }));
+
+  const runAmountTest = (cases: AmountCase[]) => {
+    setupComponent(null);
+
+    const impositions = buildImpositions(cases);
+
+    finesMacState.offenceDetails[currentoffenceDetails].formData.fm_offence_details_date_of_sentence = '01/01/2021';
+
+    finesMacState.offenceDetails[currentoffenceDetails].formData.fm_offence_details_offence_cjs_code = 'AK123456';
+
+    finesMacState.offenceDetails[currentoffenceDetails].formData.fm_offence_details_offence_id = 52;
+
+    finesMacState.offenceDetails[currentoffenceDetails].formData.fm_offence_details_impositions =
+      structuredClone(impositions);
+
+    cy.get(DOM_ELEMENTS.submitButton).first().click();
+  };
+
+  it(
+    'Should show error message for invalid amount when £100.01 paid exceeds £100 imposed',
+    {
+      tags: [
+        '@JIRA-EPIC:PO-2219',
+        '@JIRA-STORY:PO-9140',
+        '@JIRA-DEFECT:PO-9140',
+        '@JIRA-LABEL:manual-account-creation',
+        '@R1A',
+        '@JIRA-TEST-KEY:PO-9977',
+      ],
+    },
+    () => {
+      runAmountTest([{ imposed: 100, paid: 100.01 }]);
+      cy.get(DOM_ELEMENTS.errorSummary).should(
+        'contain',
+        IMPOSITION_ERROR_MESSAGES.invalidAmountPaidGreaterThanImposed,
+      );
+    },
+  );
+  it(
+    'Should allow form submission with amount paid being equal to amount imposed',
+    {
+      tags: [
+        '@JIRA-EPIC:PO-2219',
+        '@JIRA-STORY:PO-9140',
+        '@JIRA-DEFECT:PO-9140',
+        '@JIRA-LABEL:manual-account-creation',
+        '@R1A',
+        '@JIRA-TEST-KEY:PO-9978',
+      ],
+    },
+    () => {
+      runAmountTest([{ imposed: 100.01, paid: 100.01 }]);
+
+      cy.get(DOM_ELEMENTS.errorSummary).should('not.exist');
+    },
+  );
+  it(
+    'Should allow form submission with amount paid being under the amount imposed',
+    {
+      tags: [
+        '@JIRA-EPIC:PO-2219',
+        '@JIRA-STORY:PO-9140',
+        '@JIRA-DEFECT:PO-9140',
+        '@JIRA-LABEL:manual-account-creation',
+        '@R1A',
+        '@JIRA-TEST-KEY:PO-9979',
+      ],
+    },
+    () => {
+      runAmountTest([{ imposed: 100.0, paid: 99.99 }]);
+
+      cy.get(DOM_ELEMENTS.errorSummary).should('not.exist');
+    },
+  );
+  it(
+    'Should show error when amount paid exceeds amount imposed on a subsequent imposition',
+    {
+      tags: [
+        '@JIRA-EPIC:PO-2219',
+        '@JIRA-STORY:PO-9140',
+        '@JIRA-DEFECT:PO-9140',
+        '@JIRA-LABEL:manual-account-creation',
+        '@R1A',
+        '@JIRA-TEST-KEY:PO-9980',
+      ],
+    },
+    () => {
+      runAmountTest([
+        { imposed: 100, paid: 50 },
+        { imposed: 200, paid: 200.01 },
+      ]);
+
+      cy.get(DOM_ELEMENTS.errorSummary).should(
+        'contain',
+        IMPOSITION_ERROR_MESSAGES.invalidAmountPaidGreaterThanImposed,
+      );
     },
   );
 });

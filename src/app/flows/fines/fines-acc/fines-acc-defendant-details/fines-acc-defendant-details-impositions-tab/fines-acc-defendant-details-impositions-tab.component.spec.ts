@@ -78,8 +78,28 @@ describe('FinesAccDefendantDetailsImpositionsTabComponent', () => {
     const balanceCell = fixture.nativeElement.querySelector('#imposition-balance-0') as HTMLTableCellElement;
 
     expect(imposedAmountCell.textContent?.trim()).toBe('£200.00');
-    expect(paidAmountCell.textContent?.trim()).toBe('-£50.00');
-    expect(balanceCell.textContent?.trim()).toBe('-£150.00');
+    expect(paidAmountCell.querySelector('[aria-hidden="true"]')?.textContent?.trim()).toBe('-£50.00');
+    expect(balanceCell.querySelector('[aria-hidden="true"]')?.textContent?.trim()).toBe('-£150.00');
+  });
+
+  it('should expose accessible minus text for negative paid and balance amounts', () => {
+    const tabData = structuredClone(OPAL_FINES_ACCOUNT_DEFENDANT_DETAILS_IMPOSITIONS_TAB_REF_DATA_MOCK);
+    tabData.impositions[0].paid_amount = -50;
+    tabData.impositions[0].balance = -150;
+
+    const { fixture } = setupComponent(tabData);
+
+    const paidAmountCell = fixture.nativeElement.querySelector('#imposition-paid-amount-0') as HTMLTableCellElement;
+    const balanceCell = fixture.nativeElement.querySelector('#imposition-balance-0') as HTMLTableCellElement;
+    const paidVisibleAmount = paidAmountCell.querySelector('[aria-hidden="true"]') as HTMLSpanElement;
+    const balanceVisibleAmount = balanceCell.querySelector('[aria-hidden="true"]') as HTMLSpanElement;
+    const paidAccessibleAmount = paidAmountCell.querySelector('.govuk-visually-hidden') as HTMLSpanElement;
+    const balanceAccessibleAmount = balanceCell.querySelector('.govuk-visually-hidden') as HTMLSpanElement;
+
+    expect(paidVisibleAmount.textContent?.trim()).toBe('-£50.00');
+    expect(balanceVisibleAmount.textContent?.trim()).toBe('-£150.00');
+    expect(paidAccessibleAmount.textContent?.trim()).toBe('minus £50.00');
+    expect(balanceAccessibleAmount.textContent?.trim()).toBe('minus £150.00');
   });
 
   it('should sort rows when a sortable header is clicked', () => {
@@ -146,8 +166,9 @@ describe('FinesAccDefendantDetailsImpositionsTabComponent', () => {
     expect(creditorCell.textContent).toContain('Central Fund');
   });
 
-  it('should paginate imposition rows at 25 results per page', () => {
+  it('should announce the new page and focus its first date cell after rendering', async () => {
     const { component, fixture } = setupComponent();
+    fixture.componentRef.setInput('paginationPageTitle', 'John Smith');
 
     expect(component.paginatedTableDataComputed()).toHaveLength(25);
     expect(fixture.nativeElement.querySelector('opal-lib-moj-pagination')).toBeTruthy();
@@ -156,11 +177,17 @@ describe('FinesAccDefendantDetailsImpositionsTabComponent', () => {
 
     component.onPageChange(2);
     fixture.detectChanges();
+    await fixture.whenStable();
 
+    const firstCell = fixture.nativeElement.querySelector('#imposition-date-added-0') as HTMLTableCellElement;
+    const status = fixture.nativeElement.querySelector('output') as HTMLOutputElement;
     expect(component.currentPageSignal()).toBe(2);
     expect(component.paginatedTableDataComputed()).toHaveLength(8);
     expect(fixture.nativeElement.textContent).toContain('Major Creditor 23');
     expect(fixture.nativeElement.textContent).not.toContain('Central Funds');
+    expect(firstCell.getAttribute('tabindex')).toBe('-1');
+    expect(document.activeElement).toBe(firstCell);
+    expect(status.textContent?.trim()).toBe('John Smith, page 2 of 2');
   });
 
   it('should not render pagination when there are 25 or fewer imposition rows', () => {

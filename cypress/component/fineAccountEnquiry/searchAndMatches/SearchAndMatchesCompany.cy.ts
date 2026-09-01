@@ -85,7 +85,7 @@ describe('Search Account Component - Company', () => {
 
   it(
     'AC6a. should route to problem screen when National Insurance number is combined with company criteria',
-    { tags: [...buildTags('@JIRA-STORY:PO-2953'), '@JIRA-EPIC:PO-2630'] },
+    { tags: [...buildTags('@JIRA-STORY:PO-2953'), '@JIRA-EPIC:PO-2630', '@JIRA-TEST-KEY:PO-9908'] },
     () => {
       setupComponent((searchState) => {
         searchState.fsa_search_account_individuals_search_criteria!.fsa_search_account_individuals_national_insurance_number =
@@ -111,10 +111,13 @@ describe('Search Account Component - Company', () => {
       });
 
       cy.get(CommonLocators.searchButton).click();
-      cy.get(CommonLocators.errorSummary).should('contain', 'Address line 1 must only contain letters or numbers');
+      cy.get(CommonLocators.errorSummary).should(
+        'contain',
+        'Address line 1 must only include letters a to z, numbers 0-9 and certain special characters (such as hyphens, spaces, apostrophes and commas)',
+      );
       cy.get(CompanyLocators.addressLine1Error).should(
         'contain',
-        'Address line 1 must only contain letters or numbers',
+        'Address line 1 must only include letters a to z, numbers 0-9 and certain special characters (such as hyphens, spaces, apostrophes and commas)',
       );
       cy.get(CompanyLocators.addressLine1Input).clear();
     },

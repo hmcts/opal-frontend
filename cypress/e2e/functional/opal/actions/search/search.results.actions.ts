@@ -78,6 +78,16 @@ export class ResultsActions {
     Balance: `${R.cols.balance}, ${R.cols.minorCreditorBalance}`,
     // Column header "Ref" → reference column cell
     Ref: R.cols.ref,
+    // Column header "Enf" → enforcement column cell
+    Enf: R.cols.enf,
+    // Column header "Aliases" → aliases column cell
+    Aliases: R.cols.aliases,
+    // Column header "Date of birth" → date of birth cell
+    'Date of birth': R.cols.dob,
+    // Column header "NI number" → national insurance number cell
+    'NI number': R.cols.ni,
+    // Column header "Parent or guardian" → parent/guardian column cell
+    'Parent or guardian': R.cols.parentGuard,
   };
 
   /**
@@ -271,6 +281,26 @@ export class ResultsActions {
     this.assertNavigatedToDetails();
   }
 
+  /**
+   * Opens the associated defendant from the first minor creditor result row.
+   *
+   * This deliberately targets the Defendant-column link rather than the minor
+   * creditor account-number link.
+   */
+  public openLatestMinorCreditorDefendant(): void {
+    log('open', 'Opening associated defendant from latest minor creditor result');
+
+    cy.get(R.table.rows, { timeout: ResultsActions.WAIT_MS })
+      .should('have.length.greaterThan', 0)
+      .first()
+      .find(R.cols.minorCreditorDefendantLink, { timeout: ResultsActions.WAIT_MS })
+      .should('be.visible')
+      .scrollIntoView()
+      .click({ force: true });
+
+    this.assertNavigatedToDetails();
+  }
+
   /********this should be in flow ******** */
   /**
    * Opens a specific account **by account number** from the results table.
@@ -283,6 +313,51 @@ export class ResultsActions {
 
     // Dynamic locator is defined in the locators file
     cy.get(R.linkByAccountNumber(accountNumber), { timeout: ResultsActions.WAIT_MS })
+      .scrollIntoView()
+      .should('be.visible')
+      .click({ force: true });
+
+    this.assertNavigatedToDetails();
+  }
+
+  /**
+   * Opens the single result matching all supplied column/value expectations.
+   * Matching is case-insensitive and whitespace-tolerant so formatted values
+   * such as NI numbers remain reliable.
+   * @param expectations Map of results-table column labels to expected values.
+   */
+  public openByColumnValues(expectations: Record<string, string>): void {
+    if (Object.keys(expectations).length === 0) {
+      throw new Error('At least one results-table column/value is required to open a matching result');
+    }
+
+    const normalizedExpectations = Object.entries(expectations).map(([columnLabel, expectedValue]) => {
+      const selector = ResultsActions.COLUMN_LOCATORS[columnLabel];
+
+      if (!selector) {
+        throw new Error(
+          `No column locator mapping defined for header "${columnLabel}". ` +
+            'Supported columns are Account, Name, Aliases, Date of birth, Address line 1, Postcode, NI number, Parent or guardian, and Business unit.',
+        );
+      }
+
+      return [selector, expectedValue.replace(/\s+/g, ' ').trim().toLowerCase()] as const;
+    });
+
+    log('open', 'Opening result matching supplied column values', { expectations });
+
+    cy.get(R.table.rows, { timeout: ResultsActions.WAIT_MS })
+      .filter((_, row) => {
+        const $row = Cypress.$(row);
+
+        return normalizedExpectations.every(([selector, expectedValue]) => {
+          const actualValue = $row.find(selector).text().replace(/\s+/g, ' ').trim().toLowerCase();
+          return actualValue === expectedValue;
+        });
+      })
+      .should('have.length', 1)
+      .first()
+      .find(R.cols.accountLink, { timeout: ResultsActions.WAIT_MS })
       .scrollIntoView()
       .should('be.visible')
       .click({ force: true });

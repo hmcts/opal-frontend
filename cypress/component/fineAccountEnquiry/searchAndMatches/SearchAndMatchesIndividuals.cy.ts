@@ -98,7 +98,7 @@ describe('Search Account Component - Individuals', () => {
 
   it(
     'AC1-AC5. should render the NI quick search section',
-    { tags: [...buildTags('@JIRA-STORY:PO-2953'), '@JIRA-EPIC:PO-2630'] },
+    { tags: [...buildTags('@JIRA-STORY:PO-2953'), '@JIRA-EPIC:PO-2630', '@JIRA-TEST-KEY:PO-9909'] },
     () => {
       setupComponent();
 
@@ -369,10 +369,16 @@ describe('Search Account Component - Individuals', () => {
 
       cy.get(CommonLocators.errorSummary)
         .should('exist')
-        .and('contain', 'Address line 1 must only contain letters or numbers');
+        .and(
+          'contain',
+          'Address line 1 must only include letters a to z, numbers 0-9 and certain special characters (such as hyphens, spaces, apostrophes and commas)',
+        );
       cy.get(IndividualsLocators.addressLine1Error)
         .should('exist')
-        .and('contain', 'Address line 1 must only contain letters or numbers');
+        .and(
+          'contain',
+          'Address line 1 must only include letters a to z, numbers 0-9 and certain special characters (such as hyphens, spaces, apostrophes and commas)',
+        );
 
       cy.get(IndividualsLocators.addressLine1Input).clear();
     },
@@ -499,7 +505,7 @@ describe('Search Account Component - Individuals', () => {
 
   it(
     'AC7. should call the Individuals endpoint for National Insurance search',
-    { tags: [...buildTags('@JIRA-STORY:PO-2953'), '@JIRA-EPIC:PO-2630'] },
+    { tags: [...buildTags('@JIRA-STORY:PO-2953'), '@JIRA-EPIC:PO-2630', '@JIRA-TEST-KEY:PO-9910'] },
     () => {
       setupComponent(
         (searchState) => {
@@ -530,7 +536,7 @@ describe('Search Account Component - Individuals', () => {
 
   it(
     'AC6a. should route to the problem screen when National Insurance number is combined with a reference or case number',
-    { tags: [...buildTags('@JIRA-STORY:PO-2953'), '@JIRA-EPIC:PO-2630'] },
+    { tags: [...buildTags('@JIRA-STORY:PO-2953'), '@JIRA-EPIC:PO-2630', '@JIRA-TEST-KEY:PO-9911'] },
     () => {
       setupComponent((searchState) => {
         searchState.fsa_search_account_reference_case_number = 'REF123';
@@ -546,7 +552,7 @@ describe('Search Account Component - Individuals', () => {
 
   it(
     'AC8. should preserve National Insurance number search behaviour after spaces are removed',
-    { tags: [...buildTags('@JIRA-STORY:PO-2953'), '@JIRA-EPIC:PO-2630'] },
+    { tags: [...buildTags('@JIRA-STORY:PO-2953'), '@JIRA-EPIC:PO-2630', '@JIRA-TEST-KEY:PO-9912'] },
     () => {
       setupComponent(
         (searchState) => {
@@ -576,7 +582,7 @@ describe('Search Account Component - Individuals', () => {
   // Invalid characters must still be rejected after whitespace normalisation; this validates NI input rules, not AC8.
   it(
     'NI validation: should reject invalid characters after spaces are removed',
-    { tags: [...buildTags('@JIRA-STORY:PO-2953'), '@JIRA-EPIC:PO-2630'] },
+    { tags: [...buildTags('@JIRA-STORY:PO-2953'), '@JIRA-EPIC:PO-2630', '@JIRA-TEST-KEY:PO-9913'] },
     () => {
       setupComponent((searchState) => {
         searchState.fsa_search_account_individuals_search_criteria!.fsa_search_account_individuals_national_insurance_number =

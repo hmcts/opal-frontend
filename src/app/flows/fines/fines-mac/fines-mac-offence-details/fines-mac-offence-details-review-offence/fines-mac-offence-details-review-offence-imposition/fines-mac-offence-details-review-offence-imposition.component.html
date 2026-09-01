@@ -1,4 +1,4 @@
-<opal-lib-govuk-table>
+<opal-lib-govuk-table captionClasses="govuk-visually-hidden" caption="Offence: {{ offenceCaption }}">
   <ng-container head>
     <th opal-lib-govuk-table-heading>Imposition</th>
     <th opal-lib-govuk-table-heading>Creditor</th>
@@ -30,17 +30,27 @@
             {{ imposition.creditor }}
           }
         </td>
-        <td opal-lib-govuk-table-body-row-data id="amountImposed">{{ imposition.amountImposed }}</td>
-        <td opal-lib-govuk-table-body-row-data id="amountPaid">{{ imposition.amountPaid }}</td>
-        <td opal-lib-govuk-table-body-row-data id="balanceRemaining">{{ imposition.balanceRemaining }}</td>
+        <td opal-lib-govuk-table-body-row-data id="amountImposed">
+          <opal-lib-custom-accessible-monetary [value]="imposition.amountImposed" />
+        </td>
+        <td opal-lib-govuk-table-body-row-data id="amountPaid">
+          <opal-lib-custom-accessible-monetary [value]="imposition.amountPaid" />
+        </td>
+        <td opal-lib-govuk-table-body-row-data id="balanceRemaining">
+          <opal-lib-custom-accessible-monetary [value]="imposition.balanceRemaining" />
+        </td>
       </tr>
     }
     <tr opal-lib-govuk-table-body-row bodyRowClasses="govuk-light-grey-background-color">
       <th opal-lib-govuk-table-body-row-data colspan="2" id="totalsHeading"><strong>Totals</strong></th>
-      <th opal-lib-govuk-table-body-row-data id="totalAmountImposed">{{ impositionsTotalsData.totalAmountImposed }}</th>
-      <th opal-lib-govuk-table-body-row-data id="totalAmountPaid">{{ impositionsTotalsData.totalAmountPaid }}</th>
+      <th opal-lib-govuk-table-body-row-data id="totalAmountImposed">
+        <opal-lib-custom-accessible-monetary [value]="impositionsTotalsData.totalAmountImposed" />
+      </th>
+      <th opal-lib-govuk-table-body-row-data id="totalAmountPaid">
+        <opal-lib-custom-accessible-monetary [value]="impositionsTotalsData.totalAmountPaid" />
+      </th>
       <th opal-lib-govuk-table-body-row-data id="totalBalanceRemaining">
-        {{ impositionsTotalsData.totalBalanceRemaining }}
+        <opal-lib-custom-accessible-monetary [value]="impositionsTotalsData.totalBalanceRemaining" />
       </th>
     </tr>
   </ng-container>

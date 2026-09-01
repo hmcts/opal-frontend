@@ -53,12 +53,12 @@ Feature: Offence Details
       | Compensation     | FNAME LNAME                           | £200.00        | £100.00     | £100.00           |
       | Compensation     | Temporary Creditor (TEMP)             | £300.00        | £100.00     | £200.00           |
       | Victim Surcharge | HM Courts & Tribunals Service (HMCTS) | £500.00        | £250.00     | £250.00           |
-      | Totals           |                                       | £1000.00       | £450.00     | £550.00           |
+      | Totals           |                                       | £1,000.00      | £450.00     | £550.00           |
 
     And the review summary table contains:
-      | Amount imposed    | £1000.00 |
-      | Amount paid       | £450.00  |
-      | Balance remaining | £550.00  |
+      | Amount imposed    | £1,000.00 |
+      | Amount paid       | £450.00   |
+      | Balance remaining | £550.00   |
 
     When I return to account details from offence details
     Then I return to the top of the page
@@ -287,7 +287,7 @@ Feature: Offence Details
     # Only one imposition left – cannot remove
     And I do not see the "Remove imposition" link for imposition 1
 
-  @R1A @JIRA-EPIC:PO-2219 @JIRA-STORY:PO-2127 @JIRA-DEFECT:PO-8265
+  @R1A @JIRA-EPIC:PO-2219 @JIRA-STORY:PO-2127 @JIRA-DEFECT:PO-8265 @JIRA-TEST-KEY:PO-10038
   Scenario: Changing an imposition from FCOMP to FCOST clears major creditor selection and re-filters creditor options
     When I provide offence details for offence code "TP11003" with a sentence date 9 weeks in the past
 
@@ -356,7 +356,7 @@ Feature: Offence Details
       | Victim Surcharge | HM Courts & Tribunals Service (HMCTS) | £500.00        | £250.00     | £250.00           |
       | Costs            | CNAME3                                | £200.00        | £100.00     | £100.00           |
       | Costs to Crown   | Crown Prosecution Service (CPS)       | £500.00        | £250.00     | £250.00           |
-      | Totals           |                                       | £1500.00       | £700.00     | £800.00           |
+      | Totals           |                                       | £1,500.00      | £700.00     | £800.00           |
 
   @R1A @JIRA-EPIC:PO-272 @JIRA-TEST-KEY:PO-5366
   Scenario: User can update remaining impositions and add a new one after removals
@@ -399,9 +399,9 @@ Feature: Offence Details
       | Compensation                       | Temporary Creditor (TEMP)             | £900.00        | £134.00     | £766.00           |
       | Costs to Crown Prosecution Service | Crown Prosecution Service (CPS)       | £500.00        | £250.00     | £250.00           |
       | Vehicle Excise Back Duty           | HM Courts & Tribunals Service (HMCTS) | £100.00        | £50.00      | £50.00            |
-      | Totals                             |                                       | £1500.00       | £434.00     | £1066.00          |
+      | Totals                             |                                       | £1,500.00      | £434.00     | £1,066.00         |
 
-  @R1A @JIRA-EPIC:PO-272 @JIRA-TEST-KEY:PO-5367
+  @R1A @JIRA-EPIC:PO-272 @JIRA-DEFECT:PO-9139 @JIRA-TEST-KEY:PO-5367
   Scenario: (AC.2, AC.7, AC.8) User can add multiple offences and see them ordered with correct totals [@PO-272, @PO-344, @PO-345, @PO-545, @PO-815, @PO-417, @PO-676, @PO-679, @PO-416, @PO-682, @PO-680, @PO-1395]
     # Offence 1
     When I provide offence details for offence code "TP11003" with a sentence date 9 weeks in the past
@@ -457,9 +457,9 @@ Feature: Offence Details
       | Totals     |                                       | £200.00        | £100.00     | £100.00           |
 
     And the summary list contains:
-      | Amount imposed | £1200.00 |
-      | Amount paid    | £600.00  |
-      | Balance        | £600.00  |
+      | Amount imposed | £1,200.00 |
+      | Amount paid    | £600.00   |
+      | Balance        | £600.00   |
 
   @R1A @JIRA-EPIC:PO-272 @JIRA-TEST-KEY:PO-5368
   Scenario: (AC.2, AC.7, AC.8) User can change an offence and remove another offence when multiple offences exist [@PO-272, @PO-344, @PO-345, @PO-545, @PO-815, @PO-417, @PO-676, @PO-679, @PO-416, @PO-682, @PO-680, @PO-1395]
@@ -508,9 +508,9 @@ Feature: Offence Details
       | Totals     |                                       | £200.00        | £100.00     | £100.00           |
 
     And the summary list contains:
-      | Amount imposed | £1200.00 |
-      | Amount paid    | £600.00  |
-      | Balance        | £600.00  |
+      | Amount imposed | £1,200.00 |
+      | Amount paid    | £600.00   |
+      | Balance        | £600.00   |
 
     # Remove offence TH68001B (Offence 3) – cancel then confirm
     When I choose to remove offence with offence code "TH68001B"
@@ -538,9 +538,9 @@ Feature: Offence Details
       | Totals     |                                       | £200.00        | £100.00     | £100.00           |
 
     And the summary list contains:
-      | Amount imposed | £1200.00 |
-      | Amount paid    | £600.00  |
-      | Balance        | £600.00  |
+      | Amount imposed | £1,200.00 |
+      | Amount paid    | £600.00   |
+      | Balance        | £600.00   |
 
     When I choose to remove offence with offence code "TH68001B"
     Then I am asked to confirm removing offence with offence code "TH68001B"
@@ -574,9 +574,9 @@ Feature: Offence Details
       | Totals     |          | £500.00        | £250.00     | £250.00           |
 
     And the summary list contains:
-      | Amount imposed | £1000.00 |
-      | Amount paid    | £500.00  |
-      | Balance        | £500.00  |
+      | Amount imposed | £1,000.00 |
+      | Amount paid    | £500.00   |
+      | Balance        | £500.00   |
 
   @R1A @JIRA-EPIC:PO-545 @JIRA-STORY:PO-416 @JIRA-STORY:PO-682 @JIRA-STORY:PO-680 @JIRA-DEFECT:PO-9111 @JIRA-TEST-KEY:PO-5369
   Scenario: User can add multiple offences and remove all offences
@@ -896,6 +896,29 @@ Feature: Offence Details
     When I reset the offence search to exclude inactive offence codes
     Then I am viewing offence results with active offences only
 
+
+  @R1A @JIRA-DEFECT:PO-9788 @JIRA-STORY:PO-987 @JIRA-EPIC:PO-545
+  Scenario: Show warning message when amending imposition amount is cancelled
+    When I provide offence details for offence code "TP11003" with a sentence date 9 weeks in the past
+    And I record impositions with creditor types:
+      | Imposition | Result code          | Amount imposed | Amount paid | Creditor type | Creditor search |
+      | 1          | Compensation (FCOMP) | 200            | 100         | Minor         |                 |
+    And I maintain individual minor creditor with BACS details for imposition 1:
+      | Title | First name | Last name | Address line 1 | Address line 2 | Address line 3 | Postcode | Account name | Sort code | Account number | Payment reference |
+      | Mr    | FNAME      | LNAME     | Addr1          | Addr2          | Addr3          | TE12 3ST | F LNAME      | 123456    | 12345678       | REF               |
+
+    When I review the offence
+    And I choose to amend offence with offence code "TP11003"
+    And I enter "250" into the "Amount imposed" field for imposition 1 in the MAC flow
+    And I cancel offence details choosing "Cancel" in the unsaved changes warning
+    Then I see the offence details page with header "Add an offence" and text "Offence details"
+    And I see "250" in the "Amount imposed" field for imposition 1 in the MAC flow
+
+    When I cancel offence details choosing "Ok" in the unsaved changes warning
+    Then the offence review table for offence code "TP11003" contains:
+      | Imposition   | Creditor    | Amount imposed | Amount paid | Balance remaining |
+      | Compensation | FNAME LNAME | £200.00        | £100.00     | £100.00           |
+      | Totals       |             | £200.00        | £100.00     | £100.00           |
 
   @R1A @JIRA-STORY:PO-2432 @JIRA-EPIC:PO-245 @JIRA-TEST-KEY:PO-5382
   Scenario: Minor creditor details persist after repeated offence review and change [PO-2432]
