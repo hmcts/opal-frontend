@@ -455,15 +455,17 @@ export class ManualOffenceDetailsActions {
   toggleMinorCreditorDetails(index: number, action: 'Show details' | 'Hide details'): void {
     log('click', 'Toggling minor creditor visibility', { index, action });
     const panel = this.getImpositionPanel(index);
-    const linkSelector = 'a:contains("Show details"), a:contains("Hide details")';
+    const summarySelector = 'span.govuk-details__summary-text';
 
-    panel.find(linkSelector, this.common.getTimeoutOptions()).then(($links) => {
+    panel.then(($panel) => {
+      const $summaries = $panel.find(summarySelector);
       const target =
         action === 'Show details'
-          ? $links.filter((_, el) => Cypress.$(el).text().includes('Show details'))
-          : $links.filter((_, el) => Cypress.$(el).text().includes('Hide details'));
+          ? $summaries.filter((_, el) => Cypress.$(el).text().includes('Show details'))
+          : $summaries.filter((_, el) => Cypress.$(el).text().includes('Hide details'));
 
-      // If already in the desired state (e.g., hide link visible but we want show), no need to click.
+      // The Add Offence summary card has no toggle because its details are always visible.
+      // If no toggle exists, or it is already in the desired state, no need to click.
       if (!target.length) {
         return;
       }

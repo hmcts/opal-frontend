@@ -5,7 +5,7 @@ export interface IFinesMacOffenceDetailsReviewSummaryImpositionTableData {
   impositionDescription: string;
   creditor: string;
   minorCreditor: IFinesMacOffenceDetailsReviewSummaryMinorCreditorTableData | null;
-  showMinorCreditorData: boolean;
+  minorCreditorDetailsSummaryText: string;
   amountImposed: string;
   amountPaid: string;
   balanceRemaining: string;
