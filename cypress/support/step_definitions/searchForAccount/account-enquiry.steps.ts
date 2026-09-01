@@ -269,6 +269,11 @@ Given('I stub the defendant header summary payment terms account balance to {int
   accountEnquiryFlow().stubPaymentTermsAccountBalance(balance);
 });
 
+Given('I stub the defendant header summary business unit code to {string}', (businessUnitCode: string) => {
+  log('intercept', 'Stub defendant header summary business unit code', { businessUnitCode });
+  accountEnquiryFlow().stubHeaderSummaryBusinessUnitCode(businessUnitCode);
+});
+
 Given(
   'I stub the defendant header summary for the {string} Collection Order warning scenario',
   (category: 'Adult' | 'Youth' | 'Company' | 'Conditional Caution') => {

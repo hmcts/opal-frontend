@@ -272,7 +272,7 @@ describe('Account Enquiry - Defendant Header', () => {
 
         cy.contains(DOM.labelBusinessUnit).should('be.visible');
         cy.contains(header.business_unit_summary.business_unit_name).should('be.visible');
-        cy.contains(`(${header.business_unit_summary.business_unit_id})`).should('be.visible');
+        cy.contains(`(${header.business_unit_summary.business_unit_code})`).should('be.visible');
 
         cy.contains(DOM.labelReceivedFrom).should('be.visible');
         cy.get(DOM.receivedFrom).should('be.visible').and('have.contain', header.originator_name);
@@ -314,7 +314,7 @@ describe('Account Enquiry - Defendant Header', () => {
 
         cy.contains(DOM.labelBusinessUnit).should('be.visible');
         cy.contains(header.business_unit_summary.business_unit_name).should('be.visible');
-        cy.contains(`(${header.business_unit_summary.business_unit_id})`).should('be.visible');
+        cy.contains(`(${header.business_unit_summary.business_unit_code})`).should('be.visible');
 
         cy.contains(DOM.labelReceivedFrom).should('be.visible');
         cy.get(DOM.receivedFrom).should('be.visible').and('have.contain', header.originator_name);
@@ -879,7 +879,10 @@ describe('Account Enquiry - Minor Creditor Header', () => {
 
       cy.get(DOM.pageHeader).should('exist');
       cy.get(DOM.minorCreditorAccountType).should('contain.text', 'Minor Creditor');
-      cy.get(DOM.minorCreditorBusinessUnit).should('contain.text', 'Camberwell Green (77)');
+      cy.get(DOM.minorCreditorBusinessUnit).should(
+        'contain.text',
+        `${header.business_unit.business_unit_name} (${header.business_unit.business_unit_code})`,
+      );
 
       cy.get(DOM.summaryMetricBar).within(() => {
         cy.contains(DOM.labelAwaitingPayout)

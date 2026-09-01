@@ -515,6 +515,29 @@ export class AccountEnquiryFlow {
   }
 
   /**
+   * Stubs the defendant header-summary response with a business-unit code that is
+   * intentionally distinct from the internal business-unit identifier.
+   *
+   * @param businessUnitCode Public business-unit code to inject into the response.
+   */
+  public stubHeaderSummaryBusinessUnitCode(businessUnitCode: string): void {
+    logAE('intercept', 'Stubbing defendant header-summary business-unit code', { businessUnitCode });
+
+    cy.intercept('GET', '**/defendant-accounts/**/header-summary', (req) => {
+      req.continue((res) => {
+        const body = res.body as { business_unit_summary?: { business_unit_code?: string } };
+
+        if (!body?.business_unit_summary) {
+          throw new Error('Expected defendant header-summary response to include business_unit_summary.');
+        }
+
+        body.business_unit_summary.business_unit_code = businessUnitCode;
+        res.send({ body });
+      });
+    }).as('businessUnitCodeHeaderSummary');
+  }
+
+  /**
    * Stubs the header API with a Collection Order mismatch for the named account category.
    * This represents the data-quality conditions that cannot be created through normal UI flows.
    * @param category - Account category whose mismatch should be returned by the header API.
