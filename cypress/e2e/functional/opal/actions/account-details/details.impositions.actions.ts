@@ -3,6 +3,8 @@ import { createScopedLogger } from '../../../../../support/utils/log.helper';
 
 const log = createScopedLogger('AccountDetailsImpositionsActions');
 
+const SHORT_MONTH_NAMES = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
+
 const normalizeTableText = (value: string): string =>
   value
     .replace(/\u00a0/g, ' ')
@@ -13,12 +15,16 @@ const resolveExpectedTableValue = (value: string): string => {
   const normalizedValue = normalizeTableText(value);
   if (normalizedValue !== '{today}') return normalizedValue;
 
-  return new Intl.DateTimeFormat('en-GB', {
-    day: 'numeric',
-    month: 'short',
+  const dateParts = new Intl.DateTimeFormat('en-GB', {
+    day: '2-digit',
+    month: 'numeric',
     year: 'numeric',
     timeZone: 'Europe/London',
-  }).format(new Date());
+  }).formatToParts(new Date());
+  const datePart = (type: Intl.DateTimeFormatPartTypes): string =>
+    dateParts.find((part) => part.type === type)?.value ?? '';
+
+  return `${datePart('day')} ${SHORT_MONTH_NAMES[Number(datePart('month')) - 1]} ${datePart('year')}`;
 };
 
 const assertTableCellText = (selector: string, expected: string): void => {
