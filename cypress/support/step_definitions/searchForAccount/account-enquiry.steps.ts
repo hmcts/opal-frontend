@@ -108,6 +108,11 @@ When('I search for the account by last name {string} and open the latest result'
   accountEnquiryFlow().searchAndClickLatestBySurnameOpenLatestResult(surnameWithUniq);
 });
 
+Then('I should be on the FAE account details page', () => {
+  log('assert', 'FAE defendant account details page is visible');
+  accountEnquiryFlow().assertOnDefendantAccountDetailsPage();
+});
+
 /**
  * @step Opens the latest matching account from the current Search results page.
  *
@@ -262,6 +267,29 @@ Given('I stub the defendant header summary payment terms account status code to 
 Given('I stub the defendant header summary payment terms account balance to {int}', (balance: number) => {
   log('intercept', 'Stub defendant header summary payment terms account balance', { balance });
   accountEnquiryFlow().stubPaymentTermsAccountBalance(balance);
+});
+
+Given('I stub the defendant header summary business unit code to {string}', (businessUnitCode: string) => {
+  log('intercept', 'Stub defendant header summary business unit code', { businessUnitCode });
+  accountEnquiryFlow().stubHeaderSummaryBusinessUnitCode(businessUnitCode);
+});
+
+Given(
+  'I stub the defendant header summary for the {string} Collection Order warning scenario',
+  (category: 'Adult' | 'Youth' | 'Company' | 'Conditional Caution') => {
+    log('intercept', 'Stub Collection Order warning header scenario', { category });
+    accountEnquiryFlow().stubCollectionOrderWarningScenario(category);
+  },
+);
+
+Then('I should see the permanent Collection Order warning {string}', (message: string) => {
+  log('assert', 'Collection Order warning is visible and permanent', { message });
+  accountEnquiryFlow().assertCollectionOrderWarning(message);
+});
+
+Then('I should not see a Collection Order warning', () => {
+  log('assert', 'Collection Order warning is absent');
+  accountEnquiryFlow().assertCollectionOrderWarningNotPresent();
 });
 
 Then('I do not see the Payment terms Change or Request payment card actions', () => {

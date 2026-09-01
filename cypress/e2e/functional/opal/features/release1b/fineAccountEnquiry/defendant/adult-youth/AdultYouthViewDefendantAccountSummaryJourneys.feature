@@ -26,3 +26,16 @@ Feature: Adult Youth View Defendant Account Summary Journeys
     And I should see the account header summary values:
       | Account type | Fine                 |
       | Case number  | PCRR1BSUM{uniqUpper} |
+
+  @R1B @JIRA-STORY:PO-7410 @JIRA-EPIC:PO-8248
+  Scenario: Account header displays the business unit code
+    Given I am logged in with email "opal-test@dev.platform.hmcts.net"
+    And a published adult or youth defendant account exists:
+      | first name                | Taylor               |
+      | last name                 | BusinessUnit{uniq}   |
+      | prosecutor case reference | PCRBUCODE{uniqUpper} |
+      | date of birth             | 2001-05-15           |
+    And I stub the defendant header summary business unit code to "BU-CODE-E2E"
+    When I search for the account by last name "BusinessUnit{uniq}" and open the latest result
+    Then I should see the account header summary values:
+      | Business unit | BU-CODE-E2E |

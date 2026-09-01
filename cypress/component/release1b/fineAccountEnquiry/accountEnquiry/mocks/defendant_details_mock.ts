@@ -26,6 +26,7 @@ export const DEFENDANT_HEADER_MOCK: IOpalFinesAccountDefendantDetailsHeader = {
   fixed_penalty_ticket_number: '888',
   business_unit_summary: {
     business_unit_id: '77',
+    business_unit_code: '0046',
     business_unit_name: 'Central London',
     welsh_speaking: 'No',
   },

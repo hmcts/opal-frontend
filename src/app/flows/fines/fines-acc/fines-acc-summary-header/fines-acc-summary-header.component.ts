@@ -36,6 +36,7 @@ export class FinesAccSummaryHeaderComponent {
 
   @Input({ required: true }) accountStore!: FinesAccountStoreType;
   @Input({ required: true }) showAddAccountNoteButton!: boolean;
+  @Input() collectionOrderBannerMessage: string | null = null;
   @Input() public set accountStatusCode(accountStatusCode: string | null | undefined) {
     this.accountStatusBannerContent = getFinesAccAccountStatusBannerContent(accountStatusCode);
     this._accountStatusCode = accountStatusCode ?? null;
