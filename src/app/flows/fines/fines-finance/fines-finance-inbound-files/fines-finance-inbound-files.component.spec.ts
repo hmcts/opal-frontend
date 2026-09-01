@@ -1,6 +1,5 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { beforeEach, describe, expect, it } from 'vitest';
-
 import { FinesFinanceInboundFilesComponent } from './fines-finance-inbound-files.component';
 
 describe('FinesFinanceInboundFiles', () => {
