@@ -41,7 +41,7 @@ Feature: Check And Validate Draft Accounts
     And the draft success banner is "You have approved Larry Lincoln{uniq}'s account"
 
 
-  @R1A @JIRA-STORY:PO-969 @JIRA-STORY:PO-601 @JIRA-EPIC:PO-2220 @JIRA-TEST-KEY:PO-5332 @JIRA-NFR:PO-2506
+  @R1A @JIRA-STORY:PO-969 @JIRA-STORY:PO-601 @JIRA-STORY:PO-10196 @JIRA-EPIC:PO-2220 @JIRA-TEST-KEY:PO-5332 @JIRA-NFR:PO-2506
   Scenario: Reject an in-review draft account and review it from the Rejected tab
     Given a "adultOrYouthOnly" draft account exists with:
       | Account_status                          | Submitted                      |
@@ -61,6 +61,10 @@ Feature: Check And Validate Draft Accounts
     When I view the "Rejected" tab on the Check and Validate page
     Then I open the draft account for "Potter{uniq}, Harry" and see header "Mr Harry Potter{uniq}"
     And the draft account status tag is "Rejected"
+    And the draft review history item 1 is:
+      | title       | Rejected               |
+      | date        | Today                  |
+      | description | Testing review history |
     When I go back to Check and Validate Draft Accounts
     Then I should see the checker header "Review accounts" and status heading "Rejected"
 
