@@ -537,7 +537,7 @@ describe('Account Enquiry Defendant Details Tab', () => {
       interceptDefendantDetails(accountId, defendantDetailsMock, accountId);
       setupAccountEnquiryComponent({ ...componentProperties, accountId: accountId });
 
-      cy.wait(['@getDefendantHeaderSummary', '@getDefendantDetails']);
+      cy.wait(['@getUserState', '@getDefendantHeaderSummary', '@getDefendantDetails']);
       cy.contains('a', 'Add parent or guardian details').should('be.visible').click();
       cy.get('app-fines-acc-debtor-add-amend-form').should('exist');
     },
