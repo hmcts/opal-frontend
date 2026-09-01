@@ -330,4 +330,10 @@ describe('transformMajorCreditorTransactionDetails', () => {
 
     expect(result).toEqual(details(part(fragment('UNMAPPED'))));
   });
+
+  it('should return no details when the response does not provide a transaction type', () => {
+    const result = transformMajorCreditorTransactionDetails({ details: {} });
+
+    expect(result).toEqual(details());
+  });
 });
