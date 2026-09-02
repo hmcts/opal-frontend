@@ -2,6 +2,7 @@ import { IOpalFinesAccountMinorCreditorDetailsHeader } from '../interfaces/fines
 
 export const FINES_ACC_MINOR_CREDITOR_DETAILS_HEADER_MOCK: IOpalFinesAccountMinorCreditorDetailsHeader = {
   version: null,
+  repayment: false,
   creditor: {
     account_id: 99000000000800,
     account_number: '87654321',
