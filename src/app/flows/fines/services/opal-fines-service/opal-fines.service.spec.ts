@@ -379,6 +379,23 @@ describe('OpalFines', () => {
     secondReq.flush(mockResponse);
   });
 
+  it('should request report instances for a user without adding a report id', () => {
+    const mockResponse: IOpalFinesReportInstancesResponse = {
+      report_instances: [],
+      count: 0,
+    };
+
+    service.getReportInstances({ user_id: 12345678 }).subscribe((response) => {
+      expect(response).toEqual(mockResponse);
+    });
+
+    const req = httpMock.expectOne((request) => request.url === OPAL_FINES_PATHS.reportInstances);
+    expect(req.request.method).toBe('GET');
+    expect(req.request.params.get('user_id')).toBe('12345678');
+    expect(req.request.params.has('report_id')).toBe(false);
+    req.flush(mockResponse);
+  });
+
   it('should send a GET request to court ref data API', () => {
     const businessUnit = 1;
     const mockCourts: IOpalFinesCourtRefData = OPAL_FINES_COURT_REF_DATA_MOCK;
