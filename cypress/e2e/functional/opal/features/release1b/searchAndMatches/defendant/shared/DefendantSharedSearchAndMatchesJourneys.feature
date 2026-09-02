@@ -8,7 +8,7 @@ Feature: Defendant Shared Search And Matches Journeys
     Given I am logged in with email "opal-test@dev.platform.hmcts.net"
     And I clear all approved accounts
 
-  @R1BUatTechJCDE @JIRA-STORY:PO-709 @JIRA-STORY:PO-706 @JIRA-EPIC:PO-704 @JIRA-TEST-KEY:PO-5294
+  @R1BDrop1UatTechJCDE @JIRA-STORY:PO-709 @JIRA-STORY:PO-706 @JIRA-EPIC:PO-704 @JIRA-TEST-KEY:PO-5294
   Scenario: Search by prosecutor case reference and review results across defendant tabs
     Given I create a "adultOrYouthOnly" draft account with the following details and set status "Publishing Pending" using user "opal-test-10@dev.platform.hmcts.net":
       | Account_status                          | Submitted                       |
@@ -61,11 +61,11 @@ Feature: Defendant Shared Search And Matches Journeys
       | Company | <LEGACY_SHARED_COMPANY_NAME>   |
     When I open the latest matching result from the Companies search results
     Then I should see the account header contains "<LEGACY_SHARED_COMPANY_NAME>"
-    @R1BUatTechJCDE @JIRA-TEST-KEY:PO-10334
+    @R1BDrop1UatTechJCDE @JIRA-TEST-KEY:PO-10334
     Examples:
       | LEGACY_SHARED_ACCOUNT_NUMBER | LEGACY_SHARED_COMPANY_NAME | LEGACY_SHARED_INDIVIDUAL_NAME |
       | 26000471W                    | OPALTEST                   | EnfPgAccessyeyjkqsje, Alex    |
-    @R1BUatTechPreprod @skip
+    @R1BDrop1UatTechPreprod
     Examples:
       | LEGACY_SHARED_ACCOUNT_NUMBER | LEGACY_SHARED_COMPANY_NAME | LEGACY_SHARED_INDIVIDUAL_NAME |
       | 26000471W                    | —                          | EnfPgAccessyeyjkqsje, Alex    |

@@ -26,7 +26,7 @@ Feature: Company Account Enquiries View Details
       And I should not see the convert to company account text
 
 
-    @R1B @JIRA-STORY:PO-967 @JIRA-STORY:PO-1111 @JIRA-STORY:PO-1128 @JIRA-EPIC:PO-812 @JIRA-TEST-KEY:PO-5520
+    @R1BDrop1 @JIRA-STORY:PO-967 @JIRA-STORY:PO-1111 @JIRA-STORY:PO-1128 @JIRA-EPIC:PO-812 @JIRA-TEST-KEY:PO-5520
     Scenario: Company edit warning retains changes when I stay on the form
       # AC4 - Route Guard (stay on edit)
       And I edit the Company details and change the Company name to "Test"
@@ -35,7 +35,7 @@ Feature: Company Account Enquiries View Details
       And I should see the company name field contains "Test"
 
 
-    @R1B @JIRA-STORY:PO-967 @JIRA-STORY:PO-1111 @JIRA-STORY:PO-1128 @JIRA-EPIC:PO-812 @JIRA-TEST-KEY:PO-5521
+    @R1BDrop1 @JIRA-STORY:PO-967 @JIRA-STORY:PO-1111 @JIRA-STORY:PO-1128 @JIRA-EPIC:PO-812 @JIRA-TEST-KEY:PO-5521
     Scenario: Company edit warning discards changes when I leave the form
       # AC4 - Route Guard (discard changes)
       And I edit the Company details and change the Company name to "Test"
@@ -44,7 +44,7 @@ Feature: Company Account Enquiries View Details
       And I should see the account header contains "Accdetail comp{uniq}"
 
 
-    @R1B @JIRA-STORY:PO-967 @JIRA-STORY:PO-1111 @JIRA-STORY:PO-1128 @JIRA-EPIC:PO-812 @JIRA-TEST-KEY:PO-5522
+    @R1BDrop1 @JIRA-STORY:PO-967 @JIRA-STORY:PO-1111 @JIRA-STORY:PO-1128 @JIRA-EPIC:PO-812 @JIRA-TEST-KEY:PO-5522
     Scenario: Saving company details updates the organisation name and audit trail
       # AC3 - Edit and save changes
       And I edit the Company details and change the Company name to "Accdetail comp updated{uniq}"
@@ -55,7 +55,7 @@ Feature: Company Account Enquiries View Details
       And I verify Company amendments via API for company name "Accdetail comp updated{uniq}"
 
 
-    @R1B @JIRA-STORY:PO-967 @JIRA-STORY:PO-1111 @JIRA-STORY:PO-1128 @JIRA-EPIC:PO-812 @JIRA-TEST-KEY:PO-5523
+    @R1BDrop1 @JIRA-STORY:PO-967 @JIRA-STORY:PO-1111 @JIRA-STORY:PO-1128 @JIRA-EPIC:PO-812 @JIRA-TEST-KEY:PO-5523
     Scenario: Saving unchanged company details does not create amendments
       # AC3/4 – Verify via API and store amendment count baseline
       And I establish a company amendment baseline with company name "Accdetail comp updated{uniq}"
@@ -66,7 +66,7 @@ Feature: Company Account Enquiries View Details
       And I should see the account header contains "Accdetail comp updated{uniq}"
       And I verify no amendments were created via API for company details
 
-    @R1B @JIRA-EPIC:PO-1970 @JIRA-STORY:PO-1955 @JIRA-STORY:PO-1956 @JIRA-STORY:PO-1957 @JIRA-TEST-KEY:PO-5524
+    @R1BDrop1 @JIRA-EPIC:PO-1970 @JIRA-STORY:PO-1955 @JIRA-STORY:PO-1956 @JIRA-STORY:PO-1957 @JIRA-TEST-KEY:PO-5524
     Scenario: Convert to individual saves and shows the converted defendant account details
       When I start converting the account to an individual account
       Then I should see the convert to individual confirmation screen for company "Accdetail comp{uniq}"
@@ -84,7 +84,7 @@ Feature: Company Account Enquiries View Details
       And I should see the defendant name contains "Jamie"
       And I should see the primary email address contains "Test@email.com"
 
-    @R1B @JIRA-EPIC:PO-1970 @JIRA-STORY:PO-1955 @JIRA-STORY:PO-1956 @JIRA-STORY:PO-1957 @JIRA-TEST-KEY:PO-5525
+    @R1BDrop1 @JIRA-EPIC:PO-1970 @JIRA-STORY:PO-1955 @JIRA-STORY:PO-1956 @JIRA-STORY:PO-1957 @JIRA-TEST-KEY:PO-5525
     Scenario: Convert to individual confirmation cancel returns to Defendant details with no changes made
       When I start converting the account to an individual account
       Then I should see the convert to individual confirmation screen for company "Accdetail comp{uniq}"
@@ -93,7 +93,7 @@ Feature: Company Account Enquiries View Details
       And I should see the convert to individual account action
       And I should not see the convert to company account text
 
-    @R1B @JIRA-STORY:PO-2671 @JIRA-EPIC:PO-8248
+    @R1BDrop1 @JIRA-STORY:PO-2671 @JIRA-EPIC:PO-8248
     Scenario Outline: AC2c-AC2d Company Defendant tab Change links open the correct amend screens
       # AC2a – the heading Change link is removed
       # AC2b – section Change links are shown for Company details and Contact details

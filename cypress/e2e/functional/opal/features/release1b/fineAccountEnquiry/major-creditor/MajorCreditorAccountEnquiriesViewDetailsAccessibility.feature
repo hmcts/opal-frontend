@@ -8,7 +8,7 @@ Feature: Major Creditor Account Enquiries View Details Accessibility
 
   Rule: Major creditor account details accessibility
 
-    @R1B @JIRA-STORY:PO-2128 @JIRA-EPIC:PO-1286 @JIRA-TEST-KEY:PO-9565
+    @R1BDrop2 @JIRA-STORY:PO-2128 @JIRA-EPIC:PO-1286 @JIRA-TEST-KEY:PO-9565
     Scenario: Check Account Details View Accessibility with Axe-Core for Major Creditor Account
       Given I am on the Account Search page - Individuals form displayed by default
       And I open the business unit filter from the search page
@@ -23,7 +23,7 @@ Feature: Major Creditor Account Enquiries View Details Accessibility
       When I search for the major creditor "Crown Prosecution Service (DPP)"
       Then I check the page for accessibility
 
-    @R1B @JIRA-STORY:PO-2350 @JIRA-EPIC:PO-1286
+    @R1BDrop2 @JIRA-STORY:PO-2350 @JIRA-EPIC:PO-1286
     Scenario: Check Central Fund account accessibility with Axe-Core
       Given I am on the Account Search page - Individuals form displayed by default
       And I open the business unit filter from the search page

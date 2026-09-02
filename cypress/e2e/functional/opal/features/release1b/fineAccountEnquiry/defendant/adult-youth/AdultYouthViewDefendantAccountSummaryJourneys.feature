@@ -7,7 +7,7 @@ Feature: Adult Youth View Defendant Account Summary Journeys
   Background:
     Given I clear all approved accounts
 
-  @R1BUatTechJCDE @JIRA-STORY:PO-1593 @JIRA-STORY:PO-866 @JIRA-EPIC:PO-812 @JIRA-TEST-KEY:PO-5569
+  @R1BDrop1UatTechJCDE @JIRA-STORY:PO-1593 @JIRA-STORY:PO-866 @JIRA-EPIC:PO-812 @JIRA-TEST-KEY:PO-5569
   Scenario: Search for an adult or youth defendant account and view the default account summary
     Given I am logged in with email "opal-test@dev.platform.hmcts.net"
     And a published adult or youth defendant account exists:
@@ -27,7 +27,7 @@ Feature: Adult Youth View Defendant Account Summary Journeys
       | Account type | Fine                 |
       | Case number  | PCRR1BSUM{uniqUpper} |
 
-  @R1B @JIRA-STORY:PO-7410 @JIRA-EPIC:PO-8248
+  @R1BDrop1 @JIRA-STORY:PO-7410 @JIRA-EPIC:PO-8248
   Scenario: Account header displays the business unit code
     Given I am logged in with email "opal-test@dev.platform.hmcts.net"
     And a published adult or youth defendant account exists:

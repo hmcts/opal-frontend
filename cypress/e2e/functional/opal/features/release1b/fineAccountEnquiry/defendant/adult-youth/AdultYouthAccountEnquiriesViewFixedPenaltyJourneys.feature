@@ -8,7 +8,7 @@ Feature: Adult Youth Account Enquiries View Fixed Penalty Journeys
   Background:
     Given I am logged in with email "opal-test@dev.platform.hmcts.net"
     And I clear all approved accounts
-  @R1BUatTechJCDE @JIRA-STORY:PO-994 @JIRA-EPIC:PO-812 @JIRA-TEST-KEY:PO-5300
+  @R1BDrop1UatTechJCDE @JIRA-STORY:PO-994 @JIRA-EPIC:PO-812 @JIRA-TEST-KEY:PO-5300
   Scenario: Search for a non-vehicle fixed penalty account and view the fixed penalty details
     Given a published non-vehicle fixed penalty account exists:
       | first name        | Robert                               |

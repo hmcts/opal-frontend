@@ -7,7 +7,7 @@ Feature: Parent Guardian To Pay View Defendant Account Summary Journeys
   Background:
     Given I clear all approved accounts
 
-  @R1BUatTechJCDE @JIRA-STORY:PO-779 @JIRA-STORY:PO-866 @JIRA-EPIC:PO-812
+  @R1BDrop1UatTechJCDE @JIRA-STORY:PO-779 @JIRA-STORY:PO-866 @JIRA-EPIC:PO-812
   Scenario: View a parent or guardian account summary with Welsh language preferences
     Given I am logged in with email "opal-test-6@dev.platform.hmcts.net"
     And a published Welsh-speaking parent or guardian account exists:

@@ -9,7 +9,7 @@ Feature: Company Enforcement Override
     And I clear all approved accounts
 
   Rule: Company account on NOENF
-    @R1B @JIRA-STORY:PO-1843 @JIRA-EPIC:PO-1675 @JIRA-LABEL:account-enquiry @JIRA-TEST-KEY:PO-8008
+    @R1BDrop1 @JIRA-STORY:PO-1843 @JIRA-EPIC:PO-1675 @JIRA-LABEL:account-enquiry @JIRA-TEST-KEY:PO-8008
     Scenario: Company removing enforcement hold returns to add additional enforcement action
       Given I create a "company" draft account with the following details and set status "Publishing Pending" using user "opal-test-10@dev.platform.hmcts.net":
         | Account_status                                  | Submitted                         |
@@ -32,7 +32,7 @@ Feature: Company Enforcement Override
       And the enforcement hold success banner is "Enforcement hold removed"
 
   Rule: Company account on NOENF
-    @R1B @JIRA-STORY:PO-1843 @JIRA-EPIC:PO-1675 @JIRA-LABEL:account-enquiry @JIRA-TEST-KEY:PO-8010
+    @R1BDrop1 @JIRA-STORY:PO-1843 @JIRA-EPIC:PO-1675 @JIRA-LABEL:account-enquiry @JIRA-TEST-KEY:PO-8010
     Scenario: Remove enforcement hold page is displayed for a company account on NOENF
       Given I create a "company" draft account with the following details and set status "Publishing Pending" using user "opal-test-10@dev.platform.hmcts.net":
         | Account_status                                  | Submitted                         |
@@ -67,7 +67,7 @@ Feature: Company Enforcement Override
       When I open the company account details for "Add Override Company{uniq}"
       And I go to the Enforcement tab
 
-    @R1B @JIRA-STORY:PO-1867 @JIRA-STORY:PO-1863 @JIRA-EPIC:PO-1675 @JIRA-TEST-KEY:PO-5298
+    @R1BDrop1 @JIRA-STORY:PO-1867 @JIRA-STORY:PO-1863 @JIRA-EPIC:PO-1675 @JIRA-TEST-KEY:PO-5298
     Scenario: Saving a company enforcement override returns to the Enforcement tab with the new summary value
       And I open the add enforcement override form
       When I add the enforcement override "ABDC" with the enforcer "The DWP (3)"
@@ -79,7 +79,7 @@ Feature: Company Enforcement Override
       And the enforcement override summary shows:
         | enforcement override | Application made for Benefit Deductions (ABDC) |
 
-    @R1B @JIRA-STORY:PO-1863 @JIRA-EPIC:PO-1675 @JIRA-TEST-KEY:PO-10025
+    @R1BDrop1 @JIRA-STORY:PO-1863 @JIRA-EPIC:PO-1675 @JIRA-TEST-KEY:PO-10025
     Scenario: Changing an existing company enforcement court returns to the Enforcement tab with a success banner
       Given the enforcement court summary shows an existing value
       When I change the enforcement court to a different value
@@ -87,7 +87,7 @@ Feature: Company Enforcement Override
       And the enforcement court summary shows the selected value
       And the enforcement court success banner is "Enforcement court changed"
 
-    @R1B @JIRA-STORY:PO-1863 @JIRA-EPIC:PO-1675 @JIRA-TEST-KEY:PO-10026
+    @R1BDrop1 @JIRA-STORY:PO-1863 @JIRA-EPIC:PO-1675 @JIRA-TEST-KEY:PO-10026
     Scenario: Saving the same changed company enforcement court again does not display a success banner
       Given the enforcement court summary shows an existing value
       When I change the enforcement court to a different value
@@ -99,7 +99,7 @@ Feature: Company Enforcement Override
       And the enforcement court summary shows the selected value
       And the enforcement success banner is not displayed
 
-    @R1B @JIRA-STORY:PO-1863 @JIRA-EPIC:PO-1675 @JIRA-TEST-KEY:PO-10027
+    @R1BDrop1 @JIRA-STORY:PO-1863 @JIRA-EPIC:PO-1675 @JIRA-TEST-KEY:PO-10027
     Scenario: Cancelling company enforcement court change without edits returns to the Enforcement tab
       Given the enforcement court summary shows an existing value
       When I open the change enforcement court form
@@ -107,7 +107,7 @@ Feature: Company Enforcement Override
       Then I should return to the Enforcement tab
       And the enforcement court summary still shows the original value
 
-    @R1B @JIRA-STORY:PO-1863 @JIRA-EPIC:PO-1675 @JIRA-TEST-KEY:PO-10028
+    @R1BDrop1 @JIRA-STORY:PO-1863 @JIRA-EPIC:PO-1675 @JIRA-TEST-KEY:PO-10028
     Scenario: Discarding an edited company enforcement court change keeps the changed value on the Enforcement tab
       Given the enforcement court summary shows an existing value
       When I change the enforcement court to a different value
@@ -118,7 +118,7 @@ Feature: Company Enforcement Override
       Then I should return to the Enforcement tab
       And the enforcement court summary shows the selected value
 
-    @R1B @JIRA-STORY:PO-1843 @JIRA-EPIC:PO-1675 @JIRA-TEST-KEY:PO-8013
+    @R1BDrop1 @JIRA-STORY:PO-1843 @JIRA-EPIC:PO-1675 @JIRA-TEST-KEY:PO-8013
     Scenario: Saving a withdrawn company enforcement action takes the user to add another enforcement action
       And I open the add enforcement action form
       And I choose the enforcement action "Withdrawn (WDN)"

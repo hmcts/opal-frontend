@@ -52,8 +52,8 @@ const stubRouterNavigateByUrl = () => {
     const typedRouter = router as unknown as { navigateByUrl: Function; serializeUrl: (value: unknown) => string };
     const originalNavigateByUrl = typedRouter.navigateByUrl.bind(router);
 
-    cy.stub(router as unknown as object, 'navigateByUrl' as keyof object)
-      .as('routerNavigateByUrl')
+    const navigateByUrlStub = cy
+      .stub(router as unknown as object, 'navigateByUrl' as keyof object)
       .callsFake((url, extras) => {
         const path = typeof url === 'string' ? url : typedRouter.serializeUrl(url);
 
@@ -63,6 +63,7 @@ const stubRouterNavigateByUrl = () => {
 
         return originalNavigateByUrl(url, extras);
       });
+    cy.wrap(navigateByUrlStub).as('routerNavigateByUrl');
   });
 };
 

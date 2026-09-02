@@ -9,7 +9,7 @@ Feature: Defendant Company Search And Matches Journeys
     Given I am logged in with email "opal-test@dev.platform.hmcts.net"
     And I clear all approved accounts
 
-  @R1BUatTechJCDE @JIRA-STORY:PO-712 @JIRA-STORY:PO-706 @JIRA-STORY:PO-707 @JIRA-EPIC:PO-704 @JIRA-TEST-KEY:PO-5291
+  @R1BDrop1UatTechJCDE @JIRA-STORY:PO-712 @JIRA-STORY:PO-706 @JIRA-STORY:PO-707 @JIRA-EPIC:PO-704 @JIRA-TEST-KEY:PO-5291
   Scenario: Search for a company defendant account and open the matching record
     Given I create a "company" draft account with the following details and set status "Publishing Pending" using user "opal-test-10@dev.platform.hmcts.net":
       | Account_status                      | Submitted                 |
@@ -49,11 +49,11 @@ Feature: Defendant Company Search And Matches Journeys
       | Account | <LEGACY_COMPANY_ACCOUNT_NUMBER> |
     When I open the latest matching result from the search results
     Then I should see the account header contains "<LEGACY_COMPANY_NAME>"
-    @R1BUatTechJCDE @JIRA-TEST-KEY:PO-10325
+    @R1BDrop1UatTechJCDE @JIRA-TEST-KEY:PO-10325
     Examples:
       | LEGACY_COMPANY_NAME | LEGACY_COMPANY_ACCOUNT_NUMBER |
       | OPALTEST            | 26000471W                     |
-    @R1BUatTechPreprod @skip
+    @R1BDrop1UatTechPreprod
     Examples:
       | LEGACY_COMPANY_NAME | LEGACY_COMPANY_REFERENCE |
       | Journey Co          | PCRJRNYCO1234            |
@@ -76,11 +76,11 @@ Feature: Defendant Company Search And Matches Journeys
       | Balance        | <LEGACY_COMPANY_BALANCE>        |
     When I open the latest matching result from the search results
     Then I should see the account header contains "<LEGACY_COMPANY_NAME>"
-    @R1BUatTechJCDE @JIRA-TEST-KEY:PO-10326
+    @R1BDrop1UatTechJCDE @JIRA-TEST-KEY:PO-10326
     Examples:
       | LEGACY_COMPANY_ACCOUNT_NUMBER | LEGACY_COMPANY_NAME         | LEGACY_COMPANY_ALIASES                                                                              | LEGACY_COMPANY_ADR_LINE_1 | LEGACY_COMPANY_POSTCODE | BUSINESS_UNIT | LEGACY_COMPANY_REF    | LEGACY_COMPANY_ENF | LEGACY_COMPANY_BALANCE |
       | 24000050E                     | Company A Chocolate Limited | The Alias Company A The Alias Company B The Alias Company C The Alias Company D The Alias Company E | Company address line 001  | EN51 1RL                | West London   | CA-Company-Master1-1A | NOENF              | -£600.01               |
-    @R1BUatTechPreprod @skip
+    @R1BDrop1UatTechPreprod
     Examples:
       | LEGACY_COMPANY_ACCOUNT_NUMBER | LEGACY_COMPANY_NAME | LEGACY_COMPANY_ALIASES | LEGACY_COMPANY_ADR_LINE_1 | LEGACY_COMPANY_POSTCODE | BUSINESS_UNIT | LEGACY_COMPANY_REF | LEGACY_COMPANY_ENF | LEGACY_COMPANY_BALANCE |
       | placeholder                   | placeholder         | placeholder            | placeholder               | placeholder             | placeholder   | placeholder        | placeholder        | placeholder            |

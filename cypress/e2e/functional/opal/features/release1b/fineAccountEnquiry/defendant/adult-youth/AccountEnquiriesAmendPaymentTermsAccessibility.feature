@@ -21,14 +21,14 @@ Feature: Account Enquiries Amend Payment Terms Accessibility
       | account.offences.0.impositions.0.amount_paid    | 300                       |
       | account.payment_terms.payment_terms_type_code   | B                         |
       | account.payment_terms.effective_date            | 2025-05-30                |
-  @R1B @JIRA-STORY:PO-1149 @JIRA-EPIC:PO-2472 @JIRA-TEST-KEY:PO-5302
+  @R1BDrop1 @JIRA-STORY:PO-1149 @JIRA-EPIC:PO-2472 @JIRA-TEST-KEY:PO-5302
   Scenario: Amend payment terms page accessibility
     When I search for the account by last name "AmendPayTerms{uniq}" and open the latest result
     And I go to the Payment terms tab
     And I open the amend payment terms form
     Then I check the page for accessibility
 
-  @R1B @JIRA-STORY:PO-5753 @JIRA-EPIC:PO-2990 @JIRA-TEST-KEY:PO-10013
+  @R1BDrop1 @JIRA-STORY:PO-5753 @JIRA-EPIC:PO-2990 @JIRA-TEST-KEY:PO-10013
   Scenario: AC6: Payment terms tab passes Axe-Core accessibility checks
     When I search for the account by last name "AmendPayTerms{uniq}" and open the latest result
     And I go to the Payment terms tab

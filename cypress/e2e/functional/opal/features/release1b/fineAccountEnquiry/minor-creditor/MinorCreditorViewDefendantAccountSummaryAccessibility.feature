@@ -6,7 +6,7 @@ Feature: Minor Creditor View Defendant Account Summary Accessibility
     Given I am logged in with email "opal-test@dev.platform.hmcts.net"
     And I clear all approved accounts
 
-  @R1B @JIRA-STORY:PO-1917 @JIRA-STORY:PO-6361 @JIRA-EPIC:PO-2472 @JIRA-TEST-KEY:PO-5574
+  @R1BDrop2 @JIRA-STORY:PO-1917 @JIRA-STORY:PO-6361 @JIRA-EPIC:PO-2472 @JIRA-TEST-KEY:PO-5574
   Scenario: Check View Minor Creditor Account Summary Accessibility with Axe-Core
     Given a published account exists with an individual minor creditor:
       | prosecutor case reference | PCRMINA11Y{uniqUpper} |

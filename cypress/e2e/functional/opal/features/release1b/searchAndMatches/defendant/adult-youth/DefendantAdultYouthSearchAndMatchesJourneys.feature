@@ -8,7 +8,7 @@ Feature: Defendant Adult Youth Search And Matches Journeys
     Given I am logged in with email "opal-test@dev.platform.hmcts.net"
     And I clear all approved accounts
 
-  @R1BUatTechJCDE @JIRA-STORY:PO-705 @JIRA-STORY:PO-706 @JIRA-STORY:PO-717 @JIRA-DEFECT:PO-3541 @JIRA-EPIC:PO-704 @JIRA-TEST-KEY:PO-5290
+  @R1BDrop1UatTechJCDE @JIRA-STORY:PO-705 @JIRA-STORY:PO-706 @JIRA-STORY:PO-717 @JIRA-DEFECT:PO-3541 @JIRA-EPIC:PO-704 @JIRA-TEST-KEY:PO-5290
   Scenario: Search for an individual defendant account and open the matching record
     Given I create a "adultOrYouthOnly" draft account with the following details and set status "Publishing Pending" using user "opal-test-10@dev.platform.hmcts.net":
       | Account_status                              | Submitted                        |
@@ -38,7 +38,7 @@ Feature: Defendant Adult Youth Search And Matches Journeys
     When I open the latest matching result from the search results
     Then I should see the account summary header contains "JOURNEYIND{uniqUpper}"
 
-  @R1B @JIRA-STORY:PO-2953 @JIRA-EPIC:PO-2630 @JIRA-TEST-KEY:PO-10014
+  @R1BDrop1 @JIRA-STORY:PO-2953 @JIRA-EPIC:PO-2630 @JIRA-TEST-KEY:PO-10014
   Scenario: Search for an individual defendant account by National Insurance number and open the matching record
     # PO-2953 - AC7
     Given I create a "adultOrYouthOnly" draft account with the following details and set status "Publishing Pending" using user "opal-test-10@dev.platform.hmcts.net":
@@ -65,7 +65,7 @@ Feature: Defendant Adult Youth Search And Matches Journeys
     When I open the latest matching result from the search results
     Then I should see the account summary header contains "JOURNEYNI{uniqUpper}"
 
-  @R1B @JIRA-STORY:PO-2953 @JIRA-EPIC:PO-2630 @JIRA-TEST-KEY:PO-10015
+  @R1BDrop1 @JIRA-STORY:PO-2953 @JIRA-EPIC:PO-2630 @JIRA-TEST-KEY:PO-10015
   Scenario: Search for an individual defendant account by National Insurance number with spaces and open the matching record
     # PO-2953 - AC8
     Given I create a "adultOrYouthOnly" draft account with the following details and set status "Publishing Pending" using user "opal-test-10@dev.platform.hmcts.net":
@@ -93,7 +93,7 @@ Feature: Defendant Adult Youth Search And Matches Journeys
     Then I should see the account summary header contains "JOURNEYNISPACE{uniqUpper}"
 
 
-  @JIRA-EPIC:PO-704 @R1BUatTechJCDE @JIRA-STORY:PO-706 @JIRA-TEST-KEY:PO-5295
+  @JIRA-EPIC:PO-704 @R1BDrop1UatTechJCDE @JIRA-STORY:PO-706 @JIRA-TEST-KEY:PO-5295
   Scenario: Search by account number and open the matching record
     Given I create a "adultOrYouthOnly" draft account with the following details and set status "Publishing Pending" using user "opal-test-10@dev.platform.hmcts.net":
       | Account_status                          | Submitted                           |
@@ -129,11 +129,11 @@ Feature: Defendant Adult Youth Search And Matches Journeys
     When I open the matching result from the search results:
       | Business unit | <BUSINESS_UNIT> |
     Then I should see the account summary header contains "<LEGACY_INDIVIDUAL_SUMMARY_HEADER>"
-    @R1BUatTechJCDE @JIRA-TEST-KEY:PO-10328
+    @R1BDrop1UatTechJCDE @JIRA-TEST-KEY:PO-10328
     Examples:
       | LEGACY_INDIVIDUAL_LAST_NAME | LEGACY_INDIVIDUAL_ACCOUNT_NUMBER | LEGACY_INDIVIDUAL_SUMMARY_HEADER | BUSINESS_UNIT |
       | AdultOpenPaidWO             | 25000184C                        | Mr Arne ADULTOPENPAIDWO          | West London   |
-    @R1BUatTechPreprod @skip
+    @R1BDrop1UatTechPreprod
     Examples:
       | LEGACY_INDIVIDUAL_LAST_NAME | LEGACY_INDIVIDUAL_ACCOUNT_NUMBER | LEGACY_INDIVIDUAL_SUMMARY_HEADER | BUSINESS_UNIT |
       | Jones                       | 25000185D                        | LEGACY JONES                     | West London   |
@@ -153,11 +153,11 @@ Feature: Defendant Adult Youth Search And Matches Journeys
     When I open the matching result from the search results:
       | Business unit | <BUSINESS_UNIT> |
     Then I should see the account summary header contains "<LEGACY_INDIVIDUAL_DOB_SUMMARY_HEADER>"
-    @R1BUatTechJCDE @JIRA-TEST-KEY:PO-10329
+    @R1BDrop1UatTechJCDE @JIRA-TEST-KEY:PO-10329
     Examples:
       | LEGACY_INDIVIDUAL_LAST_NAME_PARTIAL | LEGACY_INDIVIDUAL_DATE_OF_BIRTH | LEGACY_INDIVIDUAL_ACCOUNT_NUMBER | LEGACY_INDIVIDUAL_DOB_SUMMARY_HEADER | BUSINESS_UNIT |
       | AdultO                              | 09/09/1999                      | 25000184C                        | Mr Arne ADULTOPENPAIDWO              | West London   |
-    @R1BUatTechPreprod @skip
+    @R1BDrop1UatTechPreprod
     Examples:
       | LEGACY_INDIVIDUAL_LAST_NAME_PARTIAL | LEGACY_INDIVIDUAL_DATE_OF_BIRTH | LEGACY_INDIVIDUAL_ACCOUNT_NUMBER | LEGACY_INDIVIDUAL_DOB_SUMMARY_HEADER | BUSINESS_UNIT |
       | Adult                               | 01/01/1990                      | 25000185D                        | LEGACY JONES                         | West London   |
@@ -175,11 +175,11 @@ Feature: Defendant Adult Youth Search And Matches Journeys
     When I open the matching result from the search results:
       | Business unit | <BUSINESS_UNIT> |
     Then I should see the account summary header contains "<LEGACY_INDIVIDUAL_NI_SUMMARY_HEADER>"
-    @R1BUatTechJCDE @JIRA-TEST-KEY:PO-10330
+    @R1BDrop1UatTechJCDE @JIRA-TEST-KEY:PO-10330
     Examples:
       | LEGACY_INDIVIDUAL_NI_NUMBER | LEGACY_INDIVIDUAL_ACCOUNT_NUMBER | LEGACY_INDIVIDUAL_NI_SUMMARY_HEADER | BUSINESS_UNIT |
       | NI 19 99 09 A               | 25000184C                        | Mr Arne ADULTOPENPAIDWO             | West London   |
-    @R1BUatTechPreprod @skip
+    @R1BDrop1UatTechPreprod
     Examples:
       | LEGACY_INDIVIDUAL_NI_NUMBER | LEGACY_INDIVIDUAL_NI_REFERENCE | LEGACY_INDIVIDUAL_NI_SUMMARY_HEADER | BUSINESS_UNIT |
       | QQ123456C                   | LEGACY NI REFERENCE            | LEGACY NI SUMMARY HEADER            | West London   |
@@ -197,11 +197,11 @@ Feature: Defendant Adult Youth Search And Matches Journeys
     When I open the matching result from the search results:
       | Business unit | <BUSINESS_UNIT> |
     Then I should see the account summary header contains "<LEGACY_INDIVIDUAL_POSTCODE_SUMMARY_HEADER>"
-    @R1BUatTechJCDE @JIRA-TEST-KEY:PO-10331
+    @R1BDrop1UatTechJCDE @JIRA-TEST-KEY:PO-10331
     Examples:
       | LEGACY_INDIVIDUAL_LAST_NAME_PARTIAL | LEGACY_INDIVIDUAL_POSTCODE | LEGACY_INDIVIDUAL_POSTCODE_REFERENCE | LEGACY_INDIVIDUAL_POSTCODE_SUMMARY_HEADER | BUSINESS_UNIT |
       | A                                   | UN2 1QE                    | PCRJRNYINDPOSTCODE                   | Mr Brod ADULTACCUNIQUEB                   | West London   |
-    @R1BUatTechPreprod @skip
+    @R1BDrop1UatTechPreprod
     Examples:
       | LEGACY_INDIVIDUAL_LAST_NAME_PARTIAL | LEGACY_INDIVIDUAL_POSTCODE | LEGACY_INDIVIDUAL_POSTCODE_REFERENCE | LEGACY_INDIVIDUAL_POSTCODE_SUMMARY_HEADER | BUSINESS_UNIT |
       |                                     | AB1 2CD                    | LEGACY POSTCODE REFERENCE            | LEGACY POSTCODE SUMMARY HEADER            | West London   |
@@ -217,11 +217,11 @@ Feature: Defendant Adult Youth Search And Matches Journeys
     When I open the matching result from the search results:
       | Business unit | <BUSINESS_UNIT> |
     Then I should see the account summary header contains "<LEGACY_ACCOUNT_SUMMARY_HEADER>"
-    @R1BUatTechJCDE @JIRA-TEST-KEY:PO-10332
+    @R1BDrop1UatTechJCDE @JIRA-TEST-KEY:PO-10332
     Examples:
       | LEGACY_ACCOUNT_NUMBER | LEGACY_ACCOUNT_SUMMARY_HEADER | BUSINESS_UNIT |
       | 25000180S             | Mr Brod ADULTACCUNIQUEB       | West London   |
-    @R1BUatTechPreprod @skip
+    @R1BDrop1UatTechPreprod
     Examples:
       | LEGACY_ACCOUNT_NUMBER | LEGACY_ACCOUNT_SUMMARY_HEADER | BUSINESS_UNIT |
       | 25000185D             | LEGACY JONES                  | West London   |
@@ -244,11 +244,11 @@ Feature: Defendant Adult Youth Search And Matches Journeys
       | Parent or guardian | <LEGACY_INDIVIDUAL_PARENT_GUARDIAN> |
       | Balance            | <LEGACY_INDIVIDUAL_BALANCE>         |
 
-    @R1BUatTechJCDE @JIRA-TEST-KEY:PO-10333
+    @R1BDrop1UatTechJCDE @JIRA-TEST-KEY:PO-10333
     Examples:
       | LEGACY_INDIVIDUAL_ACCOUNT_NUMBER | LEGACY_INDIVIDUAL_NAME           | LEGACY_INDIVIDUAL_ALIASES | LEGACY_INDIVIDUAL_DOB | LEGACY_INDIVIDUAL_ADR_LINE_1 | LEGACY_INDIVIDUAL_POSTCODE | LEGACY_INDIVIDUAL_NI_NUMBER | LEGACY_INDIVIDUAL_PARENT_GUARDIAN | LEGACY_INDIVIDUAL_BALANCE |
       | 15000055L                        | EDTTEMPLATESTWENTYONE, TWENTYONE | Alias, Alice              | 01 Jan 1998           | 123 ASDF ASD                 | EN5 8QQ                    | NI 12 34 56 A               | TWENTYONE PARENTTWENTYONE         | -£200.00                  |
-    @R1BUatTechPreprod @skip
+    @R1BDrop1UatTechPreprod
     Examples:
       | LEGACY_INDIVIDUAL_ACCOUNT_NUMBER | LEGACY_INDIVIDUAL_NAME | LEGACY_INDIVIDUAL_ALIASES | LEGACY_INDIVIDUAL_DOB | LEGACY_INDIVIDUAL_ADR_LINE_1 | LEGACY_INDIVIDUAL_POSTCODE | LEGACY_INDIVIDUAL_NI_NUMBER | LEGACY_INDIVIDUAL_PARENT_GUARDIAN | LEGACY_INDIVIDUAL_BALANCE |
       | placeholder                      | placeholder            | placeholder               | placeholder           | placeholder                  | placeholder                | placeholder                 | placeholder                       | placeholder               |
