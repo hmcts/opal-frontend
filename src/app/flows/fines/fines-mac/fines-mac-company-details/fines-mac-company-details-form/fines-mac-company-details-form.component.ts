@@ -33,10 +33,7 @@ import { patternValidator } from '@hmcts/opal-frontend-common/validators/pattern
 import { ALPHANUMERIC_WITH_SPACES_PATTERN, SINGLE_ASCII_CHARACTERS } from '@hmcts/opal-frontend-common/constants';
 
 //regex pattern validators for the form controls
-const SINGLE_ASCII_CHARACTERS_ALPHANUMERIC_WITH_SPECIAL_CHARACTERS_PATTERN_VALIDATOR = patternValidator(
-  SINGLE_ASCII_CHARACTERS,
-  'singleAsciiChatacters',
-);
+const SINGLE_ASCII_CHARACTERS_PATTERN_VALIDATOR = patternValidator(SINGLE_ASCII_CHARACTERS, 'singleAsciiCharacters');
 const ALPHANUMERIC_WITH_SPACES_PATTERN_VALIDATOR = patternValidator(
   ALPHANUMERIC_WITH_SPACES_PATTERN,
   'alphanumericTextPattern',
@@ -79,22 +76,22 @@ export class FinesMacCompanyDetailsFormComponent extends AbstractFormAliasBaseCo
       fm_company_details_company_name: new FormControl(null, [
         Validators.required,
         Validators.maxLength(50),
-        SINGLE_ASCII_CHARACTERS_ALPHANUMERIC_WITH_SPECIAL_CHARACTERS_PATTERN_VALIDATOR,
+        SINGLE_ASCII_CHARACTERS_PATTERN_VALIDATOR,
       ]),
       fm_company_details_add_alias: new FormControl(null),
       fm_company_details_aliases: new FormArray([]),
       fm_company_details_address_line_1: new FormControl(null, [
         Validators.required,
         Validators.maxLength(30),
-        ALPHANUMERIC_WITH_SPACES_PATTERN_VALIDATOR,
+        SINGLE_ASCII_CHARACTERS_PATTERN_VALIDATOR,
       ]),
       fm_company_details_address_line_2: new FormControl(null, [
         optionalMaxLengthValidator(30),
-        ALPHANUMERIC_WITH_SPACES_PATTERN_VALIDATOR,
+        SINGLE_ASCII_CHARACTERS_PATTERN_VALIDATOR,
       ]),
       fm_company_details_address_line_3: new FormControl(null, [
         optionalMaxLengthValidator(16),
-        ALPHANUMERIC_WITH_SPACES_PATTERN_VALIDATOR,
+        SINGLE_ASCII_CHARACTERS_PATTERN_VALIDATOR,
       ]),
       fm_company_details_postcode: new FormControl(null, [
         optionalMaxLengthValidator(8),
