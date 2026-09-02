@@ -5,6 +5,7 @@ import { routePermissionsGuard } from '@hmcts/opal-frontend-common/guards/route-
 import { TitleResolver } from '@hmcts/opal-frontend-common/resolvers/title';
 import { FINES_API_ROUTING_PATHS } from './constants/fines-api-routing-paths.constant';
 import { FINES_API_ROUTING_TITLES } from './constants/fines-api-routing-titles.constant';
+import { finesApiFlowStateGuard } from './guards/fines-api-flow-state.guard';
 
 export const routing: Routes = [
   {
@@ -31,7 +32,7 @@ export const routing: Routes = [
       import('../fines-api-process-allocate/fines-api-process-allocate.component').then(
         (c) => c.FinesApiProcessAllocateComponent,
       ),
-    canActivate: [authGuard, routePermissionsGuard],
+    canActivate: [authGuard, routePermissionsGuard, finesApiFlowStateGuard],
     data: {
       routePermissionId: [FINES_PERMISSIONS['process-and-allocate-payments']],
       title: FINES_API_ROUTING_TITLES.children.processAllocate,

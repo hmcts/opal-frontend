@@ -7,6 +7,7 @@ import { FinesApiProcessAllocateComponent } from '../fines-api-process-allocate/
 import { FinesApiSelectBusComponent } from '../fines-api-select-bus/fines-api-select-bus.component';
 import { FINES_API_ROUTING_PATHS } from './constants/fines-api-routing-paths.constant';
 import { FINES_API_ROUTING_TITLES } from './constants/fines-api-routing-titles.constant';
+import { finesApiFlowStateGuard } from './guards/fines-api-flow-state.guard';
 import { routing } from './fines-api.routes';
 
 describe('fines API routes', () => {
@@ -18,33 +19,45 @@ describe('fines API routes', () => {
     });
   });
 
-  it.each([
-    {
-      path: FINES_API_ROUTING_PATHS.children.selectBusinessUnits,
-      title: FINES_API_ROUTING_TITLES.children.selectBusinessUnits,
-      component: FinesApiSelectBusComponent,
-    },
-    {
-      path: FINES_API_ROUTING_PATHS.children.processAllocate,
-      title: FINES_API_ROUTING_TITLES.children.processAllocate,
-      component: FinesApiProcessAllocateComponent,
-    },
-  ])('should expose the $path route', async ({ path, title, component }) => {
-    const route = routing.find((routeItem) => routeItem.path === path);
+  it('should expose the select business units route as the flow entry point', async () => {
+    const selectBusinessUnitsRoute = routing.find(
+      (route) => route.path === FINES_API_ROUTING_PATHS.children.selectBusinessUnits,
+    );
 
-    expect(route).toEqual(
+    expect(selectBusinessUnitsRoute).toEqual(
       expect.objectContaining({
-        path,
+        path: FINES_API_ROUTING_PATHS.children.selectBusinessUnits,
         canActivate: [authGuard, routePermissionsGuard],
         data: {
           routePermissionId: [FINES_PERMISSIONS['process-and-allocate-payments']],
-          title,
+          title: FINES_API_ROUTING_TITLES.children.selectBusinessUnits,
         },
         resolve: {
           title: TitleResolver,
         },
       }),
     );
-    await expect(route?.loadComponent?.()).resolves.toBe(component);
+    await expect(selectBusinessUnitsRoute?.loadComponent?.()).resolves.toBe(FinesApiSelectBusComponent);
+  });
+
+  it('should protect the process allocate route with the ACI flow state guard', async () => {
+    const processAllocateRoute = routing.find(
+      (route) => route.path === FINES_API_ROUTING_PATHS.children.processAllocate,
+    );
+
+    expect(processAllocateRoute).toEqual(
+      expect.objectContaining({
+        path: FINES_API_ROUTING_PATHS.children.processAllocate,
+        canActivate: [authGuard, routePermissionsGuard, finesApiFlowStateGuard],
+        data: {
+          routePermissionId: [FINES_PERMISSIONS['process-and-allocate-payments']],
+          title: FINES_API_ROUTING_TITLES.children.processAllocate,
+        },
+        resolve: {
+          title: TitleResolver,
+        },
+      }),
+    );
+    await expect(processAllocateRoute?.loadComponent?.()).resolves.toBe(FinesApiProcessAllocateComponent);
   });
 });
