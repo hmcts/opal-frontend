@@ -7,31 +7,7 @@ import { FINES_ACCOUNT_HISTORY_TABLE_MAPPING_DISPLAY } from '../../../fines-acco
 import { FINES_ACC_DEFENDANT_ROUTING_PATHS } from '../../../routing/constants/fines-acc-defendant-routing-paths.constant';
 import { FINES_ACC_ROUTING_PATHS } from '../../../routing/constants/fines-acc-routing-paths.constant';
 import { FinesAccMajorCreditorDetailsHistoryAndNotesTableComponent } from './fines-acc-major-creditor-details-history-and-notes-table.component';
-
-const HISTORY_TAB_DATA_MOCK = {
-  version: null,
-  historyItems: [
-    {
-      amount: -25,
-      details: {
-        line1: [
-          {
-            fragments: [
-              { text: 'Payment reversed', bold: false, hyphen: false },
-              { text: 'Account 123', bold: false, hyphen: true },
-            ],
-          },
-        ],
-        line2: null,
-      },
-      postedDetails: {
-        posted_by_name: 'Case worker',
-        posted_date: '25/06/2026',
-      },
-      type: 'Financial',
-    },
-  ],
-};
+import { FINES_ACC_MAJOR_CREDITOR_HISTORY_AND_NOTES_TAB_DATA_MOCK } from './mocks/fines-acc-major-creditor-details-history-and-notes-table-tab-data.mock';
 
 describe('FinesAccMajorCreditorDetailsHistoryAndNotesTableComponent', () => {
   let component: FinesAccMajorCreditorDetailsHistoryAndNotesTableComponent;
@@ -59,7 +35,9 @@ describe('FinesAccMajorCreditorDetailsHistoryAndNotesTableComponent', () => {
   });
 
   it('should map major creditor history items to shared history table rows', () => {
-    const rows = component.historyTableAdapter.getRows(structuredClone(HISTORY_TAB_DATA_MOCK));
+    const rows = component.historyTableAdapter.getRows(
+      structuredClone(FINES_ACC_MAJOR_CREDITOR_HISTORY_AND_NOTES_TAB_DATA_MOCK),
+    );
 
     expect(rows).toEqual([
       expect.objectContaining({
@@ -79,7 +57,7 @@ describe('FinesAccMajorCreditorDetailsHistoryAndNotesTableComponent', () => {
   });
 
   it('should map major creditor history items supplied with the API history_items key', () => {
-    const tabData: Record<string, unknown> = structuredClone(HISTORY_TAB_DATA_MOCK);
+    const tabData: Record<string, unknown> = structuredClone(FINES_ACC_MAJOR_CREDITOR_HISTORY_AND_NOTES_TAB_DATA_MOCK);
     tabData['history_items'] = tabData['historyItems'];
     delete tabData['historyItems'];
 
@@ -95,7 +73,7 @@ describe('FinesAccMajorCreditorDetailsHistoryAndNotesTableComponent', () => {
   });
 
   it('should render the shared history table with mapped rows', () => {
-    fixture.componentRef.setInput('tabData', structuredClone(HISTORY_TAB_DATA_MOCK));
+    fixture.componentRef.setInput('tabData', structuredClone(FINES_ACC_MAJOR_CREDITOR_HISTORY_AND_NOTES_TAB_DATA_MOCK));
 
     fixture.detectChanges();
 
