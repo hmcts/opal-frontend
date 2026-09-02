@@ -101,8 +101,8 @@
       <app-fines-acc-minor-creditor-details-creditor-tab
         [tabData]="tabData"
         [style]="tabContentStyles"
-        [hasAccountMaintenancePermission]="hasPermission(finesPermissions['account-maintenance'])"
-        [hasAccountMaintenancePermissionInBU]="hasBusinessUnitPermissionKey('account-maintenance')"
+        [hasMinorCreditorMaintenancePermission]="hasPermission(finesPermissions['account-maintenance-minor-creditor'])"
+        [hasMinorCreditorMaintenancePermissionInBU]="hasBusinessUnitPermissionKey('account-maintenance-minor-creditor')"
         [hasViewCreditorBacsPermission]="hasPermission(finesPermissions['view-creditor-bacs'])"
       ></app-fines-acc-minor-creditor-details-creditor-tab>
     }
