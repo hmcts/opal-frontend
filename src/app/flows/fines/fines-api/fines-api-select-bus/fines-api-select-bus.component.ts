@@ -110,6 +110,59 @@ export class FinesApiSelectBusComponent implements OnInit {
   }
 
   /**
+   * Loads business unit counts from route resolver data.
+   */
+  private initialiseBusinessUnits(): void {
+    const resolverData = this.activatedRoute.snapshot.data[
+      'businessUnitCounts'
+    ] as IOpalFinesBusinessUnitOutstandingAutoPaymentCounts | null;
+    this.businessUnits = Array.isArray(resolverData?.business_units) ? resolverData.business_units : [];
+  }
+
+  /**
+   * Returns stored business unit IDs that still exist in the latest resolver payload.
+   */
+  private getValidStoredBusinessUnitIds(): number[] {
+    const availableBusinessUnitIds = new Set(this.businessUnits.map(({ business_unit_id }) => business_unit_id));
+
+    return this.finesApiStore
+      .selectedBusinessUnitIds()
+      .filter((businessUnitId) => availableBusinessUnitIds.has(businessUnitId));
+  }
+
+  /**
+   * Updates the ACI store when stale stored business unit IDs were removed.
+   *
+   * @param selectedBusinessUnitIds - Valid selected business unit IDs after filtering against resolver data.
+   * @param storedBusinessUnitIds - Business unit IDs currently held in the store.
+   */
+  private updateStoreWhenStoredSelectionsChanged(
+    selectedBusinessUnitIds: number[],
+    storedBusinessUnitIds: number[],
+  ): void {
+    if (selectedBusinessUnitIds.length === storedBusinessUnitIds.length) {
+      return;
+    }
+
+    if (selectedBusinessUnitIds.length === 0) {
+      this.finesApiStore.clearSelectedBusinessUnitIds();
+    } else {
+      this.finesApiStore.setSelectedBusinessUnitIds(selectedBusinessUnitIds);
+    }
+  }
+
+  /**
+   * Restores valid BU selections from the store and clears any stale selections.
+   */
+  private restoreValidBusinessUnitSelections(): void {
+    const storedBusinessUnitIds = this.finesApiStore.selectedBusinessUnitIds();
+    const selectedBusinessUnitIds = this.getValidStoredBusinessUnitIds();
+
+    this.selectedBusinessUnitIds = new Set(selectedBusinessUnitIds);
+    this.updateStoreWhenStoredSelectionsChanged(selectedBusinessUnitIds, storedBusinessUnitIds);
+  }
+
+  /**
    * Returns whether the supplied business unit ID is selected.
    *
    * @param businessUnitId - Business unit ID to check.
@@ -178,59 +231,6 @@ export class FinesApiSelectBusComponent implements OnInit {
         this.finesApiStore.resetFinesApiState();
       }
     });
-  }
-
-  /**
-   * Loads business unit counts from route resolver data.
-   */
-  private initialiseBusinessUnits(): void {
-    const resolverData = this.activatedRoute.snapshot.data[
-      'businessUnitCounts'
-    ] as IOpalFinesBusinessUnitOutstandingAutoPaymentCounts | null;
-    this.businessUnits = Array.isArray(resolverData?.business_units) ? resolverData.business_units : [];
-  }
-
-  /**
-   * Returns stored business unit IDs that still exist in the latest resolver payload.
-   */
-  private getValidStoredBusinessUnitIds(): number[] {
-    const availableBusinessUnitIds = new Set(this.businessUnits.map(({ business_unit_id }) => business_unit_id));
-
-    return this.finesApiStore
-      .selectedBusinessUnitIds()
-      .filter((businessUnitId) => availableBusinessUnitIds.has(businessUnitId));
-  }
-
-  /**
-   * Updates the ACI store when stale stored business unit IDs were removed.
-   *
-   * @param selectedBusinessUnitIds - Valid selected business unit IDs after filtering against resolver data.
-   * @param storedBusinessUnitIds - Business unit IDs currently held in the store.
-   */
-  private updateStoreWhenStoredSelectionsChanged(
-    selectedBusinessUnitIds: number[],
-    storedBusinessUnitIds: number[],
-  ): void {
-    if (selectedBusinessUnitIds.length === storedBusinessUnitIds.length) {
-      return;
-    }
-
-    if (selectedBusinessUnitIds.length === 0) {
-      this.finesApiStore.clearSelectedBusinessUnitIds();
-    } else {
-      this.finesApiStore.setSelectedBusinessUnitIds(selectedBusinessUnitIds);
-    }
-  }
-
-  /**
-   * Restores valid BU selections from the store and clears any stale selections.
-   */
-  private restoreValidBusinessUnitSelections(): void {
-    const storedBusinessUnitIds = this.finesApiStore.selectedBusinessUnitIds();
-    const selectedBusinessUnitIds = this.getValidStoredBusinessUnitIds();
-
-    this.selectedBusinessUnitIds = new Set(selectedBusinessUnitIds);
-    this.updateStoreWhenStoredSelectionsChanged(selectedBusinessUnitIds, storedBusinessUnitIds);
   }
 
   /**
