@@ -863,8 +863,15 @@ describe('Account Enquiry - Minor Creditor Header', () => {
   };
 
   it(
-    'AC1, AC2a: renders the Minor Creditor Account Header Summary',
-    { tags: [...buildTags('@JIRA-STORY:PO-1924'), '@JIRA-EPIC:PO-2234', '@JIRA-TEST-KEY:PO-4222'] },
+    'AC4: retains all existing financial tiles for a regular Minor Creditor account with an associated Defendant Account',
+    {
+      tags: [
+        ...buildTags('@JIRA-STORY:PO-1924', '@JIRA-STORY:PO-2963'),
+        '@JIRA-EPIC:PO-2234',
+        '@JIRA-EPIC:PO-2630',
+        '@JIRA-TEST-KEY:PO-4222',
+      ],
+    },
     () => {
       const header = structuredClone(FINES_ACC_MINOR_CREDITOR_DETAILS_HEADER_MOCK);
       header.creditor.has_associated_defendant = true;
@@ -906,17 +913,14 @@ describe('Account Enquiry - Minor Creditor Header', () => {
   );
 
   it(
-    'AC1, AC2, AC3, AC5, AC6: shows only Paid out for a Minor Creditor repayment account',
-    { tags: [...buildTags('@JIRA-STORY:PO-2963'), '@JIRA-EPIC:PO-2234'] },
+    'AC1, AC2, AC3, AC5, AC6: displays only the API-provided Paid out repayment amount in the Minor Creditor header',
+    { tags: [...buildTags('@JIRA-STORY:PO-2963'), '@JIRA-EPIC:PO-2630'] },
     () => {
       const baseHeader = structuredClone(FINES_ACC_MINOR_CREDITOR_DETAILS_HEADER_MOCK);
       const repaymentHeader = {
         ...baseHeader,
-        creditor: {
-          ...baseHeader.creditor,
-          has_associated_defendant: false,
-          repayment: true,
-        },
+        repayment: true,
+        creditor: { ...baseHeader.creditor, has_associated_defendant: false },
         financials: {
           ...baseHeader.financials,
           awarded: 200,
