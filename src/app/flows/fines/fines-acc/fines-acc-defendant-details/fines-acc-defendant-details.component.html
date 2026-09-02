@@ -2,6 +2,7 @@
   [accountStore]="accountStore"
   id="defendant"
   [accountStatusCode]="accountData.account_status_reference.account_status_code"
+  [collectionOrderBannerMessage]="collectionOrderBannerMessage"
   [showAddAccountNoteButton]="hasPermission(finesPermissions['add-account-activity-notes'])"
   (refreshPage)="refreshPage()"
   (navigateToAddAccountNotePage)="navigateToAddAccountNotePage()"
@@ -41,7 +42,7 @@
       <h2 opal-lib-custom-account-information-item-label>Business Unit:</h2>
       <p opal-lib-custom-account-information-item-value id="defendant-business-unit">
         {{ accountData.business_unit_summary.business_unit_name }} ({{
-          accountData.business_unit_summary.business_unit_id
+          accountData.business_unit_summary.business_unit_code
         }})
       </p>
     </opal-lib-custom-account-information-item>

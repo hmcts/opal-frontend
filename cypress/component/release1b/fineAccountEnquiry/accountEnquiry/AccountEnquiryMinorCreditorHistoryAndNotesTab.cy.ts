@@ -32,6 +32,8 @@ import { setupAccountEnquiryComponent } from './setup/SetupComponent';
 const ACCOUNT_ENQUIRY_JIRA_LABEL = '@JIRA-LABEL:account-enquiry';
 const MINOR_CREDITOR_HISTORY_STORY_TAG = '@JIRA-STORY:PO-2640';
 const MINOR_CREDITOR_HISTORY_EPIC_TAG = '@JIRA-EPIC:PO-2653';
+const MAJOR_CREDITOR_HISTORY_REGRESSION_STORY_TAG = '@JIRA-STORY:PO-2657';
+const MAJOR_CREDITOR_HISTORY_REGRESSION_EPIC_TAG = '@JIRA-EPIC:PO-2655';
 
 const buildTags = (...tags: string[]): string[] => [...tags, ACCOUNT_ENQUIRY_JIRA_LABEL, '@R1B'];
 
@@ -352,7 +354,15 @@ describe('Minor Creditor Account Enquiry - History and notes tab', () => {
   it(
     'AC3. renders details fragments with pipes, hyphens, bold link text, link events, and line2',
     {
-      tags: [...buildTags(MINOR_CREDITOR_HISTORY_STORY_TAG, MINOR_CREDITOR_HISTORY_EPIC_TAG), '@JIRA-TEST-KEY:PO-9857'],
+      tags: [
+        ...buildTags(
+          MINOR_CREDITOR_HISTORY_STORY_TAG,
+          MINOR_CREDITOR_HISTORY_EPIC_TAG,
+          MAJOR_CREDITOR_HISTORY_REGRESSION_STORY_TAG,
+          MAJOR_CREDITOR_HISTORY_REGRESSION_EPIC_TAG,
+        ),
+        '@JIRA-TEST-KEY:PO-9857',
+      ],
     },
     () => {
       mountMinorCreditorHistoryTable(
@@ -457,7 +467,15 @@ describe('Minor Creditor Account Enquiry - History and notes tab', () => {
   it(
     'AC6a. covers representative minor creditor amendments, notes, financial details, and special characters',
     {
-      tags: [...buildTags(MINOR_CREDITOR_HISTORY_STORY_TAG, MINOR_CREDITOR_HISTORY_EPIC_TAG), '@JIRA-TEST-KEY:PO-9860'],
+      tags: [
+        ...buildTags(
+          MINOR_CREDITOR_HISTORY_STORY_TAG,
+          MINOR_CREDITOR_HISTORY_EPIC_TAG,
+          MAJOR_CREDITOR_HISTORY_REGRESSION_STORY_TAG,
+          MAJOR_CREDITOR_HISTORY_REGRESSION_EPIC_TAG,
+        ),
+        '@JIRA-TEST-KEY:PO-9860',
+      ],
     },
     () => {
       setupMinorCreditorHistoryAndNotesScreenWithTabData(
