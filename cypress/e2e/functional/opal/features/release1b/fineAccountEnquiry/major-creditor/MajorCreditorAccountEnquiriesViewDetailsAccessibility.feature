@@ -8,6 +8,22 @@ Feature: Major Creditor Account Enquiries View Details Accessibility
 
   Rule: Major creditor account details accessibility
 
+    @R1BDrop2 @JIRA-STORY:PO-2657 @JIRA-EPIC:PO-2655
+    Scenario: Major Creditor History and notes tab is accessible
+      Given I am on the Account Search page - Individuals form displayed by default
+      And I open the business unit filter from the search page
+      And I clear all selected business units on the "Fines" tab
+      And I clear all selected business units on the "Confiscation" tab
+      When I select the following business units:
+        | tab   | businessUnit |
+        | Fines | West London  |
+      And I save the selected business units and the filter summary is "West London"
+      And I view the Major Creditors search form
+      And I search for the major creditor "Crown Prosecution Service (DPP)"
+      And I open the Major Creditor History and notes tab
+      Then I should see the Major Creditor History and notes tab
+      And I check the page for accessibility
+
     @R1BDrop2 @JIRA-STORY:PO-2128 @JIRA-EPIC:PO-1286 @JIRA-TEST-KEY:PO-9565
     Scenario: Check Account Details View Accessibility with Axe-Core for Major Creditor Account
       Given I am on the Account Search page - Individuals form displayed by default

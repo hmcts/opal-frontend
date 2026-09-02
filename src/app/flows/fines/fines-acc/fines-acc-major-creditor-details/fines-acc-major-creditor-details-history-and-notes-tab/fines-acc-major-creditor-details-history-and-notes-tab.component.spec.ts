@@ -1,3 +1,4 @@
+import { SimpleChange } from '@angular/core';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { ActivatedRoute, provideRouter } from '@angular/router';
 import { FinesAccountStore } from '../../stores/fines-acc.store';
@@ -6,6 +7,8 @@ import { OpalFines } from '@services/fines/opal-fines-service/opal-fines.service
 import { OPAL_FINES_ACCOUNT_MAJOR_CREDITOR_DETAILS_HISTORY_AND_NOTES_TAB_REF_DATA_MOCK } from '@services/fines/opal-fines-service/mocks/opal-fines-account-major-creditor-details-history-and-notes-tab-ref-data.mock';
 import { FINES_ACC_MAJOR_CREDITOR_DETAILS_HISTORY_AND_NOTES_FILTER_FORM_MOCK } from './mocks/fines-acc-major-creditor-details-history-and-notes-filter-form.mock';
 import { FINES_ACC_MAJOR_CREDITOR_DETAILS_HISTORY_AND_NOTES_FILTER_PAYLOAD_MOCK } from './mocks/fines-acc-major-creditor-details-history-and-notes-filter-payload.mock';
+import { FINES_ACC_MAJOR_CREDITOR_HISTORY_AND_NOTES_DETAILS_TRANSFORMATION_CONFIG } from '../../services/constants/fines-acc-major-creditor-history-and-notes-details-transformation-config.constant';
+import { IOpalFinesAccountMajorCreditorDetailsHistoryAndNotesTabRefData } from '@services/fines/opal-fines-service/interfaces/opal-fines-account-major-creditor-details-history-and-notes-tab-ref-data.interface';
 import { of } from 'rxjs';
 import { beforeEach, describe, expect, it } from 'vitest';
 import { FinesAccMajorCreditorDetailsHistoryAndNotesTabComponent } from './fines-acc-major-creditor-details-history-and-notes-tab.component';
@@ -27,6 +30,7 @@ describe('FinesAccMajorCreditorDetailsHistoryAndNotesTabComponent', () => {
     };
     mockPayloadService = {
       buildMajorCreditorHistoryFilterPayload: vi.fn(),
+      transformHistoryAndNotesItems: vi.fn(),
     };
     mockAccountStore = {
       compareVersion: vi.fn(),
@@ -38,6 +42,7 @@ describe('FinesAccMajorCreditorDetailsHistoryAndNotesTabComponent', () => {
     mockPayloadService.buildMajorCreditorHistoryFilterPayload.mockReturnValue(
       FINES_ACC_MAJOR_CREDITOR_DETAILS_HISTORY_AND_NOTES_FILTER_PAYLOAD_MOCK,
     );
+    mockPayloadService.transformHistoryAndNotesItems.mockImplementation((historyItems: unknown[]) => historyItems);
 
     await TestBed.configureTestingModule({
       imports: [FinesAccMajorCreditorDetailsHistoryAndNotesTabComponent],
@@ -95,15 +100,56 @@ describe('FinesAccMajorCreditorDetailsHistoryAndNotesTabComponent', () => {
   it('should use the parent-provided tab data stream', () => {
     const emitted: unknown[] = [];
 
+    mockPayloadService.transformHistoryAndNotesItems.mockClear();
     component.historyAndNotesTabData$.subscribe((data) => emitted.push(data));
 
+    expect(mockPayloadService.transformHistoryAndNotesItems).toHaveBeenCalledWith(
+      OPAL_FINES_ACCOUNT_MAJOR_CREDITOR_DETAILS_HISTORY_AND_NOTES_TAB_REF_DATA_MOCK['historyItems'],
+      FINES_ACC_MAJOR_CREDITOR_HISTORY_AND_NOTES_DETAILS_TRANSFORMATION_CONFIG,
+    );
     expect(emitted).toEqual([OPAL_FINES_ACCOUNT_MAJOR_CREDITOR_DETAILS_HISTORY_AND_NOTES_TAB_REF_DATA_MOCK]);
+  });
+
+  it('should transform history items when the API uses the supported history_items key', () => {
+    const rawItems = [{ type: 'Financial', details: { transactionType: { transactionType: 'BACS' } } }];
+    const transformedItems = [{ type: 'Financial', details: { line1: [], line2: null } }];
+    const tabData = {
+      version: null,
+      history_items: rawItems,
+    } as IOpalFinesAccountMajorCreditorDetailsHistoryAndNotesTabRefData;
+    const emitted: unknown[] = [];
+
+    mockPayloadService.transformHistoryAndNotesItems.mockReset();
+    mockPayloadService.transformHistoryAndNotesItems.mockReturnValue(transformedItems);
+    component.tabData$ = of(tabData);
+    component.ngOnChanges({ tabData$: new SimpleChange(null, component.tabData$, false) });
+    component.historyAndNotesTabData$.subscribe((data) => emitted.push(data));
+
+    expect(mockPayloadService.transformHistoryAndNotesItems).toHaveBeenCalledWith(
+      rawItems,
+      FINES_ACC_MAJOR_CREDITOR_HISTORY_AND_NOTES_DETAILS_TRANSFORMATION_CONFIG,
+    );
+    expect(emitted.at(-1)).toEqual({ ...tabData, history_items: transformedItems });
+  });
+
+  it('should preserve tab data without history items without calling the transformer', () => {
+    const tabData = { version: null } as IOpalFinesAccountMajorCreditorDetailsHistoryAndNotesTabRefData;
+    const emitted: unknown[] = [];
+
+    mockPayloadService.transformHistoryAndNotesItems.mockClear();
+    component.tabData$ = of(tabData);
+    component.ngOnChanges({ tabData$: new SimpleChange(null, component.tabData$, false) });
+    component.historyAndNotesTabData$.subscribe((data) => emitted.push(data));
+
+    expect(mockPayloadService.transformHistoryAndNotesItems).not.toHaveBeenCalled();
+    expect(emitted.at(-1)).toEqual(tabData);
   });
 
   it('should fetch filtered tab data when filter values are applied', () => {
     const emitted: unknown[] = [];
 
     component.historyAndNotesTabData$.subscribe();
+    mockPayloadService.transformHistoryAndNotesItems.mockClear();
     component.handleFilterApplied(FINES_ACC_MAJOR_CREDITOR_DETAILS_HISTORY_AND_NOTES_FILTER_FORM_MOCK);
     component.historyAndNotesTabData$.subscribe((data) => emitted.push(data));
 
@@ -116,6 +162,10 @@ describe('FinesAccMajorCreditorDetailsHistoryAndNotesTabComponent', () => {
     );
     expect(mockAccountStore.compareVersion).toHaveBeenCalledWith(
       OPAL_FINES_ACCOUNT_MAJOR_CREDITOR_DETAILS_HISTORY_AND_NOTES_TAB_REF_DATA_MOCK.version,
+    );
+    expect(mockPayloadService.transformHistoryAndNotesItems).toHaveBeenCalledWith(
+      OPAL_FINES_ACCOUNT_MAJOR_CREDITOR_DETAILS_HISTORY_AND_NOTES_TAB_REF_DATA_MOCK['historyItems'],
+      FINES_ACC_MAJOR_CREDITOR_HISTORY_AND_NOTES_DETAILS_TRANSFORMATION_CONFIG,
     );
     expect(emitted).toEqual([
       OPAL_FINES_ACCOUNT_MAJOR_CREDITOR_DETAILS_HISTORY_AND_NOTES_TAB_REF_DATA_MOCK,
