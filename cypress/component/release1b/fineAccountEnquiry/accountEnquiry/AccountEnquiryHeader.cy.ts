@@ -1014,7 +1014,7 @@ describe('Account Enquiry - Minor Creditor Header', () => {
     },
   );
 
-  it.only(
+  it(
     'formats a decimal Paid out repayment amount while displaying only one financial tile',
     { tags: [...buildTags('@JIRA-STORY:PO-2963'), '@JIRA-EPIC:PO-2630'] },
     () => {
