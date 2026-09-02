@@ -7,6 +7,7 @@ import { IOpalFinesCourtRefData } from '@services/fines/opal-fines-service/inter
 import { IOpalFinesLocalJusticeArea } from '@services/fines/opal-fines-service/interfaces/opal-fines-local-justice-area.interface';
 import { IOpalFinesLocalJusticeAreaRefData } from '@services/fines/opal-fines-service/interfaces/opal-fines-local-justice-area-ref-data.interface';
 import { OPAL_FINES_BUSINESS_UNIT_REF_DATA_MOCK } from './mocks/opal-fines-business-unit-ref-data.mock';
+import { OPAL_FINES_BUSINESS_UNIT_OUTSTANDING_AUTO_PAYMENT_COUNTS_MOCK } from './mocks/opal-fines-business-unit-outstanding-auto-payment-counts.mock';
 import { OPAL_FINES_COURT_REF_DATA_MOCK } from './mocks/opal-fines-court-ref-data.mock';
 import { OPAL_FINES_LOCAL_JUSTICE_AREA_REF_DATA_MOCK } from './mocks/opal-fines-local-justice-area-ref-data.mock';
 import { OPAL_FINES_PATHS } from '@services/fines/opal-fines-service/constants/opal-fines-paths.constant';
@@ -319,6 +320,39 @@ describe('OpalFines', () => {
       expect(response).toEqual(mockBusinessUnits);
     });
     httpMock.expectNone(expectedUrl);
+  });
+
+  it('should send a GET request to business unit outstanding auto payment count API', () => {
+    const mockBusinessUnitCounts = OPAL_FINES_BUSINESS_UNIT_OUTSTANDING_AUTO_PAYMENT_COUNTS_MOCK;
+
+    service.getBusinessUnitOutstandingAutoPaymentCounts().subscribe((response) => {
+      expect(response).toEqual(mockBusinessUnitCounts);
+    });
+
+    const req = httpMock.expectOne(OPAL_FINES_PATHS.businessUnitOutstandingAutoPaymentCount);
+    expect(req.request.method).toBe('GET');
+
+    req.flush(mockBusinessUnitCounts);
+  });
+
+  it('should not cache business unit outstanding auto payment count responses', () => {
+    const mockBusinessUnitCounts = OPAL_FINES_BUSINESS_UNIT_OUTSTANDING_AUTO_PAYMENT_COUNTS_MOCK;
+
+    service.getBusinessUnitOutstandingAutoPaymentCounts().subscribe((response) => {
+      expect(response).toEqual(mockBusinessUnitCounts);
+    });
+
+    const firstReq = httpMock.expectOne(OPAL_FINES_PATHS.businessUnitOutstandingAutoPaymentCount);
+    expect(firstReq.request.method).toBe('GET');
+    firstReq.flush(mockBusinessUnitCounts);
+
+    service.getBusinessUnitOutstandingAutoPaymentCounts().subscribe((response) => {
+      expect(response).toEqual(mockBusinessUnitCounts);
+    });
+
+    const secondReq = httpMock.expectOne(OPAL_FINES_PATHS.businessUnitOutstandingAutoPaymentCount);
+    expect(secondReq.request.method).toBe('GET');
+    secondReq.flush(mockBusinessUnitCounts);
   });
 
   it('should send a GET request to report metadata API and cache the response', () => {

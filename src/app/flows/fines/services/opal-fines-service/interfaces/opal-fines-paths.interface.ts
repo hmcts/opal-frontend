@@ -1,5 +1,6 @@
 export interface IOpalFinesPaths {
   businessUnitRefData: string;
+  businessUnitOutstandingAutoPaymentCount: string;
   localJusticeAreaRefData: string;
   courtRefData: string;
   offencesRefData: string;

@@ -5,6 +5,7 @@ import { withHttpRetry } from '@hmcts/opal-frontend-common/interceptors/http-ret
 
 import { IOpalFinesBusinessUnit } from '@services/fines/opal-fines-service/interfaces/opal-fines-business-unit.interface';
 import { IOpalFinesBusinessUnitNonSnakeCase } from '@services/fines/opal-fines-service/interfaces/opal-fines-business-unit-non-snake-case.interface';
+import { IOpalFinesBusinessUnitOutstandingAutoPaymentCounts } from '@services/fines/opal-fines-service/interfaces/opal-fines-business-unit-outstanding-auto-payment-counts.interface';
 import { IOpalFinesBusinessUnitRefData } from '@services/fines/opal-fines-service/interfaces/opal-fines-business-unit-ref-data.interface';
 import { IOpalFinesCourt } from '@services/fines/opal-fines-service/interfaces/opal-fines-court.interface';
 import { IOpalFinesCourtRefData } from '@services/fines/opal-fines-service/interfaces/opal-fines-court-ref-data.interface';
@@ -344,6 +345,20 @@ export class OpalFines {
       .pipe(shareReplay(1));
 
     return this.cache.businessUnitsCache$;
+  }
+
+  /**
+   * Retrieves outstanding auto payment counts by business unit.
+   *
+   * Counts are operational data, so this response is not cached.
+   *
+   * @returns An observable of business units with file and till counts for Automatic Cash Input.
+   */
+  public getBusinessUnitOutstandingAutoPaymentCounts(): Observable<IOpalFinesBusinessUnitOutstandingAutoPaymentCounts> {
+    return this.http.get<IOpalFinesBusinessUnitOutstandingAutoPaymentCounts>(
+      OPAL_FINES_PATHS.businessUnitOutstandingAutoPaymentCount,
+      this.retrySafeReadOptions(),
+    );
   }
 
   /**

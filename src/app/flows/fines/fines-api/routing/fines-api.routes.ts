@@ -6,6 +6,7 @@ import { TitleResolver } from '@hmcts/opal-frontend-common/resolvers/title';
 import { FINES_API_ROUTING_PATHS } from './constants/fines-api-routing-paths.constant';
 import { FINES_API_ROUTING_TITLES } from './constants/fines-api-routing-titles.constant';
 import { finesApiFlowStateGuard } from './guards/fines-api-flow-state.guard';
+import { finesApiBusinessUnitCountsResolver } from './resolvers/fines-api-business-unit-counts.resolver';
 
 export const routing: Routes = [
   {
@@ -24,6 +25,7 @@ export const routing: Routes = [
     },
     resolve: {
       title: TitleResolver,
+      businessUnitCounts: finesApiBusinessUnitCountsResolver,
     },
   },
   {

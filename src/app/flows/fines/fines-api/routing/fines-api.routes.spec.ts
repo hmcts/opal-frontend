@@ -8,6 +8,7 @@ import { FinesApiSelectBusComponent } from '../fines-api-select-bus/fines-api-se
 import { FINES_API_ROUTING_PATHS } from './constants/fines-api-routing-paths.constant';
 import { FINES_API_ROUTING_TITLES } from './constants/fines-api-routing-titles.constant';
 import { finesApiFlowStateGuard } from './guards/fines-api-flow-state.guard';
+import { finesApiBusinessUnitCountsResolver } from './resolvers/fines-api-business-unit-counts.resolver';
 import { routing } from './fines-api.routes';
 
 describe('fines API routes', () => {
@@ -34,6 +35,7 @@ describe('fines API routes', () => {
         },
         resolve: {
           title: TitleResolver,
+          businessUnitCounts: finesApiBusinessUnitCountsResolver,
         },
       }),
     );
