@@ -72,4 +72,20 @@ describe('FinesApiComponent', () => {
 
     expect(handleBeforeUnloadSpy).toHaveBeenCalled();
   });
+
+  it('should reset the ACI store when the journey shell is destroyed', () => {
+    finesApiStore.setSelectedBusinessUnitIds([77]);
+    finesApiStore.setSelectedFileIds(['file-1']);
+    finesApiStore.setOverrideInhibitFileIds(['file-1']);
+    finesApiStore.setActiveTab('ignored');
+
+    fixture.destroy();
+
+    expect(finesApiStore.selectedBusinessUnitIds()).toEqual([]);
+    expect(finesApiStore.selectedFileIds()).toEqual([]);
+    expect(finesApiStore.overrideInhibitFileIds()).toEqual([]);
+    expect(finesApiStore.activeTab()).toBe('process');
+    expect(finesApiStore.stateChanges()).toBe(false);
+    expect(finesApiStore.unsavedChanges()).toBe(false);
+  });
 });

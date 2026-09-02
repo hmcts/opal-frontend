@@ -1,18 +1,22 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { ActivatedRoute, Router } from '@angular/router';
 import { OPAL_FINES_BUSINESS_UNIT_OUTSTANDING_AUTO_PAYMENT_COUNTS_MOCK } from '@services/fines/opal-fines-service/mocks/opal-fines-business-unit-outstanding-auto-payment-counts.mock';
+import { IOpalFinesBusinessUnitOutstandingAutoPaymentCounts } from '@services/fines/opal-fines-service/interfaces/opal-fines-business-unit-outstanding-auto-payment-counts.interface';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
 import { FinesApiSelectBusComponent } from './fines-api-select-bus.component';
 import { FinesApiStore } from '../stores/fines-api.store';
+import { FINES_API_SELECT_BUS_ERRORS } from './constants/fines-api-select-bus-errors.constant';
 
 describe('FinesApiSelectBusComponent', () => {
   let component: FinesApiSelectBusComponent;
   let fixture: ComponentFixture<FinesApiSelectBusComponent>;
   let finesApiStore: InstanceType<typeof FinesApiStore>;
   let routerNavigate: ReturnType<typeof vi.fn>;
+  let businessUnitCounts: IOpalFinesBusinessUnitOutstandingAutoPaymentCounts;
 
   beforeEach(async () => {
     routerNavigate = vi.fn().mockResolvedValue(true);
+    businessUnitCounts = OPAL_FINES_BUSINESS_UNIT_OUTSTANDING_AUTO_PAYMENT_COUNTS_MOCK;
 
     await TestBed.configureTestingModule({
       imports: [FinesApiSelectBusComponent],
@@ -22,7 +26,9 @@ describe('FinesApiSelectBusComponent', () => {
           useValue: {
             snapshot: {
               data: {
-                businessUnitCounts: OPAL_FINES_BUSINESS_UNIT_OUTSTANDING_AUTO_PAYMENT_COUNTS_MOCK,
+                get businessUnitCounts() {
+                  return businessUnitCounts;
+                },
               },
             },
           },
@@ -96,6 +102,39 @@ describe('FinesApiSelectBusComponent', () => {
     expect(finesApiStore.unsavedChanges()).toBe(true);
   });
 
+  it('should clear stored business unit ids that are not in the resolver data', () => {
+    businessUnitCounts = {
+      business_units: [
+        {
+          business_unit_id: 65,
+          business_unit_name: 'Camden and Islington',
+          file_count: 0,
+          till_count: 0,
+        },
+      ],
+    };
+    finesApiStore.setSelectedBusinessUnitIds([77]);
+    fixture.detectChanges();
+
+    const nativeElement = fixture.nativeElement as HTMLElement;
+    const continueButton = nativeElement.querySelector<HTMLButtonElement>('#fines-api-select-business-units-continue');
+    continueButton!.click();
+    fixture.detectChanges();
+
+    expect(finesApiStore.selectedBusinessUnitIds()).toEqual([]);
+    expect(finesApiStore.unsavedChanges()).toBe(false);
+    expect(nativeElement.textContent).toContain(FINES_API_SELECT_BUS_ERRORS.selectAtLeastOneBusinessUnit);
+    expect(routerNavigate).not.toHaveBeenCalled();
+  });
+
+  it('should keep stored business unit ids that are still in the resolver data', () => {
+    finesApiStore.setSelectedBusinessUnitIds([77, 65, 999]);
+    fixture.detectChanges();
+
+    expect(finesApiStore.selectedBusinessUnitIds()).toEqual([77, 65]);
+    expect(finesApiStore.unsavedChanges()).toBe(true);
+  });
+
   it('should select and clear all business units from the top-level checkbox', () => {
     fixture.detectChanges();
 
@@ -123,7 +162,7 @@ describe('FinesApiSelectBusComponent', () => {
     continueButton!.click();
     fixture.detectChanges();
 
-    expect(nativeElement.textContent).toContain('Select at least 1 business unit');
+    expect(nativeElement.textContent).toContain(FINES_API_SELECT_BUS_ERRORS.selectAtLeastOneBusinessUnit);
     expect(routerNavigate).not.toHaveBeenCalled();
   });
 
@@ -134,7 +173,7 @@ describe('FinesApiSelectBusComponent', () => {
     const continueButton = nativeElement.querySelector<HTMLButtonElement>('#fines-api-select-business-units-continue');
     continueButton!.click();
     fixture.detectChanges();
-    expect(nativeElement.textContent).toContain('Select at least 1 business unit');
+    expect(nativeElement.textContent).toContain(FINES_API_SELECT_BUS_ERRORS.selectAtLeastOneBusinessUnit);
 
     const checkbox = nativeElement.querySelector<HTMLInputElement>('#fines-api-business-unit-77');
     checkbox!.checked = true;

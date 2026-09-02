@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, Component, HostListener, inject } from '@angular/core';
+import { ChangeDetectionStrategy, Component, HostListener, OnDestroy, inject } from '@angular/core';
 import { RouterOutlet } from '@angular/router';
 import { CanDeactivateTypes } from '@hmcts/opal-frontend-common/guards/can-deactivate/types';
 import { FinesApiStore } from './stores/fines-api.store';
@@ -9,7 +9,7 @@ import { FinesApiStore } from './stores/fines-api.store';
   templateUrl: './fines-api.component.html',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class FinesApiComponent {
+export class FinesApiComponent implements OnDestroy {
   private readonly finesApiStore = inject(FinesApiStore);
 
   @HostListener('window:beforeunload')
@@ -19,5 +19,9 @@ export class FinesApiComponent {
 
   public canDeactivate(): CanDeactivateTypes {
     return !this.finesApiStore.unsavedChanges();
+  }
+
+  public ngOnDestroy(): void {
+    this.finesApiStore.resetFinesApiState();
   }
 }

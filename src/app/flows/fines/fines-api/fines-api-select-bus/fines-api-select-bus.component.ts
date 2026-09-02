@@ -1,4 +1,4 @@
-import { CommonModule } from '@angular/common';
+import { CommonModule, DOCUMENT } from '@angular/common';
 import { ChangeDetectionStrategy, Component, OnInit, inject } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { IAbstractFormBaseFormErrorSummaryMessage } from '@hmcts/opal-frontend-common/components/abstract/interfaces';
@@ -10,6 +10,7 @@ import { IOpalFinesBusinessUnitOutstandingAutoPaymentCount } from '../../service
 import { IOpalFinesBusinessUnitOutstandingAutoPaymentCounts } from '../../services/opal-fines-service/interfaces/opal-fines-business-unit-outstanding-auto-payment-counts.interface';
 import { FinesApiStore } from '../stores/fines-api.store';
 import { FINES_API_ROUTING_PATHS } from '../routing/constants/fines-api-routing-paths.constant';
+import { FINES_API_SELECT_BUS_ERRORS } from './constants/fines-api-select-bus-errors.constant';
 
 @Component({
   selector: 'app-fines-api-select-bus',
@@ -19,8 +20,9 @@ import { FINES_API_ROUTING_PATHS } from '../routing/constants/fines-api-routing-
 })
 export class FinesApiSelectBusComponent implements OnInit {
   private readonly activatedRoute = inject(ActivatedRoute);
+  private readonly document = inject(DOCUMENT);
   private readonly router = inject(Router);
-  private readonly selectBusinessUnitsErrorMessage = 'Select at least 1 business unit';
+  private readonly selectBusinessUnitsErrorMessage = FINES_API_SELECT_BUS_ERRORS.selectAtLeastOneBusinessUnit;
 
   protected readonly finesApiStore = inject(FinesApiStore);
   protected businessUnits: IOpalFinesBusinessUnitOutstandingAutoPaymentCount[] = [];
@@ -122,7 +124,7 @@ export class FinesApiSelectBusComponent implements OnInit {
    * @param fieldId - Element ID to focus.
    */
   protected scrollTo(fieldId: string): void {
-    document.getElementById(fieldId)?.focus();
+    this.document.getElementById(fieldId)?.focus();
   }
 
   /**
@@ -179,13 +181,63 @@ export class FinesApiSelectBusComponent implements OnInit {
   }
 
   /**
-   * Loads resolved business unit counts and restores any existing BU selection from the store.
+   * Loads business unit counts from route resolver data.
    */
-  public ngOnInit(): void {
+  private initialiseBusinessUnits(): void {
     const resolverData = this.activatedRoute.snapshot.data[
       'businessUnitCounts'
     ] as IOpalFinesBusinessUnitOutstandingAutoPaymentCounts | null;
     this.businessUnits = Array.isArray(resolverData?.business_units) ? resolverData.business_units : [];
-    this.selectedBusinessUnitIds = new Set(this.finesApiStore.selectedBusinessUnitIds());
+  }
+
+  /**
+   * Returns stored business unit IDs that still exist in the latest resolver payload.
+   */
+  private getValidStoredBusinessUnitIds(): number[] {
+    const availableBusinessUnitIds = new Set(this.businessUnits.map(({ business_unit_id }) => business_unit_id));
+
+    return this.finesApiStore
+      .selectedBusinessUnitIds()
+      .filter((businessUnitId) => availableBusinessUnitIds.has(businessUnitId));
+  }
+
+  /**
+   * Updates the ACI store when stale stored business unit IDs were removed.
+   *
+   * @param selectedBusinessUnitIds - Valid selected business unit IDs after filtering against resolver data.
+   * @param storedBusinessUnitIds - Business unit IDs currently held in the store.
+   */
+  private updateStoreWhenStoredSelectionsChanged(
+    selectedBusinessUnitIds: number[],
+    storedBusinessUnitIds: number[],
+  ): void {
+    if (selectedBusinessUnitIds.length === storedBusinessUnitIds.length) {
+      return;
+    }
+
+    if (selectedBusinessUnitIds.length === 0) {
+      this.finesApiStore.clearSelectedBusinessUnitIds();
+    } else {
+      this.finesApiStore.setSelectedBusinessUnitIds(selectedBusinessUnitIds);
+    }
+  }
+
+  /**
+   * Restores valid BU selections from the store and clears any stale selections.
+   */
+  private restoreValidBusinessUnitSelections(): void {
+    const storedBusinessUnitIds = this.finesApiStore.selectedBusinessUnitIds();
+    const selectedBusinessUnitIds = this.getValidStoredBusinessUnitIds();
+
+    this.selectedBusinessUnitIds = new Set(selectedBusinessUnitIds);
+    this.updateStoreWhenStoredSelectionsChanged(selectedBusinessUnitIds, storedBusinessUnitIds);
+  }
+
+  /**
+   * Loads resolved business unit counts and restores any valid existing BU selections from the store.
+   */
+  public ngOnInit(): void {
+    this.initialiseBusinessUnits();
+    this.restoreValidBusinessUnitSelections();
   }
 }
