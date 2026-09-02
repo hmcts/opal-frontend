@@ -12,6 +12,7 @@ import { finesSectionPermissionsGuard } from './guards/fines-section-permissions
 import { dashboardTypeGuard } from './guards/dashboard-type/dashboard-type.guard';
 import { PRIMARY_NAV_HIDDEN_ROUTE_DATA } from '@app/constants/route-data.constant';
 import { authGuard } from '@hmcts/opal-frontend-common/guards/auth';
+import { canDeactivateGuard } from '@hmcts/opal-frontend-common/guards/can-deactivate';
 import { routing as aecRouting } from '../fines-aec/routing/fines-aec.routes';
 import { routing as autoPaymentInRouting } from '../fines-api/routing/fines-api.routes';
 import {
@@ -123,6 +124,7 @@ describe('fines routes', () => {
 
     expect(autoPaymentInRoute?.children).toBe(autoPaymentInRouting);
     expect(autoPaymentInRoute?.canActivate).toEqual([authGuard, finesSectionPermissionsGuard]);
+    expect(autoPaymentInRoute?.canDeactivate).toEqual([canDeactivateGuard]);
     expect(autoPaymentInRoute?.data).toEqual({
       sectionKey: FINES_DASHBOARD_ROUTING_PATHS.children.finance,
     });

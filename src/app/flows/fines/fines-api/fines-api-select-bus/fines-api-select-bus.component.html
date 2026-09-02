@@ -1,1 +1,99 @@
-<p>Placeholder for Automatic Cash Input - Select Business Units</p>
+<opal-lib-govuk-error-summary
+  [errors]="formErrorSummaryMessage"
+  (errorClick)="scrollTo($event)"
+></opal-lib-govuk-error-summary>
+
+<h1 class="govuk-heading-l">Automatic Cash Input</h1>
+
+<div class="govuk-form-group" [class.govuk-form-group--error]="hasBusinessUnitSelectionError">
+  <fieldset
+    class="govuk-fieldset"
+    [attr.aria-describedby]="hasBusinessUnitSelectionError ? 'fines-api-select-business-units-error' : null"
+  >
+    <legend class="govuk-fieldset__legend govuk-fieldset__legend--m">Select business units</legend>
+
+    @if (hasBusinessUnitSelectionError) {
+      <p id="fines-api-select-business-units-error" class="govuk-error-message">
+        <span class="govuk-visually-hidden">Error:</span> {{ formErrorSummaryMessage[0].message }}
+      </p>
+    }
+
+    <table class="govuk-table">
+      <caption class="govuk-table__caption govuk-visually-hidden">
+        Business units available for Automatic Cash Input
+      </caption>
+      <thead class="govuk-table__head">
+        <tr class="govuk-table__row">
+          <th scope="col" class="govuk-table__header">
+            <div class="govuk-checkboxes govuk-checkboxes--small">
+              <div class="govuk-checkboxes__item">
+                <input
+                  id="fines-api-select-business-units"
+                  class="govuk-checkboxes__input"
+                  type="checkbox"
+                  [checked]="allBusinessUnitsSelected"
+                  [indeterminate]="someBusinessUnitsSelected"
+                  (change)="toggleAllBusinessUnits($event)"
+                />
+                <label class="govuk-label govuk-checkboxes__label" for="fines-api-select-business-units">
+                  Business unit
+                </label>
+              </div>
+            </div>
+          </th>
+          <th scope="col" class="govuk-table__header govuk-table__header--numeric">Files to process</th>
+          <th scope="col" class="govuk-table__header govuk-table__header--numeric">Tills to allocate</th>
+        </tr>
+      </thead>
+      <tbody class="govuk-table__body">
+        @for (businessUnit of businessUnits; track businessUnit.business_unit_id) {
+          <tr class="govuk-table__row">
+            <td class="govuk-table__cell">
+              <div class="govuk-checkboxes govuk-checkboxes--small">
+                <div class="govuk-checkboxes__item">
+                  <input
+                    [id]="'fines-api-business-unit-' + businessUnit.business_unit_id"
+                    class="govuk-checkboxes__input"
+                    type="checkbox"
+                    [checked]="isBusinessUnitSelected(businessUnit.business_unit_id)"
+                    (change)="toggleBusinessUnit(businessUnit.business_unit_id, $event)"
+                  />
+                  <label
+                    class="govuk-label govuk-checkboxes__label"
+                    [for]="'fines-api-business-unit-' + businessUnit.business_unit_id"
+                  >
+                    {{ businessUnit.business_unit_name }}
+                  </label>
+                </div>
+              </div>
+            </td>
+            <td class="govuk-table__cell govuk-table__cell--numeric">{{ businessUnit.file_count }}</td>
+            <td class="govuk-table__cell govuk-table__cell--numeric">{{ businessUnit.till_count }}</td>
+          </tr>
+        }
+      </tbody>
+    </table>
+  </fieldset>
+</div>
+
+<!-- <div class="govuk-button-group">
+  <opal-lib-govuk-button buttonId="fines-api-select-business-units-continue" (buttonClickEvent)="continue()">
+    Continue
+  </opal-lib-govuk-button>
+  <opal-lib-govuk-cancel-link (linkClickEvent)="cancel()"></opal-lib-govuk-cancel-link>
+</div> -->
+
+<div class="govuk-grid-row">
+  <div class="govuk-grid-column-two-thirds govuk-!-margin-bottom-0">
+    <div class="govuk-button-group govuk-!-margin-bottom-0">
+      <button
+        class="govuk-button govuk-!-margin-right-4"
+        id="fines-api-select-business-units-continue"
+        (buttonClickEvent)="continue()"
+      >
+        Continue
+      </button>
+      <opal-lib-govuk-cancel-link (linkClickEvent)="cancel()"></opal-lib-govuk-cancel-link>
+    </div>
+  </div>
+</div>

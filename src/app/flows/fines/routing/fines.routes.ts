@@ -116,6 +116,7 @@ export const finesRouting: Routes = [
         loadComponent: () => import('../fines-api/fines-api.component').then((c) => c.FinesApiComponent),
         children: autoPaymentInRouting,
         canActivate: [authGuard, finesSectionPermissionsGuard],
+        canDeactivate: [canDeactivateGuard],
         data: {
           sectionKey: FINES_DASHBOARD_ROUTING_PATHS.children.finance,
         },
