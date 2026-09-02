@@ -82,6 +82,20 @@ describe('FinesApiSelectBusComponent', () => {
     expect(finesApiStore.unsavedChanges()).toBe(true);
   });
 
+  it('should remove a selected business unit id when a row checkbox is unchecked', () => {
+    finesApiStore.setSelectedBusinessUnitIds([77, 65]);
+    fixture.detectChanges();
+
+    const nativeElement = fixture.nativeElement as HTMLElement;
+    const checkbox = nativeElement.querySelector<HTMLInputElement>('#fines-api-business-unit-77');
+    checkbox!.checked = false;
+    checkbox!.dispatchEvent(new Event('change'));
+    fixture.detectChanges();
+
+    expect(finesApiStore.selectedBusinessUnitIds()).toEqual([65]);
+    expect(finesApiStore.unsavedChanges()).toBe(true);
+  });
+
   it('should select and clear all business units from the top-level checkbox', () => {
     fixture.detectChanges();
 
@@ -158,5 +172,23 @@ describe('FinesApiSelectBusComponent', () => {
 
     expect(routerNavigate).toHaveBeenCalledWith(['/', 'fines', 'dashboard', 'finance']);
     expect(finesApiStore.selectedBusinessUnitIds()).toEqual([77]);
+  });
+
+  it('should focus the element matching an error summary field id', () => {
+    fixture.detectChanges();
+
+    const nativeElement = fixture.nativeElement as HTMLElement;
+    const checkbox = nativeElement.querySelector<HTMLInputElement>('#fines-api-select-business-units');
+    const focusSpy = vi.spyOn(checkbox!, 'focus');
+
+    component['scrollTo']('fines-api-select-business-units');
+
+    expect(focusSpy).toHaveBeenCalled();
+  });
+
+  it('should not throw when an error summary field id does not match an element', () => {
+    fixture.detectChanges();
+
+    expect(() => component['scrollTo']('missing-field-id')).not.toThrow();
   });
 });

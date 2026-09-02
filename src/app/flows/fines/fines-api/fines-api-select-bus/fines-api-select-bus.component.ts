@@ -2,7 +2,6 @@ import { CommonModule } from '@angular/common';
 import { ChangeDetectionStrategy, Component, OnInit, inject } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { IAbstractFormBaseFormErrorSummaryMessage } from '@hmcts/opal-frontend-common/components/abstract/interfaces';
-import { GovukButtonComponent } from '@hmcts/opal-frontend-common/components/govuk/govuk-button';
 import { GovukCancelLinkComponent } from '@hmcts/opal-frontend-common/components/govuk/govuk-cancel-link';
 import { GovukErrorSummaryComponent } from '@hmcts/opal-frontend-common/components/govuk/govuk-error-summary';
 import { FINES_DASHBOARD_ROUTING_PATHS } from '../../constants/fines-dashboard-routing-paths.constant';
@@ -14,20 +13,20 @@ import { FINES_API_ROUTING_PATHS } from '../routing/constants/fines-api-routing-
 
 @Component({
   selector: 'app-fines-api-select-bus',
-  imports: [CommonModule, GovukButtonComponent, GovukCancelLinkComponent, GovukErrorSummaryComponent],
+  imports: [CommonModule, GovukCancelLinkComponent, GovukErrorSummaryComponent],
   templateUrl: './fines-api-select-bus.component.html',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class FinesApiSelectBusComponent implements OnInit {
   private readonly activatedRoute = inject(ActivatedRoute);
   private readonly router = inject(Router);
+  private readonly selectBusinessUnitsErrorMessage = 'Select at least 1 business unit';
+
   protected readonly finesApiStore = inject(FinesApiStore);
   protected businessUnits: IOpalFinesBusinessUnitOutstandingAutoPaymentCount[] = [];
   protected selectedBusinessUnitIds = new Set<number>();
   protected formErrorSummaryMessage: IAbstractFormBaseFormErrorSummaryMessage[] = [];
   protected hasBusinessUnitSelectionError = false;
-
-  private readonly selectBusinessUnitsErrorMessage = 'Select at least 1 business unit';
 
   /**
    * Returns whether every displayed business unit is currently selected.
