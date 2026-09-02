@@ -1,5 +1,12 @@
 import { describe, expect, it } from 'vitest';
-import { transformHistoryAndNotesDetails } from './fines-acc-payload-transform-history-and-notes.utils';
+import {
+  createHistoryChequeDetails,
+  createHistoryPlainLabelValuePart,
+  createHistorySuspenseTransferAssociatedRecordPart,
+  createHistoryTextPartWithOptionalLink,
+  getHistoryTransactionTemplateValue,
+  transformHistoryAndNotesDetails,
+} from './fines-acc-payload-transform-history-and-notes.utils';
 import { FINES_ACC_HISTORY_AND_NOTES_DETAILS_TRANSFORMERS } from '../constants/fines-acc-history-and-notes-details-transformers.constant';
 import { FINES_ACC_HISTORY_AND_NOTES_DETAILS_PAYMENT_TERMS_TYPE_CODES } from '../constants/fines-acc-history-and-notes-details-payment-terms-type-codes.constant';
 import { FINES_ACC_HISTORY_AND_NOTES_DETAILS_TRANSACTION_TYPES } from '../constants/fines-acc-history-and-notes-details-transaction-types.constant';
@@ -53,6 +60,109 @@ const fragment = (
 });
 
 const part = (...fragments: ReturnType<typeof fragment>[]) => ({ fragments });
+
+describe('getHistoryTransactionTemplateValue', () => {
+  const templates = {
+    BACS: 'BACS payment',
+    CHEQUE: 'Cheque issued',
+  };
+
+  it('should return the configured template for a matching transaction type', () => {
+    expect(getHistoryTransactionTemplateValue(templates, 'BACS')).toBe('BACS payment');
+  });
+
+  it('should return null when the transaction type is not configured', () => {
+    expect(getHistoryTransactionTemplateValue(templates, 'UNKNOWN')).toBeNull();
+  });
+});
+
+describe('createHistoryChequeDetails', () => {
+  it('should use the documented default when the cheque number is absent', () => {
+    expect(createHistoryChequeDetails('Cheque issued', null, null, null)).toEqual({
+      line1: [
+        part(fragment('Cheque issued')),
+        part({ text: 'Cheque number:', bold: false, hyphen: false }, fragment('Not yet written')),
+      ],
+      line2: null,
+    });
+  });
+
+  it('should append the documented cancelled status and date', () => {
+    expect(createHistoryChequeDetails('Cheque issued', '524589', 'X', '2026-06-20')).toEqual({
+      line1: [
+        part(fragment('Cheque issued')),
+        part({ text: 'Cheque number:', bold: false, hyphen: false }, fragment('524589')),
+        part(fragment('Cheque cancelled 20/06/2026')),
+      ],
+      line2: null,
+    });
+  });
+});
+
+describe('createHistoryPlainLabelValuePart', () => {
+  it('should return null when the value is absent', () => {
+    expect(createHistoryPlainLabelValuePart('Cheque number:', null)).toBeNull();
+  });
+});
+
+describe('createHistoryTextPartWithOptionalLink', () => {
+  it('should add link metadata when a target record identifier is supplied', () => {
+    expect(createHistoryTextPartWithOptionalLink('250000123M', 'account', '123123')).toEqual(
+      part(fragment('250000123M', { link: { type: 'account', emit: '123123' } })),
+    );
+  });
+
+  it('should return plain text when a target record identifier is absent', () => {
+    expect(createHistoryTextPartWithOptionalLink('250000123M', 'account', null)).toEqual(part(fragment('250000123M')));
+  });
+});
+
+describe('createHistorySuspenseTransferAssociatedRecordPart', () => {
+  it('should create a linked suspense transaction part when the mapping requires it', () => {
+    expect(
+      createHistorySuspenseTransferAssociatedRecordPart(
+        {
+          associatedRecordType: 'suspense_item',
+          associatedRecordId: 'SUSP-123',
+          defendantAccountNumber: null,
+          defendantAccountId: null,
+          creditorAccountNumber: null,
+        },
+        ['suspense_item'],
+      ),
+    ).toEqual(part(fragment('SUSP-123', { link: { type: 'suspenseTransaction', emit: 'SUSP-123' } })));
+  });
+
+  it('should create a plain creditor-account part when the mapping does not require a link', () => {
+    expect(
+      createHistorySuspenseTransferAssociatedRecordPart(
+        {
+          associatedRecordType: 'creditor_accounts',
+          associatedRecordId: '456',
+          defendantAccountNumber: null,
+          defendantAccountId: null,
+          creditorAccountNumber: 'MC12345',
+        },
+        [],
+      ),
+    ).toEqual(part(fragment('MC12345')));
+  });
+
+  it('should create a plain defendant-account part when the mapping does not require a link', () => {
+    expect(
+      createHistorySuspenseTransferAssociatedRecordPart(
+        {
+          associatedRecordType: 'defendant_transaction',
+          associatedRecordId: null,
+          defendantAccountNumber: '250000123M',
+          defendantAccountId: '123123',
+          creditorAccountNumber: null,
+        },
+        [],
+      ),
+    ).toEqual(part(fragment('250000123M')));
+  });
+});
 
 describe('transformHistoryAndNotesDetails', () => {
   it('should transform amendment details into pipe-separated parts with bold attribute and values', () => {

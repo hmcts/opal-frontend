@@ -39,6 +39,7 @@ import { FINES_ACC_MINOR_CREDITOR_DETAILS_HISTORY_AND_NOTES_FILTER_ALL_FORM_MOCK
 import { FINES_ACC_MINOR_CREDITOR_DETAILS_HISTORY_AND_NOTES_FILTER_EMPTY_FORM_MOCK } from '../fines-acc-minor-creditor-details/fines-acc-minor-creditor-details-history-and-notes-tab/mocks/fines-acc-minor-creditor-details-history-and-notes-filter-empty-form.mock';
 import { OPAL_FINES_MINOR_CREDITOR_ACCOUNT_HISTORY_PARAMS_MOCK } from '@services/fines/opal-fines-service/mocks/opal-fines-minor-creditor-account-history-params.mock';
 import { FINES_ACC_MINOR_CREDITOR_HISTORY_AND_NOTES_DETAILS_TRANSFORMATION_CONFIG } from './constants/fines-acc-minor-creditor-history-and-notes-details-transformation-config.constant';
+import { FINES_ACC_MAJOR_CREDITOR_HISTORY_AND_NOTES_DETAILS_TRANSFORMATION_CONFIG } from './constants/fines-acc-major-creditor-history-and-notes-details-transformation-config.constant';
 import { FINES_ACC_MAJOR_CREDITOR_DETAILS_HISTORY_AND_NOTES_FILTER_FORM_MOCK } from '../fines-acc-major-creditor-details/fines-acc-major-creditor-details-history-and-notes-tab/mocks/fines-acc-major-creditor-details-history-and-notes-filter-form.mock';
 import { FINES_ACC_MAJOR_CREDITOR_DETAILS_HISTORY_AND_NOTES_FILTER_EMPTY_FORM_MOCK } from '../fines-acc-major-creditor-details/fines-acc-major-creditor-details-history-and-notes-tab/mocks/fines-acc-major-creditor-details-history-and-notes-filter-empty-form.mock';
 import { FINES_ACC_MAJOR_CREDITOR_DETAILS_HISTORY_AND_NOTES_FILTER_PAYLOAD_MOCK } from '../fines-acc-major-creditor-details/fines-acc-major-creditor-details-history-and-notes-tab/mocks/fines-acc-major-creditor-details-history-and-notes-filter-payload.mock';
@@ -315,6 +316,35 @@ describe('FinesAccPayloadService', () => {
             fragments: [
               { text: 'Reference:', bold: false, hyphen: false },
               { text: 'REF123', bold: false, hyphen: false },
+            ],
+          },
+        ],
+        line2: null,
+      });
+    });
+
+    it('should transform major creditor financial history items with the major creditor configuration', () => {
+      const result = service.transformHistoryAndNotesItems(
+        [
+          {
+            id: 1,
+            type: 'Financial',
+            details: {
+              transactionType: { transactionType: 'BACS' },
+              paymentReference: 'MJH0000004',
+            },
+          },
+        ],
+        FINES_ACC_MAJOR_CREDITOR_HISTORY_AND_NOTES_DETAILS_TRANSFORMATION_CONFIG,
+      );
+
+      expect(result[0]['details']).toEqual({
+        line1: [
+          { fragments: [{ text: 'BACS payment', bold: false, hyphen: false }] },
+          {
+            fragments: [
+              { text: 'Payment reference:', bold: false, hyphen: false },
+              { text: 'MJH0000004', bold: false, hyphen: false },
             ],
           },
         ],
