@@ -119,6 +119,7 @@ export const finesRouting: Routes = [
         canDeactivate: [canDeactivateGuard],
         data: {
           sectionKey: FINES_DASHBOARD_ROUTING_PATHS.children.finance,
+          ...PRIMARY_NAV_HIDDEN_ROUTE_DATA,
         },
       },
       {

@@ -127,6 +127,7 @@ describe('fines routes', () => {
     expect(autoPaymentInRoute?.canDeactivate).toEqual([canDeactivateGuard]);
     expect(autoPaymentInRoute?.data).toEqual({
       sectionKey: FINES_DASHBOARD_ROUTING_PATHS.children.finance,
+      ...PRIMARY_NAV_HIDDEN_ROUTE_DATA,
     });
   });
 
