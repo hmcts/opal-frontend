@@ -13,7 +13,7 @@ import { IOpalFinesProsecutorRefData } from '@services/fines/opal-fines-service/
 import { IOpalFinesLocalJusticeArea } from '@services/fines/opal-fines-service/interfaces/opal-fines-local-justice-area.interface';
 import { IOpalFinesLocalJusticeAreaRefData } from '@services/fines/opal-fines-service/interfaces/opal-fines-local-justice-area-ref-data.interface';
 
-import { map, Observable, of, shareReplay } from 'rxjs';
+import { map, Observable, shareReplay } from 'rxjs';
 import { IOpalFinesOffencesNonSnakeCase } from './interfaces/opal-fines-offences-non-snake-case.interface';
 import { IOpalFinesOffencesRefData } from './interfaces/opal-fines-offences-ref-data.interface';
 import { IOpalFinesResults } from './interfaces/opal-fines-results.interface';
@@ -41,10 +41,6 @@ import { IOpalFinesDefendantAccountHistoryParams } from './interfaces/opal-fines
 import { IOpalFinesAccountMinorCreditorDetailsHistoryAndNotesTabRefData } from './interfaces/opal-fines-account-minor-creditor-details-history-and-notes-tab-ref-data.interface';
 import { IOpalFinesMinorCreditorAccountHistoryParams } from './interfaces/opal-fines-minor-creditor-account-history-params.interface';
 import { IOpalFinesAccountMajorCreditorDetailsHistoryAndNotesTabRefData } from './interfaces/opal-fines-account-major-creditor-details-history-and-notes-tab-ref-data.interface';
-import {
-  OPAL_FINES_ACCOUNT_MAJOR_CREDITOR_DETAILS_HISTORY_AND_NOTES_BROWSER_MOCK,
-  USE_MAJOR_CREDITOR_HISTORY_BROWSER_MOCK,
-} from './mocks/opal-fines-account-major-creditor-details-history-and-notes-browser.mock';
 import { IOpalFinesMajorCreditorAccountHistoryParams } from './interfaces/opal-fines-major-creditor-account-history-params.interface';
 import { IOpalFinesAmendPaymentTermsPayload } from './interfaces/opal-fines-amend-payment-terms-payload.interface';
 import { IOpalFinesAccountDefendantDetailsImpositionsTabRefData } from './interfaces/opal-fines-account-defendant-details-impositions-tab-ref-data.interface';
@@ -1656,11 +1652,6 @@ export class OpalFines {
     account_id: number | null,
     filterParams?: IOpalFinesMajorCreditorAccountHistoryParams,
   ): Observable<IOpalFinesAccountMajorCreditorDetailsHistoryAndNotesTabRefData> {
-    // Temporary local browser fixture for PO-2658 visual verification. Do not commit.
-    if (USE_MAJOR_CREDITOR_HISTORY_BROWSER_MOCK) {
-      return of(structuredClone(OPAL_FINES_ACCOUNT_MAJOR_CREDITOR_DETAILS_HISTORY_AND_NOTES_BROWSER_MOCK));
-    }
-
     const url = `${OPAL_FINES_PATHS.majorCreditorAccounts}/${account_id}/history`;
     const options = this.buildHistoryReadOptions(
       filterParams
