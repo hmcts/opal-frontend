@@ -17,7 +17,7 @@
     <opal-lib-custom-account-information-item itemClasses="govuk-grid-column-one-quarter govuk-!-padding-left-0">
       <h2 opal-lib-custom-account-information-item-label>Business Unit:</h2>
       <p opal-lib-custom-account-information-item-value id="minor-creditor-business-unit">
-        {{ accountData.business_unit.business_unit_name }} ({{ accountData.business_unit.business_unit_id }})
+        {{ accountData.business_unit.business_unit_name }} ({{ accountData.business_unit.business_unit_code }})
       </p>
     </opal-lib-custom-account-information-item>
   </opal-lib-custom-account-information>
@@ -101,8 +101,8 @@
       <app-fines-acc-minor-creditor-details-creditor-tab
         [tabData]="tabData"
         [style]="tabContentStyles"
-        [hasAccountMaintenancePermission]="hasPermission(finesPermissions['account-maintenance'])"
-        [hasAccountMaintenancePermissionInBU]="hasBusinessUnitPermissionKey('account-maintenance')"
+        [hasMinorCreditorMaintenancePermission]="hasPermission(finesPermissions['account-maintenance-minor-creditor'])"
+        [hasMinorCreditorMaintenancePermissionInBU]="hasBusinessUnitPermissionKey('account-maintenance-minor-creditor')"
         [hasViewCreditorBacsPermission]="hasPermission(finesPermissions['view-creditor-bacs'])"
       ></app-fines-acc-minor-creditor-details-creditor-tab>
     }
