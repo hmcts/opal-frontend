@@ -37,7 +37,7 @@ Feature: Minor Creditor Account Enquiries View Details
       Then I should return to the account details page Creditor tab
       And I should see the minor creditor name contains "Mr John AMENDMINOR{uniqUpper}"
 
-    @R1B @JIRA-STORY:PO-1984 @JIRA-EPIC:PO-1285 @JIRA-TEST-KEY:PO-7550
+    @R1B @JIRA-STORY:PO-1984 @JIRA-STORY:PO-9700 @JIRA-EPIC:PO-1285 @JIRA-TEST-KEY:PO-7550
     Scenario: Amend minor creditor's first name and save, return to the Creditor tab and see the updated name
       # AC2b – Save valid changes returns to Creditor and persists updates
       When I amend the minor creditor first name to "Updated" and save
