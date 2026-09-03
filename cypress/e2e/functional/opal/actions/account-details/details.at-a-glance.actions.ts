@@ -14,6 +14,45 @@ const log = createScopedLogger('AccountDetailsAtAGlanceActions');
 export class AccountDetailsAtAGlanceActions {
   private readonly common = new CommonActions();
 
+  /**
+   * Normalizes visible text for stable whitespace-insensitive assertions.
+   *
+   * @param value - Raw text content read from the page.
+   * @returns Text with non-breaking spaces replaced and whitespace collapsed.
+   */
+  private normalize(value: string): string {
+    return value.replace(/\u00a0/g, ' ').replace(/\s+/g, ' ').trim();
+  }
+
+  /**
+   * Asserts a map of label/value pairs using the supplied selector mapping.
+   *
+   * @param expected - Expected values keyed by visible label text.
+   * @param fieldSelectors - Mapping of normalized labels to locators.
+   * @param scope - Root selector that must be visible before assertions run.
+   */
+  private assertMappedValues(expected: Record<string, string>, fieldSelectors: Record<string, string>, scope: string): void {
+    cy.get(scope, { timeout: 15000 }).should('be.visible');
+
+    Object.entries(expected).forEach(([label, value]) => {
+      const normalizedLabel = label.trim().toLowerCase();
+      const selector = fieldSelectors[normalizedLabel];
+
+      if (!selector) {
+        throw new Error(
+          `Unsupported At a glance label "${label}". Supported labels: ${Object.keys(fieldSelectors).join(', ')}`,
+        );
+      }
+
+      log('assert', 'Asserting At a glance value', { label, value });
+
+      cy.get(selector, this.common.getTimeoutOptions())
+        .should('be.visible')
+        .invoke('text')
+        .then((text) => expect(this.normalize(text)).to.contain(this.normalize(value)));
+    });
+  }
+
   /** Asserts that the FAE At a glance account-details view has rendered. */
   public assertAtAGlancePageVisible(): void {
     cy.get(N.header.title, this.common.getPathTimeoutOptions()).should('be.visible');
@@ -76,6 +115,35 @@ export class AccountDetailsAtAGlanceActions {
   }
 
   /**
+   * Asserts the account number caption shown above the page title.
+   *
+   * @param expected - Expected account number caption.
+   */
+  public assertAccountNumberCaption(expected: string): void {
+    cy.get(N.header.accountIdCaption, { timeout: 15000 })
+      .should('be.visible')
+      .invoke('text')
+      .then((text) => expect(this.normalize(text)).to.eq(this.normalize(expected)));
+  }
+
+  /**
+   * Asserts the summary metric bar values shown above the tabs.
+   *
+   * @param expected - Map of visible metric labels to expected values.
+   */
+  public assertSummaryMetricValues(expected: Record<string, string>): void {
+    const fieldSelectors: Record<string, string> = {
+      imposed: H.imposedAmountValue,
+      arrears: H.arrearsAmountValue,
+      'paid/written off': H.paidWrittenOffValue,
+      'paid written off': H.paidWrittenOffValue,
+      'account balance': H.accountBalanceValue,
+    };
+
+    this.assertMappedValues(expected, fieldSelectors, H.summaryMetricBar);
+  }
+
+  /**
    * Asserts the language preference values shown on the At a glance tab.
    *
    * @param expected - Map of language preference labels to expected values.
@@ -105,6 +173,58 @@ export class AccountDetailsAtAGlanceActions {
         .invoke('text')
         .then((text) => expect(text.trim()).to.contain(value));
     });
+  }
+
+  /**
+   * Asserts selected defendant values shown on the At a glance tab.
+   *
+   * @param expected - Map of visible labels to expected values.
+   */
+  public assertDefendantValues(expected: Record<string, string>): void {
+    const fieldSelectors: Record<string, string> = {
+      name: N.fields.name,
+      aliases: N.fields.aliases,
+      'date of birth': N.fields.dateOfBirth,
+      address: N.fields.address,
+      'national insurance number': N.fields.nationalInsuranceNumber,
+    };
+
+    this.assertMappedValues(expected, fieldSelectors, N.sections.atAGlanceTabRoot);
+  }
+
+  /**
+   * Asserts selected payment terms values shown on the At a glance tab.
+   *
+   * @param expected - Map of visible labels to expected values.
+   */
+  public assertPaymentTermsValues(expected: Record<string, string>): void {
+    const fieldSelectors: Record<string, string> = {
+      'payment terms': N.fields.paymentTermsType,
+      'pay by date': N.fields.paymentByDate,
+      frequency: N.fields.paymentFrequency,
+      instalments: N.fields.paymentInstalments,
+      'start date': N.fields.paymentStartDate,
+    };
+
+    this.assertMappedValues(expected, fieldSelectors, N.sections.atAGlanceTabRoot);
+  }
+
+  /**
+   * Asserts selected enforcement status values shown on the At a glance tab.
+   *
+   * @param expected - Map of visible labels to expected values.
+   */
+  public assertEnforcementStatusValues(expected: Record<string, string>): void {
+    const fieldSelectors: Record<string, string> = {
+      status: N.fields.enforcementStatusTag,
+      'enforcement status': N.fields.enforcementStatusTag,
+      'collection order': N.fields.enforcementStatusBadge,
+      'days in default': N.fields.daysInDefault,
+      'date of last movement': N.fields.dateOfLastMovement,
+      'enforcement override': N.fields.enforcementOverride,
+    };
+
+    this.assertMappedValues(expected, fieldSelectors, N.sections.atAGlanceTabRoot);
   }
 
   /**

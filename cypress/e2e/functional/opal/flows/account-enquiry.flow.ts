@@ -13,6 +13,7 @@ import { AccountDetailsMinorCreditorActions } from '../actions/account-details/d
 import { AccountDetailsPaymentTermsActions } from '../actions/account-details/details.payment-terms.actions';
 import { AccountDetailsFixedPenaltyActions } from '../actions/account-details/details.fixed-penalty.actions';
 import { AccountDetailsHistoryActions } from '../actions/account-details/details.history.actions';
+import { AccountDetailsImpositionsActions } from '../actions/account-details/details.impositions.actions';
 import { AccountDetailsConsolidatedAccountsActions } from '../actions/account-details/details.consolidated-accounts.actions';
 import { AccountSearchIndividualsLocators as L } from '../../../../shared/selectors/account-search/account.search.individuals.locators';
 import { AccountSearchCompaniesLocators as C } from '../../../../shared/selectors/account-search/account.search.companies.locators';
@@ -39,6 +40,46 @@ type MinorCreditorAmendmentSearchResult = {
   amendments: Array<Record<string, unknown>>;
   count: number | undefined;
   recordType: string;
+};
+
+type LegacyDefendantTabName = 'Defendant' | 'Payment terms' | 'Enforcement' | 'Impositions' | 'History and notes';
+
+type LegacyDefendantAccountFixture = {
+  header?: {
+    accountNumber?: string;
+    name?: string;
+    summary?: Record<string, string>;
+    metrics?: Record<string, string>;
+  };
+  atAGlance?: {
+    defendant?: Record<string, string>;
+    paymentTerms?: Record<string, string>;
+    enforcementStatus?: Record<string, string>;
+    comments?: {
+      comment?: string;
+      lines?: string[];
+    };
+  };
+  defendantTab?: {
+    defendant?: Record<string, string>;
+    contact?: Record<string, string>;
+    employer?: Record<string, string>;
+  };
+  paymentTermsTab?: Record<string, string>;
+  enforcementTab?: {
+    overview?: Record<string, string>;
+    lastEnforcementAction?: Record<string, string>;
+    noOutstandingEnforcementActionMessage?: string;
+  };
+  impositionsTab?: {
+    rows?: string[][];
+    emptyState?: string;
+  };
+  historyAndNotesTab?: {
+    columns?: string[];
+    rows?: Array<Record<string, string>>;
+    noResultsMessage?: string;
+  };
 };
 
 /**
@@ -99,8 +140,19 @@ export class AccountEnquiryFlow {
   private readonly enforcement = new AccountDetailsEnforcementActions();
   private readonly removeParentGuardian = new RemoveParentGuardianActions();
   private readonly historyAndNotes = new AccountDetailsHistoryActions();
+  private readonly impositionsDetails = new AccountDetailsImpositionsActions();
   private readonly consolidatedAccounts = new AccountDetailsConsolidatedAccountsActions();
   private readonly responsiveLayout = new AccountDetailsResponsiveLayoutActions();
+
+  /**
+   * Loads the legacy defendant validation fixture used by the Search and Matches journeys.
+   *
+   * @param fixturePath - Cypress fixture path relative to `cypress/fixtures`.
+   * @returns Chainable resolving to the parsed fixture object.
+   */
+  private loadLegacyDefendantAccountFixture(fixturePath: string): Cypress.Chainable<LegacyDefendantAccountFixture> {
+    return cy.fixture<LegacyDefendantAccountFixture>(fixturePath.trim());
+  }
 
   /**
    * Ensures the test is on the Individuals Account Search page.
@@ -698,6 +750,204 @@ export class AccountEnquiryFlow {
     this.detailsNav.goToHistoryAndNotesTab();
     this.detailsNav.assertHistoryAndNotesTabIsActive();
     this.historyAndNotes.assertHistoryAndNotesTabLoaded();
+  }
+
+  /**
+   * Validates the header summary and At a glance sections for a legacy defendant account.
+   *
+   * @param fixturePath - Cypress fixture path containing expected legacy account values.
+   */
+  public validateLegacyDefendantHeaderAndAtAGlance(fixturePath: string): void {
+    logAE('method', 'validateLegacyDefendantHeaderAndAtAGlance()', { fixturePath });
+
+    this.loadLegacyDefendantAccountFixture(fixturePath).then((fixture) => {
+      this.detailsNav.assertAtAGlanceTabIsActive();
+      this.atAGlanceDetails.assertAtAGlancePageVisible();
+
+      if (fixture.header?.accountNumber) {
+        this.atAGlanceDetails.assertAccountNumberCaption(fixture.header.accountNumber);
+      }
+
+      if (fixture.header?.name) {
+        this.atAGlanceDetails.assertHeaderContains(fixture.header.name);
+      }
+
+      if (fixture.header?.summary) {
+        this.atAGlanceDetails.assertAccountHeaderSummaryValues(fixture.header.summary);
+      }
+
+      if (fixture.header?.metrics) {
+        this.atAGlanceDetails.assertSummaryMetricValues(fixture.header.metrics);
+      }
+
+      if (fixture.atAGlance?.defendant) {
+        this.atAGlanceDetails.assertDefendantValues(fixture.atAGlance.defendant);
+      }
+
+      if (fixture.atAGlance?.paymentTerms) {
+        this.atAGlanceDetails.assertPaymentTermsValues(fixture.atAGlance.paymentTerms);
+      }
+
+      if (fixture.atAGlance?.enforcementStatus) {
+        this.atAGlanceDetails.assertEnforcementStatusValues(fixture.atAGlance.enforcementStatus);
+      }
+
+      if (fixture.atAGlance?.comments?.comment || fixture.atAGlance?.comments?.lines?.length) {
+        this.atAGlanceDetails.assertCommentsSection(fixture.atAGlance.comments ?? {});
+      }
+    });
+  }
+
+  /**
+   * Validates the Defendant tab summary cards for a legacy defendant account.
+   *
+   * @param fixturePath - Cypress fixture path containing expected legacy account values.
+   */
+  public validateLegacyDefendantTab(fixturePath: string): void {
+    logAE('method', 'validateLegacyDefendantTab()', { fixturePath });
+
+    this.loadLegacyDefendantAccountFixture(fixturePath).then((fixture) => {
+      this.detailsNav.assertDefendantTabIsActive();
+      this.defendantDetails.assertSectionHeader('Defendant details');
+
+      if (fixture.defendantTab?.defendant) {
+        this.defendantDetails.assertDefendantDetails(fixture.defendantTab.defendant);
+      }
+
+      if (fixture.defendantTab?.contact) {
+        this.defendantDetails.assertContactDetails(fixture.defendantTab.contact);
+      }
+
+      if (fixture.defendantTab?.employer) {
+        this.defendantDetails.assertEmployerDetails(fixture.defendantTab.employer);
+      }
+    });
+  }
+
+  /**
+   * Validates the Payment terms tab values for a legacy defendant account.
+   *
+   * @param fixturePath - Cypress fixture path containing expected legacy account values.
+   */
+  public validateLegacyDefendantPaymentTermsTab(fixturePath: string): void {
+    logAE('method', 'validateLegacyDefendantPaymentTermsTab()', { fixturePath });
+
+    this.loadLegacyDefendantAccountFixture(fixturePath).then((fixture) => {
+      this.detailsNav.assertPaymentTermsTabIsActive();
+      this.paymentTerms.assertPaymentTermsTabVisible();
+
+      if (fixture.paymentTermsTab && Object.keys(fixture.paymentTermsTab).length > 0) {
+        this.paymentTerms.assertPaymentTermsValues(fixture.paymentTermsTab);
+      }
+    });
+  }
+
+  /**
+   * Validates the Enforcement tab values for a legacy defendant account.
+   *
+   * @param fixturePath - Cypress fixture path containing expected legacy account values.
+   */
+  public validateLegacyDefendantEnforcementTab(fixturePath: string): void {
+    logAE('method', 'validateLegacyDefendantEnforcementTab()', { fixturePath });
+
+    this.loadLegacyDefendantAccountFixture(fixturePath).then((fixture) => {
+      this.detailsNav.assertEnforcementTabIsActive();
+      this.enforcement.assertEnforcementTabVisible();
+
+      if (fixture.enforcementTab?.overview) {
+        this.enforcement.assertEnforcementOverview(fixture.enforcementTab.overview);
+      }
+
+      if (fixture.enforcementTab?.lastEnforcementAction) {
+        this.enforcement.assertLastEnforcementActionDetails(fixture.enforcementTab.lastEnforcementAction);
+      } else if (fixture.enforcementTab?.noOutstandingEnforcementActionMessage) {
+        this.enforcement.assertNoOutstandingEnforcementActionMessage(
+          fixture.enforcementTab.noOutstandingEnforcementActionMessage,
+        );
+      }
+    });
+  }
+
+  /**
+   * Validates the Impositions tab data when fixture expectations are available.
+   *
+   * @param fixturePath - Cypress fixture path containing expected legacy account values.
+   */
+  public validateLegacyDefendantImpositionsTab(fixturePath: string): void {
+    logAE('method', 'validateLegacyDefendantImpositionsTab()', { fixturePath });
+
+    this.loadLegacyDefendantAccountFixture(fixturePath).then((fixture) => {
+      this.detailsNav.assertImpositionsTabIsActive();
+      this.impositionsDetails.assertImpositionsTabVisible();
+
+      if (fixture.impositionsTab?.rows?.length) {
+        this.impositionsDetails.assertDefendantAccountImpositionsLoaded(fixture.impositionsTab.rows);
+      } else if (fixture.impositionsTab?.emptyState) {
+        this.impositionsDetails.assertEmptyState(fixture.impositionsTab.emptyState);
+      }
+    });
+  }
+
+  /**
+   * Validates the History and notes tab data when fixture expectations are available.
+   *
+   * @param fixturePath - Cypress fixture path containing expected legacy account values.
+   */
+  public validateLegacyDefendantHistoryAndNotesTab(fixturePath: string): void {
+    logAE('method', 'validateLegacyDefendantHistoryAndNotesTab()', { fixturePath });
+
+    this.loadLegacyDefendantAccountFixture(fixturePath).then((fixture) => {
+      this.detailsNav.assertHistoryAndNotesTabIsActive();
+      this.historyAndNotes.assertHistoryAndNotesTabVisible();
+
+      if (fixture.historyAndNotesTab?.noResultsMessage) {
+        this.historyAndNotes.assertHistoryAndNotesNoResultsMessage(fixture.historyAndNotesTab.noResultsMessage);
+        return;
+      }
+
+      if (fixture.historyAndNotesTab?.columns?.length) {
+        this.historyAndNotes.assertHistoryAndNotesColumns(fixture.historyAndNotesTab.columns);
+      }
+
+      if (fixture.historyAndNotesTab?.rows?.length) {
+        this.historyAndNotes.assertHistoryAndNotesRows(fixture.historyAndNotesTab.rows);
+      }
+    });
+  }
+
+  /**
+   * Navigates to a legacy defendant tab and validates it using fixture-backed expectations.
+   *
+   * @param tabName - Tab label to navigate to.
+   * @param fixturePath - Cypress fixture path containing expected legacy account values.
+   */
+  public goToLegacyDefendantTabAndValidate(tabName: LegacyDefendantTabName, fixturePath: string): void {
+    logAE('method', 'goToLegacyDefendantTabAndValidate()', { tabName, fixturePath });
+
+    switch (tabName) {
+      case 'Defendant':
+        this.detailsNav.goToDefendantTab();
+        this.validateLegacyDefendantTab(fixturePath);
+        break;
+      case 'Payment terms':
+        this.goToPaymentTermsTab();
+        this.validateLegacyDefendantPaymentTermsTab(fixturePath);
+        break;
+      case 'Enforcement':
+        this.goToEnforcementTab();
+        this.validateLegacyDefendantEnforcementTab(fixturePath);
+        break;
+      case 'Impositions':
+        this.detailsNav.goToImpositionsTab();
+        this.validateLegacyDefendantImpositionsTab(fixturePath);
+        break;
+      case 'History and notes':
+        this.goToHistoryAndNotesTab();
+        this.validateLegacyDefendantHistoryAndNotesTab(fixturePath);
+        break;
+      default:
+        throw new Error(`Unsupported legacy defendant tab: ${tabName}`);
+    }
   }
 
   /**

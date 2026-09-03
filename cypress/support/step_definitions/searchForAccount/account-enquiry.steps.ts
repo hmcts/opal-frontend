@@ -567,6 +567,14 @@ When('I go to the Fixed penalty section and the header is {string}', (expected: 
 });
 
 /**
+ * @step Navigates to the Defendant tab.
+ */
+When('I go to the Defendant tab', () => {
+  log('step', 'Navigate to Defendant tab');
+  navActions().goToDefendantTab();
+});
+
+/**
  * @step Navigates to the Payment terms tab.
  */
 When('I go to the Payment terms tab', () => {
@@ -1040,6 +1048,25 @@ Then('I should see the following minor creditor summary metric values:', (table:
   log('assert', 'Asserting minor creditor summary metric values', { expectedValues });
   atAGlanceDetails().assertMinorCreditorSummaryMetricValues(expectedValues);
 });
+
+Then('I validate the legacy defendant header and At a glance tab using fixture {string}', (fixturePath: string) => {
+  log('assert', 'Validate legacy defendant header and At a glance tab', { fixturePath });
+  accountEnquiryFlow().validateLegacyDefendantHeaderAndAtAGlance(fixturePath);
+});
+
+/**
+ * @step Navigates to the selected legacy defendant tab and validates its fixture-backed content.
+ */
+When(
+  /^I go to the (Defendant|Payment terms|Enforcement|Impositions|History and notes) tab and validate the legacy defendant using fixture "([^"]+)"$/,
+  (tabName: string, fixturePath: string) => {
+    log('step', 'Navigate to legacy defendant tab and validate fixture-backed content', { tabName, fixturePath });
+    accountEnquiryFlow().goToLegacyDefendantTabAndValidate(
+      tabName as 'Defendant' | 'Payment terms' | 'Enforcement' | 'Impositions' | 'History and notes',
+      fixturePath,
+    );
+  },
+);
 
 /**
  * @step Asserts the payment terms tab is active.

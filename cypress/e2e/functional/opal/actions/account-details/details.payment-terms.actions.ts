@@ -19,6 +19,33 @@ export class AccountDetailsPaymentTermsActions {
   private static readonly DEFAULT_TIMEOUT = 15_000;
 
   /**
+   * Asserts a map of label/value pairs within the Payment terms tab.
+   *
+   * @param expected - Expected values keyed by visible label text.
+   * @param fieldSelectors - Mapping of normalized labels to locators.
+   */
+  private assertMappedValues(expected: Record<string, string>, fieldSelectors: Record<string, string>): void {
+    cy.get(L.tab.root, { timeout: AccountDetailsPaymentTermsActions.DEFAULT_TIMEOUT }).should('be.visible');
+
+    Object.entries(expected).forEach(([label, value]) => {
+      const normalizedLabel = label.trim().toLowerCase();
+      const selector = fieldSelectors[normalizedLabel];
+
+      if (!selector) {
+        throw new Error(
+          `Unsupported Payment terms label "${label}". Supported labels: ${Object.keys(fieldSelectors).join(', ')}`,
+        );
+      }
+
+      log('assert', 'Asserting Payment terms value', { label, value });
+      cy.get(selector, this.common.getTimeoutOptions())
+        .should('be.visible')
+        .invoke('text')
+        .then((text) => expect(this.normalize(text)).to.contain(this.normalize(value)));
+    });
+  }
+
+  /**
    * Opens the payment terms amend form from the details tab.
    */
   public openChangeLink(): void {
@@ -152,6 +179,30 @@ export class AccountDetailsPaymentTermsActions {
   public assertPaymentTermsTabVisible(): void {
     log('assert', 'Payment terms tab is visible');
     cy.get(L.tab.root, { timeout: AccountDetailsPaymentTermsActions.DEFAULT_TIMEOUT }).should('be.visible');
+  }
+
+  /**
+   * Asserts visible values within the Payment terms tab.
+   *
+   * @param expected - Map of visible labels to expected values.
+   */
+  public assertPaymentTermsValues(expected: Record<string, string>): void {
+    const fieldSelectors: Record<string, string> = {
+      'pay by date': L.fields.effectiveDate,
+      'start date': L.fields.effectiveDate,
+      'days in default': L.fields.daysInDefault,
+      'date days in default were imposed': L.fields.dateDaysInDefaultImposed,
+      'payment card last requested': L.fields.paymentCardLastRequested,
+      instalment: L.fields.instalmentAmount,
+      'instalment amount': L.fields.instalmentAmount,
+      frequency: L.fields.instalmentFrequency,
+      'lump sum': L.fields.lumpSumAmount,
+      'date last amended': L.fields.dateLastAmended,
+      'last amended by': L.fields.lastAmendedBy,
+      'amendment reason': L.fields.amendmentReason,
+    };
+
+    this.assertMappedValues(expected, fieldSelectors);
   }
 
   /**

@@ -51,6 +51,34 @@ export class AccountDetailsEnforcementActions {
   }
 
   /**
+   * Asserts a map of label/value pairs within a specific Enforcement tab card.
+   *
+   * @param expected - Expected values keyed by visible label text.
+   * @param fieldSelectors - Mapping of normalized labels to locators.
+   * @param scope - Root selector that must be visible before assertions run.
+   */
+  private assertMappedValues(expected: Record<string, string>, fieldSelectors: Record<string, string>, scope: string): void {
+    cy.get(scope, { timeout: AccountDetailsEnforcementActions.DEFAULT_TIMEOUT }).should('be.visible');
+
+    Object.entries(expected).forEach(([label, value]) => {
+      const normalizedLabel = label.trim().toLowerCase();
+      const selector = fieldSelectors[normalizedLabel];
+
+      if (!selector) {
+        throw new Error(
+          `Unsupported Enforcement tab label "${label}". Supported labels: ${Object.keys(fieldSelectors).join(', ')}`,
+        );
+      }
+
+      log('assert', 'Asserting Enforcement tab value', { label, value });
+      cy.get(selector, { timeout: AccountDetailsEnforcementActions.DEFAULT_TIMEOUT })
+        .should('be.visible')
+        .invoke('text')
+        .then((text) => expect(this.normalize(text)).to.contain(this.normalize(value)));
+    });
+  }
+
+  /**
    * Asserts the Enforcement tab content is visible.
    */
   public assertEnforcementTabVisible(): void {
@@ -58,6 +86,53 @@ export class AccountDetailsEnforcementActions {
     cy.contains(ENF.tableTitle, 'Enforcement overview', {
       timeout: AccountDetailsEnforcementActions.DEFAULT_TIMEOUT,
     }).should('be.visible');
+  }
+
+  /**
+   * Asserts the Enforcement overview card values.
+   *
+   * @param expected - Map of visible labels to expected values.
+   */
+  public assertEnforcementOverview(expected: Record<string, string>): void {
+    const fieldSelectors: Record<string, string> = {
+      'collection order status': ENF.collectionOrderStatusValue,
+      'days in default': ENF.daysInDefaultValue,
+      'enforcement court': ENF.enforcementCourtValue,
+    };
+
+    this.assertMappedValues(expected, fieldSelectors, ENF.enforcementOverviewList);
+  }
+
+  /**
+   * Asserts the last enforcement action card values.
+   *
+   * @param expected - Map of visible labels to expected values.
+   */
+  public assertLastEnforcementActionDetails(expected: Record<string, string>): void {
+    const fieldSelectors: Record<string, string> = {
+      'enforcement action': ENF.enforcementActionValue,
+      reason: ENF.reasonValue,
+      enforcer: ENF.lastEnfEnforcerValue,
+      'days in default': ENF.lastEnforcementActionDaysInDefaultValue,
+      'warrant number': ENF.warrantNumberValue,
+      'hearing date': ENF.hearingDateValue,
+      court: ENF.courtValue,
+      'date added': ENF.dateAddedValue,
+    };
+
+    this.assertMappedValues(expected, fieldSelectors, ENF.lastEnforcementActionCard);
+  }
+
+  /**
+   * Asserts the last enforcement action empty-state message.
+   *
+   * @param expected - Expected empty-state message.
+   */
+  public assertNoOutstandingEnforcementActionMessage(expected: string): void {
+    log('assert', 'No outstanding enforcement action message', { expected });
+    cy.get(ENF.lastEnforcementActionCard, { timeout: AccountDetailsEnforcementActions.DEFAULT_TIMEOUT })
+      .should('be.visible')
+      .and('contain.text', expected);
   }
 
   /**

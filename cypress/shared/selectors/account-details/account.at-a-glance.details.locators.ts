@@ -133,9 +133,21 @@ export const AccountAtAGlanceLocators = {
     paymentTermsType:
       'app-fines-acc-defendant-details-at-a-glance-tab .govuk-grid-column-one-third:has(h2:contains("Payment terms")) h3:contains("Payment terms") + p',
 
-    /** By date value. */
+    /** Payment frequency value. */
+    paymentFrequency:
+      'app-fines-acc-defendant-details-at-a-glance-tab .govuk-grid-column-one-third:has(h2:contains("Payment terms")) h3:contains("Frequency") + p',
+
+    /** Instalments value. */
+    paymentInstalments:
+      'app-fines-acc-defendant-details-at-a-glance-tab .govuk-grid-column-one-third:has(h2:contains("Payment terms")) h3:contains("Instalments") + p',
+
+    /** Pay by date value. */
     paymentByDate:
-      'app-fines-acc-defendant-details-at-a-glance-tab .govuk-grid-column-one-third:has(h2:contains("Payment terms")) h3:contains("By date") + p',
+      'app-fines-acc-defendant-details-at-a-glance-tab .govuk-grid-column-one-third:has(h2:contains("Payment terms")) h3:contains("Pay by date") + p',
+
+    /** Start date value. */
+    paymentStartDate:
+      'app-fines-acc-defendant-details-at-a-glance-tab .govuk-grid-column-one-third:has(h2:contains("Payment terms")) h3:contains("Start date") + p',
 
     // Enforcement status column
     /** Enforcement status tag text. */
@@ -143,6 +155,14 @@ export const AccountAtAGlanceLocators = {
 
     /** Enforcement status badge text. */
     enforcementStatusBadge: 'app-fines-acc-defendant-details-at-a-glance-tab span#badge1',
+
+    /** Days in default value. */
+    daysInDefault:
+      'app-fines-acc-defendant-details-at-a-glance-tab .govuk-grid-column-one-third:has(h2:contains("Enforcement status")) h3:contains("Days in default") + p',
+
+    /** Enforcement override value. */
+    enforcementOverride:
+      'app-fines-acc-defendant-details-at-a-glance-tab .govuk-grid-column-one-third:has(h2:contains("Enforcement status")) h3:contains("Enforcement override") + p',
 
     /** Date of last movement value. */
     dateOfLastMovement:

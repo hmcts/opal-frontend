@@ -1,3 +1,7 @@
+/**
+ * @file details.history.actions.ts
+ * @description Actions for asserting and stubbing the Account Details "History and notes" tab.
+ */
 import { ACCOUNT_ENQUIRY_HISTORY_AND_NOTES_ELEMENTS as L } from '../../../../../shared/selectors/account-enquiry/account.enquiry.history-and-notes.locators';
 import { createScopedLogger } from '../../../../../support/utils/log.helper';
 
@@ -13,6 +17,16 @@ type HistoryAndNotesResponse = {
  */
 export class AccountDetailsHistoryActions {
   private static readonly DEFAULT_TIMEOUT = 15_000;
+
+  /**
+   * Normalizes visible text for stable whitespace-insensitive assertions.
+   *
+   * @param value - Raw text content read from the page.
+   * @returns Text with non-breaking spaces replaced and whitespace collapsed.
+   */
+  private normalize(value: string): string {
+    return value.replace(/\u00a0/g, ' ').replace(/\s+/g, ' ').trim();
+  }
 
   /**
    * Builds the deterministic History and notes API payload used by E2E tests.
@@ -135,6 +149,86 @@ export class AccountDetailsHistoryActions {
         const headers = [...$headers].map((header) => header.textContent?.replace(/\s+/g, ' ').trim() ?? '');
         expect(headers).to.deep.equal(['Date', 'User', 'Type', 'Details', 'Amount']);
       });
+  }
+
+  /**
+   * Asserts the History and notes tab shell is visible without relying on a stub alias.
+   */
+  public assertHistoryAndNotesTabVisible(): void {
+    log('assert', 'Asserting History and notes tab is visible');
+
+    cy.get(L.tabRoot, { timeout: AccountDetailsHistoryActions.DEFAULT_TIMEOUT }).should('be.visible');
+    cy.get('body', { timeout: AccountDetailsHistoryActions.DEFAULT_TIMEOUT }).should(($body) => {
+      const tableCount = $body.find(L.table).length;
+      const noResultsCount = $body.find(L.noResultsMessage).length;
+
+      expect(tableCount + noResultsCount).to.be.greaterThan(0);
+    });
+  }
+
+  /**
+   * Asserts the History and notes table column headers.
+   *
+   * @param expectedColumns - Expected column headings in rendered order.
+   */
+  public assertHistoryAndNotesColumns(expectedColumns: string[]): void {
+    log('assert', 'Asserting History and notes columns', { expectedColumns });
+
+    cy.get(L.table, { timeout: AccountDetailsHistoryActions.DEFAULT_TIMEOUT }).should('be.visible');
+    cy.get(L.tableHeadings, { timeout: AccountDetailsHistoryActions.DEFAULT_TIMEOUT })
+      .find('th')
+      .then(($headers) => {
+        const headers = [...$headers].map((header) => this.normalize(header.textContent ?? ''));
+        expect(headers).to.deep.equal(expectedColumns.map((column) => this.normalize(column)));
+      });
+  }
+
+  /**
+   * Asserts History and notes table rows using the rendered cell text.
+   *
+   * @param expectedRows - Expected row objects keyed by Date, User, Type, Details, Amount.
+   */
+  public assertHistoryAndNotesRows(expectedRows: Array<Record<string, string>>): void {
+    log('assert', 'Asserting History and notes row values', { expectedRows });
+
+    const columnSelectors: Record<string, (rowIndex: number) => string> = {
+      date: (rowIndex: number) => `#history-and-notes-date-${rowIndex}`,
+      user: (rowIndex: number) => `#history-and-notes-user-${rowIndex}`,
+      type: (rowIndex: number) => `#history-and-notes-type-${rowIndex}`,
+      details: (rowIndex: number) => `#history-and-notes-details-${rowIndex}`,
+      amount: (rowIndex: number) => `#history-and-notes-amount-${rowIndex}`,
+    };
+
+    cy.get(L.tableRows, { timeout: AccountDetailsHistoryActions.DEFAULT_TIMEOUT }).should('have.length', expectedRows.length);
+
+    expectedRows.forEach((row, rowIndex) => {
+      Object.entries(row).forEach(([label, value]) => {
+        const selector = columnSelectors[label.trim().toLowerCase()];
+
+        if (!selector) {
+          throw new Error(
+            `Unsupported History and notes label "${label}". Supported labels: ${Object.keys(columnSelectors).join(', ')}`,
+          );
+        }
+
+        cy.get(selector(rowIndex), { timeout: AccountDetailsHistoryActions.DEFAULT_TIMEOUT })
+          .should('be.visible')
+          .invoke('text')
+          .then((text) => expect(this.normalize(text)).to.contain(this.normalize(value)));
+      });
+    });
+  }
+
+  /**
+   * Asserts the History and notes empty-state message.
+   *
+   * @param expected - Expected message shown when there are no results.
+   */
+  public assertHistoryAndNotesNoResultsMessage(expected: string): void {
+    log('assert', 'Asserting History and notes empty-state message', { expected });
+    cy.get(L.noResultsMessage, { timeout: AccountDetailsHistoryActions.DEFAULT_TIMEOUT })
+      .should('be.visible')
+      .and('contain.text', expected);
   }
 
   /**
