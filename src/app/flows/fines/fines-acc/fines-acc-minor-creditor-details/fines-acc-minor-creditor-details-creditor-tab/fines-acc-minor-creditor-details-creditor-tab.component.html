@@ -3,14 +3,16 @@
     <div class="govuk-grid-column-two-thirds">
       <h2 [class]="style.heading">Creditor Details</h2>
     </div>
-    @if (hasAccountMaintenancePermission) {
-      <div class="govuk-grid-column-one-third govuk-!-text-align-right govuk-!-margin-top-3">
-        <a [class]="style.changeLink" [routerLink]="changeCreditorDetailsLink()">Change</a>
-      </div>
-    }
   </div>
   <hr [class]="style.hr" />
   <opal-lib-govuk-summary-card-list cardTitle="Minor creditor details" summaryCardListId="creditor-details">
+    @if (hasMinorCreditorMaintenancePermission) {
+      <ng-container actions>
+        <li class="govuk-summary-card__action">
+          <a class="govuk-link govuk-link--no-visited-state" [routerLink]="changeCreditorDetailsLink()">Change</a>
+        </li>
+      </ng-container>
+    }
     <ng-container content>
       <opal-lib-govuk-summary-list summaryListId="creditorDetailsNameAddress">
         <div
