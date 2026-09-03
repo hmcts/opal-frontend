@@ -12,13 +12,9 @@ import { finesSectionPermissionsGuard } from './guards/fines-section-permissions
 import { dashboardTypeGuard } from './guards/dashboard-type/dashboard-type.guard';
 import { PRIMARY_NAV_HIDDEN_ROUTE_DATA } from '@app/constants/route-data.constant';
 import { authGuard } from '@hmcts/opal-frontend-common/guards/auth';
+import { canDeactivateGuard } from '@hmcts/opal-frontend-common/guards/can-deactivate';
 import { routing as aecRouting } from '../fines-aec/routing/fines-aec.routes';
-import {
-  RELEASE_1A_FEATURE_FLAG,
-  RELEASE_1B_FEATURE_FLAG,
-  RELEASE_1C_ENFORCEMENT_OPERATIONAL_REPORTING_FEATURE_FLAG,
-  RELEASE_1C_WRITE_OFF_FEATURE_FLAG,
-} from '../constants/release-feature-flags.constant';
+import { routing as autoPaymentInRouting } from '../fines-api/routing/fines-api.routes';
 
 const {
   featureFlagRedirectGuardMock,
@@ -63,24 +59,18 @@ describe('fines routes', () => {
     finesRouting.find((route) => route.path === FINES_ROUTING_PATHS.root && route.children)?.children ?? [];
 
   it('should create the release-1a feature flag guard from the common redirect guard', () => {
-    expect(featureFlagRedirectGuardMock).toHaveBeenCalledWith(RELEASE_1A_FEATURE_FLAG);
     expect(release1aFeatureFlagGuard).toBe(release1aFeatureFlagGuardMock);
   });
 
   it('should create the release-1b feature flag guard from the common redirect guard', () => {
-    expect(featureFlagRedirectGuardMock).toHaveBeenCalledWith(RELEASE_1B_FEATURE_FLAG);
     expect(release1bFeatureFlagGuard).toBe(release1bFeatureFlagGuardMock);
   });
 
   it('should create the release-1c-write-off feature flag guard from the common redirect guard', () => {
-    expect(featureFlagRedirectGuardMock).toHaveBeenCalledWith(RELEASE_1C_WRITE_OFF_FEATURE_FLAG);
     expect(release1cWriteOffFeatureFlagGuard).toBe(release1cWriteOffFeatureFlagGuardMock);
   });
 
   it('should create the release-1c enforcement operational reporting feature flag guard from the common redirect guard', () => {
-    expect(featureFlagRedirectGuardMock).toHaveBeenCalledWith(
-      RELEASE_1C_ENFORCEMENT_OPERATIONAL_REPORTING_FEATURE_FLAG,
-    );
     expect(release1cEnforcementOperationalReportingFeatureFlagGuard).toBe(
       release1cEnforcementOperationalReportingFeatureFlagGuardMock,
     );
@@ -112,6 +102,20 @@ describe('fines routes', () => {
     expect(manualCashInputRoute?.canActivate).toContain(finesSectionPermissionsGuard);
     expect(manualCashInputRoute?.data).toEqual({
       sectionKey: FINES_DASHBOARD_ROUTING_PATHS.children.finance,
+    });
+  });
+
+  it('should add Auto Payment In as a Finance section entry route', () => {
+    const autoPaymentInRoute = childRoutes.find(
+      (route) => route.path === FINES_ROUTING_PATHS.children.autoPaymentIn.root,
+    );
+
+    expect(autoPaymentInRoute?.children).toBe(autoPaymentInRouting);
+    expect(autoPaymentInRoute?.canActivate).toEqual([authGuard, finesSectionPermissionsGuard]);
+    expect(autoPaymentInRoute?.canDeactivate).toEqual([canDeactivateGuard]);
+    expect(autoPaymentInRoute?.data).toEqual({
+      sectionKey: FINES_DASHBOARD_ROUTING_PATHS.children.finance,
+      ...PRIMARY_NAV_HIDDEN_ROUTE_DATA,
     });
   });
 

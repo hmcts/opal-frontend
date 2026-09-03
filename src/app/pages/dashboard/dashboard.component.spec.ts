@@ -12,6 +12,7 @@ import { PermissionsService } from '@hmcts/opal-frontend-common/services/permiss
 import { GlobalStore } from '@hmcts/opal-frontend-common/stores/global';
 import { createSpyObj } from '@app/testing/create-spy-obj.helper';
 import { FINES_PERMISSIONS } from '@app/constants/fines-permissions.constant';
+import { FINES_ROUTING_PATHS } from '@app/flows/fines/routing/constants/fines-routing-paths.constant';
 import {
   RELEASE_1A_FEATURE_FLAG,
   RELEASE_1C_ADMINISTRATION_FEATURE_FLAG,
@@ -221,10 +222,14 @@ describe('DashboardComponent', () => {
     fixture.detectChanges();
 
     const renderedText = fixture.nativeElement.textContent as string;
+    const automaticCashInputLink = fixture.nativeElement.querySelector('#automaticCashInputLink') as HTMLAnchorElement;
 
     expect(renderedText).toContain('Cash');
     expect(renderedText).toContain('Automatic Cash Input');
     expect(renderedText).toContain('Manual cash input');
+    expect(automaticCashInputLink.getAttribute('href')).toBe(
+      `/${FINES_ROUTING_PATHS.root}/${FINES_ROUTING_PATHS.children.autoPaymentIn.root}/${FINES_ROUTING_PATHS.children.autoPaymentIn.children.selectBusinessUnits}`,
+    );
   });
 
   it('should hide the manual cash input link when the user lacks process and allocate payments permission', () => {
