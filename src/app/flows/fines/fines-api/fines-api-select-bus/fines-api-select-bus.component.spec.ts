@@ -208,13 +208,13 @@ describe('FinesApiSelectBusComponent', () => {
     expect(component['selectedBusinessUnitIds']).toEqual(new Set<number>());
   });
 
-  it('should fall back to the local selection set when checking a business unit that is not displayed', () => {
+  it('should check selection state by business unit id', () => {
     fixture.detectChanges();
 
-    component['selectedBusinessUnitIds'] = new Set([999]);
+    component['selectedBusinessUnitIds'] = new Set([77]);
 
-    expect(component['isBusinessUnitSelected'](999)).toBe(true);
-    expect(component['isBusinessUnitSelected'](1000)).toBe(false);
+    expect(component['isBusinessUnitSelected'](77)).toBe(true);
+    expect(component['isBusinessUnitSelected'](65)).toBe(false);
   });
 
   it('should initialise and synchronise business unit checkbox controls', () => {

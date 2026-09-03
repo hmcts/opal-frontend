@@ -18,7 +18,6 @@ import {
 import {
   areAllMultiSelectRowsSelected,
   areSomeMultiSelectRowsSelected,
-  isMultiSelectRowSelected,
   MojMultiSelectBodyDirective,
   MojMultiSelectHeadDirective,
   MultiSelectRowIdentifier,
@@ -254,11 +253,7 @@ export class FinesApiSelectBusComponent implements OnInit {
    * @param businessUnitId - Business unit ID to check.
    */
   protected isBusinessUnitSelected(businessUnitId: number): boolean {
-    const businessUnit = this.businessUnits.find(({ business_unit_id }) => business_unit_id === businessUnitId);
-
-    return businessUnit
-      ? isMultiSelectRowSelected(businessUnit, 0, this.selectedBusinessUnitIds, this.getBusinessUnitId)
-      : this.selectedBusinessUnitIds.has(businessUnitId);
+    return this.selectedBusinessUnitIds.has(businessUnitId);
   }
 
   /**
