@@ -279,3 +279,104 @@ Feature: Defendant Adult Youth Search And Matches Journeys
     Examples:
       | LEGACY_INDIVIDUAL_ACCOUNT_NUMBER | LEGACY_INDIVIDUAL_NAME | LEGACY_INDIVIDUAL_ALIASES | LEGACY_INDIVIDUAL_DOB | LEGACY_INDIVIDUAL_ADR_LINE_1 | LEGACY_INDIVIDUAL_POSTCODE | LEGACY_INDIVIDUAL_NI_NUMBER | LEGACY_INDIVIDUAL_PARENT_GUARDIAN | LEGACY_INDIVIDUAL_BALANCE |
       | placeholder                      | placeholder            | placeholder               | placeholder           | placeholder                  | placeholder                | placeholder                 | placeholder                       | placeholder               |
+
+  @LegacyData @JIRA-STORY:PO-706 @JIRA-EPIC:PO-704
+  # Template only. Populate the example row and fixture, then remove @skip.
+  # Minimum data set required: one parent or guardian legacy account with a searchable account number, expected summary header, and a populated legacy fixture.
+  Scenario Outline: Search for a parent or guardian legacy account by account number and open the matching record
+    Given I am on the Account Search page - Individuals form displayed by default
+    When I search using the following inputs:
+      | account number | <LEGACY_PARENT_GUARDIAN_ACCOUNT_NUMBER> |
+    Then I see the Search results page
+    And I see the Individuals search results:
+      | Account | <LEGACY_PARENT_GUARDIAN_ACCOUNT_NUMBER> |
+    When I open the matching result from the search results:
+      | Business unit | <BUSINESS_UNIT> |
+    Then I should see the account summary header contains "<LEGACY_PARENT_GUARDIAN_SUMMARY_HEADER>"
+    And I validate the legacy defendant header and At a glance tab using fixture "<LEGACY_PARENT_GUARDIAN_VALIDATION_FIXTURE>"
+    When I go to the Defendant tab and validate the legacy defendant using fixture "<LEGACY_PARENT_GUARDIAN_VALIDATION_FIXTURE>"
+    And I go to the Payment terms tab and validate the legacy defendant using fixture "<LEGACY_PARENT_GUARDIAN_VALIDATION_FIXTURE>"
+    And I go to the Enforcement tab and validate the legacy defendant using fixture "<LEGACY_PARENT_GUARDIAN_VALIDATION_FIXTURE>"
+    And I go to the Impositions tab and validate the legacy defendant using fixture "<LEGACY_PARENT_GUARDIAN_VALIDATION_FIXTURE>"
+    And I go to the History and notes tab and validate the legacy defendant using fixture "<LEGACY_PARENT_GUARDIAN_VALIDATION_FIXTURE>"
+    And I go to the Parent or guardian details section and the header is "Parent or guardian details"
+    @R1BDrop1UatTechJCDE
+    Examples:
+      | LEGACY_PARENT_GUARDIAN_ACCOUNT_NUMBER | LEGACY_PARENT_GUARDIAN_SUMMARY_HEADER | BUSINESS_UNIT               | LEGACY_PARENT_GUARDIAN_VALIDATION_FIXTURE                                           |
+      | TEMPLATE_JCDE_ACCOUNT_NUMBER          | TEMPLATE_JCDE_SUMMARY_HEADER          | TEMPLATE_JCDE_BUSINESS_UNIT | accountEnquiry/legacyDefendant/templates/jcde/parent-guardian-account-template.json |
+    @R1BDrop1UatTechPreprod
+    Examples:
+      | LEGACY_PARENT_GUARDIAN_ACCOUNT_NUMBER | LEGACY_PARENT_GUARDIAN_SUMMARY_HEADER | BUSINESS_UNIT                  | LEGACY_PARENT_GUARDIAN_VALIDATION_FIXTURE                                              |
+      | TEMPLATE_PREPROD_ACCOUNT_NUMBER       | TEMPLATE_PREPROD_SUMMARY_HEADER       | TEMPLATE_PREPROD_BUSINESS_UNIT | accountEnquiry/legacyDefendant/templates/preprod/parent-guardian-account-template.json |
+
+  @LegacyData @JIRA-STORY:PO-706 @JIRA-EPIC:PO-704
+  # Template only. Populate the example row and fixture, then remove @skip.
+  # Minimum data set required: one fixed penalty legacy individual account with a searchable account number, expected summary header, a populated legacy fixture, and fixed penalty detail values.
+  Scenario Outline: Search for a fixed penalty legacy account by account number and open the matching record
+    Given I am on the Account Search page - Individuals form displayed by default
+    When I search using the following inputs:
+      | account number | <LEGACY_FIXED_PENALTY_ACCOUNT_NUMBER> |
+    Then I see the Search results page
+    And I see the Individuals search results:
+      | Account | <LEGACY_FIXED_PENALTY_ACCOUNT_NUMBER> |
+    When I open the matching result from the search results:
+      | Business unit | <BUSINESS_UNIT> |
+    Then I should see the account summary header contains "<LEGACY_FIXED_PENALTY_SUMMARY_HEADER>"
+    And I validate the legacy defendant header and At a glance tab using fixture "<LEGACY_FIXED_PENALTY_VALIDATION_FIXTURE>"
+    When I go to the Defendant tab and validate the legacy defendant using fixture "<LEGACY_FIXED_PENALTY_VALIDATION_FIXTURE>"
+    And I go to the Payment terms tab and validate the legacy defendant using fixture "<LEGACY_FIXED_PENALTY_VALIDATION_FIXTURE>"
+    And I go to the Enforcement tab and validate the legacy defendant using fixture "<LEGACY_FIXED_PENALTY_VALIDATION_FIXTURE>"
+    And I go to the Impositions tab and validate the legacy defendant using fixture "<LEGACY_FIXED_PENALTY_VALIDATION_FIXTURE>"
+    And I go to the History and notes tab and validate the legacy defendant using fixture "<LEGACY_FIXED_PENALTY_VALIDATION_FIXTURE>"
+    And I should see the Fixed penalty tab
+    When I go to the Fixed penalty section and the header is "Fixed Penalty details"
+    Then I should see the fixed penalty details:
+      | issuing authority                         | <LEGACY_FIXED_PENALTY_ISSUING_AUTHORITY> |
+      | ticket number                             | <LEGACY_FIXED_PENALTY_TICKET_NUMBER>     |
+      | registration number                       | <LEGACY_FIXED_PENALTY_REGISTRATION>      |
+      | driving licence                           | <LEGACY_FIXED_PENALTY_DRIVING_LICENCE>   |
+      | notice to owner or hirer number (nto/nth) | <LEGACY_FIXED_PENALTY_NOTICE_NUMBER>     |
+      | date notice to owner was issued           | <LEGACY_FIXED_PENALTY_ISSUED_DATE>       |
+      | time of offence                           | <LEGACY_FIXED_PENALTY_TIME_OF_OFFENCE>   |
+      | place of offence                          | <LEGACY_FIXED_PENALTY_PLACE_OF_OFFENCE>  |
+    @R1BDrop1UatTechJCDE
+    Examples:
+      | LEGACY_FIXED_PENALTY_ACCOUNT_NUMBER | LEGACY_FIXED_PENALTY_SUMMARY_HEADER | BUSINESS_UNIT               | LEGACY_FIXED_PENALTY_VALIDATION_FIXTURE                                           | LEGACY_FIXED_PENALTY_ISSUING_AUTHORITY | LEGACY_FIXED_PENALTY_TICKET_NUMBER | LEGACY_FIXED_PENALTY_REGISTRATION | LEGACY_FIXED_PENALTY_DRIVING_LICENCE | LEGACY_FIXED_PENALTY_NOTICE_NUMBER | LEGACY_FIXED_PENALTY_ISSUED_DATE | LEGACY_FIXED_PENALTY_TIME_OF_OFFENCE | LEGACY_FIXED_PENALTY_PLACE_OF_OFFENCE |
+      | TEMPLATE_JCDE_ACCOUNT_NUMBER        | TEMPLATE_JCDE_SUMMARY_HEADER        | TEMPLATE_JCDE_BUSINESS_UNIT | accountEnquiry/legacyDefendant/templates/jcde/fixed-penalty-account-template.json | TEMPLATE_JCDE_ISSUING_AUTHORITY        | TEMPLATE_JCDE_TICKET_NUMBER        | TEMPLATE_JCDE_REGISTRATION_NUMBER | TEMPLATE_JCDE_DRIVING_LICENCE        | TEMPLATE_JCDE_NOTICE_NUMBER        | TEMPLATE_JCDE_ISSUED_DATE        | TEMPLATE_JCDE_TIME_OF_OFFENCE        | TEMPLATE_JCDE_PLACE_OF_OFFENCE        |
+    @R1BDrop1UatTechPreprod
+    Examples:
+      | LEGACY_FIXED_PENALTY_ACCOUNT_NUMBER | LEGACY_FIXED_PENALTY_SUMMARY_HEADER | BUSINESS_UNIT                  | LEGACY_FIXED_PENALTY_VALIDATION_FIXTURE                                              | LEGACY_FIXED_PENALTY_ISSUING_AUTHORITY | LEGACY_FIXED_PENALTY_TICKET_NUMBER | LEGACY_FIXED_PENALTY_REGISTRATION    | LEGACY_FIXED_PENALTY_DRIVING_LICENCE | LEGACY_FIXED_PENALTY_NOTICE_NUMBER | LEGACY_FIXED_PENALTY_ISSUED_DATE | LEGACY_FIXED_PENALTY_TIME_OF_OFFENCE | LEGACY_FIXED_PENALTY_PLACE_OF_OFFENCE |
+      | TEMPLATE_PREPROD_ACCOUNT_NUMBER     | TEMPLATE_PREPROD_SUMMARY_HEADER     | TEMPLATE_PREPROD_BUSINESS_UNIT | accountEnquiry/legacyDefendant/templates/preprod/fixed-penalty-account-template.json | TEMPLATE_PREPROD_ISSUING_AUTHORITY     | TEMPLATE_PREPROD_TICKET_NUMBER     | TEMPLATE_PREPROD_REGISTRATION_NUMBER | TEMPLATE_PREPROD_DRIVING_LICENCE     | TEMPLATE_PREPROD_NOTICE_NUMBER     | TEMPLATE_PREPROD_ISSUED_DATE     | TEMPLATE_PREPROD_TIME_OF_OFFENCE     | TEMPLATE_PREPROD_PLACE_OF_OFFENCE     |
+
+  @LegacyData @JIRA-STORY:PO-706 @JIRA-EPIC:PO-704
+  # Template only. Populate the example row and fixture, then remove @skip.
+  # Minimum data set required: one legacy defendant account with consolidated child accounts, a searchable account number, expected summary header, and a populated legacy fixture.
+  Scenario Outline: Search for a legacy account with consolidated accounts by account number and open the matching record
+    Given I am on the Account Search page - Individuals form displayed by default
+    When I search using the following inputs:
+      | account number | <LEGACY_CONSOLIDATED_ACCOUNT_NUMBER> |
+    Then I see the Search results page
+    And I see the Individuals search results:
+      | Account | <LEGACY_CONSOLIDATED_ACCOUNT_NUMBER> |
+    When I open the matching result from the search results:
+      | Business unit | <BUSINESS_UNIT> |
+    Then I should see the account summary header contains "<LEGACY_CONSOLIDATED_SUMMARY_HEADER>"
+    And I validate the legacy defendant header and At a glance tab using fixture "<LEGACY_CONSOLIDATED_VALIDATION_FIXTURE>"
+    When I go to the Defendant tab and validate the legacy defendant using fixture "<LEGACY_CONSOLIDATED_VALIDATION_FIXTURE>"
+    And I go to the Payment terms tab and validate the legacy defendant using fixture "<LEGACY_CONSOLIDATED_VALIDATION_FIXTURE>"
+    And I go to the Enforcement tab and validate the legacy defendant using fixture "<LEGACY_CONSOLIDATED_VALIDATION_FIXTURE>"
+    And I go to the Impositions tab and validate the legacy defendant using fixture "<LEGACY_CONSOLIDATED_VALIDATION_FIXTURE>"
+    And I go to the History and notes tab and validate the legacy defendant using fixture "<LEGACY_CONSOLIDATED_VALIDATION_FIXTURE>"
+    When I view the Consolidated accounts tab
+    Then I can see a table containing the child accounts
+    When I view the first child account record
+    Then I am presented with the details of the selected child account
+    And I am notified that the selected child account is closed because it was consolidated
+    @R1BDrop1UatTechJCDE
+    Examples:
+      | LEGACY_CONSOLIDATED_ACCOUNT_NUMBER | LEGACY_CONSOLIDATED_SUMMARY_HEADER | BUSINESS_UNIT               | LEGACY_CONSOLIDATED_VALIDATION_FIXTURE                                           |
+      | TEMPLATE_JCDE_ACCOUNT_NUMBER       | TEMPLATE_JCDE_SUMMARY_HEADER       | TEMPLATE_JCDE_BUSINESS_UNIT | accountEnquiry/legacyDefendant/templates/jcde/consolidated-account-template.json |
+    @R1BDrop1UatTechPreprod
+    Examples:
+      | LEGACY_CONSOLIDATED_ACCOUNT_NUMBER | LEGACY_CONSOLIDATED_SUMMARY_HEADER | BUSINESS_UNIT                  | LEGACY_CONSOLIDATED_VALIDATION_FIXTURE                                              |
+      | TEMPLATE_PREPROD_ACCOUNT_NUMBER    | TEMPLATE_PREPROD_SUMMARY_HEADER    | TEMPLATE_PREPROD_BUSINESS_UNIT | accountEnquiry/legacyDefendant/templates/preprod/consolidated-account-template.json |
