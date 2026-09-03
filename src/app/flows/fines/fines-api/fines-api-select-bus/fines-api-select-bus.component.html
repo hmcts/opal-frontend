@@ -25,26 +25,28 @@
         <ng-container head>
           <th opal-lib-govuk-table-heading id="fines-api-select-business-units-header-select">
             <span class="govuk-visually-hidden">Select business units</span>
-            <opal-lib-govuk-checkboxes
-              fieldSetId="fines-api-select-business-units-group"
-              checkboxClasses=""
-              legendText=""
-              legendClasses="govuk-!-margin-0"
-            >
-              <div
-                class="govuk-checkboxes--small"
-                opal-lib-govuk-checkboxes-item
-                opalLibMojMultiSelectHead
-                [control]="selectAllControl"
-                inputId="fines-api-select-business-units"
-                inputName="fines-api-select-business-units"
-                labelText=""
-                labelClasses="govuk-!-padding-0"
-                ariaLabel="Select all business units"
-                [selectAllIndeterminate]="someBusinessUnitsSelected"
-                (toggleAll)="toggleAllBusinessUnits($event)"
-              ></div>
-            </opal-lib-govuk-checkboxes>
+            @if (hasBusinessUnits) {
+              <opal-lib-govuk-checkboxes
+                fieldSetId="fines-api-select-business-units-group"
+                checkboxClasses=""
+                legendText=""
+                legendClasses="govuk-!-margin-0"
+              >
+                <div
+                  class="govuk-checkboxes--small"
+                  opal-lib-govuk-checkboxes-item
+                  opalLibMojMultiSelectHead
+                  [control]="selectAllControl"
+                  inputId="fines-api-select-business-units"
+                  inputName="fines-api-select-business-units"
+                  labelText=""
+                  labelClasses="govuk-!-padding-0"
+                  ariaLabel="Select all business units"
+                  [selectAllIndeterminate]="someBusinessUnitsSelected"
+                  (toggleAll)="toggleAllBusinessUnits($event)"
+                ></div>
+              </opal-lib-govuk-checkboxes>
+            }
           </th>
           <th opal-lib-govuk-table-heading id="fines-api-select-business-units-header">Business unit</th>
           <th opal-lib-govuk-table-heading class="govuk-table__header--numeric">Files to process</th>
@@ -99,6 +101,12 @@
                 {{ businessUnit.till_count }}
               </td>
             </tr>
+          } @empty {
+            <tr opal-lib-govuk-table-body-row>
+              <td opal-lib-govuk-table-body-row-data id="fines-api-business-unit-empty" colspan="4">
+                There are no business units available.
+              </td>
+            </tr>
           }
         </ng-container>
       </opal-lib-govuk-table>
@@ -112,6 +120,7 @@
       class="govuk-button govuk-!-margin-right-4"
       (click)="continue()"
       id="fines-api-select-business-units-continue"
+      [disabled]="!hasBusinessUnits"
     >
       Continue
     </button>

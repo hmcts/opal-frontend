@@ -81,9 +81,29 @@ describe('FinesApiSelectBusComponent', () => {
 
     fixture.detectChanges();
 
+    const nativeElement = fixture.nativeElement as HTMLElement;
+    const continueButton = nativeElement.querySelector<HTMLButtonElement>('#fines-api-select-business-units-continue');
+    const selectAllCheckbox = nativeElement.querySelector<HTMLInputElement>('#fines-api-select-business-units');
+
     expect(component['businessUnits']).toEqual([]);
+    expect(component.hasBusinessUnits).toBe(false);
     expect(component.allBusinessUnitsSelected).toBe(false);
     expect(component.someBusinessUnitsSelected).toBe(false);
+    expect(nativeElement.textContent).toContain('There are no business units available.');
+    expect(continueButton?.disabled).toBe(true);
+    expect(selectAllCheckbox).toBeNull();
+  });
+
+  it('should not show a validation error or navigate when continue is triggered without available business units', () => {
+    businessUnitCounts = { business_units: [] };
+
+    fixture.detectChanges();
+
+    component['continue']();
+
+    expect(component['formErrorSummaryMessage']).toEqual([]);
+    expect(component['hasBusinessUnitSelectionError']).toBe(false);
+    expect(routerNavigate).not.toHaveBeenCalled();
   });
 
   it('should report partial and complete business unit selection states', () => {

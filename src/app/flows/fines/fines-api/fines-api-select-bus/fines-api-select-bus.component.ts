@@ -80,6 +80,13 @@ export class FinesApiSelectBusComponent implements OnInit {
   }
 
   /**
+   * Returns whether the resolver supplied any selectable business units.
+   */
+  public get hasBusinessUnits(): boolean {
+    return this.businessUnits.length > 0;
+  }
+
+  /**
    * Returns selected business unit IDs in the same order as the resolver payload.
    */
   private get selectedIdsInDisplayOrder(): number[] {
@@ -305,6 +312,10 @@ export class FinesApiSelectBusComponent implements OnInit {
    * Validates the selection and navigates to Process and Allocate when at least one BU is selected.
    */
   protected continue(): void {
+    if (!this.hasBusinessUnits) {
+      return;
+    }
+
     if (this.selectedBusinessUnitIds.size === 0) {
       this.setValidationError();
       return;
