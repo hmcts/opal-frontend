@@ -18,61 +18,91 @@
         </p>
       }
 
-      <table class="govuk-table">
-        <caption class="govuk-table__caption govuk-visually-hidden">
-          Business units available for Automatic Cash Input
-        </caption>
-        <thead class="govuk-table__head">
-          <tr class="govuk-table__row">
-            <th scope="col" class="govuk-table__header">
-              <div class="govuk-checkboxes govuk-checkboxes--small">
-                <div class="govuk-checkboxes__item">
-                  <input
-                    id="fines-api-select-business-units"
-                    class="govuk-checkboxes__input"
-                    type="checkbox"
-                    [checked]="allBusinessUnitsSelected"
-                    [indeterminate]="someBusinessUnitsSelected"
-                    (change)="toggleAllBusinessUnits($event)"
-                  />
-                  <label class="govuk-label govuk-checkboxes__label" for="fines-api-select-business-units">
-                    <strong>Business unit</strong>
-                  </label>
-                </div>
-              </div>
-            </th>
-            <th scope="col" class="govuk-table__header govuk-table__header--numeric">Files to process</th>
-            <th scope="col" class="govuk-table__header govuk-table__header--numeric">Tills to allocate</th>
-          </tr>
-        </thead>
-        <tbody class="govuk-table__body">
+      <opal-lib-govuk-table
+        tableClasses="fines-api-select-bus-table"
+        caption="Business units available for Automatic Cash Input"
+        captionClasses="govuk-visually-hidden"
+      >
+        <ng-container head>
+          <th opal-lib-govuk-table-heading id="fines-api-select-business-units-header-select">
+            <span class="govuk-visually-hidden">Select business units</span>
+            <opal-lib-govuk-checkboxes
+              fieldSetId="fines-api-select-business-units-group"
+              checkboxClasses=""
+              legendText=""
+              legendClasses="govuk-!-margin-0"
+            >
+              <div
+                class="govuk-checkboxes--small"
+                opal-lib-govuk-checkboxes-item
+                opalLibMojMultiSelectHead
+                [control]="selectAllControl"
+                inputId="fines-api-select-business-units"
+                inputName="fines-api-select-business-units"
+                labelText=""
+                labelClasses="govuk-!-padding-0"
+                ariaLabel="Select all business units"
+                [selectAllIndeterminate]="someBusinessUnitsSelected"
+                (toggleAll)="toggleAllBusinessUnits($event)"
+              ></div>
+            </opal-lib-govuk-checkboxes>
+          </th>
+          <th opal-lib-govuk-table-heading id="fines-api-select-business-units-header">Business unit</th>
+          <th opal-lib-govuk-table-heading class="govuk-table__header--numeric">Files to process</th>
+          <th opal-lib-govuk-table-heading class="govuk-table__header--numeric">Tills to allocate</th>
+        </ng-container>
+
+        <ng-container body>
           @for (businessUnit of businessUnits; track businessUnit.business_unit_id) {
-            <tr class="govuk-table__row">
-              <td class="govuk-table__cell">
-                <div class="govuk-checkboxes govuk-checkboxes--small">
-                  <div class="govuk-checkboxes__item">
-                    <input
-                      [id]="'fines-api-business-unit-' + businessUnit.business_unit_id"
-                      class="govuk-checkboxes__input"
-                      type="checkbox"
-                      [checked]="isBusinessUnitSelected(businessUnit.business_unit_id)"
-                      (change)="toggleBusinessUnit(businessUnit.business_unit_id, $event)"
-                    />
-                    <label
-                      class="govuk-label govuk-checkboxes__label"
-                      [for]="'fines-api-business-unit-' + businessUnit.business_unit_id"
-                    >
-                      {{ businessUnit.business_unit_name }}
-                    </label>
-                  </div>
-                </div>
+            <tr
+              opal-lib-govuk-table-body-row
+              [bodyRowClasses]="
+                isBusinessUnitSelected(businessUnit.business_unit_id) ? 'govuk-table__row--selected' : ''
+              "
+            >
+              <td opal-lib-govuk-table-body-row-data id="fines-api-business-unit-select">
+                <opal-lib-govuk-checkboxes
+                  [fieldSetId]="'fines-api-business-unit-' + businessUnit.business_unit_id + '-group'"
+                  checkboxClasses=""
+                  [legendText]="'Select ' + businessUnit.business_unit_name"
+                  legendClasses="govuk-!-margin-0 govuk-visually-hidden"
+                >
+                  <div
+                    class="govuk-checkboxes--small"
+                    opal-lib-govuk-checkboxes-item
+                    opalLibMojMultiSelectBody
+                    [control]="getBusinessUnitControl(businessUnit)"
+                    [inputId]="'fines-api-business-unit-' + businessUnit.business_unit_id"
+                    [inputName]="'fines-api-business-unit-' + businessUnit.business_unit_id"
+                    labelText=""
+                    labelClasses="govuk-!-padding-0"
+                    [rowId]="businessUnit.business_unit_id"
+                    [ariaLabel]="'Select ' + businessUnit.business_unit_name"
+                    (selectionChange)="toggleBusinessUnit($event)"
+                  ></div>
+                </opal-lib-govuk-checkboxes>
               </td>
-              <td class="govuk-table__cell govuk-table__cell--numeric">{{ businessUnit.file_count }}</td>
-              <td class="govuk-table__cell govuk-table__cell--numeric">{{ businessUnit.till_count }}</td>
+              <td opal-lib-govuk-table-body-row-data id="fines-api-business-unit-name">
+                {{ businessUnit.business_unit_name }}
+              </td>
+              <td
+                opal-lib-govuk-table-body-row-data
+                id="fines-api-business-unit-file-count"
+                class="govuk-table__cell--numeric"
+              >
+                {{ businessUnit.file_count }}
+              </td>
+              <td
+                opal-lib-govuk-table-body-row-data
+                id="fines-api-business-unit-till-count"
+                class="govuk-table__cell--numeric"
+              >
+                {{ businessUnit.till_count }}
+              </td>
             </tr>
           }
-        </tbody>
-      </table>
+        </ng-container>
+      </opal-lib-govuk-table>
     </fieldset>
   </div>
 </div>

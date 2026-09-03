@@ -1,9 +1,30 @@
 import { CommonModule, DOCUMENT } from '@angular/common';
 import { ChangeDetectionStrategy, Component, OnInit, inject } from '@angular/core';
+import { FormControl } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 import { IAbstractFormBaseFormErrorSummaryMessage } from '@hmcts/opal-frontend-common/components/abstract/interfaces';
+import {
+  GovukCheckboxesComponent,
+  GovukCheckboxesItemComponent,
+} from '@hmcts/opal-frontend-common/components/govuk/govuk-checkboxes';
 import { GovukCancelLinkComponent } from '@hmcts/opal-frontend-common/components/govuk/govuk-cancel-link';
 import { GovukErrorSummaryComponent } from '@hmcts/opal-frontend-common/components/govuk/govuk-error-summary';
+import {
+  GovukTableBodyRowComponent,
+  GovukTableBodyRowDataComponent,
+  GovukTableComponent,
+  GovukTableHeadingComponent,
+} from '@hmcts/opal-frontend-common/components/govuk/govuk-table';
+import {
+  areAllMultiSelectRowsSelected,
+  areSomeMultiSelectRowsSelected,
+  isMultiSelectRowSelected,
+  MojMultiSelectBodyDirective,
+  MojMultiSelectHeadDirective,
+  MultiSelectRowIdentifier,
+  toggleAllMultiSelectRows,
+  toggleMultiSelectRow,
+} from '@hmcts/opal-frontend-common/directives/moj-multi-select';
 import { FINES_DASHBOARD_ROUTING_PATHS } from '../../constants/fines-dashboard-routing-paths.constant';
 import { FINES_ROUTING_PATHS } from '../../routing/constants/fines-routing-paths.constant';
 import { IOpalFinesBusinessUnitOutstandingAutoPaymentCount } from '../../services/opal-fines-service/interfaces/opal-fines-business-unit-outstanding-auto-payment-count.interface';
@@ -14,7 +35,19 @@ import { FINES_API_SELECT_BUS_ERRORS } from './constants/fines-api-select-bus-er
 
 @Component({
   selector: 'app-fines-api-select-bus',
-  imports: [CommonModule, GovukCancelLinkComponent, GovukErrorSummaryComponent],
+  imports: [
+    CommonModule,
+    GovukCancelLinkComponent,
+    GovukCheckboxesComponent,
+    GovukCheckboxesItemComponent,
+    GovukErrorSummaryComponent,
+    GovukTableBodyRowComponent,
+    GovukTableBodyRowDataComponent,
+    GovukTableComponent,
+    GovukTableHeadingComponent,
+    MojMultiSelectBodyDirective,
+    MojMultiSelectHeadDirective,
+  ],
   templateUrl: './fines-api-select-bus.component.html',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
@@ -23,25 +56,27 @@ export class FinesApiSelectBusComponent implements OnInit {
   private readonly document = inject(DOCUMENT);
   private readonly router = inject(Router);
   private readonly selectBusinessUnitsErrorMessage = FINES_API_SELECT_BUS_ERRORS.selectAtLeastOneBusinessUnit;
+  private readonly businessUnitControls = new Map<number, FormControl<boolean>>();
 
   protected readonly finesApiStore = inject(FinesApiStore);
   protected businessUnits: IOpalFinesBusinessUnitOutstandingAutoPaymentCount[] = [];
   protected selectedBusinessUnitIds = new Set<number>();
   protected formErrorSummaryMessage: IAbstractFormBaseFormErrorSummaryMessage[] = [];
   protected hasBusinessUnitSelectionError = false;
+  protected readonly selectAllControl = new FormControl<boolean>(false, { nonNullable: true });
 
   /**
    * Returns whether every displayed business unit is currently selected.
    */
   public get allBusinessUnitsSelected(): boolean {
-    return this.businessUnits.length > 0 && this.selectedBusinessUnitIds.size === this.businessUnits.length;
+    return areAllMultiSelectRowsSelected(this.businessUnits, this.selectedBusinessUnitIds, this.getBusinessUnitId);
   }
 
   /**
    * Returns whether some, but not all, displayed business units are selected.
    */
   public get someBusinessUnitsSelected(): boolean {
-    return this.selectedBusinessUnitIds.size > 0 && !this.allBusinessUnitsSelected;
+    return areSomeMultiSelectRowsSelected(this.businessUnits, this.selectedBusinessUnitIds, this.getBusinessUnitId);
   }
 
   /**
@@ -85,6 +120,7 @@ export class FinesApiSelectBusComponent implements OnInit {
   private setSelectedBusinessUnitIds(selectedBusinessUnitIds: number[]): void {
     this.selectedBusinessUnitIds = new Set(selectedBusinessUnitIds);
     this.finesApiStore.setSelectedBusinessUnitIds(this.selectedIdsInDisplayOrder);
+    this.syncSelectionControls();
     this.clearValidationError();
   }
 
@@ -160,6 +196,41 @@ export class FinesApiSelectBusComponent implements OnInit {
 
     this.selectedBusinessUnitIds = new Set(selectedBusinessUnitIds);
     this.updateStoreWhenStoredSelectionsChanged(selectedBusinessUnitIds, storedBusinessUnitIds);
+    this.syncSelectionControls();
+  }
+
+  /**
+   * Synchronises checkbox controls with the current selected business units.
+   */
+  private syncSelectionControls(): void {
+    const displayedBusinessUnitIds = new Set(this.businessUnits.map(({ business_unit_id }) => business_unit_id));
+
+    this.businessUnitControls.forEach((control, businessUnitId) => {
+      if (!displayedBusinessUnitIds.has(businessUnitId)) {
+        this.businessUnitControls.delete(businessUnitId);
+        return;
+      }
+
+      const selected = this.selectedBusinessUnitIds.has(businessUnitId);
+      if (control.value !== selected) {
+        control.setValue(selected, { emitEvent: false });
+      }
+    });
+
+    const allSelected = this.allBusinessUnitsSelected;
+    if (this.selectAllControl.value !== allSelected) {
+      this.selectAllControl.setValue(allSelected, { emitEvent: false });
+    }
+  }
+
+  /**
+   * Returns the stable multi-select row identifier for a business unit.
+   *
+   * @param businessUnit - Business unit row data.
+   * @returns Business unit ID.
+   */
+  protected getBusinessUnitId(businessUnit: IOpalFinesBusinessUnitOutstandingAutoPaymentCount): number {
+    return businessUnit.business_unit_id;
   }
 
   /**
@@ -168,7 +239,36 @@ export class FinesApiSelectBusComponent implements OnInit {
    * @param businessUnitId - Business unit ID to check.
    */
   protected isBusinessUnitSelected(businessUnitId: number): boolean {
-    return this.selectedBusinessUnitIds.has(businessUnitId);
+    const businessUnit = this.businessUnits.find(({ business_unit_id }) => business_unit_id === businessUnitId);
+
+    return businessUnit
+      ? isMultiSelectRowSelected(businessUnit, 0, this.selectedBusinessUnitIds, this.getBusinessUnitId)
+      : this.selectedBusinessUnitIds.has(businessUnitId);
+  }
+
+  /**
+   * Gets or creates a checkbox control for a business unit row.
+   *
+   * @param businessUnit - Business unit row data.
+   * @returns Checkbox form control for row selection.
+   */
+  protected getBusinessUnitControl(
+    businessUnit: IOpalFinesBusinessUnitOutstandingAutoPaymentCount,
+  ): FormControl<boolean> {
+    const businessUnitId = this.getBusinessUnitId(businessUnit);
+    const selected = this.selectedBusinessUnitIds.has(businessUnitId);
+    const existingControl = this.businessUnitControls.get(businessUnitId);
+
+    if (existingControl) {
+      if (existingControl.value !== selected) {
+        existingControl.setValue(selected, { emitEvent: false });
+      }
+      return existingControl;
+    }
+
+    const control = new FormControl<boolean>(selected, { nonNullable: true });
+    this.businessUnitControls.set(businessUnitId, control);
+    return control;
   }
 
   /**
@@ -186,15 +286,18 @@ export class FinesApiSelectBusComponent implements OnInit {
    * @param businessUnitId - Business unit ID represented by the checkbox.
    * @param event - Checkbox change event.
    */
-  protected toggleBusinessUnit(businessUnitId: number, event: Event): void {
-    const checked = (event.target as HTMLInputElement).checked;
-    const selectedBusinessUnitIds = new Set(this.selectedBusinessUnitIds);
+  protected toggleBusinessUnit(event: { rowId: MultiSelectRowIdentifier; checked: boolean }): void {
+    const businessUnitId = Number(event.rowId);
 
-    if (checked) {
-      selectedBusinessUnitIds.add(businessUnitId);
-    } else {
-      selectedBusinessUnitIds.delete(businessUnitId);
+    if (!Number.isFinite(businessUnitId)) {
+      return;
     }
+
+    const selectedBusinessUnitIds = toggleMultiSelectRow(
+      this.selectedBusinessUnitIds,
+      businessUnitId,
+      event.checked,
+    ) as Set<number>;
 
     this.setSelectedBusinessUnitIds([...selectedBusinessUnitIds]);
   }
@@ -204,9 +307,15 @@ export class FinesApiSelectBusComponent implements OnInit {
    *
    * @param event - Checkbox change event.
    */
-  protected toggleAllBusinessUnits(event: Event): void {
-    const checked = (event.target as HTMLInputElement).checked;
-    this.setSelectedBusinessUnitIds(checked ? this.businessUnits.map(({ business_unit_id }) => business_unit_id) : []);
+  protected toggleAllBusinessUnits(checked: boolean): void {
+    const selectedBusinessUnitIds = toggleAllMultiSelectRows(
+      this.businessUnits,
+      this.selectedBusinessUnitIds,
+      this.getBusinessUnitId,
+      checked,
+    ) as Set<number>;
+
+    this.setSelectedBusinessUnitIds([...selectedBusinessUnitIds]);
   }
 
   /**

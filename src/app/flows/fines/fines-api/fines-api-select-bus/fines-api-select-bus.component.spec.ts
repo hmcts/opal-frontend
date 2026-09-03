@@ -1,4 +1,5 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
+import { FormControl } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 import { OPAL_FINES_BUSINESS_UNIT_OUTSTANDING_AUTO_PAYMENT_COUNTS_MOCK } from '@services/fines/opal-fines-service/mocks/opal-fines-business-unit-outstanding-auto-payment-counts.mock';
 import { IOpalFinesBusinessUnitOutstandingAutoPaymentCounts } from '@services/fines/opal-fines-service/interfaces/opal-fines-business-unit-outstanding-auto-payment-counts.interface';
@@ -75,13 +76,37 @@ describe('FinesApiSelectBusComponent', () => {
     expect(textContent.indexOf('Camberwell Green')).toBeLessThan(textContent.indexOf('Camden and Islington'));
   });
 
+  it('should initialise with no business units when resolver data is missing', () => {
+    businessUnitCounts = null as unknown as IOpalFinesBusinessUnitOutstandingAutoPaymentCounts;
+
+    fixture.detectChanges();
+
+    expect(component['businessUnits']).toEqual([]);
+    expect(component.allBusinessUnitsSelected).toBe(false);
+    expect(component.someBusinessUnitsSelected).toBe(false);
+  });
+
+  it('should report partial and complete business unit selection states', () => {
+    fixture.detectChanges();
+
+    component['toggleBusinessUnit']({ rowId: 77, checked: true });
+
+    expect(component.allBusinessUnitsSelected).toBe(false);
+    expect(component.someBusinessUnitsSelected).toBe(true);
+
+    component['toggleAllBusinessUnits'](true);
+
+    expect(component.allBusinessUnitsSelected).toBe(true);
+    expect(component.someBusinessUnitsSelected).toBe(false);
+  });
+
   it('should store selected business unit ids when a row checkbox changes', () => {
     fixture.detectChanges();
 
     const nativeElement = fixture.nativeElement as HTMLElement;
     const checkbox = nativeElement.querySelector<HTMLInputElement>('#fines-api-business-unit-77');
     checkbox!.checked = true;
-    checkbox!.dispatchEvent(new Event('change'));
+    checkbox!.dispatchEvent(new Event('change', { bubbles: true }));
     fixture.detectChanges();
 
     expect(finesApiStore.selectedBusinessUnitIds()).toEqual([77]);
@@ -95,7 +120,7 @@ describe('FinesApiSelectBusComponent', () => {
     const nativeElement = fixture.nativeElement as HTMLElement;
     const checkbox = nativeElement.querySelector<HTMLInputElement>('#fines-api-business-unit-77');
     checkbox!.checked = false;
-    checkbox!.dispatchEvent(new Event('change'));
+    checkbox!.dispatchEvent(new Event('change', { bubbles: true }));
     fixture.detectChanges();
 
     expect(finesApiStore.selectedBusinessUnitIds()).toEqual([65]);
@@ -141,17 +166,84 @@ describe('FinesApiSelectBusComponent', () => {
     const nativeElement = fixture.nativeElement as HTMLElement;
     const selectAllCheckbox = nativeElement.querySelector<HTMLInputElement>('#fines-api-select-business-units');
     selectAllCheckbox!.checked = true;
-    selectAllCheckbox!.dispatchEvent(new Event('change'));
+    selectAllCheckbox!.dispatchEvent(new Event('change', { bubbles: true }));
     fixture.detectChanges();
 
     expect(finesApiStore.selectedBusinessUnitIds()).toEqual([77, 65, 78, 73, 80]);
 
     selectAllCheckbox!.checked = false;
-    selectAllCheckbox!.dispatchEvent(new Event('change'));
+    selectAllCheckbox!.dispatchEvent(new Event('change', { bubbles: true }));
     fixture.detectChanges();
 
     expect(finesApiStore.selectedBusinessUnitIds()).toEqual([]);
     expect(finesApiStore.unsavedChanges()).toBe(false);
+  });
+
+  it('should ignore row selection events that do not contain a numeric business unit id', () => {
+    fixture.detectChanges();
+
+    component['toggleBusinessUnit']({ rowId: 'not-a-business-unit-id', checked: true });
+
+    expect(finesApiStore.selectedBusinessUnitIds()).toEqual([]);
+    expect(component['selectedBusinessUnitIds']).toEqual(new Set<number>());
+  });
+
+  it('should fall back to the local selection set when checking a business unit that is not displayed', () => {
+    fixture.detectChanges();
+
+    component['selectedBusinessUnitIds'] = new Set([999]);
+
+    expect(component['isBusinessUnitSelected'](999)).toBe(true);
+    expect(component['isBusinessUnitSelected'](1000)).toBe(false);
+  });
+
+  it('should reuse and synchronise existing business unit checkbox controls', () => {
+    fixture.detectChanges();
+
+    const [businessUnit] = component['businessUnits'];
+    const control = component['getBusinessUnitControl'](businessUnit);
+
+    expect(control.value).toBe(false);
+    expect(component['getBusinessUnitControl'](businessUnit)).toBe(control);
+
+    component['selectedBusinessUnitIds'] = new Set([businessUnit.business_unit_id]);
+
+    expect(component['getBusinessUnitControl'](businessUnit)).toBe(control);
+    expect(control.value).toBe(true);
+
+    expect(component['getBusinessUnitControl'](businessUnit)).toBe(control);
+    expect(control.value).toBe(true);
+  });
+
+  it('should remove checkbox controls for business units that are no longer displayed', () => {
+    fixture.detectChanges();
+
+    const firstBusinessUnit = component['businessUnits'][0];
+    const staleControl = component['getBusinessUnitControl'](firstBusinessUnit);
+    component['businessUnits'] = [component['businessUnits'][1]];
+    component['selectedBusinessUnitIds'] = new Set([component['businessUnits'][0].business_unit_id]);
+
+    component['syncSelectionControls']();
+
+    expect(component['businessUnitControls'].has(firstBusinessUnit.business_unit_id)).toBe(false);
+    expect(component['businessUnitControls'].get(component['businessUnits'][0].business_unit_id)?.value).toBe(true);
+    expect(staleControl.value).toBe(false);
+  });
+
+  it('should update existing controls when sync selection state changes', () => {
+    fixture.detectChanges();
+
+    const firstBusinessUnit = component['businessUnits'][0];
+    component['businessUnitControls'].set(
+      firstBusinessUnit.business_unit_id,
+      new FormControl(false, { nonNullable: true }),
+    );
+    component['selectedBusinessUnitIds'] = new Set([firstBusinessUnit.business_unit_id]);
+
+    component['syncSelectionControls']();
+
+    expect(component['businessUnitControls'].get(firstBusinessUnit.business_unit_id)?.value).toBe(true);
+    expect(component['selectAllControl'].value).toBe(false);
   });
 
   it('should show a validation error and remain on the page when continue is selected without a business unit', () => {
@@ -177,7 +269,7 @@ describe('FinesApiSelectBusComponent', () => {
 
     const checkbox = nativeElement.querySelector<HTMLInputElement>('#fines-api-business-unit-77');
     checkbox!.checked = true;
-    checkbox!.dispatchEvent(new Event('change'));
+    checkbox!.dispatchEvent(new Event('change', { bubbles: true }));
 
     continueButton!.click();
     fixture.detectChanges();
