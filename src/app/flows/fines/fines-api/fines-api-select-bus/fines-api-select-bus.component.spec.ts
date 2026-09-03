@@ -197,29 +197,32 @@ describe('FinesApiSelectBusComponent', () => {
     expect(component['isBusinessUnitSelected'](1000)).toBe(false);
   });
 
-  it('should reuse and synchronise existing business unit checkbox controls', () => {
+  it('should initialise and synchronise business unit checkbox controls', () => {
     fixture.detectChanges();
 
     const [businessUnit] = component['businessUnits'];
-    const control = component['getBusinessUnitControl'](businessUnit);
+    const control = component['businessUnitControls'].get(businessUnit.business_unit_id);
 
-    expect(control.value).toBe(false);
-    expect(component['getBusinessUnitControl'](businessUnit)).toBe(control);
+    expect(component['businessUnitControls'].size).toBe(component['businessUnits'].length);
+    expect(control?.value).toBe(false);
 
     component['selectedBusinessUnitIds'] = new Set([businessUnit.business_unit_id]);
+    component['syncSelectionControls']();
 
-    expect(component['getBusinessUnitControl'](businessUnit)).toBe(control);
-    expect(control.value).toBe(true);
+    expect(component['businessUnitControls'].get(businessUnit.business_unit_id)).toBe(control);
+    expect(control?.value).toBe(true);
 
-    expect(component['getBusinessUnitControl'](businessUnit)).toBe(control);
-    expect(control.value).toBe(true);
+    component['syncSelectionControls']();
+
+    expect(component['businessUnitControls'].get(businessUnit.business_unit_id)).toBe(control);
+    expect(control?.value).toBe(true);
   });
 
   it('should remove checkbox controls for business units that are no longer displayed', () => {
     fixture.detectChanges();
 
     const firstBusinessUnit = component['businessUnits'][0];
-    const staleControl = component['getBusinessUnitControl'](firstBusinessUnit);
+    const staleControl = component['businessUnitControls'].get(firstBusinessUnit.business_unit_id);
     component['businessUnits'] = [component['businessUnits'][1]];
     component['selectedBusinessUnitIds'] = new Set([component['businessUnits'][0].business_unit_id]);
 
@@ -227,7 +230,7 @@ describe('FinesApiSelectBusComponent', () => {
 
     expect(component['businessUnitControls'].has(firstBusinessUnit.business_unit_id)).toBe(false);
     expect(component['businessUnitControls'].get(component['businessUnits'][0].business_unit_id)?.value).toBe(true);
-    expect(staleControl.value).toBe(false);
+    expect(staleControl?.value).toBe(false);
   });
 
   it('should update existing controls when sync selection state changes', () => {

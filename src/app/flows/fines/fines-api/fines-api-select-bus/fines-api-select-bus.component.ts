@@ -56,9 +56,9 @@ export class FinesApiSelectBusComponent implements OnInit {
   private readonly document = inject(DOCUMENT);
   private readonly router = inject(Router);
   private readonly selectBusinessUnitsErrorMessage = FINES_API_SELECT_BUS_ERRORS.selectAtLeastOneBusinessUnit;
-  private readonly businessUnitControls = new Map<number, FormControl<boolean>>();
 
   protected readonly finesApiStore = inject(FinesApiStore);
+  protected readonly businessUnitControls = new Map<number, FormControl<boolean>>();
   protected businessUnits: IOpalFinesBusinessUnitOutstandingAutoPaymentCount[] = [];
   protected selectedBusinessUnitIds = new Set<number>();
   protected formErrorSummaryMessage: IAbstractFormBaseFormErrorSummaryMessage[] = [];
@@ -205,15 +205,23 @@ export class FinesApiSelectBusComponent implements OnInit {
   private syncSelectionControls(): void {
     const displayedBusinessUnitIds = new Set(this.businessUnits.map(({ business_unit_id }) => business_unit_id));
 
-    this.businessUnitControls.forEach((control, businessUnitId) => {
-      if (!displayedBusinessUnitIds.has(businessUnitId)) {
-        this.businessUnitControls.delete(businessUnitId);
+    this.businessUnits.forEach(({ business_unit_id: businessUnitId }) => {
+      const selected = this.selectedBusinessUnitIds.has(businessUnitId);
+      const control = this.businessUnitControls.get(businessUnitId);
+
+      if (control) {
+        if (control.value !== selected) {
+          control.setValue(selected, { emitEvent: false });
+        }
         return;
       }
 
-      const selected = this.selectedBusinessUnitIds.has(businessUnitId);
-      if (control.value !== selected) {
-        control.setValue(selected, { emitEvent: false });
+      this.businessUnitControls.set(businessUnitId, new FormControl<boolean>(selected, { nonNullable: true }));
+    });
+
+    Array.from(this.businessUnitControls.keys()).forEach((businessUnitId) => {
+      if (!displayedBusinessUnitIds.has(businessUnitId)) {
+        this.businessUnitControls.delete(businessUnitId);
       }
     });
 
@@ -244,31 +252,6 @@ export class FinesApiSelectBusComponent implements OnInit {
     return businessUnit
       ? isMultiSelectRowSelected(businessUnit, 0, this.selectedBusinessUnitIds, this.getBusinessUnitId)
       : this.selectedBusinessUnitIds.has(businessUnitId);
-  }
-
-  /**
-   * Gets or creates a checkbox control for a business unit row.
-   *
-   * @param businessUnit - Business unit row data.
-   * @returns Checkbox form control for row selection.
-   */
-  protected getBusinessUnitControl(
-    businessUnit: IOpalFinesBusinessUnitOutstandingAutoPaymentCount,
-  ): FormControl<boolean> {
-    const businessUnitId = this.getBusinessUnitId(businessUnit);
-    const selected = this.selectedBusinessUnitIds.has(businessUnitId);
-    const existingControl = this.businessUnitControls.get(businessUnitId);
-
-    if (existingControl) {
-      if (existingControl.value !== selected) {
-        existingControl.setValue(selected, { emitEvent: false });
-      }
-      return existingControl;
-    }
-
-    const control = new FormControl<boolean>(selected, { nonNullable: true });
-    this.businessUnitControls.set(businessUnitId, control);
-    return control;
   }
 
   /**

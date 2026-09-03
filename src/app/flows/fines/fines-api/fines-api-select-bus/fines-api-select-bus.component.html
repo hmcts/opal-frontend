@@ -70,7 +70,7 @@
                     class="govuk-checkboxes--small"
                     opal-lib-govuk-checkboxes-item
                     opalLibMojMultiSelectBody
-                    [control]="getBusinessUnitControl(businessUnit)"
+                    [control]="businessUnitControls.get(businessUnit.business_unit_id)!"
                     [inputId]="'fines-api-business-unit-' + businessUnit.business_unit_id"
                     [inputName]="'fines-api-business-unit-' + businessUnit.business_unit_id"
                     labelText=""
