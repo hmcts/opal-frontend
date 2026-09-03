@@ -318,9 +318,9 @@ const buildDraftPatchPayload = (
     account_status: status,
     business_unit_id,
     reason_text: reasonText,
-    // validated_by: status.toLowerCase() === 'rejected' ? null : validatedBy,
-    // validated_by_name: status.toLowerCase() === 'rejected' ? null : validatedByName,
-    // version: String(draftBody['version'] ?? '0'),
+    validated_by: status.toLowerCase() === 'rejected' ? null : validatedBy,
+    validated_by_name: status.toLowerCase() === 'rejected' ? null : validatedByName,
+    version: String(draftBody['version'] ?? '0'),
   };
 };
 
@@ -331,17 +331,17 @@ const applyCurrentSubmitterToDraftRequest = (
   const businessUnitId = Number(draftBody['business_unit_id'] ?? draftBody['businessUnitId']);
   if (!Number.isFinite(businessUnitId)) return;
 
-  // const submittedBy = readBusinessUnitUserId(userStateBody, businessUnitId, null);
-  // if (submittedBy) {
-  //   draftBody['submitted_by'] = submittedBy;
-  // }
+  const submittedBy = readBusinessUnitUserId(userStateBody, businessUnitId, null);
+  if (submittedBy) {
+    draftBody['submitted_by'] = submittedBy;
+  }
 
-  // if (!isNonEmptyString(draftBody['submitted_by_name'])) {
-  //   const submittedByName = readUserDisplayName(userStateBody);
-  //   if (submittedByName) {
-  //     draftBody['submitted_by_name'] = submittedByName;
-  //   }
-  // }
+  if (!isNonEmptyString(draftBody['submitted_by_name'])) {
+    const submittedByName = readUserDisplayName(userStateBody);
+    if (submittedByName) {
+      draftBody['submitted_by_name'] = submittedByName;
+    }
+  }
 
   log('info', 'Prepared draft submitter from current user state', {
     businessUnitId,
