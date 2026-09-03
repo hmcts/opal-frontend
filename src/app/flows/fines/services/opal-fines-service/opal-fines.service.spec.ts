@@ -64,11 +64,17 @@ import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import { OPAL_FINES_ENFORCER_MOCK } from './mocks/opal-fines-enforcer.mock';
 import { OPAL_FINES_MINOR_CREDITOR_UPDATE_PAYLOAD_MOCK } from './mocks/opal-fines-minor-creditor-update-payload.mock';
 import { OPAL_FINES_ACCOUNT_MINOR_CREDITOR_CREDITOR_MOCK } from './mocks/opal-fines-account-minor-creditor-creditor.mock';
+import { OPAL_FINES_CENTRAL_FUND_RESPONSE_MOCK } from './mocks/opal-fines-central-funds-response.mock';
 import { OPAL_FINES_DEFENDANT_ACCOUNT_HISTORY_PARAMS_MOCK } from './mocks/opal-fines-defendant-account-history-params.mock';
 import { FINES_ACC_MAJOR_CREDITOR_DETAILS_HEADER_MOCK } from '../../fines-acc/fines-acc-major-creditor-details/mocks/fines-acc-major-creditor-details-header.mock';
 import { OPAL_FINES_ACCOUNT_MAJOR_CREDITOR_AT_A_GLANCE_MOCK } from './mocks/opal-fines-account-major-creditor-at-a-glance-with-defendant.mock';
+import { OPAL_FINES_ACCOUNT_MAJOR_CREDITOR_DETAILS_HISTORY_AND_NOTES_TAB_REF_DATA_MOCK } from './mocks/opal-fines-account-major-creditor-details-history-and-notes-tab-ref-data.mock';
+import { OPAL_FINES_MAJOR_CREDITOR_ACCOUNT_HISTORY_PARAMS_MOCK } from './mocks/opal-fines-major-creditor-account-history-params.mock';
 import { OPAL_FINES_ACCOUNT_MINOR_CREDITOR_DETAILS_HISTORY_AND_NOTES_TAB_REF_DATA_MOCK } from './mocks/opal-fines-account-minor-creditor-details-history-and-notes-tab-ref-data.mock';
 import { OPAL_FINES_MINOR_CREDITOR_ACCOUNT_HISTORY_PARAMS_MOCK } from './mocks/opal-fines-minor-creditor-account-history-params.mock';
+import { OPAL_FINES_ACCOUNT_DEFENDANT_DETAILS_CONSOLIDATED_ACCOUNTS_MOCK } from './mocks/opal-fines-account-defendant-details-consolidated-accounts.mock';
+import { IOpalFinesReport } from './interfaces/opal-fines-report.interface';
+import { IOpalFinesReportInstancesResponse } from './interfaces/opal-fines-report-instances-response.interface';
 
 describe('OpalFines', () => {
   let service: OpalFines;
@@ -315,6 +321,64 @@ describe('OpalFines', () => {
     httpMock.expectNone(expectedUrl);
   });
 
+  it('should send a GET request to report metadata API and cache the response', () => {
+    const reportId = 'operational_report_enforcement';
+    const mockReport: IOpalFinesReport = {
+      report_id: reportId,
+      report_title: 'Operational reports (by enforcement)',
+      can_manually_create: true,
+    };
+    const expectedUrl = `${OPAL_FINES_PATHS.reports}/${reportId}`;
+
+    service.getReport(reportId).subscribe((response) => {
+      expect(response).toEqual(mockReport);
+    });
+
+    const req = httpMock.expectOne(expectedUrl);
+    expect(req.request.method).toBe('GET');
+    req.flush(mockReport);
+
+    service.getReport(reportId).subscribe((response) => {
+      expect(response).toEqual(mockReport);
+    });
+
+    httpMock.expectNone(expectedUrl);
+  });
+
+  it('should send a GET request to report instances API with query params and not cache the response', () => {
+    const mockResponse: IOpalFinesReportInstancesResponse = {
+      report_instances: [],
+      count: 0,
+    };
+
+    service
+      .getReportInstances({
+        report_id: 'operational_report_enforcement',
+        from_date: '2026-06-02',
+        to_date: '2026-06-08',
+        business_units: [1],
+      })
+      .subscribe((response) => {
+        expect(response).toEqual(mockResponse);
+      });
+
+    const req = httpMock.expectOne((request) => request.url === OPAL_FINES_PATHS.reportInstances);
+    expect(req.request.method).toBe('GET');
+    expect(req.request.params.get('report_id')).toBe('operational_report_enforcement');
+    expect(req.request.params.get('from_date')).toBe('2026-06-02');
+    expect(req.request.params.get('to_date')).toBe('2026-06-08');
+    expect(req.request.params.getAll('business_units')).toEqual(['1']);
+    req.flush(mockResponse);
+
+    service.getReportInstances({ report_id: 'operational_report_enforcement' }).subscribe((response) => {
+      expect(response).toEqual(mockResponse);
+    });
+
+    const secondReq = httpMock.expectOne((request) => request.url === OPAL_FINES_PATHS.reportInstances);
+    expect(secondReq.request.method).toBe('GET');
+    secondReq.flush(mockResponse);
+  });
+
   it('should send a GET request to court ref data API', () => {
     const businessUnit = 1;
     const mockCourts: IOpalFinesCourtRefData = OPAL_FINES_COURT_REF_DATA_MOCK;
@@ -484,6 +548,19 @@ describe('OpalFines', () => {
     const result = service.getEnforcerPrettyName(enforcer);
 
     expect(result).toEqual(`${enforcer.name} (${enforcer.enforcer_code})`);
+  });
+
+  it('should send a GET request to central funds API for a business unit', () => {
+    const businessUnitId = 77;
+    const expectedUrl = `${OPAL_FINES_PATHS.centralFunds}/${businessUnitId}`;
+
+    service.getCentralFund(businessUnitId).subscribe((response) => {
+      expect(response).toEqual(OPAL_FINES_CENTRAL_FUND_RESPONSE_MOCK);
+    });
+
+    const req = httpMock.expectOne(expectedUrl);
+    expect(req.request.method).toBe('GET');
+    req.flush(OPAL_FINES_CENTRAL_FUND_RESPONSE_MOCK);
   });
 
   it('should return the item value for a given configuration item name', () => {
@@ -678,9 +755,9 @@ describe('OpalFines', () => {
       count: 1,
       refData: [refData],
     };
-    const expectedUrl = `${OPAL_FINES_PATHS.offencesRefData}?q=${refData.get_cjs_code}`;
+    const expectedUrl = `${OPAL_FINES_PATHS.offencesRefData}?q=${refData.cjs_code}`;
 
-    service.getOffenceByCjsCode(refData.get_cjs_code).subscribe((response) => {
+    service.getOffenceByCjsCode(refData.cjs_code).subscribe((response) => {
       expect(response).toEqual(expectedResponse);
     });
 
@@ -695,11 +772,11 @@ describe('OpalFines', () => {
       count: 1,
       refData: [refData],
     };
-    const expectedUrl = `${OPAL_FINES_PATHS.offencesRefData}?q=${refData.get_cjs_code}`;
+    const expectedUrl = `${OPAL_FINES_PATHS.offencesRefData}?q=${refData.cjs_code}`;
     const firstError = vi.fn();
     const secondNext = vi.fn();
 
-    service.getOffenceByCjsCode(refData.get_cjs_code).subscribe({
+    service.getOffenceByCjsCode(refData.cjs_code).subscribe({
       error: firstError,
     });
 
@@ -709,7 +786,7 @@ describe('OpalFines', () => {
 
     expect(firstError).toHaveBeenCalledTimes(1);
 
-    service.getOffenceByCjsCode(refData.get_cjs_code).subscribe({
+    service.getOffenceByCjsCode(refData.cjs_code).subscribe({
       next: secondNext,
     });
 
@@ -764,6 +841,18 @@ describe('OpalFines', () => {
     const result = service.getMajorCreditorPrettyName(majorCreditor);
 
     expect(result).toEqual(`${majorCreditor.name} (${majorCreditor.major_creditor_code})`);
+  });
+
+  it('should return only the major creditor name when no code is present', () => {
+    const majorCreditor: IOpalFinesMajorCreditor = {
+      ...OPAL_FINES_MAJOR_CREDITOR_REF_DATA_MOCK.refData[0],
+      major_creditor_code: null,
+      name: 'Central Funds',
+    };
+
+    const result = service.getMajorCreditorPrettyName(majorCreditor);
+
+    expect(result).toEqual('Central Funds');
   });
 
   it('should POST the fines mac payload', () => {
@@ -1423,6 +1512,46 @@ describe('OpalFines', () => {
     req.flush(OPAL_FINES_ACCOUNT_DEFENDANT_DETAILS_HISTORY_AND_NOTES_TAB_REF_DATA_MOCK);
   });
 
+  it('should getDefendantAccountConsolidatedAccounts', () => {
+    const account_id = 77;
+    const apiUrl = `${OPAL_FINES_PATHS.defendantAccounts}/${account_id}/consolidated-accounts`;
+    const expectedResponse = {
+      ...OPAL_FINES_ACCOUNT_DEFENDANT_DETAILS_CONSOLIDATED_ACCOUNTS_MOCK,
+      version: '"123"',
+    };
+
+    service.getDefendantAccountConsolidatedAccounts(account_id).subscribe((response) => {
+      expect(response).toEqual(expectedResponse);
+    });
+
+    const req = httpMock.expectOne(apiUrl);
+    expect(req.request.method).toBe('GET');
+
+    req.flush(OPAL_FINES_ACCOUNT_DEFENDANT_DETAILS_CONSOLIDATED_ACCOUNTS_MOCK.consolidated_accounts, {
+      headers: { ETag: '"123"' },
+    });
+  });
+
+  it('should return cached defendant account consolidated accounts on repeated calls', () => {
+    const account_id = 77;
+    const apiUrl = `${OPAL_FINES_PATHS.defendantAccounts}/${account_id}/consolidated-accounts`;
+    const expectedResponse = {
+      ...OPAL_FINES_ACCOUNT_DEFENDANT_DETAILS_CONSOLIDATED_ACCOUNTS_MOCK,
+      version: null,
+    };
+
+    service.getDefendantAccountConsolidatedAccounts(account_id).subscribe();
+
+    const req = httpMock.expectOne(apiUrl);
+    req.flush(OPAL_FINES_ACCOUNT_DEFENDANT_DETAILS_CONSOLIDATED_ACCOUNTS_MOCK.consolidated_accounts);
+
+    service.getDefendantAccountConsolidatedAccounts(account_id).subscribe((response) => {
+      expect(response).toEqual(expectedResponse);
+    });
+
+    httpMock.expectNone(apiUrl);
+  });
+
   it('should send a POST request to add note API with correct payload and return mock response', () => {
     const payload: IOpalFinesAddNotePayload = OPAL_FINES_ADD_NOTE_PAYLOAD_MOCK;
     const version = '1';
@@ -1556,6 +1685,9 @@ describe('OpalFines', () => {
     service['cache']['defendantAccountFixedPenaltyCache$'] = of(
       OPAL_FINES_ACCOUNT_DEFENDANT_DETAILS_FIXED_PENALTY_MOCK,
     );
+    service['cache']['defendantAccountConsolidatedAccountsCache$'] = of(
+      OPAL_FINES_ACCOUNT_DEFENDANT_DETAILS_CONSOLIDATED_ACCOUNTS_MOCK,
+    );
     service['cache']['minorCreditorAccountAtAGlanceCache$'] = of(
       OPAL_FINES_ACCOUNT_MINOR_CREDITOR_AT_A_GLANCE_WITH_DEFENDANT_MOCK,
     );
@@ -1570,6 +1702,7 @@ describe('OpalFines', () => {
     expect(service['cache']['defendantAccountHistoryAndNotesCache$']).toBeNull();
     expect(service['cache']['defendantAccountPaymentTermsLatestCache$']).toBeNull();
     expect(service['cache']['defendantAccountFixedPenaltyCache$']).toBeNull();
+    expect(service['cache']['defendantAccountConsolidatedAccountsCache$']).toBeNull();
     expect(service['cache']['minorCreditorAccountAtAGlanceCache$']).toBeNull();
   });
 
@@ -1588,6 +1721,10 @@ describe('OpalFines', () => {
     service['cache']['businessUnitsCache$'] = of(OPAL_FINES_BUSINESS_UNIT_REF_DATA_MOCK);
     service['cache']['localJusticeAreasLjaTypeCache$']['adult'] = of(OPAL_FINES_LOCAL_JUSTICE_AREA_REF_DATA_MOCK);
     service['cache']['offenceCodesCache$']['code'] = of(OPAL_FINES_OFFENCES_REF_DATA_MOCK);
+    service['cache']['reportsCache$']['operational_report_enforcement'] = of({
+      report_id: 'operational_report_enforcement',
+      report_title: 'Operational reports (by enforcement)',
+    });
 
     service.clearAllCaches();
 
@@ -1597,6 +1734,7 @@ describe('OpalFines', () => {
     expect(service['cache']['businessUnitsCache$']).toBeNull();
     expect(service['cache']['localJusticeAreasLjaTypeCache$']).toEqual({});
     expect(service['cache']['offenceCodesCache$']).toEqual({});
+    expect(service['cache']['reportsCache$']).toEqual({});
   });
 
   it('should send a POST request to search defendant accounts API with correct body', () => {
@@ -2205,6 +2343,67 @@ describe('OpalFines', () => {
       const req = httpMock.expectOne(`${OPAL_FINES_PATHS.minorCreditorAccounts}/${account_id}`);
       expect(req.request.method).toBe('GET');
       req.flush(expectedResponse);
+    });
+  });
+
+  describe('getMajorCreditorAccountHistoryAndNotesTabData', () => {
+    it('should get major creditor account history and notes data without query params', () => {
+      const account_id: number = 77;
+      const apiUrl = `${OPAL_FINES_PATHS.majorCreditorAccounts}/${account_id}/history`;
+      const expectedResponse = {
+        ...OPAL_FINES_ACCOUNT_MAJOR_CREDITOR_DETAILS_HISTORY_AND_NOTES_TAB_REF_DATA_MOCK,
+        version: '"123"',
+      };
+
+      service.getMajorCreditorAccountHistoryAndNotesTabData(account_id).subscribe((response) => {
+        expect(response).toEqual(expectedResponse);
+      });
+
+      const req = httpMock.expectOne(apiUrl);
+      expect(req.request.method).toBe('GET');
+      expect(req.request.params.keys()).toEqual([]);
+
+      req.flush(OPAL_FINES_ACCOUNT_MAJOR_CREDITOR_DETAILS_HISTORY_AND_NOTES_TAB_REF_DATA_MOCK, {
+        headers: { ETag: '"123"' },
+      });
+    });
+
+    it('should return cached major creditor account history data on repeated unfiltered calls', () => {
+      const account_id = 77;
+      const apiUrl = `${OPAL_FINES_PATHS.majorCreditorAccounts}/${account_id}/history`;
+
+      service.getMajorCreditorAccountHistoryAndNotesTabData(account_id).subscribe();
+
+      const req = httpMock.expectOne(apiUrl);
+      req.flush(OPAL_FINES_ACCOUNT_MAJOR_CREDITOR_DETAILS_HISTORY_AND_NOTES_TAB_REF_DATA_MOCK);
+
+      service.getMajorCreditorAccountHistoryAndNotesTabData(account_id).subscribe((response) => {
+        expect(response).toEqual(OPAL_FINES_ACCOUNT_MAJOR_CREDITOR_DETAILS_HISTORY_AND_NOTES_TAB_REF_DATA_MOCK);
+      });
+
+      httpMock.expectNone(apiUrl);
+    });
+
+    it('should send a GET request to major creditor account history with filter query params', () => {
+      const account_id = 77;
+      const apiUrl = `${OPAL_FINES_PATHS.majorCreditorAccounts}/${account_id}/history`;
+
+      service
+        .getMajorCreditorAccountHistoryAndNotesTabData(
+          account_id,
+          OPAL_FINES_MAJOR_CREDITOR_ACCOUNT_HISTORY_PARAMS_MOCK,
+        )
+        .subscribe((response) => {
+          expect(response).toEqual(OPAL_FINES_ACCOUNT_MAJOR_CREDITOR_DETAILS_HISTORY_AND_NOTES_TAB_REF_DATA_MOCK);
+        });
+
+      const req = httpMock.expectOne((request) => request.url === apiUrl);
+      expect(req.request.method).toBe('GET');
+      expect(req.request.params.get('dateFrom')).toBe(OPAL_FINES_MAJOR_CREDITOR_ACCOUNT_HISTORY_PARAMS_MOCK.dateFrom);
+      expect(req.request.params.get('dateTo')).toBe(OPAL_FINES_MAJOR_CREDITOR_ACCOUNT_HISTORY_PARAMS_MOCK.dateTo);
+      expect(req.request.params.get('itemTypes')).toBeNull();
+
+      req.flush(OPAL_FINES_ACCOUNT_MAJOR_CREDITOR_DETAILS_HISTORY_AND_NOTES_TAB_REF_DATA_MOCK);
     });
   });
 

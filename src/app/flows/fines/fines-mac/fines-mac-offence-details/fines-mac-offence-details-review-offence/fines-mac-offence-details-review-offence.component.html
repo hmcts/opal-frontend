@@ -1,19 +1,19 @@
-<app-fines-mac-offence-details-review-offence-heading
-  [offenceId]="offence.formData.fm_offence_details_id"
-  [offenceRefId]="offence.formData.fm_offence_details_offence_id"
-  [offenceCode]="offence.formData.fm_offence_details_offence_cjs_code!"
-  [showActions]="showActions"
-  [showDetails]="showDetails"
-  [isReadOnly]="isReadOnly"
-  (actionClicked)="emitAction($event)"
-></app-fines-mac-offence-details-review-offence-heading>
+@if (offenceDetails$ | async; as offenceDetails) {
+  <app-fines-mac-offence-details-review-offence-heading
+    [offenceId]="offence.formData.fm_offence_details_id"
+    [offenceCode]="offenceDetails.cjs_code"
+    [offenceTitle]="offenceDetails.offence_title"
+    [showActions]="showActions"
+    [isReadOnly]="isReadOnly"
+    (actionClicked)="emitAction($event)"
+  ></app-fines-mac-offence-details-review-offence-heading>
 
-@if (showDetails) {
   <app-fines-mac-offence-details-review-offence-imposition
     [impositionRefData]="impositionRefData"
     [majorCreditorRefData]="majorCreditorRefData"
     [impositions]="offence.formData.fm_offence_details_impositions"
     [offenceIndex]="offence.formData.fm_offence_details_id"
+    [offenceCaption]="offenceDetails.offence_title + ' (' + offenceDetails.cjs_code + ')'"
     [isReadOnly]="isReadOnly"
   >
   </app-fines-mac-offence-details-review-offence-imposition>

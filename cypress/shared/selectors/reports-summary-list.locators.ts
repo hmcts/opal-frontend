@@ -1,0 +1,41 @@
+export const ReportsSummaryListLocators = {
+  page: 'div.govuk-grid-column-full',
+  pageHeader: 'h1.govuk-heading-l',
+  createReportButton: '#create-report-button',
+
+  filters: {
+    form: 'form',
+    businessUnit: '#reports-summary-list-business-unit',
+    last7Days: '#reports-summary-list-date-filter-last-7-days',
+    businessUnitAutocomplete: 'input#reports-summary-list-business-unit-autocomplete',
+    businessUnitOptions: 'li[id^="reports-summary-list-business-unit-autocomplete__option--"]',
+    customDays: '#reports-summary-list-date-filter-custom-days',
+    days: '#reports-summary-list-days',
+    dateRange: '#reports-summary-list-date-filter-date-range',
+    dateFrom: '#reports-summary-list-date-from',
+    dateTo: '#reports-summary-list-date-to',
+    datePickerButton: 'button.moj-datepicker__toggle.moj-js-datepicker-toggle',
+    datePickerDialogHeader: 'div.moj-datepicker__dialog-header',
+    refreshButton: '#refresh-reports-button',
+    errorSummary: 'opal-lib-govuk-error-summary',
+  },
+
+  table: {
+    root: 'opal-lib-moj-sortable-table',
+    resultsCount: 'app-fines-reports-summary-list-table-wrapper p.govuk-body',
+    rows: 'opal-lib-moj-sortable-table tbody tr',
+    headings: 'opal-lib-moj-sortable-table th',
+    dateTime: (rowIndex: number) => `#reportInstanceDateTime-${rowIndex}`,
+    title: (rowIndex: number) => `#reportInstanceTitle-${rowIndex}`,
+    businessUnit: (rowIndex: number) => `#reportInstanceBusinessUnit-${rowIndex}`,
+    createdBy: (rowIndex: number) => `#reportInstanceCreatedBy-${rowIndex}`,
+    status: (rowIndex: number) => `#reportInstanceStatus-${rowIndex}`,
+    action: (rowIndex: number) => `#reportInstanceAction-${rowIndex}`,
+  },
+
+  noReportsFound: 'p.govuk-body',
+  resultLimitHeading: 'h2.govuk-heading-m',
+  pagination: '#fines-reports-summary-list-pagination',
+  paginationNext: '#fines-reports-summary-list-pagination a[rel="next"]',
+  paginationResults: 'opal-lib-moj-pagination .moj-pagination__results',
+} as const;

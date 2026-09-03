@@ -1,5 +1,5 @@
 @JIRA-LABEL:manual-account-creation
-Feature: Manual account creation - Create Draft Account
+Feature: Populate And Submit
 
   Background:
     Given I am logged in with email "opal-test@dev.platform.hmcts.net"
@@ -59,9 +59,9 @@ Feature: Manual account creation - Create Draft Account
       | Compensation     | FNAME LNAME                           | £200.00        | £100.00     | £100.00           |
       | Compensation     | Temporary Creditor (TEMP)             | £300.00        | £100.00     | £200.00           |
       | Victim Surcharge | HM Courts & Tribunals Service (HMCTS) | £500.00        | £250.00     | £250.00           |
-      | Totals           |                                       | £1000.00       | £450.00     | £550.00           |
+      | Totals           |                                       | £1,000.00      | £450.00     | £550.00           |
     And the summary list should contain the following information:
-      | Amount imposed    | £1000.00 |
+      | Amount imposed    | £1,000.00 |
       | Amount paid       | £450.00  |
       | Balance remaining | £550.00  |
     When I return to account details from offence details

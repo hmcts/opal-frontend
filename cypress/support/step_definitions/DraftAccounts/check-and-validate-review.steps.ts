@@ -90,6 +90,15 @@ Then('the draft review history item {int} is:', (position: number, table: DataTa
 });
 
 /**
+ * @step Assert that the review history contains a user-facing status.
+ * @param status - Exact status expected in the rendered timeline.
+ */
+Then('the draft review history contains the status {string}', (status: string) => {
+  log('assert', 'Asserting review history contains status', { status });
+  review().assertTimelineContainsStatus(status);
+});
+
+/**
  * Opens the delete account flow from the review page.
  * @step Open the delete account flow from the review page.
  */

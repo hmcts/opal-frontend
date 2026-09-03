@@ -14,6 +14,7 @@ This is an [Angular SSR](https://angular.dev/guide/ssr) application. There are t
 - [Production Server](#5-production-server)
 - [Running Unit Tests](#running-unit-tests)
 - [Running End-to-End Tests](#running-end-to-end-tests)
+- [Running Tests Against JCDE Payloads](#running-tests-against-jcde-payloads)
 - [Accessibility Tests](#running-accessibility-tests)
 - [Switching Between Local and Published Common Libraries](#switching-between-local-and-published-common-libraries)
 - [OpenAPI reference models](#openapi-reference-models)
@@ -319,14 +320,40 @@ To filter scenarios by tag locally, set `TAGS` and use the tagged runner:
 ```bash
 
 TAGS=@UAT-Technical yarn test:functional:tags
+TAGS=@R1BUatTechJCDE yarn test:functional:tags
+TAGS=@R1BUatTechPreprod yarn test:functional:tags
 
 ```
 
 Run `yarn test:component` to execute the Cypress component suite.
 
+### Running Tests Against JCDE Payloads
+
+Some test environments require a different draft-account payload for JCDE. Set
+`JCDE_OVERRIDE=true` to make the Cypress draft-account helpers load payloads
+from `cypress/fixtures/draftAccounts/jcde/` instead of the default fixture
+directory:
+
+```bash
+JCDE_OVERRIDE=true yarn test:functional
+```
+
+or
+
+```bash
+JCDE_OVERRIDE=true yarn cypress
+```
+
+The override is disabled by default. It applies to draft-account payloads
+resolved by `getDraftPayloadFile`; approved-account fixtures and other Cypress
+fixtures are unchanged. Add a matching file under
+`cypress/fixtures/draftAccounts/jcde/` when a payload needs a JCDE-specific
+version. For example, the current `adultOrYouthOnly` payload is available at
+`cypress/fixtures/draftAccounts/jcde/adultOrYouthOnlyPayload.json`.
+
 #### Release-scoped runners
 
-The default functional runner excludes `@UAT-Technical`, `@skip`, and the off-state release tags, so the normal pipeline picks up the enabled-path coverage without automatically running the disabled-path scenarios.
+The default functional runner excludes `@UAT-Technical`, `@R1BUatTechJCDE`, `@R1BUatTechPreprod`, `@skip`, and the off-state release tags, so the normal pipeline picks up the enabled-path coverage without automatically running the disabled-path scenarios.
 
 Use these functional scripts when you need a release-aligned run locally or in a dedicated CI stage:
 
@@ -334,7 +361,7 @@ Use these functional scripts when you need a release-aligned run locally or in a
 - `yarn test:functional:r1ab`: current `R1A` + `R1B` positive coverage only
 - `yarn test:functional:all_flags_off`: technical disabled scenarios for `R1A`, `R1B`, `R1CWriteOff`, `R1CEnforcementOperationalReporting`, `R1CAdministration`, and `R1CFinancialMovements`
 
-Use `yarn test:component` for all component coverage. Component tests mock responses, so they can run in any release environment without release-specific runners.
+Use `yarn test:component` for all component coverage. Component tests mock responses, so they can run in any release environment. To run the component coverage for a single release, use `yarn test:component:r1a`, `yarn test:component:r1b`, or `yarn test:component:r1c`.
 
 All three top-level runners accept:
 
@@ -351,6 +378,7 @@ yarn test:smoke --mode=legacy --serial
 yarn test:functional --browser=firefox --mode=opal --parallel
 yarn test:functional:r1ab --browser=chrome
 yarn test:component --browser=edge
+yarn test:component:r1b --browser=chrome
 
 ```
 
@@ -362,6 +390,10 @@ This keeps the functional suite on the normal OPAL spec tree and only switches t
 ```bash
 
 yarn test:functional:uat_legacy
+yarn test:functional:uat_legacy_r1a
+yarn test:functional:uat_legacy_r1b
+yarn test:functional:uat_legacy_r1b_jcde
+yarn test:functional:uat_legacy_r1b_preprod
 
 ```
 
@@ -369,7 +401,7 @@ yarn test:functional:uat_legacy
 
 If you do not add a selector label, the CNP pipeline uses its normal default functional selection:
 
-- functional tags: `not @UAT-Technical and not @skip and not (@R1AOff or @R1BOff or @R1CWriteOffOff or @R1CEnforcementOperationalReportingOff)`
+- functional tags: `not (@UAT-Technical or @R1BUatTechJCDE or @R1BUatTechPreprod) and not @skip and not (@R1AOff or @R1BOff or @R1CWriteOffOff or @R1CEnforcementOperationalReportingOff)`
 - functional specs: all functional features, unless one or more `test_*` routing labels are present
 
 PR labels supported by the CNP pipeline:
@@ -393,7 +425,7 @@ For release-scoped PR runs, use one of the `run_release:*` labels listed above i
 
 `run_release` skips smoke tests automatically. It also scopes component execution to the matching current-release package where supported, so an `r1a` run does not execute `R1B` or `R1C` component coverage. Off-state release selectors run the functional off-state coverage only. Do not combine `run_release` with `run_tag` or `enable_legacy_mode`.
 
-When legacy mode is enabled in CI, you must also provide a `run_tag:<expression>` label, for example `run_tag:@UAT-Technical`, to scope the suite. The pipeline always appends `not @skip`.
+When legacy mode is enabled in CI, you must also provide a `run_tag:<expression>` label, for example `run_tag:@UAT-Technical`, `run_tag:@R1BUatTechJCDE`, or `run_tag:@R1BUatTechPreprod`, to scope the suite. The pipeline always appends `not @skip`.
 
 The `test_*` routing labels only affect the normal CNP path. If `run_release:<suite>` is present, the release suite decides both the tags and the spec selection.
 
@@ -408,7 +440,10 @@ The nightly Jenkins pipeline runs its stages in this order after checkout and te
 - `R1A Legacy Demo` runs when `LEGACY_DEMO_SUITE=R1A`. It points `TEST_URL` at `https://opal-frontend.demo.apps.hmcts.net/`, switches app mode to legacy, and runs `yarn test:functional:r1a`.
 - `R1A and R1B Legacy Demo` runs when `LEGACY_DEMO_SUITE=R1A_AND_R1B`. It uses the same demo legacy flow and runs `yarn test:functional:r1ab`.
 - `All Flags Off Legacy Demo` runs when `LEGACY_DEMO_SUITE=ALL_FLAGS_OFF`. It uses the same demo legacy flow and runs `yarn test:functional:all_flags_off`.
-- `UAT-Technical` runs only when `RunUatTech=true`. It uses the same demo legacy flow and runs `yarn test:functional:uat_legacy`.
+- `RunUatTech=true` enables the selected nightly UAT-Technical suite.
+- `UAT_TECHNICAL_SUITE=R1A` runs `yarn test:functional:uat_legacy_r1a`.
+- `UAT_TECHNICAL_SUITE=R1B` with `LEGACY_URL=DEV` runs `yarn test:functional:uat_legacy_r1b_jcde`.
+- `UAT_TECHNICAL_SUITE=R1B` with `LEGACY_URL=PRE-PROD` runs `yarn test:functional:uat_legacy_r1b_preprod`.
 - `Legacy Tests` runs only when `Legacy=true`. It runs the general functional suite in legacy mode.
 - `RunChrome=true` switches the selected nightly stages to Chrome instead of the default browser.
 - `RunFirefox=true` switches the selected nightly stages to Firefox instead of the default browser.
@@ -496,11 +531,18 @@ functional-output/
           r1ab-legacy-demo-report.html
         zephyr/
           cucumber-report.json
-      uat-technical/
-        uat-technical-test-result.xml
+      uat-technical-r1a/
+        uat-technical-r1a-test-result.xml
         cucumber/
-          uat-technical-report.ndjson
-          uat-technical-report.html
+          uat-technical-r1a-report.ndjson
+          uat-technical-r1a-report.html
+        zephyr/
+          cucumber-report.json
+      uat-technical-r1b/
+        uat-technical-r1b-test-result.xml
+        cucumber/
+          uat-technical-r1b-report.ndjson
+          uat-technical-r1b-report.html
         zephyr/
           cucumber-report.json
   screenshots/
@@ -543,7 +585,7 @@ Notes:
 - `functional-output/component/<browser>/json/.jsons/` is the raw Mochawesome JSON used to build `html/component-report.html`.
 - Each nightly stage now copies its Zephyr JSON into that stage's own artifact directory as well as the shared root `*-output/zephyr/` location used by the existing scripts.
 - `functional-output/prod/<browser>/legacy/` and `smoke-output/prod/<browser>/legacy/` are only created for legacy-mode runs.
-- `functional-output/prod/<browser>/{r1a-legacy-demo,r1ab-legacy-demo,all-flags-off-legacy-demo,uat-technical}/` are created by the dedicated nightly demo stages.
+- `functional-output/prod/<browser>/{r1a-legacy-demo,r1ab-legacy-demo,all-flags-off-legacy-demo,uat-technical-r1a,uat-technical-r1b}/` are created by the dedicated nightly demo stages.
 - `videos/` is only expected when using `yarn test:functionalOpalVideo`.
 - `account_evidence/` is only expected when legacy evidence capture is enabled.
 - These older component paths should not be recreated on a clean run: `functional-output/component-report/`, `functional-output/component-html/`, and `functional-output/prod/<browser>/component/`.
@@ -784,7 +826,9 @@ Zephyr Automation is a tool for integrating test results and ticket management b
 - `zephyr:test:r1ab_legacy_demo`: Reset outputs, run the R1A and R1B legacy demo functional suite, then create a Zephyr execution from the functional Cucumber JSON report.
 - `zephyr:test:r1a_off_legacy_demo`: Reset outputs, run the all-flags-off legacy demo functional suite, then create a Zephyr execution from the functional Cucumber JSON report.
 - `zephyr:test:smoke`: Reset outputs, run smoke tests, then create a Zephyr execution from the smoke Cucumber JSON report.
-- `zephyr:test:uat_technical`: Reset outputs, run the UAT-Technical legacy-mode functional suite, then create a Zephyr execution from the functional Cucumber JSON report.
+- `zephyr:test:uat_technical`: Reset outputs, run the R1A UAT-Technical legacy-mode functional suite, then create a Zephyr execution from the functional Cucumber JSON report.
+- `zephyr:test:uat_technical_r1a`: Reset outputs, run the R1A UAT-Technical legacy-mode functional suite, then create a Zephyr execution from the functional Cucumber JSON report.
+- `zephyr:test:uat_technical_r1b`: Reset outputs, run the R1B UAT-Technical legacy-mode functional suite, then create a Zephyr execution from the functional Cucumber JSON report.
 - `zephyr:test:legacy`: Reset outputs, run the legacy-mode functional suite, then create a Zephyr execution from the functional Cucumber JSON report.
 
 ## Test Metadata Maintenance
@@ -802,18 +846,18 @@ Zephyr Automation is a tool for integrating test results and ticket management b
 
 The following tags can be used in your test scenarios to control ticket creation, linking, and metadata:
 
-| Tag Prefix         | Example Value           | Description                                                        |
-| ------------------ | ----------------------- | ------------------------------------------------------------------ |
-| `@JIRA-TEST-KEY:`  | `@JIRA-TEST-KEY:PROJ-123` | Associates the test with an existing Jira issue key.             |
-| `@JIRA-TEST-KEY:PO-*` | `@JIRA-TEST-KEY:PO-1234` | Associates one executable test with one Zephyr PO test case key. |
-| `@JIRA-COMPONENT:` | `@JIRA-COMPONENT:API`   | Adds the specified Jira component to the ticket.                   |
-| `@JIRA-LABEL:`     | `@JIRA-LABEL:smoke`     | Adds the specified label to the Jira ticket.                       |
-| `@JIRA-EPIC:`      | `@JIRA-EPIC:PROJ-456`   | Links the ticket to the specified Jira Epic.                       |
-| `@JIRA-NFR:`       | `@JIRA-NFR:PROJ-789`    | Links the ticket to a Non-Functional Requirement (NFR) Jira issue. |
-| `@JIRA-LINK:`      | `@JIRA-LINK:PROJ-321`   | Creates a generic link to another Jira issue.                      |
-| `@JIRA-STORY:`     | `@JIRA-STORY:PROJ-654`  | Links the ticket to a Jira Story.                                  |
-| `@JIRA-DEFECT:`    | `@JIRA-DEFECT:PROJ-987` | Links the ticket to a Jira Defect.                                 |
-| `@JIRA-IGNORE:`    | `@JIRA-IGNORE`          | Prevents ticket creation or update for this test.                  |
+| Tag Prefix            | Example Value             | Description                                                        |
+| --------------------- | ------------------------- | ------------------------------------------------------------------ |
+| `@JIRA-TEST-KEY:`     | `@JIRA-TEST-KEY:PROJ-123` | Associates the test with an existing Jira issue key.               |
+| `@JIRA-TEST-KEY:PO-*` | `@JIRA-TEST-KEY:PO-1234`  | Associates one executable test with one Zephyr PO test case key.   |
+| `@JIRA-COMPONENT:`    | `@JIRA-COMPONENT:API`     | Adds the specified Jira component to the ticket.                   |
+| `@JIRA-LABEL:`        | `@JIRA-LABEL:smoke`       | Adds the specified label to the Jira ticket.                       |
+| `@JIRA-EPIC:`         | `@JIRA-EPIC:PROJ-456`     | Links the ticket to the specified Jira Epic.                       |
+| `@JIRA-NFR:`          | `@JIRA-NFR:PROJ-789`      | Links the ticket to a Non-Functional Requirement (NFR) Jira issue. |
+| `@JIRA-LINK:`         | `@JIRA-LINK:PROJ-321`     | Creates a generic link to another Jira issue.                      |
+| `@JIRA-STORY:`        | `@JIRA-STORY:PROJ-654`    | Links the ticket to a Jira Story.                                  |
+| `@JIRA-DEFECT:`       | `@JIRA-DEFECT:PROJ-987`   | Links the ticket to a Jira Defect.                                 |
+| `@JIRA-IGNORE:`       | `@JIRA-IGNORE`            | Prevents ticket creation or update for this test.                  |
 
 - Tags are case-sensitive and must be used exactly as shown.
 - `yarn check:jira:test-metadata` uses `@hmcts/opal-frontend-common-cypress` to enforce the covered-test Jira metadata policy, including the single-epic rule.

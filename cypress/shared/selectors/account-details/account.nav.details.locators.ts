@@ -103,6 +103,9 @@ export const AccountNavDetailsLocators = {
     /** Tab link for “History and notes.” */
     historyAndNotesTab: 'li[subnavitemid="history-and-notes-tab"] a.moj-sub-navigation__link',
 
+    /** Tab link for “Consolidated accounts.” */
+    consolidatedAccountsTab: 'li[subnavitemid="consolidated-accounts-tab"] > a.moj-sub-navigation__link',
+
     /** Currently active tab link (has `aria-current="page"`). */
     currentTab: 'a.moj-sub-navigation__link[aria-current="page"]',
 
@@ -133,6 +136,8 @@ export const AccountNavDetailsLocators = {
 
   /** Page-level banner messages rendered above the account details header. */
   banners: {
+    accountStatus: '#defendant-account-status',
+    accountStatusInformationAlert: '#defendant-account-status opal-lib-moj-alert[type="information"]',
     success: 'opal-lib-moj-alert[type="success"]',
     successText: 'opal-lib-moj-alert-content-text',
   },

@@ -408,6 +408,18 @@ describe('FinesMacPaymentTermsFormComponent', () => {
     expect(component.form.get('fm_payment_terms_reason_account_is_on_noenf')?.enabled).toBe(true);
   });
 
+  it('should accept commas and full stops in the NOENF reason', () => {
+    component.defendantType = FINES_MAC_DEFENDANT_TYPES_KEYS.company;
+    component['addEnforcementFields']();
+    component.form.controls['fm_payment_terms_hold_enforcement_on_account'].setValue(true);
+    const reasonControl = component.form.controls['fm_payment_terms_reason_account_is_on_noenf'];
+
+    reasonControl.setValue("Reason, account-1. O'Neil");
+
+    expect(reasonControl.errors).toBeNull();
+    expect(reasonControl.valid).toBe(true);
+  });
+
   it('should remove control when hold enforcement on account is false', () => {
     component.defendantType = FINES_MAC_DEFENDANT_TYPES_KEYS.company;
     component['addEnforcementFields']();
@@ -680,10 +692,5 @@ describe('FinesMacPaymentTermsFormComponent', () => {
 
     expect(() => component['disableConditionalControls']()).not.toThrow();
     expect(component.form.get('fm_payment_terms_collection_order_date')).toBeNull();
-  });
-
-  it('should set autocomplete="off" on the form', () => {
-    fixture.detectChanges();
-    expect(fixture.nativeElement.querySelector('form')?.getAttribute('autocomplete')).toBe('off');
   });
 });

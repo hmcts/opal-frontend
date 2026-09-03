@@ -322,7 +322,7 @@ export default defineConfig({
   screenshotsFolder: `functional-output/screenshots/${resolvedBrowserToRun}`,
 
   e2e: {
-    baseUrl: process.env.TEST_URL || 'http://localhost:4000/',
+    baseUrl: process.env.TEST_URL || 'https://opal-frontend.staging.apps.hmcts.net',
     specPattern: 'cypress/e2e/**/*.feature',
     excludeSpecPattern: [
       '**/*/*.cy.ts',
@@ -340,12 +340,13 @@ export default defineConfig({
 
   env: {
     CYPRESS_TEST_EMAIL: process.env.OPAL_TEST_USER_EMAIL,
-    CYPRESS_TEST_PASSWORD: process.env.OPAL_TEST_USER_PASSWORD,
+    CYPRESS_TEST_PASSWORD: process.env.OPAL_TEST_USER_PASSWORD || 'OpalFinesService1',
     TEST_MODE: process.env.TEST_MODE || 'OPAL',
     TAGS: process.env.TAGS || '',
     DEV_DEFAULT_APP_MODE: process.env.DEV_DEFAULT_APP_MODE || '',
     DEFAULT_APP_MODE: process.env.DEFAULT_APP_MODE || '',
     LEGACY_ENABLED: process.env.LEGACY_ENABLED || false,
+    JCDE_OVERRIDE: process.env.JCDE_OVERRIDE || 'false',
     omitFiltered: true,
     filterSpecs: true,
   },

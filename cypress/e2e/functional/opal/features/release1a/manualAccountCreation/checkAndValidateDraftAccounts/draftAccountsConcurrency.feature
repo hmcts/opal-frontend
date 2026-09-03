@@ -1,6 +1,6 @@
 @JIRA-LABEL:manual-account-creation
 @api @concurrency @JIRA-STORY:PO-2117
-Feature: Draft Accounts — ETag/If-Match Concurrency
+Feature: Draft Accounts Concurrency
 
   Background:
     Given I am logged in with email "opal-test@dev.platform.hmcts.net"

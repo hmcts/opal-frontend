@@ -49,15 +49,16 @@
   <ng-container row>
     @for (row of paginatedTableDataComputed(); track row['Code']) {
       <tr opal-lib-moj-sortable-table-row>
-        <td opal-lib-moj-sortable-table-row-data id="code">
+        <td #paginationFocusTarget opal-lib-moj-sortable-table-row-data id="code">
           {{ row['Code'] }}
           <a
             class="govuk-link govuk-link--no-visited-state"
             #codeLink
             href=""
-            (click)="copyCodeToClipboard(codeLink, liveRegion, row['Code'], $event)"
+            (click)="copyCodeToClipboard(codeLink, copyCodeLabel, liveRegion, row['Code'], $event)"
           >
-            {{ COPY_CODE_TO_CLIPBOARD }}
+            <span #copyCodeLabel>{{ COPY_CODE_TO_CLIPBOARD }}</span>
+            <span class="govuk-visually-hidden">{{ row['Code'] }}</span>
           </a>
           <span #liveRegion class="govuk-visually-hidden" aria-live="assertive" aria-atomic="true"></span>
         </td>
@@ -81,6 +82,7 @@
     }
   </ng-container>
   <ng-container status>
+    <output aria-atomic="true" class="govuk-visually-hidden">{{ pageChangeAnnouncement() }}</output>
     <opal-lib-moj-sortable-table-status
       [columnTitle]="sortedColumnTitleSignal()"
       [sortDirection]="sortedColumnDirectionSignal()"

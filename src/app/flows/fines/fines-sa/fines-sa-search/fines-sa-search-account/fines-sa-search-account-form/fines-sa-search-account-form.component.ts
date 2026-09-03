@@ -39,11 +39,17 @@ import { IAlphagovAccessibleAutocompleteItem } from '@hmcts/opal-frontend-common
 import { OpalFines } from '@services/fines/opal-fines-service/opal-fines.service';
 import { IOpalFinesMajorCreditor } from '@services/fines/opal-fines-service/interfaces/opal-fines-major-creditor.interface';
 import { FINES_SA_SEARCH_ACCOUNT_FORM_MAJOR_CREDITORS_FIELD_ERRORS } from './fines-sa-search-account-form-major-creditors/constants/fines-sa-search-account-form-major-creditors-field-errors.constants';
+import {
+  nationalInsuranceNumberMaxLengthValidator,
+  normalizeNationalInsuranceNumber,
+} from '../../../utils/national-insurance-number.utils';
 
 const ALPHANUMERIC_WITH_SPACES_PATTERN_VALIDATOR = patternValidator(
   ALPHANUMERIC_WITH_SPACES_PATTERN,
   'alphanumericTextPattern',
 );
+const NATIONAL_INSURANCE_CONTROL = 'fsa_search_account_individuals_national_insurance_number';
+const INDIVIDUALS_CRITERIA_GROUP = 'fsa_search_account_individuals_search_criteria';
 
 /**
  * Parent form for “Search Account” with tabbed sub-forms (Individuals, Companies, Minor Creditors, Major Creditors).
@@ -102,10 +108,25 @@ export class FinesSaSearchAccountFormComponent extends AbstractFormBaseComponent
    * Emits after `handleFormSubmit` runs the base validation/submission logic and the form is valid.
    */
   @Output() protected override formSubmit = new EventEmitter<IFinesSaSearchAccountForm>();
+
+  /**
+   * Autocomplete options for the Major Creditors tab, derived from the supplied reference data.
+   */
   protected majorCreditors = signal<IAlphagovAccessibleAutocompleteItem[]>([]);
 
+  /**
+   * Business unit reference data used to render the selected business unit summary.
+   */
   @Input({ required: true }) businessUnitRefData!: IOpalFinesBusinessUnit[];
+
+  /**
+   * Major creditor reference data used to populate the Major Creditors autocomplete.
+   */
   @Input({ required: true }) majorCreditorsRefData!: IOpalFinesMajorCreditor[];
+
+  /**
+   * Shared SA store used to hydrate form state, persist temporary search data, and track the active tab.
+   */
   public readonly finesSaStore = inject(FinesSaStore);
   /**
    * Parent-owned field error templates. These are swapped per active tab using `tabFieldErrorMap`.
@@ -153,7 +174,7 @@ export class FinesSaSearchAccountFormComponent extends AbstractFormBaseComponent
           ALPHANUMERIC_WITH_SPACES_PATTERN_VALIDATOR,
           Validators.maxLength(30),
         ]),
-        fsa_search_account_individuals_search_criteria: new FormGroup({}),
+        fsa_search_account_individuals_search_criteria: this.buildIndividualSearchCriteriaFormGroup(),
         fsa_search_account_companies_search_criteria: new FormGroup({}),
         fsa_search_account_minor_creditors_search_criteria: new FormGroup({}),
         fsa_search_account_major_creditors_search_criteria: new FormGroup({}),
@@ -161,6 +182,50 @@ export class FinesSaSearchAccountFormComponent extends AbstractFormBaseComponent
       },
       { validators: finesSaOneCriteriaValidator },
     );
+  }
+
+  /**
+   * Creates the National Insurance control used by the Individuals criteria group.
+   *
+   * @param value Optional value to retain when the Individuals group is rebuilt during tab changes.
+   * @returns A FormControl configured with alphanumeric-with-spaces and length validation.
+   */
+  private buildNationalInsuranceControl(value: string | null = null): FormControl<string | null> {
+    return new FormControl<string | null>(value, [
+      ALPHANUMERIC_WITH_SPACES_PATTERN_VALIDATOR,
+      nationalInsuranceNumberMaxLengthValidator,
+    ]);
+  }
+
+  /**
+   * Builds the Individuals search criteria FormGroup with the parent-owned National Insurance control.
+   *
+   * @param nationalInsuranceNumber Optional National Insurance value to preserve across tab resets.
+   * @returns A FormGroup containing the base Individuals search criteria controls.
+   */
+  private buildIndividualSearchCriteriaFormGroup(nationalInsuranceNumber: string | null = null): FormGroup {
+    return new FormGroup({
+      [NATIONAL_INSURANCE_CONTROL]: this.buildNationalInsuranceControl(nationalInsuranceNumber),
+    });
+  }
+
+  /**
+   * Normalises the quick-search National Insurance input in-place so the visible value
+   * and submitted form state use the same canonical format as the API payload.
+   */
+  private normalizeNationalInsuranceInput(): void {
+    const nationalInsuranceControl = this.form.get(`${INDIVIDUALS_CRITERIA_GROUP}.${NATIONAL_INSURANCE_CONTROL}`);
+    const nationalInsuranceNumber = nationalInsuranceControl?.value as string | null | undefined;
+
+    if (typeof nationalInsuranceNumber !== 'string') {
+      return;
+    }
+
+    const normalizedNationalInsuranceNumber = normalizeNationalInsuranceNumber(nationalInsuranceNumber);
+
+    if (normalizedNationalInsuranceNumber !== nationalInsuranceNumber) {
+      nationalInsuranceControl?.setValue(normalizedNationalInsuranceNumber);
+    }
   }
 
   /**
@@ -189,7 +254,7 @@ export class FinesSaSearchAccountFormComponent extends AbstractFormBaseComponent
   /**
    * Populates the `majorCreditors` property with a list of major creditors
    * retrieved from the route's snapshot data. The data is transformed into
-   * an array of objects containing the creditor's code as `value` and a
+   * an array of objects containing the creditor's account ID as `value` and a
    * prettified name as `name`.
    *
    * The method uses the `opalFinesService` to generate the prettified names
@@ -200,7 +265,7 @@ export class FinesSaSearchAccountFormComponent extends AbstractFormBaseComponent
   private populateMajorCreditors(): void {
     this.majorCreditors.set(
       this.majorCreditorsRefData.map((mc) => ({
-        value: mc.major_creditor_code!,
+        value: mc.creditor_account_id!,
         name: this.opalFinesService.getMajorCreditorPrettyName(mc),
       })),
     );
@@ -223,7 +288,12 @@ export class FinesSaSearchAccountFormComponent extends AbstractFormBaseComponent
    * inline/summary error messages.
    */
   private clearSearchForm(): void {
-    this.form.setControl('fsa_search_account_individuals_search_criteria', new FormGroup({}));
+    const nationalInsuranceNumber = this.form.get(`${INDIVIDUALS_CRITERIA_GROUP}.${NATIONAL_INSURANCE_CONTROL}`)
+      ?.value as string | null;
+    this.form.setControl(
+      INDIVIDUALS_CRITERIA_GROUP,
+      this.buildIndividualSearchCriteriaFormGroup(nationalInsuranceNumber),
+    );
     this.form.setControl('fsa_search_account_companies_search_criteria', new FormGroup({}));
     this.form.setControl('fsa_search_account_minor_creditors_search_criteria', new FormGroup({}));
     this.form.setControl('fsa_search_account_major_creditors_search_criteria', new FormGroup({}));
@@ -237,7 +307,7 @@ export class FinesSaSearchAccountFormComponent extends AbstractFormBaseComponent
    * - Clears all tab groups, then rehydrates any persisted form state from the store.
    * - Persists the selected tab to the store (and resets temporary state if the tab changed).
    *
-   * @param tab Fragment string identifying the tab (the component treats this as a string).
+   * @param tab Fragment string or tab-change event identifying the tab to activate.
    */
   private switchTab(tab: string | Event): void {
     const resolvedTab = tab as FinesSaSearchAccountTab;
@@ -319,6 +389,7 @@ export class FinesSaSearchAccountFormComponent extends AbstractFormBaseComponent
    * Runs pre-submit guards, then delegates to the base `handleFormSubmit` implementation.
    */
   public override handleFormSubmit(event: SubmitEvent): void {
+    this.normalizeNationalInsuranceInput();
     this.handleFormSubmission();
     super.handleFormSubmit(event);
   }

@@ -1,5 +1,5 @@
 @JIRA-LABEL:global-api-interceptor
-Feature: Global API Interceptor shows error banner for release 1b entrypoints
+Feature: Global Api Interceptor R1b
 
   Background:
     Given I am logged in with email "opal-test@dev.platform.hmcts.net"

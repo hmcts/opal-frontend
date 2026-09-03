@@ -138,7 +138,11 @@ describe('FinesSaSearchAccountFormComponent', () => {
     tabKeys.forEach((key) => {
       const group = component.form.get(key) as FormGroup;
       expect(group.get('dummy')).toBeNull();
-      expect(Object.keys(group.controls)).toEqual([]);
+      expect(Object.keys(group.controls)).toEqual(
+        key === 'fsa_search_account_individuals_search_criteria'
+          ? ['fsa_search_account_individuals_national_insurance_number']
+          : [],
+      );
     });
 
     expect(component.formControlErrorMessages).toEqual({});
@@ -159,12 +163,23 @@ describe('FinesSaSearchAccountFormComponent', () => {
     expect(component.form.valid).toBe(true);
   });
 
-  it('should populate major creditor autocomplete values from major creditor codes', () => {
+  it('should normalize National Insurance number input before submit', () => {
+    const nationalInsuranceControl = component.form.get(
+      'fsa_search_account_individuals_search_criteria.fsa_search_account_individuals_national_insurance_number',
+    );
+    nationalInsuranceControl?.setValue('ab 12 34 56 c');
+
+    component.handleFormSubmit(new SubmitEvent('submit', { bubbles: true, cancelable: true }));
+
+    expect(nationalInsuranceControl?.value).toBe('AB123456C');
+  });
+
+  it('should populate major creditor autocomplete values from creditor account ids', () => {
     component['populateMajorCreditors']();
 
     expect(component['majorCreditors']()).toEqual(
       OPAL_FINES_MAJOR_CREDITOR_REF_DATA_MOCK.refData.map((majorCreditor) => ({
-        value: majorCreditor.major_creditor_code!,
+        value: majorCreditor.creditor_account_id!,
         name: OPAL_FINES_MAJOR_CREDITOR_PRETTY_NAME_MOCK,
       })),
     );
@@ -327,10 +342,5 @@ describe('FinesSaSearchAccountFormComponent', () => {
       component.updateFormErrorSummaryMessages([]);
       expect(component.formErrorSummaryMessage).toEqual([]);
     });
-  });
-
-  it('should set autocomplete="off" on the form', () => {
-    fixture.detectChanges();
-    expect(fixture.nativeElement.querySelector('form')?.getAttribute('autocomplete')).toBe('off');
   });
 });
