@@ -21,7 +21,8 @@ import { UtilsService } from '@hmcts/opal-frontend-common/services/utils-service
 import { beforeEach, describe, expect, it, vi } from 'vitest';
 
 import { createSpyObj } from '@app/testing/create-spy-obj.helper';
-import { OPAL_FINES_RESULT_PRETTY_NAME_MOCK } from 'src/app/flows/fines/services/opal-fines-service/mocks/opal-fines-result-pretty-name.mock';
+import { OPAL_FINES_RESULT_PRETTY_NAME_MOCK } from '@services/fines/opal-fines-service/mocks/opal-fines-result-pretty-name.mock';
+import { FINES_MAC_OFFENCE_DETAILS_REVIEW_OFFENCE_IMPOSITION_DETAILS_SUMMARY_TEXT } from './constants/fines-mac-offence-details-review-offence-imposition-details-summary-text.constant';
 
 describe('FinesMacOffenceDetailsReviewOffenceImpositionComponent', () => {
   let component: FinesMacOffenceDetailsReviewOffenceImpositionComponent;
@@ -43,6 +44,7 @@ describe('FinesMacOffenceDetailsReviewOffenceImpositionComponent', () => {
       'formatSortCode',
       'checkFormValues',
       'checkFormArrayValues',
+      'upperCaseFirstLetter',
     ]);
 
     mockUtilsService.formatAddress.mockReturnValue(['Test Address']);
@@ -70,6 +72,7 @@ describe('FinesMacOffenceDetailsReviewOffenceImpositionComponent', () => {
     component.majorCreditorRefData = OPAL_FINES_MAJOR_CREDITOR_REF_DATA_MOCK;
     component.impositions = [structuredClone(FINES_MAC_OFFENCE_DETAILS_STATE_IMPOSITIONS_MOCK[0])];
     component.offenceIndex = 0;
+    component.offenceCaption = 'Criminal Courts Charge (FCC)';
     component.isReadOnly = false;
 
     const finesMacState = structuredClone(FINES_MAC_STATE_MOCK);
@@ -87,39 +90,88 @@ describe('FinesMacOffenceDetailsReviewOffenceImpositionComponent', () => {
     component.impositionRefData = OPAL_FINES_RESULTS_REF_DATA_MOCK;
     component.majorCreditorRefData = OPAL_FINES_MAJOR_CREDITOR_REF_DATA_MOCK;
     component.impositions = [structuredClone(FINES_MAC_OFFENCE_DETAILS_STATE_IMPOSITIONS_MOCK[0])];
-    component.offenceIndex = 0;
+    component.offenceCaption = 'Criminal Courts Charge (FCC)';
   });
 
   it('should create', () => {
     expect(component).toBeTruthy();
   });
 
-  it('should enforce current template link semantics', () => {
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    const templateConsts = ((FinesMacOffenceDetailsReviewOffenceImpositionComponent as any).ɵcmp?.consts ?? []).filter(
-      (entry: unknown) => Array.isArray(entry),
-    ) as unknown[][];
-    const templateFunction =
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      ((FinesMacOffenceDetailsReviewOffenceImpositionComponent as any).ɵcmp?.template?.toString() as
-        | string
-        | undefined) ?? '';
-    const actionLinkConsts = templateConsts.filter(
-      (entry) =>
-        entry.includes('govuk-link') &&
-        entry.includes('govuk-link--no-visited-state') &&
-        entry.includes('href') &&
-        entry.includes('click'),
+  it('should render minor creditor details using the GOV.UK details component', () => {
+    const details = fixture.nativeElement.querySelector('opal-lib-govuk-details details') as HTMLDetailsElement | null;
+    const summary = details?.querySelector('.govuk-details__summary-text');
+    const detailsText = details?.querySelector('.govuk-details__text');
+
+    expect(details).toBeTruthy();
+    expect(summary?.textContent?.trim()).toBe(
+      FINES_MAC_OFFENCE_DETAILS_REVIEW_OFFENCE_IMPOSITION_DETAILS_SUMMARY_TEXT.show,
+    );
+    expect(detailsText?.textContent).toContain('Address');
+    expect(detailsText?.textContent).toContain('Payment method');
+  });
+
+  it('should toggle the minor creditor details summary text when the details component opens and closes', () => {
+    const details = fixture.nativeElement.querySelector('opal-lib-govuk-details details') as HTMLDetailsElement | null;
+    expect(details).toBeTruthy();
+    if (!details) throw new Error('Minor creditor details component not found');
+
+    details.open = true;
+    details.dispatchEvent(new Event('toggle'));
+
+    expect(details.querySelector('.govuk-details__summary-text')?.textContent?.trim()).toBe(
+      FINES_MAC_OFFENCE_DETAILS_REVIEW_OFFENCE_IMPOSITION_DETAILS_SUMMARY_TEXT.hide,
     );
 
-    expect(actionLinkConsts.length).toBeGreaterThanOrEqual(1);
-    actionLinkConsts.forEach((entry) => {
-      expect(entry).toContain('href');
-      expect(entry).toContain('');
-      expect(entry).not.toContain('tabindex');
+    details.open = false;
+    details.dispatchEvent(new Event('toggle'));
+
+    expect(details.querySelector('.govuk-details__summary-text')?.textContent?.trim()).toBe(
+      FINES_MAC_OFFENCE_DETAILS_REVIEW_OFFENCE_IMPOSITION_DETAILS_SUMMARY_TEXT.show,
+    );
+  });
+
+  it('should skip details toggle listener setup when the details element is not available', () => {
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    const rendererListenSpy = vi.spyOn<any, any>(component['renderer'], 'listen');
+
+    Object.defineProperty(component, 'minorCreditorDetails', {
+      value: {
+        forEach: (
+          callback: (detailsComponent: { nativeElement: { querySelector: () => null } }, index: number) => void,
+        ) => callback({ nativeElement: { querySelector: () => null } }, 0),
+      },
     });
-    expect(templateFunction).not.toContain('keydown.enter');
-    expect(templateFunction).not.toContain('keyup.enter');
+
+    component['setupDetailsToggleListeners']();
+
+    expect(rendererListenSpy).not.toHaveBeenCalled();
+  });
+
+  it('should skip details toggle listener setup when there is no matching minor creditor imposition', () => {
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    const rendererListenSpy = vi.spyOn<any, any>(component['renderer'], 'listen');
+    const detailsElement = document.createElement('details');
+
+    component.impositionTableData = [
+      {
+        ...component.impositionTableData[0],
+        minorCreditor: null,
+      },
+    ];
+    Object.defineProperty(component, 'minorCreditorDetails', {
+      value: {
+        forEach: (
+          callback: (
+            detailsComponent: { nativeElement: { querySelector: () => HTMLDetailsElement } },
+            index: number,
+          ) => void,
+        ) => callback({ nativeElement: { querySelector: () => detailsElement } }, 0),
+      },
+    });
+
+    component['setupDetailsToggleListeners']();
+
+    expect(rendererListenSpy).not.toHaveBeenCalled();
   });
 
   it('should set impositionsTotalsData with converted monetary strings', () => {
@@ -149,7 +201,7 @@ describe('FinesMacOffenceDetailsReviewOffenceImpositionComponent', () => {
           accountNumber: '12345678',
           paymentReference: 'Testing',
         },
-        showMinorCreditorData: false,
+        minorCreditorDetailsSummaryText: FINES_MAC_OFFENCE_DETAILS_REVIEW_OFFENCE_IMPOSITION_DETAILS_SUMMARY_TEXT.show,
         amountImposed: expectedTotal,
         amountPaid: expectedTotal,
         balanceRemaining: expectedTotal,
@@ -162,6 +214,54 @@ describe('FinesMacOffenceDetailsReviewOffenceImpositionComponent', () => {
     component['getImpositionData']();
 
     expect(component.impositionTableData).toEqual(expectedImpositionTableData);
+  });
+
+  it('should expose accessible minus text for negative monetary values', () => {
+    mockUtilsService.convertToMonetaryString.mockImplementation((value: number | string) => {
+      if (value === -17) {
+        return '-£17.00';
+      }
+
+      if (value === -3) {
+        return '-£3.00';
+      }
+
+      if (value === -14) {
+        return '-£14.00';
+      }
+
+      return `£${value}.00`;
+    });
+
+    const hostFixture = TestBed.createComponent(FinesMacOffenceDetailsReviewOffenceImpositionComponent);
+    const hostComponent = hostFixture.componentInstance;
+    const negativeImpositions = [
+      {
+        ...structuredClone(FINES_MAC_OFFENCE_DETAILS_STATE_IMPOSITIONS_MOCK[0]),
+        fm_offence_details_amount_imposed: -17,
+        fm_offence_details_amount_paid: -3,
+        fm_offence_details_balance_remaining: -14,
+      },
+    ];
+
+    hostComponent.impositionRefData = OPAL_FINES_RESULTS_REF_DATA_MOCK;
+    hostComponent.majorCreditorRefData = OPAL_FINES_MAJOR_CREDITOR_REF_DATA_MOCK;
+    hostComponent.impositions = negativeImpositions;
+    hostComponent.offenceIndex = 0;
+    hostComponent.isReadOnly = false;
+
+    hostFixture.detectChanges();
+
+    const totalBalanceRemainingCell = hostFixture.nativeElement.querySelector(
+      '#totalBalanceRemaining',
+    ) as HTMLTableCellElement;
+    const accessibleMonetaryComponent = totalBalanceRemainingCell.querySelector('opal-lib-custom-accessible-monetary');
+    const visibleAmount = totalBalanceRemainingCell.querySelector('[aria-hidden="true"]');
+    const hiddenAmount = totalBalanceRemainingCell.querySelector('.govuk-visually-hidden');
+
+    expect(accessibleMonetaryComponent).toBeTruthy();
+    expect(visibleAmount?.textContent?.trim()).toBe('-£14.00');
+    expect(hiddenAmount?.textContent?.trim()).toBe('minus £14.00');
   });
 
   it('should return minor creditor - Any resultCodeCreditor', () => {
@@ -277,51 +377,6 @@ describe('FinesMacOffenceDetailsReviewOffenceImpositionComponent', () => {
     expect(() => component['sortImpositionsByAllocationOrder']()).toThrow();
   });
 
-  it('should invert showMinorCreditorData', () => {
-    component.impositions = [structuredClone(FINES_MAC_OFFENCE_DETAILS_STATE_IMPOSITIONS_MOCK[0])];
-    component['getImpositionData']();
-    const impositionId = component.impositionTableData[0].impositionId;
-
-    component.invertShowMinorCreditorData(impositionId);
-
-    expect(component.impositionTableData[0].showMinorCreditorData).toBe(true);
-
-    component.invertShowMinorCreditorData(impositionId);
-
-    expect(component.impositionTableData[0].showMinorCreditorData).toBe(false);
-  });
-
-  it('should click show/hide details link and preserve current template click behaviour', () => {
-    const link = fixture.nativeElement.querySelector('a.govuk-link') as HTMLAnchorElement | null;
-    expect(link).toBeTruthy();
-    if (!link) throw new Error('Show/hide details link not found');
-
-    expect(link.classList.contains('govuk-link--no-visited-state')).toBe(true);
-    expect(link.getAttribute('href')).toBe('');
-    expect(link.getAttribute('tabindex')).toBeNull();
-
-    const impositionId = component.impositionTableData[0].impositionId;
-    const event = new MouseEvent('click', { bubbles: true, cancelable: true });
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    const handlerSpy = vi.spyOn<any, any>(component, 'invertShowMinorCreditorData');
-
-    link.dispatchEvent(event);
-
-    expect(handlerSpy).toHaveBeenCalledWith(impositionId, event);
-    expect(event.defaultPrevented).toBe(true);
-  });
-
-  it('should prevent default and still invert minor creditor data when event is provided', () => {
-    const impositionId = component.impositionTableData[0].impositionId;
-    const event = new Event('click');
-    const preventDefaultSpy = vi.spyOn(event, 'preventDefault');
-
-    component.invertShowMinorCreditorData(impositionId, event);
-
-    expect(preventDefaultSpy).toHaveBeenCalled();
-    expect(component.impositionTableData[0].showMinorCreditorData).toBe(true);
-  });
-
   it('should return null for address and payment method for minor creditor', () => {
     const finesMacState = structuredClone(finesMacStore.getFinesMacStore());
     finesMacState.offenceDetails[0].childFormData = [
@@ -351,5 +406,13 @@ describe('FinesMacOffenceDetailsReviewOffenceImpositionComponent', () => {
 
   it('should return null as no minor creditor exists', () => {
     expect(component['getMinorCreditorData'](99)).toBeNull();
+  });
+
+  it('should render a visually hidden caption for the offence table', () => {
+    const caption = fixture.nativeElement.querySelector('caption') as HTMLTableCaptionElement | null;
+
+    expect(caption).toBeTruthy();
+    expect(caption?.textContent?.trim()).toBe('Offence: Criminal Courts Charge (FCC)');
+    expect(caption?.classList.contains('govuk-visually-hidden')).toBe(true);
   });
 });

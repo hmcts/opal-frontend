@@ -6,6 +6,7 @@ export const FINES_ACC_DEFENDANT_DETAILS_HEADER_MOCK: IOpalFinesAccountDefendant
   defendant_account_id: '77',
   defendant_account_party_id: '77',
   parent_guardian_party_id: '77',
+  collection_order: true,
   account_type: 'Fine',
   originator_name: 'Asylum & Immigration Tribunal',
   prosecutor_case_reference: '090A',
@@ -16,6 +17,7 @@ export const FINES_ACC_DEFENDANT_DETAILS_HEADER_MOCK: IOpalFinesAccountDefendant
   },
   business_unit_summary: {
     business_unit_id: '78',
+    business_unit_code: '0046',
     business_unit_name: 'N E Region',
     welsh_speaking: 'N',
   },

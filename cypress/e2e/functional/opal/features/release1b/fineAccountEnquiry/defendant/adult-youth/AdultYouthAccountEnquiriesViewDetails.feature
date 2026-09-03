@@ -104,14 +104,21 @@ Feature: Adult Youth Account Enquiries View Details
       When I open the "<section>" Change link on the Defendant tab
       Then I should be on the "individual" amend route with fragment "<fragment>"
 
+      @JIRA-TEST-KEY:PO-10002
       Examples:
-        | section           | fragment           |
-        | Defendant details | party-details      |
-        | Contact details   | contact-details    |
-        | Employer details  | employment-details |
+        | section           | fragment      |
+        | Defendant details | party-details |
+      @JIRA-TEST-KEY:PO-10003
+      Examples:
+        | section         | fragment        |
+        | Contact details | contact-details |
+      @JIRA-TEST-KEY:PO-10004
+      Examples:
+        | section          | fragment           |
+        | Employer details | employment-details |
 
   Rule: Youth-only add parent or guardian visibility
-    @R1B @JIRA-STORY:PO-5751 @JIRA-EPIC:PO-2990
+    @R1B @JIRA-STORY:PO-5751 @JIRA-EPIC:PO-2990 @JIRA-TEST-KEY:PO-10005
     Scenario: Youth-only account shows the Add parent or guardian details action
       # AC2 – Existing youth-only eligibility rules still show the Add parent or guardian details action.
       Given a published adult or youth defendant account exists:
@@ -138,15 +145,28 @@ Feature: Adult Youth Account Enquiries View Details
       When I go to the Defendant details section and the header is "Defendant details"
       Then I do not see the add parent or guardian details action
 
+      @JIRA-TEST-KEY:PO-10006
       Examples:
         | status |
         | CS     |
+      @JIRA-TEST-KEY:PO-10007
+      Examples:
+        | status |
         | WO     |
+      @JIRA-TEST-KEY:PO-10008
+      Examples:
+        | status |
         | TO     |
+      @JIRA-TEST-KEY:PO-10009
+      Examples:
+        | status |
         | TS     |
+      @JIRA-TEST-KEY:PO-10010
+      Examples:
+        | status |
         | TA     |
 
-    @R1B @JIRA-STORY:PO-5751 @JIRA-EPIC:PO-2990
+    @R1B @JIRA-STORY:PO-5751 @JIRA-EPIC:PO-2990 @JIRA-TEST-KEY:PO-10011
     Scenario: Youth-only account navigates to the Add parent or guardian details page
       # AC3 – The visible action keeps its existing navigation and behaviour
       Given a published adult or youth defendant account exists:

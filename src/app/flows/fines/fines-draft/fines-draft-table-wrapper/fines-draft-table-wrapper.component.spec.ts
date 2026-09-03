@@ -5,6 +5,7 @@ import { IFinesDraftTableWrapperTableSort } from './interfaces/fines-draft-table
 import { FINES_DRAFT_TABLE_WRAPPER_SORT_DEFAULT } from './constants/fines-draft-table-wrapper-table-sort.constants';
 import { FINES_DRAFT_TABLE_WRAPPER_TABLE_DATA_MOCK } from './mocks/fines-draft-table-wrapper-table-data.mock';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
+import { FINES_DRAFT_TAB_FRAGMENT } from '../constants/fines-draft-tab-fragments.constant';
 
 describe('FinesDraftTableWrapperComponent', () => {
   let component: FinesDraftTableWrapperComponent;
@@ -28,6 +29,25 @@ describe('FinesDraftTableWrapperComponent', () => {
     expect(component).toBeTruthy();
   });
 
+  it('should announce the new page and focus its first cell after rendering', async () => {
+    component.itemsPerPageSignal.set(1);
+    fixture.componentRef.setInput('paginationPageTitle', 'Review accounts');
+    fixture.detectChanges();
+    const previousFirstCell = fixture.nativeElement.querySelector('td#defendant') as HTMLTableCellElement;
+
+    component.onPageChange(2);
+    fixture.detectChanges();
+    await fixture.whenStable();
+
+    const firstCell = fixture.nativeElement.querySelector('td#defendant') as HTMLTableCellElement;
+    const status = fixture.nativeElement.querySelector('output') as HTMLOutputElement;
+    expect(firstCell).not.toBe(previousFirstCell);
+    expect(firstCell.textContent).toContain('Jane Smith');
+    expect(firstCell.getAttribute('tabindex')).toBe('-1');
+    expect(document.activeElement).toBe(firstCell);
+    expect(status.textContent?.trim()).toBe('Review accounts, page 2 of 2');
+  });
+
   it('should set displayTableDataSignal when tableData input is provided', () => {
     const testData: IFinesDraftTableWrapperTableData[] = FINES_DRAFT_TABLE_WRAPPER_TABLE_DATA_MOCK;
     component.tableData = testData;
@@ -41,8 +61,8 @@ describe('FinesDraftTableWrapperComponent', () => {
   });
 
   it('should accept activeTab input', () => {
-    component.activeTab = 'approved';
-    expect(component.activeTab).toBe('approved');
+    component.activeTab = FINES_DRAFT_TAB_FRAGMENT.approved;
+    expect(component.activeTab).toBe(FINES_DRAFT_TAB_FRAGMENT.approved);
   });
 
   it('should emit linkClicked event with the correct id when onDefendantClick is called', () => {
@@ -91,7 +111,7 @@ describe('FinesDraftTableWrapperComponent', () => {
   });
 
   it('should click defendant link and preserve current template click behaviour', () => {
-    component.activeTab = 'review';
+    component.activeTab = FINES_DRAFT_TAB_FRAGMENT.review;
     component.tableData = FINES_DRAFT_TABLE_WRAPPER_TABLE_DATA_MOCK;
     fixture.detectChanges();
 
@@ -119,7 +139,7 @@ describe('FinesDraftTableWrapperComponent', () => {
   });
 
   it('should click account link and preserve current template click behaviour', () => {
-    fixture.componentRef.setInput('activeTab', 'approved');
+    fixture.componentRef.setInput('activeTab', FINES_DRAFT_TAB_FRAGMENT.approved);
     fixture.componentRef.setInput('approvedAccountLinkEnabled', true);
     fixture.componentRef.setInput('tableData', FINES_DRAFT_TABLE_WRAPPER_TABLE_DATA_MOCK);
     fixture.detectChanges();
@@ -150,7 +170,7 @@ describe('FinesDraftTableWrapperComponent', () => {
   });
 
   it('should render approved account numbers as plain text when account links are disabled', () => {
-    fixture.componentRef.setInput('activeTab', 'approved');
+    fixture.componentRef.setInput('activeTab', FINES_DRAFT_TAB_FRAGMENT.approved);
     fixture.componentRef.setInput('approvedAccountLinkEnabled', false);
     fixture.componentRef.setInput('tableData', FINES_DRAFT_TABLE_WRAPPER_TABLE_DATA_MOCK);
     fixture.detectChanges();

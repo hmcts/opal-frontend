@@ -7,7 +7,7 @@ import { DOM_ELEMENTS as ENF_COURT_CHANGE } from '../../../../../shared/selector
 import { DOM_ELEMENTS as ENF_OVR } from '../../../../../shared/selectors/account-enquiry/account.enquiry.enforcement-override-add.locators';
 import { DOM_ELEMENTS as ENF_ACT } from '../../../../../shared/selectors/account-enquiry/account.enquiry.enforcement-action-select.locators';
 import { REMOVE_ENFORCEMENT_HOLD_ELEMENTS as ENF_REMOVE_HOLD } from '../../../../../shared/selectors/account-enquiry/account.enquiry.enforcement-hold-remove.locators';
-import { DOM_ELEMENTS as ENF_ACTION_ADD } from '../../../../../component/fineAccountEnquiry/accountEnquiry/locators/account.enquiry.enforcement-action-add.locators';
+import { DOM_ELEMENTS as ENF_ACTION_ADD } from '../../../../../component/release1b/fineAccountEnquiry/accountEnquiry/locators/account.enquiry.enforcement-action-add.locators';
 import { COLLECTION_ORDER_CHANGE_ELEMENTS as COLLO } from '../../../../../shared/selectors/account-enquiry/account.enquiry.collection-order-change.locators';
 import { createScopedLogger } from '../../../../../support/utils/log.helper';
 
@@ -380,13 +380,27 @@ export class AccountDetailsEnforcementActions {
   }
 
   /**
+   * Chooses the collection type on the add enforcement action details form.
+   *
+   * @param option - The collection type option to select.
+   */
+  public chooseCollectionType(option: string): void {
+    log('action', 'Choosing collection type option', { option });
+
+    cy.contains('legend', 'Collection type').parent().contains('label', option).click();
+  }
+
+  /**
    * Chooses whether to change existing payment terms on the add enforcement action details form.
    *
    * @param option - Visible option text, usually "Yes" or "No".
    */
   public chooseChangeExistingPaymentTerms(option: string): void {
     log('action', 'Choosing change existing payment terms option', { option });
-    cy.contains('label', option, { timeout: AccountDetailsEnforcementActions.DEFAULT_TIMEOUT }).click();
+    cy.contains('legend', 'Do you want to change the existing payment terms?')
+      .parent()
+      .contains('label', option)
+      .click();
   }
 
   /**

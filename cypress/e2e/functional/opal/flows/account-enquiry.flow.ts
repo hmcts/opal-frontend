@@ -29,6 +29,8 @@ import { createScopedLogger, createScopedSyncLogger } from '../../../../support/
 import { EtagUpdate } from '../actions/draft-account/draft-account.api';
 import { MINOR_CREDITOR_AMEND_ELEMENTS } from '../../../../shared/selectors/account-enquiry/account.enquiry.minor-creditor-amend.locators';
 import { AccountDetailsResponsiveLayoutActions } from '../actions/account-details/details.responsive-layout.actions';
+import type { DataTable } from '@badeball/cypress-cucumber-preprocessor';
+import { applyUniqPlaceholder } from '../../../../support/utils/stringUtils';
 
 const logAE = createScopedLogger('AccountEnquiryFlow');
 const logAESync = createScopedSyncLogger('AccountEnquiryFlow');
@@ -201,6 +203,17 @@ export class AccountEnquiryFlow {
     this.clickLatestPublishedFromResultsOrAcrossPages();
   }
 
+  /** Asserts that the user is on the FAE defendant account-details At a glance page. */
+  public assertOnDefendantAccountDetailsPage(): void {
+    logAE('assert', 'FAE defendant account-details page is visible');
+    cy.location('pathname', this.common.getPathTimeoutOptions()).should(
+      'match',
+      /\/fines\/account\/defendant\/\d+\/details$/,
+    );
+    this.detailsNav.assertAtAGlanceTabIsActive();
+    this.atAGlanceDetails.assertAtAGlancePageVisible();
+  }
+
   /**
    * Searches by surname, opens the latest result, and asserts the header text.
    * @param surname - Surname to search for.
@@ -232,6 +245,33 @@ export class AccountEnquiryFlow {
     ForceSingleTabNavigation();
     this.results.waitForResultsTable();
     this.results.openLatestPublished();
+  }
+
+  /**
+   * Opens the single result matching all supplied result-table values.
+   * @param table Two-column table of optional result column/value pairs.
+   */
+  public openMatchingResultFromResults(table: DataTable): void {
+    const expectations = Object.fromEntries(
+      Object.entries(table.rowsHash()).map(([key, value]) => [key.trim(), applyUniqPlaceholder(String(value).trim())]),
+    );
+
+    logAE('method', 'openMatchingResultFromResults()', { expectations });
+    logAE('open', 'Opening result matching supplied column values');
+
+    ForceSingleTabNavigation();
+    this.results.waitForResultsTable();
+    this.results.openByColumnValues(expectations);
+  }
+
+  /** Opens the associated defendant linked from the latest minor creditor result. */
+  public openLatestMinorCreditorDefendantFromResults(): void {
+    logAE('method', 'openLatestMinorCreditorDefendantFromResults()');
+    logAE('open', 'Opening associated defendant from latest minor creditor result');
+
+    ForceSingleTabNavigation();
+    this.results.waitForResultsTable();
+    this.results.openLatestMinorCreditorDefendant();
   }
 
   /**
@@ -475,6 +515,74 @@ export class AccountEnquiryFlow {
   }
 
   /**
+   * Stubs the defendant header-summary response with a business-unit code that is
+   * intentionally distinct from the internal business-unit identifier.
+   *
+   * @param businessUnitCode Public business-unit code to inject into the response.
+   */
+  public stubHeaderSummaryBusinessUnitCode(businessUnitCode: string): void {
+    logAE('intercept', 'Stubbing defendant header-summary business-unit code', { businessUnitCode });
+
+    cy.intercept('GET', '**/defendant-accounts/**/header-summary', (req) => {
+      req.continue((res) => {
+        const body = res.body as { business_unit_summary?: { business_unit_code?: string } };
+
+        if (!body?.business_unit_summary) {
+          throw new Error('Expected defendant header-summary response to include business_unit_summary.');
+        }
+
+        body.business_unit_summary.business_unit_code = businessUnitCode;
+        res.send({ body });
+      });
+    }).as('businessUnitCodeHeaderSummary');
+  }
+
+  /**
+   * Stubs the header API with a Collection Order mismatch for the named account category.
+   * This represents the data-quality conditions that cannot be created through normal UI flows.
+   * @param category - Account category whose mismatch should be returned by the header API.
+   */
+  public stubCollectionOrderWarningScenario(category: 'Adult' | 'Youth' | 'Company' | 'Conditional Caution'): void {
+    logAE('intercept', 'Stubbing Collection Order warning header scenario', { category });
+
+    cy.intercept('GET', '**/defendant-accounts/**/header-summary', (req) => {
+      req.continue((res) => {
+        const body = res.body as {
+          account_type?: string | null;
+          collection_order?: boolean | null;
+          debtor_type?: string;
+          is_youth?: boolean;
+          party_details?: { organisation_flag?: boolean };
+        };
+
+        if (!body?.party_details) {
+          throw new Error('Expected defendant header-summary response to include party_details.');
+        }
+
+        body.debtor_type = 'Defendant';
+        body.is_youth = category === 'Youth';
+        body.party_details.organisation_flag = category === 'Company';
+        body.account_type = category === 'Conditional Caution' ? 'Conditional Caution' : 'Fine';
+        body.collection_order = category === 'Adult' ? false : true;
+        res.send({ body });
+      });
+    }).as('collectionOrderWarningHeaderSummary');
+  }
+
+  /**
+   * Asserts the permanent Collection Order warning message.
+   * @param message - Warning text expected in the account header.
+   */
+  public assertCollectionOrderWarning(message: string): void {
+    this.defendantDetails.assertCollectionOrderWarning(message);
+  }
+
+  /** Asserts Collection Order data has no warning banner. */
+  public assertCollectionOrderWarningNotPresent(): void {
+    this.defendantDetails.assertCollectionOrderWarningNotPresent();
+  }
+
+  /**
    * Asserts that neither payment-terms action is displayed.
    */
   public assertPaymentTermsActionsNotVisible(): void {
@@ -640,6 +748,14 @@ export class AccountEnquiryFlow {
   public assertSelectedChildAccountDetailsVisible(): void {
     logAE('method', 'assertSelectedChildAccountDetailsVisible()');
     this.consolidatedAccounts.assertSelectedChildAccountDetailsVisible();
+  }
+
+  /**
+   * Asserts the selected consolidated child account displays the closed account banner.
+   */
+  public assertSelectedChildAccountStatusBannerVisible(): void {
+    logAE('method', 'assertSelectedChildAccountStatusBannerVisible()');
+    this.consolidatedAccounts.assertSelectedChildAccountStatusBannerVisible();
   }
 
   /**

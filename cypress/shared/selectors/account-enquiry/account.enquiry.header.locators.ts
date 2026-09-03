@@ -13,6 +13,10 @@ export const ACCOUNT_ENQUIRY_HEADER_ELEMENTS = {
   headingName: 'h1.govuk-heading-l',
   headingCaption: 'opal-lib-govuk-heading-with-caption .govuk-caption-l',
   pageHeader: 'opal-lib-custom-page-header',
+  accountStatusBanner: '#defendant-account-status',
+  accountStatusBannerAlert: '#defendant-account-status opal-lib-moj-alert[type="information"]',
+  collectionOrderWarningBanner: '#defendant-banners-collection-order',
+  collectionOrderWarningAlert: '#defendant-banners-collection-order opal-lib-moj-alert[type="warning"]',
 
   // Buttons
   addNoteButton: 'button#defendant-addAccountNote',

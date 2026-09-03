@@ -3,7 +3,7 @@
   [errors]="formErrorSummaryMessage"
   (errorClick)="scrollTo($event)"
 ></opal-lib-govuk-error-summary>
-<form autocomplete="off" (submit)="handleFormSubmit($event)" [formGroup]="form">
+<form (submit)="handleFormSubmit($event)" [formGroup]="form">
   <opal-lib-govuk-text-input
     labelText="First names"
     inputId="fm_parent_guardian_details_forenames"
@@ -173,6 +173,7 @@
       [control]="form.get('fm_parent_guardian_details_post_code')"
       [errors]="formControlErrorMessages['fm_parent_guardian_details_post_code']"
       [opalLibCapitaliseAllCharacters]="form.get('fm_parent_guardian_details_post_code')!"
+      [opalLibTrimLeadingTrailingWhitespace]="form.get('fm_parent_guardian_details_post_code')!"
     ></opal-lib-govuk-text-input>
   </fieldset>
 

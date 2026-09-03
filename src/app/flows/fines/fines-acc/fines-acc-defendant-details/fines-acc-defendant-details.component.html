@@ -2,6 +2,7 @@
   [accountStore]="accountStore"
   id="defendant"
   [accountStatusCode]="accountData.account_status_reference.account_status_code"
+  [collectionOrderBannerMessage]="collectionOrderBannerMessage"
   [showAddAccountNoteButton]="hasPermission(finesPermissions['add-account-activity-notes'])"
   (refreshPage)="refreshPage()"
   (navigateToAddAccountNotePage)="navigateToAddAccountNotePage()"
@@ -41,7 +42,7 @@
       <h2 opal-lib-custom-account-information-item-label>Business Unit:</h2>
       <p opal-lib-custom-account-information-item-value id="defendant-business-unit">
         {{ accountData.business_unit_summary.business_unit_name }} ({{
-          accountData.business_unit_summary.business_unit_id
+          accountData.business_unit_summary.business_unit_code
         }})
       </p>
     </opal-lib-custom-account-information-item>
@@ -61,7 +62,10 @@
     <opal-lib-custom-summary-metric-bar-item itemClasses="govuk-grid-column-one-quarter">
       <p opal-lib-custom-summary-metric-bar-item-label>Imposed:</p>
       <p opal-lib-custom-summary-metric-bar-item-value>
-        {{ accountData.payment_state_summary.imposed_amount | monetary: 'remove-minus-symbol' }}
+        <opal-lib-custom-accessible-monetary
+          [value]="accountData.payment_state_summary.imposed_amount"
+          format="remove-minus-symbol"
+        />
       </p>
     </opal-lib-custom-summary-metric-bar-item>
     <opal-lib-custom-summary-metric-bar-item
@@ -70,7 +74,10 @@
     >
       <p opal-lib-custom-summary-metric-bar-item-label textColour="govuk-dark-blue-text-colour">Arrears:</p>
       <p opal-lib-custom-summary-metric-bar-item-value textColour="govuk-dark-blue-text-colour">
-        {{ accountData.payment_state_summary.arrears_amount | monetary: 'remove-minus-symbol' }}
+        <opal-lib-custom-accessible-monetary
+          [value]="accountData.payment_state_summary.arrears_amount"
+          format="remove-minus-symbol"
+        />
       </p>
     </opal-lib-custom-summary-metric-bar-item>
     <opal-lib-custom-summary-metric-bar-item
@@ -79,7 +86,10 @@
     >
       <p opal-lib-custom-summary-metric-bar-item-label textColour="govuk-dark-blue-text-colour">Paid/Written off:</p>
       <p opal-lib-custom-summary-metric-bar-item-value textColour="govuk-dark-blue-text-colour">
-        {{ accountData.payment_state_summary.paid_amount | monetary: 'remove-minus-symbol' }}
+        <opal-lib-custom-accessible-monetary
+          [value]="accountData.payment_state_summary.paid_amount"
+          format="remove-minus-symbol"
+        />
       </p>
     </opal-lib-custom-summary-metric-bar-item>
     <opal-lib-custom-summary-metric-bar-item
@@ -88,7 +98,7 @@
     >
       <p opal-lib-custom-summary-metric-bar-item-label textColour="govuk-white-text-colour">Account Balance:</p>
       <p opal-lib-custom-summary-metric-bar-item-value textColour="govuk-white-text-colour">
-        {{ accountData.payment_state_summary.account_balance | monetary }}
+        <opal-lib-custom-accessible-monetary [value]="accountData.payment_state_summary.account_balance" />
       </p>
     </opal-lib-custom-summary-metric-bar-item>
   </opal-lib-custom-summary-metric-bar>
@@ -240,6 +250,7 @@
       <app-fines-acc-defendant-details-impositions-tab
         [tabData]="tabData"
         [style]="tabContentStyles"
+        [paginationPageTitle]="accountStore.party_name() ?? ''"
       ></app-fines-acc-defendant-details-impositions-tab>
     }
   }

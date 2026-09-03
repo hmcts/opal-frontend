@@ -50,23 +50,6 @@ export class FinesSaSearchAccountComponent extends AbstractFormParentBaseCompone
   }
 
   /**
-   * Gets the creditor account ID for a selected major creditor autocomplete value.
-   *
-   * @param majorCreditorCode - The selected major creditor code from the autocomplete.
-   * @returns The creditor account ID for the selected major creditor.
-   * @throws Error when the selected major creditor cannot be found in the resolved reference data.
-   */
-  private getCreditorAccountId(majorCreditorCode: string): number {
-    const majorCreditor = this.majorCreditorsRefData.find((mc) => mc.major_creditor_code === majorCreditorCode);
-
-    if (!majorCreditor?.creditor_account_id) {
-      throw new Error(`Major creditor account ID could not be found for code: ${majorCreditorCode}`);
-    }
-
-    return majorCreditor.creditor_account_id;
-  }
-
-  /**
    * Retrieves business unit reference data from the route resolver and ensures the store
    * has a default search account business unit selection.
    *
@@ -127,7 +110,7 @@ export class FinesSaSearchAccountComponent extends AbstractFormParentBaseCompone
    * 1. Updates the search account state in the store with the provided form data.
    * 2. Navigates to the appropriate page based on the active tab in the store:
    *    - If the active tab is 'majorCreditors', it navigates to the major creditor's page
-   *      using the creditor account ID associated with the selected major creditor code.
+   *      using the selected creditor account ID.
    *    - Otherwise, it navigates to the search results page.
    *
    * @param form - The form data of type `IFinesSaSearchAccountForm` containing the search account details.
@@ -139,10 +122,9 @@ export class FinesSaSearchAccountComponent extends AbstractFormParentBaseCompone
 
     // Navigate to the search results page
     if (this.finesSaStore.activeTab() === 'majorCreditors') {
-      const selectedMajorCreditorCode =
+      const creditorAccountId =
         form.formData.fsa_search_account_major_creditors_search_criteria!
           .fsa_search_account_major_creditors_major_creditor_id!;
-      const creditorAccountId = this.getCreditorAccountId(selectedMajorCreditorCode);
 
       this.navigateToMajorCreditor(creditorAccountId);
     } else {
