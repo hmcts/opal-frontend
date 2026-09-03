@@ -61,7 +61,10 @@
                 isBusinessUnitSelected(businessUnit.business_unit_id) ? 'govuk-table__row--selected' : ''
               "
             >
-              <td opal-lib-govuk-table-body-row-data id="fines-api-business-unit-select">
+              <td
+                opal-lib-govuk-table-body-row-data
+                [id]="'fines-api-business-unit-select-' + businessUnit.business_unit_id"
+              >
                 <opal-lib-govuk-checkboxes
                   [fieldSetId]="'fines-api-business-unit-' + businessUnit.business_unit_id + '-group'"
                   checkboxClasses=""
@@ -83,19 +86,22 @@
                   ></div>
                 </opal-lib-govuk-checkboxes>
               </td>
-              <td opal-lib-govuk-table-body-row-data id="fines-api-business-unit-name">
+              <td
+                opal-lib-govuk-table-body-row-data
+                [id]="'fines-api-business-unit-name-' + businessUnit.business_unit_id"
+              >
                 {{ businessUnit.business_unit_name }}
               </td>
               <td
                 opal-lib-govuk-table-body-row-data
-                id="fines-api-business-unit-file-count"
+                [id]="'fines-api-business-unit-file-count-' + businessUnit.business_unit_id"
                 class="govuk-table__cell--numeric"
               >
                 {{ businessUnit.file_count }}
               </td>
               <td
                 opal-lib-govuk-table-body-row-data
-                id="fines-api-business-unit-till-count"
+                [id]="'fines-api-business-unit-till-count-' + businessUnit.business_unit_id"
                 class="govuk-table__cell--numeric"
               >
                 {{ businessUnit.till_count }}
