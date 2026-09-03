@@ -1101,7 +1101,7 @@ describe('FinesMacReviewAccountComponent', () => {
     },
     () => {
       finesMacState.accountDetails.formData.fm_create_account_defendant_type = 'pgToPay';
-      setupComponent(finesAccountPayload, finesAccountPayload);
+      setupComponent();
       cy.get(DOM_ELEMENTS.heading).should('exist');
       cy.get(DOM_ELEMENTS.backLink).should('exist');
 
@@ -1250,7 +1250,7 @@ describe('FinesMacReviewAccountComponent', () => {
     },
     () => {
       finesMacState.accountDetails.formData.fm_create_account_defendant_type = 'company';
-      setupComponent(finesAccountPayload, finesAccountPayload);
+      setupComponent();
 
       cy.get(DOM_ELEMENTS.heading).should('exist');
       cy.get(DOM_ELEMENTS.backLink).should('exist');
