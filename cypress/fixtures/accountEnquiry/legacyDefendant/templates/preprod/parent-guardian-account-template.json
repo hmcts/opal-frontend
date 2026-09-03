@@ -60,6 +60,9 @@
       "employer address": "TEMPLATE_EMPLOYER_ADDRESS_LINE_1\nTEMPLATE_EMPLOYER_ADDRESS_LINE_2\nTEMPLATE_EMPLOYER_POSTCODE"
     }
   },
+  "parentGuardianTab": {
+    "header": "TEMPLATE_PREPROD_PARENT_GUARDIAN_DETAILS_HEADER"
+  },
   "paymentTermsTab": {
     "pay by date": "TEMPLATE_PAY_BY_DATE",
     "days in default": "TEMPLATE_DAYS_IN_DEFAULT_NUMBER",

@@ -1058,11 +1058,18 @@ Then('I validate the legacy defendant header and At a glance tab using fixture {
  * @step Navigates to the selected legacy defendant tab and validates its fixture-backed content.
  */
 When(
-  /^I go to the (Defendant|Payment terms|Enforcement|Impositions|History and notes) tab and validate the legacy defendant using fixture "([^"]+)"$/,
+  /^I go to the (Defendant|Parent or guardian|Payment terms|Enforcement|Impositions|History and notes|Fixed penalty) tab and validate the legacy defendant using fixture "([^"]+)"$/,
   (tabName: string, fixturePath: string) => {
     log('step', 'Navigate to legacy defendant tab and validate fixture-backed content', { tabName, fixturePath });
     accountEnquiryFlow().goToLegacyDefendantTabAndValidate(
-      tabName as 'Defendant' | 'Payment terms' | 'Enforcement' | 'Impositions' | 'History and notes',
+      tabName as
+        | 'Defendant'
+        | 'Parent or guardian'
+        | 'Payment terms'
+        | 'Enforcement'
+        | 'Impositions'
+        | 'History and notes'
+        | 'Fixed penalty',
       fixturePath,
     );
   },

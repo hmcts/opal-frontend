@@ -42,7 +42,14 @@ type MinorCreditorAmendmentSearchResult = {
   recordType: string;
 };
 
-type LegacyDefendantTabName = 'Defendant' | 'Payment terms' | 'Enforcement' | 'Impositions' | 'History and notes';
+type LegacyDefendantTabName =
+  | 'Defendant'
+  | 'Parent or guardian'
+  | 'Payment terms'
+  | 'Enforcement'
+  | 'Impositions'
+  | 'History and notes'
+  | 'Fixed penalty';
 
 type LegacyDefendantAccountFixture = {
   header?: {
@@ -65,6 +72,9 @@ type LegacyDefendantAccountFixture = {
     contact?: Record<string, string>;
     employer?: Record<string, string>;
   };
+  parentGuardianTab?: {
+    header?: string;
+  };
   paymentTermsTab?: Record<string, string>;
   enforcementTab?: {
     overview?: Record<string, string>;
@@ -80,6 +90,7 @@ type LegacyDefendantAccountFixture = {
     rows?: Array<Record<string, string>>;
     noResultsMessage?: string;
   };
+  fixedPenaltyTab?: Record<string, string>;
 };
 
 /**
@@ -843,6 +854,22 @@ export class AccountEnquiryFlow {
   }
 
   /**
+   * Validates the Parent or guardian tab values for a legacy defendant account.
+   *
+   * @param fixturePath - Cypress fixture path containing expected legacy account values.
+   */
+  public validateLegacyDefendantParentGuardianTab(fixturePath: string): void {
+    logAE('method', 'validateLegacyDefendantParentGuardianTab()', { fixturePath });
+
+    this.loadLegacyDefendantAccountFixture(fixturePath).then((fixture) => {
+      this.detailsNav.assertParentGuardianTabIsActive();
+      this.parentGuardianDetails.assertSectionHeader(
+        fixture.parentGuardianTab?.header ?? 'Parent or guardian details',
+      );
+    });
+  }
+
+  /**
    * Validates the Enforcement tab values for a legacy defendant account.
    *
    * @param fixturePath - Cypress fixture path containing expected legacy account values.
@@ -916,6 +943,24 @@ export class AccountEnquiryFlow {
   }
 
   /**
+   * Validates the Fixed penalty tab values for a legacy defendant account.
+   *
+   * @param fixturePath - Cypress fixture path containing expected legacy account values.
+   */
+  public validateLegacyDefendantFixedPenaltyTab(fixturePath: string): void {
+    logAE('method', 'validateLegacyDefendantFixedPenaltyTab()', { fixturePath });
+
+    this.loadLegacyDefendantAccountFixture(fixturePath).then((fixture) => {
+      this.detailsNav.assertFixedPenaltyTabIsActive();
+      this.fixedPenaltyDetails.assertSectionHeader('Fixed Penalty details');
+
+      if (fixture.fixedPenaltyTab && Object.keys(fixture.fixedPenaltyTab).length > 0) {
+        this.fixedPenaltyDetails.assertDetails(fixture.fixedPenaltyTab);
+      }
+    });
+  }
+
+  /**
    * Navigates to a legacy defendant tab and validates it using fixture-backed expectations.
    *
    * @param tabName - Tab label to navigate to.
@@ -928,6 +973,10 @@ export class AccountEnquiryFlow {
       case 'Defendant':
         this.detailsNav.goToDefendantTab();
         this.validateLegacyDefendantTab(fixturePath);
+        break;
+      case 'Parent or guardian':
+        this.detailsNav.goToParentGuardianTab();
+        this.validateLegacyDefendantParentGuardianTab(fixturePath);
         break;
       case 'Payment terms':
         this.goToPaymentTermsTab();
@@ -944,6 +993,10 @@ export class AccountEnquiryFlow {
       case 'History and notes':
         this.goToHistoryAndNotesTab();
         this.validateLegacyDefendantHistoryAndNotesTab(fixturePath);
+        break;
+      case 'Fixed penalty':
+        this.detailsNav.goToFixedPenaltyTab();
+        this.validateLegacyDefendantFixedPenaltyTab(fixturePath);
         break;
       default:
         throw new Error(`Unsupported legacy defendant tab: ${tabName}`);

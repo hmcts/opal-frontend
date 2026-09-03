@@ -75,5 +75,15 @@
     "noOutstandingEnforcementActionMessage": "TEMPLATE_NO_OUTSTANDING_ENFORCEMENT_ACTION_MESSAGE"
   },
   "impositionsTab": {},
-  "historyAndNotesTab": {}
+  "historyAndNotesTab": {},
+  "fixedPenaltyTab": {
+    "issuing authority": "TEMPLATE_JCDE_ISSUING_AUTHORITY",
+    "ticket number": "TEMPLATE_JCDE_TICKET_NUMBER",
+    "registration number": "TEMPLATE_JCDE_REGISTRATION_NUMBER",
+    "driving licence": "TEMPLATE_JCDE_DRIVING_LICENCE",
+    "notice to owner or hirer number (nto/nth)": "TEMPLATE_JCDE_NOTICE_NUMBER",
+    "date notice to owner was issued": "TEMPLATE_JCDE_ISSUED_DATE",
+    "time of offence": "TEMPLATE_JCDE_TIME_OF_OFFENCE",
+    "place of offence": "TEMPLATE_JCDE_PLACE_OF_OFFENCE"
+  }
 }

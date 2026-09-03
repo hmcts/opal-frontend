@@ -299,7 +299,7 @@ Feature: Defendant Adult Youth Search And Matches Journeys
     And I go to the Enforcement tab and validate the legacy defendant using fixture "<LEGACY_PARENT_GUARDIAN_VALIDATION_FIXTURE>"
     And I go to the Impositions tab and validate the legacy defendant using fixture "<LEGACY_PARENT_GUARDIAN_VALIDATION_FIXTURE>"
     And I go to the History and notes tab and validate the legacy defendant using fixture "<LEGACY_PARENT_GUARDIAN_VALIDATION_FIXTURE>"
-    And I go to the Parent or guardian details section and the header is "Parent or guardian details"
+    And I go to the Parent or guardian tab and validate the legacy defendant using fixture "<LEGACY_PARENT_GUARDIAN_VALIDATION_FIXTURE>"
     @R1BDrop1UatTechJCDE
     Examples:
       | LEGACY_PARENT_GUARDIAN_ACCOUNT_NUMBER | LEGACY_PARENT_GUARDIAN_SUMMARY_HEADER | BUSINESS_UNIT               | LEGACY_PARENT_GUARDIAN_VALIDATION_FIXTURE                                           |
@@ -328,25 +328,15 @@ Feature: Defendant Adult Youth Search And Matches Journeys
     And I go to the Enforcement tab and validate the legacy defendant using fixture "<LEGACY_FIXED_PENALTY_VALIDATION_FIXTURE>"
     And I go to the Impositions tab and validate the legacy defendant using fixture "<LEGACY_FIXED_PENALTY_VALIDATION_FIXTURE>"
     And I go to the History and notes tab and validate the legacy defendant using fixture "<LEGACY_FIXED_PENALTY_VALIDATION_FIXTURE>"
-    And I should see the Fixed penalty tab
-    When I go to the Fixed penalty section and the header is "Fixed Penalty details"
-    Then I should see the fixed penalty details:
-      | issuing authority                         | <LEGACY_FIXED_PENALTY_ISSUING_AUTHORITY> |
-      | ticket number                             | <LEGACY_FIXED_PENALTY_TICKET_NUMBER>     |
-      | registration number                       | <LEGACY_FIXED_PENALTY_REGISTRATION>      |
-      | driving licence                           | <LEGACY_FIXED_PENALTY_DRIVING_LICENCE>   |
-      | notice to owner or hirer number (nto/nth) | <LEGACY_FIXED_PENALTY_NOTICE_NUMBER>     |
-      | date notice to owner was issued           | <LEGACY_FIXED_PENALTY_ISSUED_DATE>       |
-      | time of offence                           | <LEGACY_FIXED_PENALTY_TIME_OF_OFFENCE>   |
-      | place of offence                          | <LEGACY_FIXED_PENALTY_PLACE_OF_OFFENCE>  |
+    And I go to the Fixed penalty tab and validate the legacy defendant using fixture "<LEGACY_FIXED_PENALTY_VALIDATION_FIXTURE>"
     @R1BDrop1UatTechJCDE
     Examples:
-      | LEGACY_FIXED_PENALTY_ACCOUNT_NUMBER | LEGACY_FIXED_PENALTY_SUMMARY_HEADER | BUSINESS_UNIT               | LEGACY_FIXED_PENALTY_VALIDATION_FIXTURE                                           | LEGACY_FIXED_PENALTY_ISSUING_AUTHORITY | LEGACY_FIXED_PENALTY_TICKET_NUMBER | LEGACY_FIXED_PENALTY_REGISTRATION | LEGACY_FIXED_PENALTY_DRIVING_LICENCE | LEGACY_FIXED_PENALTY_NOTICE_NUMBER | LEGACY_FIXED_PENALTY_ISSUED_DATE | LEGACY_FIXED_PENALTY_TIME_OF_OFFENCE | LEGACY_FIXED_PENALTY_PLACE_OF_OFFENCE |
-      | TEMPLATE_JCDE_ACCOUNT_NUMBER        | TEMPLATE_JCDE_SUMMARY_HEADER        | TEMPLATE_JCDE_BUSINESS_UNIT | accountEnquiry/legacyDefendant/templates/jcde/fixed-penalty-account-template.json | TEMPLATE_JCDE_ISSUING_AUTHORITY        | TEMPLATE_JCDE_TICKET_NUMBER        | TEMPLATE_JCDE_REGISTRATION_NUMBER | TEMPLATE_JCDE_DRIVING_LICENCE        | TEMPLATE_JCDE_NOTICE_NUMBER        | TEMPLATE_JCDE_ISSUED_DATE        | TEMPLATE_JCDE_TIME_OF_OFFENCE        | TEMPLATE_JCDE_PLACE_OF_OFFENCE        |
+      | LEGACY_FIXED_PENALTY_ACCOUNT_NUMBER | LEGACY_FIXED_PENALTY_SUMMARY_HEADER | BUSINESS_UNIT               | LEGACY_FIXED_PENALTY_VALIDATION_FIXTURE                                           |
+      | TEMPLATE_JCDE_ACCOUNT_NUMBER        | TEMPLATE_JCDE_SUMMARY_HEADER        | TEMPLATE_JCDE_BUSINESS_UNIT | accountEnquiry/legacyDefendant/templates/jcde/fixed-penalty-account-template.json |
     @R1BDrop1UatTechPreprod
     Examples:
-      | LEGACY_FIXED_PENALTY_ACCOUNT_NUMBER | LEGACY_FIXED_PENALTY_SUMMARY_HEADER | BUSINESS_UNIT                  | LEGACY_FIXED_PENALTY_VALIDATION_FIXTURE                                              | LEGACY_FIXED_PENALTY_ISSUING_AUTHORITY | LEGACY_FIXED_PENALTY_TICKET_NUMBER | LEGACY_FIXED_PENALTY_REGISTRATION    | LEGACY_FIXED_PENALTY_DRIVING_LICENCE | LEGACY_FIXED_PENALTY_NOTICE_NUMBER | LEGACY_FIXED_PENALTY_ISSUED_DATE | LEGACY_FIXED_PENALTY_TIME_OF_OFFENCE | LEGACY_FIXED_PENALTY_PLACE_OF_OFFENCE |
-      | TEMPLATE_PREPROD_ACCOUNT_NUMBER     | TEMPLATE_PREPROD_SUMMARY_HEADER     | TEMPLATE_PREPROD_BUSINESS_UNIT | accountEnquiry/legacyDefendant/templates/preprod/fixed-penalty-account-template.json | TEMPLATE_PREPROD_ISSUING_AUTHORITY     | TEMPLATE_PREPROD_TICKET_NUMBER     | TEMPLATE_PREPROD_REGISTRATION_NUMBER | TEMPLATE_PREPROD_DRIVING_LICENCE     | TEMPLATE_PREPROD_NOTICE_NUMBER     | TEMPLATE_PREPROD_ISSUED_DATE     | TEMPLATE_PREPROD_TIME_OF_OFFENCE     | TEMPLATE_PREPROD_PLACE_OF_OFFENCE     |
+      | LEGACY_FIXED_PENALTY_ACCOUNT_NUMBER | LEGACY_FIXED_PENALTY_SUMMARY_HEADER | BUSINESS_UNIT                  | LEGACY_FIXED_PENALTY_VALIDATION_FIXTURE                                              |
+      | TEMPLATE_PREPROD_ACCOUNT_NUMBER     | TEMPLATE_PREPROD_SUMMARY_HEADER     | TEMPLATE_PREPROD_BUSINESS_UNIT | accountEnquiry/legacyDefendant/templates/preprod/fixed-penalty-account-template.json |
 
   @LegacyData @JIRA-STORY:PO-706 @JIRA-EPIC:PO-704
   # Template only. Populate the example row and fixture, then remove @skip.
