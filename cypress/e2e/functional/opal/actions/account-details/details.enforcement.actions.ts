@@ -57,7 +57,11 @@ export class AccountDetailsEnforcementActions {
    * @param fieldSelectors - Mapping of normalized labels to locators.
    * @param scope - Root selector that must be visible before assertions run.
    */
-  private assertMappedValues(expected: Record<string, string>, fieldSelectors: Record<string, string>, scope: string): void {
+  private assertMappedValues(
+    expected: Record<string, string>,
+    fieldSelectors: Record<string, string>,
+    scope: string,
+  ): void {
     cy.get(scope, { timeout: AccountDetailsEnforcementActions.DEFAULT_TIMEOUT }).should('be.visible');
 
     Object.entries(expected).forEach(([label, value]) => {

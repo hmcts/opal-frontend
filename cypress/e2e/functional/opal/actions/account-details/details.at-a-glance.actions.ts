@@ -21,7 +21,10 @@ export class AccountDetailsAtAGlanceActions {
    * @returns Text with non-breaking spaces replaced and whitespace collapsed.
    */
   private normalize(value: string): string {
-    return value.replace(/\u00a0/g, ' ').replace(/\s+/g, ' ').trim();
+    return value
+      .replace(/\u00a0/g, ' ')
+      .replace(/\s+/g, ' ')
+      .trim();
   }
 
   /**
@@ -31,7 +34,11 @@ export class AccountDetailsAtAGlanceActions {
    * @param fieldSelectors - Mapping of normalized labels to locators.
    * @param scope - Root selector that must be visible before assertions run.
    */
-  private assertMappedValues(expected: Record<string, string>, fieldSelectors: Record<string, string>, scope: string): void {
+  private assertMappedValues(
+    expected: Record<string, string>,
+    fieldSelectors: Record<string, string>,
+    scope: string,
+  ): void {
     cy.get(scope, { timeout: 15000 }).should('be.visible');
 
     Object.entries(expected).forEach(([label, value]) => {

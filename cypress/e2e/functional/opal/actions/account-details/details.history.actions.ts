@@ -25,7 +25,10 @@ export class AccountDetailsHistoryActions {
    * @returns Text with non-breaking spaces replaced and whitespace collapsed.
    */
   private normalize(value: string): string {
-    return value.replace(/\u00a0/g, ' ').replace(/\s+/g, ' ').trim();
+    return value
+      .replace(/\u00a0/g, ' ')
+      .replace(/\s+/g, ' ')
+      .trim();
   }
 
   /**
@@ -199,7 +202,10 @@ export class AccountDetailsHistoryActions {
       amount: (rowIndex: number) => `#history-and-notes-amount-${rowIndex}`,
     };
 
-    cy.get(L.tableRows, { timeout: AccountDetailsHistoryActions.DEFAULT_TIMEOUT }).should('have.length', expectedRows.length);
+    cy.get(L.tableRows, { timeout: AccountDetailsHistoryActions.DEFAULT_TIMEOUT }).should(
+      'have.length',
+      expectedRows.length,
+    );
 
     expectedRows.forEach((row, rowIndex) => {
       Object.entries(row).forEach(([label, value]) => {

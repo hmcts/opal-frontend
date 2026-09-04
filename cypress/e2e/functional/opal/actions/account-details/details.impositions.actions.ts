@@ -67,7 +67,10 @@ export class AccountDetailsImpositionsActions {
   public assertImpositionsTabVisible(): void {
     log('assert', 'Asserting Impositions tab is visible');
     cy.get(L.root, { timeout: AccountDetailsImpositionsActions.DEFAULT_TIMEOUT }).should('be.visible');
-    cy.get(L.heading, { timeout: AccountDetailsImpositionsActions.DEFAULT_TIMEOUT }).should('contain.text', 'Impositions');
+    cy.get(L.heading, { timeout: AccountDetailsImpositionsActions.DEFAULT_TIMEOUT }).should(
+      'contain.text',
+      'Impositions',
+    );
   }
 
   /**
@@ -77,7 +80,10 @@ export class AccountDetailsImpositionsActions {
    */
   public assertEmptyState(expected: string): void {
     this.assertImpositionsTabVisible();
-    cy.get(L.emptyState, { timeout: AccountDetailsImpositionsActions.DEFAULT_TIMEOUT }).should('contain.text', expected);
+    cy.get(L.emptyState, { timeout: AccountDetailsImpositionsActions.DEFAULT_TIMEOUT }).should(
+      'contain.text',
+      expected,
+    );
   }
 
   /**

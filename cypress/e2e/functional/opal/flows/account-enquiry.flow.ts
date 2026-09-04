@@ -863,9 +863,7 @@ export class AccountEnquiryFlow {
 
     this.loadLegacyDefendantAccountFixture(fixturePath).then((fixture) => {
       this.detailsNav.assertParentGuardianTabIsActive();
-      this.parentGuardianDetails.assertSectionHeader(
-        fixture.parentGuardianTab?.header ?? 'Parent or guardian details',
-      );
+      this.parentGuardianDetails.assertSectionHeader(fixture.parentGuardianTab?.header ?? 'Parent or guardian details');
     });
   }
 
