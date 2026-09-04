@@ -10,6 +10,7 @@ import java.time.ZonedDateTime
 @Field String legacyDemoSuiteR1aChoice = suiteR1aChoice
 @Field String legacyDemoSuiteR1aR1bDrop1Choice = 'R1A_AND_R1B_DROP1'
 @Field String legacyDemoSuiteR1abChoice = 'R1A_AND_R1B'
+@Field String legacyDemoSuiteR1bDrop1Choice = 'R1B_DROP1'
 @Field String legacyDemoSuiteR1bOffChoice = 'R1B_OFF'
 @Field String legacyDemoSuiteR1aOffChoice = 'R1A_OFF'
 @Field String legacyDemoSuiteR1abOffChoice = 'R1A_AND_R1B_OFF'
@@ -21,6 +22,7 @@ import java.time.ZonedDateTime
 @Field String functionalR1aCommand = 'test:functional:r1a'
 @Field String functionalR1aAndR1bDrop1Command = 'test:functional:r1a_and_r1b_drop1'
 @Field String functionalR1abCommand = 'test:functional:r1ab'
+@Field String functionalR1bDrop1Command = 'test:functional:r1b_drop1'
 @Field String functionalR1bOffCommand = 'test:functional:r1bOff'
 @Field String functionalR1aOffCommand = 'test:functional:r1aOff'
 @Field String functionalR1abOffCommand = 'test:functional:r1aboff'
@@ -76,6 +78,7 @@ properties([
         legacyDemoSuiteR1aChoice,
         legacyDemoSuiteR1aR1bDrop1Choice,
         legacyDemoSuiteR1abChoice,
+        legacyDemoSuiteR1bDrop1Choice,
         legacyDemoSuiteR1bOffChoice,
         legacyDemoSuiteR1aOffChoice,
         legacyDemoSuiteR1abOffChoice,
@@ -132,6 +135,7 @@ String failureResult = 'FAILURE'
 @Field String demoStageR1aDirName = 'r1a-legacy-demo'
 @Field String demoStageR1aAndR1bDrop1DirName = 'r1a-and-r1b-drop1-legacy-demo'
 @Field String demoStageR1abDirName = 'r1ab-legacy-demo'
+@Field String demoStageR1bDrop1DirName = 'r1b-drop1-legacy-demo'
 @Field String demoStageR1bOffDirName = 'r1b-off-legacy-demo'
 @Field String demoStageR1aOffDirName = 'r1a-off-legacy-demo'
 @Field String demoStageR1abOffDirName = 'r1ab-off-legacy-demo'
@@ -848,6 +852,32 @@ boolean isSelectedLegacyDemoSuite(String suiteChoice) {
   return params.LEGACY_DEMO_SUITE == suiteChoice
 }
 
+// Run the nightly R1B Drop1 legacy demo checks and publish a dedicated report.
+void runR1bDrop1LegacyDemoStage(
+  boolean enabled,
+  String failureResultValue,
+  uk.gov.hmcts.contino.YarnBuilder builder,
+  boolean shouldRunWithZephyr,
+  String browserToRun
+) {
+  String r1bDrop1Command =
+    shouldRunWithZephyr ? 'zephyr:test:r1b_drop1_legacy_demo' : functionalR1bDrop1Command
+  runDemoLegacyStage([
+    enabled           : enabled,
+    stageName         : 'R1B Drop1 Legacy Demo',
+    failureResultValue: failureResultValue,
+    failureMessage    : 'R1B Drop1 Legacy Demo failed',
+    startMessage      :
+      "Running R1B Drop1 legacy demo scenarios against ${nightlyTestUrlDemo} " +
+      "with yarn ${r1bDrop1Command}",
+    outputDirName     : demoStageR1bDrop1DirName,
+    reportName        : "R1B Drop1 Legacy Demo Functional Test Report (${browserToRun})",
+    browserToRun      : browserToRun,
+  ]) {
+    builder.yarn(r1bDrop1Command)
+  }
+}
+
 // Run the nightly R1B-off legacy demo checks and publish a dedicated report.
 void runR1bOffLegacyDemoStage(
   boolean enabled,
@@ -1203,6 +1233,13 @@ Description: ${env.EXECUTION_CYCLE_DESCRIPTION}
     )
     runR1aAndR1bLegacyDemoStage(
       isSelectedLegacyDemoSuite(legacyDemoSuiteR1abChoice),
+      failureResult,
+      yarnBuilder,
+      shouldRunWithZephyr,
+      browserToRun
+    )
+    runR1bDrop1LegacyDemoStage(
+      isSelectedLegacyDemoSuite(legacyDemoSuiteR1bDrop1Choice),
       failureResult,
       yarnBuilder,
       shouldRunWithZephyr,
