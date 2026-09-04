@@ -1,0 +1,19 @@
+{
+  "header": {
+    "accountNumber": "TEMPLATE_PREPROD_ACCOUNT",
+    "name": "TEMPLATE_PREPROD_HEADER"
+  },
+  "atAGlance": {
+    "company": {},
+    "paymentTerms": {},
+    "enforcementStatus": {},
+    "comments": {}
+  },
+  "defendantTab": {
+    "company": {}
+  },
+  "paymentTermsTab": {},
+  "enforcementTab": {},
+  "impositionsTab": {},
+  "historyAndNotesTab": {}
+}

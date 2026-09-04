@@ -16,6 +16,7 @@ export const DEFENDANT_HEADER_MOCK: IOpalFinesAccountDefendantDetailsHeader = {
   defendant_account_party_id: '77',
   parent_guardian_party_id: null,
   has_consolidated_accounts: false,
+  collection_order: true,
   account_status_reference: {
     account_status_code: 'L',
     account_status_display_name: 'Live',

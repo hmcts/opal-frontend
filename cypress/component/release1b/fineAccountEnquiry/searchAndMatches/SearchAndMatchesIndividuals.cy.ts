@@ -514,9 +514,10 @@ describe('Search Account Component - Individuals', () => {
         },
         { useSpyRouter: false },
       ).then(({ fixture }) => {
-        cy.stub(fixture.componentRef.injector.get(OpalFines), 'getDefendantAccounts')
-          .returns(of({ count: 0, defendant_accounts: [] }))
-          .as('getDefendantAccounts');
+        const getDefendantAccountsStub = cy
+          .stub(fixture.componentRef.injector.get(OpalFines), 'getDefendantAccounts')
+          .returns(of({ count: 0, defendant_accounts: [] }));
+        cy.wrap(getDefendantAccountsStub).as('getDefendantAccounts');
       });
 
       cy.get(CommonLocators.nationalInsuranceNumberInput).should('have.value', 'QQ123456C');
@@ -561,9 +562,10 @@ describe('Search Account Component - Individuals', () => {
         },
         { useSpyRouter: false },
       ).then(({ fixture }) => {
-        cy.stub(fixture.componentRef.injector.get(OpalFines), 'getDefendantAccounts')
-          .returns(of({ count: 0, defendant_accounts: [] }))
-          .as('getDefendantAccounts');
+        const getDefendantAccountsStub = cy
+          .stub(fixture.componentRef.injector.get(OpalFines), 'getDefendantAccounts')
+          .returns(of({ count: 0, defendant_accounts: [] }));
+        cy.wrap(getDefendantAccountsStub).as('getDefendantAccounts');
       });
 
       cy.get(CommonLocators.nationalInsuranceNumberInput).should('have.value', 'AB 12 34 56 C');

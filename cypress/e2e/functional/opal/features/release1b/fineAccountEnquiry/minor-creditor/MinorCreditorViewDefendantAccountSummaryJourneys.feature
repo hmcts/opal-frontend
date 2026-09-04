@@ -8,7 +8,7 @@ Feature: Minor Creditor View Defendant Account Summary Journeys
   Background:
     Given I clear all approved accounts
 
-  @R1BUatTechJCDE @JIRA-STORY:PO-1917 @JIRA-STORY:PO-6361 @JIRA-EPIC:PO-2234 @JIRA-TEST-KEY:PO-5570
+  @R1BDrop2UatTechJCDE @JIRA-STORY:PO-1917 @JIRA-STORY:PO-6361 @JIRA-EPIC:PO-2234 @JIRA-TEST-KEY:PO-5570
   Scenario: Search for a minor creditor account and view the default account summary
     Given I am logged in with email "opal-test@dev.platform.hmcts.net"
     And a published account exists with an individual minor creditor:
@@ -42,7 +42,7 @@ Feature: Minor Creditor View Defendant Account Summary Journeys
       | Address      | 1 High Street                    |
       | BACS details | Provided                         |
 
-  @R1BUatTechJCDE @JIRA-STORY:PO-8927 @JIRA-EPIC:PO-812
+  @R1BDrop2UatTechJCDE @JIRA-STORY:PO-8927 @JIRA-EPIC:PO-812
   Scenario: Search for a minor creditor account by account number and view the default account summary
     Given I am logged in with email "opal-test@dev.platform.hmcts.net"
     And a published account exists with an individual minor creditor:

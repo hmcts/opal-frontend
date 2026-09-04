@@ -1,3 +1,7 @@
+/**
+ * @file details.impositions.actions.ts
+ * @description Actions for asserting the Account Details "Impositions" tab.
+ */
 import { AccountImpositionsDetailsLocators as L } from '../../../../../shared/selectors/account-details/account.impositions.details.locators';
 import { createScopedLogger } from '../../../../../support/utils/log.helper';
 
@@ -5,12 +9,24 @@ const log = createScopedLogger('AccountDetailsImpositionsActions');
 
 const SHORT_MONTH_NAMES = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
 
+/**
+ * Normalizes rendered table text for stable whitespace-insensitive comparisons.
+ *
+ * @param value - Raw text content from the DOM.
+ * @returns Text with non-breaking spaces replaced and whitespace collapsed.
+ */
 const normalizeTableText = (value: string): string =>
   value
     .replace(/\u00a0/g, ' ')
     .replace(/\s+/g, ' ')
     .trim();
 
+/**
+ * Resolves placeholders used in expected imposition table values.
+ *
+ * @param value - Expected table cell value or supported placeholder.
+ * @returns Concrete expected text for comparison.
+ */
 const resolveExpectedTableValue = (value: string): string => {
   const normalizedValue = normalizeTableText(value);
   if (normalizedValue !== '{today}') return normalizedValue;
@@ -27,6 +43,12 @@ const resolveExpectedTableValue = (value: string): string => {
   return `${datePart('day')} ${SHORT_MONTH_NAMES[Number(datePart('month')) - 1]} ${datePart('year')}`;
 };
 
+/**
+ * Asserts a rendered table cell exactly matches the expected normalized text.
+ *
+ * @param selector - Cell selector to read from the DOM.
+ * @param expected - Expected cell text after normalization.
+ */
 const assertTableCellText = (selector: string, expected: string): void => {
   cy.get(selector)
     .invoke('text')
@@ -38,6 +60,31 @@ const assertTableCellText = (selector: string, expected: string): void => {
 /** Actions and assertions for the defendant account Impositions tab. */
 export class AccountDetailsImpositionsActions {
   private static readonly DEFAULT_TIMEOUT = 15_000;
+
+  /**
+   * Asserts the Impositions tab shell is visible.
+   */
+  public assertImpositionsTabVisible(): void {
+    log('assert', 'Asserting Impositions tab is visible');
+    cy.get(L.root, { timeout: AccountDetailsImpositionsActions.DEFAULT_TIMEOUT }).should('be.visible');
+    cy.get(L.heading, { timeout: AccountDetailsImpositionsActions.DEFAULT_TIMEOUT }).should(
+      'contain.text',
+      'Impositions',
+    );
+  }
+
+  /**
+   * Asserts the Impositions tab empty-state text.
+   *
+   * @param expected - Expected empty-state message.
+   */
+  public assertEmptyState(expected: string): void {
+    this.assertImpositionsTabVisible();
+    cy.get(L.emptyState, { timeout: AccountDetailsImpositionsActions.DEFAULT_TIMEOUT }).should(
+      'contain.text',
+      expected,
+    );
+  }
 
   /**
    * Verifies every rendered imposition row against the expected data-table rows.

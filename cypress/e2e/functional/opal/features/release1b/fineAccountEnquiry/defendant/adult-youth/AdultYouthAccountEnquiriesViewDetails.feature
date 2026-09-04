@@ -31,7 +31,7 @@ Feature: Adult Youth Account Enquiries View Details
       Then I should see the convert to company account action
 
 
-    @R1B @JIRA-STORY:PO-1593 @JIRA-STORY:PO-866 @JIRA-STORY:PO-1110 @JIRA-STORY:PO-1127 @JIRA-EPIC:PO-812 @JIRA-TEST-KEY:PO-5514
+    @R1BDrop1 @JIRA-STORY:PO-1593 @JIRA-STORY:PO-866 @JIRA-STORY:PO-1110 @JIRA-STORY:PO-1127 @JIRA-EPIC:PO-812 @JIRA-TEST-KEY:PO-5514
     Scenario: Defendant edit warning retains changes when I stay on the form
       # AC4 – Route Guard (Cancel and stay)
       And I edit the Defendant details and change the First name to "Test"
@@ -40,7 +40,7 @@ Feature: Adult Youth Account Enquiries View Details
       And I should see the First name field still contains "Test"
 
 
-    @R1B @JIRA-STORY:PO-1593 @JIRA-STORY:PO-866 @JIRA-STORY:PO-1110 @JIRA-STORY:PO-1127 @JIRA-EPIC:PO-812 @JIRA-TEST-KEY:PO-5515
+    @R1BDrop1 @JIRA-STORY:PO-1593 @JIRA-STORY:PO-866 @JIRA-STORY:PO-1110 @JIRA-STORY:PO-1127 @JIRA-EPIC:PO-812 @JIRA-TEST-KEY:PO-5515
     Scenario: Defendant edit warning discards changes when I leave the form
       # AC4 – Route Guard (Cancel and leave)
       And I edit the Defendant details and change the First name to "Test"
@@ -49,7 +49,7 @@ Feature: Adult Youth Account Enquiries View Details
       And I should see the account header contains "Mr John ACCDETAILSURNAME{uniqUpper}"
 
 
-    @R1B @JIRA-STORY:PO-1593 @JIRA-STORY:PO-866 @JIRA-STORY:PO-1110 @JIRA-STORY:PO-1127 @JIRA-EPIC:PO-812 @JIRA-TEST-KEY:PO-5516
+    @R1BDrop1 @JIRA-STORY:PO-1593 @JIRA-STORY:PO-866 @JIRA-STORY:PO-1110 @JIRA-STORY:PO-1127 @JIRA-EPIC:PO-812 @JIRA-TEST-KEY:PO-5516
     Scenario: Saving defendant details updates the name and audit trail
       # AC1 – Edit and save changes
       And I edit the Defendant details and change the First name to "Updated"
@@ -60,7 +60,7 @@ Feature: Adult Youth Account Enquiries View Details
       And I verify defendant amendments via API for first name "Updated"
 
 
-    @R1B @JIRA-STORY:PO-1593 @JIRA-STORY:PO-866 @JIRA-STORY:PO-1110 @JIRA-STORY:PO-1127 @JIRA-EPIC:PO-812 @JIRA-TEST-KEY:PO-5517
+    @R1BDrop1 @JIRA-STORY:PO-1593 @JIRA-STORY:PO-866 @JIRA-STORY:PO-1110 @JIRA-STORY:PO-1127 @JIRA-EPIC:PO-812 @JIRA-TEST-KEY:PO-5517
     Scenario: Saving unchanged defendant details does not create amendments
       # AC3/4 – Verify via API and store amendment count baseline
       And I establish a defendant amendment baseline with first name "Updated"
@@ -71,7 +71,7 @@ Feature: Adult Youth Account Enquiries View Details
       And I should see the account header contains "Mr Updated ACCDETAILSURNAME{uniqUpper}"
       And I verify no amendments were created via API
 
-    @R1B @JIRA-EPIC:PO-1970 @JIRA-STORY:PO-1942 @JIRA-STORY:PO-1943 @JIRA-STORY:PO-1953 @JIRA-TEST-KEY:PO-5518
+    @R1BDrop1 @JIRA-EPIC:PO-1970 @JIRA-STORY:PO-1942 @JIRA-STORY:PO-1943 @JIRA-STORY:PO-1953 @JIRA-TEST-KEY:PO-5518
     Scenario: Convert to company saves and shows the converted company account details
       When I start converting the account to a company account
       Then I should see the convert to company confirmation screen for defendant "Mr John ACCDETAILSURNAME{uniqUpper}"
@@ -89,7 +89,7 @@ Feature: Adult Youth Account Enquiries View Details
       And I should see the company name contains "Accdetail converted comp{uniq}"
       And I should see the primary email address contains "John.AccDetailSurname{uniq}@test.com"
 
-    @R1B @JIRA-EPIC:PO-1970 @JIRA-STORY:PO-1943 @JIRA-TEST-KEY:PO-5519
+    @R1BDrop1 @JIRA-EPIC:PO-1970 @JIRA-STORY:PO-1943 @JIRA-TEST-KEY:PO-5519
     Scenario: Convert to company confirmation cancel returns to Defendant details with no changes made
       When I start converting the account to a company account
       Then I should see the convert to company confirmation screen for defendant "Mr John ACCDETAILSURNAME{uniqUpper}"
@@ -97,7 +97,7 @@ Feature: Adult Youth Account Enquiries View Details
       Then I should return to the account details page Defendant tab
       And I should see the convert to company account action
 
-    @R1B @JIRA-STORY:PO-2671 @JIRA-EPIC:PO-8248
+    @R1BDrop1 @JIRA-STORY:PO-2671 @JIRA-EPIC:PO-8248
     Scenario Outline: AC1c-AC1e Individual Defendant tab Change links open the correct amend screens
       # AC1a – the heading Change link is removed
       # AC1b – section Change links are shown for Defendant details, Contact details, and Employer details
@@ -118,7 +118,7 @@ Feature: Adult Youth Account Enquiries View Details
         | Employer details | employment-details |
 
   Rule: Youth-only add parent or guardian visibility
-    @R1B @JIRA-STORY:PO-5751 @JIRA-EPIC:PO-2990 @JIRA-TEST-KEY:PO-10005
+    @R1BDrop1 @JIRA-STORY:PO-5751 @JIRA-EPIC:PO-2990 @JIRA-TEST-KEY:PO-10005
     Scenario: Youth-only account shows the Add parent or guardian details action
       # AC2 – Existing youth-only eligibility rules still show the Add parent or guardian details action.
       Given a published adult or youth defendant account exists:
@@ -131,7 +131,7 @@ Feature: Adult Youth Account Enquiries View Details
       When I go to the Defendant details section and the header is "Defendant details"
       Then I should see the add parent or guardian details action
 
-    @R1B @JIRA-STORY:PO-5751 @JIRA-EPIC:PO-2990
+    @R1BDrop1 @JIRA-STORY:PO-5751 @JIRA-EPIC:PO-2990
     Scenario Outline: Youth-only account hides the Add parent or guardian details action for restricted account statuses
       # AC1 – A youth-only account does not show the Add parent or guardian details action for restricted account statuses
       Given I stub the defendant header summary account status code to "<status>"
@@ -166,7 +166,7 @@ Feature: Adult Youth Account Enquiries View Details
         | status |
         | TA     |
 
-    @R1B @JIRA-STORY:PO-5751 @JIRA-EPIC:PO-2990 @JIRA-TEST-KEY:PO-10011
+    @R1BDrop1 @JIRA-STORY:PO-5751 @JIRA-EPIC:PO-2990 @JIRA-TEST-KEY:PO-10011
     Scenario: Youth-only account navigates to the Add parent or guardian details page
       # AC3 – The visible action keeps its existing navigation and behaviour
       Given a published adult or youth defendant account exists:
@@ -198,7 +198,7 @@ Feature: Adult Youth Account Enquiries View Details
       When I search for the account by last name "HistoryNotes{uniq}" and open the latest result
       Then I should see the page header contains "Ms Harriet HISTORYNOTES{uniqUpper}"
 
-    @R1B @JIRA-STORY:PO-2635 @JIRA-EPIC:PO-2621 @JIRA-TEST-KEY:PO-9568
+    @R1BDrop1 @JIRA-STORY:PO-2635 @JIRA-EPIC:PO-2621 @JIRA-TEST-KEY:PO-9568
 
     Scenario: History and notes items load and can be filtered
       When I go to the History and notes tab
@@ -206,7 +206,7 @@ Feature: Adult Youth Account Enquiries View Details
       When I filter the History and notes results to Notes
       Then I should only see Note items in History and notes
 
-    @R1B @JIRA-STORY:PO-2635 @JIRA-EPIC:PO-2621 @JIRA-TEST-KEY:PO-9569
+    @R1BDrop1 @JIRA-STORY:PO-2635 @JIRA-EPIC:PO-2621 @JIRA-TEST-KEY:PO-9569
 
     Scenario: History and notes account links open the correct record in a new tab
       When I go to the History and notes tab

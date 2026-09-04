@@ -27,7 +27,7 @@ Feature: Adult Youth Collection Order
       When I search for the account by last name "CollectionOrderAdult{uniq}" and open the latest result
       And I go to the Enforcement tab
 
-    @R1B @JIRA-EPIC:PO-2219 @JIRA-TEST-KEY:PO-5349
+    @R1BDrop1 @JIRA-EPIC:PO-2219 @JIRA-TEST-KEY:PO-5349
     Scenario: Save Collection Order status for an adult or youth account
       And I open the Change Collection Order status form
       Then I should see the Change Collection Order status page
@@ -38,20 +38,20 @@ Feature: Adult Youth Collection Order
       And I should see the collection order success banner "Collection Order status changed"
       And the collection order summary should show "Collection Order"
 
-    @R1B @JIRA-EPIC:PO-2219 @JIRA-TEST-KEY:PO-5350
+    @R1BDrop1 @JIRA-EPIC:PO-2219 @JIRA-TEST-KEY:PO-5350
     Scenario: Cancel without making a selection returns to the Enforcement tab (adult or youth account)
       And I open the Change Collection Order status form
       And I cancel the Change Collection Order status form without making changes
       Then I should return to the Enforcement tab
 
-    @R1B @JIRA-EPIC:PO-2219 @JIRA-TEST-KEY:PO-5351
+    @R1BDrop1 @JIRA-EPIC:PO-2219 @JIRA-TEST-KEY:PO-5351
     Scenario: Cancel after selecting a value shows a route guard (adult or youth account)
       And I open the Change Collection Order status form
       And I select "Yes" for Collection Order status
       And I cancel the Change Collection Order status form and choose to stay
       Then I should remain on the Change Collection Order status page
 
-    @R1B @JIRA-STORY:PO-3395 @JIRA-EPIC:PO-2630
+    @R1BDrop1 @JIRA-STORY:PO-3395 @JIRA-EPIC:PO-2630
     Scenario: AC1, AC3, AC4 - Adult account without a Collection Order displays a permanent warning
       Given I create a "adultOrYouthOnly" draft account with the following details and set status "Publishing Pending" using user "opal-test-10@dev.platform.hmcts.net":
         | Account_status                          | Submitted                    |
@@ -68,7 +68,7 @@ Feature: Adult Youth Collection Order
       Then I should be on the FAE account details page
       And I should see the permanent Collection Order warning "Account has no Collection Order."
 
-    @R1B @JIRA-STORY:PO-3395 @JIRA-EPIC:PO-2630
+    @R1BDrop1 @JIRA-STORY:PO-3395 @JIRA-EPIC:PO-2630
     Scenario Outline: AC2, AC3, AC4 - Header API data for youth and Conditional Caution accounts displays the matching permanent warning
       Given I create a "adultOrYouthOnly" draft account with the following details and set status "Publishing Pending" using user "opal-test-10@dev.platform.hmcts.net":
         | Account_status                    | Submitted                     |
