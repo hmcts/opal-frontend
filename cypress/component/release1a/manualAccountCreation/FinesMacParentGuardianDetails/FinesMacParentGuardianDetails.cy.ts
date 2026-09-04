@@ -746,7 +746,7 @@ describe('FinesMacParentGuardianDetailsComponent', () => {
 
       finesMacState.parentGuardianDetails.formData.fm_parent_guardian_details_forenames = 'FNAME';
       finesMacState.parentGuardianDetails.formData.fm_parent_guardian_details_surname = 'LNAME';
-      finesMacState.parentGuardianDetails.formData.fm_parent_guardian_details_address_line_1 = 'ADDR1é';
+      finesMacState.parentGuardianDetails.formData.fm_parent_guardian_details_address_line_1 = 'ADDR1';
 
       cy.get(DOM_ELEMENTS.returnToAccountDetailsButton).click();
       cy.get(DOM_ELEMENTS.errorSummary).should('not.exist');
