@@ -485,6 +485,8 @@ yarn cypress
 
 ```
 
+Use `yarn cypress:legacy:jcde` to open the Cypress console in legacy mode with the JCDE payload override enabled.
+
 ### Reports
 
 After a clean run, artifacts and reports are written to `functional-output/` and `smoke-output/`.

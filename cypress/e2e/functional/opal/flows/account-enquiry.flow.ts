@@ -192,10 +192,10 @@ export class AccountEnquiryFlow {
    * @returns Chainable resolving to a trimmed account number or `null` when absent/empty.
    */
   private resolveAccountNumberFromAlias(): Cypress.Chainable<string | null> {
-    return cy
-      .get('@etagUpdate', { timeout: 0 })
-      .then((etag: any) => (etag ? (etag.accountNumber ?? null) : null))
-      .then((n: string | null) => (n && String(n).trim() ? String(n).trim() : null));
+    return cy.then(function (this: { etagUpdate?: EtagUpdate }) {
+      const accountNumber = this.etagUpdate?.accountNumber ?? null;
+      return accountNumber && String(accountNumber).trim() ? String(accountNumber).trim() : null;
+    });
   }
 
   /**
@@ -241,6 +241,8 @@ export class AccountEnquiryFlow {
     ForceSingleTabNavigation();
     this.results.waitForResultsTable();
 
+    // Prefer the seeded account captured during draft setup; only use the first
+    // visible result when the scenario did not create or retain account metadata.
     this.resolveAccountNumberFromAlias().then((accOrNull) => {
       if (!accOrNull) {
         logAE('fallback', 'No @etagUpdate found → opening latest row');
@@ -303,15 +305,13 @@ export class AccountEnquiryFlow {
   }
 
   /**
-   * Opens the most recent account from the results (top row) and asserts navigation.
+   * Opens the seeded matching account from results when available.
+   * Falls back to the top row only when no seeded account metadata exists.
    */
   public openMostRecentFromResults(): void {
     logAE('method', 'openMostRecentFromResults()');
-    logAE('open', 'Opening most recent account from results');
-
-    ForceSingleTabNavigation();
-    this.results.waitForResultsTable();
-    this.results.openLatestPublished();
+    logAE('open', 'Opening seeded matching account from results or falling back to top row');
+    this.clickLatestPublishedFromResultsOrAcrossPages();
   }
 
   /**

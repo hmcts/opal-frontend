@@ -54,6 +54,7 @@
     "prettier": "prettier --check \"./**/*.{ts,js,html,scss}\"",
     "prettier:fix": "prettier --write \"./**/*.{ts,js,html,scss}\"",
     "cypress": "cypress open",
+    "cypress:legacy:jcde": "DEFAULT_APP_MODE=legacy LEGACY_ENABLED=true JCDE_OVERRIDE=true cypress open",
     "audit:save": "yarn npm audit --recursive --environment production --json > yarn-audit-known-issues",
     "postinstall": "patch-package",
     "check:steps": "cypress run --env cucumberOnlyMissingSteps=true",

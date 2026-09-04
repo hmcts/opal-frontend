@@ -34,9 +34,6 @@ Feature: Defendant Company Search And Matches Journeys
     When I open the latest matching result from the search results
     Then I should see the account header contains "Journey Co {uniq}"
 
-  Legacy-data scenarios are scaffolds.
-  Replace the LEGACY_* placeholders with real seeded data values before executing them.
-
   @LegacyData @JIRA-STORY:PO-712 @JIRA-STORY:PO-706 @JIRA-STORY:PO-707 @JIRA-EPIC:PO-704
   # Minimum data set required: one company defendant account with searchable company name LEGACY_COMPANY_NAME, account number LEGACY_COMPANY_ACCOUNT_NUMBER, and a populated validation fixture LEGACY_COMPANY_VALIDATION_FIXTURE.
   Scenario Outline: Search for a company defendant account from legacy data and open the matching record
@@ -55,7 +52,7 @@ Feature: Defendant Company Search And Matches Journeys
     Examples:
       | LEGACY_COMPANY_NAME | LEGACY_COMPANY_ACCOUNT_NUMBER | LEGACY_COMPANY_HEADER | LEGACY_COMPANY_VALIDATION_FIXTURE               |
       | OPALTEST            | 26000471W                     | OPALTEST              | accountEnquiry/legacyCompany/jcde/opaltest.json |
-    @R1BDrop1UatTechPreprod
+    @R1BDrop1UatTechPreprod @skip
     Examples:
       | LEGACY_COMPANY_NAME      | LEGACY_COMPANY_ACCOUNT_NUMBER | LEGACY_COMPANY_HEADER   | LEGACY_COMPANY_VALIDATION_FIXTURE                          |
       | TEMPLATE_PREPROD_COMPANY | TEMPLATE_PREPROD_ACCOUNT      | TEMPLATE_PREPROD_HEADER | accountEnquiry/legacyCompany/preprod/company-template.json |
@@ -82,7 +79,7 @@ Feature: Defendant Company Search And Matches Journeys
     Examples:
       | LEGACY_COMPANY_ACCOUNT_NUMBER | LEGACY_COMPANY_NAME         | LEGACY_COMPANY_ALIASES                                                                              | LEGACY_COMPANY_ADR_LINE_1 | LEGACY_COMPANY_POSTCODE | BUSINESS_UNIT | LEGACY_COMPANY_REF    | LEGACY_COMPANY_ENF | LEGACY_COMPANY_BALANCE |
       | 24000050E                     | Company A Chocolate Limited | The Alias Company A The Alias Company B The Alias Company C The Alias Company D The Alias Company E | Company address line 001  | EN51 1RL                | West London   | CA-Company-Master1-1A | NOENF              | -£600.01               |
-    @R1BDrop1UatTechPreprod
+    @R1BDrop1UatTechPreprod @skip
     Examples:
       | LEGACY_COMPANY_ACCOUNT_NUMBER | LEGACY_COMPANY_NAME | LEGACY_COMPANY_ALIASES | LEGACY_COMPANY_ADR_LINE_1 | LEGACY_COMPANY_POSTCODE | BUSINESS_UNIT | LEGACY_COMPANY_REF | LEGACY_COMPANY_ENF | LEGACY_COMPANY_BALANCE |
       | placeholder                   | placeholder         | placeholder            | placeholder               | placeholder             | placeholder   | placeholder        | placeholder        | placeholder            |
