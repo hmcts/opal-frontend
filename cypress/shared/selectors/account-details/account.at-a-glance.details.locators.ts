@@ -104,6 +104,10 @@ export const AccountAtAGlanceLocators = {
     /** Defendant name value. */
     name: 'app-fines-acc-defendant-details-at-a-glance-tab .govuk-grid-column-one-third:has(h2:contains("Defendant")) h3:contains("Name") + p',
 
+    /** Company name value. */
+    companyName:
+      'app-fines-acc-defendant-details-at-a-glance-tab .govuk-grid-column-one-third:has(h2:contains("Defendant")) h3:contains("Company Name") + p',
+
     /** Defendant aliases value. */
     aliases:
       'app-fines-acc-defendant-details-at-a-glance-tab .govuk-grid-column-one-third:has(h2:contains("Defendant")) h3:contains("Aliases") + p',

@@ -1054,6 +1054,22 @@ Then('I validate the legacy defendant header and At a glance tab using fixture {
   accountEnquiryFlow().validateLegacyDefendantHeaderAndAtAGlance(fixturePath);
 });
 
+Then('I validate the legacy company header and At a glance tab using fixture {string}', (fixturePath: string) => {
+  log('assert', 'Validate legacy company header and At a glance tab', { fixturePath });
+  accountEnquiryFlow().validateLegacyCompanyHeaderAndAtAGlance(fixturePath);
+});
+
+/**
+ * @step Navigates to the selected legacy company tab and validates its fixture-backed content.
+ */
+When(
+  /^I go to the (Defendant|Payment terms) tab and validate the legacy company using fixture "([^"]+)"$/,
+  (tabName: string, fixturePath: string) => {
+    log('step', 'Navigate to legacy company tab and validate fixture-backed content', { tabName, fixturePath });
+    accountEnquiryFlow().goToLegacyCompanyTabAndValidate(tabName as 'Defendant' | 'Payment terms', fixturePath);
+  },
+);
+
 /**
  * @step Navigates to the selected legacy defendant tab and validates its fixture-backed content.
  */

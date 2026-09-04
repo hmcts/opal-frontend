@@ -51,6 +51,8 @@ type LegacyDefendantTabName =
   | 'History and notes'
   | 'Fixed penalty';
 
+type LegacyCompanyTabName = 'Defendant' | 'Payment terms';
+
 type LegacyDefendantAccountFixture = {
   header?: {
     accountNumber?: string;
@@ -60,6 +62,7 @@ type LegacyDefendantAccountFixture = {
   };
   atAGlance?: {
     defendant?: Record<string, string>;
+    company?: Record<string, string>;
     paymentTerms?: Record<string, string>;
     enforcementStatus?: Record<string, string>;
     comments?: {
@@ -69,6 +72,7 @@ type LegacyDefendantAccountFixture = {
   };
   defendantTab?: {
     defendant?: Record<string, string>;
+    company?: Record<string, string>;
     contact?: Record<string, string>;
     employer?: Record<string, string>;
   };
@@ -761,6 +765,111 @@ export class AccountEnquiryFlow {
     this.detailsNav.goToHistoryAndNotesTab();
     this.detailsNav.assertHistoryAndNotesTabIsActive();
     this.historyAndNotes.assertHistoryAndNotesTabLoaded();
+  }
+
+  /**
+   * Validates the header summary and At a glance sections for a legacy company account.
+   *
+   * @param fixturePath - Cypress fixture path containing expected legacy account values.
+   */
+  public validateLegacyCompanyHeaderAndAtAGlance(fixturePath: string): void {
+    logAE('method', 'validateLegacyCompanyHeaderAndAtAGlance()', { fixturePath });
+
+    this.loadLegacyDefendantAccountFixture(fixturePath).then((fixture) => {
+      this.detailsNav.assertAtAGlanceTabIsActive();
+      this.atAGlanceDetails.assertAtAGlancePageVisible();
+
+      if (fixture.header?.accountNumber) {
+        this.atAGlanceDetails.assertAccountNumberCaption(fixture.header.accountNumber);
+      }
+
+      if (fixture.header?.name) {
+        this.atAGlanceDetails.assertHeaderContains(fixture.header.name);
+      }
+
+      if (fixture.header?.summary) {
+        this.atAGlanceDetails.assertAccountHeaderSummaryValues(fixture.header.summary);
+      }
+
+      if (fixture.header?.metrics) {
+        this.atAGlanceDetails.assertSummaryMetricValues(fixture.header.metrics);
+      }
+
+      if (fixture.atAGlance?.company) {
+        this.atAGlanceDetails.assertCompanyValues(fixture.atAGlance.company);
+      }
+
+      if (fixture.atAGlance?.paymentTerms) {
+        this.atAGlanceDetails.assertPaymentTermsValues(fixture.atAGlance.paymentTerms);
+      }
+
+      if (fixture.atAGlance?.enforcementStatus) {
+        this.atAGlanceDetails.assertEnforcementStatusValues(fixture.atAGlance.enforcementStatus);
+      }
+
+      if (fixture.atAGlance?.comments?.comment || fixture.atAGlance?.comments?.lines?.length) {
+        this.atAGlanceDetails.assertCommentsSection(fixture.atAGlance.comments ?? {});
+      }
+    });
+  }
+
+  /**
+   * Validates the Defendant tab summary card for a legacy company account.
+   *
+   * @param fixturePath - Cypress fixture path containing expected legacy account values.
+   */
+  public validateLegacyCompanyDefendantTab(fixturePath: string): void {
+    logAE('method', 'validateLegacyCompanyDefendantTab()', { fixturePath });
+
+    this.loadLegacyDefendantAccountFixture(fixturePath).then((fixture) => {
+      this.detailsNav.assertDefendantTabIsActive();
+      this.defendantDetails.assertSectionHeader('Company details');
+
+      if (fixture.defendantTab?.company) {
+        this.defendantDetails.assertCompanyDetails(fixture.defendantTab.company);
+      }
+    });
+  }
+
+  /**
+   * Validates the Payment terms tab values for a legacy company account.
+   *
+   * @param fixturePath - Cypress fixture path containing expected legacy account values.
+   */
+  public validateLegacyCompanyPaymentTermsTab(fixturePath: string): void {
+    logAE('method', 'validateLegacyCompanyPaymentTermsTab()', { fixturePath });
+
+    this.loadLegacyDefendantAccountFixture(fixturePath).then((fixture) => {
+      this.detailsNav.assertPaymentTermsTabIsActive();
+      this.paymentTerms.assertPaymentTermsTabVisible();
+
+      if (fixture.paymentTermsTab && Object.keys(fixture.paymentTermsTab).length > 0) {
+        this.paymentTerms.assertPaymentTermsValues(fixture.paymentTermsTab);
+      }
+    });
+  }
+
+  /**
+   * Navigates to a legacy company tab and validates it using fixture-backed expectations.
+   *
+   * @param tabName - Tab label to navigate to.
+   * @param fixturePath - Cypress fixture path containing expected legacy account values.
+   */
+  public goToLegacyCompanyTabAndValidate(tabName: LegacyCompanyTabName, fixturePath: string): void {
+    logAE('method', 'goToLegacyCompanyTabAndValidate()', { tabName, fixturePath });
+
+    switch (tabName) {
+      case 'Defendant':
+        this.detailsNav.goToDefendantTab();
+        this.validateLegacyCompanyDefendantTab(fixturePath);
+        break;
+      case 'Payment terms':
+        this.goToPaymentTermsTab();
+        this.validateLegacyCompanyPaymentTermsTab(fixturePath);
+        break;
+      default:
+        throw new Error(`Unsupported legacy company tab: ${tabName}`);
+    }
   }
 
   /**

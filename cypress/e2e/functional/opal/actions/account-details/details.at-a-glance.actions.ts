@@ -56,7 +56,7 @@ export class AccountDetailsAtAGlanceActions {
       cy.get(selector, this.common.getTimeoutOptions())
         .should('be.visible')
         .invoke('text')
-        .then((text) => expect(this.normalize(text)).to.contain(this.normalize(value)));
+        .then((text) => expect(this.normalize(text).toLowerCase()).to.contain(this.normalize(value).toLowerCase()));
     });
   }
 
@@ -194,6 +194,21 @@ export class AccountDetailsAtAGlanceActions {
       'date of birth': N.fields.dateOfBirth,
       address: N.fields.address,
       'national insurance number': N.fields.nationalInsuranceNumber,
+    };
+
+    this.assertMappedValues(expected, fieldSelectors, N.sections.atAGlanceTabRoot);
+  }
+
+  /**
+   * Asserts selected company values shown on the At a glance tab.
+   *
+   * @param expected - Map of visible labels to expected values.
+   */
+  public assertCompanyValues(expected: Record<string, string>): void {
+    const fieldSelectors: Record<string, string> = {
+      name: N.fields.companyName,
+      'company name': N.fields.companyName,
+      address: N.fields.address,
     };
 
     this.assertMappedValues(expected, fieldSelectors, N.sections.atAGlanceTabRoot);

@@ -165,6 +165,24 @@ export class AccountDetailsDefendantActions {
   }
 
   /**
+   * Asserts the Company details summary-card values.
+   *
+   * @param expected - Map of visible labels to expected values.
+   */
+  public assertCompanyDetails(expected: Record<string, string>): void {
+    const fieldSelectors: Record<string, string> = {
+      name: C.fields.name,
+      'company name': C.fields.name,
+      aliases: C.fields.aliases,
+      address: C.fields.address,
+      'vehicle make and model': C.fields.vehicleMakeAndModel,
+      'vehicle registration': C.fields.vehicleRegistration,
+    };
+
+    this.assertMappedValues(expected, fieldSelectors, C.card);
+  }
+
+  /**
    * Asserts the primary email address shown in the contact summary contains the expected value.
    *
    * @param expected - Expected text within the primary email field.

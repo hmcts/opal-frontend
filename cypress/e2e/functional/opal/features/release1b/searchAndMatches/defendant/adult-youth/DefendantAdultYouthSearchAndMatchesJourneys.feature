@@ -92,7 +92,6 @@ Feature: Defendant Adult Youth Search And Matches Journeys
     When I open the latest matching result from the search results
     Then I should see the account summary header contains "JOURNEYNISPACE{uniqUpper}"
 
-
   @JIRA-EPIC:PO-704 @R1BDrop1UatTechJCDE @JIRA-STORY:PO-706 @JIRA-TEST-KEY:PO-5295
   Scenario: Search by account number and open the matching record
     Given I create a "adultOrYouthOnly" draft account with the following details and set status "Publishing Pending" using user "opal-test-10@dev.platform.hmcts.net":
@@ -221,11 +220,12 @@ Feature: Defendant Adult Youth Search And Matches Journeys
     @R1BDrop1UatTechJCDE @JIRA-TEST-KEY:PO-10331
     Examples:
       | LEGACY_INDIVIDUAL_LAST_NAME_PARTIAL | LEGACY_INDIVIDUAL_POSTCODE | LEGACY_INDIVIDUAL_POSTCODE_REFERENCE | LEGACY_INDIVIDUAL_POSTCODE_SUMMARY_HEADER | BUSINESS_UNIT | LEGACY_INDIVIDUAL_VALIDATION_FIXTURE                        |
-      | A                                   | UN2 1QE                    | PCRJRNYINDPOSTCODE                   | Mr Brod ADULTACCUNIQUEB                   | West London   | accountEnquiry/legacyDefendant/jcde/adult-open-paid-wo.json |
+      | A                                   | UN2 1QE                    | PCRJRNYINDPOSTCODE                   | Mr Brod ADULTACCUNIQUEB                   | West London   | accountEnquiry/legacyDefendant/jcde/adult-acc-unique-b.json |
     @R1BDrop1UatTechPreprod
     Examples:
       | LEGACY_INDIVIDUAL_LAST_NAME_PARTIAL | LEGACY_INDIVIDUAL_POSTCODE | LEGACY_INDIVIDUAL_POSTCODE_REFERENCE | LEGACY_INDIVIDUAL_POSTCODE_SUMMARY_HEADER | BUSINESS_UNIT | LEGACY_INDIVIDUAL_VALIDATION_FIXTURE                         |
       |                                     | AB1 2CD                    | LEGACY POSTCODE REFERENCE            | LEGACY POSTCODE SUMMARY HEADER            | West London   | accountEnquiry/legacyDefendant/preprod/individual-jones.json |
+
   @LegacyData @JIRA-STORY:PO-706 @JIRA-EPIC:PO-704
   # Minimum data set required: one individual defendant account with account number LEGACY_ACCOUNT_NUMBER and summary header text LEGACY_ACCOUNT_SUMMARY_HEADER.
   Scenario: Search by account number in legacy data and open the matching record
