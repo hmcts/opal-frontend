@@ -501,7 +501,7 @@ describe('FinesMacManualFixedPenalty', () => {
     '(AC8) Validation will exist for the Address Line 1 field - special characters',
     { tags: [...buildTags('@JIRA-STORY:PO-857'), '@JIRA-EPIC:PO-855', '@JIRA-TEST-KEY:PO-4770'] },
     () => {
-      fixedPenaltyMock.personalDetails.formData.fm_personal_details_address_line_1 = '123 High Street $%^&*';
+      fixedPenaltyMock.personalDetails.formData.fm_personal_details_address_line_1 = '123 High Stréet';
       setupComponent();
       cy.get(DOM_ELEMENTS.submitButton).click();
       cy.get(DOM_ELEMENTS.errorSummaryList).should(
@@ -528,8 +528,8 @@ describe('FinesMacManualFixedPenalty', () => {
     '(AC9) Validation will exist for the Address Line 2 field - special characters',
     { tags: [...buildTags('@JIRA-STORY:PO-857'), '@JIRA-EPIC:PO-855', '@JIRA-TEST-KEY:PO-4772'] },
     () => {
-      // User enters non-alphanumeric characters
-      fixedPenaltyMock.personalDetails.formData.fm_personal_details_address_line_2 = 'Apartment 123 $%^&*';
+      // User enters non-single-byte ASCII characters
+      fixedPenaltyMock.personalDetails.formData.fm_personal_details_address_line_2 = 'Apartément 123';
       setupComponent();
       cy.get(DOM_ELEMENTS.submitButton).click();
       cy.get(DOM_ELEMENTS.errorSummaryList).should(
@@ -557,7 +557,7 @@ describe('FinesMacManualFixedPenalty', () => {
     { tags: [...buildTags('@JIRA-STORY:PO-857'), '@JIRA-EPIC:PO-855', '@JIRA-TEST-KEY:PO-4774'] },
     () => {
       // User enters non-alphanumeric characters
-      fixedPenaltyMock.personalDetails.formData.fm_personal_details_address_line_3 = 'West $%^&*';
+      fixedPenaltyMock.personalDetails.formData.fm_personal_details_address_line_3 = 'Wést';
       setupComponent();
       cy.get(DOM_ELEMENTS.submitButton).click();
       cy.get(DOM_ELEMENTS.errorSummaryList).should(

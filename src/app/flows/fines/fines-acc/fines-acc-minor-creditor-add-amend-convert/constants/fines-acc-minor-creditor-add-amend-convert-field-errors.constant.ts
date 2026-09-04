@@ -69,7 +69,8 @@ export const FINES_ACC_MINOR_CREDITOR_ADD_AMEND_CONVERT_FIELD_ERRORS: IFinesAccM
         priority: 1,
       },
       singleAsciiCharacters: {
-        message: 'Address line 1 must only include letters a to z, numbers 0-9 and certain special characters',
+        message:
+          'Address line 1 must only include letters a to z, numbers 0-9 and certain special characters (such as hyphens, spaces, apostrophes and commas)',
         priority: 2,
       },
     },
@@ -79,7 +80,8 @@ export const FINES_ACC_MINOR_CREDITOR_ADD_AMEND_CONVERT_FIELD_ERRORS: IFinesAccM
         priority: 1,
       },
       singleAsciiCharacters: {
-        message: 'Address line 2 must only include letters a to z, numbers 0-9 and certain special characters',
+        message:
+          'Address line 2 must only include letters a to z, numbers 0-9 and certain special characters (such as hyphens, spaces, apostrophes and commas)',
         priority: 2,
       },
     },
@@ -89,7 +91,8 @@ export const FINES_ACC_MINOR_CREDITOR_ADD_AMEND_CONVERT_FIELD_ERRORS: IFinesAccM
         priority: 1,
       },
       singleAsciiCharacters: {
-        message: 'Address line 3 must only include letters a to z, numbers 0-9 and certain special characters',
+        message:
+          'Address line 3 must only include letters a to z, numbers 0-9 and certain special characters (such as hyphens, spaces, apostrophes and commas)',
         priority: 2,
       },
     },
@@ -99,7 +102,8 @@ export const FINES_ACC_MINOR_CREDITOR_ADD_AMEND_CONVERT_FIELD_ERRORS: IFinesAccM
         priority: 1,
       },
       singleAsciiCharacters: {
-        message: 'Address line 4 must only include letters a to z, numbers 0-9 and certain special characters',
+        message:
+          'Address line 4 must only include letters a to z, numbers 0-9 and certain special characters (such as hyphens, spaces, apostrophes and commas)',
         priority: 2,
       },
     },
@@ -109,7 +113,8 @@ export const FINES_ACC_MINOR_CREDITOR_ADD_AMEND_CONVERT_FIELD_ERRORS: IFinesAccM
         priority: 1,
       },
       singleAsciiCharacters: {
-        message: 'Address line 5 must only include letters a to z, numbers 0-9 and certain special characters',
+        message:
+          'Address line 5 must only include letters a to z, numbers 0-9 and certain special characters (such as hyphens, spaces, apostrophes and commas)',
         priority: 2,
       },
     },

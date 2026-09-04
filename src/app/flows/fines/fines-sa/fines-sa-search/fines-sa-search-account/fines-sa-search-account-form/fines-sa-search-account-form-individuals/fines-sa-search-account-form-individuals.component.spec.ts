@@ -168,6 +168,16 @@ describe('FinesSaSearchAccountFormIndividualsComponent', () => {
     names.forEach((n) => expect(component.form.get(n), n).toBeTruthy());
   });
 
+  it('should validate address line 1 with the single ASCII characters pattern', () => {
+    const addressControl = component.form.get('fsa_search_account_individuals_address_line_1');
+
+    addressControl?.setValue('Flat @ 2');
+    expect(addressControl?.hasError('singleAsciiCharacters')).toBe(false);
+
+    addressControl?.setValue('Café');
+    expect(addressControl?.hasError('singleAsciiCharacters')).toBe(true);
+  });
+
   it('should remove its installed controls on destroy when nested in a parent group', () => {
     // Recreate an isolated child group and nest it under a parent to ensure `form.parent` is truthy
     const child = new FormGroup({});

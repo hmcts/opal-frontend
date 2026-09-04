@@ -491,9 +491,9 @@ describe('FinesMacCompanyDetailsComponent', () => {
     () => {
       setupComponent(null, 'company');
 
-      finesMacState.companyDetails.formData.fm_company_details_address_line_1 = '123/Fake Street';
-      finesMacState.companyDetails.formData.fm_company_details_address_line_2 = '123/Fake Street';
-      finesMacState.companyDetails.formData.fm_company_details_address_line_3 = '123/Fake Street';
+      finesMacState.companyDetails.formData.fm_company_details_address_line_1 = '123éFake Street';
+      finesMacState.companyDetails.formData.fm_company_details_address_line_2 = '123éFake Street';
+      finesMacState.companyDetails.formData.fm_company_details_address_line_3 = '123éFake Street';
 
       cy.get(L.submitButton).first().click();
 

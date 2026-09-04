@@ -115,6 +115,22 @@ describe('FinesSaSearchAccountFormMinorCreditorsComponent', () => {
   });
 
   it.each([
+    'fsa_search_account_minor_creditors_individual.fsa_search_account_minor_creditors_individual_address_line_1',
+    'fsa_search_account_minor_creditors_company.fsa_search_account_minor_creditors_company_address_line_1',
+  ])('should validate %s with the single ASCII characters pattern', (controlName) => {
+    component.form
+      .get('fsa_search_account_minor_creditors_minor_creditor_type')
+      ?.setValue(controlName.includes('individual') ? 'individual' : 'company');
+    const addressControl = component.form.get(controlName);
+
+    addressControl?.setValue('Flat @ 2');
+    expect(addressControl?.hasError('singleAsciiCharacters')).toBe(false);
+
+    addressControl?.setValue('Café');
+    expect(addressControl?.hasError('singleAsciiCharacters')).toBe(true);
+  });
+
+  it.each([
     {
       controlName:
         'fsa_search_account_minor_creditors_individual.fsa_search_account_minor_creditors_individual_post_code',
