@@ -72,7 +72,7 @@ export const AccountDetailsNotesLocators = {
 
   actions: {
     /** Primary submit button to save the note. */
-    saveNoteButton: 'button#save-note.govuk-button[type="submit"]',
+    saveNoteButton: 'button#save-note[type="submit"]',
 
     /** Cancel link beneath the form. */
     cancelLink: 'a.button-link.govuk-link',

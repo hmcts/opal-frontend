@@ -1,11 +1,5 @@
 {
-  "draft_account_id": null,
-  "created_at": null,
-  "account_snapshot": null,
-  "account_status_date": null,
   "business_unit_id": 77,
-  "submitted_by": "L077JG",
-  "submitted_by_name": "opal-test",
   "account": {
     "originator_type": "TFO",
     "account_type": "Fine",
@@ -99,7 +93,5 @@
     "account_notes": null
   },
   "account_type": "Fine",
-  "account_status": "Submitted",
-
-  "version": 0
+  "account_status": "Submitted"
 }

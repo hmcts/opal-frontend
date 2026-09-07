@@ -54,9 +54,7 @@ export class FinesMacDeleteAccountConfirmationComponent extends AbstractFormPare
     const business_unit_id = this.finesMacStore.getBusinessUnitId();
 
     return {
-      validated_by: null,
       account_status: status,
-      validated_by_name: null,
       business_unit_id,
       version: version ?? '0',
       reason_text,
