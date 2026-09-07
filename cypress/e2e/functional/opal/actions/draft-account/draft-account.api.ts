@@ -324,32 +324,6 @@ const buildDraftPatchPayload = (
   };
 };
 
-const applyCurrentSubmitterToDraftRequest = (
-  draftBody: Record<string, unknown>,
-  userStateBody: UserStateRecord,
-): void => {
-  const businessUnitId = Number(draftBody['business_unit_id'] ?? draftBody['businessUnitId']);
-  if (!Number.isFinite(businessUnitId)) return;
-
-  const submittedBy = readBusinessUnitUserId(userStateBody, businessUnitId, null);
-  if (submittedBy) {
-    draftBody['submitted_by'] = submittedBy;
-  }
-
-  if (!isNonEmptyString(draftBody['submitted_by_name'])) {
-    const submittedByName = readUserDisplayName(userStateBody);
-    if (submittedByName) {
-      draftBody['submitted_by_name'] = submittedByName;
-    }
-  }
-
-  log('info', 'Prepared draft submitter from current user state', {
-    businessUnitId,
-    hasSubmittedBy: isNonEmptyString(draftBody['submitted_by']),
-    hasSubmittedByName: isNonEmptyString(draftBody['submitted_by_name']),
-  });
-};
-
 // Logs a PATCH failure in a redacted, evidence-friendly format.
 const logPatchFailure = (
   context: string,
@@ -579,12 +553,6 @@ export function createDraftAndSetStatus(
       .then((base) => {
         requestBody = stripBackendOwnedDraftRequestFields(merge({}, base, sanitizedOverrides), 'POST /draft-accounts');
       })
-      .then(() =>
-        requestLoggedInUserState().then((userStateBody) => {
-          applyCurrentSubmitterToDraftRequest(requestBody, userStateBody);
-          return cy.wrap<void>(undefined, { log: false });
-        }),
-      )
 
       // 1) POST create the draft account.
       .then(() => {
