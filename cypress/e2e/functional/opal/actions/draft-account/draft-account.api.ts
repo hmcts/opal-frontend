@@ -25,12 +25,7 @@ import {
 } from '../../../../../support/utils/accountCapture';
 import { createScopedLogger } from '../../../../../support/utils/log.helper';
 import { performLogin } from '../login.actions';
-import {
-  findBusinessUnitUser,
-  readUserDisplayName,
-  requestLoggedInUserState,
-  type UserStateRecord,
-} from '../user-state.actions';
+import { requestLoggedInUserState, type UserStateRecord } from '../user-state.actions';
 
 // Scoped logger used by all draft-account API actions in this module.
 const log = createScopedLogger('DraftAccountApiActions');
@@ -278,25 +273,9 @@ const buildPatchResponseSummary = (
 };
 
 // String guard used when normalizing optional API values.
-const isNonEmptyString = (value: unknown): value is string => typeof value === 'string' && value.trim().length > 0;
+// const isNonEmptyString = (value: unknown): value is string => typeof value === 'string' && value.trim().length > 0;
 
-// Resolves the current user's BU-specific business user id for the target business unit.
-const readBusinessUnitUserId = (
-  userStateBody: UserStateRecord,
-  businessUnitId: number,
-  fallback?: string | null,
-): string | null => {
-  // Membership record that matches the draft's business unit id.
-  const matchedBusinessUnit = findBusinessUnitUser(userStateBody, businessUnitId);
-
-  if (!isRecord(matchedBusinessUnit)) {
-    return fallback ?? null;
-  }
-
-  // Business-unit user id taken from the matched membership record.
-  const businessUnitUserId = matchedBusinessUnit['business_unit_user_id'];
-  return isNonEmptyString(businessUnitUserId) ? businessUnitUserId : (fallback ?? null);
-};
+//
 
 // Builds a UI-like PATCH payload for status changes on an existing draft.
 const buildDraftPatchPayload = (
@@ -307,20 +286,11 @@ const buildDraftPatchPayload = (
 ): Record<string, unknown> => {
   // Draft business unit id, normalized from either snake_case or camelCase fields.
   const business_unit_id = Number(draftBody['business_unit_id'] ?? draftBody['businessUnitId']);
-  // Existing validated_by value used as a fallback when user-state lookup fails.
-  const existingValidatedBy = isNonEmptyString(draftBody['validated_by']) ? draftBody['validated_by'] : null;
   // Current checker's business-unit user id for the draft business unit.
-  const validatedBy = readBusinessUnitUserId(userStateBody, business_unit_id, existingValidatedBy);
-  // Human-readable checker name used in patch metadata.
-  const validatedByName = readUserDisplayName(userStateBody);
-
   return {
     account_status: status,
     business_unit_id,
     reason_text: reasonText,
-    validated_by: status.toLowerCase() === 'rejected' ? null : validatedBy,
-    validated_by_name: status.toLowerCase() === 'rejected' ? null : validatedByName,
-    version: String(draftBody['version'] ?? '0'),
   };
 };
 
