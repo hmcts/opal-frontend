@@ -87,15 +87,15 @@ export const ERROR_MESSAGES = {
   DATA_TYPE_EMPLOYER_REFERENCE:
     'Employer reference must only include letters a to z, numbers, hyphens, spaces and apostrophes',
   DATA_TYPE_EMPLOYER_ADDRESS_LINE_1:
-    'Employer address line 1 must only include letters a to z, numbers, hyphens, spaces and apostrophes',
+    'Employer address line 1 must only include letters a to z, numbers 0-9 and certain special characters (such as hyphens, spaces, apostrophes and commas)',
   DATA_TYPE_EMPLOYER_ADDRESS_LINE_2:
-    'Employer address line 2 must only include letters a to z, numbers, hyphens, spaces and apostrophes',
+    'Employer address line 2 must only include letters a to z, numbers 0-9 and certain special characters (such as hyphens, spaces, apostrophes and commas)',
   DATA_TYPE_EMPLOYER_ADDRESS_LINE_3:
-    'Employer address line 3 must only include letters a to z, numbers, hyphens, spaces and apostrophes',
+    'Employer address line 3 must only include letters a to z, numbers 0-9 and certain special characters (such as hyphens, spaces, apostrophes and commas)',
   DATA_TYPE_EMPLOYER_ADDRESS_LINE_4:
-    'Employer address line 4 must only include letters a to z, numbers, hyphens, spaces and apostrophes',
+    'Employer address line 4 must only include letters a to z, numbers 0-9 and certain special characters (such as hyphens, spaces, apostrophes and commas)',
   DATA_TYPE_EMPLOYER_ADDRESS_LINE_5:
-    'Employer address line 5 must only include letters a to z, numbers, hyphens, spaces and apostrophes',
+    'Employer address line 5 must only include letters a to z, numbers 0-9 and certain special characters (such as hyphens, spaces, apostrophes and commas)',
   DATA_TYPE_EMPLOYER_POSTCODE: 'Employer postcode must only include letters and number',
 
   // Company errors
