@@ -7,7 +7,6 @@ import {
   MojSubNavigationComponent,
   MojSubNavigationItemComponent,
 } from '@hmcts/opal-frontend-common/components/moj/moj-sub-navigation';
-import { CanDeactivateTypes } from '@hmcts/opal-frontend-common/guards/can-deactivate/types';
 import { BehaviorSubject, EMPTY, Observable, catchError, map, of, shareReplay, switchMap } from 'rxjs';
 import { FINES_DASHBOARD_ROUTING_PATHS } from '../../constants/fines-dashboard-routing-paths.constant';
 import { FINES_ROUTING_PATHS } from '../../routing/constants/fines-routing-paths.constant';
@@ -180,11 +179,6 @@ export class FinesApiProcessAllocateComponent implements OnInit, OnDestroy {
         this.finesApiStore.resetFinesApiState();
       }
     });
-  }
-
-  /** Warns on navigation while Process files are selected. */
-  public canDeactivate(): CanDeactivateTypes {
-    return !this.finesApiStore.hasSelectedFiles();
   }
 
   public ngOnInit(): void {

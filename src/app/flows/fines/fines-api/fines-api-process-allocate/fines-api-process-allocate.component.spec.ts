@@ -269,7 +269,6 @@ describe('FinesApiProcessAllocateComponent', () => {
     component['navigateBack']();
     await fixture.whenStable();
 
-    expect(component.canDeactivate()).toBe(false);
     expect(finesApiStore.selectedBusinessUnitIds()).toEqual([77, 80]);
     expect(finesApiStore.selectedFileIds()).toEqual(['701']);
   });
@@ -310,14 +309,5 @@ describe('FinesApiProcessAllocateComponent', () => {
     render();
 
     expect(finesApiStore.unsavedChanges()).toBe(false);
-    expect(component.canDeactivate()).toBe(true);
-  });
-
-  it('should block guarded navigation while Process files are selected', () => {
-    finesApiStore.setSelectedFileIds(['701']);
-
-    render();
-
-    expect(component.canDeactivate()).toBe(false);
   });
 });

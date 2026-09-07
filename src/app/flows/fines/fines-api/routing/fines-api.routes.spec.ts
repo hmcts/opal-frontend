@@ -9,8 +9,6 @@ import { FinesApiSelectBusComponent } from '../fines-api-select-bus/fines-api-se
 import { FINES_API_ROUTING_PATHS } from './constants/fines-api-routing-paths.constant';
 import { FINES_API_ROUTING_TITLES } from './constants/fines-api-routing-titles.constant';
 import { finesApiFlowStateGuard } from './guards/fines-api-flow-state.guard';
-import { finesApiFileSelectionGuard } from './guards/fines-api-file-selection.guard';
-import { finesApiProcessCanDeactivateGuard } from './guards/fines-api-process-can-deactivate.guard';
 import { finesApiBusinessUnitCountsResolver } from './resolvers/fines-api-business-unit-counts.resolver';
 import { routing } from './fines-api.routes';
 
@@ -54,7 +52,6 @@ describe('fines API routes', () => {
       expect.objectContaining({
         path: FINES_API_ROUTING_PATHS.children.processAllocate,
         canActivate: [authGuard, routePermissionsGuard, finesApiFlowStateGuard],
-        canDeactivate: [finesApiProcessCanDeactivateGuard],
         data: {
           routePermissionId: [FINES_PERMISSIONS['process-and-allocate-payments']],
           title: FINES_API_ROUTING_TITLES.children.processAllocate,
@@ -67,13 +64,13 @@ describe('fines API routes', () => {
     await expect(processAllocateRoute?.loadComponent?.()).resolves.toBe(FinesApiProcessAllocateComponent);
   });
 
-  it('should protect the confirm process route with the flow and file selection guards', async () => {
+  it('should protect the confirm process route with the ACI flow state guard', async () => {
     const confirmProcessRoute = routing.find((route) => route.path === FINES_API_ROUTING_PATHS.children.confirmProcess);
 
     expect(confirmProcessRoute).toEqual(
       expect.objectContaining({
         path: FINES_API_ROUTING_PATHS.children.confirmProcess,
-        canActivate: [authGuard, routePermissionsGuard, finesApiFlowStateGuard, finesApiFileSelectionGuard],
+        canActivate: [authGuard, routePermissionsGuard, finesApiFlowStateGuard],
         data: {
           routePermissionId: [FINES_PERMISSIONS['process-and-allocate-payments']],
           title: FINES_API_ROUTING_TITLES.children.confirmProcess,
