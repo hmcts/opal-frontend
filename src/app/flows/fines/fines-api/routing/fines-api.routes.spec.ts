@@ -3,11 +3,14 @@ import { FINES_PERMISSIONS } from '@app/constants/fines-permissions.constant';
 import { authGuard } from '@hmcts/opal-frontend-common/guards/auth';
 import { routePermissionsGuard } from '@hmcts/opal-frontend-common/guards/route-permissions';
 import { TitleResolver } from '@hmcts/opal-frontend-common/resolvers/title';
+import { FinesApiConfirmProcessComponent } from '../fines-api-confirm-process/fines-api-confirm-process.component';
 import { FinesApiProcessAllocateComponent } from '../fines-api-process-allocate/fines-api-process-allocate.component';
 import { FinesApiSelectBusComponent } from '../fines-api-select-bus/fines-api-select-bus.component';
 import { FINES_API_ROUTING_PATHS } from './constants/fines-api-routing-paths.constant';
 import { FINES_API_ROUTING_TITLES } from './constants/fines-api-routing-titles.constant';
 import { finesApiFlowStateGuard } from './guards/fines-api-flow-state.guard';
+import { finesApiFileSelectionGuard } from './guards/fines-api-file-selection.guard';
+import { finesApiProcessCanDeactivateGuard } from './guards/fines-api-process-can-deactivate.guard';
 import { finesApiBusinessUnitCountsResolver } from './resolvers/fines-api-business-unit-counts.resolver';
 import { routing } from './fines-api.routes';
 
@@ -51,6 +54,7 @@ describe('fines API routes', () => {
       expect.objectContaining({
         path: FINES_API_ROUTING_PATHS.children.processAllocate,
         canActivate: [authGuard, routePermissionsGuard, finesApiFlowStateGuard],
+        canDeactivate: [finesApiProcessCanDeactivateGuard],
         data: {
           routePermissionId: [FINES_PERMISSIONS['process-and-allocate-payments']],
           title: FINES_API_ROUTING_TITLES.children.processAllocate,
@@ -61,5 +65,24 @@ describe('fines API routes', () => {
       }),
     );
     await expect(processAllocateRoute?.loadComponent?.()).resolves.toBe(FinesApiProcessAllocateComponent);
+  });
+
+  it('should protect the confirm process route with the flow and file selection guards', async () => {
+    const confirmProcessRoute = routing.find((route) => route.path === FINES_API_ROUTING_PATHS.children.confirmProcess);
+
+    expect(confirmProcessRoute).toEqual(
+      expect.objectContaining({
+        path: FINES_API_ROUTING_PATHS.children.confirmProcess,
+        canActivate: [authGuard, routePermissionsGuard, finesApiFlowStateGuard, finesApiFileSelectionGuard],
+        data: {
+          routePermissionId: [FINES_PERMISSIONS['process-and-allocate-payments']],
+          title: FINES_API_ROUTING_TITLES.children.confirmProcess,
+        },
+        resolve: {
+          title: TitleResolver,
+        },
+      }),
+    );
+    await expect(confirmProcessRoute?.loadComponent?.()).resolves.toBe(FinesApiConfirmProcessComponent);
   });
 });

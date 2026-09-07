@@ -1,0 +1,152 @@
+<opal-lib-custom-deferred-live-region-announcement
+  id="fines-api-process-files-announcement"
+  [message]="processFilesAnnouncement"
+  role="status"
+/>
+
+<p id="fines-api-process-files-selected-count" class="govuk-hint" role="status" aria-live="polite" aria-atomic="true">
+  {{ selectedFilesHintComputed() }}
+</p>
+
+<opal-lib-custom-horizontal-scroll-pane>
+  <opal-lib-moj-sortable-table>
+    <ng-container caption>
+      <span class="govuk-visually-hidden">{{ content.caption }}</span>
+    </ng-container>
+
+    <ng-container head>
+      <th class="govuk-table__header" scope="col" id="fines-api-process-files-select-all">
+        <span class="govuk-visually-hidden">{{ content.selectColumn }}</span>
+        @if (fullTableDataComputed().length > 0) {
+          <div class="govuk-form-group">
+            <fieldset
+              id="fines-api-process-files-select-all-group"
+              class="govuk-fieldset"
+              aria-labelledby="fines-api-process-files-heading"
+              [attr.aria-describedby]="
+                selectionErrorId
+                  ? 'fines-api-process-files-description fines-api-process-files-selected-count ' + selectionErrorId
+                  : 'fines-api-process-files-description fines-api-process-files-selected-count'
+              "
+            >
+              <legend class="govuk-fieldset__legend govuk-visually-hidden">{{ content.selectionLegend }}</legend>
+              <div class="govuk-checkboxes" data-module="govuk-checkboxes">
+                <div
+                  class="govuk-checkboxes--small"
+                  opal-lib-govuk-checkboxes-item
+                  opalLibMojMultiSelectHead
+                  [control]="selectAllControl"
+                  inputId="fines-api-process-files-select-all-checkbox"
+                  inputName="fines-api-process-files-select-all-checkbox"
+                  labelText=""
+                  labelClasses="govuk-!-padding-0"
+                  [ariaLabel]="content.selectAll"
+                  [selectAllIndeterminate]="someRowsSelected()"
+                  (toggleAll)="onToggleAll($event)"
+                ></div>
+              </div>
+            </fieldset>
+          </div>
+        }
+      </th>
+      <th
+        opal-lib-moj-sortable-table-header
+        [columnKey]="content.columns.fileName"
+        [sortDirection]="sortStateSignal()[content.columns.fileName]"
+        (sortChange)="onSortChange($event)"
+        [dataIndex]="0"
+      >
+        {{ content.columns.fileName }}
+      </th>
+      <th
+        opal-lib-moj-sortable-table-header
+        [columnKey]="content.columns.source"
+        [sortDirection]="sortStateSignal()[content.columns.source]"
+        (sortChange)="onSortChange($event)"
+        [dataIndex]="1"
+      >
+        {{ content.columns.source }}
+      </th>
+      <th
+        opal-lib-moj-sortable-table-header
+        [columnKey]="content.columns.businessUnit"
+        [sortDirection]="sortStateSignal()[content.columns.businessUnit]"
+        (sortChange)="onSortChange($event)"
+        [dataIndex]="2"
+      >
+        {{ content.columns.businessUnit }}
+      </th>
+      <th
+        opal-lib-moj-sortable-table-header
+        [columnKey]="content.columns.dateUploaded"
+        [sortDirection]="sortStateSignal()[content.columns.dateUploaded]"
+        (sortChange)="onSortChange($event)"
+        [dataIndex]="3"
+      >
+        {{ content.columns.dateUploaded }}
+      </th>
+    </ng-container>
+
+    <ng-container row>
+      @for (row of paginatedTableDataComputed(); track row.interfaceJobId; let rowIndex = $index) {
+        <tr
+          opal-lib-moj-sortable-table-row
+          [bodyRowClasses]="isRowSelected(row, rowIndex) ? 'govuk-table__row--selected' : ''"
+        >
+          <td #paginationFocusTarget opal-lib-moj-sortable-table-row-data [id]="getRowDomId(row) + '-cell'">
+            <opal-lib-govuk-checkboxes
+              [fieldSetId]="getRowDomId(row) + '-group'"
+              checkboxClasses=""
+              [legendText]="content.selectFile(row[content.columns.fileName])"
+              legendClasses="govuk-!-margin-0 govuk-visually-hidden"
+            >
+              <div
+                class="govuk-checkboxes--small"
+                opal-lib-govuk-checkboxes-item
+                opalLibMojMultiSelectBody
+                [control]="getRowControl(row)"
+                [inputId]="getRowDomId(row)"
+                [inputName]="getRowDomId(row)"
+                labelText=""
+                labelClasses="govuk-!-padding-0"
+                [rowId]="getRowIdentifier(row)"
+                [ariaLabel]="content.selectFile(row[content.columns.fileName])"
+                (selectionChange)="onRowSelectionChange($event)"
+              ></div>
+            </opal-lib-govuk-checkboxes>
+          </td>
+          <td opal-lib-moj-sortable-table-row-data [id]="'fines-api-process-file-name-' + row.interfaceJobId">
+            {{ row[content.columns.fileName] }}
+          </td>
+          <td opal-lib-moj-sortable-table-row-data [id]="'fines-api-process-file-source-' + row.interfaceJobId">
+            {{ row[content.columns.source] }}
+          </td>
+          <td opal-lib-moj-sortable-table-row-data [id]="'fines-api-process-file-business-unit-' + row.interfaceJobId">
+            {{ row[content.columns.businessUnit] }}
+          </td>
+          <td opal-lib-moj-sortable-table-row-data [id]="'fines-api-process-file-date-uploaded-' + row.interfaceJobId">
+            {{ row.dateUploadedDisplay }}
+          </td>
+        </tr>
+      }
+    </ng-container>
+
+    <ng-container status>
+      <output aria-atomic="true" class="govuk-visually-hidden">{{ pageChangeAnnouncement() }}</output>
+      <opal-lib-moj-sortable-table-status
+        [columnTitle]="sortedColumnTitleSignal()"
+        [sortDirection]="sortedColumnDirectionSignal()"
+      ></opal-lib-moj-sortable-table-status>
+    </ng-container>
+  </opal-lib-moj-sortable-table>
+</opal-lib-custom-horizontal-scroll-pane>
+
+@if (fullTableDataComputed().length > paginatedTableDataComputed().length) {
+  <opal-lib-moj-pagination
+    id="fines-api-process-files-pagination"
+    [currentPage]="currentPageSignal()"
+    [limit]="itemsPerPageSignal()"
+    [total]="fullTableDataComputed().length"
+    (changePage)="onPageChange($event)"
+  ></opal-lib-moj-pagination>
+}

@@ -1,6 +1,7 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { FormControl } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
+import { UtilsService } from '@hmcts/opal-frontend-common/services/utils-service';
 import { OPAL_FINES_BUSINESS_UNIT_OUTSTANDING_AUTO_PAYMENT_COUNTS_MOCK } from '@services/fines/opal-fines-service/mocks/opal-fines-business-unit-outstanding-auto-payment-counts.mock';
 import { IOpalFinesBusinessUnitOutstandingAutoPaymentCounts } from '@services/fines/opal-fines-service/interfaces/opal-fines-business-unit-outstanding-auto-payment-counts.interface';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
@@ -13,10 +14,14 @@ describe('FinesApiSelectBusComponent', () => {
   let fixture: ComponentFixture<FinesApiSelectBusComponent>;
   let finesApiStore: InstanceType<typeof FinesApiStore>;
   let routerNavigate: ReturnType<typeof vi.fn>;
+  let routerCurrentNavigation: ReturnType<typeof vi.fn>;
+  let scrollToTop: ReturnType<typeof vi.fn>;
   let businessUnitCounts: IOpalFinesBusinessUnitOutstandingAutoPaymentCounts;
 
   beforeEach(async () => {
     routerNavigate = vi.fn().mockResolvedValue(true);
+    routerCurrentNavigation = vi.fn().mockReturnValue(null);
+    scrollToTop = vi.fn();
     businessUnitCounts = OPAL_FINES_BUSINESS_UNIT_OUTSTANDING_AUTO_PAYMENT_COUNTS_MOCK;
 
     await TestBed.configureTestingModule({
@@ -38,7 +43,12 @@ describe('FinesApiSelectBusComponent', () => {
           provide: Router,
           useValue: {
             navigate: routerNavigate,
+            currentNavigation: routerCurrentNavigation,
           },
+        },
+        {
+          provide: UtilsService,
+          useValue: { scrollToTop },
         },
       ],
     }).compileComponents();
@@ -170,6 +180,7 @@ describe('FinesApiSelectBusComponent', () => {
     expect(finesApiStore.unsavedChanges()).toBe(false);
     expect(nativeElement.textContent).toContain(FINES_API_SELECT_BUS_ERRORS.selectAtLeastOneBusinessUnit);
     expect(routerNavigate).not.toHaveBeenCalled();
+    expect(scrollToTop).toHaveBeenCalledOnce();
   });
 
   it('should keep stored business unit ids that are still in the resolver data', () => {
@@ -178,6 +189,39 @@ describe('FinesApiSelectBusComponent', () => {
 
     expect(finesApiStore.selectedBusinessUnitIds()).toEqual([77, 65]);
     expect(finesApiStore.unsavedChanges()).toBe(true);
+  });
+
+  it('should clear previous flow selections before rendering after Process Back navigation', () => {
+    finesApiStore.setSelectedBusinessUnitIds([77, 65]);
+    finesApiStore.setSelectedFileIds(['701']);
+    routerCurrentNavigation.mockReturnValue({
+      extras: { state: { resetFinesApiState: true } },
+    });
+
+    fixture.detectChanges();
+
+    expect(finesApiStore.selectedBusinessUnitIds()).toEqual([]);
+    expect(finesApiStore.selectedFileIds()).toEqual([]);
+    expect(component['selectedBusinessUnitIds']).toEqual(new Set<number>());
+  });
+
+  it('should clear previous flow selections when browser Back returns from Process', () => {
+    finesApiStore.setSelectedBusinessUnitIds([77, 65]);
+    finesApiStore.setSelectedFileIds(['701']);
+    routerCurrentNavigation.mockReturnValue({
+      extras: {},
+      previousNavigation: {
+        finalUrl: {
+          toString: () => '/fines/auto-payment-in/process-allocate?source=browser#process',
+        },
+      },
+    });
+
+    fixture.detectChanges();
+
+    expect(finesApiStore.selectedBusinessUnitIds()).toEqual([]);
+    expect(finesApiStore.selectedFileIds()).toEqual([]);
+    expect(component['selectedBusinessUnitIds']).toEqual(new Set<number>());
   });
 
   it('should select and clear all business units from the top-level checkbox', () => {
@@ -326,23 +370,5 @@ describe('FinesApiSelectBusComponent', () => {
 
     expect(routerNavigate).toHaveBeenCalledWith(['/', 'fines', 'dashboard', 'finance']);
     expect(finesApiStore.selectedBusinessUnitIds()).toEqual([77]);
-  });
-
-  it('should focus the element matching an error summary field id', () => {
-    fixture.detectChanges();
-
-    const nativeElement = fixture.nativeElement as HTMLElement;
-    const checkbox = nativeElement.querySelector<HTMLInputElement>('#fines-api-select-business-units');
-    const focusSpy = vi.spyOn(checkbox!, 'focus');
-
-    component['scrollTo']('fines-api-select-business-units');
-
-    expect(focusSpy).toHaveBeenCalled();
-  });
-
-  it('should not throw when an error summary field id does not match an element', () => {
-    fixture.detectChanges();
-
-    expect(() => component['scrollTo']('missing-field-id')).not.toThrow();
   });
 });

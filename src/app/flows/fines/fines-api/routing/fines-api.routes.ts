@@ -6,7 +6,9 @@ import { TitleResolver } from '@hmcts/opal-frontend-common/resolvers/title';
 import { FINES_API_ROUTING_PATHS } from './constants/fines-api-routing-paths.constant';
 import { FINES_API_ROUTING_TITLES } from './constants/fines-api-routing-titles.constant';
 import { finesApiFlowStateGuard } from './guards/fines-api-flow-state.guard';
+import { finesApiFileSelectionGuard } from './guards/fines-api-file-selection.guard';
 import { finesApiBusinessUnitCountsResolver } from './resolvers/fines-api-business-unit-counts.resolver';
+import { finesApiProcessCanDeactivateGuard } from './guards/fines-api-process-can-deactivate.guard';
 
 export const routing: Routes = [
   {
@@ -35,9 +37,25 @@ export const routing: Routes = [
         (c) => c.FinesApiProcessAllocateComponent,
       ),
     canActivate: [authGuard, routePermissionsGuard, finesApiFlowStateGuard],
+    canDeactivate: [finesApiProcessCanDeactivateGuard],
     data: {
       routePermissionId: [FINES_PERMISSIONS['process-and-allocate-payments']],
       title: FINES_API_ROUTING_TITLES.children.processAllocate,
+    },
+    resolve: {
+      title: TitleResolver,
+    },
+  },
+  {
+    path: FINES_API_ROUTING_PATHS.children.confirmProcess,
+    loadComponent: () =>
+      import('../fines-api-confirm-process/fines-api-confirm-process.component').then(
+        (c) => c.FinesApiConfirmProcessComponent,
+      ),
+    canActivate: [authGuard, routePermissionsGuard, finesApiFlowStateGuard, finesApiFileSelectionGuard],
+    data: {
+      routePermissionId: [FINES_PERMISSIONS['process-and-allocate-payments']],
+      title: FINES_API_ROUTING_TITLES.children.confirmProcess,
     },
     resolve: {
       title: TitleResolver,

@@ -1,10 +1,23 @@
 import { TestBed } from '@angular/core/testing';
+import { IOpalFinesInterfaceJobSummary } from '@services/fines/opal-fines-service/interfaces/opal-fines-interface-job-summary.interface';
 import { beforeEach, describe, expect, it } from 'vitest';
 import { FINES_API_STATE } from './constants/fines-api-state.constant';
 import { FinesApiStore } from './fines-api.store';
 
 describe('FinesApiStore', () => {
   let store: InstanceType<typeof FinesApiStore>;
+  const processInterfaceJobs: IOpalFinesInterfaceJobSummary[] = [
+    {
+      business_unit_name: 'Camberwell Green',
+      completed_datetime: null,
+      created_datetime: '2026-09-03T11:29:54.794Z',
+      file_name: 'payments.csv',
+      interface_file_id: 501,
+      interface_job_id: 701,
+      source: 'NATWEST',
+      status: 'CREATED',
+    },
+  ];
 
   beforeEach(() => {
     TestBed.configureTestingModule({});
@@ -17,20 +30,25 @@ describe('FinesApiStore', () => {
     expect(store.selectedBusinessUnitIds()).toEqual(FINES_API_STATE.selectedBusinessUnitIds);
     expect(store.selectedFileIds()).toEqual(FINES_API_STATE.selectedFileIds);
     expect(store.overrideInhibitFileIds()).toEqual(FINES_API_STATE.overrideInhibitFileIds);
+    expect(store.processInterfaceJobs()).toBeNull();
     expect(store.activeTab()).toBe(FINES_API_STATE.activeTab);
     expect(store.stateChanges()).toBe(false);
     expect(store.unsavedChanges()).toBe(false);
   });
 
-  it('should set selected business unit ids and clear file selections', () => {
-    store.setSelectedFileIds(['file-1']);
-    store.setOverrideInhibitFileIds(['file-1']);
+  it('should set selected business unit ids and clear dependent process state', () => {
+    store.setSelectedFileIds(['701']);
+    store.setOverrideInhibitFileIds(['701']);
+    store.setProcessInterfaceJobs(processInterfaceJobs);
+    store.setActiveTab('ignored');
 
     store.setSelectedBusinessUnitIds([101, 202]);
 
     expect(store.selectedBusinessUnitIds()).toEqual([101, 202]);
     expect(store.selectedFileIds()).toEqual([]);
     expect(store.overrideInhibitFileIds()).toEqual([]);
+    expect(store.processInterfaceJobs()).toBeNull();
+    expect(store.activeTab()).toBe('process');
     expect(store.stateChanges()).toBe(true);
     expect(store.unsavedChanges()).toBe(true);
   });
@@ -43,30 +61,60 @@ describe('FinesApiStore', () => {
     expect(store.hasSelectedBusinessUnits()).toBe(true);
   });
 
+  it('should retain process state when the selected business units have not changed', () => {
+    store.setSelectedBusinessUnitIds([101, 202]);
+    store.setSelectedFileIds(['701']);
+    store.setOverrideInhibitFileIds(['701']);
+    store.setProcessInterfaceJobs(processInterfaceJobs);
+    store.setActiveTab('ignored');
+
+    store.setSelectedBusinessUnitIds([202, 101]);
+
+    expect(store.selectedFileIds()).toEqual(['701']);
+    expect(store.overrideInhibitFileIds()).toEqual(['701']);
+    expect(store.processInterfaceJobs()).toEqual(processInterfaceJobs);
+    expect(store.activeTab()).toBe('ignored');
+  });
+
   it('should clear selected business unit ids and dependent selections', () => {
     store.setSelectedBusinessUnitIds([101]);
-    store.setSelectedFileIds(['file-1']);
-    store.setOverrideInhibitFileIds(['file-1']);
+    store.setSelectedFileIds(['701']);
+    store.setOverrideInhibitFileIds(['701']);
+    store.setProcessInterfaceJobs(processInterfaceJobs);
+    store.setActiveTab('allocate');
 
     store.clearSelectedBusinessUnitIds();
 
     expect(store.selectedBusinessUnitIds()).toEqual([]);
     expect(store.selectedFileIds()).toEqual([]);
     expect(store.overrideInhibitFileIds()).toEqual([]);
+    expect(store.processInterfaceJobs()).toBeNull();
+    expect(store.activeTab()).toBe('process');
     expect(store.stateChanges()).toBe(false);
     expect(store.unsavedChanges()).toBe(false);
   });
 
-  it('should set selected file ids and clear override inhibits', () => {
-    store.setOverrideInhibitFileIds(['file-1']);
+  it('should store stringified interface job ids and clear override inhibits', () => {
+    store.setOverrideInhibitFileIds(['701']);
 
-    store.setSelectedFileIds(['file-2']);
+    store.setSelectedFileIds(['702']);
 
-    expect(store.selectedFileIds()).toEqual(['file-2']);
+    expect(store.selectedFileIds()).toEqual(['702']);
     expect(store.overrideInhibitFileIds()).toEqual([]);
     expect(store.hasSelectedFiles()).toBe(true);
     expect(store.stateChanges()).toBe(true);
     expect(store.unsavedChanges()).toBe(true);
+  });
+
+  it('should set and clear retained process interface jobs', () => {
+    store.setProcessInterfaceJobs(processInterfaceJobs);
+
+    expect(store.processInterfaceJobs()).toEqual(processInterfaceJobs);
+    expect(store.processInterfaceJobs()).not.toBe(processInterfaceJobs);
+
+    store.clearProcessInterfaceJobs();
+
+    expect(store.processInterfaceJobs()).toBeNull();
   });
 
   it('should set override inhibit file ids', () => {
@@ -91,8 +139,9 @@ describe('FinesApiStore', () => {
 
   it('should reset to the initial state', () => {
     store.setSelectedBusinessUnitIds([101]);
-    store.setSelectedFileIds(['file-1']);
-    store.setOverrideInhibitFileIds(['file-1']);
+    store.setSelectedFileIds(['701']);
+    store.setOverrideInhibitFileIds(['701']);
+    store.setProcessInterfaceJobs(processInterfaceJobs);
     store.setActiveTab('ignored');
 
     store.resetFinesApiState();
@@ -100,6 +149,7 @@ describe('FinesApiStore', () => {
     expect(store.selectedBusinessUnitIds()).toEqual(FINES_API_STATE.selectedBusinessUnitIds);
     expect(store.selectedFileIds()).toEqual(FINES_API_STATE.selectedFileIds);
     expect(store.overrideInhibitFileIds()).toEqual(FINES_API_STATE.overrideInhibitFileIds);
+    expect(store.processInterfaceJobs()).toBeNull();
     expect(store.activeTab()).toBe(FINES_API_STATE.activeTab);
     expect(store.stateChanges()).toBe(false);
     expect(store.unsavedChanges()).toBe(false);

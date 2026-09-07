@@ -1,0 +1,48 @@
+<div id="fines-api-process-tab-content" class="govuk-grid-column-full">
+  <opal-lib-govuk-error-summary [errors]="formErrorSummaryMessage"></opal-lib-govuk-error-summary>
+
+  @if (tabData.tableData.length > 0) {
+    <h2 id="fines-api-process-files-heading" class="govuk-heading-m">{{ content.heading }}</h2>
+    <p id="fines-api-process-files-description" class="govuk-hint">{{ content.hint }}</p>
+    <div id="fines-api-process-actions" class="govuk-button-group">
+      <button
+        id="fines-api-process-refresh"
+        class="govuk-button govuk-button--secondary"
+        type="button"
+        (click)="refresh()"
+      >
+        {{ content.refreshButton }}
+      </button>
+      <button id="fines-api-process-submit" class="govuk-button" type="button" (click)="process()">
+        {{ content.processButton }}
+      </button>
+    </div>
+
+    <div id="fines-api-process-files" class="govuk-form-group" [class.govuk-form-group--error]="hasFileSelectionError">
+      @if (hasFileSelectionError) {
+        <p id="fines-api-process-files-error" class="govuk-error-message">
+          <span class="govuk-visually-hidden">{{ content.errorPrefix }}</span> {{ selectAtLeastOneFileMessage }}
+        </p>
+      }
+
+      <app-fines-api-process-files-table-wrapper
+        [tableData]="tabData.tableData"
+        [selectedInterfaceJobIds]="finesApiStore.selectedFileIds()"
+        [existingSortState]="processFilesSort"
+        [selectionErrorId]="hasFileSelectionError ? 'fines-api-process-files-error' : null"
+        (selectedInterfaceJobIdsChange)="handleSelectedInterfaceJobIdsChange($event)"
+      ></app-fines-api-process-files-table-wrapper>
+    </div>
+  } @else {
+    <h2 id="fines-api-process-files-empty" class="govuk-heading-m">{{ content.heading }}</h2>
+    <p id="fines-api-process-files-description-empty" class="govuk-hint">{{ content.emptyState }}</p>
+    <button
+      id="fines-api-process-empty-refresh"
+      class="govuk-button govuk-button--secondary"
+      type="button"
+      (click)="refresh()"
+    >
+      {{ content.refreshButton }}
+    </button>
+  }
+</div>

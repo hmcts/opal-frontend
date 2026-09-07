@@ -1,0 +1,188 @@
+import { ComponentFixture, TestBed } from '@angular/core/testing';
+import { beforeEach, describe, expect, it, vi } from 'vitest';
+import { FINES_API_PROCESS_FILES_TABLE_WRAPPER_TABLE_SORT_DEFAULT } from './constants/fines-api-process-files-table-wrapper-table-sort-default.constant';
+import { FinesApiProcessFilesTableWrapperComponent } from './fines-api-process-files-table-wrapper.component';
+import { IFinesApiProcessFilesTableWrapperTableData } from './interfaces/fines-api-process-files-table-wrapper-table-data.interface';
+
+const buildTableRows = (count: number): IFinesApiProcessFilesTableWrapperTableData[] => {
+  return Array.from({ length: count }, (_, index) => {
+    const id = index + 1;
+
+    return {
+      'File name': `payments-${id.toString().padStart(3, '0')}.dat`,
+      Source: id % 2 === 0 ? 'allpay' : 'NatWest',
+      'Business unit': id % 2 === 0 ? 'West London' : 'Camberwell Green',
+      'Date uploaded': id,
+      interfaceJobId: id.toString(),
+      interfaceFileId: (id + 1000).toString(),
+      dateUploadedDisplay: `${id.toString().padStart(2, '0')} September 2026 at 09:15`,
+      status: 'CREATED',
+    };
+  });
+};
+
+describe('FinesApiProcessFilesTableWrapperComponent', () => {
+  let component: FinesApiProcessFilesTableWrapperComponent;
+  let fixture: ComponentFixture<FinesApiProcessFilesTableWrapperComponent>;
+
+  beforeEach(async () => {
+    await TestBed.configureTestingModule({
+      imports: [FinesApiProcessFilesTableWrapperComponent],
+    }).compileComponents();
+
+    fixture = TestBed.createComponent(FinesApiProcessFilesTableWrapperComponent);
+    component = fixture.componentInstance;
+  });
+
+  const render = (rows: IFinesApiProcessFilesTableWrapperTableData[], selectedIds: string[] = []): void => {
+    component.existingSortState = FINES_API_PROCESS_FILES_TABLE_WRAPPER_TABLE_SORT_DEFAULT;
+    component.tableData = rows;
+    component.selectedInterfaceJobIds = selectedIds;
+    fixture.detectChanges();
+  };
+
+  it('should render the four sortable headers in API order with no initial client sort', () => {
+    const rows = [buildTableRows(2)[1], buildTableRows(2)[0]];
+
+    render(rows);
+
+    const tableText = (fixture.nativeElement as HTMLElement).textContent;
+    expect(tableText).toContain('File name');
+    expect(tableText).toContain('Source');
+    expect(tableText).toContain('Business unit');
+    expect(tableText).toContain('Date uploaded');
+    expect(component.fullTableDataComputed().map((row) => row.interfaceJobId)).toEqual(['2', '1']);
+    expect(component.sortStateSignal()).toEqual(FINES_API_PROCESS_FILES_TABLE_WRAPPER_TABLE_SORT_DEFAULT);
+  });
+
+  it('should expose the file-selection heading and hint to assistive technology', () => {
+    render(buildTableRows(1));
+
+    const nativeElement = fixture.nativeElement as HTMLElement;
+    const selectAll = nativeElement.querySelector<HTMLInputElement>('#fines-api-process-files-select-all-checkbox');
+    const selectedCount = nativeElement.querySelector<HTMLElement>('#fines-api-process-files-selected-count');
+    const selectionAnnouncement = nativeElement.querySelector<HTMLOutputElement>(
+      '#fines-api-process-files-announcement output',
+    );
+    const selectAllFieldset = nativeElement.querySelector<HTMLElement>('#fines-api-process-files-select-all-group');
+
+    expect(selectAll).toBeTruthy();
+    expect(selectedCount?.textContent?.trim()).toBe('0 of 1 files selected');
+    expect(selectedCount?.getAttribute('role')).toBe('status');
+    expect(selectedCount?.getAttribute('aria-live')).toBe('polite');
+    expect(selectedCount?.getAttribute('aria-atomic')).toBe('true');
+    expect(selectionAnnouncement?.getAttribute('role')).toBe('status');
+    expect(component.processFilesAnnouncement).toBe('Process files. Select the files you want to process.');
+    expect(selectAllFieldset?.getAttribute('aria-labelledby')).toBe('fines-api-process-files-heading');
+    expect(selectAllFieldset?.getAttribute('aria-describedby')).toBe(
+      'fines-api-process-files-description fines-api-process-files-selected-count',
+    );
+  });
+
+  it('should associate parent validation with the select-all fieldset', () => {
+    component.selectionErrorId = 'fines-api-process-files-error';
+    render(buildTableRows(1));
+
+    expect(
+      (fixture.nativeElement as HTMLElement)
+        .querySelector('#fines-api-process-files-select-all-group')
+        ?.getAttribute('aria-describedby'),
+    ).toBe('fines-api-process-files-description fines-api-process-files-selected-count fines-api-process-files-error');
+  });
+
+  it('should emit string interface job IDs and update the selected count for a row selection', () => {
+    const emitSpy = vi.spyOn(component.selectedInterfaceJobIdsChange, 'emit');
+    const rows = buildTableRows(2);
+    render(rows);
+
+    component.onRowSelectionChange({ rowId: rows[1].interfaceJobId, checked: true });
+    fixture.detectChanges();
+
+    expect(emitSpy).toHaveBeenLastCalledWith(['2']);
+    expect(component.selectedFilesHintComputed()).toBe('1 of 2 files selected');
+    expect(component.getRowControl(rows[1]).value).toBe(true);
+  });
+
+  it('should ignore a selection event for a job that is not in the table', () => {
+    const emitSpy = vi.spyOn(component.selectedInterfaceJobIdsChange, 'emit');
+    render(buildTableRows(1));
+
+    component.onRowSelectionChange({ rowId: '999', checked: true });
+
+    expect(emitSpy).not.toHaveBeenCalled();
+    expect(component.selectedFilesCountComputed()).toBe(0);
+  });
+
+  it('should select all files across every page and preserve selection after changing page', () => {
+    const rows = buildTableRows(30);
+    const emitSpy = vi.spyOn(component.selectedInterfaceJobIdsChange, 'emit');
+    render(rows);
+
+    component.onToggleAll(true);
+    component.currentPageSignal.set(2);
+    fixture.detectChanges();
+
+    expect(emitSpy).toHaveBeenLastCalledWith(rows.map((row) => row.interfaceJobId));
+    expect(component.selectedFilesHintComputed()).toBe('30 of 30 files selected');
+    expect(component.paginatedTableDataComputed()).toHaveLength(5);
+    expect(component.getRowControl(rows[25]).value).toBe(true);
+    expect(component.selectAllControl.value).toBe(true);
+  });
+
+  it('should retain a selected row across sorting and reset pagination to page one', () => {
+    const rows = buildTableRows(30);
+    render(rows);
+    component.onRowSelectionChange({ rowId: '30', checked: true });
+    component.currentPageSignal.set(2);
+
+    component.onSortChange({ key: 'File name', sortType: 'descending' });
+
+    expect(component.currentPageSignal()).toBe(1);
+    expect(component.fullTableDataComputed()[0].interfaceJobId).toBe('30');
+    expect(component.getRowControl(rows[29]).value).toBe(true);
+    expect(component.selectedFilesCountComputed()).toBe(1);
+  });
+
+  it('should restore externally persisted selections', () => {
+    const rows = buildTableRows(3);
+
+    render(rows, ['1', '3']);
+
+    expect(component.selectedFilesCountComputed()).toBe(2);
+    expect(component.getRowControl(rows[0]).value).toBe(true);
+    expect(component.getRowControl(rows[1]).value).toBe(false);
+    expect(component.getRowControl(rows[2]).value).toBe(true);
+    expect(component.someRowsSelected()).toBe(true);
+  });
+
+  it('should prune and emit selections missing from refreshed table data', () => {
+    const rows = buildTableRows(3);
+    render(rows);
+    component.onRowSelectionChange({ rowId: '1', checked: true });
+    component.onRowSelectionChange({ rowId: '2', checked: true });
+    const emitSpy = vi.spyOn(component.selectedInterfaceJobIdsChange, 'emit');
+
+    component.tableData = rows.slice(1);
+
+    expect(component.selectedFilesCountComputed()).toBe(1);
+    expect(emitSpy).toHaveBeenLastCalledWith(['2']);
+  });
+
+  it('should cap direct table input at 500 rows', () => {
+    render(buildTableRows(501));
+
+    component.onToggleAll(true);
+
+    expect(component.fullTableDataComputed()).toHaveLength(500);
+    expect(component.selectedFilesCountComputed()).toBe(500);
+  });
+
+  it('should not render select-all or pagination for an empty table', () => {
+    render([]);
+
+    const nativeElement = fixture.nativeElement as HTMLElement;
+    expect(nativeElement.querySelector('#fines-api-process-files-select-all-checkbox')).toBeNull();
+    expect(nativeElement.querySelector('opal-lib-moj-pagination')).toBeNull();
+    expect(component.selectedFilesHintComputed()).toBe('0 of 0 files selected');
+  });
+});
