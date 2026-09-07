@@ -102,12 +102,12 @@ describe('Search Account Component - Company', () => {
   );
 
   it(
-    'AC3b. should show error for non-alphabetical address line 1',
+    'AC3b. should show error for invalid address line 1',
     { tags: [...buildTags('@JIRA-STORY:PO-712'), '@JIRA-EPIC:PO-704', '@JIRA-TEST-KEY:PO-4469'] },
     () => {
       setupComponent((searchState) => {
         searchState.fsa_search_account_companies_search_criteria!.fsa_search_account_companies_address_line_1 =
-          'Address123?';
+          'Addréss123';
       });
 
       cy.get(CommonLocators.searchButton).click();

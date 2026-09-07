@@ -12,9 +12,9 @@ import { patternValidator } from '@hmcts/opal-frontend-common/validators/pattern
 import { TrimLeadingTrailingWhitespaceDirective } from '@hmcts/opal-frontend-common/directives/trim-leading-trailing-whitespace';
 import { FinesConStore } from '../../../../stores/fines-con.store';
 import {
-  ALPHANUMERIC_WITH_HYPHENS_SPACES_APOSTROPHES_DOT_PATTERN,
   ALPHANUMERIC_WITH_SPACES_PATTERN,
   LETTERS_SPACES_HYPHENS_APOSTROPHES_DOT_PATTERN,
+  SINGLE_ASCII_CHARACTERS,
 } from '@hmcts/opal-frontend-common/constants';
 import { finesConSearchAccountFormCompaniesValidator } from './validators/fines-con-search-account-form-companies.validator';
 
@@ -23,10 +23,7 @@ const LETTERS_WITH_SPACES_HYPHENS_APOSTROPHES_VALIDATOR = patternValidator(
   'lettersWithSpacesHyphensApostrophesPattern',
 );
 
-const ALPHANUMERIC_WITH_HYPHENS_APOSTROPHES_VALIDATOR = patternValidator(
-  ALPHANUMERIC_WITH_HYPHENS_SPACES_APOSTROPHES_DOT_PATTERN,
-  'alphanumericTextPattern',
-);
+const SINGLE_ASCII_CHARACTERS_PATTERN_VALIDATOR = patternValidator(SINGLE_ASCII_CHARACTERS, 'singleAsciiCharacters');
 
 const ALPHANUMERIC_WITH_SPACES_PATTERN_VALIDATOR = patternValidator(
   ALPHANUMERIC_WITH_SPACES_PATTERN,
@@ -82,7 +79,7 @@ export class FinesConSearchAccountFormCompaniesComponent extends AbstractNestedF
       fcon_search_account_companies_company_name_exact_match: new FormControl<boolean | null>(null),
       fcon_search_account_companies_include_aliases: new FormControl<boolean | null>(null),
       fcon_search_account_companies_address_line_1: new FormControl<string | null>(null, [
-        ALPHANUMERIC_WITH_HYPHENS_APOSTROPHES_VALIDATOR,
+        SINGLE_ASCII_CHARACTERS_PATTERN_VALIDATOR,
         Validators.maxLength(30),
       ]),
       fcon_search_account_companies_post_code: new FormControl<string | null>(null, [
