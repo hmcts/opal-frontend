@@ -120,6 +120,9 @@ describe('FinesAccountStore', () => {
     store.setAccountState({ ...MOCK_FINES_ACCOUNT_STATE, originator_type: ' tfo ' });
     expect(store.isTransferredIn()).toBe(true);
 
+    store.setAccountState({ ...MOCK_FINES_ACCOUNT_STATE, originator_type: 'NEW' });
+    expect(store.isTransferredIn()).toBe(false);
+
     store.setAccountState({ ...MOCK_FINES_ACCOUNT_STATE, originator_type: null });
     expect(store.isTransferredIn()).toBe(false);
   });

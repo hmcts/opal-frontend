@@ -70,4 +70,11 @@ describe('FinesAccBannerMessagesComponent', () => {
     expect(bannerText).toContain('Account transferred in');
     expect(dismissButton).toBeFalsy();
   });
+
+  it('should not render the transferred in banner when isTransferredIn is false', () => {
+    component.isTransferredIn = false;
+    fixture.detectChanges();
+
+    expect(fixture.debugElement.query(By.css('#acc-summary-header-banners-transferred-in'))).toBeFalsy();
+  });
 });

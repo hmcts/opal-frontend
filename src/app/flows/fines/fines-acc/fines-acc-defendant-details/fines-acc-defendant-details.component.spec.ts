@@ -156,6 +156,15 @@ describe('FinesAccDefendantDetailsComponent', () => {
     expect(bannerText).toContain('Account transferred in');
   });
 
+  it('should not display the transferred in banner when accountData originator_type is not TFO', () => {
+    component.accountData = {
+      ...structuredClone(FINES_ACC_DEFENDANT_DETAILS_HEADER_MOCK),
+      originator_type: 'NEW',
+    };
+
+    expect(component.isTransferredIn).toBe(false);
+  });
+
   it('should pass the account status code to the summary header', () => {
     const summaryHeader = fixture.debugElement.query(By.directive(FinesAccSummaryHeaderComponent));
 

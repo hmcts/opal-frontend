@@ -13,12 +13,18 @@ const resolveExpectedTableValue = (value: string): string => {
   const normalizedValue = normalizeTableText(value);
   if (normalizedValue !== '{today}') return normalizedValue;
 
-  return new Intl.DateTimeFormat('en-GB', {
-    day: 'numeric',
-    month: 'short',
+  const dateParts = new Intl.DateTimeFormat('en-GB', {
+    day: '2-digit',
+    month: 'numeric',
     year: 'numeric',
     timeZone: 'Europe/London',
-  }).format(new Date());
+  }).formatToParts(new Date());
+  const day = dateParts.find(({ type }) => type === 'day')?.value;
+  const month = Number(dateParts.find(({ type }) => type === 'month')?.value);
+  const year = dateParts.find(({ type }) => type === 'year')?.value;
+  const monthName = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'][month - 1];
+
+  return `${day} ${monthName} ${year}`;
 };
 
 const assertTableCellText = (selector: string, expected: string): void => {

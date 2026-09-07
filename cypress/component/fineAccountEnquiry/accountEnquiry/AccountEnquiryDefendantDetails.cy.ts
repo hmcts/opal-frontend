@@ -17,6 +17,7 @@ import { setupAccountEnquiryComponent } from './setup/SetupComponent';
 import { setLanguagePref } from './Utils/SharedFunctions';
 import { FinesAccDefendantDetailsDefendantTabComponent } from 'src/app/flows/fines/fines-acc/fines-acc-defendant-details/fines-acc-defendant-details-defendant-tab/fines-acc-defendant-details-defendant-tab.component';
 import { FINES_ACC_RESTRICTED_ACCOUNT_STATUS_CODES } from 'src/app/flows/fines/fines-acc/constants/fines-acc-restricted-account-status-codes.constant';
+import 'cypress-axe';
 
 const ACCOUNT_ENQUIRY_JIRA_LABEL = '@JIRA-LABEL:account-enquiry';
 
@@ -137,6 +138,41 @@ describe('Account Enquiry Defendant Details Tab', () => {
         .then((text) => {
           expect(text.trim().replace(/\s+/g, ' ')).to.eq('200 Innovation Park CD3 4EF');
         });
+    },
+  );
+
+  it(
+    'AC1, AC2, AC3. Transfer-in banner is permanent and accessible',
+    { tags: [...buildTags('@JIRA-STORY:PO-2951'), '@JIRA-TEST-KEY:PO-2951-AXE'] },
+    () => {
+      const headerMock = structuredClone(DEFENDANT_HEADER_MOCK);
+      headerMock.originator_type = 'TFO';
+      const defendantDetailsMock = structuredClone(OPAL_FINES_ACCOUNT_DEFENDANT_ACCOUNT_PARTY_MOCK);
+      const accountId = headerMock.defendant_account_party_id;
+
+      interceptAuthenticatedUser();
+      interceptUserState(USER_STATE_MOCK_PERMISSION_BU77);
+      interceptDefendantHeader(accountId, headerMock, accountId);
+      interceptDefendantDetails(accountId, defendantDetailsMock, accountId);
+      setupAccountEnquiryComponent({ ...componentProperties, accountId });
+
+      cy.get('#defendant-banners-transferred-in')
+        .should('exist')
+        .and('contain.text', 'Account transferred in')
+        .find('button')
+        .should('not.exist');
+
+      cy.document().then((document) => {
+        document.documentElement.lang = 'en';
+      });
+      cy.get('app-fines-acc-defendant-details').then(($accountEnquiry) => {
+        $accountEnquiry.wrap('<main id="component-test-main"></main>');
+      });
+
+      cy.injectAxe({ axeCorePath: 'node_modules/axe-core/axe.min.js' });
+      cy.checkA11y('#component-test-main', {
+        includedImpacts: ['critical', 'serious', 'moderate'],
+      });
     },
   );
 
