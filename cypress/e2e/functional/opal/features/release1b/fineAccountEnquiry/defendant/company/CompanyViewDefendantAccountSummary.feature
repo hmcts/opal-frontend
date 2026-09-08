@@ -5,7 +5,7 @@ Feature: Company View Defendant Account Summary
   Background:
     Given I am logged in with email "opal-test@dev.platform.hmcts.net"
     And I clear all approved accounts
-  @JIRA-EPIC:PO-812 @R1B @JIRA-STORY:PO-777 @JIRA-TEST-KEY:PO-5476
+  @JIRA-EPIC:PO-812 @R1BDrop1 @JIRA-STORY:PO-777 @JIRA-TEST-KEY:PO-5476
   Scenario: Complete View Defendant Company Account Summary and Comments functionality
     # AC4 - Create & publish a company account then view header summary
     Given I create a "company" draft account with the following details and set status "Publishing Pending" using user "opal-test-10@dev.platform.hmcts.net":

@@ -44,6 +44,7 @@ String smokeXmlReport = 'cypress/reports/smokeXmlReport.html'
 String functionalXmlReport = 'cypress/reports/functionalXmlReport.html'
 @Field String runReleasePrefix = 'run_release:'
 @Field String andTagSeparator = ' and '
+@Field String orTagSeparator = ' or '
 @Field String commaSeparator = ','
 @Field String skipTagExpression = 'not @skip'
 @Field String functionalFeatureGlob = 'cypress/e2e/functional/opal/**/*.feature'
@@ -54,8 +55,23 @@ String functionalXmlReport = 'cypress/reports/functionalXmlReport.html'
 @Field String releaseSuiteR1cWriteOffOff = 'r1c_write_off_off'
 @Field String releaseSuiteR1cEnforcementOperationalReportingOff = 'r1c_enforcement_operational_reporting_off'
 @Field String componentTestScript = 'test:component'
+@Field List<String> defaultFunctionalUatTechExclusions = [
+  '@UAT-Technical',
+  '@R1BDrop1UatTechJCDE',
+  '@R1BDrop1UatTechPreprod',
+  '@R1BDrop2UatTechJCDE',
+  '@R1BDrop2UatTechPreprod',
+]
+@Field List<String> r1aPositiveExclusions = [
+  '@R1BDrop1',
+  '@R1BDrop2',
+  '@R1CFinance',
+  '@R1CWriteOff',
+  '@R1CEnforcementOperationalReporting',
+  '@R1CAdministration',
+]
 @Field String defaultFunctionalTagExpression =
-  'not (@UAT-Technical or @R1BUatTechJCDE or @R1BUatTechPreprod) and not @skip' + andTagSeparator +
+  "not (${defaultFunctionalUatTechExclusions.join(orTagSeparator)}) and not @skip" + andTagSeparator +
   'not (@R1AOff or @R1BOff or @R1CWriteOffOff or ' +
   '@R1CEnforcementOperationalReportingOff or @R1CAdministrationOff or @R1CFinancialMovementsOff)'
 @Field String componentExcludeGrepTags = '-@R1AOff+-@R1BOff'
@@ -68,8 +84,7 @@ String functionalXmlReport = 'cypress/reports/functionalXmlReport.html'
 @Field String finesPrimaryNavigationFeatureGlob =
   'cypress/e2e/functional/opal/features/navigation/finesPrimaryNavigation.feature'
 @Field String r1aPositiveTagExpression =
-  defaultFunctionalTagExpression + andTagSeparator +
-  'not (@R1B or @R1CFinance or @R1CWriteOff or @R1CEnforcementOperationalReporting or @R1CAdministration)'
+  defaultFunctionalTagExpression + andTagSeparator + "not (${r1aPositiveExclusions.join(orTagSeparator)})"
 @Field String r1abPositiveTagExpression =
   defaultFunctionalTagExpression + andTagSeparator +
   'not (@R1CFinance or @R1CWriteOff or @R1CEnforcementOperationalReporting or @R1CAdministration)'
@@ -638,7 +653,8 @@ if (releaseSuite && legacyEnabled && isPR) {
 // Guard: legacy mode must explicitly scope tests via run_tag:<expression>
 if (legacyEnabled && isPR && !baseTags) {
     error 'Legacy mode requires a populated run_tag:<expression> label ' +
-      '(e.g. run_tag:@UAT-Technical, run_tag:@R1BUatTechJCDE, or run_tag:@R1BUatTechPreprod) to avoid running the full suite.'
+      '(e.g. run_tag:@UAT-Technical, run_tag:@R1BDrop1UatTechJCDE, or run_tag:@R1BDrop2UatTechJCDE) ' +
+      'to avoid running the full suite.'
 }
 
 env.RELEASE_SUITE = releaseSuite

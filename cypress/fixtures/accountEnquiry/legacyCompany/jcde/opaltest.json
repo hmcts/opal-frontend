@@ -1,0 +1,50 @@
+{
+  "header": {
+    "accountNumber": "26000471W",
+    "name": "OPALTEST",
+    "summary": {
+      "account type": "Fine",
+      "business unit": "West London (0042)"
+    },
+    "metrics": {
+      "imposed": "\u00a3120.99",
+      "arrears": "\u00a30.00",
+      "paid/written off": "\u00a30.00",
+      "account balance": "-\u00a3120.99"
+    }
+  },
+  "atAGlance": {
+    "company": {
+      "company name": "OPALTEST",
+      "address": "Company addline1\nComp addline2\nComp addline3\nEN51 1RL"
+    },
+    "paymentTerms": {
+      "payment terms": "Pay in full",
+      "pay by date": "01 February 2027"
+    },
+    "enforcementStatus": {
+      "collection order": "No Collection Order",
+      "days in default": "1 day",
+      "date of last movement": "07 August 2026"
+    },
+    "comments": {
+      "comment": "TEST OPAL"
+    }
+  },
+  "defendantTab": {
+    "company": {
+      "company name": "OPALTEST",
+      "aliases": "\u2014",
+      "address": "Company addline1\nComp addline2\nComp addline3\nEN51 1RL"
+    }
+  },
+  "paymentTermsTab": {
+    "pay by date": "01 February 2027",
+    "days in default": "1",
+    "date days in default were imposed": "\u2014",
+    "payment card last requested": "\u2014"
+  },
+  "enforcementTab": {},
+  "impositionsTab": {},
+  "historyAndNotesTab": {}
+}
