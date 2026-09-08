@@ -89,10 +89,21 @@ function mapInstalmentPeriodDisplayName(instalmentPeriodCode: string): string | 
 }
 
 /**
+ * Returns the current local datetime without a timezone suffix.
+ */
+function getCurrentLocalDateTime(): string {
+  const now = new Date();
+  const pad = (value: number): string => value.toString().padStart(2, '0');
+
+  return `${now.getFullYear()}-${pad(now.getMonth() + 1)}-${pad(now.getDate())}T${pad(now.getHours())}:${pad(
+    now.getMinutes(),
+  )}:${pad(now.getSeconds())}`;
+}
+
+/**
  * Maps payment terms form data to API payload format
  *
  * @param formData - The payment terms form data
- * @param currentDate - Current date in yyyy-MM-dd format for posted_date
  * @returns Payload in API format
  */
 export function buildPaymentTermsAmendPayloadUtil(
@@ -135,9 +146,9 @@ export function buildPaymentTermsAmendPayloadUtil(
       lump_sum_amount: mapLumpSumAmount(formData),
       instalment_amount: mapInstalmentAmount(formData),
       posted_details: {
-        posted_by: '',
-        posted_date: '',
-        posted_by_name: '',
+        posted_by: null,
+        posted_date: getCurrentLocalDateTime(),
+        posted_by_name: null,
       },
     },
     request_payment_card: formData.facc_payment_terms_payment_card_request,

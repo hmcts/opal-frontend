@@ -2,9 +2,20 @@ import { buildPaymentTermsAmendPayloadUtil } from './fines-acc-payload-build-pay
 import { IFinesAccPaymentTermsAmendState } from '../../fines-acc-payment-terms-amend/interfaces/fines-acc-payment-terms-amend-state.interface';
 import { FINES_PAYMENT_TERMS_FREQUENCY_OPTIONS } from '../../../constants/fines-payment-terms-frequency-options.constant';
 import { FINES_PAYMENT_TERMS_TYPE_DISPLAY_OPTIONS } from '../../../constants/fines-payment-terms-type-display-options.constant';
-import { describe, it, expect } from 'vitest';
+import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
+
+const POSTED_DATE = '2026-09-07T15:38:32';
 
 describe('buildPaymentTermsAmendPayload', () => {
+  beforeEach(() => {
+    vi.useFakeTimers();
+    vi.setSystemTime(new Date(2026, 8, 7, 15, 38, 32));
+  });
+
+  afterEach(() => {
+    vi.useRealTimers();
+  });
+
   it('should build payload for pay in full payment type', () => {
     const formData: IFinesAccPaymentTermsAmendState = {
       facc_payment_terms_payment_terms: 'payInFull',
@@ -36,9 +47,9 @@ describe('buildPaymentTermsAmendPayload', () => {
         lump_sum_amount: null,
         instalment_amount: null,
         posted_details: {
-          posted_by: '',
-          posted_date: '',
-          posted_by_name: '',
+          posted_by: null,
+          posted_date: POSTED_DATE,
+          posted_by_name: null,
         },
       },
       request_payment_card: null,
@@ -77,9 +88,9 @@ describe('buildPaymentTermsAmendPayload', () => {
         lump_sum_amount: null,
         instalment_amount: 50,
         posted_details: {
-          posted_by: '',
-          posted_date: '',
-          posted_by_name: '',
+          posted_by: null,
+          posted_date: POSTED_DATE,
+          posted_by_name: null,
         },
       },
       request_payment_card: null,
@@ -118,9 +129,9 @@ describe('buildPaymentTermsAmendPayload', () => {
         lump_sum_amount: 200,
         instalment_amount: 75,
         posted_details: {
-          posted_by: '',
-          posted_date: '',
-          posted_by_name: '',
+          posted_by: null,
+          posted_date: POSTED_DATE,
+          posted_by_name: null,
         },
       },
       request_payment_card: null,
