@@ -24,6 +24,7 @@ export const DEFENDANT_HEADER_MOCK: IOpalFinesAccountDefendantDetailsHeader = {
   originator_name: "Bedfordshire Magistrates' Court",
   prosecutor_case_reference: '090A',
   fixed_penalty_ticket_number: '888',
+  collection_order: null,
   business_unit_summary: {
     business_unit_id: '77',
     business_unit_code: '0046',

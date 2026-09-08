@@ -19,7 +19,7 @@ export const FINES_SA_SEARCH_ACCOUNT_FORM_COMPANIES_FIELD_ERRORS: IFinesSaSearch
   fsa_search_account_companies_company_name_exact_match: {},
   fsa_search_account_companies_include_aliases: {},
   fsa_search_account_companies_address_line_1: {
-    alphanumericWithHyphensSpacesApostrophesDotPattern: {
+    singleAsciiCharacters: {
       message:
         'Address line 1 must only include letters a to z, numbers 0-9 and certain special characters (such as hyphens, spaces, apostrophes and commas)',
       priority: 1,
