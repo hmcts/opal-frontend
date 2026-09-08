@@ -13,5 +13,6 @@ export interface IFinesRoutingPaths extends IParentRoutingPaths {
     con: IChildRoutingPaths;
     reports: IChildRoutingPaths;
     aec: IChildRoutingPaths;
+    finance: IChildRoutingPaths;
   };
 }
