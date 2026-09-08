@@ -6,8 +6,8 @@ export const FINES_SA_SEARCH_ACCOUNT_FORM_INDIVIDUALS_FIELD_ERRORS: IFinesSaSear
       message: 'Enter last name',
       priority: 1,
     },
-    lettersWithSpacesPattern: {
-      message: 'Last name must only contain letters',
+    lettersSpacesHyphensPattern: {
+      message: 'Last name must only include letters, spaces or hyphens',
       priority: 2,
     },
     maxlength: {

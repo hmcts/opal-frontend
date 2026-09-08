@@ -25,6 +25,11 @@ const ALPHANUMERIC_WITH_SPACES_PATTERN_VALIDATOR = patternValidator(
   ALPHANUMERIC_WITH_SPACES_PATTERN,
   'alphanumericTextPattern',
 );
+const LETTERS_SPACES_HYPHENS_PATTERN = /^[a-zA-Z -]*$/;
+const LETTERS_SPACES_HYPHENS_PATTERN_VALIDATOR = patternValidator(
+  LETTERS_SPACES_HYPHENS_PATTERN,
+  'lettersSpacesHyphensPattern',
+);
 const LETTERS_WITH_SPACES_PATTERN_VALIDATOR = patternValidator(LETTERS_WITH_SPACES_PATTERN, 'lettersWithSpacesPattern');
 const SINGLE_ASCII_CHARACTERS_PATTERN_VALIDATOR = patternValidator(SINGLE_ASCII_CHARACTERS, 'singleAsciiCharacters');
 
@@ -67,7 +72,7 @@ export class FinesSaSearchAccountFormIndividualsComponent extends AbstractNested
   private buildIndividualFormControls(): FormGroup {
     return new FormGroup({
       fsa_search_account_individuals_last_name: new FormControl<string | null>(null, [
-        LETTERS_WITH_SPACES_PATTERN_VALIDATOR,
+        LETTERS_SPACES_HYPHENS_PATTERN_VALIDATOR,
         Validators.maxLength(30),
       ]),
       fsa_search_account_individuals_last_name_exact_match: new FormControl<boolean | null>(null),
