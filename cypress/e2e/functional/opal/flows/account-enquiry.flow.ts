@@ -116,6 +116,9 @@ export class AccountEnquiryFlow {
   /** Timeout (ms) for route transitions back to the defendant details shell. */
   private static readonly DETAILS_NAV_WAIT_MS = 45_000;
   private static readonly BASE_API_PATH = '/opal-fines-service';
+  private static readonly AT_A_GLANCE_TAB_SELECTOR =
+    'app-fines-acc-defendant-details-at-a-glance-tab, app-fines-acc-minor-creditor-details-at-a-glance-tab';
+  private static readonly MINOR_CREDITOR_RESULTS_SELECTOR = 'app-fines-sa-results-minor-creditor-table-wrapper';
 
   /** Waits for the account header summary call to succeed and the At a glance tab to render. */
   private waitForHeaderSummaryAndAtAGlance(): void {
@@ -126,9 +129,7 @@ export class AccountEnquiryFlow {
       }
     });
 
-    cy.get('app-fines-acc-defendant-details-at-a-glance-tab', { timeout: AccountEnquiryFlow.WAIT_MS }).should(
-      'be.visible',
-    );
+    cy.get(AccountEnquiryFlow.AT_A_GLANCE_TAB_SELECTOR, { timeout: AccountEnquiryFlow.WAIT_MS }).should('be.visible');
   }
 
   private readonly searchIndividuals = new AccountSearchIndividualsActions();
@@ -192,10 +193,10 @@ export class AccountEnquiryFlow {
    * @returns Chainable resolving to a trimmed account number or `null` when absent/empty.
    */
   private resolveAccountNumberFromAlias(): Cypress.Chainable<string | null> {
-    return cy.then(function (this: { etagUpdate?: EtagUpdate }) {
+    return cy.then(function (this: { etagUpdate?: EtagUpdate }): string | null {
       const accountNumber = this.etagUpdate?.accountNumber ?? null;
       return accountNumber && String(accountNumber).trim() ? String(accountNumber).trim() : null;
-    });
+    }) as Cypress.Chainable<string | null>;
   }
 
   /**
@@ -229,34 +230,43 @@ export class AccountEnquiryFlow {
    * Clicks the latest published account from the current results page.
    *
    * Behaviour:
-   *  - If `@etagUpdate` has an `accountNumber` and it's visible on the current page → click it.
-   *  - Otherwise → open the first row via {@link ResultsActions.openLatestPublished}.
-   *  - If the @etagUpdate account number is not on the current page, we paginate to find it.
+   *  - If the visible results are minor-creditor results, open the top matching minor-creditor row.
+   *  - If `@etagUpdate` has a defendant `accountNumber`, paginate to find and open it.
+   *  - Otherwise, open the first visible row via {@link ResultsActions.openLatestPublished}.
    */
   public clickLatestPublishedFromResultsOrAcrossPages(): void {
     logAE('method', 'clickLatestPublishedFromResultsOrAcrossPages()');
-    logAE('click', 'Click latest published account or matching @etagUpdate (current page only)');
+    logAE('click', 'Click latest visible result or matching @etagUpdate account');
 
-    cy.intercept('GET', '**/defendant-accounts/**/header-summary').as('headerSummary');
+    cy.intercept('GET', '**/header-summary').as('headerSummary');
     ForceSingleTabNavigation();
     this.results.waitForResultsTable();
 
-    // Prefer the seeded account captured during draft setup; only use the first
-    // visible result when the scenario did not create or retain account metadata.
-    this.resolveAccountNumberFromAlias().then((accOrNull) => {
-      if (!accOrNull) {
-        logAE('fallback', 'No @etagUpdate found → opening latest row');
+    cy.get('body', { timeout: AccountEnquiryFlow.WAIT_MS }).then(($body) => {
+      if ($body.find(`${AccountEnquiryFlow.MINOR_CREDITOR_RESULTS_SELECTOR}:visible`).length) {
+        logAE('match', 'Opening latest visible minor creditor result');
         this.results.openLatestPublished();
         this.waitForHeaderSummaryAndAtAGlance();
         return;
       }
 
-      const acc = accOrNull;
-      logAE('match', 'Opening account by number from @etagUpdate', { accountNumber: acc });
+      // Prefer the seeded account captured during draft setup; only use the first
+      // visible result when the scenario did not create or retain account metadata.
+      this.resolveAccountNumberFromAlias().then((accOrNull) => {
+        if (!accOrNull) {
+          logAE('fallback', 'No @etagUpdate found → opening latest row');
+          this.results.openLatestPublished();
+          this.waitForHeaderSummaryAndAtAGlance();
+          return;
+        }
 
-      // Wait for the specific account we just created; traverse pagination if needed.
-      this.results.openByAccountNumberAcrossPages(acc);
-      this.waitForHeaderSummaryAndAtAGlance();
+        const acc = accOrNull;
+        logAE('match', 'Opening account by number from @etagUpdate', { accountNumber: acc });
+
+        // Wait for the specific account we just created; traverse pagination if needed.
+        this.results.openByAccountNumberAcrossPages(acc);
+        this.waitForHeaderSummaryAndAtAGlance();
+      });
     });
   }
 
