@@ -213,6 +213,42 @@ Then('the intercepted minor creditor header summary awarded value is {string}', 
   minorCreditorDetails().assertHeaderSummaryAwardedValue(numericExpectedAwardedValue);
 });
 
+When(
+  'the minor creditor header summary API returns a repayment with paid out value {string}',
+  (paidOutValue: string) => {
+    const numericPaidOutValue = Number(paidOutValue.trim());
+
+    if (!Number.isFinite(numericPaidOutValue)) {
+      throw new Error(`Expected a numeric paid out value but received "${paidOutValue}"`);
+    }
+
+    log('intercept', 'Overriding minor creditor header summary as a repayment', { paidOutValue: numericPaidOutValue });
+    minorCreditorDetails().stubHeaderSummaryRepayment(numericPaidOutValue);
+  },
+);
+
+Then(
+  'the intercepted minor creditor header summary identifies a repayment with paid out value {string}',
+  (paidOutValue: string) => {
+    const numericPaidOutValue = Number(paidOutValue.trim());
+
+    if (!Number.isFinite(numericPaidOutValue)) {
+      throw new Error(`Expected a numeric paid out value but received "${paidOutValue}"`);
+    }
+
+    log('assert', 'Asserting minor creditor repayment header summary', { paidOutValue: numericPaidOutValue });
+    minorCreditorDetails().assertHeaderSummaryRepayment(numericPaidOutValue);
+  },
+);
+
+Then(
+  'I should see only the repayment Paid out minor creditor summary metric value {string}',
+  (paidOutValue: string) => {
+    log('assert', 'Asserting repayment-only minor creditor summary metric', { paidOutValue });
+    minorCreditorDetails().assertRepaymentSummaryMetric(paidOutValue);
+  },
+);
+
 /**
  * @step Navigates to the Defendant details section and validates the header text.
  *
