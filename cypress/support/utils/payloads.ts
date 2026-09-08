@@ -54,6 +54,9 @@ export function getDraftPayloadFile(type: DraftPayloadType): string {
     opalE2EFixedPenaltyCompany: 'opalE2EFixedPenaltyCompanyPayload.json',
     ayMultiOffenceMultiImposition: 'ayMultiOffenceMultiImpositionPayload.json',
   };
+  if (Cypress.env('JCDE_OVERRIDE') === 'true') {
+    return `jcde/` + map[type];
+  }
   return map[type];
 }
 

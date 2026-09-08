@@ -12,7 +12,7 @@ import { FormControl, FormGroup, FormsModule, ReactiveFormsModule, Validators } 
 import { AbstractFormBaseComponent } from '@hmcts/opal-frontend-common/components/abstract/abstract-form-base';
 import { IAbstractFormBaseFieldErrors } from '@hmcts/opal-frontend-common/components/abstract/abstract-form-base/interfaces';
 import { IFinesMacEmployerDetailsForm } from '../interfaces/fines-mac-employer-details-form.interface';
-import { FINES_MAC_EMPLOYER_DETAILS_FIELD_ERRORS } from '../constants/fines-mac-employer-details-field-errors';
+import { FINES_MAC_EMPLOYER_DETAILS_FIELD_ERRORS } from '../constants/fines-mac-employer-details-field-errors.constant';
 import { FINES_MAC_ROUTING_NESTED_ROUTES } from '../../routing/constants/fines-mac-routing-nested-routes.constant';
 import { FINES_MAC_ROUTING_PATHS } from '../../routing/constants/fines-mac-routing-paths.constant';
 import { FinesMacStore } from '../../stores/fines-mac.store';
@@ -38,10 +38,7 @@ const ALPHANUMERIC_WITH_SPACES_PATTERN_VALIDATOR = patternValidator(
   ALPHANUMERIC_WITH_SPACES_PATTERN,
   'alphanumericTextPattern',
 );
-const SINGLE_ASCII_CHARACTERS_ALPHANUMERIC_WITH_SPECIAL_CHARACTERS_PATTERN_VALIDATOR = patternValidator(
-  SINGLE_ASCII_CHARACTERS,
-  'singleAsciiChatacters',
-);
+const SINGLE_ASCII_CHARACTERS_PATTERN_VALIDATOR = patternValidator(SINGLE_ASCII_CHARACTERS, 'singleAsciiCharacters');
 const ALPHANUMERIC_WITH_HYPHENS_SPACES_APOSTROPHES_DOT_PATTERN_VALIDATOR = patternValidator(
   ALPHANUMERIC_WITH_HYPHENS_SPACES_APOSTROPHES_DOT_PATTERN,
   'alphanumericWithHyphensSpacesApostrophesDotPattern',
@@ -81,7 +78,7 @@ export class FinesMacEmployerDetailsFormComponent extends AbstractFormBaseCompon
       fm_employer_details_employer_company_name: new FormControl(null, [
         Validators.required,
         Validators.maxLength(35),
-        SINGLE_ASCII_CHARACTERS_ALPHANUMERIC_WITH_SPECIAL_CHARACTERS_PATTERN_VALIDATOR,
+        SINGLE_ASCII_CHARACTERS_PATTERN_VALIDATOR,
       ]),
       fm_employer_details_employer_reference: new FormControl(null, [
         Validators.required,
@@ -99,23 +96,23 @@ export class FinesMacEmployerDetailsFormComponent extends AbstractFormBaseCompon
       fm_employer_details_employer_address_line_1: new FormControl(null, [
         Validators.required,
         Validators.maxLength(30),
-        ALPHANUMERIC_WITH_SPACES_PATTERN_VALIDATOR,
+        SINGLE_ASCII_CHARACTERS_PATTERN_VALIDATOR,
       ]),
       fm_employer_details_employer_address_line_2: new FormControl(null, [
         optionalMaxLengthValidator(30),
-        ALPHANUMERIC_WITH_SPACES_PATTERN_VALIDATOR,
+        SINGLE_ASCII_CHARACTERS_PATTERN_VALIDATOR,
       ]),
       fm_employer_details_employer_address_line_3: new FormControl(null, [
         optionalMaxLengthValidator(30),
-        ALPHANUMERIC_WITH_SPACES_PATTERN_VALIDATOR,
+        SINGLE_ASCII_CHARACTERS_PATTERN_VALIDATOR,
       ]),
       fm_employer_details_employer_address_line_4: new FormControl(null, [
         optionalMaxLengthValidator(30),
-        ALPHANUMERIC_WITH_SPACES_PATTERN_VALIDATOR,
+        SINGLE_ASCII_CHARACTERS_PATTERN_VALIDATOR,
       ]),
       fm_employer_details_employer_address_line_5: new FormControl(null, [
         optionalMaxLengthValidator(30),
-        ALPHANUMERIC_WITH_SPACES_PATTERN_VALIDATOR,
+        SINGLE_ASCII_CHARACTERS_PATTERN_VALIDATOR,
       ]),
       fm_employer_details_employer_post_code: new FormControl(null, [
         optionalMaxLengthValidator(8),

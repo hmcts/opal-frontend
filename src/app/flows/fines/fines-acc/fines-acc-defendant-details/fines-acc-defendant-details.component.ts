@@ -58,6 +58,7 @@ import { FINES_ACC_BANNER_MESSAGES } from '../stores/constants/fines-acc-store-b
 import { FinesAccDefendantDetailsHistoryAndNotesTabComponent } from './fines-acc-defendant-details-history-and-notes-tab/fines-acc-defendant-details-history-and-notes-tab.component';
 import { IOpalFinesAccountDefendantDetailsConsolidatedAccounts } from '@services/fines/opal-fines-service/interfaces/opal-fines-account-defendant-account-consolidated-accounts.interface';
 import { FinesAccDefendantDetailsConsolidatedAccountsTabComponent } from './fines-acc-defendant-details-consolidated-accounts-tab/fines-acc-defendant-details-consolidated-accounts-tab.component';
+import { getFinesAccCollectionOrderBannerMessage } from '../utils/fines-acc-collection-order-banner.utils';
 import { CustomAccessibleMonetaryComponent } from '@hmcts/opal-frontend-common/components/custom/custom-accessible-monetary';
 
 @Component({
@@ -260,6 +261,13 @@ export class FinesAccDefendantDetailsComponent
    */
   public hasConsolidatedAccounts(): boolean {
     return this.accountData.has_consolidated_accounts;
+  }
+
+  /**
+   * Gets the Collection Order warning banner message for the current defendant account.
+   */
+  public get collectionOrderBannerMessage(): string | null {
+    return getFinesAccCollectionOrderBannerMessage(this.accountData);
   }
 
   /**

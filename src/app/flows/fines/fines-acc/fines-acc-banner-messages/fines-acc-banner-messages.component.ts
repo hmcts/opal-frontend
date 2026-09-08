@@ -16,6 +16,7 @@ export class FinesAccBannerMessagesComponent {
   @Input({ required: true }) hasPaymentHold!: boolean;
   @Input({ required: true }) isTransferredIn!: boolean;
   @Input({ required: true }) successMessage: string | null = null;
+  @Input() collectionOrderBannerMessage: string | null = null;
   @Input() id = 'acc-summary-header-banners';
   @Output() clearSuccessMessage = new EventEmitter<void>();
   @Output() refreshPage = new EventEmitter<void>();

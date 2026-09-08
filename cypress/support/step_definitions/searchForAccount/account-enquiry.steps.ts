@@ -108,6 +108,11 @@ When('I search for the account by last name {string} and open the latest result'
   accountEnquiryFlow().searchAndClickLatestBySurnameOpenLatestResult(surnameWithUniq);
 });
 
+Then('I should be on the FAE account details page', () => {
+  log('assert', 'FAE defendant account details page is visible');
+  accountEnquiryFlow().assertOnDefendantAccountDetailsPage();
+});
+
 /**
  * @step Opens the latest matching account from the current Search results page.
  *
@@ -208,6 +213,42 @@ Then('the intercepted minor creditor header summary awarded value is {string}', 
   minorCreditorDetails().assertHeaderSummaryAwardedValue(numericExpectedAwardedValue);
 });
 
+When(
+  'the minor creditor header summary API returns a repayment with paid out value {string}',
+  (paidOutValue: string) => {
+    const numericPaidOutValue = Number(paidOutValue.trim());
+
+    if (!Number.isFinite(numericPaidOutValue)) {
+      throw new Error(`Expected a numeric paid out value but received "${paidOutValue}"`);
+    }
+
+    log('intercept', 'Overriding minor creditor header summary as a repayment', { paidOutValue: numericPaidOutValue });
+    minorCreditorDetails().stubHeaderSummaryRepayment(numericPaidOutValue);
+  },
+);
+
+Then(
+  'the intercepted minor creditor header summary identifies a repayment with paid out value {string}',
+  (paidOutValue: string) => {
+    const numericPaidOutValue = Number(paidOutValue.trim());
+
+    if (!Number.isFinite(numericPaidOutValue)) {
+      throw new Error(`Expected a numeric paid out value but received "${paidOutValue}"`);
+    }
+
+    log('assert', 'Asserting minor creditor repayment header summary', { paidOutValue: numericPaidOutValue });
+    minorCreditorDetails().assertHeaderSummaryRepayment(numericPaidOutValue);
+  },
+);
+
+Then(
+  'I should see only the repayment Paid out minor creditor summary metric value {string}',
+  (paidOutValue: string) => {
+    log('assert', 'Asserting repayment-only minor creditor summary metric', { paidOutValue });
+    minorCreditorDetails().assertRepaymentSummaryMetric(paidOutValue);
+  },
+);
+
 /**
  * @step Navigates to the Defendant details section and validates the header text.
  *
@@ -262,6 +303,29 @@ Given('I stub the defendant header summary payment terms account status code to 
 Given('I stub the defendant header summary payment terms account balance to {int}', (balance: number) => {
   log('intercept', 'Stub defendant header summary payment terms account balance', { balance });
   accountEnquiryFlow().stubPaymentTermsAccountBalance(balance);
+});
+
+Given('I stub the defendant header summary business unit code to {string}', (businessUnitCode: string) => {
+  log('intercept', 'Stub defendant header summary business unit code', { businessUnitCode });
+  accountEnquiryFlow().stubHeaderSummaryBusinessUnitCode(businessUnitCode);
+});
+
+Given(
+  'I stub the defendant header summary for the {string} Collection Order warning scenario',
+  (category: 'Adult' | 'Youth' | 'Company' | 'Conditional Caution') => {
+    log('intercept', 'Stub Collection Order warning header scenario', { category });
+    accountEnquiryFlow().stubCollectionOrderWarningScenario(category);
+  },
+);
+
+Then('I should see the permanent Collection Order warning {string}', (message: string) => {
+  log('assert', 'Collection Order warning is visible and permanent', { message });
+  accountEnquiryFlow().assertCollectionOrderWarning(message);
+});
+
+Then('I should not see a Collection Order warning', () => {
+  log('assert', 'Collection Order warning is absent');
+  accountEnquiryFlow().assertCollectionOrderWarningNotPresent();
 });
 
 Then('I do not see the Payment terms Change or Request payment card actions', () => {
@@ -539,6 +603,14 @@ When('I go to the Fixed penalty section and the header is {string}', (expected: 
 });
 
 /**
+ * @step Navigates to the Defendant tab.
+ */
+When('I go to the Defendant tab', () => {
+  log('step', 'Navigate to Defendant tab');
+  navActions().goToDefendantTab();
+});
+
+/**
  * @step Navigates to the Payment terms tab.
  */
 When('I go to the Payment terms tab', () => {
@@ -798,6 +870,14 @@ When('I enter {string} for the enforcement action reason', (reason: string) => {
 });
 
 /**
+ * @step Chooses the collection type on the add enforcement action details form.
+ */
+When('I choose {string} for collection type', (option: string) => {
+  log('step', 'Choose collection type option', { option });
+  enforcementActions().chooseCollectionType(option);
+});
+
+/**
  * @step Chooses whether to change existing payment terms on the add enforcement action details form.
  */
 When('I choose {string} for changing existing payment terms', (option: string) => {
@@ -1004,6 +1084,48 @@ Then('I should see the following minor creditor summary metric values:', (table:
   log('assert', 'Asserting minor creditor summary metric values', { expectedValues });
   atAGlanceDetails().assertMinorCreditorSummaryMetricValues(expectedValues);
 });
+
+Then('I validate the legacy defendant header and At a glance tab using fixture {string}', (fixturePath: string) => {
+  log('assert', 'Validate legacy defendant header and At a glance tab', { fixturePath });
+  accountEnquiryFlow().validateLegacyDefendantHeaderAndAtAGlance(fixturePath);
+});
+
+Then('I validate the legacy company header and At a glance tab using fixture {string}', (fixturePath: string) => {
+  log('assert', 'Validate legacy company header and At a glance tab', { fixturePath });
+  accountEnquiryFlow().validateLegacyCompanyHeaderAndAtAGlance(fixturePath);
+});
+
+/**
+ * @step Navigates to the selected legacy company tab and validates its fixture-backed content.
+ */
+When(
+  /^I go to the (Defendant|Payment terms) tab and validate the legacy company using fixture "([^"]+)"$/,
+  (tabName: string, fixturePath: string) => {
+    log('step', 'Navigate to legacy company tab and validate fixture-backed content', { tabName, fixturePath });
+    accountEnquiryFlow().goToLegacyCompanyTabAndValidate(tabName as 'Defendant' | 'Payment terms', fixturePath);
+  },
+);
+
+/**
+ * @step Navigates to the selected legacy defendant tab and validates its fixture-backed content.
+ */
+When(
+  /^I go to the (Defendant|Parent or guardian|Payment terms|Enforcement|Impositions|History and notes|Fixed penalty) tab and validate the legacy defendant using fixture "([^"]+)"$/,
+  (tabName: string, fixturePath: string) => {
+    log('step', 'Navigate to legacy defendant tab and validate fixture-backed content', { tabName, fixturePath });
+    accountEnquiryFlow().goToLegacyDefendantTabAndValidate(
+      tabName as
+        | 'Defendant'
+        | 'Parent or guardian'
+        | 'Payment terms'
+        | 'Enforcement'
+        | 'Impositions'
+        | 'History and notes'
+        | 'Fixed penalty',
+      fixturePath,
+    );
+  },
+);
 
 /**
  * @step Asserts the payment terms tab is active.

@@ -13,25 +13,14 @@
     headingClasses="govuk-heading-m govuk-!-margin-bottom-0"
     [headingLevel]="2"
   ></opal-lib-govuk-heading-with-caption>
-  @if (showActions) {
+  @if (showActions && !isReadOnly) {
     <opal-lib-govuk-summary-list-row-actions class="heading-actions">
-      <ng-container *ngTemplateOutlet="isReadOnly ? readOnlyActions : actions"></ng-container>
+      <ng-container *ngTemplateOutlet="actions"></ng-container>
     </opal-lib-govuk-summary-list-row-actions>
   }
 </div>
 
-<ng-template #readOnlyActions>
-  <li
-    opal-lib-govuk-summary-list-row-action-item
-    [actionId]="showDetails ? 'hide' : 'show'"
-    [actionName]="showDetails ? 'Hide' : 'Show'"
-    [visuallyHiddenText]="'Offence ' + offenceCode"
-    (linkClick)="onActionClick($event)"
-  ></li>
-</ng-template>
-
 <ng-template #actions>
-  <ng-container *ngTemplateOutlet="readOnlyActions"></ng-container>
   <li
     opal-lib-govuk-summary-list-row-action-item
     actionId="change"

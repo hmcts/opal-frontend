@@ -41,7 +41,7 @@ Feature: Check And Validate Draft Accounts
     And the draft success banner is "You have approved Larry Lincoln{uniq}'s account"
 
 
-  @R1A @JIRA-STORY:PO-969 @JIRA-STORY:PO-601 @JIRA-EPIC:PO-2220 @JIRA-TEST-KEY:PO-5332 @JIRA-NFR:PO-2506
+  @R1A @JIRA-STORY:PO-969 @JIRA-STORY:PO-601 @JIRA-STORY:PO-10196 @JIRA-EPIC:PO-2220 @JIRA-TEST-KEY:PO-5332 @JIRA-NFR:PO-2506
   Scenario: Reject an in-review draft account and review it from the Rejected tab
     Given a "adultOrYouthOnly" draft account exists with:
       | Account_status                          | Submitted                      |
@@ -61,6 +61,10 @@ Feature: Check And Validate Draft Accounts
     When I view the "Rejected" tab on the Check and Validate page
     Then I open the draft account for "Potter{uniq}, Harry" and see header "Mr Harry Potter{uniq}"
     And the draft account status tag is "Rejected"
+    And the draft review history item 1 is:
+      | title       | Rejected               |
+      | date        | Today                  |
+      | description | Testing review history |
     When I go back to Check and Validate Draft Accounts
     Then I should see the checker header "Review accounts" and status heading "Rejected"
 
@@ -97,7 +101,7 @@ Feature: Check And Validate Draft Accounts
 
 
 
-  @R1A @JIRA-STORY:PO-597 @JIRA-STORY:PO-616 @JIRA-EPIC:PO-2220 @JIRA-TEST-KEY:PO-5334 @JIRA-NFR:PO-2506
+  @R1A @JIRA-STORY:PO-597 @JIRA-STORY:PO-616 @JIRA-DEFECT:PO-1858 @JIRA-EPIC:PO-2220 @JIRA-TEST-KEY:PO-5334 @JIRA-NFR:PO-2506
   Scenario: Delete an in-review draft account and verify it on the Deleted tab
     Given a "adultOrYouthOnly" draft account exists with:
       | Account_status                          | Submitted                    |
@@ -109,6 +113,8 @@ Feature: Check And Validate Draft Accounts
     When I open Check and Validate Draft Accounts
     Then I open the draft account for "Barnes{uniq}, Peter" and see header "Mr Peter Barnes{uniq}"
     And the draft account status tag is "In review"
+    And the draft review history item 1 is:
+      | title | Created |
     When I delete the draft account from review and see the confirmation page
     And I confirm draft deletion with reason:
       | Reason | test reason YXZ123 |
@@ -119,6 +125,7 @@ Feature: Check And Validate Draft Accounts
     And the draft account status tag is "Deleted"
     And the draft review history item 1 is:
       | title       | Deleted            |
+      | date        | Today              |
       | description | test reason YXZ123 |
     When I go back to Check and Validate Draft Accounts
     Then I should see the checker header "Review accounts" and status heading "Deleted"

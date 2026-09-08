@@ -1,6 +1,9 @@
-export interface FinesDraftResolverOptions {
-  useFragmentForStatuses?: boolean;
-  defaultStatuses?: string[];
-  includeSubmittedBy?: boolean;
-  includeNotSubmittedBy?: boolean;
+import { FinesDraftTabFragment } from '../../../types/fines-draft-tab-fragment.type';
+import { IFinesDraftAccountParamOptions } from '../../../interfaces/fines-draft-account-param-options.interface';
+
+export interface IFinesDraftResolverOptions extends Pick<
+  IFinesDraftAccountParamOptions,
+  'includeSubmittedBy' | 'includeNotSubmittedBy'
+> {
+  defaultTab: FinesDraftTabFragment;
 }

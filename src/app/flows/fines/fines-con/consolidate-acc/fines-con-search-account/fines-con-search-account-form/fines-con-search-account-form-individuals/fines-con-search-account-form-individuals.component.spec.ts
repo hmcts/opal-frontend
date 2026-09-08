@@ -141,6 +141,18 @@ describe('FinesConSearchAccountFormIndividualsComponent', () => {
     expect(postcodeControl?.hasError('alphanumericTextPattern')).toBe(true);
   });
 
+  it('should validate address line 1 with the single ASCII characters pattern', () => {
+    const addressControl = component.form.get(
+      'fcon_search_account_individuals_search_criteria.fcon_search_account_individuals_address_line_1',
+    );
+
+    addressControl?.setValue('Flat @ 2');
+    expect(addressControl?.hasError('singleAsciiCharacters')).toBe(false);
+
+    addressControl?.setValue('Café');
+    expect(addressControl?.hasError('singleAsciiCharacters')).toBe(true);
+  });
+
   it('should validate postcode max length after stripping whitespace on the individuals postcode control', () => {
     const postcodeControl = component.form.get(
       'fcon_search_account_individuals_search_criteria.fcon_search_account_individuals_post_code',

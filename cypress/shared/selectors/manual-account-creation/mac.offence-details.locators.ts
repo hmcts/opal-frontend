@@ -297,7 +297,7 @@ export const MacOffenceDetailsReviewSummaryLocators = {
   addOffenceButton: 'button[id = "addAnOffence"]',
   returnToCreateAccountButton: 'button[id = "returnToCreateAccount"]',
   cancelLink: 'a.govuk-link.button-link',
-  hideLink: 'a[id = "hide"]',
+  hideLink: 'span.govuk-details__summary-text',
 } as const;
 
 // Search offence form locators.
