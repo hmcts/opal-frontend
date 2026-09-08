@@ -88,7 +88,7 @@
     </ng-container>
 
     <ng-container row>
-      @for (row of paginatedTableDataComputed(); track row.interfaceJobId; let rowIndex = $index) {
+      @for (row of paginatedTableDataComputed(); track row.interfaceFileId; let rowIndex = $index) {
         <tr
           opal-lib-moj-sortable-table-row
           [bodyRowClasses]="isRowSelected(row, rowIndex) ? 'govuk-table__row--selected' : ''"
@@ -115,16 +115,16 @@
               ></div>
             </opal-lib-govuk-checkboxes>
           </td>
-          <td opal-lib-moj-sortable-table-row-data [id]="'fines-api-process-file-name-' + row.interfaceJobId">
+          <td opal-lib-moj-sortable-table-row-data [id]="getRowDomId(row) + '-name'">
             {{ row[content.columns.fileName] }}
           </td>
-          <td opal-lib-moj-sortable-table-row-data [id]="'fines-api-process-file-source-' + row.interfaceJobId">
+          <td opal-lib-moj-sortable-table-row-data [id]="getRowDomId(row) + '-source'">
             {{ row[content.columns.source] }}
           </td>
-          <td opal-lib-moj-sortable-table-row-data [id]="'fines-api-process-file-business-unit-' + row.interfaceJobId">
+          <td opal-lib-moj-sortable-table-row-data [id]="getRowDomId(row) + '-business-unit'">
             {{ row[content.columns.businessUnit] }}
           </td>
-          <td opal-lib-moj-sortable-table-row-data [id]="'fines-api-process-file-date-uploaded-' + row.interfaceJobId">
+          <td opal-lib-moj-sortable-table-row-data [id]="getRowDomId(row) + '-date-uploaded'">
             {{ row.dateUploadedDisplay }}
           </td>
         </tr>

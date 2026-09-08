@@ -132,18 +132,22 @@ describe('FinesApiProcessAllocateComponent', () => {
     expect(cancelContainer?.querySelector('a')?.textContent?.trim()).toBe('Cancel');
   });
 
-  it('should pass retained Process data to the tab without calling the API again', () => {
-    finesApiStore.setProcessInterfaceJobs(PROCESS_JOBS);
+  it('should fetch current Process data on initial entry instead of rendering retained data', () => {
+    finesApiStore.setProcessInterfaceJobs([{ ...PROCESS_JOBS[0], file_name: 'payments_stale.dat' }]);
+    processJobs = [{ ...PROCESS_JOBS[0], file_name: 'payments_current.dat' }];
 
     render();
 
-    expect(getInterfaceJobsSummary).not.toHaveBeenCalled();
-    expect((fixture.nativeElement as HTMLElement).textContent).toContain('payments_natwest_001.dat');
+    const textContent = (fixture.nativeElement as HTMLElement).textContent;
+    expect(getInterfaceJobsSummary).toHaveBeenCalledOnce();
+    expect(finesApiStore.processInterfaceJobs()).toEqual(processJobs);
+    expect(textContent).toContain('payments_current.dat');
+    expect(textContent).not.toContain('payments_stale.dat');
   });
 
   it('should switch tabs, clear Process selections, and load Process again when selected', () => {
     render();
-    finesApiStore.setSelectedFileIds(['701']);
+    finesApiStore.setSelectedFileIds(['1701']);
 
     component['handleTabSwitch']('allocate');
     fixture.detectChanges();
@@ -159,12 +163,14 @@ describe('FinesApiProcessAllocateComponent', () => {
     });
 
     activatedRoute.snapshot.fragment = 'allocate';
+    processJobs = [{ ...PROCESS_JOBS[0], file_name: 'payments_after_return.dat' }];
     component['handleTabSwitch']('process');
     fixture.detectChanges();
 
     expect(finesApiStore.activeTab()).toBe('process');
     expect((fixture.nativeElement as HTMLElement).querySelector('app-fines-api-process')).toBeTruthy();
-    expect(getInterfaceJobsSummary).toHaveBeenCalledOnce();
+    expect(getInterfaceJobsSummary).toHaveBeenCalledTimes(2);
+    expect((fixture.nativeElement as HTMLElement).textContent).toContain('payments_after_return.dat');
   });
 
   it('should reload Process data when the child emits Refresh', () => {
@@ -248,7 +254,7 @@ describe('FinesApiProcessAllocateComponent', () => {
 
   it('should clear the flow only after Back navigation succeeds', async () => {
     render();
-    finesApiStore.setSelectedFileIds(['701']);
+    finesApiStore.setSelectedFileIds(['1701']);
 
     component['navigateBack']();
     await fixture.whenStable();
@@ -264,18 +270,18 @@ describe('FinesApiProcessAllocateComponent', () => {
   it('should retain flow state when Back navigation is rejected by the route guard', async () => {
     routerNavigate.mockResolvedValue(false);
     render();
-    finesApiStore.setSelectedFileIds(['701']);
+    finesApiStore.setSelectedFileIds(['1701']);
 
     component['navigateBack']();
     await fixture.whenStable();
 
     expect(finesApiStore.selectedBusinessUnitIds()).toEqual([77, 80]);
-    expect(finesApiStore.selectedFileIds()).toEqual(['701']);
+    expect(finesApiStore.selectedFileIds()).toEqual(['1701']);
   });
 
   it('should navigate to the Finance dashboard and clear flow state when Cancel navigation succeeds', async () => {
     render();
-    finesApiStore.setSelectedFileIds(['701']);
+    finesApiStore.setSelectedFileIds(['1701']);
 
     (fixture.nativeElement as HTMLElement)
       .querySelector<HTMLAnchorElement>('#fines-api-process-allocate-cancel a')!
@@ -291,7 +297,7 @@ describe('FinesApiProcessAllocateComponent', () => {
   it('should retain flow state when Cancel navigation is rejected by the route guard', async () => {
     routerNavigate.mockResolvedValue(false);
     render();
-    finesApiStore.setSelectedFileIds(['701']);
+    finesApiStore.setSelectedFileIds(['1701']);
 
     (fixture.nativeElement as HTMLElement)
       .querySelector<HTMLAnchorElement>('#fines-api-process-allocate-cancel a')!
@@ -300,7 +306,7 @@ describe('FinesApiProcessAllocateComponent', () => {
 
     expect(routerNavigate).toHaveBeenCalledWith(['/', 'fines', 'dashboard', 'finance']);
     expect(finesApiStore.selectedBusinessUnitIds()).toEqual([77, 80]);
-    expect(finesApiStore.selectedFileIds()).toEqual(['701']);
+    expect(finesApiStore.selectedFileIds()).toEqual(['1701']);
   });
 
   it('should baseline unsaved changes against file selection rather than selected business units', () => {

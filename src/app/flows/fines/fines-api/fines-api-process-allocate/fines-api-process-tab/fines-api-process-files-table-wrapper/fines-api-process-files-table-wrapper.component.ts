@@ -70,7 +70,7 @@ export class FinesApiProcessFilesTableWrapperComponent extends AbstractSortableT
   );
   public readonly processFilesAnnouncement = this.content.announcement;
 
-  @Output() public readonly selectedInterfaceJobIdsChange = new EventEmitter<string[]>();
+  @Output() public readonly selectedInterfaceFileIdsChange = new EventEmitter<string[]>();
 
   /** Associates the select-all fieldset with validation rendered by the parent screen. */
   @Input() public selectionErrorId: string | null = null;
@@ -94,23 +94,23 @@ export class FinesApiProcessFilesTableWrapperComponent extends AbstractSortableT
   }
 
   /**
-   * Restores selected interface job IDs held by the parent flow store.
+   * Restores selected interface file IDs held by the parent flow store.
    */
-  @Input({ required: false }) set selectedInterfaceJobIds(selectedInterfaceJobIds: string[] | null) {
-    this.selectedRowIdsSignal.set(new Set(selectedInterfaceJobIds ?? []));
+  @Input({ required: false }) set selectedInterfaceFileIds(selectedInterfaceFileIds: string[] | null) {
+    this.selectedRowIdsSignal.set(new Set(selectedInterfaceFileIds ?? []));
     this.pruneMissingSelections(false);
   }
 
   /**
    * Emits selected IDs in the API-provided row order rather than the current visual sort order.
    */
-  private emitSelectedInterfaceJobIds(): void {
+  private emitSelectedInterfaceFileIds(): void {
     const selectedRowIds = this.selectedRowIdsSignal();
     const selectedIds = (this.displayTableDataSignal() as IFinesApiProcessFilesTableWrapperTableData[])
-      .filter((row) => selectedRowIds.has(row.interfaceJobId))
-      .map((row) => row.interfaceJobId);
+      .filter((row) => selectedRowIds.has(this.getRowIdentifier(row)))
+      .map((row) => this.getRowIdentifier(row));
 
-    this.selectedInterfaceJobIdsChange.emit(selectedIds);
+    this.selectedInterfaceFileIdsChange.emit(selectedIds);
   }
 
   /**
@@ -118,11 +118,12 @@ export class FinesApiProcessFilesTableWrapperComponent extends AbstractSortableT
    */
   private syncSelectionControls(): void {
     const currentRows = this.fullTableDataComputed();
-    const currentRowIds = new Set(currentRows.map((row) => row.interfaceJobId));
+    const currentRowIds = new Set(currentRows.map((row) => this.getRowIdentifier(row)));
 
     currentRows.forEach((row) => {
-      const selected = this.selectedRowIdsSignal().has(row.interfaceJobId);
-      const control = this.rowControls.get(row.interfaceJobId);
+      const rowId = this.getRowIdentifier(row);
+      const selected = this.selectedRowIdsSignal().has(rowId);
+      const control = this.rowControls.get(rowId);
 
       if (control && control.value !== selected) {
         control.setValue(selected, { emitEvent: false });
@@ -146,7 +147,7 @@ export class FinesApiProcessFilesTableWrapperComponent extends AbstractSortableT
    */
   private pruneMissingSelections(emitChange: boolean): void {
     const currentSelection = this.selectedRowIdsSignal();
-    const validRowIds = new Set(this.fullTableDataComputed().map((row) => row.interfaceJobId));
+    const validRowIds = new Set(this.fullTableDataComputed().map((row) => this.getRowIdentifier(row)));
     const nextSelection = new Set([...currentSelection].filter((rowId) => validRowIds.has(rowId)));
     const selectionChanged = nextSelection.size !== currentSelection.size;
 
@@ -154,22 +155,22 @@ export class FinesApiProcessFilesTableWrapperComponent extends AbstractSortableT
     this.syncSelectionControls();
 
     if (emitChange && selectionChanged) {
-      this.emitSelectedInterfaceJobIds();
+      this.emitSelectedInterfaceFileIds();
     }
   }
 
   /**
-   * Returns the stable interface job identifier used for row selection.
+   * Returns the stable interface file identifier used for row selection.
    */
   public getRowIdentifier(row: IFinesApiProcessFilesTableWrapperTableData): string {
-    return row.interfaceJobId;
+    return row.interfaceFileId;
   }
 
   /**
    * Builds a safe, stable DOM id for the row checkbox.
    */
   public getRowDomId(row: IFinesApiProcessFilesTableWrapperTableData): string {
-    return `fines-api-process-file-${row.interfaceJobId.replaceAll(/[^a-zA-Z0-9_-]/g, '-')}`;
+    return `fines-api-process-file-${this.getRowIdentifier(row).replaceAll(/[^a-zA-Z0-9_-]/g, '-')}`;
   }
 
   /**
@@ -234,7 +235,7 @@ export class FinesApiProcessFilesTableWrapperComponent extends AbstractSortableT
       ) as Set<string>,
     );
     this.syncSelectionControls();
-    this.emitSelectedInterfaceJobIds();
+    this.emitSelectedInterfaceFileIds();
   }
 
   /**
@@ -243,7 +244,7 @@ export class FinesApiProcessFilesTableWrapperComponent extends AbstractSortableT
   public onRowSelectionChange(event: { rowId: MultiSelectRowIdentifier; checked: boolean }): void {
     const rowId = event.rowId.toString();
 
-    if (!this.fullTableDataComputed().some((row) => row.interfaceJobId === rowId)) {
+    if (!this.fullTableDataComputed().some((row) => this.getRowIdentifier(row) === rowId)) {
       return;
     }
 
@@ -251,6 +252,6 @@ export class FinesApiProcessFilesTableWrapperComponent extends AbstractSortableT
       toggleMultiSelectRow(this.selectedRowIdsSignal(), rowId, event.checked) as Set<string>,
     );
     this.syncSelectionControls();
-    this.emitSelectedInterfaceJobIds();
+    this.emitSelectedInterfaceFileIds();
   }
 }

@@ -37,7 +37,7 @@ describe('FinesApiProcessFilesTableWrapperComponent', () => {
   const render = (rows: IFinesApiProcessFilesTableWrapperTableData[], selectedIds: string[] = []): void => {
     component.existingSortState = FINES_API_PROCESS_FILES_TABLE_WRAPPER_TABLE_SORT_DEFAULT;
     component.tableData = rows;
-    component.selectedInterfaceJobIds = selectedIds;
+    component.selectedInterfaceFileIds = selectedIds;
     fixture.detectChanges();
   };
 
@@ -90,21 +90,26 @@ describe('FinesApiProcessFilesTableWrapperComponent', () => {
     ).toBe('fines-api-process-files-description fines-api-process-files-selected-count fines-api-process-files-error');
   });
 
-  it('should emit string interface job IDs and update the selected count for a row selection', () => {
-    const emitSpy = vi.spyOn(component.selectedInterfaceJobIdsChange, 'emit');
-    const rows = buildTableRows(2);
+  it('should independently identify and select files that belong to the same interface job', () => {
+    const emitSpy = vi.spyOn(component.selectedInterfaceFileIdsChange, 'emit');
+    const rows = buildTableRows(2).map((row) => ({ ...row, interfaceJobId: 'shared-job' }));
     render(rows);
 
-    component.onRowSelectionChange({ rowId: rows[1].interfaceJobId, checked: true });
+    component.onRowSelectionChange({ rowId: rows[1].interfaceFileId, checked: true });
     fixture.detectChanges();
 
-    expect(emitSpy).toHaveBeenLastCalledWith(['2']);
+    expect(component.getRowIdentifier(rows[0])).toBe('1001');
+    expect(component.getRowIdentifier(rows[1])).toBe('1002');
+    expect(component.getRowDomId(rows[0])).toBe('fines-api-process-file-1001');
+    expect(component.getRowDomId(rows[1])).toBe('fines-api-process-file-1002');
+    expect(emitSpy).toHaveBeenLastCalledWith(['1002']);
     expect(component.selectedFilesHintComputed()).toBe('1 of 2 files selected');
+    expect(component.getRowControl(rows[0]).value).toBe(false);
     expect(component.getRowControl(rows[1]).value).toBe(true);
   });
 
-  it('should ignore a selection event for a job that is not in the table', () => {
-    const emitSpy = vi.spyOn(component.selectedInterfaceJobIdsChange, 'emit');
+  it('should ignore a selection event for a file that is not in the table', () => {
+    const emitSpy = vi.spyOn(component.selectedInterfaceFileIdsChange, 'emit');
     render(buildTableRows(1));
 
     component.onRowSelectionChange({ rowId: '999', checked: true });
@@ -115,14 +120,14 @@ describe('FinesApiProcessFilesTableWrapperComponent', () => {
 
   it('should select all files across every page and preserve selection after changing page', () => {
     const rows = buildTableRows(30);
-    const emitSpy = vi.spyOn(component.selectedInterfaceJobIdsChange, 'emit');
+    const emitSpy = vi.spyOn(component.selectedInterfaceFileIdsChange, 'emit');
     render(rows);
 
     component.onToggleAll(true);
     component.currentPageSignal.set(2);
     fixture.detectChanges();
 
-    expect(emitSpy).toHaveBeenLastCalledWith(rows.map((row) => row.interfaceJobId));
+    expect(emitSpy).toHaveBeenLastCalledWith(rows.map((row) => row.interfaceFileId));
     expect(component.selectedFilesHintComputed()).toBe('30 of 30 files selected');
     expect(component.paginatedTableDataComputed()).toHaveLength(5);
     expect(component.getRowControl(rows[25]).value).toBe(true);
@@ -132,7 +137,7 @@ describe('FinesApiProcessFilesTableWrapperComponent', () => {
   it('should retain a selected row across sorting and reset pagination to page one', () => {
     const rows = buildTableRows(30);
     render(rows);
-    component.onRowSelectionChange({ rowId: '30', checked: true });
+    component.onRowSelectionChange({ rowId: '1030', checked: true });
     component.currentPageSignal.set(2);
 
     component.onSortChange({ key: 'File name', sortType: 'descending' });
@@ -146,7 +151,7 @@ describe('FinesApiProcessFilesTableWrapperComponent', () => {
   it('should restore externally persisted selections', () => {
     const rows = buildTableRows(3);
 
-    render(rows, ['1', '3']);
+    render(rows, ['1001', '1003']);
 
     expect(component.selectedFilesCountComputed()).toBe(2);
     expect(component.getRowControl(rows[0]).value).toBe(true);
@@ -155,17 +160,40 @@ describe('FinesApiProcessFilesTableWrapperComponent', () => {
     expect(component.someRowsSelected()).toBe(true);
   });
 
+  it('should treat a null persisted selection as empty', () => {
+    const rows = buildTableRows(1);
+    component.existingSortState = FINES_API_PROCESS_FILES_TABLE_WRAPPER_TABLE_SORT_DEFAULT;
+    component.tableData = rows;
+
+    component.selectedInterfaceFileIds = null;
+
+    expect(component.selectedFilesCountComputed()).toBe(0);
+    expect(component.getRowControl(rows[0]).value).toBe(false);
+  });
+
+  it('should resynchronise an existing row control with the selected file IDs', () => {
+    const rows = buildTableRows(1);
+    render(rows);
+    const rowControl = component.getRowControl(rows[0]);
+    rowControl.setValue(true, { emitEvent: false });
+
+    const returnedControl = component.getRowControl(rows[0]);
+
+    expect(returnedControl).toBe(rowControl);
+    expect(returnedControl.value).toBe(false);
+  });
+
   it('should prune and emit selections missing from refreshed table data', () => {
     const rows = buildTableRows(3);
     render(rows);
-    component.onRowSelectionChange({ rowId: '1', checked: true });
-    component.onRowSelectionChange({ rowId: '2', checked: true });
-    const emitSpy = vi.spyOn(component.selectedInterfaceJobIdsChange, 'emit');
+    component.onRowSelectionChange({ rowId: '1001', checked: true });
+    component.onRowSelectionChange({ rowId: '1002', checked: true });
+    const emitSpy = vi.spyOn(component.selectedInterfaceFileIdsChange, 'emit');
 
     component.tableData = rows.slice(1);
 
     expect(component.selectedFilesCountComputed()).toBe(1);
-    expect(emitSpy).toHaveBeenLastCalledWith(['2']);
+    expect(emitSpy).toHaveBeenLastCalledWith(['1002']);
   });
 
   it('should cap direct table input at 500 rows', () => {

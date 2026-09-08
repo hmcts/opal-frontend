@@ -50,11 +50,11 @@ export class FinesApiProcessComponent {
     this.utilsService.scrollToTop();
   }
 
-  /** Persists stable interface job IDs emitted by the Process table. */
-  protected handleSelectedInterfaceJobIdsChange(selectedInterfaceJobIds: string[]): void {
-    this.finesApiStore.setSelectedFileIds(selectedInterfaceJobIds);
+  /** Persists stable interface file IDs emitted by the Process table. */
+  protected handleSelectedInterfaceFileIdsChange(selectedInterfaceFileIds: string[]): void {
+    this.finesApiStore.setSelectedFileIds(selectedInterfaceFileIds);
 
-    if (selectedInterfaceJobIds.length > 0) {
+    if (selectedInterfaceFileIds.length > 0) {
       this.clearFileSelectionError();
     }
   }

@@ -13,6 +13,7 @@ import {
   RELEASE_1C_FINANCIAL_MOVEMENTS_FEATURE_FLAG,
   RELEASE_1B_FEATURE_FLAG,
   RELEASE_1C_ENFORCEMENT_OPERATIONAL_REPORTING_FEATURE_FLAG,
+  RELEASE_1C_PAYMENT_FEATURE_FLAG,
   RELEASE_1C_WRITE_OFF_FEATURE_FLAG,
 } from '../constants/release-feature-flags.constant';
 import {
@@ -75,6 +76,7 @@ describe('fines-section-permissions.utils', () => {
     [RELEASE_1C_ENFORCEMENT_OPERATIONAL_REPORTING_FEATURE_FLAG]: true,
     [RELEASE_1C_ADMINISTRATION_FEATURE_FLAG]: true,
     [RELEASE_1C_FINANCIAL_MOVEMENTS_FEATURE_FLAG]: true,
+    [RELEASE_1C_PAYMENT_FEATURE_FLAG]: true,
   };
   const release1aEnabled = { [RELEASE_1A_FEATURE_FLAG]: true };
   const release1bEnabled = { [RELEASE_1B_FEATURE_FLAG]: true };
@@ -134,6 +136,7 @@ describe('fines-section-permissions.utils', () => {
         [RELEASE_1C_ENFORCEMENT_OPERATIONAL_REPORTING_FEATURE_FLAG]: false,
         [RELEASE_1C_ADMINISTRATION_FEATURE_FLAG]: false,
         [RELEASE_1C_FINANCIAL_MOVEMENTS_FEATURE_FLAG]: false,
+        [RELEASE_1C_PAYMENT_FEATURE_FLAG]: false,
       });
 
       expect(getFeatureFlagReleaseState(release1cWriteOffEnabled)).toEqual({
@@ -143,6 +146,7 @@ describe('fines-section-permissions.utils', () => {
         [RELEASE_1C_ENFORCEMENT_OPERATIONAL_REPORTING_FEATURE_FLAG]: false,
         [RELEASE_1C_ADMINISTRATION_FEATURE_FLAG]: false,
         [RELEASE_1C_FINANCIAL_MOVEMENTS_FEATURE_FLAG]: false,
+        [RELEASE_1C_PAYMENT_FEATURE_FLAG]: false,
       });
 
       expect(getFeatureFlagReleaseState(release1cReportingEnabled)).toEqual({
@@ -152,6 +156,7 @@ describe('fines-section-permissions.utils', () => {
         [RELEASE_1C_ENFORCEMENT_OPERATIONAL_REPORTING_FEATURE_FLAG]: true,
         [RELEASE_1C_ADMINISTRATION_FEATURE_FLAG]: false,
         [RELEASE_1C_FINANCIAL_MOVEMENTS_FEATURE_FLAG]: false,
+        [RELEASE_1C_PAYMENT_FEATURE_FLAG]: false,
       });
 
       expect(getFeatureFlagReleaseState(release1cAdministrationEnabled)).toEqual({
@@ -161,6 +166,7 @@ describe('fines-section-permissions.utils', () => {
         [RELEASE_1C_ENFORCEMENT_OPERATIONAL_REPORTING_FEATURE_FLAG]: false,
         [RELEASE_1C_ADMINISTRATION_FEATURE_FLAG]: true,
         [RELEASE_1C_FINANCIAL_MOVEMENTS_FEATURE_FLAG]: false,
+        [RELEASE_1C_PAYMENT_FEATURE_FLAG]: false,
       });
 
       expect(getFeatureFlagReleaseState(release1cFinancialMovementsEnabled)).toEqual({
@@ -170,6 +176,7 @@ describe('fines-section-permissions.utils', () => {
         [RELEASE_1C_ENFORCEMENT_OPERATIONAL_REPORTING_FEATURE_FLAG]: false,
         [RELEASE_1C_ADMINISTRATION_FEATURE_FLAG]: false,
         [RELEASE_1C_FINANCIAL_MOVEMENTS_FEATURE_FLAG]: true,
+        [RELEASE_1C_PAYMENT_FEATURE_FLAG]: false,
       });
 
       expect(getFeatureFlagReleaseState({})).toEqual({
@@ -179,6 +186,7 @@ describe('fines-section-permissions.utils', () => {
         [RELEASE_1C_ENFORCEMENT_OPERATIONAL_REPORTING_FEATURE_FLAG]: false,
         [RELEASE_1C_ADMINISTRATION_FEATURE_FLAG]: false,
         [RELEASE_1C_FINANCIAL_MOVEMENTS_FEATURE_FLAG]: false,
+        [RELEASE_1C_PAYMENT_FEATURE_FLAG]: false,
       });
     });
   });

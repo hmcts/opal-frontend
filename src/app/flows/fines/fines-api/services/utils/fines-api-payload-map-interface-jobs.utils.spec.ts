@@ -1,6 +1,7 @@
 import { DateService } from '@hmcts/opal-frontend-common/services/date-service';
 import { IOpalFinesInterfaceJobSummary } from '@services/fines/opal-fines-service/interfaces/opal-fines-interface-job-summary.interface';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
+import { FINES_API_PROCESS_FILES_TABLE_WRAPPER_CONTENT } from '../../fines-api-process-allocate/fines-api-process-tab/fines-api-process-files-table-wrapper/constants/fines-api-process-files-table-wrapper-content.constant';
 import {
   extractInterfaceJobs,
   FINES_API_INTERFACE_JOBS_MAX_RESULTS,
@@ -112,5 +113,14 @@ describe('fines-api-payload-map-interface-jobs utils', () => {
     expect(row['Date uploaded']).toBe(0);
     expect(row.dateUploadedDisplay).toBe('not-a-date');
     expect(dateService.toFormat).not.toHaveBeenCalled();
+  });
+
+  it('should show the unavailable-date label for an empty invalid timestamp', () => {
+    vi.mocked(dateService.getFromIso).mockReturnValueOnce({ isValid: false } as ReturnType<DateService['getFromIso']>);
+
+    const [row] = mapInterfaceJobs([buildInterfaceJob({ created_datetime: '' })], dateService);
+
+    expect(row['Date uploaded']).toBe(0);
+    expect(row.dateUploadedDisplay).toBe(FINES_API_PROCESS_FILES_TABLE_WRAPPER_CONTENT.unavailableDate);
   });
 });

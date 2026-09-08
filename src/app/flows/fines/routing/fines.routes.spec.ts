@@ -6,6 +6,7 @@ import {
   release1aFeatureFlagGuard,
   release1bFeatureFlagGuard,
   release1cEnforcementOperationalReportingFeatureFlagGuard,
+  release1cPaymentFeatureFlagGuard,
   release1cWriteOffFeatureFlagGuard,
 } from './fines.routes';
 import { finesSectionPermissionsGuard } from './guards/fines-section-permissions/fines-section-permissions.guard';
@@ -22,18 +23,22 @@ const {
   release1bFeatureFlagGuardMock,
   release1cWriteOffFeatureFlagGuardMock,
   release1cEnforcementOperationalReportingFeatureFlagGuardMock,
+  release1cPaymentFeatureFlagGuardMock,
   release1aFeatureFlagName,
   release1bFeatureFlagName,
   release1cWriteOffFeatureFlagName,
+  release1cPaymentFeatureFlagName,
 } = vi.hoisted(() => ({
   featureFlagRedirectGuardMock: vi.fn(),
   release1aFeatureFlagGuardMock: vi.fn(),
   release1bFeatureFlagGuardMock: vi.fn(),
   release1cWriteOffFeatureFlagGuardMock: vi.fn(),
   release1cEnforcementOperationalReportingFeatureFlagGuardMock: vi.fn(),
+  release1cPaymentFeatureFlagGuardMock: vi.fn(),
   release1aFeatureFlagName: 'release-1a',
   release1bFeatureFlagName: 'release-1b',
   release1cWriteOffFeatureFlagName: 'release-1c-write-off',
+  release1cPaymentFeatureFlagName: 'release-1c-payment',
 }));
 
 vi.mock('@hmcts/opal-frontend-common/guards/feature-flag', () => ({
@@ -48,6 +53,10 @@ vi.mock('@hmcts/opal-frontend-common/guards/feature-flag', () => ({
 
     if (featureFlagName === release1cWriteOffFeatureFlagName) {
       return release1cWriteOffFeatureFlagGuardMock;
+    }
+
+    if (featureFlagName === release1cPaymentFeatureFlagName) {
+      return release1cPaymentFeatureFlagGuardMock;
     }
 
     return release1cEnforcementOperationalReportingFeatureFlagGuardMock;
@@ -74,6 +83,10 @@ describe('fines routes', () => {
     expect(release1cEnforcementOperationalReportingFeatureFlagGuard).toBe(
       release1cEnforcementOperationalReportingFeatureFlagGuardMock,
     );
+  });
+
+  it('should create the release-1c payment feature flag guard from the common redirect guard', () => {
+    expect(release1cPaymentFeatureFlagGuard).toBe(release1cPaymentFeatureFlagGuardMock);
   });
 
   it('should guard the draft root as an Accounts section entry route', () => {
@@ -111,7 +124,12 @@ describe('fines routes', () => {
     );
 
     expect(autoPaymentInRoute?.children).toBe(autoPaymentInRouting);
-    expect(autoPaymentInRoute?.canActivate).toEqual([authGuard, finesSectionPermissionsGuard]);
+    expect(autoPaymentInRoute?.canActivate).toEqual([
+      authGuard,
+      release1cPaymentFeatureFlagGuard,
+      finesSectionPermissionsGuard,
+    ]);
+    expect(autoPaymentInRoute?.canActivateChild).toEqual([release1cPaymentFeatureFlagGuard]);
     expect(autoPaymentInRoute?.canDeactivate).toEqual([canDeactivateGuard]);
     expect(autoPaymentInRoute?.data).toEqual({
       sectionKey: FINES_DASHBOARD_ROUTING_PATHS.children.finance,

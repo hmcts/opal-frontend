@@ -478,6 +478,7 @@ describe('OpalFines', () => {
         report_id: 'operational_report_enforcement',
         from_date: '2026-06-02',
         to_date: '2026-06-08',
+        user_id: 42,
         business_units: [1],
       })
       .subscribe((response) => {
@@ -489,10 +490,11 @@ describe('OpalFines', () => {
     expect(req.request.params.get('report_id')).toBe('operational_report_enforcement');
     expect(req.request.params.get('from_date')).toBe('2026-06-02');
     expect(req.request.params.get('to_date')).toBe('2026-06-08');
+    expect(req.request.params.get('user_id')).toBe('42');
     expect(req.request.params.getAll('business_units')).toEqual(['1']);
     req.flush(mockResponse);
 
-    service.getReportInstances({ report_id: 'operational_report_enforcement' }).subscribe((response) => {
+    service.getReportInstances({}).subscribe((response) => {
       expect(response).toEqual(mockResponse);
     });
 
@@ -975,6 +977,16 @@ describe('OpalFines', () => {
     const result = service.getMajorCreditorPrettyName(majorCreditor);
 
     expect(result).toEqual('Central Funds');
+  });
+
+  it('should return an empty major creditor name when neither a name nor code is present', () => {
+    const majorCreditor: IOpalFinesMajorCreditor = {
+      ...OPAL_FINES_MAJOR_CREDITOR_REF_DATA_MOCK.refData[0],
+      major_creditor_code: null,
+      name: null,
+    };
+
+    expect(service.getMajorCreditorPrettyName(majorCreditor)).toBe('');
   });
 
   it('should POST the fines mac payload', () => {
@@ -1672,6 +1684,18 @@ describe('OpalFines', () => {
     });
 
     httpMock.expectNone(apiUrl);
+  });
+
+  it('should return no consolidated accounts when the response body is null', () => {
+    const account_id = 77;
+    const apiUrl = `${OPAL_FINES_PATHS.defendantAccounts}/${account_id}/consolidated-accounts`;
+
+    service.getDefendantAccountConsolidatedAccounts(account_id).subscribe((response) => {
+      expect(response).toEqual({ consolidated_accounts: [], version: null });
+    });
+
+    const req = httpMock.expectOne(apiUrl);
+    req.flush(null);
   });
 
   it('should send a POST request to add note API with correct payload and return mock response', () => {

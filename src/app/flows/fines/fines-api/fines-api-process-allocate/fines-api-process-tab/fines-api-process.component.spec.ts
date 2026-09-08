@@ -141,25 +141,40 @@ describe('FinesApiProcessComponent', () => {
     expect(scrollToTop).toHaveBeenCalledOnce();
   });
 
-  it('should persist selected interface job IDs, clear validation, and navigate to Confirm Process', () => {
+  it('should persist selected interface file IDs, clear validation, and navigate to Confirm Process', () => {
     render();
     component['process']();
 
-    component['handleSelectedInterfaceJobIdsChange'](['701', '702']);
+    component['handleSelectedInterfaceFileIdsChange'](['1701', '1702']);
     component['process']();
 
-    expect(finesApiStore.selectedFileIds()).toEqual(['701', '702']);
+    expect(finesApiStore.selectedFileIds()).toEqual(['1701', '1702']);
     expect(component['formErrorSummaryMessage']).toEqual([]);
     expect(routerNavigate).toHaveBeenCalledWith([FINES_API_ROUTING_PATHS.children.confirmProcess], {
       relativeTo: activatedRouteParent,
     });
   });
 
+  it('should retain the validation error when the selected file IDs remain empty', () => {
+    render();
+    component['process']();
+
+    component['handleSelectedInterfaceFileIdsChange']([]);
+
+    expect(finesApiStore.selectedFileIds()).toEqual([]);
+    expect(component['formErrorSummaryMessage']).toEqual([
+      {
+        fieldId: 'fines-api-process-files-select-all-checkbox',
+        message: FINES_API_PROCESS_ERRORS.selectAtLeastOneFile,
+      },
+    ]);
+  });
+
   it('should clear selection state and ask the parent to refresh Process data', () => {
     render();
     const refreshRequested = vi.fn();
     component.refreshRequested.subscribe(refreshRequested);
-    component['handleSelectedInterfaceJobIdsChange'](['701']);
+    component['handleSelectedInterfaceFileIdsChange'](['1701']);
 
     component['refresh']();
 

@@ -22,6 +22,19 @@ const haveSelectedBusinessUnitsChanged = (currentIds: number[], nextIds: number[
   return currentIds.some((businessUnitId) => !nextIdSet.has(businessUnitId));
 };
 
+/** Maps file-level UI selections to the unique job IDs required by the processing endpoint. */
+const getSelectedInterfaceJobIds = (
+  processInterfaceJobs: IOpalFinesInterfaceJobSummary[] | null,
+  selectedFileIds: string[],
+): number[] => {
+  const selectedFileIdSet = new Set(selectedFileIds);
+  const selectedJobIds = (processInterfaceJobs ?? [])
+    .filter((interfaceJob) => selectedFileIdSet.has(interfaceJob.interface_file_id.toString()))
+    .map((interfaceJob) => interfaceJob.interface_job_id);
+
+  return [...new Set(selectedJobIds)];
+};
+
 export const FinesApiStore = signalStore(
   { providedIn: 'root' },
   withState<IFinesApiState>(() => getFinesApiState()),
@@ -33,6 +46,9 @@ export const FinesApiStore = signalStore(
   withComputed((store) => ({
     hasSelectedBusinessUnits: computed(() => store.selectedBusinessUnitIds().length > 0),
     hasSelectedFiles: computed(() => store.selectedFileIds().length > 0),
+    selectedInterfaceJobIds: computed(() =>
+      getSelectedInterfaceJobIds(store.processInterfaceJobs(), store.selectedFileIds()),
+    ),
   })),
   withMethods((store) => ({
     setSelectedBusinessUnitIds: (selectedBusinessUnitIds: number[]) => {

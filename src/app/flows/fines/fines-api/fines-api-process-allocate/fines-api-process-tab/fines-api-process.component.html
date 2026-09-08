@@ -27,10 +27,10 @@
 
       <app-fines-api-process-files-table-wrapper
         [tableData]="tabData.tableData"
-        [selectedInterfaceJobIds]="finesApiStore.selectedFileIds()"
+        [selectedInterfaceFileIds]="finesApiStore.selectedFileIds()"
         [existingSortState]="processFilesSort"
         [selectionErrorId]="hasFileSelectionError ? 'fines-api-process-files-error' : null"
-        (selectedInterfaceJobIdsChange)="handleSelectedInterfaceJobIdsChange($event)"
+        (selectedInterfaceFileIdsChange)="handleSelectedInterfaceFileIdsChange($event)"
       ></app-fines-api-process-files-table-wrapper>
     </div>
   } @else {
