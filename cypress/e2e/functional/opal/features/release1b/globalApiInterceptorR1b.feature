@@ -9,7 +9,7 @@ Feature: Global Api Interceptor R1b
     Background:
       Given I am on the Account Search page - Individuals form displayed by default
 
-    @JIRA-EPIC:PO-2239 @JIRA-STORY:PO-2224 @JIRA-TEST-KEY:PO-5279 @JIRA-NFR:PO-2542 @R1B
+    @JIRA-EPIC:PO-2239 @JIRA-STORY:PO-2224 @JIRA-TEST-KEY:PO-5279 @JIRA-NFR:PO-2542 @R1BDrop1
     Scenario: Internal Server Error page is displayed for non-retriable account search errors
       When I attempt a Companies account search for reference "NOMATCH999" with a non-retriable 500 error
       Then the error page shows:
@@ -17,7 +17,7 @@ Feature: Global Api Interceptor R1b
         | header  | Sorry, there is a problem with the service |
         | message | Error code: OP67890.                       |
 
-    @JIRA-EPIC:PO-2239 @JIRA-STORY:PO-2223 @JIRA-TEST-KEY:PO-5280 @JIRA-NFR:PO-2542 @R1B
+    @JIRA-EPIC:PO-2239 @JIRA-STORY:PO-2223 @JIRA-TEST-KEY:PO-5280 @JIRA-NFR:PO-2542 @R1BDrop1
     Scenario: Global warning banner is displayed for retriable account search errors
       When I attempt a Companies account search for reference "NOMATCH999" with a retriable 500 error
       Then the global warning banner is displayed with:
@@ -27,7 +27,7 @@ Feature: Global Api Interceptor R1b
         | operation id | OP12345                                          |
       And the global banner clears after refresh on the "Search for an account" page
 
-    @JIRA-STORY:PO-2225  @JIRA-EPIC:PO-2239 @JIRA-TEST-KEY:PO-5281 @JIRA-NFR:PO-2542 @R1B
+    @JIRA-STORY:PO-2225  @JIRA-EPIC:PO-2239 @JIRA-TEST-KEY:PO-5281 @JIRA-NFR:PO-2542 @R1BDrop1
     Scenario: Global warning banner is displayed when the fixed penalty details API receives no response
       Given a published non-vehicle fixed penalty account exists:
         | first name        | Robert                               |
@@ -63,7 +63,7 @@ Feature: Global Api Interceptor R1b
       When I search for the account by last name "ConcurrencyFae{uniq}" and open the latest result
       And I go to the Defendant details section and the header is "Defendant details"
 
-    @JIRA-EPIC:PO-2239 @JIRA-STORY:PO-2226 @JIRA-TEST-KEY:PO-5282 @JIRA-NFR:PO-2542 @R1B
+    @JIRA-EPIC:PO-2239 @JIRA-STORY:PO-2226 @JIRA-TEST-KEY:PO-5282 @JIRA-NFR:PO-2542 @R1BDrop1
     Scenario: Concurrency failure discards defendant edit state
       # AC1: CTA-triggered Replace Defendant Account Party request fails with a non-retriable HTTP 409 concurrency response.
       When I edit the Defendant details and change the First name to "Concurrency"
@@ -92,7 +92,7 @@ Feature: Global Api Interceptor R1b
       When I search for the account by last name "PermissionNote{uniq}" and open the latest result
       Then I should see the account summary header contains "Mr Priya PERMISSIONNOTE{uniqUpper}"
 
-    @JIRA-EPIC:PO-2239 @JIRA-STORY:PO-2227 @JIRA-TEST-KEY:PO-5283 @JIRA-NFR:PO-2542 @R1B
+    @JIRA-EPIC:PO-2239 @JIRA-STORY:PO-2227 @JIRA-TEST-KEY:PO-5283 @JIRA-NFR:PO-2542 @R1BDrop1
     Scenario: Permission Denied page is displayed when the Add Note API returns a non-retriable permission error
       # AC1: CTA-triggered Add Note request fails with a non-retriable HTTP 403 permission response.
       When I open the Add account note screen and verify the header is Add account note

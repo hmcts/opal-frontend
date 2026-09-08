@@ -7,6 +7,13 @@ import { attach } from '@badeball/cypress-cucumber-preprocessor';
 import { getCurrentScenarioFeaturePath, getCurrentScenarioTitle } from './scenarioContext';
 import { isEvidenceCaptureEnabled } from './evidenceMode';
 
+type SavedEvidenceScreenshot = {
+  base64: string;
+};
+
+const isSavedEvidenceScreenshot = (value: unknown): value is SavedEvidenceScreenshot =>
+  value !== null && typeof value === 'object' && 'base64' in value && typeof value.base64 === 'string';
+
 /**
  * Capture a screenshot with the current scenario name prefixed.
  * @param tag - Short tag describing the moment (e.g., "before-submit").
@@ -61,7 +68,7 @@ export function captureScenarioScreenshot(
           { log: false },
         )
         .then((savedEvidence) => {
-          if (!savedEvidence || typeof savedEvidence !== 'object' || !('base64' in savedEvidence)) {
+          if (!isSavedEvidenceScreenshot(savedEvidence)) {
             return undefined;
           }
 
