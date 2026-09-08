@@ -18,4 +18,17 @@ export interface IFinesMacAddAccountPayload extends IOpalFinesVersion {
   account_status_date: string | null;
 }
 
-export type IFinesMacAddAccountRequestPayload = Omit<IFinesMacAddAccountPayload, 'timeline_data'>;
+export interface IFinesMacAddAccountRequestPayload {
+  business_unit_id: number;
+  account: IFinesMacPayloadAccount;
+  account_type: string;
+  account_status: string | null;
+  status_message: string | null;
+}
+
+export interface IFinesMacReplaceAccountRequestPayload {
+  business_unit_id: number;
+  account: IFinesMacPayloadAccount;
+  account_type: string;
+  account_status: string | null;
+}

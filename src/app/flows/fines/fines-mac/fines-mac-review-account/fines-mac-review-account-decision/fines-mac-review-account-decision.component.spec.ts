@@ -82,6 +82,16 @@ describe('FinesMacReviewAccountDecisionComponent', () => {
 
     component.handleFormSubmit(formSubmit);
 
+    expect(mockFinesMacPayloadService.buildPatchAccountPayload).toHaveBeenCalledWith(
+      finesDraftStore.getFinesDraftState(),
+      'Rejected',
+      formSubmit.formData.fm_review_account_decision_reason,
+    );
+    expect(mockOpalFinesService.patchDraftAccountPayload).toHaveBeenCalledWith(
+      finesDraftStore.draft_account_id(),
+      OPAL_FINES_DRAFT_ACCOUNTS_PATCH_PAYLOAD,
+      finesDraftStore.version(),
+    );
     expect(routerSpy).toHaveBeenCalledWith([component['checkAndValidateTabs']], {
       fragment: component['finesDraftStore'].fragment(),
     });

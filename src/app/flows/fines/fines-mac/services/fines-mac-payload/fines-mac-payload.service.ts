@@ -8,6 +8,7 @@ import { FINES_MAC_MAP_TRANSFORM_ITEMS_CONFIG } from './constants/fines-mac-map-
 import {
   IFinesMacAddAccountPayload,
   IFinesMacAddAccountRequestPayload,
+  IFinesMacReplaceAccountRequestPayload,
 } from './interfaces/fines-mac-payload-add-account.interfaces';
 import { finesMacPayloadBuildAccountOffences } from './utils/fines-mac-payload-build-account/fines-mac-payload-build-account-offences.utils';
 import { FINES_MAC_STATE } from '../../constants/fines-mac-state';
@@ -24,7 +25,6 @@ import { IOpalFinesOffencesNonSnakeCase } from '@services/fines/opal-fines-servi
 import { finesMacPayloadMapBusinessUnit } from './utils/fines-mac-payload-map-account/fines-mac-payload-map-business-unit.utils';
 import { TransformationService } from '@hmcts/opal-frontend-common/services/transformation-service';
 import { ITransformItem } from '@hmcts/opal-frontend-common/services/transformation-service/interfaces';
-import { OPAL_FINES_DRAFT_ACCOUNT_STATUSES } from '@services/fines/opal-fines-service/constants/opal-fines-draft-account-statues.constant';
 import { FINES_MAC_DEFENDANT_TYPES_KEYS } from '../../constants/fines-mac-defendant-types-keys';
 import { finesMacPayloadBuildAccountFixedPenalty } from './utils/fines-mac-payload-build-account/fines-mac-payload-build-account-fixed-penalty.utils';
 import { finesMacPayloadMapAccountFixedPenalty } from './utils/fines-mac-payload-map-account/fines-mac-payload-map-account-fixed-penalty.utils';
@@ -45,10 +45,9 @@ export class FinesMacPayloadService {
    * @param finesMacPayload - The payload object to be transformed.
    * @returns The transformed payload object.
    */
-  private transformPayload<T extends IFinesMacAddAccountPayload | IFinesMacAddAccountRequestPayload>(
-    finesMacPayload: T,
-    transformItemsConfig: ITransformItem[],
-  ): T {
+  private transformPayload<
+    T extends IFinesMacAddAccountPayload | IFinesMacAddAccountRequestPayload | IFinesMacReplaceAccountRequestPayload,
+  >(finesMacPayload: T, transformItemsConfig: ITransformItem[]): T {
     return this.transformationService.transformObjectValues(finesMacPayload, transformItemsConfig);
   }
 
@@ -114,117 +113,83 @@ export class FinesMacPayloadService {
   }
 
   /**
-   * Builds the payload for adding or replacing an account in the fines MAC system.
+   * Builds the fields shared by add and replace draft-account requests.
    *
    * @param finesMacState - The current state of the fines MAC.
-   * @param sessionUserState - The current state of the session user.
-   * @param addAccount - A boolean indicating whether to add a new account (true) or replace an existing account (false).
-   * @returns The payload for adding or replacing an account.
+   * @param accountStatus - Status to include in the request.
+   * @returns The shared draft-account request payload.
    */
-  private buildAddReplaceAccountPayload(
+  private buildAccountRequestPayload(
     finesMacState: IFinesMacState,
-    draftAccountPayload: IFinesMacAddAccountPayload | null,
-    userState: IOpalUserState,
-    addAccount: boolean,
-  ): IFinesMacAddAccountRequestPayload {
+    accountStatus: string,
+  ): IFinesMacReplaceAccountRequestPayload {
     const { formData: accountDetailsState } = finesMacState.accountDetails;
     const accountPayload = this.buildAccountPayload(finesMacState);
-    const accountStatus = addAccount ? FINES_MAC_PAYLOAD_STATUSES.submitted : FINES_MAC_PAYLOAD_STATUSES.resubmitted;
 
-    // Build the add account payload
-    const addAccountPayload: IFinesMacAddAccountRequestPayload = {
-      draft_account_id: draftAccountPayload ? draftAccountPayload.draft_account_id : null,
-      created_at: null,
-      account_snapshot: null,
-      account_status_date: null,
-      business_unit_id: accountDetailsState['fm_create_account_business_unit_id'],
-      submitted_by: this.getBusinessUnitBusinessUserId(
-        accountDetailsState['fm_create_account_business_unit_id'],
-        userState,
-      ),
-      submitted_by_name: userState['name'],
+    const requestPayload: IFinesMacReplaceAccountRequestPayload = {
+      business_unit_id: accountDetailsState['fm_create_account_business_unit_id']!,
       account: accountPayload,
-      account_type: accountDetailsState['fm_create_account_account_type'],
+      account_type: accountDetailsState['fm_create_account_account_type']!,
       account_status: accountStatus,
-      account_status_message: null,
-      version: draftAccountPayload ? draftAccountPayload.version : '0',
     };
 
-    // Transform the payload, format the dates and times to the correct format
-    return this.transformPayload(addAccountPayload, FINES_MAC_BUILD_TRANSFORM_ITEMS_CONFIG);
+    return this.transformPayload(requestPayload, FINES_MAC_BUILD_TRANSFORM_ITEMS_CONFIG);
   }
 
   /**
-   * Retrieves the business unit user ID associated with a given business unit ID.
+   * Retrieves the business unit user ID associated with a business unit.
    *
-   * @param businessUnitId - The ID of the business unit to search for. Can be null.
-   * @param userState - The current session user state containing business unit user information.
-   * @returns The business unit user ID if found, otherwise null.
+   * @param businessUnitId - Business unit ID to find.
+   * @param userState - Current user state containing business unit memberships.
+   * @returns The matching business unit user ID, or null when none exists.
    */
   public getBusinessUnitBusinessUserId(businessUnitId: number | null, userState: IOpalUserState): string | null {
-    const businessUnitUserId = userState.business_unit_users.find(
-      (businessUnitUsers) => businessUnitUsers.business_unit_id === businessUnitId,
+    return (
+      userState.business_unit_users.find((businessUnitUser) => businessUnitUser.business_unit_id === businessUnitId)
+        ?.business_unit_user_id ?? null
     );
-
-    if (businessUnitUserId) {
-      return businessUnitUserId.business_unit_user_id;
-    }
-
-    return null;
   }
 
   /**
    * Builds the payload for adding an account in the fines MAC (Management and Control) system.
    *
    * @param finesMacState - The current state of the fines MAC.
-   * @param sessionUserState - The current state of the session user.
    * @returns The payload required to add an account in the fines MAC system.
    */
-  public buildAddAccountPayload(
-    finesMacState: IFinesMacState,
-    userState: IOpalUserState,
-  ): IFinesMacAddAccountRequestPayload {
-    return this.buildAddReplaceAccountPayload(structuredClone(finesMacState), null, userState, true);
+  public buildAddAccountPayload(finesMacState: IFinesMacState): IFinesMacAddAccountRequestPayload {
+    return {
+      ...this.buildAccountRequestPayload(structuredClone(finesMacState), FINES_MAC_PAYLOAD_STATUSES.submitted),
+      status_message: null,
+    };
   }
 
   /**
    * Builds the payload for replacing an account in the fines MAC state.
    *
    * @param finesMacState - The current state of the fines MAC.
-   * @param sessionUserState - The current state of the session user.
    * @returns The payload required to add or replace an account in the fines MAC state.
    */
-  public buildReplaceAccountPayload(
-    finesMacState: IFinesMacState,
-    draftAccountPayload: IFinesMacAddAccountPayload,
-    userState: IOpalUserState,
-  ): IFinesMacAddAccountRequestPayload {
-    return this.buildAddReplaceAccountPayload(structuredClone(finesMacState), draftAccountPayload, userState, false);
+  public buildReplaceAccountPayload(finesMacState: IFinesMacState): IFinesMacReplaceAccountRequestPayload {
+    return this.buildAccountRequestPayload(structuredClone(finesMacState), FINES_MAC_PAYLOAD_STATUSES.resubmitted);
   }
 
   /**
    * Builds a patch payload for updating a fines account draft.
    *
    * @param draftAccountPayload - The original account payload to be patched.
-   * @param sessionUserState - The current session user's state, used for validation information.
+   * @param status - Status to apply to the draft account.
+   * @param reasonText - Reason associated with the status change.
    * @returns The constructed patch payload for the fines account draft.
    */
   public buildPatchAccountPayload(
     draftAccountPayload: IFinesMacAddAccountPayload,
     status: string,
     reasonText: string | null,
-    userState: IOpalUserState,
   ): IOpalFinesDraftAccountPatchRequestPayload {
     return {
       account_status: status,
       business_unit_id: draftAccountPayload.business_unit_id!,
       reason_text: reasonText,
-      validated_by:
-        status === OPAL_FINES_DRAFT_ACCOUNT_STATUSES.rejected
-          ? null
-          : this.getBusinessUnitBusinessUserId(draftAccountPayload.business_unit_id, userState)!,
-      validated_by_name: status === OPAL_FINES_DRAFT_ACCOUNT_STATUSES.rejected ? null : userState['name'],
-      version: draftAccountPayload.version!,
     };
   }
 

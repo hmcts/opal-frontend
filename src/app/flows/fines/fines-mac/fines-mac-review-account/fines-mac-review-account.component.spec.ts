@@ -33,6 +33,25 @@ import { beforeEach, describe, expect, it, vi } from 'vitest';
 
 import { createSpyObj } from '@app/testing/create-spy-obj.helper';
 import { FINES_MAC_DEFENDANT_TYPES_KEYS } from '../constants/fines-mac-defendant-types-keys';
+import {
+  IFinesMacAddAccountRequestPayload,
+  IFinesMacReplaceAccountRequestPayload,
+} from '../services/fines-mac-payload/interfaces/fines-mac-payload-add-account.interfaces';
+
+const ADD_ACCOUNT_REQUEST: IFinesMacAddAccountRequestPayload = {
+  business_unit_id: FINES_MAC_PAYLOAD_ADD_ACCOUNT.business_unit_id!,
+  account: FINES_MAC_PAYLOAD_ADD_ACCOUNT.account,
+  account_type: FINES_MAC_PAYLOAD_ADD_ACCOUNT.account_type!,
+  account_status: FINES_MAC_PAYLOAD_ADD_ACCOUNT.account_status,
+  status_message: null,
+};
+
+const REPLACE_ACCOUNT_REQUEST: IFinesMacReplaceAccountRequestPayload = {
+  business_unit_id: FINES_MAC_PAYLOAD_ADD_ACCOUNT.business_unit_id!,
+  account: FINES_MAC_PAYLOAD_ADD_ACCOUNT.account,
+  account_type: FINES_MAC_PAYLOAD_ADD_ACCOUNT.account_type!,
+  account_status: FINES_MAC_PAYLOAD_ADD_ACCOUNT.account_status,
+};
 
 // Shared factory for setting up the test module
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -61,10 +80,8 @@ function createTestModule(snapshotData?: any) {
     'mapAccountPayload',
     'getDefendantName',
   ]);
-  mockFinesMacPayloadService['buildReplaceAccountPayload'].mockReturnValue(
-    structuredClone(FINES_MAC_PAYLOAD_ADD_ACCOUNT),
-  );
-  mockFinesMacPayloadService['buildAddAccountPayload'].mockReturnValue(structuredClone(FINES_MAC_PAYLOAD_ADD_ACCOUNT));
+  mockFinesMacPayloadService['buildReplaceAccountPayload'].mockReturnValue(structuredClone(REPLACE_ACCOUNT_REQUEST));
+  mockFinesMacPayloadService['buildAddAccountPayload'].mockReturnValue(structuredClone(ADD_ACCOUNT_REQUEST));
   mockFinesMacPayloadService['getDefendantName'].mockReturnValue('Test Defendant Name');
 
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -236,7 +253,12 @@ describe('FinesMacReviewAccountComponent', () => {
       mockOpalFinesService.putDraftAddAccountPayload = vi
         .fn()
         .mockReturnValue(throwError(() => new Error('Something went wrong')));
-      component['handlePutRequest'](FINES_MAC_PAYLOAD_ADD_ACCOUNT);
+      component['handlePutRequest'](REPLACE_ACCOUNT_REQUEST);
+      expect(mockOpalFinesService.putDraftAddAccountPayload).toHaveBeenCalledWith(
+        finesDraftStore.draft_account_id(),
+        REPLACE_ACCOUNT_REQUEST,
+        finesDraftStore.version(),
+      );
       expect(handleRequestErrorSpy).toHaveBeenCalled();
     });
 
@@ -255,7 +277,7 @@ describe('FinesMacReviewAccountComponent', () => {
       mockOpalFinesService.postDraftAddAccountPayload = vi
         .fn()
         .mockReturnValue(throwError(() => new Error('Something went wrong')));
-      component['handlePostRequest'](FINES_MAC_PAYLOAD_ADD_ACCOUNT);
+      component['handlePostRequest'](ADD_ACCOUNT_REQUEST);
       expect(handleRequestErrorSpy).toHaveBeenCalled();
     });
 
@@ -306,17 +328,12 @@ describe('FinesMacReviewAccountComponent', () => {
       component['preparePutPayload']();
       expect(mockFinesMacPayloadService.buildReplaceAccountPayload).toHaveBeenCalledWith(
         finesMacStore.getFinesMacStore(),
-        finesDraftStore.getFinesDraftState(),
-        component['userState'],
       );
     });
 
     it('should test preparePostPayload', () => {
       component['preparePostPayload']();
-      expect(mockFinesMacPayloadService.buildAddAccountPayload).toHaveBeenCalledWith(
-        finesMacStore.getFinesMacStore(),
-        component['userState'],
-      );
+      expect(mockFinesMacPayloadService.buildAddAccountPayload).toHaveBeenCalledWith(finesMacStore.getFinesMacStore());
     });
 
     it('should test submitPutPayload', () => {

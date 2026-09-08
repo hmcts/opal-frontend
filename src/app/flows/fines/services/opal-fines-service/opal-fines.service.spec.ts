@@ -31,6 +31,7 @@ import { OPAL_FINES_SEARCH_OFFENCES_MOCK } from './mocks/opal-fines-search-offen
 import {
   IFinesMacAddAccountPayload,
   IFinesMacAddAccountRequestPayload,
+  IFinesMacReplaceAccountRequestPayload,
 } from '../../fines-mac/services/fines-mac-payload/interfaces/fines-mac-payload-add-account.interfaces';
 import { OPAL_FINES_PATCH_DELETE_ACCOUNT_PAYLOAD_MOCK } from './mocks/opal-fines-patch-delete-account-payload.mock';
 import { OPAL_FINES_DRAFT_ACCOUNTS_PATCH_PAYLOAD } from './mocks/opal-fines-draft-accounts-patch-payload.mock';
@@ -84,10 +85,23 @@ describe('OpalFines', () => {
     return { get: getFn } as unknown as HttpResponse<unknown>['headers'];
   }
 
-  const removeTimelineData = (payload: IFinesMacAddAccountPayload): IFinesMacAddAccountRequestPayload => {
-    const requestPayload = structuredClone(payload) as Partial<IFinesMacAddAccountPayload>;
-    delete requestPayload.timeline_data;
-    return requestPayload as IFinesMacAddAccountRequestPayload;
+  const buildAddRequest = (payload: IFinesMacAddAccountPayload): IFinesMacAddAccountRequestPayload => {
+    return {
+      business_unit_id: payload.business_unit_id!,
+      account: payload.account,
+      account_type: payload.account_type!,
+      account_status: payload.account_status,
+      status_message: null,
+    };
+  };
+
+  const buildReplaceRequest = (payload: IFinesMacAddAccountPayload): IFinesMacReplaceAccountRequestPayload => {
+    return {
+      business_unit_id: payload.business_unit_id!,
+      account: payload.account,
+      account_type: payload.account_type!,
+      account_status: payload.account_status,
+    };
   };
 
   beforeEach(() => {
@@ -233,13 +247,12 @@ describe('OpalFines', () => {
 
   it('should not retry versioned If-Match mutations after transient timeout failures', () => {
     const error = vi.fn();
-    const body = {
-      ...removeTimelineData(FINES_MAC_PAYLOAD_ADD_ACCOUNT),
-      version: '1',
-    } as IFinesMacAddAccountRequestPayload;
-    const apiUrl = `${OPAL_FINES_PATHS.draftAccounts}/${body.draft_account_id}`;
+    const body = buildReplaceRequest(FINES_MAC_PAYLOAD_ADD_ACCOUNT);
+    const draftAccountId = FINES_MAC_PAYLOAD_ADD_ACCOUNT.draft_account_id!;
+    const version = '1';
+    const apiUrl = `${OPAL_FINES_PATHS.draftAccounts}/${draftAccountId}`;
 
-    service.putDraftAddAccountPayload(body).subscribe({ error });
+    service.putDraftAddAccountPayload(draftAccountId, body, version).subscribe({ error });
 
     const request = httpMock.expectOne(apiUrl);
     expect(request.request.method).toBe('PUT');
@@ -856,7 +869,7 @@ describe('OpalFines', () => {
   });
 
   it('should POST the fines mac payload', () => {
-    const body = removeTimelineData(FINES_MAC_PAYLOAD_ADD_ACCOUNT);
+    const body = buildAddRequest(FINES_MAC_PAYLOAD_ADD_ACCOUNT);
 
     const apiUrl = OPAL_FINES_PATHS.draftAccounts;
 
@@ -867,7 +880,13 @@ describe('OpalFines', () => {
     const req = httpMock.expectOne(apiUrl);
     expect(req.request.method).toBe('POST');
     expect(req.request.body).toEqual(body);
-    expect(req.request.body).not.toHaveProperty('timeline_data');
+    expect(Object.keys(req.request.body)).toEqual([
+      'business_unit_id',
+      'account',
+      'account_type',
+      'account_status',
+      'status_message',
+    ]);
 
     req.flush(OPAL_FINES_DRAFT_ADD_ACCOUNT_PAYLOAD_MOCK);
   });
@@ -978,17 +997,20 @@ describe('OpalFines', () => {
   });
 
   it('should send a PUT request to update the draft account payload', () => {
-    const body = removeTimelineData(FINES_MAC_PAYLOAD_ADD_ACCOUNT);
-    const apiUrl = `${OPAL_FINES_PATHS.draftAccounts}/${body.draft_account_id}`;
+    const body = buildReplaceRequest(FINES_MAC_PAYLOAD_ADD_ACCOUNT);
+    const draftAccountId = FINES_MAC_PAYLOAD_ADD_ACCOUNT.draft_account_id!;
+    const version = FINES_MAC_PAYLOAD_ADD_ACCOUNT.version!;
+    const apiUrl = `${OPAL_FINES_PATHS.draftAccounts}/${draftAccountId}`;
 
-    service.putDraftAddAccountPayload(body).subscribe((response) => {
+    service.putDraftAddAccountPayload(draftAccountId, body, version).subscribe((response) => {
       expect(response).toEqual(FINES_MAC_PAYLOAD_ADD_ACCOUNT);
     });
 
     const req = httpMock.expectOne(apiUrl);
     expect(req.request.method).toBe('PUT');
     expect(req.request.body).toEqual(body);
-    expect(req.request.body).not.toHaveProperty('timeline_data');
+    expect(req.request.headers.get('If-Match')).toBe(version);
+    expect(Object.keys(req.request.body)).toEqual(['business_unit_id', 'account', 'account_type', 'account_status']);
 
     req.flush(FINES_MAC_PAYLOAD_ADD_ACCOUNT);
   });
@@ -998,14 +1020,16 @@ describe('OpalFines', () => {
     const body = OPAL_FINES_DRAFT_ACCOUNTS_PATCH_PAYLOAD;
     const apiUrl = `${OPAL_FINES_PATHS.draftAccounts}/${draftAccountId}`;
 
-    service.patchDraftAccountPayload(draftAccountId, body).subscribe((response) => {
+    const version = '1';
+    service.patchDraftAccountPayload(draftAccountId, body, version).subscribe((response) => {
       expect(response).toEqual(FINES_MAC_PAYLOAD_ADD_ACCOUNT);
     });
 
     const req = httpMock.expectOne(apiUrl);
     expect(req.request.method).toBe('PATCH');
     expect(req.request.body).toEqual(body);
-    expect(req.request.body).not.toHaveProperty('timeline_data');
+    expect(req.request.headers.get('If-Match')).toBe(version);
+    expect(Object.keys(req.request.body)).toEqual(['account_status', 'business_unit_id', 'reason_text']);
 
     req.flush(FINES_MAC_PAYLOAD_ADD_ACCOUNT);
   });
@@ -1070,14 +1094,16 @@ describe('OpalFines', () => {
     const expectedResponse = FINES_MAC_PAYLOAD_ADD_ACCOUNT;
     const apiUrl = `${OPAL_FINES_PATHS.draftAccounts}/${accountId}`;
 
-    service.patchDraftAccountPayload(accountId, body).subscribe((response) => {
+    const version = '1';
+    service.patchDraftAccountPayload(accountId, body, version).subscribe((response) => {
       expect(response).toEqual(expectedResponse);
     });
 
     const req = httpMock.expectOne(apiUrl);
     expect(req.request.method).toBe('PATCH');
     expect(req.request.body).toEqual(body);
-    expect(req.request.body).not.toHaveProperty('timeline_data');
+    expect(req.request.headers.get('If-Match')).toBe(version);
+    expect(Object.keys(req.request.body)).toEqual(['account_status', 'business_unit_id', 'reason_text']);
 
     req.flush(expectedResponse);
   });

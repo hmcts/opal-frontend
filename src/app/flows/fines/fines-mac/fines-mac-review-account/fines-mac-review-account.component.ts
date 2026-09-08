@@ -26,6 +26,7 @@ import { FinesMacReviewAccountHistoryComponent } from './fines-mac-review-accoun
 import {
   IFinesMacAddAccountPayload,
   IFinesMacAddAccountRequestPayload,
+  IFinesMacReplaceAccountRequestPayload,
 } from '../services/fines-mac-payload/interfaces/fines-mac-payload-add-account.interfaces';
 import { FINES_DRAFT_ROUTING_PATHS } from '../../fines-draft/routing/constants/fines-draft-routing-paths.constant';
 import { FINES_DRAFT_CREATE_AND_MANAGE_ROUTING_PATHS } from '../../fines-draft/fines-draft-create-and-manage/routing/constants/fines-draft-create-and-manage-routing-paths.constant';
@@ -75,7 +76,6 @@ export class FinesMacReviewAccountComponent extends AbstractFormParentBaseCompon
   private readonly globalStore = inject(GlobalStore);
   private readonly opalFinesService = inject(OpalFines);
   private readonly finesMacPayloadService = inject(FinesMacPayloadService);
-  private readonly userState = this.globalStore.userState();
 
   protected readonly utilsService = inject(UtilsService);
   protected readonly dateService = inject(DateService);
@@ -197,9 +197,9 @@ export class FinesMacReviewAccountComponent extends AbstractFormParentBaseCompon
    * It processes the response using `processPutResponse` method and handles any errors by scrolling to the top of the page.
    * The request is automatically unsubscribed when the component is destroyed using `takeUntil` with `ngUnsubscribe`.
    */
-  private handlePutRequest(payload: IFinesMacAddAccountRequestPayload): void {
+  private handlePutRequest(payload: IFinesMacReplaceAccountRequestPayload): void {
     this.opalFinesService
-      .putDraftAddAccountPayload(payload)
+      .putDraftAddAccountPayload(this.finesDraftStore.draft_account_id()!, payload, this.finesDraftStore.version()!)
       .pipe(
         tap((response) => this.processPutResponse(response)),
         catchError(() => {
@@ -267,18 +267,12 @@ export class FinesMacReviewAccountComponent extends AbstractFormParentBaseCompon
    * Prepares the payload for a PUT request to replace an account.
    *
    * This method utilizes the `finesMacPayloadService` to build the payload
-   * required for replacing an account. It takes into consideration the current
-   * state of fines (`finesMacState`), the draft state of fines (`finesDraftState`),
-   * and the user state (`userState`).
+   * required for replacing an account from the current fines MAC state.
    *
-   * @returns {IFinesMacAddAccountRequestPayload} The payload for the PUT request.
+   * @returns {IFinesMacReplaceAccountRequestPayload} The payload for the PUT request.
    */
-  private preparePutPayload(): IFinesMacAddAccountRequestPayload {
-    return this.finesMacPayloadService.buildReplaceAccountPayload(
-      this.finesMacStore.getFinesMacStore(),
-      this.finesDraftStore.getFinesDraftState(),
-      this.userState,
-    );
+  private preparePutPayload(): IFinesMacReplaceAccountRequestPayload {
+    return this.finesMacPayloadService.buildReplaceAccountPayload(this.finesMacStore.getFinesMacStore());
   }
 
   /**
@@ -286,12 +280,12 @@ export class FinesMacReviewAccountComponent extends AbstractFormParentBaseCompon
    *
    * This method constructs the payload required to add an account by utilizing
    * the `finesMacPayloadService` to build the payload based on the current state
-   * of `finesMacState` and `userState`.
+   * of `finesMacState`.
    *
    * @returns {IFinesMacAddAccountRequestPayload} The payload for adding an account.
    */
   private preparePostPayload(): IFinesMacAddAccountRequestPayload {
-    return this.finesMacPayloadService.buildAddAccountPayload(this.finesMacStore.getFinesMacStore(), this.userState);
+    return this.finesMacPayloadService.buildAddAccountPayload(this.finesMacStore.getFinesMacStore());
   }
 
   /**

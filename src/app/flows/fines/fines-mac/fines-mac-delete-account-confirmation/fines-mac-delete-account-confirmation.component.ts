@@ -49,16 +49,12 @@ export class FinesMacDeleteAccountConfirmationComponent extends AbstractFormPare
    */
   private createPatchPayload(form: IFinesMacDeleteAccountConfirmationForm): IOpalFinesDraftAccountPatchRequestPayload {
     const reason_text = form.formData.fm_delete_account_confirmation_reason;
-    const { version } = this.finesDraftStore.getFinesDraftState();
     const status = 'Deleted';
     const business_unit_id = this.finesMacStore.getBusinessUnitId();
 
     return {
-      validated_by: null,
       account_status: status,
-      validated_by_name: null,
       business_unit_id,
-      version: version ?? '0',
       reason_text,
     };
   }
@@ -79,7 +75,7 @@ export class FinesMacDeleteAccountConfirmationComponent extends AbstractFormPare
     }
 
     this.opalFinesService
-      .patchDraftAccountPayload(this.accountId, payload)
+      .patchDraftAccountPayload(this.accountId, payload, this.finesDraftStore.version()!)
       .pipe(
         tap((response) => this.processPatchResponse(response)),
         catchError(() => {
