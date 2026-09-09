@@ -26,7 +26,6 @@ import { ITransformItem } from '@hmcts/opal-frontend-common/services/transformat
 import { FINES_MAC_DEFENDANT_TYPES_KEYS } from '../../constants/fines-mac-defendant-types-keys';
 import { finesMacPayloadBuildAccountFixedPenalty } from './utils/fines-mac-payload-build-account/fines-mac-payload-build-account-fixed-penalty.utils';
 import { finesMacPayloadMapAccountFixedPenalty } from './utils/fines-mac-payload-map-account/fines-mac-payload-map-account-fixed-penalty.utils';
-import { IOpalUserState } from '@hmcts/opal-frontend-common/services/opal-user-service/interfaces';
 import { FINES_ACCOUNT_TYPES } from '../../../constants/fines-account-types.constant';
 import { IOpalFinesDraftAccountPatchRequestPayload } from '@services/fines/opal-fines-service/interfaces/opal-fines-draft-account-patch-request-payload.interface';
 
@@ -132,20 +131,6 @@ export class FinesMacPayloadService {
     };
 
     return this.transformPayload(requestPayload, FINES_MAC_BUILD_TRANSFORM_ITEMS_CONFIG);
-  }
-
-  /**
-   * Retrieves the business unit user ID associated with a business unit.
-   *
-   * @param businessUnitId - Business unit ID to find.
-   * @param userState - Current user state containing business unit memberships.
-   * @returns The matching business unit user ID, or null when none exists.
-   */
-  public getBusinessUnitBusinessUserId(businessUnitId: number | null, userState: IOpalUserState): string | null {
-    return (
-      userState.business_unit_users.find((businessUnitUser) => businessUnitUser.business_unit_id === businessUnitId)
-        ?.business_unit_user_id ?? null
-    );
   }
 
   /**

@@ -17,7 +17,6 @@ import { FINES_MAC_PAYLOAD_ADD_ACCOUNT_FIXED_PENALTY_MOCK } from './mocks/fines-
 import { FINES_MAC_PAYLOAD_FIXED_PENALTY_DETAILS_STATE_MOCK } from './utils/mocks/state/fines-mac-payload-fixed-penalty-details-state.mock';
 import { FINES_MAC_PAYMENT_TERMS_FORM } from '../../fines-mac-payment-terms/constants/fines-mac-payment-terms-form';
 import { FINES_ACCOUNT_TYPES } from '../../../constants/fines-account-types.constant';
-import { OPAL_USER_STATE_MOCK } from '@hmcts/opal-frontend-common/services/opal-user-service/mocks';
 import { afterAll, beforeEach, describe, expect, it } from 'vitest';
 
 describe('FinesMacPayloadService', () => {
@@ -201,34 +200,6 @@ describe('FinesMacPayloadService', () => {
       business_unit_id: finesMacPayloadAddAccount.business_unit_id!,
       reason_text: reasonText,
     });
-  });
-
-  it('should return the business unit user ID for a matching business unit', () => {
-    if (!service) {
-      throw new Error('Service is not properly initialised');
-    }
-
-    const businessUnitUser = OPAL_USER_STATE_MOCK.business_unit_users[0];
-
-    expect(service.getBusinessUnitBusinessUserId(businessUnitUser.business_unit_id, OPAL_USER_STATE_MOCK)).toBe(
-      businessUnitUser.business_unit_user_id,
-    );
-  });
-
-  it('should return null when the business unit ID does not match a user business unit', () => {
-    if (!service) {
-      throw new Error('Service is not properly initialised');
-    }
-
-    expect(service.getBusinessUnitBusinessUserId(Number.MAX_SAFE_INTEGER, OPAL_USER_STATE_MOCK)).toBeNull();
-  });
-
-  it('should return null when the business unit ID is null', () => {
-    if (!service) {
-      throw new Error('Service is not properly initialised');
-    }
-
-    expect(service.getBusinessUnitBusinessUserId(null, OPAL_USER_STATE_MOCK)).toBeNull();
   });
 
   it('should return forenames and surname when defendant_type is "adultOrYouthOnly"', () => {
