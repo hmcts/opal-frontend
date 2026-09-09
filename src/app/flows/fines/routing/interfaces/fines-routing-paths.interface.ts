@@ -1,10 +1,12 @@
 import { IChildRoutingPaths, IParentRoutingPaths } from '@hmcts/opal-frontend-common/pages/routing/interfaces';
 import { IFinesDashboardRoutingPaths } from '../../interfaces/fines-dashboard-routing-paths.interface';
 import { IFinesMciRoutingPaths } from '../../fines-mci/routing/interfaces/fines-mci-routing-paths.interface';
+import { IFinesApiRoutingPaths } from '../../fines-api/interfaces/fines-api-routing-paths.interface';
 
 export interface IFinesRoutingPaths extends IParentRoutingPaths {
   children: {
     dashboard: IFinesDashboardRoutingPaths;
+    autoPaymentIn: IFinesApiRoutingPaths;
     mci: IFinesMciRoutingPaths;
     mac: IChildRoutingPaths;
     draft: IChildRoutingPaths;
