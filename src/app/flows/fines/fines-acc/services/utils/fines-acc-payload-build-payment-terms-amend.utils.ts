@@ -89,25 +89,15 @@ function mapInstalmentPeriodDisplayName(instalmentPeriodCode: string): string | 
 }
 
 /**
- * Returns the current local datetime without a timezone suffix.
- */
-function getCurrentLocalDateTime(): string {
-  const now = new Date();
-  const pad = (value: number): string => value.toString().padStart(2, '0');
-
-  return `${now.getFullYear()}-${pad(now.getMonth() + 1)}-${pad(now.getDate())}T${pad(now.getHours())}:${pad(
-    now.getMinutes(),
-  )}:${pad(now.getSeconds())}`;
-}
-
-/**
  * Maps payment terms form data to API payload format
  *
  * @param formData - The payment terms form data
+ * @param postedDate - The local timestamp to include in the posted details
  * @returns Payload in API format
  */
 export function buildPaymentTermsAmendPayloadUtil(
   formData: IFinesAccPaymentTermsAmendState,
+  postedDate: string,
 ): IOpalFinesAmendPaymentTermsPayload {
   // Map payment terms type to API codes
   const paymentTermsTypeCode = mapPaymentTermsTypeToCode(formData.facc_payment_terms_payment_terms);
@@ -147,7 +137,7 @@ export function buildPaymentTermsAmendPayloadUtil(
       instalment_amount: mapInstalmentAmount(formData),
       posted_details: {
         posted_by: null,
-        posted_date: getCurrentLocalDateTime(),
+        posted_date: postedDate,
         posted_by_name: null,
       },
     },

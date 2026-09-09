@@ -1,4 +1,5 @@
 import { inject, Injectable } from '@angular/core';
+import { DateService } from '@hmcts/opal-frontend-common/services/date-service';
 import { FinesMacPayloadService } from '../../fines-mac/services/fines-mac-payload/fines-mac-payload.service';
 import { IFinesAccAddNoteForm } from '../fines-acc-note-add/interfaces/fines-acc-note-add-form.interface';
 import { IOpalFinesAddNotePayload } from '@services/fines/opal-fines-service/interfaces/opal-fines-add-note.interface';
@@ -70,6 +71,14 @@ export class FinesAccPayloadService {
   private readonly globalStore = inject(GlobalStore);
   private readonly finesAccStore = inject(FinesAccountStore);
   private readonly historyDetailsTransformationService = inject(HistoryTransformationService);
+  private readonly dateService = inject(DateService);
+
+  /**
+   * Returns the current local datetime without a timezone suffix.
+   */
+  private getCurrentLocalDateTime(): string {
+    return this.dateService.toFormat(this.dateService.getDateNow(), "yyyy-MM-dd'T'HH:mm:ss");
+  }
 
   /**
    * Constructs the payload for adding a note against the requested account record type.
@@ -489,7 +498,10 @@ export class FinesAccPayloadService {
    * @returns The payload object conforming to the IOpalFinesAmendPaymentTermsPayload interface
    */
   public buildPaymentTermsAmendPayload(formData: IFinesAccPaymentTermsAmendState): IOpalFinesAmendPaymentTermsPayload {
-    return this.transformPayload(buildPaymentTermsAmendPayloadUtil(formData), FINES_ACC_BUILD_TRANSFORM_ITEMS_CONFIG);
+    return this.transformPayload(
+      buildPaymentTermsAmendPayloadUtil(formData, this.getCurrentLocalDateTime()),
+      FINES_ACC_BUILD_TRANSFORM_ITEMS_CONFIG,
+    );
   }
 
   /**
@@ -505,7 +517,7 @@ export class FinesAccPayloadService {
     fields: IFinesAccEnfActionAddFormField[],
     formState: IFinesAccEnfActionAddFormState,
   ): IOpalFinesAddEnforcementActionPayload {
-    return buildEnforcementActionAddPayload(result, fields, formState);
+    return buildEnforcementActionAddPayload(result, fields, formState, this.getCurrentLocalDateTime());
   }
 
   /**

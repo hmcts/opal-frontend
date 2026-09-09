@@ -2,20 +2,11 @@ import { buildPaymentTermsAmendPayloadUtil } from './fines-acc-payload-build-pay
 import { IFinesAccPaymentTermsAmendState } from '../../fines-acc-payment-terms-amend/interfaces/fines-acc-payment-terms-amend-state.interface';
 import { FINES_PAYMENT_TERMS_FREQUENCY_OPTIONS } from '../../../constants/fines-payment-terms-frequency-options.constant';
 import { FINES_PAYMENT_TERMS_TYPE_DISPLAY_OPTIONS } from '../../../constants/fines-payment-terms-type-display-options.constant';
-import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
+import { describe, expect, it } from 'vitest';
 
 const POSTED_DATE = '2026-09-07T15:38:32';
 
 describe('buildPaymentTermsAmendPayload', () => {
-  beforeEach(() => {
-    vi.useFakeTimers();
-    vi.setSystemTime(new Date(2026, 8, 7, 15, 38, 32));
-  });
-
-  afterEach(() => {
-    vi.useRealTimers();
-  });
-
   it('should build payload for pay in full payment type', () => {
     const formData: IFinesAccPaymentTermsAmendState = {
       facc_payment_terms_payment_terms: 'payInFull',
@@ -33,7 +24,7 @@ describe('buildPaymentTermsAmendPayload', () => {
       facc_payment_terms_change_letter: null,
     };
 
-    const result = buildPaymentTermsAmendPayloadUtil(formData);
+    const result = buildPaymentTermsAmendPayloadUtil(formData, POSTED_DATE);
 
     expect(result).toEqual({
       payment_terms: {
@@ -74,7 +65,7 @@ describe('buildPaymentTermsAmendPayload', () => {
       facc_payment_terms_change_letter: null,
     };
 
-    const result = buildPaymentTermsAmendPayloadUtil(formData);
+    const result = buildPaymentTermsAmendPayloadUtil(formData, POSTED_DATE);
 
     expect(result).toEqual({
       payment_terms: {
@@ -115,7 +106,7 @@ describe('buildPaymentTermsAmendPayload', () => {
       facc_payment_terms_change_letter: null,
     };
 
-    const result = buildPaymentTermsAmendPayloadUtil(formData);
+    const result = buildPaymentTermsAmendPayloadUtil(formData, POSTED_DATE);
 
     expect(result).toEqual({
       payment_terms: {
@@ -156,7 +147,7 @@ describe('buildPaymentTermsAmendPayload', () => {
       facc_payment_terms_change_letter: null,
     };
 
-    const result = buildPaymentTermsAmendPayloadUtil(formData);
+    const result = buildPaymentTermsAmendPayloadUtil(formData, POSTED_DATE);
 
     expect(result.payment_terms.days_in_default).toBe(0);
   });
@@ -178,7 +169,7 @@ describe('buildPaymentTermsAmendPayload', () => {
       facc_payment_terms_change_letter: null,
     };
 
-    const result = buildPaymentTermsAmendPayloadUtil(formData);
+    const result = buildPaymentTermsAmendPayloadUtil(formData, POSTED_DATE);
 
     expect(result.payment_terms.payment_terms_type).toBeNull();
     expect(result.payment_terms.effective_date).toBeNull();
@@ -201,7 +192,7 @@ describe('buildPaymentTermsAmendPayload', () => {
       facc_payment_terms_change_letter: null,
     };
 
-    const result = buildPaymentTermsAmendPayloadUtil(formData);
+    const result = buildPaymentTermsAmendPayloadUtil(formData, POSTED_DATE);
 
     expect(result.payment_terms.lump_sum_amount).toBe(0);
     expect(result.payment_terms.instalment_amount).toBe(0);
@@ -232,7 +223,7 @@ describe('buildPaymentTermsAmendPayload', () => {
         facc_payment_terms_change_letter: null,
       };
 
-      const result = buildPaymentTermsAmendPayloadUtil(formData);
+      const result = buildPaymentTermsAmendPayloadUtil(formData, POSTED_DATE);
 
       expect(result.payment_terms.payment_terms_type).toEqual({
         payment_terms_type_code: 'B',
@@ -265,7 +256,7 @@ describe('buildPaymentTermsAmendPayload', () => {
         facc_payment_terms_change_letter: null,
       };
 
-      const result = buildPaymentTermsAmendPayloadUtil(formData);
+      const result = buildPaymentTermsAmendPayloadUtil(formData, POSTED_DATE);
 
       expect(result.payment_terms.instalment_period).toEqual({
         instalment_period_code: 'M',
