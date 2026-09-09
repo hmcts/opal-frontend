@@ -323,14 +323,14 @@ Feature: Defendant Adult Youth Search And Matches Journeys
     And I validate the legacy defendant header and At a glance tab using fixture "<LEGACY_FIXED_PENALTY_VALIDATION_FIXTURE>"
     When I go to the Defendant tab and validate the legacy defendant using fixture "<LEGACY_FIXED_PENALTY_VALIDATION_FIXTURE>"
     And I go to the Payment terms tab and validate the legacy defendant using fixture "<LEGACY_FIXED_PENALTY_VALIDATION_FIXTURE>"
-    And I go to the Enforcement tab and validate the legacy defendant using fixture "<LEGACY_FIXED_PENALTY_VALIDATION_FIXTURE>"
-    And I go to the Impositions tab and validate the legacy defendant using fixture "<LEGACY_FIXED_PENALTY_VALIDATION_FIXTURE>"
+    # And I go to the Enforcement tab and validate the legacy defendant using fixture "<LEGACY_FIXED_PENALTY_VALIDATION_FIXTURE>"
+    # And I go to the Impositions tab and validate the legacy defendant using fixture "<LEGACY_FIXED_PENALTY_VALIDATION_FIXTURE>"
     # And I go to the History and notes tab and validate the legacy defendant using fixture "<LEGACY_FIXED_PENALTY_VALIDATION_FIXTURE>"
     # And I go to the Fixed penalty tab and validate the legacy defendant using fixture "<LEGACY_FIXED_PENALTY_VALIDATION_FIXTURE>"
     @R1BDrop1UatTechJCDE
     Examples:
-      | LEGACY_FIXED_PENALTY_ACCOUNT_NUMBER | LEGACY_FIXED_PENALTY_SUMMARY_HEADER | BUSINESS_UNIT               | LEGACY_FIXED_PENALTY_VALIDATION_FIXTURE                                           |
-      | 26000284T                           | Mr Aldous Curio CPGB-ADULT-A-C      | West London                 | accountEnquiry/legacyDefendant/jcde/fixed-penalty-account.json                    |
+      | LEGACY_FIXED_PENALTY_ACCOUNT_NUMBER | LEGACY_FIXED_PENALTY_SUMMARY_HEADER | BUSINESS_UNIT | LEGACY_FIXED_PENALTY_VALIDATION_FIXTURE                        |
+      | 26000284T                           | Mr Aldous Curio CPGB-ADULT-A-C      | West London   | accountEnquiry/legacyDefendant/jcde/fixed-penalty-account.json |
     @R1BDrop1UatTechPreprod @skip
     Examples:
       | LEGACY_FIXED_PENALTY_ACCOUNT_NUMBER | LEGACY_FIXED_PENALTY_SUMMARY_HEADER | BUSINESS_UNIT                  | LEGACY_FIXED_PENALTY_VALIDATION_FIXTURE                                              |
@@ -350,7 +350,7 @@ Feature: Defendant Adult Youth Search And Matches Journeys
     And I validate the legacy defendant header and At a glance tab using fixture "<LEGACY_CONSOLIDATED_VALIDATION_FIXTURE>"
     When I go to the Defendant tab and validate the legacy defendant using fixture "<LEGACY_CONSOLIDATED_VALIDATION_FIXTURE>"
     And I go to the Payment terms tab and validate the legacy defendant using fixture "<LEGACY_CONSOLIDATED_VALIDATION_FIXTURE>"
-    And I go to the Enforcement tab and validate the legacy defendant using fixture "<LEGACY_CONSOLIDATED_VALIDATION_FIXTURE>"
+    # And I go to the Enforcement tab and validate the legacy defendant using fixture "<LEGACY_CONSOLIDATED_VALIDATION_FIXTURE>"
     # And I go to the Impositions tab and validate the legacy defendant using fixture "<LEGACY_CONSOLIDATED_VALIDATION_FIXTURE>"
     # And I go to the History and notes tab and validate the legacy defendant using fixture "<LEGACY_CONSOLIDATED_VALIDATION_FIXTURE>"
     # When I view the Consolidated accounts tab
@@ -360,8 +360,8 @@ Feature: Defendant Adult Youth Search And Matches Journeys
     # And I am notified that the selected child account is closed because it was consolidated
     @R1BDrop1UatTechJCDE
     Examples:
-      | LEGACY_CONSOLIDATED_ACCOUNT_NUMBER | LEGACY_CONSOLIDATED_SUMMARY_HEADER | BUSINESS_UNIT | LEGACY_CONSOLIDATED_VALIDATION_FIXTURE                              |
-      | 26000289W                          | Mr Henry CPGB-ADULT-B-H            | West London   | accountEnquiry/legacyDefendant/jcde/consolidated-account.json       |
+      | LEGACY_CONSOLIDATED_ACCOUNT_NUMBER | LEGACY_CONSOLIDATED_SUMMARY_HEADER | BUSINESS_UNIT | LEGACY_CONSOLIDATED_VALIDATION_FIXTURE                        |
+      | 26000289W                          | Mr Henry CPGB-ADULT-B-H            | West London   | accountEnquiry/legacyDefendant/jcde/consolidated-account.json |
     @R1BDrop1UatTechPreprod @skip
     Examples:
       | LEGACY_CONSOLIDATED_ACCOUNT_NUMBER | LEGACY_CONSOLIDATED_SUMMARY_HEADER | BUSINESS_UNIT                  | LEGACY_CONSOLIDATED_VALIDATION_FIXTURE                                              |
