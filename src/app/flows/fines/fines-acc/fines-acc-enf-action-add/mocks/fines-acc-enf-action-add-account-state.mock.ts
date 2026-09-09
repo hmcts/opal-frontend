@@ -11,4 +11,5 @@ export const FINES_ACC_ENF_ACTION_ADD_ACCOUNT_STATE_MOCK: IFinesAccountState = {
   business_unit_id: '78',
   business_unit_user_id: 'user-1',
   welsh_speaking: 'Y',
+  originator_type: 'TFO',
 };
