@@ -8,7 +8,7 @@ Feature: Minor Creditor View Defendant Account Summary Journeys
   Background:
     Given I clear all approved accounts
 
-  @R1BUatTechJCDE @JIRA-STORY:PO-1917 @JIRA-STORY:PO-6361 @JIRA-EPIC:PO-2234 @JIRA-TEST-KEY:PO-5570
+  @R1BDrop2UatTechJCDE @JIRA-STORY:PO-1917 @JIRA-STORY:PO-6361 @JIRA-EPIC:PO-2234 @JIRA-TEST-KEY:PO-5570
   Scenario: Search for a minor creditor account and view the default account summary
     Given I am logged in with email "opal-test@dev.platform.hmcts.net"
     And a published account exists with an individual minor creditor:
@@ -42,7 +42,7 @@ Feature: Minor Creditor View Defendant Account Summary Journeys
       | Address      | 1 High Street                    |
       | BACS details | Provided                         |
 
-  @R1BUatTechJCDE @JIRA-STORY:PO-8927 @JIRA-EPIC:PO-812
+  @R1BDrop2UatTechJCDE @JIRA-STORY:PO-8927 @JIRA-EPIC:PO-812
   Scenario: Search for a minor creditor account by account number and view the default account summary
     Given I am logged in with email "opal-test@dev.platform.hmcts.net"
     And a published account exists with an individual minor creditor:
@@ -57,3 +57,27 @@ Feature: Minor Creditor View Defendant Account Summary Journeys
     Then I see the Search results page
     When I open the latest matching result from the search results
     Then I should see the account header contains "Minor Creditor Seed AccountSearch{uniqUpper}"
+
+  @R1B @JIRA-STORY:PO-2963 @JIRA-EPIC:PO-2630
+  Scenario: AC1, AC2, AC3 and AC5 - Repayment minor creditor displays only the Paid out header tile
+    Given I am logged in with email "opal-test@dev.platform.hmcts.net"
+    And a published account exists with an individual minor creditor:
+      | prosecutor case reference | PCRMINREP{uniqUpper} |
+      | title                     | Mrs                  |
+      | first name                | Mina                 |
+      | last name                 | Repayment{uniq}      |
+      | address line 1            | 1 High Street        |
+      | postcode                  | MC1 1AA              |
+    And the minor creditor header summary API returns a repayment with paid out value "50"
+    And I am on the Account Search page - Individuals form displayed by default
+    When I view the Minor creditors search form
+    And I search using the following inputs:
+      | minor creditor type  | Individual      |
+      | individual last name | Repayment{uniq} |
+      | first names          | Mina            |
+      | address line 1       | 1 High Street   |
+      | postcode             | MC1 1AA         |
+    Then I see the Search results page
+    When I open the latest matching result from the search results
+    Then the intercepted minor creditor header summary identifies a repayment with paid out value "50"
+    And I should see only the repayment Paid out minor creditor summary metric value "£50.00"

@@ -65,7 +65,7 @@ export class FinesApiProcessAllocateComponent implements OnInit, OnDestroy {
   private getProcessRequestParams(): IOpalFinesInterfaceJobsSummaryParams {
     return {
       business_unit_ids: this.finesApiStore.selectedBusinessUnitIds(),
-      statuses: ['CREATED'],
+      statuses: ['CREATED', 'FAILED'],
       interface_name: 'payments_in',
     };
   }

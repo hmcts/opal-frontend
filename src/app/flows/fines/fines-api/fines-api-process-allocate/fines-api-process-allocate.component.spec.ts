@@ -33,7 +33,7 @@ const PROCESS_JOBS: IOpalFinesInterfaceJobSummary[] = [
     interface_file_id: 1701,
     interface_job_id: 701,
     source: 'NATWEST',
-    status: 'CREATED',
+    status: 'FAILED',
   },
   {
     business_unit_name: 'West London',
@@ -115,7 +115,7 @@ describe('FinesApiProcessAllocateComponent', () => {
     expect(getInterfaceJobsSummary).toHaveBeenCalledOnce();
     expect(getInterfaceJobsSummary).toHaveBeenCalledWith({
       business_unit_ids: [77, 80],
-      statuses: ['CREATED'],
+      statuses: ['CREATED', 'FAILED'],
       interface_name: 'payments_in',
     });
     expect(finesApiStore.processInterfaceJobs()).toEqual(PROCESS_JOBS);

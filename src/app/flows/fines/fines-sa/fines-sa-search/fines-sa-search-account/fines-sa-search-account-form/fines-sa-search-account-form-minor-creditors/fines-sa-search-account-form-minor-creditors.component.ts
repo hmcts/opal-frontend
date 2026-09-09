@@ -20,6 +20,7 @@ import {
   ALPHANUMERIC_WITH_HYPHENS_SPACES_APOSTROPHES_DOT_PATTERN,
   ALPHANUMERIC_WITH_SPACES_PATTERN,
   LETTERS_WITH_SPACES_PATTERN,
+  SINGLE_ASCII_CHARACTERS,
 } from '@hmcts/opal-frontend-common/constants';
 import { patternValidator } from '@hmcts/opal-frontend-common/validators/pattern-validator';
 import {
@@ -37,6 +38,7 @@ const ALPHANUMERIC_WITH_SPACES_PATTERN_VALIDATOR = patternValidator(
   'alphanumericTextPattern',
 );
 const LETTERS_WITH_SPACES_PATTERN_VALIDATOR = patternValidator(LETTERS_WITH_SPACES_PATTERN, 'lettersWithSpacesPattern');
+const SINGLE_ASCII_CHARACTERS_PATTERN_VALIDATOR = patternValidator(SINGLE_ASCII_CHARACTERS, 'singleAsciiCharacters');
 
 /**
  * Nested Minor Creditors sub-form for Search Account.
@@ -124,7 +126,7 @@ export class FinesSaSearchAccountFormMinorCreditorsComponent extends AbstractNes
         ]),
         fsa_search_account_minor_creditors_first_names_exact_match: new FormControl<boolean | null>(null),
         fsa_search_account_minor_creditors_individual_address_line_1: new FormControl<string | null>(null, [
-          ALPHANUMERIC_WITH_SPACES_PATTERN_VALIDATOR,
+          SINGLE_ASCII_CHARACTERS_PATTERN_VALIDATOR,
           Validators.maxLength(30),
         ]),
         fsa_search_account_minor_creditors_individual_post_code: new FormControl<string | null>(null, [
@@ -139,7 +141,7 @@ export class FinesSaSearchAccountFormMinorCreditorsComponent extends AbstractNes
         ]),
         fsa_search_account_minor_creditors_company_name_exact_match: new FormControl<boolean | null>(null),
         fsa_search_account_minor_creditors_company_address_line_1: new FormControl<string | null>(null, [
-          ALPHANUMERIC_WITH_SPACES_PATTERN_VALIDATOR,
+          SINGLE_ASCII_CHARACTERS_PATTERN_VALIDATOR,
           Validators.maxLength(30),
         ]),
         fsa_search_account_minor_creditors_company_post_code: new FormControl<string | null>(null, [

@@ -5,7 +5,7 @@ Feature: Parent Guardian To Pay View Defendant Account Summary
   Background:
     Given I am logged in with email "opal-test@dev.platform.hmcts.net"
     And I clear all approved accounts
-  @JIRA-EPIC:PO-812 @R1B @JIRA-STORY:PO-777 @JIRA-TEST-KEY:PO-5477
+  @JIRA-EPIC:PO-812 @R1BDrop1 @JIRA-STORY:PO-777 @JIRA-TEST-KEY:PO-5477
   Scenario: Complete View Defendant Adult or Youth with Parent Guardian to Pay Account Summary and Comments functionality
     # Create & publish a pgToPay account then view header summary
     Given I create a "pgToPay" draft account with the following details and set status "Publishing Pending" using user "opal-test-10@dev.platform.hmcts.net":
@@ -47,7 +47,7 @@ Feature: Parent Guardian To Pay View Defendant Account Summary
       | Line 2  | Parent Guardian Line2   |
       | Line 3  | Parent Guardian Line3   |
 
-  @R1B @JIRA-STORY:PO-1112 @JIRA-EPIC:PO-812 @JIRA-TEST-KEY:PO-5478
+  @R1BDrop1 @JIRA-STORY:PO-1112 @JIRA-EPIC:PO-812 @JIRA-TEST-KEY:PO-5478
   Scenario: As a user I can view account details of a Parent/Guardian account
     Given I create a "pgToPay" draft account with the following details and set status "Publishing Pending" using user "opal-test-10@dev.platform.hmcts.net":
       | Account_status                          | Submitted                      |
