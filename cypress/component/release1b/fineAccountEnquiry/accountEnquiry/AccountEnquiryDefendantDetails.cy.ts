@@ -143,7 +143,9 @@ describe('Account Enquiry Defendant Details Tab', () => {
 
   it(
     'AC1, AC2, AC3. Transfer-in banner is permanent and accessible',
-    { tags: [...buildTags('@JIRA-STORY:PO-2951'), '@JIRA-TEST-KEY:PO-2951-AXE'] },
+    {
+      tags: [...buildTags('@JIRA-STORY:PO-2951'), '@JIRA-EPIC:PO-2472', '@JIRA-TEST-KEY:PO-2951-AXE'],
+    },
     () => {
       const headerMock = structuredClone(DEFENDANT_HEADER_MOCK);
       headerMock.originator_type = 'TFO';
