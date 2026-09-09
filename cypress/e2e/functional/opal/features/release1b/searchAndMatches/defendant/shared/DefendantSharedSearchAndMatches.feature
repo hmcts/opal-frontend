@@ -8,7 +8,7 @@ Feature: Defendant Shared Search And Matches
     And I am on the Account Search page - Individuals form displayed by default
 
   # PO-706  AC7 Back Button navigates to Search Page
-  @JIRA-EPIC:PO-704 @R1B @JIRA-STORY:PO-706 @JIRA-TEST-KEY:PO-5442
+  @JIRA-EPIC:PO-704 @R1BDrop1 @JIRA-STORY:PO-706 @JIRA-TEST-KEY:PO-5442
   Scenario: Search results back button preserves tab state and form data
     When I search using the following inputs:
       | account number | 12345678A |
@@ -18,7 +18,7 @@ Feature: Defendant Shared Search And Matches
       | account number | 12345678A |
 
   # Need to check that intercepted call should be organisation = true (it wasn't originally)
-  @JIRA-EPIC:PO-704 @R1B @JIRA-STORY:PO-706 @JIRA-TEST-KEY:PO-5443
+  @JIRA-EPIC:PO-704 @R1BDrop1 @JIRA-STORY:PO-706 @JIRA-TEST-KEY:PO-5443
   Scenario: Verify API call parameters for Defenders and Creditor search using Account number
     # AC1a, AC1b, AC1c
     When I intercept the "account number" account search API
@@ -39,7 +39,7 @@ Feature: Defendant Shared Search And Matches
       | active_accounts_only | false                                                                                                                                                                               |
       | creditor             | null                                                                                                                                                                                |
 
-  @JIRA-EPIC:PO-704 @R1B @JIRA-STORY:PO-709 @JIRA-TEST-KEY:PO-5444
+  @JIRA-EPIC:PO-704 @R1BDrop1 @JIRA-STORY:PO-709 @JIRA-TEST-KEY:PO-5444
   Scenario: Verify API call parameters for Defenders and Creditors search using Reference or case number
     # AC1a, AC1b, AC1c
     Given I create a "company" draft account with the following details and set status "Publishing Pending" using user "opal-test-10@dev.platform.hmcts.net":
@@ -88,7 +88,7 @@ Feature: Defendant Shared Search And Matches
     When I return to the Companies search page from the results it is displayed with:
       | reference or case number | PCRAUTO008 |
 
-  @R1B @JIRA-STORY:PO-709
+  @R1BDrop1 @JIRA-STORY:PO-709
   Scenario Outline: Verify search works for all reference types - <reference_type>
     #AC6
     Given I create a "company" draft account with the following details and set status "Publishing Pending" using user "opal-test-10@dev.platform.hmcts.net":
@@ -108,22 +108,22 @@ Feature: Defendant Shared Search And Matches
       | reference or case number | <reference_value> |
     And I see the Companies search results:
       | Ref | <reference_value> |
-    @R1B @JIRA-EPIC:PO-704 @JIRA-TEST-KEY:PO-5445
+    @R1BDrop1 @JIRA-EPIC:PO-704 @JIRA-TEST-KEY:PO-5445
     Examples: Case Number
       | reference_type | reference_field                   | expected_reference_field | reference_value |
       | Case Number    | account.prosecutor_case_reference | case_number              | CN12345         |
 
-    @R1B @JIRA-EPIC:PO-704 @JIRA-TEST-KEY:PO-5446
+    @R1BDrop1 @JIRA-EPIC:PO-704 @JIRA-TEST-KEY:PO-5446
     Examples: Police Reference Number
       | reference_type          | reference_field                   | expected_reference_field | reference_value |
       | Police Reference Number | account.prosecutor_case_reference | police_reference_number  | PRN67890        |
 
-    @R1B @JIRA-EPIC:PO-704 @JIRA-TEST-KEY:PO-5447
+    @R1BDrop1 @JIRA-EPIC:PO-704 @JIRA-TEST-KEY:PO-5447
     Examples: Crown Court Reference
       | reference_type        | reference_field                   | expected_reference_field | reference_value |
       | Crown Court Reference | account.prosecutor_case_reference | crown_court_reference    | CCR98765        |
 
-  @JIRA-EPIC:PO-704 @R1B @JIRA-STORY:PO-709 @JIRA-TEST-KEY:PO-5448
+  @JIRA-EPIC:PO-704 @R1BDrop1 @JIRA-STORY:PO-709 @JIRA-TEST-KEY:PO-5448
   Scenario: Verify that the Reference or Case Number search only returns exact matches
     #AC6a - Return only exact match
     Given I create a "company" draft account with the following details and set status "Publishing Pending" using user "opal-test-10@dev.platform.hmcts.net":
@@ -156,7 +156,7 @@ Feature: Defendant Shared Search And Matches
     And I see the Companies search results exclude:
       | Ref | PCRUNIQ010A |
 
-  @JIRA-EPIC:PO-704 @R1B @JIRA-STORY:PO-709 @JIRA-TEST-KEY:PO-5449
+  @JIRA-EPIC:PO-704 @R1BDrop1 @JIRA-STORY:PO-709 @JIRA-TEST-KEY:PO-5449
   Scenario: Verify that 'Check your search' link returns user to Search for an Account screen after no results found
     And I view the Companies search form
     When I search using the following inputs:

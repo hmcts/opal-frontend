@@ -8,7 +8,7 @@ Feature: Company Account Enquiries View Fixed Penalty Journeys
   Background:
     Given I am logged in with email "opal-test@dev.platform.hmcts.net"
     And I clear all approved accounts
-  @R1BUatTechJCDE @JIRA-STORY:PO-994 @JIRA-STORY:PO-1818 @JIRA-EPIC:PO-812 @JIRA-TEST-KEY:PO-5301
+  @R1BDrop1UatTechJCDE @JIRA-STORY:PO-994 @JIRA-STORY:PO-1818 @JIRA-EPIC:PO-812 @JIRA-TEST-KEY:PO-5301
   Scenario: Search for a vehicle fixed penalty company account and view the vehicle-specific fixed penalty details
     Given a published vehicle fixed penalty company account exists:
       | company name                              | Fixed Penalty Co {uniq}              |

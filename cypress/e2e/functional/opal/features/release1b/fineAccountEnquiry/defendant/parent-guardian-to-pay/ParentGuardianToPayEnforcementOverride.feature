@@ -23,7 +23,7 @@ Feature: Parent Guardian To Pay Enforcement Override
         | account.payment_card_request                    | false                        |
         | account.defendant.dob                           | 2002-05-15                   |
         | account.payment_terms.enforcements[0].result_id | PRIS                         |
-    @R1B @JIRA-STORY:PO-1833 @JIRA-EPIC:PO-1675 @JIRA-LABEL:account-enquiry @JIRA-TEST-KEY:PO-8009
+    @R1BDrop1 @JIRA-STORY:PO-1833 @JIRA-EPIC:PO-1675 @JIRA-LABEL:account-enquiry @JIRA-TEST-KEY:PO-8009
     Scenario: Parent or guardian removing enforcement hold returns to add additional enforcement action
       Given I create a "pgToPay" draft account with the following details and set status "Publishing Pending" using user "opal-test-10@dev.platform.hmcts.net":
         | Account_status                                  | Submitted                        |
@@ -64,7 +64,7 @@ Feature: Parent Guardian To Pay Enforcement Override
         | account.defendant.parent_guardian.dob           | 1980-02-15                       |
         | account.payment_terms.enforcements[0].result_id | PRIS                             |
 
-    @R1B @JIRA-STORY:PO-1866 @JIRA-STORY:PO-1863 @JIRA-EPIC:PO-1675 @JIRA-TEST-KEY:PO-5299
+    @R1BDrop1 @JIRA-STORY:PO-1866 @JIRA-STORY:PO-1863 @JIRA-EPIC:PO-1675 @JIRA-TEST-KEY:PO-5299
     Scenario: Parent or guardian save an enforcement override and return to the Enforcement tab
       When I search for the account by last name "AddEnfOverridePG{uniq}" and open the latest result
       And I go to the Enforcement tab
@@ -98,7 +98,7 @@ Feature: Parent Guardian To Pay Enforcement Override
       Then I should return to the Enforcement tab
       And the enforcement court summary shows the selected value
 
-    @R1B @JIRA-STORY:PO-1833 @JIRA-EPIC:PO-1675 @JIRA-TEST-KEY:PO-8014
+    @R1BDrop1 @JIRA-STORY:PO-1833 @JIRA-EPIC:PO-1675 @JIRA-TEST-KEY:PO-8014
     Scenario: Parent or guardian save an enforcement action that directs to additional enforcement action
       When I search for the account by last name "AddEnfOverridePG{uniq}" and open the latest result
       And I go to the Enforcement tab
