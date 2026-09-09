@@ -33,10 +33,8 @@ import { beforeEach, describe, expect, it, vi } from 'vitest';
 
 import { createSpyObj } from '@app/testing/create-spy-obj.helper';
 import { FINES_MAC_DEFENDANT_TYPES_KEYS } from '../constants/fines-mac-defendant-types-keys';
-import {
-  IFinesMacAddAccountRequestPayload,
-  IFinesMacReplaceAccountRequestPayload,
-} from '../services/fines-mac-payload/interfaces/fines-mac-payload-add-account.interfaces';
+import { IFinesMacAddAccountRequestPayload } from '../services/fines-mac-payload/interfaces/fines-mac-payload-add-account-request.interface';
+import { IFinesMacReplaceAccountRequestPayload } from '../services/fines-mac-payload/interfaces/fines-mac-payload-replace-account-request.interface';
 
 const ADD_ACCOUNT_REQUEST: IFinesMacAddAccountRequestPayload = {
   business_unit_id: FINES_MAC_PAYLOAD_ADD_ACCOUNT.business_unit_id!,

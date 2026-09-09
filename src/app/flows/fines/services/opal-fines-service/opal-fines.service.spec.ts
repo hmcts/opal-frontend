@@ -28,13 +28,11 @@ import { OPAL_FINES_BUSINESS_UNIT_NON_SNAKE_CASE_MOCK } from './mocks/opal-fines
 import { OPAL_FINES_OFFENCE_DATA_NON_SNAKE_CASE_MOCK } from './mocks/opal-fines-offence-data-non-snake-case.mock';
 import { OPAL_FINES_SEARCH_OFFENCES_PARAMS_MOCK } from './mocks/opal-fines-search-offences-params.mock';
 import { OPAL_FINES_SEARCH_OFFENCES_MOCK } from './mocks/opal-fines-search-offences.mock';
-import {
-  IFinesMacAddAccountPayload,
-  IFinesMacAddAccountRequestPayload,
-  IFinesMacReplaceAccountRequestPayload,
-} from '../../fines-mac/services/fines-mac-payload/interfaces/fines-mac-payload-add-account.interfaces';
+import { IFinesMacAddAccountPayload } from '../../fines-mac/services/fines-mac-payload/interfaces/fines-mac-payload-add-account.interfaces';
+import { IFinesMacAddAccountRequestPayload } from '../../fines-mac/services/fines-mac-payload/interfaces/fines-mac-payload-add-account-request.interface';
+import { IFinesMacReplaceAccountRequestPayload } from '../../fines-mac/services/fines-mac-payload/interfaces/fines-mac-payload-replace-account-request.interface';
 import { OPAL_FINES_PATCH_DELETE_ACCOUNT_PAYLOAD_MOCK } from './mocks/opal-fines-patch-delete-account-payload.mock';
-import { OPAL_FINES_DRAFT_ACCOUNTS_PATCH_PAYLOAD } from './mocks/opal-fines-draft-accounts-patch-payload.mock';
+import { OPAL_FINES_DRAFT_ACCOUNTS_PATCH_PAYLOAD_MOCK } from './mocks/opal-fines-draft-accounts-patch-payload.mock';
 import { OPAL_FINES_PROSECUTOR_REF_DATA_MOCK } from './mocks/opal-fines-prosecutor-ref-data.mock';
 import { FINES_ACC_DEFENDANT_DETAILS_HEADER_MOCK } from '../../fines-acc/fines-acc-defendant-details/mocks/fines-acc-defendant-details-header.mock';
 import { OPAL_FINES_ACCOUNT_DEFENDANT_AT_A_GLANCE_MOCK } from './mocks/opal-fines-account-defendant-at-a-glance.mock';
@@ -248,7 +246,7 @@ describe('OpalFines', () => {
   it('should not retry versioned If-Match mutations after transient timeout failures', () => {
     const error = vi.fn();
     const body = buildReplaceRequest(FINES_MAC_PAYLOAD_ADD_ACCOUNT);
-    const draftAccountId = FINES_MAC_PAYLOAD_ADD_ACCOUNT.draft_account_id!;
+    const draftAccountId = 123;
     const version = '1';
     const apiUrl = `${OPAL_FINES_PATHS.draftAccounts}/${draftAccountId}`;
 
@@ -998,7 +996,7 @@ describe('OpalFines', () => {
 
   it('should send a PUT request to update the draft account payload', () => {
     const body = buildReplaceRequest(FINES_MAC_PAYLOAD_ADD_ACCOUNT);
-    const draftAccountId = FINES_MAC_PAYLOAD_ADD_ACCOUNT.draft_account_id!;
+    const draftAccountId = 123;
     const version = FINES_MAC_PAYLOAD_ADD_ACCOUNT.version!;
     const apiUrl = `${OPAL_FINES_PATHS.draftAccounts}/${draftAccountId}`;
 
@@ -1017,7 +1015,7 @@ describe('OpalFines', () => {
 
   it('should send a PATCH request to update the draft account', () => {
     const draftAccountId = 1;
-    const body = OPAL_FINES_DRAFT_ACCOUNTS_PATCH_PAYLOAD;
+    const body = OPAL_FINES_DRAFT_ACCOUNTS_PATCH_PAYLOAD_MOCK;
     const apiUrl = `${OPAL_FINES_PATHS.draftAccounts}/${draftAccountId}`;
 
     const version = '1';

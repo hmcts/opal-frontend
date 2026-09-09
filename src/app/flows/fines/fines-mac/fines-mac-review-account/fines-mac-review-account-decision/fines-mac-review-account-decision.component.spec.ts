@@ -12,7 +12,7 @@ import { FinesMacPayloadService } from '../../services/fines-mac-payload/fines-m
 import { UtilsService } from '@hmcts/opal-frontend-common/services/utils-service';
 import { FinesMacStoreType } from '../../stores/types/fines-mac-store.type';
 import { OPAL_FINES_DRAFT_ADD_ACCOUNT_PAYLOAD_MOCK } from '@services/fines/opal-fines-service/mocks/opal-fines-draft-add-account-payload.mock';
-import { OPAL_FINES_DRAFT_ACCOUNTS_PATCH_PAYLOAD } from '@services/fines/opal-fines-service/mocks/opal-fines-draft-accounts-patch-payload.mock';
+import { OPAL_FINES_DRAFT_ACCOUNTS_PATCH_PAYLOAD_MOCK } from '@services/fines/opal-fines-service/mocks/opal-fines-draft-accounts-patch-payload.mock';
 import { FinesMacStore } from '../../stores/fines-mac.store';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
 
@@ -41,7 +41,7 @@ describe('FinesMacReviewAccountDecisionComponent', () => {
 
     mockFinesMacPayloadService = createSpyObj(FinesMacPayloadService, ['buildPatchAccountPayload', 'getDefendantName']);
     mockFinesMacPayloadService.buildPatchAccountPayload.mockReturnValue(
-      structuredClone(OPAL_FINES_DRAFT_ACCOUNTS_PATCH_PAYLOAD),
+      structuredClone(OPAL_FINES_DRAFT_ACCOUNTS_PATCH_PAYLOAD_MOCK),
     );
 
     await TestBed.configureTestingModule({
@@ -89,7 +89,7 @@ describe('FinesMacReviewAccountDecisionComponent', () => {
     );
     expect(mockOpalFinesService.patchDraftAccountPayload).toHaveBeenCalledWith(
       finesDraftStore.draft_account_id(),
-      OPAL_FINES_DRAFT_ACCOUNTS_PATCH_PAYLOAD,
+      OPAL_FINES_DRAFT_ACCOUNTS_PATCH_PAYLOAD_MOCK,
       finesDraftStore.version(),
     );
     expect(routerSpy).toHaveBeenCalledWith([component['checkAndValidateTabs']], {

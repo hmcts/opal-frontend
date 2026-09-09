@@ -5,11 +5,9 @@ import { finesMacPayloadBuildAccountAccountNotes } from './utils/fines-mac-paylo
 import { IFinesMacPayloadAccount } from './interfaces/fines-mac-payload-account.interface';
 import { FINES_MAC_BUILD_TRANSFORM_ITEMS_CONFIG } from './constants/fines-mac-transform-items-config.constant';
 import { FINES_MAC_MAP_TRANSFORM_ITEMS_CONFIG } from './constants/fines-mac-map-transform-items-config.constant';
-import {
-  IFinesMacAddAccountPayload,
-  IFinesMacAddAccountRequestPayload,
-  IFinesMacReplaceAccountRequestPayload,
-} from './interfaces/fines-mac-payload-add-account.interfaces';
+import { IFinesMacAddAccountPayload } from './interfaces/fines-mac-payload-add-account.interfaces';
+import { IFinesMacAddAccountRequestPayload } from './interfaces/fines-mac-payload-add-account-request.interface';
+import { IFinesMacReplaceAccountRequestPayload } from './interfaces/fines-mac-payload-replace-account-request.interface';
 import { finesMacPayloadBuildAccountOffences } from './utils/fines-mac-payload-build-account/fines-mac-payload-build-account-offences.utils';
 import { FINES_MAC_STATE } from '../../constants/fines-mac-state';
 import { finesMacPayloadMapAccountDefendant } from './utils/fines-mac-payload-map-account/fines-mac-payload-map-account-defendant.utils';
@@ -30,7 +28,7 @@ import { finesMacPayloadBuildAccountFixedPenalty } from './utils/fines-mac-paylo
 import { finesMacPayloadMapAccountFixedPenalty } from './utils/fines-mac-payload-map-account/fines-mac-payload-map-account-fixed-penalty.utils';
 import { IOpalUserState } from '@hmcts/opal-frontend-common/services/opal-user-service/interfaces';
 import { FINES_ACCOUNT_TYPES } from '../../../constants/fines-account-types.constant';
-import { IOpalFinesDraftAccountPatchRequestPayload } from '@services/fines/opal-fines-service/types/opal-fines-draft-account-patch-request-payload.type';
+import { IOpalFinesDraftAccountPatchRequestPayload } from '@services/fines/opal-fines-service/interfaces/opal-fines-draft-account-patch-request-payload.interface';
 
 @Injectable({
   providedIn: 'root',
