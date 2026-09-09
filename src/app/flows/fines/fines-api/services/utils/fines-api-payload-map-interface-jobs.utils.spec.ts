@@ -82,17 +82,16 @@ describe('fines-api-payload-map-interface-jobs utils', () => {
   });
 
   it.each([
-    ['ALLPAY', 'allpay'],
-    ['ALL_PAY', 'allpay'],
     ['NATWEST', 'NatWest'],
+    ['ALLPAY', 'allpay'],
+    ['ALLPAY_DD', 'allpay DD'],
     ['BARCLAYCARD', 'Barclaycard'],
-    ['BRITISH_TELECOM', 'British Telecom'],
-    ['BRITISHTELECOM', 'British Telecom'],
-    ['BT', 'British Telecom'],
-    ['DWP_AEA', 'DWP/AEA'],
-    ['DWP/AEA', 'DWP/AEA'],
+    ['BTECKOH', 'British Telecom'],
     ['DWP', 'DWP/AEA'],
-    ['AEA', 'DWP/AEA'],
+    ['CDER', 'CDER'],
+    ['JACOBS', 'Jacobs'],
+    ['MARSTON', 'Marston'],
+    ['OTHER', 'Other'],
   ])('should display source %s as %s', (source, expectedSource) => {
     const [row] = mapInterfaceJobs([buildInterfaceJob({ source })], dateService);
 
