@@ -1,4 +1,4 @@
-import { CommonModule } from '@angular/common';
+import { CommonModule, DOCUMENT } from '@angular/common';
 import { ChangeDetectionStrategy, Component, OnInit, inject } from '@angular/core';
 import { FormControl } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
@@ -54,6 +54,7 @@ import { FINES_API_SELECT_BUS_CONTENT } from './constants/fines-api-select-bus-c
 })
 export class FinesApiSelectBusComponent implements OnInit {
   private readonly activatedRoute = inject(ActivatedRoute);
+  private readonly document = inject(DOCUMENT);
   private readonly router = inject(Router);
   private readonly utilsService = inject(UtilsService);
   private readonly selectBusinessUnitsErrorMessage = FINES_API_SELECT_BUS_ERRORS.selectAtLeastOneBusinessUnit;
@@ -283,6 +284,15 @@ export class FinesApiSelectBusComponent implements OnInit {
    */
   protected isBusinessUnitSelected(businessUnitId: number): boolean {
     return this.selectedBusinessUnitIds.has(businessUnitId);
+  }
+
+  /**
+   * Moves focus to the field associated with an error summary link.
+   *
+   * @param fieldId - Element ID to focus.
+   */
+  protected scrollTo(fieldId: string): void {
+    this.document.getElementById(fieldId)?.focus();
   }
 
   /**

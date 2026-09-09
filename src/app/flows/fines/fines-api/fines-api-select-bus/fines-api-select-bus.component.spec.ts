@@ -325,6 +325,21 @@ describe('FinesApiSelectBusComponent', () => {
     expect(routerNavigate).not.toHaveBeenCalled();
   });
 
+  it('should focus the select-all checkbox when the error summary link is activated', () => {
+    fixture.detectChanges();
+
+    const nativeElement = fixture.nativeElement as HTMLElement;
+    nativeElement.querySelector<HTMLButtonElement>('#fines-api-select-business-units-continue')!.click();
+    fixture.detectChanges();
+
+    const checkbox = nativeElement.querySelector<HTMLInputElement>('#fines-api-select-business-units')!;
+    const focusSpy = vi.spyOn(checkbox, 'focus');
+    nativeElement.querySelector<HTMLAnchorElement>('.govuk-error-summary__list a')!.click();
+
+    expect(focusSpy).toHaveBeenCalledOnce();
+    expect(document.activeElement).toBe(checkbox);
+  });
+
   it('should clear validation errors and navigate to process allocate when continue is selected with a business unit', () => {
     fixture.detectChanges();
 

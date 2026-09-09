@@ -1,6 +1,9 @@
 <div class="govuk-grid-column-full">
   <h1 class="govuk-heading-l">{{ content.heading }}</h1>
-  <opal-lib-govuk-error-summary [errors]="formErrorSummaryMessage"></opal-lib-govuk-error-summary>
+  <opal-lib-govuk-error-summary
+    [errors]="formErrorSummaryMessage"
+    (errorClick)="scrollTo($event)"
+  ></opal-lib-govuk-error-summary>
 
   <div class="govuk-form-group" [class.govuk-form-group--error]="hasBusinessUnitSelectionError">
     <fieldset

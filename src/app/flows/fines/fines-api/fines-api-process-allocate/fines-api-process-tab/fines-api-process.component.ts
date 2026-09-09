@@ -1,3 +1,4 @@
+import { DOCUMENT } from '@angular/common';
 import { ChangeDetectionStrategy, Component, EventEmitter, Input, Output, inject } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { IAbstractFormBaseFormErrorSummaryMessage } from '@hmcts/opal-frontend-common/components/abstract/interfaces';
@@ -19,6 +20,7 @@ import { IFinesApiProcessData } from './interfaces/fines-api-process-data.interf
 })
 export class FinesApiProcessComponent {
   private readonly activatedRoute = inject(ActivatedRoute);
+  private readonly document = inject(DOCUMENT);
   private readonly router = inject(Router);
   private readonly utilsService = inject(UtilsService);
 
@@ -57,6 +59,11 @@ export class FinesApiProcessComponent {
     if (selectedInterfaceFileIds.length > 0) {
       this.clearFileSelectionError();
     }
+  }
+
+  /** Moves focus to the field associated with an error summary link. */
+  protected scrollTo(fieldId: string): void {
+    this.document.getElementById(fieldId)?.focus();
   }
 
   /** Clears current selections and asks the parent tab shell to reload Process data. */

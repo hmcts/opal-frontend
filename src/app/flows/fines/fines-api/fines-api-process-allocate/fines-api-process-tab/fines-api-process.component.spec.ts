@@ -141,6 +141,21 @@ describe('FinesApiProcessComponent', () => {
     expect(scrollToTop).toHaveBeenCalledOnce();
   });
 
+  it('should focus the file select-all checkbox when the error summary link is activated', () => {
+    render();
+
+    const nativeElement = fixture.nativeElement as HTMLElement;
+    nativeElement.querySelector<HTMLButtonElement>('#fines-api-process-submit')!.click();
+    fixture.detectChanges();
+
+    const checkbox = nativeElement.querySelector<HTMLInputElement>('#fines-api-process-files-select-all-checkbox')!;
+    const focusSpy = vi.spyOn(checkbox, 'focus');
+    nativeElement.querySelector<HTMLAnchorElement>('.govuk-error-summary__list a')!.click();
+
+    expect(focusSpy).toHaveBeenCalledOnce();
+    expect(document.activeElement).toBe(checkbox);
+  });
+
   it('should persist selected interface file IDs, clear validation, and navigate to Confirm Process', () => {
     render();
     component['process']();

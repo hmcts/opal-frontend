@@ -1,5 +1,8 @@
 <div id="fines-api-process-tab-content" class="govuk-grid-column-full">
-  <opal-lib-govuk-error-summary [errors]="formErrorSummaryMessage"></opal-lib-govuk-error-summary>
+  <opal-lib-govuk-error-summary
+    [errors]="formErrorSummaryMessage"
+    (errorClick)="scrollTo($event)"
+  ></opal-lib-govuk-error-summary>
 
   @if (tabData.tableData.length > 0) {
     <h2 id="fines-api-process-files-heading" class="govuk-heading-m">{{ content.heading }}</h2>
