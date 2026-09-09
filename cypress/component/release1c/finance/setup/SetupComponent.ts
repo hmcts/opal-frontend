@@ -6,6 +6,7 @@ import { IOpalUserState } from '@hmcts/opal-frontend-common/services/opal-user-s
 import { OPAL_USER_STATE_MOCK } from '@hmcts/opal-frontend-common/services/opal-user-service/mocks';
 import { SessionService } from '@hmcts/opal-frontend-common/services/session-service';
 import { GlobalStore } from '@hmcts/opal-frontend-common/stores/global';
+import { canDeactivateGuard } from '@hmcts/opal-frontend-common/guards/can-deactivate';
 import { mount } from 'cypress/angular';
 import { NEVER } from 'rxjs';
 import { AppComponent } from 'src/app/app.component';
@@ -17,6 +18,11 @@ import { FINES_ROUTING_PATHS } from 'src/app/flows/fines/routing/constants/fines
 import { SEARCH_PERMISSIONS } from 'src/app/flows/fines/constants/search-permissions.constant';
 import { DashboardComponent } from 'src/app/pages/dashboard/dashboard.component';
 import { FINES_PERMISSIONS } from 'src/app/constants/fines-permissions.constant';
+import { FinesApiComponent } from 'src/app/flows/fines/fines-api/fines-api.component';
+import { FinesApiProcessAllocateComponent } from 'src/app/flows/fines/fines-api/fines-api-process-allocate/fines-api-process-allocate.component';
+import { FinesApiSelectBusComponent } from 'src/app/flows/fines/fines-api/fines-api-select-bus/fines-api-select-bus.component';
+import { FinesApiStore } from 'src/app/flows/fines/fines-api/stores/fines-api.store';
+import { OPAL_FINES_BUSINESS_UNIT_OUTSTANDING_AUTO_PAYMENT_COUNTS_MOCK } from 'src/app/flows/fines/services/opal-fines-service/mocks/opal-fines-business-unit-outstanding-auto-payment-counts.mock';
 
 export type FinanceComponentSetupOptions = {
   dashboardType?: string;
@@ -39,6 +45,24 @@ const FINANCE_COMPONENT_ROUTES: Routes = [
   {
     path: `${FINES_ROUTING_PATHS.root}/${FINES_DASHBOARD_ROUTING_PATHS.root}/:dashboardType`,
     component: DashboardComponent,
+  },
+  {
+    path: [FINES_ROUTING_PATHS.root, FINES_ROUTING_PATHS.children.autoPaymentIn.root].join('/'),
+    component: FinesApiComponent,
+    canDeactivate: [canDeactivateGuard],
+    children: [
+      {
+        path: FINES_ROUTING_PATHS.children.autoPaymentIn.children.selectBusinessUnits,
+        component: FinesApiSelectBusComponent,
+        data: {
+          businessUnitCounts: OPAL_FINES_BUSINESS_UNIT_OUTSTANDING_AUTO_PAYMENT_COUNTS_MOCK,
+        },
+      },
+      {
+        path: FINES_ROUTING_PATHS.children.autoPaymentIn.children.processAllocate,
+        component: FinesApiProcessAllocateComponent,
+      },
+    ],
   },
 ];
 
@@ -118,6 +142,10 @@ export const setupFinancePageComponent = ({
       ],
     }).then(({ fixture }) => {
       const router = fixture.componentRef.injector.get(Router);
+      const finesApiStore = fixture.componentRef.injector.get(FinesApiStore);
+      cy.wrap(router).as('financeRouter');
+      cy.wrap(finesApiStore).as('finesApiStore');
+
       return router
         .navigate(['/', FINES_ROUTING_PATHS.root, FINES_DASHBOARD_ROUTING_PATHS.root, dashboardType])
         .then((navigationSucceeded) => {
