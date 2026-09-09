@@ -188,6 +188,7 @@ export class FinesApiSelectBusComponent implements OnInit {
       'businessUnitCounts'
     ] as IOpalFinesBusinessUnitOutstandingAutoPaymentCounts | null;
     this.businessUnits = Array.isArray(resolverData?.business_units) ? resolverData.business_units : [];
+    this.finesApiStore.setAvailableBusinessUnits(this.businessUnits);
   }
 
   /**

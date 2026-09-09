@@ -1,5 +1,6 @@
 import { computed } from '@angular/core';
 import { patchState, signalStore, withComputed, withHooks, withMethods, withState } from '@ngrx/signals';
+import { IOpalFinesBusinessUnitOutstandingAutoPaymentCount } from '@services/fines/opal-fines-service/interfaces/opal-fines-business-unit-outstanding-auto-payment-count.interface';
 import { IOpalFinesInterfaceJobSummary } from '@services/fines/opal-fines-service/interfaces/opal-fines-interface-job-summary.interface';
 import { FINES_API_PROCESS_ALLOCATE_TABS_KEYS } from '../fines-api-process-allocate/constants/fines-api-process-allocate-tabs-keys.constant';
 import { TFinesApiProcessAllocateTabKey } from '../fines-api-process-allocate/types/fines-api-process-allocate-tab-key.type';
@@ -8,6 +9,7 @@ import { IFinesApiState } from './interfaces/fines-api-state.interface';
 
 const getFinesApiState = (): IFinesApiState => ({
   ...FINES_API_STATE,
+  availableBusinessUnits: FINES_API_STATE.availableBusinessUnits.map((businessUnit) => ({ ...businessUnit })),
   selectedBusinessUnitIds: [...FINES_API_STATE.selectedBusinessUnitIds],
   selectedFileIds: [...FINES_API_STATE.selectedFileIds],
   overrideInhibitFileIds: [...FINES_API_STATE.overrideInhibitFileIds],
@@ -51,6 +53,11 @@ export const FinesApiStore = signalStore(
     ),
   })),
   withMethods((store) => ({
+    setAvailableBusinessUnits: (availableBusinessUnits: IOpalFinesBusinessUnitOutstandingAutoPaymentCount[]) => {
+      patchState(store, {
+        availableBusinessUnits: availableBusinessUnits.map((businessUnit) => ({ ...businessUnit })),
+      });
+    },
     setSelectedBusinessUnitIds: (selectedBusinessUnitIds: number[]) => {
       const businessUnitsChanged = haveSelectedBusinessUnitsChanged(
         store.selectedBusinessUnitIds(),

@@ -1,6 +1,160 @@
-<div class="govuk-grid-row">
-  <div class="govuk-grid-column-two-thirds">
-    <h1 class="govuk-heading-l">{{ content.heading }}</h1>
-    <p class="govuk-body">{{ content.description }}</p>
+<div id="fines-api-confirm-process-page" class="govuk-grid-column-two-thirds">
+  <h1 id="fines-api-confirm-process-heading" class="govuk-heading-l">{{ content.heading }}</h1>
+  <p
+    id="fines-api-confirm-process-selection-count"
+    class="govuk-body"
+    role="status"
+    aria-live="polite"
+    aria-atomic="true"
+  >
+    {{ content.selectedFiles(selectedFilesCount, selectedInterfaceJobs.length) }}
+  </p>
+
+  <opal-lib-govuk-table
+    id="fines-api-confirm-process-business-units"
+    [caption]="content.totalFilesCaption"
+    captionClasses="govuk-table__caption--m"
+  >
+    <ng-container head>
+      <th opal-lib-govuk-table-heading id="fines-api-confirm-process-business-unit-heading">
+        {{ content.totalFilesColumns.businessUnit }}
+      </th>
+      <th
+        opal-lib-govuk-table-heading
+        id="fines-api-confirm-process-file-count-heading"
+        class="govuk-table__header--numeric"
+      >
+        {{ content.totalFilesColumns.files }}
+      </th>
+    </ng-container>
+
+    <ng-container body>
+      @for (businessUnit of businessUnitSummary; track businessUnit.businessUnitId) {
+        <tr opal-lib-govuk-table-body-row>
+          <td
+            opal-lib-govuk-table-body-row-data
+            [id]="'fines-api-confirm-process-business-unit-' + businessUnit.businessUnitId"
+          >
+            {{ businessUnit.businessUnitName }}
+          </td>
+          <td
+            opal-lib-govuk-table-body-row-data
+            [id]="'fines-api-confirm-process-file-count-' + businessUnit.businessUnitId"
+            class="govuk-table__cell--numeric"
+          >
+            {{ businessUnit.fileCount }}
+          </td>
+        </tr>
+      }
+    </ng-container>
+  </opal-lib-govuk-table>
+
+  @if (dwpAeaInterfaceJobs.length > 0) {
+    <section id="fines-api-confirm-process-override-inhibits" aria-labelledby="override-inhibits-heading">
+      <h2 id="override-inhibits-heading" class="govuk-heading-m">{{ content.overrideInhibitsHeading }}</h2>
+      <p id="fines-api-confirm-process-override-inhibits-hint" class="govuk-hint">
+        {{ content.overrideInhibitsHint }}
+      </p>
+
+      <opal-lib-govuk-table [caption]="content.overrideInhibitsCaption" captionClasses="govuk-visually-hidden">
+        <ng-container head>
+          <th opal-lib-govuk-table-heading id="fines-api-confirm-process-override-inhibits-select-heading">
+            <span class="govuk-visually-hidden">{{ content.overrideInhibitsColumns.select }}</span>
+            <opal-lib-govuk-checkboxes
+              fieldSetId="fines-api-confirm-process-override-inhibits-select-all-group"
+              checkboxClasses=""
+              [legendText]="content.selectAllOverrideInhibits"
+              legendClasses="govuk-!-margin-0 govuk-visually-hidden"
+            >
+              <div
+                class="govuk-checkboxes--small"
+                opal-lib-govuk-checkboxes-item
+                opalLibMojMultiSelectHead
+                [control]="selectAllOverrideInhibitsControl"
+                inputId="fines-api-confirm-process-override-inhibits-select-all"
+                inputName="fines-api-confirm-process-override-inhibits-select-all"
+                labelText=""
+                labelClasses="govuk-!-padding-0"
+                [ariaLabel]="content.selectAllOverrideInhibits"
+                [selectAllIndeterminate]="someOverrideInhibitsSelected"
+                (toggleAll)="toggleAllOverrideInhibits($event)"
+              ></div>
+            </opal-lib-govuk-checkboxes>
+          </th>
+          <th opal-lib-govuk-table-heading id="fines-api-confirm-process-override-inhibits-file-heading">
+            {{ content.overrideInhibitsColumns.file }}
+          </th>
+          <th opal-lib-govuk-table-heading id="fines-api-confirm-process-override-inhibits-business-unit-heading">
+            {{ content.overrideInhibitsColumns.businessUnit }}
+          </th>
+        </ng-container>
+
+        <ng-container body>
+          @for (interfaceJob of dwpAeaInterfaceJobs; track interfaceJob.interface_file_id) {
+            <tr
+              opal-lib-govuk-table-body-row
+              [bodyRowClasses]="
+                overrideInhibitFileIds.has(getInterfaceFileId(interfaceJob)) ? 'govuk-table__row--selected' : ''
+              "
+            >
+              <td
+                opal-lib-govuk-table-body-row-data
+                [id]="'fines-api-confirm-process-override-inhibits-select-' + interfaceJob.interface_file_id"
+              >
+                <opal-lib-govuk-checkboxes
+                  [fieldSetId]="
+                    'fines-api-confirm-process-override-inhibits-' + interfaceJob.interface_file_id + '-group'
+                  "
+                  checkboxClasses=""
+                  [legendText]="content.overrideInhibitsForFile(interfaceJob.file_name)"
+                  legendClasses="govuk-!-margin-0 govuk-visually-hidden"
+                >
+                  <div
+                    class="govuk-checkboxes--small"
+                    opal-lib-govuk-checkboxes-item
+                    opalLibMojMultiSelectBody
+                    [control]="getOverrideInhibitControl(interfaceJob)"
+                    [inputId]="'fines-api-confirm-process-override-inhibits-' + interfaceJob.interface_file_id"
+                    [inputName]="'fines-api-confirm-process-override-inhibits-' + interfaceJob.interface_file_id"
+                    labelText=""
+                    labelClasses="govuk-!-padding-0"
+                    [rowId]="getInterfaceFileId(interfaceJob)"
+                    [ariaLabel]="content.overrideInhibitsForFile(interfaceJob.file_name)"
+                    (selectionChange)="toggleOverrideInhibits($event)"
+                  ></div>
+                </opal-lib-govuk-checkboxes>
+              </td>
+              <td
+                opal-lib-govuk-table-body-row-data
+                [id]="'fines-api-confirm-process-override-inhibits-file-' + interfaceJob.interface_file_id"
+              >
+                {{ interfaceJob.file_name }}
+              </td>
+              <td
+                opal-lib-govuk-table-body-row-data
+                [id]="'fines-api-confirm-process-override-inhibits-business-unit-' + interfaceJob.interface_file_id"
+              >
+                {{ interfaceJob.business_unit_name }}
+              </td>
+            </tr>
+          }
+        </ng-container>
+      </opal-lib-govuk-table>
+    </section>
+  }
+
+  <div class="govuk-button-group govuk-!-margin-top-6 govuk-!-margin-bottom-7">
+    <button
+      id="fines-api-confirm-process-submit"
+      class="govuk-button"
+      type="button"
+      [disabled]="isProcessing()"
+      (click)="process()"
+    >
+      {{ content.processButton }}
+    </button>
+    @if (!isProcessing()) {
+      <opal-lib-govuk-cancel-link (linkClickEvent)="cancel()"></opal-lib-govuk-cancel-link>
+    }
   </div>
 </div>
