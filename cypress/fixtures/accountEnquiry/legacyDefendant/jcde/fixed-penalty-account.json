@@ -25,7 +25,7 @@
       "pay by date": "28 February 2030"
     },
     "enforcementStatus": {
-      "status": "NO COLLECTION ORDER",
+      "collection order": "NO COLLECTION ORDER",
       "days in default": "200 days",
       "date of last movement": "02 June 2026"
     },
