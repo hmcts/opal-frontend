@@ -27,7 +27,7 @@ Feature: Minor Creditor Account Enquiries View Details Accessibility
       When I open the latest matching result from the search results
       And I go to the Creditor tab
 
-    @R1B @JIRA-STORY:PO-1984 @JIRA-EPIC:PO-1285 @JIRA-TEST-KEY:PO-7556
+    @R1BDrop2 @JIRA-STORY:PO-1984 @JIRA-EPIC:PO-1285 @JIRA-TEST-KEY:PO-7556
     Scenario: Amend minor creditor details form and validation summary states are accessible
       When I view the amend minor creditor details form
       # Check accessibility on the amend minor creditor form
@@ -38,7 +38,7 @@ Feature: Minor Creditor Account Enquiries View Details Accessibility
       And I should see the minor creditor amend error summary contains "Enter minor creditor’s first name"
       And I check the page for accessibility
 
-    @R1B @JIRA-STORY:PO-2640 @JIRA-EPIC:PO-2653 @JIRA-TEST-KEY:PO-10023
+    @R1BDrop2 @JIRA-STORY:PO-2640 @JIRA-EPIC:PO-2653 @JIRA-TEST-KEY:PO-10023
     Scenario: History and notes tab is accessible
       Given the History and notes API is stubbed with standard tab data
       When I go to the History and notes tab
