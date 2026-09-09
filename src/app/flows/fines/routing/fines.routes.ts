@@ -7,6 +7,7 @@ import { routing as aecRouting } from '../fines-aec/routing/fines-aec.routes';
 import { routing as consolidationRouting } from '../fines-con/routing/fines-con.routes';
 import { routing as reportingRouting } from '../fines-reports/routing/fines-reports.routes';
 import { routing as manualCashInputRouting } from '../fines-mci/routing/fines-mci.routes';
+import { routing as financeRouting } from '../fines-finance/routing/fines-finance.routes';
 import { FINES_ROUTING_PATHS } from '@routing/fines/constants/fines-routing-paths.constant';
 import { authGuard } from '@hmcts/opal-frontend-common/guards/auth';
 import { canDeactivateGuard } from '@hmcts/opal-frontend-common/guards/can-deactivate';
@@ -179,6 +180,15 @@ export const finesRouting: Routes = [
         canActivate: [authGuard, finesSectionPermissionsGuard],
         data: {
           sectionKey: FINES_DASHBOARD_ROUTING_PATHS.children.administration,
+        },
+      },
+      {
+        path: FINES_ROUTING_PATHS.children.finance.root,
+        loadComponent: () => import('../fines-finance/fines-finance.component').then((c) => c.FinesFinanceComponent),
+        children: financeRouting,
+        canActivate: [authGuard, finesSectionPermissionsGuard],
+        data: {
+          sectionKey: FINES_DASHBOARD_ROUTING_PATHS.children.finance,
         },
       },
     ],

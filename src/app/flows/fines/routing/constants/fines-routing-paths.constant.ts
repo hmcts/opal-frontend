@@ -8,6 +8,7 @@ import { FINES_DASHBOARD_ROUTING_PATHS } from '../../constants/fines-dashboard-r
 import { FINES_REPORTS_ROUTING_PATHS } from '../../fines-reports/routing/constants/fines-reports-routing-paths.constant';
 import { FINES_MCI_ROUTING_PATHS } from '../../fines-mci/routing/constants/fines-mci-routing-paths.constant';
 import { FINES_AEC_ROUTING_PATHS } from '../../fines-aec/routing/fines-aec-routing-paths.constant';
+import { FINES_FINANCE_ROUTING_PATHS } from '../../fines-finance/routing/fines-finance-routing-paths.constant';
 
 export const FINES_ROUTING_PATHS: IFinesRoutingPaths = {
   root: 'fines',
@@ -21,5 +22,6 @@ export const FINES_ROUTING_PATHS: IFinesRoutingPaths = {
     con: FINES_CON_ROUTING_PATHS,
     reports: FINES_REPORTS_ROUTING_PATHS,
     aec: FINES_AEC_ROUTING_PATHS,
+    finance: FINES_FINANCE_ROUTING_PATHS,
   },
 };

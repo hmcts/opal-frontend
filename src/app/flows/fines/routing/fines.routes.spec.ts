@@ -11,6 +11,7 @@ import {
 import { finesSectionPermissionsGuard } from './guards/fines-section-permissions/fines-section-permissions.guard';
 import { dashboardTypeGuard } from './guards/dashboard-type/dashboard-type.guard';
 import { PRIMARY_NAV_HIDDEN_ROUTE_DATA } from '@app/constants/route-data.constant';
+import { routing as finesFinanceRouting } from '../fines-finance/routing/fines-finance.routes';
 import { authGuard } from '@hmcts/opal-frontend-common/guards/auth';
 import { routing as aecRouting } from '../fines-aec/routing/fines-aec.routes';
 import {
@@ -166,6 +167,16 @@ describe('fines routes', () => {
     expect(autoEnforcementRoute?.canActivate).toContain(finesSectionPermissionsGuard);
     expect(autoEnforcementRoute?.data).toEqual({
       sectionKey: FINES_DASHBOARD_ROUTING_PATHS.children.administration,
+    });
+  });
+
+  it('should add Finance as a Finance section entry route', () => {
+    const financeRoute = childRoutes.find((route) => route.path === FINES_ROUTING_PATHS.children.finance.root);
+
+    expect(financeRoute?.children).toBe(finesFinanceRouting);
+    expect(financeRoute?.canActivate).toEqual([authGuard, finesSectionPermissionsGuard]);
+    expect(financeRoute?.data).toEqual({
+      sectionKey: FINES_DASHBOARD_ROUTING_PATHS.children.finance,
     });
   });
 });
