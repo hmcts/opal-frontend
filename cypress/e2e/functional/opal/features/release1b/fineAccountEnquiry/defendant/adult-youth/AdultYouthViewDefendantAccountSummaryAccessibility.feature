@@ -6,7 +6,7 @@ Feature: Adult Youth View Defendant Account Summary Accessibility
     Given I am logged in with email "opal-test@dev.platform.hmcts.net"
     And I clear all approved accounts
 
-  @R1B @JIRA-STORY:PO-777 @JIRA-EPIC:PO-2472 @JIRA-TEST-KEY:PO-5571
+  @R1BDrop1 @JIRA-STORY:PO-777 @JIRA-EPIC:PO-2472 @JIRA-TEST-KEY:PO-5571
   Scenario: Complete View Defendant Account Adult or Youth Summary and Comments functionality Accessibility
     # Create & publish an individual (adultOrYouthOnly) account then check accessibility
     Given I create a "adultOrYouthOnly" draft account with the following details and set status "Publishing Pending" using user "opal-test-10@dev.platform.hmcts.net":
@@ -36,7 +36,7 @@ Feature: Adult Youth View Defendant Account Summary Accessibility
       | Line 3  | Line3 Test   |
     Then I check the page for accessibility
 
-  @R1B @JIRA-STORY:PO-2673 @JIRA-EPIC:PO-2673 @JIRA-TEST-KEY:PO-2675 @skip @JIRA-DEFECT:PO-9657
+  @R1BDrop1 @JIRA-STORY:PO-2673 @JIRA-EPIC:PO-2673 @JIRA-TEST-KEY:PO-2675 @skip @JIRA-DEFECT:PO-9657
   Scenario: Account details reflows without horizontal overflow at narrow viewport
     Given I create a "adultOrYouthOnly" draft account with the following details and set status "Publishing Pending" using user "opal-test-10@dev.platform.hmcts.net":
       | Account_status                          | Submitted                            |

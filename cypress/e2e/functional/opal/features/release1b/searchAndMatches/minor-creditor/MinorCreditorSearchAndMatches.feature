@@ -7,7 +7,7 @@ Feature: Minor Creditor Search And Matches
     Given I am logged in with email "opal-test@dev.platform.hmcts.net"
     And I am on the Account Search page - Individuals form displayed by default
 
-  @JIRA-EPIC:PO-704 @R1B @JIRA-STORY:PO-715 @JIRA-TEST-KEY:PO-5420 @JIRA-NFR:PO-2549
+  @JIRA-EPIC:PO-704 @R1BDrop2 @JIRA-STORY:PO-715 @JIRA-TEST-KEY:PO-5420 @JIRA-NFR:PO-2549
   Scenario: Minor creditors Individual validation message on empty submit
     #PO-715 - AC5, AC5a
     When I view the Minor creditors search form
@@ -16,7 +16,7 @@ Feature: Minor Creditor Search And Matches
     Then the search remains on the Minor creditors form - no navigation
     And I see "Enter minor creditor first name, last name, address or postcode" validation message for a minor creditor "individual"
 
-  @JIRA-EPIC:PO-704 @R1B @JIRA-STORY:PO-715 @JIRA-TEST-KEY:PO-5421 @JIRA-NFR:PO-2549
+  @JIRA-EPIC:PO-704 @R1BDrop2 @JIRA-STORY:PO-715 @JIRA-TEST-KEY:PO-5421 @JIRA-NFR:PO-2549
   Scenario: Minor creditors Company validation message on empty submit
     #PO-715 - AC5b
     When I view the Minor creditors search form
@@ -25,7 +25,7 @@ Feature: Minor Creditor Search And Matches
     Then the search remains on the Minor creditors form - no navigation
     And I see "Enter minor creditor company name or address" validation message for a minor creditor "company"
 
-  @JIRA-EPIC:PO-704 @R1B @JIRA-STORY:PO-715 @JIRA-TEST-KEY:PO-5424
+  @JIRA-EPIC:PO-704 @R1BDrop2 @JIRA-STORY:PO-715 @JIRA-TEST-KEY:PO-5424
   Scenario: Switching tabs clears Minor creditors data (Individual and Company)
     #PO-715 - AC10
     When I prepare a Minor creditors search for type "Individual" - sample details provided
@@ -37,7 +37,7 @@ Feature: Minor Creditor Search And Matches
 
   @JIRA-EPIC:PO-704 @JIRA-STORY:PO-715
   #- AC5i.
-  @R1B @JIRA-TEST-KEY:PO-5432
+  @R1BDrop2 @JIRA-TEST-KEY:PO-5432
   Scenario: Error when all 3 sections contain data on Minor creditors (Company)
     And I view the Minor Creditors search form
     When I search using the following inputs:
@@ -73,22 +73,22 @@ Feature: Minor Creditor Search And Matches
       | account number           | <accountNumber> |
       | reference or case number | <reference>     |
       | company name             | <companyName>   |
-    @R1B @JIRA-EPIC:PO-704 @JIRA-TEST-KEY:PO-5433
+    @R1BDrop2 @JIRA-EPIC:PO-704 @JIRA-TEST-KEY:PO-5433
     Examples: Account number, reference, and company name
       | validation_case                             | accountNumber | reference | companyName |
       | Account number, reference, and company name | 12345678      | REF-123   | CompanyOne  |
 
-    @R1B @JIRA-EPIC:PO-704 @JIRA-TEST-KEY:PO-5434
+    @R1BDrop2 @JIRA-EPIC:PO-704 @JIRA-TEST-KEY:PO-5434
     Examples: Account number and company name
       | validation_case                 | accountNumber | reference | companyName |
       | Account number and company name | 12345678      |           | CompanyOne  |
 
-    @R1B @JIRA-EPIC:PO-704 @JIRA-TEST-KEY:PO-5435
+    @R1BDrop2 @JIRA-EPIC:PO-704 @JIRA-TEST-KEY:PO-5435
     Examples: Reference and company name
       | validation_case            | accountNumber | reference | companyName |
       | Reference and company name |               | REF-123   | CompanyOne  |
 
-  @JIRA-EPIC:PO-704 @R1B @JIRA-STORY:PO-715 @JIRA-TEST-KEY:PO-5436 @JIRA-NFR:PO-2549
+  @JIRA-EPIC:PO-704 @R1BDrop2 @JIRA-STORY:PO-715 @JIRA-TEST-KEY:PO-5436 @JIRA-NFR:PO-2549
   Scenario: Minor creditors - company type displays validation message when name, address and postcode are missing
     # AC5a
     And I view the Minor Creditors search form
@@ -99,7 +99,7 @@ Feature: Minor Creditor Search And Matches
 
   @JIRA-EPIC:PO-704 @JIRA-STORY:PO-715
   # AC8.
-  @R1B @JIRA-TEST-KEY:PO-5437 @JIRA-NFR:PO-2549
+  @R1BDrop2 @JIRA-TEST-KEY:PO-5437 @JIRA-NFR:PO-2549
   Scenario: Minor creditors - individual first name only triggers last name required
     And I view the Minor Creditors search form
     When I search using the following inputs:
@@ -108,7 +108,7 @@ Feature: Minor Creditor Search And Matches
     Then the search remains on the Minor creditors form - no navigation
     And I see "Enter last name" validation message for a minor creditor "individual"
 
-  @JIRA-EPIC:PO-704 @R1B @JIRA-STORY:PO-708 @JIRA-TEST-KEY:PO-5441
+  @JIRA-EPIC:PO-704 @R1BDrop2 @JIRA-STORY:PO-708 @JIRA-TEST-KEY:PO-5441
   Scenario: Successful Search For Minor Creditor Accounts
     And I view the Minor Creditors search form
     When I search using the following inputs:
@@ -121,7 +121,7 @@ Feature: Minor Creditor Search And Matches
       | minor creditor type  | Individual |
       | individual last name | Graham     |
 
-  @JIRA-EPIC:PO-704 @R1B @JIRA-STORY:PO-708 @JIRA-TEST-KEY:PO-5456
+  @JIRA-EPIC:PO-704 @R1BDrop2 @JIRA-STORY:PO-708 @JIRA-TEST-KEY:PO-5456
   Scenario: Verify API call parameters for Minor Creditor search - Individual
     #AC1
     And I view the Minor Creditors search form
@@ -143,7 +143,7 @@ Feature: Minor Creditor Search And Matches
       | address_line_1                | 123 Test Street |
       | postcode                      | SW1A 1AA        |
 
-  @JIRA-EPIC:PO-704 @R1B @JIRA-STORY:PO-708 @JIRA-TEST-KEY:PO-5457
+  @JIRA-EPIC:PO-704 @R1BDrop2 @JIRA-STORY:PO-708 @JIRA-TEST-KEY:PO-5457
   Scenario: Verify API call parameters for Minor Creditor search - Individual with only last name populated
     #AC1
     And I view the Minor Creditors search form
@@ -162,7 +162,7 @@ Feature: Minor Creditor Search And Matches
       | exact_match_surname           | null     |
       | exact_match_forenames         | null     |
 
-  @JIRA-EPIC:PO-704 @R1B @JIRA-STORY:PO-708 @JIRA-TEST-KEY:PO-5458
+  @JIRA-EPIC:PO-704 @R1BDrop2 @JIRA-STORY:PO-708 @JIRA-TEST-KEY:PO-5458
   Scenario: Verify API call parameters for Minor Creditor search - Company
     #AC1
     And I view the Minor Creditors search form

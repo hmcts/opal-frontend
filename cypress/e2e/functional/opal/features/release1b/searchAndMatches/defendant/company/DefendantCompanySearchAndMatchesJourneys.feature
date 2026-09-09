@@ -9,7 +9,7 @@ Feature: Defendant Company Search And Matches Journeys
     Given I am logged in with email "opal-test@dev.platform.hmcts.net"
     And I clear all approved accounts
 
-  @R1BUatTechJCDE @JIRA-STORY:PO-712 @JIRA-STORY:PO-706 @JIRA-STORY:PO-707 @JIRA-EPIC:PO-704 @JIRA-TEST-KEY:PO-5291
+  @R1BDrop1UatTechJCDE @JIRA-STORY:PO-712 @JIRA-STORY:PO-706 @JIRA-STORY:PO-707 @JIRA-EPIC:PO-704 @JIRA-TEST-KEY:PO-5291
   Scenario: Search for a company defendant account and open the matching record
     Given I create a "company" draft account with the following details and set status "Publishing Pending" using user "opal-test-10@dev.platform.hmcts.net":
       | Account_status                      | Submitted                 |
@@ -34,32 +34,31 @@ Feature: Defendant Company Search And Matches Journeys
     When I open the latest matching result from the search results
     Then I should see the account header contains "Journey Co {uniq}"
 
-  # Legacy-data scenarios are scaffolds.
-  # Replace the LEGACY_* placeholders with real seeded data values before executing them.
-
   @LegacyData @JIRA-STORY:PO-712 @JIRA-STORY:PO-706 @JIRA-STORY:PO-707 @JIRA-EPIC:PO-704
-  # Minimum data set required: one company defendant account with company name LEGACY_COMPANY_NAME, prosecutor case reference LEGACY_COMPANY_REFERENCE, and account header text LEGACY_COMPANY_HEADER.
-  Scenario: Search for a company defendant account from legacy data and open the matching record
+  # Minimum data set required: one company defendant account with searchable company name LEGACY_COMPANY_NAME, account number LEGACY_COMPANY_ACCOUNT_NUMBER, and a populated validation fixture LEGACY_COMPANY_VALIDATION_FIXTURE.
+  Scenario Outline: Search for a company defendant account from legacy data and open the matching record
     Given I am on the Account Search page - Individuals form displayed by default
     When I view the Companies search form
     And I search using the following inputs:
       | company name | <LEGACY_COMPANY_NAME> |
-    Then I see the Search results page
-    And I see the Companies search results:
+    Then I see the Companies search results by tab switch:
       | Account | <LEGACY_COMPANY_ACCOUNT_NUMBER> |
-    When I open the latest matching result from the search results
-    Then I should see the account header contains "<LEGACY_COMPANY_NAME>"
-    @R1BUatTechJCDE @JIRA-TEST-KEY:PO-10325
+    When I open the latest matching result from the Companies search results
+    Then I should see the account header contains "<LEGACY_COMPANY_HEADER>"
+    And I validate the legacy company header and At a glance tab using fixture "<LEGACY_COMPANY_VALIDATION_FIXTURE>"
+    When I go to the Defendant tab and validate the legacy company using fixture "<LEGACY_COMPANY_VALIDATION_FIXTURE>"
+    And I go to the Payment terms tab and validate the legacy company using fixture "<LEGACY_COMPANY_VALIDATION_FIXTURE>"
+    @R1BDrop1UatTechJCDE @JIRA-TEST-KEY:PO-10325
     Examples:
-      | LEGACY_COMPANY_NAME | LEGACY_COMPANY_ACCOUNT_NUMBER |
-      | OPALTEST            | 26000471W                     |
-    @R1BUatTechPreprod @skip
+      | LEGACY_COMPANY_NAME | LEGACY_COMPANY_ACCOUNT_NUMBER | LEGACY_COMPANY_HEADER | LEGACY_COMPANY_VALIDATION_FIXTURE               |
+      | OPALTEST            | 26000471W                     | OPALTEST              | accountEnquiry/legacyCompany/jcde/opaltest.json |
+    @R1BDrop1UatTechPreprod @skip
     Examples:
-      | LEGACY_COMPANY_NAME | LEGACY_COMPANY_REFERENCE |
-      | Journey Co          | PCRJRNYCO1234            |
+      | LEGACY_COMPANY_NAME      | LEGACY_COMPANY_ACCOUNT_NUMBER | LEGACY_COMPANY_HEADER   | LEGACY_COMPANY_VALIDATION_FIXTURE                          |
+      | TEMPLATE_PREPROD_COMPANY | TEMPLATE_PREPROD_ACCOUNT      | TEMPLATE_PREPROD_HEADER | accountEnquiry/legacyCompany/preprod/company-template.json |
 
   @LegacyData @JIRA-STORY:PO-712 @JIRA-STORY:PO-706 @JIRA-STORY:PO-707 @JIRA-EPIC:PO-704 @JIRA-DEFECT:PO-10245
-  Scenario: Search for a company defendant account from legacy data and validate the matching record
+  Scenario Outline: Search for a company defendant account from legacy data and validate the matching record
     Given I am on the Account Search page - Individuals form displayed by default
     When I view the Companies search form
     And I search using the following inputs:
@@ -76,11 +75,11 @@ Feature: Defendant Company Search And Matches Journeys
       | Balance        | <LEGACY_COMPANY_BALANCE>        |
     When I open the latest matching result from the search results
     Then I should see the account header contains "<LEGACY_COMPANY_NAME>"
-    @R1BUatTechJCDE @JIRA-TEST-KEY:PO-10326
+    @R1BDrop1UatTechJCDE @JIRA-TEST-KEY:PO-10326
     Examples:
       | LEGACY_COMPANY_ACCOUNT_NUMBER | LEGACY_COMPANY_NAME         | LEGACY_COMPANY_ALIASES                                                                              | LEGACY_COMPANY_ADR_LINE_1 | LEGACY_COMPANY_POSTCODE | BUSINESS_UNIT | LEGACY_COMPANY_REF    | LEGACY_COMPANY_ENF | LEGACY_COMPANY_BALANCE |
       | 24000050E                     | Company A Chocolate Limited | The Alias Company A The Alias Company B The Alias Company C The Alias Company D The Alias Company E | Company address line 001  | EN51 1RL                | West London   | CA-Company-Master1-1A | NOENF              | -£600.01               |
-    @R1BUatTechPreprod @skip
+    @R1BDrop1UatTechPreprod @skip
     Examples:
       | LEGACY_COMPANY_ACCOUNT_NUMBER | LEGACY_COMPANY_NAME | LEGACY_COMPANY_ALIASES | LEGACY_COMPANY_ADR_LINE_1 | LEGACY_COMPANY_POSTCODE | BUSINESS_UNIT | LEGACY_COMPANY_REF | LEGACY_COMPANY_ENF | LEGACY_COMPANY_BALANCE |
       | placeholder                   | placeholder         | placeholder            | placeholder               | placeholder             | placeholder   | placeholder        | placeholder        | placeholder            |

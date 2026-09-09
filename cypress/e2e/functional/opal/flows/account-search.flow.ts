@@ -1224,6 +1224,8 @@ export class AccountSearchFlow {
       expectations,
     });
 
+    this.results.assertOnResults();
+
     // Switch tab first – header should still be "Search results"
     this.results.selectCompaniesTab();
 

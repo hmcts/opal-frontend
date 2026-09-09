@@ -13,6 +13,50 @@ export class AccountDetailsDefendantActions {
   readonly common = new CommonActions();
 
   /**
+   * Normalizes visible text for stable whitespace-insensitive assertions.
+   *
+   * @param value - Raw text content read from the page.
+   * @returns Text with non-breaking spaces replaced and whitespace collapsed.
+   */
+  private normalize(value: string): string {
+    return value
+      .replace(/\u00a0/g, ' ')
+      .replace(/\s+/g, ' ')
+      .trim();
+  }
+
+  /**
+   * Asserts a map of label/value pairs within a specific summary card.
+   *
+   * @param expected - Expected values keyed by visible label text.
+   * @param fieldSelectors - Mapping of normalized labels to locators.
+   * @param scope - Root selector that must be visible before assertions run.
+   */
+  private assertMappedValues(
+    expected: Record<string, string>,
+    fieldSelectors: Record<string, string>,
+    scope: string,
+  ): void {
+    cy.get(scope, this.common.getTimeoutOptions()).should('be.visible');
+
+    Object.entries(expected).forEach(([label, value]) => {
+      const normalizedLabel = label.trim().toLowerCase();
+      const selector = fieldSelectors[normalizedLabel];
+
+      if (!selector) {
+        throw new Error(
+          `Unsupported Defendant tab label "${label}". Supported labels: ${Object.keys(fieldSelectors).join(', ')}`,
+        );
+      }
+
+      cy.get(selector, this.common.getTimeoutOptions())
+        .should('be.visible')
+        .invoke('text')
+        .then((text) => expect(this.normalize(text)).to.contain(this.normalize(value)));
+    });
+  }
+
+  /**
    * Assert section header text matches expectation
    * @param expected - Expected heading text.
    */
@@ -102,12 +146,85 @@ export class AccountDetailsDefendantActions {
   }
 
   /**
+   * Asserts the Defendant details summary-card values.
+   *
+   * @param expected - Map of visible labels to expected values.
+   */
+  public assertDefendantDetails(expected: Record<string, string>): void {
+    const fieldSelectors: Record<string, string> = {
+      name: L.defendant.fields.name,
+      aliases: L.defendant.fields.aliases,
+      'date of birth': L.defendant.fields.dateOfBirth,
+      'national insurance number': L.defendant.fields.nationalInsuranceNumber,
+      address: L.defendant.fields.address,
+      'vehicle make and model': L.defendant.fields.vehicleMakeAndModel,
+      'vehicle registration': L.defendant.fields.vehicleRegistration,
+    };
+
+    this.assertMappedValues(expected, fieldSelectors, L.defendant.card);
+  }
+
+  /**
+   * Asserts the Company details summary-card values.
+   *
+   * @param expected - Map of visible labels to expected values.
+   */
+  public assertCompanyDetails(expected: Record<string, string>): void {
+    const fieldSelectors: Record<string, string> = {
+      name: C.fields.name,
+      'company name': C.fields.name,
+      aliases: C.fields.aliases,
+      address: C.fields.address,
+      'vehicle make and model': C.fields.vehicleMakeAndModel,
+      'vehicle registration': C.fields.vehicleRegistration,
+    };
+
+    this.assertMappedValues(expected, fieldSelectors, C.card);
+  }
+
+  /**
    * Asserts the primary email address shown in the contact summary contains the expected value.
    *
    * @param expected - Expected text within the primary email field.
    */
   assertPrimaryEmailContains(expected: string): void {
     cy.get(L.contact.fields.primaryEmail, this.common.getTimeoutOptions()).should('contain.text', expected);
+  }
+
+  /**
+   * Asserts the Contact details summary-card values.
+   *
+   * @param expected - Map of visible labels to expected values.
+   */
+  public assertContactDetails(expected: Record<string, string>): void {
+    const fieldSelectors: Record<string, string> = {
+      'primary email address': L.contact.fields.primaryEmail,
+      'secondary email address': L.contact.fields.secondaryEmail,
+      'mobile telephone number': L.contact.fields.mobileTelephone,
+      'home telephone number': L.contact.fields.homeTelephone,
+      'work telephone number': L.contact.fields.workTelephone,
+    };
+
+    this.assertMappedValues(expected, fieldSelectors, L.contact.card);
+  }
+
+  /**
+   * Asserts the Employer details summary-card values.
+   *
+   * @param expected - Map of visible labels to expected values.
+   */
+  public assertEmployerDetails(expected: Record<string, string>): void {
+    const fieldSelectors: Record<string, string> = {
+      'employer name': L.employer.fields.employerName,
+      'employer reference': L.employer.fields.employerReference,
+      'employer email': L.employer.fields.employerEmail,
+      'employer email address': L.employer.fields.employerEmail,
+      'employer telephone': L.employer.fields.employerTelephone,
+      'employer telephone number': L.employer.fields.employerTelephone,
+      'employer address': L.employer.fields.employerAddress,
+    };
+
+    this.assertMappedValues(expected, fieldSelectors, L.employer.card);
   }
 
   /**
