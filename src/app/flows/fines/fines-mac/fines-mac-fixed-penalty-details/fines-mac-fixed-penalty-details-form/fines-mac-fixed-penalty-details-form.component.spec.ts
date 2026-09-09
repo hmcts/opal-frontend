@@ -118,6 +118,25 @@ describe('FinesMacFixedPenaltyFormComponent', () => {
     expect(component).toBeTruthy();
   });
 
+  it.each([
+    'fm_fp_personal_details_address_line_1',
+    'fm_fp_personal_details_address_line_2',
+    'fm_fp_personal_details_address_line_3',
+    'fm_fp_company_details_address_line_1',
+    'fm_fp_company_details_address_line_2',
+    'fm_fp_company_details_address_line_3',
+  ])('should validate %s with the single ASCII characters pattern', (controlName) => {
+    component.defendantType = FINES_MAC_DEFENDANT_TYPES_KEYS.company;
+    component['setValidators']();
+    const control = component.form.get(controlName);
+
+    control?.setValue('Flat @ 2');
+    expect(control?.hasError('singleAsciiCharacters')).toBe(false);
+
+    control?.setValue('Café');
+    expect(control?.hasError('singleAsciiCharacters')).toBe(true);
+  });
+
   it('should trim only surrounding whitespace from the personal postcode input on focusout', () => {
     component.defendantType = FINES_MAC_DEFENDANT_TYPES_KEYS.adultOrYouthOnly;
     fixture.detectChanges();
@@ -293,12 +312,12 @@ describe('FinesMacFixedPenaltyFormComponent', () => {
     const event = {} as SubmitEvent;
     const commentsControl = component.form.controls['fm_fp_account_comments_notes_comments'];
     const expectedErrorMessage =
-      FINES_MAC_FIXED_PENALTY_DETAILS_FIELD_ERRORS.fm_fp_account_comments_notes_comments['singleAsciiChatacters']
+      FINES_MAC_FIXED_PENALTY_DETAILS_FIELD_ERRORS.fm_fp_account_comments_notes_comments['singleAsciiCharacters']
         .message;
 
     commentsControl.setValue('Invalidé');
 
-    expect(commentsControl.hasError('singleAsciiChatacters')).toBe(true);
+    expect(commentsControl.hasError('singleAsciiCharacters')).toBe(true);
 
     component.handleFormSubmit(event);
 
@@ -313,11 +332,11 @@ describe('FinesMacFixedPenaltyFormComponent', () => {
     const event = {} as SubmitEvent;
     const notesControl = component.form.controls['fm_fp_account_comments_notes_notes'];
     const expectedErrorMessage =
-      FINES_MAC_FIXED_PENALTY_DETAILS_FIELD_ERRORS.fm_fp_account_comments_notes_notes['singleAsciiChatacters'].message;
+      FINES_MAC_FIXED_PENALTY_DETAILS_FIELD_ERRORS.fm_fp_account_comments_notes_notes['singleAsciiCharacters'].message;
 
     notesControl.setValue('Invalidé');
 
-    expect(notesControl.hasError('singleAsciiChatacters')).toBe(true);
+    expect(notesControl.hasError('singleAsciiCharacters')).toBe(true);
 
     component.handleFormSubmit(event);
 

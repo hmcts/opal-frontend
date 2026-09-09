@@ -334,7 +334,7 @@ Feature: Check And Validate
     When I go back to Create and Manage Draft Accounts
     Then I should see the header containing text "Create accounts"
 
-  @JIRA-EPIC:PO-2220 @R1B @JIRA-STORY:PO-607 @JIRA-STORY:PO-3720 @JIRA-TEST-KEY:PO-3883
+  @JIRA-EPIC:PO-2220 @R1BDrop1 @JIRA-STORY:PO-607 @JIRA-STORY:PO-3720 @JIRA-TEST-KEY:PO-3883
   Scenario: Approved tab lists recent accounts - Hyperlinks
     Given I create a "company" approved account with the following details:
       | account_snapshot.defendant_name | TEST New Company Ltd {uniq} |
