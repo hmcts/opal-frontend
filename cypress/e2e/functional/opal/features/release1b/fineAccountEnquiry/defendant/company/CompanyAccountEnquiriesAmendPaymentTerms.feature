@@ -25,7 +25,7 @@ Feature: Company Account Enquiries Amend Payment Terms
         | account.payment_terms.payment_terms_type_code   | B                       |
         | account.payment_terms.effective_date            | 2025-05-30              |
 
-    @JIRA-EPIC:PO-977 @R1B @JIRA-STORY:PO-1640 @JIRA-TEST-KEY:PO-5305
+    @JIRA-EPIC:PO-977 @R1BDrop1 @JIRA-STORY:PO-1640 @JIRA-TEST-KEY:PO-5305
     Scenario: Company save payment terms changes and return to Payment terms tab
       When I open the company account details for "Amend Co{uniq}"
       And I go to the Payment terms tab
@@ -39,7 +39,7 @@ Feature: Company Account Enquiries Amend Payment Terms
       And the payment terms save request should include a payment card request
       And the payment terms last enforcement is cleared
 
-    @JIRA-EPIC:PO-977 @R1B @JIRA-STORY:PO-1640 @JIRA-TEST-KEY:PO-5306
+    @JIRA-EPIC:PO-977 @R1BDrop1 @JIRA-STORY:PO-1640 @JIRA-TEST-KEY:PO-5306
     Scenario: Company cancel payment terms amendments returns to Payment terms tab
       When I open the company account details for "Amend Co{uniq}"
       And I go to the Payment terms tab

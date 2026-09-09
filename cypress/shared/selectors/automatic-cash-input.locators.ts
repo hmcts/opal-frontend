@@ -13,8 +13,10 @@ export const AutomaticCashInputLocators = {
   errorSummaryTitle: '.govuk-error-summary__title',
   businessUnitNameCells: '[id^="fines-api-business-unit-name-"]',
   businessUnitNameCell: (businessUnitId: number): string => `#fines-api-business-unit-name-${businessUnitId}`,
-  businessUnitFileCountCell: (businessUnitId: number): string => `#fines-api-business-unit-file-count-${businessUnitId}`,
-  businessUnitTillCountCell: (businessUnitId: number): string => `#fines-api-business-unit-till-count-${businessUnitId}`,
+  businessUnitFileCountCell: (businessUnitId: number): string =>
+    `#fines-api-business-unit-file-count-${businessUnitId}`,
+  businessUnitTillCountCell: (businessUnitId: number): string =>
+    `#fines-api-business-unit-till-count-${businessUnitId}`,
   continueButton: '#fines-api-select-business-units-continue',
   cancelLink: 'a.govuk-link.button-link',
 } as const;

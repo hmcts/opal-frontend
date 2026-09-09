@@ -1,7 +1,7 @@
 @JIRA-LABEL:account-enquiry
 Feature: Major Creditor History and notes
 
-  @R1B @JIRA-STORY:PO-2657 @JIRA-EPIC:PO-2655
+  @R1BDrop1 @JIRA-STORY:PO-2657 @JIRA-EPIC:PO-2655
   Scenario: AC1a. Transformation service - consumes raw Major Creditor history data from the API
     Given I am logged in with email "opal-test@dev.platform.hmcts.net"
     And I am on the Account Search page - Individuals form displayed by default

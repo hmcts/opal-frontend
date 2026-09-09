@@ -115,7 +115,9 @@ describe('Automatic Cash Input - Select Business Units', () => {
         'contain.text',
         'Select at least 1 business unit',
       );
-      cy.get(AutomaticCashInputLocators.errorSummary).should('be.visible').and('contain.text', 'Select at least 1 business unit');
+      cy.get(AutomaticCashInputLocators.errorSummary)
+        .should('be.visible')
+        .and('contain.text', 'Select at least 1 business unit');
       cy.get(AutomaticCashInputLocators.errorSummaryTitle).should('have.text', 'There is a problem');
       cy.get('@financeRouter')
         .its('url')

@@ -50,6 +50,22 @@ describe('FinesMacEmployerDetailsFormComponent', () => {
     expect(component).toBeTruthy();
   });
 
+  it.each([
+    'fm_employer_details_employer_address_line_1',
+    'fm_employer_details_employer_address_line_2',
+    'fm_employer_details_employer_address_line_3',
+    'fm_employer_details_employer_address_line_4',
+    'fm_employer_details_employer_address_line_5',
+  ])('should validate %s with the single ASCII characters pattern', (controlName) => {
+    const control = component.form.get(controlName);
+
+    control?.setValue('Flat @ 2');
+    expect(control?.hasError('singleAsciiCharacters')).toBe(false);
+
+    control?.setValue('Café');
+    expect(control?.hasError('singleAsciiCharacters')).toBe(true);
+  });
+
   it('should emit form submit event with form value - continue flow', () => {
     const event = { submitter: { className: 'nested-flow' } } as SubmitEvent;
     formSubmit.nestedFlow = true;
