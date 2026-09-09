@@ -152,7 +152,7 @@
       id="fines-api-confirm-process-submit"
       class="govuk-button"
       type="button"
-      [disabled]="isProcessing()"
+      [disabled]="isProcessing() || selectedFilesCount === 0"
       (click)="process()"
     >
       {{ content.processButton }}

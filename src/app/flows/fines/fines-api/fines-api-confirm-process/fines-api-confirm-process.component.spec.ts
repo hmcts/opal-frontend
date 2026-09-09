@@ -203,6 +203,15 @@ describe('FinesApiConfirmProcessComponent', () => {
         ?.textContent?.trim(),
     ).toBe('You have selected 2 of 3 files to process');
     expect(finesApiStore.overrideInhibitFileIds()).toEqual(['501']);
+
+    const summaryRows = (fixture.nativeElement as HTMLElement).querySelectorAll<HTMLTableRowElement>(
+      '#fines-api-confirm-process-business-units tbody tr',
+    );
+    expect(summaryRows).toHaveLength(2);
+    expect(summaryRows[0].textContent).toContain('Camberwell Green');
+    expect(summaryRows[0].textContent).toContain('1');
+    expect(summaryRows[1].textContent).toContain('West London');
+    expect(summaryRows[1].textContent).toContain('1');
   });
 
   it('should hide the override-inhibits section when no selected files are from DWP/AEA', () => {
@@ -217,7 +226,7 @@ describe('FinesApiConfirmProcessComponent', () => {
     expect(nativeElement.querySelector('#fines-api-confirm-process-override-inhibits')).toBeNull();
   });
 
-  it('should submit every selected job with its override flag and navigate to Allocate', () => {
+  it('should exclude an unchecked DWP/AEA job from processing and navigate to Allocate', () => {
     createComponent();
     fixture.detectChanges();
     component['toggleOverrideInhibits']({ rowId: '503', checked: false });
@@ -228,7 +237,6 @@ describe('FinesApiConfirmProcessComponent', () => {
       interface_jobs: [
         { business_unit_id: 80, interface_job_id: 1001, override_inhibits: true },
         { business_unit_id: 77, interface_job_id: 1002, override_inhibits: false },
-        { business_unit_id: 77, interface_job_id: 1003, override_inhibits: false },
       ],
     });
     expect(finesApiStore.activeTab()).toBe(FINES_API_PROCESS_ALLOCATE_TABS_KEYS.allocate);
@@ -239,6 +247,29 @@ describe('FinesApiConfirmProcessComponent', () => {
       relativeTo: activatedRouteParent,
       fragment: FINES_API_PROCESS_ALLOCATE_TABS_KEYS.allocate,
     });
+  });
+
+  it('should disable processing and not call the API when every selected file is unchecked', () => {
+    createComponent([PROCESS_JOBS[0]], ['501']);
+    fixture.detectChanges();
+
+    const checkbox = (fixture.nativeElement as HTMLElement).querySelector<HTMLInputElement>(
+      '#fines-api-confirm-process-override-inhibits-501',
+    )!;
+    checkbox.click();
+    fixture.detectChanges();
+
+    const nativeElement = fixture.nativeElement as HTMLElement;
+    expect(nativeElement.querySelector('#fines-api-confirm-process-selection-count')?.textContent?.trim()).toBe(
+      'You have selected 0 of 1 files to process',
+    );
+    expect(nativeElement.querySelectorAll('#fines-api-confirm-process-business-units tbody tr')).toHaveLength(0);
+    expect(nativeElement.querySelector<HTMLButtonElement>('#fines-api-confirm-process-submit')?.disabled).toBe(true);
+
+    component['process']();
+
+    expect(processInterfaceJobs).not.toHaveBeenCalled();
+    expect(routerNavigate).not.toHaveBeenCalled();
   });
 
   it('should disable repeat processing while the request is in flight', () => {

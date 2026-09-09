@@ -5,6 +5,7 @@ import {
   buildBusinessUnitSummary,
   buildProcessInterfaceJobsPayload,
   enrichInterfaceJobsWithBusinessUnitIds,
+  getInterfaceJobsToProcess,
   getSelectedInterfaceJobs,
   isDwpAeaSource,
 } from './fines-api-confirm-process.utils';
@@ -96,7 +97,17 @@ describe('fines-api-confirm-process utils', () => {
     ]);
   });
 
-  it('should build a unique job payload with override inhibits true only for checked DWP/AEA files', () => {
+  it('should retain non-DWP/AEA files and only selected DWP/AEA files for processing', () => {
+    const interfaceJobs = [
+      buildConfirmInterfaceJob({ interface_file_id: 501, interface_job_id: 1001, source: 'DWP_AEA' }),
+      buildConfirmInterfaceJob({ interface_file_id: 502, interface_job_id: 1002, source: 'DWP/AEA' }),
+      buildConfirmInterfaceJob({ interface_file_id: 503, interface_job_id: 1003, source: 'NATWEST' }),
+    ];
+
+    expect(getInterfaceJobsToProcess(interfaceJobs, new Set(['501']))).toEqual([interfaceJobs[0], interfaceJobs[2]]);
+  });
+
+  it('should exclude unchecked DWP/AEA files from the unique job payload', () => {
     const interfaceJobs = [
       buildConfirmInterfaceJob({ interface_file_id: 501, interface_job_id: 1001, source: 'DWP_AEA' }),
       buildConfirmInterfaceJob({ interface_file_id: 502, interface_job_id: 1002, source: 'DWP/AEA' }),
@@ -106,7 +117,6 @@ describe('fines-api-confirm-process utils', () => {
     expect(buildProcessInterfaceJobsPayload(interfaceJobs, new Set(['501', '503']))).toEqual({
       interface_jobs: [
         { business_unit_id: 77, interface_job_id: 1001, override_inhibits: true },
-        { business_unit_id: 77, interface_job_id: 1002, override_inhibits: false },
         { business_unit_id: 77, interface_job_id: 1003, override_inhibits: false },
       ],
     });

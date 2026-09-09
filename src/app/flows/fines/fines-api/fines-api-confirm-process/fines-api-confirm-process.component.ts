@@ -34,6 +34,7 @@ import {
   buildBusinessUnitSummary,
   buildProcessInterfaceJobsPayload,
   enrichInterfaceJobsWithBusinessUnitIds,
+  getInterfaceJobsToProcess,
   getSelectedInterfaceJobs,
   isDwpAeaSource,
 } from './utils/fines-api-confirm-process.utils';
@@ -73,9 +74,10 @@ export class FinesApiConfirmProcessComponent implements OnInit {
       .availableBusinessUnits()
       .filter(({ business_unit_id: businessUnitId }) => this.selectedBusinessUnitIds.has(businessUnitId)),
   );
-  protected readonly businessUnitSummary = buildBusinessUnitSummary(this.selectedInterfaceJobs);
   protected readonly dwpAeaInterfaceJobs = this.selectedInterfaceJobs.filter(({ source }) => isDwpAeaSource(source));
   protected overrideInhibitFileIds = new Set<string>();
+  protected businessUnitSummary = buildBusinessUnitSummary(this.selectedInterfaceJobs);
+  protected selectedFilesCount = this.selectedInterfaceJobs.length;
 
   /** Synchronises every override-inhibits checkbox with the current selection set. */
   private syncOverrideInhibitControls(): void {
@@ -101,16 +103,15 @@ export class FinesApiConfirmProcessComponent implements OnInit {
   private updateOverrideInhibitSelection(selectedFileIds: Set<string>): void {
     this.overrideInhibitFileIds = selectedFileIds;
     this.syncOverrideInhibitControls();
+    const interfaceJobsToProcess = getInterfaceJobsToProcess(this.selectedInterfaceJobs, selectedFileIds);
+
+    this.selectedFilesCount = interfaceJobsToProcess.length;
+    this.businessUnitSummary = buildBusinessUnitSummary(interfaceJobsToProcess);
     this.finesApiStore.setOverrideInhibitFileIds(
       this.dwpAeaInterfaceJobs
         .map((interfaceJob) => this.getInterfaceFileId(interfaceJob))
         .filter((interfaceFileId) => selectedFileIds.has(interfaceFileId)),
     );
-  }
-
-  /** Returns the displayed count, including every non-DWP/AEA file and checked DWP/AEA file. */
-  protected get selectedFilesCount(): number {
-    return this.selectedInterfaceJobs.length - this.dwpAeaInterfaceJobs.length + this.overrideInhibitFileIds.size;
   }
 
   /** Returns whether every DWP/AEA file is selected to override inhibits. */
@@ -183,15 +184,21 @@ export class FinesApiConfirmProcessComponent implements OnInit {
     });
   }
 
-  /** Submits all originally selected jobs and opens the Allocate tab after a successful response. */
+  /** Submits the files that remain selected and opens the Allocate tab after a successful response. */
   protected process(): void {
     if (this.isProcessing()) {
       return;
     }
 
+    const payload = buildProcessInterfaceJobsPayload(this.selectedInterfaceJobs, this.overrideInhibitFileIds);
+
+    if (payload.interface_jobs.length === 0) {
+      return;
+    }
+
     this.isProcessing.set(true);
     this.opalFinesService
-      .processInterfaceJobs(buildProcessInterfaceJobsPayload(this.selectedInterfaceJobs, this.overrideInhibitFileIds))
+      .processInterfaceJobs(payload)
       .pipe(
         map(() => true),
         catchError(() => of(false)),
