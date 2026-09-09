@@ -193,6 +193,7 @@ describe('fines-section-permissions.utils', () => {
         [RELEASE_1C_ENFORCEMENT_OPERATIONAL_REPORTING_FEATURE_FLAG]: false,
         [RELEASE_1C_ADMINISTRATION_FEATURE_FLAG]: false,
         [RELEASE_1C_FINANCIAL_MOVEMENTS_FEATURE_FLAG]: false,
+        [RELEASE_1C_PAYMENT_FEATURE_FLAG]: false,
         [RELEASE_1C_BANKING_INTERFACES_FEATURE_FLAG]: true,
       });
 
