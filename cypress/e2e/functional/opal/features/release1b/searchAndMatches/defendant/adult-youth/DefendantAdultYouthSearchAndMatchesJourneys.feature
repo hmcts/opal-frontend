@@ -281,7 +281,6 @@ Feature: Defendant Adult Youth Search And Matches Journeys
       | placeholder                      | placeholder            | placeholder               | placeholder           | placeholder                  | placeholder                | placeholder                 | placeholder                       | placeholder               |
 
   @LegacyData @JIRA-STORY:PO-706 @JIRA-EPIC:PO-704
-  # Template only. Populate the example row and fixture, then remove @skip.
   # Minimum data set required: one parent or guardian legacy account with a searchable account number, expected summary header, and a populated legacy fixture.
   Scenario Outline: Search for a parent or guardian legacy account by account number and open the matching record
     Given I am on the Account Search page - Individuals form displayed by default
@@ -295,22 +294,21 @@ Feature: Defendant Adult Youth Search And Matches Journeys
     Then I should see the account summary header contains "<LEGACY_PARENT_GUARDIAN_SUMMARY_HEADER>"
     And I validate the legacy defendant header and At a glance tab using fixture "<LEGACY_PARENT_GUARDIAN_VALIDATION_FIXTURE>"
     When I go to the Defendant tab and validate the legacy defendant using fixture "<LEGACY_PARENT_GUARDIAN_VALIDATION_FIXTURE>"
+    And I go to the Parent or guardian tab and validate the legacy defendant using fixture "<LEGACY_PARENT_GUARDIAN_VALIDATION_FIXTURE>"
     And I go to the Payment terms tab and validate the legacy defendant using fixture "<LEGACY_PARENT_GUARDIAN_VALIDATION_FIXTURE>"
-    And I go to the Enforcement tab and validate the legacy defendant using fixture "<LEGACY_PARENT_GUARDIAN_VALIDATION_FIXTURE>"
-    And I go to the Impositions tab and validate the legacy defendant using fixture "<LEGACY_PARENT_GUARDIAN_VALIDATION_FIXTURE>"
+    # And I go to the Enforcement tab and validate the legacy defendant using fixture "<LEGACY_PARENT_GUARDIAN_VALIDATION_FIXTURE>"
+    # And I go to the Impositions tab and validate the legacy defendant using fixture "<LEGACY_PARENT_GUARDIAN_VALIDATION_FIXTURE>"
     # And I go to the History and notes tab and validate the legacy defendant using fixture "<LEGACY_PARENT_GUARDIAN_VALIDATION_FIXTURE>"
-    # And I go to the Parent or guardian tab and validate the legacy defendant using fixture "<LEGACY_PARENT_GUARDIAN_VALIDATION_FIXTURE>"
-    @R1BDrop1UatTechJCDE @skip
+    @R1BDrop1UatTechJCDE
     Examples:
-      | LEGACY_PARENT_GUARDIAN_ACCOUNT_NUMBER | LEGACY_PARENT_GUARDIAN_SUMMARY_HEADER | BUSINESS_UNIT               | LEGACY_PARENT_GUARDIAN_VALIDATION_FIXTURE                                           |
-      | TEMPLATE_JCDE_ACCOUNT_NUMBER          | TEMPLATE_JCDE_SUMMARY_HEADER          | TEMPLATE_JCDE_BUSINESS_UNIT | accountEnquiry/legacyDefendant/templates/jcde/parent-guardian-account-template.json |
+      | LEGACY_PARENT_GUARDIAN_ACCOUNT_NUMBER | LEGACY_PARENT_GUARDIAN_SUMMARY_HEADER | BUSINESS_UNIT | LEGACY_PARENT_GUARDIAN_VALIDATION_FIXTURE                       |
+      | 26000285P                             | Mr Antonius Barnet CPGB-YOUTH-A-B     | West London   | accountEnquiry/legacyDefendant/jcde/parent-guardian-to-pay.json |
     @R1BDrop1UatTechPreprod @skip
     Examples:
       | LEGACY_PARENT_GUARDIAN_ACCOUNT_NUMBER | LEGACY_PARENT_GUARDIAN_SUMMARY_HEADER | BUSINESS_UNIT                  | LEGACY_PARENT_GUARDIAN_VALIDATION_FIXTURE                                              |
       | TEMPLATE_PREPROD_ACCOUNT_NUMBER       | TEMPLATE_PREPROD_SUMMARY_HEADER       | TEMPLATE_PREPROD_BUSINESS_UNIT | accountEnquiry/legacyDefendant/templates/preprod/parent-guardian-account-template.json |
 
   @LegacyData @JIRA-STORY:PO-706 @JIRA-EPIC:PO-704
-  # Template only. Populate the example row and fixture, then remove @skip.
   # Minimum data set required: one fixed penalty legacy individual account with a searchable account number, expected summary header, a populated legacy fixture, and fixed penalty detail values.
   Scenario Outline: Search for a fixed penalty legacy account by account number and open the matching record
     Given I am on the Account Search page - Individuals form displayed by default
@@ -329,18 +327,16 @@ Feature: Defendant Adult Youth Search And Matches Journeys
     And I go to the Impositions tab and validate the legacy defendant using fixture "<LEGACY_FIXED_PENALTY_VALIDATION_FIXTURE>"
     # And I go to the History and notes tab and validate the legacy defendant using fixture "<LEGACY_FIXED_PENALTY_VALIDATION_FIXTURE>"
     # And I go to the Fixed penalty tab and validate the legacy defendant using fixture "<LEGACY_FIXED_PENALTY_VALIDATION_FIXTURE>"
-    @R1BDrop1UatTechJCDE @skip
+    @R1BDrop1UatTechJCDE
     Examples:
       | LEGACY_FIXED_PENALTY_ACCOUNT_NUMBER | LEGACY_FIXED_PENALTY_SUMMARY_HEADER | BUSINESS_UNIT               | LEGACY_FIXED_PENALTY_VALIDATION_FIXTURE                                           |
-      | TEMPLATE_JCDE_ACCOUNT_NUMBER        | TEMPLATE_JCDE_SUMMARY_HEADER        | TEMPLATE_JCDE_BUSINESS_UNIT | accountEnquiry/legacyDefendant/templates/jcde/fixed-penalty-account-template.json |
+      | 26000284T                           | Mr Aldous Curio CPGB-ADULT-A-C      | West London                 | accountEnquiry/legacyDefendant/jcde/fixed-penalty-account.json                    |
     @R1BDrop1UatTechPreprod @skip
     Examples:
       | LEGACY_FIXED_PENALTY_ACCOUNT_NUMBER | LEGACY_FIXED_PENALTY_SUMMARY_HEADER | BUSINESS_UNIT                  | LEGACY_FIXED_PENALTY_VALIDATION_FIXTURE                                              |
       | TEMPLATE_PREPROD_ACCOUNT_NUMBER     | TEMPLATE_PREPROD_SUMMARY_HEADER     | TEMPLATE_PREPROD_BUSINESS_UNIT | accountEnquiry/legacyDefendant/templates/preprod/fixed-penalty-account-template.json |
 
   @LegacyData @JIRA-STORY:PO-706 @JIRA-EPIC:PO-704
-  # Template only. Populate the example row and fixture, then remove @skip.
-  # Minimum data set required: one legacy defendant account with consolidated child accounts, a searchable account number, expected summary header, and a populated legacy fixture.
   Scenario Outline: Search for a legacy account with consolidated accounts by account number and open the matching record
     Given I am on the Account Search page - Individuals form displayed by default
     When I search using the following inputs:
@@ -362,10 +358,10 @@ Feature: Defendant Adult Youth Search And Matches Journeys
     # When I view the first child account record
     # Then I am presented with the details of the selected child account
     # And I am notified that the selected child account is closed because it was consolidated
-    @R1BDrop1UatTechJCDE @skip
+    @R1BDrop1UatTechJCDE
     Examples:
-      | LEGACY_CONSOLIDATED_ACCOUNT_NUMBER | LEGACY_CONSOLIDATED_SUMMARY_HEADER | BUSINESS_UNIT               | LEGACY_CONSOLIDATED_VALIDATION_FIXTURE                                           |
-      | TEMPLATE_JCDE_ACCOUNT_NUMBER       | TEMPLATE_JCDE_SUMMARY_HEADER       | TEMPLATE_JCDE_BUSINESS_UNIT | accountEnquiry/legacyDefendant/templates/jcde/consolidated-account-template.json |
+      | LEGACY_CONSOLIDATED_ACCOUNT_NUMBER | LEGACY_CONSOLIDATED_SUMMARY_HEADER | BUSINESS_UNIT | LEGACY_CONSOLIDATED_VALIDATION_FIXTURE                              |
+      | 26000289W                          | Mr Henry CPGB-ADULT-B-H            | West London   | accountEnquiry/legacyDefendant/jcde/consolidated-account.json       |
     @R1BDrop1UatTechPreprod @skip
     Examples:
       | LEGACY_CONSOLIDATED_ACCOUNT_NUMBER | LEGACY_CONSOLIDATED_SUMMARY_HEADER | BUSINESS_UNIT                  | LEGACY_CONSOLIDATED_VALIDATION_FIXTURE                                              |
