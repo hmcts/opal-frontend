@@ -50,7 +50,11 @@
   </opal-lib-govuk-table>
 
   @if (dwpAeaInterfaceJobs.length > 0) {
-    <section id="fines-api-confirm-process-override-inhibits" aria-labelledby="override-inhibits-heading">
+    <section
+      id="fines-api-confirm-process-override-inhibits"
+      class="govuk-form-group govuk-!-margin-bottom-0"
+      aria-labelledby="override-inhibits-heading"
+    >
       <h2 id="override-inhibits-heading" class="govuk-heading-m">{{ content.overrideInhibitsHeading }}</h2>
       <p id="fines-api-confirm-process-override-inhibits-hint" class="govuk-hint">
         {{ content.overrideInhibitsHint }}

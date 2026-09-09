@@ -164,8 +164,19 @@ describe('FinesApiConfirmProcessComponent', () => {
     const nativeElement = fixture.nativeElement as HTMLElement;
     const overrideSection = nativeElement.querySelector('#fines-api-confirm-process-override-inhibits');
     const overrideCheckboxes = overrideSection?.querySelectorAll<HTMLInputElement>('tbody input[type="checkbox"]');
+    const checkboxFormGroups = overrideSection?.querySelectorAll<HTMLElement>(
+      'opal-lib-govuk-checkboxes > .govuk-form-group',
+    );
 
     expect(overrideSection?.textContent).toContain('Override inhibits for DWP/AEA files');
+    expect(overrideSection?.classList.contains('govuk-form-group')).toBe(true);
+    expect(overrideSection?.classList.contains('govuk-!-margin-bottom-0')).toBe(true);
+    expect(checkboxFormGroups?.length).toBeGreaterThan(0);
+    expect(
+      Array.from(checkboxFormGroups ?? []).every(
+        (formGroup) => Number.parseFloat(getComputedStyle(formGroup).marginBottom) === 0,
+      ),
+    ).toBe(true);
     expect(overrideSection?.textContent).toContain('payments_dwp_001.dat');
     expect(overrideSection?.textContent).toContain('payments_aea_001.dat');
     expect(overrideSection?.textContent).not.toContain('payments_natwest_001.dat');
