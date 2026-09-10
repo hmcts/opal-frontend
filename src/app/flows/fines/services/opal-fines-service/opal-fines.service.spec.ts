@@ -2428,6 +2428,27 @@ describe('OpalFines', () => {
 
       req.flush(null);
     });
+
+    it('should omit conditional headers when their values are unavailable', () => {
+      const defendantAccountId = 123456;
+      const payload = {
+        reason: 'Removed',
+      };
+
+      service
+        .removeEnforcementHold(defendantAccountId, payload, undefined as unknown as string)
+        .subscribe((response) => {
+          expect(response).toBeNull();
+        });
+
+      const req = httpMock.expectOne(`${OPAL_FINES_PATHS.defendantAccounts}/${defendantAccountId}/remove-enf-hold`);
+      expect(req.request.method).toBe('PATCH');
+      expect(req.request.body).toEqual(payload);
+      expect(req.request.headers.has('Business-Unit-Id')).toBe(false);
+      expect(req.request.headers.has('If-Match')).toBe(false);
+
+      req.flush(null);
+    });
   });
 
   describe('getMinorCreditorAccountAtAGlance', () => {

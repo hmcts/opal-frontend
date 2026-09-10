@@ -110,6 +110,14 @@ describe('FinesAccMajorCreditorDetailsHistoryAndNotesTabComponent', () => {
     expect(emitted).toEqual([OPAL_FINES_ACCOUNT_MAJOR_CREDITOR_DETAILS_HISTORY_AND_NOTES_TAB_REF_DATA_MOCK]);
   });
 
+  it('should keep the initialized display stream on the first tab data input change', () => {
+    const initializedDisplayStream = component.historyAndNotesTabData$;
+
+    component.ngOnChanges({ tabData$: new SimpleChange(undefined, component.tabData$, true) });
+
+    expect(component.historyAndNotesTabData$).toBe(initializedDisplayStream);
+  });
+
   it('should transform history items when the API uses the supported history_items key', () => {
     const rawItems = [{ type: 'Financial', details: { transactionType: { transactionType: 'BACS' } } }];
     const transformedItems = [{ type: 'Financial', details: { line1: [], line2: null } }];
