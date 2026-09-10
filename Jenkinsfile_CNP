@@ -62,6 +62,10 @@ String functionalXmlReport = 'cypress/reports/functionalXmlReport.html'
   '@R1BDrop2UatTechJCDE',
   '@R1BDrop2UatTechPreprod',
 ]
+@Field List<String> jcdeOverrideTags = [
+  '@R1BDrop1UatTechJCDE',
+  '@R1BDrop2UatTechJCDE',
+]
 @Field List<String> r1aPositiveExclusions = [
   '@R1BDrop1',
   '@R1BDrop2',
@@ -614,6 +618,7 @@ boolean legacyEnabled = cachedPrLabels.contains('enable_legacy_mode')
 // Safe defaults (current behaviour)
 env.DEV_DEFAULT_APP_MODE = opalName
 env.DEV_OPAL_LEGACY_GATEWAY_URL = 'https://opal-legacy-db-stub.staging.platform.hmcts.net/opal'
+env.JCDE_OVERRIDE = stringFalse
 env.OPAL_LOG_LEVEL = env.OPAL_LOG_LEVEL ?: 'INFO'
 
 // Opt-in: Dev → JCDE (PR builds only)
@@ -633,6 +638,10 @@ echo "OPAL_LOG_LEVEL=${env.OPAL_LOG_LEVEL}"
 String tagLabel = cachedPrLabels.find { String label -> label.startsWith(runTagPrefix) }
 String releaseSuiteLabel = cachedPrLabels.find { String label -> label.startsWith(runReleasePrefix) }
 String baseTags = tagLabel ? tagLabel.substring(runTagPrefix.length()).trim() : ''
+if (baseTags && jcdeOverrideTags.any { String tag -> baseTags.contains(tag) }) {
+    env.JCDE_OVERRIDE = stringTrue
+}
+echo "JCDE_OVERRIDE=${env.JCDE_OVERRIDE}"
 String releaseSuite = normalizeReleaseSuite(
   releaseSuiteLabel ? releaseSuiteLabel.substring(runReleasePrefix.length()) : ''
 )

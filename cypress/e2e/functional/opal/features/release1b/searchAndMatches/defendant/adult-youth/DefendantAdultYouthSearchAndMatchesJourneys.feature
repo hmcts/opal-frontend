@@ -3,7 +3,6 @@ Feature: Defendant Adult Youth Search And Matches Journeys
   High-value end-to-end journeys for Search and Matches.
   These scenarios cover the core business flows for finding and viewing matching records,
   while leaving detailed field validation and request-shape coverage to the existing feature files.
-  Ok
 
   Background:
     Given I am logged in with email "opal-test@dev.platform.hmcts.net"
