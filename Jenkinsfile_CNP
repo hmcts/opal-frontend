@@ -618,12 +618,16 @@ boolean legacyEnabled = cachedPrLabels.contains('enable_legacy_mode')
 // Safe defaults (current behaviour)
 env.DEV_DEFAULT_APP_MODE = opalName
 env.DEV_OPAL_LEGACY_GATEWAY_URL = 'https://opal-legacy-db-stub.staging.platform.hmcts.net/opal'
+env.IS_LEGACY_MODE = stringFalse
+env.LEGACY_ENABLED = stringFalse
 env.JCDE_OVERRIDE = stringFalse
 env.OPAL_LOG_LEVEL = env.OPAL_LOG_LEVEL ?: 'INFO'
 
 // Opt-in: Dev → JCDE (PR builds only)
 if (legacyEnabled && isPR) {
     env.DEV_DEFAULT_APP_MODE = 'legacy'
+    env.IS_LEGACY_MODE = stringTrue
+    env.LEGACY_ENABLED = stringTrue
     env.DEV_OPAL_LEGACY_GATEWAY_URL = 'https://opal.clouddev.online/opal'
     env.OPAL_LOG_LEVEL = 'DEBUG'
 } else if (legacyEnabled && !isPR) {
@@ -632,6 +636,8 @@ if (legacyEnabled && isPR) {
 
 echo "DEV_DEFAULT_APP_MODE=${env.DEV_DEFAULT_APP_MODE}"
 echo "DEV_OPAL_LEGACY_GATEWAY_URL=${env.DEV_OPAL_LEGACY_GATEWAY_URL}"
+echo "IS_LEGACY_MODE=${env.IS_LEGACY_MODE}"
+echo "LEGACY_ENABLED=${env.LEGACY_ENABLED}"
 echo "OPAL_LOG_LEVEL=${env.OPAL_LOG_LEVEL}"
 
 // Find the first label like: run_tag:<expression>
