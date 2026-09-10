@@ -104,6 +104,22 @@ export const AccountAtAGlanceLocators = {
     /** Defendant name value. */
     name: 'app-fines-acc-defendant-details-at-a-glance-tab .govuk-grid-column-one-third:has(h2:contains("Defendant")) h3:contains("Name") + p',
 
+    /** Parent or guardian name value. */
+    parentGuardianName:
+      'app-fines-acc-defendant-details-at-a-glance-tab .govuk-grid-column-one-third:has(h2:contains("Parent or Guardian")) h3:contains("Name") + p, app-fines-acc-defendant-details-at-a-glance-tab .govuk-grid-column-one-third:has(h2:contains("Parent or guardian")) h3:contains("Name") + p',
+
+    /** Parent or guardian aliases value. */
+    parentGuardianAliases:
+      'app-fines-acc-defendant-details-at-a-glance-tab .govuk-grid-column-one-third:has(h2:contains("Parent or Guardian")) h3:contains("Aliases") + p, app-fines-acc-defendant-details-at-a-glance-tab .govuk-grid-column-one-third:has(h2:contains("Parent or guardian")) h3:contains("Aliases") + p',
+
+    /** Parent or guardian address value. */
+    parentGuardianAddress:
+      'app-fines-acc-defendant-details-at-a-glance-tab .govuk-grid-column-one-third:has(h2:contains("Parent or Guardian")) h3:contains("Address") + p, app-fines-acc-defendant-details-at-a-glance-tab .govuk-grid-column-one-third:has(h2:contains("Parent or guardian")) h3:contains("Address") + p',
+
+    /** Parent or guardian National Insurance Number value. */
+    parentGuardianNationalInsuranceNumber:
+      'app-fines-acc-defendant-details-at-a-glance-tab .govuk-grid-column-one-third:has(h2:contains("Parent or Guardian")) h3:contains("National Insurance Number") + p, app-fines-acc-defendant-details-at-a-glance-tab .govuk-grid-column-one-third:has(h2:contains("Parent or guardian")) h3:contains("National Insurance Number") + p',
+
     /** Company name value. */
     companyName:
       'app-fines-acc-defendant-details-at-a-glance-tab .govuk-grid-column-one-third:has(h2:contains("Defendant")) h3:contains("Company Name") + p',
