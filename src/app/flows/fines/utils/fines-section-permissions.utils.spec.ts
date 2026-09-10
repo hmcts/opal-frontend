@@ -17,6 +17,7 @@ import {
   RELEASE_1C_WRITE_OFF_FEATURE_FLAG,
   RELEASE_1C_BANKING_INTERFACES_FEATURE_FLAG,
 } from '../constants/release-feature-flags.constant';
+import { FEATURE_FLAG_SECTION_PERMISSION_EXCLUSIONS } from '../constants/feature-flag-section-permission-exclusions.constant';
 import {
   canAccessFinesPrimaryNavigationSection,
   filterDashboardConfigByFeatureFlags,
@@ -242,6 +243,32 @@ describe('fines-section-permissions.utils', () => {
 
     it('should remove Reports permissions when release-1c enforcement operational reporting is disabled', () => {
       expect(getRequiredPermissionIdsForSection('reports', release1cReportingDisabled)).toEqual([]);
+    });
+
+    it('should ignore an exclusion flag that has no configured permission ids', () => {
+      const searchExclusions = FEATURE_FLAG_SECTION_PERMISSION_EXCLUSIONS.search as Record<
+        string,
+        readonly number[] | undefined
+      >;
+      const originalRelease1bExclusions = searchExclusions[RELEASE_1B_FEATURE_FLAG];
+      searchExclusions[RELEASE_1B_FEATURE_FLAG] = undefined;
+
+      try {
+        expect(getRequiredPermissionIdsForSection('search', release1bDisabled)).toEqual(SEARCH_PERMISSIONS);
+      } finally {
+        searchExclusions[RELEASE_1B_FEATURE_FLAG] = originalRelease1bExclusions;
+      }
+    });
+
+    it('should return all permissions when a restricted section has no exclusion configuration', () => {
+      const originalSearchExclusions = FEATURE_FLAG_SECTION_PERMISSION_EXCLUSIONS.search;
+      delete FEATURE_FLAG_SECTION_PERMISSION_EXCLUSIONS.search;
+
+      try {
+        expect(getRequiredPermissionIdsForSection('search', release1bDisabled)).toEqual(SEARCH_PERMISSIONS);
+      } finally {
+        FEATURE_FLAG_SECTION_PERMISSION_EXCLUSIONS.search = originalSearchExclusions;
+      }
     });
   });
 

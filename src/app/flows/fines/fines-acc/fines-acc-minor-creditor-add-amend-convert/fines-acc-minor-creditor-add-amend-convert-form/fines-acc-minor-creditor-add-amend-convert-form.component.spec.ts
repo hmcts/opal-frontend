@@ -80,6 +80,22 @@ describe('FinesAccMinorCreditorAddAmendConvertFormComponent', () => {
     expect(component.form.get(component.controls.bankAccountNumber)?.value).toBe('12345678');
   });
 
+  it('should not add BACS controls when the initial BACS selection is null', () => {
+    createComponent({
+      formData: {
+        ...companyFormData.formData,
+        facc_minor_creditor_pay_by_bacs: null,
+      },
+      nestedFlow: false,
+    });
+
+    expect(getControl(component.controls.payByBacs).value).toBeNull();
+    expect(component.form.get(component.controls.bankAccountName)).toBeNull();
+    expect(component.form.get(component.controls.bankSortCode)).toBeNull();
+    expect(component.form.get(component.controls.bankAccountNumber)).toBeNull();
+    expect(component.form.get(component.controls.bankAccountReference)).toBeNull();
+  });
+
   it('should render the header and BACS controls when BACS details are provided', () => {
     createComponent();
     const element = fixture.nativeElement as HTMLElement;

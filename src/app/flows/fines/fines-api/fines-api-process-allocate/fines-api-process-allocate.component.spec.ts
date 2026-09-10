@@ -12,6 +12,11 @@ import { FinesApiProcessAllocateComponent } from './fines-api-process-allocate.c
 import { FinesApiProcessComponent } from './fines-api-process-tab/fines-api-process.component';
 import { IFinesApiProcessData } from './fines-api-process-tab/interfaces/fines-api-process-data.interface';
 
+type ComponentFactory = (componentType?: typeof FinesApiProcessAllocateComponent) => FinesApiProcessAllocateComponent;
+const originalComponentFactory = (
+  FinesApiProcessAllocateComponent as typeof FinesApiProcessAllocateComponent & { ɵfac: ComponentFactory }
+).ɵfac;
+
 @Component({
   selector: 'app-fines-api-process',
   template: `
@@ -315,5 +320,42 @@ describe('FinesApiProcessAllocateComponent', () => {
     render();
 
     expect(finesApiStore.unsavedChanges()).toBe(false);
+  });
+
+  it('should create and update through the compiled Angular definition', async () => {
+    TestBed.resetTestingModule();
+    await TestBed.configureTestingModule({
+      imports: [FinesApiProcessAllocateComponent],
+      providers: [
+        { provide: ActivatedRoute, useValue: activatedRoute },
+        { provide: Router, useValue: { navigate: routerNavigate } },
+        { provide: OpalFines, useValue: { getInterfaceJobsSummary } },
+      ],
+    }).compileComponents();
+
+    finesApiStore = TestBed.inject(FinesApiStore);
+    finesApiStore.resetFinesApiState();
+    finesApiStore.setSelectedBusinessUnitIds([77, 80]);
+
+    const defaultFactoryInstance = TestBed.runInInjectionContext(() => originalComponentFactory());
+    const explicitFactoryInstance = TestBed.runInInjectionContext(() =>
+      originalComponentFactory(FinesApiProcessAllocateComponent),
+    );
+
+    expect(defaultFactoryInstance).toBeInstanceOf(FinesApiProcessAllocateComponent);
+    expect(explicitFactoryInstance).toBeInstanceOf(FinesApiProcessAllocateComponent);
+    defaultFactoryInstance.ngOnDestroy();
+    explicitFactoryInstance.ngOnDestroy();
+
+    fixture = TestBed.createComponent(FinesApiProcessAllocateComponent);
+    component = fixture.componentInstance;
+    fixture.detectChanges();
+
+    expect((fixture.nativeElement as HTMLElement).querySelector('app-fines-api-process')).toBeTruthy();
+
+    finesApiStore.setActiveTab('allocate');
+    fixture.detectChanges();
+
+    expect((fixture.nativeElement as HTMLElement).querySelector('app-fines-api-process')).toBeNull();
   });
 });

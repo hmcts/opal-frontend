@@ -60,7 +60,7 @@ describe('FinesApiProcessFilesTableWrapperComponent', () => {
 
     const nativeElement = fixture.nativeElement as HTMLElement;
     const selectAll = nativeElement.querySelector<HTMLInputElement>('#fines-api-process-files-select-all-checkbox');
-    const selectedCount = nativeElement.querySelector<HTMLElement>('#fines-api-process-files-selected-count');
+    const selectedCount = nativeElement.querySelector<HTMLOutputElement>('#fines-api-process-files-selected-count');
     const selectionAnnouncement = nativeElement.querySelector<HTMLOutputElement>(
       '#fines-api-process-files-announcement output',
     );
@@ -68,7 +68,8 @@ describe('FinesApiProcessFilesTableWrapperComponent', () => {
 
     expect(selectAll).toBeTruthy();
     expect(selectedCount?.textContent?.trim()).toBe('0 of 1 files selected');
-    expect(selectedCount?.getAttribute('role')).toBe('status');
+    expect(selectedCount?.tagName).toBe('OUTPUT');
+    expect(selectedCount?.hasAttribute('role')).toBe(false);
     expect(selectedCount?.getAttribute('aria-live')).toBe('polite');
     expect(selectedCount?.getAttribute('aria-atomic')).toBe('true');
     expect(selectionAnnouncement?.getAttribute('role')).toBe('status');
