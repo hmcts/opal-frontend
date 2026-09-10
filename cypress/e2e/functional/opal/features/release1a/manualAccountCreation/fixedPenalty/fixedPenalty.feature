@@ -7,7 +7,7 @@ Feature: Fixed Penalty
       When I start a fixed penalty account for business unit "West London", defendant type "Adult or youth only" and originator type "New"
       And I complete fixed penalty details:
         | Section          | Field                  | Value                                     |
-        | Court details    | Issuing Authority      | City of London Central Ticket Office (34) |
+        | Court details    | Issuing Authority      | Met Camera Processing Services / Traffic Offence Reports (001) |
         | Court details    | Enforcement court      | Aram Court (123)                          |
         | Personal details | Title                  | Mr                                        |
         | Personal details | First names            | John                                      |
@@ -31,7 +31,7 @@ Feature: Fixed Penalty
     Scenario: Review shows fixed penalty details for adult or youth
       Then the fixed penalty review "Court details" summary is:
         | Label             | Value                                     |
-        | Issuing Authority | City of London Central Ticket Office (34) |
+        | Issuing Authority | Met Camera Processing Services / Traffic Offence Reports (001) |
         | Enforcement court | Aram Court (123)                          |
       And the fixed penalty review "Personal details" summary is:
         | Label         | Value           |
