@@ -11,6 +11,7 @@ import {
   ALPHANUMERIC_WITH_SPACES_PATTERN,
   LETTERS_WITH_SPACES_PATTERN,
   SINGLE_ASCII_CHARACTERS,
+  LETTERS_SPACES_HYPHENS_PATTERN,
 } from '@hmcts/opal-frontend-common/constants';
 import { patternValidator } from '@hmcts/opal-frontend-common/validators/pattern-validator';
 import { dateOfBirthValidator } from '@hmcts/opal-frontend-common/validators/date-of-birth';
@@ -25,7 +26,6 @@ const ALPHANUMERIC_WITH_SPACES_PATTERN_VALIDATOR = patternValidator(
   ALPHANUMERIC_WITH_SPACES_PATTERN,
   'alphanumericTextPattern',
 );
-const LETTERS_SPACES_HYPHENS_PATTERN = /^[a-zA-Z -]*$/;
 const LETTERS_SPACES_HYPHENS_PATTERN_VALIDATOR = patternValidator(
   LETTERS_SPACES_HYPHENS_PATTERN,
   'lettersSpacesHyphensPattern',
