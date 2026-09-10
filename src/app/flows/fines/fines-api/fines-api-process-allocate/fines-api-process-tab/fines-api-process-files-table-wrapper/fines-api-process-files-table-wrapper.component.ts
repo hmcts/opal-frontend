@@ -76,10 +76,11 @@ export class FinesApiProcessFilesTableWrapperComponent extends AbstractSortableT
   @Input() public selectionErrorId: string | null = null;
 
   /**
-   * Sets the latest mapped table rows, retaining the active user sort and valid selections.
+   * Sets the latest mapped table rows, restoring the default sort and retaining valid selections.
    */
   @Input({ required: true }) set tableData(tableData: IFinesApiProcessFilesTableWrapperTableData[]) {
     this.setTableData(tableData.slice(0, this.MAX_RESULTS));
+    this.resetSortStateToDefault();
     this.onApplyFilters();
     this.pruneMissingSelections(true);
   }
@@ -99,6 +100,16 @@ export class FinesApiProcessFilesTableWrapperComponent extends AbstractSortableT
   @Input({ required: false }) set selectedInterfaceFileIds(selectedInterfaceFileIds: string[] | null) {
     this.selectedRowIdsSignal.set(new Set(selectedInterfaceFileIds ?? []));
     this.pruneMissingSelections(false);
+  }
+
+  /** Restores the externally supplied default sort before refreshed rows are displayed. */
+  private resetSortStateToDefault(): void {
+    const defaultSortState = this.abstractExistingSortState ?? {};
+    const defaultSortedColumn = Object.entries(defaultSortState).find(([, sortType]) => sortType !== 'none');
+
+    this.sortStateSignal.set({ ...defaultSortState });
+    this.sortedColumnTitleSignal.set(defaultSortedColumn?.[0] ?? '');
+    this.sortedColumnDirectionSignal.set(defaultSortedColumn?.[1] ?? 'none');
   }
 
   /**

@@ -149,6 +149,48 @@ describe('FinesApiProcessFilesTableWrapperComponent', () => {
     expect(component.selectedFilesCountComputed()).toBe(1);
   });
 
+  it('should reset sorting and render refreshed table data in API order', () => {
+    const initialRows = buildTableRows(30);
+    const refreshedRows: IFinesApiProcessFilesTableWrapperTableData[] = [
+      {
+        ...initialRows[0],
+        'File name': 'zebra-latest.xml',
+        interfaceJobId: '106',
+        interfaceFileId: '1106',
+      },
+      {
+        ...initialRows[1],
+        'File name': 'alpha-latest.xml',
+        interfaceJobId: '107',
+        interfaceFileId: '1107',
+      },
+    ];
+    render(initialRows);
+    component.onSortChange({ key: 'File name', sortType: 'ascending' });
+    component.currentPageSignal.set(2);
+
+    fixture.componentRef.setInput('tableData', refreshedRows);
+    fixture.detectChanges();
+
+    const nativeElement = fixture.nativeElement as HTMLElement;
+    const fileNameHeader = Array.from(nativeElement.querySelectorAll<HTMLElement>('thead th')).find((heading) =>
+      heading.textContent?.includes('File name'),
+    );
+    expect(component.sortStateSignal()).toEqual(FINES_API_PROCESS_FILES_TABLE_WRAPPER_TABLE_SORT_DEFAULT);
+    expect(component.sortedColumnTitleSignal()).toBe('');
+    expect(component.sortedColumnDirectionSignal()).toBe('none');
+    expect(component.currentPageSignal()).toBe(1);
+    expect(component.fullTableDataComputed().map((row) => row['File name'])).toEqual([
+      'zebra-latest.xml',
+      'alpha-latest.xml',
+    ]);
+    expect(fileNameHeader?.getAttribute('aria-sort')).toBe('none');
+    expect(
+      Array.from(nativeElement.querySelectorAll<HTMLElement>('[id$="-name"]'), (cell) => cell.textContent?.trim()),
+    ).toEqual(['zebra-latest.xml', 'alpha-latest.xml']);
+    expect(nativeElement.querySelector('#fines-api-process-file-1001-name')).toBeNull();
+  });
+
   it('should restore externally persisted selections', () => {
     const rows = buildTableRows(3);
 
