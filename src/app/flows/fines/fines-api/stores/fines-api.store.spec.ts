@@ -132,8 +132,8 @@ describe('FinesApiStore', () => {
   it('should set and clear retained process interface jobs', () => {
     store.setProcessInterfaceJobs(processInterfaceJobs);
 
-    expect(store.processInterfaceJobs()).toEqual(processInterfaceJobs)
-    
+    expect(store.processInterfaceJobs()).toEqual(processInterfaceJobs);
+
     store.clearProcessInterfaceJobs();
 
     expect(store.processInterfaceJobs()).toBeNull();
