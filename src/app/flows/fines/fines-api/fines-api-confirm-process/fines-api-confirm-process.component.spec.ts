@@ -19,7 +19,7 @@ const PROCESS_JOBS: IOpalFinesInterfaceJobSummary[] = [
     file_name: 'payments_dwp_001.dat',
     interface_file_id: 501,
     interface_job_id: 1001,
-    source: 'DWP_AEA',
+    source: 'DWP',
     status: 'CREATED',
   },
   {
@@ -39,7 +39,7 @@ const PROCESS_JOBS: IOpalFinesInterfaceJobSummary[] = [
     file_name: 'payments_aea_001.dat',
     interface_file_id: 503,
     interface_job_id: 1003,
-    source: 'AEA',
+    source: 'DWP',
     status: 'FAILED',
   },
   {
@@ -49,7 +49,7 @@ const PROCESS_JOBS: IOpalFinesInterfaceJobSummary[] = [
     file_name: 'payments_not_selected.dat',
     interface_file_id: 504,
     interface_job_id: 1004,
-    source: 'DWP/AEA',
+    source: 'DWP',
     status: 'CREATED',
   },
 ];
@@ -128,7 +128,7 @@ describe('FinesApiConfirmProcessComponent', () => {
     finesApiStore = TestBed.inject(FinesApiStore);
   });
 
-  it('should render selected file counts and alphabetically sorted business unit totals', () => {
+  it('should render the heading and alphabetically sorted business unit totals', () => {
     createComponent();
 
     fixture.detectChanges();
@@ -141,13 +141,7 @@ describe('FinesApiConfirmProcessComponent', () => {
     expect(component).toBeTruthy();
     expect(nativeElement.querySelector('h1')?.textContent?.trim()).toBe('Confirm before processing');
     expect(nativeElement.querySelector('#fines-api-confirm-process-selection-count')?.textContent?.trim()).toBe(
-      'You have selected 3 of 3 files to process',
-    );
-    expect(nativeElement.querySelector('#fines-api-confirm-process-selection-count')?.getAttribute('role')).toBe(
-      'status',
-    );
-    expect(nativeElement.querySelector('#fines-api-confirm-process-selection-count')?.getAttribute('aria-atomic')).toBe(
-      'true',
+      'You have selected 3 of 4 files to process',
     );
     expect(summaryRows).toHaveLength(2);
     expect(summaryRows[0].textContent).toContain('Camberwell Green');
@@ -186,7 +180,7 @@ describe('FinesApiConfirmProcessComponent', () => {
     expect(finesApiStore.overrideInhibitFileIds()).toEqual(['501', '503']);
   });
 
-  it('should reduce the displayed selection count when a DWP/AEA override is unchecked', () => {
+  it('should keep every selected file in the summary when a DWP/AEA override is unchecked', () => {
     createComponent();
     fixture.detectChanges();
 
@@ -197,19 +191,19 @@ describe('FinesApiConfirmProcessComponent', () => {
     fixture.detectChanges();
 
     expect(checkbox.checked).toBe(false);
+    expect(finesApiStore.overrideInhibitFileIds()).toEqual(['501']);
     expect(
       (fixture.nativeElement as HTMLElement)
         .querySelector('#fines-api-confirm-process-selection-count')
         ?.textContent?.trim(),
-    ).toBe('You have selected 2 of 3 files to process');
-    expect(finesApiStore.overrideInhibitFileIds()).toEqual(['501']);
+    ).toBe('You have selected 3 of 4 files to process');
 
     const summaryRows = (fixture.nativeElement as HTMLElement).querySelectorAll<HTMLTableRowElement>(
       '#fines-api-confirm-process-business-units tbody tr',
     );
     expect(summaryRows).toHaveLength(2);
     expect(summaryRows[0].textContent).toContain('Camberwell Green');
-    expect(summaryRows[0].textContent).toContain('1');
+    expect(summaryRows[0].textContent).toContain('2');
     expect(summaryRows[1].textContent).toContain('West London');
     expect(summaryRows[1].textContent).toContain('1');
   });
@@ -220,13 +214,10 @@ describe('FinesApiConfirmProcessComponent', () => {
     fixture.detectChanges();
 
     const nativeElement = fixture.nativeElement as HTMLElement;
-    expect(nativeElement.querySelector('#fines-api-confirm-process-selection-count')?.textContent?.trim()).toBe(
-      'You have selected 1 of 1 files to process',
-    );
     expect(nativeElement.querySelector('#fines-api-confirm-process-override-inhibits')).toBeNull();
   });
 
-  it('should exclude an unchecked DWP/AEA job from processing and navigate to Allocate', () => {
+  it('should submit an unchecked DWP/AEA job with override inhibits false and navigate to Allocate', () => {
     createComponent();
     fixture.detectChanges();
     component['toggleOverrideInhibits']({ rowId: '503', checked: false });
@@ -237,6 +228,7 @@ describe('FinesApiConfirmProcessComponent', () => {
       interface_jobs: [
         { business_unit_id: 80, interface_job_id: 1001, override_inhibits: true },
         { business_unit_id: 77, interface_job_id: 1002, override_inhibits: false },
+        { business_unit_id: 77, interface_job_id: 1003, override_inhibits: false },
       ],
     });
     expect(finesApiStore.activeTab()).toBe(FINES_API_PROCESS_ALLOCATE_TABS_KEYS.allocate);
@@ -249,7 +241,7 @@ describe('FinesApiConfirmProcessComponent', () => {
     });
   });
 
-  it('should disable processing and not call the API when every selected file is unchecked', () => {
+  it('should process every selected file when every override-inhibits checkbox is unchecked', () => {
     createComponent([PROCESS_JOBS[0]], ['501']);
     fixture.detectChanges();
 
@@ -260,11 +252,29 @@ describe('FinesApiConfirmProcessComponent', () => {
     fixture.detectChanges();
 
     const nativeElement = fixture.nativeElement as HTMLElement;
-    expect(nativeElement.querySelector('#fines-api-confirm-process-selection-count')?.textContent?.trim()).toBe(
-      'You have selected 0 of 1 files to process',
-    );
-    expect(nativeElement.querySelectorAll('#fines-api-confirm-process-business-units tbody tr')).toHaveLength(0);
-    expect(nativeElement.querySelector<HTMLButtonElement>('#fines-api-confirm-process-submit')?.disabled).toBe(true);
+    expect(nativeElement.querySelectorAll('#fines-api-confirm-process-business-units tbody tr')).toHaveLength(1);
+    expect(nativeElement.querySelector('#fines-api-confirm-process-file-count-80')?.textContent?.trim()).toBe('1');
+    expect(nativeElement.querySelector<HTMLButtonElement>('#fines-api-confirm-process-submit')?.disabled).toBe(false);
+
+    component['process']();
+
+    expect(processInterfaceJobs).toHaveBeenCalledWith({
+      interface_jobs: [{ business_unit_id: 80, interface_job_id: 1001, override_inhibits: false }],
+    });
+    expect(routerNavigate).toHaveBeenCalledWith([FINES_API_ROUTING_PATHS.children.processAllocate], {
+      relativeTo: activatedRouteParent,
+      fragment: FINES_API_PROCESS_ALLOCATE_TABS_KEYS.allocate,
+    });
+  });
+
+  it('should disable processing and not call the API when no selected jobs can be resolved', () => {
+    createComponent(PROCESS_JOBS, ['999']);
+    fixture.detectChanges();
+
+    expect(
+      (fixture.nativeElement as HTMLElement).querySelector<HTMLButtonElement>('#fines-api-confirm-process-submit')
+        ?.disabled,
+    ).toBe(true);
 
     component['process']();
 

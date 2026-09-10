@@ -47,7 +47,7 @@ const PROCESS_JOBS: IOpalFinesInterfaceJobSummary[] = [
     file_name: 'payments_dwp_002.dat',
     interface_file_id: 1702,
     interface_job_id: 702,
-    source: 'DWP_AEA',
+    source: 'DWP',
     status: 'CREATED',
   },
 ];

@@ -34,7 +34,6 @@ import {
   buildBusinessUnitSummary,
   buildProcessInterfaceJobsPayload,
   enrichInterfaceJobsWithBusinessUnitIds,
-  getInterfaceJobsToProcess,
   getSelectedInterfaceJobs,
   isDwpAeaSource,
 } from './utils/fines-api-confirm-process.utils';
@@ -76,8 +75,8 @@ export class FinesApiConfirmProcessComponent implements OnInit {
   );
   protected readonly dwpAeaInterfaceJobs = this.selectedInterfaceJobs.filter(({ source }) => isDwpAeaSource(source));
   protected overrideInhibitFileIds = new Set<string>();
-  protected businessUnitSummary = buildBusinessUnitSummary(this.selectedInterfaceJobs);
-  protected selectedFilesCount = this.selectedInterfaceJobs.length;
+  protected readonly businessUnitSummary = buildBusinessUnitSummary(this.selectedInterfaceJobs);
+  protected readonly totalFilesCount = this.finesApiStore.processInterfaceJobs()?.length ?? 0;
 
   /** Synchronises every override-inhibits checkbox with the current selection set. */
   private syncOverrideInhibitControls(): void {
@@ -103,10 +102,6 @@ export class FinesApiConfirmProcessComponent implements OnInit {
   private updateOverrideInhibitSelection(selectedFileIds: Set<string>): void {
     this.overrideInhibitFileIds = selectedFileIds;
     this.syncOverrideInhibitControls();
-    const interfaceJobsToProcess = getInterfaceJobsToProcess(this.selectedInterfaceJobs, selectedFileIds);
-
-    this.selectedFilesCount = interfaceJobsToProcess.length;
-    this.businessUnitSummary = buildBusinessUnitSummary(interfaceJobsToProcess);
     this.finesApiStore.setOverrideInhibitFileIds(
       this.dwpAeaInterfaceJobs
         .map((interfaceJob) => this.getInterfaceFileId(interfaceJob))
@@ -184,7 +179,7 @@ export class FinesApiConfirmProcessComponent implements OnInit {
     });
   }
 
-  /** Submits the files that remain selected and opens the Allocate tab after a successful response. */
+  /** Submits every file selected on the Process tab and opens the Allocate tab after a successful response. */
   protected process(): void {
     if (this.isProcessing()) {
       return;

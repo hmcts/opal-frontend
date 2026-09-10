@@ -22,18 +22,6 @@ export const isDwpAeaSource = (source: string): boolean =>
   FINES_API_INTERFACE_JOB_SOURCE_LABELS[source.trim().toUpperCase()] === 'DWP/AEA';
 
 /**
- * Returns every non-DWP/AEA file and only DWP/AEA files that remain selected on confirmation.
- */
-export const getInterfaceJobsToProcess = (
-  interfaceJobs: IFinesApiConfirmProcessInterfaceJob[],
-  overrideInhibitFileIds: ReadonlySet<string>,
-): IFinesApiConfirmProcessInterfaceJob[] =>
-  interfaceJobs.filter(
-    (interfaceJob) =>
-      !isDwpAeaSource(interfaceJob.source) || overrideInhibitFileIds.has(interfaceJob.interface_file_id.toString()),
-  );
-
-/**
  * Adds the business-unit ID omitted by the summary API by matching each row to the selected
  * business-unit resolver data. Ambiguous or missing names are left out so the route guard can
  * prevent an invalid processing request.
@@ -83,14 +71,14 @@ export const buildBusinessUnitSummary = (
   );
 };
 
-/** Builds the unique job payload, excluding unchecked DWP/AEA files from processing. */
+/** Builds the unique job payload and applies the selected DWP/AEA override-inhibits flags. */
 export const buildProcessInterfaceJobsPayload = (
   interfaceJobs: IFinesApiConfirmProcessInterfaceJob[],
   overrideInhibitFileIds: ReadonlySet<string>,
 ): IOpalFinesProcessInterfaceJobsPayload => {
   const interfaceJobsById = new Map<number, IOpalFinesProcessInterfaceJobsPayload['interface_jobs'][number]>();
 
-  getInterfaceJobsToProcess(interfaceJobs, overrideInhibitFileIds).forEach((interfaceJob) => {
+  interfaceJobs.forEach((interfaceJob) => {
     const overrideInhibits =
       isDwpAeaSource(interfaceJob.source) && overrideInhibitFileIds.has(interfaceJob.interface_file_id.toString());
     const existingJob = interfaceJobsById.get(interfaceJob.interface_job_id);

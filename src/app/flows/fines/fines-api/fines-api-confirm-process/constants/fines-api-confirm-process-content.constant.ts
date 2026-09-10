@@ -8,15 +8,14 @@ export const FINES_API_CONFIRM_PROCESS_CONTENT = {
     files: 'Files',
   },
   overrideInhibitsHeading: 'Override inhibits for DWP/AEA files',
-  overrideInhibitsHint:
-    'Only selected DWP/AEA files will be processed. Inhibits will be overridden for every selected file.',
+  overrideInhibitsHint: 'If any files are from DWP/AEA, unselect them below to include the inhibits',
   overrideInhibitsCaption: 'DWP/AEA files with override inhibits options',
   overrideInhibitsColumns: {
     select: 'Override inhibits',
     file: 'File',
     businessUnit: 'Business unit',
   },
-  selectAllOverrideInhibits: 'Select all DWP/AEA files to process and override inhibits',
-  overrideInhibitsForFile: (fileName: string) => `Process ${fileName} and override inhibits`,
+  selectAllOverrideInhibits: 'Override inhibits for all DWP/AEA files',
+  overrideInhibitsForFile: (fileName: string) => `Override inhibits for ${fileName}`,
   processButton: 'Process',
 } as const;

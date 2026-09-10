@@ -1,13 +1,7 @@
 <div id="fines-api-confirm-process-page" class="govuk-grid-column-two-thirds">
   <h1 id="fines-api-confirm-process-heading" class="govuk-heading-l">{{ content.heading }}</h1>
-  <p
-    id="fines-api-confirm-process-selection-count"
-    class="govuk-body"
-    role="status"
-    aria-live="polite"
-    aria-atomic="true"
-  >
-    {{ content.selectedFiles(selectedFilesCount, selectedInterfaceJobs.length) }}
+  <p id="fines-api-confirm-process-selection-count" class="govuk-body">
+    {{ content.selectedFiles(selectedInterfaceJobs.length, totalFilesCount) }}
   </p>
 
   <opal-lib-govuk-table
@@ -152,7 +146,7 @@
       id="fines-api-confirm-process-submit"
       class="govuk-button"
       type="button"
-      [disabled]="isProcessing() || selectedFilesCount === 0"
+      [disabled]="isProcessing() || selectedInterfaceJobs.length === 0"
       (click)="process()"
     >
       {{ content.processButton }}

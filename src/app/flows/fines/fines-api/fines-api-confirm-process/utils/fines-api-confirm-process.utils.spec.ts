@@ -5,7 +5,6 @@ import {
   buildBusinessUnitSummary,
   buildProcessInterfaceJobsPayload,
   enrichInterfaceJobsWithBusinessUnitIds,
-  getInterfaceJobsToProcess,
   getSelectedInterfaceJobs,
   isDwpAeaSource,
 } from './fines-api-confirm-process.utils';
@@ -42,16 +41,16 @@ describe('fines-api-confirm-process utils', () => {
     expect(getSelectedInterfaceJobs(null, ['501'])).toEqual([]);
   });
 
-  it.each(['DWP_AEA', 'DWP/AEA', 'DWP/AEA/DWP', 'DWP', 'AEA', ' dwp_aea '])(
-    'should recognise %s as a DWP/AEA source',
+  it.each(['DWP', 'dwp', ' DWP '])('should recognise %s as a DWP/AEA source', (source) => {
+    expect(isDwpAeaSource(source)).toBe(true);
+  });
+
+  it.each(['DWP_AEA', 'DWP/AEA', 'DWP/AEA/DWP', 'AEA', 'NATWEST'])(
+    'should not recognise unsupported source %s as DWP/AEA',
     (source) => {
-      expect(isDwpAeaSource(source)).toBe(true);
+      expect(isDwpAeaSource(source)).toBe(false);
     },
   );
-
-  it('should not recognise another payment source as DWP/AEA', () => {
-    expect(isDwpAeaSource('NATWEST')).toBe(false);
-  });
 
   it('should enrich summary rows with IDs from selected business-unit data', () => {
     const interfaceJobs = [
@@ -97,26 +96,17 @@ describe('fines-api-confirm-process utils', () => {
     ]);
   });
 
-  it('should retain non-DWP/AEA files and only selected DWP/AEA files for processing', () => {
+  it('should submit every job and set override inhibits only for selected DWP files', () => {
     const interfaceJobs = [
-      buildConfirmInterfaceJob({ interface_file_id: 501, interface_job_id: 1001, source: 'DWP_AEA' }),
-      buildConfirmInterfaceJob({ interface_file_id: 502, interface_job_id: 1002, source: 'DWP/AEA' }),
-      buildConfirmInterfaceJob({ interface_file_id: 503, interface_job_id: 1003, source: 'NATWEST' }),
-    ];
-
-    expect(getInterfaceJobsToProcess(interfaceJobs, new Set(['501']))).toEqual([interfaceJobs[0], interfaceJobs[2]]);
-  });
-
-  it('should exclude unchecked DWP/AEA files from the unique job payload', () => {
-    const interfaceJobs = [
-      buildConfirmInterfaceJob({ interface_file_id: 501, interface_job_id: 1001, source: 'DWP_AEA' }),
-      buildConfirmInterfaceJob({ interface_file_id: 502, interface_job_id: 1002, source: 'DWP/AEA' }),
+      buildConfirmInterfaceJob({ interface_file_id: 501, interface_job_id: 1001, source: 'DWP' }),
+      buildConfirmInterfaceJob({ interface_file_id: 502, interface_job_id: 1002, source: 'DWP' }),
       buildConfirmInterfaceJob({ interface_file_id: 503, interface_job_id: 1003, source: 'NATWEST' }),
     ];
 
     expect(buildProcessInterfaceJobsPayload(interfaceJobs, new Set(['501', '503']))).toEqual({
       interface_jobs: [
         { business_unit_id: 77, interface_job_id: 1001, override_inhibits: true },
+        { business_unit_id: 77, interface_job_id: 1002, override_inhibits: false },
         { business_unit_id: 77, interface_job_id: 1003, override_inhibits: false },
       ],
     });
@@ -124,12 +114,23 @@ describe('fines-api-confirm-process utils', () => {
 
   it('should submit a shared interface job once and retain a selected override', () => {
     const interfaceJobs = [
-      buildConfirmInterfaceJob({ interface_file_id: 501, interface_job_id: 1001, source: 'DWP_AEA' }),
-      buildConfirmInterfaceJob({ interface_file_id: 502, interface_job_id: 1001, source: 'DWP_AEA' }),
+      buildConfirmInterfaceJob({ interface_file_id: 501, interface_job_id: 1001, source: 'DWP' }),
+      buildConfirmInterfaceJob({ interface_file_id: 502, interface_job_id: 1001, source: 'DWP' }),
     ];
 
     expect(buildProcessInterfaceJobsPayload(interfaceJobs, new Set(['502']))).toEqual({
       interface_jobs: [{ business_unit_id: 77, interface_job_id: 1001, override_inhibits: true }],
+    });
+  });
+
+  it('should submit a shared interface job once with override inhibits false when every file is unchecked', () => {
+    const interfaceJobs = [
+      buildConfirmInterfaceJob({ interface_file_id: 501, interface_job_id: 1001, source: 'DWP' }),
+      buildConfirmInterfaceJob({ interface_file_id: 502, interface_job_id: 1001, source: 'DWP' }),
+    ];
+
+    expect(buildProcessInterfaceJobsPayload(interfaceJobs, new Set())).toEqual({
+      interface_jobs: [{ business_unit_id: 77, interface_job_id: 1001, override_inhibits: false }],
     });
   });
 });
