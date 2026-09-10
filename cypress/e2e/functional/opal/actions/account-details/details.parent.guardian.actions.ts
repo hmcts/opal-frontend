@@ -4,9 +4,58 @@
  * to the change form and summary assertions.
  */
 import { AccountParentOrGuardianDetailsLocators as L } from '../../../../../shared/selectors/account-details/account.parent-guardian.details.locators';
+import { CommonActions } from '../common/common.actions';
 
 /** Actions for the Parent/Guardian section on Account Details. */
 export class AccountDetailsParentGuardianActions {
+  private readonly common = new CommonActions();
+
+  /**
+   * Normalizes visible text for stable whitespace-insensitive assertions.
+   *
+   * @param value - Raw text content read from the page.
+   * @returns Text with non-breaking spaces replaced and whitespace collapsed.
+   */
+  private normalize(value: string): string {
+    return value
+      .replace(/\u00a0/g, ' ')
+      .replace(/\s+/g, ' ')
+      .trim();
+  }
+
+  /**
+   * Asserts a map of label/value pairs within a specific Parent or guardian summary card.
+   *
+   * @param expected - Expected values keyed by visible label text.
+   * @param fieldSelectors - Mapping of normalized labels to locators.
+   * @param scope - Root selector that must be visible before assertions run.
+   */
+  private assertMappedValues(
+    expected: Record<string, string>,
+    fieldSelectors: Record<string, string>,
+    scope: string,
+  ): void {
+    cy.get(scope, this.common.getTimeoutOptions()).should('be.visible');
+
+    Object.entries(expected).forEach(([label, value]) => {
+      const normalizedLabel = label.trim().toLowerCase();
+      const selector = fieldSelectors[normalizedLabel];
+
+      if (!selector) {
+        throw new Error(
+          `Unsupported Parent or guardian tab label "${label}". Supported labels: ${Object.keys(fieldSelectors).join(
+            ', ',
+          )}`,
+        );
+      }
+
+      cy.get(selector, this.common.getTimeoutOptions())
+        .should('be.visible')
+        .invoke('text')
+        .then((text) => expect(this.normalize(text)).to.contain(this.normalize(value)));
+    });
+  }
+
   /**
    * Clicks the "Change" link in the Parent or guardian details summary card.
    *
@@ -103,5 +152,24 @@ export class AccountDetailsParentGuardianActions {
       .should('be.visible')
       .invoke('text')
       .then((t) => expect(t.trim().toLowerCase()).to.contain(expected.trim().toLowerCase()));
+  }
+
+  /**
+   * Asserts the Parent or guardian details summary-card values.
+   *
+   * @param expected - Map of visible labels to expected values.
+   */
+  public assertParentGuardianDetails(expected: Record<string, string>): void {
+    const fieldSelectors: Record<string, string> = {
+      name: L.parentOrGuardian.fields.name,
+      aliases: L.parentOrGuardian.fields.aliases,
+      'date of birth': L.parentOrGuardian.fields.dateOfBirth,
+      'national insurance number': L.parentOrGuardian.fields.nationalInsuranceNumber,
+      address: L.parentOrGuardian.fields.address,
+      'vehicle make and model': L.parentOrGuardian.fields.vehicleMakeAndModel,
+      'vehicle registration': L.parentOrGuardian.fields.vehicleRegistration,
+    };
+
+    this.assertMappedValues(expected, fieldSelectors, L.parentOrGuardian.card);
   }
 }
