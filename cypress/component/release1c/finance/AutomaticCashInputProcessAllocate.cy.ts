@@ -6,10 +6,13 @@ import { AutomaticCashInputLocators } from '../../../shared/selectors/automatic-
 import { FinanceLocators } from '../../../shared/selectors/finance.locators';
 import { setupFinancePageComponent } from './setup/SetupComponent';
 import { PROCESS_INTERFACE_JOBS_SUMMARY_MOCK } from './mocks/interface-jobs-summary.mock';
+import 'cypress-axe';
 
 const AUTOMATIC_CASH_INPUT_JIRA_LABEL = '@JIRA-LABEL:Auto-Payments Processing Filess';
 const AUTOMATIC_CASH_INPUT_JIRA_EPIC = '@JIRA-EPIC:PO-2468';
 const AUTOMATIC_CASH_INPUT_RELEASE_TAG = '@R1CFinancialMovements';
+const UNSAVED_CHANGES_MESSAGE =
+  'WARNING: Are you sure you want to leave this page? Any information you entered will be lost.';
 
 const assertTrimmedText = (selector: string, expectedText: string): void => {
   cy.get(selector)
@@ -316,29 +319,30 @@ describe('Automatic Cash Input - Process files and allocate tills', () => {
       cy.get(FinanceLocators.automaticCashInputLink).click();
       cy.get(AutomaticCashInputLocators.businessUnitCheckbox(77)).check({ force: true });
       cy.get(AutomaticCashInputLocators.continueButton).click();
-      cy.wait('@getInterfaceJobsSummary');
-      cy.get(AutomaticCashInputLocators.processFileNameCells).should('have.length', 5);
+      cy.wait('@getInterfaceJobsSummary').then(() => {
+        cy.get(AutomaticCashInputLocators.processFileNameCells).should('have.length', 5);
 
-      interfaceJobsResponse = {
-        interface_jobs: [
-          {
-            interface_file_id: 106,
-            interface_job_id: 1006,
-            file_name: 'camden-latest.xml',
-            source: 'ALLPAY',
-            business_unit_name: 'Camden and Islington',
-            created_datetime: '2026-01-11T13:30:00.000Z',
-            completed_datetime: null,
-            status: 'CREATED',
-          },
-        ],
-      };
+        interfaceJobsResponse = {
+          interface_jobs: [
+            {
+              interface_file_id: 106,
+              interface_job_id: 1006,
+              file_name: 'camden-latest.xml',
+              source: 'ALLPAY',
+              business_unit_name: 'Camden and Islington',
+              created_datetime: '2026-01-11T13:30:00.000Z',
+              completed_datetime: null,
+              status: 'CREATED',
+            },
+          ],
+        };
 
-      cy.get(AutomaticCashInputLocators.processFilesRefreshButton).click();
-      cy.wait('@getInterfaceJobsSummary').its('request.query.business_unit_ids').should('eq', '77');
-      cy.get(AutomaticCashInputLocators.processFileNameCells).should('have.length', 1);
-      assertTrimmedText(AutomaticCashInputLocators.processFileNameCell(106), 'camden-latest.xml');
-      cy.get(AutomaticCashInputLocators.processFileNameCell(101)).should('not.exist');
+        cy.get(AutomaticCashInputLocators.processFilesRefreshButton).click();
+        cy.wait('@getInterfaceJobsSummary').its('request.query.business_unit_ids').should('eq', '77');
+        cy.get(AutomaticCashInputLocators.processFileNameCells).should('have.length', 1);
+        assertTrimmedText(AutomaticCashInputLocators.processFileNameCell(106), 'camden-latest.xml');
+        cy.get(AutomaticCashInputLocators.processFileNameCell(101)).should('not.exist');
+      });
     },
   );
 
@@ -425,6 +429,113 @@ describe('Automatic Cash Input - Process files and allocate tills', () => {
       cy.get(AutomaticCashInputLocators.selectBusinessUnitsLegend).should('contain.text', 'Select business units');
       cy.get('@finesApiStore').then((finesApiStore) => {
         expect((finesApiStore as InstanceType<typeof FinesApiStore>).selectedFileIds()).to.deep.equal([]);
+      });
+    },
+  );
+
+  it(
+    '(AC7a, AC7ai, AC7aii) confirms data loss before returning to Select Business Units with selected files',
+    {
+      tags: [
+        '@JIRA-STORY:PO-2585',
+        AUTOMATIC_CASH_INPUT_JIRA_LABEL,
+        AUTOMATIC_CASH_INPUT_JIRA_EPIC,
+        AUTOMATIC_CASH_INPUT_RELEASE_TAG,
+      ],
+    },
+    () => {
+      cy.intercept(
+        {
+          method: 'GET',
+          pathname: '/opal-fines-service/interface-jobs/summary',
+        },
+        PROCESS_INTERFACE_JOBS_SUMMARY_MOCK,
+      ).as('getInterfaceJobsSummary');
+      setupFinancePageComponent({ dashboardType: FINES_DASHBOARD_ROUTING_PATHS.children.finance });
+
+      cy.get(FinanceLocators.automaticCashInputLink).click();
+      cy.get(AutomaticCashInputLocators.businessUnitCheckbox(77)).check({ force: true });
+      cy.get(AutomaticCashInputLocators.continueButton).click();
+      cy.wait('@getInterfaceJobsSummary');
+      cy.get(AutomaticCashInputLocators.processFileCheckbox(101)).check({ force: true });
+      cy.window().then((window) => {
+        const leavePageConfirm = cy.stub(window, 'confirm');
+
+        leavePageConfirm.onFirstCall().returns(false);
+        leavePageConfirm.onSecondCall().returns(true);
+        cy.wrap(leavePageConfirm).as('leavePageConfirm');
+      });
+
+      cy.get(AutomaticCashInputLocators.processAllocateBackLink).click();
+
+      cy.get('@leavePageConfirm')
+        .should('have.been.calledOnce')
+        .and('have.been.calledWithExactly', UNSAVED_CHANGES_MESSAGE);
+      cy.get('@financeRouter')
+        .its('url')
+        .should(
+          'eq',
+          [
+            '',
+            FINES_ROUTING_PATHS.root,
+            FINES_ROUTING_PATHS.children.autoPaymentIn.root,
+            FINES_ROUTING_PATHS.children.autoPaymentIn.children.processAllocate,
+          ].join('/'),
+        );
+      cy.get(AutomaticCashInputLocators.processFileCheckbox(101)).should('be.checked');
+
+      cy.get(AutomaticCashInputLocators.processAllocateBackLink).click();
+
+      cy.get('@leavePageConfirm').should('have.been.calledTwice');
+      cy.get('@financeRouter')
+        .its('url')
+        .should(
+          'eq',
+          [
+            '',
+            FINES_ROUTING_PATHS.root,
+            FINES_ROUTING_PATHS.children.autoPaymentIn.root,
+            FINES_ROUTING_PATHS.children.autoPaymentIn.children.selectBusinessUnits,
+          ].join('/'),
+        );
+      cy.get('@finesApiStore').then((finesApiStore) => {
+        expect((finesApiStore as InstanceType<typeof FinesApiStore>).selectedFileIds()).to.deep.equal([]);
+      });
+    },
+  );
+
+  it(
+    '(AC9) passes Axe Core accessibility checks for the populated Process files screen',
+    {
+      tags: [
+        '@JIRA-STORY:PO-2585',
+        AUTOMATIC_CASH_INPUT_JIRA_LABEL,
+        AUTOMATIC_CASH_INPUT_JIRA_EPIC,
+        AUTOMATIC_CASH_INPUT_RELEASE_TAG,
+      ],
+    },
+    () => {
+      cy.intercept(
+        {
+          method: 'GET',
+          pathname: '/opal-fines-service/interface-jobs/summary',
+        },
+        PROCESS_INTERFACE_JOBS_SUMMARY_MOCK,
+      ).as('getInterfaceJobsSummary');
+      setupFinancePageComponent({ dashboardType: FINES_DASHBOARD_ROUTING_PATHS.children.finance });
+
+      cy.get(FinanceLocators.automaticCashInputLink).click();
+      cy.get(AutomaticCashInputLocators.businessUnitCheckbox(77)).check({ force: true });
+      cy.get(AutomaticCashInputLocators.continueButton).click();
+      cy.wait('@getInterfaceJobsSummary');
+      cy.get('#main-content').should('contain.text', 'Process files');
+      cy.document().then((document) => {
+        document.documentElement.lang = 'en';
+      });
+
+      cy.injectAxe({ axeCorePath: 'node_modules/axe-core/axe.min.js' });
+      cy.checkA11y('#main-content', {
+        includedImpacts: ['critical', 'serious', 'moderate'],
       });
     },
   );
