@@ -104,8 +104,8 @@ describe('FinesApiProcessFilesTableWrapperComponent', () => {
     expect(component.getRowDomId(rows[1])).toBe('fines-api-process-file-1002');
     expect(emitSpy).toHaveBeenLastCalledWith(['1002']);
     expect(component.selectedFilesHintComputed()).toBe('1 of 2 files selected');
-    expect(component.getRowControl(rows[0]).value).toBe(false);
-    expect(component.getRowControl(rows[1]).value).toBe(true);
+    expect(component['rowControls'].get(rows[0].interfaceFileId)?.value).toBe(false);
+    expect(component['rowControls'].get(rows[1].interfaceFileId)?.value).toBe(true);
   });
 
   it('should ignore a selection event for a file that is not in the table', () => {
@@ -130,7 +130,7 @@ describe('FinesApiProcessFilesTableWrapperComponent', () => {
     expect(emitSpy).toHaveBeenLastCalledWith(rows.map((row) => row.interfaceFileId));
     expect(component.selectedFilesHintComputed()).toBe('30 of 30 files selected');
     expect(component.paginatedTableDataComputed()).toHaveLength(5);
-    expect(component.getRowControl(rows[25]).value).toBe(true);
+    expect(component['rowControls'].get(rows[25].interfaceFileId)?.value).toBe(true);
     expect(component.selectAllControl.value).toBe(true);
   });
 
@@ -144,7 +144,7 @@ describe('FinesApiProcessFilesTableWrapperComponent', () => {
 
     expect(component.currentPageSignal()).toBe(1);
     expect(component.fullTableDataComputed()[0].interfaceJobId).toBe('30');
-    expect(component.getRowControl(rows[29]).value).toBe(true);
+    expect(component['rowControls'].get(rows[29].interfaceFileId)?.value).toBe(true);
     expect(component.selectedFilesCountComputed()).toBe(1);
   });
 
@@ -154,9 +154,9 @@ describe('FinesApiProcessFilesTableWrapperComponent', () => {
     render(rows, ['1001', '1003']);
 
     expect(component.selectedFilesCountComputed()).toBe(2);
-    expect(component.getRowControl(rows[0]).value).toBe(true);
-    expect(component.getRowControl(rows[1]).value).toBe(false);
-    expect(component.getRowControl(rows[2]).value).toBe(true);
+    expect(component['rowControls'].get(rows[0].interfaceFileId)?.value).toBe(true);
+    expect(component['rowControls'].get(rows[1].interfaceFileId)?.value).toBe(false);
+    expect(component['rowControls'].get(rows[2].interfaceFileId)?.value).toBe(true);
     expect(component.someRowsSelected()).toBe(true);
   });
 
@@ -168,19 +168,31 @@ describe('FinesApiProcessFilesTableWrapperComponent', () => {
     component.selectedInterfaceFileIds = null;
 
     expect(component.selectedFilesCountComputed()).toBe(0);
-    expect(component.getRowControl(rows[0]).value).toBe(false);
+    expect(component['rowControls'].get(rows[0].interfaceFileId)?.value).toBe(false);
   });
 
-  it('should resynchronise an existing row control with the selected file IDs', () => {
-    const rows = buildTableRows(1);
-    render(rows);
-    const rowControl = component.getRowControl(rows[0]);
-    rowControl.setValue(true, { emitEvent: false });
+  it('should initialise and synchronise row controls before template evaluation', () => {
+    const rows = buildTableRows(2);
+    component.existingSortState = FINES_API_PROCESS_FILES_TABLE_WRAPPER_TABLE_SORT_DEFAULT;
 
-    const returnedControl = component.getRowControl(rows[0]);
+    component.tableData = rows;
 
-    expect(returnedControl).toBe(rowControl);
-    expect(returnedControl.value).toBe(false);
+    const firstControl = component['rowControls'].get(rows[0].interfaceFileId);
+    expect(component['rowControls'].size).toBe(rows.length);
+    expect(firstControl?.value).toBe(false);
+
+    component.selectedInterfaceFileIds = [rows[0].interfaceFileId];
+
+    expect(component['rowControls'].get(rows[0].interfaceFileId)).toBe(firstControl);
+    expect(firstControl?.value).toBe(true);
+
+    const mapSetSpy = vi.spyOn(component['rowControls'], 'set');
+    const controlSetValueSpy = vi.spyOn(firstControl!, 'setValue');
+
+    fixture.detectChanges();
+
+    expect(mapSetSpy).not.toHaveBeenCalled();
+    expect(controlSetValueSpy).not.toHaveBeenCalled();
   });
 
   it('should prune and emit selections missing from refreshed table data', () => {
@@ -193,6 +205,7 @@ describe('FinesApiProcessFilesTableWrapperComponent', () => {
     component.tableData = rows.slice(1);
 
     expect(component.selectedFilesCountComputed()).toBe(1);
+    expect(component['rowControls'].has(rows[0].interfaceFileId)).toBe(false);
     expect(emitSpy).toHaveBeenLastCalledWith(['1002']);
   });
 

@@ -51,7 +51,7 @@ import { IFinesApiProcessFilesTableWrapperTableSort } from './interfaces/fines-a
 export class FinesApiProcessFilesTableWrapperComponent extends AbstractSortableTablePaginationComponent {
   private readonly MAX_RESULTS = 500;
   private readonly selectedRowIdsSignal = signal<Set<string>>(new Set<string>());
-  private readonly rowControls = new Map<string, FormControl<boolean>>();
+  protected readonly rowControls = new Map<string, FormControl<boolean>>();
 
   public readonly selectAllControl = new FormControl<boolean>(false, { nonNullable: true });
   public override itemsPerPageSignal = signal(25);
@@ -125,9 +125,14 @@ export class FinesApiProcessFilesTableWrapperComponent extends AbstractSortableT
       const selected = this.selectedRowIdsSignal().has(rowId);
       const control = this.rowControls.get(rowId);
 
-      if (control && control.value !== selected) {
-        control.setValue(selected, { emitEvent: false });
+      if (control) {
+        if (control.value !== selected) {
+          control.setValue(selected, { emitEvent: false });
+        }
+        return;
       }
+
+      this.rowControls.set(rowId, new FormControl<boolean>(selected, { nonNullable: true }));
     });
 
     Array.from(this.rowControls.keys()).forEach((rowId) => {
@@ -171,26 +176,6 @@ export class FinesApiProcessFilesTableWrapperComponent extends AbstractSortableT
    */
   public getRowDomId(row: IFinesApiProcessFilesTableWrapperTableData): string {
     return `fines-api-process-file-${this.getRowIdentifier(row).replaceAll(/[^a-zA-Z0-9_-]/g, '-')}`;
-  }
-
-  /**
-   * Gets or creates the checkbox control associated with a table row.
-   */
-  public getRowControl(row: IFinesApiProcessFilesTableWrapperTableData): FormControl<boolean> {
-    const rowId = this.getRowIdentifier(row);
-    const selected = this.selectedRowIdsSignal().has(rowId);
-    const existingControl = this.rowControls.get(rowId);
-
-    if (existingControl) {
-      if (existingControl.value !== selected) {
-        existingControl.setValue(selected, { emitEvent: false });
-      }
-      return existingControl;
-    }
-
-    const control = new FormControl<boolean>(selected, { nonNullable: true });
-    this.rowControls.set(rowId, control);
-    return control;
   }
 
   /**

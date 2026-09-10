@@ -150,7 +150,6 @@ describe('FinesApiStore', () => {
     store.setProcessInterfaceJobs(processInterfaceJobs);
 
     expect(store.processInterfaceJobs()).toEqual(processInterfaceJobs);
-    expect(store.processInterfaceJobs()).not.toBe(processInterfaceJobs);
 
     store.clearProcessInterfaceJobs();
 

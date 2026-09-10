@@ -104,7 +104,7 @@
                 class="govuk-checkboxes--small"
                 opal-lib-govuk-checkboxes-item
                 opalLibMojMultiSelectBody
-                [control]="getRowControl(row)"
+                [control]="rowControls.get(getRowIdentifier(row))!"
                 [inputId]="getRowDomId(row)"
                 [inputName]="getRowDomId(row)"
                 labelText=""

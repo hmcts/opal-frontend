@@ -1,0 +1,62 @@
+{
+  "header": {
+    "accountNumber": "26000284T",
+    "name": "Mr Aldous Curio CPGB-ADULT-A-C",
+    "summary": {
+      "account type": "Fine",
+      "business unit": "West London (0042)"
+    },
+    "metrics": {
+      "imposed": "\u00a3175.00",
+      "arrears": "\u00a30.00",
+      "paid/written off": "\u00a30.00",
+      "account balance": "-\u00a3175.00"
+    }
+  },
+  "atAGlance": {
+    "defendant": {
+      "name": "Mr Aldous Curio CPGB-ADULT-A-C",
+      "date of birth": "01 January 2000",
+      "address": "123 Address Line1\nAddress Line2 Address Line3\nAddress Line4 Address Line5\nEN51 1RL",
+      "national insurance number": "\u2014"
+    },
+    "paymentTerms": {
+      "payment terms": "Pay in full",
+      "pay by date": "28 February 2030"
+    },
+    "enforcementStatus": {
+      "collection order": "NO COLLECTION ORDER",
+      "days in default": "200 days",
+      "date of last movement": "02 June 2026"
+    },
+    "comments": {
+      "comment": "Here is an Account comment",
+      "lines": ["\u2014"]
+    }
+  },
+  "defendantTab": {
+    "defendant": {
+      "name": "Mr Aldous Curio CPGB-ADULT-A-C",
+      "aliases": "\u2014",
+      "date of birth": "01 January 2000",
+      "national insurance number": "\u2014",
+      "address": "123 Address Line1\nAddress Line2 Address Line3\nAddress Line4 Address Line5\nEN51 1RL"
+    }
+  },
+  "paymentTermsTab": {
+    "pay by date": "28 February 2030",
+    "days in default": "200",
+    "date days in default were imposed": "\u2014",
+    "payment card last requested": "\u2014"
+  },
+  "enforcementTab": {
+    "overview": {
+      "collection order status": "No Collection Order",
+      "days in default": "200 days",
+      "enforcement court": "West London CH31 Rm 01 (110)"
+    },
+    "noOutstandingEnforcementActionMessage": "There is no outstanding enforcement action."
+  },
+  "impositionsTab": {},
+  "historyAndNotesTab": {}
+}
