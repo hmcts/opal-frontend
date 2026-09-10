@@ -200,6 +200,22 @@ export class AccountDetailsAtAGlanceActions {
   }
 
   /**
+   * Asserts selected parent or guardian values shown on the At a glance tab.
+   *
+   * @param expected - Map of visible labels to expected values.
+   */
+  public assertParentGuardianValues(expected: Record<string, string>): void {
+    const fieldSelectors: Record<string, string> = {
+      name: N.fields.parentGuardianName,
+      aliases: N.fields.parentGuardianAliases,
+      address: N.fields.parentGuardianAddress,
+      'national insurance number': N.fields.parentGuardianNationalInsuranceNumber,
+    };
+
+    this.assertMappedValues(expected, fieldSelectors, N.sections.atAGlanceTabRoot);
+  }
+
+  /**
    * Asserts selected company values shown on the At a glance tab.
    *
    * @param expected - Map of visible labels to expected values.
