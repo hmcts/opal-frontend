@@ -63,6 +63,7 @@ const FINANCE_COMPONENT_ROUTES: Routes = [
       {
         path: FINES_ROUTING_PATHS.children.autoPaymentIn.children.processAllocate,
         component: FinesApiProcessAllocateComponent,
+        canDeactivate: [canDeactivateGuard],
       },
       {
         path: FINES_API_ROUTING_PATHS.children.confirmProcess,

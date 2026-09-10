@@ -58,6 +58,7 @@ describe('FinesApiProcessAllocateComponent', () => {
   let finesApiStore: InstanceType<typeof FinesApiStore>;
   let processJobs: IOpalFinesInterfaceJobSummary[];
   let getInterfaceJobsSummary: ReturnType<typeof vi.fn>;
+  let routerCurrentNavigation: ReturnType<typeof vi.fn>;
   let routerNavigate: ReturnType<typeof vi.fn>;
   const activatedRouteParent = { routeConfig: {} };
   const activatedRoute = {
@@ -69,6 +70,7 @@ describe('FinesApiProcessAllocateComponent', () => {
   beforeEach(async () => {
     processJobs = PROCESS_JOBS;
     activatedRoute.snapshot.fragment = 'process';
+    routerCurrentNavigation = vi.fn().mockReturnValue(null);
     routerNavigate = vi.fn().mockResolvedValue(true);
     getInterfaceJobsSummary = vi.fn(
       (): Observable<IOpalFinesInterfaceJobsSummaryResponse> => of({ interface_jobs: processJobs }),
@@ -83,7 +85,7 @@ describe('FinesApiProcessAllocateComponent', () => {
         },
         {
           provide: Router,
-          useValue: { navigate: routerNavigate },
+          useValue: { currentNavigation: routerCurrentNavigation, navigate: routerNavigate },
         },
         {
           provide: OpalFines,
@@ -322,13 +324,54 @@ describe('FinesApiProcessAllocateComponent', () => {
     expect(finesApiStore.unsavedChanges()).toBe(false);
   });
 
+  it.each([
+    '/fines/auto-payment-in/select-business-units',
+    '/fines/auto-payment-in/select-business-units?from=process#selection',
+  ])('should prevent Back navigation to %s after a Process file is selected', (nextUrl) => {
+    render();
+    finesApiStore.setSelectedFileIds(['1701']);
+    routerCurrentNavigation.mockReturnValue({ finalUrl: { toString: () => nextUrl } });
+
+    expect(component.canDeactivate()).toBe(false);
+  });
+
+  it('should allow Back navigation when no Process files are selected', () => {
+    render();
+    routerCurrentNavigation.mockReturnValue({
+      finalUrl: { toString: () => '/fines/auto-payment-in/select-business-units' },
+    });
+
+    expect(component.canDeactivate()).toBe(true);
+  });
+
+  it('should allow navigation to Confirm Process while retaining the selected files', () => {
+    render();
+    finesApiStore.setSelectedFileIds(['1701']);
+    routerCurrentNavigation.mockReturnValue({
+      finalUrl: { toString: () => '/fines/auto-payment-in/confirm-process' },
+    });
+
+    expect(component.canDeactivate()).toBe(true);
+    expect(finesApiStore.selectedFileIds()).toEqual(['1701']);
+  });
+
+  it('should let the parent journey guard handle external navigation', () => {
+    render();
+    finesApiStore.setSelectedFileIds(['1701']);
+    routerCurrentNavigation.mockReturnValue({
+      finalUrl: { toString: () => '/fines/dashboard/finance' },
+    });
+
+    expect(component.canDeactivate()).toBe(true);
+  });
+
   it('should create and update through the compiled Angular definition', async () => {
     TestBed.resetTestingModule();
     await TestBed.configureTestingModule({
       imports: [FinesApiProcessAllocateComponent],
       providers: [
         { provide: ActivatedRoute, useValue: activatedRoute },
-        { provide: Router, useValue: { navigate: routerNavigate } },
+        { provide: Router, useValue: { currentNavigation: routerCurrentNavigation, navigate: routerNavigate } },
         { provide: OpalFines, useValue: { getInterfaceJobsSummary } },
       ],
     }).compileComponents();

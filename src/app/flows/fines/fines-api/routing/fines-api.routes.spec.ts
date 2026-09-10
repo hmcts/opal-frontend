@@ -1,6 +1,7 @@
 import { describe, expect, it } from 'vitest';
 import { FINES_PERMISSIONS } from '@app/constants/fines-permissions.constant';
 import { authGuard } from '@hmcts/opal-frontend-common/guards/auth';
+import { canDeactivateGuard } from '@hmcts/opal-frontend-common/guards/can-deactivate';
 import { routePermissionsGuard } from '@hmcts/opal-frontend-common/guards/route-permissions';
 import { TitleResolver } from '@hmcts/opal-frontend-common/resolvers/title';
 import { FinesApiConfirmProcessComponent } from '../fines-api-confirm-process/fines-api-confirm-process.component';
@@ -53,6 +54,7 @@ describe('fines API routes', () => {
       expect.objectContaining({
         path: FINES_API_ROUTING_PATHS.children.processAllocate,
         canActivate: [authGuard, routePermissionsGuard, finesApiFlowStateGuard],
+        canDeactivate: [canDeactivateGuard],
         data: {
           routePermissionId: [FINES_PERMISSIONS['process-and-allocate-payments']],
           title: FINES_API_ROUTING_TITLES.children.processAllocate,
