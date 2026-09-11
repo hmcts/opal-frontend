@@ -21,6 +21,7 @@ import { FINES_MAC_DEFENDANT_TYPES_KEYS } from '../../../constants/fines-mac-def
 import { beforeEach, describe, expect, it, vi } from 'vitest';
 
 import { createSpyObj } from '@app/testing/create-spy-obj.helper';
+import { By } from '@angular/platform-browser';
 
 describe('FinesMacOffenceDetailsReviewSummaryComponent', () => {
   let component: FinesMacOffenceDetailsReviewSummaryComponent;
@@ -124,22 +125,6 @@ describe('FinesMacOffenceDetailsReviewSummaryComponent', () => {
     expect(fixture.nativeElement.textContent).not.toContain('Add an offence');
   });
 
-  it('should ignore offences with a null offence id when building the hidden map', () => {
-    component.offencesImpositions = [
-      {
-        ...structuredClone(FINES_MAC_OFFENCE_DETAILS_REVIEW_SUMMARY_FORM_MOCK[0]),
-        formData: {
-          ...structuredClone(FINES_MAC_OFFENCE_DETAILS_REVIEW_SUMMARY_FORM_MOCK[0].formData),
-          fm_offence_details_id: null,
-        } as unknown as (typeof FINES_MAC_OFFENCE_DETAILS_REVIEW_SUMMARY_FORM_MOCK)[number]['formData'],
-      },
-    ];
-
-    component['offenceDetailsHidden']();
-
-    expect(component.offencesHidden).toEqual({});
-  });
-
   it('should set the offenceIndex and navigate to addOffence route when actionName is "Change"', () => {
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     const routerSpy = vi.spyOn<any, any>(component['router'], 'navigate');
@@ -166,18 +151,15 @@ describe('FinesMacOffenceDetailsReviewSummaryComponent', () => {
     });
   });
 
-  it('should toggle the offencesHidden value when the action name is not "Change" or "Remove"', () => {
+  it('should set the offenceIndex and not navigate when actionName is not "Change" or "Remove"', () => {
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    const routerSpy = vi.spyOn<any, any>(component['router'], 'navigate');
     const action = { actionName: 'hide', offenceId: 1 };
 
     component.offenceAction(action);
 
-    expect(component.offencesHidden[action.offenceId]).toBe(false);
-
-    action.actionName = 'show';
-
-    component.offenceAction(action);
-
-    expect(component.offencesHidden[action.offenceId]).toBe(true);
+    expect(finesMacOffenceDetailsStore.offenceIndex()).toBe(action.offenceId);
+    expect(routerSpy).not.toHaveBeenCalled();
   });
 
   it('should set the offenceIndex and navigate to addOffence route when addAnotherOffence is called', () => {
@@ -252,5 +234,17 @@ describe('FinesMacOffenceDetailsReviewSummaryComponent', () => {
     const result = component.checkSubNavigationButton();
 
     expect(result).toBe(true);
+  });
+
+  it('should announce the offence code message in the success alert', () => {
+    finesMacOffenceDetailsStore.setOffenceCodeMessage('Offence HY35014 added');
+
+    fixture.detectChanges();
+
+    const alert = fixture.debugElement.query(By.css('opal-lib-moj-alert'));
+
+    expect(alert).toBeTruthy();
+    expect(alert.componentInstance.ariaLabel).toBe('Offence HY35014 added');
+    expect(alert.componentInstance.announcementMessage).toBe('success: Offence HY35014 added');
   });
 });

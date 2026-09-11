@@ -78,6 +78,24 @@ describe('FinesAccPartyAddAmendConvertFormComponent', () => {
     expect(component).toBeTruthy();
   });
 
+  it.each([
+    'facc_party_add_amend_convert_employer_address_line_1',
+    'facc_party_add_amend_convert_employer_address_line_2',
+    'facc_party_add_amend_convert_employer_address_line_3',
+    'facc_party_add_amend_convert_employer_address_line_4',
+    'facc_party_add_amend_convert_employer_address_line_5',
+  ])('should validate %s with the single ASCII characters pattern', (controlName) => {
+    component.partyType = 'individual';
+    fixture.detectChanges();
+    const control = component.form.get(controlName);
+
+    control?.setValue('Flat @ 2');
+    expect(control?.hasError('singleAsciiCharacters')).toBe(false);
+
+    control?.setValue('Café');
+    expect(control?.hasError('singleAsciiCharacters')).toBe(true);
+  });
+
   it('should enforce remove link template semantics', () => {
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     const templateConsts = ((FinesAccPartyAddAmendConvertFormComponent as any).ɵcmp?.consts ?? []).filter(

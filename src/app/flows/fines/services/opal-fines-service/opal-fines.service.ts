@@ -5,6 +5,7 @@ import { withHttpRetry } from '@hmcts/opal-frontend-common/interceptors/http-ret
 
 import { IOpalFinesBusinessUnit } from '@services/fines/opal-fines-service/interfaces/opal-fines-business-unit.interface';
 import { IOpalFinesBusinessUnitNonSnakeCase } from '@services/fines/opal-fines-service/interfaces/opal-fines-business-unit-non-snake-case.interface';
+import { IOpalFinesBusinessUnitOutstandingAutoPaymentCounts } from '@services/fines/opal-fines-service/interfaces/opal-fines-business-unit-outstanding-auto-payment-counts.interface';
 import { IOpalFinesBusinessUnitRefData } from '@services/fines/opal-fines-service/interfaces/opal-fines-business-unit-ref-data.interface';
 import { IOpalFinesCourt } from '@services/fines/opal-fines-service/interfaces/opal-fines-court.interface';
 import { IOpalFinesCourtRefData } from '@services/fines/opal-fines-service/interfaces/opal-fines-court-ref-data.interface';
@@ -67,6 +68,7 @@ import { IOpalFinesRemoveEnforcementHoldPayload } from './interfaces/opal-fines-
 import { IOpalFinesAccountMinorCreditorCreditor } from './interfaces/opal-fines-account-minor-creditor-creditor.interface';
 import { IOpalFinesDraftAccountPatchRequestPayload } from '@services/fines/opal-fines-service/types/opal-fines-draft-account-patch-request-payload.type';
 import { IOpalFinesDeleteDefendantAccountPartyPayload } from './interfaces/opal-fines-delete-defendant-account-party-payload.interface';
+import { IOpalFinesCentralFund } from './interfaces/opal-fines-account-central-fund.interface';
 import { IOpalFinesAccountMajorCreditorDetailsHeader } from '../../fines-acc/fines-acc-major-creditor-details/interfaces/fines-acc-major-creditor-details-header.interface';
 import { IOpalFinesAccountMajorCreditorAtAGlance } from './interfaces/opal-fines-account-major-creditor-at-a-glance.interface';
 import { IOpalFinesAccountDefendantDetailsConsolidatedAccount } from './interfaces/opal-fines-account-defendant-account-consolidated-account.interface';
@@ -346,6 +348,20 @@ export class OpalFines {
   }
 
   /**
+   * Retrieves outstanding auto payment counts by business unit.
+   *
+   * Counts are operational data, so this response is not cached.
+   *
+   * @returns An observable of business units with file and till counts for Automatic Cash Input.
+   */
+  public getBusinessUnitOutstandingAutoPaymentCounts(): Observable<IOpalFinesBusinessUnitOutstandingAutoPaymentCounts> {
+    return this.http.get<IOpalFinesBusinessUnitOutstandingAutoPaymentCounts>(
+      OPAL_FINES_PATHS.businessUnitOutstandingAutoPaymentCount,
+      this.retrySafeReadOptions(),
+    );
+  }
+
+  /**
    * Retrieves report metadata for a report type.
    * Metadata is cached because report configuration is reference-like data.
    *
@@ -550,7 +566,9 @@ export class OpalFines {
    * @returns The pretty name of the major creditor.
    */
   public getMajorCreditorPrettyName(majorCreditor: IOpalFinesMajorCreditor): string {
-    return `${majorCreditor.name} (${majorCreditor.major_creditor_code})`;
+    return majorCreditor.major_creditor_code
+      ? `${majorCreditor.name} (${majorCreditor.major_creditor_code})`
+      : (majorCreditor.name ?? '');
   }
 
   /**
@@ -1494,6 +1512,17 @@ export class OpalFines {
         );
     }
     return this.cache.minorCreditorAccountCreditorCache$;
+  }
+
+  /**
+   * Retrieves the central fund details for a specific business unit.
+   *
+   * @param busunessUnitId - The ID of the business unit.
+   * @returns An Observable that emits the central fund details.
+   */
+  public getCentralFund(busunessUnitId: number): Observable<IOpalFinesCentralFund> {
+    const url = `${OPAL_FINES_PATHS.centralFunds}/${busunessUnitId}`;
+    return this.http.get<IOpalFinesCentralFund>(url);
   }
 
   /**

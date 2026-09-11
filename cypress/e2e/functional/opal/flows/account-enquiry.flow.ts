@@ -13,6 +13,7 @@ import { AccountDetailsMinorCreditorActions } from '../actions/account-details/d
 import { AccountDetailsPaymentTermsActions } from '../actions/account-details/details.payment-terms.actions';
 import { AccountDetailsFixedPenaltyActions } from '../actions/account-details/details.fixed-penalty.actions';
 import { AccountDetailsHistoryActions } from '../actions/account-details/details.history.actions';
+import { AccountDetailsImpositionsActions } from '../actions/account-details/details.impositions.actions';
 import { AccountDetailsConsolidatedAccountsActions } from '../actions/account-details/details.consolidated-accounts.actions';
 import { AccountSearchIndividualsLocators as L } from '../../../../shared/selectors/account-search/account.search.individuals.locators';
 import { AccountSearchCompaniesLocators as C } from '../../../../shared/selectors/account-search/account.search.companies.locators';
@@ -41,6 +42,63 @@ type MinorCreditorAmendmentSearchResult = {
   recordType: string;
 };
 
+type LegacyDefendantTabName =
+  | 'Defendant'
+  | 'Parent or guardian'
+  | 'Payment terms'
+  | 'Enforcement'
+  | 'Impositions'
+  | 'History and notes'
+  | 'Fixed penalty';
+
+type LegacyCompanyTabName = 'Defendant' | 'Payment terms';
+
+type LegacyDefendantAccountFixture = {
+  header?: {
+    accountNumber?: string;
+    name?: string;
+    summary?: Record<string, string>;
+    metrics?: Record<string, string>;
+  };
+  atAGlance?: {
+    defendant?: Record<string, string>;
+    parentGuardian?: Record<string, string>;
+    company?: Record<string, string>;
+    paymentTerms?: Record<string, string>;
+    enforcementStatus?: Record<string, string>;
+    comments?: {
+      comment?: string;
+      lines?: string[];
+    };
+  };
+  defendantTab?: {
+    defendant?: Record<string, string>;
+    company?: Record<string, string>;
+    contact?: Record<string, string>;
+    employer?: Record<string, string>;
+  };
+  parentGuardianTab?: {
+    header?: string;
+    parentGuardian?: Record<string, string>;
+  };
+  paymentTermsTab?: Record<string, string>;
+  enforcementTab?: {
+    overview?: Record<string, string>;
+    lastEnforcementAction?: Record<string, string>;
+    noOutstandingEnforcementActionMessage?: string;
+  };
+  impositionsTab?: {
+    rows?: string[][];
+    emptyState?: string;
+  };
+  historyAndNotesTab?: {
+    columns?: string[];
+    rows?: Array<Record<string, string>>;
+    noResultsMessage?: string;
+  };
+  fixedPenaltyTab?: Record<string, string>;
+};
+
 /**
  * @file AccountEnquiryFlow
  * @description High-level workflow for searching accounts (individuals/companies),
@@ -60,6 +118,9 @@ export class AccountEnquiryFlow {
   /** Timeout (ms) for route transitions back to the defendant details shell. */
   private static readonly DETAILS_NAV_WAIT_MS = 45_000;
   private static readonly BASE_API_PATH = '/opal-fines-service';
+  private static readonly AT_A_GLANCE_TAB_SELECTOR =
+    'app-fines-acc-defendant-details-at-a-glance-tab, app-fines-acc-minor-creditor-details-at-a-glance-tab';
+  private static readonly MINOR_CREDITOR_RESULTS_SELECTOR = 'app-fines-sa-results-minor-creditor-table-wrapper';
 
   /** Waits for the account header summary call to succeed and the At a glance tab to render. */
   private waitForHeaderSummaryAndAtAGlance(): void {
@@ -70,9 +131,7 @@ export class AccountEnquiryFlow {
       }
     });
 
-    cy.get('app-fines-acc-defendant-details-at-a-glance-tab', { timeout: AccountEnquiryFlow.WAIT_MS }).should(
-      'be.visible',
-    );
+    cy.get(AccountEnquiryFlow.AT_A_GLANCE_TAB_SELECTOR, { timeout: AccountEnquiryFlow.WAIT_MS }).should('be.visible');
   }
 
   private readonly searchIndividuals = new AccountSearchIndividualsActions();
@@ -99,8 +158,19 @@ export class AccountEnquiryFlow {
   private readonly enforcement = new AccountDetailsEnforcementActions();
   private readonly removeParentGuardian = new RemoveParentGuardianActions();
   private readonly historyAndNotes = new AccountDetailsHistoryActions();
+  private readonly impositionsDetails = new AccountDetailsImpositionsActions();
   private readonly consolidatedAccounts = new AccountDetailsConsolidatedAccountsActions();
   private readonly responsiveLayout = new AccountDetailsResponsiveLayoutActions();
+
+  /**
+   * Loads the legacy defendant validation fixture used by the Search and Matches journeys.
+   *
+   * @param fixturePath - Cypress fixture path relative to `cypress/fixtures`.
+   * @returns Chainable resolving to the parsed fixture object.
+   */
+  private loadLegacyDefendantAccountFixture(fixturePath: string): Cypress.Chainable<LegacyDefendantAccountFixture> {
+    return cy.fixture<LegacyDefendantAccountFixture>(fixturePath.trim());
+  }
 
   /**
    * Ensures the test is on the Individuals Account Search page.
@@ -125,10 +195,10 @@ export class AccountEnquiryFlow {
    * @returns Chainable resolving to a trimmed account number or `null` when absent/empty.
    */
   private resolveAccountNumberFromAlias(): Cypress.Chainable<string | null> {
-    return cy
-      .get('@etagUpdate', { timeout: 0 })
-      .then((etag: any) => (etag ? (etag.accountNumber ?? null) : null))
-      .then((n: string | null) => (n && String(n).trim() ? String(n).trim() : null));
+    return cy.then(function (this: { etagUpdate?: EtagUpdate }): string | null {
+      const accountNumber = this.etagUpdate?.accountNumber ?? null;
+      return accountNumber && String(accountNumber).trim() ? String(accountNumber).trim() : null;
+    }) as Cypress.Chainable<string | null>;
   }
 
   /**
@@ -162,32 +232,43 @@ export class AccountEnquiryFlow {
    * Clicks the latest published account from the current results page.
    *
    * Behaviour:
-   *  - If `@etagUpdate` has an `accountNumber` and it's visible on the current page → click it.
-   *  - Otherwise → open the first row via {@link ResultsActions.openLatestPublished}.
-   *  - If the @etagUpdate account number is not on the current page, we paginate to find it.
+   *  - If the visible results are minor-creditor results, open the top matching minor-creditor row.
+   *  - If `@etagUpdate` has a defendant `accountNumber`, paginate to find and open it.
+   *  - Otherwise, open the first visible row via {@link ResultsActions.openLatestPublished}.
    */
   public clickLatestPublishedFromResultsOrAcrossPages(): void {
     logAE('method', 'clickLatestPublishedFromResultsOrAcrossPages()');
-    logAE('click', 'Click latest published account or matching @etagUpdate (current page only)');
+    logAE('click', 'Click latest visible result or matching @etagUpdate account');
 
-    cy.intercept('GET', '**/defendant-accounts/**/header-summary').as('headerSummary');
+    cy.intercept('GET', '**/header-summary').as('headerSummary');
     ForceSingleTabNavigation();
     this.results.waitForResultsTable();
 
-    this.resolveAccountNumberFromAlias().then((accOrNull) => {
-      if (!accOrNull) {
-        logAE('fallback', 'No @etagUpdate found → opening latest row');
+    cy.get('body', { timeout: AccountEnquiryFlow.WAIT_MS }).then(($body) => {
+      if ($body.find(`${AccountEnquiryFlow.MINOR_CREDITOR_RESULTS_SELECTOR}:visible`).length) {
+        logAE('match', 'Opening latest visible minor creditor result');
         this.results.openLatestPublished();
         this.waitForHeaderSummaryAndAtAGlance();
         return;
       }
 
-      const acc = accOrNull;
-      logAE('match', 'Opening account by number from @etagUpdate', { accountNumber: acc });
+      // Prefer the seeded account captured during draft setup; only use the first
+      // visible result when the scenario did not create or retain account metadata.
+      this.resolveAccountNumberFromAlias().then((accOrNull) => {
+        if (!accOrNull) {
+          logAE('fallback', 'No @etagUpdate found → opening latest row');
+          this.results.openLatestPublished();
+          this.waitForHeaderSummaryAndAtAGlance();
+          return;
+        }
 
-      // Wait for the specific account we just created; traverse pagination if needed.
-      this.results.openByAccountNumberAcrossPages(acc);
-      this.waitForHeaderSummaryAndAtAGlance();
+        const acc = accOrNull;
+        logAE('match', 'Opening account by number from @etagUpdate', { accountNumber: acc });
+
+        // Wait for the specific account we just created; traverse pagination if needed.
+        this.results.openByAccountNumberAcrossPages(acc);
+        this.waitForHeaderSummaryAndAtAGlance();
+      });
     });
   }
 
@@ -201,6 +282,17 @@ export class AccountEnquiryFlow {
     logAE('flow', 'Search and open latest by surname', { surname });
     this.searchByLastName(surname);
     this.clickLatestPublishedFromResultsOrAcrossPages();
+  }
+
+  /** Asserts that the user is on the FAE defendant account-details At a glance page. */
+  public assertOnDefendantAccountDetailsPage(): void {
+    logAE('assert', 'FAE defendant account-details page is visible');
+    cy.location('pathname', this.common.getPathTimeoutOptions()).should(
+      'match',
+      /\/fines\/account\/defendant\/\d+\/details$/,
+    );
+    this.detailsNav.assertAtAGlanceTabIsActive();
+    this.atAGlanceDetails.assertAtAGlancePageVisible();
   }
 
   /**
@@ -225,15 +317,13 @@ export class AccountEnquiryFlow {
   }
 
   /**
-   * Opens the most recent account from the results (top row) and asserts navigation.
+   * Opens the seeded matching account from results when available.
+   * Falls back to the top row only when no seeded account metadata exists.
    */
   public openMostRecentFromResults(): void {
     logAE('method', 'openMostRecentFromResults()');
-    logAE('open', 'Opening most recent account from results');
-
-    ForceSingleTabNavigation();
-    this.results.waitForResultsTable();
-    this.results.openLatestPublished();
+    logAE('open', 'Opening seeded matching account from results or falling back to top row');
+    this.clickLatestPublishedFromResultsOrAcrossPages();
   }
 
   /**
@@ -504,6 +594,74 @@ export class AccountEnquiryFlow {
   }
 
   /**
+   * Stubs the defendant header-summary response with a business-unit code that is
+   * intentionally distinct from the internal business-unit identifier.
+   *
+   * @param businessUnitCode Public business-unit code to inject into the response.
+   */
+  public stubHeaderSummaryBusinessUnitCode(businessUnitCode: string): void {
+    logAE('intercept', 'Stubbing defendant header-summary business-unit code', { businessUnitCode });
+
+    cy.intercept('GET', '**/defendant-accounts/**/header-summary', (req) => {
+      req.continue((res) => {
+        const body = res.body as { business_unit_summary?: { business_unit_code?: string } };
+
+        if (!body?.business_unit_summary) {
+          throw new Error('Expected defendant header-summary response to include business_unit_summary.');
+        }
+
+        body.business_unit_summary.business_unit_code = businessUnitCode;
+        res.send({ body });
+      });
+    }).as('businessUnitCodeHeaderSummary');
+  }
+
+  /**
+   * Stubs the header API with a Collection Order mismatch for the named account category.
+   * This represents the data-quality conditions that cannot be created through normal UI flows.
+   * @param category - Account category whose mismatch should be returned by the header API.
+   */
+  public stubCollectionOrderWarningScenario(category: 'Adult' | 'Youth' | 'Company' | 'Conditional Caution'): void {
+    logAE('intercept', 'Stubbing Collection Order warning header scenario', { category });
+
+    cy.intercept('GET', '**/defendant-accounts/**/header-summary', (req) => {
+      req.continue((res) => {
+        const body = res.body as {
+          account_type?: string | null;
+          collection_order?: boolean | null;
+          debtor_type?: string;
+          is_youth?: boolean;
+          party_details?: { organisation_flag?: boolean };
+        };
+
+        if (!body?.party_details) {
+          throw new Error('Expected defendant header-summary response to include party_details.');
+        }
+
+        body.debtor_type = 'Defendant';
+        body.is_youth = category === 'Youth';
+        body.party_details.organisation_flag = category === 'Company';
+        body.account_type = category === 'Conditional Caution' ? 'Conditional Caution' : 'Fine';
+        body.collection_order = category === 'Adult' ? false : true;
+        res.send({ body });
+      });
+    }).as('collectionOrderWarningHeaderSummary');
+  }
+
+  /**
+   * Asserts the permanent Collection Order warning message.
+   * @param message - Warning text expected in the account header.
+   */
+  public assertCollectionOrderWarning(message: string): void {
+    this.defendantDetails.assertCollectionOrderWarning(message);
+  }
+
+  /** Asserts Collection Order data has no warning banner. */
+  public assertCollectionOrderWarningNotPresent(): void {
+    this.defendantDetails.assertCollectionOrderWarningNotPresent();
+  }
+
+  /**
    * Asserts that neither payment-terms action is displayed.
    */
   public assertPaymentTermsActionsNotVisible(): void {
@@ -619,6 +777,357 @@ export class AccountEnquiryFlow {
     this.detailsNav.goToHistoryAndNotesTab();
     this.detailsNav.assertHistoryAndNotesTabIsActive();
     this.historyAndNotes.assertHistoryAndNotesTabLoaded();
+  }
+
+  /**
+   * Validates the header summary and At a glance sections for a legacy company account.
+   *
+   * @param fixturePath - Cypress fixture path containing expected legacy account values.
+   */
+  public validateLegacyCompanyHeaderAndAtAGlance(fixturePath: string): void {
+    logAE('method', 'validateLegacyCompanyHeaderAndAtAGlance()', { fixturePath });
+
+    this.loadLegacyDefendantAccountFixture(fixturePath).then((fixture) => {
+      this.detailsNav.assertAtAGlanceTabIsActive();
+      this.atAGlanceDetails.assertAtAGlancePageVisible();
+
+      if (fixture.header?.accountNumber) {
+        this.atAGlanceDetails.assertAccountNumberCaption(fixture.header.accountNumber);
+      }
+
+      if (fixture.header?.name) {
+        this.atAGlanceDetails.assertHeaderContains(fixture.header.name);
+      }
+
+      if (fixture.header?.summary) {
+        this.atAGlanceDetails.assertAccountHeaderSummaryValues(fixture.header.summary);
+      }
+
+      if (fixture.header?.metrics) {
+        this.atAGlanceDetails.assertSummaryMetricValues(fixture.header.metrics);
+      }
+
+      if (fixture.atAGlance?.company) {
+        this.atAGlanceDetails.assertCompanyValues(fixture.atAGlance.company);
+      }
+
+      if (fixture.atAGlance?.paymentTerms) {
+        this.atAGlanceDetails.assertPaymentTermsValues(fixture.atAGlance.paymentTerms);
+      }
+
+      if (fixture.atAGlance?.enforcementStatus) {
+        this.atAGlanceDetails.assertEnforcementStatusValues(fixture.atAGlance.enforcementStatus);
+      }
+
+      if (fixture.atAGlance?.comments?.comment || fixture.atAGlance?.comments?.lines?.length) {
+        this.atAGlanceDetails.assertCommentsSection(fixture.atAGlance.comments ?? {});
+      }
+    });
+  }
+
+  /**
+   * Validates the Defendant tab summary card for a legacy company account.
+   *
+   * @param fixturePath - Cypress fixture path containing expected legacy account values.
+   */
+  public validateLegacyCompanyDefendantTab(fixturePath: string): void {
+    logAE('method', 'validateLegacyCompanyDefendantTab()', { fixturePath });
+
+    this.loadLegacyDefendantAccountFixture(fixturePath).then((fixture) => {
+      this.detailsNav.assertDefendantTabIsActive();
+      this.defendantDetails.assertSectionHeader('Company details');
+
+      if (fixture.defendantTab?.company) {
+        this.defendantDetails.assertCompanyDetails(fixture.defendantTab.company);
+      }
+    });
+  }
+
+  /**
+   * Validates the Payment terms tab values for a legacy company account.
+   *
+   * @param fixturePath - Cypress fixture path containing expected legacy account values.
+   */
+  public validateLegacyCompanyPaymentTermsTab(fixturePath: string): void {
+    logAE('method', 'validateLegacyCompanyPaymentTermsTab()', { fixturePath });
+
+    this.loadLegacyDefendantAccountFixture(fixturePath).then((fixture) => {
+      this.detailsNav.assertPaymentTermsTabIsActive();
+      this.paymentTerms.assertPaymentTermsTabVisible();
+
+      if (fixture.paymentTermsTab && Object.keys(fixture.paymentTermsTab).length > 0) {
+        this.paymentTerms.assertPaymentTermsValues(fixture.paymentTermsTab);
+      }
+    });
+  }
+
+  /**
+   * Navigates to a legacy company tab and validates it using fixture-backed expectations.
+   *
+   * @param tabName - Tab label to navigate to.
+   * @param fixturePath - Cypress fixture path containing expected legacy account values.
+   */
+  public goToLegacyCompanyTabAndValidate(tabName: LegacyCompanyTabName, fixturePath: string): void {
+    logAE('method', 'goToLegacyCompanyTabAndValidate()', { tabName, fixturePath });
+
+    switch (tabName) {
+      case 'Defendant':
+        this.detailsNav.goToDefendantTab();
+        this.validateLegacyCompanyDefendantTab(fixturePath);
+        break;
+      case 'Payment terms':
+        this.goToPaymentTermsTab();
+        this.validateLegacyCompanyPaymentTermsTab(fixturePath);
+        break;
+      default:
+        throw new Error(`Unsupported legacy company tab: ${tabName}`);
+    }
+  }
+
+  /**
+   * Validates the header summary and At a glance sections for a legacy defendant account.
+   *
+   * @param fixturePath - Cypress fixture path containing expected legacy account values.
+   */
+  public validateLegacyDefendantHeaderAndAtAGlance(fixturePath: string): void {
+    logAE('method', 'validateLegacyDefendantHeaderAndAtAGlance()', { fixturePath });
+
+    this.loadLegacyDefendantAccountFixture(fixturePath).then((fixture) => {
+      this.detailsNav.assertAtAGlanceTabIsActive();
+      this.atAGlanceDetails.assertAtAGlancePageVisible();
+
+      if (fixture.header?.accountNumber) {
+        this.atAGlanceDetails.assertAccountNumberCaption(fixture.header.accountNumber);
+      }
+
+      if (fixture.header?.name) {
+        this.atAGlanceDetails.assertHeaderContains(fixture.header.name);
+      }
+
+      if (fixture.header?.summary) {
+        this.atAGlanceDetails.assertAccountHeaderSummaryValues(fixture.header.summary);
+      }
+
+      if (fixture.header?.metrics) {
+        this.atAGlanceDetails.assertSummaryMetricValues(fixture.header.metrics);
+      }
+
+      if (fixture.atAGlance?.defendant) {
+        this.atAGlanceDetails.assertDefendantValues(fixture.atAGlance.defendant);
+      }
+
+      if (fixture.atAGlance?.parentGuardian) {
+        this.atAGlanceDetails.assertParentGuardianValues(fixture.atAGlance.parentGuardian);
+      }
+
+      if (fixture.atAGlance?.paymentTerms) {
+        this.atAGlanceDetails.assertPaymentTermsValues(fixture.atAGlance.paymentTerms);
+      }
+
+      if (fixture.atAGlance?.enforcementStatus) {
+        this.atAGlanceDetails.assertEnforcementStatusValues(fixture.atAGlance.enforcementStatus);
+      }
+
+      if (fixture.atAGlance?.comments?.comment || fixture.atAGlance?.comments?.lines?.length) {
+        this.atAGlanceDetails.assertCommentsSection(fixture.atAGlance.comments ?? {});
+      }
+    });
+  }
+
+  /**
+   * Validates the Defendant tab summary cards for a legacy defendant account.
+   *
+   * @param fixturePath - Cypress fixture path containing expected legacy account values.
+   */
+  public validateLegacyDefendantTab(fixturePath: string): void {
+    logAE('method', 'validateLegacyDefendantTab()', { fixturePath });
+
+    this.loadLegacyDefendantAccountFixture(fixturePath).then((fixture) => {
+      this.detailsNav.assertDefendantTabIsActive();
+      this.defendantDetails.assertSectionHeader('Defendant details');
+
+      if (fixture.defendantTab?.defendant) {
+        this.defendantDetails.assertDefendantDetails(fixture.defendantTab.defendant);
+      }
+
+      if (fixture.defendantTab?.contact) {
+        this.defendantDetails.assertContactDetails(fixture.defendantTab.contact);
+      }
+
+      if (fixture.defendantTab?.employer) {
+        this.defendantDetails.assertEmployerDetails(fixture.defendantTab.employer);
+      }
+    });
+  }
+
+  /**
+   * Validates the Payment terms tab values for a legacy defendant account.
+   *
+   * @param fixturePath - Cypress fixture path containing expected legacy account values.
+   */
+  public validateLegacyDefendantPaymentTermsTab(fixturePath: string): void {
+    logAE('method', 'validateLegacyDefendantPaymentTermsTab()', { fixturePath });
+
+    this.loadLegacyDefendantAccountFixture(fixturePath).then((fixture) => {
+      this.detailsNav.assertPaymentTermsTabIsActive();
+      this.paymentTerms.assertPaymentTermsTabVisible();
+
+      if (fixture.paymentTermsTab && Object.keys(fixture.paymentTermsTab).length > 0) {
+        this.paymentTerms.assertPaymentTermsValues(fixture.paymentTermsTab);
+      }
+    });
+  }
+
+  /**
+   * Validates the Parent or guardian tab values for a legacy defendant account.
+   *
+   * @param fixturePath - Cypress fixture path containing expected legacy account values.
+   */
+  public validateLegacyDefendantParentGuardianTab(fixturePath: string): void {
+    logAE('method', 'validateLegacyDefendantParentGuardianTab()', { fixturePath });
+
+    this.loadLegacyDefendantAccountFixture(fixturePath).then((fixture) => {
+      this.detailsNav.assertParentGuardianTabIsActive();
+      this.parentGuardianDetails.assertSectionHeader(fixture.parentGuardianTab?.header ?? 'Parent or guardian details');
+
+      if (fixture.parentGuardianTab?.parentGuardian) {
+        this.parentGuardianDetails.assertParentGuardianDetails(fixture.parentGuardianTab.parentGuardian);
+      }
+    });
+  }
+
+  /**
+   * Validates the Enforcement tab values for a legacy defendant account.
+   *
+   * @param fixturePath - Cypress fixture path containing expected legacy account values.
+   */
+  public validateLegacyDefendantEnforcementTab(fixturePath: string): void {
+    logAE('method', 'validateLegacyDefendantEnforcementTab()', { fixturePath });
+
+    this.loadLegacyDefendantAccountFixture(fixturePath).then((fixture) => {
+      this.detailsNav.assertEnforcementTabIsActive();
+      this.enforcement.assertEnforcementTabVisible();
+
+      if (fixture.enforcementTab?.overview) {
+        this.enforcement.assertEnforcementOverview(fixture.enforcementTab.overview);
+      }
+
+      if (fixture.enforcementTab?.lastEnforcementAction) {
+        this.enforcement.assertLastEnforcementActionDetails(fixture.enforcementTab.lastEnforcementAction);
+      } else if (fixture.enforcementTab?.noOutstandingEnforcementActionMessage) {
+        this.enforcement.assertNoOutstandingEnforcementActionMessage(
+          fixture.enforcementTab.noOutstandingEnforcementActionMessage,
+        );
+      }
+    });
+  }
+
+  /**
+   * Validates the Impositions tab data when fixture expectations are available.
+   *
+   * @param fixturePath - Cypress fixture path containing expected legacy account values.
+   */
+  public validateLegacyDefendantImpositionsTab(fixturePath: string): void {
+    logAE('method', 'validateLegacyDefendantImpositionsTab()', { fixturePath });
+
+    this.loadLegacyDefendantAccountFixture(fixturePath).then((fixture) => {
+      this.detailsNav.assertImpositionsTabIsActive();
+      this.impositionsDetails.assertImpositionsTabVisible();
+
+      if (fixture.impositionsTab?.rows?.length) {
+        this.impositionsDetails.assertDefendantAccountImpositionsLoaded(fixture.impositionsTab.rows);
+      } else if (fixture.impositionsTab?.emptyState) {
+        this.impositionsDetails.assertEmptyState(fixture.impositionsTab.emptyState);
+      }
+    });
+  }
+
+  /**
+   * Validates the History and notes tab data when fixture expectations are available.
+   *
+   * @param fixturePath - Cypress fixture path containing expected legacy account values.
+   */
+  public validateLegacyDefendantHistoryAndNotesTab(fixturePath: string): void {
+    logAE('method', 'validateLegacyDefendantHistoryAndNotesTab()', { fixturePath });
+
+    this.loadLegacyDefendantAccountFixture(fixturePath).then((fixture) => {
+      this.detailsNav.assertHistoryAndNotesTabIsActive();
+      this.historyAndNotes.assertHistoryAndNotesTabVisible();
+
+      if (fixture.historyAndNotesTab?.noResultsMessage) {
+        this.historyAndNotes.assertHistoryAndNotesNoResultsMessage(fixture.historyAndNotesTab.noResultsMessage);
+        return;
+      }
+
+      if (fixture.historyAndNotesTab?.columns?.length) {
+        this.historyAndNotes.assertHistoryAndNotesColumns(fixture.historyAndNotesTab.columns);
+      }
+
+      if (fixture.historyAndNotesTab?.rows?.length) {
+        this.historyAndNotes.assertHistoryAndNotesRows(fixture.historyAndNotesTab.rows);
+      }
+    });
+  }
+
+  /**
+   * Validates the Fixed penalty tab values for a legacy defendant account.
+   *
+   * @param fixturePath - Cypress fixture path containing expected legacy account values.
+   */
+  public validateLegacyDefendantFixedPenaltyTab(fixturePath: string): void {
+    logAE('method', 'validateLegacyDefendantFixedPenaltyTab()', { fixturePath });
+
+    this.loadLegacyDefendantAccountFixture(fixturePath).then((fixture) => {
+      this.detailsNav.assertFixedPenaltyTabIsActive();
+      this.fixedPenaltyDetails.assertSectionHeader('Fixed Penalty details');
+
+      if (fixture.fixedPenaltyTab && Object.keys(fixture.fixedPenaltyTab).length > 0) {
+        this.fixedPenaltyDetails.assertDetails(fixture.fixedPenaltyTab);
+      }
+    });
+  }
+
+  /**
+   * Navigates to a legacy defendant tab and validates it using fixture-backed expectations.
+   *
+   * @param tabName - Tab label to navigate to.
+   * @param fixturePath - Cypress fixture path containing expected legacy account values.
+   */
+  public goToLegacyDefendantTabAndValidate(tabName: LegacyDefendantTabName, fixturePath: string): void {
+    logAE('method', 'goToLegacyDefendantTabAndValidate()', { tabName, fixturePath });
+
+    switch (tabName) {
+      case 'Defendant':
+        this.detailsNav.goToDefendantTab();
+        this.validateLegacyDefendantTab(fixturePath);
+        break;
+      case 'Parent or guardian':
+        this.detailsNav.goToParentGuardianTab();
+        this.validateLegacyDefendantParentGuardianTab(fixturePath);
+        break;
+      case 'Payment terms':
+        this.goToPaymentTermsTab();
+        this.validateLegacyDefendantPaymentTermsTab(fixturePath);
+        break;
+      case 'Enforcement':
+        this.goToEnforcementTab();
+        this.validateLegacyDefendantEnforcementTab(fixturePath);
+        break;
+      case 'Impositions':
+        this.detailsNav.goToImpositionsTab();
+        this.validateLegacyDefendantImpositionsTab(fixturePath);
+        break;
+      case 'History and notes':
+        this.goToHistoryAndNotesTab();
+        this.validateLegacyDefendantHistoryAndNotesTab(fixturePath);
+        break;
+      case 'Fixed penalty':
+        this.detailsNav.goToFixedPenaltyTab();
+        this.validateLegacyDefendantFixedPenaltyTab(fixturePath);
+        break;
+      default:
+        throw new Error(`Unsupported legacy defendant tab: ${tabName}`);
+    }
   }
 
   /**

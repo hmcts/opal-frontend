@@ -13,7 +13,6 @@ export class FinesMacOffenceDetailsReviewOffenceHeadingComponent {
   @Input({ required: true }) public offenceCode!: string;
   @Input({ required: true }) public offenceTitle!: string;
   @Input({ required: false }) public showActions!: boolean;
-  @Input({ required: false }) public showDetails: boolean = true;
   @Input({ required: false }) public isReadOnly: boolean = false;
   @Output() public actionClicked = new EventEmitter<{ actionName: string; offenceId: number }>();
 

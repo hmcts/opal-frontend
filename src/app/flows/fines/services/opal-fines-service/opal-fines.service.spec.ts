@@ -7,6 +7,7 @@ import { IOpalFinesCourtRefData } from '@services/fines/opal-fines-service/inter
 import { IOpalFinesLocalJusticeArea } from '@services/fines/opal-fines-service/interfaces/opal-fines-local-justice-area.interface';
 import { IOpalFinesLocalJusticeAreaRefData } from '@services/fines/opal-fines-service/interfaces/opal-fines-local-justice-area-ref-data.interface';
 import { OPAL_FINES_BUSINESS_UNIT_REF_DATA_MOCK } from './mocks/opal-fines-business-unit-ref-data.mock';
+import { OPAL_FINES_BUSINESS_UNIT_OUTSTANDING_AUTO_PAYMENT_COUNTS_MOCK } from './mocks/opal-fines-business-unit-outstanding-auto-payment-counts.mock';
 import { OPAL_FINES_COURT_REF_DATA_MOCK } from './mocks/opal-fines-court-ref-data.mock';
 import { OPAL_FINES_LOCAL_JUSTICE_AREA_REF_DATA_MOCK } from './mocks/opal-fines-local-justice-area-ref-data.mock';
 import { OPAL_FINES_PATHS } from '@services/fines/opal-fines-service/constants/opal-fines-paths.constant';
@@ -64,6 +65,7 @@ import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import { OPAL_FINES_ENFORCER_MOCK } from './mocks/opal-fines-enforcer.mock';
 import { OPAL_FINES_MINOR_CREDITOR_UPDATE_PAYLOAD_MOCK } from './mocks/opal-fines-minor-creditor-update-payload.mock';
 import { OPAL_FINES_ACCOUNT_MINOR_CREDITOR_CREDITOR_MOCK } from './mocks/opal-fines-account-minor-creditor-creditor.mock';
+import { OPAL_FINES_CENTRAL_FUND_RESPONSE_MOCK } from './mocks/opal-fines-central-funds-response.mock';
 import { OPAL_FINES_DEFENDANT_ACCOUNT_HISTORY_PARAMS_MOCK } from './mocks/opal-fines-defendant-account-history-params.mock';
 import { FINES_ACC_MAJOR_CREDITOR_DETAILS_HEADER_MOCK } from '../../fines-acc/fines-acc-major-creditor-details/mocks/fines-acc-major-creditor-details-header.mock';
 import { OPAL_FINES_ACCOUNT_MAJOR_CREDITOR_AT_A_GLANCE_MOCK } from './mocks/opal-fines-account-major-creditor-at-a-glance-with-defendant.mock';
@@ -320,6 +322,39 @@ describe('OpalFines', () => {
     httpMock.expectNone(expectedUrl);
   });
 
+  it('should send a GET request to business unit outstanding auto payment count API', () => {
+    const mockBusinessUnitCounts = OPAL_FINES_BUSINESS_UNIT_OUTSTANDING_AUTO_PAYMENT_COUNTS_MOCK;
+
+    service.getBusinessUnitOutstandingAutoPaymentCounts().subscribe((response) => {
+      expect(response).toEqual(mockBusinessUnitCounts);
+    });
+
+    const req = httpMock.expectOne(OPAL_FINES_PATHS.businessUnitOutstandingAutoPaymentCount);
+    expect(req.request.method).toBe('GET');
+
+    req.flush(mockBusinessUnitCounts);
+  });
+
+  it('should not cache business unit outstanding auto payment count responses', () => {
+    const mockBusinessUnitCounts = OPAL_FINES_BUSINESS_UNIT_OUTSTANDING_AUTO_PAYMENT_COUNTS_MOCK;
+
+    service.getBusinessUnitOutstandingAutoPaymentCounts().subscribe((response) => {
+      expect(response).toEqual(mockBusinessUnitCounts);
+    });
+
+    const firstReq = httpMock.expectOne(OPAL_FINES_PATHS.businessUnitOutstandingAutoPaymentCount);
+    expect(firstReq.request.method).toBe('GET');
+    firstReq.flush(mockBusinessUnitCounts);
+
+    service.getBusinessUnitOutstandingAutoPaymentCounts().subscribe((response) => {
+      expect(response).toEqual(mockBusinessUnitCounts);
+    });
+
+    const secondReq = httpMock.expectOne(OPAL_FINES_PATHS.businessUnitOutstandingAutoPaymentCount);
+    expect(secondReq.request.method).toBe('GET');
+    secondReq.flush(mockBusinessUnitCounts);
+  });
+
   it('should send a GET request to report metadata API and cache the response', () => {
     const reportId = 'operational_report_enforcement';
     const mockReport: IOpalFinesReport = {
@@ -547,6 +582,19 @@ describe('OpalFines', () => {
     const result = service.getEnforcerPrettyName(enforcer);
 
     expect(result).toEqual(`${enforcer.name} (${enforcer.enforcer_code})`);
+  });
+
+  it('should send a GET request to central funds API for a business unit', () => {
+    const businessUnitId = 77;
+    const expectedUrl = `${OPAL_FINES_PATHS.centralFunds}/${businessUnitId}`;
+
+    service.getCentralFund(businessUnitId).subscribe((response) => {
+      expect(response).toEqual(OPAL_FINES_CENTRAL_FUND_RESPONSE_MOCK);
+    });
+
+    const req = httpMock.expectOne(expectedUrl);
+    expect(req.request.method).toBe('GET');
+    req.flush(OPAL_FINES_CENTRAL_FUND_RESPONSE_MOCK);
   });
 
   it('should return the item value for a given configuration item name', () => {
@@ -827,6 +875,18 @@ describe('OpalFines', () => {
     const result = service.getMajorCreditorPrettyName(majorCreditor);
 
     expect(result).toEqual(`${majorCreditor.name} (${majorCreditor.major_creditor_code})`);
+  });
+
+  it('should return only the major creditor name when no code is present', () => {
+    const majorCreditor: IOpalFinesMajorCreditor = {
+      ...OPAL_FINES_MAJOR_CREDITOR_REF_DATA_MOCK.refData[0],
+      major_creditor_code: null,
+      name: 'Central Funds',
+    };
+
+    const result = service.getMajorCreditorPrettyName(majorCreditor);
+
+    expect(result).toEqual('Central Funds');
   });
 
   it('should POST the fines mac payload', () => {

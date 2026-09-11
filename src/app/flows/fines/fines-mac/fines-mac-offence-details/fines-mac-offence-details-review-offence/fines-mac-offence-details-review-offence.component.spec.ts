@@ -190,8 +190,6 @@ describe('FinesMacOffenceDetailsReviewOffenceComponent', () => {
     const savedOffenceCode = component.offence.formData.fm_offence_details_offence_cjs_code;
     const savedImpositions = component.offence.formData.fm_offence_details_impositions;
 
-    component.showDetails = true;
-
     fixture.detectChanges();
     await fixture.whenStable();
     fixture.detectChanges();
@@ -206,5 +204,17 @@ describe('FinesMacOffenceDetailsReviewOffenceComponent', () => {
     expect(heading.componentInstance.offenceCode).toBe(savedOffenceCode);
     expect(heading.componentInstance.offenceTitle).toBe('');
     expect(imposition.componentInstance.impositions).toEqual(savedImpositions);
+  });
+
+  it('should render impositions in read only mode', async () => {
+    component.isReadOnly = true;
+
+    fixture.detectChanges();
+    await fixture.whenStable();
+    fixture.detectChanges();
+
+    const imposition = fixture.debugElement.query(By.directive(FinesMacOffenceDetailsReviewOffenceImpositionComponent));
+
+    expect(imposition).toBeTruthy();
   });
 });

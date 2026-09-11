@@ -22,6 +22,7 @@ import {
   transformHistoryDetails,
 } from '@hmcts/opal-frontend-common/services/history-transformation-service';
 import { FINES_ACC_HISTORY_AND_NOTES_DETAILS_ALIAS_PATH_PREFIXES } from '../constants/fines-acc-history-and-notes-details-alias-path-prefixes.constant';
+import { FINES_ACC_HISTORY_AND_NOTES_DETAILS_ASSOCIATED_RECORD_TYPES } from '../constants/fines-acc-history-and-notes-details-associated-record-types.constant';
 import { FINES_ACC_HISTORY_AND_NOTES_DETAILS_CHEQUE_STATUS_LABELS } from '../constants/fines-acc-history-and-notes-details-cheque-status-labels.constant';
 import { FINES_ACC_HISTORY_AND_NOTES_DETAILS_CURRENCY_PREFIX } from '../constants/fines-acc-history-and-notes-details-currency-prefix.constant';
 import { FINES_ACC_HISTORY_AND_NOTES_DETAILS_DATE_FORMAT } from '../constants/fines-acc-history-and-notes-details-date-format.constant';
@@ -37,6 +38,7 @@ import { FINES_ACC_HISTORY_AND_NOTES_DETAILS_PAYMENT_TERMS_TYPE_CODES } from '..
 import { FINES_ACC_HISTORY_AND_NOTES_DETAILS_TRANSACTION_TYPE_ALIASES } from '../constants/fines-acc-history-and-notes-details-transaction-type-aliases.constant';
 import { FINES_ACC_HISTORY_AND_NOTES_DETAILS_TRANSACTION_TYPES } from '../constants/fines-acc-history-and-notes-details-transaction-types.constant';
 import { FINES_ACC_HISTORY_AND_NOTES_DETAILS_XFER_REASON_LABELS } from '../constants/fines-acc-history-and-notes-details-xfer-reason-labels.constant';
+import { IFinesAccHistoryAndNotesSuspenseTransferValues } from '../../fines-acc-history-and-notes/interfaces/fines-acc-history-and-notes-suspense-transfer-values.interface';
 
 /**
  * Transforms a raw history item into the structured details model.
@@ -57,6 +59,158 @@ export function transformHistoryAndNotesDetails(
     historyItemTypeAliases: FINES_ACC_HISTORY_AND_NOTES_DETAILS_HISTORY_ITEM_TYPE_ALIASES,
     transformers: config,
   });
+}
+
+/**
+ * Gets a configured transaction template for a normalised transaction type.
+ *
+ * @param templates - The transaction-code-to-template mapping.
+ * @param transactionType - The normalised transaction type returned by the API.
+ * @returns The matching template or null when the transaction type is not configured.
+ */
+export function getHistoryTransactionTemplateValue<T extends Record<string, unknown>>(
+  templates: T,
+  transactionType: string | null,
+): T[keyof T] | null {
+  return transactionType && transactionType in templates ? templates[transactionType as keyof T] : null;
+}
+
+/**
+ * Creates the shared display details for an issued or reissued cheque.
+ *
+ * @param title - The creditor-specific cheque title.
+ * @param chequeNumber - The payment reference used as the cheque number.
+ * @param status - The raw cheque status code.
+ * @param statusDate - The date on which the status was recorded.
+ * @returns The display-ready cheque details.
+ */
+export function createHistoryChequeDetails(
+  title: string,
+  chequeNumber: string | null,
+  status: string | null,
+  statusDate: string | null,
+): IFinesAccHistoryAndNotesDetails {
+  const statusLabel = status ? FINES_ACC_HISTORY_AND_NOTES_DETAILS_CHEQUE_STATUS_LABELS[status] : null;
+  const chequeNumberText = chequeNumber ?? FINES_ACC_HISTORY_AND_NOTES_DETAILS_LABELS.notYetWritten;
+  const statusText = statusLabel
+    ? [statusLabel, formatHistoryDate(statusDate, FINES_ACC_HISTORY_AND_NOTES_DETAILS_DATE_FORMAT)]
+        .filter(Boolean)
+        .join(' ')
+    : null;
+
+  return createHistoryDetails([
+    createHistoryTextPart(title),
+    createHistoryPlainLabelValuePart(FINES_ACC_HISTORY_AND_NOTES_DETAILS_LABELS.chequeNumber, chequeNumberText),
+    createHistoryTextPart(statusText),
+  ]);
+}
+
+/**
+ * Creates a plain label and value details part.
+ *
+ * @param label - The label text.
+ * @param value - The value text.
+ * @returns The plain labelled details part or null when the value is absent.
+ */
+export function createHistoryPlainLabelValuePart(
+  label: string,
+  value: string | null,
+): IFinesAccHistoryAndNotesDetailsPart | null {
+  return value ? createHistoryDetailsPart([createHistoryFragment(label), createHistoryFragment(value)]) : null;
+}
+
+/**
+ * Creates a text details part with link metadata when a target record identifier is available.
+ *
+ * @param text - The optional text displayed to the user.
+ * @param linkType - The type of record the text opens.
+ * @param linkEmit - The optional target record identifier emitted by the UI.
+ * @returns The text part, with link metadata when possible, or null when there is no text to display.
+ */
+export function createHistoryTextPartWithOptionalLink(
+  text: string | null,
+  linkType: string,
+  linkEmit: string | null,
+): IFinesAccHistoryAndNotesDetailsPart | null {
+  return text
+    ? createHistoryDetailsPart([
+        createHistoryFragment(text, {
+          link: linkEmit ? createHistoryLink(linkType, linkEmit) : null,
+        }),
+      ])
+    : null;
+}
+
+/**
+ * Creates the optional associated-record part for a suspense transfer.
+ *
+ * @param values - The raw values needed by the three documented associated-record types.
+ * @param linkedRecordTypes - The associated-record types that should include link metadata for this creditor flow.
+ * @returns The selected associated-record part, or null when the record type is not recognised or has no display value.
+ */
+export function createHistorySuspenseTransferAssociatedRecordPart(
+  values: IFinesAccHistoryAndNotesSuspenseTransferValues,
+  linkedRecordTypes: readonly string[],
+): IFinesAccHistoryAndNotesDetailsPart | null {
+  const associatedRecordTypes = FINES_ACC_HISTORY_AND_NOTES_DETAILS_ASSOCIATED_RECORD_TYPES;
+
+  if (values.associatedRecordType === associatedRecordTypes.suspenseItem) {
+    return linkedRecordTypes.includes(associatedRecordTypes.suspenseItem)
+      ? createHistorySuspenseTransferLinkedRecordPart(
+          values.associatedRecordId,
+          FINES_ACC_HISTORY_AND_NOTES_DETAILS_LINK_TYPES.suspenseTransaction,
+          values.associatedRecordId,
+        )
+      : createHistorySuspenseTransferPlainRecordPart(values.associatedRecordId);
+  }
+
+  if (values.associatedRecordType === associatedRecordTypes.defendantTransaction) {
+    return linkedRecordTypes.includes(associatedRecordTypes.defendantTransaction)
+      ? createHistorySuspenseTransferLinkedRecordPart(
+          values.defendantAccountNumber,
+          FINES_ACC_HISTORY_AND_NOTES_DETAILS_LINK_TYPES.account,
+          values.defendantAccountId,
+        )
+      : createHistorySuspenseTransferPlainRecordPart(values.defendantAccountNumber);
+  }
+
+  if (values.associatedRecordType === associatedRecordTypes.creditorAccounts) {
+    return linkedRecordTypes.includes(associatedRecordTypes.creditorAccounts)
+      ? createHistorySuspenseTransferLinkedRecordPart(
+          values.creditorAccountNumber,
+          FINES_ACC_HISTORY_AND_NOTES_DETAILS_LINK_TYPES.account,
+          values.associatedRecordId,
+        )
+      : createHistorySuspenseTransferPlainRecordPart(values.creditorAccountNumber);
+  }
+
+  return null;
+}
+
+/**
+ * Creates a plain suspense-transfer record part.
+ *
+ * @param text - The optional value displayed in the history item.
+ * @returns The display-ready history details part or null when the value is absent.
+ */
+function createHistorySuspenseTransferPlainRecordPart(text: string | null): IFinesAccHistoryAndNotesDetailsPart | null {
+  return createHistoryTextPart(text);
+}
+
+/**
+ * Creates a linked suspense-transfer record part.
+ *
+ * @param text - The optional value displayed in the history item.
+ * @param linkType - The type of record the value opens when linked.
+ * @param linkEmit - The optional target record identifier.
+ * @returns The display-ready history details part or null when the value is absent.
+ */
+function createHistorySuspenseTransferLinkedRecordPart(
+  text: string | null,
+  linkType: string,
+  linkEmit: string | null,
+): IFinesAccHistoryAndNotesDetailsPart | null {
+  return createHistoryTextPartWithOptionalLink(text, linkType, linkEmit);
 }
 
 /**

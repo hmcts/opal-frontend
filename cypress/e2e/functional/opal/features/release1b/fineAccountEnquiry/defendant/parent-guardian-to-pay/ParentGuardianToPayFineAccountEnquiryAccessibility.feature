@@ -6,7 +6,7 @@ Feature: Parent Guardian To Pay Fine Account Enquiry Accessibility
     Given I am logged in with email "opal-test@dev.platform.hmcts.net"
     And I clear all approved accounts
 
-  @R1B @JIRA-STORY:PO-1862 @JIRA-STORY:PO-3729 @JIRA-EPIC:PO-2472 @JIRA-TEST-KEY:PO-5463
+  @R1BDrop1 @JIRA-STORY:PO-1862 @JIRA-STORY:PO-3729 @JIRA-EPIC:PO-2472 @JIRA-TEST-KEY:PO-5463
   Scenario: Parent or guardian enforcement tab accessibility
     Given I create a "pgToPay" draft account with the following details and set status "Publishing Pending" using user "opal-test-10@dev.platform.hmcts.net":
       | Account_status                                  | Submitted                       |
@@ -29,7 +29,7 @@ Feature: Parent Guardian To Pay Fine Account Enquiry Accessibility
     And I open the change enforcement court form
     And I check the page for accessibility
 
-  @R1B @JIRA-STORY:PO-5749 @JIRA-EPIC:PO-2990 @JIRA-TEST-KEY:PO-10024
+  @R1BDrop1 @JIRA-STORY:PO-5749 @JIRA-EPIC:PO-2990 @JIRA-TEST-KEY:PO-10024
   Scenario: Restricted Parent or guardian details tab accessibility
     # AC5 – Axe-Core coverage for the restricted Parent or guardian details tab.
     Given I stub the defendant header summary account status code to "CS"

@@ -1,5 +1,6 @@
 export interface IOpalFinesPaths {
   businessUnitRefData: string;
+  businessUnitOutstandingAutoPaymentCount: string;
   localJusticeAreaRefData: string;
   courtRefData: string;
   offencesRefData: string;
@@ -16,6 +17,7 @@ export interface IOpalFinesPaths {
   searchMinorCreditorAccounts: string;
   minorCreditorAccounts: string;
   enforcersRefData: string;
+  centralFunds: string;
   reports: string;
   reportInstances: string;
 }

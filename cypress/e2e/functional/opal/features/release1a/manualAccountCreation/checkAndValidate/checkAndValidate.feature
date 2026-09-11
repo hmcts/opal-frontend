@@ -195,6 +195,10 @@ Feature: Check And Validate
 
     When I submit the manual account for review
     Then I should see the header containing text "Create accounts"
+    And I am logged in with email "opal-test-10@dev.platform.hmcts.net"
+    When I open Check and Validate Draft Accounts
+    Then I open the draft account for "LNAME{uniq}, FNAME" and see header "Mr FNAME LNAME{uniq}"
+    And the draft review history contains the status "Submitted"
 
   @JIRA-EPIC:PO-2220 @R1A @JIRA-STORY:PO-640 @JIRA-TEST-KEY:PO-3881
   Scenario: Rejected parent or guardian to pay account can be edited and resubmitted
@@ -330,7 +334,7 @@ Feature: Check And Validate
     When I go back to Create and Manage Draft Accounts
     Then I should see the header containing text "Create accounts"
 
-  @JIRA-EPIC:PO-2220 @R1B @JIRA-STORY:PO-607 @JIRA-STORY:PO-3720 @JIRA-TEST-KEY:PO-3883
+  @JIRA-EPIC:PO-2220 @R1BDrop1 @JIRA-STORY:PO-607 @JIRA-STORY:PO-3720 @JIRA-TEST-KEY:PO-3883
   Scenario: Approved tab lists recent accounts - Hyperlinks
     Given I create a "company" approved account with the following details:
       | account_snapshot.defendant_name | TEST New Company Ltd {uniq} |

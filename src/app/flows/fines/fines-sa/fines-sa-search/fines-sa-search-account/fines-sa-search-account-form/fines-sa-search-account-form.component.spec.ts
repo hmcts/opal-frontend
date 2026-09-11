@@ -174,12 +174,12 @@ describe('FinesSaSearchAccountFormComponent', () => {
     expect(nationalInsuranceControl?.value).toBe('AB123456C');
   });
 
-  it('should populate major creditor autocomplete values from major creditor codes', () => {
+  it('should populate major creditor autocomplete values from creditor account ids', () => {
     component['populateMajorCreditors']();
 
     expect(component['majorCreditors']()).toEqual(
       OPAL_FINES_MAJOR_CREDITOR_REF_DATA_MOCK.refData.map((majorCreditor) => ({
-        value: majorCreditor.major_creditor_code!,
+        value: majorCreditor.creditor_account_id!,
         name: OPAL_FINES_MAJOR_CREDITOR_PRETTY_NAME_MOCK,
       })),
     );

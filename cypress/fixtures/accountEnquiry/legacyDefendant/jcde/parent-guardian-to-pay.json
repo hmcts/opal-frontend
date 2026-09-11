@@ -1,0 +1,70 @@
+{
+  "header": {
+    "accountNumber": "26000285P",
+    "name": "Mr Antonius Barnet CPGB-YOUTH-A-B",
+    "summary": {
+      "account type": "Fine",
+      "business unit": "West London (0042)"
+    },
+    "metrics": {
+      "imposed": "\u00a3175.00",
+      "arrears": "\u00a380.00",
+      "paid/written off": "\u00a30.00",
+      "account balance": "-\u00a3175.00"
+    }
+  },
+  "atAGlance": {
+    "parentGuardian": {
+      "name": "ANALIESE PARENT-A-B",
+      "address": "PG add line 1 PG add line 2\nPG add line 3 PG add line 4\nPG add line 5",
+      "national insurance number": "\u2014"
+    },
+    "paymentTerms": {
+      "payment terms": "Instalments only",
+      "instalments": "\u00a310.00",
+      "start date": "11 May 2026"
+    },
+    "enforcementStatus": {
+      "collection order": "NO COLLECTION ORDER",
+      "days in default": "200 days",
+      "date of last movement": "02 June 2026"
+    },
+    "comments": {
+      "comment": "Here is an Account comment",
+      "lines": ["\u2014"]
+    }
+  },
+  "defendantTab": {
+    "defendant": {
+      "name": "Mr Antonius Barnet CPGB-YOUTH-A-B",
+      "aliases": "\u2014",
+      "date of birth": "01 January 2010",
+      "national insurance number": "\u2014",
+      "address": "123 Address Line1\nAddress Line2 Address Line3\nAddress Line4 Address Line5\nEN51 1RL"
+    }
+  },
+  "parentGuardianTab": {
+    "header": "Parent or guardian details",
+    "parentGuardian": {
+      "name": "ANALIESE PARENT-A-B",
+      "aliases": "\u2014",
+      "date of birth": "\u2014",
+      "national insurance number": "\u2014",
+      "address": "PG add line 1 PG add line 2\nPG add line 3 PG add line 4\nPG add line 5"
+    }
+  },
+  "paymentTermsTab": {
+    "pay by date": "11 May 2026",
+    "days in default": "200",
+    "date days in default were imposed": "\u2014",
+    "payment card last requested": "02 June 2026"
+  },
+  "enforcementTab": {
+    "overview": {
+      "collection order status": "NO COLLECTION ORDER",
+      "days in default": "200 days"
+    }
+  },
+  "impositionsTab": {},
+  "historyAndNotesTab": {}
+}

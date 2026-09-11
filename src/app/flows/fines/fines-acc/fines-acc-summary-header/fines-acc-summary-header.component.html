@@ -2,7 +2,9 @@
   id="{{ id }}-banners"
   [hasVersionMismatch]="accountStore.hasVersionMismatch()"
   [hasPaymentHold]="accountStore.hasPaymentHold()"
+  [isTransferredIn]="isTransferredIn"
   [successMessage]="accountStore.successMessage()"
+  [collectionOrderBannerMessage]="collectionOrderBannerMessage"
   (clearSuccessMessage)="accountStore.clearSuccessMessage()"
   (refreshPage)="handleRefreshPage()"
 ></app-fines-acc-banner-messages>

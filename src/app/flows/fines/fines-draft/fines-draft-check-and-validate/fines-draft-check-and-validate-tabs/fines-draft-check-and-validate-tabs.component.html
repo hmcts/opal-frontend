@@ -13,21 +13,21 @@
       opal-lib-moj-sub-navigation-item
       subNavItemId="checker-to-review-tab"
       [activeSubNavItemFragment]="activeTab"
-      subNavItemFragment="to-review"
+      [subNavItemFragment]="finesDraftTabFragment.toReview"
       subNavItemText="To review"
     ></li>
     <li
       opal-lib-moj-sub-navigation-item
       subNavItemId="checker-rejected-tab"
       [activeSubNavItemFragment]="activeTab"
-      subNavItemFragment="rejected"
+      [subNavItemFragment]="finesDraftTabFragment.rejected"
       subNavItemText="Rejected"
     ></li>
     <li
       opal-lib-moj-sub-navigation-item
       subNavItemId="checker-deleted-tab"
       [activeSubNavItemFragment]="activeTab"
-      subNavItemFragment="deleted"
+      [subNavItemFragment]="finesDraftTabFragment.deleted"
       subNavItemText="Deleted"
     ></li>
     @if (failedCount$ | async; as failedCount) {
@@ -35,7 +35,7 @@
         opal-lib-moj-sub-navigation-item
         subNavItemId="checker-failed-tab"
         [activeSubNavItemFragment]="activeTab"
-        subNavItemFragment="failed"
+        [subNavItemFragment]="finesDraftTabFragment.failed"
         subNavItemText="Failed"
       >
         @if (failedCount !== '0') {
@@ -47,19 +47,19 @@
     }
   </opal-lib-moj-sub-navigation>
   @switch (activeTab) {
-    @case ('to-review') {
+    @case (finesDraftTabFragment.toReview) {
       <h2 class="govuk-heading-m">To review</h2>
       <ng-container *ngTemplateOutlet="tableWrapper"></ng-container>
     }
-    @case ('rejected') {
+    @case (finesDraftTabFragment.rejected) {
       <h2 class="govuk-heading-m">Rejected</h2>
       <ng-container *ngTemplateOutlet="tableWrapper"></ng-container>
     }
-    @case ('deleted') {
+    @case (finesDraftTabFragment.deleted) {
       <h2 class="govuk-heading-m">Deleted</h2>
       <ng-container *ngTemplateOutlet="tableWrapper"></ng-container>
     }
-    @case ('failed') {
+    @case (finesDraftTabFragment.failed) {
       <h2 class="govuk-heading-m">Failed</h2>
       <ng-container *ngTemplateOutlet="tableWrapper"></ng-container>
     }
@@ -80,16 +80,16 @@
         ></app-fines-draft-table-wrapper>
       } @else {
         @switch (activeTab) {
-          @case ('to-review') {
+          @case (finesDraftTabFragment.toReview) {
             <ng-container *ngTemplateOutlet="reviewNoData"></ng-container>
           }
-          @case ('rejected') {
+          @case (finesDraftTabFragment.rejected) {
             <ng-container *ngTemplateOutlet="rejectedNoData"></ng-container>
           }
-          @case ('deleted') {
+          @case (finesDraftTabFragment.deleted) {
             <ng-container *ngTemplateOutlet="deletedNoData"></ng-container>
           }
-          @case ('failed') {
+          @case (finesDraftTabFragment.failed) {
             <ng-container *ngTemplateOutlet="failedNoData"></ng-container>
           }
         }

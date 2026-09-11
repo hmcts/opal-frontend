@@ -58,6 +58,7 @@ import { FINES_ACC_BANNER_MESSAGES } from '../stores/constants/fines-acc-store-b
 import { FinesAccDefendantDetailsHistoryAndNotesTabComponent } from './fines-acc-defendant-details-history-and-notes-tab/fines-acc-defendant-details-history-and-notes-tab.component';
 import { IOpalFinesAccountDefendantDetailsConsolidatedAccounts } from '@services/fines/opal-fines-service/interfaces/opal-fines-account-defendant-account-consolidated-accounts.interface';
 import { FinesAccDefendantDetailsConsolidatedAccountsTabComponent } from './fines-acc-defendant-details-consolidated-accounts-tab/fines-acc-defendant-details-consolidated-accounts-tab.component';
+import { getFinesAccCollectionOrderBannerMessage } from '../utils/fines-acc-collection-order-banner.utils';
 import { CustomAccessibleMonetaryComponent } from '@hmcts/opal-frontend-common/components/custom/custom-accessible-monetary';
 
 @Component({
@@ -263,6 +264,13 @@ export class FinesAccDefendantDetailsComponent
   }
 
   /**
+   * Gets the Collection Order warning banner message for the current defendant account.
+   */
+  public get collectionOrderBannerMessage(): string | null {
+    return getFinesAccCollectionOrderBannerMessage(this.accountData);
+  }
+
+  /**
    *
    * Calculates if the user can amend payment terms based on account status, balance, permissions, and enforcement.
    * @returns boolean indicating if the user can amend payment terms
@@ -286,6 +294,14 @@ export class FinesAccDefendantDetailsComponent
       this.accountAllowsPaymentTermsActions &&
       this.hasBusinessUnitPermissionKey('amend-payment-terms')
     );
+  }
+  /**
+   * Determines whether the account was transferred in from another originator.
+   *
+   * @returns `true` when the normalized originator type is `TFO`; otherwise, `false`.
+   */
+  public get isTransferredIn(): boolean {
+    return this.accountData.originator_type?.trim().toUpperCase() === 'TFO';
   }
 
   /**

@@ -20,8 +20,7 @@
               *ngTemplateOutlet="
                 minorCreditor;
                 context: {
-                  impositionId: imposition.impositionId,
-                  show: imposition.showMinorCreditorData,
+                  imposition,
                   minorCreditor: imposition.minorCreditor,
                 }
               "
@@ -56,15 +55,8 @@
   </ng-container>
 </opal-lib-govuk-table>
 
-<ng-template #minorCreditor let-impositionId="impositionId" let-show="show" let-minorCreditor="minorCreditor">
-  @let linkLabel = show ? 'Hide details' : 'Show details';
-  <a
-    class="govuk-link govuk-link--no-visited-state"
-    href=""
-    (click)="invertShowMinorCreditorData(impositionId, $event)"
-    >{{ linkLabel }}</a
-  >
-  @if (show) {
+<ng-template #minorCreditor let-imposition="imposition" let-minorCreditor="minorCreditor">
+  <opal-lib-govuk-details #minorCreditorDetails [summaryText]="imposition.minorCreditorDetailsSummaryText">
     <opal-lib-govuk-summary-list classes="govuk-summary-list--no-border" summaryListId="minorCreditorDataTable">
       <div
         opal-lib-govuk-summary-list-row
@@ -162,7 +154,7 @@
         </div>
       }
     </opal-lib-govuk-summary-list>
-  }
+  </opal-lib-govuk-details>
 </ng-template>
 
 <ng-template #notProvided>

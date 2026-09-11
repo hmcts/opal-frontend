@@ -33,6 +33,7 @@ import { GovukRadioComponent } from '@hmcts/opal-frontend-common/components/govu
 import { afterAll, beforeAll, beforeEach, describe, expect, it, vi } from 'vitest';
 
 import { createSpyObj } from '@app/testing/create-spy-obj.helper';
+import { By } from '@angular/platform-browser';
 
 describe('FinesMacOffenceDetailsAddAnOffenceFormComponent', () => {
   let component: FinesMacOffenceDetailsAddAnOffenceFormComponent;
@@ -549,7 +550,6 @@ describe('FinesMacOffenceDetailsAddAnOffenceFormComponent', () => {
     const creditorControl = impositionsFormGroup.controls[`fm_offence_details_creditor_${index}`] as FormControl;
 
     component.minorCreditors = {};
-    component.minorCreditorsHidden = {};
     needsCreditorControl.setValue(true);
     creditorControl.setValue('major');
     component['changeDetector'].detectChanges();
@@ -961,6 +961,16 @@ describe('FinesMacOffenceDetailsAddAnOffenceFormComponent', () => {
     expect(finesMacOffenceDetailsStore.offenceDetailsDraftDirty()).toBe(false);
   });
 
+  it('should announce the offence code message when offence is successfully added', () => {
+    finesMacOffenceDetailsStore.setOffenceCodeMessage('Offence HY35014 added');
+    fixture.detectChanges();
+
+    const alert = fixture.debugElement.query(By.css('opal-lib-moj-alert'));
+
+    expect(alert.componentInstance.ariaLabel).toBe('Offence HY35014 added');
+    expect(alert.componentInstance.announcementMessage).toBe('success: Offence HY35014 added');
+  });
+
   it('should update removeMinorCreditor in finesMacOffenceDetailsDraftState and call updateOffenceDetailsDraft and handleRoute', () => {
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     const routerSpy = vi.spyOn<any, any>(component['router'], 'navigate');
@@ -1016,14 +1026,6 @@ describe('FinesMacOffenceDetailsAddAnOffenceFormComponent', () => {
 
     expect(component.selectedOffenceConfirmation).toBe(false);
     expect(handleErrorMessagesSpy).toHaveBeenCalled();
-  });
-
-  it('should update minorCreditorsHidden based on hidden imposition minor creditor', () => {
-    component.minorCreditorsHidden = { 0: false };
-
-    component.minorCreditorActions({ action: 'showHideDetails', index: 0 });
-
-    expect(component.minorCreditorsHidden).toEqual({ 0: true });
   });
 
   it('should return the correct minor creditor form data for the specified row index', () => {
@@ -1131,10 +1133,6 @@ describe('FinesMacOffenceDetailsAddAnOffenceFormComponent', () => {
         fm_offence_details_imposition_position: 1,
       },
     });
-    expect(component.minorCreditorsHidden).toEqual({
-      0: true,
-      1: true,
-    });
   });
 
   it('should retrieve minor creditors from draft offence details', () => {
@@ -1160,10 +1158,6 @@ describe('FinesMacOffenceDetailsAddAnOffenceFormComponent', () => {
         fm_offence_details_imposition_position: 1,
       },
     });
-    expect(component.minorCreditorsHidden).toEqual({
-      0: true,
-      1: true,
-    });
   });
 
   it('should ignore draft minor creditors without an imposition position when building lookup maps', () => {
@@ -1185,12 +1179,9 @@ describe('FinesMacOffenceDetailsAddAnOffenceFormComponent', () => {
     expect(component.minorCreditors).toEqual({
       0: FINES_MAC_OFFENCE_DETAILS_MINOR_CREDITOR_FORM_MOCK.formData,
     });
-    expect(component.minorCreditorsHidden).toEqual({
-      0: true,
-    });
   });
 
-  it('should set minorCreditors and minorCreditorsHidden to empty objects if no minor creditors are found', () => {
+  it('should set minorCreditors to an empty object if no minor creditors are found', () => {
     finesMacStore.setFinesMacStore({
       ...FINES_MAC_STATE_MOCK,
       offenceDetails: [structuredClone(FINES_MAC_OFFENCE_DETAILS_FORM_MOCK)],
@@ -1200,7 +1191,6 @@ describe('FinesMacOffenceDetailsAddAnOffenceFormComponent', () => {
     component.getMinorCreditors();
 
     expect(component.minorCreditors).toEqual({});
-    expect(component.minorCreditorsHidden).toEqual({});
   });
 
   it('should set minorCreditorMissing error when needsCreditor is true, selectedCreditor is minor, and no minor creditor exists', () => {

@@ -23,6 +23,7 @@ import { IOpalUserState } from '@hmcts/opal-frontend-common/services/opal-user-s
 import { OPAL_USER_STATE_MOCK } from '@hmcts/opal-frontend-common/services/opal-user-service/mocks';
 import { MojAlertComponent } from '@hmcts/opal-frontend-common/components/moj/moj-alert';
 import { LaunchDarklyService } from '@hmcts/opal-frontend-common/services/launch-darkly-service';
+import { CustomDeferredLiveRegionAnnouncement } from '@hmcts/opal-frontend-common/components/custom/custom-deferred-live-region-announcement';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
 import { createSpyObj } from './testing/create-spy-obj.helper';
 import { FINES_DASHBOARD_ROUTING_PATHS } from './flows/fines/constants/fines-dashboard-routing-paths.constant';
@@ -336,6 +337,94 @@ describe('AppComponent - browser', () => {
     component['setupTokenExpiry']();
 
     expect(component['sessionService'].getTokenExpiry).toHaveBeenCalled();
+  });
+
+  it('should use a dedicated live announcement for the session expiry warning', () => {
+    const fixture = TestBed.createComponent(AppComponent);
+    const component = fixture.componentInstance;
+
+    component.thresholdInMinutes = 10;
+    component.minutesRemaining$ = of(10);
+
+    fixture.detectChanges();
+
+    const liveRegionDebugElement = fixture.debugElement.query(By.directive(CustomDeferredLiveRegionAnnouncement));
+    const alertDebugElement = fixture.debugElement.query(By.directive(MojAlertComponent));
+
+    expect(liveRegionDebugElement).toBeTruthy();
+    expect(alertDebugElement).toBeTruthy();
+
+    const liveRegion = liveRegionDebugElement.componentInstance as CustomDeferredLiveRegionAnnouncement;
+    const alert = alertDebugElement.componentInstance as MojAlertComponent;
+
+    expect(liveRegion.message).toBe(
+      'Warning: Your session will expire soon. Please save your work and log out, then log back in to continue.',
+    );
+    expect(liveRegion.role).toBe('alert');
+    expect(alert.enableLiveAnnouncement).toBe(false);
+  });
+
+  it('should keep the same live announcement when the session expiry countdown changes', () => {
+    const fixture = TestBed.createComponent(AppComponent);
+    const component = fixture.componentInstance;
+    const minutesRemaining = new Subject<number>();
+
+    component.thresholdInMinutes = 10;
+    component.minutesRemaining$ = minutesRemaining.asObservable();
+
+    fixture.detectChanges();
+
+    minutesRemaining.next(10);
+    fixture.detectChanges();
+
+    const initialLiveRegion = fixture.debugElement.query(By.directive(CustomDeferredLiveRegionAnnouncement));
+
+    expect(initialLiveRegion).toBeTruthy();
+
+    const initialLiveRegionInstance = initialLiveRegion.componentInstance;
+
+    minutesRemaining.next(9);
+    fixture.detectChanges();
+
+    const updatedLiveRegion = fixture.debugElement.query(By.directive(CustomDeferredLiveRegionAnnouncement));
+
+    expect(updatedLiveRegion).toBeTruthy();
+    expect(updatedLiveRegion.componentInstance).toBe(initialLiveRegionInstance);
+  });
+
+  it('should not render the session expiry live announcement outside the warning threshold', () => {
+    const fixture = TestBed.createComponent(AppComponent);
+    const component = fixture.componentInstance;
+
+    component.thresholdInMinutes = 10;
+    component.minutesRemaining$ = of(11);
+
+    fixture.detectChanges();
+
+    const liveRegion = fixture.debugElement.query(By.directive(CustomDeferredLiveRegionAnnouncement));
+
+    expect(liveRegion).toBeNull();
+  });
+
+  it('should include the banner error title and message in the alert aria-label', () => {
+    globalStore.setAuthenticated(true);
+    globalStore.setBannerError({
+      error: true,
+      title: 'Something went wrong',
+      message: 'Unable to load case details',
+      operationId: '123456',
+    });
+
+    const fixture = TestBed.createComponent(AppComponent);
+    fixture.detectChanges();
+
+    const alertDebugElement = fixture.debugElement.query(By.directive(MojAlertComponent));
+
+    expect(alertDebugElement).toBeTruthy();
+
+    const alert = alertDebugElement.componentInstance as MojAlertComponent;
+
+    expect(alert.ariaLabel).toBe('Something went wrong. Unable to load case details');
   });
 
   it('should track page views on navigation end', () => {
