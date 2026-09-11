@@ -322,15 +322,16 @@ Feature: Defendant Adult Youth Search And Matches Journeys
     Then I should see the account summary header contains "<LEGACY_FIXED_PENALTY_SUMMARY_HEADER>"
     And I validate the legacy defendant header and At a glance tab using fixture "<LEGACY_FIXED_PENALTY_VALIDATION_FIXTURE>"
     When I go to the Defendant tab and validate the legacy defendant using fixture "<LEGACY_FIXED_PENALTY_VALIDATION_FIXTURE>"
+    And I go to the Fixed penalty tab and validate the legacy defendant using fixture "<LEGACY_FIXED_PENALTY_VALIDATION_FIXTURE>"
     And I go to the Payment terms tab and validate the legacy defendant using fixture "<LEGACY_FIXED_PENALTY_VALIDATION_FIXTURE>"
     And I go to the Enforcement tab and validate the legacy defendant using fixture "<LEGACY_FIXED_PENALTY_VALIDATION_FIXTURE>"
     And I go to the Impositions tab and validate the legacy defendant using fixture "<LEGACY_FIXED_PENALTY_VALIDATION_FIXTURE>"
     And I go to the History and notes tab and validate the legacy defendant using fixture "<LEGACY_FIXED_PENALTY_VALIDATION_FIXTURE>"
-    And I go to the Fixed penalty tab and validate the legacy defendant using fixture "<LEGACY_FIXED_PENALTY_VALIDATION_FIXTURE>"
+
     @R1BDrop1UatTechJCDE
     Examples:
       | LEGACY_FIXED_PENALTY_ACCOUNT_NUMBER | LEGACY_FIXED_PENALTY_SUMMARY_HEADER | BUSINESS_UNIT | LEGACY_FIXED_PENALTY_VALIDATION_FIXTURE                        |
-      | 26000284T                           | Mr Aldous Curio CPGB-ADULT-A-C      | West London   | accountEnquiry/legacyDefendant/jcde/fixed-penalty-account.json |
+      | 25000248I                           | Mr Daimler ADULT-FIXED-PEN-E        | West London   | accountEnquiry/legacyDefendant/jcde/fixed-penalty-account.json |
     @R1BDrop1UatTechPreprod @skip
     Examples:
       | LEGACY_FIXED_PENALTY_ACCOUNT_NUMBER | LEGACY_FIXED_PENALTY_SUMMARY_HEADER | BUSINESS_UNIT                  | LEGACY_FIXED_PENALTY_VALIDATION_FIXTURE                                              |
