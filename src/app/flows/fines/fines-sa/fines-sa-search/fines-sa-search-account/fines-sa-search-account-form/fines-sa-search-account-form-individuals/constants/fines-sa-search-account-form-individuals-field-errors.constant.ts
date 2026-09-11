@@ -6,8 +6,9 @@ export const FINES_SA_SEARCH_ACCOUNT_FORM_INDIVIDUALS_FIELD_ERRORS: IFinesSaSear
       message: 'Enter last name',
       priority: 1,
     },
-    lettersWithSpacesPattern: {
-      message: 'Last name must only contain letters',
+    singleAsciiCharacters: {
+      message:
+        'Last name must only include letters a to z, numbers 0-9 and certain special characters (such as hyphens, spaces, apostrophes and commas)',
       priority: 2,
     },
     maxlength: {
@@ -21,13 +22,14 @@ export const FINES_SA_SEARCH_ACCOUNT_FORM_INDIVIDUALS_FIELD_ERRORS: IFinesSaSear
       message: 'Enter first name',
       priority: 1,
     },
-    lettersWithSpacesPattern: {
-      message: 'First names must only contain letters',
-      priority: 1,
+    singleAsciiCharacters: {
+      message:
+        'First name must only include letters a to z, numbers 0-9 and certain special characters (such as hyphens, spaces, apostrophes and commas)',
+      priority: 2,
     },
     maxlength: {
       message: 'First names must be 20 characters or fewer',
-      priority: 2,
+      priority: 3,
     },
   },
   fsa_search_account_individuals_first_names_exact_match: {},

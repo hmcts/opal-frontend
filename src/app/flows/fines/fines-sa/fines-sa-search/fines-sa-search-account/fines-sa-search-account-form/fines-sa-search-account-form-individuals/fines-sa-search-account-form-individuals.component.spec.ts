@@ -168,6 +168,19 @@ describe('FinesSaSearchAccountFormIndividualsComponent', () => {
     names.forEach((n) => expect(component.form.get(n), n).toBeTruthy());
   });
 
+  it.each([
+    'fsa_search_account_individuals_first_names',
+    'fsa_search_account_individuals_last_name',
+  ])('should validate %s with the single ASCII characters pattern', (controlName) => {
+    const control = component.form.get(controlName);
+
+    control?.setValue("Anne-Marie O'Neil");
+    expect(control?.hasError('singleAsciiCharacters')).toBe(false);
+
+    control?.setValue('Café');
+    expect(control?.hasError('singleAsciiCharacters')).toBe(true);
+  });
+
   it('should validate address line 1 with the single ASCII characters pattern', () => {
     const addressControl = component.form.get('fsa_search_account_individuals_address_line_1');
 
