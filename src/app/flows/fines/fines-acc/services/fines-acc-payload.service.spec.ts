@@ -1279,6 +1279,20 @@ describe('FinesAccPayloadService', () => {
         }),
       );
     });
+
+    it('preserves null posted user details in the final amendment payload', () => {
+      const result = service.buildPaymentTermsAmendPayload({
+        facc_payment_terms_payment_terms: 'payInFull',
+        facc_payment_terms_pay_by_date: '2025-01-01',
+      } as never);
+
+      expect(result.payment_terms.posted_details).toEqual(
+        expect.objectContaining({
+          posted_by: null,
+          posted_by_name: null,
+        }),
+      );
+    });
   });
 
   describe('buildEnforcementActionAddPayload', () => {
