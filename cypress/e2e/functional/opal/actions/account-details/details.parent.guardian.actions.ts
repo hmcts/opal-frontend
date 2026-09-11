@@ -172,4 +172,18 @@ export class AccountDetailsParentGuardianActions {
 
     this.assertMappedValues(expected, fieldSelectors, L.parentOrGuardian.card);
   }
+
+  /**
+   * Asserts the Language preferences summary-card values on the Parent or guardian tab.
+   *
+   * @param expected - Map of visible language preference labels to expected values.
+   */
+  public assertLanguagePreferences(expected: Record<string, string>): void {
+    const fieldSelectors: Record<string, string> = {
+      'document language': L.languagePreferences.fields.documentLanguage,
+      'court hearing language': L.languagePreferences.fields.courtHearingLanguage,
+    };
+
+    this.assertMappedValues(expected, fieldSelectors, L.languagePreferences.card);
+  }
 }

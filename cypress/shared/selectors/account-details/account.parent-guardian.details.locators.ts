@@ -148,6 +148,21 @@ export const AccountParentOrGuardianDetailsLocators = {
   },
 
   // ──────────────────────────────
+  // Language preferences (summary card inside Parent or guardian tab)
+  // ──────────────────────────────
+  languagePreferences: {
+    /** Language preferences summary card and list. */
+    card: '#language-summary-card-list',
+    list: '#languagePreferences',
+
+    /** Language preference fields (stable by ID). */
+    fields: {
+      documentLanguage: '#languagePreferencesDocument_languageValue',
+      courtHearingLanguage: '#languagePreferencesHearing_languageValue',
+    },
+  },
+
+  // ──────────────────────────────
   // Right-hand actions column (inside Parent or guardian tab)
   // ──────────────────────────────
   actions: {
