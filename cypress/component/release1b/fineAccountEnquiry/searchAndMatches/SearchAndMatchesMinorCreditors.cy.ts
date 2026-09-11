@@ -142,12 +142,12 @@ describe('Search Account Component - Minor Creditors', () => {
   );
 
   it(
-    'AC6d. should show error for non-alphabetical address line 1',
+    'AC6d. should show error for invalid address line 1',
     { tags: [...buildTags('@JIRA-STORY:PO-715'), '@JIRA-EPIC:PO-704', '@JIRA-TEST-KEY:PO-4514'] },
     () => {
       setupComponent((searchState) => {
         searchState.fsa_search_account_minor_creditors_search_criteria!.fsa_search_account_minor_creditors_individual.fsa_search_account_minor_creditors_individual_address_line_1 =
-          'Address123?';
+          'Addréss123';
       });
       cy.get(MinorTypeLocators.individualRadio).click();
       cy.get(CommonLocators.searchButton).click();

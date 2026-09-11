@@ -6,6 +6,7 @@
 export const AccountImpositionsDetailsLocators = {
   root: 'app-fines-acc-defendant-details-impositions-tab',
   heading: 'app-fines-acc-defendant-details-impositions-tab h2',
+  emptyState: 'app-fines-acc-defendant-details-impositions-tab p.govuk-body',
   tableHeadings: 'app-fines-acc-defendant-details-impositions-tab th',
   tableRows: 'app-fines-acc-defendant-details-impositions-tab tbody tr',
   dateAdded: (rowIndex: number) => `#imposition-date-added-${rowIndex}`,

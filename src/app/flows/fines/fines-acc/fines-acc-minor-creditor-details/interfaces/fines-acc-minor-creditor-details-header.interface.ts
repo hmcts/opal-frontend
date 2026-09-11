@@ -1,6 +1,7 @@
 import { IOpalFinesVersion } from '../../../services/opal-fines-service/interfaces/opal-fines-version.interface';
 
 export interface IOpalFinesAccountMinorCreditorDetailsHeader extends IOpalFinesVersion {
+  repayment: boolean;
   creditor: {
     account_id: number;
     account_number: string;

@@ -9,7 +9,7 @@ Feature: Minor Creditor Search And Matches Journeys
     Given I am logged in with email "opal-test@dev.platform.hmcts.net"
     And I clear all approved accounts
 
-  @R1BUatTechJCDE @JIRA-STORY:PO-715 @JIRA-STORY:PO-706 @JIRA-STORY:PO-708 @JIRA-EPIC:PO-704 @JIRA-TEST-KEY:PO-5292
+  @R1BDrop2UatTechJCDE @JIRA-STORY:PO-715 @JIRA-STORY:PO-706 @JIRA-STORY:PO-708 @JIRA-EPIC:PO-704 @JIRA-TEST-KEY:PO-5292
   Scenario: Search for a minor creditor account and review the matching results
     Given a published account exists with an individual minor creditor:
       | prosecutor case reference | PCRJRNYMIN{uniqUpper} |
@@ -30,7 +30,7 @@ Feature: Minor Creditor Search And Matches Journeys
       | Name           | JourneyMinor{uniq}, Mina |
       | Address line 1 | 1 High Street            |
 
-  @R1B @JIRA-DEFECT:PO-9149 @JIRA-EPIC:PO-2821
+  @R1BDrop2 @JIRA-DEFECT:PO-9149 @JIRA-EPIC:PO-2821
   Scenario: Open the defendant linked from a minor creditor search result
     Given a published account exists with an individual minor creditor:
       | prosecutor case reference | PCRMINDEFLINK{uniqUpper} |
@@ -51,7 +51,7 @@ Feature: Minor Creditor Search And Matches Journeys
     Then I should see the account header contains "Minor Creditor Seed DefendantLink{uniqUpper}"
 
 
-  @R1BUatTechJCDE @JIRA-STORY:PO-715 @JIRA-STORY:PO-706 @JIRA-STORY:PO-708 @JIRA-EPIC:PO-704 @JIRA-TEST-KEY:PO-5293
+  @R1BDrop2UatTechJCDE @JIRA-STORY:PO-715 @JIRA-STORY:PO-706 @JIRA-STORY:PO-708 @JIRA-EPIC:PO-704 @JIRA-TEST-KEY:PO-5293
   Scenario: Search for a company minor creditor account and review the matching results
     Given a published account exists with a company minor creditor:
       | prosecutor case reference | PCRJRNYMINCO{uniqUpper} |
@@ -86,11 +86,11 @@ Feature: Minor Creditor Search And Matches Journeys
     And I see the Minor creditors search results:
       | Name           | <LEGACY_MINOR_CREDITOR_NAME>           |
       | Address line 1 | <LEGACY_MINOR_CREDITOR_ADDRESS_LINE_1> |
-    @R1BUatTechJCDE @JIRA-TEST-KEY:PO-10327
+    @R1BDrop2UatTechJCDE @JIRA-TEST-KEY:PO-10327
     Examples:
       | LEGACY_MINOR_CREDITOR_LAST_NAME | LEGACY_MINOR_CREDITOR_NAME | LEGACY_MINOR_CREDITOR_ADDRESS_LINE_1 |
       | MinCredAccUniB                  | placeholder                | Unique MinCred CT                    |
-    @R1BUatTechPreprod @skip
+    @R1BDrop2UatTechPreprod
     Examples:
       | LEGACY_MINOR_CREDITOR_LAST_NAME | LEGACY_MINOR_CREDITOR_NAME | LEGACY_MINOR_CREDITOR_ADDRESS_LINE_1 |
       | placeholder                     | placeholder                | placeholder                          |
