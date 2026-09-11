@@ -168,14 +168,17 @@ describe('FinesSaSearchAccountFormIndividualsComponent', () => {
     names.forEach((n) => expect(component.form.get(n), n).toBeTruthy());
   });
 
-  it('should allow hyphens in last name', () => {
-    const lastNameControl = component.form.get('fsa_search_account_individuals_last_name');
+  it.each([
+    'fsa_search_account_individuals_first_names',
+    'fsa_search_account_individuals_last_name',
+  ])('should validate %s with the single ASCII characters pattern', (controlName) => {
+    const control = component.form.get(controlName);
 
-    lastNameControl?.setValue('Henry-Ford');
-    expect(lastNameControl?.hasError('lettersSpacesHyphensPattern')).toBe(false);
+    control?.setValue("Anne-Marie O'Neil");
+    expect(control?.hasError('singleAsciiCharacters')).toBe(false);
 
-    lastNameControl?.setValue('Henry@Ford');
-    expect(lastNameControl?.hasError('lettersSpacesHyphensPattern')).toBe(true);
+    control?.setValue('Café');
+    expect(control?.hasError('singleAsciiCharacters')).toBe(true);
   });
 
   it('should validate address line 1 with the single ASCII characters pattern', () => {
