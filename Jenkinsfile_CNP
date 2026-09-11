@@ -622,6 +622,7 @@ env.IS_LEGACY_MODE = stringFalse
 env.LEGACY_ENABLED = stringFalse
 env.JCDE_OVERRIDE = stringFalse
 env.OPAL_LOG_LEVEL = env.OPAL_LOG_LEVEL ?: 'INFO'
+env.OVERRIDE_FEATURE_FLAGS = stringFalse
 
 // Opt-in: Dev → JCDE (PR builds only)
 if (legacyEnabled && isPR) {
@@ -630,6 +631,7 @@ if (legacyEnabled && isPR) {
     env.LEGACY_ENABLED = stringTrue
     env.DEV_OPAL_LEGACY_GATEWAY_URL = 'https://opal.clouddev.online/opal'
     env.OPAL_LOG_LEVEL = 'DEBUG'
+    env.OVERRIDE_FEATURE_FLAGS = stringTrue
 } else if (legacyEnabled && !isPR) {
     echo 'Legacy mode label detected but this is not a PR build; ignoring.'
 }
