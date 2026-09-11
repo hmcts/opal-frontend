@@ -1,5 +1,5 @@
 <div class="govuk-grid-column-full">
-  <h1 class="govuk-heading-l">Automatic Cash Input</h1>
+  <h1 class="govuk-heading-l">{{ content.heading }}</h1>
   <opal-lib-govuk-error-summary
     [errors]="formErrorSummaryMessage"
     (errorClick)="scrollTo($event)"
@@ -10,21 +10,19 @@
       class="govuk-fieldset"
       [attr.aria-describedby]="hasBusinessUnitSelectionError ? 'fines-api-select-business-units-error' : null"
     >
-      <legend class="govuk-fieldset__legend govuk-fieldset__legend--m">Select business units</legend>
+      <legend class="govuk-fieldset__legend govuk-fieldset__legend--m">{{ content.legend }}</legend>
 
       @if (hasBusinessUnitSelectionError) {
         <p id="fines-api-select-business-units-error" class="govuk-error-message">
-          <span class="govuk-visually-hidden">Error:</span> {{ formErrorSummaryMessage[0].message }}
+          <span class="govuk-visually-hidden">{{ content.errorPrefix }}</span>
+          {{ formErrorSummaryMessage[0].message }}
         </p>
       }
 
-      <opal-lib-govuk-table
-        caption="Business units available for Automatic Cash Input"
-        captionClasses="govuk-visually-hidden"
-      >
+      <opal-lib-govuk-table [caption]="content.tableCaption" captionClasses="govuk-visually-hidden">
         <ng-container head>
           <th opal-lib-govuk-table-heading id="fines-api-select-business-units-header-select">
-            <span class="govuk-visually-hidden">Select business units</span>
+            <span class="govuk-visually-hidden">{{ content.selectColumn }}</span>
             @if (hasBusinessUnits) {
               <opal-lib-govuk-checkboxes
                 fieldSetId="fines-api-select-business-units-group"
@@ -41,16 +39,22 @@
                   inputName="fines-api-select-business-units"
                   labelText=""
                   labelClasses="govuk-!-padding-0"
-                  ariaLabel="Select all business units"
+                  [ariaLabel]="content.selectAll"
                   [selectAllIndeterminate]="someBusinessUnitsSelected"
                   (toggleAll)="toggleAllBusinessUnits($event)"
                 ></div>
               </opal-lib-govuk-checkboxes>
             }
           </th>
-          <th opal-lib-govuk-table-heading id="fines-api-select-business-units-header">Business unit</th>
-          <th opal-lib-govuk-table-heading class="govuk-table__header--numeric">Files to process</th>
-          <th opal-lib-govuk-table-heading class="govuk-table__header--numeric">Tills to allocate</th>
+          <th opal-lib-govuk-table-heading id="fines-api-select-business-units-header">
+            {{ content.columns.businessUnit }}
+          </th>
+          <th opal-lib-govuk-table-heading class="govuk-table__header--numeric">
+            {{ content.columns.filesToProcess }}
+          </th>
+          <th opal-lib-govuk-table-heading class="govuk-table__header--numeric">
+            {{ content.columns.tillsToAllocate }}
+          </th>
         </ng-container>
 
         <ng-container body>
@@ -68,7 +72,7 @@
                 <opal-lib-govuk-checkboxes
                   [fieldSetId]="'fines-api-business-unit-' + businessUnit.business_unit_id + '-group'"
                   checkboxClasses=""
-                  [legendText]="'Select ' + businessUnit.business_unit_name"
+                  [legendText]="content.selectBusinessUnit(businessUnit.business_unit_name)"
                   legendClasses="govuk-!-margin-0 govuk-visually-hidden"
                 >
                   <div
@@ -81,7 +85,7 @@
                     labelText=""
                     labelClasses="govuk-!-padding-0"
                     [rowId]="businessUnit.business_unit_id"
-                    [ariaLabel]="'Select ' + businessUnit.business_unit_name"
+                    [ariaLabel]="content.selectBusinessUnit(businessUnit.business_unit_name)"
                     (selectionChange)="toggleBusinessUnit($event)"
                   ></div>
                 </opal-lib-govuk-checkboxes>
@@ -110,7 +114,7 @@
           } @empty {
             <tr opal-lib-govuk-table-body-row>
               <td opal-lib-govuk-table-body-row-data id="fines-api-business-unit-empty" colspan="4">
-                There are no business units available.
+                {{ content.emptyState }}
               </td>
             </tr>
           }
@@ -128,7 +132,7 @@
       id="fines-api-select-business-units-continue"
       [disabled]="!hasBusinessUnits"
     >
-      Continue
+      {{ content.continueButton }}
     </button>
     <opal-lib-govuk-cancel-link (linkClickEvent)="cancel()"></opal-lib-govuk-cancel-link>
   </div>
