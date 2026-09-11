@@ -1,6 +1,7 @@
 import { AsyncPipe } from '@angular/common';
 import { ChangeDetectionStrategy, Component, Input, OnChanges, OnInit, SimpleChanges, inject } from '@angular/core';
 import { FinesAccHistoryAndNotesFilterFormComponent } from '../../fines-acc-history-and-notes/fines-acc-history-and-notes-filter-form/fines-acc-history-and-notes-filter-form.component';
+import { FinesAccMajorCreditorDetailsHistoryAndNotesTableComponent } from './fines-acc-major-creditor-details-history-and-notes-table/fines-acc-major-creditor-details-history-and-notes-table.component';
 import { FINES_ACC_SUMMARY_TABS_CONTENT_STYLES } from '../../constants/fines-acc-summary-tabs-content-styles.constant';
 import { IFinesAccSummaryTabsContentStyles } from '../../fines-acc-defendant-details/interfaces/fines-acc-summary-tabs-content-styles.interface';
 import { IFinesAccHistoryAndNotesFilterForm } from '../../fines-acc-history-and-notes/interfaces/fines-acc-history-and-notes-filter-form.interface';
@@ -17,7 +18,11 @@ import { FINES_ACC_MAJOR_CREDITOR_DETAILS_HISTORY_AND_NOTES_TAB_HISTORY_ITEM_KEY
 
 @Component({
   selector: 'app-fines-acc-major-creditor-details-history-and-notes-tab',
-  imports: [AsyncPipe, FinesAccHistoryAndNotesFilterFormComponent],
+  imports: [
+    AsyncPipe,
+    FinesAccHistoryAndNotesFilterFormComponent,
+    FinesAccMajorCreditorDetailsHistoryAndNotesTableComponent,
+  ],
   templateUrl: './fines-acc-major-creditor-details-history-and-notes-tab.component.html',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
