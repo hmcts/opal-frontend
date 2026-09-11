@@ -32,6 +32,7 @@ export const AutomaticCashInputLocators = {
   processFilesSelectedCount: '#fines-api-process-files-selected-count',
   processFilesRefreshButton: '#fines-api-process-refresh',
   processFilesProcessButton: '#fines-api-process-submit',
+  processFilesPagination: '#fines-api-process-files-pagination',
   processFilesSelectAllCheckbox: '#fines-api-process-files-select-all-checkbox',
   processFilesSelectionError: '#fines-api-process-files-error',
   processFileCheckbox: (interfaceFileId: number): string => `#fines-api-process-file-${interfaceFileId}`,

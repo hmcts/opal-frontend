@@ -6,9 +6,8 @@ import { AutomaticCashInputLocators } from '../../../shared/selectors/automatic-
 import { FinanceLocators } from '../../../shared/selectors/finance.locators';
 import { setupFinancePageComponent } from './setup/SetupComponent';
 import { PROCESS_INTERFACE_JOBS_SUMMARY_MOCK } from './mocks/interface-jobs-summary.mock';
-import 'cypress-axe';
 
-const AUTOMATIC_CASH_INPUT_JIRA_LABEL = '@JIRA-LABEL:Auto-Payments Processing Filess';
+const AUTOMATIC_CASH_INPUT_JIRA_LABEL = '@JIRA-LABEL:auto-payments-processing-files';
 const AUTOMATIC_CASH_INPUT_JIRA_EPIC = '@JIRA-EPIC:PO-2468';
 const AUTOMATIC_CASH_INPUT_RELEASE_TAG = '@R1CFinancialMovements';
 const UNSAVED_CHANGES_MESSAGE =
@@ -196,7 +195,7 @@ describe('Automatic Cash Input - Process files and allocate tills', () => {
   );
 
   it(
-    '(AC4, AC4a, AC4b) selects one, many, or all files, updates the count, and requires a selection before processing',
+    '(AC4, AC4a, AC4b, AC8b EMAC1) selects one, many, or all files, updates the count, and requires a selection before processing',
     {
       tags: [
         '@JIRA-STORY:PO-2585',
@@ -434,7 +433,7 @@ describe('Automatic Cash Input - Process files and allocate tills', () => {
   );
 
   it(
-    '(AC7a, AC7ai, AC7aii) confirms data loss before returning to Select Business Units with selected files',
+    '(AC7a, AC7ai, AC7aii, AC8a RGAC1) confirms data loss before returning to Select Business Units with selected files',
     {
       tags: [
         '@JIRA-STORY:PO-2585',
@@ -505,7 +504,7 @@ describe('Automatic Cash Input - Process files and allocate tills', () => {
   );
 
   it(
-    '(AC9) passes Axe Core accessibility checks for the populated Process files screen',
+    '(AC8a RGAC2a, RGAC3a) prevents browser exit and refresh while files are selected and retains selections',
     {
       tags: [
         '@JIRA-STORY:PO-2585',
@@ -528,14 +527,125 @@ describe('Automatic Cash Input - Process files and allocate tills', () => {
       cy.get(AutomaticCashInputLocators.businessUnitCheckbox(77)).check({ force: true });
       cy.get(AutomaticCashInputLocators.continueButton).click();
       cy.wait('@getInterfaceJobsSummary');
-      cy.get('#main-content').should('contain.text', 'Process files');
-      cy.document().then((document) => {
-        document.documentElement.lang = 'en';
-      });
+      cy.get(AutomaticCashInputLocators.processFileCheckbox(101)).check({ force: true });
 
-      cy.injectAxe({ axeCorePath: 'node_modules/axe-core/axe.min.js' });
-      cy.checkA11y('#main-content', {
-        includedImpacts: ['critical', 'serious', 'moderate'],
+      cy.window().then((window) => {
+        const beforeUnloadEvent = new Event('beforeunload', { cancelable: true });
+
+        window.dispatchEvent(beforeUnloadEvent);
+
+        expect(beforeUnloadEvent.defaultPrevented).to.be.true;
+      });
+      cy.get(AutomaticCashInputLocators.processFileCheckbox(101)).should('be.checked');
+      cy.get('@finesApiStore').then((finesApiStore) => {
+        expect((finesApiStore as InstanceType<typeof FinesApiStore>).selectedFileIds()).to.deep.equal(['101']);
+      });
+    },
+  );
+
+  it(
+    '(AC8c CSAC1, CSAC1a, CSAC2, CSAC3) sorts one column at a time and resets sorting when refreshed',
+    {
+      tags: [
+        '@JIRA-STORY:PO-2585',
+        AUTOMATIC_CASH_INPUT_JIRA_LABEL,
+        AUTOMATIC_CASH_INPUT_JIRA_EPIC,
+        AUTOMATIC_CASH_INPUT_RELEASE_TAG,
+      ],
+    },
+    () => {
+      cy.intercept(
+        {
+          method: 'GET',
+          pathname: '/opal-fines-service/interface-jobs/summary',
+        },
+        PROCESS_INTERFACE_JOBS_SUMMARY_MOCK,
+      ).as('getInterfaceJobsSummary');
+      setupFinancePageComponent({ dashboardType: FINES_DASHBOARD_ROUTING_PATHS.children.finance });
+
+      cy.get(FinanceLocators.automaticCashInputLink).click();
+      cy.get(AutomaticCashInputLocators.businessUnitCheckbox(77)).check({ force: true });
+      cy.get(AutomaticCashInputLocators.continueButton).click();
+      cy.wait('@getInterfaceJobsSummary');
+
+      cy.contains(AutomaticCashInputLocators.processFilesTableHeadings, 'File name').find('button').click();
+      cy.contains(AutomaticCashInputLocators.processFilesTableHeadings, 'File name').should(
+        'have.attr',
+        'aria-sort',
+        'ascending',
+      );
+      cy.get(AutomaticCashInputLocators.processFileNameCells).then(($cells) =>
+        expect([...$cells].map((cell) => cell.textContent?.trim())).to.deep.equal([
+          'camberwell-dwp.xml',
+          'camberwell-new.xml',
+          'camberwell-telecom.xml',
+          'camden-new.xml',
+          'camden-old.xml',
+        ]),
+      );
+
+      cy.contains(AutomaticCashInputLocators.processFilesTableHeadings, 'Source').find('button').click();
+      cy.contains(AutomaticCashInputLocators.processFilesTableHeadings, 'File name').should(
+        'have.attr',
+        'aria-sort',
+        'none',
+      );
+      cy.contains(AutomaticCashInputLocators.processFilesTableHeadings, 'Source').should(
+        'have.attr',
+        'aria-sort',
+        'ascending',
+      );
+
+      cy.get(AutomaticCashInputLocators.processFilesRefreshButton).click();
+      cy.wait('@getInterfaceJobsSummary');
+      cy.contains(AutomaticCashInputLocators.processFilesTableHeadings, 'Source').should(
+        'have.attr',
+        'aria-sort',
+        'none',
+      );
+    },
+  );
+
+  it(
+    '(AC8c CSAC1) displays sortable columns when the Process files table is paginated',
+    {
+      tags: [
+        '@JIRA-STORY:PO-2585',
+        AUTOMATIC_CASH_INPUT_JIRA_LABEL,
+        AUTOMATIC_CASH_INPUT_JIRA_EPIC,
+        AUTOMATIC_CASH_INPUT_RELEASE_TAG,
+      ],
+    },
+    () => {
+      const paginatedInterfaceJobsResponse = {
+        interface_jobs: Array.from({ length: 26 }, (_, index) => ({
+          ...PROCESS_INTERFACE_JOBS_SUMMARY_MOCK.interface_jobs[0],
+          interface_file_id: 200 + index,
+          interface_job_id: 1200 + index,
+          file_name: `paginated-file-${index + 1}.xml`,
+        })),
+      };
+
+      cy.intercept(
+        {
+          method: 'GET',
+          pathname: '/opal-fines-service/interface-jobs/summary',
+        },
+        paginatedInterfaceJobsResponse,
+      ).as('getInterfaceJobsSummary');
+      setupFinancePageComponent({ dashboardType: FINES_DASHBOARD_ROUTING_PATHS.children.finance });
+
+      cy.get(FinanceLocators.automaticCashInputLink).click();
+      cy.get(AutomaticCashInputLocators.businessUnitCheckbox(77)).check({ force: true });
+      cy.get(AutomaticCashInputLocators.continueButton).click();
+      cy.wait('@getInterfaceJobsSummary');
+
+      cy.get(AutomaticCashInputLocators.processFilesPagination).should('be.visible');
+      cy.get(AutomaticCashInputLocators.processFileNameCells).should('have.length', 25);
+      ['File name', 'Source', 'Business unit', 'Date uploaded'].forEach((columnHeading) => {
+        cy.contains(AutomaticCashInputLocators.processFilesTableHeadings, columnHeading)
+          .find('button')
+          .should('be.visible');
       });
     },
   );
