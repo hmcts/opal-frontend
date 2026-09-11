@@ -21,10 +21,9 @@ import { IOpalFinesResults } from './interfaces/opal-fines-results.interface';
 import { IOpalFinesResultsRefData } from './interfaces/opal-fines-results-ref-data.interface';
 import { IOpalFinesMajorCreditor } from './interfaces/opal-fines-major-creditor.interface';
 import { IOpalFinesMajorCreditorRefData } from './interfaces/opal-fines-major-creditor-ref-data.interface';
-import {
-  IFinesMacAddAccountPayload,
-  IFinesMacAddAccountRequestPayload,
-} from '../../fines-mac/services/fines-mac-payload/interfaces/fines-mac-payload-add-account.interfaces';
+import { IFinesMacAddAccountPayload } from '../../fines-mac/services/fines-mac-payload/interfaces/fines-mac-payload-add-account.interfaces';
+import { IFinesMacAddAccountRequestPayload } from '../../fines-mac/services/fines-mac-payload/interfaces/fines-mac-payload-add-account-request.interface';
+import { IFinesMacReplaceAccountRequestPayload } from '../../fines-mac/services/fines-mac-payload/interfaces/fines-mac-payload-replace-account-request.interface';
 import { IOpalFinesDraftAccountsResponse } from './interfaces/opal-fines-draft-account-data.interface';
 import { IOpalFinesDraftAccountParams } from './interfaces/opal-fines-draft-account-params.interface';
 import { IOpalFinesSearchOffencesParams } from './interfaces/opal-fines-search-offences-params.interface';
@@ -66,7 +65,7 @@ import { IOpalFinesUpdateMinorCreditorAccountPayload } from './interfaces/opal-f
 import { IOpalFinesAddEnforcementActionPayload } from './interfaces/opal-fines-add-enforcement-action-payload.interface';
 import { IOpalFinesRemoveEnforcementHoldPayload } from './interfaces/opal-fines-remove-enforcement-hold-payload.interface';
 import { IOpalFinesAccountMinorCreditorCreditor } from './interfaces/opal-fines-account-minor-creditor-creditor.interface';
-import { IOpalFinesDraftAccountPatchRequestPayload } from '@services/fines/opal-fines-service/types/opal-fines-draft-account-patch-request-payload.type';
+import { IOpalFinesDraftAccountPatchRequestPayload } from '@services/fines/opal-fines-service/interfaces/opal-fines-draft-account-patch-request-payload.interface';
 import { IOpalFinesDeleteDefendantAccountPartyPayload } from './interfaces/opal-fines-delete-defendant-account-party-payload.interface';
 import { IOpalFinesCentralFund } from './interfaces/opal-fines-account-central-fund.interface';
 import { IOpalFinesAccountMajorCreditorDetailsHeader } from '../../fines-acc/fines-acc-major-creditor-details/interfaces/fines-acc-major-creditor-details-header.interface';
@@ -789,14 +788,20 @@ export class OpalFines {
   /**
    * Sends a PUT request to update the draft account payload.
    *
-   * @param body - The payload containing the account information to be added.
+   * @param draftAccountId - ID of the draft account to replace.
+   * @param body - Replacement account request body.
+   * @param version - Version supplied through the If-Match header.
    * @returns An Observable of the updated account payload.
    */
-  public putDraftAddAccountPayload(body: IFinesMacAddAccountRequestPayload): Observable<IFinesMacAddAccountPayload> {
+  public putDraftAddAccountPayload(
+    draftAccountId: number,
+    body: IFinesMacReplaceAccountRequestPayload,
+    version: string,
+  ): Observable<IFinesMacAddAccountPayload> {
     return this.http.put<IFinesMacAddAccountPayload>(
-      `${OPAL_FINES_PATHS.draftAccounts}/${body.draft_account_id}`,
+      `${OPAL_FINES_PATHS.draftAccounts}/${draftAccountId}`,
       body,
-      this.buildIfMatchHeader(body.version!),
+      this.buildIfMatchHeader(version),
     );
   }
 
@@ -816,16 +821,18 @@ export class OpalFines {
    *
    * @param draftAccountId - The unique identifier of the draft account to update.
    * @param payload - The partial payload containing the fields to update in the draft account.
+   * @param version - Version supplied through the If-Match header.
    * @returns An Observable emitting the updated account payload as an `IFinesMacAddAccountPayload`.
    */
   public patchDraftAccountPayload(
     draftAccountId: number,
     payload: IOpalFinesDraftAccountPatchRequestPayload,
+    version: string,
   ): Observable<IFinesMacAddAccountPayload> {
     return this.http.patch<IFinesMacAddAccountPayload>(
       `${OPAL_FINES_PATHS.draftAccounts}/${draftAccountId}`,
       payload,
-      this.buildIfMatchHeader(payload.version!),
+      this.buildIfMatchHeader(version),
     );
   }
 

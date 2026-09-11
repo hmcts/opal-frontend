@@ -14,7 +14,7 @@ import { FINES_DRAFT_ROUTING_PATHS } from '../../fines-draft/routing/constants/f
 import { FINES_DRAFT_CHECK_AND_VALIDATE_ROUTING_PATHS } from '../../fines-draft/fines-draft-check-and-validate/routing/constants/fines-draft-check-and-validate-routing-paths.constant';
 import { UtilsService } from '@hmcts/opal-frontend-common/services/utils-service';
 import { FINES_ACCOUNT_TYPES } from '../../constants/fines-account-types.constant';
-import { IOpalFinesDraftAccountPatchRequestPayload } from '@services/fines/opal-fines-service/types/opal-fines-draft-account-patch-request-payload.type';
+import { IOpalFinesDraftAccountPatchRequestPayload } from '@services/fines/opal-fines-service/interfaces/opal-fines-draft-account-patch-request-payload.interface';
 
 @Component({
   selector: 'app-fines-mac-delete-account-confirmation',
@@ -49,16 +49,12 @@ export class FinesMacDeleteAccountConfirmationComponent extends AbstractFormPare
    */
   private createPatchPayload(form: IFinesMacDeleteAccountConfirmationForm): IOpalFinesDraftAccountPatchRequestPayload {
     const reason_text = form.formData.fm_delete_account_confirmation_reason;
-    const { version } = this.finesDraftStore.getFinesDraftState();
     const status = 'Deleted';
     const business_unit_id = this.finesMacStore.getBusinessUnitId();
 
     return {
-      validated_by: null,
       account_status: status,
-      validated_by_name: null,
       business_unit_id,
-      version: version ?? '0',
       reason_text,
     };
   }
@@ -79,7 +75,7 @@ export class FinesMacDeleteAccountConfirmationComponent extends AbstractFormPare
     }
 
     this.opalFinesService
-      .patchDraftAccountPayload(this.accountId, payload)
+      .patchDraftAccountPayload(this.accountId, payload, this.finesDraftStore.version()!)
       .pipe(
         tap((response) => this.processPatchResponse(response)),
         catchError(() => {
