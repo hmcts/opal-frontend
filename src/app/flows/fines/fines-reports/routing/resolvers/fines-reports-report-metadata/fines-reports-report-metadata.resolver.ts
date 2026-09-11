@@ -10,7 +10,7 @@ import { FINES_REPORTS_SUMMARY_LIST_ROUTING_PATHS } from '../../../fines-reports
  * Resolves report metadata for the selected fines report route.
  *
  * Metadata is only loaded for configured operational report routes. Routes without a report configuration and
- * the "Your reports" placeholder resolve to null because they do not have report-specific metadata.
+ * the "Your reports" route resolve to null because they do not have report-specific metadata.
  *
  * @param route - The activated route snapshot used to determine the report configuration.
  * @returns An observable containing the report metadata, or null when no metadata should be loaded.
