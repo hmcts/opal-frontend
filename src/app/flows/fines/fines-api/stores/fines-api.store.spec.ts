@@ -6,6 +6,14 @@ import { FinesApiStore } from './fines-api.store';
 
 describe('FinesApiStore', () => {
   let store: InstanceType<typeof FinesApiStore>;
+  const availableBusinessUnits = [
+    {
+      business_unit_id: 77,
+      business_unit_name: 'Camberwell Green',
+      file_count: 1,
+      till_count: 0,
+    },
+  ];
   const processInterfaceJobs: IOpalFinesInterfaceJobSummary[] = [
     {
       business_unit_name: 'Camberwell Green',
@@ -27,6 +35,7 @@ describe('FinesApiStore', () => {
 
   it('should be created with the initial state', () => {
     expect(store).toBeTruthy();
+    expect(store.availableBusinessUnits()).toEqual(FINES_API_STATE.availableBusinessUnits);
     expect(store.selectedBusinessUnitIds()).toEqual(FINES_API_STATE.selectedBusinessUnitIds);
     expect(store.selectedFileIds()).toEqual(FINES_API_STATE.selectedFileIds);
     expect(store.overrideInhibitFileIds()).toEqual(FINES_API_STATE.overrideInhibitFileIds);
@@ -35,6 +44,14 @@ describe('FinesApiStore', () => {
     expect(store.activeTab()).toBe(FINES_API_STATE.activeTab);
     expect(store.stateChanges()).toBe(false);
     expect(store.unsavedChanges()).toBe(false);
+  });
+
+  it('should retain a defensive copy of available business units', () => {
+    store.setAvailableBusinessUnits(availableBusinessUnits);
+
+    expect(store.availableBusinessUnits()).toEqual(availableBusinessUnits);
+    expect(store.availableBusinessUnits()).not.toBe(availableBusinessUnits);
+    expect(store.availableBusinessUnits()[0]).not.toBe(availableBusinessUnits[0]);
   });
 
   it('should set selected business unit ids and clear dependent process state', () => {
@@ -160,6 +177,7 @@ describe('FinesApiStore', () => {
   });
 
   it('should reset to the initial state', () => {
+    store.setAvailableBusinessUnits(availableBusinessUnits);
     store.setSelectedBusinessUnitIds([101]);
     store.setSelectedFileIds(['501']);
     store.setOverrideInhibitFileIds(['501']);
@@ -168,6 +186,7 @@ describe('FinesApiStore', () => {
 
     store.resetFinesApiState();
 
+    expect(store.availableBusinessUnits()).toEqual(FINES_API_STATE.availableBusinessUnits);
     expect(store.selectedBusinessUnitIds()).toEqual(FINES_API_STATE.selectedBusinessUnitIds);
     expect(store.selectedFileIds()).toEqual(FINES_API_STATE.selectedFileIds);
     expect(store.overrideInhibitFileIds()).toEqual(FINES_API_STATE.overrideInhibitFileIds);

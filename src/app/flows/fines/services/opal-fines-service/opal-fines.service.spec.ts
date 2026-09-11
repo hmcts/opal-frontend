@@ -443,6 +443,26 @@ describe('OpalFines', () => {
     });
   });
 
+  it('should post selected interface jobs for asynchronous processing', () => {
+    const payload = {
+      interface_jobs: [
+        {
+          business_unit_id: 77,
+          interface_job_id: 1001,
+          override_inhibits: true,
+        },
+      ],
+    };
+
+    service.processInterfaceJobs(payload).subscribe();
+
+    const req = httpMock.expectOne(OPAL_FINES_PATHS.processInterfaceJobs);
+    expect(req.request.method).toBe('POST');
+    expect(req.request.body).toEqual(payload);
+
+    req.flush(null);
+  });
+
   it('should send a GET request to report metadata API and cache the response', () => {
     const reportId = 'operational_report_enforcement';
     const mockReport: IOpalFinesReport = {

@@ -78,6 +78,7 @@ import { IOpalFinesReportInstancesParams } from './interfaces/opal-fines-report-
 import { IOpalFinesReportInstancesResponse } from './interfaces/opal-fines-report-instances-response.interface';
 import { IOpalFinesInterfaceJobsSummaryParams } from './interfaces/opal-fines-interface-jobs-summary-params.interface';
 import { IOpalFinesInterfaceJobsSummaryResponse } from './interfaces/opal-fines-interface-jobs-summary-response.interface';
+import { IOpalFinesProcessInterfaceJobsPayload } from './interfaces/opal-fines-process-interface-jobs-payload.interface';
 
 const SAFE_READ_RETRY_POLICY = {
   retryCount: 1,
@@ -413,6 +414,18 @@ export class OpalFines {
       OPAL_FINES_PATHS.interfaceJobsSummary,
       this.withRetrySafeReadOptions({ params: this.getInterfaceJobsSummaryParams(params) }),
     );
+  }
+
+  /**
+   * Starts asynchronous processing for the selected interface jobs.
+   *
+   * This write request is intentionally not retried because repeating it could queue the same jobs twice.
+   *
+   * @param payload - Interface jobs and their override-inhibits values.
+   * @returns An observable that completes when the jobs have been accepted for processing.
+   */
+  public processInterfaceJobs(payload: IOpalFinesProcessInterfaceJobsPayload): Observable<void> {
+    return this.http.post<void>(OPAL_FINES_PATHS.processInterfaceJobs, payload);
   }
 
   /**
