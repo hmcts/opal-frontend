@@ -62,6 +62,7 @@ type LegacyDefendantAccountFixture = {
   };
   atAGlance?: {
     defendant?: Record<string, string>;
+    parentGuardian?: Record<string, string>;
     company?: Record<string, string>;
     paymentTerms?: Record<string, string>;
     enforcementStatus?: Record<string, string>;
@@ -78,6 +79,7 @@ type LegacyDefendantAccountFixture = {
   };
   parentGuardianTab?: {
     header?: string;
+    parentGuardian?: Record<string, string>;
   };
   paymentTermsTab?: Record<string, string>;
   enforcementTab?: {
@@ -914,6 +916,10 @@ export class AccountEnquiryFlow {
         this.atAGlanceDetails.assertDefendantValues(fixture.atAGlance.defendant);
       }
 
+      if (fixture.atAGlance?.parentGuardian) {
+        this.atAGlanceDetails.assertParentGuardianValues(fixture.atAGlance.parentGuardian);
+      }
+
       if (fixture.atAGlance?.paymentTerms) {
         this.atAGlanceDetails.assertPaymentTermsValues(fixture.atAGlance.paymentTerms);
       }
@@ -983,6 +989,10 @@ export class AccountEnquiryFlow {
     this.loadLegacyDefendantAccountFixture(fixturePath).then((fixture) => {
       this.detailsNav.assertParentGuardianTabIsActive();
       this.parentGuardianDetails.assertSectionHeader(fixture.parentGuardianTab?.header ?? 'Parent or guardian details');
+
+      if (fixture.parentGuardianTab?.parentGuardian) {
+        this.parentGuardianDetails.assertParentGuardianDetails(fixture.parentGuardianTab.parentGuardian);
+      }
     });
   }
 

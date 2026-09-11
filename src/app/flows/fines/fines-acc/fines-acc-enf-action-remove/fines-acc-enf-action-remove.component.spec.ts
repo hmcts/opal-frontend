@@ -28,6 +28,7 @@ describe('FinesAccEnfActionRemoveComponent', () => {
     business_unit_id: '78',
     business_unit_user_id: 'user-1',
     welsh_speaking: 'Y',
+    originator_type: null,
   };
 
   const activatedRouteStub = {
