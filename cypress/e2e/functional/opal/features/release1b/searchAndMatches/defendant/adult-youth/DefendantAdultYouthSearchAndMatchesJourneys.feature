@@ -129,8 +129,8 @@ Feature: Defendant Adult Youth Search And Matches Journeys
     When I go to the Defendant tab and validate the legacy defendant using fixture "<LEGACY_INDIVIDUAL_VALIDATION_FIXTURE>"
     And I go to the Payment terms tab and validate the legacy defendant using fixture "<LEGACY_INDIVIDUAL_VALIDATION_FIXTURE>"
     And I go to the Enforcement tab and validate the legacy defendant using fixture "<LEGACY_INDIVIDUAL_VALIDATION_FIXTURE>"
-    # And I go to the Impositions tab and validate the legacy defendant using fixture "<LEGACY_INDIVIDUAL_VALIDATION_FIXTURE>"
-    # And I go to the History and notes tab and validate the legacy defendant using fixture "<LEGACY_INDIVIDUAL_VALIDATION_FIXTURE>"
+    And I go to the Impositions tab and validate the legacy defendant using fixture "<LEGACY_INDIVIDUAL_VALIDATION_FIXTURE>"
+    And I go to the History and notes tab and validate the legacy defendant using fixture "<LEGACY_INDIVIDUAL_VALIDATION_FIXTURE>"
     @R1BDrop1UatTechJCDE @JIRA-TEST-KEY:PO-10328
     Examples:
       | LEGACY_INDIVIDUAL_LAST_NAME | LEGACY_INDIVIDUAL_ACCOUNT_NUMBER | LEGACY_INDIVIDUAL_SUMMARY_HEADER | BUSINESS_UNIT | LEGACY_INDIVIDUAL_VALIDATION_FIXTURE                        |
@@ -159,8 +159,8 @@ Feature: Defendant Adult Youth Search And Matches Journeys
     When I go to the Defendant tab and validate the legacy defendant using fixture "<LEGACY_INDIVIDUAL_VALIDATION_FIXTURE>"
     And I go to the Payment terms tab and validate the legacy defendant using fixture "<LEGACY_INDIVIDUAL_VALIDATION_FIXTURE>"
     And I go to the Enforcement tab and validate the legacy defendant using fixture "<LEGACY_INDIVIDUAL_VALIDATION_FIXTURE>"
-    # And I go to the Impositions tab and validate the legacy defendant using fixture "<LEGACY_INDIVIDUAL_VALIDATION_FIXTURE>"
-    # And I go to the History and notes tab and validate the legacy defendant using fixture "<LEGACY_INDIVIDUAL_VALIDATION_FIXTURE>"
+    And I go to the Impositions tab and validate the legacy defendant using fixture "<LEGACY_INDIVIDUAL_VALIDATION_FIXTURE>"
+    And I go to the History and notes tab and validate the legacy defendant using fixture "<LEGACY_INDIVIDUAL_VALIDATION_FIXTURE>"
     @R1BDrop1UatTechJCDE @JIRA-TEST-KEY:PO-10329
     Examples:
       | LEGACY_INDIVIDUAL_LAST_NAME_PARTIAL | LEGACY_INDIVIDUAL_DATE_OF_BIRTH | LEGACY_INDIVIDUAL_ACCOUNT_NUMBER | LEGACY_INDIVIDUAL_DOB_SUMMARY_HEADER | BUSINESS_UNIT | LEGACY_INDIVIDUAL_VALIDATION_FIXTURE                        |
@@ -187,8 +187,8 @@ Feature: Defendant Adult Youth Search And Matches Journeys
     When I go to the Defendant tab and validate the legacy defendant using fixture "<LEGACY_INDIVIDUAL_VALIDATION_FIXTURE>"
     And I go to the Payment terms tab and validate the legacy defendant using fixture "<LEGACY_INDIVIDUAL_VALIDATION_FIXTURE>"
     And I go to the Enforcement tab and validate the legacy defendant using fixture "<LEGACY_INDIVIDUAL_VALIDATION_FIXTURE>"
-    # And I go to the Impositions tab and validate the legacy defendant using fixture "<LEGACY_INDIVIDUAL_VALIDATION_FIXTURE>"
-    # And I go to the History and notes tab and validate the legacy defendant using fixture "<LEGACY_INDIVIDUAL_VALIDATION_FIXTURE>"
+    And I go to the Impositions tab and validate the legacy defendant using fixture "<LEGACY_INDIVIDUAL_VALIDATION_FIXTURE>"
+    And I go to the History and notes tab and validate the legacy defendant using fixture "<LEGACY_INDIVIDUAL_VALIDATION_FIXTURE>"
     @R1BDrop1UatTechJCDE @JIRA-TEST-KEY:PO-10330
     Examples:
       | LEGACY_INDIVIDUAL_NI_NUMBER | LEGACY_INDIVIDUAL_ACCOUNT_NUMBER | LEGACY_INDIVIDUAL_NI_SUMMARY_HEADER | BUSINESS_UNIT | LEGACY_INDIVIDUAL_VALIDATION_FIXTURE                        |
@@ -215,8 +215,8 @@ Feature: Defendant Adult Youth Search And Matches Journeys
     When I go to the Defendant tab and validate the legacy defendant using fixture "<LEGACY_INDIVIDUAL_VALIDATION_FIXTURE>"
     And I go to the Payment terms tab and validate the legacy defendant using fixture "<LEGACY_INDIVIDUAL_VALIDATION_FIXTURE>"
     And I go to the Enforcement tab and validate the legacy defendant using fixture "<LEGACY_INDIVIDUAL_VALIDATION_FIXTURE>"
-    # And I go to the Impositions tab and validate the legacy defendant using fixture "<LEGACY_INDIVIDUAL_VALIDATION_FIXTURE>"
-    # And I go to the History and notes tab and validate the legacy defendant using fixture "<LEGACY_INDIVIDUAL_VALIDATION_FIXTURE>"
+    And I go to the Impositions tab and validate the legacy defendant using fixture "<LEGACY_INDIVIDUAL_VALIDATION_FIXTURE>"
+    And I go to the History and notes tab and validate the legacy defendant using fixture "<LEGACY_INDIVIDUAL_VALIDATION_FIXTURE>"
     @R1BDrop1UatTechJCDE @JIRA-TEST-KEY:PO-10331
     Examples:
       | LEGACY_INDIVIDUAL_LAST_NAME_PARTIAL | LEGACY_INDIVIDUAL_POSTCODE | LEGACY_INDIVIDUAL_POSTCODE_REFERENCE | LEGACY_INDIVIDUAL_POSTCODE_SUMMARY_HEADER | BUSINESS_UNIT | LEGACY_INDIVIDUAL_VALIDATION_FIXTURE                        |
@@ -242,8 +242,8 @@ Feature: Defendant Adult Youth Search And Matches Journeys
     When I go to the Defendant tab and validate the legacy defendant using fixture "<LEGACY_ACCOUNT_VALIDATION_FIXTURE>"
     And I go to the Payment terms tab and validate the legacy defendant using fixture "<LEGACY_ACCOUNT_VALIDATION_FIXTURE>"
     And I go to the Enforcement tab and validate the legacy defendant using fixture "<LEGACY_ACCOUNT_VALIDATION_FIXTURE>"
-    # And I go to the Impositions tab and validate the legacy defendant using fixture "<LEGACY_ACCOUNT_VALIDATION_FIXTURE>"
-    # And I go to the History and notes tab and validate the legacy defendant using fixture "<LEGACY_ACCOUNT_VALIDATION_FIXTURE>"
+    And I go to the Impositions tab and validate the legacy defendant using fixture "<LEGACY_ACCOUNT_VALIDATION_FIXTURE>"
+    And I go to the History and notes tab and validate the legacy defendant using fixture "<LEGACY_ACCOUNT_VALIDATION_FIXTURE>"
     @R1BDrop1UatTechJCDE @JIRA-TEST-KEY:PO-10332
     Examples:
       | LEGACY_ACCOUNT_NUMBER | LEGACY_ACCOUNT_SUMMARY_HEADER | BUSINESS_UNIT | LEGACY_ACCOUNT_VALIDATION_FIXTURE                           |
@@ -296,9 +296,9 @@ Feature: Defendant Adult Youth Search And Matches Journeys
     When I go to the Defendant tab and validate the legacy defendant using fixture "<LEGACY_PARENT_GUARDIAN_VALIDATION_FIXTURE>"
     And I go to the Parent or guardian tab and validate the legacy defendant using fixture "<LEGACY_PARENT_GUARDIAN_VALIDATION_FIXTURE>"
     And I go to the Payment terms tab and validate the legacy defendant using fixture "<LEGACY_PARENT_GUARDIAN_VALIDATION_FIXTURE>"
-    # And I go to the Enforcement tab and validate the legacy defendant using fixture "<LEGACY_PARENT_GUARDIAN_VALIDATION_FIXTURE>"
-    # And I go to the Impositions tab and validate the legacy defendant using fixture "<LEGACY_PARENT_GUARDIAN_VALIDATION_FIXTURE>"
-    # And I go to the History and notes tab and validate the legacy defendant using fixture "<LEGACY_PARENT_GUARDIAN_VALIDATION_FIXTURE>"
+    And I go to the Enforcement tab and validate the legacy defendant using fixture "<LEGACY_PARENT_GUARDIAN_VALIDATION_FIXTURE>"
+    And I go to the Impositions tab and validate the legacy defendant using fixture "<LEGACY_PARENT_GUARDIAN_VALIDATION_FIXTURE>"
+    And I go to the History and notes tab and validate the legacy defendant using fixture "<LEGACY_PARENT_GUARDIAN_VALIDATION_FIXTURE>"
     @R1BDrop1UatTechJCDE
     Examples:
       | LEGACY_PARENT_GUARDIAN_ACCOUNT_NUMBER | LEGACY_PARENT_GUARDIAN_SUMMARY_HEADER | BUSINESS_UNIT | LEGACY_PARENT_GUARDIAN_VALIDATION_FIXTURE                       |
@@ -323,10 +323,10 @@ Feature: Defendant Adult Youth Search And Matches Journeys
     And I validate the legacy defendant header and At a glance tab using fixture "<LEGACY_FIXED_PENALTY_VALIDATION_FIXTURE>"
     When I go to the Defendant tab and validate the legacy defendant using fixture "<LEGACY_FIXED_PENALTY_VALIDATION_FIXTURE>"
     And I go to the Payment terms tab and validate the legacy defendant using fixture "<LEGACY_FIXED_PENALTY_VALIDATION_FIXTURE>"
-    # And I go to the Enforcement tab and validate the legacy defendant using fixture "<LEGACY_FIXED_PENALTY_VALIDATION_FIXTURE>"
-    # And I go to the Impositions tab and validate the legacy defendant using fixture "<LEGACY_FIXED_PENALTY_VALIDATION_FIXTURE>"
-    # And I go to the History and notes tab and validate the legacy defendant using fixture "<LEGACY_FIXED_PENALTY_VALIDATION_FIXTURE>"
-    # And I go to the Fixed penalty tab and validate the legacy defendant using fixture "<LEGACY_FIXED_PENALTY_VALIDATION_FIXTURE>"
+    And I go to the Enforcement tab and validate the legacy defendant using fixture "<LEGACY_FIXED_PENALTY_VALIDATION_FIXTURE>"
+    And I go to the Impositions tab and validate the legacy defendant using fixture "<LEGACY_FIXED_PENALTY_VALIDATION_FIXTURE>"
+    And I go to the History and notes tab and validate the legacy defendant using fixture "<LEGACY_FIXED_PENALTY_VALIDATION_FIXTURE>"
+    And I go to the Fixed penalty tab and validate the legacy defendant using fixture "<LEGACY_FIXED_PENALTY_VALIDATION_FIXTURE>"
     @R1BDrop1UatTechJCDE
     Examples:
       | LEGACY_FIXED_PENALTY_ACCOUNT_NUMBER | LEGACY_FIXED_PENALTY_SUMMARY_HEADER | BUSINESS_UNIT | LEGACY_FIXED_PENALTY_VALIDATION_FIXTURE                        |
@@ -350,14 +350,14 @@ Feature: Defendant Adult Youth Search And Matches Journeys
     And I validate the legacy defendant header and At a glance tab using fixture "<LEGACY_CONSOLIDATED_VALIDATION_FIXTURE>"
     When I go to the Defendant tab and validate the legacy defendant using fixture "<LEGACY_CONSOLIDATED_VALIDATION_FIXTURE>"
     And I go to the Payment terms tab and validate the legacy defendant using fixture "<LEGACY_CONSOLIDATED_VALIDATION_FIXTURE>"
-    # And I go to the Enforcement tab and validate the legacy defendant using fixture "<LEGACY_CONSOLIDATED_VALIDATION_FIXTURE>"
-    # And I go to the Impositions tab and validate the legacy defendant using fixture "<LEGACY_CONSOLIDATED_VALIDATION_FIXTURE>"
-    # And I go to the History and notes tab and validate the legacy defendant using fixture "<LEGACY_CONSOLIDATED_VALIDATION_FIXTURE>"
-    # When I view the Consolidated accounts tab
-    # Then I can see a table containing the child accounts
-    # When I view the first child account record
-    # Then I am presented with the details of the selected child account
-    # And I am notified that the selected child account is closed because it was consolidated
+    And I go to the Enforcement tab and validate the legacy defendant using fixture "<LEGACY_CONSOLIDATED_VALIDATION_FIXTURE>"
+    And I go to the Impositions tab and validate the legacy defendant using fixture "<LEGACY_CONSOLIDATED_VALIDATION_FIXTURE>"
+    And I go to the History and notes tab and validate the legacy defendant using fixture "<LEGACY_CONSOLIDATED_VALIDATION_FIXTURE>"
+    When I view the Consolidated accounts tab
+    Then I can see a table containing the child accounts
+    When I view the first child account record
+    Then I am presented with the details of the selected child account
+    And I am notified that the selected child account is closed because it was consolidated
     @R1BDrop1UatTechJCDE
     Examples:
       | LEGACY_CONSOLIDATED_ACCOUNT_NUMBER | LEGACY_CONSOLIDATED_SUMMARY_HEADER | BUSINESS_UNIT | LEGACY_CONSOLIDATED_VALIDATION_FIXTURE                        |

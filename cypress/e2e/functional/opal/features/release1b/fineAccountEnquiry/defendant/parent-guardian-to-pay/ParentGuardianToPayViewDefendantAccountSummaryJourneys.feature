@@ -25,6 +25,9 @@ Feature: Parent Guardian To Pay View Defendant Account Summary Journeys
       | Payment terms      |
       | Enforcement status |
       | Comment            |
+    And I should see the following language preferences on the At a glance tab:
+      | Document language      | Welsh and English |
+      | Court hearing language | Welsh and English |
     When I view the Parent or guardian tab
     Then I should see the following language preferences on the Parent or guardian tab:
       | Document language      | Welsh and English |
