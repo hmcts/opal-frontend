@@ -8,7 +8,7 @@ Feature: Major Creditor Account Enquiries View Details Accessibility
 
   Rule: Major creditor account details accessibility
 
-    @R1BDrop2 @JIRA-STORY:PO-2657 @JIRA-EPIC:PO-2655
+    @R1BDrop2 @JIRA-STORY:PO-2657 @JIRA-STORY:PO-2658 @JIRA-EPIC:PO-2655
     Scenario: Major Creditor History and notes tab is accessible
       Given I am on the Account Search page - Individuals form displayed by default
       And I open the business unit filter from the search page
@@ -20,6 +20,7 @@ Feature: Major Creditor Account Enquiries View Details Accessibility
       And I save the selected business units and the filter summary is "West London"
       And I view the Major Creditors search form
       And I search for the major creditor "Crown Prosecution Service (DPP)"
+      And the Major Creditor History and notes API is stubbed with standard tab data
       And I open the Major Creditor History and notes tab
       Then I should see the Major Creditor History and notes tab
       And I check the page for accessibility
