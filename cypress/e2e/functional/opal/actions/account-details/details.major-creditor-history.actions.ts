@@ -15,6 +15,11 @@ export class MajorCreditorHistoryActions {
   private static readonly LINKED_DEFENDANT_ACCOUNT_ID = 123123;
   private readonly detailsNav = new AccountDetailsNavActions();
 
+  /**
+   * Builds the major creditor history and notes response.
+   *
+   * @returns The major creditor history and notes response.
+   */
   private buildHistoryAndNotesResponse(): MajorCreditorHistoryAndNotesResponse {
     return {
       version: 'e2e-major-creditor-history-and-notes',
