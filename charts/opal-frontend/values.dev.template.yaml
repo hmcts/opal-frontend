@@ -81,6 +81,8 @@ opal-fines-service:
       OPAL_REDIS_ENABLED: false
       RELEASE_1A_ENABLED: true
       RELEASE_1B_ENABLED: true
+      RELEASE_1C_WRITE_OFF_ENABLED: true
+      RELEASE_1C_PAYMENT_ENABLED: true
 postgresql:
   enabled: ${DEV_ENABLE_OPAL_FINES_SERVICE}
   image:
