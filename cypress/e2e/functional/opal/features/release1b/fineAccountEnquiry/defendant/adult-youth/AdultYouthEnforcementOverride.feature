@@ -8,7 +8,7 @@ Feature: Adult Youth Enforcement Override
     Given I am logged in with email "opal-test@dev.platform.hmcts.net"
     And I clear all approved accounts
 
-  @R1BDrop1 @JIRA-DEFECT:PO-9718
+  @R1BDrop1 @JIRA-EPIC:PO-1675 @JIRA-DEFECT:PO-9718
   Scenario: Checker can access the Enforcement tab for a draft account without a defendant DOB
     Given I create a "adultOrYouthOnly" draft account with the following details and set status "Publishing Pending" using user "opal-test-10@dev.platform.hmcts.net":
       | Account_status                                  | Submitted                  |
