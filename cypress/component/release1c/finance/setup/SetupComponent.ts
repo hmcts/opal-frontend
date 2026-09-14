@@ -21,7 +21,9 @@ import { FINES_PERMISSIONS } from 'src/app/constants/fines-permissions.constant'
 import { FinesApiComponent } from 'src/app/flows/fines/fines-api/fines-api.component';
 import { FinesApiProcessAllocateComponent } from 'src/app/flows/fines/fines-api/fines-api-process-allocate/fines-api-process-allocate.component';
 import { FinesApiSelectBusComponent } from 'src/app/flows/fines/fines-api/fines-api-select-bus/fines-api-select-bus.component';
+import { FinesApiConfirmProcessComponent } from 'src/app/flows/fines/fines-api/fines-api-confirm-process/fines-api-confirm-process.component';
 import { FinesApiStore } from 'src/app/flows/fines/fines-api/stores/fines-api.store';
+import { FINES_API_ROUTING_PATHS } from 'src/app/flows/fines/fines-api/routing/constants/fines-api-routing-paths.constant';
 import { OPAL_FINES_BUSINESS_UNIT_OUTSTANDING_AUTO_PAYMENT_COUNTS_MOCK } from 'src/app/flows/fines/services/opal-fines-service/mocks/opal-fines-business-unit-outstanding-auto-payment-counts.mock';
 
 export type FinanceComponentSetupOptions = {
@@ -61,6 +63,11 @@ const FINANCE_COMPONENT_ROUTES: Routes = [
       {
         path: FINES_ROUTING_PATHS.children.autoPaymentIn.children.processAllocate,
         component: FinesApiProcessAllocateComponent,
+        canDeactivate: [canDeactivateGuard],
+      },
+      {
+        path: FINES_API_ROUTING_PATHS.children.confirmProcess,
+        component: FinesApiConfirmProcessComponent,
       },
     ],
   },
