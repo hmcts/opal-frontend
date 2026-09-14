@@ -3,6 +3,7 @@ import { ChangeDetectionStrategy, Component, OnDestroy, OnInit, inject } from '@
 import { ActivatedRoute, Router } from '@angular/router';
 import { GovukBackLinkComponent } from '@hmcts/opal-frontend-common/components/govuk/govuk-back-link';
 import { GovukCancelLinkComponent } from '@hmcts/opal-frontend-common/components/govuk/govuk-cancel-link';
+import { CanDeactivateTypes } from '@hmcts/opal-frontend-common/guards/can-deactivate/types';
 import {
   MojSubNavigationComponent,
   MojSubNavigationItemComponent,
@@ -95,6 +96,17 @@ export class FinesApiProcessAllocateComponent implements OnInit, OnDestroy {
     ];
   }
 
+  /** Returns whether the active navigation is taking the user back to Select Business Units. */
+  private isNavigatingToSelectBusinessUnits(): boolean {
+    const nextUrl = this.router.currentNavigation()?.finalUrl?.toString();
+    const nextUrlPath = nextUrl?.split(/[?#]/)[0];
+
+    return (
+      nextUrlPath ===
+      `/${FINES_ROUTING_PATHS.root}/${FINES_API_ROUTING_PATHS.root}/${FINES_API_ROUTING_PATHS.children.selectBusinessUnits}`
+    );
+  }
+
   /** Keeps the URL fragment aligned with the active tab. */
   private syncTabFragment(tab: TFinesApiProcessAllocateTabKey): void {
     if (this.activatedRoute.snapshot.fragment === tab) {
@@ -159,6 +171,12 @@ export class FinesApiProcessAllocateComponent implements OnInit, OnDestroy {
 
   public ngOnInit(): void {
     this.finesApiStore.setUnsavedChanges(this.finesApiStore.hasSelectedFiles());
+  }
+
+  public canDeactivate(): CanDeactivateTypes {
+    // The parent journey guard owns external exits. This child guard fills the sibling-route
+    // gap for Back while allowing Process -> Confirm to retain the selected file IDs.
+    return !this.isNavigatingToSelectBusinessUnits() || !this.finesApiStore.hasSelectedFiles();
   }
 
   public ngOnDestroy(): void {
