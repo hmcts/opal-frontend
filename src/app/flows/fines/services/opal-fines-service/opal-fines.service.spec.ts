@@ -4,6 +4,7 @@ import { HttpResponse, provideHttpClient, withInterceptors, withInterceptorsFrom
 import { httpRetryInterceptor } from '@hmcts/opal-frontend-common/interceptors/http-retry';
 import { IOpalFinesCourt } from '@services/fines/opal-fines-service/interfaces/opal-fines-court.interface';
 import { IOpalFinesCourtRefData } from '@services/fines/opal-fines-service/interfaces/opal-fines-court-ref-data.interface';
+import { IOpalFinesInterfaceJobsSummaryResponse } from '@services/fines/opal-fines-service/interfaces/opal-fines-interface-jobs-summary-response.interface';
 import { IOpalFinesLocalJusticeArea } from '@services/fines/opal-fines-service/interfaces/opal-fines-local-justice-area.interface';
 import { IOpalFinesLocalJusticeAreaRefData } from '@services/fines/opal-fines-service/interfaces/opal-fines-local-justice-area-ref-data.interface';
 import { OPAL_FINES_BUSINESS_UNIT_REF_DATA_MOCK } from './mocks/opal-fines-business-unit-ref-data.mock';
@@ -76,6 +77,21 @@ import { OPAL_FINES_MINOR_CREDITOR_ACCOUNT_HISTORY_PARAMS_MOCK } from './mocks/o
 import { OPAL_FINES_ACCOUNT_DEFENDANT_DETAILS_CONSOLIDATED_ACCOUNTS_MOCK } from './mocks/opal-fines-account-defendant-details-consolidated-accounts.mock';
 import { IOpalFinesReport } from './interfaces/opal-fines-report.interface';
 import { IOpalFinesReportInstancesResponse } from './interfaces/opal-fines-report-instances-response.interface';
+
+const INTERFACE_JOBS_SUMMARY_RESPONSE: IOpalFinesInterfaceJobsSummaryResponse = {
+  interface_jobs: [
+    {
+      business_unit_name: 'Camberwell Green',
+      completed_datetime: null,
+      created_datetime: '2026-09-03T10:15:00.000Z',
+      file_name: 'payments_20260903_natwest_001.dat',
+      interface_file_id: 501,
+      interface_job_id: 1001,
+      source: 'NATWEST',
+      status: 'CREATED',
+    },
+  ],
+};
 
 describe('OpalFines', () => {
   let service: OpalFines;
@@ -355,6 +371,78 @@ describe('OpalFines', () => {
     secondReq.flush(mockBusinessUnitCounts);
   });
 
+  describe('getInterfaceJobsSummary', () => {
+    it('should send a GET request with comma-separated list filters and optional query parameters', () => {
+      service
+        .getInterfaceJobsSummary({
+          business_unit_ids: [77, 65],
+          statuses: ['CREATED', 'FAILED'],
+          completed_date_from: '2026-08-20T00:00:00.000Z',
+          completed_date_to: '2026-09-03T23:59:59.999Z',
+          interface_name: 'payments_in',
+        })
+        .subscribe((response) => {
+          expect(response).toEqual(INTERFACE_JOBS_SUMMARY_RESPONSE);
+        });
+
+      const req = httpMock.expectOne((request) => request.url === OPAL_FINES_PATHS.interfaceJobsSummary);
+      expect(req.request.method).toBe('GET');
+      expect(req.request.params.getAll('business_unit_ids')).toEqual(['77,65']);
+      expect(req.request.params.getAll('statuses')).toEqual(['CREATED,FAILED']);
+      expect(req.request.params.get('completed_date_from')).toBe('2026-08-20T00:00:00.000Z');
+      expect(req.request.params.get('completed_date_to')).toBe('2026-09-03T23:59:59.999Z');
+      expect(req.request.params.get('interface_name')).toBe('payments_in');
+
+      req.flush(INTERFACE_JOBS_SUMMARY_RESPONSE);
+    });
+
+    it('should omit empty optional filters and not cache responses', () => {
+      const params = {
+        business_unit_ids: [77],
+        statuses: [],
+        completed_date_from: null,
+        completed_date_to: null,
+        interface_name: null,
+      };
+
+      service.getInterfaceJobsSummary(params).subscribe((response) => {
+        expect(response).toEqual(INTERFACE_JOBS_SUMMARY_RESPONSE);
+      });
+
+      const firstReq = httpMock.expectOne((request) => request.url === OPAL_FINES_PATHS.interfaceJobsSummary);
+      expect(firstReq.request.method).toBe('GET');
+      expect(firstReq.request.params.keys()).toEqual(['business_unit_ids']);
+      expect(firstReq.request.params.get('business_unit_ids')).toBe('77');
+      firstReq.flush(INTERFACE_JOBS_SUMMARY_RESPONSE);
+
+      service.getInterfaceJobsSummary(params).subscribe((response) => {
+        expect(response).toEqual(INTERFACE_JOBS_SUMMARY_RESPONSE);
+      });
+
+      const secondReq = httpMock.expectOne((request) => request.url === OPAL_FINES_PATHS.interfaceJobsSummary);
+      expect(secondReq.request.method).toBe('GET');
+      secondReq.flush(INTERFACE_JOBS_SUMMARY_RESPONSE);
+    });
+
+    it('should retry the GET request after a transient timeout failure', () => {
+      const next = vi.fn();
+      const error = vi.fn();
+
+      service.getInterfaceJobsSummary({ business_unit_ids: [77] }).subscribe({ next, error });
+
+      const firstReq = httpMock.expectOne((request) => request.url === OPAL_FINES_PATHS.interfaceJobsSummary);
+      expect(firstReq.request.method).toBe('GET');
+      firstReq.flush({ message: 'timed out' }, { status: 504, statusText: 'Gateway Timeout' });
+
+      const retryReq = httpMock.expectOne((request) => request.url === OPAL_FINES_PATHS.interfaceJobsSummary);
+      expect(retryReq.request.method).toBe('GET');
+      retryReq.flush(INTERFACE_JOBS_SUMMARY_RESPONSE);
+
+      expect(next).toHaveBeenCalledWith(INTERFACE_JOBS_SUMMARY_RESPONSE);
+      expect(error).not.toHaveBeenCalled();
+    });
+  });
+
   it('should send a GET request to report metadata API and cache the response', () => {
     const reportId = 'operational_report_enforcement';
     const mockReport: IOpalFinesReport = {
@@ -390,6 +478,7 @@ describe('OpalFines', () => {
         report_id: 'operational_report_enforcement',
         from_date: '2026-06-02',
         to_date: '2026-06-08',
+        user_id: 42,
         business_units: [1],
       })
       .subscribe((response) => {
@@ -401,10 +490,11 @@ describe('OpalFines', () => {
     expect(req.request.params.get('report_id')).toBe('operational_report_enforcement');
     expect(req.request.params.get('from_date')).toBe('2026-06-02');
     expect(req.request.params.get('to_date')).toBe('2026-06-08');
+    expect(req.request.params.get('user_id')).toBe('42');
     expect(req.request.params.getAll('business_units')).toEqual(['1']);
     req.flush(mockResponse);
 
-    service.getReportInstances({ report_id: 'operational_report_enforcement' }).subscribe((response) => {
+    service.getReportInstances({}).subscribe((response) => {
       expect(response).toEqual(mockResponse);
     });
 
@@ -887,6 +977,16 @@ describe('OpalFines', () => {
     const result = service.getMajorCreditorPrettyName(majorCreditor);
 
     expect(result).toEqual('Central Funds');
+  });
+
+  it('should return an empty major creditor name when neither a name nor code is present', () => {
+    const majorCreditor: IOpalFinesMajorCreditor = {
+      ...OPAL_FINES_MAJOR_CREDITOR_REF_DATA_MOCK.refData[0],
+      major_creditor_code: null,
+      name: null,
+    };
+
+    expect(service.getMajorCreditorPrettyName(majorCreditor)).toBe('');
   });
 
   it('should POST the fines mac payload', () => {
@@ -1584,6 +1684,18 @@ describe('OpalFines', () => {
     });
 
     httpMock.expectNone(apiUrl);
+  });
+
+  it('should return no consolidated accounts when the response body is null', () => {
+    const account_id = 77;
+    const apiUrl = `${OPAL_FINES_PATHS.defendantAccounts}/${account_id}/consolidated-accounts`;
+
+    service.getDefendantAccountConsolidatedAccounts(account_id).subscribe((response) => {
+      expect(response).toEqual({ consolidated_accounts: [], version: null });
+    });
+
+    const req = httpMock.expectOne(apiUrl);
+    req.flush(null);
   });
 
   it('should send a POST request to add note API with correct payload and return mock response', () => {
@@ -2293,6 +2405,27 @@ describe('OpalFines', () => {
       expect(req.request.body).toEqual(payload);
       expect(req.request.headers.get('Business-Unit-Id')).toBe(businessUnitId);
       expect(req.request.headers.get('If-Match')).toBe(version);
+
+      req.flush(null);
+    });
+
+    it('should omit conditional headers when their values are unavailable', () => {
+      const defendantAccountId = 123456;
+      const payload = {
+        reason: 'Removed',
+      };
+
+      service
+        .removeEnforcementHold(defendantAccountId, payload, undefined as unknown as string)
+        .subscribe((response) => {
+          expect(response).toBeNull();
+        });
+
+      const req = httpMock.expectOne(`${OPAL_FINES_PATHS.defendantAccounts}/${defendantAccountId}/remove-enf-hold`);
+      expect(req.request.method).toBe('PATCH');
+      expect(req.request.body).toEqual(payload);
+      expect(req.request.headers.has('Business-Unit-Id')).toBe(false);
+      expect(req.request.headers.has('If-Match')).toBe(false);
 
       req.flush(null);
     });
