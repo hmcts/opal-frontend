@@ -1,6 +1,7 @@
 import { SimpleChange } from '@angular/core';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { ActivatedRoute, provideRouter } from '@angular/router';
+import { By } from '@angular/platform-browser';
 import { FinesAccountStore } from '../../stores/fines-acc.store';
 import { FinesAccPayloadService } from '../../services/fines-acc-payload.service';
 import { OpalFines } from '@services/fines/opal-fines-service/opal-fines.service';
@@ -12,6 +13,7 @@ import { IOpalFinesAccountMajorCreditorDetailsHistoryAndNotesTabRefData } from '
 import { of } from 'rxjs';
 import { beforeEach, describe, expect, it } from 'vitest';
 import { FinesAccMajorCreditorDetailsHistoryAndNotesTabComponent } from './fines-acc-major-creditor-details-history-and-notes-tab.component';
+import { FinesAccMajorCreditorDetailsHistoryAndNotesTableComponent } from './fines-acc-major-creditor-details-history-and-notes-table/fines-acc-major-creditor-details-history-and-notes-table.component';
 import { vi } from 'vitest';
 
 describe('FinesAccMajorCreditorDetailsHistoryAndNotesTabComponent', () => {
@@ -80,6 +82,15 @@ describe('FinesAccMajorCreditorDetailsHistoryAndNotesTabComponent', () => {
     expect(textContent).toContain('Date to');
     expect(textContent).toContain('Filter');
     expect(textContent).not.toContain('Categories');
+    expect(fixture.nativeElement.querySelector('hr')).toBeNull();
+  });
+
+  it('should render the major creditor history table with the parent tab data', () => {
+    const historyTable = fixture.debugElement.query(
+      By.directive(FinesAccMajorCreditorDetailsHistoryAndNotesTableComponent),
+    ).componentInstance as FinesAccMajorCreditorDetailsHistoryAndNotesTableComponent;
+
+    expect(historyTable.tabData).toEqual(OPAL_FINES_ACCOUNT_MAJOR_CREDITOR_DETAILS_HISTORY_AND_NOTES_TAB_REF_DATA_MOCK);
   });
 
   it('should keep the submitted filter form and details state', () => {
