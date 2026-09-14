@@ -195,4 +195,31 @@ describe('FinesApiStore', () => {
     expect(store.stateChanges()).toBe(false);
     expect(store.unsavedChanges()).toBe(false);
   });
+
+  it('should reset with defensive copies of every mutable initial state collection', () => {
+    const initialBusinessUnit = { ...availableBusinessUnits[0] };
+    FINES_API_STATE.availableBusinessUnits.push(initialBusinessUnit);
+    FINES_API_STATE.selectedBusinessUnitIds.push(77);
+    FINES_API_STATE.selectedFileIds.push('501');
+    FINES_API_STATE.overrideInhibitFileIds.push('501');
+
+    try {
+      store.resetFinesApiState();
+
+      expect(store.availableBusinessUnits()).toEqual(FINES_API_STATE.availableBusinessUnits);
+      expect(store.availableBusinessUnits()).not.toBe(FINES_API_STATE.availableBusinessUnits);
+      expect(store.availableBusinessUnits()[0]).not.toBe(initialBusinessUnit);
+      expect(store.selectedBusinessUnitIds()).toEqual(FINES_API_STATE.selectedBusinessUnitIds);
+      expect(store.selectedBusinessUnitIds()).not.toBe(FINES_API_STATE.selectedBusinessUnitIds);
+      expect(store.selectedFileIds()).toEqual(FINES_API_STATE.selectedFileIds);
+      expect(store.selectedFileIds()).not.toBe(FINES_API_STATE.selectedFileIds);
+      expect(store.overrideInhibitFileIds()).toEqual(FINES_API_STATE.overrideInhibitFileIds);
+      expect(store.overrideInhibitFileIds()).not.toBe(FINES_API_STATE.overrideInhibitFileIds);
+    } finally {
+      FINES_API_STATE.availableBusinessUnits.length = 0;
+      FINES_API_STATE.selectedBusinessUnitIds.length = 0;
+      FINES_API_STATE.selectedFileIds.length = 0;
+      FINES_API_STATE.overrideInhibitFileIds.length = 0;
+    }
+  });
 });

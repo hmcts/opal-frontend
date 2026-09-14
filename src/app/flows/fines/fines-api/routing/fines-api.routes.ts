@@ -53,6 +53,7 @@ export const routing: Routes = [
         (c) => c.FinesApiConfirmProcessComponent,
       ),
     canActivate: [authGuard, routePermissionsGuard, finesApiFlowStateGuard, finesApiFileSelectionGuard],
+    canDeactivate: [canDeactivateGuard],
     data: {
       routePermissionId: [FINES_PERMISSIONS['process-and-allocate-payments']],
       title: FINES_API_ROUTING_TITLES.children.confirmProcess,

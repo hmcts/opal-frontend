@@ -58,6 +58,7 @@ describe('FinesApiProcessAllocateComponent', () => {
   let finesApiStore: InstanceType<typeof FinesApiStore>;
   let processJobs: IOpalFinesInterfaceJobSummary[];
   let getInterfaceJobsSummary: ReturnType<typeof vi.fn>;
+  let routerCurrentNavigation: ReturnType<typeof vi.fn>;
   let routerNavigate: ReturnType<typeof vi.fn>;
   const activatedRouteParent = { routeConfig: {} };
   const activatedRoute = {
@@ -69,6 +70,7 @@ describe('FinesApiProcessAllocateComponent', () => {
   beforeEach(async () => {
     processJobs = PROCESS_JOBS;
     activatedRoute.snapshot.fragment = 'process';
+    routerCurrentNavigation = vi.fn().mockReturnValue(null);
     routerNavigate = vi.fn().mockResolvedValue(true);
     getInterfaceJobsSummary = vi.fn(
       (): Observable<IOpalFinesInterfaceJobsSummaryResponse> => of({ interface_jobs: processJobs }),
@@ -83,7 +85,7 @@ describe('FinesApiProcessAllocateComponent', () => {
         },
         {
           provide: Router,
-          useValue: { navigate: routerNavigate },
+          useValue: { currentNavigation: routerCurrentNavigation, navigate: routerNavigate },
         },
         {
           provide: OpalFines,
@@ -106,6 +108,19 @@ describe('FinesApiProcessAllocateComponent', () => {
     fixture = TestBed.createComponent(FinesApiProcessAllocateComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
+  };
+
+  const createComponentWithoutRender = (): void => {
+    fixture = TestBed.createComponent(FinesApiProcessAllocateComponent);
+    component = fixture.componentInstance;
+  };
+
+  const mockCurrentNavigationFinalUrl = (url: string): void => {
+    routerCurrentNavigation.mockReturnValue({
+      finalUrl: {
+        toString: () => url,
+      },
+    });
   };
 
   it('should render the shell and load the Process tab component by default', () => {
@@ -284,6 +299,58 @@ describe('FinesApiProcessAllocateComponent', () => {
     expect(finesApiStore.selectedFileIds()).toEqual(['1701']);
   });
 
+  it('should identify navigation back to Select Business Units without query params or fragment', () => {
+    mockCurrentNavigationFinalUrl('/fines/auto-payment-in/select-business-units?source=back#process');
+    createComponentWithoutRender();
+
+    expect(component['isNavigatingToSelectBusinessUnits']()).toBe(true);
+  });
+
+  it('should not identify other navigation targets as Select Business Units navigation', () => {
+    mockCurrentNavigationFinalUrl('/fines/auto-payment-in/confirm-process');
+    createComponentWithoutRender();
+
+    expect(component['isNavigatingToSelectBusinessUnits']()).toBe(false);
+  });
+
+  it('should not identify a missing current navigation as Select Business Units navigation', () => {
+    routerCurrentNavigation.mockReturnValue(null);
+    createComponentWithoutRender();
+
+    expect(component['isNavigatingToSelectBusinessUnits']()).toBe(false);
+  });
+
+  it('should prevent deactivation when selected files would be lost by returning to Select Business Units', () => {
+    mockCurrentNavigationFinalUrl('/fines/auto-payment-in/select-business-units');
+    finesApiStore.setSelectedFileIds(['1701']);
+    createComponentWithoutRender();
+
+    expect(component.canDeactivate()).toBe(false);
+  });
+
+  it('should allow deactivation back to Select Business Units when no files are selected', () => {
+    mockCurrentNavigationFinalUrl('/fines/auto-payment-in/select-business-units');
+    createComponentWithoutRender();
+
+    expect(component.canDeactivate()).toBe(true);
+  });
+
+  it('should allow deactivation with selected files when the next route is not Select Business Units', () => {
+    mockCurrentNavigationFinalUrl('/fines/auto-payment-in/confirm-process');
+    finesApiStore.setSelectedFileIds(['1701']);
+    createComponentWithoutRender();
+
+    expect(component.canDeactivate()).toBe(true);
+  });
+
+  it('should allow deactivation with selected files when there is no current navigation target', () => {
+    routerCurrentNavigation.mockReturnValue(null);
+    finesApiStore.setSelectedFileIds(['1701']);
+    createComponentWithoutRender();
+
+    expect(component.canDeactivate()).toBe(true);
+  });
+
   it('should navigate to the Finance dashboard and clear flow state when Cancel navigation succeeds', async () => {
     render();
     finesApiStore.setSelectedFileIds(['1701']);
@@ -328,7 +395,7 @@ describe('FinesApiProcessAllocateComponent', () => {
       imports: [FinesApiProcessAllocateComponent],
       providers: [
         { provide: ActivatedRoute, useValue: activatedRoute },
-        { provide: Router, useValue: { navigate: routerNavigate } },
+        { provide: Router, useValue: { currentNavigation: routerCurrentNavigation, navigate: routerNavigate } },
         { provide: OpalFines, useValue: { getInterfaceJobsSummary } },
       ],
     }).compileComponents();

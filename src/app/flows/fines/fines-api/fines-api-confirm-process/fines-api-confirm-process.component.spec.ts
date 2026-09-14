@@ -80,6 +80,7 @@ describe('FinesApiConfirmProcessComponent', () => {
   let fixture: ComponentFixture<FinesApiConfirmProcessComponent>;
   let finesApiStore: InstanceType<typeof FinesApiStore>;
   let processInterfaceJobs: ReturnType<typeof vi.fn>;
+  let routerCurrentNavigation: ReturnType<typeof vi.fn>;
   let routerNavigate: ReturnType<typeof vi.fn>;
   let scrollToTop: ReturnType<typeof vi.fn>;
   const activatedRouteParent = {};
@@ -100,6 +101,7 @@ describe('FinesApiConfirmProcessComponent', () => {
 
   beforeEach(async () => {
     processInterfaceJobs = vi.fn().mockReturnValue(of(undefined));
+    routerCurrentNavigation = vi.fn().mockReturnValue(null);
     routerNavigate = vi.fn().mockResolvedValue(true);
     scrollToTop = vi.fn();
 
@@ -112,7 +114,7 @@ describe('FinesApiConfirmProcessComponent', () => {
         },
         {
           provide: Router,
-          useValue: { navigate: routerNavigate },
+          useValue: { currentNavigation: routerCurrentNavigation, navigate: routerNavigate },
         },
         {
           provide: OpalFines,
@@ -127,6 +129,14 @@ describe('FinesApiConfirmProcessComponent', () => {
 
     finesApiStore = TestBed.inject(FinesApiStore);
   });
+
+  const mockCurrentNavigationFinalUrl = (url: string): void => {
+    routerCurrentNavigation.mockReturnValue({
+      finalUrl: {
+        toString: () => url,
+      },
+    });
+  };
 
   it('should render the heading and alphabetically sorted business unit totals', () => {
     createComponent();
@@ -206,6 +216,65 @@ describe('FinesApiConfirmProcessComponent', () => {
     expect(summaryRows[0].textContent).toContain('2');
     expect(summaryRows[1].textContent).toContain('West London');
     expect(summaryRows[1].textContent).toContain('1');
+  });
+
+  it('should clear and restore every DWP/AEA override inhibit selection', () => {
+    createComponent();
+    fixture.detectChanges();
+
+    component['toggleAllOverrideInhibits'](false);
+    fixture.detectChanges();
+
+    const nativeElement = fixture.nativeElement as HTMLElement;
+    const overrideCheckboxes = nativeElement.querySelectorAll<HTMLInputElement>(
+      '#fines-api-confirm-process-override-inhibits tbody input[type="checkbox"]',
+    );
+
+    expect(finesApiStore.overrideInhibitFileIds()).toEqual([]);
+    expect(Array.from(overrideCheckboxes).every((checkbox) => !checkbox.checked)).toBe(true);
+
+    component['toggleAllOverrideInhibits'](true);
+    fixture.detectChanges();
+
+    expect(finesApiStore.overrideInhibitFileIds()).toEqual(['501', '503']);
+    expect(Array.from(overrideCheckboxes).every((checkbox) => checkbox.checked)).toBe(true);
+  });
+
+  it('should reselect a DWP/AEA override inhibit after it has been cleared', () => {
+    createComponent();
+    fixture.detectChanges();
+
+    component['toggleOverrideInhibits']({ rowId: '503', checked: false });
+    component['toggleOverrideInhibits']({ rowId: '503', checked: true });
+    fixture.detectChanges();
+
+    expect(finesApiStore.overrideInhibitFileIds()).toEqual(['501', '503']);
+    expect(
+      (fixture.nativeElement as HTMLElement).querySelector<HTMLInputElement>(
+        '#fines-api-confirm-process-override-inhibits-503',
+      )?.checked,
+    ).toBe(true);
+  });
+
+  it('should ignore override inhibit changes for files that are not DWP/AEA rows', () => {
+    createComponent();
+    fixture.detectChanges();
+
+    component['toggleOverrideInhibits']({ rowId: '502', checked: false });
+    component['toggleOverrideInhibits']({ rowId: '999', checked: true });
+    fixture.detectChanges();
+
+    expect(finesApiStore.overrideInhibitFileIds()).toEqual(['501', '503']);
+    expect(
+      (fixture.nativeElement as HTMLElement).querySelector<HTMLInputElement>(
+        '#fines-api-confirm-process-override-inhibits-501',
+      )?.checked,
+    ).toBe(true);
+    expect(
+      (fixture.nativeElement as HTMLElement).querySelector<HTMLInputElement>(
+        '#fines-api-confirm-process-override-inhibits-503',
+      )?.checked,
+    ).toBe(true);
   });
 
   it('should hide the override-inhibits section when no selected files are from DWP/AEA', () => {
@@ -347,6 +416,34 @@ describe('FinesApiConfirmProcessComponent', () => {
     expect(routerNavigate).not.toHaveBeenCalled();
     expect(finesApiStore.selectedFileIds()).toEqual(['501', '502', '503']);
     expect(component['isProcessing']()).toBe(false);
+  });
+
+  it('should prevent deactivation when selected files would be lost by returning to Select Business Units', () => {
+    mockCurrentNavigationFinalUrl('/fines/auto-payment-in/select-business-units?source=back#process');
+    createComponent();
+
+    expect(component.canDeactivate()).toBe(false);
+  });
+
+  it('should allow deactivation back to Select Business Units when no files are selected', () => {
+    mockCurrentNavigationFinalUrl('/fines/auto-payment-in/select-business-units');
+    createComponent(PROCESS_JOBS, []);
+
+    expect(component.canDeactivate()).toBe(true);
+  });
+
+  it('should allow deactivation with selected files when the next route is not Select Business Units', () => {
+    mockCurrentNavigationFinalUrl('/fines/auto-payment-in/process-allocate');
+    createComponent();
+
+    expect(component.canDeactivate()).toBe(true);
+  });
+
+  it('should allow deactivation with selected files when there is no current navigation target', () => {
+    routerCurrentNavigation.mockReturnValue(null);
+    createComponent();
+
+    expect(component.canDeactivate()).toBe(true);
   });
 
   it('should discard confirmation selections and return to a freshly loaded Process tab on cancel', () => {

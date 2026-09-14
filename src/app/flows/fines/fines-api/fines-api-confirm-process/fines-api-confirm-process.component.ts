@@ -13,6 +13,7 @@ import {
   GovukTableComponent,
   GovukTableHeadingComponent,
 } from '@hmcts/opal-frontend-common/components/govuk/govuk-table';
+import { CanDeactivateTypes } from '@hmcts/opal-frontend-common/guards/can-deactivate/types';
 import {
   areAllMultiSelectRowsSelected,
   areSomeMultiSelectRowsSelected,
@@ -25,6 +26,7 @@ import {
 import { UtilsService } from '@hmcts/opal-frontend-common/services/utils-service';
 import { IOpalFinesInterfaceJobSummary } from '@services/fines/opal-fines-service/interfaces/opal-fines-interface-job-summary.interface';
 import { catchError, defaultIfEmpty, finalize, map, of } from 'rxjs';
+import { FINES_ROUTING_PATHS } from '../../routing/constants/fines-routing-paths.constant';
 import { OpalFines } from '../../services/opal-fines-service/opal-fines.service';
 import { FINES_API_PROCESS_ALLOCATE_TABS_KEYS } from '../fines-api-process-allocate/constants/fines-api-process-allocate-tabs-keys.constant';
 import { FINES_API_ROUTING_PATHS } from '../routing/constants/fines-api-routing-paths.constant';
@@ -106,6 +108,17 @@ export class FinesApiConfirmProcessComponent implements OnInit {
       this.dwpAeaInterfaceJobs
         .map((interfaceJob) => this.getInterfaceFileId(interfaceJob))
         .filter((interfaceFileId) => selectedFileIds.has(interfaceFileId)),
+    );
+  }
+
+  /** Returns whether the active navigation is taking the user back to Select Business Units. */
+  private isNavigatingToSelectBusinessUnits(): boolean {
+    const nextUrl = this.router.currentNavigation()?.finalUrl?.toString();
+    const nextUrlPath = nextUrl?.split(/[?#]/)[0];
+
+    return (
+      nextUrlPath ===
+      `/${FINES_ROUTING_PATHS.root}/${FINES_API_ROUTING_PATHS.root}/${FINES_API_ROUTING_PATHS.children.selectBusinessUnits}`
     );
   }
 
@@ -224,5 +237,9 @@ export class FinesApiConfirmProcessComponent implements OnInit {
     this.updateOverrideInhibitSelection(
       new Set(this.dwpAeaInterfaceJobs.map((interfaceJob) => this.getInterfaceFileId(interfaceJob))),
     );
+  }
+
+  public canDeactivate(): CanDeactivateTypes {
+    return !this.isNavigatingToSelectBusinessUnits() || !this.finesApiStore.hasSelectedFiles();
   }
 }
