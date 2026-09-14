@@ -166,7 +166,7 @@ describe('Major Creditor Account Enquiry - History and notes tab', () => {
 
   it(
     'AC1a-AC1e. displays local dates and toggles date sorting using the UTC timestamp',
-    { tags: buildTags(MAJOR_CREDITOR_HISTORY_STORY_TAG) },
+    { tags: buildTags(MAJOR_CREDITOR_HISTORY_STORY_TAG, MAJOR_CREDITOR_HISTORY_EPIC_TAG) },
     () => {
       setupMajorCreditorHistory(structuredClone(INITIAL_HISTORY));
       cy.wait('@getMajorCreditorHistoryAndNotes');
@@ -183,7 +183,7 @@ describe('Major Creditor Account Enquiry - History and notes tab', () => {
 
   it(
     'AC4a, AC5a. renders account links and CR/DR labels',
-    { tags: buildTags(MAJOR_CREDITOR_HISTORY_STORY_TAG) },
+    { tags: buildTags(MAJOR_CREDITOR_HISTORY_STORY_TAG, MAJOR_CREDITOR_HISTORY_EPIC_TAG) },
     () => {
       setupMajorCreditorHistory(structuredClone(INITIAL_HISTORY));
       cy.wait('@getMajorCreditorHistoryAndNotes');
@@ -206,7 +206,7 @@ describe('Major Creditor Account Enquiry - History and notes tab', () => {
 
   it(
     'AC6a. maps date filters to the major creditor history API query',
-    { tags: buildTags(MAJOR_CREDITOR_HISTORY_STORY_TAG) },
+    { tags: buildTags(MAJOR_CREDITOR_HISTORY_STORY_TAG, MAJOR_CREDITOR_HISTORY_EPIC_TAG) },
     () => {
       setupMajorCreditorHistory(structuredClone(INITIAL_HISTORY));
       cy.wait('@getMajorCreditorHistoryAndNotes');
@@ -224,7 +224,7 @@ describe('Major Creditor Account Enquiry - History and notes tab', () => {
 
   it(
     'AC2b. renders hundreds of history items in one scrollable table without pagination',
-    { tags: buildTags(MAJOR_CREDITOR_HISTORY_STORY_TAG) },
+    { tags: buildTags(MAJOR_CREDITOR_HISTORY_STORY_TAG, MAJOR_CREDITOR_HISTORY_EPIC_TAG) },
     () => {
       setupMajorCreditorHistory(structuredClone(LARGE_HISTORY));
       cy.wait('@getMajorCreditorHistoryAndNotes');
@@ -239,7 +239,7 @@ describe('Major Creditor Account Enquiry - History and notes tab', () => {
 
   it(
     'AC3b, AC3e. renders transformed major-creditor details with separators and links',
-    { tags: buildTags(MAJOR_CREDITOR_HISTORY_STORY_TAG) },
+    { tags: buildTags(MAJOR_CREDITOR_HISTORY_STORY_TAG, MAJOR_CREDITOR_HISTORY_EPIC_TAG) },
     () => {
       setupMajorCreditorHistory(structuredClone(INITIAL_HISTORY));
       cy.wait('@getMajorCreditorHistoryAndNotes');
@@ -257,7 +257,7 @@ describe('Major Creditor Account Enquiry - History and notes tab', () => {
 
   it(
     'AC3c-AC3f. renders hyphenated, bold, linked and second-line details fragments',
-    { tags: buildTags(MAJOR_CREDITOR_HISTORY_STORY_TAG) },
+    { tags: buildTags(MAJOR_CREDITOR_HISTORY_STORY_TAG, MAJOR_CREDITOR_HISTORY_EPIC_TAG) },
     () => {
       setupMajorCreditorHistoryTable(structuredClone(TABLE_FRAGMENT_TAB_DATA));
 
@@ -277,7 +277,7 @@ describe('Major Creditor Account Enquiry - History and notes tab', () => {
 
   it(
     'AC2c, AC8. keeps existing rows while refreshing, then shows no results with the submitted filter visible',
-    { tags: buildTags(MAJOR_CREDITOR_HISTORY_STORY_TAG) },
+    { tags: buildTags(MAJOR_CREDITOR_HISTORY_STORY_TAG, MAJOR_CREDITOR_HISTORY_EPIC_TAG) },
     () => {
       interceptAuthenticatedUser();
       interceptUserState(USER_STATE_MOCK_PERMISSION_BU77);
