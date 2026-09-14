@@ -62,6 +62,10 @@ String functionalXmlReport = 'cypress/reports/functionalXmlReport.html'
   '@R1BDrop2UatTechJCDE',
   '@R1BDrop2UatTechPreprod',
 ]
+@Field List<String> jcdeOverrideTags = [
+  '@R1BDrop1UatTechJCDE',
+  '@R1BDrop2UatTechJCDE',
+]
 @Field List<String> r1aPositiveExclusions = [
   '@R1BDrop1',
   '@R1BDrop2',
@@ -614,25 +618,38 @@ boolean legacyEnabled = cachedPrLabels.contains('enable_legacy_mode')
 // Safe defaults (current behaviour)
 env.DEV_DEFAULT_APP_MODE = opalName
 env.DEV_OPAL_LEGACY_GATEWAY_URL = 'https://opal-legacy-db-stub.staging.platform.hmcts.net/opal'
+env.IS_LEGACY_MODE = stringFalse
+env.LEGACY_ENABLED = stringFalse
+env.JCDE_OVERRIDE = stringFalse
 env.OPAL_LOG_LEVEL = env.OPAL_LOG_LEVEL ?: 'INFO'
+env.OVERRIDE_FEATURE_FLAGS = stringFalse
 
 // Opt-in: Dev → JCDE (PR builds only)
 if (legacyEnabled && isPR) {
     env.DEV_DEFAULT_APP_MODE = 'legacy'
+    env.IS_LEGACY_MODE = stringTrue
+    env.LEGACY_ENABLED = stringTrue
     env.DEV_OPAL_LEGACY_GATEWAY_URL = 'https://opal.clouddev.online/opal'
     env.OPAL_LOG_LEVEL = 'DEBUG'
+    env.OVERRIDE_FEATURE_FLAGS = stringTrue
 } else if (legacyEnabled && !isPR) {
     echo 'Legacy mode label detected but this is not a PR build; ignoring.'
 }
 
 echo "DEV_DEFAULT_APP_MODE=${env.DEV_DEFAULT_APP_MODE}"
 echo "DEV_OPAL_LEGACY_GATEWAY_URL=${env.DEV_OPAL_LEGACY_GATEWAY_URL}"
+echo "IS_LEGACY_MODE=${env.IS_LEGACY_MODE}"
+echo "LEGACY_ENABLED=${env.LEGACY_ENABLED}"
 echo "OPAL_LOG_LEVEL=${env.OPAL_LOG_LEVEL}"
 
 // Find the first label like: run_tag:<expression>
 String tagLabel = cachedPrLabels.find { String label -> label.startsWith(runTagPrefix) }
 String releaseSuiteLabel = cachedPrLabels.find { String label -> label.startsWith(runReleasePrefix) }
 String baseTags = tagLabel ? tagLabel.substring(runTagPrefix.length()).trim() : ''
+if (baseTags && jcdeOverrideTags.any { String tag -> baseTags.contains(tag) }) {
+    env.JCDE_OVERRIDE = stringTrue
+}
+echo "JCDE_OVERRIDE=${env.JCDE_OVERRIDE}"
 String releaseSuite = normalizeReleaseSuite(
   releaseSuiteLabel ? releaseSuiteLabel.substring(runReleasePrefix.length()) : ''
 )
