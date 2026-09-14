@@ -8,6 +8,24 @@ Feature: Adult Youth Enforcement Override
     Given I am logged in with email "opal-test@dev.platform.hmcts.net"
     And I clear all approved accounts
 
+  @R1BDrop1 @JIRA-DEFECT:PO-9718
+  Scenario: Checker can access the Enforcement tab for a draft account without a defendant DOB
+    Given I create a "adultOrYouthOnly" draft account with the following details and set status "Publishing Pending" using user "opal-test-10@dev.platform.hmcts.net":
+      | Account_status                                  | Submitted                  |
+      | account.defendant.forenames                     | Casey                      |
+      | account.defendant.surname                       | NoDobEnforcement{uniq}     |
+      | account.defendant.email_address_1               | casey.nodob{uniq}@test.com |
+      | account.defendant.telephone_number_home         | 02078250042                |
+      | account.account_type                            | Fine                       |
+      | account.prosecutor_case_reference               | PCR-NODOB-{uniqUpper}      |
+      | account.collection_order_made                   | false                      |
+      | account.collection_order_made_today             | false                      |
+      | account.payment_card_request                    | false                      |
+      | account.payment_terms.enforcements[0].result_id | PRIS                       |
+    And I am logged in with email "opal-test-10@dev.platform.hmcts.net"
+    When I search for the account by last name "NoDobEnforcement{uniq}" and open the latest result
+    And I go to the Enforcement tab
+
   Rule: Adult or youth account
     Background:
       Given I create a "adultOrYouthOnly" draft account with the following details and set status "Publishing Pending" using user "opal-test-10@dev.platform.hmcts.net":
