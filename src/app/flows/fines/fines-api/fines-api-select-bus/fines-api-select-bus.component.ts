@@ -9,6 +9,7 @@ import {
 } from '@hmcts/opal-frontend-common/components/govuk/govuk-checkboxes';
 import { GovukCancelLinkComponent } from '@hmcts/opal-frontend-common/components/govuk/govuk-cancel-link';
 import { GovukErrorSummaryComponent } from '@hmcts/opal-frontend-common/components/govuk/govuk-error-summary';
+import { UtilsService } from '@hmcts/opal-frontend-common/services/utils-service';
 import {
   GovukTableBodyRowComponent,
   GovukTableBodyRowDataComponent,
@@ -31,6 +32,7 @@ import { IOpalFinesBusinessUnitOutstandingAutoPaymentCounts } from '../../servic
 import { FinesApiStore } from '../stores/fines-api.store';
 import { FINES_API_ROUTING_PATHS } from '../routing/constants/fines-api-routing-paths.constant';
 import { FINES_API_SELECT_BUS_ERRORS } from './constants/fines-api-select-bus-errors.constant';
+import { FINES_API_SELECT_BUS_CONTENT } from './constants/fines-api-select-bus-content.constant';
 
 @Component({
   selector: 'app-fines-api-select-bus',
@@ -54,9 +56,11 @@ export class FinesApiSelectBusComponent implements OnInit {
   private readonly activatedRoute = inject(ActivatedRoute);
   private readonly document = inject(DOCUMENT);
   private readonly router = inject(Router);
+  private readonly utilsService = inject(UtilsService);
   private readonly selectBusinessUnitsErrorMessage = FINES_API_SELECT_BUS_ERRORS.selectAtLeastOneBusinessUnit;
 
   protected readonly finesApiStore = inject(FinesApiStore);
+  protected readonly content = FINES_API_SELECT_BUS_CONTENT;
   protected readonly businessUnitControls = new Map<number, FormControl<boolean>>();
   protected businessUnits: IOpalFinesBusinessUnitOutstandingAutoPaymentCount[] = [];
   protected selectedBusinessUnitIds = new Set<number>();
@@ -119,6 +123,31 @@ export class FinesApiSelectBusComponent implements OnInit {
   }
 
   /**
+   * Returns whether the current navigation came from the Process and Allocate screen.
+   *
+   * This also covers browser Back, where custom navigation state is not available.
+   */
+  private isReturningFromProcess(): boolean {
+    const previousUrl = this.router.currentNavigation?.()?.previousNavigation?.finalUrl?.toString();
+    const previousUrlPath = previousUrl?.split(/[?#]/)[0];
+
+    return previousUrlPath?.endsWith(`/${FINES_API_ROUTING_PATHS.children.processAllocate}`) ?? false;
+  }
+
+  /**
+   * Clears the previous Process selection before this screen restores checkbox state after Back navigation.
+   */
+  private resetFlowStateAfterProcessBackNavigation(): void {
+    const navigationState = this.router.currentNavigation?.()?.extras.state as
+      | { resetFinesApiState?: boolean }
+      | undefined;
+
+    if (navigationState?.resetFinesApiState || this.isReturningFromProcess()) {
+      this.finesApiStore.resetFinesApiState();
+    }
+  }
+
+  /**
    * Updates the local selection set and persists the selected IDs to the ACI store.
    *
    * @param selectedBusinessUnitIds - Business unit IDs selected by the user.
@@ -149,6 +178,7 @@ export class FinesApiSelectBusComponent implements OnInit {
       },
     ];
     this.hasBusinessUnitSelectionError = true;
+    this.utilsService.scrollToTop();
   }
 
   /**
@@ -335,6 +365,7 @@ export class FinesApiSelectBusComponent implements OnInit {
    * Loads resolved business unit counts and restores any valid existing BU selections from the store.
    */
   public ngOnInit(): void {
+    this.resetFlowStateAfterProcessBackNavigation();
     this.initialiseBusinessUnits();
     this.restoreValidBusinessUnitSelections();
   }

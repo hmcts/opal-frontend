@@ -8,6 +8,7 @@ export const RELEASE_1C_ENFORCEMENT_OPERATIONAL_REPORTING_FEATURE_FLAG =
 export const RELEASE_1C_ADMINISTRATION_FEATURE_FLAG = 'release-1c-administration' satisfies FeatureFlagReleaseName;
 export const RELEASE_1C_FINANCIAL_MOVEMENTS_FEATURE_FLAG =
   'release-1c-financial-movements' satisfies FeatureFlagReleaseName;
+export const RELEASE_1C_PAYMENT_FEATURE_FLAG = 'release-1c-payment' satisfies FeatureFlagReleaseName;
 export const RELEASE_1C_BANKING_INTERFACES_FEATURE_FLAG =
   'release-1c-banking-interfaces' satisfies FeatureFlagReleaseName;
 
@@ -18,5 +19,6 @@ export const RELEASE_FEATURE_FLAGS = [
   RELEASE_1C_ENFORCEMENT_OPERATIONAL_REPORTING_FEATURE_FLAG,
   RELEASE_1C_ADMINISTRATION_FEATURE_FLAG,
   RELEASE_1C_FINANCIAL_MOVEMENTS_FEATURE_FLAG,
+  RELEASE_1C_PAYMENT_FEATURE_FLAG,
   RELEASE_1C_BANKING_INTERFACES_FEATURE_FLAG,
 ] as const;

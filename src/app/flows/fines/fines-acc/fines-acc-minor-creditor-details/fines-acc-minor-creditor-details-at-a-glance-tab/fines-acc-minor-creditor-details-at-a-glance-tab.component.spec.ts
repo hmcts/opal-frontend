@@ -53,6 +53,14 @@ describe('FinesAccMinorCreditorDetailsAtAGlanceTabComponent', () => {
     );
   });
 
+  it('should return the payment hold denied route when the user cannot remove a hold in the current BU', () => {
+    component.hasAddRemovePaymentHoldPermissionInBU = false;
+
+    expect(component.removePaymentHoldLink()).toBe(
+      `../${FINES_ACC_MINOR_CREDITOR_ROUTING_PATHS.children['payment-hold']}/denied`,
+    );
+  });
+
   it('should return the defendant account details url', () => {
     const router = TestBed.inject(Router);
     const accountId = component.tabData.defendant!.account_id;

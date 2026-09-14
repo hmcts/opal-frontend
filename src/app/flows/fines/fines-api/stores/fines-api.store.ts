@@ -1,7 +1,10 @@
 import { computed } from '@angular/core';
 import { patchState, signalStore, withComputed, withHooks, withMethods, withState } from '@ngrx/signals';
+import { IOpalFinesInterfaceJobSummary } from '@services/fines/opal-fines-service/interfaces/opal-fines-interface-job-summary.interface';
+import { FINES_API_PROCESS_ALLOCATE_TABS_KEYS } from '../fines-api-process-allocate/constants/fines-api-process-allocate-tabs-keys.constant';
+import { TFinesApiProcessAllocateTabKey } from '../fines-api-process-allocate/types/fines-api-process-allocate-tab-key.type';
 import { FINES_API_STATE } from './constants/fines-api-state.constant';
-import { FinesApiTab, IFinesApiState } from './interfaces/fines-api-state.interface';
+import { IFinesApiState } from './interfaces/fines-api-state.interface';
 
 const getFinesApiState = (): IFinesApiState => ({
   ...FINES_API_STATE,
@@ -9,6 +12,28 @@ const getFinesApiState = (): IFinesApiState => ({
   selectedFileIds: [...FINES_API_STATE.selectedFileIds],
   overrideInhibitFileIds: [...FINES_API_STATE.overrideInhibitFileIds],
 });
+
+const haveSelectedBusinessUnitsChanged = (currentIds: number[], nextIds: number[]): boolean => {
+  if (currentIds.length !== nextIds.length) {
+    return true;
+  }
+
+  const nextIdSet = new Set(nextIds);
+  return currentIds.some((businessUnitId) => !nextIdSet.has(businessUnitId));
+};
+
+/** Maps file-level UI selections to the unique job IDs required by the processing endpoint. */
+const getSelectedInterfaceJobIds = (
+  processInterfaceJobs: IOpalFinesInterfaceJobSummary[] | null,
+  selectedFileIds: string[],
+): number[] => {
+  const selectedFileIdSet = new Set(selectedFileIds);
+  const selectedJobIds = (processInterfaceJobs ?? [])
+    .filter((interfaceJob) => selectedFileIdSet.has(interfaceJob.interface_file_id.toString()))
+    .map((interfaceJob) => interfaceJob.interface_job_id);
+
+  return [...new Set(selectedJobIds)];
+};
 
 export const FinesApiStore = signalStore(
   { providedIn: 'root' },
@@ -21,13 +46,25 @@ export const FinesApiStore = signalStore(
   withComputed((store) => ({
     hasSelectedBusinessUnits: computed(() => store.selectedBusinessUnitIds().length > 0),
     hasSelectedFiles: computed(() => store.selectedFileIds().length > 0),
+    selectedInterfaceJobIds: computed(() =>
+      getSelectedInterfaceJobIds(store.processInterfaceJobs(), store.selectedFileIds()),
+    ),
   })),
   withMethods((store) => ({
     setSelectedBusinessUnitIds: (selectedBusinessUnitIds: number[]) => {
+      const businessUnitsChanged = haveSelectedBusinessUnitsChanged(
+        store.selectedBusinessUnitIds(),
+        selectedBusinessUnitIds,
+      );
+
       patchState(store, {
         selectedBusinessUnitIds: [...selectedBusinessUnitIds],
-        selectedFileIds: [],
-        overrideInhibitFileIds: [],
+        ...(businessUnitsChanged && {
+          selectedFileIds: [],
+          overrideInhibitFileIds: [],
+          processInterfaceJobs: null,
+          activeTab: FINES_API_STATE.activeTab,
+        }),
         stateChanges: true,
         unsavedChanges: selectedBusinessUnitIds.length > 0,
       });
@@ -37,6 +74,8 @@ export const FinesApiStore = signalStore(
         selectedBusinessUnitIds: [],
         selectedFileIds: [],
         overrideInhibitFileIds: [],
+        processInterfaceJobs: null,
+        activeTab: FINES_API_PROCESS_ALLOCATE_TABS_KEYS.process,
         stateChanges: false,
         unsavedChanges: false,
       });
@@ -49,12 +88,18 @@ export const FinesApiStore = signalStore(
         unsavedChanges: selectedFileIds.length > 0,
       });
     },
+    setProcessInterfaceJobs: (processInterfaceJobs: IOpalFinesInterfaceJobSummary[]) => {
+      patchState(store, { processInterfaceJobs: [...processInterfaceJobs] });
+    },
+    clearProcessInterfaceJobs: () => {
+      patchState(store, { processInterfaceJobs: null });
+    },
     setOverrideInhibitFileIds: (overrideInhibitFileIds: string[]) => {
       patchState(store, {
         overrideInhibitFileIds: [...overrideInhibitFileIds],
       });
     },
-    setActiveTab: (activeTab: FinesApiTab) => {
+    setActiveTab: (activeTab: TFinesApiProcessAllocateTabKey) => {
       patchState(store, { activeTab });
     },
     setStateChanges: (stateChanges: boolean) => {
