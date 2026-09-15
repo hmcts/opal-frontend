@@ -328,7 +328,7 @@ export class GlobalApiInterceptorActions {
    */
   public stubAddNoteNonRetriablePermissionError(statusCode: number): void {
     log('intercept', 'Stubbing add note non-retriable permission error', { statusCode });
-    cy.intercept('POST', '**/opal-fines-service/notes/add', {
+    cy.intercept('POST', '**/opal-fines-service/notes', {
       statusCode,
       body: {
         retriable: false,
