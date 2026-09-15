@@ -1702,7 +1702,7 @@ describe('OpalFines', () => {
     const payload: IOpalFinesAddNotePayload = OPAL_FINES_ADD_NOTE_PAYLOAD_MOCK;
     const version = '1';
     const businessUnitId = '78';
-    const expectedUrl = OPAL_FINES_PATHS.notes;
+    const expectedUrl = '/opal-fines-service/notes';
 
     service.addNote(payload, version, businessUnitId).subscribe((response) => {
       expect(response.note_id).toBeGreaterThan(0);
