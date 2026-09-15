@@ -6,33 +6,33 @@ Feature: Fixed Penalty
       Given I am logged in with email "opal-test@dev.platform.hmcts.net"
       When I start a fixed penalty account for business unit "West London", defendant type "Adult or youth only" and originator type "New"
       And I complete fixed penalty details:
-        | Section          | Field                  | Value                                 |
-        | Court details    | Issuing Authority      | West London Magistrates' Court (2578) |
-        | Court details    | Enforcement court      | Aram Court (123)                      |
-        | Personal details | Title                  | Mr                                    |
-        | Personal details | First names            | John                                  |
-        | Personal details | Last name              | Smith{uniq}                           |
-        | Personal details | Date of birth          | 01/01/1980                            |
-        | Personal details | Address line 1         | 123 High Street                       |
-        | Personal details | Postcode               | SW1A 1AA                              |
-        | Offence details  | Notice number          | FPN1234                               |
-        | Offence details  | Offence type           | Vehicle                               |
-        | Offence details  | Date of offence        | 01/01/2023                            |
-        | Offence details  | Offence code           | HY35014                               |
-        | Offence details  | Time of offence        | 14:30                                 |
-        | Offence details  | Place of offence       | First,Oxford Street - London          |
-        | Offence details  | Amount imposed         | 150                                   |
-        | Vehicle details  | Registration number    | AB12CDE                               |
-        | Vehicle details  | Driving licence number | SMITH010123JS9AB                      |
+        | Section          | Field                  | Value                                     |
+        | Court details    | Issuing Authority      | Met Camera Processing Services / Traffic Offence Reports (001) |
+        | Court details    | Enforcement court      | Aram Court (123)                          |
+        | Personal details | Title                  | Mr                                        |
+        | Personal details | First names            | John                                      |
+        | Personal details | Last name              | Smith{uniq}                               |
+        | Personal details | Date of birth          | 01/01/1980                                |
+        | Personal details | Address line 1         | 123 High Street                           |
+        | Personal details | Postcode               | SW1A 1AA                                  |
+        | Offence details  | Notice number          | FPN1234                                   |
+        | Offence details  | Offence type           | Vehicle                                   |
+        | Offence details  | Date of offence        | 01/01/2023                                |
+        | Offence details  | Offence code           | HY35014                                   |
+        | Offence details  | Time of offence        | 14:30                                     |
+        | Offence details  | Place of offence       | First,Oxford Street - London              |
+        | Offence details  | Amount imposed         | 150                                       |
+        | Vehicle details  | Registration number    | AB12CDE                                   |
+        | Vehicle details  | Driving licence number | SMITH010123JS9AB                          |
       And I review the fixed penalty account
 
 
     @R1A @JIRA-STORY:PO-857 @JIRA-STORY:PO-861 @JIRA-EPIC:PO-855 @JIRA-TEST-KEY:PO-5311
     Scenario: Review shows fixed penalty details for adult or youth
       Then the fixed penalty review "Court details" summary is:
-        | Label             | Value                                 |
-        | Issuing Authority | West London Magistrates' Court (2578) |
-        | Enforcement court | Aram Court (123)                      |
+        | Label             | Value                                     |
+        | Issuing Authority | Met Camera Processing Services / Traffic Offence Reports (001) |
+        | Enforcement court | Aram Court (123)                          |
       And the fixed penalty review "Personal details" summary is:
         | Label         | Value           |
         | Title         | Mr              |
