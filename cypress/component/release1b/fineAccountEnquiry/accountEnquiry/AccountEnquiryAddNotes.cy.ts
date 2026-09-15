@@ -168,7 +168,7 @@ describe('FinesAccNoteAddFormComponent', () => {
     () => {
       setupComponent();
       cy.get(L.fields.noteTextArea).clear().type('a'.repeat(10), { delay: 0 });
-      cy.intercept('POST', '**/opal-fines-service/notes/add', { statusCode: 200 }).as('addNote');
+      cy.intercept('POST', '**/opal-fines-service/notes', { statusCode: 200 }).as('addNote');
       cy.get(L.actions.saveNoteButton).click();
       cy.wait('@addNote').then((interception) => {
         expect(interception.request.body).to.have.nested.property('activity_note.note_text', 'aaaaaaaaaa');

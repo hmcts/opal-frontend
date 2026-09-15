@@ -13,7 +13,7 @@ const draftAccounts = 'draft-accounts';
 const prosecutors = 'prosecutors';
 const defendantAccounts = 'defendant-accounts';
 const defendantAccountParties = 'defendant-account-parties';
-const notes = 'notes/add';
+const notes = 'notes';
 const minorCreditorAccounts = 'minor-creditor-accounts';
 const searchAccounts = '/search';
 const enforcers = 'enforcers';
@@ -21,6 +21,7 @@ const centralFunds = 'central-funds';
 const reports = 'reports';
 const reportInstances = 'report-instances';
 const outstandingAutoPaymentCount = '/outstanding-auto-payment-count';
+const interfaceJobsSummary = 'interface-jobs/summary';
 
 export const OPAL_FINES_PATHS: IOpalFinesPaths = {
   businessUnitRefData: `${baseUrl}${businessUnit}`,
@@ -42,6 +43,7 @@ export const OPAL_FINES_PATHS: IOpalFinesPaths = {
   enforcersRefData: `${baseUrl}${enforcers}`,
   reports: `${baseUrl}${reports}`,
   reportInstances: `${baseUrl}${reportInstances}`,
+  interfaceJobsSummary: `${baseUrl}${interfaceJobsSummary}`,
   defendantAccountParties,
   centralFunds: `${baseUrl}${centralFunds}`,
 };

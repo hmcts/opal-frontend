@@ -25,6 +25,7 @@ import { EditDefendantDetailsActions } from '../../..//e2e/functional/opal/actio
 import { EditCompanyDetailsActions } from '../../..//e2e/functional/opal/actions/account-details/edit.company-details.actions';
 import { AccountDetailsNavActions } from '../../..//e2e/functional/opal/actions/account-details/details.nav.actions';
 import { AccountDetailsDefendantActions } from '../../..//e2e/functional/opal/actions/account-details/details.defendant.actions';
+import { AccountDetailsParentGuardianActions } from '../../..//e2e/functional/opal/actions/account-details/details.parent.guardian.actions';
 import { AccountDetailsMinorCreditorActions } from '../../..//e2e/functional/opal/actions/account-details/details.minor-creditor.actions';
 import { AccountDetailsEnforcementActions } from '../../..//e2e/functional/opal/actions/account-details/details.enforcement.actions';
 import { AccountDetailsPaymentTermsActions } from '../../..//e2e/functional/opal/actions/account-details/details.payment-terms.actions';
@@ -48,6 +49,7 @@ const common = () => new CommonActions();
 const editDefendantDetails = () => new EditDefendantDetailsActions();
 const editCompanyDetails = () => new EditCompanyDetailsActions();
 const defendantDetails = () => new AccountDetailsDefendantActions();
+const parentGuardianDetails = () => new AccountDetailsParentGuardianActions();
 const minorCreditorDetails = () => new AccountDetailsMinorCreditorActions();
 const convertActions = () => new AccountConvertActions();
 const editParentGuardianDetails = () => new EditParentGuardianDetailsActions();
@@ -1063,6 +1065,25 @@ Then('I should see the following language preferences on the At a glance tab:', 
 
   log('assert', 'Asserting language preferences on the At a glance tab', { expectedValues });
   atAGlanceDetails().assertLanguagePreferences(expectedValues);
+});
+
+/**
+ * @step Opens the Parent or guardian tab on the account details page.
+ */
+When('I view the Parent or guardian tab', () => {
+  log('step', 'Viewing Parent or guardian tab');
+  navActions().goToParentGuardianTab();
+  navActions().assertParentGuardianTabIsActive();
+});
+
+/**
+ * @step Asserts the language preferences shown on the Parent or guardian tab.
+ */
+Then('I should see the following language preferences on the Parent or guardian tab:', (table: DataTable) => {
+  const expectedValues = normalizeHash(table);
+
+  log('assert', 'Asserting language preferences on the Parent or guardian tab', { expectedValues });
+  parentGuardianDetails().assertLanguagePreferences(expectedValues);
 });
 
 /**
