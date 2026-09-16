@@ -1478,7 +1478,8 @@ export class AccountEnquiryFlow {
     });
     this.paymentTerms.submitChanges();
 
-    cy.wait('@paymentTermsSave').then(({ request }) => {
+    cy.wait('@paymentTermsSave').then(({ request, response }) => {
+      expect(response?.statusCode, 'payment terms save status').to.be.within(200, 299);
       cy.wrap(request.body, { log: false }).as('paymentTermsSaveBody');
       expect(request.body).to.have.nested.property('payment_terms.payment_terms_type.payment_terms_type_code', 'I');
       expect(request.body).to.have.nested.property('payment_terms.instalment_period.instalment_period_code', 'M');
