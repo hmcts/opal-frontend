@@ -1,1 +1,61 @@
-<p>Placeholder for Automatic Cash Input - Process files and allocate tills</p>
+<div class="govuk-grid-column-full govuk-!-margin-bottom-4">
+  <opal-lib-govuk-back-link (clickEvent)="navigateBack()"></opal-lib-govuk-back-link>
+</div>
+
+<div class="govuk-grid-column-full" id="fines-api-process-allocate-page">
+  <h1 class="govuk-heading-l">{{ content.heading }}</h1>
+</div>
+
+<div class="govuk-grid-column-full govuk-!-padding-top-2">
+  <opal-lib-moj-sub-navigation
+    subNavId="fines-api-process-allocate-tabs"
+    (activeSubNavItemFragment)="handleTabSwitch($event)"
+  >
+    <li
+      opal-lib-moj-sub-navigation-item
+      subNavItemId="fines-api-process-tab"
+      [activeSubNavItemFragment]="finesApiStore.activeTab()"
+      [subNavItemFragment]="tabKeys.process"
+      [subNavItemText]="tabs[tabKeys.process]"
+    ></li>
+    <li
+      opal-lib-moj-sub-navigation-item
+      subNavItemId="fines-api-allocate-tab"
+      [activeSubNavItemFragment]="finesApiStore.activeTab()"
+      [subNavItemFragment]="tabKeys.allocate"
+      [subNavItemText]="tabs[tabKeys.allocate]"
+    ></li>
+    <li
+      opal-lib-moj-sub-navigation-item
+      subNavItemId="fines-api-ignored-tab"
+      [activeSubNavItemFragment]="finesApiStore.activeTab()"
+      [subNavItemFragment]="tabKeys.ignored"
+      [subNavItemText]="tabs[tabKeys.ignored]"
+    ></li>
+  </opal-lib-moj-sub-navigation>
+</div>
+
+@switch (finesApiStore.activeTab()) {
+  @case (tabKeys.process) {
+    @if (tabProcess$ | async; as tabData) {
+      <app-fines-api-process [tabData]="tabData" (refreshRequested)="refreshProcessData()"></app-fines-api-process>
+    }
+  }
+  @case (tabKeys.allocate) {
+    <!-- Allocate tab component will be loaded here by its implementation ticket. -->
+  }
+  @case (tabKeys.ignored) {
+    <!-- Ignored files tab component will be loaded here by its implementation ticket. -->
+  }
+}
+
+<div id="fines-api-process-allocate-section-break-container" class="govuk-grid-column-full">
+  <hr
+    id="fines-api-process-allocate-section-break"
+    class="govuk-section-break govuk-section-break--l govuk-section-break--visible"
+  />
+</div>
+
+<div id="fines-api-process-allocate-cancel" class="govuk-grid-column-full govuk-!-margin-bottom-7 govuk-!-margin-top-1">
+  <opal-lib-govuk-cancel-link (linkClickEvent)="cancel()"></opal-lib-govuk-cancel-link>
+</div>
