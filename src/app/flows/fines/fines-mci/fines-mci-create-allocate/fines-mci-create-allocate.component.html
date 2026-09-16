@@ -1,5 +1,13 @@
-<div class="govuk-grid-column-two-thirds">
+<div class="govuk-grid-column-full">
+  <a class="govuk-back-link" [routerLink]="financeDashboardRoute">Back</a>
   <h1 class="govuk-heading-l">Manual cash input</h1>
-  <p class="govuk-body">This page is not available yet.</p>
-  <a class="govuk-back-link" [routerLink]="financeDashboardRoute">Back to finance</a>
+  <button buttonId="create-till-button" opalLibGovukButton>Create till</button>
+  <hr class="govuk-section-break govuk-section-break--l govuk-section-break--visible govuk-!-margin-top-0" />
+  <h2 class="govuk-heading-m">Allocate tills</h2>
+  @if (tillsAvailable) {
+    <p class="govuk-hint">Select the tills you want to allocate</p>
+    <button buttonId="allocate-till-button" opalLibGovukButton>Allocate</button>
+  } @else {
+    <p class="govuk-body">There are no outstanding tills available to allocate</p>
+  }
 </div>
