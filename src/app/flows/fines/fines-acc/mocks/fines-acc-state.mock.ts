@@ -11,4 +11,5 @@ export const MOCK_FINES_ACCOUNT_STATE: IFinesAccountState = {
   business_unit_id: '77',
   business_unit_user_id: 'BU-USER-123',
   welsh_speaking: 'Y',
+  originator_type: null,
 };

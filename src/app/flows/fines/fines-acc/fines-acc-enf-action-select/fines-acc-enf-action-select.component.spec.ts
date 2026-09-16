@@ -37,6 +37,7 @@ describe('FinesAccEnfActionSelectComponent', () => {
     getAccountNumber: signal<string | null>('123456'),
     party_name: signal<string | null>('Test Company Ltd'),
     successMessage: signal<string | null>(null),
+    isTransferredIn: vi.fn().mockReturnValue(false),
     clearSuccessMessage: vi.fn(),
   };
 
@@ -83,6 +84,9 @@ describe('FinesAccEnfActionSelectComponent', () => {
 
   beforeEach(async () => {
     vi.clearAllMocks();
+    mockAccountStore.getAccountNumber.set('123456');
+    mockAccountStore.party_name.set('Test Company Ltd');
+    mockAccountStore.isTransferredIn.mockReturnValue(false);
 
     activatedRouteStub = {
       snapshot: {
@@ -107,12 +111,20 @@ describe('FinesAccEnfActionSelectComponent', () => {
         { provide: Router, useValue: mockRouter },
       ],
     }).compileComponents();
-
-    createComponent();
   });
 
   it('should create', () => {
+    createComponent();
+
     expect(component).toBeTruthy();
+  });
+
+  it('should display the transferred in banner when the account is transferred in', () => {
+    mockAccountStore.isTransferredIn.mockReturnValue(true);
+
+    createComponent();
+
+    expect(fixture.nativeElement.querySelector('#fines-acc-enf-action-select-banners-transferred-in')).toBeTruthy();
   });
 
   it('should default accountNumber and partyName to empty strings when the store values are null', () => {
@@ -126,6 +138,8 @@ describe('FinesAccEnfActionSelectComponent', () => {
   });
 
   it('should build warning messages for collection order, youth and company accounts', () => {
+    createComponent();
+
     expect(component.warningMessages).toEqual([
       FINES_ACC_ENF_ACTION_SELECT_WARNING_MESSAGES.collectionOrderMissing,
       FINES_ACC_ENF_ACTION_SELECT_WARNING_MESSAGES.youthAccount,
@@ -185,17 +199,22 @@ describe('FinesAccEnfActionSelectComponent', () => {
   });
 
   it('should map next permitted actions into autocomplete options', () => {
+    createComponent();
+
     expect(mockOpalFinesService.getResultPrettyName).toHaveBeenCalledTimes(2);
     expect(component.actionOptions).toEqual(FINES_ACC_ENF_ACTION_SELECT_ACTION_OPTIONS_MOCK);
   });
 
   it('should update stateUnsavedChanges when handleUnsavedChanges is called', () => {
+    createComponent();
+
     component.handleUnsavedChanges(true);
 
     expect((component as unknown as { stateUnsavedChanges: boolean }).stateUnsavedChanges).toBe(true);
   });
 
   it('should navigate back to the enforcement tab when cancel is triggered', () => {
+    createComponent();
     const routerNavigateSpy = vi.spyOn(component as never, 'routerNavigate');
 
     component.handleUnsavedChanges(true);
@@ -218,6 +237,7 @@ describe('FinesAccEnfActionSelectComponent', () => {
       requires_employment_data: false,
     } as IOpalFinesResultRefData;
 
+    createComponent();
     component.handleUnsavedChanges(true);
 
     (
@@ -255,6 +275,7 @@ describe('FinesAccEnfActionSelectComponent', () => {
       requires_employment_data: true,
     } as IOpalFinesResultRefData;
 
+    createComponent();
     component.handleUnsavedChanges(true);
 
     (
@@ -272,6 +293,7 @@ describe('FinesAccEnfActionSelectComponent', () => {
   });
 
   it('should fetch the selected action and delegate processing when handleSubmit is called', () => {
+    createComponent();
     const processSelectedActionSpy = vi.spyOn(
       component as unknown as { processSelectedAction: (result: IOpalFinesResultRefData) => void },
       'processSelectedAction',

@@ -205,6 +205,7 @@ export class FinesAccPayloadService {
       business_unit_id: headingData.business_unit_summary.business_unit_id,
       business_unit_user_id,
       welsh_speaking: headingData.business_unit_summary.welsh_speaking,
+      originator_type: headingData.originator_type,
     };
   }
 
@@ -246,6 +247,7 @@ export class FinesAccPayloadService {
       business_unit_id: headingData.business_unit.business_unit_id,
       business_unit_user_id,
       welsh_speaking: headingData.business_unit.welsh_speaking,
+      originator_type: null,
     };
   }
 
@@ -606,6 +608,7 @@ export class FinesAccPayloadService {
       business_unit_id: headingData.business_unit_details.business_unit_id,
       business_unit_user_id,
       welsh_speaking: headingData.business_unit_details.welsh_speaking,
+      originator_type: null,
     };
   }
 }

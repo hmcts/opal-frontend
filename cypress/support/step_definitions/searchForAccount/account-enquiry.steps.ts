@@ -25,6 +25,7 @@ import { EditDefendantDetailsActions } from '../../..//e2e/functional/opal/actio
 import { EditCompanyDetailsActions } from '../../..//e2e/functional/opal/actions/account-details/edit.company-details.actions';
 import { AccountDetailsNavActions } from '../../..//e2e/functional/opal/actions/account-details/details.nav.actions';
 import { AccountDetailsDefendantActions } from '../../..//e2e/functional/opal/actions/account-details/details.defendant.actions';
+import { AccountDetailsParentGuardianActions } from '../../..//e2e/functional/opal/actions/account-details/details.parent.guardian.actions';
 import { AccountDetailsMinorCreditorActions } from '../../..//e2e/functional/opal/actions/account-details/details.minor-creditor.actions';
 import { AccountDetailsEnforcementActions } from '../../..//e2e/functional/opal/actions/account-details/details.enforcement.actions';
 import { AccountDetailsPaymentTermsActions } from '../../..//e2e/functional/opal/actions/account-details/details.payment-terms.actions';
@@ -48,6 +49,7 @@ const common = () => new CommonActions();
 const editDefendantDetails = () => new EditDefendantDetailsActions();
 const editCompanyDetails = () => new EditCompanyDetailsActions();
 const defendantDetails = () => new AccountDetailsDefendantActions();
+const parentGuardianDetails = () => new AccountDetailsParentGuardianActions();
 const minorCreditorDetails = () => new AccountDetailsMinorCreditorActions();
 const convertActions = () => new AccountConvertActions();
 const editParentGuardianDetails = () => new EditParentGuardianDetailsActions();
@@ -212,6 +214,42 @@ Then('the intercepted minor creditor header summary awarded value is {string}', 
   });
   minorCreditorDetails().assertHeaderSummaryAwardedValue(numericExpectedAwardedValue);
 });
+
+When(
+  'the minor creditor header summary API returns a repayment with paid out value {string}',
+  (paidOutValue: string) => {
+    const numericPaidOutValue = Number(paidOutValue.trim());
+
+    if (!Number.isFinite(numericPaidOutValue)) {
+      throw new Error(`Expected a numeric paid out value but received "${paidOutValue}"`);
+    }
+
+    log('intercept', 'Overriding minor creditor header summary as a repayment', { paidOutValue: numericPaidOutValue });
+    minorCreditorDetails().stubHeaderSummaryRepayment(numericPaidOutValue);
+  },
+);
+
+Then(
+  'the intercepted minor creditor header summary identifies a repayment with paid out value {string}',
+  (paidOutValue: string) => {
+    const numericPaidOutValue = Number(paidOutValue.trim());
+
+    if (!Number.isFinite(numericPaidOutValue)) {
+      throw new Error(`Expected a numeric paid out value but received "${paidOutValue}"`);
+    }
+
+    log('assert', 'Asserting minor creditor repayment header summary', { paidOutValue: numericPaidOutValue });
+    minorCreditorDetails().assertHeaderSummaryRepayment(numericPaidOutValue);
+  },
+);
+
+Then(
+  'I should see only the repayment Paid out minor creditor summary metric value {string}',
+  (paidOutValue: string) => {
+    log('assert', 'Asserting repayment-only minor creditor summary metric', { paidOutValue });
+    minorCreditorDetails().assertRepaymentSummaryMetric(paidOutValue);
+  },
+);
 
 /**
  * @step Navigates to the Defendant details section and validates the header text.
@@ -564,6 +602,14 @@ When('I go to the Fixed penalty section and the header is {string}', (expected: 
   const expectedWithUniq = applyUniqPlaceholder(expected);
   log('step', 'Navigate to Fixed penalty details', { expected: expectedWithUniq });
   accountEnquiryFlow().goToFixedPenaltyDetailsAndAssert(expectedWithUniq);
+});
+
+/**
+ * @step Navigates to the Defendant tab.
+ */
+When('I go to the Defendant tab', () => {
+  log('step', 'Navigate to Defendant tab');
+  navActions().goToDefendantTab();
 });
 
 /**
@@ -1022,6 +1068,25 @@ Then('I should see the following language preferences on the At a glance tab:', 
 });
 
 /**
+ * @step Opens the Parent or guardian tab on the account details page.
+ */
+When('I view the Parent or guardian tab', () => {
+  log('step', 'Viewing Parent or guardian tab');
+  navActions().goToParentGuardianTab();
+  navActions().assertParentGuardianTabIsActive();
+});
+
+/**
+ * @step Asserts the language preferences shown on the Parent or guardian tab.
+ */
+Then('I should see the following language preferences on the Parent or guardian tab:', (table: DataTable) => {
+  const expectedValues = normalizeHash(table);
+
+  log('assert', 'Asserting language preferences on the Parent or guardian tab', { expectedValues });
+  parentGuardianDetails().assertLanguagePreferences(expectedValues);
+});
+
+/**
  * @step Asserts selected values shown on the minor creditor At a glance tab.
  */
 Then('I should see the following minor creditor values on the At a glance tab:', (table: DataTable) => {
@@ -1040,6 +1105,48 @@ Then('I should see the following minor creditor summary metric values:', (table:
   log('assert', 'Asserting minor creditor summary metric values', { expectedValues });
   atAGlanceDetails().assertMinorCreditorSummaryMetricValues(expectedValues);
 });
+
+Then('I validate the legacy defendant header and At a glance tab using fixture {string}', (fixturePath: string) => {
+  log('assert', 'Validate legacy defendant header and At a glance tab', { fixturePath });
+  accountEnquiryFlow().validateLegacyDefendantHeaderAndAtAGlance(fixturePath);
+});
+
+Then('I validate the legacy company header and At a glance tab using fixture {string}', (fixturePath: string) => {
+  log('assert', 'Validate legacy company header and At a glance tab', { fixturePath });
+  accountEnquiryFlow().validateLegacyCompanyHeaderAndAtAGlance(fixturePath);
+});
+
+/**
+ * @step Navigates to the selected legacy company tab and validates its fixture-backed content.
+ */
+When(
+  /^I go to the (Defendant|Payment terms) tab and validate the legacy company using fixture "([^"]+)"$/,
+  (tabName: string, fixturePath: string) => {
+    log('step', 'Navigate to legacy company tab and validate fixture-backed content', { tabName, fixturePath });
+    accountEnquiryFlow().goToLegacyCompanyTabAndValidate(tabName as 'Defendant' | 'Payment terms', fixturePath);
+  },
+);
+
+/**
+ * @step Navigates to the selected legacy defendant tab and validates its fixture-backed content.
+ */
+When(
+  /^I go to the (Defendant|Parent or guardian|Payment terms|Enforcement|Impositions|History and notes|Fixed penalty) tab and validate the legacy defendant using fixture "([^"]+)"$/,
+  (tabName: string, fixturePath: string) => {
+    log('step', 'Navigate to legacy defendant tab and validate fixture-backed content', { tabName, fixturePath });
+    accountEnquiryFlow().goToLegacyDefendantTabAndValidate(
+      tabName as
+        | 'Defendant'
+        | 'Parent or guardian'
+        | 'Payment terms'
+        | 'Enforcement'
+        | 'Impositions'
+        | 'History and notes'
+        | 'Fixed penalty',
+      fixturePath,
+    );
+  },
+);
 
 /**
  * @step Asserts the payment terms tab is active.

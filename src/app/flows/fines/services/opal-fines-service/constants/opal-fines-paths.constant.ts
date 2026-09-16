@@ -20,9 +20,12 @@ const enforcers = 'enforcers';
 const centralFunds = 'central-funds';
 const reports = 'reports';
 const reportInstances = 'report-instances';
+const outstandingAutoPaymentCount = '/outstanding-auto-payment-count';
+const interfaceJobsSummary = 'interface-jobs/summary';
 
 export const OPAL_FINES_PATHS: IOpalFinesPaths = {
   businessUnitRefData: `${baseUrl}${businessUnit}`,
+  businessUnitOutstandingAutoPaymentCount: `${baseUrl}${businessUnit}${outstandingAutoPaymentCount}`,
   localJusticeAreaRefData: `${baseUrl}${localJusticeArea}`,
   courtRefData: `${baseUrl}${courtPath}`,
   offencesRefData: `${baseUrl}${offences}`,
@@ -40,6 +43,7 @@ export const OPAL_FINES_PATHS: IOpalFinesPaths = {
   enforcersRefData: `${baseUrl}${enforcers}`,
   reports: `${baseUrl}${reports}`,
   reportInstances: `${baseUrl}${reportInstances}`,
+  interfaceJobsSummary: `${baseUrl}${interfaceJobsSummary}`,
   defendantAccountParties,
   centralFunds: `${baseUrl}${centralFunds}`,
 };

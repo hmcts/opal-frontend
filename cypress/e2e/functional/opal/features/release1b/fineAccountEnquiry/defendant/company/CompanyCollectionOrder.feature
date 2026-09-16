@@ -25,7 +25,7 @@ Feature: Company Collection Order
       When I open the company account details for "Collection Order Company{uniq}"
       And I go to the Enforcement tab
 
-    @R1B @JIRA-EPIC:PO-1675 @JIRA-TEST-KEY:PO-5355
+    @R1BDrop1 @JIRA-EPIC:PO-1675 @JIRA-TEST-KEY:PO-5355
     Scenario: Save Collection Order status for a company account
       And I open the Change Collection Order status form
       Then I should see the Change Collection Order status page
@@ -36,20 +36,20 @@ Feature: Company Collection Order
       And I should see the collection order success banner "Collection Order status changed"
       And the collection order summary should show "Collection Order"
 
-    @R1B @JIRA-EPIC:PO-1675 @JIRA-TEST-KEY:PO-5356
+    @R1BDrop1 @JIRA-EPIC:PO-1675 @JIRA-TEST-KEY:PO-5356
     Scenario: Cancel without making a selection returns to the Enforcement tab (company account)
       And I open the Change Collection Order status form
       And I cancel the Change Collection Order status form without making changes
       Then I should return to the Enforcement tab
 
-    @R1B @JIRA-EPIC:PO-1675 @JIRA-TEST-KEY:PO-5357
+    @R1BDrop1 @JIRA-EPIC:PO-1675 @JIRA-TEST-KEY:PO-5357
     Scenario: Cancel after selecting a value shows a route guard (company account)
       And I open the Change Collection Order status form
       And I select "Yes" for Collection Order status
       And I cancel the Change Collection Order status form and choose to stay
       Then I should remain on the Change Collection Order status page
 
-    @R1B @JIRA-STORY:PO-3395 @JIRA-EPIC:PO-2630
+    @R1BDrop1 @JIRA-STORY:PO-3395 @JIRA-EPIC:PO-2630
     Scenario: AC2, AC3, AC4 - Company account with a Collection Order displays a permanent warning
       Given I create a "company" draft account with the following details and set status "Publishing Pending" using user "opal-test-10@dev.platform.hmcts.net":
         | Account_status                    | Submitted                      |

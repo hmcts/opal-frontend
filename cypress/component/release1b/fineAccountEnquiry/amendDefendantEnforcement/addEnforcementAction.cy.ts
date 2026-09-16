@@ -5,7 +5,10 @@ import { UNSAVED_CHANGES_WARNING } from '../../../../shared/constants/confirmati
 import { setupAccountEnquiryComponent } from '../accountEnquiry/setup/SetupComponent';
 import { buildSeededAccountStore, buildSeededGlobalStore } from '../accountEnquiry/setup/SeededStores';
 import { IComponentProperties } from '../accountEnquiry/setup/setupComponent.interface';
-import { Routes } from '@angular/router';
+import { Component, inject, InjectionToken } from '@angular/core';
+import { provideHttpClient } from '@angular/common/http';
+import { provideRouter, Router, RouterOutlet, Routes } from '@angular/router';
+import { mount } from 'cypress/angular';
 import { routing } from 'src/app/flows/fines/fines-acc/routing/fines-acc.routes';
 import {
   interceptAuthenticatedUser,
@@ -28,6 +31,55 @@ import { FINES_ACC_ENF_ACTION_ADD_RESULT_MOCK } from '@app/flows/fines/fines-acc
 import { OPAL_FINES_ACCOUNT_DEFENDANT_DETAILS_ENFORCEMENT_TAB_REF_DATA_MOCK } from '@app/flows/fines/services/opal-fines-service/mocks/opal-fines-account-defendant-details-enforcement-tab-ref-data.mock';
 import { ADD_ENFORCEMENT_ACTION_ALL_FIELD_TYPES_RESULT_MOCK } from './mocks/add_enforcement_action_all_field_type_result.mock';
 import { FINES_ACC_RESTRICTED_ACCOUNT_STATUS_CODES } from '@app/flows/fines/fines-acc/constants/fines-acc-restricted-account-status-codes.constant';
+import { FinesAccDefendantDetailsEnforcementTab } from '@app/flows/fines/fines-acc/fines-acc-defendant-details/fines-acc-defendant-details-enforcement-tab/fines-acc-defendant-details-enforcement-tab.component';
+import { FinesAccEnfActionDeniedComponent } from '@app/flows/fines/fines-acc/fines-acc-enf-action-denied/fines-acc-enf-action-denied.component';
+import { FINES_ACC_DEFENDANT_ROUTING_PATHS } from '@app/flows/fines/fines-acc/routing/constants/fines-acc-defendant-routing-paths.constant';
+import { FINES_ACC_ENF_ACTION_ROUTING_PATHS } from '@app/flows/fines/fines-acc/fines-acc-enf-action-select/constants/fines-acc-enf-action-select-routing-paths.constant';
+import { FinesAccountStore } from '@app/flows/fines/fines-acc/stores/fines-acc.store';
+import { FinesAccEnfActionSelectComponent } from '@app/flows/fines/fines-acc/fines-acc-enf-action-select/fines-acc-enf-action-select.component';
+import { FinesAccEnfActionAddComponent } from '@app/flows/fines/fines-acc/fines-acc-enf-action-add/fines-acc-enf-action-add.component';
+import { FinesAccPayloadService } from '@app/flows/fines/fines-acc/services/fines-acc-payload.service';
+import { OpalFines } from '@services/fines/opal-fines-service/opal-fines.service';
+import { GlobalStore } from '@hmcts/opal-frontend-common/stores/global';
+import { UtilsService } from '@hmcts/opal-frontend-common/services/utils-service';
+import { IOpalFinesAccountDefendantDetailsHeader } from '@app/flows/fines/fines-acc/fines-acc-defendant-details/interfaces/fines-acc-defendant-details-header.interface';
+import { IOpalFinesResultsRefData } from '@services/fines/opal-fines-service/interfaces/opal-fines-results-ref-data.interface';
+import { OPAL_FINES_NEXT_PERMITTED_ENFORCEMENT_ACTIONS_MOCK } from 'cypress/component/CommonIntercepts/referenceData/results/NextPermittedEnforcementActionsIntercept.mocks';
+
+type EnforcementMock = typeof OPAL_FINES_ACCOUNT_DEFENDANT_DETAILS_ENFORCEMENT_TAB_REF_DATA_MOCK;
+type EnforcementTabRouteData = {
+  headerMock: IOpalFinesAccountDefendantDetailsHeader;
+  enforcementMock: EnforcementMock;
+};
+
+const ENFORCEMENT_TAB_DATA = new InjectionToken<EnforcementTabRouteData>('ENFORCEMENT_TAB_DATA');
+
+@Component({
+  selector: 'app-test-enforcement-tab-route',
+  imports: [FinesAccDefendantDetailsEnforcementTab],
+  template: `
+    <app-fines-acc-defendant-details-enforcement-tab
+      [tabData]="enforcementMock"
+      [isCompanyAccount]="headerMock.party_details.organisation_flag"
+      [hasAccountMaintenancePermission]="true"
+      [hasEnterEnforcementPermission]="true"
+      [accountStatusCode]="headerMock.account_status_reference.account_status_code"
+      [accountBalance]="headerMock.payment_state_summary.account_balance"
+    />
+  `,
+})
+class TestEnforcementTabRouteComponent {
+  private readonly routeData = inject(ENFORCEMENT_TAB_DATA);
+  public readonly headerMock = this.routeData.headerMock;
+  public readonly enforcementMock = this.routeData.enforcementMock;
+}
+
+@Component({
+  selector: 'app-test-router-outlet',
+  imports: [RouterOutlet],
+  template: '<router-outlet />',
+})
+class TestRouterOutletComponent {}
 
 const finesAccountRoutes: Routes = [
   {
@@ -48,6 +100,97 @@ const COMPONENT_PROPERTIES: IComponentProperties = {
     '../enforcement/amend-denied',
   ],
 };
+
+function mountNavigableEnforcementTab(
+  accountId: string,
+  headerMock: IOpalFinesAccountDefendantDetailsHeader,
+  enforcementMock: EnforcementMock,
+  nextPermittedEnfActions: IOpalFinesResultsRefData = { count: 0, refData: [] },
+  enforcementActionResult = FINES_ACC_ENF_ACTION_ADD_RESULT_MOCK,
+): void {
+  const defendantRoot = FINES_ACC_DEFENDANT_ROUTING_PATHS.root;
+  const detailsPath = FINES_ACC_DEFENDANT_ROUTING_PATHS.children.details;
+  const enforcementPath = FINES_ACC_DEFENDANT_ROUTING_PATHS.children.enforcement;
+  const actionRoot = FINES_ACC_ENF_ACTION_ROUTING_PATHS.root;
+  const deniedPath = FINES_ACC_ENF_ACTION_ROUTING_PATHS.children.denied;
+  const selectPath = FINES_ACC_ENF_ACTION_ROUTING_PATHS.children.select;
+  const addPath = FINES_ACC_ENF_ACTION_ROUTING_PATHS.children.add;
+  const initialPath = `${defendantRoot}/${accountId}/${detailsPath}`;
+  const partyName = headerMock.party_details.organisation_flag
+    ? headerMock.party_details.organisation_details!.organisation_name
+    : [
+        headerMock.party_details.individual_details!.title,
+        headerMock.party_details.individual_details!.forenames,
+        headerMock.party_details.individual_details!.surname.toUpperCase(),
+      ]
+        .filter(Boolean)
+        .join(' ');
+
+  mount(TestRouterOutletComponent, {
+    providers: [
+      provideHttpClient(),
+      provideRouter([
+        {
+          path: `${defendantRoot}/:accountId`,
+          children: [
+            {
+              path: detailsPath,
+              component: TestEnforcementTabRouteComponent,
+            },
+            {
+              path: `${enforcementPath}/${actionRoot}/${deniedPath}/:type`,
+              component: FinesAccEnfActionDeniedComponent,
+              data: {
+                defendantAccountHeadingData: headerMock,
+                enforcementStatus: enforcementMock,
+              },
+            },
+            {
+              path: `${enforcementPath}/${actionRoot}/${selectPath}`,
+              component: FinesAccEnfActionSelectComponent,
+              data: {
+                defendantAccountHeadingData: headerMock,
+                enforcementStatus: enforcementMock,
+                nextPermittedEnfActions,
+              },
+            },
+            {
+              path: `${enforcementPath}/${actionRoot}/${addPath}`,
+              component: FinesAccEnfActionAddComponent,
+              data: {
+                defendantAccountHeadingData: headerMock,
+                enforcementActionResult,
+              },
+            },
+          ],
+        },
+      ]),
+      { provide: ENFORCEMENT_TAB_DATA, useValue: { headerMock, enforcementMock } },
+      FinesAccPayloadService,
+      OpalFines,
+      {
+        provide: GlobalStore,
+        useFactory: () => buildSeededGlobalStore(USER_STATE_MOCK_PERMISSION_BU77),
+      },
+      UtilsService,
+      {
+        provide: FinesAccountStore,
+        useFactory: () =>
+          buildSeededAccountStore(accountId, {
+            party_name: partyName,
+            party_type: headerMock.party_details.organisation_flag ? 'Company' : 'Defendant',
+          }),
+      },
+    ],
+  }).then(({ fixture }) => {
+    const router = fixture.debugElement.injector.get(Router);
+
+    return router.navigateByUrl(initialPath).then((success) => {
+      expect(success).to.be.true;
+      fixture.detectChanges();
+    });
+  });
+}
 
 function setupAddEnforcementActionDetailsRoute(
   accountId: string,
@@ -797,17 +940,7 @@ describe(
 
         const accountId = headerMock.defendant_account_party_id;
 
-        interceptAuthenticatedUser();
-        interceptUserState(USER_STATE_MOCK_PERMISSION_BU77);
-        interceptDefendantHeader(accountId, headerMock, '123');
-        interceptEnforcementStatus(accountId, enforcementMock, '123');
-        interceptNextPermittedEnforcementActionsEmpty();
-
-        setupAccountEnquiryComponent({
-          ...COMPONENT_PROPERTIES,
-          accountId,
-        });
-        cy.wait(['@getUserState', '@getDefendantHeaderSummary', '@getEnforcementStatus']);
+        mountNavigableEnforcementTab(accountId, headerMock, enforcementMock);
 
         cy.get(ENF.addEnforcementActionLink).click();
 
@@ -837,16 +970,7 @@ describe(
 
         const accountId = headerMock.defendant_account_party_id;
 
-        interceptAuthenticatedUser();
-        interceptUserState(USER_STATE_MOCK_PERMISSION_BU77);
-        interceptDefendantHeader(accountId, headerMock, '123');
-        interceptEnforcementStatus(accountId, enforcementMock, '123');
-        interceptNextPermittedEnforcementActionsEmpty();
-
-        setupAccountEnquiryComponent({
-          ...COMPONENT_PROPERTIES,
-          accountId,
-        });
+        mountNavigableEnforcementTab(accountId, headerMock, enforcementMock);
 
         cy.get(ENF.addEnforcementActionLink).click();
 
@@ -877,13 +1001,6 @@ describe(
 
         const accountId = headerMock.defendant_account_party_id;
 
-        interceptAuthenticatedUser();
-        interceptUserState(USER_STATE_MOCK_PERMISSION_BU77);
-        interceptDefendantHeader(accountId, headerMock, '123');
-        interceptEnforcementStatus(accountId, enforcementMock, '123');
-        interceptNextPermittedEnforcementActions(['COLLO']);
-        interceptEnforcers();
-
         cy.intercept(
           {
             method: 'GET',
@@ -895,7 +1012,12 @@ describe(
           },
         ).as('getCollectionOrderResult');
 
-        setupAccountEnquiryComponent({ ...COMPONENT_PROPERTIES, accountId });
+        mountNavigableEnforcementTab(accountId, headerMock, enforcementMock, {
+          count: 1,
+          refData: OPAL_FINES_NEXT_PERMITTED_ENFORCEMENT_ACTIONS_MOCK.refData.filter(
+            (result) => result.result_id === 'COLLO',
+          ),
+        });
 
         cy.get(ENF.addEnforcementActionLink).should('exist').click();
 

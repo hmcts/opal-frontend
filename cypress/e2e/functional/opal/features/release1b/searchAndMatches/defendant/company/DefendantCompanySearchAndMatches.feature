@@ -7,21 +7,21 @@ Feature: Defendant Company Search And Matches
     Given I am logged in with email "opal-test@dev.platform.hmcts.net"
     And I am on the Account Search page - Individuals form displayed by default
 
-  @JIRA-EPIC:PO-704 @R1B @JIRA-STORY:PO-712 @JIRA-TEST-KEY:PO-5419
+  @JIRA-EPIC:PO-704 @R1BDrop1 @JIRA-STORY:PO-712 @JIRA-TEST-KEY:PO-5419
   Scenario: Companies empty submit shows defaults
     #PO-712 - AC2
     When I view the Companies search form
     And I submit an empty company account search
     Then the Companies form shows default empty fields and options
 
-  @JIRA-EPIC:PO-704 @R1B @JIRA-STORY:PO-712 @JIRA-TEST-KEY:PO-5423
+  @JIRA-EPIC:PO-704 @R1BDrop1 @JIRA-STORY:PO-712 @JIRA-TEST-KEY:PO-5423
   Scenario: Switching tabs clears Companies data
     #PO-712 - AC6
     When I prepare a Companies search - sample details provided
     And I switch away and back to the Companies form
     Then the Companies form is cleared to defaults
 
-  @JIRA-EPIC:PO-704 @R1B @JIRA-STORY:PO-712 @JIRA-TEST-KEY:PO-5429 @JIRA-NFR:PO-2549
+  @JIRA-EPIC:PO-704 @R1BDrop1 @JIRA-STORY:PO-712 @JIRA-TEST-KEY:PO-5429 @JIRA-NFR:PO-2549
   Scenario: Error when all 3 sections contain data (Account number, Reference number, Company name)
     # PO-712 - AC5i.
     And I view the Companies search form
@@ -53,17 +53,17 @@ Feature: Defendant Company Search And Matches
       | account number           | <accountNumber> |
       | reference or case number | <reference>     |
       | company name             | <companyName>   |
-    @R1B @JIRA-EPIC:PO-704 @JIRA-TEST-KEY:PO-5430
+    @R1BDrop1 @JIRA-EPIC:PO-704 @JIRA-TEST-KEY:PO-5430
     Examples: Reference and company name
       | validation_case            | accountNumber | reference | companyName |
       | Reference and company name |               | REF-123   | CompanyOne  |
 
-    @R1B @JIRA-EPIC:PO-704 @JIRA-TEST-KEY:PO-5431
+    @R1BDrop1 @JIRA-EPIC:PO-704 @JIRA-TEST-KEY:PO-5431
     Examples: Account number and reference
       | validation_case              | accountNumber | reference | companyName |
       | Account number and reference | 2345678       | REF-123   |             |
 
-  @JIRA-EPIC:PO-704 @R1B @JIRA-STORY:PO-707 @JIRA-TEST-KEY:PO-5440
+  @JIRA-EPIC:PO-704 @R1BDrop1 @JIRA-STORY:PO-707 @JIRA-TEST-KEY:PO-5440
   Scenario: Successful Search For company defendant accounts
     And I view the Companies search form
     When I search using the following inputs:
@@ -73,7 +73,7 @@ Feature: Defendant Company Search And Matches
     Then I see the "Search for an account" page for companies with the following details:
       | company name | TechCorp Solutions Ltd |
 
-  @JIRA-EPIC:PO-704 @R1B @JIRA-STORY:PO-707 @JIRA-TEST-KEY:PO-5453
+  @JIRA-EPIC:PO-704 @R1BDrop1 @JIRA-STORY:PO-707 @JIRA-TEST-KEY:PO-5453
   Scenario: Verify API call parameters for Company search
     #AC1
     And I view the Companies search form
@@ -97,7 +97,7 @@ Feature: Defendant Company Search And Matches
       | birth_date                    | null            |
       | national_insurance_number     | null            |
 
-  @JIRA-EPIC:PO-704 @R1B @JIRA-STORY:PO-707 @JIRA-TEST-KEY:PO-5454
+  @JIRA-EPIC:PO-704 @R1BDrop1 @JIRA-STORY:PO-707 @JIRA-TEST-KEY:PO-5454
   Scenario: Verify API call parameters for Company search with only company name populated
     #AC1
     And I view the Companies search form
@@ -116,7 +116,7 @@ Feature: Defendant Company Search And Matches
       | birth_date                    | null       |
       | national_insurance_number     | null       |
 
-  @JIRA-EPIC:PO-704 @R1B @JIRA-STORY:PO-707 @JIRA-TEST-KEY:PO-5455
+  @JIRA-EPIC:PO-704 @R1BDrop1 @JIRA-STORY:PO-707 @JIRA-TEST-KEY:PO-5455
   Scenario: Verify API call parameters for Company search with "Active accounts only" checkbox unchecked
     #AC1
     And I view the Companies search form

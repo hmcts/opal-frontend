@@ -6,7 +6,7 @@ Feature: Company View Defendant Account Summary Accessibility
     Given I am logged in with email "opal-test@dev.platform.hmcts.net"
     And I clear all approved accounts
 
-  @R1B @JIRA-STORY:PO-777 @JIRA-EPIC:PO-2472 @JIRA-TEST-KEY:PO-5572
+  @R1BDrop1 @JIRA-STORY:PO-777 @JIRA-EPIC:PO-2472 @JIRA-TEST-KEY:PO-5572
   Scenario: Check View Defendant Company Account Summary and Comments Accessibility with Axe-Core
     # Create & publish a company account then check accessibility
     Given I create a "company" draft account with the following details and set status "Publishing Pending" using user "opal-test-10@dev.platform.hmcts.net":
@@ -34,7 +34,7 @@ Feature: Company View Defendant Account Summary Accessibility
       | Line 3  | Company Line3   |
     Then I check the page for accessibility
 
-  @R1B @JIRA-STORY:PO-2673 @JIRA-EPIC:PO-2673 @JIRA-TEST-KEY:PO-2678
+  @R1BDrop1 @JIRA-STORY:PO-2673 @JIRA-EPIC:PO-2673 @JIRA-TEST-KEY:PO-2678
   Scenario: Company account details reflows without horizontal overflow at narrow viewport
     Given I create a "company" draft account with the following details and set status "Publishing Pending" using user "opal-test-10@dev.platform.hmcts.net":
       | Account_status                      | Submitted                                          |

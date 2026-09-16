@@ -863,8 +863,15 @@ describe('Account Enquiry - Minor Creditor Header', () => {
   };
 
   it(
-    'AC1, AC2a: renders the Minor Creditor Account Header Summary',
-    { tags: [...buildTags('@JIRA-STORY:PO-1924'), '@JIRA-EPIC:PO-2234', '@JIRA-TEST-KEY:PO-4222'] },
+    'AC4: retains all existing financial tiles for a regular Minor Creditor account with an associated Defendant Account',
+    {
+      tags: [
+        ...buildTags('@JIRA-STORY:PO-1924', '@JIRA-STORY:PO-2963'),
+        '@JIRA-EPIC:PO-2234',
+        '@JIRA-EPIC:PO-2630',
+        '@JIRA-TEST-KEY:PO-4222',
+      ],
+    },
     () => {
       const header = structuredClone(FINES_ACC_MINOR_CREDITOR_DETAILS_HEADER_MOCK);
       header.creditor.has_associated_defendant = true;
@@ -906,30 +913,127 @@ describe('Account Enquiry - Minor Creditor Header', () => {
   );
 
   it(
-    'AC2b: hides Awarded and Outstanding when no defendant is associated',
-    { tags: [...buildTags('@JIRA-STORY:PO-1924'), '@JIRA-EPIC:PO-2234', '@JIRA-TEST-KEY:PO-4223'] },
+    'AC1, AC2, AC3, AC5, AC6: displays only the API-provided Paid out repayment amount in the Minor Creditor header',
+    { tags: [...buildTags('@JIRA-STORY:PO-2963'), '@JIRA-EPIC:PO-2630'] },
     () => {
-      const header = structuredClone(FINES_ACC_MINOR_CREDITOR_DETAILS_HEADER_MOCK);
-      header.financials.awaiting_payout = 100;
-      header.financials.paid_out = 50;
+      const baseHeader = structuredClone(FINES_ACC_MINOR_CREDITOR_DETAILS_HEADER_MOCK);
+      const repaymentHeader = {
+        ...baseHeader,
+        repayment: true,
+        creditor: { ...baseHeader.creditor, has_associated_defendant: false },
+        financials: {
+          ...baseHeader.financials,
+          awarded: 200,
+          paid_out: 50,
+          awaiting_payout: 100,
+          outstanding: 150,
+        },
+      };
 
       interceptUserState(USER_STATE_MOCK_PERMISSION_BU77);
-      interceptMinorCreditorHeader(minorCreditorAccountId, header, '1');
+      interceptMinorCreditorHeader(minorCreditorAccountId, repaymentHeader, '1');
 
       setupAccountEnquiryComponent(minorCreditorComponentProperties);
 
       cy.get(DOM.summaryMetricBar).within(() => {
+        cy.get(DOM.summaryMetricBarItem).should('have.length', 1);
         cy.contains(DOM.labelPaidOut)
           .should('be.visible')
           .closest(DOM.summaryMetricBarItem)
           .should('contain.text', '£50.00');
-        cy.contains(DOM.labelAwaitingPayout)
-          .should('be.visible')
-          .closest(DOM.summaryMetricBarItem)
-          .should('contain.text', '£100.00');
       });
       cy.get(DOM.summaryMetricBar).should('not.contain.text', DOM.labelAwarded);
+      cy.get(DOM.summaryMetricBar).should('not.contain.text', DOM.labelAwaitingPayout);
       cy.get(DOM.summaryMetricBar).should('not.contain.text', DOM.labelOutstanding);
+
+      cy.document().then((document) => {
+        document.documentElement.lang = 'en';
+      });
+      cy.get('app-fines-acc-minor-creditor-details').then(($accountEnquiry) => {
+        $accountEnquiry.wrap('<main id="component-test-main"></main>');
+      });
+      cy.injectAxe({ axeCorePath: 'node_modules/axe-core/axe.min.js' });
+      cy.checkA11y('#component-test-main', {
+        includedImpacts: ['critical', 'serious', 'moderate'],
+      });
+    },
+  );
+
+  it(
+    'retains all financial tiles when a Minor Creditor has no associated Defendant Account but is not a repayment',
+    { tags: [...buildTags('@JIRA-STORY:PO-2963'), '@JIRA-EPIC:PO-2630'] },
+    () => {
+      const header = structuredClone(FINES_ACC_MINOR_CREDITOR_DETAILS_HEADER_MOCK);
+      header.repayment = false;
+      header.creditor.has_associated_defendant = false;
+      header.financials.awaiting_payout = 100;
+      header.financials.awarded = 200;
+      header.financials.paid_out = 50;
+      header.financials.outstanding = 150;
+
+      interceptUserState(USER_STATE_MOCK_PERMISSION_BU77);
+      interceptMinorCreditorHeader(minorCreditorAccountId, header, '1');
+      setupAccountEnquiryComponent(minorCreditorComponentProperties);
+
+      cy.get(DOM.summaryMetricBar).within(() => {
+        cy.get(DOM.summaryMetricBarItem).should('have.length', 4);
+        cy.contains(DOM.labelAwarded).should('be.visible');
+        cy.contains(DOM.labelPaidOut).should('be.visible');
+        cy.contains(DOM.labelAwaitingPayout).should('be.visible');
+        cy.contains(DOM.labelOutstanding).should('be.visible');
+      });
+    },
+  );
+
+  it(
+    'displays a zero Paid out repayment amount without restoring the other financial tiles',
+    { tags: [...buildTags('@JIRA-STORY:PO-2963'), '@JIRA-EPIC:PO-2630'] },
+    () => {
+      const header = structuredClone(FINES_ACC_MINOR_CREDITOR_DETAILS_HEADER_MOCK);
+      header.repayment = true;
+      header.creditor.has_associated_defendant = false;
+      header.financials.awarded = 200;
+      header.financials.paid_out = 0;
+      header.financials.awaiting_payout = 100;
+      header.financials.outstanding = 150;
+
+      interceptUserState(USER_STATE_MOCK_PERMISSION_BU77);
+      interceptMinorCreditorHeader(minorCreditorAccountId, header, '1');
+      setupAccountEnquiryComponent(minorCreditorComponentProperties);
+
+      cy.get(DOM.summaryMetricBar).within(() => {
+        cy.get(DOM.summaryMetricBarItem).should('have.length', 1);
+        cy.contains(DOM.labelPaidOut)
+          .should('be.visible')
+          .closest(DOM.summaryMetricBarItem)
+          .should('contain.text', '£0.00');
+      });
+      cy.get(DOM.summaryMetricBar).should('not.contain.text', DOM.labelAwarded);
+      cy.get(DOM.summaryMetricBar).should('not.contain.text', DOM.labelAwaitingPayout);
+      cy.get(DOM.summaryMetricBar).should('not.contain.text', DOM.labelOutstanding);
+    },
+  );
+
+  it(
+    'formats a decimal Paid out repayment amount while displaying only one financial tile',
+    { tags: [...buildTags('@JIRA-STORY:PO-2963'), '@JIRA-EPIC:PO-2630'] },
+    () => {
+      const header = structuredClone(FINES_ACC_MINOR_CREDITOR_DETAILS_HEADER_MOCK);
+      header.repayment = true;
+      header.creditor.has_associated_defendant = false;
+      header.financials.paid_out = 1234.5;
+
+      interceptUserState(USER_STATE_MOCK_PERMISSION_BU77);
+      interceptMinorCreditorHeader(minorCreditorAccountId, header, '1');
+      setupAccountEnquiryComponent(minorCreditorComponentProperties);
+
+      cy.get(DOM.summaryMetricBar).within(() => {
+        cy.get(DOM.summaryMetricBarItem).should('have.length', 1);
+        cy.contains(DOM.labelPaidOut)
+          .should('be.visible')
+          .closest(DOM.summaryMetricBarItem)
+          .should('contain.text', '£1,234.50');
+      });
     },
   );
 

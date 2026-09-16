@@ -20,10 +20,7 @@ const ALPHANUMERIC_WITH_SPACES_PATTERN_VALIDATOR = patternValidator(
 );
 
 // regex pattern validators for the form controls
-const SINGLE_ASCII_CHARACTERS_ALPHANUMERIC_WITH_SPECIAL_CHARACTERS_PATTERN_VALIDATOR = patternValidator(
-  SINGLE_ASCII_CHARACTERS,
-  'singleAsciiChatacters',
-);
+const SINGLE_ASCII_CHARACTERS_PATTERN_VALIDATOR = patternValidator(SINGLE_ASCII_CHARACTERS, 'singleAsciiCharacters');
 
 @Component({
   selector: 'app-fines-mac-offence-details-search-offences-search-form',
@@ -72,11 +69,11 @@ export class FinesMacOffenceDetailsSearchOffencesSearchFormComponent
       ]),
       fm_offence_details_search_offences_short_title: new FormControl(null, [
         Validators.maxLength(120),
-        SINGLE_ASCII_CHARACTERS_ALPHANUMERIC_WITH_SPECIAL_CHARACTERS_PATTERN_VALIDATOR,
+        SINGLE_ASCII_CHARACTERS_PATTERN_VALIDATOR,
       ]),
       fm_offence_details_search_offences_act_section: new FormControl(null, [
         Validators.maxLength(4000),
-        SINGLE_ASCII_CHARACTERS_ALPHANUMERIC_WITH_SPECIAL_CHARACTERS_PATTERN_VALIDATOR,
+        SINGLE_ASCII_CHARACTERS_PATTERN_VALIDATOR,
       ]),
       fm_offence_details_search_offences_inactive: new FormControl(false),
     });

@@ -5,6 +5,7 @@ import { withHttpRetry } from '@hmcts/opal-frontend-common/interceptors/http-ret
 
 import { IOpalFinesBusinessUnit } from '@services/fines/opal-fines-service/interfaces/opal-fines-business-unit.interface';
 import { IOpalFinesBusinessUnitNonSnakeCase } from '@services/fines/opal-fines-service/interfaces/opal-fines-business-unit-non-snake-case.interface';
+import { IOpalFinesBusinessUnitOutstandingAutoPaymentCounts } from '@services/fines/opal-fines-service/interfaces/opal-fines-business-unit-outstanding-auto-payment-counts.interface';
 import { IOpalFinesBusinessUnitRefData } from '@services/fines/opal-fines-service/interfaces/opal-fines-business-unit-ref-data.interface';
 import { IOpalFinesCourt } from '@services/fines/opal-fines-service/interfaces/opal-fines-court.interface';
 import { IOpalFinesCourtRefData } from '@services/fines/opal-fines-service/interfaces/opal-fines-court-ref-data.interface';
@@ -75,6 +76,8 @@ import { IOpalFinesAccountDefendantDetailsConsolidatedAccounts } from './interfa
 import { IOpalFinesReport } from './interfaces/opal-fines-report.interface';
 import { IOpalFinesReportInstancesParams } from './interfaces/opal-fines-report-instances-params.interface';
 import { IOpalFinesReportInstancesResponse } from './interfaces/opal-fines-report-instances-response.interface';
+import { IOpalFinesInterfaceJobsSummaryParams } from './interfaces/opal-fines-interface-jobs-summary-params.interface';
+import { IOpalFinesInterfaceJobsSummaryResponse } from './interfaces/opal-fines-interface-jobs-summary-response.interface';
 
 const SAFE_READ_RETRY_POLICY = {
   retryCount: 1,
@@ -99,6 +102,11 @@ export class OpalFines {
   private readonly PARAM_BUSINESS_UNITS = 'business_units';
   private readonly PARAM_USER_ID = 'user_id';
   private readonly PARAM_REPORT_ID = 'report_id';
+  private readonly PARAM_BUSINESS_UNIT_IDS = 'business_unit_ids';
+  private readonly PARAM_STATUSES = 'statuses';
+  private readonly PARAM_COMPLETED_DATE_FROM = 'completed_date_from';
+  private readonly PARAM_COMPLETED_DATE_TO = 'completed_date_to';
+  private readonly PARAM_INTERFACE_NAME = 'interface_name';
 
   private retrySafeReadOptions() {
     return { context: withHttpRetry(SAFE_READ_RETRY_POLICY) };
@@ -264,6 +272,36 @@ export class OpalFines {
   }
 
   /**
+   * Builds HTTP query parameters for retrieving interface job summaries.
+   *
+   * Array filters are serialized as comma-separated values to match the endpoint contract.
+   *
+   * @param params - Interface job summary query parameters.
+   * @returns The HTTP query parameters for the request.
+   */
+  private getInterfaceJobsSummaryParams(params: IOpalFinesInterfaceJobsSummaryParams): HttpParams {
+    let httpParams = new HttpParams().set(this.PARAM_BUSINESS_UNIT_IDS, params.business_unit_ids.join(','));
+
+    if (params.statuses?.length) {
+      httpParams = httpParams.set(this.PARAM_STATUSES, params.statuses.join(','));
+    }
+
+    if (params.completed_date_from) {
+      httpParams = httpParams.set(this.PARAM_COMPLETED_DATE_FROM, params.completed_date_from);
+    }
+
+    if (params.completed_date_to) {
+      httpParams = httpParams.set(this.PARAM_COMPLETED_DATE_TO, params.completed_date_to);
+    }
+
+    if (params.interface_name) {
+      httpParams = httpParams.set(this.PARAM_INTERFACE_NAME, params.interface_name);
+    }
+
+    return httpParams;
+  }
+
+  /**
    * Retrieves the court data for a specific business unit.
    * If the court data is not already cached, it makes an HTTP request to fetch the data and caches it for future use.
    * @param business_unit - The business unit for which to retrieve the court data.
@@ -344,6 +382,37 @@ export class OpalFines {
       .pipe(shareReplay(1));
 
     return this.cache.businessUnitsCache$;
+  }
+
+  /**
+   * Retrieves outstanding auto payment counts by business unit.
+   *
+   * Counts are operational data, so this response is not cached.
+   *
+   * @returns An observable of business units with file and till counts for Automatic Cash Input.
+   */
+  public getBusinessUnitOutstandingAutoPaymentCounts(): Observable<IOpalFinesBusinessUnitOutstandingAutoPaymentCounts> {
+    return this.http.get<IOpalFinesBusinessUnitOutstandingAutoPaymentCounts>(
+      OPAL_FINES_PATHS.businessUnitOutstandingAutoPaymentCount,
+      this.retrySafeReadOptions(),
+    );
+  }
+
+  /**
+   * Retrieves interface job summaries using the supplied business unit and optional filters.
+   *
+   * Interface job state is operational data, so this response is not cached.
+   *
+   * @param params - Business unit, status, completion date, and interface name filters.
+   * @returns An observable of matching interface job summaries.
+   */
+  public getInterfaceJobsSummary(
+    params: IOpalFinesInterfaceJobsSummaryParams,
+  ): Observable<IOpalFinesInterfaceJobsSummaryResponse> {
+    return this.http.get<IOpalFinesInterfaceJobsSummaryResponse>(
+      OPAL_FINES_PATHS.interfaceJobsSummary,
+      this.withRetrySafeReadOptions({ params: this.getInterfaceJobsSummaryParams(params) }),
+    );
   }
 
   /**

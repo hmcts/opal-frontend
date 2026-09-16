@@ -268,7 +268,7 @@ describe('FinesConConsolidateAccComponent - Account & Company Search', () => {
           fcon_search_account_individuals_first_names_exact_match: false,
           fcon_search_account_individuals_include_aliases: false,
           fcon_search_account_individuals_date_of_birth: 'textbox',
-          fcon_search_account_individuals_address_line_1: '123 Main Street %',
+          fcon_search_account_individuals_address_line_1: '123 Main Stréet',
           fcon_search_account_individuals_post_code: 'SW1A!AA',
         },
       };
@@ -281,7 +281,8 @@ describe('FinesConConsolidateAccComponent - Account & Company Search', () => {
           selector: AccountSearchLocators.dateOfBirthError,
         },
         {
-          message: 'Address line 1 must only include letters a to z, numbers, hyphens, spaces and apostrophes',
+          message:
+            'Address line 1 must only include letters a to z, numbers 0-9 and certain special characters (such as hyphens, spaces, apostrophes and commas)',
           selector: AccountSearchLocators.addressLine1Error,
         },
         {
@@ -764,7 +765,7 @@ describe('FinesConConsolidateAccComponent - Account & Company Search', () => {
           fcon_search_account_companies_company_name: 'Testing!!!',
           fcon_search_account_companies_company_name_exact_match: false,
           fcon_search_account_companies_include_aliases: false,
-          fcon_search_account_companies_address_line_1: '&& High Street',
+          fcon_search_account_companies_address_line_1: 'High Stréet',
           fcon_search_account_companies_post_code: 'TE5&5TN',
         },
       };
@@ -778,8 +779,9 @@ describe('FinesConConsolidateAccComponent - Account & Company Search', () => {
           selector: AccountSearchLocators.companyNameError,
         },
         {
-          //AC3c. User enters non-alphanumeric and the following error is produced
-          message: 'Address line 1 must only include letters a to z, numbers, hyphens, spaces and apostrophes',
+          //AC3c. User enters non single-byte ASCII characters  and the following error is produced
+          message:
+            'Address line 1 must only include letters a to z, numbers 0-9 and certain special characters (such as hyphens, spaces, apostrophes and commas)',
           selector: AccountSearchLocators.companyAddressLine1Error,
         },
         {

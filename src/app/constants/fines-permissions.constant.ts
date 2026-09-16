@@ -18,5 +18,7 @@ export const FINES_PERMISSIONS: IFinesPermissions = {
   'operational-report-by-payments': 15,
   'process-and-allocate-payments': 16,
   'auto-enforcement': 17,
+  'view-interface-files': 18,
+  'create-interface-files': 19,
   'account-maintenance-minor-creditor': 20,
 };

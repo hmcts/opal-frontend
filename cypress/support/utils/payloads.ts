@@ -28,6 +28,17 @@ export type DefendantTypes = 'company' | 'adultOrYouthOnly' | 'pgToPay';
 export type AccountType = 'Fine' | 'Fixed penalty' | 'Fixed Penalty' | 'Conditional caution' | 'Conditional Caution';
 export type ApprovedAccountType = DefendantTypes | 'fixedPenalty' | 'fixedPenaltyCompany';
 
+const jcdeDraftPayloadTypes = new Set<DraftPayloadType>([
+  'company',
+  'adultOrYouthOnly',
+  'pgToPay',
+  'failedAdultOrYouthOnly',
+  'failedCompany',
+  'fixedPenalty',
+  'fixedPenaltyCompany',
+  'ayMultiOffenceMultiImposition',
+]);
+
 /**
  * Resolve draft fixture file name for POST /draft-accounts. Adjust names if yours differ.
  * @param type Draft account payload type.
@@ -54,7 +65,7 @@ export function getDraftPayloadFile(type: DraftPayloadType): string {
     opalE2EFixedPenaltyCompany: 'opalE2EFixedPenaltyCompanyPayload.json',
     ayMultiOffenceMultiImposition: 'ayMultiOffenceMultiImpositionPayload.json',
   };
-  if (Cypress.env('JCDE_OVERRIDE') === 'true') {
+  if (Cypress.env('JCDE_OVERRIDE') === 'true' && jcdeDraftPayloadTypes.has(type)) {
     return `jcde/` + map[type];
   }
   return map[type];

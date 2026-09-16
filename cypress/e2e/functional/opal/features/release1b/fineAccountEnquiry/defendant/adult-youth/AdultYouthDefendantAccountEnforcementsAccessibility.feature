@@ -5,7 +5,7 @@ Feature: Adult Youth Defendant Account Enforcements Accessibility
   Background:
     Given I am logged in with email "opal-test@dev.platform.hmcts.net"
     And I clear all approved accounts
-  @R1B @JIRA-STORY:PO-1848 @JIRA-STORY:PO-1846 @JIRA-EPIC:PO-2472 @JIRA-TEST-KEY:PO-5346
+  @R1BDrop1 @JIRA-STORY:PO-1848 @JIRA-STORY:PO-1846 @JIRA-EPIC:PO-2472 @JIRA-TEST-KEY:PO-5346
   Scenario: Check Change Collection Order status accessibility for an adult or youth account
     Given I create a "adultOrYouthOnly" draft account with the following details and set status "Publishing Pending" using user "opal-test-10@dev.platform.hmcts.net":
       | Account_status                                  | Submitted                             |
