@@ -1,0 +1,76 @@
+{
+  "header": {
+    "accountNumber": "26000289W",
+    "name": "Mr Henry CPGB-ADULT-B-H",
+    "summary": {
+      "account type": "Fine",
+      "business unit": "West London (0042)"
+    },
+    "metrics": {
+      "imposed": "\u00a3536.10",
+      "arrears": "\u00a30.00",
+      "paid/written off": "\u00a30.00",
+      "account balance": "-\u00a3536.10"
+    }
+  },
+  "atAGlance": {
+    "defendant": {
+      "name": "Mr Henry CPGB-ADULT-B-H",
+      "date of birth": "01 January 2000",
+      "address": "123 Address Line1\nAddress Line2 Address Line3\nAddress Line4 Address Line5\nEN51 1RL",
+      "national insurance number": "NI 12 34 56 A"
+    },
+    "paymentTerms": {
+      "payment terms": "Pay in full",
+      "pay by date": "28 February 2030"
+    },
+    "enforcementStatus": {
+      "collection order": "Collection Order",
+      "days in default": "999 days",
+      "date of last movement": "04 June 2026"
+    },
+    "comments": {
+      "comment": "Given_Account_comment_30_chars",
+      "lines": ["\u2014"]
+    }
+  },
+  "defendantTab": {
+    "defendant": {
+      "name": "Mr Henry CPGB-ADULT-B-H",
+      "aliases": "\u2014",
+      "date of birth": "01 January 2000",
+      "national insurance number": "NI 12 34 56 A",
+      "address": "123 Address Line1\nAddress Line2 Address Line3\nAddress Line4 Address Line5\nEN51 1RL",
+      "vehicle make and model": "Fiat",
+      "vehicle registration": "ELV154"
+    },
+    "contact": {
+      "primary email address": "testa1@test.tst",
+      "secondary email address": "testa2@test.tst",
+      "mobile telephone number": "01234 567890",
+      "home telephone number": "01234 567890",
+      "work telephone number": "01234 567890"
+    },
+    "employer": {
+      "employer name": "Hexagon & Co Ltd",
+      "employer reference": "STAFFNO-00002",
+      "employer email": "employer1@test.tst",
+      "employer telephone": "0207 456 7890",
+      "employer address": "Emp Addr 1\nEmp Addr 2\nEmp Addr 3\nEmp Addr 4\nEmp Addr 5\nSW1A 1AA"
+    }
+  },
+  "paymentTermsTab": {
+    "pay by date": "28 February 2030",
+    "days in default": "999",
+    "date days in default were imposed": "\u2014",
+    "payment card last requested": "\u2014"
+  },
+  "enforcementTab": {
+    "overview": {
+      "collection order status": "Collection Order",
+      "days in default": "999 days"
+    }
+  },
+  "impositionsTab": {},
+  "historyAndNotesTab": {}
+}

@@ -16,13 +16,19 @@ import {
   MINOR_CREDITOR_ACCOUNT_ID,
 } from './mocks/minor_creditor_at_a_glance.mock';
 import { OPAL_FINES_ACCOUNT_MINOR_CREDITOR_CREDITOR_MOCK } from 'src/app/flows/fines/services/opal-fines-service/mocks/opal-fines-account-minor-creditor-creditor.mock';
+import { FINES_PERMISSIONS } from 'src/app/constants/fines-permissions.constant';
 
 const ACCOUNT_ENQUIRY_JIRA_LABEL = '@JIRA-LABEL:account-enquiry';
 const CREDITOR_TAB_STORY_TAG = '@JIRA-STORY:PO-1979';
 const CHANGE_BUTTON_STORY_TAG = '@JIRA-STORY:PO-1983';
 const CHANGE_BUTTON_EPIC_TAG = '@JIRA-EPIC:PO-1285';
+const MINOR_CREDITOR_MAINTENANCE_STORY_TAG = '@JIRA-STORY:PO-9700';
 
 const buildTags = (...tags: string[]): string[] => [...tags, ACCOUNT_ENQUIRY_JIRA_LABEL, '@R1B'];
+const MINOR_CREDITOR_MAINTENANCE_PERMISSION = {
+  permission_id: FINES_PERMISSIONS['account-maintenance-minor-creditor'],
+  permission_name: 'Account Maintenance - Minor Creditor',
+};
 
 const componentProperties: IComponentProperties = {
   accountId: MINOR_CREDITOR_ACCOUNT_ID.toString(),
@@ -41,6 +47,14 @@ const setupMinorCreditorCreditorTab = (
   setupAccountEnquiryComponent(componentProperties);
 };
 
+const withMinorCreditorMaintenancePermission = (userState: typeof USER_STATE_MOCK_NO_PERMISSION) => {
+  const nextUserState = structuredClone(userState);
+
+  nextUserState.business_unit_users[0].permissions.push(MINOR_CREDITOR_MAINTENANCE_PERMISSION);
+
+  return nextUserState;
+};
+
 const normalizeText = (text: string): string =>
   text
     .replace(/\u00A0/g, ' ')
@@ -52,8 +66,8 @@ const stubRouterNavigateByUrl = () => {
     const typedRouter = router as unknown as { navigateByUrl: Function; serializeUrl: (value: unknown) => string };
     const originalNavigateByUrl = typedRouter.navigateByUrl.bind(router);
 
-    cy.stub(router as unknown as object, 'navigateByUrl' as keyof object)
-      .as('routerNavigateByUrl')
+    const navigateByUrlStub = cy
+      .stub(router as unknown as object, 'navigateByUrl' as keyof object)
       .callsFake((url, extras) => {
         const path = typeof url === 'string' ? url : typedRouter.serializeUrl(url);
 
@@ -63,6 +77,7 @@ const stubRouterNavigateByUrl = () => {
 
         return originalNavigateByUrl(url, extras);
       });
+    cy.wrap(navigateByUrlStub).as('routerNavigateByUrl');
   });
 };
 
@@ -150,9 +165,14 @@ describe('Minor Creditor Account Summary - Creditor Tab', () => {
 
   it(
     'AC1, AC2a: displays the Change button and navigates to Change creditor details when the user has Account Maintenance permission in the account BU',
-    { tags: [...buildTags(CHANGE_BUTTON_STORY_TAG, CHANGE_BUTTON_EPIC_TAG), '@JIRA-TEST-KEY:PO-7490'] },
+    {
+      tags: [
+        ...buildTags(CHANGE_BUTTON_STORY_TAG, MINOR_CREDITOR_MAINTENANCE_STORY_TAG, CHANGE_BUTTON_EPIC_TAG),
+        '@JIRA-TEST-KEY:PO-7490',
+      ],
+    },
     () => {
-      setupMinorCreditorCreditorTab(USER_STATE_MOCK_PERMISSION_BU77);
+      setupMinorCreditorCreditorTab(withMinorCreditorMaintenancePermission(USER_STATE_MOCK_NO_PERMISSION));
       stubRouterNavigateByUrl();
 
       cy.get(HEADER.pageHeader).should('exist');
@@ -175,9 +195,14 @@ describe('Minor Creditor Account Summary - Creditor Tab', () => {
 
   it(
     'AC1, AC2b: displays the Change button and routes to access denied when the user only has Account Maintenance permission in a different BU',
-    { tags: [...buildTags(CHANGE_BUTTON_STORY_TAG, CHANGE_BUTTON_EPIC_TAG), '@JIRA-TEST-KEY:PO-7491'] },
+    {
+      tags: [
+        ...buildTags(CHANGE_BUTTON_STORY_TAG, MINOR_CREDITOR_MAINTENANCE_STORY_TAG, CHANGE_BUTTON_EPIC_TAG),
+        '@JIRA-TEST-KEY:PO-7491',
+      ],
+    },
     () => {
-      setupMinorCreditorCreditorTab(USER_STATE_MOCK_PERMISSION_BU17);
+      setupMinorCreditorCreditorTab(withMinorCreditorMaintenancePermission(USER_STATE_MOCK_PERMISSION_BU17));
       stubRouterNavigateByUrl();
 
       cy.get(CREDITOR_TAB.changeLink)
@@ -206,6 +231,19 @@ describe('Minor Creditor Account Summary - Creditor Tab', () => {
     { tags: [...buildTags(CHANGE_BUTTON_STORY_TAG, CHANGE_BUTTON_EPIC_TAG), '@JIRA-TEST-KEY:PO-7492'] },
     () => {
       setupMinorCreditorCreditorTab(USER_STATE_MOCK_NO_PERMISSION);
+
+      cy.get(CREDITOR_TAB.component).should('exist');
+      cy.get(CREDITOR_TAB.changeLink).should('not.exist');
+    },
+  );
+
+  it(
+    'PO-9700: does not display the Change button when the user only has generic Account Maintenance permission',
+    {
+      tags: [...buildTags(CHANGE_BUTTON_STORY_TAG, MINOR_CREDITOR_MAINTENANCE_STORY_TAG, CHANGE_BUTTON_EPIC_TAG)],
+    },
+    () => {
+      setupMinorCreditorCreditorTab(USER_STATE_MOCK_PERMISSION_BU77);
 
       cy.get(CREDITOR_TAB.component).should('exist');
       cy.get(CREDITOR_TAB.changeLink).should('not.exist');

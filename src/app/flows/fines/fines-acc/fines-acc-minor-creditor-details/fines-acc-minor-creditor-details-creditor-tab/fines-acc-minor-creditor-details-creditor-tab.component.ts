@@ -25,20 +25,21 @@ import { RouterLink } from '@angular/router';
 export class FinesAccMinorCreditorDetailsCreditorTab {
   @Input({ required: true }) tabData!: IOpalFinesAccountMinorCreditorCreditor;
   @Input() style: IFinesAccSummaryTabsContentStyles = FINES_ACC_SUMMARY_TABS_CONTENT_STYLES;
-  @Input() hasAccountMaintenancePermission: boolean = false;
-  @Input() hasAccountMaintenancePermissionInBU: boolean = false;
+  @Input() hasMinorCreditorMaintenancePermission: boolean = false;
+  @Input() hasMinorCreditorMaintenancePermissionInBU: boolean = false;
   @Input() hasViewCreditorBacsPermission: boolean = false;
 
   /**
    * This method determines the target URL for the "Change" link based on the user's permissions.
    *
-   * If the user has account maintenance permission in the business unit, the link will navigate to the amend page for minor creditor details.
+   * If the user has Account Maintenance - Minor Creditor permission in the business unit, the link will navigate to the
+   * amend page for minor creditor details.
    * If the user does not have the necessary permission, the link will navigate to an access denied page.
    *
    * @returns A string representing the target URL for the "Change" link.
    */
   public changeCreditorDetailsLink(): string {
-    return this.hasAccountMaintenancePermissionInBU
+    return this.hasMinorCreditorMaintenancePermissionInBU
       ? `../${FINES_ACC_MINOR_CREDITOR_ROUTING_PATHS.children.amend}`
       : '/access-denied';
   }

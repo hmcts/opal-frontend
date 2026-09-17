@@ -7,6 +7,8 @@ import { routing as aecRouting } from '../fines-aec/routing/fines-aec.routes';
 import { routing as consolidationRouting } from '../fines-con/routing/fines-con.routes';
 import { routing as reportingRouting } from '../fines-reports/routing/fines-reports.routes';
 import { routing as manualCashInputRouting } from '../fines-mci/routing/fines-mci.routes';
+import { routing as autoPaymentInRouting } from '../fines-api/routing/fines-api.routes';
+import { routing as financeRouting } from '../fines-finance/routing/fines-finance.routes';
 import { FINES_ROUTING_PATHS } from '@routing/fines/constants/fines-routing-paths.constant';
 import { authGuard } from '@hmcts/opal-frontend-common/guards/auth';
 import { canDeactivateGuard } from '@hmcts/opal-frontend-common/guards/can-deactivate';
@@ -32,6 +34,7 @@ import {
   RELEASE_1B_FEATURE_FLAG,
   RELEASE_1C_WRITE_OFF_FEATURE_FLAG,
   RELEASE_1C_ENFORCEMENT_OPERATIONAL_REPORTING_FEATURE_FLAG,
+  RELEASE_1C_PAYMENT_FEATURE_FLAG,
 } from '../constants/release-feature-flags.constant';
 
 export const release1aFeatureFlagGuard = featureFlagRedirectGuard(RELEASE_1A_FEATURE_FLAG);
@@ -40,6 +43,7 @@ export const release1cWriteOffFeatureFlagGuard = featureFlagRedirectGuard(RELEAS
 export const release1cEnforcementOperationalReportingFeatureFlagGuard = featureFlagRedirectGuard(
   RELEASE_1C_ENFORCEMENT_OPERATIONAL_REPORTING_FEATURE_FLAG,
 );
+export const release1cPaymentFeatureFlagGuard = featureFlagRedirectGuard(RELEASE_1C_PAYMENT_FEATURE_FLAG);
 
 export const finesRouting: Routes = [
   {
@@ -111,6 +115,18 @@ export const finesRouting: Routes = [
         },
       },
       {
+        path: FINES_ROUTING_PATHS.children.autoPaymentIn.root,
+        loadComponent: () => import('../fines-api/fines-api.component').then((c) => c.FinesApiComponent),
+        children: autoPaymentInRouting,
+        canActivate: [authGuard, release1cPaymentFeatureFlagGuard, finesSectionPermissionsGuard],
+        canActivateChild: [release1cPaymentFeatureFlagGuard],
+        canDeactivate: [canDeactivateGuard],
+        data: {
+          sectionKey: FINES_DASHBOARD_ROUTING_PATHS.children.finance,
+          ...PRIMARY_NAV_HIDDEN_ROUTE_DATA,
+        },
+      },
+      {
         path: FINES_ROUTING_PATHS.children.mac.root,
         loadComponent: () => import('../fines-mac/fines-mac.component').then((c) => c.FinesMacComponent),
         children: macRouting,
@@ -179,6 +195,15 @@ export const finesRouting: Routes = [
         canActivate: [authGuard, finesSectionPermissionsGuard],
         data: {
           sectionKey: FINES_DASHBOARD_ROUTING_PATHS.children.administration,
+        },
+      },
+      {
+        path: FINES_ROUTING_PATHS.children.finance.root,
+        loadComponent: () => import('../fines-finance/fines-finance.component').then((c) => c.FinesFinanceComponent),
+        children: financeRouting,
+        canActivate: [authGuard, finesSectionPermissionsGuard],
+        data: {
+          sectionKey: FINES_DASHBOARD_ROUTING_PATHS.children.finance,
         },
       },
     ],

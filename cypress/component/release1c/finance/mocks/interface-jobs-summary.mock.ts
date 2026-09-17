@@ -1,0 +1,56 @@
+import { IOpalFinesInterfaceJobsSummaryResponse } from '@services/fines/opal-fines-service/interfaces/opal-fines-interface-jobs-summary-response.interface';
+
+export const PROCESS_INTERFACE_JOBS_SUMMARY_MOCK: IOpalFinesInterfaceJobsSummaryResponse = {
+  interface_jobs: [
+    {
+      interface_file_id: 101,
+      interface_job_id: 1001,
+      file_name: 'camden-new.xml',
+      source: 'ALLPAY',
+      business_unit_name: 'Camden and Islington',
+      created_datetime: '2026-01-10T13:30:00.000Z',
+      completed_datetime: null,
+      status: 'CREATED',
+    },
+    {
+      interface_file_id: 102,
+      interface_job_id: 1002,
+      file_name: 'camden-old.xml',
+      source: 'NATWEST',
+      business_unit_name: 'Camden and Islington',
+      created_datetime: '2026-01-09T13:30:00.000Z',
+      completed_datetime: null,
+      status: 'FAILED',
+    },
+    {
+      interface_file_id: 103,
+      interface_job_id: 1003,
+      file_name: 'camberwell-new.xml',
+      source: 'BARCLAYCARD',
+      business_unit_name: 'Camberwell Green',
+      created_datetime: '2026-01-10T14:00:00.000Z',
+      completed_datetime: null,
+      status: 'CREATED',
+    },
+    {
+      interface_file_id: 104,
+      interface_job_id: 1004,
+      file_name: 'camberwell-telecom.xml',
+      source: 'BTECKOH',
+      business_unit_name: 'Camberwell Green',
+      created_datetime: '2026-01-10T12:00:00.000Z',
+      completed_datetime: null,
+      status: 'FAILED',
+    },
+    {
+      interface_file_id: 105,
+      interface_job_id: 1005,
+      file_name: 'camberwell-dwp.xml',
+      source: 'DWP',
+      business_unit_name: 'Camberwell Green',
+      created_datetime: '2026-01-09T12:00:00.000Z',
+      completed_datetime: null,
+      status: 'CREATED',
+    },
+  ],
+};

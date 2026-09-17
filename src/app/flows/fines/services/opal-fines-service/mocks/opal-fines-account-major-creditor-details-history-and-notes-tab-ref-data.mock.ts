@@ -5,9 +5,12 @@ export const OPAL_FINES_ACCOUNT_MAJOR_CREDITOR_DETAILS_HISTORY_AND_NOTES_TAB_REF
     version: null,
     historyItems: [
       {
-        type: 'Note',
+        type: 'Financial',
         details: {
-          noteText: 'Major creditor account note',
+          transactionType: {
+            transactionType: 'BACS',
+          },
+          paymentReference: 'MJH0000004',
         },
       },
     ],

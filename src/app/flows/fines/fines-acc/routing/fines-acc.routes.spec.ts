@@ -34,6 +34,7 @@ import { FINES_ACC_REMOVE_NON_PAYING_PG_ROUTING_PATHS } from '../fines-acc-remov
 import { finesAccStateGuard } from './guards/fines-acc-state-guard/fines-acc-state.guard';
 import { FinesAccBusinessUnitResolver } from './resolvers/fines-acc-business-unit.resolver';
 import { FINES_ACCOUNT_ROUTE_TYPES } from './constants/fines-acc-route-types.constant';
+import { FINES_PERMISSIONS } from '../../../../constants/fines-permissions.constant';
 
 describe('fines acc routes', () => {
   const defendantRoute = routing.find((route) => route.path === `${FINES_ACC_DEFENDANT_ROUTING_PATHS.root}/:accountId`);
@@ -142,6 +143,7 @@ describe('fines acc routes', () => {
     );
 
     expect(amendRoute?.canActivate).toEqual([authGuard, businessUnitRoutePermissionsGuard, finesAccStateGuard]);
+    expect(amendRoute?.data?.['routePermissionId']).toEqual([FINES_PERMISSIONS['account-maintenance-minor-creditor']]);
     expect(amendRoute?.resolve?.['minorCreditorAccountCreditor']).toBe(minorCreditorAccountCreditorResolver);
   });
 

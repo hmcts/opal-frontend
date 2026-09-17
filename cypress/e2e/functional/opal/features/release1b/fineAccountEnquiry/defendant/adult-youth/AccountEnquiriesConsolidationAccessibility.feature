@@ -14,7 +14,7 @@ Feature: Defendant - Adult or youth - Account Enquiries - Consolidation Accessib
       | account.defendant.dob             | 2002-05-15                                 |
     When I search for the account by last name "ConsolidatedAccount{uniq}" and open the latest result
 
-  @R1B @JIRA-STORY:PO-2391 @JIRA-EPIC:PO-2332 @JIRA-TEST-KEY:PO-10037
+  @R1BDrop1 @JIRA-STORY:PO-2391 @JIRA-EPIC:PO-2332 @JIRA-TEST-KEY:PO-10037
   Scenario: Consolidated account tab accessibility
     # The consolidated-account response is mocked in the test harness because consolidation
     # behaviour is not available end-to-end in the live environment yet.
@@ -23,7 +23,7 @@ Feature: Defendant - Adult or youth - Account Enquiries - Consolidation Accessib
     And I can see a table containing the child accounts
     Then I check the page for accessibility
 
-  @R1B @JIRA-STORY:PO-2392 @JIRA-EPIC:PO-2332
+  @R1BDrop1 @JIRA-STORY:PO-2392 @JIRA-EPIC:PO-2332
   Scenario: Consolidated child account banner accessibility
     # The consolidated-account response is mocked in the test harness because consolidation
     # behaviour is not available end-to-end in the live environment yet.
