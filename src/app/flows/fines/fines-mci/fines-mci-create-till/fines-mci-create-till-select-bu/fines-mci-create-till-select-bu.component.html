@@ -1,0 +1,25 @@
+<div class="govuk-grid-column-one-half">
+  <h1 class="govuk-heading-l">Create till</h1>
+
+  <form [formGroup]="form" autocomplete="off" novalidate>
+    @if (businessUnitAutoCompleteItems.length === 1) {
+      <p class="govuk-body">The till will be created in {{ businessUnitAutoCompleteItems[0].name }}</p>
+    } @else {
+      <opal-lib-alphagov-accessible-autocomplete
+        [control]="form.get('fmci_create_till_business_unit_id')"
+        labelText="Select a business unit"
+        labelClasses="govuk-fieldset__legend--m"
+        inputId="fmci_create_till_business_unit_id"
+        inputName="fmci_create_till_business_unit_id"
+        label="Search for a business unit"
+        [autoCompleteItems]="businessUnitAutoCompleteItems"
+        [tabIndex]="0"
+      ></opal-lib-alphagov-accessible-autocomplete>
+    }
+
+    <div class="govuk-button-group">
+      <opal-lib-govuk-button buttonId="submitForm" type="submit">Continue</opal-lib-govuk-button>
+      <a class="govuk-link" [routerLink]="createAllocateRoute">Cancel</a>
+    </div>
+  </form>
+</div>
