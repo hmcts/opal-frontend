@@ -16,10 +16,7 @@ import { IGovUkRadioOptions } from '@hmcts/opal-frontend-common/components/govuk
 import { AbstractNestedFormBaseComponent } from '@hmcts/opal-frontend-common/components/abstract/abstract-nested-form-base';
 import { requiredMinorCreditorDataValidator } from './validators/fines-sa-search-account-form-minor-creditors.validator';
 import { FinesSaStore } from '../../../../stores/fines-sa.store';
-import {
-  ALPHANUMERIC_WITH_SPACES_PATTERN,
-  SINGLE_ASCII_CHARACTERS,
-} from '@hmcts/opal-frontend-common/constants';
+import { ALPHANUMERIC_WITH_SPACES_PATTERN, SINGLE_ASCII_CHARACTERS } from '@hmcts/opal-frontend-common/constants';
 import { patternValidator } from '@hmcts/opal-frontend-common/validators/pattern-validator';
 import {
   IAbstractFormBaseFormErrorSummaryMessage,

@@ -7,10 +7,7 @@ import {
 import { GovukTextInputComponent } from '@hmcts/opal-frontend-common/components/govuk/govuk-text-input';
 import { AbstractNestedFormBaseComponent } from '@hmcts/opal-frontend-common/components/abstract/abstract-nested-form-base';
 import { FinesSaStore } from '../../../../stores/fines-sa.store';
-import {
-  ALPHANUMERIC_WITH_SPACES_PATTERN,
-  SINGLE_ASCII_CHARACTERS,
-} from '@hmcts/opal-frontend-common/constants';
+import { ALPHANUMERIC_WITH_SPACES_PATTERN, SINGLE_ASCII_CHARACTERS } from '@hmcts/opal-frontend-common/constants';
 import { TrimLeadingTrailingWhitespaceDirective } from '@hmcts/opal-frontend-common/directives/trim-leading-trailing-whitespace';
 import { patternValidator } from '@hmcts/opal-frontend-common/validators/pattern-validator';
 import { IAbstractFormControlErrorMessage } from '@hmcts/opal-frontend-common/components/abstract/interfaces';
