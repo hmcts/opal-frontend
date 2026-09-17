@@ -1,22 +1,30 @@
 import { ChangeDetectionStrategy, Component, inject } from '@angular/core';
 import { FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
-import { ActivatedRoute, RouterLink } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import { FINES_ROUTING_PATHS } from '@app/flows/fines/routing/constants/fines-routing-paths.constant';
 import { AlphagovAccessibleAutocompleteComponent } from '@hmcts/opal-frontend-common/components/alphagov/alphagov-accessible-autocomplete';
 import { IAlphagovAccessibleAutocompleteItem } from '@hmcts/opal-frontend-common/components/alphagov/alphagov-accessible-autocomplete/interfaces';
 import { GovukButtonComponent } from '@hmcts/opal-frontend-common/components/govuk/govuk-button';
+import { GovukCancelLinkComponent } from '@hmcts/opal-frontend-common/components/govuk/govuk-cancel-link';
 import { IOpalFinesBusinessUnitRefData } from '@services/fines/opal-fines-service/interfaces/opal-fines-business-unit-ref-data.interface';
 import { IOpalFinesBusinessUnit } from '@services/fines/opal-fines-service/interfaces/opal-fines-business-unit.interface';
 import { FINES_MCI_ROUTING_PATHS } from '../../routing/constants/fines-mci-routing-paths.constant';
 
 @Component({
   selector: 'app-fines-mci-create-till-select-bu',
-  imports: [AlphagovAccessibleAutocompleteComponent, GovukButtonComponent, ReactiveFormsModule, RouterLink],
+  imports: [
+    AlphagovAccessibleAutocompleteComponent,
+    GovukButtonComponent,
+    GovukCancelLinkComponent,
+    ReactiveFormsModule,
+  ],
   templateUrl: './fines-mci-create-till-select-bu.component.html',
+  styleUrl: './fines-mci-create-till-select-bu.component.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class FinesMciCreateTillSelectBuComponent {
   private readonly activatedRoute = inject(ActivatedRoute);
+  private readonly router = inject(Router);
   private readonly businessUnitsRefData: IOpalFinesBusinessUnitRefData = (this.activatedRoute.snapshot.data[
     'businessUnits'
   ] as IOpalFinesBusinessUnitRefData | undefined) ?? {
@@ -59,5 +67,12 @@ export class FinesMciCreateTillSelectBuComponent {
         this.businessUnitsRefData.refData[0].business_unit_id,
       );
     }
+  }
+
+  /**
+   * Returns the user to the manual cash input create and allocate page.
+   */
+  public handleCancel(): void {
+    void this.router.navigate(this.createAllocateRoute);
   }
 }
