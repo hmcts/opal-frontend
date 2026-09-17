@@ -20,8 +20,6 @@ Feature: Adult Youth Defendant Account Enforcements Accessibility
       | account.payment_card_request                    | false                                 |
       | account.defendant.dob                           | 2001-05-15                            |
       | account.payment_terms.enforcements[0].result_id | PRIS                                  |
-    When I search for the account by last name "CollectionOrderAdult{uniq}" and open the latest result
-    And I go to the Enforcement tab
-    And I open the Change Collection Order status form
+    When the Change Collection Order status form is displayed for defendant account with last name "CollectionOrderAdult{uniq}"
     Then I should see the Change Collection Order status page
     And I check the page for accessibility

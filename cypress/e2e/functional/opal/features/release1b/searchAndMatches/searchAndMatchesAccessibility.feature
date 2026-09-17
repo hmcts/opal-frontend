@@ -7,7 +7,7 @@ Feature: Search And Matches Accessibility
     And I am on the Account Search page - Individuals form displayed by default
 
   @R1BDrop1 @JIRA-STORY:PO-705 @JIRA-STORY:PO-712 @JIRA-STORY:PO-715 @JIRA-EPIC:PO-2472 @JIRA-TEST-KEY:PO-5296
-  Scenario: Check Search and Matches Accessibility with Axe-Core
+  Scenario: Search and Matches journey is accessible
     ## Check Accessibility on Individuals Tab
     When I search using the following inputs:
       | individual last name | * |
@@ -39,7 +39,7 @@ Feature: Search And Matches Accessibility
     And I check the page for accessibility
 
   @JIRA-STORY:PO-2953 @JIRA-EPIC:PO-2630 @R1BDrop1 @JIRA-TEST-KEY:PO-10019
-  Scenario: Check Search and Matches Accessibility with Axe-Core for National Insurance quick search
+  Scenario: National Insurance quick search is accessible
     ## Check Accessibility on National Insurance quick search
     When I search using the following inputs:
       | National Insurance number | * |
