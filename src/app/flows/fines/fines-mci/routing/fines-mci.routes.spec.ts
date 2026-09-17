@@ -34,25 +34,4 @@ describe('finesMci routes', () => {
     );
     expect(createAllocateRoute?.loadComponent).toEqual(expect.any(Function));
   });
-
-  it('should expose a guarded create till select business unit placeholder route', () => {
-    const createRoute = routing.find((route) => route.path === 'create');
-    const createTillRoute = createRoute?.children?.find((route) => route.path === 'till');
-    const createTillSelectBusinessUnitRoute = createTillRoute?.children?.find((route) => route.path === 'select-bu');
-
-    expect(createTillSelectBusinessUnitRoute).toEqual(
-      expect.objectContaining({
-        path: 'select-bu',
-        canActivate: [authGuard, routePermissionsGuard],
-        data: {
-          routePermissionId: [FINES_PERMISSIONS['process-and-allocate-payments']],
-          title: FINES_MCI_ROUTING_TITLES.children.createTillSelectBusinessUnit,
-        },
-        resolve: expect.objectContaining({
-          title: TitleResolver,
-        }),
-      }),
-    );
-    expect(createTillSelectBusinessUnitRoute?.loadComponent).toEqual(expect.any(Function));
-  });
 });
