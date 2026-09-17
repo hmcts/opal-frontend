@@ -9,7 +9,6 @@ import { AbstractNestedFormBaseComponent } from '@hmcts/opal-frontend-common/com
 import { FinesSaStore } from '../../../../stores/fines-sa.store';
 import {
   ALPHANUMERIC_WITH_SPACES_PATTERN,
-  LETTERS_SPACES_HYPHENS_APOSTROPHES_DOT_PATTERN,
   SINGLE_ASCII_CHARACTERS,
 } from '@hmcts/opal-frontend-common/constants';
 import { TrimLeadingTrailingWhitespaceDirective } from '@hmcts/opal-frontend-common/directives/trim-leading-trailing-whitespace';
@@ -18,10 +17,6 @@ import { IAbstractFormControlErrorMessage } from '@hmcts/opal-frontend-common/co
 import { finesSaSearchAccountFormCompaniesValidator } from './validators/fines-sa-search-account-form-companies.validator';
 
 const SINGLE_ASCII_CHARACTERS_PATTERN_VALIDATOR = patternValidator(SINGLE_ASCII_CHARACTERS, 'singleAsciiCharacters');
-const LETTERS_SPACES_HYPHENS_APOSTROPHES_DOT_PATTERN_VALIDATOR = patternValidator(
-  LETTERS_SPACES_HYPHENS_APOSTROPHES_DOT_PATTERN,
-  'lettersSpacesHyphensApostrophesDotPattern',
-);
 const ALPHANUMERIC_WITH_SPACES_PATTERN_VALIDATOR = patternValidator(
   ALPHANUMERIC_WITH_SPACES_PATTERN,
   'alphanumericTextPattern',
@@ -63,7 +58,7 @@ export class FinesSaSearchAccountFormCompaniesComponent extends AbstractNestedFo
   private buildCompanyFormControls(): FormGroup {
     return new FormGroup({
       fsa_search_account_companies_company_name: new FormControl<string | null>(null, [
-        LETTERS_SPACES_HYPHENS_APOSTROPHES_DOT_PATTERN_VALIDATOR,
+        SINGLE_ASCII_CHARACTERS_PATTERN_VALIDATOR,
         Validators.maxLength(50),
       ]),
       fsa_search_account_companies_company_name_exact_match: new FormControl<boolean | null>(null),

@@ -122,15 +122,18 @@ describe('FinesSaSearchAccountFormCompaniesComponent', () => {
     expect(postcodeControl?.hasError('alphanumericTextPattern')).toBe(true);
   });
 
-  it('should validate address line 1 with the single ASCII characters pattern', () => {
-    const addressControl = component.form.get('fsa_search_account_companies_address_line_1');
+  it.each(['fsa_search_account_companies_company_name', 'fsa_search_account_companies_address_line_1'])(
+    'should validate %s with the single ASCII characters pattern',
+    (controlName) => {
+      const control = component.form.get(controlName);
 
-    addressControl?.setValue('Flat @ 2');
-    expect(addressControl?.hasError('singleAsciiCharacters')).toBe(false);
+      control?.setValue('Acme Ltd, Branch 2');
+      expect(control?.hasError('singleAsciiCharacters')).toBe(false);
 
-    addressControl?.setValue('Café');
-    expect(addressControl?.hasError('singleAsciiCharacters')).toBe(true);
-  });
+      control?.setValue('Café');
+      expect(control?.hasError('singleAsciiCharacters')).toBe(true);
+    },
+  );
 
   it('should validate postcode max length', () => {
     const postcodeControl = component.form.get('fsa_search_account_companies_post_code');
