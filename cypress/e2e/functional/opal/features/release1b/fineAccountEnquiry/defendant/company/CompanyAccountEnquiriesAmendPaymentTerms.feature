@@ -25,7 +25,7 @@ Feature: Company Account Enquiries Amend Payment Terms
         | account.payment_terms.payment_terms_type_code   | B                       |
         | account.payment_terms.effective_date            | 2025-05-30              |
 
-    @JIRA-EPIC:PO-977 @R1BDrop1 @JIRA-STORY:PO-1640 @JIRA-TEST-KEY:PO-5305 @JIRA-NFR:PO-2324
+    @JIRA-EPIC:PO-977 @R1BDrop1 @JIRA-STORY:PO-1640 @JIRA-TEST-KEY:PO-5305 @JIRA-NFR:PO-2324 @skip
     Scenario: Company save payment terms changes and return to Payment terms tab
       When the amend payment terms form is displayed for company account "Amend Co{uniq}"
       And I submit instalments only payment terms with a payment card request

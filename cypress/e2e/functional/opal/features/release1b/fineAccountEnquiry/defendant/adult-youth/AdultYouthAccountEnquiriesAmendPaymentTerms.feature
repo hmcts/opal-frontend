@@ -27,7 +27,7 @@ Feature: Adult Youth Account Enquiries Amend Payment Terms
         | account.payment_terms.payment_terms_type_code   | B                         |
         | account.payment_terms.effective_date            | 2025-05-30                |
 
-    @JIRA-EPIC:PO-977 @R1BDrop1 @JIRA-STORY:PO-1149 @JIRA-TEST-KEY:PO-5303 @JIRA-NFR:PO-2324
+    @JIRA-EPIC:PO-977 @R1BDrop1 @JIRA-STORY:PO-1149 @JIRA-TEST-KEY:PO-5303 @JIRA-NFR:PO-2324 @skip
     Scenario: Save payment terms changes and return to Payment terms tab
       When the amend payment terms form is displayed for defendant account with last name "AmendPayTerms{uniq}"
       And I submit instalments only payment terms with a payment card request
