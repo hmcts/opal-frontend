@@ -24,13 +24,17 @@ describe('FinesMciCreateAllocateComponent', () => {
 
   it('should render a manual cash input placeholder page', () => {
     const text = fixture.nativeElement.textContent;
+    const nativeElement = fixture.nativeElement as HTMLElement;
 
     expect(text).toContain('Manual cash input');
     expect(text).toContain('Create till');
     expect(text).toContain('Allocate tills');
     expect(text).toContain('Select the tills you want to allocate');
     expect(text).toContain('Allocate');
-    expect(fixture.nativeElement.querySelector('a')?.getAttribute('href')).toBe('/fines/dashboard/finance');
+    expect(nativeElement.querySelector('a')?.getAttribute('href')).toBe('/fines/dashboard/finance');
+    expect(nativeElement.querySelector('#create-till-button')?.getAttribute('href')).toBe(
+      '/fines/manual-cash-input/create/till/select-bu',
+    );
   });
 
   it('should render mock tills available to allocate', () => {

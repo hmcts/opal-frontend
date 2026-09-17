@@ -27,4 +27,29 @@ export const routing: Routes = [
       title: TitleResolver,
     },
   },
+  {
+    path: 'create',
+    children: [
+      {
+        path: 'till',
+        children: [
+          {
+            path: 'select-bu',
+            loadComponent: () =>
+              import('../fines-mci-create-till/fines-mci-create-till-select-bu/fines-mci-create-till-select-bu.component').then(
+                (c) => c.FinesMciCreateTillSelectBuComponent,
+              ),
+            canActivate: [authGuard, routePermissionsGuard],
+            data: {
+              routePermissionId: [FINES_PERMISSIONS['process-and-allocate-payments']],
+              title: FINES_MCI_ROUTING_TITLES.children.createTillSelectBusinessUnit,
+            },
+            resolve: {
+              title: TitleResolver,
+            },
+          },
+        ],
+      },
+    ],
+  },
 ];

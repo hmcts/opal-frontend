@@ -1,7 +1,7 @@
 <div class="govuk-grid-column-full">
   <a class="govuk-back-link" [routerLink]="financeDashboardRoute">Back</a>
   <h1 class="govuk-heading-l">Manual cash input</h1>
-  <button buttonId="create-till-button" opalLibGovukButton>Create till</button>
+  <a buttonId="create-till-button" opalLibGovukButton [routerLink]="createTillRoute">Create till</a>
   <hr class="govuk-section-break govuk-section-break--l govuk-section-break--visible govuk-!-margin-top-0" />
   <h2 class="govuk-heading-m">Allocate tills</h2>
   @if (tillsAvailable) {
