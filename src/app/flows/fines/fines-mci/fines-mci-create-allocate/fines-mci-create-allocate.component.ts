@@ -3,10 +3,13 @@ import { RouterLink } from '@angular/router';
 import { FINES_ROUTING_PATHS } from '@app/flows/fines/routing/constants/fines-routing-paths.constant';
 import { FINES_DASHBOARD_ROUTING_PATHS } from '@app/flows/fines/constants/fines-dashboard-routing-paths.constant';
 import { GovukButtonDirective } from '@hmcts/opal-frontend-common/directives/govuk-button';
+import { FinesMciCreateAllocateTableComponent } from './fines-mci-create-allocate-table/fines-mci-create-allocate-table.component';
+import { FINES_MCI_CREATE_ALLOCATE_TABLE_SORT_DEFAULT } from './fines-mci-create-allocate-table/constants/fines-mci-create-allocate-table-sort-default.constant';
+import { FINES_MCI_CREATE_ALLOCATE_TABLE_DATA_MOCK } from './fines-mci-create-allocate-table/mocks/fines-mci-create-allocate-table-data.mock';
 
 @Component({
   selector: 'app-fines-mci-create-allocate',
-  imports: [RouterLink, GovukButtonDirective],
+  imports: [RouterLink, GovukButtonDirective, FinesMciCreateAllocateTableComponent],
   templateUrl: './fines-mci-create-allocate.component.html',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
@@ -18,5 +21,7 @@ export class FinesMciCreateAllocateComponent {
     FINES_DASHBOARD_ROUTING_PATHS.children.finance,
   ];
 
-  public tillsAvailable = true;
+  public readonly tills = FINES_MCI_CREATE_ALLOCATE_TABLE_DATA_MOCK;
+  public readonly tableSort = FINES_MCI_CREATE_ALLOCATE_TABLE_SORT_DEFAULT;
+  public readonly tillsAvailable = this.tills.length > 0;
 }

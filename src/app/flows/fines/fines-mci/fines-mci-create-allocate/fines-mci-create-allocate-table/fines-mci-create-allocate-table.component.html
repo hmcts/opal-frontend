@@ -1,0 +1,136 @@
+<div>
+  <output id="fines-mci-create-allocate-selected-count" class="govuk-hint" aria-live="polite" aria-atomic="true">
+    {{ selectedTillsHintComputed() }}
+  </output>
+</div>
+
+<opal-lib-moj-sortable-table>
+  <ng-container head>
+    <th class="govuk-table__header" scope="col" id="fines-mci-create-allocate-select-all">
+      <span class="govuk-visually-hidden">{{ content.selectColumn }}</span>
+      @if (fullTableDataComputed().length > 0) {
+        <div class="govuk-checkboxes govuk-checkboxes--small" data-module="govuk-checkboxes">
+          <div
+            opal-lib-govuk-checkboxes-item
+            opalLibMojMultiSelectHead
+            [control]="selectAllControl"
+            inputId="fines-mci-create-allocate-select-all-checkbox"
+            inputName="fines-mci-create-allocate-select-all-checkbox"
+            labelText=""
+            labelClasses="govuk-!-padding-0"
+            [ariaLabel]="content.selectAll"
+            [selectAllIndeterminate]="someRowsSelected()"
+            (toggleAll)="onToggleAll($event)"
+          ></div>
+        </div>
+      }
+    </th>
+    <th
+      opal-lib-moj-sortable-table-header
+      [columnKey]="content.columns.tillNumber"
+      [sortDirection]="sortStateSignal()[content.columns.tillNumber]"
+      (sortChange)="onSortChange($event)"
+      [dataIndex]="0"
+    >
+      {{ content.columns.tillNumber }}
+    </th>
+    <th
+      opal-lib-moj-sortable-table-header
+      [columnKey]="content.columns.payments"
+      [sortDirection]="sortStateSignal()[content.columns.payments]"
+      (sortChange)="onSortChange($event)"
+      [dataIndex]="1"
+    >
+      {{ content.columns.payments }}
+    </th>
+    <th
+      opal-lib-moj-sortable-table-header
+      [columnKey]="content.columns.amount"
+      [sortDirection]="sortStateSignal()[content.columns.amount]"
+      (sortChange)="onSortChange($event)"
+      [dataIndex]="2"
+    >
+      {{ content.columns.amount }}
+    </th>
+    <th
+      opal-lib-moj-sortable-table-header
+      [columnKey]="content.columns.businessUnit"
+      [sortDirection]="sortStateSignal()[content.columns.businessUnit]"
+      (sortChange)="onSortChange($event)"
+      [dataIndex]="3"
+    >
+      {{ content.columns.businessUnit }}
+    </th>
+    <th
+      opal-lib-moj-sortable-table-header
+      [columnKey]="content.columns.createdBy"
+      [sortDirection]="sortStateSignal()[content.columns.createdBy]"
+      (sortChange)="onSortChange($event)"
+      [dataIndex]="4"
+    >
+      {{ content.columns.createdBy }}
+    </th>
+    <th
+      opal-lib-moj-sortable-table-header
+      [columnKey]="content.columns.dateCreated"
+      [sortDirection]="sortStateSignal()[content.columns.dateCreated]"
+      (sortChange)="onSortChange($event)"
+      [dataIndex]="5"
+    >
+      {{ content.columns.dateCreated }}
+    </th>
+  </ng-container>
+
+  <ng-container row>
+    @for (row of fullTableDataComputed(); track row.tillId; let rowIndex = $index) {
+      <tr
+        opal-lib-moj-sortable-table-row
+        [bodyRowClasses]="isRowSelected(row, rowIndex) ? 'govuk-table__row--selected' : ''"
+      >
+        <td opal-lib-moj-sortable-table-row-data [id]="getRowDomId(row) + '-cell'">
+          <div class="govuk-checkboxes govuk-checkboxes--small" data-module="govuk-checkboxes">
+            <div
+              opal-lib-govuk-checkboxes-item
+              opalLibMojMultiSelectBody
+              [control]="rowControls.get(getRowIdentifier(row))!"
+              [inputId]="getRowDomId(row)"
+              [inputName]="getRowDomId(row)"
+              labelText=""
+              labelClasses="govuk-!-padding-0"
+              [rowId]="getRowIdentifier(row)"
+              [ariaLabel]="content.selectTill(row[content.columns.tillNumber])"
+              (selectionChange)="onRowSelectionChange($event)"
+            ></div>
+          </div>
+        </td>
+        <td opal-lib-moj-sortable-table-row-data [id]="getRowDomId(row) + '-till-number'">
+          <a href="" class="govuk-link govuk-link--no-visited-state" (click)="$event.preventDefault()">
+            {{ row[content.columns.tillNumber] }}
+          </a>
+        </td>
+        <td opal-lib-moj-sortable-table-row-data [id]="getRowDomId(row) + '-payments'">
+          {{ row[content.columns.payments] }}
+        </td>
+        <td opal-lib-moj-sortable-table-row-data [id]="getRowDomId(row) + '-amount'">
+          {{ row[content.columns.amount] | currency: 'GBP' : 'symbol' : '1.2-2' }}
+        </td>
+        <td opal-lib-moj-sortable-table-row-data [id]="getRowDomId(row) + '-business-unit'">
+          {{ row[content.columns.businessUnit] }}
+        </td>
+        <td opal-lib-moj-sortable-table-row-data [id]="getRowDomId(row) + '-created-by'">
+          {{ row[content.columns.createdBy] }}
+        </td>
+        <td opal-lib-moj-sortable-table-row-data [id]="getRowDomId(row) + '-date-created'">
+          {{ row.dateCreatedDisplay }}
+        </td>
+      </tr>
+    }
+  </ng-container>
+
+  <ng-container status>
+    <opal-lib-moj-sortable-table-status
+      [columnTitle]="sortedColumnTitleSignal()"
+      [sortDirection]="sortedColumnDirectionSignal()"
+    />
+  </ng-container>
+</opal-lib-moj-sortable-table>

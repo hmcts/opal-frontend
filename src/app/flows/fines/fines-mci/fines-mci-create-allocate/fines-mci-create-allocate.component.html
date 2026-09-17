@@ -7,6 +7,10 @@
   @if (tillsAvailable) {
     <p class="govuk-hint">Select the tills you want to allocate</p>
     <button buttonId="allocate-till-button" opalLibGovukButton>Allocate</button>
+    <app-fines-mci-create-allocate-table
+      [tableData]="tills"
+      [existingSortState]="tableSort"
+    ></app-fines-mci-create-allocate-table>
   } @else {
     <p class="govuk-body">There are no outstanding tills available to allocate</p>
   }
