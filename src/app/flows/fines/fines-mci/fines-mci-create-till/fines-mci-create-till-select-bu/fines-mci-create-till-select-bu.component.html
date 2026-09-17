@@ -3,7 +3,17 @@
 
   <form [formGroup]="form" autocomplete="off" novalidate>
     @if (businessUnitAutoCompleteItems.length === 1) {
-      <p class="govuk-body">The till will be created in {{ businessUnitAutoCompleteItems[0].name }}</p>
+      <opal-lib-govuk-summary-list summaryListId="fines-mci-create-till-business-unit">
+        <div
+          opal-lib-govuk-summary-list-row
+          class="govuk-summary-list__row govuk-summary-list__row--no-actions"
+          summaryListId="fines-mci-create-till-business-unit"
+          summaryListRowId="business-unit"
+        >
+          <ng-container name>Business unit</ng-container>
+          <ng-container value>{{ businessUnitAutoCompleteItems[0].name }}</ng-container>
+        </div>
+      </opal-lib-govuk-summary-list>
     } @else {
       <opal-lib-alphagov-accessible-autocomplete
         [control]="form.get('fmci_create_till_business_unit_id')"

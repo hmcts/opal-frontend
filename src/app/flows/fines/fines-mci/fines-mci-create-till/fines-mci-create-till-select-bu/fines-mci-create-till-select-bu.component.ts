@@ -6,6 +6,10 @@ import { AlphagovAccessibleAutocompleteComponent } from '@hmcts/opal-frontend-co
 import { IAlphagovAccessibleAutocompleteItem } from '@hmcts/opal-frontend-common/components/alphagov/alphagov-accessible-autocomplete/interfaces';
 import { GovukButtonComponent } from '@hmcts/opal-frontend-common/components/govuk/govuk-button';
 import { GovukCancelLinkComponent } from '@hmcts/opal-frontend-common/components/govuk/govuk-cancel-link';
+import {
+  GovukSummaryListComponent,
+  GovukSummaryListRowComponent,
+} from '@hmcts/opal-frontend-common/components/govuk/govuk-summary-list';
 import { IOpalFinesBusinessUnitRefData } from '@services/fines/opal-fines-service/interfaces/opal-fines-business-unit-ref-data.interface';
 import { IOpalFinesBusinessUnit } from '@services/fines/opal-fines-service/interfaces/opal-fines-business-unit.interface';
 import { FINES_MCI_ROUTING_PATHS } from '../../routing/constants/fines-mci-routing-paths.constant';
@@ -16,6 +20,8 @@ import { FINES_MCI_ROUTING_PATHS } from '../../routing/constants/fines-mci-routi
     AlphagovAccessibleAutocompleteComponent,
     GovukButtonComponent,
     GovukCancelLinkComponent,
+    GovukSummaryListComponent,
+    GovukSummaryListRowComponent,
     ReactiveFormsModule,
   ],
   templateUrl: './fines-mci-create-till-select-bu.component.html',

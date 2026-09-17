@@ -45,7 +45,7 @@ describe('FinesMciCreateTillSelectBuComponent', () => {
     expect(text).toContain('Create till');
     expect(text).toContain('Select a business unit');
     expect(nativeElement.querySelector('.govuk-button-group')?.classList).toContain(
-      'fines-mci-create-till-select-bu-actions',
+      'fines-mci-create-till-select-bu-button-group',
     );
     expect(nativeElement.querySelector('opal-lib-govuk-cancel-link')).toBeTruthy();
   });
@@ -58,7 +58,7 @@ describe('FinesMciCreateTillSelectBuComponent', () => {
     expect(navigateSpy).toHaveBeenCalledWith(['/', 'fines', 'manual-cash-input', 'create-allocate']);
   });
 
-  it('should render selected business unit text when the user has one business unit', async () => {
+  it('should render selected business unit summary when the user has one business unit', async () => {
     TestBed.resetTestingModule();
     await TestBed.configureTestingModule({
       imports: [FinesMciCreateTillSelectBuComponent],
@@ -84,6 +84,13 @@ describe('FinesMciCreateTillSelectBuComponent', () => {
     component = fixture.componentInstance;
     fixture.detectChanges();
 
-    expect(fixture.nativeElement.textContent).toContain('The till will be created in Historical Debt');
+    const nativeElement = fixture.nativeElement as HTMLElement;
+    const text = nativeElement.textContent;
+
+    expect(nativeElement.querySelector('opal-lib-govuk-summary-list')).toBeTruthy();
+    expect(text).toContain('Business unit');
+    expect(text).toContain('Historical Debt');
+    expect(text).not.toContain('The till will be created in Historical Debt');
+    expect(nativeElement.querySelector('opal-lib-alphagov-accessible-autocomplete')).toBeFalsy();
   });
 });
