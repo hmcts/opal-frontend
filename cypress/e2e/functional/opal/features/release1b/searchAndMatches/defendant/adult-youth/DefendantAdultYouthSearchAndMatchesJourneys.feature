@@ -228,7 +228,7 @@ Feature: Defendant Adult Youth Search And Matches Journeys
 
   @LegacyData @JIRA-STORY:PO-706 @JIRA-EPIC:PO-704
   # Minimum data set required: one individual defendant account with account number LEGACY_ACCOUNT_NUMBER and summary header text LEGACY_ACCOUNT_SUMMARY_HEADER.
-  Scenario: Search by account number in legacy data and open the matching record
+  Scenario Outline: Search by account number in legacy data and open the matching record
     Given I am on the Account Search page - Individuals form displayed by default
     When I search using the following inputs:
       | account number | <LEGACY_ACCOUNT_NUMBER> |
@@ -254,7 +254,7 @@ Feature: Defendant Adult Youth Search And Matches Journeys
       | 25000185D             | LEGACY JONES                  | West London   | accountEnquiry/legacyDefendant/preprod/individual-jones.json |
 
   @LegacyData @JIRA-STORY:PO-706 @JIRA-EPIC:PO-704
-  Scenario: Search for a individual defendant account from legacy data and validate the matching record on the search results page
+  Scenario Outline: Search for a individual defendant account from legacy data and validate the matching record on the search results page
     Given I am on the Account Search page - Individuals form displayed by default
     When I view the Individuals search form
     And I search using the following inputs:
