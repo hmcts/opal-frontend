@@ -93,14 +93,15 @@ describe('FinesReportsReportSummaryComponent', () => {
   );
 
   const setup = async (
-    reportTypeId = enforcementReportTypeId,
+    reportTypeId: string | null = enforcementReportTypeId,
     reportSummary: IFinesReportsReportSummaryViewModel | null = enforcementReportSummary,
+    useParentRoute = true,
   ): Promise<{
     component: FinesReportsReportSummaryComponent;
     fixture: ComponentFixture<FinesReportsReportSummaryComponent>;
     mockRouter: { navigate: ReturnType<typeof vi.fn> };
   }> => {
-    const reportParamMap = convertToParamMap({ reportTypeId });
+    const reportParamMap = convertToParamMap(reportTypeId === null ? {} : { reportTypeId });
     const mockRouter = {
       navigate: vi.fn().mockName('Router.navigate'),
     };
@@ -116,15 +117,12 @@ describe('FinesReportsReportSummaryComponent', () => {
           provide: ActivatedRoute,
           useValue: {
             snapshot: {
+              paramMap: reportParamMap,
               data: {
                 reportSummary,
               },
             },
-            parent: {
-              snapshot: {
-                paramMap: reportParamMap,
-              },
-            },
+            parent: useParentRoute ? { snapshot: { paramMap: reportParamMap } } : null,
           },
         },
       ],
@@ -282,5 +280,28 @@ describe('FinesReportsReportSummaryComponent', () => {
       enforcementReportTypeId,
       FINES_REPORTS_ROUTING_PATHS.children.summaryList,
     ]);
+  });
+
+  it('reads the report type from the current route when there is no parent', async () => {
+    const { component, mockRouter } = await setup(paymentsReportTypeId, paymentsReportSummary, false);
+
+    component.navigateBack();
+
+    expect(component.reportTypeId).toBe(paymentsReportTypeId);
+    expect(mockRouter.navigate).toHaveBeenCalledWith([
+      '/',
+      FINES_ROUTING_PATHS.root,
+      FINES_REPORTS_ROUTING_PATHS.root,
+      paymentsReportTypeId,
+      FINES_REPORTS_ROUTING_PATHS.children.summaryList,
+    ]);
+  });
+
+  it('uses an empty report type when the route has no report type parameter', async () => {
+    const { component } = await setup(null, null, false);
+
+    expect(component.reportTypeId).toBe('');
+    expect(component.reportSummary).toBeNull();
+    expect(component.pageHeading).toBe('Operational report');
   });
 });

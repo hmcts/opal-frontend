@@ -173,4 +173,45 @@ describe('finesReportsReportInstanceResolver', () => {
       ],
     });
   });
+
+  it('uses the report type on the current route when the parent has no report type', async () => {
+    const route = {
+      paramMap: convertToParamMap({ reportTypeId: OPAL_FINES_REPORT_MOCK.report_id, reportInstanceId: '12345' }),
+      parent: { paramMap: convertToParamMap({}) },
+    } as ActivatedRouteSnapshot;
+
+    const result = await firstValueFrom(executeResolver(route, {} as never) as Observable<unknown>);
+
+    expect(mockOpalFinesService.getReport).toHaveBeenCalledWith(OPAL_FINES_REPORT_MOCK.report_id);
+    expect(mockOpalFinesService.getReportInstance).toHaveBeenCalledWith('12345');
+    expect(result).toMatchObject({ reportTitle: OPAL_FINES_REPORT_MOCK.report_title });
+  });
+
+  it('passes empty identifiers to the API when route parameters are absent', async () => {
+    const route = { paramMap: convertToParamMap({}), parent: null } as ActivatedRouteSnapshot;
+
+    await firstValueFrom(executeResolver(route, {} as never) as Observable<unknown>);
+
+    expect(mockOpalFinesService.getReport).toHaveBeenCalledWith('');
+    expect(mockOpalFinesService.getReportInstance).toHaveBeenCalledWith('');
+  });
+
+  it('does not request reference data for a blank enforcement-action code', async () => {
+    mockOpalFinesService.getReportInstance.mockReturnValue(
+      of({
+        ...OPAL_FINES_REPORT_INSTANCE_MOCK,
+        report_parameters: { reportEnforcementMode: 'LAST_ACTION', enforcementAction: '  ' },
+      }),
+    );
+
+    const result = await firstValueFrom(
+      executeResolver(
+        buildRoute('12345', OPAL_FINES_REPORT_MOCK.report_id.toString()),
+        {} as never,
+      ) as Observable<unknown>,
+    );
+
+    expect(mockOpalFinesService.getResult).not.toHaveBeenCalled();
+    expect(result).toMatchObject({ criteriaRows: [{ key: 'Enforcement', value: 'Last enforcement action' }] });
+  });
 });

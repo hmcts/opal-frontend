@@ -140,4 +140,86 @@ describe('mapFinesReportsReportInstanceToViewModel', () => {
 
     expect(result.reportType).toBe('Detail');
   });
+
+  it('uses report and requester identifiers when display names are blank', () => {
+    const result = mapFinesReportsReportInstanceToViewModel(
+      {
+        ...OPAL_FINES_REPORT_INSTANCE_MOCK,
+        name: '  ',
+        requested_by: { name: '  ', user_id: 42 },
+        business_units: [{ business_unit_id: 77, business_unit_name: '  ', welsh_speaking: 'N' }],
+      },
+      null,
+      'Operational report',
+      dateService,
+    );
+
+    expect(result.reportName).toBe(OPAL_FINES_REPORT_INSTANCE_MOCK.report.id);
+    expect(result.general.createdBy).toBe('42');
+    expect(result.general.businessUnits).toBe('77');
+  });
+
+  it('uses missing-value states for absent optional data and an invalid creation date', () => {
+    const result = mapFinesReportsReportInstanceToViewModel(
+      {
+        ...OPAL_FINES_REPORT_INSTANCE_MOCK,
+        requested_at: 'invalid-date',
+        requested_by: { name: null, user_id: null },
+        business_units: [],
+        number_of_records: undefined,
+        report_parameters: undefined,
+      },
+      null,
+      'Operational report',
+      dateService,
+    );
+
+    expect(result.general).toEqual({
+      status: 'Ready',
+      dateCreated: null,
+      businessUnits: null,
+      numberOfRecords: null,
+      createdBy: null,
+    });
+    expect(result.criteriaRows).toEqual([]);
+    expect(result.reportType).toBe('Summary');
+  });
+
+  it.each([undefined, []])('returns no error rows when an error report supplies no error details: %j', (errors) => {
+    const result = mapFinesReportsReportInstanceToViewModel(
+      { ...OPAL_FINES_REPORT_INSTANCE_MOCK, status: { code: 'ERROR', display_name: 'Error' }, errors },
+      null,
+      '',
+      dateService,
+    );
+
+    expect(result.general.status).toBe('Error');
+    expect(result.general.numberOfRecords).toBeNull();
+    expect(result.errorRows).toEqual([]);
+  });
+
+  it('treats an unknown status as an error and preserves useful error details in order', () => {
+    const result = mapFinesReportsReportInstanceToViewModel(
+      {
+        ...OPAL_FINES_REPORT_INSTANCE_MOCK,
+        status: { code: 'UNRECOGNISED', display_name: 'Ready' },
+        errors: [
+          { error: 'Failed', operationId: 'job-123', empty: '', absent: null, missing: undefined, unused: [] },
+          { additional_details: { message: 'Connection closed' }, error_description: 'Retry later' },
+        ],
+      },
+      null,
+      '',
+      dateService,
+    );
+
+    expect(result.general.status).toBe('Error');
+    expect(result.general.numberOfRecords).toBeNull();
+    expect(result.errorRows).toEqual([
+      { key: 'Error description', value: 'Failed' },
+      { key: 'Operation ID', value: 'job-123' },
+      { key: 'additional_details', value: '{"message":"Connection closed"}' },
+      { key: 'Error description', value: 'Retry later' },
+    ]);
+  });
 });
