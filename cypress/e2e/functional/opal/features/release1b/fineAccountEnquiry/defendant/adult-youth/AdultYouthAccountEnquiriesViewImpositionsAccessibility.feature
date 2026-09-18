@@ -1,4 +1,5 @@
 @JIRA-LABEL:account-enquiry
+@JIRA-NFR:PO-2322
 Feature: Adult Youth Account Enquiries View Impositions Accessibility
   As a caseworker
   I want to view the impositions for a defendant account
@@ -28,6 +29,5 @@ Feature: Adult Youth Account Enquiries View Impositions Accessibility
     When I go to the Impositions tab
     Then I should return to the Impositions tab
     And I check the page for accessibility
-
 
 

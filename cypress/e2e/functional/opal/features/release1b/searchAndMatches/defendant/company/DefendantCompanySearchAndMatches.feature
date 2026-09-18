@@ -21,7 +21,7 @@ Feature: Defendant Company Search And Matches
     And I switch away and back to the Companies form
     Then the Companies form is cleared to defaults
 
-  @JIRA-EPIC:PO-704 @R1BDrop1 @JIRA-STORY:PO-712 @JIRA-TEST-KEY:PO-5429 @JIRA-NFR:PO-2549
+  @JIRA-EPIC:PO-704 @R1BDrop1 @JIRA-STORY:PO-712 @JIRA-TEST-KEY:PO-5429 @JIRA-NFR:PO-2549 @JIRA-NFR:PO-2323
   Scenario: Error when all 3 sections contain data (Account number, Reference number, Company name)
     # PO-712 - AC5i.
     And I view the Companies search form
@@ -53,7 +53,7 @@ Feature: Defendant Company Search And Matches
       | account number           | <accountNumber> |
       | reference or case number | <reference>     |
       | company name             | <companyName>   |
-    @R1BDrop1 @JIRA-EPIC:PO-704 @JIRA-TEST-KEY:PO-5430
+    @R1BDrop1 @JIRA-EPIC:PO-704 @JIRA-TEST-KEY:PO-5430 @JIRA-NFR:PO-2323
     Examples: Reference and company name
       | validation_case            | accountNumber | reference | companyName |
       | Reference and company name |               | REF-123   | CompanyOne  |
