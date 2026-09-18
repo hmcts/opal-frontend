@@ -17,7 +17,7 @@ Feature: Major Creditor History and notes
     And I open the Major Creditor History and notes tab
     Then I should see the Major Creditor History and notes tab
 
-  @R1BDrop2 @JIRA-STORY:PO-2658 @JIRA-EPIC:PO-2655
+  @R1BDrop2 @JIRA-STORY:PO-2658 @JIRA-EPIC:PO-2655 @JIRA-NFR:PO-2324
   Scenario: AC2a, AC6a, AC8. Major Creditor History and notes items load and can be filtered
     Given I am logged in with email "opal-test@dev.platform.hmcts.net"
     And I am on the Account Search page - Individuals form displayed by default

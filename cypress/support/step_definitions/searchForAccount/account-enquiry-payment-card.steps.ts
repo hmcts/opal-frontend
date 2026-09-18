@@ -15,68 +15,63 @@ const flow = () => new AccountEnquiryPaymentCardFlow();
 const CONFIRMATION_HEADING = 'Do you want to request a payment card for the defendant?';
 const SUCCESS_MESSAGE = 'Payment card request submitted successfully';
 const ALREADY_EXISTS_MESSAGE = 'A payment card request already exists for this account.';
-const LAST_REQUESTED_ALIAS = 'paymentCardLastRequested';
 
 const getTodayDisplayDate = (): string =>
   new Date().toLocaleDateString('en-GB', { day: '2-digit', month: 'long', year: 'numeric' });
 
+/**
+ * @step Supports the Cucumber step: I go to the Payment terms section
+ */
 When('I go to the Payment terms section', () => {
   log('step', 'Navigating to Payment terms section');
   flow().goToPaymentTermsTab();
 });
 
+/**
+ * @step Supports the Cucumber step: I start a payment card request
+ */
 When('I start a payment card request', () => {
   log('step', 'Starting payment card request');
   flow().startPaymentCardRequest();
 });
 
+/**
+ * @step Supports the Cucumber step: I confirm the payment card request
+ */
 When('I confirm the payment card request', () => {
   log('step', 'Confirming payment card request');
   flow().confirmPaymentCardRequest();
 });
 
-When('I cancel the payment card request', () => {
-  log('step', 'Cancelling payment card request');
-  flow().cancelPaymentCardRequest();
-});
-
-When('I capture the payment card last requested value', () => {
-  log('step', 'Capturing payment card last requested value');
-  flow().capturePaymentCardLastRequested(LAST_REQUESTED_ALIAS);
-});
-
+/**
+ * @step Supports the Cucumber step: I should see the request payment card confirmation screen
+ */
 Then('I should see the request payment card confirmation screen', () => {
   log('step', 'Asserting request payment card confirmation screen');
   flow().assertConfirmationScreen(CONFIRMATION_HEADING);
 });
 
-Then('I should return to the Payment terms section', () => {
-  log('step', 'Asserting Payment terms section is active');
-  flow().assertOnPaymentTermsTab();
-});
-
+/**
+ * @step Supports the Cucumber step: I should see the payment card request success message
+ */
 Then('I should see the payment card request success message', () => {
   log('step', 'Asserting payment card request success message');
   flow().waitForPaymentTermsRefresh();
   flow().assertSuccessBanner(SUCCESS_MESSAGE);
 });
 
-Then('I should not see a payment card request success message', () => {
-  log('step', 'Asserting success banner is not visible');
-  flow().assertSuccessBannerNotVisible();
-});
-
-Then('the payment card last requested value should match the captured value', () => {
-  log('step', 'Asserting payment card last requested value unchanged');
-  flow().assertPaymentCardLastRequestedMatchesAlias(LAST_REQUESTED_ALIAS);
-});
-
+/**
+ * @step Supports the Cucumber step: the payment card last requested date should be today date
+ */
 Then('the payment card last requested date should be today date', () => {
   const today = getTodayDisplayDate();
   log('step', 'Asserting payment card last requested date', { today });
   flow().assertPaymentCardLastRequestedEquals(today);
 });
 
+/**
+ * @step Supports the Cucumber step: I should see the payment card request already exists error
+ */
 Then('I should see the payment card request already exists error', () => {
   log('step', 'Asserting existing payment card request error');
   flow().assertPaymentCardRequestAlreadyExistsError(ALREADY_EXISTS_MESSAGE);

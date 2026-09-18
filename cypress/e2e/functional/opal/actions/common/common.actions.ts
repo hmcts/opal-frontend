@@ -145,6 +145,16 @@ export class CommonActions {
   }
 
   /**
+   * Cancels without entering data while preserving the existing no-navigation behaviour.
+   */
+  public cancelWithoutEnteringData(): void {
+    cy.location('pathname').then((beforePath) => {
+      log('debug', 'Captured current pathname before cancel', { beforePath });
+      this.cancelEditing(true);
+    });
+  }
+
+  /**
    * Prepares Cypress to auto-respond to the **next native confirm() dialog**
    * that appears — but does *NOT* trigger it.
    * @param accept - Whether to accept (`true`) or cancel (`false`) the dialog.

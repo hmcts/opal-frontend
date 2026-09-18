@@ -40,11 +40,9 @@ Feature: Parent Guardian To Pay Enforcement Override
         | account.defendant.parent_guardian.dob           | 1980-02-15                       |
         | account.payment_terms.enforcements[0].result_id | NOENF                            |
 
-      When I search for the account by last name "RemoveAddNew{uniq}" and open the latest result
-      And I go to the Enforcement tab
-      And I open the remove enforcement hold screen
-      When I enter "Removed" in the "Reason" field
-      And I press the "Remove" button
+      When the remove enforcement hold screen is displayed for defendant account with last name "RemoveAddNew{uniq}"
+      When the remove enforcement hold reason is "Removed"
+      And I remove the enforcement hold
       Then I should see the add new enforcement action page
       And the enforcement hold success banner is "Enforcement hold removed"
   Rule: Parent or guardian account
@@ -66,9 +64,7 @@ Feature: Parent Guardian To Pay Enforcement Override
 
     @R1BDrop1 @JIRA-STORY:PO-1866 @JIRA-STORY:PO-1863 @JIRA-EPIC:PO-1675 @JIRA-TEST-KEY:PO-5299
     Scenario: Parent or guardian save an enforcement override and return to the Enforcement tab
-      When I search for the account by last name "AddEnfOverridePG{uniq}" and open the latest result
-      And I go to the Enforcement tab
-      And I open the add enforcement override form
+      When the add enforcement override form is displayed for defendant account with last name "AddEnfOverridePG{uniq}"
       When I add the enforcement override "ABDC" with the enforcer "The DWP (3)"
       Then I should return to the Enforcement tab
       And the enforcement override success banner is "Enforcement override added"
@@ -88,22 +84,20 @@ Feature: Parent Guardian To Pay Enforcement Override
       And the enforcement court summary shows the selected value
       And the enforcement success banner is not displayed
       # AC5a - Cancel without selecting a value returns to the Enforcement tab without confirmation
-      When I open the change enforcement court form
+      When the change enforcement court form is displayed
       And I cancel without entering data
       Then I should return to the Enforcement tab
       And the enforcement court summary shows the selected value
       # AC5b - Cancel after selecting a value shows the route guard confirmation before returning to the Enforcement tab
-      When I open the change enforcement court form
+      When the change enforcement court form is displayed
       And I cancel the change enforcement court form after selecting a value and discarding changes
       Then I should return to the Enforcement tab
       And the enforcement court summary shows the selected value
 
     @R1BDrop1 @JIRA-STORY:PO-1833 @JIRA-EPIC:PO-1675 @JIRA-TEST-KEY:PO-8014
     Scenario: Parent or guardian save an enforcement action that directs to additional enforcement action
-      When I search for the account by last name "AddEnfOverridePG{uniq}" and open the latest result
-      And I go to the Enforcement tab
-      And I open the add enforcement action form
-      And I choose the enforcement action "Withdrawn (WDN)"
+      When the add enforcement action form is displayed for defendant account with last name "AddEnfOverridePG{uniq}"
+      And the enforcement action is "Withdrawn (WDN)"
       And I continue to the confirm enforcement action page
       And I enter "Test reason" for the enforcement action reason
       And I add the enforcement action
