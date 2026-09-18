@@ -214,4 +214,71 @@ describe('finesReportsReportInstanceResolver', () => {
     expect(mockOpalFinesService.getResult).not.toHaveBeenCalled();
     expect(result).toMatchObject({ criteriaRows: [{ key: 'Enforcement', value: 'Last enforcement action' }] });
   });
+
+  it.each([
+    { mode: 'ALL', expected: 'All accounts' },
+    { mode: 'REGF', expected: 'Registration of fine (REGF)' },
+    { mode: 'NOT_UNDER_ENFORCEMENT', expected: 'Accounts not under enforcement' },
+  ])(
+    'ignores a stale action code for enforcement mode $mode even if the lookup would fail',
+    async ({ mode, expected }) => {
+      mockOpalFinesService.getReportInstance.mockReturnValue(
+        of({
+          ...OPAL_FINES_REPORT_INSTANCE_MOCK,
+          report_parameters: { reportEnforcementMode: mode, enforcementAction: 'BWTD' },
+        }),
+      );
+      mockOpalFinesService.getResult.mockReturnValue(
+        throwError(() => new HttpErrorResponse({ status: 500, statusText: 'Internal Server Error' })),
+      );
+
+      const result = await firstValueFrom(
+        executeResolver(
+          buildRoute('12345', OPAL_FINES_REPORT_MOCK.report_id.toString()),
+          {} as never,
+        ) as Observable<unknown>,
+      );
+
+      expect(mockOpalFinesService.getResult).not.toHaveBeenCalled();
+      expect(result).toMatchObject({ criteriaRows: [{ key: 'Enforcement', value: expected }] });
+    },
+  );
+
+  it('ignores a stale action code when no enforcement mode is selected', async () => {
+    mockOpalFinesService.getReportInstance.mockReturnValue(
+      of({
+        ...OPAL_FINES_REPORT_INSTANCE_MOCK,
+        report_parameters: { enforcementAction: 'BWTD' },
+      }),
+    );
+
+    const result = await firstValueFrom(
+      executeResolver(
+        buildRoute('12345', OPAL_FINES_REPORT_MOCK.report_id.toString()),
+        {} as never,
+      ) as Observable<unknown>,
+    );
+
+    expect(mockOpalFinesService.getResult).not.toHaveBeenCalled();
+    expect(result).toMatchObject({ criteriaRows: [] });
+  });
+
+  it('resolves last-action mode without a lookup when the action code is absent', async () => {
+    mockOpalFinesService.getReportInstance.mockReturnValue(
+      of({
+        ...OPAL_FINES_REPORT_INSTANCE_MOCK,
+        report_parameters: { reportEnforcementMode: 'LAST_ACTION' },
+      }),
+    );
+
+    const result = await firstValueFrom(
+      executeResolver(
+        buildRoute('12345', OPAL_FINES_REPORT_MOCK.report_id.toString()),
+        {} as never,
+      ) as Observable<unknown>,
+    );
+
+    expect(mockOpalFinesService.getResult).not.toHaveBeenCalled();
+    expect(result).toMatchObject({ criteriaRows: [{ key: 'Enforcement', value: 'Last enforcement action' }] });
+  });
 });

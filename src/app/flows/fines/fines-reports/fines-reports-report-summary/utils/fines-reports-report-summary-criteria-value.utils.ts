@@ -2,6 +2,7 @@ import { type IOpalFinesResultRefData } from '@services/fines/opal-fines-service
 import { DateService } from '@hmcts/opal-frontend-common/services/date-service';
 import { FINES_REPORTS_SUMMARY_LIST_ROUTING_PATHS } from '../../fines-reports-summary-list/routing/constants/fines-reports-summary-list-routing-paths.constant';
 import { FINES_REPORTS_REPORT_SUMMARY_CRITERIA_LABELS } from '../constants/fines-reports-report-summary-criteria-labels.constant';
+import { FINES_REPORTS_REPORT_SUMMARY_LAST_ACTION_MODE } from '../constants/fines-reports-report-summary-last-action-mode.constant';
 import { FINES_REPORTS_REPORT_SUMMARY_PARAMETER_KEYS } from '../constants/fines-reports-report-summary-parameter-keys.constant';
 import { FINES_REPORTS_REPORT_SUMMARY_REPORT_TYPES } from '../constants/fines-reports-report-summary-report-types.constant';
 import { type IFinesReportsReportSummaryViewModel } from '../interfaces/fines-reports-report-summary-view-model.interface';
@@ -47,7 +48,7 @@ const DATE_RANGE_PARAMETER_CONFIGS = [
  */
 const REPORT_ENFORCEMENT_MODE_DISPLAY: Record<string, string> = {
   ALL: 'All accounts',
-  LAST_ACTION: 'Last enforcement action',
+  [FINES_REPORTS_REPORT_SUMMARY_LAST_ACTION_MODE]: 'Last enforcement action',
   REGF: 'Registration of fine (REGF)',
   NOT_UNDER_ENFORCEMENT: 'Accounts not under enforcement',
 };
@@ -215,7 +216,7 @@ const getEnforcementDisplayValue = (
 ): string => {
   const enforcementMode = typeof value === 'string' ? value : '';
 
-  if (enforcementMode !== 'LAST_ACTION') {
+  if (enforcementMode !== FINES_REPORTS_REPORT_SUMMARY_LAST_ACTION_MODE) {
     return REPORT_ENFORCEMENT_MODE_DISPLAY[enforcementMode] ?? enforcementMode;
   }
 

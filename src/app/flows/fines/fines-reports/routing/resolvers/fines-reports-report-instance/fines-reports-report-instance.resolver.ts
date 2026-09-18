@@ -5,16 +5,17 @@ import { DateService } from '@hmcts/opal-frontend-common/services/date-service';
 import { type IOpalFinesReportInstanceDetail } from '@services/fines/opal-fines-service/interfaces/opal-fines-report-instance-detail.interface';
 import { OpalFines } from '@services/fines/opal-fines-service/opal-fines.service';
 import { map, of, switchMap } from 'rxjs';
+import { FINES_REPORTS_REPORT_SUMMARY_LAST_ACTION_MODE } from '../../../fines-reports-report-summary/constants/fines-reports-report-summary-last-action-mode.constant';
 import { FINES_REPORTS_REPORT_SUMMARY_PARAMETER_KEYS } from '../../../fines-reports-report-summary/constants/fines-reports-report-summary-parameter-keys.constant';
 import { IFinesReportsReportSummaryViewModel } from '../../../fines-reports-report-summary/interfaces/fines-reports-report-summary-view-model.interface';
 import { mapFinesReportsReportInstanceToViewModel } from '../../../fines-reports-report-summary/utils/fines-reports-report-summary-map-view-model.utils';
 
 /**
- * Loads the action reference data when a report uses it, then maps the instance for the summary page.
+ * Loads action reference data only for last-action enforcement mode, then maps the instance for the summary page.
  *
  * @param reportInstance - The report instance returned by the API.
  * @param reportTitle - The report title supplied by the report definition.
- * @param opalFinesService - The fines API service used to resolve an enforcement action when one is present.
+ * @param opalFinesService - The fines API service used to resolve an action required by last-action enforcement mode.
  * @param dateService - The shared service used to parse and format dates.
  * @returns An observable emitting the mapped report summary; enforcement-action lookup failures propagate to the resolver.
  */
@@ -24,12 +25,18 @@ const resolveReportSummaryViewModel = (
   opalFinesService: OpalFines,
   dateService: DateService,
 ) => {
-  // The instance contains only the action code. Reference data supplies the readable action title for the summary.
+  const enforcementMode =
+    reportInstance.report_parameters?.[FINES_REPORTS_REPORT_SUMMARY_PARAMETER_KEYS.reportEnforcementMode];
+  // The instance contains only the action code. Last-action mode needs its readable reference-data title.
   const enforcementAction =
     reportInstance.report_parameters?.[FINES_REPORTS_REPORT_SUMMARY_PARAMETER_KEYS.enforcementAction];
 
-  // Reports without an action criterion can be mapped without an additional API call.
-  if (typeof enforcementAction !== 'string' || enforcementAction.trim().length === 0) {
+  // Other enforcement modes do not use an action title, even if a stale action code is present.
+  if (
+    enforcementMode !== FINES_REPORTS_REPORT_SUMMARY_LAST_ACTION_MODE ||
+    typeof enforcementAction !== 'string' ||
+    enforcementAction.trim().length === 0
+  ) {
     return of(mapFinesReportsReportInstanceToViewModel(reportInstance, null, reportTitle, dateService));
   }
 
