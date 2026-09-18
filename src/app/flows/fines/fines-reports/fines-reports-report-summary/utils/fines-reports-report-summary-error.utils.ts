@@ -16,6 +16,9 @@ const ERROR_PARAMETER_LABEL_OVERRIDES: Record<string, string> = {
 
 /**
  * Looks up the friendly label for a report-generation error key.
+ *
+ * @param key - The report-generation error field name.
+ * @returns The configured friendly label, or the original key when no label is configured.
  */
 const getErrorParameterLabel = (key: string): string => {
   return ERROR_PARAMETER_LABEL_OVERRIDES[key] ?? key;
@@ -25,6 +28,10 @@ const getErrorParameterLabel = (key: string): string => {
  * Maps error values only when a report instance has the Error status. Each API error is an object
  * because one generation failure can carry several named values. Flattening those objects gives
  * the template simple key/value rows while retaining the received error and property sequence.
+ *
+ * @param errors - The API error objects, or null or undefined when no errors are supplied.
+ * @param status - The normalised report lifecycle status.
+ * @returns Non-empty error rows for Error status, or an empty array for other statuses or missing errors.
  */
 export const mapReportSummaryErrors = (
   errors: Array<Record<string, unknown>> | null | undefined,

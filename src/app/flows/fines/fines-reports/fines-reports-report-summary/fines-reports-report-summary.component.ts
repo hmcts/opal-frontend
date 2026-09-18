@@ -37,6 +37,8 @@ export class FinesReportsReportSummaryComponent {
 
   /**
    * Returns the report summary page heading for the selected report instance.
+   *
+   * @returns The instance name and report type, or the report title with an operational-report fallback.
    */
   public get pageHeading(): string {
     const reportSummary = this.reportSummary;

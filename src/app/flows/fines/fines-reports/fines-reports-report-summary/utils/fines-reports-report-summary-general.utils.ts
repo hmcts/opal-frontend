@@ -8,6 +8,9 @@ import { type FinesReportsReportSummaryNormalisedStatus } from '../types/fines-r
 /**
  * Allows only recognised backend status codes through to the summary screen. An unknown value
  * deliberately becomes Error so the UI never presents an unsupported lifecycle state as successful or in progress.
+ *
+ * @param status - The backend report status code.
+ * @returns The recognised Requested, In progress or Ready code, otherwise the Error code.
  */
 export const normaliseReportSummaryStatus = (status: string): FinesReportsReportSummaryNormalisedStatus => {
   if (
@@ -23,6 +26,9 @@ export const normaliseReportSummaryStatus = (status: string): FinesReportsReport
 
 /**
  * Gets the requester display name, falling back to their user id when no name is available.
+ *
+ * @param reportInstance - The report instance returned by the API.
+ * @returns The trimmed requester name, their user ID as text, or empty text when neither is available.
  */
 const getCreatedBy = (reportInstance: IOpalFinesReportInstanceDetail): string => {
   return reportInstance.requested_by.name?.trim() || reportInstance.requested_by.user_id?.toString().trim() || '';
@@ -30,6 +36,9 @@ const getCreatedBy = (reportInstance: IOpalFinesReportInstanceDetail): string =>
 
 /**
  * Gets displayable business unit names from the API response.
+ *
+ * @param reportInstance - The report instance returned by the API.
+ * @returns Non-empty business-unit names in API order, falling back to each unit ID when its name is blank.
  */
 const getBusinessUnits = (reportInstance: IOpalFinesReportInstanceDetail): string[] => {
   return reportInstance.business_units
@@ -39,6 +48,10 @@ const getBusinessUnits = (reportInstance: IOpalFinesReportInstanceDetail): strin
 
 /**
  * Gets the status text shown to the user, including the ready-with-zero-records "No content" case.
+ *
+ * @param status - The normalised report lifecycle status.
+ * @param recordCount - The generated record count, or null when unavailable.
+ * @returns No content for a ready report with zero records; otherwise Ready, Error or In progress.
  */
 const getStatusDisplay = (status: FinesReportsReportSummaryNormalisedStatus, recordCount: number | null): string => {
   if (status === FINES_REPORTS_REPORT_SUMMARY_STATUSES.ready && recordCount === 0) {
@@ -54,6 +67,10 @@ const getStatusDisplay = (status: FinesReportsReportSummaryNormalisedStatus, rec
 
 /**
  * Hides the record count for statuses where a count is not meaningful yet.
+ *
+ * @param status - The normalised report lifecycle status.
+ * @param numberOfRecords - The generated record count, or null when unavailable.
+ * @returns The supplied count for Ready status, otherwise null.
  */
 const getNumberOfRecordsDisplayValue = (
   status: FinesReportsReportSummaryNormalisedStatus,
@@ -66,6 +83,10 @@ const getNumberOfRecordsDisplayValue = (
  * Converts an API ISO date-time into the numeric value used by Angular's DatePipe through Opal's
  * shared DateService. Returning null for an invalid value lets the template show the standard
  * missing-value state instead of rendering an invalid date to the user.
+ *
+ * @param value - The ISO date-time supplied by the API.
+ * @param dateService - The shared service used to parse and format dates.
+ * @returns Milliseconds since the Unix epoch, or null when the date-time is invalid.
  */
 const getDateTimeDisplayValue = (value: string, dateService: DateService): number | null => {
   const dateTime = dateService.getFromIso(value);
@@ -75,6 +96,11 @@ const getDateTimeDisplayValue = (value: string, dateService: DateService): numbe
 
 /**
  * Maps the fixed General section from a report instance and its normalised status.
+ *
+ * @param reportInstance - The report instance returned by the API.
+ * @param status - The normalised report lifecycle status.
+ * @param dateService - The shared service used to parse and format dates.
+ * @returns The General section with formatted status, date, business units, record count and requester values.
  */
 export const mapReportSummaryGeneral = (
   reportInstance: IOpalFinesReportInstanceDetail,

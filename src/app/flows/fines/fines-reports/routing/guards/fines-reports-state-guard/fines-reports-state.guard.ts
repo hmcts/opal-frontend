@@ -8,6 +8,12 @@ import { FINES_REPORT_SUMMARY_LIST_REPORT_CONFIGURATION } from '../../../fines-r
 import { FINES_ROUTING_PATHS } from '@app/flows/fines/routing/constants/fines-routing-paths.constant';
 import { FINES_DASHBOARD_ROUTING_PATHS } from '@app/flows/fines/constants/fines-dashboard-routing-paths.constant';
 
+/**
+ * Checks the report type and the current user permissions before allowing report navigation.
+ *
+ * @param route - The activated route snapshot containing the reportTypeId parameter.
+ * @returns True or a reports-page UrlTree immediately, or an observable emitting true, an access-denied UrlTree or false on user lookup failure.
+ */
 export const finesReportsStateGuard: CanActivateFn = (route) => {
   const router = inject(Router);
   const permissionsService = inject(PermissionsService);

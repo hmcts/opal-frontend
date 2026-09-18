@@ -11,6 +11,12 @@ import { mapFinesReportsReportInstanceToViewModel } from '../../../fines-reports
 
 /**
  * Loads the action reference data when a report uses it, then maps the instance for the summary page.
+ *
+ * @param reportInstance - The report instance returned by the API.
+ * @param reportTitle - The report title supplied by the report definition.
+ * @param opalFinesService - The fines API service used to resolve an enforcement action when one is present.
+ * @param dateService - The shared service used to parse and format dates.
+ * @returns An observable emitting the mapped report summary; enforcement-action lookup failures propagate to the resolver.
  */
 const resolveReportSummaryViewModel = (
   reportInstance: IOpalFinesReportInstanceDetail,
@@ -33,6 +39,12 @@ const resolveReportSummaryViewModel = (
     .pipe(map((result) => mapFinesReportsReportInstanceToViewModel(reportInstance, result, reportTitle, dateService)));
 };
 
+/**
+ * Loads the report definition and instance, checks that they match, and resolves the summary page data.
+ *
+ * @param route - The activated route snapshot containing the instance ID and the current or parent report type ID.
+ * @returns An observable emitting the summary view model or an access-denied RedirectCommand for a report-type mismatch; API failures propagate.
+ */
 export const finesReportsReportInstanceResolver: ResolveFn<IFinesReportsReportSummaryViewModel | RedirectCommand> = (
   route: ActivatedRouteSnapshot,
 ) => {

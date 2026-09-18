@@ -103,6 +103,10 @@ const REPORT_TYPE_DISPLAY_BY_API_VALUE: Record<string, string> = {
  * Resolves the display label for the API's supported report-type values. The route report id is
  * retained as the fallback because it is the authoritative report definition when an older
  * report instance contains an unrecognised reportType value.
+ *
+ * @param value - The reportType parameter supplied by the API.
+ * @param reportId - The report definition identifier used to choose the fallback display label.
+ * @returns The Summary or Detail display label.
  */
 export const formatReportTypeDisplay = (value: unknown, reportId: string): string => {
   const normalised = typeof value === 'string' ? value.trim().toLowerCase() : '';
@@ -120,6 +124,11 @@ export const formatReportTypeDisplay = (value: unknown, reportId: string): strin
  * each range as two API properties, but the design deliberately presents the pair as one row.
  * The caller invokes this while walking the received properties, so the row takes the position
  * of the first date property in that pair.
+ *
+ * @param reportParameters - The report parameter values supplied by the API.
+ * @param parameterKey - The parameter key used to identify the corresponding date range.
+ * @param dateService - The shared service used to parse and format dates.
+ * @returns The action-date row, or null when the key is not a date-range parameter or both dates are empty.
  */
 export const buildActionDateRow = (
   reportParameters: Record<string, unknown>,
@@ -159,6 +168,9 @@ export const buildActionDateRow = (
 /**
  * Maps selected account-type flags to their one user-facing summary row. Iterating the received
  * parameters, rather than this label map, retains the order in which the API supplied selections.
+ *
+ * @param reportParameters - The report parameter values supplied by the API.
+ * @returns The combined selected account types, or null when no account-type flags are true.
  */
 export const buildAccountTypeRow = (
   reportParameters: Record<string, unknown>,
@@ -178,6 +190,9 @@ export const buildAccountTypeRow = (
 
 /**
  * Identifies API parameters that contribute to the combined account-type display row.
+ *
+ * @param key - The API parameter key being mapped.
+ * @returns Whether the key identifies a supported account-type flag.
  */
 export const isAccountTypeParameter = (key: string): key is keyof typeof ACCOUNT_TYPE_PARAMETER_LABELS => {
   return Object.hasOwn(ACCOUNT_TYPE_PARAMETER_LABELS, key);
@@ -187,6 +202,11 @@ export const isAccountTypeParameter = (key: string): key is keyof typeof ACCOUNT
  * Combines a last-enforcement mode and result reference into the wording used by the design.
  * LAST_ACTION needs the resolved reference-data title; when that optional lookup is unavailable,
  * the original action code is still shown so the criterion is not silently lost.
+ *
+ * @param value - The enforcement-mode parameter supplied by the API.
+ * @param enforcementAction - The resolved enforcement action reference data, or null when unavailable.
+ * @param enforcementActionCode - The original action code used when reference data is unavailable.
+ * @returns The enforcement label with the action title or code where available; unknown string modes are retained.
  */
 const getEnforcementDisplayValue = (
   value: unknown,
@@ -210,6 +230,9 @@ const getEnforcementDisplayValue = (
 
 /**
  * Converts a payment-made boolean to the wording required by the report criteria section.
+ *
+ * @param value - The payment-made parameter supplied by the API.
+ * @returns Yes for true, No for false, or the original value for other inputs.
  */
 const getPaymentMadeDisplayValue = (value: unknown): unknown => {
   if (value === true) {
@@ -227,6 +250,13 @@ const getPaymentMadeDisplayValue = (value: unknown): unknown => {
  * Maps a known operational-report parameter to its user-facing summary value. The API also
  * contains technical partner values, such as enforcementAction and the individual account-type
  * flags, which are intentionally represented by their combined display rows instead.
+ *
+ * @param key - The API parameter key being mapped.
+ * @param value - The API value associated with the parameter key.
+ * @param enforcementAction - The resolved enforcement action reference data, or null when unavailable.
+ * @param enforcementActionCode - The original action code used when reference data is unavailable.
+ * @param dateService - The shared service used to parse and format dates.
+ * @returns The mapped criterion, or null for unsupported, supporting or unselected flag parameters.
  */
 export const mapOperationalReportParameter = (
   key: string,
@@ -298,6 +328,9 @@ export const mapOperationalReportParameter = (
  * Removes unused optional criteria and marks money rows for the template's GBP currency pipe.
  * Currency remains a number where possible so the shared template formatting is responsible for
  * its final display, but invalid API values are retained as text rather than rendered as NaN.
+ *
+ * @param values - The intermediate named criteria, including optional and monetary values.
+ * @returns Display rows with unused optional values removed and currency values marked for formatting.
  */
 export const mapCriteriaRows = (
   values: FinesReportsReportSummaryNamedValue[],

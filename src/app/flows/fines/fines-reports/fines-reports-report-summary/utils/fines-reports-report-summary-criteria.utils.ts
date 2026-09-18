@@ -16,6 +16,13 @@ type CombinedCriteriaState = {
   hasActionDateRow: boolean;
 };
 
+/**
+ * Builds the report-type criterion when the current key identifies it.
+ *
+ * @param key - The API parameter key being mapped.
+ * @param reportType - The resolved report-type display label.
+ * @returns The report-type row, or null when the key identifies another parameter.
+ */
 const getReportTypeRow = (key: string, reportType: string): FinesReportsReportSummaryNamedValue | null => {
   return key === FINES_REPORTS_REPORT_SUMMARY_PARAMETER_KEYS.reportType
     ? { name: FINES_REPORTS_REPORT_SUMMARY_CRITERIA_LABELS.reportType, value: reportType }
@@ -24,6 +31,12 @@ const getReportTypeRow = (key: string, reportType: string): FinesReportsReportSu
 
 /**
  * Creates rows that are formed from multiple API parameters, ensuring each combined row is shown once.
+ *
+ * @param reportParameters - The report parameter values supplied by the API.
+ * @param key - The API parameter key being mapped.
+ * @param dateService - The shared service used to parse and format dates.
+ * @param state - Mutable flags recording emitted date and account-type rows; updated when a combined row is created.
+ * @returns The next combined criterion, or null when no applicable row remains to be emitted.
  */
 const getCombinedCriteriaRow = (
   reportParameters: Record<string, unknown>,
@@ -55,6 +68,15 @@ const getCombinedCriteriaRow = (
 
 /**
  * Maps one report parameter, handling the combined display rows before regular one-to-one mappings.
+ *
+ * @param reportParameters - The report parameter values supplied by the API.
+ * @param key - The API parameter key being mapped.
+ * @param value - The API value associated with the parameter key.
+ * @param reportType - The resolved report-type display label.
+ * @param enforcementAction - The resolved enforcement action reference data, or null when unavailable.
+ * @param dateService - The shared service used to parse and format dates.
+ * @param combinedCriteriaState - Mutable flags used to emit each combined date or account-type row once.
+ * @returns The first applicable report-type, combined or individual criterion, or null when none applies.
  */
 const mapCriteriaParameter = (
   reportParameters: Record<string, unknown>,
@@ -62,10 +84,11 @@ const mapCriteriaParameter = (
   value: unknown,
   reportType: string,
   enforcementAction: IOpalFinesResultRefData | null,
-  enforcementActionCode: unknown,
   dateService: DateService,
   combinedCriteriaState: CombinedCriteriaState,
 ): FinesReportsReportSummaryNamedValue | null => {
+  const enforcementActionCode = reportParameters[FINES_REPORTS_REPORT_SUMMARY_PARAMETER_KEYS.enforcementAction];
+
   return (
     getReportTypeRow(key, reportType) ??
     getCombinedCriteriaRow(reportParameters, key, dateService, combinedCriteriaState) ??
@@ -78,6 +101,12 @@ const mapCriteriaParameter = (
  * Date-pair and account-type properties are the exceptions: each represents one combined design
  * row, which is emitted once at the position of that group's first parameter. Unrecognised and
  * technical supporting parameters do not produce a raw row.
+ *
+ * @param reportParameters - The API report parameters; null or undefined is treated as an empty object.
+ * @param reportType - The resolved report-type display label.
+ * @param enforcementAction - The resolved enforcement action reference data, or null when unavailable.
+ * @param dateService - The shared service used to parse and format dates.
+ * @returns Formatted criteria rows in source-parameter order, with related parameters combined and unused values omitted.
  */
 export const mapReportSummaryCriteria = (
   reportParameters: Record<string, unknown> | null | undefined,
@@ -86,7 +115,6 @@ export const mapReportSummaryCriteria = (
   dateService: DateService,
 ) => {
   const parameters = reportParameters ?? {};
-  const enforcementActionCode = parameters[FINES_REPORTS_REPORT_SUMMARY_PARAMETER_KEYS.enforcementAction];
   const rows: FinesReportsReportSummaryNamedValue[] = [];
   const combinedCriteriaState: CombinedCriteriaState = {
     hasAccountTypeRow: false,
@@ -100,7 +128,6 @@ export const mapReportSummaryCriteria = (
       value,
       reportType,
       enforcementAction,
-      enforcementActionCode,
       dateService,
       combinedCriteriaState,
     );
