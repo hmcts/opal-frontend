@@ -127,8 +127,8 @@ Feature: Defendant Adult Youth Search And Matches Journeys
     Then I should see the account summary header contains "<LEGACY_INDIVIDUAL_SUMMARY_HEADER>"
     And I validate the legacy defendant header and At a glance tab using fixture "<LEGACY_INDIVIDUAL_VALIDATION_FIXTURE>"
     When I go to the Defendant tab and validate the legacy defendant using fixture "<LEGACY_INDIVIDUAL_VALIDATION_FIXTURE>"
-    And I go to the Payment terms tab and validate the legacy defendant using fixture "<LEGACY_INDIVIDUAL_VALIDATION_FIXTURE>"
-    And I go to the Enforcement tab and validate the legacy defendant using fixture "<LEGACY_INDIVIDUAL_VALIDATION_FIXTURE>"
+    And the Payment terms tab is selected and validate the legacy defendant using fixture "<LEGACY_INDIVIDUAL_VALIDATION_FIXTURE>"
+    And the Enforcement tab is selected and validate the legacy defendant using fixture "<LEGACY_INDIVIDUAL_VALIDATION_FIXTURE>"
     And I go to the Impositions tab and validate the legacy defendant using fixture "<LEGACY_INDIVIDUAL_VALIDATION_FIXTURE>"
     And I go to the History and notes tab and validate the legacy defendant using fixture "<LEGACY_INDIVIDUAL_VALIDATION_FIXTURE>"
     @R1BDrop1UatTechJCDE @JIRA-TEST-KEY:PO-10328
@@ -157,8 +157,8 @@ Feature: Defendant Adult Youth Search And Matches Journeys
     Then I should see the account summary header contains "<LEGACY_INDIVIDUAL_DOB_SUMMARY_HEADER>"
     And I validate the legacy defendant header and At a glance tab using fixture "<LEGACY_INDIVIDUAL_VALIDATION_FIXTURE>"
     When I go to the Defendant tab and validate the legacy defendant using fixture "<LEGACY_INDIVIDUAL_VALIDATION_FIXTURE>"
-    And I go to the Payment terms tab and validate the legacy defendant using fixture "<LEGACY_INDIVIDUAL_VALIDATION_FIXTURE>"
-    And I go to the Enforcement tab and validate the legacy defendant using fixture "<LEGACY_INDIVIDUAL_VALIDATION_FIXTURE>"
+    And the Payment terms tab is selected and validate the legacy defendant using fixture "<LEGACY_INDIVIDUAL_VALIDATION_FIXTURE>"
+    And the Enforcement tab is selected and validate the legacy defendant using fixture "<LEGACY_INDIVIDUAL_VALIDATION_FIXTURE>"
     And I go to the Impositions tab and validate the legacy defendant using fixture "<LEGACY_INDIVIDUAL_VALIDATION_FIXTURE>"
     And I go to the History and notes tab and validate the legacy defendant using fixture "<LEGACY_INDIVIDUAL_VALIDATION_FIXTURE>"
     @R1BDrop1UatTechJCDE @JIRA-TEST-KEY:PO-10329
@@ -185,8 +185,8 @@ Feature: Defendant Adult Youth Search And Matches Journeys
     Then I should see the account summary header contains "<LEGACY_INDIVIDUAL_NI_SUMMARY_HEADER>"
     And I validate the legacy defendant header and At a glance tab using fixture "<LEGACY_INDIVIDUAL_VALIDATION_FIXTURE>"
     When I go to the Defendant tab and validate the legacy defendant using fixture "<LEGACY_INDIVIDUAL_VALIDATION_FIXTURE>"
-    And I go to the Payment terms tab and validate the legacy defendant using fixture "<LEGACY_INDIVIDUAL_VALIDATION_FIXTURE>"
-    And I go to the Enforcement tab and validate the legacy defendant using fixture "<LEGACY_INDIVIDUAL_VALIDATION_FIXTURE>"
+    And the Payment terms tab is selected and validate the legacy defendant using fixture "<LEGACY_INDIVIDUAL_VALIDATION_FIXTURE>"
+    And the Enforcement tab is selected and validate the legacy defendant using fixture "<LEGACY_INDIVIDUAL_VALIDATION_FIXTURE>"
     And I go to the Impositions tab and validate the legacy defendant using fixture "<LEGACY_INDIVIDUAL_VALIDATION_FIXTURE>"
     And I go to the History and notes tab and validate the legacy defendant using fixture "<LEGACY_INDIVIDUAL_VALIDATION_FIXTURE>"
     @R1BDrop1UatTechJCDE @JIRA-TEST-KEY:PO-10330
@@ -213,8 +213,8 @@ Feature: Defendant Adult Youth Search And Matches Journeys
     Then I should see the account summary header contains "<LEGACY_INDIVIDUAL_POSTCODE_SUMMARY_HEADER>"
     And I validate the legacy defendant header and At a glance tab using fixture "<LEGACY_INDIVIDUAL_VALIDATION_FIXTURE>"
     When I go to the Defendant tab and validate the legacy defendant using fixture "<LEGACY_INDIVIDUAL_VALIDATION_FIXTURE>"
-    And I go to the Payment terms tab and validate the legacy defendant using fixture "<LEGACY_INDIVIDUAL_VALIDATION_FIXTURE>"
-    And I go to the Enforcement tab and validate the legacy defendant using fixture "<LEGACY_INDIVIDUAL_VALIDATION_FIXTURE>"
+    And the Payment terms tab is selected and validate the legacy defendant using fixture "<LEGACY_INDIVIDUAL_VALIDATION_FIXTURE>"
+    And the Enforcement tab is selected and validate the legacy defendant using fixture "<LEGACY_INDIVIDUAL_VALIDATION_FIXTURE>"
     And I go to the Impositions tab and validate the legacy defendant using fixture "<LEGACY_INDIVIDUAL_VALIDATION_FIXTURE>"
     And I go to the History and notes tab and validate the legacy defendant using fixture "<LEGACY_INDIVIDUAL_VALIDATION_FIXTURE>"
     @R1BDrop1UatTechJCDE @JIRA-TEST-KEY:PO-10331
@@ -228,7 +228,7 @@ Feature: Defendant Adult Youth Search And Matches Journeys
 
   @LegacyData @JIRA-STORY:PO-706 @JIRA-EPIC:PO-704
   # Minimum data set required: one individual defendant account with account number LEGACY_ACCOUNT_NUMBER and summary header text LEGACY_ACCOUNT_SUMMARY_HEADER.
-  Scenario: Search by account number in legacy data and open the matching record
+  Scenario Outline: Search by account number in legacy data and open the matching record
     Given I am on the Account Search page - Individuals form displayed by default
     When I search using the following inputs:
       | account number | <LEGACY_ACCOUNT_NUMBER> |
@@ -240,8 +240,8 @@ Feature: Defendant Adult Youth Search And Matches Journeys
     Then I should see the account summary header contains "<LEGACY_ACCOUNT_SUMMARY_HEADER>"
     And I validate the legacy defendant header and At a glance tab using fixture "<LEGACY_ACCOUNT_VALIDATION_FIXTURE>"
     When I go to the Defendant tab and validate the legacy defendant using fixture "<LEGACY_ACCOUNT_VALIDATION_FIXTURE>"
-    And I go to the Payment terms tab and validate the legacy defendant using fixture "<LEGACY_ACCOUNT_VALIDATION_FIXTURE>"
-    And I go to the Enforcement tab and validate the legacy defendant using fixture "<LEGACY_ACCOUNT_VALIDATION_FIXTURE>"
+    And the Payment terms tab is selected and validate the legacy defendant using fixture "<LEGACY_ACCOUNT_VALIDATION_FIXTURE>"
+    And the Enforcement tab is selected and validate the legacy defendant using fixture "<LEGACY_ACCOUNT_VALIDATION_FIXTURE>"
     And I go to the Impositions tab and validate the legacy defendant using fixture "<LEGACY_ACCOUNT_VALIDATION_FIXTURE>"
     And I go to the History and notes tab and validate the legacy defendant using fixture "<LEGACY_ACCOUNT_VALIDATION_FIXTURE>"
     @R1BDrop1UatTechJCDE @JIRA-TEST-KEY:PO-10332
@@ -254,7 +254,7 @@ Feature: Defendant Adult Youth Search And Matches Journeys
       | 25000185D             | LEGACY JONES                  | West London   | accountEnquiry/legacyDefendant/preprod/individual-jones.json |
 
   @LegacyData @JIRA-STORY:PO-706 @JIRA-EPIC:PO-704
-  Scenario: Search for a individual defendant account from legacy data and validate the matching record on the search results page
+  Scenario Outline: Search for a individual defendant account from legacy data and validate the matching record on the search results page
     Given I am on the Account Search page - Individuals form displayed by default
     When I view the Individuals search form
     And I search using the following inputs:
@@ -295,8 +295,8 @@ Feature: Defendant Adult Youth Search And Matches Journeys
     And I validate the legacy defendant header and At a glance tab using fixture "<LEGACY_PARENT_GUARDIAN_VALIDATION_FIXTURE>"
     When I go to the Defendant tab and validate the legacy defendant using fixture "<LEGACY_PARENT_GUARDIAN_VALIDATION_FIXTURE>"
     And I go to the Parent or guardian tab and validate the legacy defendant using fixture "<LEGACY_PARENT_GUARDIAN_VALIDATION_FIXTURE>"
-    And I go to the Payment terms tab and validate the legacy defendant using fixture "<LEGACY_PARENT_GUARDIAN_VALIDATION_FIXTURE>"
-    And I go to the Enforcement tab and validate the legacy defendant using fixture "<LEGACY_PARENT_GUARDIAN_VALIDATION_FIXTURE>"
+    And the Payment terms tab is selected and validate the legacy defendant using fixture "<LEGACY_PARENT_GUARDIAN_VALIDATION_FIXTURE>"
+    And the Enforcement tab is selected and validate the legacy defendant using fixture "<LEGACY_PARENT_GUARDIAN_VALIDATION_FIXTURE>"
     And I go to the Impositions tab and validate the legacy defendant using fixture "<LEGACY_PARENT_GUARDIAN_VALIDATION_FIXTURE>"
     And I go to the History and notes tab and validate the legacy defendant using fixture "<LEGACY_PARENT_GUARDIAN_VALIDATION_FIXTURE>"
     @R1BDrop1UatTechJCDE
@@ -323,8 +323,8 @@ Feature: Defendant Adult Youth Search And Matches Journeys
     And I validate the legacy defendant header and At a glance tab using fixture "<LEGACY_FIXED_PENALTY_VALIDATION_FIXTURE>"
     When I go to the Defendant tab and validate the legacy defendant using fixture "<LEGACY_FIXED_PENALTY_VALIDATION_FIXTURE>"
     And I go to the Fixed penalty tab and validate the legacy defendant using fixture "<LEGACY_FIXED_PENALTY_VALIDATION_FIXTURE>"
-    And I go to the Payment terms tab and validate the legacy defendant using fixture "<LEGACY_FIXED_PENALTY_VALIDATION_FIXTURE>"
-    And I go to the Enforcement tab and validate the legacy defendant using fixture "<LEGACY_FIXED_PENALTY_VALIDATION_FIXTURE>"
+    And the Payment terms tab is selected and validate the legacy defendant using fixture "<LEGACY_FIXED_PENALTY_VALIDATION_FIXTURE>"
+    And the Enforcement tab is selected and validate the legacy defendant using fixture "<LEGACY_FIXED_PENALTY_VALIDATION_FIXTURE>"
     And I go to the Impositions tab and validate the legacy defendant using fixture "<LEGACY_FIXED_PENALTY_VALIDATION_FIXTURE>"
     And I go to the History and notes tab and validate the legacy defendant using fixture "<LEGACY_FIXED_PENALTY_VALIDATION_FIXTURE>"
 
@@ -350,8 +350,8 @@ Feature: Defendant Adult Youth Search And Matches Journeys
     Then I should see the account summary header contains "<LEGACY_CONSOLIDATED_SUMMARY_HEADER>"
     And I validate the legacy defendant header and At a glance tab using fixture "<LEGACY_CONSOLIDATED_VALIDATION_FIXTURE>"
     When I go to the Defendant tab and validate the legacy defendant using fixture "<LEGACY_CONSOLIDATED_VALIDATION_FIXTURE>"
-    And I go to the Payment terms tab and validate the legacy defendant using fixture "<LEGACY_CONSOLIDATED_VALIDATION_FIXTURE>"
-    And I go to the Enforcement tab and validate the legacy defendant using fixture "<LEGACY_CONSOLIDATED_VALIDATION_FIXTURE>"
+    And the Payment terms tab is selected and validate the legacy defendant using fixture "<LEGACY_CONSOLIDATED_VALIDATION_FIXTURE>"
+    And the Enforcement tab is selected and validate the legacy defendant using fixture "<LEGACY_CONSOLIDATED_VALIDATION_FIXTURE>"
     And I go to the Impositions tab and validate the legacy defendant using fixture "<LEGACY_CONSOLIDATED_VALIDATION_FIXTURE>"
     And I go to the History and notes tab and validate the legacy defendant using fixture "<LEGACY_CONSOLIDATED_VALIDATION_FIXTURE>"
     When I view the Consolidated accounts tab

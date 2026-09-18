@@ -28,11 +28,9 @@ Feature: Parent Guardian To Pay Account Enquiries Amend Payment Terms
         | account.payment_terms.payment_terms_type_code   | B                      |
         | account.payment_terms.effective_date            | 2025-05-30             |
 
-    @JIRA-EPIC:PO-977 @R1BDrop1 @JIRA-STORY:PO-1639 @JIRA-TEST-KEY:PO-5307 @skip
+    @JIRA-EPIC:PO-977 @R1BDrop1 @JIRA-STORY:PO-1639 @JIRA-TEST-KEY:PO-5307 @JIRA-NFR:PO-2324 @skip
     Scenario: Parent or guardian save payment terms changes and return to Payment terms tab
-      When I search for the account by last name "AmendPG{uniq}" and open the latest result
-      And I go to the Payment terms tab
-      And I open the amend payment terms form
+      When the amend payment terms form is displayed for defendant account with last name "AmendPG{uniq}"
       And I submit instalments only payment terms with a payment card request
       Then I should return to the Payment terms tab
       And the payment terms summary shows instalments:
@@ -44,9 +42,7 @@ Feature: Parent Guardian To Pay Account Enquiries Amend Payment Terms
 
     @JIRA-EPIC:PO-977 @R1BDrop1 @JIRA-STORY:PO-1639 @JIRA-TEST-KEY:PO-5308
     Scenario: Parent or guardian cancel payment terms amendments returns to Payment terms tab
-      When I search for the account by last name "AmendPG{uniq}" and open the latest result
-      And I go to the Payment terms tab
-      And I open the amend payment terms form
+      When the amend payment terms form is displayed for defendant account with last name "AmendPG{uniq}"
       And I cancel payment terms amendments
       Then I should return to the Payment terms tab
       And the payment terms pay by date is "30 May 2025"
