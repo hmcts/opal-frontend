@@ -33,6 +33,7 @@ describe('FinesAccNoteAddFormComponent', () => {
     business_unit_id: '77',
     business_unit_user_id: 'test.user',
     welsh_speaking: null,
+    originator_type: null,
   };
   let finesAccountState = structuredClone(mockFinesAccountStore);
 
