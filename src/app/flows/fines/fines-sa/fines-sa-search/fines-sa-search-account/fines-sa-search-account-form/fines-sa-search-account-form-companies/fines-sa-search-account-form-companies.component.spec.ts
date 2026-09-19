@@ -8,6 +8,8 @@ import { beforeEach, describe, expect, it } from 'vitest';
 describe('FinesSaSearchAccountFormCompaniesComponent', () => {
   let component: FinesSaSearchAccountFormCompaniesComponent;
   let fixture: ComponentFixture<FinesSaSearchAccountFormCompaniesComponent>;
+  const printableAsciiCharacters = Array.from({ length: 95 }, (_, index) => String.fromCharCode(index + 32));
+  const nonPrintableAsciiCharacters = [String.fromCharCode(31), String.fromCharCode(127)];
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
@@ -122,14 +124,41 @@ describe('FinesSaSearchAccountFormCompaniesComponent', () => {
     expect(postcodeControl?.hasError('alphanumericTextPattern')).toBe(true);
   });
 
-  it('should validate address line 1 with the single ASCII characters pattern', () => {
-    const addressControl = component.form.get('fsa_search_account_companies_address_line_1');
+  it.each(['fsa_search_account_companies_company_name', 'fsa_search_account_companies_address_line_1'])(
+    'should accept every printable ASCII character in %s',
+    (controlName) => {
+      const control = component.form.get(controlName);
 
-    addressControl?.setValue('Flat @ 2');
-    expect(addressControl?.hasError('singleAsciiCharacters')).toBe(false);
+      printableAsciiCharacters.forEach((character) => {
+        control?.setValue(character);
+        expect(control?.hasError('singleAsciiCharacters'), `character ${character.charCodeAt(0)}`).toBe(false);
+      });
+    },
+  );
 
-    addressControl?.setValue('Café');
-    expect(addressControl?.hasError('singleAsciiCharacters')).toBe(true);
+  it.each(['fsa_search_account_companies_company_name', 'fsa_search_account_companies_address_line_1'])(
+    'should reject characters outside printable ASCII in %s',
+    (controlName) => {
+      const control = component.form.get(controlName);
+
+      nonPrintableAsciiCharacters.forEach((character) => {
+        control?.setValue(character);
+        expect(control?.hasError('singleAsciiCharacters'), `character ${character.charCodeAt(0)}`).toBe(true);
+      });
+    },
+  );
+
+  it.each([
+    ['fsa_search_account_companies_company_name', 50],
+    ['fsa_search_account_companies_address_line_1', 30],
+  ] as const)('should enforce the maximum length for %s', (controlName, maxLength) => {
+    const control = component.form.get(controlName);
+
+    control?.setValue('A'.repeat(maxLength));
+    expect(control?.hasError('maxlength')).toBe(false);
+
+    control?.setValue('A'.repeat(maxLength + 1));
+    expect(control?.hasError('maxlength')).toBe(true);
   });
 
   it('should validate postcode max length', () => {
