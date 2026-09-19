@@ -1,0 +1,49 @@
+import { FINES_REPORTS_REPORT_SUMMARY_STATUSES } from '../constants/fines-reports-report-summary-statuses.constant';
+import { type IFinesReportsReportSummaryViewModel } from '../interfaces/fines-reports-report-summary-view-model.interface';
+import { type FinesReportsReportSummaryNormalisedStatus } from '../types/fines-reports-report-summary-normalised-status.type';
+import { isUnusedOptionalValue, mapDisplayText } from './fines-reports-report-summary-display-value.utils';
+
+/**
+ * Gives backend error keys the user-facing labels agreed for the Errors section.
+ */
+const ERROR_PARAMETER_LABEL_OVERRIDES: Record<string, string> = {
+  error: 'Error description',
+  error_description: 'Error description',
+  operationId: 'Operation ID',
+  report_generation_error: 'Report generation error',
+  report_service: 'Report service',
+};
+
+/**
+ * Looks up the friendly label for a report-generation error key.
+ *
+ * @param key - The report-generation error field name.
+ * @returns The configured friendly label, or the original key when no label is configured.
+ */
+const getErrorParameterLabel = (key: string): string => {
+  return ERROR_PARAMETER_LABEL_OVERRIDES[key] ?? key;
+};
+
+/**
+ * Maps error values only when a report instance has the Error status. Each API error is an object
+ * because one generation failure can carry several named values. Flattening those objects gives
+ * the template simple key/value rows while retaining the received error and property sequence.
+ *
+ * @param errors - The API error objects, or null or undefined when no errors are supplied.
+ * @param status - The normalised report lifecycle status.
+ * @returns Non-empty error rows for Error status, or an empty array for other statuses or missing errors.
+ */
+export const mapReportSummaryErrors = (
+  errors: Array<Record<string, unknown>> | null | undefined,
+  status: FinesReportsReportSummaryNormalisedStatus,
+): IFinesReportsReportSummaryViewModel['errorRows'] => {
+  if (status !== FINES_REPORTS_REPORT_SUMMARY_STATUSES.error) {
+    return [];
+  }
+
+  return (errors ?? []).flatMap((error) =>
+    Object.entries(error)
+      .filter(([, value]) => !isUnusedOptionalValue(value))
+      .map(([key, value]) => ({ key: getErrorParameterLabel(key), value: mapDisplayText(value) })),
+  );
+};
