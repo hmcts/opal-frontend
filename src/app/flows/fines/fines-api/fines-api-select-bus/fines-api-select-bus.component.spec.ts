@@ -84,6 +84,9 @@ describe('FinesApiSelectBusComponent', () => {
       'Westminster - North (Wells Street)',
     ]);
     expect(textContent.indexOf('Camberwell Green')).toBeLessThan(textContent.indexOf('Camden and Islington'));
+    expect(finesApiStore.availableBusinessUnits()).toEqual(
+      OPAL_FINES_BUSINESS_UNIT_OUTSTANDING_AUTO_PAYMENT_COUNTS_MOCK.business_units,
+    );
   });
 
   it('should initialise with no business units when resolver data is missing', () => {
@@ -99,6 +102,7 @@ describe('FinesApiSelectBusComponent', () => {
     expect(component.hasBusinessUnits).toBe(false);
     expect(component.allBusinessUnitsSelected).toBe(false);
     expect(component.someBusinessUnitsSelected).toBe(false);
+    expect(finesApiStore.availableBusinessUnits()).toEqual([]);
     expect(nativeElement.textContent).toContain('There are no business units available.');
     expect(continueButton?.disabled).toBe(true);
     expect(selectAllCheckbox).toBeNull();
