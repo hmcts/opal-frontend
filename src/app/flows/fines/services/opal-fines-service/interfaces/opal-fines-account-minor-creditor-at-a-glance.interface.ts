@@ -9,6 +9,8 @@ export interface IOpalFinesAccountMinorCreditorAtAGlance extends IOpalFinesVersi
   defendant: {
     account_number: string;
     account_id: number;
+    organisation: boolean;
+    organisation_name: string | null;
     title: string;
     forenames: string;
     surname: string;
