@@ -21,7 +21,7 @@ Feature: Company Account Enquiries View Details
       When I open the company account details for "Accdetail comp{uniq}"
       Then I should see the account header contains "Accdetail comp{uniq}"
       # AC3 – Navigate to Company details
-      When I go to the Defendant details section and the header is "Company details"
+      When the Defendant details section header is "Company details"
       Then I should see the convert to individual account action
       And I should not see the convert to company account text
 
@@ -78,7 +78,7 @@ Feature: Company Account Enquiries View Details
       When I complete converting the account to an individual with title "Miss", first name "Jamie", and last name "Converted{uniq}"
       Then I should return to the account details page Defendant tab
       And I should see the account conversion success message "Converted to an individual account."
-      When I go to the Defendant details section and the header is "Defendant details"
+      When the Defendant details section header is "Defendant details"
       Then I should see the defendant summary card
       And I should not see the company summary card
       And I should see the defendant name contains "Jamie"
@@ -94,10 +94,10 @@ Feature: Company Account Enquiries View Details
       And I should not see the convert to company account text
 
     @R1BDrop1 @JIRA-STORY:PO-2671 @JIRA-EPIC:PO-8248
-    Scenario Outline: AC2c-AC2d Company Defendant tab Change links open the correct amend screens
-      # AC2a – the heading Change link is removed
-      # AC2b – section Change links are shown for Company details and Contact details
-      When I open the "<section>" Change link on the Defendant tab
+    Scenario Outline: AC2c-AC2d Company Defendant tab change actions open the correct amend screens
+      # AC2a – the heading Change action is removed
+      # AC2b – section Change actions are shown for Company details and Contact details
+      When the "<section>" Defendant tab Change action is selected
       Then I should be on the "company" amend route with fragment "<fragment>"
 
       @JIRA-TEST-KEY:PO-9995

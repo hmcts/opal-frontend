@@ -47,7 +47,7 @@ const PROCESS_JOBS: IOpalFinesInterfaceJobSummary[] = [
     file_name: 'payments_dwp_002.dat',
     interface_file_id: 1702,
     interface_job_id: 702,
-    source: 'DWP_AEA',
+    source: 'DWP',
     status: 'CREATED',
   },
 ];
@@ -108,6 +108,19 @@ describe('FinesApiProcessAllocateComponent', () => {
     fixture = TestBed.createComponent(FinesApiProcessAllocateComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
+  };
+
+  const createComponentWithoutRender = (): void => {
+    fixture = TestBed.createComponent(FinesApiProcessAllocateComponent);
+    component = fixture.componentInstance;
+  };
+
+  const mockCurrentNavigationFinalUrl = (url: string): void => {
+    routerCurrentNavigation.mockReturnValue({
+      finalUrl: {
+        toString: () => url,
+      },
+    });
   };
 
   it('should render the shell and load the Process tab component by default', () => {
@@ -286,6 +299,58 @@ describe('FinesApiProcessAllocateComponent', () => {
     expect(finesApiStore.selectedFileIds()).toEqual(['1701']);
   });
 
+  it('should identify navigation back to Select Business Units without query params or fragment', () => {
+    mockCurrentNavigationFinalUrl('/fines/auto-payment-in/select-business-units?source=back#process');
+    createComponentWithoutRender();
+
+    expect(component['isNavigatingToSelectBusinessUnits']()).toBe(true);
+  });
+
+  it('should not identify other navigation targets as Select Business Units navigation', () => {
+    mockCurrentNavigationFinalUrl('/fines/auto-payment-in/confirm-process');
+    createComponentWithoutRender();
+
+    expect(component['isNavigatingToSelectBusinessUnits']()).toBe(false);
+  });
+
+  it('should not identify a missing current navigation as Select Business Units navigation', () => {
+    routerCurrentNavigation.mockReturnValue(null);
+    createComponentWithoutRender();
+
+    expect(component['isNavigatingToSelectBusinessUnits']()).toBe(false);
+  });
+
+  it('should prevent deactivation when selected files would be lost by returning to Select Business Units', () => {
+    mockCurrentNavigationFinalUrl('/fines/auto-payment-in/select-business-units');
+    finesApiStore.setSelectedFileIds(['1701']);
+    createComponentWithoutRender();
+
+    expect(component.canDeactivate()).toBe(false);
+  });
+
+  it('should allow deactivation back to Select Business Units when no files are selected', () => {
+    mockCurrentNavigationFinalUrl('/fines/auto-payment-in/select-business-units');
+    createComponentWithoutRender();
+
+    expect(component.canDeactivate()).toBe(true);
+  });
+
+  it('should allow deactivation with selected files when the next route is not Select Business Units', () => {
+    mockCurrentNavigationFinalUrl('/fines/auto-payment-in/confirm-process');
+    finesApiStore.setSelectedFileIds(['1701']);
+    createComponentWithoutRender();
+
+    expect(component.canDeactivate()).toBe(true);
+  });
+
+  it('should allow deactivation with selected files when there is no current navigation target', () => {
+    routerCurrentNavigation.mockReturnValue(null);
+    finesApiStore.setSelectedFileIds(['1701']);
+    createComponentWithoutRender();
+
+    expect(component.canDeactivate()).toBe(true);
+  });
+
   it('should navigate to the Finance dashboard and clear flow state when Cancel navigation succeeds', async () => {
     render();
     finesApiStore.setSelectedFileIds(['1701']);
@@ -322,47 +387,6 @@ describe('FinesApiProcessAllocateComponent', () => {
     render();
 
     expect(finesApiStore.unsavedChanges()).toBe(false);
-  });
-
-  it.each([
-    '/fines/auto-payment-in/select-business-units',
-    '/fines/auto-payment-in/select-business-units?from=process#selection',
-  ])('should prevent Back navigation to %s after a Process file is selected', (nextUrl) => {
-    render();
-    finesApiStore.setSelectedFileIds(['1701']);
-    routerCurrentNavigation.mockReturnValue({ finalUrl: { toString: () => nextUrl } });
-
-    expect(component.canDeactivate()).toBe(false);
-  });
-
-  it('should allow Back navigation when no Process files are selected', () => {
-    render();
-    routerCurrentNavigation.mockReturnValue({
-      finalUrl: { toString: () => '/fines/auto-payment-in/select-business-units' },
-    });
-
-    expect(component.canDeactivate()).toBe(true);
-  });
-
-  it('should allow navigation to Confirm Process while retaining the selected files', () => {
-    render();
-    finesApiStore.setSelectedFileIds(['1701']);
-    routerCurrentNavigation.mockReturnValue({
-      finalUrl: { toString: () => '/fines/auto-payment-in/confirm-process' },
-    });
-
-    expect(component.canDeactivate()).toBe(true);
-    expect(finesApiStore.selectedFileIds()).toEqual(['1701']);
-  });
-
-  it('should let the parent journey guard handle external navigation', () => {
-    render();
-    finesApiStore.setSelectedFileIds(['1701']);
-    routerCurrentNavigation.mockReturnValue({
-      finalUrl: { toString: () => '/fines/dashboard/finance' },
-    });
-
-    expect(component.canDeactivate()).toBe(true);
   });
 
   it('should create and update through the compiled Angular definition', async () => {
