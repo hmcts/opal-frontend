@@ -6,7 +6,7 @@ Feature: Adult Youth Add Account Note Accessibility
     Given I am logged in with email "opal-test@dev.platform.hmcts.net"
     And I clear all approved accounts
   @R1BDrop1 @JIRA-STORY:PO-771 @JIRA-STORY:PO-807 @JIRA-EPIC:PO-2472 @JIRA-TEST-KEY:PO-5504
-  Scenario: Check Add Account Note Accessibility with Axe-Core for Individual Account
+  Scenario: Add account note is accessible for an individual account
 
     Given I create a "adultOrYouthOnly" draft account with the following details and set status "Publishing Pending" using user "opal-test-10@dev.platform.hmcts.net":
       | Account_status                          | Submitted                                 |

@@ -47,7 +47,7 @@ Feature: Defendant Company Search And Matches Journeys
     Then I should see the account header contains "<LEGACY_COMPANY_HEADER>"
     And I validate the legacy company header and At a glance tab using fixture "<LEGACY_COMPANY_VALIDATION_FIXTURE>"
     When I go to the Defendant tab and validate the legacy company using fixture "<LEGACY_COMPANY_VALIDATION_FIXTURE>"
-    And I go to the Payment terms tab and validate the legacy company using fixture "<LEGACY_COMPANY_VALIDATION_FIXTURE>"
+    And the Payment terms tab is selected and validate the legacy company using fixture "<LEGACY_COMPANY_VALIDATION_FIXTURE>"
     @R1BDrop1UatTechJCDE @JIRA-TEST-KEY:PO-10325
     Examples:
       | LEGACY_COMPANY_NAME | LEGACY_COMPANY_ACCOUNT_NUMBER | LEGACY_COMPANY_HEADER | LEGACY_COMPANY_VALIDATION_FIXTURE               |

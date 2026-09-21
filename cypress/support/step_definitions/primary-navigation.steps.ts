@@ -107,6 +107,15 @@ When('I select the Fines primary navigation item {string}', (itemLabel: string) 
 });
 
 /**
+ * Selects a Fines area from the top-level primary navigation using declarative scenario wording.
+ * @param itemLabel - Visible label of the primary navigation item to select.
+ */
+When('the {string} Fines area is selected', (itemLabel: string) => {
+  log('step', 'Selecting a Fines primary navigation area', { itemLabel });
+  primaryNavigationFlow().selectArea(itemLabel);
+});
+
+/**
  * Opens a known Fines landing page from the primary navigation and verifies it is shown.
  * @param itemLabel - Visible label of the landing page to open.
  */
@@ -123,15 +132,6 @@ When('I open the {string} landing page', (itemLabel: string) => {
 When('I open the {string} landing page link', (linkLabel: string) => {
   log('step', 'Opening a dashboard landing page link', { linkLabel });
   primaryNavigation().openLandingPageLink(linkLabel);
-});
-
-/**
- * Directs the browser to a dashboard entry point.
- * @param dashboardLabel - Visible dashboard label.
- */
-When('I navigate directly to the {string} entry point', (dashboardLabel: string) => {
-  log('step', 'Navigating directly to a dashboard entry point', { dashboardLabel });
-  primaryNavigation().navigateDirectlyToEntryPoint(dashboardLabel);
 });
 
 /**

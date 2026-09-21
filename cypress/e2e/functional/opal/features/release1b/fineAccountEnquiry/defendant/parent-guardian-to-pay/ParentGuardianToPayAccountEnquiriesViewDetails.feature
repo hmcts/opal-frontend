@@ -22,7 +22,7 @@ Feature: Parent Guardian To Pay Account Enquiries View Details
         | account.defendant.dob               | 2010-05-15       |
       When I search for the account by last name "AddPgYouth{uniq}" and open the latest result
       Then I should see the page header contains "ADDPGYOUTH{uniqUpper}"
-      When I go to the Defendant details section and the header is "Defendant details"
+      When the Defendant details section header is "Defendant details"
       Then I should see the add parent or guardian details action
 
     @R1BDrop1 @JIRA-STORY:PO-1877 @JIRA-EPIC:PO-1875 @JIRA-TEST-KEY:PO-5530
@@ -75,7 +75,7 @@ Feature: Parent Guardian To Pay Account Enquiries View Details
         | account.defendant.dob               | 2010-05-15          |
       When I search for the account by last name "RemovePgYouth{uniq}" and open the latest result
       Then I should see the page header contains "REMOVEPGYOUTH{uniqUpper}"
-      When I go to the Defendant details section and the header is "Defendant details"
+      When the Defendant details section header is "Defendant details"
       Then I should see the add parent or guardian details action
       When I start adding parent or guardian details
       Then I should be on the add parent or guardian details page
@@ -99,7 +99,7 @@ Feature: Parent Guardian To Pay Account Enquiries View Details
       Then I should be on the amend parent or guardian details page
       When I cancel changing parent or guardian details without making changes
       Then I should return to the account details page Defendant tab
-      When I go to the Parent or guardian details section and the header is "Parent or guardian details"
+      When the Parent or guardian details section header is "Parent or guardian details"
       And I start removing parent or guardian details
       Then I should be on the remove parent or guardian details page for "REMOVEPGYOUTH{uniqUpper}"
       When I cancel removing parent or guardian details
@@ -144,13 +144,13 @@ Feature: Parent Guardian To Pay Account Enquiries View Details
       When I search for the account by last name "PgPayEdit{uniq}" and open the latest result
       Then I should see the page header contains "Alex PGPAYEDIT{uniqUpper}"
       # AC3 – Navigate to Parent or guardian details
-      When I go to the Parent or guardian details section and the header is "Parent or guardian details"
+      When the Parent or guardian details section header is "Parent or guardian details"
 
     @R1BDrop1 @JIRA-STORY:PO-2671 @JIRA-EPIC:PO-8248
-    Scenario Outline: AC3a-AC3e Parent or guardian tab Change links open the correct amend screens
-      # AC3a – the heading Change link is removed
-      # AC3b – section Change links are shown for Parent or guardian details, Contact details, and Employer details
-      When I open the "<section>" Change link on the Parent or guardian tab
+    Scenario Outline: AC3a-AC3e Parent or guardian tab change actions open the correct amend screens
+      # AC3a – the heading Change action is removed
+      # AC3b – section Change actions are shown for Parent or guardian details, Contact details, and Employer details
+      When the "<section>" Parent or guardian tab Change action is selected
       Then I should be on the "parentGuardian" amend route with fragment "<fragment>"
 
       @JIRA-TEST-KEY:PO-9985
@@ -202,7 +202,7 @@ Feature: Parent Guardian To Pay Account Enquiries View Details
         | account.defendant.dob               | 2010-05-15         |
       When I search for the account by last name "AmendPgYouth{uniq}" and open the latest result
       Then I should see the page header contains "AMENDPGYOUTH{uniqUpper}"
-      When I go to the Defendant details section and the header is "Defendant details"
+      When the Defendant details section header is "Defendant details"
       Then I should see the add parent or guardian details action
       When I start adding parent or guardian details
       Then I should be on the add parent or guardian details page
@@ -222,13 +222,13 @@ Feature: Parent Guardian To Pay Account Enquiries View Details
 
     @R1BDrop1 @JIRA-STORY:PO-3915 @JIRA-EPIC:PO-1875 @JIRA-TEST-KEY:PO-9988
     Scenario: Discarding entered parent or guardian changes keeps the saved name on the account
-      When I go to the Parent or guardian details section and the header is "Parent or guardian details"
+      When the Parent or guardian details section header is "Parent or guardian details"
       And I start changing the non-paying parent or guardian details
       Then I should be on the amend parent or guardian details page
       When I enter "Updated" into the amend parent or guardian first name field
       And I attempt to cancel changing parent or guardian details and choose OK on the confirmation dialog
       Then I should return to the account details page Defendant tab
-      When I go to the Parent or guardian details section and the header is "Parent or guardian details"
+      When the Parent or guardian details section header is "Parent or guardian details"
       Then I should see the parent or guardian name contains "Pat GUARDIANAMEND{uniqUpper}"
 
     @R1BDrop1 @JIRA-STORY:PO-3915 @JIRA-EPIC:PO-1875 @JIRA-TEST-KEY:PO-9989
@@ -268,7 +268,7 @@ Feature: Parent Guardian To Pay Account Enquiries View Details
       When I search for the account by last name "TestNonPayee{uniq}" and open the latest result
       Then I should see the page header contains "Miss Jane TESTNONPAYEE{uniqUpper}"
       # AC3 – Navigate to Defendant details
-      When I go to the Defendant details section and the header is "Defendant details"
+      When the Defendant details section header is "Defendant details"
       Then I should not see the convert to company account action
 
 
@@ -331,7 +331,7 @@ Feature: Parent Guardian To Pay Account Enquiries View Details
         | account.defendant.dob                   | 2010-11-10                          |
         | account.defendant.parent_guardian.dob   | 1980-02-15                          |
       When I search for the account by last name "PgPayRestricted{uniq}" and verify the page header is "Alex PGPAYRESTRICTED{uniqUpper}"
-      And I go to the Parent or guardian details section and the header is "Parent or guardian details"
+      And the Parent or guardian details section header is "Parent or guardian details"
       Then I do not see any parent or guardian details Change actions
       And I do not see the remove parent or guardian details action
 
