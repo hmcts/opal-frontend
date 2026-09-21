@@ -7,8 +7,8 @@ export const FIXED_PENALTY_DEFENDANT_MOCK = {
   account: {
     account_type: 'Fixed Penalty',
     defendant_type: 'adultOrYouthOnly',
-    originator_name: 'Fixed Penalty Office',
-    originator_id: 36,
+    originator_name: 'Police force',
+    originator_id: 1223,
     prosecutor_case_reference: null,
     enforcement_court_id: 770000000001,
     collection_order_made: null,

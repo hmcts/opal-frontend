@@ -70,7 +70,7 @@ export const FIXED_PENALTY_AY_MOCK = {
       { note_type: 'AC', account_note_text: 'Scenario 10 account comment', account_note_serial: 3 },
       { note_type: 'AA', account_note_text: 'Scenario 10 account note', account_note_serial: 2 },
     ],
-    originator_id: 5735,
+    originator_id: 1223,
     payment_terms: {
       enforcements: null,
       effective_date: null,
@@ -81,7 +81,7 @@ export const FIXED_PENALTY_AY_MOCK = {
       payment_terms_type_code: 'B',
     },
     defendant_type: 'company',
-    originator_name: "Central London Magistrates' Court",
+    originator_name: 'Police force',
     fp_ticket_detail: {
       date_of_issue: '2025-08-01',
       notice_number: '101010',
