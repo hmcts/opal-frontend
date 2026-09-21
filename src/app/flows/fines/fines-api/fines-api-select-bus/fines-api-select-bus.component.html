@@ -21,7 +21,7 @@
 
       <opal-lib-govuk-table [caption]="content.tableCaption" captionClasses="govuk-visually-hidden">
         <ng-container head>
-          <th opal-lib-govuk-table-heading id="fines-api-select-business-units-header-select">
+          <th opal-lib-govuk-table-heading id="fines-api-select-business-units-header-select" class="govuk-!-padding-0">
             <span class="govuk-visually-hidden">{{ content.selectColumn }}</span>
             @if (hasBusinessUnits) {
               <opal-lib-govuk-checkboxes
@@ -46,13 +46,23 @@
               </opal-lib-govuk-checkboxes>
             }
           </th>
-          <th opal-lib-govuk-table-heading id="fines-api-select-business-units-header">
+          <th
+            opal-lib-govuk-table-heading
+            id="fines-api-select-business-units-header"
+            class="govuk-!-padding-top-2 govuk-!-padding-bottom-0"
+          >
             {{ content.columns.businessUnit }}
           </th>
-          <th opal-lib-govuk-table-heading class="govuk-table__header--numeric">
+          <th
+            opal-lib-govuk-table-heading
+            class="govuk-table__header--numeric govuk-!-padding-top-2 govuk-!-padding-bottom-0"
+          >
             {{ content.columns.filesToProcess }}
           </th>
-          <th opal-lib-govuk-table-heading class="govuk-table__header--numeric">
+          <th
+            opal-lib-govuk-table-heading
+            class="govuk-table__header--numeric govuk-!-padding-top-2 govuk-!-padding-bottom-0"
+          >
             {{ content.columns.tillsToAllocate }}
           </th>
         </ng-container>
@@ -68,12 +78,14 @@
               <td
                 opal-lib-govuk-table-body-row-data
                 [id]="'fines-api-business-unit-select-' + businessUnit.business_unit_id"
+                class="govuk-!-padding-top-1 govuk-!-padding-bottom-0"
               >
                 <opal-lib-govuk-checkboxes
                   [fieldSetId]="'fines-api-business-unit-' + businessUnit.business_unit_id + '-group'"
-                  checkboxClasses=""
+                  checkboxClasses="govuk-!-padding-0"
                   [legendText]="content.selectBusinessUnit(businessUnit.business_unit_name)"
-                  legendClasses="govuk-!-margin-0 govuk-visually-hidden"
+                  legendClasses="govuk-visually-hidden"
+                  labelClasses="govuk-!-padding-0"
                 >
                   <div
                     class="govuk-checkboxes--small"
@@ -93,27 +105,33 @@
               <td
                 opal-lib-govuk-table-body-row-data
                 [id]="'fines-api-business-unit-name-' + businessUnit.business_unit_id"
+                class="govuk-!-padding-top-3"
               >
                 {{ businessUnit.business_unit_name }}
               </td>
               <td
                 opal-lib-govuk-table-body-row-data
                 [id]="'fines-api-business-unit-file-count-' + businessUnit.business_unit_id"
-                class="govuk-table__cell--numeric"
+                class="govuk-table__cell--numeric govuk-!-padding-top-3"
               >
                 {{ businessUnit.file_count }}
               </td>
               <td
                 opal-lib-govuk-table-body-row-data
                 [id]="'fines-api-business-unit-till-count-' + businessUnit.business_unit_id"
-                class="govuk-table__cell--numeric"
+                class="govuk-table__cell--numeric govuk-!-padding-top-3"
               >
                 {{ businessUnit.till_count }}
               </td>
             </tr>
           } @empty {
             <tr opal-lib-govuk-table-body-row>
-              <td opal-lib-govuk-table-body-row-data id="fines-api-business-unit-empty" colspan="4">
+              <td
+                opal-lib-govuk-table-body-row-data
+                id="fines-api-business-unit-empty"
+                colspan="4"
+                class="govuk-!-padding-top-3"
+              >
                 {{ content.emptyState }}
               </td>
             </tr>
