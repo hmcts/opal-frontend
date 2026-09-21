@@ -484,7 +484,7 @@ describe('FinesMacCourtDetailsComponent', () => {
 
   it(
     '(PO-10693) should use prosecutors as sending police forces for Conditional Caution accounts',
-    { tags: [...buildTags('@JIRA-DEFECT:PO-10693')] },
+    { tags: [...buildTags('@JIRA-DEFECT:PO-10693'), '@JIRA-EPIC:PO-2750'] },
     () => {
       const formSubmitSpy = Cypress.sinon.spy();
       setupComponent(
