@@ -246,7 +246,7 @@ function assertErrors() {
 describe('Change Enforcement Court - Individual', { tags: ADULT_OR_YOUTH_TAGS }, () => {
   it(
     'AC1, AC1a, AC2a, AC2b, AC2c, AC2ci. Individual: navigates to the change enforcement court screen and displays the form',
-    { tags: ['@JIRA-TEST-KEY:PO-4407'] },
+    { tags: ['@JIRA-TEST-KEY:PO-4407', '@JIRA-NFR:PO-2329'] },
     () => {
       // AC1, AC1a, AC2a, AC2b, AC2c, AC2ci
       const { courtsMock, expectedCaption } = commonSetup();
@@ -304,7 +304,7 @@ describe('Change Enforcement Court - Parent/Guardian', { tags: PARENT_GUARDIAN_T
 describe('Change Enforcement Court - Company', { tags: COMPANY_TAGS }, () => {
   it(
     'AC1, AC1a, AC2a, AC2b, AC2c, AC2ci. Company: navigates to the change enforcement court screen and displays the form',
-    { tags: ['@JIRA-TEST-KEY:PO-4411'] },
+    { tags: ['@JIRA-TEST-KEY:PO-4411', '@JIRA-NFR:PO-2329'] },
     () => {
       const { courtsMock, expectedCaption } = mountChangeEnforcementCourtForm(buildCompanyHeaderMock());
       assertTitle();
