@@ -13,7 +13,7 @@ export interface IOpalFinesAccountMinorCreditorAtAGlance extends IOpalFinesVersi
     organisation_name: string | null;
     title: string | null;
     forenames: string | null;
-    surnames: string | null;
+    surname: string | null;
   } | null;
   payment: {
     is_bacs: boolean;
