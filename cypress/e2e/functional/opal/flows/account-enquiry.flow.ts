@@ -32,6 +32,7 @@ import { MINOR_CREDITOR_AMEND_ELEMENTS } from '../../../../shared/selectors/acco
 import { AccountDetailsResponsiveLayoutActions } from '../actions/account-details/details.responsive-layout.actions';
 import type { DataTable } from '@badeball/cypress-cucumber-preprocessor';
 import { applyUniqPlaceholder } from '../../../../support/utils/stringUtils';
+import { captureUatTechnicalEvidenceScreenshot } from '../../../../support/utils/screenshot';
 
 const logAE = createScopedLogger('AccountEnquiryFlow');
 const logAESync = createScopedSyncLogger('AccountEnquiryFlow');
@@ -132,6 +133,7 @@ export class AccountEnquiryFlow {
     });
 
     cy.get(AccountEnquiryFlow.AT_A_GLANCE_TAB_SELECTOR, { timeout: AccountEnquiryFlow.WAIT_MS }).should('be.visible');
+    captureUatTechnicalEvidenceScreenshot('at-a-glance-tab');
   }
 
   private readonly searchIndividuals = new AccountSearchIndividualsActions();
