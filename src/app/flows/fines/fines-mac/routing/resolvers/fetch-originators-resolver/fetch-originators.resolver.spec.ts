@@ -90,4 +90,17 @@ describe('fetchOriginatorsResolver', () => {
     expect(mockOpalFinesService.getProsecutors).not.toHaveBeenCalled();
     expect(result).toEqual(FINES_MAC_LJA_ORIGINATOR_REF_DATA_MOCK);
   });
+
+  it('should resolve local justice areas without filters when the originator type is not set', async () => {
+    const originatorTypeForm = structuredClone(FINES_MAC_ORIGINATOR_TYPE_FORM);
+    originatorTypeForm.formData.fm_originator_type_originator_type = null;
+    finesMacStore.setOriginatorType(originatorTypeForm);
+    setAccountType(FINES_ACCOUNT_TYPES.Fine);
+
+    const result = await firstValueFrom(executeResolver(route, state) as Observable<IFinesMacOriginatorRefData>);
+
+    expect(mockOpalFinesService.getLocalJusticeAreas).toHaveBeenCalledWith();
+    expect(mockOpalFinesService.getProsecutors).not.toHaveBeenCalled();
+    expect(result).toEqual(FINES_MAC_LJA_ORIGINATOR_REF_DATA_MOCK);
+  });
 });
