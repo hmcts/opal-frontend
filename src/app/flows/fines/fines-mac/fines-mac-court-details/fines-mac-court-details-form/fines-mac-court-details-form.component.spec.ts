@@ -6,7 +6,6 @@ import { OPAL_FINES_COURT_AUTOCOMPLETE_ITEMS_MOCK } from '@services/fines/opal-f
 import { OPAL_FINES_LOCAL_JUSTICE_AREA_AUTOCOMPLETE_ITEMS_MOCK } from '@services/fines/opal-fines-service/mocks/opal-fines-local-justice-area-autocomplete-items.mock';
 import { FINES_MAC_COURT_DETAILS_FORM_MOCK } from '../mocks/fines-mac-court-details-form.mock';
 import { ActivatedRoute } from '@angular/router';
-import { OPAL_FINES_LOCAL_JUSTICE_AREA_REF_DATA_MOCK } from '@services/fines/opal-fines-service/mocks/opal-fines-local-justice-area-ref-data.mock';
 import { FinesMacStoreType } from '../../stores/types/fines-mac-store.type';
 import { FinesMacStore } from '../../stores/fines-mac.store';
 import { of } from 'rxjs';
@@ -18,6 +17,10 @@ import { FINES_MAC_CREATE_ACCOUNT_STATE_MOCK } from '../../fines-mac-create-acco
 import { FINES_MAC_BUSINESS_UNIT_STATE } from '../../constants/fines-mac-business-unit-state';
 import { FINES_MAC_LANGUAGE_PREFERENCES_FORM } from '../../fines-mac-language-preferences/constants/fines-mac-language-preferences-form';
 import { FINES_MAC_COURT_DETAILS_COPY_BY_ACCOUNT_TYPE } from '../../constants/fines-mac-court-details-copy.constant';
+import {
+  FINES_MAC_LJA_ORIGINATOR_REF_DATA_MOCK,
+  FINES_MAC_PROSECUTOR_ORIGINATOR_REF_DATA_MOCK,
+} from '../../routing/resolvers/fetch-originators-resolver/mocks/fines-mac-originator-ref-data.mock';
 
 describe('FinesMacCourtDetailsFormComponent', () => {
   let component: FinesMacCourtDetailsFormComponent;
@@ -47,7 +50,7 @@ describe('FinesMacCourtDetailsFormComponent', () => {
     finesMacStore.setFinesMacStore(FINES_MAC_STATE_MOCK);
 
     component.defendantType = FINES_MAC_DEFENDANT_TYPES_KEYS.adultOrYouthOnly;
-    component.localJusticeAreas = OPAL_FINES_LOCAL_JUSTICE_AREA_REF_DATA_MOCK;
+    component.originators = FINES_MAC_LJA_ORIGINATOR_REF_DATA_MOCK;
     component.sendingCourtAutoCompleteItems = OPAL_FINES_LOCAL_JUSTICE_AREA_AUTOCOMPLETE_ITEMS_MOCK;
     component.enforcingCourtAutoCompleteItems = OPAL_FINES_COURT_AUTOCOMPLETE_ITEMS_MOCK;
 
@@ -97,6 +100,14 @@ describe('FinesMacCourtDetailsFormComponent', () => {
   it('should get originator name based on originator ID', () => {
     const originatorName = component['getOriginatorName']('9985');
     expect(originatorName).toBe('Asylum & Immigration Tribunal');
+  });
+
+  it('should get a prosecutor name for a Conditional Caution originator ID', () => {
+    component.originators = FINES_MAC_PROSECUTOR_ORIGINATOR_REF_DATA_MOCK;
+
+    const originatorName = component['getOriginatorName']('1865');
+
+    expect(originatorName).toBe('Central ticket office');
   });
 
   it('should return empty string if originator ID is not found', () => {

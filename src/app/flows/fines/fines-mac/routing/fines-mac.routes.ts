@@ -16,6 +16,7 @@ import { fetchMajorCreditorsResolver } from '../fines-mac-offence-details/routin
 import { routePermissionsGuard } from '@hmcts/opal-frontend-common/guards/route-permissions';
 import { FINES_PERMISSIONS } from '../../../../constants/fines-permissions.constant';
 import { fetchProsecutorsResolver } from './resolvers/fetch-prosecutors-resolver/fetch-prosecutors.resolver';
+import { fetchOriginatorsResolver } from './resolvers/fetch-originators-resolver/fetch-originators.resolver';
 
 const draftRootPermissionIds = FINES_PERMISSIONS;
 
@@ -157,7 +158,7 @@ export const routing: Routes = [
     resolve: {
       title: TitleResolver,
       courts: fetchEnforcementCourtsResolver,
-      localJusticeAreas: fetchSendingCourtsResolver,
+      originators: fetchOriginatorsResolver,
     },
   },
   {
@@ -336,7 +337,6 @@ export const routing: Routes = [
       title: TitleResolver,
       courts: fetchEnforcementCourtsResolver,
       prosecutors: fetchProsecutorsResolver,
-      localJusticeAreas: fetchSendingCourtsResolver,
     },
     data: {
       title: FINES_MAC_ROUTING_TITLES.children.fixedPenaltyDetails,

@@ -114,7 +114,7 @@ describe('FinesMacReviewAccountCourtDetailsComponent', () => {
     expect(component.issuingAuthority).toBe('Police force (101)');
   });
 
-  it('should get court data and set issuingAuthority from getCourtDetailsData for a fixed penalty account when issuing authority is a local justice authority', () => {
+  it('should not fall back to a local justice area for a fixed penalty account', () => {
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     vi.spyOn<any, any>(component, 'getEnforcementCourt').mockImplementation(() => {});
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -127,8 +127,25 @@ describe('FinesMacReviewAccountCourtDetailsComponent', () => {
     component['getCourtDetailsData']();
 
     expect(component['getProsecutor']).toHaveBeenCalled();
-    expect(component['getSendingCourt']).toHaveBeenCalledTimes(1);
-    expect(component.issuingAuthority).toBe('Asylum & Immigration Tribunal (9985)');
+    expect(component['getSendingCourt']).toHaveBeenCalledTimes(0);
+    expect(component.issuingAuthority).toBeNull();
+  });
+
+  it('should use prosecutor data for a conditional caution sending police force', () => {
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    vi.spyOn<any, any>(component, 'getEnforcementCourt').mockImplementation(() => {});
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    vi.spyOn<any, any>(component, 'getProsecutor');
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    vi.spyOn<any, any>(component, 'getSendingCourt');
+    component.courtDetails.fm_court_details_originator_id = '1865';
+    component.accountType = FINES_ACCOUNT_TYPES['Conditional Caution'];
+
+    component['getCourtDetailsData']();
+
+    expect(component['getProsecutor']).toHaveBeenCalledTimes(1);
+    expect(component['getSendingCourt']).not.toHaveBeenCalled();
+    expect(component.sendingCourt).toBe('Police force (101)');
   });
 
   it('should get court data and set sendingCourt from getCourtDetailsData for a non-fixed penalty account', () => {

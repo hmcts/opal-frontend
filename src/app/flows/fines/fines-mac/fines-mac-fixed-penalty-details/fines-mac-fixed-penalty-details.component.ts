@@ -17,10 +17,9 @@ import { IFinesMacLanguagePreferencesForm } from '../fines-mac-language-preferen
 import { FINES_MAC_LANGUAGE_PREFERENCES_FORM } from '../fines-mac-language-preferences/constants/fines-mac-language-preferences-form';
 import { IFinesMacFixedPenaltyDetailsStoreForm } from './interfaces/fines-mac-fixed-penalty-details-store-form.interface';
 import { FINES_MAC_FIXED_PENALTY_DETAILS_STORE_FORM } from './constants/fines-mac-fixed-penalty-details-store-form';
-import { IOpalFinesProsecutorRefData } from '@services/fines/opal-fines-service/interfaces/opal-fines-prosecutor-ref-data.interface';
-import { IOpalFinesLocalJusticeAreaRefData } from '@services/fines/opal-fines-service/interfaces/opal-fines-local-justice-area-ref-data.interface';
 import { IFinesMacCompanyDetailsForm } from '../fines-mac-company-details/interfaces/fines-mac-company-details-form.interface';
 import { FINES_MAC_COMPANY_DETAILS_FORM } from '../fines-mac-company-details/constants/fines-mac-company-details-form';
+import { IOpalFinesProsecutorRefData } from '@services/fines/opal-fines-service/interfaces/opal-fines-prosecutor-ref-data.interface';
 
 @Component({
   selector: 'app-fines-mac-fixed-penalty-details',
@@ -33,7 +32,6 @@ export class FinesMacFixedPenaltyDetailsComponent extends AbstractFormParentBase
   private readonly finesMacStore = inject(FinesMacStore);
   private courts!: IOpalFinesCourtRefData;
   private prosecutors!: IOpalFinesProsecutorRefData;
-  private localJusticeAreas!: IOpalFinesLocalJusticeAreaRefData;
   private readonly finesPrefix = 'fm_';
   private readonly fixedPenaltyPrefix = 'fm_fp_';
   public defendantType = this.finesMacStore.getDefendantType();
@@ -185,7 +183,7 @@ export class FinesMacFixedPenaltyDetailsComponent extends AbstractFormParentBase
 
   /**
    * Creates an array of autocomplete items based on the response from the server.
-   * @param response - The response object containing the local justice area reference data.
+   * @param response - The response object containing the enforcement court reference data.
    * @returns An array of autocomplete items.
    */
   private createAutoCompleteItemsCourts(response: IOpalFinesCourtRefData): IAlphagovAccessibleAutocompleteItem[] {
@@ -200,45 +198,36 @@ export class FinesMacFixedPenaltyDetailsComponent extends AbstractFormParentBase
   }
 
   /**
-   * Creates an array of autocomplete items based on the response from the server.
-   * @param response - The response object containing the issuing authorities reference data.
-   * @returns An array of autocomplete items.
+   * Creates issuing-authority autocomplete items from prosecutor reference data.
+   * @param prosecutors - The prosecutors available to the selected business unit.
+   * @returns Autocomplete items containing each prosecutor's ID and display name.
    */
   private createAutoCompleteItemsAuthorities(
     prosecutors: IOpalFinesProsecutorRefData,
-    localJusticeAreas: IOpalFinesLocalJusticeAreaRefData,
   ): IAlphagovAccessibleAutocompleteItem[] {
-    const _prosecutors = prosecutors.ref_data.map((item) => {
+    return prosecutors.ref_data.map((item) => {
       return {
         value: item.prosecutor_id,
         name: this.opalFinesService.getProsecutorPrettyName(item),
       };
     });
-    const _localJusticeAreas = localJusticeAreas.refData.map((item) => {
-      return {
-        value: item.local_justice_area_id,
-        name: this.opalFinesService.getLocalJusticeAreaPrettyName(item),
-      };
-    });
-    return [..._prosecutors, ..._localJusticeAreas];
   }
 
   /**
-   * Created auto complete lists for relevant form fields.
-   * @returns { void}
+   * Creates the enforcement-court and prosecutor-only issuing-authority autocomplete lists
+   * from the route resolver data.
    */
   private createAutoCompleteData(): void {
     this.courts = this['activatedRoute'].snapshot.data['courts'];
     this.enforcementCourtData = this.createAutoCompleteItemsCourts(this.courts);
     this.prosecutors = this['activatedRoute'].snapshot.data['prosecutors'];
-    this.localJusticeAreas = this['activatedRoute'].snapshot.data['localJusticeAreas'];
-    this.issuingAuthoritiesData = this.createAutoCompleteItemsAuthorities(this.prosecutors, this.localJusticeAreas);
+    this.issuingAuthoritiesData = this.createAutoCompleteItemsAuthorities(this.prosecutors);
   }
 
   /**
-   * Handles the submission of personal details form.
+   * Stores the submitted Fixed Penalty form sections and navigates to account review.
    *
-   * @param form - The personal details form data.
+   * @param form - The completed Fixed Penalty details form data.
    * @returns void
    */
   public handleFixedPenaltyDetailsSubmit(form: IFinesMacFixedPenaltyDetailsForm): void {
