@@ -110,6 +110,85 @@ When('I search for the account by last name {string} and open the latest result'
   accountEnquiryFlow().searchAndClickLatestBySurnameOpenLatestResult(surnameWithUniq);
 });
 
+/**
+ * @step Presents the amend payment terms form for the latest defendant account matching the surname.
+ */
+When('the amend payment terms form is displayed for defendant account with last name {string}', (surname: string) => {
+  const surnameWithUniq = applyUniqPlaceholder(surname);
+  log('step', 'Display amend payment terms form for defendant account', { surname: surnameWithUniq });
+  accountEnquiryFlow().openDefendantPaymentTermsAmendFormBySurname(surnameWithUniq);
+});
+
+/**
+ * @step Presents the Payment terms tab for the latest defendant account matching the surname.
+ */
+When('the Payment terms tab is displayed for defendant account with last name {string}', (surname: string) => {
+  const surnameWithUniq = applyUniqPlaceholder(surname);
+  log('step', 'Display Payment terms tab for defendant account', { surname: surnameWithUniq });
+  accountEnquiryFlow().openDefendantPaymentTermsTabBySurname(surnameWithUniq);
+});
+
+/**
+ * @step Presents the Enforcement tab for the latest defendant account matching the surname.
+ */
+When('the Enforcement tab is displayed for defendant account with last name {string}', (surname: string) => {
+  const surnameWithUniq = applyUniqPlaceholder(surname);
+  log('step', 'Display Enforcement tab for defendant account', { surname: surnameWithUniq });
+  accountEnquiryFlow().openDefendantEnforcementTabBySurname(surnameWithUniq);
+});
+
+/**
+ * @step Presents the remove enforcement hold screen for the latest defendant account matching the surname.
+ */
+When(
+  'the remove enforcement hold screen is displayed for defendant account with last name {string}',
+  (surname: string) => {
+    const surnameWithUniq = applyUniqPlaceholder(surname);
+    log('step', 'Display remove enforcement hold screen for defendant account', { surname: surnameWithUniq });
+    accountEnquiryFlow().openDefendantRemoveEnforcementHoldFormBySurname(surnameWithUniq);
+  },
+);
+
+/**
+ * @step Presents the Change Collection Order status form for the latest defendant account matching the
+ * surname.
+ */
+When(
+  'the Change Collection Order status form is displayed for defendant account with last name {string}',
+  (surname: string) => {
+    const surnameWithUniq = applyUniqPlaceholder(surname);
+    log('step', 'Display Change Collection Order status form for defendant account', { surname: surnameWithUniq });
+    accountEnquiryFlow().openDefendantCollectionOrderStatusFormBySurname(surnameWithUniq);
+  },
+);
+
+/**
+ * @step Presents the add enforcement action form for the latest defendant account matching the surname.
+ */
+When(
+  'the add enforcement action form is displayed for defendant account with last name {string}',
+  (surname: string) => {
+    const surnameWithUniq = applyUniqPlaceholder(surname);
+    log('step', 'Display add enforcement action form for defendant account', { surname: surnameWithUniq });
+    accountEnquiryFlow().openDefendantAddEnforcementActionFormBySurname(surnameWithUniq);
+  },
+);
+
+/**
+ * @step Presents the add enforcement override form for the latest defendant account matching the surname.
+ */
+When(
+  'the add enforcement override form is displayed for defendant account with last name {string}',
+  (surname: string) => {
+    const surnameWithUniq = applyUniqPlaceholder(surname);
+    log('step', 'Display add enforcement override form for defendant account', { surname: surnameWithUniq });
+    accountEnquiryFlow().openDefendantAddEnforcementOverrideFormBySurname(surnameWithUniq);
+  },
+);
+
+/**
+ * @step Supports the Cucumber step: I should be on the FAE account details page
+ */
 Then('I should be on the FAE account details page', () => {
   log('assert', 'FAE defendant account details page is visible');
   accountEnquiryFlow().assertOnDefendantAccountDetailsPage();
@@ -127,13 +206,17 @@ When('I open the latest matching result from the search results', () => {
   accountEnquiryFlow().openMostRecentFromResults();
 });
 
-/** Opens the single result matching all supplied result-table column values. */
+/**
+ * @step Opens the single result matching all supplied result-table column values.
+ */
 When('I open the matching result from the search results:', (table: DataTable) => {
   log('step', 'Opening result matching supplied column values');
   accountEnquiryFlow().openMatchingResultFromResults(table);
 });
 
-/** Opens the Defendant-column link from the latest minor creditor result row. */
+/**
+ * @step Opens the Defendant-column link from the latest minor creditor result row.
+ */
 When('I open the defendant linked from the latest minor creditor search result', () => {
   log('step', 'Opening defendant linked from latest minor creditor search result');
   accountEnquiryFlow().openLatestMinorCreditorDefendantFromResults();
@@ -215,6 +298,10 @@ Then('the intercepted minor creditor header summary awarded value is {string}', 
   minorCreditorDetails().assertHeaderSummaryAwardedValue(numericExpectedAwardedValue);
 });
 
+/**
+ * @step Supports the Cucumber step: the minor creditor header summary API returns a repayment with paid
+ * out value {string}
+ */
 When(
   'the minor creditor header summary API returns a repayment with paid out value {string}',
   (paidOutValue: string) => {
@@ -229,6 +316,10 @@ When(
   },
 );
 
+/**
+ * @step Supports the Cucumber step: the intercepted minor creditor header summary identifies a repayment
+ * with paid out value {string}
+ */
 Then(
   'the intercepted minor creditor header summary identifies a repayment with paid out value {string}',
   (paidOutValue: string) => {
@@ -243,6 +334,10 @@ Then(
   },
 );
 
+/**
+ * @step Supports the Cucumber step: I should see only the repayment Paid out minor creditor summary
+ * metric value {string}
+ */
 Then(
   'I should see only the repayment Paid out minor creditor summary metric value {string}',
   (paidOutValue: string) => {
@@ -252,66 +347,102 @@ Then(
 );
 
 /**
- * @step Navigates to the Defendant details section and validates the header text.
+ * @step Shows the Defendant details section and validates the header text.
  *
  * @param expected - Expected header text for the section.
  */
-When('I go to the Defendant details section and the header is {string}', (expected: string) => {
+When('the Defendant details section header is {string}', (expected: string) => {
   const expectedWithUniq = applyUniqPlaceholder(expected);
-  log('step', 'Navigate to Defendant details', { expected: expectedWithUniq });
+  log('step', 'Show Defendant details', { expected: expectedWithUniq });
   accountEnquiryFlow().goToDefendantDetailsAndAssert(expectedWithUniq);
 });
 
+/**
+ * @step Supports the Cucumber step: I should see the convert to company account action
+ */
 Then('I should see the convert to company account action', () => {
   log('assert', 'Convert to company account action is visible');
   defendantDetails().assertConvertToCompanyActionVisible();
 });
 
+/**
+ * @step Supports the Cucumber step: I should see the convert to individual account action
+ */
 Then('I should see the convert to individual account action', () => {
   log('assert', 'Convert to individual account action is visible');
   defendantDetails().assertConvertToIndividualActionVisible();
 });
 
+/**
+ * @step Supports the Cucumber step: I should see the add parent or guardian details action
+ */
 Then('I should see the add parent or guardian details action', () => {
   log('assert', 'Add parent or guardian details action is visible');
   defendantDetails().assertAddParentGuardianActionVisible();
 });
 
+/**
+ * @step Supports the Cucumber step: I do not see the add parent or guardian details action
+ */
 Then('I do not see the add parent or guardian details action', () => {
   log('assert', 'Add parent or guardian details action is absent');
   defendantDetails().assertAddParentGuardianActionNotPresent();
 });
 
+/**
+ * @step Supports the Cucumber step: I should see the remove parent or guardian details action
+ */
 Then('I should see the remove parent or guardian details action', () => {
   log('assert', 'Remove parent or guardian details action is visible');
   accountEnquiryFlow().assertRemoveParentGuardianActionVisible();
 });
 
+/**
+ * @step Supports the Cucumber step: I should see the parent or guardian details Change actions
+ */
 Then('I should see the parent or guardian details Change actions', () => {
   log('assert', 'Parent or guardian details Change actions are visible');
   accountEnquiryFlow().assertChangeParentGuardianActionsVisible();
 });
 
+/**
+ * @step Supports the Cucumber step: I stub the defendant header summary account status code to {string}
+ */
 Given('I stub the defendant header summary account status code to {string}', (statusCode: string) => {
   log('intercept', 'Stub defendant header summary restricted status', { statusCode });
   accountEnquiryFlow().stubRestrictedParentGuardianStatusCode(statusCode);
 });
 
+/**
+ * @step Supports the Cucumber step: I stub the defendant header summary payment terms account status
+ * code to {string}
+ */
 Given('I stub the defendant header summary payment terms account status code to {string}', (statusCode: string) => {
   log('intercept', 'Stub defendant header summary payment terms restricted status', { statusCode });
   accountEnquiryFlow().stubPaymentTermsAccountStatusCode(statusCode);
 });
 
+/**
+ * @step Supports the Cucumber step: I stub the defendant header summary payment terms account balance to
+ * {int}
+ */
 Given('I stub the defendant header summary payment terms account balance to {int}', (balance: number) => {
   log('intercept', 'Stub defendant header summary payment terms account balance', { balance });
   accountEnquiryFlow().stubPaymentTermsAccountBalance(balance);
 });
 
+/**
+ * @step Supports the Cucumber step: I stub the defendant header summary business unit code to {string}
+ */
 Given('I stub the defendant header summary business unit code to {string}', (businessUnitCode: string) => {
   log('intercept', 'Stub defendant header summary business unit code', { businessUnitCode });
   accountEnquiryFlow().stubHeaderSummaryBusinessUnitCode(businessUnitCode);
 });
 
+/**
+ * @step Supports the Cucumber step: I stub the defendant header summary for the {string} Collection
+ * Order warning scenario
+ */
 Given(
   'I stub the defendant header summary for the {string} Collection Order warning scenario',
   (category: 'Adult' | 'Youth' | 'Company' | 'Conditional Caution') => {
@@ -320,26 +451,34 @@ Given(
   },
 );
 
+/**
+ * @step Supports the Cucumber step: I should see the permanent Collection Order warning {string}
+ */
 Then('I should see the permanent Collection Order warning {string}', (message: string) => {
   log('assert', 'Collection Order warning is visible and permanent', { message });
   accountEnquiryFlow().assertCollectionOrderWarning(message);
 });
 
-Then('I should not see a Collection Order warning', () => {
-  log('assert', 'Collection Order warning is absent');
-  accountEnquiryFlow().assertCollectionOrderWarningNotPresent();
-});
-
+/**
+ * @step Supports the Cucumber step: I do not see the Payment terms Change or Request payment card
+ * actions
+ */
 Then('I do not see the Payment terms Change or Request payment card actions', () => {
   log('assert', 'Payment terms Change and Request payment card actions are absent');
   accountEnquiryFlow().assertPaymentTermsActionsNotVisible();
 });
 
+/**
+ * @step Supports the Cucumber step: I do not see any parent or guardian details Change actions
+ */
 Then('I do not see any parent or guardian details Change actions', () => {
   log('assert', 'Parent or guardian details Change actions are absent');
   accountEnquiryFlow().assertChangeParentGuardianActionsNotVisible();
 });
 
+/**
+ * @step Supports the Cucumber step: I do not see the remove parent or guardian details action
+ */
 Then('I do not see the remove parent or guardian details action', () => {
   log('assert', 'Remove parent or guardian details action is absent');
   accountEnquiryFlow().assertRemoveParentGuardianActionNotVisible();
@@ -361,79 +500,109 @@ Then('the account details summary columns should stack below the primary content
   accountEnquiryFlow().assertAtAGlanceColumnsStacked();
 });
 
+/**
+ * @step Supports the Cucumber step: the account information and summary metrics should remain readable
+ */
 Then('the account information and summary metrics should remain readable', () => {
   log('assert', 'Checking account information and summary metrics remain readable');
   accountEnquiryFlow().assertSummaryContentReadable();
 });
 
+/**
+ * @step Supports the Cucumber step: the account details header action should reflow below the account
+ * name
+ */
 Then('the account details header action should reflow below the account name', () => {
   log('assert', 'Checking account details header action reflows below the account name');
   accountEnquiryFlow().assertHeaderActionReflowsBelowTitle();
 });
 
+/**
+ * @step Supports the Cucumber step: I should not see the convert to company account action
+ */
 Then('I should not see the convert to company account action', () => {
   log('assert', 'Convert to company account action is absent');
   defendantDetails().assertConvertToCompanyActionNotPresent();
 });
 
-When('I open the remove enforcement hold screen', () => {
-  log('step', 'Open remove enforcement hold screen');
-  accountEnquiryFlow().openRemoveEnforcementHoldForm();
-});
-
-When('I enter {string} in the "Reason" field', (reason: string) => {
+/**
+ * @step Sets the reason shown on the remove enforcement hold screen.
+ */
+When('the remove enforcement hold reason is {string}', (reason: string) => {
   const resolvedReason = applyUniqPlaceholder(reason);
-  log('step', 'Enter reason on remove enforcement hold screen', { reason: resolvedReason });
+  log('step', 'Set remove enforcement hold reason', { reason: resolvedReason });
   enforcementActions().enterRemoveEnforcementHoldReason(resolvedReason);
 });
 
-When('I press the {string} button', (buttonText: string) => {
-  const resolvedButtonText = applyUniqPlaceholder(buttonText);
-  log('step', 'Press button', { buttonText: resolvedButtonText });
-  enforcementActions().clickRemoveEnforcementHoldButton(resolvedButtonText);
+/**
+ * @step Removes the enforcement hold from the remove enforcement hold screen.
+ */
+When('I remove the enforcement hold', () => {
+  log('step', 'Remove enforcement hold');
+  enforcementActions().clickRemoveEnforcementHoldButton('Remove');
 });
 
+/**
+ * @step Supports the Cucumber step: I cancel the remove enforcement hold screen and confirm leaving
+ */
 When('I cancel the remove enforcement hold screen and confirm leaving', () => {
   log('step', 'Cancel remove enforcement hold screen and confirm leaving');
   common().cancelEditing(true);
 });
 
+/**
+ * @step Supports the Cucumber step: I should see the remove enforcement hold page
+ */
 Then('I should see the remove enforcement hold page', () => {
   log('assert', 'Remove enforcement hold page is visible');
   enforcementActions().assertRemoveEnforcementHoldFormVisible();
 });
 
+/**
+ * @step Supports the Cucumber step: I should see the remove enforcement hold account identifier {string}
+ */
 Then('I should see the remove enforcement hold account identifier {string}', (expected: string) => {
   const expectedWithUniq = applyUniqPlaceholder(expected);
   log('assert', 'Remove enforcement hold account identifier', { expected: expectedWithUniq });
   enforcementActions().assertRemoveEnforcementHoldAccountIdentifier(expectedWithUniq);
 });
 
-Then('I should see the add enforcement action page', () => {
-  log('assert', 'Add enforcement action page is visible');
-  enforcementActions().assertAddEnforcementActionFormVisible();
-});
-
+/**
+ * @step Supports the Cucumber step: I should see the add new enforcement action page
+ */
 Then('I should see the add new enforcement action page', () => {
   log('assert', 'Add new enforcement action page is visible');
   enforcementActions().assertAddNewEnforcementActionFormVisible();
 });
 
+/**
+ * @step Supports the Cucumber step: the enforcement hold success banner is {string}
+ */
 Then('the enforcement hold success banner is {string}', (expected: string) => {
   log('assert', 'Enforcement hold success banner text', { expected });
   enforcementActions().assertSuccessBannerText(expected);
 });
 
+/**
+ * @step Supports the Cucumber step: I should not see the convert to company account text
+ */
 Then('I should not see the convert to company account text', () => {
   log('assert', 'Convert to company account text is absent from the visible action');
   defendantDetails().assertConvertToCompanyActionTextNotPresent();
 });
 
+/**
+ * @step Supports the Cucumber step: I start converting the account to a company account
+ */
 When('I start converting the account to a company account', () => {
   log('step', 'Start converting account to company');
   accountEnquiryFlow().openConvertToCompanyConfirmation();
 });
 
+/**
+ * @step Supports the Cucumber step: I should see the convert to company confirmation screen for
+ * defendant {string}
+ */
 Then(
   'I should see the convert to company confirmation screen for defendant {string}',
   (expectedCaptionName: string) => {
@@ -445,21 +614,33 @@ Then(
   },
 );
 
+/**
+ * @step Supports the Cucumber step: I continue converting the account to a company account
+ */
 When('I continue converting the account to a company account', () => {
   log('step', 'Continue converting account to company');
   convertActions().confirmConvertToCompany();
 });
 
+/**
+ * @step Supports the Cucumber step: I should be on the Company details convert route
+ */
 Then('I should be on the Company details convert route', () => {
   log('assert', 'Company details convert route is active');
   editCompanyDetails().assertOnConvertRoute();
 });
 
+/**
+ * @step Supports the Cucumber step: I cancel converting the account to a company account
+ */
 When('I cancel converting the account to a company account', () => {
   log('step', 'Cancel converting account to company');
   convertActions().cancelConvertToCompany();
 });
 
+/**
+ * @step Supports the Cucumber step: the Company details form should be pre-populated with:
+ */
 Then('the Company details form should be pre-populated with:', (table: DataTable) => {
   const expectedFieldValues = Object.fromEntries(
     Object.entries(rowsHashSafe(table)).map(([fieldName, fieldValue]) => [fieldName, applyUniqPlaceholder(fieldValue)]),
@@ -468,21 +649,34 @@ Then('the Company details form should be pre-populated with:', (table: DataTable
   editCompanyDetails().assertPrefilledFieldValues(expectedFieldValues);
 });
 
+/**
+ * @step Supports the Cucumber step: I start converting the account to an individual account
+ */
 When('I start converting the account to an individual account', () => {
   log('step', 'Start converting account to individual');
   accountEnquiryFlow().openConvertToIndividualConfirmation();
 });
 
+/**
+ * @step Supports the Cucumber step: I start adding parent or guardian details
+ */
 When('I start adding parent or guardian details', () => {
   log('step', 'Start adding parent or guardian details');
   accountEnquiryFlow().openAddParentGuardianDetails();
 });
 
+/**
+ * @step Supports the Cucumber step: I start removing parent or guardian details
+ */
 When('I start removing parent or guardian details', () => {
   log('step', 'Start removing parent or guardian details');
   accountEnquiryFlow().openRemoveParentGuardianDetails();
 });
 
+/**
+ * @step Supports the Cucumber step: I should see the convert to individual confirmation screen for
+ * company {string}
+ */
 Then(
   'I should see the convert to individual confirmation screen for company {string}',
   (expectedCaptionName: string) => {
@@ -494,21 +688,33 @@ Then(
   },
 );
 
+/**
+ * @step Supports the Cucumber step: I continue converting the account to an individual account
+ */
 When('I continue converting the account to an individual account', () => {
   log('step', 'Continue converting account to individual');
   convertActions().confirmConvertToIndividual();
 });
 
+/**
+ * @step Supports the Cucumber step: I should be on the Defendant details convert route
+ */
 Then('I should be on the Defendant details convert route', () => {
   log('assert', 'Defendant details convert route is active');
   editDefendantDetails().assertOnConvertRoute();
 });
 
+/**
+ * @step Supports the Cucumber step: I cancel converting the account to an individual account
+ */
 When('I cancel converting the account to an individual account', () => {
   log('step', 'Cancel converting account to individual');
   convertActions().cancelConvertToIndividual();
 });
 
+/**
+ * @step Supports the Cucumber step: the Defendant details form should be pre-populated with:
+ */
 Then('the Defendant details form should be pre-populated with:', (table: DataTable) => {
   const expectedFieldValues = Object.fromEntries(
     Object.entries(rowsHashSafe(table)).map(([fieldName, fieldValue]) => [fieldName, applyUniqPlaceholder(fieldValue)]),
@@ -517,12 +723,20 @@ Then('the Defendant details form should be pre-populated with:', (table: DataTab
   editDefendantDetails().assertPrefilledFieldValues(expectedFieldValues);
 });
 
+/**
+ * @step Supports the Cucumber step: I complete converting the account to a company with company name
+ * {string}
+ */
 When('I complete converting the account to a company with company name {string}', (companyName: string) => {
   const companyNameWithUniq = applyUniqPlaceholder(companyName);
   log('step', 'Complete converting account to company', { companyName: companyNameWithUniq });
   accountEnquiryFlow().completeConvertToCompany(companyNameWithUniq);
 });
 
+/**
+ * @step Supports the Cucumber step: I complete converting the account to an individual with title
+ * {string}, first name {string}, and last name {string}
+ */
 When(
   'I complete converting the account to an individual with title {string}, first name {string}, and last name {string}',
   (title: string, firstName: string, lastName: string) => {
@@ -541,31 +755,49 @@ When(
   },
 );
 
+/**
+ * @step Supports the Cucumber step: I should see the account conversion success message {string}
+ */
 Then('I should see the account conversion success message {string}', (expected: string) => {
   log('assert', 'Account conversion success message is visible', { expected });
   navActions().assertSuccessBannerText(expected);
 });
 
+/**
+ * @step Supports the Cucumber step: I should see the company summary card
+ */
 Then('I should see the company summary card', () => {
   log('assert', 'Company summary card is visible');
   editCompanyDetails().assertCompanySummaryVisible();
 });
 
+/**
+ * @step Supports the Cucumber step: I should not see the company summary card
+ */
 Then('I should not see the company summary card', () => {
   log('assert', 'Company summary card is absent');
   editCompanyDetails().assertCompanySummaryNotPresent();
 });
 
+/**
+ * @step Supports the Cucumber step: I should see the defendant summary card
+ */
 Then('I should see the defendant summary card', () => {
   log('assert', 'Defendant summary card is visible');
   defendantDetails().assertDefendantSummaryVisible();
 });
 
+/**
+ * @step Supports the Cucumber step: I should not see the defendant summary card
+ */
 Then('I should not see the defendant summary card', () => {
   log('assert', 'Defendant summary card is absent');
   defendantDetails().assertDefendantSummaryNotPresent();
 });
 
+/**
+ * @step Supports the Cucumber step: I should see the primary email address contains {string}
+ */
 Then('I should see the primary email address contains {string}', (expected: string) => {
   const expectedWithUniq = applyUniqPlaceholder(expected);
   log('assert', 'Primary email address contains', { expected: expectedWithUniq });
@@ -573,20 +805,27 @@ Then('I should see the primary email address contains {string}', (expected: stri
 });
 
 /**
- * @step Navigates to the Parent or guardian details section and validates the header text.
+ * @step Shows the Parent or guardian details section and validates the header text.
  *
  * @param expected - Expected header text for the section.
  */
-When('I go to the Parent or guardian details section and the header is {string}', (expected: string) => {
-  log('step', 'Navigate to Parent/Guardian details', { expected });
+When('the Parent or guardian details section header is {string}', (expected: string) => {
+  log('step', 'Show Parent/Guardian details', { expected });
   accountEnquiryFlow().goToParentGuardianDetailsAndAssert(expected);
 });
 
+/**
+ * @step Supports the Cucumber step: I should be on the add parent or guardian details page
+ */
 Then('I should be on the add parent or guardian details page', () => {
   log('assert', 'Add parent or guardian details page is visible');
   accountEnquiryFlow().assertOnAddParentGuardianDetailsPage();
 });
 
+/**
+ * @step Supports the Cucumber step: I should be on the remove parent or guardian details page for
+ * {string}
+ */
 Then('I should be on the remove parent or guardian details page for {string}', (expected: string) => {
   const expectedWithUniq = applyUniqPlaceholder(expected);
   log('assert', 'Remove parent or guardian details page is visible', { expected: expectedWithUniq });
@@ -602,22 +841,6 @@ When('I go to the Fixed penalty section and the header is {string}', (expected: 
   const expectedWithUniq = applyUniqPlaceholder(expected);
   log('step', 'Navigate to Fixed penalty details', { expected: expectedWithUniq });
   accountEnquiryFlow().goToFixedPenaltyDetailsAndAssert(expectedWithUniq);
-});
-
-/**
- * @step Navigates to the Defendant tab.
- */
-When('I go to the Defendant tab', () => {
-  log('step', 'Navigate to Defendant tab');
-  navActions().goToDefendantTab();
-});
-
-/**
- * @step Navigates to the Payment terms tab.
- */
-When('I go to the Payment terms tab', () => {
-  log('step', 'Navigate to Payment terms tab');
-  accountEnquiryFlow().goToPaymentTermsTab();
 });
 
 /**
@@ -725,43 +948,43 @@ When('I open the first History and notes account link in a new tab', () => {
 });
 
 /**
- * @step Opens the amend payment terms form.
+ * @step Presents the amend payment terms form.
  */
-When('I open the amend payment terms form', () => {
-  log('step', 'Open amend payment terms form');
+When('the amend payment terms form is displayed', () => {
+  log('step', 'Display amend payment terms form');
   accountEnquiryFlow().openPaymentTermsAmendForm();
 });
 
 /**
- * @step Navigates to the Enforcement tab.
+ * @step Selects the Enforcement tab.
  */
-When('I go to the Enforcement tab', () => {
-  log('step', 'Navigate to Enforcement tab');
+When('the Enforcement tab is selected', () => {
+  log('step', 'Select Enforcement tab');
   accountEnquiryFlow().goToEnforcementTab();
 });
 
 /**
- * @step Opens the add enforcement override form from the Enforcement tab.
+ * @step Presents the add enforcement override form.
  */
-When('I open the add enforcement override form', () => {
-  log('step', 'Open add enforcement override form');
+When('the add enforcement override form is displayed', () => {
+  log('step', 'Display add enforcement override form');
   accountEnquiryFlow().openAddEnforcementOverrideForm();
 });
 
 /**
- * @step Opens the add enforcement action form from the Enforcement tab.
+ * @step Presents the add enforcement action form.
  */
-When('I open the add enforcement action form', () => {
-  log('step', 'Open add enforcement action form');
+When('the add enforcement action form is displayed', () => {
+  log('step', 'Display add enforcement action form');
   accountEnquiryFlow().openAddEnforcementActionForm();
 });
 
 /**
- * @step Opens the Change Collection Order status form from the Enforcement tab.
+ * @step Presents the Change Collection Order status form.
  */
-When('I open the Change Collection Order status form', () => {
-  log('step', 'Open Change Collection Order status form');
-  enforcementActions().openChangeCollectionOrderForm();
+When('the Change Collection Order status form is displayed', () => {
+  log('step', 'Display Change Collection Order status form');
+  accountEnquiryFlow().openChangeCollectionOrderStatusForm();
 });
 
 /**
@@ -782,10 +1005,10 @@ Then('I should see the account identifier {string}', (expected: string) => {
 });
 
 /**
- * @step Selects the requested Collection Order status option on the change form.
+ * @step Sets the Collection Order status on the change form.
  */
-When('I select {string} for Collection Order status', (option: string) => {
-  log('step', 'Select Collection Order status', { option });
+When('the Collection Order status is {string}', (option: string) => {
+  log('step', 'Set Collection Order status', { option });
   enforcementActions().selectCollectionOrderStatus(option);
 });
 
@@ -840,18 +1063,10 @@ Then('I should remain on the Change Collection Order status page', () => {
 });
 
 /**
- * @step Selects an enforcement override on the add form.
+ * @step Sets the enforcement action on the add enforcement action form.
  */
-When('I choose the enforcement override {string}', (resultCode: string) => {
-  log('step', 'Choose enforcement override', { resultCode });
-  enforcementActions().selectEnforcementOverride(resultCode);
-});
-
-/**
- * @step Selects an enforcement action on the add form.
- */
-When('I choose the enforcement action {string}', (resultCode: string) => {
-  log('step', 'Choose enforcement action', { resultCode });
+When('the enforcement action is {string}', (resultCode: string) => {
+  log('step', 'Set enforcement action', { resultCode });
   enforcementActions().selectEnforcementAction(resultCode);
 });
 
@@ -872,18 +1087,18 @@ When('I enter {string} for the enforcement action reason', (reason: string) => {
 });
 
 /**
- * @step Chooses the collection type on the add enforcement action details form.
+ * @step Sets the collection type on the add enforcement action form.
  */
-When('I choose {string} for collection type', (option: string) => {
-  log('step', 'Choose collection type option', { option });
+When('the collection type is {string}', (option: string) => {
+  log('step', 'Set collection type option', { option });
   enforcementActions().chooseCollectionType(option);
 });
 
 /**
- * @step Chooses whether to change existing payment terms on the add enforcement action details form.
+ * @step Sets whether existing payment terms should change on the add enforcement action form.
  */
-When('I choose {string} for changing existing payment terms', (option: string) => {
-  log('step', 'Choose change existing payment terms option', { option });
+When('changing existing payment terms is {string}', (option: string) => {
+  log('step', 'Set change existing payment terms option', { option });
   enforcementActions().chooseChangeExistingPaymentTerms(option);
 });
 
@@ -904,41 +1119,6 @@ Then('the enforcement action added success banner is {string}', (expected: strin
 });
 
 /**
- * @step Selects a Local Justice Area on the add form.
- */
-When('I choose the Local Justice Area {string}', (localJusticeArea: string) => {
-  log('step', 'Choose Local Justice Area', { localJusticeArea });
-  enforcementActions().selectLocalJusticeArea(localJusticeArea);
-});
-
-/**
- * @step Selects an enforcer on the add form.
- */
-When('I choose the enforcer {string}', (enforcer: string) => {
-  log('step', 'Choose enforcer', { enforcer });
-  enforcementActions().selectEnforcer(enforcer);
-});
-
-/**
- * @step Submits the add enforcement override form.
- */
-When('I add the enforcement override', () => {
-  log('step', 'Submit add enforcement override form');
-  accountEnquiryFlow().submitAddEnforcementOverride();
-});
-
-/**
- * @step Completes the add enforcement override form with the provided values and submits it.
- */
-When(
-  'I add the enforcement override {string} with the Local Justice Area {string}',
-  (resultCode: string, lja: string) => {
-    log('step', 'Add enforcement override with Local Justice Area', { resultCode, lja });
-    accountEnquiryFlow().addEnforcementOverrideWithLocalJusticeArea(resultCode, lja);
-  },
-);
-
-/**
  * @step Completes the add enforcement override form with the provided values and submits it.
  */
 When('I add the enforcement override {string} with the enforcer {string}', (resultCode: string, enforcer: string) => {
@@ -947,10 +1127,10 @@ When('I add the enforcement override {string} with the enforcer {string}', (resu
 });
 
 /**
- * @step Opens the change enforcement court form from the Enforcement tab.
+ * @step Presents the change enforcement court form.
  */
-When('I open the change enforcement court form', () => {
-  log('step', 'Open change enforcement court form');
+When('the change enforcement court form is displayed', () => {
+  log('step', 'Display change enforcement court form');
   accountEnquiryFlow().openChangeEnforcementCourtForm();
 });
 
@@ -976,14 +1156,6 @@ When('I save the same enforcement court value again', () => {
 When('I cancel the change enforcement court form after selecting a value and discarding changes', () => {
   log('step', 'Cancel dirty change enforcement court form and discard changes');
   accountEnquiryFlow().cancelDirtyChangeEnforcementCourtAndDiscardChanges();
-});
-
-/**
- * @step Cancels the add enforcement override form and discards changes.
- */
-When('I cancel the add enforcement override form and discard changes', () => {
-  log('step', 'Cancel add enforcement override form and discard changes');
-  accountEnquiryFlow().cancelAddEnforcementOverrideAndDiscardChanges();
 });
 
 /**
@@ -1106,11 +1278,19 @@ Then('I should see the following minor creditor summary metric values:', (table:
   atAGlanceDetails().assertMinorCreditorSummaryMetricValues(expectedValues);
 });
 
+/**
+ * @step Supports the Cucumber step: I validate the legacy defendant header and At a glance tab using
+ * fixture {string}
+ */
 Then('I validate the legacy defendant header and At a glance tab using fixture {string}', (fixturePath: string) => {
   log('assert', 'Validate legacy defendant header and At a glance tab', { fixturePath });
   accountEnquiryFlow().validateLegacyDefendantHeaderAndAtAGlance(fixturePath);
 });
 
+/**
+ * @step Supports the Cucumber step: I validate the legacy company header and At a glance tab using
+ * fixture {string}
+ */
 Then('I validate the legacy company header and At a glance tab using fixture {string}', (fixturePath: string) => {
   log('assert', 'Validate legacy company header and At a glance tab', { fixturePath });
   accountEnquiryFlow().validateLegacyCompanyHeaderAndAtAGlance(fixturePath);
@@ -1128,12 +1308,44 @@ When(
 );
 
 /**
+ * @step Selects the chosen legacy company tab and validates its fixture-backed content.
+ */
+When(
+  /^the (Defendant|Payment terms) tab is selected and validate the legacy company using fixture "([^"]+)"$/,
+  (tabName: string, fixturePath: string) => {
+    log('step', 'Select legacy company tab and validate fixture-backed content', { tabName, fixturePath });
+    accountEnquiryFlow().goToLegacyCompanyTabAndValidate(tabName as 'Defendant' | 'Payment terms', fixturePath);
+  },
+);
+
+/**
  * @step Navigates to the selected legacy defendant tab and validates its fixture-backed content.
  */
 When(
   /^I go to the (Defendant|Parent or guardian|Payment terms|Enforcement|Impositions|History and notes|Fixed penalty) tab and validate the legacy defendant using fixture "([^"]+)"$/,
   (tabName: string, fixturePath: string) => {
     log('step', 'Navigate to legacy defendant tab and validate fixture-backed content', { tabName, fixturePath });
+    accountEnquiryFlow().goToLegacyDefendantTabAndValidate(
+      tabName as
+        | 'Defendant'
+        | 'Parent or guardian'
+        | 'Payment terms'
+        | 'Enforcement'
+        | 'Impositions'
+        | 'History and notes'
+        | 'Fixed penalty',
+      fixturePath,
+    );
+  },
+);
+
+/**
+ * @step Selects the chosen legacy defendant tab and validates its fixture-backed content.
+ */
+When(
+  /^the (Defendant|Parent or guardian|Payment terms|Enforcement|Impositions|History and notes|Fixed penalty) tab is selected and validate the legacy defendant using fixture "([^"]+)"$/,
+  (tabName: string, fixturePath: string) => {
+    log('step', 'Select legacy defendant tab and validate fixture-backed content', { tabName, fixturePath });
     accountEnquiryFlow().goToLegacyDefendantTabAndValidate(
       tabName as
         | 'Defendant'
@@ -1172,7 +1384,9 @@ When('I go to the Impositions tab', () => {
   navActions().goToImpositionsTab();
 });
 
-/** @step Asserts the rendered defendant account imposition rows. */
+/**
+ * @step Asserts the rendered defendant account imposition rows.
+ */
 Then('I should see the defendant account impositions load with the following values:', (table: DataTable) => {
   log('assert', 'Verify defendant account impositions load');
   impositionsDetails().assertDefendantAccountImpositionsLoaded(table.raw());
@@ -1351,24 +1565,36 @@ When('I edit the Parent or guardian details without making changes', () => {
   accountEnquiryFlow().editParentGuardianDetailsWithoutChanges();
 });
 
+/**
+ * @step Supports the Cucumber step: I enter {string} into the parent or guardian first name field
+ */
 When('I enter {string} into the parent or guardian first name field', (value: string) => {
   const valueWithUniq = applyUniqPlaceholder(value);
   log('step', 'Enter parent or guardian first name', { value: valueWithUniq });
   editParentGuardianDetails().editFirstNames(valueWithUniq);
 });
 
+/**
+ * @step Supports the Cucumber step: I enter {string} into the amend parent or guardian first name field
+ */
 When('I enter {string} into the amend parent or guardian first name field', (value: string) => {
   const valueWithUniq = applyUniqPlaceholder(value);
   log('step', 'Enter amend parent or guardian first name', { value: valueWithUniq });
   editParentGuardianDetails().editFirstNames(valueWithUniq);
 });
 
+/**
+ * @step Supports the Cucumber step: I enter {string} into the parent or guardian last name field
+ */
 When('I enter {string} into the parent or guardian last name field', (value: string) => {
   const valueWithUniq = applyUniqPlaceholder(value);
   log('step', 'Enter parent or guardian last name', { value: valueWithUniq });
   editParentGuardianDetails().editLastName(valueWithUniq);
 });
 
+/**
+ * @step Supports the Cucumber step: I enter {string} into the parent or guardian address line 1 field
+ */
 When('I enter {string} into the parent or guardian address line 1 field', (value: string) => {
   const valueWithUniq = applyUniqPlaceholder(value);
   log('step', 'Enter parent or guardian address line 1', { value: valueWithUniq });
@@ -1446,79 +1672,123 @@ When('I attempt to cancel editing and choose OK on the confirmation dialog', () 
   commonFlow().cancelEditAndLeave();
 });
 
+/**
+ * @step Supports the Cucumber step: I cancel adding parent or guardian details without making changes
+ */
 When('I cancel adding parent or guardian details without making changes', () => {
   log('step', 'Cancel add parent or guardian details without making changes');
   accountEnquiryFlow().cancelAddParentGuardianWithoutChanges();
 });
 
+/**
+ * @step Supports the Cucumber step: I attempt to cancel adding parent or guardian details and choose
+ * Cancel on the confirmation dialog
+ */
 When('I attempt to cancel adding parent or guardian details and choose Cancel on the confirmation dialog', () => {
   log('step', 'Cancel add parent or guardian details and stay on page');
   accountEnquiryFlow().cancelAddParentGuardianAndStay();
 });
 
+/**
+ * @step Supports the Cucumber step: I attempt to cancel adding parent or guardian details and choose OK
+ * on the confirmation dialog
+ */
 When('I attempt to cancel adding parent or guardian details and choose OK on the confirmation dialog', () => {
   log('step', 'Cancel add parent or guardian details and leave page');
   accountEnquiryFlow().cancelAddParentGuardianAndLeave();
 });
 
+/**
+ * @step Supports the Cucumber step: I cancel removing parent or guardian details
+ */
 When('I cancel removing parent or guardian details', () => {
   log('step', 'Cancel removing parent or guardian details');
   accountEnquiryFlow().cancelRemoveParentGuardianDetails();
 });
 
+/**
+ * @step Supports the Cucumber step: I confirm removing parent or guardian details
+ */
 When('I confirm removing parent or guardian details', () => {
   log('step', 'Confirm removing parent or guardian details');
   accountEnquiryFlow().confirmRemoveParentGuardianDetails();
 });
 
+/**
+ * @step Supports the Cucumber step: I start changing the non-paying parent or guardian details
+ */
 When('I start changing the non-paying parent or guardian details', () => {
   log('step', 'Start changing non-paying parent or guardian details');
   accountEnquiryFlow().openNonPayingParentGuardianChangeForm();
 });
 
+/**
+ * @step Supports the Cucumber step: I view the amend minor creditor details form
+ */
 When('I view the amend minor creditor details form', () => {
   log('step', 'View amend minor creditor details form');
   accountEnquiryFlow().openMinorCreditorChangeForm();
 });
 
+/**
+ * @step Supports the Cucumber step: I cancel changing parent or guardian details without making changes
+ */
 When('I cancel changing parent or guardian details without making changes', () => {
   log('step', 'Cancel amend parent or guardian details without making changes');
   accountEnquiryFlow().cancelAmendParentGuardianWithoutChanges();
 });
 
+/**
+ * @step Supports the Cucumber step: I attempt to cancel changing parent or guardian details and choose
+ * Cancel on the confirmation dialog
+ */
 When('I attempt to cancel changing parent or guardian details and choose Cancel on the confirmation dialog', () => {
   log('step', 'Cancel amend parent or guardian details and stay on page');
   accountEnquiryFlow().cancelAmendParentGuardianAndStay();
 });
 
+/**
+ * @step Supports the Cucumber step: I attempt to cancel changing parent or guardian details and choose
+ * OK on the confirmation dialog
+ */
 When('I attempt to cancel changing parent or guardian details and choose OK on the confirmation dialog', () => {
   log('step', 'Cancel amend parent or guardian details and leave page');
   accountEnquiryFlow().cancelAmendParentGuardianAndLeave();
 });
 
-When('I attempt to cancel changing minor creditor details and choose OK on the confirmation dialog', () => {
-  log('step', 'Cancel amend minor creditor details and leave page');
-  accountEnquiryFlow().cancelAmendMinorCreditorAndLeave();
-});
-
+/**
+ * @step Supports the Cucumber step: I amend the minor creditor first name to {string} and discard the
+ * changes
+ */
 When('I amend the minor creditor first name to {string} and discard the changes', (value: string) => {
   const valueWithUniq = applyUniqPlaceholder(value);
   log('step', 'Amend minor creditor first name and discard changes', { value: valueWithUniq });
   accountEnquiryFlow().amendMinorCreditorFirstNameAndDiscard(valueWithUniq);
 });
 
+/**
+ * @step Supports the Cucumber step: I amend the minor creditor first name to {string} and save
+ */
 When('I amend the minor creditor first name to {string} and save', (value: string) => {
   const valueWithUniq = applyUniqPlaceholder(value);
   log('step', 'Amend minor creditor first name and save', { value: valueWithUniq });
   accountEnquiryFlow().amendMinorCreditorFirstNameAndSave(valueWithUniq);
 });
 
+/**
+ * @step Supports the Cucumber step: I attempt to amend the minor creditor first name to {string} and
+ * save
+ */
 When('I attempt to amend the minor creditor first name to {string} and save', (value: string) => {
   const valueWithUniq = applyUniqPlaceholder(value);
   log('step', 'Attempt to amend minor creditor first name and save', { value: valueWithUniq });
   accountEnquiryFlow().attemptToAmendMinorCreditorFirstNameAndSave(valueWithUniq);
 });
 
+/**
+ * @step Supports the Cucumber step: I attempt to save the amend minor creditor details with first name
+ * {string}
+ */
 When('I attempt to save the amend minor creditor details with first name {string}', (value: string) => {
   const valueWithUniq = applyUniqPlaceholder(value);
   log('step', 'Attempt to save current amend minor creditor details with first name', { value: valueWithUniq });
@@ -1533,26 +1803,33 @@ Then('I should remain on the defendant edit page', () => {
   editDefendantDetails().assertStillOnEditPage();
 });
 
+/**
+ * @step Supports the Cucumber step: I should remain on the add parent or guardian details page
+ */
 Then('I should remain on the add parent or guardian details page', () => {
   log('assert', 'Remain on add parent or guardian details page');
   accountEnquiryFlow().assertOnAddParentGuardianDetailsPage();
 });
 
+/**
+ * @step Supports the Cucumber step: I should be on the amend parent or guardian details page
+ */
 Then('I should be on the amend parent or guardian details page', () => {
   log('assert', 'Amend parent or guardian details page is visible');
   accountEnquiryFlow().assertOnAmendParentGuardianDetailsPage();
 });
 
+/**
+ * @step Supports the Cucumber step: I should remain on the amend parent or guardian details page
+ */
 Then('I should remain on the amend parent or guardian details page', () => {
   log('assert', 'Remain on amend parent or guardian details page');
   accountEnquiryFlow().assertOnAmendParentGuardianDetailsPage();
 });
 
-Then('I should be on the amend minor creditor details page', () => {
-  log('assert', 'Amend minor creditor details page is visible');
-  editMinorCreditorDetails().assertHeader({ route: 'amend' });
-});
-
+/**
+ * @step Supports the Cucumber step: I should remain on the amend minor creditor details page
+ */
 Then('I should remain on the amend minor creditor details page', () => {
   log('assert', 'Remain on amend minor creditor details page');
   editMinorCreditorDetails().assertHeader({ route: 'amend' });
@@ -1595,6 +1872,9 @@ Then('I should see the company name field contains {string}', (expected: string)
   editCompanyDetails().verifyFieldValue(expected);
 });
 
+/**
+ * @step Supports the Cucumber step: I should see the account details success message {string}
+ */
 Then('I should see the account details success message {string}', (expected: string) => {
   log('assert', 'Account details success message is visible', { expected });
   navActions().assertSuccessBannerText(expected);
@@ -1608,11 +1888,17 @@ Then('I should return to the account details page Defendant tab', () => {
   navActions().assertDefendantTabIsActive();
 });
 
+/**
+ * @step Supports the Cucumber step: I should return to the account details page Parent or guardian tab
+ */
 Then('I should return to the account details page Parent or guardian tab', () => {
   log('assert', 'Return to Parent/Guardian details tab');
   navActions().assertParentGuardianTabIsActive();
 });
 
+/**
+ * @step Supports the Cucumber step: I should return to the account details page Creditor tab
+ */
 Then('I should return to the account details page Creditor tab', () => {
   log('assert', 'Return to Creditor details tab');
   navActions().assertCreditorTabIsActive();
@@ -1639,28 +1925,33 @@ Then('I should see the parent or guardian name contains {string}', (expected: st
   accountEnquiryFlow().assertParentGuardianNameContains(expectedWithUniq);
 });
 
+/**
+ * @step Supports the Cucumber step: I should see the minor creditor name contains {string}
+ */
 Then('I should see the minor creditor name contains {string}', (expected: string) => {
   const expectedWithUniq = applyUniqPlaceholder(expected);
   log('assert', 'Minor creditor name contains', { expected: expectedWithUniq });
   accountEnquiryFlow().assertMinorCreditorNameContains(expectedWithUniq);
 });
 
+/**
+ * @step Supports the Cucumber step: I should see the parent or guardian first name field contains
+ * {string}
+ */
 Then('I should see the parent or guardian first name field contains {string}', (expected: string) => {
   const expectedWithUniq = applyUniqPlaceholder(expected);
   log('assert', 'Parent or guardian first name field contains', { expected: expectedWithUniq });
   accountEnquiryFlow().assertAddParentGuardianFirstName(expectedWithUniq);
 });
 
+/**
+ * @step Supports the Cucumber step: I should see the amend parent or guardian first name field contains
+ * {string}
+ */
 Then('I should see the amend parent or guardian first name field contains {string}', (expected: string) => {
   const expectedWithUniq = applyUniqPlaceholder(expected);
   log('assert', 'Amend parent or guardian first name field contains', { expected: expectedWithUniq });
   accountEnquiryFlow().assertAmendParentGuardianFirstName(expectedWithUniq);
-});
-
-When('I enter {string} into the amend minor creditor first name field', (value: string) => {
-  const valueWithUniq = applyUniqPlaceholder(value);
-  log('step', 'Enter amend minor creditor first name', { value: valueWithUniq });
-  accountEnquiryFlow().enterAmendMinorCreditorFirstName(valueWithUniq);
 });
 
 /**
@@ -1736,6 +2027,9 @@ Then('I verify parent or guardian amendments via API for guardian name {string}'
   accountEnquiryFlow().verifyParentGuardianAmendmentsViaApi(expectedGuardianName);
 });
 
+/**
+ * @step Supports the Cucumber step: I verify minor creditor amendments via API for first name {string}
+ */
 Then('I verify minor creditor amendments via API for first name {string}', (expectedForename: string) => {
   const expectedWithUniq = applyUniqPlaceholder(expectedForename);
   log('assert', 'Verify minor creditor amendments via API', { expectedForename: expectedWithUniq });
@@ -1766,36 +2060,52 @@ Then('I verify no amendments were created via API for parent or guardian details
   accountEnquiryFlow().verifyNoParentGuardianAmendments();
 });
 
+/**
+ * @step Supports the Cucumber step: I verify the parent or guardian has been removed via API
+ */
 Then('I verify the parent or guardian has been removed via API', () => {
   log('assert', 'Verify parent or guardian removal via API');
   accountEnquiryFlow().verifyParentGuardianRemovedViaApi();
 });
 
+/**
+ * @step Supports the Cucumber step: I attempt to save the parent or guardian add details
+ */
 When('I attempt to save the parent or guardian add details', () => {
   log('step', 'Attempt to save add parent or guardian details');
   accountEnquiryFlow().attemptSaveAddParentGuardianDetails();
 });
 
+/**
+ * @step Supports the Cucumber step: I should see the parent or guardian add error summary contains
+ * {string}
+ */
 Then('I should see the parent or guardian add error summary contains {string}', (expected: string) => {
   log('assert', 'Parent or guardian add error summary contains', { expected });
   accountEnquiryFlow().assertAddParentGuardianErrorSummaryContains(expected);
 });
 
+/**
+ * @step Supports the Cucumber step: I attempt to save the parent or guardian amend details
+ */
 When('I attempt to save the parent or guardian amend details', () => {
   log('step', 'Attempt to save amend parent or guardian details');
   accountEnquiryFlow().attemptSaveAmendParentGuardianDetails();
 });
 
+/**
+ * @step Supports the Cucumber step: I should see the parent or guardian amend error summary contains
+ * {string}
+ */
 Then('I should see the parent or guardian amend error summary contains {string}', (expected: string) => {
   log('assert', 'Parent or guardian amend error summary contains', { expected });
   accountEnquiryFlow().assertAmendParentGuardianErrorSummaryContains(expected);
 });
 
-When('I save the minor creditor amend details', () => {
-  log('step', 'Save amend minor creditor details');
-  editMinorCreditorDetails().saveChanges();
-});
-
+/**
+ * @step Supports the Cucumber step: I should see the minor creditor amend error summary contains
+ * {string}
+ */
 Then('I should see the minor creditor amend error summary contains {string}', (expected: string) => {
   log('assert', 'Minor creditor amend error summary contains', { expected });
   accountEnquiryFlow().assertAmendMinorCreditorErrorSummaryContains(expected);
@@ -1821,6 +2131,63 @@ When('I open the company account details for {string}', (companyName: string) =>
   const companyWithUniq = applyUniqPlaceholder(companyName);
   log('step', 'Open company account details', { companyName: companyWithUniq });
   accountEnquiryFlow().openCompanyAccountDetailsByNameAndSelectLatest(companyWithUniq);
+});
+
+/**
+ * @step Presents the amend payment terms form for the latest company account matching the company name.
+ */
+When('the amend payment terms form is displayed for company account {string}', (companyName: string) => {
+  const companyWithUniq = applyUniqPlaceholder(companyName);
+  log('step', 'Display amend payment terms form for company account', { companyName: companyWithUniq });
+  accountEnquiryFlow().openCompanyPaymentTermsAmendFormByName(companyWithUniq);
+});
+
+/**
+ * @step Presents the Enforcement tab for the latest company account matching the company name.
+ */
+When('the Enforcement tab is displayed for company account {string}', (companyName: string) => {
+  const companyWithUniq = applyUniqPlaceholder(companyName);
+  log('step', 'Display Enforcement tab for company account', { companyName: companyWithUniq });
+  accountEnquiryFlow().openCompanyEnforcementTabByName(companyWithUniq);
+});
+
+/**
+ * @step Presents the remove enforcement hold screen for the latest company account matching the company
+ * name.
+ */
+When('the remove enforcement hold screen is displayed for company account {string}', (companyName: string) => {
+  const companyWithUniq = applyUniqPlaceholder(companyName);
+  log('step', 'Display remove enforcement hold screen for company account', { companyName: companyWithUniq });
+  accountEnquiryFlow().openCompanyRemoveEnforcementHoldFormByName(companyWithUniq);
+});
+
+/**
+ * @step Presents the Change Collection Order status form for the latest company account matching the
+ * company name.
+ */
+When('the Change Collection Order status form is displayed for company account {string}', (companyName: string) => {
+  const companyWithUniq = applyUniqPlaceholder(companyName);
+  log('step', 'Display Change Collection Order status form for company account', { companyName: companyWithUniq });
+  accountEnquiryFlow().openCompanyCollectionOrderStatusFormByName(companyWithUniq);
+});
+
+/**
+ * @step Presents the add enforcement action form for the latest company account matching the company name.
+ */
+When('the add enforcement action form is displayed for company account {string}', (companyName: string) => {
+  const companyWithUniq = applyUniqPlaceholder(companyName);
+  log('step', 'Display add enforcement action form for company account', { companyName: companyWithUniq });
+  accountEnquiryFlow().openCompanyAddEnforcementActionFormByName(companyWithUniq);
+});
+
+/**
+ * @step Presents the add enforcement override form for the latest company account matching the company
+ * name.
+ */
+When('the add enforcement override form is displayed for company account {string}', (companyName: string) => {
+  const companyWithUniq = applyUniqPlaceholder(companyName);
+  log('step', 'Display add enforcement override form for company account', { companyName: companyWithUniq });
+  accountEnquiryFlow().openCompanyAddEnforcementOverrideFormByName(companyWithUniq);
 });
 
 /**

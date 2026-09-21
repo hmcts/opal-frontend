@@ -5,7 +5,7 @@ Feature: Check And Validate Draft Accounts
     Given I am logged in with email "opal-test@dev.platform.hmcts.net"
     Then I should be on the dashboard
 
-  @JIRA-EPIC:PO-2220 @R1A @JIRA-STORY:PO-594 @JIRA-TEST-KEY:PO-5331
+  @JIRA-EPIC:PO-2220 @R1A @JIRA-STORY:PO-594
   Scenario: Back navigation returns to Review accounts from an in-review draft
     Given a "adultOrYouthOnly" draft account exists with:
       | Account_status                          | Submitted                       |
@@ -44,7 +44,7 @@ Feature: Check And Validate Draft Accounts
     And the draft success banner is "You have approved Larry Lincoln{uniq}'s account"
 
 
-  @R1A @JIRA-STORY:PO-969 @JIRA-STORY:PO-601 @JIRA-STORY:PO-10196 @JIRA-EPIC:PO-2220 @JIRA-TEST-KEY:PO-5332 @JIRA-NFR:PO-2506
+  @R1A @JIRA-STORY:PO-969 @JIRA-STORY:PO-601 @JIRA-STORY:PO-10196 @JIRA-EPIC:PO-2220 @JIRA-NFR:PO-2506
   @draft-request-contract
   Scenario: Reject an in-review draft account and review it from the Rejected tab
     Given a "adultOrYouthOnly" draft account exists with:

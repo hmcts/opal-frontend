@@ -1954,7 +1954,16 @@ describe(
 
     it(
       'AC1a, AC2a, AC2b, AC2ci, AC3a. Individual: displays the add new enforcement action prompt after adding an action that allows an additional action',
-      { tags: ['@JIRA-STORY:PO-1786', '@JIRA-STORY:PO-1833', '@JIRA-STORY:PO-1843', '@JIRA-EPIC:PO-1674', '@R1B'] },
+      {
+        tags: [
+          '@JIRA-STORY:PO-1786',
+          '@JIRA-STORY:PO-1833',
+          '@JIRA-STORY:PO-1843',
+          '@JIRA-EPIC:PO-1674',
+          '@R1B',
+          '@JIRA-NFR:PO-2506',
+        ],
+      },
       () => {
         const headerMock = structuredClone(createDefendantHeaderMockWithName('Robert', 'Thomson'));
         headerMock.debtor_type = 'Defendant';
