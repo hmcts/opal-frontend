@@ -8,6 +8,10 @@ export const CommonLocators = {
   header: '[data-testid="page-header"], h1[class*="govuk-heading"], h1',
   /** Standard GOV.UK page heading used across MAC flows. */
   pageHeader: 'h1.govuk-heading-l',
+  /** Application-wide error alert rendered from the global error store. */
+  globalErrorBanner: 'div[opal-lib-moj-alert][type="error"]',
+  /** Heading within the application-wide error alert. */
+  globalErrorBannerHeading: 'div[opal-lib-moj-alert][type="error"] opal-lib-moj-alert-content-heading',
 
   /** Logical identifier for the unsaved changes confirmation dialog.
    *  Usage: `cy.on(commonLocators.unsavedChangesDialog, (msg) => { ... })` */
