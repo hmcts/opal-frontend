@@ -1121,7 +1121,7 @@ describe('Account Enquiry Payment Terms', () => {
 
   it(
     'AC4a. Payment terms Change link is repositioned within the payment terms panel - Adult or youth only',
-    { tags: [...buildTags('@JIRA-STORY:PO-2671'), '@JIRA-EPIC:PO-8248', '@JIRA-TEST-KEY:PO-4237'] },
+    { tags: [...buildTags('@JIRA-STORY:PO-2671'), '@JIRA-EPIC:PO-8248'] },
     () => {
       let headerMock = structuredClone(createDefendantHeaderMockWithName('Robert', 'Thomson'));
       headerMock.payment_state_summary.account_balance = -500.58;

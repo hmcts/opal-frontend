@@ -80,7 +80,7 @@
     "find:duplicate:scenarios": "opal-cypress-find-duplicate-scenarios --root cypress/e2e/functional/opal/features",
     "check:jira:test-metadata": "opal-cypress-check-new-tests-jira-metadata --feature-root cypress/e2e/functional/opal/features --exclude-file cypress/e2e/functional/opal/features/reciprocalMaintenance/dummyTest.feature",
     "extract:jira:po-keys-from-tests": "opal-cypress-extract-jira-test-keys --output matches.csv",
-    "find:unused:steps": "opal-cypress-find-unused-steps --exclude-path-fragment manualAccountCreation --exclude-path-fragment manual-account-creation",
+    "find:unused:steps": "opal-cypress-find-unused-steps --exclude-path-fragment manual-account-creation",
     "reset-test-outputs": "tsx ./scripts/reset-test-outputs.ts",
     "zephyr:cypress:jira-create": "node ./scripts/run-with-log.js --log-path tmp/zephyr/zephyr-cypress-jira-create.log -- tsx ./scripts/run-zephyr.ts --action-type=CREATE_TICKETS --process-type=CYPRESS_JSON_REPORT --report-path=functional-output/zephyr/cypress-report-1.json",
     "zephyr:cypress:jira-update": "node ./scripts/run-with-log.js --log-path tmp/zephyr/zephyr-cypress-jira-update.log -- tsx ./scripts/run-zephyr.ts --action-type=UPDATE_TICKETS --process-type=CYPRESS_JSON_REPORT --report-path=functional-output/zephyr/cypress-report-1.json",

@@ -1,4 +1,5 @@
 @JIRA-LABEL:account-enquiry
+@JIRA-NFR:PO-2322
 Feature: Defendant - Adult or youth - Account Enquiries - Consolidation Accessibility
   As an Opal user
   I want to view the child account of a defendant's consolidated account

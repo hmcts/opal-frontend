@@ -195,12 +195,14 @@ describe('Account Enquiry Amend Payment Terms', () => {
     );
 
     it(
-      'AC3b: Pay in full past date warning message displays',
-      { tags: [...buildTags('@JIRA-STORY:PO-1149'), '@JIRA-EPIC:PO-977', '@JIRA-TEST-KEY:PO-4253'] },
+      'AC3b: Pay in full bank holiday past date warning message displays',
+      {
+        tags: [...buildTags('@JIRA-STORY:PO-1149'), '@JIRA-EPIC:PO-977', '@JIRA-NFR:PO-2325', '@JIRA-TEST-KEY:PO-4253'],
+      },
       () => {
         mountAmendPaymentTermsForm('adultOrYouth', {
           facc_payment_terms_payment_terms: 'payInFull',
-          facc_payment_terms_pay_by_date: '01/01/2020',
+          facc_payment_terms_pay_by_date: '25/12/2025',
         });
 
         cy.get(AMEND_PAYMENT_TERMS.payInFullRadio).should('be.checked');
@@ -288,12 +290,14 @@ describe('Account Enquiry Amend Payment Terms', () => {
     );
 
     it(
-      'AC4c: Start date in future warning displays',
-      { tags: [...buildTags('@JIRA-STORY:PO-1149'), '@JIRA-EPIC:PO-977', '@JIRA-TEST-KEY:PO-4259'] },
+      'AC4c: Leap-day start date in future warning displays',
+      {
+        tags: [...buildTags('@JIRA-STORY:PO-1149'), '@JIRA-EPIC:PO-977', '@JIRA-NFR:PO-2325', '@JIRA-TEST-KEY:PO-4259'],
+      },
       () => {
         mountAmendPaymentTermsForm('adultOrYouth', {
           facc_payment_terms_payment_terms: 'instalmentsOnly',
-          facc_payment_terms_start_date: '01/01/2030',
+          facc_payment_terms_start_date: '29/02/2032',
         });
 
         cy.contains('strong', 'Start date is more than 6 months in the future').should('exist');
@@ -397,12 +401,14 @@ describe('Account Enquiry Amend Payment Terms', () => {
     );
 
     it(
-      'AC5b: Lump sum plus instalments start date in past warning displays',
-      { tags: [...buildTags('@JIRA-STORY:PO-1149'), '@JIRA-EPIC:PO-977', '@JIRA-TEST-KEY:PO-4265'] },
+      'AC5b: Lump sum plus instalments DST short-day start date in past warning displays',
+      {
+        tags: [...buildTags('@JIRA-STORY:PO-1149'), '@JIRA-EPIC:PO-977', '@JIRA-NFR:PO-2325', '@JIRA-TEST-KEY:PO-4265'],
+      },
       () => {
         mountAmendPaymentTermsForm('adultOrYouth', {
           facc_payment_terms_payment_terms: 'lumpSumPlusInstalments',
-          facc_payment_terms_start_date: '01/01/2020',
+          facc_payment_terms_start_date: '30/03/2025',
         });
 
         cy.contains('strong', 'Start date is in the past').should('exist');
@@ -1401,12 +1407,14 @@ describe('Account Enquiry Amend Payment Terms', () => {
     );
 
     it(
-      'AC3b: Pay in full past date warning message displays (Company defendant)',
-      { tags: [...buildTags('@JIRA-STORY:PO-1640'), '@JIRA-EPIC:PO-977', '@JIRA-TEST-KEY:PO-4327'] },
+      'AC3b: Pay in full DST long-day past date warning message displays (Company defendant)',
+      {
+        tags: [...buildTags('@JIRA-STORY:PO-1640'), '@JIRA-EPIC:PO-977', '@JIRA-NFR:PO-2325', '@JIRA-TEST-KEY:PO-4327'],
+      },
       () => {
         mountAmendPaymentTermsForm('company', {
           facc_payment_terms_payment_terms: 'payInFull',
-          facc_payment_terms_pay_by_date: '01/01/2020',
+          facc_payment_terms_pay_by_date: '26/10/2025',
         });
 
         cy.get(AMEND_PAYMENT_TERMS.payInFullRadio).should('be.checked');
@@ -1431,12 +1439,14 @@ describe('Account Enquiry Amend Payment Terms', () => {
     );
 
     it(
-      'AC3dii.b: Invalid pay by date shows valid date error (Company defendant)',
-      { tags: [...buildTags('@JIRA-STORY:PO-1640'), '@JIRA-EPIC:PO-977', '@JIRA-TEST-KEY:PO-4329'] },
+      'AC3dii.b: Non-leap-year pay by date shows valid date error (Company defendant)',
+      {
+        tags: [...buildTags('@JIRA-STORY:PO-1640'), '@JIRA-EPIC:PO-977', '@JIRA-NFR:PO-2325', '@JIRA-TEST-KEY:PO-4329'],
+      },
       () => {
         mountAmendPaymentTermsForm('company', {
           facc_payment_terms_payment_terms: 'payInFull',
-          facc_payment_terms_pay_by_date: '32/13/2024',
+          facc_payment_terms_pay_by_date: '29/02/2023',
         });
 
         cy.get(AMEND_PAYMENT_TERMS.submitButton).click();
