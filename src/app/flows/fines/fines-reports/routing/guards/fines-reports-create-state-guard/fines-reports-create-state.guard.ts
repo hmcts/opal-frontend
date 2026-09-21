@@ -7,6 +7,12 @@ import { FINES_REPORTS_ROUTING_PATHS } from '../../constants/fines-reports-routi
 import { FinesReportsStore } from '../../../stores/fines-reports.store';
 import { getFinesReportsRouteReportTypeId } from '../../../utils/fines-reports-route.utils';
 
+/**
+ * Checks that the report journey has the business unit selection required by the target route.
+ *
+ * @param route - The target route snapshot containing report parameters and selection requirements.
+ * @returns True when access is allowed, or a URL tree to the reports dashboard or business unit selection.
+ */
 export const finesReportsCreateStateGuard: CanActivateFn = (route) => {
   const router = inject(Router);
   const finesReportsStore = inject(FinesReportsStore);

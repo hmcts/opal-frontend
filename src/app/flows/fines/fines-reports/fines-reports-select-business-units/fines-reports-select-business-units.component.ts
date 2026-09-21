@@ -99,7 +99,9 @@ export class FinesReportsSelectBusinessUnitsComponent extends AbstractFormParent
   }
 
   /**
-   * Clears the current selection and returns to the report summary list.
+   * Returns to the report summary list and clears the selection only when navigation succeeds.
+   *
+   * @returns A promise that resolves after navigation and any resulting selection reset complete.
    */
   public async handleCancel(): Promise<void> {
     const navigated = await this.routerService.navigate([`../../${FINES_REPORTS_ROUTING_PATHS.children.summaryList}`], {

@@ -17,6 +17,13 @@ const FINES_REPORTS_EMPTY_BUSINESS_UNIT_REF_DATA: IOpalFinesBusinessUnitRefData 
   refData: [],
 };
 
+/**
+ * Resolves available business units and checks report creation permissions.
+ *
+ * @param route - The route snapshot identifying the report and whether it is being created.
+ * @returns An observable emitting business unit reference data (empty for Your reports), or a redirect
+ * to the summary list when manual creation is disabled or access denied when no report permission exists.
+ */
 export const finesReportsBusinessUnitsResolver: ResolveFn<IOpalFinesBusinessUnitRefData | RedirectCommand> = (
   route,
 ) => {
