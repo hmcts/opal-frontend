@@ -1,6 +1,7 @@
 import { ConsolidatedAccountsLocators } from '../../../../../shared/selectors/account-details/account.consolidated-accounts.locators';
 import { AccountNavDetailsLocators } from '../../../../../shared/selectors/account-details/account.nav.details.locators';
 import { createScopedLogger } from '../../../../../support/utils/log.helper';
+import { captureUatTechnicalEvidenceScreenshot } from '../../../../../support/utils/screenshot';
 
 const log = createScopedLogger('AccountDetailsConsolidatedAccountsActions');
 
@@ -153,6 +154,7 @@ export class AccountDetailsConsolidatedAccountsActions {
     cy.get(ConsolidatedAccountsLocators.tabRoot, {
       timeout: AccountDetailsConsolidatedAccountsActions.WAIT_MS,
     }).should('be.visible');
+    captureUatTechnicalEvidenceScreenshot('consolidated-accounts-tab');
   }
 
   /**
