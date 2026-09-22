@@ -120,6 +120,7 @@ describe('FinesSaSearchAccountFormMinorCreditorsComponent', () => {
     'fsa_search_account_minor_creditors_individual.fsa_search_account_minor_creditors_last_name',
     'fsa_search_account_minor_creditors_individual.fsa_search_account_minor_creditors_first_names',
     'fsa_search_account_minor_creditors_individual.fsa_search_account_minor_creditors_individual_address_line_1',
+    'fsa_search_account_minor_creditors_individual.fsa_search_account_minor_creditors_individual_post_code',
     'fsa_search_account_minor_creditors_company.fsa_search_account_minor_creditors_company_name',
     'fsa_search_account_minor_creditors_company.fsa_search_account_minor_creditors_company_address_line_1',
   ])('should accept every printable ASCII character in %s', (controlName) => {
@@ -138,6 +139,7 @@ describe('FinesSaSearchAccountFormMinorCreditorsComponent', () => {
     'fsa_search_account_minor_creditors_individual.fsa_search_account_minor_creditors_last_name',
     'fsa_search_account_minor_creditors_individual.fsa_search_account_minor_creditors_first_names',
     'fsa_search_account_minor_creditors_individual.fsa_search_account_minor_creditors_individual_address_line_1',
+    'fsa_search_account_minor_creditors_individual.fsa_search_account_minor_creditors_individual_post_code',
     'fsa_search_account_minor_creditors_company.fsa_search_account_minor_creditors_company_name',
     'fsa_search_account_minor_creditors_company.fsa_search_account_minor_creditors_company_address_line_1',
   ])('should reject characters outside printable ASCII in %s', (controlName) => {
@@ -157,18 +159,20 @@ describe('FinesSaSearchAccountFormMinorCreditorsComponent', () => {
       controlName:
         'fsa_search_account_minor_creditors_individual.fsa_search_account_minor_creditors_individual_post_code',
       validValue: 'SW1A 1AA',
+      patternError: 'singleAsciiCharacters',
       invalidPatternValue: 'Café',
       invalidLengthValue: 'SW1A1AAAA',
     },
     {
       controlName: 'fsa_search_account_minor_creditors_company.fsa_search_account_minor_creditors_company_post_code',
       validValue: 'B12 3CD',
+      patternError: 'alphanumericTextPattern',
       invalidPatternValue: 'B12-3CD',
       invalidLengthValue: 'B12 3CDEF',
     },
   ] as const)(
     'should validate postcode control $controlName',
-    ({ controlName, validValue, invalidPatternValue, invalidLengthValue }) => {
+    ({ controlName, validValue, patternError, invalidPatternValue, invalidLengthValue }) => {
       component.form
         .get('fsa_search_account_minor_creditors_minor_creditor_type')
         ?.setValue(controlName.includes('individual') ? 'individual' : 'company');
@@ -176,11 +180,11 @@ describe('FinesSaSearchAccountFormMinorCreditorsComponent', () => {
       const postcodeControl = component.form.get(controlName);
 
       postcodeControl?.setValue(validValue);
-      expect(postcodeControl?.hasError('alphanumericTextPattern')).toBe(false);
+      expect(postcodeControl?.hasError(patternError)).toBe(false);
       expect(postcodeControl?.hasError('maxlength')).toBe(false);
 
       postcodeControl?.setValue(invalidPatternValue);
-      expect(postcodeControl?.hasError('alphanumericTextPattern')).toBe(true);
+      expect(postcodeControl?.hasError(patternError)).toBe(true);
 
       postcodeControl?.setValue(invalidLengthValue);
       expect(postcodeControl?.hasError('maxlength')).toBe(true);

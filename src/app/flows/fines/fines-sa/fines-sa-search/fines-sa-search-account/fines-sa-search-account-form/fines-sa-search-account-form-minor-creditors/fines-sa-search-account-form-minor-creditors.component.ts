@@ -120,7 +120,7 @@ export class FinesSaSearchAccountFormMinorCreditorsComponent extends AbstractNes
           Validators.maxLength(30),
         ]),
         fsa_search_account_minor_creditors_individual_post_code: new FormControl<string | null>(null, [
-          ALPHANUMERIC_WITH_SPACES_PATTERN_VALIDATOR,
+          SINGLE_ASCII_CHARACTERS_PATTERN_VALIDATOR,
           Validators.maxLength(8),
         ]),
       }),

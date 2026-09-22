@@ -72,8 +72,9 @@ export const FINES_SA_SEARCH_ACCOUNT_FORM_MINOR_CREDITORS_FIELD_ERRORS: IFinesSa
       },
     },
     fsa_search_account_minor_creditors_individual_post_code: {
-      alphanumericTextPattern: {
-        message: 'Postcode must only contain letters or numbers',
+      singleAsciiCharacters: {
+        message:
+          'Postcode must only include letters a to z, numbers 0-9 and certain special characters (such as hyphens, spaces, apostrophes and commas)',
         priority: 1,
       },
       maxlength: {
