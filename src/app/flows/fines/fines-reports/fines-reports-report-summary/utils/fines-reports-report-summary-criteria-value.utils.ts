@@ -340,11 +340,12 @@ export const mapCriteriaRows = (
     .filter((row) => !row.optional || !isUnusedOptionalValue(row.value))
     .map((row) => {
       const isCurrency = CURRENCY_ROW_KEYS.has(row.name);
+      const value = isCurrency ? mapCurrencyValue(row.value) : mapDisplayText(row.value);
 
       return {
         key: row.name,
-        value: isCurrency ? mapCurrencyValue(row.value) : mapDisplayText(row.value),
-        ...(isCurrency ? { isCurrency: true } : {}),
+        value,
+        ...(isCurrency && typeof value === 'number' && Number.isFinite(value) ? { isCurrency: true } : {}),
       };
     });
 };

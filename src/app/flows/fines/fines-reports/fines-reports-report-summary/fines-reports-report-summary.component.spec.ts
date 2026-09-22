@@ -185,6 +185,28 @@ describe('FinesReportsReportSummaryComponent', () => {
     expect(fixture.nativeElement.textContent).toContain('Summary');
   });
 
+  it('should render nonnumeric balances as text and numeric balances as currency', async () => {
+    const reportSummary = mapFinesReportsReportInstanceToViewModel(
+      {
+        ...OPAL_FINES_REPORT_INSTANCE_MOCK,
+        report_parameters: {
+          minBalance: 'not available',
+          maxBalance: '120.50',
+        },
+      },
+      null,
+      '',
+      dateService,
+    );
+    const { fixture } = await setup(enforcementReportTypeId, reportSummary);
+
+    fixture.detectChanges();
+
+    const pageText = fixture.nativeElement.textContent;
+    expect(pageText).toContain('not available');
+    expect(pageText).toContain('£120.50');
+  });
+
   it('should render the payments report heading', async () => {
     const { fixture } = await setup(paymentsReportTypeId, paymentsReportSummary);
 
