@@ -8,6 +8,7 @@
 
 import { AccountEnquiryResultsLocators as R } from '../../../../../shared/selectors/account-enquiry/account.enquiry.results.locators';
 import { createScopedLogger } from '../../../../../support/utils/log.helper';
+import { captureUatTechnicalEvidenceScreenshot } from '../../../../../support/utils/screenshot';
 
 const log = createScopedLogger('ResultsActions');
 
@@ -109,6 +110,7 @@ export class ResultsActions {
       .should('be.visible')
       .and('contain.text', 'Search results');
     cy.get(R.table.root, { timeout: ResultsActions.WAIT_MS }).should('be.visible');
+    captureUatTechnicalEvidenceScreenshot('search-results-page');
   }
 
   /**
