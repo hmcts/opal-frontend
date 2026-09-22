@@ -5,6 +5,19 @@ interface IOpalFinesAccountDefendantDetailsImpositionResult {
 
 interface IOpalFinesAccountDefendantDetailsImpositionCreditor {
   creditor_account_id: number;
+  creditor_account_type: {
+    account_type: string;
+    display_name?: string | null;
+  };
+  major_creditor_name?: string | null;
+  minor_creditor_organisation_flag?: boolean | null;
+  individual_name?: {
+    forenames?: string | null;
+    surname: string;
+  } | null;
+  company_name?: {
+    organisation_name: string;
+  } | null;
   account_type: string;
   display_name: string;
   major_creditor_id: number | null;

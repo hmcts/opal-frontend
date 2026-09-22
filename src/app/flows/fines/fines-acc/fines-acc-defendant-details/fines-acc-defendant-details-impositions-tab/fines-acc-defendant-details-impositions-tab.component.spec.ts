@@ -179,12 +179,76 @@ describe('FinesAccDefendantDetailsImpositionsTabComponent', () => {
     },
   ])('should display $description', ({ displayName, expected }) => {
     const tabData = structuredClone(OPAL_FINES_ACCOUNT_DEFENDANT_DETAILS_IMPOSITIONS_TAB_REF_DATA_MOCK);
-    Object.assign(tabData.impositions[0].creditor, { name: null, display_name: displayName });
+    tabData.impositions[0].creditor.major_creditor_name = null;
+    tabData.impositions[0].creditor.creditor_account_type.display_name = displayName;
 
     const { fixture } = setupComponent(tabData);
     const creditorCell = fixture.nativeElement.querySelector('#imposition-creditor-0') as HTMLTableCellElement;
 
     expect(creditorCell.textContent?.trim()).toBe(expected);
+  });
+
+  it.each([
+    {
+      description: 'forenames and surname',
+      individual: { forenames: 'Alex James', surname: 'Smith' },
+      expected: 'Alex James Smith',
+    },
+    { description: 'surname only', individual: { surname: 'Smith' }, expected: 'Smith' },
+    { description: 'null forenames', individual: { forenames: null, surname: 'Smith' }, expected: 'Smith' },
+    { description: 'missing individual details', individual: null, expected: 'Minor Creditor' },
+  ])('should display a minor creditor with $description', ({ individual, expected }) => {
+    const tabData = structuredClone(OPAL_FINES_ACCOUNT_DEFENDANT_DETAILS_IMPOSITIONS_TAB_REF_DATA_MOCK);
+    tabData.impositions[1].creditor.minor_creditor_organisation_flag = false;
+    tabData.impositions[1].creditor.individual_name = individual;
+
+    const { fixture } = setupComponent(tabData);
+    const creditorCell = fixture.nativeElement.querySelector('#imposition-creditor-1') as HTMLTableCellElement;
+
+    expect(creditorCell.textContent?.trim()).toBe(expected);
+  });
+
+  it('should select the company name when the organisation flag is true', () => {
+    const tabData = structuredClone(OPAL_FINES_ACCOUNT_DEFENDANT_DETAILS_IMPOSITIONS_TAB_REF_DATA_MOCK);
+    tabData.impositions[1].creditor.company_name = { organisation_name: 'Updated Company Ltd' };
+    tabData.impositions[1].creditor.individual_name = { surname: 'Smith' };
+
+    const { fixture } = setupComponent(tabData);
+    const creditorCell = fixture.nativeElement.querySelector('#imposition-creditor-1') as HTMLTableCellElement;
+
+    expect(creditorCell.textContent?.trim()).toBe('Updated Company Ltd');
+  });
+
+  it('should use the account-type label when company details are missing', () => {
+    const tabData = structuredClone(OPAL_FINES_ACCOUNT_DEFENDANT_DETAILS_IMPOSITIONS_TAB_REF_DATA_MOCK);
+    tabData.impositions[1].creditor.company_name = null;
+
+    const { fixture } = setupComponent(tabData);
+    const creditorCell = fixture.nativeElement.querySelector('#imposition-creditor-1') as HTMLTableCellElement;
+
+    expect(creditorCell.textContent?.trim()).toBe('Minor Creditor');
+  });
+
+  it('should use the supplied major creditor name', () => {
+    const tabData = structuredClone(OPAL_FINES_ACCOUNT_DEFENDANT_DETAILS_IMPOSITIONS_TAB_REF_DATA_MOCK);
+    tabData.impositions[0].creditor.major_creditor_name = 'Updated Major Creditor';
+    tabData.impositions[0].creditor.company_name = { organisation_name: 'Unused company name' };
+
+    const { fixture } = setupComponent(tabData);
+    const creditorCell = fixture.nativeElement.querySelector('#imposition-creditor-0') as HTMLTableCellElement;
+
+    expect(creditorCell.textContent?.trim()).toBe('Updated Major Creditor');
+  });
+
+  it.each([null, undefined])('should display the Central Fund company name with organisation flag %s', (flag) => {
+    const tabData = structuredClone(OPAL_FINES_ACCOUNT_DEFENDANT_DETAILS_IMPOSITIONS_TAB_REF_DATA_MOCK);
+    tabData.impositions[2].creditor.minor_creditor_organisation_flag = flag;
+    tabData.impositions[2].creditor.company_name = { organisation_name: 'Central Fund Organisation' };
+
+    const { fixture } = setupComponent(tabData);
+    const creditorCell = fixture.nativeElement.querySelector('#imposition-creditor-2') as HTMLTableCellElement;
+
+    expect(creditorCell.textContent?.trim()).toBe('Central Fund Organisation');
   });
 
   it('should announce the new page and focus its first date cell after rendering', async () => {

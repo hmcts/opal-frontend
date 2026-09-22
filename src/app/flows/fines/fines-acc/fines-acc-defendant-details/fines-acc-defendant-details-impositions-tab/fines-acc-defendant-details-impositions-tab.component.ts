@@ -103,8 +103,21 @@ export class FinesAccDefendantDetailsImpositionsTabComponent extends AbstractSor
     const isMinorCreditor = apiImposition.creditor.minor_creditor_party_id !== null;
     const isMajorCreditor = apiImposition.creditor.major_creditor_id !== null;
     const creditorAccountId = apiImposition.creditor.creditor_account_id;
-    const creditorDisplay =
-      apiImposition.creditor.name ?? apiImposition.creditor.display_name ?? creditorAccountId.toString();
+    const creditor = apiImposition.creditor;
+    // Major creditors supply their name directly; Central Fund supplies a company name.
+    let creditorName = creditor.major_creditor_name ?? creditor.company_name?.organisation_name;
+
+    if (creditor.minor_creditor_organisation_flag === true) {
+      // Minor creditor organisations use the company name.
+      creditorName = creditor.company_name?.organisation_name;
+    } else if (creditor.minor_creditor_organisation_flag === false) {
+      // Minor creditor individuals use their forenames, when supplied, and surname.
+      const individual = creditor.individual_name;
+      creditorName = individual ? [individual.forenames, individual.surname].filter(Boolean).join(' ') : undefined;
+    }
+
+    // Fall back to the account-type display name, then the creditor account ID.
+    const creditorDisplay = creditorName ?? creditor.creditor_account_type.display_name ?? creditorAccountId.toString();
     let creditorDetailsRouterLink: string | null = null;
 
     if (isMinorCreditor) {
