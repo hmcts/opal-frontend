@@ -67,18 +67,17 @@ export const setupAccountEnquiryComponent = (componentProperties: IComponentProp
 
       // Use Cypress to stub the router's navigate method.
       // This lets us intercept navigation attempts and control their behavior in the test.
-      cy.stub(router, 'navigate')
-        .as('routerNavigate') // Give the stub a name for easier reference in assertions.
-        .callsFake((commands, extras) => {
-          // If the navigation is trying to go to '/access-denied', intercept and resolve immediately.
-          // This prevents the actual redirect during the test, allowing us to test other logic.
+      const navigateStub = cy.stub(router, 'navigate').callsFake((commands, extras) => {
+        // If the navigation is trying to go to '/access-denied', intercept and resolve immediately.
+        // This prevents the actual redirect during the test, allowing us to test other logic.
 
-          if (Array.isArray(commands) && componentProperties.interceptedRoutes?.includes(commands[0])) {
-            return Promise.resolve(true); // Swallow the redirect, simulating a successful navigation.
-          }
-          // For all other routes, call the original navigate method to allow normal navigation.
-          return originalNavigate(commands, extras);
-        });
+        if (Array.isArray(commands) && componentProperties.interceptedRoutes?.includes(commands[0])) {
+          return Promise.resolve(true); // Swallow the redirect, simulating a successful navigation.
+        }
+        // For all other routes, call the original navigate method to allow normal navigation.
+        return originalNavigate(commands, extras);
+      });
+      cy.wrap(navigateStub).as('routerNavigate'); // Give the stub a name for easier reference in assertions.
 
       const routeRoot = componentProperties.routeRoot ?? 'defendant';
       const routeSegments = componentProperties.routeSegments ?? ['details'];

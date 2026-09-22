@@ -573,7 +573,7 @@ describe('ReviewAccountRejectedApproveComponent', () => {
   );
   it(
     'AC.8b,AC.8c,AC.8ci user does not select any radio button and selects the Continue button (ReviewAccountRejectedApproveComponent)',
-    { tags: [...buildTags('@JIRA-STORY:PO-594'), '@JIRA-EPIC:PO-2220', '@JIRA-TEST-KEY:PO-5180'] },
+    { tags: [...buildTags('@JIRA-STORY:PO-594'), '@JIRA-EPIC:PO-2220'] },
     () => {
       setupComponent(finesAccountPayload, finesAccountPayload, false, true);
       cy.get(DOM_ELEMENTS.rejectRadioButton).should('exist').click();

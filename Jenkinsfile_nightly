@@ -6,25 +6,44 @@ import java.time.ZonedDateTime
 
 @Field String legacyUrlDevChoice = 'DEV'
 @Field String legacyUrlPreProdChoice = 'PRE-PROD'
-@Field String legacyDemoSuiteR1aChoice = 'R1A'
+@Field String suiteR1aChoice = 'R1A'
+@Field String legacyDemoSuiteR1aChoice = suiteR1aChoice
+@Field String legacyDemoSuiteR1aR1bDrop1Choice = 'R1A_AND_R1B_DROP1'
 @Field String legacyDemoSuiteR1abChoice = 'R1A_AND_R1B'
+@Field String legacyDemoSuiteR1bDrop1Choice = 'R1B_DROP1'
 @Field String legacyDemoSuiteR1bOffChoice = 'R1B_OFF'
 @Field String legacyDemoSuiteR1aOffChoice = 'R1A_OFF'
 @Field String legacyDemoSuiteR1abOffChoice = 'R1A_AND_R1B_OFF'
 @Field String legacyDemoSuiteNoneChoice = 'NONE'
-@Field String uatTechnicalSuiteR1aChoice = 'R1A'
-@Field String uatTechnicalSuiteR1bChoice = 'R1B'
+@Field String uatTechnicalSuiteR1aChoice = suiteR1aChoice
+@Field String uatTechnicalSuiteR1bDrop1Choice = 'R1BDrop1'
+@Field String uatTechnicalSuiteR1bDrop2Choice = 'R1BDrop2'
+@Field String uatTechnicalSuiteR1bDrop1AndR1bDrop2Choice = 'R1BDrop1AndR1BDrop2'
 @Field String functionalR1aCommand = 'test:functional:r1a'
+@Field String functionalR1aAndR1bDrop1Command = 'test:functional:r1a_and_r1b_drop1'
 @Field String functionalR1abCommand = 'test:functional:r1ab'
+@Field String functionalR1bDrop1Command = 'test:functional:r1b_drop1'
 @Field String functionalR1bOffCommand = 'test:functional:r1bOff'
 @Field String functionalR1aOffCommand = 'test:functional:r1aOff'
 @Field String functionalR1abOffCommand = 'test:functional:r1aboff'
 @Field String functionalUatTechnicalR1aCommand = 'test:functional:uat_legacy_r1a'
-@Field String functionalUatTechnicalR1bJcdeCommand = 'test:functional:uat_legacy_r1b_jcde'
-@Field String functionalUatTechnicalR1bPreProdCommand = 'test:functional:uat_legacy_r1b_preprod'
+@Field String functionalUatTechnicalR1bDrop1JcdeCommand = 'test:functional:uat_legacy_r1b_drop1_jcde'
+@Field String functionalUatTechnicalR1bDrop1PreProdCommand = 'test:functional:uat_legacy_r1b_drop1_preprod'
+@Field String functionalUatTechnicalR1bDrop2JcdeCommand = 'test:functional:uat_legacy_r1b_drop2_jcde'
+@Field String functionalUatTechnicalR1bDrop2PreProdCommand = 'test:functional:uat_legacy_r1b_drop2_preprod'
+@Field String functionalUatTechnicalR1bDrop1AndR1bDrop2JcdeCommand =
+  'test:functional:uat_legacy_r1b_drop1_and_r1b_drop2_jcde'
+@Field String functionalUatTechnicalR1bDrop1AndR1bDrop2PreProdCommand =
+  'test:functional:uat_legacy_r1b_drop1_and_r1b_drop2_preprod'
 @Field String zephyrUatTechnicalR1aCommand = 'zephyr:test:uat_technical_r1a'
-@Field String zephyrUatTechnicalR1bJcdeCommand = 'zephyr:test:uat_technical_r1b_jcde'
-@Field String zephyrUatTechnicalR1bPreProdCommand = 'zephyr:test:uat_technical_r1b_preprod'
+@Field String zephyrUatTechnicalR1bDrop1JcdeCommand = 'zephyr:test:uat_technical_r1b_drop1_jcde'
+@Field String zephyrUatTechnicalR1bDrop1PreProdCommand = 'zephyr:test:uat_technical_r1b_drop1_preprod'
+@Field String zephyrUatTechnicalR1bDrop2JcdeCommand = 'zephyr:test:uat_technical_r1b_drop2_jcde'
+@Field String zephyrUatTechnicalR1bDrop2PreProdCommand = 'zephyr:test:uat_technical_r1b_drop2_preprod'
+@Field String zephyrUatTechnicalR1bDrop1AndR1bDrop2JcdeCommand =
+  'zephyr:test:uat_technical_r1b_drop1_and_r1b_drop2_jcde'
+@Field String zephyrUatTechnicalR1bDrop1AndR1bDrop2PreProdCommand =
+  'zephyr:test:uat_technical_r1b_drop1_and_r1b_drop2_preprod'
 
 properties([
     // H allow predefined but random minute see https://en.wikipedia.org/wiki/Cron#Non-standard_characters
@@ -57,7 +76,9 @@ properties([
       name: 'LEGACY_DEMO_SUITE',
       choices: [
         legacyDemoSuiteR1aChoice,
+        legacyDemoSuiteR1aR1bDrop1Choice,
         legacyDemoSuiteR1abChoice,
+        legacyDemoSuiteR1bDrop1Choice,
         legacyDemoSuiteR1bOffChoice,
         legacyDemoSuiteR1aOffChoice,
         legacyDemoSuiteR1abOffChoice,
@@ -72,7 +93,12 @@ properties([
     ),
     choice(
       name: 'UAT_TECHNICAL_SUITE',
-      choices: [uatTechnicalSuiteR1aChoice, uatTechnicalSuiteR1bChoice],
+      choices: [
+        uatTechnicalSuiteR1aChoice,
+        uatTechnicalSuiteR1bDrop1Choice,
+        uatTechnicalSuiteR1bDrop2Choice,
+        uatTechnicalSuiteR1bDrop1AndR1bDrop2Choice,
+      ],
       description: 'Select which UAT-Technical suite to run when RunUatTech=true.'
     ),
     booleanParam(name: 'ZephyrExecution', defaultValue: false, description: 'Create Zephyr Execution'),
@@ -103,9 +129,13 @@ String failureResult = 'FAILURE'
 @Field String nightlyTestUrlStaging = 'https://opal-frontend.staging.apps.hmcts.net/'
 @Field String nightlyTestUrlDemo = 'https://opal-frontend.demo.apps.hmcts.net/'
 @Field String demoStageUatTechnicalR1aDirName = 'uat-technical-r1a'
-@Field String demoStageUatTechnicalR1bDirName = 'uat-technical-r1b'
+@Field String demoStageUatTechnicalR1bDrop1DirName = 'uat-technical-r1b-drop1'
+@Field String demoStageUatTechnicalR1bDrop2DirName = 'uat-technical-r1b-drop2'
+@Field String demoStageUatTechnicalR1bDrop1AndR1bDrop2DirName = 'uat-technical-r1b-drop1-and-r1b-drop2'
 @Field String demoStageR1aDirName = 'r1a-legacy-demo'
+@Field String demoStageR1aAndR1bDrop1DirName = 'r1a-and-r1b-drop1-legacy-demo'
 @Field String demoStageR1abDirName = 'r1ab-legacy-demo'
+@Field String demoStageR1bDrop1DirName = 'r1b-drop1-legacy-demo'
 @Field String demoStageR1bOffDirName = 'r1b-off-legacy-demo'
 @Field String demoStageR1aOffDirName = 'r1a-off-legacy-demo'
 @Field String demoStageR1abOffDirName = 'r1ab-off-legacy-demo'
@@ -273,14 +303,72 @@ INSTALL ${browser.toUpperCase()} OR DISABLE THE ${browser.toUpperCase()} RUN
 
 // Resolve the requested UAT-Technical suite for nightly legacy-mode checks.
 String selectedUatTechnicalSuite() {
-  String suite = (params.UAT_TECHNICAL_SUITE ?: uatTechnicalSuiteR1aChoice).trim().toUpperCase()
-  List<String> supportedSuites = [uatTechnicalSuiteR1aChoice, uatTechnicalSuiteR1bChoice]
+  String suite = (params.UAT_TECHNICAL_SUITE ?: uatTechnicalSuiteR1aChoice).trim()
+  List<String> supportedSuites = [
+    uatTechnicalSuiteR1aChoice,
+    uatTechnicalSuiteR1bDrop1Choice,
+    uatTechnicalSuiteR1bDrop2Choice,
+    uatTechnicalSuiteR1bDrop1AndR1bDrop2Choice,
+  ]
 
   if (!supportedSuites.contains(suite)) {
     error "Unsupported UAT_TECHNICAL_SUITE value '${suite}'. Supported values: ${supportedSuites.join(', ')}"
   }
 
   return suite
+}
+
+// Resolve the selected UAT-Technical command for the requested environment.
+String resolveUatTechnicalCommand(String suite, boolean shouldRunWithZephyr, boolean usePreProdLegacyGateway) {
+  if (shouldRunWithZephyr) {
+    switch (suite) {
+      case uatTechnicalSuiteR1bDrop1Choice:
+        return usePreProdLegacyGateway
+          ? zephyrUatTechnicalR1bDrop1PreProdCommand
+          : zephyrUatTechnicalR1bDrop1JcdeCommand
+      case uatTechnicalSuiteR1bDrop2Choice:
+        return usePreProdLegacyGateway
+          ? zephyrUatTechnicalR1bDrop2PreProdCommand
+          : zephyrUatTechnicalR1bDrop2JcdeCommand
+      case uatTechnicalSuiteR1bDrop1AndR1bDrop2Choice:
+        return usePreProdLegacyGateway
+          ? zephyrUatTechnicalR1bDrop1AndR1bDrop2PreProdCommand
+          : zephyrUatTechnicalR1bDrop1AndR1bDrop2JcdeCommand
+      default:
+        return zephyrUatTechnicalR1aCommand
+    }
+  }
+
+  switch (suite) {
+    case uatTechnicalSuiteR1bDrop1Choice:
+      return usePreProdLegacyGateway
+        ? functionalUatTechnicalR1bDrop1PreProdCommand
+        : functionalUatTechnicalR1bDrop1JcdeCommand
+    case uatTechnicalSuiteR1bDrop2Choice:
+      return usePreProdLegacyGateway
+        ? functionalUatTechnicalR1bDrop2PreProdCommand
+        : functionalUatTechnicalR1bDrop2JcdeCommand
+    case uatTechnicalSuiteR1bDrop1AndR1bDrop2Choice:
+      return usePreProdLegacyGateway
+        ? functionalUatTechnicalR1bDrop1AndR1bDrop2PreProdCommand
+        : functionalUatTechnicalR1bDrop1AndR1bDrop2JcdeCommand
+    default:
+      return functionalUatTechnicalR1aCommand
+  }
+}
+
+// Resolve the report directory name for the selected UAT-Technical suite.
+String resolveUatTechnicalOutputDir(String suite) {
+  switch (suite) {
+    case uatTechnicalSuiteR1bDrop1Choice:
+      return demoStageUatTechnicalR1bDrop1DirName
+    case uatTechnicalSuiteR1bDrop2Choice:
+      return demoStageUatTechnicalR1bDrop2DirName
+    case uatTechnicalSuiteR1bDrop1AndR1bDrop2Choice:
+      return demoStageUatTechnicalR1bDrop1AndR1bDrop2DirName
+    default:
+      return demoStageUatTechnicalR1aDirName
+  }
 }
 
 // Check whether any files in the workspace match the provided glob.
@@ -686,15 +774,8 @@ void runUatTechnicalStage(
   String browserToRun
 ) {
   String uatSuite = selectedUatTechnicalSuite()
-  boolean isR1bSuite = uatSuite == uatTechnicalSuiteR1bChoice
   boolean usePreProdLegacyGateway = params.LEGACY_URL == legacyUrlPreProdChoice
-  String uatCommand = shouldRunWithZephyr
-    ? (isR1bSuite
-      ? (usePreProdLegacyGateway ? zephyrUatTechnicalR1bPreProdCommand : zephyrUatTechnicalR1bJcdeCommand)
-      : zephyrUatTechnicalR1aCommand)
-    : (isR1bSuite
-      ? (usePreProdLegacyGateway ? functionalUatTechnicalR1bPreProdCommand : functionalUatTechnicalR1bJcdeCommand)
-      : functionalUatTechnicalR1aCommand)
+  String uatCommand = resolveUatTechnicalCommand(uatSuite, shouldRunWithZephyr, usePreProdLegacyGateway)
   String stageName = "UAT-Technical ${uatSuite}"
   String startMessage =
     "Running ${stageName} scenarios against ${nightlyTestUrlDemo} " +
@@ -706,7 +787,7 @@ void runUatTechnicalStage(
     failureResultValue: failureResultValue,
     failureMessage    : "${stageName} failed",
     startMessage      : startMessage,
-    outputDirName     : isR1bSuite ? demoStageUatTechnicalR1bDirName : demoStageUatTechnicalR1aDirName,
+    outputDirName     : resolveUatTechnicalOutputDir(uatSuite),
     reportName        : "${stageName} Functional Test Report (${browserToRun})",
     browserToRun      : browserToRun,
     archiveAccountEvidence: true,
@@ -771,6 +852,32 @@ boolean isSelectedLegacyDemoSuite(String suiteChoice) {
   return params.LEGACY_DEMO_SUITE == suiteChoice
 }
 
+// Run the nightly R1B Drop1 legacy demo checks and publish a dedicated report.
+void runR1bDrop1LegacyDemoStage(
+  boolean enabled,
+  String failureResultValue,
+  uk.gov.hmcts.contino.YarnBuilder builder,
+  boolean shouldRunWithZephyr,
+  String browserToRun
+) {
+  String r1bDrop1Command =
+    shouldRunWithZephyr ? 'zephyr:test:r1b_drop1_legacy_demo' : functionalR1bDrop1Command
+  runDemoLegacyStage([
+    enabled           : enabled,
+    stageName         : 'R1B Drop1 Legacy Demo',
+    failureResultValue: failureResultValue,
+    failureMessage    : 'R1B Drop1 Legacy Demo failed',
+    startMessage      :
+      "Running R1B Drop1 legacy demo scenarios against ${nightlyTestUrlDemo} " +
+      "with yarn ${r1bDrop1Command}",
+    outputDirName     : demoStageR1bDrop1DirName,
+    reportName        : "R1B Drop1 Legacy Demo Functional Test Report (${browserToRun})",
+    browserToRun      : browserToRun,
+  ]) {
+    builder.yarn(r1bDrop1Command)
+  }
+}
+
 // Run the nightly R1B-off legacy demo checks and publish a dedicated report.
 void runR1bOffLegacyDemoStage(
   boolean enabled,
@@ -794,6 +901,33 @@ void runR1bOffLegacyDemoStage(
     browserToRun      : browserToRun,
   ]) {
     builder.yarn(r1bOffCommand)
+  }
+}
+
+// Run the nightly R1A and R1B Drop1 legacy demo checks and publish a dedicated report.
+void runR1aAndR1bDrop1LegacyDemoStage(
+  boolean enabled,
+  String failureResultValue,
+  uk.gov.hmcts.contino.YarnBuilder builder,
+  boolean shouldRunWithZephyr,
+  String browserToRun
+) {
+  String r1aAndR1bDrop1Command = shouldRunWithZephyr
+    ? 'zephyr:test:r1a_and_r1b_drop1_legacy_demo'
+    : functionalR1aAndR1bDrop1Command
+  runDemoLegacyStage([
+    enabled           : enabled,
+    stageName         : 'R1A and R1B Drop1 Legacy Demo',
+    failureResultValue: failureResultValue,
+    failureMessage    : 'R1A and R1B Drop1 Legacy Demo failed',
+    startMessage      :
+      "Running R1A and R1B Drop1 legacy demo scenarios against ${nightlyTestUrlDemo} " +
+      "with yarn ${r1aAndR1bDrop1Command}",
+    outputDirName     : demoStageR1aAndR1bDrop1DirName,
+    reportName        : "R1A and R1B Drop1 Legacy Demo Functional Test Report (${browserToRun})",
+    browserToRun      : browserToRun,
+  ]) {
+    builder.yarn(r1aAndR1bDrop1Command)
   }
 }
 
@@ -1090,8 +1224,22 @@ Description: ${env.EXECUTION_CYCLE_DESCRIPTION}
       shouldRunWithZephyr,
       browserToRun
     )
+    runR1aAndR1bDrop1LegacyDemoStage(
+      isSelectedLegacyDemoSuite(legacyDemoSuiteR1aR1bDrop1Choice),
+      failureResult,
+      yarnBuilder,
+      shouldRunWithZephyr,
+      browserToRun
+    )
     runR1aAndR1bLegacyDemoStage(
       isSelectedLegacyDemoSuite(legacyDemoSuiteR1abChoice),
+      failureResult,
+      yarnBuilder,
+      shouldRunWithZephyr,
+      browserToRun
+    )
+    runR1bDrop1LegacyDemoStage(
+      isSelectedLegacyDemoSuite(legacyDemoSuiteR1bDrop1Choice),
       failureResult,
       yarnBuilder,
       shouldRunWithZephyr,

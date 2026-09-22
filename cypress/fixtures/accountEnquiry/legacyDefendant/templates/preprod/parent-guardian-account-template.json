@@ -1,0 +1,82 @@
+{
+  "header": {
+    "accountNumber": "TEMPLATE_PARENT_GUARDIAN_ACCOUNT_NUMBER",
+    "name": "TEMPLATE_PARENT_GUARDIAN_SUMMARY_HEADER",
+    "summary": {
+      "account type": "TEMPLATE_ACCOUNT_TYPE",
+      "pcr or case number": "TEMPLATE_PROSECUTOR_CASE_REFERENCE",
+      "business unit": "TEMPLATE_BUSINESS_UNIT"
+    },
+    "metrics": {
+      "imposed": "TEMPLATE_IMPOSED_AMOUNT",
+      "arrears": "TEMPLATE_ARREARS_AMOUNT",
+      "paid/written off": "TEMPLATE_PAID_WRITTEN_OFF_AMOUNT",
+      "account balance": "TEMPLATE_ACCOUNT_BALANCE"
+    }
+  },
+  "atAGlance": {
+    "defendant": {
+      "name": "TEMPLATE_DEFENDANT_NAME",
+      "date of birth": "TEMPLATE_DATE_OF_BIRTH",
+      "address": "TEMPLATE_ADDRESS_LINE_1\nTEMPLATE_ADDRESS_LINE_2\nTEMPLATE_POSTCODE",
+      "national insurance number": "TEMPLATE_NI_NUMBER"
+    },
+    "paymentTerms": {
+      "payment terms": "TEMPLATE_PAYMENT_TERMS",
+      "pay by date": "TEMPLATE_PAY_BY_DATE"
+    },
+    "enforcementStatus": {
+      "collection order": "TEMPLATE_COLLECTION_ORDER_STATUS",
+      "days in default": "TEMPLATE_DAYS_IN_DEFAULT",
+      "date of last movement": "TEMPLATE_DATE_OF_LAST_MOVEMENT"
+    },
+    "comments": {
+      "comment": "TEMPLATE_ACCOUNT_COMMENT",
+      "lines": ["TEMPLATE_FREE_TEXT_NOTE"]
+    }
+  },
+  "defendantTab": {
+    "defendant": {
+      "name": "TEMPLATE_DEFENDANT_NAME",
+      "aliases": "TEMPLATE_ALIASES",
+      "date of birth": "TEMPLATE_DATE_OF_BIRTH",
+      "national insurance number": "TEMPLATE_NI_NUMBER",
+      "address": "TEMPLATE_ADDRESS_LINE_1\nTEMPLATE_ADDRESS_LINE_2\nTEMPLATE_POSTCODE",
+      "vehicle make and model": "TEMPLATE_VEHICLE_MAKE_AND_MODEL",
+      "vehicle registration": "TEMPLATE_VEHICLE_REGISTRATION"
+    },
+    "contact": {
+      "primary email address": "TEMPLATE_PRIMARY_EMAIL",
+      "secondary email address": "TEMPLATE_SECONDARY_EMAIL",
+      "mobile telephone number": "TEMPLATE_MOBILE_TELEPHONE",
+      "home telephone number": "TEMPLATE_HOME_TELEPHONE",
+      "work telephone number": "TEMPLATE_WORK_TELEPHONE"
+    },
+    "employer": {
+      "employer name": "TEMPLATE_EMPLOYER_NAME",
+      "employer reference": "TEMPLATE_EMPLOYER_REFERENCE",
+      "employer email": "TEMPLATE_EMPLOYER_EMAIL",
+      "employer telephone": "TEMPLATE_EMPLOYER_TELEPHONE",
+      "employer address": "TEMPLATE_EMPLOYER_ADDRESS_LINE_1\nTEMPLATE_EMPLOYER_ADDRESS_LINE_2\nTEMPLATE_EMPLOYER_POSTCODE"
+    }
+  },
+  "parentGuardianTab": {
+    "header": "TEMPLATE_PREPROD_PARENT_GUARDIAN_DETAILS_HEADER"
+  },
+  "paymentTermsTab": {
+    "pay by date": "TEMPLATE_PAY_BY_DATE",
+    "days in default": "TEMPLATE_DAYS_IN_DEFAULT_NUMBER",
+    "date days in default were imposed": "TEMPLATE_DATE_DAYS_IN_DEFAULT_WERE_IMPOSED",
+    "payment card last requested": "TEMPLATE_PAYMENT_CARD_LAST_REQUESTED"
+  },
+  "enforcementTab": {
+    "overview": {
+      "collection order status": "TEMPLATE_COLLECTION_ORDER_STATUS",
+      "days in default": "TEMPLATE_DAYS_IN_DEFAULT",
+      "enforcement court": "TEMPLATE_ENFORCEMENT_COURT"
+    },
+    "noOutstandingEnforcementActionMessage": "TEMPLATE_NO_OUTSTANDING_ENFORCEMENT_ACTION_MESSAGE"
+  },
+  "impositionsTab": {},
+  "historyAndNotesTab": {}
+}

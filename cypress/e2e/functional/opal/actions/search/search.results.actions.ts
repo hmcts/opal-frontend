@@ -8,6 +8,7 @@
 
 import { AccountEnquiryResultsLocators as R } from '../../../../../shared/selectors/account-enquiry/account.enquiry.results.locators';
 import { createScopedLogger } from '../../../../../support/utils/log.helper';
+import { captureUatTechnicalEvidenceScreenshot } from '../../../../../support/utils/screenshot';
 
 const log = createScopedLogger('ResultsActions');
 
@@ -78,8 +79,9 @@ export class ResultsActions {
     Balance: `${R.cols.balance}, ${R.cols.minorCreditorBalance}`,
     // Column header "Ref" → reference column cell
     Ref: R.cols.ref,
-    // Column header "Enf" → enforcement column cell
+    // Column header "Enf"/"ENF" → enforcement column cell
     Enf: R.cols.enf,
+    ENF: R.cols.enf,
     // Column header "Aliases" → aliases column cell
     Aliases: R.cols.aliases,
     // Column header "Date of birth" → date of birth cell
@@ -108,6 +110,7 @@ export class ResultsActions {
       .should('be.visible')
       .and('contain.text', 'Search results');
     cy.get(R.table.root, { timeout: ResultsActions.WAIT_MS }).should('be.visible');
+    captureUatTechnicalEvidenceScreenshot('search-results-page');
   }
 
   /**
@@ -117,6 +120,40 @@ export class ResultsActions {
    */
   private static normalizeHeader(text: string): string {
     return text.replace(/\s+/g, ' ').trim();
+  }
+
+  /**
+   * Normalises visible cell text to make row matching whitespace-safe and case-insensitive.
+   *
+   * @param text - Raw visible cell text from the DOM or feature data.
+   * @returns Cell text with placeholder empties normalized, whitespace removed, and normalized casing.
+   */
+  private static normalizeCellText(text: string): string {
+    const normalizedText = text
+      .replace(/\u00a0/g, ' ')
+      .replace(/\s+/g, '')
+      .trim()
+      .toLowerCase();
+
+    if (['—', '–', '-'].includes(normalizedText)) {
+      return '';
+    }
+
+    return normalizedText;
+  }
+
+  /**
+   * Extracts comparable text from a result cell while ignoring visually hidden
+   * accessibility text that is appended to some rendered values.
+   *
+   * @param row - jQuery-wrapped result row.
+   * @param selector - Row-scoped selector for the target cell.
+   * @returns Normalized visible cell text used for matching.
+   */
+  private static getComparableCellText(row: JQuery<HTMLElement>, selector: string): string {
+    const $cell = row.find(selector).first().clone();
+    $cell.find('.govuk-visually-hidden').remove();
+    return ResultsActions.normalizeCellText($cell.text());
   }
 
   /**
@@ -198,11 +235,24 @@ export class ResultsActions {
    * @remarks
    * Uses a text-based lookup for the tab label. Once tab-specific selectors
    * are available in the locators file, this should be updated to use those.
+   * Mixed-result searches render a selectable Companies tab; single-type
+   * company searches do not, so this becomes a no-op in that state.
    */
   public selectCompaniesTab(): void {
     log('click', 'Selecting "Companies" tab');
 
-    cy.contains('button, a', 'Companies', { matchCase: false }).should('be.visible').click({ force: true });
+    cy.get('body', { timeout: ResultsActions.WAIT_MS }).then(($body) => {
+      const $tab = $body.find('button, a').filter((_, element) => {
+        return ResultsActions.normalizeHeader(element.textContent ?? '').toLowerCase() === 'companies';
+      });
+
+      if ($tab.length === 0) {
+        log('info', 'No selectable "Companies" tab rendered; results are already scoped to Companies');
+        return;
+      }
+
+      cy.wrap($tab.first()).should('be.visible').click({ force: true });
+    });
   }
 
   /**
@@ -341,7 +391,7 @@ export class ResultsActions {
         );
       }
 
-      return [selector, expectedValue.replace(/\s+/g, ' ').trim().toLowerCase()] as const;
+      return [selector, ResultsActions.normalizeCellText(expectedValue)] as const;
     });
 
     log('open', 'Opening result matching supplied column values', { expectations });
@@ -351,7 +401,7 @@ export class ResultsActions {
         const $row = Cypress.$(row);
 
         return normalizedExpectations.every(([selector, expectedValue]) => {
-          const actualValue = $row.find(selector).text().replace(/\s+/g, ' ').trim().toLowerCase();
+          const actualValue = ResultsActions.getComparableCellText($row, selector);
           return actualValue === expectedValue;
         });
       })
@@ -445,8 +495,8 @@ export class ResultsActions {
             );
           }
 
-          const cellText = $row.find(selector).text().trim();
-          const expectedValue = expectedValueRaw.trim();
+          const cellText = ResultsActions.getComparableCellText($row, selector);
+          const expectedValue = ResultsActions.normalizeCellText(expectedValueRaw);
 
           if (cellText !== expectedValue) {
             allMatch = false;
@@ -509,8 +559,8 @@ export class ResultsActions {
             );
           }
 
-          const cellText = $row.find(selector).text().trim();
-          const expectedValue = expectedValueRaw.trim();
+          const cellText = ResultsActions.getComparableCellText($row, selector);
+          const expectedValue = ResultsActions.normalizeCellText(expectedValueRaw);
 
           if (cellText !== expectedValue) {
             allMatch = false;

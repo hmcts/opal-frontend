@@ -732,15 +732,14 @@ describe('FinesAccPartyAddAmendConvert - View and Amend Defendant', () => {
       dataTypeValidationMock.defendant_account_party.employer_details!.employer_name = 'Test Company <>?/';
       dataTypeValidationMock.defendant_account_party.employer_details!.employer_reference = 'EMP123~`';
       dataTypeValidationMock.defendant_account_party.employer_details!.employer_address!.address_line_1 =
-        '456 Business Park !@#';
-      dataTypeValidationMock.defendant_account_party.employer_details!.employer_address!.address_line_2 =
-        'Suite 200 $%^';
+        '456 Business Pârk';
+      dataTypeValidationMock.defendant_account_party.employer_details!.employer_address!.address_line_2 = 'Suité 200';
       dataTypeValidationMock.defendant_account_party.employer_details!.employer_address!.address_line_3 =
-        'Industrial Estate &*()';
+        'Industrial Estaté';
       dataTypeValidationMock.defendant_account_party.employer_details!.employer_address!.address_line_4 =
-        'Business District +={}';
+        'Businéss District';
       dataTypeValidationMock.defendant_account_party.employer_details!.employer_address!.address_line_5 =
-        'Metropolitan Area []|\\';
+        'Métropolitan Area';
       dataTypeValidationMock.defendant_account_party.employer_details!.employer_address!.postcode = 'BU5& 1NE';
 
       setupComponent('INDIVIDUAL', dataTypeValidationMock);

@@ -59,7 +59,7 @@ export const FINES_SA_SEARCH_ACCOUNT_FORM_MINOR_CREDITORS_FIELD_ERRORS: IFinesSa
     },
     fsa_search_account_minor_creditors_company_name_exact_match: {},
     fsa_search_account_minor_creditors_individual_address_line_1: {
-      alphanumericTextPattern: {
+      singleAsciiCharacters: {
         message:
           'Address line 1 must only include letters a to z, numbers 0-9 and certain special characters (such as hyphens, spaces, apostrophes and commas)',
         priority: 1,
@@ -80,7 +80,7 @@ export const FINES_SA_SEARCH_ACCOUNT_FORM_MINOR_CREDITORS_FIELD_ERRORS: IFinesSa
       },
     },
     fsa_search_account_minor_creditors_company_address_line_1: {
-      alphanumericWithSpacesPattern: {
+      singleAsciiCharacters: {
         message:
           'Address line 1 must only include letters a to z, numbers 0-9 and certain special characters (such as hyphens, spaces, apostrophes and commas)',
         priority: 1,

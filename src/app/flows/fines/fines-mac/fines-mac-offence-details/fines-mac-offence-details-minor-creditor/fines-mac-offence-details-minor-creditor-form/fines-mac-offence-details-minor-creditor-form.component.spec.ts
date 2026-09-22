@@ -58,6 +58,20 @@ describe('FinesMacOffenceDetailsMinorCreditorFormComponent', () => {
     expect(component).toBeTruthy();
   });
 
+  it.each([
+    'fm_offence_details_minor_creditor_address_line_1',
+    'fm_offence_details_minor_creditor_address_line_2',
+    'fm_offence_details_minor_creditor_address_line_3',
+  ])('should validate %s with the single ASCII characters pattern', (controlName) => {
+    const control = component.form.get(controlName);
+
+    control?.setValue('Flat @ 2');
+    expect(control?.hasError('singleAsciiCharacters')).toBe(false);
+
+    control?.setValue('Café');
+    expect(control?.hasError('singleAsciiCharacters')).toBe(true);
+  });
+
   it('should not repopulate the form when removeMinorCreditor is set but no matching creditor exists', () => {
     finesMacOffenceDetailsStore.setOffenceDetailsDraft([
       {

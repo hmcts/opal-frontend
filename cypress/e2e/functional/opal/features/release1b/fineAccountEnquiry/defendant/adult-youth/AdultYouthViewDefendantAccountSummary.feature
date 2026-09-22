@@ -22,18 +22,18 @@ Feature: Adult Youth View Defendant Account Summary
         | account.defendant.dob                   | 2002-05-15                           |
       And I search for the account by last name "AccDetailSurname{uniq}" and verify the page header is "Mr John ACCDETAILSURNAME{uniqUpper}"
 
-    @JIRA-EPIC:PO-812 @R1B @JIRA-STORY:PO-777 @JIRA-TEST-KEY:PO-5475
+    @JIRA-EPIC:PO-812 @R1BDrop1 @JIRA-STORY:PO-777 @JIRA-TEST-KEY:PO-5475
     Scenario: Opening comments and cancelling returns to the account summary
       When I open the Comments page from the defendant summary and verify the page contents
       And I cancel with confirmation on the Comments page
       Then I should see the account summary header contains "Mr John ACCDETAILSURNAME{uniqUpper}"
 
-    @JIRA-EPIC:PO-812 @R1B @JIRA-STORY:PO-777 @JIRA-TEST-KEY:PO-10041
+    @JIRA-EPIC:PO-812 @R1BDrop1 @JIRA-STORY:PO-777 @JIRA-TEST-KEY:PO-10041
     Scenario: Staying on the comments route guard keeps the user on the flow until they confirm leaving
       When I verify route guard behaviour when cancelling comments with "Comment Test"
       Then I should see the account summary header contains "Mr John ACCDETAILSURNAME{uniqUpper}"
 
-    @JIRA-EPIC:PO-812 @R1B @JIRA-STORY:PO-777 @JIRA-TEST-KEY:PO-10042
+    @JIRA-EPIC:PO-812 @R1BDrop1 @JIRA-STORY:PO-777 @JIRA-TEST-KEY:PO-10042
     Scenario: Saving comments updates the account summary and comments form values
       When I save the following comments and verify the account header is "Mr John ACCDETAILSURNAME{uniqUpper}":
         | field   | text         |

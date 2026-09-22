@@ -6,7 +6,7 @@ Feature: Company Fine Account Enquiry Accessibility
     Given I am logged in with email "opal-test@dev.platform.hmcts.net"
     And I clear all approved accounts
 
-  @R1B @JIRA-STORY:PO-1863 @JIRA-STORY:PO-3729 @JIRA-EPIC:PO-2472 @JIRA-TEST-KEY:PO-5461
+  @R1BDrop1 @JIRA-STORY:PO-1863 @JIRA-STORY:PO-3729 @JIRA-EPIC:PO-2472 @JIRA-TEST-KEY:PO-5461
   Scenario: Company enforcement tab accessibility
     Given I create a "company" draft account with the following details and set status "Publishing Pending" using user "opal-test-10@dev.platform.hmcts.net":
       | Account_status                                  | Submitted                 |
@@ -20,13 +20,12 @@ Feature: Company Fine Account Enquiry Accessibility
       | account.payment_card_request                    | false                     |
       | account.payment_terms.enforcements[0].result_id | PRIS                      |
 
-    When I open the company account details for "Enf Company{uniq}"
-    And I go to the Enforcement tab
+    When the Enforcement tab is displayed for company account "Enf Company{uniq}"
     Then I check the page for accessibility
-    And I open the change enforcement court form
+    And the change enforcement court form is displayed
     And I check the page for accessibility
 
-  @R1B @JIRA-STORY:PO-1867 @JIRA-STORY:PO-1863 @JIRA-EPIC:PO-2472 @JIRA-TEST-KEY:PO-5462
+  @R1BDrop1 @JIRA-STORY:PO-1867 @JIRA-STORY:PO-1863 @JIRA-EPIC:PO-2472 @JIRA-TEST-KEY:PO-5462
   Scenario: Company add enforcement override page accessibility
     Given I create a "company" draft account with the following details and set status "Publishing Pending" using user "opal-test-10@dev.platform.hmcts.net":
       | Account_status                                  | Submitted                         |
@@ -40,12 +39,10 @@ Feature: Company Fine Account Enquiry Accessibility
       | account.payment_card_request                    | false                             |
       | account.payment_terms.enforcements[0].result_id | PRIS                              |
 
-    When I open the company account details for "Enf Override Company{uniq}"
-    And I go to the Enforcement tab
-    And I open the add enforcement override form
+    When the add enforcement override form is displayed for company account "Enf Override Company{uniq}"
     Then I check the page for accessibility
 
-  @R1B @JIRA-STORY:PO-1782 @JIRA-EPIC:PO-2472 @JIRA-TEST-KEY:PO-5465
+  @R1BDrop1 @JIRA-STORY:PO-1782 @JIRA-EPIC:PO-2472 @JIRA-TEST-KEY:PO-5465
   Scenario: Company add enforcement action page accessibility
     Given I create a "company" draft account with the following details and set status "Publishing Pending" using user "opal-test-10@dev.platform.hmcts.net":
       | Account_status                                  | Submitted                       |
@@ -59,7 +56,5 @@ Feature: Company Fine Account Enquiry Accessibility
       | account.payment_card_request                    | false                           |
       | account.payment_terms.enforcements[0].result_id | PRIS                            |
 
-    When I open the company account details for "Enf Action Company{uniq}"
-    And I go to the Enforcement tab
-    And I open the add enforcement action form
+    When the add enforcement action form is displayed for company account "Enf Action Company{uniq}"
     Then I check the page for accessibility
