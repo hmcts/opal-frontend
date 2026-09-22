@@ -93,10 +93,13 @@ export class DraftAccountsInterceptActions {
         url: /\/opal-fines-service\/draft-accounts\?.*status=(?:Published|Approved)/i,
       },
       (_req) => {
-        log('intercept', 'Serving approved draft listings', { returned: summaries.length });
+        // Read the shared collection when the request arrives so later account setup
+        // steps do not replace earlier approved listings in the response.
+        const currentListings = [...approvedDraftListings];
+        log('intercept', 'Serving approved draft listings', { returned: currentListings.length });
         _req.reply({
-          count: summaries.length,
-          summaries,
+          count: currentListings.length,
+          summaries: currentListings,
         });
       },
     );

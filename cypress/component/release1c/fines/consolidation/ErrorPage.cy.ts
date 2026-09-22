@@ -3,6 +3,8 @@ import { ActivatedRoute, provideRouter } from '@angular/router';
 import { FinesConSearchErrorComponent } from 'src/app/flows/fines/fines-con/consolidate-acc/fines-con-search-error/fines-con-search-error.component';
 import { FinesConStore } from 'src/app/flows/fines/fines-con/stores/fines-con.store';
 import { ErrorPageLocators } from 'cypress/shared/selectors/consolidation/ErrorPage.locators';
+import { FINES_CON_SELECT_BU_FORM } from 'src/app/flows/fines/fines-con/select-business-unit/fines-con-select-bu/constants/fines-con-select-bu-form.constant';
+import { IFinesConSelectBuForm } from 'src/app/flows/fines/fines-con/select-business-unit/fines-con-select-bu/interfaces/fines-con-select-bu-form.interface';
 
 const CONSOLIDATION_JIRA_LABEL = '@JIRA-LABEL:consolidation';
 const CONSOLIDATION_STORY_LABEL = '@JIRA-STORY:PO-2417';
@@ -25,7 +27,15 @@ describe('FinesConSearchErrorComponent', () => {
       ],
     }).then(({ fixture }) => {
       const store = fixture.componentRef.injector.get(FinesConStore);
-      cy.stub(store, 'getDefendantType').returns(defendantType);
+      const selectBuForm: IFinesConSelectBuForm = {
+        ...FINES_CON_SELECT_BU_FORM,
+        formData: {
+          ...FINES_CON_SELECT_BU_FORM.formData,
+          fcon_select_bu_defendant_type: defendantType,
+        },
+      };
+
+      store.updateSelectBuFormComplete(selectBuForm);
       expect(store.getDefendantType()).to.equal(defendantType);
       fixture.detectChanges();
     });

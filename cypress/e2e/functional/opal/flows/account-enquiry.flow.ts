@@ -165,6 +165,14 @@ export class AccountEnquiryFlow {
   private readonly responsiveLayout = new AccountDetailsResponsiveLayoutActions();
 
   /**
+   * Waits for the defendant details page to fully render after a note save/cancel.
+   */
+  private waitForDefendantDetailsPage(): void {
+    cy.location('pathname', { timeout: 20_000 }).should('match', /\/fines\/account\/defendant\/\d+\/details$/);
+    cy.get('app-fines-acc-defendant-details-at-a-glance-tab', { timeout: 20_000 }).should('be.visible');
+  }
+
+  /**
    * Loads the legacy defendant validation fixture used by the Search and Matches journeys.
    *
    * @param fixturePath - Cypress fixture path relative to `cypress/fixtures`.
@@ -2625,8 +2633,7 @@ export class AccountEnquiryFlow {
 
     logAE('save', 'Saving account note');
     this.notes.save();
-
-    cy.location('pathname', { timeout: 20000 }).should('match', /\/fines\/account\/defendant\/\d+\/details$/);
+    this.waitForDefendantDetailsPage();
   }
 
   /**
@@ -2648,8 +2655,7 @@ export class AccountEnquiryFlow {
     this.notes.assertNoteValueEquals('');
 
     this.common.cancelEditing(true);
-
-    cy.location('pathname', { timeout: 20000 }).should('match', /\/fines\/account\/defendant\/\d+\/details$/);
+    this.waitForDefendantDetailsPage();
   }
 
   /**
@@ -2676,6 +2682,8 @@ export class AccountEnquiryFlow {
     this.notes.enterAccountNote(note);
     logAE('save', 'Saving account note');
     this.notes.save();
+    cy.location('pathname', { timeout: 20000 }).should('match', /\/fines\/account\/defendant\/\d+\/details$/);
+    cy.get('app-fines-acc-defendant-details-at-a-glance-tab', { timeout: 20000 }).should('be.visible');
   }
 
   /**

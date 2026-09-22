@@ -125,8 +125,7 @@ describe('FinesMacReviewAccountComponent - Rejected Account view', () => {
 
         expect(request.body).to.have.property('draft_account_id', 123);
         expect(request.body).to.have.property('business_unit_id', 61);
-        expect(request.body).to.have.property('submitted_by', 'L017KG');
-        expect(request.body).to.have.property('submitted_by_name', 'Timmy Tester');
+        expect(request.body).not.to.have.property('submitted_by_name');
 
         //Checking a few of the values in the account object are correct
         expect(request.body).to.have.property('account');
@@ -168,13 +167,10 @@ describe('FinesMacReviewAccountComponent - Rejected Account view', () => {
         // AC4a
         expect(request.body).to.have.property('business_unit_id', 61);
 
-        // AC4b
-        expect(request.body).to.have.property('submitted_by', 'L017KG');
+        // AC4b - submitter details are not part of the draft update request contract.
+        expect(request.body).not.to.have.property('submitted_by_name');
 
         // AC4c
-        expect(request.body).to.have.property('submitted_by_name', 'Timmy Tester');
-
-        // AC4d
         expect(request.body).to.have.property('account');
         expect(request.body.account).to.have.property('account_type', FINES_ACCOUNT_TYPES['Fixed Penalty']);
         expect(request.body.account).to.have.property('defendant_type', 'adultOrYouthOnly');
@@ -187,10 +183,10 @@ describe('FinesMacReviewAccountComponent - Rejected Account view', () => {
         expect(request.body.account.defendant).to.have.property('address_line_3', 'Fake City');
         expect(request.body.account.defendant).to.have.property('post_code', 'AB12 3CD');
 
-        // AC4e - account_type = 'Fixed Penalty'
+        // AC4d - account_type = 'Fixed Penalty'
         expect(request.body).to.have.property('account_type', FINES_ACCOUNT_TYPES['Fixed Penalty']);
 
-        // AC4f - account_status_message = null
+        // AC4e - account_status_message = null
         expect(request.body).to.have.property('account_status_message', null);
 
         // Account status should be 'Resubmitted' when resubmitting

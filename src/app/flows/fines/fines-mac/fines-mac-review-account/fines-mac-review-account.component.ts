@@ -75,7 +75,6 @@ export class FinesMacReviewAccountComponent extends AbstractFormParentBaseCompon
   private readonly globalStore = inject(GlobalStore);
   private readonly opalFinesService = inject(OpalFines);
   private readonly finesMacPayloadService = inject(FinesMacPayloadService);
-  private readonly userState = this.globalStore.userState();
 
   protected readonly utilsService = inject(UtilsService);
   protected readonly dateService = inject(DateService);
@@ -268,8 +267,7 @@ export class FinesMacReviewAccountComponent extends AbstractFormParentBaseCompon
    *
    * This method utilizes the `finesMacPayloadService` to build the payload
    * required for replacing an account. It takes into consideration the current
-   * state of fines (`finesMacState`), the draft state of fines (`finesDraftState`),
-   * and the user state (`userState`).
+   * state of fines (`finesMacState`) and the draft state of fines (`finesDraftState`).
    *
    * @returns {IFinesMacAddAccountRequestPayload} The payload for the PUT request.
    */
@@ -277,7 +275,6 @@ export class FinesMacReviewAccountComponent extends AbstractFormParentBaseCompon
     return this.finesMacPayloadService.buildReplaceAccountPayload(
       this.finesMacStore.getFinesMacStore(),
       this.finesDraftStore.getFinesDraftState(),
-      this.userState,
     );
   }
 
@@ -285,13 +282,12 @@ export class FinesMacReviewAccountComponent extends AbstractFormParentBaseCompon
    * Prepares the payload for posting account data.
    *
    * This method constructs the payload required to add an account by utilizing
-   * the `finesMacPayloadService` to build the payload based on the current state
-   * of `finesMacState` and `userState`.
+   * the `finesMacPayloadService` to build the payload based on the current fines MAC state.
    *
    * @returns {IFinesMacAddAccountRequestPayload} The payload for adding an account.
    */
   private preparePostPayload(): IFinesMacAddAccountRequestPayload {
-    return this.finesMacPayloadService.buildAddAccountPayload(this.finesMacStore.getFinesMacStore(), this.userState);
+    return this.finesMacPayloadService.buildAddAccountPayload(this.finesMacStore.getFinesMacStore());
   }
 
   /**
