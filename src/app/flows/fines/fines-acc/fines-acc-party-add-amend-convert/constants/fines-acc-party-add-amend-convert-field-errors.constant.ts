@@ -335,7 +335,7 @@ export const FINES_ACC_PARTY_ADD_AMEND_CONVERT_FIELD_ERRORS: IFinesAccPartyAddAm
   },
   facc_party_add_amend_convert_address_line_3: {
     maxlength: {
-      message: `Address line 3 must be 16 characters or fewer`,
+      message: `Address line 3 must be 13 characters or fewer`,
       priority: 1,
     },
     singleAsciiCharacters: {

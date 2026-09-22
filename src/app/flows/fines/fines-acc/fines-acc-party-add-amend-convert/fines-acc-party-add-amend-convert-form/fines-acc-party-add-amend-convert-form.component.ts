@@ -152,7 +152,7 @@ export class FinesAccPartyAddAmendConvertFormComponent
         SINGLE_ASCII_CHARACTERS_PATTERN_VALIDATOR,
       ]),
       facc_party_add_amend_convert_address_line_3: new FormControl(null, [
-        optionalMaxLengthValidator(16),
+        optionalMaxLengthValidator(13),
         SINGLE_ASCII_CHARACTERS_PATTERN_VALIDATOR,
       ]),
       facc_party_add_amend_convert_post_code: new FormControl(null, [
