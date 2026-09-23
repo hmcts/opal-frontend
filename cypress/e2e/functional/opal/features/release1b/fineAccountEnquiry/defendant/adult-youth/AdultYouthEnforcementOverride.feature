@@ -52,7 +52,7 @@ Feature: Adult Youth Enforcement Override
         | enforcement override result id | ABDC         |
         | enforcer id                    | 770000000003 |
       And the enforcement override summary shows:
-        | enforcement override | Application made for Benefit Deductions (ABDC) |
+        | enforcement override | Application made for Benefit Deduction (ABDC) |
 
     @R1BDrop1 @JIRA-STORY:PO-1849 @JIRA-EPIC:PO-1675 @JIRA-TEST-KEY:PO-9997
     Scenario: Changing the existing enforcement court returns to the Enforcement tab with a success banner

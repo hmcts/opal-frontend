@@ -238,16 +238,12 @@ export class AccountDetailsHistoryActions {
   }
 
   /**
-   * Waits for the History and notes endpoint and asserts the tab shell is rendered.
+   * Asserts the History and notes tab shell is rendered.
    */
   public assertHistoryAndNotesTabLoaded(): void {
     log('assert', 'Asserting History and notes tab is loaded');
 
-    cy.wait('@historyAndNotes', { timeout: AccountDetailsHistoryActions.DEFAULT_TIMEOUT })
-      .its('response.statusCode')
-      .should('eq', 200);
-    cy.get(L.tabRoot, { timeout: AccountDetailsHistoryActions.DEFAULT_TIMEOUT }).should('be.visible');
-    cy.get(L.table, { timeout: AccountDetailsHistoryActions.DEFAULT_TIMEOUT }).should('be.visible');
+    this.assertHistoryAndNotesTabVisible();
   }
 
   /**
