@@ -13,6 +13,7 @@ import {
 import { IOpalFinesBusinessUnitRefData } from '@services/fines/opal-fines-service/interfaces/opal-fines-business-unit-ref-data.interface';
 import { IOpalFinesBusinessUnit } from '@services/fines/opal-fines-service/interfaces/opal-fines-business-unit.interface';
 import { FINES_MCI_ROUTING_PATHS } from '../../routing/constants/fines-mci-routing-paths.constant';
+import { FinesMciStore } from '../../stores/fines-mci.store';
 
 @Component({
   selector: 'app-fines-mci-create-till-select-bu',
@@ -31,6 +32,7 @@ import { FINES_MCI_ROUTING_PATHS } from '../../routing/constants/fines-mci-routi
 export class FinesMciCreateTillSelectBuComponent {
   private readonly activatedRoute = inject(ActivatedRoute);
   private readonly router = inject(Router);
+  private readonly finesMciStore = inject(FinesMciStore);
   private readonly businessUnitsRefData: IOpalFinesBusinessUnitRefData = (this.activatedRoute.snapshot.data[
     'businessUnits'
   ] as IOpalFinesBusinessUnitRefData | undefined) ?? {
@@ -51,7 +53,7 @@ export class FinesMciCreateTillSelectBuComponent {
   protected readonly businessUnitAutoCompleteItems = this.createAutoCompleteItems(this.businessUnitsRefData);
 
   public constructor() {
-    this.setDefaultBusinessUnit();
+    this.setInitialBusinessUnit();
   }
 
   /**
@@ -67,7 +69,14 @@ export class FinesMciCreateTillSelectBuComponent {
   /**
    * Defaults the form when the user has exactly one associated business unit.
    */
-  private setDefaultBusinessUnit(): void {
+  private setInitialBusinessUnit(): void {
+    const selectedBusinessUnitId = this.finesMciStore.businessUnit()?.business_unit_id;
+
+    if (this.businessUnitsRefData.refData.some(({ business_unit_id }) => business_unit_id === selectedBusinessUnitId)) {
+      this.form.controls.fmci_create_till_business_unit_id.setValue(selectedBusinessUnitId ?? null);
+      return;
+    }
+
     if (this.businessUnitsRefData.refData.length === 1) {
       this.form.controls.fmci_create_till_business_unit_id.setValue(
         this.businessUnitsRefData.refData[0].business_unit_id,
@@ -76,9 +85,33 @@ export class FinesMciCreateTillSelectBuComponent {
   }
 
   /**
+   * Stores the selected business unit and continues to the till details page.
+   */
+  public handleSubmit(): void {
+    const businessUnitId = this.form.controls.fmci_create_till_business_unit_id.value;
+    const businessUnit = this.businessUnitsRefData.refData.find(
+      ({ business_unit_id }) => business_unit_id === businessUnitId,
+    );
+
+    if (!businessUnit) {
+      this.form.markAllAsTouched();
+      return;
+    }
+
+    this.finesMciStore.setBusinessUnit(businessUnit);
+    void this.router.navigate([
+      '/',
+      FINES_ROUTING_PATHS.root,
+      FINES_MCI_ROUTING_PATHS.root,
+      FINES_MCI_ROUTING_PATHS.children.createTillDetails,
+    ]);
+  }
+
+  /**
    * Returns the user to the manual cash input create and allocate page.
    */
   public handleCancel(): void {
+    this.finesMciStore.reset();
     void this.router.navigate(this.createAllocateRoute);
   }
 }

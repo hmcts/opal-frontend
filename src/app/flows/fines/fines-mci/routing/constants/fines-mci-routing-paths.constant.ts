@@ -5,5 +5,8 @@ export const FINES_MCI_ROUTING_PATHS: IFinesMciRoutingPaths = {
   children: {
     createAllocate: 'create-allocate',
     createTillSelectBusinessUnit: 'create/till/select-bu',
+    createTillDetails: 'create/till/details',
+    createTillPaymentCategory: 'create/till/payment-category',
+    createTillCancel: 'create/till/cancel',
   },
 };

@@ -5,5 +5,8 @@ export const FINES_MCI_ROUTING_TITLES: IFinesMciRoutingPaths = {
   children: {
     createAllocate: 'Create and allocate tills',
     createTillSelectBusinessUnit: 'Select business unit',
+    createTillDetails: 'Till details',
+    createTillPaymentCategory: 'Payment category',
+    createTillCancel: 'Cancel till creation',
   },
 };
