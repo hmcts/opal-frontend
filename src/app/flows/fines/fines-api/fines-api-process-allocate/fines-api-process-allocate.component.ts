@@ -8,7 +8,7 @@ import {
   MojSubNavigationComponent,
   MojSubNavigationItemComponent,
 } from '@hmcts/opal-frontend-common/components/moj/moj-sub-navigation';
-import { EMPTY, Observable, Subject, catchError, map, startWith, switchMap } from 'rxjs';
+import { EMPTY, Observable, Subject, catchError, forkJoin, map, startWith, switchMap } from 'rxjs';
 import { FINES_DASHBOARD_ROUTING_PATHS } from '../../constants/fines-dashboard-routing-paths.constant';
 import { FINES_ROUTING_PATHS } from '../../routing/constants/fines-routing-paths.constant';
 import { IOpalFinesInterfaceJobSummary } from '../../services/opal-fines-service/interfaces/opal-fines-interface-job-summary.interface';
@@ -20,6 +20,9 @@ import { FinesApiStore } from '../stores/fines-api.store';
 import { FINES_API_PROCESS_ALLOCATE_CONTENT } from './constants/fines-api-process-allocate-content.constant';
 import { FINES_API_PROCESS_ALLOCATE_TABS_KEYS } from './constants/fines-api-process-allocate-tabs-keys.constant';
 import { FINES_API_PROCESS_ALLOCATE_TABS } from './constants/fines-api-process-allocate-tabs.constant';
+import { FinesApiAllocateComponent } from './fines-api-allocate-tab/fines-api-allocate.component';
+import { FINES_API_ALLOCATE_CONTENT } from './fines-api-allocate-tab/constants/fines-api-allocate-content.constant';
+import { IFinesApiAllocateData } from './fines-api-allocate-tab/interfaces/fines-api-allocate-data.interface';
 import { FinesApiProcessComponent } from './fines-api-process-tab/fines-api-process.component';
 import { IFinesApiProcessData } from './fines-api-process-tab/interfaces/fines-api-process-data.interface';
 import { IFinesApiProcessAllocateTabs } from './interfaces/fines-api-process-allocate-tabs.interface';
@@ -30,6 +33,7 @@ import { TFinesApiProcessAllocateTabKey } from './types/fines-api-process-alloca
   imports: [
     AsyncPipe,
     FinesApiProcessComponent,
+    FinesApiAllocateComponent,
     GovukBackLinkComponent,
     GovukCancelLinkComponent,
     MojSubNavigationComponent,
@@ -44,9 +48,11 @@ export class FinesApiProcessAllocateComponent implements OnInit, OnDestroy {
   private readonly opalFinesService = inject(OpalFines);
   private readonly router = inject(Router);
   private readonly processDataRefresh = new Subject<void>();
+  private readonly allocateDataRefresh = new Subject<void>();
 
   protected readonly finesApiStore = inject(FinesApiStore);
   protected readonly content = FINES_API_PROCESS_ALLOCATE_CONTENT;
+  protected readonly allocateContent = FINES_API_ALLOCATE_CONTENT;
   protected readonly tabs: IFinesApiProcessAllocateTabs = FINES_API_PROCESS_ALLOCATE_TABS;
   protected readonly tabKeys = FINES_API_PROCESS_ALLOCATE_TABS_KEYS;
   /** Fetches on every Process-tab subscription and explicit refresh without replaying a previous response. */
@@ -54,6 +60,37 @@ export class FinesApiProcessAllocateComponent implements OnInit, OnDestroy {
     startWith(undefined),
     switchMap(() => this.fetchProcessData()),
   );
+
+  /** Each tab entry subscribes afresh; refresh replaces any in-flight pair of reads. */
+  protected readonly tabAllocate$: Observable<IFinesApiAllocateData> = this.allocateDataRefresh.pipe(
+    startWith(undefined),
+    switchMap(() => this.fetchAllocateData()),
+  );
+
+  /** Publishes one consistent display only after both selected-BU reads complete. */
+  private fetchAllocateData(): Observable<IFinesApiAllocateData> {
+    const businessUnitIds = this.finesApiStore.selectedBusinessUnitIds();
+    if (businessUnitIds.length === 0) {
+      return EMPTY;
+    }
+
+    return forkJoin({
+      jobs: this.opalFinesService.getInterfaceJobsSummary({
+        business_unit_ids: businessUnitIds,
+        statuses: ['PROCESSING'],
+        interface_name: 'payments_in',
+      }),
+      tills: this.opalFinesService.getTills({
+        business_unit_ids: businessUnitIds,
+        statuses: ['Created', 'Failed'],
+        auto_payments: true,
+      }),
+    }).pipe(
+      map(({ jobs, tills }) => this.finesApiPayloadService.mapAllocateData(jobs, tills)),
+      // The interceptor owns API errors. Retain the last complete display and keep Refresh usable.
+      catchError(() => EMPTY),
+    );
+  }
 
   /** Maps raw Process jobs into the Process tab view model. */
   private buildProcessData(processInterfaceJobs: IOpalFinesInterfaceJobSummary[]): IFinesApiProcessData {
@@ -146,6 +183,11 @@ export class FinesApiProcessAllocateComponent implements OnInit, OnDestroy {
     this.processDataRefresh.next();
   }
 
+  /** Reloads both Allocate datasets; the child clears local selection before emitting. */
+  protected refreshAllocateData(): void {
+    this.allocateDataRefresh.next();
+  }
+
   /** Navigates back to Select Business Units and clears flow state only after navigation succeeds. */
   protected navigateBack(): void {
     void this.router
@@ -181,5 +223,6 @@ export class FinesApiProcessAllocateComponent implements OnInit, OnDestroy {
 
   public ngOnDestroy(): void {
     this.processDataRefresh.complete();
+    this.allocateDataRefresh.complete();
   }
 }
