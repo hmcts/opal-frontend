@@ -1,3 +1,6 @@
+import { IOpalFinesCompanyName } from './opal-fines-company-name.interface';
+import { IOpalFinesIndividualName } from './opal-fines-individual-name.interface';
+
 interface IOpalFinesAccountDefendantDetailsImpositionResult {
   result_id: string | null;
   result_title: string | null;
@@ -11,13 +14,8 @@ interface IOpalFinesAccountDefendantDetailsImpositionCreditor {
   };
   major_creditor_name?: string | null;
   minor_creditor_organisation_flag?: boolean | null;
-  individual_name?: {
-    forenames?: string | null;
-    surname: string;
-  } | null;
-  company_name?: {
-    organisation_name: string;
-  } | null;
+  individual_name?: IOpalFinesIndividualName | null;
+  company_name?: IOpalFinesCompanyName | null;
   major_creditor_id: number | null;
   minor_creditor_party_id: number | null;
 }
