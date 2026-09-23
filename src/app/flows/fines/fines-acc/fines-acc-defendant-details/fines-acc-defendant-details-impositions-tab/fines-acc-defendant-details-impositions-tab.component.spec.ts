@@ -129,7 +129,7 @@ describe('FinesAccDefendantDetailsImpositionsTabComponent', () => {
 
   it('should identify minor creditors by minor creditor party id rather than account type code', () => {
     const tabData = structuredClone(OPAL_FINES_ACCOUNT_DEFENDANT_DETAILS_IMPOSITIONS_TAB_REF_DATA_MOCK);
-    tabData.impositions[1].creditor.account_type = 'changed-type';
+    tabData.impositions[1].creditor.creditor_account_type.account_type = 'changed-type';
 
     const { fixture } = setupComponent(tabData);
     const minorCreditorLink = fixture.nativeElement.querySelector('#imposition-creditor-1 a') as HTMLAnchorElement;
@@ -149,7 +149,7 @@ describe('FinesAccDefendantDetailsImpositionsTabComponent', () => {
 
   it('should identify major creditors by major creditor id rather than account type code', () => {
     const tabData = structuredClone(OPAL_FINES_ACCOUNT_DEFENDANT_DETAILS_IMPOSITIONS_TAB_REF_DATA_MOCK);
-    tabData.impositions[0].creditor.account_type = 'changed-type';
+    tabData.impositions[0].creditor.creditor_account_type.account_type = 'changed-type';
 
     const { fixture } = setupComponent(tabData);
     const majorCreditorLink = fixture.nativeElement.querySelector('#imposition-creditor-0 a') as HTMLAnchorElement;

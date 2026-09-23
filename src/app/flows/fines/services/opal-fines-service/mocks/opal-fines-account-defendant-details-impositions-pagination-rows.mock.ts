@@ -18,11 +18,8 @@ export const OPAL_FINES_ACCOUNT_DEFENDANT_DETAILS_IMPOSITIONS_PAGINATION_ROWS_MO
       },
       creditor: {
         creditor_account_id: 770000100000 + rowNumber,
-        account_type: creditorAccountType,
-        display_name: creditorTypeDisplayName,
         major_creditor_id: creditorAccountType === 'MJ' ? 880000100000 + rowNumber : null,
         minor_creditor_party_id: creditorAccountType === 'MN' ? 990000100000 + rowNumber : null,
-        name: `${creditorTypeDisplayName} ${rowNumber}`,
         creditor_account_type: { account_type: creditorAccountType, display_name: creditorTypeDisplayName },
         major_creditor_name: creditorAccountType === 'MJ' ? `${creditorTypeDisplayName} ${rowNumber}` : null,
         minor_creditor_organisation_flag: creditorAccountType === 'MN' ? true : null,

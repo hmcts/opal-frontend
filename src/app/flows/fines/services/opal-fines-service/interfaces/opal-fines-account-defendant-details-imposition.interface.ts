@@ -18,11 +18,8 @@ interface IOpalFinesAccountDefendantDetailsImpositionCreditor {
   company_name?: {
     organisation_name: string;
   } | null;
-  account_type: string;
-  display_name: string;
   major_creditor_id: number | null;
   minor_creditor_party_id: number | null;
-  name: string;
 }
 
 interface IOpalFinesAccountDefendantDetailsImpositionOffence {
