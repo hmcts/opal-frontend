@@ -245,8 +245,7 @@ export class FinesAccDefendantDetailsComponent
    * Determines whether the account has an outstanding balance.
    */
   private get accountHasOutstandingBalance(): boolean {
-    // Outstanding debt is represented by a negative account balance in the API.
-    return this.accountData.payment_state_summary.account_balance < 0;
+    return this.accountData.payment_state_summary.account_balance > 0;
   }
 
   /**
@@ -314,7 +313,7 @@ export class FinesAccDefendantDetailsComponent
       return 'enforcement';
     } else if (!this.hasBusinessUnitPermissionKey('amend-payment-terms')) {
       return 'permission';
-    } else if (!this.accountHasOutstandingBalance) {
+    } else if (this.accountData.payment_state_summary.account_balance <= 0) {
       return 'balance';
     } else {
       return 'account-status';

@@ -23,7 +23,7 @@ Feature: Account Enquiries Request Payment Card
         | account.payment_card_request                    | false                               |
         | account.defendant.dob                           | 2002-05-15                          |
         | account.offences.0.impositions.0.amount_imposed | 250                                 |
-        | account.offences.0.impositions.0.amount_paid    | 0                                   |
+        | account.offences.0.impositions.0.amount_paid    | 300                                 |
       When I search for the account by last name "PayCardRequest{uniq}" and open the latest result
       Then I should see the page header contains "Mr Jamie PAYCARDREQUEST{uniqUpper}"
       When I go to the Payment terms section

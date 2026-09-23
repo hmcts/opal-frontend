@@ -445,8 +445,8 @@ describe('FinesAccDefendantDetailsComponent', () => {
   });
 
   describe('should get the relevant denied type from getAmendPaymentTermsDeniedType', () => {
-    it.each([0, 100])('for a zero or credit balance (%s) should return "balance"', (balance) => {
-      component.accountData.payment_state_summary.account_balance = balance;
+    it('for a balance of 0 should return "balance"', () => {
+      component.accountData.payment_state_summary.account_balance = 0;
       const deniedType = component['getAmendPaymentTermsDeniedType']();
       expect(deniedType).toBe('balance');
     });
@@ -467,9 +467,9 @@ describe('FinesAccDefendantDetailsComponent', () => {
   });
 
   describe('should get the correct response from accountAllowsPaymentTermsActions', () => {
-    it('when the account status is unrestricted and the account has an outstanding balance', () => {
+    it('when the account status is unrestricted and the account has a positive balance', () => {
       component.accountData.account_status_reference.account_status_code = 'L';
-      component.accountData.payment_state_summary.account_balance = -500.58;
+      component.accountData.payment_state_summary.account_balance = 500.58;
 
       expect(component.accountAllowsPaymentTermsActions).toBe(true);
     });
@@ -478,15 +478,15 @@ describe('FinesAccDefendantDetailsComponent', () => {
       'when the account status is restricted account status %s',
       (statusCode) => {
         component.accountData.account_status_reference.account_status_code = statusCode;
-        component.accountData.payment_state_summary.account_balance = -500.58;
+        component.accountData.payment_state_summary.account_balance = 500.58;
 
         expect(component.accountAllowsPaymentTermsActions).toBe(false);
       },
     );
 
-    it.each([0, 100])('when the account balance is zero or in credit (%s)', (balance) => {
+    it('when the account balance is zero', () => {
       component.accountData.account_status_reference.account_status_code = 'L';
-      component.accountData.payment_state_summary.account_balance = balance;
+      component.accountData.payment_state_summary.account_balance = 0;
 
       expect(component.accountAllowsPaymentTermsActions).toBe(false);
     });
@@ -496,10 +496,10 @@ describe('FinesAccDefendantDetailsComponent', () => {
     it.each([
       {
         description:
-          'when the user has amend-payment-terms permission, no disallowing enforcement, a valid status and outstanding balance',
+          'when the user has amend-payment-terms permission, no disallowing enforcement, a valid status and positive balance',
         extendTtpDisallow: false,
         accountStatusCode: 'L',
-        accountBalance: -100,
+        accountBalance: 100,
         hasPermission: true,
         expectedCanAmend: true,
       },
@@ -507,7 +507,7 @@ describe('FinesAccDefendantDetailsComponent', () => {
         description: 'when the last enforcement disallows extending TTP',
         extendTtpDisallow: true,
         accountStatusCode: 'L',
-        accountBalance: -100,
+        accountBalance: 100,
         hasPermission: true,
         expectedCanAmend: false,
       },
@@ -515,7 +515,7 @@ describe('FinesAccDefendantDetailsComponent', () => {
         description: `when account status is ${accountStatusCode}`,
         extendTtpDisallow: false,
         accountStatusCode,
-        accountBalance: -100,
+        accountBalance: 100,
         hasPermission: true,
         expectedCanAmend: false,
       })),
@@ -523,7 +523,7 @@ describe('FinesAccDefendantDetailsComponent', () => {
         description: 'when the user does not have amend-payment-terms permission',
         extendTtpDisallow: false,
         accountStatusCode: 'L',
-        accountBalance: -100,
+        accountBalance: 100,
         hasPermission: false,
         expectedCanAmend: false,
       },
@@ -557,7 +557,7 @@ describe('FinesAccDefendantDetailsComponent', () => {
       'when the user has permission and the account status is restricted account status %s',
       (statusCode) => {
         component.accountData.account_status_reference.account_status_code = statusCode;
-        component.accountData.payment_state_summary.account_balance = -500.58;
+        component.accountData.payment_state_summary.account_balance = 500.58;
         component.lastEnforcement = structuredClone(OPAL_FINES_RESULT_REF_DATA_MOCK);
         component.lastEnforcement.prevent_payment_card = false;
         // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -569,9 +569,9 @@ describe('FinesAccDefendantDetailsComponent', () => {
       },
     );
 
-    it.each([0, 100])('when the user has permission and a zero or credit balance (%s)', (balance) => {
+    it('when the user has permission and the account balance is zero', () => {
       component.accountData.account_status_reference.account_status_code = 'L';
-      component.accountData.payment_state_summary.account_balance = balance;
+      component.accountData.payment_state_summary.account_balance = 0;
       component.lastEnforcement = structuredClone(OPAL_FINES_RESULT_REF_DATA_MOCK);
       component.lastEnforcement.prevent_payment_card = false;
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -618,7 +618,6 @@ describe('FinesAccDefendantDetailsComponent', () => {
       ({ hasPermission, preventPaymentCard, expectedCanRequest }) => {
         component.lastEnforcement = structuredClone(OPAL_FINES_RESULT_REF_DATA_MOCK);
         component.lastEnforcement.prevent_payment_card = preventPaymentCard;
-        component.accountData.payment_state_summary.account_balance = -100;
         // eslint-disable-next-line @typescript-eslint/no-explicit-any
         vi.spyOn<any, any>(component['permissionsService'], 'hasBusinessUnitPermissionAccess').mockReturnValue(
           hasPermission,

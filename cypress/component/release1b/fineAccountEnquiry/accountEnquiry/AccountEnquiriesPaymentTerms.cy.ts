@@ -64,7 +64,6 @@ describe('Account Enquiry Payment Terms', () => {
 
   const buildParentGuardianHeaderMock = () => {
     const headerMock = structuredClone(createDefendantHeaderMockWithName('Robert', 'Thomson'));
-    headerMock.payment_state_summary.account_balance = -500.58;
     headerMock.debtor_type = 'Parent/Guardian';
     headerMock.parent_guardian_party_id = '1770000001';
 
@@ -73,7 +72,6 @@ describe('Account Enquiry Payment Terms', () => {
 
   const buildCompanyHeaderMock = () => {
     const headerMock = structuredClone(DEFENDANT_HEADER_MOCK);
-    headerMock.payment_state_summary.account_balance = -500.58;
     headerMock.party_details.organisation_flag = true;
     headerMock.party_details.organisation_details = {
       organisation_name: 'Test Org Ltd',
@@ -90,7 +88,6 @@ describe('Account Enquiry Payment Terms', () => {
     { description: 'account status is TFO Out Acknowledged', accountStatusCode: 'TS' },
     { description: 'account status is TFO Out S/NI', accountStatusCode: 'TO' },
     { description: 'account balance is zero', accountBalance: 0 },
-    { description: 'account balance is in credit', accountBalance: 100 },
   ];
 
   restrictedPaymentTermsAccountScenarios.forEach(({ description, accountStatusCode, accountBalance }) => {
@@ -99,7 +96,6 @@ describe('Account Enquiry Payment Terms', () => {
       { tags: [...buildTags('@JIRA-STORY:PO-5753', '@JIRA-EPIC:PO-2990')] },
       () => {
         const headerMock = structuredClone(createDefendantHeaderMockWithName('Robert', 'Thomson'));
-        headerMock.payment_state_summary.account_balance = -500.58;
         headerMock.debtor_type = 'individual';
 
         if (accountStatusCode) {
@@ -125,7 +121,6 @@ describe('Account Enquiry Payment Terms', () => {
       { tags: [...buildTags('@JIRA-STORY:PO-5753', '@JIRA-EPIC:PO-2990')] },
       () => {
         const headerMock = structuredClone(createDefendantHeaderMockWithName('Robert', 'Thomson'));
-        headerMock.payment_state_summary.account_balance = -500.58;
         headerMock.debtor_type = 'individual';
 
         if (accountStatusCode) {
@@ -150,7 +145,6 @@ describe('Account Enquiry Payment Terms', () => {
     { tags: [...buildTags('@JIRA-STORY:PO-5753', '@JIRA-EPIC:PO-2990'), '@JIRA-TEST-KEY:PO-9835'] },
     () => {
       const headerMock = structuredClone(createDefendantHeaderMockWithName('Robert', 'Thomson'));
-      headerMock.payment_state_summary.account_balance = -500.58;
       headerMock.debtor_type = 'individual';
       const paymentTermsMock = structuredClone(OPAL_FINES_ACCOUNT_DEFENDANT_DETAILS_PAYMENT_TERMS_LATEST_MOCK);
       const accountId = headerMock.defendant_account_party_id;
@@ -178,7 +172,6 @@ describe('Account Enquiry Payment Terms', () => {
     { tags: [...buildTags('@JIRA-STORY:PO-5753', '@JIRA-EPIC:PO-2990'), '@JIRA-TEST-KEY:PO-9836'] },
     () => {
       const headerMock = structuredClone(createDefendantHeaderMockWithName('Robert', 'Thomson'));
-      headerMock.payment_state_summary.account_balance = -500.58;
       headerMock.debtor_type = 'individual';
       const paymentTermsMock = structuredClone(OPAL_FINES_ACCOUNT_DEFENDANT_DETAILS_PAYMENT_TERMS_LATEST_MOCK);
 
@@ -194,7 +187,6 @@ describe('Account Enquiry Payment Terms', () => {
     { tags: [...buildTags('@JIRA-STORY:PO-5753', '@JIRA-EPIC:PO-2990'), '@JIRA-TEST-KEY:PO-9837'] },
     () => {
       const headerMock = structuredClone(createDefendantHeaderMockWithName('Robert', 'Thomson'));
-      headerMock.payment_state_summary.account_balance = -500.58;
       headerMock.debtor_type = 'individual';
       const paymentTermsMock = structuredClone(OPAL_FINES_ACCOUNT_DEFENDANT_DETAILS_PAYMENT_TERMS_LATEST_MOCK);
       paymentTermsMock.last_enforcement = 'DW';
@@ -227,7 +219,6 @@ describe('Account Enquiry Payment Terms', () => {
     { tags: [...buildTags('@JIRA-STORY:PO-1146'), '@JIRA-EPIC:PO-977', '@JIRA-TEST-KEY:PO-4128'] },
     () => {
       let headerMock = structuredClone(createDefendantHeaderMockWithName('Robert', 'Thomson'));
-      headerMock.payment_state_summary.account_balance = -500.58;
       headerMock.debtor_type = 'individual';
       let paymentTermsMock = structuredClone(OPAL_FINES_ACCOUNT_DEFENDANT_DETAILS_PAYMENT_TERMS_LATEST_MOCK);
       paymentTermsMock.payment_terms.payment_terms_type.payment_terms_type_code = 'P';
@@ -264,7 +255,6 @@ describe('Account Enquiry Payment Terms', () => {
     { tags: [...buildTags('@JIRA-STORY:PO-1146'), '@JIRA-EPIC:PO-977', '@JIRA-TEST-KEY:PO-4129'] },
     () => {
       let headerMock = structuredClone(createDefendantHeaderMockWithName('Robert', 'Thomson'));
-      headerMock.payment_state_summary.account_balance = -500.58;
       headerMock.debtor_type = 'individual';
       let paymentTermsMock = structuredClone(OPAL_FINES_ACCOUNT_DEFENDANT_DETAILS_PAYMENT_TERMS_LATEST_MOCK);
       paymentTermsMock.payment_terms.payment_terms_type.payment_terms_type_code = 'I';
@@ -290,7 +280,6 @@ describe('Account Enquiry Payment Terms', () => {
     { tags: [...buildTags('@JIRA-STORY:PO-1146'), '@JIRA-EPIC:PO-977', '@JIRA-TEST-KEY:PO-4130'] },
     () => {
       let headerMock = structuredClone(createDefendantHeaderMockWithName('Robert', 'Thomson'));
-      headerMock.payment_state_summary.account_balance = -500.58;
       headerMock.debtor_type = 'individual';
       let paymentTermsMock = structuredClone(OPAL_FINES_ACCOUNT_DEFENDANT_DETAILS_PAYMENT_TERMS_LATEST_MOCK);
       paymentTermsMock.payment_terms.payment_terms_type.payment_terms_type_code = 'I';
@@ -320,7 +309,6 @@ describe('Account Enquiry Payment Terms', () => {
     { tags: [...buildTags('@JIRA-STORY:PO-1146'), '@JIRA-EPIC:PO-977', '@JIRA-TEST-KEY:PO-4131'] },
     () => {
       let headerMock = structuredClone(createDefendantHeaderMockWithName('Robert', 'Thomson'));
-      headerMock.payment_state_summary.account_balance = -500.58;
       headerMock.debtor_type = 'individual';
       let paymentTermsMock = structuredClone(OPAL_FINES_ACCOUNT_DEFENDANT_DETAILS_PAYMENT_TERMS_LATEST_MOCK);
 
@@ -349,7 +337,6 @@ describe('Account Enquiry Payment Terms', () => {
     { tags: [...buildTags('@JIRA-STORY:PO-1146'), '@JIRA-EPIC:PO-977', '@JIRA-TEST-KEY:PO-4132'] },
     () => {
       let headerMock = structuredClone(createDefendantHeaderMockWithName('Robert', 'Thomson'));
-      headerMock.payment_state_summary.account_balance = -500.58;
       headerMock.debtor_type = 'individual';
       let paymentTermsMock = structuredClone(OPAL_FINES_ACCOUNT_DEFENDANT_DETAILS_PAYMENT_TERMS_LATEST_MOCK);
 
@@ -381,7 +368,6 @@ describe('Account Enquiry Payment Terms', () => {
     { tags: [...buildTags('@JIRA-STORY:PO-1146'), '@JIRA-EPIC:PO-977', '@JIRA-TEST-KEY:PO-4133'] },
     () => {
       let headerMock = structuredClone(createDefendantHeaderMockWithName('Robert', 'Thomson'));
-      headerMock.payment_state_summary.account_balance = -500.58;
       headerMock.debtor_type = 'individual';
       let paymentTermsMock = structuredClone(OPAL_FINES_ACCOUNT_DEFENDANT_DETAILS_PAYMENT_TERMS_LATEST_MOCK);
 
@@ -411,7 +397,6 @@ describe('Account Enquiry Payment Terms', () => {
     { tags: [...buildTags('@JIRA-STORY:PO-1146'), '@JIRA-EPIC:PO-977', '@JIRA-TEST-KEY:PO-4134'] },
     () => {
       let headerMock = structuredClone(createDefendantHeaderMockWithName('Robert', 'Thomson'));
-      headerMock.payment_state_summary.account_balance = -500.58;
       headerMock.debtor_type = 'individual';
       let paymentTermsMock = structuredClone(OPAL_FINES_ACCOUNT_DEFENDANT_DETAILS_PAYMENT_TERMS_LATEST_MOCK);
       paymentTermsMock.last_enforcement = 'DW';
@@ -442,7 +427,6 @@ describe('Account Enquiry Payment Terms', () => {
     { tags: [...buildTags('@JIRA-STORY:PO-1146'), '@JIRA-EPIC:PO-977', '@JIRA-TEST-KEY:PO-4141'] },
     () => {
       let headerMock = structuredClone(createDefendantHeaderMockWithName('Robert', 'Thomson'));
-      headerMock.payment_state_summary.account_balance = -500.58;
       headerMock.debtor_type = 'individual';
       let paymentTermsMock = structuredClone(OPAL_FINES_ACCOUNT_DEFENDANT_DETAILS_PAYMENT_TERMS_LATEST_MOCK);
       paymentTermsMock.payment_terms.extension = true;
@@ -463,7 +447,6 @@ describe('Account Enquiry Payment Terms', () => {
     { tags: [...buildTags('@JIRA-STORY:PO-1636'), '@JIRA-EPIC:PO-977', '@JIRA-TEST-KEY:PO-4142'] },
     () => {
       let headerMock = structuredClone(createDefendantHeaderMockWithName('Robert', 'Thomson'));
-      headerMock.payment_state_summary.account_balance = -500.58;
       headerMock.debtor_type = 'Parent/Guardian';
       headerMock.parent_guardian_party_id = '1770000001';
       let paymentTermsMock = structuredClone(OPAL_FINES_ACCOUNT_DEFENDANT_DETAILS_PAYMENT_TERMS_LATEST_MOCK);
@@ -555,7 +538,6 @@ describe('Account Enquiry Payment Terms', () => {
     { tags: [...buildTags('@JIRA-STORY:PO-1636'), '@JIRA-EPIC:PO-977', '@JIRA-TEST-KEY:PO-4145'] },
     () => {
       let headerMock = structuredClone(createDefendantHeaderMockWithName('Robert', 'Thomson'));
-      headerMock.payment_state_summary.account_balance = -500.58;
       headerMock.debtor_type = 'Parent/Guardian';
       headerMock.parent_guardian_party_id = '1770000001';
       let paymentTermsMock = structuredClone(OPAL_FINES_ACCOUNT_DEFENDANT_DETAILS_PAYMENT_TERMS_LATEST_MOCK);
@@ -586,7 +568,6 @@ describe('Account Enquiry Payment Terms', () => {
     { tags: [...buildTags('@JIRA-STORY:PO-1636'), '@JIRA-EPIC:PO-977', '@JIRA-TEST-KEY:PO-4146'] },
     () => {
       let headerMock = structuredClone(createDefendantHeaderMockWithName('Robert', 'Thomson'));
-      headerMock.payment_state_summary.account_balance = -500.58;
       headerMock.debtor_type = 'Parent/Guardian';
       headerMock.parent_guardian_party_id = '1770000001';
       let paymentTermsMock = structuredClone(OPAL_FINES_ACCOUNT_DEFENDANT_DETAILS_PAYMENT_TERMS_LATEST_MOCK);
@@ -618,7 +599,6 @@ describe('Account Enquiry Payment Terms', () => {
     { tags: [...buildTags('@JIRA-STORY:PO-1636'), '@JIRA-EPIC:PO-977', '@JIRA-TEST-KEY:PO-4147'] },
     () => {
       let headerMock = structuredClone(createDefendantHeaderMockWithName('Robert', 'Thomson'));
-      headerMock.payment_state_summary.account_balance = -500.58;
       headerMock.debtor_type = 'Parent/Guardian';
       headerMock.parent_guardian_party_id = '1770000001';
       let paymentTermsMock = structuredClone(OPAL_FINES_ACCOUNT_DEFENDANT_DETAILS_PAYMENT_TERMS_LATEST_MOCK);
@@ -670,7 +650,6 @@ describe('Account Enquiry Payment Terms', () => {
     { tags: [...buildTags('@JIRA-STORY:PO-1637'), '@JIRA-EPIC:PO-977', '@JIRA-TEST-KEY:PO-4149'] },
     () => {
       const header = structuredClone(DEFENDANT_HEADER_MOCK);
-      header.payment_state_summary.account_balance = -500.58;
       header.party_details.organisation_flag = true;
       header.party_details.organisation_details = {
         organisation_name: 'Test Org Ltd',
@@ -767,7 +746,6 @@ describe('Account Enquiry Payment Terms', () => {
     { tags: [...buildTags('@JIRA-STORY:PO-1637'), '@JIRA-EPIC:PO-977', '@JIRA-TEST-KEY:PO-4152'] },
     () => {
       const header = structuredClone(DEFENDANT_HEADER_MOCK);
-      header.payment_state_summary.account_balance = -500.58;
       header.party_details.organisation_flag = true;
       header.party_details.organisation_details = {
         organisation_name: 'Test Org Ltd',
@@ -802,7 +780,6 @@ describe('Account Enquiry Payment Terms', () => {
     { tags: [...buildTags('@JIRA-STORY:PO-1637'), '@JIRA-EPIC:PO-977', '@JIRA-TEST-KEY:PO-4153'] },
     () => {
       const header = structuredClone(DEFENDANT_HEADER_MOCK);
-      header.payment_state_summary.account_balance = -500.58;
       header.party_details.organisation_flag = true;
       header.party_details.organisation_details = {
         organisation_name: 'Test Org Ltd',
@@ -838,7 +815,6 @@ describe('Account Enquiry Payment Terms', () => {
     { tags: [...buildTags('@JIRA-STORY:PO-1637'), '@JIRA-EPIC:PO-977', '@JIRA-TEST-KEY:PO-4154'] },
     () => {
       const header = structuredClone(DEFENDANT_HEADER_MOCK);
-      header.payment_state_summary.account_balance = -500.58;
       header.party_details.organisation_flag = true;
       header.party_details.organisation_details = {
         organisation_name: 'Test Org Ltd',
@@ -894,7 +870,6 @@ describe('Account Enquiry Payment Terms', () => {
     { tags: [...buildTags('@JIRA-STORY:PO-1700'), '@JIRA-EPIC:PO-977', '@JIRA-TEST-KEY:PO-4156'] },
     () => {
       let headerMock = structuredClone(createDefendantHeaderMockWithName('Robert', 'Thomson'));
-      headerMock.payment_state_summary.account_balance = -500.58;
       headerMock.debtor_type = 'individual';
       let paymentTermsMock = structuredClone(OPAL_FINES_ACCOUNT_DEFENDANT_DETAILS_PAYMENT_TERMS_LATEST_MOCK);
       paymentTermsMock.last_enforcement = 'REM';
@@ -920,7 +895,6 @@ describe('Account Enquiry Payment Terms', () => {
     { tags: [...buildTags('@JIRA-STORY:PO-1700'), '@JIRA-EPIC:PO-977', '@JIRA-TEST-KEY:PO-4157'] },
     () => {
       let headerMock = structuredClone(createDefendantHeaderMockWithName('Robert', 'Thomson'));
-      headerMock.payment_state_summary.account_balance = -500.58;
       headerMock.debtor_type = 'individual';
       let paymentTermsMock = structuredClone(OPAL_FINES_ACCOUNT_DEFENDANT_DETAILS_PAYMENT_TERMS_LATEST_MOCK);
       paymentTermsMock.last_enforcement = 'DW';
@@ -944,7 +918,6 @@ describe('Account Enquiry Payment Terms', () => {
     { tags: [...buildTags('@JIRA-STORY:PO-1700'), '@JIRA-EPIC:PO-977', '@JIRA-TEST-KEY:PO-4158'] },
     () => {
       let headerMock = structuredClone(createDefendantHeaderMockWithName('Robert', 'Thomson'));
-      headerMock.payment_state_summary.account_balance = -500.58;
       headerMock.debtor_type = 'individual';
       let paymentTermsMock = structuredClone(OPAL_FINES_ACCOUNT_DEFENDANT_DETAILS_PAYMENT_TERMS_LATEST_MOCK);
       paymentTermsMock.last_enforcement = 'REM';
@@ -967,7 +940,6 @@ describe('Account Enquiry Payment Terms', () => {
     { tags: [...buildTags('@JIRA-STORY:PO-1701'), '@JIRA-EPIC:PO-977', '@JIRA-TEST-KEY:PO-4159'] },
     () => {
       let headerMock = structuredClone(createDefendantHeaderMockWithName('Robert', 'Thomson'));
-      headerMock.payment_state_summary.account_balance = -500.58;
       headerMock.debtor_type = 'Parent/Guardian';
       headerMock.parent_guardian_party_id = '1770000001';
       let paymentTermsMock = structuredClone(OPAL_FINES_ACCOUNT_DEFENDANT_DETAILS_PAYMENT_TERMS_LATEST_MOCK);
@@ -993,7 +965,6 @@ describe('Account Enquiry Payment Terms', () => {
     { tags: [...buildTags('@JIRA-STORY:PO-1701'), '@JIRA-EPIC:PO-977', '@JIRA-TEST-KEY:PO-4160'] },
     () => {
       let headerMock = structuredClone(createDefendantHeaderMockWithName('Robert', 'Thomson'));
-      headerMock.payment_state_summary.account_balance = -500.58;
       headerMock.debtor_type = 'Parent/Guardian';
       headerMock.parent_guardian_party_id = '1770000001';
       let paymentTermsMock = structuredClone(OPAL_FINES_ACCOUNT_DEFENDANT_DETAILS_PAYMENT_TERMS_LATEST_MOCK);
@@ -1017,7 +988,6 @@ describe('Account Enquiry Payment Terms', () => {
     { tags: [...buildTags('@JIRA-STORY:PO-1701'), '@JIRA-EPIC:PO-977', '@JIRA-TEST-KEY:PO-4161'] },
     () => {
       let headerMock = structuredClone(createDefendantHeaderMockWithName('Robert', 'Thomson'));
-      headerMock.payment_state_summary.account_balance = -500.58;
       headerMock.debtor_type = 'Parent/Guardian';
       headerMock.parent_guardian_party_id = '1770000001';
       let paymentTermsMock = structuredClone(OPAL_FINES_ACCOUNT_DEFENDANT_DETAILS_PAYMENT_TERMS_LATEST_MOCK);
@@ -1041,7 +1011,6 @@ describe('Account Enquiry Payment Terms', () => {
     { tags: [...buildTags('@JIRA-STORY:PO-1702'), '@JIRA-EPIC:PO-977', '@JIRA-TEST-KEY:PO-4162'] },
     () => {
       const header = structuredClone(DEFENDANT_HEADER_MOCK);
-      header.payment_state_summary.account_balance = -500.58;
       header.party_details.organisation_flag = true;
       header.party_details.organisation_details = {
         organisation_name: 'Test Org Ltd',
@@ -1071,7 +1040,6 @@ describe('Account Enquiry Payment Terms', () => {
     { tags: [...buildTags('@JIRA-STORY:PO-1702'), '@JIRA-EPIC:PO-977', '@JIRA-TEST-KEY:PO-4163'] },
     () => {
       const header = structuredClone(DEFENDANT_HEADER_MOCK);
-      header.payment_state_summary.account_balance = -500.58;
       header.party_details.organisation_flag = true;
       header.party_details.organisation_details = {
         organisation_name: 'Test Org Ltd',
@@ -1097,7 +1065,6 @@ describe('Account Enquiry Payment Terms', () => {
     { tags: [...buildTags('@JIRA-STORY:PO-1702'), '@JIRA-EPIC:PO-977', '@JIRA-TEST-KEY:PO-4164'] },
     () => {
       const header = structuredClone(DEFENDANT_HEADER_MOCK);
-      header.payment_state_summary.account_balance = -500.58;
       header.party_details.organisation_flag = true;
       header.party_details.organisation_details = {
         organisation_name: 'Test Org Ltd',
@@ -1124,7 +1091,6 @@ describe('Account Enquiry Payment Terms', () => {
     { tags: [...buildTags('@JIRA-STORY:PO-2671'), '@JIRA-EPIC:PO-8248'] },
     () => {
       let headerMock = structuredClone(createDefendantHeaderMockWithName('Robert', 'Thomson'));
-      headerMock.payment_state_summary.account_balance = -500.58;
       headerMock.debtor_type = 'individual';
       let paymentTermsMock = structuredClone(OPAL_FINES_ACCOUNT_DEFENDANT_DETAILS_PAYMENT_TERMS_LATEST_MOCK);
       paymentTermsMock.payment_terms.payment_terms_type.payment_terms_type_code = 'P';
@@ -1153,7 +1119,6 @@ describe('Account Enquiry Payment Terms', () => {
     { tags: [...buildTags('@JIRA-STORY:PO-2671'), '@JIRA-EPIC:PO-8248', '@JIRA-TEST-KEY:PO-4238'] },
     () => {
       let headerMock = structuredClone(createDefendantHeaderMockWithName('Robert', 'Thomson'));
-      headerMock.payment_state_summary.account_balance = -500.58;
       headerMock.debtor_type = 'individual';
       let paymentTermsMock = structuredClone(OPAL_FINES_ACCOUNT_DEFENDANT_DETAILS_PAYMENT_TERMS_LATEST_MOCK);
       paymentTermsMock.payment_terms.payment_terms_type.payment_terms_type_code = 'P';

@@ -44,7 +44,6 @@ describe('Account Enquiry Payment Terms - Payment card', () => {
     { tags: [...buildTags('@JIRA-STORY:PO-1802'), '@JIRA-EPIC:PO-977', '@JIRA-TEST-KEY:PO-4385'] },
     () => {
       let headerMock = structuredClone(createDefendantHeaderMockWithName('John', 'Smith'));
-      headerMock.payment_state_summary.account_balance = -500.58;
       headerMock.debtor_type = 'individual';
       let paymentTermsMock = structuredClone(OPAL_FINES_ACCOUNT_DEFENDANT_DETAILS_PAYMENT_TERMS_LATEST_MOCK);
       paymentTermsMock.last_enforcement = 'DW';
@@ -72,7 +71,6 @@ describe('Account Enquiry Payment Terms - Payment card', () => {
     { tags: [...buildTags('@JIRA-STORY:PO-1802'), '@JIRA-EPIC:PO-977', '@JIRA-TEST-KEY:PO-4386'] },
     () => {
       let headerMock = structuredClone(createDefendantHeaderMockWithName('John', 'Smith'));
-      headerMock.payment_state_summary.account_balance = -500.58;
       headerMock.debtor_type = 'individual';
       let paymentTermsMock = structuredClone(OPAL_FINES_ACCOUNT_DEFENDANT_DETAILS_PAYMENT_TERMS_LATEST_MOCK);
       paymentTermsMock.last_enforcement = 'REM';
@@ -100,7 +98,6 @@ describe('Account Enquiry Payment Terms - Payment card', () => {
     { tags: [...buildTags('@JIRA-STORY:PO-1700'), '@JIRA-EPIC:PO-977', '@JIRA-TEST-KEY:PO-4387'] },
     () => {
       let headerMock = structuredClone(createDefendantHeaderMockWithName('Robert', 'Thomson'));
-      headerMock.payment_state_summary.account_balance = -500.58;
       headerMock.debtor_type = 'individual';
       let paymentTermsMock = structuredClone(OPAL_FINES_ACCOUNT_DEFENDANT_DETAILS_PAYMENT_TERMS_LATEST_MOCK);
       paymentTermsMock.last_enforcement = 'REM';
@@ -129,7 +126,6 @@ describe('Account Enquiry Payment Terms - Payment card', () => {
     { tags: [...buildTags('@JIRA-STORY:PO-1700'), '@JIRA-EPIC:PO-977', '@JIRA-TEST-KEY:PO-4388'] },
     () => {
       let headerMock = structuredClone(createDefendantHeaderMockWithName('Robert', 'Thomson'));
-      headerMock.payment_state_summary.account_balance = -500.58;
       headerMock.debtor_type = 'individual';
       let paymentTermsMock = structuredClone(OPAL_FINES_ACCOUNT_DEFENDANT_DETAILS_PAYMENT_TERMS_LATEST_MOCK);
       paymentTermsMock.last_enforcement = 'REM';
