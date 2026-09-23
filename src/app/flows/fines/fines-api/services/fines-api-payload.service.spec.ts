@@ -42,6 +42,24 @@ describe('FinesApiPayloadService', () => {
     service = TestBed.inject(FinesApiPayloadService);
   });
 
+  it('maps complete Allocate responses through the facade', () => {
+    const jobs = Array.from({ length: 501 }, (_, index) => ({
+      ...INTERFACE_JOBS_RESPONSE.interface_jobs[0],
+      interface_job_id: index,
+      status: 'PROCESSING',
+    }));
+    const data = service.mapAllocateData(
+      { interface_jobs: jobs },
+      {
+        tills: [
+          { till_id: 123, till_number: 7, amount: '12.50', business_unit_name: 'BU Alpha', processed_by: 'operator' },
+        ],
+      },
+    );
+    expect(data.processingTotal).toBe(501);
+    expect(data.tills[0]).toEqual(expect.objectContaining({ tillId: '123', amountDisplay: '£12.50' }));
+  });
+
   it('should create', () => {
     expect(service).toBeTruthy();
   });
