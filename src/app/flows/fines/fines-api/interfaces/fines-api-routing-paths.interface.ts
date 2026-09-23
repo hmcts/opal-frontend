@@ -5,5 +5,6 @@ export interface IFinesApiRoutingPaths extends IChildRoutingPaths {
     selectBusinessUnits: string;
     processAllocate: string;
     confirmProcess: string;
+    tillSummary: string;
   };
 }

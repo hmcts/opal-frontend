@@ -1,6 +1,6 @@
 import { Component, EventEmitter, Input, Output } from '@angular/core';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
-import { ActivatedRoute, Router } from '@angular/router';
+import { ActivatedRoute, provideRouter, Router } from '@angular/router';
 import { IOpalFinesInterfaceJobSummary } from '@services/fines/opal-fines-service/interfaces/opal-fines-interface-job-summary.interface';
 import { IOpalFinesInterfaceJobsSummaryResponse } from '@services/fines/opal-fines-service/interfaces/opal-fines-interface-jobs-summary-response.interface';
 import { IOpalFinesTillsResponse } from '@services/fines/opal-fines-service/interfaces/opal-fines-tills-response.interface';
@@ -60,8 +60,8 @@ describe('FinesApiProcessAllocateComponent', () => {
   let processJobs: IOpalFinesInterfaceJobSummary[];
   let getInterfaceJobsSummary: ReturnType<typeof vi.fn>;
   let getTills: ReturnType<typeof vi.fn>;
-  let routerCurrentNavigation: ReturnType<typeof vi.fn>;
-  let routerNavigate: ReturnType<typeof vi.fn>;
+  let routerCurrentNavigation: ReturnType<typeof vi.fn<() => Partial<ReturnType<Router['currentNavigation']>>>>;
+  let routerNavigate: ReturnType<typeof vi.fn<Router['navigate']>>;
   const activatedRouteParent = { routeConfig: {} };
   const activatedRoute = {
     parent: activatedRouteParent,
@@ -74,8 +74,8 @@ describe('FinesApiProcessAllocateComponent', () => {
     getTills = vi.fn((): Observable<IOpalFinesTillsResponse> => of({ tills: [] }));
     activatedRoute.snapshot.fragment = 'process';
     activatedRoute.fragment = of('process');
-    routerCurrentNavigation = vi.fn().mockReturnValue(null);
-    routerNavigate = vi.fn().mockResolvedValue(true);
+    routerCurrentNavigation = vi.fn<() => Partial<ReturnType<Router['currentNavigation']>>>().mockReturnValue(null);
+    routerNavigate = vi.fn<Router['navigate']>().mockResolvedValue(true);
     getInterfaceJobsSummary = vi.fn(
       (): Observable<IOpalFinesInterfaceJobsSummaryResponse> => of({ interface_jobs: processJobs }),
     );
@@ -83,13 +83,10 @@ describe('FinesApiProcessAllocateComponent', () => {
     await TestBed.configureTestingModule({
       imports: [FinesApiProcessAllocateComponent],
       providers: [
+        provideRouter([]),
         {
           provide: ActivatedRoute,
           useValue: activatedRoute,
-        },
-        {
-          provide: Router,
-          useValue: { currentNavigation: routerCurrentNavigation, navigate: routerNavigate },
         },
         {
           provide: OpalFines,
@@ -102,6 +99,11 @@ describe('FinesApiProcessAllocateComponent', () => {
         add: { imports: [FinesApiProcessStubComponent] },
       })
       .compileComponents();
+
+    vi.spyOn(TestBed.inject(Router), 'navigate').mockImplementation((...args) => routerNavigate(...args));
+    vi.spyOn(TestBed.inject(Router), 'currentNavigation').mockImplementation(
+      () => routerCurrentNavigation() as ReturnType<Router['currentNavigation']>,
+    );
 
     finesApiStore = TestBed.inject(FinesApiStore);
     finesApiStore.resetFinesApiState();
@@ -121,9 +123,7 @@ describe('FinesApiProcessAllocateComponent', () => {
 
   const mockCurrentNavigationFinalUrl = (url: string): void => {
     routerCurrentNavigation.mockReturnValue({
-      finalUrl: {
-        toString: () => url,
-      },
+      finalUrl: TestBed.inject(Router).parseUrl(url),
     });
   };
 
@@ -575,11 +575,16 @@ describe('FinesApiProcessAllocateComponent', () => {
     await TestBed.configureTestingModule({
       imports: [FinesApiProcessAllocateComponent],
       providers: [
+        provideRouter([]),
         { provide: ActivatedRoute, useValue: activatedRoute },
-        { provide: Router, useValue: { currentNavigation: routerCurrentNavigation, navigate: routerNavigate } },
         { provide: OpalFines, useValue: { getInterfaceJobsSummary, getTills } },
       ],
     }).compileComponents();
+
+    vi.spyOn(TestBed.inject(Router), 'navigate').mockImplementation((...args) => routerNavigate(...args));
+    vi.spyOn(TestBed.inject(Router), 'currentNavigation').mockImplementation(
+      () => routerCurrentNavigation() as ReturnType<Router['currentNavigation']>,
+    );
 
     finesApiStore = TestBed.inject(FinesApiStore);
     finesApiStore.resetFinesApiState();

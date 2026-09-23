@@ -1,5 +1,6 @@
 import { ChangeDetectionStrategy, Component, computed, EventEmitter, Input, Output, signal } from '@angular/core';
 import { FormControl } from '@angular/forms';
+import { RouterLink } from '@angular/router';
 import { CustomHorizontalScrollPaneComponent } from '@hmcts/opal-frontend-common/components/custom/custom-horizontal-scroll-pane';
 import { GovukCheckboxesItemComponent } from '@hmcts/opal-frontend-common/components/govuk/govuk-checkboxes';
 import {
@@ -15,10 +16,13 @@ import {
 } from '@hmcts/opal-frontend-common/directives/moj-multi-select';
 import { FINES_API_ALLOCATE_CONTENT } from './constants/fines-api-allocate-content.constant';
 import { IFinesApiAllocateData } from './interfaces/fines-api-allocate-data.interface';
+import { FINES_ROUTING_PATHS } from '../../../routing/constants/fines-routing-paths.constant';
+import { FINES_API_ROUTING_PATHS } from '../../routing/constants/fines-api-routing-paths.constant';
 
 @Component({
   selector: 'app-fines-api-allocate',
   imports: [
+    RouterLink,
     CustomHorizontalScrollPaneComponent,
     GovukCheckboxesItemComponent,
     MojAlertComponent,
@@ -38,6 +42,7 @@ export class FinesApiAllocateComponent {
     tills: [],
   });
   protected readonly content = FINES_API_ALLOCATE_CONTENT;
+  protected readonly tillSummaryRoute = `/${FINES_ROUTING_PATHS.root}/${FINES_API_ROUTING_PATHS.root}/${FINES_API_ROUTING_PATHS.children.tillSummary}`;
   protected readonly rowControls = new Map<string, FormControl<boolean>>();
   protected readonly selectAllControl = new FormControl(false, { nonNullable: true });
   protected readonly selectedCount = computed(() => this.selectedIds().size);

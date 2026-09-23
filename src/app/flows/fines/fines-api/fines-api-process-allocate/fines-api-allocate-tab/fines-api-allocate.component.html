@@ -91,7 +91,9 @@
                   ></div>
                 </div>
               </td>
-              <td class="govuk-table__cell">{{ row.tillNumber }}</td>
+              <td class="govuk-table__cell">
+                <a class="govuk-link" [routerLink]="[tillSummaryRoute, row.tillId]">{{ row.tillNumber }}</a>
+              </td>
               <td class="govuk-table__cell">{{ row.errorsDisplay }}</td>
               <td class="govuk-table__cell">{{ row.fileName }}</td>
               <td class="govuk-table__cell">{{ row.sourceLabel }}</td>

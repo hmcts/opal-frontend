@@ -1,4 +1,5 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
+import { provideRouter, Router, UrlTree } from '@angular/router';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
 import { FinesApiAllocateComponent } from './fines-api-allocate.component';
 import { IFinesApiAllocateData, IFinesApiAllocateTillRow } from './interfaces/fines-api-allocate-data.interface';
@@ -41,7 +42,10 @@ describe('FinesApiAllocateComponent', () => {
   };
 
   beforeEach(async () => {
-    await TestBed.configureTestingModule({ imports: [FinesApiAllocateComponent] }).compileComponents();
+    await TestBed.configureTestingModule({
+      imports: [FinesApiAllocateComponent],
+      providers: [provideRouter([])],
+    }).compileComponents();
     fixture = TestBed.createComponent(FinesApiAllocateComponent);
   });
 
@@ -102,7 +106,31 @@ describe('FinesApiAllocateComponent', () => {
       '22 September 2026 at 14:31',
     ]);
     expect(element().querySelector('th button')).toBeNull();
-    expect(element().querySelector('a')).toBeNull();
+  });
+
+  it('links same-number tills to distinct summary URLs using their internal IDs', () => {
+    render(data());
+    const links = Array.from(element().querySelectorAll<HTMLAnchorElement>('tbody a'));
+    expect(links.map((link) => link.textContent!.trim())).toEqual(['7', '7']);
+    expect(links.map((link) => link.getAttribute('href'))).toEqual([
+      '/fines/auto-payment-in/till-summary/101',
+      '/fines/auto-payment-in/till-summary/102',
+    ]);
+  });
+
+  it('requests the clicked till summary without changing the checkbox selection', async () => {
+    const router = TestBed.inject(Router);
+    const navigate = vi.spyOn(router, 'navigateByUrl').mockResolvedValue(true);
+    render(data());
+    click('fines-api-allocate-till-101');
+    element().querySelectorAll<HTMLAnchorElement>('tbody a')[1].click();
+    await fixture.whenStable();
+
+    expect(navigate).toHaveBeenCalledOnce();
+    expect(router.serializeUrl(navigate.mock.calls[0][0] as UrlTree)).toBe('/fines/auto-payment-in/till-summary/102');
+    expect(selectedText()).toBe('1 of 2 tills selected.');
+    expect(checkbox('fines-api-allocate-till-101').checked).toBe(true);
+    expect(checkbox('fines-api-allocate-till-102').checked).toBe(false);
   });
 
   it('selects same-number tills independently by their ID with accessible labels', () => {
