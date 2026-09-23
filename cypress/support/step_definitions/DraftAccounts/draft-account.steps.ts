@@ -598,7 +598,6 @@ Given('a published Welsh-speaking parent or guardian account exists:', (table: D
   const overrides = {
     business_unit_id: businessUnitId,
     account: {
-      originator_name: "North East Wales Magistrates' Court",
       prosecutor_case_reference: prosecutorCaseReference,
       collection_order_made: false,
       collection_order_made_today: false,
