@@ -2624,7 +2624,9 @@ export class AccountEnquiryFlow {
     this.openNotesScreenAndEnterText(note);
 
     logAE('save', 'Saving account note');
+    this.notes.watchAddNoteRequest();
     this.notes.save();
+    this.notes.assertAddNoteRequest();
 
     cy.location('pathname', { timeout: 20000 }).should('match', /\/fines\/account\/defendant\/\d+\/details$/);
   }
