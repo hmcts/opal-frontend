@@ -11,8 +11,6 @@ const OPAL_FINES_ACCOUNT_DEFENDANT_DETAILS_IMPOSITIONS_MOCK: IOpalFinesAccountDe
     },
     creditor: {
       creditor_account_id: 770000000001,
-      major_creditor_id: 880000000001,
-      minor_creditor_party_id: null,
       creditor_account_type: { account_type: 'MJ', display_name: 'Major Creditor' },
       major_creditor_name: 'Central Funds',
     },
@@ -40,8 +38,6 @@ const OPAL_FINES_ACCOUNT_DEFENDANT_DETAILS_IMPOSITIONS_MOCK: IOpalFinesAccountDe
     },
     creditor: {
       creditor_account_id: 660000000001,
-      major_creditor_id: null,
-      minor_creditor_party_id: 990000000001,
       creditor_account_type: { account_type: 'MN', display_name: 'Minor Creditor' },
       minor_creditor_organisation_flag: true,
       company_name: { organisation_name: 'Minor Creditor Test Ltd' },
@@ -66,8 +62,6 @@ const OPAL_FINES_ACCOUNT_DEFENDANT_DETAILS_IMPOSITIONS_MOCK: IOpalFinesAccountDe
     },
     creditor: {
       creditor_account_id: 770000000003,
-      major_creditor_id: null,
-      minor_creditor_party_id: null,
       creditor_account_type: { account_type: 'CF', display_name: 'Central Fund' },
     },
     imposed_amount: 30,

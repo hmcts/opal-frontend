@@ -1,3 +1,4 @@
+import { OPAL_FINES_CREDITOR_ACCOUNT_TYPES } from '../constants/opal-fines-creditor-account-types.constant';
 import { IOpalFinesAccountDefendantDetailsImposition } from '../interfaces/opal-fines-account-defendant-details-imposition.interface';
 
 export const OPAL_FINES_ACCOUNT_DEFENDANT_DETAILS_IMPOSITIONS_PAGINATION_ROWS_MOCK: IOpalFinesAccountDefendantDetailsImposition[] =
@@ -5,10 +6,12 @@ export const OPAL_FINES_ACCOUNT_DEFENDANT_DETAILS_IMPOSITIONS_PAGINATION_ROWS_MO
     const rowNumber = index + 1;
     const postedDay = String(rowNumber).padStart(2, '0');
     const imposedDay = String((index % 28) + 1).padStart(2, '0');
-    const creditorAccountType = index % 2 === 0 ? 'MJ' : 'MN';
+    const creditorAccountType =
+      index % 2 === 0 ? OPAL_FINES_CREDITOR_ACCOUNT_TYPES.major : OPAL_FINES_CREDITOR_ACCOUNT_TYPES.minor;
     const imposedAmount = 100 + rowNumber * 12.5;
     const paidAmount = index % 3 === 0 ? 25 : 10;
-    const creditorTypeDisplayName = creditorAccountType === 'MJ' ? 'Major Creditor' : 'Minor Creditor';
+    const creditorTypeDisplayName =
+      creditorAccountType === OPAL_FINES_CREDITOR_ACCOUNT_TYPES.major ? 'Major Creditor' : 'Minor Creditor';
 
     return {
       date_added: `2025-03-${postedDay}`,
@@ -18,13 +21,16 @@ export const OPAL_FINES_ACCOUNT_DEFENDANT_DETAILS_IMPOSITIONS_PAGINATION_ROWS_MO
       },
       creditor: {
         creditor_account_id: 770000100000 + rowNumber,
-        major_creditor_id: creditorAccountType === 'MJ' ? 880000100000 + rowNumber : null,
-        minor_creditor_party_id: creditorAccountType === 'MN' ? 990000100000 + rowNumber : null,
         creditor_account_type: { account_type: creditorAccountType, display_name: creditorTypeDisplayName },
-        major_creditor_name: creditorAccountType === 'MJ' ? `${creditorTypeDisplayName} ${rowNumber}` : null,
-        minor_creditor_organisation_flag: creditorAccountType === 'MN' ? true : null,
+        major_creditor_name:
+          creditorAccountType === OPAL_FINES_CREDITOR_ACCOUNT_TYPES.major
+            ? `${creditorTypeDisplayName} ${rowNumber}`
+            : null,
+        minor_creditor_organisation_flag: creditorAccountType === OPAL_FINES_CREDITOR_ACCOUNT_TYPES.minor ? true : null,
         company_name:
-          creditorAccountType === 'MN' ? { organisation_name: `${creditorTypeDisplayName} ${rowNumber}` } : null,
+          creditorAccountType === OPAL_FINES_CREDITOR_ACCOUNT_TYPES.minor
+            ? { organisation_name: `${creditorTypeDisplayName} ${rowNumber}` }
+            : null,
       },
       imposed_amount: imposedAmount,
       paid_amount: paidAmount,

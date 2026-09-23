@@ -1,3 +1,4 @@
+import { OPAL_FINES_CREDITOR_ACCOUNT_TYPES } from '../constants/opal-fines-creditor-account-types.constant';
 import { IOpalFinesCompanyName } from './opal-fines-company-name.interface';
 import { IOpalFinesIndividualName } from './opal-fines-individual-name.interface';
 
@@ -9,15 +10,16 @@ interface IOpalFinesAccountDefendantDetailsImpositionResult {
 interface IOpalFinesAccountDefendantDetailsImpositionCreditor {
   creditor_account_id: number;
   creditor_account_type: {
-    account_type: string;
-    display_name?: string | null;
+    account_type:
+      | typeof OPAL_FINES_CREDITOR_ACCOUNT_TYPES.minor
+      | typeof OPAL_FINES_CREDITOR_ACCOUNT_TYPES.major
+      | typeof OPAL_FINES_CREDITOR_ACCOUNT_TYPES.centralFund;
+    display_name?: 'Minor Creditor' | 'Major Creditor' | 'Central Fund' | null;
   };
   major_creditor_name?: string | null;
   minor_creditor_organisation_flag?: boolean | null;
   individual_name?: IOpalFinesIndividualName | null;
   company_name?: IOpalFinesCompanyName | null;
-  major_creditor_id: number | null;
-  minor_creditor_party_id: number | null;
 }
 
 interface IOpalFinesAccountDefendantDetailsImpositionOffence {
@@ -28,7 +30,7 @@ interface IOpalFinesAccountDefendantDetailsImpositionOffence {
 
 interface IOpalFinesAccountDefendantDetailsImpositionCourt {
   court_id: number;
-  court_code: number | null;
+  court_code?: number | null;
   court_name: string;
 }
 
@@ -41,6 +43,6 @@ export interface IOpalFinesAccountDefendantDetailsImposition {
   balance: number;
   date_imposed: string | null;
   offence: IOpalFinesAccountDefendantDetailsImpositionOffence;
-  imposed_by: IOpalFinesAccountDefendantDetailsImpositionCourt | null;
+  imposed_by?: IOpalFinesAccountDefendantDetailsImpositionCourt | null;
   imposition_id: number;
 }
