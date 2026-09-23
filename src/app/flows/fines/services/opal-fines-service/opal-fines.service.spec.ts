@@ -371,6 +371,56 @@ describe('OpalFines', () => {
     secondReq.flush(mockBusinessUnitCounts);
   });
 
+  describe('getTills', () => {
+    it('requests eligible auto-payment tills with CSV filters and preserves the response', () => {
+      const response = {
+        tills: [
+          {
+            till_id: '9007199254740993',
+            till_number: 7,
+            amount: '123.45',
+            business_unit_name: 'BU Alpha',
+            processed_by: 'test.operator',
+            errors: 0,
+            file_name: null,
+          },
+        ],
+      };
+      const received = vi.fn();
+      service
+        .getTills({ statuses: ['Created', 'Failed'], auto_payments: true, business_unit_ids: [77, 65] })
+        .subscribe(received);
+
+      const req = httpMock.expectOne((request) => request.url === OPAL_FINES_PATHS.tills);
+      expect(req.request.method).toBe('GET');
+      expect(req.request.body).toBeNull();
+      expect(req.request.params.getAll('statuses')).toEqual(['Created,Failed']);
+      expect(req.request.params.getAll('business_unit_ids')).toEqual(['77,65']);
+      expect(req.request.params.get('auto_payments')).toBe('true');
+      req.flush(response);
+      expect(received).toHaveBeenCalledWith(response);
+    });
+
+    it('includes an explicit false auto-payments filter and omits empty arrays', () => {
+      service.getTills({ auto_payments: false, statuses: [], business_unit_ids: [] }).subscribe();
+      const req = httpMock.expectOne((request) => request.url === OPAL_FINES_PATHS.tills);
+      expect(req.request.params.keys()).toEqual(['auto_payments']);
+      expect(req.request.params.get('auto_payments')).toBe('false');
+      req.flush({ tills: [] });
+    });
+
+    it('omits absent filters and fetches fresh results on each call', () => {
+      for (let call = 0; call < 2; call++) {
+        const received = vi.fn();
+        service.getTills({}).subscribe(received);
+        const req = httpMock.expectOne(OPAL_FINES_PATHS.tills);
+        expect(req.request.params.keys()).toEqual([]);
+        req.flush({ tills: [] });
+        expect(received).toHaveBeenCalledWith({ tills: [] });
+      }
+    });
+  });
+
   describe('getInterfaceJobsSummary', () => {
     it('should send a GET request with comma-separated list filters and optional query parameters', () => {
       service

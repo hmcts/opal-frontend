@@ -76,6 +76,8 @@ import { IOpalFinesAccountDefendantDetailsConsolidatedAccounts } from './interfa
 import { IOpalFinesReport } from './interfaces/opal-fines-report.interface';
 import { IOpalFinesReportInstancesParams } from './interfaces/opal-fines-report-instances-params.interface';
 import { IOpalFinesReportInstancesResponse } from './interfaces/opal-fines-report-instances-response.interface';
+import { IOpalFinesTillsParams } from './interfaces/opal-fines-tills-params.interface';
+import { IOpalFinesTillsResponse } from './interfaces/opal-fines-tills-response.interface';
 import { IOpalFinesInterfaceJobsSummaryParams } from './interfaces/opal-fines-interface-jobs-summary-params.interface';
 import { IOpalFinesInterfaceJobsSummaryResponse } from './interfaces/opal-fines-interface-jobs-summary-response.interface';
 import { IOpalFinesProcessInterfaceJobsPayload } from './interfaces/opal-fines-process-interface-jobs-payload.interface';
@@ -105,6 +107,7 @@ export class OpalFines {
   private readonly PARAM_REPORT_ID = 'report_id';
   private readonly PARAM_BUSINESS_UNIT_IDS = 'business_unit_ids';
   private readonly PARAM_STATUSES = 'statuses';
+  private readonly PARAM_AUTO_PAYMENTS = 'auto_payments';
   private readonly PARAM_COMPLETED_DATE_FROM = 'completed_date_from';
   private readonly PARAM_COMPLETED_DATE_TO = 'completed_date_to';
   private readonly PARAM_INTERFACE_NAME = 'interface_name';
@@ -413,6 +416,29 @@ export class OpalFines {
     return this.http.get<IOpalFinesInterfaceJobsSummaryResponse>(
       OPAL_FINES_PATHS.interfaceJobsSummary,
       this.withRetrySafeReadOptions({ params: this.getInterfaceJobsSummaryParams(params) }),
+    );
+  }
+
+  /**
+   * Retrieves matching tills without caching operational allocation state.
+   * Array filters use the endpoint's comma-separated query convention.
+   */
+  public getTills(params: IOpalFinesTillsParams): Observable<IOpalFinesTillsResponse> {
+    let httpParams = new HttpParams();
+
+    if (params.statuses?.length) {
+      httpParams = httpParams.set(this.PARAM_STATUSES, params.statuses.join(','));
+    }
+    if (params.auto_payments !== undefined) {
+      httpParams = httpParams.set(this.PARAM_AUTO_PAYMENTS, params.auto_payments);
+    }
+    if (params.business_unit_ids?.length) {
+      httpParams = httpParams.set(this.PARAM_BUSINESS_UNIT_IDS, params.business_unit_ids.join(','));
+    }
+
+    return this.http.get<IOpalFinesTillsResponse>(
+      OPAL_FINES_PATHS.tills,
+      this.withRetrySafeReadOptions({ params: httpParams }),
     );
   }
 
