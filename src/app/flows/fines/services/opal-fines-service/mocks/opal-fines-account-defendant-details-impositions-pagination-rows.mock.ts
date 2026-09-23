@@ -31,9 +31,9 @@ export const OPAL_FINES_ACCOUNT_DEFENDANT_DETAILS_IMPOSITIONS_PAGINATION_ROWS_MO
       balance: Number((imposedAmount - paidAmount).toFixed(2)),
       date_imposed: `2025-02-${imposedDay}`,
       offence: {
-        id: 33369 + rowNumber,
-        code: `MOCK${rowNumber}`,
-        title: `Mock offence title ${rowNumber}`,
+        offence_id: 33369 + rowNumber,
+        cjs_code: `MOCK${rowNumber}`,
+        offence_title: `Mock offence title ${rowNumber}`,
       },
       imposed_by:
         index % 2 === 0

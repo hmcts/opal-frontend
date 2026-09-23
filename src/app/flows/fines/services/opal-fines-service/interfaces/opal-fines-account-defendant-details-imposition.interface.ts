@@ -21,9 +21,9 @@ interface IOpalFinesAccountDefendantDetailsImpositionCreditor {
 }
 
 interface IOpalFinesAccountDefendantDetailsImpositionOffence {
-  id: number | null;
-  code: string | null;
-  title: string;
+  offence_id?: number | null;
+  cjs_code?: string | null;
+  offence_title: string;
 }
 
 interface IOpalFinesAccountDefendantDetailsImpositionCourt {

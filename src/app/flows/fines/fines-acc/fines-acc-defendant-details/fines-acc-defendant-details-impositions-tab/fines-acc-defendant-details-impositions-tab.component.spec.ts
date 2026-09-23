@@ -50,6 +50,26 @@ describe('FinesAccDefendantDetailsImpositionsTabComponent', () => {
     expect(textContent).toContain('111111111111');
   });
 
+  it.each([
+    {
+      description: 'populated reference fields',
+      offence: { offence_id: 33369, cjs_code: 'HY35014', offence_title: 'Test offence title' },
+    },
+    {
+      description: 'null reference fields',
+      offence: { offence_id: null, cjs_code: null, offence_title: 'Test offence title' },
+    },
+    { description: 'omitted reference fields', offence: { offence_title: 'Test offence title' } },
+  ])('should display the offence title with $description', ({ offence }) => {
+    const tabData = structuredClone(OPAL_FINES_ACCOUNT_DEFENDANT_DETAILS_IMPOSITIONS_TAB_REF_DATA_MOCK);
+    tabData.impositions[0].offence = offence;
+
+    const { fixture } = setupComponent(tabData);
+    const offenceCell = fixture.nativeElement.querySelector('#imposition-offence-0') as HTMLTableCellElement;
+
+    expect(offenceCell.textContent?.trim()).toBe('Test offence title');
+  });
+
   it('should render API date strings with the shared date format pipe', () => {
     const tabData = structuredClone(OPAL_FINES_ACCOUNT_DEFENDANT_DETAILS_IMPOSITIONS_TAB_REF_DATA_MOCK);
     tabData.impositions[0].date_added = '2025-12-05';

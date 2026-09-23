@@ -21,9 +21,9 @@ const OPAL_FINES_ACCOUNT_DEFENDANT_DETAILS_IMPOSITIONS_MOCK: IOpalFinesAccountDe
     balance: 150,
     date_imposed: '2025-01-30',
     offence: {
-      id: 33369,
-      code: 'HY35014',
-      title: 'Speeding - exceed 30mph on restricted road',
+      offence_id: 33369,
+      cjs_code: 'HY35014',
+      offence_title: 'Speeding - exceed 30mph on restricted road',
     },
     imposed_by: {
       court_id: 101,
@@ -51,9 +51,9 @@ const OPAL_FINES_ACCOUNT_DEFENDANT_DETAILS_IMPOSITIONS_MOCK: IOpalFinesAccountDe
     balance: 0,
     date_imposed: '2025-01-30',
     offence: {
-      id: 33370,
-      code: 'HY35015',
-      title: 'Failure to comply with court order',
+      offence_id: 33370,
+      cjs_code: 'HY35015',
+      offence_title: 'Failure to comply with court order',
     },
     imposed_by: null,
     imposition_id: 222222222222,
@@ -75,9 +75,9 @@ const OPAL_FINES_ACCOUNT_DEFENDANT_DETAILS_IMPOSITIONS_MOCK: IOpalFinesAccountDe
     balance: 30,
     date_imposed: null,
     offence: {
-      id: null,
-      code: null,
-      title: 'Offence title not provided',
+      offence_id: null,
+      cjs_code: null,
+      offence_title: 'Offence title not provided',
     },
     imposed_by: null,
     imposition_id: 333333333333,

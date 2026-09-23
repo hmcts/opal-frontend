@@ -134,7 +134,7 @@ export class FinesAccDefendantDetailsImpositionsTabComponent extends AbstractSor
       'Paid/Written off': apiImposition.paid_amount,
       Balance: roundedBalance,
       'Date imposed': apiImposition.date_imposed,
-      Offence: apiImposition.offence.title,
+      Offence: apiImposition.offence.offence_title,
       'Imposed by': apiImposition.imposed_by?.court_name ?? null,
       'Imposition ID': apiImposition.imposition_id,
       'Creditor account id': creditorAccountId,
