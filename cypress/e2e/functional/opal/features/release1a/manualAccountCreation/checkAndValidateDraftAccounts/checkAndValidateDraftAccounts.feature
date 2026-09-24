@@ -21,6 +21,7 @@ Feature: Check And Validate Draft Accounts
     Then I should see the checker header "Review accounts" and status heading "To review"
 
   @JIRA-EPIC:PO-2220 @JIRA-NFR:PO-2505 @R1A @JIRA-STORY:PO-594 @UAT-Technical @JIRA-TEST-KEY:PO-7435
+  @draft-request-contract
   Scenario: Approve an in-review draft account from the review screen
     Given a "adultOrYouthOnly" draft account exists with:
       | Account_status                                            | Submitted                                                                                                                                                                   |
@@ -32,16 +33,19 @@ Feature: Check And Validate Draft Accounts
       | account.defendant.debtor_detail.vehicle_registration_mark | $%^&*()-                                                                                                                                                                    |
       | account.account_notes                                     | [{"account_note_serial":1,"account_note_text":"It's short - note.","note_type":"AC"},{"account_note_serial":2,"account_note_text":"Here's short - note.","note_type":"AA"}] |
     And I am logged in with email "opal-test-10@dev.platform.hmcts.net"
+    And I monitor the draft account PATCH contract
     When I open Check and Validate Draft Accounts
     Then I open the draft account for "Lincoln{uniq}, Larry" and see header "Mr Larry Lincoln{uniq}"
     And the draft account status tag is "In review"
     When I record the following decision on the draft account:
       | Decision | Approve |
+    Then the draft account PATCH matches the contract for status "Publishing Pending" and reason ""
     Then I should see the checker header "Review accounts" and status heading "To review"
     And the draft success banner is "You have approved Larry Lincoln{uniq}'s account"
 
 
   @R1A @JIRA-STORY:PO-969 @JIRA-STORY:PO-601 @JIRA-STORY:PO-10196 @JIRA-EPIC:PO-2220 @JIRA-NFR:PO-2506
+  @draft-request-contract
   Scenario: Reject an in-review draft account and review it from the Rejected tab
     Given a "adultOrYouthOnly" draft account exists with:
       | Account_status                          | Submitted                      |
@@ -50,12 +54,14 @@ Feature: Check And Validate Draft Accounts
       | account.defendant.email_address_1       | harry.potter{uniq}@outlook.com |
       | account.defendant.telephone_number_home | 02078219385                    |
     And I am logged in with email "opal-test-10@dev.platform.hmcts.net"
+    And I monitor the draft account PATCH contract
     When I open Check and Validate Draft Accounts
     Then I open the draft account for "Potter{uniq}, Harry" and see header "Mr Harry Potter{uniq}"
     And the draft account status tag is "In review"
     When I record the following decision on the draft account:
       | Decision | Reject                 |
       | Reason   | Testing review history |
+    Then the draft account PATCH matches the contract for status "Rejected" and reason "Testing review history"
     Then I should see the checker header "Review accounts" and status heading "To review"
     And the draft success banner is "You have rejected Harry Potter{uniq}'s account"
     When I view the "Rejected" tab on the Check and Validate page
@@ -102,6 +108,7 @@ Feature: Check And Validate Draft Accounts
 
 
   @R1A @JIRA-STORY:PO-597 @JIRA-STORY:PO-616 @JIRA-DEFECT:PO-1858 @JIRA-EPIC:PO-2220 @JIRA-TEST-KEY:PO-5334 @JIRA-NFR:PO-2506
+  @draft-request-contract
   Scenario: Delete an in-review draft account and verify it on the Deleted tab
     Given a "adultOrYouthOnly" draft account exists with:
       | Account_status                          | Submitted                    |
@@ -110,6 +117,7 @@ Feature: Check And Validate Draft Accounts
       | account.defendant.email_address_1       | peter.barn{uniq}@outlook.com |
       | account.defendant.telephone_number_home | 02078219334                  |
     And I am logged in with email "opal-test-10@dev.platform.hmcts.net"
+    And I monitor the draft account PATCH contract
     When I open Check and Validate Draft Accounts
     Then I open the draft account for "Barnes{uniq}, Peter" and see header "Mr Peter Barnes{uniq}"
     And the draft account status tag is "In review"
@@ -118,6 +126,7 @@ Feature: Check And Validate Draft Accounts
     When I delete the draft account from review and see the confirmation page
     And I confirm draft deletion with reason:
       | Reason | test reason YXZ123 |
+    Then the draft account PATCH matches the contract for status "Deleted" and reason "test reason YXZ123"
     Then I should see the checker header "Review accounts" and status heading "To review"
     And the draft success banner is "You have deleted Barnes{uniq}, Peter's account"
     When I view the "Deleted" tab on the Check and Validate page

@@ -73,8 +73,11 @@ Feature: Fixed Penalty
       Then I should see the header containing text "Check fixed penalty account details"
 
     @JIRA-EPIC:PO-855 @R1A @JIRA-STORY:PO-1796 @JIRA-TEST-KEY:PO-5315
+    @draft-request-contract
     Scenario: Submit adult or youth fixed penalty for review
+      Given I monitor the draft account POST contract
       When I submit the fixed penalty account for review and capture the draft account id
+      Then the draft account POST matches the contract for "adultOrYouthOnly" and "Fixed Penalty"
       Then I see the following text on the page "You've submitted this account for review"
 
     @JIRA-EPIC:PO-855 @R1A @JIRA-STORY:PO-1796 @JIRA-TEST-KEY:PO-5316
@@ -293,8 +296,11 @@ Feature: Fixed Penalty
       Then I should see the header containing text "Check fixed penalty account details"
 
     @JIRA-EPIC:PO-855 @R1A @JIRA-STORY:PO-1796 @JIRA-TEST-KEY:PO-5327
+    @draft-request-contract
     Scenario: Submit company fixed penalty for review
+      Given I monitor the draft account POST contract
       When I submit the fixed penalty account for review and capture the draft account id
+      Then the draft account POST matches the contract for "company" and "Fixed Penalty"
       Then I see the following text on the page "You've submitted this account for review"
 
     @JIRA-EPIC:PO-855 @R1A @JIRA-STORY:PO-1796 @JIRA-TEST-KEY:PO-5328
