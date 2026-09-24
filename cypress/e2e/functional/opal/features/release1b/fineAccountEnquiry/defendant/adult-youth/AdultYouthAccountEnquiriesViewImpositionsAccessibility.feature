@@ -1,4 +1,5 @@
 @JIRA-LABEL:account-enquiry
+@JIRA-NFR:PO-2322
 Feature: Adult Youth Account Enquiries View Impositions Accessibility
   As a caseworker
   I want to view the impositions for a defendant account
@@ -8,7 +9,7 @@ Feature: Adult Youth Account Enquiries View Impositions Accessibility
     Given I am logged in with email "opal-test@dev.platform.hmcts.net"
     And I clear all approved accounts
 
-  @R1B @JIRA-STORY:PO-2079 @JIRA-EPIC:PO-979
+  @R1BDrop1 @JIRA-STORY:PO-2079 @JIRA-EPIC:PO-979
   Scenario: Defendant account impositions tab accessibility
     Given I create a "ayMultiOffenceMultiImposition" draft account with the following details and set status "Publishing Pending" using user "opal-test-10@dev.platform.hmcts.net":
       | Account_status                      | Submitted                         |
@@ -28,6 +29,5 @@ Feature: Adult Youth Account Enquiries View Impositions Accessibility
     When I go to the Impositions tab
     Then I should return to the Impositions tab
     And I check the page for accessibility
-
 
 

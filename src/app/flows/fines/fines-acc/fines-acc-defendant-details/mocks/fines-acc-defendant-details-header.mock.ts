@@ -8,6 +8,7 @@ export const FINES_ACC_DEFENDANT_DETAILS_HEADER_MOCK: IOpalFinesAccountDefendant
   parent_guardian_party_id: '77',
   collection_order: true,
   account_type: 'Fine',
+  originator_type: 'TFO',
   originator_name: 'Asylum & Immigration Tribunal',
   prosecutor_case_reference: '090A',
   fixed_penalty_ticket_number: '888',

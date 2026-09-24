@@ -5,7 +5,7 @@ Feature: Company Defendant Account Enforcements Accessibility
   Background:
     Given I am logged in with email "opal-test@dev.platform.hmcts.net"
     And I clear all approved accounts
-  @R1B @JIRA-STORY:PO-1848 @JIRA-EPIC:PO-2472 @JIRA-TEST-KEY:PO-5348
+  @R1BDrop1 @JIRA-STORY:PO-1848 @JIRA-EPIC:PO-2472 @JIRA-TEST-KEY:PO-5348
   Scenario: Check Change Collection Order status accessibility for a company account
     Given I create a "company" draft account with the following details and set status "Publishing Pending" using user "opal-test-10@dev.platform.hmcts.net":
       | Account_status                                  | Submitted                               |
@@ -18,8 +18,6 @@ Feature: Company Defendant Account Enforcements Accessibility
       | account.collection_order_made_today             | false                                   |
       | account.payment_card_request                    | false                                   |
       | account.payment_terms.enforcements[0].result_id | PRIS                                    |
-    When I open the company account details for "Collection Order Company{uniq}"
-    And I go to the Enforcement tab
-    And I open the Change Collection Order status form
+    When the Change Collection Order status form is displayed for company account "Collection Order Company{uniq}"
     Then I should see the Change Collection Order status page
     And I check the page for accessibility

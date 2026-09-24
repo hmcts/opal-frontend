@@ -1,3 +1,5 @@
+import { provideHttpClient } from '@angular/common/http';
+import { Component, inject, InjectionToken } from '@angular/core';
 import { interceptAuthenticatedUser, interceptUserState } from 'cypress/component/CommonIntercepts/CommonIntercepts';
 import { DEFENDANT_HEADER_MOCK, DEFENDANT_HEADER_YOUTH_MOCK } from './mocks/defendant_details_mock';
 import { ACCOUNT_ENQUIRY_HEADER_ELEMENTS as HEADER } from '../../../../shared/selectors/account-enquiry/account.enquiry.header.locators';
@@ -8,7 +10,7 @@ import {
   USER_STATE_MOCK_PERMISSION_BU77,
 } from '../../../CommonIntercepts/CommonUserState.mocks';
 import { mount } from 'cypress/angular';
-import { ActivatedRoute, provideRouter } from '@angular/router';
+import { ActivatedRoute, provideRouter, Router, RouterOutlet } from '@angular/router';
 
 import { interceptDefendantHeader, interceptDefendantDetails } from './intercept/defendantAccountIntercepts';
 import { OPAL_FINES_ACCOUNT_DEFENDANT_ACCOUNT_PARTY_MOCK } from '@services/fines/opal-fines-service/mocks/opal-fines-account-defendant-account-party.mock';
@@ -17,11 +19,46 @@ import { setupAccountEnquiryComponent } from './setup/SetupComponent';
 import { setLanguagePref } from './Utils/SharedFunctions';
 import { FinesAccDefendantDetailsDefendantTabComponent } from 'src/app/flows/fines/fines-acc/fines-acc-defendant-details/fines-acc-defendant-details-defendant-tab/fines-acc-defendant-details-defendant-tab.component';
 import { FINES_ACC_RESTRICTED_ACCOUNT_STATUS_CODES } from 'src/app/flows/fines/fines-acc/constants/fines-acc-restricted-account-status-codes.constant';
+import 'cypress-axe';
+import { FINES_ACC_DEFENDANT_ROUTING_PATHS } from 'src/app/flows/fines/fines-acc/routing/constants/fines-acc-defendant-routing-paths.constant';
+import { FINES_ACC_PARTY_ADD_AMEND_CONVERT_PARTY_TYPES } from 'src/app/flows/fines/fines-acc/fines-acc-party-add-amend-convert/constants/fines-acc-party-add-amend-convert-party-types.constant';
+import { FINES_ACC_PARTY_ADD_AMEND_CONVERT_MODES } from 'src/app/flows/fines/fines-acc/fines-acc-party-add-amend-convert/constants/fines-acc-party-add-amend-convert-modes.constant';
+import { FinesAccPartyAddAmendConvert } from 'src/app/flows/fines/fines-acc/fines-acc-party-add-amend-convert/fines-acc-party-add-amend-convert.component';
+import { FinesAccPayloadService } from 'src/app/flows/fines/fines-acc/services/fines-acc-payload.service';
+import { FinesAccountStore } from 'src/app/flows/fines/fines-acc/stores/fines-acc.store';
+import { OpalFines } from '@services/fines/opal-fines-service/opal-fines.service';
+import { GlobalStore } from '@hmcts/opal-frontend-common/stores/global';
+import { UtilsService } from '@hmcts/opal-frontend-common/services/utils-service';
 
 const ACCOUNT_ENQUIRY_JIRA_LABEL = '@JIRA-LABEL:account-enquiry';
 
 const buildTags = (...tags: string[]): string[] => [...tags, ACCOUNT_ENQUIRY_JIRA_LABEL, '@R1B'];
 type DefendantDetailsMock = typeof OPAL_FINES_ACCOUNT_DEFENDANT_ACCOUNT_PARTY_MOCK;
+
+const DEFENDANT_TAB_DATA = new InjectionToken<DefendantDetailsMock>('DEFENDANT_TAB_DATA');
+
+@Component({
+  selector: 'app-test-defendant-tab-route',
+  imports: [FinesAccDefendantDetailsDefendantTabComponent],
+  template: `
+    <app-fines-acc-defendant-details-defendant-tab
+      [tabData]="defendantDetailsMock"
+      [hasAccountMaintenencePermission]="true"
+      [hasAccountMaintenancePermissionInBU]="true"
+      [canAddParentOrGuardianDetails]="true"
+    />
+  `,
+})
+class TestDefendantTabRouteComponent {
+  public readonly defendantDetailsMock = inject(DEFENDANT_TAB_DATA);
+}
+
+@Component({
+  selector: 'app-test-router-outlet',
+  imports: [RouterOutlet],
+  template: '<router-outlet />',
+})
+class TestRouterOutletComponent {}
 
 /**
  * Local implementation of setLanguagePref to avoid injection context errors
@@ -50,19 +87,56 @@ describe('Account Enquiry Defendant Details Tab', () => {
   const mountDefendantTab = ({
     defendantDetailsMock,
     hasAccountMaintenencePermission = false,
+    hasAccountMaintenancePermissionInBU = false,
     canAddParentOrGuardianDetails = false,
   }: {
     defendantDetailsMock: DefendantDetailsMock;
     hasAccountMaintenencePermission?: boolean;
+    hasAccountMaintenancePermissionInBU?: boolean;
     canAddParentOrGuardianDetails?: boolean;
   }) => {
     mount(FinesAccDefendantDetailsDefendantTabComponent, {
       componentProperties: {
         tabData: defendantDetailsMock,
         hasAccountMaintenencePermission,
+        hasAccountMaintenancePermissionInBU,
         canAddParentOrGuardianDetails,
       },
       providers: [provideRouter([]), { provide: ActivatedRoute, useValue: { snapshot: { params: {}, data: {} } } }],
+    });
+  };
+
+  const mountNavigableDefendantTab = (defendantDetailsMock: DefendantDetailsMock, accountId: string) => {
+    const initialPath = `${FINES_ACC_DEFENDANT_ROUTING_PATHS.root}/${accountId}/${FINES_ACC_DEFENDANT_ROUTING_PATHS.children.details}`;
+
+    mount(TestRouterOutletComponent, {
+      providers: [
+        provideHttpClient(),
+        provideRouter([
+          {
+            path: `${FINES_ACC_DEFENDANT_ROUTING_PATHS.root}/:accountId/${FINES_ACC_DEFENDANT_ROUTING_PATHS.children.details}`,
+            component: TestDefendantTabRouteComponent,
+          },
+          {
+            path: `${FINES_ACC_DEFENDANT_ROUTING_PATHS.root}/:accountId/${FINES_ACC_DEFENDANT_ROUTING_PATHS.children.party}/:partyType/:mode`,
+            component: FinesAccPartyAddAmendConvert,
+          },
+        ]),
+        { provide: DEFENDANT_TAB_DATA, useValue: defendantDetailsMock },
+        FinesAccPayloadService,
+        FinesAccountStore,
+        OpalFines,
+        GlobalStore,
+        UtilsService,
+      ],
+    }).then(({ fixture }) => {
+      const router = fixture.debugElement.injector.get(Router);
+      cy.wrap(router).as('defendantTabRouter');
+
+      return router.navigateByUrl(initialPath).then((success) => {
+        expect(success).to.be.true;
+        fixture.detectChanges();
+      });
     });
   };
 
@@ -137,6 +211,43 @@ describe('Account Enquiry Defendant Details Tab', () => {
         .then((text) => {
           expect(text.trim().replace(/\s+/g, ' ')).to.eq('200 Innovation Park CD3 4EF');
         });
+    },
+  );
+
+  it(
+    'AC1, AC2, AC3. Transfer-in banner is permanent and accessible',
+    {
+      tags: [...buildTags('@JIRA-STORY:PO-2951'), '@JIRA-EPIC:PO-2472', '@JIRA-TEST-KEY:PO-2951-AXE'],
+    },
+    () => {
+      const headerMock = structuredClone(DEFENDANT_HEADER_MOCK);
+      headerMock.originator_type = 'TFO';
+      const defendantDetailsMock = structuredClone(OPAL_FINES_ACCOUNT_DEFENDANT_ACCOUNT_PARTY_MOCK);
+      const accountId = headerMock.defendant_account_party_id;
+
+      interceptAuthenticatedUser();
+      interceptUserState(USER_STATE_MOCK_PERMISSION_BU77);
+      interceptDefendantHeader(accountId, headerMock, accountId);
+      interceptDefendantDetails(accountId, defendantDetailsMock, accountId);
+      setupAccountEnquiryComponent({ ...componentProperties, accountId });
+
+      cy.get('#defendant-banners-transferred-in')
+        .should('exist')
+        .and('contain.text', 'Account transferred in')
+        .find('button')
+        .should('not.exist');
+
+      cy.document().then((document) => {
+        document.documentElement.lang = 'en';
+      });
+      cy.get('app-fines-acc-defendant-details').then(($accountEnquiry) => {
+        $accountEnquiry.wrap('<main id="component-test-main"></main>');
+      });
+
+      cy.injectAxe({ axeCorePath: 'node_modules/axe-core/axe.min.js' });
+      cy.checkA11y('#component-test-main', {
+        includedImpacts: ['critical', 'serious', 'moderate'],
+      });
     },
   );
 
@@ -520,25 +631,24 @@ describe('Account Enquiry Defendant Details Tab', () => {
     },
     () => {
       // AC3 – The visible action keeps its existing navigation and behaviour.
-      const headerMock = structuredClone(DEFENDANT_HEADER_YOUTH_MOCK);
       const defendantDetailsMock = structuredClone(OPAL_FINES_ACCOUNT_DEFENDANT_ACCOUNT_PARTY_MOCK);
       const { language_preferences } = defendantDetailsMock.defendant_account_party;
-      const accountId = headerMock.defendant_account_party_id;
+      const accountId = DEFENDANT_HEADER_YOUTH_MOCK.defendant_account_party_id;
 
-      headerMock.parent_guardian_party_id = null;
       defendantDetailsMock.defendant_account_party.party_details.organisation_flag = false;
       defendantDetailsMock.defendant_account_party.is_debtor = true;
       setLanguagePref(language_preferences!.document_language_preference);
       setLanguagePref(language_preferences!.hearing_language_preference);
 
-      interceptAuthenticatedUser();
-      interceptUserState(USER_STATE_MOCK_PERMISSION_BU77);
-      interceptDefendantHeader(accountId, headerMock, accountId);
-      interceptDefendantDetails(accountId, defendantDetailsMock, accountId);
-      setupAccountEnquiryComponent({ ...componentProperties, accountId: accountId });
+      mountNavigableDefendantTab(defendantDetailsMock, accountId);
 
-      cy.wait(['@getUserState', '@getDefendantHeaderSummary', '@getDefendantDetails']);
       cy.contains('a', 'Add parent or guardian details').should('be.visible').click();
+      cy.get('@defendantTabRouter')
+        .its('url')
+        .should(
+          'equal',
+          `/${FINES_ACC_DEFENDANT_ROUTING_PATHS.root}/${accountId}/${FINES_ACC_DEFENDANT_ROUTING_PATHS.children.party}/${FINES_ACC_PARTY_ADD_AMEND_CONVERT_PARTY_TYPES.PARENT_GUARDIAN}/${FINES_ACC_PARTY_ADD_AMEND_CONVERT_MODES.ADD}`,
+        );
       cy.get('app-fines-acc-debtor-add-amend-form').should('exist');
     },
   );
@@ -608,22 +718,20 @@ describe('Account Enquiry Defendant Details Tab', () => {
     'AC2a, AC2b. Company Defendant tab removes the heading Change link and shows section Change links',
     { tags: [...buildTags('@JIRA-STORY:PO-2671', '@JIRA-EPIC:PO-8248'), '@JIRA-TEST-KEY:PO-9847'] },
     () => {
-      const headerMock = structuredClone(DEFENDANT_HEADER_MOCK);
       const defendantDetailsMock = structuredClone(OPAL_FINES_ACCOUNT_DEFENDANT_ACCOUNT_PARTY_MOCK);
       defendantDetailsMock.defendant_account_party.party_details.organisation_flag = true;
       defendantDetailsMock.defendant_account_party.is_debtor = true;
       const { language_preferences } = defendantDetailsMock.defendant_account_party;
-      const accountId = headerMock.defendant_account_party_id;
       setLanguagePref(language_preferences!.document_language_preference);
       setLanguagePref(language_preferences!.hearing_language_preference);
 
-      interceptAuthenticatedUser();
-      interceptUserState(USER_STATE_MOCK_PERMISSION_BU77);
-      interceptDefendantHeader(accountId, headerMock, accountId);
-      interceptDefendantDetails(accountId, defendantDetailsMock, accountId);
-      setupAccountEnquiryComponent({ ...componentProperties, accountId });
+      mountDefendantTab({
+        defendantDetailsMock,
+        hasAccountMaintenencePermission: true,
+        hasAccountMaintenancePermissionInBU: true,
+      });
 
-      cy.get('h2').contains('Company Details').should('be.visible');
+      cy.contains('h2', 'Company Details').should('be.visible');
       cy.get(DEFENDANT_DETAILS.defendantChange).should('not.exist');
       cy.contains('h2', 'Company Details')
         .closest('.govuk-grid-row')

@@ -71,6 +71,20 @@ describe('FinesMacParentGuardianDetailsFormComponent', () => {
     expect(component).toBeTruthy();
   });
 
+  it.each([
+    'fm_parent_guardian_details_address_line_1',
+    'fm_parent_guardian_details_address_line_2',
+    'fm_parent_guardian_details_address_line_3',
+  ])('should validate %s with the single ASCII characters pattern', (controlName) => {
+    const control = component.form.get(controlName);
+
+    control?.setValue('Flat @ 2');
+    expect(control?.hasError('singleAsciiCharacters')).toBe(false);
+
+    control?.setValue('Café');
+    expect(control?.hasError('singleAsciiCharacters')).toBe(true);
+  });
+
   it('should enforce remove alias link template semantics', () => {
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     const templateConsts = ((FinesMacParentGuardianDetailsFormComponent as any).ɵcmp?.consts ?? []).filter(
