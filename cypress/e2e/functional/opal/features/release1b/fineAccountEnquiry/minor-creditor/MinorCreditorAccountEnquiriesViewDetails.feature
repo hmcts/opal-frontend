@@ -74,7 +74,7 @@ Feature: Minor Creditor Account Enquiries View Details
       When I open the latest matching result from the search results
       Then I should see the account header contains "Mr Harper HISTMINOR{uniqUpper}"
 
-    @R1BDrop2 @JIRA-STORY:PO-2640 @JIRA-EPIC:PO-2653 @JIRA-STORY:PO-2657 @JIRA-EPIC:PO-2655 @JIRA-TEST-KEY:PO-10039 @only
+    @R1BDrop2 @JIRA-STORY:PO-2640 @JIRA-EPIC:PO-2653 @JIRA-STORY:PO-2657 @JIRA-EPIC:PO-2655 @JIRA-TEST-KEY:PO-10039
     Scenario: Minor creditor History and notes items load and can be filtered
       When I go to the History and notes tab
       Then I should see the History and notes items load
