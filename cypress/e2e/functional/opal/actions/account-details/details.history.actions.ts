@@ -32,6 +32,40 @@ export class AccountDetailsHistoryActions {
   }
 
   /**
+   * Reads the `itemTypes` query parameter from a History and notes request URL.
+   *
+   * @param requestUrl - Intercepted request URL.
+   * @returns The `itemTypes` value when present.
+   */
+  private getItemTypesFromUrl(requestUrl: string): string | null {
+    return new URL(requestUrl, 'http://localhost').searchParams.get('itemTypes');
+  }
+
+  /**
+   * Waits for the Notes filter request, allowing for an earlier tab-load request
+   * that may still be queued against the same intercept alias.
+   */
+  private waitForNotesFilterRequest(): void {
+    cy.wait('@historyAndNotes', { timeout: AccountDetailsHistoryActions.DEFAULT_TIMEOUT }).then(
+      ({ request, response }) => {
+        const itemTypes = this.getItemTypesFromUrl(request.url);
+
+        if (itemTypes !== 'note') {
+          cy.wait('@historyAndNotes', { timeout: AccountDetailsHistoryActions.DEFAULT_TIMEOUT }).then(
+            ({ request: filteredRequest, response: filteredResponse }) => {
+              expect(this.getItemTypesFromUrl(filteredRequest.url)).to.equal('note');
+              expect(filteredResponse?.statusCode).to.equal(200);
+            },
+          );
+          return;
+        }
+
+        expect(response?.statusCode).to.equal(200);
+      },
+    );
+  }
+
+  /**
    * Builds the deterministic History and notes API payload used by E2E tests.
    *
    * @param accountId - Defendant account id to emit in linked history items.
@@ -133,7 +167,7 @@ export class AccountDetailsHistoryActions {
         const fullResponse = req.url.includes('/minor-creditor-accounts/') ? minorCreditorResponse : defendantResponse;
         const noteOnlyResponse = buildFilteredResponse(fullResponse);
 
-        const itemTypes = String(req.query['itemTypes'] ?? '').toLowerCase();
+        const itemTypes = String(req.query['itemTypes'] ?? this.getItemTypesFromUrl(req.url) ?? '').toLowerCase();
         req.reply({
           statusCode: 200,
           body: itemTypes === 'note' ? noteOnlyResponse : fullResponse,
@@ -269,12 +303,7 @@ export class AccountDetailsHistoryActions {
     cy.get(L.notesCheckbox, { timeout: AccountDetailsHistoryActions.DEFAULT_TIMEOUT }).check({ force: true });
     cy.get(L.filterButton, { timeout: AccountDetailsHistoryActions.DEFAULT_TIMEOUT }).click();
 
-    cy.wait('@historyAndNotes', { timeout: AccountDetailsHistoryActions.DEFAULT_TIMEOUT }).then(
-      ({ request, response }) => {
-        expect(request.query['itemTypes']).to.equal('note');
-        expect(response?.statusCode).to.equal(200);
-      },
-    );
+    this.waitForNotesFilterRequest();
   }
 
   /**

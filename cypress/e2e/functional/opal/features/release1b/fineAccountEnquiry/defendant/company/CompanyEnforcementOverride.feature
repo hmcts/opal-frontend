@@ -72,7 +72,7 @@ Feature: Company Enforcement Override
         | enforcement override result id | ABDC         |
         | enforcer id                    | 770000000003 |
       And the enforcement override summary shows:
-        | enforcement override | Application made for Benefit Deduction (ABDC) |
+        | enforcement override | Application made for Benefit Deductions (ABDC) |
 
     @R1BDrop1 @JIRA-STORY:PO-1863 @JIRA-EPIC:PO-1675 @JIRA-TEST-KEY:PO-10025
     Scenario: Changing an existing company enforcement court returns to the Enforcement tab with a success banner

@@ -23,6 +23,7 @@ Feature: Parent Guardian To Pay Enforcement Override
         | account.payment_card_request                    | false                        |
         | account.defendant.dob                           | 2002-05-15                   |
         | account.payment_terms.enforcements[0].result_id | PRIS                         |
+
     @R1BDrop1 @JIRA-STORY:PO-1833 @JIRA-EPIC:PO-1675 @JIRA-LABEL:account-enquiry @JIRA-TEST-KEY:PO-8009
     Scenario: Parent or guardian removing enforcement hold returns to add additional enforcement action
       Given I create a "pgToPay" draft account with the following details and set status "Publishing Pending" using user "opal-test-10@dev.platform.hmcts.net":
@@ -72,7 +73,7 @@ Feature: Parent Guardian To Pay Enforcement Override
         | enforcement override result id | ABDC         |
         | enforcer id                    | 770000000003 |
       And the enforcement override summary shows:
-        | enforcement override | Application made for Benefit Deduction (ABDC) |
+        | enforcement override | Application made for Benefit Deductions (ABDC) |
       # AC4a/AC4b/AC4c - Change the enforcement court to a different value and verify the Enforcement tab, new value, and success banner
       When I change the enforcement court to a different value
       Then I should return to the Enforcement tab
