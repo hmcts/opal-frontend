@@ -11,6 +11,8 @@ describe('FinesSaSearchAccountFormIndividualsComponent', () => {
   let component: FinesSaSearchAccountFormIndividualsComponent;
   let fixture: ComponentFixture<FinesSaSearchAccountFormIndividualsComponent>;
   let originalConfigureDatePicker: () => void;
+  const printableAsciiCharacters = Array.from({ length: 95 }, (_, index) => String.fromCharCode(index + 32));
+  const nonPrintableAsciiCharacters = [String.fromCharCode(31), String.fromCharCode(127)];
 
   beforeAll(() => {
     originalConfigureDatePicker = MojDatePickerComponent.prototype.configureDatePicker;
@@ -168,14 +170,44 @@ describe('FinesSaSearchAccountFormIndividualsComponent', () => {
     names.forEach((n) => expect(component.form.get(n), n).toBeTruthy());
   });
 
-  it('should validate address line 1 with the single ASCII characters pattern', () => {
-    const addressControl = component.form.get('fsa_search_account_individuals_address_line_1');
+  it.each([
+    'fsa_search_account_individuals_last_name',
+    'fsa_search_account_individuals_first_names',
+    'fsa_search_account_individuals_address_line_1',
+  ])('should accept every printable ASCII character in %s', (controlName) => {
+    const control = component.form.get(controlName);
 
-    addressControl?.setValue('Flat @ 2');
-    expect(addressControl?.hasError('singleAsciiCharacters')).toBe(false);
+    printableAsciiCharacters.forEach((character) => {
+      control?.setValue(character);
+      expect(control?.hasError('singleAsciiCharacters'), `character ${character.charCodeAt(0)}`).toBe(false);
+    });
+  });
 
-    addressControl?.setValue('Café');
-    expect(addressControl?.hasError('singleAsciiCharacters')).toBe(true);
+  it.each([
+    'fsa_search_account_individuals_last_name',
+    'fsa_search_account_individuals_first_names',
+    'fsa_search_account_individuals_address_line_1',
+  ])('should reject characters outside printable ASCII in %s', (controlName) => {
+    const control = component.form.get(controlName);
+
+    nonPrintableAsciiCharacters.forEach((character) => {
+      control?.setValue(character);
+      expect(control?.hasError('singleAsciiCharacters'), `character ${character.charCodeAt(0)}`).toBe(true);
+    });
+  });
+
+  it.each([
+    ['fsa_search_account_individuals_last_name', 30],
+    ['fsa_search_account_individuals_first_names', 20],
+    ['fsa_search_account_individuals_address_line_1', 30],
+  ] as const)('should enforce the maximum length for %s', (controlName, maxLength) => {
+    const control = component.form.get(controlName);
+
+    control?.setValue('A'.repeat(maxLength));
+    expect(control?.hasError('maxlength')).toBe(false);
+
+    control?.setValue('A'.repeat(maxLength + 1));
+    expect(control?.hasError('maxlength')).toBe(true);
   });
 
   it('should remove its installed controls on destroy when nested in a parent group', () => {

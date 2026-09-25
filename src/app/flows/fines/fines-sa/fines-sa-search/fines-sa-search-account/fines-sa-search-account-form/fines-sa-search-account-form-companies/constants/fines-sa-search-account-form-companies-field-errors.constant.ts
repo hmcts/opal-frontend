@@ -6,14 +6,14 @@ export const FINES_SA_SEARCH_ACCOUNT_FORM_COMPANIES_FIELD_ERRORS: IFinesSaSearch
       message: 'Enter company name',
       priority: 1,
     },
-    lettersSpacesHyphensApostrophesDotPattern: {
+    singleAsciiCharacters: {
       message:
-        'Company name must only include letters a to z, numbers 0-9 and certain special characters (hyphens, spaces, apostrophes)',
-      priority: 1,
+        'Company name must only include letters a to z, numbers 0-9 and certain special characters (such as hyphens, spaces, apostrophes and commas)',
+      priority: 2,
     },
     maxlength: {
       message: 'Company name must be 50 characters or fewer',
-      priority: 2,
+      priority: 3,
     },
   },
   fsa_search_account_companies_company_name_exact_match: {},
