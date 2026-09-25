@@ -77,10 +77,10 @@
         "offence_id": 33369,
         "impositions": [
           {
-            "result_id": "FO",
+            "result_id": "FCOST",
             "amount_imposed": 122,
             "amount_paid": 10,
-            "major_creditor_id": null,
+            "major_creditor_id": 770000000061,
             "minor_creditor": null
           }
         ]
