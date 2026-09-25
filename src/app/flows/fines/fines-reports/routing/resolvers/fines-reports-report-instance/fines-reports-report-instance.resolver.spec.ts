@@ -73,6 +73,77 @@ describe('finesReportsReportInstanceResolver', () => {
     expect(result).toMatchObject({ reportTitle: OPAL_FINES_REPORT_MOCK.report_title });
   });
 
+  it.each([
+    FINES_REPORTS_SUMMARY_LIST_ROUTING_PATHS.children.operationalReportsByEnforcement,
+    FINES_REPORTS_SUMMARY_LIST_ROUTING_PATHS.children.operationalReportsByPayments,
+  ])('should resolve a %s summary opened from Your reports using the instance report type', async (reportTypeId) => {
+    const reportInstance = {
+      ...OPAL_FINES_REPORT_INSTANCE_MOCK,
+      report: { ...OPAL_FINES_REPORT_INSTANCE_MOCK.report, id: reportTypeId },
+    };
+    const reportDefinition = { ...OPAL_FINES_REPORT_MOCK, report_id: reportTypeId };
+    mockOpalFinesService.getReportInstance.mockReturnValue(of(reportInstance));
+    mockOpalFinesService.getReport.mockImplementation((reportId: string) =>
+      reportId === reportTypeId
+        ? of(reportDefinition)
+        : throwError(() => new HttpErrorResponse({ status: 404, statusText: 'Not Found' })),
+    );
+
+    const result = await firstValueFrom(
+      executeResolver(
+        buildRoute('12345', FINES_REPORTS_SUMMARY_LIST_ROUTING_PATHS.children.yourReports),
+        {} as never,
+      ) as Observable<unknown>,
+    );
+
+    expect(mockOpalFinesService.getReportInstance).toHaveBeenCalledExactlyOnceWith('12345');
+    expect(mockOpalFinesService.getReport).toHaveBeenCalledExactlyOnceWith(reportTypeId);
+    expect(mockOpalFinesService.getReportInstance.mock.invocationCallOrder[0]).toBeLessThan(
+      mockOpalFinesService.getReport.mock.invocationCallOrder[0],
+    );
+    expect(result).toMatchObject({
+      reportId: reportTypeId,
+      reportTitle: reportDefinition.report_title,
+      reportName: reportInstance.name,
+    });
+    expect(mockRouter.createUrlTree).not.toHaveBeenCalled();
+  });
+
+  it('should propagate Your reports instance failures without requesting a report definition', async () => {
+    const error = new HttpErrorResponse({ status: 403, statusText: 'Forbidden' });
+    mockOpalFinesService.getReportInstance.mockReturnValue(throwError(() => error));
+
+    await expect(
+      firstValueFrom(
+        executeResolver(
+          buildRoute('12345', FINES_REPORTS_SUMMARY_LIST_ROUTING_PATHS.children.yourReports),
+          {} as never,
+        ) as Observable<unknown>,
+      ),
+    ).rejects.toBe(error);
+
+    expect(mockOpalFinesService.getReport).not.toHaveBeenCalled();
+    expect(mockOpalFinesService.getResult).not.toHaveBeenCalled();
+  });
+
+  it('should propagate Your reports definition failures after loading the instance', async () => {
+    const error = new HttpErrorResponse({ status: 403, statusText: 'Forbidden' });
+    mockOpalFinesService.getReport.mockReturnValue(throwError(() => error));
+
+    await expect(
+      firstValueFrom(
+        executeResolver(
+          buildRoute('12345', FINES_REPORTS_SUMMARY_LIST_ROUTING_PATHS.children.yourReports),
+          {} as never,
+        ) as Observable<unknown>,
+      ),
+    ).rejects.toBe(error);
+
+    expect(mockOpalFinesService.getReportInstance).toHaveBeenCalledExactlyOnceWith('12345');
+    expect(mockOpalFinesService.getReport).toHaveBeenCalledExactlyOnceWith(OPAL_FINES_REPORT_INSTANCE_MOCK.report.id);
+    expect(mockOpalFinesService.getResult).not.toHaveBeenCalled();
+  });
+
   it('should redirect to access denied when the report instance does not match the permitted route report type', async () => {
     mockOpalFinesService.getReportInstance.mockReturnValue(
       of({

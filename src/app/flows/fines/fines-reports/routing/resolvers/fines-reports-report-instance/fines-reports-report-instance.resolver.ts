@@ -9,6 +9,7 @@ import { FINES_REPORTS_REPORT_SUMMARY_LAST_ACTION_MODE } from '../../../fines-re
 import { FINES_REPORTS_REPORT_SUMMARY_PARAMETER_KEYS } from '../../../fines-reports-report-summary/constants/fines-reports-report-summary-parameter-keys.constant';
 import { IFinesReportsReportSummaryViewModel } from '../../../fines-reports-report-summary/interfaces/fines-reports-report-summary-view-model.interface';
 import { mapFinesReportsReportInstanceToViewModel } from '../../../fines-reports-report-summary/utils/fines-reports-report-summary-map-view-model.utils';
+import { FINES_REPORTS_SUMMARY_LIST_ROUTING_PATHS } from '../../../fines-reports-summary-list/routing/constants/fines-reports-summary-list-routing-paths.constant';
 
 /**
  * Loads action reference data only for last-action enforcement mode, then maps the instance for the summary page.
@@ -47,7 +48,9 @@ const resolveReportSummaryViewModel = (
 };
 
 /**
- * Loads the report definition and instance, checks that they match, and resolves the summary page data.
+ * Loads the report definition and instance and resolves the summary page data.
+ * Your reports loads the instance first to identify its report definition. Report-specific routes load
+ * the definition first and check that the instance belongs to that report type.
  *
  * @param route - The activated route snapshot containing the instance ID and the current or parent report type ID.
  * @returns An observable emitting the summary view model or an access-denied RedirectCommand for a report-type mismatch; API failures propagate.
@@ -60,6 +63,28 @@ export const finesReportsReportInstanceResolver: ResolveFn<IFinesReportsReportSu
   const dateService = inject(DateService);
   const reportInstanceId = route.paramMap.get('reportInstanceId') ?? '';
   const reportTypeId = route.parent?.paramMap.get('reportTypeId') ?? route.paramMap.get('reportTypeId') ?? '';
+
+  // Your reports uses a list identifier, so resolve the actual report definition from the selected instance.
+  if (reportTypeId === FINES_REPORTS_SUMMARY_LIST_ROUTING_PATHS.children.yourReports) {
+    return opalFinesService
+      .getReportInstance(reportInstanceId)
+      .pipe(
+        switchMap((reportInstance) =>
+          opalFinesService
+            .getReport(reportInstance.report.id)
+            .pipe(
+              switchMap((reportDefinition) =>
+                resolveReportSummaryViewModel(
+                  reportInstance,
+                  reportDefinition.report_title,
+                  opalFinesService,
+                  dateService,
+                ),
+              ),
+            ),
+        ),
+      );
+  }
 
   // Load the permission-gated definition first. It validates the report type in the URL and supplies the page heading.
   return opalFinesService.getReport(reportTypeId).pipe(
