@@ -445,8 +445,8 @@ describe('FinesAccDefendantDetailsComponent', () => {
   });
 
   describe('should get the relevant denied type from getAmendPaymentTermsDeniedType', () => {
-    it('for a balance of 0 should return "balance"', () => {
-      component.accountData.payment_state_summary.account_balance = 0;
+    it.each([0, 100])('for a non-negative balance (%s) should return "balance"', (accountBalance) => {
+      component.accountData.payment_state_summary.account_balance = accountBalance;
       const deniedType = component['getAmendPaymentTermsDeniedType']();
       expect(deniedType).toBe('balance');
     });
@@ -467,11 +467,18 @@ describe('FinesAccDefendantDetailsComponent', () => {
   });
 
   describe('should get the correct response from accountAllowsPaymentTermsActions', () => {
-    it('when the account status is unrestricted and the account has a positive balance', () => {
+    it('when the account status is unrestricted and the account has an outstanding negative balance', () => {
+      component.accountData.account_status_reference.account_status_code = 'L';
+      component.accountData.payment_state_summary.account_balance = -500.58;
+
+      expect(component.accountAllowsPaymentTermsActions).toBe(true);
+    });
+
+    it('when the account balance is positive', () => {
       component.accountData.account_status_reference.account_status_code = 'L';
       component.accountData.payment_state_summary.account_balance = 500.58;
 
-      expect(component.accountAllowsPaymentTermsActions).toBe(true);
+      expect(component.accountAllowsPaymentTermsActions).toBe(false);
     });
 
     it.each(FINES_ACC_RESTRICTED_ACCOUNT_STATUS_CODES)(
@@ -496,12 +503,20 @@ describe('FinesAccDefendantDetailsComponent', () => {
     it.each([
       {
         description:
-          'when the user has amend-payment-terms permission, no disallowing enforcement, a valid status and positive balance',
+          'when the user has amend-payment-terms permission, no disallowing enforcement, a valid status and outstanding negative balance',
+        extendTtpDisallow: false,
+        accountStatusCode: 'L',
+        accountBalance: -100,
+        hasPermission: true,
+        expectedCanAmend: true,
+      },
+      {
+        description: 'when the account balance is positive',
         extendTtpDisallow: false,
         accountStatusCode: 'L',
         accountBalance: 100,
         hasPermission: true,
-        expectedCanAmend: true,
+        expectedCanAmend: false,
       },
       {
         description: 'when the last enforcement disallows extending TTP',
