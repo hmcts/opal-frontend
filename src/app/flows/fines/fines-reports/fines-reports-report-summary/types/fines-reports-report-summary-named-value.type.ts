@@ -4,5 +4,5 @@
 export type FinesReportsReportSummaryNamedValue = {
   name: string;
   value: unknown;
-  optional?: boolean;
+  optional: boolean;
 };

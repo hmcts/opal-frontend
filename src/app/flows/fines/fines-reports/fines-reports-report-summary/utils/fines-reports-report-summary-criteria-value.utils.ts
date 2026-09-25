@@ -156,14 +156,19 @@ export const buildActionDateRow = (
     return {
       name: FINES_REPORTS_REPORT_SUMMARY_CRITERIA_LABELS.actionDate,
       value: `From ${fromDisplay} to ${toDisplay}`,
+      optional: false,
     };
   }
 
   if (fromDisplay) {
-    return { name: FINES_REPORTS_REPORT_SUMMARY_CRITERIA_LABELS.actionDate, value: `From ${fromDisplay}` };
+    return {
+      name: FINES_REPORTS_REPORT_SUMMARY_CRITERIA_LABELS.actionDate,
+      value: `From ${fromDisplay}`,
+      optional: false,
+    };
   }
 
-  return { name: FINES_REPORTS_REPORT_SUMMARY_CRITERIA_LABELS.actionDate, value: `To ${toDisplay}` };
+  return { name: FINES_REPORTS_REPORT_SUMMARY_CRITERIA_LABELS.actionDate, value: `To ${toDisplay}`, optional: false };
 };
 
 /**
@@ -273,6 +278,7 @@ export const mapOperationalReportParameter = (
       return {
         name: FINES_REPORTS_REPORT_SUMMARY_CRITERIA_LABELS.enforcement,
         value: getEnforcementDisplayValue(value, enforcementAction, enforcementActionCode),
+        optional: false,
       };
     case FINES_REPORTS_REPORT_SUMMARY_PARAMETER_KEYS.accountStatus:
       return {
@@ -296,17 +302,19 @@ export const mapOperationalReportParameter = (
       return { name: FINES_REPORTS_REPORT_SUMMARY_CRITERIA_LABELS.upperNameRange, value, optional: true };
     case FINES_REPORTS_REPORT_SUMMARY_PARAMETER_KEYS.firstPaymentOrPayByInNext7Days:
       return value === true
-        ? { name: FINES_REPORTS_REPORT_SUMMARY_CRITERIA_LABELS.firstPaymentOrPayByInNext7Days, value }
+        ? { name: FINES_REPORTS_REPORT_SUMMARY_CRITERIA_LABELS.firstPaymentOrPayByInNext7Days, value, optional: false }
         : null;
     case FINES_REPORTS_REPORT_SUMMARY_PARAMETER_KEYS.isPaymentMade:
       return {
         name: FINES_REPORTS_REPORT_SUMMARY_CRITERIA_LABELS.paymentsMade,
         value: getPaymentMadeDisplayValue(value),
+        optional: false,
       };
     case FINES_REPORTS_REPORT_SUMMARY_PARAMETER_KEYS.reportMode:
       return {
         name: FINES_REPORTS_REPORT_SUMMARY_CRITERIA_LABELS.paymentReportMode,
         value: PAYMENT_REPORT_MODE_DISPLAY[stringCode] ?? stringCode,
+        optional: false,
       };
     case FINES_REPORTS_REPORT_SUMMARY_PARAMETER_KEYS.sinceLastEnforcementAction:
       return {

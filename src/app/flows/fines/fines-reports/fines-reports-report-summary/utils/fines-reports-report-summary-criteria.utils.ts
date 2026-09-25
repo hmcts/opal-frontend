@@ -25,7 +25,7 @@ type CombinedCriteriaState = {
  */
 const getReportTypeRow = (key: string, reportType: string): FinesReportsReportSummaryNamedValue | null => {
   return key === FINES_REPORTS_REPORT_SUMMARY_PARAMETER_KEYS.reportType
-    ? { name: FINES_REPORTS_REPORT_SUMMARY_CRITERIA_LABELS.reportType, value: reportType }
+    ? { name: FINES_REPORTS_REPORT_SUMMARY_CRITERIA_LABELS.reportType, value: reportType, optional: false }
     : null;
 };
 
