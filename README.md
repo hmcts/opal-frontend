@@ -448,7 +448,7 @@ The nightly Jenkins pipeline runs its stages in this order after checkout and te
 - `Component Tests` runs when `Component=true`.
 - `Smoke Tests` runs when `Smoke=true`.
 - `Functional Tests` runs when `Functional=true`.
-- `LEGACY_DEMO_SUITE` selects which optional demo legacy stage runs. The supported values are `R1A` (default), `R1A_AND_R1B_DROP1`, `R1A_AND_R1B`, `R1B_OFF`, `R1A_OFF`, `R1A_AND_R1B_OFF`, and `NONE`.
+- `LEGACY_DEMO_SUITE` selects which optional demo legacy stage runs. The supported values are `R1A_AND_R1B_DROP1` (default), `R1A`, `R1A_AND_R1B`, `R1B_OFF`, `R1A_OFF`, `R1A_AND_R1B_OFF`, and `NONE`.
 - `R1A Legacy Demo` runs when `LEGACY_DEMO_SUITE=R1A`. It points `TEST_URL` at `https://opal-frontend.demo.apps.hmcts.net/`, switches app mode to legacy, and runs `yarn test:functional:r1a`.
 - `R1A and R1B Drop1 Legacy Demo` runs when `LEGACY_DEMO_SUITE=R1A_AND_R1B_DROP1`. It uses the same demo legacy flow and runs `yarn test:functional:r1a_and_r1b_drop1`.
 - `R1A and R1B Legacy Demo` runs when `LEGACY_DEMO_SUITE=R1A_AND_R1B`. It uses the same demo legacy flow and runs `yarn test:functional:r1ab`.

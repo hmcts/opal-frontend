@@ -72,6 +72,8 @@ export const createIndividualMinorCreditorAtAGlanceMock = () => {
   atAGlance.defendant = {
     account_number: 'ACC-654321',
     account_id: 123456789,
+    organisation: false,
+    organisation_name: null,
     title: 'Mr',
     forenames: 'John',
     surname: 'Doe',

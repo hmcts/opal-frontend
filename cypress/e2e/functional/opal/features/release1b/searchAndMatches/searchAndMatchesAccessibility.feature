@@ -45,7 +45,7 @@ Feature: Search And Matches Accessibility
       | National Insurance number | * |
     Then I check the page for accessibility
 
-  @JIRA-STORY:PO-3720 @JIRA-EPIC:PO-3685 @JIRA-TEST-KEY:PO-3721 @R1BDrop1
+  @JIRA-STORY:PO-3720 @JIRA-EPIC:PO-3685 @JIRA-TEST-KEY:PO-3721 @R1BDrop2
   Scenario: Major Creditors search form is available when release 1b is enabled
     When I view the Major Creditors search form
     Then I check the page for accessibility
