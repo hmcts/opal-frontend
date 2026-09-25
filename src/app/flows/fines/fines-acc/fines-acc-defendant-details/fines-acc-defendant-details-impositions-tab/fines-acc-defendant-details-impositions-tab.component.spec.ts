@@ -59,7 +59,6 @@ describe('FinesAccDefendantDetailsImpositionsTabComponent', () => {
       description: 'null reference fields',
       offence: { offence_id: null, cjs_code: null, offence_title: 'Test offence title' },
     },
-    { description: 'omitted reference fields', offence: { offence_title: 'Test offence title' } },
   ])('should display the offence title with $description', ({ offence }) => {
     const tabData = structuredClone(OPAL_FINES_ACCOUNT_DEFENDANT_DETAILS_IMPOSITIONS_TAB_REF_DATA_MOCK);
     tabData.impositions[0].offence = offence;
@@ -149,7 +148,7 @@ describe('FinesAccDefendantDetailsImpositionsTabComponent', () => {
 
   it('should use the minor creditor code even when the display label differs', () => {
     const tabData = structuredClone(OPAL_FINES_ACCOUNT_DEFENDANT_DETAILS_IMPOSITIONS_TAB_REF_DATA_MOCK);
-    tabData.impositions[1].creditor.creditor_account_type.display_name = 'Major Creditor';
+    tabData.impositions[1].creditor.creditor_account_type_reference.creditor_account_display_name = 'Major Creditor';
 
     const { fixture } = setupComponent(tabData);
     const minorCreditorLink = fixture.nativeElement.querySelector('#imposition-creditor-1 a') as HTMLAnchorElement;
@@ -170,7 +169,7 @@ describe('FinesAccDefendantDetailsImpositionsTabComponent', () => {
 
   it('should use the major creditor code even when the display label differs', () => {
     const tabData = structuredClone(OPAL_FINES_ACCOUNT_DEFENDANT_DETAILS_IMPOSITIONS_TAB_REF_DATA_MOCK);
-    tabData.impositions[0].creditor.creditor_account_type.display_name = 'Minor Creditor';
+    tabData.impositions[0].creditor.creditor_account_type_reference.creditor_account_display_name = 'Minor Creditor';
 
     const { fixture } = setupComponent(tabData);
     const majorCreditorLink = fixture.nativeElement.querySelector('#imposition-creditor-0 a') as HTMLAnchorElement;
@@ -202,9 +201,9 @@ describe('FinesAccDefendantDetailsImpositionsTabComponent', () => {
       expected: '770000000001',
     },
     {
-      description: 'the creditor account ID when the name is empty and the display name is omitted',
+      description: 'the creditor account ID when the name is empty and the display name is null',
       creditorName: '',
-      displayName: undefined,
+      displayName: null,
       expected: '770000000001',
     },
     {
@@ -216,7 +215,7 @@ describe('FinesAccDefendantDetailsImpositionsTabComponent', () => {
   ])('should display $description', ({ creditorName, displayName, expected }) => {
     const tabData = structuredClone(OPAL_FINES_ACCOUNT_DEFENDANT_DETAILS_IMPOSITIONS_TAB_REF_DATA_MOCK);
     tabData.impositions[0].creditor.major_creditor_name = creditorName;
-    tabData.impositions[0].creditor.creditor_account_type.display_name = displayName;
+    tabData.impositions[0].creditor.creditor_account_type_reference.creditor_account_display_name = displayName;
 
     const { fixture } = setupComponent(tabData);
     const creditorCell = fixture.nativeElement.querySelector('#imposition-creditor-0') as HTMLTableCellElement;
@@ -233,10 +232,9 @@ describe('FinesAccDefendantDetailsImpositionsTabComponent', () => {
       individual: { forenames: 'Alex James', surname: 'Smith' },
       expected: 'Alex James Smith',
     },
-    { description: 'surname only', individual: { surname: 'Smith' }, expected: 'Smith' },
     { description: 'null forenames', individual: { forenames: null, surname: 'Smith' }, expected: 'Smith' },
     { description: 'missing individual details', individual: null, expected: 'Minor Creditor' },
-    { description: 'an empty surname', individual: { surname: '' }, expected: 'Minor Creditor' },
+    { description: 'an empty surname', individual: { forenames: null, surname: '' }, expected: 'Minor Creditor' },
     {
       description: 'whitespace-only forenames and surname',
       individual: { forenames: '   ', surname: '   ' },
@@ -259,7 +257,7 @@ describe('FinesAccDefendantDetailsImpositionsTabComponent', () => {
   it('should select the company name when the organisation flag is true', () => {
     const tabData = structuredClone(OPAL_FINES_ACCOUNT_DEFENDANT_DETAILS_IMPOSITIONS_TAB_REF_DATA_MOCK);
     tabData.impositions[1].creditor.company_name = { organisation_name: 'Updated Company Ltd' };
-    tabData.impositions[1].creditor.individual_name = { surname: 'Smith' };
+    tabData.impositions[1].creditor.individual_name = { forenames: null, surname: 'Smith' };
 
     const { fixture } = setupComponent(tabData);
     const creditorCell = fixture.nativeElement.querySelector('#imposition-creditor-1') as HTMLTableCellElement;
@@ -321,9 +319,9 @@ describe('FinesAccDefendantDetailsImpositionsTabComponent', () => {
     expect(creditorCell.textContent?.trim()).toBe('Updated Major Creditor');
   });
 
-  it.each([null, undefined])('should display the Central Fund company name with organisation flag %s', (flag) => {
+  it('should display the Central Fund company name with a null organisation flag', () => {
     const tabData = structuredClone(OPAL_FINES_ACCOUNT_DEFENDANT_DETAILS_IMPOSITIONS_TAB_REF_DATA_MOCK);
-    tabData.impositions[2].creditor.minor_creditor_organisation_flag = flag;
+    tabData.impositions[2].creditor.minor_creditor_organisation_flag = null;
     tabData.impositions[2].creditor.company_name = { organisation_name: 'Central Fund Organisation' };
 
     const { fixture } = setupComponent(tabData);
@@ -385,9 +383,9 @@ describe('FinesAccDefendantDetailsImpositionsTabComponent', () => {
     expect(imposedByCell.textContent?.trim()).toBe('');
   });
 
-  it('should leave the imposing court blank when omitted', () => {
+  it('should leave the imposing court blank when null', () => {
     const tabData = structuredClone(OPAL_FINES_ACCOUNT_DEFENDANT_DETAILS_IMPOSITIONS_TAB_REF_DATA_MOCK);
-    delete tabData.impositions[0].imposed_by;
+    tabData.impositions[0].imposed_by = null;
 
     const { fixture } = setupComponent(tabData);
     const cell = fixture.nativeElement.querySelector('#imposition-imposed-by-0') as HTMLTableCellElement;
@@ -395,9 +393,9 @@ describe('FinesAccDefendantDetailsImpositionsTabComponent', () => {
     expect(cell.textContent?.trim()).toBe('');
   });
 
-  it('should display the court name without an optional court code', () => {
+  it('should display the court name with a null court code', () => {
     const tabData = structuredClone(OPAL_FINES_ACCOUNT_DEFENDANT_DETAILS_IMPOSITIONS_TAB_REF_DATA_MOCK);
-    tabData.impositions[0].imposed_by = { court_id: 101, court_name: 'Test Court' };
+    tabData.impositions[0].imposed_by = { court_id: 101, court_code: null, court_name: 'Test Court' };
 
     const { fixture } = setupComponent(tabData);
     const cell = fixture.nativeElement.querySelector('#imposition-imposed-by-0') as HTMLTableCellElement;

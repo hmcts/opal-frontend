@@ -21,12 +21,16 @@ export const OPAL_FINES_ACCOUNT_DEFENDANT_DETAILS_IMPOSITIONS_PAGINATION_ROWS_MO
       },
       creditor: {
         creditor_account_id: 770000100000 + rowNumber,
-        creditor_account_type: { account_type: creditorAccountType, display_name: creditorTypeDisplayName },
+        creditor_account_type_reference: {
+          creditor_account_type: creditorAccountType,
+          creditor_account_display_name: creditorTypeDisplayName,
+        },
         major_creditor_name:
           creditorAccountType === OPAL_FINES_CREDITOR_ACCOUNT_TYPES.major
             ? `${creditorTypeDisplayName} ${rowNumber}`
             : null,
         minor_creditor_organisation_flag: creditorAccountType === OPAL_FINES_CREDITOR_ACCOUNT_TYPES.minor ? true : null,
+        individual_name: null,
         company_name:
           creditorAccountType === OPAL_FINES_CREDITOR_ACCOUNT_TYPES.minor
             ? { organisation_name: `${creditorTypeDisplayName} ${rowNumber}` }

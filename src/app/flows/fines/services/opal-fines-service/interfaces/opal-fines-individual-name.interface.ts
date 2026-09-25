@@ -1,4 +1,4 @@
 export interface IOpalFinesIndividualName {
-  forenames?: string | null;
+  forenames: string | null;
   surname: string;
 }

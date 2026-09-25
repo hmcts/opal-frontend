@@ -103,7 +103,7 @@ export class FinesAccDefendantDetailsImpositionsTabComponent extends AbstractSor
     const hasZeroBalance = roundedBalance === 0;
     const creditorAccountId = apiImposition.creditor.creditor_account_id;
     const creditor = apiImposition.creditor;
-    const accountType = creditor.creditor_account_type.account_type;
+    const accountType = creditor.creditor_account_type_reference.creditor_account_type;
     // Major creditors supply their name directly; Central Fund supplies a company name.
     let creditorName = creditor.major_creditor_name ?? creditor.company_name?.organisation_name;
 
@@ -118,7 +118,9 @@ export class FinesAccDefendantDetailsImpositionsTabComponent extends AbstractSor
 
     // Treat blank names as missing, then fall back to the account-type display name and creditor account ID.
     const creditorDisplay =
-      creditorName?.trim() || creditor.creditor_account_type.display_name || creditorAccountId.toString();
+      creditorName?.trim() ||
+      creditor.creditor_account_type_reference.creditor_account_display_name ||
+      creditorAccountId.toString();
     let creditorDetailsRouterLink: string | null = null;
 
     if (accountType === OPAL_FINES_CREDITOR_ACCOUNT_TYPES.minor) {
