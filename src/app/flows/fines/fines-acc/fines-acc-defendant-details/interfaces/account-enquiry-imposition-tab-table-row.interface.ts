@@ -13,8 +13,6 @@ export interface IAccountEnquiryImpositionTabTableRow extends IAbstractTableData
   'Imposed by': string | null;
   'Imposition ID': number;
   'Creditor account id': number;
-  'Minor creditor party id': number | null;
-  'Major creditor id': number | null;
   creditorDetailsRouterLink: string | null;
   hasZeroBalance: boolean;
   rowClasses: string;
