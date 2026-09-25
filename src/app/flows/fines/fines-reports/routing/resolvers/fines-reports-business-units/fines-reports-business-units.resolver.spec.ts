@@ -80,15 +80,12 @@ describe('finesReportsBusinessUnitsResolver', () => {
     expect(result).toEqual(OPAL_FINES_BUSINESS_UNIT_REF_DATA_MOCK);
   });
 
-  it('should return no business units without making a request for Your reports', async () => {
+  it('should resolve all accessible business units for Your reports', async () => {
     const result = await runResolver(FINES_REPORTS_SUMMARY_LIST_ROUTING_PATHS.children.yourReports);
 
     expect(mockOpalFinesService.getReport).not.toHaveBeenCalled();
-    expect(mockOpalFinesService.getBusinessUnits).not.toHaveBeenCalled();
+    expect(mockOpalFinesService.getBusinessUnits).toHaveBeenCalled();
     expect(mockOpalFinesService.getBusinessUnitsByPermission).not.toHaveBeenCalled();
-    expect(result).toEqual({
-      count: 0,
-      refData: [],
-    });
+    expect(result).toEqual(OPAL_FINES_BUSINESS_UNIT_REF_DATA_MOCK);
   });
 });
