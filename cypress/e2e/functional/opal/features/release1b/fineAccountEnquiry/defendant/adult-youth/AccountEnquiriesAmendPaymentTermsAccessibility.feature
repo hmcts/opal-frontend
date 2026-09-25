@@ -18,7 +18,7 @@ Feature: Account Enquiries Amend Payment Terms Accessibility
       | account.payment_card_request                    | false                     |
       | account.defendant.dob                           | 2002-05-15                |
       | account.offences.0.impositions.0.amount_imposed | 250                       |
-      | account.offences.0.impositions.0.amount_paid    | 300                       |
+      | account.offences.0.impositions.0.amount_paid    | 0                         |
       | account.payment_terms.payment_terms_type_code   | B                         |
       | account.payment_terms.effective_date            | 2025-05-30                |
   @R1BDrop1 @JIRA-STORY:PO-1149 @JIRA-EPIC:PO-2472 @JIRA-TEST-KEY:PO-5302
