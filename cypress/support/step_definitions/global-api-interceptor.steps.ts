@@ -10,6 +10,10 @@ import { log } from '../utils/log.helper';
 const flow = () => new GlobalApiInterceptorFlow();
 const actions = () => new GlobalApiInterceptorActions();
 
+/**
+ * @step Supports the regex Cucumber step: /^I attempt to open Manual Account Creation and the business
+ * units request fails with (\d+|<errorCode>)$/
+ */
 When(
   /^I attempt to open Manual Account Creation and the business units request fails with (\d+|<errorCode>)$/,
   (statusCode: string) => {
@@ -25,6 +29,10 @@ When(
   },
 );
 
+/**
+ * @step Supports the Cucumber step: I attempt to open Manual Account Creation and the business units
+ * request fails with a retriable {int} error
+ */
 When(
   'I attempt to open Manual Account Creation and the business units request fails with a retriable {int} error',
   (statusCode: number) => {
@@ -33,16 +41,19 @@ When(
   },
 );
 
+/**
+ * @step Supports the Cucumber step: I attempt to open Manual Account Creation and the business units
+ * request fails due to a network error
+ */
 When('I attempt to open Manual Account Creation and the business units request fails due to a network error', () => {
   log('step', 'Attempting Manual Account Creation with business units network error');
   flow().openManualAccountCreationWithBusinessUnitsNetworkFailure();
 });
 
-When('I click the Cancel button and the Cancel confirmation popup is displayed with:', (table: DataTable) => {
-  log('step', 'Clicking Cancel and asserting Cancel confirmation popup', { rows: table.raw() });
-  actions().clickCancelAndAssertConfirmationPopupFromTable(table);
-});
-
+/**
+ * @step Supports the Cucumber step: I attempt to open Manual Account Creation and the business units
+ * request fails with a non-retriable {int} error
+ */
 When(
   'I attempt to open Manual Account Creation and the business units request fails with a non-retriable {int} error',
   (statusCode: number) => {
@@ -51,6 +62,10 @@ When(
   },
 );
 
+/**
+ * @step Supports the Cucumber step: I attempt a Companies account search for reference {string} with a
+ * retriable {int} error
+ */
 When(
   'I attempt a Companies account search for reference {string} with a retriable {int} error',
   (reference: string, statusCode: number) => {
@@ -59,6 +74,10 @@ When(
   },
 );
 
+/**
+ * @step Supports the Cucumber step: I attempt a Companies account search for reference {string} with a
+ * non-retriable {int} error
+ */
 When(
   'I attempt a Companies account search for reference {string} with a non-retriable {int} error',
   (reference: string, statusCode: number) => {
@@ -67,11 +86,19 @@ When(
   },
 );
 
+/**
+ * @step Supports the Cucumber step: I open the Fixed penalty section and the fixed penalty details
+ * request receives no response
+ */
 When('I open the Fixed penalty section and the fixed penalty details request receives no response', () => {
   log('step', 'Opening Fixed penalty section with no response from the details request');
   flow().openFixedPenaltyDetailsWithNetworkFailure();
 });
 
+/**
+ * @step Supports the Cucumber step: I save the defendant details and the Replace Defendant Account Party
+ * request fails with a non-retriable {int} error
+ */
 When(
   'I save the defendant details and the Replace Defendant Account Party request fails with a non-retriable {int} error',
   (statusCode: number) => {
@@ -80,6 +107,10 @@ When(
   },
 );
 
+/**
+ * @step Supports the Cucumber step: I save account note {string} and the Add Note request fails with a
+ * non-retriable {int} error
+ */
 When(
   'I save account note {string} and the Add Note request fails with a non-retriable {int} error',
   (noteText: string, statusCode: number) => {
@@ -88,21 +119,33 @@ When(
   },
 );
 
+/**
+ * @step Supports the Cucumber step: the global error banner is displayed
+ */
 Then('the global error banner is displayed', () => {
   log('assert', 'Asserting global error banner is visible');
   actions().assertGlobalErrorBanner();
 });
 
+/**
+ * @step Supports the Cucumber step: the global warning banner is displayed with:
+ */
 Then('the global warning banner is displayed with:', (table: DataTable) => {
   log('assert', 'Asserting global warning banner', { rows: table.raw() });
   actions().assertGlobalWarningBannerFromTable(table);
 });
 
+/**
+ * @step Supports the Cucumber step: the global banner clears after refresh on the {string} page
+ */
 Then('the global banner clears after refresh on the {string} page', (expectedHeader: string) => {
   log('assert', 'Refreshing and confirming global banner cleared', { expectedHeader });
   flow().refreshAndAssertBannerCleared(expectedHeader);
 });
 
+/**
+ * @step Supports the Cucumber step: the error page shows:
+ */
 Then('the error page shows:', (table: DataTable) => {
   log('assert', 'Asserting error page content', { rows: table.raw() });
   actions().assertErrorPageContent(table);

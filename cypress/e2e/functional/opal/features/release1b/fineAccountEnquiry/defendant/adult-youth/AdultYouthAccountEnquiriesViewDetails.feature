@@ -27,7 +27,7 @@ Feature: Adult Youth Account Enquiries View Details
       When I search for the account by last name "AccDetailSurname{uniq}" and open the latest result
       Then I should see the page header contains "Mr John ACCDETAILSURNAME{uniqUpper}"
       # AC3 – Navigate to Defendant details
-      When I go to the Defendant details section and the header is "Defendant details"
+      When the Defendant details section header is "Defendant details"
       Then I should see the convert to company account action
 
 
@@ -83,7 +83,7 @@ Feature: Adult Youth Account Enquiries View Details
       When I complete converting the account to a company with company name "Accdetail converted comp{uniq}"
       Then I should return to the account details page Defendant tab
       And I should see the account conversion success message "Converted to a company account."
-      When I go to the Defendant details section and the header is "Company details"
+      When the Defendant details section header is "Company details"
       Then I should see the company summary card
       And I should not see the defendant summary card
       And I should see the company name contains "Accdetail converted comp{uniq}"
@@ -98,10 +98,10 @@ Feature: Adult Youth Account Enquiries View Details
       And I should see the convert to company account action
 
     @R1BDrop1 @JIRA-STORY:PO-2671 @JIRA-EPIC:PO-8248
-    Scenario Outline: AC1c-AC1e Individual Defendant tab Change links open the correct amend screens
-      # AC1a – the heading Change link is removed
-      # AC1b – section Change links are shown for Defendant details, Contact details, and Employer details
-      When I open the "<section>" Change link on the Defendant tab
+    Scenario Outline: AC1c-AC1e Individual Defendant tab change actions open the correct amend screens
+      # AC1a – the heading Change action is removed
+      # AC1b – section Change actions are shown for Defendant details, Contact details, and Employer details
+      When the "<section>" Defendant tab Change action is selected
       Then I should be on the "individual" amend route with fragment "<fragment>"
 
       @JIRA-TEST-KEY:PO-10002
@@ -128,7 +128,7 @@ Feature: Adult Youth Account Enquiries View Details
         | date of birth             | 2010-05-15         |
       When I search for the account by last name "AddPgVisible{uniq}" and open the latest result
       Then I should see the page header contains "Mr Jamie ADDPGVISIBLE{uniqUpper}"
-      When I go to the Defendant details section and the header is "Defendant details"
+      When the Defendant details section header is "Defendant details"
       Then I should see the add parent or guardian details action
 
     @R1BDrop1 @JIRA-STORY:PO-5751 @JIRA-EPIC:PO-2990
@@ -142,7 +142,7 @@ Feature: Adult Youth Account Enquiries View Details
         | date of birth             | 2010-05-15            |
       When I search for the account by last name "AddPgRestricted{uniq}" and open the latest result
       Then I should see the page header contains "Mr Jamie ADDPGRESTRICTED{uniqUpper}"
-      When I go to the Defendant details section and the header is "Defendant details"
+      When the Defendant details section header is "Defendant details"
       Then I do not see the add parent or guardian details action
 
       @JIRA-TEST-KEY:PO-10006
@@ -176,7 +176,7 @@ Feature: Adult Youth Account Enquiries View Details
         | date of birth             | 2010-05-15          |
       When I search for the account by last name "AddPgNavigate{uniq}" and open the latest result
       Then I should see the page header contains "Mr Jamie ADDPGNAVIGATE{uniqUpper}"
-      When I go to the Defendant details section and the header is "Defendant details"
+      When the Defendant details section header is "Defendant details"
       And I start adding parent or guardian details
       Then I should be on the add parent or guardian details page
   Rule: History and notes tab

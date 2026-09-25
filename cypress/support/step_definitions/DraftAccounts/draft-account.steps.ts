@@ -36,7 +36,6 @@ import {
   CreateManageDraftsActions,
   CreateManageTab,
 } from '../../../e2e/functional/opal/actions/draft-account/create-manage-drafts.actions';
-import { DraftTabsActions, InputterTab, CheckerTab } from '../../../e2e/functional/opal/actions/draft-tabs.actions';
 import {
   CheckAndValidateDraftsActions,
   CheckAndValidateTab,
@@ -76,7 +75,6 @@ const checker = () => new CheckAndValidateDraftsActions();
 const checkerReview = () => new CheckAndValidateReviewActions();
 const intercepts = () => new DraftAccountsInterceptActions();
 const draftsFlow = () => new DraftAccountsFlow();
-const tabs = () => new DraftTabsActions();
 const primaryNavigation = () => new PrimaryNavigationActions();
 const withUniq = (value: string) => applyUniqPlaceholder(value ?? '');
 
@@ -600,7 +598,6 @@ Given('a published Welsh-speaking parent or guardian account exists:', (table: D
   const overrides = {
     business_unit_id: businessUnitId,
     account: {
-      originator_name: "North East Wales Magistrates' Court",
       prosecutor_case_reference: prosecutorCaseReference,
       collection_order_made: false,
       collection_order_made_today: false,
@@ -1044,15 +1041,6 @@ When('I view the draft account details for defendant {string}', (defendantName: 
 });
 
 /**
- * @step Open a draft account by account number (Approved tab).
- * @param accountNumber - Visible account number in the Account column.
- */
-When('I open the draft account number {string}', (accountNumber: string) => {
-  log('navigate', 'Opening draft account by account number', { accountNumber });
-  inputter().openAccountNumber(accountNumber);
-});
-
-/**
  * @step Follow the View all rejected accounts link.
  */
 When('I view all rejected draft accounts', () => {
@@ -1125,20 +1113,6 @@ Then('the manual draft table headings are:', (table: DataTable) => {
 });
 
 /**
- * @step Assert a row contains expected values in order.
- * @param position - 1-based row index.
- * @param table - Single-column table of expected cell text.
- */
-Then('the manual draft table row {int} contains:', (position: number, table: DataTable) => {
-  const expectedValues = table
-    .rows()
-    .map(([value]) => withUniq(value.trim()))
-    .filter(Boolean);
-  log('assert', 'Draft table row values', { position, expectedValues });
-  inputter().assertRowValues(position, expectedValues);
-});
-
-/**
  * @step Assert a row contains specific column/value pairs (unordered).
  * @param position - 1-based row index.
  * @param table - Two-column table: Column | Value.
@@ -1176,20 +1150,6 @@ Then(
 );
 
 /**
- * @step Assert that a column contains the provided text.
- * @param column - Column label (e.g., "Defendant", "Account type").
- * @param expectedText - Text to search for within the column cells.
- */
-Then('I see {string} in the manual draft column {string}', (expectedText: string, column: string) => {
-  const normalized = withUniq(expectedText);
-  log('assert', 'Draft table column contains text', { column, expectedText: normalized });
-  inputter().assertColumnContains(
-    column as Parameters<CreateManageDraftsActions['assertColumnContains']>[0],
-    normalized,
-  );
-});
-
-/**
  * @step Assert that the draft accounts table contains text in a column (checker view).
  * @param expectedText - Text to search for.
  * @param column - Column label.
@@ -1220,23 +1180,3 @@ When(
     );
   },
 );
-
-/**
- * @step Switches to the specified inputter draft tab.
- * @description Clicks the tab by name within the inputter draft accounts view.
- * @param tab - Tab name (e.g., "In review").
- */
-When('I view the inputter draft tab {string}', (tab: InputterTab) => {
-  log('navigate', 'Switching inputter tab', { tab });
-  tabs().switchInputterTab(tab);
-});
-
-/**
- * @step Switches to the specified checker draft tab.
- * @description Clicks the tab by name within the checker draft accounts view.
- * @param tab - Tab name (e.g., "To review").
- */
-When('I view the checker draft tab {string}', (tab: CheckerTab) => {
-  log('navigate', 'Switching checker tab', { tab });
-  tabs().switchCheckerTab(tab);
-});

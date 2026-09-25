@@ -99,18 +99,6 @@ Then('the draft review history contains the status {string}', (status: string) =
 });
 
 /**
- * Opens the delete account flow from the review page.
- * @step Open the delete account flow from the review page.
- */
-const openDeleteFromReview = () => {
-  log('navigate', 'Opening delete flow from review');
-  review().openDeleteAccount();
-};
-
-When('I delete the draft account from review', openDeleteFromReview);
-When('I open draft deletion from review', openDeleteFromReview);
-
-/**
  * @step Open draft deletion from review and assert confirmation page.
  */
 When('I delete the draft account from review and see the confirmation page', () => {

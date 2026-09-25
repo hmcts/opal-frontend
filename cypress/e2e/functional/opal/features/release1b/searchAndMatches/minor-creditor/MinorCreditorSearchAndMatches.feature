@@ -7,7 +7,7 @@ Feature: Minor Creditor Search And Matches
     Given I am logged in with email "opal-test@dev.platform.hmcts.net"
     And I am on the Account Search page - Individuals form displayed by default
 
-  @JIRA-EPIC:PO-704 @R1BDrop2 @JIRA-STORY:PO-715 @JIRA-TEST-KEY:PO-5420 @JIRA-NFR:PO-2549
+  @JIRA-EPIC:PO-704 @R1BDrop2 @JIRA-STORY:PO-715 @JIRA-TEST-KEY:PO-5420 @JIRA-NFR:PO-2549 @JIRA-NFR:PO-2323
   Scenario: Minor creditors Individual validation message on empty submit
     #PO-715 - AC5, AC5a
     When I view the Minor creditors search form
@@ -16,7 +16,7 @@ Feature: Minor Creditor Search And Matches
     Then the search remains on the Minor creditors form - no navigation
     And I see "Enter minor creditor first name, last name, address or postcode" validation message for a minor creditor "individual"
 
-  @JIRA-EPIC:PO-704 @R1BDrop2 @JIRA-STORY:PO-715 @JIRA-TEST-KEY:PO-5421 @JIRA-NFR:PO-2549
+  @JIRA-EPIC:PO-704 @R1BDrop2 @JIRA-STORY:PO-715 @JIRA-TEST-KEY:PO-5421 @JIRA-NFR:PO-2549 @JIRA-NFR:PO-2323
   Scenario: Minor creditors Company validation message on empty submit
     #PO-715 - AC5b
     When I view the Minor creditors search form

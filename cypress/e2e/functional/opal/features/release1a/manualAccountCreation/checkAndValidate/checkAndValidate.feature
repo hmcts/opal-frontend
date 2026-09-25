@@ -360,7 +360,7 @@ Feature: Check And Validate
     And the approved draft account number "FP123456" is shown as a hyperlink
     And the approved draft account number "FINE123456" is shown as a hyperlink
 
-  @JIRA-EPIC:PO-2220 @R1BOff @JIRA-STORY:PO-607 @JIRA-STORY:PO-3720
+  @JIRA-EPIC:PO-2220 @R1A @R1BOff @JIRA-STORY:PO-607 @JIRA-STORY:PO-3720
   Scenario: Approved tab lists recent accounts - Text
     Given I create a "company" approved account with the following details:
       | account_snapshot.defendant_name | TEST New Company Ltd {uniq} |

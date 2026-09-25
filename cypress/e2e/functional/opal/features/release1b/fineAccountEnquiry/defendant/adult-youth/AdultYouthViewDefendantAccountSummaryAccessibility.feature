@@ -7,7 +7,7 @@ Feature: Adult Youth View Defendant Account Summary Accessibility
     And I clear all approved accounts
 
   @R1BDrop1 @JIRA-STORY:PO-777 @JIRA-EPIC:PO-2472 @JIRA-TEST-KEY:PO-5571
-  Scenario: Complete View Defendant Account Adult or Youth Summary and Comments functionality Accessibility
+  Scenario: Adult or youth account summary and comments are accessible
     # Create & publish an individual (adultOrYouthOnly) account then check accessibility
     Given I create a "adultOrYouthOnly" draft account with the following details and set status "Publishing Pending" using user "opal-test-10@dev.platform.hmcts.net":
       | Account_status                          | Submitted                            |

@@ -55,13 +55,9 @@ When('I open Manual Account Creation', () => {
 });
 
 /**
- * @step Opens the **Search for an Account** page via the dashboard.
- *
- * @details
- * - Asserts the dashboard landing is ready.
- * - Navigates to Search and verifies the Search page is displayed.
+ * @step Presents the Search for an Account page from the dashboard.
  */
-When('I open Search for an Account', () => {
+When('the Search for an Account area is selected', () => {
   primaryNavigation().assertDashboardLandingReady();
   primaryNavigation().chooseItem('Search');
   searchIndividuals().assertOnSearchLandingPage();

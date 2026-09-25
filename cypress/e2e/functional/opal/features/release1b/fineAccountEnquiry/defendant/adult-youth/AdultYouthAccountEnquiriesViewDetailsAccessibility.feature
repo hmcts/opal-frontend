@@ -7,7 +7,7 @@ Feature: Adult Youth Account Enquiries View Details Accessibility
     And I clear all approved accounts
 
   @R1BDrop1 @JIRA-STORY:PO-1593 @JIRA-STORY:PO-866 @JIRA-STORY:PO-1110 @JIRA-STORY:PO-1127 @JIRA-EPIC:PO-2472 @JIRA-TEST-KEY:PO-5466
-  Scenario: Check Account Details View Accessibility with Axe-Core for Individual Account
+  Scenario: Individual account details view is accessible
     Given I create a "adultOrYouthOnly" draft account with the following details and set status "Publishing Pending" using user "opal-test-10@dev.platform.hmcts.net":
       | Account_status                          | Submitted                            |
       | account.defendant.forenames             | John                                 |
@@ -24,7 +24,7 @@ Feature: Adult Youth Account Enquiries View Details Accessibility
     ## Check Accessibility on Search Results Page
     Then I check the page for accessibility
     And I select the latest published account and verify the header is "Mr John ACCDETAILSURNAME{uniqUpper}"
-    And I go to the Defendant details section and the header is "Defendant details"
+    And the Defendant details section header is "Defendant details"
     And I should see the convert to company account action
     ## Check Accessibility on Defendant Details Page
     Then I check the page for accessibility
@@ -33,8 +33,8 @@ Feature: Adult Youth Account Enquiries View Details Accessibility
     And I check the page for accessibility
 
   @R1BDrop1 @JIRA-STORY:PO-5751 @JIRA-EPIC:PO-2990 @JIRA-TEST-KEY:PO-10001
-  Scenario: Check Account Details View Accessibility with Axe-Core for the youth-only add parent or guardian details action
-    # AC4 – Axe-Core coverage for the youth-only Defendant tab with the Add parent or guardian details action.
+  Scenario: Youth-only add parent or guardian details action is accessible
+    # AC4 - Accessibility coverage for the youth-only Defendant tab with the Add parent or guardian details action.
     Given I create a "adultOrYouthOnly" draft account with the following details and set status "Publishing Pending" using user "opal-test-10@dev.platform.hmcts.net":
       | Account_status                          | Submitted                        |
       | account.defendant.forenames             | Jamie                            |
@@ -49,6 +49,6 @@ Feature: Adult Youth Account Enquiries View Details Accessibility
       | account.defendant.dob                   | 2010-05-15                       |
     When I search for the account by last name "AddPgAccess{uniq}" and open the latest result
     Then I should see the page header contains "Mr Jamie ADDPGACCESS{uniqUpper}"
-    When I go to the Defendant details section and the header is "Defendant details"
+    When the Defendant details section header is "Defendant details"
     Then I should see the add parent or guardian details action
     And I check the page for accessibility

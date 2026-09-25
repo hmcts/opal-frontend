@@ -17,23 +17,6 @@ When('I sign out', () => {
 });
 
 /**
- * Verify current page. For "Sign in" assert SSO redirect; otherwise check page header.
- *
- * @param pageName - expected page name (e.g. "Sign in")
- */
-Then('I should be on the {string} page', (pageName: string) => {
-  const normalized = pageName
-    .toLowerCase()
-    .replace(/[-\s]+/g, ' ')
-    .trim();
-  if (normalized === 'sign in') {
-    logout().verifySignInFlow();
-  } else {
-    logout().verifyPage(pageName);
-  }
-});
-
-/**
  * Verify the user is being redirected to the sign-in flow (SSO auth entry point).
  */
 Then('I should be redirected to the sign-in page', () => {

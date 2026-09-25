@@ -102,16 +102,6 @@ export class FinesApiProcessFilesTableWrapperComponent extends AbstractSortableT
     this.pruneMissingSelections(false);
   }
 
-  /** Restores the externally supplied default sort before refreshed rows are displayed. */
-  private resetSortStateToDefault(): void {
-    const defaultSortState = this.abstractExistingSortState ?? {};
-    const defaultSortedColumn = Object.entries(defaultSortState).find(([, sortType]) => sortType !== 'none');
-
-    this.sortStateSignal.set({ ...defaultSortState });
-    this.sortedColumnTitleSignal.set(defaultSortedColumn?.[0] ?? '');
-    this.sortedColumnDirectionSignal.set(defaultSortedColumn?.[1] ?? 'none');
-  }
-
   /**
    * Emits selected IDs in the API-provided row order rather than the current visual sort order.
    */
@@ -173,6 +163,16 @@ export class FinesApiProcessFilesTableWrapperComponent extends AbstractSortableT
     if (emitChange && selectionChanged) {
       this.emitSelectedInterfaceFileIds();
     }
+  }
+
+  /** Restores the externally supplied default sort before refreshed rows are displayed. */
+  private resetSortStateToDefault(): void {
+    const defaultSortState = this.abstractExistingSortState ?? {};
+    const defaultSortedColumn = Object.entries(defaultSortState).find(([, sortType]) => sortType !== 'none');
+
+    this.sortStateSignal.set({ ...defaultSortState });
+    this.sortedColumnTitleSignal.set(defaultSortedColumn?.[0] ?? '');
+    this.sortedColumnDirectionSignal.set(defaultSortedColumn?.[1] ?? 'none');
   }
 
   /**

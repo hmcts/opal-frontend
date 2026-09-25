@@ -22,7 +22,6 @@ describe('FinesAccMinorCreditorDetailsAtAGlanceTabComponent', () => {
     fixture = TestBed.createComponent(FinesAccMinorCreditorDetailsAtAGlanceTabComponent);
     component = fixture.componentInstance;
     component.tabData = structuredClone(OPAL_FINES_ACCOUNT_MINOR_CREDITOR_AT_A_GLANCE_WITH_DEFENDANT_MOCK);
-    fixture.detectChanges();
   });
 
   it('should create', () => {
@@ -88,5 +87,37 @@ describe('FinesAccMinorCreditorDetailsAtAGlanceTabComponent', () => {
 
     expect(defendantLink).toBeTruthy();
     expect(defendantLink.getAttribute('target')).toBe('_blank');
+  });
+
+  it('should render the organisation name for an organisation defendant', () => {
+    component.hasAssociatedDefendant = true;
+    component.tabData.defendant!.organisation = true;
+    component.tabData.defendant!.organisation_name = 'The Empire';
+
+    fixture.detectChanges();
+
+    const headings = fixture.nativeElement.querySelectorAll('h3') as NodeListOf<HTMLHeadingElement>;
+    const defendantNameHeading = Array.from(headings).find(
+      (heading) => heading.textContent?.trim() === 'Defendant name',
+    );
+    const defendantName = defendantNameHeading?.nextElementSibling;
+
+    expect(defendantName?.textContent?.trim()).toBe('The Empire');
+  });
+
+  it('should render the individual name for an individual defendant', () => {
+    component.hasAssociatedDefendant = true;
+
+    fixture.detectChanges();
+
+    const headings = fixture.nativeElement.querySelectorAll('h3') as NodeListOf<HTMLHeadingElement>;
+    const defendantNameHeading = Array.from(headings).find(
+      (heading) => heading.textContent?.trim() === 'Defendant name',
+    );
+    const defendantName = defendantNameHeading?.nextElementSibling;
+
+    expect(defendantName?.textContent).toContain('Mr');
+    expect(defendantName?.textContent).toContain('John');
+    expect(defendantName?.textContent).toContain('DOE');
   });
 });

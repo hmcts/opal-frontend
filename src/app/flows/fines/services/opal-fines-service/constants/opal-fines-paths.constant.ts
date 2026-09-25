@@ -22,6 +22,7 @@ const reports = 'reports';
 const reportInstances = 'report-instances';
 const outstandingAutoPaymentCount = '/outstanding-auto-payment-count';
 const interfaceJobsSummary = 'interface-jobs/summary';
+const processInterfaceJobs = 'interface-jobs/process';
 
 export const OPAL_FINES_PATHS: IOpalFinesPaths = {
   businessUnitRefData: `${baseUrl}${businessUnit}`,
@@ -44,6 +45,7 @@ export const OPAL_FINES_PATHS: IOpalFinesPaths = {
   reports: `${baseUrl}${reports}`,
   reportInstances: `${baseUrl}${reportInstances}`,
   interfaceJobsSummary: `${baseUrl}${interfaceJobsSummary}`,
+  processInterfaceJobs: `${baseUrl}${processInterfaceJobs}`,
   defendantAccountParties,
   centralFunds: `${baseUrl}${centralFunds}`,
 };

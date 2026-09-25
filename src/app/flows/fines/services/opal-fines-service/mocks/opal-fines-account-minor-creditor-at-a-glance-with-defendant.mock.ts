@@ -24,6 +24,8 @@ export const OPAL_FINES_ACCOUNT_MINOR_CREDITOR_AT_A_GLANCE_WITH_DEFENDANT_MOCK: 
     defendant: {
       account_number: 'ACC-654321',
       account_id: 123456789,
+      organisation: false,
+      organisation_name: null,
       title: 'Mr',
       forenames: 'John',
       surname: 'Doe',

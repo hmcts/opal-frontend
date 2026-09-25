@@ -20,10 +20,9 @@ Feature: Company Fine Account Enquiry Accessibility
       | account.payment_card_request                    | false                     |
       | account.payment_terms.enforcements[0].result_id | PRIS                      |
 
-    When I open the company account details for "Enf Company{uniq}"
-    And I go to the Enforcement tab
+    When the Enforcement tab is displayed for company account "Enf Company{uniq}"
     Then I check the page for accessibility
-    And I open the change enforcement court form
+    And the change enforcement court form is displayed
     And I check the page for accessibility
 
   @R1BDrop1 @JIRA-STORY:PO-1867 @JIRA-STORY:PO-1863 @JIRA-EPIC:PO-2472 @JIRA-TEST-KEY:PO-5462
@@ -40,9 +39,7 @@ Feature: Company Fine Account Enquiry Accessibility
       | account.payment_card_request                    | false                             |
       | account.payment_terms.enforcements[0].result_id | PRIS                              |
 
-    When I open the company account details for "Enf Override Company{uniq}"
-    And I go to the Enforcement tab
-    And I open the add enforcement override form
+    When the add enforcement override form is displayed for company account "Enf Override Company{uniq}"
     Then I check the page for accessibility
 
   @R1BDrop1 @JIRA-STORY:PO-1782 @JIRA-EPIC:PO-2472 @JIRA-TEST-KEY:PO-5465
@@ -59,7 +56,5 @@ Feature: Company Fine Account Enquiry Accessibility
       | account.payment_card_request                    | false                           |
       | account.payment_terms.enforcements[0].result_id | PRIS                            |
 
-    When I open the company account details for "Enf Action Company{uniq}"
-    And I go to the Enforcement tab
-    And I open the add enforcement action form
+    When the add enforcement action form is displayed for company account "Enf Action Company{uniq}"
     Then I check the page for accessibility

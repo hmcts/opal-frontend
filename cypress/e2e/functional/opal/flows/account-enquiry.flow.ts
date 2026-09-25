@@ -32,6 +32,7 @@ import { MINOR_CREDITOR_AMEND_ELEMENTS } from '../../../../shared/selectors/acco
 import { AccountDetailsResponsiveLayoutActions } from '../actions/account-details/details.responsive-layout.actions';
 import type { DataTable } from '@badeball/cypress-cucumber-preprocessor';
 import { applyUniqPlaceholder } from '../../../../support/utils/stringUtils';
+import { captureUatTechnicalEvidenceScreenshot } from '../../../../support/utils/screenshot';
 
 const logAE = createScopedLogger('AccountEnquiryFlow');
 const logAESync = createScopedSyncLogger('AccountEnquiryFlow');
@@ -132,6 +133,7 @@ export class AccountEnquiryFlow {
     });
 
     cy.get(AccountEnquiryFlow.AT_A_GLANCE_TAB_SELECTOR, { timeout: AccountEnquiryFlow.WAIT_MS }).should('be.visible');
+    captureUatTechnicalEvidenceScreenshot('at-a-glance-tab');
   }
 
   private readonly searchIndividuals = new AccountSearchIndividualsActions();
@@ -282,6 +284,100 @@ export class AccountEnquiryFlow {
     logAE('flow', 'Search and open latest by surname', { surname });
     this.searchByLastName(surname);
     this.clickLatestPublishedFromResultsOrAcrossPages();
+  }
+
+  /**
+   * Opens the latest defendant account matching a surname and presents the amend payment terms form.
+   *
+   * @param surname - Surname to search for.
+   */
+  public openDefendantPaymentTermsAmendFormBySurname(surname: string): void {
+    logAE('method', 'openDefendantPaymentTermsAmendFormBySurname()', { surname });
+    this.searchAndClickLatestBySurnameOpenLatestResult(surname);
+    this.goToPaymentTermsTab();
+    this.openPaymentTermsAmendForm();
+  }
+
+  /**
+   * Opens the latest defendant account matching a surname and presents the Payment terms tab.
+   *
+   * @param surname - Surname to search for.
+   */
+  public openDefendantPaymentTermsTabBySurname(surname: string): void {
+    logAE('method', 'openDefendantPaymentTermsTabBySurname()', { surname });
+    this.searchAndClickLatestBySurnameOpenLatestResult(surname);
+    this.goToPaymentTermsTab();
+  }
+
+  /**
+   * Opens the latest defendant account matching a surname and presents the Enforcement tab.
+   *
+   * @param surname - Surname to search for.
+   */
+  public openDefendantEnforcementTabBySurname(surname: string): void {
+    logAE('method', 'openDefendantEnforcementTabBySurname()', { surname });
+    this.searchAndClickLatestBySurnameOpenLatestResult(surname);
+    this.goToEnforcementTab();
+  }
+
+  /**
+   * Opens the latest defendant account matching a surname and presents the remove enforcement hold form.
+   *
+   * @param surname - Surname to search for.
+   */
+  public openDefendantRemoveEnforcementHoldFormBySurname(surname: string): void {
+    logAE('method', 'openDefendantRemoveEnforcementHoldFormBySurname()', { surname });
+    this.searchAndClickLatestBySurnameOpenLatestResult(surname);
+    this.goToEnforcementTab();
+    this.openRemoveEnforcementHoldForm();
+  }
+
+  /**
+   * Opens the latest defendant account matching a surname and presents the Collection Order status form.
+   *
+   * @param surname - Surname to search for.
+   */
+  public openDefendantCollectionOrderStatusFormBySurname(surname: string): void {
+    logAE('method', 'openDefendantCollectionOrderStatusFormBySurname()', { surname });
+    this.searchAndClickLatestBySurnameOpenLatestResult(surname);
+    this.goToEnforcementTab();
+    this.openChangeCollectionOrderStatusForm();
+  }
+
+  /**
+   * Opens the latest defendant account matching a surname and presents the add enforcement action form.
+   *
+   * @param surname - Surname to search for.
+   */
+  public openDefendantAddEnforcementActionFormBySurname(surname: string): void {
+    logAE('method', 'openDefendantAddEnforcementActionFormBySurname()', { surname });
+    this.searchAndClickLatestBySurnameOpenLatestResult(surname);
+    this.goToEnforcementTab();
+    this.openAddEnforcementActionForm();
+  }
+
+  /**
+   * Opens the latest defendant account matching a surname and presents the add enforcement override form.
+   *
+   * @param surname - Surname to search for.
+   */
+  public openDefendantAddEnforcementOverrideFormBySurname(surname: string): void {
+    logAE('method', 'openDefendantAddEnforcementOverrideFormBySurname()', { surname });
+    this.searchAndClickLatestBySurnameOpenLatestResult(surname);
+    this.goToEnforcementTab();
+    this.openAddEnforcementOverrideForm();
+  }
+
+  /**
+   * Opens the latest defendant account matching a surname and presents the change enforcement court form.
+   *
+   * @param surname - Surname to search for.
+   */
+  public openDefendantChangeEnforcementCourtFormBySurname(surname: string): void {
+    logAE('method', 'openDefendantChangeEnforcementCourtFormBySurname()', { surname });
+    this.searchAndClickLatestBySurnameOpenLatestResult(surname);
+    this.goToEnforcementTab();
+    this.openChangeEnforcementCourtForm();
   }
 
   /** Asserts that the user is on the FAE defendant account-details At a glance page. */
@@ -1254,6 +1350,15 @@ export class AccountEnquiryFlow {
     logAE('method', 'openRemoveEnforcementHoldForm()');
     this.enforcement.openRemoveEnforcementHoldForm();
     this.enforcement.assertRemoveEnforcementHoldFormVisible();
+  }
+
+  /**
+   * Opens the Change Collection Order status form from the Enforcement tab.
+   */
+  public openChangeCollectionOrderStatusForm(): void {
+    logAE('method', 'openChangeCollectionOrderStatusForm()');
+    this.enforcement.openChangeCollectionOrderForm();
+    this.enforcement.assertChangeCollectionOrderFormVisible();
   }
 
   /**
@@ -2364,6 +2469,100 @@ export class AccountEnquiryFlow {
     this.searchByCompanyName(companyName);
     logAE('results', 'Select Latest published company account from results', { companyName });
     this.clickLatestPublishedFromResultsOrAcrossPages();
+  }
+
+  /**
+   * Opens the latest company account matching a company name and presents the amend payment terms form.
+   *
+   * @param companyName - Company name to search and open.
+   */
+  public openCompanyPaymentTermsAmendFormByName(companyName: string): void {
+    logAE('method', 'openCompanyPaymentTermsAmendFormByName()', { companyName });
+    this.openCompanyAccountDetailsByNameAndSelectLatest(companyName);
+    this.goToPaymentTermsTab();
+    this.openPaymentTermsAmendForm();
+  }
+
+  /**
+   * Opens the latest company account matching a company name and presents the Payment terms tab.
+   *
+   * @param companyName - Company name to search and open.
+   */
+  public openCompanyPaymentTermsTabByName(companyName: string): void {
+    logAE('method', 'openCompanyPaymentTermsTabByName()', { companyName });
+    this.openCompanyAccountDetailsByNameAndSelectLatest(companyName);
+    this.goToPaymentTermsTab();
+  }
+
+  /**
+   * Opens the latest company account matching a company name and presents the Enforcement tab.
+   *
+   * @param companyName - Company name to search and open.
+   */
+  public openCompanyEnforcementTabByName(companyName: string): void {
+    logAE('method', 'openCompanyEnforcementTabByName()', { companyName });
+    this.openCompanyAccountDetailsByNameAndSelectLatest(companyName);
+    this.goToEnforcementTab();
+  }
+
+  /**
+   * Opens the latest company account matching a company name and presents the remove enforcement hold form.
+   *
+   * @param companyName - Company name to search and open.
+   */
+  public openCompanyRemoveEnforcementHoldFormByName(companyName: string): void {
+    logAE('method', 'openCompanyRemoveEnforcementHoldFormByName()', { companyName });
+    this.openCompanyAccountDetailsByNameAndSelectLatest(companyName);
+    this.goToEnforcementTab();
+    this.openRemoveEnforcementHoldForm();
+  }
+
+  /**
+   * Opens the latest company account matching a company name and presents the Collection Order status form.
+   *
+   * @param companyName - Company name to search and open.
+   */
+  public openCompanyCollectionOrderStatusFormByName(companyName: string): void {
+    logAE('method', 'openCompanyCollectionOrderStatusFormByName()', { companyName });
+    this.openCompanyAccountDetailsByNameAndSelectLatest(companyName);
+    this.goToEnforcementTab();
+    this.openChangeCollectionOrderStatusForm();
+  }
+
+  /**
+   * Opens the latest company account matching a company name and presents the add enforcement action form.
+   *
+   * @param companyName - Company name to search and open.
+   */
+  public openCompanyAddEnforcementActionFormByName(companyName: string): void {
+    logAE('method', 'openCompanyAddEnforcementActionFormByName()', { companyName });
+    this.openCompanyAccountDetailsByNameAndSelectLatest(companyName);
+    this.goToEnforcementTab();
+    this.openAddEnforcementActionForm();
+  }
+
+  /**
+   * Opens the latest company account matching a company name and presents the add enforcement override form.
+   *
+   * @param companyName - Company name to search and open.
+   */
+  public openCompanyAddEnforcementOverrideFormByName(companyName: string): void {
+    logAE('method', 'openCompanyAddEnforcementOverrideFormByName()', { companyName });
+    this.openCompanyAccountDetailsByNameAndSelectLatest(companyName);
+    this.goToEnforcementTab();
+    this.openAddEnforcementOverrideForm();
+  }
+
+  /**
+   * Opens the latest company account matching a company name and presents the change enforcement court form.
+   *
+   * @param companyName - Company name to search and open.
+   */
+  public openCompanyChangeEnforcementCourtFormByName(companyName: string): void {
+    logAE('method', 'openCompanyChangeEnforcementCourtFormByName()', { companyName });
+    this.openCompanyAccountDetailsByNameAndSelectLatest(companyName);
+    this.goToEnforcementTab();
+    this.openChangeEnforcementCourtForm();
   }
 
   /**

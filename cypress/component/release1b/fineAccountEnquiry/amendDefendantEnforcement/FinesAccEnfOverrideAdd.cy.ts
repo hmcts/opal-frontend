@@ -302,7 +302,7 @@ describe(
 
     it(
       'AC5. Valid submission returns to Enforcement tab with success banner and new override panel',
-      { tags: ['@JIRA-TEST-KEY:PO-4421', '@R1B'] },
+      { tags: ['@JIRA-TEST-KEY:PO-4421', '@R1B', '@JIRA-NFR:PO-2506'] },
       () => {
         const { accountId } = commonSetup();
         const updatedEnforcementMock = structuredClone(

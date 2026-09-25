@@ -46,4 +46,26 @@ export const AutomaticCashInputLocators = {
   processFileDateUploadedCell: (interfaceFileId: number): string =>
     `#fines-api-process-file-${interfaceFileId}-date-uploaded`,
   processAllocateCancelLink: '#fines-api-process-allocate-cancel .govuk-link',
+  confirmProcessPage: '#fines-api-confirm-process-page',
+  confirmProcessHeading: '#fines-api-confirm-process-heading',
+  confirmProcessSelectionCount: '#fines-api-confirm-process-selection-count',
+  confirmProcessBusinessUnitsTable: '#fines-api-confirm-process-business-units',
+  confirmProcessBusinessUnitSummaryRows: '#fines-api-confirm-process-business-units tbody tr',
+  confirmProcessBusinessUnitSummaryNameCells:
+    '#fines-api-confirm-process-business-units tbody [id^="fines-api-confirm-process-business-unit-"]',
+  confirmProcessBusinessUnitCell: (businessUnitId: number): string =>
+    `#fines-api-confirm-process-business-unit-${businessUnitId}`,
+  confirmProcessFileCountCell: (businessUnitId: number): string =>
+    `#fines-api-confirm-process-file-count-${businessUnitId}`,
+  confirmProcessOverrideInhibitsSection: '#fines-api-confirm-process-override-inhibits',
+  confirmProcessOverrideInhibitsRows: '#fines-api-confirm-process-override-inhibits tbody tr',
+  confirmProcessOverrideInhibitsSelectAllCheckbox: '#fines-api-confirm-process-override-inhibits-select-all',
+  confirmProcessOverrideInhibitsCheckbox: (interfaceFileId: number): string =>
+    `#fines-api-confirm-process-override-inhibits-${interfaceFileId}`,
+  confirmProcessOverrideInhibitsFileCell: (interfaceFileId: number): string =>
+    `#fines-api-confirm-process-override-inhibits-file-${interfaceFileId}`,
+  confirmProcessOverrideInhibitsBusinessUnitCell: (interfaceFileId: number): string =>
+    `#fines-api-confirm-process-override-inhibits-business-unit-${interfaceFileId}`,
+  confirmProcessProcessButton: '#fines-api-confirm-process-submit',
+  confirmProcessCancelLink: '#fines-api-confirm-process-page a.govuk-link.button-link',
 } as const;

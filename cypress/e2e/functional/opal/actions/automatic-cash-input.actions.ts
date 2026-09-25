@@ -80,7 +80,7 @@ const buildInterfaceJobsForSelectedBusinessUnits = (
       file_name: `${businessUnit.business_unit_id}-created.xml`,
       interface_file_id: 1000 + index * 2,
       interface_job_id: 2000 + index * 2,
-      source: 'ALLPAY',
+      source: 'DWP',
       status: 'CREATED',
     },
     {
@@ -226,5 +226,14 @@ export class AutomaticCashInputActions {
         });
       });
     });
+  }
+
+  /**
+   * Selects a DWP file from Processing and opens Confirm before processing.
+   */
+  public selectAProcessFileAndOpenConfirmProcess(): void {
+    cy.get(AutomaticCashInputLocators.processFileCheckbox(1000)).check({ force: true });
+    cy.get(AutomaticCashInputLocators.processFilesProcessButton).should('be.visible').click();
+    cy.get(AutomaticCashInputLocators.confirmProcessPage).should('be.visible');
   }
 }

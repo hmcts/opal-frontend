@@ -18,3 +18,7 @@ When('I select business units and continue to Processing', () => {
 Then('only files for the selected business units are displayed', () => {
   automaticCashInputFlow().assertOnlySelectedBusinessUnitFilesAreDisplayed();
 });
+
+When('I select a Process file and open Confirm before processing', () => {
+  automaticCashInputFlow().selectAProcessFileAndOpenConfirmProcess();
+});

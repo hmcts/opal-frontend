@@ -1,4 +1,5 @@
-import { provideHttpClient } from '@angular/common/http';
+import { provideHttpClient, withInterceptors } from '@angular/common/http';
+import { httpErrorInterceptor } from '@hmcts/opal-frontend-common/interceptors/http-error';
 import { provideRouter, Router, Routes } from '@angular/router';
 import { AppInsightsService } from '@hmcts/opal-frontend-common/services/app-insights-service';
 import { LaunchDarklyService } from '@hmcts/opal-frontend-common/services/launch-darkly-service';
@@ -124,7 +125,7 @@ export const setupFinancePageComponent = ({
   cy.then(() => {
     mount(AppComponent, {
       providers: [
-        provideHttpClient(),
+        provideHttpClient(withInterceptors([httpErrorInterceptor])),
         provideRouter(FINANCE_COMPONENT_ROUTES),
         {
           provide: GlobalStore,
@@ -136,7 +137,7 @@ export const setupFinancePageComponent = ({
         },
         {
           provide: AppInsightsService,
-          useValue: { logPageView: () => null },
+          useValue: { logException: () => null, logPageView: () => null },
         },
         {
           provide: LaunchDarklyService,

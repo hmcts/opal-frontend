@@ -89,6 +89,7 @@ export function buildPublishedNonVehicleFixedPenaltyOverrides(
         forenames: firstNames,
         surname: lastName,
         debtor_detail: {
+          vehicle_make: null,
           vehicle_registration_mark: null,
         },
       },
@@ -105,6 +106,8 @@ export function buildPublishedNonVehicleFixedPenaltyOverrides(
         place_of_offence: placeOfOffence,
         time_of_offence: timeOfOffence,
         time_of_issue: timeOfOffence,
+        date_of_issue: null,
+        date_of_notice: null,
         vehicle_registration: null,
         fp_registration_number: null,
         driving_licence_number: null,
