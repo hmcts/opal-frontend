@@ -17,7 +17,6 @@ import { FINES_MAC_COURT_DETAILS_FIELD_ERRORS } from '../constants/fines-mac-cou
 import { FINES_MAC_COURT_DETAILS_COPY_BY_ACCOUNT_TYPE } from '../../constants/fines-mac-court-details-copy.constant';
 import { FINES_MAC_ROUTING_NESTED_ROUTES } from '../../routing/constants/fines-mac-routing-nested-routes.constant';
 import { FINES_MAC_ROUTING_PATHS } from '../../routing/constants/fines-mac-routing-paths.constant';
-import { IOpalFinesLocalJusticeAreaRefData } from '@services/fines/opal-fines-service/interfaces/opal-fines-local-justice-area-ref-data.interface';
 import { FinesMacStore } from '../../stores/fines-mac.store';
 import { GovukTextInputComponent } from '@hmcts/opal-frontend-common/components/govuk/govuk-text-input';
 import { GovukButtonComponent } from '@hmcts/opal-frontend-common/components/govuk/govuk-button';
@@ -28,6 +27,7 @@ import { ALPHANUMERIC_WITH_SPACES_PATTERN } from '@hmcts/opal-frontend-common/co
 import { patternValidator } from '@hmcts/opal-frontend-common/validators/pattern-validator';
 import { IFinesAccountTypes } from '@app/flows/fines/interfaces/fines-account-types.interface';
 import { IFinesMacCourtDetailsCopy } from '../../interfaces/fines-mac-court-details-copy.interface';
+import { IFinesMacOriginatorRefData } from '../../routing/resolvers/fetch-originators-resolver/interfaces/fines-mac-originator-ref-data.interface';
 
 //regex pattern validators for the form controls
 const ALPHANUMERIC_WITH_SPACES_PATTERN_VALIDATOR = patternValidator(
@@ -56,7 +56,7 @@ export class FinesMacCourtDetailsFormComponent extends AbstractFormBaseComponent
   protected readonly finesMacNestedRoutes = FINES_MAC_ROUTING_NESTED_ROUTES;
 
   @Input() public defendantType!: string;
-  @Input({ required: true }) public localJusticeAreas!: IOpalFinesLocalJusticeAreaRefData;
+  @Input({ required: true }) public originators!: IFinesMacOriginatorRefData;
   @Input({ required: true }) public sendingCourtAutoCompleteItems!: IAlphagovAccessibleAutocompleteItem[];
   @Input({ required: true }) public enforcingCourtAutoCompleteItems!: IAlphagovAccessibleAutocompleteItem[];
 
@@ -118,33 +118,31 @@ export class FinesMacCourtDetailsFormComponent extends AbstractFormBaseComponent
   }
 
   /**
-   * Retrieves the name of the originator based on the provided originator ID.
+   * Retrieves the stored name for the selected prosecutor or local justice area.
    *
-   * @param originatorId - The ID of the originator as a string or null.
+   * @param originatorId - The normalized originator ID as a string or null.
    * @returns The name of the originator if found, otherwise an empty string.
    */
   private getOriginatorName(originatorId: string | null): string {
     const originatorIdNumber = Number(originatorId); // Convert string to number
-    const court = this.localJusticeAreas.refData.find((court) => court.local_justice_area_id === originatorIdNumber);
-    return court ? court.name : '';
+    const originator = this.originators.refData.find((item) => item.originatorId === originatorIdNumber);
+    return originator ? originator.name : '';
   }
 
   /**
-   * Sets the originator name based on the value of the sending court details.
+   * Sets the originator name from the selected originator ID.
    *
    * This method retrieves the value of the 'fm_court_details_originator_id' form control.
    * If the value is present, it sets the 'fm_court_details_originator_name' form control
-   * with the originator name derived from the sending court details.
+   * with the corresponding prosecutor or local justice area name.
    *
    * @private
    */
   private setOriginatorName(): void {
-    const courtDetailsSendingCourt = this.form.get('fm_court_details_originator_id');
+    const originatorIdControl = this.form.get('fm_court_details_originator_id');
 
-    if (courtDetailsSendingCourt?.value) {
-      this.form
-        .get('fm_court_details_originator_name')
-        ?.setValue(this.getOriginatorName(courtDetailsSendingCourt.value));
+    if (originatorIdControl?.value) {
+      this.form.get('fm_court_details_originator_name')?.setValue(this.getOriginatorName(originatorIdControl.value));
     }
   }
 

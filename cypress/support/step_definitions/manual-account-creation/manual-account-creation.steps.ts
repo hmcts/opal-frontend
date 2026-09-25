@@ -1458,6 +1458,27 @@ When('I monitor local justice areas requests', () => {
 });
 
 /**
+ * @step Starts intercepting prosecutor lookup requests.
+ */
+When('I monitor prosecutor requests', () => {
+  flow().monitorProsecutorRequests();
+});
+
+/**
+ * @step Asserts that a prosecutor lookup request was made.
+ */
+Then('a prosecutor request should be made', () => {
+  flow().assertProsecutorRequestMade();
+});
+
+/**
+ * @step Asserts that no local justice area lookup request was made.
+ */
+Then('no local justice area requests should be made', () => {
+  flow().assertNoLocalJusticeAreasRequestsMade();
+});
+
+/**
  * @step Asserts lja_type query params on the latest local justice area request.
  * @description Validates the request contains the expected lja_type values, order-insensitive.
  * @param table - DataTable containing one lja_type per row.

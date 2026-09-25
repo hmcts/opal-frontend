@@ -9,6 +9,7 @@ let matchedLocalJusticeAreasRequest: Interception | null = null;
  */
 export class ManualAccountRequestMonitorActions {
   private static readonly LOCAL_JUSTICE_AREAS_ALIAS = 'getLocalJusticeAreas';
+  private static readonly PROSECUTORS_ALIAS = 'getProsecutors';
   private static readonly DRAFT_ACCOUNT_CREATE_ALIAS = 'postDraftAccount';
   private static readonly UTC_TIMESTAMP_PATTERN = /^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}(?:\.\d+)?Z$/;
 
@@ -21,6 +22,34 @@ export class ManualAccountRequestMonitorActions {
     cy.intercept({ method: 'GET', url: '**/local-justice-areas*' }).as(
       ManualAccountRequestMonitorActions.LOCAL_JUSTICE_AREAS_ALIAS,
     );
+  }
+
+  /**
+   * Starts intercepting prosecutor lookup requests.
+   */
+  monitorProsecutorRequests(): void {
+    log('intercept', 'Monitoring prosecutor requests');
+    cy.intercept({ method: 'GET', url: '**/opal-fines-service/prosecutors*' }).as(
+      ManualAccountRequestMonitorActions.PROSECUTORS_ALIAS,
+    );
+  }
+
+  /**
+   * Asserts that at least one prosecutor lookup request was made.
+   */
+  assertProsecutorRequestMade(): void {
+    this.getCapturedRequests(ManualAccountRequestMonitorActions.PROSECUTORS_ALIAS).then((requests) => {
+      expect(requests, 'captured prosecutor requests').to.have.length.greaterThan(0);
+    });
+  }
+
+  /**
+   * Asserts that no local justice area lookup request was made.
+   */
+  assertNoLocalJusticeAreasRequestsMade(): void {
+    this.getCapturedRequests(ManualAccountRequestMonitorActions.LOCAL_JUSTICE_AREAS_ALIAS).then((requests) => {
+      expect(requests, 'captured local justice area requests').to.have.length(0);
+    });
   }
 
   /**

@@ -1456,6 +1456,28 @@ export class ManualAccountCreationFlow {
   }
 
   /**
+   * Starts intercepting prosecutor lookup requests.
+   */
+  monitorProsecutorRequests(): void {
+    log('flow', 'Monitor prosecutor requests');
+    this.requestMonitor.monitorProsecutorRequests();
+  }
+
+  /**
+   * Asserts that a prosecutor lookup request was made.
+   */
+  assertProsecutorRequestMade(): void {
+    this.requestMonitor.assertProsecutorRequestMade();
+  }
+
+  /**
+   * Asserts that no local justice area lookup request was made.
+   */
+  assertNoLocalJusticeAreasRequestsMade(): void {
+    this.requestMonitor.assertNoLocalJusticeAreasRequestsMade();
+  }
+
+  /**
    * Asserts that the latest local justice area request includes exactly the expected lja_types.
    * @param expectedLjaTypes - Expected lja_type values (order-insensitive).
    */

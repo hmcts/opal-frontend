@@ -173,7 +173,7 @@ describe('FinesMacReviewFixedPenalty using ReviewAccountComponent', () => {
       cy.get(DOM_ELEMENTS.defendantType).should('contain', 'Adult');
 
       // Section 2 - Issuing Authority and Court Details
-      cy.get(DOM_ELEMENTS.issuingAuthority).should('exist').and('contain', 'Asylum & Immigration Tribunal (9985)');
+      cy.get(DOM_ELEMENTS.issuingAuthority).should('exist').and('contain', 'Police force (123)');
       // The card title should reflect this is for issuing authority too
       cy.get(DOM_ELEMENTS.enforcementCourt).should('exist').and('contain', 'Historic Debt Database (101)');
 
@@ -211,8 +211,8 @@ describe('FinesMacReviewFixedPenalty using ReviewAccountComponent', () => {
       cy.wait('@postDraftAccount')
         .its('request.body.account')
         .should((account) => {
-          expect(account.originator_id).to.equal('9985');
-          expect(account.originator_name).to.equal('Asylum & Immigration Tribunal');
+          expect(account.originator_id).to.equal('1223');
+          expect(account.originator_name).to.equal('Police force');
         });
     },
   );
@@ -315,7 +315,7 @@ describe('FinesMacReviewFixedPenalty using ReviewAccountComponent', () => {
       cy.get(DOM_ELEMENTS.defendantType).should('contain', 'Company');
 
       // Section 2 - Court Details
-      cy.get(DOM_ELEMENTS.issuingAuthority).should('exist').and('contain', 'Asylum & Immigration Tribunal (9985)');
+      cy.get(DOM_ELEMENTS.issuingAuthority).should('exist').and('contain', 'Police force (123)');
       cy.get(DOM_ELEMENTS.enforcementCourt).should('exist').and('contain', 'Historic Debt Database (101)');
 
       // Section 3 - Company Details
@@ -345,8 +345,8 @@ describe('FinesMacReviewFixedPenalty using ReviewAccountComponent', () => {
       cy.wait('@postDraftAccount')
         .its('request.body.account')
         .should((account) => {
-          expect(account.originator_id).to.equal('9985');
-          expect(account.originator_name).to.equal('Asylum & Immigration Tribunal');
+          expect(account.originator_id).to.equal('1223');
+          expect(account.originator_name).to.equal('Police force');
         });
     },
   );

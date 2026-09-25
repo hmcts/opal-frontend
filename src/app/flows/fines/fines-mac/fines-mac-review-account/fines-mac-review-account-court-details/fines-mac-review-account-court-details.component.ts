@@ -94,9 +94,10 @@ export class FinesMacReviewAccountCourtDetailsComponent implements OnInit {
   }
 
   /**
-   * Retrieves the prosecutor details based on the originator ID from the fixed penalty details.
+   * Retrieves the prosecutor details for the selected originator ID.
    * It finds the corresponding prosecutor from the prosecutorsData array
-   * and returns the pretty name for that prosecutor or null if not found.
+   * and returns the pretty name used by Fixed Penalty and Conditional Caution reviews,
+   * or null if no prosecutor matches.
    *
    * @private
    * @returns {string | null}
@@ -113,16 +114,17 @@ export class FinesMacReviewAccountCourtDetailsComponent implements OnInit {
   }
 
   /**
-   * Retrieves and processes the court details data.
-   * This method calls the `getEnforcementCourt` function to fetch the enforcement court details
-   * and sets the `sendingCourt` (and `issuingAuthority` if required), based on the originator ID from the relevant store
+   * Resolves the enforcement court and account-type-specific originator display values.
+   * Fixed Penalty issuing authorities and Conditional Caution sending police forces are resolved
+   * from prosecutors; Fine sending courts are resolved from local justice areas.
    * @private
    */
   private getCourtDetailsData(): void {
     this.getEnforcementCourt();
     if (this.accountType === this.accountTypesKeys['Fixed Penalty']) {
-      this.issuingAuthority =
-        this.getProsecutor() ?? this.getSendingCourt(this.courtDetails.fm_court_details_originator_id);
+      this.issuingAuthority = this.getProsecutor();
+    } else if (this.accountType === this.accountTypesKeys['Conditional Caution']) {
+      this.sendingCourt = this.getProsecutor();
     } else {
       this.sendingCourt = this.getSendingCourt(this.courtDetails.fm_court_details_originator_id);
     }
