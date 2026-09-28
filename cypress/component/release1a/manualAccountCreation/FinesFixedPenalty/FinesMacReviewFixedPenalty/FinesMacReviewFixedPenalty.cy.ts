@@ -23,6 +23,7 @@ import { interceptOffences } from 'cypress/component/CommonIntercepts/CommonInte
 import { ACCOUNT_SESSION_USER_STATE_MOCK } from '../mocks/user_state_mock';
 import { FINES_DEFAULT_VALUES } from 'src/app/flows/fines/constants/fines-default-values.constant';
 import { FINES_ACCOUNT_TYPES } from 'src/app/flows/fines/constants/fines-account-types.constant';
+import { RELEASE_1A_1_1_FEATURE_FLAG } from 'src/app/flows/fines/constants/release-feature-flags.constant';
 
 const MANUAL_ACCOUNT_CREATION_JIRA_LABEL = '@JIRA-LABEL:manual-account-creation';
 
@@ -92,6 +93,7 @@ describe('FinesMacReviewFixedPenalty using ReviewAccountComponent', () => {
               title: null,
               operationId: null,
             });
+            store.setFeatureFlags({ [RELEASE_1A_1_1_FEATURE_FLAG]: true });
             return store;
           },
         },

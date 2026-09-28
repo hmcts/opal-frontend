@@ -9,7 +9,7 @@ import { MacFixedPenaltyDetailsLocators as DOM_ELEMENTS } from '../../../../../s
 import { provideHttpClient } from '@angular/common/http';
 import { calculateWeeksInFuture } from '../../../../../support/utils/dateUtils';
 import { interceptOffences } from 'cypress/component/CommonIntercepts/CommonIntercepts';
-import { OPAL_FINES_PROSECUTOR_REF_DATA_MOCK } from '../../../../../../src/app/flows/fines/services/opal-fines-service/mocks/opal-fines-prosecutor-ref-data.mock';
+import { FINES_MAC_PROSECUTOR_ORIGINATOR_REF_DATA_MOCK } from '../../../../../../src/app/flows/fines/fines-mac/routing/resolvers/fetch-originators-resolver/mocks/fines-mac-originator-ref-data.mock';
 
 const MANUAL_ACCOUNT_CREATION_JIRA_LABEL = '@JIRA-LABEL:manual-account-creation';
 const ADD_COMMENT_ALLOWED_CHARACTERS_ERROR =
@@ -44,7 +44,7 @@ describe('FinesMacManualFixedPenalty', () => {
             snapshot: {
               data: {
                 courts: OPAL_FINES_COURT_REF_DATA_MOCK,
-                prosecutors: OPAL_FINES_PROSECUTOR_REF_DATA_MOCK,
+                originators: FINES_MAC_PROSECUTOR_ORIGINATOR_REF_DATA_MOCK,
               },
               parent: {
                 url: [{ path: 'manual-account-creation' }],

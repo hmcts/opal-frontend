@@ -36,6 +36,7 @@ export class FinesMacReviewAccountCourtDetailsComponent implements OnInit {
   @Input({ required: true }) public enforcementCourtsData!: IOpalFinesCourtRefData;
   @Input({ required: true }) public localJusticeAreasData!: IOpalFinesLocalJusticeAreaRefData;
   @Input({ required: true }) public prosecutorsData!: IOpalFinesProsecutorRefData;
+  @Input({ required: true }) public release1a1_1Enabled!: boolean;
   @Input({ required: false }) public isReadOnly = false;
   @Input({ required: true }) public accountType!: string;
   @Output() public emitChangeCourtDetails = new EventEmitter<void>();
@@ -115,18 +116,26 @@ export class FinesMacReviewAccountCourtDetailsComponent implements OnInit {
 
   /**
    * Resolves the enforcement court and account-type-specific originator display values.
-   * Fixed Penalty issuing authorities and Conditional Caution sending police forces are resolved
-   * from prosecutors; Fine sending courts are resolved from local justice areas.
+   * Fine sending courts always use local justice areas. When release-1a-1.1 is enabled,
+   * Fixed Penalty and Conditional Caution originators prefer prosecutors. When it is disabled,
+   * Fixed Penalty retains its prosecutor-first lookup and Conditional Caution prefers local justice areas.
+   * Both flag-aware account types fall back to the other reference dataset and then the stored
+   * originator name so persisted drafts remain visible across flag transitions.
    * @private
    */
   private getCourtDetailsData(): void {
+    const originatorId = this.courtDetails.fm_court_details_originator_id;
+    const storedOriginatorName = this.courtDetails.fm_court_details_originator_name;
+
     this.getEnforcementCourt();
     if (this.accountType === this.accountTypesKeys['Fixed Penalty']) {
-      this.issuingAuthority = this.getProsecutor();
+      this.issuingAuthority = this.getProsecutor() ?? this.getSendingCourt(originatorId) ?? storedOriginatorName;
     } else if (this.accountType === this.accountTypesKeys['Conditional Caution']) {
-      this.sendingCourt = this.getProsecutor();
+      this.sendingCourt = this.release1a1_1Enabled
+        ? (this.getProsecutor() ?? this.getSendingCourt(originatorId) ?? storedOriginatorName)
+        : (this.getSendingCourt(originatorId) ?? this.getProsecutor() ?? storedOriginatorName);
     } else {
-      this.sendingCourt = this.getSendingCourt(this.courtDetails.fm_court_details_originator_id);
+      this.sendingCourt = this.getSendingCourt(originatorId);
     }
   }
 

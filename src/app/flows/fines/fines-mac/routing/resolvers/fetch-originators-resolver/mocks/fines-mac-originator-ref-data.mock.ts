@@ -19,3 +19,11 @@ export const FINES_MAC_PROSECUTOR_ORIGINATOR_REF_DATA_MOCK: IFinesMacOriginatorR
     displayName: `${prosecutor.name} (${prosecutor.prosecutor_code})`,
   })),
 };
+
+export const FINES_MAC_COMBINED_ORIGINATOR_REF_DATA_MOCK: IFinesMacOriginatorRefData = {
+  count: FINES_MAC_PROSECUTOR_ORIGINATOR_REF_DATA_MOCK.count + FINES_MAC_LJA_ORIGINATOR_REF_DATA_MOCK.count,
+  refData: [
+    ...FINES_MAC_PROSECUTOR_ORIGINATOR_REF_DATA_MOCK.refData,
+    ...FINES_MAC_LJA_ORIGINATOR_REF_DATA_MOCK.refData,
+  ],
+};

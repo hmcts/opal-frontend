@@ -19,7 +19,7 @@ import { IFinesMacFixedPenaltyDetailsStoreForm } from './interfaces/fines-mac-fi
 import { FINES_MAC_FIXED_PENALTY_DETAILS_STORE_FORM } from './constants/fines-mac-fixed-penalty-details-store-form';
 import { IFinesMacCompanyDetailsForm } from '../fines-mac-company-details/interfaces/fines-mac-company-details-form.interface';
 import { FINES_MAC_COMPANY_DETAILS_FORM } from '../fines-mac-company-details/constants/fines-mac-company-details-form';
-import { IOpalFinesProsecutorRefData } from '@services/fines/opal-fines-service/interfaces/opal-fines-prosecutor-ref-data.interface';
+import { IFinesMacOriginatorRefData } from '../routing/resolvers/fetch-originators-resolver/interfaces/fines-mac-originator-ref-data.interface';
 
 @Component({
   selector: 'app-fines-mac-fixed-penalty-details',
@@ -31,7 +31,7 @@ export class FinesMacFixedPenaltyDetailsComponent extends AbstractFormParentBase
   private readonly opalFinesService = inject(OpalFines);
   private readonly finesMacStore = inject(FinesMacStore);
   private courts!: IOpalFinesCourtRefData;
-  private prosecutors!: IOpalFinesProsecutorRefData;
+  private originators!: IFinesMacOriginatorRefData;
   private readonly finesPrefix = 'fm_';
   private readonly fixedPenaltyPrefix = 'fm_fp_';
   public defendantType = this.finesMacStore.getDefendantType();
@@ -198,30 +198,32 @@ export class FinesMacFixedPenaltyDetailsComponent extends AbstractFormParentBase
   }
 
   /**
-   * Creates issuing-authority autocomplete items from prosecutor reference data.
-   * @param prosecutors - The prosecutors available to the selected business unit.
-   * @returns Autocomplete items containing each prosecutor's ID and display name.
+   * Creates issuing-authority autocomplete items from the resolved originator reference data.
+   * Depending on the release-1a-1.1 flag, this contains prosecutors only or the released
+   * combination of prosecutors and local justice areas.
+   * @param originators - The normalized issuing authorities resolved for the current flag state.
+   * @returns Autocomplete items containing each issuing authority's ID and display name.
    */
   private createAutoCompleteItemsAuthorities(
-    prosecutors: IOpalFinesProsecutorRefData,
+    originators: IFinesMacOriginatorRefData,
   ): IAlphagovAccessibleAutocompleteItem[] {
-    return prosecutors.ref_data.map((item) => {
+    return originators.refData.map((originator) => {
       return {
-        value: item.prosecutor_id,
-        name: this.opalFinesService.getProsecutorPrettyName(item),
+        value: originator.originatorId,
+        name: originator.displayName,
       };
     });
   }
 
   /**
-   * Creates the enforcement-court and prosecutor-only issuing-authority autocomplete lists
-   * from the route resolver data.
+   * Creates the enforcement-court and flag-aware issuing-authority autocomplete lists
+   * from normalized route resolver data.
    */
   private createAutoCompleteData(): void {
     this.courts = this['activatedRoute'].snapshot.data['courts'];
     this.enforcementCourtData = this.createAutoCompleteItemsCourts(this.courts);
-    this.prosecutors = this['activatedRoute'].snapshot.data['prosecutors'];
-    this.issuingAuthoritiesData = this.createAutoCompleteItemsAuthorities(this.prosecutors);
+    this.originators = this['activatedRoute'].snapshot.data['originators'];
+    this.issuingAuthoritiesData = this.createAutoCompleteItemsAuthorities(this.originators);
   }
 
   /**

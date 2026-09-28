@@ -336,7 +336,7 @@ export const routing: Routes = [
     resolve: {
       title: TitleResolver,
       courts: fetchEnforcementCourtsResolver,
-      prosecutors: fetchProsecutorsResolver,
+      originators: fetchOriginatorsResolver,
     },
     data: {
       title: FINES_MAC_ROUTING_TITLES.children.fixedPenaltyDetails,
