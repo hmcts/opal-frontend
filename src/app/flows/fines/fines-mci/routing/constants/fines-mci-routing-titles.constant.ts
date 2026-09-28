@@ -4,5 +4,6 @@ export const FINES_MCI_ROUTING_TITLES: IFinesMciRoutingPaths = {
   root: 'Manual cash input',
   children: {
     createAllocate: 'Create and allocate tills',
+    paymentCategoryCriminalSearch: 'Search for criminal accounts',
   },
 };

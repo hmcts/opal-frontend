@@ -34,4 +34,25 @@ describe('finesMci routes', () => {
     );
     expect(createAllocateRoute?.loadComponent).toEqual(expect.any(Function));
   });
+
+  it('should expose a guarded criminal account search placeholder route', () => {
+    const criminalAccountSearchRoute = routing.find(
+      (route) => route.path === FINES_MCI_ROUTING_PATHS.children.paymentCategoryCriminalSearch,
+    );
+
+    expect(criminalAccountSearchRoute).toEqual(
+      expect.objectContaining({
+        path: FINES_MCI_ROUTING_PATHS.children.paymentCategoryCriminalSearch,
+        canActivate: [authGuard, routePermissionsGuard],
+        data: {
+          routePermissionId: [FINES_PERMISSIONS['process-and-allocate-payments']],
+          title: FINES_MCI_ROUTING_TITLES.children.paymentCategoryCriminalSearch,
+        },
+        resolve: expect.objectContaining({
+          title: TitleResolver,
+        }),
+      }),
+    );
+    expect(criminalAccountSearchRoute?.loadComponent).toEqual(expect.any(Function));
+  });
 });

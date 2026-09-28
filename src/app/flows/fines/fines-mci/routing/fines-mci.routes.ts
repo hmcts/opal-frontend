@@ -27,4 +27,19 @@ export const routing: Routes = [
       title: TitleResolver,
     },
   },
+  {
+    path: FINES_MCI_ROUTING_PATHS.children.paymentCategoryCriminalSearch,
+    loadComponent: () =>
+      import('../fines-mci-payment-category-criminal-search/fines-mci-payment-category-criminal-search.component').then(
+        (c) => c.FinesMciPaymentCategoryCriminalSearchComponent,
+      ),
+    canActivate: [authGuard, routePermissionsGuard],
+    data: {
+      routePermissionId: [FINES_PERMISSIONS['process-and-allocate-payments']],
+      title: FINES_MCI_ROUTING_TITLES.children.paymentCategoryCriminalSearch,
+    },
+    resolve: {
+      title: TitleResolver,
+    },
+  },
 ];
