@@ -43,7 +43,9 @@ Feature: Defendant Company Search And Matches Journeys
       | company name | <LEGACY_COMPANY_NAME> |
     Then I see the Companies search results by tab switch:
       | Account | <LEGACY_COMPANY_ACCOUNT_NUMBER> |
-    When I open the latest matching result from the Companies search results
+    When I open the matching result from the search results:
+      | Account | <LEGACY_COMPANY_ACCOUNT_NUMBER> |
+      | Company | <LEGACY_COMPANY_NAME>           |
     Then I should see the account header contains "<LEGACY_COMPANY_HEADER>"
     And I validate the legacy company header and At a glance tab using fixture "<LEGACY_COMPANY_VALIDATION_FIXTURE>"
     When I go to the Defendant tab and validate the legacy company using fixture "<LEGACY_COMPANY_VALIDATION_FIXTURE>"
@@ -73,7 +75,9 @@ Feature: Defendant Company Search And Matches Journeys
       | Ref            | <LEGACY_COMPANY_REF>            |
       | Enf            | <LEGACY_COMPANY_ENF>            |
       | Balance        | <LEGACY_COMPANY_BALANCE>        |
-    When I open the latest matching result from the search results
+    When I open the matching result from the search results:
+      | Account | <LEGACY_COMPANY_ACCOUNT_NUMBER> |
+      | Company | <LEGACY_COMPANY_NAME>           |
     Then I should see the account header contains "<LEGACY_COMPANY_NAME>"
     @R1BDrop1UatTechJCDE @JIRA-TEST-KEY:PO-10326
     Examples:
