@@ -112,7 +112,11 @@ export class CommonActions {
    * @param expected - Expected text.
    * @param timeoutMs - Optional timeout override for the assertion.
    */
-  public assertElementContainsNormalizedText(selector: string, expected: string, timeoutMs: number = this.TIMEOUT): void {
+  public assertElementContainsNormalizedText(
+    selector: string,
+    expected: string,
+    timeoutMs: number = this.TIMEOUT,
+  ): void {
     this.assertElementContainsAnyNormalizedText(selector, [expected], timeoutMs);
   }
 

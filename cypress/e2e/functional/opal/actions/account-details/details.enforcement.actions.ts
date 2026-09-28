@@ -43,7 +43,11 @@ export class AccountDetailsEnforcementActions {
    * @param expected - Expected text.
    */
   private assertContainsNormalizedText(selector: string, expected: string): void {
-    this.common.assertElementContainsNormalizedText(selector, expected, AccountDetailsEnforcementActions.DEFAULT_TIMEOUT);
+    this.common.assertElementContainsNormalizedText(
+      selector,
+      expected,
+      AccountDetailsEnforcementActions.DEFAULT_TIMEOUT,
+    );
   }
 
   /**
