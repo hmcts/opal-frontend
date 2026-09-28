@@ -494,7 +494,7 @@ Feature: Populate And Submit
       | Cancel journey state |
       | with changes         |
 
-  @JIRA-EPIC:PO-2750 @R1A @JIRA-STORY:PO-2790 @JIRA-DEFECT:PO-10693 @JIRA-TEST-KEY:PO-5559
+  @JIRA-EPIC:PO-2750 @R1A1_1 @JIRA-STORY:PO-2790 @JIRA-DEFECT:PO-10693 @JIRA-TEST-KEY:PO-5559
   Scenario: Conditional Caution shows Police and court details across task list, court details and check account details
     When I open Manual Account Creation from the dashboard
     And I select manual account business unit "West London"

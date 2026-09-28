@@ -36,7 +36,7 @@ Feature: Court and prosecutor reference data requests
       | NICRT  |
 
   # PO-10693 AC1a, AC1c
-  @JIRA-EPIC:PO-2750 @R1A @JIRA-STORY:PO-2761 @JIRA-DEFECT:PO-10693 @JIRA-TEST-KEY:PO-5385
+  @JIRA-EPIC:PO-2750 @R1A1_1 @JIRA-STORY:PO-2761 @JIRA-DEFECT:PO-10693 @JIRA-TEST-KEY:PO-5385
   Scenario: Conditional Caution + New requests prosecutors without requesting local justice areas
     When I create a "New" manual "Conditional Caution" account for business unit "West London" with defendant type "Adult or youth only"
     And I access the "Court details" task
@@ -44,7 +44,7 @@ Feature: Court and prosecutor reference data requests
     And no local justice area requests should be made
 
   # PO-10693 AC2a, AC2c
-  @JIRA-EPIC:PO-2750 @R1A @JIRA-STORY:PO-2761 @JIRA-DEFECT:PO-10693 @JIRA-TEST-KEY:PO-5386
+  @JIRA-EPIC:PO-2750 @R1A1_1 @JIRA-STORY:PO-2761 @JIRA-DEFECT:PO-10693 @JIRA-TEST-KEY:PO-5386
   Scenario: Fixed Penalty + New requests prosecutors without requesting local justice areas
     When I create a "New" manual "Fixed Penalty" account for business unit "West London" with defendant type "Adult or youth only"
     Then I should see the header containing text "Fixed Penalty details"
@@ -52,7 +52,7 @@ Feature: Court and prosecutor reference data requests
     And no local justice area requests should be made
 
   # PO-10693 AC2a, AC2c
-  @JIRA-EPIC:PO-2750 @R1A @JIRA-STORY:PO-2761 @JIRA-DEFECT:PO-10693 @JIRA-TEST-KEY:PO-5387
+  @JIRA-EPIC:PO-2750 @R1A1_1 @JIRA-STORY:PO-2761 @JIRA-DEFECT:PO-10693 @JIRA-TEST-KEY:PO-5387
   Scenario: Fixed Penalty + Transfer in requests prosecutors without requesting local justice areas
     When I create a "Transfer in" manual "Fixed Penalty" account for business unit "West London" with defendant type "Adult or youth only"
     Then I should see the header containing text "Fixed Penalty details"

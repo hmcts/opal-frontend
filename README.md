@@ -360,6 +360,8 @@ The default functional runner excludes `@UAT-Technical`, `@R1BDrop1UatTechJCDE`,
 Use these functional scripts when you need a release-aligned run locally or in a dedicated CI stage:
 
 - `yarn test:functional:r1a`: current `R1A` positive coverage only
+- `yarn test:functional:r1a_1_1`: `release-1a-1.1` enabled coverage only
+- `yarn test:functional:r1a_1_1Off`: `release-1a-1.1` disabled coverage only
 - `yarn test:functional:r1a_and_r1b_drop1`: current `R1A` + `R1BDrop1` positive coverage only
 - `yarn test:functional:r1ab`: current `R1A` + `R1B` positive coverage only
 - `yarn test:functional:r1b_drop1`: current `R1BDrop1` coverage only
@@ -413,12 +415,14 @@ draft-account payloads resolve from `cypress/fixtures/draftAccounts/jcde/`.
 
 If you do not add a selector label, the CNP pipeline uses its normal default functional selection:
 
-- functional tags: `not (@UAT-Technical or @R1BDrop1UatTechJCDE or @R1BDrop1UatTechPreprod or @R1BDrop2UatTechJCDE or @R1BDrop2UatTechPreprod) and not @skip and not (@R1AOff or @R1BOff or @R1CWriteOffOff or @R1CEnforcementOperationalReportingOff)`
+- functional tags: `not (@UAT-Technical or @R1BDrop1UatTechJCDE or @R1BDrop1UatTechPreprod or @R1BDrop2UatTechJCDE or @R1BDrop2UatTechPreprod) and not @skip and not (@R1AOff or @R1A1_1Off or @R1BOff or @R1CWriteOffOff or @R1CEnforcementOperationalReportingOff)`
 - functional specs: all functional features, unless one or more `test_*` routing labels are present
 
 PR labels supported by the CNP pipeline:
 
 - `run_release:r1a`: run the current `R1A` positive suite only
+- `run_release:r1a_1_1`: run the `release-1a-1.1` enabled scenarios only
+- `run_release:r1a_1_1_off`: run the `release-1a-1.1` disabled scenarios only
 - `run_release:r1ab`: run the current `R1A` + `R1B` positive suite only
 - `run_release:r1a_off`: run the `release-1a` disabled technical scenarios only
 - `run_release:r1b_off`: run the `release-1b` disabled technical scenarios only
