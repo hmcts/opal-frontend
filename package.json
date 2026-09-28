@@ -75,6 +75,8 @@
     "test:functional:uat_legacy_r1b_drop2_preprod": "TAGS='(@R1BDrop2UatTechPreprod) and not @skip' DEFAULT_APP_MODE=legacy LEGACY_ENABLED=true yarn test:functional:tags",
     "test:functional:uat_legacy_r1b_drop1_and_r1b_drop2_jcde": "TAGS='(@R1BDrop1UatTechJCDE or @R1BDrop2UatTechJCDE) and not @skip' DEFAULT_APP_MODE=legacy LEGACY_ENABLED=true JCDE_OVERRIDE=true yarn test:functional:tags",
     "test:functional:uat_legacy_r1b_drop1_and_r1b_drop2_preprod": "TAGS='(@R1BDrop1UatTechPreprod or @R1BDrop2UatTechPreprod) and not @skip' DEFAULT_APP_MODE=legacy LEGACY_ENABLED=true yarn test:functional:tags",
+    "test:functional:uat_legacy_r1a_and_r1b_drop1_preprod": "TAGS='(@UAT-Technical or @R1BDrop1UatTechPreprod) and not @skip' DEFAULT_APP_MODE=legacy LEGACY_ENABLED=true yarn test:functional:tags",
+    "test:functional:uat_legacy_r1a_and_r1b_preprod": "TAGS='(@UAT-Technical or @R1BDrop1UatTechPreprod or @R1BDrop2UatTechPreprod) and not @skip' DEFAULT_APP_MODE=legacy LEGACY_ENABLED=true yarn test:functional:tags",
     "test:functional:uat_legacy_data": "TAGS='(@LegacyData) and not @skip' DEFAULT_APP_MODE=legacy LEGACY_ENABLED=true yarn test:functional:tags",
     "test:functional:uat_legacy": "TAGS='(@UAT-Technical) and not @skip' DEFAULT_APP_MODE=legacy LEGACY_ENABLED=true yarn test:functional:tags",
     "find:duplicate:scenarios": "opal-cypress-find-duplicate-scenarios --root cypress/e2e/functional/opal/features",
@@ -110,6 +112,8 @@
     "zephyr:test:uat_technical_r1b_drop2_preprod": "CODE=0; yarn test:functional:uat_legacy_r1b_drop2_preprod --reset || CODE=$?; yarn zephyr:cucumber:functional:jira-execute; exit $CODE",
     "zephyr:test:uat_technical_r1b_drop1_and_r1b_drop2_jcde": "CODE=0; yarn test:functional:uat_legacy_r1b_drop1_and_r1b_drop2_jcde --reset || CODE=$?; yarn zephyr:cucumber:functional:jira-execute; exit $CODE",
     "zephyr:test:uat_technical_r1b_drop1_and_r1b_drop2_preprod": "CODE=0; yarn test:functional:uat_legacy_r1b_drop1_and_r1b_drop2_preprod --reset || CODE=$?; yarn zephyr:cucumber:functional:jira-execute; exit $CODE",
+    "zephyr:test:uat_technical_r1a_and_r1b_drop1_preprod": "CODE=0; yarn test:functional:uat_legacy_r1a_and_r1b_drop1_preprod --reset || CODE=$?; yarn zephyr:cucumber:functional:jira-execute; exit $CODE",
+    "zephyr:test:uat_technical_r1a_and_r1b_preprod": "CODE=0; yarn test:functional:uat_legacy_r1a_and_r1b_preprod --reset || CODE=$?; yarn zephyr:cucumber:functional:jira-execute; exit $CODE",
     "zephyr:test:uat_technical": "CODE=0; yarn test:functional:uat_legacy_r1a --reset || CODE=$?; yarn zephyr:cucumber:functional:jira-execute; exit $CODE",
     "zephyr:test:legacy": "CODE=0; yarn test:functional --mode=legacy --reset || CODE=$?; yarn zephyr:cucumber:functional:jira-execute; exit $CODE"
   },
