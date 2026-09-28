@@ -123,10 +123,8 @@ describe('FinesMacReviewAccountComponent - Rejected Account view', () => {
         expect(request.url).to.include('/opal-fines-service/draft-accounts/123');
         expect(request.method).to.equal('PUT');
 
-        expect(request.body).to.have.property('draft_account_id', 123);
+        expect(request.body).to.have.all.keys('business_unit_id', 'account', 'account_type', 'account_status');
         expect(request.body).to.have.property('business_unit_id', 61);
-        expect(request.body).to.have.property('submitted_by', 'L017KG');
-        expect(request.body).to.have.property('submitted_by_name', 'Timmy Tester');
 
         //Checking a few of the values in the account object are correct
         expect(request.body).to.have.property('account');
@@ -166,15 +164,9 @@ describe('FinesMacReviewAccountComponent - Rejected Account view', () => {
         expect(request.method).to.equal('PUT');
 
         // AC4a
+        expect(request.body).to.have.all.keys('business_unit_id', 'account', 'account_type', 'account_status');
         expect(request.body).to.have.property('business_unit_id', 61);
 
-        // AC4b
-        expect(request.body).to.have.property('submitted_by', 'L017KG');
-
-        // AC4c
-        expect(request.body).to.have.property('submitted_by_name', 'Timmy Tester');
-
-        // AC4d
         expect(request.body).to.have.property('account');
         expect(request.body.account).to.have.property('account_type', FINES_ACCOUNT_TYPES['Fixed Penalty']);
         expect(request.body.account).to.have.property('defendant_type', 'adultOrYouthOnly');
@@ -189,9 +181,6 @@ describe('FinesMacReviewAccountComponent - Rejected Account view', () => {
 
         // AC4e - account_type = 'Fixed Penalty'
         expect(request.body).to.have.property('account_type', FINES_ACCOUNT_TYPES['Fixed Penalty']);
-
-        // AC4f - account_status_message = null
-        expect(request.body).to.have.property('account_status_message', null);
 
         // Account status should be 'Resubmitted' when resubmitting
         expect(request.body).to.have.property('account_status', 'Resubmitted');

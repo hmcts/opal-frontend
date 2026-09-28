@@ -1,0 +1,51 @@
+{
+  "header": {
+    "accountNumber": "24000093L",
+    "name": "Mr Kelvin Kappa JF-TFO-K",
+    "metrics": {
+      "imposed": "£246.90",
+      "arrears": "£246.90",
+      "paid/written off": "£0.00",
+      "account balance": "-£246.90"
+    }
+  },
+  "atAGlance": {
+    "defendant": {
+      "name": "Mr Kelvin Kappa JF-TFO-K",
+      "date of birth": "01 February 2000",
+      "address": "123 asdf\nasdf\nasdf",
+      "national insurance number": "NI123456C"
+    },
+    "paymentTerms": {
+      "payment terms": "Pay in full",
+      "pay by date": "01 February 2025"
+    },
+    "enforcementStatus": {
+      "days in default": "0 days",
+      "date of last movement": "26 April 2024"
+    },
+    "comments": {
+      "comment": "test"
+    }
+  },
+  "defendantTab": {
+    "defendant": {
+      "name": "Mr Kelvin Kappa JF-TFO-K",
+      "date of birth": "01 February 2000",
+      "address": "123 asdf\nasdf\nasdf",
+      "national insurance number": "NI123456C"
+    }
+  },
+  "paymentTermsTab": {
+    "pay by date": "01 February 2025",
+    "days in default": "0"
+  },
+  "enforcementTab": {
+    "overview": {
+      "days in default": "0 days",
+      "enforcement court": "West London VPFPO (101)"
+    }
+  },
+  "impositionsTab": {},
+  "historyAndNotesTab": {}
+}

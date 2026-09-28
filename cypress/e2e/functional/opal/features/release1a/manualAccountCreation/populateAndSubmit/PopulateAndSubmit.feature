@@ -161,7 +161,9 @@ Feature: Populate And Submit
 
 
   @R1A @JIRA-STORY:PO-1450 @JIRA-STORY:PO-1638 @JIRA-EPIC:PO-2219 @JIRA-TEST-KEY:PO-5549
+  @draft-request-contract
   Scenario: Submitting a company manual account with a minor creditor shows the correct review summaries
+    Given I monitor the draft account POST contract
     When I start a fine manual account for business unit "West London" with defendant type "Company" and originator type "New"
     And I complete manual account creation with the following fields and defaults:
       | Section        | Field                     | Value                               | Imposition |
@@ -214,6 +216,7 @@ Feature: Populate And Submit
       | Payment reference | REF            |
 
     When I submit the manual account for review
+    Then the draft account POST matches the contract for "company" and "Fine"
     Then I see the following text on the page "You've submitted this account for review"
 
 
@@ -354,7 +357,9 @@ Feature: Populate And Submit
 
 
   @R1A @JIRA-STORY:PO-1449 @JIRA-STORY:PO-1638 @JIRA-EPIC:PO-2219 @JIRA-TEST-KEY:PO-5552
+  @draft-request-contract
   Scenario: Submitting an adult or youth with parent or guardian to pay account with a minor creditor shows the correct review summaries
+    Given I monitor the draft account POST contract
     When I start a fine manual account for business unit "West London" with defendant type "Adult or youth with parent or guardian to pay" and originator type "New"
     And I complete manual account creation with the following fields and defaults:
       | Section            | Field                                    | Value                | Imposition |
@@ -439,28 +444,35 @@ Feature: Populate And Submit
       | Payment reference | REFAB       |
 
     When I submit the manual account for review
+    Then the draft account POST matches the contract for "pgToPay" and "Fine"
     Then I see the following text on the page "You've submitted this account for review"
 
   @JIRA-EPIC:PO-2750 @R1A @JIRA-STORY:PO-2793 @JIRA-TEST-KEY:PO-5553 @JIRA-NFR:PO-2324
+  @draft-request-contract
   Scenario: A checker approves a New account and defendant_accounts.originator_type is NEW
+    Given I monitor the draft account POST contract
     When I open Manual Account Creation
     And I monitor draft account create requests
     And I create a "New" manual "Fine" account for business unit "West London" with defendant type "Adult or youth only"
     And I complete standard manual fine account fields for originator type checks
     When I check the manual account details
     And I submit the manual account for review
+    Then the draft account POST matches the contract for "adultOrYouthOnly" and "Fine"
     Then the latest draft account create request should include originator type "NEW"
     And the latest draft account create response should include UTC timestamps
     And I see the following text on the page "You've submitted this account for review"
 
   @JIRA-EPIC:PO-2750 @R1A @JIRA-STORY:PO-2793 @JIRA-TEST-KEY:PO-5554
+  @draft-request-contract
   Scenario: A checker approves a Transfer in from England or Wales account and defendant_accounts.originator_type is TFO
+    Given I monitor the draft account POST contract
     When I open Manual Account Creation
     And I monitor draft account create requests
     And I create a "Transfer in" manual "Fine" account for business unit "West London" with defendant type "Adult or youth only"
     And I complete standard manual fine account fields for originator type checks
     When I check the manual account details
     And I submit the manual account for review
+    Then the draft account POST matches the contract for "adultOrYouthOnly" and "Fine"
     Then the latest draft account create request should include originator type "TFO"
     And I see the following text on the page "You've submitted this account for review"
 

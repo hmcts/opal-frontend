@@ -1,0 +1,44 @@
+{
+  "header": {
+    "accountNumber": "24000209J",
+    "name": "JFtest TFO Company",
+    "metrics": {
+      "imposed": "£123.99",
+      "arrears": "£123.99",
+      "paid/written off": "£0.00",
+      "account balance": "-£123.99"
+    }
+  },
+  "atAGlance": {
+    "company": {
+      "company name": "JFtest TFO Company",
+      "address": "123 asdf\nasdfasfd\nasdfasdf\npostcode"
+    },
+    "paymentTerms": {
+      "payment terms": "Pay in full",
+      "pay by date": "01 May 2025"
+    },
+    "enforcementStatus": {
+      "days in default": "1 day",
+      "date of last movement": "06 December 2024"
+    }
+  },
+  "defendantTab": {
+    "company": {
+      "company name": "JFtest TFO Company",
+      "address": "123 asdf\nasdfasfd\nasdfasdf\npostcode"
+    }
+  },
+  "paymentTermsTab": {
+    "pay by date": "01 May 2025",
+    "days in default": "1"
+  },
+  "enforcementTab": {
+    "overview": {
+      "days in default": "1 day",
+      "enforcement court": "West London VPFPO (101)"
+    }
+  },
+  "impositionsTab": {},
+  "historyAndNotesTab": {}
+}
