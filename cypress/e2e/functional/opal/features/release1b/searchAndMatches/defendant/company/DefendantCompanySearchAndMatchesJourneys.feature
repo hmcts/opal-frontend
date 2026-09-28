@@ -9,7 +9,7 @@ Feature: Defendant Company Search And Matches Journeys
     Given I am logged in with email "opal-test@dev.platform.hmcts.net"
     And I clear all approved accounts
 
-  @R1BDrop1UatTechJCDE @JIRA-STORY:PO-712 @JIRA-STORY:PO-706 @JIRA-STORY:PO-707 @JIRA-EPIC:PO-704 @JIRA-TEST-KEY:PO-5291
+  @R1BDrop1UatTechJCDE @R1BDrop1UatTechPreprod @JIRA-STORY:PO-712 @JIRA-STORY:PO-706 @JIRA-STORY:PO-707 @JIRA-EPIC:PO-704 @JIRA-TEST-KEY:PO-5291
   Scenario: Search for a company defendant account and open the matching record
     Given I create a "company" draft account with the following details and set status "Publishing Pending" using user "opal-test-10@dev.platform.hmcts.net":
       | Account_status                      | Submitted                 |

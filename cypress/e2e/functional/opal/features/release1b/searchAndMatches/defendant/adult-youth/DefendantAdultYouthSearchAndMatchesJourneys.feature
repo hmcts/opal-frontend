@@ -8,7 +8,7 @@ Feature: Defendant Adult Youth Search And Matches Journeys
     Given I am logged in with email "opal-test@dev.platform.hmcts.net"
     And I clear all approved accounts
 
-  @R1BDrop1UatTechJCDE @JIRA-STORY:PO-705 @JIRA-STORY:PO-706 @JIRA-STORY:PO-717 @JIRA-DEFECT:PO-3541 @JIRA-EPIC:PO-704 @JIRA-TEST-KEY:PO-5290
+  @R1BDrop1UatTechJCDE @R1BDrop1UatTechPreprod @JIRA-STORY:PO-705 @JIRA-STORY:PO-706 @JIRA-STORY:PO-717 @JIRA-DEFECT:PO-3541 @JIRA-EPIC:PO-704 @JIRA-TEST-KEY:PO-5290
   Scenario: Search for an individual defendant account and open the matching record
     Given I create a "adultOrYouthOnly" draft account with the following details and set status "Publishing Pending" using user "opal-test-10@dev.platform.hmcts.net":
       | Account_status                              | Submitted                        |
@@ -92,7 +92,7 @@ Feature: Defendant Adult Youth Search And Matches Journeys
     When I open the latest matching result from the search results
     Then I should see the account summary header contains "JOURNEYNISPACE{uniqUpper}"
 
-  @JIRA-EPIC:PO-704 @R1BDrop1UatTechJCDE @JIRA-STORY:PO-706 @JIRA-TEST-KEY:PO-5295
+  @JIRA-EPIC:PO-704 @R1BDrop1UatTechJCDE @R1BDrop1UatTechPreprod @JIRA-STORY:PO-706 @JIRA-TEST-KEY:PO-5295
   Scenario: Search by account number and open the matching record
     Given I create a "adultOrYouthOnly" draft account with the following details and set status "Publishing Pending" using user "opal-test-10@dev.platform.hmcts.net":
       | Account_status                          | Submitted                           |
