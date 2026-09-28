@@ -11,6 +11,7 @@ import { InterfaceFileViewerFileSource, InterfaceFileViewerFileType} from '../co
 export class FinesFinanceInboundFilesComponent {
 
 
+
 public readonly fileTypeAutoCompleteItems: IAlphagovAccessibleAutocompleteItem[] =
   Object.values(InterfaceFileViewerFileType).map((fileType) => ({
     name: fileType,
@@ -25,5 +26,9 @@ public readonly fileSourceAutoCompleteItems: IAlphagovAccessibleAutocompleteItem
   })
 );
 
+public ngOnInit(): void {
+   
+
+  }
 
 }
