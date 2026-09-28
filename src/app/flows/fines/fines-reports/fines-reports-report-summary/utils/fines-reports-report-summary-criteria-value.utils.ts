@@ -5,6 +5,7 @@ import { FINES_REPORTS_REPORT_SUMMARY_CRITERIA_LABELS } from '../constants/fines
 import { FINES_REPORTS_REPORT_SUMMARY_LAST_ACTION_MODE } from '../constants/fines-reports-report-summary-last-action-mode.constant';
 import { FINES_REPORTS_REPORT_SUMMARY_PARAMETER_KEYS } from '../constants/fines-reports-report-summary-parameter-keys.constant';
 import { FINES_REPORTS_REPORT_SUMMARY_REPORT_TYPES } from '../constants/fines-reports-report-summary-report-types.constant';
+import { FINES_REPORTS_REPORT_SUMMARY_SINCE_LAST_ENFORCEMENT_MODE } from '../constants/fines-reports-report-summary-since-last-enforcement-mode.constant';
 import { type IFinesReportsReportSummaryViewModel } from '../interfaces/fines-reports-report-summary-view-model.interface';
 import { type FinesReportsReportSummaryNamedValue } from '../types/fines-reports-report-summary-named-value.type';
 import {
@@ -75,7 +76,7 @@ const COLLECTION_ORDER_DISPLAY: Record<string, string> = {
  * Translates payment-report mode codes into the wording required by the report criteria section.
  */
 const PAYMENT_REPORT_MODE_DISPLAY: Record<string, string> = {
-  SINCE_LAST_ENFORCEMENT: 'Since last enforcement action',
+  [FINES_REPORTS_REPORT_SUMMARY_SINCE_LAST_ENFORCEMENT_MODE]: 'Since last enforcement action',
   WITH_REGF: 'With registration of fine (REGF)',
   SINCE_DATE: 'Since date',
 };
@@ -319,7 +320,7 @@ export const mapOperationalReportParameter = (
     case FINES_REPORTS_REPORT_SUMMARY_PARAMETER_KEYS.sinceLastEnforcementAction:
       return {
         name: FINES_REPORTS_REPORT_SUMMARY_CRITERIA_LABELS.sinceLastEnforcementAction,
-        value,
+        value: enforcementAction ? `${enforcementAction.result_title} (${enforcementAction.result_id})` : value,
         optional: true,
       };
     case FINES_REPORTS_REPORT_SUMMARY_PARAMETER_KEYS.sinceDate:

@@ -245,6 +245,105 @@ describe('finesReportsReportInstanceResolver', () => {
     });
   });
 
+  describe('payment report actions', () => {
+    const reportTypeId = FINES_REPORTS_SUMMARY_LIST_ROUTING_PATHS.children.operationalReportsByPayments;
+    const mockPaymentParameters = (reportParameters: Record<string, unknown> | null) => {
+      mockOpalFinesService.getReportInstance.mockReturnValue(
+        of({
+          ...OPAL_FINES_REPORT_INSTANCE_MOCK,
+          report: { ...OPAL_FINES_REPORT_INSTANCE_MOCK.report, id: reportTypeId },
+          report_parameters: reportParameters,
+        }),
+      );
+    };
+    const resolvePaymentSummary = () =>
+      firstValueFrom(executeResolver(buildRoute('12345', reportTypeId), {} as never) as Observable<unknown>);
+
+    beforeEach(() => {
+      mockOpalFinesService.getReport.mockReturnValue(
+        of({ ...OPAL_FINES_REPORT_MOCK, report_id: reportTypeId, report_title: 'Operational report (by payment)' }),
+      );
+      mockPaymentParameters({ reportMode: 'SINCE_LAST_ENFORCEMENT', sinceLastEnforcementAction: 'ABDC' });
+      mockOpalFinesService.getResult.mockReturnValue(
+        of({
+          ...OPAL_FINES_RESULT_REF_DATA_MOCK,
+          result_id: 'ABDC',
+          result_title: 'Application made for Benefit Deductions',
+        }),
+      );
+    });
+
+    it('resolves the selected action and displays its title and code', async () => {
+      const result = await resolvePaymentSummary();
+
+      expect(mockOpalFinesService.getResult).toHaveBeenCalledExactlyOnceWith('ABDC');
+      expect(result).toMatchObject({
+        criteriaRows: [
+          { key: 'Payment report mode', value: 'Since last enforcement action' },
+          { key: 'Since last enforcement action', value: 'Application made for Benefit Deductions (ABDC)' },
+        ],
+      });
+    });
+
+    it('propagates the selected payment action lookup failure', async () => {
+      const error = new HttpErrorResponse({ status: 500, statusText: 'Internal Server Error' });
+      mockOpalFinesService.getResult.mockReturnValue(throwError(() => error));
+
+      await expect(resolvePaymentSummary()).rejects.toBe(error);
+      expect(mockOpalFinesService.getResult).toHaveBeenCalledExactlyOnceWith('ABDC');
+    });
+
+    it.each([
+      { mode: 'WITH_REGF', expected: 'With registration of fine (REGF)' },
+      { mode: 'SINCE_DATE', expected: 'Since date' },
+    ])('does not look up a stale payment action for mode $mode', async ({ mode, expected }) => {
+      mockPaymentParameters({ reportMode: mode, sinceLastEnforcementAction: 'ABDC' });
+      mockOpalFinesService.getResult.mockReturnValue(
+        throwError(() => new HttpErrorResponse({ status: 500, statusText: 'Internal Server Error' })),
+      );
+
+      const result = await resolvePaymentSummary();
+
+      expect(mockOpalFinesService.getResult).not.toHaveBeenCalled();
+      expect(result).toMatchObject({
+        criteriaRows: expect.arrayContaining([{ key: 'Payment report mode', value: expected }]),
+      });
+    });
+
+    it.each([undefined, '', '  '])(
+      'skips the lookup when the selected payment action is absent or blank: %j',
+      async (code) => {
+        mockPaymentParameters({ reportMode: 'SINCE_LAST_ENFORCEMENT', sinceLastEnforcementAction: code });
+
+        const result = await resolvePaymentSummary();
+
+        expect(mockOpalFinesService.getResult).not.toHaveBeenCalled();
+        expect(result).toMatchObject({
+          criteriaRows: expect.arrayContaining([
+            { key: 'Payment report mode', value: 'Since last enforcement action' },
+          ]),
+        });
+      },
+    );
+
+    it('skips action lookups when the report has no parameters', async () => {
+      mockPaymentParameters(null);
+
+      const result = await resolvePaymentSummary();
+
+      expect(mockOpalFinesService.getResult).not.toHaveBeenCalled();
+      expect(result).toMatchObject({ criteriaRows: [] });
+    });
+
+    it('skips the lookup when no payment mode is selected', async () => {
+      mockPaymentParameters({ sinceLastEnforcementAction: 'ABDC' });
+
+      await resolvePaymentSummary();
+
+      expect(mockOpalFinesService.getResult).not.toHaveBeenCalled();
+    });
+  });
+
   it('uses the report type on the current route when the parent has no report type', async () => {
     const route = {
       paramMap: convertToParamMap({ reportTypeId: OPAL_FINES_REPORT_MOCK.report_id, reportInstanceId: '12345' }),

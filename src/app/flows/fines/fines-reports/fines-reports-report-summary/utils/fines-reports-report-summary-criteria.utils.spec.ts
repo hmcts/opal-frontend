@@ -91,6 +91,24 @@ describe('mapReportSummaryCriteria', () => {
     expect(result).toEqual([{ key: 'Enforcement', value: 'Last enforcement - Bail Warrant - dated (BWTD)' }]);
   });
 
+  it('displays the resolved payment action title and code for a string result ID', () => {
+    const result = mapReportSummaryCriteria(
+      { reportMode: 'SINCE_LAST_ENFORCEMENT', sinceLastEnforcementAction: 'ABDC' },
+      'Summary',
+      {
+        ...OPAL_FINES_RESULT_REF_DATA_MOCK,
+        result_id: 'ABDC',
+        result_title: 'Application made for Benefit Deductions',
+      },
+      dateService,
+    );
+
+    expect(result).toEqual([
+      { key: 'Payment report mode', value: 'Since last enforcement action' },
+      { key: 'Since last enforcement action', value: 'Application made for Benefit Deductions (ABDC)' },
+    ]);
+  });
+
   it.each([
     { key: 'accountStatus', value: 'ALL', label: 'Account status', expected: 'All accounts' },
     { key: 'accountStatus', value: 'CLOSED', label: 'Account status', expected: 'Closed' },
@@ -139,7 +157,7 @@ describe('mapReportSummaryCriteria', () => {
         upperNameRange: 'M',
         minBalance: '£1,200.50',
         maxBalance: 2500,
-        sinceLastEnforcementAction: true,
+        sinceLastEnforcementAction: 'ABDC',
         sinceDate: '2006-05-01',
         includeAdult: false,
         unknownParameter: 'not shown',
@@ -149,7 +167,7 @@ describe('mapReportSummaryCriteria', () => {
       { key: 'Upper name range', value: 'M' },
       { key: 'Minimum account balance', value: 1200.5, isCurrency: true },
       { key: 'Maximum account balance', value: 2500, isCurrency: true },
-      { key: 'Since last enforcement action', value: 'TRUE' },
+      { key: 'Since last enforcement action', value: 'ABDC' },
       { key: 'Since date', value: '01 May 2006' },
     ]);
     expect(mapCriteria({ lowerNameRange: '', upperNameRange: null, minBalance: undefined, sinceDate: '' })).toEqual([]);

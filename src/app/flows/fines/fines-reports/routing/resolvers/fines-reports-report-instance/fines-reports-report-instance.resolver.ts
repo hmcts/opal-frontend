@@ -7,16 +7,17 @@ import { OpalFines } from '@services/fines/opal-fines-service/opal-fines.service
 import { map, of, switchMap } from 'rxjs';
 import { FINES_REPORTS_REPORT_SUMMARY_LAST_ACTION_MODE } from '../../../fines-reports-report-summary/constants/fines-reports-report-summary-last-action-mode.constant';
 import { FINES_REPORTS_REPORT_SUMMARY_PARAMETER_KEYS } from '../../../fines-reports-report-summary/constants/fines-reports-report-summary-parameter-keys.constant';
+import { FINES_REPORTS_REPORT_SUMMARY_SINCE_LAST_ENFORCEMENT_MODE } from '../../../fines-reports-report-summary/constants/fines-reports-report-summary-since-last-enforcement-mode.constant';
 import { IFinesReportsReportSummaryViewModel } from '../../../fines-reports-report-summary/interfaces/fines-reports-report-summary-view-model.interface';
 import { mapFinesReportsReportInstanceToViewModel } from '../../../fines-reports-report-summary/utils/fines-reports-report-summary-map-view-model.utils';
 import { FINES_REPORTS_SUMMARY_LIST_ROUTING_PATHS } from '../../../fines-reports-summary-list/routing/constants/fines-reports-summary-list-routing-paths.constant';
 
 /**
- * Loads action reference data only for last-action enforcement mode, then maps the instance for the summary page.
+ * Loads action reference data for enforcement or payment modes that require it, then maps the summary page.
  *
  * @param reportInstance - The report instance returned by the API.
  * @param reportTitle - The report title supplied by the report definition.
- * @param opalFinesService - The fines API service used to resolve an action required by last-action enforcement mode.
+ * @param opalFinesService - The fines API service used to resolve the selected mode's enforcement action.
  * @param dateService - The shared service used to parse and format dates.
  * @returns An observable emitting the mapped report summary; enforcement-action lookup failures propagate to the resolver.
  */
@@ -26,22 +27,28 @@ const resolveReportSummaryViewModel = (
   opalFinesService: OpalFines,
   dateService: DateService,
 ) => {
-  const enforcementMode =
-    reportInstance.report_parameters?.[FINES_REPORTS_REPORT_SUMMARY_PARAMETER_KEYS.reportEnforcementMode];
-  // The instance contains only the action code. Last-action mode needs its readable reference-data title.
-  const enforcementAction =
-    reportInstance.report_parameters?.[FINES_REPORTS_REPORT_SUMMARY_PARAMETER_KEYS.enforcementAction];
+  const parameters = reportInstance.report_parameters;
+  let enforcementAction: unknown;
 
-  // Other enforcement modes do not use an action title, even if a stale action code is present.
+  // Each report mode stores its selected action code under a different parameter.
   if (
-    enforcementMode !== FINES_REPORTS_REPORT_SUMMARY_LAST_ACTION_MODE ||
-    typeof enforcementAction !== 'string' ||
-    enforcementAction.trim().length === 0
+    parameters?.[FINES_REPORTS_REPORT_SUMMARY_PARAMETER_KEYS.reportEnforcementMode] ===
+    FINES_REPORTS_REPORT_SUMMARY_LAST_ACTION_MODE
   ) {
+    enforcementAction = parameters[FINES_REPORTS_REPORT_SUMMARY_PARAMETER_KEYS.enforcementAction];
+  } else if (
+    parameters?.[FINES_REPORTS_REPORT_SUMMARY_PARAMETER_KEYS.reportMode] ===
+    FINES_REPORTS_REPORT_SUMMARY_SINCE_LAST_ENFORCEMENT_MODE
+  ) {
+    enforcementAction = parameters[FINES_REPORTS_REPORT_SUMMARY_PARAMETER_KEYS.sinceLastEnforcementAction];
+  }
+
+  // Other modes do not need an action title, even if a stale action code is present.
+  if (typeof enforcementAction !== 'string' || enforcementAction.trim().length === 0) {
     return of(mapFinesReportsReportInstanceToViewModel(reportInstance, null, reportTitle, dateService));
   }
 
-  // Let a failed lookup stop navigation: the Enforcement criterion could not otherwise be rendered accurately.
+  // Let a failed lookup stop navigation because the selected action's title could not be resolved.
   return opalFinesService
     .getResult(enforcementAction)
     .pipe(map((result) => mapFinesReportsReportInstanceToViewModel(reportInstance, result, reportTitle, dateService)));
