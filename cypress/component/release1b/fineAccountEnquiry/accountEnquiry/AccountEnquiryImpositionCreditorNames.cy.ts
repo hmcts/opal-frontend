@@ -36,7 +36,7 @@ describe('Account Enquiry Imposition creditor names', () => {
 
   it(
     'PO-10571: displays each creditor type from the revised creditor summary response',
-    { tags: ['@PO-10571', '@R1B'] },
+    { tags: ['@JIRA-STORY:PO-10571', '@JIRA-EPIC:PO-979', '@R1B'] },
     () => {
       setupImpositionsScreen();
       cy.wait('@getImpositions');
