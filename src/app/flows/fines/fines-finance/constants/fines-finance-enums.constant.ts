@@ -26,7 +26,7 @@ export enum InterfaceFileViewerSupportedDomain {
   Confiscation = 'CONFISCATION',
   Maintenance = 'MAINTENANCE',
   FileHandler = 'FILE_HANDLER',
-}               
+}
 
 export enum InterfaceFileViewerFileStatus {
   Duplicate = 'DUPLICATE',
