@@ -115,6 +115,28 @@ describe('FinesMacCourtDetailsFormComponent', () => {
     expect(originatorName).toBe('');
   });
 
+  it('should clear an originator that is unavailable for the current journey', () => {
+    component.originators = FINES_MAC_PROSECUTOR_ORIGINATOR_REF_DATA_MOCK;
+    component.form.get('fm_court_details_originator_id')?.setValue('9985');
+    component.form.get('fm_court_details_originator_name')?.setValue('Asylum & Immigration Tribunal');
+
+    component['clearUnmatchedOriginator']();
+
+    expect(component.form.get('fm_court_details_originator_id')?.value).toBeNull();
+    expect(component.form.get('fm_court_details_originator_name')?.value).toBeNull();
+    expect(component.form.get('fm_court_details_originator_id')?.hasError('required')).toBe(true);
+  });
+
+  it('should preserve an originator that is available for the current journey', () => {
+    component.form.get('fm_court_details_originator_id')?.setValue('9985');
+    component.form.get('fm_court_details_originator_name')?.setValue('Asylum & Immigration Tribunal');
+
+    component['clearUnmatchedOriginator']();
+
+    expect(component.form.get('fm_court_details_originator_id')?.value).toBe('9985');
+    expect(component.form.get('fm_court_details_originator_name')?.value).toBe('Asylum & Immigration Tribunal');
+  });
+
   it('should set originator name based on sending court details', () => {
     component['setupCourtDetailsForm']();
     component.form.get('fm_court_details_originator_id')?.setValue('9985');

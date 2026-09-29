@@ -130,6 +130,20 @@ export class FinesMacCourtDetailsFormComponent extends AbstractFormBaseComponent
   }
 
   /**
+   * Clears a stored originator when it is not available in the reference data resolved for the current journey.
+   * This prevents a legacy originator ID from satisfying required validation while its autocomplete is blank.
+   */
+  private clearUnmatchedOriginator(): void {
+    const originatorIdControl = this.form.get('fm_court_details_originator_id');
+    const originatorId = originatorIdControl?.value;
+
+    if (originatorId && !this.originators.refData.some((item) => item.originatorId === Number(originatorId))) {
+      originatorIdControl.setValue(null);
+      this.form.get('fm_court_details_originator_name')?.setValue(null);
+    }
+  }
+
+  /**
    * Sets the originator name from the selected originator ID.
    *
    * This method retrieves the value of the 'fm_court_details_originator_id' form control.
@@ -149,7 +163,8 @@ export class FinesMacCourtDetailsFormComponent extends AbstractFormBaseComponent
   /**
    * Performs the initial setup for the court details form.
    * This method sets up the court details form, initializes error messages,
-   * and repopulates the form with the initial court details data.
+   * repopulates the form with the initial court details data, and clears an originator
+   * that is not available in the reference data for the current journey.
    */
   private initialCourtDetailsSetup(): void {
     const { formData } = this.finesMacStore.courtDetails();
@@ -157,6 +172,7 @@ export class FinesMacCourtDetailsFormComponent extends AbstractFormBaseComponent
     this.setFieldErrors();
     this.setInitialErrorMessages();
     this.rePopulateForm(formData);
+    this.clearUnmatchedOriginator();
   }
 
   public override handleFormSubmit(event: SubmitEvent): void {
