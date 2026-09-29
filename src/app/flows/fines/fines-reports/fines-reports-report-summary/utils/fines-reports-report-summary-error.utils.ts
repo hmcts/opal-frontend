@@ -4,7 +4,7 @@ import { type FinesReportsReportSummaryNormalisedStatus } from '../types/fines-r
 import { isUnusedOptionalValue, mapDisplayText } from './fines-reports-report-summary-display-value.utils';
 
 const ERROR_DESCRIPTION_LABEL = 'Error Description';
-const ERROR_DESCRIPTION_FIELDS = ['error', 'error_description', 'report_generation_error'];
+const ERROR_DESCRIPTION_FIELDS = new Set(['error', 'error_description', 'report_generation_error']);
 
 /**
  * Expands a JSON-encoded array into description rows in the supplied order, without the error names.
@@ -66,7 +66,7 @@ export const mapReportSummaryErrors = (
 
   return (errors ?? []).flatMap((error) =>
     Object.entries(error)
-      .filter(([key, value]) => ERROR_DESCRIPTION_FIELDS.includes(key) && !isUnusedOptionalValue(value))
+      .filter(([key, value]) => ERROR_DESCRIPTION_FIELDS.has(key) && !isUnusedOptionalValue(value))
       .flatMap(
         ([, value]) => parseNamedErrorRows(value) ?? [{ key: ERROR_DESCRIPTION_LABEL, value: mapDisplayText(value) }],
       ),
