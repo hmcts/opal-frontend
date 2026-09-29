@@ -12,17 +12,23 @@ Feature: Adult Youth Account Enquiries View Details
     Background:
       # AC1 – Account setup
       Given I create a "adultOrYouthOnly" draft account with the following details and set status "Publishing Pending" using user "opal-test-10@dev.platform.hmcts.net":
-        | Account_status                          | Submitted                            |
-        | account.defendant.forenames             | John                                 |
-        | account.defendant.surname               | AccDetailSurname{uniq}               |
-        | account.defendant.email_address_1       | John.AccDetailSurname{uniq}@test.com |
-        | account.defendant.telephone_number_home | 02078259314                          |
-        | account.account_type                    | Fine                                 |
-        | account.prosecutor_case_reference       | PCR-AUTO-002                         |
-        | account.collection_order_made           | false                                |
-        | account.collection_order_made_today     | false                                |
-        | account.payment_card_request            | false                                |
-        | account.defendant.dob                   | 2002-05-15                           |
+        | Account_status                                            | Submitted                            |
+        | account.defendant.forenames                               | John                                 |
+        | account.defendant.surname                                 | AccDetailSurname{uniq}               |
+        | account.defendant.email_address_1                         | John.AccDetailSurname{uniq}@test.com |
+        | account.defendant.telephone_number_home                   | 02078259314                          |
+        | account.account_type                                      | Fine                                 |
+        | account.prosecutor_case_reference                         | PCR-AUTO-002                         |
+        | account.collection_order_made                             | false                                |
+        | account.collection_order_made_today                       | false                                |
+        | account.payment_card_request                              | false                                |
+        | account.defendant.dob                                     | 2002-05-15                           |
+        | account.defendant.debtor_detail.employer_company_name     | Accdetail Employer Ltd               |
+        | account.defendant.debtor_detail.employee_reference        | EMPACCDETAIL                         |
+        | account.defendant.debtor_detail.employer_address_line_1   | Employer Street                      |
+        | account.defendant.debtor_detail.employer_post_code        | TE12 3ST                             |
+        | account.defendant.debtor_detail.employer_telephone_number | 02079460000                          |
+        | account.defendant.debtor_detail.employer_email_address    | employer.accdetail@test.com          |
       # AC2 – Search and view account details
       When I search for the account by last name "AccDetailSurname{uniq}" and open the latest result
       Then I should see the page header contains "Mr John ACCDETAILSURNAME{uniqUpper}"

@@ -10,14 +10,21 @@ import { REMOVE_ENFORCEMENT_HOLD_ELEMENTS as ENF_REMOVE_HOLD } from '../../../..
 import { DOM_ELEMENTS as ENF_ACTION_ADD } from '../../../../../component/release1b/fineAccountEnquiry/accountEnquiry/locators/account.enquiry.enforcement-action-add.locators';
 import { COLLECTION_ORDER_CHANGE_ELEMENTS as COLLO } from '../../../../../shared/selectors/account-enquiry/account.enquiry.collection-order-change.locators';
 import { createScopedLogger } from '../../../../../support/utils/log.helper';
+import { CommonActions } from '../common/common.actions';
 
 const log = createScopedLogger('AccountDetailsEnforcementActions');
+
+const ENFORCEMENT_OVERRIDE_SUMMARY_TEXT_ALIASES: Record<string, string[]> = {
+  'Application made for Benefit Deductions (ABDC)': ['Application made for Benefit Deduction (ABDC)'],
+};
 
 /**
  * Actions for the Account Details enforcement tab and add override form.
  */
 export class AccountDetailsEnforcementActions {
   private static readonly DEFAULT_TIMEOUT = 30_000;
+
+  private readonly common = new CommonActions();
 
   /**
    * Normalizes visible text for reliable equality assertions.
@@ -27,6 +34,20 @@ export class AccountDetailsEnforcementActions {
    */
   private normalize(value: string): string {
     return value.replace(/\s+/g, ' ').trim();
+  }
+
+  /**
+   * Asserts an element contains expected text after normalizing whitespace and casing.
+   *
+   * @param selector - Element selector.
+   * @param expected - Expected text.
+   */
+  private assertContainsNormalizedText(selector: string, expected: string): void {
+    this.common.assertElementContainsNormalizedText(
+      selector,
+      expected,
+      AccountDetailsEnforcementActions.DEFAULT_TIMEOUT,
+    );
   }
 
   /**
@@ -655,24 +676,19 @@ export class AccountDetailsEnforcementActions {
     log('assert', 'Enforcement override summary', expected);
 
     if (expected.override) {
-      cy.get(ENF.enforcementOverrideValue, { timeout: AccountDetailsEnforcementActions.DEFAULT_TIMEOUT }).should(
-        'contain.text',
-        expected.override,
+      this.common.assertElementContainsAnyNormalizedText(
+        ENF.enforcementOverrideValue,
+        [expected.override, ...(ENFORCEMENT_OVERRIDE_SUMMARY_TEXT_ALIASES[expected.override] ?? [])],
+        AccountDetailsEnforcementActions.DEFAULT_TIMEOUT,
       );
     }
 
     if (expected.lja) {
-      cy.get(ENF.localJusticeAreaValue, { timeout: AccountDetailsEnforcementActions.DEFAULT_TIMEOUT }).should(
-        'contain.text',
-        expected.lja,
-      );
+      this.assertContainsNormalizedText(ENF.localJusticeAreaValue, expected.lja);
     }
 
     if (expected.enforcer) {
-      cy.get(ENF.enfOverrideEnforcer, { timeout: AccountDetailsEnforcementActions.DEFAULT_TIMEOUT }).should(
-        'contain.text',
-        expected.enforcer,
-      );
+      this.assertContainsNormalizedText(ENF.enfOverrideEnforcer, expected.enforcer);
     }
   }
 

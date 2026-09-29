@@ -9,7 +9,7 @@ Feature: Defendant Company Search And Matches Journeys
     Given I am logged in with email "opal-test@dev.platform.hmcts.net"
     And I clear all approved accounts
 
-  @R1BDrop1UatTechJCDE @JIRA-STORY:PO-712 @JIRA-STORY:PO-706 @JIRA-STORY:PO-707 @JIRA-EPIC:PO-704 @JIRA-TEST-KEY:PO-5291
+  @R1BDrop1UatTechJCDE @R1BDrop1UatTechPreprod @JIRA-STORY:PO-712 @JIRA-STORY:PO-706 @JIRA-STORY:PO-707 @JIRA-EPIC:PO-704 @JIRA-TEST-KEY:PO-5291
   Scenario: Search for a company defendant account and open the matching record
     Given I create a "company" draft account with the following details and set status "Publishing Pending" using user "opal-test-10@dev.platform.hmcts.net":
       | Account_status                      | Submitted                 |
@@ -43,7 +43,9 @@ Feature: Defendant Company Search And Matches Journeys
       | company name | <LEGACY_COMPANY_NAME> |
     Then I see the Companies search results by tab switch:
       | Account | <LEGACY_COMPANY_ACCOUNT_NUMBER> |
-    When I open the latest matching result from the Companies search results
+    When I open the matching result from the search results:
+      | Account | <LEGACY_COMPANY_ACCOUNT_NUMBER> |
+      | Company | <LEGACY_COMPANY_NAME>           |
     Then I should see the account header contains "<LEGACY_COMPANY_HEADER>"
     And I validate the legacy company header and At a glance tab using fixture "<LEGACY_COMPANY_VALIDATION_FIXTURE>"
     When I go to the Defendant tab and validate the legacy company using fixture "<LEGACY_COMPANY_VALIDATION_FIXTURE>"
@@ -52,10 +54,10 @@ Feature: Defendant Company Search And Matches Journeys
     Examples:
       | LEGACY_COMPANY_NAME | LEGACY_COMPANY_ACCOUNT_NUMBER | LEGACY_COMPANY_HEADER | LEGACY_COMPANY_VALIDATION_FIXTURE               |
       | OPALTEST            | 26000471W                     | OPALTEST              | accountEnquiry/legacyCompany/jcde/opaltest.json |
-    @R1BDrop1UatTechPreprod @skip
+    @R1BDrop1UatTechPreprod
     Examples:
       | LEGACY_COMPANY_NAME      | LEGACY_COMPANY_ACCOUNT_NUMBER | LEGACY_COMPANY_HEADER   | LEGACY_COMPANY_VALIDATION_FIXTURE                          |
-      | TEMPLATE_PREPROD_COMPANY | TEMPLATE_PREPROD_ACCOUNT      | TEMPLATE_PREPROD_HEADER | accountEnquiry/legacyCompany/preprod/company-template.json |
+      | JFtest TFO Company       | 24000209J                     | JFtest TFO Company      | accountEnquiry/legacyCompany/preprod/jftest-tfo-company.json |
 
   @LegacyData @JIRA-STORY:PO-712 @JIRA-STORY:PO-706 @JIRA-STORY:PO-707 @JIRA-EPIC:PO-704 @JIRA-DEFECT:PO-10245
   Scenario Outline: Search for a company defendant account from legacy data and validate the matching record
@@ -73,13 +75,15 @@ Feature: Defendant Company Search And Matches Journeys
       | Ref            | <LEGACY_COMPANY_REF>            |
       | Enf            | <LEGACY_COMPANY_ENF>            |
       | Balance        | <LEGACY_COMPANY_BALANCE>        |
-    When I open the latest matching result from the search results
+    When I open the matching result from the search results:
+      | Account | <LEGACY_COMPANY_ACCOUNT_NUMBER> |
+      | Company | <LEGACY_COMPANY_NAME>           |
     Then I should see the account header contains "<LEGACY_COMPANY_NAME>"
     @R1BDrop1UatTechJCDE @JIRA-TEST-KEY:PO-10326
     Examples:
       | LEGACY_COMPANY_ACCOUNT_NUMBER | LEGACY_COMPANY_NAME         | LEGACY_COMPANY_ALIASES                                                                              | LEGACY_COMPANY_ADR_LINE_1 | LEGACY_COMPANY_POSTCODE | BUSINESS_UNIT | LEGACY_COMPANY_REF    | LEGACY_COMPANY_ENF | LEGACY_COMPANY_BALANCE |
       | 24000050E                     | Company A Chocolate Limited | The Alias Company A The Alias Company B The Alias Company C The Alias Company D The Alias Company E | Company address line 001  | EN51 1RL                | West London   | CA-Company-Master1-1A | NOENF              | -£600.01               |
-    @R1BDrop1UatTechPreprod @skip
+    @R1BDrop1UatTechPreprod
     Examples:
       | LEGACY_COMPANY_ACCOUNT_NUMBER | LEGACY_COMPANY_NAME | LEGACY_COMPANY_ALIASES | LEGACY_COMPANY_ADR_LINE_1 | LEGACY_COMPANY_POSTCODE | BUSINESS_UNIT | LEGACY_COMPANY_REF | LEGACY_COMPANY_ENF | LEGACY_COMPANY_BALANCE |
-      | placeholder                   | placeholder         | placeholder            | placeholder               | placeholder             | placeholder   | placeholder        | placeholder        | placeholder            |
+      | 24000209J                     | JFtest TFO Company  | —                      | 123 asdf                  | postcode                | West London   | —                  | —                  | -£123.99               |

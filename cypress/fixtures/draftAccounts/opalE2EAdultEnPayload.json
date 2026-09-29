@@ -289,7 +289,13 @@
         }
       ]
     },
-    "account_notes": null
+    "account_notes": [
+      {
+        "account_note_serial": 2,
+        "account_note_text": "Temp notes field with symbols ! @ # $ % ^ & * ( ) _ + - = [ ] ; : ' , . / ? < > ~ and spaced   words\n\nSecond line after a blank line",
+        "note_type": "AA"
+      }
+    ]
   },
   "account_type": "Fine",
   "account_status": "Submitted",
