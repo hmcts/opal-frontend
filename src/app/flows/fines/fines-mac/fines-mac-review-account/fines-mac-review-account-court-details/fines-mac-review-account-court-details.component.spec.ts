@@ -270,6 +270,25 @@ describe('FinesMacReviewAccountCourtDetailsComponent', () => {
     expect(component.sendingCourt).toBe('Persisted originator');
   });
 
+  it('should use the stored originator name for a conditional caution when release-1a-1.1 is disabled and neither reference dataset contains the originator', () => {
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    vi.spyOn<any, any>(component, 'getEnforcementCourt').mockImplementation(() => {});
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    vi.spyOn<any, any>(component, 'getSendingCourt').mockReturnValue(null);
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    vi.spyOn<any, any>(component, 'getProsecutor').mockReturnValue(null);
+    component.release1a1_1Enabled = false;
+    component.courtDetails.fm_court_details_originator_id = '9999';
+    component.courtDetails.fm_court_details_originator_name = 'Persisted originator';
+    component.accountType = FINES_ACCOUNT_TYPES['Conditional Caution'];
+
+    component['getCourtDetailsData']();
+
+    expect(component['getSendingCourt']).toHaveBeenCalledWith('9999');
+    expect(component['getProsecutor']).toHaveBeenCalledTimes(1);
+    expect(component.sendingCourt).toBe('Persisted originator');
+  });
+
   it('should get court data and set sendingCourt from getCourtDetailsData for a non-fixed penalty account', () => {
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     vi.spyOn<any, any>(component, 'getEnforcementCourt').mockImplementation(() => {});
