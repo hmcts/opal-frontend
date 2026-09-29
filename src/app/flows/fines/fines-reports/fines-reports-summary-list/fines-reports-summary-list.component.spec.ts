@@ -9,6 +9,8 @@ import { FINES_REPORT_SUMMARY_LIST_REPORT_CONFIGURATION } from './constants/fine
 import { OPAL_FINES_BUSINESS_UNIT_REF_DATA_MOCK } from '@services/fines/opal-fines-service/mocks/opal-fines-business-unit-ref-data.mock';
 import { OpalFines } from '@services/fines/opal-fines-service/opal-fines.service';
 import { AlphagovAccessibleAutocompleteComponent } from '@hmcts/opal-frontend-common/components/alphagov/alphagov-accessible-autocomplete';
+import { GlobalStore } from '@hmcts/opal-frontend-common/stores/global';
+import { OPAL_USER_STATE_MOCK } from '@hmcts/opal-frontend-common/services/opal-user-service/mocks';
 import { IOpalFinesReportInstancesResponse } from '@services/fines/opal-fines-service/interfaces/opal-fines-report-instances-response.interface';
 import { IOpalFinesReport } from '@services/fines/opal-fines-service/interfaces/opal-fines-report.interface';
 import { FinesReportsSummaryListStore } from './stores/fines-reports-summary-list.store';
@@ -111,7 +113,12 @@ describe('FinesReportsSummaryListComponent', () => {
       options.useParentRoute === false && !options.omitRouteParams ? { [childParamName]: currentReportId } : {},
     );
     const routeData: Record<string, unknown> = {
-      reportMetadata: currentReportId === paymentsReportId ? mockPaymentsReportMetadata : mockReportMetadata,
+      reportMetadata:
+        currentReportId === yourReportsId
+          ? null
+          : currentReportId === paymentsReportId
+            ? mockPaymentsReportMetadata
+            : mockReportMetadata,
     };
 
     if (!options.omitBusinessUnits) {
@@ -158,6 +165,12 @@ describe('FinesReportsSummaryListComponent', () => {
           provide: OpalFines,
           useValue: mockOpalFines,
         },
+        {
+          provide: GlobalStore,
+          useValue: {
+            userState: () => OPAL_USER_STATE_MOCK,
+          },
+        },
       ],
     }).compileComponents();
 
@@ -190,13 +203,16 @@ describe('FinesReportsSummaryListComponent', () => {
     expect(fixture.nativeElement.querySelector('h1')?.textContent?.trim()).toBe(heading);
   });
 
-  it('should render the static Your reports content', async () => {
+  it('should render the Your reports summary list without a create report button', async () => {
     const { fixture } = await setup(yourReportsId);
     const heading = FINES_REPORT_SUMMARY_LIST_REPORT_CONFIGURATION.find(
       (config) => config.id === yourReportsId,
     )?.heading;
 
     expect(fixture.nativeElement.querySelector('h1')?.textContent?.trim()).toBe(heading);
+    expect(fixture.nativeElement.querySelector('form')).toBeTruthy();
+    expect(fixture.nativeElement.textContent).toContain('Operational report (by enforcement) - CLAMPO - Detailed');
+    expect(fixture.nativeElement.querySelector('#create-report-button')).toBeNull();
   });
 
   it('should return empty heading and hide create report button for unknown report routes', async () => {
@@ -379,6 +395,21 @@ describe('FinesReportsSummaryListComponent', () => {
         report_id: paymentsReportId,
       }),
     );
+  });
+
+  it('should request current user report instances for Your reports', async () => {
+    const { component } = await setup(yourReportsId);
+
+    component.filtersForm.controls.businessUnit.setValue('67');
+    component.onRefresh();
+
+    expect(mockOpalFines.getReportInstances).toHaveBeenCalledWith(
+      expect.objectContaining({
+        user_id: OPAL_USER_STATE_MOCK.user_id,
+        business_units: ['67'],
+      }),
+    );
+    expect(mockOpalFines.getReportInstances.mock.calls[0][0]).not.toHaveProperty('report_id');
   });
 
   it('should fall back to configured create report visibility when metadata is unavailable', async () => {

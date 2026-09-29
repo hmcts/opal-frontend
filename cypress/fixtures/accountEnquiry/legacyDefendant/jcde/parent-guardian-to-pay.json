@@ -25,7 +25,7 @@
       "start date": "11 May 2026"
     },
     "enforcementStatus": {
-      "collection order": "NO COLLECTION ORDER",
+      "collection order": "No Collection Order",
       "days in default": "200 days",
       "date of last movement": "02 June 2026"
     },
@@ -61,7 +61,7 @@
   },
   "enforcementTab": {
     "overview": {
-      "collection order status": "NO COLLECTION ORDER",
+      "collection order status": "No Collection Order",
       "days in default": "200 days"
     }
   },

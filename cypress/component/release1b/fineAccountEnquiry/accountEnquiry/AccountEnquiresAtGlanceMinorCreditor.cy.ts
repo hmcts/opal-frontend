@@ -146,6 +146,38 @@ describe('Minor Creditor Account Summary - At a Glance Tab', () => {
   );
 
   it(
+    'PO-10682: displays the organisation name for an associated organisation defendant and preserves its account link',
+    { tags: buildTags('@JIRA-STORY:PO-10682', MINOR_CREDITOR_SUMMARY_EPIC_TAG) },
+    () => {
+      const header = createIndividualMinorCreditorHeaderMock();
+      const atAGlance = createIndividualMinorCreditorAtAGlanceMock();
+      const organisationName = 'The Empire Ltd';
+
+      atAGlance.defendant = {
+        ...atAGlance.defendant!,
+        organisation: true,
+        organisation_name: organisationName,
+      };
+
+      setupMinorCreditorAtAGlance(USER_STATE_MOCK_NO_PERMISSION, header, atAGlance);
+
+      cy.contains(DOM.fieldHeading, DOM.labelDefendantName)
+        .next(DOM.fieldValue)
+        .invoke('text')
+        .then((text) => {
+          expect(normalizeText(text)).to.eq(organisationName);
+        });
+
+      cy.contains(DOM.fieldHeading, DOM.labelDefendantAccount)
+        .next(DOM.fieldValue)
+        .find(DOM.linkText)
+        .should('have.text', 'ACC-654321')
+        .and('have.attr', 'href', '/fines/account/defendant/123456789/details')
+        .and('have.attr', 'target', '_blank');
+    },
+  );
+
+  it(
     'AC2b, AC4a: shows only the minor creditor and payout status sections when no defendant is associated, and shows BACS as not provided',
     {
       tags: [...buildTags(MINOR_CREDITOR_SUMMARY_STORY_TAG, MINOR_CREDITOR_SUMMARY_EPIC_TAG), '@JIRA-TEST-KEY:PO-4004'],

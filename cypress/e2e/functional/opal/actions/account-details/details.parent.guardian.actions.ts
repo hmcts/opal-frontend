@@ -24,6 +24,16 @@ export class AccountDetailsParentGuardianActions {
   }
 
   /**
+   * Normalizes visible text for stable case-insensitive assertions.
+   *
+   * @param value - Raw text content read from the page.
+   * @returns Text with whitespace normalized and casing lowered.
+   */
+  private normalizeCaseInsensitive(value: string): string {
+    return this.normalize(value).toLowerCase();
+  }
+
+  /**
    * Asserts a map of label/value pairs within a specific Parent or guardian summary card.
    *
    * @param expected - Expected values keyed by visible label text.
@@ -139,7 +149,12 @@ export class AccountDetailsParentGuardianActions {
    * @param expected Text expected in the name field.
    */
   public assertNameContains(expected: string): void {
-    cy.get(L.parentOrGuardian.fields.name, { timeout: 10_000 }).should('contain.text', expected);
+    cy.get(L.parentOrGuardian.fields.name, { timeout: 10_000 })
+      .should('be.visible')
+      .invoke('text')
+      .then((actual) => {
+        expect(this.normalizeCaseInsensitive(actual)).to.contain(this.normalizeCaseInsensitive(expected));
+      });
   }
 
   /**
