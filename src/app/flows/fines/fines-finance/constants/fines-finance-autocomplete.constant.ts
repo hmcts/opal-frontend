@@ -1,0 +1,3 @@
+export const FINES_FINANCE_INBOUND_FILES_ALL_BUSINESS_UNITS = 'All business units';
+export const FINES_FINANCE_INBOUND_FILES_ALL_FILE_SOURCES = 'All sources';
+export const FINES_FINANCE_INBOUND_FILES_ALL_FILE_TYPES = 'All types';
