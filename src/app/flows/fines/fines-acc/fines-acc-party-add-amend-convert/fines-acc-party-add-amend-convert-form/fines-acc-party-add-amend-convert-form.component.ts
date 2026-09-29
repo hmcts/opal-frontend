@@ -429,14 +429,8 @@ export class FinesAccPartyAddAmendConvertFormComponent
         this.fieldErrors['facc_party_add_amend_convert_forenames_parent_guardian'];
       this.fieldErrors['facc_party_add_amend_convert_surname'] =
         this.fieldErrors['facc_party_add_amend_convert_surname_parent_guardian'];
-      const addressLine3Errors = this.fieldErrors['facc_party_add_amend_convert_address_line_3'];
-      this.fieldErrors['facc_party_add_amend_convert_address_line_3'] = {
-        ...addressLine3Errors,
-        maxlength: {
-          ...addressLine3Errors['maxlength'],
-          message: 'Address line 3 must be 13 characters or fewer',
-        },
-      };
+      this.fieldErrors['facc_party_add_amend_convert_address_line_3'] =
+        this.fieldErrors['facc_party_add_amend_convert_address_line_3_parent_guardian'];
     }
     this.yesterday = this.dateService.getPreviousDate({ days: 1 });
     this.dateOfBirthListener();
