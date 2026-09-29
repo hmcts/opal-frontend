@@ -1471,6 +1471,13 @@ export class ManualAccountCreationFlow {
   }
 
   /**
+   * Asserts that no prosecutor lookup request was made.
+   */
+  assertNoProsecutorRequestsMade(): void {
+    this.requestMonitor.assertNoProsecutorRequestsMade();
+  }
+
+  /**
    * Asserts that no local justice area lookup request was made.
    */
   assertNoLocalJusticeAreasRequestsMade(): void {

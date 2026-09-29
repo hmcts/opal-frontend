@@ -44,6 +44,15 @@ export class ManualAccountRequestMonitorActions {
   }
 
   /**
+   * Asserts that no prosecutor lookup request was made.
+   */
+  assertNoProsecutorRequestsMade(): void {
+    this.getCapturedRequests(ManualAccountRequestMonitorActions.PROSECUTORS_ALIAS).then((requests) => {
+      expect(requests, 'captured prosecutor requests').to.have.length(0);
+    });
+  }
+
+  /**
    * Asserts that no local justice area lookup request was made.
    */
   assertNoLocalJusticeAreasRequestsMade(): void {

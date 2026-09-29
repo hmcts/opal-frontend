@@ -1472,6 +1472,13 @@ Then('a prosecutor request should be made', () => {
 });
 
 /**
+ * @step Asserts that no prosecutor lookup request was made.
+ */
+Then('no prosecutor requests should be made', () => {
+  flow().assertNoProsecutorRequestsMade();
+});
+
+/**
  * @step Asserts that no local justice area lookup request was made.
  */
 Then('no local justice area requests should be made', () => {
