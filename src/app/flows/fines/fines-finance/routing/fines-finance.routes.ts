@@ -8,6 +8,7 @@ import { routePermissionsGuard } from '@hmcts/opal-frontend-common/guards/route-
 import { authGuard } from '@hmcts/opal-frontend-common/guards/auth';
 import { featureFlagRedirectGuard } from '@hmcts/opal-frontend-common/guards/feature-flag';
 import { RELEASE_1C_BANKING_INTERFACES_FEATURE_FLAG } from '../../constants/release-feature-flags.constant';
+import { fetchBusinessUnitsResolver } from '@routing/fines/resolvers/fetch-business-units-resolver/fetch-business-units.resolver';
 
 const financeRootPermissionIds = FINES_PERMISSIONS;
 
@@ -33,7 +34,7 @@ export const routing: Routes = [
       routePermissionId: [financeRootPermissionIds['view-interface-files']],
       title: FINES_FINANCE_ROUTING_TITLES.children.inbound,
     },
-    resolve: { title: TitleResolver },
+    resolve: { title: TitleResolver, businessUnits: fetchBusinessUnitsResolver },
   },
   {
     path: `${FINES_FINANCE_ROUTING_PATHS.children.outbound}/${FINES_FINANCE_ROUTING_PATHS.children.search}`,

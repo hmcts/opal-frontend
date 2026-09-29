@@ -10,6 +10,7 @@ import { FINES_PERMISSIONS } from '../../../../constants/fines-permissions.const
 import { authGuard } from '@hmcts/opal-frontend-common/guards/auth';
 import { routePermissionsGuard } from '@hmcts/opal-frontend-common/guards/route-permissions';
 import { release1cBankingInterfacesFeatureFlagGuard, routing } from './fines-finance.routes';
+import { fetchBusinessUnitsResolver } from '@routing/fines/resolvers/fetch-business-units-resolver/fetch-business-units.resolver';
 describe('fines finance routes', () => {
   it('should redirect the Finance root to the dashboard', () => {
     const rootRoute = routing.find((route) => route.path === '');
@@ -23,25 +24,35 @@ describe('fines finance routes', () => {
       title: FINES_FINANCE_ROUTING_TITLES.children.inbound,
       routePermissionId: FINES_PERMISSIONS['view-interface-files'],
       component: FinesFinanceInboundFilesComponent,
+      expectedResolvers: { title: TitleResolver, businessUnits: fetchBusinessUnitsResolver },
     },
     {
       path: `${FINES_FINANCE_ROUTING_PATHS.children.outbound}/${FINES_FINANCE_ROUTING_PATHS.children.search}`,
       title: FINES_FINANCE_ROUTING_TITLES.children.outbound,
       routePermissionId: FINES_PERMISSIONS['view-interface-files'],
       component: FinesFinanceOutboundFilesComponent,
+      expectedResolvers: { title: TitleResolver },
     },
     {
       path: `${FINES_FINANCE_ROUTING_PATHS.children.variantBankingFiles}/${FINES_FINANCE_ROUTING_PATHS.children.upload}`,
       title: FINES_FINANCE_ROUTING_TITLES.children.upload,
       routePermissionId: FINES_PERMISSIONS['create-interface-files'],
       component: FinesFinanceUploadVariantBankingFilesComponent,
+      expectedResolvers: { title: TitleResolver },
     },
-  ])('should title and lazy-load the $title route', async ({ path, title, routePermissionId, component }) => {
-    const route = routing.find((routeItem) => routeItem.path === path);
+  ])(
+    'should title and lazy-load the $title route',
+    async ({ path, title, routePermissionId, component, expectedResolvers }) => {
+      const route = routing.find((routeItem) => routeItem.path === path);
 
-    expect(route?.data).toEqual({ title, routePermissionId: [routePermissionId] });
-    expect(route?.resolve).toEqual({ title: TitleResolver });
-    expect(route?.canActivate).toEqual([authGuard, routePermissionsGuard, release1cBankingInterfacesFeatureFlagGuard]);
-    await expect(route?.loadComponent?.()).resolves.toBe(component);
-  });
+      expect(route?.data).toEqual({ title, routePermissionId: [routePermissionId] });
+      expect(route?.resolve).toEqual(expectedResolvers);
+      expect(route?.canActivate).toEqual([
+        authGuard,
+        routePermissionsGuard,
+        release1cBankingInterfacesFeatureFlagGuard,
+      ]);
+      await expect(route?.loadComponent?.()).resolves.toBe(component);
+    },
+  );
 });
