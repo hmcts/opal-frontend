@@ -131,9 +131,11 @@ export class FinesMacReviewAccountCourtDetailsComponent implements OnInit {
     if (this.accountType === this.accountTypesKeys['Fixed Penalty']) {
       this.issuingAuthority = this.getProsecutor() ?? this.getSendingCourt(originatorId) ?? storedOriginatorName;
     } else if (this.accountType === this.accountTypesKeys['Conditional Caution']) {
-      this.sendingCourt = this.release1a1_1Enabled
-        ? (this.getProsecutor() ?? this.getSendingCourt(originatorId) ?? storedOriginatorName)
-        : (this.getSendingCourt(originatorId) ?? this.getProsecutor() ?? storedOriginatorName);
+      if (this.release1a1_1Enabled) {
+        this.sendingCourt = this.getProsecutor() ?? this.getSendingCourt(originatorId) ?? storedOriginatorName;
+      } else {
+        this.sendingCourt = this.getSendingCourt(originatorId) ?? this.getProsecutor() ?? storedOriginatorName;
+      }
     } else {
       this.sendingCourt = this.getSendingCourt(originatorId);
     }
