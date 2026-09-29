@@ -270,11 +270,51 @@ describe('FinesReportsReportSummaryComponent', () => {
     const pageText = fixture.nativeElement.textContent;
 
     expect(pageText).toContain('Errors');
-    expect(pageText).toContain('Report generation error');
+    expect(pageText).toContain('Error Description');
     expect(pageText).toContain('Legacy report timed out');
-    expect(pageText).toContain('Report service');
-    expect(pageText).toContain('No response from reporting engine');
+    expect(pageText).not.toContain('Report service');
+    expect(pageText).not.toContain('No response from reporting engine');
     expect(pageText).toContain('Reporting service connection was reset');
+  });
+
+  it('should render JSON-encoded error descriptions as separate readable rows', async () => {
+    const reportSummary = mapFinesReportsReportInstanceToViewModel(
+      {
+        ...OPAL_FINES_REPORT_INSTANCE_MOCK,
+        status: { code: FINES_REPORTS_REPORT_SUMMARY_STATUSES.error, display_name: 'Error' },
+        errors: [
+          {
+            error: JSON.stringify([
+              { name: 'Report query failed.', value: 'The report could not be generated for QA testing.' },
+              { name: 'Account data unavailable.', value: 'One or more account records could not be read.' },
+            ]),
+            operationId: 'REPORT-GENERATION-ERROR',
+          },
+        ],
+      },
+      null,
+      '',
+      dateService,
+    );
+    const { fixture } = await setup(enforcementReportTypeId, reportSummary);
+
+    fixture.detectChanges();
+
+    const errorsSection: HTMLElement = fixture.nativeElement.querySelector('#reportSummaryErrors');
+    const rows = Array.from(errorsSection.querySelectorAll('.govuk-summary-list__row')).map((row) => ({
+      key: row.querySelector('.govuk-summary-list__key')?.textContent?.trim(),
+      value: row.querySelector('.govuk-summary-list__value')?.textContent?.trim(),
+    }));
+
+    expect(rows).toEqual([
+      { key: 'Error Description', value: 'The report could not be generated for QA testing.' },
+      { key: 'Error Description', value: 'One or more account records could not be read.' },
+    ]);
+    expect(errorsSection.textContent).not.toContain('[{"name":');
+    expect(errorsSection.textContent).not.toContain('Report query failed.');
+    expect(errorsSection.textContent).not.toContain('Account data unavailable.');
+    expect(errorsSection.textContent).not.toContain('Operation ID');
+    expect(errorsSection.textContent).not.toContain('REPORT-GENERATION-ERROR');
   });
 
   it('should render without a local error banner when no report summary data is resolved', async () => {

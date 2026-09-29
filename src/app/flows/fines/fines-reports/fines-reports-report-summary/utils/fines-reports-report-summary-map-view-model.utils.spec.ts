@@ -109,7 +109,7 @@ describe('mapFinesReportsReportInstanceToViewModel', () => {
       dateService,
     );
 
-    expect(result.errorRows).toEqual([{ key: 'Report generation error', value: 'Report timed out' }]);
+    expect(result.errorRows).toEqual([{ key: 'Error Description', value: 'Report timed out' }]);
   });
 
   it('uses the report ID when the report type parameter is missing or unsupported', () => {
@@ -198,7 +198,7 @@ describe('mapFinesReportsReportInstanceToViewModel', () => {
     expect(result.errorRows).toEqual([]);
   });
 
-  it('treats an unknown status as an error and preserves useful error details in order', () => {
+  it('treats an unknown status as an error and preserves only descriptions in order', () => {
     const result = mapFinesReportsReportInstanceToViewModel(
       {
         ...OPAL_FINES_REPORT_INSTANCE_MOCK,
@@ -216,10 +216,8 @@ describe('mapFinesReportsReportInstanceToViewModel', () => {
     expect(result.general.status).toBe('Error');
     expect(result.general.numberOfRecords).toBeNull();
     expect(result.errorRows).toEqual([
-      { key: 'Error description', value: 'Failed' },
-      { key: 'Operation ID', value: 'job-123' },
-      { key: 'additional_details', value: '{"message":"Connection closed"}' },
-      { key: 'Error description', value: 'Retry later' },
+      { key: 'Error Description', value: 'Failed' },
+      { key: 'Error Description', value: 'Retry later' },
     ]);
   });
 });

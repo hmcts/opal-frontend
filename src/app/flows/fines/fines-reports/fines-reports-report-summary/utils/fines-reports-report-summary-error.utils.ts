@@ -3,31 +3,54 @@ import { type IFinesReportsReportSummaryViewModel } from '../interfaces/fines-re
 import { type FinesReportsReportSummaryNormalisedStatus } from '../types/fines-reports-report-summary-normalised-status.type';
 import { isUnusedOptionalValue, mapDisplayText } from './fines-reports-report-summary-display-value.utils';
 
-/**
- * Gives backend error keys the user-facing labels agreed for the Errors section.
- */
-const ERROR_PARAMETER_LABEL_OVERRIDES: Record<string, string> = {
-  error: 'Error description',
-  error_description: 'Error description',
-  operationId: 'Operation ID',
-  report_generation_error: 'Report generation error',
-  report_service: 'Report service',
-};
+const ERROR_DESCRIPTION_LABEL = 'Error Description';
+const ERROR_DESCRIPTION_FIELDS = ['error', 'error_description', 'report_generation_error'];
 
 /**
- * Looks up the friendly label for a report-generation error key.
+ * Expands a JSON-encoded array into description rows in the supplied order, without the error names.
  *
- * @param key - The report-generation error field name.
- * @returns The configured friendly label, or the original key when no label is configured.
+ * @param value - The error field value received from the API.
+ * @returns The named error rows, or null when the original field value should be displayed instead.
  */
-const getErrorParameterLabel = (key: string): string => {
-  return ERROR_PARAMETER_LABEL_OVERRIDES[key] ?? key;
+const parseNamedErrorRows = (value: unknown): IFinesReportsReportSummaryViewModel['errorRows'] | null => {
+  if (typeof value !== 'string') {
+    return null;
+  }
+
+  let parsed: unknown;
+  try {
+    parsed = JSON.parse(value);
+  } catch {
+    return null;
+  }
+
+  if (!Array.isArray(parsed) || parsed.length === 0) {
+    return null;
+  }
+
+  const entries: unknown[] = parsed;
+  const rows: IFinesReportsReportSummaryViewModel['errorRows'] = [];
+  for (const entry of entries) {
+    if (
+      typeof entry !== 'object' ||
+      entry === null ||
+      !('name' in entry) ||
+      typeof entry.name !== 'string' ||
+      !('value' in entry) ||
+      typeof entry.value !== 'string'
+    ) {
+      return null;
+    }
+
+    rows.push({ key: ERROR_DESCRIPTION_LABEL, value: entry.value });
+  }
+
+  return rows;
 };
 
 /**
- * Maps error values only when a report instance has the Error status. Each API error is an object
- * because one generation failure can carry several named values. Flattening those objects gives
- * the template simple key/value rows while retaining the received error and property sequence.
+ * Maps error descriptions only when a report instance has the Error status. JSON-encoded name/value
+ * arrays become individual description rows. Operation IDs and other metadata are excluded.
  *
  * @param errors - The API error objects, or null or undefined when no errors are supplied.
  * @param status - The normalised report lifecycle status.
@@ -43,7 +66,9 @@ export const mapReportSummaryErrors = (
 
   return (errors ?? []).flatMap((error) =>
     Object.entries(error)
-      .filter(([, value]) => !isUnusedOptionalValue(value))
-      .map(([key, value]) => ({ key: getErrorParameterLabel(key), value: mapDisplayText(value) })),
+      .filter(([key, value]) => ERROR_DESCRIPTION_FIELDS.includes(key) && !isUnusedOptionalValue(value))
+      .flatMap(
+        ([, value]) => parseNamedErrorRows(value) ?? [{ key: ERROR_DESCRIPTION_LABEL, value: mapDisplayText(value) }],
+      ),
   );
 };
