@@ -135,10 +135,10 @@ Feature: Defendant Adult Youth Search And Matches Journeys
     Examples:
       | LEGACY_INDIVIDUAL_LAST_NAME | LEGACY_INDIVIDUAL_ACCOUNT_NUMBER | LEGACY_INDIVIDUAL_SUMMARY_HEADER | BUSINESS_UNIT | LEGACY_INDIVIDUAL_VALIDATION_FIXTURE                        |
       | AdultOpenPaidWO             | 25000184C                        | Mr Arne ADULTOPENPAIDWO          | West London   | accountEnquiry/legacyDefendant/jcde/adult-open-paid-wo.json |
-    @R1BDrop1UatTechPreprod @skip
+    @R1BDrop1UatTechPreprod
     Examples:
       | LEGACY_INDIVIDUAL_LAST_NAME | LEGACY_INDIVIDUAL_ACCOUNT_NUMBER | LEGACY_INDIVIDUAL_SUMMARY_HEADER | BUSINESS_UNIT | LEGACY_INDIVIDUAL_VALIDATION_FIXTURE                         |
-      | Jones                       | 25000185D                        | LEGACY JONES                     | West London   | accountEnquiry/legacyDefendant/preprod/individual-jones.json |
+      | Kappa                       | 24000093L                        | Mr Kelvin Kappa JF-TFO-K         | West London   | accountEnquiry/legacyDefendant/preprod/individual-kappa.json |
 
   @LegacyData @JIRA-STORY:PO-705 @JIRA-STORY:PO-706 @JIRA-STORY:PO-717 @JIRA-EPIC:PO-704
   # Minimum data set required: one individual defendant account with a unique searchable date of birth LEGACY_INDIVIDUAL_DATE_OF_BIRTH (DD/MM/YYYY), prosecutor case reference LEGACY_INDIVIDUAL_DOB_REFERENCE, and summary header text LEGACY_INDIVIDUAL_DOB_SUMMARY_HEADER.
@@ -151,7 +151,7 @@ Feature: Defendant Adult Youth Search And Matches Journeys
     Then I see the Search results page
     And I see the Individuals search results:
       | Account       | <LEGACY_INDIVIDUAL_ACCOUNT_NUMBER> |
-      | Date of birth | 09 Sep 1999                        |
+      | Date of birth | <LEGACY_INDIVIDUAL_EXPECTED_DOB>   |
     When I open the matching result from the search results:
       | Business unit | <BUSINESS_UNIT> |
     Then I should see the account summary header contains "<LEGACY_INDIVIDUAL_DOB_SUMMARY_HEADER>"
@@ -163,12 +163,12 @@ Feature: Defendant Adult Youth Search And Matches Journeys
     And I go to the History and notes tab and validate the legacy defendant using fixture "<LEGACY_INDIVIDUAL_VALIDATION_FIXTURE>"
     @R1BDrop1UatTechJCDE @JIRA-TEST-KEY:PO-10329
     Examples:
-      | LEGACY_INDIVIDUAL_LAST_NAME_PARTIAL | LEGACY_INDIVIDUAL_DATE_OF_BIRTH | LEGACY_INDIVIDUAL_ACCOUNT_NUMBER | LEGACY_INDIVIDUAL_DOB_SUMMARY_HEADER | BUSINESS_UNIT | LEGACY_INDIVIDUAL_VALIDATION_FIXTURE                        |
-      | AdultO                              | 09/09/1999                      | 25000184C                        | Mr Arne ADULTOPENPAIDWO              | West London   | accountEnquiry/legacyDefendant/jcde/adult-open-paid-wo.json |
-    @R1BDrop1UatTechPreprod @skip
+      | LEGACY_INDIVIDUAL_LAST_NAME_PARTIAL | LEGACY_INDIVIDUAL_DATE_OF_BIRTH | LEGACY_INDIVIDUAL_EXPECTED_DOB | LEGACY_INDIVIDUAL_ACCOUNT_NUMBER | LEGACY_INDIVIDUAL_DOB_SUMMARY_HEADER | BUSINESS_UNIT | LEGACY_INDIVIDUAL_VALIDATION_FIXTURE                        |
+      | AdultO                              | 09/09/1999                      | 09 Sep 1999                    | 25000184C                        | Mr Arne ADULTOPENPAIDWO              | West London   | accountEnquiry/legacyDefendant/jcde/adult-open-paid-wo.json |
+    @R1BDrop1UatTechPreprod
     Examples:
-      | LEGACY_INDIVIDUAL_LAST_NAME_PARTIAL | LEGACY_INDIVIDUAL_DATE_OF_BIRTH | LEGACY_INDIVIDUAL_ACCOUNT_NUMBER | LEGACY_INDIVIDUAL_DOB_SUMMARY_HEADER | BUSINESS_UNIT | LEGACY_INDIVIDUAL_VALIDATION_FIXTURE                         |
-      | Adult                               | 01/01/1990                      | 25000185D                        | LEGACY JONES                         | West London   | accountEnquiry/legacyDefendant/preprod/individual-jones.json |
+      | LEGACY_INDIVIDUAL_LAST_NAME_PARTIAL | LEGACY_INDIVIDUAL_DATE_OF_BIRTH | LEGACY_INDIVIDUAL_EXPECTED_DOB | LEGACY_INDIVIDUAL_ACCOUNT_NUMBER | LEGACY_INDIVIDUAL_DOB_SUMMARY_HEADER | BUSINESS_UNIT | LEGACY_INDIVIDUAL_VALIDATION_FIXTURE                         |
+      | Kappa                               | 01/02/2000                      | 01 Feb 2000                    | 24000093L                        | Mr Kelvin Kappa JF-TFO-K             | West London   | accountEnquiry/legacyDefendant/preprod/individual-kappa.json |
 
   @LegacyData @JIRA-STORY:PO-705 @JIRA-STORY:PO-706 @JIRA-STORY:PO-717 @JIRA-EPIC:PO-704
   # Minimum data set required: one individual defendant account with searchable national insurance number LEGACY_INDIVIDUAL_NI_NUMBER, prosecutor case reference LEGACY_INDIVIDUAL_NI_REFERENCE, and summary header text LEGACY_INDIVIDUAL_NI_SUMMARY_HEADER.
@@ -193,10 +193,10 @@ Feature: Defendant Adult Youth Search And Matches Journeys
     Examples:
       | LEGACY_INDIVIDUAL_NI_NUMBER | LEGACY_INDIVIDUAL_ACCOUNT_NUMBER | LEGACY_INDIVIDUAL_NI_SUMMARY_HEADER | BUSINESS_UNIT | LEGACY_INDIVIDUAL_VALIDATION_FIXTURE                        |
       | NI 19 99 09 A               | 25000184C                        | Mr Arne ADULTOPENPAIDWO             | West London   | accountEnquiry/legacyDefendant/jcde/adult-open-paid-wo.json |
-    @R1BDrop1UatTechPreprod @skip
+    @R1BDrop1UatTechPreprod
     Examples:
-      | LEGACY_INDIVIDUAL_NI_NUMBER | LEGACY_INDIVIDUAL_NI_REFERENCE | LEGACY_INDIVIDUAL_NI_SUMMARY_HEADER | BUSINESS_UNIT | LEGACY_INDIVIDUAL_VALIDATION_FIXTURE                         |
-      | QQ123456C                   | LEGACY NI REFERENCE            | LEGACY NI SUMMARY HEADER            | West London   | accountEnquiry/legacyDefendant/preprod/individual-jones.json |
+      | LEGACY_INDIVIDUAL_NI_NUMBER | LEGACY_INDIVIDUAL_ACCOUNT_NUMBER | LEGACY_INDIVIDUAL_NI_SUMMARY_HEADER | BUSINESS_UNIT | LEGACY_INDIVIDUAL_VALIDATION_FIXTURE                         |
+      | NI123456C                   | 24000093L                        | Mr Kelvin Kappa JF-TFO-K            | West London   | accountEnquiry/legacyDefendant/preprod/individual-kappa.json |
 
   @LegacyData @JIRA-STORY:PO-705 @JIRA-STORY:PO-706 @JIRA-STORY:PO-717 @JIRA-EPIC:PO-704
   # Minimum data set required: one individual defendant account with a unique searchable postcode LEGACY_INDIVIDUAL_POSTCODE, prosecutor case reference LEGACY_INDIVIDUAL_POSTCODE_REFERENCE, and summary header text LEGACY_INDIVIDUAL_POSTCODE_SUMMARY_HEADER.
@@ -221,10 +221,10 @@ Feature: Defendant Adult Youth Search And Matches Journeys
     Examples:
       | LEGACY_INDIVIDUAL_LAST_NAME_PARTIAL | LEGACY_INDIVIDUAL_POSTCODE | LEGACY_INDIVIDUAL_POSTCODE_REFERENCE | LEGACY_INDIVIDUAL_POSTCODE_SUMMARY_HEADER | BUSINESS_UNIT | LEGACY_INDIVIDUAL_VALIDATION_FIXTURE                        |
       | A                                   | UN2 1QE                    | PCRJRNYINDPOSTCODE                   | Mr Brod ADULTACCUNIQUEB                   | West London   | accountEnquiry/legacyDefendant/jcde/adult-acc-unique-b.json |
-    @R1BDrop1UatTechPreprod @skip
+    @R1BDrop1UatTechPreprod
     Examples:
       | LEGACY_INDIVIDUAL_LAST_NAME_PARTIAL | LEGACY_INDIVIDUAL_POSTCODE | LEGACY_INDIVIDUAL_POSTCODE_REFERENCE | LEGACY_INDIVIDUAL_POSTCODE_SUMMARY_HEADER | BUSINESS_UNIT | LEGACY_INDIVIDUAL_VALIDATION_FIXTURE                         |
-      |                                     | AB1 2CD                    | LEGACY POSTCODE REFERENCE            | LEGACY POSTCODE SUMMARY HEADER            | West London   | accountEnquiry/legacyDefendant/preprod/individual-jones.json |
+      | Kappa                               | asdf                       | —                                    | Mr Kelvin Kappa JF-TFO-K                  | West London   | accountEnquiry/legacyDefendant/preprod/individual-kappa.json |
 
   @LegacyData @JIRA-STORY:PO-706 @JIRA-EPIC:PO-704
   # Minimum data set required: one individual defendant account with account number LEGACY_ACCOUNT_NUMBER and summary header text LEGACY_ACCOUNT_SUMMARY_HEADER.
@@ -248,10 +248,10 @@ Feature: Defendant Adult Youth Search And Matches Journeys
     Examples:
       | LEGACY_ACCOUNT_NUMBER | LEGACY_ACCOUNT_SUMMARY_HEADER | BUSINESS_UNIT | LEGACY_ACCOUNT_VALIDATION_FIXTURE                           |
       | 25000180S             | Mr Brod ADULTACCUNIQUEB       | West London   | accountEnquiry/legacyDefendant/jcde/adult-acc-unique-b.json |
-    @R1BDrop1UatTechPreprod @skip
+    @R1BDrop1UatTechPreprod
     Examples:
       | LEGACY_ACCOUNT_NUMBER | LEGACY_ACCOUNT_SUMMARY_HEADER | BUSINESS_UNIT | LEGACY_ACCOUNT_VALIDATION_FIXTURE                            |
-      | 25000185D             | LEGACY JONES                  | West London   | accountEnquiry/legacyDefendant/preprod/individual-jones.json |
+      | 24000093L             | Mr Kelvin Kappa JF-TFO-K      | West London   | accountEnquiry/legacyDefendant/preprod/individual-kappa.json |
 
   @LegacyData @JIRA-STORY:PO-706 @JIRA-EPIC:PO-704
   Scenario Outline: Search for a individual defendant account from legacy data and validate the matching record on the search results page
@@ -275,10 +275,10 @@ Feature: Defendant Adult Youth Search And Matches Journeys
     Examples:
       | LEGACY_INDIVIDUAL_ACCOUNT_NUMBER | LEGACY_INDIVIDUAL_NAME           | LEGACY_INDIVIDUAL_ALIASES | LEGACY_INDIVIDUAL_DOB | LEGACY_INDIVIDUAL_ADR_LINE_1 | LEGACY_INDIVIDUAL_POSTCODE | LEGACY_INDIVIDUAL_NI_NUMBER | LEGACY_INDIVIDUAL_PARENT_GUARDIAN | LEGACY_INDIVIDUAL_BALANCE |
       | 15000055L                        | EDTTEMPLATESTWENTYONE, TWENTYONE | Alias, Alice              | 01 Jan 1998           | 123 ASDF ASD                 | EN5 8QQ                    | NI 12 34 56 A               | TWENTYONE PARENTTWENTYONE         | -£200.00                  |
-    @R1BDrop1UatTechPreprod @skip
+    @R1BDrop1UatTechPreprod
     Examples:
       | LEGACY_INDIVIDUAL_ACCOUNT_NUMBER | LEGACY_INDIVIDUAL_NAME | LEGACY_INDIVIDUAL_ALIASES | LEGACY_INDIVIDUAL_DOB | LEGACY_INDIVIDUAL_ADR_LINE_1 | LEGACY_INDIVIDUAL_POSTCODE | LEGACY_INDIVIDUAL_NI_NUMBER | LEGACY_INDIVIDUAL_PARENT_GUARDIAN | LEGACY_INDIVIDUAL_BALANCE |
-      | placeholder                      | placeholder            | placeholder               | placeholder           | placeholder                  | placeholder                | placeholder                 | placeholder                       | placeholder               |
+      | 24000093L                        | KAPPA, Kelvin          | —                         | 01 Feb 2000           | 123 asdf                     | asdf                       | NI123456C                   | —                                 | -£246.90                  |
 
   @LegacyData @JIRA-STORY:PO-706 @JIRA-EPIC:PO-704
   # Minimum data set required: one parent or guardian legacy account with a searchable account number, expected summary header, and a populated legacy fixture.
@@ -303,10 +303,10 @@ Feature: Defendant Adult Youth Search And Matches Journeys
     Examples:
       | LEGACY_PARENT_GUARDIAN_ACCOUNT_NUMBER | LEGACY_PARENT_GUARDIAN_SUMMARY_HEADER | BUSINESS_UNIT | LEGACY_PARENT_GUARDIAN_VALIDATION_FIXTURE                       |
       | 26000285P                             | Mr Antonius Barnet CPGB-YOUTH-A-B     | West London   | accountEnquiry/legacyDefendant/jcde/parent-guardian-to-pay.json |
-    @R1BDrop1UatTechPreprod @skip
+    @R1BDrop1UatTechPreprod
     Examples:
-      | LEGACY_PARENT_GUARDIAN_ACCOUNT_NUMBER | LEGACY_PARENT_GUARDIAN_SUMMARY_HEADER | BUSINESS_UNIT                  | LEGACY_PARENT_GUARDIAN_VALIDATION_FIXTURE                                              |
-      | TEMPLATE_PREPROD_ACCOUNT_NUMBER       | TEMPLATE_PREPROD_SUMMARY_HEADER       | TEMPLATE_PREPROD_BUSINESS_UNIT | accountEnquiry/legacyDefendant/templates/preprod/parent-guardian-account-template.json |
+      | LEGACY_PARENT_GUARDIAN_ACCOUNT_NUMBER | LEGACY_PARENT_GUARDIAN_SUMMARY_HEADER | BUSINESS_UNIT | LEGACY_PARENT_GUARDIAN_VALIDATION_FIXTURE                                |
+      | 16000489R                             | Mr Person Youth                       | West London   | accountEnquiry/legacyDefendant/preprod/parent-guardian-person-youth.json |
 
   @LegacyData @JIRA-STORY:PO-706 @JIRA-EPIC:PO-704
   # Minimum data set required: one fixed penalty legacy individual account with a searchable account number, expected summary header, a populated legacy fixture, and fixed penalty detail values.
@@ -332,10 +332,10 @@ Feature: Defendant Adult Youth Search And Matches Journeys
     Examples:
       | LEGACY_FIXED_PENALTY_ACCOUNT_NUMBER | LEGACY_FIXED_PENALTY_SUMMARY_HEADER | BUSINESS_UNIT | LEGACY_FIXED_PENALTY_VALIDATION_FIXTURE                        |
       | 25000248I                           | Mr Daimler ADULT-FIXED-PEN-E        | West London   | accountEnquiry/legacyDefendant/jcde/fixed-penalty-account.json |
-    @R1BDrop1UatTechPreprod @skip
+    @R1BDrop1UatTechPreprod
     Examples:
-      | LEGACY_FIXED_PENALTY_ACCOUNT_NUMBER | LEGACY_FIXED_PENALTY_SUMMARY_HEADER | BUSINESS_UNIT                  | LEGACY_FIXED_PENALTY_VALIDATION_FIXTURE                                              |
-      | TEMPLATE_PREPROD_ACCOUNT_NUMBER     | TEMPLATE_PREPROD_SUMMARY_HEADER     | TEMPLATE_PREPROD_BUSINESS_UNIT | accountEnquiry/legacyDefendant/templates/preprod/fixed-penalty-account-template.json |
+      | LEGACY_FIXED_PENALTY_ACCOUNT_NUMBER | LEGACY_FIXED_PENALTY_SUMMARY_HEADER | BUSINESS_UNIT | LEGACY_FIXED_PENALTY_VALIDATION_FIXTURE                                  |
+      | 25000038T                           | Mr Abbot Adult-FixPen-A             | West London   | accountEnquiry/legacyDefendant/preprod/fixed-penalty-adult-fixpen-a.json |
 
   @LegacyData @JIRA-STORY:PO-706 @JIRA-EPIC:PO-704
   Scenario Outline: Search for a legacy account with consolidated accounts by account number and open the matching record
@@ -363,7 +363,7 @@ Feature: Defendant Adult Youth Search And Matches Journeys
     Examples:
       | LEGACY_CONSOLIDATED_ACCOUNT_NUMBER | LEGACY_CONSOLIDATED_SUMMARY_HEADER | BUSINESS_UNIT | LEGACY_CONSOLIDATED_VALIDATION_FIXTURE                        |
       | 26000289W                          | Mr Henry CPGB-ADULT-B-H            | West London   | accountEnquiry/legacyDefendant/jcde/consolidated-account.json |
-    @R1BDrop1UatTechPreprod @skip
+    @R1BDrop1UatTechPreprod
     Examples:
-      | LEGACY_CONSOLIDATED_ACCOUNT_NUMBER | LEGACY_CONSOLIDATED_SUMMARY_HEADER | BUSINESS_UNIT                  | LEGACY_CONSOLIDATED_VALIDATION_FIXTURE                                              |
-      | TEMPLATE_PREPROD_ACCOUNT_NUMBER    | TEMPLATE_PREPROD_SUMMARY_HEADER    | TEMPLATE_PREPROD_BUSINESS_UNIT | accountEnquiry/legacyDefendant/templates/preprod/consolidated-account-template.json |
+      | LEGACY_CONSOLIDATED_ACCOUNT_NUMBER | LEGACY_CONSOLIDATED_SUMMARY_HEADER | BUSINESS_UNIT | LEGACY_CONSOLIDATED_VALIDATION_FIXTURE                           |
+      | 26000060B                          | Mr Steve Consolidate-sub           | West London   | accountEnquiry/legacyDefendant/preprod/consolidated-account.json |
