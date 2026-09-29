@@ -24,7 +24,7 @@ Feature: Adult Youth Account Enquiries View Details
         | account.payment_card_request                              | false                                |
         | account.defendant.dob                                     | 2002-05-15                           |
         | account.defendant.debtor_detail.employer_company_name     | Accdetail Employer Ltd               |
-        | account.defendant.debtor_detail.employee_reference        | EMP-ACCDETAIL                        |
+        | account.defendant.debtor_detail.employee_reference        | EMPACCDETAIL                         |
         | account.defendant.debtor_detail.employer_address_line_1   | Employer Street                      |
         | account.defendant.debtor_detail.employer_post_code        | TE12 3ST                             |
         | account.defendant.debtor_detail.employer_telephone_number | 02079460000                          |
