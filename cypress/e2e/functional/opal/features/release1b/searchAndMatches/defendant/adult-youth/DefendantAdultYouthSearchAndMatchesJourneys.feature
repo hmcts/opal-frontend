@@ -8,7 +8,7 @@ Feature: Defendant Adult Youth Search And Matches Journeys
     Given I am logged in with email "opal-test@dev.platform.hmcts.net"
     And I clear all approved accounts
 
-  @R1BDrop1UatTechJCDE @JIRA-STORY:PO-705 @JIRA-STORY:PO-706 @JIRA-STORY:PO-717 @JIRA-DEFECT:PO-3541 @JIRA-EPIC:PO-704 @JIRA-TEST-KEY:PO-5290
+  @R1BDrop1UatTechJCDE @R1BDrop1UatTechPreprod @JIRA-STORY:PO-705 @JIRA-STORY:PO-706 @JIRA-STORY:PO-717 @JIRA-DEFECT:PO-3541 @JIRA-EPIC:PO-704 @JIRA-TEST-KEY:PO-5290
   Scenario: Search for an individual defendant account and open the matching record
     Given I create a "adultOrYouthOnly" draft account with the following details and set status "Publishing Pending" using user "opal-test-10@dev.platform.hmcts.net":
       | Account_status                              | Submitted                        |
@@ -92,7 +92,7 @@ Feature: Defendant Adult Youth Search And Matches Journeys
     When I open the latest matching result from the search results
     Then I should see the account summary header contains "JOURNEYNISPACE{uniqUpper}"
 
-  @JIRA-EPIC:PO-704 @R1BDrop1UatTechJCDE @JIRA-STORY:PO-706 @JIRA-TEST-KEY:PO-5295
+  @JIRA-EPIC:PO-704 @R1BDrop1UatTechJCDE @R1BDrop1UatTechPreprod @JIRA-STORY:PO-706 @JIRA-TEST-KEY:PO-5295
   Scenario: Search by account number and open the matching record
     Given I create a "adultOrYouthOnly" draft account with the following details and set status "Publishing Pending" using user "opal-test-10@dev.platform.hmcts.net":
       | Account_status                          | Submitted                           |
@@ -123,6 +123,7 @@ Feature: Defendant Adult Youth Search And Matches Journeys
     And I see the Individuals search results:
       | Account | <LEGACY_INDIVIDUAL_ACCOUNT_NUMBER> |
     When I open the matching result from the search results:
+      | Account       | <LEGACY_INDIVIDUAL_ACCOUNT_NUMBER> |
       | Business unit | <BUSINESS_UNIT> |
     Then I should see the account summary header contains "<LEGACY_INDIVIDUAL_SUMMARY_HEADER>"
     And I validate the legacy defendant header and At a glance tab using fixture "<LEGACY_INDIVIDUAL_VALIDATION_FIXTURE>"
@@ -138,7 +139,7 @@ Feature: Defendant Adult Youth Search And Matches Journeys
     @R1BDrop1UatTechPreprod
     Examples:
       | LEGACY_INDIVIDUAL_LAST_NAME | LEGACY_INDIVIDUAL_ACCOUNT_NUMBER | LEGACY_INDIVIDUAL_SUMMARY_HEADER | BUSINESS_UNIT | LEGACY_INDIVIDUAL_VALIDATION_FIXTURE                         |
-      | Kappa                       | 24000093L                        | Mr Kelvin Kappa JF-TFO-K         | West London   | accountEnquiry/legacyDefendant/preprod/individual-kappa.json |
+      | Smith                       | 17004613J                        | Mr Abdelrahman SMITH             | Libra National Computer System | accountEnquiry/legacyDefendant/preprod/individual-smith.json |
 
   @LegacyData @JIRA-STORY:PO-705 @JIRA-STORY:PO-706 @JIRA-STORY:PO-717 @JIRA-EPIC:PO-704
   # Minimum data set required: one individual defendant account with a unique searchable date of birth LEGACY_INDIVIDUAL_DATE_OF_BIRTH (DD/MM/YYYY), prosecutor case reference LEGACY_INDIVIDUAL_DOB_REFERENCE, and summary header text LEGACY_INDIVIDUAL_DOB_SUMMARY_HEADER.
@@ -153,6 +154,7 @@ Feature: Defendant Adult Youth Search And Matches Journeys
       | Account       | <LEGACY_INDIVIDUAL_ACCOUNT_NUMBER> |
       | Date of birth | <LEGACY_INDIVIDUAL_EXPECTED_DOB>   |
     When I open the matching result from the search results:
+      | Account       | <LEGACY_INDIVIDUAL_ACCOUNT_NUMBER> |
       | Business unit | <BUSINESS_UNIT> |
     Then I should see the account summary header contains "<LEGACY_INDIVIDUAL_DOB_SUMMARY_HEADER>"
     And I validate the legacy defendant header and At a glance tab using fixture "<LEGACY_INDIVIDUAL_VALIDATION_FIXTURE>"
@@ -168,7 +170,7 @@ Feature: Defendant Adult Youth Search And Matches Journeys
     @R1BDrop1UatTechPreprod
     Examples:
       | LEGACY_INDIVIDUAL_LAST_NAME_PARTIAL | LEGACY_INDIVIDUAL_DATE_OF_BIRTH | LEGACY_INDIVIDUAL_EXPECTED_DOB | LEGACY_INDIVIDUAL_ACCOUNT_NUMBER | LEGACY_INDIVIDUAL_DOB_SUMMARY_HEADER | BUSINESS_UNIT | LEGACY_INDIVIDUAL_VALIDATION_FIXTURE                         |
-      | Kappa                               | 01/02/2000                      | 01 Feb 2000                    | 24000093L                        | Mr Kelvin Kappa JF-TFO-K             | West London   | accountEnquiry/legacyDefendant/preprod/individual-kappa.json |
+      | Smith                               | 27/12/1965                      | 27 Dec 1965                    | 17004613J                        | Mr Abdelrahman SMITH                 | Libra National Computer System | accountEnquiry/legacyDefendant/preprod/individual-smith.json |
 
   @LegacyData @JIRA-STORY:PO-705 @JIRA-STORY:PO-706 @JIRA-STORY:PO-717 @JIRA-EPIC:PO-704
   # Minimum data set required: one individual defendant account with searchable national insurance number LEGACY_INDIVIDUAL_NI_NUMBER, prosecutor case reference LEGACY_INDIVIDUAL_NI_REFERENCE, and summary header text LEGACY_INDIVIDUAL_NI_SUMMARY_HEADER.
@@ -181,6 +183,7 @@ Feature: Defendant Adult Youth Search And Matches Journeys
       | Account   | <LEGACY_INDIVIDUAL_ACCOUNT_NUMBER> |
       | NI number | <LEGACY_INDIVIDUAL_NI_NUMBER>      |
     When I open the matching result from the search results:
+      | Account       | <LEGACY_INDIVIDUAL_ACCOUNT_NUMBER> |
       | Business unit | <BUSINESS_UNIT> |
     Then I should see the account summary header contains "<LEGACY_INDIVIDUAL_NI_SUMMARY_HEADER>"
     And I validate the legacy defendant header and At a glance tab using fixture "<LEGACY_INDIVIDUAL_VALIDATION_FIXTURE>"
@@ -209,6 +212,7 @@ Feature: Defendant Adult Youth Search And Matches Journeys
     And I see the Individuals search results:
       | Postcode | <LEGACY_INDIVIDUAL_POSTCODE> |
     When I open the matching result from the search results:
+      | Account       | <LEGACY_INDIVIDUAL_ACCOUNT_NUMBER> |
       | Business unit | <BUSINESS_UNIT> |
     Then I should see the account summary header contains "<LEGACY_INDIVIDUAL_POSTCODE_SUMMARY_HEADER>"
     And I validate the legacy defendant header and At a glance tab using fixture "<LEGACY_INDIVIDUAL_VALIDATION_FIXTURE>"
@@ -224,7 +228,7 @@ Feature: Defendant Adult Youth Search And Matches Journeys
     @R1BDrop1UatTechPreprod
     Examples:
       | LEGACY_INDIVIDUAL_LAST_NAME_PARTIAL | LEGACY_INDIVIDUAL_POSTCODE | LEGACY_INDIVIDUAL_POSTCODE_REFERENCE | LEGACY_INDIVIDUAL_POSTCODE_SUMMARY_HEADER | BUSINESS_UNIT | LEGACY_INDIVIDUAL_VALIDATION_FIXTURE                         |
-      | Kappa                               | asdf                       | —                                    | Mr Kelvin Kappa JF-TFO-K                  | West London   | accountEnquiry/legacyDefendant/preprod/individual-kappa.json |
+      | Smith                               | CR0 2GE                    | —                                    | Mr Abdelrahman SMITH                      | Libra National Computer System | accountEnquiry/legacyDefendant/preprod/individual-smith.json |
 
   @LegacyData @JIRA-STORY:PO-706 @JIRA-EPIC:PO-704
   # Minimum data set required: one individual defendant account with account number LEGACY_ACCOUNT_NUMBER and summary header text LEGACY_ACCOUNT_SUMMARY_HEADER.
@@ -236,6 +240,7 @@ Feature: Defendant Adult Youth Search And Matches Journeys
     And I see the Individuals search results:
       | Account | <LEGACY_ACCOUNT_NUMBER> |
     When I open the matching result from the search results:
+      | Account       | <LEGACY_ACCOUNT_NUMBER> |
       | Business unit | <BUSINESS_UNIT> |
     Then I should see the account summary header contains "<LEGACY_ACCOUNT_SUMMARY_HEADER>"
     And I validate the legacy defendant header and At a glance tab using fixture "<LEGACY_ACCOUNT_VALIDATION_FIXTURE>"
@@ -251,7 +256,7 @@ Feature: Defendant Adult Youth Search And Matches Journeys
     @R1BDrop1UatTechPreprod
     Examples:
       | LEGACY_ACCOUNT_NUMBER | LEGACY_ACCOUNT_SUMMARY_HEADER | BUSINESS_UNIT | LEGACY_ACCOUNT_VALIDATION_FIXTURE                            |
-      | 24000093L             | Mr Kelvin Kappa JF-TFO-K      | West London   | accountEnquiry/legacyDefendant/preprod/individual-kappa.json |
+      | 17004613J             | Mr Abdelrahman SMITH          | Libra National Computer System | accountEnquiry/legacyDefendant/preprod/individual-smith.json |
 
   @LegacyData @JIRA-STORY:PO-706 @JIRA-EPIC:PO-704
   Scenario Outline: Search for a individual defendant account from legacy data and validate the matching record on the search results page
@@ -278,7 +283,7 @@ Feature: Defendant Adult Youth Search And Matches Journeys
     @R1BDrop1UatTechPreprod
     Examples:
       | LEGACY_INDIVIDUAL_ACCOUNT_NUMBER | LEGACY_INDIVIDUAL_NAME | LEGACY_INDIVIDUAL_ALIASES | LEGACY_INDIVIDUAL_DOB | LEGACY_INDIVIDUAL_ADR_LINE_1 | LEGACY_INDIVIDUAL_POSTCODE | LEGACY_INDIVIDUAL_NI_NUMBER | LEGACY_INDIVIDUAL_PARENT_GUARDIAN | LEGACY_INDIVIDUAL_BALANCE |
-      | 24000093L                        | KAPPA, Kelvin          | —                         | 01 Feb 2000           | 123 asdf                     | asdf                       | NI123456C                   | —                                 | -£246.90                  |
+      | 17004613J                        | SMITH, Abdelrahman     | —                         | 27 Dec 1965           | Flat 1                       | CR0 2GE                    | —                           | —                                 | -£280.00                  |
 
   @LegacyData @JIRA-STORY:PO-706 @JIRA-EPIC:PO-704
   # Minimum data set required: one parent or guardian legacy account with a searchable account number, expected summary header, and a populated legacy fixture.
