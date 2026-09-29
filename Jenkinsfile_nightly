@@ -75,8 +75,8 @@ properties([
     choice(
       name: 'LEGACY_DEMO_SUITE',
       choices: [
-        legacyDemoSuiteR1aChoice,
         legacyDemoSuiteR1aR1bDrop1Choice,
+        legacyDemoSuiteR1aChoice,
         legacyDemoSuiteR1abChoice,
         legacyDemoSuiteR1bDrop1Choice,
         legacyDemoSuiteR1bOffChoice,

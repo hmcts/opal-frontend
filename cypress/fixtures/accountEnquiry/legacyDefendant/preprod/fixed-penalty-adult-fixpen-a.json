@@ -1,0 +1,58 @@
+{
+  "header": {
+    "accountNumber": "25000038T",
+    "name": "Mr Abbot Adult-FixPen-A",
+    "summary": {
+      "account type": "Fixed Penalty"
+    },
+    "metrics": {
+      "imposed": "£138.45",
+      "arrears": "£138.45",
+      "paid/written off": "£0.00",
+      "account balance": "-£138.45"
+    }
+  },
+  "atAGlance": {
+    "defendant": {
+      "name": "Mr Abbot Adult-FixPen-A",
+      "date of birth": "01 February 2000",
+      "address": "123 Asdf\nAdsfsadf\nAdsfasdf\nEN5 1RL"
+    },
+    "paymentTerms": {
+      "payment terms": "Pay in full",
+      "pay by date": "26 February 2025"
+    },
+    "enforcementStatus": {
+      "collection order": "Collection Order",
+      "days in default": "0 days",
+      "date of last movement": "19 February 2025"
+    },
+    "comments": {
+      "comment": "created 19.02.2025"
+    }
+  },
+  "defendantTab": {
+    "defendant": {
+      "name": "Mr Abbot Adult-FixPen-A",
+      "date of birth": "01 February 2000",
+      "address": "123 Asdf\nAdsfsadf\nAdsfasdf\nEN5 1RL"
+    }
+  },
+  "paymentTermsTab": {
+    "pay by date": "26 February 2025",
+    "days in default": "0"
+  },
+  "enforcementTab": {
+    "overview": {
+      "collection order status": "Collection Order",
+      "days in default": "0 days",
+      "enforcement court": "West London VPFPO (101)"
+    }
+  },
+  "impositionsTab": {},
+  "historyAndNotesTab": {},
+  "fixedPenaltyTab": {
+    "issuing authority": "POL123",
+    "registration number": "FIXED PENALTY REGISTRATION"
+  }
+}

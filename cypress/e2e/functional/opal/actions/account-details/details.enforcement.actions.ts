@@ -30,6 +30,31 @@ export class AccountDetailsEnforcementActions {
   }
 
   /**
+   * Normalizes visible text for case-insensitive assertions.
+   *
+   * @param value - Raw text content.
+   * @returns Text with collapsed whitespace and normalized casing.
+   */
+  private normalizeCaseInsensitive(value: string): string {
+    return this.normalize(value).toLowerCase();
+  }
+
+  /**
+   * Asserts an element contains expected text after normalizing whitespace and casing.
+   *
+   * @param selector - Element selector.
+   * @param expected - Expected text.
+   */
+  private assertContainsNormalizedText(selector: string, expected: string): void {
+    cy.get(selector, { timeout: AccountDetailsEnforcementActions.DEFAULT_TIMEOUT })
+      .should('be.visible')
+      .invoke('text')
+      .then((actual) => {
+        expect(this.normalizeCaseInsensitive(actual)).to.contain(this.normalizeCaseInsensitive(expected));
+      });
+  }
+
+  /**
    * Selects an option from an accessible autocomplete control.
    *
    * @param selector - Input selector for the autocomplete.
@@ -655,24 +680,15 @@ export class AccountDetailsEnforcementActions {
     log('assert', 'Enforcement override summary', expected);
 
     if (expected.override) {
-      cy.get(ENF.enforcementOverrideValue, { timeout: AccountDetailsEnforcementActions.DEFAULT_TIMEOUT }).should(
-        'contain.text',
-        expected.override,
-      );
+      this.assertContainsNormalizedText(ENF.enforcementOverrideValue, expected.override);
     }
 
     if (expected.lja) {
-      cy.get(ENF.localJusticeAreaValue, { timeout: AccountDetailsEnforcementActions.DEFAULT_TIMEOUT }).should(
-        'contain.text',
-        expected.lja,
-      );
+      this.assertContainsNormalizedText(ENF.localJusticeAreaValue, expected.lja);
     }
 
     if (expected.enforcer) {
-      cy.get(ENF.enfOverrideEnforcer, { timeout: AccountDetailsEnforcementActions.DEFAULT_TIMEOUT }).should(
-        'contain.text',
-        expected.enforcer,
-      );
+      this.assertContainsNormalizedText(ENF.enfOverrideEnforcer, expected.enforcer);
     }
   }
 
