@@ -195,9 +195,7 @@ export class FinesMciPaymentCategoryCriminalSearchComponent extends AbstractForm
   }
 
   private searchDefendantAccounts(): void {
-    this.opalFinesService.getDefendantAccounts(this.buildSearchParams()).subscribe((response) => {
-      console.log('Manual cash input criminal account search response count', response.count);
-    });
+    this.opalFinesService.getDefendantAccounts(this.buildSearchParams()).subscribe();
   }
 
   private handleFormSubmission(): boolean {

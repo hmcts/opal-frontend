@@ -2,14 +2,13 @@ import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { ActivatedRoute, NavigationExtras, provideRouter, Router } from '@angular/router';
 import { OpalFines } from '@services/fines/opal-fines-service/opal-fines.service';
 import { BehaviorSubject, of } from 'rxjs';
-import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
+import { beforeEach, describe, expect, it, vi } from 'vitest';
 import { FinesMciPaymentCategoryCriminalSearchComponent } from './fines-mci-payment-category-criminal-search.component';
 
 describe('FinesMciPaymentCategoryCriminalSearchComponent', () => {
   let component: FinesMciPaymentCategoryCriminalSearchComponent;
   let fixture: ComponentFixture<FinesMciPaymentCategoryCriminalSearchComponent>;
   let mockOpalFines: { getDefendantAccounts: ReturnType<typeof vi.fn> };
-  let consoleLogSpy: ReturnType<typeof vi.spyOn>;
   let fragmentSubject: BehaviorSubject<string | null>;
   let routerNavigateSpy: ReturnType<typeof vi.fn<(_: readonly unknown[], __?: NavigationExtras) => Promise<boolean>>>;
 
@@ -17,7 +16,6 @@ describe('FinesMciPaymentCategoryCriminalSearchComponent', () => {
     mockOpalFines = {
       getDefendantAccounts: vi.fn().mockReturnValue(of({ count: 1, defendant_accounts: [] })),
     };
-    consoleLogSpy = vi.spyOn(console, 'log').mockImplementation(() => undefined);
     fragmentSubject = new BehaviorSubject<string | null>(null);
     routerNavigateSpy = vi.fn<(_: readonly unknown[], __?: NavigationExtras) => Promise<boolean>>();
     routerNavigateSpy.mockResolvedValue(true);
@@ -41,10 +39,6 @@ describe('FinesMciPaymentCategoryCriminalSearchComponent', () => {
     fixture = TestBed.createComponent(FinesMciPaymentCategoryCriminalSearchComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
-  });
-
-  afterEach(() => {
-    consoleLogSpy.mockRestore();
   });
 
   it('should create', () => {
@@ -116,7 +110,7 @@ describe('FinesMciPaymentCategoryCriminalSearchComponent', () => {
     ).toBeNull();
   });
 
-  it('should search individual defendant accounts and log the response count', () => {
+  it('should search individual defendant accounts', () => {
     component['form'].patchValue({
       fsa_search_account_individuals_search_criteria: {
         fsa_search_account_individuals_last_name: 'Smith',
@@ -140,7 +134,6 @@ describe('FinesMciPaymentCategoryCriminalSearchComponent', () => {
         active_accounts_only: true,
       }),
     );
-    expect(consoleLogSpy).toHaveBeenCalledWith('Manual cash input criminal account search response count', 1);
   });
 
   it('should search company defendant accounts from the companies tab', () => {
