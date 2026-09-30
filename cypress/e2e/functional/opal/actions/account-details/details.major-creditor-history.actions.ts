@@ -16,6 +16,49 @@ export class MajorCreditorHistoryActions {
   private readonly detailsNav = new AccountDetailsNavActions();
 
   /**
+   * Reads a query parameter from an intercepted Major Creditor History request URL.
+   *
+   * @param requestUrl - Intercepted request URL.
+   * @param key - Query parameter name.
+   * @returns The query parameter value when present.
+   */
+  private getHistoryQueryParamFromUrl(requestUrl: string, key: 'dateFrom' | 'dateTo'): string | null {
+    return new URL(requestUrl, 'http://localhost').searchParams.get(key);
+  }
+
+  /**
+   * Waits for the date-filtered history request, allowing for an earlier tab-load
+   * request that may still be queued against the same intercept alias.
+   */
+  private waitForDateFilterRequest(): void {
+    cy.wait('@getMajorCreditorHistory', { timeout: MajorCreditorHistoryActions.DEFAULT_TIMEOUT }).then(
+      ({ request, response }) => {
+        const dateFrom = this.getHistoryQueryParamFromUrl(request.url, 'dateFrom');
+        const dateTo = this.getHistoryQueryParamFromUrl(request.url, 'dateTo');
+
+        if (dateFrom !== '2025-03-11' || dateTo !== '2025-03-11') {
+          cy.wait('@getMajorCreditorHistory', { timeout: MajorCreditorHistoryActions.DEFAULT_TIMEOUT }).then(
+            ({ request: filteredRequest, response: filteredResponse }) => {
+              expect(
+                this.getHistoryQueryParamFromUrl(filteredRequest.url, 'dateFrom'),
+                `dateFrom query in ${filteredRequest.url}`,
+              ).to.equal('2025-03-11');
+              expect(
+                this.getHistoryQueryParamFromUrl(filteredRequest.url, 'dateTo'),
+                `dateTo query in ${filteredRequest.url}`,
+              ).to.equal('2025-03-11');
+              expect(filteredResponse?.statusCode).to.equal(200);
+            },
+          );
+          return;
+        }
+
+        expect(response?.statusCode).to.equal(200);
+      },
+    );
+  }
+
+  /**
    * Builds the major creditor history and notes response.
    *
    * @returns The major creditor history and notes response.
@@ -68,9 +111,12 @@ export class MajorCreditorHistoryActions {
     log('intercept', 'Stubbing Major Creditor History and notes API response');
 
     cy.intercept('GET', '**/major-creditor-accounts/*/history*', (req) => {
+      const dateFrom = this.getHistoryQueryParamFromUrl(req.url, 'dateFrom');
+      const dateTo = this.getHistoryQueryParamFromUrl(req.url, 'dateTo');
+
       req.reply({
         statusCode: 200,
-        body: req.query['dateFrom'] || req.query['dateTo'] ? filteredResponse : fullResponse,
+        body: dateFrom || dateTo ? filteredResponse : fullResponse,
       });
     }).as('getMajorCreditorHistory');
   }
@@ -126,13 +172,7 @@ export class MajorCreditorHistoryActions {
     cy.get(L.dateToInput, { timeout: MajorCreditorHistoryActions.DEFAULT_TIMEOUT }).type('11/03/2025');
     cy.get(L.filterButton, { timeout: MajorCreditorHistoryActions.DEFAULT_TIMEOUT }).click();
 
-    cy.wait('@getMajorCreditorHistory', { timeout: MajorCreditorHistoryActions.DEFAULT_TIMEOUT }).then(
-      ({ request, response }) => {
-        expect(request.query['dateFrom']).to.equal('2025-03-11');
-        expect(request.query['dateTo']).to.equal('2025-03-11');
-        expect(response?.statusCode).to.equal(200);
-      },
-    );
+    this.waitForDateFilterRequest();
   }
 
   /** Asserts the table reflects the filtered Major Creditor History and notes response. */
