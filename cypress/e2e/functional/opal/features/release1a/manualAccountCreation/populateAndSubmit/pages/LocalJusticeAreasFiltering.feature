@@ -59,28 +59,18 @@ Feature: Court and prosecutor reference data requests
     And a prosecutor request should be made
     And no local justice area requests should be made
 
-  # PO-10693 release-1a-1.1 disabled fallback
+  # PO-10693 release-1a-1.1 disabled: prosecutor originators remain in use
   @JIRA-EPIC:PO-2750 @R1A1_1Off @JIRA-STORY:PO-2761 @JIRA-DEFECT:PO-10693
-  Scenario: Conditional Caution + New requests local justice areas without requesting prosecutors when release 1a 1.1 is disabled
+  Scenario: Conditional Caution + New requests prosecutors without requesting local justice areas when release 1a 1.1 is disabled
     When I create a "New" manual "Conditional Caution" account for business unit "West London" with defendant type "Adult or youth only"
     And I access the "Court details" task
-    Then the latest local justice areas request should include lja types:
-      | LJA    |
-      | CRWCRT |
-      | SJCRT  |
-      | SCSCRT |
-      | NICRT  |
-    And no prosecutor requests should be made
+    Then a prosecutor request should be made
+    And no local justice area requests should be made
 
-  # PO-10693 release-1a-1.1 disabled fallback
+  # PO-10693 release-1a-1.1 disabled: prosecutor originators remain in use
   @JIRA-EPIC:PO-2750 @R1A1_1Off @JIRA-STORY:PO-2761 @JIRA-DEFECT:PO-10693
-  Scenario: Fixed Penalty + New requests prosecutors and local justice areas when release 1a 1.1 is disabled
+  Scenario: Fixed Penalty + New requests prosecutors without requesting local justice areas when release 1a 1.1 is disabled
     When I create a "New" manual "Fixed Penalty" account for business unit "West London" with defendant type "Adult or youth only"
     Then I should see the header containing text "Fixed Penalty details"
     And a prosecutor request should be made
-    And the latest local justice areas request should include lja types:
-      | LJA    |
-      | CRWCRT |
-      | SJCRT  |
-      | SCSCRT |
-      | NICRT  |
+    And no local justice area requests should be made

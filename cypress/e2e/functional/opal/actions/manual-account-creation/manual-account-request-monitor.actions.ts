@@ -67,17 +67,31 @@ export class ManualAccountRequestMonitorActions {
    */
   assertLatestLocalJusticeAreasRequestIncludes(expectedLjaTypes: string[]): void {
     const normalizedExpected = this.normalizeUniqueValues(expectedLjaTypes).sort();
-    this.getCapturedRequests(ManualAccountRequestMonitorActions.LOCAL_JUSTICE_AREAS_ALIAS).then((requests) => {
-      const matchingRequest = this.findLatestRequestWithLjaTypes(requests, normalizedExpected);
-      const actualLjaTypes = matchingRequest ? this.getSearchParams(matchingRequest, 'lja_type').sort() : [];
+    cy.wait(
+      `@${ManualAccountRequestMonitorActions.LOCAL_JUSTICE_AREAS_ALIAS}`,
+      this.commonRequestTimeoutOptions(),
+    ).then(() => {
+      this.getCapturedRequests(ManualAccountRequestMonitorActions.LOCAL_JUSTICE_AREAS_ALIAS).then((requests) => {
+        const matchingRequest = this.findLatestRequestWithLjaTypes(requests, normalizedExpected);
+        const actualLjaTypes = matchingRequest ? this.getSearchParams(matchingRequest, 'lja_type').sort() : [];
 
-      expect(
-        actualLjaTypes,
-        `expected a local justice area request with lja_type values [${normalizedExpected.join(', ')}], captured: ${this.describeCapturedLjaTypes(requests)}`,
-      ).to.deep.equal(normalizedExpected);
+        expect(
+          actualLjaTypes,
+          `expected a local justice area request with lja_type values [${normalizedExpected.join(', ')}], captured: ${this.describeCapturedLjaTypes(requests)}`,
+        ).to.deep.equal(normalizedExpected);
 
-      matchedLocalJusticeAreasRequest = matchingRequest;
+        matchedLocalJusticeAreasRequest = matchingRequest;
+      });
     });
+  }
+
+  /**
+   * Returns the timeout used while waiting for a resolver-backed request.
+   * Keeping this local avoids coupling the monitor to Cypress' global timeout.
+   * @returns Cypress request wait timeout options.
+   */
+  private commonRequestTimeoutOptions(): { timeout: number } {
+    return { timeout: 20_000 };
   }
 
   /**
