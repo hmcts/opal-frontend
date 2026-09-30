@@ -1,6 +1,10 @@
-<opal-lib-govuk-back-link
-  (clickEvent)="handleRoute(fineMacRoutingPaths.children.createAccount)"
-></opal-lib-govuk-back-link>
+<ng-template appBackLink>
+  <div class="govuk-grid-column-full">
+    <opal-lib-govuk-back-link
+      (clickEvent)="handleRoute(fineMacRoutingPaths.children.createAccount)"
+    ></opal-lib-govuk-back-link>
+  </div>
+</ng-template>
 <h1 class="govuk-heading-l">Fixed Penalty details</h1>
 <opal-lib-govuk-error-summary
   [errors]="formErrorSummaryMessage"

@@ -12,6 +12,7 @@ import { FinesSaResultsDefendantTableWrapperComponent } from './fines-sa-results
 import { FINES_SA_RESULTS_DEFENDANT_TABLE_WRAPPER_TABLE_SORT_DEFAULT } from './fines-sa-results-defendant-table-wrapper/constants/fines-sa-results-defendant-table-wrapper-table-sort-default.constant';
 import { IFinesSaResultsDefendantTableWrapperTableData } from './fines-sa-results-defendant-table-wrapper/interfaces/fines-sa-results-defendant-table-wrapper-table-data.interface';
 import { GovukBackLinkComponent } from '@hmcts/opal-frontend-common/components/govuk/govuk-back-link';
+import { BackLinkDirective } from '@app/directives/back-link.directive';
 import { Subject, takeUntil } from 'rxjs';
 import { FinesSaSearchAccountTab } from '../fines-sa-search/fines-sa-search-account/types/fines-sa-search-account-tab.type';
 import { FinesSaResultsTabsType } from './types/fines-sa-results-tabs.type';
@@ -36,6 +37,7 @@ import { FINES_SA_RESULTS_ACCOUNT_TYPE } from './constants/accountType.constant'
   imports: [
     CommonModule,
     GovukBackLinkComponent,
+    BackLinkDirective,
     GovukTabsComponent,
     GovukTabsListItemComponent,
     GovukTabsPanelComponent,

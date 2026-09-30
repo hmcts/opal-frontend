@@ -46,6 +46,7 @@ import { FINES_ACC_DEFENDANT_ROUTING_PATHS } from './flows/fines/fines-acc/routi
 import { FINES_ACC_MINOR_CREDITOR_ROUTING_PATHS } from './flows/fines/fines-acc/routing/constants/fines-acc-minor-creditor-routing-paths.constant';
 import { FINES_CON_ROUTING_PATHS } from './flows/fines/fines-con/routing/constants/fines-con-routing-paths.constant';
 import { FINES_MAC_ROUTING_PATHS } from './flows/fines/fines-mac/routing/constants/fines-mac-routing-paths.constant';
+import { BackLinkDirective } from './directives/back-link.directive';
 const mockTokenExpiry: ISessionTokenExpiry = SESSION_TOKEN_EXPIRY_MOCK;
 const DEFAULT_RELEASE_FEATURE_FLAGS = {
   [RELEASE_1A_FEATURE_FLAG]: true,
@@ -61,6 +62,16 @@ const DEFAULT_RELEASE_FEATURE_FLAGS = {
   template: '',
 })
 class DummyDashboardRouteComponent {}
+
+@Component({
+  standalone: true,
+  imports: [BackLinkDirective],
+  template: `
+    <ng-template appBackLink><a id="test-back-link">Back</a></ng-template>
+    <h1>Page heading</h1>
+  `,
+})
+class DummyBackLinkRouteComponent {}
 
 const createUserStateWithPermissions = (permissionIds: readonly number[]): IOpalUserState => {
   const userState = structuredClone(OPAL_USER_STATE_MOCK);
@@ -443,6 +454,40 @@ describe('AppComponent - browser', () => {
     return navigateToUrl(fixture, router, '/test').then(() => {
       expect(component['appInsightsService'].logPageView).toHaveBeenCalledWith('test', '/test');
     });
+  });
+
+  it('should render the main region without back link spacing when a back link is not present', async () => {
+    const router = TestBed.inject(Router);
+    router.resetConfig([{ path: 'test', component: DummyDashboardRouteComponent }]);
+
+    const fixture = TestBed.createComponent(AppComponent);
+    fixture.detectChanges();
+
+    await navigateToUrl(fixture, router, '/test');
+
+    const main = fixture.nativeElement.querySelector('main') as HTMLElement;
+
+    expect(main.previousElementSibling).toBeNull();
+    expect(main.classList).toContain('govuk-main-wrapper');
+    expect(main.classList).not.toContain('govuk-!-padding-top-0');
+  });
+
+  it('should render a routed page back link immediately before the main region when back link is present', async () => {
+    const router = TestBed.inject(Router);
+    router.resetConfig([{ path: 'back-link-test', component: DummyBackLinkRouteComponent }]);
+
+    const fixture = TestBed.createComponent(AppComponent);
+    fixture.detectChanges();
+
+    await navigateToUrl(fixture, router, '/back-link-test');
+
+    const main = fixture.nativeElement.querySelector('main') as HTMLElement;
+    const backLink = fixture.nativeElement.querySelector('#test-back-link') as HTMLAnchorElement;
+    const backLinkWrapper = backLink.closest('.govuk-main-wrapper');
+
+    expect(main.contains(backLink)).toBe(false);
+    expect(main.previousElementSibling).toBe(backLinkWrapper);
+    expect(main.querySelector('h1')?.textContent).toContain('Page heading');
   });
 
   it('should fall back to "unknown" when a navigation event has no trailing page segment', () => {

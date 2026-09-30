@@ -1,5 +1,9 @@
+<ng-template appBackLink>
+  <div class="govuk-grid-column-full">
+    <opal-lib-govuk-back-link (clickEvent)="navigateBack()"></opal-lib-govuk-back-link>
+  </div>
+</ng-template>
 <div class="govuk-grid-column-full">
-  <opal-lib-govuk-back-link (clickEvent)="navigateBack()"></opal-lib-govuk-back-link>
   @if (reviewAccountStatus === 'Failed') {
     <app-fines-mac-review-account-failed-banner></app-fines-mac-review-account-failed-banner>
   }
