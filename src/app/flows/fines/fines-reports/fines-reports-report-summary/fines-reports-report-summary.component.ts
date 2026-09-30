@@ -55,7 +55,7 @@ export class FinesReportsReportSummaryComponent {
    * Navigates back to the current report summary list.
    */
   public navigateBack(): void {
-    this.router.navigate([
+    void this.router.navigate([
       '/',
       FINES_ROUTING_PATHS.root,
       FINES_REPORTS_ROUTING_PATHS.root,
