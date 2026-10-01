@@ -80,7 +80,7 @@ export const finesMciPaymentCategoryCriminalSearchOneCriteriaValidator = (
   }
 
   if (populatedCriteriaCount > 1) {
-    return { atLeastOneCriteriaRequired: true };
+    return { searchCriteriaCannotBeCombined: true };
   }
 
   return null;

@@ -5,6 +5,18 @@ import { BehaviorSubject, of } from 'rxjs';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
 import { FinesMciPaymentCategoryCriminalSearchComponent } from './fines-mci-payment-category-criminal-search.component';
 
+const CRIMINAL_MATCHES_ROUTE = [
+  '/',
+  'fines',
+  'manual-cash-input',
+  'create',
+  'till',
+  'payment',
+  'category',
+  'criminal',
+  'matches',
+];
+
 describe('FinesMciPaymentCategoryCriminalSearchComponent', () => {
   let component: FinesMciPaymentCategoryCriminalSearchComponent;
   let fixture: ComponentFixture<FinesMciPaymentCategoryCriminalSearchComponent>;
@@ -68,6 +80,8 @@ describe('FinesMciPaymentCategoryCriminalSearchComponent', () => {
   });
 
   it('should update the fragment when changing tab', () => {
+    routerNavigateSpy.mockClear();
+
     component['setActiveTab']('companies', { preventDefault: vi.fn() } as unknown as Event);
 
     expect(routerNavigateSpy).toHaveBeenCalledWith([], {
@@ -110,7 +124,8 @@ describe('FinesMciPaymentCategoryCriminalSearchComponent', () => {
     ).toBeNull();
   });
 
-  it('should search individual defendant accounts', () => {
+  it('should search individual defendant accounts and navigate to the matches results page when results are returned', () => {
+    routerNavigateSpy.mockClear();
     component['form'].patchValue({
       fsa_search_account_individuals_search_criteria: {
         fsa_search_account_individuals_last_name: 'Smith',
@@ -134,9 +149,15 @@ describe('FinesMciPaymentCategoryCriminalSearchComponent', () => {
         active_accounts_only: true,
       }),
     );
+    expect(routerNavigateSpy).toHaveBeenCalledWith(CRIMINAL_MATCHES_ROUTE, {
+      queryParams: {
+        results: 'matches',
+      },
+    });
   });
 
   it('should search company defendant accounts from the companies tab', () => {
+    routerNavigateSpy.mockClear();
     fragmentSubject.next('companies');
     component['form'].patchValue({
       fsa_search_account_companies_search_criteria: {
@@ -159,11 +180,75 @@ describe('FinesMciPaymentCategoryCriminalSearchComponent', () => {
         active_accounts_only: true,
       }),
     );
+    expect(routerNavigateSpy).toHaveBeenCalledWith(CRIMINAL_MATCHES_ROUTE, {
+      queryParams: {
+        results: 'matches',
+      },
+    });
+  });
+
+  it('should navigate to the no matches results page when the search returns no results', () => {
+    routerNavigateSpy.mockClear();
+    mockOpalFines.getDefendantAccounts.mockReturnValue(of({ count: 0, defendant_accounts: [] }));
+    component['form'].patchValue({
+      fsa_search_account_individuals_search_criteria: {
+        fsa_search_account_individuals_last_name: 'Smith',
+      },
+    });
+
+    component.handleFormSubmit({ preventDefault: vi.fn() } as unknown as SubmitEvent);
+
+    expect(routerNavigateSpy).toHaveBeenCalledWith(CRIMINAL_MATCHES_ROUTE, {
+      queryParams: {
+        results: 'no-matches',
+      },
+    });
+  });
+
+  it('should navigate to the too many matches results page when the search returns more than 100 results', () => {
+    routerNavigateSpy.mockClear();
+    mockOpalFines.getDefendantAccounts.mockReturnValue(of({ count: 101, defendant_accounts: [] }));
+    component['form'].patchValue({
+      fsa_search_account_individuals_search_criteria: {
+        fsa_search_account_individuals_last_name: 'Smith',
+      },
+    });
+
+    component.handleFormSubmit({ preventDefault: vi.fn() } as unknown as SubmitEvent);
+
+    expect(routerNavigateSpy).toHaveBeenCalledWith(CRIMINAL_MATCHES_ROUTE, {
+      queryParams: {
+        results: 'too-many',
+      },
+    });
+  });
+
+  it('should navigate to the search criteria cannot be combined results page when account number and account information are entered together', () => {
+    const preventDefault = vi.fn();
+    routerNavigateSpy.mockClear();
+    component['form'].patchValue({
+      fsa_search_account_number: '12345678',
+      fsa_search_account_individuals_search_criteria: {
+        fsa_search_account_individuals_last_name: 'Smith',
+      },
+    });
+
+    component.handleFormSubmit({ preventDefault } as unknown as SubmitEvent);
+
+    expect(preventDefault).toHaveBeenCalled();
+    expect(mockOpalFines.getDefendantAccounts).not.toHaveBeenCalled();
+    expect(routerNavigateSpy).toHaveBeenCalledWith(CRIMINAL_MATCHES_ROUTE, {
+      queryParams: {
+        results: 'search-criteria-cannot-be-combined',
+      },
+    });
   });
 
   it('should not search when the form is empty', () => {
+    routerNavigateSpy.mockClear();
     component.handleFormSubmit({ preventDefault: vi.fn() } as unknown as SubmitEvent);
 
     expect(mockOpalFines.getDefendantAccounts).not.toHaveBeenCalled();
+    expect(routerNavigateSpy).not.toHaveBeenCalled();
   });
 });

@@ -16,12 +16,17 @@ import {
 } from '@hmcts/opal-frontend-common/constants';
 import { patternValidator } from '@hmcts/opal-frontend-common/validators/pattern-validator';
 import { FINES_DASHBOARD_ROUTING_PATHS } from '@app/flows/fines/constants/fines-dashboard-routing-paths.constant';
+import { FINES_MCI_ROUTING_PATHS } from '../routing/constants/fines-mci-routing-paths.constant';
 import { FINES_ROUTING_PATHS } from '@app/flows/fines/routing/constants/fines-routing-paths.constant';
 import { OPAL_FINES_DEFENDANT_ACCOUNT_SEARCH_PARAMS_DEFAULTS } from '@services/fines/opal-fines-service/constants/opal-fines-defendant-account-search-params-defaults.constant';
 import { OPAL_FINES_DEFENDANT_ACCOUNT_SEARCH_PARAMS_DEFENDANT_DEFAULTS } from '@services/fines/opal-fines-service/constants/opal-fines-defendant-account-search-params-defendant-defaults.constant';
 import { OPAL_FINES_DEFENDANT_ACCOUNT_SEARCH_PARAMS_REFERENCE_DEFAULTS } from '@services/fines/opal-fines-service/constants/opal-fines-defendant-account-search-params-reference-defaults.constant';
 import { IOpalFinesDefendantAccountSearchParams } from '@services/fines/opal-fines-service/interfaces/opal-fines-defendant-account-search-params.interface';
 import { OpalFines } from '@services/fines/opal-fines-service/opal-fines.service';
+import {
+  FINES_MCI_CRIMINAL_SEARCH_RESULTS,
+  FinesMciCriminalSearchResults,
+} from '../constants/fines-mci-criminal-search-results.constant';
 import { FINES_MCI_PAYMENT_CATEGORY_CRIMINAL_SEARCH_FIELD_ERRORS } from './constants/fines-mci-payment-category-criminal-search-field-errors.constant';
 import {
   finesMciPaymentCategoryCriminalSearchCompaniesValidator,
@@ -31,6 +36,15 @@ import {
 import { distinctUntilChanged, takeUntil } from 'rxjs';
 
 type FinesMciCriminalSearchTab = 'individuals' | 'companies';
+type FinesMciCriminalSearchFormSubmissionResult =
+  | typeof FORM_SUBMISSION_RESULT.valid
+  | typeof FORM_SUBMISSION_RESULT.empty
+  | typeof FINES_MCI_CRIMINAL_SEARCH_RESULTS.searchCriteriaCannotBeCombined;
+
+const FORM_SUBMISSION_RESULT = {
+  valid: 'valid',
+  empty: 'empty',
+} as const;
 
 const ALPHANUMERIC_WITH_SPACES_PATTERN_VALIDATOR = patternValidator(
   ALPHANUMERIC_WITH_SPACES_PATTERN,
@@ -61,6 +75,12 @@ export class FinesMciPaymentCategoryCriminalSearchComponent extends AbstractForm
   private readonly currentRoute = inject(ActivatedRoute);
   private readonly opalFinesService = inject(OpalFines);
   private readonly angularRouter = inject(Router);
+  private readonly criminalMatchesRoute = [
+    '/',
+    FINES_ROUTING_PATHS.root,
+    FINES_MCI_ROUTING_PATHS.root,
+    ...FINES_MCI_ROUTING_PATHS.children.paymentCategoryCriminalMatches.split('/'),
+  ];
 
   protected readonly activeTab = signal<FinesMciCriminalSearchTab>('individuals');
   protected readonly financeDashboardRoute = [
@@ -195,14 +215,42 @@ export class FinesMciPaymentCategoryCriminalSearchComponent extends AbstractForm
   }
 
   private searchDefendantAccounts(): void {
-    this.opalFinesService.getDefendantAccounts(this.buildSearchParams()).subscribe();
+    this.opalFinesService.getDefendantAccounts(this.buildSearchParams()).subscribe((response) => {
+      if (response.count > 100) {
+        this.navigateToMatches(FINES_MCI_CRIMINAL_SEARCH_RESULTS.tooMany);
+        return;
+      }
+
+      if (response.count === 0) {
+        this.navigateToMatches(FINES_MCI_CRIMINAL_SEARCH_RESULTS.noMatches);
+        return;
+      }
+
+      this.navigateToMatches(FINES_MCI_CRIMINAL_SEARCH_RESULTS.matches);
+    });
   }
 
-  private handleFormSubmission(): boolean {
+  private navigateToMatches(results: FinesMciCriminalSearchResults): void {
+    this.angularRouter.navigate(this.criminalMatchesRoute, {
+      queryParams: {
+        results,
+      },
+    });
+  }
+
+  private handleFormSubmission(): FinesMciCriminalSearchFormSubmissionResult {
     this.clearInactiveTabCriteria();
     this.form.updateValueAndValidity({ emitEvent: false });
 
-    return !this.form.errors?.['atLeastOneCriteriaRequired'] && !this.form.errors?.['formEmpty'];
+    if (this.form.errors?.['searchCriteriaCannotBeCombined']) {
+      return FINES_MCI_CRIMINAL_SEARCH_RESULTS.searchCriteriaCannotBeCombined;
+    }
+
+    if (this.form.errors?.['formEmpty']) {
+      return FORM_SUBMISSION_RESULT.empty;
+    }
+
+    return FORM_SUBMISSION_RESULT.valid;
   }
 
   private setActiveTabFromFragment(tab: FinesMciCriminalSearchTab): void {
@@ -220,7 +268,15 @@ export class FinesMciPaymentCategoryCriminalSearchComponent extends AbstractForm
   }
 
   public override handleFormSubmit(event: SubmitEvent): void {
-    if (!this.handleFormSubmission()) {
+    const formSubmissionResult = this.handleFormSubmission();
+
+    if (formSubmissionResult === FINES_MCI_CRIMINAL_SEARCH_RESULTS.searchCriteriaCannotBeCombined) {
+      event.preventDefault();
+      this.navigateToMatches(FINES_MCI_CRIMINAL_SEARCH_RESULTS.searchCriteriaCannotBeCombined);
+      return;
+    }
+
+    if (formSubmissionResult === FORM_SUBMISSION_RESULT.empty) {
       super.handleFormSubmit(event);
       return;
     }

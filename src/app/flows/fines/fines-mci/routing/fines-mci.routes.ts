@@ -42,4 +42,19 @@ export const routing: Routes = [
       title: TitleResolver,
     },
   },
+  {
+    path: FINES_MCI_ROUTING_PATHS.children.paymentCategoryCriminalMatches,
+    loadComponent: () =>
+      import('../fines-mci-payment-category-criminal-matches/fines-mci-payment-category-criminal-matches.component').then(
+        (c) => c.FinesMciPaymentCategoryCriminalMatchesComponent,
+      ),
+    canActivate: [authGuard, routePermissionsGuard],
+    data: {
+      routePermissionId: [FINES_PERMISSIONS['process-and-allocate-payments']],
+      title: FINES_MCI_ROUTING_TITLES.children.paymentCategoryCriminalMatches,
+    },
+    resolve: {
+      title: TitleResolver,
+    },
+  },
 ];
