@@ -22,9 +22,7 @@ describe('FinesMacDefaultDaysComponent', () => {
   });
 
   it('should render calculate days in default as fieldset legend text and not as a heading', () => {
-    const legend = fixture.nativeElement.querySelector(
-      '.govuk-fieldset__legend',
-    ) as HTMLElement | null;
+    const legend = fixture.nativeElement.querySelector('.govuk-fieldset__legend') as HTMLElement | null;
 
     const heading = legend?.querySelector('h1');
 
