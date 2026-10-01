@@ -1,3 +1,9 @@
-<form [formGroup]="filtersForm">
-  <opal-lib-custom-inbound-file-viewer [items]="inboundViewerItems"></opal-lib-custom-inbound-file-viewer>
-</form>
+
+  <opal-lib-custom-inbound-file-viewer
+  [fileTypeAutoComplete]="fileTypeAutoCompleteItems"   
+  [fileSourceAutoComplete]="fileSourceAutoCompleteItems"
+  [businessUnitsAutoComplete]="businessUnitAutoCompleteItems"
+  [direction]="direction"
+  (formSubmit)="onFormSubmit($event)"
+  ></opal-lib-custom-inbound-file-viewer>
+  
