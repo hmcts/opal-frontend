@@ -21,6 +21,17 @@ describe('FinesMacDefaultDaysComponent', () => {
     expect(component).toBeTruthy();
   });
 
+  it('should render calculate days in default as fieldset legend text and not as a heading', () => {
+    const legend = fixture.nativeElement.querySelector(
+      '.govuk-fieldset__legend',
+    ) as HTMLElement | null;
+
+    const heading = legend?.querySelector('h1');
+
+    expect(legend?.textContent).toContain('Calculate days in default');
+    expect(heading).toBeNull();
+  });
+
   it('should calculate days in default', () => {
     component.date = '01/01/2022';
     component.daysInDefaultCalculatorForm.controls['years'].setValue(1);
