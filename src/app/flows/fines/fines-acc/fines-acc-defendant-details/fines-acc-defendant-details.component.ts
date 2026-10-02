@@ -245,7 +245,7 @@ export class FinesAccDefendantDetailsComponent
    * Determines whether the account has an outstanding balance.
    */
   private get accountHasOutstandingBalance(): boolean {
-    return this.accountData.payment_state_summary.account_balance > 0;
+    return this.accountData.payment_state_summary.account_balance < 0;
   }
 
   /**
@@ -313,7 +313,7 @@ export class FinesAccDefendantDetailsComponent
       return 'enforcement';
     } else if (!this.hasBusinessUnitPermissionKey('amend-payment-terms')) {
       return 'permission';
-    } else if (this.accountData.payment_state_summary.account_balance <= 0) {
+    } else if (!this.accountHasOutstandingBalance) {
       return 'balance';
     } else {
       return 'account-status';
