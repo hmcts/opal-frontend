@@ -3,6 +3,7 @@ import { ActivatedRoute, NavigationExtras, provideRouter, Router } from '@angula
 import { OpalFines } from '@services/fines/opal-fines-service/opal-fines.service';
 import { BehaviorSubject, of } from 'rxjs';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
+import { FinesMciStore } from '../stores/fines-mci.store';
 import { FinesMciPaymentCategoryCriminalSearchComponent } from './fines-mci-payment-category-criminal-search.component';
 
 const CRIMINAL_MATCHES_ROUTE = [
@@ -23,6 +24,7 @@ describe('FinesMciPaymentCategoryCriminalSearchComponent', () => {
   let mockOpalFines: { getDefendantAccounts: ReturnType<typeof vi.fn> };
   let fragmentSubject: BehaviorSubject<string | null>;
   let routerNavigateSpy: ReturnType<typeof vi.fn<(_: readonly unknown[], __?: NavigationExtras) => Promise<boolean>>>;
+  let finesMciStore: InstanceType<typeof FinesMciStore>;
 
   beforeEach(async () => {
     mockOpalFines = {
@@ -46,6 +48,8 @@ describe('FinesMciPaymentCategoryCriminalSearchComponent', () => {
       ],
     }).compileComponents();
 
+    finesMciStore = TestBed.inject(FinesMciStore);
+    finesMciStore.resetCriminalSearch();
     vi.spyOn(TestBed.inject(Router), 'navigate').mockImplementation(routerNavigateSpy);
 
     fixture = TestBed.createComponent(FinesMciPaymentCategoryCriminalSearchComponent);
@@ -154,6 +158,7 @@ describe('FinesMciPaymentCategoryCriminalSearchComponent', () => {
         results: 'matches',
       },
     });
+    expect(finesMciStore.criminalSearchResults()).toEqual({ count: 1, defendant_accounts: [] });
   });
 
   it('should search company defendant accounts from the companies tab', () => {

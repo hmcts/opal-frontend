@@ -27,6 +27,7 @@ import {
   FINES_MCI_CRIMINAL_SEARCH_RESULTS,
   FinesMciCriminalSearchResults,
 } from '../constants/fines-mci-criminal-search-results.constant';
+import { FinesMciStore } from '../stores/fines-mci.store';
 import { FINES_MCI_PAYMENT_CATEGORY_CRIMINAL_SEARCH_FIELD_ERRORS } from './constants/fines-mci-payment-category-criminal-search-field-errors.constant';
 import {
   finesMciPaymentCategoryCriminalSearchCompaniesValidator,
@@ -73,6 +74,7 @@ const DEFAULT_SEARCH_BUSINESS_UNIT_IDS = [65, 66, 73, 77, 80, 78];
 })
 export class FinesMciPaymentCategoryCriminalSearchComponent extends AbstractFormBaseComponent {
   private readonly currentRoute = inject(ActivatedRoute);
+  private readonly finesMciStore = inject(FinesMciStore);
   private readonly opalFinesService = inject(OpalFines);
   private readonly angularRouter = inject(Router);
   private readonly criminalMatchesRoute = [
@@ -216,6 +218,8 @@ export class FinesMciPaymentCategoryCriminalSearchComponent extends AbstractForm
 
   private searchDefendantAccounts(): void {
     this.opalFinesService.getDefendantAccounts(this.buildSearchParams()).subscribe((response) => {
+      this.finesMciStore.setCriminalSearchResults(response);
+
       if (response.count > 100) {
         this.navigateToMatches(FINES_MCI_CRIMINAL_SEARCH_RESULTS.tooMany);
         return;

@@ -1,11 +1,20 @@
 import { ChangeDetectionStrategy, Component, computed, inject } from '@angular/core';
 import { toSignal } from '@angular/core/rxjs-interop';
-import { ActivatedRoute } from '@angular/router';
+import { ActivatedRoute, Router, RouterLink } from '@angular/router';
+import { GovukBackLinkComponent } from '@hmcts/opal-frontend-common/components/govuk/govuk-back-link';
+import { IOpalFinesDefendantAccount } from '@services/fines/opal-fines-service/interfaces/opal-fines-defendant-account.interface';
 import { map } from 'rxjs';
+import { FINES_DASHBOARD_ROUTING_PATHS } from '../../constants/fines-dashboard-routing-paths.constant';
+import { FINES_ROUTING_PATHS } from '../../routing/constants/fines-routing-paths.constant';
 import {
   FINES_MCI_CRIMINAL_SEARCH_RESULTS,
   FinesMciCriminalSearchResults,
 } from '../constants/fines-mci-criminal-search-results.constant';
+import { FINES_MCI_PAYMENT_CATEGORY_CRIMINAL_MATCHES_TABLE_WRAPPER_TABLE_SORT_DEFAULT } from './fines-mci-payment-category-criminal-matches-table-wrapper/constants/fines-mci-payment-category-criminal-matches-table-wrapper-table-sort-default.constant';
+import { FinesMciPaymentCategoryCriminalMatchesTableWrapperComponent } from './fines-mci-payment-category-criminal-matches-table-wrapper/fines-mci-payment-category-criminal-matches-table-wrapper.component';
+import { IFinesMciPaymentCategoryCriminalMatchesTableWrapperTableData } from './fines-mci-payment-category-criminal-matches-table-wrapper/interfaces/fines-mci-payment-category-criminal-matches-table-wrapper-table-data.interface';
+import { FINES_MCI_ROUTING_PATHS } from '../routing/constants/fines-mci-routing-paths.constant';
+import { FinesMciStore } from '../stores/fines-mci.store';
 
 interface FinesMciCriminalMatchesContent {
   heading: string;
@@ -13,15 +22,18 @@ interface FinesMciCriminalMatchesContent {
   body: string;
 }
 
+type FinesMciCriminalMatchesPlaceholderResults = Exclude<
+  FinesMciCriminalSearchResults,
+  typeof FINES_MCI_CRIMINAL_SEARCH_RESULTS.matches
+>;
+
 const FINES_MCI_CRIMINAL_MATCHES_DEFAULT_RESULTS: FinesMciCriminalSearchResults =
   FINES_MCI_CRIMINAL_SEARCH_RESULTS.matches;
 
-const FINES_MCI_CRIMINAL_MATCHES_CONTENT: Record<FinesMciCriminalSearchResults, FinesMciCriminalMatchesContent> = {
-  [FINES_MCI_CRIMINAL_SEARCH_RESULTS.matches]: {
-    heading: 'Matching criminal accounts',
-    ticket: 'PO-3480',
-    body: 'The design and functionality for matching criminal account results will be implemented under ticket PO-3480.',
-  },
+const FINES_MCI_CRIMINAL_MATCHES_CONTENT: Record<
+  FinesMciCriminalMatchesPlaceholderResults,
+  FinesMciCriminalMatchesContent
+> = {
   [FINES_MCI_CRIMINAL_SEARCH_RESULTS.noMatches]: {
     heading: 'No matching criminal accounts',
     ticket: 'PO-3528',
@@ -44,11 +56,13 @@ const isFinesMciCriminalMatchesResults = (results: string | null): results is Fi
 
 @Component({
   selector: 'app-fines-mci-payment-category-criminal-matches',
+  imports: [FinesMciPaymentCategoryCriminalMatchesTableWrapperComponent, GovukBackLinkComponent, RouterLink],
   templateUrl: './fines-mci-payment-category-criminal-matches.component.html',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class FinesMciPaymentCategoryCriminalMatchesComponent {
   private readonly route = inject(ActivatedRoute);
+  private readonly router = inject(Router);
   private readonly results = toSignal(
     this.route.queryParamMap.pipe(
       map((queryParamMap) => {
@@ -59,5 +73,87 @@ export class FinesMciPaymentCategoryCriminalMatchesComponent {
     { initialValue: FINES_MCI_CRIMINAL_MATCHES_DEFAULT_RESULTS },
   );
 
-  protected readonly content = computed(() => FINES_MCI_CRIMINAL_MATCHES_CONTENT[this.results()]);
+  protected readonly finesMciStore = inject(FinesMciStore);
+  protected readonly content = computed(
+    () => FINES_MCI_CRIMINAL_MATCHES_CONTENT[this.results() as FinesMciCriminalMatchesPlaceholderResults],
+  );
+  protected readonly searchResults = computed(() => this.finesMciStore.criminalSearchResults()?.defendant_accounts ?? []);
+  protected readonly selectedAccountId = computed(
+    () => this.finesMciStore.selectedCriminalAccount()?.defendant_account_id ?? null,
+  );
+  protected readonly tableData = computed(() => this.mapAccountsToTableData(this.searchResults()));
+  protected readonly sortState = FINES_MCI_PAYMENT_CATEGORY_CRIMINAL_MATCHES_TABLE_WRAPPER_TABLE_SORT_DEFAULT;
+  protected readonly isMatchesResults = computed(() => this.results() === FINES_MCI_CRIMINAL_SEARCH_RESULTS.matches);
+  protected readonly financeDashboardRoute = [
+    '/',
+    FINES_ROUTING_PATHS.root,
+    FINES_DASHBOARD_ROUTING_PATHS.root,
+    FINES_DASHBOARD_ROUTING_PATHS.children.finance,
+  ];
+  protected readonly criminalSearchRoute = [
+    '/',
+    FINES_ROUTING_PATHS.root,
+    FINES_MCI_ROUTING_PATHS.root,
+    ...FINES_MCI_ROUTING_PATHS.children.paymentCategoryCriminalSearch.split('/'),
+  ];
+
+  private formatDefendantName(account: IOpalFinesDefendantAccount): string | null {
+    if (account.organisation_flag) {
+      return account.organisation_name;
+    }
+
+    if (!account.defendant_surname && !account.defendant_firstnames) {
+      return null;
+    }
+
+    const surname = account.defendant_surname ?? '';
+    const firstnames = account.defendant_firstnames ?? '';
+    const separator = account.defendant_surname && account.defendant_firstnames ? ', ' : '';
+    return `${surname}${separator}${firstnames}`;
+  }
+
+  private formatAliases(account: IOpalFinesDefendantAccount): string | null {
+    if (!account.aliases || account.aliases.length === 0) {
+      return null;
+    }
+
+    const aliases = account.aliases.map((alias) => {
+      if (account.organisation_flag) {
+        return alias.organisation_name;
+      }
+
+      const surname = alias.surname ?? '';
+      const forenames = alias.forenames ?? '';
+      const separator = alias.surname && alias.forenames ? ', ' : '';
+      return `${surname}${separator}${forenames}`;
+    });
+
+    return aliases.filter(Boolean).join('\n') || null;
+  }
+
+  private mapAccountsToTableData(
+    accounts: IOpalFinesDefendantAccount[],
+  ): IFinesMciPaymentCategoryCriminalMatchesTableWrapperTableData[] {
+    return accounts.map((account) => ({
+      'Account ID': account.defendant_account_id,
+      Account: account.account_number,
+      Name: this.formatDefendantName(account),
+      Aliases: this.formatAliases(account),
+      'Date of birth': account.birth_date,
+      'Address line 1': account.address_line_1,
+      Postcode: account.postcode,
+      Balance: account.account_balance,
+      Enf: account.last_enforcement_action,
+      CO: null,
+    }));
+  }
+
+  protected navigateBack(): void {
+    this.router.navigate(this.criminalSearchRoute);
+  }
+
+  protected selectAccount(accountId: number): void {
+    const selectedAccount = this.searchResults().find((account) => account.defendant_account_id === accountId) ?? null;
+    this.finesMciStore.setSelectedCriminalAccount(selectedAccount);
+  }
 }
