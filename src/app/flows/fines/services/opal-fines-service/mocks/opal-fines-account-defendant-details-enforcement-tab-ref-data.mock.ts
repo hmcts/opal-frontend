@@ -50,10 +50,12 @@ export const OPAL_FINES_ACCOUNT_DEFENDANT_DETAILS_ENFORCEMENT_TAB_REF_DATA_MOCK:
       result_responses: [
         {
           parameter_name: 'param1',
+          prompt: 'Parameter 1',
           response: 'response1',
         },
         {
           parameter_name: 'param2',
+          prompt: 'Parameter 2',
           response: 'response2',
         },
       ],

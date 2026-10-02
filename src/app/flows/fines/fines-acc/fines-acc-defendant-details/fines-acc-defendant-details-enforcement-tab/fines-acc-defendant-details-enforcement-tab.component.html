@@ -244,7 +244,7 @@
                       summaryListId="enforcementActionDetails"
                       [summaryListRowId]="response.parameter_name"
                     >
-                      <ng-container name>{{ response.parameter_name | titlecase }}</ng-container>
+                      <ng-container name>{{ response.prompt || (response.parameter_name | titlecase) }}</ng-container>
                       <ng-container value>
                         @if (response.parameter_name === 'hearing date') {
                           {{ response.response | date: 'dd MMMM yyyy' }}

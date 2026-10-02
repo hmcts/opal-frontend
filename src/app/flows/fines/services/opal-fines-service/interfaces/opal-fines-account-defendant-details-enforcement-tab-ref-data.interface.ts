@@ -48,6 +48,7 @@ export interface IOpalFinesAccountDefendantDetailsEnforcementTabRefData extends 
     reason: string;
     result_responses: Array<{
       parameter_name: string;
+      prompt: string | null;
       response: string;
     }>;
     warrant_number: string;
