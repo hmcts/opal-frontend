@@ -1,21 +1,25 @@
 import { inject } from '@angular/core';
 import { ResolveFn } from '@angular/router';
 import { FINES_ACCOUNT_TYPES } from '@app/flows/fines/constants/fines-account-types.constant';
+import { RELEASE_1A_1_1_FEATURE_FLAG } from '@app/flows/fines/constants/release-feature-flags.constant';
+import { resolveFeatureFlagGuard } from '@hmcts/opal-frontend-common/guards/feature-flag';
 import { OpalFines } from '@services/fines/opal-fines-service/opal-fines.service';
-import { map, Observable } from 'rxjs';
+import { forkJoin, from, map, Observable, switchMap } from 'rxjs';
 import { FinesMacStore } from '../../../stores/fines-mac.store';
 import { getFetchSendingCourtsLjaTypes } from '../fetch-sending-courts-resolver/helpers/fetch-sending-courts-lja-type.helper';
 import { IFinesMacOriginatorRefData } from './interfaces/fines-mac-originator-ref-data.interface';
 
 /**
  * Resolves and normalizes account-type-specific originator reference data.
- * Fine accounts use local justice areas. Conditional Caution and Fixed Penalty accounts
- * use prosecutors only; neither account type uses local justice areas as originators.
+ * Fine accounts always use local justice areas. Conditional Caution and Fixed Penalty accounts
+ * use their original originator sources until the release-1a-1.1 feature flag is enabled, when
+ * both account types use prosecutors only.
  * @returns An observable containing normalized prosecutor, local justice area, or combined originator data.
  */
-export const fetchOriginatorsResolver: ResolveFn<
-  IFinesMacOriginatorRefData
-> = (): Observable<IFinesMacOriginatorRefData> => {
+export const fetchOriginatorsResolver: ResolveFn<IFinesMacOriginatorRefData> = (
+  route,
+  state,
+): Observable<IFinesMacOriginatorRefData> => {
   const opalFinesService = inject(OpalFines);
   const finesMacStore = inject(FinesMacStore);
   const accountType = finesMacStore.accountDetails().formData.fm_create_account_account_type;
@@ -51,12 +55,30 @@ export const fetchOriginatorsResolver: ResolveFn<
     );
   };
 
-  if (
-    accountType === FINES_ACCOUNT_TYPES['Conditional Caution'] ||
-    accountType === FINES_ACCOUNT_TYPES['Fixed Penalty']
-  ) {
-    return fetchProsecutorOriginators();
+  if (accountType === FINES_ACCOUNT_TYPES.Fine) {
+    return fetchLocalJusticeAreaOriginators();
   }
 
-  return fetchLocalJusticeAreaOriginators();
+  return from(resolveFeatureFlagGuard(RELEASE_1A_1_1_FEATURE_FLAG, route, state)).pipe(
+    switchMap((release1a1_1Enabled) => {
+      if (
+        release1a1_1Enabled &&
+        (accountType === FINES_ACCOUNT_TYPES['Conditional Caution'] ||
+          accountType === FINES_ACCOUNT_TYPES['Fixed Penalty'])
+      ) {
+        return fetchProsecutorOriginators();
+      }
+
+      if (accountType === FINES_ACCOUNT_TYPES['Fixed Penalty']) {
+        return forkJoin([fetchProsecutorOriginators(), fetchLocalJusticeAreaOriginators()]).pipe(
+          map(([prosecutors, localJusticeAreas]) => ({
+            count: prosecutors.count + localJusticeAreas.count,
+            refData: [...prosecutors.refData, ...localJusticeAreas.refData],
+          })),
+        );
+      }
+
+      return fetchLocalJusticeAreaOriginators();
+    }),
+  );
 };

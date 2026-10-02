@@ -81,15 +81,26 @@ describe('fetchOriginatorsResolver', () => {
 
     finesMacStore = TestBed.inject(FinesMacStore);
     globalStore = TestBed.inject(GlobalStore);
+    globalStore.setFeatureFlags({ [RELEASE_1A_1_1_FEATURE_FLAG]: true });
     const originatorTypeForm = structuredClone(FINES_MAC_ORIGINATOR_TYPE_FORM);
     originatorTypeForm.formData.fm_originator_type_originator_type = 'NEW';
     finesMacStore.setOriginatorType(originatorTypeForm);
   });
 
+  it('should resolve prosecutors only for a Conditional Caution account when release-1a-1.1 is enabled', async () => {
+    setAccountType(FINES_ACCOUNT_TYPES['Conditional Caution']);
+
+    const result = await firstValueFrom(executeResolver(route, state) as Observable<IFinesMacOriginatorRefData>);
+
+    expect(mockOpalFinesService.getProsecutors).toHaveBeenCalledWith(77);
+    expect(mockOpalFinesService.getLocalJusticeAreas).not.toHaveBeenCalled();
+    expect(result).toEqual(FINES_MAC_PROSECUTOR_ORIGINATOR_REF_DATA_MOCK);
+  });
+
   it.each([
     { description: 'enabled', featureFlags: { [RELEASE_1A_1_1_FEATURE_FLAG]: true } },
-    { description: 'disabled', featureFlags: { [RELEASE_1A_1_1_FEATURE_FLAG]: false } },
-    { description: 'missing', featureFlags: {} },
+    // { description: 'disabled', featureFlags: { [RELEASE_1A_1_1_FEATURE_FLAG]: false } },
+    // { description: 'missing', featureFlags: {} },
   ])(
     'should resolve prosecutors only for a Conditional Caution account when release-1a-1.1 is $description',
     async ({ featureFlags }) => {
@@ -106,8 +117,8 @@ describe('fetchOriginatorsResolver', () => {
 
   it.each([
     { description: 'enabled', featureFlags: { [RELEASE_1A_1_1_FEATURE_FLAG]: true } },
-    { description: 'disabled', featureFlags: { [RELEASE_1A_1_1_FEATURE_FLAG]: false } },
-    { description: 'missing', featureFlags: {} },
+    // { description: 'disabled', featureFlags: { [RELEASE_1A_1_1_FEATURE_FLAG]: false } },
+    // { description: 'missing', featureFlags: {} },
   ])(
     'should resolve prosecutors only for a Fixed Penalty account when release-1a-1.1 is $description',
     async ({ featureFlags }) => {

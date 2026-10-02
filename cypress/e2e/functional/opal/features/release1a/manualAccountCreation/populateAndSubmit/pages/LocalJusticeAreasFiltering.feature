@@ -36,7 +36,7 @@ Feature: Court and prosecutor reference data requests
       | NICRT  |
 
   # PO-10693 AC1a, AC1c
-  @JIRA-EPIC:PO-2750 @R1A1_1 @JIRA-STORY:PO-2761 @JIRA-DEFECT:PO-10693 @JIRA-TEST-KEY:PO-5385
+  @JIRA-EPIC:PO-2750 @R1A1 @JIRA-STORY:PO-2761 @JIRA-DEFECT:PO-10693 @JIRA-TEST-KEY:PO-5385
   Scenario: Conditional Caution + New requests prosecutors without requesting local justice areas
     When I create a "New" manual "Conditional Caution" account for business unit "West London" with defendant type "Adult or youth only"
     And I access the "Court details" task
@@ -44,7 +44,7 @@ Feature: Court and prosecutor reference data requests
     And no local justice area requests should be made
 
   # PO-10693 AC2a, AC2c
-  @JIRA-EPIC:PO-2750 @R1A1_1 @JIRA-STORY:PO-2761 @JIRA-DEFECT:PO-10693 @JIRA-TEST-KEY:PO-5386
+  @JIRA-EPIC:PO-2750 @R1A1 @JIRA-STORY:PO-2761 @JIRA-DEFECT:PO-10693 @JIRA-TEST-KEY:PO-5386
   Scenario: Fixed Penalty + New requests prosecutors without requesting local justice areas
     When I create a "New" manual "Fixed Penalty" account for business unit "West London" with defendant type "Adult or youth only"
     Then I should see the header containing text "Fixed Penalty details"
@@ -52,25 +52,9 @@ Feature: Court and prosecutor reference data requests
     And no local justice area requests should be made
 
   # PO-10693 AC2a, AC2c
-  @JIRA-EPIC:PO-2750 @R1A1_1 @JIRA-STORY:PO-2761 @JIRA-DEFECT:PO-10693 @JIRA-TEST-KEY:PO-5387
+  @JIRA-EPIC:PO-2750 @R1A1 @JIRA-STORY:PO-2761 @JIRA-DEFECT:PO-10693 @JIRA-TEST-KEY:PO-5387
   Scenario: Fixed Penalty + Transfer in requests prosecutors without requesting local justice areas
     When I create a "Transfer in" manual "Fixed Penalty" account for business unit "West London" with defendant type "Adult or youth only"
-    Then I should see the header containing text "Fixed Penalty details"
-    And a prosecutor request should be made
-    And no local justice area requests should be made
-
-  # PO-10693 release-1a-1.1 disabled: prosecutor originators remain in use
-  @JIRA-EPIC:PO-2750 @R1A1_1Off @JIRA-STORY:PO-2761 @JIRA-DEFECT:PO-10693
-  Scenario: Conditional Caution + New requests prosecutors without requesting local justice areas when release 1a 1.1 is disabled
-    When I create a "New" manual "Conditional Caution" account for business unit "West London" with defendant type "Adult or youth only"
-    And I access the "Court details" task
-    Then a prosecutor request should be made
-    And no local justice area requests should be made
-
-  # PO-10693 release-1a-1.1 disabled: prosecutor originators remain in use
-  @JIRA-EPIC:PO-2750 @R1A1_1Off @JIRA-STORY:PO-2761 @JIRA-DEFECT:PO-10693
-  Scenario: Fixed Penalty + New requests prosecutors without requesting local justice areas when release 1a 1.1 is disabled
-    When I create a "New" manual "Fixed Penalty" account for business unit "West London" with defendant type "Adult or youth only"
     Then I should see the header containing text "Fixed Penalty details"
     And a prosecutor request should be made
     And no local justice area requests should be made
