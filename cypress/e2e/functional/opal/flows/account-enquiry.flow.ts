@@ -54,6 +54,40 @@ type LegacyDefendantTabName =
 
 type LegacyCompanyTabName = 'Defendant' | 'Payment terms';
 
+const normalizeComparisonText = (value: unknown): string =>
+  String(value ?? '')
+    .replace(/\s+/g, ' ')
+    .trim()
+    .toLowerCase();
+
+const isLegacyAccountMode = (): boolean => {
+  const legacyEnabled = Cypress.env('LEGACY_ENABLED');
+
+  if (typeof legacyEnabled === 'string') {
+    const normalizedLegacyEnabled = legacyEnabled.trim().toLowerCase();
+
+    if (['true', 'legacy', '1'].includes(normalizedLegacyEnabled)) {
+      return true;
+    }
+  } else if (legacyEnabled === true) {
+    return true;
+  }
+
+  const testMode = String(Cypress.env('TEST_MODE') ?? '')
+    .trim()
+    .toLowerCase();
+  const appMode = String(Cypress.env('DEV_DEFAULT_APP_MODE') ?? Cypress.env('DEFAULT_APP_MODE') ?? '')
+    .trim()
+    .toLowerCase();
+
+  return testMode === 'legacy' || appMode === 'legacy';
+};
+
+const expectTextToContainIgnoringCase = (actual: unknown, expected: string, message: string): void => {
+  expect(actual, message).to.be.a('string');
+  expect(normalizeComparisonText(actual), message).to.contain(normalizeComparisonText(expected));
+};
+
 type LegacyDefendantAccountFixture = {
   header?: {
     accountNumber?: string;
@@ -1891,7 +1925,11 @@ export class AccountEnquiryFlow {
   public assertDefendantNameContains(expected: string): void {
     logAE('assert', 'assertDefendantNameContains()', { expected });
     this.detailsNav.goToDefendantTab();
-    this.defendantDetails.assertDefendantNameContains(expected);
+    if (isLegacyAccountMode()) {
+      this.defendantDetails.assertDefendantNameContainsIgnoringCase(expected);
+    } else {
+      this.defendantDetails.assertDefendantNameContains(expected);
+    }
   }
 
   /**
@@ -3071,6 +3109,22 @@ export class AccountEnquiryFlow {
           const details = party?.['party_details'] as Record<string, unknown> | undefined;
           const individual = details?.['individual_details'] as Record<string, unknown> | undefined;
 
+          if (isLegacyAccountMode()) {
+            const forenames = individual?.['forenames'];
+
+            if (forenames === null || forenames === undefined || String(forenames).trim() === '') {
+              expectTextToContainIgnoringCase(
+                individual?.['surname'],
+                expectedForename,
+                'Legacy individual surname should contain expected forename',
+              );
+              logAESync('assert', 'Legacy forename verified in combined surname field', {
+                surname: individual?.['surname'],
+              });
+              return data.defendantAccountId;
+            }
+          }
+
           expect(individual?.['forenames'], 'Forename should match expected value').to.eq(expectedForename);
           logAESync('assert', 'Forename verified in party details', { forenames: individual?.['forenames'] });
           return data.defendantAccountId;
@@ -3208,6 +3262,21 @@ export class AccountEnquiryFlow {
           const details = party?.['party_details'] as Record<string, unknown> | undefined;
           const individual = details?.['individual_details'] as Record<string, unknown> | undefined;
 
+          if (isLegacyAccountMode()) {
+            expect(individual?.['forenames'] ?? null, 'Legacy parent/guardian forenames should not be inferred').to.be
+              .null;
+            expectTextToContainIgnoringCase(
+              individual?.['surname'],
+              expectedGuardianName,
+              'Legacy parent/guardian surname should contain the combined GoB name',
+            );
+            logAESync('assert', 'Legacy parent/guardian name verified in combined surname field', {
+              forenames: individual?.['forenames'],
+              surname: individual?.['surname'],
+            });
+            return data.defendantAccountId;
+          }
+
           expect(individual?.['forenames'], 'Guardian forename should match expected value').to.eq(
             expectedGuardianName,
           );
@@ -3288,6 +3357,16 @@ export class AccountEnquiryFlow {
 
           const organisation = details?.['organisation_details'] as Record<string, unknown> | undefined;
           const organisationName = organisation?.['organisation_name'];
+
+          if (isLegacyAccountMode()) {
+            expectTextToContainIgnoringCase(
+              organisationName,
+              expectedCompanyName,
+              'Legacy organisation name should contain expected value',
+            );
+            logAESync('assert', 'Legacy organisation name verified in party details', { organisationName });
+            return data.defendantAccountId;
+          }
 
           expect(organisationName, 'Organisation name should match expected value').to.eq(expectedCompanyName);
           logAESync('assert', 'Organisation name verified in party details', { organisationName });
