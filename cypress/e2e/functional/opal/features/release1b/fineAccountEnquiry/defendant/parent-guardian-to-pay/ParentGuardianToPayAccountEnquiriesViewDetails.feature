@@ -61,6 +61,24 @@ Feature: Parent Guardian To Pay Account Enquiries View Details
       And I should see the parent or guardian add error summary contains "Enter parent or guardian last name"
       And I should see the parent or guardian add error summary contains "Enter address line 1, typically the building and street"
 
+    @R1BDrop1 @JIRA-STORY:PO-1877 @JIRA-STORY:PO-10731 @JIRA-EPIC:PO-976
+    Scenario: Adding a non-paying parent or guardian rejects address line 3 above 13 characters and saves 13 characters
+      When I start adding parent or guardian details
+      And I enter "Pat" into the parent or guardian first name field
+      And I enter "Guardian" into the parent or guardian last name field
+      And I enter "1 Test Street" into the parent or guardian address line 1 field
+      And I enter "ABCDEFGHIJKLMN" into the parent or guardian address line 3 field
+      And I attempt to save the parent or guardian add details
+      Then I should see the parent or guardian add error summary contains "Address line 3 must be 13 characters or fewer"
+      When I enter "ABCDEFGHIJKLMNOP" into the parent or guardian address line 3 field
+      And I attempt to save the parent or guardian add details
+      Then I should see the parent or guardian add error summary contains "Address line 3 must be 13 characters or fewer"
+      When I enter "ABCDEFGHIJKLM" into the parent or guardian address line 3 field
+      And I save the parent or guardian details
+      Then I should return to the account details page Parent or guardian tab
+      When I start changing the non-paying parent or guardian details
+      Then I should see the parent or guardian address line 3 field contains "ABCDEFGHIJKLM"
+
   Rule: Youth-only account with parent or guardian details
     Background:
       Given I create a "adultOrYouthOnly" draft account with the following details and set status "Publishing Pending" using user "opal-test-10@dev.platform.hmcts.net":
@@ -190,6 +208,21 @@ Feature: Parent Guardian To Pay Account Enquiries View Details
       And I should see the parent or guardian name contains "Updated LNAME"
       And I verify no amendments were created via API for parent or guardian details
 
+    @R1BDrop1 @JIRA-STORY:PO-1112 @JIRA-STORY:PO-10731 @JIRA-EPIC:PO-976
+    Scenario: Amending a paying parent or guardian rejects address line 3 above 13 characters and saves 13 characters
+      When I edit the Parent or guardian details without making changes
+      And I enter "ABCDEFGHIJKLMN" into the parent or guardian address line 3 field
+      And I attempt to save the parent or guardian amend details
+      Then I should see the parent or guardian amend error summary contains "Address line 3 must be 13 characters or fewer"
+      When I enter "ABCDEFGHIJKLMNOP" into the parent or guardian address line 3 field
+      And I attempt to save the parent or guardian amend details
+      Then I should see the parent or guardian amend error summary contains "Address line 3 must be 13 characters or fewer"
+      When I enter "ABCDEFGHIJKLM" into the parent or guardian address line 3 field
+      And I save the parent or guardian details
+      Then I should return to the account details page Parent or guardian tab
+      When I edit the Parent or guardian details without making changes
+      Then I should see the parent or guardian address line 3 field contains "ABCDEFGHIJKLM"
+
   Rule: Youth-only amend parent or guardian baseline
     Background:
       Given I create a "adultOrYouthOnly" draft account with the following details and set status "Publishing Pending" using user "opal-test-10@dev.platform.hmcts.net":
@@ -257,6 +290,21 @@ Feature: Parent Guardian To Pay Account Enquiries View Details
       Then I should remain on the amend parent or guardian details page
       And I should see the amend parent or guardian first name field contains "Updated"
       And I should see the parent or guardian amend error summary contains "Enter parent or guardian last name"
+
+    @R1BDrop1 @JIRA-STORY:PO-3915 @JIRA-STORY:PO-10731 @JIRA-EPIC:PO-976
+    Scenario: Amending a non-paying parent or guardian rejects address line 3 above 13 characters and saves 13 characters
+      When I start changing the non-paying parent or guardian details
+      And I enter "ABCDEFGHIJKLMN" into the parent or guardian address line 3 field
+      And I attempt to save the parent or guardian amend details
+      Then I should see the parent or guardian amend error summary contains "Address line 3 must be 13 characters or fewer"
+      When I enter "ABCDEFGHIJKLMNOP" into the parent or guardian address line 3 field
+      And I attempt to save the parent or guardian amend details
+      Then I should see the parent or guardian amend error summary contains "Address line 3 must be 13 characters or fewer"
+      When I enter "ABCDEFGHIJKLM" into the parent or guardian address line 3 field
+      And I save the parent or guardian details
+      Then I should return to the account details page Parent or guardian tab
+      When I start changing the non-paying parent or guardian details
+      Then I should see the parent or guardian address line 3 field contains "ABCDEFGHIJKLM"
 
   Rule: Non-paying defendant account baseline
     Background:
