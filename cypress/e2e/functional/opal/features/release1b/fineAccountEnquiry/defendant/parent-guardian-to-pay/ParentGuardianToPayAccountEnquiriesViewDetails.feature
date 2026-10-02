@@ -61,7 +61,7 @@ Feature: Parent Guardian To Pay Account Enquiries View Details
       And I should see the parent or guardian add error summary contains "Enter parent or guardian last name"
       And I should see the parent or guardian add error summary contains "Enter address line 1, typically the building and street"
 
-    @R1BDrop1 @JIRA-STORY:PO-1877 @JIRA-STORY:PO-10731 @JIRA-EPIC:PO-976
+    @functional @R1BDrop1 @JIRA-STORY:PO-1877 @JIRA-EPIC:PO-1875 @JIRA-DEFECT:PO-10731
     Scenario: Adding a non-paying parent or guardian rejects address line 3 above 13 characters and saves 13 characters
       When I start adding parent or guardian details
       And I enter "Pat" into the parent or guardian first name field
@@ -208,7 +208,7 @@ Feature: Parent Guardian To Pay Account Enquiries View Details
       And I should see the parent or guardian name contains "Updated LNAME"
       And I verify no amendments were created via API for parent or guardian details
 
-    @R1BDrop1 @JIRA-STORY:PO-1112 @JIRA-STORY:PO-10731 @JIRA-EPIC:PO-976
+    @functional @R1BDrop1 @JIRA-STORY:PO-1112 @JIRA-EPIC:PO-976 @JIRA-DEFECT:PO-10731
     Scenario: Amending a paying parent or guardian rejects address line 3 above 13 characters and saves 13 characters
       When I edit the Parent or guardian details without making changes
       And I enter "ABCDEFGHIJKLMN" into the parent or guardian address line 3 field
@@ -291,7 +291,7 @@ Feature: Parent Guardian To Pay Account Enquiries View Details
       And I should see the amend parent or guardian first name field contains "Updated"
       And I should see the parent or guardian amend error summary contains "Enter parent or guardian last name"
 
-    @R1BDrop1 @JIRA-STORY:PO-3915 @JIRA-STORY:PO-10731 @JIRA-EPIC:PO-976
+    @functional @R1BDrop1 @JIRA-STORY:PO-3915 @JIRA-EPIC:PO-1875 @JIRA-DEFECT:PO-10731
     Scenario: Amending a non-paying parent or guardian rejects address line 3 above 13 characters and saves 13 characters
       When I start changing the non-paying parent or guardian details
       And I enter "ABCDEFGHIJKLMN" into the parent or guardian address line 3 field
