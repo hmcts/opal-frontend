@@ -2024,7 +2024,7 @@ export class AccountEnquiryFlow {
    */
   public attemptSaveAmendParentGuardianDetails(): void {
     logAE('method', 'attemptSaveAmendParentGuardianDetails()');
-    this.assertOnAmendParentGuardianDetailsPage();
+    this.editParentGuardianActions.assertHeader({ route: 'amend' });
     this.editParentGuardianActions.saveChanges();
   }
 
@@ -2116,7 +2116,7 @@ export class AccountEnquiryFlow {
    */
   public assertAmendParentGuardianErrorSummaryContains(expected: string): void {
     logAE('method', 'assertAmendParentGuardianErrorSummaryContains()', { expected });
-    this.assertOnAmendParentGuardianDetailsPage();
+    this.editParentGuardianActions.assertHeader({ route: 'amend' });
     this.editParentGuardianActions.assertErrorSummaryContains(expected);
   }
 

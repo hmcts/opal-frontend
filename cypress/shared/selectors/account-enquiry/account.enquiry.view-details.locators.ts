@@ -55,6 +55,7 @@ export const DOM_ELEMENTS = {
   addressLine1Input: 'input[id="facc_party_add_amend_convert_address_line_1"]',
   addressLine2Input: 'input[id="facc_party_add_amend_convert_address_line_2"]',
   addressLine3Input: 'input[id="facc_party_add_amend_convert_address_line_3"]',
+  addressLine3Error: '#facc_party_add_amend_convert_address_line_3-error-message',
   postcodeInput: 'input[id="facc_party_add_amend_convert_post_code"]',
 
   // Contact details
