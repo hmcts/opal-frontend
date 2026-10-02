@@ -15,10 +15,11 @@ Feature: Search For Account Filter By BU
     When the user switches to the Confiscation tab
     Then the Confiscation Filter by business unit page is shown with defaults
 
-  @JIRA-EPIC:PO-704 @R1BDrop1 @JIRA-STORY:PO-711 @AC7 @JIRA-TEST-KEY:PO-5414
+  @JIRA-EPIC:PO-704 @R1BDrop1 @JIRA-STORY:PO-711 @AC7 @JIRA-TEST-KEY:PO-5414 @only
   Scenario: AC7 — Saving sends the combined selection across tabs
     And I clear all selected business units on the "Fines" tab
     And I clear all selected business units on the "Confiscation" tab
+    Then the "Save selection" button displays a total of 0
     # Act: pick some on each tab
     When I select the following business units:
       | tab          | businessUnit |
@@ -36,7 +37,7 @@ Feature: Search For Account Filter By BU
     Then the business unit filter summary is "All business units"
 
 
-  @JIRA-EPIC:PO-704 @R1BDrop1 @JIRA-STORY:PO-711 @AC9 @JIRA-TEST-KEY:PO-5416
+  @JIRA-EPIC:PO-704 @R1BDrop1 @JIRA-STORY:PO-711 @AC9 @JIRA-TEST-KEY:PO-5416 @only
   Scenario: AC9 — Switching tabs preserves selections and total count
     And I clear all selected business units on the "Fines" tab
     And I clear all selected business units on the "Confiscation" tab
@@ -60,7 +61,7 @@ Feature: Search For Account Filter By BU
     And the "Save selection" button displays a total of 2
 
 
-  @JIRA-EPIC:PO-704 @R1BDrop1 @JIRA-STORY:PO-711 @AC10 @JIRA-TEST-KEY:PO-5417
+  @JIRA-EPIC:PO-704 @R1BDrop1 @JIRA-STORY:PO-711 @AC10 @JIRA-TEST-KEY:PO-5417 @only
   Scenario: AC10 — Previously entered search criteria remain populated after saving amended business unit filter
     # Background ends on "Filter by business unit" → go back first
     When I cancel the business unit selection
@@ -79,6 +80,7 @@ Feature: Search For Account Filter By BU
     And I open the business unit filter from the search page
     And I clear all selected business units on the "Fines" tab
     And I clear all selected business units on the "Confiscation" tab
+    Then the "Save selection" button displays a total of 0
     When I select the following business units:
       | tab   | businessUnit |
       | Fines | Bedfordshire |
