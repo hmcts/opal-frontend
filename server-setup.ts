@@ -40,6 +40,7 @@ export function getRoutesConfig(): {
     ...DEFAULT_PROXY_CONFIG,
     opalFinesServiceUrl: config.get('opal-api.opal-fines-service'),
     opalUserServiceUrl: config.get('opal-api.opal-user-service'),
+    opalFileHandlingServiceUrl: config.get('opal-api.opal-file-handling-service'),
     timeoutInMilliseconds: config.get('opal-api.timeoutInMilliseconds'),
   };
 
@@ -97,6 +98,17 @@ export function configureApiProxyRoutes(app: Express, proxyConfiguration: ProxyC
       ),
     );
   }
+
+  if (proxyConfiguration.opalFileHandlingServiceUrl) {
+    app.use(
+      '/opal-file-handling-service',
+      OpalApiProxy(
+        proxyConfiguration.opalFileHandlingServiceUrl, 
+        ipLoggingEnabled, 
+        proxyConfiguration.timeoutInMilliseconds),
+    );
+  } 
+
 
   if (proxyConfiguration.opalUserServiceUrl) {
     app.use(
