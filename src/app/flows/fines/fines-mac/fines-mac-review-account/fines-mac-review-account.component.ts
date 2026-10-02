@@ -30,6 +30,7 @@ import { FINES_DRAFT_ROUTING_PATHS } from '../../fines-draft/routing/constants/f
 import { FINES_DRAFT_CREATE_AND_MANAGE_ROUTING_PATHS } from '../../fines-draft/fines-draft-create-and-manage/routing/constants/fines-draft-create-and-manage-routing-paths.constant';
 import { GovukButtonComponent } from '@hmcts/opal-frontend-common/components/govuk/govuk-button';
 import { GovukBackLinkComponent } from '@hmcts/opal-frontend-common/components/govuk/govuk-back-link';
+import { BackLinkDirective } from '@app/directives/back-link.directive';
 import { GlobalStore } from '@hmcts/opal-frontend-common/stores/global';
 import { UtilsService } from '@hmcts/opal-frontend-common/services/utils-service';
 import { DateService } from '@hmcts/opal-frontend-common/services/date-service';
@@ -50,6 +51,7 @@ import { FINES_ACCOUNT_TYPES } from '../../constants/fines-account-types.constan
   imports: [
     CommonModule,
     GovukBackLinkComponent,
+    BackLinkDirective,
     GovukButtonComponent,
     FinesMacReviewAccountAccountDetailsComponent,
     FinesMacReviewAccountCourtDetailsComponent,

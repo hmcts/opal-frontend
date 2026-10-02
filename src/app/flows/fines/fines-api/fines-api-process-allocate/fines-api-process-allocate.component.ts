@@ -2,6 +2,7 @@ import { AsyncPipe } from '@angular/common';
 import { ChangeDetectionStrategy, Component, OnDestroy, OnInit, inject } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { GovukBackLinkComponent } from '@hmcts/opal-frontend-common/components/govuk/govuk-back-link';
+import { BackLinkDirective } from '@app/directives/back-link.directive';
 import { GovukCancelLinkComponent } from '@hmcts/opal-frontend-common/components/govuk/govuk-cancel-link';
 import { CanDeactivateTypes } from '@hmcts/opal-frontend-common/guards/can-deactivate/types';
 import {
@@ -31,6 +32,7 @@ import { TFinesApiProcessAllocateTabKey } from './types/fines-api-process-alloca
     AsyncPipe,
     FinesApiProcessComponent,
     GovukBackLinkComponent,
+    BackLinkDirective,
     GovukCancelLinkComponent,
     MojSubNavigationComponent,
     MojSubNavigationItemComponent,

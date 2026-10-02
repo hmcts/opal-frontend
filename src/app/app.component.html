@@ -30,7 +30,18 @@
 
   <div class="content-wrapper">
     <div class="govuk-width-container">
-      <main class="govuk-main-wrapper" id="main-content" role="main">
+      @if (backLinkTemplate(); as backLinkTemplate) {
+        <div class="govuk-main-wrapper govuk-!-padding-bottom-0">
+          <div class="govuk-grid-row">
+            <ng-container [ngTemplateOutlet]="backLinkTemplate"></ng-container>
+          </div>
+        </div>
+      }
+      <main
+        [class]="backLinkTemplate() ? 'govuk-main-wrapper govuk-!-padding-top-0' : 'govuk-main-wrapper'"
+        id="main-content"
+        role="main"
+      >
         @if (minutesRemaining$ | async; as minutes) {
           @if (thresholdInMinutes >= minutes && minutes > 0) {
             <div>
