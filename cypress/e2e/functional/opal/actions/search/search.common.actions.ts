@@ -260,7 +260,9 @@ const valuesMatch = (actualValue: unknown, expectedRaw: string, mapping: Account
       );
     }
 
-    return parsedExpectedOptions.some((parsedExpected) => JSON.stringify(actualValue) === JSON.stringify(parsedExpected));
+    return parsedExpectedOptions.some(
+      (parsedExpected) => JSON.stringify(actualValue) === JSON.stringify(parsedExpected),
+    );
   }
 
   return String(actualValue) === String(expectedValue);
