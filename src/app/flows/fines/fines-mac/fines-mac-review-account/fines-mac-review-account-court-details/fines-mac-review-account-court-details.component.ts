@@ -36,6 +36,7 @@ export class FinesMacReviewAccountCourtDetailsComponent implements OnInit {
   @Input({ required: true }) public enforcementCourtsData!: IOpalFinesCourtRefData;
   @Input({ required: true }) public localJusticeAreasData!: IOpalFinesLocalJusticeAreaRefData;
   @Input({ required: true }) public prosecutorsData!: IOpalFinesProsecutorRefData;
+  @Input({ required: true }) public release1a1_1Enabled!: boolean;
   @Input({ required: false }) public isReadOnly = false;
   @Input({ required: true }) public accountType!: string;
   @Output() public emitChangeCourtDetails = new EventEmitter<void>();
@@ -94,9 +95,10 @@ export class FinesMacReviewAccountCourtDetailsComponent implements OnInit {
   }
 
   /**
-   * Retrieves the prosecutor details based on the originator ID from the fixed penalty details.
+   * Retrieves the prosecutor details for the selected originator ID.
    * It finds the corresponding prosecutor from the prosecutorsData array
-   * and returns the pretty name for that prosecutor or null if not found.
+   * and returns the pretty name used by Fixed Penalty and Conditional Caution reviews,
+   * or null if no prosecutor matches.
    *
    * @private
    * @returns {string | null}
@@ -113,18 +115,29 @@ export class FinesMacReviewAccountCourtDetailsComponent implements OnInit {
   }
 
   /**
-   * Retrieves and processes the court details data.
-   * This method calls the `getEnforcementCourt` function to fetch the enforcement court details
-   * and sets the `sendingCourt` (and `issuingAuthority` if required), based on the originator ID from the relevant store
+   * Resolves the enforcement court and account-type-specific originator display values.
+   * Fine sending courts always use local justice areas. When release-1a-1.1 is enabled,
+   * Fixed Penalty and Conditional Caution originators prefer prosecutors. When it is disabled,
+   * Fixed Penalty retains its prosecutor-first lookup and Conditional Caution prefers local justice areas.
+   * Both flag-aware account types fall back to the other reference dataset and then the stored
+   * originator name so persisted drafts remain visible across flag transitions.
    * @private
    */
   private getCourtDetailsData(): void {
+    const originatorId = this.courtDetails.fm_court_details_originator_id;
+    const storedOriginatorName = this.courtDetails.fm_court_details_originator_name;
+
     this.getEnforcementCourt();
     if (this.accountType === this.accountTypesKeys['Fixed Penalty']) {
-      this.issuingAuthority =
-        this.getProsecutor() ?? this.getSendingCourt(this.courtDetails.fm_court_details_originator_id);
+      this.issuingAuthority = this.getProsecutor() ?? this.getSendingCourt(originatorId) ?? storedOriginatorName;
+    } else if (this.accountType === this.accountTypesKeys['Conditional Caution']) {
+      if (this.release1a1_1Enabled) {
+        this.sendingCourt = this.getProsecutor() ?? this.getSendingCourt(originatorId) ?? storedOriginatorName;
+      } else {
+        this.sendingCourt = this.getSendingCourt(originatorId) ?? this.getProsecutor() ?? storedOriginatorName;
+      }
     } else {
-      this.sendingCourt = this.getSendingCourt(this.courtDetails.fm_court_details_originator_id);
+      this.sendingCourt = this.getSendingCourt(originatorId);
     }
   }
 

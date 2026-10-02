@@ -27,6 +27,7 @@
       "override": false,
       "releases": {
         "release-1a": true,
+        "release-1a-1.1": true,
         "release-1b": true,
         "release-1c-write-off": true,
         "release-1c-auto-enforcement": true,
