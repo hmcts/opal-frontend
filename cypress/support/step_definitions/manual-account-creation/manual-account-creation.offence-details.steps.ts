@@ -815,6 +815,19 @@ When('I cancel offence details choosing {string}', (choice: 'Cancel' | 'Ok' | 'S
 });
 
 /**
+ * @step Cancels offence details, responds to the warning, and verifies the warning was displayed.
+ * @description Prevents regressions where cancelling a changed offence silently navigates away.
+ */
+When(
+  'I cancel offence details choosing {string} in the unsaved changes warning',
+  (choice: 'Cancel' | 'Ok' | 'Stay' | 'Leave') => {
+    log('cancel', 'Cancelling offence details and responding to the unsaved-changes warning', { choice });
+    offenceDetails().assertOnAddOffencePage();
+    offenceDetails().cancelOffenceDetailsAndAssertUnsavedChangesWarning(choice);
+  },
+);
+
+/**
  * @step Cancels imposition removal from the confirmation screen.
  * @description Cancels imposition removal from the confirmation screen.
 

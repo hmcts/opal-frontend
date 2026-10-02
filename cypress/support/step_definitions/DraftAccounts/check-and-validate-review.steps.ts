@@ -90,16 +90,13 @@ Then('the draft review history item {int} is:', (position: number, table: DataTa
 });
 
 /**
- * Opens the delete account flow from the review page.
- * @step Open the delete account flow from the review page.
+ * @step Assert that the review history contains a user-facing status.
+ * @param status - Exact status expected in the rendered timeline.
  */
-const openDeleteFromReview = () => {
-  log('navigate', 'Opening delete flow from review');
-  review().openDeleteAccount();
-};
-
-When('I delete the draft account from review', openDeleteFromReview);
-When('I open draft deletion from review', openDeleteFromReview);
+Then('the draft review history contains the status {string}', (status: string) => {
+  log('assert', 'Asserting review history contains status', { status });
+  review().assertTimelineContainsStatus(status);
+});
 
 /**
  * @step Open draft deletion from review and assert confirmation page.

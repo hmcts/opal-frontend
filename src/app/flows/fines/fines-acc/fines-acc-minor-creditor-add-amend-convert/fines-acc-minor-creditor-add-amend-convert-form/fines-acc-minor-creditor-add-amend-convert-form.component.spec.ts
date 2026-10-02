@@ -80,6 +80,22 @@ describe('FinesAccMinorCreditorAddAmendConvertFormComponent', () => {
     expect(component.form.get(component.controls.bankAccountNumber)?.value).toBe('12345678');
   });
 
+  it('should not add BACS controls when the initial BACS selection is null', () => {
+    createComponent({
+      formData: {
+        ...companyFormData.formData,
+        facc_minor_creditor_pay_by_bacs: null,
+      },
+      nestedFlow: false,
+    });
+
+    expect(getControl(component.controls.payByBacs).value).toBeNull();
+    expect(component.form.get(component.controls.bankAccountName)).toBeNull();
+    expect(component.form.get(component.controls.bankSortCode)).toBeNull();
+    expect(component.form.get(component.controls.bankAccountNumber)).toBeNull();
+    expect(component.form.get(component.controls.bankAccountReference)).toBeNull();
+  });
+
   it('should render the header and BACS controls when BACS details are provided', () => {
     createComponent();
     const element = fixture.nativeElement as HTMLElement;
@@ -295,12 +311,27 @@ describe('FinesAccMinorCreditorAddAmendConvertFormComponent', () => {
     getControl(component.controls.addressLine1).setValue('A'.repeat(31));
     expect(getControl(component.controls.addressLine1).hasError('maxlength')).toBe(true);
 
+    getControl(component.controls.postCode).setValue('AB12 3CD');
+    expect(getControl(component.controls.postCode).hasError('alphanumericTextPattern')).toBe(false);
+
+    getControl(component.controls.postCode).setValue('');
+    expect(getControl(component.controls.postCode).hasError('alphanumericTextPattern')).toBe(false);
+
     getControl(component.controls.postCode).setValue('AB12-3CD');
     expect(getControl(component.controls.postCode).hasError('alphanumericTextPattern')).toBe(true);
-  });
 
-  it('should set autocomplete="off" on the form', () => {
+    const postcodeInput = fixture.nativeElement.querySelector(
+      `input[name="${component.controls.postCode}"]`,
+    ) as HTMLInputElement | null;
+    if (!postcodeInput) throw new Error('Postcode input not found');
+
+    getControl(component.controls.postCode).setValue('  AB1  3CD ');
+    postcodeInput.dispatchEvent(new FocusEvent('focusout', { bubbles: true }));
     fixture.detectChanges();
-    expect(fixture.nativeElement.querySelector('form')?.getAttribute('autocomplete')).toBe('off');
+    expect(getControl(component.controls.postCode).value).toBe('AB1  3CD');
+    expect(getControl(component.controls.postCode).hasError('maxlength')).toBe(false);
+
+    getControl(component.controls.postCode).setValue('AB12 3CDA');
+    expect(getControl(component.controls.postCode).hasError('maxlength')).toBe(true);
   });
 });

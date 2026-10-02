@@ -55,6 +55,20 @@ describe('FinesMacCompanyDetailsFormComponent', () => {
     expect(component).toBeTruthy();
   });
 
+  it.each([
+    'fm_company_details_address_line_1',
+    'fm_company_details_address_line_2',
+    'fm_company_details_address_line_3',
+  ])('should validate %s with the single ASCII characters pattern', (controlName) => {
+    const control = component.form.get(controlName);
+
+    control?.setValue('Flat @ 2');
+    expect(control?.hasError('singleAsciiCharacters')).toBe(false);
+
+    control?.setValue('Café');
+    expect(control?.hasError('singleAsciiCharacters')).toBe(true);
+  });
+
   it('should enforce remove alias link template semantics', () => {
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     const templateConsts = ((FinesMacCompanyDetailsFormComponent as any).ɵcmp?.consts ?? []).filter((entry: unknown) =>
@@ -156,6 +170,42 @@ describe('FinesMacCompanyDetailsFormComponent', () => {
     expect(component.form.get('fm_company_details_postcode')).toBeTruthy();
   });
 
+  it('should validate postcode format using alphanumericTextPattern', () => {
+    const postcodeControl = component.form.get('fm_company_details_postcode');
+
+    postcodeControl?.setValue('SW1A 1AA');
+    expect(postcodeControl?.hasError('alphanumericTextPattern')).toBe(false);
+
+    postcodeControl?.setValue('SW1A-1AA');
+    expect(postcodeControl?.hasError('alphanumericTextPattern')).toBe(true);
+  });
+
+  it('should validate postcode max length', () => {
+    const postcodeControl = component.form.get('fm_company_details_postcode');
+
+    postcodeControl?.setValue('SW1A 1AA');
+    expect(postcodeControl?.hasError('maxlength')).toBe(false);
+
+    postcodeControl?.setValue('SW1A 1AAA');
+    expect(postcodeControl?.hasError('maxlength')).toBe(true);
+  });
+
+  it('should trim only surrounding whitespace from the postcode input on focusout', () => {
+    const postcodeInput = fixture.nativeElement.querySelector(
+      'input[name="fm_company_details_postcode"]',
+    ) as HTMLInputElement | null;
+    if (!postcodeInput) throw new Error('Postcode input not found');
+
+    const postcodeControl = component.form.get('fm_company_details_postcode');
+
+    postcodeControl?.setValue('  AB1  3CD ');
+    postcodeInput.dispatchEvent(new FocusEvent('focusout', { bubbles: true }));
+    fixture.detectChanges();
+
+    expect(postcodeControl?.value).toBe('AB1  3CD');
+    expect(postcodeControl?.hasError('maxlength')).toBe(false);
+  });
+
   it('should set up the alias configuration for the company details form', () => {
     component['setupAliasConfiguration']();
     expect(component.aliasFields).toEqual(FINES_MAC_COMPANY_DETAILS_ALIAS.map((item) => item.controlName));
@@ -190,10 +240,5 @@ describe('FinesMacCompanyDetailsFormComponent', () => {
       'fm_company_details_add_alias',
       'fm_company_details_aliases',
     );
-  });
-
-  it('should set autocomplete="off" on the form', () => {
-    fixture.detectChanges();
-    expect(fixture.nativeElement.querySelector('form')?.getAttribute('autocomplete')).toBe('off');
   });
 });

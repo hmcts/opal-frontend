@@ -11,7 +11,6 @@ import { FinesMacOffenceDetailsReviewSummaryOffencesTotalComponent } from './fin
 import { IFinesMacOffenceDetailsReviewSummaryForm } from '../interfaces/fines-mac-offence-details-review-summary-form.interface';
 import { FINES_MAC_STATUS } from '../../../constants/fines-mac-status';
 import { FinesMacOffenceDetailsReviewOffenceComponent } from '../../fines-mac-offence-details-review-offence/fines-mac-offence-details-review-offence.component';
-import { IFinesMacOffenceDetailsReviewSummaryDetailsHidden } from '../interfaces/fines-mac-offence-details-review-summary-details-hidden.interface';
 import { FinesMacStore } from '../../../stores/fines-mac.store';
 import { FinesMacOffenceDetailsStore } from '../../stores/fines-mac-offence-details.store';
 import {
@@ -56,25 +55,6 @@ export class FinesMacOffenceDetailsReviewSummaryComponent implements OnInit, OnD
   @Input({ required: true }) public offencesImpositions!: IFinesMacOffenceDetailsReviewSummaryForm[];
   @Input({ required: false }) public isReadOnly = false;
   public readonly finesMacStatus = FINES_MAC_STATUS;
-  public offencesHidden!: IFinesMacOffenceDetailsReviewSummaryDetailsHidden;
-
-  /**
-   * Hides the offence details by setting the corresponding offence ID to false in the accumulator object.
-   *
-   * @private
-   * @returns {void}
-   */
-  private offenceDetailsHidden(): void {
-    this.offencesHidden = this.offencesImpositions.reduce((acc, offence) => {
-      const offenceId = offence.formData.fm_offence_details_id;
-
-      if (offenceId !== null) {
-        acc[offenceId] = true;
-      }
-
-      return acc;
-    }, {} as IFinesMacOffenceDetailsReviewSummaryDetailsHidden);
-  }
 
   /**
    * Returns the maximum offence ID from the `offencesImpositions` array.
@@ -103,8 +83,6 @@ export class FinesMacOffenceDetailsReviewSummaryComponent implements OnInit, OnD
       this.handleRoute(FINES_MAC_OFFENCE_DETAILS_ROUTING_PATHS.children.addOffence);
     } else if (action.actionName === 'remove') {
       this.handleRoute(FINES_MAC_OFFENCE_DETAILS_ROUTING_PATHS.children.removeOffence);
-    } else {
-      this.offencesHidden[action.offenceId] = !this.offencesHidden[action.offenceId];
     }
   }
 
@@ -150,7 +128,6 @@ export class FinesMacOffenceDetailsReviewSummaryComponent implements OnInit, OnD
     if (this.offencesImpositions.length === 0 && !this.finesMacOffenceDetailsStore.offenceRemoved()) {
       this.addAnotherOffence();
     }
-    this.offenceDetailsHidden();
   }
 
   public ngOnDestroy(): void {

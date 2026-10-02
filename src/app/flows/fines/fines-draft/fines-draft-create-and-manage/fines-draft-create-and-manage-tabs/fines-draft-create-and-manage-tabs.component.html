@@ -24,7 +24,7 @@
       opal-lib-moj-sub-navigation-item
       subNavItemId="inputter-in-review-tab"
       [activeSubNavItemFragment]="activeTab"
-      subNavItemFragment="review"
+      [subNavItemFragment]="finesDraftTabFragment.review"
       subNavItemText="In review"
     ></li>
     @if (rejectedCount$ | async; as rejectedCount) {
@@ -32,7 +32,7 @@
         opal-lib-moj-sub-navigation-item
         subNavItemId="inputter-rejected-tab"
         [activeSubNavItemFragment]="activeTab"
-        subNavItemFragment="rejected"
+        [subNavItemFragment]="finesDraftTabFragment.rejected"
         subNavItemText="Rejected"
       >
         @if (rejectedCount !== '0') {
@@ -46,31 +46,31 @@
       opal-lib-moj-sub-navigation-item
       subNavItemId="inputter-approved-tab"
       [activeSubNavItemFragment]="activeTab"
-      subNavItemFragment="approved"
+      [subNavItemFragment]="finesDraftTabFragment.approved"
       subNavItemText="Approved"
     ></li>
     <li
       opal-lib-moj-sub-navigation-item
       subNavItemId="inputter-deleted-tab"
       [activeSubNavItemFragment]="activeTab"
-      subNavItemFragment="deleted"
+      [subNavItemFragment]="finesDraftTabFragment.deleted"
       subNavItemText="Deleted"
     ></li>
   </opal-lib-moj-sub-navigation>
   @switch (activeTab) {
-    @case ('review') {
+    @case (finesDraftTabFragment.review) {
       <h2 class="govuk-heading-m">In review</h2>
       <ng-container *ngTemplateOutlet="tableWrapper"></ng-container>
     }
-    @case ('rejected') {
+    @case (finesDraftTabFragment.rejected) {
       <h2 class="govuk-heading-m">Rejected</h2>
       <ng-container *ngTemplateOutlet="tableWrapper"></ng-container>
     }
-    @case ('approved') {
+    @case (finesDraftTabFragment.approved) {
       <h2 class="govuk-heading-m">Approved</h2>
       <ng-container *ngTemplateOutlet="tableWrapper"></ng-container>
     }
-    @case ('deleted') {
+    @case (finesDraftTabFragment.deleted) {
       <h2 class="govuk-heading-m">Deleted</h2>
       <ng-container *ngTemplateOutlet="tableWrapper"></ng-container>
     }
@@ -80,13 +80,13 @@
     @if (tabData$ | async; as draftAccounts) {
       @if (draftAccounts.length) {
         @switch (activeTab) {
-          @case ('rejected') {
+          @case (finesDraftTabFragment.rejected) {
             <ng-container *ngTemplateOutlet="rejectedTeamMemberData"></ng-container>
           }
-          @case ('deleted') {
+          @case (finesDraftTabFragment.deleted) {
             <ng-container *ngTemplateOutlet="deletedIntroText"></ng-container>
           }
-          @case ('approved') {
+          @case (finesDraftTabFragment.approved) {
             <ng-container *ngTemplateOutlet="approvedIntroText"></ng-container>
           }
         }
@@ -97,19 +97,20 @@
           [approvedAccountLinkEnabled]="hasApprovedAccountLinkAccess()"
           (linkClicked)="onDefendantClick($event)"
           (accountClicked)="onAccountClick($event)"
+          paginationPageTitle="Create accounts"
         ></app-fines-draft-table-wrapper>
       } @else {
         @switch (activeTab) {
-          @case ('review') {
+          @case (finesDraftTabFragment.review) {
             <ng-container *ngTemplateOutlet="reviewNoData"></ng-container>
           }
-          @case ('rejected') {
+          @case (finesDraftTabFragment.rejected) {
             <ng-container *ngTemplateOutlet="rejectedNoData"></ng-container>
           }
-          @case ('approved') {
+          @case (finesDraftTabFragment.approved) {
             <ng-container *ngTemplateOutlet="approvedNoData"></ng-container>
           }
-          @case ('deleted') {
+          @case (finesDraftTabFragment.deleted) {
             <ng-container *ngTemplateOutlet="deletedNoData"></ng-container>
           }
         }

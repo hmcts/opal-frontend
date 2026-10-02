@@ -2,6 +2,7 @@ import { IOpalFinesAccountMinorCreditorDetailsHeader } from '../interfaces/fines
 
 export const FINES_ACC_MINOR_CREDITOR_DETAILS_HEADER_MOCK: IOpalFinesAccountMinorCreditorDetailsHeader = {
   version: null,
+  repayment: false,
   creditor: {
     account_id: 99000000000800,
     account_number: '87654321',
@@ -13,6 +14,7 @@ export const FINES_ACC_MINOR_CREDITOR_DETAILS_HEADER_MOCK: IOpalFinesAccountMino
   },
   business_unit: {
     business_unit_id: '77',
+    business_unit_code: '0046',
     business_unit_name: 'Camberwell Green',
     welsh_speaking: 'N',
   },

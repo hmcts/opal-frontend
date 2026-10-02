@@ -58,6 +58,20 @@ describe('FinesMacOffenceDetailsMinorCreditorFormComponent', () => {
     expect(component).toBeTruthy();
   });
 
+  it.each([
+    'fm_offence_details_minor_creditor_address_line_1',
+    'fm_offence_details_minor_creditor_address_line_2',
+    'fm_offence_details_minor_creditor_address_line_3',
+  ])('should validate %s with the single ASCII characters pattern', (controlName) => {
+    const control = component.form.get(controlName);
+
+    control?.setValue('Flat @ 2');
+    expect(control?.hasError('singleAsciiCharacters')).toBe(false);
+
+    control?.setValue('Café');
+    expect(control?.hasError('singleAsciiCharacters')).toBe(true);
+  });
+
   it('should not repopulate the form when removeMinorCreditor is set but no matching creditor exists', () => {
     finesMacOffenceDetailsStore.setOffenceDetailsDraft([
       {
@@ -143,9 +157,18 @@ describe('FinesMacOffenceDetailsMinorCreditorFormComponent', () => {
     companyNameControl.setValue('A very long company name exceeding fifty characters');
     expect(companyNameControl.errors?.['maxlength']).toBeTruthy();
 
-    // Test alphanumeric text pattern validator on company name
-    companyNameControl.setValue('/$£');
-    expect(companyNameControl.errors?.['alphanumericWithHyphensSpacesApostrophesDotPattern']).toBeTruthy();
+    // Test single-byte ASCII characters are accepted in company names
+    companyNameControl.setValue('Company & Sons');
+    expect(companyNameControl.valid).toBe(true);
+
+    // Test non-ASCII characters are rejected in company names
+    companyNameControl.setValue('InvalidéName');
+    expect(companyNameControl.errors?.['singleAsciiCharacters']).toBeTruthy();
+    expect(
+      component.fieldErrors['fm_offence_details_minor_creditor_company_name']['singleAsciiCharacters'].message,
+    ).toBe(
+      'Company name must only include letters a to z, numbers 0-9 and certain special characters (such as hyphens, spaces, apostrophes and commas)',
+    );
   });
 
   it('should set validators for payment detail controls', () => {
@@ -163,7 +186,7 @@ describe('FinesMacOffenceDetailsMinorCreditorFormComponent', () => {
     expect(nameOnAccountControl.errors?.['maxlength']).toBeTruthy();
 
     nameOnAccountControl.setValue('InvalidéName'); // Invalid characters
-    expect(nameOnAccountControl.errors?.['singleAsciiChatacters']).toBeTruthy();
+    expect(nameOnAccountControl.errors?.['singleAsciiCharacters']).toBeTruthy();
 
     nameOnAccountControl.setValue('Valid@Name'); // Valid input
     expect(nameOnAccountControl.valid).toBeTruthy();
@@ -495,8 +518,39 @@ describe('FinesMacOffenceDetailsMinorCreditorFormComponent', () => {
     );
   });
 
-  it('should set autocomplete="off" on the form', () => {
+  it('should validate postcode format using alphanumericTextPattern', () => {
+    const postcodeControl = component.form.get('fm_offence_details_minor_creditor_post_code');
+
+    postcodeControl?.setValue('SW1A 1AA');
+    expect(postcodeControl?.hasError('alphanumericTextPattern')).toBe(false);
+
+    postcodeControl?.setValue('SW1A-1AA');
+    expect(postcodeControl?.hasError('alphanumericTextPattern')).toBe(true);
+  });
+
+  it('should validate postcode max length', () => {
+    const postcodeControl = component.form.get('fm_offence_details_minor_creditor_post_code');
+
+    postcodeControl?.setValue('SW1A 1AA');
+    expect(postcodeControl?.hasError('maxlength')).toBe(false);
+
+    postcodeControl?.setValue('SW1A 1AAA');
+    expect(postcodeControl?.hasError('maxlength')).toBe(true);
+  });
+
+  it('should trim only surrounding whitespace from the postcode input on focusout', () => {
+    const postcodeInput = fixture.nativeElement.querySelector(
+      'input[name="fm_offence_details_minor_creditor_post_code"]',
+    ) as HTMLInputElement | null;
+    if (!postcodeInput) throw new Error('Postcode input not found');
+
+    const postcodeControl = component.form.get('fm_offence_details_minor_creditor_post_code');
+
+    postcodeControl?.setValue('  AB1  3CD ');
+    postcodeInput.dispatchEvent(new FocusEvent('focusout', { bubbles: true }));
     fixture.detectChanges();
-    expect(fixture.nativeElement.querySelector('form')?.getAttribute('autocomplete')).toBe('off');
+
+    expect(postcodeControl?.value).toBe('AB1  3CD');
+    expect(postcodeControl?.hasError('maxlength')).toBe(false);
   });
 });

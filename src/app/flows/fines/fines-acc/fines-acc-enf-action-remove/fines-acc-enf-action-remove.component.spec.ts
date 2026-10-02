@@ -28,6 +28,7 @@ describe('FinesAccEnfActionRemoveComponent', () => {
     business_unit_id: '78',
     business_unit_user_id: 'user-1',
     welsh_speaking: 'Y',
+    originator_type: null,
   };
 
   const activatedRouteStub = {
@@ -71,6 +72,7 @@ describe('FinesAccEnfActionRemoveComponent', () => {
     mockFinesAccStore.business_unit_id.set('78');
     mockPayloadService.transformDefendantAccountHeaderForStore.mockReturnValue(accountStateMock);
     mockOpalFinesService.removeEnforcementHold.mockReturnValue(of({}));
+    activatedRouteStub.snapshot.data.title = 'Remove enforcement hold';
 
     await TestBed.configureTestingModule({
       imports: [FinesAccEnfActionRemoveComponent],
@@ -109,6 +111,14 @@ describe('FinesAccEnfActionRemoveComponent', () => {
 
     expect(component.accountNumber).toBe('');
     expect(component.partyName).toBe('');
+  });
+
+  it('should use the default page title when the route title is unavailable', () => {
+    delete (activatedRouteStub.snapshot.data as { title?: string }).title;
+
+    createComponent();
+
+    expect(component.pageTitle).toBe('Remove enforcement hold');
   });
 
   it('should remove the enforcement hold and navigate to the add new action prompt', () => {

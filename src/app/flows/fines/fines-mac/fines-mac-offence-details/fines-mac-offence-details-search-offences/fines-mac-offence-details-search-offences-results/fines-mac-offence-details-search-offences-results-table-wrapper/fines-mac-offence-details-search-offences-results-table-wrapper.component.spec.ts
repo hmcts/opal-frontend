@@ -14,6 +14,7 @@ describe('FinesMacOffenceDetailsSearchOffencesResultsTableWrapperComponent', () 
   beforeEach(async () => {
     utilsService = {
       copyToClipboard: vi.fn().mockName('UtilsService.copyToClipboard'),
+      focusAndScrollToTop: vi.fn().mockName('UtilsService.focusAndScrollToTop'),
     };
 
     await TestBed.configureTestingModule({
@@ -56,6 +57,26 @@ describe('FinesMacOffenceDetailsSearchOffencesResultsTableWrapperComponent', () 
         FINES_MAC_OFFENCE_DETAILS_SEARCH_OFFENCES_RESULTS_TABLE_WRAPPER_TABLE_DATA_MOCK[index].Code,
       );
     });
+  });
+
+  it('should announce the new page and focus its first code after rendering', async () => {
+    component.itemsPerPageSignal.set(1);
+    fixture.componentRef.setInput('paginationPageTitle', 'Search results');
+    fixture.detectChanges();
+    const previousPageCodeCell = fixture.nativeElement.querySelector('td#code') as HTMLTableCellElement;
+
+    component.onPageChange(2);
+    fixture.detectChanges();
+    await fixture.whenStable();
+
+    const firstCodeCell = fixture.nativeElement.querySelector('td#code') as HTMLTableCellElement;
+    const status = fixture.nativeElement.querySelector('output') as HTMLOutputElement;
+    expect(firstCodeCell).not.toBe(previousPageCodeCell);
+    expect(firstCodeCell.firstChild?.textContent?.trim()).toBe('5678');
+    expect(firstCodeCell.getAttribute('tabindex')).toBe('-1');
+    expect(document.activeElement).toBe(firstCodeCell);
+    expect(status.textContent?.trim()).toBe('Search results, page 2 of 3');
+    expect(utilsService.focusAndScrollToTop).not.toHaveBeenCalled();
   });
 
   it('should prevent default and copy to clipboard when copyCodeToClipboard is called with an event', () => {

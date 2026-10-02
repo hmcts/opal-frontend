@@ -10,6 +10,7 @@ import { authGuard } from '@hmcts/opal-frontend-common/guards/auth';
 import { FINES_MAC_OFFENCE_DETAILS_SEARCH_OFFENCES_ROUTING_PATHS } from '../fines-mac-offence-details-search-offences/routing/constants/fines-mac-offence-details-search-offences-routing-paths.constant';
 import { fetchResultsResolver } from './resolvers/fetch-results-resolver/fetch-results.resolver';
 import { fetchMajorCreditorsResolver } from './resolvers/fetch-major-creditors-resolver/fetch-major-creditors.resolver';
+import { finesMacOffenceDetailsAddAnOffenceCanDeactivateGuard } from './guards/fines-mac-offence-details-add-an-offence-can-deactivate.guard';
 
 export const routing: Routes = [
   {
@@ -34,6 +35,7 @@ export const routing: Routes = [
         (c) => c.FinesMacOffenceDetailsAddAnOffenceComponent,
       ),
     canActivate: [finesMacFlowStateGuard],
+    canDeactivate: [finesMacOffenceDetailsAddAnOffenceCanDeactivateGuard],
     data: { title: FINES_MAC_OFFENCE_DETAILS_ROUTING_TITLES.children.addOffence },
     resolve: { title: TitleResolver, results: fetchResultsResolver, majorCreditors: fetchMajorCreditorsResolver },
   },

@@ -54,4 +54,7 @@
   inputClasses="govuk-input--width-10"
   [control]="form.get('fcon_search_account_companies_search_criteria.fcon_search_account_companies_post_code')"
   [errors]="formControlErrorMessages['fcon_search_account_companies_post_code']"
+  [opalLibTrimLeadingTrailingWhitespace]="
+    form.get('fcon_search_account_companies_search_criteria.fcon_search_account_companies_post_code')!
+  "
 ></opal-lib-govuk-text-input>

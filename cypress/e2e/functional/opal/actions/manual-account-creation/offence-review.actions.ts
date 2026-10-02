@@ -51,6 +51,12 @@ export class ManualOffenceReviewActions {
     this.getOffenceComponent(offenceCode)
       .find(L.review.impositionTable)
       .within(() => {
+        cy.get('caption')
+          .should('have.length', 1)
+          .and('have.class', 'govuk-visually-hidden')
+          .and('contain.text', 'Offence:')
+          .and('contain.text', offenceCode);
+
         cy.get('thead th')
           .then(($headers) => Array.from($headers, (el) => el.textContent?.trim() ?? ''))
           .should((actualHeaders) => {

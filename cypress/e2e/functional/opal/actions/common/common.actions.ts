@@ -4,6 +4,7 @@
  * text presence, dialog handling, and other cross-cutting UI utilities used by flows/actions.
  */
 import { CommonLocators as L } from '../../../../../shared/selectors/common.locators';
+import { UNSAVED_CHANGES_WARNING } from '../../../../../shared/constants/confirmation-messages';
 import { createScopedLogger } from '../../../../../support/utils/log.helper';
 
 const log = createScopedLogger('CommonActions');
@@ -14,6 +15,26 @@ const log = createScopedLogger('CommonActions');
 export class CommonActions {
   private readonly TIMEOUT = 20_000;
   private readonly PATH_TIMEOUT = 30_000;
+
+  /**
+   * Normalizes visible text for reliable assertions.
+   *
+   * @param value - Raw text content.
+   * @returns Text with collapsed whitespace.
+   */
+  private normalizeText(value: string): string {
+    return value.replace(/\s+/g, ' ').trim();
+  }
+
+  /**
+   * Normalizes visible text for case-insensitive assertions.
+   *
+   * @param value - Raw text content.
+   * @returns Text with collapsed whitespace and normalized casing.
+   */
+  private normalizeTextCaseInsensitive(value: string): string {
+    return this.normalizeText(value).toLowerCase();
+  }
 
   /**
    * Standard timeout options for most UI waits.
@@ -85,6 +106,48 @@ export class CommonActions {
   }
 
   /**
+   * Asserts an element contains expected text after normalizing whitespace and casing.
+   *
+   * @param selector - Element selector.
+   * @param expected - Expected text.
+   * @param timeoutMs - Optional timeout override for the assertion.
+   */
+  public assertElementContainsNormalizedText(
+    selector: string,
+    expected: string,
+    timeoutMs: number = this.TIMEOUT,
+  ): void {
+    this.assertElementContainsAnyNormalizedText(selector, [expected], timeoutMs);
+  }
+
+  /**
+   * Asserts an element contains one of the accepted text values after normalizing whitespace and casing.
+   *
+   * @param selector - Element selector.
+   * @param expectedValues - Accepted text values.
+   * @param timeoutMs - Optional timeout override for the assertion.
+   */
+  public assertElementContainsAnyNormalizedText(
+    selector: string,
+    expectedValues: string[],
+    timeoutMs: number = this.TIMEOUT,
+  ): void {
+    cy.get(selector, { timeout: timeoutMs })
+      .should('be.visible')
+      .invoke('text')
+      .then((actual) => {
+        const actualNormalized = this.normalizeTextCaseInsensitive(actual);
+        const expectedNormalizedValues = expectedValues.map((expected) => this.normalizeTextCaseInsensitive(expected));
+        const includesExpectedValue = expectedNormalizedValues.some((expected) => actualNormalized.includes(expected));
+
+        expect(
+          includesExpectedValue,
+          `Expected "${this.normalizeText(actual)}" to include one of: ${expectedValues.join(', ')}`,
+        ).to.eq(true);
+      });
+  }
+
+  /**
    * Asserts that the page header **equals** the expected text (exact match).
    * @param expected - The exact header text expected.
    */
@@ -133,7 +196,7 @@ export class CommonActions {
 
     cy.once('window:confirm', (msg) => {
       const normalized = msg.replace(/\s+/g, ' ');
-      expect(normalized, 'Confirm prompt message').to.match(/unsaved changes/i);
+      expect(normalized, 'Confirm prompt message').to.equal(UNSAVED_CHANGES_WARNING);
       return confirmLeave;
     });
 
@@ -144,12 +207,22 @@ export class CommonActions {
   }
 
   /**
+   * Cancels without entering data while preserving the existing no-navigation behaviour.
+   */
+  public cancelWithoutEnteringData(): void {
+    cy.location('pathname').then((beforePath) => {
+      log('debug', 'Captured current pathname before cancel', { beforePath });
+      this.cancelEditing(true);
+    });
+  }
+
+  /**
    * Prepares Cypress to auto-respond to the **next native confirm() dialog**
    * that appears — but does *NOT* trigger it.
    * @param accept - Whether to accept (`true`) or cancel (`false`) the dialog.
    * @param expected - Expected dialog text or regex matcher.
    */
-  public confirmNextUnsavedChanges(accept: boolean, expected: RegExp | string = /unsaved changes/i): void {
+  public confirmNextUnsavedChanges(accept: boolean, expected: RegExp | string = UNSAVED_CHANGES_WARNING): void {
     cy.once('window:confirm', (msg) => {
       const normalized = String(msg).replace(/\s+/g, ' ');
       if (expected instanceof RegExp) {

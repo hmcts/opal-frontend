@@ -7,7 +7,7 @@ import { FINES_MAC_PARENT_GUARDIAN_DETAILS_ALIAS } from '../constants/fines-mac-
 import { FINES_MAC_ROUTING_PATHS } from '../../routing/constants/fines-mac-routing-paths.constant';
 import { MojTicketPanelComponent } from '@hmcts/opal-frontend-common/components/moj/moj-ticket-panel';
 import { MojDatePickerComponent } from '@hmcts/opal-frontend-common/components/moj/moj-date-picker';
-import { FINES_MAC_PARENT_GUARDIAN_DETAILS_FIELD_ERRORS } from '../constants/fines-mac-parent-guardian-details-field-errors';
+import { FINES_MAC_PARENT_GUARDIAN_DETAILS_FIELD_ERRORS } from '../constants/fines-mac-parent-guardian-details-field-errors.constant';
 import { FinesMacStore } from '../../stores/fines-mac.store';
 import { GovukTextInputComponent } from '@hmcts/opal-frontend-common/components/govuk/govuk-text-input';
 import { GovukButtonComponent } from '@hmcts/opal-frontend-common/components/govuk/govuk-button';
@@ -24,14 +24,12 @@ import { nationalInsuranceNumberValidator } from '@hmcts/opal-frontend-common/va
 import { optionalMaxLengthValidator } from '@hmcts/opal-frontend-common/validators/optional-max-length';
 import { optionalValidDateValidator } from '@hmcts/opal-frontend-common/validators/optional-valid-date';
 import { CapitalisationDirective } from '@hmcts/opal-frontend-common/directives/capitalisation';
+import { TrimLeadingTrailingWhitespaceDirective } from '@hmcts/opal-frontend-common/directives/trim-leading-trailing-whitespace';
 import { patternValidator } from '@hmcts/opal-frontend-common/validators/pattern-validator';
 import { ALPHANUMERIC_WITH_SPACES_PATTERN, SINGLE_ASCII_CHARACTERS } from '@hmcts/opal-frontend-common/constants';
 
 // regex pattern validators for the form controls
-const SINGLE_ASCII_CHARACTERS_ALPHANUMERIC_WITH_SPECIAL_CHARACTERS_PATTERN_VALIDATOR = patternValidator(
-  SINGLE_ASCII_CHARACTERS,
-  'singleAsciiChatacters',
-);
+const SINGLE_ASCII_CHARACTERS_PATTERN_VALIDATOR = patternValidator(SINGLE_ASCII_CHARACTERS, 'singleAsciiCharacters');
 const ALPHANUMERIC_WITH_SPACES_PATTERN_VALIDATOR = patternValidator(
   ALPHANUMERIC_WITH_SPACES_PATTERN,
   'alphanumericTextPattern',
@@ -52,6 +50,7 @@ const ALPHANUMERIC_WITH_SPACES_PATTERN_VALIDATOR = patternValidator(
     MojTicketPanelComponent,
     MojDatePickerComponent,
     CapitalisationDirective,
+    TrimLeadingTrailingWhitespaceDirective,
   ],
   templateUrl: './fines-mac-parent-guardian-details-form.component.html',
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -79,12 +78,12 @@ export class FinesMacParentGuardianDetailsFormComponent
       fm_parent_guardian_details_forenames: new FormControl(null, [
         Validators.required,
         Validators.maxLength(20),
-        SINGLE_ASCII_CHARACTERS_ALPHANUMERIC_WITH_SPECIAL_CHARACTERS_PATTERN_VALIDATOR,
+        SINGLE_ASCII_CHARACTERS_PATTERN_VALIDATOR,
       ]),
       fm_parent_guardian_details_surname: new FormControl(null, [
         Validators.required,
         Validators.maxLength(30),
-        SINGLE_ASCII_CHARACTERS_ALPHANUMERIC_WITH_SPECIAL_CHARACTERS_PATTERN_VALIDATOR,
+        SINGLE_ASCII_CHARACTERS_PATTERN_VALIDATOR,
       ]),
       fm_parent_guardian_details_aliases: new FormArray([]),
       fm_parent_guardian_details_add_alias: new FormControl(null),
@@ -93,17 +92,20 @@ export class FinesMacParentGuardianDetailsFormComponent
       fm_parent_guardian_details_address_line_1: new FormControl(null, [
         Validators.required,
         Validators.maxLength(25),
-        ALPHANUMERIC_WITH_SPACES_PATTERN_VALIDATOR,
+        SINGLE_ASCII_CHARACTERS_PATTERN_VALIDATOR,
       ]),
       fm_parent_guardian_details_address_line_2: new FormControl(null, [
         optionalMaxLengthValidator(25),
-        ALPHANUMERIC_WITH_SPACES_PATTERN_VALIDATOR,
+        SINGLE_ASCII_CHARACTERS_PATTERN_VALIDATOR,
       ]),
       fm_parent_guardian_details_address_line_3: new FormControl(null, [
         optionalMaxLengthValidator(13),
+        SINGLE_ASCII_CHARACTERS_PATTERN_VALIDATOR,
+      ]),
+      fm_parent_guardian_details_post_code: new FormControl(null, [
+        optionalMaxLengthValidator(8),
         ALPHANUMERIC_WITH_SPACES_PATTERN_VALIDATOR,
       ]),
-      fm_parent_guardian_details_post_code: new FormControl(null, [optionalMaxLengthValidator(8)]),
       fm_parent_guardian_details_vehicle_make: new FormControl(null, [optionalMaxLengthValidator(30)]),
       fm_parent_guardian_details_vehicle_registration_mark: new FormControl(null, [optionalMaxLengthValidator(10)]),
     });

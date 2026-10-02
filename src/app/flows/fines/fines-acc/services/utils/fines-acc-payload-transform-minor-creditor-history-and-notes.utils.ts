@@ -2,25 +2,28 @@ import {
   createHistoryDetails,
   createHistoryDetailsPart,
   createHistoryFragment,
-  createHistoryLink,
   createHistoryTextPart,
-  formatHistoryDate,
   getHistoryString,
   IHistoryDetails as IFinesAccHistoryAndNotesDetails,
   IHistoryDetailsFragment as IFinesAccHistoryAndNotesDetailsFragment,
-  IHistoryDetailsLink as IFinesAccHistoryAndNotesDetailsLink,
   IHistoryDetailsPart as IFinesAccHistoryAndNotesDetailsPart,
   IHistoryFragmentOptions as IFinesAccHistoryAndNotesFragmentOptions,
   normaliseHistoryTransactionType,
   THistoryDetailsRawItem as TFinesAccHistoryAndNotesRawItem,
 } from '@hmcts/opal-frontend-common/services/history-transformation-service';
 import { FINES_ACC_HISTORY_AND_NOTES_DETAILS_ALIAS_PATH_PREFIXES } from '../constants/fines-acc-history-and-notes-details-alias-path-prefixes.constant';
-import { FINES_ACC_HISTORY_AND_NOTES_DETAILS_DATE_FORMAT } from '../constants/fines-acc-history-and-notes-details-date-format.constant';
 import { FINES_ACC_HISTORY_AND_NOTES_DETAILS_EMPTY_VALUES } from '../constants/fines-acc-history-and-notes-details-empty-values.constant';
 import { FINES_ACC_HISTORY_AND_NOTES_DETAILS_LINK_TYPES } from '../constants/fines-acc-history-and-notes-details-link-types.constant';
+import { FINES_ACC_HISTORY_AND_NOTES_DETAILS_ASSOCIATED_RECORD_TYPES } from '../constants/fines-acc-history-and-notes-details-associated-record-types.constant';
 import { FINES_ACC_MINOR_CREDITOR_HISTORY_AND_NOTES_DETAILS_FIELD_ALIASES } from '../constants/fines-acc-minor-creditor-history-and-notes-details-field-aliases.constant';
 import { FINES_ACC_MINOR_CREDITOR_HISTORY_AND_NOTES_ORDER_AND_NOTICE_TEMPLATES } from '../constants/fines-acc-minor-creditor-history-and-notes-order-and-notice-templates.constant';
 import { FINES_ACC_MINOR_CREDITOR_HISTORY_AND_NOTES_TRANSACTION_TEMPLATES } from '../constants/fines-acc-minor-creditor-history-and-notes-transaction-templates.constant';
+import {
+  createHistoryChequeDetails,
+  createHistorySuspenseTransferAssociatedRecordPart,
+  createHistoryTextPartWithOptionalLink,
+  getHistoryTransactionTemplateValue,
+} from './fines-acc-payload-transform-history-and-notes.utils';
 
 /**
  * Transforms a minor creditor amendment history item.
@@ -66,13 +69,13 @@ export function transformMinorCreditorTransactionDetails(
   const aliases = FINES_ACC_MINOR_CREDITOR_HISTORY_AND_NOTES_DETAILS_FIELD_ALIASES;
   const transactionType = normaliseTransactionType(getString(item, aliases.transactionType));
   const templates = FINES_ACC_MINOR_CREDITOR_HISTORY_AND_NOTES_TRANSACTION_TEMPLATES;
-  const simpleTemplate = getTemplateValue(templates.simple, transactionType);
-  const labelledReferenceTemplate = getTemplateValue(templates.labelledReference, transactionType);
-  const chequeTemplate = getTemplateValue(templates.cheque, transactionType);
-  const defendantAccountTemplate = getTemplateValue(templates.defendantAccount, transactionType);
-  const creditorAccountTemplate = getTemplateValue(templates.creditorAccount, transactionType);
-  const associatedRecordTemplate = getTemplateValue(templates.associatedRecord, transactionType);
-  const associatedValueTemplate = getTemplateValue(templates.associatedValue, transactionType);
+  const simpleTemplate = getHistoryTransactionTemplateValue(templates.simple, transactionType);
+  const labelledReferenceTemplate = getHistoryTransactionTemplateValue(templates.labelledReference, transactionType);
+  const chequeTemplate = getHistoryTransactionTemplateValue(templates.cheque, transactionType);
+  const defendantAccountTemplate = getHistoryTransactionTemplateValue(templates.defendantAccount, transactionType);
+  const creditorAccountTemplate = getHistoryTransactionTemplateValue(templates.creditorAccount, transactionType);
+  const associatedRecordTemplate = getHistoryTransactionTemplateValue(templates.associatedRecord, transactionType);
+  const associatedValueTemplate = getHistoryTransactionTemplateValue(templates.associatedValue, transactionType);
 
   if (simpleTemplate) {
     return createDetails([textPart(simpleTemplate)]);
@@ -191,40 +194,13 @@ function labelValuePart(label: string, value: string | null): IFinesAccHistoryAn
  * @returns The structured cheque details.
  */
 function chequeDetails(title: string, item: TFinesAccHistoryAndNotesRawItem): IFinesAccHistoryAndNotesDetails {
-  const templates = FINES_ACC_MINOR_CREDITOR_HISTORY_AND_NOTES_TRANSACTION_TEMPLATES;
+  const aliases = FINES_ACC_MINOR_CREDITOR_HISTORY_AND_NOTES_DETAILS_FIELD_ALIASES;
 
-  return createDetails([
-    textPart(title),
-    labelValuePart(templates.chequeNumberLabel, paymentReference(item) ?? templates.defaultChequeNumber),
-    chequeStatusPart(item),
-  ]);
-}
-
-/**
- * Builds the optional cheque status part.
- *
- * @param item - The raw minor creditor transaction history item.
- * @returns The status part or null.
- */
-function chequeStatusPart(item: TFinesAccHistoryAndNotesRawItem): IFinesAccHistoryAndNotesDetailsPart | null {
-  const status = getString(item, FINES_ACC_MINOR_CREDITOR_HISTORY_AND_NOTES_DETAILS_FIELD_ALIASES.status);
-  const statusLabel = status
-    ? FINES_ACC_MINOR_CREDITOR_HISTORY_AND_NOTES_TRANSACTION_TEMPLATES.statusLabels[
-        status as keyof typeof FINES_ACC_MINOR_CREDITOR_HISTORY_AND_NOTES_TRANSACTION_TEMPLATES.statusLabels
-      ]
-    : null;
-
-  if (!statusLabel) {
-    return null;
-  }
-
-  return textPart(
-    [
-      statusLabel,
-      formatDate(getString(item, FINES_ACC_MINOR_CREDITOR_HISTORY_AND_NOTES_DETAILS_FIELD_ALIASES.statusDate)),
-    ]
-      .filter(Boolean)
-      .join(' '),
+  return createHistoryChequeDetails(
+    title,
+    paymentReference(item),
+    getString(item, aliases.status),
+    getString(item, aliases.statusDate),
   );
 }
 
@@ -237,24 +213,33 @@ function chequeStatusPart(item: TFinesAccHistoryAndNotesRawItem): IFinesAccHisto
 function suspenseTransferAssociatedValuePart(
   item: TFinesAccHistoryAndNotesRawItem,
 ): IFinesAccHistoryAndNotesDetailsPart | null {
-  const associatedRecordTypes = FINES_ACC_MINOR_CREDITOR_HISTORY_AND_NOTES_TRANSACTION_TEMPLATES.associatedRecordTypes;
+  const associatedRecordTypes = FINES_ACC_HISTORY_AND_NOTES_DETAILS_ASSOCIATED_RECORD_TYPES;
   const associatedRecordType = getString(
     item,
     FINES_ACC_MINOR_CREDITOR_HISTORY_AND_NOTES_DETAILS_FIELD_ALIASES.associatedRecordType,
   );
+  const associatedRecordPart = createHistorySuspenseTransferAssociatedRecordPart(
+    {
+      associatedRecordType,
+      associatedRecordId: associatedRecordId(item),
+      defendantAccountNumber: defendantAccountNumber(item),
+      defendantAccountId: defendantAccountId(item),
+      creditorAccountNumber: creditorAccountNumber(item),
+    },
+    [associatedRecordTypes.defendantTransaction],
+  );
 
-  switch (associatedRecordType) {
-    case associatedRecordTypes.suspenseItem:
-      return textPart(associatedRecordId(item));
-    case associatedRecordTypes.defendantTransaction:
-      return defendantAccountNumberPart(item);
-    case associatedRecordTypes.creditorAccounts:
-      return textPart(creditorAccountNumber(item));
-    default:
-      return (
-        textPart(associatedRecordId(item)) ?? defendantAccountNumberPart(item) ?? textPart(creditorAccountNumber(item))
-      );
+  if (
+    associatedRecordType === associatedRecordTypes.suspenseItem ||
+    associatedRecordType === associatedRecordTypes.defendantTransaction ||
+    associatedRecordType === associatedRecordTypes.creditorAccounts
+  ) {
+    return associatedRecordPart;
   }
+
+  return (
+    textPart(associatedRecordId(item)) ?? defendantAccountNumberPart(item) ?? textPart(creditorAccountNumber(item))
+  );
 }
 
 /**
@@ -267,27 +252,11 @@ function defendantAccountNumberPart(item: TFinesAccHistoryAndNotesRawItem): IFin
   const accountNumber = defendantAccountNumber(item);
   const emit = defendantAccountId(item);
 
-  return accountNumber
-    ? part([
-        fragment(accountNumber, {
-          link: emit ? createLink(FINES_ACC_HISTORY_AND_NOTES_DETAILS_LINK_TYPES.account, emit) : null,
-        }),
-      ])
-    : null;
-}
-
-/**
- * Gets a template value for a transaction type.
- *
- * @param templates - The template record.
- * @param transactionType - The normalised transaction type or null.
- * @returns The matching template value or null.
- */
-function getTemplateValue<T extends Record<string, unknown>>(
-  templates: T,
-  transactionType: string | null,
-): T[keyof T] | null {
-  return transactionType && transactionType in templates ? templates[transactionType as keyof T] : null;
+  return createHistoryTextPartWithOptionalLink(
+    accountNumber,
+    FINES_ACC_HISTORY_AND_NOTES_DETAILS_LINK_TYPES.account,
+    emit,
+  );
 }
 
 /**
@@ -365,17 +334,6 @@ function fragment(
 }
 
 /**
- * Creates link metadata for a fragment.
- *
- * @param type - The link type emitted by the UI.
- * @param emit - The emitted linked entity identifier.
- * @returns The fragment link metadata.
- */
-function createLink(type: string, emit: string): IFinesAccHistoryAndNotesDetailsLink {
-  return createHistoryLink(type, emit);
-}
-
-/**
  * Normalises a transaction type for switch matching.
  *
  * @param value - The raw transaction type.
@@ -383,16 +341,6 @@ function createLink(type: string, emit: string): IFinesAccHistoryAndNotesDetails
  */
 function normaliseTransactionType(value: string | null): string | null {
   return normaliseHistoryTransactionType(value);
-}
-
-/**
- * Formats ISO dates as DD/MM/YYYY while leaving unknown formats unchanged.
- *
- * @param value - The raw date value.
- * @returns The formatted date or null.
- */
-function formatDate(value: string | null): string | null {
-  return formatHistoryDate(value, FINES_ACC_HISTORY_AND_NOTES_DETAILS_DATE_FORMAT);
 }
 
 /**

@@ -1,0 +1,52 @@
+{
+  "header": {
+    "accountNumber": "17004613J",
+    "name": "Mr Abdelrahman SMITH",
+    "metrics": {
+      "imposed": "£280.00",
+      "arrears": "£280.00",
+      "paid/written off": "£0.00",
+      "account balance": "-£280.00"
+    }
+  },
+  "atAGlance": {
+    "defendant": {
+      "name": "Mr Abdelrahman SMITH",
+      "date of birth": "27 December 1965",
+      "address": "Flat 1\nArmageddon House\nGiggleswick\nCR0 2GE",
+      "national insurance number": "\u2014"
+    },
+    "paymentTerms": {
+      "payment terms": "Pay in full",
+      "pay by date": "06 December 2017"
+    },
+    "enforcementStatus": {
+      "collection order": "COLLECTION ORDER",
+      "date of last movement": "22 November 2017"
+    }
+  },
+  "defendantTab": {
+    "defendant": {
+      "name": "Mr Abdelrahman SMITH",
+      "aliases": "\u2014",
+      "date of birth": "27 December 1965",
+      "address": "Flat 1\nArmageddon House\nGiggleswick\nCR0 2GE",
+      "national insurance number": "\u2014"
+    }
+  },
+  "paymentTermsTab": {
+    "pay by date": "06 December 2017",
+    "days in default": "\u2014",
+    "date days in default were imposed": "\u2014",
+    "payment card last requested": "\u2014"
+  },
+  "enforcementTab": {
+    "overview": {
+      "collection order status": "COLLECTION ORDER",
+      "enforcement court": "ATCM Test (828)"
+    },
+    "noOutstandingEnforcementActionMessage": "There is no outstanding enforcement action."
+  },
+  "impositionsTab": {},
+  "historyAndNotesTab": {}
+}

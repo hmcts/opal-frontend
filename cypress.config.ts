@@ -346,6 +346,7 @@ export default defineConfig({
     DEV_DEFAULT_APP_MODE: process.env.DEV_DEFAULT_APP_MODE || '',
     DEFAULT_APP_MODE: process.env.DEFAULT_APP_MODE || '',
     LEGACY_ENABLED: process.env.LEGACY_ENABLED || false,
+    JCDE_OVERRIDE: process.env.JCDE_OVERRIDE || 'false',
     omitFiltered: true,
     filterSpecs: true,
   },

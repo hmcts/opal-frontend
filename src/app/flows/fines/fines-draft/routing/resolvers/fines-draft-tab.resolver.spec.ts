@@ -13,6 +13,7 @@ import { IOpalFinesDraftAccountsResponse } from '@services/fines/opal-fines-serv
 import { IFinesDraftTabStatuses } from '../../interfaces/fines-draft-tab-statuses.interface';
 import { DateService } from '@hmcts/opal-frontend-common/services/date-service';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
+import { FINES_DRAFT_TAB_FRAGMENT } from '../../constants/fines-draft-tab-fragments.constant';
 
 describe('finesDraftTabResolver', () => {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -60,7 +61,10 @@ describe('finesDraftTabResolver', () => {
     opalFinesServiceMock.getDraftAccounts.mockReturnValue(of(structuredClone(OPAL_FINES_DRAFT_ACCOUNTS_MOCK)));
 
     const tab = FINES_DRAFT_TAB_STATUSES[0];
-    const result = await runResolverWithOptions({ useFragmentForStatuses: true, includeSubmittedBy: true }, tab.tab);
+    const result = await runResolverWithOptions(
+      { defaultTab: tab.tab, includeSubmittedBy: true, includeNotSubmittedBy: false },
+      tab.tab,
+    );
 
     expect(opalFinesServiceMock.getDraftAccounts).toHaveBeenCalledWith({
       businessUnitIds: OPAL_USER_STATE_MOCK.business_unit_users.map((u) => u.business_unit_id),
@@ -74,7 +78,10 @@ describe('finesDraftTabResolver', () => {
     opalFinesServiceMock.getDraftAccounts.mockReturnValue(of(structuredClone(OPAL_FINES_DRAFT_ACCOUNTS_MOCK)));
 
     const tab = FINES_DRAFT_TAB_STATUSES[0];
-    const result = await runResolverWithOptions({ useFragmentForStatuses: true, includeNotSubmittedBy: true }, tab.tab);
+    const result = await runResolverWithOptions(
+      { defaultTab: tab.tab, includeSubmittedBy: false, includeNotSubmittedBy: true },
+      tab.tab,
+    );
 
     expect(opalFinesServiceMock.getDraftAccounts).toHaveBeenCalledWith({
       businessUnitIds: OPAL_USER_STATE_MOCK.business_unit_users.map((u) => u.business_unit_id),
@@ -85,42 +92,41 @@ describe('finesDraftTabResolver', () => {
   });
 
   it('should return empty response when fragment is invalid', async () => {
-    const result = await runResolverWithOptions({ useFragmentForStatuses: true }, 'invalid-fragment');
+    const result = await runResolverWithOptions(
+      {
+        defaultTab: FINES_DRAFT_TAB_FRAGMENT.review,
+        includeSubmittedBy: false,
+        includeNotSubmittedBy: false,
+      },
+      'invalid-fragment',
+    );
 
     expect(result).toEqual(FINES_DRAFT_RESOLVER_EMPTY_RESPONSE);
     expect(opalFinesServiceMock.getDraftAccounts).not.toHaveBeenCalled();
   });
 
-  it('should return empty response when fragment is null', async () => {
-    const result = await runResolverWithOptions({ useFragmentForStatuses: true }, null);
-
-    expect(result).toEqual(FINES_DRAFT_RESOLVER_EMPTY_RESPONSE);
-    expect(opalFinesServiceMock.getDraftAccounts).not.toHaveBeenCalled();
-  });
-
-  it('should return empty response when no statuses are resolved and no default provided', async () => {
-    const result = await runResolverWithOptions({ useFragmentForStatuses: false }, null);
-
-    expect(result).toEqual(FINES_DRAFT_RESOLVER_EMPTY_RESPONSE);
-    expect(opalFinesServiceMock.getDraftAccounts).not.toHaveBeenCalled();
-  });
-
-  it('should use defaultStatuses when provided and not using fragment', async () => {
-    const defaultStatuses = ['Draft', 'AwaitingReview'];
+  it('should use defaultTab when fragment is null', async () => {
     opalFinesServiceMock.getDraftAccounts.mockReturnValue(of(structuredClone(OPAL_FINES_DRAFT_ACCOUNTS_MOCK)));
 
-    const result = await runResolverWithOptions({ defaultStatuses }, null);
+    const tab = FINES_DRAFT_TAB_STATUSES[0];
+    const result = await runResolverWithOptions(
+      { defaultTab: tab.tab, includeSubmittedBy: true, includeNotSubmittedBy: false },
+      null,
+    );
 
     expect(opalFinesServiceMock.getDraftAccounts).toHaveBeenCalledWith({
       businessUnitIds: OPAL_USER_STATE_MOCK.business_unit_users.map((u) => u.business_unit_id),
-      statuses: defaultStatuses,
+      statuses: tab.statuses,
+      submittedBy: OPAL_USER_STATE_MOCK.business_unit_users.map((u) => u.business_unit_user_id),
     });
     expect(result).toEqual(OPAL_FINES_DRAFT_ACCOUNTS_MOCK);
   });
 
   it('should include accountStatusDateFrom and accountStatusDateTo if historicWindowInDays is set', async () => {
     // Find a tab and set historicWindowInDays for this test
-    const tab = FINES_DRAFT_TAB_STATUSES.find((t) => t.tab === 'deleted') as IFinesDraftTabStatuses;
+    const tab = FINES_DRAFT_TAB_STATUSES.find(
+      (t) => t.tab === FINES_DRAFT_TAB_FRAGMENT.deleted,
+    ) as IFinesDraftTabStatuses;
     const originalHistoricWindow = tab.historicWindowInDays;
     tab.historicWindowInDays = 7;
 
@@ -131,7 +137,10 @@ describe('finesDraftTabResolver', () => {
 
     opalFinesServiceMock.getDraftAccounts.mockReturnValue(of(structuredClone(OPAL_FINES_DRAFT_ACCOUNTS_MOCK)));
 
-    const result = await runResolverWithOptions({ useFragmentForStatuses: true, includeSubmittedBy: true }, tab.tab);
+    const result = await runResolverWithOptions(
+      { defaultTab: tab.tab, includeSubmittedBy: true, includeNotSubmittedBy: false },
+      tab.tab,
+    );
 
     expect(dateServiceMock.getDateRange).toHaveBeenCalledWith(7, 0);
     expect(opalFinesServiceMock.getDraftAccounts).toHaveBeenCalledWith({

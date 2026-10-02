@@ -19,6 +19,7 @@ import {
   GovukTableHeadingComponent,
   GovukTableComponent,
 } from '@hmcts/opal-frontend-common/components/govuk/govuk-table';
+import { CustomAccessibleMonetaryComponent } from '@hmcts/opal-frontend-common/components/custom/custom-accessible-monetary';
 
 @Component({
   selector: 'app-fines-mac-offence-details-remove-imposition',
@@ -29,6 +30,7 @@ import {
     GovukTableHeadingComponent,
     GovukTableBodyRowComponent,
     GovukTableBodyRowDataComponent,
+    CustomAccessibleMonetaryComponent,
   ],
   templateUrl: './fines-mac-offence-details-remove-imposition.component.html',
   changeDetection: ChangeDetectionStrategy.OnPush,

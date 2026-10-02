@@ -22,6 +22,8 @@ export const CheckAndValidateDraftsLocators = {
   paginationLinks: 'a.govuk-link.govuk-pagination__link',
   paginationLinksNext: '.govuk-pagination__next',
   paginationLinksPrevious: '.govuk-pagination__prev',
+  paginationPageLink: (pageNum: number) => `a.govuk-pagination__link[aria-label="Page ${pageNum}"]`,
+  paginationAnnouncement: 'opal-lib-moj-sortable-table > output.govuk-visually-hidden[aria-atomic="true"]',
   paginationPageNumber: (pageNum: number | string) =>
     `.govuk-pagination__item a.govuk-pagination__link:contains("${pageNum}"), .govuk-pagination__item--current:contains("${pageNum}"), .govuk-pagination__item:contains("${pageNum}")`,
   accountStatus: 'strong[id="status"]',

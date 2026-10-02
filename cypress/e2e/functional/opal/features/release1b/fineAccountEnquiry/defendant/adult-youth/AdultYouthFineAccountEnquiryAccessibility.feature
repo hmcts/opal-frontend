@@ -6,7 +6,23 @@ Feature: Adult Youth Fine Account Enquiry Accessibility
     Given I am logged in with email "opal-test@dev.platform.hmcts.net"
     And I clear all approved accounts
 
-  @R1B @JIRA-STORY:PO-1849 @JIRA-STORY:PO-3729 @JIRA-EPIC:PO-2472 @JIRA-TEST-KEY:PO-5459
+  @R1BDrop1 @JIRA-STORY:PO-3395 @JIRA-EPIC:PO-2630
+  Scenario: AC6 - Adult Collection Order warning is accessible
+    Given I create a "adultOrYouthOnly" draft account with the following details and set status "Publishing Pending" using user "opal-test-10@dev.platform.hmcts.net":
+      | Account_status                      | Submitted                   |
+      | account.defendant.forenames         | Alex                        |
+      | account.defendant.surname           | WarningAccess{uniq}         |
+      | account.defendant.email_address_1   | Alex.Warning{uniq}@test.com |
+      | account.defendant.dob               | 2001-05-15                  |
+      | account.account_type                | Fine                        |
+      | account.collection_order_made       | false                       |
+      | account.collection_order_made_today | false                       |
+    When I search for the account by last name "WarningAccess{uniq}" and open the latest result
+    Then I should be on the FAE account details page
+    And I should see the permanent Collection Order warning "Account has no Collection Order."
+    And I check the page for accessibility
+
+  @R1BDrop1 @JIRA-STORY:PO-1849 @JIRA-STORY:PO-3729 @JIRA-EPIC:PO-2472 @JIRA-TEST-KEY:PO-5459
   Scenario: Enforcement tab accessibility
     Given I create a "adultOrYouthOnly" draft account with the following details and set status "Publishing Pending" using user "opal-test-10@dev.platform.hmcts.net":
       | Account_status                                  | Submitted                     |
@@ -22,13 +38,12 @@ Feature: Adult Youth Fine Account Enquiry Accessibility
       | account.defendant.dob                           | 2002-05-15                    |
       | account.payment_terms.enforcements[0].result_id | PRIS                          |
 
-    When I search for the account by last name "EnfAccess{uniq}" and open the latest result
-    And I go to the Enforcement tab
+    When the Enforcement tab is displayed for defendant account with last name "EnfAccess{uniq}"
     Then I check the page for accessibility
-    And I open the change enforcement court form
+    And the change enforcement court form is displayed
     And I check the page for accessibility
 
-  @R1B @JIRA-STORY:PO-1850 @JIRA-EPIC:PO-2472 @JIRA-TEST-KEY:PO-5460
+  @R1BDrop1 @JIRA-STORY:PO-1850 @JIRA-EPIC:PO-2472 @JIRA-TEST-KEY:PO-5460
   Scenario: Add enforcement override page accessibility
     Given I create a "adultOrYouthOnly" draft account with the following details and set status "Publishing Pending" using user "opal-test-10@dev.platform.hmcts.net":
       | Account_status                                  | Submitted                             |
@@ -44,12 +59,10 @@ Feature: Adult Youth Fine Account Enquiry Accessibility
       | account.defendant.dob                           | 2002-05-15                            |
       | account.payment_terms.enforcements[0].result_id | PRIS                                  |
 
-    When I search for the account by last name "EnfOverrideAccess{uniq}" and open the latest result
-    And I go to the Enforcement tab
-    And I open the add enforcement override form
+    When the add enforcement override form is displayed for defendant account with last name "EnfOverrideAccess{uniq}"
     Then I check the page for accessibility
 
-  @R1B @JIRA-STORY:PO-1782 @JIRA-EPIC:PO-2472 @JIRA-TEST-KEY:PO-5464
+  @R1BDrop1 @JIRA-STORY:PO-1782 @JIRA-EPIC:PO-2472 @JIRA-TEST-KEY:PO-5464
   Scenario: Add enforcement action page accessibility
     Given I create a "adultOrYouthOnly" draft account with the following details and set status "Publishing Pending" using user "opal-test-10@dev.platform.hmcts.net":
       | Account_status                                  | Submitted                           |
@@ -65,12 +78,10 @@ Feature: Adult Youth Fine Account Enquiry Accessibility
       | account.defendant.dob                           | 2002-05-15                          |
       | account.payment_terms.enforcements[0].result_id | PRIS                                |
 
-    When I search for the account by last name "EnfActionAccess{uniq}" and open the latest result
-    And I go to the Enforcement tab
-    And I open the add enforcement action form
+    When the add enforcement action form is displayed for defendant account with last name "EnfActionAccess{uniq}"
     Then I check the page for accessibility
 
-  @R1B @JIRA-STORY:PO-1782 @JIRA-EPIC:PO-2630 @JIRA-TEST-KEY:PO-7555
+  @R1BDrop1 @JIRA-STORY:PO-1782 @JIRA-EPIC:PO-2630 @JIRA-TEST-KEY:PO-7555
   Scenario: Confirm enforcement action page accessibility
     Given I create a "adultOrYouthOnly" draft account with the following details and set status "Publishing Pending" using user "opal-test-10@dev.platform.hmcts.net":
       | Account_status                                  | Submitted                           |
@@ -86,14 +97,12 @@ Feature: Adult Youth Fine Account Enquiry Accessibility
       | account.defendant.dob                           | 2002-05-15                          |
       | account.payment_terms.enforcements[0].result_id | PRIS                                |
 
-    When I search for the account by last name "EnfActionAccess{uniq}" and open the latest result
-    And I go to the Enforcement tab
-    And I open the add enforcement action form
-    And I choose the enforcement action "Collection order (COLLO)"
+    When the add enforcement action form is displayed for defendant account with last name "EnfActionAccess{uniq}"
+    And the enforcement action is "Collection order (COLLO)"
     And I continue to the confirm enforcement action page
     Then I check the page for accessibility
 
-  @R1B @JIRA-STORY:PO-1785 @JIRA-EPIC:PO-1675 @JIRA-TEST-KEY:PO-10029
+  @R1BDrop1 @JIRA-STORY:PO-1785 @JIRA-EPIC:PO-1675 @JIRA-TEST-KEY:PO-10029
   Scenario: Remove enforcement hold page accessibility
     Given I create a "adultOrYouthOnly" draft account with the following details and set status "Publishing Pending" using user "opal-test-10@dev.platform.hmcts.net":
       | Account_status                                  | Submitted                           |
@@ -109,12 +118,10 @@ Feature: Adult Youth Fine Account Enquiry Accessibility
       | account.defendant.dob                           | 2002-05-15                          |
       | account.payment_terms.enforcements[0].result_id | NOENF                               |
 
-    When I search for the account by last name "EnfRemoveAccess{uniq}" and open the latest result
-    And I go to the Enforcement tab
-    And I open the remove enforcement hold screen
+    When the remove enforcement hold screen is displayed for defendant account with last name "EnfRemoveAccess{uniq}"
     Then I check the page for accessibility
 
-  @R1B @JIRA-STORY:PO-2635 @JIRA-EPIC:PO-2621 @JIRA-TEST-KEY:PO-9563
+  @R1BDrop1 @JIRA-STORY:PO-2635 @JIRA-EPIC:PO-2621 @JIRA-TEST-KEY:PO-9563
   Scenario: History and notes tab accessibility
     Given I create a "adultOrYouthOnly" draft account with the following details and set status "Publishing Pending" using user "opal-test-10@dev.platform.hmcts.net":
       | Account_status                          | Submitted                           |

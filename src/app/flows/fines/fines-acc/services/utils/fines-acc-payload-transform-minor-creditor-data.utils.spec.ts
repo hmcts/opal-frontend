@@ -22,6 +22,17 @@ describe('transformMinorCreditorAccountPayload', () => {
     expect(result).toEqual(MOCK_FINES_ACC_MINOR_CREDITOR_ADD_AMEND_CONVERT_INDIVIDUAL_FORM.formData);
   });
 
+  it('should map missing individual name details to null', () => {
+    const minorCreditorData = structuredClone(OPAL_FINES_ACCOUNT_MINOR_CREDITOR_CREDITOR_INDIVIDUAL_MOCK);
+    minorCreditorData.party_details.individual_details = null;
+
+    const result = transformMinorCreditorAccountPayload(minorCreditorData);
+
+    expect(result.facc_minor_creditor_title).toBeNull();
+    expect(result.facc_minor_creditor_forenames).toBeNull();
+    expect(result.facc_minor_creditor_surname).toBeNull();
+  });
+
   it('should map missing optional values to null', () => {
     const minorCreditorData = structuredClone(OPAL_FINES_ACCOUNT_MINOR_CREDITOR_CREDITOR_MOCK);
     minorCreditorData.party_details.organisation_details = null;

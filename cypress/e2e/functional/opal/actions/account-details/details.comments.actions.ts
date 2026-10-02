@@ -4,6 +4,7 @@
  */
 import { AccountCommentsAddLocators as L } from '../../../../../shared/selectors/account-details/account.comments.details.locators';
 import { AccountAtAGlanceLocators as N } from '../../../../../shared/selectors/account-details/account.at-a-glance.details.locators';
+import { UNSAVED_CHANGES_WARNING } from '../../../../../shared/constants/confirmation-messages';
 import { createScopedLogger } from '../../../../../support/utils/log.helper';
 
 const log = createScopedLogger('AccountDetailsCommentsActions');
@@ -133,7 +134,7 @@ export class AccountDetailsCommentsActions {
     // Prepare native confirm: click OK (accept)
     cy.once('window:confirm', (msg) => {
       const normalized = String(msg).replace(/\s+/g, ' ');
-      expect(normalized, 'Confirm prompt message').to.match(/unsaved changes/i);
+      expect(normalized, 'Confirm prompt message').to.equal(UNSAVED_CHANGES_WARNING);
       return true; // OK = leave
     });
 

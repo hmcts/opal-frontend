@@ -1,0 +1,49 @@
+import { mount } from 'cypress/angular';
+import { OpalFines } from '../../../../../src/app/flows/fines/services/opal-fines-service/opal-fines.service';
+import { ActivatedRoute } from '@angular/router';
+import { FINES_MAC_STATE_MOCK } from '../../../../../src/app/flows/fines/fines-mac/mocks/fines-mac-state.mock';
+import { FinesMacSubmitConfirmationComponent } from '../../../../../src/app/flows/fines/fines-mac/fines-mac-submit-confirmation/fines-mac-submit-confirmation.component';
+import { of } from 'rxjs';
+
+const MANUAL_ACCOUNT_CREATION_JIRA_LABEL = '@JIRA-LABEL:manual-account-creation';
+
+const buildTags = (...tags: string[]) => [...tags, '@R1A', MANUAL_ACCOUNT_CREATION_JIRA_LABEL];
+
+describe('FinesMacSubmitConfirmation', () => {
+  const createMockFinesService = () => ({
+    finesMacState: structuredClone(FINES_MAC_STATE_MOCK),
+  });
+  let mockFinesService = createMockFinesService();
+
+  beforeEach(() => {
+    mockFinesService = createMockFinesService();
+  });
+
+  const setupComponent = () => {
+    mount(FinesMacSubmitConfirmationComponent, {
+      providers: [
+        { provide: OpalFines, useValue: mockFinesService },
+        {
+          provide: ActivatedRoute,
+          useValue: {
+            parent: of('manual-account-creation'),
+          },
+        },
+      ],
+      componentProperties: {},
+    });
+  };
+
+  it(
+    '(AC.1,AC.2)should render the component and have all elements',
+    { tags: [...buildTags('@JIRA-STORY:PO-660'), '@JIRA-EPIC:PO-973', '@JIRA-TEST-KEY:PO-5248'] },
+    () => {
+      setupComponent();
+
+      cy.get('opal-lib-govuk-panel').should('contain', "You've submitted this account for review");
+      cy.get('h2').should('contain', 'Next steps');
+      cy.get('a').should('contain', 'Create a new account');
+      cy.get('a').should('contain', 'See all accounts in review');
+    },
+  );
+});

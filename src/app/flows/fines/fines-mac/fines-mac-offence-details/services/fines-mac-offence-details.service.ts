@@ -85,16 +85,6 @@ export class FinesMacOffenceDetailsService {
   }
 
   /**
-   * Extracts the offence code from a ref-data item.
-   *
-   * @param offence - The offence ref-data item.
-   * @returns The offence code when present.
-   */
-  private getOffenceCode(offence: IOpalFinesOffences & { cjs_code?: string }): string | undefined {
-    return offence.get_cjs_code ?? offence.cjs_code;
-  }
-
-  /**
    * Removes an imposition from the specified offence in the data array.
    *
    * @param data - The array of offence data objects.
@@ -157,9 +147,6 @@ export class FinesMacOffenceDetailsService {
   /**
    * Finds the exact offence match for a supplied offence code from the returned offence reference data.
    *
-   * Supports both `get_cjs_code` and `cjs_code` shaped response objects so the caller does not need
-   * to care about the source format.
-   *
    * @param response - The offence lookup response.
    * @param offenceCode - The offence code entered by the user.
    * @param offenceId - Optional saved offence ID used to disambiguate duplicate exact-code matches.
@@ -176,8 +163,7 @@ export class FinesMacOffenceDetailsService {
 
     const normalisedOffenceCode = offenceCode.trim().toUpperCase();
     const exactCodeMatches = response.refData.filter((offence) => {
-      const returnedCode = this.getOffenceCode(offence);
-      return returnedCode?.trim().toUpperCase() === normalisedOffenceCode;
+      return offence.cjs_code.trim().toUpperCase() === normalisedOffenceCode;
     });
 
     if (exactCodeMatches.length === 1) {

@@ -5,7 +5,7 @@ export const OPAL_FINES_OFFENCES_REF_DATA_DUPLICATE_CODE_MOCK: IOpalFinesOffence
   refData: [
     {
       offence_id: 41799,
-      get_cjs_code: 'GMMET001',
+      cjs_code: 'GMMET001',
       business_unit_id: 52,
       offence_title: 'Duplicate offence title A',
       offence_title_cy: null,
@@ -16,7 +16,7 @@ export const OPAL_FINES_OFFENCES_REF_DATA_DUPLICATE_CODE_MOCK: IOpalFinesOffence
     },
     {
       offence_id: 41800,
-      get_cjs_code: 'GMMET001',
+      cjs_code: 'GMMET001',
       business_unit_id: 73,
       offence_title: 'Duplicate offence title B',
       offence_title_cy: null,

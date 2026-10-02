@@ -172,16 +172,16 @@ describe('FinesConSearchAccountFormCompaniesComponent', () => {
     expect(companyNameControl?.hasError('maxlength')).toBe(true);
   });
 
-  it('should validate address line 1 with alphanumeric hyphens apostrophes and spaces pattern', () => {
+  it('should validate address line 1 with the single ASCII characters pattern', () => {
     const addressControl = component.form.get(
       'fcon_search_account_companies_search_criteria.fcon_search_account_companies_address_line_1',
     );
 
-    addressControl?.setValue('123 Main Street-North');
-    expect(addressControl?.hasError('alphanumericTextPattern')).toBe(false);
+    addressControl?.setValue('123 Main Street & Co.');
+    expect(addressControl?.hasError('singleAsciiCharacters')).toBe(false);
 
-    addressControl?.setValue('123 Main St &');
-    expect(addressControl?.hasError('alphanumericTextPattern')).toBe(true);
+    addressControl?.setValue('123 Café Street');
+    expect(addressControl?.hasError('singleAsciiCharacters')).toBe(true);
   });
 
   it('should validate address line 1 max length of 30 characters', () => {
@@ -198,15 +198,15 @@ describe('FinesConSearchAccountFormCompaniesComponent', () => {
 
   it.each([
     {
-      caseName: 'alphanumeric hyphens apostrophes and spaces pattern',
+      caseName: 'alphanumeric and spaces pattern',
       validValue: 'SW1A 1AA',
-      invalidValue: 'SW1A@1AA',
+      invalidValue: 'SW1A-1AA',
       errorName: 'alphanumericTextPattern',
     },
     {
-      caseName: 'max length of 8 characters',
-      validValue: 'SW1A1AA',
-      invalidValue: 'SW1A 1AAA',
+      caseName: 'max length of 8 characters after stripping whitespace',
+      validValue: 'SW1A1AAA',
+      invalidValue: 'SW1A1AAAA',
       errorName: 'maxlength',
     },
   ] as const)('should validate postcode $caseName', ({ validValue, invalidValue, errorName }) => {
@@ -219,6 +219,24 @@ describe('FinesConSearchAccountFormCompaniesComponent', () => {
 
     postcodeControl?.setValue(invalidValue);
     expect(postcodeControl?.hasError(errorName)).toBe(true);
+  });
+
+  it('should trim only surrounding whitespace from the postcode input on focusout', () => {
+    const postcodeInput = fixture.nativeElement.querySelector(
+      'input[name="fcon_search_account_companies_post_code"]',
+    ) as HTMLInputElement | null;
+    if (!postcodeInput) throw new Error('Postcode input not found');
+
+    const postcodeControl = component.form.get(
+      'fcon_search_account_companies_search_criteria.fcon_search_account_companies_post_code',
+    );
+
+    postcodeControl?.setValue('  AB1  3CD ');
+    postcodeInput.dispatchEvent(new FocusEvent('focusout', { bubbles: true }));
+    fixture.detectChanges();
+
+    expect(postcodeControl?.value).toBe('AB1  3CD');
+    expect(postcodeControl?.hasError('maxlength')).toBe(false);
   });
 
   it('should set input value and trigger conditional validation for nested control path', () => {

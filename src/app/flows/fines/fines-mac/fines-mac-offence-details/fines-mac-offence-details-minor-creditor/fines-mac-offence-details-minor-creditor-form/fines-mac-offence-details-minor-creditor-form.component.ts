@@ -28,9 +28,9 @@ import {
 import { GovukErrorSummaryComponent } from '@hmcts/opal-frontend-common/components/govuk/govuk-error-summary';
 import { GovukCancelLinkComponent } from '@hmcts/opal-frontend-common/components/govuk/govuk-cancel-link';
 import { CapitalisationDirective } from '@hmcts/opal-frontend-common/directives/capitalisation';
+import { TrimLeadingTrailingWhitespaceDirective } from '@hmcts/opal-frontend-common/directives/trim-leading-trailing-whitespace';
 import { patternValidator } from '@hmcts/opal-frontend-common/validators/pattern-validator';
 import {
-  ALPHANUMERIC_WITH_HYPHENS_SPACES_APOSTROPHES_DOT_PATTERN,
   ALPHANUMERIC_WITH_SPACES_PATTERN,
   LETTERS_WITH_SPACES_PATTERN,
   NUMERIC_PATTERN,
@@ -38,18 +38,11 @@ import {
 } from '@hmcts/opal-frontend-common/constants';
 
 const LETTERS_WITH_SPACES_PATTERN_VALIDATOR = patternValidator(LETTERS_WITH_SPACES_PATTERN, 'lettersWithSpacesPattern');
-const ALPHANUMERIC_WITH_HYPHENS_SPACES_APOSTROPHES_DOT_PATTERN_VALIDATOR = patternValidator(
-  ALPHANUMERIC_WITH_HYPHENS_SPACES_APOSTROPHES_DOT_PATTERN,
-  'alphanumericWithHyphensSpacesApostrophesDotPattern',
-);
 const ALPHANUMERIC_WITH_SPACES_PATTERN_VALIDATOR = patternValidator(
   ALPHANUMERIC_WITH_SPACES_PATTERN,
   'alphanumericTextPattern',
 );
-const SINGLE_ASCII_CHARACTERS_BANK_ACCOUNT_NAME_PATTERN_VALIDATOR = patternValidator(
-  SINGLE_ASCII_CHARACTERS,
-  'singleAsciiChatacters',
-);
+const SINGLE_ASCII_CHARACTERS_PATTERN_VALIDATOR = patternValidator(SINGLE_ASCII_CHARACTERS, 'singleAsciiCharacters');
 const NUMERIC_PATTERN_VALIDATOR = patternValidator(NUMERIC_PATTERN, 'numericalTextPattern');
 
 @Component({
@@ -69,6 +62,7 @@ const NUMERIC_PATTERN_VALIDATOR = patternValidator(NUMERIC_PATTERN, 'numericalTe
     GovukTextInputComponent,
     GovukCancelLinkComponent,
     CapitalisationDirective,
+    TrimLeadingTrailingWhitespaceDirective,
   ],
   templateUrl: './fines-mac-offence-details-minor-creditor-form.component.html',
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -111,17 +105,20 @@ export class FinesMacOffenceDetailsMinorCreditorFormComponent extends AbstractFo
       fm_offence_details_minor_creditor_company_name: new FormControl(null),
       fm_offence_details_minor_creditor_address_line_1: new FormControl(null, [
         Validators.maxLength(30),
-        ALPHANUMERIC_WITH_SPACES_PATTERN_VALIDATOR,
+        SINGLE_ASCII_CHARACTERS_PATTERN_VALIDATOR,
       ]),
       fm_offence_details_minor_creditor_address_line_2: new FormControl(null, [
         Validators.maxLength(30),
-        ALPHANUMERIC_WITH_SPACES_PATTERN_VALIDATOR,
+        SINGLE_ASCII_CHARACTERS_PATTERN_VALIDATOR,
       ]),
       fm_offence_details_minor_creditor_address_line_3: new FormControl(null, [
         Validators.maxLength(16),
+        SINGLE_ASCII_CHARACTERS_PATTERN_VALIDATOR,
+      ]),
+      fm_offence_details_minor_creditor_post_code: new FormControl(null, [
+        Validators.maxLength(8),
         ALPHANUMERIC_WITH_SPACES_PATTERN_VALIDATOR,
       ]),
-      fm_offence_details_minor_creditor_post_code: new FormControl(null, [Validators.maxLength(8)]),
       fm_offence_details_minor_creditor_pay_by_bacs: new FormControl(null),
       fm_offence_details_minor_creditor_bank_account_name: new FormControl(null),
       fm_offence_details_minor_creditor_bank_sort_code: new FormControl(null),
@@ -178,7 +175,7 @@ export class FinesMacOffenceDetailsMinorCreditorFormComponent extends AbstractFo
     companyName.setValidators([
       Validators.required,
       Validators.maxLength(50),
-      ALPHANUMERIC_WITH_HYPHENS_SPACES_APOSTROPHES_DOT_PATTERN_VALIDATOR,
+      SINGLE_ASCII_CHARACTERS_PATTERN_VALIDATOR,
     ]);
   }
 
@@ -196,7 +193,7 @@ export class FinesMacOffenceDetailsMinorCreditorFormComponent extends AbstractFo
     nameOnAccount.setValidators([
       Validators.required,
       Validators.maxLength(18),
-      SINGLE_ASCII_CHARACTERS_BANK_ACCOUNT_NAME_PATTERN_VALIDATOR,
+      SINGLE_ASCII_CHARACTERS_PATTERN_VALIDATOR,
     ]);
     sortCode.setValidators([Validators.required, Validators.maxLength(6), NUMERIC_PATTERN_VALIDATOR]);
     accountNumber.setValidators([Validators.required, Validators.maxLength(8), NUMERIC_PATTERN_VALIDATOR]);

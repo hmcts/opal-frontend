@@ -1,6 +1,6 @@
 <opal-lib-moj-sortable-table>
   <ng-container head>
-    @if (activeTab === 'approved') {
+    @if (activeTab === finesDraftTabFragment.approved) {
       <th
         opal-lib-moj-sortable-table-header
         columnKey="Account"
@@ -16,7 +16,7 @@
       columnKey="Defendant"
       [sortDirection]="sortStateSignal()['Defendant']"
       (sortChange)="onSortChange($event)"
-      [dataIndex]="activeTab === 'approved' ? 1 : 0"
+      [dataIndex]="activeTab === finesDraftTabFragment.approved ? 1 : 0"
     >
       Defendant
     </th>
@@ -25,11 +25,11 @@
       columnKey="Date of birth"
       [sortDirection]="sortStateSignal()['Date of birth']"
       (sortChange)="onSortChange($event)"
-      [dataIndex]="activeTab === 'approved' ? 2 : 1"
+      [dataIndex]="activeTab === finesDraftTabFragment.approved ? 2 : 1"
     >
       Date of birth
     </th>
-    @if (activeTab === 'deleted' || activeTab === 'failed') {
+    @if (activeTab === finesDraftTabFragment.deleted || activeTab === finesDraftTabFragment.failed) {
       <th
         opal-lib-moj-sortable-table-header
         columnKey="ChangedDate"
@@ -37,9 +37,9 @@
         (sortChange)="onSortChange($event)"
         [dataIndex]="2"
       >
-        {{ activeTab === 'deleted' ? 'Deleted' : 'Date failed' }}
+        {{ activeTab === finesDraftTabFragment.deleted ? 'Deleted' : 'Date failed' }}
       </th>
-    } @else if (activeTab === 'approved') {
+    } @else if (activeTab === finesDraftTabFragment.approved) {
       <th
         opal-lib-moj-sortable-table-header
         columnKey="CreatedDate"
@@ -65,7 +65,7 @@
       columnKey="Account type"
       [sortDirection]="sortStateSignal()['Account type']"
       (sortChange)="onSortChange($event)"
-      [dataIndex]="activeTab === 'approved' ? 4 : 3"
+      [dataIndex]="activeTab === finesDraftTabFragment.approved ? 4 : 3"
     >
       Account type
     </th>
@@ -74,11 +74,11 @@
       columnKey="Business unit"
       [sortDirection]="sortStateSignal()['Business unit']"
       (sortChange)="onSortChange($event)"
-      [dataIndex]="activeTab === 'approved' ? 5 : 4"
+      [dataIndex]="activeTab === finesDraftTabFragment.approved ? 5 : 4"
     >
       Business unit
     </th>
-    @if (isChecker && activeTab !== 'deleted') {
+    @if (isChecker && activeTab !== finesDraftTabFragment.deleted) {
       <th
         opal-lib-moj-sortable-table-header
         columnKey="Submitted by"
@@ -94,7 +94,7 @@
     @for (row of paginatedTableDataComputed(); track row['Defendant id']) {
       <tr opal-lib-moj-sortable-table-row>
         @if (activeTab === 'approved') {
-          <td opal-lib-moj-sortable-table-row-data id="account">
+          <td #paginationFocusTarget opal-lib-moj-sortable-table-row-data id="account">
             @if (approvedAccountLinkEnabled) {
               <a
                 class="govuk-link govuk-link--no-visited-state"
@@ -107,7 +107,7 @@
             }
           </td>
         }
-        <td opal-lib-moj-sortable-table-row-data id="defendant">
+        <td #paginationFocusTarget opal-lib-moj-sortable-table-row-data id="defendant">
           @if (activeTab === 'approved') {
             {{ row['Defendant'] }}
           } @else {
@@ -119,20 +119,21 @@
         <td opal-lib-moj-sortable-table-row-data id="dob">
           {{ row['Date of birth'] | dateFormat: DATE_INPUT_FORMAT : DATE_OUTPUT_FORMAT }}
         </td>
-        @if (activeTab === 'deleted' || activeTab === 'failed') {
+        @if (activeTab === finesDraftTabFragment.deleted || activeTab === finesDraftTabFragment.failed) {
           <td opal-lib-moj-sortable-table-row-data id="changedDate">{{ row['Changed'] | daysAgo }}</td>
         } @else {
           <td opal-lib-moj-sortable-table-row-data id="createdDate">{{ row['Created'] | daysAgo }}</td>
         }
         <td opal-lib-moj-sortable-table-row-data id="accountType">{{ row['Account type'] }}</td>
         <td opal-lib-moj-sortable-table-row-data id="businessUnit">{{ row['Business unit'] }}</td>
-        @if (isChecker && activeTab !== 'deleted') {
+        @if (isChecker && activeTab !== finesDraftTabFragment.deleted) {
           <td opal-lib-moj-sortable-table-row-data id="submittedBy">{{ row['Submitted by'] }}</td>
         }
       </tr>
     }
   </ng-container>
   <ng-container status>
+    <output aria-atomic="true" class="govuk-visually-hidden">{{ pageChangeAnnouncement() }}</output>
     <opal-lib-moj-sortable-table-status
       [columnTitle]="sortedColumnTitleSignal()"
       [sortDirection]="sortedColumnDirectionSignal()"

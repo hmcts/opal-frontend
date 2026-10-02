@@ -34,6 +34,7 @@ import { IFinesConSearchResultAccountCheck } from '../interfaces/fines-con-searc
 import { IFinesConSearchResultDefendantTableWrapperTableData } from './interfaces/fines-con-search-result-defendant-table-wrapper-table-data.interface';
 import { IFinesConSearchResultDefendantTableWrapperTableSort } from './interfaces/fines-con-search-result-defendant-table-wrapper-table-sort.interface';
 import { FinesConDefendant } from '../../../types/fines-con-defendant.type';
+import { CustomAccessibleMonetaryComponent } from '@hmcts/opal-frontend-common/components/custom/custom-accessible-monetary';
 
 @Component({
   selector: 'app-fines-con-search-result-defendant-table-wrapper',
@@ -54,6 +55,7 @@ import { FinesConDefendant } from '../../../types/fines-con-defendant.type';
     FinesNotProvidedComponent,
     MojAlertIconComponent,
     GovukErrorSummaryComponent,
+    CustomAccessibleMonetaryComponent,
   ],
   templateUrl: './fines-con-search-result-defendant-table-wrapper.component.html',
   styleUrls: ['./fines-con-search-result-defendant-table-wrapper.component.scss'],

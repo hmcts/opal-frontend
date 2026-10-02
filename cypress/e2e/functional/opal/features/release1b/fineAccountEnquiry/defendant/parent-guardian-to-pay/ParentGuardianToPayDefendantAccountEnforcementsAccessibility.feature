@@ -5,7 +5,7 @@ Feature: Parent Guardian To Pay Defendant Account Enforcements Accessibility
   Background:
     Given I am logged in with email "opal-test@dev.platform.hmcts.net"
     And I clear all approved accounts
-  @R1B @JIRA-STORY:PO-1848 @JIRA-STORY:PO-1860 @JIRA-EPIC:PO-2472 @JIRA-TEST-KEY:PO-5347
+  @R1BDrop1 @JIRA-STORY:PO-1848 @JIRA-STORY:PO-1860 @JIRA-EPIC:PO-2472 @JIRA-TEST-KEY:PO-5347
   Scenario: Check Change Collection Order status accessibility for an account with parent or guardian details
     Given I create a "pgToPay" draft account with the following details and set status "Publishing Pending" using user "opal-test-10@dev.platform.hmcts.net":
       | Account_status                          | Submitted                             |
@@ -20,7 +20,7 @@ Feature: Parent Guardian To Pay Defendant Account Enforcements Accessibility
       | account.payment_card_request            | false                                 |
       | account.defendant.dob                   | 2010-05-15                            |
     When I search for the account by last name "ParentGuardianSurname{uniq}" and verify the page header is "Miss Michael PARENTGUARDIANSURNAME{uniqUpper}"
-    And I go to the Enforcement tab
-    And I open the Change Collection Order status form
+    And the Enforcement tab is selected
+    And the Change Collection Order status form is displayed
     Then I should see the Change Collection Order status page
     And I check the page for accessibility

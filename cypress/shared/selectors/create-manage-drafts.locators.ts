@@ -16,6 +16,8 @@ export const CreateManageDraftsLocators = {
   tableCaption: '.moj-pagination__results',
   table: 'table.govuk-table',
   tableHeadings: 'th.govuk-table__header',
+  sortableHeaderButton: 'button',
+  sortableHeaderIcon: 'button svg',
   tableRow: 'table.govuk-table>tbody>tr',
   defendant: 'td[id = "defendant"]',
   dob: 'td[id = "dob"]',

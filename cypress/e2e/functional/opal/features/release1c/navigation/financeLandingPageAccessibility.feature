@@ -9,3 +9,18 @@ Feature: Finance Landing Page Accessibility
     Then I am taken to the "Finance" Fines landing page
     And I see the following text on the page "Automatic Cash Input"
     Then I check the page for accessibility
+
+  @JIRA-STORY:PO-3480 @JIRA-EPIC:PO-2439 @R1CFinancialMovements
+  Scenario: Finance landing page with Manual cash input accessibility
+    # AC3: verify the Finance landing page, including Manual cash input, with axe-core.
+    When I select the Fines primary navigation item "Finance"
+    Then I am taken to the "Finance" Fines landing page
+    And I see the following text on the page "Manual cash input"
+    Then I check the page for accessibility
+
+  @JIRA-STORY:PO-8691 @JIRA-EPIC:PO-2439 @R1CBankingInterfaces
+  Scenario: Finance banking interfaces links accessibility
+    When I select the Fines primary navigation item "Finance"
+    Then I am taken to the "Finance" Fines landing page
+    And I see the External banking interfaces section and its available links
+    Then I check the page for accessibility

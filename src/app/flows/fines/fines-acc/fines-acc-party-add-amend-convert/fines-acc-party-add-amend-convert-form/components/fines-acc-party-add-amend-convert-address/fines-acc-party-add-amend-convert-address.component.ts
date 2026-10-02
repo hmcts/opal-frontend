@@ -4,6 +4,7 @@ import { GovukTextInputComponent } from '@hmcts/opal-frontend-common/components/
 import { AbstractNestedFormBaseComponent } from '@hmcts/opal-frontend-common/components/abstract/abstract-nested-form-base';
 import { IAbstractFormControlErrorMessage } from '@hmcts/opal-frontend-common/components/abstract/interfaces';
 import { CapitalisationDirective } from '@hmcts/opal-frontend-common/directives/capitalisation';
+import { TrimLeadingTrailingWhitespaceDirective } from '@hmcts/opal-frontend-common/directives/trim-leading-trailing-whitespace';
 
 /**
  * Address sub-component for the fines account party add/amend/convert form.
@@ -16,7 +17,12 @@ import { CapitalisationDirective } from '@hmcts/opal-frontend-common/directives/
  */
 @Component({
   selector: 'app-fines-acc-party-add-amend-convert-address',
-  imports: [ReactiveFormsModule, GovukTextInputComponent, CapitalisationDirective],
+  imports: [
+    ReactiveFormsModule,
+    GovukTextInputComponent,
+    CapitalisationDirective,
+    TrimLeadingTrailingWhitespaceDirective,
+  ],
   templateUrl: './fines-acc-party-add-amend-convert-address.component.html',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })

@@ -1,5 +1,6 @@
 import { signal } from '@angular/core';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
+import { By } from '@angular/platform-browser';
 import { ActivatedRoute, convertToParamMap, Router } from '@angular/router';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
 import { FINES_ACC_DEFENDANT_DETAILS_HEADER_MOCK } from '../fines-acc-defendant-details/mocks/fines-acc-defendant-details-header.mock';
@@ -25,6 +26,7 @@ describe('FinesAccEnfActionAddNewComponent', () => {
     business_unit_id: '78',
     business_unit_user_id: 'user-1',
     welsh_speaking: 'Y',
+    originator_type: null,
   };
 
   const activatedRouteStub = {
@@ -39,6 +41,7 @@ describe('FinesAccEnfActionAddNewComponent', () => {
 
   const mockFinesAccStore = {
     successMessage: signal<string | null>('Enforcement action added'),
+    isTransferredIn: vi.fn().mockReturnValue(false),
     setAccountState: vi.fn(),
     clearSuccessMessage: vi.fn(),
   };
@@ -57,6 +60,7 @@ describe('FinesAccEnfActionAddNewComponent', () => {
     vi.clearAllMocks();
 
     mockFinesAccStore.successMessage.set('Enforcement action added');
+    mockFinesAccStore.isTransferredIn.mockReturnValue(false);
     mockPayloadService.transformDefendantAccountHeaderForStore.mockReturnValue(accountStateMock);
 
     await TestBed.configureTestingModule({
@@ -94,6 +98,14 @@ describe('FinesAccEnfActionAddNewComponent', () => {
 
     expect(component.accountNumber).toBe('');
     expect(component.partyName).toBe('');
+  });
+
+  it('should display the transferred in banner when the account is transferred in', () => {
+    mockFinesAccStore.isTransferredIn.mockReturnValue(true);
+
+    createComponent();
+
+    expect(fixture.debugElement.query(By.css('#fines-acc-enf-action-add-new-banners-transferred-in'))).toBeTruthy();
   });
 
   it('should clear the success message and navigate to select enforcement action when yes is selected', () => {

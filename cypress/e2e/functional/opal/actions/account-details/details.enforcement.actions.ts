@@ -7,17 +7,24 @@ import { DOM_ELEMENTS as ENF_COURT_CHANGE } from '../../../../../shared/selector
 import { DOM_ELEMENTS as ENF_OVR } from '../../../../../shared/selectors/account-enquiry/account.enquiry.enforcement-override-add.locators';
 import { DOM_ELEMENTS as ENF_ACT } from '../../../../../shared/selectors/account-enquiry/account.enquiry.enforcement-action-select.locators';
 import { REMOVE_ENFORCEMENT_HOLD_ELEMENTS as ENF_REMOVE_HOLD } from '../../../../../shared/selectors/account-enquiry/account.enquiry.enforcement-hold-remove.locators';
-import { DOM_ELEMENTS as ENF_ACTION_ADD } from '../../../../../component/fineAccountEnquiry/accountEnquiry/locators/account.enquiry.enforcement-action-add.locators';
+import { DOM_ELEMENTS as ENF_ACTION_ADD } from '../../../../../component/release1b/fineAccountEnquiry/accountEnquiry/locators/account.enquiry.enforcement-action-add.locators';
 import { COLLECTION_ORDER_CHANGE_ELEMENTS as COLLO } from '../../../../../shared/selectors/account-enquiry/account.enquiry.collection-order-change.locators';
 import { createScopedLogger } from '../../../../../support/utils/log.helper';
+import { CommonActions } from '../common/common.actions';
 
 const log = createScopedLogger('AccountDetailsEnforcementActions');
+
+const ENFORCEMENT_OVERRIDE_SUMMARY_TEXT_ALIASES: Record<string, string[]> = {
+  'Application made for Benefit Deductions (ABDC)': ['Application made for Benefit Deduction (ABDC)'],
+};
 
 /**
  * Actions for the Account Details enforcement tab and add override form.
  */
 export class AccountDetailsEnforcementActions {
   private static readonly DEFAULT_TIMEOUT = 30_000;
+
+  private readonly common = new CommonActions();
 
   /**
    * Normalizes visible text for reliable equality assertions.
@@ -27,6 +34,20 @@ export class AccountDetailsEnforcementActions {
    */
   private normalize(value: string): string {
     return value.replace(/\s+/g, ' ').trim();
+  }
+
+  /**
+   * Asserts an element contains expected text after normalizing whitespace and casing.
+   *
+   * @param selector - Element selector.
+   * @param expected - Expected text.
+   */
+  private assertContainsNormalizedText(selector: string, expected: string): void {
+    this.common.assertElementContainsNormalizedText(
+      selector,
+      expected,
+      AccountDetailsEnforcementActions.DEFAULT_TIMEOUT,
+    );
   }
 
   /**
@@ -51,6 +72,38 @@ export class AccountDetailsEnforcementActions {
   }
 
   /**
+   * Asserts a map of label/value pairs within a specific Enforcement tab card.
+   *
+   * @param expected - Expected values keyed by visible label text.
+   * @param fieldSelectors - Mapping of normalized labels to locators.
+   * @param scope - Root selector that must be visible before assertions run.
+   */
+  private assertMappedValues(
+    expected: Record<string, string>,
+    fieldSelectors: Record<string, string>,
+    scope: string,
+  ): void {
+    cy.get(scope, { timeout: AccountDetailsEnforcementActions.DEFAULT_TIMEOUT }).should('be.visible');
+
+    Object.entries(expected).forEach(([label, value]) => {
+      const normalizedLabel = label.trim().toLowerCase();
+      const selector = fieldSelectors[normalizedLabel];
+
+      if (!selector) {
+        throw new Error(
+          `Unsupported Enforcement tab label "${label}". Supported labels: ${Object.keys(fieldSelectors).join(', ')}`,
+        );
+      }
+
+      log('assert', 'Asserting Enforcement tab value', { label, value });
+      cy.get(selector, { timeout: AccountDetailsEnforcementActions.DEFAULT_TIMEOUT })
+        .should('be.visible')
+        .invoke('text')
+        .then((text) => expect(this.normalize(text)).to.contain(this.normalize(value)));
+    });
+  }
+
+  /**
    * Asserts the Enforcement tab content is visible.
    */
   public assertEnforcementTabVisible(): void {
@@ -58,6 +111,53 @@ export class AccountDetailsEnforcementActions {
     cy.contains(ENF.tableTitle, 'Enforcement overview', {
       timeout: AccountDetailsEnforcementActions.DEFAULT_TIMEOUT,
     }).should('be.visible');
+  }
+
+  /**
+   * Asserts the Enforcement overview card values.
+   *
+   * @param expected - Map of visible labels to expected values.
+   */
+  public assertEnforcementOverview(expected: Record<string, string>): void {
+    const fieldSelectors: Record<string, string> = {
+      'collection order status': ENF.collectionOrderStatusValue,
+      'days in default': ENF.daysInDefaultValue,
+      'enforcement court': ENF.enforcementCourtValue,
+    };
+
+    this.assertMappedValues(expected, fieldSelectors, ENF.enforcementOverviewList);
+  }
+
+  /**
+   * Asserts the last enforcement action card values.
+   *
+   * @param expected - Map of visible labels to expected values.
+   */
+  public assertLastEnforcementActionDetails(expected: Record<string, string>): void {
+    const fieldSelectors: Record<string, string> = {
+      'enforcement action': ENF.enforcementActionValue,
+      reason: ENF.reasonValue,
+      enforcer: ENF.lastEnfEnforcerValue,
+      'days in default': ENF.lastEnforcementActionDaysInDefaultValue,
+      'warrant number': ENF.warrantNumberValue,
+      'hearing date': ENF.hearingDateValue,
+      court: ENF.courtValue,
+      'date added': ENF.dateAddedValue,
+    };
+
+    this.assertMappedValues(expected, fieldSelectors, ENF.lastEnforcementActionCard);
+  }
+
+  /**
+   * Asserts the last enforcement action empty-state message.
+   *
+   * @param expected - Expected empty-state message.
+   */
+  public assertNoOutstandingEnforcementActionMessage(expected: string): void {
+    log('assert', 'No outstanding enforcement action message', { expected });
+    cy.get(ENF.lastEnforcementActionCard, { timeout: AccountDetailsEnforcementActions.DEFAULT_TIMEOUT })
+      .should('be.visible')
+      .and('contain.text', expected);
   }
 
   /**
@@ -380,13 +480,27 @@ export class AccountDetailsEnforcementActions {
   }
 
   /**
+   * Chooses the collection type on the add enforcement action details form.
+   *
+   * @param option - The collection type option to select.
+   */
+  public chooseCollectionType(option: string): void {
+    log('action', 'Choosing collection type option', { option });
+
+    cy.contains('legend', 'Collection type').parent().contains('label', option).click();
+  }
+
+  /**
    * Chooses whether to change existing payment terms on the add enforcement action details form.
    *
    * @param option - Visible option text, usually "Yes" or "No".
    */
   public chooseChangeExistingPaymentTerms(option: string): void {
     log('action', 'Choosing change existing payment terms option', { option });
-    cy.contains('label', option, { timeout: AccountDetailsEnforcementActions.DEFAULT_TIMEOUT }).click();
+    cy.contains('legend', 'Do you want to change the existing payment terms?')
+      .parent()
+      .contains('label', option)
+      .click();
   }
 
   /**
@@ -562,24 +676,19 @@ export class AccountDetailsEnforcementActions {
     log('assert', 'Enforcement override summary', expected);
 
     if (expected.override) {
-      cy.get(ENF.enforcementOverrideValue, { timeout: AccountDetailsEnforcementActions.DEFAULT_TIMEOUT }).should(
-        'contain.text',
-        expected.override,
+      this.common.assertElementContainsAnyNormalizedText(
+        ENF.enforcementOverrideValue,
+        [expected.override, ...(ENFORCEMENT_OVERRIDE_SUMMARY_TEXT_ALIASES[expected.override] ?? [])],
+        AccountDetailsEnforcementActions.DEFAULT_TIMEOUT,
       );
     }
 
     if (expected.lja) {
-      cy.get(ENF.localJusticeAreaValue, { timeout: AccountDetailsEnforcementActions.DEFAULT_TIMEOUT }).should(
-        'contain.text',
-        expected.lja,
-      );
+      this.assertContainsNormalizedText(ENF.localJusticeAreaValue, expected.lja);
     }
 
     if (expected.enforcer) {
-      cy.get(ENF.enfOverrideEnforcer, { timeout: AccountDetailsEnforcementActions.DEFAULT_TIMEOUT }).should(
-        'contain.text',
-        expected.enforcer,
-      );
+      this.assertContainsNormalizedText(ENF.enfOverrideEnforcer, expected.enforcer);
     }
   }
 

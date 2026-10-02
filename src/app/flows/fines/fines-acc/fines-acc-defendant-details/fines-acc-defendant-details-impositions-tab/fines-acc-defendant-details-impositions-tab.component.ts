@@ -12,10 +12,10 @@ import {
   MojSortableTableStatusComponent,
 } from '@hmcts/opal-frontend-common/components/moj/moj-sortable-table';
 import { DateFormatPipe } from '@hmcts/opal-frontend-common/pipes/date-format';
-import { MonetaryPipe } from '@hmcts/opal-frontend-common/pipes/monetary';
 import { IOpalFinesAccountDefendantDetailsImposition } from '@services/fines/opal-fines-service/interfaces/opal-fines-account-defendant-details-imposition.interface';
 import { IOpalFinesAccountDefendantDetailsImpositionsTabRefData } from '@services/fines/opal-fines-service/interfaces/opal-fines-account-defendant-details-impositions-tab-ref-data.interface';
 import { FINES_ROUTING_PATHS } from '@routing/fines/constants/fines-routing-paths.constant';
+import { CustomAccessibleMonetaryComponent } from '@hmcts/opal-frontend-common/components/custom/custom-accessible-monetary';
 import { FINES_ACC_SUMMARY_TABS_CONTENT_STYLES } from '../../constants/fines-acc-summary-tabs-content-styles.constant';
 import { FinesNotProvidedComponent } from '../../../components/fines-not-provided/fines-not-provided.component';
 import { FINES_ACC_ROUTING_PATHS } from '../../routing/constants/fines-acc-routing-paths.constant';
@@ -36,9 +36,9 @@ import { IAccountEnquiryImpositionTabTableRow } from '../interfaces/account-enqu
     MojSortableTableRowComponent,
     MojSortableTableRowDataComponent,
     MojSortableTableStatusComponent,
-    MonetaryPipe,
     NgTemplateOutlet,
     RouterLink,
+    CustomAccessibleMonetaryComponent,
   ],
   templateUrl: './fines-acc-defendant-details-impositions-tab.component.html',
   changeDetection: ChangeDetectionStrategy.OnPush,

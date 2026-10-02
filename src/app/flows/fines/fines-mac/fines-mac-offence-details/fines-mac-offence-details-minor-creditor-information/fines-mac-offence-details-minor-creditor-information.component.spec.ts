@@ -40,6 +40,30 @@ describe('FinesMacOffenceDetailsMinorCreditorInformationComponent', () => {
     expect(component.getClasses).toBe('app-custom-class');
   });
 
+  it('should always render minor creditor details without a show or hide details action', () => {
+    fixture.componentRef.setInput('showActions', true);
+
+    fixture.detectChanges();
+
+    const textContent = (fixture.nativeElement as HTMLElement).textContent;
+
+    expect(textContent).toContain('Address');
+    expect(textContent).toContain('Payment method');
+    expect(textContent).not.toContain('Show details');
+    expect(textContent).not.toContain('Hide details');
+  });
+
+  it('should still render change and remove actions when actions are enabled', () => {
+    fixture.componentRef.setInput('showActions', true);
+
+    fixture.detectChanges();
+
+    const textContent = (fixture.nativeElement as HTMLElement).textContent;
+
+    expect(textContent).toContain('Change');
+    expect(textContent).toContain('Remove');
+  });
+
   it('should set name to formatted individual name if creditor_type is individual', () => {
     component.minorCreditor = structuredClone(FINES_MAC_OFFENCE_DETAILS_MINOR_CREDITOR_STATE_MOCK);
 

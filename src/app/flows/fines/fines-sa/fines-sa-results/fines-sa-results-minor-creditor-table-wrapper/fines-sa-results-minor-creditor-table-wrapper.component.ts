@@ -14,6 +14,7 @@ import { IFinesSaResultsMinorCreditorTableWrapperTableData } from './interfaces/
 import { IFinesSaResultsMinorCreditorTableWrapperTableSort } from './interfaces/fines-sa-results-minor-creditor-table-wrapper-table-sort.interface';
 import { FINES_DEFAULT_VALUES } from '../../../constants/fines-default-values.constant';
 import { FinesNotProvidedComponent } from '../../../components/fines-not-provided/fines-not-provided.component';
+import { CustomAccessibleMonetaryComponent } from '@hmcts/opal-frontend-common/components/custom/custom-accessible-monetary';
 
 @Component({
   selector: 'app-fines-sa-results-minor-creditor-table-wrapper',
@@ -27,6 +28,7 @@ import { FinesNotProvidedComponent } from '../../../components/fines-not-provide
     MojPaginationComponent,
     CustomHorizontalScrollPaneComponent,
     FinesNotProvidedComponent,
+    CustomAccessibleMonetaryComponent,
   ],
   templateUrl: './fines-sa-results-minor-creditor-table-wrapper.component.html',
   changeDetection: ChangeDetectionStrategy.OnPush,

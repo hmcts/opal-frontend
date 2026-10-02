@@ -34,6 +34,7 @@ export const CheckAndValidateReviewLocators = {
   timeline: {
     items: '.moj-timeline__item',
     title: '.moj-timeline__title',
+    date: 'span[date]',
     description: '.moj-timeline__description, span[description]',
   },
 } as const;

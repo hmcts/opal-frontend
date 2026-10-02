@@ -10,9 +10,11 @@ import { AbstractNestedFormBaseComponent } from '@hmcts/opal-frontend-common/com
 import { IAbstractFormControlErrorMessage } from '@hmcts/opal-frontend-common/components/abstract/interfaces';
 import { CommonModule } from '@angular/common';
 import { patternValidator } from '@hmcts/opal-frontend-common/validators/pattern-validator';
+import { TrimLeadingTrailingWhitespaceDirective } from '@hmcts/opal-frontend-common/directives/trim-leading-trailing-whitespace';
 import {
   LETTERS_WITH_SPACES_PATTERN,
-  ALPHANUMERIC_WITH_HYPHENS_SPACES_APOSTROPHES_DOT_PATTERN,
+  ALPHANUMERIC_WITH_SPACES_PATTERN,
+  SINGLE_ASCII_CHARACTERS,
 } from '@hmcts/opal-frontend-common/constants';
 import { optionalValidDateValidator } from '@hmcts/opal-frontend-common/validators/optional-valid-date';
 import { dateOfBirthValidator } from '@hmcts/opal-frontend-common/validators/date-of-birth';
@@ -20,8 +22,9 @@ import { FinesConStore } from '../../../../stores/fines-con.store';
 import { finesConSearchAccountFormIndividualsValidator } from './validators/fines-con-search-account-form-individuals.validator';
 
 const LETTERS_WITH_SPACES_PATTERN_VALIDATOR = patternValidator(LETTERS_WITH_SPACES_PATTERN, 'lettersWithSpacesPattern');
-const ALPHANUMERIC_WITH_HYPHENS_SPACES_APOSTROPHES_DOT_VALIDATOR = patternValidator(
-  ALPHANUMERIC_WITH_HYPHENS_SPACES_APOSTROPHES_DOT_PATTERN,
+const SINGLE_ASCII_CHARACTERS_PATTERN_VALIDATOR = patternValidator(SINGLE_ASCII_CHARACTERS, 'singleAsciiCharacters');
+const ALPHANUMERIC_WITH_SPACES_PATTERN_VALIDATOR = patternValidator(
+  ALPHANUMERIC_WITH_SPACES_PATTERN,
   'alphanumericTextPattern',
 );
 
@@ -48,6 +51,7 @@ const ALPHANUMERIC_WITH_HYPHENS_SPACES_APOSTROPHES_DOT_VALIDATOR = patternValida
     GovukCheckboxesComponent,
     GovukCheckboxesItemComponent,
     MojDatePickerComponent,
+    TrimLeadingTrailingWhitespaceDirective,
   ],
   templateUrl: './fines-con-search-account-form-individuals.component.html',
   styleUrls: ['./fines-con-search-account-form-individuals.component.scss'],
@@ -83,11 +87,11 @@ export class FinesConSearchAccountFormIndividualsComponent extends AbstractNeste
         dateOfBirthValidator(),
       ]),
       fcon_search_account_individuals_address_line_1: new FormControl<string | null>(null, [
-        ALPHANUMERIC_WITH_HYPHENS_SPACES_APOSTROPHES_DOT_VALIDATOR,
+        SINGLE_ASCII_CHARACTERS_PATTERN_VALIDATOR,
         Validators.maxLength(30),
       ]),
       fcon_search_account_individuals_post_code: new FormControl<string | null>(null, [
-        ALPHANUMERIC_WITH_HYPHENS_SPACES_APOSTROPHES_DOT_VALIDATOR,
+        ALPHANUMERIC_WITH_SPACES_PATTERN_VALIDATOR,
         Validators.maxLength(8),
       ]),
     });

@@ -111,6 +111,7 @@ export const MacOffenceDetailsAddOffenceLocators = {
   dateHint: 'div[id = "fm_offence_details_date_of_sentence-hint"]',
   offenceCodeLabel: 'label[for = "fm_offence_details_offence_cjs_code"]',
   offenceCodeHint: 'div[id = "fm_offence_details_offence_cjs_code-hint"]',
+  offenceCodeGuidance: 'div[id = "fm_offence_details_offence_cjs_code-guidance"]',
   addImpositionButton: 'button[id = "addImposition"]',
   submitButton: 'button[type = "submit"]',
   addAnotherOffenceButton: 'button[type = "submit"]:contains("Add another offence")',
@@ -123,7 +124,7 @@ export const MacOffenceDetailsAddOffenceLocators = {
   datePickerCancelButton: 'button.govuk-button.govuk-button--secondary.moj-js-datepicker-cancel',
   datePickerDialogHead: 'div.moj-datepicker__dialog-header',
   testDate: `button[data-testid = "${formattedDate}"]`,
-  offenceLink: 'a.govuk-link.govuk-task-list_link.govuk-link--no-visited-state',
+  offenceLink: 'a.govuk-link.govuk-link--no-visited-state',
   minorCreditorLink: 'a:contains("Add minor creditor details")',
   removeImpositionLink: 'a:contains("Remove imposition")',
 } as const;
@@ -296,7 +297,7 @@ export const MacOffenceDetailsReviewSummaryLocators = {
   addOffenceButton: 'button[id = "addAnOffence"]',
   returnToCreateAccountButton: 'button[id = "returnToCreateAccount"]',
   cancelLink: 'a.govuk-link.button-link',
-  hideLink: 'a[id = "hide"]',
+  hideLink: 'span.govuk-details__summary-text',
 } as const;
 
 // Search offence form locators.

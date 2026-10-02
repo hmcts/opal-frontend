@@ -127,4 +127,13 @@ describe('FinesAccMajorCreditorDetailsComponent', () => {
       expect.any(Array),
     );
   });
+
+  it('should not clear a cache when the active tab has no cache mapping', () => {
+    component.activeTab = 'unmapped-tab';
+    vi.mocked(mockOpalFinesService.clearCache).mockClear();
+
+    component['setupTabDataStream']();
+
+    expect(mockOpalFinesService.clearCache).not.toHaveBeenCalled();
+  });
 });

@@ -5,7 +5,7 @@ export const OPAL_FINES_OFFENCES_REF_DATA_EXACT_MATCH_MULTI_RESULT_MOCK: IOpalFi
   refData: [
     {
       offence_id: 41799,
-      get_cjs_code: 'CD71039',
+      cjs_code: 'CD71039',
       business_unit_id: 52,
       offence_title: 'Criminal damage to property valued under £5000',
       offence_title_cy: null,
@@ -16,7 +16,7 @@ export const OPAL_FINES_OFFENCES_REF_DATA_EXACT_MATCH_MULTI_RESULT_MOCK: IOpalFi
     },
     {
       offence_id: 30733,
-      get_cjs_code: 'CD71039A',
+      cjs_code: 'CD71039A',
       business_unit_id: 52,
       offence_title: 'Attempt criminal damage to property valued under £5000',
       offence_title_cy: null,
@@ -27,7 +27,7 @@ export const OPAL_FINES_OFFENCES_REF_DATA_EXACT_MATCH_MULTI_RESULT_MOCK: IOpalFi
     },
     {
       offence_id: 30734,
-      get_cjs_code: 'CD71039B',
+      cjs_code: 'CD71039B',
       business_unit_id: 52,
       offence_title: 'Aid, abet, counsel and procure damage under £5000',
       offence_title_cy: null,
@@ -38,7 +38,7 @@ export const OPAL_FINES_OFFENCES_REF_DATA_EXACT_MATCH_MULTI_RESULT_MOCK: IOpalFi
     },
     {
       offence_id: 30735,
-      get_cjs_code: 'CD71039C',
+      cjs_code: 'CD71039C',
       business_unit_id: 52,
       offence_title: 'Conspiracy to destroy or damage property under £5000',
       offence_title_cy: null,

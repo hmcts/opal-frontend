@@ -5,10 +5,12 @@ export interface IOpalFinesAccountDefendantDetailsHeader extends IOpalFinesVersi
   defendant_account_id: string;
   debtor_type: string;
   is_youth: boolean;
+  collection_order: boolean | null;
   account_number: string;
   defendant_account_party_id: string;
   parent_guardian_party_id: string | null;
   account_type: string | null;
+  originator_type: string | null;
   originator_name: string | null;
   prosecutor_case_reference: string | null;
   fixed_penalty_ticket_number: string | null;
@@ -18,6 +20,7 @@ export interface IOpalFinesAccountDefendantDetailsHeader extends IOpalFinesVersi
   };
   business_unit_summary: {
     business_unit_id: string;
+    business_unit_code: string;
     business_unit_name: string;
     welsh_speaking: string;
   };
