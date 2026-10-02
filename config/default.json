@@ -7,6 +7,7 @@
   "opal-api": {
     "opal-fines-service": "http://localhost:4550",
     "opal-user-service": "http://localhost:4555",
+    "opal-file-handling-service": "http://localhost:4075",
     "timeoutInMilliseconds": 30000
   },
   "features": {

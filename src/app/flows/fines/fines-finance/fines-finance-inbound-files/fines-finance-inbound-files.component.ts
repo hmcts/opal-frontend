@@ -1,4 +1,5 @@
-import { ChangeDetectionStrategy, Component, inject, OnInit } from '@angular/core';
+import { ChangeDetectionStrategy, Component, DestroyRef, inject, OnInit } from '@angular/core';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { IAlphagovAccessibleAutocompleteItem } from '@hmcts/opal-frontend-common/components/alphagov/alphagov-accessible-autocomplete/interfaces';
 import { InterfaceFileViewerFileSource, InterfaceFileViewerFileType } from '../constants/fines-finance-enums.constant';
 import { ActivatedRoute } from '@angular/router';
@@ -10,6 +11,7 @@ import {
   FINES_FINANCE_INBOUND_FILES_ALL_FILE_TYPES,
 } from '../constants/fines-finance-autocomplete.constant';
 import { CustomInboundFileViewerComponent } from '@hmcts/opal-frontend-common/components/custom/custom-file-interface-viewer/custom-inbound-file-viewer';
+import { OpalFileHandlingService } from '@hmcts/opal-frontend-common/services/opal-file-handling-service';
 
 @Component({
   selector: 'app-fines-ext-finance-inbound-files',
@@ -17,10 +19,13 @@ import { CustomInboundFileViewerComponent } from '@hmcts/opal-frontend-common/co
   templateUrl: './fines-finance-inbound-files.component.html',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
+
 export class FinesFinanceInboundFilesComponent implements OnInit {
   private readonly activatedRoute = inject(ActivatedRoute);
+  private readonly destroyRef = inject(DestroyRef);
+  private readonly opalFileHandlingService = inject(OpalFileHandlingService);
   public data: IAlphagovAccessibleAutocompleteItem[] = [];
-
+  
   public readonly direction = "inbound"
   public readonly fileTypeAutoCompleteItems: IAlphagovAccessibleAutocompleteItem[] = [
     {
@@ -76,6 +81,14 @@ export class FinesFinanceInboundFilesComponent implements OnInit {
     this.fileSourceAutoCompleteItems.forEach((item) => {
       console.log(`name ${item.name} value ${item.value}`);
     });
+ 
+    this.opalFileHandlingService
+      .getInterfaceFilesRefData()
+      .pipe(takeUntilDestroyed(this.destroyRef))
+      .subscribe((files) => {
+        console.log(`Inbound files: ${JSON.stringify(files)}`);
+        //this.data = files;
+      });
   }
 
   public onFormSubmit(event: any): void {

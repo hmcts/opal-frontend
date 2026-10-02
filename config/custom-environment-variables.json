@@ -3,6 +3,7 @@
   "opal-api": {
     "opal-fines-service": "OPAL_FINES_SERVICE_API_URL",
     "opal-user-service": "OPAL_USER_SERVICE_API_URL",
+    "opal-file-handling-service": "OPAL_FILE_HANDLING_SERVICE_API_URL",
     "timeoutInMilliseconds": {
       "__name": "OPAL_API_PROXY_TIMEOUT_IN_MILLISECONDS",
       "__format": "number"
