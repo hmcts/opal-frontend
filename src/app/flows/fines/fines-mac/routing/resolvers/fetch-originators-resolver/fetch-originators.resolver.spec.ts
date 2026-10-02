@@ -22,6 +22,7 @@ import { FETCH_SENDING_COURTS_LJA_TYPE_MAP } from '../fetch-sending-courts-resol
 import { fetchOriginatorsResolver } from './fetch-originators.resolver';
 import { IFinesMacOriginatorRefData } from './interfaces/fines-mac-originator-ref-data.interface';
 import {
+  FINES_MAC_COMBINED_ORIGINATOR_REF_DATA_MOCK,
   FINES_MAC_LJA_ORIGINATOR_REF_DATA_MOCK,
   FINES_MAC_PROSECUTOR_ORIGINATOR_REF_DATA_MOCK,
 } from './mocks/fines-mac-originator-ref-data.mock';
@@ -81,13 +82,13 @@ describe('fetchOriginatorsResolver', () => {
 
     finesMacStore = TestBed.inject(FinesMacStore);
     globalStore = TestBed.inject(GlobalStore);
-    globalStore.setFeatureFlags({ [RELEASE_1A_1_1_FEATURE_FLAG]: true });
     const originatorTypeForm = structuredClone(FINES_MAC_ORIGINATOR_TYPE_FORM);
     originatorTypeForm.formData.fm_originator_type_originator_type = 'NEW';
     finesMacStore.setOriginatorType(originatorTypeForm);
   });
 
   it('should resolve prosecutors only for a Conditional Caution account when release-1a-1.1 is enabled', async () => {
+    globalStore.setFeatureFlags({ [RELEASE_1A_1_1_FEATURE_FLAG]: true });
     setAccountType(FINES_ACCOUNT_TYPES['Conditional Caution']);
 
     const result = await firstValueFrom(executeResolver(route, state) as Observable<IFinesMacOriginatorRefData>);
@@ -97,41 +98,42 @@ describe('fetchOriginatorsResolver', () => {
     expect(result).toEqual(FINES_MAC_PROSECUTOR_ORIGINATOR_REF_DATA_MOCK);
   });
 
-  it.each([
-    { description: 'enabled', featureFlags: { [RELEASE_1A_1_1_FEATURE_FLAG]: true } },
-    // { description: 'disabled', featureFlags: { [RELEASE_1A_1_1_FEATURE_FLAG]: false } },
-    // { description: 'missing', featureFlags: {} },
-  ])(
-    'should resolve prosecutors only for a Conditional Caution account when release-1a-1.1 is $description',
-    async ({ featureFlags }) => {
-      globalStore.setFeatureFlags(featureFlags);
-      setAccountType(FINES_ACCOUNT_TYPES['Conditional Caution']);
+  it('should resolve local justice areas for a Conditional Caution account when release-1a-1.1 is disabled', async () => {
+    globalStore.setFeatureFlags({ [RELEASE_1A_1_1_FEATURE_FLAG]: false });
+    setAccountType(FINES_ACCOUNT_TYPES['Conditional Caution']);
 
-      const result = await firstValueFrom(executeResolver(route, state) as Observable<IFinesMacOriginatorRefData>);
+    const result = await firstValueFrom(executeResolver(route, state) as Observable<IFinesMacOriginatorRefData>);
 
-      expect(mockOpalFinesService.getProsecutors).toHaveBeenCalledWith(77);
-      expect(mockOpalFinesService.getLocalJusticeAreas).not.toHaveBeenCalled();
-      expect(result).toEqual(FINES_MAC_PROSECUTOR_ORIGINATOR_REF_DATA_MOCK);
-    },
-  );
+    expect(mockOpalFinesService.getLocalJusticeAreas).toHaveBeenCalledWith(
+      FETCH_SENDING_COURTS_LJA_TYPE_MAP.NEW['Conditional Caution'],
+    );
+    expect(mockOpalFinesService.getProsecutors).not.toHaveBeenCalled();
+    expect(result).toEqual(FINES_MAC_LJA_ORIGINATOR_REF_DATA_MOCK);
+  });
 
-  it.each([
-    { description: 'enabled', featureFlags: { [RELEASE_1A_1_1_FEATURE_FLAG]: true } },
-    // { description: 'disabled', featureFlags: { [RELEASE_1A_1_1_FEATURE_FLAG]: false } },
-    // { description: 'missing', featureFlags: {} },
-  ])(
-    'should resolve prosecutors only for a Fixed Penalty account when release-1a-1.1 is $description',
-    async ({ featureFlags }) => {
-      globalStore.setFeatureFlags(featureFlags);
-      setAccountType(FINES_ACCOUNT_TYPES['Fixed Penalty']);
+  it('should resolve prosecutors only for a Fixed Penalty account when release-1a-1.1 is enabled', async () => {
+    globalStore.setFeatureFlags({ [RELEASE_1A_1_1_FEATURE_FLAG]: true });
+    setAccountType(FINES_ACCOUNT_TYPES['Fixed Penalty']);
 
-      const result = await firstValueFrom(executeResolver(route, state) as Observable<IFinesMacOriginatorRefData>);
+    const result = await firstValueFrom(executeResolver(route, state) as Observable<IFinesMacOriginatorRefData>);
 
-      expect(mockOpalFinesService.getProsecutors).toHaveBeenCalledWith(77);
-      expect(mockOpalFinesService.getLocalJusticeAreas).not.toHaveBeenCalled();
-      expect(result).toEqual(FINES_MAC_PROSECUTOR_ORIGINATOR_REF_DATA_MOCK);
-    },
-  );
+    expect(mockOpalFinesService.getProsecutors).toHaveBeenCalledWith(77);
+    expect(mockOpalFinesService.getLocalJusticeAreas).not.toHaveBeenCalled();
+    expect(result).toEqual(FINES_MAC_PROSECUTOR_ORIGINATOR_REF_DATA_MOCK);
+  });
+
+  it('should combine prosecutors and local justice areas for a Fixed Penalty account when release-1a-1.1 is disabled', async () => {
+    globalStore.setFeatureFlags({ [RELEASE_1A_1_1_FEATURE_FLAG]: false });
+    setAccountType(FINES_ACCOUNT_TYPES['Fixed Penalty']);
+
+    const result = await firstValueFrom(executeResolver(route, state) as Observable<IFinesMacOriginatorRefData>);
+
+    expect(mockOpalFinesService.getProsecutors).toHaveBeenCalledWith(77);
+    expect(mockOpalFinesService.getLocalJusticeAreas).toHaveBeenCalledWith(
+      FETCH_SENDING_COURTS_LJA_TYPE_MAP.NEW['Fixed Penalty'],
+    );
+    expect(result).toEqual(FINES_MAC_COMBINED_ORIGINATOR_REF_DATA_MOCK);
+  });
 
   it('should resolve local justice areas only for a Fine account', async () => {
     setAccountType(FINES_ACCOUNT_TYPES.Fine);
