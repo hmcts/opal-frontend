@@ -1,3 +1,4 @@
+import { OPAL_FINES_CREDITOR_ACCOUNT_TYPES } from '@services/fines/opal-fines-service/constants/opal-fines-creditor-account-types.constant';
 import { NgTemplateOutlet } from '@angular/common';
 import { ChangeDetectionStrategy, Component, computed, Input, signal } from '@angular/core';
 import { RouterLink } from '@angular/router';
@@ -100,16 +101,31 @@ export class FinesAccDefendantDetailsImpositionsTabComponent extends AbstractSor
   ): IAccountEnquiryImpositionTabTableRow {
     const roundedBalance = Number(apiImposition.balance.toFixed(2));
     const hasZeroBalance = roundedBalance === 0;
-    const isMinorCreditor = apiImposition.creditor.minor_creditor_party_id !== null;
-    const isMajorCreditor = apiImposition.creditor.major_creditor_id !== null;
     const creditorAccountId = apiImposition.creditor.creditor_account_id;
+    const creditor = apiImposition.creditor;
+    const accountType = creditor.creditor_account_type_reference.creditor_account_type;
+    // Major creditors supply their name directly; Central Fund supplies a company name.
+    let creditorName = creditor.major_creditor_name ?? creditor.company_name?.organisation_name;
+
+    if (creditor.minor_creditor_organisation_flag === true) {
+      // Minor creditor organisations use the company name.
+      creditorName = creditor.company_name?.organisation_name;
+    } else if (creditor.minor_creditor_organisation_flag === false) {
+      // Minor creditor individuals use their forenames, when supplied, and surname.
+      const individual = creditor.individual_name;
+      creditorName = individual ? [individual.forenames, individual.surname].filter(Boolean).join(' ') : undefined;
+    }
+
+    // Treat blank names as missing, then fall back to the account-type display name and creditor account ID.
     const creditorDisplay =
-      apiImposition.creditor.name ?? apiImposition.creditor.display_name ?? creditorAccountId.toString();
+      creditorName?.trim() ||
+      creditor.creditor_account_type_reference.creditor_account_display_name ||
+      creditorAccountId.toString();
     let creditorDetailsRouterLink: string | null = null;
 
-    if (isMinorCreditor) {
+    if (accountType === OPAL_FINES_CREDITOR_ACCOUNT_TYPES.minor) {
       creditorDetailsRouterLink = `${this.minorCreditorDetailsRouterLinkPrefix}/${creditorAccountId}/${this.minorCreditorDetailsRouterLinkSuffix}`;
-    } else if (isMajorCreditor) {
+    } else if (accountType === OPAL_FINES_CREDITOR_ACCOUNT_TYPES.major) {
       creditorDetailsRouterLink = `${this.majorCreditorDetailsRouterLinkPrefix}/${creditorAccountId}/${this.majorCreditorDetailsRouterLinkSuffix}`;
     }
 
@@ -121,12 +137,10 @@ export class FinesAccDefendantDetailsImpositionsTabComponent extends AbstractSor
       'Paid/Written off': apiImposition.paid_amount,
       Balance: roundedBalance,
       'Date imposed': apiImposition.date_imposed,
-      Offence: apiImposition.offence.title,
+      Offence: apiImposition.offence.offence_title,
       'Imposed by': apiImposition.imposed_by?.court_name ?? null,
       'Imposition ID': apiImposition.imposition_id,
       'Creditor account id': creditorAccountId,
-      'Minor creditor party id': apiImposition.creditor.minor_creditor_party_id,
-      'Major creditor id': apiImposition.creditor.major_creditor_id,
       creditorDetailsRouterLink,
       hasZeroBalance,
       rowClasses: hasZeroBalance ? this.zeroBalanceRowClass : '',
