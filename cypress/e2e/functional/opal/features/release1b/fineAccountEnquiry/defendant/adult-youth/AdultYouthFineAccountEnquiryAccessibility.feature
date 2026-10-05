@@ -62,7 +62,7 @@ Feature: Adult Youth Fine Account Enquiry Accessibility
     When the add enforcement override form is displayed for defendant account with last name "EnfOverrideAccess{uniq}"
     Then I check the page for accessibility
 
-  @R1BDrop1 @JIRA-STORY:PO-1782 @JIRA-EPIC:PO-2472 @JIRA-TEST-KEY:PO-5464
+  @R1BDrop1.1 @JIRA-STORY:PO-1782 @JIRA-EPIC:PO-2472 @JIRA-TEST-KEY:PO-5464
   Scenario: Add enforcement action page accessibility
     Given I create a "adultOrYouthOnly" draft account with the following details and set status "Publishing Pending" using user "opal-test-10@dev.platform.hmcts.net":
       | Account_status                                  | Submitted                           |
@@ -81,7 +81,7 @@ Feature: Adult Youth Fine Account Enquiry Accessibility
     When the add enforcement action form is displayed for defendant account with last name "EnfActionAccess{uniq}"
     Then I check the page for accessibility
 
-  @R1BDrop1 @JIRA-STORY:PO-1782 @JIRA-EPIC:PO-2630 @JIRA-TEST-KEY:PO-7555
+  @R1BDrop1.1 @JIRA-STORY:PO-1782 @JIRA-EPIC:PO-2630 @JIRA-TEST-KEY:PO-7555
   Scenario: Confirm enforcement action page accessibility
     Given I create a "adultOrYouthOnly" draft account with the following details and set status "Publishing Pending" using user "opal-test-10@dev.platform.hmcts.net":
       | Account_status                                  | Submitted                           |
