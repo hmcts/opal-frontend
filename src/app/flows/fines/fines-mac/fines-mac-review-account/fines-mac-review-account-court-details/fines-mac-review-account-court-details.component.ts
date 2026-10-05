@@ -115,26 +115,67 @@ export class FinesMacReviewAccountCourtDetailsComponent implements OnInit {
   }
 
   /**
+   * Resolves an originator when its numeric ID exists in both the prosecutor and LJA datasets.
+   * The persisted originator name identifies which dataset supplied the original selection.
+   *
+   * @param originatorId - The persisted originator ID.
+   * @param storedOriginatorName - The persisted raw originator name.
+   * @returns The matching formatted originator name, or null when the ID is not ambiguous or the name does not match.
+   */
+  private getOriginatorForOverlappingId(
+    originatorId: string | null,
+    storedOriginatorName: string | null,
+  ): string | null {
+    if (!originatorId || !storedOriginatorName) {
+      return null;
+    }
+
+    const originatorIdNumber = +originatorId;
+    const prosecutor = this.prosecutorsData.ref_data.find(
+      (item: IOpalFinesProsecutor) => item.prosecutor_id === originatorIdNumber,
+    );
+    const localJusticeArea = this.localJusticeAreasData.refData.find(
+      (item: IOpalFinesLocalJusticeArea) => item.local_justice_area_id === originatorIdNumber,
+    );
+
+    if (!prosecutor || !localJusticeArea) {
+      return null;
+    }
+    if (prosecutor.name === storedOriginatorName) {
+      return this.opalFinesService.getProsecutorPrettyName(prosecutor);
+    }
+    if (localJusticeArea.name === storedOriginatorName) {
+      return this.opalFinesService.getLocalJusticeAreaPrettyName(localJusticeArea);
+    }
+    return null;
+  }
+
+  /**
    * Resolves the enforcement court and account-type-specific originator display values.
    * Fine sending courts always use local justice areas. When release-1a-1.1 is enabled,
    * Fixed Penalty and Conditional Caution originators prefer prosecutors. When it is disabled,
    * Fixed Penalty retains its prosecutor-first lookup and Conditional Caution prefers local justice areas.
-   * Both flag-aware account types fall back to the other reference dataset and then the stored
-   * originator name so persisted drafts remain visible across flag transitions.
+   * When an ID exists in both datasets, the stored originator name disambiguates the selection.
+   * Both flag-aware account types otherwise fall back to the other reference dataset and then
+   * the stored originator name so persisted drafts remain visible across flag transitions.
    * @private
    */
   private getCourtDetailsData(): void {
     const originatorId = this.courtDetails.fm_court_details_originator_id;
     const storedOriginatorName = this.courtDetails.fm_court_details_originator_name;
+    const overlappingOriginator = this.getOriginatorForOverlappingId(originatorId, storedOriginatorName);
 
     this.getEnforcementCourt();
     if (this.accountType === this.accountTypesKeys['Fixed Penalty']) {
-      this.issuingAuthority = this.getProsecutor() ?? this.getSendingCourt(originatorId) ?? storedOriginatorName;
+      this.issuingAuthority =
+        overlappingOriginator ?? this.getProsecutor() ?? this.getSendingCourt(originatorId) ?? storedOriginatorName;
     } else if (this.accountType === this.accountTypesKeys['Conditional Caution']) {
       if (this.release1a1_1Enabled) {
-        this.sendingCourt = this.getProsecutor() ?? this.getSendingCourt(originatorId) ?? storedOriginatorName;
+        this.sendingCourt =
+          overlappingOriginator ?? this.getProsecutor() ?? this.getSendingCourt(originatorId) ?? storedOriginatorName;
       } else {
-        this.sendingCourt = this.getSendingCourt(originatorId) ?? this.getProsecutor() ?? storedOriginatorName;
+        this.sendingCourt =
+          overlappingOriginator ?? this.getSendingCourt(originatorId) ?? this.getProsecutor() ?? storedOriginatorName;
       }
     } else {
       this.sendingCourt = this.getSendingCourt(originatorId);

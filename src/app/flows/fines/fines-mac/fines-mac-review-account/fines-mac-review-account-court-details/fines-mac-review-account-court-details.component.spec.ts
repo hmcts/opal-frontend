@@ -168,6 +168,25 @@ describe('FinesMacReviewAccountCourtDetailsComponent', () => {
     expect(component.issuingAuthority).toBe('Asylum & Immigration Tribunal (9985)');
   });
 
+  it('should use the stored LJA name when a fixed penalty originator ID overlaps with a prosecutor', () => {
+    const localJusticeArea = component.localJusticeAreasData.refData[0];
+    component.prosecutorsData.ref_data.push({
+      ...component.prosecutorsData.ref_data[0],
+      prosecutor_id: localJusticeArea.local_justice_area_id,
+      name: 'Unrelated prosecutor',
+    });
+    component.courtDetails.fm_court_details_originator_id = localJusticeArea.local_justice_area_id.toString();
+    component.courtDetails.fm_court_details_originator_name = localJusticeArea.name;
+    component.accountType = FINES_ACCOUNT_TYPES['Fixed Penalty'];
+    vi.clearAllMocks();
+
+    component['getCourtDetailsData']();
+
+    expect(mockOpalFinesService.getLocalJusticeAreaPrettyName).toHaveBeenCalledWith(localJusticeArea);
+    expect(mockOpalFinesService.getProsecutorPrettyName).not.toHaveBeenCalled();
+    expect(component.issuingAuthority).toBe(OPAL_FINES_LOCAL_JUSTICE_AREA_PRETTY_NAME_MOCK);
+  });
+
   it('should use the stored originator name when neither reference dataset contains a fixed penalty originator', () => {
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     vi.spyOn<any, any>(component, 'getEnforcementCourt').mockImplementation(() => {});
@@ -252,6 +271,78 @@ describe('FinesMacReviewAccountCourtDetailsComponent', () => {
     expect(component['getSendingCourt']).toHaveBeenCalledWith('1865');
     expect(component['getProsecutor']).toHaveBeenCalledTimes(1);
     expect(component.sendingCourt).toBe('Police force (101)');
+  });
+
+  it('should use the stored prosecutor name when a conditional caution originator ID overlaps with an LJA', () => {
+    const prosecutor = component.prosecutorsData.ref_data[0];
+    component.localJusticeAreasData.refData.push({
+      ...component.localJusticeAreasData.refData[0],
+      local_justice_area_id: prosecutor.prosecutor_id,
+      name: 'Unrelated court',
+    });
+    component.release1a1_1Enabled = false;
+    component.courtDetails.fm_court_details_originator_id = prosecutor.prosecutor_id.toString();
+    component.courtDetails.fm_court_details_originator_name = prosecutor.name;
+    component.accountType = FINES_ACCOUNT_TYPES['Conditional Caution'];
+    vi.clearAllMocks();
+
+    component['getCourtDetailsData']();
+
+    expect(mockOpalFinesService.getProsecutorPrettyName).toHaveBeenCalledWith(prosecutor);
+    expect(mockOpalFinesService.getLocalJusticeAreaPrettyName).not.toHaveBeenCalled();
+    expect(component.sendingCourt).toBe(OPAL_FINES_PROSECUTOR_PRETTY_NAME_MOCK);
+  });
+
+  it('should use the stored LJA name when a conditional caution originator ID overlaps with a prosecutor', () => {
+    const localJusticeArea = component.localJusticeAreasData.refData[0];
+    component.prosecutorsData.ref_data.push({
+      ...component.prosecutorsData.ref_data[0],
+      prosecutor_id: localJusticeArea.local_justice_area_id,
+      name: 'Unrelated prosecutor',
+    });
+    component.courtDetails.fm_court_details_originator_id = localJusticeArea.local_justice_area_id.toString();
+    component.courtDetails.fm_court_details_originator_name = localJusticeArea.name;
+    component.accountType = FINES_ACCOUNT_TYPES['Conditional Caution'];
+    vi.clearAllMocks();
+
+    component['getCourtDetailsData']();
+
+    expect(mockOpalFinesService.getLocalJusticeAreaPrettyName).toHaveBeenCalledWith(localJusticeArea);
+    expect(mockOpalFinesService.getProsecutorPrettyName).not.toHaveBeenCalled();
+    expect(component.sendingCourt).toBe(OPAL_FINES_LOCAL_JUSTICE_AREA_PRETTY_NAME_MOCK);
+  });
+
+  it('should retain flag-based lookup order when an overlapping originator ID does not match the stored name', () => {
+    const prosecutor = component.prosecutorsData.ref_data[0];
+    component.localJusticeAreasData.refData.push({
+      ...component.localJusticeAreasData.refData[0],
+      local_justice_area_id: prosecutor.prosecutor_id,
+      name: 'Unrelated court',
+    });
+    component.release1a1_1Enabled = false;
+    component.courtDetails.fm_court_details_originator_id = prosecutor.prosecutor_id.toString();
+    component.courtDetails.fm_court_details_originator_name = 'Unknown originator';
+    component.accountType = FINES_ACCOUNT_TYPES['Conditional Caution'];
+    vi.clearAllMocks();
+
+    component['getCourtDetailsData']();
+
+    expect(mockOpalFinesService.getLocalJusticeAreaPrettyName).toHaveBeenCalled();
+    expect(mockOpalFinesService.getProsecutorPrettyName).not.toHaveBeenCalled();
+    expect(component.sendingCourt).toBe(OPAL_FINES_LOCAL_JUSTICE_AREA_PRETTY_NAME_MOCK);
+  });
+
+  it('should retain flag-based lookup when an originator name has not been stored', () => {
+    component.courtDetails.fm_court_details_originator_id = '1865';
+    component.courtDetails.fm_court_details_originator_name = null;
+    component.accountType = FINES_ACCOUNT_TYPES['Conditional Caution'];
+    vi.clearAllMocks();
+
+    component['getCourtDetailsData']();
+
+    expect(mockOpalFinesService.getProsecutorPrettyName).toHaveBeenCalled();
+    expect(mockOpalFinesService.getLocalJusticeAreaPrettyName).not.toHaveBeenCalled();
+    expect(component.sendingCourt).toBe(OPAL_FINES_PROSECUTOR_PRETTY_NAME_MOCK);
   });
 
   it('should use the stored originator name when neither reference dataset contains a conditional caution originator', () => {
