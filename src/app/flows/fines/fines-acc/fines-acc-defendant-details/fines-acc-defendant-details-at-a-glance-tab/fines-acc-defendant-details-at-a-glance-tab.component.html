@@ -219,13 +219,7 @@
         tabData.comments_and_notes?.free_text_note_3
       ) {
         <h3 [class]="style.key">Comment</h3>
-        <p [class]="style.value">
-          @if (tabData.comments_and_notes?.account_comment; as accountComment) {
-            {{ accountComment }}
-          } @else {
-            <app-fines-not-provided></app-fines-not-provided>
-          }
-        </p>
+        <p [class]="style.value">{{ tabData.comments_and_notes?.account_comment ?? '-' }}</p>
         @if (hasAccountMaintenencePermission) {
           <p [class]="style.value">
             <a class="govuk-link govuk-link--no-visited-state" [routerLink]="navigateToAddCommentsPage()">Change</a>
@@ -251,7 +245,7 @@
             }
           </p>
         } @else {
-          <p [class]="style.value"><app-fines-not-provided></app-fines-not-provided></p>
+          <p [class]="style.value">&mdash;</p>
         }
         @if (hasAccountMaintenencePermission) {
           <p [class]="style.value">
