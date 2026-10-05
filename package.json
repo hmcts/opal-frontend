@@ -141,7 +141,7 @@
     "@ministryofjustice/frontend": "^10.0.0",
     "@ngrx/signals": "^21.0.0",
     "accessible-autocomplete": "^3.0.0",
-    "axios": "^1.6.2",
+    "axios": "^1.20.0",
     "body-parser": "^2.0.0",
     "config": "^5.0.0",
     "connect-redis": "^9.0.0",
