@@ -42,7 +42,7 @@ Feature: Company Fine Account Enquiry Accessibility
     When the add enforcement override form is displayed for company account "Enf Override Company{uniq}"
     Then I check the page for accessibility
 
-  @R1BDrop1 @JIRA-STORY:PO-1782 @JIRA-EPIC:PO-2472 @JIRA-TEST-KEY:PO-5465
+  @R1BDrop1.1 @JIRA-STORY:PO-1782 @JIRA-EPIC:PO-2472 @JIRA-TEST-KEY:PO-5465
   Scenario: Company add enforcement action page accessibility
     Given I create a "company" draft account with the following details and set status "Publishing Pending" using user "opal-test-10@dev.platform.hmcts.net":
       | Account_status                                  | Submitted                       |
