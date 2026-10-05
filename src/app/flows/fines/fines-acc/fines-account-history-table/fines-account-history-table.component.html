@@ -21,14 +21,22 @@
               @if (row.displayDate !== null) {
                 {{ row.displayDate | date: tableDisplay.dateFormat }}
               } @else {
-                {{ tableDisplay.emptyCell }}
+                <app-fines-not-provided></app-fines-not-provided>
               }
             </td>
             <td opal-lib-moj-sortable-table-row-data [id]="tableDisplay.rowIdPrefixes.user + rowIndex">
-              {{ row.User || tableDisplay.emptyCell }}
+              @if (row.User) {
+                {{ row.User }}
+              } @else {
+                <app-fines-not-provided></app-fines-not-provided>
+              }
             </td>
             <td opal-lib-moj-sortable-table-row-data [id]="tableDisplay.rowIdPrefixes.type + rowIndex">
-              {{ row.Type || tableDisplay.emptyCell }}
+              @if (row.Type) {
+                {{ row.Type }}
+              } @else {
+                <app-fines-not-provided></app-fines-not-provided>
+              }
             </td>
             <td opal-lib-moj-sortable-table-row-data [id]="tableDisplay.rowIdPrefixes.details + rowIndex">
               @if (row.details; as details) {
@@ -95,7 +103,7 @@
                   </div>
                 }
               } @else {
-                {{ tableDisplay.emptyCell }}
+                <app-fines-not-provided></app-fines-not-provided>
               }
             </td>
             <td opal-lib-moj-sortable-table-row-data [id]="tableDisplay.rowIdPrefixes.amount + rowIndex">
@@ -108,7 +116,7 @@
                   row.amountDescription
                 }}</span>
               } @else {
-                {{ tableDisplay.emptyCell }}
+                <app-fines-not-provided></app-fines-not-provided>
               }
             </td>
           </tr>

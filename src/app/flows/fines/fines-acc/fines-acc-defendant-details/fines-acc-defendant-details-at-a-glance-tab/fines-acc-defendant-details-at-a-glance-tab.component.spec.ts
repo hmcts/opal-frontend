@@ -98,7 +98,7 @@ describe('FinesAccDefendantDetailsAtAGlanceTabComponent', () => {
     const changeLinks = getChangeLinks();
 
     expect(getSectionValue('Comment')).toBe('Account warning');
-    expect(getSectionValue('Free text notes')).toBe('—');
+    expect(getSectionValue('Free text notes')).toContain('—');
     expect(changeLinks).toHaveLength(2);
     changeLinks.forEach((link) => {
       expect(link.classList.contains('govuk-link--no-visited-state')).toBe(true);

@@ -13,6 +13,7 @@ import { DaysAgoPipe } from '@hmcts/opal-frontend-common/pipes/days-ago';
 import { DateFormatPipe } from '@hmcts/opal-frontend-common/pipes/date-format';
 import { MojPaginationComponent } from '@hmcts/opal-frontend-common/components/moj/moj-pagination';
 import { FINES_DRAFT_TAB_FRAGMENT } from '../constants/fines-draft-tab-fragments.constant';
+import { FinesNotProvidedComponent } from '../../components/fines-not-provided/fines-not-provided.component';
 
 @Component({
   selector: 'app-fines-draft-table-wrapper',
@@ -25,6 +26,7 @@ import { FINES_DRAFT_TAB_FRAGMENT } from '../constants/fines-draft-tab-fragments
     MojSortableTableStatusComponent,
     DaysAgoPipe,
     DateFormatPipe,
+    FinesNotProvidedComponent,
     MojPaginationComponent,
   ],
   templateUrl: './fines-draft-table-wrapper.component.html',

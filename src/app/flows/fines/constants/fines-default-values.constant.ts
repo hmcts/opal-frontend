@@ -2,5 +2,5 @@ import { IFinesDefaultValues } from '../interfaces/fines-default-values.interfac
 
 export const FINES_DEFAULT_VALUES: IFinesDefaultValues = {
   notProvidedLabel: '\u2014',
-  notProvidedAriaLabel: 'Not provided',
+  notProvidedAriaLabel: 'No data',
 };

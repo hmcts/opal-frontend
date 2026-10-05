@@ -18,6 +18,7 @@ import {
   IHistoryDetailsFragment,
   IHistoryDetailsLink,
 } from '@hmcts/opal-frontend-common/services/history-transformation-service';
+import { FinesNotProvidedComponent } from '../../components/fines-not-provided/fines-not-provided.component';
 import { FINES_ACCOUNT_HISTORY_TABLE_COLUMNS } from './constants/fines-account-history-table-columns.constant';
 import { FINES_ACCOUNT_HISTORY_TABLE_DEFAULT_SORT } from './constants/fines-account-history-table-default-sort.constant';
 import { FINES_ACCOUNT_HISTORY_TABLE_DISPLAY } from './constants/fines-account-history-table-display.constant';
@@ -34,6 +35,7 @@ import { TFinesAccountHistoryTableSortState } from './types/fines-account-histor
   imports: [
     CustomHorizontalScrollPaneComponent,
     DatePipe,
+    FinesNotProvidedComponent,
     MonetaryPipe,
     MojSortableTableComponent,
     MojSortableTableHeaderComponent,

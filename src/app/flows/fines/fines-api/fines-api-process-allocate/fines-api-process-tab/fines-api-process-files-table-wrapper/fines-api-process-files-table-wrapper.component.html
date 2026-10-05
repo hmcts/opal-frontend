@@ -143,7 +143,11 @@
             [id]="getRowDomId(row) + '-date-uploaded'"
             class="govuk-!-padding-top-3"
           >
-            {{ row.dateUploadedDisplay }}
+            @if (row.dateUploadedDisplay === content.unavailableDate) {
+              <app-fines-not-provided></app-fines-not-provided>
+            } @else {
+              {{ row.dateUploadedDisplay }}
+            }
           </td>
         </tr>
       }
