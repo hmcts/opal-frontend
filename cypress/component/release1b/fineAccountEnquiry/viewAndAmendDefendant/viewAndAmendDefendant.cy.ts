@@ -1,5 +1,5 @@
 import { mount } from 'cypress/angular';
-import { ActivatedRoute } from '@angular/router';
+import { ActivatedRoute, provideRouter, Router } from '@angular/router';
 import { DateService } from '@hmcts/opal-frontend-common/services/date-service';
 import { FinesAccountStore } from 'src/app/flows/fines/fines-acc/stores/fines-acc.store';
 import { of } from 'rxjs';
@@ -25,6 +25,8 @@ import { VIEW_AND_AMEND_DEFENDANT_COMPANY_FULL_MOCK } from './mocks/view-and-ame
 import { VIEW_AND_AMEND_DEFENDANT_INDIVIDUAL_FULL_MOCK } from './mocks/view-and-amend-defendant-individual-full.mock';
 import { VIEW_AND_AMEND_DEFENDANT_INDIVIDUAL_MINIMAL_MOCK } from './mocks/view-and-amend-defendant-individual-minimal.mock';
 import { MOCK_FINES_ACCOUNT_STATE } from 'src/app/flows/fines/fines-acc/mocks/fines-acc-state.mock';
+import { interceptPutDefendantAccountParty } from '../accountEnquiry/intercept/defendantAccountIntercepts';
+import { FINES_ACC_PARTY_ADD_AMEND_CONVERT_PARTY_TYPES } from 'src/app/flows/fines/fines-acc/fines-acc-party-add-amend-convert/constants/fines-acc-party-add-amend-convert-party-types.constant';
 
 const ACCOUNT_ENQUIRY_JIRA_LABEL = '@JIRA-LABEL:account-enquiry';
 
@@ -48,6 +50,7 @@ describe('FinesAccPartyAddAmendConvert - View and Amend Defendant', () => {
     mount(FinesAccPartyAddAmendConvert, {
       providers: [
         provideHttpClient(),
+        provideRouter([]),
         DateService,
         {
           provide: FinesAccountStore,
@@ -77,8 +80,47 @@ describe('FinesAccPartyAddAmendConvert - View and Amend Defendant', () => {
           },
         },
       ],
+    }).then(({ fixture }) => {
+      const router = fixture.debugElement.injector.get(Router);
+      cy.stub(router, 'navigate')
+        .callsFake(() => Promise.resolve(true))
+        .as('routerNavigate');
     });
   };
+
+  [
+    FINES_ACC_PARTY_ADD_AMEND_CONVERT_PARTY_TYPES.INDIVIDUAL,
+    FINES_ACC_PARTY_ADD_AMEND_CONVERT_PARTY_TYPES.COMPANY,
+  ].forEach((partyType) => {
+    it(
+      `PO-10731. ${partyType} address line 3 rejects 17 characters and saves 16`,
+      { tags: [...buildTags('@JIRA-STORY:PO-10731'), '@JIRA-EPIC:PO-976'] },
+      () => {
+        const partyMock =
+          partyType === FINES_ACC_PARTY_ADD_AMEND_CONVERT_PARTY_TYPES.COMPANY ? companyfullMock : minimalMock;
+        partyMock.version = '1';
+        interceptPutDefendantAccountParty(123, partyMock);
+        setupComponent(partyType, partyMock);
+
+        cy.get(DOM_ELEMENTS.addressLine3Input).clear().type('ABCDEFGHIJKLMNOPQ', { delay: 0 });
+        cy.get(DOM_ELEMENTS.submitButton).click();
+
+        cy.get(DOM_ELEMENTS.errorSummary).should('contain.text', ERROR_MESSAGES.MAX_LENGTH_ADDRESS_LINE_3);
+        cy.get(DOM_ELEMENTS.addressLine3Error).should('contain.text', ERROR_MESSAGES.MAX_LENGTH_ADDRESS_LINE_3);
+        cy.get('@putDefendantAccountParty.all').should('have.length', 0);
+        cy.get('@routerNavigate').should('not.have.been.called');
+
+        cy.get(DOM_ELEMENTS.addressLine3Input).clear().type('ABCDEFGHIJKLMNOP', { delay: 0 });
+        cy.get(DOM_ELEMENTS.submitButton).click();
+
+        cy.wait('@putDefendantAccountParty')
+          .its('request.body.address.address_line_3')
+          .should('equal', 'ABCDEFGHIJKLMNOP');
+        cy.get(DOM_ELEMENTS.addressLine3Error).should('not.exist');
+        cy.get('@routerNavigate').should('have.been.calledWithMatch', ['details'], { fragment: 'defendant' });
+      },
+    );
+  });
 
   const addAliasAndAssert = (aliasNumber: number) => {
     cy.get(DOM_ELEMENTS.addAliasButton).click();
