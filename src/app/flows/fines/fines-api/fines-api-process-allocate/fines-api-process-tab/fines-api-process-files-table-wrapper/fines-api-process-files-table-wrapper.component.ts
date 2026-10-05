@@ -25,7 +25,6 @@ import {
   toggleAllMultiSelectRows,
   toggleMultiSelectRow,
 } from '@hmcts/opal-frontend-common/directives/moj-multi-select';
-import { FinesNotProvidedComponent } from '@app/flows/fines/components/fines-not-provided/fines-not-provided.component';
 import { FINES_API_PROCESS_FILES_TABLE_WRAPPER_CONTENT } from './constants/fines-api-process-files-table-wrapper-content.constant';
 import { IFinesApiProcessFilesTableWrapperTableData } from './interfaces/fines-api-process-files-table-wrapper-table-data.interface';
 import { IFinesApiProcessFilesTableWrapperTableSort } from './interfaces/fines-api-process-files-table-wrapper-table-sort.interface';
@@ -35,7 +34,6 @@ import { IFinesApiProcessFilesTableWrapperTableSort } from './interfaces/fines-a
   imports: [
     CustomDeferredLiveRegionAnnouncement,
     CustomHorizontalScrollPaneComponent,
-    FinesNotProvidedComponent,
     GovukCheckboxesComponent,
     GovukCheckboxesItemComponent,
     MojMultiSelectBodyDirective,
