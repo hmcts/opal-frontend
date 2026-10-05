@@ -1,5 +1,5 @@
 #!groovy
-/* groovylint-disable CompileStatic */
+/* groovylint-disable CompileStatic, MethodCount */
 import groovy.transform.Field
 import uk.gov.hmcts.contino.GithubAPI
 
@@ -57,16 +57,18 @@ String functionalXmlReport = 'cypress/reports/functionalXmlReport.html'
 @Field String releaseSuiteR1cWriteOffOff = 'r1c_write_off_off'
 @Field String releaseSuiteR1cEnforcementOperationalReportingOff = 'r1c_enforcement_operational_reporting_off'
 @Field String componentTestScript = 'test:component'
+@Field String r1bDrop1UatTechJcdeTag = '@R1BDrop1UatTechJCDE'
+@Field String r1bDrop2UatTechJcdeTag = '@R1BDrop2UatTechJCDE'
 @Field List<String> defaultFunctionalUatTechExclusions = [
   '@UAT-Technical',
-  '@R1BDrop1UatTechJCDE',
+  r1bDrop1UatTechJcdeTag,
   '@R1BDrop1UatTechPreprod',
-  '@R1BDrop2UatTechJCDE',
+  r1bDrop2UatTechJcdeTag,
   '@R1BDrop2UatTechPreprod',
 ]
 @Field List<String> jcdeOverrideTags = [
-  '@R1BDrop1UatTechJCDE',
-  '@R1BDrop2UatTechJCDE',
+  r1bDrop1UatTechJcdeTag,
+  r1bDrop2UatTechJcdeTag,
 ]
 @Field List<String> r1aPositiveExclusions = [
   '@R1A1_1',
@@ -626,25 +628,31 @@ try {
 boolean legacyEnabled = cachedPrLabels.contains('enable_legacy_mode')
 
 // Safe defaults (current behaviour)
-env.DEV_DEFAULT_APP_MODE = opalName
-env.DEV_OPAL_LEGACY_GATEWAY_URL = 'https://opal-legacy-db-stub.staging.platform.hmcts.net/opal'
-env.IS_LEGACY_MODE = stringFalse
-env.LEGACY_ENABLED = stringFalse
-env.JCDE_OVERRIDE = stringFalse
-env.OPAL_LOG_LEVEL = env.OPAL_LOG_LEVEL ?: 'INFO'
-env.OVERRIDE_FEATURE_FLAGS = stringFalse
+/* groovylint-disable UnnecessaryObjectReferences */
+env.with { pipelineEnv ->
+    pipelineEnv.DEV_DEFAULT_APP_MODE = opalName
+    pipelineEnv.DEV_OPAL_LEGACY_GATEWAY_URL = 'https://opal-legacy-db-stub.staging.platform.hmcts.net/opal'
+    pipelineEnv.IS_LEGACY_MODE = stringFalse
+    pipelineEnv.LEGACY_ENABLED = stringFalse
+    pipelineEnv.JCDE_OVERRIDE = stringFalse
+    pipelineEnv.OPAL_LOG_LEVEL = pipelineEnv.OPAL_LOG_LEVEL ?: 'INFO'
+    pipelineEnv.OVERRIDE_FEATURE_FLAGS = stringFalse
+}
 
 // Opt-in: Dev → JCDE (PR builds only)
 if (legacyEnabled && isPR) {
-    env.DEV_DEFAULT_APP_MODE = 'legacy'
-    env.IS_LEGACY_MODE = stringTrue
-    env.LEGACY_ENABLED = stringTrue
-    env.DEV_OPAL_LEGACY_GATEWAY_URL = 'https://opal.clouddev.online/opal'
-    env.OPAL_LOG_LEVEL = 'DEBUG'
-    env.OVERRIDE_FEATURE_FLAGS = stringTrue
+    env.with { pipelineEnv ->
+        pipelineEnv.DEV_DEFAULT_APP_MODE = 'legacy'
+        pipelineEnv.IS_LEGACY_MODE = stringTrue
+        pipelineEnv.LEGACY_ENABLED = stringTrue
+        pipelineEnv.DEV_OPAL_LEGACY_GATEWAY_URL = 'https://opal.clouddev.online/opal'
+        pipelineEnv.OPAL_LOG_LEVEL = 'DEBUG'
+        pipelineEnv.OVERRIDE_FEATURE_FLAGS = stringTrue
+    }
 } else if (legacyEnabled && !isPR) {
     echo 'Legacy mode label detected but this is not a PR build; ignoring.'
 }
+/* groovylint-enable UnnecessaryObjectReferences */
 
 echo "DEV_DEFAULT_APP_MODE=${env.DEV_DEFAULT_APP_MODE}"
 echo "DEV_OPAL_LEGACY_GATEWAY_URL=${env.DEV_OPAL_LEGACY_GATEWAY_URL}"
@@ -680,7 +688,8 @@ if (releaseSuite && legacyEnabled && isPR) {
 // Guard: legacy mode must explicitly scope tests via run_tag:<expression>
 if (legacyEnabled && isPR && !baseTags) {
     error 'Legacy mode requires a populated run_tag:<expression> label ' +
-      '(e.g. run_tag:@UAT-Technical, run_tag:@R1BDrop1UatTechJCDE, or run_tag:@R1BDrop2UatTechJCDE) ' +
+      "(e.g. run_tag:@UAT-Technical, run_tag:${r1bDrop1UatTechJcdeTag}, or " +
+      "run_tag:${r1bDrop2UatTechJcdeTag}) " +
       'to avoid running the full suite.'
 }
 
@@ -714,10 +723,10 @@ withPipeline(type, product, component) {
 
     // master fails we want a notification on slack
     onMaster {
-      enableSlackNotifications('#opal-builds')
+        enableSlackNotifications('#opal-builds')
     }
 
-  // Configure PR-only deployment knobs before helm installs run
+    // Configure PR-only deployment knobs before helm installs run
     before('akschartsinstall') {
         onPR {
             determineDevEnvironmentDeployment()
