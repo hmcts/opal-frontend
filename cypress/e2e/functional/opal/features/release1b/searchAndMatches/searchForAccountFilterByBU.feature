@@ -19,6 +19,7 @@ Feature: Search For Account Filter By BU
   Scenario: AC7 — Saving sends the combined selection across tabs
     And I clear all selected business units on the "Fines" tab
     And I clear all selected business units on the "Confiscation" tab
+    Then the "Save selection" button displays a total of 0
     # Act: pick some on each tab
     When I select the following business units:
       | tab          | businessUnit |
@@ -79,6 +80,7 @@ Feature: Search For Account Filter By BU
     And I open the business unit filter from the search page
     And I clear all selected business units on the "Fines" tab
     And I clear all selected business units on the "Confiscation" tab
+    Then the "Save selection" button displays a total of 0
     When I select the following business units:
       | tab   | businessUnit |
       | Fines | Bedfordshire |
