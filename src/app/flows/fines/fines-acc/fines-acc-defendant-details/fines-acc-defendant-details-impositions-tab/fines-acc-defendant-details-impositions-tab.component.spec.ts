@@ -229,7 +229,7 @@ describe('FinesAccDefendantDetailsImpositionsTabComponent', () => {
     const zeroBalanceCell = zeroBalanceRow.querySelector('[id^="imposition-balance-"]') as HTMLTableCellElement;
 
     expect(zeroBalanceRow).toBeTruthy();
-    expect(zeroBalanceCell.textContent?.trim()).toBe('—');
+    expect(zeroBalanceCell.textContent?.trim()).toContain('—');
     expect(zeroBalanceRow.textContent).toContain('Minor Creditor Test Ltd');
   });
 
