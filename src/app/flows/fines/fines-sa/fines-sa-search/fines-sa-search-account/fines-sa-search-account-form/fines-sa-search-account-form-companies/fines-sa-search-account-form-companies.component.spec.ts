@@ -8,6 +8,8 @@ import { beforeEach, describe, expect, it } from 'vitest';
 describe('FinesSaSearchAccountFormCompaniesComponent', () => {
   let component: FinesSaSearchAccountFormCompaniesComponent;
   let fixture: ComponentFixture<FinesSaSearchAccountFormCompaniesComponent>;
+  const printableAsciiCharacters = Array.from({ length: 95 }, (_, index) => String.fromCharCode(index + 32));
+  const nonPrintableAsciiCharacters = [String.fromCharCode(31), String.fromCharCode(127)];
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
@@ -123,17 +125,41 @@ describe('FinesSaSearchAccountFormCompaniesComponent', () => {
   });
 
   it.each(['fsa_search_account_companies_company_name', 'fsa_search_account_companies_address_line_1'])(
-    'should validate %s with the single ASCII characters pattern',
+    'should accept every printable ASCII character in %s',
     (controlName) => {
       const control = component.form.get(controlName);
 
-      control?.setValue('Acme Ltd, Branch 2');
-      expect(control?.hasError('singleAsciiCharacters')).toBe(false);
-
-      control?.setValue('Café');
-      expect(control?.hasError('singleAsciiCharacters')).toBe(true);
+      printableAsciiCharacters.forEach((character) => {
+        control?.setValue(character);
+        expect(control?.hasError('singleAsciiCharacters'), `character ${character.charCodeAt(0)}`).toBe(false);
+      });
     },
   );
+
+  it.each(['fsa_search_account_companies_company_name', 'fsa_search_account_companies_address_line_1'])(
+    'should reject characters outside printable ASCII in %s',
+    (controlName) => {
+      const control = component.form.get(controlName);
+
+      nonPrintableAsciiCharacters.forEach((character) => {
+        control?.setValue(character);
+        expect(control?.hasError('singleAsciiCharacters'), `character ${character.charCodeAt(0)}`).toBe(true);
+      });
+    },
+  );
+
+  it.each([
+    ['fsa_search_account_companies_company_name', 50],
+    ['fsa_search_account_companies_address_line_1', 30],
+  ] as const)('should enforce the maximum length for %s', (controlName, maxLength) => {
+    const control = component.form.get(controlName);
+
+    control?.setValue('A'.repeat(maxLength));
+    expect(control?.hasError('maxlength')).toBe(false);
+
+    control?.setValue('A'.repeat(maxLength + 1));
+    expect(control?.hasError('maxlength')).toBe(true);
+  });
 
   it('should validate postcode max length', () => {
     const postcodeControl = component.form.get('fsa_search_account_companies_post_code');
