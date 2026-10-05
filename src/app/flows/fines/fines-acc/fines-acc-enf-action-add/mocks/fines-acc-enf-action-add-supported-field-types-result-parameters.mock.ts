@@ -16,7 +16,7 @@ export const FINES_ACC_ENF_ACTION_ADD_SUPPORTED_FIELD_TYPES_RESULT_PARAMETERS_MO
     name: 'enforcer',
     prompt: 'Enforcer',
     type: FINES_ACC_ENF_ACTION_ADD_FIELD_TYPES.menuAutocomplete,
-    apiData: FINES_ACC_ENF_ACTION_ADD_API_DATA_KEYS.enforcers,
+    apidata: FINES_ACC_ENF_ACTION_ADD_API_DATA_KEYS.enforcers,
     mandatory: true,
     min: 1,
     max: 1,
