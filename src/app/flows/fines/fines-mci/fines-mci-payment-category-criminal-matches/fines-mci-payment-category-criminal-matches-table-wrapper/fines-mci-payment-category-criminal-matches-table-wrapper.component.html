@@ -98,9 +98,9 @@
                   [id]="'fines-mci-criminal-account-' + row['Account ID']"
                   name="fines-mci-criminal-account"
                   [value]="row['Account ID']"
-                  [checked]="selectedAccountId === row['Account ID']"
+                  [checked]="isAccountSelected(row['Account ID'])"
                   [attr.aria-label]="'Select account ' + row['Account']"
-                  (change)="selectAccount(row['Account ID'])"
+                  (change)="onAccountSelectionChanged(row['Account ID'], $event)"
                 />
                 <label
                   class="govuk-label govuk-checkboxes__label"

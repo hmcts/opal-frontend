@@ -4,17 +4,32 @@
   <span class="govuk-caption-m">Avon and Somerset</span>
   <h1 class="govuk-heading-l">Search results</h1>
 
-  <h2 class="govuk-heading-m">Select 1 account to continue</h2>
+  <div class="govuk-form-group" [class.govuk-form-group--error]="hasSelectionValidationError()">
+    <fieldset
+      class="govuk-fieldset"
+      [attr.aria-describedby]="hasSelectionValidationError() ? selectionErrorFieldId + '-error' : null"
+    >
+      <legend class="govuk-fieldset__legend govuk-fieldset__legend--m" [id]="selectionErrorFieldId" tabindex="-1">
+        Select 1 account to continue
+      </legend>
 
-  <app-fines-mci-payment-category-criminal-matches-table-wrapper
-    [tableData]="tableData()"
-    [existingSortState]="sortState"
-    [selectedAccountId]="selectedAccountId()"
-    (accountSelected)="selectAccount($event)"
-  ></app-fines-mci-payment-category-criminal-matches-table-wrapper>
+      @if (selectionValidationMessage()) {
+        <p [id]="selectionErrorFieldId + '-error'" class="govuk-error-message">
+          <span class="govuk-visually-hidden">Error: </span>{{ selectionValidationMessage() }}
+        </p>
+      }
+
+      <app-fines-mci-payment-category-criminal-matches-table-wrapper
+        [tableData]="tableData()"
+        [existingSortState]="sortState"
+        [selectedAccountIds]="selectedAccountIds()"
+        (accountSelectionChanged)="onAccountSelectionChanged($event)"
+      ></app-fines-mci-payment-category-criminal-matches-table-wrapper>
+    </fieldset>
+  </div>
 
   <div class="govuk-button-group govuk-!-margin-top-6">
-    <button class="govuk-button" type="button">Continue</button>
+    <button class="govuk-button" type="button" (click)="continue()">Continue</button>
     <a class="govuk-link govuk-link--no-visited-state" [routerLink]="criminalSearchRoute">Search again</a>
   </div>
 

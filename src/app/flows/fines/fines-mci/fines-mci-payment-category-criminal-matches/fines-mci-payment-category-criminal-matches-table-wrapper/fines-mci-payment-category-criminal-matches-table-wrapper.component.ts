@@ -15,6 +15,11 @@ import { FinesNotProvidedComponent } from '../../../components/fines-not-provide
 import { IFinesMciPaymentCategoryCriminalMatchesTableWrapperTableData } from './interfaces/fines-mci-payment-category-criminal-matches-table-wrapper-table-data.interface';
 import { IFinesMciPaymentCategoryCriminalMatchesTableWrapperTableSort } from './interfaces/fines-mci-payment-category-criminal-matches-table-wrapper-table-sort.interface';
 
+export interface IFinesMciPaymentCategoryCriminalMatchesTableWrapperAccountSelection {
+  accountId: number;
+  selected: boolean;
+}
+
 @Component({
   selector: 'app-fines-mci-payment-category-criminal-matches-table-wrapper',
   imports: [
@@ -48,9 +53,10 @@ export class FinesMciPaymentCategoryCriminalMatchesTableWrapperComponent extends
     this.abstractExistingSortState = existingSortState;
   }
 
-  @Input() public selectedAccountId: number | null = null;
+  @Input() public selectedAccountIds: number[] = [];
 
-  @Output() public accountSelected = new EventEmitter<number>();
+  @Output() public accountSelectionChanged =
+    new EventEmitter<IFinesMciPaymentCategoryCriminalMatchesTableWrapperAccountSelection>();
 
   public override itemsPerPageSignal = signal(100);
   public override paginatedTableDataComputed = computed(() => {
@@ -58,9 +64,16 @@ export class FinesMciPaymentCategoryCriminalMatchesTableWrapperComponent extends
     return data.slice(this.startIndexComputed() - 1, this.endIndexComputed());
   });
 
-  public selectAccount(accountId: number | null): void {
+  public isAccountSelected(accountId: number | null): boolean {
+    return accountId !== null && this.selectedAccountIds.includes(accountId);
+  }
+
+  public onAccountSelectionChanged(accountId: number | null, event: Event): void {
     if (accountId !== null) {
-      this.accountSelected.emit(accountId);
+      this.accountSelectionChanged.emit({
+        accountId,
+        selected: (event.target as HTMLInputElement).checked,
+      });
     }
   }
 

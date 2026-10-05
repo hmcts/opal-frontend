@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, Component, computed, inject } from '@angular/core';
+import { ChangeDetectionStrategy, Component, computed, inject, signal } from '@angular/core';
 import { toSignal } from '@angular/core/rxjs-interop';
 import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 import { GovukBackLinkComponent } from '@hmcts/opal-frontend-common/components/govuk/govuk-back-link';
@@ -10,11 +10,16 @@ import {
   FINES_MCI_CRIMINAL_SEARCH_RESULTS,
   FinesMciCriminalSearchResults,
 } from '../constants/fines-mci-criminal-search-results.constant';
+import { FINES_MCI_PAYMENT_CATEGORY_CRIMINAL_MATCHES_ERROR_FIELD_IDS } from './constants/fines-mci-payment-category-criminal-matches-errors.constant';
 import { FINES_MCI_PAYMENT_CATEGORY_CRIMINAL_MATCHES_TABLE_WRAPPER_TABLE_SORT_DEFAULT } from './fines-mci-payment-category-criminal-matches-table-wrapper/constants/fines-mci-payment-category-criminal-matches-table-wrapper-table-sort-default.constant';
-import { FinesMciPaymentCategoryCriminalMatchesTableWrapperComponent } from './fines-mci-payment-category-criminal-matches-table-wrapper/fines-mci-payment-category-criminal-matches-table-wrapper.component';
+import {
+  FinesMciPaymentCategoryCriminalMatchesTableWrapperComponent,
+  IFinesMciPaymentCategoryCriminalMatchesTableWrapperAccountSelection,
+} from './fines-mci-payment-category-criminal-matches-table-wrapper/fines-mci-payment-category-criminal-matches-table-wrapper.component';
 import { IFinesMciPaymentCategoryCriminalMatchesTableWrapperTableData } from './fines-mci-payment-category-criminal-matches-table-wrapper/interfaces/fines-mci-payment-category-criminal-matches-table-wrapper-table-data.interface';
 import { FINES_MCI_ROUTING_PATHS } from '../routing/constants/fines-mci-routing-paths.constant';
 import { FinesMciStore } from '../stores/fines-mci.store';
+import { finesMciPaymentCategoryCriminalMatchesSelectionValidator } from './validators/fines-mci-payment-category-criminal-matches.validator';
 
 interface FinesMciCriminalMatchesContent {
   heading: string;
@@ -63,6 +68,8 @@ const isFinesMciCriminalMatchesResults = (results: string | null): results is Fi
 export class FinesMciPaymentCategoryCriminalMatchesComponent {
   private readonly route = inject(ActivatedRoute);
   private readonly router = inject(Router);
+  private readonly selectedAccountIdsSignal = signal<Set<number>>(new Set<number>());
+  private readonly selectionValidationMessageSignal = signal<string | null>(null);
   private readonly results = toSignal(
     this.route.queryParamMap.pipe(
       map((queryParamMap) => {
@@ -74,13 +81,14 @@ export class FinesMciPaymentCategoryCriminalMatchesComponent {
   );
 
   protected readonly finesMciStore = inject(FinesMciStore);
+  protected readonly selectionErrorFieldId = FINES_MCI_PAYMENT_CATEGORY_CRIMINAL_MATCHES_ERROR_FIELD_IDS.accountSelection;
   protected readonly content = computed(
     () => FINES_MCI_CRIMINAL_MATCHES_CONTENT[this.results() as FinesMciCriminalMatchesPlaceholderResults],
   );
   protected readonly searchResults = computed(() => this.finesMciStore.criminalSearchResults()?.defendant_accounts ?? []);
-  protected readonly selectedAccountId = computed(
-    () => this.finesMciStore.selectedCriminalAccount()?.defendant_account_id ?? null,
-  );
+  protected readonly selectedAccountIds = computed(() => [...this.selectedAccountIdsSignal()]);
+  protected readonly selectionValidationMessage = computed(() => this.selectionValidationMessageSignal());
+  protected readonly hasSelectionValidationError = computed(() => !!this.selectionValidationMessageSignal());
   protected readonly tableData = computed(() => this.mapAccountsToTableData(this.searchResults()));
   protected readonly sortState = FINES_MCI_PAYMENT_CATEGORY_CRIMINAL_MATCHES_TABLE_WRAPPER_TABLE_SORT_DEFAULT;
   protected readonly isMatchesResults = computed(() => this.results() === FINES_MCI_CRIMINAL_SEARCH_RESULTS.matches);
@@ -152,8 +160,35 @@ export class FinesMciPaymentCategoryCriminalMatchesComponent {
     this.router.navigate(this.criminalSearchRoute);
   }
 
-  protected selectAccount(accountId: number): void {
-    const selectedAccount = this.searchResults().find((account) => account.defendant_account_id === accountId) ?? null;
+  protected onAccountSelectionChanged(
+    accountSelection: IFinesMciPaymentCategoryCriminalMatchesTableWrapperAccountSelection,
+  ): void {
+    const selectedAccountIds = new Set(this.selectedAccountIdsSignal());
+
+    if (accountSelection.selected) {
+      selectedAccountIds.add(accountSelection.accountId);
+    } else {
+      selectedAccountIds.delete(accountSelection.accountId);
+    }
+
+    this.selectedAccountIdsSignal.set(selectedAccountIds);
+    this.selectionValidationMessageSignal.set(null);
+    this.finesMciStore.setSelectedCriminalAccount(null);
+  }
+
+  protected continue(): void {
+    const selectedAccountIds = this.selectedAccountIds();
+    const validationMessage = finesMciPaymentCategoryCriminalMatchesSelectionValidator(selectedAccountIds);
+
+    if (validationMessage) {
+      this.selectionValidationMessageSignal.set(validationMessage);
+      return;
+    }
+
+    this.selectionValidationMessageSignal.set(null);
+
+    const selectedAccount =
+      this.searchResults().find((account) => account.defendant_account_id === selectedAccountIds[0]) ?? null;
     this.finesMciStore.setSelectedCriminalAccount(selectedAccount);
   }
 }

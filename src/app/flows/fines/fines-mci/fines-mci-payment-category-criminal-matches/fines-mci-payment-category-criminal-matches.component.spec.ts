@@ -75,12 +75,65 @@ describe('FinesMciPaymentCategoryCriminalMatchesComponent', () => {
     expect(fixture.nativeElement.textContent).toContain('Select 1 account to continue');
   });
 
-  it('should store the selected criminal account when a row is selected', () => {
+  it('should show an error when continuing without selecting an account', () => {
+    const continueButton = fixture.nativeElement.querySelector('button.govuk-button') as HTMLButtonElement;
+
+    continueButton.click();
+    fixture.detectChanges();
+
+    expect(fixture.nativeElement.textContent).toContain('Select 1 account');
+    expect(fixture.nativeElement.querySelector('.govuk-form-group--error')).not.toBeNull();
+    expect(finesMciStore.selectedCriminalAccount()).toBeNull();
+  });
+
+  it('should show an error when continuing with more than one account selected', () => {
+    const firstAccountCheckbox = fixture.nativeElement.querySelector(
+      '#fines-mci-criminal-account-1',
+    ) as HTMLInputElement;
     const secondAccountCheckbox = fixture.nativeElement.querySelector(
       '#fines-mci-criminal-account-2',
     ) as HTMLInputElement;
+    const continueButton = fixture.nativeElement.querySelector('button.govuk-button') as HTMLButtonElement;
+
+    firstAccountCheckbox.click();
+    secondAccountCheckbox.click();
+    fixture.detectChanges();
+
+    continueButton.click();
+    fixture.detectChanges();
+
+    expect(fixture.nativeElement.textContent).toContain('Select only 1 account');
+    expect(fixture.nativeElement.querySelector('.govuk-form-group--error')).not.toBeNull();
+    expect(finesMciStore.selectedCriminalAccount()).toBeNull();
+  });
+
+  it('should clear the selection error when an account selection changes', () => {
+    const firstAccountCheckbox = fixture.nativeElement.querySelector(
+      '#fines-mci-criminal-account-1',
+    ) as HTMLInputElement;
+    const continueButton = fixture.nativeElement.querySelector('button.govuk-button') as HTMLButtonElement;
+
+    continueButton.click();
+    fixture.detectChanges();
+    expect(fixture.nativeElement.textContent).toContain('Select 1 account');
+
+    firstAccountCheckbox.click();
+    fixture.detectChanges();
+
+    expect(fixture.nativeElement.textContent).not.toContain('Error: Select 1 account');
+    expect(fixture.nativeElement.querySelector('.govuk-form-group--error')).toBeNull();
+  });
+
+  it('should store the selected criminal account when continuing with one account selected', () => {
+    const secondAccountCheckbox = fixture.nativeElement.querySelector(
+      '#fines-mci-criminal-account-2',
+    ) as HTMLInputElement;
+    const continueButton = fixture.nativeElement.querySelector('button.govuk-button') as HTMLButtonElement;
 
     secondAccountCheckbox.click();
+    fixture.detectChanges();
+
+    continueButton.click();
     fixture.detectChanges();
 
     expect(finesMciStore.selectedCriminalAccount()).toEqual(
