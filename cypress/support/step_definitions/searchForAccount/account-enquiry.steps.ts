@@ -2386,3 +2386,17 @@ Then('I should see the unsaved value retained for Last name as {string}', (expec
   log('assert', 'Verify unsaved PG last name retained', { expected });
   editParentGuardianDetails().verifyLastName(expected);
 });
+
+/**
+ * @step Sets Address line 3 on the parent or guardian form.
+ */
+When('I enter {string} into the parent or guardian address line 3 field', (value: string) => {
+  editParentGuardianDetails().editAddressLine3(value);
+});
+
+/**
+ * @step Verifies the persisted parent or guardian Address line 3.
+ */
+Then('I should see the parent or guardian address line 3 field contains {string}', (expected: string) => {
+  editParentGuardianDetails().verifyAddressLine3(expected);
+});
