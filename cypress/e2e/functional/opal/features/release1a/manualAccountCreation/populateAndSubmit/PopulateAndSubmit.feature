@@ -62,8 +62,8 @@ Feature: Populate And Submit
       | Totals           |                                       | £1,000.00      | £450.00     | £550.00           |
     And the summary list should contain the following information:
       | Amount imposed    | £1,000.00 |
-      | Amount paid       | £450.00  |
-      | Balance remaining | £550.00  |
+      | Amount paid       | £450.00   |
+      | Balance remaining | £550.00   |
     When I return to account details from offence details
     Then the "Offence details" task status is "Provided"
 
@@ -494,7 +494,7 @@ Feature: Populate And Submit
       | Cancel journey state |
       | with changes         |
 
-  @JIRA-EPIC:PO-2750 @R1A1_1 @JIRA-STORY:PO-2790 @JIRA-DEFECT:PO-10693 @JIRA-TEST-KEY:PO-5559
+  @JIRA-EPIC:PO-2750 @R1A @JIRA-STORY:PO-2790 @JIRA-DEFECT:PO-10693 @JIRA-TEST-KEY:PO-5559
   Scenario: Conditional Caution shows Police and court details across task list, court details and check account details
     When I open Manual Account Creation from the dashboard
     And I select manual account business unit "West London"
@@ -509,8 +509,8 @@ Feature: Populate And Submit
 
     When I complete manual court details:
       | Sending police force            | Avon and Somerset Road Safety Support Unit |
-      | Prosecutor Case Reference (PCR) | 1234                                        |
-      | Enforcement court               | West London VPFPO                           |
+      | Prosecutor Case Reference (PCR) | 1234                                       |
+      | Enforcement court               | West London VPFPO                          |
     And I return to account details
     Then the "Court details" task status is "Provided"
     And I complete manual account creation with the following fields and defaults:
@@ -540,8 +540,8 @@ Feature: Populate And Submit
     And I see the following text on the page "Police and court details"
     And I see the manual review "Court details" summary:
       | Sending police force            | Avon and Somerset Road Safety Support Unit (052) |
-      | Prosecutor Case Reference (PCR) | 1234                                              |
-      | Enforcement court               | West London VPFPO (101)                         |
+      | Prosecutor Case Reference (PCR) | 1234                                             |
+      | Enforcement court               | West London VPFPO (101)                          |
 
   @JIRA-STORY:PO-2767
   Scenario Outline: User selects entry type and is visible on review account screen - <Originator type>
