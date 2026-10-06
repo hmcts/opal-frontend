@@ -89,6 +89,7 @@ const finesAccountRoutes: Routes = [
 ];
 
 const COMPONENT_PROPERTIES: IComponentProperties = {
+  globalStoreFactory: () => buildSeededGlobalStore(USER_STATE_MOCK_PERMISSION_BU77),
   accountId: '77',
   fragments: 'enforcement',
   interceptedRoutes: [
