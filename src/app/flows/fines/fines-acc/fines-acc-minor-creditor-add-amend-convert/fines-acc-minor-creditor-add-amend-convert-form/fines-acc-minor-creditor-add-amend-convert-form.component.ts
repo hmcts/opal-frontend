@@ -65,6 +65,30 @@ const ALPHANUMERIC_WITH_SPACES_PATTERN_VALIDATOR = patternValidator(
   'alphanumericTextPattern',
 );
 const NUMERIC_PATTERN_VALIDATOR = patternValidator(NUMERIC_PATTERN, 'numericalTextPattern');
+const SORT_CODE_VALIDATOR: ValidatorFn = (control: AbstractControl): ValidationErrors | null => {
+  const value = control.value as string | null;
+
+  if (!value) {
+    return null;
+  }
+
+  const containsOnlyDigitsAndSeparators = /^[\d\s-]+$/.test(value);
+  const digits = value.replace(/[\s-]/g, '');
+
+  if (!containsOnlyDigitsAndSeparators) {
+    return { numericalTextPattern: true };
+  }
+
+  if (digits.length < 6) {
+    return { minlength: true };
+  }
+
+  if (digits.length > 6) {
+    return { maxlength: true };
+  }
+
+  return null;
+};
 
 @Component({
   selector: 'app-fines-acc-minor-creditor-add-amend-convert-form',
@@ -189,9 +213,7 @@ export class FinesAccMinorCreditorAddAmendConvertFormComponent
       ]),
       [this.controls.bankSortCode]: this.createFormControl([
         Validators.required,
-        Validators.minLength(6),
-        Validators.maxLength(6),
-        NUMERIC_PATTERN_VALIDATOR,
+        SORT_CODE_VALIDATOR,
       ]),
       [this.controls.bankAccountNumber]: this.createFormControl([
         Validators.required,

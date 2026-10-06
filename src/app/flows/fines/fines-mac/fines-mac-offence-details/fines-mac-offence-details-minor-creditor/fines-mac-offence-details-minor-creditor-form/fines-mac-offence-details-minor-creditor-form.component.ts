@@ -195,7 +195,12 @@ export class FinesMacOffenceDetailsMinorCreditorFormComponent extends AbstractFo
       Validators.maxLength(18),
       SINGLE_ASCII_CHARACTERS_PATTERN_VALIDATOR,
     ]);
-    sortCode.setValidators([Validators.required, Validators.maxLength(6), NUMERIC_PATTERN_VALIDATOR]);
+    sortCode.setValidators([
+      Validators.required,
+      Validators.minLength(6),
+      Validators.maxLength(6),
+      NUMERIC_PATTERN_VALIDATOR,
+    ]);
     accountNumber.setValidators([Validators.required, Validators.maxLength(8), NUMERIC_PATTERN_VALIDATOR]);
     paymentReference.setValidators([
       Validators.required,
