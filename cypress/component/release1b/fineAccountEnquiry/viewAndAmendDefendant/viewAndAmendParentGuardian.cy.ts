@@ -21,6 +21,7 @@ import {
   coreRequiredMessages,
   expectedErrors,
   allExpectedErrors,
+  PARENT_GUARDIAN_ERROR_MESSAGES,
 } from '../../../../shared/errorMessages/accountEnquiriesViewDetails.errorMessages';
 import { VIEW_AND_AMEND_DEFENDANT_INDIVIDUAL_FULL_MOCK } from './mocks/view-and-amend-defendant-individual-full.mock';
 import { VIEW_AND_AMEND_DEFENDANT_INDIVIDUAL_MINIMAL_MOCK } from './mocks/view-and-amend-defendant-individual-minimal.mock';
@@ -1109,7 +1110,7 @@ describe('FinesAccPartyAddAmendConvert - View and Amend Parent or Guardian', () 
       maxLengthMock.defendant_account_party.party_details.individual_details!.national_insurance_number = 'AB123456CD';
       maxLengthMock.defendant_account_party.address!.address_line_1 = 'E'.repeat(31);
       maxLengthMock.defendant_account_party.address!.address_line_2 = 'F'.repeat(31);
-      maxLengthMock.defendant_account_party.address!.address_line_3 = 'G'.repeat(17);
+      maxLengthMock.defendant_account_party.address!.address_line_3 = 'G'.repeat(14);
       maxLengthMock.defendant_account_party.address!.postcode = 'POSTCODE9';
       maxLengthMock.defendant_account_party.contact_details!.primary_email_address = primaryEmail;
       maxLengthMock.defendant_account_party.contact_details!.secondary_email_address = secondaryEmail;
@@ -1134,6 +1135,82 @@ describe('FinesAccPartyAddAmendConvert - View and Amend Parent or Guardian', () 
 
       expectedErrors.forEach((message) => {
         cy.get(DOM_ELEMENTS.errorSummary).should('contain.text', message);
+      });
+    },
+  );
+
+  [true, false].forEach((isDebtor) => {
+    it(
+      `PO-10731. ${isDebtor ? 'Paying' : 'Non-paying'} parent/guardian amend rejects 14 address characters and saves 13`,
+      { tags: [...buildTags('@JIRA-STORY:PO-10731'), '@JIRA-EPIC:PO-976'] },
+      () => {
+        const partyMock = structuredClone(minimalMock);
+        partyMock.version = '1';
+        partyMock.defendant_account_party.is_debtor = isDebtor;
+        interceptPutDefendantAccountParty(123, partyMock);
+        setupComponent('parentGuardian', partyMock);
+
+        cy.get(DOM_ELEMENTS.addressLine3Input).clear().type('ABCDEFGHIJKLMN', { delay: 0 });
+        cy.get(DOM_ELEMENTS.submitButton).click();
+
+        cy.get(DOM_ELEMENTS.errorSummary).should(
+          'contain.text',
+          PARENT_GUARDIAN_ERROR_MESSAGES.MAX_LENGTH_ADDRESS_LINE_3,
+        );
+        cy.get(DOM_ELEMENTS.addressLine3Error).should(
+          'contain.text',
+          PARENT_GUARDIAN_ERROR_MESSAGES.MAX_LENGTH_ADDRESS_LINE_3,
+        );
+        cy.get('@putDefendantAccountParty.all').should('have.length', 0);
+        cy.get('@routerNavigate').should('not.have.been.called');
+
+        cy.get(DOM_ELEMENTS.addressLine3Input).clear().type('ABCDEFGHIJKLM', { delay: 0 });
+        cy.get(DOM_ELEMENTS.submitButton).click();
+
+        cy.wait('@putDefendantAccountParty')
+          .its('request.body.address.address_line_3')
+          .should('equal', 'ABCDEFGHIJKLM');
+        cy.get(DOM_ELEMENTS.addressLine3Error).should('not.exist');
+        cy.get('@routerNavigate').should('have.been.calledWithMatch', ['details'], {
+          fragment: 'parent-or-guardian',
+        });
+      },
+    );
+  });
+
+  it(
+    'PO-10731. Non-paying parent/guardian add rejects 14 address characters and saves 13',
+    { tags: [...buildTags('@JIRA-STORY:PO-10731'), '@JIRA-EPIC:PO-976'] },
+    () => {
+      interceptPostDefendantAccountParty(123, minimalMock);
+      setupComponent('parentGuardian', minimalMock, 'N', FINES_ACC_PARTY_ADD_AMEND_CONVERT_MODES.ADD);
+
+      cy.get(DOM_ELEMENTS.forenamesInput).type('Test', { delay: 0 });
+      cy.get(DOM_ELEMENTS.surnameInput).type('Guardian', { delay: 0 });
+      cy.get(DOM_ELEMENTS.addressLine1Input).type('1 Test Street', { delay: 0 });
+      cy.get(DOM_ELEMENTS.addressLine3Input).type('ABCDEFGHIJKLMN', { delay: 0 });
+      cy.get(DOM_ELEMENTS.submitButton).click();
+
+      cy.get(DOM_ELEMENTS.errorSummary).should(
+        'contain.text',
+        PARENT_GUARDIAN_ERROR_MESSAGES.MAX_LENGTH_ADDRESS_LINE_3,
+      );
+      cy.get(DOM_ELEMENTS.addressLine3Error).should(
+        'contain.text',
+        PARENT_GUARDIAN_ERROR_MESSAGES.MAX_LENGTH_ADDRESS_LINE_3,
+      );
+      cy.get('@postDefendantAccountParty.all').should('have.length', 0);
+      cy.get('@routerNavigate').should('not.have.been.called');
+
+      cy.get(DOM_ELEMENTS.addressLine3Input).clear().type('ABCDEFGHIJKLM', { delay: 0 });
+      cy.get(DOM_ELEMENTS.submitButton).click();
+
+      cy.wait('@postDefendantAccountParty')
+        .its('request.body.defendant_account_party.address.address_line_3')
+        .should('equal', 'ABCDEFGHIJKLM');
+      cy.get(DOM_ELEMENTS.addressLine3Error).should('not.exist');
+      cy.get('@routerNavigate').should('have.been.calledWithMatch', ['details'], {
+        fragment: 'parent-or-guardian',
       });
     },
   );
