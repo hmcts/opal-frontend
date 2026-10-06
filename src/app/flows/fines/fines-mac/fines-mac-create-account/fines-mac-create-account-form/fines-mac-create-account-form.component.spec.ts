@@ -65,6 +65,22 @@ describe('FinesMacCreateAccountFormComponent', () => {
     expect(component).toBeTruthy();
   });
 
+  it('should only include the business unit combobox in the tab sequence', async () => {
+    const autocomplete = fixture.nativeElement.querySelector(
+      'opal-lib-alphagov-accessible-autocomplete',
+    ) as HTMLElement;
+
+    expect(autocomplete.getAttribute('tabindex')).toBeNull();
+    expect(autocomplete.tabIndex).toBe(-1);
+
+    await vi.waitFor(() => {
+      const combobox = autocomplete.querySelector<HTMLInputElement>('input[role="combobox"]');
+
+      expect(combobox).toBeTruthy();
+      expect(combobox?.tabIndex).toBe(0);
+    });
+  });
+
   it('should setup account type listener', () => {
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     vi.spyOn<any, any>(component, 'handleAccountTypeChange');
