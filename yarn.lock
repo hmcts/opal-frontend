@@ -3807,9 +3807,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@hmcts/opal-frontend-common@npm:0.0.110":
-  version: 0.0.110
-  resolution: "@hmcts/opal-frontend-common@npm:0.0.110"
+"@hmcts/opal-frontend-common@npm:0.0.109":
+  version: 0.0.109
+  resolution: "@hmcts/opal-frontend-common@npm:0.0.109"
   dependencies:
     "@microsoft/applicationinsights-web": "npm:^3.3.6"
     "@ministryofjustice/frontend": "npm:^11.0.0"
@@ -3831,7 +3831,7 @@ __metadata:
   peerDependenciesMeta:
     "@ngrx/signals":
       optional: true
-  checksum: 10/3bec3e69f8a2eeb2759e9ef0195b41d6025f2c9c78976aeaf9c499fc6e9e13a5b11da52a88037a85b99d5c38d3ea24a0a98bc985184fdd52193a4460c5173710
+  checksum: 10/c6522bda9e9e362bc517e46025ac852d23020151c19dcf8054e06b5b6401e6c923c742666d90be6019b6d370c633f21cbc5eb86aa2afc36304346dd0ca4c0ea1
   languageName: node
   linkType: hard
 
@@ -7645,14 +7645,14 @@ __metadata:
   linkType: hard
 
 "accessible-autocomplete@npm:^3.0.0, accessible-autocomplete@npm:^3.0.1":
-  version: 3.0.1
-  resolution: "accessible-autocomplete@npm:3.0.1"
+  version: 3.0.2
+  resolution: "accessible-autocomplete@npm:3.0.2"
   peerDependencies:
     preact: ^8.0.0
   peerDependenciesMeta:
     preact:
       optional: true
-  checksum: 10/240e22c1c1fe68a011c26a6fbe7f54db23e766313d594607f5cbba6d703f70296282d11b4dc110efa00974d6edf1b3165fb6366314acd176f0b470c58c7beed7
+  checksum: 10/9330e866b0937b18c864c3877f996690e441c919bddf00b5ac5e5e2580440f85985bb91fa19ae9e999e6f3dcfa937e1120ce6909e705254a6d5cb837d7fff509
   languageName: node
   linkType: hard
 
@@ -15658,7 +15658,7 @@ __metadata:
     "@hmcts/info-provider": "npm:^1.1.0"
     "@hmcts/nodejs-healthcheck": "npm:^1.8.5"
     "@hmcts/nodejs-logging": "npm:^4.0.4"
-    "@hmcts/opal-frontend-common": "npm:0.0.110"
+    "@hmcts/opal-frontend-common": "npm:0.0.109"
     "@hmcts/opal-frontend-common-cypress": "npm:^0.0.3"
     "@hmcts/opal-frontend-common-node": "npm:^0.0.45"
     "@hmcts/properties-volume": "npm:^1.1.0"
