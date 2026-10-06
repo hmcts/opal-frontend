@@ -10,6 +10,7 @@ import { finesReportsTitleResolver } from './resolvers/fines-reports-title/fines
 import { finesReportsReportMetadataResolver } from './resolvers/fines-reports-report-metadata/fines-reports-report-metadata.resolver';
 import { finesReportsReportInstancesResolver } from './resolvers/fines-reports-report-instances/fines-reports-report-instances.resolver';
 import { finesReportsBusinessUnitsResolver } from './resolvers/fines-reports-business-units/fines-reports-business-units.resolver';
+import { finesReportsReportInstanceResolver } from './resolvers/fines-reports-report-instance/fines-reports-report-instance.resolver';
 
 export const routing: Routes = [
   {
@@ -48,6 +49,7 @@ export const routing: Routes = [
         },
         resolve: {
           title: TitleResolver,
+          reportSummary: finesReportsReportInstanceResolver,
         },
       },
       {

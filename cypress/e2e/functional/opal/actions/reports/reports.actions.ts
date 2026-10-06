@@ -1,4 +1,6 @@
 import { ReportsLocators as L } from '../../../../../shared/selectors/reports.locators';
+import { ReportSummaryLocators as SummaryLocators } from '../../../../../shared/selectors/report-summary.locators';
+import { ReportsSummaryListLocators as SummaryListLocators } from '../../../../../shared/selectors/reports-summary-list.locators';
 import { createScopedLogger } from '../../../../../support/utils/log.helper';
 import { CommonActions } from '../common/common.actions';
 import { PrimaryNavigationActions } from '../primary-navigation.actions';
@@ -91,6 +93,37 @@ export class ReportsActions {
     log('assert', 'Checking Reports summary list screen', { reportLink, path });
     this.common.assertHeaderContains(heading);
     cy.location('pathname', this.common.getPathTimeoutOptions()).should('eq', path);
+  }
+
+  /**
+   * Opens the first report summary available in the current summary list.
+   * The Date and time link must be present for the PO-9738 seeded report data
+   * to be discoverable through the default date filter.
+   */
+  public openFirstReportSummary(): void {
+    log('action', 'Opening the first report summary from the Date and time link');
+    cy.get(SummaryListLocators.page, this.common.getPathTimeoutOptions()).then(($page) => {
+      if ($page.text().includes('No reports found')) {
+        throw new Error(
+          'No report is available in this summary list. Verify that the seeded report instance has a generation date and that the logged-in user has access to its Business Unit.',
+        );
+      }
+    });
+    cy.get(SummaryListLocators.table.dateTime(0), this.common.getPathTimeoutOptions())
+      .find('a')
+      .should('be.visible')
+      .click();
+  }
+
+  /** Asserts that a selected Date and time link opened a report summary. */
+  public assertReportSummaryScreen(): void {
+    log('assert', 'Checking Report summary screen');
+    cy.location('pathname', this.common.getPathTimeoutOptions()).should(
+      'match',
+      /\/fines\/reports\/[^/]+\/summary\/[^/]+$/,
+    );
+    this.common.assertPageHeadingVisible();
+    cy.get(SummaryLocators.general, this.common.getPathTimeoutOptions()).should('be.visible');
   }
 
   /**

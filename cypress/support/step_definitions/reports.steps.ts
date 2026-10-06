@@ -33,6 +33,16 @@ Then('I am taken to the Reports summary list screen for {string}', (reportLink: 
   reportsActions().assertSummaryListScreen(reportLink);
 });
 
+When('I select the first report Date and time link', () => {
+  log('step', 'Opening the first Report summary from its Date and time link');
+  reportsActions().openFirstReportSummary();
+});
+
+Then('I am taken to the Report summary screen', () => {
+  log('assert', 'Checking the Report summary screen');
+  reportsActions().assertReportSummaryScreen();
+});
+
 When('I navigate directly to the Reports entry point {string}', (entryPoint: ReportsEntryPoint) => {
   log('step', 'Navigating directly to a Reports entry point', { entryPoint });
   reportsActions().visitEntryPointDirectly(entryPoint);
