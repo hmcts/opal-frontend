@@ -32,12 +32,10 @@ import { TrimLeadingTrailingWhitespaceDirective } from '@hmcts/opal-frontend-com
 import { patternValidator } from '@hmcts/opal-frontend-common/validators/pattern-validator';
 import {
   ALPHANUMERIC_WITH_SPACES_PATTERN,
-  LETTERS_WITH_SPACES_PATTERN,
   NUMERIC_PATTERN,
   SINGLE_ASCII_CHARACTERS,
 } from '@hmcts/opal-frontend-common/constants';
 
-const LETTERS_WITH_SPACES_PATTERN_VALIDATOR = patternValidator(LETTERS_WITH_SPACES_PATTERN, 'lettersWithSpacesPattern');
 const ALPHANUMERIC_WITH_SPACES_PATTERN_VALIDATOR = patternValidator(
   ALPHANUMERIC_WITH_SPACES_PATTERN,
   'alphanumericTextPattern',
@@ -163,8 +161,8 @@ export class FinesMacOffenceDetailsMinorCreditorFormComponent extends AbstractFo
       fm_offence_details_minor_creditor_surname: surname,
     } = this.form.controls;
     title.setValidators([Validators.required]);
-    forenames.setValidators([Validators.required, Validators.maxLength(20), LETTERS_WITH_SPACES_PATTERN_VALIDATOR]);
-    surname.setValidators([Validators.required, Validators.maxLength(30), LETTERS_WITH_SPACES_PATTERN_VALIDATOR]);
+    forenames.setValidators([Validators.required, Validators.maxLength(20), SINGLE_ASCII_CHARACTERS_PATTERN_VALIDATOR]);
+    surname.setValidators([Validators.required, Validators.maxLength(30), SINGLE_ASCII_CHARACTERS_PATTERN_VALIDATOR]);
   }
 
   /**
