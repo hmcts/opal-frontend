@@ -4,8 +4,8 @@ export const FINES_ACC_SUMMARY_TABS_CONTENT_STYLES: IFinesAccSummaryTabsContentS
   heading: 'govuk-heading-s govuk-!-margin-bottom-2 govuk-!-margin-top-2 govuk-!-text-break-word',
   hr: 'govuk-section-break govuk-section-break--m govuk-section-break--visible custom-section-break--4px govuk-!-margin-bottom-3 govuk-!-margin-top-0',
   hr2: 'govuk-section-break govuk-section-break--l govuk-section-break--visible',
-  key: 'govuk-!-font-size-16 govuk-!-font-weight-bold govuk-!-margin-top-0 govuk-!-margin-bottom-1 govuk-body govuk-!-text-break-word',
+  key: 'govuk-!-font-size-16 govuk-!-font-weight-bold govuk-!-margin-top-0 govuk-!-margin-bottom-1 govuk-body',
   value: 'govuk-!-font-size-16  govuk-!-margin-top-0 govuk-!-margin-bottom-2 govuk-body govuk-!-text-break-word',
-  changeLink: 'govuk-link govuk-link--no-visited-state govuk-!-margin-bottom-0 govuk-!-text-break-word',
+  changeLink: 'govuk-link govuk-link--no-visited-state govuk-!-margin-bottom-0',
   badgeBlue: 'moj-badge--blue',
 };
