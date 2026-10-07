@@ -34,6 +34,7 @@ import { IFinesAccEnfColloChangeFormState } from '../fines-acc-enf-collo-change/
 import { FINES_ACC_COLLECTION_ORDER_PAYLOAD_DEFAULTS } from './constants/fines-acc-collection-order-payload-defaults.constant';
 import { IOpalFinesUpdateMinorCreditorAccountPayload } from '../../services/opal-fines-service/interfaces/opal-fines-update-minor-creditor-account-payload.interface';
 import { IOpalFinesAccountMinorCreditorAtAGlance } from '../../services/opal-fines-service/interfaces/opal-fines-account-minor-creditor-at-a-glance.interface';
+import { normalizeSortCode } from '../../validators/sort-code.validator';
 import { FINES_ACC_PARTY_TYPES } from '../constants/fines-acc-party-types.constant';
 import { IOpalFinesAccountMajorCreditorDetailsHeader } from '../fines-acc-major-creditor-details/interfaces/fines-acc-major-creditor-details-header.interface';
 import { IFinesAccEnfActionAddFormState } from '../fines-acc-enf-action-add/interfaces/fines-acc-enf-action-add-form-state.interface';
@@ -496,7 +497,7 @@ export class FinesAccPayloadService {
         pay_by_bacs: hasBacsDetails,
         hold_payment: currentData.payment.hold_payment,
         account_name: hasBacsDetails ? formState.facc_minor_creditor_bank_account_name : null,
-        sort_code: hasBacsDetails ? formState.facc_minor_creditor_bank_sort_code : null,
+        sort_code: hasBacsDetails ? normalizeSortCode(formState.facc_minor_creditor_bank_sort_code) : null,
         account_number: hasBacsDetails ? formState.facc_minor_creditor_bank_account_number : null,
         account_reference: hasBacsDetails ? formState.facc_minor_creditor_bank_account_reference : null,
       },

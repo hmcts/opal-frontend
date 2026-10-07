@@ -6,6 +6,7 @@ import { IFinesMacOffenceDetailsImpositionsState } from '../../../../fines-mac-o
 import { IFinesMacPayloadAccountOffences } from '../interfaces/fines-mac-payload-account-offences.interface';
 import { IFinesMacPayloadAccountOffencesImposition } from '../interfaces/fines-mac-payload-account-offences-imposition.interface';
 import { IFinesMacPayloadAccountOffencesMinorCreditor } from '../interfaces/fines-mac-payload-account-offences-minor-creditor.interface';
+import { normalizeSortCode } from '../../../../../validators/sort-code.validator';
 
 /**
  * Determines if the payout is on hold based on the payment method.
@@ -67,7 +68,7 @@ const buildAccountOffencesImpositionsMinorCreditorPayload = (
     payout_hold: payoutOnHold,
     pay_by_bacs: payByBacs,
     bank_account_type: '1',
-    bank_sort_code: childFormData?.formData.fm_offence_details_minor_creditor_bank_sort_code ?? null,
+    bank_sort_code: normalizeSortCode(childFormData?.formData.fm_offence_details_minor_creditor_bank_sort_code),
     bank_account_number: childFormData?.formData.fm_offence_details_minor_creditor_bank_account_number ?? null,
     bank_account_name: childFormData?.formData.fm_offence_details_minor_creditor_bank_account_name ?? null,
     bank_account_ref: childFormData?.formData.fm_offence_details_minor_creditor_bank_account_ref ?? null,

@@ -10,6 +10,7 @@ import { FINES_MAC_OFFENCE_DETAILS_MINOR_CREDITOR_FIELD_ERRORS } from '../consta
 import { FINES_MAC_OFFENCE_DETAILS_ROUTING_PATHS } from '../../routing/constants/fines-mac-offence-details-routing-paths.constant';
 import { IFinesMacOffenceDetailsMinorCreditorForm } from '../interfaces/fines-mac-offence-details-minor-creditor-form.interface';
 import { FinesMacOffenceDetailsStore } from '../../stores/fines-mac-offence-details.store';
+import { normalizeSortCode, sortCodeValidator } from '../../../../validators/sort-code.validator';
 import { GovukTextInputComponent } from '@hmcts/opal-frontend-common/components/govuk/govuk-text-input';
 import { GovukButtonComponent } from '@hmcts/opal-frontend-common/components/govuk/govuk-button';
 import {
@@ -195,12 +196,7 @@ export class FinesMacOffenceDetailsMinorCreditorFormComponent extends AbstractFo
       Validators.maxLength(18),
       SINGLE_ASCII_CHARACTERS_PATTERN_VALIDATOR,
     ]);
-    sortCode.setValidators([
-      Validators.required,
-      Validators.minLength(6),
-      Validators.maxLength(6),
-      NUMERIC_PATTERN_VALIDATOR,
-    ]);
+    sortCode.setValidators([Validators.required, sortCodeValidator]);
     accountNumber.setValidators([Validators.required, Validators.maxLength(8), NUMERIC_PATTERN_VALIDATOR]);
     paymentReference.setValidators([
       Validators.required,
@@ -372,5 +368,15 @@ export class FinesMacOffenceDetailsMinorCreditorFormComponent extends AbstractFo
   public override ngOnInit(): void {
     this.initialMinorCreditorSetup();
     super.ngOnInit();
+  }
+
+  public override handleFormSubmit(event: SubmitEvent): void {
+    const sortCodeControl = this.form.controls['fm_offence_details_minor_creditor_bank_sort_code'];
+
+    if (sortCodeControl.valid && sortCodeControl.value) {
+      sortCodeControl.setValue(normalizeSortCode(sortCodeControl.value), { emitEvent: false });
+    }
+
+    super.handleFormSubmit(event);
   }
 }

@@ -193,10 +193,16 @@ describe('FinesMacOffenceDetailsMinorCreditorFormComponent', () => {
 
     // Test validators for sort code
     sortCodeControl.setValue('1234567'); // Exceeds 6 characters
-    expect(sortCodeControl.errors?.['maxlength']).toBeTruthy();
+    expect(sortCodeControl.errors?.['invalidSortCode']).toBeTruthy();
 
     sortCodeControl.setValue('ABC123'); // Non-numeric input
-    expect(sortCodeControl.errors?.['numericalTextPattern']).toBeTruthy();
+    expect(sortCodeControl.errors?.['invalidSortCode']).toBeTruthy();
+
+    sortCodeControl.setValue('12-34-56');
+    expect(sortCodeControl.valid).toBeTruthy();
+
+    sortCodeControl.setValue('12 34 56');
+    expect(sortCodeControl.valid).toBeTruthy();
 
     sortCodeControl.setValue('123456'); // Valid input
     expect(sortCodeControl.valid).toBeTruthy();

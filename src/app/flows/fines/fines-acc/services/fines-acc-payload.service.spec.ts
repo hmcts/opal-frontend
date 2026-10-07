@@ -1104,7 +1104,7 @@ describe('FinesAccPayloadService', () => {
         facc_minor_creditor_post_code: 'CD34 5EF',
         facc_minor_creditor_pay_by_bacs: true,
         facc_minor_creditor_bank_account_name: 'Updated Account',
-        facc_minor_creditor_bank_sort_code: '309430',
+        facc_minor_creditor_bank_sort_code: '30-94 30',
         facc_minor_creditor_bank_account_number: '00733445',
         facc_minor_creditor_bank_account_reference: 'UPDATED-REF',
       };

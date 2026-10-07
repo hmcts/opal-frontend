@@ -58,6 +58,7 @@ import { FINES_ACC_MINOR_CREDITOR_ADD_AMEND_CONVERT_CONTROL_NAMES } from '../con
 import { FINES_ACC_MINOR_CREDITOR_ADD_AMEND_CONVERT_CREDITOR_TYPES } from '../constants/fines-acc-minor-creditor-add-amend-convert-creditor-types.constant';
 import { FINES_ACC_MINOR_CREDITOR_ADD_AMEND_CONVERT_INDIVIDUAL_CONTROL_NAMES } from '../constants/fines-acc-minor-creditor-add-amend-convert-control-names-individual.constant';
 import { FINES_ACC_MINOR_CREDITOR_ADD_AMEND_CONVERT_COMPANY_CONTROL_NAMES } from '../constants/fines-acc-minor-creditor-add-amend-convert-control-names-company.constant';
+import { normalizeSortCode, sortCodeValidator } from '../../../validators/sort-code.validator';
 
 const SINGLE_ASCII_CHARACTERS_PATTERN_VALIDATOR = patternValidator(SINGLE_ASCII_CHARACTERS, 'singleAsciiCharacters');
 const ALPHANUMERIC_WITH_SPACES_PATTERN_VALIDATOR = patternValidator(
@@ -65,31 +66,6 @@ const ALPHANUMERIC_WITH_SPACES_PATTERN_VALIDATOR = patternValidator(
   'alphanumericTextPattern',
 );
 const NUMERIC_PATTERN_VALIDATOR = patternValidator(NUMERIC_PATTERN, 'numericalTextPattern');
-const SORT_CODE_VALIDATOR: ValidatorFn = (control: AbstractControl): ValidationErrors | null => {
-  const value = control.value as string | null;
-
-  if (!value) {
-    return null;
-  }
-
-  const containsOnlyDigitsAndSeparators = /^[\d\s-]+$/.test(value);
-  const digits = value.replace(/[\s-]/g, '');
-
-  if (!containsOnlyDigitsAndSeparators) {
-    return { numericalTextPattern: true };
-  }
-
-  if (digits.length < 6) {
-    return { minlength: true };
-  }
-
-  if (digits.length > 6) {
-    return { maxlength: true };
-  }
-
-  return null;
-};
-
 @Component({
   selector: 'app-fines-acc-minor-creditor-add-amend-convert-form',
   imports: [
@@ -211,7 +187,7 @@ export class FinesAccMinorCreditorAddAmendConvertFormComponent
         Validators.maxLength(18),
         SINGLE_ASCII_CHARACTERS_PATTERN_VALIDATOR,
       ]),
-      [this.controls.bankSortCode]: this.createFormControl([Validators.required, SORT_CODE_VALIDATOR]),
+      [this.controls.bankSortCode]: this.createFormControl([Validators.required, sortCodeValidator]),
       [this.controls.bankAccountNumber]: this.createFormControl([
         Validators.required,
         Validators.minLength(6),
@@ -395,6 +371,16 @@ export class FinesAccMinorCreditorAddAmendConvertFormComponent
   public override ngOnInit(): void {
     this.setupForm();
     super.ngOnInit();
+  }
+
+  public override handleFormSubmit(event: SubmitEvent): void {
+    const sortCodeControl = this.form.get(this.controls.bankSortCode);
+
+    if (sortCodeControl?.valid && sortCodeControl.value) {
+      sortCodeControl.setValue(normalizeSortCode(sortCodeControl.value), { emitEvent: false });
+    }
+
+    super.handleFormSubmit(event);
   }
 
   /**
