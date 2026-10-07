@@ -42,18 +42,19 @@ describe('FinesMacOffenceDetailsSearchOffencesResultsTableWrapperComponent', () 
     expect(component).toBeTruthy();
   });
 
-  it('should render a unique visually hidden code for each copy link', () => {
-    const copyLinks = fixture.nativeElement.querySelectorAll('td#code a.govuk-link.govuk-link--no-visited-state');
+  it('should render a copy code button with a unique visually hidden code for each offence', () => {
+    const copyButtons = fixture.nativeElement.querySelectorAll('td#actions button');
 
-    expect(copyLinks).toHaveLength(
+    expect(copyButtons).toHaveLength(
       FINES_MAC_OFFENCE_DETAILS_SEARCH_OFFENCES_RESULTS_TABLE_WRAPPER_TABLE_DATA_MOCK.length,
     );
 
-    copyLinks.forEach((link: HTMLAnchorElement, index: number) => {
-      expect(link.textContent).toContain(
+    copyButtons.forEach((button: HTMLButtonElement, index: number) => {
+      expect(button.type).toBe('button');
+      expect(button.textContent).toContain(
         FINES_MAC_OFFENCE_DETAILS_SEARCH_OFFENCES_RESULTS_TABLE_WRAPPER_LINK_DEFAULTS.COPY_CODE_TO_CLIPBOARD,
       );
-      expect(link.querySelector('.govuk-visually-hidden')?.textContent?.trim()).toBe(
+      expect(button.querySelector('.govuk-visually-hidden')?.textContent?.trim()).toBe(
         FINES_MAC_OFFENCE_DETAILS_SEARCH_OFFENCES_RESULTS_TABLE_WRAPPER_TABLE_DATA_MOCK[index].Code,
       );
     });
@@ -79,39 +80,37 @@ describe('FinesMacOffenceDetailsSearchOffencesResultsTableWrapperComponent', () 
     expect(utilsService.focusAndScrollToTop).not.toHaveBeenCalled();
   });
 
-  it('should prevent default and copy to clipboard when copyCodeToClipboard is called with an event', () => {
-    const event = new Event('click');
-    const preventDefaultSpy = vi.spyOn(event, 'preventDefault');
-    const linkElement = document.createElement('a');
+  it('should copy the offence code to the clipboard', () => {
     const labelElement = document.createElement('span');
     const liveRegion = document.createElement('span');
 
-    component.copyCodeToClipboard(linkElement, labelElement, liveRegion, '1234', event);
+    component.copyCodeToClipboard(labelElement, liveRegion, '1234');
 
-    expect(preventDefaultSpy).toHaveBeenCalled();
     expect(utilsService.copyToClipboard).toHaveBeenCalledWith('1234');
   });
 
-  it('should preserve the hidden offence code when a rendered copy link is clicked and reset', () => {
+  it('should preserve the hidden offence code when a rendered copy button is clicked and reset', () => {
     vi.useFakeTimers();
-    const linkElement = fixture.nativeElement.querySelector(
-      'td#code a.govuk-link.govuk-link--no-visited-state',
-    ) as HTMLAnchorElement;
-    const hiddenCodeElement = linkElement.querySelector('.govuk-visually-hidden') as HTMLSpanElement;
+
+    const buttonElement = fixture.nativeElement.querySelector('td#actions button') as HTMLButtonElement;
+
+    const hiddenCodeElement = buttonElement.querySelector('.govuk-visually-hidden') as HTMLSpanElement;
+
     const liveRegion = fixture.nativeElement.querySelector(
-      'td#code > span.govuk-visually-hidden[aria-live]',
+      'td#actions > span.govuk-visually-hidden[aria-live]',
     ) as HTMLSpanElement;
 
-    linkElement.click();
+    buttonElement.click();
     fixture.detectChanges();
 
     expect(utilsService.copyToClipboard).toHaveBeenCalledWith(
       FINES_MAC_OFFENCE_DETAILS_SEARCH_OFFENCES_RESULTS_TABLE_WRAPPER_TABLE_DATA_MOCK[0].Code,
     );
-    expect(linkElement.getAttribute('aria-live')).toBe('assertive');
+
     expect(liveRegion.textContent).toBe(
       FINES_MAC_OFFENCE_DETAILS_SEARCH_OFFENCES_RESULTS_TABLE_WRAPPER_LINK_DEFAULTS.COPIED_CODE_TO_CLIPBOARD,
     );
+
     expect(hiddenCodeElement).toBeTruthy();
     expect(hiddenCodeElement.textContent?.trim()).toBe(
       FINES_MAC_OFFENCE_DETAILS_SEARCH_OFFENCES_RESULTS_TABLE_WRAPPER_TABLE_DATA_MOCK[0].Code,
@@ -122,32 +121,11 @@ describe('FinesMacOffenceDetailsSearchOffencesResultsTableWrapperComponent', () 
     );
     fixture.detectChanges();
 
-    expect(linkElement.hasAttribute('aria-live')).toBe(false);
     expect(liveRegion.textContent).toBe('');
-    expect(linkElement.querySelector('.govuk-visually-hidden')).toBeTruthy();
-    expect(linkElement.querySelector('.govuk-visually-hidden')?.textContent?.trim()).toBe(
+    expect(buttonElement.querySelector('.govuk-visually-hidden')).toBeTruthy();
+    expect(buttonElement.querySelector('.govuk-visually-hidden')?.textContent?.trim()).toBe(
       FINES_MAC_OFFENCE_DETAILS_SEARCH_OFFENCES_RESULTS_TABLE_WRAPPER_TABLE_DATA_MOCK[0].Code,
     );
-  });
-
-  it('should restore original aria-live if it was present', () => {
-    vi.useFakeTimers();
-    const linkElement = document.createElement('a');
-    const labelElement = document.createElement('span');
-    const liveRegion = document.createElement('span');
-    labelElement.innerText =
-      FINES_MAC_OFFENCE_DETAILS_SEARCH_OFFENCES_RESULTS_TABLE_WRAPPER_LINK_DEFAULTS.COPY_CODE_TO_CLIPBOARD;
-    linkElement.setAttribute('aria-live', 'polite');
-
-    component.copyCodeToClipboard(linkElement, labelElement, liveRegion, '5678');
-
-    expect(linkElement.getAttribute('aria-live')).toBe('assertive');
-
-    vi.advanceTimersByTime(
-      FINES_MAC_OFFENCE_DETAILS_SEARCH_OFFENCES_RESULTS_TABLE_WRAPPER_LINK_DEFAULTS.COPY_CODE_TO_CLIPBOARD_TIMEOUT,
-    );
-
-    expect(linkElement.getAttribute('aria-live')).toBe('polite');
   });
 
   it('should clear the copyCodeTimeoutId on ngOnDestroy if timeout is set', () => {

@@ -13,6 +13,7 @@ import { IFinesMacOffenceDetailsSearchOffencesResultsTableWrapperTableSort } fro
 import { UtilsService } from '@hmcts/opal-frontend-common/services/utils-service';
 import { FINES_MAC_OFFENCE_DETAILS_SEARCH_OFFENCES_RESULTS_TABLE_WRAPPER_LINK_DEFAULTS } from './constants/fines-mac-offence-details-search-offences-results-table-wrapper-link-defaults.constant';
 import { MojPaginationComponent } from '@hmcts/opal-frontend-common/components/moj/moj-pagination';
+import { GovukButtonComponent } from '@hmcts/opal-frontend-common/components/govuk/govuk-button';
 
 @Component({
   selector: 'app-fines-mac-offence-details-search-offences-results-table-wrapper',
@@ -25,6 +26,7 @@ import { MojPaginationComponent } from '@hmcts/opal-frontend-common/components/m
     MojSortableTableStatusComponent,
     DateFormatPipe,
     MojPaginationComponent,
+    GovukButtonComponent,
   ],
   templateUrl: './fines-mac-offence-details-search-offences-results-table-wrapper.component.html',
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -64,43 +66,27 @@ export class FinesMacOffenceDetailsSearchOffencesResultsTableWrapperComponent
    *
    * This method updates the given label element's text to indicate that the code has been copied,
    * and updates a live region for screen readers to announce the action. After a timeout,
-   * it restores the original text and ARIA attributes.
+   * it restores the original text and clears the live region.
    *
-   * @param linkElement - The HTML element that owns the copied state and ARIA attributes.
    * @param labelElement - The HTML element whose visible label will be temporarily changed.
    * @param liveRegion - The HTML element used as a live region for screen readers to announce the copy action.
    * @param value - The string value to be copied to the clipboard.
-   * @param event - The optional DOM event that triggered the copy action.
    */
-  public copyCodeToClipboard(
-    linkElement: HTMLElement,
-    labelElement: HTMLElement,
-    liveRegion: HTMLElement,
-    value: string,
-    event?: Event,
-  ): void {
-    event?.preventDefault();
+  public copyCodeToClipboard(labelElement: HTMLElement, liveRegion: HTMLElement, value: string): void {
     this.utilsService.copyToClipboard(value);
 
     const originalText = labelElement.innerText;
-    const originalAriaLive = linkElement.getAttribute('aria-live');
 
     // Update visual label
     labelElement.innerText =
       FINES_MAC_OFFENCE_DETAILS_SEARCH_OFFENCES_RESULTS_TABLE_WRAPPER_LINK_DEFAULTS.COPIED_CODE_TO_CLIPBOARD;
+
     // Update screen reader span
     liveRegion.textContent =
       FINES_MAC_OFFENCE_DETAILS_SEARCH_OFFENCES_RESULTS_TABLE_WRAPPER_LINK_DEFAULTS.COPIED_CODE_TO_CLIPBOARD;
-    // Set ARIA live assertive for immediate SR announcement
-    linkElement.setAttribute('aria-live', 'assertive');
 
     this.copyCodeTimeoutId = setTimeout(() => {
       labelElement.innerText = originalText;
-      if (originalAriaLive) {
-        linkElement.setAttribute('aria-live', originalAriaLive);
-      } else {
-        linkElement.removeAttribute('aria-live');
-      }
       liveRegion.textContent = '';
       this.copyCodeTimeoutId = null;
     }, FINES_MAC_OFFENCE_DETAILS_SEARCH_OFFENCES_RESULTS_TABLE_WRAPPER_LINK_DEFAULTS.COPY_CODE_TO_CLIPBOARD_TIMEOUT);
