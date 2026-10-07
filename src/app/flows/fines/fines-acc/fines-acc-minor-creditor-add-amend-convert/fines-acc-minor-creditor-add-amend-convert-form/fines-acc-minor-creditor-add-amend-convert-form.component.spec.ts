@@ -252,6 +252,9 @@ describe('FinesAccMinorCreditorAddAmendConvertFormComponent', () => {
     getControl(component.controls.bankSortCode).setValue('12345');
     expect(getControl(component.controls.bankSortCode).hasError('minlength')).toBe(true);
 
+    getControl(component.controls.bankSortCode).setValue('1234567');
+    expect(getControl(component.controls.bankSortCode).hasError('maxlength')).toBe(true);
+
     getControl(component.controls.bankSortCode).setValue('12345A');
     expect(getControl(component.controls.bankSortCode).hasError('numericalTextPattern')).toBe(true);
 
