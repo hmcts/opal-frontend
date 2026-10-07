@@ -1,3 +1,4 @@
+import { GlobalStore } from '@hmcts/opal-frontend-common/stores/global';
 import { ENFORCEMENT_RESULT_MOCK } from './mocks/enforcement_result_mock';
 import { createDefendantHeaderMockWithName, DEFENDANT_HEADER_MOCK } from './mocks/defendant_details_mock';
 
@@ -101,6 +102,11 @@ describe('Account Enquiry Enforcement Status', () => {
   const componentProperties: IComponentProperties = {
     accountId: '77',
     fragments: 'enforcement',
+    globalStoreFactory: () => {
+      const store = new GlobalStore();
+      store.setFeatureFlags({ 'release-1b': true, 'release-1b-1-1': true });
+      return store;
+    },
     interceptedRoutes: [
       '/access-denied',
       '../note/add',
@@ -1126,6 +1132,47 @@ describe('Account Enquiry Enforcement Status', () => {
         .and('contain.text', 'Reason')
         .next()
         .should('contain.text', 'Test reason for enforcement action');
+    },
+  );
+
+  it(
+    'displays title-cased parameter names when release-1b-1-1 is disabled',
+    { tags: [...buildTags('@JIRA-STORY:PO-10789')] },
+    () => {
+      const header = buildIndividualHeader();
+      const enforcement = buildEnforcementMock();
+      enforcement.last_enforcement_action!.result_responses = [
+        { parameter_name: 'daysindefault', response: '15' },
+        { parameter_name: 'hearingdate', response: '2026-10-07' },
+      ];
+      const accountId = header.defendant_account_party_id;
+      interceptUserState(USER_STATE_MOCK_PERMISSION_BU77);
+      interceptDefendantHeader(accountId, header, '123');
+      interceptEnforcementStatus(accountId, enforcement, '123');
+      setupAccountEnquiryComponent({
+        ...componentProperties,
+        accountId,
+        globalStoreFactory: () => {
+          const store = new GlobalStore();
+          store.setFeatureFlags({ 'release-1b': true, 'release-1b-1-1': false });
+          return store;
+        },
+      });
+
+      cy.wait('@getEnforcementResult').its('request.url').should('include', '/results/EA123');
+      cy.get(ENFORCEMENT_STATUS_TAB.detailsLink).click();
+      cy.get(ENFORCEMENT_STATUS_TAB.detailsDaysInDefault)
+        .should('contain.text', 'Daysindefault')
+        .and('not.contain.text', 'Days in default')
+        .next()
+        .should('contain.text', '15 days');
+      cy.get(ENFORCEMENT_STATUS_TAB.detailsHearingDate)
+        .should('contain.text', 'Hearingdate')
+        .and('not.contain.text', 'Hearing date')
+        .next()
+        .should('contain.text', '07 October 2026');
+      cy.get(ENFORCEMENT_STATUS_TAB.lastEnforcementActionDaysInDefaultValue).should('contain.text', '15 days');
+      cy.get(ENFORCEMENT_STATUS_TAB.hearingDateValue).should('contain.text', '07 October 2026');
     },
   );
 

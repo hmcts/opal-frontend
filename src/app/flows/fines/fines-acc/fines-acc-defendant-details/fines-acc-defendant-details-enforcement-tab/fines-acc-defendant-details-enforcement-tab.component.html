@@ -245,7 +245,9 @@
                       [summaryListRowId]="response.parameter_name"
                     >
                       <ng-container name>{{
-                        parameterLabels.get(response.parameter_name) ?? (response.parameter_name | titlecase)
+                        showParameterPrompts()
+                          ? (parameterLabels.get(response.parameter_name) ?? (response.parameter_name | titlecase))
+                          : (response.parameter_name | titlecase)
                       }}</ng-container>
                       <ng-container value>
                         @if (response.parameter_name === 'hearingdate') {
