@@ -221,7 +221,7 @@ Feature: Adult Youth Enforcement Override
         | account.payment_terms.enforcements[0].result_id | PRIS                         |
       When the Enforcement tab is displayed for defendant account with last name "AddEnfOverride{uniq}"
 
-    @R1BDrop1.1 @JIRA-STORY:PO-1782 @JIRA-EPIC:PO-2630 @JIRA-TEST-KEY:PO-8011
+    @R1BDropOnePointOne @JIRA-STORY:PO-1782 @JIRA-EPIC:PO-2630 @JIRA-TEST-KEY:PO-8011
     Scenario: Saving an enforcement action returns to the Enforcement tab
       And the add enforcement action form is displayed
       And the enforcement action is "Collection order (COLLO)"
@@ -250,7 +250,7 @@ Feature: Adult Youth Enforcement Override
         | account.payment_terms.enforcements[0].result_id | PRIS                         |
       When the Enforcement tab is displayed for defendant account with last name "AddEnfOverride{uniq}"
 
-    @R1BDrop1.1 @JIRA-STORY:PO-1786 @JIRA-EPIC:PO-1675 @JIRA-TEST-KEY:PO-8012
+    @R1BDropOnePointOne @JIRA-STORY:PO-1786 @JIRA-EPIC:PO-1675 @JIRA-TEST-KEY:PO-8012
     Scenario: Saving a withdrawn enforcement action takes the user to add another enforcement action
       And the add enforcement action form is displayed
       And the enforcement action is "Withdrawn (WDN)"
