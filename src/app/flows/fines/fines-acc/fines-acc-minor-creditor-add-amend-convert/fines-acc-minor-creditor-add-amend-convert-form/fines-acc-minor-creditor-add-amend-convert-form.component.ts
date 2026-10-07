@@ -211,10 +211,7 @@ export class FinesAccMinorCreditorAddAmendConvertFormComponent
         Validators.maxLength(18),
         SINGLE_ASCII_CHARACTERS_PATTERN_VALIDATOR,
       ]),
-      [this.controls.bankSortCode]: this.createFormControl([
-        Validators.required,
-        SORT_CODE_VALIDATOR,
-      ]),
+      [this.controls.bankSortCode]: this.createFormControl([Validators.required, SORT_CODE_VALIDATOR]),
       [this.controls.bankAccountNumber]: this.createFormControl([
         Validators.required,
         Validators.minLength(6),
