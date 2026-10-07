@@ -8,5 +8,5 @@ export const FINES_ACC_HISTORY_FILTER_ITEM_TYPE_MAP: Record<
   enforcements: 'enforcement',
   financial: 'financial',
   notes: 'note',
-  paymentTerms: 'paymentTerm',
+  paymentTerms: 'paymentTerms',
 };
