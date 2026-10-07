@@ -1,3 +1,4 @@
+import { IOpalFinesResultRefData } from '@services/fines/opal-fines-service/interfaces/opal-fines-result-ref-data.interface';
 import { IOpalFinesAccountDefendantAccountParty } from '@services/fines/opal-fines-service/interfaces/opal-fines-account-defendant-account-party.interface';
 import { IOpalFinesAccountDefendantAtAGlance } from '@services/fines/opal-fines-service/interfaces/opal-fines-account-defendant-at-a-glance.interface';
 import { IOpalFinesAccountDefendantDetailsEnforcementTabRefData } from '@services/fines/opal-fines-service/interfaces/opal-fines-account-defendant-details-enforcement-tab-ref-data.interface';
@@ -567,4 +568,16 @@ export function interceptPatchDefendantAccount() {
       body: {},
     })
     .as('patchDefendantAccount');
+}
+
+/**
+ * Intercepts the reference-data lookup for the last enforcement action.
+ */
+export function interceptEnforcementResult(mockData: IOpalFinesResultRefData) {
+  return cy
+    .intercept('GET', `/opal-fines-service/results/${mockData.result_id}`, {
+      statusCode: 200,
+      body: mockData,
+    })
+    .as('getEnforcementResult');
 }

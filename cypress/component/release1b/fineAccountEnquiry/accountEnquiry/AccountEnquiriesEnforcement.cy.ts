@@ -1,3 +1,4 @@
+import { ENFORCEMENT_RESULT_MOCK } from './mocks/enforcement_result_mock';
 import { createDefendantHeaderMockWithName, DEFENDANT_HEADER_MOCK } from './mocks/defendant_details_mock';
 
 import {
@@ -9,7 +10,11 @@ import {
 
 import { OPAL_FINES_ACCOUNT_DEFENDANT_DETAILS_ENFORCEMENT_TAB_REF_DATA_MOCK } from '@services/fines/opal-fines-service/mocks/opal-fines-account-defendant-details-enforcement-tab-ref-data.mock';
 import { ACCOUNT_ENQUIRY_ENFORCEMENT_STATUS_ELEMENTS as ENFORCEMENT_STATUS_TAB } from '../../../../shared/selectors/account-enquiry/account.enquiry.enforcement.locators';
-import { interceptDefendantHeader, interceptEnforcementStatus } from './intercept/defendantAccountIntercepts';
+import {
+  interceptDefendantHeader,
+  interceptEnforcementStatus,
+  interceptEnforcementResult,
+} from './intercept/defendantAccountIntercepts';
 import { interceptAuthenticatedUser, interceptUserState } from 'cypress/component/CommonIntercepts/CommonIntercepts';
 import { ActivatedRoute, provideRouter } from '@angular/router';
 import { mount } from 'cypress/angular';
@@ -90,6 +95,8 @@ const clearEnforcementOverrideResult = (
 describe('Account Enquiry Enforcement Status', () => {
   beforeEach(() => {
     interceptAuthenticatedUser();
+    interceptEnforcementResult(ENFORCEMENT_RESULT_MOCK);
+    interceptEnforcementResult({ ...ENFORCEMENT_RESULT_MOCK, result_id: 'NOENF' });
   });
   const componentProperties: IComponentProperties = {
     accountId: '77',
@@ -1047,12 +1054,16 @@ describe('Account Enquiry Enforcement Status', () => {
       headerMock.debtor_type = 'individual';
       let enforcementMock = structuredClone(OPAL_FINES_ACCOUNT_DEFENDANT_DETAILS_ENFORCEMENT_TAB_REF_DATA_MOCK);
       enforcementMock.last_enforcement_action!.result_responses[0] = {
-        parameter_name: 'days in default',
+        parameter_name: 'daysindefault',
         response: '15',
       };
       enforcementMock.last_enforcement_action!.result_responses[1] = {
         parameter_name: 'reason',
         response: 'Test reason for enforcement action',
+      };
+      enforcementMock.last_enforcement_action!.result_responses[2] = {
+        parameter_name: 'hearingdate',
+        response: '2026-10-07',
       };
 
       const accountId = headerMock.defendant_account_party_id;
@@ -1098,9 +1109,16 @@ describe('Account Enquiry Enforcement Status', () => {
         .should('contain.text', '10 December 2025');
 
       cy.get(ENFORCEMENT_STATUS_TAB.detailsLink).should('exist').and('contain.text', 'Details').click();
+      cy.wait('@getEnforcementResult').its('request.url').should('include', '/results/EA123');
+      cy.get(ENFORCEMENT_STATUS_TAB.lastEnforcementActionDaysInDefaultValue).should('contain.text', '15 days');
+      cy.get(ENFORCEMENT_STATUS_TAB.hearingDateValue).should('contain.text', '07 October 2026');
+      cy.get(ENFORCEMENT_STATUS_TAB.detailsHearingDate)
+        .should('contain.text', 'Hearing date')
+        .next()
+        .should('contain.text', '07 October 2026');
       cy.get(ENFORCEMENT_STATUS_TAB.detailsDaysInDefault)
         .should('exist')
-        .and('contain.text', 'Days In Default')
+        .and('contain.text', 'Days in default')
         .next()
         .should('contain.text', '15 days');
       cy.get(ENFORCEMENT_STATUS_TAB.detailsReason)
@@ -1278,12 +1296,16 @@ describe('Account Enquiry Enforcement Status', () => {
       headerMock.parent_guardian_party_id = '1770000001';
       let enforcementMock = structuredClone(OPAL_FINES_ACCOUNT_DEFENDANT_DETAILS_ENFORCEMENT_TAB_REF_DATA_MOCK);
       enforcementMock.last_enforcement_action!.result_responses[0] = {
-        parameter_name: 'days in default',
+        parameter_name: 'daysindefault',
         response: '15',
       };
       enforcementMock.last_enforcement_action!.result_responses[1] = {
         parameter_name: 'reason',
         response: 'Test reason for enforcement action',
+      };
+      enforcementMock.last_enforcement_action!.result_responses[2] = {
+        parameter_name: 'hearingdate',
+        response: '2026-10-07',
       };
 
       const accountId = headerMock.defendant_account_party_id;
@@ -1330,9 +1352,16 @@ describe('Account Enquiry Enforcement Status', () => {
         .should('contain.text', '10 December 2025');
 
       cy.get(ENFORCEMENT_STATUS_TAB.detailsLink).should('exist').and('contain.text', 'Details').click();
+      cy.wait('@getEnforcementResult').its('request.url').should('include', '/results/EA123');
+      cy.get(ENFORCEMENT_STATUS_TAB.lastEnforcementActionDaysInDefaultValue).should('contain.text', '15 days');
+      cy.get(ENFORCEMENT_STATUS_TAB.hearingDateValue).should('contain.text', '07 October 2026');
+      cy.get(ENFORCEMENT_STATUS_TAB.detailsHearingDate)
+        .should('contain.text', 'Hearing date')
+        .next()
+        .should('contain.text', '07 October 2026');
       cy.get(ENFORCEMENT_STATUS_TAB.detailsDaysInDefault)
         .should('exist')
-        .and('contain.text', 'Days In Default')
+        .and('contain.text', 'Days in default')
         .next()
         .should('contain.text', '15 days');
       cy.get(ENFORCEMENT_STATUS_TAB.detailsReason)
@@ -1522,12 +1551,16 @@ describe('Account Enquiry Enforcement Status', () => {
 
       let enforcementMock = structuredClone(OPAL_FINES_ACCOUNT_DEFENDANT_DETAILS_ENFORCEMENT_TAB_REF_DATA_MOCK);
       enforcementMock.last_enforcement_action!.result_responses[0] = {
-        parameter_name: 'days in default',
+        parameter_name: 'daysindefault',
         response: '15',
       };
       enforcementMock.last_enforcement_action!.result_responses[1] = {
         parameter_name: 'reason',
         response: 'Test reason for enforcement action',
+      };
+      enforcementMock.last_enforcement_action!.result_responses[2] = {
+        parameter_name: 'hearingdate',
+        response: '2026-10-07',
       };
 
       const accountId = header.defendant_account_party_id;
@@ -1573,9 +1606,16 @@ describe('Account Enquiry Enforcement Status', () => {
         .should('contain.text', '10 December 2025');
 
       cy.get(ENFORCEMENT_STATUS_TAB.detailsLink).should('exist').and('contain.text', 'Details').click();
+      cy.wait('@getEnforcementResult').its('request.url').should('include', '/results/EA123');
+      cy.get(ENFORCEMENT_STATUS_TAB.lastEnforcementActionDaysInDefaultValue).should('contain.text', '15 days');
+      cy.get(ENFORCEMENT_STATUS_TAB.hearingDateValue).should('contain.text', '07 October 2026');
+      cy.get(ENFORCEMENT_STATUS_TAB.detailsHearingDate)
+        .should('contain.text', 'Hearing date')
+        .next()
+        .should('contain.text', '07 October 2026');
       cy.get(ENFORCEMENT_STATUS_TAB.detailsDaysInDefault)
         .should('exist')
-        .and('contain.text', 'Days In Default')
+        .and('contain.text', 'Days in default')
         .next()
         .should('contain.text', '15 days');
       cy.get(ENFORCEMENT_STATUS_TAB.detailsReason)

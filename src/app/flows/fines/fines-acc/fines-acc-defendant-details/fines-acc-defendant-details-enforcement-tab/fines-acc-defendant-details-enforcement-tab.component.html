@@ -158,7 +158,7 @@
 
             @if (tabData.last_enforcement_action.result_responses) {
               @for (param of tabData.last_enforcement_action.result_responses; track param.parameter_name) {
-                @if (param.parameter_name === 'days in default' && param.response) {
+                @if (param.parameter_name === 'daysindefault' && param.response) {
                   <div
                     opal-lib-govuk-summary-list-row
                     class="govuk-summary-list__row govuk-summary-list__row--no-actions"
@@ -190,7 +190,7 @@
 
             @if (tabData.last_enforcement_action.result_responses) {
               @for (param of tabData.last_enforcement_action.result_responses; track param.parameter_name) {
-                @if (param.parameter_name === 'hearing_date' && param.response) {
+                @if (param.parameter_name === 'hearingdate' && param.response) {
                   <div
                     opal-lib-govuk-summary-list-row
                     class="govuk-summary-list__row govuk-summary-list__row--no-actions"
@@ -248,9 +248,9 @@
                         parameterLabels.get(response.parameter_name) ?? (response.parameter_name | titlecase)
                       }}</ng-container>
                       <ng-container value>
-                        @if (response.parameter_name === 'hearing date') {
+                        @if (response.parameter_name === 'hearingdate') {
                           {{ response.response | date: 'dd MMMM yyyy' }}
-                        } @else if (response.parameter_name === 'days in default') {
+                        } @else if (response.parameter_name === 'daysindefault') {
                           @let daysValue = +response.response;
                           @let daysText = daysValue === 1 ? 'day' : 'days';
                           {{ daysValue }} {{ daysText }}

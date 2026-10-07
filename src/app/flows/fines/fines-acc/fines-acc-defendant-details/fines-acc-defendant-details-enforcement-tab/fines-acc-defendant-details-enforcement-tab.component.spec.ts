@@ -52,13 +52,35 @@ describe('FinesAccDefendantDetailsEnforcementTab', () => {
       ]),
     );
     preview.detectChanges();
+    const summary = preview.nativeElement.querySelector('[summaryListId="lastEnforcementActionDetails"]');
     const details = preview.nativeElement.querySelector('opal-lib-govuk-details');
+    expect(summary.textContent).toContain('Days in default');
+    expect(summary.textContent).toContain('14 days');
     expect(details.textContent).toContain('Days in default');
-    expect(details.textContent).toContain('14');
+    expect(details.textContent).toContain('14 days');
     expect(details.textContent).toContain('Reason');
     expect(details.textContent).toContain('Order made by the court');
     expect(details.textContent).toContain('Unknown');
     expect(details.textContent).toContain('Retained value');
+  });
+
+  it('formats hearingdate in the last enforcement summary and Details', () => {
+    const preview = TestBed.createComponent(FinesAccDefendantDetailsEnforcementTab);
+    const data = structuredClone(OPAL_FINES_ACCOUNT_DEFENDANT_DETAILS_ENFORCEMENT_TAB_REF_DATA_MOCK);
+    data.last_enforcement_action!.result_responses = [{ parameter_name: 'hearingdate', response: '2026-10-07' }];
+    preview.componentRef.setInput('tabData', data);
+    preview.componentRef.setInput('accountStatusCode', 'L');
+    preview.componentRef.setInput('accountBalance', 500);
+    preview.componentRef.setInput('parameterLabels', new Map([['hearingdate', 'Hearing date']]));
+    preview.detectChanges();
+
+    const summary = preview.nativeElement.querySelector('[summaryListId="lastEnforcementActionDetails"]');
+    const details = preview.nativeElement.querySelector('opal-lib-govuk-details');
+    expect(summary.textContent).toContain('Hearing date');
+    expect(summary.textContent).toContain('07 October 2026');
+    expect(details.textContent).toContain('Hearing date');
+    expect(details.textContent).toContain('07 October 2026');
+    expect(details.textContent).not.toContain('2026-10-07');
   });
 
   it('should create', () => {
