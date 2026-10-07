@@ -86,7 +86,7 @@
     <app-fines-mac-review-account-fixed-penalty-offence-details
       [offenceDetails]="finesMacStore.fixedPenaltyDetails().formData"
       [isReadOnly]="isReadOnly"
-      (emitChangeOffenceDetails)="change()"
+      (emitChangeOffenceDetails)="change(finesMacRoutes.children.offenceDetails)"
       [isReadOnly]="isReadOnly"
     ></app-fines-mac-review-account-fixed-penalty-offence-details>
   } @else {

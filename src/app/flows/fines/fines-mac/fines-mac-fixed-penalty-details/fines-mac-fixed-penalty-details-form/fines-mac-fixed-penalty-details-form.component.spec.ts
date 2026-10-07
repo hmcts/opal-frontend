@@ -25,6 +25,7 @@ import { TrimLeadingTrailingWhitespaceDirective } from '@hmcts/opal-frontend-com
 import { By } from '@angular/platform-browser';
 import { afterAll, afterEach, beforeAll, beforeEach, describe, expect, it, vi } from 'vitest';
 import { FINES_MAC_FIXED_PENALTY_DETAILS_FIELD_ERRORS } from '../constants/fines-mac-fixed-penalty-details-field-errors';
+import { FINES_MAC_ROUTING_PATHS } from '../../routing/constants/fines-mac-routing-paths.constant';
 
 import { createSpyObj } from '@app/testing/create-spy-obj.helper';
 
@@ -116,6 +117,34 @@ describe('FinesMacFixedPenaltyFormComponent', () => {
 
   it('should create the component', () => {
     expect(component).toBeTruthy();
+  });
+
+  it.each(['courtDetails', 'personalDetails', 'offenceDetails', 'accountCommentsNotes'] as const)(
+    'should render the %s section legend as a focusable fragment target for an adult or youth',
+    (routeKey) => {
+      const fragment = FINES_MAC_ROUTING_PATHS.children[routeKey];
+      const legend = fixture.nativeElement.querySelector(`legend#${fragment}`) as HTMLElement | null;
+
+      expect(legend).toBeTruthy();
+      expect(legend?.getAttribute('tabindex')).toBe('-1');
+    },
+  );
+
+  it('should render the company details legend as a focusable fragment target for a company', () => {
+    const companyFixture = TestBed.createComponent(FinesMacFixedPenaltyDetailsFormComponent);
+    const companyComponent = companyFixture.componentInstance;
+    companyComponent.defendantType = FINES_MAC_DEFENDANT_TYPES_KEYS.company;
+    companyComponent.enforcingCourtAutoCompleteItems = OPAL_FINES_COURT_AUTOCOMPLETE_ITEMS_MOCK;
+    companyComponent.issuingAuthorityAutoCompleteItems = OPAL_FINES_COURT_AUTOCOMPLETE_ITEMS_MOCK;
+    companyFixture.detectChanges();
+
+    const fragment = FINES_MAC_ROUTING_PATHS.children.companyDetails;
+    const legend = companyFixture.nativeElement.querySelector(`legend#${fragment}`) as HTMLElement | null;
+
+    expect(legend).toBeTruthy();
+    expect(legend?.getAttribute('tabindex')).toBe('-1');
+
+    companyFixture.destroy();
   });
 
   it.each([
