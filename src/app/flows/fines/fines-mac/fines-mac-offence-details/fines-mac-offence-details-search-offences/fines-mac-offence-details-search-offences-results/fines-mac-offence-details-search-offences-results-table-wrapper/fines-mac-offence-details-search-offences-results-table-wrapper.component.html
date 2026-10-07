@@ -45,22 +45,13 @@
     >
       Used to
     </th>
+    <th opal-lib-moj-sortable-table-header columnKey="Actions" [dataIndex]="5">Actions</th>
   </ng-container>
   <ng-container row>
     @for (row of paginatedTableDataComputed(); track row['Code']) {
       <tr opal-lib-moj-sortable-table-row>
         <td #paginationFocusTarget opal-lib-moj-sortable-table-row-data id="code">
           {{ row['Code'] }}
-          <a
-            class="govuk-link govuk-link--no-visited-state"
-            #codeLink
-            href=""
-            (click)="copyCodeToClipboard(codeLink, copyCodeLabel, liveRegion, row['Code'], $event)"
-          >
-            <span #copyCodeLabel>{{ COPY_CODE_TO_CLIPBOARD }}</span>
-            <span class="govuk-visually-hidden">{{ row['Code'] }}</span>
-          </a>
-          <span #liveRegion class="govuk-visually-hidden" aria-live="assertive" aria-atomic="true"></span>
         </td>
         <td opal-lib-moj-sortable-table-row-data id="shortTitle">
           {{ row['Short title'] }}
@@ -77,6 +68,19 @@
           } @else {
             <p>Present</p>
           }
+        </td>
+        <td opal-lib-moj-sortable-table-row-data id="actions">
+          <opal-lib-govuk-button
+            [buttonId]="'copy-code-' + row['Code']"
+            type="button"
+            buttonClasses="govuk-button--secondary govuk-!-margin-bottom-0"
+            (buttonClickEvent)="copyCodeToClipboard(copyCodeLabel, liveRegion, row['Code'])"
+          >
+            <span #copyCodeLabel>{{ COPY_CODE_TO_CLIPBOARD }}</span>
+            <span class="govuk-visually-hidden">{{ row['Code'] }}</span>
+          </opal-lib-govuk-button>
+
+          <span #liveRegion class="govuk-visually-hidden" aria-live="assertive" aria-atomic="true"></span>
         </td>
       </tr>
     }
