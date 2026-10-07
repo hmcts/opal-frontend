@@ -1,9 +1,8 @@
-
-  <opal-lib-custom-inbound-file-viewer
-  [fileTypeAutoComplete]="fileTypeAutoCompleteItems"   
-  [fileSourceAutoComplete]="fileSourceAutoCompleteItems"
-  [businessUnitsAutoComplete]="businessUnitAutoCompleteItems"
-  [direction]="direction"
+<opal-lib-custom-inbound-file-viewer
+  [sourceList]="sourceList"
+  [source]="source"
+  [businessUnits]="businessUnits"
+  [isInbound]="isInbound"
+  [domain]="domain"
   (formSubmit)="onFormSubmit($event)"
-  ></opal-lib-custom-inbound-file-viewer>
-  
+></opal-lib-custom-inbound-file-viewer>
