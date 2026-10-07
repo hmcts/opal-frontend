@@ -7,7 +7,6 @@ import { buildPaymentTermsAmendPayloadUtil } from './fines-acc-payload-build-pay
 import { FINES_ACC_ENF_ACTION_ADD_FORM_CONTROL_NAMES } from '../../fines-acc-enf-action-add/constants/fines-acc-enf-action-add-control-names.constant';
 import { FINES_ACC_ENF_ACTION_ADD_FIELD_TYPES } from '../../fines-acc-enf-action-add/constants/fines-acc-enf-action-add-field-types.constant';
 import { FINES_ACC_ENF_ACTION_ADD_PAYMENT_TERMS_RESULT_IDS } from '../../fines-acc-enf-action-add/constants/fines-acc-enf-action-add-payment-terms-result-ids.constant';
-import { FINES_ACC_ENF_ACTION_ADD_RESULT_PARAMETER_NAME_MAP } from '../../fines-acc-enf-action-add/constants/fines-acc-enf-action-add-result-parameter-name-map.constant';
 import { IFinesAccEnfActionAddFormState } from '../../fines-acc-enf-action-add/interfaces/fines-acc-enf-action-add-form-state.interface';
 import { IFinesAccEnfActionAddFormField } from '../../fines-acc-enf-action-add/interfaces/fines-acc-enf-action-add-form-field.interface';
 import { TFinesAccEnfActionAddFieldType } from '../../fines-acc-enf-action-add/types/fines-acc-enf-action-add-field-type.type';
@@ -60,7 +59,7 @@ function buildFieldResponses(
   const responses = response
     ? [
         {
-          parameter_name: toSnakeCaseParameterName(field.parameterName),
+          parameter_name: field.parameterName,
           response,
         },
       ]
@@ -69,7 +68,7 @@ function buildFieldResponses(
   if (field.welshControlName) {
     const welshResponse = getResponseValue(formState[field.welshControlName], field.type);
     if (welshResponse) {
-      const parameterName = toSnakeCaseParameterName(field.parameterName);
+      const parameterName = field.parameterName;
       responses.push({
         parameter_name: `${parameterName}_cy`,
         response: welshResponse,
@@ -78,18 +77,6 @@ function buildFieldResponses(
   }
 
   return responses;
-}
-
-/**
- * Normalises API result parameter names to the snake_case names expected by the add-enforcement-action endpoint.
- */
-function toSnakeCaseParameterName(parameterName: string): string {
-  const trimmedName = parameterName.trim();
-  const normalizedName = trimmedName.toLowerCase();
-  return (
-    FINES_ACC_ENF_ACTION_ADD_RESULT_PARAMETER_NAME_MAP[normalizedName] ??
-    trimUnderscores(trimmedName.replace(/([a-z0-9])([A-Z])/g, '$1_$2').replace(/[^a-zA-Z0-9]+/g, '_')).toLowerCase()
-  );
 }
 
 /**

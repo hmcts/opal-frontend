@@ -48,6 +48,7 @@ export class FinesAccDefendantDetailsEnforcementTab {
   private readonly activatedRoute = inject(ActivatedRoute);
 
   @Input({ required: true }) tabData!: IOpalFinesAccountDefendantDetailsEnforcementTabRefData;
+  @Input() parameterLabels: ReadonlyMap<string, string> = new Map();
   @Input() style: IFinesAccSummaryTabsContentStyles = FINES_ACC_SUMMARY_TABS_CONTENT_STYLES;
   @Input() isCompanyAccount: boolean = false;
   @Input() hasAccountMaintenancePermission: boolean = false;

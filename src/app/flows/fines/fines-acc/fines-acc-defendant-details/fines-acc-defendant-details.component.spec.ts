@@ -347,11 +347,22 @@ describe('FinesAccDefendantDetailsComponent', () => {
     expect(mockPayloadService.transformPayload).toHaveBeenCalled();
   });
 
-  it('should fetch the enforcement tab data when fragment is changed to enforcement', () => {
+  it('loads the last enforcement result prompts with the enforcement tab', () => {
+    mockOpalFinesService.getResult.mockReturnValue(
+      of({
+        ...OPAL_FINES_RESULT_REF_DATA_MOCK,
+        result_parameters: '[{"name":"daysindefault","prompt":"Days in default"}]',
+      }),
+    );
     component['refreshFragment$'].next('enforcement');
     // Subscribe to trigger the pipe execution
     component.tabEnforcement$.subscribe();
     expect(mockOpalFinesService.getDefendantAccountEnforcementStatus).toHaveBeenCalled();
+    expect(mockOpalFinesService.getResult).toHaveBeenCalledWith(
+      OPAL_FINES_ACCOUNT_DEFENDANT_DETAILS_ENFORCEMENT_TAB_REF_DATA_MOCK.last_enforcement_action!.enforcement_action
+        .result_id,
+    );
+    expect(component.enforcementParameterLabels.get('daysindefault')).toBe('Days in default');
     expect(mockPayloadService.transformPayload).toHaveBeenCalled();
   });
 

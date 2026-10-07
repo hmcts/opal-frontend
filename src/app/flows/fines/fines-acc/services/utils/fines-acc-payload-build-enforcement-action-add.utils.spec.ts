@@ -165,11 +165,11 @@ describe('buildEnforcementActionAddPayload', () => {
     );
 
     expect(payload.enforcement_result_responses).toEqual([
-      { parameter_name: 'select_how_it_will_be_served', response: 'Consecutive' },
+      { parameter_name: 'selecthowitwillbeserved', response: 'Consecutive' },
     ]);
   });
 
-  it('normalises concatenated result parameter names to snake case', () => {
+  it('preserves configured compact result parameter names', () => {
     const payload = buildEnforcementActionAddPayload(
       FINES_ACC_PAYLOAD_ENFORCEMENT_ACTION_ADD_PAYMENT_TERMS_DISABLED_RESULT_MOCK,
       [
@@ -208,14 +208,14 @@ describe('buildEnforcementActionAddPayload', () => {
     );
 
     expect(payload.enforcement_result_responses).toEqual([
-      { parameter_name: 'court_code', response: '123' },
-      { parameter_name: 'days_in_default', response: '14' },
-      { parameter_name: 'basis_of_committal', response: 'Basis' },
-      { parameter_name: 'basis_of_committal_cy', response: 'Sail' },
+      { parameter_name: 'courtcode', response: '123' },
+      { parameter_name: 'daysindefault', response: '14' },
+      { parameter_name: 'basisofcommittal', response: 'Basis' },
+      { parameter_name: 'basisofcommittal_cy', response: 'Sail' },
     ]);
   });
 
-  it('normalises unmapped result parameter names to snake case', () => {
+  it('preserves unmapped result parameter names verbatim', () => {
     const payload = buildEnforcementActionAddPayload(
       FINES_ACC_PAYLOAD_ENFORCEMENT_ACTION_ADD_PAYMENT_TERMS_DISABLED_RESULT_MOCK,
       [
@@ -243,8 +243,8 @@ describe('buildEnforcementActionAddPayload', () => {
     );
 
     expect(payload.enforcement_result_responses).toEqual([
-      { parameter_name: 'custom_parameter_name', response: 'Camel' },
-      { parameter_name: 'custom_parameter_name', response: 'Spaced' },
+      { parameter_name: 'customParameterName', response: 'Camel' },
+      { parameter_name: ' custom parameter name ', response: 'Spaced' },
     ]);
   });
 

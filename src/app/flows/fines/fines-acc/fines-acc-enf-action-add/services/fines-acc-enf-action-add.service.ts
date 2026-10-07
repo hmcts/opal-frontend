@@ -342,6 +342,17 @@ export class FinesAccEnfActionAddService {
   }
 
   /**
+   * Uses the form's reference-data prompts as labels for enforcement response details.
+   */
+  public getResultParameterLabels(resultParameters: string | undefined): ReadonlyMap<string, string> {
+    return new Map(
+      this.parseResultParams(resultParameters)
+        .filter((param) => typeof param?.name === 'string' && typeof param?.prompt === 'string' && param.prompt.trim())
+        .map((param) => [param.name, param.prompt.trim()]),
+    );
+  }
+
+  /**
    * Maps the result parameter JSON string into the dynamic form structure used by the add screen.
    */
   public mapResultParamsToFormStructure(

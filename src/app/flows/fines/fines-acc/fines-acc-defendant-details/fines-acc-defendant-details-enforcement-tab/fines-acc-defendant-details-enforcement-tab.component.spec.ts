@@ -33,6 +33,34 @@ describe('FinesAccDefendantDetailsEnforcementTab', () => {
     fixture.detectChanges();
   });
 
+  it('renders configured Details labels and retains unmatched responses', () => {
+    const preview = TestBed.createComponent(FinesAccDefendantDetailsEnforcementTab);
+    const data = structuredClone(OPAL_FINES_ACCOUNT_DEFENDANT_DETAILS_ENFORCEMENT_TAB_REF_DATA_MOCK);
+    data.last_enforcement_action!.result_responses = [
+      { parameter_name: 'daysindefault', response: '14' },
+      { parameter_name: 'reason', response: 'Order made by the court' },
+      { parameter_name: 'unknown', response: 'Retained value' },
+    ];
+    preview.componentRef.setInput('tabData', data);
+    preview.componentRef.setInput('accountStatusCode', 'L');
+    preview.componentRef.setInput('accountBalance', 500);
+    preview.componentRef.setInput(
+      'parameterLabels',
+      new Map([
+        ['daysindefault', 'Days in default'],
+        ['reason', 'Reason'],
+      ]),
+    );
+    preview.detectChanges();
+    const details = preview.nativeElement.querySelector('opal-lib-govuk-details');
+    expect(details.textContent).toContain('Days in default');
+    expect(details.textContent).toContain('14');
+    expect(details.textContent).toContain('Reason');
+    expect(details.textContent).toContain('Order made by the court');
+    expect(details.textContent).toContain('Unknown');
+    expect(details.textContent).toContain('Retained value');
+  });
+
   it('should create', () => {
     expect(component).toBeTruthy();
   });
