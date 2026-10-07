@@ -146,6 +146,22 @@ export class EditParentGuardianDetailsActions {
   }
 
   /**
+   * Sets Address line 3 on the Parent/Guardian add or amend form.
+   * @param value - Address text, or an empty string to clear the optional field.
+   */
+  public editAddressLine3(value: string): void {
+    this.setTextInputValue(L.fields.address.line3, value, 10_000);
+  }
+
+  /**
+   * Verifies the saved Address line 3 after reopening the form.
+   * @param expected - Expected address text.
+   */
+  public verifyAddressLine3(expected: string): void {
+    cy.get(L.fields.address.line3).should('be.visible').and('have.value', expected);
+  }
+
+  /**
    * Verifies the "First names" value in the Parent/Guardian **edit form**.
    *
    * Waits for the form and input to be visible, then asserts the input's value

@@ -95,7 +95,7 @@ Feature: Parent Guardian To Pay Enforcement Override
       Then I should return to the Enforcement tab
       And the enforcement court summary shows the selected value
 
-    @R1BDrop1 @JIRA-STORY:PO-1833 @JIRA-EPIC:PO-1675 @JIRA-TEST-KEY:PO-8014
+    @R1BDropOnePointOne @JIRA-STORY:PO-1833 @JIRA-EPIC:PO-1675 @JIRA-TEST-KEY:PO-8014
     Scenario: Parent or guardian save an enforcement action that directs to additional enforcement action
       When the add enforcement action form is displayed for defendant account with last name "AddEnfOverridePG{uniq}"
       And the enforcement action is "Withdrawn (WDN)"

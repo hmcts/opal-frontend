@@ -62,22 +62,22 @@ describe('Search Account Component - Company', () => {
   );
 
   it(
-    'AC3a. should show error for non-alphabetical company name',
+    'AC3a. should show error for non-ASCII characters in company name',
     { tags: [...buildTags('@JIRA-STORY:PO-712'), '@JIRA-EPIC:PO-704', '@JIRA-TEST-KEY:PO-4468'] },
     () => {
       setupComponent((searchState) => {
         searchState.fsa_search_account_companies_search_criteria!.fsa_search_account_companies_company_name =
-          'Company123!';
+          'Compány123';
       });
 
       cy.get(CommonLocators.searchButton).click();
       cy.get(CommonLocators.errorSummary).should(
         'contain',
-        'Company name must only include letters a to z, numbers 0-9 and certain special characters (hyphens, spaces, apostrophes)',
+        'Company name must only include letters a to z, numbers 0-9 and certain special characters (such as hyphens, spaces, apostrophes and commas)',
       );
       cy.get(CompanyLocators.companyNameError).should(
         'contain',
-        'Company name must only include letters a to z, numbers 0-9 and certain special characters (hyphens, spaces, apostrophes)',
+        'Company name must only include letters a to z, numbers 0-9 and certain special characters (such as hyphens, spaces, apostrophes and commas)',
       );
       cy.get(CompanyLocators.companyNameInput).clear();
     },

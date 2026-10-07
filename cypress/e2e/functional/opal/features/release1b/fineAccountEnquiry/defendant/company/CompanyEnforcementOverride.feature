@@ -113,7 +113,7 @@ Feature: Company Enforcement Override
       Then I should return to the Enforcement tab
       And the enforcement court summary shows the selected value
 
-    @R1BDrop1 @JIRA-STORY:PO-1843 @JIRA-EPIC:PO-1675 @JIRA-TEST-KEY:PO-8013
+    @R1BDropOnePointOne @JIRA-STORY:PO-1843 @JIRA-EPIC:PO-1675 @JIRA-TEST-KEY:PO-8013
     Scenario: Saving a withdrawn company enforcement action takes the user to add another enforcement action
       And the add enforcement action form is displayed
       And the enforcement action is "Withdrawn (WDN)"
