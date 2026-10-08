@@ -556,7 +556,11 @@ describe(
         interceptEnforcementStatus(accountId, enforcementMock, '123');
 
         interceptNextPermittedEnforcementActions(['WOC', 'WOA']);
-        setupAccountEnquiryComponent({ ...COMPONENT_PROPERTIES, accountId });
+        setupAccountEnquiryComponent({
+          ...COMPONENT_PROPERTIES,
+          accountId,
+          globalStoreFactory: () => buildSeededGlobalStore(USER_STATE_MOCK_PERMISSION_BU77),
+        });
 
         cy.get(ENF.addEnforcementActionLink).should('exist').click();
 

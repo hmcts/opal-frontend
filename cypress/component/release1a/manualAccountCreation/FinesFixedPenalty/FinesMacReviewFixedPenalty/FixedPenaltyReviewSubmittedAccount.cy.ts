@@ -66,7 +66,7 @@ describe('Fixed Penalty - Review Account Details', () => {
       cy.get(DOM_ELEMENTS.defendantType).should('contain', 'Company');
 
       // Section 2 - Issuing Authority and Court Details
-      cy.get(DOM_ELEMENTS.issuingAuthority).should('exist').and('contain', "Avon & Somerset Magistrates' Court (5735)");
+      cy.get(DOM_ELEMENTS.issuingAuthority).should('exist').and('contain', 'Police force (123)');
       cy.get(DOM_ELEMENTS.enforcementCourt).should('exist').and('contain', 'Camberwell Green Magistrates Court (104)');
 
       // Section 3 - Company Details
@@ -133,7 +133,7 @@ describe('Fixed Penalty - Review Account Details', () => {
       cy.get(DOM_ELEMENTS.defendantType).should('contain', 'Adult or youth only');
 
       // Section 2 - Issuing Authority and Court Details
-      cy.get(DOM_ELEMENTS.issuingAuthority).should('exist');
+      cy.get(DOM_ELEMENTS.issuingAuthority).should('exist').and('contain', 'Police force (123)');
       cy.get(DOM_ELEMENTS.enforcementCourt).should('exist').and('contain', 'Camberwell Green Magistrates Court (104)');
 
       // Section 3 - Personal Details
@@ -220,7 +220,7 @@ describe('Fixed Penalty - Review Account Details', () => {
       cy.get(DOM_ELEMENTS.defendantType).should('contain', 'Adult or youth only');
 
       // Section 2 - Issuing Authority and Court Details
-      cy.get(DOM_ELEMENTS.issuingAuthority).should('exist');
+      cy.get(DOM_ELEMENTS.issuingAuthority).should('exist').and('contain', 'Police force (123)');
       cy.get(DOM_ELEMENTS.enforcementCourt).should('exist').and('contain', 'Camberwell Green Magistrates Court (104)');
 
       // Section 3 - Personal Details
@@ -311,7 +311,7 @@ describe('Fixed Penalty - Review Account Details', () => {
       cy.get(DOM_ELEMENTS.defendantType).should('contain', 'Company');
 
       // Section 2 - Issuing Authority and Court Details
-      cy.get(DOM_ELEMENTS.issuingAuthority).should('exist').and('contain', "Avon & Somerset Magistrates' Court (5735)");
+      cy.get(DOM_ELEMENTS.issuingAuthority).should('exist').and('contain', 'Police force (123)');
       cy.get(DOM_ELEMENTS.enforcementCourt).should('exist').and('contain', 'Camberwell Green Magistrates Court (104)');
 
       // Section 3 - Company Details

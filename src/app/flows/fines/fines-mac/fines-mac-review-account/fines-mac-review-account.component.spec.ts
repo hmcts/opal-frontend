@@ -29,6 +29,7 @@ import { OPAL_FINES_MAJOR_CREDITOR_REF_DATA_MOCK } from '@services/fines/opal-fi
 import { OPAL_FINES_PROSECUTOR_REF_DATA_MOCK } from '@services/fines/opal-fines-service/mocks/opal-fines-prosecutor-ref-data.mock';
 import { GLOBAL_ERROR_STATE } from '@hmcts/opal-frontend-common/stores/global/constants';
 import { FINES_ACCOUNT_TYPES } from '../../constants/fines-account-types.constant';
+import { RELEASE_1A_1_1_FEATURE_FLAG } from '../../constants/release-feature-flags.constant';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
 
 import { createSpyObj } from '@app/testing/create-spy-obj.helper';
@@ -158,6 +159,7 @@ describe('FinesMacReviewAccountComponent', () => {
     let mockUtilsService: any;
     let finesMacStore: FinesMacStoreType;
     let finesDraftStore: FinesDraftStoreType;
+    let globalStore: ReturnType<typeof createTestModule>['globalStore'];
 
     beforeEach(async () => {
       const setup = createTestModule();
@@ -168,10 +170,19 @@ describe('FinesMacReviewAccountComponent', () => {
       mockUtilsService = setup.mockUtilsService;
       finesMacStore = setup.finesMacStore;
       finesDraftStore = setup.finesDraftStore;
+      globalStore = setup.globalStore;
     });
 
     it('should create', () => {
       expect(component).toBeTruthy();
+    });
+
+    it('should expose release-1a-1-1 as disabled when missing and react when it is enabled', () => {
+      expect(component.release1a1_1Enabled()).toBe(false);
+
+      globalStore.setFeatureFlags({ [RELEASE_1A_1_1_FEATURE_FLAG]: true });
+
+      expect(component.release1a1_1Enabled()).toBe(true);
     });
 
     it('should test Employer Details above Defendant Details when defendant is pgToPay', () => {
