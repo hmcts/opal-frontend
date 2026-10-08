@@ -22,6 +22,7 @@ import { FINES_DRAFT_STATE } from 'src/app/flows/fines/fines-draft/constants/fin
 import { interceptOffences } from 'cypress/component/CommonIntercepts/CommonIntercepts';
 import { FINES_ACCOUNT_TYPES } from 'src/app/flows/fines/constants/fines-account-types.constant';
 import { GLOBAL_ERROR_STATE } from '@hmcts/opal-frontend-common/stores/global/constants';
+import { RELEASE_1A_1_1_FEATURE_FLAG } from 'src/app/flows/fines/constants/release-feature-flags.constant';
 
 const MANUAL_ACCOUNT_CREATION_JIRA_LABEL = '@JIRA-LABEL:manual-account-creation';
 
@@ -84,6 +85,7 @@ describe('FinesMacReviewAccountComponent', () => {
             const store = new GlobalStore();
             store.setUserState(OPAL_USER_STATE_MOCK);
             store.setBannerError({ ...GLOBAL_ERROR_STATE, error: false, message: '' });
+            store.setFeatureFlags({ [RELEASE_1A_1_1_FEATURE_FLAG]: true });
             return store;
           },
         },
@@ -175,20 +177,24 @@ describe('FinesMacReviewAccountComponent', () => {
     () => {
       cy.intercept('PUT', '**/opal-fines-service/draft-accounts/**', { statusCode: 200 }).as('putDraftAccount');
       finesMacState.accountDetails.formData.fm_create_account_account_type = FINES_ACCOUNT_TYPES['Conditional Caution'];
+      finesMacState.courtDetails.formData.fm_court_details_originator_id = '1223';
+      finesMacState.courtDetails.formData.fm_court_details_originator_name = 'Police force';
 
       setupComponent();
       cy.wait('@getOffenceByCjsCode');
 
       cy.get(DOM_ELEMENTS.heading).should('contain', 'Check account details');
       cy.contains('.govuk-summary-card__title', 'Police and court details').should('exist');
-      cy.get(DOM_ELEMENTS.originatorName).should('contain', 'Sending police force');
+      cy.get(DOM_ELEMENTS.originatorName)
+        .should('contain', 'Sending police force')
+        .and('contain', 'Police force (123)');
 
       cy.get(DOM_ELEMENTS.submitButton).click();
       cy.wait('@putDraftAccount')
         .its('request.body.account')
         .should((account) => {
-          expect(account.originator_id).to.equal('9985');
-          expect(account.originator_name).to.equal('Asylum & Immigration Tribunal');
+          expect(account.originator_id).to.equal('1223');
+          expect(account.originator_name).to.equal('Police force');
         });
     },
   );
