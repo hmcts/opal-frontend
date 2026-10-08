@@ -12,7 +12,7 @@ import { IFinesMacOriginatorRefData } from './interfaces/fines-mac-originator-re
 /**
  * Resolves and normalizes account-type-specific originator reference data.
  * Fine accounts always use local justice areas. Conditional Caution and Fixed Penalty accounts
- * use their original originator sources until the release-1a-1.1 feature flag is enabled, when
+ * use their original originator sources until the release-1a-1-1 feature flag is enabled, when
  * both account types use prosecutors only.
  * @returns An observable containing normalized prosecutor, local justice area, or combined originator data.
  */

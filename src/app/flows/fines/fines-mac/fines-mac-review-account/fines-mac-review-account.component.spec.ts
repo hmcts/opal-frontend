@@ -177,7 +177,7 @@ describe('FinesMacReviewAccountComponent', () => {
       expect(component).toBeTruthy();
     });
 
-    it('should expose release-1a-1.1 as disabled when missing and react when it is enabled', () => {
+    it('should expose release-1a-1-1 as disabled when missing and react when it is enabled', () => {
       expect(component.release1a1_1Enabled()).toBe(false);
 
       globalStore.setFeatureFlags({ [RELEASE_1A_1_1_FEATURE_FLAG]: true });

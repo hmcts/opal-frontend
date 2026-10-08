@@ -152,7 +152,7 @@ export class FinesMacReviewAccountCourtDetailsComponent implements OnInit {
 
   /**
    * Resolves the enforcement court and account-type-specific originator display values.
-   * Fine sending courts always use local justice areas. When release-1a-1.1 is enabled,
+   * Fine sending courts always use local justice areas. When release-1a-1-1 is enabled,
    * Fixed Penalty and Conditional Caution originators prefer prosecutors. When it is disabled,
    * Fixed Penalty retains its prosecutor-first lookup and Conditional Caution prefers local justice areas.
    * When an ID exists in both datasets, the stored originator name disambiguates the selection.

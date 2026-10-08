@@ -199,7 +199,7 @@ export class FinesMacFixedPenaltyDetailsComponent extends AbstractFormParentBase
 
   /**
    * Creates issuing-authority autocomplete items from the resolved originator reference data.
-   * Depending on the release-1a-1.1 flag, this contains prosecutors only or the released
+   * Depending on the release-1a-1-1 flag, this contains prosecutors only or the released
    * combination of prosecutors and local justice areas.
    * @param originators - The normalized issuing authorities resolved for the current flag state.
    * @returns Autocomplete items containing each issuing authority's ID and display name.

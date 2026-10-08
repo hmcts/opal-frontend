@@ -87,7 +87,7 @@ describe('fetchOriginatorsResolver', () => {
     finesMacStore.setOriginatorType(originatorTypeForm);
   });
 
-  it('should resolve prosecutors only for a Conditional Caution account when release-1a-1.1 is enabled', async () => {
+  it('should resolve prosecutors only for a Conditional Caution account when release-1a-1-1 is enabled', async () => {
     globalStore.setFeatureFlags({ [RELEASE_1A_1_1_FEATURE_FLAG]: true });
     setAccountType(FINES_ACCOUNT_TYPES['Conditional Caution']);
 
@@ -98,7 +98,7 @@ describe('fetchOriginatorsResolver', () => {
     expect(result).toEqual(FINES_MAC_PROSECUTOR_ORIGINATOR_REF_DATA_MOCK);
   });
 
-  it('should resolve local justice areas for a Conditional Caution account when release-1a-1.1 is disabled', async () => {
+  it('should resolve local justice areas for a Conditional Caution account when release-1a-1-1 is disabled', async () => {
     globalStore.setFeatureFlags({ [RELEASE_1A_1_1_FEATURE_FLAG]: false });
     setAccountType(FINES_ACCOUNT_TYPES['Conditional Caution']);
 
@@ -111,7 +111,7 @@ describe('fetchOriginatorsResolver', () => {
     expect(result).toEqual(FINES_MAC_LJA_ORIGINATOR_REF_DATA_MOCK);
   });
 
-  it('should resolve prosecutors only for a Fixed Penalty account when release-1a-1.1 is enabled', async () => {
+  it('should resolve prosecutors only for a Fixed Penalty account when release-1a-1-1 is enabled', async () => {
     globalStore.setFeatureFlags({ [RELEASE_1A_1_1_FEATURE_FLAG]: true });
     setAccountType(FINES_ACCOUNT_TYPES['Fixed Penalty']);
 
@@ -122,7 +122,7 @@ describe('fetchOriginatorsResolver', () => {
     expect(result).toEqual(FINES_MAC_PROSECUTOR_ORIGINATOR_REF_DATA_MOCK);
   });
 
-  it('should combine prosecutors and local justice areas for a Fixed Penalty account when release-1a-1.1 is disabled', async () => {
+  it('should combine prosecutors and local justice areas for a Fixed Penalty account when release-1a-1-1 is disabled', async () => {
     globalStore.setFeatureFlags({ [RELEASE_1A_1_1_FEATURE_FLAG]: false });
     setAccountType(FINES_ACCOUNT_TYPES['Fixed Penalty']);
 

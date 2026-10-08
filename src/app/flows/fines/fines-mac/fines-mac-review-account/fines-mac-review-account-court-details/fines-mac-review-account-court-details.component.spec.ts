@@ -115,7 +115,7 @@ describe('FinesMacReviewAccountCourtDetailsComponent', () => {
     expect(component.issuingAuthority).toBe('Police force (101)');
   });
 
-  it('should keep an LJA-backed fixed penalty draft visible when release-1a-1.1 is enabled', () => {
+  it('should keep an LJA-backed fixed penalty draft visible when release-1a-1-1 is enabled', () => {
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     vi.spyOn<any, any>(component, 'getEnforcementCourt').mockImplementation(() => {});
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -132,7 +132,7 @@ describe('FinesMacReviewAccountCourtDetailsComponent', () => {
     expect(component.issuingAuthority).toBe('Asylum & Immigration Tribunal (9985)');
   });
 
-  it('should use prosecutor data first for a fixed penalty account when release-1a-1.1 is disabled', () => {
+  it('should use prosecutor data first for a fixed penalty account when release-1a-1-1 is disabled', () => {
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     vi.spyOn<any, any>(component, 'getEnforcementCourt').mockImplementation(() => {});
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -150,7 +150,7 @@ describe('FinesMacReviewAccountCourtDetailsComponent', () => {
     expect(component.issuingAuthority).toBe('Police force (101)');
   });
 
-  it('should fall back to local justice area data for a fixed penalty account when release-1a-1.1 is disabled', () => {
+  it('should fall back to local justice area data for a fixed penalty account when release-1a-1-1 is disabled', () => {
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     vi.spyOn<any, any>(component, 'getEnforcementCourt').mockImplementation(() => {});
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -220,7 +220,7 @@ describe('FinesMacReviewAccountCourtDetailsComponent', () => {
     expect(component.sendingCourt).toBe('Police force (101)');
   });
 
-  it('should use local justice area data for a conditional caution when release-1a-1.1 is disabled', () => {
+  it('should use local justice area data for a conditional caution when release-1a-1-1 is disabled', () => {
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     vi.spyOn<any, any>(component, 'getEnforcementCourt').mockImplementation(() => {});
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -238,7 +238,7 @@ describe('FinesMacReviewAccountCourtDetailsComponent', () => {
     expect(component.sendingCourt).toBe('Asylum & Immigration Tribunal (9985)');
   });
 
-  it('should keep an LJA-backed conditional caution draft visible when release-1a-1.1 is enabled', () => {
+  it('should keep an LJA-backed conditional caution draft visible when release-1a-1-1 is enabled', () => {
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     vi.spyOn<any, any>(component, 'getEnforcementCourt').mockImplementation(() => {});
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -255,7 +255,7 @@ describe('FinesMacReviewAccountCourtDetailsComponent', () => {
     expect(component.sendingCourt).toBe('Asylum & Immigration Tribunal (9985)');
   });
 
-  it('should keep a prosecutor-backed conditional caution draft visible when release-1a-1.1 is disabled', () => {
+  it('should keep a prosecutor-backed conditional caution draft visible when release-1a-1-1 is disabled', () => {
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     vi.spyOn<any, any>(component, 'getEnforcementCourt').mockImplementation(() => {});
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -361,7 +361,7 @@ describe('FinesMacReviewAccountCourtDetailsComponent', () => {
     expect(component.sendingCourt).toBe('Persisted originator');
   });
 
-  it('should use the stored originator name for a conditional caution when release-1a-1.1 is disabled and neither reference dataset contains the originator', () => {
+  it('should use the stored originator name for a conditional caution when release-1a-1-1 is disabled and neither reference dataset contains the originator', () => {
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     vi.spyOn<any, any>(component, 'getEnforcementCourt').mockImplementation(() => {});
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
