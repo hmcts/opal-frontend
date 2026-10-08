@@ -7,7 +7,7 @@ describe('sortCodeValidator', () => {
     expect(sortCodeValidator(new FormControl('12--34  56'))).toEqual({ invalidSortCode: true });
   });
 
-  it.each(['12345', '1234567', '12345A', '12--34  56'])('should reject invalid sort code %s', (value) => {
+  it.each(['1234', '12345', '1234567', '12345A', '12--34  56'])('should reject invalid sort code %s', (value) => {
     expect(sortCodeValidator(new FormControl(value))).toEqual({ invalidSortCode: true });
   });
 
