@@ -135,7 +135,7 @@ export const MacPaymentTermsLocators = {
   days: 'input[id="days"]',
   weeks: 'input[id="weeks"]',
   calculatedDays: 'div.govuk-grid-column-one-half',
-  calculateHeading: 'h1.govuk-fieldset__heading',
+  calculateHeading: 'legend.govuk-fieldset__legend.govuk-fieldset__legend--s',
   yearsLabel: 'label[for="years"]',
   monthsLabel: 'label[for="months"]',
   daysLabel: 'label[for="days"]',
