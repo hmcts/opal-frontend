@@ -189,7 +189,9 @@ export class FinesAccDefendantDetailsComponent
               switchMap((data) => {
                 const action = data.last_enforcement_action;
                 this.enforcementParameterLabels = new Map();
-                if (!action?.result_responses?.length) return of(data);
+                const showParameterPrompts =
+                  (this.globalStore.featureFlags() as Record<string, unknown>)['release-1b-1-1'] === true;
+                if (!showParameterPrompts || !action?.result_responses?.length) return of(data);
 
                 return this.opalFinesService.getResult(action.enforcement_action.result_id).pipe(
                   tap((result) => {

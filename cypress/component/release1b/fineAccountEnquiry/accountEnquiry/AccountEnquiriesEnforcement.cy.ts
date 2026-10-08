@@ -1159,7 +1159,6 @@ describe('Account Enquiry Enforcement Status', () => {
         },
       });
 
-      cy.wait('@getEnforcementResult').its('request.url').should('include', '/results/EA123');
       cy.get(ENFORCEMENT_STATUS_TAB.detailsLink).click();
       cy.get(ENFORCEMENT_STATUS_TAB.detailsSnakeCaseDaysInDefault)
         .should('contain.text', 'Days_in_default')
@@ -1173,6 +1172,7 @@ describe('Account Enquiry Enforcement Status', () => {
         .should('contain.text', '07 October 2026');
       cy.get(ENFORCEMENT_STATUS_TAB.lastEnforcementActionDaysInDefaultValue).should('contain.text', '15 days');
       cy.get(ENFORCEMENT_STATUS_TAB.hearingDateValue).should('contain.text', '07 October 2026');
+      cy.get('@getEnforcementResult.all').should('have.length', 0);
     },
   );
 
