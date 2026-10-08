@@ -14,5 +14,5 @@ export const sortCodeValidator: ValidatorFn = (control: AbstractControl): Valida
 
   const normalizedValue = normalizeSortCode(value);
 
-  return SORT_CODE_FORMAT.test(value) && /^\d{6}$/.test(normalizedValue ?? '') ? null : { invalidSortCode: true };
+  return SORT_CODE_FORMAT.test(value) && /^\d{6}$/.test(normalizedValue!) ? null : { invalidSortCode: true };
 };
