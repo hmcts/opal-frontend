@@ -70,24 +70,48 @@ describe('FinesAccDefendantDetailsEnforcementTab', () => {
     },
   );
 
-  it('formats hearingdate in the last enforcement summary and Details', () => {
-    TestBed.inject(GlobalStore).setFeatureFlags({ 'release-1b-1-1': true });
-    const preview = TestBed.createComponent(FinesAccDefendantDetailsEnforcementTab);
-    const data = structuredClone(OPAL_FINES_ACCOUNT_DEFENDANT_DETAILS_ENFORCEMENT_TAB_REF_DATA_MOCK);
-    data.last_enforcement_action!.result_responses = [{ parameter_name: 'hearingdate', response: '2026-10-07' }];
-    preview.componentRef.setInput('tabData', data);
-    preview.componentRef.setInput('accountStatusCode', 'L');
-    preview.componentRef.setInput('accountBalance', 500);
-    preview.componentRef.setInput('parameterLabels', new Map([['hearingdate', 'Hearing date']]));
-    preview.detectChanges();
+  describe.each([true, false, undefined])('response formatting with release-1b-1-1=%s', (enabled) => {
+    it.each([
+      { hearingName: 'hearingdate', daysName: 'daysindefault' },
+      { hearingName: 'hearing_date', daysName: 'days_in_default' },
+    ])('formats $hearingName and $daysName in the summary and Details', ({ hearingName, daysName }) => {
+      TestBed.inject(GlobalStore).setFeatureFlags(enabled === undefined ? {} : { 'release-1b-1-1': enabled });
+      const preview = TestBed.createComponent(FinesAccDefendantDetailsEnforcementTab);
+      const data = structuredClone(OPAL_FINES_ACCOUNT_DEFENDANT_DETAILS_ENFORCEMENT_TAB_REF_DATA_MOCK);
+      data.last_enforcement_action!.result_responses = [
+        { parameter_name: hearingName, response: '2026-10-07' },
+        { parameter_name: daysName, response: '1' },
+      ];
+      preview.componentRef.setInput('tabData', data);
+      preview.componentRef.setInput('accountStatusCode', 'L');
+      preview.componentRef.setInput('accountBalance', 500);
+      preview.componentRef.setInput(
+        'parameterLabels',
+        new Map([
+          ['hearingdate', 'Hearing date'],
+          ['daysindefault', 'Days in default'],
+        ]),
+      );
+      preview.detectChanges();
 
-    const summary = preview.nativeElement.querySelector('[summaryListId="lastEnforcementActionDetails"]');
-    const details = preview.nativeElement.querySelector('opal-lib-govuk-details');
-    expect(summary.textContent).toContain('Hearing date');
-    expect(summary.textContent).toContain('07 October 2026');
-    expect(details.textContent).toContain('Hearing date');
-    expect(details.textContent).toContain('07 October 2026');
-    expect(details.textContent).not.toContain('2026-10-07');
+      const summary = preview.nativeElement.querySelector('[summaryListId="lastEnforcementActionDetails"]');
+      const details = preview.nativeElement.querySelector('opal-lib-govuk-details');
+      expect(summary.textContent).toContain('Hearing date');
+      expect(summary.textContent).toContain('Days in default');
+      for (const panel of [summary, details]) {
+        expect(panel.textContent).toContain('07 October 2026');
+        expect(panel.textContent).toContain('1 day');
+        expect(panel.textContent).not.toContain('1 days');
+        expect(panel.textContent).not.toContain('2026-10-07');
+      }
+      if (hearingName === 'hearing_date') {
+        expect(details.textContent).toContain('Hearing_date');
+        expect(details.textContent).toContain('Days_in_default');
+      } else {
+        expect(details.textContent).toContain(enabled ? 'Hearing date' : 'Hearingdate');
+        expect(details.textContent).toContain(enabled ? 'Days in default' : 'Daysindefault');
+      }
+    });
   });
 
   it('should create', () => {

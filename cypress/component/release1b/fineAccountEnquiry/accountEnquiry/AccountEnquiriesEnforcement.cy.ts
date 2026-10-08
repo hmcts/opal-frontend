@@ -1142,8 +1142,8 @@ describe('Account Enquiry Enforcement Status', () => {
       const header = buildIndividualHeader();
       const enforcement = buildEnforcementMock();
       enforcement.last_enforcement_action!.result_responses = [
-        { parameter_name: 'daysindefault', response: '15' },
-        { parameter_name: 'hearingdate', response: '2026-10-07' },
+        { parameter_name: 'days_in_default', response: '15' },
+        { parameter_name: 'hearing_date', response: '2026-10-07' },
       ];
       const accountId = header.defendant_account_party_id;
       interceptUserState(USER_STATE_MOCK_PERMISSION_BU77);
@@ -1161,13 +1161,13 @@ describe('Account Enquiry Enforcement Status', () => {
 
       cy.wait('@getEnforcementResult').its('request.url').should('include', '/results/EA123');
       cy.get(ENFORCEMENT_STATUS_TAB.detailsLink).click();
-      cy.get(ENFORCEMENT_STATUS_TAB.detailsDaysInDefault)
-        .should('contain.text', 'Daysindefault')
+      cy.get(ENFORCEMENT_STATUS_TAB.detailsSnakeCaseDaysInDefault)
+        .should('contain.text', 'Days_in_default')
         .and('not.contain.text', 'Days in default')
         .next()
         .should('contain.text', '15 days');
-      cy.get(ENFORCEMENT_STATUS_TAB.detailsHearingDate)
-        .should('contain.text', 'Hearingdate')
+      cy.get(ENFORCEMENT_STATUS_TAB.detailsSnakeCaseHearingDate)
+        .should('contain.text', 'Hearing_date')
         .and('not.contain.text', 'Hearing date')
         .next()
         .should('contain.text', '07 October 2026');
