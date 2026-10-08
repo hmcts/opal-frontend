@@ -123,6 +123,9 @@ export class EditParentGuardianDetailsActions {
   /**
    * Legacy parent/guardian data can return as one combined name in the surname field.
    * The amend form still requires first names and last name, so split it before saving.
+   *
+   * @param opts Optional configuration.
+   * @param opts.timeout Max time to wait for the form/field visibility (default 10_000 ms).
    */
   public normaliseLegacyCombinedNameIntoRequiredFields(opts?: { timeout?: number }): void {
     const timeout = opts?.timeout ?? 10_000;
@@ -162,6 +165,9 @@ export class EditParentGuardianDetailsActions {
   /**
    * Legacy can pre-populate the surname field with the previous combined name.
    * After changing first names, keep only the surname portion for the submit.
+   *
+   * @param opts Optional configuration.
+   * @param opts.timeout Max time to wait for the form/field visibility (default 10_000 ms).
    */
   public normaliseLegacySurnameFromCombinedName(opts?: { timeout?: number }): void {
     const timeout = opts?.timeout ?? 10_000;
