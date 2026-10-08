@@ -121,6 +121,75 @@ export class EditParentGuardianDetailsActions {
   }
 
   /**
+   * Legacy parent/guardian data can return as one combined name in the surname field.
+   * The amend form still requires first names and last name, so split it before saving.
+   */
+  public normaliseLegacyCombinedNameIntoRequiredFields(opts?: { timeout?: number }): void {
+    const timeout = opts?.timeout ?? 10_000;
+
+    log('method', 'Normalising legacy combined parent/guardian name');
+    cy.get(L.form, { timeout }).should('be.visible');
+
+    cy.get(L.fields.firstNames, { timeout })
+      .invoke('val')
+      .then((firstNamesValue) => {
+        if (String(firstNamesValue ?? '').trim()) {
+          return;
+        }
+
+        cy.get(L.fields.lastName, { timeout })
+          .invoke('val')
+          .then((lastNameValue) => {
+            const nameParts = String(lastNameValue ?? '')
+              .trim()
+              .split(/\s+/)
+              .filter(Boolean);
+
+            if (nameParts.length < 2) {
+              return;
+            }
+
+            const [firstName, ...lastNameParts] = nameParts;
+            const lastName = lastNameParts.join(' ');
+
+            log('action', 'Splitting legacy combined parent/guardian name', { firstName, lastName });
+            this.setTextInputValue(L.fields.firstNames, firstName, timeout);
+            this.editLastName(lastName, { timeout });
+          });
+      });
+  }
+
+  /**
+   * Legacy can pre-populate the surname field with the previous combined name.
+   * After changing first names, keep only the surname portion for the submit.
+   */
+  public normaliseLegacySurnameFromCombinedName(opts?: { timeout?: number }): void {
+    const timeout = opts?.timeout ?? 10_000;
+
+    log('method', 'Normalising legacy parent/guardian surname from combined name');
+    cy.get(L.form, { timeout }).should('be.visible');
+
+    cy.get(L.fields.lastName, { timeout })
+      .invoke('val')
+      .then((lastNameValue) => {
+        const nameParts = String(lastNameValue ?? '')
+          .trim()
+          .split(/\s+/)
+          .filter(Boolean);
+
+        if (nameParts.length < 2) {
+          return;
+        }
+
+        const [, ...lastNameParts] = nameParts;
+        const lastName = lastNameParts.join(' ');
+
+        log('action', 'Removing legacy first-name token from parent/guardian surname', { lastName });
+        this.editLastName(lastName, { timeout });
+      });
+  }
+
+  /**
    * Edits the address line 1 input within the Parent/Guardian add/edit form.
    *
    * @param value - Address line 1 to enter.
