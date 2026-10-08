@@ -2108,7 +2108,11 @@ Then('I verify no amendments were created via API for company details', () => {
  * @step Verifies via API that no parent/guardian amendments were created.
  */
 Then('I verify no amendments were created via API for parent or guardian details', () => {
-  if (skipApiAmendmentVerificationOutsideOpal('I verify no amendments were created via API for parent or guardian details')) {
+  if (
+    skipApiAmendmentVerificationOutsideOpal(
+      'I verify no amendments were created via API for parent or guardian details',
+    )
+  ) {
     return;
   }
 
