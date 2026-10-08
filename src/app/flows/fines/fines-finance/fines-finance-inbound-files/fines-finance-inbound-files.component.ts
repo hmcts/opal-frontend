@@ -25,6 +25,7 @@ import { OpalFileHandlingService } from '@hmcts/opal-frontend-common/services/op
   templateUrl: './fines-finance-inbound-files.component.html',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
+// simple comment to test commit
 export class FinesFinanceInboundFilesComponent {
   private readonly activatedRoute = inject(ActivatedRoute);
   private readonly payloadService = inject(FinesFinancePayloadService);
