@@ -1,3 +1,4 @@
+import { FINES_ACC_ENF_ACTION_ADD_RESULT_PARAMETER_NAME_MAP } from '../../fines-acc-enf-action-add/constants/fines-acc-enf-action-add-result-parameter-name-map.constant';
 import { DateService } from '@hmcts/opal-frontend-common/services/date-service';
 import { IOpalFinesAddEnforcementActionPayload } from '@services/fines/opal-fines-service/interfaces/opal-fines-add-enforcement-action-payload.interface';
 import { IOpalFinesAmendPaymentTerms } from '@services/fines/opal-fines-service/interfaces/opal-fines-amend-payment-terms.interface';
@@ -27,8 +28,11 @@ export function buildEnforcementActionAddPayload(
   fields: IFinesAccEnfActionAddFormField[],
   formState: IFinesAccEnfActionAddFormState,
   postedDate = dateService.toFormat(dateService.getDateNow(), "yyyy-MM-dd'T'HH:mm:ss"),
+  preserveParameterNames = false,
 ): IOpalFinesAddEnforcementActionPayload {
-  const enforcementResultResponses = fields.flatMap((field) => buildFieldResponses(field, formState));
+  const enforcementResultResponses = fields.flatMap((field) =>
+    buildFieldResponses(field, formState, preserveParameterNames),
+  );
   const paymentTerms = canAddPaymentTerms(result) ? buildPaymentTerms(formState, postedDate) : undefined;
 
   return {
@@ -47,11 +51,17 @@ function canAddPaymentTerms(result: IOpalFinesResultRefData): boolean {
 
 /**
  * Builds result response entries from dynamic form fields and Welsh companion fields.
+ * @param field The form field to build responses for.
+ * @param formState The current state of the form.
+ * @param preserveParameterNames Whether to preserve the original parameter names.
+ * @returns An array of result response entries for the API payload.
  */
 function buildFieldResponses(
   field: IFinesAccEnfActionAddFormField,
   formState: IFinesAccEnfActionAddFormState,
+  preserveParameterNames: boolean,
 ): { parameter_name: string; response: string }[] {
+  const parameterName = preserveParameterNames ? field.parameterName : toSnakeCaseParameterName(field.parameterName);
   const response =
     field.type === FIELD_TYPES.menuCheckbox
       ? getCheckboxResponseValue(field, formState)
@@ -59,7 +69,7 @@ function buildFieldResponses(
   const responses = response
     ? [
         {
-          parameter_name: field.parameterName,
+          parameter_name: parameterName,
           response,
         },
       ]
@@ -68,7 +78,6 @@ function buildFieldResponses(
   if (field.welshControlName) {
     const welshResponse = getResponseValue(formState[field.welshControlName], field.type);
     if (welshResponse) {
-      const parameterName = field.parameterName;
       responses.push({
         parameter_name: `${parameterName}_cy`,
         response: welshResponse,
@@ -77,6 +86,18 @@ function buildFieldResponses(
   }
 
   return responses;
+}
+
+/**
+ * Preserves the legacy parameter naming when release-1b-1-1 is disabled.
+ */
+function toSnakeCaseParameterName(parameterName: string): string {
+  const trimmedName = parameterName.trim();
+  const normalizedName = trimmedName.toLowerCase();
+  return (
+    FINES_ACC_ENF_ACTION_ADD_RESULT_PARAMETER_NAME_MAP[normalizedName] ??
+    trimUnderscores(trimmedName.replace(/([a-z0-9])([A-Z])/g, '$1_$2').replace(/[^a-zA-Z0-9]+/g, '_')).toLowerCase()
+  );
 }
 
 /**
