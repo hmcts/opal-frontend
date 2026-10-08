@@ -269,8 +269,8 @@ Feature: Fixed Penalty
         | Amount imposed   | £500.00                                  |
       And the fixed penalty review "Account comments and notes" summary is:
         | Label        | Value        |
-        | Comment      | Not provided |
-        | Account note | Not provided |
+        | Comment      | No data      |
+        | Account note | No data      |
 
     @JIRA-EPIC:PO-855 @R1A @JIRA-STORY:PO-861 @JIRA-TEST-KEY:PO-5324
     Scenario: Change links reopen company fixed penalty sections
