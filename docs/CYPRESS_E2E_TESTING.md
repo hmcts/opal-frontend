@@ -18,7 +18,7 @@ Use this guide when writing or updating Cypress E2E tests and Cucumber feature f
 
 - Keep release-specific feature files under the matching release folder.
 - `features/release1a/**` should contain only `@R1A`, `@R1AOff`, `@R1A1_1`, or `@R1A1_1Off` scenarios and examples.
-- `features/release1b/**` should contain only `@R1B` or `@R1BOff` scenarios and examples.
+- `features/release1b/**` should contain only `@R1BDrop1`, `@R1BDrop2`, `@R1BDrop1UatTechJCDE`, `@R1BDrop1UatTechPreprod`, `@R1BDrop2UatTechJCDE`, `@R1BDrop2UatTechPreprod`, or `@R1BOff` scenarios and examples.
 - `features/release1c/**` should contain only `@R1C...` scenarios and examples.
 - When a feature file mixes release tags, split the scenarios into separate release-specific files rather than keeping cross-release examples in one file.
 
