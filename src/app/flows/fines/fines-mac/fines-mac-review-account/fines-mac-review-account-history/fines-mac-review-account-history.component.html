@@ -11,7 +11,7 @@
 <h2 class="govuk-heading-m govuk-!-margin-top-4">Review history</h2>
 <opal-lib-moj-timeline>
   @for (timelineItem of timelineData; track $index) {
-    <opal-lib-moj-timeline-item>
+    <opal-lib-moj-timeline-item [headingLevel]="3">
       <span title>{{ timelineItem.status }}</span>
       <span user>{{ timelineItem.username }}</span>
       <span date>{{ timelineItem.status_date | dateFormat: 'yyyy-MM-dd' : 'dd MMMM yyyy' }}</span>

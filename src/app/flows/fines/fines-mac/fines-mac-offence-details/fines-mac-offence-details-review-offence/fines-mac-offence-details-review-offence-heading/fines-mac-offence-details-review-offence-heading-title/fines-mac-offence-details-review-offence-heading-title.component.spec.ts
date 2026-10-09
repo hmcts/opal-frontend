@@ -30,6 +30,11 @@ describe('FinesMacOffenceDetailsReviewOffenceHeadingTitleComponent', () => {
     expect(component).toBeTruthy();
   });
 
+  it('should render the offence title as a level 3 heading', () => {
+    expect(fixture.debugElement.query(By.css('h3'))?.nativeElement.textContent).toContain('ak test');
+    expect(fixture.debugElement.query(By.css('h2'))).toBeNull();
+  });
+
   it('should emit action when onActionClick is called', () => {
     const action = 'Change';
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
