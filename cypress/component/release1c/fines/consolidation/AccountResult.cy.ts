@@ -118,6 +118,15 @@ describe('FinesConConsolidateAccComponent - Account Results', () => {
       });
   };
 
+  const assertRowVisibleCellText = (accountNumber: string, cellSelector: string, expectedText: string) => {
+    cy.get(AccountResultsLocators.resultRowWithAccount(accountNumber))
+      .find(cellSelector)
+      .find('[aria-hidden="true"]')
+      .should(($marker) => {
+        expect(normaliseText($marker.text())).to.equal(expectedText);
+      });
+  };
+
   const assertDisplayedResultsOrder = (expectedRows: ExpectedResultsOrderRow[]) => {
     cy.get(AccountResultsLocators.resultAccountLink)
       .should('have.length', expectedRows.length)
@@ -273,18 +282,18 @@ describe('FinesConConsolidateAccComponent - Account Results', () => {
           .find(AccountResultsLocators.resultNameCell)
           .should('contain', EM_DASH);
         // AC5b. Aliases display only when aliases exist; otherwise the no-data marker is shown.
-        assertRowCellText('ACC002', AccountResultsLocators.resultAliasesCell, EM_DASH);
-        assertRowCellText('ACC002', AccountResultsLocators.resultDateOfBirthCell, EM_DASH);
-        assertRowCellText('ACC002', AccountResultsLocators.resultAddressLine1Cell, EM_DASH);
-        assertRowCellText('ACC002', AccountResultsLocators.resultPostcodeCell, EM_DASH);
+        assertRowVisibleCellText('ACC002', AccountResultsLocators.resultAliasesCell, EM_DASH);
+        assertRowVisibleCellText('ACC002', AccountResultsLocators.resultDateOfBirthCell, EM_DASH);
+        assertRowVisibleCellText('ACC002', AccountResultsLocators.resultAddressLine1Cell, EM_DASH);
+        assertRowVisibleCellText('ACC002', AccountResultsLocators.resultPostcodeCell, EM_DASH);
         // AC5d. CO displays an '-' when collection order is false.
         assertRowCellText('ACC002', AccountResultsLocators.resultCollectionOrderCell, '-');
-        assertRowCellText('ACC002', AccountResultsLocators.resultEnforcementCell, EM_DASH);
-        assertRowCellText('ACC002', AccountResultsLocators.resultBalanceCell, EM_DASH);
+        assertRowVisibleCellText('ACC002', AccountResultsLocators.resultEnforcementCell, EM_DASH);
+        assertRowVisibleCellText('ACC002', AccountResultsLocators.resultBalanceCell, EM_DASH);
         // AC5g. P/G displays an '-' when there is no paying parent or guardian.
         assertRowCellText('ACC002', AccountResultsLocators.resultPayingParentGuardianCell, '-');
-        assertRowCellText('ACC002', AccountResultsLocators.resultNationalInsuranceNumberCell, EM_DASH);
-        assertRowCellText('ACC002', AccountResultsLocators.resultRefCell, EM_DASH);
+        assertRowVisibleCellText('ACC002', AccountResultsLocators.resultNationalInsuranceNumberCell, EM_DASH);
+        assertRowVisibleCellText('ACC002', AccountResultsLocators.resultRefCell, EM_DASH);
       },
     );
 
@@ -600,13 +609,13 @@ describe('FinesConConsolidateAccComponent - Account Results', () => {
         cy.get(AccountResultsLocators.resultRowWithAccount('COMP002'))
           .find(AccountResultsLocators.resultNameCell)
           .should('contain', EM_DASH);
-        assertRowCellText('COMP002', AccountResultsLocators.resultAliasesCell, EM_DASH);
-        assertRowCellText('COMP002', AccountResultsLocators.resultAddressLine1Cell, EM_DASH);
-        assertRowCellText('COMP002', AccountResultsLocators.resultPostcodeCell, EM_DASH);
+        assertRowVisibleCellText('COMP002', AccountResultsLocators.resultAliasesCell, EM_DASH);
+        assertRowVisibleCellText('COMP002', AccountResultsLocators.resultAddressLine1Cell, EM_DASH);
+        assertRowVisibleCellText('COMP002', AccountResultsLocators.resultPostcodeCell, EM_DASH);
         assertRowCellText('COMP002', AccountResultsLocators.resultCollectionOrderCell, '-');
-        assertRowCellText('COMP002', AccountResultsLocators.resultEnforcementCell, EM_DASH);
-        assertRowCellText('COMP002', AccountResultsLocators.resultBalanceCell, EM_DASH);
-        assertRowCellText('COMP002', AccountResultsLocators.resultRefCell, EM_DASH);
+        assertRowVisibleCellText('COMP002', AccountResultsLocators.resultEnforcementCell, EM_DASH);
+        assertRowVisibleCellText('COMP002', AccountResultsLocators.resultBalanceCell, EM_DASH);
+        assertRowVisibleCellText('COMP002', AccountResultsLocators.resultRefCell, EM_DASH);
       },
     );
 

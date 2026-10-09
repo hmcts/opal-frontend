@@ -20,4 +20,9 @@ describe('FinesNotProvidedComponent', () => {
   it('should create', () => {
     expect(component).toBeTruthy();
   });
+
+  it('should display an em dash and announce no data to screen readers', () => {
+    expect(fixture.nativeElement.querySelector('[aria-hidden="true"]').textContent.trim()).toBe('—');
+    expect(fixture.nativeElement.querySelector('.govuk-visually-hidden').textContent.trim()).toBe('No data');
+  });
 });

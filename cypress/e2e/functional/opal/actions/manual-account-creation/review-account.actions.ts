@@ -87,13 +87,15 @@ export class ManualReviewAccountActions {
             .within(() => {
               cy.get(L.summaryValue, this.common.getTimeoutOptions()).should(($val) => {
                 const normalizedText = ($val.text() ?? '').replace(/\s+/g, ' ').trim();
-                const expectsNotProvided = value.trim().toLowerCase() === 'not provided';
-                if (expectsNotProvided) {
-                  const hasNotProvidedIcon = $val.find('[aria-label="Not provided"]').length > 0;
-                  expect(hasNotProvidedIcon || /not provided/i.test(normalizedText)).to.equal(
-                    true,
-                    'Not provided indicator',
-                  );
+                const expectedEmptyValue = value.trim().toLowerCase();
+                const expectsEmptyValue = expectedEmptyValue === 'not provided' || expectedEmptyValue === 'no data';
+                if (expectsEmptyValue) {
+                  const accessibleEmptyValue = $val.find('.govuk-visually-hidden').text().replace(/\s+/g, ' ').trim();
+                  const hasNoDataIndicator = /^no data$/i.test(accessibleEmptyValue);
+                  const hasLegacyNotProvidedIndicator = $val.find('[aria-label="Not provided"]').length > 0;
+                  expect(
+                    hasNoDataIndicator || hasLegacyNotProvidedIndicator || /not provided/i.test(normalizedText),
+                  ).to.equal(true, 'No data indicator');
                   return;
                 }
                 const expectedNormalized = value.replace(/\s+/g, ' ').trim();

@@ -42,6 +42,15 @@ const expectCellText = (selector: string, expected: string) => {
     });
 };
 
+const expectVisibleCellText = (selector: string, expected: string) => {
+  cy.get(selector)
+    .find('[aria-hidden="true"]')
+    .invoke('text')
+    .then((text) => {
+      expect(normalizeText(text)).to.eq(expected);
+    });
+};
+
 const stubRouterNavigateByUrl = () => {
   cy.get('@router').then((router) => {
     cy.stub(router as unknown as { navigateByUrl: (url: unknown) => Promise<boolean> }, 'navigateByUrl')
@@ -110,10 +119,10 @@ describe('Account Enquiry Impositions', () => {
         .closest('tr')
         .should('have.class', 'govuk-light-grey-background-colour')
         .and('contain.text', 'Minor Creditor Test Ltd');
-      expectCellText(getImpositionsCell('balance', 1), '—');
+      expectVisibleCellText(getImpositionsCell('balance', 1), '—');
 
-      expectCellText(getImpositionsCell('date-added', 2), '—');
-      expectCellText(getImpositionsCell('date-imposed', 2), '—');
+      expectVisibleCellText(getImpositionsCell('date-added', 2), '—');
+      expectVisibleCellText(getImpositionsCell('date-imposed', 2), '—');
     },
   );
 
