@@ -1718,6 +1718,10 @@ export class AccountEnquiryFlow {
     this.parentGuardianDetails.change();
     this.editParentGuardianActions.assertHeader();
     this.editParentGuardianActions.editFirstNames(value);
+
+    if (isLegacyAccountMode()) {
+      this.editParentGuardianActions.normaliseLegacySurnameFromCombinedName();
+    }
   }
 
   /**
@@ -1729,6 +1733,10 @@ export class AccountEnquiryFlow {
     this.detailsNav.goToParentGuardianTab();
     this.parentGuardianDetails.change();
     this.editParentGuardianActions.assertStillOnEditPage();
+
+    if (isLegacyAccountMode()) {
+      this.editParentGuardianActions.normaliseLegacyCombinedNameIntoRequiredFields();
+    }
   }
 
   /**
@@ -2989,6 +2997,12 @@ export class AccountEnquiryFlow {
     this.editDefendantAndChangeFirstName(updatedFirstName);
     this.saveDefendantDetails();
     this.assertDefendantNameContains(updatedFirstName);
+
+    if (isLegacyAccountMode()) {
+      logAE('info', 'Skipping OPAL-only defendant amendment baseline verification');
+      return;
+    }
+
     this.verifyDefendantAmendmentsViaApi(updatedFirstName);
   }
 
@@ -3004,6 +3018,12 @@ export class AccountEnquiryFlow {
     this.editCompanyDetailsAndChangeName(updatedCompanyName);
     this.saveCompanyDetails();
     this.assertCompanyNameContains(updatedCompanyName);
+
+    if (isLegacyAccountMode()) {
+      logAE('info', 'Skipping OPAL-only company amendment baseline verification');
+      return;
+    }
+
     this.verifyCompanyAmendmentsViaApi(updatedCompanyName);
   }
 
@@ -3019,6 +3039,12 @@ export class AccountEnquiryFlow {
     this.editParentGuardianAndChangeFirstName(updatedFirstName);
     this.saveParentGuardianDetails();
     this.assertParentGuardianNameContains(updatedFirstName);
+
+    if (isLegacyAccountMode()) {
+      logAE('info', 'Skipping OPAL-only parent/guardian amendment baseline verification');
+      return;
+    }
+
     this.verifyParentGuardianAmendmentsViaApi(updatedFirstName);
   }
 
