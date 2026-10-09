@@ -123,19 +123,20 @@ describe('FinesMacOffenceDetailsSearchOffencesResultsComponent', () => {
   );
 
   it(
-    'Displays "Copy Code" link between Code and Short Title columns (AC5)',
+    'Displays "Copy code" button in the Actions column (AC5)',
     { tags: [...buildTags('@JIRA-STORY:PO-987'), '@JIRA-EPIC:PO-545', '@JIRA-TEST-KEY:PO-5071'] },
     () => {
       setupComponent();
 
-      cy.get(DOM_ELEMENTS.copyCodeLink).first().should('exist');
-      cy.get(DOM_ELEMENTS.copyCodeLink).first().should('contain', 'Copy code');
+      cy.get(DOM_ELEMENTS.copyCodeButton).first().should('exist');
+      cy.get(DOM_ELEMENTS.copyCodeButton).first().should('have.attr', 'type', 'button');
+      cy.get(DOM_ELEMENTS.copyCodeButton).first().should('contain', 'Copy code');
 
-      cy.get(DOM_ELEMENTS.copyCodeLink).first().click();
+      cy.get(DOM_ELEMENTS.copyCodeButton).first().click();
 
       cy.get('@clipboardWriteText').should('have.been.called');
 
-      cy.get(DOM_ELEMENTS.copyCodeLink).first().should('contain', 'Code copied');
+      cy.get(DOM_ELEMENTS.copyCodeButton).first().should('contain', 'Code copied');
     },
   );
 
