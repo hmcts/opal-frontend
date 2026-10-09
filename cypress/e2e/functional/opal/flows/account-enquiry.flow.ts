@@ -25,6 +25,7 @@ import { EditParentGuardianDetailsActions } from '../actions/account-details/edi
 import { EditMinorCreditorDetailsActions } from '../actions/account-details/edit.minor-creditor-details.actions';
 import { AccountConvertActions } from '../actions/account-details/convert.account.actions';
 import { AccountDetailsEnforcementActions } from '../actions/account-details/details.enforcement.actions';
+import { DOM_ELEMENTS as ENF_ACTION_ADD } from '../../../../component/release1b/fineAccountEnquiry/accountEnquiry/locators/account.enquiry.enforcement-action-add.locators';
 import { RemoveParentGuardianActions } from '../actions/account-details/remove.parent-guardian.actions';
 import { createScopedLogger, createScopedSyncLogger } from '../../../../support/utils/log.helper';
 import { EtagUpdate } from '../actions/draft-account/draft-account.api';
@@ -1375,6 +1376,86 @@ export class AccountEnquiryFlow {
     logAE('method', 'openAddEnforcementActionForm()');
     this.enforcement.openAddEnforcementActionForm();
     this.enforcement.assertAddEnforcementActionFormVisible();
+  }
+
+  /**
+   * Asserts that Court code options are available on the add enforcement action form.
+   */
+  public assertCourtCodeAutocompleteDisplayed(): void {
+    logAE('method', 'assertCourtCodeAutocompleteDisplayed()');
+    this.enforcement.assertCourtCodeAutocompleteDisplayed();
+  }
+
+  /**
+   * Asserts that Court options use the Court name (court code) format.
+   */
+  public assertCourtCodeOptionLabelsUseNameAndCodeFormat(): void {
+    logAE('method', 'assertCourtCodeOptionLabelsUseNameAndCodeFormat()');
+    this.enforcement.assertCourtCodeOptionLabelsUseNameAndCodeFormat();
+  }
+
+  /**
+   * Searches Court code options on the add enforcement action form.
+   *
+   * @param searchText - Court name or code fragment to search for.
+   */
+  public searchCourtCodeOptions(searchText: string): void {
+    logAE('method', 'searchCourtCodeOptions()', { searchText });
+    this.enforcement.searchCourtCodeOptions(searchText);
+  }
+
+  /**
+   * Selects the first filtered Court code option.
+   */
+  public selectFirstCourtCodeOption(): void {
+    logAE('method', 'selectFirstCourtCodeOption()');
+    this.enforcement.selectFirstCourtCodeOption();
+  }
+
+  /**
+   * Asserts that the selected Court code is displayed.
+   */
+  public assertSelectedCourtCodeIsDisplayed(): void {
+    logAE('method', 'assertSelectedCourtCodeIsDisplayed()');
+    this.enforcement.assertSelectedCourtCodeIsDisplayed();
+  }
+
+  /**
+   * Selects the mandatory SUMM prison/detention option.
+   *
+   * @param option - Visible option label.
+   */
+  public selectPrisonDetentionOption(option: string): void {
+    logAE('method', 'selectPrisonDetentionOption()', { option });
+    this.enforcement.selectDynamicEnforcementActionRadio(ENF_ACTION_ADD.prisonDetentionFieldset, option);
+  }
+
+  /**
+   * Submits the enforcement action and captures its request body.
+   */
+  public submitAddEnforcementActionAndCaptureRequest(): void {
+    logAE('method', 'submitAddEnforcementActionAndCaptureRequest()');
+    cy.intercept('POST', '**/defendant-accounts/*/enforcements').as('addEnforcementAction');
+    this.enforcement.submitAddEnforcementActionForm();
+    cy.wait('@addEnforcementAction').then(({ request }) => {
+      cy.wrap(request.body, { log: false }).as('addEnforcementActionBody');
+    });
+  }
+
+  /**
+   * Verifies that the selected court code is submitted under the configured parameter name.
+   */
+  public assertSubmittedCourtCode(): void {
+    logAE('method', 'assertSubmittedCourtCode()');
+    cy.get('@selectedCourtCode').then((selectedCourtCode) => {
+      cy.get('@addEnforcementActionBody').then((requestBody) => {
+        expect(requestBody).to.have.nested.property('enforcement_result_responses');
+        expect(requestBody.enforcement_result_responses).to.deep.include({
+          parameter_name: 'courtcode',
+          response: selectedCourtCode,
+        });
+      });
+    });
   }
 
   /**
