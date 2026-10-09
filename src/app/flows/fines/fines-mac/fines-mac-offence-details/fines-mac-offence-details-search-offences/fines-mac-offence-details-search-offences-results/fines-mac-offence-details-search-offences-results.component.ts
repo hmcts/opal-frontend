@@ -1,5 +1,6 @@
 import { ChangeDetectionStrategy, Component, inject } from '@angular/core';
 import { GovukBackLinkComponent } from '@hmcts/opal-frontend-common/components/govuk/govuk-back-link';
+import { BackLinkDirective } from '@app/directives/back-link.directive';
 import { ActivatedRoute, Router, RouterModule } from '@angular/router';
 import { CustomDeferredLiveRegionAnnouncement } from '@hmcts/opal-frontend-common/components/custom/custom-deferred-live-region-announcement';
 import { CanDeactivateTypes } from '@hmcts/opal-frontend-common/guards/can-deactivate/types';
@@ -17,6 +18,7 @@ import { FINES_MAC_OFFENCE_DETAILS_SEARCH_OFFENCES_RESULTS_NO_RESULTS_ANNOUNCEME
   imports: [
     RouterModule,
     GovukBackLinkComponent,
+    BackLinkDirective,
     FinesMacOffenceDetailsSearchOffencesResultsTableWrapperComponent,
     CustomDeferredLiveRegionAnnouncement,
   ],
