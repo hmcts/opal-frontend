@@ -41,6 +41,7 @@ import { DASHBOARD_PAGE_DEFAULT_TAB } from './pages/dashboard/constants/dashboar
 import { DashboardPageType } from './pages/dashboard/types/dashboard.type';
 import { isDashboardPageType } from './pages/dashboard/constants/dashboard-config.constant';
 import { FINES_DASHBOARD_ROUTING_PATHS } from './flows/fines/constants/fines-dashboard-routing-paths.constant';
+import { GovukSkipLinkComponent } from '@hmcts/opal-frontend-common/components/govuk/govuk-skip-link';
 import {
   getAccessiblePrimaryNavigationItems,
   getFeatureFlagReleaseState,
@@ -64,6 +65,7 @@ import { FINES_ACC_MINOR_CREDITOR_ROUTING_PATHS } from './flows/fines/fines-acc/
     MojAlertIconComponent,
     MojAlertHeadingComponent,
     GovukFooterComponent,
+    GovukSkipLinkComponent,
     MojPrimaryNavigationComponent,
     MojPrimaryNavigationItemComponent,
     CustomDeferredLiveRegionAnnouncement,

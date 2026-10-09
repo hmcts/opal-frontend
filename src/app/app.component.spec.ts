@@ -181,6 +181,21 @@ describe('AppComponent - browser', () => {
     expect(app).toBeTruthy();
   });
 
+  it('should render a GOV.UK skip link before the page content', () => {
+    const fixture = TestBed.createComponent(AppComponent);
+    fixture.detectChanges();
+
+    const skipLinkComponent = fixture.nativeElement.querySelector('opal-lib-govuk-skip-link') as HTMLElement;
+    const skipLink = fixture.nativeElement.querySelector('.govuk-skip-link') as HTMLAnchorElement;
+
+    expect(skipLinkComponent).toBe(fixture.nativeElement.firstElementChild);
+    expect(skipLink).toBe(skipLinkComponent.firstElementChild);
+    expect(skipLink.textContent?.trim()).toBe('Skip to main content');
+    expect(skipLink.getAttribute('href')).toBe(`${window.location.pathname}#main-content`);
+    expect(skipLink.dataset['module']).toBe('govuk-skip-link');
+    expect(fixture.nativeElement.querySelector(skipLink.hash)?.id).toBe('main-content');
+  });
+
   it('should initialize launchDarklyFlags and subscribe to launchDarklyFlags$', () => {
     const fixture = TestBed.createComponent(AppComponent);
     const app = fixture.componentInstance;
