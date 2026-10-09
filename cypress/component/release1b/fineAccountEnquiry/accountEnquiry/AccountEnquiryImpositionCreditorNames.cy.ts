@@ -1,9 +1,6 @@
 import { interceptAuthenticatedUser, interceptUserState } from 'cypress/component/CommonIntercepts/CommonIntercepts';
 import { USER_STATE_MOCK_PERMISSION_BU77 } from '../../../CommonIntercepts/CommonUserState.mocks';
-import {
-  getImpositionCreditorCell,
-  getImpositionCreditorLink,
-} from '../../../../shared/selectors/account-enquiry/account.enquiry.imposition-creditor-names.locators';
+import { AccountDetailsImpositionsActions } from '../../../../e2e/functional/opal/actions/account-details/details.impositions.actions';
 import { OPAL_FINES_ACCOUNT_DEFENDANT_AT_A_GLANCE_MOCK } from './mocks/defendant_details_at_glance_mock';
 import { DEFENDANT_HEADER_MOCK } from './mocks/defendant_details_mock';
 import { IMPOSITION_CREDITOR_NAMES_MOCK } from './mocks/imposition-creditor-names.mock';
@@ -39,25 +36,14 @@ describe('Account Enquiry Imposition creditor names', () => {
     { tags: ['@JIRA-STORY:PO-10571', '@JIRA-EPIC:PO-979', '@R1B'] },
     () => {
       setupImpositionsScreen();
-      cy.wait('@getImpositions');
-
-      cy.get(getImpositionCreditorCell(0)).should('contain.text', 'Example Company Ltd');
-      cy.get(getImpositionCreditorLink(0)).should('exist');
-
-      cy.get(getImpositionCreditorCell(1)).should('contain.text', 'Example Individual');
-      cy.get(getImpositionCreditorLink(1)).should('exist');
-
-      cy.get(getImpositionCreditorCell(2)).should('contain.text', 'SurnameOnly');
-      cy.get(getImpositionCreditorLink(2)).should('exist');
-
-      cy.get(getImpositionCreditorCell(3)).should('contain.text', 'Example Major Creditor');
-      cy.get(getImpositionCreditorLink(3)).should('exist');
-
-      cy.get(getImpositionCreditorCell(4)).should('contain.text', 'Central Fund');
-      cy.get(getImpositionCreditorLink(4)).should('not.exist');
-
-      cy.get(getImpositionCreditorCell(5)).should('contain.text', 'Minor Creditor');
-      cy.get(getImpositionCreditorLink(5)).should('exist');
+      new AccountDetailsImpositionsActions().assertCreditorSummaryResponse('@getImpositions', [
+        ['PO10571 Company Ltd', 'MN', 'true'],
+        ['Alex James Example', 'MN', 'false'],
+        ['SurnameOnly', 'MN', 'false'],
+        ['PO10571 Major Creditor', 'MJ', ''],
+        ['Central Fund', 'CF', ''],
+        ['Minor Creditor', 'MN', 'true'],
+      ]);
     },
   );
 });

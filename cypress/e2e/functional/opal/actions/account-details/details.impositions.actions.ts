@@ -73,6 +73,52 @@ export class AccountDetailsImpositionsActions {
     );
   }
 
+  /** Observes the seeded Opal response without stubbing or changing backend data. */
+  public observeSeededImpositions(): void {
+    cy.intercept('GET', '**/opal-fines-service/defendant-accounts/99105710000001/impositions').as('seededImpositions');
+  }
+
+  /**
+   * Checks the successful Opal response and exact creditor text and destinations by account ID.
+   * @param alias - Request alias registered before navigation.
+   * @param expectedRows - Expected name, creditor type and optional organisation flag in API order.
+   */
+  public assertCreditorSummaryResponse(alias: `@${string}`, expectedRows: string[][]): void {
+    cy.wait(alias).then(({ request, response }) => {
+      expect(request.method).to.equal('GET');
+      expect(new URL(request.url).pathname).to.match(/^\/opal-fines-service\/defendant-accounts\/\d+\/impositions$/);
+      expect(response?.statusCode).to.equal(200);
+      const body = response?.body;
+      expect(body.impositions).to.have.length(expectedRows.length);
+      this.assertImpositionsTabVisible();
+      cy.get(L.table).should('be.visible');
+      cy.get(L.creditorRows).should('have.length', expectedRows.length);
+
+      expectedRows.forEach(([name, type, flag], index) => {
+        const creditor = body.impositions[index].creditor;
+        expect(creditor.creditor_account_type_reference.creditor_account_type).to.equal(type);
+        if (flag) {
+          expect(
+            creditor.minor_creditor_organisation_flag,
+            `minor_creditor_organisation_flag (response fields: ${Object.keys(creditor).join(', ')})`,
+          ).to.equal(flag === 'true');
+        }
+        const selector = L.creditorByAccountId(creditor.creditor_account_id);
+        cy.get(selector).should(($cell) => {
+          expect($cell.text().trim()).to.equal(name);
+        });
+        if (type === 'CF') {
+          cy.get(selector).find('a').should('not.exist');
+        } else {
+          const route = type === 'MJ' ? 'major-creditor' : 'minor-creditor';
+          cy.get(selector)
+            .find('a')
+            .should('have.attr', 'href', `/fines/account/${route}/${creditor.creditor_account_id}/details`);
+        }
+      });
+    });
+  }
+
   /**
    * Asserts the Impositions tab empty-state text.
    *

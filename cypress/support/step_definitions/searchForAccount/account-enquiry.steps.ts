@@ -2386,3 +2386,13 @@ Then('I should see the unsaved value retained for Last name as {string}', (expec
   log('assert', 'Verify unsaved PG last name retained', { expected });
   editParentGuardianDetails().verifyLastName(expected);
 });
+
+/** Observes the seeded account response without mocking it. */
+Given('I observe the seeded PO-10571 Opal impositions request', () => {
+  impositionsDetails().observeSeededImpositions();
+});
+
+/** Asserts names and links against the real seeded Opal response. */
+Then('the seeded Opal impositions show these creditor names and links:', (table: DataTable) => {
+  impositionsDetails().assertCreditorSummaryResponse('@seededImpositions', table.rows());
+});

@@ -103,7 +103,11 @@
             track impositionTableRow['Imposition ID'];
             let rowIndex = $index
           ) {
-            <tr opal-lib-moj-sortable-table-row [bodyRowClasses]="impositionTableRow.rowClasses">
+            <tr
+              opal-lib-moj-sortable-table-row
+              data-testid="imposition-row"
+              [bodyRowClasses]="impositionTableRow.rowClasses"
+            >
               <td
                 #paginationFocusTarget
                 opal-lib-moj-sortable-table-row-data
@@ -122,7 +126,11 @@
                   <ng-container *ngTemplateOutlet="notProvided"></ng-container>
                 }
               </td>
-              <td opal-lib-moj-sortable-table-row-data [id]="'imposition-creditor-' + rowIndex">
+              <td
+                opal-lib-moj-sortable-table-row-data
+                [id]="'imposition-creditor-' + rowIndex"
+                [attr.data-testid]="'imposition-creditor-' + impositionTableRow['Creditor account id']"
+              >
                 @if (impositionTableRow.Creditor; as creditorDisplay) {
                   @if (impositionTableRow.creditorDetailsRouterLink; as creditorDetailsRouterLink) {
                     <a class="govuk-link govuk-link--no-visited-state" [routerLink]="creditorDetailsRouterLink">

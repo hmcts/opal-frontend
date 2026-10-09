@@ -1580,6 +1580,32 @@ describe('OpalFines', () => {
     });
   });
 
+  it('should not emit impositions while the response is pending', () => {
+    const next = vi.fn();
+    service.getDefendantAccountImpositionsTabData(77).subscribe(next);
+
+    const request = httpMock.expectOne(`${OPAL_FINES_PATHS.defendantAccounts}/77/impositions`);
+    expect(next).not.toHaveBeenCalled();
+
+    request.flush(OPAL_FINES_ACCOUNT_DEFENDANT_DETAILS_IMPOSITIONS_TAB_REF_DATA_MOCK);
+    expect(next).toHaveBeenCalledTimes(1);
+    expect(next).toHaveBeenCalledWith(OPAL_FINES_ACCOUNT_DEFENDANT_DETAILS_IMPOSITIONS_TAB_REF_DATA_MOCK);
+  });
+
+  it('should propagate an impositions error without emitting table data', () => {
+    const next = vi.fn();
+    const error = vi.fn();
+    service.getDefendantAccountImpositionsTabData(77).subscribe({ next, error });
+
+    const request = httpMock.expectOne(`${OPAL_FINES_PATHS.defendantAccounts}/77/impositions`);
+    request.flush({}, { status: 400, statusText: 'Bad Request' });
+
+    expect(next).not.toHaveBeenCalled();
+    expect(error).toHaveBeenCalledTimes(1);
+    expect(error.mock.calls[0][0].status).toBe(400);
+    httpMock.expectNone(`${OPAL_FINES_PATHS.defendantAccounts}/77/impositions`);
+  });
+
   it('should return cached defendant account impositions data on repeated calls', () => {
     const account_id = 77;
     const apiUrl = `${OPAL_FINES_PATHS.defendantAccounts}/${account_id}/impositions`;
