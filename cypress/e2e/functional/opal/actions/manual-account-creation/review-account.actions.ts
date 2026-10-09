@@ -95,10 +95,7 @@ export class ManualReviewAccountActions {
                   const hasLegacyNotProvidedIndicator = $val.find('[aria-label="Not provided"]').length > 0;
                   expect(
                     hasNoDataIndicator || hasLegacyNotProvidedIndicator || /not provided/i.test(normalizedText),
-                  ).to.equal(
-                    true,
-                    'No data indicator',
-                  );
+                  ).to.equal(true, 'No data indicator');
                   return;
                 }
                 const expectedNormalized = value.replace(/\s+/g, ' ').trim();
