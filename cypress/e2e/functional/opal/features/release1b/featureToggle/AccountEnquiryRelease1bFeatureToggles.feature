@@ -17,7 +17,7 @@ Feature: Account Enquiry Release1b Feature Toggles
   @R1BOff @JIRA-STORY:PO-3720 @JIRA-EPIC:PO-3685 @JIRA-TEST-KEY:PO-8019
   Scenario: Direct navigation to Account Enquiry is blocked when release 1b is disabled
     Given I am authenticated with email "opal-test@dev.platform.hmcts.net"
-    And a published adult or youth defendant account exists:
+    And a published adult or youth defendant account exists without waiting for search indexing:
       | first name                | Riley                   |
       | last name                 | Release1BDirect{uniq}   |
       | prosecutor case reference | PCRR1BDIRECT{uniqUpper} |
