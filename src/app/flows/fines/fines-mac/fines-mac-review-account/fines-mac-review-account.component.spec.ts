@@ -650,17 +650,22 @@ describe('FinesMacReviewAccountComponent', () => {
       });
     });
 
-    it('should route to the fixed penalty details form when change() is called from a fixed penalty account', () => {
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      const routerSpy = vi.spyOn<any, any>(component['router'], 'navigate');
-      component.accountType = FINES_ACCOUNT_TYPES['Fixed Penalty'];
+    it.each(['courtDetails', 'personalDetails', 'companyDetails', 'offenceDetails', 'accountCommentsNotes'] as const)(
+      'should route to the %s section of the fixed penalty details form when change() is called from a fixed penalty account',
+      (routeKey) => {
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        const routerSpy = vi.spyOn<any, any>(component['router'], 'navigate');
+        component.accountType = FINES_ACCOUNT_TYPES['Fixed Penalty'];
+        const fragment = component['finesMacRoutes'].children[routeKey];
 
-      component.change();
+        component.change(fragment);
 
-      expect(routerSpy).toHaveBeenCalledWith([component['finesMacRoutes'].children.fixedPenaltyDetails], {
-        relativeTo: expect.any(Object),
-      });
-    });
+        expect(routerSpy).toHaveBeenCalledWith([component['finesMacRoutes'].children.fixedPenaltyDetails], {
+          relativeTo: expect.any(Object),
+          fragment,
+        });
+      },
+    );
   });
 
   describe('when snapshot has localJusticeAreas, courts, results, major creditors and reviewAccountFetchMap', () => {
