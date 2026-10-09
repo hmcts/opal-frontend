@@ -462,6 +462,10 @@ export interface EtagUpdate {
   accountNumber?: string | null;
 }
 
+export interface CreateDraftAndSetStatusOptions {
+  waitForSearchIndex?: boolean;
+}
+
 /**
  * @description Captures the result of a stale If-Match update attempt.
  */
@@ -481,6 +485,7 @@ export interface EtagConflictResult {
  * @param overrides - Nested override object for the draft payload (values can include Account_status).
  * @param user - Identifier for the user performing the publishing action (for logging/evidence).
  * @param returnToUser - Identifier for the user to return to after status update (for logging/evidence).
+ * @param options - Additional setup controls, such as whether to wait for the published account search index.
  * @returns A Cypress chainable that resolves when the draft is created and updated
  *
  * @remarks
@@ -494,6 +499,7 @@ export function createDraftAndSetStatus(
   overrides: Record<string, unknown>,
   user: string,
   returnToUser: string,
+  options: CreateDraftAndSetStatusOptions = {},
 ): Cypress.Chainable<void> {
   /**
    * Normalizes a requested status into an API-compatible value and determines
@@ -539,6 +545,7 @@ export function createDraftAndSetStatus(
    * Sanitize the override object before merging it into the draft payload.
    */
   const sanitizedOverrides = stripAccountStatusOverride(overrides);
+  const waitForSearchIndex = options.waitForSearchIndex ?? true;
 
   /** Load the base draft payload fixture for the specified draft type */
   const draftFixture = getDraftPayloadFile(draftType);
@@ -756,8 +763,12 @@ export function createDraftAndSetStatus(
             log('info', `Returned to user ${returnToUser} after status update`, { returnToUser });
 
             const publishedAccountNumber = numberForUI ?? postAccountNumber ?? null;
-            if (publishedAccountNumber) {
+            if (publishedAccountNumber && waitForSearchIndex) {
               return waitForPublishedAccountSearchable(publishedAccountNumber, isCompanyDraftRequest(requestBody));
+            }
+
+            if (publishedAccountNumber && !waitForSearchIndex) {
+              log('info', 'Skipping published account search-index wait', { accountNumber: publishedAccountNumber });
             }
 
             return cy.wrap(undefined, { log: false }) as Cypress.Chainable<void>;
