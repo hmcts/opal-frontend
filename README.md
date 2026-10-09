@@ -360,6 +360,8 @@ The default functional runner excludes `@UAT-Technical`, `@R1BDrop1UatTechJCDE`,
 Use these functional scripts when you need a release-aligned run locally or in a dedicated CI stage:
 
 - `yarn test:functional:r1a`: current `R1A` positive coverage only
+- `yarn test:functional:r1a_1_1`: `release-1a-1-1` enabled coverage only
+- `yarn test:functional:r1a_1_1Off`: `release-1a-1-1` disabled coverage only
 - `yarn test:functional:r1a_and_r1b_drop1`: current `R1A` + `R1BDrop1` positive coverage only
 - `yarn test:functional:r1ab`: current `R1A` + `R1B` positive coverage only
 - `yarn test:functional:r1b_drop1`: current `R1BDrop1` coverage only
@@ -403,6 +405,8 @@ yarn test:functional:uat_legacy_r1b_drop2_jcde
 yarn test:functional:uat_legacy_r1b_drop2_preprod
 yarn test:functional:uat_legacy_r1b_drop1_and_r1b_drop2_jcde
 yarn test:functional:uat_legacy_r1b_drop1_and_r1b_drop2_preprod
+yarn test:functional:uat_legacy_r1a_and_r1b_drop1_preprod
+yarn test:functional:uat_legacy_r1a_and_r1b_preprod
 
 ```
 
@@ -413,12 +417,14 @@ draft-account payloads resolve from `cypress/fixtures/draftAccounts/jcde/`.
 
 If you do not add a selector label, the CNP pipeline uses its normal default functional selection:
 
-- functional tags: `not (@UAT-Technical or @R1BDrop1UatTechJCDE or @R1BDrop1UatTechPreprod or @R1BDrop2UatTechJCDE or @R1BDrop2UatTechPreprod) and not @skip and not (@R1AOff or @R1BOff or @R1CWriteOffOff or @R1CEnforcementOperationalReportingOff)`
+- functional tags: `not (@UAT-Technical or @R1BDrop1UatTechJCDE or @R1BDrop1UatTechPreprod or @R1BDrop2UatTechJCDE or @R1BDrop2UatTechPreprod) and not @skip and not (@R1AOff or @R1A1_1Off or @R1BOff or @R1CWriteOffOff or @R1CEnforcementOperationalReportingOff)`
 - functional specs: all functional features, unless one or more `test_*` routing labels are present
 
 PR labels supported by the CNP pipeline:
 
 - `run_release:r1a`: run the current `R1A` positive suite only
+- `run_release:r1a_1_1`: run the `release-1a-1-1` enabled scenarios only
+- `run_release:r1a_1_1_off`: run the `release-1a-1-1` disabled scenarios only
 - `run_release:r1ab`: run the current `R1A` + `R1B` positive suite only
 - `run_release:r1a_off`: run the `release-1a` disabled technical scenarios only
 - `run_release:r1b_off`: run the `release-1b` disabled technical scenarios only
@@ -448,7 +454,7 @@ The nightly Jenkins pipeline runs its stages in this order after checkout and te
 - `Component Tests` runs when `Component=true`.
 - `Smoke Tests` runs when `Smoke=true`.
 - `Functional Tests` runs when `Functional=true`.
-- `LEGACY_DEMO_SUITE` selects which optional demo legacy stage runs. The supported values are `R1A` (default), `R1A_AND_R1B_DROP1`, `R1A_AND_R1B`, `R1B_OFF`, `R1A_OFF`, `R1A_AND_R1B_OFF`, and `NONE`.
+- `LEGACY_DEMO_SUITE` selects which optional demo legacy stage runs. The supported values are `R1A_AND_R1B_DROP1` (default), `R1A`, `R1A_AND_R1B`, `R1B_OFF`, `R1A_OFF`, `R1A_AND_R1B_OFF`, and `NONE`.
 - `R1A Legacy Demo` runs when `LEGACY_DEMO_SUITE=R1A`. It points `TEST_URL` at `https://opal-frontend.demo.apps.hmcts.net/`, switches app mode to legacy, and runs `yarn test:functional:r1a`.
 - `R1A and R1B Drop1 Legacy Demo` runs when `LEGACY_DEMO_SUITE=R1A_AND_R1B_DROP1`. It uses the same demo legacy flow and runs `yarn test:functional:r1a_and_r1b_drop1`.
 - `R1A and R1B Legacy Demo` runs when `LEGACY_DEMO_SUITE=R1A_AND_R1B`. It uses the same demo legacy flow and runs `yarn test:functional:r1ab`.
@@ -460,6 +466,9 @@ The nightly Jenkins pipeline runs its stages in this order after checkout and te
 - `UAT_TECHNICAL_SUITE=R1BDrop2` with `LEGACY_URL=PRE-PROD` runs `yarn test:functional:uat_legacy_r1b_drop2_preprod`.
 - `UAT_TECHNICAL_SUITE=R1BDrop1AndR1BDrop2` with `LEGACY_URL=DEV` runs `yarn test:functional:uat_legacy_r1b_drop1_and_r1b_drop2_jcde`.
 - `UAT_TECHNICAL_SUITE=R1BDrop1AndR1BDrop2` with `LEGACY_URL=PRE-PROD` runs `yarn test:functional:uat_legacy_r1b_drop1_and_r1b_drop2_preprod`.
+- `UAT_TECHNICAL_SUITE=R1AAndR1BDrop1` runs `yarn test:functional:uat_legacy_r1a_and_r1b_drop1_preprod` and uses the pre-prod legacy gateway.
+- `UAT_TECHNICAL_SUITE=R1AAndR1B` runs `yarn test:functional:uat_legacy_r1a_and_r1b_preprod` and uses the pre-prod legacy gateway.
+- JCDE-only UAT Technical runs are handled through the CNP pipeline rather than the nightly combined R1A/R1B options.
 - `Legacy Tests` runs only when `Legacy=true`. It runs the general functional suite in legacy mode.
 - `RunChrome=true` switches the selected nightly stages to Chrome instead of the default browser.
 - `RunFirefox=true` switches the selected nightly stages to Firefox instead of the default browser.
@@ -469,6 +478,7 @@ Notes for the nightly pipeline:
 - The nightly pipeline uses Edge by default. If Edge is unavailable on the Jenkins agent, it falls back to Chrome.
 - `RunChrome` and `RunFirefox` are mutually exclusive browser overrides for the selected stages.
 - Selecting `RunChrome` or `RunFirefox` does not add any extra test stages. It only changes the browser used by the stages enabled for that run.
+- Nightly demo and UAT-Technical stages make a best-effort attempt to capture full `opal-frontend` and `opal-fines-service` pod logs into the stage artifact directory under `pod-logs/`. The namespace is inferred from the stage URL (`opal-demo` or `opal-staging`) and can be overridden with `NIGHTLY_POD_LOG_NAMESPACE`; set `NIGHTLY_POD_LOG_TAIL_LINES` to capture only the last N lines.
 - If no other parameters are changed, the default-enabled nightly stages still run, using the selected browser override when one is set.
 - `LEGACY_URL` defaults to `PRE-PROD`.
 - `LEGACY_URL=PRE-PROD` points the legacy gateway checks at `https://cloudgobgateway.test.platform.hmcts.net/opal`.
@@ -638,7 +648,7 @@ Notes:
 - `functional-output/component/<browser>/json/.jsons/` is the raw Mochawesome JSON used to build `html/component-report.html`.
 - Each nightly stage now copies its Zephyr JSON into that stage's own artifact directory as well as the shared root `*-output/zephyr/` location used by the existing scripts.
 - `functional-output/prod/<browser>/legacy/` and `smoke-output/prod/<browser>/legacy/` are only created for legacy-mode runs.
-- `functional-output/prod/<browser>/{r1a-legacy-demo,r1ab-legacy-demo,r1b-drop1-legacy-demo,r1b-drop2-legacy-demo,r1b-drop1-and-r1b-drop2-legacy-demo,uat-technical-r1a,uat-technical-r1b-drop1,uat-technical-r1b-drop2,uat-technical-r1b-drop1-and-r1b-drop2}/` are created by the dedicated nightly demo stages.
+- `functional-output/prod/<browser>/{r1a-legacy-demo,r1ab-legacy-demo,r1b-drop1-legacy-demo,r1b-drop2-legacy-demo,r1b-drop1-and-r1b-drop2-legacy-demo,uat-technical-r1a,uat-technical-r1b-drop1,uat-technical-r1b-drop2,uat-technical-r1b-drop1-and-r1b-drop2,uat-technical-r1a-and-r1b-drop1,uat-technical-r1a-and-r1b}/` are created by the dedicated nightly demo stages.
 - `videos/` is only expected when using `yarn test:functionalOpalVideo`.
 - `account_evidence/` is only expected when legacy evidence capture is enabled.
 - These older component paths should not be recreated on a clean run: `functional-output/component-report/`, `functional-output/component-html/`, and `functional-output/prod/<browser>/component/`.
@@ -891,6 +901,8 @@ Zephyr Automation is a tool for integrating test results and ticket management b
 - `zephyr:test:uat_technical_r1b_drop2_preprod`: Reset outputs, run the R1BDrop2 PRE-PROD UAT-Technical legacy-mode functional suite, then create a Zephyr execution from the functional Cucumber JSON report.
 - `zephyr:test:uat_technical_r1b_drop1_and_r1b_drop2_jcde`: Reset outputs, run the combined R1BDrop1 and R1BDrop2 JCDE UAT-Technical legacy-mode functional suite, then create a Zephyr execution from the functional Cucumber JSON report.
 - `zephyr:test:uat_technical_r1b_drop1_and_r1b_drop2_preprod`: Reset outputs, run the combined R1BDrop1 and R1BDrop2 PRE-PROD UAT-Technical legacy-mode functional suite, then create a Zephyr execution from the functional Cucumber JSON report.
+- `zephyr:test:uat_technical_r1a_and_r1b_drop1_preprod`: Reset outputs, run the combined R1A and R1BDrop1 PRE-PROD UAT-Technical legacy-mode functional suite, then create a Zephyr execution from the functional Cucumber JSON report.
+- `zephyr:test:uat_technical_r1a_and_r1b_preprod`: Reset outputs, run the combined R1A, R1BDrop1, and R1BDrop2 PRE-PROD UAT-Technical legacy-mode functional suite, then create a Zephyr execution from the functional Cucumber JSON report.
 - `zephyr:test:legacy`: Reset outputs, run the legacy-mode functional suite, then create a Zephyr execution from the functional Cucumber JSON report.
 
 ## Test Metadata Maintenance

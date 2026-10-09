@@ -146,9 +146,8 @@ describe('Automatic Cash Input - Select Business Units', () => {
           ].join('/'),
         );
       cy.get(AutomaticCashInputLocators.businessUnitSelectionError).should('not.exist');
-      cy.contains('p', 'Placeholder for Automatic Cash Input - Process files and allocate tills').should('be.visible');
-      // TODO(PO-2585): Replace the placeholder assertion when the Process files and allocate tills page is implemented.
-      // cy.get('h1').should('contain.text', 'Automatic Cash Input - Process files and allocate tills');
+      cy.get(AutomaticCashInputLocators.processAllocatePage).should('contain.text', 'Automatic Cash Input');
+      cy.get(AutomaticCashInputLocators.processTabLink).should('have.attr', 'aria-current', 'page');
     },
   );
 

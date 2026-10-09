@@ -48,9 +48,9 @@ describe('buildEnforcementActionAddPayload', () => {
         lump_sum_amount: 10,
         instalment_amount: 5,
         posted_details: {
-          posted_by: '',
-          posted_by_name: '',
-          posted_date: '',
+          posted_by: null,
+          posted_by_name: null,
+          posted_date: expect.any(String),
         },
       },
     });
@@ -78,9 +78,9 @@ describe('buildEnforcementActionAddPayload', () => {
       lump_sum_amount: null,
       instalment_amount: null,
       posted_details: {
-        posted_by: '',
-        posted_by_name: '',
-        posted_date: '',
+        posted_by: null,
+        posted_by_name: null,
+        posted_date: expect.any(String),
       },
     });
   });
@@ -124,9 +124,9 @@ describe('buildEnforcementActionAddPayload', () => {
       lump_sum_amount: null,
       instalment_amount: null,
       posted_details: {
-        posted_by: '',
-        posted_by_name: '',
-        posted_date: '',
+        posted_by: null,
+        posted_by_name: null,
+        posted_date: expect.any(String),
       },
     });
   });

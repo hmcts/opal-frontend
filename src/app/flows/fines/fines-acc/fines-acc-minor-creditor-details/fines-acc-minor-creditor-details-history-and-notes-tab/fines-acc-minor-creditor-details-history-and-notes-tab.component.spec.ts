@@ -262,6 +262,21 @@ describe('FinesAccMinorCreditorDetailsHistoryAndNotesTabComponent', () => {
     expect(mockAccountStore.compareVersion).not.toHaveBeenCalled();
   });
 
+  it('should complete without emitting when the first filtered request fails before tab data is available', () => {
+    const nextSpy = vi.fn();
+    const completeSpy = vi.fn();
+    mockOpalFinesService.getMinorCreditorAccountHistoryAndNotesTabData.mockReturnValue(
+      throwError(() => new Error('Initial filtered request failed')),
+    );
+
+    component.handleFilterApplied(FINES_ACC_MINOR_CREDITOR_DETAILS_HISTORY_AND_NOTES_FILTER_FORM_MOCK);
+    component.historyAndNotesTabData$.subscribe({ next: nextSpy, complete: completeSpy });
+
+    expect(nextSpy).not.toHaveBeenCalled();
+    expect(completeSpy).toHaveBeenCalledOnce();
+    expect(mockAccountStore.compareVersion).not.toHaveBeenCalled();
+  });
+
   it('should transform filtered history items into the history and notes details format', () => {
     const emitted: unknown[] = [];
     const validHistoryItem = { id: 1, type: 'Note', details: { note_text: 'Original detail' } };

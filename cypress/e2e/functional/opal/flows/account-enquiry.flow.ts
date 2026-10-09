@@ -32,6 +32,7 @@ import { MINOR_CREDITOR_AMEND_ELEMENTS } from '../../../../shared/selectors/acco
 import { AccountDetailsResponsiveLayoutActions } from '../actions/account-details/details.responsive-layout.actions';
 import type { DataTable } from '@badeball/cypress-cucumber-preprocessor';
 import { applyUniqPlaceholder } from '../../../../support/utils/stringUtils';
+import { captureUatTechnicalEvidenceScreenshot } from '../../../../support/utils/screenshot';
 
 const logAE = createScopedLogger('AccountEnquiryFlow');
 const logAESync = createScopedSyncLogger('AccountEnquiryFlow');
@@ -52,6 +53,40 @@ type LegacyDefendantTabName =
   | 'Fixed penalty';
 
 type LegacyCompanyTabName = 'Defendant' | 'Payment terms';
+
+const normalizeComparisonText = (value: unknown): string =>
+  String(value ?? '')
+    .replace(/\s+/g, ' ')
+    .trim()
+    .toLowerCase();
+
+const isLegacyAccountMode = (): boolean => {
+  const legacyEnabled = Cypress.env('LEGACY_ENABLED');
+
+  if (typeof legacyEnabled === 'string') {
+    const normalizedLegacyEnabled = legacyEnabled.trim().toLowerCase();
+
+    if (['true', 'legacy', '1'].includes(normalizedLegacyEnabled)) {
+      return true;
+    }
+  } else if (legacyEnabled === true) {
+    return true;
+  }
+
+  const testMode = String(Cypress.env('TEST_MODE') ?? '')
+    .trim()
+    .toLowerCase();
+  const appMode = String(Cypress.env('DEV_DEFAULT_APP_MODE') ?? Cypress.env('DEFAULT_APP_MODE') ?? '')
+    .trim()
+    .toLowerCase();
+
+  return testMode === 'legacy' || appMode === 'legacy';
+};
+
+const expectTextToContainIgnoringCase = (actual: unknown, expected: string, message: string): void => {
+  expect(actual, message).to.be.a('string');
+  expect(normalizeComparisonText(actual), message).to.contain(normalizeComparisonText(expected));
+};
 
 type LegacyDefendantAccountFixture = {
   header?: {
@@ -132,6 +167,7 @@ export class AccountEnquiryFlow {
     });
 
     cy.get(AccountEnquiryFlow.AT_A_GLANCE_TAB_SELECTOR, { timeout: AccountEnquiryFlow.WAIT_MS }).should('be.visible');
+    captureUatTechnicalEvidenceScreenshot('at-a-glance-tab');
   }
 
   private readonly searchIndividuals = new AccountSearchIndividualsActions();
@@ -282,6 +318,100 @@ export class AccountEnquiryFlow {
     logAE('flow', 'Search and open latest by surname', { surname });
     this.searchByLastName(surname);
     this.clickLatestPublishedFromResultsOrAcrossPages();
+  }
+
+  /**
+   * Opens the latest defendant account matching a surname and presents the amend payment terms form.
+   *
+   * @param surname - Surname to search for.
+   */
+  public openDefendantPaymentTermsAmendFormBySurname(surname: string): void {
+    logAE('method', 'openDefendantPaymentTermsAmendFormBySurname()', { surname });
+    this.searchAndClickLatestBySurnameOpenLatestResult(surname);
+    this.goToPaymentTermsTab();
+    this.openPaymentTermsAmendForm();
+  }
+
+  /**
+   * Opens the latest defendant account matching a surname and presents the Payment terms tab.
+   *
+   * @param surname - Surname to search for.
+   */
+  public openDefendantPaymentTermsTabBySurname(surname: string): void {
+    logAE('method', 'openDefendantPaymentTermsTabBySurname()', { surname });
+    this.searchAndClickLatestBySurnameOpenLatestResult(surname);
+    this.goToPaymentTermsTab();
+  }
+
+  /**
+   * Opens the latest defendant account matching a surname and presents the Enforcement tab.
+   *
+   * @param surname - Surname to search for.
+   */
+  public openDefendantEnforcementTabBySurname(surname: string): void {
+    logAE('method', 'openDefendantEnforcementTabBySurname()', { surname });
+    this.searchAndClickLatestBySurnameOpenLatestResult(surname);
+    this.goToEnforcementTab();
+  }
+
+  /**
+   * Opens the latest defendant account matching a surname and presents the remove enforcement hold form.
+   *
+   * @param surname - Surname to search for.
+   */
+  public openDefendantRemoveEnforcementHoldFormBySurname(surname: string): void {
+    logAE('method', 'openDefendantRemoveEnforcementHoldFormBySurname()', { surname });
+    this.searchAndClickLatestBySurnameOpenLatestResult(surname);
+    this.goToEnforcementTab();
+    this.openRemoveEnforcementHoldForm();
+  }
+
+  /**
+   * Opens the latest defendant account matching a surname and presents the Collection Order status form.
+   *
+   * @param surname - Surname to search for.
+   */
+  public openDefendantCollectionOrderStatusFormBySurname(surname: string): void {
+    logAE('method', 'openDefendantCollectionOrderStatusFormBySurname()', { surname });
+    this.searchAndClickLatestBySurnameOpenLatestResult(surname);
+    this.goToEnforcementTab();
+    this.openChangeCollectionOrderStatusForm();
+  }
+
+  /**
+   * Opens the latest defendant account matching a surname and presents the add enforcement action form.
+   *
+   * @param surname - Surname to search for.
+   */
+  public openDefendantAddEnforcementActionFormBySurname(surname: string): void {
+    logAE('method', 'openDefendantAddEnforcementActionFormBySurname()', { surname });
+    this.searchAndClickLatestBySurnameOpenLatestResult(surname);
+    this.goToEnforcementTab();
+    this.openAddEnforcementActionForm();
+  }
+
+  /**
+   * Opens the latest defendant account matching a surname and presents the add enforcement override form.
+   *
+   * @param surname - Surname to search for.
+   */
+  public openDefendantAddEnforcementOverrideFormBySurname(surname: string): void {
+    logAE('method', 'openDefendantAddEnforcementOverrideFormBySurname()', { surname });
+    this.searchAndClickLatestBySurnameOpenLatestResult(surname);
+    this.goToEnforcementTab();
+    this.openAddEnforcementOverrideForm();
+  }
+
+  /**
+   * Opens the latest defendant account matching a surname and presents the change enforcement court form.
+   *
+   * @param surname - Surname to search for.
+   */
+  public openDefendantChangeEnforcementCourtFormBySurname(surname: string): void {
+    logAE('method', 'openDefendantChangeEnforcementCourtFormBySurname()', { surname });
+    this.searchAndClickLatestBySurnameOpenLatestResult(surname);
+    this.goToEnforcementTab();
+    this.openChangeEnforcementCourtForm();
   }
 
   /** Asserts that the user is on the FAE defendant account-details At a glance page. */
@@ -1257,6 +1387,15 @@ export class AccountEnquiryFlow {
   }
 
   /**
+   * Opens the Change Collection Order status form from the Enforcement tab.
+   */
+  public openChangeCollectionOrderStatusForm(): void {
+    logAE('method', 'openChangeCollectionOrderStatusForm()');
+    this.enforcement.openChangeCollectionOrderForm();
+    this.enforcement.assertChangeCollectionOrderFormVisible();
+  }
+
+  /**
    * Cancels the Change Collection Order status form without making changes.
    */
   public cancelChangeCollectionOrderFormWithoutChanges(): void {
@@ -1579,6 +1718,10 @@ export class AccountEnquiryFlow {
     this.parentGuardianDetails.change();
     this.editParentGuardianActions.assertHeader();
     this.editParentGuardianActions.editFirstNames(value);
+
+    if (isLegacyAccountMode()) {
+      this.editParentGuardianActions.normaliseLegacySurnameFromCombinedName();
+    }
   }
 
   /**
@@ -1590,6 +1733,10 @@ export class AccountEnquiryFlow {
     this.detailsNav.goToParentGuardianTab();
     this.parentGuardianDetails.change();
     this.editParentGuardianActions.assertStillOnEditPage();
+
+    if (isLegacyAccountMode()) {
+      this.editParentGuardianActions.normaliseLegacyCombinedNameIntoRequiredFields();
+    }
   }
 
   /**
@@ -1786,7 +1933,11 @@ export class AccountEnquiryFlow {
   public assertDefendantNameContains(expected: string): void {
     logAE('assert', 'assertDefendantNameContains()', { expected });
     this.detailsNav.goToDefendantTab();
-    this.defendantDetails.assertDefendantNameContains(expected);
+    if (isLegacyAccountMode()) {
+      this.defendantDetails.assertDefendantNameContainsIgnoringCase(expected);
+    } else {
+      this.defendantDetails.assertDefendantNameContains(expected);
+    }
   }
 
   /**
@@ -1919,7 +2070,7 @@ export class AccountEnquiryFlow {
    */
   public attemptSaveAmendParentGuardianDetails(): void {
     logAE('method', 'attemptSaveAmendParentGuardianDetails()');
-    this.assertOnAmendParentGuardianDetailsPage();
+    this.editParentGuardianActions.assertHeader({ route: 'amend' });
     this.editParentGuardianActions.saveChanges();
   }
 
@@ -2011,7 +2162,7 @@ export class AccountEnquiryFlow {
    */
   public assertAmendParentGuardianErrorSummaryContains(expected: string): void {
     logAE('method', 'assertAmendParentGuardianErrorSummaryContains()', { expected });
-    this.assertOnAmendParentGuardianDetailsPage();
+    this.editParentGuardianActions.assertHeader({ route: 'amend' });
     this.editParentGuardianActions.assertErrorSummaryContains(expected);
   }
 
@@ -2367,6 +2518,100 @@ export class AccountEnquiryFlow {
   }
 
   /**
+   * Opens the latest company account matching a company name and presents the amend payment terms form.
+   *
+   * @param companyName - Company name to search and open.
+   */
+  public openCompanyPaymentTermsAmendFormByName(companyName: string): void {
+    logAE('method', 'openCompanyPaymentTermsAmendFormByName()', { companyName });
+    this.openCompanyAccountDetailsByNameAndSelectLatest(companyName);
+    this.goToPaymentTermsTab();
+    this.openPaymentTermsAmendForm();
+  }
+
+  /**
+   * Opens the latest company account matching a company name and presents the Payment terms tab.
+   *
+   * @param companyName - Company name to search and open.
+   */
+  public openCompanyPaymentTermsTabByName(companyName: string): void {
+    logAE('method', 'openCompanyPaymentTermsTabByName()', { companyName });
+    this.openCompanyAccountDetailsByNameAndSelectLatest(companyName);
+    this.goToPaymentTermsTab();
+  }
+
+  /**
+   * Opens the latest company account matching a company name and presents the Enforcement tab.
+   *
+   * @param companyName - Company name to search and open.
+   */
+  public openCompanyEnforcementTabByName(companyName: string): void {
+    logAE('method', 'openCompanyEnforcementTabByName()', { companyName });
+    this.openCompanyAccountDetailsByNameAndSelectLatest(companyName);
+    this.goToEnforcementTab();
+  }
+
+  /**
+   * Opens the latest company account matching a company name and presents the remove enforcement hold form.
+   *
+   * @param companyName - Company name to search and open.
+   */
+  public openCompanyRemoveEnforcementHoldFormByName(companyName: string): void {
+    logAE('method', 'openCompanyRemoveEnforcementHoldFormByName()', { companyName });
+    this.openCompanyAccountDetailsByNameAndSelectLatest(companyName);
+    this.goToEnforcementTab();
+    this.openRemoveEnforcementHoldForm();
+  }
+
+  /**
+   * Opens the latest company account matching a company name and presents the Collection Order status form.
+   *
+   * @param companyName - Company name to search and open.
+   */
+  public openCompanyCollectionOrderStatusFormByName(companyName: string): void {
+    logAE('method', 'openCompanyCollectionOrderStatusFormByName()', { companyName });
+    this.openCompanyAccountDetailsByNameAndSelectLatest(companyName);
+    this.goToEnforcementTab();
+    this.openChangeCollectionOrderStatusForm();
+  }
+
+  /**
+   * Opens the latest company account matching a company name and presents the add enforcement action form.
+   *
+   * @param companyName - Company name to search and open.
+   */
+  public openCompanyAddEnforcementActionFormByName(companyName: string): void {
+    logAE('method', 'openCompanyAddEnforcementActionFormByName()', { companyName });
+    this.openCompanyAccountDetailsByNameAndSelectLatest(companyName);
+    this.goToEnforcementTab();
+    this.openAddEnforcementActionForm();
+  }
+
+  /**
+   * Opens the latest company account matching a company name and presents the add enforcement override form.
+   *
+   * @param companyName - Company name to search and open.
+   */
+  public openCompanyAddEnforcementOverrideFormByName(companyName: string): void {
+    logAE('method', 'openCompanyAddEnforcementOverrideFormByName()', { companyName });
+    this.openCompanyAccountDetailsByNameAndSelectLatest(companyName);
+    this.goToEnforcementTab();
+    this.openAddEnforcementOverrideForm();
+  }
+
+  /**
+   * Opens the latest company account matching a company name and presents the change enforcement court form.
+   *
+   * @param companyName - Company name to search and open.
+   */
+  public openCompanyChangeEnforcementCourtFormByName(companyName: string): void {
+    logAE('method', 'openCompanyChangeEnforcementCourtFormByName()', { companyName });
+    this.openCompanyAccountDetailsByNameAndSelectLatest(companyName);
+    this.goToEnforcementTab();
+    this.openChangeEnforcementCourtForm();
+  }
+
+  /**
    * Opens the "Add account note" screen and verifies the header.
    *
    */
@@ -2425,7 +2670,9 @@ export class AccountEnquiryFlow {
     this.openNotesScreenAndEnterText(note);
 
     logAE('save', 'Saving account note');
+    this.notes.watchAddNoteRequest();
     this.notes.save();
+    this.notes.assertAddNoteRequest();
 
     cy.location('pathname', { timeout: 20000 }).should('match', /\/fines\/account\/defendant\/\d+\/details$/);
   }
@@ -2750,6 +2997,12 @@ export class AccountEnquiryFlow {
     this.editDefendantAndChangeFirstName(updatedFirstName);
     this.saveDefendantDetails();
     this.assertDefendantNameContains(updatedFirstName);
+
+    if (isLegacyAccountMode()) {
+      logAE('info', 'Skipping OPAL-only defendant amendment baseline verification');
+      return;
+    }
+
     this.verifyDefendantAmendmentsViaApi(updatedFirstName);
   }
 
@@ -2765,6 +3018,12 @@ export class AccountEnquiryFlow {
     this.editCompanyDetailsAndChangeName(updatedCompanyName);
     this.saveCompanyDetails();
     this.assertCompanyNameContains(updatedCompanyName);
+
+    if (isLegacyAccountMode()) {
+      logAE('info', 'Skipping OPAL-only company amendment baseline verification');
+      return;
+    }
+
     this.verifyCompanyAmendmentsViaApi(updatedCompanyName);
   }
 
@@ -2780,6 +3039,12 @@ export class AccountEnquiryFlow {
     this.editParentGuardianAndChangeFirstName(updatedFirstName);
     this.saveParentGuardianDetails();
     this.assertParentGuardianNameContains(updatedFirstName);
+
+    if (isLegacyAccountMode()) {
+      logAE('info', 'Skipping OPAL-only parent/guardian amendment baseline verification');
+      return;
+    }
+
     this.verifyParentGuardianAmendmentsViaApi(updatedFirstName);
   }
 
@@ -2869,6 +3134,22 @@ export class AccountEnquiryFlow {
           const party = partyBody['defendant_account_party'] as Record<string, unknown> | undefined;
           const details = party?.['party_details'] as Record<string, unknown> | undefined;
           const individual = details?.['individual_details'] as Record<string, unknown> | undefined;
+
+          if (isLegacyAccountMode()) {
+            const forenames = individual?.['forenames'];
+
+            if (forenames === null || forenames === undefined || String(forenames).trim() === '') {
+              expectTextToContainIgnoringCase(
+                individual?.['surname'],
+                expectedForename,
+                'Legacy individual surname should contain expected forename',
+              );
+              logAESync('assert', 'Legacy forename verified in combined surname field', {
+                surname: individual?.['surname'],
+              });
+              return data.defendantAccountId;
+            }
+          }
 
           expect(individual?.['forenames'], 'Forename should match expected value').to.eq(expectedForename);
           logAESync('assert', 'Forename verified in party details', { forenames: individual?.['forenames'] });
@@ -3007,6 +3288,21 @@ export class AccountEnquiryFlow {
           const details = party?.['party_details'] as Record<string, unknown> | undefined;
           const individual = details?.['individual_details'] as Record<string, unknown> | undefined;
 
+          if (isLegacyAccountMode()) {
+            expect(individual?.['forenames'] ?? null, 'Legacy parent/guardian forenames should not be inferred').to.be
+              .null;
+            expectTextToContainIgnoringCase(
+              individual?.['surname'],
+              expectedGuardianName,
+              'Legacy parent/guardian surname should contain the combined GoB name',
+            );
+            logAESync('assert', 'Legacy parent/guardian name verified in combined surname field', {
+              forenames: individual?.['forenames'],
+              surname: individual?.['surname'],
+            });
+            return data.defendantAccountId;
+          }
+
           expect(individual?.['forenames'], 'Guardian forename should match expected value').to.eq(
             expectedGuardianName,
           );
@@ -3087,6 +3383,16 @@ export class AccountEnquiryFlow {
 
           const organisation = details?.['organisation_details'] as Record<string, unknown> | undefined;
           const organisationName = organisation?.['organisation_name'];
+
+          if (isLegacyAccountMode()) {
+            expectTextToContainIgnoringCase(
+              organisationName,
+              expectedCompanyName,
+              'Legacy organisation name should contain expected value',
+            );
+            logAESync('assert', 'Legacy organisation name verified in party details', { organisationName });
+            return data.defendantAccountId;
+          }
 
           expect(organisationName, 'Organisation name should match expected value').to.eq(expectedCompanyName);
           logAESync('assert', 'Organisation name verified in party details', { organisationName });

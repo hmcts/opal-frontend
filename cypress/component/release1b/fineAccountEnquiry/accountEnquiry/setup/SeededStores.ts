@@ -23,6 +23,7 @@ export const buildSeededAccountStore = (
     business_unit_user_id: 'L077AO',
     welsh_speaking: 'No',
     ...overrides,
+    originator_type: overrides.originator_type ?? null,
   });
   return store;
 };

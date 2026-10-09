@@ -121,6 +121,81 @@ export class EditParentGuardianDetailsActions {
   }
 
   /**
+   * Legacy parent/guardian data can return as one combined name in the surname field.
+   * The amend form still requires first names and last name, so split it before saving.
+   *
+   * @param opts Optional configuration.
+   * @param opts.timeout Max time to wait for the form/field visibility (default 10_000 ms).
+   */
+  public normaliseLegacyCombinedNameIntoRequiredFields(opts?: { timeout?: number }): void {
+    const timeout = opts?.timeout ?? 10_000;
+
+    log('method', 'Normalising legacy combined parent/guardian name');
+    cy.get(L.form, { timeout }).should('be.visible');
+
+    cy.get(L.fields.firstNames, { timeout })
+      .invoke('val')
+      .then((firstNamesValue) => {
+        if (String(firstNamesValue ?? '').trim()) {
+          return;
+        }
+
+        cy.get(L.fields.lastName, { timeout })
+          .invoke('val')
+          .then((lastNameValue) => {
+            const nameParts = String(lastNameValue ?? '')
+              .trim()
+              .split(/\s+/)
+              .filter(Boolean);
+
+            if (nameParts.length < 2) {
+              return;
+            }
+
+            const [firstName, ...lastNameParts] = nameParts;
+            const lastName = lastNameParts.join(' ');
+
+            log('action', 'Splitting legacy combined parent/guardian name', { firstName, lastName });
+            this.setTextInputValue(L.fields.firstNames, firstName, timeout);
+            this.editLastName(lastName, { timeout });
+          });
+      });
+  }
+
+  /**
+   * Legacy can pre-populate the surname field with the previous combined name.
+   * After changing first names, keep only the surname portion for the submit.
+   *
+   * @param opts Optional configuration.
+   * @param opts.timeout Max time to wait for the form/field visibility (default 10_000 ms).
+   */
+  public normaliseLegacySurnameFromCombinedName(opts?: { timeout?: number }): void {
+    const timeout = opts?.timeout ?? 10_000;
+
+    log('method', 'Normalising legacy parent/guardian surname from combined name');
+    cy.get(L.form, { timeout }).should('be.visible');
+
+    cy.get(L.fields.lastName, { timeout })
+      .invoke('val')
+      .then((lastNameValue) => {
+        const nameParts = String(lastNameValue ?? '')
+          .trim()
+          .split(/\s+/)
+          .filter(Boolean);
+
+        if (nameParts.length < 2) {
+          return;
+        }
+
+        const [, ...lastNameParts] = nameParts;
+        const lastName = lastNameParts.join(' ');
+
+        log('action', 'Removing legacy first-name token from parent/guardian surname', { lastName });
+        this.editLastName(lastName, { timeout });
+      });
+  }
+
+  /**
    * Edits the address line 1 input within the Parent/Guardian add/edit form.
    *
    * @param value - Address line 1 to enter.
@@ -143,6 +218,22 @@ export class EditParentGuardianDetailsActions {
       .should('have.value', value);
 
     log('done', `Entered Address line 1 -> "${value}"`);
+  }
+
+  /**
+   * Sets Address line 3 on the Parent/Guardian add or amend form.
+   * @param value - Address text, or an empty string to clear the optional field.
+   */
+  public editAddressLine3(value: string): void {
+    this.setTextInputValue(L.fields.address.line3, value, 10_000);
+  }
+
+  /**
+   * Verifies the saved Address line 3 after reopening the form.
+   * @param expected - Expected address text.
+   */
+  public verifyAddressLine3(expected: string): void {
+    cy.get(L.fields.address.line3).should('be.visible').and('have.value', expected);
   }
 
   /**

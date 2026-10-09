@@ -21,10 +21,9 @@ import { IOpalFinesResults } from './interfaces/opal-fines-results.interface';
 import { IOpalFinesResultsRefData } from './interfaces/opal-fines-results-ref-data.interface';
 import { IOpalFinesMajorCreditor } from './interfaces/opal-fines-major-creditor.interface';
 import { IOpalFinesMajorCreditorRefData } from './interfaces/opal-fines-major-creditor-ref-data.interface';
-import {
-  IFinesMacAddAccountPayload,
-  IFinesMacAddAccountRequestPayload,
-} from '../../fines-mac/services/fines-mac-payload/interfaces/fines-mac-payload-add-account.interfaces';
+import { IFinesMacAddAccountPayload } from '../../fines-mac/services/fines-mac-payload/interfaces/fines-mac-payload-add-account.interfaces';
+import { IFinesMacAddAccountRequestPayload } from '../../fines-mac/services/fines-mac-payload/interfaces/fines-mac-payload-add-account-request.interface';
+import { IFinesMacReplaceAccountRequestPayload } from '../../fines-mac/services/fines-mac-payload/interfaces/fines-mac-payload-replace-account-request.interface';
 import { IOpalFinesDraftAccountsResponse } from './interfaces/opal-fines-draft-account-data.interface';
 import { IOpalFinesDraftAccountParams } from './interfaces/opal-fines-draft-account-params.interface';
 import { IOpalFinesSearchOffencesParams } from './interfaces/opal-fines-search-offences-params.interface';
@@ -66,7 +65,7 @@ import { IOpalFinesUpdateMinorCreditorAccountPayload } from './interfaces/opal-f
 import { IOpalFinesAddEnforcementActionPayload } from './interfaces/opal-fines-add-enforcement-action-payload.interface';
 import { IOpalFinesRemoveEnforcementHoldPayload } from './interfaces/opal-fines-remove-enforcement-hold-payload.interface';
 import { IOpalFinesAccountMinorCreditorCreditor } from './interfaces/opal-fines-account-minor-creditor-creditor.interface';
-import { IOpalFinesDraftAccountPatchRequestPayload } from '@services/fines/opal-fines-service/types/opal-fines-draft-account-patch-request-payload.type';
+import { IOpalFinesDraftAccountPatchRequestPayload } from '@services/fines/opal-fines-service/interfaces/opal-fines-draft-account-patch-request-payload.interface';
 import { IOpalFinesDeleteDefendantAccountPartyPayload } from './interfaces/opal-fines-delete-defendant-account-party-payload.interface';
 import { IOpalFinesCentralFund } from './interfaces/opal-fines-account-central-fund.interface';
 import { IOpalFinesAccountMajorCreditorDetailsHeader } from '../../fines-acc/fines-acc-major-creditor-details/interfaces/fines-acc-major-creditor-details-header.interface';
@@ -76,6 +75,9 @@ import { IOpalFinesAccountDefendantDetailsConsolidatedAccounts } from './interfa
 import { IOpalFinesReport } from './interfaces/opal-fines-report.interface';
 import { IOpalFinesReportInstancesParams } from './interfaces/opal-fines-report-instances-params.interface';
 import { IOpalFinesReportInstancesResponse } from './interfaces/opal-fines-report-instances-response.interface';
+import { IOpalFinesInterfaceJobsSummaryParams } from './interfaces/opal-fines-interface-jobs-summary-params.interface';
+import { IOpalFinesInterfaceJobsSummaryResponse } from './interfaces/opal-fines-interface-jobs-summary-response.interface';
+import { IOpalFinesProcessInterfaceJobsPayload } from './interfaces/opal-fines-process-interface-jobs-payload.interface';
 
 const SAFE_READ_RETRY_POLICY = {
   retryCount: 1,
@@ -100,6 +102,11 @@ export class OpalFines {
   private readonly PARAM_BUSINESS_UNITS = 'business_units';
   private readonly PARAM_USER_ID = 'user_id';
   private readonly PARAM_REPORT_ID = 'report_id';
+  private readonly PARAM_BUSINESS_UNIT_IDS = 'business_unit_ids';
+  private readonly PARAM_STATUSES = 'statuses';
+  private readonly PARAM_COMPLETED_DATE_FROM = 'completed_date_from';
+  private readonly PARAM_COMPLETED_DATE_TO = 'completed_date_to';
+  private readonly PARAM_INTERFACE_NAME = 'interface_name';
 
   private retrySafeReadOptions() {
     return { context: withHttpRetry(SAFE_READ_RETRY_POLICY) };
@@ -265,6 +272,36 @@ export class OpalFines {
   }
 
   /**
+   * Builds HTTP query parameters for retrieving interface job summaries.
+   *
+   * Array filters are serialized as comma-separated values to match the endpoint contract.
+   *
+   * @param params - Interface job summary query parameters.
+   * @returns The HTTP query parameters for the request.
+   */
+  private getInterfaceJobsSummaryParams(params: IOpalFinesInterfaceJobsSummaryParams): HttpParams {
+    let httpParams = new HttpParams().set(this.PARAM_BUSINESS_UNIT_IDS, params.business_unit_ids.join(','));
+
+    if (params.statuses?.length) {
+      httpParams = httpParams.set(this.PARAM_STATUSES, params.statuses.join(','));
+    }
+
+    if (params.completed_date_from) {
+      httpParams = httpParams.set(this.PARAM_COMPLETED_DATE_FROM, params.completed_date_from);
+    }
+
+    if (params.completed_date_to) {
+      httpParams = httpParams.set(this.PARAM_COMPLETED_DATE_TO, params.completed_date_to);
+    }
+
+    if (params.interface_name) {
+      httpParams = httpParams.set(this.PARAM_INTERFACE_NAME, params.interface_name);
+    }
+
+    return httpParams;
+  }
+
+  /**
    * Retrieves the court data for a specific business unit.
    * If the court data is not already cached, it makes an HTTP request to fetch the data and caches it for future use.
    * @param business_unit - The business unit for which to retrieve the court data.
@@ -359,6 +396,35 @@ export class OpalFines {
       OPAL_FINES_PATHS.businessUnitOutstandingAutoPaymentCount,
       this.retrySafeReadOptions(),
     );
+  }
+
+  /**
+   * Retrieves interface job summaries using the supplied business unit and optional filters.
+   *
+   * Interface job state is operational data, so this response is not cached.
+   *
+   * @param params - Business unit, status, completion date, and interface name filters.
+   * @returns An observable of matching interface job summaries.
+   */
+  public getInterfaceJobsSummary(
+    params: IOpalFinesInterfaceJobsSummaryParams,
+  ): Observable<IOpalFinesInterfaceJobsSummaryResponse> {
+    return this.http.get<IOpalFinesInterfaceJobsSummaryResponse>(
+      OPAL_FINES_PATHS.interfaceJobsSummary,
+      this.withRetrySafeReadOptions({ params: this.getInterfaceJobsSummaryParams(params) }),
+    );
+  }
+
+  /**
+   * Starts asynchronous processing for the selected interface jobs.
+   *
+   * This write request is intentionally not retried because repeating it could queue the same jobs twice.
+   *
+   * @param payload - Interface jobs and their override-inhibits values.
+   * @returns An observable that completes when the jobs have been accepted for processing.
+   */
+  public processInterfaceJobs(payload: IOpalFinesProcessInterfaceJobsPayload): Observable<void> {
+    return this.http.post<void>(OPAL_FINES_PATHS.processInterfaceJobs, payload);
   }
 
   /**
@@ -735,14 +801,20 @@ export class OpalFines {
   /**
    * Sends a PUT request to update the draft account payload.
    *
-   * @param body - The payload containing the account information to be added.
+   * @param draftAccountId - ID of the draft account to replace.
+   * @param body - Replacement account request body.
+   * @param version - Version supplied through the If-Match header.
    * @returns An Observable of the updated account payload.
    */
-  public putDraftAddAccountPayload(body: IFinesMacAddAccountRequestPayload): Observable<IFinesMacAddAccountPayload> {
+  public putDraftAddAccountPayload(
+    draftAccountId: number,
+    body: IFinesMacReplaceAccountRequestPayload,
+    version: string,
+  ): Observable<IFinesMacAddAccountPayload> {
     return this.http.put<IFinesMacAddAccountPayload>(
-      `${OPAL_FINES_PATHS.draftAccounts}/${body.draft_account_id}`,
+      `${OPAL_FINES_PATHS.draftAccounts}/${draftAccountId}`,
       body,
-      this.buildIfMatchHeader(body.version!),
+      this.buildIfMatchHeader(version),
     );
   }
 
@@ -762,16 +834,18 @@ export class OpalFines {
    *
    * @param draftAccountId - The unique identifier of the draft account to update.
    * @param payload - The partial payload containing the fields to update in the draft account.
+   * @param version - Version supplied through the If-Match header.
    * @returns An Observable emitting the updated account payload as an `IFinesMacAddAccountPayload`.
    */
   public patchDraftAccountPayload(
     draftAccountId: number,
     payload: IOpalFinesDraftAccountPatchRequestPayload,
+    version: string,
   ): Observable<IFinesMacAddAccountPayload> {
     return this.http.patch<IFinesMacAddAccountPayload>(
       `${OPAL_FINES_PATHS.draftAccounts}/${draftAccountId}`,
       payload,
-      this.buildIfMatchHeader(payload.version!),
+      this.buildIfMatchHeader(version),
     );
   }
 

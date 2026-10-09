@@ -61,7 +61,7 @@ Feature: Global Api Interceptor R1b
         | account.payment_card_request            | false                               |
         | account.defendant.dob                   | 2001-07-16                          |
       When I search for the account by last name "ConcurrencyFae{uniq}" and open the latest result
-      And I go to the Defendant details section and the header is "Defendant details"
+      And the Defendant details section header is "Defendant details"
 
     @JIRA-EPIC:PO-2239 @JIRA-STORY:PO-2226 @JIRA-TEST-KEY:PO-5282 @JIRA-NFR:PO-2542 @R1BDrop1
     Scenario: Concurrency failure discards defendant edit state
@@ -77,7 +77,7 @@ Feature: Global Api Interceptor R1b
       # AC1b: Unsaved journey state is discarded after the concurrency failure.
       When I return to the dashboard using the HMCTS link
       And I search for the account by last name "ConcurrencyFae{uniq}" and open the latest result
-      And I go to the Defendant details section and the header is "Defendant details"
+      And the Defendant details section header is "Defendant details"
       And I edit the Defendant details without making changes
       Then I should see the First name field still contains "Casey"
 

@@ -166,6 +166,27 @@ describe('FinesAccDefendantDetailsImpositionsTabComponent', () => {
     expect(creditorCell.textContent).toContain('Central Fund');
   });
 
+  it.each([
+    {
+      description: 'the display name when the creditor name is unavailable',
+      displayName: 'Major Creditor',
+      expected: 'Major Creditor',
+    },
+    {
+      description: 'the creditor account ID when both creditor names are unavailable',
+      displayName: null,
+      expected: '770000000001',
+    },
+  ])('should display $description', ({ displayName, expected }) => {
+    const tabData = structuredClone(OPAL_FINES_ACCOUNT_DEFENDANT_DETAILS_IMPOSITIONS_TAB_REF_DATA_MOCK);
+    Object.assign(tabData.impositions[0].creditor, { name: null, display_name: displayName });
+
+    const { fixture } = setupComponent(tabData);
+    const creditorCell = fixture.nativeElement.querySelector('#imposition-creditor-0') as HTMLTableCellElement;
+
+    expect(creditorCell.textContent?.trim()).toBe(expected);
+  });
+
   it('should announce the new page and focus its first date cell after rendering', async () => {
     const { component, fixture } = setupComponent();
     fixture.componentRef.setInput('paginationPageTitle', 'John Smith');

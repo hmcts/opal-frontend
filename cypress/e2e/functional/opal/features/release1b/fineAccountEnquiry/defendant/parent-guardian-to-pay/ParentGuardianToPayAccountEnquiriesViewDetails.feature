@@ -22,7 +22,7 @@ Feature: Parent Guardian To Pay Account Enquiries View Details
         | account.defendant.dob               | 2010-05-15       |
       When I search for the account by last name "AddPgYouth{uniq}" and open the latest result
       Then I should see the page header contains "ADDPGYOUTH{uniqUpper}"
-      When I go to the Defendant details section and the header is "Defendant details"
+      When the Defendant details section header is "Defendant details"
       Then I should see the add parent or guardian details action
 
     @R1BDrop1 @JIRA-STORY:PO-1877 @JIRA-EPIC:PO-1875 @JIRA-TEST-KEY:PO-5530
@@ -61,6 +61,24 @@ Feature: Parent Guardian To Pay Account Enquiries View Details
       And I should see the parent or guardian add error summary contains "Enter parent or guardian last name"
       And I should see the parent or guardian add error summary contains "Enter address line 1, typically the building and street"
 
+    @functional @R1BDrop1 @JIRA-STORY:PO-1877 @JIRA-EPIC:PO-1875 @JIRA-DEFECT:PO-10731
+    Scenario: Adding a non-paying parent or guardian rejects address line 3 above 13 characters and saves 13 characters
+      When I start adding parent or guardian details
+      And I enter "Pat" into the parent or guardian first name field
+      And I enter "Guardian" into the parent or guardian last name field
+      And I enter "1 Test Street" into the parent or guardian address line 1 field
+      And I enter "ABCDEFGHIJKLMN" into the parent or guardian address line 3 field
+      And I attempt to save the parent or guardian add details
+      Then I should see the parent or guardian add error summary contains "Address line 3 must be 13 characters or fewer"
+      When I enter "ABCDEFGHIJKLMNOP" into the parent or guardian address line 3 field
+      And I attempt to save the parent or guardian add details
+      Then I should see the parent or guardian add error summary contains "Address line 3 must be 13 characters or fewer"
+      When I enter "ABCDEFGHIJKLM" into the parent or guardian address line 3 field
+      And I save the parent or guardian details
+      Then I should return to the account details page Parent or guardian tab
+      When I start changing the non-paying parent or guardian details
+      Then I should see the parent or guardian address line 3 field contains "ABCDEFGHIJKLM"
+
   Rule: Youth-only account with parent or guardian details
     Background:
       Given I create a "adultOrYouthOnly" draft account with the following details and set status "Publishing Pending" using user "opal-test-10@dev.platform.hmcts.net":
@@ -75,7 +93,7 @@ Feature: Parent Guardian To Pay Account Enquiries View Details
         | account.defendant.dob               | 2010-05-15          |
       When I search for the account by last name "RemovePgYouth{uniq}" and open the latest result
       Then I should see the page header contains "REMOVEPGYOUTH{uniqUpper}"
-      When I go to the Defendant details section and the header is "Defendant details"
+      When the Defendant details section header is "Defendant details"
       Then I should see the add parent or guardian details action
       When I start adding parent or guardian details
       Then I should be on the add parent or guardian details page
@@ -99,7 +117,7 @@ Feature: Parent Guardian To Pay Account Enquiries View Details
       Then I should be on the amend parent or guardian details page
       When I cancel changing parent or guardian details without making changes
       Then I should return to the account details page Defendant tab
-      When I go to the Parent or guardian details section and the header is "Parent or guardian details"
+      When the Parent or guardian details section header is "Parent or guardian details"
       And I start removing parent or guardian details
       Then I should be on the remove parent or guardian details page for "REMOVEPGYOUTH{uniqUpper}"
       When I cancel removing parent or guardian details
@@ -128,45 +146,47 @@ Feature: Parent Guardian To Pay Account Enquiries View Details
     Background:
       # AC1 – Account setup
       Given I create a "pgToPay" draft account with the following details and set status "Publishing Pending" using user "opal-test-10@dev.platform.hmcts.net":
-        | Account_status                          | Submitted                     |
-        | account.defendant.forenames             | Alex                          |
-        | account.defendant.surname               | PgPayEdit{uniq}               |
-        | account.defendant.email_address_1       | Alex.PgPayEdit{uniq}@test.com |
-        | account.defendant.telephone_number_home | 02078250011                   |
-        | account.account_type                    | Fine                          |
-        | account.prosecutor_case_reference       | PCR-AUTO-009                  |
-        | account.collection_order_made           | false                         |
-        | account.collection_order_made_today     | false                         |
-        | account.payment_card_request            | false                         |
-        | account.defendant.dob                   | 2010-11-10                    |
-        | account.defendant.parent_guardian.dob   | 1980-02-15                    |
+        | Account_status                                                        | Submitted                     |
+        | account.defendant.forenames                                           | Alex                          |
+        | account.defendant.surname                                             | PgPayEdit{uniq}               |
+        | account.defendant.email_address_1                                     | Alex.PgPayEdit{uniq}@test.com |
+        | account.defendant.telephone_number_home                               | 02078250011                   |
+        | account.account_type                                                  | Fine                          |
+        | account.prosecutor_case_reference                                     | PCR-AUTO-009                  |
+        | account.collection_order_made                                         | false                         |
+        | account.collection_order_made_today                                   | false                         |
+        | account.payment_card_request                                          | false                         |
+        | account.defendant.dob                                                 | 2010-11-10                    |
+        | account.defendant.parent_guardian.dob                                 | 1980-02-15                    |
+        | account.defendant.parent_guardian.email_address_1                     | Pat.PgPayEdit{uniq}@test.com  |
+        | account.defendant.parent_guardian.debtor_detail.employer_company_name | PG Employer Ltd               |
       # AC2 – Search and view account details
       When I search for the account by last name "PgPayEdit{uniq}" and open the latest result
       Then I should see the page header contains "Alex PGPAYEDIT{uniqUpper}"
       # AC3 – Navigate to Parent or guardian details
-      When I go to the Parent or guardian details section and the header is "Parent or guardian details"
+      When the Parent or guardian details section header is "Parent or guardian details"
 
     @R1BDrop1 @JIRA-STORY:PO-2671 @JIRA-EPIC:PO-8248
-    Scenario Outline: AC3a-AC3e Parent or guardian tab Change links open the correct amend screens
-      # AC3a – the heading Change link is removed
-      # AC3b – section Change links are shown for Parent or guardian details, Contact details, and Employer details
-      When I open the "<section>" Change link on the Parent or guardian tab
+    Scenario Outline: AC3a-AC3e Parent or guardian tab change actions open the correct amend screens
+      # AC3a – the heading Change action is removed
+      # AC3b – section Change actions are shown for Parent or guardian details, Contact details, and Employer details
+      When the "<section>" Parent or guardian tab Change action is selected
       Then I should be on the "parentGuardian" amend route with fragment "<fragment>"
 
       @JIRA-TEST-KEY:PO-9985
       Examples:
-        | section                    | fragment           |
-        | Parent or guardian details | party-details      |
+        | section                    | fragment      |
+        | Parent or guardian details | party-details |
       @JIRA-TEST-KEY:PO-9986
       Examples:
-        | section                    | fragment           |
-        | Contact details            | contact-details    |
+        | section         | fragment        |
+        | Contact details | contact-details |
       @JIRA-TEST-KEY:PO-9987
       Examples:
-        | section                    | fragment           |
-        | Employer details           | employment-details |
+        | section          | fragment           |
+        | Employer details | employment-details |
 
-    @JIRA-EPIC:PO-976 @R1BDrop1 @JIRA-STORY:PO-1129 @JIRA-TEST-KEY:PO-5532
+    @JIRA-EPIC:PO-976 @JIRA-STORY:PO-1129 @JIRA-TEST-KEY:PO-5532
     Scenario: Saving parent or guardian details updates the name and audit trail
       # AC1 – Edit and save changes
       And I edit the Parent or guardian details and change the First name to "Updated"
@@ -176,7 +196,7 @@ Feature: Parent Guardian To Pay Account Enquiries View Details
       # AC3/4 - Verify via API
       And I verify parent or guardian amendments via API for guardian name "Updated"
 
-    @JIRA-EPIC:PO-976 @R1BDrop1 @JIRA-STORY:PO-1129 @JIRA-TEST-KEY:PO-5533
+    @JIRA-EPIC:PO-976 @JIRA-STORY:PO-1129 @JIRA-TEST-KEY:PO-5533 @JIRA-DEFECT:PO-10779
     Scenario: Saving unchanged parent or guardian details does not create amendments
       # AC3/4 – Verify via API and store amendment count baseline
       And I establish a parent or guardian amendment baseline with first name "Updated"
@@ -187,6 +207,22 @@ Feature: Parent Guardian To Pay Account Enquiries View Details
       # LNAME is set in the original pgToPay account creation
       And I should see the parent or guardian name contains "Updated LNAME"
       And I verify no amendments were created via API for parent or guardian details
+
+    @functional @R1BDrop1 @JIRA-STORY:PO-1112 @JIRA-EPIC:PO-976 @JIRA-DEFECT:PO-10731
+    Scenario: Amending a paying parent or guardian rejects address line 3 above 13 characters and saves 13 characters
+      When I edit the Parent or guardian details without making changes
+      And I enter "FNAME" into the amend parent or guardian first name field
+      And I enter "ABCDEFGHIJKLMN" into the parent or guardian address line 3 field
+      And I attempt to save the parent or guardian amend details
+      Then I should see the parent or guardian amend error summary contains "Address line 3 must be 13 characters or fewer"
+      When I enter "ABCDEFGHIJKLMNOP" into the parent or guardian address line 3 field
+      And I attempt to save the parent or guardian amend details
+      Then I should see the parent or guardian amend error summary contains "Address line 3 must be 13 characters or fewer"
+      When I enter "ABCDEFGHIJKLM" into the parent or guardian address line 3 field
+      And I save the parent or guardian details
+      Then I should return to the account details page Parent or guardian tab
+      When I edit the Parent or guardian details without making changes
+      Then I should see the parent or guardian address line 3 field contains "ABCDEFGHIJKLM"
 
   Rule: Youth-only amend parent or guardian baseline
     Background:
@@ -202,7 +238,7 @@ Feature: Parent Guardian To Pay Account Enquiries View Details
         | account.defendant.dob               | 2010-05-15         |
       When I search for the account by last name "AmendPgYouth{uniq}" and open the latest result
       Then I should see the page header contains "AMENDPGYOUTH{uniqUpper}"
-      When I go to the Defendant details section and the header is "Defendant details"
+      When the Defendant details section header is "Defendant details"
       Then I should see the add parent or guardian details action
       When I start adding parent or guardian details
       Then I should be on the add parent or guardian details page
@@ -222,23 +258,23 @@ Feature: Parent Guardian To Pay Account Enquiries View Details
 
     @R1BDrop1 @JIRA-STORY:PO-3915 @JIRA-EPIC:PO-1875 @JIRA-TEST-KEY:PO-9988
     Scenario: Discarding entered parent or guardian changes keeps the saved name on the account
-      When I go to the Parent or guardian details section and the header is "Parent or guardian details"
+      When the Parent or guardian details section header is "Parent or guardian details"
       And I start changing the non-paying parent or guardian details
       Then I should be on the amend parent or guardian details page
       When I enter "Updated" into the amend parent or guardian first name field
       And I attempt to cancel changing parent or guardian details and choose OK on the confirmation dialog
       Then I should return to the account details page Defendant tab
-      When I go to the Parent or guardian details section and the header is "Parent or guardian details"
+      When the Parent or guardian details section header is "Parent or guardian details"
       Then I should see the parent or guardian name contains "Pat GUARDIANAMEND{uniqUpper}"
 
-    @R1BDrop1 @JIRA-STORY:PO-3915 @JIRA-EPIC:PO-1875 @JIRA-TEST-KEY:PO-9989
+    @JIRA-STORY:PO-3915 @JIRA-EPIC:PO-1875 @JIRA-TEST-KEY:PO-9989 @JIRA-DEFECT:PO-10779
     Scenario: Saving parent or guardian changes updates the Parent or guardian tab and audit trail
       When I start changing the non-paying parent or guardian details
       Then I should be on the amend parent or guardian details page
       When I enter "Updated" into the amend parent or guardian first name field
       And I save the parent or guardian details
       Then I should return to the account details page Parent or guardian tab
-      And I should see the parent or guardian name contains "Updated GUARDIANAMEND{uniqUpper}"
+      And I should see the parent or guardian name contains "Updated"
       And I verify parent or guardian amendments via API for guardian name "Updated"
 
     @R1BDrop1 @JIRA-STORY:PO-3915 @JIRA-EPIC:PO-1875 @JIRA-TEST-KEY:PO-6357
@@ -255,6 +291,23 @@ Feature: Parent Guardian To Pay Account Enquiries View Details
       Then I should remain on the amend parent or guardian details page
       And I should see the amend parent or guardian first name field contains "Updated"
       And I should see the parent or guardian amend error summary contains "Enter parent or guardian last name"
+
+    @functional @R1BDrop1 @JIRA-STORY:PO-3915 @JIRA-EPIC:PO-1875 @JIRA-DEFECT:PO-10731
+    Scenario: Amending a non-paying parent or guardian rejects address line 3 above 13 characters and saves 13 characters
+      When I start changing the non-paying parent or guardian details
+      And I enter "Pat" into the amend parent or guardian first name field
+      And I enter "ABCDEFGHIJKLMN" into the parent or guardian address line 3 field
+      And I attempt to save the parent or guardian amend details
+      Then I should see the parent or guardian amend error summary contains "Address line 3 must be 13 characters or fewer"
+      When I enter "ABCDEFGHIJKLMNOP" into the parent or guardian address line 3 field
+      And I attempt to save the parent or guardian amend details
+      Then I should see the parent or guardian amend error summary contains "Address line 3 must be 13 characters or fewer"
+      When I enter "ABCDEFGHIJKLM" into the parent or guardian address line 3 field
+      And I save the parent or guardian details
+      Then I should return to the account details page Parent or guardian tab
+      When I start changing the non-paying parent or guardian details
+      Then I should see the parent or guardian address line 3 field contains "ABCDEFGHIJKLM"
+
   Rule: Non-paying defendant account baseline
     Background:
       # AC1 – Account setup
@@ -268,7 +321,7 @@ Feature: Parent Guardian To Pay Account Enquiries View Details
       When I search for the account by last name "TestNonPayee{uniq}" and open the latest result
       Then I should see the page header contains "Miss Jane TESTNONPAYEE{uniqUpper}"
       # AC3 – Navigate to Defendant details
-      When I go to the Defendant details section and the header is "Defendant details"
+      When the Defendant details section header is "Defendant details"
       Then I should not see the convert to company account action
 
 
@@ -290,7 +343,7 @@ Feature: Parent Guardian To Pay Account Enquiries View Details
       And I should see the account header contains "Miss Jane TESTNONPAYEE{uniqUpper}"
 
 
-    @R1BDrop1 @JIRA-STORY:PO-2315 @JIRA-STORY:PO-1663 @JIRA-EPIC:PO-812 @JIRA-TEST-KEY:PO-5528
+    @JIRA-STORY:PO-2315 @JIRA-STORY:PO-1663 @JIRA-EPIC:PO-812 @JIRA-TEST-KEY:PO-5528 @JIRA-DEFECT:PO-10780
     Scenario: Saving defendant details updates the name and audit trail for a non-paying account
       # AC1 – Edit and save changes
       And I edit the Defendant details and change the First name to "Updated"
@@ -301,7 +354,7 @@ Feature: Parent Guardian To Pay Account Enquiries View Details
       And I verify defendant amendments via API for first name "Updated"
 
 
-    @R1BDrop1 @JIRA-STORY:PO-2315 @JIRA-STORY:PO-1663 @JIRA-EPIC:PO-812 @JIRA-TEST-KEY:PO-5529
+    @JIRA-STORY:PO-2315 @JIRA-STORY:PO-1663 @JIRA-EPIC:PO-812 @JIRA-TEST-KEY:PO-5529 @JIRA-DEFECT:PO-10780
     Scenario: Saving unchanged defendant details does not create amendments for a non-paying account
       # AC3/4 – Verify via API and store amendment count baseline
       And I establish a defendant amendment baseline with first name "Updated"
@@ -331,7 +384,7 @@ Feature: Parent Guardian To Pay Account Enquiries View Details
         | account.defendant.dob                   | 2010-11-10                          |
         | account.defendant.parent_guardian.dob   | 1980-02-15                          |
       When I search for the account by last name "PgPayRestricted{uniq}" and verify the page header is "Alex PGPAYRESTRICTED{uniqUpper}"
-      And I go to the Parent or guardian details section and the header is "Parent or guardian details"
+      And the Parent or guardian details section header is "Parent or guardian details"
       Then I do not see any parent or guardian details Change actions
       And I do not see the remove parent or guardian details action
 

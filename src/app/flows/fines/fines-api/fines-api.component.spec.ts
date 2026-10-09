@@ -56,6 +56,13 @@ describe('FinesApiComponent', () => {
     expect(component.handleBeforeUnload()).toBe(false);
   });
 
+  it('should prevent leaving the journey or unloading after a Process file is selected', () => {
+    finesApiStore.setSelectedFileIds(['file-1']);
+
+    expect(component.canDeactivate()).toBe(false);
+    expect(component.handleBeforeUnload()).toBe(false);
+  });
+
   it('should allow deactivation again after unsaved changes are cleared', () => {
     finesApiStore.setSelectedBusinessUnitIds([77]);
     finesApiStore.clearSelectedBusinessUnitIds();

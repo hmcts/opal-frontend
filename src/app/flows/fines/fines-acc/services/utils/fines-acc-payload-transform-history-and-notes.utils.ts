@@ -510,9 +510,7 @@ function instalmentsPart(
 
   const instalmentValues = [instalmentAmount, instalmentPeriod, effectiveDate].filter(isPresentString);
 
-  return instalmentValues.length
-    ? part([fragment(labels().instalments), ...instalmentValues.map((text) => fragment(text))])
-    : null;
+  return part([fragment(labels().instalments), ...instalmentValues.map((text) => fragment(text))]);
 }
 
 /**

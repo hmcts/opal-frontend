@@ -34,6 +34,7 @@ import {
   RELEASE_1B_FEATURE_FLAG,
   RELEASE_1C_WRITE_OFF_FEATURE_FLAG,
   RELEASE_1C_ENFORCEMENT_OPERATIONAL_REPORTING_FEATURE_FLAG,
+  RELEASE_1C_PAYMENT_FEATURE_FLAG,
 } from '../constants/release-feature-flags.constant';
 
 export const release1aFeatureFlagGuard = featureFlagRedirectGuard(RELEASE_1A_FEATURE_FLAG);
@@ -42,6 +43,7 @@ export const release1cWriteOffFeatureFlagGuard = featureFlagRedirectGuard(RELEAS
 export const release1cEnforcementOperationalReportingFeatureFlagGuard = featureFlagRedirectGuard(
   RELEASE_1C_ENFORCEMENT_OPERATIONAL_REPORTING_FEATURE_FLAG,
 );
+export const release1cPaymentFeatureFlagGuard = featureFlagRedirectGuard(RELEASE_1C_PAYMENT_FEATURE_FLAG);
 
 export const finesRouting: Routes = [
   {
@@ -116,7 +118,8 @@ export const finesRouting: Routes = [
         path: FINES_ROUTING_PATHS.children.autoPaymentIn.root,
         loadComponent: () => import('../fines-api/fines-api.component').then((c) => c.FinesApiComponent),
         children: autoPaymentInRouting,
-        canActivate: [authGuard, finesSectionPermissionsGuard],
+        canActivate: [authGuard, release1cPaymentFeatureFlagGuard, finesSectionPermissionsGuard],
+        canActivateChild: [release1cPaymentFeatureFlagGuard],
         canDeactivate: [canDeactivateGuard],
         data: {
           sectionKey: FINES_DASHBOARD_ROUTING_PATHS.children.finance,

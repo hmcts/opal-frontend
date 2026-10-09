@@ -2,8 +2,10 @@ import { IChildRoutingPaths } from '@hmcts/opal-frontend-common/pages/routing/in
 
 export interface IFinesFinanceRoutingPaths extends IChildRoutingPaths {
   children: {
+    search: string;
     inbound: string;
     outbound: string;
+    variantBankingFiles: string;
     upload: string;
   };
 }

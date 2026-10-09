@@ -1,6 +1,6 @@
-import { IFinesFinanceRoutingPaths } from '../interfaces/fines-finance-routing-paths.interface';
+import { IFinesFinanceRoutingTitles } from '../interfaces/fines-finance-routing-titles.interface';
 
-export const FINES_FINANCE_ROUTING_TITLES: IFinesFinanceRoutingPaths = {
+export const FINES_FINANCE_ROUTING_TITLES: IFinesFinanceRoutingTitles = {
   root: 'Finance',
   children: {
     inbound: 'Inbound file viewer',

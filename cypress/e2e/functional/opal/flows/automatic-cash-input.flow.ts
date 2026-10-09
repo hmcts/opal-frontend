@@ -19,4 +19,25 @@ export class AutomaticCashInputFlow {
   public assertOnlyPermittedBusinessUnitsAreDisplayed(): void {
     this.actions.assertOnlyPermittedBusinessUnitsAreDisplayed();
   }
+
+  /**
+   * Selects BUs and moves to Processing with deterministic eligible file data.
+   */
+  public selectBusinessUnitsAndContinueWithStubbedProcessFiles(): void {
+    this.actions.selectBusinessUnitsAndContinueWithStubbedProcessFiles();
+  }
+
+  /**
+   * Verifies Processing only renders files for the BUs selected earlier in the journey.
+   */
+  public assertOnlySelectedBusinessUnitFilesAreDisplayed(): void {
+    this.actions.assertOnlySelectedBusinessUnitFilesAreDisplayed();
+  }
+
+  /**
+   * Selects a file and moves from Processing to Confirm before processing.
+   */
+  public selectAProcessFileAndOpenConfirmProcess(): void {
+    this.actions.selectAProcessFileAndOpenConfirmProcess();
+  }
 }

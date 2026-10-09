@@ -45,7 +45,7 @@ Feature: Minor Creditor Account Enquiries View Details
       And I should see the minor creditor name contains "Mr Updated AMENDMINOR{uniqUpper}"
       And I verify minor creditor amendments via API for first name "Updated"
 
-    @R1BDrop2 @JIRA-STORY:PO-1984 @JIRA-EPIC:PO-1285 @JIRA-TEST-KEY:PO-7551
+    @R1BDrop2 @JIRA-STORY:PO-1984 @JIRA-EPIC:PO-1285 @JIRA-TEST-KEY:PO-7551 @JIRA-NFR:PO-2323
     Scenario: Saving invalid amend minor creditor details keeps me on the form and displays validation errors
       # AC2c – Save invalid changes remains on the same screen and shows relevant errors
       When I attempt to amend the minor creditor first name to "" and save

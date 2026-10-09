@@ -58,7 +58,7 @@ Feature: Minor Creditor View Defendant Account Summary Journeys
     When I open the latest matching result from the search results
     Then I should see the account header contains "Minor Creditor Seed AccountSearch{uniqUpper}"
 
-  @R1B @JIRA-STORY:PO-2963 @JIRA-EPIC:PO-2630
+  @R1BDrop2 @JIRA-STORY:PO-2963 @JIRA-EPIC:PO-2630
   Scenario: AC1, AC2, AC3 and AC5 - Repayment minor creditor displays only the Paid out header tile
     Given I am logged in with email "opal-test@dev.platform.hmcts.net"
     And a published account exists with an individual minor creditor:

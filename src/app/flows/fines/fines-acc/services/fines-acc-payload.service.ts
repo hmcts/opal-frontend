@@ -1,5 +1,5 @@
 import { inject, Injectable } from '@angular/core';
-import { FinesMacPayloadService } from '../../fines-mac/services/fines-mac-payload/fines-mac-payload.service';
+import { DateService } from '@hmcts/opal-frontend-common/services/date-service';
 import { IFinesAccAddNoteForm } from '../fines-acc-note-add/interfaces/fines-acc-note-add-form.interface';
 import { IOpalFinesAddNotePayload } from '@services/fines/opal-fines-service/interfaces/opal-fines-add-note.interface';
 import { GlobalStore } from '@hmcts/opal-frontend-common/stores/global';
@@ -66,10 +66,32 @@ import { OPAL_FINES_NOTE_RECORD_TYPES } from '@services/fines/opal-fines-service
 })
 export class FinesAccPayloadService {
   private readonly transformationService = inject(TransformationService);
-  private readonly payloadService = inject(FinesMacPayloadService);
   private readonly globalStore = inject(GlobalStore);
   private readonly finesAccStore = inject(FinesAccountStore);
   private readonly historyDetailsTransformationService = inject(HistoryTransformationService);
+  private readonly dateService = inject(DateService);
+
+  /**
+   * Returns the current local datetime without a timezone suffix.
+   */
+  private getCurrentLocalDateTime(): string {
+    return this.dateService.toFormat(this.dateService.getDateNow(), "yyyy-MM-dd'T'HH:mm:ss");
+  }
+
+  /**
+   * Retrieves the current user's business unit user ID for a business unit.
+   *
+   * @param businessUnitId - Business unit ID to find.
+   * @returns The matching business unit user ID, or null when none exists.
+   */
+  private getBusinessUnitBusinessUserId(businessUnitId: number): string | null {
+    return (
+      this.globalStore
+        .userState()
+        .business_unit_users.find((businessUnitUser) => businessUnitUser.business_unit_id === businessUnitId)
+        ?.business_unit_user_id ?? null
+    );
+  }
 
   /**
    * Constructs the payload for adding a note against the requested account record type.
@@ -189,9 +211,8 @@ export class FinesAccPayloadService {
           .filter(Boolean)
           .join(' ');
 
-    const business_unit_user_id = this.payloadService.getBusinessUnitBusinessUserId(
+    const business_unit_user_id = this.getBusinessUnitBusinessUserId(
       Number(headingData.business_unit_summary.business_unit_id),
-      this.globalStore.userState(),
     );
 
     return {
@@ -231,9 +252,8 @@ export class FinesAccPayloadService {
           .filter(Boolean)
           .join(' ');
 
-    const business_unit_user_id = this.payloadService.getBusinessUnitBusinessUserId(
+    const business_unit_user_id = this.getBusinessUnitBusinessUserId(
       Number(headingData.business_unit.business_unit_id),
-      this.globalStore.userState(),
     );
 
     return {
@@ -491,7 +511,10 @@ export class FinesAccPayloadService {
    * @returns The payload object conforming to the IOpalFinesAmendPaymentTermsPayload interface
    */
   public buildPaymentTermsAmendPayload(formData: IFinesAccPaymentTermsAmendState): IOpalFinesAmendPaymentTermsPayload {
-    return this.transformPayload(buildPaymentTermsAmendPayloadUtil(formData), FINES_ACC_BUILD_TRANSFORM_ITEMS_CONFIG);
+    return this.transformPayload(
+      buildPaymentTermsAmendPayloadUtil(formData, this.getCurrentLocalDateTime()),
+      FINES_ACC_BUILD_TRANSFORM_ITEMS_CONFIG,
+    );
   }
 
   /**
@@ -507,7 +530,7 @@ export class FinesAccPayloadService {
     fields: IFinesAccEnfActionAddFormField[],
     formState: IFinesAccEnfActionAddFormState,
   ): IOpalFinesAddEnforcementActionPayload {
-    return buildEnforcementActionAddPayload(result, fields, formState);
+    return buildEnforcementActionAddPayload(result, fields, formState, this.getCurrentLocalDateTime());
   }
 
   /**
@@ -592,9 +615,8 @@ export class FinesAccPayloadService {
     account_id: number,
     headingData: IOpalFinesAccountMajorCreditorDetailsHeader,
   ): IFinesAccountState {
-    const business_unit_user_id = this.payloadService.getBusinessUnitBusinessUserId(
+    const business_unit_user_id = this.getBusinessUnitBusinessUserId(
       Number(headingData.business_unit_details.business_unit_id),
-      this.globalStore.userState(),
     );
 
     return {

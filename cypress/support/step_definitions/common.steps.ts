@@ -33,14 +33,7 @@ const Common = (): CommonActions => new CommonActions();
  */
 When('I cancel without entering data', () => {
   log('step', 'Cancel without edits → confirm leave (assert no navigation)');
-
-  // Capture the current pathname
-  cy.location('pathname').then((beforePath) => {
-    log('debug', 'Captured current pathname before cancel', { beforePath });
-
-    // Trigger the cancel+confirm action
-    Common().cancelEditing(true);
-  });
+  Common().cancelWithoutEnteringData();
 });
 
 /**
@@ -142,26 +135,6 @@ Then(
 When('I select back and confirm', () => {
   log('step', 'Select back and confirm (navigate back with confirmation)');
   Common().navigateBrowserBackWithChoice('ok');
-});
-
-/**
- * @step I select back and cancel
- * @description
- * Triggers a browser back navigation attempt but **cancels** the confirmation,
- * ensuring the user remains on the current page and no navigation occurs.
- *
- * @remarks
- *  - Uses `CommonActions.navigateBrowserBackWithChoice('cancel')` to simulate
- *    choosing the *Cancel* option in the confirmation dialog.
- *  - Combine this with a follow-up assertion step to verify that the URL or
- *    page state has not changed.
- *
- * @example
- *  When I select back and cancel
- */
-When('I select back and cancel', () => {
-  log('step', 'Select back and cancel (no navigate)');
-  Common().navigateBrowserBackWithChoice('cancel');
 });
 
 /**

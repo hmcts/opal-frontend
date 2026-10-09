@@ -91,6 +91,13 @@ describe('FinesAccSummaryHeaderComponent', () => {
     expect(fixture.debugElement.query(By.css('#acc-summary-header-account-status'))).toBeNull();
   });
 
+  it('should normalize an unavailable account status code to null', () => {
+    component.accountStatusCode = undefined;
+
+    expect(component.accountStatusCode).toBeNull();
+    expect(component.accountStatusBannerContent).toBeNull();
+  });
+
   it('should clear success message when banner emits clearSuccessMessage', () => {
     fixture.detectChanges();
 

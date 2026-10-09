@@ -92,11 +92,12 @@ function mapInstalmentPeriodDisplayName(instalmentPeriodCode: string): string | 
  * Maps payment terms form data to API payload format
  *
  * @param formData - The payment terms form data
- * @param currentDate - Current date in yyyy-MM-dd format for posted_date
+ * @param postedDate - The local timestamp to include in the posted details
  * @returns Payload in API format
  */
 export function buildPaymentTermsAmendPayloadUtil(
   formData: IFinesAccPaymentTermsAmendState,
+  postedDate: string,
 ): IOpalFinesAmendPaymentTermsPayload {
   // Map payment terms type to API codes
   const paymentTermsTypeCode = mapPaymentTermsTypeToCode(formData.facc_payment_terms_payment_terms);
@@ -135,9 +136,9 @@ export function buildPaymentTermsAmendPayloadUtil(
       lump_sum_amount: mapLumpSumAmount(formData),
       instalment_amount: mapInstalmentAmount(formData),
       posted_details: {
-        posted_by: '',
-        posted_date: '',
-        posted_by_name: '',
+        posted_by: null,
+        posted_date: postedDate,
+        posted_by_name: null,
       },
     },
     request_payment_card: formData.facc_payment_terms_payment_card_request,

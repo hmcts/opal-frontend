@@ -18,14 +18,12 @@
  *   Then I should see a "Back to dashboard" action
  *
  * @see {@link assertAccessDeniedPage}
- * @see {@link assertErrorMessage}
  * @see {@link assertBackToDashboardAction}
  */
 
 import { Then } from '@badeball/cypress-cucumber-preprocessor';
 import {
   assertAccessDeniedPage,
-  assertErrorMessage,
   assertBackToDashboardAction,
 } from '../../e2e/functional/opal/actions/access-denied.actions';
 
@@ -39,19 +37,6 @@ import {
  */
 Then('I should see an Access Denied page', () => {
   assertAccessDeniedPage();
-});
-
-/**
- * @step Verifies that an error message with specific text is displayed on screen.
- *
- * @param message - The expected text content of the error message element.
- *
- * @details
- * - Covers both inline and banner-style error messages, depending on page type.
- * - Uses `assertErrorMessage()` to locate and assert the message text.
- */
-Then('I should see an error message {string}', (message: string) => {
-  assertErrorMessage(message);
 });
 
 /**

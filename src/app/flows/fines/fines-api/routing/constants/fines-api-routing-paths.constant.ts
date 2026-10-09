@@ -5,5 +5,6 @@ export const FINES_API_ROUTING_PATHS: IFinesApiRoutingPaths = {
   children: {
     selectBusinessUnits: 'select-business-units',
     processAllocate: 'process-allocate',
+    confirmProcess: 'confirm-process',
   },
 };

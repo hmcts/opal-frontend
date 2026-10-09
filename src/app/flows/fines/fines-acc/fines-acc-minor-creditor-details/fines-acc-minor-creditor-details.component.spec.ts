@@ -15,6 +15,9 @@ import { beforeEach, describe, expect, it, vi } from 'vitest';
 import { OPAL_FINES_ACCOUNT_MINOR_CREDITOR_AT_A_GLANCE_WITH_DEFENDANT_MOCK } from '../../services/opal-fines-service/mocks/opal-fines-account-minor-creditor-at-a-glance-with-defendant.mock';
 import { OPAL_FINES_ACCOUNT_MINOR_CREDITOR_CREDITOR_MOCK } from '../../services/opal-fines-service/mocks/opal-fines-account-minor-creditor-creditor.mock';
 import { OPAL_FINES_ACCOUNT_MINOR_CREDITOR_DETAILS_HISTORY_AND_NOTES_TAB_REF_DATA_MOCK } from '../../services/opal-fines-service/mocks/opal-fines-account-minor-creditor-details-history-and-notes-tab-ref-data.mock';
+import { FINES_ROUTING_PATHS } from '../../routing/constants/fines-routing-paths.constant';
+import { FINES_ACC_ROUTING_PATHS } from '../routing/constants/fines-acc-routing-paths.constant';
+import { FINES_ACC_DEFENDANT_ROUTING_PATHS } from '../routing/constants/fines-acc-defendant-routing-paths.constant';
 
 describe('FinesAccMinorCreditorDetailsComponent', () => {
   let component: FinesAccMinorCreditorDetailsComponent;
@@ -232,6 +235,69 @@ describe('FinesAccMinorCreditorDetailsComponent', () => {
         relativeTo: component['activatedRoute'],
       },
     );
+  });
+
+  it('should navigate to add a payment hold when the user has permission in the current BU', () => {
+    vi.spyOn(component, 'hasBusinessUnitPermissionKey').mockReturnValue(true);
+
+    component.navigateToAddPaymentHoldPage();
+
+    expect(routerSpy.navigate).toHaveBeenCalledWith(
+      [`../${FINES_ACC_MINOR_CREDITOR_ROUTING_PATHS.children['payment-hold']}/add`],
+      { relativeTo: component['activatedRoute'] },
+    );
+  });
+
+  it('should navigate to payment hold denied when the user cannot add a hold in the current BU', () => {
+    vi.spyOn(component, 'hasBusinessUnitPermissionKey').mockReturnValue(false);
+
+    component.navigateToAddPaymentHoldPage();
+
+    expect(routerSpy.navigate).toHaveBeenCalledWith(
+      [`../${FINES_ACC_MINOR_CREDITOR_ROUTING_PATHS.children['payment-hold']}/denied`],
+      { relativeTo: component['activatedRoute'] },
+    );
+  });
+
+  it('should navigate to remove a payment hold when the user has permission in the current BU', () => {
+    vi.spyOn(component, 'hasBusinessUnitPermissionKey').mockReturnValue(true);
+
+    component.navigateToRemovePaymentHoldPage();
+
+    expect(routerSpy.navigate).toHaveBeenCalledWith(
+      [`../${FINES_ACC_MINOR_CREDITOR_ROUTING_PATHS.children['payment-hold']}/remove`],
+      { relativeTo: component['activatedRoute'] },
+    );
+  });
+
+  it('should navigate to payment hold denied when the user cannot remove a hold in the current BU', () => {
+    vi.spyOn(component, 'hasBusinessUnitPermissionKey').mockReturnValue(false);
+
+    component.navigateToRemovePaymentHoldPage();
+
+    expect(routerSpy.navigate).toHaveBeenCalledWith(
+      [`../${FINES_ACC_MINOR_CREDITOR_ROUTING_PATHS.children['payment-hold']}/denied`],
+      { relativeTo: component['activatedRoute'] },
+    );
+  });
+
+  it('should open the associated defendant account details in a new tab', () => {
+    const accountId = 456;
+    const openSpy = vi.spyOn(window, 'open').mockReturnValue(null);
+    const expectedCommands = [
+      FINES_ROUTING_PATHS.root,
+      FINES_ACC_ROUTING_PATHS.root,
+      FINES_ACC_ROUTING_PATHS.children.defendant,
+      accountId,
+      FINES_ACC_DEFENDANT_ROUTING_PATHS.children.details,
+    ];
+    const expectedUrl = `/${expectedCommands.join('/')}`;
+
+    component.navigateToDefendantAccountPage(accountId);
+
+    expect(routerSpy.createUrlTree).toHaveBeenCalledWith(expectedCommands);
+    expect(routerSpy.serializeUrl).toHaveBeenCalledWith(expectedCommands);
+    expect(openSpy).toHaveBeenCalledWith(expectedUrl, '_blank');
   });
 
   it('should set payment hold state when at-a-glance tab data emits', () => {

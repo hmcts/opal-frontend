@@ -5,5 +5,6 @@ export const FINES_API_ROUTING_TITLES: IFinesApiRoutingPaths = {
   children: {
     selectBusinessUnits: 'Automatic Cash Input - Select Business Units',
     processAllocate: 'Automatic Cash Input - Process files and allocate tills',
+    confirmProcess: 'Automatic Cash Input - Confirm before processing',
   },
 };

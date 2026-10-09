@@ -174,6 +174,18 @@ describe('transformHistoryAndNotesDetails', () => {
     expect(result).toEqual(FINES_ACC_HISTORY_AND_NOTES_AMENDMENT_DETAILS_MOCK);
   });
 
+  it('should omit amendment parts when no changed-field values are available', () => {
+    const result = transformHistoryAndNotesDetails(
+      {
+        type: 'Amendment',
+        details: {},
+      },
+      FINES_ACC_HISTORY_AND_NOTES_DETAILS_TRANSFORMERS,
+    );
+
+    expect(result).toEqual({ line1: [], line2: null });
+  });
+
   it('should transform enforcement details with hyphen fragments and secondary reason text', () => {
     const result = transformHistoryAndNotesDetails(
       FINES_ACC_HISTORY_AND_NOTES_ENFORCEMENT_HEARING_ITEM_MOCK,
@@ -366,6 +378,26 @@ describe('transformHistoryAndNotesDetails', () => {
     );
 
     expect(result).toEqual(FINES_ACC_HISTORY_AND_NOTES_SUSPENSE_TRANSFER_CAMEL_RECORD_TYPE_DETAILS_MOCK);
+  });
+
+  it('should resolve suspense transfer reasons from exact associated record type codes', () => {
+    const result = transformHistoryAndNotesDetails(
+      {
+        type: 'Financial',
+        details: {
+          associatedRecordType: 'suspense_transaction',
+          transactionType: {
+            transactionType: FINES_ACC_HISTORY_AND_NOTES_DETAILS_TRANSACTION_TYPES.suspenseTransfer,
+          },
+        },
+      },
+      FINES_ACC_HISTORY_AND_NOTES_DETAILS_TRANSFORMERS,
+    );
+
+    expect(result).toEqual({
+      line1: [part(fragment('Suspense transfer')), part(fragment('Cheque cancelled to suspense'))],
+      line2: null,
+    });
   });
 
   it('should fall back to the item type when a financial item has no transaction type', () => {

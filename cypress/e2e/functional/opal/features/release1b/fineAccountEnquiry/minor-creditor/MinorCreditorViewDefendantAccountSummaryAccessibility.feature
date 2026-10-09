@@ -7,7 +7,7 @@ Feature: Minor Creditor View Defendant Account Summary Accessibility
     And I clear all approved accounts
 
   @R1BDrop2 @JIRA-STORY:PO-1917 @JIRA-STORY:PO-6361 @JIRA-EPIC:PO-2472 @JIRA-TEST-KEY:PO-5574
-  Scenario: Check View Minor Creditor Account Summary Accessibility with Axe-Core
+  Scenario: Minor creditor account summary is accessible
     Given a published account exists with an individual minor creditor:
       | prosecutor case reference | PCRMINA11Y{uniqUpper} |
       | title                     | Mrs                   |
@@ -34,7 +34,7 @@ Feature: Minor Creditor View Defendant Account Summary Accessibility
     When I go to the Creditor tab
     Then I check the page for accessibility
 
-  @R1B @JIRA-STORY:PO-2963 @JIRA-EPIC:PO-2630
+  @R1BDrop2 @JIRA-STORY:PO-2963 @JIRA-EPIC:PO-2630
   Scenario: AC6 - Repayment Minor Creditor header summary is accessible
     Given a published account exists with an individual minor creditor:
       | prosecutor case reference | PCRMINREPA11Y{uniqUpper} |

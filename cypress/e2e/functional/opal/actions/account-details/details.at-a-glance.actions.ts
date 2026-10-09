@@ -60,6 +60,42 @@ export class AccountDetailsAtAGlanceActions {
     });
   }
 
+  /**
+   * Returns whether any expected language preference is Welsh.
+   *
+   * @param expected - Expected language preference values.
+   * @returns True when Welsh and English is expected.
+   */
+  private hasWelshLanguagePreference(expected: Record<string, string>): boolean {
+    return Object.values(expected).some((value) => this.normalize(value).toLowerCase() === 'welsh and english');
+  }
+
+  /**
+   * Asserts the Welsh language marker is visible before the first Name field on the At a glance tab.
+   */
+  private assertWelshLanguagePreferenceTagAboveName(): void {
+    log('assert', 'Asserting Welsh language preference tag above Name');
+
+    cy.get(N.sections.atAGlanceTabRoot, this.common.getTimeoutOptions())
+      .contains('h3', /^Name$/)
+      .should('be.visible')
+      .then(($name) => {
+        const $column = $name.closest('.govuk-grid-column-one-third');
+        const $tag = $column
+          .find('.govuk-tag')
+          .filter((_, element) => this.normalize(element.textContent ?? '').toLowerCase() === 'welsh and english')
+          .first();
+
+        expect($column.length, 'At a glance party column').to.eq(1);
+        expect($tag.length, 'Welsh language preference tag').to.eq(1);
+        expect($column.find('*').index($tag), 'Welsh language preference tag appears above Name').to.be.lessThan(
+          $column.find('*').index($name),
+        );
+
+        cy.wrap($tag).should('be.visible');
+      });
+  }
+
   /** Asserts that the FAE At a glance account-details view has rendered. */
   public assertAtAGlancePageVisible(): void {
     cy.get(N.header.title, this.common.getPathTimeoutOptions()).should('be.visible');
@@ -180,6 +216,10 @@ export class AccountDetailsAtAGlanceActions {
         .invoke('text')
         .then((text) => expect(text.trim()).to.contain(value));
     });
+
+    if (this.hasWelshLanguagePreference(expected)) {
+      this.assertWelshLanguagePreferenceTagAboveName();
+    }
   }
 
   /**

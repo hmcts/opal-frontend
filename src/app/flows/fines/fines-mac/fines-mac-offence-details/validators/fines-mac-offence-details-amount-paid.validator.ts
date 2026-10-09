@@ -25,7 +25,7 @@ function amountToPence(value: unknown): bigint | null {
   }
 
   const [, sign, pounds, pence = ''] = match;
-  const amount = BigInt(pounds) * 100n + BigInt(pence.padEnd(2, '0') || '0');
+  const amount = BigInt(pounds) * 100n + BigInt(pence.padEnd(2, '0'));
 
   return sign === '-' ? -amount : amount;
 }

@@ -668,7 +668,7 @@ describe('Account Enquiry Parent or Guardian Component', () => {
 
   it(
     'AC3a, AC3b. Parent or guardian tab removes the heading Change link and shows section Change links',
-    { tags: [...buildTags('@JIRA-STORY:PO-2671'), '@JIRA-EPIC:PO-8248', '@JIRA-TEST-KEY:PO-4235'] },
+    { tags: [...buildTags('@JIRA-STORY:PO-2671'), '@JIRA-EPIC:PO-8248'] },
     () => {
       const headerMock = structuredClone(createDefendantHeaderMockWithName('Robert', 'Thomson'));
       headerMock.parent_guardian_party_id = '1770000001';
@@ -697,7 +697,7 @@ describe('Account Enquiry Parent or Guardian Component', () => {
 
   it(
     'AC3c, AC3d, AC3e. Parent or guardian section Change links resolve the amend route and fragments',
-    { tags: [...buildTags('@JIRA-STORY:PO-2671'), '@JIRA-EPIC:PO-8248', '@JIRA-TEST-KEY:PO-4236'] },
+    { tags: [...buildTags('@JIRA-STORY:PO-2671'), '@JIRA-EPIC:PO-8248'] },
     () => {
       const headerMock = structuredClone(createDefendantHeaderMockWithName('Robert', 'Thomson'));
       headerMock.parent_guardian_party_id = '1770000001';
