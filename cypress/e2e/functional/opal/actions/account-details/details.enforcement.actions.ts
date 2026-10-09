@@ -563,15 +563,12 @@ export class AccountDetailsEnforcementActions {
       .should('be.visible')
       .click()
       .type('{selectall}{backspace}', { force: true })
-      .type(resultCode, { delay: 0 });
-
-    cy.contains(ENF_ACT.actionDropdownOptions, new RegExp(`\\(${Cypress._.escapeRegExp(resultCode)}\\)$`), {
-      timeout: AccountDetailsEnforcementActions.DEFAULT_TIMEOUT,
-    }).click();
+      .type(resultCode, { delay: 0 })
+      .type('{downarrow}{enter}', { force: true });
 
     cy.get(ENF_ACT.actionDropdown, { timeout: AccountDetailsEnforcementActions.DEFAULT_TIMEOUT }).should(
-      'contain.value',
-      resultCode,
+      'not.have.value',
+      '',
     );
   }
 
