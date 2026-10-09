@@ -31,6 +31,7 @@ import {
   createDraftAndSetStatus,
   simulateStaleIfMatchConflict,
   updateLastCreatedDraftAccountStatus,
+  type CreateDraftAndSetStatusOptions,
 } from '../../../e2e/functional/opal/actions/draft-account/draft-account.api';
 import {
   CreateManageDraftsActions,
@@ -192,6 +193,7 @@ function withSignedInUser<T>(action: (existingUser: string) => Cypress.Chainable
  * @param status - The target status after creation (defaults to the publishing-pending status).
  * @param switchToUser - User to perform the status update (for logging/evidence).
  * @param returnToUser - User to return to after status update (for logging/evidence).
+ * @param options - Additional setup controls passed to the draft API helper.
  * @returns Cypress.Chainable
  *
  * @remarks
@@ -204,6 +206,7 @@ function createDraftAndPrepareForPublishing(
   status: string = DEFAULT_DRAFT_STATUS,
   switchToUser: string = DEFAULT_PUBLISHING_USER,
   returnToUser: string = '',
+  options: CreateDraftAndSetStatusOptions = {},
 ) {
   log(
     'step',
@@ -217,7 +220,7 @@ function createDraftAndPrepareForPublishing(
     },
   );
 
-  return createDraftAndSetStatus(accountType, status, overrides, switchToUser, returnToUser);
+  return createDraftAndSetStatus(accountType, status, overrides, switchToUser, returnToUser, options);
 }
 
 /**
@@ -225,15 +228,24 @@ function createDraftAndPrepareForPublishing(
  * @param accountType - Draft payload type to create.
  * @param overrides - Nested override object merged into the draft fixture.
  * @param publishingUser - User who should approve/publish the seeded account.
+ * @param options - Additional setup controls passed to the draft API helper.
  * @returns Cypress.Chainable
  */
 function createPublishedDraftAccount(
   accountType: AccountType,
   overrides: Record<string, unknown>,
   publishingUser: string = DEFAULT_PUBLISHING_USER,
+  options: CreateDraftAndSetStatusOptions = {},
 ): Cypress.Chainable<void> {
   return withSignedInUser((existingUser: string) =>
-    createDraftAndPrepareForPublishing(accountType, overrides, DEFAULT_DRAFT_STATUS, publishingUser, existingUser),
+    createDraftAndPrepareForPublishing(
+      accountType,
+      overrides,
+      DEFAULT_DRAFT_STATUS,
+      publishingUser,
+      existingUser,
+      options,
+    ),
   );
 }
 
@@ -343,6 +355,26 @@ Given('a {string} draft account exists with:', (accountType: AccountType, table:
  *     | date of birth             | 2001-05-15           |
  */
 Given('a published adult or youth defendant account exists:', (table: DataTable) => {
+  return seedPublishedAdultOrYouthDefendantAccount(table);
+});
+
+Given(
+  'a published adult or youth defendant account exists without waiting for search indexing:',
+  (table: DataTable) => {
+    return seedPublishedAdultOrYouthDefendantAccount(table, { waitForSearchIndex: false });
+  },
+);
+
+/**
+ * Seeds an adult/youth defendant account using the shared published-account builder.
+ * @param table - Source Gherkin table containing account seed values.
+ * @param options - Additional setup controls passed to the draft API helper.
+ * @returns Cypress.Chainable
+ */
+function seedPublishedAdultOrYouthDefendantAccount(
+  table: DataTable,
+  options: CreateDraftAndSetStatusOptions = {},
+): Cypress.Chainable<void> {
   const values = parseSeedValues(table);
 
   const prosecutorCaseReference = values['prosecutor case reference'] ?? values['pcr'];
@@ -382,8 +414,8 @@ Given('a published adult or youth defendant account exists:', (table: DataTable)
     publishingUser,
   });
 
-  return createPublishedDraftAccount('adultOrYouthOnly', overrides, publishingUser);
-});
+  return createPublishedDraftAccount('adultOrYouthOnly', overrides, publishingUser, options);
+}
 
 /**
  * @step Creates a published non-vehicle fixed penalty account.
