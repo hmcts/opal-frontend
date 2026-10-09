@@ -147,17 +147,9 @@ export const FINES_ACC_MINOR_CREDITOR_ADD_AMEND_CONVERT_FIELD_ERRORS: IFinesAccM
         message: 'Enter sort code',
         priority: 1,
       },
-      minlength: {
-        message: 'Enter a valid sort code like 309430',
+      invalidSortCode: {
+        message: 'Sort code must be 6 numbers',
         priority: 2,
-      },
-      maxlength: {
-        message: 'Enter a valid sort code like 309430',
-        priority: 2,
-      },
-      numericalTextPattern: {
-        message: 'Enter a valid sort code like 309430',
-        priority: 3,
       },
     },
     facc_minor_creditor_bank_account_number: {

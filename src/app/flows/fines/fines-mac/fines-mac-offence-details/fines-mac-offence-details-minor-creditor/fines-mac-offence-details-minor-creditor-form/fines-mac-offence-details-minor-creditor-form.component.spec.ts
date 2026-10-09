@@ -58,6 +58,24 @@ describe('FinesMacOffenceDetailsMinorCreditorFormComponent', () => {
     expect(component).toBeTruthy();
   });
 
+  it('should normalize a valid formatted sort code before submitting', () => {
+    component['setPaymentDetailValidators']();
+    const sortCodeControl = component.form.controls['fm_offence_details_minor_creditor_bank_sort_code'];
+    sortCodeControl.setValue('12-34-56');
+
+    component.handleFormSubmit(new SubmitEvent('submit'));
+
+    expect(sortCodeControl.value).toBe('123456');
+  });
+
+  it('should not normalize an empty sort code on submit', () => {
+    const sortCodeControl = component.form.controls['fm_offence_details_minor_creditor_bank_sort_code'];
+
+    component.handleFormSubmit(new SubmitEvent('submit'));
+
+    expect(sortCodeControl.value).toBeNull();
+  });
+
   it.each([
     'fm_offence_details_minor_creditor_address_line_1',
     'fm_offence_details_minor_creditor_address_line_2',
@@ -193,10 +211,16 @@ describe('FinesMacOffenceDetailsMinorCreditorFormComponent', () => {
 
     // Test validators for sort code
     sortCodeControl.setValue('1234567'); // Exceeds 6 characters
-    expect(sortCodeControl.errors?.['maxlength']).toBeTruthy();
+    expect(sortCodeControl.errors?.['invalidSortCode']).toBeTruthy();
 
     sortCodeControl.setValue('ABC123'); // Non-numeric input
-    expect(sortCodeControl.errors?.['numericalTextPattern']).toBeTruthy();
+    expect(sortCodeControl.errors?.['invalidSortCode']).toBeTruthy();
+
+    sortCodeControl.setValue('12-34-56');
+    expect(sortCodeControl.valid).toBeTruthy();
+
+    sortCodeControl.setValue('12 34 56');
+    expect(sortCodeControl.valid).toBeTruthy();
 
     sortCodeControl.setValue('123456'); // Valid input
     expect(sortCodeControl.valid).toBeTruthy();

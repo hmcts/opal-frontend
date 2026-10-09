@@ -118,13 +118,9 @@ export const FINES_MAC_OFFENCE_DETAILS_MINOR_CREDITOR_FIELD_ERRORS: IAbstractFor
       message: 'Enter sort code',
       priority: 1,
     },
-    maxlength: {
-      message: 'Sort code must be 6 characters or fewer',
+    invalidSortCode: {
+      message: 'Sort code must be 6 numbers',
       priority: 2,
-    },
-    numericalTextPattern: {
-      message: 'Sort code must only contain numbers',
-      priority: 3,
     },
   },
   fm_offence_details_minor_creditor_bank_account_number: {
