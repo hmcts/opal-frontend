@@ -1,6 +1,5 @@
-<opal-lib-govuk-back-link (clickEvent)="navigateBack()"></opal-lib-govuk-back-link>
-
 @if (isMatchesResults()) {
+  <opal-lib-govuk-back-link (clickEvent)="navigateBack()"></opal-lib-govuk-back-link>
   <span class="govuk-caption-m">Avon and Somerset</span>
   <h1 class="govuk-heading-l">Search results</h1>
 
@@ -56,12 +55,15 @@
   </p>
 } @else if (isSearchCriteriaCannotBeCombinedResults()) {
   <div class="govuk-grid-column-two-thirds">
-    <span class="govuk-caption-m">Avon and Somerset</span>
-    <h1 class="govuk-heading-l">Search criteria cannot be combined</h1>
+    <h1 class="govuk-heading-l">There is a problem</h1>
     <p class="govuk-body">
-      The design and functionality for searches where reference data and account information are entered together will
-      be implemented under ticket PO-3529.
+      Reference data and account information cannot be entered together when searching for an account. Search using
+      either:
     </p>
-    <p class="govuk-body">Placeholder for PO-3529.</p>
+    <ul class="govuk-list govuk-list--bullet">
+      <li>account number, or</li>
+      <li>advanced search</li>
+    </ul>
+    <a class="govuk-link govuk-link--no-visited-state" [routerLink]="criminalSearchRoute">Go back</a>
   </div>
 }
