@@ -260,7 +260,8 @@ describe('FinesMacReviewFixedPenalty using ReviewAccountComponent', () => {
       adultNotProvidedFields.forEach((selector) => {
         cy.get(selector)
           .find(`${DOM_ELEMENTS.notProvided} p`)
-          .should('have.attr', 'aria-label', FINES_DEFAULT_VALUES.notProvidedAriaLabel);
+          .find('.govuk-visually-hidden')
+          .should('have.text', FINES_DEFAULT_VALUES.notProvidedAriaLabel);
       });
     },
   );
@@ -390,7 +391,8 @@ describe('FinesMacReviewFixedPenalty using ReviewAccountComponent', () => {
       companyNotProvidedFields.forEach((selector) => {
         cy.get(selector)
           .find(`${DOM_ELEMENTS.notProvided} p`)
-          .should('have.attr', 'aria-label', FINES_DEFAULT_VALUES.notProvidedAriaLabel);
+          .find('.govuk-visually-hidden')
+          .should('have.text', FINES_DEFAULT_VALUES.notProvidedAriaLabel);
       });
     },
   );
