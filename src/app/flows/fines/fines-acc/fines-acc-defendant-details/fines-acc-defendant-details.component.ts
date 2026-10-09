@@ -1,5 +1,6 @@
+import { FinesAccEnfActionAddService } from '../fines-acc-enf-action-add/services/fines-acc-enf-action-add.service';
 import { ChangeDetectionStrategy, Component, inject, OnDestroy, OnInit } from '@angular/core';
-import { EMPTY, map, merge, Observable, of, switchMap, takeUntil, tap } from 'rxjs';
+import { catchError, EMPTY, map, merge, Observable, of, switchMap, takeUntil, tap } from 'rxjs';
 // Services
 import { OpalFines } from '@services/fines/opal-fines-service/opal-fines.service';
 // Stores
@@ -97,8 +98,10 @@ export class FinesAccDefendantDetailsComponent
   implements OnInit, OnDestroy
 {
   private readonly opalFinesService = inject(OpalFines);
+  private readonly enforcementActionService = inject(FinesAccEnfActionAddService);
   private readonly payloadService = inject(FinesAccPayloadService);
 
+  public enforcementParameterLabels: ReadonlyMap<string, string> = new Map();
   public accountStore = inject(FinesAccountStore);
   public tabs: IFinesAccountDefendantDetailsTabs = FINES_ACC_DEFENDANT_DETAILS_TABS;
   public accountId: number = Number(this.activatedRoute.snapshot.paramMap.get('accountId'));
@@ -182,7 +185,26 @@ export class FinesAccDefendantDetailsComponent
           break;
         case 'enforcement':
           this.tabEnforcement$ = this.fetchTabDataTyped(
-            this.opalFinesService.getDefendantAccountEnforcementStatus(account_id),
+            this.opalFinesService.getDefendantAccountEnforcementStatus(account_id).pipe(
+              switchMap((data) => {
+                const action = data.last_enforcement_action;
+                this.enforcementParameterLabels = new Map();
+                const showParameterPrompts =
+                  (this.globalStore.featureFlags() as Record<string, unknown>)['release-1b-1-1'] === true;
+                if (!showParameterPrompts || !action?.result_responses?.length) return of(data);
+
+                return this.opalFinesService.getResult(action.enforcement_action.result_id).pipe(
+                  tap((result) => {
+                    this.enforcementParameterLabels = this.enforcementActionService.getResultParameterLabels(
+                      result.result_parameters,
+                    );
+                  }),
+                  map(() => data),
+                  // Keep the status visible if its optional label configuration cannot be loaded.
+                  catchError(() => of(data)),
+                );
+              }),
+            ),
           );
           break;
         case 'impositions':

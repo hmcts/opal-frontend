@@ -1,3 +1,4 @@
+import { GlobalStore } from '@hmcts/opal-frontend-common/stores/global';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { provideRouter, Router } from '@angular/router';
 import { FinesAccDefendantDetailsEnforcementTab } from './fines-acc-defendant-details-enforcement-tab.component';
@@ -31,6 +32,86 @@ describe('FinesAccDefendantDetailsEnforcementTab', () => {
     component.accountStatusCode = 'L';
     component.accountBalance = 500.58;
     fixture.detectChanges();
+  });
+
+  it.each([true, false, undefined])(
+    'renders Details labels with release-1b-1-1 set to %s and retains unmatched responses',
+    (enabled) => {
+      TestBed.inject(GlobalStore).setFeatureFlags(enabled === undefined ? {} : { 'release-1b-1-1': enabled });
+      const preview = TestBed.createComponent(FinesAccDefendantDetailsEnforcementTab);
+      const data = structuredClone(OPAL_FINES_ACCOUNT_DEFENDANT_DETAILS_ENFORCEMENT_TAB_REF_DATA_MOCK);
+      data.last_enforcement_action!.result_responses = [
+        { parameter_name: 'daysindefault', response: '14' },
+        { parameter_name: 'reason', response: 'Order made by the court' },
+        { parameter_name: 'unknown', response: 'Retained value' },
+      ];
+      preview.componentRef.setInput('tabData', data);
+      preview.componentRef.setInput('accountStatusCode', 'L');
+      preview.componentRef.setInput('accountBalance', 500);
+      preview.componentRef.setInput(
+        'parameterLabels',
+        new Map([
+          ['daysindefault', 'Days in default'],
+          ['reason', 'Reason'],
+        ]),
+      );
+      preview.detectChanges();
+      const summary = preview.nativeElement.querySelector('[summaryListId="lastEnforcementActionDetails"]');
+      const details = preview.nativeElement.querySelector('opal-lib-govuk-details');
+      expect(summary.textContent).toContain('Days in default');
+      expect(summary.textContent).toContain('14 days');
+      expect(details.textContent).toContain(enabled ? 'Days in default' : 'Daysindefault');
+      if (!enabled) expect(details.textContent).not.toContain('Days in default');
+      expect(details.textContent).toContain('14 days');
+      expect(details.textContent).toContain('Reason');
+      expect(details.textContent).toContain('Order made by the court');
+      expect(details.textContent).toContain('Unknown');
+      expect(details.textContent).toContain('Retained value');
+    },
+  );
+
+  describe.each([true, false, undefined])('response formatting with release-1b-1-1=%s', (enabled) => {
+    it.each([
+      { hearingName: 'hearingdate', daysName: 'daysindefault' },
+      { hearingName: 'hearing_date', daysName: 'days_in_default' },
+    ])('formats $hearingName and $daysName in the summary and Details', ({ hearingName, daysName }) => {
+      TestBed.inject(GlobalStore).setFeatureFlags(enabled === undefined ? {} : { 'release-1b-1-1': enabled });
+      const preview = TestBed.createComponent(FinesAccDefendantDetailsEnforcementTab);
+      const data = structuredClone(OPAL_FINES_ACCOUNT_DEFENDANT_DETAILS_ENFORCEMENT_TAB_REF_DATA_MOCK);
+      data.last_enforcement_action!.result_responses = [
+        { parameter_name: hearingName, response: '2026-10-07' },
+        { parameter_name: daysName, response: '1' },
+      ];
+      preview.componentRef.setInput('tabData', data);
+      preview.componentRef.setInput('accountStatusCode', 'L');
+      preview.componentRef.setInput('accountBalance', 500);
+      preview.componentRef.setInput(
+        'parameterLabels',
+        new Map([
+          ['hearingdate', 'Hearing date'],
+          ['daysindefault', 'Days in default'],
+        ]),
+      );
+      preview.detectChanges();
+
+      const summary = preview.nativeElement.querySelector('[summaryListId="lastEnforcementActionDetails"]');
+      const details = preview.nativeElement.querySelector('opal-lib-govuk-details');
+      expect(summary.textContent).toContain('Hearing date');
+      expect(summary.textContent).toContain('Days in default');
+      for (const panel of [summary, details]) {
+        expect(panel.textContent).toContain('07 October 2026');
+        expect(panel.textContent).toContain('1 day');
+        expect(panel.textContent).not.toContain('1 days');
+        expect(panel.textContent).not.toContain('2026-10-07');
+      }
+      if (hearingName === 'hearing_date') {
+        expect(details.textContent).toContain('Hearing_date');
+        expect(details.textContent).toContain('Days_in_default');
+      } else {
+        expect(details.textContent).toContain(enabled ? 'Hearing date' : 'Hearingdate');
+        expect(details.textContent).toContain(enabled ? 'Days in default' : 'Daysindefault');
+      }
+    });
   });
 
   it('should create', () => {

@@ -237,6 +237,7 @@
   @case ('enforcement') {
     @if (tabEnforcement$ | async; as tabData) {
       <app-fines-acc-defendant-details-enforcement-tab
+        [parameterLabels]="enforcementParameterLabels"
         [tabData]="tabData"
         [isCompanyAccount]="accountData.party_details.organisation_flag"
         [accountStatusCode]="accountData.account_status_reference.account_status_code"

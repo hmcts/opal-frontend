@@ -131,122 +131,143 @@ describe('buildEnforcementActionAddPayload', () => {
     });
   });
 
-  it('joins selected menu-checkbox options into the result response', () => {
-    const payload = buildEnforcementActionAddPayload(
-      FINES_ACC_PAYLOAD_ENFORCEMENT_ACTION_ADD_PAYMENT_TERMS_DISABLED_RESULT_MOCK,
-      [
+  it.each([true, false, undefined])(
+    'serialises checkbox responses with preserveParameterNames=%s',
+    (preserveParameterNames) => {
+      const payload = buildEnforcementActionAddPayload(
+        FINES_ACC_PAYLOAD_ENFORCEMENT_ACTION_ADD_PAYMENT_TERMS_DISABLED_RESULT_MOCK,
+        [
+          {
+            controlName: 'fines-acc-enf-action-add_selecthowitwillbeserved',
+            parameterName: 'selecthowitwillbeserved',
+            label: 'Select how it will be served',
+            type: FINES_ACC_ENF_ACTION_ADD_FIELD_TYPES.menuCheckbox,
+            required: false,
+            options: [
+              { value: 'Consecutive', name: 'Consecutive' },
+              { value: 'Concurrent', name: 'Concurrent' },
+            ],
+            checkboxControls: [
+              {
+                controlName: 'fines-acc-enf-action-add_selecthowitwillbeserved_consecutive',
+                option: { value: 'Consecutive', name: 'Consecutive' },
+              },
+              {
+                controlName: 'fines-acc-enf-action-add_selecthowitwillbeserved_concurrent',
+                option: { value: 'Concurrent', name: 'Concurrent' },
+              },
+            ],
+          },
+        ],
         {
-          controlName: 'fines-acc-enf-action-add_selecthowitwillbeserved',
-          parameterName: 'selecthowitwillbeserved',
-          label: 'Select how it will be served',
-          type: FINES_ACC_ENF_ACTION_ADD_FIELD_TYPES.menuCheckbox,
-          required: false,
-          options: [
-            { value: 'Consecutive', name: 'Consecutive' },
-            { value: 'Concurrent', name: 'Concurrent' },
-          ],
-          checkboxControls: [
-            {
-              controlName: 'fines-acc-enf-action-add_selecthowitwillbeserved_consecutive',
-              option: { value: 'Consecutive', name: 'Consecutive' },
-            },
-            {
-              controlName: 'fines-acc-enf-action-add_selecthowitwillbeserved_concurrent',
-              option: { value: 'Concurrent', name: 'Concurrent' },
-            },
-          ],
+          'fines-acc-enf-action-add_selecthowitwillbeserved': 'Consecutive',
+          'fines-acc-enf-action-add_selecthowitwillbeserved_consecutive': true,
+          'fines-acc-enf-action-add_selecthowitwillbeserved_concurrent': false,
         },
-      ],
-      {
-        'fines-acc-enf-action-add_selecthowitwillbeserved': 'Consecutive',
-        'fines-acc-enf-action-add_selecthowitwillbeserved_consecutive': true,
-        'fines-acc-enf-action-add_selecthowitwillbeserved_concurrent': false,
-      },
-    );
+        undefined,
+        preserveParameterNames,
+      );
 
-    expect(payload.enforcement_result_responses).toEqual([
-      { parameter_name: 'select_how_it_will_be_served', response: 'Consecutive' },
-    ]);
-  });
+      expect(payload.enforcement_result_responses).toEqual([
+        {
+          parameter_name: preserveParameterNames ? 'selecthowitwillbeserved' : 'select_how_it_will_be_served',
+          response: 'Consecutive',
+        },
+      ]);
+    },
+  );
 
-  it('normalises concatenated result parameter names to snake case', () => {
-    const payload = buildEnforcementActionAddPayload(
-      FINES_ACC_PAYLOAD_ENFORCEMENT_ACTION_ADD_PAYMENT_TERMS_DISABLED_RESULT_MOCK,
-      [
+  it.each([true, false, undefined])(
+    'serialises compact and Welsh parameter names with preserveParameterNames=%s',
+    (preserveParameterNames) => {
+      const payload = buildEnforcementActionAddPayload(
+        FINES_ACC_PAYLOAD_ENFORCEMENT_ACTION_ADD_PAYMENT_TERMS_DISABLED_RESULT_MOCK,
+        [
+          {
+            controlName: 'fines-acc-enf-action-add_courtcode',
+            parameterName: 'courtcode',
+            label: 'Court code',
+            type: FINES_ACC_ENF_ACTION_ADD_FIELD_TYPES.text,
+            required: false,
+            options: [],
+          },
+          {
+            controlName: 'fines-acc-enf-action-add_daysindefault',
+            parameterName: 'daysindefault',
+            label: 'Days in default',
+            type: FINES_ACC_ENF_ACTION_ADD_FIELD_TYPES.integer,
+            required: false,
+            options: [],
+          },
+          {
+            controlName: 'fines-acc-enf-action-add_basisofcommittal',
+            parameterName: 'basisofcommittal',
+            label: 'Basis of committal',
+            type: FINES_ACC_ENF_ACTION_ADD_FIELD_TYPES.text,
+            required: false,
+            options: [],
+            welshControlName: 'fines-acc-enf-action-add_basisofcommittal_cy',
+          },
+        ],
         {
-          controlName: 'fines-acc-enf-action-add_courtcode',
-          parameterName: 'courtcode',
-          label: 'Court code',
-          type: FINES_ACC_ENF_ACTION_ADD_FIELD_TYPES.text,
-          required: false,
-          options: [],
+          'fines-acc-enf-action-add_courtcode': '123',
+          'fines-acc-enf-action-add_daysindefault': '14',
+          'fines-acc-enf-action-add_basisofcommittal': 'Basis',
+          'fines-acc-enf-action-add_basisofcommittal_cy': 'Sail',
         },
-        {
-          controlName: 'fines-acc-enf-action-add_daysindefault',
-          parameterName: 'daysindefault',
-          label: 'Days in default',
-          type: FINES_ACC_ENF_ACTION_ADD_FIELD_TYPES.integer,
-          required: false,
-          options: [],
-        },
-        {
-          controlName: 'fines-acc-enf-action-add_basisofcommittal',
-          parameterName: 'basisofcommittal',
-          label: 'Basis of committal',
-          type: FINES_ACC_ENF_ACTION_ADD_FIELD_TYPES.text,
-          required: false,
-          options: [],
-          welshControlName: 'fines-acc-enf-action-add_basisofcommittal_cy',
-        },
-      ],
-      {
-        'fines-acc-enf-action-add_courtcode': '123',
-        'fines-acc-enf-action-add_daysindefault': '14',
-        'fines-acc-enf-action-add_basisofcommittal': 'Basis',
-        'fines-acc-enf-action-add_basisofcommittal_cy': 'Sail',
-      },
-    );
+        undefined,
+        preserveParameterNames,
+      );
 
-    expect(payload.enforcement_result_responses).toEqual([
-      { parameter_name: 'court_code', response: '123' },
-      { parameter_name: 'days_in_default', response: '14' },
-      { parameter_name: 'basis_of_committal', response: 'Basis' },
-      { parameter_name: 'basis_of_committal_cy', response: 'Sail' },
-    ]);
-  });
+      expect(payload.enforcement_result_responses).toEqual([
+        { parameter_name: preserveParameterNames ? 'courtcode' : 'court_code', response: '123' },
+        { parameter_name: preserveParameterNames ? 'daysindefault' : 'days_in_default', response: '14' },
+        { parameter_name: preserveParameterNames ? 'basisofcommittal' : 'basis_of_committal', response: 'Basis' },
+        { parameter_name: preserveParameterNames ? 'basisofcommittal_cy' : 'basis_of_committal_cy', response: 'Sail' },
+      ]);
+    },
+  );
 
-  it('normalises unmapped result parameter names to snake case', () => {
-    const payload = buildEnforcementActionAddPayload(
-      FINES_ACC_PAYLOAD_ENFORCEMENT_ACTION_ADD_PAYMENT_TERMS_DISABLED_RESULT_MOCK,
-      [
+  it.each([true, false, undefined])(
+    'serialises unmapped parameter names with preserveParameterNames=%s',
+    (preserveParameterNames) => {
+      const payload = buildEnforcementActionAddPayload(
+        FINES_ACC_PAYLOAD_ENFORCEMENT_ACTION_ADD_PAYMENT_TERMS_DISABLED_RESULT_MOCK,
+        [
+          {
+            controlName: 'fines-acc-enf-action-add_customParameterName',
+            parameterName: 'customParameterName',
+            label: 'Custom parameter name',
+            type: FINES_ACC_ENF_ACTION_ADD_FIELD_TYPES.text,
+            required: false,
+            options: [],
+          },
+          {
+            controlName: 'fines-acc-enf-action-add_custom_parameter_name',
+            parameterName: ' custom parameter name ',
+            label: 'Custom parameter name',
+            type: FINES_ACC_ENF_ACTION_ADD_FIELD_TYPES.text,
+            required: false,
+            options: [],
+          },
+        ],
         {
-          controlName: 'fines-acc-enf-action-add_customParameterName',
-          parameterName: 'customParameterName',
-          label: 'Custom parameter name',
-          type: FINES_ACC_ENF_ACTION_ADD_FIELD_TYPES.text,
-          required: false,
-          options: [],
+          'fines-acc-enf-action-add_customParameterName': 'Camel',
+          'fines-acc-enf-action-add_custom_parameter_name': 'Spaced',
         },
-        {
-          controlName: 'fines-acc-enf-action-add_custom_parameter_name',
-          parameterName: ' custom parameter name ',
-          label: 'Custom parameter name',
-          type: FINES_ACC_ENF_ACTION_ADD_FIELD_TYPES.text,
-          required: false,
-          options: [],
-        },
-      ],
-      {
-        'fines-acc-enf-action-add_customParameterName': 'Camel',
-        'fines-acc-enf-action-add_custom_parameter_name': 'Spaced',
-      },
-    );
+        undefined,
+        preserveParameterNames,
+      );
 
-    expect(payload.enforcement_result_responses).toEqual([
-      { parameter_name: 'custom_parameter_name', response: 'Camel' },
-      { parameter_name: 'custom_parameter_name', response: 'Spaced' },
-    ]);
-  });
+      expect(payload.enforcement_result_responses).toEqual([
+        { parameter_name: preserveParameterNames ? 'customParameterName' : 'custom_parameter_name', response: 'Camel' },
+        {
+          parameter_name: preserveParameterNames ? ' custom parameter name ' : 'custom_parameter_name',
+          response: 'Spaced',
+        },
+      ]);
+    },
+  );
 
   it('omits menu-checkbox responses when checkbox controls are missing', () => {
     const payload = buildEnforcementActionAddPayload(
