@@ -23,12 +23,12 @@ Feature: Account Enquiries Request Payment Card
         | account.payment_card_request                    | false                               |
         | account.defendant.dob                           | 2002-05-15                          |
         | account.offences.0.impositions.0.amount_imposed | 250                                 |
-        | account.offences.0.impositions.0.amount_paid    | 300                                 |
+        | account.offences.0.impositions.0.amount_paid    | 100                                 |
       When I search for the account by last name "PayCardRequest{uniq}" and open the latest result
       Then I should see the page header contains "Mr Jamie PAYCARDREQUEST{uniqUpper}"
       When I go to the Payment terms section
 
-    @JIRA-EPIC:PO-977 @R1BDrop1 @JIRA-STORY:PO-1803 @JIRA-TEST-KEY:PO-5468 @JIRA-NFR:PO-2324 @skip
+    @JIRA-EPIC:PO-977 @R1BDrop1 @JIRA-STORY:PO-1803 @JIRA-TEST-KEY:PO-5468 @JIRA-NFR:PO-2324 @JIRA-DEFECT:PO-9151
     Scenario: Confirming a payment card request shows success and updates the last requested date
       #AC1bii/AC1biii - Successfully requesting a payment card shows a success message and updates the last requested date
       When I start a payment card request

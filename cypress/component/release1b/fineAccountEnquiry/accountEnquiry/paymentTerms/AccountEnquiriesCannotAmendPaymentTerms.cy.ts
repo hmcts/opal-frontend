@@ -1,4 +1,4 @@
-import { createDefendantHeaderMockWithName } from '../mocks/defendant_details_mock';
+import { createDefendantHeaderMockWithName as createBaseDefendantHeaderMockWithName } from '../mocks/defendant_details_mock';
 import {
   USER_STATE_MOCK_PERMISSION_BU17,
   USER_STATE_MOCK_PERMISSION_BU77,
@@ -14,7 +14,16 @@ import {
 } from 'cypress/component/CommonIntercepts/CommonIntercepts';
 import { IComponentProperties } from '../setup/setupComponent.interface';
 import { setupAccountEnquiryComponent } from '../setup/SetupComponent';
-import { DEFENDANT_HEADER_ORG_MOCK } from '../mocks/defendant_details_mock';
+import { DEFENDANT_HEADER_ORG_MOCK as BASE_DEFENDANT_HEADER_ORG_MOCK } from '../mocks/defendant_details_mock';
+
+const DEFENDANT_HEADER_ORG_MOCK = structuredClone(BASE_DEFENDANT_HEADER_ORG_MOCK);
+DEFENDANT_HEADER_ORG_MOCK.payment_state_summary.account_balance = -500.58;
+
+const createDefendantHeaderMockWithName = (forenames: string, surname: string) => {
+  const headerMock = structuredClone(createBaseDefendantHeaderMockWithName(forenames, surname));
+  headerMock.payment_state_summary.account_balance = -500.58;
+  return headerMock;
+};
 
 const ACCOUNT_ENQUIRY_JIRA_LABEL = '@JIRA-LABEL:account-enquiry';
 

@@ -9,6 +9,11 @@ export class AccountDetailsMinorCreditorActions {
   private static readonly HEADER_SUMMARY_OVERRIDE_ALIAS = 'minorCreditorHeaderSummaryOverride';
   private static readonly REPAYMENT_HEADER_SUMMARY_OVERRIDE_ALIAS = 'minorCreditorRepaymentHeaderSummaryOverride';
 
+  /** Opens the associated defendant account in the current test tab. */
+  public openAssociatedDefendant(): void {
+    cy.get(L.associatedDefendantLink).should('be.visible').invoke('removeAttr', 'target').click();
+  }
+
   /**
    * Clicks the Creditor tab "Change" link and optionally waits for the amend form to appear.
    *

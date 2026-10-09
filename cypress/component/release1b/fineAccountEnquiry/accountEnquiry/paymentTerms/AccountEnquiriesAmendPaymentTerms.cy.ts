@@ -96,6 +96,7 @@ describe('Account Enquiry Amend Payment Terms', () => {
     headerOverride?: IOpalFinesAccountDefendantDetailsHeader,
   ) => {
     const headerMock = headerOverride ? structuredClone(headerOverride) : getHeaderMock(defendantType);
+    headerMock.payment_state_summary.account_balance = -500.58;
     const paymentTermsMock = structuredClone(OPAL_FINES_ACCOUNT_DEFENDANT_DETAILS_PAYMENT_TERMS_LATEST_MOCK);
     const accountId = headerMock.defendant_account_party_id;
 

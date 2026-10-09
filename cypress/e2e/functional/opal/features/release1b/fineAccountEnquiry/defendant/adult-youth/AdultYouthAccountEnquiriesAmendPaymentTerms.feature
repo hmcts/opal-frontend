@@ -23,11 +23,11 @@ Feature: Adult Youth Account Enquiries Amend Payment Terms
         | account.payment_card_request                    | false                     |
         | account.defendant.dob                           | 2002-05-15                |
         | account.offences.0.impositions.0.amount_imposed | 250                       |
-        | account.offences.0.impositions.0.amount_paid    | 300                       |
+        | account.offences.0.impositions.0.amount_paid    | 100                       |
         | account.payment_terms.payment_terms_type_code   | B                         |
         | account.payment_terms.effective_date            | 2025-05-30                |
 
-    @JIRA-EPIC:PO-977 @R1BDrop1 @JIRA-STORY:PO-1149 @JIRA-TEST-KEY:PO-5303 @JIRA-NFR:PO-2324 @skip
+    @JIRA-EPIC:PO-977 @R1BDrop1 @JIRA-STORY:PO-1149 @JIRA-TEST-KEY:PO-5303 @JIRA-NFR:PO-2324 @JIRA-DEFECT:PO-9151
     Scenario: Save payment terms changes and return to Payment terms tab
       When the amend payment terms form is displayed for defendant account with last name "AmendPayTerms{uniq}"
       And I submit instalments only payment terms with a payment card request

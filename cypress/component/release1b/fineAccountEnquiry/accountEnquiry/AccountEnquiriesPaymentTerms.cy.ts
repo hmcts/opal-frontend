@@ -1,4 +1,8 @@
-import { createDefendantHeaderMockWithName, DEFENDANT_HEADER_MOCK } from './mocks/defendant_details_mock';
+import { AccountDetailsPaymentTermsActions } from '../../../../e2e/functional/opal/actions/account-details/details.payment-terms.actions';
+import {
+  createDefendantHeaderMockWithName as createBaseDefendantHeaderMockWithName,
+  DEFENDANT_HEADER_MOCK as BASE_DEFENDANT_HEADER_MOCK,
+} from './mocks/defendant_details_mock';
 
 import {
   USER_STATE_MOCK_NO_PERMISSION,
@@ -16,6 +20,15 @@ import {
 } from 'cypress/component/CommonIntercepts/CommonIntercepts';
 import { IComponentProperties } from './setup/setupComponent.interface';
 import { setupAccountEnquiryComponent } from './setup/SetupComponent';
+
+const DEFENDANT_HEADER_MOCK = structuredClone(BASE_DEFENDANT_HEADER_MOCK);
+DEFENDANT_HEADER_MOCK.payment_state_summary.account_balance = -500.58;
+
+const createDefendantHeaderMockWithName = (forenames: string, surname: string) => {
+  const headerMock = structuredClone(createBaseDefendantHeaderMockWithName(forenames, surname));
+  headerMock.payment_state_summary.account_balance = -500.58;
+  return headerMock;
+};
 
 const ACCOUNT_ENQUIRY_JIRA_LABEL = '@JIRA-LABEL:account-enquiry';
 
@@ -88,6 +101,7 @@ describe('Account Enquiry Payment Terms', () => {
     { description: 'account status is TFO Out Acknowledged', accountStatusCode: 'TS' },
     { description: 'account status is TFO Out S/NI', accountStatusCode: 'TO' },
     { description: 'account balance is zero', accountBalance: 0 },
+    { description: 'account has a credit balance', accountBalance: 100 },
   ];
 
   restrictedPaymentTermsAccountScenarios.forEach(({ description, accountStatusCode, accountBalance }) => {
@@ -140,32 +154,46 @@ describe('Account Enquiry Payment Terms', () => {
     );
   });
 
-  it(
-    'AC3: Change navigation remains unchanged for an eligible account',
-    { tags: [...buildTags('@JIRA-STORY:PO-5753', '@JIRA-EPIC:PO-2990'), '@JIRA-TEST-KEY:PO-9835'] },
-    () => {
-      const headerMock = structuredClone(createDefendantHeaderMockWithName('Robert', 'Thomson'));
-      headerMock.debtor_type = 'individual';
-      const paymentTermsMock = structuredClone(OPAL_FINES_ACCOUNT_DEFENDANT_DETAILS_PAYMENT_TERMS_LATEST_MOCK);
-      const accountId = headerMock.defendant_account_party_id;
+  [
+    { description: 'adult or youth', buildHeader: () => createDefendantHeaderMockWithName('Robert', 'Thomson') },
+    { description: 'company', buildHeader: buildCompanyHeaderMock },
+    { description: 'parent or guardian', buildHeader: buildParentGuardianHeaderMock },
+  ].forEach(({ description, buildHeader }) => {
+    it(
+      `Change opens the amend form for a ${description} account with an outstanding negative balance and arrears`,
+      {
+        tags: [
+          ...buildTags('@JIRA-DEFECT:PO-9151', '@JIRA-STORY:PO-5753', '@JIRA-EPIC:PO-2990'),
+          ...(description === 'adult or youth' ? ['@JIRA-TEST-KEY:PO-9835'] : []),
+        ],
+      },
+      () => {
+        const headerMock = structuredClone(buildHeader());
+        headerMock.payment_state_summary.account_balance = -100;
+        headerMock.payment_state_summary.arrears_amount = -25;
+        const paymentTermsMock = structuredClone(OPAL_FINES_ACCOUNT_DEFENDANT_DETAILS_PAYMENT_TERMS_LATEST_MOCK);
+        const accountId = headerMock.defendant_account_party_id;
 
-      interceptUserState(USER_STATE_MOCK_PERMISSION_BU77);
-      interceptDefendantHeader(accountId, headerMock, '123');
-      interceptPaymentTerms(accountId, paymentTermsMock, '123');
-      interceptResultByCode('REM');
-      setupAccountEnquiryComponent({
-        ...componentProperties,
-        accountId,
-        interceptedRoutes: componentProperties.interceptedRoutes?.filter((route) => route !== '../payment-terms/amend'),
-      });
-      cy.wait(['@getUserState', '@getDefendantHeaderSummary']);
-      cy.get('router-outlet').should('exist');
-      waitForPaymentTermsTabLoad();
+        interceptUserState(USER_STATE_MOCK_PERMISSION_BU77);
+        interceptDefendantHeader(accountId, headerMock, '123');
+        interceptPaymentTerms(accountId, paymentTermsMock, '123');
+        interceptResultByCode('REM');
+        setupAccountEnquiryComponent({
+          ...componentProperties,
+          accountId,
+          interceptedRoutes: componentProperties.interceptedRoutes?.filter(
+            (route) => route !== '../payment-terms/amend',
+          ),
+        });
+        cy.wait(['@getUserState', '@getDefendantHeaderSummary']);
+        waitForPaymentTermsTabLoad();
 
-      cy.contains(PAYMENT_TERMS_TAB.paymentTermsLink, 'Change').click();
-      cy.get('app-fines-acc-payment-terms-amend-form').should('exist');
-    },
-  );
+        const paymentTerms = new AccountDetailsPaymentTermsActions();
+        paymentTerms.openChangeLink();
+        paymentTerms.assertAmendFormVisible();
+      },
+    );
+  });
 
   it(
     'AC3: Request payment card navigation remains unchanged for an eligible account',

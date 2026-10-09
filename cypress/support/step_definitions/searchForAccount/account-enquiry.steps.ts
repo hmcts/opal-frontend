@@ -217,6 +217,10 @@ When('I open the matching result from the search results:', (table: DataTable) =
 /**
  * @step Opens the Defendant-column link from the latest minor creditor result row.
  */
+When('I open the defendant linked from the minor creditor account', () => {
+  minorCreditorDetails().openAssociatedDefendant();
+});
+
 When('I open the defendant linked from the latest minor creditor search result', () => {
   log('step', 'Opening defendant linked from latest minor creditor search result');
   accountEnquiryFlow().openLatestMinorCreditorDefendantFromResults();
