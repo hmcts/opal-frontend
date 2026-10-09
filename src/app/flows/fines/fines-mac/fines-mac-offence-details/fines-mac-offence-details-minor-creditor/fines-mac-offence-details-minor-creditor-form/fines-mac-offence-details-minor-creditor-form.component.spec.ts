@@ -122,9 +122,13 @@ describe('FinesMacOffenceDetailsMinorCreditorFormComponent', () => {
     forenamesControl.setValue('A very long name exceeding twenty characters');
     expect(forenamesControl.errors?.['maxlength']).toBeTruthy();
 
-    // Test pattern invalid validator on forenames
-    forenamesControl.setValue('/$£');
-    expect(forenamesControl.errors?.['lettersWithSpacesPattern']).toBeTruthy();
+    // Valid ASCII special characters should not cause validation errors on forenames
+    forenamesControl.setValue(`A-B, C.D'E`);
+    expect(forenamesControl.errors).toBeNull();
+
+    // Non-ASCII special characters should cause validation errors on forenames
+    forenamesControl.setValue('Anne£Marie');
+    expect(forenamesControl.errors?.['singleAsciiCharacters']).toBeTruthy();
 
     // Test required validator on surname
     surnameControl.setValue('');
@@ -134,9 +138,13 @@ describe('FinesMacOffenceDetailsMinorCreditorFormComponent', () => {
     surnameControl.setValue('A very long surname exceeding thirty characters');
     expect(surnameControl.errors?.['maxlength']).toBeTruthy();
 
-    // Test pattern invalid validator on surname
-    surnameControl.setValue('/$£');
-    expect(surnameControl.errors?.['lettersWithSpacesPattern']).toBeTruthy();
+    // Valid ASCII special characters should not cause validation errors on surname
+    surnameControl.setValue(`O'Connor-Smith, Jr.`);
+    expect(surnameControl.errors).toBeNull();
+
+    // Non-ASCII special characters should cause validation errors on surname
+    surnameControl.setValue('O£Connor');
+    expect(surnameControl.errors?.['singleAsciiCharacters']).toBeTruthy();
   });
 
   it('should set validators for company name control', () => {
