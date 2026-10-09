@@ -21,40 +21,8 @@ import { FINES_MCI_ROUTING_PATHS } from '../routing/constants/fines-mci-routing-
 import { FinesMciStore } from '../stores/fines-mci.store';
 import { finesMciPaymentCategoryCriminalMatchesSelectionValidator } from './validators/fines-mci-payment-category-criminal-matches.validator';
 
-interface FinesMciCriminalMatchesContent {
-  heading: string;
-  ticket: string;
-  body: string;
-}
-
-type FinesMciCriminalMatchesPlaceholderResults = Exclude<
-  FinesMciCriminalSearchResults,
-  typeof FINES_MCI_CRIMINAL_SEARCH_RESULTS.matches
->;
-
 const FINES_MCI_CRIMINAL_MATCHES_DEFAULT_RESULTS: FinesMciCriminalSearchResults =
   FINES_MCI_CRIMINAL_SEARCH_RESULTS.matches;
-
-const FINES_MCI_CRIMINAL_MATCHES_CONTENT: Record<
-  FinesMciCriminalMatchesPlaceholderResults,
-  FinesMciCriminalMatchesContent
-> = {
-  [FINES_MCI_CRIMINAL_SEARCH_RESULTS.noMatches]: {
-    heading: 'No matching criminal accounts',
-    ticket: 'PO-3528',
-    body: 'The design and functionality for no matching criminal account results will be implemented under ticket PO-3528.',
-  },
-  [FINES_MCI_CRIMINAL_SEARCH_RESULTS.tooMany]: {
-    heading: 'More than 100 matching criminal accounts',
-    ticket: 'PO-3528',
-    body: 'The design and functionality for searches returning more than 100 criminal account results will be implemented under ticket PO-3528.',
-  },
-  [FINES_MCI_CRIMINAL_SEARCH_RESULTS.searchCriteriaCannotBeCombined]: {
-    heading: 'Search criteria cannot be combined',
-    ticket: 'PO-3529',
-    body: 'The design and functionality for searches where reference data and account information are entered together will be implemented under ticket PO-3529.',
-  },
-};
 
 const isFinesMciCriminalMatchesResults = (results: string | null): results is FinesMciCriminalSearchResults =>
   Object.values(FINES_MCI_CRIMINAL_SEARCH_RESULTS).includes(results as FinesMciCriminalSearchResults);
@@ -82,9 +50,6 @@ export class FinesMciPaymentCategoryCriminalMatchesComponent {
 
   protected readonly finesMciStore = inject(FinesMciStore);
   protected readonly selectionErrorFieldId = FINES_MCI_PAYMENT_CATEGORY_CRIMINAL_MATCHES_ERROR_FIELD_IDS.accountSelection;
-  protected readonly content = computed(
-    () => FINES_MCI_CRIMINAL_MATCHES_CONTENT[this.results() as FinesMciCriminalMatchesPlaceholderResults],
-  );
   protected readonly searchResults = computed(() => this.finesMciStore.criminalSearchResults()?.defendant_accounts ?? []);
   protected readonly selectedAccountIds = computed(() => [...this.selectedAccountIdsSignal()]);
   protected readonly selectionValidationMessage = computed(() => this.selectionValidationMessageSignal());
@@ -92,6 +57,11 @@ export class FinesMciPaymentCategoryCriminalMatchesComponent {
   protected readonly tableData = computed(() => this.mapAccountsToTableData(this.searchResults()));
   protected readonly sortState = FINES_MCI_PAYMENT_CATEGORY_CRIMINAL_MATCHES_TABLE_WRAPPER_TABLE_SORT_DEFAULT;
   protected readonly isMatchesResults = computed(() => this.results() === FINES_MCI_CRIMINAL_SEARCH_RESULTS.matches);
+  protected readonly isNoMatchesResults = computed(() => this.results() === FINES_MCI_CRIMINAL_SEARCH_RESULTS.noMatches);
+  protected readonly isTooManyResults = computed(() => this.results() === FINES_MCI_CRIMINAL_SEARCH_RESULTS.tooMany);
+  protected readonly isSearchCriteriaCannotBeCombinedResults = computed(
+    () => this.results() === FINES_MCI_CRIMINAL_SEARCH_RESULTS.searchCriteriaCannotBeCombined,
+  );
   protected readonly financeDashboardRoute = [
     '/',
     FINES_ROUTING_PATHS.root,

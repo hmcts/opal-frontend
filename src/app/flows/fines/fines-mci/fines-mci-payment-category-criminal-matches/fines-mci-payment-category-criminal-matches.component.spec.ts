@@ -10,6 +10,7 @@ describe('FinesMciPaymentCategoryCriminalMatchesComponent', () => {
   let fixture: ComponentFixture<FinesMciPaymentCategoryCriminalMatchesComponent>;
   let queryParamSubject: BehaviorSubject<Record<string, string>>;
   let finesMciStore: InstanceType<typeof FinesMciStore>;
+  const criminalSearchPath = '/fines/manual-cash-input/create/till/payment/category/criminal/search';
 
   beforeEach(async () => {
     queryParamSubject = new BehaviorSubject<Record<string, string>>({ results: 'matches' });
@@ -52,19 +53,49 @@ describe('FinesMciPaymentCategoryCriminalMatchesComponent', () => {
     expect(accountCheckboxes.length).toBe(30);
   });
 
-  it.each([
-    ['no-matches', 'No matching criminal accounts', 'PO-3528'],
-    ['too-many', 'More than 100 matching criminal accounts', 'PO-3528'],
-    ['search-criteria-cannot-be-combined', 'Search criteria cannot be combined', 'PO-3529'],
-  ])('should render placeholder content for %s', (results, heading, ticket) => {
-    queryParamSubject.next({ results });
+  it('should render no matches content with a link back to the criminal search page', () => {
+    queryParamSubject.next({ results: 'no-matches' });
+    fixture.detectChanges();
+
+    const text = fixture.nativeElement.textContent;
+    const link = fixture.nativeElement.querySelector('a.govuk-link') as HTMLAnchorElement;
+
+    expect(text).toContain('Avon and Somerset');
+    expect(text).toContain('Search results');
+    expect(text).toContain('There are no matching results');
+    expect(text).toContain('Check your search');
+    expect(text).toContain('and try again.');
+    expect(text).not.toContain('Placeholder for PO-3528');
+    expect(link.textContent?.trim()).toBe('Check your search');
+    expect(link.getAttribute('href')).toBe(criminalSearchPath);
+  });
+
+  it('should render too many results content with a link back to the criminal search page', () => {
+    queryParamSubject.next({ results: 'too-many' });
+    fixture.detectChanges();
+
+    const text = fixture.nativeElement.textContent;
+    const link = fixture.nativeElement.querySelector('a.govuk-link') as HTMLAnchorElement;
+
+    expect(text).toContain('Avon and Somerset');
+    expect(text).toContain('Search results');
+    expect(text).toContain('There are more than 100 results');
+    expect(text).toContain('Try adding more information');
+    expect(text).toContain('to your search.');
+    expect(text).not.toContain('Placeholder for PO-3528');
+    expect(link.textContent?.trim()).toBe('Try adding more information');
+    expect(link.getAttribute('href')).toBe(criminalSearchPath);
+  });
+
+  it('should render placeholder content for search criteria that cannot be combined', () => {
+    queryParamSubject.next({ results: 'search-criteria-cannot-be-combined' });
     fixture.detectChanges();
 
     const text = fixture.nativeElement.textContent;
 
     expect(text).toContain('Avon and Somerset');
-    expect(text).toContain(heading);
-    expect(text).toContain(ticket);
+    expect(text).toContain('Search criteria cannot be combined');
+    expect(text).toContain('PO-3529');
   });
 
   it('should render matching criminal accounts by default', () => {
