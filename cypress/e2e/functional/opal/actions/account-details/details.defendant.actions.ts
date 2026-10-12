@@ -132,6 +132,19 @@ export class AccountDetailsDefendantActions {
   }
 
   /**
+   * Asserts the defendant name on the summary card contains the expected value, ignoring case.
+   * @param expected text expected in name field
+   */
+  assertDefendantNameContainsIgnoringCase(expected: string): void {
+    cy.get(L.defendant.fields.name, this.common.getTimeoutOptions())
+      .should('be.visible')
+      .invoke('text')
+      .then((actual) => {
+        expect(this.normalize(actual).toLowerCase()).to.contain(this.normalize(expected).toLowerCase());
+      });
+  }
+
+  /**
    * Asserts the defendant summary card is rendered in the Defendant tab.
    */
   assertDefendantSummaryVisible(): void {
