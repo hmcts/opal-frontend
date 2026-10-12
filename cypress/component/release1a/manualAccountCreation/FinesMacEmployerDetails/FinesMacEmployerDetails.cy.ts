@@ -171,11 +171,11 @@ describe('FinesMacEmployerDetailsComponent', () => {
         fm_employer_details_employer_reference: 'XNJ#5567',
         fm_employer_details_employer_email_address: 'test-test-com',
         fm_employer_details_employer_telephone_number: '0123 456 789#',
-        fm_employer_details_employer_address_line_1: '12* test road',
-        fm_employer_details_employer_address_line_2: 'Avenue_test*',
-        fm_employer_details_employer_address_line_3: 'Avenue_test*',
-        fm_employer_details_employer_address_line_4: 'Avenue_test*',
-        fm_employer_details_employer_address_line_5: 'Avenue_test*',
+        fm_employer_details_employer_address_line_1: '12 tést road',
+        fm_employer_details_employer_address_line_2: 'Avénue_test',
+        fm_employer_details_employer_address_line_3: 'Avénue_test',
+        fm_employer_details_employer_address_line_4: 'Avénue_test',
+        fm_employer_details_employer_address_line_5: 'Avénue_test',
         fm_employer_details_employer_post_code: 'AB124BM#',
       };
 
@@ -204,16 +204,16 @@ describe('FinesMacEmployerDetailsComponent', () => {
   );
 
   it(
-    '(AC.1) should not allow unsupported punctuation in the address line fields',
+    '(AC.1) should not allow unsupported characters in the address line fields',
     { tags: [...buildTags('@JIRA-STORY:PO-280'), '@JIRA-EPIC:PO-272', '@JIRA-TEST-KEY:PO-4975'] },
     () => {
       setupComponent(null, 'adultOrYouthOnly');
-      finesMacState.employerDetails.formData.fm_employer_details_employer_address_line_1 = 'addr/1';
-      finesMacState.employerDetails.formData.fm_employer_details_employer_address_line_2 = 'addr/2';
-      finesMacState.employerDetails.formData.fm_employer_details_employer_address_line_3 = 'addr/3';
-      finesMacState.employerDetails.formData.fm_employer_details_employer_address_line_4 = 'addr/4';
-      finesMacState.employerDetails.formData.fm_employer_details_employer_address_line_5 = 'addr/5';
-      cy.get(L.addressLine1Input).should('have.value', 'addr/1');
+      finesMacState.employerDetails.formData.fm_employer_details_employer_address_line_1 = 'addré1';
+      finesMacState.employerDetails.formData.fm_employer_details_employer_address_line_2 = 'addré2';
+      finesMacState.employerDetails.formData.fm_employer_details_employer_address_line_3 = 'addré3';
+      finesMacState.employerDetails.formData.fm_employer_details_employer_address_line_4 = 'addré4';
+      finesMacState.employerDetails.formData.fm_employer_details_employer_address_line_5 = 'addré5';
+      cy.get(L.addressLine1Input).should('have.value', 'addré1');
       cy.get(L.submitButton).contains('Return to account details').click();
 
       cy.get(L.errorSummary).should('contain', FORMAT_VALIDATION.employer_address1_special_chars);
@@ -301,11 +301,11 @@ describe('FinesMacEmployerDetailsComponent', () => {
         fm_employer_details_employer_reference: 'XNJ#5567',
         fm_employer_details_employer_email_address: 'test-test-com',
         fm_employer_details_employer_telephone_number: '0123 456 789#',
-        fm_employer_details_employer_address_line_1: '12* test road',
-        fm_employer_details_employer_address_line_2: 'Avenue_test*',
-        fm_employer_details_employer_address_line_3: 'Avenue_test*',
-        fm_employer_details_employer_address_line_4: 'Avenue_test*',
-        fm_employer_details_employer_address_line_5: 'Avenue_test*',
+        fm_employer_details_employer_address_line_1: '12* tést road',
+        fm_employer_details_employer_address_line_2: 'Avénue_test*',
+        fm_employer_details_employer_address_line_3: 'Avénue_test*',
+        fm_employer_details_employer_address_line_4: 'Avénue_test*',
+        fm_employer_details_employer_address_line_5: 'Avénue_test*',
         fm_employer_details_employer_post_code: 'AB124BM#',
       };
       cy.get(L.submitButton).contains('Return to account details').click();
@@ -318,11 +318,11 @@ describe('FinesMacEmployerDetailsComponent', () => {
           fm_employer_details_employer_reference: '1234567890',
           fm_employer_details_employer_email_address: 'test@test.com',
           fm_employer_details_employer_telephone_number: '07700900982',
-          fm_employer_details_employer_address_line_1: 'Addr1',
-          fm_employer_details_employer_address_line_2: 'Addr2',
-          fm_employer_details_employer_address_line_3: 'Addr3',
-          fm_employer_details_employer_address_line_4: 'Addr4',
-          fm_employer_details_employer_address_line_5: 'Addr5',
+          fm_employer_details_employer_address_line_1: '12* test road',
+          fm_employer_details_employer_address_line_2: 'Avenue_test*',
+          fm_employer_details_employer_address_line_3: 'Avenue_test*',
+          fm_employer_details_employer_address_line_4: 'Avenue_test*',
+          fm_employer_details_employer_address_line_5: 'Avenue_test*',
           fm_employer_details_employer_post_code: 'TE12 3ST',
         };
 

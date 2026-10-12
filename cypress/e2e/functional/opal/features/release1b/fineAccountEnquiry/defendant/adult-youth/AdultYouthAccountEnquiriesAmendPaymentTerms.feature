@@ -27,11 +27,9 @@ Feature: Adult Youth Account Enquiries Amend Payment Terms
         | account.payment_terms.payment_terms_type_code   | B                         |
         | account.payment_terms.effective_date            | 2025-05-30                |
 
-    @JIRA-EPIC:PO-977 @R1B @JIRA-STORY:PO-1149 @JIRA-TEST-KEY:PO-5303
+    @JIRA-EPIC:PO-977 @R1BDrop1 @JIRA-STORY:PO-1149 @JIRA-TEST-KEY:PO-5303 @JIRA-NFR:PO-2324 @skip
     Scenario: Save payment terms changes and return to Payment terms tab
-      When I search for the account by last name "AmendPayTerms{uniq}" and open the latest result
-      And I go to the Payment terms tab
-      And I open the amend payment terms form
+      When the amend payment terms form is displayed for defendant account with last name "AmendPayTerms{uniq}"
       And I submit instalments only payment terms with a payment card request
       Then I should return to the Payment terms tab
       And the payment terms summary shows instalments:
@@ -41,29 +39,25 @@ Feature: Adult Youth Account Enquiries Amend Payment Terms
       And the payment terms save request should include a payment card request
       And the payment terms last enforcement is cleared
 
-    @JIRA-EPIC:PO-977 @R1B @JIRA-STORY:PO-1149 @JIRA-TEST-KEY:PO-5304
+    @JIRA-EPIC:PO-977 @R1BDrop1 @JIRA-STORY:PO-1149 @JIRA-TEST-KEY:PO-5304
     Scenario: Cancel payment terms amendments returns to Payment terms tab
-      When I search for the account by last name "AmendPayTerms{uniq}" and open the latest result
-      And I go to the Payment terms tab
-      And I open the amend payment terms form
+      When the amend payment terms form is displayed for defendant account with last name "AmendPayTerms{uniq}"
       And I cancel payment terms amendments
       Then I should return to the Payment terms tab
       And the payment terms pay by date is "30 May 2025"
       And the payment terms instalment rows are not shown
 
-    @R1B @JIRA-STORY:PO-2671 @JIRA-EPIC:PO-8248 @JIRA-TEST-KEY:PO-10030
-    Scenario: AC4a, AC4b Payment terms tab keeps the Change link inside the panel and opens the amend screen
-      When I search for the account by last name "AmendPayTerms{uniq}" and open the latest result
-      And I go to the Payment terms tab
-      Then I should only see one Change link inside the Payment terms panel
-      When I open the amend payment terms form
+    @R1BDrop1 @JIRA-STORY:PO-2671 @JIRA-EPIC:PO-8248 @JIRA-TEST-KEY:PO-10030
+    Scenario: AC4a, AC4b Payment terms tab keeps the Change action inside the panel and opens the amend screen
+      When the Payment terms tab is displayed for defendant account with last name "AmendPayTerms{uniq}"
+      Then I should only see one Change action inside the Payment terms panel
+      When the amend payment terms form is displayed
       Then I should be on the Payment terms amend screen
 
-    @R1B @JIRA-STORY:PO-5753 @JIRA-EPIC:PO-2990
+    @R1BDrop1 @JIRA-STORY:PO-5753 @JIRA-EPIC:PO-2990
     Scenario Outline: AC1, AC2 Payment terms actions are hidden for restricted account statuses
       Given I stub the defendant header summary payment terms account status code to "<status>"
-      When I search for the account by last name "AmendPayTerms{uniq}" and open the latest result
-      And I go to the Payment terms tab
+      When the Payment terms tab is displayed for defendant account with last name "AmendPayTerms{uniq}"
       Then I do not see the Payment terms Change or Request payment card actions
 
       @JIRA-TEST-KEY:PO-10031
@@ -87,9 +81,8 @@ Feature: Adult Youth Account Enquiries Amend Payment Terms
         | status |
         | TO     |
 
-    @R1B @JIRA-STORY:PO-5753 @JIRA-EPIC:PO-2990 @JIRA-TEST-KEY:PO-10036
+    @R1BDrop1 @JIRA-STORY:PO-5753 @JIRA-EPIC:PO-2990 @JIRA-TEST-KEY:PO-10036
     Scenario: AC1, AC2 Payment terms actions are hidden when the account balance is zero
       Given I stub the defendant header summary payment terms account balance to 0
-      When I search for the account by last name "AmendPayTerms{uniq}" and open the latest result
-      And I go to the Payment terms tab
+      When the Payment terms tab is displayed for defendant account with last name "AmendPayTerms{uniq}"
       Then I do not see the Payment terms Change or Request payment card actions

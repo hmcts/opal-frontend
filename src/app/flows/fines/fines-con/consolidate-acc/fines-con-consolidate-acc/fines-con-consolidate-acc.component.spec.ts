@@ -63,6 +63,18 @@ describe('FinesConConsolidateAccComponent', () => {
     expect(finesConStore.activeTab()).toBe('search');
   });
 
+  it('should update the rendered tab content when the active tab changes', () => {
+    fixture.detectChanges();
+
+    expect(fixture.nativeElement.querySelector('app-fines-con-search-account')).toBeTruthy();
+
+    component.handleTabSwitch('for-consolidation');
+    fixture.detectChanges();
+
+    expect(fixture.nativeElement.querySelector('app-fines-con-search-account')).toBeNull();
+    expect(fixture.nativeElement.querySelector('.tab-content')).toBeTruthy();
+  });
+
   it('should switch to results tab when clicked', () => {
     component.handleTabSwitch('results');
     expect(finesConStore.activeTab()).toBe('results');

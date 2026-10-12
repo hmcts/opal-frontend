@@ -118,7 +118,7 @@ describe('Minor Creditor Account Summary - At a Glance Tab', () => {
 
   it(
     'AC1, AC2, AC3, AC4, AC5, AC7, AC8, AC9, AC10: reflows the Minor Creditor at a Glance header at narrow widths',
-    { tags: [...buildTags(MINOR_CREDITOR_SUMMARY_STORY_TAG), '@JIRA-EPIC:PO-2234', '@JIRA-TEST-KEY:PO-2674'] },
+    { tags: [...buildTags(MINOR_CREDITOR_SUMMARY_STORY_TAG), '@JIRA-EPIC:PO-2234'] },
     () => {
       cy.viewport(375, 900);
 
@@ -142,6 +142,38 @@ describe('Minor Creditor Account Summary - At a Glance Tab', () => {
         );
         expect(body.scrollWidth, 'body should not overflow viewport').to.be.at.most(body.clientWidth + 1);
       });
+    },
+  );
+
+  it(
+    'PO-10682: displays the organisation name for an associated organisation defendant and preserves its account link',
+    { tags: buildTags('@JIRA-STORY:PO-10682', MINOR_CREDITOR_SUMMARY_EPIC_TAG) },
+    () => {
+      const header = createIndividualMinorCreditorHeaderMock();
+      const atAGlance = createIndividualMinorCreditorAtAGlanceMock();
+      const organisationName = 'The Empire Ltd';
+
+      atAGlance.defendant = {
+        ...atAGlance.defendant!,
+        organisation: true,
+        organisation_name: organisationName,
+      };
+
+      setupMinorCreditorAtAGlance(USER_STATE_MOCK_NO_PERMISSION, header, atAGlance);
+
+      cy.contains(DOM.fieldHeading, DOM.labelDefendantName)
+        .next(DOM.fieldValue)
+        .invoke('text')
+        .then((text) => {
+          expect(normalizeText(text)).to.eq(organisationName);
+        });
+
+      cy.contains(DOM.fieldHeading, DOM.labelDefendantAccount)
+        .next(DOM.fieldValue)
+        .find(DOM.linkText)
+        .should('have.text', 'ACC-654321')
+        .and('have.attr', 'href', '/fines/account/defendant/123456789/details')
+        .and('have.attr', 'target', '_blank');
     },
   );
 

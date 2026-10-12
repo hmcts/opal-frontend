@@ -17,7 +17,7 @@
     <opal-lib-custom-account-information-item itemClasses="govuk-grid-column-one-quarter govuk-!-padding-left-0">
       <h2 opal-lib-custom-account-information-item-label>Business Unit:</h2>
       <p opal-lib-custom-account-information-item-value id="minor-creditor-business-unit">
-        {{ accountData.business_unit.business_unit_name }} ({{ accountData.business_unit.business_unit_id }})
+        {{ accountData.business_unit.business_unit_name }} ({{ accountData.business_unit.business_unit_code }})
       </p>
     </opal-lib-custom-account-information-item>
   </opal-lib-custom-account-information>
@@ -27,7 +27,7 @@
   <hr class="govuk-section-break govuk-section-break--visible govuk-!-margin-bottom-3 govuk-!-margin-top-2" />
 
   <opal-lib-custom-summary-metric-bar>
-    @if (accountData.creditor.has_associated_defendant) {
+    @if (!accountData.repayment) {
       <opal-lib-custom-summary-metric-bar-item>
         <p opal-lib-custom-summary-metric-bar-item-label>Awarded:</p>
         <p opal-lib-custom-summary-metric-bar-item-value>
@@ -41,13 +41,13 @@
         <opal-lib-custom-accessible-monetary [value]="accountData.financials.paid_out" />
       </p>
     </opal-lib-custom-summary-metric-bar-item>
-    <opal-lib-custom-summary-metric-bar-item backgroundColour="govuk-lighter-blue-background-colour">
-      <p opal-lib-custom-summary-metric-bar-item-label textColour="govuk-dark-blue-text-colour">Awaiting payout:</p>
-      <p opal-lib-custom-summary-metric-bar-item-value textColour="govuk-dark-blue-text-colour">
-        <opal-lib-custom-accessible-monetary [value]="accountData.financials.awaiting_payout" />
-      </p>
-    </opal-lib-custom-summary-metric-bar-item>
-    @if (accountData.creditor.has_associated_defendant) {
+    @if (!accountData.repayment) {
+      <opal-lib-custom-summary-metric-bar-item backgroundColour="govuk-lighter-blue-background-colour">
+        <p opal-lib-custom-summary-metric-bar-item-label textColour="govuk-dark-blue-text-colour">Awaiting payout:</p>
+        <p opal-lib-custom-summary-metric-bar-item-value textColour="govuk-dark-blue-text-colour">
+          <opal-lib-custom-accessible-monetary [value]="accountData.financials.awaiting_payout" />
+        </p>
+      </opal-lib-custom-summary-metric-bar-item>
       <opal-lib-custom-summary-metric-bar-item backgroundColour="govuk-blue-background-colour">
         <p opal-lib-custom-summary-metric-bar-item-label textColour="govuk-white-text-colour">Outstanding:</p>
         <p opal-lib-custom-summary-metric-bar-item-value textColour="govuk-white-text-colour">
@@ -101,8 +101,8 @@
       <app-fines-acc-minor-creditor-details-creditor-tab
         [tabData]="tabData"
         [style]="tabContentStyles"
-        [hasAccountMaintenancePermission]="hasPermission(finesPermissions['account-maintenance'])"
-        [hasAccountMaintenancePermissionInBU]="hasBusinessUnitPermissionKey('account-maintenance')"
+        [hasMinorCreditorMaintenancePermission]="hasPermission(finesPermissions['account-maintenance-minor-creditor'])"
+        [hasMinorCreditorMaintenancePermissionInBU]="hasBusinessUnitPermissionKey('account-maintenance-minor-creditor')"
         [hasViewCreditorBacsPermission]="hasPermission(finesPermissions['view-creditor-bacs'])"
       ></app-fines-acc-minor-creditor-details-creditor-tab>
     }

@@ -132,9 +132,9 @@ describe('FinesMacPersonalDetailsComponent', () => {
       });
       cy.get(DOM_ELEMENTS.submitButton).click();
 
-      cy.get(DOM_ELEMENTS.errorSummary).should('not.contain', FORMAT_CHECK.addressLine1ContainsSpecialCharacters);
-      cy.get(DOM_ELEMENTS.errorSummary).should('not.contain', FORMAT_CHECK.addressLine2ContainsSpecialCharacters);
-      cy.get(DOM_ELEMENTS.errorSummary).should('not.contain', FORMAT_CHECK.addressLine3ContainsSpecialCharacters);
+      cy.get(DOM_ELEMENTS.errorSummary).should('not.contain', FORMAT_CHECK['addressLine1ContainsSpecialCharacters']);
+      cy.get(DOM_ELEMENTS.errorSummary).should('not.contain', FORMAT_CHECK['addressLine2ContainsSpecialCharacters']);
+      cy.get(DOM_ELEMENTS.errorSummary).should('not.contain', FORMAT_CHECK['addressLine3ContainsSpecialCharacters']);
     },
   );
 
@@ -165,11 +165,11 @@ describe('FinesMacPersonalDetailsComponent', () => {
     { tags: [...buildTags('@JIRA-STORY:PO-360'), '@JIRA-EPIC:PO-272'] },
     () => {
       setupComponent(null, '', (finesMacState) => {
-        finesMacState.personalDetails.formData.fm_personal_details_address_line_1 = '12/14 King Street';
+        finesMacState.personalDetails.formData.fm_personal_details_address_line_1 = '1214 King Stréet';
       });
       cy.get(DOM_ELEMENTS.submitButton).click();
 
-      cy.get(DOM_ELEMENTS.errorSummary).should('contain', FORMAT_CHECK.addressLine1ContainsSpecialCharacters);
+      cy.get(DOM_ELEMENTS.errorSummary).should('contain', FORMAT_CHECK['addressLine1ContainsSpecialCharacters']);
     },
   );
 
@@ -466,7 +466,7 @@ describe('FinesMacPersonalDetailsComponent', () => {
           'Stuart Philips aarogyam Guuci Coach VII';
         finesMacState.personalDetails.formData.fm_personal_details_surname =
           'Chicago bulls Burberry RedBull 2445 PizzaHut';
-        finesMacState.personalDetails.formData.fm_personal_details_address_line_1 = 'test Road /12';
+        finesMacState.personalDetails.formData.fm_personal_details_address_line_1 = 'tést Road 12';
       });
 
       cy.get(DOM_ELEMENTS.submitButton).contains('Return to account details').click();

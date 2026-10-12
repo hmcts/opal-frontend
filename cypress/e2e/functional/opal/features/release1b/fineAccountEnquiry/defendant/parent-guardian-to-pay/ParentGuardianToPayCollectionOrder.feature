@@ -24,29 +24,29 @@ Feature: Parent Guardian To Pay Collection Order
         | account.payment_card_request            | false                                 |
         | account.defendant.dob                   | 2010-05-15                            |
       When I search for the account by last name "ParentGuardianSurname{uniq}" and verify the page header is "Miss Michael PARENTGUARDIANSURNAME{uniqUpper}"
-      And I go to the Enforcement tab
+      And the Enforcement tab is selected
 
-    @R1B @JIRA-EPIC:PO-1675 @JIRA-TEST-KEY:PO-5352
+    @R1BDrop1 @JIRA-EPIC:PO-1675 @JIRA-TEST-KEY:PO-5352
     Scenario: Save Collection Order status for an account with parent or guardian details
-      And I open the Change Collection Order status form
+      And the Change Collection Order status form is displayed
       Then I should see the Change Collection Order status page
       And I should see the account identifier "Miss Michael PARENTGUARDIANSURNAME{uniqUpper} Change Collection Order Status"
-      And I select "Yes" for Collection Order status
+      And the Collection Order status is "Yes"
       And I submit the Change Collection Order status form
       Then I should return to the Enforcement tab
       And I should see the collection order success banner "Collection Order status changed"
       And the collection order summary should show "Collection Order"
 
-    @R1B @JIRA-EPIC:PO-1675 @JIRA-TEST-KEY:PO-5353
+    @R1BDrop1 @JIRA-EPIC:PO-1675 @JIRA-TEST-KEY:PO-5353
     Scenario: Cancel without making a selection returns to the Enforcement tab (parent or guardian account)
-      And I open the Change Collection Order status form
+      And the Change Collection Order status form is displayed
       And I cancel the Change Collection Order status form without making changes
       Then I should return to the Enforcement tab
 
-    @R1B @JIRA-EPIC:PO-1675 @JIRA-TEST-KEY:PO-5354
+    @R1BDrop1 @JIRA-EPIC:PO-1675 @JIRA-TEST-KEY:PO-5354
     Scenario: Cancel after selecting a value shows a route guard (parent or guardian account)
-      And I open the Change Collection Order status form
-      And I select "Yes" for Collection Order status
+      And the Change Collection Order status form is displayed
+      And the Collection Order status is "Yes"
       And I cancel the Change Collection Order status form and choose to stay
       Then I should remain on the Change Collection Order status page
 

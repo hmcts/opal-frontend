@@ -87,15 +87,15 @@ export const ERROR_MESSAGES = {
   DATA_TYPE_EMPLOYER_REFERENCE:
     'Employer reference must only include letters a to z, numbers, hyphens, spaces and apostrophes',
   DATA_TYPE_EMPLOYER_ADDRESS_LINE_1:
-    'Employer address line 1 must only include letters a to z, numbers, hyphens, spaces and apostrophes',
+    'Employer address line 1 must only include letters a to z, numbers 0-9 and certain special characters (such as hyphens, spaces, apostrophes and commas)',
   DATA_TYPE_EMPLOYER_ADDRESS_LINE_2:
-    'Employer address line 2 must only include letters a to z, numbers, hyphens, spaces and apostrophes',
+    'Employer address line 2 must only include letters a to z, numbers 0-9 and certain special characters (such as hyphens, spaces, apostrophes and commas)',
   DATA_TYPE_EMPLOYER_ADDRESS_LINE_3:
-    'Employer address line 3 must only include letters a to z, numbers, hyphens, spaces and apostrophes',
+    'Employer address line 3 must only include letters a to z, numbers 0-9 and certain special characters (such as hyphens, spaces, apostrophes and commas)',
   DATA_TYPE_EMPLOYER_ADDRESS_LINE_4:
-    'Employer address line 4 must only include letters a to z, numbers, hyphens, spaces and apostrophes',
+    'Employer address line 4 must only include letters a to z, numbers 0-9 and certain special characters (such as hyphens, spaces, apostrophes and commas)',
   DATA_TYPE_EMPLOYER_ADDRESS_LINE_5:
-    'Employer address line 5 must only include letters a to z, numbers, hyphens, spaces and apostrophes',
+    'Employer address line 5 must only include letters a to z, numbers 0-9 and certain special characters (such as hyphens, spaces, apostrophes and commas)',
   DATA_TYPE_EMPLOYER_POSTCODE: 'Employer postcode must only include letters and number',
 
   // Company errors
@@ -120,6 +120,7 @@ export const PARENT_GUARDIAN_ERROR_MESSAGES = {
 
   MAX_LENGTH_FORENAMES: 'Parent or guardian first name(s) must be 20 characters or fewer',
   MAX_LENGTH_SURNAME: 'Parent or guardian last name must be 30 characters or fewer',
+  MAX_LENGTH_ADDRESS_LINE_3: 'Address line 3 must be 13 characters or fewer',
 
   DATA_TYPE_FORENAMES:
     'Parent or guardian first name(s) must only include letters a to z, numbers 0-9 and certain special characters (such as hyphens, spaces, apostrophes and commas)',
@@ -260,7 +261,7 @@ export const PARENT_GUARDIAN_MAX_LENGTH_ERRORS = [
   ERROR_MESSAGES.MAX_LENGTH_NI_NUMBER,
   ERROR_MESSAGES.MAX_LENGTH_ADDRESS_LINE_1,
   ERROR_MESSAGES.MAX_LENGTH_ADDRESS_LINE_2,
-  ERROR_MESSAGES.MAX_LENGTH_ADDRESS_LINE_3,
+  PARENT_GUARDIAN_ERROR_MESSAGES.MAX_LENGTH_ADDRESS_LINE_3,
   ERROR_MESSAGES.MAX_LENGTH_POSTCODE,
   ERROR_MESSAGES.MAX_LENGTH_EMAIL_PRIMARY,
   ERROR_MESSAGES.MAX_LENGTH_EMAIL_SECONDARY,

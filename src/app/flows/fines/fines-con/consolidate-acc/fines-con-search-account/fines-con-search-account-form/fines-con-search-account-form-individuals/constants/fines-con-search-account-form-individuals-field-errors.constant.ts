@@ -51,8 +51,9 @@ export const FINES_CON_SEARCH_ACCOUNT_FORM_INDIVIDUALS_FIELD_ERRORS: IFinesConSe
       },
     },
     fcon_search_account_individuals_address_line_1: {
-      alphanumericTextPattern: {
-        message: 'Address line 1 must only include letters a to z, numbers, hyphens, spaces and apostrophes',
+      singleAsciiCharacters: {
+        message:
+          'Address line 1 must only include letters a to z, numbers 0-9 and certain special characters (such as hyphens, spaces, apostrophes and commas)',
         priority: 1,
       },
       maxlength: {

@@ -172,16 +172,16 @@ describe('FinesConSearchAccountFormCompaniesComponent', () => {
     expect(companyNameControl?.hasError('maxlength')).toBe(true);
   });
 
-  it('should validate address line 1 with alphanumeric hyphens apostrophes and spaces pattern', () => {
+  it('should validate address line 1 with the single ASCII characters pattern', () => {
     const addressControl = component.form.get(
       'fcon_search_account_companies_search_criteria.fcon_search_account_companies_address_line_1',
     );
 
-    addressControl?.setValue('123 Main Street-North');
-    expect(addressControl?.hasError('alphanumericTextPattern')).toBe(false);
+    addressControl?.setValue('123 Main Street & Co.');
+    expect(addressControl?.hasError('singleAsciiCharacters')).toBe(false);
 
-    addressControl?.setValue('123 Main St &');
-    expect(addressControl?.hasError('alphanumericTextPattern')).toBe(true);
+    addressControl?.setValue('123 Café Street');
+    expect(addressControl?.hasError('singleAsciiCharacters')).toBe(true);
   });
 
   it('should validate address line 1 max length of 30 characters', () => {

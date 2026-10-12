@@ -13,9 +13,10 @@ import { IOpalFinesAccountDefendantDetailsHeader } from 'src/app/flows/fines/fin
 import { IOpalFinesAccountMinorCreditorDetailsHeader } from 'src/app/flows/fines/fines-acc/fines-acc-minor-creditor-details/interfaces/fines-acc-minor-creditor-details-header.interface';
 import { IOpalFinesAccountMajorCreditorDetailsHeader } from 'src/app/flows/fines/fines-acc/fines-acc-major-creditor-details/interfaces/fines-acc-major-creditor-details-header.interface';
 import { IOpalFinesAccountMajorCreditorAtAGlance } from 'src/app/flows/fines/services/opal-fines-service/interfaces/opal-fines-account-major-creditor-at-a-glance.interface';
+import { IOpalFinesAccountMajorCreditorDetailsHistoryAndNotesTabRefData } from 'src/app/flows/fines/services/opal-fines-service/interfaces/opal-fines-account-major-creditor-details-history-and-notes-tab-ref-data.interface';
 
 /**
- * Intercepts the POST request to the `/opal-fines-service/notes/add` endpoint during Cypress tests.
+ * Intercepts the POST request to the `/opal-fines-service/notes` endpoint during Cypress tests.
  *
  * This function mocks the network request by returning a 201 status code with an empty response body.
  * No response data is needed, as there is no behavior based on the response content.
@@ -23,7 +24,7 @@ import { IOpalFinesAccountMajorCreditorAtAGlance } from 'src/app/flows/fines/ser
  */
 export function interceptAddNotes() {
   return cy
-    .intercept('POST', '/opal-fines-service/notes/add', {
+    .intercept('POST', '/opal-fines-service/notes', {
       statusCode: 201,
       body: {},
     })
@@ -346,6 +347,20 @@ export const interceptMajorCreditorHeader = (
     })
     .as('getMajorCreditorHeaderSummary');
 };
+
+export function interceptMajorCreditorHistoryAndNotes(
+  accountId: string | number,
+  mockData: IOpalFinesAccountMajorCreditorDetailsHistoryAndNotesTabRefData,
+  respHeaderEtag: string,
+) {
+  return cy
+    .intercept('GET', `/opal-fines-service/major-creditor-accounts/${accountId}/history*`, {
+      statusCode: 200,
+      body: mockData,
+      headers: { ETag: respHeaderEtag },
+    })
+    .as('getMajorCreditorHistoryAndNotes');
+}
 
 /**
  * Intercepts the network request for fetching defendant account party details

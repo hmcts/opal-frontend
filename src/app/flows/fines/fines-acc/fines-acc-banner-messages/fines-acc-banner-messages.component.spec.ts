@@ -16,6 +16,7 @@ describe('FinesAccBannerMessagesComponent', () => {
     fixture = TestBed.createComponent(FinesAccBannerMessagesComponent);
     component = fixture.componentInstance;
     component.hasVersionMismatch = false;
+    component.isTransferredIn = false;
     component.hasPaymentHold = false;
     component.successMessage = null;
     component.collectionOrderBannerMessage = null;
@@ -59,6 +60,25 @@ describe('FinesAccBannerMessagesComponent', () => {
     const bannerText = fixture.debugElement.query(By.css('opal-lib-moj-alert-content-text'))?.nativeElement
       ?.textContent;
     expect(bannerText).toContain('Saved');
+  });
+
+  it('should render the transferred in banner without a dismiss button when isTransferredIn is true', () => {
+    component.isTransferredIn = true;
+    fixture.detectChanges();
+
+    const banner = fixture.debugElement.query(By.css('#acc-summary-header-banners-transferred-in'));
+    const bannerText = banner?.nativeElement?.textContent;
+    const dismissButton = banner.query(By.css('button'));
+
+    expect(bannerText).toContain('Account transferred in');
+    expect(dismissButton).toBeFalsy();
+  });
+
+  it('should not render the transferred in banner when isTransferredIn is false', () => {
+    component.isTransferredIn = false;
+    fixture.detectChanges();
+
+    expect(fixture.debugElement.query(By.css('#acc-summary-header-banners-transferred-in'))).toBeFalsy();
   });
 
   it('should render the Collection Order warning banner when collectionOrderBannerMessage is provided', () => {

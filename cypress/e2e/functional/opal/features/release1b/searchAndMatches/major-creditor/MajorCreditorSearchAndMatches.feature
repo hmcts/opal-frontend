@@ -4,7 +4,7 @@ Feature: Major Creditor Search And Matches
   Background:
     Given I am logged in with email "opal-test@dev.platform.hmcts.net"
 
-  @R1B @JIRA-STORY:PO-2350 @JIRA-EPIC:PO-1286
+  @R1BDrop2 @JIRA-STORY:PO-2350 @JIRA-EPIC:PO-1286
   Scenario: Search for the Central Fund account for Camberwell Green
     Given I am on the Account Search page - Individuals form displayed by default
     And I open the business unit filter from the search page

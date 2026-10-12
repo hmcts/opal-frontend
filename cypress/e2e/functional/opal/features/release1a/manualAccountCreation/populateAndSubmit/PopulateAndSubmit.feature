@@ -62,8 +62,8 @@ Feature: Populate And Submit
       | Totals           |                                       | £1,000.00      | £450.00     | £550.00           |
     And the summary list should contain the following information:
       | Amount imposed    | £1,000.00 |
-      | Amount paid       | £450.00  |
-      | Balance remaining | £550.00  |
+      | Amount paid       | £450.00   |
+      | Balance remaining | £550.00   |
     When I return to account details from offence details
     Then the "Offence details" task status is "Provided"
 
@@ -161,7 +161,9 @@ Feature: Populate And Submit
 
 
   @R1A @JIRA-STORY:PO-1450 @JIRA-STORY:PO-1638 @JIRA-EPIC:PO-2219 @JIRA-TEST-KEY:PO-5549
+  @draft-request-contract
   Scenario: Submitting a company manual account with a minor creditor shows the correct review summaries
+    Given I monitor the draft account POST contract
     When I start a fine manual account for business unit "West London" with defendant type "Company" and originator type "New"
     And I complete manual account creation with the following fields and defaults:
       | Section        | Field                     | Value                               | Imposition |
@@ -214,6 +216,7 @@ Feature: Populate And Submit
       | Payment reference | REF            |
 
     When I submit the manual account for review
+    Then the draft account POST matches the contract for "company" and "Fine"
     Then I see the following text on the page "You've submitted this account for review"
 
 
@@ -354,7 +357,9 @@ Feature: Populate And Submit
 
 
   @R1A @JIRA-STORY:PO-1449 @JIRA-STORY:PO-1638 @JIRA-EPIC:PO-2219 @JIRA-TEST-KEY:PO-5552
+  @draft-request-contract
   Scenario: Submitting an adult or youth with parent or guardian to pay account with a minor creditor shows the correct review summaries
+    Given I monitor the draft account POST contract
     When I start a fine manual account for business unit "West London" with defendant type "Adult or youth with parent or guardian to pay" and originator type "New"
     And I complete manual account creation with the following fields and defaults:
       | Section            | Field                                    | Value                | Imposition |
@@ -439,28 +444,35 @@ Feature: Populate And Submit
       | Payment reference | REFAB       |
 
     When I submit the manual account for review
+    Then the draft account POST matches the contract for "pgToPay" and "Fine"
     Then I see the following text on the page "You've submitted this account for review"
 
   @JIRA-EPIC:PO-2750 @R1A @JIRA-STORY:PO-2793 @JIRA-TEST-KEY:PO-5553 @JIRA-NFR:PO-2324
+  @draft-request-contract
   Scenario: A checker approves a New account and defendant_accounts.originator_type is NEW
+    Given I monitor the draft account POST contract
     When I open Manual Account Creation
     And I monitor draft account create requests
     And I create a "New" manual "Fine" account for business unit "West London" with defendant type "Adult or youth only"
     And I complete standard manual fine account fields for originator type checks
     When I check the manual account details
     And I submit the manual account for review
+    Then the draft account POST matches the contract for "adultOrYouthOnly" and "Fine"
     Then the latest draft account create request should include originator type "NEW"
     And the latest draft account create response should include UTC timestamps
     And I see the following text on the page "You've submitted this account for review"
 
   @JIRA-EPIC:PO-2750 @R1A @JIRA-STORY:PO-2793 @JIRA-TEST-KEY:PO-5554
+  @draft-request-contract
   Scenario: A checker approves a Transfer in from England or Wales account and defendant_accounts.originator_type is TFO
+    Given I monitor the draft account POST contract
     When I open Manual Account Creation
     And I monitor draft account create requests
     And I create a "Transfer in" manual "Fine" account for business unit "West London" with defendant type "Adult or youth only"
     And I complete standard manual fine account fields for originator type checks
     When I check the manual account details
     And I submit the manual account for review
+    Then the draft account POST matches the contract for "adultOrYouthOnly" and "Fine"
     Then the latest draft account create request should include originator type "TFO"
     And I see the following text on the page "You've submitted this account for review"
 
@@ -482,7 +494,7 @@ Feature: Populate And Submit
       | Cancel journey state |
       | with changes         |
 
-  @JIRA-EPIC:PO-2750 @R1A @JIRA-STORY:PO-2790 @JIRA-TEST-KEY:PO-5559
+  @JIRA-EPIC:PO-2750 @R1A @JIRA-STORY:PO-2790 @JIRA-DEFECT:PO-10693 @JIRA-TEST-KEY:PO-5559
   Scenario: Conditional Caution shows Police and court details across task list, court details and check account details
     When I open Manual Account Creation from the dashboard
     And I select manual account business unit "West London"
@@ -496,9 +508,9 @@ Feature: Populate And Submit
     And I see the following text on the page "Search using the code or name of the sending police force that sent the caution"
 
     When I complete manual court details:
-      | Sending police force            | Avon & Somerset   |
-      | Prosecutor Case Reference (PCR) | 1234              |
-      | Enforcement court               | West London VPFPO |
+      | Sending police force            | Avon and Somerset Road Safety Support Unit |
+      | Prosecutor Case Reference (PCR) | 1234                                       |
+      | Enforcement court               | West London VPFPO                          |
     And I return to account details
     Then the "Court details" task status is "Provided"
     And I complete manual account creation with the following fields and defaults:
@@ -527,9 +539,9 @@ Feature: Populate And Submit
     Then I see the following text on the page "Check account details"
     And I see the following text on the page "Police and court details"
     And I see the manual review "Court details" summary:
-      | Sending police force            | Avon & Somerset Magistrates' Court (1450) |
-      | Prosecutor Case Reference (PCR) | 1234                                      |
-      | Enforcement court               | West London VPFPO (101)                   |
+      | Sending police force            | Avon and Somerset Road Safety Support Unit (052) |
+      | Prosecutor Case Reference (PCR) | 1234                                             |
+      | Enforcement court               | West London VPFPO (101)                          |
 
   @JIRA-STORY:PO-2767
   Scenario Outline: User selects entry type and is visible on review account screen - <Originator type>

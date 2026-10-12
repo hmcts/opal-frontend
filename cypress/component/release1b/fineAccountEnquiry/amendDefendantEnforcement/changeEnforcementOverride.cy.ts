@@ -261,7 +261,7 @@ describe('Change Enforcement Override - Parent/Guardian', { tags: ['@JIRA-STORY:
 
   it(
     'AC1c, AC1ci, AC1d. Parent/Guardian: should display the override dropdown, results reference data, add override button and cancel link',
-    { tags: ['@JIRA-EPIC:PO-1675', '@JIRA-TEST-KEY:PO-4448', '@R1B'] },
+    { tags: ['@JIRA-EPIC:PO-1675', '@JIRA-TEST-KEY:PO-4448', '@R1B', '@JIRA-NFR:PO-2329'] },
     () => {
       mountChangeEnforcementOverrideForm('177A - Mr Robert THOMSON');
 
@@ -290,7 +290,7 @@ describe('Change Enforcement Override - Parent/Guardian', { tags: ['@JIRA-STORY:
 
   it(
     'AC2, AC2a, AC2ai. Parent/Guardian: enforcer dropdown displays dynamically for overrides that require an enforcer',
-    { tags: ['@JIRA-EPIC:PO-1675', '@JIRA-TEST-KEY:PO-4449', '@R1B'] },
+    { tags: ['@JIRA-EPIC:PO-1675', '@JIRA-TEST-KEY:PO-4449', '@R1B', '@JIRA-NFR:PO-2329'] },
     () => {
       mountChangeEnforcementOverrideForm('177A - Mr Robert THOMSON');
 
@@ -326,7 +326,7 @@ describe('Change Enforcement Override - Parent/Guardian', { tags: ['@JIRA-STORY:
 
   it(
     'AC3, AC3a, AC3ai. Parent/Guardian: LJA dropdown displays dynamically for overrides that require a Local Justice Area',
-    { tags: ['@JIRA-EPIC:PO-1675', '@JIRA-TEST-KEY:PO-4450', '@R1B'] },
+    { tags: ['@JIRA-EPIC:PO-1675', '@JIRA-TEST-KEY:PO-4450', '@R1B', '@JIRA-NFR:PO-2329'] },
     () => {
       parentGuardianSetup();
 
@@ -413,7 +413,9 @@ describe('Change Enforcement Override - Parent/Guardian', { tags: ['@JIRA-STORY:
 
   it(
     'AC5. Parent/Guardian: valid submission returns to Enforcement tab with success banner and updated override panel',
-    { tags: ['@JIRA-EPIC:PO-1675', '@JIRA-TEST-KEY:PO-4454', '@R1B'] },
+    {
+      tags: ['@JIRA-EPIC:PO-1675', '@JIRA-TEST-KEY:PO-4454', '@R1B', '@JIRA-NFR:PO-2505', '@JIRA-NFR:PO-2506'],
+    },
     () => {
       const { accountId } = parentGuardianSetup();
       const updatedEnforcementMock = structuredClone(

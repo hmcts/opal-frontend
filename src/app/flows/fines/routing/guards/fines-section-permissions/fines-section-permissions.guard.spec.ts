@@ -454,6 +454,27 @@ describe('finesSectionPermissionsGuard', () => {
     expect(mockOpalUserService.getLoggedInUserState).not.toHaveBeenCalled();
   });
 
+  it('should reject a release flag configured for both section availability and permission exclusions', async () => {
+    vi.resetModules();
+    const { FEATURE_FLAG_SECTION_AVAILABILITY } =
+      await import('@app/flows/fines/constants/feature-flag-section-availability.constant');
+    const originalSearchAvailability = FEATURE_FLAG_SECTION_AVAILABILITY.search;
+    FEATURE_FLAG_SECTION_AVAILABILITY.search = [RELEASE_1B_FEATURE_FLAG];
+    ({ finesSectionPermissionsGuard } = await import('./fines-section-permissions.guard'));
+
+    try {
+      await expect(runGuard({ sectionKey: FINES_DASHBOARD_ROUTING_PATHS.children.search })).rejects.toThrow(
+        'Release feature flags must not be configured as both section availability and permission exclusions: release-1b',
+      );
+    } finally {
+      if (originalSearchAvailability) {
+        FEATURE_FLAG_SECTION_AVAILABILITY.search = originalSearchAvailability;
+      } else {
+        delete FEATURE_FLAG_SECTION_AVAILABILITY.search;
+      }
+    }
+  });
+
   it('should return false when the user-state lookup fails', async () => {
     mockOpalUserService.getLoggedInUserState.mockReturnValue(throwError(() => new Error('lookup failed')));
 

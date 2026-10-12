@@ -344,6 +344,17 @@ export const FINES_ACC_PARTY_ADD_AMEND_CONVERT_FIELD_ERRORS: IFinesAccPartyAddAm
       priority: 2,
     },
   },
+  facc_party_add_amend_convert_address_line_3_parent_guardian: {
+    maxlength: {
+      message: 'Address line 3 must be 13 characters or fewer',
+      priority: 1,
+    },
+    singleAsciiCharacters: {
+      message:
+        'Address line 3 must only include letters a to z, numbers 0-9 and certain special characters (such as hyphens, spaces, apostrophes and commas)',
+      priority: 2,
+    },
+  },
   facc_party_add_amend_convert_post_code: {
     maxlength: {
       message: `Postcode must be 8 characters or fewer`,
@@ -483,8 +494,9 @@ export const FINES_ACC_PARTY_ADD_AMEND_CONVERT_FIELD_ERRORS: IFinesAccPartyAddAm
       message: 'Address line 1 must be 30 characters or fewer',
       priority: 2,
     },
-    alphanumericTextPattern: {
-      message: 'Employer address line 1 must only include letters a to z, numbers, hyphens, spaces and apostrophes',
+    singleAsciiCharacters: {
+      message:
+        'Employer address line 1 must only include letters a to z, numbers 0-9 and certain special characters (such as hyphens, spaces, apostrophes and commas)',
       priority: 3,
     },
   },
@@ -493,8 +505,9 @@ export const FINES_ACC_PARTY_ADD_AMEND_CONVERT_FIELD_ERRORS: IFinesAccPartyAddAm
       message: 'Address line 2 must be 30 characters or fewer',
       priority: 1,
     },
-    alphanumericTextPattern: {
-      message: 'Employer address line 2 must only include letters a to z, numbers, hyphens, spaces and apostrophes',
+    singleAsciiCharacters: {
+      message:
+        'Employer address line 2 must only include letters a to z, numbers 0-9 and certain special characters (such as hyphens, spaces, apostrophes and commas)',
       priority: 2,
     },
   },
@@ -503,8 +516,9 @@ export const FINES_ACC_PARTY_ADD_AMEND_CONVERT_FIELD_ERRORS: IFinesAccPartyAddAm
       message: 'Address line 3 must be 30 characters or fewer',
       priority: 1,
     },
-    alphanumericTextPattern: {
-      message: 'Employer address line 3 must only include letters a to z, numbers, hyphens, spaces and apostrophes',
+    singleAsciiCharacters: {
+      message:
+        'Employer address line 3 must only include letters a to z, numbers 0-9 and certain special characters (such as hyphens, spaces, apostrophes and commas)',
       priority: 2,
     },
   },
@@ -513,8 +527,9 @@ export const FINES_ACC_PARTY_ADD_AMEND_CONVERT_FIELD_ERRORS: IFinesAccPartyAddAm
       message: 'Address line 4 must be 30 characters or fewer',
       priority: 1,
     },
-    alphanumericTextPattern: {
-      message: 'Employer address line 4 must only include letters a to z, numbers, hyphens, spaces and apostrophes',
+    singleAsciiCharacters: {
+      message:
+        'Employer address line 4 must only include letters a to z, numbers 0-9 and certain special characters (such as hyphens, spaces, apostrophes and commas)',
       priority: 2,
     },
   },
@@ -523,8 +538,9 @@ export const FINES_ACC_PARTY_ADD_AMEND_CONVERT_FIELD_ERRORS: IFinesAccPartyAddAm
       message: 'Address line 5 must be 30 characters or fewer',
       priority: 1,
     },
-    alphanumericTextPattern: {
-      message: 'Employer address line 5 must only include letters a to z, numbers, hyphens, spaces and apostrophes',
+    singleAsciiCharacters: {
+      message:
+        'Employer address line 5 must only include letters a to z, numbers 0-9 and certain special characters (such as hyphens, spaces, apostrophes and commas)',
       priority: 2,
     },
   },

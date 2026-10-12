@@ -10,7 +10,7 @@ export const FINES_MAC_EMPLOYER_DETAILS_FIELD_ERRORS: IFinesMacEmployerDetailsFi
       message: 'Employer name must be 35 characters or fewer',
       priority: 2,
     },
-    singleAsciiChatacters: {
+    singleAsciiCharacters: {
       message:
         'Employer name must only include letters a to z, numbers 0-9 and certain special characters (such as hyphens, spaces, apostrophes and commas)',
       priority: 3,
@@ -60,7 +60,7 @@ export const FINES_MAC_EMPLOYER_DETAILS_FIELD_ERRORS: IFinesMacEmployerDetailsFi
       message: 'Address line 1 must be 30 characters or fewer',
       priority: 2,
     },
-    alphanumericTextPattern: {
+    singleAsciiCharacters: {
       message:
         'Address line 1 must only include letters a to z, numbers 0-9 and certain special characters (such as hyphens, spaces, apostrophes and commas)',
       priority: 3,
@@ -71,7 +71,7 @@ export const FINES_MAC_EMPLOYER_DETAILS_FIELD_ERRORS: IFinesMacEmployerDetailsFi
       message: 'Address line 2 must be 30 characters or fewer',
       priority: 1,
     },
-    alphanumericTextPattern: {
+    singleAsciiCharacters: {
       message:
         'Address line 2 must only include letters a to z, numbers 0-9 and certain special characters (such as hyphens, spaces, apostrophes and commas)',
       priority: 2,
@@ -82,7 +82,7 @@ export const FINES_MAC_EMPLOYER_DETAILS_FIELD_ERRORS: IFinesMacEmployerDetailsFi
       message: 'Address line 3 must be 30 characters or fewer',
       priority: 1,
     },
-    alphanumericTextPattern: {
+    singleAsciiCharacters: {
       message:
         'Address line 3 must only include letters a to z, numbers 0-9 and certain special characters (such as hyphens, spaces, apostrophes and commas)',
       priority: 2,
@@ -93,7 +93,7 @@ export const FINES_MAC_EMPLOYER_DETAILS_FIELD_ERRORS: IFinesMacEmployerDetailsFi
       message: 'Address line 4 must be 30 characters or fewer',
       priority: 1,
     },
-    alphanumericTextPattern: {
+    singleAsciiCharacters: {
       message:
         'Address line 4 must only include letters a to z, numbers 0-9 and certain special characters (such as hyphens, spaces, apostrophes and commas)',
       priority: 2,
@@ -104,7 +104,7 @@ export const FINES_MAC_EMPLOYER_DETAILS_FIELD_ERRORS: IFinesMacEmployerDetailsFi
       message: 'Address line 5 must be 30 characters or fewer',
       priority: 1,
     },
-    alphanumericTextPattern: {
+    singleAsciiCharacters: {
       message:
         'Address line 5 must only include letters a to z, numbers 0-9 and certain special characters (such as hyphens, spaces, apostrophes and commas)',
       priority: 2,

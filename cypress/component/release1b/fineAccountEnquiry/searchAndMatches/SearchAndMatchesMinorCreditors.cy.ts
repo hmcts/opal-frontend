@@ -78,76 +78,92 @@ describe('Search Account Component - Minor Creditors', () => {
   );
 
   it(
-    'AC6a. should show error for non-alphabetical last name',
+    'AC6a. should show error for non-ASCII characters in last name',
     { tags: [...buildTags('@JIRA-STORY:PO-715'), '@JIRA-EPIC:PO-704', '@JIRA-TEST-KEY:PO-4511'] },
     () => {
       setupComponent((searchState) => {
         searchState.fsa_search_account_minor_creditors_search_criteria!.fsa_search_account_minor_creditors_individual.fsa_search_account_minor_creditors_last_name =
-          'Smith123';
+          'Namé123';
       });
 
       cy.get(MinorTypeLocators.individualRadio).click();
-      cy.get(MinorIndividualLocators.lastNameInput).should('have.value', 'Smith123');
+      cy.get(MinorIndividualLocators.lastNameInput).should('have.value', 'Namé123');
       cy.get(CommonLocators.searchButton).click();
-      cy.get(CommonLocators.errorSummary).should('exist').and('contain', 'Last name must only contain letters');
+      cy.get(CommonLocators.errorSummary)
+        .should('exist')
+        .and(
+          'contain',
+          'Last name must only include letters a to z, numbers 0-9 and certain special characters (such as hyphens, spaces, apostrophes and commas)',
+        );
       cy.get(MinorIndividualLocators.lastNameError)
         .should('exist')
-        .and('contain', 'Last name must only contain letters');
+        .and(
+          'contain',
+          'Last name must only include letters a to z, numbers 0-9 and certain special characters (such as hyphens, spaces, apostrophes and commas)',
+        );
       cy.get(MinorIndividualLocators.lastNameInput).clear();
     },
   );
 
   it(
-    'AC6b. should show error for non-alphabetical first name',
+    'AC6b. should show error for non-ASCII characters in first name',
     { tags: [...buildTags('@JIRA-STORY:PO-715'), '@JIRA-EPIC:PO-704', '@JIRA-TEST-KEY:PO-4512'] },
     () => {
       setupComponent((searchState) => {
         searchState.fsa_search_account_minor_creditors_search_criteria!.fsa_search_account_minor_creditors_individual.fsa_search_account_minor_creditors_first_names =
-          'Name123';
+          'Namé123';
       });
 
       cy.get(MinorTypeLocators.individualRadio).click();
-      cy.get(MinorIndividualLocators.firstNamesInput).should('have.value', 'Name123');
+      cy.get(MinorIndividualLocators.firstNamesInput).should('have.value', 'Namé123');
       cy.get(CommonLocators.searchButton).click();
-      cy.get(CommonLocators.errorSummary).should('exist').and('contain', 'First names must only contain letters');
+      cy.get(CommonLocators.errorSummary)
+        .should('exist')
+        .and(
+          'contain',
+          'First names must only include letters a to z, numbers 0-9 and certain special characters (such as hyphens, spaces, apostrophes and commas)',
+        );
       cy.get(MinorIndividualLocators.firstNamesError)
         .should('exist')
-        .and('contain', 'First names must only contain letters');
+        .and(
+          'contain',
+          'First names must only include letters a to z, numbers 0-9 and certain special characters (such as hyphens, spaces, apostrophes and commas)',
+        );
 
       cy.get(MinorIndividualLocators.firstNamesInput).clear();
     },
   );
 
   it(
-    'AC6c. should show error for non-alphabetical company name',
+    'AC6c. should show error for non-ASCII characters in company name',
     { tags: [...buildTags('@JIRA-STORY:PO-715'), '@JIRA-EPIC:PO-704', '@JIRA-TEST-KEY:PO-4513'] },
     () => {
       setupComponent((searchState) => {
         searchState.fsa_search_account_minor_creditors_search_criteria!.fsa_search_account_minor_creditors_company.fsa_search_account_minor_creditors_company_name =
-          'Company123?';
+          'Compány123';
       });
 
       cy.get(MinorTypeLocators.companyRadio).click();
       cy.get(CommonLocators.searchButton).click();
       cy.get(CommonLocators.errorSummary).should(
         'contain',
-        'Company name must only include letters a to z, numbers 0-9 and certain special characters (hyphens, spaces, apostrophes)',
+        'Company name must only include letters a to z, numbers 0-9 and certain special characters (such as hyphens, spaces, apostrophes and commas)',
       );
       cy.get(MinorCompanyLocators.companyNameError).should(
         'contain',
-        'Company name must only include letters a to z, numbers 0-9 and certain special characters (hyphens, spaces, apostrophes)',
+        'Company name must only include letters a to z, numbers 0-9 and certain special characters (such as hyphens, spaces, apostrophes and commas)',
       );
       cy.get(MinorCompanyLocators.companyNameInput).clear();
     },
   );
 
   it(
-    'AC6d. should show error for non-alphabetical address line 1',
+    'AC6d. should show error for invalid address line 1',
     { tags: [...buildTags('@JIRA-STORY:PO-715'), '@JIRA-EPIC:PO-704', '@JIRA-TEST-KEY:PO-4514'] },
     () => {
       setupComponent((searchState) => {
         searchState.fsa_search_account_minor_creditors_search_criteria!.fsa_search_account_minor_creditors_individual.fsa_search_account_minor_creditors_individual_address_line_1 =
-          'Address123?';
+          'Addréss123';
       });
       cy.get(MinorTypeLocators.individualRadio).click();
       cy.get(CommonLocators.searchButton).click();

@@ -1,0 +1,79 @@
+{
+  "header": {
+    "accountNumber": "25000184C",
+    "name": "Mr Arne ADULTOPENPAIDWO",
+    "summary": {
+      "account type": "Fine",
+      "pcr or case number": "PCR-ADULT-OPEN-WO-73-1",
+      "business unit": "West London (0042)"
+    },
+    "metrics": {
+      "imposed": "\u00a3204.01",
+      "arrears": "\u00a3153.01",
+      "paid/written off": "\u00a351.00",
+      "account balance": "-\u00a3153.01"
+    }
+  },
+  "atAGlance": {
+    "defendant": {
+      "name": "Mr Arne ADULTOPENPAIDWO",
+      "date of birth": "09 September 1999",
+      "address": "123 Address Line 1-25char\n123 Address Line 2-25char\n123 Address Line 3-25char\nEN5 1RL",
+      "national insurance number": "NI 19 99 09 A"
+    },
+    "paymentTerms": {
+      "payment terms": "Pay in full",
+      "pay by date": "31 December 2025"
+    },
+    "enforcementStatus": {
+      "collection order": "Collection Order",
+      "days in default": "2 days",
+      "date of last movement": "06 June 2025"
+    },
+    "comments": {
+      "comment": "AC1 Account Note Comment Txt30",
+      "lines": ["AN1 AccNote", "JF: updated surname 7/8/26"]
+    }
+  },
+  "defendantTab": {
+    "defendant": {
+      "name": "Mr Arne ADULTOPENPAIDWO",
+      "aliases": "\u2014",
+      "date of birth": "09 September 1999",
+      "national insurance number": "NI 19 99 09 A",
+      "address": "123 Address Line 1-25char\n123 Address Line 2-25char\n123 Address Line 3-25char\nEN5 1RL",
+      "vehicle make and model": "Defendant",
+      "vehicle registration": "ABC123"
+    },
+    "contact": {
+      "primary email address": "123456789012345678901234567890@abcdefghijklmnopqrstuvwxyz.com",
+      "secondary email address": "123456789012345678901234567890@abcdefghijklmnopqrstuvwxyz.com",
+      "mobile telephone number": "123456789012345678901234567890",
+      "home telephone number": "123456789012345678901234567890",
+      "work telephone number": "123456789012345678901234567890"
+    },
+    "employer": {
+      "employer name": "Global Enterprises",
+      "employer reference": "EMP456789",
+      "employer email": "hr@testemployer.tst",
+      "employer telephone": "02012345678",
+      "employer address": "123 Corporate St\nOffice 101\nBusiness Tower\nDowntown\nCapital City\nCC10 5HG"
+    }
+  },
+  "paymentTermsTab": {
+    "pay by date": "31 December 2025",
+    "days in default": "2",
+    "date days in default were imposed": "\u2014",
+    "payment card last requested": "\u2014"
+  },
+  "enforcementTab": {
+    "overview": {
+      "collection order status": "Collection Order",
+      "days in default": "2 days",
+      "enforcement court": "West London VPFPO (101)"
+    },
+    "noOutstandingEnforcementActionMessage": "There is no outstanding enforcement action."
+  },
+  "impositionsTab": {},
+  "historyAndNotesTab": {}
+}

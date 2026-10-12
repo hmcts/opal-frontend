@@ -203,10 +203,10 @@ describe('FinesMacPersonalDetailsFormComponent', () => {
   });
 
   it('should reject unsupported characters in personal details address lines', () => {
-    component.form.controls['fm_personal_details_address_line_1'].setValue('12/14 King Street');
+    component.form.controls['fm_personal_details_address_line_1'].setValue('Café Street');
 
     expect(component.form.controls['fm_personal_details_address_line_1'].errors).toEqual({
-      alphanumericTextPattern: true,
+      singleAsciiCharacters: true,
     });
   });
 

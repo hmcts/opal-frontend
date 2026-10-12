@@ -22,6 +22,7 @@ import {
 import { AlphagovAccessibleAutocompleteComponent } from '@hmcts/opal-frontend-common/components/alphagov/alphagov-accessible-autocomplete';
 import { IAlphagovAccessibleAutocompleteItem } from '@hmcts/opal-frontend-common/components/alphagov/alphagov-accessible-autocomplete/interfaces';
 import { MojDatePickerComponent } from '@hmcts/opal-frontend-common/components/moj/moj-date-picker';
+import { GlobalStore } from '@hmcts/opal-frontend-common/stores/global';
 import { CustomPageHeaderComponent } from '@hmcts/opal-frontend-common/components/custom/custom-page-header';
 import { AbstractReportSummaryListBaseComponent } from '@hmcts/opal-frontend-common/components/abstract/abstract-report-summary-list-base';
 import {
@@ -87,6 +88,7 @@ export class FinesReportsSummaryListComponent
   private readonly finesReportsStore = inject(FinesReportsStore);
   private readonly router = inject(Router);
   private readonly opalFinesService = inject(OpalFines);
+  private readonly globalStore = inject(GlobalStore);
   private readonly store = inject(FinesReportsSummaryListStore);
   private readonly document = inject(DOCUMENT);
   private readonly destroyRef = inject(DestroyRef);
@@ -111,6 +113,9 @@ export class FinesReportsSummaryListComponent
     (this.activatedRoute.snapshot.data['reportInstances'] as FinesReportsReportInstancesResolverData | undefined) ??
       null,
   );
+  private readonly isYourReports = computed(
+    () => this.reportId() === FINES_REPORTS_SUMMARY_LIST_ROUTING_PATHS.children.yourReports,
+  );
 
   @ViewChild('errorSummary', { read: ElementRef }) private readonly errorSummary?: ElementRef<HTMLElement>;
 
@@ -128,9 +133,6 @@ export class FinesReportsSummaryListComponent
   };
 
   public readonly tableSort = FINES_REPORTS_SUMMARY_LIST_TABLE_WRAPPER_TABLE_SORT_DEFAULT;
-  public readonly isYourReportsPlaceholder = computed(
-    () => this.reportId() === FINES_REPORTS_SUMMARY_LIST_ROUTING_PATHS.children.yourReports,
-  );
   public readonly loading = signal(false);
   public readonly loadError = signal(this.reportInstancesResponse()?.loadError ?? false);
   public readonly filtersForm: FinesReportsSummaryListFilterForm = new FormGroup({
@@ -325,12 +327,12 @@ export class FinesReportsSummaryListComponent
       from_date: query.fromDate,
       to_date: query.toDate,
       business_units: query.businessUnit ? [query.businessUnit] : undefined,
+      ...(this.isYourReports()
+        ? { user_id: this.globalStore.userState().user_id }
+        : { report_id: reportConfiguration?.reportTypeId ?? this.reportId() }),
     };
 
-    return this.opalFinesService.getReportInstances({
-      ...params,
-      report_id: reportConfiguration?.reportTypeId ?? this.reportId(),
-    });
+    return this.opalFinesService.getReportInstances(params);
   }
 
   /**

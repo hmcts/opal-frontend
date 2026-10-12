@@ -141,6 +141,18 @@ export class SearchFilterByBUFinesActions {
   unselectAllBusinessUnits(): void {
     log('action', 'Unselecting all Fines business units via master checkbox');
     this.setMasterCheckboxState(false);
+
+    cy.get(FinesFilterBusinessUnitLocators.businessUnitCheckboxes).then(($checkboxes) => {
+      const checkedCheckboxes = $checkboxes.filter(':checked');
+
+      if (checkedCheckboxes.length === 0) {
+        log('info', 'No selected Fines business unit rows remain');
+        return;
+      }
+
+      log('info', `Unchecking ${checkedCheckboxes.length} selected Fines business unit row(s)`);
+      cy.wrap(checkedCheckboxes).uncheck({ force: true });
+    });
   }
 
   /**

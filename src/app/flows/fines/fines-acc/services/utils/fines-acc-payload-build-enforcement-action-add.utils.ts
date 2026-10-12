@@ -27,9 +27,10 @@ export function buildEnforcementActionAddPayload(
   result: IOpalFinesResultRefData,
   fields: IFinesAccEnfActionAddFormField[],
   formState: IFinesAccEnfActionAddFormState,
+  postedDate = dateService.toFormat(dateService.getDateNow(), "yyyy-MM-dd'T'HH:mm:ss"),
 ): IOpalFinesAddEnforcementActionPayload {
   const enforcementResultResponses = fields.flatMap((field) => buildFieldResponses(field, formState));
-  const paymentTerms = canAddPaymentTerms(result) ? buildPaymentTerms(formState) : undefined;
+  const paymentTerms = canAddPaymentTerms(result) ? buildPaymentTerms(formState, postedDate) : undefined;
 
   return {
     result_id: result.result_id,
@@ -134,7 +135,10 @@ function getResponseValue(value: FormValue, type: TFinesAccEnfActionAddFieldType
 /**
  * Builds optional payment terms from the add-action form when the operator opts to add them.
  */
-function buildPaymentTerms(formState: IFinesAccEnfActionAddFormState): IOpalFinesAmendPaymentTerms | undefined {
+function buildPaymentTerms(
+  formState: IFinesAccEnfActionAddFormState,
+  postedDate: string,
+): IOpalFinesAmendPaymentTerms | undefined {
   if (formState[CONTROL_NAMES.addPaymentTerms] !== true) {
     return undefined;
   }
@@ -142,7 +146,7 @@ function buildPaymentTerms(formState: IFinesAccEnfActionAddFormState): IOpalFine
   const paymentTermsFormState = mapToPaymentTermsAmendState(formState);
   if (!paymentTermsFormState.facc_payment_terms_payment_terms) return undefined;
 
-  return buildPaymentTermsAmendPayloadUtil(paymentTermsFormState).payment_terms;
+  return buildPaymentTermsAmendPayloadUtil(paymentTermsFormState, postedDate).payment_terms;
 }
 
 /**

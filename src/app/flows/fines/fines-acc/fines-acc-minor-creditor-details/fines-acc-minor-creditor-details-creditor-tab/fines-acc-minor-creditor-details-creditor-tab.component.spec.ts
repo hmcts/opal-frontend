@@ -33,30 +33,33 @@ describe('FinesAccMinorCreditorDetailsCreditorTab', () => {
     expect(component).toBeTruthy();
   });
 
-  it('should show the change link when the user has account maintenance permission', () => {
-    component.hasAccountMaintenancePermission = true;
+  it('should show the change link in the summary card when the user has minor creditor account maintenance permission', () => {
+    component.hasMinorCreditorMaintenancePermission = true;
 
     fixture.detectChanges();
 
-    expect(getChangeLink()).toBeTruthy();
+    const changeLink = getChangeLink();
+
+    expect(changeLink).toBeTruthy();
+    expect(changeLink?.closest('.govuk-summary-card__actions')).toBeTruthy();
   });
 
-  it('should not show the change link when the user does not have account maintenance permission', () => {
-    component.hasAccountMaintenancePermission = false;
+  it('should not show the change link when the user does not have minor creditor account maintenance permission', () => {
+    component.hasMinorCreditorMaintenancePermission = false;
 
     fixture.detectChanges();
 
     expect(getChangeLink()).toBeNull();
   });
 
-  it('should return the amend route for the change link when the user has account maintenance permission in the BU', () => {
-    component.hasAccountMaintenancePermissionInBU = true;
+  it('should return the amend route for the change link when the user has minor creditor account maintenance permission in the BU', () => {
+    component.hasMinorCreditorMaintenancePermissionInBU = true;
 
     expect(component.changeCreditorDetailsLink()).toBe(`../${FINES_ACC_MINOR_CREDITOR_ROUTING_PATHS.children.amend}`);
   });
 
-  it('should return the access denied route for the change link when the user lacks account maintenance permission in the BU', () => {
-    component.hasAccountMaintenancePermissionInBU = false;
+  it('should return the access denied route for the change link when the user lacks minor creditor account maintenance permission in the BU', () => {
+    component.hasMinorCreditorMaintenancePermissionInBU = false;
 
     expect(component.changeCreditorDetailsLink()).toBe('/access-denied');
   });

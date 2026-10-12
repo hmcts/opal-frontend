@@ -12,12 +12,14 @@ import { PermissionsService } from '@hmcts/opal-frontend-common/services/permiss
 import { GlobalStore } from '@hmcts/opal-frontend-common/stores/global';
 import { createSpyObj } from '@app/testing/create-spy-obj.helper';
 import { FINES_PERMISSIONS } from '@app/constants/fines-permissions.constant';
+import { FINES_ROUTING_PATHS } from '@app/flows/fines/routing/constants/fines-routing-paths.constant';
 import {
   RELEASE_1A_FEATURE_FLAG,
   RELEASE_1C_ADMINISTRATION_FEATURE_FLAG,
   RELEASE_1C_WRITE_OFF_FEATURE_FLAG,
   RELEASE_1C_ENFORCEMENT_OPERATIONAL_REPORTING_FEATURE_FLAG,
   RELEASE_1C_FINANCIAL_MOVEMENTS_FEATURE_FLAG,
+  RELEASE_1C_BANKING_INTERFACES_FEATURE_FLAG,
 } from '@app/flows/fines/constants/release-feature-flags.constant';
 
 describe('DashboardComponent', () => {
@@ -35,6 +37,7 @@ describe('DashboardComponent', () => {
     [RELEASE_1C_ENFORCEMENT_OPERATIONAL_REPORTING_FEATURE_FLAG]: true,
     [RELEASE_1C_ADMINISTRATION_FEATURE_FLAG]: true,
     [RELEASE_1C_FINANCIAL_MOVEMENTS_FEATURE_FLAG]: true,
+    [RELEASE_1C_BANKING_INTERFACES_FEATURE_FLAG]: true,
   };
 
   const setupComponent = () => {
@@ -197,6 +200,7 @@ describe('DashboardComponent', () => {
 
     expect(component.resolvedConfig()).toEqual(DASHBOARD_PAGE_CONFIGURATION_MAP.finance);
     expect(component.resolvedConfig().groups.map((group) => group.id)).toContain('cash');
+    expect(component.resolvedConfig().groups.map((group) => group.id)).toContain('bankingInterfaces');
   });
 
   it('should remove finance content when release-1c-financial-movements is disabled', () => {
@@ -210,21 +214,107 @@ describe('DashboardComponent', () => {
 
     expect(component.resolvedConfig()).toEqual({
       ...DASHBOARD_PAGE_CONFIGURATION_MAP.finance,
-      groups: [],
+      groups: DASHBOARD_PAGE_CONFIGURATION_MAP.finance.groups.filter((group) => group.id !== 'cash'),
     });
+    expect(component.resolvedConfig().groups.map((group) => group.id)).not.toContain('cash');
   });
 
-  it('should render the manual cash input link when the user has process and allocate payments permission', () => {
-    permissionsServiceMock.getUniquePermissions.mockReturnValue([FINES_PERMISSIONS['process-and-allocate-payments']]);
+  it('should remove banking interfaces content when release-1c-banking-interfaces is disabled', () => {
+    globalStoreMock.featureFlags.mockReturnValue({
+      ...DEFAULT_RELEASE_FEATURE_FLAGS,
+      [RELEASE_1C_BANKING_INTERFACES_FEATURE_FLAG]: false,
+    });
+    setupComponent();
+    dashboardTypeParamMapSubject.next(convertToParamMap({ dashboardType: 'finance' }));
+    fixture.detectChanges();
+
+    expect(component.resolvedConfig()).toEqual({
+      ...DASHBOARD_PAGE_CONFIGURATION_MAP.finance,
+      groups: DASHBOARD_PAGE_CONFIGURATION_MAP.finance.groups.filter((group) => group.id !== 'bankingInterfaces'),
+    });
+    expect(component.resolvedConfig().groups.map((group) => group.id)).not.toContain('bankingInterfaces');
+  });
+
+  it('should resolve the banking interfaces config when release-1c-banking-interfaces is enabled', () => {
+    setupComponent();
+    dashboardTypeParamMapSubject.next(convertToParamMap({ dashboardType: 'finance' }));
+    fixture.detectChanges();
+
+    expect(component.resolvedConfig()).toEqual(DASHBOARD_PAGE_CONFIGURATION_MAP.finance);
+    expect(component.resolvedConfig().groups.map((group) => group.id)).toContain('bankingInterfaces');
+  });
+
+  it('should render the inbound and outbound links and hide upload when the user has view-interface-files permission only', () => {
+    permissionsServiceMock.getUniquePermissions.mockReturnValue([FINES_PERMISSIONS['view-interface-files']]);
     setupComponent();
     dashboardTypeParamMapSubject.next(convertToParamMap({ dashboardType: 'finance' }));
     fixture.detectChanges();
 
     const renderedText = fixture.nativeElement.textContent as string;
 
+    expect(renderedText).toContain('Inbound files');
+    expect(renderedText).toContain('Outbound files');
+    expect(renderedText).not.toContain('Upload variant banking files');
+  });
+
+  it('should render all banking interface links when the user has both banking interface permissions', () => {
+    permissionsServiceMock.getUniquePermissions.mockReturnValue([
+      FINES_PERMISSIONS['view-interface-files'],
+      FINES_PERMISSIONS['create-interface-files'],
+    ]);
+    setupComponent();
+    dashboardTypeParamMapSubject.next(convertToParamMap({ dashboardType: 'finance' }));
+    fixture.detectChanges();
+
+    const renderedText = fixture.nativeElement.textContent as string;
+
+    expect(renderedText).toContain('Inbound files');
+    expect(renderedText).toContain('Outbound files');
+    expect(renderedText).toContain('Upload variant banking files');
+  });
+
+  it('should hide the inbound, outbound and upload variant banking files links when the user lacks view-interface-files and create-interface-files permission', () => {
+    permissionsServiceMock.getUniquePermissions.mockReturnValue([]);
+    setupComponent();
+    dashboardTypeParamMapSubject.next(convertToParamMap({ dashboardType: 'finance' }));
+    fixture.detectChanges();
+
+    const renderedText = fixture.nativeElement.textContent as string;
+
+    expect(renderedText).not.toContain('Inbound files');
+    expect(renderedText).not.toContain('Outbound files');
+    expect(renderedText).not.toContain('Upload variant banking files');
+  });
+
+  it('should render only the upload variant banking files link when the user has create-interface-files permission only', () => {
+    permissionsServiceMock.getUniquePermissions.mockReturnValue([FINES_PERMISSIONS['create-interface-files']]);
+    setupComponent();
+    dashboardTypeParamMapSubject.next(convertToParamMap({ dashboardType: 'finance' }));
+    fixture.detectChanges();
+
+    const renderedText = fixture.nativeElement.textContent as string;
+
+    expect(renderedText).not.toContain('Inbound files');
+    expect(renderedText).not.toContain('Outbound files');
+    expect(renderedText).toContain('Upload variant banking files');
+  });
+
+  it('should render the manual cash input link when the user has process and allocate payments permission', () => {
+    permissionsServiceMock.getUniquePermissions.mockReturnValue([FINES_PERMISSIONS['process-and-allocate-payments']]);
+    setupComponent();
+
+    dashboardTypeParamMapSubject.next(convertToParamMap({ dashboardType: 'finance' }));
+    fixture.detectChanges();
+
+    const renderedText = fixture.nativeElement.textContent as string;
+    const automaticCashInputLink = fixture.nativeElement.querySelector('#automaticCashInputLink') as HTMLAnchorElement;
+
     expect(renderedText).toContain('Cash');
     expect(renderedText).toContain('Automatic Cash Input');
     expect(renderedText).toContain('Manual cash input');
+    expect(automaticCashInputLink.getAttribute('href')).toBe(
+      `/${FINES_ROUTING_PATHS.root}/${FINES_ROUTING_PATHS.children.autoPaymentIn.root}/${FINES_ROUTING_PATHS.children.autoPaymentIn.children.selectBusinessUnits}`,
+    );
   });
 
   it('should hide the manual cash input link when the user lacks process and allocate payments permission', () => {

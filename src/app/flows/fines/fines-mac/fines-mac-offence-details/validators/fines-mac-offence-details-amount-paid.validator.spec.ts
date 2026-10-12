@@ -37,6 +37,12 @@ describe('finesMacOffenceDetailsAmountPaidValidator', () => {
     expect(control.errors).toEqual({ amountPaidExceedsAmountImposed: true });
   });
 
+  it('should compare finite numeric strings that use exponent notation', () => {
+    const control = createAmountPaidControl('1e2', '100.01');
+
+    expect(control.errors).toEqual({ amountPaidExceedsAmountImposed: true });
+  });
+
   it('should leave empty and invalid values to the existing field validators', () => {
     expect(createAmountPaidControl(null, '10').errors).toBeNull();
     expect(createAmountPaidControl('100', null).errors).toBeNull();
@@ -49,5 +55,15 @@ describe('finesMacOffenceDetailsAmountPaidValidator', () => {
     const control = new FormControl('100.01');
 
     expect(finesMacOffenceDetailsAmountPaidValidator(control)).toBeNull();
+  });
+
+  it('should return null when the parent has no amount imposed control', () => {
+    const form = new FormGroup({
+      fm_offence_details_amount_paid_0: new FormControl('10', finesMacOffenceDetailsAmountPaidValidator),
+    });
+
+    form.controls.fm_offence_details_amount_paid_0.updateValueAndValidity();
+
+    expect(form.controls.fm_offence_details_amount_paid_0.errors).toBeNull();
   });
 });

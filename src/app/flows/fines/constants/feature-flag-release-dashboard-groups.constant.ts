@@ -5,6 +5,7 @@ import {
   RELEASE_1C_ENFORCEMENT_OPERATIONAL_REPORTING_FEATURE_FLAG,
   RELEASE_1C_ADMINISTRATION_FEATURE_FLAG,
   RELEASE_1C_FINANCIAL_MOVEMENTS_FEATURE_FLAG,
+  RELEASE_1C_BANKING_INTERFACES_FEATURE_FLAG,
 } from './release-feature-flags.constant';
 
 export const FEATURE_FLAG_RELEASE_DASHBOARD_GROUPS: FeatureFlagReleaseDashboardGroups = {
@@ -14,4 +15,5 @@ export const FEATURE_FLAG_RELEASE_DASHBOARD_GROUPS: FeatureFlagReleaseDashboardG
   // `administration-placeholder` is a placeholder group id until the Administration dashboard content is developed.
   [RELEASE_1C_ADMINISTRATION_FEATURE_FLAG]: ['administration-placeholder'],
   [RELEASE_1C_FINANCIAL_MOVEMENTS_FEATURE_FLAG]: ['cash'],
+  [RELEASE_1C_BANKING_INTERFACES_FEATURE_FLAG]: ['bankingInterfaces'],
 };

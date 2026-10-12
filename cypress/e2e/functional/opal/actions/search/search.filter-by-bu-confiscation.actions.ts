@@ -175,6 +175,18 @@ export class SearchFilterByBUConfiscationActions {
   unselectAllBusinessUnits(): void {
     log('action', 'Unselecting all Confiscation business units via master checkbox');
     this.setMasterCheckboxState(false);
+
+    cy.get(FinesFilterBusinessUnitConfiscationLocators.businessUnitCheckboxes).then(($checkboxes) => {
+      const checkedCheckboxes = $checkboxes.filter(':checked');
+
+      if (checkedCheckboxes.length === 0) {
+        log('info', 'No selected Confiscation business unit rows remain');
+        return;
+      }
+
+      log('info', `Unchecking ${checkedCheckboxes.length} selected Confiscation business unit row(s)`);
+      cy.wrap(checkedCheckboxes).uncheck({ force: true });
+    });
   }
 
   /**

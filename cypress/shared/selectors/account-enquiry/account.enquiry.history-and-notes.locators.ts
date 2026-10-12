@@ -15,7 +15,7 @@ export const ACCOUNT_ENQUIRY_HISTORY_AND_NOTES_ELEMENTS = {
 
   // Tab content
   tabRoot:
-    'app-fines-acc-defendant-details-history-and-notes-tab, app-fines-acc-minor-creditor-details-history-and-notes-tab',
+    'app-fines-acc-defendant-details-history-and-notes-tab, app-fines-acc-minor-creditor-details-history-and-notes-tab, app-fines-acc-major-creditor-details-history-and-notes-tab',
   tabHeading: '.govuk-\\!-margin-bottom-2',
   filterDetails: 'details.govuk-details',
   filterSummaryText: '.govuk-details__summary-text',

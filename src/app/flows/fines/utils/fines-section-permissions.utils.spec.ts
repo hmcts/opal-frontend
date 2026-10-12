@@ -8,13 +8,17 @@ import { ACCOUNTS_PERMISSIONS } from '../constants/accounts-permissions.constant
 import { REPORTS_PERMISSIONS } from '../constants/reports-permissions.constant';
 import { SEARCH_PERMISSIONS } from '../constants/search-permissions.constant';
 import {
+  RELEASE_1A_1_1_FEATURE_FLAG,
   RELEASE_1A_FEATURE_FLAG,
   RELEASE_1C_ADMINISTRATION_FEATURE_FLAG,
   RELEASE_1C_FINANCIAL_MOVEMENTS_FEATURE_FLAG,
   RELEASE_1B_FEATURE_FLAG,
   RELEASE_1C_ENFORCEMENT_OPERATIONAL_REPORTING_FEATURE_FLAG,
+  RELEASE_1C_PAYMENT_FEATURE_FLAG,
   RELEASE_1C_WRITE_OFF_FEATURE_FLAG,
+  RELEASE_1C_BANKING_INTERFACES_FEATURE_FLAG,
 } from '../constants/release-feature-flags.constant';
+import { FEATURE_FLAG_SECTION_PERMISSION_EXCLUSIONS } from '../constants/feature-flag-section-permission-exclusions.constant';
 import {
   canAccessFinesPrimaryNavigationSection,
   filterDashboardConfigByFeatureFlags,
@@ -70,11 +74,14 @@ describe('fines-section-permissions.utils', () => {
 
   const allReleaseFlagsEnabled = {
     [RELEASE_1A_FEATURE_FLAG]: true,
+    [RELEASE_1A_1_1_FEATURE_FLAG]: true,
     [RELEASE_1B_FEATURE_FLAG]: true,
     [RELEASE_1C_WRITE_OFF_FEATURE_FLAG]: true,
     [RELEASE_1C_ENFORCEMENT_OPERATIONAL_REPORTING_FEATURE_FLAG]: true,
     [RELEASE_1C_ADMINISTRATION_FEATURE_FLAG]: true,
     [RELEASE_1C_FINANCIAL_MOVEMENTS_FEATURE_FLAG]: true,
+    [RELEASE_1C_PAYMENT_FEATURE_FLAG]: true,
+    [RELEASE_1C_BANKING_INTERFACES_FEATURE_FLAG]: true,
   };
   const release1aEnabled = { [RELEASE_1A_FEATURE_FLAG]: true };
   const release1bEnabled = { [RELEASE_1B_FEATURE_FLAG]: true };
@@ -98,7 +105,7 @@ describe('fines-section-permissions.utils', () => {
   const release1cAdministrationDisabled = { [RELEASE_1C_ADMINISTRATION_FEATURE_FLAG]: false };
   const release1cFinancialMovementsEnabled = { [RELEASE_1C_FINANCIAL_MOVEMENTS_FEATURE_FLAG]: true };
   const release1cFinancialMovementsDisabled = { [RELEASE_1C_FINANCIAL_MOVEMENTS_FEATURE_FLAG]: false };
-
+  const release1cBankingInterfacesEnabled = { [RELEASE_1C_BANKING_INTERFACES_FEATURE_FLAG]: true };
   describe('getUserPermissionIds', () => {
     it('should deduplicate permission ids across business units', () => {
       const userState = createUserStateWithPermissions([SEARCH_PERMISSIONS[0], ACCOUNTS_PERMISSIONS[0]]);
@@ -129,56 +136,86 @@ describe('fines-section-permissions.utils', () => {
 
       expect(getFeatureFlagReleaseState(release1aEnabled)).toEqual({
         [RELEASE_1A_FEATURE_FLAG]: true,
+        [RELEASE_1A_1_1_FEATURE_FLAG]: false,
         [RELEASE_1B_FEATURE_FLAG]: false,
         [RELEASE_1C_WRITE_OFF_FEATURE_FLAG]: false,
         [RELEASE_1C_ENFORCEMENT_OPERATIONAL_REPORTING_FEATURE_FLAG]: false,
         [RELEASE_1C_ADMINISTRATION_FEATURE_FLAG]: false,
         [RELEASE_1C_FINANCIAL_MOVEMENTS_FEATURE_FLAG]: false,
+        [RELEASE_1C_PAYMENT_FEATURE_FLAG]: false,
+        [RELEASE_1C_BANKING_INTERFACES_FEATURE_FLAG]: false,
       });
 
       expect(getFeatureFlagReleaseState(release1cWriteOffEnabled)).toEqual({
         [RELEASE_1A_FEATURE_FLAG]: false,
+        [RELEASE_1A_1_1_FEATURE_FLAG]: false,
         [RELEASE_1B_FEATURE_FLAG]: false,
         [RELEASE_1C_WRITE_OFF_FEATURE_FLAG]: true,
         [RELEASE_1C_ENFORCEMENT_OPERATIONAL_REPORTING_FEATURE_FLAG]: false,
         [RELEASE_1C_ADMINISTRATION_FEATURE_FLAG]: false,
         [RELEASE_1C_FINANCIAL_MOVEMENTS_FEATURE_FLAG]: false,
+        [RELEASE_1C_PAYMENT_FEATURE_FLAG]: false,
+        [RELEASE_1C_BANKING_INTERFACES_FEATURE_FLAG]: false,
       });
 
       expect(getFeatureFlagReleaseState(release1cReportingEnabled)).toEqual({
         [RELEASE_1A_FEATURE_FLAG]: false,
+        [RELEASE_1A_1_1_FEATURE_FLAG]: false,
         [RELEASE_1B_FEATURE_FLAG]: false,
         [RELEASE_1C_WRITE_OFF_FEATURE_FLAG]: false,
         [RELEASE_1C_ENFORCEMENT_OPERATIONAL_REPORTING_FEATURE_FLAG]: true,
         [RELEASE_1C_ADMINISTRATION_FEATURE_FLAG]: false,
         [RELEASE_1C_FINANCIAL_MOVEMENTS_FEATURE_FLAG]: false,
+        [RELEASE_1C_PAYMENT_FEATURE_FLAG]: false,
+        [RELEASE_1C_BANKING_INTERFACES_FEATURE_FLAG]: false,
       });
 
       expect(getFeatureFlagReleaseState(release1cAdministrationEnabled)).toEqual({
         [RELEASE_1A_FEATURE_FLAG]: false,
+        [RELEASE_1A_1_1_FEATURE_FLAG]: false,
         [RELEASE_1B_FEATURE_FLAG]: false,
         [RELEASE_1C_WRITE_OFF_FEATURE_FLAG]: false,
         [RELEASE_1C_ENFORCEMENT_OPERATIONAL_REPORTING_FEATURE_FLAG]: false,
         [RELEASE_1C_ADMINISTRATION_FEATURE_FLAG]: true,
         [RELEASE_1C_FINANCIAL_MOVEMENTS_FEATURE_FLAG]: false,
+        [RELEASE_1C_PAYMENT_FEATURE_FLAG]: false,
+        [RELEASE_1C_BANKING_INTERFACES_FEATURE_FLAG]: false,
       });
 
       expect(getFeatureFlagReleaseState(release1cFinancialMovementsEnabled)).toEqual({
         [RELEASE_1A_FEATURE_FLAG]: false,
+        [RELEASE_1A_1_1_FEATURE_FLAG]: false,
         [RELEASE_1B_FEATURE_FLAG]: false,
         [RELEASE_1C_WRITE_OFF_FEATURE_FLAG]: false,
         [RELEASE_1C_ENFORCEMENT_OPERATIONAL_REPORTING_FEATURE_FLAG]: false,
         [RELEASE_1C_ADMINISTRATION_FEATURE_FLAG]: false,
         [RELEASE_1C_FINANCIAL_MOVEMENTS_FEATURE_FLAG]: true,
+        [RELEASE_1C_PAYMENT_FEATURE_FLAG]: false,
+        [RELEASE_1C_BANKING_INTERFACES_FEATURE_FLAG]: false,
       });
 
-      expect(getFeatureFlagReleaseState({})).toEqual({
+      expect(getFeatureFlagReleaseState(release1cBankingInterfacesEnabled)).toEqual({
         [RELEASE_1A_FEATURE_FLAG]: false,
+        [RELEASE_1A_1_1_FEATURE_FLAG]: false,
         [RELEASE_1B_FEATURE_FLAG]: false,
         [RELEASE_1C_WRITE_OFF_FEATURE_FLAG]: false,
         [RELEASE_1C_ENFORCEMENT_OPERATIONAL_REPORTING_FEATURE_FLAG]: false,
         [RELEASE_1C_ADMINISTRATION_FEATURE_FLAG]: false,
         [RELEASE_1C_FINANCIAL_MOVEMENTS_FEATURE_FLAG]: false,
+        [RELEASE_1C_PAYMENT_FEATURE_FLAG]: false,
+        [RELEASE_1C_BANKING_INTERFACES_FEATURE_FLAG]: true,
+      });
+
+      expect(getFeatureFlagReleaseState({})).toEqual({
+        [RELEASE_1A_FEATURE_FLAG]: false,
+        [RELEASE_1A_1_1_FEATURE_FLAG]: false,
+        [RELEASE_1B_FEATURE_FLAG]: false,
+        [RELEASE_1C_WRITE_OFF_FEATURE_FLAG]: false,
+        [RELEASE_1C_ENFORCEMENT_OPERATIONAL_REPORTING_FEATURE_FLAG]: false,
+        [RELEASE_1C_ADMINISTRATION_FEATURE_FLAG]: false,
+        [RELEASE_1C_FINANCIAL_MOVEMENTS_FEATURE_FLAG]: false,
+        [RELEASE_1C_PAYMENT_FEATURE_FLAG]: false,
+        [RELEASE_1C_BANKING_INTERFACES_FEATURE_FLAG]: false,
       });
     });
   });
@@ -215,6 +252,32 @@ describe('fines-section-permissions.utils', () => {
 
     it('should remove Reports permissions when release-1c enforcement operational reporting is disabled', () => {
       expect(getRequiredPermissionIdsForSection('reports', release1cReportingDisabled)).toEqual([]);
+    });
+
+    it('should ignore an exclusion flag that has no configured permission ids', () => {
+      const searchExclusions = FEATURE_FLAG_SECTION_PERMISSION_EXCLUSIONS.search as Record<
+        string,
+        readonly number[] | undefined
+      >;
+      const originalRelease1bExclusions = searchExclusions[RELEASE_1B_FEATURE_FLAG];
+      searchExclusions[RELEASE_1B_FEATURE_FLAG] = undefined;
+
+      try {
+        expect(getRequiredPermissionIdsForSection('search', release1bDisabled)).toEqual(SEARCH_PERMISSIONS);
+      } finally {
+        searchExclusions[RELEASE_1B_FEATURE_FLAG] = originalRelease1bExclusions;
+      }
+    });
+
+    it('should return all permissions when a restricted section has no exclusion configuration', () => {
+      const originalSearchExclusions = FEATURE_FLAG_SECTION_PERMISSION_EXCLUSIONS.search;
+      delete FEATURE_FLAG_SECTION_PERMISSION_EXCLUSIONS.search;
+
+      try {
+        expect(getRequiredPermissionIdsForSection('search', release1bDisabled)).toEqual(SEARCH_PERMISSIONS);
+      } finally {
+        FEATURE_FLAG_SECTION_PERMISSION_EXCLUSIONS.search = originalSearchExclusions;
+      }
     });
   });
 
@@ -566,10 +629,10 @@ describe('fines-section-permissions.utils', () => {
 
     it('should keep Finance dashboard content when release-1c financial movements is enabled', () => {
       expect(
-        filterDashboardConfigByFeatureFlags(
-          DASHBOARD_PAGE_CONFIGURATION_MAP.finance,
-          release1cFinancialMovementsEnabled,
-        ),
+        filterDashboardConfigByFeatureFlags(DASHBOARD_PAGE_CONFIGURATION_MAP.finance, {
+          ...release1cFinancialMovementsEnabled,
+          ...release1cBankingInterfacesEnabled,
+        }),
       ).toEqual(DASHBOARD_PAGE_CONFIGURATION_MAP.finance);
     });
 
