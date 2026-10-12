@@ -67,6 +67,38 @@ type CommentRow = { [key: string]: string };
 
 import { rowsHashSafe } from '../../utils/table';
 
+const isOpalMode = (): boolean => {
+  const legacyEnabled = Cypress.env('LEGACY_ENABLED');
+
+  if (typeof legacyEnabled === 'string') {
+    const normalizedLegacyEnabled = legacyEnabled.trim().toLowerCase();
+
+    if (['true', 'legacy', '1'].includes(normalizedLegacyEnabled)) {
+      return false;
+    }
+  } else if (legacyEnabled === true) {
+    return false;
+  }
+
+  const testMode = String(Cypress.env('TEST_MODE') ?? '')
+    .trim()
+    .toLowerCase();
+  const appMode = String(Cypress.env('DEV_DEFAULT_APP_MODE') ?? Cypress.env('DEFAULT_APP_MODE') ?? '')
+    .trim()
+    .toLowerCase();
+
+  return testMode !== 'legacy' && appMode !== 'legacy';
+};
+
+const skipApiAmendmentVerificationOutsideOpal = (stepName: string): boolean => {
+  if (isOpalMode()) {
+    return false;
+  }
+
+  log('info', `Skipping OPAL-only API amendment verification: ${stepName}`);
+  return true;
+};
+
 /**
  * @step Selects the latest account and verifies the header.
  */
@@ -2002,6 +2034,10 @@ When('I establish a parent or guardian amendment baseline with first name {strin
  * @param expectedForename - First name expected in the amendment record.
  */
 Then('I verify defendant amendments via API for first name {string}', (expectedForename: string) => {
+  if (skipApiAmendmentVerificationOutsideOpal('I verify defendant amendments via API for first name')) {
+    return;
+  }
+
   log('step', 'Verify defendant amendments via API', { expectedForename });
   accountEnquiryFlow().verifyDefendantAmendmentsViaApi(expectedForename);
 });
@@ -2012,6 +2048,10 @@ Then('I verify defendant amendments via API for first name {string}', (expectedF
  * @param expectedCompanyName - Company name expected in the amendment record.
  */
 Then('I verify Company amendments via API for company name {string}', (expectedCompanyName: string) => {
+  if (skipApiAmendmentVerificationOutsideOpal('I verify Company amendments via API for company name')) {
+    return;
+  }
+
   const companyWithUniq = applyUniqPlaceholder(expectedCompanyName);
   log('assert', 'Verify company amendments via API', { expectedCompanyName: companyWithUniq });
   accountEnquiryFlow().verifyCompanyAmendmentsViaApi(companyWithUniq);
@@ -2023,6 +2063,10 @@ Then('I verify Company amendments via API for company name {string}', (expectedC
  * @param expectedGuardianName - Guardian name expected in the amendment record.
  */
 Then('I verify parent or guardian amendments via API for guardian name {string}', (expectedGuardianName: string) => {
+  if (skipApiAmendmentVerificationOutsideOpal('I verify parent or guardian amendments via API for guardian name')) {
+    return;
+  }
+
   log('assert', 'Verify parent/guardian amendments via API', { expectedGuardianName });
   accountEnquiryFlow().verifyParentGuardianAmendmentsViaApi(expectedGuardianName);
 });
@@ -2040,6 +2084,10 @@ Then('I verify minor creditor amendments via API for first name {string}', (expe
  * @step Verifies via API that no defendant amendments were created.
  */
 Then('I verify no amendments were created via API', () => {
+  if (skipApiAmendmentVerificationOutsideOpal('I verify no amendments were created via API')) {
+    return;
+  }
+
   log('assert', 'Verify no amendments were created via API');
   accountEnquiryFlow().verifyNoDefendantAmendments();
 });
@@ -2048,6 +2096,10 @@ Then('I verify no amendments were created via API', () => {
  * @step Verifies via API that no company amendments were created.
  */
 Then('I verify no amendments were created via API for company details', () => {
+  if (skipApiAmendmentVerificationOutsideOpal('I verify no amendments were created via API for company details')) {
+    return;
+  }
+
   log('assert', 'Verify no amendments were created via API for company details');
   accountEnquiryFlow().verifyNoCompanyAmendments();
 });
@@ -2056,6 +2108,14 @@ Then('I verify no amendments were created via API for company details', () => {
  * @step Verifies via API that no parent/guardian amendments were created.
  */
 Then('I verify no amendments were created via API for parent or guardian details', () => {
+  if (
+    skipApiAmendmentVerificationOutsideOpal(
+      'I verify no amendments were created via API for parent or guardian details',
+    )
+  ) {
+    return;
+  }
+
   log('assert', 'Verify no amendments were created via API for parent or guardian details');
   accountEnquiryFlow().verifyNoParentGuardianAmendments();
 });
