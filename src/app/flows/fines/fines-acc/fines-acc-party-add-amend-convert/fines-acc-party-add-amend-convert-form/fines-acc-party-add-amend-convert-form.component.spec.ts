@@ -11,6 +11,7 @@ import { MOCK_FINES_ACC_PARTY_ADD_AMEND_CONVERT_FORM_DATA_WITH_ALIASES } from '.
 import { FINES_ACC_PARTY_ADD_AMEND_CONVERT_FORM } from '../constants/fines-acc-party-add-amend-convert-form.constant';
 import { FINES_ACC_DEFENDANT_DETAILS_TABS_KEYS } from '../../fines-acc-defendant-details/constants/fines-acc-defendant-details-tabs-keys.constant';
 import { FINES_ACC_PARTY_ADD_AMEND_CONVERT_MODES } from '../constants/fines-acc-party-add-amend-convert-modes.constant';
+import { FINES_ACC_PARTY_ADD_AMEND_CONVERT_PARTY_TYPES } from '../constants/fines-acc-party-add-amend-convert-party-types.constant';
 import { FINES_ACC_PARTY_ADD_AMEND_CONVERT_SECTION_FRAGMENTS } from '../constants/fines-acc-party-add-amend-convert-fragments.constant';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
 
@@ -549,6 +550,59 @@ describe('FinesAccPartyAddAmendConvertFormComponent', () => {
     addressControl?.setValue('123 Test Street');
     expect(addressControl?.hasError('required')).toBe(false);
   });
+
+  it.each([
+    [
+      FINES_ACC_PARTY_ADD_AMEND_CONVERT_PARTY_TYPES.PARENT_GUARDIAN,
+      FINES_ACC_PARTY_ADD_AMEND_CONVERT_MODES.ADD,
+      false,
+      13,
+    ],
+    [
+      FINES_ACC_PARTY_ADD_AMEND_CONVERT_PARTY_TYPES.PARENT_GUARDIAN,
+      FINES_ACC_PARTY_ADD_AMEND_CONVERT_MODES.AMEND,
+      false,
+      13,
+    ],
+    [
+      FINES_ACC_PARTY_ADD_AMEND_CONVERT_PARTY_TYPES.PARENT_GUARDIAN,
+      FINES_ACC_PARTY_ADD_AMEND_CONVERT_MODES.AMEND,
+      true,
+      13,
+    ],
+    [FINES_ACC_PARTY_ADD_AMEND_CONVERT_PARTY_TYPES.INDIVIDUAL, FINES_ACC_PARTY_ADD_AMEND_CONVERT_MODES.AMEND, true, 16],
+    [FINES_ACC_PARTY_ADD_AMEND_CONVERT_PARTY_TYPES.COMPANY, FINES_ACC_PARTY_ADD_AMEND_CONVERT_MODES.AMEND, true, 16],
+  ] as const)(
+    'should validate address line 3 for %s in %s mode (debtor: %s) with a %i-character limit',
+    (partyType, mode, isDebtor, maxLength) => {
+      component.partyType = partyType;
+      component.mode = mode;
+      component.isDebtor = isDebtor;
+      fixture.detectChanges();
+
+      const controlName = 'facc_party_add_amend_convert_address_line_3';
+      const addressControl = component.form.get(controlName)!;
+
+      addressControl.setValue(null);
+      expect(addressControl.valid).toBe(true);
+      addressControl.setValue('');
+      expect(addressControl.valid).toBe(true);
+
+      addressControl.setValue('A'.repeat(maxLength));
+      expect(addressControl.valid).toBe(true);
+
+      addressControl.setValue('A'.repeat(maxLength + 1));
+      expect(addressControl.getError('maxlength')).toEqual({ requiredLength: maxLength, actualLength: maxLength + 1 });
+
+      component['handleErrorMessages']();
+      expect(component['formControlErrorMessages'][controlName]).toBe(
+        `Address line 3 must be ${maxLength} characters or fewer`,
+      );
+
+      addressControl.setValue('Café');
+      expect(addressControl.hasError('singleAsciiCharacters')).toBe(true);
+    },
+  );
 
   it('should validate email addresses', () => {
     component.partyType = 'individual';

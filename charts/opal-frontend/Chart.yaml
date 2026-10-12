@@ -3,12 +3,12 @@ appVersion: '1.0'
 description: A Helm chart for opal-frontend
 name: opal-frontend
 home: https://github.com/hmcts/opal-frontend/
-version: 0.0.355
+version: 0.0.356
 maintainers:
   - name: HMCTS Opal team
 dependencies:
   - name: nodejs
-    version: 3.2.1
+    version: 3.3.1
     repository: 'oci://hmctsprod.azurecr.io/helm'
   - name: redis
     version: 25.5.3
@@ -23,7 +23,7 @@ dependencies:
     repository: 'oci://hmctsprod.azurecr.io/helm'
     condition: opal-fines-service.enabled
   - name: servicebus
-    version: 1.2.2
+    version: 1.3.0
     repository: 'oci://hmctsprod.azurecr.io/helm'
     condition: opal-fines-service.enabled
 

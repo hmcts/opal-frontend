@@ -277,7 +277,7 @@ describe('Account Enquiry History and notes', () => {
         expect(request.url).to.contain('/defendant-accounts/77/history');
         expect(request.query['dateFrom']).to.be.undefined;
         expect(request.query['dateTo']).to.be.undefined;
-        expect(request.query['itemTypes']).to.equal('amendment,enforcement,financial,note,paymentTerm');
+        expect(request.query['itemTypes']).to.equal('amendment,enforcement,financial,note,paymentTerms');
 
         expect(response?.statusCode).to.equal(200);
         expect(response?.body).to.deep.equal(OPAL_FINES_ACCOUNT_DEFENDANT_DETAILS_HISTORY_AND_NOTES_TAB_REF_DATA_MOCK);

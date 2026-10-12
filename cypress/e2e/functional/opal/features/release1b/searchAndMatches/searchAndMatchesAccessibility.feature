@@ -4,10 +4,10 @@ Feature: Search And Matches Accessibility
 
   Background:
     Given I am logged in with email "opal-test@dev.platform.hmcts.net"
-    And I am on the Account Search page - Individuals form displayed by default
 
   @R1BDrop1 @JIRA-STORY:PO-705 @JIRA-STORY:PO-712 @JIRA-STORY:PO-715 @JIRA-EPIC:PO-2472 @JIRA-TEST-KEY:PO-5296
   Scenario: Search and Matches journey is accessible
+    Given I am on the Account Search page - Individuals form displayed by default
     ## Check Accessibility on Individuals Tab
     When I search using the following inputs:
       | individual last name | * |
@@ -40,6 +40,7 @@ Feature: Search And Matches Accessibility
 
   @JIRA-STORY:PO-2953 @JIRA-EPIC:PO-2630 @R1BDrop1 @JIRA-TEST-KEY:PO-10019
   Scenario: National Insurance quick search is accessible
+    Given I am on the Account Search page - Individuals form displayed by default
     ## Check Accessibility on National Insurance quick search
     When I search using the following inputs:
       | National Insurance number | * |
@@ -47,9 +48,11 @@ Feature: Search And Matches Accessibility
 
   @JIRA-STORY:PO-3720 @JIRA-EPIC:PO-3685 @JIRA-TEST-KEY:PO-3721 @R1BDrop2
   Scenario: Major Creditors search form is available when release 1b is enabled
+    Given I am on the Account Search page - Individuals form displayed by default
     When I view the Major Creditors search form
     Then I check the page for accessibility
 
   @JIRA-STORY:PO-3720 @JIRA-EPIC:PO-3685 @JIRA-TEST-KEY:PO-3722 @R1BOff
-  Scenario: Major Creditors search form is hidden when release 1b is disabled
-    Then I should not see the Major Creditors search form
+  Scenario: Search and Matches is hidden when release 1b is disabled
+    Then I am taken to the "Accounts" Fines landing page
+    And I should not see the Fines primary navigation item "Search"

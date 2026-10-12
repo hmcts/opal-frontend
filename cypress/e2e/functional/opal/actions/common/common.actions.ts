@@ -17,6 +17,26 @@ export class CommonActions {
   private readonly PATH_TIMEOUT = 30_000;
 
   /**
+   * Normalizes visible text for reliable assertions.
+   *
+   * @param value - Raw text content.
+   * @returns Text with collapsed whitespace.
+   */
+  private normalizeText(value: string): string {
+    return value.replace(/\s+/g, ' ').trim();
+  }
+
+  /**
+   * Normalizes visible text for case-insensitive assertions.
+   *
+   * @param value - Raw text content.
+   * @returns Text with collapsed whitespace and normalized casing.
+   */
+  private normalizeTextCaseInsensitive(value: string): string {
+    return this.normalizeText(value).toLowerCase();
+  }
+
+  /**
    * Standard timeout options for most UI waits.
    * @returns Cypress timeout options object.
    */
@@ -82,6 +102,48 @@ export class CommonActions {
       .should(($el) => {
         const text = $el.text().toLowerCase();
         expect(text).to.include(expected.toLowerCase());
+      });
+  }
+
+  /**
+   * Asserts an element contains expected text after normalizing whitespace and casing.
+   *
+   * @param selector - Element selector.
+   * @param expected - Expected text.
+   * @param timeoutMs - Optional timeout override for the assertion.
+   */
+  public assertElementContainsNormalizedText(
+    selector: string,
+    expected: string,
+    timeoutMs: number = this.TIMEOUT,
+  ): void {
+    this.assertElementContainsAnyNormalizedText(selector, [expected], timeoutMs);
+  }
+
+  /**
+   * Asserts an element contains one of the accepted text values after normalizing whitespace and casing.
+   *
+   * @param selector - Element selector.
+   * @param expectedValues - Accepted text values.
+   * @param timeoutMs - Optional timeout override for the assertion.
+   */
+  public assertElementContainsAnyNormalizedText(
+    selector: string,
+    expectedValues: string[],
+    timeoutMs: number = this.TIMEOUT,
+  ): void {
+    cy.get(selector, { timeout: timeoutMs })
+      .should('be.visible')
+      .invoke('text')
+      .then((actual) => {
+        const actualNormalized = this.normalizeTextCaseInsensitive(actual);
+        const expectedNormalizedValues = expectedValues.map((expected) => this.normalizeTextCaseInsensitive(expected));
+        const includesExpectedValue = expectedNormalizedValues.some((expected) => actualNormalized.includes(expected));
+
+        expect(
+          includesExpectedValue,
+          `Expected "${this.normalizeText(actual)}" to include one of: ${expectedValues.join(', ')}`,
+        ).to.eq(true);
       });
   }
 

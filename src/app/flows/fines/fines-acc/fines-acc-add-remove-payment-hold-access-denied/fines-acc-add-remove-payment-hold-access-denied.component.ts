@@ -20,6 +20,6 @@ export class FinesAccAddRemovePaymentHoldAccessDeniedComponent {
    */
   public navigateBackToAccountSummary(event: Event): void {
     event.preventDefault();
-    this.router.navigate([`../../details`], { relativeTo: this.route });
+    void this.router.navigate([`../../details`], { relativeTo: this.route });
   }
 }
