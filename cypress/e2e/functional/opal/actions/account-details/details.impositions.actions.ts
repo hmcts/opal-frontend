@@ -79,7 +79,7 @@ export class AccountDetailsImpositionsActions {
   }
 
   /**
-   * Checks the successful Opal response and exact creditor text and destinations by account ID.
+   * Checks the successful Opal response and exact creditor text and destinations by imposition ID.
    * @param alias - Request alias registered before navigation.
    * @param expectedRows - Expected name, creditor type and optional organisation flag in API order.
    */
@@ -92,7 +92,7 @@ export class AccountDetailsImpositionsActions {
       expect(body.impositions).to.have.length(expectedRows.length);
       this.assertImpositionsTabVisible();
       cy.get(L.table).should('be.visible');
-      cy.get(L.creditorRows).should('have.length', expectedRows.length);
+      cy.get(L.tableRows).should('have.length', expectedRows.length);
 
       expectedRows.forEach(([name, type, flag], index) => {
         const creditor = body.impositions[index].creditor;
@@ -103,18 +103,25 @@ export class AccountDetailsImpositionsActions {
             `minor_creditor_organisation_flag (response fields: ${Object.keys(creditor).join(', ')})`,
           ).to.equal(flag === 'true');
         }
-        const selector = L.creditorByAccountId(creditor.creditor_account_id);
-        cy.get(selector).should(($cell) => {
-          expect($cell.text().trim()).to.equal(name);
-        });
-        if (type === 'CF') {
-          cy.get(selector).find('a').should('not.exist');
-        } else {
-          const route = type === 'MJ' ? 'major-creditor' : 'minor-creditor';
-          cy.get(selector)
-            .find('a')
-            .should('have.attr', 'href', `/fines/account/${route}/${creditor.creditor_account_id}/details`);
-        }
+        const impositionId = String(body.impositions[index].imposition_id);
+        cy.get(L.impositionIdCells)
+          .filter((_, cell) => cell.textContent?.trim() === impositionId)
+          .should('have.length', 1)
+          .closest('tr')
+          .find(L.creditorCell)
+          .should(($cell) => {
+            expect($cell.text().trim()).to.equal(name);
+          })
+          .within(() => {
+            if (type === 'CF') {
+              cy.get('a').should('not.exist');
+            } else {
+              const route = type === 'MJ' ? 'major-creditor' : 'minor-creditor';
+              cy.get('a')
+                .should('have.length', 1)
+                .and('have.attr', 'href', `/fines/account/${route}/${creditor.creditor_account_id}/details`);
+            }
+          });
       });
     });
   }
