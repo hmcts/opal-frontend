@@ -2455,6 +2455,8 @@ Given('I observe the seeded PO-10571 Opal impositions request', () => {
 /** Asserts names and links against the real seeded Opal response. */
 Then('the seeded Opal impositions show these creditor names and links:', (table: DataTable) => {
   impositionsDetails().assertCreditorSummaryResponse('@seededImpositions', table.rows());
+});
+
 /**
  * @step Sets Address line 3 on the parent or guardian form.
  */
