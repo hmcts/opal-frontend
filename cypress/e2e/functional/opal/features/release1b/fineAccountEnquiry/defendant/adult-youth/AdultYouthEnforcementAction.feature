@@ -25,7 +25,7 @@ Feature: Adult Youth Enforcement Action
 
       When the Enforcement tab is displayed for defendant account with last name "AddEnfAction{uniq}"
 
-    @JIRA-STORY:PO-10902
+    @JIRA-STORY:PO-10902 @JIRA-EPIC:PO-1675
     Scenario: Court options are available when adding a SUMM enforcement action
       And the add enforcement action form is displayed
       And the enforcement action is "SUMM"
