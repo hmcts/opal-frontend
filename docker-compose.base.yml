@@ -30,6 +30,7 @@ services:
       - opal-frontend-csrf-secret=supersecret
       - FEATURE_FLAGS_OVERRIDE=true
       - RELEASE_1A_ENABLED=true
+      - RELEASE_1A_1_1_ENABLED=true
       - RELEASE_1B_ENABLED=true
       - RELEASE_1C_ADMINISTRATION_ENABLED=true
       - RELEASE_1C_WRITE_OFF_ENABLED=true

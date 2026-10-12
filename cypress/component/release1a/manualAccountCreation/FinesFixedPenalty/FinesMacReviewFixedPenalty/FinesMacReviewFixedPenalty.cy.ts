@@ -23,6 +23,7 @@ import { interceptOffences } from 'cypress/component/CommonIntercepts/CommonInte
 import { ACCOUNT_SESSION_USER_STATE_MOCK } from '../mocks/user_state_mock';
 import { FINES_DEFAULT_VALUES } from 'src/app/flows/fines/constants/fines-default-values.constant';
 import { FINES_ACCOUNT_TYPES } from 'src/app/flows/fines/constants/fines-account-types.constant';
+import { RELEASE_1A_1_1_FEATURE_FLAG } from 'src/app/flows/fines/constants/release-feature-flags.constant';
 
 const MANUAL_ACCOUNT_CREATION_JIRA_LABEL = '@JIRA-LABEL:manual-account-creation';
 
@@ -92,6 +93,7 @@ describe('FinesMacReviewFixedPenalty using ReviewAccountComponent', () => {
               title: null,
               operationId: null,
             });
+            store.setFeatureFlags({ [RELEASE_1A_1_1_FEATURE_FLAG]: true });
             return store;
           },
         },
@@ -173,7 +175,7 @@ describe('FinesMacReviewFixedPenalty using ReviewAccountComponent', () => {
       cy.get(DOM_ELEMENTS.defendantType).should('contain', 'Adult');
 
       // Section 2 - Issuing Authority and Court Details
-      cy.get(DOM_ELEMENTS.issuingAuthority).should('exist').and('contain', 'Asylum & Immigration Tribunal (9985)');
+      cy.get(DOM_ELEMENTS.issuingAuthority).should('exist').and('contain', 'Police force (123)');
       // The card title should reflect this is for issuing authority too
       cy.get(DOM_ELEMENTS.enforcementCourt).should('exist').and('contain', 'Historic Debt Database (101)');
 
@@ -211,8 +213,8 @@ describe('FinesMacReviewFixedPenalty using ReviewAccountComponent', () => {
       cy.wait('@postDraftAccount')
         .its('request.body.account')
         .should((account) => {
-          expect(account.originator_id).to.equal('9985');
-          expect(account.originator_name).to.equal('Asylum & Immigration Tribunal');
+          expect(account.originator_id).to.equal('1223');
+          expect(account.originator_name).to.equal('Police force');
         });
     },
   );
@@ -315,7 +317,7 @@ describe('FinesMacReviewFixedPenalty using ReviewAccountComponent', () => {
       cy.get(DOM_ELEMENTS.defendantType).should('contain', 'Company');
 
       // Section 2 - Court Details
-      cy.get(DOM_ELEMENTS.issuingAuthority).should('exist').and('contain', 'Asylum & Immigration Tribunal (9985)');
+      cy.get(DOM_ELEMENTS.issuingAuthority).should('exist').and('contain', 'Police force (123)');
       cy.get(DOM_ELEMENTS.enforcementCourt).should('exist').and('contain', 'Historic Debt Database (101)');
 
       // Section 3 - Company Details
@@ -345,8 +347,8 @@ describe('FinesMacReviewFixedPenalty using ReviewAccountComponent', () => {
       cy.wait('@postDraftAccount')
         .its('request.body.account')
         .should((account) => {
-          expect(account.originator_id).to.equal('9985');
-          expect(account.originator_name).to.equal('Asylum & Immigration Tribunal');
+          expect(account.originator_id).to.equal('1223');
+          expect(account.originator_name).to.equal('Police force');
         });
     },
   );
