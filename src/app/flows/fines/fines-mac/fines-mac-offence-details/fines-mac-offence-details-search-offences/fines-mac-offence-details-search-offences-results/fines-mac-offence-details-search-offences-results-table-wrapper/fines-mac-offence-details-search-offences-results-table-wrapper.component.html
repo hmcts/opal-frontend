@@ -45,7 +45,7 @@
     >
       Used to
     </th>
-    <th opal-lib-moj-sortable-table-header columnKey="Actions" [dataIndex]="5">Actions</th>
+    <th scope="col" class="govuk-table__header">Actions</th>
   </ng-container>
   <ng-container row>
     @for (row of paginatedTableDataComputed(); track row['Code']) {
@@ -66,7 +66,7 @@
           @if (row['Used to']) {
             {{ row['Used to'] | dateFormat: DATE_INPUT_FORMAT : DATE_OUTPUT_FORMAT }}
           } @else {
-            <p>Present</p>
+            Present
           }
         </td>
         <td opal-lib-moj-sortable-table-row-data id="actions">
