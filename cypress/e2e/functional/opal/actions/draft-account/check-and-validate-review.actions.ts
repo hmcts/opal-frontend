@@ -72,7 +72,10 @@ export class CheckAndValidateReviewActions {
    * Submits the decision form.
    */
   submitDecision(): void {
-    cy.get(L.decision.continueButton, this.common.getTimeoutOptions()).should('be.visible').click({ force: true });
+    cy.get(L.decision.continueButton, this.common.getTimeoutOptions())
+      .should('be.visible')
+      .and('not.be.disabled')
+      .click({ force: true });
   }
 
   /**

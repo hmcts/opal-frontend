@@ -6,9 +6,9 @@ import { FINES_MAC_NESTED_ROUTE_KEYS } from '../constants/fines-mac-nested-route
 import { FinesMacCourtDetailsFormComponent } from './fines-mac-court-details-form/fines-mac-court-details-form.component';
 import { OpalFines } from '@services/fines/opal-fines-service/opal-fines.service';
 import { IOpalFinesCourtRefData } from '@services/fines/opal-fines-service/interfaces/opal-fines-court-ref-data.interface';
-import { IOpalFinesLocalJusticeAreaRefData } from '@services/fines/opal-fines-service/interfaces/opal-fines-local-justice-area-ref-data.interface';
 import { IFinesMacCourtDetailsForm } from './interfaces/fines-mac-court-details-form.interface';
 import { FinesMacFormParentBaseComponent } from '../components/abstract/fines-mac-form-parent-base/fines-mac-form-parent-base.component';
+import { IFinesMacOriginatorRefData } from '../routing/resolvers/fetch-originators-resolver/interfaces/fines-mac-originator-ref-data.interface';
 
 @Component({
   selector: 'app-fines-mac-court-details',
@@ -20,32 +20,31 @@ export class FinesMacCourtDetailsComponent extends FinesMacFormParentBaseCompone
   private readonly opalFinesService = inject(OpalFines);
   private courts!: IOpalFinesCourtRefData;
 
-  protected localJusticeAreas!: IOpalFinesLocalJusticeAreaRefData;
+  protected originators!: IFinesMacOriginatorRefData;
 
   public sendingCourtData: IAlphagovAccessibleAutocompleteItem[] = [];
   public enforcementCourtData: IAlphagovAccessibleAutocompleteItem[] = [];
 
   /**
-   * Creates an array of autocomplete items based on the response from the server.
-   * @param response - The response object containing the local justice area reference data.
-   * @returns An array of autocomplete items.
+   * Creates autocomplete items from the normalized originator reference data.
+   * Conditional Caution originators are prosecutors; Fine originators are local justice areas.
+   * @param response - The normalized originator reference data resolved for the current account type.
+   * @returns Autocomplete items containing each originator's ID and display name.
    */
-  private createAutoCompleteItemsLja(
-    response: IOpalFinesLocalJusticeAreaRefData,
+  private createAutoCompleteItemsOriginators(
+    response: IFinesMacOriginatorRefData,
   ): IAlphagovAccessibleAutocompleteItem[] {
-    const localJusticeAreas = response.refData;
-
-    return localJusticeAreas.map((item) => {
+    return response.refData.map((originator) => {
       return {
-        value: item.local_justice_area_id,
-        name: this.opalFinesService.getLocalJusticeAreaPrettyName(item),
+        value: originator.originatorId,
+        name: originator.displayName,
       };
     });
   }
 
   /**
    * Creates an array of autocomplete items based on the response from the server.
-   * @param response - The response object containing the local justice area reference data.
+   * @param response - The response object containing the enforcement court reference data.
    * @returns An array of autocomplete items.
    */
   private createAutoCompleteItemsCourts(response: IOpalFinesCourtRefData): IAlphagovAccessibleAutocompleteItem[] {
@@ -61,7 +60,7 @@ export class FinesMacCourtDetailsComponent extends FinesMacFormParentBaseCompone
 
   /**
    * Handles the form submission for court details.
-   * @param formData - The form data containing the search parameters.
+   * @param form - The completed court details form data.
    */
   public handleCourtDetailsSubmit(form: IFinesMacCourtDetailsForm): void {
     this.finesMacStore.setCourtDetails(form);
@@ -75,10 +74,10 @@ export class FinesMacCourtDetailsComponent extends FinesMacFormParentBaseCompone
   }
 
   public ngOnInit(): void {
-    this.localJusticeAreas = this['activatedRoute'].snapshot.data['localJusticeAreas'];
+    this.originators = this['activatedRoute'].snapshot.data['originators'];
     this.courts = this['activatedRoute'].snapshot.data['courts'];
 
-    this.sendingCourtData = this.createAutoCompleteItemsLja(this.localJusticeAreas);
+    this.sendingCourtData = this.createAutoCompleteItemsOriginators(this.originators);
     this.enforcementCourtData = this.createAutoCompleteItemsCourts(this.courts);
   }
 }

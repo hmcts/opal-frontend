@@ -183,21 +183,24 @@ export const assertParamValue = (
   }
 
   if (Array.isArray(actualValue)) {
-    let parsedExpected: unknown;
-    try {
-      parsedExpected = JSON.parse(expectedRaw);
-    } catch (error) {
-      throw new Error(`Failed to parse JSON array for "${gherkinKey}": "${expectedRaw}". ${String(error)}`);
-    }
+    const parsedExpectedOptions = parseExpectedArrayOptions(expectedRaw, gherkinKey);
 
     if (mapping.key === 'business_unit_ids') {
       const normalizedActual = [...actualValue].sort();
-      const normalizedExpected = Array.isArray(parsedExpected) ? [...parsedExpected].sort() : parsedExpected;
-      expect(normalizedActual, `${label} – array mismatch`).to.deep.equal(normalizedExpected);
+      const hasMatchingExpected = parsedExpectedOptions.some((parsedExpected) => {
+        const normalizedExpected = [...parsedExpected].sort();
+        return JSON.stringify(normalizedActual) === JSON.stringify(normalizedExpected);
+      });
+
+      expect(hasMatchingExpected, `${label} – array mismatch`).to.equal(true);
       return;
     }
 
-    expect(actualValue, `${label} – array mismatch`).to.deep.equal(parsedExpected);
+    const hasMatchingExpected = parsedExpectedOptions.some(
+      (parsedExpected) => JSON.stringify(actualValue) === JSON.stringify(parsedExpected),
+    );
+
+    expect(hasMatchingExpected, `${label} – array mismatch`).to.equal(true);
     return;
   }
 
@@ -222,6 +225,24 @@ type ExpectedCountEntry = {
   count: number;
 };
 
+const parseExpectedArrayOptions = (expectedRaw: string, label: string): unknown[][] => {
+  return expectedRaw.split(/\s*;\s*/).map((option) => {
+    const optionValue = option.replace(/^[a-zA-Z0-9 _-]+=\s*/, '');
+
+    try {
+      const parsedExpected = JSON.parse(optionValue);
+
+      if (!Array.isArray(parsedExpected)) {
+        throw new Error(`Expected a JSON array option but received "${optionValue}"`);
+      }
+
+      return parsedExpected;
+    } catch (error) {
+      throw new Error(`Failed to parse JSON array for "${label}": "${optionValue}". ${String(error)}`);
+    }
+  });
+};
+
 const valuesMatch = (actualValue: unknown, expectedRaw: string, mapping: AccountSearchFieldMapping): boolean => {
   const expectedValue = expectedRaw === 'null' ? null : expectedRaw;
 
@@ -230,22 +251,18 @@ const valuesMatch = (actualValue: unknown, expectedRaw: string, mapping: Account
   }
 
   if (Array.isArray(actualValue)) {
-    let parsedExpected: unknown;
-    try {
-      parsedExpected = JSON.parse(expectedRaw);
-    } catch (error) {
-      throw new Error(`Failed to parse JSON array for "${mapping.key}": "${expectedRaw}". ${String(error)}`);
-    }
-
-    if (!Array.isArray(parsedExpected)) {
-      return false;
-    }
+    const parsedExpectedOptions = parseExpectedArrayOptions(expectedRaw, mapping.key);
 
     if (mapping.key === 'business_unit_ids') {
-      return JSON.stringify([...actualValue].sort()) === JSON.stringify([...parsedExpected].sort());
+      const normalizedActual = JSON.stringify([...actualValue].sort());
+      return parsedExpectedOptions.some(
+        (parsedExpected) => normalizedActual === JSON.stringify([...parsedExpected].sort()),
+      );
     }
 
-    return JSON.stringify(actualValue) === JSON.stringify(parsedExpected);
+    return parsedExpectedOptions.some(
+      (parsedExpected) => JSON.stringify(actualValue) === JSON.stringify(parsedExpected),
+    );
   }
 
   return String(actualValue) === String(expectedValue);

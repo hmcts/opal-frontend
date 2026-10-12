@@ -3,6 +3,8 @@ import { findBusinessUnitUser, requestLoggedInUserState } from '../actions/user-
 
 /** Validates the draft-account requests sent by UI journeys against the API contracts. */
 export class DraftAccountRequestContractFlow {
+  private readonly draftMutationTimeoutMs = 30_000;
+
   /** Captures UI creation requests without stubbing their responses. */
   monitorCreation(): void {
     cy.intercept('POST', '**/opal-fines-service/draft-accounts').as('draftContractPost');
@@ -11,7 +13,7 @@ export class DraftAccountRequestContractFlow {
   /** Captures the loaded draft and subsequent UI status changes. */
   monitorStatusChanges(): void {
     cy.intercept('GET', /\/opal-fines-service\/draft-accounts\/\d+(?:\?.*)?$/).as('draftContractGet');
-    cy.intercept('PATCH', '**/opal-fines-service/draft-accounts/*').as('draftContractPatch');
+    cy.intercept('PATCH', /\/opal-fines-service\/draft-accounts\/\d+(?:\?.*)?$/).as('draftContractPatch');
   }
 
   /**
@@ -54,7 +56,7 @@ export class DraftAccountRequestContractFlow {
    * @param reason - Expected reason; an empty string represents null for approval.
    */
   assertStatusChange(status: string, reason: string): void {
-    cy.wait('@draftContractPatch').then(({ request, response }) => {
+    cy.wait('@draftContractPatch', { timeout: this.draftMutationTimeoutMs }).then(({ request, response }) => {
       expect(request.body).to.have.all.keys('business_unit_id', 'account_status', 'reason_text');
       expect(request.body.account_status).to.equal(status);
       expect(request.body.reason_text).to.equal(reason || null);

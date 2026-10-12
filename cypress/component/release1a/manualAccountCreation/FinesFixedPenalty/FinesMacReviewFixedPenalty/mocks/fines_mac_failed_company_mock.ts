@@ -9,8 +9,8 @@ export const FIXED_PENALTY_FAILED_DRAFT_COMPANY_MOCK = {
   account: {
     account_type: 'Fixed Penalty',
     defendant_type: 'company',
-    originator_name: 'Aberdeen Sheriff Court District',
-    originator_id: 9701,
+    originator_name: 'Police force',
+    originator_id: 1223,
     prosecutor_case_reference: null,
     enforcement_court_id: 770000000001,
     collection_order_made: null,
