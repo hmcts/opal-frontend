@@ -12,6 +12,8 @@ import {
 import { setupAccountEnquiryComponent } from './setup/SetupComponent';
 
 const ACCOUNT_ID = DEFENDANT_HEADER_MOCK.defendant_account_party_id;
+const ACCOUNT_ENQUIRY_JIRA_LABEL = '@JIRA-LABEL:account-enquiry';
+const buildTags = (...tags: string[]): string[] => [...tags, ACCOUNT_ENQUIRY_JIRA_LABEL, '@R1B'];
 
 const setupImpositionsScreen = () => {
   interceptUserState(USER_STATE_MOCK_PERMISSION_BU77);
@@ -33,7 +35,7 @@ describe('Account Enquiry Imposition creditor names', () => {
 
   it(
     'PO-10571: displays each creditor type from the revised creditor summary response',
-    { tags: ['@JIRA-STORY:PO-10571', '@JIRA-EPIC:PO-979', '@R1B'] },
+    { tags: [...buildTags('@JIRA-STORY:PO-10571'), '@JIRA-EPIC:PO-979'] },
     () => {
       setupImpositionsScreen();
       new AccountDetailsImpositionsActions().assertCreditorSummaryResponse('@getImpositions', [
