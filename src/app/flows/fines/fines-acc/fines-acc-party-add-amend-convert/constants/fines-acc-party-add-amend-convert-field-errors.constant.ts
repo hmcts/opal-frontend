@@ -344,6 +344,17 @@ export const FINES_ACC_PARTY_ADD_AMEND_CONVERT_FIELD_ERRORS: IFinesAccPartyAddAm
       priority: 2,
     },
   },
+  facc_party_add_amend_convert_address_line_3_parent_guardian: {
+    maxlength: {
+      message: 'Address line 3 must be 13 characters or fewer',
+      priority: 1,
+    },
+    singleAsciiCharacters: {
+      message:
+        'Address line 3 must only include letters a to z, numbers 0-9 and certain special characters (such as hyphens, spaces, apostrophes and commas)',
+      priority: 2,
+    },
+  },
   facc_party_add_amend_convert_post_code: {
     maxlength: {
       message: `Postcode must be 8 characters or fewer`,

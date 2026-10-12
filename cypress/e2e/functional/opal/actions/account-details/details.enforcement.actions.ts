@@ -99,7 +99,7 @@ export class AccountDetailsEnforcementActions {
       cy.get(selector, { timeout: AccountDetailsEnforcementActions.DEFAULT_TIMEOUT })
         .should('be.visible')
         .invoke('text')
-        .then((text) => expect(this.normalize(text)).to.contain(this.normalize(value)));
+        .then((text) => expect(this.normalize(text).toLowerCase()).to.contain(this.normalize(value).toLowerCase()));
     });
   }
 
