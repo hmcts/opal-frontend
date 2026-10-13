@@ -39,21 +39,19 @@
         </th>
       </ng-container>
       <ng-container body>
-        @if (businessUnitRows.length > 0) {
-          @for (row of businessUnitRows; track row.businessUnit.business_unit_id) {
-            <tr opal-lib-govuk-table-body-row>
-              <td id="business-unit-cell-{{ row.businessUnit.business_unit_id }}" opal-lib-govuk-table-body-row-data>
-                <div
-                  class="govuk-checkboxes--small"
-                  opal-lib-govuk-checkboxes-item
-                  [labelText]="row.businessUnit.business_unit_name"
-                  [inputId]="row.inputId"
-                  [inputName]="row.inputName"
-                  [control]="row.control"
-                ></div>
-              </td>
-            </tr>
-          }
+        @for (row of businessUnitRows; track row.businessUnit.business_unit_id) {
+          <tr opal-lib-govuk-table-body-row>
+            <td id="business-unit-cell-{{ row.businessUnit.business_unit_id }}" opal-lib-govuk-table-body-row-data>
+              <div
+                class="govuk-checkboxes--small"
+                opal-lib-govuk-checkboxes-item
+                [labelText]="row.businessUnit.business_unit_name"
+                [inputId]="row.inputId"
+                [inputName]="row.inputName"
+                [control]="row.control"
+              ></div>
+            </td>
+          </tr>
         }
       </ng-container>
     </opal-lib-govuk-table>

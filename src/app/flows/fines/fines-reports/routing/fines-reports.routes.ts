@@ -58,7 +58,6 @@ export const routing: Routes = [
               ),
             data: {
               title: 'Business unit warning',
-              requiresSelectedBusinessUnits: true,
             },
             canActivate: [finesReportsCreateStateGuard],
             resolve: {
@@ -73,7 +72,6 @@ export const routing: Routes = [
               ),
             data: {
               title: 'Parameters',
-              requiresSelectedBusinessUnits: true,
             },
             canActivate: [finesReportsCreateStateGuard],
             resolve: {

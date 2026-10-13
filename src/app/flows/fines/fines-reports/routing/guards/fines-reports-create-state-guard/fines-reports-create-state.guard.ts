@@ -8,9 +8,9 @@ import { FinesReportsStore } from '../../../stores/fines-reports.store';
 import { getFinesReportsRouteReportTypeId } from '../../../utils/fines-reports-route.utils';
 
 /**
- * Checks that the report journey has the business unit selection required by the target route.
+ * Requires a stored business unit selection for the report journey before allowing access.
  *
- * @param route - The target route snapshot containing report parameters and selection requirements.
+ * @param route - The target route snapshot identifying the report journey.
  * @returns True when access is allowed, or a URL tree to the reports dashboard or business unit selection.
  */
 export const finesReportsCreateStateGuard: CanActivateFn = (route) => {
@@ -27,10 +27,7 @@ export const finesReportsCreateStateGuard: CanActivateFn = (route) => {
     ]);
   }
 
-  if (
-    route.data['requiresSelectedBusinessUnits'] === true &&
-    !finesReportsStore.hasSelectedBusinessUnitsForReport(reportTypeId)
-  ) {
+  if (!finesReportsStore.hasSelectedBusinessUnitsForReport(reportTypeId)) {
     return router.createUrlTree([
       `/${FINES_ROUTING_PATHS.root}/${FINES_ROUTING_PATHS.children.reports.root}/${reportTypeId}/${FINES_REPORTS_ROUTING_PATHS.children.create}/${FINES_REPORTS_CREATE_ROUTING_PATHS.children.selectBusinessUnits}`,
     ]);

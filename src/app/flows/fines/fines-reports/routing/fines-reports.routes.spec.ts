@@ -65,7 +65,6 @@ describe('finesReports routes', () => {
       canActivate: [finesReportsCreateStateGuard],
       data: {
         title: 'Business unit warning',
-        requiresSelectedBusinessUnits: true,
       },
       resolve: {
         title: TitleResolver,
@@ -77,7 +76,6 @@ describe('finesReports routes', () => {
       canActivate: [finesReportsCreateStateGuard],
       data: {
         title: 'Parameters',
-        requiresSelectedBusinessUnits: true,
       },
       resolve: {
         title: TitleResolver,

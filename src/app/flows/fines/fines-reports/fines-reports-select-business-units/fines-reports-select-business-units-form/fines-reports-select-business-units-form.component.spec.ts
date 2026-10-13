@@ -112,6 +112,9 @@ describe('FinesReportsSelectBusinessUnitsFormComponent', () => {
     expect(record.get('67')?.value).toBe(false);
     expect(record.get('68')?.value).toBe(true);
     expect(component.allBusinessUnitsControl.value).toBe(false);
+    expect(record.errors).toBeNull();
+    expect(component['form'].errors).toBeNull();
+    expect(component['form'].valid).toBe(true);
   });
 
   it('should select the master checkbox when every restored business unit is selected', async () => {
@@ -147,6 +150,9 @@ describe('FinesReportsSelectBusinessUnitsFormComponent', () => {
     expect(record.get('67')?.value).toBe(true);
     expect(record.get('68')?.value).toBe(true);
     expect(component.allBusinessUnitsControl.value).toBe(true);
+    expect(record.errors).toBeNull();
+    expect(component['form'].errors).toBeNull();
+    expect(component['form'].valid).toBe(true);
   });
 
   it('should deselect every business unit when the master checkbox is deselected', async () => {

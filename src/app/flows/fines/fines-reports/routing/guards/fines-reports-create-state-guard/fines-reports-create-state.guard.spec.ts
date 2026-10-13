@@ -6,21 +6,21 @@ import { createSpyObj } from '@app/testing/create-spy-obj.helper';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
 import { FINES_REPORTS_CREATE_ROUTING_PATHS } from '../../constants/fines-reports-create-routing-paths.constant';
 import { FINES_REPORTS_ROUTING_PATHS } from '../../constants/fines-reports-routing-paths.constant';
+import { FINES_REPORTS_SUMMARY_LIST_ROUTING_PATHS } from '../../../fines-reports-summary-list/routing/constants/fines-reports-summary-list-routing-paths.constant';
 import { FinesReportsStore } from '../../../stores/fines-reports.store';
 import { finesReportsCreateStateGuard } from './fines-reports-create-state.guard';
 
 describe('finesReportsCreateStateGuard', () => {
-  const reportTypeId = 'operational_report_enforcement';
+  const reportTypeId = FINES_REPORTS_SUMMARY_LIST_ROUTING_PATHS.children.operationalReportsByEnforcement;
   const mockRouter = createSpyObj('Router', ['createUrlTree']);
   const mockCreateUrlTree = mockRouter['createUrlTree'];
 
-  const runGuard = (requiresSelectedBusinessUnits = false, routeReportTypeId: string | null = reportTypeId) => {
+  const runGuard = (routeReportTypeId: string | null = reportTypeId) => {
     const parent = {
       paramMap: convertToParamMap(routeReportTypeId ? { reportTypeId: routeReportTypeId } : {}),
       parent: null,
     } as unknown as ActivatedRouteSnapshot;
     const route = {
-      data: { requiresSelectedBusinessUnits },
       paramMap: convertToParamMap({}),
       parent,
     } as unknown as ActivatedRouteSnapshot;
@@ -37,17 +37,27 @@ describe('finesReportsCreateStateGuard', () => {
     });
   });
 
-  it('should allow a route that does not require selected business units', () => {
-    const result = runGuard();
-
-    expect(result).toBe(true);
-  });
-
   it('should redirect warning and parameters routes without a stored selection to Select business units', () => {
     const expectedUrlTree = new UrlTree();
     mockCreateUrlTree.mockReturnValue(expectedUrlTree);
 
-    const result = runGuard(true);
+    const result = runGuard();
+
+    expect(result).toBe(expectedUrlTree);
+    expect(mockCreateUrlTree).toHaveBeenCalledWith([
+      `/${FINES_ROUTING_PATHS.root}/${FINES_ROUTING_PATHS.children.reports.root}/${reportTypeId}/${FINES_REPORTS_ROUTING_PATHS.children.create}/${FINES_REPORTS_CREATE_ROUTING_PATHS.children.selectBusinessUnits}`,
+    ]);
+  });
+
+  it('should redirect to Select business units when the stored selection belongs to another report', () => {
+    TestBed.inject(FinesReportsStore).setSelectedBusinessUnitIds(
+      FINES_REPORTS_SUMMARY_LIST_ROUTING_PATHS.children.operationalReportsByPayments,
+      [61],
+    );
+    const expectedUrlTree = new UrlTree();
+    mockCreateUrlTree.mockReturnValue(expectedUrlTree);
+
+    const result = runGuard();
 
     expect(result).toBe(expectedUrlTree);
     expect(mockCreateUrlTree).toHaveBeenCalledWith([
@@ -58,7 +68,7 @@ describe('finesReportsCreateStateGuard', () => {
   it('should allow warning and parameters routes with a stored selection', () => {
     TestBed.inject(FinesReportsStore).setSelectedBusinessUnitIds(reportTypeId, [61]);
 
-    const result = runGuard(true);
+    const result = runGuard();
 
     expect(result).toBe(true);
   });
@@ -67,7 +77,7 @@ describe('finesReportsCreateStateGuard', () => {
     const expectedUrlTree = new UrlTree();
     mockCreateUrlTree.mockReturnValue(expectedUrlTree);
 
-    const result = runGuard(false, null);
+    const result = runGuard(null);
 
     expect(result).toBe(expectedUrlTree);
     expect(mockCreateUrlTree).toHaveBeenCalledWith([

@@ -161,7 +161,6 @@ export class FinesReportsSelectBusinessUnitsFormComponent extends AbstractFormBa
       record.get(businessUnitId.toString())?.setValue(true, { emitEvent: false });
     }
 
-    this.refreshFormValidation(record);
     this.updateAllBusinessUnitsControlFromRecord(record);
   }
 
@@ -176,7 +175,6 @@ export class FinesReportsSelectBusinessUnitsFormComponent extends AbstractFormBa
       control.setValue(selected, { emitEvent: false });
     }
 
-    this.refreshFormValidation(record);
     this.updateAllBusinessUnitsControlFromRecord(record);
   }
 
@@ -189,15 +187,6 @@ export class FinesReportsSelectBusinessUnitsFormComponent extends AbstractFormBa
     const allSelected =
       this.businessUnits.length > 1 && Object.values(record.controls).every((control) => control.value);
     this.allBusinessUnitsControl.setValue(allSelected, { emitEvent: false });
-  }
-
-  /**
-   * Refreshes the business unit record validation state.
-   *
-   * @param record - The business unit form record to validate.
-   */
-  private refreshFormValidation(record: FormRecord<FormControl<boolean>>): void {
-    record.updateValueAndValidity({ emitEvent: false });
   }
 
   /**
