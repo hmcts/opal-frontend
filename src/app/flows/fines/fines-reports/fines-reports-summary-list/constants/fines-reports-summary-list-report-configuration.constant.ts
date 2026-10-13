@@ -7,6 +7,7 @@ export const FINES_REPORT_SUMMARY_LIST_REPORT_CONFIGURATION: IFinesReportSummary
   {
     id: FINES_REPORTS_SUMMARY_LIST_ROUTING_PATHS.children.yourReports,
     reportTypeId: FINES_REPORTS_SUMMARY_LIST_ROUTING_PATHS.children.yourReports,
+    createHeading: null,
     heading: FINES_REPORTS_SUMMARY_LIST_ROUTING_TITLES.children.yourReports,
     title: FINES_REPORTS_SUMMARY_LIST_ROUTING_TITLES.children.yourReports,
     permissionIds: [],

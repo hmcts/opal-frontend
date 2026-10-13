@@ -1,7 +1,7 @@
 export interface IFinesReportSummaryListReportConfiguration {
   id: string;
   reportTypeId: string;
-  createHeading?: string;
+  createHeading: string | null;
   heading: string;
   title: string;
   permissionIds: number[];

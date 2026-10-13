@@ -43,9 +43,12 @@ describe('finesReportsReportHeadingResolver', () => {
     expect(result).toBe('Operational report (by payments)');
   });
 
-  it('should return an empty heading when the report type id is unknown', () => {
-    const result = executeResolver(buildRoute('unknown-report-id'), {} as never);
+  it.each([FINES_REPORTS_SUMMARY_LIST_ROUTING_PATHS.children.yourReports, 'unknown-report-id'])(
+    'should return an empty heading when %s has no create heading',
+    (reportTypeId) => {
+      const result = executeResolver(buildRoute(reportTypeId), {} as never);
 
-    expect(result).toBe('');
-  });
+      expect(result).toBe('');
+    },
+  );
 });

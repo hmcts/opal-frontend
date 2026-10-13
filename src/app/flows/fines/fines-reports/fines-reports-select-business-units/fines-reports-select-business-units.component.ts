@@ -27,10 +27,15 @@ export class FinesReportsSelectBusinessUnitsComponent extends AbstractFormParent
   public readonly reportTypeId = signal('');
 
   /**
+   * Keys the child form by report type so switching report routes rebuilds its controls and clears old form state.
+   */
+  public readonly businessUnitFormKeys = computed(() => [this.reportTypeId()]);
+
+  /**
    * Report heading resolved from route data for the current report journey.
    */
   public reportHeading = '';
-  public businessUnitWarningThreshold: number | undefined;
+  public businessUnitWarningThreshold: number | null = null;
   public readonly selectedBusinessUnitIds = computed(() =>
     this.finesReportsStore.getSelectedBusinessUnitIdsForReport(this.reportTypeId()),
   );
@@ -62,7 +67,7 @@ export class FinesReportsSelectBusinessUnitsComponent extends AbstractFormParent
     const resolverData = routeData['businessUnits'] as IOpalFinesBusinessUnitRefData | undefined;
 
     this.reportHeading = routeData['reportHeading'] as string;
-    this.businessUnitWarningThreshold = report?.report_parameters?.business_unit_warning_threshold;
+    this.businessUnitWarningThreshold = report?.report_parameters?.business_unit_warning_threshold ?? null;
     this.businessUnits = [...(resolverData?.refData ?? [])].sort((left, right) =>
       left.business_unit_name.localeCompare(right.business_unit_name),
     );
@@ -77,7 +82,7 @@ export class FinesReportsSelectBusinessUnitsComponent extends AbstractFormParent
    * @returns True when the API-defined warning threshold has been exceeded.
    */
   private shouldShowBusinessUnitWarning(selectedCount: number): boolean {
-    return this.businessUnitWarningThreshold !== undefined && selectedCount > this.businessUnitWarningThreshold;
+    return this.businessUnitWarningThreshold !== null && selectedCount > this.businessUnitWarningThreshold;
   }
 
   /**

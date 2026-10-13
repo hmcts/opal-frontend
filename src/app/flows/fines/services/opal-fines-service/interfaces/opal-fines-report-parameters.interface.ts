@@ -1,3 +1,3 @@
 export interface IOpalFinesReportParameters {
-  business_unit_warning_threshold?: number;
+  business_unit_warning_threshold: number | null;
 }

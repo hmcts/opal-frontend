@@ -248,8 +248,20 @@ export class FinesReportsSelectBusinessUnitsFormComponent extends AbstractFormBa
       return;
     }
 
-    this.form.markAsDirty();
     this.unsavedChanges.emit(this.hasUnsavedChanges());
+  }
+
+  /**
+   * Checks whether any business unit remains selected before the form is submitted.
+   *
+   * Overrides the base dirty-form check because cancellation requires confirmation while any business unit
+   * remains selected. Angular keeps the form dirty after all selections are cleared, but Cancel should then
+   * return directly to the summary list without confirmation.
+   *
+   * @returns True when an editable business unit is selected and the form has not been submitted.
+   */
+  protected override hasUnsavedChanges(): boolean {
+    return !this.formSubmitted && this.businessUnitRows.some((row) => row.control.value);
   }
 
   /**

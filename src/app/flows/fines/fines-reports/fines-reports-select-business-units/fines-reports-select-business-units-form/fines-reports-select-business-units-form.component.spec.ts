@@ -112,7 +112,6 @@ describe('FinesReportsSelectBusinessUnitsFormComponent', () => {
     expect(record.get('67')?.value).toBe(false);
     expect(record.get('68')?.value).toBe(true);
     expect(component.allBusinessUnitsControl.value).toBe(false);
-    expect(component['form'].dirty).toBe(true);
   });
 
   it('should select the master checkbox when every restored business unit is selected', async () => {

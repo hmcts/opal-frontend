@@ -1,5 +1,5 @@
 <div class="govuk-grid-column-two-thirds">
-  @for (formKey of [reportTypeId()]; track 'business-unit-form-' + formKey) {
+  @for (formKey of businessUnitFormKeys(); track 'business-unit-form-' + formKey) {
     <app-fines-reports-select-business-units-form
       [businessUnits]="businessUnits"
       [reportHeading]="reportHeading"
