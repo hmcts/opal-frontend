@@ -307,38 +307,43 @@ export class FinesMacFixedPenaltyDetailsFormComponent
   }
 
   /**
-   * Retrieves the prosecutor details based on the originator ID from the fixed penalty details.
-   * It finds the corresponding prosecutor from the prosecutorsData array
-   * and returns the pretty name for that prosecutor or null if not found.
+   * Retrieves an issuing authority from the autocomplete items by its originator ID.
+   * The comparison handles IDs populated from stored form data as strings and reference data as numbers.
    *
-   * @private
-   * @returns {string | null}
+   * @param originatorId - The stored originator ID.
+   * @returns The matching issuing authority, or null when no match exists.
    */
-  private getProsecutorFromId(prosecutorId: string): IAlphagovAccessibleAutocompleteItem | null {
-    const prosecutor = this.issuingAuthorityAutoCompleteItems.find(
-      (p: IAlphagovAccessibleAutocompleteItem) => p.value == prosecutorId,
-    );
-    if (!prosecutor) {
-      return null;
-    }
-    return prosecutor;
+  private getIssuingAuthorityFromId(originatorId: string): IAlphagovAccessibleAutocompleteItem | null {
+    return this.issuingAuthorityAutoCompleteItems.find((authority) => String(authority.value) === originatorId) ?? null;
   }
 
   /**
-   * Sets the court_details_originator_name form control to the prosecutor name if it exists.
-   * @param event
+   * Clears a stored issuing authority when it is not available in the reference data resolved for the current flag state.
+   * This prevents a legacy originator ID from satisfying required validation while its autocomplete is blank.
    */
-  private setProsecutorName(): void {
+  private clearUnmatchedIssuingAuthority(): void {
     const idControl = this.form.controls[`${this.fixedPenaltyPrefix}court_details_originator_id`];
-    const idValue = idControl?.value ? idControl.value.toString() : '';
-    const prosecutor = this.getProsecutorFromId(idValue);
+    const idValue = idControl.value;
 
-    if (prosecutor && typeof prosecutor.name === 'string') {
+    if (idValue && !this.getIssuingAuthorityFromId(String(idValue))) {
+      idControl.setValue(null);
+      this.form.controls[`${this.fixedPenaltyPrefix}court_details_originator_name`].setValue(null);
+    }
+  }
+
+  /**
+   * Sets the stored originator name from the selected Fixed Penalty issuing authority.
+   */
+  private setIssuingAuthorityName(): void {
+    const idControl = this.form.controls[`${this.fixedPenaltyPrefix}court_details_originator_id`];
+    const idValue = idControl.value ? idControl.value.toString() : '';
+    const issuingAuthority = this.getIssuingAuthorityFromId(idValue);
+
+    if (issuingAuthority && typeof issuingAuthority.name === 'string') {
       // Remove any parenthesis and content inside, and trim whitespace
-      const prosecutorName = this.utilsService.stripFirstParenthesesBlock(prosecutor.name);
-      this.form.controls[`${this.fixedPenaltyPrefix}court_details_originator_name`].setValue(prosecutorName);
+      const issuingAuthorityName = this.utilsService.stripFirstParenthesesBlock(issuingAuthority.name);
+      this.form.controls[`${this.fixedPenaltyPrefix}court_details_originator_name`].setValue(issuingAuthorityName);
     } else {
-      // Optionally clear the name if not found
       this.form.controls[`${this.fixedPenaltyPrefix}court_details_originator_name`].setValue('');
     }
   }
@@ -389,12 +394,14 @@ export class FinesMacFixedPenaltyDetailsFormComponent
   }
 
   /**
-   * Sets up the initial state of the fixed penalty details form, including re-populating it with existing data, adding validators and inititing listeners
+   * Sets up the Fixed Penalty details form, repopulates stored data, clears an issuing authority
+   * that is unavailable for the current flag state, applies validators, and initializes listeners.
    */
   private initialFixedPenaltyDetailsSetup(): void {
     this.setupFixedPenaltyDetailsForm();
     this.setInitialErrorMessages();
     this.rePopulateForm(this.buildFormData());
+    this.clearUnmatchedIssuingAuthority();
     this.setValidators();
 
     // Set up listeners
@@ -427,14 +434,14 @@ export class FinesMacFixedPenaltyDetailsFormComponent
   }
 
   /**
-   * Marks the form as submitted, derives the prosecutor name, enforces offence-code
+   * Marks the form as submitted, derives the issuing authority name, enforces offence-code
    * validation, and then delegates to the base submit handler.
    *
    * @param event - The submit event triggered by the form submission.
    */
   public override handleFormSubmit(event: SubmitEvent): void {
     this.hasAttemptedSubmit = true;
-    this.setProsecutorName();
+    this.setIssuingAuthorityName();
     this.offenceDetailsService.enforceOffenceCodeValidationBeforeSubmit(
       this.form,
       `${this.fixedPenaltyPrefix}offence_details_offence_cjs_code`,

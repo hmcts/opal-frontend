@@ -19,25 +19,32 @@ Feature: Defendant Shared Search And Matches
 
   # Need to check that intercepted call should be organisation = true (it wasn't originally)
   @JIRA-EPIC:PO-704 @R1BDrop1 @JIRA-STORY:PO-706 @JIRA-TEST-KEY:PO-5443
-  Scenario: Verify API call parameters for Defenders and Creditor search using Account number
+  Scenario: Verify API call parameters for Defendant search using Account number
     # AC1a, AC1b, AC1c
     When I intercept the "account number" account search API
     And I search using the following inputs:
       | account number | 12345678A |
     Then the intercepted "defendant" account search API call will contain the following parameters:
-      | defendant                 | null                                                                                                                                                                                |
-      | account_number            | 12345678A                                                                                                                                                                           |
-      | business_unit_ids         | [107,52,109,130,82,135,47,77,5,65,66,8,97,45,9,10,11,12,60,126,61,110,14,89,26,36,21,22,105,24,78,112,29,139,113,106,28,30,119,31,103,57,124,96,92,38,125,116,128,99,73,129,80,138] |
-      | active_accounts_only      | false                                                                                                                                                                               |
-      | prosecutor_case_reference | null                                                                                                                                                                                |
+      | defendant                 | null                                                                                                                                                                                                                                                                                                                                                                                                                                                          |
+      | account_number            | 12345678A                                                                                                                                                                                                                                                                                                                                                                                                                                                     |
+      | business_unit_ids         | opal=[107,52,109,130,82,135,47,77,5,65,66,8,97,45,9,10,11,12,60,126,61,110,14,89,26,36,21,22,105,24,78,112,29,139,113,106,28,30,119,31,103,57,124,96,92,38,125,116,128,99,73,129,80,138]; preprod=[106,89,60,36,116,99,29,138,82,125,119,113,96,52,80,10,9,105,45,38,139,107,12,26,78,24,57,92,61,77,31,30,21,97,14,47,66,112,109,28,22,135,65,5,124,110,129,128,130,126,73,11,8,103,81,19,25,64,68,69,70,71,72,74,75,76,79,115,108,114,13,16,17,32,40,62,63] |
+      | active_accounts_only      | false                                                                                                                                                                                                                                                                                                                                                                                                                                                         |
+      | prosecutor_case_reference | null                                                                                                                                                                                                                                                                                                                                                                                                                                                          |
     Then the intercepted "defendant" account search API requests should contain the following counts for "organisation":
       | false | 1 |
       | true  | 1 |
-    And the intercepted "minor creditor" account search API call will contain the following parameters:
-      | account_number       | 12345678A                                                                                                                                                                           |
-      | business_unit_ids    | [107,52,109,130,82,135,47,77,5,65,66,8,97,45,9,10,11,12,60,126,61,110,14,89,26,36,21,22,105,24,78,112,29,139,113,106,28,30,119,31,103,57,124,96,92,38,125,116,128,99,73,129,80,138] |
-      | active_accounts_only | false                                                                                                                                                                               |
-      | creditor             | null                                                                                                                                                                                |
+
+  @JIRA-EPIC:PO-704 @R1BDrop2 @JIRA-STORY:PO-706
+  Scenario: Verify API call parameters for Minor Creditor search using Account number
+    # AC1a, AC1b, AC1c
+    When I intercept the "account number" account search API
+    And I search using the following inputs:
+      | account number | 12345678A |
+    Then the intercepted "minor creditor" account search API call will contain the following parameters:
+      | account_number       | 12345678A                                                                                                                                                                                                                                                                                                                                                                                                                                                     |
+      | business_unit_ids    | opal=[107,52,109,130,82,135,47,77,5,65,66,8,97,45,9,10,11,12,60,126,61,110,14,89,26,36,21,22,105,24,78,112,29,139,113,106,28,30,119,31,103,57,124,96,92,38,125,116,128,99,73,129,80,138]; preprod=[106,89,60,36,116,99,29,138,82,125,119,113,96,52,80,10,9,105,45,38,139,107,12,26,78,24,57,92,61,77,31,30,21,97,14,47,66,112,109,28,22,135,65,5,124,110,129,128,130,126,73,11,8,103,81,19,25,64,68,69,70,71,72,74,75,76,79,115,108,114,13,16,17,32,40,62,63] |
+      | active_accounts_only | false                                                                                                                                                                                                                                                                                                                                                                                                                                                         |
+      | creditor             | null                                                                                                                                                                                                                                                                                                                                                                                                                                                          |
 
   @JIRA-EPIC:PO-704 @R1BDrop1 @JIRA-STORY:PO-709 @JIRA-TEST-KEY:PO-5444
   Scenario: Verify API call parameters for Defenders and Creditors search using Reference or case number
@@ -65,7 +72,6 @@ Feature: Defendant Shared Search And Matches
       | account.payment_card_request            | false                                |
       | account.defendant.dob                   | 2002-05-15                           |
     And I am on the Account Search page - Individuals form displayed by default
-
     When I intercept the "reference" account search API
     And I view the Companies search form
     When I search using the following inputs:
@@ -73,12 +79,12 @@ Feature: Defendant Shared Search And Matches
     #This step verifies that 2 calls are made, one for individuals and one for companies
     #AC6B active accounts only is set to false
     Then the intercepted "defendant" account search API call will contain the following parameters:
-      | defendant                 | null                                                                                                                                                                                |
-      | account_number            | null                                                                                                                                                                                |
-      | business_unit_ids         | [107,52,109,130,82,135,47,77,5,65,66,8,97,45,9,10,11,12,60,126,61,110,14,89,26,36,21,22,105,24,78,112,29,139,113,106,28,30,119,31,103,57,124,96,92,38,125,116,128,99,73,129,80,138] |
-      | active_accounts_only      | false                                                                                                                                                                               |
-      | organisation              | false                                                                                                                                                                               |
-      | prosecutor_case_reference | PCRAUTO008                                                                                                                                                                          |
+      | defendant                 | null                                                                                                                                                                                                                                                                                                                                                                                                                                                          |
+      | account_number            | null                                                                                                                                                                                                                                                                                                                                                                                                                                                          |
+      | business_unit_ids         | opal=[107,52,109,130,82,135,47,77,5,65,66,8,97,45,9,10,11,12,60,126,61,110,14,89,26,36,21,22,105,24,78,112,29,139,113,106,28,30,119,31,103,57,124,96,92,38,125,116,128,99,73,129,80,138]; preprod=[106,89,60,36,116,99,29,138,82,125,119,113,96,52,80,10,9,105,45,38,139,107,12,26,78,24,57,92,61,77,31,30,21,97,14,47,66,112,109,28,22,135,65,5,124,110,129,128,130,126,73,11,8,103,81,19,25,64,68,69,70,71,72,74,75,76,79,115,108,114,13,16,17,32,40,62,63] |
+      | active_accounts_only      | false                                                                                                                                                                                                                                                                                                                                                                                                                                                         |
+      | organisation              | false                                                                                                                                                                                                                                                                                                                                                                                                                                                         |
+      | prosecutor_case_reference | PCRAUTO008                                                                                                                                                                                                                                                                                                                                                                                                                                                    |
     #AC5b, AC5c, AC5e, AC5f
     Then I see the Individuals search results:
       | Ref | PCRAUTO008 |
