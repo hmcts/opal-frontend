@@ -7,5 +7,6 @@ export const FINES_API_ROUTING_PATHS: IFinesApiRoutingPaths = {
     processAllocate: 'process-allocate',
     confirmProcess: 'confirm-process',
     tillSummary: 'till-summary',
+    fileSummary: 'file-summary',
   },
 };

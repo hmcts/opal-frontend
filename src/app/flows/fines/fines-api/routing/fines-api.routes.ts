@@ -62,4 +62,36 @@ export const routing: Routes = [
       title: TitleResolver,
     },
   },
+  {
+    path: `${FINES_API_ROUTING_PATHS.children.tillSummary}/:tillId`,
+    loadComponent: () =>
+      import('../fines-api-summary-report/fines-api-summary-report.component').then(
+        (c) => c.FinesApiSummaryReportComponent,
+      ),
+    canActivate: [authGuard, routePermissionsGuard],
+    data: {
+      routePermissionId: [FINES_PERMISSIONS['process-and-allocate-payments']],
+      title: FINES_API_ROUTING_TITLES.children.tillSummary,
+    },
+    resolve: {
+      title: TitleResolver,
+      // The till summary data resolver will be added when report data loading is implemented.
+    },
+  },
+  {
+    path: `${FINES_API_ROUTING_PATHS.children.fileSummary}/:fileId`,
+    loadComponent: () =>
+      import('../fines-api-summary-report/fines-api-summary-report.component').then(
+        (c) => c.FinesApiSummaryReportComponent,
+      ),
+    canActivate: [authGuard, routePermissionsGuard],
+    data: {
+      routePermissionId: [FINES_PERMISSIONS['process-and-allocate-payments']],
+      title: FINES_API_ROUTING_TITLES.children.fileSummary,
+    },
+    resolve: {
+      title: TitleResolver,
+      // The file summary data resolver will be added when report data loading is implemented.
+    },
+  },
 ];

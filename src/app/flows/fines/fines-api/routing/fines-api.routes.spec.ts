@@ -1,3 +1,7 @@
+import { TestBed } from '@angular/core/testing';
+import { ActivatedRoute, provideRouter } from '@angular/router';
+import { RouterTestingHarness } from '@angular/router/testing';
+import { FinesApiSummaryReportComponent } from '../fines-api-summary-report/fines-api-summary-report.component';
 import { describe, expect, it } from 'vitest';
 import { FINES_PERMISSIONS } from '@app/constants/fines-permissions.constant';
 import { authGuard } from '@hmcts/opal-frontend-common/guards/auth';
@@ -85,5 +89,39 @@ describe('fines API routes', () => {
       }),
     );
     await expect(confirmProcessRoute?.loadComponent?.()).resolves.toBe(FinesApiConfirmProcessComponent);
+  });
+  describe.each([
+    ['tillSummary', 'tillId'],
+    ['fileSummary', 'fileId'],
+  ] as const)('%s', (routeKey, parameter) => {
+    const summaryPath = `${FINES_API_ROUTING_PATHS.children[routeKey]}/:${parameter}`;
+    const summaryRoute = routing.find((route) => route.path === summaryPath)!;
+
+    it('protects the summary route and loads the shared placeholder', async () => {
+      expect(summaryRoute.canActivate).toEqual([authGuard, routePermissionsGuard]);
+      expect(summaryRoute.data).toEqual({
+        routePermissionId: [FINES_PERMISSIONS['process-and-allocate-payments']],
+        title: FINES_API_ROUTING_TITLES.children[routeKey],
+      });
+      expect(summaryRoute.resolve).toEqual({ title: TitleResolver });
+      await expect(summaryRoute.loadComponent!()).resolves.toBe(FinesApiSummaryReportComponent);
+    });
+
+    it('renders the placeholder and preserves the identifier as a route parameter', async () => {
+      // Exercise route matching and lazy loading independently of authentication and title resolution.
+      TestBed.configureTestingModule({
+        providers: [provideRouter([{ path: summaryRoute.path, loadComponent: summaryRoute.loadComponent }])],
+      });
+      const harness = await RouterTestingHarness.create();
+      const id = '99000000031003';
+      await harness.navigateByUrl(
+        `/${FINES_API_ROUTING_PATHS.children[routeKey]}/${id}`,
+        FinesApiSummaryReportComponent,
+      );
+      const route = harness.routeDebugElement!.injector.get(ActivatedRoute);
+      expect(route.snapshot.paramMap.get(parameter)).toBe(id);
+      expect(harness.routeNativeElement!.querySelector('h1')!.textContent).toBe('Till/File summary report');
+      expect(harness.routeNativeElement!.textContent).toContain('This page is not available yet.');
+    });
   });
 });

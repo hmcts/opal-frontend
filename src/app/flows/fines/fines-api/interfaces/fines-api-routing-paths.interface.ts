@@ -6,5 +6,6 @@ export interface IFinesApiRoutingPaths extends IChildRoutingPaths {
     processAllocate: string;
     confirmProcess: string;
     tillSummary: string;
+    fileSummary: string;
   };
 }
