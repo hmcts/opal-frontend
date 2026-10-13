@@ -39,15 +39,13 @@
       {{ content.selected(selectedCount(), data().tills.length) }}
     </output>
     <opal-lib-custom-horizontal-scroll-pane>
-      <table class="govuk-table" id="fines-api-allocate-tills">
-        <caption class="govuk-table__caption govuk-visually-hidden">
-          {{
-            content.heading
-          }}
-        </caption>
-        <thead class="govuk-table__head">
-          <tr class="govuk-table__row">
-            <th class="govuk-table__header" scope="col">
+      <opal-lib-moj-sortable-table id="fines-api-allocate-tills">
+        <ng-container caption>
+          <span class="govuk-visually-hidden">{{ content.heading }}</span>
+        </ng-container>
+        <ng-container head>
+          <th class="govuk-table__header govuk-!-padding-0" scope="col">
+            <div class="govuk-form-group">
               <fieldset
                 class="govuk-fieldset"
                 aria-describedby="fines-api-allocate-hint fines-api-allocate-selected-count"
@@ -61,24 +59,48 @@
                     inputId="fines-api-allocate-select-all"
                     inputName="fines-api-allocate-select-all"
                     labelText=""
+                    labelClasses="govuk-!-margin-0 govuk-!-display-inline"
                     [ariaLabel]="content.selectAll"
                     [selectAllIndeterminate]="someSelected()"
                     (toggleAll)="toggleAll($event)"
                   ></div>
                 </div>
               </fieldset>
+            </div>
+          </th>
+          @for (column of content.columns; track column; let index = $index) {
+            <th
+              opal-lib-moj-sortable-table-header
+              [columnKey]="column"
+              [sortDirection]="sortColumn() === column ? sortDirection() : 'none'"
+              (sortChange)="onSortChange($event)"
+              [dataIndex]="index"
+              class="govuk-!-padding-top-2 govuk-!-padding-bottom-0"
+            >
+              {{ column }}
             </th>
-            @for (column of content.columns; track column) {
-              <th class="govuk-table__header" scope="col">{{ column }}</th>
-            }
-          </tr>
-        </thead>
-        <tbody class="govuk-table__body">
-          @for (row of data().tills; track row.tillId) {
-            <tr class="govuk-table__row" [class.govuk-table__row--selected]="rowControls.get(row.tillId)!.value">
-              <td class="govuk-table__cell">
-                <div class="govuk-checkboxes govuk-checkboxes--small">
+          }
+        </ng-container>
+        <ng-container row>
+          @for (row of sortedTills(); track row.tillId) {
+            <tr
+              opal-lib-moj-sortable-table-row
+              [bodyRowClasses]="rowControls.get(row.tillId)!.value ? 'govuk-table__row--selected' : ''"
+            >
+              <td
+                opal-lib-moj-sortable-table-row-data
+                [id]="'fines-api-allocate-' + row.tillId + '-cell-1'"
+                class="govuk-!-padding-top-1 govuk-!-padding-bottom-0"
+              >
+                <opal-lib-govuk-checkboxes
+                  [fieldSetId]="'fines-api-allocate-till-' + row.tillId + '-group'"
+                  checkboxClasses=""
+                  [legendText]="content.selectTill(row.tillNumber, row.businessUnitName)"
+                  legendClasses="govuk-visually-hidden"
+                  labelClasses="govuk-!-padding-0"
+                >
                   <div
+                    class="govuk-checkboxes--small"
                     opal-lib-govuk-checkboxes-item
                     opalLibMojMultiSelectBody
                     [control]="rowControls.get(row.tillId)!"
@@ -86,25 +108,75 @@
                     [inputId]="'fines-api-allocate-till-' + row.tillId"
                     [inputName]="'fines-api-allocate-till-' + row.tillId"
                     labelText=""
+                    labelClasses="govuk-!-padding-0"
                     [ariaLabel]="content.selectTill(row.tillNumber, row.businessUnitName)"
                     (selectionChange)="toggleRow($event)"
                   ></div>
-                </div>
+                </opal-lib-govuk-checkboxes>
               </td>
-              <td class="govuk-table__cell">
+              <td
+                opal-lib-moj-sortable-table-row-data
+                [id]="'fines-api-allocate-' + row.tillId + '-cell-2'"
+                class="govuk-!-padding-top-3"
+              >
                 <a class="govuk-link" [routerLink]="[tillSummaryRoute, row.tillId]">{{ row.tillNumber }}</a>
               </td>
-              <td class="govuk-table__cell">{{ row.errorsDisplay }}</td>
-              <td class="govuk-table__cell">{{ row.fileName }}</td>
-              <td class="govuk-table__cell">{{ row.sourceLabel }}</td>
-              <td class="govuk-table__cell govuk-table__cell--numeric">{{ row.amountDisplay }}</td>
-              <td class="govuk-table__cell">{{ row.businessUnitName }}</td>
-              <td class="govuk-table__cell">{{ row.processedByDisplay }}</td>
-              <td class="govuk-table__cell">{{ row.dateProcessedDisplay }}</td>
+              <td
+                opal-lib-moj-sortable-table-row-data
+                [id]="'fines-api-allocate-' + row.tillId + '-cell-3'"
+                class="govuk-!-padding-top-3"
+              >
+                {{ row.errorsDisplay }}
+              </td>
+              <td
+                opal-lib-moj-sortable-table-row-data
+                [id]="'fines-api-allocate-' + row.tillId + '-cell-4'"
+                class="govuk-!-padding-top-3"
+              >
+                {{ row.fileName }}
+              </td>
+              <td
+                opal-lib-moj-sortable-table-row-data
+                [id]="'fines-api-allocate-' + row.tillId + '-cell-5'"
+                class="govuk-!-padding-top-3"
+              >
+                {{ row.sourceLabel }}
+              </td>
+              <td
+                opal-lib-moj-sortable-table-row-data
+                [id]="'fines-api-allocate-' + row.tillId + '-cell-6'"
+                class="govuk-!-padding-top-3 govuk-table__cell--numeric"
+              >
+                {{ row.amountDisplay }}
+              </td>
+              <td
+                opal-lib-moj-sortable-table-row-data
+                [id]="'fines-api-allocate-' + row.tillId + '-cell-7'"
+                class="govuk-!-padding-top-3"
+              >
+                {{ row.businessUnitName }}
+              </td>
+              <td
+                opal-lib-moj-sortable-table-row-data
+                [id]="'fines-api-allocate-' + row.tillId + '-cell-8'"
+                class="govuk-!-padding-top-3"
+              >
+                {{ row.processedByDisplay }}
+              </td>
+              <td
+                opal-lib-moj-sortable-table-row-data
+                [id]="'fines-api-allocate-' + row.tillId + '-cell-9'"
+                class="govuk-!-padding-top-3"
+              >
+                {{ row.dateProcessedDisplay }}
+              </td>
             </tr>
           }
-        </tbody>
-      </table>
+        </ng-container>
+        <ng-container status>
+          <opal-lib-moj-sortable-table-status [columnTitle]="sortColumn()" [sortDirection]="sortDirection()" />
+        </ng-container>
+      </opal-lib-moj-sortable-table>
     </opal-lib-custom-horizontal-scroll-pane>
   }
 </div>

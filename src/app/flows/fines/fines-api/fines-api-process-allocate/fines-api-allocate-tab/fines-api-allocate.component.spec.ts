@@ -78,7 +78,7 @@ describe('FinesApiAllocateComponent', () => {
     ]);
   });
 
-  it('renders every mapped column in backend order without sorting controls', () => {
+  it('renders every mapped column with sortable headers and preserves initial backend order', () => {
     const tillRows = rows().reverse();
     render(data(tillRows));
     const headers = Array.from(element().querySelectorAll('thead th'), (cell) => cell.textContent!.trim());
@@ -105,7 +105,64 @@ describe('FinesApiAllocateComponent', () => {
       'original.operator',
       '22 September 2026 at 14:31',
     ]);
-    expect(element().querySelector('th button')).toBeNull();
+    expect(element().querySelectorAll('th button')).toHaveLength(8);
+  });
+
+  const sortBy = (index: number): void => {
+    element().querySelectorAll<HTMLButtonElement>('th button')[index].click();
+    fixture.detectChanges();
+  };
+  const visibleIds = (): string[] =>
+    Array.from(element().querySelectorAll<HTMLInputElement>('tbody input'), (input) => input.id);
+
+  it.each([
+    [0, 'tillNumber', '10', '2'],
+    [1, 'errorsDisplay', '10', '2'],
+    [2, 'fileName', 'zebra.dat', 'alpha.dat'],
+    [3, 'sourceLabel', 'NatWest', 'allpay'],
+    [4, 'amountDisplay', '£1,000.00', '£20.00'],
+    [5, 'businessUnitName', 'BU Zebra', 'BU Alpha'],
+    [6, 'processedByDisplay', 'z.operator', 'a.operator'],
+    [7, 'dateProcessedDisplay', '01 October 2026 at 09:00', '30 September 2026 at 15:00'],
+  ] as const)('sorts column %i in both directions and announces its state', (index, field, high, low) => {
+    const tills = rows();
+    tills[0][field] = high;
+    tills[1][field] = low;
+    render(data(tills));
+    click('fines-api-allocate-till-101');
+    sortBy(index);
+    expect(visibleIds()).toEqual(['fines-api-allocate-till-102', 'fines-api-allocate-till-101']);
+    expect(element().querySelectorAll('thead th')[index + 1].getAttribute('aria-sort')).toBe('ascending');
+    expect(element().querySelector('opal-lib-moj-sortable-table-status')!.textContent).toContain('ascending');
+    expect(checkbox('fines-api-allocate-till-101').checked).toBe(true);
+    expect(selectedText()).toBe('1 of 2 tills selected.');
+    sortBy(index);
+    expect(visibleIds()).toEqual(['fines-api-allocate-till-101', 'fines-api-allocate-till-102']);
+    expect(element().querySelectorAll('thead th')[index + 1].getAttribute('aria-sort')).toBe('descending');
+    expect(tills.map((row) => row.tillId)).toEqual(['101', '102']);
+  });
+
+  it('sorts precise and negative amounts while keeping unavailable amounts last', () => {
+    const tills = rows(4);
+    ['£9,999,999,999,999,999.02', '£9,999,999,999,999,999.01', '-£1.00', '—'].forEach(
+      (amount, index) => (tills[index].amountDisplay = amount),
+    );
+    render(data(tills));
+    sortBy(4);
+    expect(visibleIds()).toEqual([103, 102, 101, 104].map((id) => `fines-api-allocate-till-${id}`));
+    sortBy(4);
+    expect(visibleIds()).toEqual([101, 102, 103, 104].map((id) => `fines-api-allocate-till-${id}`));
+  });
+
+  it('changes the active column and applies the chosen sort to replacement rows', () => {
+    render(data());
+    sortBy(2);
+    sortBy(5);
+    expect(element().querySelectorAll('thead th')[3].getAttribute('aria-sort')).toBe('none');
+    render(data(rows().reverse()));
+    expect(visibleIds()).toEqual(['fines-api-allocate-till-101', 'fines-api-allocate-till-102']);
+    click('fines-api-allocate-select-all');
+    expect(selectedText()).toBe('2 of 2 tills selected.');
   });
 
   it('links same-number tills to distinct summary URLs using their internal IDs', () => {
