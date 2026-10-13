@@ -441,7 +441,7 @@ describe('FinesApiProcessAllocateComponent', () => {
         auto_payments: true,
       });
       expect(native().textContent).toContain('available.dat');
-      expect(native().textContent).toContain('1 file is processing.');
+      expect(native().textContent).toContain('1 file is still being processed:');
       expect(finesApiStore.processInterfaceJobs()).toBeNull();
       expect(native().querySelector('app-fines-api-process')).toBeNull();
     });
@@ -560,7 +560,7 @@ describe('FinesApiProcessAllocateComponent', () => {
         failing.mockReturnValueOnce(throwError(() => new Error('unavailable')));
         refresh();
         expect(native().textContent).toContain('available.dat');
-        expect(native().textContent).toContain('1 file is processing.');
+        expect(native().textContent).toContain('1 file is still being processed:');
         getInterfaceJobsSummary.mockReturnValue(of({ interface_jobs: [] }));
         getTills.mockReturnValue(of({ tills: [] }));
         refresh();

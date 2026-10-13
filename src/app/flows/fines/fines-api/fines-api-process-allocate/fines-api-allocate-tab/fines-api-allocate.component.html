@@ -3,13 +3,13 @@
     <opal-lib-moj-alert id="fines-api-allocate-processing" type="information" [ariaLabel]="processingAnnouncement()">
       <opal-lib-moj-alert-icon icon type="information" />
       <opal-lib-moj-alert-content content>
-        <h2 class="govuk-heading-m">{{ content.processingHeading }}</h2>
         <p class="govuk-body">{{ content.processingTotal(data().processingTotal) }}</p>
         <ul class="govuk-list">
           @for (unit of data().processingByBusinessUnit; track unit.businessUnitName) {
-            <li>{{ unit.businessUnitName }}: {{ unit.count }}</li>
+            <li>{{ unit.businessUnitName }} ({{ unit.count }})</li>
           }
         </ul>
+        <p>Refresh the page to see the latest status.</p>
       </opal-lib-moj-alert-content>
     </opal-lib-moj-alert>
   }

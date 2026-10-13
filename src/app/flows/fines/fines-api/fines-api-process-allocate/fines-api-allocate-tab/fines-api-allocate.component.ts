@@ -52,7 +52,7 @@ export class FinesApiAllocateComponent {
   protected readonly processingAnnouncement = computed(() =>
     [
       this.content.processingTotal(this.data().processingTotal),
-      ...this.data().processingByBusinessUnit.map((unit) => `${unit.businessUnitName}: ${unit.count}`),
+      ...this.data().processingByBusinessUnit.map((unit) => `${unit.businessUnitName} (${unit.count})`),
     ].join(' '),
   );
 

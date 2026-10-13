@@ -71,10 +71,10 @@ describe('FinesApiAllocateComponent', () => {
     render(data([], 3));
     const banner = element().querySelector('#fines-api-allocate-processing')!;
     expect(banner.classList.contains('moj-alert--information')).toBe(true);
-    expect(banner.textContent).toContain('3 files are processing.');
+    expect(banner.textContent).toContain('3 files are still being processed:');
     expect(Array.from(banner.querySelectorAll('li'), (li) => li.textContent?.trim())).toEqual([
-      'BU Alpha: 2',
-      'BU Beta: 1',
+      'BU Alpha (2)',
+      'BU Beta (1)',
     ]);
   });
 
