@@ -12,6 +12,7 @@ import { OPAL_FINES_LOCAL_JUSTICE_AREA_REF_DATA_MOCK } from '@services/fines/opa
 import { OPAL_FINES_COURT_REF_DATA_MOCK } from '@services/fines/opal-fines-service/mocks/opal-fines-court-ref-data.mock';
 import { OPAL_FINES_RESULTS_REF_DATA_MOCK } from '@services/fines/opal-fines-service/mocks/opal-fines-results-ref-data.mock';
 import { OPAL_FINES_MAJOR_CREDITOR_REF_DATA_MOCK } from '@services/fines/opal-fines-service/mocks/opal-fines-major-creditor-ref-data.mock';
+import { OPAL_FINES_PROSECUTOR_REF_DATA_MOCK } from '@services/fines/opal-fines-service/mocks/opal-fines-prosecutor-ref-data.mock';
 import { OPAL_FINES_OFFENCES_REF_DATA_MOCK } from '@services/fines/opal-fines-service/mocks/opal-fines-offences-ref-data.mock';
 import { MOCK_FINES_DRAFT_STATE } from './mocks/mock_fines_draft_state';
 import { GlobalStore } from '@hmcts/opal-frontend-common/stores/global';
@@ -36,6 +37,7 @@ describe('FinesMacReviewAccountComponent - View Rejected Account', () => {
     localJusticeAreas: OPAL_FINES_LOCAL_JUSTICE_AREA_REF_DATA_MOCK,
     results: OPAL_FINES_RESULTS_REF_DATA_MOCK,
     offences: OPAL_FINES_OFFENCES_REF_DATA_MOCK,
+    prosecutors: OPAL_FINES_PROSECUTOR_REF_DATA_MOCK,
   };
 
   const setupComponent = (FetchMap = reviewAccountFetchMap) => {
