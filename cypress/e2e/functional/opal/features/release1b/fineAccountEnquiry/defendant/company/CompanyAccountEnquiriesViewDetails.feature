@@ -44,6 +44,7 @@ Feature: Company Account Enquiries View Details
       And I should see the account header contains "Accdetail comp{uniq}"
 
 
+    # Intentionally no @R1... tag: this runs in the broad functional stage, not the R1B demo legacy tagged stage.
     @JIRA-STORY:PO-967 @JIRA-STORY:PO-1111 @JIRA-STORY:PO-1128 @JIRA-EPIC:PO-812 @JIRA-TEST-KEY:PO-5522
     Scenario: Saving company details updates the organisation name and audit trail
       # AC3 - Edit and save changes
@@ -55,6 +56,7 @@ Feature: Company Account Enquiries View Details
       And I verify Company amendments via API for company name "Accdetail comp updated{uniq}"
 
 
+    # Intentionally no @R1... tag: this runs in the broad functional stage, not the R1B demo legacy tagged stage.
     @JIRA-STORY:PO-967 @JIRA-STORY:PO-1111 @JIRA-STORY:PO-1128 @JIRA-EPIC:PO-812 @JIRA-TEST-KEY:PO-5523
     Scenario: Saving unchanged company details does not create amendments
       # AC3/4 – Verify via API and store amendment count baseline
