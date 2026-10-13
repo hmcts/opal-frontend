@@ -18,6 +18,7 @@ import { FINES_ACC_ENF_ACTION_ADD_API_DATA_KEYS } from './constants/fines-acc-en
 import { FINES_ACC_ENF_ACTION_ADD_FIELD_TYPES } from './constants/fines-acc-enf-action-add-field-types.constant';
 import { FINES_ACC_ENF_ACTION_ADD_PAYMENT_TERMS_RESULT_IDS } from './constants/fines-acc-enf-action-add-payment-terms-result-ids.constant';
 import { IOpalFinesEnforcersRefData } from '@services/fines/opal-fines-service/interfaces/opal-fines-enforcers-ref-data.interface';
+import { IOpalFinesCourtRefData } from '@services/fines/opal-fines-service/interfaces/opal-fines-court-ref-data.interface';
 import { FINES_ACC_ENF_ACTION_ADD_NEW_SUCCESS_MESSAGE } from '../fines-acc-enf-action-add-new/constants/fines-acc-enf-action-add-new-success-message.constant';
 
 const FIELD_TYPES = FINES_ACC_ENF_ACTION_ADD_FIELD_TYPES;
@@ -50,10 +51,26 @@ export class FinesAccEnfActionAddComponent extends AbstractFormParentBaseCompone
 
   /**
    * Replaces dynamic API-backed menu fields with options resolved for this route.
+   *
+   * @param fields - Dynamic fields created from the action configuration.
+   * @returns Fields with court and enforcer options populated.
    */
   private populateApiDataOptions(fields: IFinesAccEnfActionAddFormField[]): IFinesAccEnfActionAddFormField[] {
     return fields.map((field) => {
-      if (field.type !== FIELD_TYPES.menuAutocomplete || field.apiData !== API_DATA_KEYS.enforcers) return field;
+      if (field.type !== FIELD_TYPES.menuAutocomplete) return field;
+
+      if (field.apiData === API_DATA_KEYS.courts) {
+        const courts = this.route.snapshot.data['courtsRefData'] as IOpalFinesCourtRefData;
+        return {
+          ...field,
+          options: courts.refData.map((court) => ({
+            value: court.court_code,
+            name: this.opalFinesService.getCourtPrettyName(court),
+          })),
+        };
+      }
+
+      if (field.apiData !== API_DATA_KEYS.enforcers) return field;
 
       const enforcers = this.route.snapshot.data['enforcersRefData'] as IOpalFinesEnforcersRefData | undefined;
       return {
