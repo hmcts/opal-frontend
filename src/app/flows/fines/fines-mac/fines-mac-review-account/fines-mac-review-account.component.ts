@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, Component, inject, OnDestroy, OnInit } from '@angular/core';
+import { ChangeDetectionStrategy, Component, computed, inject, OnDestroy, OnInit } from '@angular/core';
 import { FINES_MAC_ROUTING_PATHS } from '../routing/constants/fines-mac-routing-paths.constant';
 import { FinesMacReviewAccountAccountDetailsComponent } from './fines-mac-review-account-account-details/fines-mac-review-account-account-details.component';
 import { FinesMacReviewAccountCourtDetailsComponent } from './fines-mac-review-account-court-details/fines-mac-review-account-court-details.component';
@@ -44,6 +44,8 @@ import { FINES_MAC_DEFENDANT_TYPES_KEYS } from '../constants/fines-mac-defendant
 import { IOpalFinesProsecutorRefData } from '@services/fines/opal-fines-service/interfaces/opal-fines-prosecutor-ref-data.interface';
 import { AbstractFormParentBaseComponent } from '@hmcts/opal-frontend-common/components/abstract/abstract-form-parent-base';
 import { FINES_ACCOUNT_TYPES } from '../../constants/fines-account-types.constant';
+import { RELEASE_1A_1_1_FEATURE_FLAG } from '../../constants/release-feature-flags.constant';
+import { getFeatureFlagReleaseState } from '../../utils/fines-section-permissions.utils';
 
 @Component({
   selector: 'app-fines-mac-review-account',
@@ -103,6 +105,9 @@ export class FinesMacReviewAccountComponent extends AbstractFormParentBaseCompon
   public accountTypesKeys = FINES_ACCOUNT_TYPES;
   public defendantTypesKeys = FINES_MAC_DEFENDANT_TYPES_KEYS;
   public showTimeline = false;
+  public readonly release1a1_1Enabled = computed(
+    () => getFeatureFlagReleaseState(this.globalStore.featureFlags())[RELEASE_1A_1_1_FEATURE_FLAG] === true,
+  );
 
   public formErrorSummaryMessage: IAbstractFormBaseFormErrorSummaryMessage[] = [];
 
