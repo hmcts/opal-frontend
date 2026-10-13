@@ -55,6 +55,7 @@ Feature: Adult Youth Account Enquiries View Details
       And I should see the account header contains "Mr John ACCDETAILSURNAME{uniqUpper}"
 
 
+    # Intentionally no @R1... tag: this runs in the broad functional stage, not the R1B demo legacy tagged stage.
     @JIRA-STORY:PO-1593 @JIRA-STORY:PO-866 @JIRA-STORY:PO-1110 @JIRA-STORY:PO-1127 @JIRA-EPIC:PO-812 @JIRA-TEST-KEY:PO-5516
     Scenario: Saving defendant details updates the name and audit trail
       # AC1 – Edit and save changes
@@ -66,6 +67,7 @@ Feature: Adult Youth Account Enquiries View Details
       And I verify defendant amendments via API for first name "Updated"
 
 
+    # Intentionally no @R1... tag: this runs in the broad functional stage, not the R1B demo legacy tagged stage.
     @JIRA-STORY:PO-1593 @JIRA-STORY:PO-866 @JIRA-STORY:PO-1110 @JIRA-STORY:PO-1127 @JIRA-EPIC:PO-812 @JIRA-TEST-KEY:PO-5517
     Scenario: Saving unchanged defendant details does not create amendments
       # AC3/4 – Verify via API and store amendment count baseline
