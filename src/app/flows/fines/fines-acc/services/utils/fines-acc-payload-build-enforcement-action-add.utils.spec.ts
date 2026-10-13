@@ -169,7 +169,7 @@ describe('buildEnforcementActionAddPayload', () => {
     ]);
   });
 
-  it('normalises concatenated result parameter names to snake case', () => {
+  it('preserves courtcode and hearingdate while normalising other mapped parameter names', () => {
     const payload = buildEnforcementActionAddPayload(
       FINES_ACC_PAYLOAD_ENFORCEMENT_ACTION_ADD_PAYMENT_TERMS_DISABLED_RESULT_MOCK,
       [
@@ -177,7 +177,15 @@ describe('buildEnforcementActionAddPayload', () => {
           controlName: 'fines-acc-enf-action-add_courtcode',
           parameterName: 'courtcode',
           label: 'Court code',
-          type: FINES_ACC_ENF_ACTION_ADD_FIELD_TYPES.text,
+          type: FINES_ACC_ENF_ACTION_ADD_FIELD_TYPES.menuAutocomplete,
+          required: false,
+          options: [],
+        },
+        {
+          controlName: 'fines-acc-enf-action-add_hearingdate',
+          parameterName: 'hearingdate',
+          label: 'Hearing date',
+          type: FINES_ACC_ENF_ACTION_ADD_FIELD_TYPES.date,
           required: false,
           options: [],
         },
@@ -201,6 +209,7 @@ describe('buildEnforcementActionAddPayload', () => {
       ],
       {
         'fines-acc-enf-action-add_courtcode': '123',
+        'fines-acc-enf-action-add_hearingdate': '05/10/2026',
         'fines-acc-enf-action-add_daysindefault': '14',
         'fines-acc-enf-action-add_basisofcommittal': 'Basis',
         'fines-acc-enf-action-add_basisofcommittal_cy': 'Sail',
@@ -208,7 +217,8 @@ describe('buildEnforcementActionAddPayload', () => {
     );
 
     expect(payload.enforcement_result_responses).toEqual([
-      { parameter_name: 'court_code', response: '123' },
+      { parameter_name: 'courtcode', response: '123' },
+      { parameter_name: 'hearingdate', response: '2026-10-05' },
       { parameter_name: 'days_in_default', response: '14' },
       { parameter_name: 'basis_of_committal', response: 'Basis' },
       { parameter_name: 'basis_of_committal_cy', response: 'Sail' },

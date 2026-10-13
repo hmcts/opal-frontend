@@ -138,6 +138,7 @@ export class FinesAccPartyAddAmendConvertFormComponent
 
   /**
    * Creates the base form group with fields shared by all party types.
+   * @returns The shared form group with the address limit for the current party type.
    */
   private createBaseFormGroup(): FormGroup {
     return new FormGroup({
@@ -152,7 +153,7 @@ export class FinesAccPartyAddAmendConvertFormComponent
         SINGLE_ASCII_CHARACTERS_PATTERN_VALIDATOR,
       ]),
       facc_party_add_amend_convert_address_line_3: new FormControl(null, [
-        optionalMaxLengthValidator(16),
+        optionalMaxLengthValidator(this.isParentGuardianPartyType ? 13 : 16),
         SINGLE_ASCII_CHARACTERS_PATTERN_VALIDATOR,
       ]),
       facc_party_add_amend_convert_post_code: new FormControl(null, [
@@ -428,6 +429,8 @@ export class FinesAccPartyAddAmendConvertFormComponent
         this.fieldErrors['facc_party_add_amend_convert_forenames_parent_guardian'];
       this.fieldErrors['facc_party_add_amend_convert_surname'] =
         this.fieldErrors['facc_party_add_amend_convert_surname_parent_guardian'];
+      this.fieldErrors['facc_party_add_amend_convert_address_line_3'] =
+        this.fieldErrors['facc_party_add_amend_convert_address_line_3_parent_guardian'];
     }
     this.yesterday = this.dateService.getPreviousDate({ days: 1 });
     this.dateOfBirthListener();

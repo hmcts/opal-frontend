@@ -216,39 +216,57 @@ describe('Search Account Component - Individuals', () => {
     },
   );
   it(
-    'AC3d. should show error for non-alphabetical last name',
+    'AC3d. should show error for non-ASCII characters in last name',
     { tags: [...buildTags('@JIRA-STORY:PO-705'), '@JIRA-EPIC:PO-704', '@JIRA-TEST-KEY:PO-4481'] },
     () => {
       setupComponent((searchState) => {
         searchState.fsa_search_account_individuals_search_criteria!.fsa_search_account_individuals_last_name =
-          'Smith123';
+          'Namé123';
       });
 
-      cy.get(IndividualsLocators.lastNameInput).should('have.value', 'Smith123');
+      cy.get(IndividualsLocators.lastNameInput).should('have.value', 'Namé123');
       cy.get(CommonLocators.searchButton).click();
 
-      cy.get(CommonLocators.errorSummary).should('exist').and('contain', 'Last name must only contain letters');
-      cy.get(IndividualsLocators.lastNameError).should('exist').and('contain', 'Last name must only contain letters');
+      cy.get(CommonLocators.errorSummary)
+        .should('exist')
+        .and(
+          'contain',
+          'Last name must only include letters a to z, numbers 0-9 and certain special characters (such as hyphens, spaces, apostrophes and commas)',
+        );
+      cy.get(IndividualsLocators.lastNameError)
+        .should('exist')
+        .and(
+          'contain',
+          'Last name must only include letters a to z, numbers 0-9 and certain special characters (such as hyphens, spaces, apostrophes and commas)',
+        );
 
       cy.get(IndividualsLocators.lastNameInput).clear();
     },
   );
   it(
-    'AC3e. should show error for non-alphabetical first names',
+    'AC3e. should show error for non-ASCII characters in first names',
     { tags: [...buildTags('@JIRA-STORY:PO-705'), '@JIRA-EPIC:PO-704', '@JIRA-TEST-KEY:PO-4482'] },
     () => {
       setupComponent((searchState) => {
         searchState.fsa_search_account_individuals_search_criteria!.fsa_search_account_individuals_first_names =
-          'John123';
+          'Namé123';
       });
 
-      cy.get(IndividualsLocators.firstNameInput).should('have.value', 'John123');
+      cy.get(IndividualsLocators.firstNameInput).should('have.value', 'Namé123');
       cy.get(CommonLocators.searchButton).click();
 
-      cy.get(CommonLocators.errorSummary).should('exist').and('contain', 'First names must only contain letters');
+      cy.get(CommonLocators.errorSummary)
+        .should('exist')
+        .and(
+          'contain',
+          'First names must only include letters a to z, numbers 0-9 and certain special characters (such as hyphens, spaces, apostrophes and commas)',
+        );
       cy.get(IndividualsLocators.firstNamesError)
         .should('exist')
-        .and('contain', 'First names must only contain letters');
+        .and(
+          'contain',
+          'First names must only include letters a to z, numbers 0-9 and certain special characters (such as hyphens, spaces, apostrophes and commas)',
+        );
 
       cy.get(IndividualsLocators.firstNameInput).clear();
     },
