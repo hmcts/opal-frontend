@@ -78,6 +78,7 @@ import { IOpalFinesReportInstancesParams } from './interfaces/opal-fines-report-
 import { IOpalFinesReportInstancesResponse } from './interfaces/opal-fines-report-instances-response.interface';
 import { IOpalFinesInterfaceJobsSummaryParams } from './interfaces/opal-fines-interface-jobs-summary-params.interface';
 import { IOpalFinesInterfaceJobsSummaryResponse } from './interfaces/opal-fines-interface-jobs-summary-response.interface';
+import { IOpalFinesTillsResponse } from './interfaces/opal-fines-tills-response.interface';
 
 const SAFE_READ_RETRY_POLICY = {
   retryCount: 1,
@@ -89,6 +90,7 @@ const SAFE_READ_RETRY_POLICY = {
 })
 export class OpalFines {
   private readonly http = inject(HttpClient);
+
   private cache = structuredClone(OPAL_FINES_CACHE_DEFAULTS);
 
   private readonly PARAM_BUSINESS_UNIT = 'business_unit';
@@ -1749,5 +1751,10 @@ export class OpalFines {
 
     this.cache.majorCreditorAccountHistoryAndNotesCache$ ??= request$;
     return this.cache.majorCreditorAccountHistoryAndNotesCache$;
+  }
+
+  /** Loads tills available to the authenticated user for manual allocation. */
+  public getTills(): Observable<IOpalFinesTillsResponse> {
+    return this.http.get<IOpalFinesTillsResponse>(OPAL_FINES_PATHS.tills, this.retrySafeReadOptions());
   }
 }

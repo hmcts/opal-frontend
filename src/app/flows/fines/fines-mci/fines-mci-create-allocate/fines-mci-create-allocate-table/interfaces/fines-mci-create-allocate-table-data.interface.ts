@@ -4,10 +4,10 @@ import { SortableValuesType } from '@hmcts/opal-frontend-common/components/abstr
 export interface IFinesMciCreateAllocateTableData extends IAbstractTableData<SortableValuesType> {
   tillId: string;
   'Till number': string;
-  Payments: number;
-  Amount: number;
+  Payments: number | null;
+  Amount: number | null;
   'Business unit': string;
-  'Created by': string;
-  'Date created': number;
+  'Created by': string | null;
+  'Date created': number | null;
   dateCreatedDisplay: string;
 }

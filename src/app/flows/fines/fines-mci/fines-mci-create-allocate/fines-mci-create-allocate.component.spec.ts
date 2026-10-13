@@ -1,28 +1,50 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { provideRouter } from '@angular/router';
-import { beforeEach, describe, expect, it } from 'vitest';
+import { beforeEach, describe, expect, it, vi } from 'vitest';
+import { of, throwError } from 'rxjs';
+import { OpalFines } from '../../services/opal-fines-service/opal-fines.service';
 import { FinesMciCreateAllocateComponent } from './fines-mci-create-allocate.component';
 
 describe('FinesMciCreateAllocateComponent', () => {
   let component: FinesMciCreateAllocateComponent;
   let fixture: ComponentFixture<FinesMciCreateAllocateComponent>;
+  const opalFinesServiceMock = {
+    getTills: vi.fn(),
+  };
+
+  const tillsResponse = {
+    tills: [
+      {
+        till_id: 99000000010005,
+        till_number: 9005,
+        payments_count: null,
+        amount: null,
+        business_unit_name: 'Westminster - North (Wells Street)',
+        processed_by: null,
+        date_processed: '2025-06-12',
+      },
+    ],
+  };
 
   beforeEach(async () => {
+    opalFinesServiceMock.getTills.mockReturnValue(of(tillsResponse));
+
     await TestBed.configureTestingModule({
       imports: [FinesMciCreateAllocateComponent],
-      providers: [provideRouter([])],
+      providers: [provideRouter([]), { provide: OpalFines, useValue: opalFinesServiceMock }],
     }).compileComponents();
 
     fixture = TestBed.createComponent(FinesMciCreateAllocateComponent);
     component = fixture.componentInstance;
-    fixture.detectChanges();
   });
 
   it('should create', () => {
+    fixture.detectChanges();
     expect(component).toBeTruthy();
   });
 
   it('should render a manual cash input placeholder page', () => {
+    fixture.detectChanges();
     const text = fixture.nativeElement.textContent;
     const nativeElement = fixture.nativeElement as HTMLElement;
 
@@ -35,32 +57,47 @@ describe('FinesMciCreateAllocateComponent', () => {
     expect(nativeElement.querySelector('#create-till-button')?.tagName).toBe('BUTTON');
   });
 
-  it('should render mock tills available to allocate', () => {
+  it('should render tills returned by the API', () => {
+    fixture.detectChanges();
     const text = fixture.nativeElement.textContent;
 
-    expect(text).toContain('0 of 5 selected');
+    expect(text).toContain('0 of 1 selected');
     expect(text).toContain('Till number');
     expect(text).toContain('Payments');
     expect(text).toContain('Amount');
     expect(text).toContain('Business unit');
     expect(text).toContain('Created by');
     expect(text).toContain('Date created');
-    expect(text).toContain('005576');
-    expect(text).toContain('Avon and Somerset');
-    expect(text).toContain('£200.00');
-    expect(text).toContain('12 June 2025 at 10:37');
+    expect(text).toContain('9005');
+    expect(text).toContain('Westminster - North (Wells Street)');
+    expect(text).toContain('12 June 2025');
   });
 
   it('should update the selected tills count when a till is selected', () => {
+    fixture.detectChanges();
     const nativeElement = fixture.nativeElement as HTMLElement;
-    const checkbox = nativeElement.querySelector<HTMLInputElement>(
-      '#fines-mci-create-allocate-mci-till-005576-avon-01',
-    );
+    const checkbox = nativeElement.querySelector<HTMLInputElement>('#fines-mci-create-allocate-99000000010005');
 
     checkbox!.checked = true;
     checkbox!.dispatchEvent(new Event('change', { bubbles: true }));
     fixture.detectChanges();
 
-    expect(nativeElement.textContent).toContain('1 of 5 selected');
+    expect(nativeElement.textContent).toContain('1 of 1 selected');
+  });
+
+  it('should show the empty state when the API returns no tills', () => {
+    opalFinesServiceMock.getTills.mockReturnValue(of({ tills: [] }));
+    fixture = TestBed.createComponent(FinesMciCreateAllocateComponent);
+    fixture.detectChanges();
+
+    expect(fixture.nativeElement.textContent).toContain('There are no outstanding tills to allocate.');
+  });
+
+  it('should show an error when loading tills fails', () => {
+    opalFinesServiceMock.getTills.mockReturnValue(throwError(() => new Error('Request failed')));
+    fixture = TestBed.createComponent(FinesMciCreateAllocateComponent);
+    fixture.detectChanges();
+
+    expect(fixture.nativeElement.textContent).toContain('There was a problem loading tills. Try again later.');
   });
 });
