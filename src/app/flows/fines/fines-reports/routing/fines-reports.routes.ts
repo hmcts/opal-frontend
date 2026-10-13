@@ -14,6 +14,7 @@ import { finesReportsReportInstancesResolver } from './resolvers/fines-reports-r
 import { finesReportsBusinessUnitsResolver } from './resolvers/fines-reports-business-units/fines-reports-business-units.resolver';
 import { finesReportsReportHeadingResolver } from './resolvers/fines-reports-report-heading/fines-reports-report-heading.resolver';
 import { finesReportsCreateStateGuard } from './guards/fines-reports-create-state-guard/fines-reports-create-state.guard';
+import { finesReportsManualCreationGuard } from './guards/fines-reports-manual-creation-guard/fines-reports-manual-creation.guard';
 
 export const routing: Routes = [
   {
@@ -39,6 +40,7 @@ export const routing: Routes = [
               import('../fines-reports-select-business-units/fines-reports-select-business-units.component').then(
                 (c) => c.FinesReportsSelectBusinessUnitsComponent,
               ),
+            canActivate: [finesReportsManualCreationGuard],
             canDeactivate: [canDeactivateGuard],
             data: {
               title: 'Select business units',
@@ -73,7 +75,7 @@ export const routing: Routes = [
             data: {
               title: 'Parameters',
             },
-            canActivate: [finesReportsCreateStateGuard],
+            canActivate: [finesReportsCreateStateGuard, finesReportsManualCreationGuard],
             resolve: {
               title: TitleResolver,
               reportHeading: finesReportsReportHeadingResolver,

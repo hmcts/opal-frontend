@@ -10,7 +10,6 @@ import {
 import { PAGES_ROUTING_PATHS as COMMON_PAGES_ROUTING_PATHS } from '@hmcts/opal-frontend-common/pages/routing/constants';
 import { firstValueFrom, Observable, of } from 'rxjs';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
-import { FINES_ROUTING_PATHS } from '@app/flows/fines/routing/constants/fines-routing-paths.constant';
 import { OpalFines } from '@services/fines/opal-fines-service/opal-fines.service';
 import { IOpalFinesBusinessUnitRefData } from '@services/fines/opal-fines-service/interfaces/opal-fines-business-unit-ref-data.interface';
 import { OPAL_FINES_BUSINESS_UNIT_REF_DATA_MOCK } from '@services/fines/opal-fines-service/mocks/opal-fines-business-unit-ref-data.mock';
@@ -84,27 +83,6 @@ describe('finesReportsBusinessUnitsResolver', () => {
     expect(mockOpalFinesService.getBusinessUnitsByPermission).toHaveBeenCalledWith('OPERATIONAL_REPORT_BY_ENFORCEMENT');
     expect(mockOpalFinesService.getBusinessUnits).not.toHaveBeenCalled();
     expect(result).toEqual(OPAL_FINES_BUSINESS_UNIT_REF_DATA_MOCK);
-  });
-
-  it('should return to the summary list when manual creation is unavailable', async () => {
-    const reportTypeId = FINES_REPORTS_SUMMARY_LIST_ROUTING_PATHS.children.operationalReportsByEnforcement;
-    mockOpalFinesService.getReport.mockReturnValue(
-      of({
-        report_id: reportTypeId,
-        report_title: 'Operational reports (by enforcement)',
-        can_manually_create: false,
-        report_permission: 'OPERATIONAL_REPORT_BY_ENFORCEMENT',
-      }),
-    );
-
-    const result = await runResolver(reportTypeId, FINES_REPORTS_ROUTING_PATHS.children.create);
-
-    expect(result).toBeInstanceOf(RedirectCommand);
-    expect(mockRouter.createUrlTree).toHaveBeenCalledWith([
-      `/${FINES_ROUTING_PATHS.root}/${FINES_ROUTING_PATHS.children.reports.root}/${reportTypeId}/${FINES_REPORTS_ROUTING_PATHS.children.summaryList}`,
-    ]);
-    expect(mockOpalFinesService.getBusinessUnits).not.toHaveBeenCalled();
-    expect(mockOpalFinesService.getBusinessUnitsByPermission).not.toHaveBeenCalled();
   });
 
   it('should resolve business units for the summary list when manual creation is unavailable', async () => {
