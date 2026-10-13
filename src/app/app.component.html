@@ -1,4 +1,6 @@
-<opal-lib-govuk-skip-link targetId="main-content" linkText="Skip to main content" />
+@if (showSkipLink()) {
+  <opal-lib-govuk-skip-link targetId="main-content" linkText="Skip to main content" />
+}
 <div class="page-container">
   <opal-lib-moj-header [headerLinks]="headerLinks">
     <ng-container organisationName>HMCTS</ng-container>
