@@ -209,7 +209,7 @@ describe('Account Enquiry Enforcement Status', () => {
 
   it(
     'AC2, AC2a: restricted statuses hide restricted enforcement actions',
-    { tags: [...buildTags('@JIRA-STORY:PO-5754'), '@JIRA-EPIC:PO-978', '@JIRA-TEST-KEY:PO-5754'] },
+    { tags: [...buildTags('@JIRA-STORY:PO-5754'), '@JIRA-EPIC:PO-978'] },
     () => {
       const restrictedStatuses = ['CS', 'WO', 'TA', 'TO'] as const;
 
@@ -244,7 +244,7 @@ describe('Account Enquiry Enforcement Status', () => {
 
   it(
     'AC3: TFO Out S/NI keeps the Request an HMRC check action available',
-    { tags: [...buildTags('@JIRA-STORY:PO-5754'), '@JIRA-EPIC:PO-978', '@JIRA-TEST-KEY:PO-5754'] },
+    { tags: [...buildTags('@JIRA-STORY:PO-5754'), '@JIRA-EPIC:PO-978'] },
     () => {
       const enforcementMock = buildEnforcementMock();
       if (enforcementMock.enforcement_override) {
