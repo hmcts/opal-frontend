@@ -30,11 +30,32 @@ describe('FinesAccDefendantDetailsEnforcementTab', () => {
     component.tabData = structuredClone(OPAL_FINES_ACCOUNT_DEFENDANT_DETAILS_ENFORCEMENT_TAB_REF_DATA_MOCK);
     component.accountStatusCode = 'L';
     component.accountBalance = 500.58;
-    fixture.detectChanges();
   });
 
   it('should create', () => {
+    fixture.detectChanges();
     expect(component).toBeTruthy();
+  });
+
+  it('renders hearingdate as a formatted Hearing date row', () => {
+    component.tabData.last_enforcement_action!.result_responses = [
+      { parameter_name: 'hearingdate', response: '2026-10-20' },
+    ];
+
+    fixture.detectChanges();
+
+    const row = fixture.nativeElement.querySelector('[summaryListRowId="hearing_date"]') as HTMLElement;
+    expect(row).not.toBeNull();
+    expect(row.querySelector('.govuk-summary-list__key')?.textContent?.trim()).toBe('Hearing date');
+    expect(row.querySelector('.govuk-summary-list__value')?.textContent?.trim()).toBe('20 October 2026');
+  });
+
+  it('omits the Hearing date row when hearingdate is empty', () => {
+    component.tabData.last_enforcement_action!.result_responses = [{ parameter_name: 'hearingdate', response: '' }];
+
+    fixture.detectChanges();
+
+    expect(fixture.nativeElement.querySelector('[summaryListRowId="hearing_date"]')).toBeNull();
   });
 
   it('should enforce action link template semantics', () => {

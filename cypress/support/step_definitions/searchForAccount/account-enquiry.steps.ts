@@ -1012,6 +1012,70 @@ When('the add enforcement action form is displayed', () => {
 });
 
 /**
+ * @step Verifies that Court code options are available.
+ */
+Then('the Court code autocomplete should be displayed', () => {
+  log('assert', 'Court code autocomplete has populated options');
+  accountEnquiryFlow().assertCourtCodeAutocompleteDisplayed();
+});
+
+/**
+ * @step Verifies Court options use the Court name (court code) format.
+ */
+Then(/^the Court code options should use the Court name \(court code\) format$/, () => {
+  log('assert', 'Court options use the Court name (court code) format');
+  accountEnquiryFlow().assertCourtCodeOptionLabelsUseNameAndCodeFormat();
+});
+
+/**
+ * @step Searches the Court code autocomplete options.
+ */
+When('I search the Court code options for {string}', (searchText: string) => {
+  log('step', 'Search Court code options', { searchText });
+  accountEnquiryFlow().searchCourtCodeOptions(searchText);
+});
+
+/**
+ * @step Selects the first filtered Court code option.
+ */
+When('I select the first filtered Court code option', () => {
+  log('step', 'Select first filtered Court code option');
+  accountEnquiryFlow().selectFirstCourtCodeOption();
+});
+
+/**
+ * @step Selects a dynamic SUMM prison/detention radio option.
+ */
+When('the prison detention option is {string}', (option: string) => {
+  log('step', 'Set prison detention option', { option });
+  accountEnquiryFlow().selectPrisonDetentionOption(option);
+});
+
+/**
+ * @step Submits the enforcement action while capturing its request body.
+ */
+When('I submit the enforcement action and capture the request', () => {
+  log('step', 'Submit enforcement action and capture request');
+  accountEnquiryFlow().submitAddEnforcementActionAndCaptureRequest();
+});
+
+/**
+ * @step Verifies the selected Court code was submitted under courtcode.
+ */
+Then('the submitted enforcement action should contain the selected Court code', () => {
+  log('assert', 'Submitted enforcement action contains selected Court code');
+  accountEnquiryFlow().assertSubmittedCourtCode();
+});
+
+/**
+ * @step Verifies the selected Court code is displayed.
+ */
+Then('the selected Court code should be displayed', () => {
+  log('assert', 'Selected Court code is displayed');
+  accountEnquiryFlow().assertSelectedCourtCodeIsDisplayed();
+});
+
+/**
  * @step Presents the Change Collection Order status form.
  */
 When('the Change Collection Order status form is displayed', () => {
