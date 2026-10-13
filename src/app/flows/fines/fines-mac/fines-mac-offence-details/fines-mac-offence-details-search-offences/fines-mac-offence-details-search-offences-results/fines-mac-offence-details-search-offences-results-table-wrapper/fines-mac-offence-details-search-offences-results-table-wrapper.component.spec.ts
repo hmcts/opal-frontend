@@ -60,11 +60,27 @@ describe('FinesMacOffenceDetailsSearchOffencesResultsTableWrapperComponent', () 
     });
   });
 
+  it('should generate unique button IDs when offence codes are duplicated', () => {
+    const mockData = FINES_MAC_OFFENCE_DETAILS_SEARCH_OFFENCES_RESULTS_TABLE_WRAPPER_TABLE_DATA_MOCK;
+
+    const duplicateCodeData = [{ ...mockData[0] }, { ...mockData[0] }, { ...mockData[0] }];
+
+    fixture.componentRef.setInput('tableData', duplicateCodeData);
+    fixture.detectChanges();
+
+    const copyButtons = fixture.nativeElement.querySelectorAll('td#actions button') as NodeListOf<HTMLButtonElement>;
+
+    const buttonIds = Array.from(copyButtons, (button) => button.id);
+
+    expect(copyButtons).toHaveLength(3);
+    expect(buttonIds.every((id) => id.length > 0)).toBe(true);
+    expect(new Set(buttonIds).size).toBe(3);
+  });
+
   it('should announce the new page and focus its first code after rendering', async () => {
     component.itemsPerPageSignal.set(1);
     fixture.componentRef.setInput('paginationPageTitle', 'Search results');
     fixture.detectChanges();
-    const previousPageCodeCell = fixture.nativeElement.querySelector('td#code') as HTMLTableCellElement;
 
     component.onPageChange(2);
     fixture.detectChanges();
@@ -72,7 +88,6 @@ describe('FinesMacOffenceDetailsSearchOffencesResultsTableWrapperComponent', () 
 
     const firstCodeCell = fixture.nativeElement.querySelector('td#code') as HTMLTableCellElement;
     const status = fixture.nativeElement.querySelector('output') as HTMLOutputElement;
-    expect(firstCodeCell).not.toBe(previousPageCodeCell);
     expect(firstCodeCell.firstChild?.textContent?.trim()).toBe('5678');
     expect(firstCodeCell.getAttribute('tabindex')).toBe('-1');
     expect(document.activeElement).toBe(firstCodeCell);

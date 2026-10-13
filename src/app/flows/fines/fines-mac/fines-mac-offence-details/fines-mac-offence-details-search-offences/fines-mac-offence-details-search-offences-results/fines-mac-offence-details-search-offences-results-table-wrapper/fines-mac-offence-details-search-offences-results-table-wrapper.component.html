@@ -48,7 +48,7 @@
     <th scope="col" class="govuk-table__header">Actions</th>
   </ng-container>
   <ng-container row>
-    @for (row of paginatedTableDataComputed(); track row['Code']) {
+    @for (row of paginatedTableDataComputed(); track $index; let rowIndex = $index) {
       <tr opal-lib-moj-sortable-table-row>
         <td #paginationFocusTarget opal-lib-moj-sortable-table-row-data id="code">
           {{ row['Code'] }}
@@ -71,7 +71,7 @@
         </td>
         <td opal-lib-moj-sortable-table-row-data id="actions">
           <opal-lib-govuk-button
-            [buttonId]="'copy-code-' + row['Code']"
+            [buttonId]="'copy-code-' + row['Code'] + '-' + rowIndex"
             type="button"
             buttonClasses="govuk-button--secondary govuk-!-margin-bottom-0"
             (buttonClickEvent)="copyCodeToClipboard(copyCodeLabel, liveRegion, row['Code'])"
