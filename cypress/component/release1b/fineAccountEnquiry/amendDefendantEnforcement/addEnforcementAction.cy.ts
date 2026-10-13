@@ -15,6 +15,7 @@ import {
   interceptUserState,
   interceptNextPermittedEnforcementActionsEmpty,
   interceptNextPermittedEnforcementActions,
+  interceptCourtsByBU,
   interceptEnforcers,
 } from 'cypress/component/CommonIntercepts/CommonIntercepts';
 import { USER_STATE_MOCK_PERMISSION_BU77 } from 'cypress/component/CommonIntercepts/CommonUserState.mocks';
@@ -89,6 +90,7 @@ const finesAccountRoutes: Routes = [
 ];
 
 const COMPONENT_PROPERTIES: IComponentProperties = {
+  globalStoreFactory: () => buildSeededGlobalStore(USER_STATE_MOCK_PERMISSION_BU77),
   accountId: '77',
   fragments: 'enforcement',
   interceptedRoutes: [
@@ -198,6 +200,8 @@ function setupAddEnforcementActionDetailsRoute(
   userState = USER_STATE_MOCK_PERMISSION_BU77,
   accountStateOverrides = {},
 ) {
+  interceptCourtsByBU(77);
+
   setupAccountEnquiryComponent({
     accountId,
     fragments: undefined,
@@ -555,7 +559,11 @@ describe(
         interceptEnforcementStatus(accountId, enforcementMock, '123');
 
         interceptNextPermittedEnforcementActions(['WOC', 'WOA']);
-        setupAccountEnquiryComponent({ ...COMPONENT_PROPERTIES, accountId });
+        setupAccountEnquiryComponent({
+          ...COMPONENT_PROPERTIES,
+          accountId,
+          globalStoreFactory: () => buildSeededGlobalStore(USER_STATE_MOCK_PERMISSION_BU77),
+        });
 
         cy.get(ENF.addEnforcementActionLink).should('exist').click();
 
@@ -600,6 +608,7 @@ describe(
         interceptEnforcementStatus(accountId, enforcementMock, '123');
 
         interceptNextPermittedEnforcementActions(['WOC', 'WOA']);
+        interceptCourtsByBU(77);
         interceptEnforcers();
 
         const warrantOfControlResultMock = structuredClone(FINES_ACC_ENF_ACTION_ADD_RESULT_MOCK);

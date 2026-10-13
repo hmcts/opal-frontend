@@ -186,7 +186,8 @@ Feature: Parent Guardian To Pay Account Enquiries View Details
         | section          | fragment           |
         | Employer details | employment-details |
 
-    @JIRA-EPIC:PO-976 @R1BDrop1 @JIRA-STORY:PO-1129 @JIRA-TEST-KEY:PO-5532
+    # Intentionally no @R1... tag: this runs in the broad functional stage, not the R1B demo legacy tagged stage.
+    @JIRA-EPIC:PO-976 @JIRA-STORY:PO-1129 @JIRA-TEST-KEY:PO-5532
     Scenario: Saving parent or guardian details updates the name and audit trail
       # AC1 – Edit and save changes
       And I edit the Parent or guardian details and change the First name to "Updated"
@@ -196,7 +197,8 @@ Feature: Parent Guardian To Pay Account Enquiries View Details
       # AC3/4 - Verify via API
       And I verify parent or guardian amendments via API for guardian name "Updated"
 
-    @JIRA-EPIC:PO-976 @R1BDrop1 @JIRA-STORY:PO-1129 @JIRA-TEST-KEY:PO-5533 @JIRA-DEFECT:PO-10779
+    # Intentionally no @R1... tag: this runs in the broad functional stage, not the R1B demo legacy tagged stage.
+    @JIRA-EPIC:PO-976 @JIRA-STORY:PO-1129 @JIRA-TEST-KEY:PO-5533 @JIRA-DEFECT:PO-10779
     Scenario: Saving unchanged parent or guardian details does not create amendments
       # AC3/4 – Verify via API and store amendment count baseline
       And I establish a parent or guardian amendment baseline with first name "Updated"
@@ -211,6 +213,7 @@ Feature: Parent Guardian To Pay Account Enquiries View Details
     @functional @R1BDrop1 @JIRA-STORY:PO-1112 @JIRA-EPIC:PO-976 @JIRA-DEFECT:PO-10731
     Scenario: Amending a paying parent or guardian rejects address line 3 above 13 characters and saves 13 characters
       When I edit the Parent or guardian details without making changes
+      And I enter "FNAME" into the amend parent or guardian first name field
       And I enter "ABCDEFGHIJKLMN" into the parent or guardian address line 3 field
       And I attempt to save the parent or guardian amend details
       Then I should see the parent or guardian amend error summary contains "Address line 3 must be 13 characters or fewer"
@@ -266,7 +269,8 @@ Feature: Parent Guardian To Pay Account Enquiries View Details
       When the Parent or guardian details section header is "Parent or guardian details"
       Then I should see the parent or guardian name contains "Pat GUARDIANAMEND{uniqUpper}"
 
-    @R1BDrop1 @JIRA-STORY:PO-3915 @JIRA-EPIC:PO-1875 @JIRA-TEST-KEY:PO-9989 @JIRA-DEFECT:PO-10779
+    # Intentionally no @R1... tag: this runs in the broad functional stage, not the R1B demo legacy tagged stage.
+    @JIRA-STORY:PO-3915 @JIRA-EPIC:PO-1875 @JIRA-TEST-KEY:PO-9989 @JIRA-DEFECT:PO-10779
     Scenario: Saving parent or guardian changes updates the Parent or guardian tab and audit trail
       When I start changing the non-paying parent or guardian details
       Then I should be on the amend parent or guardian details page
@@ -294,6 +298,7 @@ Feature: Parent Guardian To Pay Account Enquiries View Details
     @functional @R1BDrop1 @JIRA-STORY:PO-3915 @JIRA-EPIC:PO-1875 @JIRA-DEFECT:PO-10731
     Scenario: Amending a non-paying parent or guardian rejects address line 3 above 13 characters and saves 13 characters
       When I start changing the non-paying parent or guardian details
+      And I enter "Pat" into the amend parent or guardian first name field
       And I enter "ABCDEFGHIJKLMN" into the parent or guardian address line 3 field
       And I attempt to save the parent or guardian amend details
       Then I should see the parent or guardian amend error summary contains "Address line 3 must be 13 characters or fewer"
@@ -341,7 +346,8 @@ Feature: Parent Guardian To Pay Account Enquiries View Details
       And I should see the account header contains "Miss Jane TESTNONPAYEE{uniqUpper}"
 
 
-    @R1BDrop1 @JIRA-STORY:PO-2315 @JIRA-STORY:PO-1663 @JIRA-EPIC:PO-812 @JIRA-TEST-KEY:PO-5528 @JIRA-DEFECT:PO-10780
+    # Intentionally no @R1... tag: this runs in the broad functional stage, not the R1B demo legacy tagged stage.
+    @JIRA-STORY:PO-2315 @JIRA-STORY:PO-1663 @JIRA-EPIC:PO-812 @JIRA-TEST-KEY:PO-5528 @JIRA-DEFECT:PO-10780
     Scenario: Saving defendant details updates the name and audit trail for a non-paying account
       # AC1 – Edit and save changes
       And I edit the Defendant details and change the First name to "Updated"
@@ -352,7 +358,8 @@ Feature: Parent Guardian To Pay Account Enquiries View Details
       And I verify defendant amendments via API for first name "Updated"
 
 
-    @R1BDrop1 @JIRA-STORY:PO-2315 @JIRA-STORY:PO-1663 @JIRA-EPIC:PO-812 @JIRA-TEST-KEY:PO-5529 @JIRA-DEFECT:PO-10780
+    # Intentionally no @R1... tag: this runs in the broad functional stage, not the R1B demo legacy tagged stage.
+    @JIRA-STORY:PO-2315 @JIRA-STORY:PO-1663 @JIRA-EPIC:PO-812 @JIRA-TEST-KEY:PO-5529 @JIRA-DEFECT:PO-10780
     Scenario: Saving unchanged defendant details does not create amendments for a non-paying account
       # AC3/4 – Verify via API and store amendment count baseline
       And I establish a defendant amendment baseline with first name "Updated"
