@@ -53,6 +53,6 @@ Feature: Search And Matches Accessibility
     Then I check the page for accessibility
 
   @JIRA-STORY:PO-3720 @JIRA-EPIC:PO-3685 @JIRA-TEST-KEY:PO-3722 @R1BOff
-  Scenario: Search and Matches is hidden when release 1b is disabled
+  Scenario: Search and Matches (Accessible) is hidden when release 1b is disabled
     Then I am taken to the "Accounts" Fines landing page
     And I should not see the Fines primary navigation item "Search"
