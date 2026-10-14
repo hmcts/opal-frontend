@@ -7,22 +7,6 @@ import { FINES_API_INTERFACE_JOB_SOURCE_LABELS } from '../constants/fines-api-in
 const UNAVAILABLE = '—';
 const DATE_FORMAT = "dd MMMM yyyy 'at' HH:mm";
 
-/** Preserves decimal-string precision and treats the API amount as pounds. */
-const formatAmount = (amount: number | string): string => {
-  if (typeof amount === 'number' && (!Number.isFinite(amount) || Math.abs(amount) > Number.MAX_SAFE_INTEGER / 100)) {
-    return UNAVAILABLE;
-  }
-  const match = /^(-?)(\d{1,16})(?:\.(\d{1,2}))?$/.exec(String(amount));
-  if (!match) {
-    return UNAVAILABLE;
-  }
-  const [, sign, integer, fraction = ''] = match;
-  const pennies = fraction.padEnd(2, '0');
-  const whole = BigInt(integer);
-  const prefix = sign && (whole !== 0n || pennies !== '00') ? '-' : '';
-  return `${prefix}£${whole.toLocaleString('en-GB')}.${pennies}`;
-};
-
 /** Rejects unusable IDs rather than assigning an ambiguous selection/navigation key. */
 const mapTillId = (id: number | string): string => {
   if (typeof id === 'number' && (!Number.isSafeInteger(id) || id < 0)) {
@@ -69,7 +53,7 @@ export const mapAllocateData = (
       sourceLabel: till.source
         ? (FINES_API_INTERFACE_JOB_SOURCE_LABELS[till.source.trim().toUpperCase()] ?? till.source)
         : UNAVAILABLE,
-      amountDisplay: formatAmount(till.amount),
+      amount: till.amount,
       businessUnitName: till.business_unit_name,
       processedByDisplay: till.processed_by,
       dateProcessedDisplay: formatDate(till.date_processed, dateService),

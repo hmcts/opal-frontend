@@ -147,7 +147,7 @@
                 [id]="'fines-api-allocate-' + row.tillId + '-cell-6'"
                 class="govuk-!-padding-top-3 govuk-table__cell--numeric"
               >
-                {{ row.amountDisplay }}
+                <opal-lib-custom-accessible-monetary [value]="row.amount" />
               </td>
               <td
                 opal-lib-moj-sortable-table-row-data

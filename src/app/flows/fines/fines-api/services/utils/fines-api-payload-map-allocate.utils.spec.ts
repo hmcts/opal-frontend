@@ -68,7 +68,7 @@ describe('mapAllocateData', () => {
       errorsDisplay: '0',
       fileName: 'payments.dat',
       sourceLabel: 'NatWest',
-      amountDisplay: '£1,234.50',
+      amount: '1234.50',
       businessUnitName: 'BU Alpha',
       processedByDisplay: 'original.operator',
       dateProcessedDisplay: '22 September 2026 at 14:31',
@@ -126,22 +126,10 @@ describe('mapAllocateData', () => {
     expect(dateService.toFormat).not.toHaveBeenCalled();
   });
 
-  it.each([
-    [0, '£0.00'],
-    [1234.5, '£1,234.50'],
-    [0.29, '£0.29'],
-    ['9999999999999999.99', '£9,999,999,999,999,999.99'],
-    ['-1234.50', '-£1,234.50'],
-    ['-0.01', '-£0.01'],
-    ['-0.00', '£0.00'],
-  ])('formats pound amount %s without losing decimal-string precision', (amount, expected) => {
-    expect(map([buildTill({ amount })]).tills[0].amountDisplay).toBe(expected);
-  });
-
-  it.each(['', 'invalid', '1.234', Number.NaN, Number.POSITIVE_INFINITY, Number.MAX_SAFE_INTEGER])(
-    'does not present invalid or unsafe numeric amount %s as valid money',
+  it.each([0, 1234, 1234.5, -20, '1234.50'])(
+    'retains the raw amount %s for display formatting and sorting',
     (amount) => {
-      expect(map([buildTill({ amount })]).tills[0].amountDisplay).toBe('—');
+      expect(map([buildTill({ amount })]).tills[0].amount).toBe(amount);
     },
   );
 

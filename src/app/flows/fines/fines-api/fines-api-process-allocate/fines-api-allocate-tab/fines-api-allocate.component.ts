@@ -8,6 +8,7 @@ import {
   Output,
   signal,
 } from '@angular/core';
+import { CustomAccessibleMonetaryComponent } from '@hmcts/opal-frontend-common/components/custom/custom-accessible-monetary';
 import { DateService } from '@hmcts/opal-frontend-common/services/date-service';
 import { SortDirectionType } from '@hmcts/opal-frontend-common/components/abstract/abstract-sortable-table/types';
 import {
@@ -36,7 +37,8 @@ import {
   toggleMultiSelectRow,
 } from '@hmcts/opal-frontend-common/directives/moj-multi-select';
 import { FINES_API_ALLOCATE_CONTENT } from './constants/fines-api-allocate-content.constant';
-import { IFinesApiAllocateData, IFinesApiAllocateTillRow } from './interfaces/fines-api-allocate-data.interface';
+import { IFinesApiAllocateData } from './interfaces/fines-api-allocate-data.interface';
+import { IFinesApiAllocateTillRow } from './interfaces/fines-api-allocate-till-row.interface';
 import { FINES_ROUTING_PATHS } from '../../../routing/constants/fines-routing-paths.constant';
 import { FINES_API_ROUTING_PATHS } from '../../routing/constants/fines-api-routing-paths.constant';
 
@@ -44,6 +46,7 @@ import { FINES_API_ROUTING_PATHS } from '../../routing/constants/fines-api-routi
   selector: 'app-fines-api-allocate',
   imports: [
     RouterLink,
+    CustomAccessibleMonetaryComponent,
     MojSortableTableComponent,
     MojSortableTableHeaderComponent,
     MojSortableTableRowComponent,
@@ -122,7 +125,7 @@ export class FinesApiAllocateComponent {
   @Output() public readonly refreshRequested = new EventEmitter<void>();
 
   /**
-   * Converts a displayed column value into a comparable value, preserving monetary precision with bigint pennies.
+   * Returns a comparable column value, using the unformatted API amount for monetary sorting.
    * Returns null for unavailable or invalid numeric/date values so they sort after populated values.
    *
    * @param row The mapped till row to read.
@@ -140,8 +143,8 @@ export class FinesApiAllocateComponent {
       case 'Source':
         return row.sourceLabel === '—' ? null : row.sourceLabel;
       case 'Amount': {
-        const pennies = row.amountDisplay.replace(/[£,.]/g, '');
-        return /^-?\d+$/.test(pennies) ? BigInt(pennies) : null;
+        const amount = Number(row.amount);
+        return String(row.amount).trim() !== '' && Number.isFinite(amount) ? amount : null;
       }
       case 'Business Unit':
         return row.businessUnitName;

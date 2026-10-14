@@ -1,14 +1,4 @@
-export interface IFinesApiAllocateTillRow {
-  tillId: string;
-  tillNumber: string;
-  errorsDisplay: string;
-  fileName: string;
-  sourceLabel: string;
-  amountDisplay: string;
-  businessUnitName: string;
-  processedByDisplay: string;
-  dateProcessedDisplay: string;
-}
+import { IFinesApiAllocateTillRow } from './fines-api-allocate-till-row.interface';
 
 export interface IFinesApiAllocateData {
   processingTotal: number;

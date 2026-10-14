@@ -2,7 +2,8 @@ import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { provideRouter, Router, UrlTree } from '@angular/router';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
 import { FinesApiAllocateComponent } from './fines-api-allocate.component';
-import { IFinesApiAllocateData, IFinesApiAllocateTillRow } from './interfaces/fines-api-allocate-data.interface';
+import { IFinesApiAllocateData } from './interfaces/fines-api-allocate-data.interface';
+import { IFinesApiAllocateTillRow } from './interfaces/fines-api-allocate-till-row.interface';
 
 const rows = (count = 2): IFinesApiAllocateTillRow[] =>
   Array.from({ length: count }, (_, index) => ({
@@ -11,7 +12,7 @@ const rows = (count = 2): IFinesApiAllocateTillRow[] =>
     errorsDisplay: String(index),
     fileName: `payments-${index}.dat`,
     sourceLabel: 'NatWest',
-    amountDisplay: '£123.45',
+    amount: 123.45,
     businessUnitName: `BU ${index === 0 ? 'Alpha' : 'Beta'}`,
     processedByDisplay: 'original.operator',
     dateProcessedDisplay: '22 September 2026 at 14:31',
@@ -120,7 +121,7 @@ describe('FinesApiAllocateComponent', () => {
     [1, 'errorsDisplay', '10', '2'],
     [2, 'fileName', 'zebra.dat', 'alpha.dat'],
     [3, 'sourceLabel', 'NatWest', 'allpay'],
-    [4, 'amountDisplay', '£1,000.00', '£20.00'],
+    [4, 'amount', '1000', '20'],
     [5, 'businessUnitName', 'BU Zebra', 'BU Alpha'],
     [6, 'processedByDisplay', 'z.operator', 'a.operator'],
     [7, 'dateProcessedDisplay', '01 October 2026 at 09:00', '30 September 2026 at 15:00'],
@@ -142,16 +143,31 @@ describe('FinesApiAllocateComponent', () => {
     expect(tills.map((row) => row.tillId)).toEqual(['101', '102']);
   });
 
-  it('sorts precise and negative amounts while keeping unavailable amounts last', () => {
+  it('sorts raw numeric amounts while keeping unavailable amounts last', () => {
     const tills = rows(4);
-    ['£9,999,999,999,999,999.02', '£9,999,999,999,999,999.01', '-£1.00', '—'].forEach(
-      (amount, index) => (tills[index].amountDisplay = amount),
-    );
+    [1000, 20, -1, ''].forEach((amount, index) => (tills[index].amount = amount));
     render(data(tills));
     sortBy(4);
     expect(visibleIds()).toEqual([103, 102, 101, 104].map((id) => `fines-api-allocate-till-${id}`));
     sortBy(4);
     expect(visibleIds()).toEqual([101, 102, 103, 104].map((id) => `fines-api-allocate-till-${id}`));
+  });
+
+  it.each([
+    [0, '£0.00'],
+    [1234, '£1,234.00'],
+    ['1234.50', '£1,234.50'],
+  ])('renders amount %s using the shared monetary formatter', (amount, expected) => {
+    render(data([{ ...rows(1)[0], amount }]));
+    const monetary = element().querySelector('opal-lib-custom-accessible-monetary')!;
+    expect(monetary.textContent!.trim()).toBe(expected);
+  });
+
+  it('provides an accessible spoken value for negative amounts', () => {
+    render(data([{ ...rows(1)[0], amount: -20 }]));
+    const monetary = element().querySelector('opal-lib-custom-accessible-monetary')!;
+    expect(monetary.querySelector('[aria-hidden="true"]')!.textContent).toBe('-£20.00');
+    expect(monetary.querySelector('.govuk-visually-hidden')!.textContent).toBe('minus £20.00');
   });
 
   it('changes the active column and applies the chosen sort to replacement rows', () => {
