@@ -220,7 +220,7 @@ describe('buildEnforcementActionAddPayload', () => {
       );
 
       expect(payload.enforcement_result_responses).toEqual([
-        { parameter_name: preserveParameterNames ? 'courtcode' : 'court_code', response: '123' },
+        { parameter_name: 'courtcode', response: '123' },
         { parameter_name: preserveParameterNames ? 'daysindefault' : 'days_in_default', response: '14' },
         { parameter_name: preserveParameterNames ? 'basisofcommittal' : 'basis_of_committal', response: 'Basis' },
         { parameter_name: preserveParameterNames ? 'basisofcommittal_cy' : 'basis_of_committal_cy', response: 'Sail' },

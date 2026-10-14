@@ -1274,6 +1274,7 @@ describe('FinesAccPayloadService', () => {
     it.each([true, false, undefined])('uses the release-1b-1-1 flag value %s for payload names', (enabled) => {
       mockGlobalStore.featureFlags.mockReturnValue(enabled === undefined ? {} : { 'release-1b-1-1': enabled });
       const fields = structuredClone(FINES_ACC_PAYLOAD_ENFORCEMENT_ACTION_ADD_FIELDS_MOCK);
+      fields[0].parameterName = 'basisofcommittal';
       fields[1].parameterName = 'hearingdate';
       const payload = service.buildEnforcementActionAddPayload(
         FINES_ACC_PAYLOAD_ENFORCEMENT_ACTION_ADD_RESULT_MOCK,
@@ -1281,8 +1282,12 @@ describe('FinesAccPayloadService', () => {
         FINES_ACC_PAYLOAD_ENFORCEMENT_ACTION_ADD_LUMP_SUM_PLUS_INSTALMENTS_FORM_STATE_MOCK,
       );
       expect(payload.enforcement_result_responses).toContainEqual({
-        parameter_name: enabled ? 'hearingdate' : 'hearing_date',
+        parameter_name: 'hearingdate',
         response: '2026-05-20',
+      });
+      expect(payload.enforcement_result_responses).toContainEqual({
+        parameter_name: enabled ? 'basisofcommittal' : 'basis_of_committal',
+        response: 'Reason',
       });
     });
 
