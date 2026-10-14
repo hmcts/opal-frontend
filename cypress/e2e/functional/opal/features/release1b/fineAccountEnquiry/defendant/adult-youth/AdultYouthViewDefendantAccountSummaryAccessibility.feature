@@ -7,7 +7,7 @@ Feature: Adult Youth View Defendant Account Summary Accessibility
     And I clear all approved accounts
 
   @R1BDrop1 @JIRA-STORY:PO-777 @JIRA-EPIC:PO-2472 @JIRA-TEST-KEY:PO-5571
-  Scenario: Complete View Defendant Account Adult or Youth Summary and Comments functionality Accessibility
+  Scenario: Adult or youth account summary and comments are accessible
     # Create & publish an individual (adultOrYouthOnly) account then check accessibility
     Given I create a "adultOrYouthOnly" draft account with the following details and set status "Publishing Pending" using user "opal-test-10@dev.platform.hmcts.net":
       | Account_status                          | Submitted                            |
@@ -36,12 +36,12 @@ Feature: Adult Youth View Defendant Account Summary Accessibility
       | Line 3  | Line3 Test   |
     Then I check the page for accessibility
 
-  @R1BDrop1 @JIRA-STORY:PO-2673 @JIRA-EPIC:PO-2673 @JIRA-TEST-KEY:PO-2675 @skip @JIRA-DEFECT:PO-9657
-  Scenario: Account details reflows without horizontal overflow at narrow viewport
+  @R1BDrop1 @JIRA-STORY:PO-2673 @JIRA-EPIC:PO-2673 @JIRA-TEST-KEY:PO-2675 @JIRA-DEFECT:PO-9657
+  Scenario: Account details reflows without horizontal overflow for valid maximum-length unbroken names
     Given I create a "adultOrYouthOnly" draft account with the following details and set status "Publishing Pending" using user "opal-test-10@dev.platform.hmcts.net":
       | Account_status                          | Submitted                            |
-      | account.defendant.forenames             | very long firstname                  |
-      | account.defendant.surname               | WrapCleanly{uniq}                    |
+      | account.defendant.forenames             | FirstNameTwentyChars                 |
+      | account.defendant.surname               | SurnameThirtyCharactersLongNam       |
       | account.defendant.email_address_1       | John.AccDetailSurname{uniq}@test.com |
       | account.defendant.telephone_number_home | 02078259314                          |
       | account.account_type                    | Fine                                 |
@@ -50,11 +50,11 @@ Feature: Adult Youth View Defendant Account Summary Accessibility
       | account.collection_order_made_today     | false                                |
       | account.payment_card_request            | false                                |
       | account.defendant.dob                   | 2002-05-15                           |
-    And I search for the account by last name "WrapCleanly{uniq}" and open the latest result
+    And I search for the account by last name "SurnameThirtyCharactersLongNam" and open the latest result
     And I set the browser viewport to 320 by 900
     Then the account details page should not horizontally overflow
     And the account details summary columns should stack below the primary content
     And the account information and summary metrics should remain readable
     And the account details header action should reflow below the account name
-    And I should see the page header contains "A very long first name that should wrap cleanly"
+    And I should see the page header contains "FirstNameTwentyChars SURNAMETHIRTYCHARACTERSLONGNAM"
     And I check the page for accessibility

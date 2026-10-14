@@ -6,7 +6,7 @@ Feature: Company Add Account Note Accessibility
     Given I am logged in with email "opal-test@dev.platform.hmcts.net"
     And I clear all approved accounts
   @R1BDrop1 @JIRA-STORY:PO-771 @JIRA-STORY:PO-807 @JIRA-EPIC:PO-2472 @JIRA-TEST-KEY:PO-5505
-  Scenario: Check Add Account Note Accessibility with Axe-Core for Company Account
+  Scenario: Add account note is accessible for a company account
     Given I create a "company" draft account with the following details and set status "Publishing Pending" using user "opal-test-10@dev.platform.hmcts.net":
       | Account_status                      | Submitted                   |
       | account.defendant.company_name      | AccNote comp{uniq}          |

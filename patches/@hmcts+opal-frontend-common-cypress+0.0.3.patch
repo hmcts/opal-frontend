@@ -1,7 +1,21 @@
+diff --git a/node_modules/@hmcts/opal-frontend-common-cypress/dist/cucumber/find-unused-steps.js b/node_modules/@hmcts/opal-frontend-common-cypress/dist/cucumber/find-unused-steps.js
+index c9f9c32..5497c9d 100644
+--- a/node_modules/@hmcts/opal-frontend-common-cypress/dist/cucumber/find-unused-steps.js
++++ b/node_modules/@hmcts/opal-frontend-common-cypress/dist/cucumber/find-unused-steps.js
+@@ -152,7 +152,7 @@ function buildRegexStepMatcher(source, flags) {
+  * @returns The escaped text.
+  */
+ function escapeForRegExp(value) {
+-    return value.replace(/[-/\\^$*+?.()|[\]{}]/gu, '\\$&');
++    return value.replace(/[\/\\^$*+?.()|[\]{}]/gu, '\\$&');
+ }
+ /**
+  * Records the character index where each line in the text begins.
 diff --git a/node_modules/@hmcts/opal-frontend-common-cypress/dist/metadata/jira-metadata-policy-cli.js b/node_modules/@hmcts/opal-frontend-common-cypress/dist/metadata/jira-metadata-policy-cli.js
+index d91f414..f098a30 100644
 --- a/node_modules/@hmcts/opal-frontend-common-cypress/dist/metadata/jira-metadata-policy-cli.js
 +++ b/node_modules/@hmcts/opal-frontend-common-cypress/dist/metadata/jira-metadata-policy-cli.js
-@@ -93,7 +93,7 @@
+@@ -93,7 +93,7 @@ function printJiraMetadataSuccess(testCount) {
          return;
      }
      console.log(`Checked ${testCount} covered component/functional E2E tests.`);
@@ -10,7 +24,7 @@ diff --git a/node_modules/@hmcts/opal-frontend-common-cypress/dist/metadata/jira
  }
  /**
   * Prints the failure summary for a Jira metadata validation run.
-@@ -103,14 +103,21 @@
+@@ -103,14 +103,21 @@ function printJiraMetadataSuccess(testCount) {
   * @returns Nothing. Output is written to stderr.
   */
  function printJiraMetadataFailures(failures, testCount) {
@@ -35,9 +49,10 @@ diff --git a/node_modules/@hmcts/opal-frontend-common-cypress/dist/metadata/jira
  }
  /**
 diff --git a/node_modules/@hmcts/opal-frontend-common-cypress/dist/metadata/jira-metadata-policy.js b/node_modules/@hmcts/opal-frontend-common-cypress/dist/metadata/jira-metadata-policy.js
+index 1724f77..d11b06a 100644
 --- a/node_modules/@hmcts/opal-frontend-common-cypress/dist/metadata/jira-metadata-policy.js
 +++ b/node_modules/@hmcts/opal-frontend-common-cypress/dist/metadata/jira-metadata-policy.js
-@@ -25,6 +25,7 @@
+@@ -25,6 +25,7 @@ const JIRA_DEFECT_PREFIX = '@JIRA-DEFECT:';
  const JIRA_EPIC_PREFIX = '@JIRA-EPIC:';
  const JIRA_NFR_PREFIX = '@JIRA-NFR:';
  const JIRA_STORY_PREFIX = '@JIRA-STORY:';
@@ -45,7 +60,7 @@ diff --git a/node_modules/@hmcts/opal-frontend-common-cypress/dist/metadata/jira
  const SCENARIO_KEYWORDS = ['Scenario Outline:', 'Scenario:', 'Example:'];
  /**
   * Applies default directory settings for Jira metadata validation.
-@@ -57,9 +58,9 @@
+@@ -57,9 +58,9 @@ function validateJiraMetadataPolicy(options = {}, cwd = process.cwd()) {
          const units = parseTestUnits(filePath, content);
          tests.push(...units);
          for (const unit of units) {
@@ -58,7 +73,7 @@ diff --git a/node_modules/@hmcts/opal-frontend-common-cypress/dist/metadata/jira
              }
          }
      }
-@@ -96,8 +97,17 @@
+@@ -96,7 +97,16 @@ function validateTestUnit(unit) {
      if (unit.epics.length === 0) {
          missing.push('@JIRA-EPIC');
      }
@@ -70,17 +85,17 @@ diff --git a/node_modules/@hmcts/opal-frontend-common-cypress/dist/metadata/jira
 +        const value = tag.slice(tag.indexOf(':') + 1).trim();
 +        return !JIRA_KEY_VALUE_REGEX.test(value);
 +    });
- }
++}
 +function getAllJiraMetadataTags(unit) {
 +    return [...unit.defects, ...unit.epics, ...unit.nfrs, ...unit.stories];
-+}
+ }
  /**
   * Routes a supported test file to the parser that understands its format.
-  *
 diff --git a/node_modules/@hmcts/opal-frontend-common-cypress/dist/runner/opal-suite-runner.js b/node_modules/@hmcts/opal-frontend-common-cypress/dist/runner/opal-suite-runner.js
+index 07fa401..17371dd 100644
 --- a/node_modules/@hmcts/opal-frontend-common-cypress/dist/runner/opal-suite-runner.js
 +++ b/node_modules/@hmcts/opal-frontend-common-cypress/dist/runner/opal-suite-runner.js
-@@ -243,7 +243,8 @@
+@@ -243,7 +243,8 @@ function executeSuite(suite, options, cwd, baseEnv) {
          return testExitCode;
      }
      if (config.isComponent) {

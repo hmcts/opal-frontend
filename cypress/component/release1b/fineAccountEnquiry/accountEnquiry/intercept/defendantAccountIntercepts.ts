@@ -16,7 +16,7 @@ import { IOpalFinesAccountMajorCreditorAtAGlance } from 'src/app/flows/fines/ser
 import { IOpalFinesAccountMajorCreditorDetailsHistoryAndNotesTabRefData } from 'src/app/flows/fines/services/opal-fines-service/interfaces/opal-fines-account-major-creditor-details-history-and-notes-tab-ref-data.interface';
 
 /**
- * Intercepts the POST request to the `/opal-fines-service/notes/add` endpoint during Cypress tests.
+ * Intercepts the POST request to the `/opal-fines-service/notes` endpoint during Cypress tests.
  *
  * This function mocks the network request by returning a 201 status code with an empty response body.
  * No response data is needed, as there is no behavior based on the response content.
@@ -24,7 +24,7 @@ import { IOpalFinesAccountMajorCreditorDetailsHistoryAndNotesTabRefData } from '
  */
 export function interceptAddNotes() {
   return cy
-    .intercept('POST', '/opal-fines-service/notes/add', {
+    .intercept('POST', '/opal-fines-service/notes', {
       statusCode: 201,
       body: {},
     })

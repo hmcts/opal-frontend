@@ -95,6 +95,7 @@ export const MOCK_ACCOUNT_STATE = {
   party_type: 'Individual',
   welsh_speaking: 'Y',
   base_version: '1',
+  originator_type: null,
 };
 
 export const ADD_COMMENTS_API_RESPONSE_MOCK = {

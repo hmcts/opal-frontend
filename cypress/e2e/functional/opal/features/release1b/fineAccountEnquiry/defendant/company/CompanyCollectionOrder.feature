@@ -22,15 +22,14 @@ Feature: Company Collection Order
         | account.collection_order_made_today             | false                                   |
         | account.payment_card_request                    | false                                   |
         | account.payment_terms.enforcements[0].result_id | PRIS                                    |
-      When I open the company account details for "Collection Order Company{uniq}"
-      And I go to the Enforcement tab
+      When the Enforcement tab is displayed for company account "Collection Order Company{uniq}"
 
     @R1BDrop1 @JIRA-EPIC:PO-1675 @JIRA-TEST-KEY:PO-5355
     Scenario: Save Collection Order status for a company account
-      And I open the Change Collection Order status form
+      And the Change Collection Order status form is displayed
       Then I should see the Change Collection Order status page
       And I should see the account identifier "Collection Order Company{uniq}"
-      And I select "Yes" for Collection Order status
+      And the Collection Order status is "Yes"
       And I submit the Change Collection Order status form
       Then I should return to the Enforcement tab
       And I should see the collection order success banner "Collection Order status changed"
@@ -38,14 +37,14 @@ Feature: Company Collection Order
 
     @R1BDrop1 @JIRA-EPIC:PO-1675 @JIRA-TEST-KEY:PO-5356
     Scenario: Cancel without making a selection returns to the Enforcement tab (company account)
-      And I open the Change Collection Order status form
+      And the Change Collection Order status form is displayed
       And I cancel the Change Collection Order status form without making changes
       Then I should return to the Enforcement tab
 
     @R1BDrop1 @JIRA-EPIC:PO-1675 @JIRA-TEST-KEY:PO-5357
     Scenario: Cancel after selecting a value shows a route guard (company account)
-      And I open the Change Collection Order status form
-      And I select "Yes" for Collection Order status
+      And the Change Collection Order status form is displayed
+      And the Collection Order status is "Yes"
       And I cancel the Change Collection Order status form and choose to stay
       Then I should remain on the Change Collection Order status page
 

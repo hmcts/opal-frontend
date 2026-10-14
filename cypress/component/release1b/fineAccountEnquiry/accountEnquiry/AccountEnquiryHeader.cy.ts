@@ -722,7 +722,7 @@ describe('Account Enquiry - Defendant Header', () => {
 
   it(
     'AC1, AC2, AC3, AC4, AC5, AC7, AC8, AC9, AC10: keeps the header readable for a long company name at narrow widths',
-    { tags: [...buildTags('@JIRA-STORY:PO-2673'), '@JIRA-EPIC:PO-2673', '@JIRA-TEST-KEY:PO-2674'] },
+    { tags: [...buildTags('@JIRA-STORY:PO-2673'), '@JIRA-EPIC:PO-8248'] },
     () => {
       cy.viewport(320, 900);
 

@@ -7,7 +7,7 @@ Feature: Company View Defendant Account Summary Accessibility
     And I clear all approved accounts
 
   @R1BDrop1 @JIRA-STORY:PO-777 @JIRA-EPIC:PO-2472 @JIRA-TEST-KEY:PO-5572
-  Scenario: Check View Defendant Company Account Summary and Comments Accessibility with Axe-Core
+  Scenario: Company account summary and comments are accessible
     # Create & publish a company account then check accessibility
     Given I create a "company" draft account with the following details and set status "Publishing Pending" using user "opal-test-10@dev.platform.hmcts.net":
       | Account_status                      | Submitted                    |
