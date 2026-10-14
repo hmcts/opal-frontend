@@ -1137,7 +1137,7 @@ describe('Account Enquiry Enforcement Status', () => {
 
   it(
     'displays title-cased parameter names when release-1b-1-1 is disabled',
-    { tags: [...buildTags('@JIRA-STORY:PO-10789')] },
+    { tags: [...buildTags('@JIRA-STORY:PO-10789'), '@JIRA-EPIC:PO-978'] },
     () => {
       const header = buildIndividualHeader();
       const enforcement = buildEnforcementMock();
