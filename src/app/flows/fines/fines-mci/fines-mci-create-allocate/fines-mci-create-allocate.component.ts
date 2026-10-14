@@ -5,6 +5,7 @@ import { FINES_ROUTING_PATHS } from '@app/flows/fines/routing/constants/fines-ro
 import { FINES_DASHBOARD_ROUTING_PATHS } from '@app/flows/fines/constants/fines-dashboard-routing-paths.constant';
 import { GovukButtonDirective } from '@hmcts/opal-frontend-common/directives/govuk-button';
 import { CanDeactivateTypes } from '@hmcts/opal-frontend-common/guards/can-deactivate/types';
+import { DateService } from '@hmcts/opal-frontend-common/services/date-service';
 import { FINES_MCI_ROUTING_PATHS } from '../routing/constants/fines-mci-routing-paths.constant';
 import { FinesMciCreateAllocateTableComponent } from './fines-mci-create-allocate-table/fines-mci-create-allocate-table.component';
 import { FINES_MCI_CREATE_ALLOCATE_TABLE_SORT_DEFAULT } from './fines-mci-create-allocate-table/constants/fines-mci-create-allocate-table-sort-default.constant';
@@ -25,6 +26,7 @@ type FinesMciTillsViewState =
 })
 export class FinesMciCreateAllocateComponent {
   private readonly opalFinesService = inject(OpalFines);
+  private readonly dateService = inject(DateService);
   protected selectedTillsCount = 0;
   protected readonly financeDashboardRoute = [
     '/',
@@ -40,36 +42,34 @@ export class FinesMciCreateAllocateComponent {
     FINES_MCI_ROUTING_PATHS.children.till,
     FINES_MCI_ROUTING_PATHS.children.selectBusinessUnit,
   ];
-  public readonly tillsState$ = this.opalFinesService.getTills().pipe(
-    map(
-      ({ tills }): FinesMciTillsViewState => ({
-        status: 'success',
-        tills: tills.map((till): IFinesMciCreateAllocateTableData => {
-          const processedDate = till.date_processed ? new Date(`${till.date_processed}T00:00:00`) : null;
-          const dateCreatedDisplay = processedDate
-            ? new Intl.DateTimeFormat('en-GB', {
-                day: 'numeric',
-                month: 'long',
-                year: 'numeric',
-              }).format(processedDate)
-            : '';
+  public readonly tillsState$ = this.opalFinesService
+    .getTills({ statuses: ['CREATED', 'FAILED'], auto_payments: false })
+    .pipe(
+      map(
+        ({ tills }): FinesMciTillsViewState => ({
+          status: 'success',
+          tills: tills.map((till): IFinesMciCreateAllocateTableData => {
+            const processedDate = till.date_processed ? this.dateService.getFromIso(till.date_processed) : null;
+            const dateCreatedDisplay = processedDate?.isValid
+              ? this.dateService.toFormat(processedDate.setLocale('en-gb'), "dd MMMM yyyy 'at' HH:mm")
+              : '';
 
-          return {
-            tillId: String(till.till_id),
-            'Till number': String(till.till_number),
-            Payments: till.payments_count,
-            Amount: till.amount,
-            'Business unit': till.business_unit_name,
-            'Created by': till.processed_by,
-            'Date created': processedDate?.getTime() ?? null,
-            dateCreatedDisplay: dateCreatedDisplay,
-          };
+            return {
+              tillId: String(till.till_id),
+              'Till number': String(till.till_number),
+              Payments: till.payments_count,
+              Amount: till.amount,
+              'Business unit': till.business_unit_name,
+              'Created by': till.processed_by,
+              'Date created': processedDate?.isValid ? processedDate.toMillis() : null,
+              dateCreatedDisplay: dateCreatedDisplay,
+            };
+          }),
         }),
-      }),
-    ),
-    catchError(() => of({ status: 'error' } as const)),
-    startWith({ status: 'loading' } as const),
-  );
+      ),
+      catchError(() => of({ status: 'error' } as const)),
+      startWith({ status: 'loading' } as const),
+    );
   public readonly tableSort = FINES_MCI_CREATE_ALLOCATE_TABLE_SORT_DEFAULT;
 
   /** Tracks selected rows so navigation can warn before losing the selection. */

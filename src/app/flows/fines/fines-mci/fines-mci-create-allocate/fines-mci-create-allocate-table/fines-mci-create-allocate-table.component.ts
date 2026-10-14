@@ -38,7 +38,6 @@ import { IFinesMciCreateAllocateTableSort } from './interfaces/fines-mci-create-
     MojSortableTableStatusComponent,
   ],
   templateUrl: './fines-mci-create-allocate-table.component.html',
-  styleUrl: './fines-mci-create-allocate-table.component.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class FinesMciCreateAllocateTableComponent extends AbstractSortableTableComponent {

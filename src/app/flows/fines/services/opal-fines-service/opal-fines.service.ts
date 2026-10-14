@@ -78,6 +78,7 @@ import { IOpalFinesReportInstancesResponse } from './interfaces/opal-fines-repor
 import { IOpalFinesInterfaceJobsSummaryParams } from './interfaces/opal-fines-interface-jobs-summary-params.interface';
 import { IOpalFinesInterfaceJobsSummaryResponse } from './interfaces/opal-fines-interface-jobs-summary-response.interface';
 import { IOpalFinesTillsResponse } from './interfaces/opal-fines-tills-response.interface';
+import { IOpalFinesTillsParams } from './interfaces/opal-fines-tills-params.interface';
 import { IOpalFinesProcessInterfaceJobsPayload } from './interfaces/opal-fines-process-interface-jobs-payload.interface';
 
 const SAFE_READ_RETRY_POLICY = {
@@ -1774,7 +1775,10 @@ export class OpalFines {
   }
 
   /** Loads tills available to the authenticated user for manual allocation. */
-  public getTills(): Observable<IOpalFinesTillsResponse> {
-    return this.http.get<IOpalFinesTillsResponse>(OPAL_FINES_PATHS.tills, this.retrySafeReadOptions());
+  public getTills(query: IOpalFinesTillsParams): Observable<IOpalFinesTillsResponse> {
+    let params = new HttpParams();
+    params = this.appendArrayParams(params, this.PARAM_STATUSES, query.statuses);
+    params = params.set('auto_payments', query.auto_payments);
+    return this.http.get<IOpalFinesTillsResponse>(OPAL_FINES_PATHS.tills, this.withRetrySafeReadOptions({ params }));
   }
 }

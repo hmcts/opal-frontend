@@ -1,5 +1,6 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { provideRouter } from '@angular/router';
+import { DateService } from '@hmcts/opal-frontend-common/services/date-service';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
 import { of, throwError } from 'rxjs';
 import { OpalFines } from '../../services/opal-fines-service/opal-fines.service';
@@ -21,7 +22,7 @@ describe('FinesMciCreateAllocateComponent', () => {
         amount: null,
         business_unit_name: 'Westminster - North (Wells Street)',
         processed_by: null,
-        date_processed: '2025-06-12',
+        date_processed: '2025-06-12T13:31:27.270Z',
       },
     ],
   };
@@ -54,9 +55,10 @@ describe('FinesMciCreateAllocateComponent', () => {
     expect(text).toContain('Select the tills you want to allocate');
     expect(text).toContain('Allocate');
     expect(nativeElement.querySelector('a')?.getAttribute('href')).toBe('/fines/dashboard/finance');
-    const createTillButton = nativeElement.querySelector<HTMLButtonElement>('#create-till-button');
-    expect(createTillButton?.tagName).toBe('BUTTON');
-    expect(createTillButton?.getAttribute('href')).toBe('/fines/manual-cash-input/create/till/select-bu');
+    const createTillLink = nativeElement.querySelector<HTMLAnchorElement>('#create-till-button');
+    expect(createTillLink?.tagName).toBe('A');
+    expect(createTillLink?.classList).toContain('govuk-button');
+    expect(createTillLink?.getAttribute('href')).toBe('/fines/manual-cash-input/create/till/select-bu');
   });
 
   it('should render tills returned by the API', () => {
@@ -72,7 +74,10 @@ describe('FinesMciCreateAllocateComponent', () => {
     expect(text).toContain('Date created');
     expect(text).toContain('9005');
     expect(text).toContain('Westminster - North (Wells Street)');
-    expect(text).toContain('12 June 2025');
+    const dateService = TestBed.inject(DateService);
+    const createdDate = dateService.getFromIso('2025-06-12T13:31:27.270Z');
+    const expectedDate = dateService.toFormat(createdDate.setLocale('en-gb'), "dd MMMM yyyy 'at' HH:mm");
+    expect(text).toContain(expectedDate);
   });
 
   it('should update the selected tills count when a till is selected', () => {
