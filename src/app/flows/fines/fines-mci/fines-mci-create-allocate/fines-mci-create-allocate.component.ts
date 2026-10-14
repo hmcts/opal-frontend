@@ -4,6 +4,7 @@ import { RouterLink } from '@angular/router';
 import { FINES_ROUTING_PATHS } from '@app/flows/fines/routing/constants/fines-routing-paths.constant';
 import { FINES_DASHBOARD_ROUTING_PATHS } from '@app/flows/fines/constants/fines-dashboard-routing-paths.constant';
 import { GovukButtonDirective } from '@hmcts/opal-frontend-common/directives/govuk-button';
+import { FINES_MCI_ROUTING_PATHS } from '../routing/constants/fines-mci-routing-paths.constant';
 import { FinesMciCreateAllocateTableComponent } from './fines-mci-create-allocate-table/fines-mci-create-allocate-table.component';
 import { FINES_MCI_CREATE_ALLOCATE_TABLE_SORT_DEFAULT } from './fines-mci-create-allocate-table/constants/fines-mci-create-allocate-table-sort-default.constant';
 import { OpalFines } from '../../services/opal-fines-service/opal-fines.service';
@@ -28,6 +29,14 @@ export class FinesMciCreateAllocateComponent {
     FINES_ROUTING_PATHS.root,
     FINES_DASHBOARD_ROUTING_PATHS.root,
     FINES_DASHBOARD_ROUTING_PATHS.children.finance,
+  ];
+  protected readonly createTillSelectBusinessUnitRoute = [
+    '/',
+    FINES_ROUTING_PATHS.root,
+    FINES_MCI_ROUTING_PATHS.root,
+    FINES_MCI_ROUTING_PATHS.children.create,
+    FINES_MCI_ROUTING_PATHS.children.till,
+    FINES_MCI_ROUTING_PATHS.children.selectBusinessUnit,
   ];
   public readonly tillsState$ = this.opalFinesService.getTills().pipe(
     map(

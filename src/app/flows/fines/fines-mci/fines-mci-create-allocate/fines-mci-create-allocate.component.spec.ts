@@ -54,7 +54,9 @@ describe('FinesMciCreateAllocateComponent', () => {
     expect(text).toContain('Select the tills you want to allocate');
     expect(text).toContain('Allocate');
     expect(nativeElement.querySelector('a')?.getAttribute('href')).toBe('/fines/dashboard/finance');
-    expect(nativeElement.querySelector('#create-till-button')?.tagName).toBe('BUTTON');
+    const createTillButton = nativeElement.querySelector<HTMLButtonElement>('#create-till-button');
+    expect(createTillButton?.tagName).toBe('BUTTON');
+    expect(createTillButton?.getAttribute('href')).toBe('/fines/manual-cash-input/create/till/select-bu');
   });
 
   it('should render tills returned by the API', () => {

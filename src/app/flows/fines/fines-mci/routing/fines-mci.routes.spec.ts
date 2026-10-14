@@ -3,6 +3,7 @@ import { TitleResolver } from '@hmcts/opal-frontend-common/resolvers/title';
 import { authGuard } from '@hmcts/opal-frontend-common/guards/auth';
 import { routePermissionsGuard } from '@hmcts/opal-frontend-common/guards/route-permissions';
 import { FINES_PERMISSIONS } from '@app/constants/fines-permissions.constant';
+import { HIDE_PRIMARY_NAV_ROUTE_DATA_KEY } from '@app/constants/route-data.constant';
 import { fetchBusinessUnitsResolver } from '@app/flows/fines/routing/resolvers/fetch-business-units-resolver/fetch-business-units.resolver';
 import { routing } from './fines-mci.routes';
 import { FINES_MCI_ROUTING_PATHS } from './constants/fines-mci-routing-paths.constant';
@@ -37,18 +38,23 @@ describe('finesMci routes', () => {
   });
 
   it('should expose a guarded create till select business unit placeholder route', () => {
-    const createRoute = routing.find((route) => route.path === 'create');
-    const createTillRoute = createRoute?.children?.find((route) => route.path === 'till');
-    const createTillSelectBusinessUnitRoute = createTillRoute?.children?.find((route) => route.path === 'select-bu');
+    const createRoute = routing.find((route) => route.path === FINES_MCI_ROUTING_PATHS.children.create);
+    const createTillRoute = createRoute?.children?.find(
+      (route) => route.path === FINES_MCI_ROUTING_PATHS.children.till,
+    );
+    const createTillSelectBusinessUnitRoute = createTillRoute?.children?.find(
+      (route) => route.path === FINES_MCI_ROUTING_PATHS.children.selectBusinessUnit,
+    );
 
     expect(createTillSelectBusinessUnitRoute).toEqual(
       expect.objectContaining({
-        path: 'select-bu',
+        path: FINES_MCI_ROUTING_PATHS.children.selectBusinessUnit,
         canActivate: [authGuard, routePermissionsGuard],
         data: {
           permission: 'PROCESS_AND_ALLOCATE_PAYMENTS',
           routePermissionId: [FINES_PERMISSIONS['process-and-allocate-payments']],
           title: FINES_MCI_ROUTING_TITLES.children.createTillSelectBusinessUnit,
+          [HIDE_PRIMARY_NAV_ROUTE_DATA_KEY]: true,
         },
         resolve: expect.objectContaining({
           businessUnits: fetchBusinessUnitsResolver,
