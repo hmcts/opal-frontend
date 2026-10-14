@@ -194,7 +194,7 @@ describe('Minor Creditor Payment Hold', () => {
     );
 
     it(
-      'AC3a: No - cancel returns to the At a Glance tab without saving any changes',
+      'AC3a: No - cancel returns from add payment hold to the At a Glance tab without saving any changes',
       { tags: buildTags(ADD_PAYMENT_HOLD_STORY_TAG, PAYMENT_HOLD_EPIC_TAG, '@JIRA-TEST-KEY:PO-4242') },
       () => {
         const initialAtAGlance = createMinorCreditorAtAGlanceWithoutDefendantMock();
@@ -331,7 +331,7 @@ describe('Minor Creditor Payment Hold', () => {
     );
 
     it(
-      'AC3a: No - cancel returns to the At a Glance tab without saving any changes',
+      'AC3a: No - cancel returns from remove payment hold to the At a Glance tab without saving any changes',
       { tags: buildTags(REMOVE_PAYMENT_HOLD_STORY_TAG, PAYMENT_HOLD_EPIC_TAG, '@JIRA-TEST-KEY:PO-4248') },
       () => {
         const initialAtAGlance = createMinorCreditorAtAGlanceWithoutDefendantMock();

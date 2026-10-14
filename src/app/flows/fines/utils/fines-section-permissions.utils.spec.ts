@@ -9,6 +9,7 @@ import { REPORTS_PERMISSIONS } from '../constants/reports-permissions.constant';
 import { SEARCH_PERMISSIONS } from '../constants/search-permissions.constant';
 import {
   RELEASE_1A_1_1_FEATURE_FLAG,
+  RELEASE_1A_1_2_FEATURE_FLAG,
   RELEASE_1A_FEATURE_FLAG,
   RELEASE_1C_ADMINISTRATION_FEATURE_FLAG,
   RELEASE_1C_FINANCIAL_MOVEMENTS_FEATURE_FLAG,
@@ -75,6 +76,7 @@ describe('fines-section-permissions.utils', () => {
   const allReleaseFlagsEnabled = {
     [RELEASE_1A_FEATURE_FLAG]: true,
     [RELEASE_1A_1_1_FEATURE_FLAG]: true,
+    [RELEASE_1A_1_2_FEATURE_FLAG]: true,
     [RELEASE_1B_FEATURE_FLAG]: true,
     [RELEASE_1C_WRITE_OFF_FEATURE_FLAG]: true,
     [RELEASE_1C_ENFORCEMENT_OPERATIONAL_REPORTING_FEATURE_FLAG]: true,
@@ -137,6 +139,7 @@ describe('fines-section-permissions.utils', () => {
       expect(getFeatureFlagReleaseState(release1aEnabled)).toEqual({
         [RELEASE_1A_FEATURE_FLAG]: true,
         [RELEASE_1A_1_1_FEATURE_FLAG]: false,
+        [RELEASE_1A_1_2_FEATURE_FLAG]: false,
         [RELEASE_1B_FEATURE_FLAG]: false,
         [RELEASE_1C_WRITE_OFF_FEATURE_FLAG]: false,
         [RELEASE_1C_ENFORCEMENT_OPERATIONAL_REPORTING_FEATURE_FLAG]: false,
@@ -149,6 +152,7 @@ describe('fines-section-permissions.utils', () => {
       expect(getFeatureFlagReleaseState(release1cWriteOffEnabled)).toEqual({
         [RELEASE_1A_FEATURE_FLAG]: false,
         [RELEASE_1A_1_1_FEATURE_FLAG]: false,
+        [RELEASE_1A_1_2_FEATURE_FLAG]: false,
         [RELEASE_1B_FEATURE_FLAG]: false,
         [RELEASE_1C_WRITE_OFF_FEATURE_FLAG]: true,
         [RELEASE_1C_ENFORCEMENT_OPERATIONAL_REPORTING_FEATURE_FLAG]: false,
@@ -161,6 +165,7 @@ describe('fines-section-permissions.utils', () => {
       expect(getFeatureFlagReleaseState(release1cReportingEnabled)).toEqual({
         [RELEASE_1A_FEATURE_FLAG]: false,
         [RELEASE_1A_1_1_FEATURE_FLAG]: false,
+        [RELEASE_1A_1_2_FEATURE_FLAG]: false,
         [RELEASE_1B_FEATURE_FLAG]: false,
         [RELEASE_1C_WRITE_OFF_FEATURE_FLAG]: false,
         [RELEASE_1C_ENFORCEMENT_OPERATIONAL_REPORTING_FEATURE_FLAG]: true,
@@ -173,6 +178,7 @@ describe('fines-section-permissions.utils', () => {
       expect(getFeatureFlagReleaseState(release1cAdministrationEnabled)).toEqual({
         [RELEASE_1A_FEATURE_FLAG]: false,
         [RELEASE_1A_1_1_FEATURE_FLAG]: false,
+        [RELEASE_1A_1_2_FEATURE_FLAG]: false,
         [RELEASE_1B_FEATURE_FLAG]: false,
         [RELEASE_1C_WRITE_OFF_FEATURE_FLAG]: false,
         [RELEASE_1C_ENFORCEMENT_OPERATIONAL_REPORTING_FEATURE_FLAG]: false,
@@ -185,6 +191,7 @@ describe('fines-section-permissions.utils', () => {
       expect(getFeatureFlagReleaseState(release1cFinancialMovementsEnabled)).toEqual({
         [RELEASE_1A_FEATURE_FLAG]: false,
         [RELEASE_1A_1_1_FEATURE_FLAG]: false,
+        [RELEASE_1A_1_2_FEATURE_FLAG]: false,
         [RELEASE_1B_FEATURE_FLAG]: false,
         [RELEASE_1C_WRITE_OFF_FEATURE_FLAG]: false,
         [RELEASE_1C_ENFORCEMENT_OPERATIONAL_REPORTING_FEATURE_FLAG]: false,
@@ -197,6 +204,7 @@ describe('fines-section-permissions.utils', () => {
       expect(getFeatureFlagReleaseState(release1cBankingInterfacesEnabled)).toEqual({
         [RELEASE_1A_FEATURE_FLAG]: false,
         [RELEASE_1A_1_1_FEATURE_FLAG]: false,
+        [RELEASE_1A_1_2_FEATURE_FLAG]: false,
         [RELEASE_1B_FEATURE_FLAG]: false,
         [RELEASE_1C_WRITE_OFF_FEATURE_FLAG]: false,
         [RELEASE_1C_ENFORCEMENT_OPERATIONAL_REPORTING_FEATURE_FLAG]: false,
@@ -209,6 +217,7 @@ describe('fines-section-permissions.utils', () => {
       expect(getFeatureFlagReleaseState({})).toEqual({
         [RELEASE_1A_FEATURE_FLAG]: false,
         [RELEASE_1A_1_1_FEATURE_FLAG]: false,
+        [RELEASE_1A_1_2_FEATURE_FLAG]: false,
         [RELEASE_1B_FEATURE_FLAG]: false,
         [RELEASE_1C_WRITE_OFF_FEATURE_FLAG]: false,
         [RELEASE_1C_ENFORCEMENT_OPERATIONAL_REPORTING_FEATURE_FLAG]: false,

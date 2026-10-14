@@ -321,6 +321,123 @@ export class AccountDetailsEnforcementActions {
   }
 
   /**
+   * Asserts that the Court code autocomplete has populated options.
+   */
+  public assertCourtCodeAutocompleteDisplayed(): void {
+    log('assert', 'Court code autocomplete has populated options');
+
+    cy.get(ENF_ACTION_ADD.courtCodeAutocomplete, {
+      timeout: AccountDetailsEnforcementActions.DEFAULT_TIMEOUT,
+    })
+      .should('be.visible')
+      .and('not.be.disabled')
+      .click();
+
+    cy.get(ENF_ACTION_ADD.courtCodeOptions, {
+      timeout: AccountDetailsEnforcementActions.DEFAULT_TIMEOUT,
+    }).should('have.length.greaterThan', 0);
+  }
+
+  /**
+   * Asserts that court autocomplete options use the Court name (court code) format.
+   */
+  public assertCourtCodeOptionLabelsUseNameAndCodeFormat(): void {
+    cy.get(ENF_ACTION_ADD.courtCodeOptions, {
+      timeout: AccountDetailsEnforcementActions.DEFAULT_TIMEOUT,
+    }).then(($options) => {
+      const optionLabels = [...$options].map((option) => option.textContent?.trim() ?? '');
+
+      cy.log(`Court option labels: ${JSON.stringify(optionLabels)}`);
+
+      expect(optionLabels).to.have.length.greaterThan(0);
+      optionLabels.forEach((label) => {
+        expect(label).to.match(/^.+ \(\d+\)$/);
+      });
+    });
+  }
+
+  /**
+   * Searches for court options using the autocomplete input.
+   *
+   * @param searchText - Court name or code fragment to search for.
+   */
+  public searchCourtCodeOptions(searchText: string): void {
+    log('action', 'Searching Court code options', { searchText });
+
+    cy.get(ENF_ACTION_ADD.courtCodeAutocomplete, {
+      timeout: AccountDetailsEnforcementActions.DEFAULT_TIMEOUT,
+    })
+      .should('be.visible')
+      .click()
+      .clear()
+      .type(searchText, { delay: 0 });
+
+    cy.get(ENF_ACTION_ADD.courtCodeOptions, {
+      timeout: AccountDetailsEnforcementActions.DEFAULT_TIMEOUT,
+    })
+      .should('be.visible')
+      .and('have.length.greaterThan', 0);
+  }
+
+  /**
+   * Selects the first filtered Court code option and verifies its displayed value.
+   */
+  public selectFirstCourtCodeOption(): void {
+    log('action', 'Selecting the first Court code option');
+
+    cy.get(ENF_ACTION_ADD.courtCodeOptions, {
+      timeout: AccountDetailsEnforcementActions.DEFAULT_TIMEOUT,
+    })
+      .first()
+      .invoke('text')
+      .then((optionText) => {
+        const expectedLabel = this.normalize(optionText);
+
+        cy.get(ENF_ACTION_ADD.courtCodeOptions, {
+          timeout: AccountDetailsEnforcementActions.DEFAULT_TIMEOUT,
+        })
+          .first()
+          .click();
+
+        cy.get(ENF_ACTION_ADD.courtCodeAutocomplete, {
+          timeout: AccountDetailsEnforcementActions.DEFAULT_TIMEOUT,
+        }).should('have.value', expectedLabel);
+
+        const courtCode = expectedLabel.match(/\((\d+)\)$/)?.[1];
+        expect(courtCode, 'selected court code').to.not.be.undefined;
+        cy.wrap(courtCode, { log: false }).as('selectedCourtCode');
+      });
+  }
+
+  /**
+   * Selects a radio option for a dynamic enforcement action parameter.
+   *
+   * @param fieldsetSelector - Fieldset selector for the parameter.
+   * @param option - Visible radio option label.
+   */
+  public selectDynamicEnforcementActionRadio(fieldsetSelector: string, option: string): void {
+    log('action', 'Selecting dynamic enforcement action radio option', { option });
+    cy.get(fieldsetSelector, { timeout: AccountDetailsEnforcementActions.DEFAULT_TIMEOUT })
+      .should('be.visible')
+      .contains('label', option)
+      .click();
+  }
+
+  /**
+   * Asserts that the selected Court code is displayed in the autocomplete.
+   */
+  public assertSelectedCourtCodeIsDisplayed(): void {
+    log('assert', 'Selected Court code is displayed');
+
+    cy.get(ENF_ACTION_ADD.courtCodeAutocomplete, {
+      timeout: AccountDetailsEnforcementActions.DEFAULT_TIMEOUT,
+    })
+      .should('be.visible')
+      .invoke('val')
+      .should('match', /^.+ \(\d+\)$/);
+  }
+
+  /**
    * Asserts the add new enforcement action form is visible.
    */
   public assertAddNewEnforcementActionFormVisible(): void {
