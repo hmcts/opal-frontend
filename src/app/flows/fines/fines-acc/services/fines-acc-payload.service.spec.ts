@@ -1,6 +1,7 @@
 import type { Mock } from 'vitest';
 import { FinesAccPayloadService } from './fines-acc-payload.service';
 import { GlobalStore } from '@hmcts/opal-frontend-common/stores/global';
+import { RELEASE_1A_1_2_FEATURE_FLAG } from '../../constants/release-feature-flags.constant';
 import { FinesAccountStore } from '../stores/fines-acc.store';
 import { IFinesAccAddNoteForm } from '../fines-acc-note-add/interfaces/fines-acc-note-add-form.interface';
 import { FINES_ACC_ADD_NOTE_FORM_MOCK } from '../fines-acc-note-add/mocks/fines-acc-add-note-form.mock';
@@ -66,6 +67,7 @@ describe('FinesAccPayloadService', () => {
   beforeEach(() => {
     mockGlobalStore = {
       userState: vi.fn().mockName('GlobalStore.userState'),
+      featureFlags: vi.fn().mockReturnValue({ [RELEASE_1A_1_2_FEATURE_FLAG]: true }),
     };
 
     const mockStore = {

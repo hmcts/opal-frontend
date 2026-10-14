@@ -194,7 +194,7 @@
         <opal-lib-govuk-text-input
           labelText="Sort code"
           labelClasses="govuk-label--s"
-          [hintText]="'Must be 6 digits long, for example, 123456'"
+          [hintText]="sortCodeHintText"
           [inputId]="controls.bankSortCode"
           [inputName]="controls.bankSortCode"
           inputClasses="govuk-input--width-5"
@@ -204,7 +204,7 @@
         <opal-lib-govuk-text-input
           labelText="Account number"
           labelClasses="govuk-label--s"
-          hintText="Must be between 6 and 8 digits long"
+          [hintText]="accountNumberHintText"
           [inputId]="controls.bankAccountNumber"
           [inputName]="controls.bankAccountNumber"
           inputClasses="govuk-input--width-10"

@@ -59,6 +59,9 @@ import { FINES_ACC_MINOR_CREDITOR_ADD_AMEND_CONVERT_CREDITOR_TYPES } from '../co
 import { FINES_ACC_MINOR_CREDITOR_ADD_AMEND_CONVERT_INDIVIDUAL_CONTROL_NAMES } from '../constants/fines-acc-minor-creditor-add-amend-convert-control-names-individual.constant';
 import { FINES_ACC_MINOR_CREDITOR_ADD_AMEND_CONVERT_COMPANY_CONTROL_NAMES } from '../constants/fines-acc-minor-creditor-add-amend-convert-control-names-company.constant';
 import { normalizeSortCode, sortCodeValidator } from '../../../validators/sort-code.validator';
+import { GlobalStore } from '@hmcts/opal-frontend-common/stores/global';
+import { RELEASE_1A_1_2_FEATURE_FLAG } from '../../../constants/release-feature-flags.constant';
+import { getFeatureFlagReleaseState } from '../../../utils/fines-section-permissions.utils';
 
 const SINGLE_ASCII_CHARACTERS_PATTERN_VALIDATOR = patternValidator(SINGLE_ASCII_CHARACTERS, 'singleAsciiCharacters');
 const ALPHANUMERIC_WITH_SPACES_PATTERN_VALIDATOR = patternValidator(
@@ -95,6 +98,7 @@ export class FinesAccMinorCreditorAddAmendConvertFormComponent
   implements OnInit, OnDestroy
 {
   private readonly finesAccStore = inject(FinesAccountStore);
+  private readonly globalStore = inject(GlobalStore);
   protected override formSubmit = new EventEmitter<IFinesAccMinorCreditorAddAmendConvertForm>();
   protected readonly accountNumber = this.finesAccStore.getAccountNumber();
   protected readonly partyName = this.finesAccStore.party_name();
@@ -109,6 +113,20 @@ export class FinesAccMinorCreditorAddAmendConvertFormComponent
   public readonly titleOptions: IGovUkSelectOptions[] = FINES_MAC_TITLE_DROPDOWN_OPTIONS;
   public readonly individualConditionalId = 'facc_minor_creditor_creditor_type_individual_conditional';
   public readonly companyConditionalId = 'facc_minor_creditor_creditor_type_company_conditional';
+
+  private get newSortCodeFunctionalityEnabled(): boolean {
+    return getFeatureFlagReleaseState(this.globalStore.featureFlags())[RELEASE_1A_1_2_FEATURE_FLAG] === true;
+  }
+
+  public get sortCodeHintText(): string {
+    return this.newSortCodeFunctionalityEnabled
+      ? 'Must be 6 digits long, for example, 123456'
+      : 'Must be 6 digits long';
+  }
+
+  public get accountNumberHintText(): string {
+    return this.newSortCodeFunctionalityEnabled ? 'Must be between 6 and 8 digits long' : '';
+  }
 
   public override fieldErrors: IFinesAccMinorCreditorAddAmendConvertFieldErrors = {
     ...FINES_ACC_MINOR_CREDITOR_ADD_AMEND_CONVERT_FIELD_ERRORS,
@@ -181,13 +199,17 @@ export class FinesAccMinorCreditorAddAmendConvertFormComponent
    * Builds detached BACS payment detail controls for the nested-form helpers.
    */
   private buildPaymentDetailControls(): FormGroup {
+    const sortCodeValidators = this.newSortCodeFunctionalityEnabled
+      ? [Validators.required, sortCodeValidator]
+      : [Validators.required, Validators.minLength(6), Validators.maxLength(6), NUMERIC_PATTERN_VALIDATOR];
+
     return new FormGroup({
       [this.controls.bankAccountName]: this.createFormControl([
         Validators.required,
         Validators.maxLength(18),
         SINGLE_ASCII_CHARACTERS_PATTERN_VALIDATOR,
       ]),
-      [this.controls.bankSortCode]: this.createFormControl([Validators.required, sortCodeValidator]),
+      [this.controls.bankSortCode]: this.createFormControl(sortCodeValidators),
       [this.controls.bankAccountNumber]: this.createFormControl([
         Validators.required,
         Validators.minLength(6),
@@ -376,7 +398,7 @@ export class FinesAccMinorCreditorAddAmendConvertFormComponent
   public override handleFormSubmit(event: SubmitEvent): void {
     const sortCodeControl = this.form.get(this.controls.bankSortCode);
 
-    if (sortCodeControl?.valid && sortCodeControl.value) {
+    if (this.newSortCodeFunctionalityEnabled && sortCodeControl?.valid && sortCodeControl.value) {
       sortCodeControl.setValue(normalizeSortCode(sortCodeControl.value), { emitEvent: false });
     }
 

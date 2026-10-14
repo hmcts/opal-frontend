@@ -35,6 +35,8 @@ import { FINES_ACC_COLLECTION_ORDER_PAYLOAD_DEFAULTS } from './constants/fines-a
 import { IOpalFinesUpdateMinorCreditorAccountPayload } from '../../services/opal-fines-service/interfaces/opal-fines-update-minor-creditor-account-payload.interface';
 import { IOpalFinesAccountMinorCreditorAtAGlance } from '../../services/opal-fines-service/interfaces/opal-fines-account-minor-creditor-at-a-glance.interface';
 import { normalizeSortCode } from '../../validators/sort-code.validator';
+import { RELEASE_1A_1_2_FEATURE_FLAG } from '../../constants/release-feature-flags.constant';
+import { getFeatureFlagReleaseState } from '../../utils/fines-section-permissions.utils';
 import { FINES_ACC_PARTY_TYPES } from '../constants/fines-acc-party-types.constant';
 import { IOpalFinesAccountMajorCreditorDetailsHeader } from '../fines-acc-major-creditor-details/interfaces/fines-acc-major-creditor-details-header.interface';
 import { IFinesAccEnfActionAddFormState } from '../fines-acc-enf-action-add/interfaces/fines-acc-enf-action-add-form-state.interface';
@@ -71,6 +73,10 @@ export class FinesAccPayloadService {
   private readonly finesAccStore = inject(FinesAccountStore);
   private readonly historyDetailsTransformationService = inject(HistoryTransformationService);
   private readonly dateService = inject(DateService);
+
+  private get newSortCodeFunctionalityEnabled(): boolean {
+    return getFeatureFlagReleaseState(this.globalStore.featureFlags())[RELEASE_1A_1_2_FEATURE_FLAG] === true;
+  }
 
   /**
    * Returns the current local datetime without a timezone suffix.
@@ -497,7 +503,12 @@ export class FinesAccPayloadService {
         pay_by_bacs: hasBacsDetails,
         hold_payment: currentData.payment.hold_payment,
         account_name: hasBacsDetails ? formState.facc_minor_creditor_bank_account_name : null,
-        sort_code: hasBacsDetails ? normalizeSortCode(formState.facc_minor_creditor_bank_sort_code) : null,
+        sort_code:
+          hasBacsDetails && this.newSortCodeFunctionalityEnabled
+            ? normalizeSortCode(formState.facc_minor_creditor_bank_sort_code)
+            : hasBacsDetails
+              ? formState.facc_minor_creditor_bank_sort_code
+              : null,
         account_number: hasBacsDetails ? formState.facc_minor_creditor_bank_account_number : null,
         account_reference: hasBacsDetails ? formState.facc_minor_creditor_bank_account_reference : null,
       },

@@ -9,6 +9,8 @@ import { IFinesAccMinorCreditorAddAmendConvertForm } from '../interfaces/fines-a
 import { FinesAccountStore } from '../../stores/fines-acc.store';
 import { MOCK_FINES_ACC_MINOR_CREDITOR_ADD_AMEND_CONVERT_COMPANY_FORM } from '../mocks/fines-acc-minor-creditor-add-amend-convert-company-form.mock';
 import { MOCK_FINES_ACC_MINOR_CREDITOR_ADD_AMEND_CONVERT_INDIVIDUAL_FORM } from '../mocks/fines-acc-minor-creditor-add-amend-convert-individual-form.mock';
+import { GlobalStore } from '@hmcts/opal-frontend-common/stores/global';
+import { RELEASE_1A_1_2_FEATURE_FLAG } from '../../../constants/release-feature-flags.constant';
 
 describe('FinesAccMinorCreditorAddAmendConvertFormComponent', () => {
   let component: FinesAccMinorCreditorAddAmendConvertFormComponent;
@@ -53,6 +55,8 @@ describe('FinesAccMinorCreditorAddAmendConvertFormComponent', () => {
         },
       ],
     }).compileComponents();
+
+    TestBed.inject(GlobalStore).setFeatureFlags({ [RELEASE_1A_1_2_FEATURE_FLAG]: true });
   });
 
   const createComponent = (initialFormData: IFinesAccMinorCreditorAddAmendConvertForm = companyFormData): void => {
