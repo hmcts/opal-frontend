@@ -44,7 +44,10 @@ import { FINES_MAC_DEFENDANT_TYPES_KEYS } from '../constants/fines-mac-defendant
 import { IOpalFinesProsecutorRefData } from '@services/fines/opal-fines-service/interfaces/opal-fines-prosecutor-ref-data.interface';
 import { AbstractFormParentBaseComponent } from '@hmcts/opal-frontend-common/components/abstract/abstract-form-parent-base';
 import { FINES_ACCOUNT_TYPES } from '../../constants/fines-account-types.constant';
-import { RELEASE_1A_1_1_FEATURE_FLAG } from '../../constants/release-feature-flags.constant';
+import {
+  RELEASE_1A_1_1_FEATURE_FLAG,
+  RELEASE_1A_1_2_FEATURE_FLAG,
+} from '../../constants/release-feature-flags.constant';
 import { getFeatureFlagReleaseState } from '../../utils/fines-section-permissions.utils';
 
 @Component({
@@ -107,6 +110,9 @@ export class FinesMacReviewAccountComponent extends AbstractFormParentBaseCompon
   public showTimeline = false;
   public readonly release1a1_1Enabled = computed(
     () => getFeatureFlagReleaseState(this.globalStore.featureFlags())[RELEASE_1A_1_1_FEATURE_FLAG] === true,
+  );
+  public readonly release1a1_2Enabled = computed(
+    () => getFeatureFlagReleaseState(this.globalStore.featureFlags())[RELEASE_1A_1_2_FEATURE_FLAG] === true,
   );
 
   public formErrorSummaryMessage: IAbstractFormBaseFormErrorSummaryMessage[] = [];
@@ -407,13 +413,18 @@ export class FinesMacReviewAccountComponent extends AbstractFormParentBaseCompon
 
   /**
    * Redirects to the relevant page to change the account details.
-   * For a fixed penalty account, all sections share one page, so the supplied path is used as its section fragment.
+   * For a fixed penalty account with release-1a-1-2 enabled, the supplied path is used as the shared page's section
+   * fragment. When the release is disabled, navigation retains the legacy no-fragment behavior.
    * Otherwise, it navigates to the supplied path or the account details page.
    * @param path - Optional route path, or the section fragment for a fixed penalty account.
    */
   public change(path?: string): void {
     if (this.accountType === this.accountTypesKeys['Fixed Penalty']) {
-      this.routerNavigate(this.finesMacRoutes.children.fixedPenaltyDetails, false, undefined, undefined, path);
+      if (this.release1a1_2Enabled()) {
+        this.routerNavigate(this.finesMacRoutes.children.fixedPenaltyDetails, false, undefined, undefined, path);
+      } else {
+        this.routerNavigate(this.finesMacRoutes.children.fixedPenaltyDetails);
+      }
     } else if (path) {
       this.routerNavigate(path);
     } else {

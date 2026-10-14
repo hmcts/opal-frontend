@@ -10,8 +10,8 @@
   <fieldset class="govuk-fieldset">
     <legend
       class="govuk-fieldset__legend govuk-fieldset__legend--m"
-      [id]="fineMacRoutingPaths.children.courtDetails"
-      tabindex="-1"
+      [attr.id]="release1a1_2Enabled() ? fineMacRoutingPaths.children.courtDetails : null"
+      [attr.tabindex]="release1a1_2Enabled() ? -1 : null"
     >
       <h2 class="govuk-heading-m">Issuing Authority and Court Details</h2>
     </legend>
@@ -45,8 +45,8 @@
     <fieldset class="govuk-fieldset">
       <legend
         class="govuk-fieldset__legend govuk-fieldset__legend--m"
-        [id]="fineMacRoutingPaths.children.companyDetails"
-        tabindex="-1"
+        [attr.id]="release1a1_2Enabled() ? fineMacRoutingPaths.children.companyDetails : null"
+        [attr.tabindex]="release1a1_2Enabled() ? -1 : null"
       >
         <h2 class="govuk-heading-m govuk-!-margin-0">Company Details</h2>
       </legend>
@@ -96,8 +96,8 @@
     <fieldset class="govuk-fieldset">
       <legend
         class="govuk-fieldset__legend govuk-fieldset__legend--m"
-        [id]="fineMacRoutingPaths.children.personalDetails"
-        tabindex="-1"
+        [attr.id]="release1a1_2Enabled() ? fineMacRoutingPaths.children.personalDetails : null"
+        [attr.tabindex]="release1a1_2Enabled() ? -1 : null"
       >
         <h2 class="govuk-heading-m govuk-!-margin-0">Personal Details</h2>
       </legend>
@@ -201,8 +201,8 @@
   <fieldset class="govuk-fieldset">
     <legend
       class="govuk-fieldset__legend govuk-fieldset__legend--m"
-      [id]="fineMacRoutingPaths.children.offenceDetails"
-      tabindex="-1"
+      [attr.id]="release1a1_2Enabled() ? fineMacRoutingPaths.children.offenceDetails : null"
+      [attr.tabindex]="release1a1_2Enabled() ? -1 : null"
     >
       <h2 class="govuk-heading-m govuk-!-margin-0">Offence Details</h2>
     </legend>
@@ -376,8 +376,8 @@
   <fieldset class="govuk-fieldset">
     <legend
       class="govuk-fieldset__legend govuk-fieldset__legend--m"
-      [id]="fineMacRoutingPaths.children.accountCommentsNotes"
-      tabindex="-1"
+      [attr.id]="release1a1_2Enabled() ? fineMacRoutingPaths.children.accountCommentsNotes : null"
+      [attr.tabindex]="release1a1_2Enabled() ? -1 : null"
     >
       <h2 class="govuk-heading-m govuk-!-margin-0">Comments and Notes</h2>
     </legend>

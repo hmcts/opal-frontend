@@ -26,6 +26,9 @@ import { By } from '@angular/platform-browser';
 import { afterAll, afterEach, beforeAll, beforeEach, describe, expect, it, vi } from 'vitest';
 import { FINES_MAC_FIXED_PENALTY_DETAILS_FIELD_ERRORS } from '../constants/fines-mac-fixed-penalty-details-field-errors';
 import { FINES_MAC_ROUTING_PATHS } from '../../routing/constants/fines-mac-routing-paths.constant';
+import { GlobalStore } from '@hmcts/opal-frontend-common/stores/global';
+import { GlobalStoreType } from '@hmcts/opal-frontend-common/stores/global/types';
+import { RELEASE_1A_1_2_FEATURE_FLAG } from '../../../constants/release-feature-flags.constant';
 
 import { createSpyObj } from '@app/testing/create-spy-obj.helper';
 
@@ -39,6 +42,7 @@ describe('FinesMacFixedPenaltyFormComponent', () => {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   let mockOpalFinesService: any; // Replace with actual service type if available
   let finesMacStore: FinesMacStoreType;
+  let globalStore: GlobalStoreType;
   let originalConfigureDatePicker: () => void;
   let originalInitOuterRadios: () => void;
 
@@ -95,6 +99,9 @@ describe('FinesMacFixedPenaltyFormComponent', () => {
       ],
     }).compileComponents();
 
+    globalStore = TestBed.inject(GlobalStore);
+    globalStore.setFeatureFlags({ [RELEASE_1A_1_2_FEATURE_FLAG]: true });
+
     fixture = TestBed.createComponent(FinesMacFixedPenaltyDetailsFormComponent);
     component = fixture.componentInstance;
 
@@ -120,7 +127,7 @@ describe('FinesMacFixedPenaltyFormComponent', () => {
   });
 
   it.each(['courtDetails', 'personalDetails', 'offenceDetails', 'accountCommentsNotes'] as const)(
-    'should render the %s section legend as a focusable fragment target for an adult or youth',
+    'should render the %s section legend as a focusable fragment target for an adult or youth when release-1a-1-2 is enabled',
     (routeKey) => {
       const fragment = FINES_MAC_ROUTING_PATHS.children[routeKey];
       const legend = fixture.nativeElement.querySelector(`legend#${fragment}`) as HTMLElement | null;
@@ -130,7 +137,7 @@ describe('FinesMacFixedPenaltyFormComponent', () => {
     },
   );
 
-  it('should render the company details legend as a focusable fragment target for a company', () => {
+  it('should render the company details legend as a focusable fragment target for a company when release-1a-1-2 is enabled', () => {
     const companyFixture = TestBed.createComponent(FinesMacFixedPenaltyDetailsFormComponent);
     const companyComponent = companyFixture.componentInstance;
     companyComponent.defendantType = FINES_MAC_DEFENDANT_TYPES_KEYS.company;
@@ -146,6 +153,39 @@ describe('FinesMacFixedPenaltyFormComponent', () => {
 
     companyFixture.destroy();
   });
+
+  it.each([
+    ['missing', undefined],
+    ['disabled', false],
+  ] as const)(
+    'should omit fragment target attributes from adult or youth and company legends when release-1a-1-2 is %s',
+    (_state, releaseEnabled) => {
+      globalStore.setFeatureFlags(
+        releaseEnabled === undefined ? {} : { [RELEASE_1A_1_2_FEATURE_FLAG]: releaseEnabled },
+      );
+
+      const createFixture = (defendantType: string) => {
+        const testFixture = TestBed.createComponent(FinesMacFixedPenaltyDetailsFormComponent);
+        const testComponent = testFixture.componentInstance;
+        testComponent.defendantType = defendantType;
+        testComponent.enforcingCourtAutoCompleteItems = OPAL_FINES_COURT_AUTOCOMPLETE_ITEMS_MOCK;
+        testComponent.issuingAuthorityAutoCompleteItems = OPAL_FINES_COURT_AUTOCOMPLETE_ITEMS_MOCK;
+        testFixture.detectChanges();
+        return testFixture;
+      };
+
+      const testFixtures = [
+        createFixture(FINES_MAC_DEFENDANT_TYPES_KEYS.adultOrYouthOnly),
+        createFixture(FINES_MAC_DEFENDANT_TYPES_KEYS.company),
+      ];
+
+      testFixtures.forEach((testFixture) => {
+        expect(testFixture.nativeElement.querySelectorAll('legend').length).toBeGreaterThan(0);
+        expect(testFixture.nativeElement.querySelectorAll('legend[id], legend[tabindex]')).toHaveLength(0);
+        testFixture.destroy();
+      });
+    },
+  );
 
   it.each([
     'fm_fp_personal_details_address_line_1',

@@ -29,7 +29,10 @@ import { OPAL_FINES_MAJOR_CREDITOR_REF_DATA_MOCK } from '@services/fines/opal-fi
 import { OPAL_FINES_PROSECUTOR_REF_DATA_MOCK } from '@services/fines/opal-fines-service/mocks/opal-fines-prosecutor-ref-data.mock';
 import { GLOBAL_ERROR_STATE } from '@hmcts/opal-frontend-common/stores/global/constants';
 import { FINES_ACCOUNT_TYPES } from '../../constants/fines-account-types.constant';
-import { RELEASE_1A_1_1_FEATURE_FLAG } from '../../constants/release-feature-flags.constant';
+import {
+  RELEASE_1A_1_1_FEATURE_FLAG,
+  RELEASE_1A_1_2_FEATURE_FLAG,
+} from '../../constants/release-feature-flags.constant';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
 
 import { createSpyObj } from '@app/testing/create-spy-obj.helper';
@@ -177,12 +180,17 @@ describe('FinesMacReviewAccountComponent', () => {
       expect(component).toBeTruthy();
     });
 
-    it('should expose release-1a-1-1 as disabled when missing and react when it is enabled', () => {
+    it('should expose release flags as disabled when missing and react when they are enabled', () => {
       expect(component.release1a1_1Enabled()).toBe(false);
+      expect(component.release1a1_2Enabled()).toBe(false);
 
-      globalStore.setFeatureFlags({ [RELEASE_1A_1_1_FEATURE_FLAG]: true });
+      globalStore.setFeatureFlags({
+        [RELEASE_1A_1_1_FEATURE_FLAG]: true,
+        [RELEASE_1A_1_2_FEATURE_FLAG]: true,
+      });
 
       expect(component.release1a1_1Enabled()).toBe(true);
+      expect(component.release1a1_2Enabled()).toBe(true);
     });
 
     it('should test Employer Details above Defendant Details when defendant is pgToPay', () => {
@@ -651,10 +659,11 @@ describe('FinesMacReviewAccountComponent', () => {
     });
 
     it.each(['courtDetails', 'personalDetails', 'companyDetails', 'offenceDetails', 'accountCommentsNotes'] as const)(
-      'should route to the %s section of the fixed penalty details form when change() is called from a fixed penalty account',
+      'should route to the %s section of the fixed penalty details form when release-1a-1-2 is enabled',
       (routeKey) => {
         // eslint-disable-next-line @typescript-eslint/no-explicit-any
         const routerSpy = vi.spyOn<any, any>(component['router'], 'navigate');
+        globalStore.setFeatureFlags({ [RELEASE_1A_1_2_FEATURE_FLAG]: true });
         component.accountType = FINES_ACCOUNT_TYPES['Fixed Penalty'];
         const fragment = component['finesMacRoutes'].children[routeKey];
 
@@ -666,6 +675,34 @@ describe('FinesMacReviewAccountComponent', () => {
         });
       },
     );
+
+    it.each(['courtDetails', 'personalDetails', 'companyDetails', 'offenceDetails', 'accountCommentsNotes'] as const)(
+      'should route without a %s fragment when release-1a-1-2 is disabled',
+      (routeKey) => {
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        const routerSpy = vi.spyOn<any, any>(component['router'], 'navigate');
+        globalStore.setFeatureFlags({ [RELEASE_1A_1_2_FEATURE_FLAG]: false });
+        component.accountType = FINES_ACCOUNT_TYPES['Fixed Penalty'];
+
+        component.change(component['finesMacRoutes'].children[routeKey]);
+
+        expect(routerSpy).toHaveBeenCalledWith([component['finesMacRoutes'].children.fixedPenaltyDetails], {
+          relativeTo: component['activatedRoute'].parent,
+        });
+      },
+    );
+
+    it('should route without a fragment when release-1a-1-2 is missing', () => {
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      const routerSpy = vi.spyOn<any, any>(component['router'], 'navigate');
+      component.accountType = FINES_ACCOUNT_TYPES['Fixed Penalty'];
+
+      component.change(component['finesMacRoutes'].children.offenceDetails);
+
+      expect(routerSpy).toHaveBeenCalledWith([component['finesMacRoutes'].children.fixedPenaltyDetails], {
+        relativeTo: component['activatedRoute'].parent,
+      });
+    });
   });
 
   describe('when snapshot has localJusticeAreas, courts, results, major creditors and reviewAccountFetchMap', () => {
