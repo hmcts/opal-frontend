@@ -23,6 +23,7 @@ import {
 import { FINES_MCI_CREATE_ALLOCATE_TABLE_CONTENT } from './constants/fines-mci-create-allocate-table-content.constant';
 import { IFinesMciCreateAllocateTableData } from './interfaces/fines-mci-create-allocate-table-data.interface';
 import { IFinesMciCreateAllocateTableSort } from './interfaces/fines-mci-create-allocate-table-sort.interface';
+import { syncMultiSelectControls } from '../../../utils/sync-multi-select-controls.utils';
 
 @Component({
   selector: 'app-fines-mci-create-allocate-table',
@@ -70,33 +71,14 @@ export class FinesMciCreateAllocateTableComponent extends AbstractSortableTableC
    * Synchronises row and header checkbox controls with the selected id set.
    */
   private syncSelectionControls(rows: IFinesMciCreateAllocateTableData[]): void {
-    const currentRowIds = new Set(rows.map((row) => this.getRowIdentifier(row)));
-
-    rows.forEach((row) => {
-      const rowId = this.getRowIdentifier(row);
-      const selected = this.selectedRowIdsSignal().has(rowId);
-      const control = this.rowControls.get(rowId);
-
-      if (control) {
-        if (control.value !== selected) {
-          control.setValue(selected, { emitEvent: false });
-        }
-        return;
-      }
-
-      this.rowControls.set(rowId, new FormControl<boolean>(selected, { nonNullable: true }));
-    });
-
-    Array.from(this.rowControls.keys()).forEach((rowId) => {
-      if (!currentRowIds.has(rowId)) {
-        this.rowControls.delete(rowId);
-      }
-    });
-
-    const allSelected = this.allRowsSelected();
-    if (this.selectAllControl.value !== allSelected) {
-      this.selectAllControl.setValue(allSelected, { emitEvent: false });
-    }
+    syncMultiSelectControls(
+      rows,
+      this.rowControls,
+      this.selectedRowIdsSignal(),
+      this.getRowIdentifier,
+      this.selectAllControl,
+      () => this.allRowsSelected(),
+    );
   }
 
   /**

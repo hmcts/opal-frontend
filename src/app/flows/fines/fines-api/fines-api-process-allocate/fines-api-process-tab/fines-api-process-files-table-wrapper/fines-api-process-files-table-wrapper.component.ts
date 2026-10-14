@@ -28,6 +28,7 @@ import {
 import { FINES_API_PROCESS_FILES_TABLE_WRAPPER_CONTENT } from './constants/fines-api-process-files-table-wrapper-content.constant';
 import { IFinesApiProcessFilesTableWrapperTableData } from './interfaces/fines-api-process-files-table-wrapper-table-data.interface';
 import { IFinesApiProcessFilesTableWrapperTableSort } from './interfaces/fines-api-process-files-table-wrapper-table-sort.interface';
+import { syncMultiSelectControls } from '../../../../utils/sync-multi-select-controls.utils';
 
 @Component({
   selector: 'app-fines-api-process-files-table-wrapper',
@@ -118,34 +119,14 @@ export class FinesApiProcessFilesTableWrapperComponent extends AbstractSortableT
    * Synchronises row and header checkbox controls with the selected ID set.
    */
   private syncSelectionControls(): void {
-    const currentRows = this.fullTableDataComputed();
-    const currentRowIds = new Set(currentRows.map((row) => this.getRowIdentifier(row)));
-
-    currentRows.forEach((row) => {
-      const rowId = this.getRowIdentifier(row);
-      const selected = this.selectedRowIdsSignal().has(rowId);
-      const control = this.rowControls.get(rowId);
-
-      if (control) {
-        if (control.value !== selected) {
-          control.setValue(selected, { emitEvent: false });
-        }
-        return;
-      }
-
-      this.rowControls.set(rowId, new FormControl<boolean>(selected, { nonNullable: true }));
-    });
-
-    Array.from(this.rowControls.keys()).forEach((rowId) => {
-      if (!currentRowIds.has(rowId)) {
-        this.rowControls.delete(rowId);
-      }
-    });
-
-    const allSelected = this.allRowsSelected();
-    if (this.selectAllControl.value !== allSelected) {
-      this.selectAllControl.setValue(allSelected, { emitEvent: false });
-    }
+    syncMultiSelectControls(
+      this.fullTableDataComputed(),
+      this.rowControls,
+      this.selectedRowIdsSignal(),
+      this.getRowIdentifier,
+      this.selectAllControl,
+      () => this.allRowsSelected(),
+    );
   }
 
   /**
