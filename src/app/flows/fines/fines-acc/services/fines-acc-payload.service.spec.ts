@@ -1144,6 +1144,20 @@ describe('FinesAccPayloadService', () => {
       });
     });
 
+    it('should preserve separators when the new sort-code functionality is disabled', () => {
+      const currentData = structuredClone(OPAL_FINES_ACCOUNT_MINOR_CREDITOR_CREDITOR_MOCK);
+      const formState = {
+        ...structuredClone(MOCK_FINES_ACC_MINOR_CREDITOR_ADD_AMEND_CONVERT_COMPANY_FORM.formData),
+        facc_minor_creditor_pay_by_bacs: true,
+        facc_minor_creditor_bank_sort_code: '30-94 30',
+      };
+      mockGlobalStore.featureFlags.mockReturnValue({ [RELEASE_1A_1_2_FEATURE_FLAG]: false });
+
+      const result = service.buildMinorCreditorAccountAmendPayload(currentData, formState);
+
+      expect(result.payment.sort_code).toBe('30-94 30');
+    });
+
     it('should use an empty organisation name when company minor creditor amend form name is missing', () => {
       const currentData = structuredClone(OPAL_FINES_ACCOUNT_MINOR_CREDITOR_CREDITOR_MOCK);
       const formState = {

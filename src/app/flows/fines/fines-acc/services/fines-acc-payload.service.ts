@@ -465,6 +465,13 @@ export class FinesAccPayloadService {
   ): IOpalFinesUpdateMinorCreditorAccountPayload {
     const isCompany = formState.facc_minor_creditor_creditor_type === 'company';
     const hasBacsDetails = formState.facc_minor_creditor_pay_by_bacs === true;
+    let sortCode: string | null = null;
+
+    if (hasBacsDetails) {
+      sortCode = this.newSortCodeFunctionalityEnabled
+        ? normalizeSortCode(formState.facc_minor_creditor_bank_sort_code)
+        : formState.facc_minor_creditor_bank_sort_code;
+    }
 
     return {
       creditor_account_id: currentData.creditor_account_id,
@@ -503,12 +510,7 @@ export class FinesAccPayloadService {
         pay_by_bacs: hasBacsDetails,
         hold_payment: currentData.payment.hold_payment,
         account_name: hasBacsDetails ? formState.facc_minor_creditor_bank_account_name : null,
-        sort_code:
-          hasBacsDetails && this.newSortCodeFunctionalityEnabled
-            ? normalizeSortCode(formState.facc_minor_creditor_bank_sort_code)
-            : hasBacsDetails
-              ? formState.facc_minor_creditor_bank_sort_code
-              : null,
+        sort_code: sortCode,
         account_number: hasBacsDetails ? formState.facc_minor_creditor_bank_account_number : null,
         account_reference: hasBacsDetails ? formState.facc_minor_creditor_bank_account_reference : null,
       },

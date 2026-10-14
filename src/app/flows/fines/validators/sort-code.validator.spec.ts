@@ -20,4 +20,8 @@ describe('normalizeSortCode', () => {
   it.each(['123456', '12-34-56', '12 34 56'])('should normalize %s to six digits', (value) => {
     expect(normalizeSortCode(value)).toBe('123456');
   });
+
+  it.each([null, undefined])('should return null when the sort code is %s', (value) => {
+    expect(normalizeSortCode(value)).toBeNull();
+  });
 });

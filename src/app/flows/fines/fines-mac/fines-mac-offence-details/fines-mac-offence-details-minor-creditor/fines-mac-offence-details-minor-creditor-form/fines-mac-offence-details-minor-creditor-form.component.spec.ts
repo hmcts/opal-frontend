@@ -61,6 +61,16 @@ describe('FinesMacOffenceDetailsMinorCreditorFormComponent', () => {
     expect(component).toBeTruthy();
   });
 
+  it('should expose the feature-flagged payment hints', () => {
+    expect(component.sortCodeHintText).toBe('Must be 6 digits long, for example, 123456');
+    expect(component.accountNumberHintText).toBe('Must be between 6 and 8 digits long');
+
+    TestBed.inject(GlobalStore).setFeatureFlags({ [RELEASE_1A_1_2_FEATURE_FLAG]: false });
+
+    expect(component.sortCodeHintText).toBe('');
+    expect(component.accountNumberHintText).toBe('');
+  });
+
   it('should normalize a valid formatted sort code before submitting', () => {
     component['setPaymentDetailValidators']();
     const sortCodeControl = component.form.controls['fm_offence_details_minor_creditor_bank_sort_code'];
