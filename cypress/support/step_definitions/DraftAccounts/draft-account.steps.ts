@@ -428,6 +428,7 @@ function seedPublishedAdultOrYouthDefendantAccount(
  * - first name / first names
  * - last name
  * - ticket number
+ * - fp registration number / fp_registration_number
  * - issuing authority
  * - time of offence
  * - place of offence
@@ -449,6 +450,7 @@ Given('a published non-vehicle fixed penalty account exists:', (table: DataTable
   const firstNames = values['first name'] ?? values['first names'];
   const lastName = values['last name'];
   const ticketNumber = values['ticket number'];
+  const fpRegistrationNumber = values['fp registration number'] ?? values['fp_registration_number'] ?? null;
   const issuingAuthority = values['issuing authority'] ?? DEFAULT_FIXED_PENALTY_ISSUING_AUTHORITY;
   const timeOfOffence = values['time of offence'] ?? '14:30';
   const placeOfOffence = values['place of offence'];
@@ -466,6 +468,7 @@ Given('a published non-vehicle fixed penalty account exists:', (table: DataTable
     businessUnitId,
     issuingAuthority,
     ticketNumber,
+    fpRegistrationNumber,
     title,
     firstNames,
     lastName,
