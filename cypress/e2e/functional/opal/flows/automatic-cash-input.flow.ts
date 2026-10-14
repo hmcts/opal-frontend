@@ -33,4 +33,11 @@ export class AutomaticCashInputFlow {
   public assertOnlySelectedBusinessUnitFilesAreDisplayed(): void {
     this.actions.assertOnlySelectedBusinessUnitFilesAreDisplayed();
   }
+
+  /**
+   * Selects a file and moves from Processing to Confirm before processing.
+   */
+  public selectAProcessFileAndOpenConfirmProcess(): void {
+    this.actions.selectAProcessFileAndOpenConfirmProcess();
+  }
 }

@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, Component, inject, OnDestroy, OnInit } from '@angular/core';
+import { ChangeDetectionStrategy, Component, computed, inject, OnDestroy, OnInit } from '@angular/core';
 import { FINES_MAC_ROUTING_PATHS } from '../routing/constants/fines-mac-routing-paths.constant';
 import { FinesMacReviewAccountAccountDetailsComponent } from './fines-mac-review-account-account-details/fines-mac-review-account-account-details.component';
 import { FinesMacReviewAccountCourtDetailsComponent } from './fines-mac-review-account-court-details/fines-mac-review-account-court-details.component';
@@ -23,10 +23,9 @@ import { FINES_ROUTING_PATHS } from '@routing/fines/constants/fines-routing-path
 import { IFetchMapFinesMacPayload } from '../routing/resolvers/fetch-map-fines-mac-payload-resolver/interfaces/fetch-map-fines-mac-payload.interface';
 import { FinesDraftStore } from '../../fines-draft/stores/fines-draft.store';
 import { FinesMacReviewAccountHistoryComponent } from './fines-mac-review-account-history/fines-mac-review-account-history.component';
-import {
-  IFinesMacAddAccountPayload,
-  IFinesMacAddAccountRequestPayload,
-} from '../services/fines-mac-payload/interfaces/fines-mac-payload-add-account.interfaces';
+import { IFinesMacAddAccountPayload } from '../services/fines-mac-payload/interfaces/fines-mac-payload-add-account.interfaces';
+import { IFinesMacAddAccountRequestPayload } from '../services/fines-mac-payload/interfaces/fines-mac-payload-add-account-request.interface';
+import { IFinesMacReplaceAccountRequestPayload } from '../services/fines-mac-payload/interfaces/fines-mac-payload-replace-account-request.interface';
 import { FINES_DRAFT_ROUTING_PATHS } from '../../fines-draft/routing/constants/fines-draft-routing-paths.constant';
 import { FINES_DRAFT_CREATE_AND_MANAGE_ROUTING_PATHS } from '../../fines-draft/fines-draft-create-and-manage/routing/constants/fines-draft-create-and-manage-routing-paths.constant';
 import { GovukButtonComponent } from '@hmcts/opal-frontend-common/components/govuk/govuk-button';
@@ -45,6 +44,8 @@ import { FINES_MAC_DEFENDANT_TYPES_KEYS } from '../constants/fines-mac-defendant
 import { IOpalFinesProsecutorRefData } from '@services/fines/opal-fines-service/interfaces/opal-fines-prosecutor-ref-data.interface';
 import { AbstractFormParentBaseComponent } from '@hmcts/opal-frontend-common/components/abstract/abstract-form-parent-base';
 import { FINES_ACCOUNT_TYPES } from '../../constants/fines-account-types.constant';
+import { RELEASE_1A_1_1_FEATURE_FLAG } from '../../constants/release-feature-flags.constant';
+import { getFeatureFlagReleaseState } from '../../utils/fines-section-permissions.utils';
 
 @Component({
   selector: 'app-fines-mac-review-account',
@@ -75,7 +76,6 @@ export class FinesMacReviewAccountComponent extends AbstractFormParentBaseCompon
   private readonly globalStore = inject(GlobalStore);
   private readonly opalFinesService = inject(OpalFines);
   private readonly finesMacPayloadService = inject(FinesMacPayloadService);
-  private readonly userState = this.globalStore.userState();
 
   protected readonly utilsService = inject(UtilsService);
   protected readonly dateService = inject(DateService);
@@ -105,6 +105,9 @@ export class FinesMacReviewAccountComponent extends AbstractFormParentBaseCompon
   public accountTypesKeys = FINES_ACCOUNT_TYPES;
   public defendantTypesKeys = FINES_MAC_DEFENDANT_TYPES_KEYS;
   public showTimeline = false;
+  public readonly release1a1_1Enabled = computed(
+    () => getFeatureFlagReleaseState(this.globalStore.featureFlags())[RELEASE_1A_1_1_FEATURE_FLAG] === true,
+  );
 
   public formErrorSummaryMessage: IAbstractFormBaseFormErrorSummaryMessage[] = [];
 
@@ -197,9 +200,9 @@ export class FinesMacReviewAccountComponent extends AbstractFormParentBaseCompon
    * It processes the response using `processPutResponse` method and handles any errors by scrolling to the top of the page.
    * The request is automatically unsubscribed when the component is destroyed using `takeUntil` with `ngUnsubscribe`.
    */
-  private handlePutRequest(payload: IFinesMacAddAccountRequestPayload): void {
+  private handlePutRequest(payload: IFinesMacReplaceAccountRequestPayload): void {
     this.opalFinesService
-      .putDraftAddAccountPayload(payload)
+      .putDraftAddAccountPayload(this.finesDraftStore.draft_account_id()!, payload, this.finesDraftStore.version()!)
       .pipe(
         tap((response) => this.processPutResponse(response)),
         catchError(() => {
@@ -267,18 +270,12 @@ export class FinesMacReviewAccountComponent extends AbstractFormParentBaseCompon
    * Prepares the payload for a PUT request to replace an account.
    *
    * This method utilizes the `finesMacPayloadService` to build the payload
-   * required for replacing an account. It takes into consideration the current
-   * state of fines (`finesMacState`), the draft state of fines (`finesDraftState`),
-   * and the user state (`userState`).
+   * required for replacing an account from the current fines MAC state.
    *
-   * @returns {IFinesMacAddAccountRequestPayload} The payload for the PUT request.
+   * @returns {IFinesMacReplaceAccountRequestPayload} The payload for the PUT request.
    */
-  private preparePutPayload(): IFinesMacAddAccountRequestPayload {
-    return this.finesMacPayloadService.buildReplaceAccountPayload(
-      this.finesMacStore.getFinesMacStore(),
-      this.finesDraftStore.getFinesDraftState(),
-      this.userState,
-    );
+  private preparePutPayload(): IFinesMacReplaceAccountRequestPayload {
+    return this.finesMacPayloadService.buildReplaceAccountPayload(this.finesMacStore.getFinesMacStore());
   }
 
   /**
@@ -286,12 +283,12 @@ export class FinesMacReviewAccountComponent extends AbstractFormParentBaseCompon
    *
    * This method constructs the payload required to add an account by utilizing
    * the `finesMacPayloadService` to build the payload based on the current state
-   * of `finesMacState` and `userState`.
+   * of `finesMacState`.
    *
    * @returns {IFinesMacAddAccountRequestPayload} The payload for adding an account.
    */
   private preparePostPayload(): IFinesMacAddAccountRequestPayload {
-    return this.finesMacPayloadService.buildAddAccountPayload(this.finesMacStore.getFinesMacStore(), this.userState);
+    return this.finesMacPayloadService.buildAddAccountPayload(this.finesMacStore.getFinesMacStore());
   }
 
   /**

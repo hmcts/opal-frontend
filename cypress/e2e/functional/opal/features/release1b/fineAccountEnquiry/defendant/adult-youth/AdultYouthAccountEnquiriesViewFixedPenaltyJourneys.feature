@@ -8,15 +8,16 @@ Feature: Adult Youth Account Enquiries View Fixed Penalty Journeys
   Background:
     Given I am logged in with email "opal-test@dev.platform.hmcts.net"
     And I clear all approved accounts
-  @R1BDrop1UatTechJCDE @JIRA-STORY:PO-994 @JIRA-EPIC:PO-812 @JIRA-TEST-KEY:PO-5300
+  @R1BDrop1UatTechJCDE @R1BDrop1UatTechPreprod @JIRA-STORY:PO-994 @JIRA-EPIC:PO-812 @JIRA-TEST-KEY:PO-5300
   Scenario: Search for a non-vehicle fixed penalty account and view the fixed penalty details
     Given a published non-vehicle fixed penalty account exists:
-      | first name        | Robert                               |
-      | last name         | FixedPenaltyNV{uniq}                 |
-      | ticket number     | FPR1BNV{uniqUpper}                   |
-      | issuing authority | City of London Central Ticket Office |
-      | time of offence   | 14:30                                |
-      | place of offence  | Main Street, Metropolis              |
+      | first name             | Robert                               |
+      | last name              | FixedPenaltyNV{uniq}                 |
+      | ticket number          | FPR1BNV{uniqUpper}                   |
+      | fp_registration_number | NV                                   |
+      | issuing authority      | City of London Central Ticket Office |
+      | time of offence        | 14:30                                |
+      | place of offence       | Main Street, Metropolis              |
     When I search for the account by last name "FixedPenaltyNV{uniq}" and open the latest result
     Then I should see the account summary header contains "ROBERT FIXEDPENALTYNV{uniqUpper}"
     And I should see the account header summary values:

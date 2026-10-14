@@ -19,6 +19,8 @@ import java.time.ZonedDateTime
 @Field String uatTechnicalSuiteR1bDrop1Choice = 'R1BDrop1'
 @Field String uatTechnicalSuiteR1bDrop2Choice = 'R1BDrop2'
 @Field String uatTechnicalSuiteR1bDrop1AndR1bDrop2Choice = 'R1BDrop1AndR1BDrop2'
+@Field String uatTechnicalSuiteR1aAndR1bDrop1Choice = 'R1AAndR1BDrop1'
+@Field String uatTechnicalSuiteR1aAndR1bChoice = 'R1AAndR1B'
 @Field String functionalR1aCommand = 'test:functional:r1a'
 @Field String functionalR1aAndR1bDrop1Command = 'test:functional:r1a_and_r1b_drop1'
 @Field String functionalR1abCommand = 'test:functional:r1ab'
@@ -35,6 +37,10 @@ import java.time.ZonedDateTime
   'test:functional:uat_legacy_r1b_drop1_and_r1b_drop2_jcde'
 @Field String functionalUatTechnicalR1bDrop1AndR1bDrop2PreProdCommand =
   'test:functional:uat_legacy_r1b_drop1_and_r1b_drop2_preprod'
+@Field String functionalUatTechnicalR1aAndR1bDrop1PreProdCommand =
+  'test:functional:uat_legacy_r1a_and_r1b_drop1_preprod'
+@Field String functionalUatTechnicalR1aAndR1bPreProdCommand =
+  'test:functional:uat_legacy_r1a_and_r1b_preprod'
 @Field String zephyrUatTechnicalR1aCommand = 'zephyr:test:uat_technical_r1a'
 @Field String zephyrUatTechnicalR1bDrop1JcdeCommand = 'zephyr:test:uat_technical_r1b_drop1_jcde'
 @Field String zephyrUatTechnicalR1bDrop1PreProdCommand = 'zephyr:test:uat_technical_r1b_drop1_preprod'
@@ -44,6 +50,10 @@ import java.time.ZonedDateTime
   'zephyr:test:uat_technical_r1b_drop1_and_r1b_drop2_jcde'
 @Field String zephyrUatTechnicalR1bDrop1AndR1bDrop2PreProdCommand =
   'zephyr:test:uat_technical_r1b_drop1_and_r1b_drop2_preprod'
+@Field String zephyrUatTechnicalR1aAndR1bDrop1PreProdCommand =
+  'zephyr:test:uat_technical_r1a_and_r1b_drop1_preprod'
+@Field String zephyrUatTechnicalR1aAndR1bPreProdCommand =
+  'zephyr:test:uat_technical_r1a_and_r1b_preprod'
 
 properties([
     // H allow predefined but random minute see https://en.wikipedia.org/wiki/Cron#Non-standard_characters
@@ -75,8 +85,8 @@ properties([
     choice(
       name: 'LEGACY_DEMO_SUITE',
       choices: [
-        legacyDemoSuiteR1aChoice,
         legacyDemoSuiteR1aR1bDrop1Choice,
+        legacyDemoSuiteR1aChoice,
         legacyDemoSuiteR1abChoice,
         legacyDemoSuiteR1bDrop1Choice,
         legacyDemoSuiteR1bOffChoice,
@@ -98,6 +108,8 @@ properties([
         uatTechnicalSuiteR1bDrop1Choice,
         uatTechnicalSuiteR1bDrop2Choice,
         uatTechnicalSuiteR1bDrop1AndR1bDrop2Choice,
+        uatTechnicalSuiteR1aAndR1bDrop1Choice,
+        uatTechnicalSuiteR1aAndR1bChoice,
       ],
       description: 'Select which UAT-Technical suite to run when RunUatTech=true.'
     ),
@@ -132,6 +144,8 @@ String failureResult = 'FAILURE'
 @Field String demoStageUatTechnicalR1bDrop1DirName = 'uat-technical-r1b-drop1'
 @Field String demoStageUatTechnicalR1bDrop2DirName = 'uat-technical-r1b-drop2'
 @Field String demoStageUatTechnicalR1bDrop1AndR1bDrop2DirName = 'uat-technical-r1b-drop1-and-r1b-drop2'
+@Field String demoStageUatTechnicalR1aAndR1bDrop1DirName = 'uat-technical-r1a-and-r1b-drop1'
+@Field String demoStageUatTechnicalR1aAndR1bDirName = 'uat-technical-r1a-and-r1b'
 @Field String demoStageR1aDirName = 'r1a-legacy-demo'
 @Field String demoStageR1aAndR1bDrop1DirName = 'r1a-and-r1b-drop1-legacy-demo'
 @Field String demoStageR1abDirName = 'r1ab-legacy-demo'
@@ -182,13 +196,29 @@ Map<String, List<Map<String, Object>>> nightlySecrets() {
 
 // Set the staging legacy gateway URL used by chart templating.
 void configureStagingLegacyGatewayUrl() {
-  boolean usePreProdLegacyGateway = params.LEGACY_URL == legacyUrlPreProdChoice
   boolean shouldUsePreProdLegacyGateway =
-    (params.Legacy || params.RunUatTech) && usePreProdLegacyGateway
+    (params.Legacy || params.RunUatTech) && shouldUsePreProdLegacyGateway()
 
   env.STG_OPAL_LEGACY_GATEWAY_URL =
     shouldUsePreProdLegacyGateway ? legacyGatewayUrlPreProd : legacyGatewayUrlDev
   echo "STG_OPAL_LEGACY_GATEWAY_URL=${env.STG_OPAL_LEGACY_GATEWAY_URL}"
+}
+
+// The combined R1A UAT-Technical suites run against pre-prod only in nightly.
+boolean selectedUatTechnicalSuiteRequiresPreProd() {
+  if (!params.RunUatTech) {
+    return false
+  }
+
+  return [
+    uatTechnicalSuiteR1aAndR1bDrop1Choice,
+    uatTechnicalSuiteR1aAndR1bChoice,
+  ].contains(params.UAT_TECHNICAL_SUITE)
+}
+
+// Resolve whether the selected nightly run should use the pre-prod legacy gateway.
+boolean shouldUsePreProdLegacyGateway() {
+  return params.LEGACY_URL == legacyUrlPreProdChoice || selectedUatTechnicalSuiteRequiresPreProd()
 }
 
 // Check whether the requested browser binary is available on the Jenkins agent.
@@ -309,6 +339,8 @@ String selectedUatTechnicalSuite() {
     uatTechnicalSuiteR1bDrop1Choice,
     uatTechnicalSuiteR1bDrop2Choice,
     uatTechnicalSuiteR1bDrop1AndR1bDrop2Choice,
+    uatTechnicalSuiteR1aAndR1bDrop1Choice,
+    uatTechnicalSuiteR1aAndR1bChoice,
   ]
 
   if (!supportedSuites.contains(suite)) {
@@ -334,6 +366,10 @@ String resolveUatTechnicalCommand(String suite, boolean shouldRunWithZephyr, boo
         return usePreProdLegacyGateway
           ? zephyrUatTechnicalR1bDrop1AndR1bDrop2PreProdCommand
           : zephyrUatTechnicalR1bDrop1AndR1bDrop2JcdeCommand
+      case uatTechnicalSuiteR1aAndR1bDrop1Choice:
+        return zephyrUatTechnicalR1aAndR1bDrop1PreProdCommand
+      case uatTechnicalSuiteR1aAndR1bChoice:
+        return zephyrUatTechnicalR1aAndR1bPreProdCommand
       default:
         return zephyrUatTechnicalR1aCommand
     }
@@ -352,6 +388,10 @@ String resolveUatTechnicalCommand(String suite, boolean shouldRunWithZephyr, boo
       return usePreProdLegacyGateway
         ? functionalUatTechnicalR1bDrop1AndR1bDrop2PreProdCommand
         : functionalUatTechnicalR1bDrop1AndR1bDrop2JcdeCommand
+    case uatTechnicalSuiteR1aAndR1bDrop1Choice:
+      return functionalUatTechnicalR1aAndR1bDrop1PreProdCommand
+    case uatTechnicalSuiteR1aAndR1bChoice:
+      return functionalUatTechnicalR1aAndR1bPreProdCommand
     default:
       return functionalUatTechnicalR1aCommand
   }
@@ -366,6 +406,10 @@ String resolveUatTechnicalOutputDir(String suite) {
       return demoStageUatTechnicalR1bDrop2DirName
     case uatTechnicalSuiteR1bDrop1AndR1bDrop2Choice:
       return demoStageUatTechnicalR1bDrop1AndR1bDrop2DirName
+    case uatTechnicalSuiteR1aAndR1bDrop1Choice:
+      return demoStageUatTechnicalR1aAndR1bDrop1DirName
+    case uatTechnicalSuiteR1aAndR1bChoice:
+      return demoStageUatTechnicalR1aAndR1bDirName
     default:
       return demoStageUatTechnicalR1aDirName
   }
@@ -418,6 +462,76 @@ void prepareStageLogs(String browserToRun, String targetOutputDir) {
       mkdir -p "\$TARGET_LOG_DIR"
       cp -R "\$SOURCE_LOG_DIR/." "\$TARGET_LOG_DIR/"
     fi
+  """
+}
+
+// Resolve the likely Kubernetes namespace for a nightly stage URL.
+String resolveNightlyPodLogNamespace(String testUrl) {
+  String override = (env.NIGHTLY_POD_LOG_NAMESPACE ?: '').trim()
+  if (override) {
+    return override
+  }
+
+  String normalizedUrl = (testUrl ?: '').trim().toLowerCase()
+  if (normalizedUrl.contains('.demo.')) {
+    return "${opalName}-demo"
+  }
+  if (normalizedUrl.contains('.staging.')) {
+    return "${opalName}-staging"
+  }
+
+  String environmentName = (env.ENVIRONMENT_NAME ?: '').trim().toLowerCase()
+  return environmentName ? "${opalName}-${environmentName}" : "${opalName}-staging"
+}
+
+// Best-effort collection of service pod logs for nightly demo/UAT stages.
+void collectNightlyPodLogs(String testUrl, String targetOutputDir) {
+  String namespace = resolveNightlyPodLogNamespace(testUrl)
+  String tailLines = (env.NIGHTLY_POD_LOG_TAIL_LINES ?: '').trim()
+
+  sh """
+    set +e
+    TARGET_LOG_DIR='${targetOutputDir}/pod-logs'
+    NAMESPACE='${namespace}'
+    TAIL_LINES='${tailLines}'
+    TAIL_ARGS=''
+    if [ -n "\$TAIL_LINES" ]; then
+      TAIL_ARGS="--tail=\$TAIL_LINES"
+    fi
+    mkdir -p "\$TARGET_LOG_DIR"
+
+    if ! command -v kubectl >/dev/null 2>&1; then
+      echo 'kubectl is not available; skipping nightly pod log capture.'
+      exit 0
+    fi
+
+    echo "Collecting nightly pod logs from namespace \$NAMESPACE into \$TARGET_LOG_DIR"
+    if ! kubectl get pods -n "\$NAMESPACE" -o wide > "\$TARGET_LOG_DIR/pods.txt" 2>&1; then
+      echo "Unable to list pods in namespace \$NAMESPACE; skipping nightly pod log capture." \
+        >> "\$TARGET_LOG_DIR/pods.txt"
+      exit 0
+    fi
+
+    kubectl get pods -n "\$NAMESPACE" -o name | grep -E 'opal-(frontend|fines-service)' \
+      > "\$TARGET_LOG_DIR/matching-pods.txt" 2>/dev/null
+
+    if [ ! -s "\$TARGET_LOG_DIR/matching-pods.txt" ]; then
+      echo "No opal frontend/fines-service pods found in namespace \$NAMESPACE." \
+        > "\$TARGET_LOG_DIR/no-matching-pods.txt"
+      exit 0
+    fi
+
+    while IFS= read -r POD_RESOURCE; do
+      POD_NAME="\${POD_RESOURCE#pod/}"
+      SAFE_NAME="\$(echo "\$POD_NAME" | tr -c 'A-Za-z0-9_.-' '_')"
+      echo "Capturing logs for \$POD_NAME"
+      kubectl describe -n "\$NAMESPACE" "\$POD_RESOURCE" \
+        > "\$TARGET_LOG_DIR/\${SAFE_NAME}.describe.txt" 2>&1
+      kubectl logs -n "\$NAMESPACE" "\$POD_RESOURCE" --all-containers=true \$TAIL_ARGS \
+        > "\$TARGET_LOG_DIR/\${SAFE_NAME}.log" 2>&1
+      kubectl logs -n "\$NAMESPACE" "\$POD_RESOURCE" --all-containers=true --previous \$TAIL_ARGS \
+        > "\$TARGET_LOG_DIR/\${SAFE_NAME}.previous.log" 2>&1
+    done < "\$TARGET_LOG_DIR/matching-pods.txt"
   """
 }
 
@@ -530,8 +644,7 @@ void patchLaunchDarklyFlagState(boolean enabled, String variationName, String ac
 
 // Resolve the legacy gateway URL used by nightly demo legacy checks.
 String resolveLegacyDemoGatewayUrl() {
-  boolean useDevLegacyGateway = params.LEGACY_URL == legacyUrlDevChoice
-  return useDevLegacyGateway ? legacyGatewayUrlDev : legacyGatewayUrlPreProd
+  return shouldUsePreProdLegacyGateway() ? legacyGatewayUrlPreProd : legacyGatewayUrlDev
 }
 
 // Probe the nightly legacy health endpoint used before running demo legacy checks.
@@ -550,12 +663,12 @@ String getLegacyHealthCheckStatus() {
 
 // Run the legacy gateway health check only when the selected gateway supports it.
 boolean shouldRunLegacyHealthCheck() {
-  return params.LEGACY_URL == legacyUrlPreProdChoice
+  return shouldUsePreProdLegacyGateway()
 }
 
 // Patch LaunchDarkly app mode only when running demo legacy checks against pre-prod.
 boolean shouldPatchLaunchDarklyForDemoLegacyStage() {
-  return params.LEGACY_URL == legacyUrlPreProdChoice
+  return shouldUsePreProdLegacyGateway()
 }
 
 // Wait until the legacy health endpoint responds successfully after toggling app mode.
@@ -711,6 +824,7 @@ void runDemoLegacyStage(Map<String, Object> stageConfig, Closure runCommand) {
       String stageOutputDir = "${functionalOutputRoot}/prod/${browserToRun}/${outputDirName}"
       prepareLegacyDemoArtifacts(browserToRun, outputDirName, reportFilePrefix)
       prepareStageLogs(browserToRun, stageOutputDir)
+      collectNightlyPodLogs(testUrl, stageOutputDir)
       archiveArtifact(functionalProdArtifactsPath)
       if (archiveAccountEvidence) {
         archiveArtifact("${functionalOutputRoot}/account_evidence/created-accounts.json")
@@ -774,7 +888,7 @@ void runUatTechnicalStage(
   String browserToRun
 ) {
   String uatSuite = selectedUatTechnicalSuite()
-  boolean usePreProdLegacyGateway = params.LEGACY_URL == legacyUrlPreProdChoice
+  boolean usePreProdLegacyGateway = shouldUsePreProdLegacyGateway()
   String uatCommand = resolveUatTechnicalCommand(uatSuite, shouldRunWithZephyr, usePreProdLegacyGateway)
   String stageName = "UAT-Technical ${uatSuite}"
   String startMessage =

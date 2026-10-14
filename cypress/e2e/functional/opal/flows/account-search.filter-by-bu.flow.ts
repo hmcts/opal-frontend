@@ -24,6 +24,15 @@ const finesActions = new SearchFilterByBUFinesActions();
 const confiscationActions = new SearchFilterByBUConfiscationActions();
 const log = createScopedLogger('SearchFilterByBUFlow');
 
+const normalizeBusinessUnitSummary = (summary: string): string[] =>
+  summary
+    .replace(/\u00A0/g, ' ')
+    .replace(/\s+/g, ' ')
+    .split(',')
+    .map((part) => part.trim())
+    .filter(Boolean)
+    .sort((a, b) => a.localeCompare(b));
+
 /** Flow wrapper around business unit filter navigation and assertions. */
 export class SearchFilterByBUFlow {
   private readonly searchIndividuals = new AccountSearchIndividualsActions();
@@ -278,16 +287,11 @@ export class SearchFilterByBUFlow {
       .should('be.visible')
       .invoke('text')
       .then((text) => {
-        const normalised = text
-          .replace(/\u00A0/g, ' ')
-          .replace(/\s+/g, ' ') // collapse whitespace/newlines
-          .trim();
+        const actualParts = normalizeBusinessUnitSummary(text);
+        const expectedParts = normalizeBusinessUnitSummary(expectedSummary);
 
-        log('debug', `Normalised filter summary text: "${normalised}"`);
-        normalised.split(',').forEach((part) => {
-          log('debug', `Summary part: "${part.trim()}"`);
-          expect(expectedSummary).to.include(part.trim());
-        });
+        log('debug', `Normalised filter summary values: "${actualParts.join(', ')}"`);
+        expect(actualParts, 'business unit filter summary values').to.deep.equal(expectedParts);
       });
   }
 
