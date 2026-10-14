@@ -33,9 +33,11 @@ describe('mapAllocateData', () => {
   let parsedDate: ReturnType<DateService['getFromIso']>;
 
   beforeEach(() => {
-    parsedDate = { isValid: true, setLocale: vi.fn().mockReturnValue({}) } as unknown as ReturnType<
-      DateService['getFromIso']
-    >;
+    parsedDate = {
+      isValid: true,
+      toMillis: vi.fn().mockReturnValue(1790083887270),
+      setLocale: vi.fn().mockReturnValue({}),
+    } as unknown as ReturnType<DateService['getFromIso']>;
     dateService = {
       getFromIso: vi.fn().mockReturnValue(parsedDate),
       toFormat: vi.fn().mockReturnValue('22 September 2026 at 14:31'),
@@ -64,13 +66,14 @@ describe('mapAllocateData', () => {
   it('maps supplied values and formats the till creation timestamp using the existing date convention', () => {
     expect(map([buildTill()]).tills[0]).toEqual({
       tillId: '101',
-      tillNumber: '7',
-      errorsDisplay: '0',
-      fileName: 'payments.dat',
-      sourceLabel: 'NatWest',
-      amount: '1234.50',
-      businessUnitName: 'BU Alpha',
-      processedByDisplay: 'original.operator',
+      'Till number': 7,
+      Errors: 0,
+      Filename: 'payments.dat',
+      Source: 'NatWest',
+      Amount: 1234.5,
+      'Business Unit': 'BU Alpha',
+      'Processed by': 'original.operator',
+      'Date processed': 1790083887270,
       dateProcessedDisplay: '22 September 2026 at 14:31',
     });
     expect(dateService.getFromIso).toHaveBeenCalledWith('2026-09-22T13:31:27.270Z');
@@ -98,7 +101,7 @@ describe('mapAllocateData', () => {
     [' natwest ', 'NatWest'],
     ['NEW_SOURCE', 'NEW_SOURCE'],
   ])('maps source %s to %s', (source, expected) => {
-    expect(map([buildTill({ source })]).tills[0].sourceLabel).toBe(expected);
+    expect(map([buildTill({ source })]).tills[0]['Source']).toBe(expected);
   });
 
   it.each([undefined, null, ''])(
@@ -112,10 +115,10 @@ describe('mapAllocateData', () => {
           errors: value == null ? value : undefined,
         }),
       ]).tills[0];
-      expect(row.fileName).toBe('—');
-      expect(row.sourceLabel).toBe('—');
+      expect(row['Filename']).toBe('—');
+      expect(row['Source']).toBe('—');
       expect(row.dateProcessedDisplay).toBe('—');
-      expect(row.errorsDisplay).toBe('—');
+      expect(row['Errors']).toBeNull();
       expect(dateService.getFromIso).not.toHaveBeenCalled();
     },
   );
@@ -126,19 +129,16 @@ describe('mapAllocateData', () => {
     expect(dateService.toFormat).not.toHaveBeenCalled();
   });
 
-  it.each([0, 1234, 1234.5, -20, '1234.50'])(
-    'retains the raw amount %s for display formatting and sorting',
-    (amount) => {
-      expect(map([buildTill({ amount })]).tills[0].amount).toBe(amount);
-    },
-  );
+  it.each([0, 1234, 1234.5, -20, '1234.50'])('maps amount %s to a numeric sort and display value', (amount) => {
+    expect(map([buildTill({ amount })]).tills[0]['Amount']).toBe(Number(amount));
+  });
 
   it('preserves a large string ID and the supplied message count/operator', () => {
     const row = map([buildTill({ till_id: '9223372036854775807', errors: 3, processed_by: 'processing-service' })])
       .tills[0];
     expect(row.tillId).toBe('9223372036854775807');
-    expect(row.errorsDisplay).toBe('3');
-    expect(row.processedByDisplay).toBe('processing-service');
+    expect(row['Errors']).toBe(3);
+    expect(row['Processed by']).toBe('processing-service');
   });
 
   it.each(['', 'invalid', -1, 1.5, Number.MAX_SAFE_INTEGER + 1, undefined])('rejects unusable till ID %s', (id) => {

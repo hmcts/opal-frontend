@@ -57,7 +57,7 @@ describe('FinesApiPayloadService', () => {
       },
     );
     expect(data.processingTotal).toBe(501);
-    expect(data.tills[0]).toEqual(expect.objectContaining({ tillId: '123', amount: '12.50' }));
+    expect(data.tills[0]).toEqual(expect.objectContaining({ tillId: '123', Amount: 12.5 }));
   });
 
   it('should create', () => {

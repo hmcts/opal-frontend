@@ -4,10 +4,11 @@ export const FINES_API_ALLOCATE_CONTENT = {
   emptyState: 'There are no outstanding tills to allocate',
   refresh: 'Refresh',
   allocate: 'Allocate',
+  /**
+   * Builds the processing-summary introduction with singular or plural wording.
+   * @param count The number of files still processing.
+   * @returns The processing total followed by a colon introducing the business-unit breakdown.
+   */
   processingTotal: (count: number): string =>
     `${count} ${count === 1 ? 'file is' : 'files are'} still being processed:`,
-  selected: (count: number, total: number): string => `${count} of ${total} tills selected.`,
-  selectAll: 'Select all tills',
-  selectTill: (number: string, businessUnit: string): string => `Select till ${number} for ${businessUnit}`,
-  columns: ['Till number', 'Errors', 'Filename', 'Source', 'Amount', 'Business Unit', 'Processed by', 'Date processed'],
 } as const;
