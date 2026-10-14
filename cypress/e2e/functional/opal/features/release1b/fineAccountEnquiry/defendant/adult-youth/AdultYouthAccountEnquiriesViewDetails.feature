@@ -12,17 +12,23 @@ Feature: Adult Youth Account Enquiries View Details
     Background:
       # AC1 – Account setup
       Given I create a "adultOrYouthOnly" draft account with the following details and set status "Publishing Pending" using user "opal-test-10@dev.platform.hmcts.net":
-        | Account_status                          | Submitted                            |
-        | account.defendant.forenames             | John                                 |
-        | account.defendant.surname               | AccDetailSurname{uniq}               |
-        | account.defendant.email_address_1       | John.AccDetailSurname{uniq}@test.com |
-        | account.defendant.telephone_number_home | 02078259314                          |
-        | account.account_type                    | Fine                                 |
-        | account.prosecutor_case_reference       | PCR-AUTO-002                         |
-        | account.collection_order_made           | false                                |
-        | account.collection_order_made_today     | false                                |
-        | account.payment_card_request            | false                                |
-        | account.defendant.dob                   | 2002-05-15                           |
+        | Account_status                                            | Submitted                            |
+        | account.defendant.forenames                               | John                                 |
+        | account.defendant.surname                                 | AccDetailSurname{uniq}               |
+        | account.defendant.email_address_1                         | John.AccDetailSurname{uniq}@test.com |
+        | account.defendant.telephone_number_home                   | 02078259314                          |
+        | account.account_type                                      | Fine                                 |
+        | account.prosecutor_case_reference                         | PCR-AUTO-002                         |
+        | account.collection_order_made                             | false                                |
+        | account.collection_order_made_today                       | false                                |
+        | account.payment_card_request                              | false                                |
+        | account.defendant.dob                                     | 2002-05-15                           |
+        | account.defendant.debtor_detail.employer_company_name     | Accdetail Employer Ltd               |
+        | account.defendant.debtor_detail.employee_reference        | EMPACCDETAIL                         |
+        | account.defendant.debtor_detail.employer_address_line_1   | Employer Street                      |
+        | account.defendant.debtor_detail.employer_post_code        | TE12 3ST                             |
+        | account.defendant.debtor_detail.employer_telephone_number | 02079460000                          |
+        | account.defendant.debtor_detail.employer_email_address    | employer.accdetail@test.com          |
       # AC2 – Search and view account details
       When I search for the account by last name "AccDetailSurname{uniq}" and open the latest result
       Then I should see the page header contains "Mr John ACCDETAILSURNAME{uniqUpper}"
@@ -49,7 +55,8 @@ Feature: Adult Youth Account Enquiries View Details
       And I should see the account header contains "Mr John ACCDETAILSURNAME{uniqUpper}"
 
 
-    @R1BDrop1 @JIRA-STORY:PO-1593 @JIRA-STORY:PO-866 @JIRA-STORY:PO-1110 @JIRA-STORY:PO-1127 @JIRA-EPIC:PO-812 @JIRA-TEST-KEY:PO-5516
+    # Intentionally no @R1... tag: this runs in the broad functional stage, not the R1B demo legacy tagged stage.
+    @JIRA-STORY:PO-1593 @JIRA-STORY:PO-866 @JIRA-STORY:PO-1110 @JIRA-STORY:PO-1127 @JIRA-EPIC:PO-812 @JIRA-TEST-KEY:PO-5516
     Scenario: Saving defendant details updates the name and audit trail
       # AC1 – Edit and save changes
       And I edit the Defendant details and change the First name to "Updated"
@@ -60,7 +67,8 @@ Feature: Adult Youth Account Enquiries View Details
       And I verify defendant amendments via API for first name "Updated"
 
 
-    @R1BDrop1 @JIRA-STORY:PO-1593 @JIRA-STORY:PO-866 @JIRA-STORY:PO-1110 @JIRA-STORY:PO-1127 @JIRA-EPIC:PO-812 @JIRA-TEST-KEY:PO-5517
+    # Intentionally no @R1... tag: this runs in the broad functional stage, not the R1B demo legacy tagged stage.
+    @JIRA-STORY:PO-1593 @JIRA-STORY:PO-866 @JIRA-STORY:PO-1110 @JIRA-STORY:PO-1127 @JIRA-EPIC:PO-812 @JIRA-TEST-KEY:PO-5517
     Scenario: Saving unchanged defendant details does not create amendments
       # AC3/4 – Verify via API and store amendment count baseline
       And I establish a defendant amendment baseline with first name "Updated"

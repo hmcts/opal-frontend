@@ -40,6 +40,7 @@ export interface PublishedNonVehicleFixedPenaltySeedInput {
   businessUnitId: number;
   issuingAuthority: string;
   ticketNumber: string;
+  fpRegistrationNumber: string | null;
   title: string;
   firstNames: string;
   lastName: string;
@@ -71,8 +72,17 @@ export interface PublishedVehicleFixedPenaltyCompanySeedInput {
 export function buildPublishedNonVehicleFixedPenaltyOverrides(
   input: PublishedNonVehicleFixedPenaltySeedInput,
 ): DraftAccountSeedOverrides {
-  const { businessUnitId, issuingAuthority, ticketNumber, title, firstNames, lastName, timeOfOffence, placeOfOffence } =
-    input;
+  const {
+    businessUnitId,
+    issuingAuthority,
+    ticketNumber,
+    fpRegistrationNumber,
+    title,
+    firstNames,
+    lastName,
+    timeOfOffence,
+    placeOfOffence,
+  } = input;
   const { originator_id, originator_name } = resolveFixedPenaltyOriginator(issuingAuthority);
 
   return {
@@ -89,6 +99,7 @@ export function buildPublishedNonVehicleFixedPenaltyOverrides(
         forenames: firstNames,
         surname: lastName,
         debtor_detail: {
+          vehicle_make: null,
           vehicle_registration_mark: null,
         },
       },
@@ -105,8 +116,10 @@ export function buildPublishedNonVehicleFixedPenaltyOverrides(
         place_of_offence: placeOfOffence,
         time_of_offence: timeOfOffence,
         time_of_issue: timeOfOffence,
+        date_of_issue: null,
+        date_of_notice: null,
         vehicle_registration: null,
-        fp_registration_number: null,
+        fp_registration_number: fpRegistrationNumber,
         driving_licence_number: null,
         fp_driving_licence_number: null,
         notice_to_hirer_number: null,
