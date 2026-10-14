@@ -16,12 +16,16 @@ import { afterAll, beforeAll, beforeEach, describe, expect, it, vi } from 'vites
 import { FINES_MAC_ORIGINATOR_TYPE_FORM } from '../../fines-mac-originator-type/constants/fines-mac-originator-type-form.constant';
 import { FINES_MAC_ORIGINATOR_TYPE_STATE_MOCK } from '../../fines-mac-originator-type/mocks/fines-mac-originator-type-state.mock';
 import { FINES_MAC_DRAFT_CREATE_AND_MANAGE_TABS_ROUTE } from '../../constants/fines-mac-draft-create-and-manage-tabs-route.constant';
+import { GlobalStore } from '@hmcts/opal-frontend-common/stores/global';
+import { GlobalStoreType } from '@hmcts/opal-frontend-common/stores/global/types';
+import { RELEASE_1A_1_2_FEATURE_FLAG } from '../../../constants/release-feature-flags.constant';
 
 describe('FinesMacCreateAccountFormComponent', () => {
   let component: FinesMacCreateAccountFormComponent;
   let fixture: ComponentFixture<FinesMacCreateAccountFormComponent>;
   let formSubmit: IFinesMacAccountDetailsForm;
   let finesMacStore: FinesMacStoreType;
+  let globalStore: GlobalStoreType;
   let originalInitOuterRadios: () => void;
 
   beforeAll(() => {
@@ -55,6 +59,7 @@ describe('FinesMacCreateAccountFormComponent', () => {
 
     finesMacStore = TestBed.inject(FinesMacStore);
     finesMacStore.setFinesMacStore(FINES_MAC_STATE_MOCK);
+    globalStore = TestBed.inject(GlobalStore);
 
     component.autoCompleteItems = OPAL_FINES_BUSINESS_UNIT_AUTOCOMPLETE_ITEMS_MOCK;
 
@@ -65,7 +70,26 @@ describe('FinesMacCreateAccountFormComponent', () => {
     expect(component).toBeTruthy();
   });
 
-  it('should only include the business unit combobox in the tab sequence', async () => {
+  it('should include the autocomplete host in the tab sequence when release-1a-1-2 is disabled', async () => {
+    const autocomplete = fixture.nativeElement.querySelector(
+      'opal-lib-alphagov-accessible-autocomplete',
+    ) as HTMLElement;
+
+    expect(autocomplete.getAttribute('tabindex')).toBe('0');
+    expect(autocomplete.tabIndex).toBe(0);
+
+    await vi.waitFor(() => {
+      const combobox = autocomplete.querySelector<HTMLInputElement>('input[role="combobox"]');
+
+      expect(combobox).toBeTruthy();
+      expect(combobox?.tabIndex).toBe(0);
+    });
+  });
+
+  it('should only include the business unit combobox in the tab sequence when release-1a-1-2 is enabled', async () => {
+    globalStore.setFeatureFlags({ [RELEASE_1A_1_2_FEATURE_FLAG]: true });
+    fixture.detectChanges();
+
     const autocomplete = fixture.nativeElement.querySelector(
       'opal-lib-alphagov-accessible-autocomplete',
     ) as HTMLElement;
