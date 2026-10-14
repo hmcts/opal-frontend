@@ -40,10 +40,13 @@ describe('FinesMacReviewAccountHistoryComponent', () => {
   it.each([
     { description: 'level 2', enabled: false, expectedHeading: 'H2' },
     { description: 'level 3', enabled: true, expectedHeading: 'H3' },
-  ])('should render review history timeline events as $description headings when release-1a-1-2 is $enabled', ({ enabled, expectedHeading }) => {
-    globalStore.setFeatureFlags({ [RELEASE_1A_1_2_FEATURE_FLAG]: enabled });
-    fixture.detectChanges();
+  ])(
+    'should render review history timeline events as $description headings when release-1a-1-2 is $enabled',
+    ({ enabled, expectedHeading }) => {
+      globalStore.setFeatureFlags({ [RELEASE_1A_1_2_FEATURE_FLAG]: enabled });
+      fixture.detectChanges();
 
-    expect(fixture.debugElement.query(By.css('.moj-timeline__title'))?.nativeElement.tagName).toBe(expectedHeading);
-  });
+      expect(fixture.debugElement.query(By.css('.moj-timeline__title'))?.nativeElement.tagName).toBe(expectedHeading);
+    },
+  );
 });

@@ -38,13 +38,16 @@ describe('FinesMacOffenceDetailsReviewOffenceHeadingTitleComponent', () => {
   it.each([
     { description: 'level 2', enabled: false, expectedHeading: 'h2' },
     { description: 'level 3', enabled: true, expectedHeading: 'h3' },
-  ])('should render the offence title as a $description heading when release-1a-1-2 is $enabled', ({ enabled, expectedHeading }) => {
-    globalStore.setFeatureFlags({ [RELEASE_1A_1_2_FEATURE_FLAG]: enabled });
-    fixture.detectChanges();
+  ])(
+    'should render the offence title as a $description heading when release-1a-1-2 is $enabled',
+    ({ enabled, expectedHeading }) => {
+      globalStore.setFeatureFlags({ [RELEASE_1A_1_2_FEATURE_FLAG]: enabled });
+      fixture.detectChanges();
 
-    expect(fixture.debugElement.query(By.css(expectedHeading))?.nativeElement.textContent).toContain('ak test');
-    expect(fixture.debugElement.query(By.css(expectedHeading === 'h2' ? 'h3' : 'h2'))).toBeNull();
-  });
+      expect(fixture.debugElement.query(By.css(expectedHeading))?.nativeElement.textContent).toContain('ak test');
+      expect(fixture.debugElement.query(By.css(expectedHeading === 'h2' ? 'h3' : 'h2'))).toBeNull();
+    },
+  );
 
   it('should emit action when onActionClick is called', () => {
     const action = 'Change';
