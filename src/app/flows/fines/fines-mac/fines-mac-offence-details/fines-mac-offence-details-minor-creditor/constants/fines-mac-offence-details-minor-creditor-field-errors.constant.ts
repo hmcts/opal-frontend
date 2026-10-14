@@ -22,6 +22,10 @@ export const FINES_MAC_OFFENCE_DETAILS_MINOR_CREDITOR_FIELD_ERRORS: IAbstractFor
       message: `First name(s) must be 20 characters or fewer`,
       priority: 2,
     },
+    lettersWithSpacesPattern: {
+      message: `First name(s) must only contain letters`,
+      priority: 3,
+    },
     singleAsciiCharacters: {
       message: `First name(s) must only include letters a to z, numbers 0-9 and certain special characters (such as hyphens, spaces, apostrophes and commas)`,
       priority: 3,
@@ -35,6 +39,10 @@ export const FINES_MAC_OFFENCE_DETAILS_MINOR_CREDITOR_FIELD_ERRORS: IAbstractFor
     maxlength: {
       message: `Last name must be 30 characters or fewer`,
       priority: 2,
+    },
+    lettersWithSpacesPattern: {
+      message: `Last name must only contain letters`,
+      priority: 3,
     },
     singleAsciiCharacters: {
       message: `Last name must only include letters a to z, numbers 0-9 and certain special characters (such as hyphens, spaces, apostrophes and commas)`,
