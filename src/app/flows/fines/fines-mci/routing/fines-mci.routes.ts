@@ -1,5 +1,6 @@
 import { Routes } from '@angular/router';
 import { authGuard } from '@hmcts/opal-frontend-common/guards/auth';
+import { canDeactivateGuard } from '@hmcts/opal-frontend-common/guards/can-deactivate';
 import { routePermissionsGuard } from '@hmcts/opal-frontend-common/guards/route-permissions';
 import { TitleResolver } from '@hmcts/opal-frontend-common/resolvers/title';
 import { FINES_PERMISSIONS } from '@app/constants/fines-permissions.constant';
@@ -21,6 +22,7 @@ export const routing: Routes = [
         (c) => c.FinesMciCreateAllocateComponent,
       ),
     canActivate: [authGuard, routePermissionsGuard],
+    canDeactivate: [canDeactivateGuard],
     data: {
       routePermissionId: [FINES_PERMISSIONS['process-and-allocate-payments']],
       title: FINES_MCI_ROUTING_TITLES.children.createAllocate,

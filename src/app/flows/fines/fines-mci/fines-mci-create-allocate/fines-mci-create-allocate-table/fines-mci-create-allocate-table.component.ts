@@ -1,5 +1,5 @@
 import { CurrencyPipe } from '@angular/common';
-import { ChangeDetectionStrategy, Component, Input, computed, signal } from '@angular/core';
+import { ChangeDetectionStrategy, Component, EventEmitter, Input, Output, computed, signal } from '@angular/core';
 import { FormControl } from '@angular/forms';
 import { AbstractSortableTableComponent } from '@hmcts/opal-frontend-common/components/abstract/abstract-sortable-table';
 import { GovukCheckboxesItemComponent } from '@hmcts/opal-frontend-common/components/govuk/govuk-checkboxes';
@@ -55,6 +55,8 @@ export class FinesMciCreateAllocateTableComponent extends AbstractSortableTableC
   public readonly selectedTillsHintComputed = computed(() =>
     this.content.selectedTills(this.selectedTillsCountComputed(), this.totalTillsCountComputed()),
   );
+
+  @Output() public readonly selectedTillsCountChange = new EventEmitter<number>();
 
   @Input({ required: true }) set tableData(tableData: IFinesMciCreateAllocateTableData[]) {
     this.setTableData(tableData);
@@ -154,6 +156,7 @@ export class FinesMciCreateAllocateTableComponent extends AbstractSortableTableC
       ) as Set<string>,
     );
     this.syncSelectionControls(this.fullTableDataComputed());
+    this.selectedTillsCountChange.emit(this.selectedTillsCountComputed());
   }
 
   /**
@@ -170,5 +173,6 @@ export class FinesMciCreateAllocateTableComponent extends AbstractSortableTableC
       toggleMultiSelectRow(this.selectedRowIdsSignal(), rowId, event.checked) as Set<string>,
     );
     this.syncSelectionControls(this.fullTableDataComputed());
+    this.selectedTillsCountChange.emit(this.selectedTillsCountComputed());
   }
 }

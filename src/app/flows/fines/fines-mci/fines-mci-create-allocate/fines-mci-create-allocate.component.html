@@ -25,6 +25,7 @@
           <app-fines-mci-create-allocate-table
             [tableData]="state.tills"
             [existingSortState]="tableSort"
+            (selectedTillsCountChange)="handleSelectedTillsCountChange($event)"
           ></app-fines-mci-create-allocate-table>
         } @else {
           <p class="govuk-body">There are no outstanding tills to allocate.</p>
