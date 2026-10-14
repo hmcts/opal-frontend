@@ -1,1 +1,0 @@
-export const FINES_ACC_ENFORCEMENT_HEARING_DATE_PARAMETER_NAME = 'hearingdate';
