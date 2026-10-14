@@ -335,6 +335,7 @@ export const routing: Routes = [
               defendantAccountHeadingData: defendantAccountHeadingResolver,
               enforcementActionResult: enforcementActionResultResolver,
               enforcersRefData: fetchEnforcersResolver,
+              courtsRefData: fetchAccCourtsResolver,
             },
           },
           {
