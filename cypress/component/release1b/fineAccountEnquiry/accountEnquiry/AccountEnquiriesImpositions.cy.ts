@@ -15,6 +15,8 @@ import {
 } from './intercept/defendantAccountIntercepts';
 import { IComponentProperties } from './setup/setupComponent.interface';
 import { setupAccountEnquiryComponent } from './setup/SetupComponent';
+import { GlobalStore } from '@hmcts/opal-frontend-common/stores/global';
+import { RELEASE_1A_1_2_FEATURE_FLAG } from 'src/app/flows/fines/constants/release-feature-flags.constant';
 
 const ACCOUNT_ENQUIRY_JIRA_LABEL = '@JIRA-LABEL:account-enquiry';
 const IMPOSITIONS_STORY_TAG = '@JIRA-STORY:PO-2079';
@@ -25,6 +27,11 @@ const buildTags = (...tags: string[]): string[] => [...tags, ACCOUNT_ENQUIRY_JIR
 const componentProperties: IComponentProperties = {
   accountId: '77',
   fragments: 'at-a-glance',
+  globalStoreFactory: () => {
+    const store = new GlobalStore();
+    store.setFeatureFlags({ [RELEASE_1A_1_2_FEATURE_FLAG]: true });
+    return store;
+  },
   interceptedRoutes: ['/access-denied', '../note/add', '../debtor/individual/amend', '../debtor/parentGuardian/amend'],
 };
 
