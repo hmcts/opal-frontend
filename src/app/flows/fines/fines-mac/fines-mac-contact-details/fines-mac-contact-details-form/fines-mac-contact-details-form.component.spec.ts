@@ -108,6 +108,28 @@ describe('FinesMacContactDetailsFormComponent', () => {
     );
   });
 
+  it('should submit when the telephone numbers are empty', () => {
+    const event = {} as SubmitEvent;
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    vi.spyOn<any, any>(component['formSubmit'], 'emit');
+
+    component.form.get('fm_contact_details_telephone_number_mobile')?.setValue(null);
+    component.form.get('fm_contact_details_telephone_number_home')?.setValue(null);
+    component.form.get('fm_contact_details_telephone_number_business')?.setValue(null);
+
+    component.handleFormSubmit(event);
+
+    expect(component['formSubmit'].emit).toHaveBeenCalledWith(
+      expect.objectContaining({
+        formData: expect.objectContaining({
+          fm_contact_details_telephone_number_mobile: null,
+          fm_contact_details_telephone_number_home: null,
+          fm_contact_details_telephone_number_business: null,
+        }),
+      }),
+    );
+  });
+
   it('should accept 10 digit home and work telephone numbers while keeping mobile telephone number as 11 digits', () => {
     const mobileTelephoneControl = component.form.get('fm_contact_details_telephone_number_mobile');
     const homeTelephoneControl = component.form.get('fm_contact_details_telephone_number_home');
