@@ -1,7 +1,7 @@
 <div class="govuk-grid-column-one-half">
   <h1 class="govuk-heading-l">Create till</h1>
 
-  <form [formGroup]="form" autocomplete="off" novalidate>
+  <form [formGroup]="form" (ngSubmit)="handleSubmit()" autocomplete="off" novalidate>
     @if (businessUnitAutoCompleteItems.length === 1) {
       <opal-lib-govuk-summary-list summaryListId="fines-mci-create-till-business-unit">
         <div

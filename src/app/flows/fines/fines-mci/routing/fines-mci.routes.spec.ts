@@ -3,13 +3,17 @@ import { TitleResolver } from '@hmcts/opal-frontend-common/resolvers/title';
 import { authGuard } from '@hmcts/opal-frontend-common/guards/auth';
 import { routePermissionsGuard } from '@hmcts/opal-frontend-common/guards/route-permissions';
 import { FINES_PERMISSIONS } from '@app/constants/fines-permissions.constant';
-import { HIDE_PRIMARY_NAV_ROUTE_DATA_KEY } from '@app/constants/route-data.constant';
+import { PRIMARY_NAV_HIDDEN_ROUTE_DATA } from '@app/constants/route-data.constant';
 import { fetchBusinessUnitsResolver } from '@app/flows/fines/routing/resolvers/fetch-business-units-resolver/fetch-business-units.resolver';
 import { routing } from './fines-mci.routes';
 import { FINES_MCI_ROUTING_PATHS } from './constants/fines-mci-routing-paths.constant';
 import { FINES_MCI_ROUTING_TITLES } from './constants/fines-mci-routing-titles.constant';
 
 describe('finesMci routes', () => {
+  const createTillRoute = routing
+    .find((route) => route.path === 'create')
+    ?.children?.find((route) => route.path === 'till');
+
   it('should redirect the manual cash input root to create allocate', () => {
     expect(routing[0]).toEqual({
       path: '',
@@ -54,7 +58,6 @@ describe('finesMci routes', () => {
           permission: 'PROCESS_AND_ALLOCATE_PAYMENTS',
           routePermissionId: [FINES_PERMISSIONS['process-and-allocate-payments']],
           title: FINES_MCI_ROUTING_TITLES.children.createTillSelectBusinessUnit,
-          [HIDE_PRIMARY_NAV_ROUTE_DATA_KEY]: true,
         },
         resolve: expect.objectContaining({
           businessUnits: fetchBusinessUnitsResolver,
@@ -63,5 +66,33 @@ describe('finesMci routes', () => {
       }),
     );
     expect(createTillSelectBusinessUnitRoute?.loadComponent).toEqual(expect.any(Function));
+  });
+
+  it('should hide the primary navigation throughout the create till journey', () => {
+    expect(createTillRoute?.data).toEqual(PRIMARY_NAV_HIDDEN_ROUTE_DATA);
+  });
+
+  it.each([
+    [FINES_MCI_ROUTING_PATHS.children.details, FINES_MCI_ROUTING_TITLES.children.createTillDetails],
+    [FINES_MCI_ROUTING_PATHS.children.paymentCategory, FINES_MCI_ROUTING_TITLES.children.createTillPaymentCategory],
+    [FINES_MCI_ROUTING_PATHS.children.cancel, FINES_MCI_ROUTING_TITLES.children.createTillCancel],
+  ])('should expose the guarded create till %s route', (path, title) => {
+    const childRoute = createTillRoute?.children?.find((route) => route.path === path);
+
+    expect(childRoute).toEqual(
+      expect.objectContaining({
+        path,
+        canActivate: [authGuard, routePermissionsGuard],
+        data: expect.objectContaining({
+          permission: 'PROCESS_AND_ALLOCATE_PAYMENTS',
+          routePermissionId: [FINES_PERMISSIONS['process-and-allocate-payments']],
+          title,
+        }),
+        resolve: expect.objectContaining({
+          title: TitleResolver,
+        }),
+      }),
+    );
+    expect(childRoute?.loadComponent).toEqual(expect.any(Function));
   });
 });
