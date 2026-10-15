@@ -36,9 +36,11 @@ import {
   toggleMultiSelectRow,
 } from '@hmcts/opal-frontend-common/directives/moj-multi-select';
 import { NgTemplateOutlet } from '@angular/common';
-import { IAbstractTableData } from '@hmcts/opal-frontend-common/components/abstract/abstract-sortable-table/interfaces';
+import {
+  IAbstractSortState,
+  IAbstractTableData,
+} from '@hmcts/opal-frontend-common/components/abstract/abstract-sortable-table/interfaces';
 import { SortableValuesType } from '@hmcts/opal-frontend-common/components/abstract/abstract-sortable-table/types';
-import { IAbstractSortState } from '@hmcts/opal-frontend-common/components/abstract/abstract-sortable-table/interfaces';
 import { IFinesApiSelectableTableColumn } from './interfaces/fines-api-selectable-table-column.interface';
 import { IFinesApiSelectableTableContent } from './interfaces/fines-api-selectable-table-content.interface';
 @Component({
