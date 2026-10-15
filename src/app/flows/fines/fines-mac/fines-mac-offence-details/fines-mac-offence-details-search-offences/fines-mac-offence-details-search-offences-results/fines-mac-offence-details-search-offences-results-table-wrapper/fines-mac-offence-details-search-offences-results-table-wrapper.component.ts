@@ -81,7 +81,7 @@ export class FinesMacOffenceDetailsSearchOffencesResultsTableWrapperComponent
    * @param value - The string value to be copied to the clipboard.
    */
   public copyCodeToClipboard(labelElement: HTMLElement, liveRegion: HTMLElement, value: string): void {
-    this.utilsService.copyToClipboard(value);
+    void this.utilsService.copyToClipboard(value);
 
     const originalText = labelElement.innerText;
 
@@ -118,7 +118,7 @@ export class FinesMacOffenceDetailsSearchOffencesResultsTableWrapperComponent
     event: Event,
   ): void {
     event.preventDefault();
-    this.utilsService.copyToClipboard(value);
+    void this.utilsService.copyToClipboard(value);
 
     const originalText = labelElement.innerText;
     const originalAriaLive = linkElement.getAttribute('aria-live');
