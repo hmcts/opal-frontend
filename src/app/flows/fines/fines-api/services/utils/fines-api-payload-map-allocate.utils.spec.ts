@@ -104,24 +104,22 @@ describe('mapAllocateData', () => {
     expect(map([buildTill({ source })]).tills[0]['Source']).toBe(expected);
   });
 
-  it.each([undefined, null, ''])(
-    'shows unavailable optional cells for %s without inventing a date or zero errors',
-    (value) => {
-      const row = map([
-        buildTill({
-          file_name: value,
-          source: value,
-          date_processed: value,
-          errors: value == null ? value : undefined,
-        }),
-      ]).tills[0];
-      expect(row['Filename']).toBe('—');
-      expect(row['Source']).toBe('—');
-      expect(row.dateProcessedDisplay).toBe('—');
-      expect(row['Errors']).toBeNull();
-      expect(dateService.getFromIso).not.toHaveBeenCalled();
-    },
-  );
+  it.each([undefined, ''])('shows unavailable optional cells for %s', (value) => {
+    const row = map([
+      buildTill({
+        file_name: value,
+        source: value,
+      }),
+    ]).tills[0];
+    expect(row['Filename']).toBe('—');
+    expect(row['Source']).toBe('—');
+    expect(row['Errors']).toBe(0);
+  });
+
+  it.each([undefined, ''])('shows an unavailable date for %s', (date_processed) => {
+    expect(map([buildTill({ date_processed })]).tills[0].dateProcessedDisplay).toBe('—');
+    expect(dateService.getFromIso).not.toHaveBeenCalled();
+  });
 
   it('shows an unavailable date for an invalid timestamp', () => {
     vi.mocked(dateService.getFromIso).mockReturnValue({ isValid: false } as ReturnType<DateService['getFromIso']>);

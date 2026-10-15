@@ -1,5 +1,5 @@
 export const FINES_API_ALLOCATE_TILLS_TABLE_WRAPPER_CONTENT = {
-  caption: 'Allocate tills',
+  caption: 'Allocate processed tills',
   /**
    * Builds the selection summary displayed above the table.
    * @param count The number of selected tills.

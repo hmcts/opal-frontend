@@ -4,7 +4,7 @@ import { SortableValuesType } from '@hmcts/opal-frontend-common/components/abstr
 export interface IFinesApiAllocateTillsTableWrapperTableData extends IAbstractTableData<SortableValuesType> {
   tillId: string;
   'Till number': number;
-  Errors: number | null;
+  Errors: number;
   Filename: string;
   Source: string;
   Amount: number;

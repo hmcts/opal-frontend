@@ -97,6 +97,11 @@ export class FinesApiSelectableTableComponent<T extends IAbstractTableData<Sorta
   @Input() public cellTemplate: TemplateRef<{ $implicit: T; column: IFinesApiSelectableTableColumn }> | null = null;
   @Output() public readonly selectedIdsChange = new EventEmitter<string[]>();
 
+  /**
+   * Synchronises checkbox controls with selected IDs and removes controls for missing rows.
+   *
+   * @returns Nothing; updates row and header controls without emitting form events.
+   */
   private syncControls(): void {
     const validIds = new Set(this.rows.map(this.getRowId));
     for (const id of this.rowControls.keys()) {
@@ -111,13 +116,22 @@ export class FinesApiSelectableTableComponent<T extends IAbstractTableData<Sorta
     this.selectAllControl.setValue(this.allSelected(), { emitEvent: false });
   }
 
-  /** Emit in supplied row order, independently of the current sort and page. */
+  /**
+   * Emits selected IDs in supplied row order, independently of the current sort and page.
+   *
+   * @returns Nothing; synchronises controls and emits the complete selection.
+   */
   private emitSelection(): void {
     this.syncControls();
     this.selectedIdsChange.emit(this.rows.map(this.getRowId).filter((id) => this.selectedRowIds().has(id)));
   }
 
-  /** Reconcile inputs together so selection restoration does not depend on input assignment order. */
+  /**
+   * Reconciles inputs together so selection restoration does not depend on input assignment order.
+   *
+   * @param changes Input changes for this update, including rows, selection, sorting and pagination.
+   * @returns Nothing; updates table state and silently reconciles selection and checkbox controls.
+   */
   public ngOnChanges(changes: SimpleChanges): void {
     if (changes['pageSize']) {
       this.paginationEnabled.set(this.pageSize !== null);
@@ -140,10 +154,22 @@ export class FinesApiSelectableTableComponent<T extends IAbstractTableData<Sorta
     }
   }
 
+  /**
+   * Checks whether the supplied row is selected using its stable identifier.
+   *
+   * @param row The table row whose selection state should be checked.
+   * @returns True when the row ID belongs to the current selection; otherwise false.
+   */
   public isSelected(row: T): boolean {
     return this.selectedRowIds().has(this.getRowId(row));
   }
 
+  /**
+   * Selects or clears every supplied row, including rows on other pages.
+   *
+   * @param checked True to select all rows; false to clear the selection.
+   * @returns Nothing; updates controls and emits the complete selection.
+   */
   public toggleAll(checked: boolean): void {
     this.selectedRowIds.set(
       toggleAllMultiSelectRows(this.rows, this.selectedRowIds(), this.getRowId, checked) as Set<string>,
@@ -151,6 +177,12 @@ export class FinesApiSelectableTableComponent<T extends IAbstractTableData<Sorta
     this.emitSelection();
   }
 
+  /**
+   * Updates selection for a known row and ignores events for unknown row IDs.
+   *
+   * @param event The stable row ID and requested checkbox state.
+   * @returns Nothing; updates controls and emits the selection only for a known row.
+   */
   public toggleRow(event: { rowId: MultiSelectRowIdentifier; checked: boolean }): void {
     const id = String(event.rowId);
     if (!this.rowControls.has(id)) return;

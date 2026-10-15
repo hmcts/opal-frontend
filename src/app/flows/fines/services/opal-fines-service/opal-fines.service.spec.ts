@@ -393,7 +393,6 @@ describe('OpalFines', () => {
             business_unit_name: 'BU Alpha',
             processed_by: 'test.operator',
             errors: 0,
-            file_name: null,
           },
         ],
       };

@@ -36,21 +36,55 @@ export class FinesApiAllocateTillsTableWrapperComponent {
     }),
   );
   protected readonly tillSummaryRoute = `/${FINES_ROUTING_PATHS.root}/${FINES_API_ROUTING_PATHS.root}/${FINES_API_ROUTING_PATHS.children.tillSummary}`;
+  /**
+   * Returns the stable till identifier used for selection.
+   *
+   * @param row The mapped till row.
+   * @returns The internal till ID.
+   */
   protected readonly getRowId = (row: IFinesApiAllocateTillsTableWrapperTableData): string => row.tillId;
+  /**
+   * Builds the checkbox DOM ID for a till row.
+   *
+   * @param row The mapped till row.
+   * @returns The flow-specific checkbox ID.
+   */
   protected readonly getRowDomId = (row: IFinesApiAllocateTillsTableWrapperTableData): string =>
     `fines-api-allocate-till-${row.tillId}`;
+  /**
+   * Builds a table cell DOM ID for a till row.
+   *
+   * @param row The mapped till row.
+   * @param suffix The column or selection-cell suffix.
+   * @returns The flow-specific cell ID.
+   */
   protected readonly getCellId = (row: IFinesApiAllocateTillsTableWrapperTableData, suffix: string): string =>
     `fines-api-allocate-${row.tillId}-${suffix}`;
+  /**
+   * Builds the accessible checkbox label for a till row.
+   *
+   * @param row The mapped till row.
+   * @returns The label identifying the row to assistive technology.
+   */
   protected readonly rowLabel = (row: IFinesApiAllocateTillsTableWrapperTableData): string =>
     this.content.selectTill(row[this.content.columns.tillNumber], row[this.content.columns.businessUnit]);
 
-  /** Every replacement response clears selection, including responses with the same IDs. */
+  /**
+   * Replaces table rows and clears selection, including responses with the same IDs.
+   *
+   * @param rows All mapped tills in the order supplied by the backend.
+   * @returns Nothing; replaces rows and resets the selection.
+   */
   @Input({ required: true }) public set tableData(rows: IFinesApiAllocateTillsTableWrapperTableData[]) {
     this.rows.set(rows);
     this.clearSelection();
   }
 
-  /** Refresh clears selection immediately, even if the request fails. */
+  /**
+   * Clears selection immediately on refresh, even if the request subsequently fails.
+   *
+   * @returns Nothing; supplies an empty selection to the shared table.
+   */
   public clearSelection(): void {
     this.selectedIds.set([]);
   }

@@ -1,5 +1,5 @@
 export const FINES_API_ALLOCATE_CONTENT = {
-  heading: 'Allocate tills',
+  heading: 'Allocate processed tills',
   hint: 'Select the tills you want to allocate.',
   emptyState: 'There are no outstanding tills to allocate',
   refresh: 'Refresh',

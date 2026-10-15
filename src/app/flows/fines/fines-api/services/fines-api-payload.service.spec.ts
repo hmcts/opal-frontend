@@ -52,7 +52,14 @@ describe('FinesApiPayloadService', () => {
       { interface_jobs: jobs },
       {
         tills: [
-          { till_id: 123, till_number: 7, amount: '12.50', business_unit_name: 'BU Alpha', processed_by: 'operator' },
+          {
+            till_id: 123,
+            till_number: 7,
+            errors: 0,
+            amount: '12.50',
+            business_unit_name: 'BU Alpha',
+            processed_by: 'operator',
+          },
         ],
       },
     );

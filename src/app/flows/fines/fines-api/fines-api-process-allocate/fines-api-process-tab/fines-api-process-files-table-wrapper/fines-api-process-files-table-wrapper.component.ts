@@ -51,20 +51,56 @@ export class FinesApiProcessFilesTableWrapperComponent implements OnChanges {
   @Input({ required: true }) public tableData: IFinesApiProcessFilesTableWrapperTableData[] = [];
   @Input() public selectedInterfaceFileIds: string[] | null = null;
 
+  /**
+   * Returns the stable interface file identifier used for selection.
+   *
+   * @param row The mapped file row.
+   * @returns The internal interface file ID.
+   */
   protected readonly getRowId = (row: IFinesApiProcessFilesTableWrapperTableData): string => row.interfaceFileId;
+  /**
+   * Builds the checkbox DOM ID for a file row.
+   *
+   * @param row The mapped file row.
+   * @returns The flow-specific checkbox ID.
+   */
   protected readonly getRowDomId = (row: IFinesApiProcessFilesTableWrapperTableData): string =>
     `fines-api-process-file-${row.interfaceFileId.replaceAll(/[^a-zA-Z0-9_-]/g, '-')}`;
+  /**
+   * Builds a table cell DOM ID for a file row.
+   *
+   * @param row The mapped file row.
+   * @param suffix The column or selection-cell suffix.
+   * @returns The flow-specific cell ID.
+   */
   protected readonly getCellId = (row: IFinesApiProcessFilesTableWrapperTableData, suffix: string): string =>
     `${this.getRowDomId(row)}-${suffix}`;
+  /**
+   * Builds the accessible checkbox label for a file row.
+   *
+   * @param row The mapped file row.
+   * @returns The label identifying the row to assistive technology.
+   */
   protected readonly rowLabel = (row: IFinesApiProcessFilesTableWrapperTableData): string =>
     this.content.selectFile(row[this.content.columns.fileName]);
 
+  /**
+   * Propagates user selection from the shared table to the parent flow.
+   *
+   * @param ids Selected interface file IDs in supplied row order.
+   * @returns Nothing; stores the selection locally and emits it to the parent.
+   */
   protected selectionChanged(ids: string[]): void {
     this.selectedIds.set(ids);
     this.selectedInterfaceFileIdsChange.emit(ids);
   }
 
-  /** Apply the Process cap and reconcile replacement rows with persisted selection together. */
+  /**
+   * Applies the Process cap and reconciles replacement rows with persisted selection together.
+   *
+   * @param changes Input changes containing replacement rows or externally restored selection.
+   * @returns Nothing; updates rows and selection, emitting only when replacement data removes selected IDs.
+   */
   public ngOnChanges(changes: SimpleChanges): void {
     if (changes['tableData']) this.rows.set(this.tableData.slice(0, this.maxResults));
     if (!changes['tableData'] && !changes['selectedInterfaceFileIds']) return;
