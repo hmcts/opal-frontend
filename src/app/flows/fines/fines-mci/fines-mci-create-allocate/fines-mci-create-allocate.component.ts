@@ -1,5 +1,5 @@
 import { AsyncPipe } from '@angular/common';
-import { ChangeDetectionStrategy, Component, inject } from '@angular/core';
+import { ChangeDetectionStrategy, Component, HostListener, inject } from '@angular/core';
 import { RouterLink } from '@angular/router';
 import { FINES_ROUTING_PATHS } from '@app/flows/fines/routing/constants/fines-routing-paths.constant';
 import { FINES_DASHBOARD_ROUTING_PATHS } from '@app/flows/fines/constants/fines-dashboard-routing-paths.constant';
@@ -79,6 +79,12 @@ export class FinesMciCreateAllocateComponent {
 
   /** Prompts before leaving only when the user has selected tills. */
   public canDeactivate(): CanDeactivateTypes {
+    return this.selectedTillsCount === 0;
+  }
+
+  /** Prompts before closing or refreshing when tills are selected. */
+  @HostListener('window:beforeunload')
+  public handleBeforeUnload(): boolean {
     return this.selectedTillsCount === 0;
   }
 }

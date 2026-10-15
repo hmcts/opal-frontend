@@ -92,6 +92,22 @@ describe('FinesMciCreateAllocateComponent', () => {
     expect(nativeElement.textContent).toContain('1 of 1 selected');
   });
 
+  it('should warn before unloading only when tills are selected', () => {
+    fixture.detectChanges();
+    const eventWithoutSelection = new Event('beforeunload', { cancelable: true });
+
+    window.dispatchEvent(eventWithoutSelection);
+
+    expect(eventWithoutSelection.defaultPrevented).toBe(false);
+
+    component.handleSelectedTillsCountChange(1);
+    const eventWithSelection = new Event('beforeunload', { cancelable: true });
+
+    window.dispatchEvent(eventWithSelection);
+
+    expect(eventWithSelection.defaultPrevented).toBe(true);
+  });
+
   it('should show the empty state when the API returns no tills', () => {
     opalFinesServiceMock.getTills.mockReturnValue(of({ tills: [] }));
     fixture = TestBed.createComponent(FinesMciCreateAllocateComponent);
