@@ -1,4 +1,5 @@
-import { ChangeDetectionStrategy, Component, inject, Input } from '@angular/core';
+import { GlobalStore } from '@hmcts/opal-frontend-common/stores/global';
+import { ChangeDetectionStrategy, Component, computed, inject, Input } from '@angular/core';
 import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 import { IFinesAccSummaryTabsContentStyles } from '../interfaces/fines-acc-summary-tabs-content-styles.interface';
 import { FINES_ACC_SUMMARY_TABS_CONTENT_STYLES } from '../../constants/fines-acc-summary-tabs-content-styles.constant';
@@ -21,7 +22,6 @@ import { FINES_ACC_ENF_OVERRIDE_ADD_CHANGE_ROUTING_PATHS } from '../../fines-acc
 import { FINES_ACC_ENF_COURT_CHANGE_ROUTING_PATHS } from '../../fines-acc-enf-court-change/constants/fines-acc-enf-court-change-routing-paths.constant';
 import { getNextPermittedActionIds } from '../../fines-acc-enf-action-select/utils/fines-acc-enf-action-next-permitted-actions.utils';
 import { FINES_ACC_RESTRICTED_ACCOUNT_STATUS_CODES } from '../../constants/fines-acc-restricted-account-status-codes.constant';
-import { FINES_ACC_ENFORCEMENT_HEARING_DATE_PARAMETER_NAME } from './constants/fines-acc-enforcement-hearing-date-parameter-name.constant';
 
 const FINES_ACC_HMRC_CHECK_RESTRICTED_ACCOUNT_STATUS_CODES = new Set(
   FINES_ACC_RESTRICTED_ACCOUNT_STATUS_CODES.filter((accountStatusCode) => accountStatusCode !== 'TS'),
@@ -45,12 +45,16 @@ const FINES_ACC_HMRC_CHECK_RESTRICTED_ACCOUNT_STATUS_CODES = new Set(
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class FinesAccDefendantDetailsEnforcementTab {
+  private readonly globalStore = inject(GlobalStore);
   private readonly router = inject(Router);
   private readonly activatedRoute = inject(ActivatedRoute);
 
-  public readonly hearingDateParameterName = FINES_ACC_ENFORCEMENT_HEARING_DATE_PARAMETER_NAME;
+  protected readonly showParameterPrompts = computed(
+    () => (this.globalStore.featureFlags() as Record<string, unknown>)['release-1b-1-1'] === true,
+  );
 
   @Input({ required: true }) tabData!: IOpalFinesAccountDefendantDetailsEnforcementTabRefData;
+  @Input() parameterLabels: ReadonlyMap<string, string> = new Map();
   @Input() style: IFinesAccSummaryTabsContentStyles = FINES_ACC_SUMMARY_TABS_CONTENT_STYLES;
   @Input() isCompanyAccount: boolean = false;
   @Input() hasAccountMaintenancePermission: boolean = false;
