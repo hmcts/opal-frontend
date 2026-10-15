@@ -135,6 +135,8 @@ describe('FinesMciCreateAllocateTableComponent', () => {
     expect(component.selectedTillsCountComputed()).toBe(0);
     expect(component.allRowsSelected()).toBe(false);
     expect(component.selectAllControl.value).toBe(false);
+    expect(component['rowControls'].get(TABLE_ROWS[0].tillId)?.value).toBe(false);
+    expect(component['rowControls'].get(TABLE_ROWS[1].tillId)?.value).toBe(false);
     expect(emitSpy).toHaveBeenLastCalledWith(0);
   });
 

@@ -81,6 +81,13 @@ export class FinesMciCreateAllocateTableComponent extends AbstractSortableTableC
     );
   }
 
+  /** Applies a selection change and keeps the checkbox controls and parent count in sync. */
+  private updateSelection(selectedRowIds: Set<string>): void {
+    this.selectedRowIdsSignal.set(selectedRowIds);
+    this.syncSelectionControls(this.fullTableDataComputed());
+    this.selectedTillsCountChange.emit(this.selectedTillsCountComputed());
+  }
+
   /**
    * Returns the stable identifier used for row selection.
    */
@@ -128,7 +135,7 @@ export class FinesMciCreateAllocateTableComponent extends AbstractSortableTableC
    * Selects or clears every till.
    */
   public onToggleAll(checked: boolean): void {
-    this.selectedRowIdsSignal.set(
+    this.updateSelection(
       toggleAllMultiSelectRows(
         this.fullTableDataComputed(),
         this.selectedRowIdsSignal(),
@@ -136,8 +143,6 @@ export class FinesMciCreateAllocateTableComponent extends AbstractSortableTableC
         checked,
       ) as Set<string>,
     );
-    this.syncSelectionControls(this.fullTableDataComputed());
-    this.selectedTillsCountChange.emit(this.selectedTillsCountComputed());
   }
 
   /**
@@ -150,10 +155,8 @@ export class FinesMciCreateAllocateTableComponent extends AbstractSortableTableC
       return;
     }
 
-    this.selectedRowIdsSignal.set(
+    this.updateSelection(
       toggleMultiSelectRow(this.selectedRowIdsSignal(), rowId, event.checked) as Set<string>,
     );
-    this.syncSelectionControls(this.fullTableDataComputed());
-    this.selectedTillsCountChange.emit(this.selectedTillsCountComputed());
   }
 }
