@@ -155,8 +155,6 @@ export class FinesMciCreateAllocateTableComponent extends AbstractSortableTableC
       return;
     }
 
-    this.updateSelection(
-      toggleMultiSelectRow(this.selectedRowIdsSignal(), rowId, event.checked) as Set<string>,
-    );
+    this.updateSelection(toggleMultiSelectRow(this.selectedRowIdsSignal(), rowId, event.checked) as Set<string>);
   }
 }
