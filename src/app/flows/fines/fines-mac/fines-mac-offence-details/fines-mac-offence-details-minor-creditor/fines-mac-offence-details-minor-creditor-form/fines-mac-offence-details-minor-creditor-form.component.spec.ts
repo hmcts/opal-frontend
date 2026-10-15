@@ -259,6 +259,22 @@ describe('FinesMacOffenceDetailsMinorCreditorFormComponent', () => {
     expect(paymentReferenceControl.valid).toBeTruthy();
   });
 
+  it('should set the master payment validators when R1A-1-2 is disabled', () => {
+    TestBed.inject(GlobalStore).setFeatureFlags({ [RELEASE_1A_1_2_FEATURE_FLAG]: false });
+
+    component['setPaymentDetailValidators']();
+
+    const sortCodeControl = component.form.controls['fm_offence_details_minor_creditor_bank_sort_code'];
+    const accountNumberControl = component.form.controls['fm_offence_details_minor_creditor_bank_account_number'];
+
+    sortCodeControl.setValue('12-34-56');
+    expect(sortCodeControl.hasError('numericalTextPattern')).toBe(true);
+
+    accountNumberControl.setValue('12345');
+    expect(accountNumberControl.valid).toBe(true);
+    expect(accountNumberControl.hasError('minlength')).toBe(false);
+  });
+
   it('should reset and clear validators for name-related controls', () => {
     component.form.get('fm_offence_details_minor_creditor_creditor_type')?.setValue('individual');
     fixture.detectChanges();
