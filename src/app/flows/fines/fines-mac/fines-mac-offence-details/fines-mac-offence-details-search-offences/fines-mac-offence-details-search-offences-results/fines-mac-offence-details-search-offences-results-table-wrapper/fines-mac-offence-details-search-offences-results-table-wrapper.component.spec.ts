@@ -1,4 +1,6 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
+import { GlobalStore } from '@hmcts/opal-frontend-common/stores/global';
+import { RELEASE_1A_1_2_FEATURE_FLAG } from '../../../../../constants/release-feature-flags.constant';
 import { FinesMacOffenceDetailsSearchOffencesResultsTableWrapperComponent } from './fines-mac-offence-details-search-offences-results-table-wrapper.component';
 import { UtilsService } from '@hmcts/opal-frontend-common/services/utils-service';
 import { FINES_MAC_OFFENCE_DETAILS_SEARCH_OFFENCES_RESULTS_TABLE_WRAPPER_LINK_DEFAULTS } from './constants/fines-mac-offence-details-search-offences-results-table-wrapper-link-defaults.constant';
@@ -8,6 +10,7 @@ import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 describe('FinesMacOffenceDetailsSearchOffencesResultsTableWrapperComponent', () => {
   let component: FinesMacOffenceDetailsSearchOffencesResultsTableWrapperComponent;
   let fixture: ComponentFixture<FinesMacOffenceDetailsSearchOffencesResultsTableWrapperComponent>;
+  let globalStore: InstanceType<typeof GlobalStore>;
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   let utilsService: any;
 
@@ -24,6 +27,12 @@ describe('FinesMacOffenceDetailsSearchOffencesResultsTableWrapperComponent', () 
 
     fixture = TestBed.createComponent(FinesMacOffenceDetailsSearchOffencesResultsTableWrapperComponent);
     component = fixture.componentInstance;
+
+    globalStore = TestBed.inject(GlobalStore);
+    globalStore.setFeatureFlags({
+      [RELEASE_1A_1_2_FEATURE_FLAG]: true,
+    });
+
     fixture.componentRef.setInput(
       'tableData',
       FINES_MAC_OFFENCE_DETAILS_SEARCH_OFFENCES_RESULTS_TABLE_WRAPPER_TABLE_DATA_MOCK,
@@ -40,6 +49,62 @@ describe('FinesMacOffenceDetailsSearchOffencesResultsTableWrapperComponent', () 
 
   it('should create', () => {
     expect(component).toBeTruthy();
+  });
+
+  it('should display the original Copy code links when release-1a-1-2 is disabled', () => {
+    globalStore.setFeatureFlags({
+      [RELEASE_1A_1_2_FEATURE_FLAG]: false,
+    });
+    fixture.detectChanges();
+
+    const copyLinks = fixture.nativeElement.querySelectorAll('td#code a.govuk-link.govuk-link--no-visited-state');
+
+    const copyButtons = fixture.nativeElement.querySelectorAll('td#actions button');
+
+    const actionsHeader = Array.from(
+      fixture.nativeElement.querySelectorAll('thead th') as NodeListOf<HTMLTableCellElement>,
+    ).find((header) => header.textContent?.trim() === 'Actions');
+
+    expect(copyLinks).toHaveLength(
+      FINES_MAC_OFFENCE_DETAILS_SEARCH_OFFENCES_RESULTS_TABLE_WRAPPER_TABLE_DATA_MOCK.length,
+    );
+
+    expect(copyButtons).toHaveLength(0);
+    expect(actionsHeader).toBeUndefined();
+  });
+
+  it('should copy the offence code using the original link when release-1a-1-2 is disabled', () => {
+    globalStore.setFeatureFlags({
+      [RELEASE_1A_1_2_FEATURE_FLAG]: false,
+    });
+    fixture.detectChanges();
+
+    const copyLink = fixture.nativeElement.querySelector(
+      'td#code a.govuk-link.govuk-link--no-visited-state',
+    ) as HTMLAnchorElement;
+
+    const liveRegion = fixture.nativeElement.querySelector(
+      'td#code > span.govuk-visually-hidden[aria-live]',
+    ) as HTMLSpanElement;
+
+    expect(copyLink).toBeTruthy();
+
+    copyLink.click();
+    fixture.detectChanges();
+
+    expect(utilsService.copyToClipboard).toHaveBeenCalledWith(
+      FINES_MAC_OFFENCE_DETAILS_SEARCH_OFFENCES_RESULTS_TABLE_WRAPPER_TABLE_DATA_MOCK[0].Code,
+    );
+
+    const copyCodeLabel = copyLink.querySelector('span:not(.govuk-visually-hidden)') as HTMLSpanElement;
+
+    expect(copyCodeLabel.innerText).toBe(
+      FINES_MAC_OFFENCE_DETAILS_SEARCH_OFFENCES_RESULTS_TABLE_WRAPPER_LINK_DEFAULTS.COPIED_CODE_TO_CLIPBOARD,
+    );
+
+    expect(liveRegion.textContent).toBe(
+      FINES_MAC_OFFENCE_DETAILS_SEARCH_OFFENCES_RESULTS_TABLE_WRAPPER_LINK_DEFAULTS.COPIED_CODE_TO_CLIPBOARD,
+    );
   });
 
   it('should render a copy code button with a unique visually hidden code for each offence', () => {
