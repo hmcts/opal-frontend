@@ -88,6 +88,7 @@ describe('FinesMacContactDetailsFormComponent', () => {
       fm_contact_details_telephone_number_home: '0123 456 7890',
       fm_contact_details_telephone_number_business: '01234 567890',
     };
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     vi.spyOn<any, any>(component['formSubmit'], 'emit');
 
     Object.entries(telephoneNumbers).forEach(([controlName, value]) => {
