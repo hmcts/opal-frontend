@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, Component, inject } from '@angular/core';
+import { ChangeDetectionStrategy, Component, inject, signal } from '@angular/core';
 import { IAbstractFormBaseForm } from '@hmcts/opal-frontend-common/components/abstract/abstract-form-base/interfaces';
 import { IAlphagovAccessibleAutocompleteItem } from '@hmcts/opal-frontend-common/components/alphagov/alphagov-accessible-autocomplete/interfaces';
 import {
@@ -18,6 +18,7 @@ import { CustomInboundFileViewerComponent } from '@hmcts/opal-frontend-common/co
 import { FinesFinancePayloadService } from '../services/fines-finance-payload.service';
 import { IFinesFinanceInboundFilesForm } from '../services/interfaces/fines-finance-inbound-files-form.interface';
 import { OpalFileHandlingService } from '@hmcts/opal-frontend-common/services/opal-file-handling-service';
+import { IOpalFileHandlingInterfaceFilesRefData } from '@hmcts/opal-frontend-common/services/opal-file-handling-service/interfaces';
 
 @Component({
   selector: 'app-fines-ext-finance-inbound-files',
@@ -30,6 +31,7 @@ export class FinesFinanceInboundFilesComponent {
   private readonly activatedRoute = inject(ActivatedRoute);
   private readonly payloadService = inject(FinesFinancePayloadService);
   private readonly opalFileHandlingService = inject(OpalFileHandlingService);
+  public readonly interfaceFilesRefData = signal<IOpalFileHandlingInterfaceFilesRefData | null>(null);
   public data: IAlphagovAccessibleAutocompleteItem[] = [];
   public readonly isInbound = true;
   public readonly domain = InterfaceFileViewerSupportedDomain.Fines;
@@ -83,9 +85,7 @@ export class FinesFinanceInboundFilesComponent {
     );
 
     this.opalFileHandlingService.getInterfaceFilesRefData(searchParams).subscribe((response) => {
-      console.log('File handling response:', response);
+      this.interfaceFilesRefData.set(response);
     });
-
-    console.log(`top level Form submitted with payload: ${JSON.stringify(searchParams)}`);
   }
 }
