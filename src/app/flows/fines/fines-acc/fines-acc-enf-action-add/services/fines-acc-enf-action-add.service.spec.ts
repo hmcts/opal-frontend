@@ -7,28 +7,33 @@ import { FINES_ACC_ENF_ACTION_ADD_RESULT_MOCK } from '../mocks/fines-acc-enf-act
 import { FINES_ACC_ENF_ACTION_ADD_COLLECTION_TYPE_RESULT_PARAMETERS_MOCK } from '../mocks/fines-acc-enf-action-add-collection-type-result-parameters.mock';
 import { FINES_ACC_ENF_ACTION_ADD_SUPPORTED_FIELD_TYPES_RESULT_PARAMETERS_MOCK } from '../mocks/fines-acc-enf-action-add-supported-field-types-result-parameters.mock';
 import { FINES_ACC_ENF_ACTION_ADD_MIXED_FIELD_TYPES_RESULT_PARAMETERS_MOCK } from '../mocks/fines-acc-enf-action-add-mixed-field-types-result-parameters.mock';
-import { FINES_ACC_ENF_ACTION_ADD_COURT_RESULT_PARAMETERS_MOCK } from '../mocks/fines-acc-enf-action-add-court-result-parameters.mock';
 
 describe('FinesAccEnfActionAddService', () => {
   const service = new FinesAccEnfActionAddService();
 
-  it('reads lowercase apidata from court configuration into the internal field model', () => {
-    const { fields } = service.mapResultParamsToFormStructure(
-      FINES_ACC_ENF_ACTION_ADD_COURT_RESULT_PARAMETERS_MOCK,
-      false,
+  it('uses the selected result prompts without changing identifiers', () => {
+    const labels = service.getResultParameterLabels(
+      JSON.stringify([
+        { name: 'daysindefault', prompt: 'Days in default' },
+        { name: 'prisondetention', prompt: 'Select type of supervision ' },
+        { name: 'hearingdate', prompt: 'Adjourned to' },
+      ]),
     );
-
-    expect(fields).toEqual([
-      expect.objectContaining({
-        parameterName: 'courtcode',
-        label: 'Court code',
-        type: FINES_ACC_ENF_ACTION_ADD_FIELD_TYPES.menuAutocomplete,
-        apiData: FINES_ACC_ENF_ACTION_ADD_API_DATA_KEYS.courts,
-        required: true,
-        options: [],
-      }),
-    ]);
+    expect(labels.get('daysindefault')).toBe('Days in default');
+    expect(labels.get('prisondetention')).toBe('Select type of supervision');
+    expect(labels.get('hearingdate')).toBe('Adjourned to');
+    expect(labels.has('days_in_default')).toBe(false);
+    expect(
+      service.getResultParameterLabels('[{"name":"hearingdate","prompt":"Date of hearing"}]').get('hearingdate'),
+    ).toBe('Date of hearing');
   });
+
+  it.each([undefined, 'invalid', '{}', '[null, {"name":"missingprompt"}]'])(
+    'handles unavailable labels: %s',
+    (json) => {
+      expect(service.getResultParameterLabels(json).size).toBe(0);
+    },
+  );
 
   it('maps result parameters to dynamic form fields including Welsh text companions', () => {
     const structure = service.mapResultParamsToFormStructure(
