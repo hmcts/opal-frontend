@@ -122,10 +122,6 @@ export class FinesAccMinorCreditorAddAmendConvertFormComponent
     return this.isR1A12Enabled ? 'Must be 6 digits long, for example, 123456' : 'Must be 6 digits long';
   }
 
-  public get accountNumberHintText(): string {
-    return this.isR1A12Enabled ? 'Must be between 6 and 8 digits long' : 'Must be 6 digits long';
-  }
-
   public override fieldErrors: IFinesAccMinorCreditorAddAmendConvertFieldErrors = {
     ...FINES_ACC_MINOR_CREDITOR_ADD_AMEND_CONVERT_FIELD_ERRORS,
   };
