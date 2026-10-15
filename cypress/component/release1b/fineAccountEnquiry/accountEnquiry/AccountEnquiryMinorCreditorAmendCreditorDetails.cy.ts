@@ -302,7 +302,7 @@ describe('Minor Creditor Account Enquiry - Amend Minor Creditor Details', () => 
         facc_minor_creditor_bank_sort_code: '12AB56',
       });
 
-      assertMinorCreditorAmendErrorSummary('Sort code must be 6 numbers');
+      assertMinorCreditorAmendErrorSummary('Enter a valid sort code like 309430');
     },
   );
 
