@@ -98,16 +98,16 @@ export class FinesMacOffenceDetailsMinorCreditorFormComponent extends AbstractFo
   public readonly individualConditionalId = 'fm_offence_details_minor_creditor_creditor_type_individual';
   public readonly companyConditionalId = 'fm_offence_details_minor_creditor_creditor_type_company';
 
-  private get newSortCodeFunctionalityEnabled(): boolean {
+  private get isR1A12Enabled(): boolean {
     return getFeatureFlagReleaseState(this.globalStore.featureFlags())[RELEASE_1A_1_2_FEATURE_FLAG] === true;
   }
 
   public get sortCodeHintText(): string {
-    return this.newSortCodeFunctionalityEnabled ? 'Must be 6 digits long, for example, 123456' : '';
+    return this.isR1A12Enabled ? 'Must be 6 digits long, for example, 123456' : '';
   }
 
   public get accountNumberHintText(): string {
-    return this.newSortCodeFunctionalityEnabled ? 'Must be between 6 and 8 digits long' : '';
+    return this.isR1A12Enabled ? 'Must be between 6 and 8 digits long' : '';
   }
 
   /**
@@ -213,12 +213,12 @@ export class FinesMacOffenceDetailsMinorCreditorFormComponent extends AbstractFo
       SINGLE_ASCII_CHARACTERS_PATTERN_VALIDATOR,
     ]);
     sortCode.setValidators(
-      this.newSortCodeFunctionalityEnabled
+      this.isR1A12Enabled
         ? [Validators.required, sortCodeValidator]
         : [Validators.required, Validators.maxLength(6), NUMERIC_PATTERN_VALIDATOR],
     );
     accountNumber.setValidators(
-      this.newSortCodeFunctionalityEnabled
+      this.isR1A12Enabled
         ? [Validators.required, Validators.minLength(6), Validators.maxLength(8), NUMERIC_PATTERN_VALIDATOR]
         : [Validators.required, Validators.maxLength(8), NUMERIC_PATTERN_VALIDATOR],
     );
@@ -397,7 +397,7 @@ export class FinesMacOffenceDetailsMinorCreditorFormComponent extends AbstractFo
   public override handleFormSubmit(event: SubmitEvent): void {
     const sortCodeControl = this.form.controls['fm_offence_details_minor_creditor_bank_sort_code'];
 
-    if (this.newSortCodeFunctionalityEnabled && sortCodeControl.valid && sortCodeControl.value) {
+    if (this.isR1A12Enabled && sortCodeControl.valid && sortCodeControl.value) {
       sortCodeControl.setValue(normalizeSortCode(sortCodeControl.value), { emitEvent: false });
     }
 

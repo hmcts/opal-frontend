@@ -114,18 +114,18 @@ export class FinesAccMinorCreditorAddAmendConvertFormComponent
   public readonly individualConditionalId = 'facc_minor_creditor_creditor_type_individual_conditional';
   public readonly companyConditionalId = 'facc_minor_creditor_creditor_type_company_conditional';
 
-  private get newSortCodeFunctionalityEnabled(): boolean {
+  private get isR1A12Enabled(): boolean {
     return getFeatureFlagReleaseState(this.globalStore.featureFlags())[RELEASE_1A_1_2_FEATURE_FLAG] === true;
   }
 
   public get sortCodeHintText(): string {
-    return this.newSortCodeFunctionalityEnabled
+    return this.isR1A12Enabled
       ? 'Must be 6 digits long, for example, 123456'
       : 'Must be 6 digits long';
   }
 
   public get accountNumberHintText(): string {
-    return this.newSortCodeFunctionalityEnabled ? 'Must be between 6 and 8 digits long' : '';
+    return this.isR1A12Enabled ? 'Must be between 6 and 8 digits long' : 'Must be 6 digits long';
   }
 
   public override fieldErrors: IFinesAccMinorCreditorAddAmendConvertFieldErrors = {
@@ -199,7 +199,7 @@ export class FinesAccMinorCreditorAddAmendConvertFormComponent
    * Builds detached BACS payment detail controls for the nested-form helpers.
    */
   private buildPaymentDetailControls(): FormGroup {
-    const sortCodeValidators = this.newSortCodeFunctionalityEnabled
+    const sortCodeValidators = this.isR1A12Enabled
       ? [Validators.required, sortCodeValidator]
       : [Validators.required, Validators.minLength(6), Validators.maxLength(6), NUMERIC_PATTERN_VALIDATOR];
 
@@ -398,7 +398,7 @@ export class FinesAccMinorCreditorAddAmendConvertFormComponent
   public override handleFormSubmit(event: SubmitEvent): void {
     const sortCodeControl = this.form.get(this.controls.bankSortCode);
 
-    if (this.newSortCodeFunctionalityEnabled && sortCodeControl?.valid && sortCodeControl.value) {
+    if (this.isR1A12Enabled && sortCodeControl?.valid && sortCodeControl.value) {
       sortCodeControl.setValue(normalizeSortCode(sortCodeControl.value), { emitEvent: false });
     }
 
