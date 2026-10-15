@@ -93,6 +93,26 @@ export class FinesMacContactDetailsFormComponent extends AbstractFormBaseCompone
     this.rePopulateForm(formData);
   }
 
+  private normalizeTelephoneNumbers(): void {
+    const telephoneControlNames = [
+      'fm_contact_details_telephone_number_mobile',
+      'fm_contact_details_telephone_number_home',
+      'fm_contact_details_telephone_number_business',
+    ];
+
+    telephoneControlNames.forEach((controlName) => {
+      const control = this.form.get(controlName);
+      if (typeof control?.value === 'string') {
+        control.setValue(control.value.replace(/\s/g, ''), { emitEvent: false });
+      }
+    });
+  }
+
+  public override handleFormSubmit(event: SubmitEvent): void {
+    this.normalizeTelephoneNumbers();
+    super.handleFormSubmit(event);
+  }
+
   public override ngOnInit(): void {
     this.initialContactDetailsSetup();
     super.ngOnInit();

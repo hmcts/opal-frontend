@@ -81,6 +81,32 @@ describe('FinesMacContactDetailsFormComponent', () => {
     );
   });
 
+  it('should remove spaces from telephone numbers before emitting the form value', () => {
+    const event = {} as SubmitEvent;
+    const telephoneNumbers = {
+      fm_contact_details_telephone_number_mobile: '01234 567 890',
+      fm_contact_details_telephone_number_home: '0123 456 7890',
+      fm_contact_details_telephone_number_business: '01234 567890',
+    };
+    vi.spyOn<any, any>(component['formSubmit'], 'emit');
+
+    Object.entries(telephoneNumbers).forEach(([controlName, value]) => {
+      component.form.get(controlName)?.setValue(value);
+    });
+
+    component.handleFormSubmit(event);
+
+    expect(component['formSubmit'].emit).toHaveBeenCalledWith(
+      expect.objectContaining({
+        formData: expect.objectContaining({
+          fm_contact_details_telephone_number_mobile: '01234567890',
+          fm_contact_details_telephone_number_home: '01234567890',
+          fm_contact_details_telephone_number_business: '01234567890',
+        }),
+      }),
+    );
+  });
+
   it('should accept 10 digit home and work telephone numbers while keeping mobile telephone number as 11 digits', () => {
     const mobileTelephoneControl = component.form.get('fm_contact_details_telephone_number_mobile');
     const homeTelephoneControl = component.form.get('fm_contact_details_telephone_number_home');

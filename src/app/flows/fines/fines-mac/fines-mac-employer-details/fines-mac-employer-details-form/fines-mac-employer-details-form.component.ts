@@ -133,6 +133,18 @@ export class FinesMacEmployerDetailsFormComponent extends AbstractFormBaseCompon
     this.rePopulateForm(formData);
   }
 
+  private normalizeEmployerTelephoneNumber(): void {
+    const control = this.form.get('fm_employer_details_employer_telephone_number');
+    if (typeof control?.value === 'string') {
+      control.setValue(control.value.replace(/\s/g, ''), { emitEvent: false });
+    }
+  }
+
+  public override handleFormSubmit(event: SubmitEvent): void {
+    this.normalizeEmployerTelephoneNumber();
+    super.handleFormSubmit(event);
+  }
+
   public override ngOnInit(): void {
     this.initialEmployerDetailsSetup();
     super.ngOnInit();

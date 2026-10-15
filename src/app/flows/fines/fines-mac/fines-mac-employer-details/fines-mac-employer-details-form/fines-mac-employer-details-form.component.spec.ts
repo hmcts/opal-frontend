@@ -100,6 +100,25 @@ describe('FinesMacEmployerDetailsFormComponent', () => {
     );
   });
 
+  it('should remove spaces from the employer telephone number before emitting the form value', () => {
+    const event = {} as SubmitEvent;
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    vi.spyOn<any, any>(component['formSubmit'], 'emit');
+
+    component['rePopulateForm'](formSubmit.formData);
+    component.form.get('fm_employer_details_employer_telephone_number')?.setValue('01234 567 890');
+
+    component.handleFormSubmit(event);
+
+    expect(component['formSubmit'].emit).toHaveBeenCalledWith(
+      expect.objectContaining({
+        formData: expect.objectContaining({
+          fm_employer_details_employer_telephone_number: '01234567890',
+        }),
+      }),
+    );
+  });
+
   it('should call initialCreateAccountSetup method', () => {
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     vi.spyOn<any, any>(component, 'setupEmployerDetailsForm');
