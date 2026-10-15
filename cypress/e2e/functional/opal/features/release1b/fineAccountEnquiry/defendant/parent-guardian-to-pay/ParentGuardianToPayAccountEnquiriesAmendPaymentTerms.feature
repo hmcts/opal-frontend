@@ -24,7 +24,7 @@ Feature: Parent Guardian To Pay Account Enquiries Amend Payment Terms
         | account.defendant.dob                           | 2010-11-10             |
         | account.defendant.parent_guardian.dob           | 1980-02-15             |
         | account.offences.0.impositions.0.amount_imposed | 250                    |
-        | account.offences.0.impositions.0.amount_paid    | 300                    |
+        | account.offences.0.impositions.0.amount_paid    | 0                      |
         | account.payment_terms.payment_terms_type_code   | B                      |
         | account.payment_terms.effective_date            | 2025-05-30             |
 
