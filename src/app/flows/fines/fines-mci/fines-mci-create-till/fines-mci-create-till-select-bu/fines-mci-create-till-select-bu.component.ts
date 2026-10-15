@@ -58,10 +58,12 @@ export class FinesMciCreateTillSelectBuComponent {
    * Creates autocomplete items from business unit reference data.
    */
   private createAutoCompleteItems(result: IOpalFinesBusinessUnitRefData): IAlphagovAccessibleAutocompleteItem[] {
-    return result.refData.map((businessUnit: IOpalFinesBusinessUnit) => ({
-      value: businessUnit.business_unit_id,
-      name: businessUnit.business_unit_name,
-    }));
+    return [...result.refData]
+      .sort((a, b) => a.business_unit_name.localeCompare(b.business_unit_name))
+      .map((businessUnit: IOpalFinesBusinessUnit) => ({
+        value: businessUnit.business_unit_id,
+        name: businessUnit.business_unit_name,
+      }));
   }
 
   /**
