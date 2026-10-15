@@ -7,6 +7,8 @@ import { OPAL_FINES_BUSINESS_UNIT_REF_DATA_MOCK } from '@services/fines/opal-fin
 import { FINES_ACCOUNT_TYPES } from 'src/app/flows/fines/constants/fines-account-types.constant';
 import { FINES_MAC_ROUTING_PATHS } from 'src/app/flows/fines/fines-mac/routing/constants/fines-mac-routing-paths.constant';
 import { mountMacStoreComponent } from '../support/mountMacStoreComponent';
+import { GlobalStore } from '@hmcts/opal-frontend-common/stores/global';
+import { RELEASE_1A_1_2_FEATURE_FLAG } from 'src/app/flows/fines/constants/release-feature-flags.constant';
 
 const MANUAL_ACCOUNT_CREATION_JIRA_LABEL = '@JIRA-LABEL:manual-account-creation';
 
@@ -39,7 +41,17 @@ describe('FinesMacCreateAccountComponent', () => {
     configureBusinessUnits?: (businessUnitMock: BusinessUnitRefData) => void,
   ) =>
     mountMacStoreComponent({
-      additionalProviders: [provideHttpClient()],
+      additionalProviders: [
+        provideHttpClient(),
+        {
+          provide: GlobalStore,
+          useFactory: () => {
+            const store = new GlobalStore();
+            store.setFeatureFlags({ [RELEASE_1A_1_2_FEATURE_FLAG]: true });
+            return store;
+          },
+        },
+      ],
       component: FinesMacCreateAccountComponent,
       formSubmit,
       initialState: buildFinesMacCreateAccountState(configureState),
