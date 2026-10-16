@@ -61,7 +61,10 @@ export const ACCOUNT_ENQUIRY_ENFORCEMENT_STATUS_ELEMENTS = {
   successBanner: 'opal-lib-moj-alert[type="success"]',
   successBannerText: 'opal-lib-moj-alert-content-text',
 
-  detailsDaysInDefault: '[id="enforcementActionDetailsDays in defaultKey"]',
+  detailsDaysInDefault: '#enforcementActionDetailsDaysindefaultKey',
+  detailsHearingDate: '#enforcementActionDetailsHearingdateKey',
+  detailsSnakeCaseDaysInDefault: '#enforcementActionDetailsDays_in_defaultKey',
+  detailsSnakeCaseHearingDate: '#enforcementActionDetailsHearing_dateKey',
   detailsReason: '#enforcementActionDetailsReasonKey',
   collectionOrderChange: '#enforcementOverviewDetailsCollection_order_statusActions > a',
   actionsColumnHeader: '.govuk-grid-column-one-third > .govuk-\\!-margin-bottom-2',
