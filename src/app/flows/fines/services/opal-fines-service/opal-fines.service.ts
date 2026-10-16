@@ -422,13 +422,14 @@ export class OpalFines {
 
   /**
    * Retrieves source display names, sharing one request and caching a successful response for the session.
+   * Eligible transient failures receive one automatic retry through the safe-read policy.
    * Failed requests can be retried by a later subscriber. Clearing reference caches resets this response.
    *
    * @returns The source mapping array supplied by the backend.
    */
   public getSourceMappings(): Observable<IOpalFinesSourceMapping[]> {
     this.cache.sourceMappingsCache$ ??= this.http
-      .get<IOpalFinesSourceMapping[]>(OPAL_FINES_PATHS.sourceMappings)
+      .get<IOpalFinesSourceMapping[]>(OPAL_FINES_PATHS.sourceMappings, this.retrySafeReadOptions())
       .pipe(shareReplay({ bufferSize: 1, refCount: false }));
 
     return this.cache.sourceMappingsCache$;

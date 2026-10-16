@@ -400,6 +400,46 @@ describe('OpalFines', () => {
       }
     });
 
+    it('retries a transient failure once and caches the successful response', () => {
+      const received = vi.fn();
+      const failed = vi.fn();
+      service.getSourceMappings().subscribe({ next: received, error: failed });
+      httpMock
+        .expectOne(OPAL_FINES_PATHS.sourceMappings)
+        .flush('Timed out', { status: 504, statusText: 'Gateway Timeout' });
+
+      const retry = httpMock.expectOne(OPAL_FINES_PATHS.sourceMappings);
+      expect(retry.request.method).toBe('GET');
+      retry.flush(OPAL_FINES_SOURCE_MAPPINGS_MOCK);
+      expect(received).toHaveBeenCalledExactlyOnceWith(OPAL_FINES_SOURCE_MAPPINGS_MOCK);
+      expect(failed).not.toHaveBeenCalled();
+
+      const later = vi.fn();
+      service.getSourceMappings().subscribe(later);
+      expect(later).toHaveBeenCalledExactlyOnceWith(OPAL_FINES_SOURCE_MAPPINGS_MOCK);
+      httpMock.expectNone(OPAL_FINES_PATHS.sourceMappings);
+    });
+
+    it('propagates an exhausted retry and allows a later subscriber to try again', () => {
+      const received = vi.fn();
+      const failed = vi.fn();
+      service.getSourceMappings().subscribe({ next: received, error: failed });
+      httpMock
+        .expectOne(OPAL_FINES_PATHS.sourceMappings)
+        .flush('Timed out', { status: 504, statusText: 'Gateway Timeout' });
+      httpMock
+        .expectOne(OPAL_FINES_PATHS.sourceMappings)
+        .flush('Still unavailable', { status: 503, statusText: 'Service Unavailable' });
+
+      expect(received).not.toHaveBeenCalled();
+      expect(failed).toHaveBeenCalledExactlyOnceWith(expect.objectContaining({ status: 503 }));
+      httpMock.expectNone(OPAL_FINES_PATHS.sourceMappings);
+
+      service.getSourceMappings().subscribe(received);
+      httpMock.expectOne(OPAL_FINES_PATHS.sourceMappings).flush(OPAL_FINES_SOURCE_MAPPINGS_MOCK);
+      expect(received).toHaveBeenCalledExactlyOnceWith(OPAL_FINES_SOURCE_MAPPINGS_MOCK);
+    });
+
     it('caches an empty mapping response', () => {
       service.getSourceMappings().subscribe();
       httpMock.expectOne(OPAL_FINES_PATHS.sourceMappings).flush([]);
