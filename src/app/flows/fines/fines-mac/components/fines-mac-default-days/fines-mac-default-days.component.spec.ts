@@ -2,10 +2,13 @@ import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { FinesMacDefaultDaysComponent } from './fines-mac-default-days.component';
 import { SimpleChange } from '@angular/core';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
+import { GlobalStore } from '@hmcts/opal-frontend-common/stores/global';
+import { RELEASE_1A_1_2_FEATURE_FLAG } from '../../../constants/release-feature-flags.constant';
 
 describe('FinesMacDefaultDaysComponent', () => {
   let component: FinesMacDefaultDaysComponent;
   let fixture: ComponentFixture<FinesMacDefaultDaysComponent>;
+  let globalStore: InstanceType<typeof GlobalStore>;
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
@@ -14,11 +17,30 @@ describe('FinesMacDefaultDaysComponent', () => {
 
     fixture = TestBed.createComponent(FinesMacDefaultDaysComponent);
     component = fixture.componentInstance;
+    globalStore = TestBed.inject(GlobalStore);
+    globalStore.setFeatureFlags({
+      [RELEASE_1A_1_2_FEATURE_FLAG]: true,
+    });
     fixture.detectChanges();
   });
 
   it('should create', () => {
     expect(component).toBeTruthy();
+  });
+
+  it('should preserve the original heading markup when release-1a-1-2 is disabled', () => {
+    globalStore.setFeatureFlags({
+      [RELEASE_1A_1_2_FEATURE_FLAG]: false,
+    });
+
+    fixture.detectChanges();
+
+    const legend = fixture.nativeElement.querySelector('legend.govuk-fieldset__legend');
+    const heading = legend.querySelector('h1.govuk-fieldset__heading');
+
+    expect(legend.textContent.trim()).toBe('Calculate days in default');
+    expect(heading).not.toBeNull();
+    expect(heading.textContent.trim()).toBe('Calculate days in default');
   });
 
   it('should render calculate days in default as fieldset legend text and not as a heading', () => {
