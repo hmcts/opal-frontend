@@ -38,6 +38,20 @@ describe('FinesMciCreateTillSelectBuComponent', () => {
     expect(component).toBeTruthy();
   });
 
+  it('should use empty business unit data when the route has no resolved data', async () => {
+    TestBed.resetTestingModule();
+    await TestBed.configureTestingModule({
+      imports: [FinesMciCreateTillSelectBuComponent],
+      providers: [provideRouter([]), { provide: ActivatedRoute, useValue: { snapshot: { data: {} } } }],
+    }).compileComponents();
+
+    fixture = TestBed.createComponent(FinesMciCreateTillSelectBuComponent);
+    fixture.detectChanges();
+
+    expect(fixture.nativeElement.textContent).toContain('Create till');
+    expect(fixture.nativeElement.querySelector('opal-lib-alphagov-accessible-autocomplete')).toBeTruthy();
+  });
+
   it('should render a create till business unit autocomplete page', () => {
     const nativeElement = fixture.nativeElement as HTMLElement;
     const text = nativeElement.textContent;
