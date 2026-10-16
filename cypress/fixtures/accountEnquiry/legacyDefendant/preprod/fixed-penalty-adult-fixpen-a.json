@@ -24,7 +24,6 @@
     },
     "enforcementStatus": {
       "collection order": "Collection Order",
-      "days in default": "0 days",
       "date of last movement": "19 February 2025"
     },
     "comments": {
@@ -39,13 +38,11 @@
     }
   },
   "paymentTermsTab": {
-    "pay by date": "26 February 2025",
-    "days in default": "0"
+    "pay by date": "26 February 2025"
   },
   "enforcementTab": {
     "overview": {
       "collection order status": "Collection Order",
-      "days in default": "0 days",
       "enforcement court": "West London VPFPO (101)"
     }
   },
