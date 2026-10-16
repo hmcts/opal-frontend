@@ -47,6 +47,7 @@ export const routing: Routes = [
                 (c) => c.FinesMciCreateTillSelectBuComponent,
               ),
             canActivate: [authGuard, routePermissionsGuard],
+            canDeactivate: [canDeactivateGuard],
             data: {
               permission: 'PROCESS_AND_ALLOCATE_PAYMENTS',
               routePermissionId: [FINES_PERMISSIONS['process-and-allocate-payments']],

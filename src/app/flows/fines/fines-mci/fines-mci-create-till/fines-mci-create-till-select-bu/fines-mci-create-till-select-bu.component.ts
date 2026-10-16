@@ -1,9 +1,18 @@
 import { DOCUMENT } from '@angular/common';
-import { ChangeDetectionStrategy, ChangeDetectorRef, Component, ElementRef, ViewChild, inject } from '@angular/core';
+import {
+  ChangeDetectionStrategy,
+  ChangeDetectorRef,
+  Component,
+  ElementRef,
+  OnDestroy,
+  ViewChild,
+  inject,
+} from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 import { FINES_ROUTING_PATHS } from '@app/flows/fines/routing/constants/fines-routing-paths.constant';
+import { CanDeactivateTypes } from '@hmcts/opal-frontend-common/guards/can-deactivate/types';
 import { AlphagovAccessibleAutocompleteComponent } from '@hmcts/opal-frontend-common/components/alphagov/alphagov-accessible-autocomplete';
 import { IAlphagovAccessibleAutocompleteItem } from '@hmcts/opal-frontend-common/components/alphagov/alphagov-accessible-autocomplete/interfaces';
 import { IAbstractFormBaseFormErrorSummaryMessage } from '@hmcts/opal-frontend-common/components/abstract/interfaces';
@@ -35,7 +44,7 @@ import { FinesMciStore } from '../../stores/fines-mci.store';
   styleUrl: './fines-mci-create-till-select-bu.component.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class FinesMciCreateTillSelectBuComponent {
+export class FinesMciCreateTillSelectBuComponent implements OnDestroy {
   private readonly activatedRoute = inject(ActivatedRoute);
   private readonly router = inject(Router);
   private readonly document = inject(DOCUMENT);
@@ -63,6 +72,7 @@ export class FinesMciCreateTillSelectBuComponent {
   protected readonly businessUnitAutoCompleteItems = this.createAutoCompleteItems(this.businessUnitsRefData);
   protected businessUnitSelectionError: string | null = null;
   protected formErrorSummaryMessage: IAbstractFormBaseFormErrorSummaryMessage[] = [];
+  private isContinuing = false;
 
   public constructor() {
     this.setInitialBusinessUnit();
@@ -136,6 +146,7 @@ export class FinesMciCreateTillSelectBuComponent {
     this.businessUnitSelectionError = null;
     this.formErrorSummaryMessage = [];
     this.finesMciStore.setBusinessUnit(businessUnit);
+    this.isContinuing = true;
     void this.router.navigate([
       '/',
       FINES_ROUTING_PATHS.root,
@@ -150,8 +161,26 @@ export class FinesMciCreateTillSelectBuComponent {
    * Returns the user to the manual cash input create and allocate page.
    */
   public handleCancel(): void {
-    this.finesMciStore.reset();
     void this.router.navigate(this.createAllocateRoute);
+  }
+
+  /**
+   * Warns before leaving when the user has selected a business unit.
+   */
+  public canDeactivate(): CanDeactivateTypes {
+    const selectedBusinessUnitId = this.form.controls.fmci_create_till_business_unit_id.value;
+    const hasValidSelection = this.businessUnitsRefData.refData.some(
+      ({ business_unit_id }) => business_unit_id === selectedBusinessUnitId,
+    );
+    const hasSelectedBusinessUnit = this.finesMciStore.businessUnit() !== null || (this.form.dirty && hasValidSelection);
+
+    return this.isContinuing || !hasSelectedBusinessUnit;
+  }
+
+  public ngOnDestroy(): void {
+    if (!this.isContinuing) {
+      this.finesMciStore.reset();
+    }
   }
 
   /**
