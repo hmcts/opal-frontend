@@ -56,8 +56,8 @@ Feature: Defendant Company Search And Matches Journeys
       | OPALTEST            | 26000471W                     | OPALTEST              | accountEnquiry/legacyCompany/jcde/opaltest.json |
     @R1BDrop1UatTechPreprod
     Examples:
-      | LEGACY_COMPANY_NAME      | LEGACY_COMPANY_ACCOUNT_NUMBER | LEGACY_COMPANY_HEADER   | LEGACY_COMPANY_VALIDATION_FIXTURE                          |
-      | JFtest TFO Company       | 24000209J                     | JFtest TFO Company      | accountEnquiry/legacyCompany/preprod/jftest-tfo-company.json |
+      | LEGACY_COMPANY_NAME | LEGACY_COMPANY_ACCOUNT_NUMBER | LEGACY_COMPANY_HEADER | LEGACY_COMPANY_VALIDATION_FIXTURE                            |
+      | JFtest TFO Company  | 24000209J                     | JFtest TFO Company    | accountEnquiry/legacyCompany/preprod/jftest-tfo-company.json |
 
   @LegacyData @JIRA-STORY:PO-712 @JIRA-STORY:PO-706 @JIRA-STORY:PO-707 @JIRA-EPIC:PO-704 @JIRA-DEFECT:PO-10245
   Scenario Outline: Search for a company defendant account from legacy data and validate the matching record
@@ -66,7 +66,7 @@ Feature: Defendant Company Search And Matches Journeys
     And I search using the following inputs:
       | account number | <LEGACY_COMPANY_ACCOUNT_NUMBER> |
     Then I see the Search results page
-    And I see the Companies search results:
+    And I see the Companies search results by tab switch:
       | Account        | <LEGACY_COMPANY_ACCOUNT_NUMBER> |
       | Company        | <LEGACY_COMPANY_NAME>           |
       | Address line 1 | <LEGACY_COMPANY_ADR_LINE_1>     |
