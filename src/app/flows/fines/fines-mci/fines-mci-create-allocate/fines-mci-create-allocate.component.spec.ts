@@ -80,6 +80,23 @@ describe('FinesMciCreateAllocateComponent', () => {
     expect(text).toContain(expectedDate);
   });
 
+  it('should handle tills with missing or invalid processed dates', () => {
+    opalFinesServiceMock.getTills.mockReturnValue(
+      of({
+        tills: [
+          { ...tillsResponse.tills[0], till_id: 9001, date_processed: null },
+          { ...tillsResponse.tills[0], till_id: 9002, date_processed: 'not-a-date' },
+        ],
+      }),
+    );
+    fixture = TestBed.createComponent(FinesMciCreateAllocateComponent);
+    fixture.detectChanges();
+
+    const nativeElement = fixture.nativeElement as HTMLElement;
+    expect(nativeElement.querySelector('#fines-mci-create-allocate-9001-date-created')?.textContent?.trim()).toBe('');
+    expect(nativeElement.querySelector('#fines-mci-create-allocate-9002-date-created')?.textContent?.trim()).toBe('');
+  });
+
   it('should update the selected tills count when a till is selected', () => {
     fixture.detectChanges();
     const nativeElement = fixture.nativeElement as HTMLElement;
@@ -94,6 +111,7 @@ describe('FinesMciCreateAllocateComponent', () => {
 
   it('should warn before unloading only when tills are selected', () => {
     fixture.detectChanges();
+    expect(component.canDeactivate()).toBe(true);
     const eventWithoutSelection = new Event('beforeunload', { cancelable: true });
 
     window.dispatchEvent(eventWithoutSelection);
@@ -101,6 +119,7 @@ describe('FinesMciCreateAllocateComponent', () => {
     expect(eventWithoutSelection.defaultPrevented).toBe(false);
 
     component.handleSelectedTillsCountChange(1);
+    expect(component.canDeactivate()).toBe(false);
     const eventWithSelection = new Event('beforeunload', { cancelable: true });
 
     window.dispatchEvent(eventWithSelection);
