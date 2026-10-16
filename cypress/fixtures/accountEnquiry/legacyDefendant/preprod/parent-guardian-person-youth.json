@@ -19,7 +19,6 @@
       "pay by date": "01 January 2017"
     },
     "enforcementStatus": {
-      "days in default": "0 days",
       "date of last movement": "14 September 2016"
     },
     "comments": {
@@ -28,32 +27,98 @@
   },
   "defendantTab": {
     "defendant": {
-      "name": "Mr Person Youth",
-      "aliases": "AA one\nBB two\nCC three\nDD four\nEEEEEEEEEEEE five",
+      "name": "Mr Person YOUTH",
+      "aliases": "\u2014",
       "date of birth": "01 January 2005",
-      "national insurance number": "NI123456C",
+      "national insurance number": "AB 12 34 56 C",
       "address": "6 The Address of youth\nAdd2\nAdd3\nNW1"
-    },
-    "contact": {
-      "home telephone number": "123123123"
     }
   },
   "parentGuardianTab": {
     "header": "Parent or guardian details",
     "parentGuardian": {
-      "name": "Mrs Mummy Youth",
+      "name": "MRS MUMMY YOUTH",
+      "aliases": "\u2014",
+      "date of birth": "\u2014",
+      "national insurance number": "\u2014",
       "address": "8 Another Address\nChegunt\nLondon"
     }
   },
   "paymentTermsTab": {
     "pay by date": "01 January 2017",
-    "days in default": "0"
+    "days in default": "\u2014",
+    "date days in default were imposed": "\u2014",
+    "payment card last requested": "\u2014"
   },
   "enforcementTab": {
-    "overview": {
-      "days in default": "0 days"
-    }
+    "overview": {}
   },
-  "impositionsTab": {},
-  "historyAndNotesTab": {}
+  "impositionsTab": {
+    "rows": [
+      [
+        "Date added",
+        "Imposition",
+        "Creditor",
+        "Imposed",
+        "Paid/Written off",
+        "Balance",
+        "Date imposed",
+        "Offence",
+        "Imposed by",
+        "Imposition ID"
+      ],
+      [
+        "14 Sep 2016",
+        "FO",
+        "HM Courts & Tribunals Service",
+        "£1,200.00",
+        "£200.00",
+        "-£1,000.00",
+        "13 Sep 2016",
+        "Theft from the person of another",
+        "Dummy Court",
+        "730000005910"
+      ]
+    ]
+  },
+  "historyAndNotesTab": {
+    "columns": ["Date", "User", "Type", "Details", "Amount"],
+    "rows": [
+      {
+        "date": "19 Oct 2021",
+        "user": "L073CC",
+        "type": "Amendment",
+        "details": "Date of Birth | Old: 01.01.2000 | New: 01.01.2005",
+        "amount": "\u2014"
+      },
+      {
+        "date": "19 Oct 2021",
+        "user": "L073CC",
+        "type": "Amendment",
+        "details": "Age | Old: 0 | New: 16",
+        "amount": "\u2014"
+      },
+      {
+        "date": "19 Oct 2021",
+        "user": "L073CC",
+        "type": "Amendment",
+        "details": "National Insurance Number | New: AB123456C",
+        "amount": "\u2014"
+      },
+      {
+        "date": "14 Sep 2016",
+        "user": "L073QG",
+        "type": "Payment terms",
+        "details": "In full | Due by: 01/01/2017 | 0 days in default",
+        "amount": "\u2014"
+      },
+      {
+        "date": "14 Sep 2016",
+        "user": "L073QG",
+        "type": "Financial",
+        "details": "TFO in",
+        "amount": "£200.00"
+      }
+    ]
+  }
 }
