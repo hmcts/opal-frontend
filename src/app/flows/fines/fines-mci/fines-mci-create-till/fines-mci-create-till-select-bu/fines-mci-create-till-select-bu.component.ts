@@ -59,6 +59,7 @@ export class FinesMciCreateTillSelectBuComponent implements OnDestroy {
     count: 0,
     refData: [],
   };
+  private isContinuing = false;
 
   protected readonly createAllocateRoute = [
     '/',
@@ -73,7 +74,6 @@ export class FinesMciCreateTillSelectBuComponent implements OnDestroy {
   protected readonly businessUnitAutoCompleteItems = this.createAutoCompleteItems(this.businessUnitsRefData);
   protected businessUnitSelectionError: string | null = null;
   protected formErrorSummaryMessage: IAbstractFormBaseFormErrorSummaryMessage[] = [];
-  private isContinuing = false;
 
   public constructor() {
     this.setInitialBusinessUnit();
@@ -119,6 +119,30 @@ export class FinesMciCreateTillSelectBuComponent implements OnDestroy {
         this.businessUnitsRefData.refData[0].business_unit_id,
       );
     }
+  }
+
+  private hasSelectedBusinessUnit(): boolean {
+    const selectedBusinessUnitId = this.form.controls.fmci_create_till_business_unit_id.value;
+    const hasValidSelection = this.businessUnitsRefData.refData.some(
+      ({ business_unit_id }) => business_unit_id === selectedBusinessUnitId,
+    );
+
+    return this.finesMciStore.businessUnit() !== null || (this.form.dirty && hasValidSelection);
+  }
+
+  /**
+   * Focuses the error summary after validation errors are rendered.
+   */
+  private focusErrorSummary(): void {
+    this.changeDetector.detectChanges();
+    this.errorSummary?.nativeElement.querySelector<HTMLElement>('.govuk-error-summary')?.focus({ preventScroll: true });
+  }
+
+  /**
+   * Focuses the field linked from an error summary item.
+   */
+  protected scrollTo(fieldId: string): void {
+    this.document.getElementById(fieldId)?.focus();
   }
 
   /**
@@ -186,27 +210,4 @@ export class FinesMciCreateTillSelectBuComponent implements OnDestroy {
     }
   }
 
-  private hasSelectedBusinessUnit(): boolean {
-    const selectedBusinessUnitId = this.form.controls.fmci_create_till_business_unit_id.value;
-    const hasValidSelection = this.businessUnitsRefData.refData.some(
-      ({ business_unit_id }) => business_unit_id === selectedBusinessUnitId,
-    );
-
-    return this.finesMciStore.businessUnit() !== null || (this.form.dirty && hasValidSelection);
-  }
-
-  /**
-   * Focuses the field linked from an error summary item.
-   */
-  protected scrollTo(fieldId: string): void {
-    this.document.getElementById(fieldId)?.focus();
-  }
-
-  /**
-   * Focuses the error summary after validation errors are rendered.
-   */
-  private focusErrorSummary(): void {
-    this.changeDetector.detectChanges();
-    this.errorSummary?.nativeElement.querySelector<HTMLElement>('.govuk-error-summary')?.focus({ preventScroll: true });
-  }
 }
