@@ -4,6 +4,7 @@ import {
   ChangeDetectorRef,
   Component,
   ElementRef,
+  HostListener,
   OnDestroy,
   ViewChild,
   inject,
@@ -168,19 +169,30 @@ export class FinesMciCreateTillSelectBuComponent implements OnDestroy {
    * Warns before leaving when the user has selected a business unit.
    */
   public canDeactivate(): CanDeactivateTypes {
-    const selectedBusinessUnitId = this.form.controls.fmci_create_till_business_unit_id.value;
-    const hasValidSelection = this.businessUnitsRefData.refData.some(
-      ({ business_unit_id }) => business_unit_id === selectedBusinessUnitId,
-    );
-    const hasSelectedBusinessUnit = this.finesMciStore.businessUnit() !== null || (this.form.dirty && hasValidSelection);
+    return this.isContinuing || !this.hasSelectedBusinessUnit();
+  }
 
-    return this.isContinuing || !hasSelectedBusinessUnit;
+  /**
+   * Warns before the user closes or reloads the page with a selected business unit.
+   */
+  @HostListener('window:beforeunload')
+  public handleBeforeUnload(): boolean {
+    return !this.hasSelectedBusinessUnit();
   }
 
   public ngOnDestroy(): void {
     if (!this.isContinuing) {
       this.finesMciStore.reset();
     }
+  }
+
+  private hasSelectedBusinessUnit(): boolean {
+    const selectedBusinessUnitId = this.form.controls.fmci_create_till_business_unit_id.value;
+    const hasValidSelection = this.businessUnitsRefData.refData.some(
+      ({ business_unit_id }) => business_unit_id === selectedBusinessUnitId,
+    );
+
+    return this.finesMciStore.businessUnit() !== null || (this.form.dirty && hasValidSelection);
   }
 
   /**
