@@ -13,7 +13,7 @@
     "defendant": {
       "name": "Mr Kelvin Kappa JF-TFO-K",
       "date of birth": "01 February 2000",
-      "address": "123 asdf\nasdf\nasdf",
+      "address": "123 asdf\nadsf\nasdf\nasdf",
       "national insurance number": "NI123456C"
     },
     "paymentTerms": {
@@ -21,7 +21,6 @@
       "pay by date": "01 February 2025"
     },
     "enforcementStatus": {
-      "days in default": "0 days",
       "date of last movement": "26 April 2024"
     },
     "comments": {
@@ -32,19 +31,20 @@
     "defendant": {
       "name": "Mr Kelvin Kappa JF-TFO-K",
       "date of birth": "01 February 2000",
-      "address": "123 asdf\nasdf\nasdf",
+      "address": "123 asdf\nadsf\nasdf\nasdf",
       "national insurance number": "NI123456C"
     }
   },
   "paymentTermsTab": {
     "pay by date": "01 February 2025",
-    "days in default": "0"
+    "days in default": "\u2014"
   },
   "enforcementTab": {
     "overview": {
-      "days in default": "0 days",
+      "collection order status": "No Collection Order",
       "enforcement court": "West London VPFPO (101)"
-    }
+    },
+    "noOutstandingEnforcementActionMessage": "There is no outstanding enforcement action."
   },
   "impositionsTab": {},
   "historyAndNotesTab": {}
