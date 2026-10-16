@@ -1,3 +1,4 @@
+import { OPAL_FINES_SOURCE_MAPPINGS_MOCK } from '@services/fines/opal-fines-service/mocks/opal-fines-source-mappings.mock';
 import { Component, EventEmitter, Input, Output } from '@angular/core';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { ActivatedRoute, provideRouter, Router } from '@angular/router';
@@ -21,7 +22,9 @@ const originalComponentFactory = (
 @Component({
   selector: 'app-fines-api-process',
   template: `
-    <div id="fines-api-process-tab-content">{{ tabData.tableData[0]?.['File name'] }}</div>
+    <div id="fines-api-process-tab-content">
+      {{ tabData.tableData[0]?.['File name'] }} {{ tabData.tableData[0]?.Source }}
+    </div>
     <button id="fines-api-process-refresh-stub" type="button" (click)="refreshRequested.emit()">Refresh</button>
   `,
 })
@@ -65,11 +68,12 @@ describe('FinesApiProcessAllocateComponent', () => {
   const activatedRouteParent = { routeConfig: {} };
   const activatedRoute = {
     parent: activatedRouteParent,
-    snapshot: { fragment: 'process' as string | null },
+    snapshot: { fragment: 'process' as string | null, data: { sourceMappings: OPAL_FINES_SOURCE_MAPPINGS_MOCK } },
     fragment: of('process'),
   };
 
   beforeEach(async () => {
+    activatedRoute.snapshot.data.sourceMappings = OPAL_FINES_SOURCE_MAPPINGS_MOCK;
     processJobs = PROCESS_JOBS;
     getTills = vi.fn((): Observable<IOpalFinesTillsResponse> => of({ tills: [] }));
     activatedRoute.snapshot.fragment = 'process';
@@ -402,6 +406,7 @@ describe('FinesApiProcessAllocateComponent', () => {
           amount: '12.50',
           errors: 0,
           file_name: fileName,
+          source: 'NATWEST',
           business_unit_name: 'BU Alpha',
           processed_by: 'test.operator',
         },
@@ -426,6 +431,16 @@ describe('FinesApiProcessAllocateComponent', () => {
     beforeEach(() => {
       processJobs = [{ ...PROCESS_JOBS[0], status: 'PROCESSING', business_unit_name: 'BU Alpha' }];
       getTills.mockReturnValue(of(tillResponse()));
+    });
+
+    it('uses the resolved mapping in both tabs and after refresh', () => {
+      activatedRoute.snapshot.data.sourceMappings = [{ code: 'NATWEST', display_name: 'Resolved bank name' }];
+      startAllocate();
+      expect(native().textContent).toContain('Resolved bank name');
+      refresh();
+      expect(native().textContent).toContain('Resolved bank name');
+      switchTab('process');
+      expect(native().querySelector('#fines-api-process-tab-content')?.textContent).toContain('Resolved bank name');
     });
 
     it('loads the post-confirm Allocate state with the selected BU and eligibility filters', () => {

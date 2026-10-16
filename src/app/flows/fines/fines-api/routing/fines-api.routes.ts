@@ -1,3 +1,4 @@
+import { fetchSourceMappingsResolver } from '../../routing/resolvers/fetch-source-mappings-resolver/fetch-source-mappings.resolver';
 import { Routes } from '@angular/router';
 import { FINES_PERMISSIONS } from '@app/constants/fines-permissions.constant';
 import { authGuard } from '@hmcts/opal-frontend-common/guards/auth';
@@ -44,6 +45,7 @@ export const routing: Routes = [
     },
     resolve: {
       title: TitleResolver,
+      sourceMappings: fetchSourceMappingsResolver,
     },
   },
   {

@@ -1,3 +1,4 @@
+import { OPAL_FINES_SOURCE_MAPPINGS_MOCK } from '@services/fines/opal-fines-service/mocks/opal-fines-source-mappings.mock';
 import { TestBed } from '@angular/core/testing';
 import { HttpTestingController, provideHttpClientTesting } from '@angular/common/http/testing';
 import { HttpResponse, provideHttpClient, withInterceptors, withInterceptorsFromDi } from '@angular/common/http';
@@ -380,6 +381,56 @@ describe('OpalFines', () => {
     const secondReq = httpMock.expectOne(OPAL_FINES_PATHS.businessUnitOutstandingAutoPaymentCount);
     expect(secondReq.request.method).toBe('GET');
     secondReq.flush(mockBusinessUnitCounts);
+  });
+
+  describe('getSourceMappings', () => {
+    it('shares concurrent requests and replays the response to later callers', () => {
+      const first = vi.fn();
+      const second = vi.fn();
+      const later = vi.fn();
+      service.getSourceMappings().subscribe(first);
+      service.getSourceMappings().subscribe(second);
+      const request = httpMock.expectOne('/opal-fines-service/mappings/source');
+      expect(request.request.method).toBe('GET');
+      request.flush(OPAL_FINES_SOURCE_MAPPINGS_MOCK);
+      service.getSourceMappings().subscribe(later);
+      httpMock.expectNone('/opal-fines-service/mappings/source');
+      for (const subscriber of [first, second, later]) {
+        expect(subscriber).toHaveBeenCalledExactlyOnceWith(OPAL_FINES_SOURCE_MAPPINGS_MOCK);
+      }
+    });
+
+    it('caches an empty mapping response', () => {
+      service.getSourceMappings().subscribe();
+      httpMock.expectOne(OPAL_FINES_PATHS.sourceMappings).flush([]);
+      const received = vi.fn();
+      service.getSourceMappings().subscribe(received);
+      expect(received).toHaveBeenCalledWith([]);
+      httpMock.expectNone(OPAL_FINES_PATHS.sourceMappings);
+    });
+
+    it('allows a new request after a failure', () => {
+      const failed = vi.fn();
+      service.getSourceMappings().subscribe({ error: failed });
+      httpMock
+        .expectOne(OPAL_FINES_PATHS.sourceMappings)
+        .flush('Unavailable', { status: 400, statusText: 'Bad Request' });
+      expect(failed).toHaveBeenCalledOnce();
+      const received = vi.fn();
+      service.getSourceMappings().subscribe(received);
+      httpMock.expectOne(OPAL_FINES_PATHS.sourceMappings).flush(OPAL_FINES_SOURCE_MAPPINGS_MOCK);
+      expect(received).toHaveBeenCalledWith(OPAL_FINES_SOURCE_MAPPINGS_MOCK);
+    });
+
+    it('clears the mapping with the session reference caches', () => {
+      service.getSourceMappings().subscribe();
+      httpMock.expectOne(OPAL_FINES_PATHS.sourceMappings).flush(OPAL_FINES_SOURCE_MAPPINGS_MOCK);
+      service.clearAllCaches();
+      const received = vi.fn();
+      service.getSourceMappings().subscribe(received);
+      httpMock.expectOne(OPAL_FINES_PATHS.sourceMappings).flush([{ code: 'NEW', display_name: 'New provider' }]);
+      expect(received).toHaveBeenCalledWith([{ code: 'NEW', display_name: 'New provider' }]);
+    });
   });
 
   describe('getTills', () => {

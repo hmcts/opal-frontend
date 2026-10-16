@@ -1,3 +1,4 @@
+import { IOpalFinesSourceMapping } from '../../services/opal-fines-service/interfaces/opal-fines-source-mapping.interface';
 import { AsyncPipe } from '@angular/common';
 import { ChangeDetectionStrategy, Component, OnDestroy, OnInit, inject } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
@@ -44,6 +45,12 @@ import { TFinesApiProcessAllocateTabKey } from './types/fines-api-process-alloca
 })
 export class FinesApiProcessAllocateComponent implements OnInit, OnDestroy {
   private readonly activatedRoute = inject(ActivatedRoute);
+  private readonly sourceLabels: ReadonlyMap<string, string> = new Map(
+    (this.activatedRoute.snapshot.data['sourceMappings'] as IOpalFinesSourceMapping[]).map(({ code, display_name }) => [
+      code.trim().toUpperCase(),
+      display_name,
+    ]),
+  );
   private readonly finesApiPayloadService = inject(FinesApiPayloadService);
   private readonly opalFinesService = inject(OpalFines);
   private readonly router = inject(Router);
@@ -86,7 +93,7 @@ export class FinesApiProcessAllocateComponent implements OnInit, OnDestroy {
         auto_payments: true,
       }),
     }).pipe(
-      map(({ jobs, tills }) => this.finesApiPayloadService.mapAllocateData(jobs, tills)),
+      map(({ jobs, tills }) => this.finesApiPayloadService.mapAllocateData(jobs, tills, this.sourceLabels)),
       // The interceptor owns API errors. Retain the last complete display and keep Refresh usable.
       catchError(() => EMPTY),
     );
@@ -95,7 +102,7 @@ export class FinesApiProcessAllocateComponent implements OnInit, OnDestroy {
   /** Maps raw Process jobs into the Process tab view model. */
   private buildProcessData(processInterfaceJobs: IOpalFinesInterfaceJobSummary[]): IFinesApiProcessData {
     return {
-      tableData: this.finesApiPayloadService.mapInterfaceJobs(processInterfaceJobs),
+      tableData: this.finesApiPayloadService.mapInterfaceJobs(processInterfaceJobs, this.sourceLabels),
     };
   }
 

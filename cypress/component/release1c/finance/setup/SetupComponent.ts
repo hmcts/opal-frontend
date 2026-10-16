@@ -1,3 +1,6 @@
+import { IOpalFinesSourceMapping } from 'src/app/flows/fines/services/opal-fines-service/interfaces/opal-fines-source-mapping.interface';
+import { fetchSourceMappingsResolver } from 'src/app/flows/fines/routing/resolvers/fetch-source-mappings-resolver/fetch-source-mappings.resolver';
+import { OPAL_FINES_SOURCE_MAPPINGS_MOCK } from 'src/app/flows/fines/services/opal-fines-service/mocks/opal-fines-source-mappings.mock';
 import { provideHttpClient, withInterceptors } from '@angular/common/http';
 import { httpErrorInterceptor } from '@hmcts/opal-frontend-common/interceptors/http-error';
 import { provideRouter, Router, Routes } from '@angular/router';
@@ -29,6 +32,7 @@ import { OPAL_FINES_BUSINESS_UNIT_OUTSTANDING_AUTO_PAYMENT_COUNTS_MOCK } from 's
 
 export type FinanceComponentSetupOptions = {
   dashboardType?: string;
+  sourceMappings?: IOpalFinesSourceMapping[];
   featureFlags?: Record<string, boolean>;
   permissionIds?: readonly number[];
   paymentPermissionBusinessUnitIds?: readonly number[];
@@ -64,6 +68,7 @@ const FINANCE_COMPONENT_ROUTES: Routes = [
       {
         path: FINES_ROUTING_PATHS.children.autoPaymentIn.children.processAllocate,
         component: FinesApiProcessAllocateComponent,
+        resolve: { sourceMappings: fetchSourceMappingsResolver },
         canDeactivate: [canDeactivateGuard],
       },
       {
@@ -118,10 +123,12 @@ const createGlobalStore = ({
  */
 export const setupFinancePageComponent = ({
   dashboardType = DEFAULT_DASHBOARD_TYPE,
+  sourceMappings = OPAL_FINES_SOURCE_MAPPINGS_MOCK,
   paymentPermissionBusinessUnitIds = DEFAULT_PAYMENT_PERMISSION_BUSINESS_UNIT_IDS,
   permissionIds = DEFAULT_REPRESENTATIVE_PERMISSION_IDS,
   ...options
 }: FinanceComponentSetupOptions = {}) => {
+  cy.intercept('GET', '/opal-fines-service/mappings/source', sourceMappings).as('sourceMappings');
   cy.then(() => {
     mount(AppComponent, {
       providers: [

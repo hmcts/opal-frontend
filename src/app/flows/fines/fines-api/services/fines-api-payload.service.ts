@@ -26,18 +26,31 @@ export class FinesApiPayloadService {
 
   /**
    * Maps interface jobs into Process table rows.
+   *
+   * @param interfaceJobs Raw interface jobs in backend order.
+   * @param sourceLabels Resolved source codes and their display names.
+   * @returns Sortable Process rows with source display names.
    */
   public mapInterfaceJobs(
     interfaceJobs: IOpalFinesInterfaceJobSummary[],
+    sourceLabels: ReadonlyMap<string, string>,
   ): IFinesApiProcessFilesTableWrapperTableData[] {
-    return mapInterfaceJobs(interfaceJobs, this.dateService);
+    return mapInterfaceJobs(interfaceJobs, this.dateService, sourceLabels);
   }
 
-  /** Maps both Allocate responses into the display model without limiting results. */
+  /**
+   * Maps both Allocate responses into the display model without limiting results.
+   *
+   * @param jobs Processing jobs used for the processing summary.
+   * @param tills Eligible tills in backend order.
+   * @param sourceLabels Resolved source codes and their display names.
+   * @returns Allocate rows and processing totals.
+   */
   public mapAllocateData(
     jobs: IOpalFinesInterfaceJobsSummaryResponse,
     tills: IOpalFinesTillsResponse,
+    sourceLabels: ReadonlyMap<string, string>,
   ): IFinesApiAllocateData {
-    return mapAllocateData(jobs, tills, this.dateService);
+    return mapAllocateData(jobs, tills, this.dateService, sourceLabels);
   }
 }

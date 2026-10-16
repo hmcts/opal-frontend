@@ -1,8 +1,11 @@
+import { OPAL_FINES_SOURCE_MAPPINGS_MOCK } from '@services/fines/opal-fines-service/mocks/opal-fines-source-mappings.mock';
 import { TestBed } from '@angular/core/testing';
 import { DateService } from '@hmcts/opal-frontend-common/services/date-service';
 import { IOpalFinesInterfaceJobsSummaryResponse } from '@services/fines/opal-fines-service/interfaces/opal-fines-interface-jobs-summary-response.interface';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
 import { FinesApiPayloadService } from './fines-api-payload.service';
+
+const sourceLabels = new Map(OPAL_FINES_SOURCE_MAPPINGS_MOCK.map(({ code, display_name }) => [code, display_name]));
 
 const INTERFACE_JOBS_RESPONSE: IOpalFinesInterfaceJobsSummaryResponse = {
   interface_jobs: [
@@ -62,6 +65,7 @@ describe('FinesApiPayloadService', () => {
           },
         ],
       },
+      sourceLabels,
     );
     expect(data.processingTotal).toBe(501);
     expect(data.tills[0]).toEqual(expect.objectContaining({ tillId: '123', Amount: 12.5 }));
@@ -73,7 +77,7 @@ describe('FinesApiPayloadService', () => {
 
   it('should extract and map interface jobs for the Process table', () => {
     const interfaceJobs = service.extractInterfaceJobs(INTERFACE_JOBS_RESPONSE);
-    const rows = service.mapInterfaceJobs(interfaceJobs);
+    const rows = service.mapInterfaceJobs(interfaceJobs, sourceLabels);
 
     expect(interfaceJobs).toEqual(INTERFACE_JOBS_RESPONSE.interface_jobs);
     expect(rows).toHaveLength(INTERFACE_JOBS_RESPONSE.interface_jobs.length);

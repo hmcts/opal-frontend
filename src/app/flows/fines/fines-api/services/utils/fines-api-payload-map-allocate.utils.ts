@@ -4,7 +4,6 @@ import { DateService } from '@hmcts/opal-frontend-common/services/date-service';
 import { IOpalFinesInterfaceJobsSummaryResponse } from '@services/fines/opal-fines-service/interfaces/opal-fines-interface-jobs-summary-response.interface';
 import { IOpalFinesTillsResponse } from '@services/fines/opal-fines-service/interfaces/opal-fines-tills-response.interface';
 import { IFinesApiAllocateData } from '../../fines-api-process-allocate/fines-api-allocate-tab/interfaces/fines-api-allocate-data.interface';
-import { FINES_API_INTERFACE_JOB_SOURCE_LABELS } from '../constants/fines-api-interface-job-source-labels.constant';
 
 const UNAVAILABLE = '—';
 const DATE_FORMAT = "dd MMMM yyyy 'at' HH:mm";
@@ -57,6 +56,7 @@ const mapDateProcessed = (
  * @param jobsResponse Processing jobs already filtered to the selected business units and status.
  * @param tillsResponse Eligible automatic-payment tills in the backend's default display order.
  * @param dateService The shared service used to derive date sort values and display labels.
+ * @param sourceLabels Resolved source codes and display names; unknown sources retain their raw value.
  * @returns Processing totals, alphabetically ordered business-unit counts and sortable till rows in API order.
  * @throws Error when a till has an unusable identifier.
  */
@@ -64,6 +64,7 @@ export const mapAllocateData = (
   jobsResponse: IOpalFinesInterfaceJobsSummaryResponse,
   tillsResponse: IOpalFinesTillsResponse,
   dateService: DateService,
+  sourceLabels: ReadonlyMap<string, string>,
 ): IFinesApiAllocateData => {
   const counts = new Map<string, number>();
   for (const job of jobsResponse.interface_jobs) {
@@ -81,7 +82,7 @@ export const mapAllocateData = (
       [FINES_API_ALLOCATE_TILLS_TABLE_WRAPPER_CONTENT.columns.errors]: till.errors ?? null,
       [FINES_API_ALLOCATE_TILLS_TABLE_WRAPPER_CONTENT.columns.fileName]: till.file_name || UNAVAILABLE,
       [FINES_API_ALLOCATE_TILLS_TABLE_WRAPPER_CONTENT.columns.source]: till.source
-        ? (FINES_API_INTERFACE_JOB_SOURCE_LABELS[till.source.trim().toUpperCase()] ?? till.source)
+        ? (sourceLabels.get(till.source.trim().toUpperCase()) ?? till.source)
         : UNAVAILABLE,
       [FINES_API_ALLOCATE_TILLS_TABLE_WRAPPER_CONTENT.columns.amount]: Number(till.amount),
       [FINES_API_ALLOCATE_TILLS_TABLE_WRAPPER_CONTENT.columns.businessUnit]: till.business_unit_name,

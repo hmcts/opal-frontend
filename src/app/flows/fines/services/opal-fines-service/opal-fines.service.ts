@@ -1,3 +1,4 @@
+import { IOpalFinesSourceMapping } from './interfaces/opal-fines-source-mapping.interface';
 import { HttpClient, HttpParams, HttpResponse } from '@angular/common/http';
 import { inject, Injectable } from '@angular/core';
 import { OPAL_FINES_PATHS } from '@services/fines/opal-fines-service/constants/opal-fines-paths.constant';
@@ -228,6 +229,7 @@ export class OpalFines {
    */
   private clearReferenceDataCaches(): void {
     const referenceCaches: (keyof IOpalFinesCache)[] = [
+      'sourceMappingsCache$',
       'courtRefDataCache$',
       'businessUnitsCache$',
       'businessUnitsPermissionCache$',
@@ -416,6 +418,20 @@ export class OpalFines {
       OPAL_FINES_PATHS.interfaceJobsSummary,
       this.withRetrySafeReadOptions({ params: this.getInterfaceJobsSummaryParams(params) }),
     );
+  }
+
+  /**
+   * Retrieves source display names, sharing one request and caching a successful response for the session.
+   * Failed requests can be retried by a later subscriber. Clearing reference caches resets this response.
+   *
+   * @returns The source mapping array supplied by the backend.
+   */
+  public getSourceMappings(): Observable<IOpalFinesSourceMapping[]> {
+    this.cache.sourceMappingsCache$ ??= this.http
+      .get<IOpalFinesSourceMapping[]>(OPAL_FINES_PATHS.sourceMappings)
+      .pipe(shareReplay({ bufferSize: 1, refCount: false }));
+
+    return this.cache.sourceMappingsCache$;
   }
 
   /**

@@ -1,8 +1,11 @@
+import { OPAL_FINES_SOURCE_MAPPINGS_MOCK } from '@services/fines/opal-fines-service/mocks/opal-fines-source-mappings.mock';
 import { DateService } from '@hmcts/opal-frontend-common/services/date-service';
 import { IOpalFinesInterfaceJobSummary } from '@services/fines/opal-fines-service/interfaces/opal-fines-interface-job-summary.interface';
 import { IOpalFinesTillSummary } from '@services/fines/opal-fines-service/interfaces/opal-fines-till-summary.interface';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
 import { mapAllocateData } from './fines-api-payload-map-allocate.utils';
+
+const sourceLabels = new Map(OPAL_FINES_SOURCE_MAPPINGS_MOCK.map(({ code, display_name }) => [code, display_name]));
 
 const buildTill = (overrides: Partial<IOpalFinesTillSummary> = {}): IOpalFinesTillSummary => ({
   till_id: 101,
@@ -45,7 +48,16 @@ describe('mapAllocateData', () => {
   });
 
   const map = (tills: IOpalFinesTillSummary[], jobs: IOpalFinesInterfaceJobSummary[] = []) =>
-    mapAllocateData({ interface_jobs: jobs }, { tills }, dateService);
+    mapAllocateData({ interface_jobs: jobs }, { tills }, dateService, sourceLabels);
+
+  it('uses backend display names and retains unknown codes when the mapping is empty', () => {
+    const tills = { tills: [buildTill({ source: ' natwest ' })] };
+    const jobs = { interface_jobs: [] };
+    expect(mapAllocateData(jobs, tills, dateService, new Map([['NATWEST', 'Updated bank name']])).tills[0].Source).toBe(
+      'Updated bank name',
+    );
+    expect(mapAllocateData(jobs, tills, dateService, new Map()).tills[0].Source).toBe(' natwest ');
+  });
 
   it('maps successful empty responses to the empty display state', () => {
     expect(map([])).toEqual({ processingTotal: 0, processingByBusinessUnit: [], tills: [] });

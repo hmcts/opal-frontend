@@ -1,3 +1,4 @@
+import { fetchSourceMappingsResolver } from '../../routing/resolvers/fetch-source-mappings-resolver/fetch-source-mappings.resolver';
 import { TestBed } from '@angular/core/testing';
 import { ActivatedRoute, provideRouter } from '@angular/router';
 import { RouterTestingHarness } from '@angular/router/testing';
@@ -65,6 +66,7 @@ describe('fines API routes', () => {
         },
         resolve: {
           title: TitleResolver,
+          sourceMappings: fetchSourceMappingsResolver,
         },
       }),
     );
