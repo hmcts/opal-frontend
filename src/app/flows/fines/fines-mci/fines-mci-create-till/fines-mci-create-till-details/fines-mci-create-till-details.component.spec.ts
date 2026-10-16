@@ -47,14 +47,7 @@ describe('FinesMciCreateTillDetailsComponent', () => {
     fixture.debugElement.query(By.css('opal-lib-govuk-back-link')).triggerEventHandler('clickEvent');
 
     expect(store.businessUnit()).toEqual(selectedBusinessUnit);
-    expect(navigateSpy).toHaveBeenCalledWith([
-      '/',
-      'fines',
-      'manual-cash-input',
-      'create',
-      'till',
-      'select-bu',
-    ]);
+    expect(navigateSpy).toHaveBeenCalledWith(['/', 'fines', 'manual-cash-input', 'create', 'till', 'select-bu']);
   });
 
   it('should navigate to payment category when Add payment is selected', () => {
@@ -62,14 +55,7 @@ describe('FinesMciCreateTillDetailsComponent', () => {
 
     fixture.debugElement.query(By.css('opal-lib-govuk-button')).triggerEventHandler('buttonClickEvent');
 
-    expect(navigateSpy).toHaveBeenCalledWith([
-      '/',
-      'fines',
-      'manual-cash-input',
-      'create',
-      'till',
-      'payment-category',
-    ]);
+    expect(navigateSpy).toHaveBeenCalledWith(['/', 'fines', 'manual-cash-input', 'create', 'till', 'payment-category']);
   });
 
   it('should navigate to cancel till creation when Delete till is selected', () => {
