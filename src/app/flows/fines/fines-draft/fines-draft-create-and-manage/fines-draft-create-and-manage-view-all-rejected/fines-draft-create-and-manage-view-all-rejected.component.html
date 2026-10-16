@@ -1,5 +1,9 @@
+<ng-template appBackLink>
+  <div class="govuk-grid-column-full">
+    <opal-lib-govuk-back-link (clickEvent)="navigateBack()"></opal-lib-govuk-back-link>
+  </div>
+</ng-template>
 <div class="govuk-grid-column-full">
-  <opal-lib-govuk-back-link (clickEvent)="navigateBack()"></opal-lib-govuk-back-link>
   <h1 class="govuk-heading-l">All rejected accounts</h1>
   @if (rejectedAccounts.length > 0) {
     <app-fines-draft-table-wrapper

@@ -1,6 +1,7 @@
 import { ChangeDetectionStrategy, Component, inject, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { GovukBackLinkComponent } from '@hmcts/opal-frontend-common/components/govuk/govuk-back-link';
+import { BackLinkDirective } from '@app/directives/back-link.directive';
 import { FinesDraftStore } from '../../stores/fines-draft.store';
 import { FINES_DRAFT_CREATE_AND_MANAGE_ROUTING_PATHS } from '../routing/constants/fines-draft-create-and-manage-routing-paths.constant';
 import { FinesDraftTableWrapperComponent } from '../../fines-draft-table-wrapper/fines-draft-table-wrapper.component';
@@ -18,7 +19,7 @@ import { FINES_ACCOUNT_TYPES } from '../../../constants/fines-account-types.cons
 @Component({
   selector: 'app-fines-draft-create-and-manage-view-all-rejected',
   standalone: true,
-  imports: [GovukBackLinkComponent, FinesDraftTableWrapperComponent],
+  imports: [GovukBackLinkComponent, BackLinkDirective, FinesDraftTableWrapperComponent],
   templateUrl: './fines-draft-create-and-manage-view-all-rejected.component.html',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })

@@ -1,5 +1,9 @@
+<ng-template appBackLink>
+  <div class="govuk-grid-column-full-width">
+    <opal-lib-govuk-back-link (clickEvent)="navigateBack()"></opal-lib-govuk-back-link>
+  </div>
+</ng-template>
 <div class="govuk-grid-column-full-width">
-  <opal-lib-govuk-back-link (clickEvent)="navigateBack()"></opal-lib-govuk-back-link>
   <h1 class="govuk-heading-l">Search results</h1>
   @if (searchOffencesData.length === 0) {
     <opal-lib-custom-deferred-live-region-announcement [message]="noResultsAnnouncement" role="status" />

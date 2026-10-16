@@ -49,6 +49,7 @@ import { HIDE_PRIMARY_NAV_ROUTE_DATA_KEY } from './constants/route-data.constant
 import { FINES_ACC_ROUTING_PATHS } from './flows/fines/fines-acc/routing/constants/fines-acc-routing-paths.constant';
 import { FINES_ACC_DEFENDANT_ROUTING_PATHS } from './flows/fines/fines-acc/routing/constants/fines-acc-defendant-routing-paths.constant';
 import { FINES_ACC_MINOR_CREDITOR_ROUTING_PATHS } from './flows/fines/fines-acc/routing/constants/fines-acc-minor-creditor-routing-paths.constant';
+import { BackLinkService } from './services/back-link.service';
 
 @Component({
   selector: 'app-root',
@@ -125,6 +126,7 @@ export class AppComponent implements OnInit, OnDestroy {
     ],
   };
 
+  protected readonly backLinkTemplate = inject(BackLinkService).templateRef;
   protected readonly headerLinks = HEADER_LINKS;
   protected readonly footerLinks = FOOTER_LINKS;
 

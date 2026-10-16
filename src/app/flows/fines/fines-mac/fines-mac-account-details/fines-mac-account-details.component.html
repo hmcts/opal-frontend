@@ -1,5 +1,9 @@
+<ng-template appBackLink>
+  <div class="govuk-grid-column-two-thirds">
+    <opal-lib-govuk-back-link (clickEvent)="navigateBack()"></opal-lib-govuk-back-link>
+  </div>
+</ng-template>
 <div class="govuk-grid-column-two-thirds">
-  <opal-lib-govuk-back-link (clickEvent)="navigateBack()"></opal-lib-govuk-back-link>
   @if (finesDraftStore.amend()) {
     <app-fines-mac-review-account-history
       [defendantName]="

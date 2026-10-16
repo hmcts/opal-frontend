@@ -5,6 +5,7 @@ import { FINES_MAC_ACCOUNT_DETAILS_ACCOUNT_TYPES } from './constants/fines-mac-a
 import { FINES_MAC_ACCOUNT_DETAILS_DEFENDANT_TYPES } from './constants/fines-mac-account-details-defendant-types';
 import { FINES_MAC_ROUTING_PATHS } from '../routing/constants/fines-mac-routing-paths.constant';
 import { GovukBackLinkComponent } from '@hmcts/opal-frontend-common/components/govuk/govuk-back-link';
+import { BackLinkDirective } from '@app/directives/back-link.directive';
 import {
   GovukSummaryListComponent,
   GovukSummaryListRowComponent,
@@ -55,6 +56,7 @@ import { IFinesMacCourtDetailsCopy } from '../interfaces/fines-mac-court-details
     GovukSummaryListComponent,
     GovukSummaryListRowComponent,
     GovukBackLinkComponent,
+    BackLinkDirective,
     FinesMacReviewAccountHistoryComponent,
   ],
   templateUrl: './fines-mac-account-details.component.html',

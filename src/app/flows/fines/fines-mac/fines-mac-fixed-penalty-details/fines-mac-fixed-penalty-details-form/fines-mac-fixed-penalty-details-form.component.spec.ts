@@ -25,6 +25,7 @@ import { TrimLeadingTrailingWhitespaceDirective } from '@hmcts/opal-frontend-com
 import { By } from '@angular/platform-browser';
 import { afterAll, afterEach, beforeAll, beforeEach, describe, expect, it, vi } from 'vitest';
 import { FINES_MAC_FIXED_PENALTY_DETAILS_FIELD_ERRORS } from '../constants/fines-mac-fixed-penalty-details-field-errors';
+import { FINES_MAC_ROUTING_PATHS } from '../../routing/constants/fines-mac-routing-paths.constant';
 
 import { createSpyObj } from '@app/testing/create-spy-obj.helper';
 
@@ -116,6 +117,17 @@ describe('FinesMacFixedPenaltyFormComponent', () => {
 
   it('should create the component', () => {
     expect(component).toBeTruthy();
+  });
+
+  it('should navigate back to create account relative to the parent route', () => {
+    const routerNavigateSpy = vi.spyOn<any, any>(component['router'], 'navigate');
+    const activatedRoute = TestBed.inject(ActivatedRoute);
+
+    component.handleRoute(FINES_MAC_ROUTING_PATHS.children.createAccount);
+
+    expect(routerNavigateSpy).toHaveBeenCalledWith([FINES_MAC_ROUTING_PATHS.children.createAccount], {
+      relativeTo: activatedRoute.parent,
+    });
   });
 
   it.each([
