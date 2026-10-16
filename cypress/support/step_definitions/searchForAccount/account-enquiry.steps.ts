@@ -249,6 +249,10 @@ When('I open the matching result from the search results:', (table: DataTable) =
 /**
  * @step Opens the Defendant-column link from the latest minor creditor result row.
  */
+When('I open the defendant linked from the minor creditor account', () => {
+  minorCreditorDetails().openAssociatedDefendant();
+});
+
 When('I open the defendant linked from the latest minor creditor search result', () => {
   log('step', 'Opening defendant linked from latest minor creditor search result');
   accountEnquiryFlow().openLatestMinorCreditorDefendantFromResults();
@@ -1575,7 +1579,11 @@ Then('the enforcement override summary shows:', (table: DataTable) => {
  * @step Asserts the enforcement action summary row value shown on the Enforcement tab.
  */
 Then('the enforcement action summary shows {string}', (expected: string) => {
-  const expectedWithUniq = applyUniqPlaceholder(expected);
+  const expectedForMode =
+    !isOpalMode() && /^collection order\s*\(collo\)$/i.test(expected.trim())
+      ? 'Collection Order Made(COLLO)'
+      : expected;
+  const expectedWithUniq = applyUniqPlaceholder(expectedForMode);
   log('assert', 'Enforcement action summary value', { expected: expectedWithUniq });
   enforcementActions().assertEnforcementActionSummary(expectedWithUniq);
 });
