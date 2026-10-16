@@ -645,16 +645,13 @@ describe('fines-section-permissions.utils', () => {
       ).toEqual(DASHBOARD_PAGE_CONFIGURATION_MAP.finance);
     });
 
-    it('should remove Finance dashboard content when release-1c financial movements is disabled', () => {
-      expect(
-        filterDashboardConfigByFeatureFlags(
-          DASHBOARD_PAGE_CONFIGURATION_MAP.finance,
-          release1cFinancialMovementsDisabled,
-        ),
-      ).toEqual({
-        ...DASHBOARD_PAGE_CONFIGURATION_MAP.finance,
-        groups: [],
+    it('should remove Cash and Banking Interfaces while retaining Suspense when their release flags are disabled', () => {
+      const config = filterDashboardConfigByFeatureFlags(DASHBOARD_PAGE_CONFIGURATION_MAP.finance, {
+        ...release1cFinancialMovementsDisabled,
+        [RELEASE_1C_BANKING_INTERFACES_FEATURE_FLAG]: false,
       });
+
+      expect(config.groups.map((group) => group.id)).toEqual(['suspense']);
     });
   });
 });
