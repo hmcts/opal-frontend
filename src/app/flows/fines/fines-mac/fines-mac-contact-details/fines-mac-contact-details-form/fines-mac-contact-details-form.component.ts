@@ -25,6 +25,9 @@ import { optionalPhoneNumberValidator } from '@hmcts/opal-frontend-common/valida
 import { patternValidator } from '@hmcts/opal-frontend-common/validators/pattern-validator';
 import { EMAIL_ADDRESS_PATTERN } from '@hmcts/opal-frontend-common/constants';
 import { FINES_MAC_DEFENDANT_TYPES_KEYS } from '../../constants/fines-mac-defendant-types-keys';
+import { RELEASE_1A_1_2_FEATURE_FLAG } from '../../../constants/release-feature-flags.constant';
+import { getFeatureFlagReleaseState } from '../../../utils/fines-section-permissions.utils';
+import { GlobalStore } from '@hmcts/opal-frontend-common/stores/global';
 
 //regex pattern validators for the form controls
 const EMAIL_ADDRESS_PATTERN_VALIDATOR = patternValidator(EMAIL_ADDRESS_PATTERN, 'emailPattern');
@@ -45,6 +48,7 @@ const HOME_OR_WORK_TELEPHONE_NUMBER_LENGTHS = [10, 11];
 })
 export class FinesMacContactDetailsFormComponent extends AbstractFormBaseComponent implements OnInit, OnDestroy {
   private readonly finesMacStore = inject(FinesMacStore);
+  private readonly globalStore = inject(GlobalStore);
 
   @Output() protected override formSubmit = new EventEmitter<IFinesMacContactDetailsForm>();
   protected readonly fineMacRoutingPaths = FINES_MAC_ROUTING_PATHS;
@@ -108,8 +112,15 @@ export class FinesMacContactDetailsFormComponent extends AbstractFormBaseCompone
     });
   }
 
+  private get isR1A12Enabled(): boolean {
+    return getFeatureFlagReleaseState(this.globalStore.featureFlags())[RELEASE_1A_1_2_FEATURE_FLAG] === true;
+  }
+
   public override handleFormSubmit(event: SubmitEvent): void {
-    this.normalizeTelephoneNumbers();
+    if (this.isR1A12Enabled) {
+      this.normalizeTelephoneNumbers();
+    }
+
     super.handleFormSubmit(event);
   }
 
@@ -117,4 +128,5 @@ export class FinesMacContactDetailsFormComponent extends AbstractFormBaseCompone
     this.initialContactDetailsSetup();
     super.ngOnInit();
   }
+
 }
