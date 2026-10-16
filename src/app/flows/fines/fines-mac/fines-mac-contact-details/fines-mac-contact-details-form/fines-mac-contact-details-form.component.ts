@@ -128,5 +128,4 @@ export class FinesMacContactDetailsFormComponent extends AbstractFormBaseCompone
     this.initialContactDetailsSetup();
     super.ngOnInit();
   }
-
 }
