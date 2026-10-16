@@ -1,5 +1,11 @@
 <div class="govuk-grid-column-one-half">
   <h1 class="govuk-heading-l">Create till</h1>
+  <div #errorSummary>
+    <opal-lib-govuk-error-summary
+      [errors]="formErrorSummaryMessage"
+      (errorClick)="scrollTo($event)"
+    ></opal-lib-govuk-error-summary>
+  </div>
 
   <form [formGroup]="form" (ngSubmit)="handleSubmit()" autocomplete="off" novalidate>
     @if (businessUnitAutoCompleteItems.length === 1) {
@@ -23,6 +29,7 @@
         inputName="fmci_create_till_business_unit_id"
         label="Search for a business unit"
         [autoCompleteItems]="businessUnitAutoCompleteItems"
+        [errors]="businessUnitSelectionError"
         [tabIndex]="0"
       ></opal-lib-alphagov-accessible-autocomplete>
     }
