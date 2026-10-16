@@ -7,6 +7,7 @@ import {
   OnDestroy,
   OnInit,
   Output,
+  computed,
   inject,
 } from '@angular/core';
 import { FormControl, FormGroup, FormsModule, ReactiveFormsModule } from '@angular/forms';
@@ -55,6 +56,9 @@ import { IFinesMacFixedPenaltyDetailsState } from '../interfaces/fines-mac-fixed
 import { FINES_MAC_FIXED_PENALTY_DETAILS_FORM_VALIDATORS } from '../validators/fines-mac-fixed-penalty-details-form-validators';
 import { GovukBackLinkComponent } from '@hmcts/opal-frontend-common/components/govuk/govuk-back-link';
 import { FinesMacOffenceCodeHintComponent } from '../../components/fines-mac-offence-code-hint/fines-mac-offence-code-hint.component';
+import { GlobalStore } from '@hmcts/opal-frontend-common/stores/global';
+import { RELEASE_1A_1_2_FEATURE_FLAG } from '../../../constants/release-feature-flags.constant';
+import { getFeatureFlagReleaseState } from '../../../utils/fines-section-permissions.utils';
 @Component({
   selector: 'app-fines-mac-fixed-penalty-details-form',
   imports: [
@@ -89,6 +93,7 @@ export class FinesMacFixedPenaltyDetailsFormComponent
 {
   private hasAttemptedSubmit = false;
   private readonly changeDetector: ChangeDetectorRef = inject(ChangeDetectorRef);
+  private readonly globalStore = inject(GlobalStore);
   private readonly vehicleOffenceControls = [
     'fm_fp_offence_details_vehicle_registration_number',
     'fm_fp_offence_details_driving_licence_number',
@@ -107,6 +112,9 @@ export class FinesMacFixedPenaltyDetailsFormComponent
   protected readonly fixedPenaltyPrefix = 'fm_fp_';
   protected readonly defendantTypesKeys = FINES_MAC_DEFENDANT_TYPES_KEYS;
   public readonly vehicleOffenceConditionalId = 'fm_fp_offence_details_offence_type_vehicle_conditional';
+  public readonly release1a1_2Enabled = computed(
+    () => getFeatureFlagReleaseState(this.globalStore.featureFlags())[RELEASE_1A_1_2_FEATURE_FLAG] === true,
+  );
 
   @Input() public defendantType!: string;
   @Input({ required: true }) public enforcingCourtAutoCompleteItems!: IAlphagovAccessibleAutocompleteItem[];
