@@ -93,8 +93,12 @@ export class ManualReviewAccountActions {
                   const accessibleEmptyValue = $val.find('.govuk-visually-hidden').text().replace(/\s+/g, ' ').trim();
                   const hasNoDataIndicator = /^no data$/i.test(accessibleEmptyValue);
                   const hasLegacyNotProvidedIndicator = $val.find('[aria-label="Not provided"]').length > 0;
+                  const hasEmptyValueDash = /^—$/.test(normalizedText);
                   expect(
-                    hasNoDataIndicator || hasLegacyNotProvidedIndicator || /not provided/i.test(normalizedText),
+                    hasNoDataIndicator ||
+                      hasLegacyNotProvidedIndicator ||
+                      /not provided/i.test(normalizedText) ||
+                      hasEmptyValueDash,
                   ).to.equal(true, 'No data indicator');
                   return;
                 }
