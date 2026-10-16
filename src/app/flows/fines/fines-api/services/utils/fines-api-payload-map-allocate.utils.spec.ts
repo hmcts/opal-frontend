@@ -117,13 +117,24 @@ describe('mapAllocateData', () => {
   });
 
   it.each([undefined, ''])('shows an unavailable date for %s', (date_processed) => {
-    expect(map([buildTill({ date_processed })]).tills[0].dateProcessedDisplay).toBe('—');
+    const row = map([buildTill({ date_processed })]).tills[0];
+    expect(row['Date processed']).toBe(0);
+    expect(row.dateProcessedDisplay).toBe('—');
     expect(dateService.getFromIso).not.toHaveBeenCalled();
+    expect(dateService.toFormat).not.toHaveBeenCalled();
   });
 
   it('shows an unavailable date for an invalid timestamp', () => {
-    vi.mocked(dateService.getFromIso).mockReturnValue({ isValid: false } as ReturnType<DateService['getFromIso']>);
-    expect(map([buildTill({ date_processed: 'invalid' })]).tills[0].dateProcessedDisplay).toBe('—');
+    vi.mocked(dateService.getFromIso).mockReturnValue({
+      ...parsedDate,
+      isValid: false,
+    } as ReturnType<DateService['getFromIso']>);
+    const row = map([buildTill({ date_processed: 'invalid' })]).tills[0];
+    expect(row['Date processed']).toBe(0);
+    expect(row.dateProcessedDisplay).toBe('—');
+    expect(dateService.getFromIso).toHaveBeenCalledWith('invalid');
+    expect(parsedDate.toMillis).not.toHaveBeenCalled();
+    expect(parsedDate.setLocale).not.toHaveBeenCalled();
     expect(dateService.toFormat).not.toHaveBeenCalled();
   });
 
@@ -139,8 +150,25 @@ describe('mapAllocateData', () => {
     expect(row['Processed by']).toBe('processing-service');
   });
 
-  it.each(['', 'invalid', -1, 1.5, Number.MAX_SAFE_INTEGER + 1, undefined])('rejects unusable till ID %s', (id) => {
-    const till = { ...buildTill(), till_id: id } as IOpalFinesTillSummary;
-    expect(() => map([till])).toThrow('Invalid till identifier');
+  it.each([0, Number.MAX_SAFE_INTEGER, '0007', '9223372036854775807'])(
+    'preserves the valid boundary or digit-only till ID %s',
+    (till_id) => {
+      expect(map([buildTill({ till_id })]).tills[0].tillId).toBe(String(till_id));
+    },
+  );
+
+  it.each([undefined, null])('does not invent zero errors for a malformed response containing %s', (errors) => {
+    // Deliberately violate the API contract to exercise the runtime fallback without widening the response type.
+    const till = { ...buildTill(), errors } as unknown as IOpalFinesTillSummary;
+    expect(map([till]).tills[0]['Errors']).toBeNull();
   });
+
+  it.each(['', 'invalid', '-1', '1.5', ' 7 ', -1, 1.5, Number.MAX_SAFE_INTEGER + 1, NaN, Infinity, undefined])(
+    'rejects unusable till ID %s',
+    (id) => {
+      const till = { ...buildTill(), till_id: id } as IOpalFinesTillSummary;
+      expect(() => map([till])).toThrow('Invalid till identifier');
+      expect(dateService.getFromIso).not.toHaveBeenCalled();
+    },
+  );
 });
