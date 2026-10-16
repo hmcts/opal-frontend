@@ -209,5 +209,4 @@ export class FinesMciCreateTillSelectBuComponent implements OnDestroy {
       this.finesMciStore.reset();
     }
   }
-
 }
