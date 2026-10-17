@@ -21,6 +21,32 @@ const assertTrimmedText = (selector: string, expectedText: string): void => {
 
 describe('Automatic Cash Input - Process files and allocate tills', () => {
   it(
+    'uses resolved source display names and reuses the mapping on refresh',
+    {
+      tags: ['@JIRA-STORY:PO-2587', AUTOMATIC_CASH_INPUT_JIRA_LABEL, AUTOMATIC_CASH_INPUT_RELEASE_TAG],
+    },
+    () => {
+      cy.intercept('GET', '/opal-fines-service/interface-jobs/summary*', PROCESS_INTERFACE_JOBS_SUMMARY_MOCK).as(
+        'getInterfaceJobsSummary',
+      );
+      setupFinancePageComponent({
+        dashboardType: FINES_DASHBOARD_ROUTING_PATHS.children.finance,
+        sourceMappings: [{ code: 'NATWEST', display_name: 'Updated bank label' }],
+      });
+      cy.get(FinanceLocators.automaticCashInputLink).click();
+      cy.get(AutomaticCashInputLocators.businessUnitCheckbox(77)).check({ force: true });
+      cy.get(AutomaticCashInputLocators.continueButton).click();
+      cy.wait('@sourceMappings');
+      cy.wait('@getInterfaceJobsSummary');
+      cy.get(AutomaticCashInputLocators.processTabContent).should('contain.text', 'Updated bank label');
+      cy.get(AutomaticCashInputLocators.processFilesRefreshButton).click();
+      cy.wait('@getInterfaceJobsSummary');
+      cy.get(AutomaticCashInputLocators.processTabContent).should('contain.text', 'Updated bank label');
+      cy.get('@sourceMappings.all').should('have.length', 1);
+    },
+  );
+
+  it(
     '(AC1) navigates to Processing with the Process tab selected by default after business units are selected',
     {
       tags: [
