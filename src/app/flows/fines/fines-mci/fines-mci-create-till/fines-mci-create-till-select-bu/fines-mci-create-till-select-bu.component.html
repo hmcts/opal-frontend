@@ -1,0 +1,42 @@
+<div class="govuk-grid-column-one-half">
+  <h1 class="govuk-heading-l">Create till</h1>
+  <div #errorSummary>
+    <opal-lib-govuk-error-summary
+      [errors]="formErrorSummaryMessage"
+      (errorClick)="scrollTo($event)"
+    ></opal-lib-govuk-error-summary>
+  </div>
+
+  <form [formGroup]="form" (ngSubmit)="handleSubmit()" autocomplete="off" novalidate>
+    @if (businessUnitAutoCompleteItems.length === 1) {
+      <opal-lib-govuk-summary-list summaryListId="fines-mci-create-till-business-unit">
+        <div
+          opal-lib-govuk-summary-list-row
+          class="govuk-summary-list__row govuk-summary-list__row--no-actions"
+          summaryListId="fines-mci-create-till-business-unit"
+          summaryListRowId="business-unit"
+        >
+          <ng-container name>Business unit</ng-container>
+          <ng-container value>{{ businessUnitAutoCompleteItems[0].name }}</ng-container>
+        </div>
+      </opal-lib-govuk-summary-list>
+    } @else {
+      <opal-lib-alphagov-accessible-autocomplete
+        [control]="form.get('fmci_create_till_business_unit_id')"
+        labelText="Select a business unit"
+        labelClasses="govuk-fieldset__legend--m"
+        inputId="fmci_create_till_business_unit_id"
+        inputName="fmci_create_till_business_unit_id"
+        label="Search for a business unit"
+        [autoCompleteItems]="businessUnitAutoCompleteItems"
+        [errors]="businessUnitSelectionError"
+        [tabIndex]="0"
+      ></opal-lib-alphagov-accessible-autocomplete>
+    }
+
+    <div class="govuk-button-group fines-mci-create-till-select-bu-button-group">
+      <opal-lib-govuk-button buttonId="submitForm" type="submit">Continue</opal-lib-govuk-button>
+      <opal-lib-govuk-cancel-link (linkClickEvent)="handleCancel()"></opal-lib-govuk-cancel-link>
+    </div>
+  </form>
+</div>
