@@ -8,6 +8,8 @@ import { FinesMacOffenceDetailsStoreType } from '../../stores/types/fines-mac-of
 import { FinesMacOffenceDetailsStore } from '../../stores/fines-mac-offence-details.store';
 import { GovukRadioComponent } from '@hmcts/opal-frontend-common/components/govuk/govuk-radio';
 import { afterAll, afterEach, beforeAll, beforeEach, describe, expect, it, vi } from 'vitest';
+import { GlobalStore } from '@hmcts/opal-frontend-common/stores/global';
+import { RELEASE_1A_1_2_FEATURE_FLAG } from '../../../../constants/release-feature-flags.constant';
 
 describe('FinesMacOffenceDetailsMinorCreditorFormComponent', () => {
   let component: FinesMacOffenceDetailsMinorCreditorFormComponent;
@@ -43,6 +45,7 @@ describe('FinesMacOffenceDetailsMinorCreditorFormComponent', () => {
     component = fixture.componentInstance;
 
     finesMacOffenceDetailsStore = TestBed.inject(FinesMacOffenceDetailsStore);
+    TestBed.inject(GlobalStore).setFeatureFlags({ [RELEASE_1A_1_2_FEATURE_FLAG]: true });
 
     fixture.detectChanges();
   });
@@ -56,6 +59,34 @@ describe('FinesMacOffenceDetailsMinorCreditorFormComponent', () => {
 
   it('should create', () => {
     expect(component).toBeTruthy();
+  });
+
+  it('should expose the feature-flagged payment hints', () => {
+    expect(component.sortCodeHintText).toBe('Must be 6 digits long, for example, 123456');
+    expect(component.accountNumberHintText).toBe('Must be between 6 and 8 digits long');
+
+    TestBed.inject(GlobalStore).setFeatureFlags({ [RELEASE_1A_1_2_FEATURE_FLAG]: false });
+
+    expect(component.sortCodeHintText).toBe('');
+    expect(component.accountNumberHintText).toBe('');
+  });
+
+  it('should normalize a valid formatted sort code before submitting', () => {
+    component['setPaymentDetailValidators']();
+    const sortCodeControl = component.form.controls['fm_offence_details_minor_creditor_bank_sort_code'];
+    sortCodeControl.setValue('12-34-56');
+
+    component.handleFormSubmit(new SubmitEvent('submit'));
+
+    expect(sortCodeControl.value).toBe('123456');
+  });
+
+  it('should not normalize an empty sort code on submit', () => {
+    const sortCodeControl = component.form.controls['fm_offence_details_minor_creditor_bank_sort_code'];
+
+    component.handleFormSubmit(new SubmitEvent('submit'));
+
+    expect(sortCodeControl.value).toBeNull();
   });
 
   it.each([
@@ -193,10 +224,16 @@ describe('FinesMacOffenceDetailsMinorCreditorFormComponent', () => {
 
     // Test validators for sort code
     sortCodeControl.setValue('1234567'); // Exceeds 6 characters
-    expect(sortCodeControl.errors?.['maxlength']).toBeTruthy();
+    expect(sortCodeControl.errors?.['invalidSortCode']).toBeTruthy();
 
     sortCodeControl.setValue('ABC123'); // Non-numeric input
-    expect(sortCodeControl.errors?.['numericalTextPattern']).toBeTruthy();
+    expect(sortCodeControl.errors?.['invalidSortCode']).toBeTruthy();
+
+    sortCodeControl.setValue('12-34-56');
+    expect(sortCodeControl.valid).toBeTruthy();
+
+    sortCodeControl.setValue('12 34 56');
+    expect(sortCodeControl.valid).toBeTruthy();
 
     sortCodeControl.setValue('123456'); // Valid input
     expect(sortCodeControl.valid).toBeTruthy();
@@ -220,6 +257,22 @@ describe('FinesMacOffenceDetailsMinorCreditorFormComponent', () => {
 
     paymentReferenceControl.setValue('Valid Reference'); // Valid input
     expect(paymentReferenceControl.valid).toBeTruthy();
+  });
+
+  it('should set the master payment validators when R1A-1-2 is disabled', () => {
+    TestBed.inject(GlobalStore).setFeatureFlags({ [RELEASE_1A_1_2_FEATURE_FLAG]: false });
+
+    component['setPaymentDetailValidators']();
+
+    const sortCodeControl = component.form.controls['fm_offence_details_minor_creditor_bank_sort_code'];
+    const accountNumberControl = component.form.controls['fm_offence_details_minor_creditor_bank_account_number'];
+
+    sortCodeControl.setValue('12-34-56');
+    expect(sortCodeControl.hasError('numericalTextPattern')).toBe(true);
+
+    accountNumberControl.setValue('12345');
+    expect(accountNumberControl.valid).toBe(true);
+    expect(accountNumberControl.hasError('minlength')).toBe(false);
   });
 
   it('should reset and clear validators for name-related controls', () => {
