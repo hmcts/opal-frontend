@@ -26,6 +26,10 @@ export const FINES_MAC_OFFENCE_DETAILS_MINOR_CREDITOR_FIELD_ERRORS: IAbstractFor
       message: `First name(s) must only contain letters`,
       priority: 3,
     },
+    singleAsciiCharacters: {
+      message: `First name(s) must only include letters a to z, numbers 0-9 and certain special characters (such as hyphens, spaces, apostrophes and commas)`,
+      priority: 3,
+    },
   },
   fm_offence_details_minor_creditor_surname: {
     required: {
@@ -38,6 +42,10 @@ export const FINES_MAC_OFFENCE_DETAILS_MINOR_CREDITOR_FIELD_ERRORS: IAbstractFor
     },
     lettersWithSpacesPattern: {
       message: `Last name must only contain letters`,
+      priority: 3,
+    },
+    singleAsciiCharacters: {
+      message: `Last name must only include letters a to z, numbers 0-9 and certain special characters (such as hyphens, spaces, apostrophes and commas)`,
       priority: 3,
     },
   },

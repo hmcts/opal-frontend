@@ -350,8 +350,8 @@ describe('FinesMacMinorCreditor', () => {
 
       formData[0].formData.fm_offence_details_minor_creditor_creditor_type = 'individual';
       formData[0].formData.fm_offence_details_minor_creditor_title = 'Mr';
-      formData[0].formData.fm_offence_details_minor_creditor_forenames = '123@*';
-      formData[0].formData.fm_offence_details_minor_creditor_surname = '123@*';
+      formData[0].formData.fm_offence_details_minor_creditor_forenames = '123£';
+      formData[0].formData.fm_offence_details_minor_creditor_surname = '123£';
       cy.get(DOM_ELEMENTS.submitButton).click();
       cy.get(DOM_ELEMENTS.errorSummary).should('contain', FORMAT_CHECK.forenamesAlphabeticalTextPattern);
       cy.get(DOM_ELEMENTS.errorSummary).should('contain', FORMAT_CHECK.surnameAlphabeticalTextPattern);
@@ -430,8 +430,8 @@ describe('FinesMacMinorCreditor', () => {
 
       formData[0].formData.fm_offence_details_minor_creditor_creditor_type = 'individual';
       formData[0].formData.fm_offence_details_minor_creditor_title = 'Mr';
-      formData[0].formData.fm_offence_details_minor_creditor_forenames = 'John';
-      formData[0].formData.fm_offence_details_minor_creditor_surname = 'Doe';
+      formData[0].formData.fm_offence_details_minor_creditor_forenames = 'John-James';
+      formData[0].formData.fm_offence_details_minor_creditor_surname = 'Doe-Smith';
       formData[0].formData.fm_offence_details_minor_creditor_address_line_1 = '1 Testing Lane';
       formData[0].formData.fm_offence_details_minor_creditor_address_line_2 = 'Test Town';
       formData[0].formData.fm_offence_details_minor_creditor_address_line_3 = 'Testing';
