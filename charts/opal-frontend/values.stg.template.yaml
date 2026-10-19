@@ -61,6 +61,8 @@ opal-fines-service:
       LAUNCH_DARKLY_ENABLED: true
       OPAL_REDIS_ENABLED: true
       REDIS_CONNECTION_STRING: redis://${SERVICE_NAME}-hmcts-redis-master:6379
+  hmcts-redis:
+    enabled: true
 
 postgresql:
   enabled: true
