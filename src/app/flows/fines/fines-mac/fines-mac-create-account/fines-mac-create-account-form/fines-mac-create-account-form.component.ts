@@ -1,6 +1,7 @@
 import {
   ChangeDetectionStrategy,
   Component,
+  computed,
   EventEmitter,
   Input,
   OnDestroy,
@@ -37,6 +38,9 @@ import { FINES_ACCOUNT_TYPES } from '../../../constants/fines-account-types.cons
 import { IFinesAccountTypes } from '../../../interfaces/fines-account-types.interface';
 import { FINES_ORIGINATOR_TYPES } from '@app/flows/fines/constants/fines-originator-types.constant';
 import { FINES_MAC_DRAFT_CREATE_AND_MANAGE_TABS_ROUTE } from '../../constants/fines-mac-draft-create-and-manage-tabs-route.constant';
+import { GlobalStore } from '@hmcts/opal-frontend-common/stores/global';
+import { RELEASE_1A_1_2_FEATURE_FLAG } from '../../../constants/release-feature-flags.constant';
+import { getFeatureFlagReleaseState } from '../../../utils/fines-section-permissions.utils';
 @Component({
   selector: 'app-fines-mac-create-account-form',
   imports: [
@@ -56,6 +60,7 @@ import { FINES_MAC_DRAFT_CREATE_AND_MANAGE_TABS_ROUTE } from '../../constants/fi
 })
 export class FinesMacCreateAccountFormComponent extends AbstractFormBaseComponent implements OnInit, OnDestroy {
   private readonly accountTypeSubject = new Subject<void>();
+  private readonly globalStore = inject(GlobalStore);
   private readonly accountTypeDefendantTypeControlNames: IFinesMacCreateAccountControlNames =
     FINES_MAC_CREATE_ACCOUNT_CONTROL_NAMES;
 
@@ -71,6 +76,9 @@ export class FinesMacCreateAccountFormComponent extends AbstractFormBaseComponen
     Object.keys(FINES_ORIGINATOR_TYPES).map((key) => [key, key]),
   );
   public readonly finesMacStore = inject(FinesMacStore);
+  public readonly release1a1_2Enabled = computed(
+    () => getFeatureFlagReleaseState(this.globalStore.featureFlags())[RELEASE_1A_1_2_FEATURE_FLAG] === true,
+  );
   get isTFO(): boolean {
     return (
       this.finesMacStore.originatorType().formData.fm_originator_type_originator_type ===
