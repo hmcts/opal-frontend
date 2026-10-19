@@ -18,6 +18,7 @@ import {
   RELEASE_1C_PAYMENT_FEATURE_FLAG,
   RELEASE_1C_WRITE_OFF_FEATURE_FLAG,
   RELEASE_1C_BANKING_INTERFACES_FEATURE_FLAG,
+  RELEASE_1C_SUSPENSE_FEATURE_FLAG,
 } from '../constants/release-feature-flags.constant';
 import { FEATURE_FLAG_SECTION_PERMISSION_EXCLUSIONS } from '../constants/feature-flag-section-permission-exclusions.constant';
 import {
@@ -84,6 +85,7 @@ describe('fines-section-permissions.utils', () => {
     [RELEASE_1C_FINANCIAL_MOVEMENTS_FEATURE_FLAG]: true,
     [RELEASE_1C_PAYMENT_FEATURE_FLAG]: true,
     [RELEASE_1C_BANKING_INTERFACES_FEATURE_FLAG]: true,
+    [RELEASE_1C_SUSPENSE_FEATURE_FLAG]: true,
   };
   const release1aEnabled = { [RELEASE_1A_FEATURE_FLAG]: true };
   const release1bEnabled = { [RELEASE_1B_FEATURE_FLAG]: true };
@@ -147,6 +149,7 @@ describe('fines-section-permissions.utils', () => {
         [RELEASE_1C_FINANCIAL_MOVEMENTS_FEATURE_FLAG]: false,
         [RELEASE_1C_PAYMENT_FEATURE_FLAG]: false,
         [RELEASE_1C_BANKING_INTERFACES_FEATURE_FLAG]: false,
+        [RELEASE_1C_SUSPENSE_FEATURE_FLAG]: false,
       });
 
       expect(getFeatureFlagReleaseState(release1cWriteOffEnabled)).toEqual({
@@ -160,6 +163,7 @@ describe('fines-section-permissions.utils', () => {
         [RELEASE_1C_FINANCIAL_MOVEMENTS_FEATURE_FLAG]: false,
         [RELEASE_1C_PAYMENT_FEATURE_FLAG]: false,
         [RELEASE_1C_BANKING_INTERFACES_FEATURE_FLAG]: false,
+        [RELEASE_1C_SUSPENSE_FEATURE_FLAG]: false,
       });
 
       expect(getFeatureFlagReleaseState(release1cReportingEnabled)).toEqual({
@@ -173,6 +177,7 @@ describe('fines-section-permissions.utils', () => {
         [RELEASE_1C_FINANCIAL_MOVEMENTS_FEATURE_FLAG]: false,
         [RELEASE_1C_PAYMENT_FEATURE_FLAG]: false,
         [RELEASE_1C_BANKING_INTERFACES_FEATURE_FLAG]: false,
+        [RELEASE_1C_SUSPENSE_FEATURE_FLAG]: false,
       });
 
       expect(getFeatureFlagReleaseState(release1cAdministrationEnabled)).toEqual({
@@ -186,6 +191,7 @@ describe('fines-section-permissions.utils', () => {
         [RELEASE_1C_FINANCIAL_MOVEMENTS_FEATURE_FLAG]: false,
         [RELEASE_1C_PAYMENT_FEATURE_FLAG]: false,
         [RELEASE_1C_BANKING_INTERFACES_FEATURE_FLAG]: false,
+        [RELEASE_1C_SUSPENSE_FEATURE_FLAG]: false,
       });
 
       expect(getFeatureFlagReleaseState(release1cFinancialMovementsEnabled)).toEqual({
@@ -199,6 +205,7 @@ describe('fines-section-permissions.utils', () => {
         [RELEASE_1C_FINANCIAL_MOVEMENTS_FEATURE_FLAG]: true,
         [RELEASE_1C_PAYMENT_FEATURE_FLAG]: false,
         [RELEASE_1C_BANKING_INTERFACES_FEATURE_FLAG]: false,
+        [RELEASE_1C_SUSPENSE_FEATURE_FLAG]: false,
       });
 
       expect(getFeatureFlagReleaseState(release1cBankingInterfacesEnabled)).toEqual({
@@ -212,6 +219,7 @@ describe('fines-section-permissions.utils', () => {
         [RELEASE_1C_FINANCIAL_MOVEMENTS_FEATURE_FLAG]: false,
         [RELEASE_1C_PAYMENT_FEATURE_FLAG]: false,
         [RELEASE_1C_BANKING_INTERFACES_FEATURE_FLAG]: true,
+        [RELEASE_1C_SUSPENSE_FEATURE_FLAG]: false,
       });
 
       expect(getFeatureFlagReleaseState({})).toEqual({
@@ -225,6 +233,7 @@ describe('fines-section-permissions.utils', () => {
         [RELEASE_1C_FINANCIAL_MOVEMENTS_FEATURE_FLAG]: false,
         [RELEASE_1C_PAYMENT_FEATURE_FLAG]: false,
         [RELEASE_1C_BANKING_INTERFACES_FEATURE_FLAG]: false,
+        [RELEASE_1C_SUSPENSE_FEATURE_FLAG]: false,
       });
     });
   });
@@ -641,6 +650,7 @@ describe('fines-section-permissions.utils', () => {
         filterDashboardConfigByFeatureFlags(DASHBOARD_PAGE_CONFIGURATION_MAP.finance, {
           ...release1cFinancialMovementsEnabled,
           ...release1cBankingInterfacesEnabled,
+          [RELEASE_1C_SUSPENSE_FEATURE_FLAG]: true,
         }),
       ).toEqual(DASHBOARD_PAGE_CONFIGURATION_MAP.finance);
     });
@@ -649,6 +659,7 @@ describe('fines-section-permissions.utils', () => {
       const config = filterDashboardConfigByFeatureFlags(DASHBOARD_PAGE_CONFIGURATION_MAP.finance, {
         ...release1cFinancialMovementsDisabled,
         [RELEASE_1C_BANKING_INTERFACES_FEATURE_FLAG]: false,
+        [RELEASE_1C_SUSPENSE_FEATURE_FLAG]: true,
       });
 
       expect(config.groups.map((group) => group.id)).toEqual(['suspense']);

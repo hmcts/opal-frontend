@@ -20,6 +20,7 @@ import {
   RELEASE_1C_ENFORCEMENT_OPERATIONAL_REPORTING_FEATURE_FLAG,
   RELEASE_1C_FINANCIAL_MOVEMENTS_FEATURE_FLAG,
   RELEASE_1C_BANKING_INTERFACES_FEATURE_FLAG,
+  RELEASE_1C_SUSPENSE_FEATURE_FLAG,
 } from '@app/flows/fines/constants/release-feature-flags.constant';
 
 describe('DashboardComponent', () => {
@@ -38,6 +39,7 @@ describe('DashboardComponent', () => {
     [RELEASE_1C_ADMINISTRATION_FEATURE_FLAG]: true,
     [RELEASE_1C_FINANCIAL_MOVEMENTS_FEATURE_FLAG]: true,
     [RELEASE_1C_BANKING_INTERFACES_FEATURE_FLAG]: true,
+    [RELEASE_1C_SUSPENSE_FEATURE_FLAG]: true,
   };
 
   const setupComponent = () => {
@@ -68,6 +70,31 @@ describe('DashboardComponent', () => {
         { provide: GlobalStore, useValue: globalStoreMock },
       ],
     }).compileComponents();
+  });
+
+  it.each([
+    { name: 'enabled', flags: { [RELEASE_1C_SUSPENSE_FEATURE_FLAG]: true }, visible: true },
+    { name: 'disabled', flags: { [RELEASE_1C_SUSPENSE_FEATURE_FLAG]: false }, visible: false },
+    { name: 'missing', flags: {}, visible: false },
+  ])('should render the Suspense heading and link only when the flag is enabled ($name)', ({ flags, visible }) => {
+    globalStoreMock.featureFlags.mockReturnValue({
+      [RELEASE_1C_FINANCIAL_MOVEMENTS_FEATURE_FLAG]: true,
+      [RELEASE_1C_BANKING_INTERFACES_FEATURE_FLAG]: true,
+      ...flags,
+    });
+    dashboardTypeParamMapSubject.next(convertToParamMap({ dashboardType: 'finance' }));
+    setupComponent();
+
+    const element: HTMLElement = fixture.nativeElement;
+    const suspenseHeading = Array.from(element.querySelectorAll('h2')).find(
+      (heading) => heading.textContent?.trim() === 'Suspense',
+    );
+    const suspenseLink = element.querySelector('a[href="/fines/suspense-item/search"]');
+    expect(Boolean(suspenseHeading)).toBe(visible);
+    expect(Boolean(suspenseLink)).toBe(visible);
+    expect(component.resolvedConfig().groups.map((group) => group.id)).toEqual(
+      visible ? ['suspense', 'cash', 'bankingInterfaces'] : ['cash', 'bankingInterfaces'],
+    );
   });
 
   it('should create', () => {
