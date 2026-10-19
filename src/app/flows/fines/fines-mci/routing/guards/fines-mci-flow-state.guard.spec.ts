@@ -24,18 +24,14 @@ describe('finesMciFlowStateGuard', () => {
   it('allows navigation when a business unit is selected', () => {
     store.setBusinessUnit(OPAL_FINES_BUSINESS_UNIT_REF_DATA_MOCK.refData[0]);
 
-    const result = TestBed.runInInjectionContext(() =>
-      getGuardWithDummyUrl(finesMciFlowStateGuard, tillDetailsUrl)(),
-    );
+    const result = TestBed.runInInjectionContext(() => getGuardWithDummyUrl(finesMciFlowStateGuard, tillDetailsUrl)());
 
     expect(result).toBe(true);
     expect(mockRouter.createUrlTree).not.toHaveBeenCalled();
   });
 
   it('redirects to business unit selection when no business unit is selected', () => {
-    const result = TestBed.runInInjectionContext(() =>
-      getGuardWithDummyUrl(finesMciFlowStateGuard, tillDetailsUrl)(),
-    );
+    const result = TestBed.runInInjectionContext(() => getGuardWithDummyUrl(finesMciFlowStateGuard, tillDetailsUrl)());
 
     expect(result).toBeInstanceOf(UrlTree);
     expect(mockRouter.createUrlTree).toHaveBeenCalledWith([selectionUrl], {

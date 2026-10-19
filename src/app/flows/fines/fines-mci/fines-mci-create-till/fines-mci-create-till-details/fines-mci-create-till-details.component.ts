@@ -32,14 +32,17 @@ export class FinesMciCreateTillDetailsComponent {
   }
 
   public navigateBack(): void {
-    void this.router.navigate([
-      '/',
-      FINES_ROUTING_PATHS.root,
-      FINES_MCI_ROUTING_PATHS.root,
-      FINES_MCI_ROUTING_PATHS.children.create,
-      FINES_MCI_ROUTING_PATHS.children.till,
-      FINES_MCI_ROUTING_PATHS.children.selectBusinessUnit,
-    ], { state: { preserveBusinessUnit: true } });
+    void this.router.navigate(
+      [
+        '/',
+        FINES_ROUTING_PATHS.root,
+        FINES_MCI_ROUTING_PATHS.root,
+        FINES_MCI_ROUTING_PATHS.children.create,
+        FINES_MCI_ROUTING_PATHS.children.till,
+        FINES_MCI_ROUTING_PATHS.children.selectBusinessUnit,
+      ],
+      { state: { preserveBusinessUnit: true } },
+    );
   }
 
   public addPayment(): void {

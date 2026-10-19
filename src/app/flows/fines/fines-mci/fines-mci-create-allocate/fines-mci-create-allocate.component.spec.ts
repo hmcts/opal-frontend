@@ -72,7 +72,9 @@ describe('FinesMciCreateAllocateComponent', () => {
     expect(text).toContain('Created by');
     expect(text).toContain('Date created');
     expect(text).toContain('9005');
-    expect(fixture.nativeElement.querySelector('#fines-mci-create-allocate-9005-payments')?.textContent?.trim()).toBe('3');
+    expect(fixture.nativeElement.querySelector('#fines-mci-create-allocate-9005-payments')?.textContent?.trim()).toBe(
+      '3',
+    );
     expect(text).toContain('Westminster - North (Wells Street)');
     const dateService = TestBed.inject(DateService);
     const createdDate = dateService.getFromIso('2025-06-12T13:31:27.270Z');
