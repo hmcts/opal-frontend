@@ -36,6 +36,7 @@ import {
   RELEASE_1C_WRITE_OFF_FEATURE_FLAG,
   RELEASE_1C_ENFORCEMENT_OPERATIONAL_REPORTING_FEATURE_FLAG,
   RELEASE_1C_PAYMENT_FEATURE_FLAG,
+  RELEASE_1C_FINANCIAL_MOVEMENTS_FEATURE_FLAG,
 } from '../constants/release-feature-flags.constant';
 
 export const release1aFeatureFlagGuard = featureFlagRedirectGuard(RELEASE_1A_FEATURE_FLAG);
@@ -43,6 +44,9 @@ export const release1bFeatureFlagGuard = featureFlagRedirectGuard(RELEASE_1B_FEA
 export const release1cWriteOffFeatureFlagGuard = featureFlagRedirectGuard(RELEASE_1C_WRITE_OFF_FEATURE_FLAG);
 export const release1cEnforcementOperationalReportingFeatureFlagGuard = featureFlagRedirectGuard(
   RELEASE_1C_ENFORCEMENT_OPERATIONAL_REPORTING_FEATURE_FLAG,
+);
+export const release1cFinancialMovementsFeatureFlagGuard = featureFlagRedirectGuard(
+  RELEASE_1C_FINANCIAL_MOVEMENTS_FEATURE_FLAG,
 );
 export const release1cPaymentFeatureFlagGuard = featureFlagRedirectGuard(RELEASE_1C_PAYMENT_FEATURE_FLAG);
 
@@ -110,7 +114,7 @@ export const finesRouting: Routes = [
       {
         path: FINES_ROUTING_PATHS.children.mci.root,
         children: manualCashInputRouting,
-        canActivate: [authGuard, finesSectionPermissionsGuard],
+        canActivate: [authGuard, release1cFinancialMovementsFeatureFlagGuard, finesSectionPermissionsGuard],
         data: {
           sectionKey: FINES_DASHBOARD_ROUTING_PATHS.children.finance,
         },
@@ -124,7 +128,12 @@ export const finesRouting: Routes = [
         path: FINES_ROUTING_PATHS.children.autoPaymentIn.root,
         loadComponent: () => import('../fines-api/fines-api.component').then((c) => c.FinesApiComponent),
         children: autoPaymentInRouting,
-        canActivate: [authGuard, release1cPaymentFeatureFlagGuard, finesSectionPermissionsGuard],
+        canActivate: [
+          authGuard,
+          release1cPaymentFeatureFlagGuard,
+          release1cFinancialMovementsFeatureFlagGuard,
+          finesSectionPermissionsGuard,
+        ],
         canActivateChild: [release1cPaymentFeatureFlagGuard],
         canDeactivate: [canDeactivateGuard],
         data: {

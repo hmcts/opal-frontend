@@ -1,3 +1,4 @@
+import { FINES_PERMISSIONS } from './constants/fines-permissions.constant';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { AppComponent } from './app.component';
 import { provideHttpClientTesting } from '@angular/common/http/testing';
@@ -39,6 +40,7 @@ import {
   RELEASE_1C_WRITE_OFF_FEATURE_FLAG,
   RELEASE_1C_ENFORCEMENT_OPERATIONAL_REPORTING_FEATURE_FLAG,
   RELEASE_1C_FINANCIAL_MOVEMENTS_FEATURE_FLAG,
+  RELEASE_1C_BANKING_INTERFACES_FEATURE_FLAG,
 } from './flows/fines/constants/release-feature-flags.constant';
 import { HIDE_PRIMARY_NAV_ROUTE_DATA_KEY } from './constants/route-data.constant';
 import { FINES_ACC_ROUTING_PATHS } from './flows/fines/fines-acc/routing/constants/fines-acc-routing-paths.constant';
@@ -667,28 +669,47 @@ describe('AppComponent - browser', () => {
     expect(getPrimaryNavigationTexts(fixture)).not.toContain('Administration');
   });
 
-  it('should show Finance in primary navigation when release-1c-financial-movements is enabled', () => {
-    globalStore.setAuthenticated(true);
-    globalStore.setUserState(createUserStateWithPermissions([]));
-
-    const fixture = TestBed.createComponent(AppComponent);
-    fixture.detectChanges();
-
-    expect(getPrimaryNavigationTexts(fixture)).toContain('Finance');
-  });
-
-  it('should hide Finance in primary navigation when release-1c-financial-movements is disabled', () => {
+  it.each([
+    {
+      name: 'payment permission and Cash enabled',
+      permissions: [FINES_PERMISSIONS['process-and-allocate-payments']],
+      cash: true,
+      banking: false,
+      visible: true,
+    },
+    {
+      name: 'banking permission with Cash disabled',
+      permissions: [FINES_PERMISSIONS['view-interface-files']],
+      cash: false,
+      banking: true,
+      visible: true,
+    },
+    {
+      name: 'payment permission with Cash disabled',
+      permissions: [FINES_PERMISSIONS['process-and-allocate-payments']],
+      cash: false,
+      banking: true,
+      visible: false,
+    },
+    { name: 'no permissions', permissions: [], cash: true, banking: true, visible: false },
+    {
+      name: 'no enabled features',
+      permissions: [FINES_PERMISSIONS['view-interface-files']],
+      cash: false,
+      banking: false,
+      visible: false,
+    },
+  ])('renders the Finance tab according to $name', ({ permissions, cash, banking, visible }) => {
     globalStore.setAuthenticated(true);
     globalStore.setFeatureFlags({
       ...DEFAULT_RELEASE_FEATURE_FLAGS,
-      [RELEASE_1C_FINANCIAL_MOVEMENTS_FEATURE_FLAG]: false,
+      [RELEASE_1C_FINANCIAL_MOVEMENTS_FEATURE_FLAG]: cash,
+      [RELEASE_1C_BANKING_INTERFACES_FEATURE_FLAG]: banking,
     });
-    globalStore.setUserState(createUserStateWithPermissions([]));
-
+    globalStore.setUserState(createUserStateWithPermissions(permissions));
     const fixture = TestBed.createComponent(AppComponent);
     fixture.detectChanges();
-
-    expect(getPrimaryNavigationTexts(fixture)).not.toContain('Finance');
+    expect(getPrimaryNavigationTexts(fixture).includes('Finance')).toBe(visible);
   });
 
   it('should show the primary navigation on browse routes', async () => {

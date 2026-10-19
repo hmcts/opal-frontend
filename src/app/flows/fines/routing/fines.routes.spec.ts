@@ -10,6 +10,8 @@ const release1bFeatureFlagGuardMock = vi.fn();
 const release1cWriteOffFeatureFlagGuardMock = vi.fn();
 const release1cEnforcementOperationalReportingFeatureFlagGuardMock = vi.fn();
 const release1cPaymentFeatureFlagGuardMock = vi.fn();
+const financialMovementsFeatureFlagGuardMock = vi.fn();
+const financialMovementsFeatureFlagName = 'release-1c-financial-movements';
 const release1aFeatureFlagName = 'release-1a';
 const release1bFeatureFlagName = 'release-1b';
 const release1cWriteOffFeatureFlagName = 'release-1c-write-off';
@@ -17,6 +19,10 @@ const release1cPaymentFeatureFlagName = 'release-1c-payment';
 
 const mockFeatureFlagRedirectGuard = (): void => {
   featureFlagRedirectGuardMock.mockImplementation((featureFlagName: string) => {
+    if (featureFlagName === financialMovementsFeatureFlagName) {
+      return financialMovementsFeatureFlagGuardMock;
+    }
+
     if (featureFlagName === release1aFeatureFlagName) {
       return release1aFeatureFlagGuardMock;
     }
@@ -50,6 +56,7 @@ describe('fines routes', () => {
   let release1bFeatureFlagGuard: FinesRoutesModule['release1bFeatureFlagGuard'];
   let release1cWriteOffFeatureFlagGuard: FinesRoutesModule['release1cWriteOffFeatureFlagGuard'];
   let release1cEnforcementOperationalReportingFeatureFlagGuard: FinesRoutesModule['release1cEnforcementOperationalReportingFeatureFlagGuard'];
+  let release1cFinancialMovementsFeatureFlagGuard: FinesRoutesModule['release1cFinancialMovementsFeatureFlagGuard'];
   let release1cPaymentFeatureFlagGuard: FinesRoutesModule['release1cPaymentFeatureFlagGuard'];
   let finesSectionPermissionsGuard: unknown;
   let dashboardTypeGuard: unknown;
@@ -92,6 +99,7 @@ describe('fines routes', () => {
     release1cEnforcementOperationalReportingFeatureFlagGuard =
       finesRoutes.release1cEnforcementOperationalReportingFeatureFlagGuard;
     release1cPaymentFeatureFlagGuard = finesRoutes.release1cPaymentFeatureFlagGuard;
+    release1cFinancialMovementsFeatureFlagGuard = finesRoutes.release1cFinancialMovementsFeatureFlagGuard;
     finesSectionPermissionsGuard = finesSectionPermissionsGuardModule.finesSectionPermissionsGuard;
     dashboardTypeGuard = dashboardTypeGuardModule.dashboardTypeGuard;
     finesFinanceRouting = finesFinanceRoutingModule.routing;
@@ -101,6 +109,11 @@ describe('fines routes', () => {
     autoPaymentInRouting = autoPaymentInRoutingModule.routing;
     childRoutes =
       finesRouting.find((route) => route.path === FINES_ROUTING_PATHS.root && route.children)?.children ?? [];
+  });
+
+  it('creates the financial movements guard for Cash journeys', () => {
+    expect(release1cFinancialMovementsFeatureFlagGuard).toBe(financialMovementsFeatureFlagGuardMock);
+    expect(featureFlagRedirectGuardMock).toHaveBeenCalledWith(financialMovementsFeatureFlagName);
   });
 
   it('should register the Suspense item routes beneath fines with authentication', async () => {
@@ -158,6 +171,7 @@ describe('fines routes', () => {
     const manualCashInputRoute = childRoutes.find((route) => route.path === FINES_ROUTING_PATHS.children.mci.root);
 
     expect(manualCashInputRoute?.canActivate).toContain(finesSectionPermissionsGuard);
+    expect(manualCashInputRoute?.canActivate).toContain(release1cFinancialMovementsFeatureFlagGuard);
     expect(manualCashInputRoute?.data).toEqual({
       sectionKey: FINES_DASHBOARD_ROUTING_PATHS.children.finance,
     });
@@ -172,6 +186,7 @@ describe('fines routes', () => {
     expect(autoPaymentInRoute?.canActivate).toEqual([
       authGuard,
       release1cPaymentFeatureFlagGuard,
+      release1cFinancialMovementsFeatureFlagGuard,
       finesSectionPermissionsGuard,
     ]);
     expect(autoPaymentInRoute?.canActivateChild).toEqual([release1cPaymentFeatureFlagGuard]);

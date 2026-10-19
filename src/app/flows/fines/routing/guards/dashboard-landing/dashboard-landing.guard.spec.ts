@@ -1,3 +1,4 @@
+import { FINES_PERMISSIONS } from '@app/constants/fines-permissions.constant';
 import { TestBed } from '@angular/core/testing';
 import { ActivatedRouteSnapshot, Router, RouterStateSnapshot, UrlTree } from '@angular/router';
 import { FINES_DASHBOARD_ROUTING_PATHS } from '@app/flows/fines/constants/fines-dashboard-routing-paths.constant';
@@ -170,14 +171,14 @@ describe('dashboardLandingGuard', () => {
     ]);
   });
 
-  it('should route to Finance when release-1a is disabled and the user only has draft accounts permission', async () => {
+  it('should route to Finance when release-1a is disabled and the user has draft accounts and payment permissions', async () => {
     const expectedUrlTree = new UrlTree();
     mockFeatureFlags({
       ...DEFAULT_RELEASE_FEATURE_FLAGS,
       [RELEASE_1A_FEATURE_FLAG]: false,
     });
     mockOpalUserService.getLoggedInUserState.mockReturnValue(
-      of(createUserStateWithPermissions([ACCOUNTS_PERMISSIONS[0]])),
+      of(createUserStateWithPermissions([ACCOUNTS_PERMISSIONS[0], FINES_PERMISSIONS['process-and-allocate-payments']])),
     );
     mockRouter.createUrlTree.mockReturnValue(expectedUrlTree);
 
@@ -192,14 +193,14 @@ describe('dashboardLandingGuard', () => {
     ]);
   });
 
-  it('should route to Finance when release-1c-write-off is disabled and the user only has consolidation permission', async () => {
+  it('should route to Finance when release-1c-write-off is disabled and the user has consolidation and payment permissions', async () => {
     const expectedUrlTree = new UrlTree();
     mockFeatureFlags({
       ...DEFAULT_RELEASE_FEATURE_FLAGS,
       [RELEASE_1C_WRITE_OFF_FEATURE_FLAG]: false,
     });
     mockOpalUserService.getLoggedInUserState.mockReturnValue(
-      of(createUserStateWithPermissions([ACCOUNTS_PERMISSIONS[2]])),
+      of(createUserStateWithPermissions([ACCOUNTS_PERMISSIONS[2], FINES_PERMISSIONS['process-and-allocate-payments']])),
     );
     mockRouter.createUrlTree.mockReturnValue(expectedUrlTree);
 
@@ -303,14 +304,14 @@ describe('dashboardLandingGuard', () => {
     ]);
   });
 
-  it('should route to Finance when release-1c enforcement operational reporting is disabled for a report-only user', async () => {
+  it('should route to Finance when release-1c enforcement operational reporting is disabled for a user with report and payment permissions', async () => {
     const expectedUrlTree = new UrlTree();
     mockFeatureFlags({
       ...DEFAULT_RELEASE_FEATURE_FLAGS,
       [RELEASE_1C_ENFORCEMENT_OPERATIONAL_REPORTING_FEATURE_FLAG]: false,
     });
     mockOpalUserService.getLoggedInUserState.mockReturnValue(
-      of(createUserStateWithPermissions([REPORTS_PERMISSIONS[0]])),
+      of(createUserStateWithPermissions([REPORTS_PERMISSIONS[0], FINES_PERMISSIONS['process-and-allocate-payments']])),
     );
     mockRouter.createUrlTree.mockReturnValue(expectedUrlTree);
 
@@ -325,7 +326,7 @@ describe('dashboardLandingGuard', () => {
     ]);
   });
 
-  it('should route to Finance when the user lacks all restricted primary-navigation permissions', async () => {
+  it('should route to Administration when the user lacks all restricted primary-navigation permissions', async () => {
     const expectedUrlTree = new UrlTree();
     mockRouter.createUrlTree.mockReturnValue(expectedUrlTree);
 
@@ -336,11 +337,11 @@ describe('dashboardLandingGuard', () => {
       '/',
       FINES_ROUTING_PATHS.root,
       FINES_DASHBOARD_ROUTING_PATHS.root,
-      FINES_DASHBOARD_ROUTING_PATHS.children.finance,
+      FINES_DASHBOARD_ROUTING_PATHS.children.administration,
     ]);
   });
 
-  it('should route to Finance when user-state lookup fails', async () => {
+  it('should route to Administration when user-state lookup fails', async () => {
     const expectedUrlTree = new UrlTree();
     mockOpalUserService.getLoggedInUserState.mockReturnValue(throwError(() => new Error('lookup failed')));
     mockRouter.createUrlTree.mockReturnValue(expectedUrlTree);
@@ -352,7 +353,7 @@ describe('dashboardLandingGuard', () => {
       '/',
       FINES_ROUTING_PATHS.root,
       FINES_DASHBOARD_ROUTING_PATHS.root,
-      FINES_DASHBOARD_ROUTING_PATHS.children.finance,
+      FINES_DASHBOARD_ROUTING_PATHS.children.administration,
     ]);
   });
 });
