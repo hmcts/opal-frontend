@@ -45,6 +45,7 @@ describe('Account Enquiry Payment Terms - Payment card', () => {
     () => {
       let headerMock = structuredClone(createDefendantHeaderMockWithName('John', 'Smith'));
       headerMock.debtor_type = 'individual';
+      headerMock.payment_state_summary.account_balance = -500.58;
       let paymentTermsMock = structuredClone(OPAL_FINES_ACCOUNT_DEFENDANT_DETAILS_PAYMENT_TERMS_LATEST_MOCK);
       paymentTermsMock.last_enforcement = 'DW';
 
@@ -72,6 +73,7 @@ describe('Account Enquiry Payment Terms - Payment card', () => {
     () => {
       let headerMock = structuredClone(createDefendantHeaderMockWithName('John', 'Smith'));
       headerMock.debtor_type = 'individual';
+      headerMock.payment_state_summary.account_balance = -500.58;
       let paymentTermsMock = structuredClone(OPAL_FINES_ACCOUNT_DEFENDANT_DETAILS_PAYMENT_TERMS_LATEST_MOCK);
       paymentTermsMock.last_enforcement = 'REM';
 
@@ -99,6 +101,7 @@ describe('Account Enquiry Payment Terms - Payment card', () => {
     () => {
       let headerMock = structuredClone(createDefendantHeaderMockWithName('Robert', 'Thomson'));
       headerMock.debtor_type = 'individual';
+      headerMock.payment_state_summary.account_balance = -500.58;
       let paymentTermsMock = structuredClone(OPAL_FINES_ACCOUNT_DEFENDANT_DETAILS_PAYMENT_TERMS_LATEST_MOCK);
       paymentTermsMock.last_enforcement = 'REM';
 
@@ -127,6 +130,7 @@ describe('Account Enquiry Payment Terms - Payment card', () => {
     () => {
       let headerMock = structuredClone(createDefendantHeaderMockWithName('Robert', 'Thomson'));
       headerMock.debtor_type = 'individual';
+      headerMock.payment_state_summary.account_balance = -500.58;
       let paymentTermsMock = structuredClone(OPAL_FINES_ACCOUNT_DEFENDANT_DETAILS_PAYMENT_TERMS_LATEST_MOCK);
       paymentTermsMock.last_enforcement = 'REM';
 
