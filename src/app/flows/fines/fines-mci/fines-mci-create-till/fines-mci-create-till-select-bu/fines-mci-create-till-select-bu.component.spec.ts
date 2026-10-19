@@ -140,6 +140,32 @@ describe('FinesMciCreateTillSelectBuComponent', () => {
     expect(component['form'].controls.fmci_create_till_business_unit_id.value).toBe(businessUnit.business_unit_id);
   });
 
+  it('should clear a previous journey selection on fresh entry', () => {
+    const businessUnit = OPAL_FINES_BUSINESS_UNIT_REF_DATA_MOCK.refData[0];
+    finesMciStore.setBusinessUnit(businessUnit);
+    vi.spyOn(router, 'getCurrentNavigation').mockReturnValue(null);
+
+    fixture = TestBed.createComponent(FinesMciCreateTillSelectBuComponent);
+    component = fixture.componentInstance;
+
+    expect(finesMciStore.businessUnit()).toBeNull();
+    expect(component['form'].controls.fmci_create_till_business_unit_id.value).toBeNull();
+  });
+
+  it('should preserve the business unit when returning from till details', () => {
+    const businessUnit = OPAL_FINES_BUSINESS_UNIT_REF_DATA_MOCK.refData[0];
+    finesMciStore.setBusinessUnit(businessUnit);
+    vi.spyOn(router, 'getCurrentNavigation').mockReturnValue({
+      extras: { state: { preserveBusinessUnit: true } },
+    } as never);
+
+    fixture = TestBed.createComponent(FinesMciCreateTillSelectBuComponent);
+    component = fixture.componentInstance;
+
+    expect(finesMciStore.businessUnit()).toEqual(businessUnit);
+    expect(component['form'].controls.fmci_create_till_business_unit_id.value).toBe(businessUnit.business_unit_id);
+  });
+
   it('should normalize a missing stored business unit ID to an empty form value', () => {
     const originalRefData = component['businessUnitsRefData'].refData;
     component['businessUnitsRefData'].refData = [

@@ -39,7 +39,7 @@ export class FinesMciCreateTillDetailsComponent {
       FINES_MCI_ROUTING_PATHS.children.create,
       FINES_MCI_ROUTING_PATHS.children.till,
       FINES_MCI_ROUTING_PATHS.children.selectBusinessUnit,
-    ]);
+    ], { state: { preserveBusinessUnit: true } });
   }
 
   public addPayment(): void {

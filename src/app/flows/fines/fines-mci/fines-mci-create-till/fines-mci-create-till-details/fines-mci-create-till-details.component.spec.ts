@@ -47,7 +47,9 @@ describe('FinesMciCreateTillDetailsComponent', () => {
     fixture.debugElement.query(By.css('opal-lib-govuk-back-link')).triggerEventHandler('clickEvent');
 
     expect(store.businessUnit()).toEqual(selectedBusinessUnit);
-    expect(navigateSpy).toHaveBeenCalledWith(['/', 'fines', 'manual-cash-input', 'create', 'till', 'select-bu']);
+    expect(navigateSpy).toHaveBeenCalledWith(['/', 'fines', 'manual-cash-input', 'create', 'till', 'select-bu'], {
+      state: { preserveBusinessUnit: true },
+    });
   });
 
   it('should navigate to payment category when Add payment is selected', () => {

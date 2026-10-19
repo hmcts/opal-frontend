@@ -76,6 +76,10 @@ export class FinesMciCreateTillSelectBuComponent implements OnDestroy {
   protected formErrorSummaryMessage: IAbstractFormBaseFormErrorSummaryMessage[] = [];
 
   public constructor() {
+    const preserveBusinessUnit = this.router.getCurrentNavigation()?.extras.state?.['preserveBusinessUnit'] === true;
+    if (!preserveBusinessUnit) {
+      this.finesMciStore.reset();
+    }
     this.setInitialBusinessUnit();
     this.form.controls.fmci_create_till_business_unit_id.valueChanges
       .pipe(takeUntilDestroyed())
