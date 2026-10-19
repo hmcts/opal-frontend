@@ -130,4 +130,70 @@ describe('FinesMciCreateTillSelectBuComponent', () => {
     expect(text).not.toContain('The till will be created in Historical Debt');
     expect(nativeElement.querySelector('opal-lib-alphagov-accessible-autocomplete')).toBeFalsy();
   });
+
+  it('should retain a previously selected business unit as the initial value', () => {
+    const businessUnit = OPAL_FINES_BUSINESS_UNIT_REF_DATA_MOCK.refData[0];
+    finesMciStore.setBusinessUnit(businessUnit);
+
+    component['setInitialBusinessUnit']();
+
+    expect(component['form'].controls.fmci_create_till_business_unit_id.value).toBe(businessUnit.business_unit_id);
+  });
+
+  it('should normalize a missing stored business unit ID to an empty form value', () => {
+    const originalRefData = component['businessUnitsRefData'].refData;
+    component['businessUnitsRefData'].refData = [
+      { ...OPAL_FINES_BUSINESS_UNIT_REF_DATA_MOCK.refData[0], business_unit_id: undefined as never },
+    ];
+    finesMciStore.setBusinessUnit({ business_unit_id: undefined } as never);
+
+    component['setInitialBusinessUnit']();
+
+    expect(component['form'].controls.fmci_create_till_business_unit_id.value).toBeNull();
+    finesMciStore.reset();
+    component['businessUnitsRefData'].refData = originalRefData;
+  });
+
+  it('should prevent deactivation after the user changes to a valid business unit', () => {
+    expect(component.canDeactivate()).toBe(true);
+
+    component['form'].controls.fmci_create_till_business_unit_id.setValue(61);
+    component['form'].controls.fmci_create_till_business_unit_id.markAsDirty();
+
+    expect(component.canDeactivate()).toBe(false);
+  });
+
+  it('should block deactivation and beforeunload when a business unit is selected', () => {
+    component['form'].controls.fmci_create_till_business_unit_id.setValue(61);
+    component['form'].controls.fmci_create_till_business_unit_id.markAsDirty();
+
+    expect(component.canDeactivate()).toBe(false);
+    expect(component.handleBeforeUnload()).toBe(false);
+  });
+
+  it('should allow beforeunload when no business unit is selected', () => {
+    expect(component.handleBeforeUnload()).toBe(true);
+  });
+
+  it('should run the beforeunload listener registered on the window', () => {
+    const event = new Event('beforeunload');
+
+    expect(window.dispatchEvent(event)).toBe(true);
+  });
+
+  it('should preserve the selection error when a subsequent selection is invalid', () => {
+    component.handleSubmit();
+    component['form'].controls.fmci_create_till_business_unit_id.setValue(999);
+
+    expect(component['businessUnitSelectionError']).toBe('Select business unit');
+  });
+
+  it('should focus a field referenced by the error summary', () => {
+    const focus = vi.fn();
+    vi.spyOn(document, 'getElementById').mockReturnValue({ focus } as unknown as HTMLElement);
+
+    component['scrollTo']('fmci_create_till_business_unit_id-autocomplete');
+
+    expect(focus).toHaveBeenCalled();
+  });
 });
