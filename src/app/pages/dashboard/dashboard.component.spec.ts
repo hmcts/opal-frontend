@@ -103,6 +103,20 @@ describe('DashboardComponent', () => {
     expect(component).toBeTruthy();
   });
 
+  it('renders Manage Suspense Items under Suspense before the Cash section', () => {
+    permissionsServiceMock.getUniquePermissions.mockReturnValue([FINES_PERMISSIONS['process-and-allocate-payments']]);
+    dashboardTypeParamMapSubject.next(convertToParamMap({ dashboardType: 'finance' }));
+    setupComponent();
+
+    const element: HTMLElement = fixture.nativeElement;
+    const headings = Array.from(element.querySelectorAll('h2')).map((heading) => heading.textContent?.trim());
+    const link = element.querySelector<HTMLAnchorElement>('a[href="/fines/suspense-item/search"]');
+
+    expect(headings.slice(0, 2)).toEqual(['Suspense', 'Cash']);
+    expect(link?.textContent?.trim()).toBe('Manage Suspense Items');
+    expect(link?.target).not.toBe('_blank');
+  });
+
   it('should resolve the reports config for the reports dashboard type', () => {
     setupComponent();
     dashboardTypeParamMapSubject.next(convertToParamMap({ dashboardType: 'reports' }));

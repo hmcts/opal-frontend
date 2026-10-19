@@ -1,4 +1,5 @@
 import { TestBed } from '@angular/core/testing';
+import { Component } from '@angular/core';
 import { Title } from '@angular/platform-browser';
 import { provideRouter, Router } from '@angular/router';
 import { RouterTestingHarness } from '@angular/router/testing';
@@ -6,10 +7,18 @@ import { beforeEach, describe, expect, it } from 'vitest';
 import { FinesSuspenseItemSearchComponent } from '../fines-suspense-item-search/fines-suspense-item-search.component';
 import { routing } from './fines-suspense-item.routes';
 
+@Component({ template: '<h1>Finance</h1>' })
+class TestFinanceComponent {}
+
 describe('Suspense item navigation', () => {
   beforeEach(() => {
     TestBed.configureTestingModule({
-      providers: [provideRouter([{ path: 'fines/suspense-item', children: routing }])],
+      providers: [
+        provideRouter([
+          { path: 'fines/suspense-item', children: routing },
+          { path: 'fines/dashboard/finance', component: TestFinanceComponent },
+        ]),
+      ],
     });
   });
 
@@ -32,5 +41,19 @@ describe('Suspense item navigation', () => {
     const backLink = harness.routeNativeElement?.querySelector('a');
     expect(backLink?.textContent).toBe('Back to finance');
     expect(backLink?.getAttribute('href')).toBe('/fines/dashboard/finance');
+  });
+
+  it('returns to Finance when the back link is selected', async () => {
+    const harness = await RouterTestingHarness.create();
+    await harness.navigateByUrl('/fines/suspense-item/search', FinesSuspenseItemSearchComponent);
+
+    const backLink = harness.routeNativeElement?.querySelector<HTMLAnchorElement>('a');
+    expect(backLink).not.toBeNull();
+    backLink!.click();
+    await harness.fixture.whenStable();
+    harness.detectChanges();
+
+    expect(TestBed.inject(Router).url).toBe('/fines/dashboard/finance');
+    expect(harness.routeNativeElement?.querySelector('h1')?.textContent).toBe('Finance');
   });
 });

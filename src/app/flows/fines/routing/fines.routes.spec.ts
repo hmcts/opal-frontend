@@ -103,6 +103,15 @@ describe('fines routes', () => {
       finesRouting.find((route) => route.path === FINES_ROUTING_PATHS.root && route.children)?.children ?? [];
   });
 
+  it('should register the Suspense item routes beneath fines with authentication', async () => {
+    const { routing: suspenseItemRouting } = await import('../fines-suspense-item/routing/fines-suspense-item.routes');
+    const suspenseRoute = childRoutes.find((route) => route.path === 'suspense-item');
+
+    expect(suspenseRoute).toBeDefined();
+    expect(suspenseRoute?.children).toBe(suspenseItemRouting);
+    expect(suspenseRoute?.canActivate).toEqual([authGuard]);
+  });
+
   it('should create the release-1a feature flag guard from the common redirect guard', () => {
     expect(release1aFeatureFlagGuard).toBe(release1aFeatureFlagGuardMock);
   });
