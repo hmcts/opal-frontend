@@ -1,5 +1,5 @@
 import { ChangeDetectionStrategy, Component, inject } from '@angular/core';
-import { Router } from '@angular/router';
+import { NavigationExtras, Router } from '@angular/router';
 import { FINES_ROUTING_PATHS } from '@app/flows/fines/routing/constants/fines-routing-paths.constant';
 import { GovukBackLinkComponent } from '@hmcts/opal-frontend-common/components/govuk/govuk-back-link';
 import { GovukButtonComponent } from '@hmcts/opal-frontend-common/components/govuk/govuk-button';
@@ -20,18 +20,7 @@ export class FinesMciCreateTillDetailsComponent {
   private readonly router = inject(Router);
   protected readonly finesMciStore = inject(FinesMciStore);
 
-  private navigateTo(path: string): void {
-    void this.router.navigate([
-      '/',
-      FINES_ROUTING_PATHS.root,
-      FINES_MCI_ROUTING_PATHS.root,
-      FINES_MCI_ROUTING_PATHS.children.create,
-      FINES_MCI_ROUTING_PATHS.children.till,
-      path,
-    ]);
-  }
-
-  public navigateBack(): void {
+  private navigateTo(path: string, extras?: NavigationExtras): void {
     void this.router.navigate(
       [
         '/',
@@ -39,10 +28,14 @@ export class FinesMciCreateTillDetailsComponent {
         FINES_MCI_ROUTING_PATHS.root,
         FINES_MCI_ROUTING_PATHS.children.create,
         FINES_MCI_ROUTING_PATHS.children.till,
-        FINES_MCI_ROUTING_PATHS.children.selectBusinessUnit,
+        path,
       ],
-      { state: { preserveBusinessUnit: true } },
+      extras,
     );
+  }
+
+  public navigateBack(): void {
+    this.navigateTo(FINES_MCI_ROUTING_PATHS.children.selectBusinessUnit, { state: { preserveBusinessUnit: true } });
   }
 
   public addPayment(): void {
