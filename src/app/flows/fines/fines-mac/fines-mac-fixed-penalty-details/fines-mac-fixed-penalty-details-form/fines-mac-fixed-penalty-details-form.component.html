@@ -8,7 +8,11 @@
 ></opal-lib-govuk-error-summary>
 <form (submit)="handleFormSubmit($event)" [formGroup]="form">
   <fieldset class="govuk-fieldset">
-    <legend class="govuk-fieldset__legend govuk-fieldset__legend--m">
+    <legend
+      class="govuk-fieldset__legend govuk-fieldset__legend--m"
+      [attr.id]="release1a1_2Enabled() ? fineMacRoutingPaths.children.courtDetails : null"
+      [attr.tabindex]="release1a1_2Enabled() ? -1 : null"
+    >
       <h2 class="govuk-heading-m">Issuing Authority and Court Details</h2>
     </legend>
     <opal-lib-alphagov-accessible-autocomplete
@@ -39,7 +43,11 @@
 
   @if (defendantType === defendantTypesKeys.company) {
     <fieldset class="govuk-fieldset">
-      <legend class="govuk-fieldset__legend govuk-fieldset__legend--m">
+      <legend
+        class="govuk-fieldset__legend govuk-fieldset__legend--m"
+        [attr.id]="release1a1_2Enabled() ? fineMacRoutingPaths.children.companyDetails : null"
+        [attr.tabindex]="release1a1_2Enabled() ? -1 : null"
+      >
         <h2 class="govuk-heading-m govuk-!-margin-0">Company Details</h2>
       </legend>
       <opal-lib-govuk-text-input
@@ -86,7 +94,11 @@
     </fieldset>
   } @else {
     <fieldset class="govuk-fieldset">
-      <legend class="govuk-fieldset__legend govuk-fieldset__legend--m">
+      <legend
+        class="govuk-fieldset__legend govuk-fieldset__legend--m"
+        [attr.id]="release1a1_2Enabled() ? fineMacRoutingPaths.children.personalDetails : null"
+        [attr.tabindex]="release1a1_2Enabled() ? -1 : null"
+      >
         <h2 class="govuk-heading-m govuk-!-margin-0">Personal Details</h2>
       </legend>
       <opal-lib-govuk-select
@@ -187,7 +199,11 @@
   <hr class="govuk-section-break govuk-section-break--l govuk-section-break--visible" />
 
   <fieldset class="govuk-fieldset">
-    <legend class="govuk-fieldset__legend govuk-fieldset__legend--m">
+    <legend
+      class="govuk-fieldset__legend govuk-fieldset__legend--m"
+      [attr.id]="release1a1_2Enabled() ? fineMacRoutingPaths.children.offenceDetails : null"
+      [attr.tabindex]="release1a1_2Enabled() ? -1 : null"
+    >
       <h2 class="govuk-heading-m govuk-!-margin-0">Offence Details</h2>
     </legend>
     <opal-lib-govuk-text-input
@@ -358,7 +374,11 @@
   }
 
   <fieldset class="govuk-fieldset">
-    <legend class="govuk-fieldset__legend govuk-fieldset__legend--m">
+    <legend
+      class="govuk-fieldset__legend govuk-fieldset__legend--m"
+      [attr.id]="release1a1_2Enabled() ? fineMacRoutingPaths.children.accountCommentsNotes : null"
+      [attr.tabindex]="release1a1_2Enabled() ? -1 : null"
+    >
       <h2 class="govuk-heading-m govuk-!-margin-0">Comments and Notes</h2>
     </legend>
     <opal-lib-govuk-text-area

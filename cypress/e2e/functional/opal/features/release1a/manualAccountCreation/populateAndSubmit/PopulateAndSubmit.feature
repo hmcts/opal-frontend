@@ -427,7 +427,7 @@ Feature: Populate And Submit
       | Last name                 | LNAME                     |
       | Address                   | 1 Address Street RG12 8EU |
       | National Insurance number | AB 12 23 98 B             |
-      | Aliases                   | Not provided              |
+      | Aliases                   | No data                   |
     And I see the manual review "Employer details" summary:
       | Employee reference | AB122398B                 |
       | Employer address   | 1 Address Street RG12 8EU |
