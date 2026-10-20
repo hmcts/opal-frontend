@@ -3,9 +3,11 @@ import { IChildRoutingPaths } from '@hmcts/opal-frontend-common/pages/routing/in
 export interface IFinesMciRoutingPaths extends IChildRoutingPaths {
   children: {
     createAllocate: string;
-    createTillSelectBusinessUnit: string;
-    createTillDetails: string;
-    createTillPaymentCategory: string;
-    createTillCancel: string;
+    create: string;
+    till: string;
+    selectBusinessUnit: string;
+    details: string;
+    paymentCategory: string;
+    cancel: string;
   };
 }

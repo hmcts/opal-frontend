@@ -1,3 +1,4 @@
+import { IOpalFinesResultRefData } from '@services/fines/opal-fines-service/interfaces/opal-fines-result-ref-data.interface';
 import { IOpalFinesAccountDefendantAccountParty } from '@services/fines/opal-fines-service/interfaces/opal-fines-account-defendant-account-party.interface';
 import { IOpalFinesAccountDefendantAtAGlance } from '@services/fines/opal-fines-service/interfaces/opal-fines-account-defendant-at-a-glance.interface';
 import { IOpalFinesAccountDefendantDetailsEnforcementTabRefData } from '@services/fines/opal-fines-service/interfaces/opal-fines-account-defendant-details-enforcement-tab-ref-data.interface';
@@ -16,7 +17,7 @@ import { IOpalFinesAccountMajorCreditorAtAGlance } from 'src/app/flows/fines/ser
 import { IOpalFinesAccountMajorCreditorDetailsHistoryAndNotesTabRefData } from 'src/app/flows/fines/services/opal-fines-service/interfaces/opal-fines-account-major-creditor-details-history-and-notes-tab-ref-data.interface';
 
 /**
- * Intercepts the POST request to the `/opal-fines-service/notes/add` endpoint during Cypress tests.
+ * Intercepts the POST request to the `/opal-fines-service/notes` endpoint during Cypress tests.
  *
  * This function mocks the network request by returning a 201 status code with an empty response body.
  * No response data is needed, as there is no behavior based on the response content.
@@ -24,7 +25,7 @@ import { IOpalFinesAccountMajorCreditorDetailsHistoryAndNotesTabRefData } from '
  */
 export function interceptAddNotes() {
   return cy
-    .intercept('POST', '/opal-fines-service/notes/add', {
+    .intercept('POST', '/opal-fines-service/notes', {
       statusCode: 201,
       body: {},
     })
@@ -567,4 +568,16 @@ export function interceptPatchDefendantAccount() {
       body: {},
     })
     .as('patchDefendantAccount');
+}
+
+/**
+ * Intercepts the reference-data lookup for the last enforcement action.
+ */
+export function interceptEnforcementResult(mockData: IOpalFinesResultRefData) {
+  return cy
+    .intercept('GET', `/opal-fines-service/results/${mockData.result_id}`, {
+      statusCode: 200,
+      body: mockData,
+    })
+    .as('getEnforcementResult');
 }

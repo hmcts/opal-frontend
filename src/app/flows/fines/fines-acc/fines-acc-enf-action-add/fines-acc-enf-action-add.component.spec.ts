@@ -1,4 +1,5 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
+import { By } from '@angular/platform-browser';
 import { ActivatedRoute, Router } from '@angular/router';
 import { AbstractFormParentBaseComponent } from '@hmcts/opal-frontend-common/components/abstract/abstract-form-parent-base';
 import { OpalFines } from '@services/fines/opal-fines-service/opal-fines.service';
@@ -25,6 +26,9 @@ import { FINES_ACC_ENF_ACTION_ADD_SUBMIT_FORM_MOCK } from './mocks/fines-acc-enf
 import { createFinesAccEnfActionAddActivatedRouteMock } from './mocks/fines-acc-enf-action-add-activated-route.mock';
 import { FINES_ACC_ENF_ACTION_ADD_COLLO_RESULT_WITHOUT_PAYMENT_TERMS_FLAG_MOCK } from './mocks/fines-acc-enf-action-add-collo-result-without-payment-terms-flag.mock';
 import { FINES_ACC_ENF_ACTION_ADD_NEW_SUCCESS_MESSAGE } from '../fines-acc-enf-action-add-new/constants/fines-acc-enf-action-add-new-success-message.constant';
+import { OPAL_FINES_COURT_REF_DATA_MOCK } from '@services/fines/opal-fines-service/mocks/opal-fines-court-ref-data.mock';
+import { FINES_ACC_ENF_ACTION_ADD_COURT_RESULT_PARAMETERS_MOCK } from './mocks/fines-acc-enf-action-add-court-result-parameters.mock';
+import { buildEnforcementActionAddPayload } from '../services/utils/fines-acc-payload-build-enforcement-action-add.utils';
 
 describe('FinesAccEnfActionAddComponent', () => {
   let component: FinesAccEnfActionAddComponent;
@@ -71,6 +75,9 @@ describe('FinesAccEnfActionAddComponent', () => {
     mockOpalFinesService.addEnforcementAction.mockReturnValue(of({}));
     mockOpalFinesService.getEnforcerPrettyName.mockImplementation(
       (enforcer: { name: string; enforcer_code: number }) => `${enforcer.name} (${enforcer.enforcer_code})`,
+    );
+    mockOpalFinesService.getCourtPrettyName.mockImplementation(
+      (court: { name: string; court_code: number }) => `${court.name} (${court.court_code})`,
     );
 
     await TestBed.configureTestingModule({
@@ -126,6 +133,107 @@ describe('FinesAccEnfActionAddComponent', () => {
     createComponent();
 
     expect(component.fields[0].options).toEqual([{ value: 1, name: 'Enforcer One (101)' }]);
+  });
+
+  it('should populate court codes and name/code labels from lowercase apidata and resolved courts', () => {
+    activatedRouteStub.snapshot.data.enforcementActionResult.result_parameters =
+      FINES_ACC_ENF_ACTION_ADD_COURT_RESULT_PARAMETERS_MOCK;
+    (activatedRouteStub.snapshot.data as Record<string, unknown>)['courtsRefData'] =
+      structuredClone(OPAL_FINES_COURT_REF_DATA_MOCK);
+    const addService = new FinesAccEnfActionAddService();
+    mockAddService.mapResultParamsToFormStructure.mockImplementation(
+      addService.mapResultParamsToFormStructure.bind(addService),
+    );
+
+    createComponent();
+
+    expect(component.fields[0].options).toEqual([
+      { value: 101, name: 'Historic Debt Database (101)' },
+      { value: 998, name: 'Historic Debt Database (998)' },
+      { value: 102, name: 'HISTORIC DEBT LODGE COURT (102)' },
+      { value: 999, name: 'Port Talbot Justice Centre (999)' },
+    ]);
+  });
+
+  it('should provide no court suggestions when the resolved court list is empty', () => {
+    activatedRouteStub.snapshot.data.enforcementActionResult.result_parameters =
+      FINES_ACC_ENF_ACTION_ADD_COURT_RESULT_PARAMETERS_MOCK;
+    (activatedRouteStub.snapshot.data as Record<string, unknown>)['courtsRefData'] = { count: 0, refData: [] };
+    const addService = new FinesAccEnfActionAddService();
+    mockAddService.mapResultParamsToFormStructure.mockImplementation(
+      addService.mapResultParamsToFormStructure.bind(addService),
+    );
+
+    createComponent();
+
+    expect(component.fields[0].options).toEqual([]);
+    expect(mockOpalFinesService.getCourtPrettyName).not.toHaveBeenCalled();
+  });
+
+  it('should preserve configured autocomplete options when no API data source is specified', () => {
+    const fields = [
+      {
+        controlName: 'fines-acc-enf-action-add_choice',
+        parameterName: 'choice',
+        label: 'Choice',
+        type: FINES_ACC_ENF_ACTION_ADD_FIELD_TYPES.menuAutocomplete,
+        required: false,
+        options: [{ value: 'local', name: 'Local option' }],
+      },
+    ];
+    mockAddService.mapResultParamsToFormStructure.mockReturnValue({ fields });
+
+    createComponent();
+
+    expect(component.fields).toEqual(fields);
+    expect(mockOpalFinesService.getCourtPrettyName).not.toHaveBeenCalled();
+    expect(mockOpalFinesService.getEnforcerPrettyName).not.toHaveBeenCalled();
+  });
+
+  it.each(['SUMM', 'BWTD', 'CWN', 'REW'])('should submit the selected court code for %s', async (resultId) => {
+    Object.assign(activatedRouteStub.snapshot.data.enforcementActionResult, {
+      result_id: resultId,
+      allow_payment_terms: false,
+      result_parameters: FINES_ACC_ENF_ACTION_ADD_COURT_RESULT_PARAMETERS_MOCK,
+    });
+    (activatedRouteStub.snapshot.data as Record<string, unknown>)['courtsRefData'] =
+      structuredClone(OPAL_FINES_COURT_REF_DATA_MOCK);
+    const addService = new FinesAccEnfActionAddService();
+    mockAddService.mapResultParamsToFormStructure.mockImplementation(
+      addService.mapResultParamsToFormStructure.bind(addService),
+    );
+    mockPayloadService.buildEnforcementActionAddPayload.mockImplementation(buildEnforcementActionAddPayload);
+
+    createComponent();
+
+    const element = fixture.nativeElement as HTMLElement;
+    const form = fixture.debugElement.query(By.css('form'));
+
+    form.triggerEventHandler('submit', new Event('submit', { cancelable: true }));
+    expect(mockOpalFinesService.addEnforcementAction).not.toHaveBeenCalled();
+
+    await vi.waitFor(() => {
+      expect(element.querySelector('#fines-acc-enf-action-add_courtcode-autocomplete')).not.toBeNull();
+    });
+    const input = element.querySelector<HTMLInputElement>('#fines-acc-enf-action-add_courtcode-autocomplete')!;
+    input.value = '101';
+    input.dispatchEvent(new Event('input', { bubbles: true }));
+
+    await vi.waitFor(() => {
+      expect(element.querySelector('[role="option"]')?.textContent).toBe('Historic Debt Database (101)');
+    });
+    element.querySelector<HTMLElement>('[role="option"]')!.click();
+    form.triggerEventHandler('submit', new Event('submit', { cancelable: true }));
+
+    expect(mockOpalFinesService.addEnforcementAction).toHaveBeenCalledExactlyOnceWith(
+      12345,
+      {
+        result_id: resultId,
+        enforcement_result_responses: [{ parameter_name: 'courtcode', response: '101' }],
+      },
+      '1',
+      '78',
+    );
   });
 
   it('should use empty heading text when account state names are missing', () => {

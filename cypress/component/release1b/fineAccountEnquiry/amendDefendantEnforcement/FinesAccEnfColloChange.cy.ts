@@ -322,7 +322,7 @@ describe(
 
     it(
       'AC4a. Adult or youth: selecting a different value returns the user to the Enforcement tab',
-      { tags: ['@JIRA-TEST-KEY:PO-4391'] },
+      { tags: ['@JIRA-TEST-KEY:PO-4391', '@JIRA-NFR:PO-2505', '@JIRA-NFR:PO-2506'] },
       () => {
         assertCollectionOrderChangedNavigatesToEnforcementTab(commonSetup);
       },

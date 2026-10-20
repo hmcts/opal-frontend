@@ -23,11 +23,9 @@ Feature: Company Enforcement Override
         | account.payment_card_request                    | false                             |
         | account.payment_terms.enforcements[0].result_id | NOENF                             |
 
-      When I open the company account details for "RemoveHold Company{uniq}"
-      And I go to the Enforcement tab
-      And I open the remove enforcement hold screen
-      When I enter "Removed" in the "Reason" field
-      And I press the "Remove" button
+      When the remove enforcement hold screen is displayed for company account "RemoveHold Company{uniq}"
+      When the remove enforcement hold reason is "Removed"
+      And I remove the enforcement hold
       Then I should see the add new enforcement action page
       And the enforcement hold success banner is "Enforcement hold removed"
 
@@ -46,9 +44,7 @@ Feature: Company Enforcement Override
         | account.payment_card_request                    | false                             |
         | account.payment_terms.enforcements[0].result_id | NOENF                             |
 
-      When I open the company account details for "RemoveHold Company{uniq}"
-      And I go to the Enforcement tab
-      And I open the remove enforcement hold screen
+      When the remove enforcement hold screen is displayed for company account "RemoveHold Company{uniq}"
       Then I should see the remove enforcement hold page
       And I should see the remove enforcement hold account identifier "– RemoveHold Company{uniq}"
   Rule: Company account
@@ -64,12 +60,11 @@ Feature: Company Enforcement Override
         | account.collection_order_made_today             | false                               |
         | account.payment_card_request                    | false                               |
         | account.payment_terms.enforcements[0].result_id | PRIS                                |
-      When I open the company account details for "Add Override Company{uniq}"
-      And I go to the Enforcement tab
+      When the Enforcement tab is displayed for company account "Add Override Company{uniq}"
 
     @R1BDrop1 @JIRA-STORY:PO-1867 @JIRA-STORY:PO-1863 @JIRA-EPIC:PO-1675 @JIRA-TEST-KEY:PO-5298
     Scenario: Saving a company enforcement override returns to the Enforcement tab with the new summary value
-      And I open the add enforcement override form
+      And the add enforcement override form is displayed
       When I add the enforcement override "ABDC" with the enforcer "The DWP (3)"
       Then I should return to the Enforcement tab
       And the enforcement override success banner is "Enforcement override added"
@@ -102,7 +97,7 @@ Feature: Company Enforcement Override
     @R1BDrop1 @JIRA-STORY:PO-1863 @JIRA-EPIC:PO-1675 @JIRA-TEST-KEY:PO-10027
     Scenario: Cancelling company enforcement court change without edits returns to the Enforcement tab
       Given the enforcement court summary shows an existing value
-      When I open the change enforcement court form
+      When the change enforcement court form is displayed
       And I cancel without entering data
       Then I should return to the Enforcement tab
       And the enforcement court summary still shows the original value
@@ -113,15 +108,15 @@ Feature: Company Enforcement Override
       When I change the enforcement court to a different value
       Then I should return to the Enforcement tab
       And the enforcement court summary shows the selected value
-      When I open the change enforcement court form
+      When the change enforcement court form is displayed
       And I cancel the change enforcement court form after selecting a value and discarding changes
       Then I should return to the Enforcement tab
       And the enforcement court summary shows the selected value
 
     @R1BDrop1 @JIRA-STORY:PO-1843 @JIRA-EPIC:PO-1675 @JIRA-TEST-KEY:PO-8013
     Scenario: Saving a withdrawn company enforcement action takes the user to add another enforcement action
-      And I open the add enforcement action form
-      And I choose the enforcement action "Withdrawn (WDN)"
+      And the add enforcement action form is displayed
+      And the enforcement action is "Withdrawn (WDN)"
       And I continue to the confirm enforcement action page
       And I enter "Test reason" for the enforcement action reason
       And I add the enforcement action

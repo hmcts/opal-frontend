@@ -1,3 +1,4 @@
+import { FINES_ACC_ENF_ACTION_ADD_RESULT_PARAMETER_NAME_MAP } from '../../fines-acc-enf-action-add/constants/fines-acc-enf-action-add-result-parameter-name-map.constant';
 import { DateService } from '@hmcts/opal-frontend-common/services/date-service';
 import { IOpalFinesAddEnforcementActionPayload } from '@services/fines/opal-fines-service/interfaces/opal-fines-add-enforcement-action-payload.interface';
 import { IOpalFinesAmendPaymentTerms } from '@services/fines/opal-fines-service/interfaces/opal-fines-amend-payment-terms.interface';
@@ -7,7 +8,6 @@ import { buildPaymentTermsAmendPayloadUtil } from './fines-acc-payload-build-pay
 import { FINES_ACC_ENF_ACTION_ADD_FORM_CONTROL_NAMES } from '../../fines-acc-enf-action-add/constants/fines-acc-enf-action-add-control-names.constant';
 import { FINES_ACC_ENF_ACTION_ADD_FIELD_TYPES } from '../../fines-acc-enf-action-add/constants/fines-acc-enf-action-add-field-types.constant';
 import { FINES_ACC_ENF_ACTION_ADD_PAYMENT_TERMS_RESULT_IDS } from '../../fines-acc-enf-action-add/constants/fines-acc-enf-action-add-payment-terms-result-ids.constant';
-import { FINES_ACC_ENF_ACTION_ADD_RESULT_PARAMETER_NAME_MAP } from '../../fines-acc-enf-action-add/constants/fines-acc-enf-action-add-result-parameter-name-map.constant';
 import { IFinesAccEnfActionAddFormState } from '../../fines-acc-enf-action-add/interfaces/fines-acc-enf-action-add-form-state.interface';
 import { IFinesAccEnfActionAddFormField } from '../../fines-acc-enf-action-add/interfaces/fines-acc-enf-action-add-form-field.interface';
 import { TFinesAccEnfActionAddFieldType } from '../../fines-acc-enf-action-add/types/fines-acc-enf-action-add-field-type.type';
@@ -28,8 +28,11 @@ export function buildEnforcementActionAddPayload(
   fields: IFinesAccEnfActionAddFormField[],
   formState: IFinesAccEnfActionAddFormState,
   postedDate = dateService.toFormat(dateService.getDateNow(), "yyyy-MM-dd'T'HH:mm:ss"),
+  preserveParameterNames = false,
 ): IOpalFinesAddEnforcementActionPayload {
-  const enforcementResultResponses = fields.flatMap((field) => buildFieldResponses(field, formState));
+  const enforcementResultResponses = fields.flatMap((field) =>
+    buildFieldResponses(field, formState, preserveParameterNames),
+  );
   const paymentTerms = canAddPaymentTerms(result) ? buildPaymentTerms(formState, postedDate) : undefined;
 
   return {
@@ -48,11 +51,17 @@ function canAddPaymentTerms(result: IOpalFinesResultRefData): boolean {
 
 /**
  * Builds result response entries from dynamic form fields and Welsh companion fields.
+ * @param field The form field to build responses for.
+ * @param formState The current state of the form.
+ * @param preserveParameterNames Whether to preserve the original parameter names.
+ * @returns An array of result response entries for the API payload.
  */
 function buildFieldResponses(
   field: IFinesAccEnfActionAddFormField,
   formState: IFinesAccEnfActionAddFormState,
+  preserveParameterNames: boolean,
 ): { parameter_name: string; response: string }[] {
+  const parameterName = preserveParameterNames ? field.parameterName : toSnakeCaseParameterName(field.parameterName);
   const response =
     field.type === FIELD_TYPES.menuCheckbox
       ? getCheckboxResponseValue(field, formState)
@@ -60,7 +69,7 @@ function buildFieldResponses(
   const responses = response
     ? [
         {
-          parameter_name: toSnakeCaseParameterName(field.parameterName),
+          parameter_name: parameterName,
           response,
         },
       ]
@@ -69,7 +78,6 @@ function buildFieldResponses(
   if (field.welshControlName) {
     const welshResponse = getResponseValue(formState[field.welshControlName], field.type);
     if (welshResponse) {
-      const parameterName = toSnakeCaseParameterName(field.parameterName);
       responses.push({
         parameter_name: `${parameterName}_cy`,
         response: welshResponse,
@@ -81,7 +89,7 @@ function buildFieldResponses(
 }
 
 /**
- * Normalises API result parameter names to the snake_case names expected by the add-enforcement-action endpoint.
+ * Preserves the legacy parameter naming when release-1b-1-1 is disabled.
  */
 function toSnakeCaseParameterName(parameterName: string): string {
   const trimmedName = parameterName.trim();

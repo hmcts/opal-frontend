@@ -31,12 +31,12 @@ import {
   createDraftAndSetStatus,
   simulateStaleIfMatchConflict,
   updateLastCreatedDraftAccountStatus,
+  type CreateDraftAndSetStatusOptions,
 } from '../../../e2e/functional/opal/actions/draft-account/draft-account.api';
 import {
   CreateManageDraftsActions,
   CreateManageTab,
 } from '../../../e2e/functional/opal/actions/draft-account/create-manage-drafts.actions';
-import { DraftTabsActions, InputterTab, CheckerTab } from '../../../e2e/functional/opal/actions/draft-tabs.actions';
 import {
   CheckAndValidateDraftsActions,
   CheckAndValidateTab,
@@ -76,7 +76,6 @@ const checker = () => new CheckAndValidateDraftsActions();
 const checkerReview = () => new CheckAndValidateReviewActions();
 const intercepts = () => new DraftAccountsInterceptActions();
 const draftsFlow = () => new DraftAccountsFlow();
-const tabs = () => new DraftTabsActions();
 const primaryNavigation = () => new PrimaryNavigationActions();
 const withUniq = (value: string) => applyUniqPlaceholder(value ?? '');
 
@@ -194,6 +193,7 @@ function withSignedInUser<T>(action: (existingUser: string) => Cypress.Chainable
  * @param status - The target status after creation (defaults to the publishing-pending status).
  * @param switchToUser - User to perform the status update (for logging/evidence).
  * @param returnToUser - User to return to after status update (for logging/evidence).
+ * @param options - Additional setup controls passed to the draft API helper.
  * @returns Cypress.Chainable
  *
  * @remarks
@@ -206,6 +206,7 @@ function createDraftAndPrepareForPublishing(
   status: string = DEFAULT_DRAFT_STATUS,
   switchToUser: string = DEFAULT_PUBLISHING_USER,
   returnToUser: string = '',
+  options: CreateDraftAndSetStatusOptions = {},
 ) {
   log(
     'step',
@@ -219,7 +220,7 @@ function createDraftAndPrepareForPublishing(
     },
   );
 
-  return createDraftAndSetStatus(accountType, status, overrides, switchToUser, returnToUser);
+  return createDraftAndSetStatus(accountType, status, overrides, switchToUser, returnToUser, options);
 }
 
 /**
@@ -227,15 +228,24 @@ function createDraftAndPrepareForPublishing(
  * @param accountType - Draft payload type to create.
  * @param overrides - Nested override object merged into the draft fixture.
  * @param publishingUser - User who should approve/publish the seeded account.
+ * @param options - Additional setup controls passed to the draft API helper.
  * @returns Cypress.Chainable
  */
 function createPublishedDraftAccount(
   accountType: AccountType,
   overrides: Record<string, unknown>,
   publishingUser: string = DEFAULT_PUBLISHING_USER,
+  options: CreateDraftAndSetStatusOptions = {},
 ): Cypress.Chainable<void> {
   return withSignedInUser((existingUser: string) =>
-    createDraftAndPrepareForPublishing(accountType, overrides, DEFAULT_DRAFT_STATUS, publishingUser, existingUser),
+    createDraftAndPrepareForPublishing(
+      accountType,
+      overrides,
+      DEFAULT_DRAFT_STATUS,
+      publishingUser,
+      existingUser,
+      options,
+    ),
   );
 }
 
@@ -345,6 +355,26 @@ Given('a {string} draft account exists with:', (accountType: AccountType, table:
  *     | date of birth             | 2001-05-15           |
  */
 Given('a published adult or youth defendant account exists:', (table: DataTable) => {
+  return seedPublishedAdultOrYouthDefendantAccount(table);
+});
+
+Given(
+  'a published adult or youth defendant account exists without waiting for search indexing:',
+  (table: DataTable) => {
+    return seedPublishedAdultOrYouthDefendantAccount(table, { waitForSearchIndex: false });
+  },
+);
+
+/**
+ * Seeds an adult/youth defendant account using the shared published-account builder.
+ * @param table - Source Gherkin table containing account seed values.
+ * @param options - Additional setup controls passed to the draft API helper.
+ * @returns Cypress.Chainable
+ */
+function seedPublishedAdultOrYouthDefendantAccount(
+  table: DataTable,
+  options: CreateDraftAndSetStatusOptions = {},
+): Cypress.Chainable<void> {
   const values = parseSeedValues(table);
 
   const prosecutorCaseReference = values['prosecutor case reference'] ?? values['pcr'];
@@ -384,8 +414,8 @@ Given('a published adult or youth defendant account exists:', (table: DataTable)
     publishingUser,
   });
 
-  return createPublishedDraftAccount('adultOrYouthOnly', overrides, publishingUser);
-});
+  return createPublishedDraftAccount('adultOrYouthOnly', overrides, publishingUser, options);
+}
 
 /**
  * @step Creates a published non-vehicle fixed penalty account.
@@ -398,6 +428,7 @@ Given('a published adult or youth defendant account exists:', (table: DataTable)
  * - first name / first names
  * - last name
  * - ticket number
+ * - fp registration number / fp_registration_number
  * - issuing authority
  * - time of offence
  * - place of offence
@@ -419,6 +450,7 @@ Given('a published non-vehicle fixed penalty account exists:', (table: DataTable
   const firstNames = values['first name'] ?? values['first names'];
   const lastName = values['last name'];
   const ticketNumber = values['ticket number'];
+  const fpRegistrationNumber = values['fp registration number'] ?? values['fp_registration_number'] ?? null;
   const issuingAuthority = values['issuing authority'] ?? DEFAULT_FIXED_PENALTY_ISSUING_AUTHORITY;
   const timeOfOffence = values['time of offence'] ?? '14:30';
   const placeOfOffence = values['place of offence'];
@@ -436,6 +468,7 @@ Given('a published non-vehicle fixed penalty account exists:', (table: DataTable
     businessUnitId,
     issuingAuthority,
     ticketNumber,
+    fpRegistrationNumber,
     title,
     firstNames,
     lastName,
@@ -600,7 +633,6 @@ Given('a published Welsh-speaking parent or guardian account exists:', (table: D
   const overrides = {
     business_unit_id: businessUnitId,
     account: {
-      originator_name: "North East Wales Magistrates' Court",
       prosecutor_case_reference: prosecutorCaseReference,
       collection_order_made: false,
       collection_order_made_today: false,
@@ -1044,15 +1076,6 @@ When('I view the draft account details for defendant {string}', (defendantName: 
 });
 
 /**
- * @step Open a draft account by account number (Approved tab).
- * @param accountNumber - Visible account number in the Account column.
- */
-When('I open the draft account number {string}', (accountNumber: string) => {
-  log('navigate', 'Opening draft account by account number', { accountNumber });
-  inputter().openAccountNumber(accountNumber);
-});
-
-/**
  * @step Follow the View all rejected accounts link.
  */
 When('I view all rejected draft accounts', () => {
@@ -1125,20 +1148,6 @@ Then('the manual draft table headings are:', (table: DataTable) => {
 });
 
 /**
- * @step Assert a row contains expected values in order.
- * @param position - 1-based row index.
- * @param table - Single-column table of expected cell text.
- */
-Then('the manual draft table row {int} contains:', (position: number, table: DataTable) => {
-  const expectedValues = table
-    .rows()
-    .map(([value]) => withUniq(value.trim()))
-    .filter(Boolean);
-  log('assert', 'Draft table row values', { position, expectedValues });
-  inputter().assertRowValues(position, expectedValues);
-});
-
-/**
  * @step Assert a row contains specific column/value pairs (unordered).
  * @param position - 1-based row index.
  * @param table - Two-column table: Column | Value.
@@ -1176,20 +1185,6 @@ Then(
 );
 
 /**
- * @step Assert that a column contains the provided text.
- * @param column - Column label (e.g., "Defendant", "Account type").
- * @param expectedText - Text to search for within the column cells.
- */
-Then('I see {string} in the manual draft column {string}', (expectedText: string, column: string) => {
-  const normalized = withUniq(expectedText);
-  log('assert', 'Draft table column contains text', { column, expectedText: normalized });
-  inputter().assertColumnContains(
-    column as Parameters<CreateManageDraftsActions['assertColumnContains']>[0],
-    normalized,
-  );
-});
-
-/**
  * @step Assert that the draft accounts table contains text in a column (checker view).
  * @param expectedText - Text to search for.
  * @param column - Column label.
@@ -1220,23 +1215,3 @@ When(
     );
   },
 );
-
-/**
- * @step Switches to the specified inputter draft tab.
- * @description Clicks the tab by name within the inputter draft accounts view.
- * @param tab - Tab name (e.g., "In review").
- */
-When('I view the inputter draft tab {string}', (tab: InputterTab) => {
-  log('navigate', 'Switching inputter tab', { tab });
-  tabs().switchInputterTab(tab);
-});
-
-/**
- * @step Switches to the specified checker draft tab.
- * @description Clicks the tab by name within the checker draft accounts view.
- * @param tab - Tab name (e.g., "To review").
- */
-When('I view the checker draft tab {string}', (tab: CheckerTab) => {
-  log('navigate', 'Switching checker tab', { tab });
-  tabs().switchCheckerTab(tab);
-});

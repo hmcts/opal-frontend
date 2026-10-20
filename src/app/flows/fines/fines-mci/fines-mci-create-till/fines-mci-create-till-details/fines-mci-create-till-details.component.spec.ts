@@ -39,14 +39,17 @@ describe('FinesMciCreateTillDetailsComponent', () => {
     expect(deleteTillLink?.textContent?.trim()).toBe('Delete till');
   });
 
-  it('should clear the journey and navigate back to Manual Cash Input', () => {
+  it('should navigate back to select business unit and preserve the selected business unit', () => {
     const navigateSpy = vi.spyOn(router, 'navigate').mockResolvedValue(true);
     const store = TestBed.inject(FinesMciStore);
+    const selectedBusinessUnit = store.businessUnit();
 
     fixture.debugElement.query(By.css('opal-lib-govuk-back-link')).triggerEventHandler('clickEvent');
 
-    expect(store.businessUnit()).toBeNull();
-    expect(navigateSpy).toHaveBeenCalledWith(['/', 'fines', 'manual-cash-input', 'create-allocate']);
+    expect(store.businessUnit()).toEqual(selectedBusinessUnit);
+    expect(navigateSpy).toHaveBeenCalledWith(['/', 'fines', 'manual-cash-input', 'create', 'till', 'select-bu'], {
+      state: { preserveBusinessUnit: true },
+    });
   });
 
   it('should navigate to payment category when Add payment is selected', () => {
@@ -54,7 +57,10 @@ describe('FinesMciCreateTillDetailsComponent', () => {
 
     fixture.debugElement.query(By.css('opal-lib-govuk-button')).triggerEventHandler('buttonClickEvent');
 
-    expect(navigateSpy).toHaveBeenCalledWith(['/', 'fines', 'manual-cash-input', 'create/till/payment-category']);
+    expect(navigateSpy).toHaveBeenCalledWith(
+      ['/', 'fines', 'manual-cash-input', 'create', 'till', 'payment-category'],
+      undefined,
+    );
   });
 
   it('should navigate to cancel till creation when Delete till is selected', () => {
@@ -62,6 +68,9 @@ describe('FinesMciCreateTillDetailsComponent', () => {
 
     fixture.debugElement.query(By.css('#fines-mci-delete-till')).triggerEventHandler('click', new Event('click'));
 
-    expect(navigateSpy).toHaveBeenCalledWith(['/', 'fines', 'manual-cash-input', 'create/till/cancel']);
+    expect(navigateSpy).toHaveBeenCalledWith(
+      ['/', 'fines', 'manual-cash-input', 'create', 'till', 'cancel'],
+      undefined,
+    );
   });
 });

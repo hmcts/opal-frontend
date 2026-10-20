@@ -226,7 +226,7 @@ describe(
 
     it(
       'AC2, AC2a, AC2b, AC2c. Yes - remove should clear the override, return to Enforcement and show a success banner',
-      { tags: ['@JIRA-TEST-KEY:PO-4463', '@R1B'] },
+      { tags: ['@JIRA-TEST-KEY:PO-4463', '@R1B', '@JIRA-NFR:PO-2505', '@JIRA-NFR:PO-2506'] },
       () => {
         const { accountId } = individualSetup();
         const updatedEnforcementMock = buildRemovedEnforcementOverrideMock();

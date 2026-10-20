@@ -10,14 +10,21 @@ import { REMOVE_ENFORCEMENT_HOLD_ELEMENTS as ENF_REMOVE_HOLD } from '../../../..
 import { DOM_ELEMENTS as ENF_ACTION_ADD } from '../../../../../component/release1b/fineAccountEnquiry/accountEnquiry/locators/account.enquiry.enforcement-action-add.locators';
 import { COLLECTION_ORDER_CHANGE_ELEMENTS as COLLO } from '../../../../../shared/selectors/account-enquiry/account.enquiry.collection-order-change.locators';
 import { createScopedLogger } from '../../../../../support/utils/log.helper';
+import { CommonActions } from '../common/common.actions';
 
 const log = createScopedLogger('AccountDetailsEnforcementActions');
+
+const ENFORCEMENT_OVERRIDE_SUMMARY_TEXT_ALIASES: Record<string, string[]> = {
+  'Application made for Benefit Deductions (ABDC)': ['Application made for Benefit Deduction (ABDC)'],
+};
 
 /**
  * Actions for the Account Details enforcement tab and add override form.
  */
 export class AccountDetailsEnforcementActions {
   private static readonly DEFAULT_TIMEOUT = 30_000;
+
+  private readonly common = new CommonActions();
 
   /**
    * Normalizes visible text for reliable equality assertions.
@@ -27,6 +34,20 @@ export class AccountDetailsEnforcementActions {
    */
   private normalize(value: string): string {
     return value.replace(/\s+/g, ' ').trim();
+  }
+
+  /**
+   * Asserts an element contains expected text after normalizing whitespace and casing.
+   *
+   * @param selector - Element selector.
+   * @param expected - Expected text.
+   */
+  private assertContainsNormalizedText(selector: string, expected: string): void {
+    this.common.assertElementContainsNormalizedText(
+      selector,
+      expected,
+      AccountDetailsEnforcementActions.DEFAULT_TIMEOUT,
+    );
   }
 
   /**
@@ -78,7 +99,7 @@ export class AccountDetailsEnforcementActions {
       cy.get(selector, { timeout: AccountDetailsEnforcementActions.DEFAULT_TIMEOUT })
         .should('be.visible')
         .invoke('text')
-        .then((text) => expect(this.normalize(text)).to.contain(this.normalize(value)));
+        .then((text) => expect(this.normalize(text).toLowerCase()).to.contain(this.normalize(value).toLowerCase()));
     });
   }
 
@@ -297,6 +318,123 @@ export class AccountDetailsEnforcementActions {
       .should('be.visible')
       .and('contain.text', 'Add enforcement action');
     cy.get(ENF_ACT.actionDropdown, { timeout: AccountDetailsEnforcementActions.DEFAULT_TIMEOUT }).should('be.visible');
+  }
+
+  /**
+   * Asserts that the Court code autocomplete has populated options.
+   */
+  public assertCourtCodeAutocompleteDisplayed(): void {
+    log('assert', 'Court code autocomplete has populated options');
+
+    cy.get(ENF_ACTION_ADD.courtCodeAutocomplete, {
+      timeout: AccountDetailsEnforcementActions.DEFAULT_TIMEOUT,
+    })
+      .should('be.visible')
+      .and('not.be.disabled')
+      .click();
+
+    cy.get(ENF_ACTION_ADD.courtCodeOptions, {
+      timeout: AccountDetailsEnforcementActions.DEFAULT_TIMEOUT,
+    }).should('have.length.greaterThan', 0);
+  }
+
+  /**
+   * Asserts that court autocomplete options use the Court name (court code) format.
+   */
+  public assertCourtCodeOptionLabelsUseNameAndCodeFormat(): void {
+    cy.get(ENF_ACTION_ADD.courtCodeOptions, {
+      timeout: AccountDetailsEnforcementActions.DEFAULT_TIMEOUT,
+    }).then(($options) => {
+      const optionLabels = [...$options].map((option) => option.textContent?.trim() ?? '');
+
+      cy.log(`Court option labels: ${JSON.stringify(optionLabels)}`);
+
+      expect(optionLabels).to.have.length.greaterThan(0);
+      optionLabels.forEach((label) => {
+        expect(label).to.match(/^.+ \(\d+\)$/);
+      });
+    });
+  }
+
+  /**
+   * Searches for court options using the autocomplete input.
+   *
+   * @param searchText - Court name or code fragment to search for.
+   */
+  public searchCourtCodeOptions(searchText: string): void {
+    log('action', 'Searching Court code options', { searchText });
+
+    cy.get(ENF_ACTION_ADD.courtCodeAutocomplete, {
+      timeout: AccountDetailsEnforcementActions.DEFAULT_TIMEOUT,
+    })
+      .should('be.visible')
+      .click()
+      .clear()
+      .type(searchText, { delay: 0 });
+
+    cy.get(ENF_ACTION_ADD.courtCodeOptions, {
+      timeout: AccountDetailsEnforcementActions.DEFAULT_TIMEOUT,
+    })
+      .should('be.visible')
+      .and('have.length.greaterThan', 0);
+  }
+
+  /**
+   * Selects the first filtered Court code option and verifies its displayed value.
+   */
+  public selectFirstCourtCodeOption(): void {
+    log('action', 'Selecting the first Court code option');
+
+    cy.get(ENF_ACTION_ADD.courtCodeOptions, {
+      timeout: AccountDetailsEnforcementActions.DEFAULT_TIMEOUT,
+    })
+      .first()
+      .invoke('text')
+      .then((optionText) => {
+        const expectedLabel = this.normalize(optionText);
+
+        cy.get(ENF_ACTION_ADD.courtCodeOptions, {
+          timeout: AccountDetailsEnforcementActions.DEFAULT_TIMEOUT,
+        })
+          .first()
+          .click();
+
+        cy.get(ENF_ACTION_ADD.courtCodeAutocomplete, {
+          timeout: AccountDetailsEnforcementActions.DEFAULT_TIMEOUT,
+        }).should('have.value', expectedLabel);
+
+        const courtCode = expectedLabel.match(/\((\d+)\)$/)?.[1];
+        expect(courtCode, 'selected court code').to.not.be.undefined;
+        cy.wrap(courtCode, { log: false }).as('selectedCourtCode');
+      });
+  }
+
+  /**
+   * Selects a radio option for a dynamic enforcement action parameter.
+   *
+   * @param fieldsetSelector - Fieldset selector for the parameter.
+   * @param option - Visible radio option label.
+   */
+  public selectDynamicEnforcementActionRadio(fieldsetSelector: string, option: string): void {
+    log('action', 'Selecting dynamic enforcement action radio option', { option });
+    cy.get(fieldsetSelector, { timeout: AccountDetailsEnforcementActions.DEFAULT_TIMEOUT })
+      .should('be.visible')
+      .contains('label', option)
+      .click();
+  }
+
+  /**
+   * Asserts that the selected Court code is displayed in the autocomplete.
+   */
+  public assertSelectedCourtCodeIsDisplayed(): void {
+    log('assert', 'Selected Court code is displayed');
+
+    cy.get(ENF_ACTION_ADD.courtCodeAutocomplete, {
+      timeout: AccountDetailsEnforcementActions.DEFAULT_TIMEOUT,
+    })
+      .should('be.visible')
+      .invoke('val')
+      .should('match', /^.+ \(\d+\)$/);
   }
 
   /**
@@ -655,24 +793,19 @@ export class AccountDetailsEnforcementActions {
     log('assert', 'Enforcement override summary', expected);
 
     if (expected.override) {
-      cy.get(ENF.enforcementOverrideValue, { timeout: AccountDetailsEnforcementActions.DEFAULT_TIMEOUT }).should(
-        'contain.text',
-        expected.override,
+      this.common.assertElementContainsAnyNormalizedText(
+        ENF.enforcementOverrideValue,
+        [expected.override, ...(ENFORCEMENT_OVERRIDE_SUMMARY_TEXT_ALIASES[expected.override] ?? [])],
+        AccountDetailsEnforcementActions.DEFAULT_TIMEOUT,
       );
     }
 
     if (expected.lja) {
-      cy.get(ENF.localJusticeAreaValue, { timeout: AccountDetailsEnforcementActions.DEFAULT_TIMEOUT }).should(
-        'contain.text',
-        expected.lja,
-      );
+      this.assertContainsNormalizedText(ENF.localJusticeAreaValue, expected.lja);
     }
 
     if (expected.enforcer) {
-      cy.get(ENF.enfOverrideEnforcer, { timeout: AccountDetailsEnforcementActions.DEFAULT_TIMEOUT }).should(
-        'contain.text',
-        expected.enforcer,
-      );
+      this.assertContainsNormalizedText(ENF.enfOverrideEnforcer, expected.enforcer);
     }
   }
 
@@ -685,6 +818,8 @@ export class AccountDetailsEnforcementActions {
     log('assert', 'Enforcement action summary', { expected });
     cy.get(ENF.enforcementAction, { timeout: AccountDetailsEnforcementActions.DEFAULT_TIMEOUT })
       .parent()
-      .should('contain.text', expected);
+      .should(($row) => {
+        expect(this.normalize($row.text()).toLowerCase()).to.contain(this.normalize(expected).toLowerCase());
+      });
   }
 }

@@ -21,15 +21,13 @@ Feature: Company Account Enquiries Amend Payment Terms
         | account.collection_order_made_today             | false                   |
         | account.payment_card_request                    | false                   |
         | account.offences.0.impositions.0.amount_imposed | 250                     |
-        | account.offences.0.impositions.0.amount_paid    | 300                     |
+        | account.offences.0.impositions.0.amount_paid    | 100                     |
         | account.payment_terms.payment_terms_type_code   | B                       |
         | account.payment_terms.effective_date            | 2025-05-30              |
 
-    @JIRA-EPIC:PO-977 @R1BDrop1 @JIRA-STORY:PO-1640 @JIRA-TEST-KEY:PO-5305
+    @JIRA-EPIC:PO-977 @R1BDrop1 @JIRA-STORY:PO-1640 @JIRA-TEST-KEY:PO-5305 @JIRA-NFR:PO-2324 @JIRA-DEFECT:PO-9151
     Scenario: Company save payment terms changes and return to Payment terms tab
-      When I open the company account details for "Amend Co{uniq}"
-      And I go to the Payment terms tab
-      And I open the amend payment terms form
+      When the amend payment terms form is displayed for company account "Amend Co{uniq}"
       And I submit instalments only payment terms with a payment card request
       Then I should return to the Payment terms tab
       And the payment terms summary shows instalments:
@@ -41,9 +39,7 @@ Feature: Company Account Enquiries Amend Payment Terms
 
     @JIRA-EPIC:PO-977 @R1BDrop1 @JIRA-STORY:PO-1640 @JIRA-TEST-KEY:PO-5306
     Scenario: Company cancel payment terms amendments returns to Payment terms tab
-      When I open the company account details for "Amend Co{uniq}"
-      And I go to the Payment terms tab
-      And I open the amend payment terms form
+      When the amend payment terms form is displayed for company account "Amend Co{uniq}"
       And I cancel payment terms amendments
       Then I should return to the Payment terms tab
       And the payment terms pay by date is "30 May 2025"

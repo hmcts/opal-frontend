@@ -8,6 +8,7 @@ import { fetchBusinessUnitsResolver } from '@app/flows/fines/routing/resolvers/f
 import { routing } from './fines-mci.routes';
 import { FINES_MCI_ROUTING_PATHS } from './constants/fines-mci-routing-paths.constant';
 import { FINES_MCI_ROUTING_TITLES } from './constants/fines-mci-routing-titles.constant';
+import { finesMciFlowStateGuard } from './guards/fines-mci-flow-state.guard';
 
 describe('finesMci routes', () => {
   const createTillRoute = routing
@@ -42,11 +43,17 @@ describe('finesMci routes', () => {
   });
 
   it('should expose a guarded create till select business unit placeholder route', () => {
-    const createTillSelectBusinessUnitRoute = createTillRoute?.children?.find((route) => route.path === 'select-bu');
+    const createRoute = routing.find((route) => route.path === FINES_MCI_ROUTING_PATHS.children.create);
+    const createTillRoute = createRoute?.children?.find(
+      (route) => route.path === FINES_MCI_ROUTING_PATHS.children.till,
+    );
+    const createTillSelectBusinessUnitRoute = createTillRoute?.children?.find(
+      (route) => route.path === FINES_MCI_ROUTING_PATHS.children.selectBusinessUnit,
+    );
 
     expect(createTillSelectBusinessUnitRoute).toEqual(
       expect.objectContaining({
-        path: 'select-bu',
+        path: FINES_MCI_ROUTING_PATHS.children.selectBusinessUnit,
         canActivate: [authGuard, routePermissionsGuard],
         data: {
           permission: 'PROCESS_AND_ALLOCATE_PAYMENTS',
@@ -67,16 +74,16 @@ describe('finesMci routes', () => {
   });
 
   it.each([
-    ['details', FINES_MCI_ROUTING_TITLES.children.createTillDetails],
-    ['payment-category', FINES_MCI_ROUTING_TITLES.children.createTillPaymentCategory],
-    ['cancel', FINES_MCI_ROUTING_TITLES.children.createTillCancel],
+    [FINES_MCI_ROUTING_PATHS.children.details, FINES_MCI_ROUTING_TITLES.children.createTillDetails],
+    [FINES_MCI_ROUTING_PATHS.children.paymentCategory, FINES_MCI_ROUTING_TITLES.children.createTillPaymentCategory],
+    [FINES_MCI_ROUTING_PATHS.children.cancel, FINES_MCI_ROUTING_TITLES.children.createTillCancel],
   ])('should expose the guarded create till %s route', (path, title) => {
     const childRoute = createTillRoute?.children?.find((route) => route.path === path);
 
     expect(childRoute).toEqual(
       expect.objectContaining({
         path,
-        canActivate: [authGuard, routePermissionsGuard],
+        canActivate: [authGuard, routePermissionsGuard, finesMciFlowStateGuard],
         data: expect.objectContaining({
           permission: 'PROCESS_AND_ALLOCATE_PAYMENTS',
           routePermissionId: [FINES_PERMISSIONS['process-and-allocate-payments']],

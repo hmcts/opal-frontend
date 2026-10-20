@@ -11,3 +11,12 @@ Feature: Automatic Cash Input - Processing Accessibility
     And I open Automatic Cash Input Select Business Units
     And I select business units and continue to Processing
     Then I check the page for accessibility
+
+  @JIRA-STORY:PO-2586
+  Scenario: AC8 - Confirm before processing screen accessibility
+    When I select the Fines primary navigation item "Finance"
+    And I am taken to the "Finance" Fines landing page
+    And I open Automatic Cash Input Select Business Units
+    And I select business units and continue to Processing
+    And I select a Process file and open Confirm before processing
+    Then I check the page for accessibility

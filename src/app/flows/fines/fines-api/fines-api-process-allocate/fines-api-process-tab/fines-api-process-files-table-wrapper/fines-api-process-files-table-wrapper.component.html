@@ -15,7 +15,7 @@
     </ng-container>
 
     <ng-container head>
-      <th class="govuk-table__header" scope="col" id="fines-api-process-files-select-all">
+      <th class="govuk-table__header govuk-!-padding-0" scope="col" id="fines-api-process-files-select-all">
         <span class="govuk-visually-hidden">{{ content.selectColumn }}</span>
         @if (fullTableDataComputed().length > 0) {
           <div class="govuk-form-group">
@@ -39,7 +39,7 @@
                   inputId="fines-api-process-files-select-all-checkbox"
                   inputName="fines-api-process-files-select-all-checkbox"
                   labelText=""
-                  labelClasses="govuk-!-padding-0"
+                  labelClasses="govuk-!-margin-0 govuk-!-display-inline"
                   [ariaLabel]="content.selectAll"
                   [selectAllIndeterminate]="someRowsSelected()"
                   (toggleAll)="onToggleAll($event)"
@@ -55,6 +55,7 @@
         [sortDirection]="sortStateSignal()[content.columns.fileName]"
         (sortChange)="onSortChange($event)"
         [dataIndex]="0"
+        class="govuk-!-padding-top-2 govuk-!-padding-bottom-0"
       >
         {{ content.columns.fileName }}
       </th>
@@ -64,6 +65,7 @@
         [sortDirection]="sortStateSignal()[content.columns.source]"
         (sortChange)="onSortChange($event)"
         [dataIndex]="1"
+        class="govuk-!-padding-top-2 govuk-!-padding-bottom-0"
       >
         {{ content.columns.source }}
       </th>
@@ -73,6 +75,7 @@
         [sortDirection]="sortStateSignal()[content.columns.businessUnit]"
         (sortChange)="onSortChange($event)"
         [dataIndex]="2"
+        class="govuk-!-padding-top-2 govuk-!-padding-bottom-0"
       >
         {{ content.columns.businessUnit }}
       </th>
@@ -82,6 +85,7 @@
         [sortDirection]="sortStateSignal()[content.columns.dateUploaded]"
         (sortChange)="onSortChange($event)"
         [dataIndex]="3"
+        class="govuk-!-padding-top-2 govuk-!-padding-bottom-0"
       >
         {{ content.columns.dateUploaded }}
       </th>
@@ -93,12 +97,18 @@
           opal-lib-moj-sortable-table-row
           [bodyRowClasses]="isRowSelected(row, rowIndex) ? 'govuk-table__row--selected' : ''"
         >
-          <td #paginationFocusTarget opal-lib-moj-sortable-table-row-data [id]="getRowDomId(row) + '-cell'">
+          <td
+            #paginationFocusTarget
+            opal-lib-moj-sortable-table-row-data
+            [id]="getRowDomId(row) + '-cell'"
+            class="govuk-!-padding-top-1 govuk-!-padding-bottom-0"
+          >
             <opal-lib-govuk-checkboxes
               [fieldSetId]="getRowDomId(row) + '-group'"
               checkboxClasses=""
               [legendText]="content.selectFile(row[content.columns.fileName])"
-              legendClasses="govuk-!-margin-0 govuk-visually-hidden"
+              legendClasses="govuk-visually-hidden"
+              labelClasses="govuk-!-padding-0"
             >
               <div
                 class="govuk-checkboxes--small"
@@ -115,16 +125,24 @@
               ></div>
             </opal-lib-govuk-checkboxes>
           </td>
-          <td opal-lib-moj-sortable-table-row-data [id]="getRowDomId(row) + '-name'">
+          <td opal-lib-moj-sortable-table-row-data [id]="getRowDomId(row) + '-name'" class="govuk-!-padding-top-3">
             {{ row[content.columns.fileName] }}
           </td>
-          <td opal-lib-moj-sortable-table-row-data [id]="getRowDomId(row) + '-source'">
+          <td opal-lib-moj-sortable-table-row-data [id]="getRowDomId(row) + '-source'" class="govuk-!-padding-top-3">
             {{ row[content.columns.source] }}
           </td>
-          <td opal-lib-moj-sortable-table-row-data [id]="getRowDomId(row) + '-business-unit'">
+          <td
+            opal-lib-moj-sortable-table-row-data
+            [id]="getRowDomId(row) + '-business-unit'"
+            class="govuk-!-padding-top-3"
+          >
             {{ row[content.columns.businessUnit] }}
           </td>
-          <td opal-lib-moj-sortable-table-row-data [id]="getRowDomId(row) + '-date-uploaded'">
+          <td
+            opal-lib-moj-sortable-table-row-data
+            [id]="getRowDomId(row) + '-date-uploaded'"
+            class="govuk-!-padding-top-3"
+          >
             {{ row.dateUploadedDisplay }}
           </td>
         </tr>

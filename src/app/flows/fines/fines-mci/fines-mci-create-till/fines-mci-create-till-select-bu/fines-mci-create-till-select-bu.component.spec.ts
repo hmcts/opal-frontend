@@ -41,6 +41,20 @@ describe('FinesMciCreateTillSelectBuComponent', () => {
     expect(component).toBeTruthy();
   });
 
+  it('should use empty business unit data when the route has no resolved data', async () => {
+    TestBed.resetTestingModule();
+    await TestBed.configureTestingModule({
+      imports: [FinesMciCreateTillSelectBuComponent],
+      providers: [provideRouter([]), { provide: ActivatedRoute, useValue: { snapshot: { data: {} } } }],
+    }).compileComponents();
+
+    fixture = TestBed.createComponent(FinesMciCreateTillSelectBuComponent);
+    fixture.detectChanges();
+
+    expect(fixture.nativeElement.textContent).toContain('Create till');
+    expect(fixture.nativeElement.querySelector('opal-lib-alphagov-accessible-autocomplete')).toBeTruthy();
+  });
+
   it('should render a create till business unit autocomplete page', () => {
     const nativeElement = fixture.nativeElement as HTMLElement;
     const text = nativeElement.textContent;
@@ -68,7 +82,7 @@ describe('FinesMciCreateTillSelectBuComponent', () => {
     component.handleSubmit();
 
     expect(finesMciStore.businessUnit()).toEqual(OPAL_FINES_BUSINESS_UNIT_REF_DATA_MOCK.refData[0]);
-    expect(navigateSpy).toHaveBeenCalledWith(['/', 'fines', 'manual-cash-input', 'create/till/details']);
+    expect(navigateSpy).toHaveBeenCalledWith(['/', 'fines', 'manual-cash-input', 'create', 'till', 'details']);
   });
 
   it('should not continue without a valid business unit', () => {
@@ -115,5 +129,97 @@ describe('FinesMciCreateTillSelectBuComponent', () => {
     expect(text).toContain('Historical Debt');
     expect(text).not.toContain('The till will be created in Historical Debt');
     expect(nativeElement.querySelector('opal-lib-alphagov-accessible-autocomplete')).toBeFalsy();
+  });
+
+  it('should retain a previously selected business unit as the initial value', () => {
+    const businessUnit = OPAL_FINES_BUSINESS_UNIT_REF_DATA_MOCK.refData[0];
+    finesMciStore.setBusinessUnit(businessUnit);
+
+    component['setInitialBusinessUnit']();
+
+    expect(component['form'].controls.fmci_create_till_business_unit_id.value).toBe(businessUnit.business_unit_id);
+  });
+
+  it('should clear a previous journey selection on fresh entry', () => {
+    const businessUnit = OPAL_FINES_BUSINESS_UNIT_REF_DATA_MOCK.refData[0];
+    finesMciStore.setBusinessUnit(businessUnit);
+    vi.spyOn(router, 'getCurrentNavigation').mockReturnValue(null);
+
+    fixture = TestBed.createComponent(FinesMciCreateTillSelectBuComponent);
+    component = fixture.componentInstance;
+
+    expect(finesMciStore.businessUnit()).toBeNull();
+    expect(component['form'].controls.fmci_create_till_business_unit_id.value).toBeNull();
+  });
+
+  it('should preserve the business unit when returning from till details', () => {
+    const businessUnit = OPAL_FINES_BUSINESS_UNIT_REF_DATA_MOCK.refData[0];
+    finesMciStore.setBusinessUnit(businessUnit);
+    vi.spyOn(router, 'getCurrentNavigation').mockReturnValue({
+      extras: { state: { preserveBusinessUnit: true } },
+    } as never);
+
+    fixture = TestBed.createComponent(FinesMciCreateTillSelectBuComponent);
+    component = fixture.componentInstance;
+
+    expect(finesMciStore.businessUnit()).toEqual(businessUnit);
+    expect(component['form'].controls.fmci_create_till_business_unit_id.value).toBe(businessUnit.business_unit_id);
+  });
+
+  it('should normalize a missing stored business unit ID to an empty form value', () => {
+    const originalRefData = component['businessUnitsRefData'].refData;
+    component['businessUnitsRefData'].refData = [
+      { ...OPAL_FINES_BUSINESS_UNIT_REF_DATA_MOCK.refData[0], business_unit_id: undefined as never },
+    ];
+    finesMciStore.setBusinessUnit({ business_unit_id: undefined } as never);
+
+    component['setInitialBusinessUnit']();
+
+    expect(component['form'].controls.fmci_create_till_business_unit_id.value).toBeNull();
+    finesMciStore.reset();
+    component['businessUnitsRefData'].refData = originalRefData;
+  });
+
+  it('should prevent deactivation after the user changes to a valid business unit', () => {
+    expect(component.canDeactivate()).toBe(true);
+
+    component['form'].controls.fmci_create_till_business_unit_id.setValue(61);
+    component['form'].controls.fmci_create_till_business_unit_id.markAsDirty();
+
+    expect(component.canDeactivate()).toBe(false);
+  });
+
+  it('should block deactivation and beforeunload when a business unit is selected', () => {
+    component['form'].controls.fmci_create_till_business_unit_id.setValue(61);
+    component['form'].controls.fmci_create_till_business_unit_id.markAsDirty();
+
+    expect(component.canDeactivate()).toBe(false);
+    expect(component.handleBeforeUnload()).toBe(false);
+  });
+
+  it('should allow beforeunload when no business unit is selected', () => {
+    expect(component.handleBeforeUnload()).toBe(true);
+  });
+
+  it('should run the beforeunload listener registered on the window', () => {
+    const event = new Event('beforeunload');
+
+    expect(window.dispatchEvent(event)).toBe(true);
+  });
+
+  it('should preserve the selection error when a subsequent selection is invalid', () => {
+    component.handleSubmit();
+    component['form'].controls.fmci_create_till_business_unit_id.setValue(999);
+
+    expect(component['businessUnitSelectionError']).toBe('Select business unit');
+  });
+
+  it('should focus a field referenced by the error summary', () => {
+    const focus = vi.fn();
+    vi.spyOn(document, 'getElementById').mockReturnValue({ focus } as unknown as HTMLElement);
+
+    component['scrollTo']('fmci_create_till_business_unit_id-autocomplete');
+
+    expect(focus).toHaveBeenCalled();
   });
 });

@@ -12,6 +12,7 @@ import { OPAL_FINES_LOCAL_JUSTICE_AREA_REF_DATA_MOCK } from '@services/fines/opa
 import { OPAL_FINES_COURT_REF_DATA_MOCK } from '@services/fines/opal-fines-service/mocks/opal-fines-court-ref-data.mock';
 import { OPAL_FINES_RESULTS_REF_DATA_MOCK } from '@services/fines/opal-fines-service/mocks/opal-fines-results-ref-data.mock';
 import { OPAL_FINES_MAJOR_CREDITOR_REF_DATA_MOCK } from '@services/fines/opal-fines-service/mocks/opal-fines-major-creditor-ref-data.mock';
+import { OPAL_FINES_PROSECUTOR_REF_DATA_MOCK } from '@services/fines/opal-fines-service/mocks/opal-fines-prosecutor-ref-data.mock';
 import { MOCK_FINES_DRAFT_STATE } from './mocks/mock_fines_draft_state';
 import { GlobalStore } from '@hmcts/opal-frontend-common/stores/global';
 import { ACCOUNT_SESSION_USER_STATE_MOCK } from './mocks/user_state_mock';
@@ -83,6 +84,7 @@ describe('FinesMacReviewAccountComponent - Rejected Account view', () => {
                 localJusticeAreas: OPAL_FINES_LOCAL_JUSTICE_AREA_REF_DATA_MOCK,
                 results: OPAL_FINES_RESULTS_REF_DATA_MOCK,
                 majorCreditors: OPAL_FINES_MAJOR_CREDITOR_REF_DATA_MOCK,
+                prosecutors: OPAL_FINES_PROSECUTOR_REF_DATA_MOCK,
               },
             },
             parent: {
@@ -123,10 +125,8 @@ describe('FinesMacReviewAccountComponent - Rejected Account view', () => {
         expect(request.url).to.include('/opal-fines-service/draft-accounts/123');
         expect(request.method).to.equal('PUT');
 
-        expect(request.body).to.have.property('draft_account_id', 123);
+        expect(request.body).to.have.all.keys('business_unit_id', 'account', 'account_type', 'account_status');
         expect(request.body).to.have.property('business_unit_id', 61);
-        expect(request.body).to.have.property('submitted_by', 'L017KG');
-        expect(request.body).to.have.property('submitted_by_name', 'Timmy Tester');
 
         //Checking a few of the values in the account object are correct
         expect(request.body).to.have.property('account');
@@ -166,15 +166,9 @@ describe('FinesMacReviewAccountComponent - Rejected Account view', () => {
         expect(request.method).to.equal('PUT');
 
         // AC4a
+        expect(request.body).to.have.all.keys('business_unit_id', 'account', 'account_type', 'account_status');
         expect(request.body).to.have.property('business_unit_id', 61);
 
-        // AC4b
-        expect(request.body).to.have.property('submitted_by', 'L017KG');
-
-        // AC4c
-        expect(request.body).to.have.property('submitted_by_name', 'Timmy Tester');
-
-        // AC4d
         expect(request.body).to.have.property('account');
         expect(request.body.account).to.have.property('account_type', FINES_ACCOUNT_TYPES['Fixed Penalty']);
         expect(request.body.account).to.have.property('defendant_type', 'adultOrYouthOnly');
@@ -189,9 +183,6 @@ describe('FinesMacReviewAccountComponent - Rejected Account view', () => {
 
         // AC4e - account_type = 'Fixed Penalty'
         expect(request.body).to.have.property('account_type', FINES_ACCOUNT_TYPES['Fixed Penalty']);
-
-        // AC4f - account_status_message = null
-        expect(request.body).to.have.property('account_status_message', null);
 
         // Account status should be 'Resubmitted' when resubmitting
         expect(request.body).to.have.property('account_status', 'Resubmitted');

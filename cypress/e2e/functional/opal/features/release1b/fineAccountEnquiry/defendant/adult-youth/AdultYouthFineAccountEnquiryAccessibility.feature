@@ -38,10 +38,9 @@ Feature: Adult Youth Fine Account Enquiry Accessibility
       | account.defendant.dob                           | 2002-05-15                    |
       | account.payment_terms.enforcements[0].result_id | PRIS                          |
 
-    When I search for the account by last name "EnfAccess{uniq}" and open the latest result
-    And I go to the Enforcement tab
+    When the Enforcement tab is displayed for defendant account with last name "EnfAccess{uniq}"
     Then I check the page for accessibility
-    And I open the change enforcement court form
+    And the change enforcement court form is displayed
     And I check the page for accessibility
 
   @R1BDrop1 @JIRA-STORY:PO-1850 @JIRA-EPIC:PO-2472 @JIRA-TEST-KEY:PO-5460
@@ -60,9 +59,7 @@ Feature: Adult Youth Fine Account Enquiry Accessibility
       | account.defendant.dob                           | 2002-05-15                            |
       | account.payment_terms.enforcements[0].result_id | PRIS                                  |
 
-    When I search for the account by last name "EnfOverrideAccess{uniq}" and open the latest result
-    And I go to the Enforcement tab
-    And I open the add enforcement override form
+    When the add enforcement override form is displayed for defendant account with last name "EnfOverrideAccess{uniq}"
     Then I check the page for accessibility
 
   @R1BDrop1 @JIRA-STORY:PO-1782 @JIRA-EPIC:PO-2472 @JIRA-TEST-KEY:PO-5464
@@ -81,9 +78,7 @@ Feature: Adult Youth Fine Account Enquiry Accessibility
       | account.defendant.dob                           | 2002-05-15                          |
       | account.payment_terms.enforcements[0].result_id | PRIS                                |
 
-    When I search for the account by last name "EnfActionAccess{uniq}" and open the latest result
-    And I go to the Enforcement tab
-    And I open the add enforcement action form
+    When the add enforcement action form is displayed for defendant account with last name "EnfActionAccess{uniq}"
     Then I check the page for accessibility
 
   @R1BDrop1 @JIRA-STORY:PO-1782 @JIRA-EPIC:PO-2630 @JIRA-TEST-KEY:PO-7555
@@ -102,10 +97,8 @@ Feature: Adult Youth Fine Account Enquiry Accessibility
       | account.defendant.dob                           | 2002-05-15                          |
       | account.payment_terms.enforcements[0].result_id | PRIS                                |
 
-    When I search for the account by last name "EnfActionAccess{uniq}" and open the latest result
-    And I go to the Enforcement tab
-    And I open the add enforcement action form
-    And I choose the enforcement action "Collection order (COLLO)"
+    When the add enforcement action form is displayed for defendant account with last name "EnfActionAccess{uniq}"
+    And the enforcement action is "Collection order (COLLO)"
     And I continue to the confirm enforcement action page
     Then I check the page for accessibility
 
@@ -125,9 +118,7 @@ Feature: Adult Youth Fine Account Enquiry Accessibility
       | account.defendant.dob                           | 2002-05-15                          |
       | account.payment_terms.enforcements[0].result_id | NOENF                               |
 
-    When I search for the account by last name "EnfRemoveAccess{uniq}" and open the latest result
-    And I go to the Enforcement tab
-    And I open the remove enforcement hold screen
+    When the remove enforcement hold screen is displayed for defendant account with last name "EnfRemoveAccess{uniq}"
     Then I check the page for accessibility
 
   @R1BDrop1 @JIRA-STORY:PO-2635 @JIRA-EPIC:PO-2621 @JIRA-TEST-KEY:PO-9563

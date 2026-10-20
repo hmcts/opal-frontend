@@ -18,8 +18,6 @@ Feature: Company Defendant Account Enforcements Accessibility
       | account.collection_order_made_today             | false                                   |
       | account.payment_card_request                    | false                                   |
       | account.payment_terms.enforcements[0].result_id | PRIS                                    |
-    When I open the company account details for "Collection Order Company{uniq}"
-    And I go to the Enforcement tab
-    And I open the Change Collection Order status form
+    When the Change Collection Order status form is displayed for company account "Collection Order Company{uniq}"
     Then I should see the Change Collection Order status page
     And I check the page for accessibility

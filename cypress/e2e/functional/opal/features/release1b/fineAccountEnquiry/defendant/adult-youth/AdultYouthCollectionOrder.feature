@@ -24,15 +24,14 @@ Feature: Adult Youth Collection Order
         | account.payment_card_request                    | false                                 |
         | account.defendant.dob                           | 2001-05-15                            |
         | account.payment_terms.enforcements[0].result_id | PRIS                                  |
-      When I search for the account by last name "CollectionOrderAdult{uniq}" and open the latest result
-      And I go to the Enforcement tab
+      When the Enforcement tab is displayed for defendant account with last name "CollectionOrderAdult{uniq}"
 
     @R1BDrop1 @JIRA-EPIC:PO-2219 @JIRA-TEST-KEY:PO-5349
     Scenario: Save Collection Order status for an adult or youth account
-      And I open the Change Collection Order status form
+      And the Change Collection Order status form is displayed
       Then I should see the Change Collection Order status page
       And I should see the account identifier "Mr Pearl COLLECTIONORDERADULT{uniqUpper} Change Collection Order Status"
-      And I select "Yes" for Collection Order status
+      And the Collection Order status is "Yes"
       And I submit the Change Collection Order status form
       Then I should return to the Enforcement tab
       And I should see the collection order success banner "Collection Order status changed"
@@ -40,14 +39,14 @@ Feature: Adult Youth Collection Order
 
     @R1BDrop1 @JIRA-EPIC:PO-2219 @JIRA-TEST-KEY:PO-5350
     Scenario: Cancel without making a selection returns to the Enforcement tab (adult or youth account)
-      And I open the Change Collection Order status form
+      And the Change Collection Order status form is displayed
       And I cancel the Change Collection Order status form without making changes
       Then I should return to the Enforcement tab
 
     @R1BDrop1 @JIRA-EPIC:PO-2219 @JIRA-TEST-KEY:PO-5351
     Scenario: Cancel after selecting a value shows a route guard (adult or youth account)
-      And I open the Change Collection Order status form
-      And I select "Yes" for Collection Order status
+      And the Change Collection Order status form is displayed
+      And the Collection Order status is "Yes"
       And I cancel the Change Collection Order status form and choose to stay
       Then I should remain on the Change Collection Order status page
 

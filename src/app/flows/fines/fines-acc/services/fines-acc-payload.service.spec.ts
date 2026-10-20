@@ -1,6 +1,5 @@
 import type { Mock } from 'vitest';
 import { FinesAccPayloadService } from './fines-acc-payload.service';
-import { FinesMacPayloadService } from '../../fines-mac/services/fines-mac-payload/fines-mac-payload.service';
 import { GlobalStore } from '@hmcts/opal-frontend-common/stores/global';
 import { FinesAccountStore } from '../stores/fines-acc.store';
 import { IFinesAccAddNoteForm } from '../fines-acc-note-add/interfaces/fines-acc-note-add-form.interface';
@@ -45,10 +44,16 @@ import { FINES_ACC_MAJOR_CREDITOR_DETAILS_HISTORY_AND_NOTES_FILTER_EMPTY_FORM_MO
 import { FINES_ACC_MAJOR_CREDITOR_DETAILS_HISTORY_AND_NOTES_FILTER_PAYLOAD_MOCK } from '../fines-acc-major-creditor-details/fines-acc-major-creditor-details-history-and-notes-tab/mocks/fines-acc-major-creditor-details-history-and-notes-filter-payload.mock';
 import { OPAL_FINES_NOTE_RECORD_TYPES } from '@services/fines/opal-fines-service/constants/opal-fines-note-record-types.constant';
 
+const getExpectedBusinessUnitUserId = (businessUnitId: string): string | null => {
+  return (
+    OPAL_USER_STATE_MOCK.business_unit_users.find(
+      (businessUnitUser) => businessUnitUser.business_unit_id === Number(businessUnitId),
+    )?.business_unit_user_id ?? null
+  );
+};
+
 describe('FinesAccPayloadService', () => {
   let service: FinesAccPayloadService;
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  let mockMacPayloadService: any;
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   let mockGlobalStore: any;
   let mockFinesAccountStore: {
@@ -59,11 +64,9 @@ describe('FinesAccPayloadService', () => {
   };
 
   beforeEach(() => {
-    mockMacPayloadService = {
-      getBusinessUnitBusinessUserId: vi.fn().mockName('FinesMacPayloadService.getBusinessUnitBusinessUserId'),
-    };
     mockGlobalStore = {
       userState: vi.fn().mockName('GlobalStore.userState'),
+      featureFlags: vi.fn().mockReturnValue({}),
     };
 
     const mockStore = {
@@ -72,15 +75,11 @@ describe('FinesAccPayloadService', () => {
       party_type: vi.fn().mockReturnValue('PERSON'),
       account_id: vi.fn().mockReturnValue(77),
     };
-    mockMacPayloadService.getBusinessUnitBusinessUserId.mockReturnValue(
-      FINES_ACC_DEFENDANT_DETAILS_HEADER_MOCK.business_unit_summary.business_unit_id,
-    );
     mockGlobalStore.userState.mockReturnValue(OPAL_USER_STATE_MOCK);
 
     TestBed.configureTestingModule({
       providers: [
         FinesAccPayloadService,
-        { provide: FinesMacPayloadService, useValue: mockMacPayloadService },
         { provide: GlobalStore, useValue: mockGlobalStore },
         { provide: FinesAccountStore, useValue: mockStore },
       ],
@@ -375,15 +374,11 @@ describe('FinesAccPayloadService', () => {
         header.party_details.individual_details?.surname?.toUpperCase(),
       base_version: header.version,
       business_unit_id: header.business_unit_summary.business_unit_id,
-      business_unit_user_id: header.business_unit_summary.business_unit_id,
+      business_unit_user_id: getExpectedBusinessUnitUserId(header.business_unit_summary.business_unit_id),
       welsh_speaking: header.business_unit_summary.welsh_speaking,
       originator_type: header.originator_type,
     });
 
-    expect(mockMacPayloadService.getBusinessUnitBusinessUserId).toHaveBeenCalledWith(
-      Number(header.business_unit_summary.business_unit_id),
-      OPAL_USER_STATE_MOCK,
-    );
     expect(mockGlobalStore.userState).toHaveBeenCalled();
   });
 
@@ -403,15 +398,11 @@ describe('FinesAccPayloadService', () => {
       party_name: header.party_details.organisation_details?.organisation_name ?? '',
       base_version: header.version,
       business_unit_id: header.business_unit_summary.business_unit_id,
-      business_unit_user_id: header.business_unit_summary.business_unit_id,
+      business_unit_user_id: getExpectedBusinessUnitUserId(header.business_unit_summary.business_unit_id),
       welsh_speaking: header.business_unit_summary.welsh_speaking,
       originator_type: header.originator_type,
     });
 
-    expect(mockMacPayloadService.getBusinessUnitBusinessUserId).toHaveBeenCalledWith(
-      Number(header.business_unit_summary.business_unit_id),
-      OPAL_USER_STATE_MOCK,
-    );
     expect(mockGlobalStore.userState).toHaveBeenCalled();
   });
 
@@ -423,6 +414,15 @@ describe('FinesAccPayloadService', () => {
     const result = service.transformDefendantAccountHeaderForStore(77, header);
 
     expect(result.party_name).toBe('');
+  });
+
+  it('should set a null business unit user ID when the user has no matching business unit', () => {
+    const header: IOpalFinesAccountDefendantDetailsHeader = structuredClone(FINES_ACC_DEFENDANT_DETAILS_HEADER_MOCK);
+    header.business_unit_summary.business_unit_id = String(Number.MAX_SAFE_INTEGER);
+
+    const result = service.transformDefendantAccountHeaderForStore(77, header);
+
+    expect(result.business_unit_user_id).toBeNull();
   });
 
   it('should handle missing surname gracefully in defendant account header', () => {
@@ -441,13 +441,12 @@ describe('FinesAccPayloadService', () => {
         .join(' '),
     );
     expect(result.base_version).toBe(header.version);
-    expect(result.business_unit_user_id).toBe(header.business_unit_summary.business_unit_id);
+    expect(result.business_unit_user_id).toBe(
+      getExpectedBusinessUnitUserId(header.business_unit_summary.business_unit_id),
+    );
   });
 
   it('should transform minor creditor account header for store for a minor creditor (organisation)', () => {
-    mockMacPayloadService.getBusinessUnitBusinessUserId.mockReturnValue(
-      FINES_ACC_MINOR_CREDITOR_DETAILS_HEADER_MOCK.business_unit.business_unit_id,
-    );
     const header: IOpalFinesAccountMinorCreditorDetailsHeader = structuredClone(
       FINES_ACC_MINOR_CREDITOR_DETAILS_HEADER_MOCK,
     );
@@ -464,22 +463,15 @@ describe('FinesAccPayloadService', () => {
       party_name: header.party.organisation_details?.organisation_name ?? null,
       base_version: header.version,
       business_unit_id: header.business_unit.business_unit_id,
-      business_unit_user_id: header.business_unit.business_unit_id,
+      business_unit_user_id: getExpectedBusinessUnitUserId(header.business_unit.business_unit_id),
       welsh_speaking: header.business_unit.welsh_speaking,
       originator_type: null,
     });
 
-    expect(mockMacPayloadService.getBusinessUnitBusinessUserId).toHaveBeenCalledWith(
-      Number(header.business_unit.business_unit_id),
-      OPAL_USER_STATE_MOCK,
-    );
     expect(mockGlobalStore.userState).toHaveBeenCalled();
   });
 
   it('should transform major creditor account header for store', () => {
-    mockMacPayloadService.getBusinessUnitBusinessUserId.mockReturnValue(
-      FINES_ACC_MAJOR_CREDITOR_DETAILS_HEADER_MOCK.business_unit_details.business_unit_id,
-    );
     const header = structuredClone(FINES_ACC_MAJOR_CREDITOR_DETAILS_HEADER_MOCK);
     const account_id = header.major_creditor.creditor_account_id;
 
@@ -494,22 +486,15 @@ describe('FinesAccPayloadService', () => {
       party_name: header.major_creditor.name,
       base_version: header.version,
       business_unit_id: header.business_unit_details.business_unit_id,
-      business_unit_user_id: header.business_unit_details.business_unit_id,
+      business_unit_user_id: getExpectedBusinessUnitUserId(header.business_unit_details.business_unit_id),
       welsh_speaking: header.business_unit_details.welsh_speaking,
       originator_type: null,
     });
 
-    expect(mockMacPayloadService.getBusinessUnitBusinessUserId).toHaveBeenCalledWith(
-      Number(header.business_unit_details.business_unit_id),
-      OPAL_USER_STATE_MOCK,
-    );
     expect(mockGlobalStore.userState).toHaveBeenCalled();
   });
 
   it('should transform account header for store for a minor creditor (individual)', () => {
-    mockMacPayloadService.getBusinessUnitBusinessUserId.mockReturnValue(
-      FINES_ACC_MINOR_CREDITOR_DETAILS_HEADER_MOCK.business_unit.business_unit_id,
-    );
     const header: IOpalFinesAccountMinorCreditorDetailsHeader = structuredClone(
       FINES_ACC_MINOR_CREDITOR_DETAILS_HEADER_MOCK,
     );
@@ -538,22 +523,15 @@ describe('FinesAccPayloadService', () => {
         header.party.individual_details?.surname?.toUpperCase(),
       base_version: header.version,
       business_unit_id: header.business_unit.business_unit_id,
-      business_unit_user_id: header.business_unit.business_unit_id,
+      business_unit_user_id: getExpectedBusinessUnitUserId(header.business_unit.business_unit_id),
       welsh_speaking: header.business_unit.welsh_speaking,
       originator_type: null,
     });
 
-    expect(mockMacPayloadService.getBusinessUnitBusinessUserId).toHaveBeenCalledWith(
-      Number(header.business_unit.business_unit_id),
-      OPAL_USER_STATE_MOCK,
-    );
     expect(mockGlobalStore.userState).toHaveBeenCalled();
   });
 
   it('should return empty party_name when organisation details are missing for minor creditor organisation', () => {
-    mockMacPayloadService.getBusinessUnitBusinessUserId.mockReturnValue(
-      FINES_ACC_MINOR_CREDITOR_DETAILS_HEADER_MOCK.business_unit.business_unit_id,
-    );
     const header: IOpalFinesAccountMinorCreditorDetailsHeader = structuredClone(
       FINES_ACC_MINOR_CREDITOR_DETAILS_HEADER_MOCK,
     );
@@ -570,9 +548,6 @@ describe('FinesAccPayloadService', () => {
   });
 
   it('should build minor creditor individual party_name without surname when surname is empty', () => {
-    mockMacPayloadService.getBusinessUnitBusinessUserId.mockReturnValue(
-      FINES_ACC_MINOR_CREDITOR_DETAILS_HEADER_MOCK.business_unit.business_unit_id,
-    );
     const header: IOpalFinesAccountMinorCreditorDetailsHeader = structuredClone(
       FINES_ACC_MINOR_CREDITOR_DETAILS_HEADER_MOCK,
     );
@@ -1296,6 +1271,26 @@ describe('FinesAccPayloadService', () => {
   });
 
   describe('buildEnforcementActionAddPayload', () => {
+    it.each([true, false, undefined])('uses the release-1b-1-1 flag value %s for payload names', (enabled) => {
+      mockGlobalStore.featureFlags.mockReturnValue(enabled === undefined ? {} : { 'release-1b-1-1': enabled });
+      const fields = structuredClone(FINES_ACC_PAYLOAD_ENFORCEMENT_ACTION_ADD_FIELDS_MOCK);
+      fields[0].parameterName = 'basisofcommittal';
+      fields[1].parameterName = 'hearingdate';
+      const payload = service.buildEnforcementActionAddPayload(
+        FINES_ACC_PAYLOAD_ENFORCEMENT_ACTION_ADD_RESULT_MOCK,
+        fields,
+        FINES_ACC_PAYLOAD_ENFORCEMENT_ACTION_ADD_LUMP_SUM_PLUS_INSTALMENTS_FORM_STATE_MOCK,
+      );
+      expect(payload.enforcement_result_responses).toContainEqual({
+        parameter_name: 'hearingdate',
+        response: '2026-05-20',
+      });
+      expect(payload.enforcement_result_responses).toContainEqual({
+        parameter_name: enabled ? 'basisofcommittal' : 'basis_of_committal',
+        response: 'Reason',
+      });
+    });
+
     it('should build and return add enforcement action payload', () => {
       const result = service.buildEnforcementActionAddPayload(
         FINES_ACC_PAYLOAD_ENFORCEMENT_ACTION_ADD_RESULT_MOCK,

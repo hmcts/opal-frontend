@@ -29,10 +29,31 @@ import { OPAL_FINES_MAJOR_CREDITOR_REF_DATA_MOCK } from '@services/fines/opal-fi
 import { OPAL_FINES_PROSECUTOR_REF_DATA_MOCK } from '@services/fines/opal-fines-service/mocks/opal-fines-prosecutor-ref-data.mock';
 import { GLOBAL_ERROR_STATE } from '@hmcts/opal-frontend-common/stores/global/constants';
 import { FINES_ACCOUNT_TYPES } from '../../constants/fines-account-types.constant';
+import {
+  RELEASE_1A_1_1_FEATURE_FLAG,
+  RELEASE_1A_1_2_FEATURE_FLAG,
+} from '../../constants/release-feature-flags.constant';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
 
 import { createSpyObj } from '@app/testing/create-spy-obj.helper';
 import { FINES_MAC_DEFENDANT_TYPES_KEYS } from '../constants/fines-mac-defendant-types-keys';
+import { IFinesMacAddAccountRequestPayload } from '../services/fines-mac-payload/interfaces/fines-mac-payload-add-account-request.interface';
+import { IFinesMacReplaceAccountRequestPayload } from '../services/fines-mac-payload/interfaces/fines-mac-payload-replace-account-request.interface';
+
+const ADD_ACCOUNT_REQUEST: IFinesMacAddAccountRequestPayload = {
+  business_unit_id: FINES_MAC_PAYLOAD_ADD_ACCOUNT.business_unit_id!,
+  account: FINES_MAC_PAYLOAD_ADD_ACCOUNT.account,
+  account_type: FINES_MAC_PAYLOAD_ADD_ACCOUNT.account_type!,
+  account_status: FINES_MAC_PAYLOAD_ADD_ACCOUNT.account_status,
+  status_message: null,
+};
+
+const REPLACE_ACCOUNT_REQUEST: IFinesMacReplaceAccountRequestPayload = {
+  business_unit_id: FINES_MAC_PAYLOAD_ADD_ACCOUNT.business_unit_id!,
+  account: FINES_MAC_PAYLOAD_ADD_ACCOUNT.account,
+  account_type: FINES_MAC_PAYLOAD_ADD_ACCOUNT.account_type!,
+  account_status: FINES_MAC_PAYLOAD_ADD_ACCOUNT.account_status,
+};
 
 // Shared factory for setting up the test module
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -61,10 +82,8 @@ function createTestModule(snapshotData?: any) {
     'mapAccountPayload',
     'getDefendantName',
   ]);
-  mockFinesMacPayloadService['buildReplaceAccountPayload'].mockReturnValue(
-    structuredClone(FINES_MAC_PAYLOAD_ADD_ACCOUNT),
-  );
-  mockFinesMacPayloadService['buildAddAccountPayload'].mockReturnValue(structuredClone(FINES_MAC_PAYLOAD_ADD_ACCOUNT));
+  mockFinesMacPayloadService['buildReplaceAccountPayload'].mockReturnValue(structuredClone(REPLACE_ACCOUNT_REQUEST));
+  mockFinesMacPayloadService['buildAddAccountPayload'].mockReturnValue(structuredClone(ADD_ACCOUNT_REQUEST));
   mockFinesMacPayloadService['getDefendantName'].mockReturnValue('Test Defendant Name');
 
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -143,6 +162,7 @@ describe('FinesMacReviewAccountComponent', () => {
     let mockUtilsService: any;
     let finesMacStore: FinesMacStoreType;
     let finesDraftStore: FinesDraftStoreType;
+    let globalStore: ReturnType<typeof createTestModule>['globalStore'];
 
     beforeEach(async () => {
       const setup = createTestModule();
@@ -153,10 +173,24 @@ describe('FinesMacReviewAccountComponent', () => {
       mockUtilsService = setup.mockUtilsService;
       finesMacStore = setup.finesMacStore;
       finesDraftStore = setup.finesDraftStore;
+      globalStore = setup.globalStore;
     });
 
     it('should create', () => {
       expect(component).toBeTruthy();
+    });
+
+    it('should expose release flags as disabled when missing and react when they are enabled', () => {
+      expect(component.release1a1_1Enabled()).toBe(false);
+      expect(component.release1a1_2Enabled()).toBe(false);
+
+      globalStore.setFeatureFlags({
+        [RELEASE_1A_1_1_FEATURE_FLAG]: true,
+        [RELEASE_1A_1_2_FEATURE_FLAG]: true,
+      });
+
+      expect(component.release1a1_1Enabled()).toBe(true);
+      expect(component.release1a1_2Enabled()).toBe(true);
     });
 
     it('should test Employer Details above Defendant Details when defendant is pgToPay', () => {
@@ -236,7 +270,12 @@ describe('FinesMacReviewAccountComponent', () => {
       mockOpalFinesService.putDraftAddAccountPayload = vi
         .fn()
         .mockReturnValue(throwError(() => new Error('Something went wrong')));
-      component['handlePutRequest'](FINES_MAC_PAYLOAD_ADD_ACCOUNT);
+      component['handlePutRequest'](REPLACE_ACCOUNT_REQUEST);
+      expect(mockOpalFinesService.putDraftAddAccountPayload).toHaveBeenCalledWith(
+        finesDraftStore.draft_account_id(),
+        REPLACE_ACCOUNT_REQUEST,
+        finesDraftStore.version(),
+      );
       expect(handleRequestErrorSpy).toHaveBeenCalled();
     });
 
@@ -255,7 +294,7 @@ describe('FinesMacReviewAccountComponent', () => {
       mockOpalFinesService.postDraftAddAccountPayload = vi
         .fn()
         .mockReturnValue(throwError(() => new Error('Something went wrong')));
-      component['handlePostRequest'](FINES_MAC_PAYLOAD_ADD_ACCOUNT);
+      component['handlePostRequest'](ADD_ACCOUNT_REQUEST);
       expect(handleRequestErrorSpy).toHaveBeenCalled();
     });
 
@@ -306,17 +345,12 @@ describe('FinesMacReviewAccountComponent', () => {
       component['preparePutPayload']();
       expect(mockFinesMacPayloadService.buildReplaceAccountPayload).toHaveBeenCalledWith(
         finesMacStore.getFinesMacStore(),
-        finesDraftStore.getFinesDraftState(),
-        component['userState'],
       );
     });
 
     it('should test preparePostPayload', () => {
       component['preparePostPayload']();
-      expect(mockFinesMacPayloadService.buildAddAccountPayload).toHaveBeenCalledWith(
-        finesMacStore.getFinesMacStore(),
-        component['userState'],
-      );
+      expect(mockFinesMacPayloadService.buildAddAccountPayload).toHaveBeenCalledWith(finesMacStore.getFinesMacStore());
     });
 
     it('should test submitPutPayload', () => {
@@ -624,15 +658,49 @@ describe('FinesMacReviewAccountComponent', () => {
       });
     });
 
-    it('should route to the fixed penalty details form when change() is called from a fixed penalty account', () => {
+    it.each(['courtDetails', 'personalDetails', 'companyDetails', 'offenceDetails', 'accountCommentsNotes'] as const)(
+      'should route to the %s section of the fixed penalty details form when release-1a-1-2 is enabled',
+      (routeKey) => {
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        const routerSpy = vi.spyOn<any, any>(component['router'], 'navigate');
+        globalStore.setFeatureFlags({ [RELEASE_1A_1_2_FEATURE_FLAG]: true });
+        component.accountType = FINES_ACCOUNT_TYPES['Fixed Penalty'];
+        const fragment = component['finesMacRoutes'].children[routeKey];
+
+        component.change(fragment);
+
+        expect(routerSpy).toHaveBeenCalledWith([component['finesMacRoutes'].children.fixedPenaltyDetails], {
+          relativeTo: expect.any(Object),
+          fragment,
+        });
+      },
+    );
+
+    it.each(['courtDetails', 'personalDetails', 'companyDetails', 'offenceDetails', 'accountCommentsNotes'] as const)(
+      'should route without a %s fragment when release-1a-1-2 is disabled',
+      (routeKey) => {
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        const routerSpy = vi.spyOn<any, any>(component['router'], 'navigate');
+        globalStore.setFeatureFlags({ [RELEASE_1A_1_2_FEATURE_FLAG]: false });
+        component.accountType = FINES_ACCOUNT_TYPES['Fixed Penalty'];
+
+        component.change(component['finesMacRoutes'].children[routeKey]);
+
+        expect(routerSpy).toHaveBeenCalledWith([component['finesMacRoutes'].children.fixedPenaltyDetails], {
+          relativeTo: component['activatedRoute'].parent,
+        });
+      },
+    );
+
+    it('should route without a fragment when release-1a-1-2 is missing', () => {
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
       const routerSpy = vi.spyOn<any, any>(component['router'], 'navigate');
       component.accountType = FINES_ACCOUNT_TYPES['Fixed Penalty'];
 
-      component.change();
+      component.change(component['finesMacRoutes'].children.offenceDetails);
 
       expect(routerSpy).toHaveBeenCalledWith([component['finesMacRoutes'].children.fixedPenaltyDetails], {
-        relativeTo: expect.any(Object),
+        relativeTo: component['activatedRoute'].parent,
       });
     });
   });

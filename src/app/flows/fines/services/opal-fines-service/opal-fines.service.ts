@@ -21,10 +21,9 @@ import { IOpalFinesResults } from './interfaces/opal-fines-results.interface';
 import { IOpalFinesResultsRefData } from './interfaces/opal-fines-results-ref-data.interface';
 import { IOpalFinesMajorCreditor } from './interfaces/opal-fines-major-creditor.interface';
 import { IOpalFinesMajorCreditorRefData } from './interfaces/opal-fines-major-creditor-ref-data.interface';
-import {
-  IFinesMacAddAccountPayload,
-  IFinesMacAddAccountRequestPayload,
-} from '../../fines-mac/services/fines-mac-payload/interfaces/fines-mac-payload-add-account.interfaces';
+import { IFinesMacAddAccountPayload } from '../../fines-mac/services/fines-mac-payload/interfaces/fines-mac-payload-add-account.interfaces';
+import { IFinesMacAddAccountRequestPayload } from '../../fines-mac/services/fines-mac-payload/interfaces/fines-mac-payload-add-account-request.interface';
+import { IFinesMacReplaceAccountRequestPayload } from '../../fines-mac/services/fines-mac-payload/interfaces/fines-mac-payload-replace-account-request.interface';
 import { IOpalFinesDraftAccountsResponse } from './interfaces/opal-fines-draft-account-data.interface';
 import { IOpalFinesDraftAccountParams } from './interfaces/opal-fines-draft-account-params.interface';
 import { IOpalFinesSearchOffencesParams } from './interfaces/opal-fines-search-offences-params.interface';
@@ -66,7 +65,7 @@ import { IOpalFinesUpdateMinorCreditorAccountPayload } from './interfaces/opal-f
 import { IOpalFinesAddEnforcementActionPayload } from './interfaces/opal-fines-add-enforcement-action-payload.interface';
 import { IOpalFinesRemoveEnforcementHoldPayload } from './interfaces/opal-fines-remove-enforcement-hold-payload.interface';
 import { IOpalFinesAccountMinorCreditorCreditor } from './interfaces/opal-fines-account-minor-creditor-creditor.interface';
-import { IOpalFinesDraftAccountPatchRequestPayload } from '@services/fines/opal-fines-service/types/opal-fines-draft-account-patch-request-payload.type';
+import { IOpalFinesDraftAccountPatchRequestPayload } from '@services/fines/opal-fines-service/interfaces/opal-fines-draft-account-patch-request-payload.interface';
 import { IOpalFinesDeleteDefendantAccountPartyPayload } from './interfaces/opal-fines-delete-defendant-account-party-payload.interface';
 import { IOpalFinesCentralFund } from './interfaces/opal-fines-account-central-fund.interface';
 import { IOpalFinesAccountMajorCreditorDetailsHeader } from '../../fines-acc/fines-acc-major-creditor-details/interfaces/fines-acc-major-creditor-details-header.interface';
@@ -78,6 +77,9 @@ import { IOpalFinesReportInstancesParams } from './interfaces/opal-fines-report-
 import { IOpalFinesReportInstancesResponse } from './interfaces/opal-fines-report-instances-response.interface';
 import { IOpalFinesInterfaceJobsSummaryParams } from './interfaces/opal-fines-interface-jobs-summary-params.interface';
 import { IOpalFinesInterfaceJobsSummaryResponse } from './interfaces/opal-fines-interface-jobs-summary-response.interface';
+import { IOpalFinesTillsResponse } from './interfaces/opal-fines-tills-response.interface';
+import { IOpalFinesTillsParams } from './interfaces/opal-fines-tills-params.interface';
+import { IOpalFinesProcessInterfaceJobsPayload } from './interfaces/opal-fines-process-interface-jobs-payload.interface';
 
 const SAFE_READ_RETRY_POLICY = {
   retryCount: 1,
@@ -89,6 +91,7 @@ const SAFE_READ_RETRY_POLICY = {
 })
 export class OpalFines {
   private readonly http = inject(HttpClient);
+
   private cache = structuredClone(OPAL_FINES_CACHE_DEFAULTS);
 
   private readonly PARAM_BUSINESS_UNIT = 'business_unit';
@@ -413,6 +416,18 @@ export class OpalFines {
       OPAL_FINES_PATHS.interfaceJobsSummary,
       this.withRetrySafeReadOptions({ params: this.getInterfaceJobsSummaryParams(params) }),
     );
+  }
+
+  /**
+   * Starts asynchronous processing for the selected interface jobs.
+   *
+   * This write request is intentionally not retried because repeating it could queue the same jobs twice.
+   *
+   * @param payload - Interface jobs and their override-inhibits values.
+   * @returns An observable that completes when the jobs have been accepted for processing.
+   */
+  public processInterfaceJobs(payload: IOpalFinesProcessInterfaceJobsPayload): Observable<void> {
+    return this.http.post<void>(OPAL_FINES_PATHS.processInterfaceJobs, payload);
   }
 
   /**
@@ -789,14 +804,20 @@ export class OpalFines {
   /**
    * Sends a PUT request to update the draft account payload.
    *
-   * @param body - The payload containing the account information to be added.
+   * @param draftAccountId - ID of the draft account to replace.
+   * @param body - Replacement account request body.
+   * @param version - Version supplied through the If-Match header.
    * @returns An Observable of the updated account payload.
    */
-  public putDraftAddAccountPayload(body: IFinesMacAddAccountRequestPayload): Observable<IFinesMacAddAccountPayload> {
+  public putDraftAddAccountPayload(
+    draftAccountId: number,
+    body: IFinesMacReplaceAccountRequestPayload,
+    version: string,
+  ): Observable<IFinesMacAddAccountPayload> {
     return this.http.put<IFinesMacAddAccountPayload>(
-      `${OPAL_FINES_PATHS.draftAccounts}/${body.draft_account_id}`,
+      `${OPAL_FINES_PATHS.draftAccounts}/${draftAccountId}`,
       body,
-      this.buildIfMatchHeader(body.version!),
+      this.buildIfMatchHeader(version),
     );
   }
 
@@ -816,16 +837,18 @@ export class OpalFines {
    *
    * @param draftAccountId - The unique identifier of the draft account to update.
    * @param payload - The partial payload containing the fields to update in the draft account.
+   * @param version - Version supplied through the If-Match header.
    * @returns An Observable emitting the updated account payload as an `IFinesMacAddAccountPayload`.
    */
   public patchDraftAccountPayload(
     draftAccountId: number,
     payload: IOpalFinesDraftAccountPatchRequestPayload,
+    version: string,
   ): Observable<IFinesMacAddAccountPayload> {
     return this.http.patch<IFinesMacAddAccountPayload>(
       `${OPAL_FINES_PATHS.draftAccounts}/${draftAccountId}`,
       payload,
-      this.buildIfMatchHeader(payload.version!),
+      this.buildIfMatchHeader(version),
     );
   }
 
@@ -1749,5 +1772,13 @@ export class OpalFines {
 
     this.cache.majorCreditorAccountHistoryAndNotesCache$ ??= request$;
     return this.cache.majorCreditorAccountHistoryAndNotesCache$;
+  }
+
+  /** Loads tills available to the authenticated user for manual allocation. */
+  public getTills(query: IOpalFinesTillsParams): Observable<IOpalFinesTillsResponse> {
+    let params = new HttpParams();
+    params = this.appendArrayParams(params, this.PARAM_STATUSES, query.statuses);
+    params = params.set('auto_payments', query.auto_payments);
+    return this.http.get<IOpalFinesTillsResponse>(OPAL_FINES_PATHS.tills, this.withRetrySafeReadOptions({ params }));
   }
 }
