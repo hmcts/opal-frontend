@@ -91,6 +91,7 @@ const SAFE_READ_RETRY_POLICY = {
 })
 export class OpalFines {
   private readonly http = inject(HttpClient);
+
   private cache = structuredClone(OPAL_FINES_CACHE_DEFAULTS);
 
   private readonly PARAM_BUSINESS_UNIT = 'business_unit';
