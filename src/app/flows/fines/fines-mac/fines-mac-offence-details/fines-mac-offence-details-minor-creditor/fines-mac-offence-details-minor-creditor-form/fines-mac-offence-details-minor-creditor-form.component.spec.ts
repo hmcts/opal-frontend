@@ -89,15 +89,18 @@ describe('FinesMacOffenceDetailsMinorCreditorFormComponent', () => {
     expect(component.accountNumberHintText).toBe('');
   });
 
-  it('should normalize a valid formatted sort code before submitting', () => {
-    component['setPaymentDetailValidators']();
-    const sortCodeControl = component.form.controls['fm_offence_details_minor_creditor_bank_sort_code'];
-    sortCodeControl.setValue('12-34-56');
+  it.each(['12-34-56', '123 456', '12  34  56', '12--34  56'])(
+    'should normalize sort code %s before submitting',
+    (value) => {
+      component['setPaymentDetailValidators']();
+      const sortCodeControl = component.form.controls['fm_offence_details_minor_creditor_bank_sort_code'];
+      sortCodeControl.setValue(value);
 
-    component.handleFormSubmit(new SubmitEvent('submit'));
+      component.handleFormSubmit(new SubmitEvent('submit'));
 
-    expect(sortCodeControl.value).toBe('123456');
-  });
+      expect(sortCodeControl.value).toBe('123456');
+    },
+  );
 
   it('should not normalize an empty sort code on submit', () => {
     const sortCodeControl = component.form.controls['fm_offence_details_minor_creditor_bank_sort_code'];
