@@ -1,3 +1,4 @@
+import { BANK_ACCOUNT_NUMBER_FIELD_ERRORS } from '../../../../constants/bank-account-number-field-errors.constant';
 import { ChangeDetectionStrategy, Component, EventEmitter, OnInit, Output, inject } from '@angular/core';
 import { FormControl, FormGroup, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
 import { AbstractFormBaseComponent } from '@hmcts/opal-frontend-common/components/abstract/abstract-form-base';
@@ -200,6 +201,11 @@ export class FinesMacOffenceDetailsMinorCreditorFormComponent extends AbstractFo
    * Sets the validators for the payment detail form controls.
    */
   private setPaymentDetailValidators(): void {
+    this.fieldErrors['fm_offence_details_minor_creditor_bank_account_number'] = {
+      ...FINES_MAC_OFFENCE_DETAILS_MINOR_CREDITOR_FIELD_ERRORS['fm_offence_details_minor_creditor_bank_account_number'],
+      ...(this.isR1A12Enabled ? BANK_ACCOUNT_NUMBER_FIELD_ERRORS : {}),
+    };
+
     const {
       fm_offence_details_minor_creditor_bank_account_name: nameOnAccount,
       fm_offence_details_minor_creditor_bank_sort_code: sortCode,

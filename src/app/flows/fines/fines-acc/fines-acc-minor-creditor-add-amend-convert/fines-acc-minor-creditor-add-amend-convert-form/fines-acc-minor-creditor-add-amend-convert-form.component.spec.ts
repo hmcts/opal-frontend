@@ -68,6 +68,25 @@ describe('FinesAccMinorCreditorAddAmendConvertFormComponent', () => {
 
   const getControl = (controlName: string) => component.form.get(controlName)!;
 
+  it.each([
+    [true, '12345', 'Account number must be between 6 and 8 numbers'],
+    [true, '123456789', 'Account number must be between 6 and 8 numbers'],
+    [true, '12345A', 'Account number must be between 6 and 8 numbers'],
+    [true, '', 'Enter account number'],
+    [false, '123456789', 'Account number must be between 6 and 8 digits long'],
+    [false, '12345A', 'Enter a valid account number like 00733445'],
+    [false, '', 'Enter account number'],
+    [false, '12345', 'Account number must be between 6 and 8 digits long'],
+  ])('should show account-number error with release flag %s for %s', (enabled, value, message) => {
+    TestBed.inject(GlobalStore).setFeatureFlags({ [RELEASE_1A_1_2_FEATURE_FLAG]: enabled });
+    createComponent();
+    component.form.controls['facc_minor_creditor_bank_account_number'].setValue(value);
+
+    component['handleErrorMessages']();
+
+    expect(component.formControlErrorMessages['facc_minor_creditor_bank_account_number']).toBe(message);
+  });
+
   it('should create', () => {
     createComponent();
 

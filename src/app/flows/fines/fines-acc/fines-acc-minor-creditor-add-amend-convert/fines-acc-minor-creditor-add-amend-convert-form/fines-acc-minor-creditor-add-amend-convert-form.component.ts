@@ -1,3 +1,4 @@
+import { BANK_ACCOUNT_NUMBER_FIELD_ERRORS } from '../../../constants/bank-account-number-field-errors.constant';
 import { CommonModule } from '@angular/common';
 import {
   ChangeDetectionStrategy,
@@ -193,6 +194,11 @@ export class FinesAccMinorCreditorAddAmendConvertFormComponent
    * Builds detached BACS payment detail controls for the nested-form helpers.
    */
   private buildPaymentDetailControls(): FormGroup {
+    this.fieldErrors.facc_minor_creditor_bank_account_number = {
+      ...FINES_ACC_MINOR_CREDITOR_ADD_AMEND_CONVERT_FIELD_ERRORS.facc_minor_creditor_bank_account_number,
+      ...(this.isR1A12Enabled ? BANK_ACCOUNT_NUMBER_FIELD_ERRORS : {}),
+    };
+
     const sortCodeValidators = this.isR1A12Enabled
       ? [Validators.required, sortCodeValidator]
       : [Validators.required, Validators.minLength(6), Validators.maxLength(6), NUMERIC_PATTERN_VALIDATOR];

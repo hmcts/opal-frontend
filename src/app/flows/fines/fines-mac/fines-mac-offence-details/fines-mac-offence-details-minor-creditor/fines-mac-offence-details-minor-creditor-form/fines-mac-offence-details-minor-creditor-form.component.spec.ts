@@ -57,6 +57,24 @@ describe('FinesMacOffenceDetailsMinorCreditorFormComponent', () => {
     fixture.destroy();
   });
 
+  it.each([
+    [true, '12345', 'Account number must be between 6 and 8 numbers'],
+    [true, '123456789', 'Account number must be between 6 and 8 numbers'],
+    [true, '12345A', 'Account number must be between 6 and 8 numbers'],
+    [true, '', 'Enter account number'],
+    [false, '123456789', 'Account number must be 8 characters or fewer'],
+    [false, '12345A', 'Account number must only contain numbers'],
+    [false, '', 'Enter account number'],
+  ])('should show account-number error with release flag %s for %s', (enabled, value, message) => {
+    TestBed.inject(GlobalStore).setFeatureFlags({ [RELEASE_1A_1_2_FEATURE_FLAG]: enabled });
+    component['setPaymentDetailValidators']();
+    component.form.controls['fm_offence_details_minor_creditor_bank_account_number'].setValue(value);
+
+    component['handleErrorMessages']();
+
+    expect(component.formControlErrorMessages['fm_offence_details_minor_creditor_bank_account_number']).toBe(message);
+  });
+
   it('should create', () => {
     expect(component).toBeTruthy();
   });
