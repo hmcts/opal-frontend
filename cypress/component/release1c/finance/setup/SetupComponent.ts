@@ -23,8 +23,11 @@ import { FinesApiComponent } from 'src/app/flows/fines/fines-api/fines-api.compo
 import { FinesApiProcessAllocateComponent } from 'src/app/flows/fines/fines-api/fines-api-process-allocate/fines-api-process-allocate.component';
 import { FinesApiSelectBusComponent } from 'src/app/flows/fines/fines-api/fines-api-select-bus/fines-api-select-bus.component';
 import { FinesApiConfirmProcessComponent } from 'src/app/flows/fines/fines-api/fines-api-confirm-process/fines-api-confirm-process.component';
+import { FinesMciCreateAllocateComponent } from 'src/app/flows/fines/fines-mci/fines-mci-create-allocate/fines-mci-create-allocate.component';
+import { FinesMciCreateTillSelectBuComponent } from 'src/app/flows/fines/fines-mci/fines-mci-create-till/fines-mci-create-till-select-bu/fines-mci-create-till-select-bu.component';
 import { FinesApiStore } from 'src/app/flows/fines/fines-api/stores/fines-api.store';
 import { FINES_API_ROUTING_PATHS } from 'src/app/flows/fines/fines-api/routing/constants/fines-api-routing-paths.constant';
+import { FINES_MCI_ROUTING_PATHS } from 'src/app/flows/fines/fines-mci/routing/constants/fines-mci-routing-paths.constant';
 import { OPAL_FINES_BUSINESS_UNIT_OUTSTANDING_AUTO_PAYMENT_COUNTS_MOCK } from 'src/app/flows/fines/services/opal-fines-service/mocks/opal-fines-business-unit-outstanding-auto-payment-counts.mock';
 
 export type FinanceComponentSetupOptions = {
@@ -69,6 +72,40 @@ const FINANCE_COMPONENT_ROUTES: Routes = [
       {
         path: FINES_API_ROUTING_PATHS.children.confirmProcess,
         component: FinesApiConfirmProcessComponent,
+      },
+    ],
+  },
+  {
+    path: [FINES_ROUTING_PATHS.root, FINES_ROUTING_PATHS.children.mci.root].join('/'),
+    children: [
+      {
+        path: '',
+        redirectTo: FINES_MCI_ROUTING_PATHS.children.createAllocate,
+        pathMatch: 'full',
+      },
+      {
+        path: FINES_MCI_ROUTING_PATHS.children.createAllocate,
+        component: FinesMciCreateAllocateComponent,
+        canDeactivate: [canDeactivateGuard],
+      },
+      {
+        path: [
+          FINES_MCI_ROUTING_PATHS.children.create,
+          FINES_MCI_ROUTING_PATHS.children.till,
+          FINES_MCI_ROUTING_PATHS.children.selectBusinessUnit,
+        ].join('/'),
+        component: FinesMciCreateTillSelectBuComponent,
+        data: {
+          businessUnits: {
+            count: 1,
+            refData: [
+              {
+                business_unit_id: 77,
+                business_unit_name: 'Camden and Islington',
+              },
+            ],
+          },
+        },
       },
     ],
   },
