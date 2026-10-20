@@ -9,6 +9,7 @@ import { routing as reportingRouting } from '../fines-reports/routing/fines-repo
 import { routing as manualCashInputRouting } from '../fines-mci/routing/fines-mci.routes';
 import { routing as autoPaymentInRouting } from '../fines-api/routing/fines-api.routes';
 import { routing as financeRouting } from '../fines-finance/routing/fines-finance.routes';
+import { routing as suspenseItemRouting } from '../fines-suspense-item/routing/fines-suspense-item.routes';
 import { FINES_ROUTING_PATHS } from '@routing/fines/constants/fines-routing-paths.constant';
 import { authGuard } from '@hmcts/opal-frontend-common/guards/auth';
 import { canDeactivateGuard } from '@hmcts/opal-frontend-common/guards/can-deactivate';
@@ -113,6 +114,11 @@ export const finesRouting: Routes = [
         data: {
           sectionKey: FINES_DASHBOARD_ROUTING_PATHS.children.finance,
         },
+      },
+      {
+        path: FINES_ROUTING_PATHS.children.suspenseItem.root,
+        children: suspenseItemRouting,
+        canActivate: [authGuard],
       },
       {
         path: FINES_ROUTING_PATHS.children.autoPaymentIn.root,
