@@ -9,6 +9,8 @@ import { FINES_REPORT_SUMMARY_LIST_REPORT_CONFIGURATION } from './constants/fine
 import { OPAL_FINES_BUSINESS_UNIT_REF_DATA_MOCK } from '@services/fines/opal-fines-service/mocks/opal-fines-business-unit-ref-data.mock';
 import { OpalFines } from '@services/fines/opal-fines-service/opal-fines.service';
 import { AlphagovAccessibleAutocompleteComponent } from '@hmcts/opal-frontend-common/components/alphagov/alphagov-accessible-autocomplete';
+import { CustomDateFilterComponent } from '@hmcts/opal-frontend-common/components/custom/custom-date-filter';
+import { MojDatePickerComponent } from '@hmcts/opal-frontend-common/components/moj/moj-date-picker';
 import { GlobalStore } from '@hmcts/opal-frontend-common/stores/global';
 import { OPAL_USER_STATE_MOCK } from '@hmcts/opal-frontend-common/services/opal-user-service/mocks';
 import { IOpalFinesReportInstancesResponse } from '@services/fines/opal-fines-service/interfaces/opal-fines-report-instances-response.interface';
@@ -324,6 +326,36 @@ describe('FinesReportsSummaryListComponent', () => {
     expect(form?.getAttribute('autocomplete')).toBe('off');
   });
 
+  it.each([reportId, paymentsReportId, yourReportsId])(
+    'should start with an empty business unit filter for %s',
+    async (activeReportId) => {
+      const { component, fixture } = await setup(activeReportId);
+      const autocomplete = fixture.debugElement.query(By.directive(AlphagovAccessibleAutocompleteComponent))
+        .componentInstance as AlphagovAccessibleAutocompleteComponent;
+
+      expect(component.filtersForm.controls.businessUnit.value).toBe('');
+      expect(autocomplete.getControl.value).toBe('');
+      expect(TestBed.inject(FinesReportsSummaryListStore).filters().businessUnit).toBe('');
+    },
+  );
+
+  it.each(['', null, 'all'])(
+    'should request unrestricted business units when the filter is %s',
+    async (businessUnit) => {
+      const { component } = await setup();
+      component.filtersForm.controls.businessUnit.setValue('67');
+      component.filtersForm.controls.businessUnit.setValue(businessUnit);
+
+      component.onRefresh();
+
+      expect(mockOpalFines.getReportInstances).toHaveBeenCalledWith(
+        expect.objectContaining({ business_units: undefined }),
+      );
+      expect(TestBed.inject(FinesReportsSummaryListStore).appliedQuery()?.businessUnit).toBeNull();
+      expect(TestBed.inject(FinesReportsSummaryListStore).filters().businessUnit).toBe(businessUnit ?? '');
+    },
+  );
+
   it('should call report instances API with selected filters when Refresh is selected', async () => {
     const { component } = await setup();
 
@@ -480,7 +512,7 @@ describe('FinesReportsSummaryListComponent', () => {
       });
     });
 
-    expect(component.dateFilter()).toBe('customDays');
+    expect(component.filtersForm.controls.dateFilter.value).toBe('customDays');
     expect(fixture.nativeElement.querySelector('#reports-summary-list-custom-days')).toBeTruthy();
     expect(fixture.nativeElement.querySelector('#reports-summary-list-days')?.value).toBe('30');
   });
@@ -502,7 +534,7 @@ describe('FinesReportsSummaryListComponent', () => {
       });
     });
 
-    expect(component.dateFilter()).toBe('dateRange');
+    expect(component.filtersForm.controls.dateFilter.value).toBe('dateRange');
     expect(fixture.nativeElement.querySelector('#reports-summary-list-date-range')).toBeTruthy();
     expect(fixture.nativeElement.querySelector('#reports-summary-list-date-from')).toBeTruthy();
     expect(fixture.nativeElement.querySelector('#reports-summary-list-date-to')).toBeTruthy();
@@ -525,8 +557,8 @@ describe('FinesReportsSummaryListComponent', () => {
       });
     });
 
-    expect(component.dateFilter()).toBe('last7Days');
-    expect(component.filtersForm.controls.businessUnit.value).toBe('all');
+    expect(component.filtersForm.controls.dateFilter.value).toBe('last7Days');
+    expect(component.filtersForm.controls.businessUnit.value).toBe('');
     expect(fixture.nativeElement.querySelector('#reports-summary-list-custom-days')).toBeFalsy();
   });
 
@@ -563,8 +595,8 @@ describe('FinesReportsSummaryListComponent', () => {
     fixture.detectChanges();
 
     expect(component.pageHeading).toBe('Operational reports (by payments)');
-    expect(component.dateFilter()).toBe('last7Days');
-    expect(component.filtersForm.controls.businessUnit.value).toBe('all');
+    expect(component.filtersForm.controls.dateFilter.value).toBe('last7Days');
+    expect(component.filtersForm.controls.businessUnit.value).toBe('');
     expect(fixture.nativeElement.textContent).toContain('Operational report (by payments) - Paid in full');
     expect(fixture.nativeElement.textContent).not.toContain('Operational report (by enforcement) - CLAMPO - Detailed');
   });
@@ -619,8 +651,8 @@ describe('FinesReportsSummaryListComponent', () => {
       .componentInstance as AlphagovAccessibleAutocompleteComponent;
 
     expect(updatedAutocomplete).not.toBe(initialAutocomplete);
-    expect(component.filtersForm.controls.businessUnit.value).toBe('all');
-    expect(updatedAutocomplete.getControl.value).toBe('all');
+    expect(component.filtersForm.controls.businessUnit.value).toBe('');
+    expect(updatedAutocomplete.getControl.value).toBe('');
     expect(updatedAutocomplete.autoCompleteItems).toEqual([
       { value: 'all', name: 'All business units' },
       { value: '61', name: 'Historical Debt' },
@@ -639,7 +671,7 @@ describe('FinesReportsSummaryListComponent', () => {
     fixture.detectChanges();
 
     expect(component.pageHeading).toBe('Operational reports (by payments)');
-    expect(component.filtersForm.controls.businessUnit.value).toBe('all');
+    expect(component.filtersForm.controls.businessUnit.value).toBe('');
   });
 
   it('should read report id from the current route when there is no parent route', async () => {
@@ -956,13 +988,40 @@ describe('FinesReportsSummaryListComponent', () => {
   });
 
   it('should store date picker changes in the matching form control', async () => {
-    const { component } = await setup();
+    const { component, fixture } = await setup();
+    component.filtersForm.controls.dateFilter.setValue('dateRange');
+    fixture.detectChanges();
 
-    component.onDateChange('dateFrom', '01/06/2026');
-    component.onDateChange('dateTo', '08/06/2026');
+    const dateFilter = fixture.debugElement.query(By.directive(CustomDateFilterComponent));
+    const pickers = dateFilter.queryAll(By.directive(MojDatePickerComponent));
+    pickers[0].componentInstance.dateChange.emit('01/06/2026');
+    pickers[1].componentInstance.dateChange.emit('08/06/2026');
 
     expect(component.filtersForm.controls.dateFrom.value).toBe('01/06/2026');
     expect(component.filtersForm.controls.dateTo.value).toBe('08/06/2026');
+  });
+
+  it('should combine the shared date filter with the business unit when submitting', async () => {
+    const { component, fixture } = await setup();
+    component.filtersForm.controls.businessUnit.setValue('67');
+    fixture.nativeElement.querySelector('#reports-summary-list-date-filter-custom-days').click();
+    fixture.detectChanges();
+
+    const days = fixture.nativeElement.querySelector('#reports-summary-list-days') as HTMLInputElement;
+    days.value = '14';
+    days.dispatchEvent(new Event('input'));
+    fixture.nativeElement.querySelector('form').dispatchEvent(new Event('submit', { bubbles: true, cancelable: true }));
+
+    expect(mockOpalFines.getReportInstances).toHaveBeenCalledWith(
+      expect.objectContaining({ business_units: ['67'], from_date: expect.any(String), to_date: expect.any(String) }),
+    );
+    expect(TestBed.inject(FinesReportsSummaryListStore).filters()).toEqual({
+      businessUnit: '67',
+      dateFilter: 'customDays',
+      days: '14',
+      dateFrom: '',
+      dateTo: '',
+    });
   });
 
   it('should focus the field selected from the error summary', async () => {
