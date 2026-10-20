@@ -1,3 +1,5 @@
+@let ignoredData = tabIgnored$ | async;
+
 <div class="govuk-grid-column-full govuk-!-margin-bottom-4">
   <opal-lib-govuk-back-link (clickEvent)="navigateBack()"></opal-lib-govuk-back-link>
 </div>
@@ -31,7 +33,13 @@
       [activeSubNavItemFragment]="finesApiStore.activeTab()"
       [subNavItemFragment]="tabKeys.ignored"
       [subNavItemText]="tabs[tabKeys.ignored]"
-    ></li>
+    >
+      @if ((ignoredData?.rows?.length ?? 0) > 0) {
+        <span badge id="fines-api-ignored-count" class="moj-notification-badge fines-api-ignored-count">
+          {{ ignoredData!.rows.length }}
+        </span>
+      }
+    </li>
   </opal-lib-moj-sub-navigation>
 </div>
 
@@ -58,7 +66,7 @@
     }
   }
   @case (tabKeys.ignored) {
-    <!-- Ignored files tab component will be loaded here by its implementation ticket. -->
+    <app-fines-api-ignored [tabData]="ignoredData" (refreshRequested)="refreshIgnoredData()" />
   }
 }
 

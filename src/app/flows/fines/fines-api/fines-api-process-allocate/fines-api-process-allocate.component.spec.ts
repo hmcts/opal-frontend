@@ -1,3 +1,4 @@
+import { DateTime } from 'luxon';
 import { OPAL_FINES_SOURCE_MAPPINGS_MOCK } from '@services/fines/opal-fines-service/mocks/opal-fines-source-mappings.mock';
 import { Component, EventEmitter, Input, Output } from '@angular/core';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
@@ -61,8 +62,13 @@ describe('FinesApiProcessAllocateComponent', () => {
   let fixture: ComponentFixture<FinesApiProcessAllocateComponent>;
   let finesApiStore: InstanceType<typeof FinesApiStore>;
   let processJobs: IOpalFinesInterfaceJobSummary[];
-  let getInterfaceJobsSummary: ReturnType<typeof vi.fn>;
+  let getInterfaceJobsSummary: ReturnType<
+    typeof vi.fn<(...args: unknown[]) => Observable<IOpalFinesInterfaceJobsSummaryResponse>>
+  >;
   let getTills: ReturnType<typeof vi.fn>;
+  let getIgnoredJobs: ReturnType<
+    typeof vi.fn<(...args: unknown[]) => Observable<IOpalFinesInterfaceJobsSummaryResponse>>
+  >;
   let routerCurrentNavigation: ReturnType<typeof vi.fn<() => Partial<ReturnType<Router['currentNavigation']>>>>;
   let routerNavigate: ReturnType<typeof vi.fn<Router['navigate']>>;
   const activatedRouteParent = { routeConfig: {} };
@@ -75,6 +81,7 @@ describe('FinesApiProcessAllocateComponent', () => {
   beforeEach(async () => {
     activatedRoute.snapshot.data.sourceMappings = OPAL_FINES_SOURCE_MAPPINGS_MOCK;
     processJobs = PROCESS_JOBS;
+    getIgnoredJobs = vi.fn(() => of({ interface_jobs: [] }));
     getTills = vi.fn((): Observable<IOpalFinesTillsResponse> => of({ tills: [] }));
     activatedRoute.snapshot.fragment = 'process';
     activatedRoute.fragment = of('process');
@@ -94,7 +101,11 @@ describe('FinesApiProcessAllocateComponent', () => {
         },
         {
           provide: OpalFines,
-          useValue: { getInterfaceJobsSummary, getTills },
+          useValue: {
+            getInterfaceJobsSummary: (params: { statuses?: string[] }) =>
+              params.statuses?.includes('IGNORED') ? getIgnoredJobs(params) : getInterfaceJobsSummary(params),
+            getTills,
+          },
         },
       ],
     })
@@ -585,6 +596,136 @@ describe('FinesApiProcessAllocateComponent', () => {
     );
   });
 
+  describe('Ignored files integration', () => {
+    const ignoredJob = { ...PROCESS_JOBS[0], status: 'IGNORED', completed_datetime: '2026-10-11T12:17:04.323177' };
+    const native = (): HTMLElement => fixture.nativeElement;
+    const count = (): string | undefined => native().querySelector('#fines-api-ignored-count')?.textContent?.trim();
+    const switchTab = (tab: string): void => {
+      component['handleTabSwitch'](tab);
+      fixture.detectChanges();
+    };
+    const refresh = (): void => {
+      native().querySelector<HTMLButtonElement>('#fines-api-ignored-refresh')!.click();
+      fixture.detectChanges();
+    };
+
+    it('loads only selected BUs on entry and keeps the count across all tabs without duplicate reads', () => {
+      getIgnoredJobs.mockReturnValue(of({ interface_jobs: [ignoredJob] }));
+      render();
+      expect(getIgnoredJobs).toHaveBeenCalledExactlyOnceWith(
+        expect.objectContaining({
+          business_unit_ids: [77, 80],
+          statuses: ['IGNORED'],
+          interface_name: 'payments_in',
+          completed_date_from: expect.any(String),
+          completed_date_to: expect.any(String),
+        }),
+      );
+      expect(count()).toBe('1');
+      switchTab('allocate');
+      expect(count()).toBe('1');
+      switchTab('ignored');
+      expect(count()).toBe('1');
+      expect(native().querySelector('#fines-api-ignored-files')?.textContent).toContain('NatWest');
+      expect(native().querySelector('#fines-api-ignored-files')?.textContent).toContain('11 October 2026 at 12:17');
+      expect(native().querySelector('#fines-api-ignored-files a')?.getAttribute('href')).toBe(
+        '/fines/auto-payment-in/file-summary/701',
+      );
+      expect(getIgnoredJobs).toHaveBeenCalledOnce();
+    });
+
+    it('recomputes a single pair of UK fourteen-day bounds on every refresh', () => {
+      const now = vi
+        .spyOn(DateTime, 'now')
+        .mockReturnValue(DateTime.fromISO('2026-10-16T22:54:12', { zone: 'Europe/London' }) as DateTime<true>);
+      try {
+        render();
+        expect(getIgnoredJobs).toHaveBeenLastCalledWith(
+          expect.objectContaining({
+            completed_date_from: '2026-10-02T22:54:12',
+            completed_date_to: '2026-10-16T22:54:12',
+          }),
+        );
+        switchTab('ignored');
+        now.mockReturnValue(DateTime.fromISO('2026-10-17T09:00:00', { zone: 'Europe/London' }) as DateTime<true>);
+        refresh();
+        expect(getIgnoredJobs).toHaveBeenLastCalledWith(
+          expect.objectContaining({
+            completed_date_from: '2026-10-03T09:00:00',
+            completed_date_to: '2026-10-17T09:00:00',
+          }),
+        );
+      } finally {
+        now.mockRestore();
+      }
+    });
+
+    it('hides a zero count and updates rows/count together in both directions on refresh', () => {
+      render();
+      switchTab('ignored');
+      expect(count()).toBeUndefined();
+      expect(native().querySelector('#fines-api-ignored-files')).toBeNull();
+      expect(native().querySelector('#fines-api-ignored-refresh')).toBeTruthy();
+      getIgnoredJobs.mockReturnValue(of({ interface_jobs: [ignoredJob] }));
+      refresh();
+      expect(count()).toBe('1');
+      getIgnoredJobs.mockReturnValue(of({ interface_jobs: [] }));
+      refresh();
+      expect(count()).toBeUndefined();
+      expect(native().querySelector('#fines-api-ignored-files')).toBeNull();
+    });
+
+    it('allows retry after initial failure and keeps successful rows/count when refresh fails', () => {
+      getIgnoredJobs.mockReturnValueOnce(throwError(() => new Error('unavailable')));
+      render();
+      switchTab('ignored');
+      expect(native().querySelector('#fines-api-ignored-files')).toBeNull();
+      expect(count()).toBeUndefined();
+      getIgnoredJobs.mockReturnValue(of({ interface_jobs: [ignoredJob] }));
+      refresh();
+      getIgnoredJobs.mockReturnValueOnce(throwError(() => new Error('unavailable')));
+      refresh();
+      expect(count()).toBe('1');
+      expect(native().querySelector('#fines-api-ignored-files')).toBeTruthy();
+      getIgnoredJobs.mockReturnValue(of({ interface_jobs: [] }));
+      refresh();
+      expect(count()).toBeUndefined();
+    });
+
+    it('cancels superseded reads and unsubscribes when destroyed', () => {
+      const pending = new Subject<IOpalFinesInterfaceJobsSummaryResponse>();
+      getIgnoredJobs.mockReturnValueOnce(pending);
+      render();
+      switchTab('ignored');
+      getIgnoredJobs.mockReturnValue(of({ interface_jobs: [ignoredJob] }));
+      refresh();
+      expect(pending.observed).toBe(false);
+      pending.next({ interface_jobs: [] });
+      fixture.detectChanges();
+      expect(count()).toBe('1');
+      getIgnoredJobs.mockReturnValue(pending);
+      refresh();
+      expect(pending.observed).toBe(true);
+      fixture.destroy();
+      expect(pending.observed).toBe(false);
+    });
+
+    it('clears the old BU count before replacement data and never requests all BUs on reset', () => {
+      getIgnoredJobs.mockReturnValue(of({ interface_jobs: [ignoredJob] }));
+      render();
+      const pending = new Subject<IOpalFinesInterfaceJobsSummaryResponse>();
+      getIgnoredJobs.mockReturnValue(pending);
+      finesApiStore.setSelectedBusinessUnitIds([65]);
+      fixture.detectChanges();
+      expect(count()).toBeUndefined();
+      expect(getIgnoredJobs).toHaveBeenLastCalledWith(expect.objectContaining({ business_unit_ids: [65] }));
+      finesApiStore.setSelectedBusinessUnitIds([]);
+      fixture.detectChanges();
+      expect(pending.observed).toBe(false);
+      expect(getIgnoredJobs).toHaveBeenCalledTimes(2);
+    });
+  });
+
   it('should create and update through the compiled Angular definition', async () => {
     TestBed.resetTestingModule();
     await TestBed.configureTestingModule({
@@ -592,7 +733,14 @@ describe('FinesApiProcessAllocateComponent', () => {
       providers: [
         provideRouter([]),
         { provide: ActivatedRoute, useValue: activatedRoute },
-        { provide: OpalFines, useValue: { getInterfaceJobsSummary, getTills } },
+        {
+          provide: OpalFines,
+          useValue: {
+            getInterfaceJobsSummary: (params: { statuses?: string[] }) =>
+              params.statuses?.includes('IGNORED') ? getIgnoredJobs(params) : getInterfaceJobsSummary(params),
+            getTills,
+          },
+        },
       ],
     }).compileComponents();
 
