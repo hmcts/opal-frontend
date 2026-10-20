@@ -11,6 +11,9 @@
   "frontend-hostname": {
     "prod": "FRONTEND_HOSTNAME"
   },
+  "dynatrace": {
+    "scriptUrl": "DYNATRACE_SCRIPT_URL"
+  },
   "features": {
     "redis": {
       "enabled": {

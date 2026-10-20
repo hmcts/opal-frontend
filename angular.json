@@ -46,7 +46,7 @@
             "stylePreprocessorOptions": {
               "includePaths": ["."]
             },
-            "scripts": ["./node_modules/govuk-frontend/dist/govuk/all.bundle.js"],
+            "scripts": ["./node_modules/govuk-frontend/dist/govuk/all.bundle.js", "src/dynatrace-loader.js"],
             "allowedCommonJsDependencies": ["accessible-autocomplete"]
           },
           "configurations": {
@@ -126,7 +126,7 @@
             "stylePreprocessorOptions": {
               "includePaths": ["."]
             },
-            "scripts": ["./node_modules/govuk-frontend/dist/govuk/all.bundle.js"],
+            "scripts": ["./node_modules/govuk-frontend/dist/govuk/all.bundle.js", "src/dynatrace-loader.js"],
             "allowedCommonJsDependencies": ["accessible-autocomplete"]
           },
           "configurations": {

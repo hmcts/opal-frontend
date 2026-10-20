@@ -1,9 +1,15 @@
 import { join } from 'node:path';
 const domino = require('domino-ext');
 const fs = require('fs');
-const path = require('path');
 const distFolder = join(process.cwd(), 'dist/opal-frontend/browser');
-const template = fs.readFileSync(path.join(distFolder, 'index.html')).toString();
+const indexHtmlPath = existsSync(join(distFolder, 'index.original.html'))
+  ? join(distFolder, 'index.original.html')
+  : join(distFolder, 'index.html');
+const indexHtmlDocument = addDynatraceScriptUrl(
+  fs.readFileSync(indexHtmlPath).toString(),
+  config.get<string>('dynatrace.scriptUrl'),
+);
+const template = indexHtmlDocument;
 
 const win = domino.createWindow(template.toString());
 
@@ -20,6 +26,7 @@ import { existsSync } from 'node:fs';
 import { Logger } from '@hmcts/nodejs-logging';
 import config from 'config';
 import bootstrap from './src/main.server';
+import { addDynatraceScriptUrl } from './src/dynatrace-config';
 
 import {
   getRoutesConfig,
@@ -34,10 +41,6 @@ import { SessionConfiguration, SsoConfiguration } from '@hmcts/opal-frontend-com
 import { HealthCheck } from '@hmcts/opal-frontend-common-node/health';
 import { PropertiesVolume } from '@hmcts/opal-frontend-common-node/properties-volume';
 import { Routes } from '@hmcts/opal-frontend-common-node/routes';
-
-const indexHtml = existsSync(join(distFolder, 'index.original.html'))
-  ? join(distFolder, 'index.original.html')
-  : join(distFolder, 'index.html');
 
 const sessionConfiguration: SessionConfiguration = {
   sessionExpiryUrl: '/session/expiry',
@@ -129,7 +132,7 @@ function app(): Express {
 
       const html = await commonEngine.render({
         bootstrap,
-        documentFilePath: indexHtml,
+        document: indexHtmlDocument,
         url: `${protocol}://${headers.host}${originalUrl}`,
         publicPath: distFolder,
         providers: [

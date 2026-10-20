@@ -21,6 +21,7 @@ nodejs:
     OPAL_FINES_SERVICE_API_URL: https://opal-fines-service.{{ .Values.global.environment }}.platform.hmcts.net
     OPAL_USER_SERVICE_API_URL: https://opal-user-service.staging.platform.hmcts.net
     FRONTEND_HOSTNAME: https://opal-frontend.{{ .Values.global.environment }}.apps.hmcts.net
+    DYNATRACE_SCRIPT_URL: https://js-cdn.dynatrace.com/jstag/17177a07246/bf24054dsx/4a03186dca98a183_complete.js
     SESSION_SECURE_ENABLED: true
     CSRF_SECURE_ENABLED: true
     FEATURES_HELMET_ENABLED: true
