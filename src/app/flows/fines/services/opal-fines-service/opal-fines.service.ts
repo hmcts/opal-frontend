@@ -77,6 +77,8 @@ import { IOpalFinesReportInstancesParams } from './interfaces/opal-fines-report-
 import { IOpalFinesReportInstancesResponse } from './interfaces/opal-fines-report-instances-response.interface';
 import { IOpalFinesInterfaceJobsSummaryParams } from './interfaces/opal-fines-interface-jobs-summary-params.interface';
 import { IOpalFinesInterfaceJobsSummaryResponse } from './interfaces/opal-fines-interface-jobs-summary-response.interface';
+import { IOpalFinesTillsResponse } from './interfaces/opal-fines-tills-response.interface';
+import { IOpalFinesTillsParams } from './interfaces/opal-fines-tills-params.interface';
 import { IOpalFinesProcessInterfaceJobsPayload } from './interfaces/opal-fines-process-interface-jobs-payload.interface';
 
 const SAFE_READ_RETRY_POLICY = {
@@ -89,6 +91,7 @@ const SAFE_READ_RETRY_POLICY = {
 })
 export class OpalFines {
   private readonly http = inject(HttpClient);
+
   private cache = structuredClone(OPAL_FINES_CACHE_DEFAULTS);
 
   private readonly PARAM_BUSINESS_UNIT = 'business_unit';
@@ -1769,5 +1772,13 @@ export class OpalFines {
 
     this.cache.majorCreditorAccountHistoryAndNotesCache$ ??= request$;
     return this.cache.majorCreditorAccountHistoryAndNotesCache$;
+  }
+
+  /** Loads tills available to the authenticated user for manual allocation. */
+  public getTills(query: IOpalFinesTillsParams): Observable<IOpalFinesTillsResponse> {
+    let params = new HttpParams();
+    params = this.appendArrayParams(params, this.PARAM_STATUSES, query.statuses);
+    params = params.set('auto_payments', query.auto_payments);
+    return this.http.get<IOpalFinesTillsResponse>(OPAL_FINES_PATHS.tills, this.withRetrySafeReadOptions({ params }));
   }
 }
