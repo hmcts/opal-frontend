@@ -4,6 +4,7 @@
  * Shared selector map for the Account Enquiry minor creditor creditor tab.
  */
 export const MINOR_CREDITOR_CREDITOR_DETAILS = {
+  associatedDefendantLink: 'app-fines-acc-minor-creditor-details-at-a-glance-tab a[href*="/defendant/"]',
   component: 'app-fines-acc-minor-creditor-details-creditor-tab',
   sectionHeading:
     'app-fines-acc-minor-creditor-details-creditor-tab > .govuk-grid-column-two-thirds > .govuk-grid-row > .govuk-grid-column-two-thirds > h2',
