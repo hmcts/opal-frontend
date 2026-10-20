@@ -4,5 +4,8 @@ export const FINES_MCI_ROUTING_PATHS: IFinesMciRoutingPaths = {
   root: 'manual-cash-input',
   children: {
     createAllocate: 'create-allocate',
+    create: 'create',
+    till: 'till',
+    selectBusinessUnit: 'select-bu',
   },
 };
