@@ -1,119 +1,75 @@
 import { inject, Injectable } from '@angular/core';
-import {
-  FINES_FINANCE_INBOUND_FILES_ALL_BUSINESS_UNITS,
-  FINES_FINANCE_INBOUND_FILES_ALL_FILE_SOURCES,
-  FINES_FINANCE_INBOUND_FILES_ALL_FILE_TYPES,
-} from '../constants/fines-finance-autocomplete.constant';
-import {
-  InterfaceFileViewerFileSource,
-  InterfaceFileViewerFileType,
-  InterfaceFileViewerSupportedDomain,
-} from '../constants/fines-finance-enums.constant';
-import { IFinesFinanceInboundFilesForm } from './interfaces/fines-finance-inbound-files-form.interface';
-import { IFinesFinanceInterfaceFilesSearchParams } from './interfaces/fines-finance-interface-files-search-params.interface';
+import type { IAlphagovAccessibleAutocompleteItem } from '@hmcts/opal-frontend-common/components/alphagov/alphagov-accessible-autocomplete/interfaces';
+import type { ICustomFileInterfaceViewerInboundTableWrapperTableData } from '@hmcts/opal-frontend-common/components/custom/custom-file-interface-viewer/custom-inbound-file-viewer';
 import { DateService } from '@hmcts/opal-frontend-common/services/date-service';
+import type {
+  IOpalFileHandlingInterfaceFile,
+  IOpalFileHandlingInterfaceFileParams,
+} from '@hmcts/opal-frontend-common/services/opal-file-handling-service/interfaces';
+import { GlobalStore } from '@hmcts/opal-frontend-common/stores/global';
+import type { IOpalFinesBusinessUnit } from '../../services/opal-fines-service/interfaces/opal-fines-business-unit.interface';
+import { FINES_FINANCE_INBOUND_FILES_SOURCE_OPTIONS } from '../constants/fines-finance-inbound-files-source-options.constant';
+import { FINES_FINANCE_INBOUND_FILES_TYPE_OPTIONS } from '../constants/fines-finance-inbound-files-type-options.constant';
+import type { IFinesFinanceInboundFilesForm } from './interfaces/fines-finance-inbound-files-form.interface';
+import { buildInboundFilesSearchParams } from './utils/fines-finance-payload-build-inbound-files-search.utils';
+import {
+  getPermittedBusinessUnitOptions,
+  mapBusinessUnitsToOptions,
+} from './utils/fines-finance-payload-business-unit-options.utils';
+import { mapInboundFilesToTableData } from './utils/fines-finance-payload-map-inbound-files.utils';
 
-@Injectable({
-  providedIn: 'root',
-})
-/**
- * Facade service for building Finance file-handling payload data.
- */
+@Injectable({ providedIn: 'root' })
 export class FinesFinancePayloadService {
+  private readonly dateService = inject(DateService);
+  private readonly globalStore = inject(GlobalStore);
+
   /**
-   * Builds file-handling search parameters from the inbound interface files filter form.
+   * Builds inbound scope restrictions and selected filters for the File Handling API.
+   * @param formData - Current inbound-file filter values.
+   * @returns Search criteria with empty optional selections omitted.
    */
-
-  readonly dateService = inject(DateService);
-
-  private toBackendDateTime(value: string, time: 'T00:00:00' | 'T23:59:59'): string {
-    const inputFormat = value.includes('/') ? 'dd/MM/yyyy' : 'yyyy-MM-dd';
-    const ISODate = this.dateService.getFromFormatToFormat(value, inputFormat, 'yyyy-MM-dd');
-    return `${ISODate}${time}`;
-  }
-  private buildDateFilterParams(
-    formData: IFinesFinanceInboundFilesForm,
-  ): Pick<IFinesFinanceInterfaceFilesSearchParams, 'from_date' | 'to_date'> {
-    switch (formData.dateFilter) {
-      case 'dateRange':
-        console.log('Building date range filter params - daterange');
-        return {
-          ...(formData.dateFrom ? { from_date: this.toBackendDateTime(formData.dateFrom, 'T00:00:00') } : {}),
-          ...(formData.dateTo ? { to_date: this.toBackendDateTime(formData.dateTo, 'T23:59:59') } : {}),
-        };
-
-      case 'customDays': {
-        console.log('Building date range filter params - customDays');
-
-        if (!formData.days) return {};
-        const numberOfDays = parseInt(formData.days, 10);
-        const { from, to } = this.dateService.getDateRange(numberOfDays - 1, 0, 'yyyy-MM-dd');
-        return {
-          from_date: this.toBackendDateTime(from, 'T00:00:00'),
-          to_date: this.toBackendDateTime(to, 'T23:59:59'),
-        };
-      }
-
-      case 'last7Days': {
-        console.log('Building date range filter params - last7Days');
-
-        const { from, to } = this.dateService.getDateRange(6, 0, 'yyyy-MM-dd');
-        return {
-          from_date: this.toBackendDateTime(from, 'T00:00:00'),
-          to_date: this.toBackendDateTime(to, 'T23:59:59'),
-        };
-      }
-      default:
-        return {};
-    }
+  public buildInboundFilesSearchParams(formData: IFinesFinanceInboundFilesForm): IOpalFileHandlingInterfaceFileParams {
+    return buildInboundFilesSearchParams(formData, this.dateService);
   }
 
-  private setParamIfNotAll<T extends keyof IFinesFinanceInterfaceFilesSearchParams>(
-    params: IFinesFinanceInterfaceFilesSearchParams,
-    key: T,
-    value: string | null,
-    allValue: string,
-    transform: (value: string) => IFinesFinanceInterfaceFilesSearchParams[T],
-  ): void {
-    if (value && value !== allValue) {
-      params[key] = transform(value);
-    }
+  /**
+   * Resolves every business-unit name for displaying returned API codes.
+   * @param businessUnits - Resolved business-unit reference data.
+   * @returns Alphabetic name/code options, preserving leading zeros.
+   */
+  public mapBusinessUnitsToOptions(businessUnits: IOpalFinesBusinessUnit[]): IAlphagovAccessibleAutocompleteItem[] {
+    return mapBusinessUnitsToOptions(businessUnits);
   }
 
-  public buildInboundFilesSearchParams(
-    formData: IFinesFinanceInboundFilesForm,
-  ): IFinesFinanceInterfaceFilesSearchParams {
-    const params: IFinesFinanceInterfaceFilesSearchParams = {
-      domain: InterfaceFileViewerSupportedDomain.Fines,
-      not_target: [],
-      not_status: [],
-      target: [],
-      not_type: [InterfaceFileViewerFileSource.SourceJson],
-      ...this.buildDateFilterParams(formData),
-    };
+  /**
+   * Limits filter choices to business units where the current user can view interface files.
+   * @param businessUnits - Resolved business-unit reference data.
+   * @returns Permitted alphabetic name/code options.
+   */
+  public getPermittedBusinessUnitOptions(
+    businessUnits: IOpalFinesBusinessUnit[],
+  ): IAlphagovAccessibleAutocompleteItem[] {
+    return getPermittedBusinessUnitOptions(businessUnits, this.globalStore.userState().business_unit_users);
+  }
 
-    this.setParamIfNotAll(
-      params,
-      'business_unit_code',
-      formData.businessUnit,
-      FINES_FINANCE_INBOUND_FILES_ALL_BUSINESS_UNITS,
-      (value) => value,
+  /**
+   * Maps API metadata into localized, sortable rows using Finance reference labels.
+   * @param files - Returned files, or an absent result list.
+   * @param businessUnitOptions - Names for all resolved business-unit codes.
+   * @returns Rows for the presentational inbound-file viewer.
+   */
+  public mapInboundFilesToTableData(
+    files: IOpalFileHandlingInterfaceFile[] | null | undefined,
+    businessUnitOptions: IAlphagovAccessibleAutocompleteItem[],
+  ): ICustomFileInterfaceViewerInboundTableWrapperTableData[] {
+    return mapInboundFilesToTableData(
+      files,
+      {
+        businessUnits: businessUnitOptions,
+        sources: FINES_FINANCE_INBOUND_FILES_SOURCE_OPTIONS,
+        types: FINES_FINANCE_INBOUND_FILES_TYPE_OPTIONS,
+      },
+      this.dateService,
     );
-    this.setParamIfNotAll(
-      params,
-      'source',
-      formData.source,
-      FINES_FINANCE_INBOUND_FILES_ALL_FILE_SOURCES,
-      (value) => value as InterfaceFileViewerFileSource,
-    );
-    this.setParamIfNotAll(
-      params,
-      'type',
-      formData.fileType,
-      FINES_FINANCE_INBOUND_FILES_ALL_FILE_TYPES,
-      (value) => value as InterfaceFileViewerFileType,
-    );
-
-    return params;
   }
 }

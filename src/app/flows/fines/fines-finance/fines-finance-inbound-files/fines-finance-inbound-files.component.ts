@@ -1,91 +1,76 @@
-import { ChangeDetectionStrategy, Component, inject, signal } from '@angular/core';
+import { ChangeDetectionStrategy, Component, computed, DestroyRef, inject, OnInit, signal } from '@angular/core';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
+import { Subscription } from 'rxjs';
 import { IAbstractFormBaseForm } from '@hmcts/opal-frontend-common/components/abstract/abstract-form-base/interfaces';
 import { IAlphagovAccessibleAutocompleteItem } from '@hmcts/opal-frontend-common/components/alphagov/alphagov-accessible-autocomplete/interfaces';
-import {
-  InterfaceFileViewerFileSource,
-  InterfaceFileViewerFileType,
-  InterfaceFileViewerSupportedDomain,
-} from '../constants/fines-finance-enums.constant';
 import { ActivatedRoute } from '@angular/router';
-import { ReactiveFormsModule } from '@angular/forms';
 import { IOpalFinesBusinessUnitRefData } from '../../services/opal-fines-service/interfaces/opal-fines-business-unit-ref-data.interface';
-import {
-  FINES_FINANCE_INBOUND_FILES_ALL_BUSINESS_UNITS,
-  FINES_FINANCE_INBOUND_FILES_ALL_FILE_SOURCES,
-  FINES_FINANCE_INBOUND_FILES_ALL_FILE_TYPES,
-} from '../constants/fines-finance-autocomplete.constant';
 import { CustomInboundFileViewerComponent } from '@hmcts/opal-frontend-common/components/custom/custom-file-interface-viewer/custom-inbound-file-viewer';
 import { FinesFinancePayloadService } from '../services/fines-finance-payload.service';
 import { IFinesFinanceInboundFilesForm } from '../services/interfaces/fines-finance-inbound-files-form.interface';
 import { OpalFileHandlingService } from '@hmcts/opal-frontend-common/services/opal-file-handling-service';
 import { IOpalFileHandlingInterfaceFilesRefData } from '@hmcts/opal-frontend-common/services/opal-file-handling-service/interfaces';
+import { FINES_FINANCE_INBOUND_FILES_SOURCE_OPTIONS } from '../constants/fines-finance-inbound-files-source-options.constant';
+import { FINES_FINANCE_INBOUND_FILES_TYPE_OPTIONS } from '../constants/fines-finance-inbound-files-type-options.constant';
+import { FINES_FINANCE_INBOUND_FILES_INITIAL_FILTER_STATE } from '../constants/fines-finance-inbound-files-initial-filter-state.constant';
 
 @Component({
   selector: 'app-fines-ext-finance-inbound-files',
-  imports: [ReactiveFormsModule, CustomInboundFileViewerComponent],
+  imports: [CustomInboundFileViewerComponent],
   templateUrl: './fines-finance-inbound-files.component.html',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-// simple comment to test commit
-export class FinesFinanceInboundFilesComponent {
+export class FinesFinanceInboundFilesComponent implements OnInit {
   private readonly activatedRoute = inject(ActivatedRoute);
+  private readonly destroyRef = inject(DestroyRef);
   private readonly payloadService = inject(FinesFinancePayloadService);
   private readonly opalFileHandlingService = inject(OpalFileHandlingService);
-  public readonly interfaceFilesRefData = signal<IOpalFileHandlingInterfaceFilesRefData | null>(null);
-  public data: IAlphagovAccessibleAutocompleteItem[] = [];
-  public readonly isInbound = true;
-  public readonly domain = InterfaceFileViewerSupportedDomain.Fines;
+  private readonly businessUnitRefData =
+    (this.activatedRoute.snapshot.data['businessUnits'] as IOpalFinesBusinessUnitRefData | null)?.refData ?? [];
+  private readonly businessUnitDisplayOptions = this.payloadService.mapBusinessUnitsToOptions(this.businessUnitRefData);
+  private interfaceFilesRequest?: Subscription;
+  private readonly interfaceFilesRefData = signal<IOpalFileHandlingInterfaceFilesRefData | null>(null);
 
-  public readonly source: IAlphagovAccessibleAutocompleteItem[] = [
-    {
-      name: FINES_FINANCE_INBOUND_FILES_ALL_FILE_TYPES,
-      value: FINES_FINANCE_INBOUND_FILES_ALL_FILE_TYPES,
-    },
-    ...Object.values(InterfaceFileViewerFileType).map((fileType) => ({
-      name: fileType,
-      value: fileType,
-    })),
-  ];
-
-  public readonly sourceList: IAlphagovAccessibleAutocompleteItem[] = [
-    {
-      name: FINES_FINANCE_INBOUND_FILES_ALL_FILE_SOURCES,
-      value: FINES_FINANCE_INBOUND_FILES_ALL_FILE_SOURCES,
-    },
-    ...Object.values(InterfaceFileViewerFileSource).map((fileSource) => ({
-      name: fileSource,
-      value: fileSource,
-    })),
-  ];
-
-  public readonly businessUnits: IAlphagovAccessibleAutocompleteItem[] = this.createBusinessUnitAutoCompleteItems(
-    this.activatedRoute.snapshot.data['businessUnits'] as IOpalFinesBusinessUnitRefData | null,
-  );
+  public readonly source: IAlphagovAccessibleAutocompleteItem[] = FINES_FINANCE_INBOUND_FILES_SOURCE_OPTIONS;
+  public readonly sourceList: IAlphagovAccessibleAutocompleteItem[] = FINES_FINANCE_INBOUND_FILES_TYPE_OPTIONS;
+  public readonly businessUnits: IAlphagovAccessibleAutocompleteItem[] =
+    this.payloadService.getPermittedBusinessUnitOptions(this.businessUnitRefData);
+  public readonly refreshFailed = signal(false);
+  public readonly tableData = computed(() => {
+    const response = this.interfaceFilesRefData();
+    return response === null
+      ? null
+      : this.payloadService.mapInboundFilesToTableData(response.interface_files, this.businessUnitDisplayOptions);
+  });
 
   /**
-   * Creates an array of autocomplete items based on the business unit data.
-   * @param result - The resolved business unit reference data.
-   * @returns An array of autocomplete items.
+   * Requests files for the submitted filters, cancelling any previous pending search.
+   *
+   * @param form - Submitted inbound-file filter data and form metadata.
    */
-  private createBusinessUnitAutoCompleteItems(
-    result: IOpalFinesBusinessUnitRefData | null,
-  ): IAlphagovAccessibleAutocompleteItem[] {
-    const options =
-      result?.refData.map((item) => ({
-        value: item.business_unit_id.toString(),
-        name: item.business_unit_name,
-      })) ?? [];
-
-    return [{ value: FINES_FINANCE_INBOUND_FILES_ALL_BUSINESS_UNITS, name: 'All business units' }, ...options];
-  }
-
   public onFormSubmit(form: IAbstractFormBaseForm<unknown>): void {
     const searchParams = this.payloadService.buildInboundFilesSearchParams(
       form.formData as IFinesFinanceInboundFilesForm,
     );
 
-    this.opalFileHandlingService.getInterfaceFilesRefData(searchParams).subscribe((response) => {
-      this.interfaceFilesRefData.set(response);
+    this.interfaceFilesRequest?.unsubscribe();
+    this.refreshFailed.set(false);
+    this.interfaceFilesRequest = this.opalFileHandlingService
+      .getInterfaceFilesRefData(searchParams)
+      .pipe(takeUntilDestroyed(this.destroyRef))
+      .subscribe({
+        next: (response) => this.interfaceFilesRefData.set(response),
+        error: () => this.refreshFailed.set(true),
+      });
+  }
+
+  /**
+   * Loads inbound files on page entry using Last 7 days and empty optional filters.
+   */
+  public ngOnInit(): void {
+    this.onFormSubmit({
+      formData: { ...FINES_FINANCE_INBOUND_FILES_INITIAL_FILTER_STATE },
+      nestedFlow: false,
     });
   }
 }
