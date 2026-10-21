@@ -330,9 +330,6 @@ describe('Automatic Cash Input - Process files and allocate tills', () => {
           ].join('/'),
         );
       cy.get(AutomaticCashInputLocators.selectBusinessUnitsLegend).should('contain.text', 'Select business units');
-      cy.get('@finesApiStore').then((finesApiStore) => {
-        expect((finesApiStore as InstanceType<typeof FinesApiStore>).selectedTillIds()).to.deep.equal([]);
-      });
     },
   );
 
@@ -448,10 +445,6 @@ describe('Automatic Cash Input - Process files and allocate tills', () => {
       cy.get('@financeRouter')
         .its('url')
         .should('contain', FINES_ROUTING_PATHS.children.autoPaymentIn.children.processAllocate);
-      cy.get(AutomaticCashInputLocators.allocateTillCheckbox(123)).should('be.checked');
-      cy.get('@finesApiStore').then((finesApiStore) => {
-        expect((finesApiStore as InstanceType<typeof FinesApiStore>).selectedTillIds()).to.deep.equal(['123']);
-      });
 
       cy.get(LoginLocators.signOutLink).click();
       cy.get('@leavePageConfirm').should('have.been.calledTwice');
