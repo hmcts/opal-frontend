@@ -34,6 +34,7 @@ import { REPORTS_PERMISSIONS } from './flows/fines/constants/reports-permissions
 import { SEARCH_PERMISSIONS } from './flows/fines/constants/search-permissions.constant';
 import {
   RELEASE_1A_FEATURE_FLAG,
+  RELEASE_1A_1_2_FEATURE_FLAG,
   RELEASE_1C_ADMINISTRATION_FEATURE_FLAG,
   RELEASE_1B_FEATURE_FLAG,
   RELEASE_1C_WRITE_OFF_FEATURE_FLAG,
@@ -179,6 +180,30 @@ describe('AppComponent - browser', () => {
     const fixture = TestBed.createComponent(AppComponent);
     const app = fixture.componentInstance;
     expect(app).toBeTruthy();
+  });
+
+  it('should render a GOV.UK skip link before the page content', () => {
+    globalStore.setFeatureFlags({ ...DEFAULT_RELEASE_FEATURE_FLAGS, [RELEASE_1A_1_2_FEATURE_FLAG]: true });
+    const fixture = TestBed.createComponent(AppComponent);
+    fixture.detectChanges();
+
+    const skipLinkComponent = fixture.nativeElement.querySelector('opal-lib-govuk-skip-link') as HTMLElement;
+    const skipLink = fixture.nativeElement.querySelector('.govuk-skip-link') as HTMLAnchorElement;
+
+    expect(skipLinkComponent).toBe(fixture.nativeElement.firstElementChild);
+    expect(skipLink).toBe(skipLinkComponent.firstElementChild);
+    expect(skipLink.textContent?.trim()).toBe('Skip to main content');
+    expect(skipLink.getAttribute('href')).toBe(`${window.location.pathname}#main-content`);
+    expect(skipLink.dataset['module']).toBe('govuk-skip-link');
+    expect(fixture.nativeElement.querySelector(skipLink.hash)?.id).toBe('main-content');
+  });
+
+  it('should not render a GOV.UK skip link when release-1a-1-2 is disabled', () => {
+    globalStore.setFeatureFlags({ ...DEFAULT_RELEASE_FEATURE_FLAGS, [RELEASE_1A_1_2_FEATURE_FLAG]: false });
+    const fixture = TestBed.createComponent(AppComponent);
+    fixture.detectChanges();
+
+    expect(fixture.nativeElement.querySelector('opal-lib-govuk-skip-link')).toBeNull();
   });
 
   it('should initialize launchDarklyFlags and subscribe to launchDarklyFlags$', () => {
