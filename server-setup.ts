@@ -103,12 +103,12 @@ export function configureApiProxyRoutes(app: Express, proxyConfiguration: ProxyC
     app.use(
       '/opal-file-handling-service',
       OpalApiProxy(
-        proxyConfiguration.opalFileHandlingServiceUrl, 
-        ipLoggingEnabled, 
-        proxyConfiguration.timeoutInMilliseconds),
+        proxyConfiguration.opalFileHandlingServiceUrl,
+        ipLoggingEnabled,
+        proxyConfiguration.timeoutInMilliseconds,
+      ),
     );
-  } 
-
+  }
 
   if (proxyConfiguration.opalUserServiceUrl) {
     app.use(

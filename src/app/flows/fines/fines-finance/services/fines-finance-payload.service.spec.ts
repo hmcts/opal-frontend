@@ -1,124 +1,79 @@
 import { TestBed } from '@angular/core/testing';
-import { beforeEach, describe, expect, it } from 'vitest';
+import { Settings } from 'luxon';
+import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
+import { GlobalStore } from '@hmcts/opal-frontend-common/stores/global';
 import { FinesFinancePayloadService } from './fines-finance-payload.service';
-import {
-  FINES_FINANCE_INBOUND_FILES_ALL_BUSINESS_UNITS,
-  FINES_FINANCE_INBOUND_FILES_ALL_FILE_SOURCES,
-  FINES_FINANCE_INBOUND_FILES_ALL_FILE_TYPES,
-} from '../constants/fines-finance-autocomplete.constant';
-import {
-  InterfaceFileViewerFileSource,
-  InterfaceFileViewerFileStatus,
-  InterfaceFileViewerFileType,
-  InterfaceFileViewerSupportedDomain,
-} from '../constants/fines-finance-enums.constant';
-import { IFinesFinanceInboundFilesForm } from './interfaces/fines-finance-inbound-files-form.interface';
-import { DateService } from '@hmcts/opal-frontend-common/services/date-service';
+import { FINES_FINANCE_INBOUND_FILES_INITIAL_FILTER_STATE } from '../constants/fines-finance-inbound-files-initial-filter-state.constant';
+import { FINES_FINANCE_BUSINESS_UNIT_REF_DATA_MOCK } from '../fines-finance-inbound-files/mocks/fines-finance-business-unit-ref-data.mock';
+import { FINES_FINANCE_INBOUND_FILES_RESPONSE_MOCK } from '../fines-finance-inbound-files/mocks/fines-finance-inbound-files-response.mock';
 
 describe('FinesFinancePayloadService', () => {
   let service: FinesFinancePayloadService;
-  let dateServiceMock: { getDateRange: ReturnType<typeof vi.fn> };
-
+  let previousZone: typeof Settings.defaultZone;
   beforeEach(() => {
-    dateServiceMock = {
-      getDateRange: vi.fn((pastDays: number) =>
-        pastDays === 6 ? { from: '30/09/2026', to: '06/10/2026' } : { from: '23/09/2026', to: '06/10/2026' },
-      ),
-    };
-
+    vi.useFakeTimers({ toFake: ['Date'] });
+    vi.setSystemTime(new Date('2026-10-20T12:00:00Z'));
+    previousZone = Settings.defaultZone;
+    Settings.defaultZone = 'Europe/London';
     TestBed.configureTestingModule({
-      providers: [{ provide: DateService, useValue: dateServiceMock }],
+      providers: [
+        {
+          provide: GlobalStore,
+          useValue: {
+            userState: () => ({
+              business_unit_users: [{ business_unit_id: 77, permissions: [{ permission_id: 18 }] }],
+            }),
+          },
+        },
+      ],
     });
     service = TestBed.inject(FinesFinancePayloadService);
   });
-
-  it('should create', () => {
-    expect(service).toBeTruthy();
+  afterEach(() => {
+    Settings.defaultZone = previousZone;
+    vi.useRealTimers();
   });
 
-  it('should build inbound interface file search params and omit all-filter values', () => {
-    const formData: IFinesFinanceInboundFilesForm = {
-      businessUnit: FINES_FINANCE_INBOUND_FILES_ALL_BUSINESS_UNITS,
-      dateFilter: 'last7Days',
-      days: '',
-      dateFrom: '',
-      dateTo: '',
-      fileType: FINES_FINANCE_INBOUND_FILES_ALL_FILE_SOURCES,
-      source: FINES_FINANCE_INBOUND_FILES_ALL_FILE_TYPES,
-    };
-
-    const params = service.buildInboundFilesSearchParams(formData);
-
-    expect(params).toEqual({
-      domain: InterfaceFileViewerSupportedDomain.Fines,
-      from_date: '30/09/2026',
-      not_status: [
-        InterfaceFileViewerFileStatus.Duplicate,
-        InterfaceFileViewerFileStatus.Superseded,
-        InterfaceFileViewerFileStatus.FailedSuperseded,
-      ],
-      not_target: [InterfaceFileViewerFileSource.Source],
-      target: 'SOURCE_JSON,TRANSFORMED_JSON',
-      to_date: '06/10/2026',
+  it('builds the initial inbound API restrictions and inclusive date range', () => {
+    expect(service.buildInboundFilesSearchParams({ ...FINES_FINANCE_INBOUND_FILES_INITIAL_FILTER_STATE })).toEqual({
+      domain: 'FINES',
+      target: 'OPAL',
+      type: ['SOURCE', 'TRANSFORMED_JSON'],
+      not_status: ['FAILED_SUPERSEDED'],
+      from_date: '2026-10-13T23:00:00',
+      to_date: '2026-10-20T22:59:59.999999',
     });
-    expect(dateServiceMock.getDateRange).toHaveBeenCalledWith(6, 0, 'dd/MM/yyyy');
   });
 
-  it('should include selected business unit, file type, source, and custom days', () => {
-    const formData: IFinesFinanceInboundFilesForm = {
-      businessUnit: '77',
-      dateFilter: 'customDays',
-      days: '14',
-      dateFrom: '',
-      dateTo: '',
-      fileType: InterfaceFileViewerFileSource.SourceJson,
-      source: InterfaceFileViewerFileType.Opal,
-    };
-
-    const params = service.buildInboundFilesSearchParams(formData);
-
-    expect(params).toEqual({
-      business_unit_code: '77',
-      domain: InterfaceFileViewerSupportedDomain.Fines,
-      from_date: '23/09/2026',
-      not_status: [
-        InterfaceFileViewerFileStatus.Duplicate,
-        InterfaceFileViewerFileStatus.Superseded,
-        InterfaceFileViewerFileStatus.FailedSuperseded,
-      ],
-      not_target: [InterfaceFileViewerFileSource.Source],
-      source: InterfaceFileViewerFileSource.SourceJson,
-      target: 'SOURCE_JSON,TRANSFORMED_JSON',
-      to_date: '06/10/2026',
-      type: InterfaceFileViewerFileType.Opal,
-    });
-    expect(dateServiceMock.getDateRange).toHaveBeenCalledWith(13, 0, 'dd/MM/yyyy');
+  it('maps all business-unit codes to alphabetic display labels', () => {
+    expect(service.mapBusinessUnitsToOptions(FINES_FINANCE_BUSINESS_UNIT_REF_DATA_MOCK.refData)).toEqual([
+      { name: 'Camberwell Green', value: '0046' },
+      { name: 'Camden and Islington', value: '0034' },
+      { name: 'N E Region', value: '0047' },
+      { name: 'West London', value: '0042' },
+    ]);
   });
 
-  it('should include date range values when the date range filter is selected', () => {
-    const formData: IFinesFinanceInboundFilesForm = {
-      businessUnit: null,
-      dateFilter: 'dateRange',
-      days: '',
-      dateFrom: '01/10/2026',
-      dateTo: '05/10/2026',
-      fileType: null,
-      source: null,
-    };
+  it('uses current-user permissions for business-unit filter choices', () => {
+    expect(service.getPermittedBusinessUnitOptions(FINES_FINANCE_BUSINESS_UNIT_REF_DATA_MOCK.refData)).toEqual([
+      { name: 'Camberwell Green', value: '0046' },
+    ]);
+  });
 
-    const params = service.buildInboundFilesSearchParams(formData);
-
-    expect(params).toEqual({
-      domain: InterfaceFileViewerSupportedDomain.Fines,
-      from_date: '01/10/2026',
-      not_status: [
-        InterfaceFileViewerFileStatus.Duplicate,
-        InterfaceFileViewerFileStatus.Superseded,
-        InterfaceFileViewerFileStatus.FailedSuperseded,
-      ],
-      not_target: [InterfaceFileViewerFileSource.Source],
-      target: 'SOURCE_JSON,TRANSFORMED_JSON',
-      to_date: '05/10/2026',
+  it('supplies Finance source/type labels and date formatting when mapping rows', () => {
+    const options = service.mapBusinessUnitsToOptions(FINES_FINANCE_BUSINESS_UNIT_REF_DATA_MOCK.refData);
+    expect(
+      service.mapInboundFilesToTableData(FINES_FINANCE_INBOUND_FILES_RESPONSE_MOCK.interface_files, options)[0],
+    ).toEqual({
+      'File ID': 1001,
+      'Date and time': Date.parse('2026-10-20T12:00:00Z'),
+      dateTimeDisplay: '20 Oct 2026 at 13:00',
+      Title: 'allpay_1001.xml',
+      Type: 'RAW',
+      'Business unit': 'Camberwell Green',
+      Source: 'Allpay',
+      Status: 'Ready',
+      Actions: null,
     });
   });
 });
