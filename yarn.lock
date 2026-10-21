@@ -731,19 +731,19 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@angular/platform-server@npm:21.2.24":
-  version: 21.2.24
-  resolution: "@angular/platform-server@npm:21.2.24"
+"@angular/platform-server@npm:21.2.25":
+  version: 21.2.25
+  resolution: "@angular/platform-server@npm:21.2.25"
   dependencies:
     tslib: "npm:^2.3.0"
     xhr2: "npm:^0.2.0"
   peerDependencies:
-    "@angular/common": 21.2.24
-    "@angular/compiler": 21.2.24
-    "@angular/core": 21.2.24
-    "@angular/platform-browser": 21.2.24
+    "@angular/common": 21.2.25
+    "@angular/compiler": 21.2.25
+    "@angular/core": 21.2.25
+    "@angular/platform-browser": 21.2.25
     rxjs: ^6.5.3 || ^7.4.0
-  checksum: 10/446d5a8878caeef05f9c954d8ef8e189987a90094522e09f594b494e1f03ff8b46032c77c0cc9e119973110cec3a81b20e897b1aafb7d86cff781ee08d0193e8
+  checksum: 10/17de530786beff1764a25faa5c16b8cc301d0d488501605ba1eeb196aa17a05433626524770a1c92bfe3b725492eaa9448849e56c996ad7952ce7044cd399b1d
   languageName: node
   linkType: hard
 
@@ -15639,7 +15639,7 @@ __metadata:
     "@angular/forms": "npm:21.2.24"
     "@angular/platform-browser": "npm:21.2.24"
     "@angular/platform-browser-dynamic": "npm:21.2.24"
-    "@angular/platform-server": "npm:21.2.24"
+    "@angular/platform-server": "npm:21.2.25"
     "@angular/router": "npm:21.2.24"
     "@angular/ssr": "npm:21.2.27"
     "@badeball/cypress-cucumber-preprocessor": "npm:^24.0.0"
