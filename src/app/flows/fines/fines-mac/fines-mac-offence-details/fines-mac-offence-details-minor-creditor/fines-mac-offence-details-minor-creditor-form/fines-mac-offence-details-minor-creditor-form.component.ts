@@ -104,7 +104,7 @@ export class FinesMacOffenceDetailsMinorCreditorFormComponent extends AbstractFo
   }
 
   public get sortCodeHintText(): string {
-    return this.isR1A12Enabled ? 'Must be 6 digits long, for example, 123456' : '';
+    return this.isR1A12Enabled ? 'Must be 6 digits long' : '';
   }
 
   public get accountNumberHintText(): string {

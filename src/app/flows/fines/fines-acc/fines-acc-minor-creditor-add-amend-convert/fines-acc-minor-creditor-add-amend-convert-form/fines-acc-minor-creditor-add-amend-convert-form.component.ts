@@ -120,7 +120,7 @@ export class FinesAccMinorCreditorAddAmendConvertFormComponent
   }
 
   public get sortCodeHintText(): string {
-    return this.isR1A12Enabled ? 'Must be 6 digits long, for example, 123456' : 'Must be 6 digits long';
+    return 'Must be 6 digits long';
   }
 
   public override fieldErrors: IFinesAccMinorCreditorAddAmendConvertFieldErrors = {
