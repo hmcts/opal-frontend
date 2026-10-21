@@ -41,8 +41,6 @@ import {
   NUMERIC_PATTERN,
   SINGLE_ASCII_CHARACTERS,
 } from '@hmcts/opal-frontend-common/constants';
-import { RELEASE_1A_1_2_FEATURE_FLAG } from '../../../../constants/release-feature-flags.constant';
-import { getFeatureFlagReleaseState } from '../../../../utils/fines-section-permissions.utils';
 
 const LETTERS_WITH_SPACES_PATTERN_VALIDATOR = patternValidator(LETTERS_WITH_SPACES_PATTERN, 'lettersWithSpacesPattern');
 const ALPHANUMERIC_WITH_SPACES_PATTERN_VALIDATOR = patternValidator(

@@ -11,8 +11,6 @@ import { GlobalStoreType } from '@hmcts/opal-frontend-common/stores/global/types
 import { RELEASE_1A_1_2_FEATURE_FLAG } from '../../../../constants/release-feature-flags.constant';
 import { GovukRadioComponent } from '@hmcts/opal-frontend-common/components/govuk/govuk-radio';
 import { afterAll, afterEach, beforeAll, beforeEach, describe, expect, it, vi } from 'vitest';
-import { GlobalStore } from '@hmcts/opal-frontend-common/stores/global';
-import { RELEASE_1A_1_2_FEATURE_FLAG } from '../../../../constants/release-feature-flags.constant';
 
 describe('FinesMacOffenceDetailsMinorCreditorFormComponent', () => {
   let component: FinesMacOffenceDetailsMinorCreditorFormComponent;
