@@ -1,5 +1,6 @@
 import { CommonModule } from '@angular/common';
 import { ChangeDetectionStrategy, Component, EventEmitter, Input, Output } from '@angular/core';
+import { HeadingLevel } from '@hmcts/opal-frontend-common/types';
 import { FinesMacOffenceDetailsReviewOffenceHeadingTitleComponent } from './fines-mac-offence-details-review-offence-heading-title/fines-mac-offence-details-review-offence-heading-title.component';
 
 @Component({
@@ -12,6 +13,7 @@ export class FinesMacOffenceDetailsReviewOffenceHeadingComponent {
   @Input({ required: true }) public offenceId!: number;
   @Input({ required: true }) public offenceCode!: string;
   @Input({ required: true }) public offenceTitle!: string;
+  @Input({ required: true }) public headingLevel!: HeadingLevel;
   @Input({ required: false }) public showActions!: boolean;
   @Input({ required: false }) public isReadOnly: boolean = false;
   @Output() public actionClicked = new EventEmitter<{ actionName: string; offenceId: number }>();
