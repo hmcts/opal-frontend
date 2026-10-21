@@ -26,8 +26,8 @@ export const FORMAT_CHECK = {
   addressLine3SpecialCharactersPattern:
     'Address line 3 must only include letters a to z, numbers 0-9 and certain special characters (such as hyphens, spaces, apostrophes and commas)',
   companyNameAlphabeticalTextPattern: `Company name must only include letters a to z, numbers 0-9 and certain special characters (such as hyphens, spaces, apostrophes and commas)`,
-  surnameAlphabeticalTextPattern: `Last name must only contain letters`,
-  forenamesAlphabeticalTextPattern: `First name(s) must only contain letters`,
+  surnameAlphabeticalTextPattern: `Last name must only include letters a to z, numbers 0-9 and certain special characters (such as hyphens, spaces, apostrophes and commas)`,
+  forenamesAlphabeticalTextPattern: `First name(s) must only include letters a to z, numbers 0-9 and certain special characters (such as hyphens, spaces, apostrophes and commas)`,
 };
 
 export const REQUIRED_FIELDS = {

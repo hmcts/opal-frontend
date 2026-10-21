@@ -36,6 +36,7 @@
     [enforcementCourtsData]="courts"
     [prosecutorsData]="prosecutors"
     [localJusticeAreasData]="localJusticeAreas"
+    [release1a1_1Enabled]="release1a1_1Enabled()"
     [isReadOnly]="isReadOnly"
     (emitChangeCourtDetails)="change(finesMacRoutes.children.courtDetails)"
   ></app-fines-mac-review-account-court-details>
@@ -86,7 +87,7 @@
     <app-fines-mac-review-account-fixed-penalty-offence-details
       [offenceDetails]="finesMacStore.fixedPenaltyDetails().formData"
       [isReadOnly]="isReadOnly"
-      (emitChangeOffenceDetails)="change()"
+      (emitChangeOffenceDetails)="change(finesMacRoutes.children.offenceDetails)"
       [isReadOnly]="isReadOnly"
     ></app-fines-mac-review-account-fixed-penalty-offence-details>
   } @else {

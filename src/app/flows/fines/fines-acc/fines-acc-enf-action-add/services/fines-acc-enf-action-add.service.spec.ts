@@ -11,6 +11,30 @@ import { FINES_ACC_ENF_ACTION_ADD_MIXED_FIELD_TYPES_RESULT_PARAMETERS_MOCK } fro
 describe('FinesAccEnfActionAddService', () => {
   const service = new FinesAccEnfActionAddService();
 
+  it('uses the selected result prompts without changing identifiers', () => {
+    const labels = service.getResultParameterLabels(
+      JSON.stringify([
+        { name: 'daysindefault', prompt: 'Days in default' },
+        { name: 'prisondetention', prompt: 'Select type of supervision ' },
+        { name: 'hearingdate', prompt: 'Adjourned to' },
+      ]),
+    );
+    expect(labels.get('daysindefault')).toBe('Days in default');
+    expect(labels.get('prisondetention')).toBe('Select type of supervision');
+    expect(labels.get('hearingdate')).toBe('Adjourned to');
+    expect(labels.has('days_in_default')).toBe(false);
+    expect(
+      service.getResultParameterLabels('[{"name":"hearingdate","prompt":"Date of hearing"}]').get('hearingdate'),
+    ).toBe('Date of hearing');
+  });
+
+  it.each([undefined, 'invalid', '{}', '[null, {"name":"missingprompt"}]'])(
+    'handles unavailable labels: %s',
+    (json) => {
+      expect(service.getResultParameterLabels(json).size).toBe(0);
+    },
+  );
+
   it('maps result parameters to dynamic form fields including Welsh text companions', () => {
     const structure = service.mapResultParamsToFormStructure(
       FINES_ACC_ENF_ACTION_ADD_RESULT_MOCK.result_parameters,

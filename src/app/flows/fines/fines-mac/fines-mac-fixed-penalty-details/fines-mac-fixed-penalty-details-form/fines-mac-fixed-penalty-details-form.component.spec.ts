@@ -25,6 +25,10 @@ import { TrimLeadingTrailingWhitespaceDirective } from '@hmcts/opal-frontend-com
 import { By } from '@angular/platform-browser';
 import { afterAll, afterEach, beforeAll, beforeEach, describe, expect, it, vi } from 'vitest';
 import { FINES_MAC_FIXED_PENALTY_DETAILS_FIELD_ERRORS } from '../constants/fines-mac-fixed-penalty-details-field-errors';
+import { FINES_MAC_ROUTING_PATHS } from '../../routing/constants/fines-mac-routing-paths.constant';
+import { GlobalStore } from '@hmcts/opal-frontend-common/stores/global';
+import { GlobalStoreType } from '@hmcts/opal-frontend-common/stores/global/types';
+import { RELEASE_1A_1_2_FEATURE_FLAG } from '../../../constants/release-feature-flags.constant';
 
 import { createSpyObj } from '@app/testing/create-spy-obj.helper';
 
@@ -38,6 +42,7 @@ describe('FinesMacFixedPenaltyFormComponent', () => {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   let mockOpalFinesService: any; // Replace with actual service type if available
   let finesMacStore: FinesMacStoreType;
+  let globalStore: GlobalStoreType;
   let originalConfigureDatePicker: () => void;
   let originalInitOuterRadios: () => void;
 
@@ -94,6 +99,9 @@ describe('FinesMacFixedPenaltyFormComponent', () => {
       ],
     }).compileComponents();
 
+    globalStore = TestBed.inject(GlobalStore);
+    globalStore.setFeatureFlags({ [RELEASE_1A_1_2_FEATURE_FLAG]: true });
+
     fixture = TestBed.createComponent(FinesMacFixedPenaltyDetailsFormComponent);
     component = fixture.componentInstance;
 
@@ -117,6 +125,67 @@ describe('FinesMacFixedPenaltyFormComponent', () => {
   it('should create the component', () => {
     expect(component).toBeTruthy();
   });
+
+  it.each(['courtDetails', 'personalDetails', 'offenceDetails', 'accountCommentsNotes'] as const)(
+    'should render the %s section legend as a focusable fragment target for an adult or youth when release-1a-1-2 is enabled',
+    (routeKey) => {
+      const fragment = FINES_MAC_ROUTING_PATHS.children[routeKey];
+      const legend = fixture.nativeElement.querySelector(`legend#${fragment}`) as HTMLElement | null;
+
+      expect(legend).toBeTruthy();
+      expect(legend?.getAttribute('tabindex')).toBe('-1');
+    },
+  );
+
+  it('should render the company details legend as a focusable fragment target for a company when release-1a-1-2 is enabled', () => {
+    const companyFixture = TestBed.createComponent(FinesMacFixedPenaltyDetailsFormComponent);
+    const companyComponent = companyFixture.componentInstance;
+    companyComponent.defendantType = FINES_MAC_DEFENDANT_TYPES_KEYS.company;
+    companyComponent.enforcingCourtAutoCompleteItems = OPAL_FINES_COURT_AUTOCOMPLETE_ITEMS_MOCK;
+    companyComponent.issuingAuthorityAutoCompleteItems = OPAL_FINES_COURT_AUTOCOMPLETE_ITEMS_MOCK;
+    companyFixture.detectChanges();
+
+    const fragment = FINES_MAC_ROUTING_PATHS.children.companyDetails;
+    const legend = companyFixture.nativeElement.querySelector(`legend#${fragment}`) as HTMLElement | null;
+
+    expect(legend).toBeTruthy();
+    expect(legend?.getAttribute('tabindex')).toBe('-1');
+
+    companyFixture.destroy();
+  });
+
+  it.each([
+    ['missing', undefined],
+    ['disabled', false],
+  ] as const)(
+    'should omit fragment target attributes from adult or youth and company legends when release-1a-1-2 is %s',
+    (_state, releaseEnabled) => {
+      globalStore.setFeatureFlags(
+        releaseEnabled === undefined ? {} : { [RELEASE_1A_1_2_FEATURE_FLAG]: releaseEnabled },
+      );
+
+      const createFixture = (defendantType: string) => {
+        const testFixture = TestBed.createComponent(FinesMacFixedPenaltyDetailsFormComponent);
+        const testComponent = testFixture.componentInstance;
+        testComponent.defendantType = defendantType;
+        testComponent.enforcingCourtAutoCompleteItems = OPAL_FINES_COURT_AUTOCOMPLETE_ITEMS_MOCK;
+        testComponent.issuingAuthorityAutoCompleteItems = OPAL_FINES_COURT_AUTOCOMPLETE_ITEMS_MOCK;
+        testFixture.detectChanges();
+        return testFixture;
+      };
+
+      const testFixtures = [
+        createFixture(FINES_MAC_DEFENDANT_TYPES_KEYS.adultOrYouthOnly),
+        createFixture(FINES_MAC_DEFENDANT_TYPES_KEYS.company),
+      ];
+
+      testFixtures.forEach((testFixture) => {
+        expect(testFixture.nativeElement.querySelectorAll('legend').length).toBeGreaterThan(0);
+        expect(testFixture.nativeElement.querySelectorAll('legend[id], legend[tabindex]')).toHaveLength(0);
+        testFixture.destroy();
+      });
+    },
+  );
 
   it.each([
     'fm_fp_personal_details_address_line_1',
@@ -412,6 +481,8 @@ describe('FinesMacFixedPenaltyFormComponent', () => {
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     vi.spyOn<any, any>(component, 'rePopulateForm');
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    vi.spyOn<any, any>(component, 'clearUnmatchedIssuingAuthority');
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     vi.spyOn<any, any>(component, 'dateOfBirthListener');
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     vi.spyOn<any, any>(component, 'offenceTypeListener');
@@ -423,6 +494,7 @@ describe('FinesMacFixedPenaltyFormComponent', () => {
     expect(component['setupFixedPenaltyDetailsForm']).toHaveBeenCalled();
     expect(component['setInitialErrorMessages']).toHaveBeenCalled();
     expect(component['rePopulateForm']).toHaveBeenCalled();
+    expect(component['clearUnmatchedIssuingAuthority']).toHaveBeenCalled();
     expect(component['dateOfBirthListener']).toHaveBeenCalled();
     expect(component['offenceTypeListener']).toHaveBeenCalled();
     expect(setupOffenceCodeLookupSpy).toHaveBeenCalled();
@@ -627,69 +699,97 @@ describe('FinesMacFixedPenaltyFormComponent', () => {
     expect(companyDetailsAddressLine1Control?.hasValidator(Validators.required)).toBe(true);
   });
 
-  it('should set prosecutor name when handleFormSubmit is called', () => {
+  it('should set issuing authority name when handleFormSubmit is called', () => {
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    vi.spyOn<any, any>(component, 'setProsecutorName');
+    vi.spyOn<any, any>(component, 'setIssuingAuthorityName');
     const event = new SubmitEvent('submit');
     component.handleFormSubmit(event);
-    expect(component['setProsecutorName']).toHaveBeenCalled();
+    expect(component['setIssuingAuthorityName']).toHaveBeenCalled();
   });
 
-  it('should get prosecutor from supplied ID', () => {
-    const prosecutorId = '4821';
-    const expectedProsecutor = {
+  it('should get issuing authority from supplied ID', () => {
+    const originatorId = '4821';
+    const expectedIssuingAuthority = {
       value: '4821',
       name: 'Crown Prosecution Service (CPS)',
     };
-    component.issuingAuthorityAutoCompleteItems = [expectedProsecutor];
+    component.issuingAuthorityAutoCompleteItems = [expectedIssuingAuthority];
 
-    const result = component['getProsecutorFromId'](prosecutorId);
-    expect(result).toEqual(expectedProsecutor);
+    const result = component['getIssuingAuthorityFromId'](originatorId);
+    expect(result).toEqual(expectedIssuingAuthority);
   });
 
-  it('should return null if no prosecutor found for the given ID', () => {
-    const prosecutorId = '9999'; // Non-existent ID
+  it('should match an issuing authority when its reference ID is numeric', () => {
+    component.issuingAuthorityAutoCompleteItems = [{ value: 4821, name: 'Crown Prosecution Service (CPS)' }];
+
+    const result = component['getIssuingAuthorityFromId']('4821');
+
+    expect(result).toEqual({ value: 4821, name: 'Crown Prosecution Service (CPS)' });
+  });
+
+  it('should return null if no issuing authority is found for the given ID', () => {
+    const originatorId = '9999';
     component.issuingAuthorityAutoCompleteItems = OPAL_FINES_ISSUING_AUTHORITY_AUTOCOMPLETE_ITEMS_MOCK;
 
-    const result = component['getProsecutorFromId'](prosecutorId);
+    const result = component['getIssuingAuthorityFromId'](originatorId);
     expect(result).toBeNull();
   });
 
-  it('should set the prosecutor name in the form control', () => {
+  it('should clear an issuing authority that is unavailable for the current flag state', () => {
+    component.issuingAuthorityAutoCompleteItems = OPAL_FINES_ISSUING_AUTHORITY_AUTOCOMPLETE_ITEMS_MOCK;
+    component.form.controls['fm_fp_court_details_originator_id'].setValue('9985');
+    component.form.controls['fm_fp_court_details_originator_name'].setValue('Asylum & Immigration Tribunal');
+
+    component['clearUnmatchedIssuingAuthority']();
+
+    expect(component.form.controls['fm_fp_court_details_originator_id'].value).toBeNull();
+    expect(component.form.controls['fm_fp_court_details_originator_name'].value).toBeNull();
+    expect(component.form.controls['fm_fp_court_details_originator_id'].hasError('required')).toBe(true);
+  });
+
+  it('should preserve an issuing authority that is available for the current flag state', () => {
+    component.issuingAuthorityAutoCompleteItems = OPAL_FINES_ISSUING_AUTHORITY_AUTOCOMPLETE_ITEMS_MOCK;
+    component.form.controls['fm_fp_court_details_originator_id'].setValue('101');
+    component.form.controls['fm_fp_court_details_originator_name'].setValue('Police force');
+
+    component['clearUnmatchedIssuingAuthority']();
+
+    expect(component.form.controls['fm_fp_court_details_originator_id'].value).toBe('101');
+    expect(component.form.controls['fm_fp_court_details_originator_name'].value).toBe('Police force');
+  });
+
+  it('should set the issuing authority name in the form control', () => {
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    vi.spyOn<any, any>(component, 'getProsecutorFromId').mockReturnValue({
+    vi.spyOn<any, any>(component, 'getIssuingAuthorityFromId').mockReturnValue({
       value: '101',
       name: 'Police force',
     });
     component.form.controls['fm_fp_court_details_originator_id'].setValue('101');
     component.issuingAuthorityAutoCompleteItems = OPAL_FINES_ISSUING_AUTHORITY_AUTOCOMPLETE_ITEMS_MOCK;
 
-    // Call the method to set the prosecutor name
-    component['setProsecutorName']();
+    component['setIssuingAuthorityName']();
 
     expect(component.form.get('fm_fp_court_details_originator_name')?.value).toBe('Police force');
   });
 
-  it('should clear the prosecutor name in the form control if the prosecutor is not found', () => {
+  it('should clear the issuing authority name in the form control if the issuing authority is not found', () => {
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    vi.spyOn<any, any>(component, 'getProsecutorFromId').mockReturnValue(null);
+    vi.spyOn<any, any>(component, 'getIssuingAuthorityFromId').mockReturnValue(null);
     component.form.controls['fm_fp_court_details_originator_id'].setValue('101');
     component.issuingAuthorityAutoCompleteItems = OPAL_FINES_ISSUING_AUTHORITY_AUTOCOMPLETE_ITEMS_MOCK;
 
-    // Call the method to set the prosecutor name
-    component['setProsecutorName']();
+    component['setIssuingAuthorityName']();
 
     expect(component.form.get('fm_fp_court_details_originator_name')?.value).toBe('');
   });
 
-  it('should clear the prosecutor name in the form control if the prosecutor id is not set', () => {
+  it('should clear the issuing authority name in the form control if the originator id is not set', () => {
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    vi.spyOn<any, any>(component, 'getProsecutorFromId').mockReturnValue(null);
+    vi.spyOn<any, any>(component, 'getIssuingAuthorityFromId').mockReturnValue(null);
     component.form.controls['fm_fp_court_details_originator_id'].setValue(null);
     component.issuingAuthorityAutoCompleteItems = OPAL_FINES_ISSUING_AUTHORITY_AUTOCOMPLETE_ITEMS_MOCK;
 
-    // Call the method to set the prosecutor name
-    component['setProsecutorName']();
+    component['setIssuingAuthorityName']();
 
     expect(component.form.get('fm_fp_court_details_originator_name')?.value).toBe('');
   });

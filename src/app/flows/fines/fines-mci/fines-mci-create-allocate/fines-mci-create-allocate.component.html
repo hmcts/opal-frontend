@@ -1,5 +1,30 @@
-<div class="govuk-grid-column-two-thirds">
+<div class="govuk-grid-column-full">
+  <a class="govuk-back-link" [routerLink]="financeDashboardRoute">Back</a>
   <h1 class="govuk-heading-l">Manual cash input</h1>
-  <p class="govuk-body">This page is not available yet.</p>
-  <a class="govuk-back-link" [routerLink]="financeDashboardRoute">Back to finance</a>
+  <a id="create-till-button" class="govuk-button" [routerLink]="createTillSelectBusinessUnitRoute">Create till</a>
+  <hr class="govuk-section-break govuk-section-break--l govuk-section-break--visible govuk-!-margin-top-0" />
+  <h2 class="govuk-heading-m">Allocate tills</h2>
+  @if (tillsState$ | async; as state) {
+    @switch (state.status) {
+      @case ('loading') {
+        <p class="govuk-body">Loading tills…</p>
+      }
+      @case ('error') {
+        <p class="govuk-error-message">There was a problem loading tills. Try again later.</p>
+      }
+      @case ('success') {
+        @if (state.tills.length > 0) {
+          <p class="govuk-hint">Select the tills you want to allocate</p>
+          <button buttonId="allocate-till-button" opalLibGovukButton>Allocate</button>
+          <app-fines-mci-create-allocate-table
+            [tableData]="state.tills"
+            [existingSortState]="tableSort"
+            (selectedTillsCountChange)="handleSelectedTillsCountChange($event)"
+          ></app-fines-mci-create-allocate-table>
+        } @else {
+          <p class="govuk-body">There are no outstanding tills to allocate.</p>
+        }
+      }
+    }
+  }
 </div>

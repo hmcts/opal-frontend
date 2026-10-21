@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, Component, inject, OnDestroy, OnInit } from '@angular/core';
+import { ChangeDetectionStrategy, Component, computed, inject, OnDestroy, OnInit } from '@angular/core';
 import { FINES_MAC_ROUTING_PATHS } from '../routing/constants/fines-mac-routing-paths.constant';
 import { FinesMacReviewAccountAccountDetailsComponent } from './fines-mac-review-account-account-details/fines-mac-review-account-account-details.component';
 import { FinesMacReviewAccountCourtDetailsComponent } from './fines-mac-review-account-court-details/fines-mac-review-account-court-details.component';
@@ -44,6 +44,11 @@ import { FINES_MAC_DEFENDANT_TYPES_KEYS } from '../constants/fines-mac-defendant
 import { IOpalFinesProsecutorRefData } from '@services/fines/opal-fines-service/interfaces/opal-fines-prosecutor-ref-data.interface';
 import { AbstractFormParentBaseComponent } from '@hmcts/opal-frontend-common/components/abstract/abstract-form-parent-base';
 import { FINES_ACCOUNT_TYPES } from '../../constants/fines-account-types.constant';
+import {
+  RELEASE_1A_1_1_FEATURE_FLAG,
+  RELEASE_1A_1_2_FEATURE_FLAG,
+} from '../../constants/release-feature-flags.constant';
+import { getFeatureFlagReleaseState } from '../../utils/fines-section-permissions.utils';
 
 @Component({
   selector: 'app-fines-mac-review-account',
@@ -103,6 +108,12 @@ export class FinesMacReviewAccountComponent extends AbstractFormParentBaseCompon
   public accountTypesKeys = FINES_ACCOUNT_TYPES;
   public defendantTypesKeys = FINES_MAC_DEFENDANT_TYPES_KEYS;
   public showTimeline = false;
+  public readonly release1a1_1Enabled = computed(
+    () => getFeatureFlagReleaseState(this.globalStore.featureFlags())[RELEASE_1A_1_1_FEATURE_FLAG] === true,
+  );
+  public readonly release1a1_2Enabled = computed(
+    () => getFeatureFlagReleaseState(this.globalStore.featureFlags())[RELEASE_1A_1_2_FEATURE_FLAG] === true,
+  );
 
   public formErrorSummaryMessage: IAbstractFormBaseFormErrorSummaryMessage[] = [];
 
@@ -402,13 +413,18 @@ export class FinesMacReviewAccountComponent extends AbstractFormParentBaseCompon
 
   /**
    * Redirects to the relevant page to change the account details.
-   * If the account type is fixed penalty, it navigates to the fixed penalty details page
-   * otherwise, it navigates back to specified path or the account details page.
-   * @param path - Optional path to navigate to. If provided, it will navigate to that path instead of the default.
+   * For a fixed penalty account with release-1a-1-2 enabled, the supplied path is used as the shared page's section
+   * fragment. When the release is disabled, navigation retains the legacy no-fragment behavior.
+   * Otherwise, it navigates to the supplied path or the account details page.
+   * @param path - Optional route path, or the section fragment for a fixed penalty account.
    */
   public change(path?: string): void {
     if (this.accountType === this.accountTypesKeys['Fixed Penalty']) {
-      this.routerNavigate(this.finesMacRoutes.children.fixedPenaltyDetails);
+      if (this.release1a1_2Enabled()) {
+        this.routerNavigate(this.finesMacRoutes.children.fixedPenaltyDetails, false, undefined, undefined, path);
+      } else {
+        this.routerNavigate(this.finesMacRoutes.children.fixedPenaltyDetails);
+      }
     } else if (path) {
       this.routerNavigate(path);
     } else {

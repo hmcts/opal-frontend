@@ -125,7 +125,7 @@ Feature: Fixed Penalty
       When I start a fixed penalty account for business unit "West London", defendant type "Adult or youth only" and originator type "New"
       And I complete fixed penalty details:
         | Section          | Field                  | Value                        |
-        | Court details    | Issuing Authority      | Lowestoft County Court (256) |
+        | Court details    | Issuing Authority      | Met Camera Processing Services / Traffic Offence Reports (001) |
         | Court details    | Enforcement court      | Aram Court (123)             |
         | Personal details | Title                  | Mr                           |
         | Personal details | First names            | John                         |
@@ -153,7 +153,7 @@ Feature: Fixed Penalty
       When I start a fixed penalty account for business unit "West London", defendant type "Adult or youth only" and originator type "New"
       And I complete fixed penalty details:
         | Section          | Field                  | Value                        |
-        | Court details    | Issuing Authority      | Lowestoft County Court (256) |
+        | Court details    | Issuing Authority      | Met Camera Processing Services / Traffic Offence Reports (001) |
         | Court details    | Enforcement court      | Aram Court (123)             |
         | Personal details | Title                  | Mr                           |
         | Personal details | First names            | John                         |
@@ -269,8 +269,8 @@ Feature: Fixed Penalty
         | Amount imposed   | £500.00                                  |
       And the fixed penalty review "Account comments and notes" summary is:
         | Label        | Value        |
-        | Comment      | Not provided |
-        | Account note | Not provided |
+        | Comment      | No data      |
+        | Account note | No data      |
 
     @JIRA-EPIC:PO-855 @R1A @JIRA-STORY:PO-861 @JIRA-TEST-KEY:PO-5324
     Scenario: Change links reopen company fixed penalty sections

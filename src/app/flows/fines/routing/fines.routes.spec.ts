@@ -42,7 +42,8 @@ const mockFeatureFlagRedirectGuard = (): void => {
     return release1cEnforcementOperationalReportingFeatureFlagGuardMock;
   });
 
-  vi.doMock('@hmcts/opal-frontend-common/guards/feature-flag', () => ({
+  vi.doMock('@hmcts/opal-frontend-common/guards/feature-flag', async (importOriginal) => ({
+    ...(await importOriginal<typeof import('@hmcts/opal-frontend-common/guards/feature-flag')>()),
     featureFlagRedirectGuard: featureFlagRedirectGuardMock,
   }));
 };

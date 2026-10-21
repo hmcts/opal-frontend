@@ -530,7 +530,15 @@ export class FinesAccPayloadService {
     fields: IFinesAccEnfActionAddFormField[],
     formState: IFinesAccEnfActionAddFormState,
   ): IOpalFinesAddEnforcementActionPayload {
-    return buildEnforcementActionAddPayload(result, fields, formState, this.getCurrentLocalDateTime());
+    const preserveParameterNames =
+      (this.globalStore.featureFlags() as Record<string, unknown>)['release-1b-1-1'] === true;
+    return buildEnforcementActionAddPayload(
+      result,
+      fields,
+      formState,
+      this.getCurrentLocalDateTime(),
+      preserveParameterNames,
+    );
   }
 
   /**

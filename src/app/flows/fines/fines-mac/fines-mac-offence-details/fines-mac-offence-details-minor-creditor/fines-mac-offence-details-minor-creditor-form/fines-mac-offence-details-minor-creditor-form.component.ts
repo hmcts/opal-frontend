@@ -30,12 +30,15 @@ import { GovukCancelLinkComponent } from '@hmcts/opal-frontend-common/components
 import { CapitalisationDirective } from '@hmcts/opal-frontend-common/directives/capitalisation';
 import { TrimLeadingTrailingWhitespaceDirective } from '@hmcts/opal-frontend-common/directives/trim-leading-trailing-whitespace';
 import { patternValidator } from '@hmcts/opal-frontend-common/validators/pattern-validator';
+import { GlobalStore } from '@hmcts/opal-frontend-common/stores/global';
 import {
   ALPHANUMERIC_WITH_SPACES_PATTERN,
   LETTERS_WITH_SPACES_PATTERN,
   NUMERIC_PATTERN,
   SINGLE_ASCII_CHARACTERS,
 } from '@hmcts/opal-frontend-common/constants';
+import { RELEASE_1A_1_2_FEATURE_FLAG } from '../../../../constants/release-feature-flags.constant';
+import { getFeatureFlagReleaseState } from '../../../../utils/fines-section-permissions.utils';
 
 const LETTERS_WITH_SPACES_PATTERN_VALIDATOR = patternValidator(LETTERS_WITH_SPACES_PATTERN, 'lettersWithSpacesPattern');
 const ALPHANUMERIC_WITH_SPACES_PATTERN_VALIDATOR = patternValidator(
@@ -69,6 +72,7 @@ const NUMERIC_PATTERN_VALIDATOR = patternValidator(NUMERIC_PATTERN, 'numericalTe
 })
 export class FinesMacOffenceDetailsMinorCreditorFormComponent extends AbstractFormBaseComponent implements OnInit {
   private readonly finesMacOffenceDetailsStore = inject(FinesMacOffenceDetailsStore);
+  private readonly globalStore = inject(GlobalStore);
   private readonly individualControls = [
     'fm_offence_details_minor_creditor_title',
     'fm_offence_details_minor_creditor_forenames',
@@ -163,8 +167,12 @@ export class FinesMacOffenceDetailsMinorCreditorFormComponent extends AbstractFo
       fm_offence_details_minor_creditor_surname: surname,
     } = this.form.controls;
     title.setValidators([Validators.required]);
-    forenames.setValidators([Validators.required, Validators.maxLength(20), LETTERS_WITH_SPACES_PATTERN_VALIDATOR]);
-    surname.setValidators([Validators.required, Validators.maxLength(30), LETTERS_WITH_SPACES_PATTERN_VALIDATOR]);
+    const namePatternValidator =
+      getFeatureFlagReleaseState(this.globalStore.featureFlags())[RELEASE_1A_1_2_FEATURE_FLAG] === true
+        ? SINGLE_ASCII_CHARACTERS_PATTERN_VALIDATOR
+        : LETTERS_WITH_SPACES_PATTERN_VALIDATOR;
+    forenames.setValidators([Validators.required, Validators.maxLength(20), namePatternValidator]);
+    surname.setValidators([Validators.required, Validators.maxLength(30), namePatternValidator]);
   }
 
   /**
