@@ -85,6 +85,38 @@ describe.each(flowWrappers)('$name unload protection', ({ component: flowCompone
   });
 });
 
+describe('Flow wrapper with no active child route', () => {
+  beforeEach(async () => {
+    await TestBed.configureTestingModule({
+      providers: [
+        provideRouter([
+          {
+            path: 'finance',
+            component: FinesFinanceComponent,
+            children: [{ path: 'form', component: TestFormPage }],
+          },
+        ]),
+      ],
+    }).compileComponents();
+  });
+
+  it('allows unload when the router outlet is inactive', async () => {
+    const harness = await RouterTestingHarness.create();
+    await harness.navigateByUrl('/finance');
+    harness.detectChanges();
+
+    const routeElement = harness.routeDebugElement!;
+    const wrapper = routeElement.componentInstance as FinesFinanceComponent;
+    const outlet = routeElement.query(By.directive(RouterOutlet)).injector.get(RouterOutlet);
+    const event = new Event('beforeunload', { cancelable: true });
+    window.dispatchEvent(event);
+
+    expect(outlet.isActivated).toBe(false);
+    expect(wrapper.handleBeforeUnload()).toBe(true);
+    expect(event.defaultPrevented).toBe(false);
+  });
+});
+
 describe.each([
   { name: 'Create and manage', component: FinesDraftCreateAndManageComponent },
   { name: 'Check and validate', component: FinesDraftCheckAndValidateComponent },

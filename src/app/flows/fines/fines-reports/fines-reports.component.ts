@@ -10,7 +10,7 @@ import { activeRoutedFormHasUnsavedChanges } from '../utils/active-routed-form-u
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class FinesReportsComponent implements OnDestroy {
-  @ViewChild(RouterOutlet) private routerOutlet?: RouterOutlet;
+  @ViewChild(RouterOutlet) private readonly routerOutlet?: RouterOutlet;
 
   private readonly finesReportsSummaryListStore = inject(FinesReportsSummaryListStore);
 

@@ -12,7 +12,7 @@ import { AbstractFormParentBaseComponent } from '@hmcts/opal-frontend-common/com
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class FinesAccComponent implements OnDestroy {
-  @ViewChild(RouterOutlet) private routerOutlet?: RouterOutlet;
+  @ViewChild(RouterOutlet) private readonly routerOutlet?: RouterOutlet;
 
   private readonly globalStore = inject(GlobalStore);
   private readonly finesAccStore = inject(FinesAccountStore);

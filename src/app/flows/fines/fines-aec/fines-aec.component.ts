@@ -9,7 +9,7 @@ import { activeRoutedFormHasUnsavedChanges } from '../utils/active-routed-form-u
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class FinesAecComponent {
-  @ViewChild(RouterOutlet) private routerOutlet?: RouterOutlet;
+  @ViewChild(RouterOutlet) private readonly routerOutlet?: RouterOutlet;
 
   @HostListener('window:beforeunload')
   public handleBeforeUnload(): boolean {

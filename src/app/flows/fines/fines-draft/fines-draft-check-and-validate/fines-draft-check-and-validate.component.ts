@@ -9,7 +9,7 @@ import { activeRoutedFormHasUnsavedChanges } from '../../utils/active-routed-for
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class FinesDraftCheckAndValidateComponent {
-  @ViewChild(RouterOutlet) private routerOutlet?: RouterOutlet;
+  @ViewChild(RouterOutlet) private readonly routerOutlet?: RouterOutlet;
 
   @HostListener('window:beforeunload')
   public handleBeforeUnload(): boolean {

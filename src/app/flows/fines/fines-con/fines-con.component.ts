@@ -10,7 +10,7 @@ import { FinesConStore } from './stores/fines-con.store';
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class FinesConComponent implements OnDestroy {
-  @ViewChild(RouterOutlet) private routerOutlet?: RouterOutlet;
+  @ViewChild(RouterOutlet) private readonly routerOutlet?: RouterOutlet;
 
   private readonly finesConStore = inject(FinesConStore);
 

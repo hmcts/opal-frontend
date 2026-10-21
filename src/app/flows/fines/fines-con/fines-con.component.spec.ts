@@ -30,12 +30,14 @@ describe('FinesConComponent', () => {
     fixture = TestBed.createComponent(FinesConComponent);
     component = fixture.componentInstance;
     finesConStore = TestBed.inject(FinesConStore);
-
-    fixture.detectChanges();
   });
 
   it('should create', () => {
     expect(component).toBeTruthy();
+  });
+
+  it('allows unload before the routed outlet is initialised', () => {
+    expect(component.handleBeforeUnload()).toBe(true);
   });
 
   it('should reset consolidation state on destroy', () => {
@@ -89,6 +91,13 @@ describe('FinesConComponent browser unload protection', () => {
   it('allows unload when the journey has no changes', async () => {
     const { component } = await navigateToConsolidation();
 
+    expect(component.handleBeforeUnload()).toBe(true);
+  });
+
+  it('allows unload when the outlet has no active child page', async () => {
+    const { component, outlet } = await navigateToConsolidation('/consolidation');
+
+    expect(outlet.isActivated).toBe(false);
     expect(component.handleBeforeUnload()).toBe(true);
   });
 
