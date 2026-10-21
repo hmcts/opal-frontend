@@ -6,6 +6,9 @@ import { FINES_MAC_OFFENCE_DETAILS_DRAFT_STATE_MOCK } from '../../mocks/fines-ma
 import { FINES_MAC_OFFENCE_DETAILS_MINOR_CREDITOR_FORM_MOCK } from '../mocks/fines-mac-offence-details-minor-creditor-form.mock';
 import { FinesMacOffenceDetailsStoreType } from '../../stores/types/fines-mac-offence-details.type';
 import { FinesMacOffenceDetailsStore } from '../../stores/fines-mac-offence-details.store';
+import { GlobalStore } from '@hmcts/opal-frontend-common/stores/global';
+import { GlobalStoreType } from '@hmcts/opal-frontend-common/stores/global/types';
+import { RELEASE_1A_1_2_FEATURE_FLAG } from '../../../../constants/release-feature-flags.constant';
 import { GovukRadioComponent } from '@hmcts/opal-frontend-common/components/govuk/govuk-radio';
 import { afterAll, afterEach, beforeAll, beforeEach, describe, expect, it, vi } from 'vitest';
 
@@ -13,6 +16,7 @@ describe('FinesMacOffenceDetailsMinorCreditorFormComponent', () => {
   let component: FinesMacOffenceDetailsMinorCreditorFormComponent;
   let fixture: ComponentFixture<FinesMacOffenceDetailsMinorCreditorFormComponent>;
   let finesMacOffenceDetailsStore: FinesMacOffenceDetailsStoreType;
+  let globalStore: GlobalStoreType;
   let originalInitOuterRadios: () => void;
 
   beforeAll(() => {
@@ -43,6 +47,7 @@ describe('FinesMacOffenceDetailsMinorCreditorFormComponent', () => {
     component = fixture.componentInstance;
 
     finesMacOffenceDetailsStore = TestBed.inject(FinesMacOffenceDetailsStore);
+    globalStore = TestBed.inject(GlobalStore);
 
     fixture.detectChanges();
   });
@@ -99,6 +104,7 @@ describe('FinesMacOffenceDetailsMinorCreditorFormComponent', () => {
   });
 
   it('should set individual validators for title, forenames and surname controls', () => {
+    globalStore.setFeatureFlags({ [RELEASE_1A_1_2_FEATURE_FLAG]: true });
     component.form.get('fm_offence_details_minor_creditor_creditor_type')?.setValue('individual');
     fixture.detectChanges();
 
@@ -122,9 +128,13 @@ describe('FinesMacOffenceDetailsMinorCreditorFormComponent', () => {
     forenamesControl.setValue('A very long name exceeding twenty characters');
     expect(forenamesControl.errors?.['maxlength']).toBeTruthy();
 
-    // Test pattern invalid validator on forenames
-    forenamesControl.setValue('/$£');
-    expect(forenamesControl.errors?.['lettersWithSpacesPattern']).toBeTruthy();
+    // Valid ASCII special characters should not cause validation errors on forenames
+    forenamesControl.setValue(`A-B, C.D'E`);
+    expect(forenamesControl.errors).toBeNull();
+
+    // Non-ASCII special characters should cause validation errors on forenames
+    forenamesControl.setValue('Anne£Marie');
+    expect(forenamesControl.errors?.['singleAsciiCharacters']).toBeTruthy();
 
     // Test required validator on surname
     surnameControl.setValue('');
@@ -134,8 +144,33 @@ describe('FinesMacOffenceDetailsMinorCreditorFormComponent', () => {
     surnameControl.setValue('A very long surname exceeding thirty characters');
     expect(surnameControl.errors?.['maxlength']).toBeTruthy();
 
-    // Test pattern invalid validator on surname
-    surnameControl.setValue('/$£');
+    // Valid ASCII special characters should not cause validation errors on surname
+    surnameControl.setValue(`O'Connor-Smith, Jr.`);
+    expect(surnameControl.errors).toBeNull();
+
+    // Non-ASCII special characters should cause validation errors on surname
+    surnameControl.setValue('O£Connor');
+    expect(surnameControl.errors?.['singleAsciiCharacters']).toBeTruthy();
+  });
+
+  it('should use the letters with spaces pattern for forenames and surname when release-1a-1-2 is disabled', () => {
+    globalStore.setFeatureFlags({ [RELEASE_1A_1_2_FEATURE_FLAG]: false });
+    component.form.controls['fm_offence_details_minor_creditor_creditor_type'].setValue('individual');
+    fixture.detectChanges();
+
+    const forenamesControl = component.form.controls['fm_offence_details_minor_creditor_forenames'];
+    const surnameControl = component.form.controls['fm_offence_details_minor_creditor_surname'];
+
+    forenamesControl.setValue('Anne Marie');
+    expect(forenamesControl.errors).toBeNull();
+
+    forenamesControl.setValue('Anne-Marie');
+    expect(forenamesControl.errors?.['lettersWithSpacesPattern']).toBeTruthy();
+
+    surnameControl.setValue('O Connor');
+    expect(surnameControl.errors).toBeNull();
+
+    surnameControl.setValue("O'Connor");
     expect(surnameControl.errors?.['lettersWithSpacesPattern']).toBeTruthy();
   });
 

@@ -1,33 +1,156 @@
+import { IOpalFinesTillsResponse } from '../../services/opal-fines-service/interfaces/opal-fines-tills-response.interface';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { provideRouter } from '@angular/router';
-import { beforeEach, describe, expect, it } from 'vitest';
+import { DateService } from '@hmcts/opal-frontend-common/services/date-service';
+import { beforeEach, describe, expect, it, vi } from 'vitest';
+import { of, throwError } from 'rxjs';
+import { OpalFines } from '../../services/opal-fines-service/opal-fines.service';
 import { FinesMciCreateAllocateComponent } from './fines-mci-create-allocate.component';
 
 describe('FinesMciCreateAllocateComponent', () => {
   let component: FinesMciCreateAllocateComponent;
   let fixture: ComponentFixture<FinesMciCreateAllocateComponent>;
+  const opalFinesServiceMock = {
+    getTills: vi.fn(),
+  };
+
+  const tillsResponse: IOpalFinesTillsResponse = {
+    tills: [
+      {
+        till_id: 99000000010005,
+        till_number: 9005,
+        errors: 0,
+        amount: '125.50',
+        business_unit_name: 'Westminster - North (Wells Street)',
+        processed_by: 'test.operator',
+        date_processed: '2025-06-12T13:31:27.270Z',
+      },
+    ],
+  };
 
   beforeEach(async () => {
+    opalFinesServiceMock.getTills.mockReturnValue(of(tillsResponse));
+
     await TestBed.configureTestingModule({
       imports: [FinesMciCreateAllocateComponent],
-      providers: [provideRouter([])],
+      providers: [provideRouter([]), { provide: OpalFines, useValue: opalFinesServiceMock }],
     }).compileComponents();
 
     fixture = TestBed.createComponent(FinesMciCreateAllocateComponent);
     component = fixture.componentInstance;
-    fixture.detectChanges();
   });
 
   it('should create', () => {
+    fixture.detectChanges();
     expect(component).toBeTruthy();
   });
 
   it('should render a manual cash input placeholder page', () => {
+    fixture.detectChanges();
     const text = fixture.nativeElement.textContent;
+    const nativeElement = fixture.nativeElement as HTMLElement;
 
     expect(text).toContain('Manual cash input');
-    expect(text).toContain('This page is not available yet.');
-    expect(text).toContain('Back to finance');
-    expect(fixture.nativeElement.querySelector('a')?.getAttribute('href')).toBe('/fines/dashboard/finance');
+    expect(text).toContain('Create till');
+    expect(text).toContain('Allocate tills');
+    expect(text).toContain('Select the tills you want to allocate');
+    expect(text).toContain('Allocate');
+    expect(nativeElement.querySelector('a')?.getAttribute('href')).toBe('/fines/dashboard/finance');
+    const createTillLink = nativeElement.querySelector<HTMLAnchorElement>('#create-till-button');
+    expect(createTillLink?.tagName).toBe('A');
+    expect(createTillLink?.classList).toContain('govuk-button');
+    expect(createTillLink?.getAttribute('href')).toBe('/fines/manual-cash-input/create/till/select-bu');
+  });
+
+  it('should render tills returned by the API', () => {
+    fixture.detectChanges();
+    const text = fixture.nativeElement.textContent;
+
+    expect(text).toContain('0 of 1 selected');
+    expect(text).toContain('Till number');
+    expect(text).toContain('Payments');
+    expect(text).toContain('Amount');
+    expect(text).toContain('Business unit');
+    expect(text).toContain('Created by');
+    expect(text).toContain('Date created');
+    expect(text).toContain('9005');
+    expect(text).toContain('Westminster - North (Wells Street)');
+    const dateService = TestBed.inject(DateService);
+    const createdDate = dateService.getFromIso('2025-06-12T13:31:27.270Z');
+    const expectedDate = dateService.toFormat(createdDate.setLocale('en-gb'), "dd MMMM yyyy 'at' HH:mm");
+    expect(text).toContain(expectedDate);
+  });
+
+  it('should map a decimal amount and an omitted payment count from the shared till response', () => {
+    const states: unknown[] = [];
+    component.tillsState$.subscribe((state) => states.push(state));
+
+    expect(states.at(-1)).toEqual({
+      status: 'success',
+      tills: [expect.objectContaining({ tillId: '99000000010005', Amount: 125.5, Payments: null })],
+    });
+  });
+
+  it('should handle tills with missing or invalid processed dates', () => {
+    opalFinesServiceMock.getTills.mockReturnValue(
+      of({
+        tills: [
+          { ...tillsResponse.tills[0], till_id: 9001, date_processed: null },
+          { ...tillsResponse.tills[0], till_id: 9002, date_processed: 'not-a-date' },
+        ],
+      }),
+    );
+    fixture = TestBed.createComponent(FinesMciCreateAllocateComponent);
+    fixture.detectChanges();
+
+    const nativeElement = fixture.nativeElement as HTMLElement;
+    expect(nativeElement.querySelector('#fines-mci-create-allocate-9001-date-created')?.textContent?.trim()).toBe('');
+    expect(nativeElement.querySelector('#fines-mci-create-allocate-9002-date-created')?.textContent?.trim()).toBe('');
+  });
+
+  it('should update the selected tills count when a till is selected', () => {
+    fixture.detectChanges();
+    const nativeElement = fixture.nativeElement as HTMLElement;
+    const checkbox = nativeElement.querySelector<HTMLInputElement>('#fines-mci-create-allocate-99000000010005');
+
+    checkbox!.checked = true;
+    checkbox!.dispatchEvent(new Event('change', { bubbles: true }));
+    fixture.detectChanges();
+
+    expect(nativeElement.textContent).toContain('1 of 1 selected');
+  });
+
+  it('should warn before unloading only when tills are selected', () => {
+    fixture.detectChanges();
+    expect(component.canDeactivate()).toBe(true);
+    const eventWithoutSelection = new Event('beforeunload', { cancelable: true });
+
+    window.dispatchEvent(eventWithoutSelection);
+
+    expect(eventWithoutSelection.defaultPrevented).toBe(false);
+
+    component.handleSelectedTillsCountChange(1);
+    expect(component.canDeactivate()).toBe(false);
+    const eventWithSelection = new Event('beforeunload', { cancelable: true });
+
+    window.dispatchEvent(eventWithSelection);
+
+    expect(eventWithSelection.defaultPrevented).toBe(true);
+  });
+
+  it('should show the empty state when the API returns no tills', () => {
+    opalFinesServiceMock.getTills.mockReturnValue(of({ tills: [] }));
+    fixture = TestBed.createComponent(FinesMciCreateAllocateComponent);
+    fixture.detectChanges();
+
+    expect(fixture.nativeElement.textContent).toContain('There are no outstanding tills to allocate.');
+  });
+
+  it('should show an error when loading tills fails', () => {
+    opalFinesServiceMock.getTills.mockReturnValue(throwError(() => new Error('Request failed')));
+    fixture = TestBed.createComponent(FinesMciCreateAllocateComponent);
+    fixture.detectChanges();
+
+    expect(fixture.nativeElement.textContent).toContain('There was a problem loading tills. Try again later.');
   });
 });

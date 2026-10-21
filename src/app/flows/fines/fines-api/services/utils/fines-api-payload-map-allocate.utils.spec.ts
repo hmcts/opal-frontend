@@ -1,13 +1,13 @@
 import { OPAL_FINES_SOURCE_MAPPINGS_MOCK } from '@services/fines/opal-fines-service/mocks/opal-fines-source-mappings.mock';
 import { DateService } from '@hmcts/opal-frontend-common/services/date-service';
 import { IOpalFinesInterfaceJobSummary } from '@services/fines/opal-fines-service/interfaces/opal-fines-interface-job-summary.interface';
-import { IOpalFinesTillSummary } from '@services/fines/opal-fines-service/interfaces/opal-fines-till-summary.interface';
+import { IOpalFinesTill } from '@services/fines/opal-fines-service/interfaces/opal-fines-till.interface';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
 import { mapAllocateData } from './fines-api-payload-map-allocate.utils';
 
 const sourceLabels = new Map(OPAL_FINES_SOURCE_MAPPINGS_MOCK.map(({ code, display_name }) => [code, display_name]));
 
-const buildTill = (overrides: Partial<IOpalFinesTillSummary> = {}): IOpalFinesTillSummary => ({
+const buildTill = (overrides: Partial<IOpalFinesTill> = {}): IOpalFinesTill => ({
   till_id: 101,
   till_number: 7,
   errors: 0,
@@ -47,7 +47,7 @@ describe('mapAllocateData', () => {
     } as unknown as DateService;
   });
 
-  const map = (tills: IOpalFinesTillSummary[], jobs: IOpalFinesInterfaceJobSummary[] = []) =>
+  const map = (tills: IOpalFinesTill[], jobs: IOpalFinesInterfaceJobSummary[] = []) =>
     mapAllocateData({ interface_jobs: jobs }, { tills }, dateService, sourceLabels);
 
   it('uses backend display names and retains unknown codes when the mapping is empty', () => {
@@ -171,14 +171,14 @@ describe('mapAllocateData', () => {
 
   it.each([undefined, null])('does not invent zero errors for a malformed response containing %s', (errors) => {
     // Deliberately violate the API contract to exercise the runtime fallback without widening the response type.
-    const till = { ...buildTill(), errors } as unknown as IOpalFinesTillSummary;
+    const till = { ...buildTill(), errors } as unknown as IOpalFinesTill;
     expect(map([till]).tills[0]['Errors']).toBeNull();
   });
 
   it.each(['', 'invalid', '-1', '1.5', ' 7 ', -1, 1.5, Number.MAX_SAFE_INTEGER + 1, NaN, Infinity, undefined])(
     'rejects unusable till ID %s',
     (id) => {
-      const till = { ...buildTill(), till_id: id } as IOpalFinesTillSummary;
+      const till = { ...buildTill(), till_id: id } as IOpalFinesTill;
       expect(() => map([till])).toThrow('Invalid till identifier');
       expect(dateService.getFromIso).not.toHaveBeenCalled();
     },

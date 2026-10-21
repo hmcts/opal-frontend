@@ -41,10 +41,12 @@ import { DASHBOARD_PAGE_DEFAULT_TAB } from './pages/dashboard/constants/dashboar
 import { DashboardPageType } from './pages/dashboard/types/dashboard.type';
 import { isDashboardPageType } from './pages/dashboard/constants/dashboard-config.constant';
 import { FINES_DASHBOARD_ROUTING_PATHS } from './flows/fines/constants/fines-dashboard-routing-paths.constant';
+import { GovukSkipLinkComponent } from '@hmcts/opal-frontend-common/components/govuk/govuk-skip-link';
 import {
   getAccessiblePrimaryNavigationItems,
   getFeatureFlagReleaseState,
 } from './flows/fines/utils/fines-section-permissions.utils';
+import { RELEASE_1A_1_2_FEATURE_FLAG } from './flows/fines/constants/release-feature-flags.constant';
 import { HIDE_PRIMARY_NAV_ROUTE_DATA_KEY } from './constants/route-data.constant';
 import { FINES_ACC_ROUTING_PATHS } from './flows/fines/fines-acc/routing/constants/fines-acc-routing-paths.constant';
 import { FINES_ACC_DEFENDANT_ROUTING_PATHS } from './flows/fines/fines-acc/routing/constants/fines-acc-defendant-routing-paths.constant';
@@ -68,6 +70,7 @@ const UNSAVED_CHANGES_WARNING =
     MojAlertIconComponent,
     MojAlertHeadingComponent,
     GovukFooterComponent,
+    GovukSkipLinkComponent,
     MojPrimaryNavigationComponent,
     MojPrimaryNavigationItemComponent,
     CustomDeferredLiveRegionAnnouncement,
@@ -139,6 +142,9 @@ export class AppComponent implements OnInit, OnDestroy {
   public readonly sessionService = inject(SessionService);
   public readonly globalStore = inject(GlobalStore);
   private readonly finesApiStore = inject(FinesApiStore);
+  public readonly showSkipLink = computed(
+    () => getFeatureFlagReleaseState(this.globalStore.featureFlags())[RELEASE_1A_1_2_FEATURE_FLAG] === true,
+  );
   public readonly navigationItems = computed(() =>
     getAccessiblePrimaryNavigationItems(
       NAVIGATION_BAR_CONFIGURATION,
@@ -414,10 +420,7 @@ export class AppComponent implements OnInit, OnDestroy {
    */
   public handleAuthentication(): void {
     if (this.globalStore.authenticated()) {
-      if (
-        this.finesApiStore.unsavedChanges() &&
-        !this.document.defaultView?.confirm(UNSAVED_CHANGES_WARNING)
-      ) {
+      if (this.finesApiStore.unsavedChanges() && !this.document.defaultView?.confirm(UNSAVED_CHANGES_WARNING)) {
         return;
       }
       this.handleRedirect(SSO_ENDPOINTS.logout);
