@@ -7,13 +7,10 @@ import {
   GovukSummaryListRowActionItemComponent,
   GovukSummaryListRowActionsComponent,
 } from '@hmcts/opal-frontend-common/components/govuk/govuk-summary-list';
-import { GlobalStore } from '@hmcts/opal-frontend-common/stores/global';
-import { RELEASE_1A_1_2_FEATURE_FLAG } from '../../../../../constants/release-feature-flags.constant';
 
 describe('FinesMacOffenceDetailsReviewOffenceHeadingTitleComponent', () => {
   let component: FinesMacOffenceDetailsReviewOffenceHeadingTitleComponent;
   let fixture: ComponentFixture<FinesMacOffenceDetailsReviewOffenceHeadingTitleComponent>;
-  let globalStore: InstanceType<typeof GlobalStore>;
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
@@ -22,11 +19,10 @@ describe('FinesMacOffenceDetailsReviewOffenceHeadingTitleComponent', () => {
 
     fixture = TestBed.createComponent(FinesMacOffenceDetailsReviewOffenceHeadingTitleComponent);
     component = fixture.componentInstance;
-    globalStore = TestBed.inject(GlobalStore);
-    globalStore.setFeatureFlags({});
 
     component.offenceCode = 'AK123456';
     component.offenceTitle = 'ak test';
+    component.headingLevel = 2;
 
     fixture.detectChanges();
   });
@@ -36,18 +32,15 @@ describe('FinesMacOffenceDetailsReviewOffenceHeadingTitleComponent', () => {
   });
 
   it.each([
-    { description: 'level 2', enabled: false, expectedHeading: 'h2' },
-    { description: 'level 3', enabled: true, expectedHeading: 'h3' },
-  ])(
-    'should render the offence title as a $description heading when release-1a-1-2 is $enabled',
-    ({ enabled, expectedHeading }) => {
-      globalStore.setFeatureFlags({ [RELEASE_1A_1_2_FEATURE_FLAG]: enabled });
-      fixture.detectChanges();
+    { headingLevel: 2, expectedHeading: 'h2' },
+    { headingLevel: 3, expectedHeading: 'h3' },
+  ] as const)('should render the offence title as an h$headingLevel heading', ({ headingLevel, expectedHeading }) => {
+    fixture.componentRef.setInput('headingLevel', headingLevel);
+    fixture.detectChanges();
 
-      expect(fixture.debugElement.query(By.css(expectedHeading))?.nativeElement.textContent).toContain('ak test');
-      expect(fixture.debugElement.query(By.css(expectedHeading === 'h2' ? 'h3' : 'h2'))).toBeNull();
-    },
-  );
+    expect(fixture.debugElement.query(By.css(expectedHeading))?.nativeElement.textContent).toContain('ak test');
+    expect(fixture.debugElement.query(By.css(expectedHeading === 'h2' ? 'h3' : 'h2'))).toBeNull();
+  });
 
   it('should emit action when onActionClick is called', () => {
     const action = 'Change';
