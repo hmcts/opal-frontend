@@ -76,7 +76,7 @@ export class FinesMciCreateTillSelectBuComponent implements OnDestroy {
   protected formErrorSummaryMessage: IAbstractFormBaseFormErrorSummaryMessage[] = [];
 
   public constructor() {
-    const preserveBusinessUnit = this.router.getCurrentNavigation()?.extras.state?.['preserveBusinessUnit'] === true;
+    const preserveBusinessUnit = this.router.currentNavigation()?.extras.state?.['preserveBusinessUnit'] === true;
     if (!preserveBusinessUnit) {
       this.finesMciStore.reset();
     }

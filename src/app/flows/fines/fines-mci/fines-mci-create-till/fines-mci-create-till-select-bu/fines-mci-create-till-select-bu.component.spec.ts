@@ -1,6 +1,7 @@
+import { signal } from '@angular/core';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { By } from '@angular/platform-browser';
-import { ActivatedRoute, Router, provideRouter } from '@angular/router';
+import { ActivatedRoute, Navigation, Router, provideRouter } from '@angular/router';
 import { OPAL_FINES_BUSINESS_UNIT_REF_DATA_MOCK } from '@services/fines/opal-fines-service/mocks/opal-fines-business-unit-ref-data.mock';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
 import { FinesMciCreateTillSelectBuComponent } from './fines-mci-create-till-select-bu.component';
@@ -143,7 +144,7 @@ describe('FinesMciCreateTillSelectBuComponent', () => {
   it('should clear a previous journey selection on fresh entry', () => {
     const businessUnit = OPAL_FINES_BUSINESS_UNIT_REF_DATA_MOCK.refData[0];
     finesMciStore.setBusinessUnit(businessUnit);
-    vi.spyOn(router, 'getCurrentNavigation').mockReturnValue(null);
+    Object.defineProperty(router, 'currentNavigation', { configurable: true, value: signal<Navigation | null>(null) });
 
     fixture = TestBed.createComponent(FinesMciCreateTillSelectBuComponent);
     component = fixture.componentInstance;
@@ -155,9 +156,12 @@ describe('FinesMciCreateTillSelectBuComponent', () => {
   it('should preserve the business unit when returning from till details', () => {
     const businessUnit = OPAL_FINES_BUSINESS_UNIT_REF_DATA_MOCK.refData[0];
     finesMciStore.setBusinessUnit(businessUnit);
-    vi.spyOn(router, 'getCurrentNavigation').mockReturnValue({
-      extras: { state: { preserveBusinessUnit: true } },
-    } as never);
+    Object.defineProperty(router, 'currentNavigation', {
+      configurable: true,
+      value: signal<Navigation | null>({
+        extras: { state: { preserveBusinessUnit: true } },
+      } as unknown as Navigation),
+    });
 
     fixture = TestBed.createComponent(FinesMciCreateTillSelectBuComponent);
     component = fixture.componentInstance;
