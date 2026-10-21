@@ -26,6 +26,7 @@ import { FinesApiComponent } from 'src/app/flows/fines/fines-api/fines-api.compo
 import { FinesApiProcessAllocateComponent } from 'src/app/flows/fines/fines-api/fines-api-process-allocate/fines-api-process-allocate.component';
 import { FinesApiSelectBusComponent } from 'src/app/flows/fines/fines-api/fines-api-select-bus/fines-api-select-bus.component';
 import { FinesApiConfirmProcessComponent } from 'src/app/flows/fines/fines-api/fines-api-confirm-process/fines-api-confirm-process.component';
+import { FinesApiSummaryReportComponent } from 'src/app/flows/fines/fines-api/fines-api-summary-report/fines-api-summary-report.component';
 import { FinesApiStore } from 'src/app/flows/fines/fines-api/stores/fines-api.store';
 import { FINES_API_ROUTING_PATHS } from 'src/app/flows/fines/fines-api/routing/constants/fines-api-routing-paths.constant';
 import { OPAL_FINES_BUSINESS_UNIT_OUTSTANDING_AUTO_PAYMENT_COUNTS_MOCK } from 'src/app/flows/fines/services/opal-fines-service/mocks/opal-fines-business-unit-outstanding-auto-payment-counts.mock';
@@ -74,6 +75,10 @@ const FINANCE_COMPONENT_ROUTES: Routes = [
       {
         path: FINES_API_ROUTING_PATHS.children.confirmProcess,
         component: FinesApiConfirmProcessComponent,
+      },
+      {
+        path: `${FINES_API_ROUTING_PATHS.children.tillSummary}/:tillId`,
+        component: FinesApiSummaryReportComponent,
       },
     ],
   },
@@ -158,6 +163,7 @@ export const setupFinancePageComponent = ({
     }).then(({ fixture }) => {
       const router = fixture.componentRef.injector.get(Router);
       const finesApiStore = fixture.componentRef.injector.get(FinesApiStore);
+      cy.wrap(fixture.componentInstance).as('appComponent');
       cy.wrap(router).as('financeRouter');
       cy.wrap(finesApiStore).as('finesApiStore');
 
