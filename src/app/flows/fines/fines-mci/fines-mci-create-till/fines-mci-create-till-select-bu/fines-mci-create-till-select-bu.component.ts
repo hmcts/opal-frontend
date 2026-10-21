@@ -108,7 +108,8 @@ export class FinesMciCreateTillSelectBuComponent implements OnDestroy {
   }
 
   /**
-   * Defaults the form when the user has exactly one associated business unit.
+   * Restores a stored business unit selection when available, otherwise defaults the form
+   * when the user has exactly one associated business unit.
    */
   private setInitialBusinessUnit(): void {
     const selectedBusinessUnitId = this.finesMciStore.businessUnit()?.business_unit_id;

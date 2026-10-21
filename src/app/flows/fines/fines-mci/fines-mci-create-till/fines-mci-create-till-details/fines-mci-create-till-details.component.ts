@@ -18,19 +18,12 @@ import { FinesMciStore } from '../../stores/fines-mci.store';
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class FinesMciCreateTillDetailsComponent {
+  private allowIntendedNavigation = false;
   private readonly router = inject(Router);
   protected readonly finesMciStore = inject(FinesMciStore);
 
-  public canDeactivate(): CanDeactivateTypes {
-    return false;
-  }
-
-  @HostListener('window:beforeunload')
-  public handleBeforeUnload(): boolean {
-    return false;
-  }
-
   private navigateTo(path: string, extras?: NavigationExtras): void {
+    this.allowIntendedNavigation = true;
     void this.router.navigate(
       [
         '/',
@@ -42,6 +35,15 @@ export class FinesMciCreateTillDetailsComponent {
       ],
       extras,
     );
+  }
+
+  public canDeactivate(): CanDeactivateTypes {
+    return this.allowIntendedNavigation;
+  }
+
+  @HostListener('window:beforeunload')
+  public handleBeforeUnload(): boolean {
+    return false;
   }
 
   public navigateBack(): void {
