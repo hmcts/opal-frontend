@@ -747,17 +747,17 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@angular/router@npm:21.2.24":
-  version: 21.2.24
-  resolution: "@angular/router@npm:21.2.24"
+"@angular/router@npm:21.2.25":
+  version: 21.2.25
+  resolution: "@angular/router@npm:21.2.25"
   dependencies:
     tslib: "npm:^2.3.0"
   peerDependencies:
-    "@angular/common": 21.2.24
-    "@angular/core": 21.2.24
-    "@angular/platform-browser": 21.2.24
+    "@angular/common": 21.2.25
+    "@angular/core": 21.2.25
+    "@angular/platform-browser": 21.2.25
     rxjs: ^6.5.3 || ^7.4.0
-  checksum: 10/03c7b148961bc5911c63ab5d6e265473a5ec4f3c76b4eb52ef71deadf46b6e8b8b79e916745563dc838b118ad063e4a20fc0493b10aba8014ba0238b0df07c75
+  checksum: 10/65a33805af09e3f4a5d0dc7f5ea21364114009f7a230069b2c2ff82aca87565753551680899774ac30bd547b54c6004789076f35659a65ab41c51bdf53f77e9b
   languageName: node
   linkType: hard
 
@@ -15640,7 +15640,7 @@ __metadata:
     "@angular/platform-browser": "npm:21.2.24"
     "@angular/platform-browser-dynamic": "npm:21.2.24"
     "@angular/platform-server": "npm:21.2.25"
-    "@angular/router": "npm:21.2.24"
+    "@angular/router": "npm:21.2.25"
     "@angular/ssr": "npm:21.2.27"
     "@badeball/cypress-cucumber-preprocessor": "npm:^24.0.0"
     "@cypress/grep": "npm:^6.0.0"
