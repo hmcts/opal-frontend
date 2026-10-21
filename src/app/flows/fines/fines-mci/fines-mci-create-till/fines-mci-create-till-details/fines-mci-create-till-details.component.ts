@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, Component, inject } from '@angular/core';
+import { ChangeDetectionStrategy, Component, HostListener, inject } from '@angular/core';
 import { NavigationExtras, Router } from '@angular/router';
 import { FINES_ROUTING_PATHS } from '@app/flows/fines/routing/constants/fines-routing-paths.constant';
 import { GovukBackLinkComponent } from '@hmcts/opal-frontend-common/components/govuk/govuk-back-link';
@@ -7,6 +7,7 @@ import {
   GovukSummaryListComponent,
   GovukSummaryListRowComponent,
 } from '@hmcts/opal-frontend-common/components/govuk/govuk-summary-list';
+import { CanDeactivateTypes } from '@hmcts/opal-frontend-common/guards/can-deactivate/types';
 import { FINES_MCI_ROUTING_PATHS } from '../../routing/constants/fines-mci-routing-paths.constant';
 import { FinesMciStore } from '../../stores/fines-mci.store';
 
@@ -19,6 +20,15 @@ import { FinesMciStore } from '../../stores/fines-mci.store';
 export class FinesMciCreateTillDetailsComponent {
   private readonly router = inject(Router);
   protected readonly finesMciStore = inject(FinesMciStore);
+
+  public canDeactivate(): CanDeactivateTypes {
+    return false;
+  }
+
+  @HostListener('window:beforeunload')
+  public handleBeforeUnload(): boolean {
+    return false;
+  }
 
   private navigateTo(path: string, extras?: NavigationExtras): void {
     void this.router.navigate(
