@@ -41,6 +41,8 @@ import {
   NUMERIC_PATTERN,
   SINGLE_ASCII_CHARACTERS,
 } from '@hmcts/opal-frontend-common/constants';
+import { RELEASE_1A_1_2_FEATURE_FLAG } from '../../../../constants/release-feature-flags.constant';
+import { getFeatureFlagReleaseState } from '../../../../utils/fines-section-permissions.utils';
 
 const LETTERS_WITH_SPACES_PATTERN_VALIDATOR = patternValidator(LETTERS_WITH_SPACES_PATTERN, 'lettersWithSpacesPattern');
 const ALPHANUMERIC_WITH_SPACES_PATTERN_VALIDATOR = patternValidator(
@@ -181,8 +183,12 @@ export class FinesMacOffenceDetailsMinorCreditorFormComponent extends AbstractFo
       fm_offence_details_minor_creditor_surname: surname,
     } = this.form.controls;
     title.setValidators([Validators.required]);
-    forenames.setValidators([Validators.required, Validators.maxLength(20), LETTERS_WITH_SPACES_PATTERN_VALIDATOR]);
-    surname.setValidators([Validators.required, Validators.maxLength(30), LETTERS_WITH_SPACES_PATTERN_VALIDATOR]);
+    const namePatternValidator =
+      getFeatureFlagReleaseState(this.globalStore.featureFlags())[RELEASE_1A_1_2_FEATURE_FLAG] === true
+        ? SINGLE_ASCII_CHARACTERS_PATTERN_VALIDATOR
+        : LETTERS_WITH_SPACES_PATTERN_VALIDATOR;
+    forenames.setValidators([Validators.required, Validators.maxLength(20), namePatternValidator]);
+    surname.setValidators([Validators.required, Validators.maxLength(30), namePatternValidator]);
   }
 
   /**
