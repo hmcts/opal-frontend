@@ -1,12 +1,15 @@
 import { Routes } from '@angular/router';
-import { TitleResolver } from '@hmcts/opal-frontend-common/resolvers/title';
-import { FINES_FINANCE_ROUTING_PATHS } from './constants/fines-finance-routing-paths.constant';
-import { PAGES_ROUTING_PATHS } from '@routing/pages/constants/routing-paths.constant';
-import { FINES_FINANCE_ROUTING_TITLES } from './constants/fines-finance-routing-titles.constant';
-import { FINES_PERMISSIONS } from '../../../../constants/fines-permissions.constant';
-import { routePermissionsGuard } from '@hmcts/opal-frontend-common/guards/route-permissions';
+
 import { authGuard } from '@hmcts/opal-frontend-common/guards/auth';
+import { routePermissionsGuard } from '@hmcts/opal-frontend-common/guards/route-permissions';
+import { TitleResolver } from '@hmcts/opal-frontend-common/resolvers/title';
+
 import { fetchBusinessUnitsResolver } from '@routing/fines/resolvers/fetch-business-units-resolver/fetch-business-units.resolver';
+import { PAGES_ROUTING_PATHS } from '@routing/pages/constants/routing-paths.constant';
+
+import { FINES_PERMISSIONS } from '../../../../constants/fines-permissions.constant';
+import { FINES_FINANCE_ROUTING_PATHS } from './constants/fines-finance-routing-paths.constant';
+import { FINES_FINANCE_ROUTING_TITLES } from './constants/fines-finance-routing-titles.constant';
 
 export const routing: Routes = [
   {
@@ -16,7 +19,6 @@ export const routing: Routes = [
   },
   {
     path: `${FINES_FINANCE_ROUTING_PATHS.children.inbound}/${FINES_FINANCE_ROUTING_PATHS.children.search}`,
-
     loadComponent: () =>
       import('../fines-finance-inbound-files/fines-finance-inbound-files.component').then(
         (c) => c.FinesFinanceInboundFilesComponent,
@@ -30,7 +32,6 @@ export const routing: Routes = [
   },
   {
     path: `${FINES_FINANCE_ROUTING_PATHS.children.outbound}/${FINES_FINANCE_ROUTING_PATHS.children.search}`,
-
     loadComponent: () =>
       import('../fines-finance-outbound-files/fines-finance-outbound-files.component').then(
         (c) => c.FinesFinanceOutboundFilesComponent,
@@ -40,7 +41,7 @@ export const routing: Routes = [
       routePermissionId: [FINES_PERMISSIONS['view-interface-files']],
       title: FINES_FINANCE_ROUTING_TITLES.children.outbound,
     },
-    resolve: { title: TitleResolver },
+    resolve: { title: TitleResolver, businessUnits: fetchBusinessUnitsResolver },
   },
   {
     path: `${FINES_FINANCE_ROUTING_PATHS.children.variantBankingFiles}/${FINES_FINANCE_ROUTING_PATHS.children.upload}`,
