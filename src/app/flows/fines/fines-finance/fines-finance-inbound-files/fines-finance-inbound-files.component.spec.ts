@@ -11,9 +11,8 @@ import { httpErrorInterceptor } from '@hmcts/opal-frontend-common/interceptors/h
 import { contentDigestInterceptor } from '@hmcts/opal-frontend-common/interceptors/content-digest';
 import { AppInsightsService } from '@hmcts/opal-frontend-common/services/app-insights-service';
 import { GlobalStore } from '@hmcts/opal-frontend-common/stores/global';
-import { FinesFinancePayloadService } from '../services/fines-finance-payload.service';
 import { FinesFinanceInboundFilesComponent } from './fines-finance-inbound-files.component';
-import { FINES_FINANCE_BUSINESS_UNIT_REF_DATA_MOCK } from './mocks/fines-finance-business-unit-ref-data.mock';
+import { FINES_FINANCE_BUSINESS_UNIT_REF_DATA_MOCK } from '../mocks/fines-finance-business-unit-ref-data.mock';
 import { FINES_FINANCE_INBOUND_FILES_RESPONSE_MOCK } from './mocks/fines-finance-inbound-files-response.mock';
 
 describe('FinesFinanceInboundFilesComponent', () => {
@@ -96,7 +95,6 @@ describe('FinesFinanceInboundFilesComponent', () => {
   });
 
   it('requests files on entry with blank optional filters and Last 7 days selected', async () => {
-    const buildParams = vi.spyOn(TestBed.inject(FinesFinancePayloadService), 'buildInboundFilesSearchParams');
     fixture.detectChanges();
     const request = httpMock.expectOne((req) => req.url === '/opal-file-handling-service/interface-files');
     expect(request.request.method).toBe('GET');
@@ -128,7 +126,6 @@ describe('FinesFinanceInboundFilesComponent', () => {
       dateFrom: '',
       dateTo: '',
     });
-    expect(buildParams).toHaveBeenCalledExactlyOnceWith(filters.filtersForm.getRawValue());
     expect(filters.filtersForm.pristine).toBe(true);
     expect((fixture.nativeElement.querySelector('#refresh-reports-button') as HTMLButtonElement).disabled).toBe(false);
     expect(
@@ -183,15 +180,71 @@ describe('FinesFinanceInboundFilesComponent', () => {
       'Business unit': 'Camberwell Green',
       Source: 'Allpay',
       Status: 'Ready',
-      Actions: null,
+      Actions: 'Download',
     });
     expect(fixture.nativeElement.querySelector('tbody').textContent).toContain('Camberwell Green');
     expect(fixture.nativeElement.querySelector('tbody').textContent).toContain('N E Region');
     expect(fixture.nativeElement.querySelector('tbody').textContent).toContain('In-Progress');
+    expect(
+      Array.from((fixture.nativeElement as HTMLElement).querySelectorAll('thead th')).map((cell) =>
+        cell.textContent?.trim(),
+      ),
+    ).toEqual(['Date and time', 'Title', 'Type', 'Business unit', 'Source', 'Status', 'Action']);
     const rows = component.tableData();
     fixture.detectChanges();
     expect(component.tableData()).toBe(rows);
   });
+
+  it.each([
+    {
+      heading: 'Type',
+      cellIndex: 2,
+      ascending: ['RAW', 'RAW', 'RAW', 'TRANSFORMED'],
+      descending: ['TRANSFORMED', 'RAW', 'RAW', 'RAW'],
+    },
+    {
+      heading: 'Source',
+      cellIndex: 4,
+      ascending: ['Allpay', 'Allpay', 'Allpay DD', 'NatWest'],
+      descending: ['NatWest', 'Allpay DD', 'Allpay', 'Allpay'],
+    },
+    {
+      heading: 'Action',
+      cellIndex: 6,
+      ascending: ['', 'Download', 'Download', 'Download'],
+      descending: ['Download', 'Download', 'Download', ''],
+    },
+  ])(
+    'sorts the $heading column in both directions through its heading button',
+    async ({ heading, cellIndex, ascending, descending }) => {
+      fixture.detectChanges();
+      httpMock
+        .expectOne((req) => req.url === '/opal-file-handling-service/interface-files')
+        .flush(FINES_FINANCE_INBOUND_FILES_RESPONSE_MOCK);
+      await fixture.whenStable();
+      fixture.detectChanges();
+      const element = fixture.nativeElement as HTMLElement;
+      const header = Array.from(element.querySelectorAll('thead th')).find(
+        (cell) => cell.textContent?.trim() === heading,
+      )!;
+      const button = header.querySelector('button')!;
+      const values = () =>
+        Array.from(element.querySelectorAll('tbody tr')).map((row) =>
+          row.querySelectorAll('td')[cellIndex].textContent?.trim(),
+        );
+
+      button.click();
+      fixture.detectChanges();
+      expect(header.getAttribute('aria-sort')).toBe('ascending');
+      expect(values()).toEqual(ascending);
+
+      button.click();
+      fixture.detectChanges();
+      expect(header.getAttribute('aria-sort')).toBe('descending');
+      expect(values()).toEqual(descending);
+      httpMock.expectNone((req) => req.url.endsWith('/content'));
+    },
+  );
 
   it('shows the empty state when the API file list is null', async () => {
     fixture.detectChanges();
@@ -448,7 +501,6 @@ describe('FinesFinanceInboundFilesComponent', () => {
       .expectOne((req) => req.url === '/opal-file-handling-service/interface-files')
       .flush(FINES_FINANCE_INBOUND_FILES_RESPONSE_MOCK);
     fixture.detectChanges();
-    const oldAction = fixture.nativeElement.querySelector('#interface-file-download-1001') as HTMLAnchorElement;
     (fixture.nativeElement.querySelector('#refresh-reports-button') as HTMLButtonElement).click();
     httpMock
       .expectOne((req) => req.url === '/opal-file-handling-service/interface-files')
@@ -456,10 +508,13 @@ describe('FinesFinanceInboundFilesComponent', () => {
         number_of_results: 1,
         interface_files: [{ ...FINES_FINANCE_INBOUND_FILES_RESPONSE_MOCK.interface_files![0], status: 'INGESTED' }],
       });
+    fixture.detectChanges();
 
-    oldAction.dispatchEvent(new MouseEvent('click', { bubbles: true, cancelable: true }));
+    const staleClick = new MouseEvent('click', { cancelable: true });
+    component.onDownloadFile(1001, staleClick);
     component.onDownloadFile(9999, new MouseEvent('click', { cancelable: true }));
 
+    expect(staleClick.defaultPrevented).toBe(true);
     httpMock.expectNone((req) => req.url.endsWith('/content'));
     fixture.detectChanges();
     expect(fixture.nativeElement.querySelector('#interface-file-download-1001')).toBeNull();

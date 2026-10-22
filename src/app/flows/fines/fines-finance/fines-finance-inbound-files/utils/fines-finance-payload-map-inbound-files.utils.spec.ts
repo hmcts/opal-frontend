@@ -3,7 +3,7 @@ import { DateService } from '@hmcts/opal-frontend-common/services/date-service';
 import { Settings } from 'luxon';
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import type { IFinesFinanceInboundFilesTableOptions } from '../interfaces/fines-finance-inbound-files-table-options.interface';
-import { FINES_FINANCE_INBOUND_FILES_RESPONSE_MOCK } from '../../fines-finance-inbound-files/mocks/fines-finance-inbound-files-response.mock';
+import { FINES_FINANCE_INBOUND_FILES_RESPONSE_MOCK } from '../mocks/fines-finance-inbound-files-response.mock';
 import { mapInboundFilesToTableData } from './fines-finance-payload-map-inbound-files.utils';
 
 describe('mapInboundFilesToTableData', () => {
@@ -42,7 +42,7 @@ describe('mapInboundFilesToTableData', () => {
         'Business unit': 'Camberwell Green, Numeric code, UNKNOWN',
         Source: 'Allpay',
         Status: 'Ready',
-        Actions: null,
+        Actions: 'Download',
       },
     ]);
     expect(response).toEqual(original);
@@ -89,7 +89,7 @@ describe('mapInboundFilesToTableData', () => {
       Source: null,
       Status: null,
       'Business unit': null,
-      Actions: null,
+      Actions: '',
     });
   });
 
