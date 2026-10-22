@@ -21,7 +21,7 @@
       "pay by date": "01 February 2025"
     },
     "enforcementStatus": {
-      "date of last movement": "26 April 2024"
+      "date of last movement": "21 October 2026"
     },
     "comments": {
       "comment": "test"
@@ -44,7 +44,10 @@
       "collection order status": "No Collection Order",
       "enforcement court": "West London VPFPO (101)"
     },
-    "noOutstandingEnforcementActionMessage": "There is no outstanding enforcement action."
+    "lastEnforcementAction": {
+      "enforcement action": "FURTHER STEPS(FSN)",
+      "date added": "21 October 2026"
+    }
   },
   "impositionsTab": {},
   "historyAndNotesTab": {}

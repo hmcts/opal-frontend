@@ -27,10 +27,12 @@ Feature: Adult Youth Account Enquiries View Impositions
     When I search for the account by last name "Impositions{uniq}" and open the latest result
     When I go to the Impositions tab
     Then I should return to the Impositions tab
+    # Defect 11131: Legacy manual accounts have no imposing court details and display
+    # an em-dash with hidden "No data" text. Opal retains the fixture's imposing court.
     And I should see the defendant account impositions load with the following values:
-      | Date added | Imposition | Creditor     | Imposed   | Paid/Written off | Balance    | Date imposed | Offence                          | Imposed by                |
-      | {today}    | FCOST      | DVLA         | £125.00   | £10.00           | -£115.00   | 29 Feb 2024  | Riding a bicycle on a footpath   | Court 777 Camberwell CH09 |
-      | {today}    | FO         | Central Fund | £1,250.00 | £10.00           | -£1,240.00 | 29 Feb 2024  | Riding a bicycle on a footpath   | Court 777 Camberwell CH09 |
-      | {today}    | FO         | Central Fund | £1,250.00 | £10.00           | -£1,240.00 | 15 May 2025  | Theft from the person of another | Court 777 Camberwell CH09 |
-      | {today}    | FVS        | Central Fund | £999.00   | £0.00            | -£999.00   | 15 May 2025  | Theft from the person of another | Court 777 Camberwell CH09 |
+      | Date added | Imposition | Creditor     | Imposed   | Paid/Written off | Balance    | Date imposed | Offence                          | Imposed by (Opal)         | Imposed by (Legacy) |
+      | {today}    | FCOST      | DVLA         | £125.00   | £10.00           | -£115.00   | 29 Feb 2024  | Riding a bicycle on a footpath   | Court 777 Camberwell CH09 | —No data            |
+      | {today}    | FO         | Central Fund | £1,250.00 | £10.00           | -£1,240.00 | 29 Feb 2024  | Riding a bicycle on a footpath   | Court 777 Camberwell CH09 | —No data            |
+      | {today}    | FO         | Central Fund | £1,250.00 | £10.00           | -£1,240.00 | 15 May 2025  | Theft from the person of another | Court 777 Camberwell CH09 | —No data            |
+      | {today}    | FVS        | Central Fund | £999.00   | £0.00            | -£999.00   | 15 May 2025  | Theft from the person of another | Court 777 Camberwell CH09 | —No data            |
 
