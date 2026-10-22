@@ -458,16 +458,28 @@ describe('OpalFines', () => {
     it('should request created and failed manual tills using serialized query parameters', () => {
       const response = { tills: [] };
 
-      service.getTills({ statuses: ['CREATED', 'FAILED'], auto_payments: false }).subscribe((result) => {
-        expect(result).toEqual(response);
-      });
+      service
+        .getTills({ statuses: ['CREATED', 'FAILED'], auto_payments: false, business_unit_ids: [77, 88] })
+        .subscribe((result) => {
+          expect(result).toEqual(response);
+        });
 
       const req = httpMock.expectOne((request) => request.url === OPAL_FINES_PATHS.tills);
       expect(req.request.method).toBe('GET');
       expect(req.request.params.getAll('statuses')).toEqual(['CREATED,FAILED']);
       expect(req.request.params.get('auto_payments')).toBe('false');
+      expect(req.request.params.get('business_unit_ids')).toBe('77,88');
 
       req.flush(response);
+    });
+
+    it('should omit filters when none are provided', () => {
+      service.getTills({ statuses: [], business_unit_ids: [] }).subscribe();
+
+      const req = httpMock.expectOne((request) => request.url === OPAL_FINES_PATHS.tills);
+      expect(req.request.params.keys()).toEqual([]);
+
+      req.flush({ tills: [] });
     });
   });
 
