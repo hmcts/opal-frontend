@@ -1,3 +1,5 @@
+import { IOpalFinesSuspenseItemSummary } from './interfaces/opal-fines-suspense-item-summary.interface';
+import { IOpalFinesSuspenseItemHistoryEntry } from './interfaces/opal-fines-suspense-item-history-entry.interface';
 import { HttpClient, HttpParams, HttpResponse } from '@angular/common/http';
 import { inject, Injectable } from '@angular/core';
 import { OPAL_FINES_PATHS } from '@services/fines/opal-fines-service/constants/opal-fines-paths.constant';
@@ -385,6 +387,39 @@ export class OpalFines {
       .pipe(shareReplay(1));
 
     return this.cache.businessUnitsCache$;
+  }
+
+  /**
+   * Looks up the user-facing reference within a BU. Keep the reference as text
+   * to preserve leading zeroes and avoid numeric precision loss.
+   * TODO(PO-9796): Confirm the provisional response types against the API contract.
+   *
+   * @param businessUnitId - The selected business unit in which to look up the item.
+   * @param reference - The user-entered suspense reference, preserved as text and URL-encoded for the request.
+   * @returns An observable of the item summary, including its internal ID for subsequent history requests.
+   */
+  public getSuspenseItemSummary(businessUnitId: number, reference: string): Observable<IOpalFinesSuspenseItemSummary> {
+    const url = `${OPAL_FINES_PATHS.suspenseAccounts}/${businessUnitId}/suspense-items/${encodeURIComponent(reference)}/summary`;
+    return this.http.get<IOpalFinesSuspenseItemSummary>(url, this.retrySafeReadOptions());
+  }
+
+  /**
+   * Uses the internal item ID returned by the summary, rather than its reference.
+   * TODO(PO-9797): Confirm the BU header name and provisional history response.
+   *
+   * @param businessUnitId - The item's business unit, sent in the business_unit_id request header.
+   * @param suspenseItemId - The internal suspense_item_id returned by the summary lookup.
+   * @returns An observable of the item's history and notes entries using the provisional response structure.
+   */
+  public getSuspenseItemHistory(
+    businessUnitId: number,
+    suspenseItemId: number,
+  ): Observable<IOpalFinesSuspenseItemHistoryEntry[]> {
+    const url = `${OPAL_FINES_PATHS.suspenseItems}/${suspenseItemId}/history`;
+    return this.http.get<IOpalFinesSuspenseItemHistoryEntry[]>(
+      url,
+      this.withRetrySafeReadOptions({ headers: { business_unit_id: String(businessUnitId) } }),
+    );
   }
 
   /**

@@ -1,3 +1,5 @@
+import { OPAL_FINES_SUSPENSE_ITEM_SUMMARY_MOCK } from './mocks/opal-fines-suspense-item-summary.mock';
+import { OPAL_FINES_SUSPENSE_ITEM_HISTORY_MOCK } from './mocks/opal-fines-suspense-item-history.mock';
 import { TestBed } from '@angular/core/testing';
 import { HttpTestingController, provideHttpClientTesting } from '@angular/common/http/testing';
 import { HttpResponse, provideHttpClient, withInterceptors, withInterceptorsFromDi } from '@angular/common/http';
@@ -95,6 +97,34 @@ const INTERFACE_JOBS_SUMMARY_RESPONSE: IOpalFinesInterfaceJobsSummaryResponse = 
 describe('OpalFines', () => {
   let service: OpalFines;
   let httpMock: HttpTestingController;
+
+  it('requests a suspense summary with its BU and encoded reference, preserving the response', () => {
+    const received = vi.fn();
+    service.getSuspenseItemSummary(22, '001234/5').subscribe(received);
+    const request = httpMock.expectOne('/opal-fines-service/suspense-accounts/22/suspense-items/001234%2F5/summary');
+    expect(request.request.method).toBe('GET');
+    request.flush(OPAL_FINES_SUSPENSE_ITEM_SUMMARY_MOCK);
+    expect(received).toHaveBeenCalledWith(OPAL_FINES_SUSPENSE_ITEM_SUMMARY_MOCK);
+  });
+
+  it('requests suspense history by internal ID and sends its BU in the header', () => {
+    const received = vi.fn();
+    service.getSuspenseItemHistory(22, 1001).subscribe(received);
+    const request = httpMock.expectOne('/opal-fines-service/suspense-items/1001/history');
+    expect(request.request.method).toBe('GET');
+    expect(request.request.headers.get('business_unit_id')).toBe('22');
+    request.flush(OPAL_FINES_SUSPENSE_ITEM_HISTORY_MOCK);
+    expect(received).toHaveBeenCalledWith(OPAL_FINES_SUSPENSE_ITEM_HISTORY_MOCK);
+  });
+
+  it('propagates a missing suspense summary when the local fallback is not registered', () => {
+    const failed = vi.fn();
+    service.getSuspenseItemSummary(22, '001234').subscribe({ error: failed });
+    httpMock
+      .expectOne('/opal-fines-service/suspense-accounts/22/suspense-items/001234/summary')
+      .flush({}, { status: 404, statusText: 'Not Found' });
+    expect(failed).toHaveBeenCalledWith(expect.objectContaining({ status: 404 }));
+  });
 
   function mockHeaders(getFn: (name: string) => string | null) {
     return { get: getFn } as unknown as HttpResponse<unknown>['headers'];
