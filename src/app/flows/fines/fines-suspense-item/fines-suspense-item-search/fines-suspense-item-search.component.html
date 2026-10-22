@@ -2,6 +2,8 @@
   <app-fines-suspense-item-search-form
     [autoCompleteItems]="businessUnitAutoCompleteItems"
     [initialBusinessUnitId]="initialBusinessUnitId"
+    (businessUnitChange)="handleBusinessUnitChange($event)"
+    (formSubmit)="handleFormSubmit($event)"
     (cancelSearch)="handleCancel()"
   ></app-fines-suspense-item-search-form>
 </div>

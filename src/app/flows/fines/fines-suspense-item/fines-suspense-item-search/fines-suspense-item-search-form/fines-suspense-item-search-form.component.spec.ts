@@ -108,6 +108,45 @@ describe('FinesSuspenseItemSearchFormComponent', () => {
     });
   });
 
+  it('prevents an empty submission and displays linked summary and inline errors', () => {
+    const submitted = vi.fn();
+    component['formSubmit'].subscribe(submitted);
+    fixture.detectChanges();
+    const page: HTMLElement = fixture.nativeElement;
+    page.querySelector('form')!.dispatchEvent(new Event('submit', { bubbles: true, cancelable: true }));
+    fixture.detectChanges();
+
+    expect(submitted).not.toHaveBeenCalled();
+    expect(page.querySelector('.govuk-error-summary')?.textContent).toContain('There is a problem');
+    const summaryLinks = page.querySelectorAll<HTMLAnchorElement>('.govuk-error-summary a');
+    expect(Array.from(summaryLinks, (link) => link.textContent)).toEqual([
+      'Select a business unit',
+      'Enter a suspense reference number',
+    ]);
+    const scrollTo = vi.spyOn(component, 'scrollTo').mockImplementation(() => undefined);
+    summaryLinks[0].click();
+    expect(scrollTo).toHaveBeenLastCalledWith('fsis_business_unit_id');
+    summaryLinks[1].click();
+    expect(scrollTo).toHaveBeenLastCalledWith('fsis_suspense_reference_number');
+    const inlineErrors = Array.from(page.querySelectorAll('.govuk-error-message'), (error) => error.textContent);
+    expect(inlineErrors.some((message) => message?.includes('Select a business unit'))).toBe(true);
+    expect(inlineErrors.some((message) => message?.includes('Enter a suspense reference number'))).toBe(true);
+  });
+
+  it('prevents submission without a reference when the sole BU is supplied', () => {
+    fixture.componentRef.setInput('autoCompleteItems', [FINES_SUSPENSE_ITEM_SEARCH_BUSINESS_UNITS_MOCK[0]]);
+    fixture.componentRef.setInput('initialBusinessUnitId', 11);
+    const submitted = vi.fn();
+    component['formSubmit'].subscribe(submitted);
+    fixture.detectChanges();
+    fixture.nativeElement.querySelector('form').dispatchEvent(new Event('submit', { bubbles: true, cancelable: true }));
+    fixture.detectChanges();
+
+    expect(submitted).not.toHaveBeenCalled();
+    expect(component.form.get('fsis_business_unit_id')?.valid).toBe(true);
+    expect(component.form.get('fsis_suspense_reference_number')?.hasError('required')).toBe(true);
+  });
+
   it('emits Cancel without submitting the form', () => {
     const cancelled = vi.fn();
     const submitted = vi.fn();

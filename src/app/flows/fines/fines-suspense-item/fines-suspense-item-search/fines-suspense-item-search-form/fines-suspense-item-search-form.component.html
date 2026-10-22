@@ -1,5 +1,10 @@
 <h1 class="govuk-heading-l">Search for suspense item</h1>
 
+<opal-lib-govuk-error-summary
+  [errors]="formErrorSummaryMessage"
+  (errorClick)="scrollTo($event)"
+></opal-lib-govuk-error-summary>
+
 <form [formGroup]="form" (ngSubmit)="handleFormSubmit($event)" autocomplete="off" novalidate>
   @if (autoCompleteItems.length === 1) {
     <opal-lib-govuk-summary-list summaryListId="suspense-search-business-unit">
@@ -16,6 +21,7 @@
   } @else {
     <opal-lib-alphagov-accessible-autocomplete
       [control]="form.get('fsis_business_unit_id')"
+      [errors]="formControlErrorMessages['fsis_business_unit_id']"
       [autoCompleteItems]="autoCompleteItems"
       labelText="Select a business unit"
       labelClasses="govuk-label--s"
@@ -27,6 +33,7 @@
 
   <opal-lib-govuk-text-input
     [control]="form.get('fsis_suspense_reference_number')"
+    [errors]="formControlErrorMessages['fsis_suspense_reference_number']"
     labelText="Suspense reference number"
     labelClasses="govuk-label--s"
     inputId="fsis_suspense_reference_number"
