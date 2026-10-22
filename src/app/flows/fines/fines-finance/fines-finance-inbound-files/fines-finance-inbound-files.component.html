@@ -1,8 +1,30 @@
+<a #fileDownloadLink hidden>Download file</a>
+<div #downloadErrorSummary class="govuk-grid-column-full">
+  <opal-lib-govuk-error-summary
+    [errors]="downloadErrors()"
+    (errorClick)="onDownloadErrorClick($event)"
+  ></opal-lib-govuk-error-summary>
+</div>
+
 <opal-lib-custom-inbound-file-viewer
   [sourceList]="sourceList"
   [source]="source"
   [businessUnits]="businessUnits"
   [tableData]="tableData()"
-  [refreshFailed]="refreshFailed()"
+  [actionTemplate]="downloadAction"
   (formSubmit)="onFormSubmit($event)"
 ></opal-lib-custom-inbound-file-viewer>
+
+<ng-template #downloadAction let-row>
+  @if (canDownload(row)) {
+    <a
+      id="interface-file-download-{{ row['File ID'] }}"
+      class="govuk-link"
+      [href]="getDownloadHref(row['File ID'])"
+      aria-label="Download {{ row.Title || 'interface file ' + row['File ID'] }}"
+      (click)="onDownloadFile(row['File ID'], $event)"
+    >
+      Download
+    </a>
+  }
+</ng-template>

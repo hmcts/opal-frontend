@@ -23,6 +23,29 @@ describe('FinesFinanceInboundFilesComponent', () => {
   let previousZone: typeof Settings.defaultZone;
   const userState = vi.fn();
 
+  /**
+   * Records browser saves while leaving HTTP requests and download orchestration real.
+   * @returns Object URL spies and the filenames and anchors used by FileService.
+   */
+  const mockFileSave = () => {
+    const createObjectURL = vi.fn().mockReturnValue('blob:test-download');
+    const revokeObjectURL = vi.fn();
+    vi.stubGlobal(
+      'URL',
+      class extends URL {
+        static override createObjectURL = createObjectURL;
+        static override revokeObjectURL = revokeObjectURL;
+      },
+    );
+    const filenames: string[] = [];
+    const links: HTMLAnchorElement[] = [];
+    vi.spyOn(HTMLAnchorElement.prototype, 'click').mockImplementation(function (this: HTMLAnchorElement) {
+      filenames.push(this.download);
+      links.push(this);
+    });
+    return { createObjectURL, revokeObjectURL, filenames, links };
+  };
+
   beforeEach(async () => {
     vi.useFakeTimers({ toFake: ['Date'] });
     vi.setSystemTime(new Date('2026-10-20T12:00:00Z'));
@@ -93,7 +116,7 @@ describe('FinesFinanceInboundFilesComponent', () => {
     });
     expect(buildParams).toHaveBeenCalledExactlyOnceWith(filters.filtersForm.getRawValue());
     expect(filters.filtersForm.pristine).toBe(true);
-    expect((fixture.nativeElement.querySelector('#refresh-reports-button') as HTMLButtonElement).disabled).toBe(true);
+    expect((fixture.nativeElement.querySelector('#refresh-reports-button') as HTMLButtonElement).disabled).toBe(false);
     expect(
       (fixture.nativeElement.querySelector('input[type="radio"][value="last7Days"]') as HTMLInputElement).checked,
     ).toBe(true);
@@ -193,6 +216,36 @@ describe('FinesFinanceInboundFilesComponent', () => {
     expect(component.tableData()).toEqual([]);
   });
 
+  it('refreshes unchanged successful criteria and displays the latest response each time', () => {
+    fixture.detectChanges();
+    const initial = httpMock.expectOne((req) => req.url === '/opal-file-handling-service/interface-files');
+    const criteria = initial.request.params.toString();
+    initial.flush(FINES_FINANCE_INBOUND_FILES_RESPONSE_MOCK);
+    fixture.detectChanges();
+    const refresh = fixture.nativeElement.querySelector('#refresh-reports-button') as HTMLButtonElement;
+
+    refresh.click();
+    const firstRefresh = httpMock.expectOne((req) => req.url === '/opal-file-handling-service/interface-files');
+    expect(firstRefresh.request.params.toString()).toBe(criteria);
+    firstRefresh.flush({
+      number_of_results: 1,
+      interface_files: [
+        { ...FINES_FINANCE_INBOUND_FILES_RESPONSE_MOCK.interface_files![0], file_name: 'latest-file.xml' },
+      ],
+    });
+    fixture.detectChanges();
+    expect(fixture.nativeElement.querySelector('tbody').textContent).toContain('latest-file.xml');
+    expect(refresh.disabled).toBe(false);
+
+    refresh.click();
+    const secondRefresh = httpMock.expectOne((req) => req.url === '/opal-file-handling-service/interface-files');
+    expect(secondRefresh.request.params.toString()).toBe(criteria);
+    secondRefresh.flush({ number_of_results: 0, interface_files: [] });
+    fixture.detectChanges();
+    expect(fixture.nativeElement.textContent).toContain('There are no inbound interface files to display.');
+    expect(refresh.disabled).toBe(false);
+  });
+
   it('allows retrying the initial search with unchanged filters after a failure', () => {
     fixture.detectChanges();
     const initial = httpMock.expectOne((req) => req.url === '/opal-file-handling-service/interface-files');
@@ -201,7 +254,6 @@ describe('FinesFinanceInboundFilesComponent', () => {
     fixture.detectChanges();
     const refresh = fixture.nativeElement.querySelector('#refresh-reports-button') as HTMLButtonElement;
 
-    expect(component.refreshFailed()).toBe(true);
     expect(component.tableData()).toBeNull();
     expect(refresh.disabled).toBe(false);
     expect(TestBed.inject(GlobalStore).setBannerError).toHaveBeenCalled();
@@ -209,13 +261,12 @@ describe('FinesFinanceInboundFilesComponent', () => {
     fixture.detectChanges();
     const retry = httpMock.expectOne((req) => req.url === '/opal-file-handling-service/interface-files');
     expect(retry.request.params.toString()).toBe(criteria);
-    expect(component.refreshFailed()).toBe(false);
-    expect(refresh.disabled).toBe(true);
+    expect(refresh.disabled).toBe(false);
     retry.flush(FINES_FINANCE_INBOUND_FILES_RESPONSE_MOCK);
     fixture.detectChanges();
 
     expect(component.tableData()).toHaveLength(FINES_FINANCE_INBOUND_FILES_RESPONSE_MOCK.interface_files!.length);
-    expect(refresh.disabled).toBe(true);
+    expect(refresh.disabled).toBe(false);
   });
 
   it('retains results and allows repeated retries of failed edited criteria', () => {
@@ -254,9 +305,8 @@ describe('FinesFinanceInboundFilesComponent', () => {
     expect(success.request.params.toString()).toBe(criteria);
     success.flush({ number_of_results: 0, interface_files: [] });
     fixture.detectChanges();
-    expect(component.refreshFailed()).toBe(false);
     expect(component.tableData()).toEqual([]);
-    expect(refresh.disabled).toBe(true);
+    expect(refresh.disabled).toBe(false);
   });
 
   it('cancels the previous search so it cannot replace refreshed results', () => {
@@ -349,22 +399,187 @@ describe('FinesFinanceInboundFilesComponent', () => {
     all.flush(FINES_FINANCE_INBOUND_FILES_RESPONSE_MOCK);
   });
 
+  it('offers downloads only for Ready and File failed rows with a file ID', () => {
+    fixture.detectChanges();
+    httpMock
+      .expectOne((req) => req.url === '/opal-file-handling-service/interface-files')
+      .flush({
+        number_of_results: 5,
+        interface_files: [
+          ...FINES_FINANCE_INBOUND_FILES_RESPONSE_MOCK.interface_files!,
+          {
+            ...FINES_FINANCE_INBOUND_FILES_RESPONSE_MOCK.interface_files![0],
+            interface_file_id: null,
+            file_name: 'missing-id.xml',
+          },
+        ],
+      });
+    fixture.detectChanges();
+
+    const links = fixture.nativeElement.querySelectorAll(
+      'a[id^="interface-file-download-"]',
+    ) as NodeListOf<HTMLAnchorElement>;
+    expect(Array.from(links, (link) => link.id)).toEqual([
+      'interface-file-download-1001',
+      'interface-file-download-1002',
+      'interface-file-download-1004',
+    ]);
+    expect(fixture.nativeElement.querySelector('#interface-file-download-1001').closest('tr').textContent).toContain(
+      'Ready',
+    );
+    expect(fixture.nativeElement.querySelector('#interface-file-download-1002').closest('tr').textContent).toContain(
+      'File failed',
+    );
+    expect(fixture.nativeElement.querySelector('#interface-file-download-1003')).toBeNull();
+    const missingIdRow = Array.from(fixture.nativeElement.querySelectorAll('tbody tr') as NodeListOf<HTMLElement>).find(
+      (row) => row.textContent?.includes('missing-id.xml'),
+    );
+    expect(missingIdRow?.querySelector('a')).toBeNull();
+  });
+
+  it('rechecks the latest row before downloading from a stale action', () => {
+    fixture.detectChanges();
+    httpMock
+      .expectOne((req) => req.url === '/opal-file-handling-service/interface-files')
+      .flush(FINES_FINANCE_INBOUND_FILES_RESPONSE_MOCK);
+    fixture.detectChanges();
+    const oldAction = fixture.nativeElement.querySelector('#interface-file-download-1001') as HTMLAnchorElement;
+    (fixture.nativeElement.querySelector('#refresh-reports-button') as HTMLButtonElement).click();
+    httpMock
+      .expectOne((req) => req.url === '/opal-file-handling-service/interface-files')
+      .flush({
+        number_of_results: 1,
+        interface_files: [{ ...FINES_FINANCE_INBOUND_FILES_RESPONSE_MOCK.interface_files![0], status: 'INGESTED' }],
+      });
+
+    oldAction.dispatchEvent(new MouseEvent('click', { bubbles: true, cancelable: true }));
+    component.onDownloadFile(9999, new MouseEvent('click', { cancelable: true }));
+
+    httpMock.expectNone((req) => req.url.endsWith('/content'));
+    fixture.detectChanges();
+    expect(fixture.nativeElement.querySelector('#interface-file-download-1001')).toBeNull();
+  });
+
+  it('focuses download errors, returns to the action and retries without changing rows', async () => {
+    const { filenames } = mockFileSave();
+    fixture.detectChanges();
+    httpMock
+      .expectOne((req) => req.url === '/opal-file-handling-service/interface-files')
+      .flush(FINES_FINANCE_INBOUND_FILES_RESPONSE_MOCK);
+    fixture.detectChanges();
+    const rows = component.tableData();
+    const download = fixture.nativeElement.querySelector('#interface-file-download-1002') as HTMLAnchorElement;
+    download.dispatchEvent(new MouseEvent('click', { bubbles: true, cancelable: true }));
+    httpMock.expectOne('/opal-file-handling-service/interface-files/1002/content').flush(new Blob(), {
+      status: 500,
+      statusText: 'Download failed',
+    });
+    fixture.detectChanges();
+    const summary = fixture.nativeElement.querySelector('.govuk-error-summary') as HTMLElement;
+
+    expect(summary.textContent).toContain('The file could not be downloaded. Try again.');
+    await vi.waitFor(() => expect(document.activeElement).toBe(summary));
+    summary.querySelector('a')!.dispatchEvent(new MouseEvent('click', { bubbles: true, cancelable: true }));
+    expect(document.activeElement).toBe(download);
+
+    download.dispatchEvent(new MouseEvent('click', { bubbles: true, cancelable: true }));
+    fixture.detectChanges();
+    expect(fixture.nativeElement.querySelector('.govuk-error-summary')).toBeNull();
+    httpMock
+      .expectOne('/opal-file-handling-service/interface-files/1002/content')
+      .flush(new Blob(['<interfaceFile />'], { type: 'application/octet-stream' }));
+    fixture.detectChanges();
+
+    expect(filenames).toEqual(['allpay_1002.xml']);
+    expect(component.tableData()).toBe(rows);
+    expect(fixture.nativeElement.querySelector('#interface-file-download-1002')).toBe(download);
+  });
+
+  it('saves a pending download after pagination without changing the selected page', () => {
+    const { filenames, links } = mockFileSave();
+    fixture.detectChanges();
+    httpMock
+      .expectOne((req) => req.url === '/opal-file-handling-service/interface-files')
+      .flush({
+        number_of_results: 26,
+        interface_files: Array.from({ length: 26 }, (_, index) => ({
+          ...FINES_FINANCE_INBOUND_FILES_RESPONSE_MOCK.interface_files![0],
+          interface_file_id: index + 1001,
+          file_name: `file-${index + 1}.xml`,
+        })),
+      });
+    fixture.detectChanges();
+    const download = fixture.nativeElement.querySelector('#interface-file-download-1001') as HTMLAnchorElement;
+    download.dispatchEvent(new MouseEvent('click', { bubbles: true, cancelable: true }));
+    const request = httpMock.expectOne('/opal-file-handling-service/interface-files/1001/content');
+    (
+      fixture.nativeElement.querySelector('#inbound-file-viewer-pagination a[aria-label="Page 2"]') as HTMLAnchorElement
+    ).dispatchEvent(new MouseEvent('click', { bubbles: true, cancelable: true }));
+    fixture.detectChanges();
+    expect(fixture.nativeElement.querySelector('#interface-file-download-1001')).toBeNull();
+    request.flush(new Blob(['<interfaceFile />'], { type: 'application/octet-stream' }));
+    fixture.detectChanges();
+
+    expect(filenames).toEqual(['file-1.xml']);
+    expect(links[0]).not.toBe(download);
+    expect(links[0].hidden).toBe(true);
+    expect(fixture.nativeElement.querySelector('#interface-file-download-1026')).not.toBeNull();
+    expect(
+      fixture.nativeElement.querySelector('#inbound-file-viewer-pagination [aria-current="page"]').textContent.trim(),
+    ).toBe('2');
+  });
+
+  it('returns to the results when a failed download action is on another page', async () => {
+    fixture.detectChanges();
+    httpMock
+      .expectOne((req) => req.url === '/opal-file-handling-service/interface-files')
+      .flush({
+        number_of_results: 26,
+        interface_files: Array.from({ length: 26 }, (_, index) => ({
+          ...FINES_FINANCE_INBOUND_FILES_RESPONSE_MOCK.interface_files![0],
+          interface_file_id: index + 1001,
+        })),
+      });
+    fixture.detectChanges();
+    (fixture.nativeElement.querySelector('#interface-file-download-1001') as HTMLAnchorElement).dispatchEvent(
+      new MouseEvent('click', { bubbles: true, cancelable: true }),
+    );
+    const request = httpMock.expectOne('/opal-file-handling-service/interface-files/1001/content');
+    (
+      fixture.nativeElement.querySelector('#inbound-file-viewer-pagination a[aria-label="Page 2"]') as HTMLAnchorElement
+    ).dispatchEvent(new MouseEvent('click', { bubbles: true, cancelable: true }));
+    fixture.detectChanges();
+    request.flush(new Blob(), { status: 500, statusText: 'Download failed' });
+    fixture.detectChanges();
+    const summary = fixture.nativeElement.querySelector('.govuk-error-summary') as HTMLElement;
+    await vi.waitFor(() => expect(document.activeElement).toBe(summary));
+
+    summary.querySelector('a')!.dispatchEvent(new MouseEvent('click', { bubbles: true, cancelable: true }));
+
+    expect(document.activeElement).toBe(fixture.nativeElement.querySelector('#inbound-interface-files-results'));
+    expect(fixture.nativeElement.querySelector('#interface-file-download-1026')).not.toBeNull();
+  });
+
+  it('cancels a pending download when leaving the page', () => {
+    fixture.detectChanges();
+    httpMock
+      .expectOne((req) => req.url === '/opal-file-handling-service/interface-files')
+      .flush(FINES_FINANCE_INBOUND_FILES_RESPONSE_MOCK);
+    fixture.detectChanges();
+    (fixture.nativeElement.querySelector('#interface-file-download-1001') as HTMLAnchorElement).dispatchEvent(
+      new MouseEvent('click', { bubbles: true, cancelable: true }),
+    );
+    const request = httpMock.expectOne('/opal-file-handling-service/interface-files/1001/content');
+
+    fixture.destroy();
+
+    expect(request.cancelled).toBe(true);
+  });
+
   it.each([404, 422, 500])(
     'uses the existing interceptors for original file bytes and retains rows after a %s failure',
     async (status) => {
-      const createObjectURL = vi.fn().mockReturnValue('blob:test-download');
-      const revokeObjectURL = vi.fn();
-      vi.stubGlobal(
-        'URL',
-        class extends URL {
-          static override createObjectURL = createObjectURL;
-          static override revokeObjectURL = revokeObjectURL;
-        },
-      );
-      const filenames: string[] = [];
-      vi.spyOn(HTMLAnchorElement.prototype, 'click').mockImplementation(function (this: HTMLAnchorElement) {
-        filenames.push(this.download);
-      });
+      const { createObjectURL, revokeObjectURL, filenames } = mockFileSave();
       fixture.detectChanges();
       httpMock
         .expectOne((req) => req.url === '/opal-file-handling-service/interface-files')
