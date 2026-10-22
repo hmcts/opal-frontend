@@ -3,10 +3,10 @@ import { Settings } from 'luxon';
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import { DateService } from '@hmcts/opal-frontend-common/services/date-service';
 import { buildInboundFilesSearchParams } from './fines-finance-payload-build-inbound-files-search.utils';
-import { FINES_FINANCE_INBOUND_FILES_INITIAL_FILTER_STATE } from '../../constants/fines-finance-inbound-files-initial-filter-state.constant';
-import { FinesFinanceInterfaceFileType } from '../../constants/fines-finance-interface-file-type.constant';
+import { FINES_FINANCE_INBOUND_FILES_INITIAL_FILTER_STATE } from '../constants/fines-finance-inbound-files-initial-filter-state.constant';
+import { FinesFinanceInboundFileType } from '../constants/fines-finance-inbound-file-type.constant';
 import { InterfaceFileViewerFileStatus } from '../../constants/fines-finance-interface-file-status.constant';
-import { FinesFinanceInterfaceFileSource } from '../../constants/fines-finance-interface-file-source.constant';
+import { FinesFinanceInboundFileSource } from '../constants/fines-finance-inbound-file-source.constant';
 import { InterfaceFileViewerSupportedDomain } from '../../constants/fines-finance-interface-file-domain.constant';
 import { IFinesFinanceInboundFilesForm } from '../interfaces/fines-finance-inbound-files-form.interface';
 
@@ -58,8 +58,8 @@ describe('buildInboundFilesSearchParams', () => {
       days: '14',
       dateFrom: '',
       dateTo: '',
-      fileType: FinesFinanceInterfaceFileType.TransformedJson,
-      source: FinesFinanceInterfaceFileSource.Allpay,
+      fileType: FinesFinanceInboundFileType.TransformedJson,
+      source: FinesFinanceInboundFileSource.Allpay,
     };
 
     const params = buildInboundFilesSearchParams(formData, dateService);
@@ -69,10 +69,10 @@ describe('buildInboundFilesSearchParams', () => {
       domain: InterfaceFileViewerSupportedDomain.Fines,
       from_date: '2026-09-22T23:00:00',
       not_status: [InterfaceFileViewerFileStatus.FailedSuperseded],
-      source: FinesFinanceInterfaceFileSource.Allpay,
+      source: FinesFinanceInboundFileSource.Allpay,
       target: 'OPAL',
       to_date: '2026-10-06T22:59:59.999999',
-      type: [FinesFinanceInterfaceFileType.TransformedJson],
+      type: [FinesFinanceInboundFileType.TransformedJson],
     });
   });
 
