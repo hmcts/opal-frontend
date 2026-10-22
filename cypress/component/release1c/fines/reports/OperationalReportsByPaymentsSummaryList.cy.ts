@@ -276,7 +276,7 @@ describe(
 
       cy.get(L.filters.dateRange).check();
       cy.get(L.filters.dateFrom).closest('.govuk-\\!-margin-bottom-5').should('exist');
-        cy.get(L.filters.dateFrom).should('have.attr', 'aria-describedby', 'reports-summary-list-date-from-hint');
+      cy.get(L.filters.dateFrom).should('have.attr', 'aria-describedby', 'reports-summary-list-date-from-hint');
 
       cy.get(L.filters.refreshButton).click();
       cy.get(L.filters.dateFrom).should(
