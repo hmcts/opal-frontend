@@ -242,15 +242,49 @@ describe(
 
     // AC6a–d require permission-filtered API data and will be covered by a follow-up E2E test.
     it(
-      'AC6: defaults the business unit filter to All business units',
+      'PO-11125: defaults the business unit filter to blank while keeping All business units selectable',
       { tags: ['@JIRA-STORY:PO-2313', '@JIRA-EPIC:PO-2248', '@JIRA-TEST-KEY:PO-9958'] },
       () => {
         setupComponent();
 
-        cy.get(L.filters.businessUnitAutocomplete).should('be.visible').and('have.value', 'All business units');
-        cy.get(L.filters.businessUnit).should('have.value', 'all');
+        cy.get(L.filters.businessUnitAutocomplete).should('be.visible').and('have.value', '');
+        cy.get(L.filters.businessUnit).should('have.value', '');
+        cy.get(L.filters.businessUnitAutocomplete).click();
+        cy.contains(L.filters.businessUnitOptions, 'All business units').should('be.visible');
       },
     );
+
+    it(
+      'PO-11125: treats blank and All business units as unrestricted selections',
+      { tags: ['@JIRA-STORY:PO-11125'] },
+      () => {
+        setupComponent();
+
+        cy.get(L.filters.refreshButton).click();
+        cy.get('@getReportInstances').its('firstCall.args.0').should('deep.include', { business_units: undefined });
+
+        cy.get(L.filters.businessUnitAutocomplete).click();
+        cy.contains(L.filters.businessUnitOptions, 'All business units').click();
+        cy.get(L.filters.businessUnit).should('have.value', 'all');
+        cy.get(L.filters.refreshButton).click();
+        cy.get('@getReportInstances').its('lastCall.args.0').should('deep.include', { business_units: undefined });
+      },
+    );
+
+    it('PO-11125: preserves date range spacing and error associations', { tags: ['@JIRA-STORY:PO-11125'] }, () => {
+      setupComponent();
+
+      cy.get(L.filters.dateRange).check();
+      cy.get(L.filters.dateFrom).closest('.govuk-\\!-margin-bottom-5').should('exist');
+        cy.get(L.filters.dateFrom).should('have.attr', 'aria-describedby', 'reports-summary-list-date-from-hint');
+
+      cy.get(L.filters.refreshButton).click();
+      cy.get(L.filters.dateFrom).should(
+        'have.attr',
+        'aria-describedby',
+        'reports-summary-list-date-from-hint reports-summary-list-date-from-error-message',
+      );
+    });
 
     // AC7a–b require API/E2E data to verify the returned results;
     it(
