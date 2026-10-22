@@ -464,7 +464,7 @@ describe('OpalFines', () => {
 
       const req = httpMock.expectOne((request) => request.url === OPAL_FINES_PATHS.tills);
       expect(req.request.method).toBe('GET');
-      expect(req.request.params.getAll('statuses')).toEqual(['CREATED', 'FAILED']);
+      expect(req.request.params.getAll('statuses')).toEqual(['CREATED,FAILED']);
       expect(req.request.params.get('auto_payments')).toBe('false');
 
       req.flush(response);
