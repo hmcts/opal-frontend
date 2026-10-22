@@ -1,3 +1,4 @@
+import { fetchBusinessUnitsResolver } from '@routing/fines/resolvers/fetch-business-units-resolver/fetch-business-units.resolver';
 import { Routes } from '@angular/router';
 import { TitleResolver } from '@hmcts/opal-frontend-common/resolvers/title';
 import { FINES_SUSPENSE_ITEM_ROUTING_PATHS } from './constants/fines-suspense-item-routing-paths.constant';
@@ -20,6 +21,8 @@ export const routing: Routes = [
     },
     resolve: {
       title: TitleResolver,
+      // TODO(PO-9763): Apply suspense BU permissions when the permission contract is available.
+      businessUnits: fetchBusinessUnitsResolver,
     },
   },
 ];

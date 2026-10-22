@@ -57,7 +57,8 @@ export class FinesSuspenseItemSearchFormComponent extends AbstractFormBaseCompon
   @Output() public cancelSearch = new EventEmitter<void>();
 
   /**
-   * Creates the search controls using the supplied business-unit selection.
+   * Restores the supplied BU but starts a fresh reference entry. Report BU changes
+   * to the parent as they happen so the selection survives leaving without Continue.
    */
   private initialiseSearchForm(): void {
     const businessUnitControl = new FormControl<number | null>(this.initialBusinessUnitId, Validators.required);
