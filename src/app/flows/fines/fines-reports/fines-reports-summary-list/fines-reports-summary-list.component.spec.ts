@@ -975,6 +975,38 @@ describe('FinesReportsSummaryListComponent', () => {
     expect(mockOpalFines.getReportInstances).not.toHaveBeenCalled();
   });
 
+  it.each([
+    { dateFilter: 'last7Days', days: '', dateFrom: '', dateTo: '' },
+    { dateFilter: 'customDays', days: '14', dateFrom: '', dateTo: '' },
+    { dateFilter: 'dateRange', days: '', dateFrom: '01/06/2026', dateTo: '08/06/2026' },
+    { dateFilter: null, days: '', dateFrom: '', dateTo: '' },
+  ] as const)(
+    'should clear inactive date fields and preserve active filters for $dateFilter',
+    async ({ dateFilter, days, dateFrom, dateTo }) => {
+      const { component } = await setup();
+      component.filtersForm.setValue(
+        {
+          businessUnit: '67',
+          dateFilter,
+          days: '14',
+          dateFrom: '01/06/2026',
+          dateTo: '08/06/2026',
+        },
+        { emitEvent: false },
+      );
+
+      component['clearInactiveDateFilterFields'](component.filtersForm, dateFilter);
+
+      expect(component.filtersForm.getRawValue()).toEqual({
+        businessUnit: '67',
+        dateFilter,
+        days,
+        dateFrom,
+        dateTo,
+      });
+    },
+  );
+
   it('should clear conditional date fields when another date filter is selected', async () => {
     const { component } = await setup();
 
