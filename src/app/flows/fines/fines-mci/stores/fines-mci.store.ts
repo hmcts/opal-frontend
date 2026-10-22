@@ -31,9 +31,11 @@ export const FinesMciStore = signalStore(
     addPayment(tillId: string, journey: FinesMciJourney): string {
       const paymentId = crypto.randomUUID();
       patchState(store, {
-        tills: store.tills().map((till) =>
-          till.tillId === tillId ? { ...till, payments: [...till.payments, { paymentId, journey }] } : till,
-        ),
+        tills: store
+          .tills()
+          .map((till) =>
+            till.tillId === tillId ? { ...till, payments: [...till.payments, { paymentId, journey }] } : till,
+          ),
       });
       return paymentId;
     },
