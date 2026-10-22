@@ -6,14 +6,15 @@
   ></opal-lib-govuk-error-summary>
 </div>
 
-<opal-lib-custom-inbound-file-viewer
-  [sourceList]="sourceList"
-  [source]="source"
+<opal-lib-custom-file-interface-viewer
+  [isInbound]="isInbound"
   [businessUnits]="businessUnits"
+  [source]="source"
+  [sourceList]="sourceList"
   [tableData]="tableData()"
   [actionTemplate]="downloadAction"
   (formSubmit)="onFormSubmit($event)"
-></opal-lib-custom-inbound-file-viewer>
+></opal-lib-custom-file-interface-viewer>
 
 <ng-template #downloadAction let-row>
   @if (canDownload(row)) {

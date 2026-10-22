@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest';
 import type { IOpalUserBusinessUnitUser } from '@hmcts/opal-frontend-common/services/opal-user-service/interfaces';
-import { FINES_FINANCE_BUSINESS_UNIT_REF_DATA_MOCK } from '../../fines-finance-inbound-files/mocks/fines-finance-business-unit-ref-data.mock';
+import { FINES_FINANCE_BUSINESS_UNIT_REF_DATA_MOCK } from '../../mocks/fines-finance-business-unit-ref-data.mock';
 import {
   getPermittedBusinessUnitOptions,
   mapBusinessUnitsToOptions,

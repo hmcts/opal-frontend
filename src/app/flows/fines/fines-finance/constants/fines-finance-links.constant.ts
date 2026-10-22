@@ -1,5 +1,5 @@
 import { IDashboardPageConfigurationLink } from '@hmcts/opal-frontend-common/pages/dashboard-page/interfaces';
-import { FINES_ROUTING_PATHS } from '../../routing/constants/fines-routing-paths.constant';
+
 import { FINES_PERMISSIONS } from '@app/constants/fines-permissions.constant';
 
 const FINES_FINANCE_ROUTE_PREFIX = ['/', FINES_ROUTING_PATHS.root, FINES_ROUTING_PATHS.children.finance.root] as const;
