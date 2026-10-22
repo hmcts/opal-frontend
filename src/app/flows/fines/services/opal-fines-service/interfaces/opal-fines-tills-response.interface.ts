@@ -1,5 +1,5 @@
-import { IOpalFinesTillSummary } from './opal-fines-till-summary.interface';
+import { IOpalFinesTill } from './opal-fines-till.interface';
 
 export interface IOpalFinesTillsResponse {
-  tills: IOpalFinesTillSummary[];
+  tills: IOpalFinesTill[];
 }
