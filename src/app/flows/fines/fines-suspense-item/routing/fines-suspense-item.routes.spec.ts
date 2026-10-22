@@ -31,25 +31,26 @@ describe('Suspense item navigation', () => {
     expect(harness.routeNativeElement?.querySelector('h1')?.textContent).toBe('Search for suspense item');
   });
 
-  it('opens the search URL with a page title, unavailable message and link back to Finance', async () => {
+  it('opens the search URL with a page title, reference input and Continue and Cancel actions', async () => {
     const harness = await RouterTestingHarness.create();
 
     await harness.navigateByUrl('/fines/suspense-item/search', FinesSuspenseItemSearchComponent);
 
     expect(TestBed.inject(Title).getTitle()).toBe('OPAL - Search for suspense item');
-    expect(harness.routeNativeElement?.querySelector('p')?.textContent).toBe('This page is not available yet.');
-    const backLink = harness.routeNativeElement?.querySelector('a');
-    expect(backLink?.textContent).toBe('Back to finance');
-    expect(backLink?.getAttribute('href')).toBe('/fines/dashboard/finance');
+    expect(harness.routeNativeElement?.querySelector('#fsis_suspense_reference_number')).not.toBeNull();
+    expect(harness.routeNativeElement?.querySelector('button[type="submit"]')?.textContent?.trim()).toBe('Continue');
+    expect(harness.routeNativeElement?.querySelector('opal-lib-govuk-cancel-link a')?.textContent?.trim()).toBe(
+      'Cancel',
+    );
   });
 
-  it('returns to Finance when the back link is selected', async () => {
+  it('returns to Finance when Cancel is selected', async () => {
     const harness = await RouterTestingHarness.create();
     await harness.navigateByUrl('/fines/suspense-item/search', FinesSuspenseItemSearchComponent);
 
-    const backLink = harness.routeNativeElement?.querySelector<HTMLAnchorElement>('a');
-    expect(backLink).not.toBeNull();
-    backLink!.click();
+    const cancelLink = harness.routeNativeElement?.querySelector<HTMLAnchorElement>('opal-lib-govuk-cancel-link a');
+    expect(cancelLink).not.toBeNull();
+    cancelLink!.click();
     await harness.fixture.whenStable();
     harness.detectChanges();
 

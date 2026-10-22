@@ -1,0 +1,41 @@
+<h1 class="govuk-heading-l">Search for suspense item</h1>
+
+<form [formGroup]="form" (ngSubmit)="handleFormSubmit($event)" autocomplete="off" novalidate>
+  @if (autoCompleteItems.length === 1) {
+    <opal-lib-govuk-summary-list summaryListId="suspense-search-business-unit">
+      <div
+        opal-lib-govuk-summary-list-row
+        class="govuk-summary-list__row govuk-summary-list__row--no-actions"
+        summaryListId="suspense-search-business-unit"
+        summaryListRowId="business-unit"
+      >
+        <ng-container name>Business unit</ng-container>
+        <ng-container value>{{ autoCompleteItems[0].name }}</ng-container>
+      </div>
+    </opal-lib-govuk-summary-list>
+  } @else {
+    <opal-lib-alphagov-accessible-autocomplete
+      [control]="form.get('fsis_business_unit_id')"
+      [autoCompleteItems]="autoCompleteItems"
+      labelText="Select a business unit"
+      labelClasses="govuk-label--s"
+      inputId="fsis_business_unit_id"
+      inputName="fsis_business_unit_id"
+      inputClasses="govuk-input--width-20"
+    ></opal-lib-alphagov-accessible-autocomplete>
+  }
+
+  <opal-lib-govuk-text-input
+    [control]="form.get('fsis_suspense_reference_number')"
+    labelText="Suspense reference number"
+    labelClasses="govuk-label--s"
+    inputId="fsis_suspense_reference_number"
+    inputName="fsis_suspense_reference_number"
+    inputClasses="govuk-input--width-5"
+  ></opal-lib-govuk-text-input>
+
+  <div class="govuk-button-group">
+    <button id="submitForm" type="submit" class="govuk-button govuk-!-margin-right-4">Continue</button>
+    <opal-lib-govuk-cancel-link (linkClickEvent)="cancelSearch.emit()"></opal-lib-govuk-cancel-link>
+  </div>
+</form>

@@ -1,5 +1,7 @@
 <div class="govuk-grid-column-two-thirds">
-  <h1 class="govuk-heading-l">Search for suspense item</h1>
-  <p class="govuk-body">This page is not available yet.</p>
-  <a class="govuk-back-link" [routerLink]="financeDashboardRoute">Back to finance</a>
+  <app-fines-suspense-item-search-form
+    [autoCompleteItems]="businessUnitAutoCompleteItems"
+    [initialBusinessUnitId]="initialBusinessUnitId"
+    (cancelSearch)="handleCancel()"
+  ></app-fines-suspense-item-search-form>
 </div>
