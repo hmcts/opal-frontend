@@ -6,9 +6,14 @@ import {
   OnDestroy,
   OnInit,
   Output,
+  computed,
   inject,
 } from '@angular/core';
 import { AbstractFormAliasBaseComponent } from '@hmcts/opal-frontend-common/components/abstract/abstract-form-alias-base';
+import { GlobalStore } from '@hmcts/opal-frontend-common/stores/global';
+import { RELEASE_1A_1_2_FEATURE_FLAG } from '../../../constants/release-feature-flags.constant';
+import { getFeatureFlagReleaseState } from '../../../utils/fines-section-permissions.utils';
+import { renumberAliasFormControls } from '../../../utils/fines-alias-renumbering.utils';
 import { FormGroup, FormControl, Validators, FormArray, FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { IFinesMacCompanyDetailsForm } from '../interfaces/fines-mac-company-details-form.interface';
 import { IFinesMacCompanyDetailsFieldErrors } from '../interfaces/fines-mac-company-details-field-errors.interface';
@@ -59,6 +64,7 @@ const ALPHANUMERIC_WITH_SPACES_PATTERN_VALIDATOR = patternValidator(
 })
 export class FinesMacCompanyDetailsFormComponent extends AbstractFormAliasBaseComponent implements OnInit, OnDestroy {
   private readonly finesMacStore = inject(FinesMacStore);
+  private readonly globalStore = inject(GlobalStore);
 
   @Output() protected override formSubmit = new EventEmitter<IFinesMacCompanyDetailsForm>();
 
@@ -67,6 +73,10 @@ export class FinesMacCompanyDetailsFormComponent extends AbstractFormAliasBaseCo
 
   @Input() public defendantType!: string;
   override fieldErrors: IFinesMacCompanyDetailsFieldErrors = FINES_MAC_COMPANY_DETAILS_FIELD_ERRORS;
+
+  public readonly release1a1_2Enabled = computed(
+    () => getFeatureFlagReleaseState(this.globalStore.featureFlags())[RELEASE_1A_1_2_FEATURE_FLAG] === true,
+  );
 
   /**
    * Sets up the company details form with the necessary form controls.
@@ -125,6 +135,21 @@ export class FinesMacCompanyDetailsFormComponent extends AbstractFormAliasBaseCo
     this.setInitialErrorMessages();
     this.rePopulateForm(formData);
     this.setUpAliasCheckboxListener('fm_company_details_add_alias', 'fm_company_details_aliases');
+  }
+
+  /**
+   * Removes the selected company alias and renumbers the remaining controls.
+   * Preserves existing FormControl instances and their values.
+   */
+  public removeAndRenumberAlias(index: number): void {
+    const formArrayName = 'fm_company_details_aliases';
+    const aliases = this.form.get(formArrayName) as FormArray;
+
+    this.removeAlias(index, formArrayName);
+
+    renumberAliasFormControls(aliases, this.aliasFields);
+
+    this.aliasControls = this.aliasControls.map((_, rowIndex) => this.createAliasControls(this.aliasFields, rowIndex));
   }
 
   public override ngOnInit(): void {

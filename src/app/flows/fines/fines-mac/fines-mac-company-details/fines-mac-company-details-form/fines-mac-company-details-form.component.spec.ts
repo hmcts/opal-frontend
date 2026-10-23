@@ -1,4 +1,7 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
+import { FormArray } from '@angular/forms';
+import { GlobalStore } from '@hmcts/opal-frontend-common/stores/global';
+import { RELEASE_1A_1_2_FEATURE_FLAG } from '../../../constants/release-feature-flags.constant';
 import { FinesMacCompanyDetailsFormComponent } from './fines-mac-company-details-form.component';
 import { IFinesMacCompanyDetailsForm } from '../interfaces/fines-mac-company-details-form.interface';
 import { FINES_MAC_STATE_MOCK } from '../../mocks/fines-mac-state.mock';
@@ -16,6 +19,7 @@ describe('FinesMacCompanyDetailsFormComponent', () => {
   let fixture: ComponentFixture<FinesMacCompanyDetailsFormComponent>;
   let formSubmit: IFinesMacCompanyDetailsForm;
   let finesMacStore: FinesMacStoreType;
+  let globalStore: InstanceType<typeof GlobalStore>;
 
   beforeEach(async () => {
     formSubmit = structuredClone(FINES_MAC_COMPANY_DETAILS_FORM_MOCK);
@@ -34,6 +38,11 @@ describe('FinesMacCompanyDetailsFormComponent', () => {
 
     fixture = TestBed.createComponent(FinesMacCompanyDetailsFormComponent);
     component = fixture.componentInstance;
+    globalStore = TestBed.inject(GlobalStore);
+
+    globalStore.setFeatureFlags({
+      [RELEASE_1A_1_2_FEATURE_FLAG]: false,
+    });
 
     component.defendantType = FINES_MAC_DEFENDANT_TYPES_KEYS.adultOrYouthOnly;
 
@@ -53,6 +62,107 @@ describe('FinesMacCompanyDetailsFormComponent', () => {
 
   it('should create', () => {
     expect(component).toBeTruthy();
+  });
+
+  it('should display Remove alias buttons when release-1a-1-2 is enabled', () => {
+    globalStore.setFeatureFlags({
+      [RELEASE_1A_1_2_FEATURE_FLAG]: true,
+    });
+
+    component.form.get('fm_company_details_add_alias')?.setValue(true);
+
+    while (component.aliasControls.length < 2) {
+      component.addAlias(component.aliasControls.length, 'fm_company_details_aliases');
+    }
+
+    fixture.detectChanges();
+
+    const removeButtons = fixture.nativeElement.querySelectorAll(
+      'button.moj-add-another__remove-button',
+    ) as NodeListOf<HTMLButtonElement>;
+
+    expect(removeButtons.length).toBe(2);
+    expect(removeButtons[0].textContent?.trim()).toBe('Remove alias 1');
+    expect(removeButtons[1].textContent?.trim()).toBe('Remove alias 2');
+
+    const aliasHeadings = fixture.nativeElement.querySelectorAll(
+      '[formArrayName="fm_company_details_aliases"] legend.govuk-fieldset__legend h2.govuk-heading-m',
+    ) as NodeListOf<HTMLHeadingElement>;
+
+    expect(aliasHeadings.length).toBe(2);
+    expect(aliasHeadings[0].textContent?.trim()).toBe('Alias 1 of 2');
+    expect(aliasHeadings[1].textContent?.trim()).toBe('Alias 2 of 2');
+
+    removeButtons.forEach((button) => {
+      expect(button.type).toBe('button');
+      expect(button.classList.contains('govuk-button--secondary')).toBe(true);
+    });
+  });
+
+  it('should display Alias 1 without a Remove button when release-1a-1-2 is enabled', () => {
+    globalStore.setFeatureFlags({
+      [RELEASE_1A_1_2_FEATURE_FLAG]: true,
+    });
+
+    component.form.get('fm_company_details_add_alias')?.setValue(true);
+    fixture.detectChanges();
+
+    const aliasContainer = fixture.nativeElement.querySelector(
+      '[formArrayName="fm_company_details_aliases"]',
+    ) as HTMLElement;
+
+    const aliasHeading = aliasContainer.querySelector(
+      'legend.govuk-fieldset__legend h2.govuk-heading-m',
+    ) as HTMLHeadingElement | null;
+
+    const removeButtons = aliasContainer.querySelectorAll('button.moj-add-another__remove-button');
+
+    const addButton = aliasContainer.querySelector('#addAlias');
+
+    expect(component.aliasControls.length).toBe(1);
+    expect(aliasHeading?.textContent?.trim()).toBe('Alias 1');
+    expect(removeButtons.length).toBe(0);
+    expect(addButton).not.toBeNull();
+  });
+
+  it('should display correctly numbered headings and Remove buttons for multiple aliases', () => {
+    globalStore.setFeatureFlags({
+      [RELEASE_1A_1_2_FEATURE_FLAG]: true,
+    });
+
+    component.form.get('fm_company_details_add_alias')?.setValue(true);
+
+    while (component.aliasControls.length < 3) {
+      component.addAlias(component.aliasControls.length, 'fm_company_details_aliases');
+    }
+
+    fixture.detectChanges();
+
+    const aliasContainer = fixture.nativeElement.querySelector(
+      '[formArrayName="fm_company_details_aliases"]',
+    ) as HTMLElement;
+
+    const headings = aliasContainer.querySelectorAll(
+      'legend.govuk-fieldset__legend h2.govuk-heading-m',
+    ) as NodeListOf<HTMLHeadingElement>;
+
+    const removeButtons = aliasContainer.querySelectorAll(
+      'button.moj-add-another__remove-button',
+    ) as NodeListOf<HTMLButtonElement>;
+
+    expect(component.aliasControls.length).toBe(3);
+
+    expect(Array.from(headings, (heading) => heading.textContent?.trim())).toEqual([
+      'Alias 1 of 3',
+      'Alias 2 of 3',
+      'Alias 3 of 3',
+    ]);
+
+    expect(Array.from(removeButtons, (button) => button.textContent?.trim())).toEqual([
+      'Remove alias 1',
+      'Remove alias 2',
+      'Remove alias 3',
+    ]);
   });
 
   it.each([
@@ -122,6 +232,326 @@ describe('FinesMacCompanyDetailsFormComponent', () => {
     link.dispatchEvent(event);
 
     expect(removeAliasSpy).toHaveBeenCalledWith(expectedIndex, 'fm_company_details_aliases', event);
+  });
+
+  it('should maintain unique alias input IDs after removing and adding an alias', () => {
+    component.form.get('fm_company_details_add_alias')?.setValue(true);
+
+    while (component.aliasControls.length < 3) {
+      component.addAlias(component.aliasControls.length, 'fm_company_details_aliases');
+    }
+
+    const aliases = component.form.get('fm_company_details_aliases') as FormArray;
+
+    aliases.at(0).get('fm_company_details_alias_company_name_0')?.setValue('FIRST COMPANY');
+    aliases.at(1).get('fm_company_details_alias_company_name_1')?.setValue('SECOND COMPANY');
+    aliases.at(2).get('fm_company_details_alias_company_name_2')?.setValue('THIRD COMPANY');
+
+    const secondAliasControl = aliases.at(1).get('fm_company_details_alias_company_name_1');
+    const thirdAliasControl = aliases.at(2).get('fm_company_details_alias_company_name_2');
+
+    component.removeAndRenumberAlias(0);
+
+    expect(aliases.at(0).get('fm_company_details_alias_company_name_0')).toBe(secondAliasControl);
+    expect(aliases.at(1).get('fm_company_details_alias_company_name_1')).toBe(thirdAliasControl);
+    expect(aliases.at(0).get('fm_company_details_alias_company_name_0')?.value).toBe('SECOND COMPANY');
+    expect(aliases.at(1).get('fm_company_details_alias_company_name_1')?.value).toBe('THIRD COMPANY');
+
+    component.addAlias(component.aliasControls.length, 'fm_company_details_aliases');
+
+    fixture.detectChanges();
+
+    const aliasInputs = fixture.nativeElement.querySelectorAll(
+      'input[id^="fm_company_details_alias_company_name_"]',
+    ) as NodeListOf<HTMLInputElement>;
+
+    const inputIds = Array.from(aliasInputs, (input) => input.id);
+
+    expect(aliasInputs.length).toBe(3);
+    expect(new Set(inputIds).size).toBe(inputIds.length);
+  });
+
+  it('should renumber aliases and preserve values when removing the middle alias', () => {
+    component.form.get('fm_company_details_add_alias')?.setValue(true);
+
+    while (component.aliasControls.length < 3) {
+      component.addAlias(component.aliasControls.length, 'fm_company_details_aliases');
+    }
+
+    const aliases = component.form.get('fm_company_details_aliases') as FormArray;
+
+    aliases.at(0).get('fm_company_details_alias_company_name_0')?.setValue('FIRST COMPANY');
+    aliases.at(1).get('fm_company_details_alias_company_name_1')?.setValue('SECOND COMPANY');
+    aliases.at(2).get('fm_company_details_alias_company_name_2')?.setValue('THIRD COMPANY');
+
+    const firstControl = aliases.at(0).get('fm_company_details_alias_company_name_0');
+    const thirdControl = aliases.at(2).get('fm_company_details_alias_company_name_2');
+
+    component.removeAndRenumberAlias(1);
+    fixture.detectChanges();
+
+    expect(aliases.length).toBe(2);
+
+    expect(aliases.at(0).get('fm_company_details_alias_company_name_0')).toBe(firstControl);
+    expect(aliases.at(1).get('fm_company_details_alias_company_name_1')).toBe(thirdControl);
+
+    expect(aliases.at(0).get('fm_company_details_alias_company_name_0')?.value).toBe('FIRST COMPANY');
+    expect(aliases.at(1).get('fm_company_details_alias_company_name_1')?.value).toBe('THIRD COMPANY');
+
+    const inputIds = Array.from(
+      fixture.nativeElement.querySelectorAll('input[id^="fm_company_details_alias_company_name_"]'),
+      (input) => (input as HTMLInputElement).id,
+    );
+
+    expect(inputIds).toEqual(['fm_company_details_alias_company_name_0', 'fm_company_details_alias_company_name_1']);
+
+    const secondAlias = aliases.at(1).get('fm_company_details_alias_company_name_1');
+
+    secondAlias?.setValue('');
+    secondAlias?.markAsTouched();
+    secondAlias?.updateValueAndValidity();
+
+    const submitEvent = {
+      submitter: { className: '' },
+    } as SubmitEvent;
+
+    component.handleFormSubmit(submitEvent);
+
+    expect(component.formErrorSummaryMessage).toContainEqual({
+      fieldId: 'fm_company_details_alias_company_name_1',
+      message: 'Enter alias 2 company name',
+    });
+  });
+
+  it('should remove the final alias and hide Remove buttons when one alias remains', () => {
+    globalStore.setFeatureFlags({
+      [RELEASE_1A_1_2_FEATURE_FLAG]: true,
+    });
+
+    component.form.get('fm_company_details_add_alias')?.setValue(true);
+    component.addAlias(component.aliasControls.length, 'fm_company_details_aliases');
+    fixture.detectChanges();
+
+    const aliasContainer = fixture.nativeElement.querySelector(
+      '[formArrayName="fm_company_details_aliases"]',
+    ) as HTMLElement;
+
+    const removeButtons = aliasContainer.querySelectorAll(
+      'button.moj-add-another__remove-button',
+    ) as NodeListOf<HTMLButtonElement>;
+
+    expect(removeButtons.length).toBe(2);
+
+    removeButtons[1].click();
+    fixture.detectChanges();
+
+    const headings = aliasContainer.querySelectorAll(
+      'legend.govuk-fieldset__legend h2.govuk-heading-m',
+    ) as NodeListOf<HTMLHeadingElement>;
+
+    expect(component.aliasControls.length).toBe(1);
+    expect(headings.length).toBe(1);
+    expect(headings[0].textContent?.trim()).toBe('Alias 1');
+
+    expect(aliasContainer.querySelectorAll('button.moj-add-another__remove-button').length).toBe(0);
+    expect(aliasContainer.querySelector('#addAlias')).not.toBeNull();
+  });
+
+  it('should remove the first alias and hide Remove buttons when one alias remains', () => {
+    globalStore.setFeatureFlags({
+      [RELEASE_1A_1_2_FEATURE_FLAG]: true,
+    });
+
+    component.form.get('fm_company_details_add_alias')?.setValue(true);
+    component.addAlias(component.aliasControls.length, 'fm_company_details_aliases');
+
+    const aliases = component.form.get('fm_company_details_aliases') as FormArray;
+    aliases.at(1).get('fm_company_details_alias_company_name_1')?.setValue('SECOND COMPANY');
+
+    fixture.detectChanges();
+
+    const aliasContainer = fixture.nativeElement.querySelector(
+      '[formArrayName="fm_company_details_aliases"]',
+    ) as HTMLElement;
+
+    const removeButtons = aliasContainer.querySelectorAll(
+      'button.moj-add-another__remove-button',
+    ) as NodeListOf<HTMLButtonElement>;
+
+    expect(removeButtons.length).toBe(2);
+
+    removeButtons[0].click();
+    fixture.detectChanges();
+
+    const heading = aliasContainer.querySelector(
+      'legend.govuk-fieldset__legend h2.govuk-heading-m',
+    ) as HTMLHeadingElement | null;
+
+    expect(component.aliasControls.length).toBe(1);
+    expect(heading?.textContent?.trim()).toBe('Alias 1');
+    expect(aliasContainer.querySelectorAll('button.moj-add-another__remove-button').length).toBe(0);
+    expect(aliasContainer.querySelector('#addAlias')).not.toBeNull();
+
+    expect(aliases.at(0).get('fm_company_details_alias_company_name_0')?.value).toBe('SECOND COMPANY');
+  });
+
+  it('should renumber remaining aliases when removing the first of three aliases', () => {
+    globalStore.setFeatureFlags({
+      [RELEASE_1A_1_2_FEATURE_FLAG]: true,
+    });
+
+    component.form.get('fm_company_details_add_alias')?.setValue(true);
+
+    while (component.aliasControls.length < 3) {
+      component.addAlias(component.aliasControls.length, 'fm_company_details_aliases');
+    }
+
+    const aliases = component.form.get('fm_company_details_aliases') as FormArray;
+    aliases.at(1).get('fm_company_details_alias_company_name_1')?.setValue('SECOND COMPANY');
+    aliases.at(2).get('fm_company_details_alias_company_name_2')?.setValue('THIRD COMPANY');
+
+    fixture.detectChanges();
+
+    const aliasContainer = fixture.nativeElement.querySelector(
+      '[formArrayName="fm_company_details_aliases"]',
+    ) as HTMLElement;
+
+    const removeButtons = aliasContainer.querySelectorAll(
+      'button.moj-add-another__remove-button',
+    ) as NodeListOf<HTMLButtonElement>;
+
+    expect(removeButtons.length).toBe(3);
+
+    removeButtons[0].click();
+    fixture.detectChanges();
+
+    const headings = aliasContainer.querySelectorAll(
+      'legend.govuk-fieldset__legend h2.govuk-heading-m',
+    ) as NodeListOf<HTMLHeadingElement>;
+
+    const remainingButtons = aliasContainer.querySelectorAll(
+      'button.moj-add-another__remove-button',
+    ) as NodeListOf<HTMLButtonElement>;
+
+    expect(Array.from(headings, (heading) => heading.textContent?.trim())).toEqual(['Alias 1 of 2', 'Alias 2 of 2']);
+
+    expect(Array.from(remainingButtons, (button) => button.textContent?.trim())).toEqual([
+      'Remove alias 1',
+      'Remove alias 2',
+    ]);
+
+    expect(aliases.at(0).get('fm_company_details_alias_company_name_0')?.value).toBe('SECOND COMPANY');
+    expect(aliases.at(1).get('fm_company_details_alias_company_name_1')?.value).toBe('THIRD COMPANY');
+  });
+
+  it('should renumber remaining aliases when removing the final alias from three', () => {
+    globalStore.setFeatureFlags({
+      [RELEASE_1A_1_2_FEATURE_FLAG]: true,
+    });
+
+    component.form.get('fm_company_details_add_alias')?.setValue(true);
+
+    while (component.aliasControls.length < 3) {
+      component.addAlias(component.aliasControls.length, 'fm_company_details_aliases');
+    }
+
+    const aliases = component.form.get('fm_company_details_aliases') as FormArray;
+    aliases.at(0).get('fm_company_details_alias_company_name_0')?.setValue('FIRST COMPANY');
+    aliases.at(1).get('fm_company_details_alias_company_name_1')?.setValue('SECOND COMPANY');
+    aliases.at(2).get('fm_company_details_alias_company_name_2')?.setValue('THIRD COMPANY');
+
+    fixture.detectChanges();
+
+    const aliasContainer = fixture.nativeElement.querySelector(
+      '[formArrayName="fm_company_details_aliases"]',
+    ) as HTMLElement;
+
+    const removeButtons = aliasContainer.querySelectorAll(
+      'button.moj-add-another__remove-button',
+    ) as NodeListOf<HTMLButtonElement>;
+
+    expect(removeButtons.length).toBe(3);
+
+    removeButtons[2].click();
+    fixture.detectChanges();
+
+    const headings = aliasContainer.querySelectorAll(
+      'legend.govuk-fieldset__legend h2.govuk-heading-m',
+    ) as NodeListOf<HTMLHeadingElement>;
+
+    const remainingButtons = aliasContainer.querySelectorAll(
+      'button.moj-add-another__remove-button',
+    ) as NodeListOf<HTMLButtonElement>;
+
+    expect(component.aliasControls.length).toBe(2);
+
+    expect(Array.from(headings, (heading) => heading.textContent?.trim())).toEqual(['Alias 1 of 2', 'Alias 2 of 2']);
+
+    expect(Array.from(remainingButtons, (button) => button.textContent?.trim())).toEqual([
+      'Remove alias 1',
+      'Remove alias 2',
+    ]);
+
+    expect(aliases.at(0).get('fm_company_details_alias_company_name_0')?.value).toBe('FIRST COMPANY');
+    expect(aliases.at(1).get('fm_company_details_alias_company_name_1')?.value).toBe('SECOND COMPANY');
+
+    expect(aliasContainer.querySelector('#addAlias')).not.toBeNull();
+  });
+
+  it('should renumber remaining aliases when removing the middle alias through the UI', () => {
+    globalStore.setFeatureFlags({
+      [RELEASE_1A_1_2_FEATURE_FLAG]: true,
+    });
+
+    component.form.get('fm_company_details_add_alias')?.setValue(true);
+
+    while (component.aliasControls.length < 3) {
+      component.addAlias(component.aliasControls.length, 'fm_company_details_aliases');
+    }
+
+    const aliases = component.form.get('fm_company_details_aliases') as FormArray;
+
+    aliases.at(0).get('fm_company_details_alias_company_name_0')?.setValue('FIRST COMPANY');
+    aliases.at(1).get('fm_company_details_alias_company_name_1')?.setValue('SECOND COMPANY');
+    aliases.at(2).get('fm_company_details_alias_company_name_2')?.setValue('THIRD COMPANY');
+
+    fixture.detectChanges();
+
+    const aliasContainer = fixture.nativeElement.querySelector(
+      '[formArrayName="fm_company_details_aliases"]',
+    ) as HTMLElement;
+
+    const removeButtons = aliasContainer.querySelectorAll(
+      'button.moj-add-another__remove-button',
+    ) as NodeListOf<HTMLButtonElement>;
+
+    expect(removeButtons.length).toBe(3);
+
+    // Remove Alias 2 (the middle alias).
+    removeButtons[1].click();
+    fixture.detectChanges();
+
+    const headings = aliasContainer.querySelectorAll(
+      'legend.govuk-fieldset__legend h2.govuk-heading-m',
+    ) as NodeListOf<HTMLHeadingElement>;
+
+    const remainingButtons = aliasContainer.querySelectorAll(
+      'button.moj-add-another__remove-button',
+    ) as NodeListOf<HTMLButtonElement>;
+
+    expect(component.aliasControls.length).toBe(2);
+
+    expect(Array.from(headings, (heading) => heading.textContent?.trim())).toEqual(['Alias 1 of 2', 'Alias 2 of 2']);
+
+    expect(Array.from(remainingButtons, (button) => button.textContent?.trim())).toEqual([
+      'Remove alias 1',
+      'Remove alias 2',
+    ]);
+
+    expect(aliases.at(0).get('fm_company_details_alias_company_name_0')?.value).toBe('FIRST COMPANY');
+    expect(aliases.at(1).get('fm_company_details_alias_company_name_1')?.value).toBe('THIRD COMPANY');
+
+    expect(aliasContainer.querySelector('#addAlias')).not.toBeNull();
   });
 
   it('should emit form submit event with form value - nestedFlow true', () => {

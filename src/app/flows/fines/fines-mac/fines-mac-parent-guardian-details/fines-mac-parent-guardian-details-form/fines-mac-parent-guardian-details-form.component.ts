@@ -1,6 +1,19 @@
-import { ChangeDetectionStrategy, Component, EventEmitter, OnDestroy, OnInit, Output, inject } from '@angular/core';
+import {
+  ChangeDetectionStrategy,
+  Component,
+  EventEmitter,
+  OnDestroy,
+  OnInit,
+  Output,
+  computed,
+  inject,
+} from '@angular/core';
 import { AbstractFormAliasBaseComponent } from '@hmcts/opal-frontend-common/components/abstract/abstract-form-alias-base';
 import { FormArray, FormControl, FormGroup, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
+import { GlobalStore } from '@hmcts/opal-frontend-common/stores/global';
+import { RELEASE_1A_1_2_FEATURE_FLAG } from '../../../constants/release-feature-flags.constant';
+import { getFeatureFlagReleaseState } from '../../../utils/fines-section-permissions.utils';
+import { renumberAliasFormControls } from '../../../utils/fines-alias-renumbering.utils';
 import { IFinesMacParentGuardianDetailsFieldErrors } from '../interfaces/fines-mac-parent-guardian-details-field-errors.interface';
 import { IFinesMacParentGuardianDetailsForm } from '../interfaces/fines-mac-parent-guardian-details-form.interface';
 import { FINES_MAC_PARENT_GUARDIAN_DETAILS_ALIAS } from '../constants/fines-mac-parent-guardian-details-alias';
@@ -60,12 +73,18 @@ export class FinesMacParentGuardianDetailsFormComponent
   implements OnInit, OnDestroy
 {
   private readonly finesMacStore = inject(FinesMacStore);
+  private readonly globalStore = inject(GlobalStore);
 
   @Output() protected override formSubmit = new EventEmitter<IFinesMacParentGuardianDetailsForm>();
   protected readonly dateService = inject(DateService);
   protected readonly fineMacRoutingPaths = FINES_MAC_ROUTING_PATHS;
 
   override fieldErrors: IFinesMacParentGuardianDetailsFieldErrors = FINES_MAC_PARENT_GUARDIAN_DETAILS_FIELD_ERRORS;
+
+  public readonly release1a1_2Enabled = computed(
+    () => getFeatureFlagReleaseState(this.globalStore.featureFlags())[RELEASE_1A_1_2_FEATURE_FLAG] === true,
+  );
+
   public yesterday!: string;
   public age!: number;
   public ageLabel!: string;
@@ -138,6 +157,22 @@ export class FinesMacParentGuardianDetailsFormComponent
     this.rePopulateForm(formData);
     this.setUpAliasCheckboxListener('fm_parent_guardian_details_add_alias', 'fm_parent_guardian_details_aliases');
     this.yesterday = this.dateService.getPreviousDate({ days: 1 });
+  }
+
+  /**
+   * Removes the selected parent/guardian alias and renumbers
+   * all remaining alias controls.
+   * Preserves existing FormControl instances, values and validators.
+   */
+  public removeAndRenumberAlias(index: number): void {
+    const formArrayName = 'fm_parent_guardian_details_aliases';
+    const aliases = this.form.get(formArrayName) as FormArray;
+
+    this.removeAlias(index, formArrayName);
+
+    renumberAliasFormControls(aliases, this.aliasFields);
+
+    this.aliasControls = this.aliasControls.map((_, rowIndex) => this.createAliasControls(this.aliasFields, rowIndex));
   }
 
   public override ngOnInit(): void {
