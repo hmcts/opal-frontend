@@ -1,12 +1,4 @@
-export interface IFinesApiIgnoredRow {
-  interfaceJobId: string;
-  interfaceFileId: string;
-  'File name': string;
-  Source: string;
-  'Business unit': string;
-  'Date processed': number;
-  dateProcessedDisplay: string;
-}
+import { IFinesApiIgnoredRow } from './fines-api-ignored-row.interface';
 
 export interface IFinesApiIgnoredData {
   rows: IFinesApiIgnoredRow[];

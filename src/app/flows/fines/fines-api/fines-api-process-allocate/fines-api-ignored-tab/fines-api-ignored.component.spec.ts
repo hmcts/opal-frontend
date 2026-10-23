@@ -2,7 +2,7 @@ import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { provideRouter, Router } from '@angular/router';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
 import { FinesApiIgnoredComponent } from './fines-api-ignored.component';
-import { IFinesApiIgnoredRow } from './interfaces/fines-api-ignored-data.interface';
+import { IFinesApiIgnoredRow } from './interfaces/fines-api-ignored-row.interface';
 
 const rows: IFinesApiIgnoredRow[] = [
   {
