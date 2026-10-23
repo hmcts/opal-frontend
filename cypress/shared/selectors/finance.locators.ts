@@ -38,4 +38,13 @@ export const ManualCashInputLocators = {
   businessUnitCell: (tillId: number | string): string => `#fines-mci-create-allocate-${tillId}-business-unit`,
   createdByCell: (tillId: number | string): string => `#fines-mci-create-allocate-${tillId}-created-by`,
   dateCreatedCell: (tillId: number | string): string => `#fines-mci-create-allocate-${tillId}-date-created`,
+  selectBusinessUnitHeading: 'h1.govuk-heading-l',
+  businessUnitInput: '#fmci_create_till_business_unit_id-autocomplete',
+  businessUnitAutocomplete: '#fmci_create_till_business_unit_id-autocomplete__listbox',
+  businessUnitError: '#fmci_create_till_business_unit_id-autocomplete-error-message',
+  errorSummary: '.govuk-error-summary',
+  singleBusinessUnitSummary: '#fines-mci-create-till-business-unit',
+  continueButton: '#submitForm',
+  cancelLink: 'a.govuk-link.button-link',
+  tillDetails: '#fines-mci-create-till-details',
 } as const;

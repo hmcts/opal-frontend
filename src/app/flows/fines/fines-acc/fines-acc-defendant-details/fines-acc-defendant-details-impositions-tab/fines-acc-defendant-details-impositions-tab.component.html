@@ -168,6 +168,8 @@
               <td opal-lib-moj-sortable-table-row-data [id]="'imposition-imposed-by-' + rowIndex">
                 @if (impositionTableRow['Imposed by']; as imposedByDisplay) {
                   {{ imposedByDisplay }}
+                } @else {
+                  <ng-container *ngTemplateOutlet="notProvided"></ng-container>
                 }
               </td>
               <td opal-lib-moj-sortable-table-row-data [id]="'imposition-id-' + rowIndex">
