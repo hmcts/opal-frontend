@@ -9,14 +9,14 @@ Feature: Manual Cash Input - Create Till Accessibility
   Scenario: AC7 - Manual Cash Input create and allocate screen accessibility
     When I select the Fines primary navigation item "Finance"
     And I am taken to the "Finance" Fines landing page
-    And I open Manual Cash Input create and allocate
+    And I open Manual Cash Input
     Then I check the page for accessibility
 
-  # AC7: axe-core accessibility coverage for Select Business Unit (Manual Payments In).
-  @JIRA-STORY:PO-3475
+  # AC7/EMAC1: axe-core accessibility coverage for Select a Business Unit (Manual Payments In).
+  @JIRA-STORY:PO-3475 @JIRA-STORY:PO-3476
   Scenario: AC7 - Select Business Unit (Manual Payments In) screen accessibility
     When I select the Fines primary navigation item "Finance"
     And I am taken to the "Finance" Fines landing page
-    And I open Manual Cash Input create and allocate
-    And I select Create Till from Manual Cash Input
+    And I open Manual Cash Input
+    And I create a till
     Then I check the page for accessibility
