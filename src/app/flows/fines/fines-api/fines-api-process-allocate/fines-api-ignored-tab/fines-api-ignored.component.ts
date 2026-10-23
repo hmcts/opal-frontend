@@ -51,13 +51,22 @@ export class FinesApiIgnoredComponent {
   public readonly tabData = input<IFinesApiIgnoredData | null>(null);
   public readonly refreshRequested = output<void>();
 
-  /** Applies one user-selected column without changing the backend response. */
+  /**
+   * Sorts the displayed rows by a recognised column without mutating the backend response.
+   *
+   * @param event Selected column key and ascending or descending sort direction.
+   * @returns Nothing; updates the sort signal for recognised columns and ignores unknown keys.
+   */
   protected onSortChange(event: { key: string; sortType: 'ascending' | 'descending' }): void {
     const key = this.content.columns.find((column) => column === event.key);
     if (key) this.sort.set({ key, sortType: event.sortType });
   }
 
-  /** Resets sorting immediately, even when the subsequent refresh fails. */
+  /**
+   * Restores backend row order and requests fresh ignored-file data from the parent.
+   *
+   * @returns Nothing; clears sorting immediately and emits a refresh request, even if the read later fails.
+   */
   protected refresh(): void {
     this.sort.set(null);
     this.refreshRequested.emit();

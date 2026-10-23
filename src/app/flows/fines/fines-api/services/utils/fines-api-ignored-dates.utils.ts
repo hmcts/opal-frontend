@@ -3,7 +3,12 @@ import { DateTime } from 'luxon';
 export const FINES_API_IGNORED_TIME_ZONE = 'Europe/London';
 const REQUEST_DATE_FORMAT = "yyyy-MM-dd'T'HH:mm:ss";
 
-/** Builds UK-local completion bounds from one clock reading, preserving wall time across GMT/BST. */
+/**
+ * Builds UK-local completion bounds from one clock reading, preserving wall time across GMT/BST.
+ *
+ * @param now End of the reporting period; defaults to the current time.
+ * @returns Offset-free endpoint timestamps spanning the preceding fourteen UK calendar days.
+ */
 export const getIgnoredDateBounds = (now: DateTime = DateTime.now()) => {
   const to = now.setZone(FINES_API_IGNORED_TIME_ZONE);
   return {

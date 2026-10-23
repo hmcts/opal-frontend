@@ -108,7 +108,13 @@ export class FinesApiProcessAllocateComponent implements OnInit, OnDestroy {
     ),
   );
 
-  /** Loads ignored rows for the selected BUs and retains successful data if Refresh fails. */
+  /**
+   * Loads ignored payment files completed within the past fourteen UK calendar days.
+   *
+   * @param businessUnitIds Selected business units used to scope the request.
+   * @returns Mapped ignored-file data, or an empty stream when no units are selected or the read fails.
+   * Failed refreshes leave the last successful display intact; the interceptor handles API errors.
+   */
   private fetchIgnoredData(businessUnitIds: number[]): Observable<IFinesApiIgnoredData> {
     if (businessUnitIds.length === 0) {
       return EMPTY;
@@ -224,7 +230,11 @@ export class FinesApiProcessAllocateComponent implements OnInit, OnDestroy {
     return Object.values(this.tabKeys).includes(tab as TFinesApiProcessAllocateTabKey);
   }
 
-  /** Reloads the shared ignored rows/count regardless of the active tab. */
+  /**
+   * Requests fresh ignored-file rows and their matching tab count using the current business units.
+   *
+   * @returns Nothing; emits to the shared refresh stream regardless of the active tab.
+   */
   protected refreshIgnoredData(): void {
     this.ignoredDataRefresh.next();
   }
