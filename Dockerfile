@@ -1,10 +1,10 @@
-FROM hmctsprod.azurecr.io/base/node:20-alpine AS base
+FROM hmctsprod.azurecr.io/base/node:24-alpine AS base
 
 COPY --chown=hmcts:hmcts . .
 
 USER root
 
-# Puppeteer config 
+# Puppeteer config
 ENV PUPPETEER_SKIP_CHROMIUM_DOWNLOAD true
 ENV PUPPETEER_EXECUTABLE_PATH=/usr/bin/chromium
 
