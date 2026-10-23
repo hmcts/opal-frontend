@@ -1,3 +1,4 @@
+import { BANK_ACCOUNT_NUMBER_FIELD_ERRORS } from '../../../../constants/bank-account-number-field-errors.constant';
 import { ChangeDetectionStrategy, Component, EventEmitter, OnInit, Output, inject } from '@angular/core';
 import { FormControl, FormGroup, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
 import { AbstractFormBaseComponent } from '@hmcts/opal-frontend-common/components/abstract/abstract-form-base';
@@ -10,6 +11,7 @@ import { FINES_MAC_OFFENCE_DETAILS_MINOR_CREDITOR_FIELD_ERRORS } from '../consta
 import { FINES_MAC_OFFENCE_DETAILS_ROUTING_PATHS } from '../../routing/constants/fines-mac-offence-details-routing-paths.constant';
 import { IFinesMacOffenceDetailsMinorCreditorForm } from '../interfaces/fines-mac-offence-details-minor-creditor-form.interface';
 import { FinesMacOffenceDetailsStore } from '../../stores/fines-mac-offence-details.store';
+import { normalizeSortCode, sortCodeValidator } from '../../../../validators/sort-code.validator';
 import { GovukTextInputComponent } from '@hmcts/opal-frontend-common/components/govuk/govuk-text-input';
 import { GovukButtonComponent } from '@hmcts/opal-frontend-common/components/govuk/govuk-button';
 import {
@@ -31,14 +33,14 @@ import { CapitalisationDirective } from '@hmcts/opal-frontend-common/directives/
 import { TrimLeadingTrailingWhitespaceDirective } from '@hmcts/opal-frontend-common/directives/trim-leading-trailing-whitespace';
 import { patternValidator } from '@hmcts/opal-frontend-common/validators/pattern-validator';
 import { GlobalStore } from '@hmcts/opal-frontend-common/stores/global';
+import { RELEASE_1A_1_2_FEATURE_FLAG } from '../../../../constants/release-feature-flags.constant';
+import { getFeatureFlagReleaseState } from '../../../../utils/fines-section-permissions.utils';
 import {
   ALPHANUMERIC_WITH_SPACES_PATTERN,
   LETTERS_WITH_SPACES_PATTERN,
   NUMERIC_PATTERN,
   SINGLE_ASCII_CHARACTERS,
 } from '@hmcts/opal-frontend-common/constants';
-import { RELEASE_1A_1_2_FEATURE_FLAG } from '../../../../constants/release-feature-flags.constant';
-import { getFeatureFlagReleaseState } from '../../../../utils/fines-section-permissions.utils';
 
 const LETTERS_WITH_SPACES_PATTERN_VALIDATOR = patternValidator(LETTERS_WITH_SPACES_PATTERN, 'lettersWithSpacesPattern');
 const ALPHANUMERIC_WITH_SPACES_PATTERN_VALIDATOR = patternValidator(
@@ -96,6 +98,18 @@ export class FinesMacOffenceDetailsMinorCreditorFormComponent extends AbstractFo
   };
   public readonly individualConditionalId = 'fm_offence_details_minor_creditor_creditor_type_individual';
   public readonly companyConditionalId = 'fm_offence_details_minor_creditor_creditor_type_company';
+
+  private get isR1A12Enabled(): boolean {
+    return getFeatureFlagReleaseState(this.globalStore.featureFlags())[RELEASE_1A_1_2_FEATURE_FLAG] === true;
+  }
+
+  public get sortCodeHintText(): string {
+    return this.isR1A12Enabled ? 'Must be 6 digits long' : '';
+  }
+
+  public get accountNumberHintText(): string {
+    return this.isR1A12Enabled ? 'Must be between 6 and 8 digits long' : '';
+  }
 
   /**
    * Sets up the form for capturing minor creditor details.
@@ -191,6 +205,11 @@ export class FinesMacOffenceDetailsMinorCreditorFormComponent extends AbstractFo
    * Sets the validators for the payment detail form controls.
    */
   private setPaymentDetailValidators(): void {
+    this.fieldErrors['fm_offence_details_minor_creditor_bank_account_number'] = {
+      ...FINES_MAC_OFFENCE_DETAILS_MINOR_CREDITOR_FIELD_ERRORS['fm_offence_details_minor_creditor_bank_account_number'],
+      ...(this.isR1A12Enabled ? BANK_ACCOUNT_NUMBER_FIELD_ERRORS : {}),
+    };
+
     const {
       fm_offence_details_minor_creditor_bank_account_name: nameOnAccount,
       fm_offence_details_minor_creditor_bank_sort_code: sortCode,
@@ -203,8 +222,16 @@ export class FinesMacOffenceDetailsMinorCreditorFormComponent extends AbstractFo
       Validators.maxLength(18),
       SINGLE_ASCII_CHARACTERS_PATTERN_VALIDATOR,
     ]);
-    sortCode.setValidators([Validators.required, Validators.maxLength(6), NUMERIC_PATTERN_VALIDATOR]);
-    accountNumber.setValidators([Validators.required, Validators.maxLength(8), NUMERIC_PATTERN_VALIDATOR]);
+    sortCode.setValidators(
+      this.isR1A12Enabled
+        ? [Validators.required, sortCodeValidator]
+        : [Validators.required, Validators.maxLength(6), NUMERIC_PATTERN_VALIDATOR],
+    );
+    accountNumber.setValidators(
+      this.isR1A12Enabled
+        ? [Validators.required, Validators.minLength(6), Validators.maxLength(8), NUMERIC_PATTERN_VALIDATOR]
+        : [Validators.required, Validators.maxLength(8), NUMERIC_PATTERN_VALIDATOR],
+    );
     paymentReference.setValidators([
       Validators.required,
       Validators.maxLength(18),
@@ -375,5 +402,15 @@ export class FinesMacOffenceDetailsMinorCreditorFormComponent extends AbstractFo
   public override ngOnInit(): void {
     this.initialMinorCreditorSetup();
     super.ngOnInit();
+  }
+
+  public override handleFormSubmit(event: SubmitEvent): void {
+    const sortCodeControl = this.form.controls['fm_offence_details_minor_creditor_bank_sort_code'];
+
+    if (this.isR1A12Enabled && sortCodeControl.valid && sortCodeControl.value) {
+      sortCodeControl.setValue(normalizeSortCode(sortCodeControl.value), { emitEvent: false });
+    }
+
+    super.handleFormSubmit(event);
   }
 }
