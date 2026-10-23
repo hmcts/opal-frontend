@@ -55,6 +55,11 @@ export class FinesAccEnfActionAddNewComponent extends AbstractFormParentBaseComp
     );
   }
 
+  /** Keeps the browser unload warning in sync with changes to the radio form. */
+  public handleUnsavedChanges(unsavedChanges: boolean): void {
+    this.stateUnsavedChanges = unsavedChanges;
+  }
+
   /**
    * Seeds account state from resolved route data.
    */
