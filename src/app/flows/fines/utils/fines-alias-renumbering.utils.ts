@@ -15,7 +15,7 @@ export function renumberAliasFormControls(aliases: FormArray, aliasFields: strin
       const newControlName = `${fieldName}_${rowIndex}`;
 
       const oldControlName = Object.keys(aliasGroup.controls).find((name) =>
-        new RegExp(`^${fieldName}_\\d+$`).test(name),
+        new RegExp(String.raw`^${fieldName}_\d+$`).test(name),
       );
 
       if (oldControlName && oldControlName !== newControlName) {
@@ -26,4 +26,22 @@ export function renumberAliasFormControls(aliases: FormArray, aliasFields: strin
       }
     });
   });
+}
+
+/**
+ * Removes an alias, renumbers the remaining controls,
+ * and rebuilds the corresponding alias metadata.
+ */
+export function removeAndRenumberAliasControls<T>(
+  aliases: FormArray,
+  aliasFields: string[],
+  index: number,
+  removeAlias: (index: number) => void,
+  createAliasControls: (index: number) => T,
+): T[] {
+  removeAlias(index);
+
+  renumberAliasFormControls(aliases, aliasFields);
+
+  return aliases.controls.map((_, rowIndex) => createAliasControls(rowIndex));
 }

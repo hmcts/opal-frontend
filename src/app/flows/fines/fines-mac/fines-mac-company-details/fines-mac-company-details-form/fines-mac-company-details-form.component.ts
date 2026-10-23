@@ -13,7 +13,7 @@ import { AbstractFormAliasBaseComponent } from '@hmcts/opal-frontend-common/comp
 import { GlobalStore } from '@hmcts/opal-frontend-common/stores/global';
 import { RELEASE_1A_1_2_FEATURE_FLAG } from '../../../constants/release-feature-flags.constant';
 import { getFeatureFlagReleaseState } from '../../../utils/fines-section-permissions.utils';
-import { renumberAliasFormControls } from '../../../utils/fines-alias-renumbering.utils';
+import { removeAndRenumberAliasControls } from '../../../utils/fines-alias-renumbering.utils';
 import { FormGroup, FormControl, Validators, FormArray, FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { IFinesMacCompanyDetailsForm } from '../interfaces/fines-mac-company-details-form.interface';
 import { IFinesMacCompanyDetailsFieldErrors } from '../interfaces/fines-mac-company-details-field-errors.interface';
@@ -143,13 +143,14 @@ export class FinesMacCompanyDetailsFormComponent extends AbstractFormAliasBaseCo
    */
   public removeAndRenumberAlias(index: number): void {
     const formArrayName = 'fm_company_details_aliases';
-    const aliases = this.form.get(formArrayName) as FormArray;
 
-    this.removeAlias(index, formArrayName);
-
-    renumberAliasFormControls(aliases, this.aliasFields);
-
-    this.aliasControls = this.aliasControls.map((_, rowIndex) => this.createAliasControls(this.aliasFields, rowIndex));
+    this.aliasControls = removeAndRenumberAliasControls(
+      this.form.get(formArrayName) as FormArray,
+      this.aliasFields,
+      index,
+      (aliasIndex) => this.removeAlias(aliasIndex, formArrayName),
+      (rowIndex) => this.createAliasControls(this.aliasFields, rowIndex),
+    );
   }
 
   public override ngOnInit(): void {
