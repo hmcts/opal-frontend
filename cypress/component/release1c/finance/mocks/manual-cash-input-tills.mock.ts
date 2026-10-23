@@ -3,7 +3,7 @@ export const MANUAL_CASH_INPUT_TILLS_MOCK = {
     {
       till_id: 1001,
       till_number: 9001,
-      payments_count: 3,
+      payment_count: 3,
       amount: 125.5,
       business_unit_name: 'Camden and Islington',
       processed_by: 'Alex Smith',
@@ -12,7 +12,7 @@ export const MANUAL_CASH_INPUT_TILLS_MOCK = {
     {
       till_id: 1002,
       till_number: 9002,
-      payments_count: 1,
+      payment_count: 1,
       amount: 10,
       business_unit_name: 'Westminster - North',
       processed_by: 'Sam Jones',
