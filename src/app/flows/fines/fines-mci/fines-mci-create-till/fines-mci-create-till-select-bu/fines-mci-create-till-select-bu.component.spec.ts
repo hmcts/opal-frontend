@@ -105,6 +105,26 @@ describe('FinesMciCreateTillSelectBuComponent', () => {
     expect(component['form'].controls.fmci_create_till_business_unit_id.touched).toBe(true);
   });
 
+  it('should store the selected business unit and navigate to till details on submit', () => {
+    const navigateSpy = vi.spyOn(router, 'navigate').mockResolvedValue(true);
+    component['form'].controls.fmci_create_till_business_unit_id.setValue(61);
+
+    component.handleSubmit();
+
+    expect(finesMciStore.businessUnit()).toEqual(OPAL_FINES_BUSINESS_UNIT_REF_DATA_MOCK.refData[0]);
+    expect(navigateSpy).toHaveBeenCalledWith(['/', 'fines', 'manual-cash-input', 'create', 'till', 'details']);
+  });
+
+  it('should not continue without a valid business unit', () => {
+    const navigateSpy = vi.spyOn(router, 'navigate').mockResolvedValue(true);
+
+    component.handleSubmit();
+
+    expect(finesMciStore.businessUnit()).toBeNull();
+    expect(navigateSpy).not.toHaveBeenCalled();
+    expect(component['form'].controls.fmci_create_till_business_unit_id.touched).toBe(true);
+  });
+
   it('should render selected business unit summary when the user has one business unit', async () => {
     TestBed.resetTestingModule();
     await TestBed.configureTestingModule({
