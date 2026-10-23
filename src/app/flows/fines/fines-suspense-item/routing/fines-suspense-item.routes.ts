@@ -1,3 +1,4 @@
+import { canDeactivateGuard } from '@hmcts/opal-frontend-common/guards/can-deactivate';
 import { fetchBusinessUnitsResolver } from '@routing/fines/resolvers/fetch-business-units-resolver/fetch-business-units.resolver';
 import { Routes } from '@angular/router';
 import { TitleResolver } from '@hmcts/opal-frontend-common/resolvers/title';
@@ -16,6 +17,7 @@ export const routing: Routes = [
       import('../fines-suspense-item-search/fines-suspense-item-search.component').then(
         (c) => c.FinesSuspenseItemSearchComponent,
       ),
+    canDeactivate: [canDeactivateGuard],
     data: {
       title: FINES_SUSPENSE_ITEM_ROUTING_TITLES.children.search,
     },

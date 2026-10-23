@@ -117,6 +117,8 @@ export const finesRouting: Routes = [
       },
       {
         path: FINES_ROUTING_PATHS.children.suspenseItem.root,
+        loadComponent: () =>
+          import('../fines-suspense-item/fines-suspense-item.component').then((c) => c.FinesSuspenseItemComponent),
         children: suspenseItemRouting,
         canActivate: [authGuard],
       },

@@ -10,37 +10,20 @@ describe('FinesSuspenseItemStore', () => {
     store = TestBed.inject(FinesSuspenseItemStore);
   });
 
-  it('starts without a selected BU or submitted search', () => {
+  it('starts without a selected BU', () => {
     expect(store.selectedBusinessUnitId()).toBeNull();
-    expect(store.submittedCriteria()).toBeNull();
   });
 
-  it('keeps a copy of the submitted BU and reference together', () => {
-    const criteria = { fsis_business_unit_id: 11, fsis_suspense_reference_number: '001234' };
-    store.setSubmittedCriteria(criteria);
-    criteria.fsis_suspense_reference_number = '999';
-    expect(store.selectedBusinessUnitId()).toBe(11);
-    expect(store.submittedCriteria()).toEqual({
-      fsis_business_unit_id: 11,
-      fsis_suspense_reference_number: '001234',
-    });
-  });
-
-  it('discards the previous search when the selected BU changes or is cleared', () => {
-    store.setSubmittedCriteria({ fsis_business_unit_id: 11, fsis_suspense_reference_number: '1234' });
+  it('retains the selected BU and allows it to be cleared', () => {
     store.setSelectedBusinessUnitId(22);
     expect(store.selectedBusinessUnitId()).toBe(22);
-    expect(store.submittedCriteria()).toBeNull();
-    store.setSubmittedCriteria({ fsis_business_unit_id: 22, fsis_suspense_reference_number: '5678' });
     store.setSelectedBusinessUnitId(null);
     expect(store.selectedBusinessUnitId()).toBeNull();
-    expect(store.submittedCriteria()).toBeNull();
   });
 
-  it('preserves the last submitted search when the BU has not changed', () => {
-    const criteria = { fsis_business_unit_id: 11, fsis_suspense_reference_number: '1234' };
-    store.setSubmittedCriteria(criteria);
-    store.setSelectedBusinessUnitId(11);
-    expect(store.submittedCriteria()).toEqual(criteria);
+  it('clears the selected BU when the journey is reset', () => {
+    store.setSelectedBusinessUnitId(22);
+    store.resetStore();
+    expect(store.selectedBusinessUnitId()).toBeNull();
   });
 });

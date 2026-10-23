@@ -1,3 +1,5 @@
+import { NUMERIC_PATTERN } from '@hmcts/opal-frontend-common/constants';
+import { patternValidator } from '@hmcts/opal-frontend-common/validators/pattern-validator';
 import { GovukErrorSummaryComponent } from '@hmcts/opal-frontend-common/components/govuk/govuk-error-summary';
 import { FINES_SUSPENSE_ITEM_SEARCH_FIELD_ERRORS } from '../constants/fines-suspense-item-search-field-errors.constant';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
@@ -64,7 +66,10 @@ export class FinesSuspenseItemSearchFormComponent extends AbstractFormBaseCompon
     const businessUnitControl = new FormControl<number | null>(this.initialBusinessUnitId, Validators.required);
     this.form = new FormGroup({
       fsis_business_unit_id: businessUnitControl,
-      fsis_suspense_reference_number: new FormControl('', { nonNullable: true, validators: Validators.required }),
+      fsis_suspense_reference_number: new FormControl('', {
+        nonNullable: true,
+        validators: [Validators.required, patternValidator(NUMERIC_PATTERN, 'numericalTextPattern')],
+      }),
     });
     this.setInitialErrorMessages();
     businessUnitControl.valueChanges

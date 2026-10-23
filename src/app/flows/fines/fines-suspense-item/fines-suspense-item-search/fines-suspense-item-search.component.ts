@@ -1,5 +1,8 @@
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
+import { catchError, EMPTY } from 'rxjs';
+import { OpalFines } from '@services/fines/opal-fines-service/opal-fines.service';
 import { IOpalFinesBusinessUnitRefData } from '@services/fines/opal-fines-service/interfaces/opal-fines-business-unit-ref-data.interface';
-import { ChangeDetectionStrategy, Component, OnInit, inject } from '@angular/core';
+import { ChangeDetectionStrategy, Component, OnInit, inject, DestroyRef } from '@angular/core';
 import { IAbstractFormBaseForm } from '@hmcts/opal-frontend-common/components/abstract/abstract-form-base/interfaces';
 import { FinesSuspenseItemStore } from '../stores/fines-suspense-item.store';
 import { IFinesSuspenseItemSearchFormState } from './interfaces/fines-suspense-item-search-form-state.interface';
@@ -16,6 +19,8 @@ import { FinesSuspenseItemSearchFormComponent } from './fines-suspense-item-sear
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class FinesSuspenseItemSearchComponent implements OnInit {
+  private readonly opalFines = inject(OpalFines);
+  private readonly destroyRef = inject(DestroyRef);
   private readonly suspenseItemStore = inject(FinesSuspenseItemStore);
   private readonly router = inject(Router);
   private readonly activatedRoute = inject(ActivatedRoute);
@@ -29,6 +34,7 @@ export class FinesSuspenseItemSearchComponent implements OnInit {
 
   public businessUnitAutoCompleteItems: IAlphagovAccessibleAutocompleteItem[] = [];
   public initialBusinessUnitId: number | null = null;
+  public stateUnsavedChanges = false;
 
   /**
    * Uses the BUs already loaded by the route resolver. Build the options before
@@ -63,8 +69,41 @@ export class FinesSuspenseItemSearchComponent implements OnInit {
     this.suspenseItemStore.setSelectedBusinessUnitId(businessUnitId);
   }
 
+  /**
+   * Starts a fresh lookup and temporarily logs the response for browser inspection.
+   * @param form - Validated values emitted by the search form.
+   * @returns Nothing; the response is logged to the browser console.
+   */
   public handleFormSubmit(form: IAbstractFormBaseForm<IFinesSuspenseItemSearchFormState>): void {
-    this.suspenseItemStore.setSubmittedCriteria(form.formData);
+    const criteria = { ...form.formData };
+    if (criteria.fsis_business_unit_id === null) {
+      return;
+    }
+
+    // Strip leading zeroes as text: references have no length limit, so Number() could lose precision.
+    const reference = criteria.fsis_suspense_reference_number.replace(/^0+(?=\d)/, '');
+    this.opalFines.clearCache('suspenseItemSummaryCache$');
+    this.opalFines.clearCache('suspenseItemHistoryCache$');
+    this.opalFines
+      .getSuspenseItemSummary(criteria.fsis_business_unit_id, reference)
+      .pipe(
+        // The shared HTTP interceptor displays and logs errors; complete without emitting a result.
+        catchError(() => EMPTY),
+        takeUntilDestroyed(this.destroyRef),
+      )
+      .subscribe({
+        // TODO(PO-9764, PO-9765): Replace console logging with results navigation and resolver-provided route data.
+        next: (summary) => console.log('Suspense item summary:', summary),
+      });
+  }
+
+  public handleUnsavedChanges(unsavedChanges: boolean): void {
+    this.stateUnsavedChanges = unsavedChanges;
+  }
+
+  /** Allows the shared route guard to confirm leaving after the user edits the form. */
+  public canDeactivate(): boolean {
+    return !this.stateUnsavedChanges;
   }
 
   public ngOnInit(): void {

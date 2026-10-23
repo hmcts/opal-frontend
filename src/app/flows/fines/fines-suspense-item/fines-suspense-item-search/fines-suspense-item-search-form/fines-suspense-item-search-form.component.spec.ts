@@ -121,7 +121,7 @@ describe('FinesSuspenseItemSearchFormComponent', () => {
     const summaryLinks = page.querySelectorAll<HTMLAnchorElement>('.govuk-error-summary a');
     expect(Array.from(summaryLinks, (link) => link.textContent)).toEqual([
       'Select a business unit',
-      'Enter a suspense reference number',
+      'Enter suspense reference number',
     ]);
     const scrollTo = vi.spyOn(component, 'scrollTo').mockImplementation(() => undefined);
     summaryLinks[0].click();
@@ -130,7 +130,7 @@ describe('FinesSuspenseItemSearchFormComponent', () => {
     expect(scrollTo).toHaveBeenLastCalledWith('fsis_suspense_reference_number');
     const inlineErrors = Array.from(page.querySelectorAll('.govuk-error-message'), (error) => error.textContent);
     expect(inlineErrors.some((message) => message?.includes('Select a business unit'))).toBe(true);
-    expect(inlineErrors.some((message) => message?.includes('Enter a suspense reference number'))).toBe(true);
+    expect(inlineErrors.some((message) => message?.includes('Enter suspense reference number'))).toBe(true);
   });
 
   it('prevents submission without a reference when the sole BU is supplied', () => {
@@ -146,6 +146,37 @@ describe('FinesSuspenseItemSearchFormComponent', () => {
     expect(component.form.get('fsis_business_unit_id')?.valid).toBe(true);
     expect(component.form.get('fsis_suspense_reference_number')?.hasError('required')).toBe(true);
   });
+
+  it.each(['abc', '12a3', '12.3', '-1', '+1', '1e3', '12 34', ' 123', '123 ', ' '])(
+    'rejects non-digit reference %s with the specified inline and summary message',
+    (reference) => {
+      fixture.detectChanges();
+      component.form.setValue({ fsis_business_unit_id: 11, fsis_suspense_reference_number: reference });
+      const submitted = vi.fn();
+      component['formSubmit'].subscribe(submitted);
+      fixture.nativeElement
+        .querySelector('form')
+        .dispatchEvent(new Event('submit', { bubbles: true, cancelable: true }));
+      fixture.detectChanges();
+      expect(submitted).not.toHaveBeenCalled();
+      expect(component.form.get('fsis_suspense_reference_number')?.hasError('numericalTextPattern')).toBe(true);
+      expect(fixture.nativeElement.querySelector('.govuk-error-message').textContent).toContain(
+        'Enter suspense reference number in the correct format',
+      );
+      expect(fixture.nativeElement.querySelector('.govuk-error-summary').textContent).toContain(
+        'Enter suspense reference number in the correct format',
+      );
+    },
+  );
+
+  it.each(['0', '7', '0000', '001234', '123456789012345678901234567890', '9'.repeat(100)])(
+    'accepts digits without a length or range restriction: %s',
+    (reference) => {
+      fixture.detectChanges();
+      component.form.setValue({ fsis_business_unit_id: 11, fsis_suspense_reference_number: reference });
+      expect(component.form.valid).toBe(true);
+    },
+  );
 
   it('emits Cancel without submitting the form', () => {
     const cancelled = vi.fn();

@@ -3,6 +3,7 @@
     [autoCompleteItems]="businessUnitAutoCompleteItems"
     [initialBusinessUnitId]="initialBusinessUnitId"
     (businessUnitChange)="handleBusinessUnitChange($event)"
+    (unsavedChanges)="handleUnsavedChanges($event)"
     (formSubmit)="handleFormSubmit($event)"
     (cancelSearch)="handleCancel()"
   ></app-fines-suspense-item-search-form>

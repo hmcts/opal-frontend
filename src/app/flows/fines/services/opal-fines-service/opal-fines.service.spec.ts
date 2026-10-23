@@ -117,6 +117,47 @@ describe('OpalFines', () => {
     expect(received).toHaveBeenCalledWith(OPAL_FINES_SUSPENSE_ITEM_HISTORY_MOCK);
   });
 
+  it('reuses history for the same BU and item while keeping other BUs and items separate', () => {
+    const url = '/opal-fines-service/suspense-items/1001/history';
+    service.getSuspenseItemHistory(22, 1001).subscribe();
+    httpMock.expectOne(url).flush(OPAL_FINES_SUSPENSE_ITEM_HISTORY_MOCK);
+    const received = vi.fn();
+    service.getSuspenseItemHistory(22, 1001).subscribe(received);
+    httpMock.expectNone(url);
+    expect(received).toHaveBeenCalledWith(OPAL_FINES_SUSPENSE_ITEM_HISTORY_MOCK);
+
+    service.getSuspenseItemHistory(11, 1001).subscribe();
+    const otherBu = httpMock.expectOne(url);
+    expect(otherBu.request.headers.get('business_unit_id')).toBe('11');
+    otherBu.flush([]);
+    service.getSuspenseItemHistory(22, 1002).subscribe();
+    httpMock.expectOne('/opal-fines-service/suspense-items/1002/history').flush([]);
+  });
+
+  it.each([
+    ['history', () => service.clearCache('suspenseItemHistoryCache$')],
+    ['all', () => service.clearAllCaches()],
+  ])('fetches fresh history after clearing the %s cache', (_scope, clearCache) => {
+    const url = '/opal-fines-service/suspense-items/1001/history';
+    service.getSuspenseItemHistory(22, 1001).subscribe();
+    httpMock.expectOne(url).flush(OPAL_FINES_SUSPENSE_ITEM_HISTORY_MOCK);
+    clearCache();
+    const received = vi.fn();
+    service.getSuspenseItemHistory(22, 1001).subscribe(received);
+    httpMock.expectOne(url).flush([]);
+    expect(received).toHaveBeenCalledWith([]);
+  });
+
+  it('does not retain a failed history response in the cache', () => {
+    const url = '/opal-fines-service/suspense-items/1001/history';
+    const failed = vi.fn();
+    service.getSuspenseItemHistory(22, 1001).subscribe({ error: failed });
+    httpMock.expectOne(url).flush({}, { status: 500, statusText: 'Server error' });
+    expect(failed).toHaveBeenCalledWith(expect.objectContaining({ status: 500 }));
+    service.getSuspenseItemHistory(22, 1001).subscribe();
+    httpMock.expectOne(url).flush(OPAL_FINES_SUSPENSE_ITEM_HISTORY_MOCK);
+  });
+
   it('propagates a missing suspense summary when the local fallback is not registered', () => {
     const failed = vi.fn();
     service.getSuspenseItemSummary(22, '001234').subscribe({ error: failed });
@@ -124,6 +165,34 @@ describe('OpalFines', () => {
       .expectOne('/opal-fines-service/suspense-accounts/22/suspense-items/001234/summary')
       .flush({}, { status: 404, statusText: 'Not Found' });
     expect(failed).toHaveBeenCalledWith(expect.objectContaining({ status: 404 }));
+  });
+
+  it('reuses a summary for the same BU/reference and separates different searches', () => {
+    service.getSuspenseItemSummary(22, '001234').subscribe();
+    httpMock
+      .expectOne('/opal-fines-service/suspense-accounts/22/suspense-items/001234/summary')
+      .flush(OPAL_FINES_SUSPENSE_ITEM_SUMMARY_MOCK);
+    const received = vi.fn();
+    service.getSuspenseItemSummary(22, '001234').subscribe(received);
+    httpMock.expectNone('/opal-fines-service/suspense-accounts/22/suspense-items/001234/summary');
+    expect(received).toHaveBeenCalledWith(OPAL_FINES_SUSPENSE_ITEM_SUMMARY_MOCK);
+    service.getSuspenseItemSummary(11, '001234').subscribe();
+    httpMock
+      .expectOne('/opal-fines-service/suspense-accounts/11/suspense-items/001234/summary')
+      .flush(OPAL_FINES_SUSPENSE_ITEM_SUMMARY_MOCK);
+    service.getSuspenseItemSummary(22, '5678').subscribe();
+    httpMock
+      .expectOne('/opal-fines-service/suspense-accounts/22/suspense-items/5678/summary')
+      .flush(OPAL_FINES_SUSPENSE_ITEM_SUMMARY_MOCK);
+  });
+
+  it('fetches a fresh summary after its cache is cleared', () => {
+    const url = '/opal-fines-service/suspense-accounts/22/suspense-items/001234/summary';
+    service.getSuspenseItemSummary(22, '001234').subscribe();
+    httpMock.expectOne(url).flush(OPAL_FINES_SUSPENSE_ITEM_SUMMARY_MOCK);
+    service.clearCache('suspenseItemSummaryCache$');
+    service.getSuspenseItemSummary(22, '001234').subscribe();
+    httpMock.expectOne(url).flush(OPAL_FINES_SUSPENSE_ITEM_SUMMARY_MOCK);
   });
 
   function mockHeaders(getFn: (name: string) => string | null) {

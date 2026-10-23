@@ -392,6 +392,7 @@ export class OpalFines {
   /**
    * Looks up the user-facing reference within a BU. Keep the reference as text
    * to preserve leading zeroes and avoid numeric precision loss.
+   * Cached by BU/reference until a new search or journey exit clears it.
    * TODO(PO-9796): Confirm the provisional response types against the API contract.
    *
    * @param businessUnitId - The selected business unit in which to look up the item.
@@ -400,11 +401,15 @@ export class OpalFines {
    */
   public getSuspenseItemSummary(businessUnitId: number, reference: string): Observable<IOpalFinesSuspenseItemSummary> {
     const url = `${OPAL_FINES_PATHS.suspenseAccounts}/${businessUnitId}/suspense-items/${encodeURIComponent(reference)}/summary`;
-    return this.http.get<IOpalFinesSuspenseItemSummary>(url, this.retrySafeReadOptions());
+    this.cache.suspenseItemSummaryCache$[url] ??= this.http
+      .get<IOpalFinesSuspenseItemSummary>(url, this.retrySafeReadOptions())
+      .pipe(shareReplay({ bufferSize: 1, refCount: true }));
+    return this.cache.suspenseItemSummaryCache$[url];
   }
 
   /**
    * Uses the internal item ID returned by the summary, rather than its reference.
+   * Cached by BU/internal ID until a new search or journey exit clears it.
    * TODO(PO-9797): Confirm the BU header name and provisional history response.
    *
    * @param businessUnitId - The item's business unit, sent in the business_unit_id request header.
@@ -416,10 +421,13 @@ export class OpalFines {
     suspenseItemId: number,
   ): Observable<IOpalFinesSuspenseItemHistoryEntry[]> {
     const url = `${OPAL_FINES_PATHS.suspenseItems}/${suspenseItemId}/history`;
-    return this.http.get<IOpalFinesSuspenseItemHistoryEntry[]>(
-      url,
-      this.withRetrySafeReadOptions({ headers: { business_unit_id: String(businessUnitId) } }),
-    );
+    // The BU is sent in a header, so the URL alone does not identify the cached request.
+    const cacheKey = `${businessUnitId}:${suspenseItemId}`;
+    const options = this.withRetrySafeReadOptions({ headers: { business_unit_id: String(businessUnitId) } });
+    this.cache.suspenseItemHistoryCache$[cacheKey] ??= this.http
+      .get<IOpalFinesSuspenseItemHistoryEntry[]>(url, options)
+      .pipe(shareReplay({ bufferSize: 1, refCount: true }));
+    return this.cache.suspenseItemHistoryCache$[cacheKey];
   }
 
   /**
@@ -781,6 +789,8 @@ export class OpalFines {
    * Clears all caches maintained by this service.
    */
   public clearAllCaches(): void {
+    this.clearCache('suspenseItemSummaryCache$');
+    this.clearCache('suspenseItemHistoryCache$');
     this.clearDraftAccountsCache();
     this.clearAccountDetailsCache();
     this.clearReferenceDataCaches();
