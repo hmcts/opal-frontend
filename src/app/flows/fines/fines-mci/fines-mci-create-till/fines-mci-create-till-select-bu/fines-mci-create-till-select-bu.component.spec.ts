@@ -85,7 +85,7 @@ describe('FinesMciCreateTillSelectBuComponent', () => {
     expect(finesMciStore.businessUnit()).toBeNull();
   });
 
-  it('should store the selected business unit and navigate to till details on submit', () => {
+  it('should retain the selected business unit for the till details step', () => {
     const navigateSpy = vi.spyOn(router, 'navigate').mockResolvedValue(true);
     component['form'].controls.fmci_create_till_business_unit_id.setValue(61);
 
@@ -95,7 +95,7 @@ describe('FinesMciCreateTillSelectBuComponent', () => {
     expect(navigateSpy).toHaveBeenCalledWith(['/', 'fines', 'manual-cash-input', 'create', 'till', 'details']);
   });
 
-  it('should not continue without a valid business unit', () => {
+  it('should mark the business unit field as touched when submit has no selection', () => {
     const navigateSpy = vi.spyOn(router, 'navigate').mockResolvedValue(true);
 
     component.handleSubmit();
@@ -105,7 +105,7 @@ describe('FinesMciCreateTillSelectBuComponent', () => {
     expect(component['form'].controls.fmci_create_till_business_unit_id.touched).toBe(true);
   });
 
-  it('should store the selected business unit and navigate to till details on submit', () => {
+  it('should navigate to till details after storing the selected business unit', () => {
     const navigateSpy = vi.spyOn(router, 'navigate').mockResolvedValue(true);
     component['form'].controls.fmci_create_till_business_unit_id.setValue(61);
 
@@ -115,7 +115,7 @@ describe('FinesMciCreateTillSelectBuComponent', () => {
     expect(navigateSpy).toHaveBeenCalledWith(['/', 'fines', 'manual-cash-input', 'create', 'till', 'details']);
   });
 
-  it('should not continue without a valid business unit', () => {
+  it('should keep the user on the selection page when no business unit is chosen', () => {
     const navigateSpy = vi.spyOn(router, 'navigate').mockResolvedValue(true);
 
     component.handleSubmit();
