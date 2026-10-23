@@ -191,7 +191,6 @@ export class FinesMciCreateTillSelectBuComponent implements OnDestroy {
    * Returns the user to the manual cash input create and allocate page.
    */
   public handleCancel(): void {
-    this.finesMciStore.reset();
     void this.router.navigate(this.createAllocateRoute);
   }
 

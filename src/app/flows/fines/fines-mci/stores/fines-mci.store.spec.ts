@@ -36,22 +36,25 @@ describe('FinesMciStore', () => {
     expect(store.tills()).toEqual([{ tillId: '00000000-0000-4000-8000-000000000001', payments: [] }]);
   });
 
-  it('should add a payment to the matching till and return its id', () => {
-    vi.spyOn(crypto, 'randomUUID')
-      .mockReturnValueOnce('00000000-0000-4000-8000-000000000001')
-      .mockReturnValueOnce('00000000-0000-4000-8000-000000000002');
-    store.addTill();
+  it.each(['criminal', 'courtFee', 'suspense'] as const)(
+    'should add a %s payment to the matching till and return its id',
+    (journey) => {
+      vi.spyOn(crypto, 'randomUUID')
+        .mockReturnValueOnce('00000000-0000-4000-8000-000000000001')
+        .mockReturnValueOnce('00000000-0000-4000-8000-000000000002');
+      store.addTill();
 
-    expect(store.addPayment('00000000-0000-4000-8000-000000000001', 'criminal')).toBe(
-      '00000000-0000-4000-8000-000000000002',
-    );
-    expect(store.tills()).toEqual([
-      {
-        tillId: '00000000-0000-4000-8000-000000000001',
-        payments: [{ paymentId: '00000000-0000-4000-8000-000000000002', journey: 'criminal' }],
-      },
-    ]);
-  });
+      expect(store.addPayment('00000000-0000-4000-8000-000000000001', journey)).toBe(
+        '00000000-0000-4000-8000-000000000002',
+      );
+      expect(store.tills()).toEqual([
+        {
+          tillId: '00000000-0000-4000-8000-000000000001',
+          payments: [{ paymentId: '00000000-0000-4000-8000-000000000002', journey }],
+        },
+      ]);
+    },
+  );
 
   it('should leave tills unchanged when adding a payment to an unknown till', () => {
     vi.spyOn(crypto, 'randomUUID')

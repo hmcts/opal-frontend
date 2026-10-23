@@ -70,10 +70,19 @@ describe('FinesMciCreateTillSelectBuComponent', () => {
 
   it('should navigate to create and allocate when cancel is selected', () => {
     const navigateSpy = vi.spyOn(router, 'navigate').mockResolvedValue(true);
+    const businessUnit = OPAL_FINES_BUSINESS_UNIT_REF_DATA_MOCK.refData[0];
+    finesMciStore.setBusinessUnit(businessUnit);
+    component['form'].controls.fmci_create_till_business_unit_id.setValue(null);
 
     fixture.debugElement.query(By.css('opal-lib-govuk-cancel-link')).triggerEventHandler('linkClickEvent', true);
 
     expect(navigateSpy).toHaveBeenCalledWith(['/', 'fines', 'manual-cash-input', 'create-allocate']);
+    expect(finesMciStore.businessUnit()).toEqual(businessUnit);
+    expect(component.canDeactivate()).toBe(false);
+
+    component.ngOnDestroy();
+
+    expect(finesMciStore.businessUnit()).toBeNull();
   });
 
   it('should store the selected business unit and navigate to till details on submit', () => {
@@ -199,6 +208,23 @@ describe('FinesMciCreateTillSelectBuComponent', () => {
 
     expect(component.canDeactivate()).toBe(false);
     expect(component.handleBeforeUnload()).toBe(false);
+  });
+
+  it('should warn before leaving when a restored business unit selection is pristine', () => {
+    const businessUnit = OPAL_FINES_BUSINESS_UNIT_REF_DATA_MOCK.refData[0];
+    finesMciStore.setBusinessUnit(businessUnit);
+    Object.defineProperty(router, 'currentNavigation', {
+      configurable: true,
+      value: signal<Navigation | null>({
+        extras: { state: { preserveBusinessUnit: true } },
+      } as unknown as Navigation),
+    });
+
+    fixture = TestBed.createComponent(FinesMciCreateTillSelectBuComponent);
+    component = fixture.componentInstance;
+
+    expect(component['form'].pristine).toBe(true);
+    expect(component.canDeactivate()).toBe(false);
   });
 
   it('should allow beforeunload when no business unit is selected', () => {
