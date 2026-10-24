@@ -33,58 +33,91 @@
       [control]="form.get('fm_parent_guardian_details_add_alias')"
     ></div>
   </opal-lib-govuk-checkboxes>
+
   @if (form.get('fm_parent_guardian_details_add_alias')?.value === true) {
     <span id="parent-guardian-add-alias-conditional-label" class="govuk-visually-hidden"> Options for Add alias </span>
+
     <div
       opal-lib-govuk-checkboxes-conditional
       conditionalId="fm_parent_guardian_details_add_alias"
       formArrayName="fm_parent_guardian_details_aliases"
+      [class.moj-add-another]="release1a1_2Enabled()"
     >
-      @for (aliasControl of aliasControls; let rowIndex = $index; track rowIndex) {
-        <fieldset class="govuk-fieldset">
-          <legend class="govuk-fieldset__legend govuk-fieldset__legend--m">
-            <h2 class="govuk-heading-m govuk-!-margin-0">Alias {{ rowIndex + 1 }}</h2>
-          </legend>
-          <opal-lib-govuk-text-input
-            #aliasFirstField
-            labelText="First names"
-            [inputId]="aliasControl['fm_parent_guardian_details_alias_forenames'].inputId"
-            [inputName]="aliasControl['fm_parent_guardian_details_alias_forenames'].inputName"
-            inputClasses="govuk-input--width-20"
-            [control]="
-              form.get([
-                'fm_parent_guardian_details_aliases',
-                rowIndex,
-                aliasControl['fm_parent_guardian_details_alias_forenames'].controlName,
-              ])
-            "
-            [errors]="formControlErrorMessages[aliasControl['fm_parent_guardian_details_alias_forenames'].controlName]"
-          ></opal-lib-govuk-text-input>
-          <opal-lib-govuk-text-input
-            labelText="Last name"
-            [inputId]="aliasControl['fm_parent_guardian_details_alias_surname'].inputId"
-            [inputName]="aliasControl['fm_parent_guardian_details_alias_surname'].inputName"
-            inputClasses="govuk-input--width-20"
-            [control]="
-              form.get([
-                'fm_parent_guardian_details_aliases',
-                rowIndex,
-                aliasControl['fm_parent_guardian_details_alias_surname'].controlName,
-              ])
-            "
-            [errors]="formControlErrorMessages[aliasControl['fm_parent_guardian_details_alias_surname'].controlName]"
-            [opalLibCapitaliseAllCharacters]="
-              form.get([
-                'fm_parent_guardian_details_aliases',
-                rowIndex,
-                aliasControl['fm_parent_guardian_details_alias_surname'].controlName,
-              ])!
-            "
-          ></opal-lib-govuk-text-input>
-        </fieldset>
-      }
+      <div [class.moj-add-another__items]="release1a1_2Enabled()">
+        @for (aliasControl of aliasControls; let rowIndex = $index; track rowIndex) {
+          <div [class.moj-add-another__item]="release1a1_2Enabled()">
+            <fieldset class="govuk-fieldset" [class.moj-add-another__fieldset]="release1a1_2Enabled()">
+              <legend
+                class="govuk-fieldset__legend govuk-fieldset__legend--m"
+                [class.moj-add-another__item-title]="release1a1_2Enabled()"
+              >
+                <h2 class="govuk-heading-m govuk-!-margin-0">
+                  Alias {{ rowIndex + 1
+                  }}{{ release1a1_2Enabled() && aliasControls.length > 1 ? ' of ' + aliasControls.length : '' }}
+                </h2>
+              </legend>
 
-      @if (aliasControls.length > 1) {
+              <div [class.moj-add-another__item-container]="release1a1_2Enabled()">
+                <opal-lib-govuk-text-input
+                  #aliasFirstField
+                  labelText="First names"
+                  [inputId]="aliasControl['fm_parent_guardian_details_alias_forenames'].inputId"
+                  [inputName]="aliasControl['fm_parent_guardian_details_alias_forenames'].inputName"
+                  inputClasses="govuk-input--width-20"
+                  [control]="
+                    form.get([
+                      'fm_parent_guardian_details_aliases',
+                      rowIndex,
+                      aliasControl['fm_parent_guardian_details_alias_forenames'].controlName,
+                    ])
+                  "
+                  [errors]="
+                    formControlErrorMessages[aliasControl['fm_parent_guardian_details_alias_forenames'].controlName]
+                  "
+                ></opal-lib-govuk-text-input>
+
+                <opal-lib-govuk-text-input
+                  labelText="Last name"
+                  [inputId]="aliasControl['fm_parent_guardian_details_alias_surname'].inputId"
+                  [inputName]="aliasControl['fm_parent_guardian_details_alias_surname'].inputName"
+                  inputClasses="govuk-input--width-20"
+                  [control]="
+                    form.get([
+                      'fm_parent_guardian_details_aliases',
+                      rowIndex,
+                      aliasControl['fm_parent_guardian_details_alias_surname'].controlName,
+                    ])
+                  "
+                  [errors]="
+                    formControlErrorMessages[aliasControl['fm_parent_guardian_details_alias_surname'].controlName]
+                  "
+                  [opalLibCapitaliseAllCharacters]="
+                    form.get([
+                      'fm_parent_guardian_details_aliases',
+                      rowIndex,
+                      aliasControl['fm_parent_guardian_details_alias_surname'].controlName,
+                    ])!
+                  "
+                ></opal-lib-govuk-text-input>
+
+                @if (release1a1_2Enabled() && aliasControls.length > 1) {
+                  <div class="moj-add-another__remove-button-container">
+                    <button
+                      type="button"
+                      class="govuk-button govuk-button--secondary moj-add-another__remove-button"
+                      (click)="removeAndRenumberAlias(rowIndex)"
+                    >
+                      Remove alias {{ rowIndex + 1 }}
+                    </button>
+                  </div>
+                }
+              </div>
+            </fieldset>
+          </div>
+        }
+      </div>
+
+      @if (!release1a1_2Enabled() && aliasControls.length > 1) {
         <div class="govuk-!-margin-bottom-3">
           <a
             class="govuk-link govuk-link--no-visited-state"
@@ -95,17 +128,21 @@
           </a>
         </div>
       }
+
       @if (aliasControls.length < 5) {
-        <opal-lib-govuk-button
-          buttonId="addAlias"
-          buttonClasses="govuk-button--secondary govuk-!-margin-bottom-0"
-          type="button"
-          (buttonClickEvent)="addAlias(aliasControls.length, 'fm_parent_guardian_details_aliases')"
-          >Add another alias</opal-lib-govuk-button
-        >
+        <div [class.moj-add-another__add-button-container]="release1a1_2Enabled()">
+          <opal-lib-govuk-button
+            buttonId="addAlias"
+            buttonClasses="govuk-button--secondary govuk-!-margin-bottom-0"
+            type="button"
+            (buttonClickEvent)="addAlias(aliasControls.length, 'fm_parent_guardian_details_aliases')"
+            >Add another alias</opal-lib-govuk-button
+          >
+        </div>
       }
     </div>
   }
+
   <opal-lib-moj-date-picker
     labelText="Date of birth"
     labelClasses="govuk-label--s"

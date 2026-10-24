@@ -6,9 +6,14 @@ import {
   OnDestroy,
   OnInit,
   Output,
+  computed,
   inject,
 } from '@angular/core';
 import { FormArray, FormControl, FormGroup, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
+import { GlobalStore } from '@hmcts/opal-frontend-common/stores/global';
+import { RELEASE_1A_1_2_FEATURE_FLAG } from '../../../constants/release-feature-flags.constant';
+import { getFeatureFlagReleaseState } from '../../../utils/fines-section-permissions.utils';
+import { removeAndRenumberAliasControls } from '../../../utils/fines-alias-renumbering.utils';
 import { AbstractFormAliasBaseComponent } from '@hmcts/opal-frontend-common/components/abstract/abstract-form-alias-base';
 import { IFinesMacPersonalDetailsFieldErrors } from '../interfaces/fines-mac-personal-details-field-errors.interface';
 import { IFinesMacPersonalDetailsForm } from '../interfaces/fines-mac-personal-details-form.interface';
@@ -76,6 +81,7 @@ const ALPHANUMERIC_WITH_SPACES_PATTERN_VALIDATOR = patternValidator(
 })
 export class FinesMacPersonalDetailsFormComponent extends AbstractFormAliasBaseComponent implements OnInit, OnDestroy {
   private readonly finesMacStore = inject(FinesMacStore);
+  private readonly globalStore = inject(GlobalStore);
 
   @Output() protected override formSubmit = new EventEmitter<IFinesMacPersonalDetailsForm>();
   protected readonly dateService = inject(DateService);
@@ -86,6 +92,11 @@ export class FinesMacPersonalDetailsFormComponent extends AbstractFormAliasBaseC
   override fieldErrors: IFinesMacPersonalDetailsFieldErrors = {
     ...FINES_MAC_PERSONAL_DETAILS_FIELD_ERRORS,
   };
+
+  public readonly release1a1_2Enabled = computed(
+    () => getFeatureFlagReleaseState(this.globalStore.featureFlags())[RELEASE_1A_1_2_FEATURE_FLAG] === true,
+  );
+
   public readonly titleOptions: IGovUkSelectOptions[] = FINES_MAC_TITLE_DROPDOWN_OPTIONS;
   public yesterday!: string;
   public age!: number;
@@ -206,6 +217,22 @@ export class FinesMacPersonalDetailsFormComponent extends AbstractFormAliasBaseC
     this.setUpAliasCheckboxListener('fm_personal_details_add_alias', 'fm_personal_details_aliases');
     this.dateOfBirthListener();
     this.yesterday = this.dateService.getPreviousDate({ days: 1 });
+  }
+
+  /**
+   * Removes the selected personal alias and renumbers the remaining controls.
+   * Preserves existing FormControl instances, values and validators.
+   */
+  public removeAndRenumberAlias(index: number): void {
+    const formArrayName = 'fm_personal_details_aliases';
+
+    this.aliasControls = removeAndRenumberAliasControls(
+      this.form.get(formArrayName) as FormArray,
+      this.aliasFields,
+      index,
+      (aliasIndex) => this.removeAlias(aliasIndex, formArrayName),
+      (rowIndex) => this.createAliasControls(this.aliasFields, rowIndex),
+    );
   }
 
   public override ngOnInit(): void {
