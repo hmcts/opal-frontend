@@ -1,3 +1,5 @@
+import { mapIgnoredData } from './utils/fines-api-payload-map-ignored.utils';
+import { IFinesApiIgnoredData } from '../fines-api-process-allocate/fines-api-ignored-tab/interfaces/fines-api-ignored-data.interface';
 import { inject, Injectable } from '@angular/core';
 import { DateService } from '@hmcts/opal-frontend-common/services/date-service';
 import { IOpalFinesInterfaceJobSummary } from '@services/fines/opal-fines-service/interfaces/opal-fines-interface-job-summary.interface';
@@ -36,6 +38,20 @@ export class FinesApiPayloadService {
     sourceLabels: ReadonlyMap<string, string>,
   ): IFinesApiProcessFilesTableWrapperTableData[] {
     return mapInterfaceJobs(interfaceJobs, this.dateService, sourceLabels);
+  }
+
+  /**
+   * Maps the complete ignored response without the Process result cap.
+   *
+   * @param response Raw ignored jobs response from the backend.
+   * @param sourceLabels Resolved source codes and their display names.
+   * @returns Ignored rows with source display names.
+   */
+  public mapIgnoredData(
+    response: IOpalFinesInterfaceJobsSummaryResponse,
+    sourceLabels: ReadonlyMap<string, string>,
+  ): IFinesApiIgnoredData {
+    return mapIgnoredData(response, this.dateService, sourceLabels);
   }
 
   /**
