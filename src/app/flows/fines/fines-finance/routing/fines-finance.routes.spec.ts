@@ -1,7 +1,7 @@
 import { TitleResolver } from '@hmcts/opal-frontend-common/resolvers/title';
 import { PAGES_ROUTING_PATHS } from '@routing/pages/constants/routing-paths.constant';
 import { describe, expect, it } from 'vitest';
-import { FINES_FINANCE_ROUTING_PATHS } from './fines-finance-routing-paths.constant';
+import { FINES_FINANCE_ROUTING_PATHS } from './constants/fines-finance-routing-paths.constant';
 import { FinesFinanceInboundFilesComponent } from '../fines-finance-inbound-files/fines-finance-inbound-files.component';
 import { FinesFinanceOutboundFilesComponent } from '../fines-finance-outbound-files/fines-finance-outbound-files.component';
 import { FinesFinanceUploadVariantBankingFilesComponent } from '../fines-finance-upload-variant-banking-files/fines-finance-upload-variant-banking-files.component';
@@ -9,7 +9,8 @@ import { FINES_FINANCE_ROUTING_TITLES } from './constants/fines-finance-routing-
 import { FINES_PERMISSIONS } from '../../../../constants/fines-permissions.constant';
 import { authGuard } from '@hmcts/opal-frontend-common/guards/auth';
 import { routePermissionsGuard } from '@hmcts/opal-frontend-common/guards/route-permissions';
-import { release1cBankingInterfacesFeatureFlagGuard, routing } from './fines-finance.routes';
+import { routing } from './fines-finance.routes';
+import { fetchBusinessUnitsResolver } from '@routing/fines/resolvers/fetch-business-units-resolver/fetch-business-units.resolver';
 describe('fines finance routes', () => {
   it('should redirect the Finance root to the dashboard', () => {
     const rootRoute = routing.find((route) => route.path === '');
@@ -23,25 +24,31 @@ describe('fines finance routes', () => {
       title: FINES_FINANCE_ROUTING_TITLES.children.inbound,
       routePermissionId: FINES_PERMISSIONS['view-interface-files'],
       component: FinesFinanceInboundFilesComponent,
+      expectedResolvers: { title: TitleResolver, businessUnits: fetchBusinessUnitsResolver },
     },
     {
       path: `${FINES_FINANCE_ROUTING_PATHS.children.outbound}/${FINES_FINANCE_ROUTING_PATHS.children.search}`,
       title: FINES_FINANCE_ROUTING_TITLES.children.outbound,
       routePermissionId: FINES_PERMISSIONS['view-interface-files'],
       component: FinesFinanceOutboundFilesComponent,
+      expectedResolvers: { title: TitleResolver },
     },
     {
       path: `${FINES_FINANCE_ROUTING_PATHS.children.variantBankingFiles}/${FINES_FINANCE_ROUTING_PATHS.children.upload}`,
       title: FINES_FINANCE_ROUTING_TITLES.children.upload,
       routePermissionId: FINES_PERMISSIONS['create-interface-files'],
       component: FinesFinanceUploadVariantBankingFilesComponent,
+      expectedResolvers: { title: TitleResolver },
     },
-  ])('should title and lazy-load the $title route', async ({ path, title, routePermissionId, component }) => {
-    const route = routing.find((routeItem) => routeItem.path === path);
+  ])(
+    'should title and lazy-load the $title route',
+    async ({ path, title, routePermissionId, component, expectedResolvers }) => {
+      const route = routing.find((routeItem) => routeItem.path === path);
 
-    expect(route?.data).toEqual({ title, routePermissionId: [routePermissionId] });
-    expect(route?.resolve).toEqual({ title: TitleResolver });
-    expect(route?.canActivate).toEqual([authGuard, routePermissionsGuard, release1cBankingInterfacesFeatureFlagGuard]);
-    await expect(route?.loadComponent?.()).resolves.toBe(component);
-  });
+      expect(route?.data).toEqual({ title, routePermissionId: [routePermissionId] });
+      expect(route?.resolve).toEqual(expectedResolvers);
+      expect(route?.canActivate).toEqual([authGuard, routePermissionsGuard]);
+      await expect(route?.loadComponent?.()).resolves.toBe(component);
+    },
+  );
 });
