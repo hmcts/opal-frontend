@@ -51,6 +51,10 @@ import { HIDE_PRIMARY_NAV_ROUTE_DATA_KEY } from './constants/route-data.constant
 import { FINES_ACC_ROUTING_PATHS } from './flows/fines/fines-acc/routing/constants/fines-acc-routing-paths.constant';
 import { FINES_ACC_DEFENDANT_ROUTING_PATHS } from './flows/fines/fines-acc/routing/constants/fines-acc-defendant-routing-paths.constant';
 import { FINES_ACC_MINOR_CREDITOR_ROUTING_PATHS } from './flows/fines/fines-acc/routing/constants/fines-acc-minor-creditor-routing-paths.constant';
+import { FinesApiStore } from './flows/fines/fines-api/stores/fines-api.store';
+
+const UNSAVED_CHANGES_WARNING =
+  'WARNING: Are you sure you want to leave this page? Any information you entered will be lost.';
 
 @Component({
   selector: 'app-root',
@@ -137,6 +141,7 @@ export class AppComponent implements OnInit, OnDestroy {
   public showExpiredWarning = false;
   public readonly sessionService = inject(SessionService);
   public readonly globalStore = inject(GlobalStore);
+  private readonly finesApiStore = inject(FinesApiStore);
   public readonly showSkipLink = computed(
     () => getFeatureFlagReleaseState(this.globalStore.featureFlags())[RELEASE_1A_1_2_FEATURE_FLAG] === true,
   );
@@ -415,6 +420,9 @@ export class AppComponent implements OnInit, OnDestroy {
    */
   public handleAuthentication(): void {
     if (this.globalStore.authenticated()) {
+      if (this.finesApiStore.unsavedChanges() && !this.document.defaultView?.confirm(UNSAVED_CHANGES_WARNING)) {
+        return;
+      }
       this.handleRedirect(SSO_ENDPOINTS.logout);
     } else {
       this.handleRedirect(SSO_ENDPOINTS.login);

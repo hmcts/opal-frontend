@@ -1,3 +1,4 @@
+import { IOpalFinesTillsResponse } from '../../services/opal-fines-service/interfaces/opal-fines-tills-response.interface';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { provideRouter } from '@angular/router';
 import { DateService } from '@hmcts/opal-frontend-common/services/date-service';
@@ -13,14 +14,14 @@ describe('FinesMciCreateAllocateComponent', () => {
     getTills: vi.fn(),
   };
 
-  const tillsResponse = {
+  const tillsResponse: IOpalFinesTillsResponse = {
     tills: [
       {
         till_number: 9005,
         payment_count: 3,
         amount: null,
         business_unit_name: 'Westminster - North (Wells Street)',
-        processed_by: null,
+        processed_by: 'test.operator',
         date_processed: '2025-06-12T13:31:27.270Z',
       },
     ],
@@ -80,6 +81,16 @@ describe('FinesMciCreateAllocateComponent', () => {
     const createdDate = dateService.getFromIso('2025-06-12T13:31:27.270Z');
     const expectedDate = dateService.toFormat(createdDate.setLocale('en-gb'), "dd MMMM yyyy 'at' HH:mm");
     expect(text).toContain(expectedDate);
+  });
+
+  it('should map a decimal amount and an omitted payment count from the shared till response', () => {
+    const states: unknown[] = [];
+    component.tillsState$.subscribe((state) => states.push(state));
+
+    expect(states.at(-1)).toEqual({
+      status: 'success',
+      tills: [expect.objectContaining({ tillId: '99000000010005', Amount: 125.5, Payments: null })],
+    });
   });
 
   it('should handle tills with missing or invalid processed dates', () => {
