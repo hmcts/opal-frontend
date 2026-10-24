@@ -112,6 +112,17 @@ function setupBrowserLaunch(on: Cypress.PluginEvents): void {
     const width = 3640;
     const height = 2560;
 
+    if (browser.family === 'chromium') {
+      // Cypress relies on unload to reinstall window:confirm after page transitions.
+      // Preserve existing Chromium flags while opting out of Chrome's unload deprecation.
+      const disabledFeaturesIndex = launchOptions.args.findIndex((arg) => arg.startsWith('--disable-features='));
+      if (disabledFeaturesIndex === -1) {
+        launchOptions.args.push('--disable-features=DeprecateUnload');
+      } else {
+        launchOptions.args[disabledFeaturesIndex] += ',DeprecateUnload';
+      }
+    }
+
     // eslint-disable-next-line no-console
     console.log('setting the browser window size to %d x %d', width, height);
 
@@ -214,7 +225,7 @@ async function setupNodeEvents(
           rules: [
             {
               test: /\.ts$/,
-              exclude: [/node_modules/, /src/],
+              exclude: [/node_modules/],
               use: [
                 {
                   loader: 'ts-loader',
@@ -224,6 +235,7 @@ async function setupNodeEvents(
                     // keep transpileOnly to speed up bundling for Cypress
                     transpileOnly: true,
                     compilerOptions: {
+                      rootDir: __dirname,
                       // TS sourcemaps are optional; Webpack devtool handles
                       // bundle-level sourcemaps for Cucumber.
                       sourceMap: false,
@@ -359,6 +371,10 @@ export default defineConfig({
         projectConfig: componentProjectConfig,
       },
       webpackConfig: {
+        optimization: {
+          // Keep references stable as incremental compilation changes the component spec graph.
+          moduleIds: 'named',
+        },
         devServer: {
           port: Number(`809${process.env.CYPRESS_THREAD || '0'}`),
         },
@@ -367,6 +383,7 @@ export default defineConfig({
           plugins: [
             new TsconfigPathsPlugin({
               configFile: componentTsconfigPath,
+              baseUrl: __dirname,
             }),
           ],
         },

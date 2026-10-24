@@ -731,6 +731,25 @@ withPipeline(type, product, component) {
     // Inject KeyVault secrets required for login/setup
     loadVaultSecrets(secrets)
 
+    // Fetch the actual PR target so Sonar can identify changed lines in stacked PRs.
+    before('sonarscan') {
+        onPR {
+            sh '''
+          set -eu
+          git check-ref-format "refs/heads/$CHANGE_TARGET"
+          sonarTargetRef="refs/remotes/origin/$CHANGE_TARGET"
+          sonarTargetRefspec="+refs/heads/$CHANGE_TARGET:$sonarTargetRef"
+          if [ "$(git rev-parse --is-shallow-repository)" = true ]; then
+            git fetch --unshallow --no-tags origin "$sonarTargetRefspec"
+          else
+            git fetch --no-tags origin "$sonarTargetRefspec"
+          fi
+          git show-ref --verify "$sonarTargetRef"
+          git merge-base HEAD "$sonarTargetRef"
+          '''
+        }
+    }
+
     // master fails we want a notification on slack
     onMaster {
         enableSlackNotifications('#opal-builds')

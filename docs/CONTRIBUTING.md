@@ -1,64 +1,107 @@
 # Contributing
 
-## Commit and Pull Request Guidelines
+This document is the authoritative workflow for branches, commits, pull requests, evidence, review, and QA.
 
-- Follow Conventional Commits, optionally prefixed with Jira keys (e.g., `PO-716`); keep subjects at or below 72 characters.
-- Reference the Jira ticket and linked PR (e.g., `(#1828)`) in subject or body.
-- Include a concise summary, testing evidence, and updated checklists in PRs; attach Cypress artifacts when debugging flakes.
+## Branches
 
-## Pull Request Template
+- Create or reuse a dedicated branch for the Jira ticket.
+- Use the Jira key as the branch identifier, for example `PO-1234`.
+- If the execution environment requires a namespace, prefix the Jira key, for example `codex/PO-1234`.
+- Do not add a description suffix unless the team or automation requires one.
+- For non-ticketed maintenance, use a short kebab-case description, with any namespace required by the execution environment.
+- Automated dependency and environment branches may follow their tool's established naming convention.
+- If work starts on the wrong branch, preserve the changes and move them to a correctly named branch before raising a PR.
 
-Use this template for PR descriptions:
+## Commits
+
+- Use Conventional Commits: `<type>(<optional-scope>): <imperative summary>`.
+- A Jira key may be used as the scope for ticketed work, for example `feat(PO-1234): add defendant validation`.
+- Use an established type such as `feat`, `fix`, `test`, `docs`, `refactor`, `chore`, or `ci`.
+- Keep the subject meaningful, related to the change, and at or below 72 characters.
+- Reference the Jira ticket and related PR in the commit body when the branch or PR does not provide sufficient context.
+- Do not include secrets, tokens, credentials, PII, or sensitive environment details in commit messages.
+
+## Pull requests
+
+A pull request must include:
+
+- The Jira ticket number in the title when the change is ticketed.
+- A completed Jira link when the change is ticketed.
+- A clear change description tied to the Acceptance Criteria.
+- Testing evidence.
+- A completed Security Vulnerability Assessment.
+- A reviewed and updated checklist.
+
+Keep the PR focused. Separate unrelated changes rather than expanding the ticket's scope.
+
+## Testing evidence
+
+Record:
+
+- What was tested.
+- Where it was tested, including the environment where relevant.
+- The exact automated commands run and their results.
+- Manual scenarios covered where automation did not execute the changed behaviour.
+- Checks that were not run and why.
+- Before-and-after screenshots for UI changes, with secrets, credentials, tokens, and PII removed.
+
+A successful pipeline is not evidence that every changed line or scenario was executed. Explain the applicable automated or manual coverage.
+
+## Review and QA
+
+- Obtain approval from at least two reviewers before merge.
+- Run or apply agent review using `AGENTS.md`, `docs/CODE_REVIEW_GUIDELINES.md`, and the applicable repository testing guides.
+- Validate review feedback technically; resolve validated blocking findings before merge.
+- Reviewers confirm that the Acceptance Criteria are met, evidence is adequate, the UI is accessible and consistent with project patterns, and avoidable regressions have not been introduced.
+- Obtain QA sign-off where the ticket or release process requires it.
+
+## Pull request template
 
 ```md
 ### Jira link
 
-<!--
-Replace PROJ-XXXXXX with your Jira key
-Remove this section if its not applicable, or replace it with another reference link
--->
+<!-- Replace PROJ-XXXXXX and JIRA_LINK. Remove this section when not applicable. -->
 
 See [PROJ-XXXXXX](JIRA_LINK)
 
 ### Change description
 
-<!--
-Provide a description of what change you are proposing.
-A short summary here and then you can add comments in your pull request explaining your change to others.
--->
+<!-- Summarise the change and how it satisfies the Acceptance Criteria. -->
 
 ### Testing done
 
-<!-- Comment:
-Provide a clear description of how this change was tested.
-At minimum this should include proof that a computer has executed the changed lines.
-Ideally this should include an automated test or an explanation as to why this change has no tests.
-Note that automated test coverage is not always complete, so a successful pull request build does not necessarily imply that a computer has executed the changed lines.
-If automated test coverage does not exist for the lines you are changing, you must describe the scenario(s) in which you manually tested the change.
-For frontend changes, include screenshots of the relevant page(s) before and after the change.
-For refactoring and code cleanup changes, exercise the code before and after the change and verify the behaviour remains the same.
+<!--
+Include:
+- what was tested
+- where it was tested
+- exact automated commands and results
+- manual scenarios
+- checks not run and why
+- before-and-after screenshots for UI changes
 -->
 
 ### Security Vulnerability Assessment
 
-<!-- Comment:
-If Yes to the below question, please provide details below:
-CVE ID(s): (List all suppressed or relevant CVE IDs)
-Reason for Suppression/Ignoring: (e.g., Low risk in our specific context, Mitigating controls in place, False positive - with justification)
-Mitigating Factors/Compensating Controls: Describe any measures taken to reduce the risk associated with the vulnerability
--->
-
-**CVE Suppression:** Are there any CVEs present in the codebase (either newly introduced or pre-existing) that are being intentionally suppressed or ignored by this commit?
+**CVE Suppression:** Are any newly introduced or pre-existing CVEs intentionally suppressed or ignored by this change?
 
 - [ ] Yes
 - [ ] No
 
+<!--
+If Yes, include:
+- CVE IDs
+- reason for suppression or acceptance
+- mitigating factors or compensating controls
+-->
+
 ### Checklist
 
-<!-- Check each box by removing the space and adding an x, e.g. [x] -->
-
-- [ ] commit messages are meaningful and follow good commit message guidelines
-- [ ] README and other documentation has been updated / added (if needed)
-- [ ] tests have been updated / new tests has been added (if needed)
-- [ ] Does this PR introduce a breaking change
+- [ ] The change meets the ticket Acceptance Criteria.
+- [ ] Commit messages follow the repository convention.
+- [ ] Documentation has been updated where required.
+- [ ] Relevant tests have been added or updated.
+- [ ] Testing evidence is complete.
+- [ ] Accessibility has been considered for changed UI.
+- [ ] The Security Vulnerability Assessment is complete.
+- [ ] Breaking changes are identified and documented.
 ```
