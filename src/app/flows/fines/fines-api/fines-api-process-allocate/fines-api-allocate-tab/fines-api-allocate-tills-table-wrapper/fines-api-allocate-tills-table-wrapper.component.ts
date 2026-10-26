@@ -81,6 +81,11 @@ export class FinesApiAllocateTillsTableWrapperComponent {
     this.clearSelection();
   }
 
+  /** Stores the selected till IDs so shared navigation guards can protect the selection. */
+  protected updateSelection(selectedIds: string[]): void {
+    this.finesApiStore.setSelectedTillIds(selectedIds);
+  }
+
   /**
    * Clears selection immediately on refresh, even if the request subsequently fails.
    *
@@ -88,10 +93,5 @@ export class FinesApiAllocateTillsTableWrapperComponent {
    */
   public clearSelection(): void {
     this.finesApiStore.setSelectedTillIds([]);
-  }
-
-  /** Stores the selected till IDs so shared navigation guards can protect the selection. */
-  protected updateSelection(selectedIds: string[]): void {
-    this.finesApiStore.setSelectedTillIds(selectedIds);
   }
 }

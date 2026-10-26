@@ -85,6 +85,7 @@ export class AppComponent implements OnInit, OnDestroy {
   private readonly ngUnsubscribe = new Subject<void>();
   private readonly appInsightsService = inject(AppInsightsService);
   private readonly launchDarklyService = inject(LaunchDarklyService);
+  private readonly finesApiStore = inject(FinesApiStore);
   private readonly router = inject(Router);
   private readonly navigationEnd$ = this.router.events.pipe(
     filter((event): event is NavigationEnd => event instanceof NavigationEnd),
@@ -141,7 +142,6 @@ export class AppComponent implements OnInit, OnDestroy {
   public showExpiredWarning = false;
   public readonly sessionService = inject(SessionService);
   public readonly globalStore = inject(GlobalStore);
-  private readonly finesApiStore = inject(FinesApiStore);
   public readonly showSkipLink = computed(
     () => getFeatureFlagReleaseState(this.globalStore.featureFlags())[RELEASE_1A_1_2_FEATURE_FLAG] === true,
   );

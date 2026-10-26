@@ -151,9 +151,7 @@ describe('Automatic Cash Input - Process files and allocate tills', () => {
         .find('tbody tr')
         .then(($rows) => {
           const rowValues = [...$rows].map((row) =>
-            [...row.querySelectorAll('td')]
-              .slice(1)
-              .map((cell) => cell.textContent?.trim()),
+            [...row.querySelectorAll('td')].slice(1).map((cell) => cell.textContent?.trim()),
           );
 
           expect(rowValues).to.deep.equal([
@@ -241,9 +239,7 @@ describe('Automatic Cash Input - Process files and allocate tills', () => {
       cy.wait('@getTills');
 
       cy.get(AutomaticCashInputLocators.allocateTillNumberLink(123)).should('have.text', '456').click();
-      cy.get('@financeRouter')
-        .its('url')
-        .should('contain', `${FINES_API_ROUTING_PATHS.children.tillSummary}/123`);
+      cy.get('@financeRouter').its('url').should('contain', `${FINES_API_ROUTING_PATHS.children.tillSummary}/123`);
       cy.contains('h1', 'Till/File summary report').should('be.visible');
     },
   );
@@ -448,9 +444,7 @@ describe('Automatic Cash Input - Process files and allocate tills', () => {
 
       cy.get(LoginLocators.signOutLink).click();
       cy.get('@leavePageConfirm').should('have.been.calledTwice');
-      cy.get('@handleRedirect')
-        .should('have.been.calledOnce')
-        .and('have.been.calledWithExactly', SSO_ENDPOINTS.logout);
+      cy.get('@handleRedirect').should('have.been.calledOnce').and('have.been.calledWithExactly', SSO_ENDPOINTS.logout);
     },
   );
 
@@ -601,7 +595,12 @@ describe('Automatic Cash Input - Process files and allocate tills', () => {
   it(
     'uses resolved source display names and reuses the mapping on refresh',
     {
-      tags: ['@JIRA-STORY:PO-2587', AUTOMATIC_CASH_INPUT_JIRA_EPIC,AUTOMATIC_CASH_INPUT_JIRA_LABEL, AUTOMATIC_CASH_INPUT_RELEASE_TAG],
+      tags: [
+        '@JIRA-STORY:PO-2587',
+        AUTOMATIC_CASH_INPUT_JIRA_LABEL,
+        AUTOMATIC_CASH_INPUT_JIRA_EPIC,
+        AUTOMATIC_CASH_INPUT_RELEASE_TAG,
+      ],
     },
     () => {
       cy.intercept('GET', '/opal-fines-service/interface-jobs/summary*', PROCESS_INTERFACE_JOBS_SUMMARY_MOCK).as(
