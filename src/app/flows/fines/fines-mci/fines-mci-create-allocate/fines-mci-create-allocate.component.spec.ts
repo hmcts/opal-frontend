@@ -16,9 +16,8 @@ describe('FinesMciCreateAllocateComponent', () => {
   const tillsResponse = {
     tills: [
       {
-        till_id: 99000000010005,
         till_number: 9005,
-        payments_count: null,
+        payment_count: 3,
         amount: null,
         business_unit_name: 'Westminster - North (Wells Street)',
         processed_by: null,
@@ -73,6 +72,9 @@ describe('FinesMciCreateAllocateComponent', () => {
     expect(text).toContain('Created by');
     expect(text).toContain('Date created');
     expect(text).toContain('9005');
+    expect(fixture.nativeElement.querySelector('#fines-mci-create-allocate-9005-payments')?.textContent?.trim()).toBe(
+      '3',
+    );
     expect(text).toContain('Westminster - North (Wells Street)');
     const dateService = TestBed.inject(DateService);
     const createdDate = dateService.getFromIso('2025-06-12T13:31:27.270Z');
@@ -84,8 +86,8 @@ describe('FinesMciCreateAllocateComponent', () => {
     opalFinesServiceMock.getTills.mockReturnValue(
       of({
         tills: [
-          { ...tillsResponse.tills[0], till_id: 9001, date_processed: null },
-          { ...tillsResponse.tills[0], till_id: 9002, date_processed: 'not-a-date' },
+          { ...tillsResponse.tills[0], till_number: 9001, date_processed: null },
+          { ...tillsResponse.tills[0], till_number: 9002, date_processed: 'not-a-date' },
         ],
       }),
     );
@@ -100,7 +102,7 @@ describe('FinesMciCreateAllocateComponent', () => {
   it('should update the selected tills count when a till is selected', () => {
     fixture.detectChanges();
     const nativeElement = fixture.nativeElement as HTMLElement;
-    const checkbox = nativeElement.querySelector<HTMLInputElement>('#fines-mci-create-allocate-99000000010005');
+    const checkbox = nativeElement.querySelector<HTMLInputElement>('#fines-mci-create-allocate-9005');
 
     checkbox!.checked = true;
     checkbox!.dispatchEvent(new Event('change', { bubbles: true }));

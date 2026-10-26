@@ -15,7 +15,7 @@ type ManualCashInputTillsResponse = {
   tills: ReadonlyArray<{
     till_id: number;
     till_number: number;
-    payments_count: number;
+    payment_count: number;
     amount: number;
     business_unit_name: string;
     processed_by: string;
@@ -71,19 +71,19 @@ describe('Manual Cash Input - Create and allocate tills', () => {
       ['Till number', 'Payments', 'Amount', 'Business unit', 'Created by', 'Date created'].forEach((heading) => {
         cy.contains(Mci.tableHeadings, heading).should('be.visible');
       });
-      assertTrimmedText(Mci.tillNumberCell(1001), '9001');
-      cy.get(Mci.tillNumberCell(1001)).find('a').should('not.exist');
-      assertTrimmedText(Mci.paymentsCell(1001), '3');
-      assertTrimmedText(Mci.amountCell(1001), '£125.50');
-      assertTrimmedText(Mci.businessUnitCell(1001), 'Camden and Islington');
-      assertTrimmedText(Mci.createdByCell(1001), 'Alex Smith');
-      assertTrimmedText(Mci.dateCreatedCell(1001), '10 January 2026 at 13:30');
-      assertTrimmedText(Mci.tillNumberCell(1002), '9002');
-      assertTrimmedText(Mci.paymentsCell(1002), '1');
-      assertTrimmedText(Mci.amountCell(1002), '£10.00');
-      assertTrimmedText(Mci.businessUnitCell(1002), 'Westminster - North');
-      assertTrimmedText(Mci.createdByCell(1002), 'Sam Jones');
-      assertTrimmedText(Mci.dateCreatedCell(1002), '09 January 2026 at 09:05');
+      assertTrimmedText(Mci.tillNumberCell(9001), '9001');
+      cy.get(Mci.tillNumberCell(9001)).find('a').should('not.exist');
+      assertTrimmedText(Mci.paymentsCell(9001), '3');
+      assertTrimmedText(Mci.amountCell(9001), '£125.50');
+      assertTrimmedText(Mci.businessUnitCell(9001), 'Camden and Islington');
+      assertTrimmedText(Mci.createdByCell(9001), 'Alex Smith');
+      assertTrimmedText(Mci.dateCreatedCell(9001), '10 January 2026 at 13:30');
+      assertTrimmedText(Mci.tillNumberCell(9002), '9002');
+      assertTrimmedText(Mci.paymentsCell(9002), '1');
+      assertTrimmedText(Mci.amountCell(9002), '£10.00');
+      assertTrimmedText(Mci.businessUnitCell(9002), 'Westminster - North');
+      assertTrimmedText(Mci.createdByCell(9002), 'Sam Jones');
+      assertTrimmedText(Mci.dateCreatedCell(9002), '09 January 2026 at 09:05');
     },
   );
 
@@ -133,20 +133,20 @@ describe('Manual Cash Input - Create and allocate tills', () => {
       assertTrimmedText(Mci.selectedCount, '0 of 2 selected');
 
       // AC3e: an individual till can be selected and deselected with its row checkbox.
-      cy.get(Mci.tillCheckbox(1001)).check({ force: true });
+      cy.get(Mci.tillCheckbox(9001)).check({ force: true });
       assertTrimmedText(Mci.selectedCount, '1 of 2 selected');
-      cy.get(Mci.tillCheckbox(1001)).uncheck({ force: true });
+      cy.get(Mci.tillCheckbox(9001)).uncheck({ force: true });
       assertTrimmedText(Mci.selectedCount, '0 of 2 selected');
 
       // AC3e: the Till number header checkbox selects and deselects every till.
       cy.get(Mci.selectAllCheckbox).check({ force: true });
-      cy.get(Mci.tillCheckbox(1001)).should('be.checked');
-      cy.get(Mci.tillCheckbox(1002)).should('be.checked');
+      cy.get(Mci.tillCheckbox(9001)).should('be.checked');
+      cy.get(Mci.tillCheckbox(9002)).should('be.checked');
       assertTrimmedText(Mci.selectedCount, '2 of 2 selected');
 
       // AC3d / AC3e edge case: deselecting one row after select-all keeps the other till selected and updates the count.
-      cy.get(Mci.tillCheckbox(1001)).uncheck({ force: true });
-      cy.get(Mci.tillCheckbox(1002)).should('be.checked');
+      cy.get(Mci.tillCheckbox(9001)).uncheck({ force: true });
+      cy.get(Mci.tillCheckbox(9002)).should('be.checked');
       assertTrimmedText(Mci.selectedCount, '1 of 2 selected');
 
       // The header checkbox is indeterminate (and therefore unchecked) after a partial row selection.
@@ -154,8 +154,8 @@ describe('Manual Cash Input - Create and allocate tills', () => {
       cy.get(Mci.selectAllCheckbox).check({ force: true });
       assertTrimmedText(Mci.selectedCount, '2 of 2 selected');
       cy.get(Mci.selectAllCheckbox).uncheck({ force: true });
-      cy.get(Mci.tillCheckbox(1001)).should('not.be.checked');
-      cy.get(Mci.tillCheckbox(1002)).should('not.be.checked');
+      cy.get(Mci.tillCheckbox(9001)).should('not.be.checked');
+      cy.get(Mci.tillCheckbox(9002)).should('not.be.checked');
       assertTrimmedText(Mci.selectedCount, '0 of 2 selected');
     },
   );
@@ -216,7 +216,7 @@ describe('Manual Cash Input - Create and allocate tills', () => {
       openManualCashInput();
 
       // AC5a / AC6a RGAC1: selecting a till means Back must warn that the selection will be lost.
-      cy.get(Mci.tillCheckbox(1001)).check({ force: true });
+      cy.get(Mci.tillCheckbox(9001)).check({ force: true });
       cy.window().then((window) => {
         const leavePageConfirm = cy.stub(window, 'confirm');
         leavePageConfirm.onFirstCall().returns(false);
@@ -228,7 +228,7 @@ describe('Manual Cash Input - Create and allocate tills', () => {
       cy.get('@leavePageConfirm').should('have.been.calledWithExactly', UNSAVED_CHANGES_MESSAGE);
 
       // AC5aii / AC6a RGAC1a: declining the warning retains the user on the page and preserves their selection.
-      cy.get(Mci.tillCheckbox(1001)).should('be.checked');
+      cy.get(Mci.tillCheckbox(9001)).should('be.checked');
       assertTrimmedText(Mci.selectedCount, '1 of 2 selected');
 
       cy.get(Mci.backLink).click();
@@ -238,7 +238,7 @@ describe('Manual Cash Input - Create and allocate tills', () => {
       cy.contains('h1', 'Finance').should('be.visible');
       cy.get(FinanceLocators.manualCashInputLink).click();
       cy.wait('@getManualCashInputTills');
-      cy.get(Mci.tillCheckbox(1001)).should('not.be.checked');
+      cy.get(Mci.tillCheckbox(9001)).should('not.be.checked');
       assertTrimmedText(Mci.selectedCount, '0 of 2 selected');
     },
   );
@@ -248,7 +248,7 @@ describe('Manual Cash Input - Create and allocate tills', () => {
     { tags: buildTags() },
     () => {
       openManualCashInput(MANUAL_CASH_INPUT_TILLS_MOCK, true);
-      cy.get(Mci.tillCheckbox(1001)).check({ force: true });
+      cy.get(Mci.tillCheckbox(9001)).check({ force: true });
 
       // Invoke the registered listener directly: dispatching on window would display Edge's native dialog and pause Cypress.
       cy.get<Cypress.Agent<sinon.SinonStub>>('@addEventListener').then((addEventListener) => {
@@ -267,7 +267,7 @@ describe('Manual Cash Input - Create and allocate tills', () => {
       });
 
       // RGAC2a / RGAC3a: cancelling the browser warning leaves the selected till in application memory.
-      cy.get(Mci.tillCheckbox(1001)).should('be.checked');
+      cy.get(Mci.tillCheckbox(9001)).should('be.checked');
       assertTrimmedText(Mci.selectedCount, '1 of 2 selected');
     },
   );
@@ -298,8 +298,8 @@ describe('Manual Cash Input - Create and allocate tills', () => {
       );
 
       // AC3d / AC3e edge case: row identity and selection survive sorting.
-      cy.get(Mci.tillCheckbox(1001)).check({ force: true });
-      cy.get(Mci.tillCheckbox(1001)).should('be.checked');
+      cy.get(Mci.tillCheckbox(9001)).check({ force: true });
+      cy.get(Mci.tillCheckbox(9001)).should('be.checked');
       assertTrimmedText(Mci.selectedCount, '1 of 2 selected');
 
       // CSAC2: choosing another column clears the prior column's sorting state.
@@ -309,7 +309,7 @@ describe('Manual Cash Input - Create and allocate tills', () => {
 
       // CSAC3: returning to the screen creates a fresh table with the default, unsorted column state.
       // Clear the selection first: this scenario is validating sort reset, not the leave-page guard.
-      cy.get(Mci.tillCheckbox(1001)).uncheck({ force: true });
+      cy.get(Mci.tillCheckbox(9001)).uncheck({ force: true });
       assertTrimmedText(Mci.selectedCount, '0 of 2 selected');
       cy.get('@financeRouter')
         .then((router) =>
