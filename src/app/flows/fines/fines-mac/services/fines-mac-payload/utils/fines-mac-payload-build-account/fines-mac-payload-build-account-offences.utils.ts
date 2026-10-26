@@ -6,6 +6,7 @@ import { IFinesMacOffenceDetailsImpositionsState } from '../../../../fines-mac-o
 import { IFinesMacPayloadAccountOffences } from '../interfaces/fines-mac-payload-account-offences.interface';
 import { IFinesMacPayloadAccountOffencesImposition } from '../interfaces/fines-mac-payload-account-offences-imposition.interface';
 import { IFinesMacPayloadAccountOffencesMinorCreditor } from '../interfaces/fines-mac-payload-account-offences-minor-creditor.interface';
+import { normalizeSortCode } from '../../../../../validators/sort-code.validator';
 
 /**
  * Determines if the payout is on hold based on the payment method.
@@ -41,6 +42,7 @@ const getCompanyFlag = (creditorType: string | null): boolean => {
  */
 const buildAccountOffencesImpositionsMinorCreditorPayload = (
   childFormData: IFinesMacOffenceDetailsMinorCreditorForm | null,
+  normalizeMinorCreditorSortCode: boolean,
 ): IFinesMacPayloadAccountOffencesMinorCreditor | null => {
   if (!childFormData) {
     return null;
@@ -67,7 +69,9 @@ const buildAccountOffencesImpositionsMinorCreditorPayload = (
     payout_hold: payoutOnHold,
     pay_by_bacs: payByBacs,
     bank_account_type: '1',
-    bank_sort_code: childFormData?.formData.fm_offence_details_minor_creditor_bank_sort_code ?? null,
+    bank_sort_code: normalizeMinorCreditorSortCode
+      ? normalizeSortCode(childFormData?.formData.fm_offence_details_minor_creditor_bank_sort_code)
+      : (childFormData?.formData.fm_offence_details_minor_creditor_bank_sort_code ?? null),
     bank_account_number: childFormData?.formData.fm_offence_details_minor_creditor_bank_account_number ?? null,
     bank_account_name: childFormData?.formData.fm_offence_details_minor_creditor_bank_account_name ?? null,
     bank_account_ref: childFormData?.formData.fm_offence_details_minor_creditor_bank_account_ref ?? null,
@@ -84,6 +88,7 @@ const buildAccountOffencesImpositionsMinorCreditorPayload = (
 const buildAccountOffencesImpositionsPayload = (
   impositions: IFinesMacOffenceDetailsImpositionsState[],
   childFormData: IFinesMacOffenceDetailsMinorCreditorForm[],
+  normalizeMinorCreditorSortCode: boolean,
 ): IFinesMacPayloadAccountOffencesImposition[] => {
   return impositions.map(
     ({
@@ -98,7 +103,10 @@ const buildAccountOffencesImpositionsPayload = (
           ? null
           : (childFormData.find((child) => child.formData.fm_offence_details_imposition_position === impositionId) ??
             null);
-      const minorCreditor = buildAccountOffencesImpositionsMinorCreditorPayload(impositionMinorCreditor);
+      const minorCreditor = buildAccountOffencesImpositionsMinorCreditorPayload(
+        impositionMinorCreditor,
+        normalizeMinorCreditorSortCode,
+      );
 
       return {
         result_id: resultId ?? null,
@@ -127,6 +135,7 @@ export const finesMacPayloadBuildAccountOffences = (
   offenceDetailsState: IFinesMacOffenceDetailsForm[],
   fixedPenaltyDetails?: IFinesMacFixedPenaltyDetailsStoreState,
   accountType?: string | null,
+  normalizeMinorCreditorSortCode = false,
 ): IFinesMacPayloadAccountOffences[] => {
   // If fixed penalty details are provided, use them to build and return a single offence payload
   if (fixedPenaltyDetails && accountType && accountType === FINES_ACCOUNT_TYPES['Fixed Penalty']) {
@@ -155,6 +164,7 @@ export const finesMacPayloadBuildAccountOffences = (
     const impositions = buildAccountOffencesImpositionsPayload(
       offence.formData.fm_offence_details_impositions,
       childFormData,
+      normalizeMinorCreditorSortCode,
     );
     return {
       date_of_sentence: offence.formData.fm_offence_details_date_of_sentence ?? null,
