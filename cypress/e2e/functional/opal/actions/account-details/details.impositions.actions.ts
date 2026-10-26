@@ -55,12 +55,16 @@ const CENTRAL_FUND_CREDITOR_ALIASES = [
 ];
 
 /**
- * Reads a rendered table cell as normalized text.
+ * Reads normalized table cell text without visually hidden accessibility labels.
  *
  * @param selector - Cell selector to read from the DOM.
- * @returns Normalized rendered cell text.
+ * @returns Normalized visible cell text.
  */
-const getTableCellText = (selector: string): string => normalizeTableText(Cypress.$(selector).text());
+const getTableCellText = (selector: string): string => {
+  const cell = Cypress.$(selector).clone();
+  cell.find('.govuk-visually-hidden').remove();
+  return normalizeTableText(cell.text());
+};
 
 /**
  * Normalizes known environment-specific rendered values before row matching.
@@ -99,6 +103,59 @@ export class AccountDetailsImpositionsActions {
       'contain.text',
       'Impositions',
     );
+  }
+
+  /** Observes the seeded Opal response without stubbing or changing backend data. */
+  public observeSeededImpositions(): void {
+    cy.intercept('GET', '**/opal-fines-service/defendant-accounts/99105710000001/impositions').as('seededImpositions');
+  }
+
+  /**
+   * Checks the successful Opal response and exact creditor text and destinations by imposition ID.
+   * @param alias - Request alias registered before navigation.
+   * @param expectedRows - Expected name, creditor type and optional organisation flag in API order.
+   */
+  public assertCreditorSummaryResponse(alias: `@${string}`, expectedRows: string[][]): void {
+    cy.wait(alias).then(({ request, response }) => {
+      expect(request.method).to.equal('GET');
+      expect(new URL(request.url).pathname).to.match(/^\/opal-fines-service\/defendant-accounts\/\d+\/impositions$/);
+      expect(response?.statusCode).to.equal(200);
+      const body = response?.body;
+      expect(body.impositions).to.have.length(expectedRows.length);
+      this.assertImpositionsTabVisible();
+      cy.get(L.table).should('be.visible');
+      cy.get(L.tableRows).should('have.length', expectedRows.length);
+
+      expectedRows.forEach(([name, type, flag], index) => {
+        const creditor = body.impositions[index].creditor;
+        expect(creditor.creditor_account_type_reference.creditor_account_type).to.equal(type);
+        if (flag) {
+          expect(
+            creditor.minor_creditor_organisation_flag,
+            `minor_creditor_organisation_flag (response fields: ${Object.keys(creditor).join(', ')})`,
+          ).to.equal(flag === 'true');
+        }
+        const impositionId = String(body.impositions[index].imposition_id);
+        cy.get(L.impositionIdCells)
+          .filter((_, cell) => cell.textContent?.trim() === impositionId)
+          .should('have.length', 1)
+          .closest('tr')
+          .find(L.creditorCell)
+          .should(($cell) => {
+            expect($cell.text().trim()).to.equal(name);
+          })
+          .within(() => {
+            if (type === 'CF') {
+              cy.get('a').should('not.exist');
+            } else {
+              const route = type === 'MJ' ? 'major-creditor' : 'minor-creditor';
+              cy.get('a')
+                .should('have.length', 1)
+                .and('have.attr', 'href', `/fines/account/${route}/${creditor.creditor_account_id}/details`);
+            }
+          });
+      });
+    });
   }
 
   /**

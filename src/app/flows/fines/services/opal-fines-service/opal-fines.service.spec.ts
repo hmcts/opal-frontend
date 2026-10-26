@@ -455,6 +455,23 @@ describe('OpalFines', () => {
     });
   });
 
+  describe('getTills', () => {
+    it('should request created and failed manual tills using serialized query parameters', () => {
+      const response = { tills: [] };
+
+      service.getTills({ statuses: ['CREATED', 'FAILED'], auto_payments: false }).subscribe((result) => {
+        expect(result).toEqual(response);
+      });
+
+      const req = httpMock.expectOne((request) => request.url === OPAL_FINES_PATHS.tills);
+      expect(req.request.method).toBe('GET');
+      expect(req.request.params.getAll('statuses')).toEqual(['CREATED', 'FAILED']);
+      expect(req.request.params.get('auto_payments')).toBe('false');
+
+      req.flush(response);
+    });
+  });
+
   it('should post selected interface jobs for asynchronous processing', () => {
     const payload = {
       interface_jobs: [

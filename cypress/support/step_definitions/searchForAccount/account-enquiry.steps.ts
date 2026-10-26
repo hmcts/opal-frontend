@@ -249,6 +249,10 @@ When('I open the matching result from the search results:', (table: DataTable) =
 /**
  * @step Opens the Defendant-column link from the latest minor creditor result row.
  */
+When('I open the defendant linked from the minor creditor account', () => {
+  minorCreditorDetails().openAssociatedDefendant();
+});
+
 When('I open the defendant linked from the latest minor creditor search result', () => {
   log('step', 'Opening defendant linked from latest minor creditor search result');
   accountEnquiryFlow().openLatestMinorCreditorDefendantFromResults();
@@ -1485,7 +1489,7 @@ When('I go to the Impositions tab', () => {
  */
 Then('I should see the defendant account impositions load with the following values:', (table: DataTable) => {
   log('assert', 'Verify defendant account impositions load');
-  impositionsDetails().assertDefendantAccountImpositionsLoaded(table.raw());
+  accountEnquiryFlow().assertDefendantAccountImpositionsLoaded(table);
 });
 
 /**
@@ -1575,7 +1579,11 @@ Then('the enforcement override summary shows:', (table: DataTable) => {
  * @step Asserts the enforcement action summary row value shown on the Enforcement tab.
  */
 Then('the enforcement action summary shows {string}', (expected: string) => {
-  const expectedWithUniq = applyUniqPlaceholder(expected);
+  const expectedForMode =
+    !isOpalMode() && /^collection order\s*\(collo\)$/i.test(expected.trim())
+      ? 'Collection Order Made(COLLO)'
+      : expected;
+  const expectedWithUniq = applyUniqPlaceholder(expectedForMode);
   log('assert', 'Enforcement action summary value', { expected: expectedWithUniq });
   enforcementActions().assertEnforcementActionSummary(expectedWithUniq);
 });
@@ -2509,6 +2517,16 @@ When('I partially edit Parent or guardian details and choose to stay on the page
 Then('I should see the unsaved value retained for Last name as {string}', (expected: string) => {
   log('assert', 'Verify unsaved PG last name retained', { expected });
   editParentGuardianDetails().verifyLastName(expected);
+});
+
+/** Observes the seeded account response without mocking it. */
+Given('I observe the seeded PO-10571 Opal impositions request', () => {
+  impositionsDetails().observeSeededImpositions();
+});
+
+/** Asserts names and links against the real seeded Opal response. */
+Then('the seeded Opal impositions show these creditor names and links:', (table: DataTable) => {
+  impositionsDetails().assertCreditorSummaryResponse('@seededImpositions', table.rows());
 });
 
 /**

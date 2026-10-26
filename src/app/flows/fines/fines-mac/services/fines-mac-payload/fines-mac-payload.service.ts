@@ -28,12 +28,20 @@ import { finesMacPayloadBuildAccountFixedPenalty } from './utils/fines-mac-paylo
 import { finesMacPayloadMapAccountFixedPenalty } from './utils/fines-mac-payload-map-account/fines-mac-payload-map-account-fixed-penalty.utils';
 import { FINES_ACCOUNT_TYPES } from '../../../constants/fines-account-types.constant';
 import { IOpalFinesDraftAccountPatchRequestPayload } from '@services/fines/opal-fines-service/interfaces/opal-fines-draft-account-patch-request-payload.interface';
+import { GlobalStore } from '@hmcts/opal-frontend-common/stores/global';
+import { RELEASE_1A_1_2_FEATURE_FLAG } from '../../../constants/release-feature-flags.constant';
+import { getFeatureFlagReleaseState } from '../../../utils/fines-section-permissions.utils';
 
 @Injectable({
   providedIn: 'root',
 })
 export class FinesMacPayloadService {
   private readonly transformationService = inject(TransformationService);
+  private readonly globalStore = inject(GlobalStore);
+
+  private get newSortCodeFunctionalityEnabled(): boolean {
+    return getFeatureFlagReleaseState(this.globalStore.featureFlags())[RELEASE_1A_1_2_FEATURE_FLAG] === true;
+  }
 
   /**
    * Transforms the given finesMacPayload object by applying the transformations
@@ -96,7 +104,12 @@ export class FinesMacPayloadService {
     }
     const paymentTerms = finesMacPayloadBuildAccountPaymentTerms(paymentTermsState, accountType);
     const accountNotes = finesMacPayloadBuildAccountAccountNotes(accountCommentsNotesState);
-    const offences = finesMacPayloadBuildAccountOffences(offenceDetailsForms, fixedPenaltyDetails, accountType);
+    const offences = finesMacPayloadBuildAccountOffences(
+      offenceDetailsForms,
+      fixedPenaltyDetails,
+      accountType,
+      this.newSortCodeFunctionalityEnabled,
+    );
 
     // Return our payload object
     return {
