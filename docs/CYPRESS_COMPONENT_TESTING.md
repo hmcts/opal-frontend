@@ -37,3 +37,7 @@ yarn test:component:r1b --browser=chrome
 
 - If a component spec fails due to a real product bug, do not change application code to force a pass.
 - Skip or mark the test pending and explain the failure in the task update.
+
+## Extended Tests
+
+Use `@extendedTest` for tests excluded from PR/master runs by default and included in manual and nightly runs. Add the GitHub label `extendedTests` to a PR to include them in that PR pipeline. Direct Cypress runs include extended tests even when the pipeline exclusion flag is set. See [Extended test runs](EXTENDED_TEST_RUNS.md) for tagging, pipeline behaviour and execution commands.
