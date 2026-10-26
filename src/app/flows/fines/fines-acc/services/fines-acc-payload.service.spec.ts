@@ -1,6 +1,7 @@
 import type { Mock } from 'vitest';
 import { FinesAccPayloadService } from './fines-acc-payload.service';
 import { GlobalStore } from '@hmcts/opal-frontend-common/stores/global';
+import { RELEASE_1A_1_2_FEATURE_FLAG } from '../../constants/release-feature-flags.constant';
 import { FinesAccountStore } from '../stores/fines-acc.store';
 import { IFinesAccAddNoteForm } from '../fines-acc-note-add/interfaces/fines-acc-note-add-form.interface';
 import { FINES_ACC_ADD_NOTE_FORM_MOCK } from '../fines-acc-note-add/mocks/fines-acc-add-note-form.mock';
@@ -66,7 +67,7 @@ describe('FinesAccPayloadService', () => {
   beforeEach(() => {
     mockGlobalStore = {
       userState: vi.fn().mockName('GlobalStore.userState'),
-      featureFlags: vi.fn().mockReturnValue({}),
+      featureFlags: vi.fn().mockReturnValue({ [RELEASE_1A_1_2_FEATURE_FLAG]: true }),
     };
 
     const mockStore = {
@@ -1105,7 +1106,7 @@ describe('FinesAccPayloadService', () => {
         facc_minor_creditor_post_code: 'CD34 5EF',
         facc_minor_creditor_pay_by_bacs: true,
         facc_minor_creditor_bank_account_name: 'Updated Account',
-        facc_minor_creditor_bank_sort_code: '309430',
+        facc_minor_creditor_bank_sort_code: '30-94 30',
         facc_minor_creditor_bank_account_number: '00733445',
         facc_minor_creditor_bank_account_reference: 'UPDATED-REF',
       };
@@ -1141,6 +1142,20 @@ describe('FinesAccPayloadService', () => {
           account_reference: 'UPDATED-REF',
         },
       });
+    });
+
+    it('should preserve separators when the new sort-code functionality is disabled', () => {
+      const currentData = structuredClone(OPAL_FINES_ACCOUNT_MINOR_CREDITOR_CREDITOR_MOCK);
+      const formState = {
+        ...structuredClone(MOCK_FINES_ACC_MINOR_CREDITOR_ADD_AMEND_CONVERT_COMPANY_FORM.formData),
+        facc_minor_creditor_pay_by_bacs: true,
+        facc_minor_creditor_bank_sort_code: '30-94 30',
+      };
+      mockGlobalStore.featureFlags.mockReturnValue({ [RELEASE_1A_1_2_FEATURE_FLAG]: false });
+
+      const result = service.buildMinorCreditorAccountAmendPayload(currentData, formState);
+
+      expect(result.payment.sort_code).toBe('30-94 30');
     });
 
     it('should use an empty organisation name when company minor creditor amend form name is missing', () => {

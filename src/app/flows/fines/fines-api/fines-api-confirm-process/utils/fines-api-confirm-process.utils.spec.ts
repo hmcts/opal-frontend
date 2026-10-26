@@ -96,6 +96,18 @@ describe('fines-api-confirm-process utils', () => {
     ]);
   });
 
+  it('should sort business units with matching names by ID', () => {
+    const interfaceJobs = [
+      buildConfirmInterfaceJob({ businessUnitId: 80, business_unit_name: 'Shared name', interface_file_id: 501 }),
+      buildConfirmInterfaceJob({ businessUnitId: 77, business_unit_name: 'Shared name', interface_file_id: 502 }),
+    ];
+
+    expect(buildBusinessUnitSummary(interfaceJobs)).toEqual([
+      { businessUnitId: 77, businessUnitName: 'Shared name', fileCount: 1 },
+      { businessUnitId: 80, businessUnitName: 'Shared name', fileCount: 1 },
+    ]);
+  });
+
   it('should submit every job and set override inhibits only for selected DWP files', () => {
     const interfaceJobs = [
       buildConfirmInterfaceJob({ interface_file_id: 501, interface_job_id: 1001, source: 'DWP' }),
