@@ -601,7 +601,7 @@ describe('Automatic Cash Input - Process files and allocate tills', () => {
   it(
     'uses resolved source display names and reuses the mapping on refresh',
     {
-      tags: ['@JIRA-STORY:PO-2587', AUTOMATIC_CASH_INPUT_JIRA_LABEL, AUTOMATIC_CASH_INPUT_RELEASE_TAG],
+      tags: ['@JIRA-STORY:PO-2587', AUTOMATIC_CASH_INPUT_JIRA_EPIC,AUTOMATIC_CASH_INPUT_JIRA_LABEL, AUTOMATIC_CASH_INPUT_RELEASE_TAG],
     },
     () => {
       cy.intercept('GET', '/opal-fines-service/interface-jobs/summary*', PROCESS_INTERFACE_JOBS_SUMMARY_MOCK).as(
