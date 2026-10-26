@@ -9,7 +9,7 @@ This is an [Angular SSR](https://angular.dev/guide/ssr) application. There are t
 ## Contents
 
 - [Getting Started](#getting-started)
-- [Shared Codex Skills](#shared-codex-skills)
+- [Engineering and Agent Guidance](#engineering-and-agent-guidance)
 - [Local Development Strategy](#local-development-strategy)
 - [Production Server](#5-production-server)
 - [Running Unit Tests](#running-unit-tests)
@@ -26,9 +26,9 @@ This is an [Angular SSR](https://angular.dev/guide/ssr) application. There are t
 
 Running the application requires the following tools to be installed in your environment:
 
-- [Node.js](https://nodejs.org/) `^20.19.0` or `^22.12.0` or `>=24.0.0` (use `.nvmrc`, currently `24.13.0`).
+- [Node.js](https://nodejs.org/) at the version declared in `.nvmrc`.
 
-- [yarn](https://yarnpkg.com/) v4
+- [Yarn](https://yarnpkg.com/) through Corepack, using the version declared by `package.json#packageManager`.
 
 - [Docker](https://www.docker.com)
 
@@ -42,16 +42,18 @@ yarn
 
 ```
 
-### Shared Codex Skills
+### Engineering and Agent Guidance
 
-Shared Codex skills for Opal frontend work live in the sibling `opal-dev-agent-skills` repository. After cloning or updating this repository, run:
+Start with [AGENTS.md](AGENTS.md). The required workflows are self-contained in this repository; no additional skill
+installation or sibling instruction repository is required.
 
-```bash
-cd ../opal-dev-agent-skills
-./scripts/frontend/sync-codex-skills.sh
-```
-
-This pulls the latest shared skills and installs Codex-only symlinks for the shared `frontend` and `general` skill folders into `.codex/skills/` for both `opal-frontend` and `opal-rm-frontend`, including `opal-frontend-vitest-guard` for Angular/Vitest unit-test work. The `.codex/skills/` directory is gitignored so developers can also keep local-only skills without pushing them to GitHub.
+- [Implementation standards](docs/REPO_GUIDELINES.md)
+- [Contribution and review workflow](docs/CONTRIBUTING.md)
+- [Code review guidelines](docs/CODE_REVIEW_GUIDELINES.md)
+- [Component testing](docs/CYPRESS_COMPONENT_TESTING.md)
+- [E2E and accessibility testing](docs/CYPRESS_E2E_TESTING.md)
+- [Sonar quality requirements](docs/SONAR.md)
+- [Frontend Definition of Done](docs/FRONTEND_DEFINITION_OF_DONE.md)
 
 ### Local Development Strategy
 
@@ -743,127 +745,6 @@ The Cypress helper commands in `opal-frontend` now come from the shared package 
 Run `yarn ng generate component component-name` to generate a new component. You can also use `yarn ng generate directive|pipe|service|class|guard|interface|enum|module`.
 
 Note the requirement for prefixing the `ng` commands with `yarn`
-
-## Angular code LLM prompts
-
-https://angular.dev/ai/develop-with-ai
-
-Paste the following prompt into your AI assistant of choice.
-
-```markdown
-You are an expert in TypeScript, Angular, and scalable web application development. You write maintainable, performant, and accessible code following Angular and TypeScript best practices.
-
-## TypeScript Best Practices
-
-- Use strict type checking
-- Prefer type inference when the type is obvious
-- Avoid the `any` type; use `unknown` when type is uncertain
-
-## Angular Best Practices
-
-- Always use standalone components over NgModules
-- Do NOT set `standalone: true` inside the `@Component`, `@Directive` and `@Pipe` decorators
-- Use signals for state management
-- Implement lazy loading for feature routes
-- Use `NgOptimizedImage` for all static images.
-- Do NOT use the `@HostBinding` and `@HostListener` decorators. Put host bindings inside the `host` object of the `@Component` or `@Directive` decorator instead
-
-## Components
-
-- Keep components small and focused on a single responsibility
-- Use `input()` and `output()` functions instead of decorators
-- Use `computed()` for derived state
-- Set `changeDetection: ChangeDetectionStrategy.OnPush` in `@Component` decorator
-- Prefer inline templates for small components
-- Prefer Reactive forms instead of Template-driven ones
-- Do NOT use `ngClass`, use `class` bindings instead
-- DO NOT use `ngStyle`, use `style` bindings instead
-
-## State Management
-
-- Use signals for local component state
-- Use `computed()` for derived state
-- Keep state transformations pure and predictable
-- Do NOT use `mutate` on signals, use `update` or `set` instead
-
-## Templates
-
-- Keep templates simple and avoid complex logic
-- Use native control flow (`@if`, `@for`, `@switch`) instead of `*ngIf`, `*ngFor`, `*ngSwitch`
-- Use the async pipe to handle observables
-
-## Services
-
-- Design services around a single responsibility
-- Use the `providedIn: 'root'` option for singleton services
-- Use the `inject()` function instead of constructor injection
-```
-
-## 💡 Copilot Prompt Examples for Angular MCP
-
-### 📘 1. Ask for Documentation Help
-
-**Prompt:**
-
-> “How do Angular signals work?”
-
-**What Copilot does:**  
-Calls `search_documentation("signals")` and returns official Angular documentation context.
-
----
-
-### 🧱 2. Generate Code
-
-**Prompt:**
-
-> “Generate a service for user authentication”
-
-**What Copilot does:**  
-Runs `ng generate service user-auth` through the MCP server — adds the file in the correct directory.
-
----
-
-### 📚 3. Get Project File Structure
-
-**Prompt:**
-
-> “List all Angular modules in this project”
-
-**What Copilot does:**  
-Uses `list_projects` and `get_file_tree` to find and display modules across the workspace.
-
----
-
-### 🧭 4. Navigate Routing Setup
-
-**Prompt:**
-
-> “What routes are defined in this app?”
-
-**What Copilot does:**  
-Parses routing modules and shows route paths, guards, and lazy-loaded modules.
-
----
-
-### 🧹 5. Refactor with AI Help
-
-**Prompt:**
-
-> “Convert this component to use the standalone API”
-
-**What Copilot does:**  
-Updates component metadata with `standalone: true`, refactors imports, and removes old NgModule references.
-
----
-
-### 🛠️ 6. Add Angular Libraries
-
-**Prompt:**
-
-> “Add Angular Material”
-
-**What Copilot does:**  
-Triggers `ng add @angular/material` to install the package and configure animations + theming.
 
 # Zephyr Automation
 
