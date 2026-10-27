@@ -17,9 +17,10 @@ describe('FinesMciCreateAllocateComponent', () => {
   const tillsResponse: IOpalFinesTillsResponse = {
     tills: [
       {
+        till_id: 99000000010005,
         till_number: 9005,
-        payment_count: 3,
-        amount: null,
+        errors: 0,
+        amount: '125.50',
         business_unit_name: 'Westminster - North (Wells Street)',
         processed_by: 'test.operator',
         date_processed: '2025-06-12T13:31:27.270Z',
@@ -73,9 +74,6 @@ describe('FinesMciCreateAllocateComponent', () => {
     expect(text).toContain('Created by');
     expect(text).toContain('Date created');
     expect(text).toContain('9005');
-    expect(fixture.nativeElement.querySelector('#fines-mci-create-allocate-9005-payments')?.textContent?.trim()).toBe(
-      '3',
-    );
     expect(text).toContain('Westminster - North (Wells Street)');
     const dateService = TestBed.inject(DateService);
     const createdDate = dateService.getFromIso('2025-06-12T13:31:27.270Z');
@@ -83,7 +81,7 @@ describe('FinesMciCreateAllocateComponent', () => {
     expect(text).toContain(expectedDate);
   });
 
-  it('should map a decimal amount and an omitted payment count from the shared till response', () => {
+  it('should map a decimal amount and an omitted payment count from the till response', () => {
     const states: unknown[] = [];
     component.tillsState$.subscribe((state) => states.push(state));
 
@@ -97,8 +95,8 @@ describe('FinesMciCreateAllocateComponent', () => {
     opalFinesServiceMock.getTills.mockReturnValue(
       of({
         tills: [
-          { ...tillsResponse.tills[0], till_number: 9001, date_processed: null },
-          { ...tillsResponse.tills[0], till_number: 9002, date_processed: 'not-a-date' },
+          { ...tillsResponse.tills[0], till_id: 9001, till_number: 9001, date_processed: null },
+          { ...tillsResponse.tills[0], till_id: 9002, till_number: 9002, date_processed: 'not-a-date' },
         ],
       }),
     );
@@ -113,7 +111,7 @@ describe('FinesMciCreateAllocateComponent', () => {
   it('should update the selected tills count when a till is selected', () => {
     fixture.detectChanges();
     const nativeElement = fixture.nativeElement as HTMLElement;
-    const checkbox = nativeElement.querySelector<HTMLInputElement>('#fines-mci-create-allocate-9005');
+    const checkbox = nativeElement.querySelector<HTMLInputElement>('#fines-mci-create-allocate-99000000010005');
 
     checkbox!.checked = true;
     checkbox!.dispatchEvent(new Event('change', { bubbles: true }));

@@ -47,6 +47,18 @@ When('I continue with the read-only unit', () => {
   manualCashInputFlow().continueWithReadOnlyBusinessUnit();
 });
 
+Then('I see empty Till Details for {string}', (businessUnit: string) => {
+  manualCashInputFlow().assertEmptyTillDetails(businessUnit);
+});
+
+When('I add a payment to the till', () => {
+  manualCashInputFlow().addPayment();
+});
+
+When('I delete the till being created', () => {
+  manualCashInputFlow().deleteTill();
+});
+
 When('I cancel', () => {
   manualCashInputFlow().cancelWithoutBusinessUnit();
 });

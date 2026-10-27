@@ -81,3 +81,7 @@ yarn cypress run --browser chrome --spec 'cypress/e2e/functional/opal/features/m
 
 - When a feature fails because of a real product bug, do not patch application behavior just to green the test.
 - Skip or xfail the test if unavoidable and report the underlying issue in the task update.
+
+## Extended Tests
+
+Use `@extendedTest` for tests excluded from PR/master runs by default and included in manual and nightly runs. Add the GitHub label `extendedTests` to a PR to include them in that PR pipeline. Direct Cypress runs include extended tests even when the pipeline exclusion flag is set. See [Extended test runs](EXTENDED_TEST_RUNS.md) for tagging, pipeline behaviour and execution commands.

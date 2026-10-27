@@ -437,29 +437,6 @@ export class OpalFines {
   }
 
   /**
-   * Retrieves matching tills without caching operational allocation state.
-   * Array filters use the endpoint's comma-separated query convention.
-   */
-  public getTills(params: IOpalFinesTillsParams): Observable<IOpalFinesTillsResponse> {
-    let httpParams = new HttpParams();
-
-    if (params.statuses?.length) {
-      httpParams = httpParams.set(this.PARAM_STATUSES, params.statuses.join(','));
-    }
-    if (params.auto_payments !== undefined) {
-      httpParams = httpParams.set(this.PARAM_AUTO_PAYMENTS, params.auto_payments);
-    }
-    if (params.business_unit_ids?.length) {
-      httpParams = httpParams.set(this.PARAM_BUSINESS_UNIT_IDS, params.business_unit_ids.join(','));
-    }
-
-    return this.http.get<IOpalFinesTillsResponse>(
-      OPAL_FINES_PATHS.tills,
-      this.withRetrySafeReadOptions({ params: httpParams }),
-    );
-  }
-
-  /**
    * Starts asynchronous processing for the selected interface jobs.
    *
    * This write request is intentionally not retried because repeating it could queue the same jobs twice.
@@ -1813,5 +1790,28 @@ export class OpalFines {
 
     this.cache.majorCreditorAccountHistoryAndNotesCache$ ??= request$;
     return this.cache.majorCreditorAccountHistoryAndNotesCache$;
+  }
+
+  /**
+   * Retrieves matching tills without caching operational allocation state.
+   * Array filters use the endpoint's comma-separated query convention.
+   */
+  public getTills(params: IOpalFinesTillsParams): Observable<IOpalFinesTillsResponse> {
+    let httpParams = new HttpParams();
+
+    if (params.statuses?.length) {
+      httpParams = httpParams.set(this.PARAM_STATUSES, params.statuses.join(','));
+    }
+    if (params.auto_payments !== undefined) {
+      httpParams = httpParams.set(this.PARAM_AUTO_PAYMENTS, params.auto_payments);
+    }
+    if (params.business_unit_ids?.length) {
+      httpParams = httpParams.set(this.PARAM_BUSINESS_UNIT_IDS, params.business_unit_ids.join(','));
+    }
+
+    return this.http.get<IOpalFinesTillsResponse>(
+      OPAL_FINES_PATHS.tills,
+      this.withRetrySafeReadOptions({ params: httpParams }),
+    );
   }
 }
