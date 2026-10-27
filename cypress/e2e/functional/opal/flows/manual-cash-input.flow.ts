@@ -82,6 +82,24 @@ export class ManualCashInputFlow {
     this.actions.continueWithReadOnlyBusinessUnit();
   }
 
+  /**
+   * Verifies the selected business unit and empty-till guidance on Till Details.
+   * @param businessUnit - Name of the selected business unit.
+   */
+  public assertEmptyTillDetails(businessUnit: string): void {
+    this.actions.assertEmptyTillDetails(businessUnit);
+  }
+
+  /** Opens Payment Category from Till Details. */
+  public addPayment(): void {
+    this.actions.addPayment();
+  }
+
+  /** Opens Delete Till from Till Details. */
+  public deleteTill(): void {
+    this.actions.deleteTill();
+  }
+
   /** Cancels without a selection. */
   public cancelWithoutBusinessUnit(): void {
     this.actions.cancelWithoutBusinessUnit();

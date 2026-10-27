@@ -107,6 +107,7 @@ export class OpalFines {
   private readonly PARAM_REPORT_ID = 'report_id';
   private readonly PARAM_BUSINESS_UNIT_IDS = 'business_unit_ids';
   private readonly PARAM_STATUSES = 'statuses';
+  private readonly PARAM_AUTO_PAYMENTS = 'auto_payments';
   private readonly PARAM_COMPLETED_DATE_FROM = 'completed_date_from';
   private readonly PARAM_COMPLETED_DATE_TO = 'completed_date_to';
   private readonly PARAM_INTERFACE_NAME = 'interface_name';
@@ -1774,11 +1775,26 @@ export class OpalFines {
     return this.cache.majorCreditorAccountHistoryAndNotesCache$;
   }
 
-  /** Loads tills available to the authenticated user for manual allocation. */
-  public getTills(query: IOpalFinesTillsParams): Observable<IOpalFinesTillsResponse> {
-    let params = new HttpParams();
-    params = this.appendArrayParams(params, this.PARAM_STATUSES, query.statuses);
-    params = params.set('auto_payments', query.auto_payments);
-    return this.http.get<IOpalFinesTillsResponse>(OPAL_FINES_PATHS.tills, this.withRetrySafeReadOptions({ params }));
+  /**
+   * Retrieves matching tills without caching operational allocation state.
+   * Array filters use the endpoint's comma-separated query convention.
+   */
+  public getTills(params: IOpalFinesTillsParams): Observable<IOpalFinesTillsResponse> {
+    let httpParams = new HttpParams();
+
+    if (params.statuses?.length) {
+      httpParams = httpParams.set(this.PARAM_STATUSES, params.statuses.join(','));
+    }
+    if (params.auto_payments !== undefined) {
+      httpParams = httpParams.set(this.PARAM_AUTO_PAYMENTS, params.auto_payments);
+    }
+    if (params.business_unit_ids?.length) {
+      httpParams = httpParams.set(this.PARAM_BUSINESS_UNIT_IDS, params.business_unit_ids.join(','));
+    }
+
+    return this.http.get<IOpalFinesTillsResponse>(
+      OPAL_FINES_PATHS.tills,
+      this.withRetrySafeReadOptions({ params: httpParams }),
+    );
   }
 }
