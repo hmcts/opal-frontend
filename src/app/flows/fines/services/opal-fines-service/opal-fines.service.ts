@@ -1,3 +1,4 @@
+import { IOpalFinesSourceMapping } from './interfaces/opal-fines-source-mapping.interface';
 import { HttpClient, HttpParams, HttpResponse } from '@angular/common/http';
 import { inject, Injectable } from '@angular/core';
 import { OPAL_FINES_PATHS } from '@services/fines/opal-fines-service/constants/opal-fines-paths.constant';
@@ -75,10 +76,10 @@ import { IOpalFinesAccountDefendantDetailsConsolidatedAccounts } from './interfa
 import { IOpalFinesReport } from './interfaces/opal-fines-report.interface';
 import { IOpalFinesReportInstancesParams } from './interfaces/opal-fines-report-instances-params.interface';
 import { IOpalFinesReportInstancesResponse } from './interfaces/opal-fines-report-instances-response.interface';
+import { IOpalFinesTillsParams } from './interfaces/opal-fines-tills-params.interface';
+import { IOpalFinesTillsResponse } from './interfaces/opal-fines-tills-response.interface';
 import { IOpalFinesInterfaceJobsSummaryParams } from './interfaces/opal-fines-interface-jobs-summary-params.interface';
 import { IOpalFinesInterfaceJobsSummaryResponse } from './interfaces/opal-fines-interface-jobs-summary-response.interface';
-import { IOpalFinesTillsResponse } from './interfaces/opal-fines-tills-response.interface';
-import { IOpalFinesTillsParams } from './interfaces/opal-fines-tills-params.interface';
 import { IOpalFinesProcessInterfaceJobsPayload } from './interfaces/opal-fines-process-interface-jobs-payload.interface';
 
 const SAFE_READ_RETRY_POLICY = {
@@ -229,6 +230,7 @@ export class OpalFines {
    */
   private clearReferenceDataCaches(): void {
     const referenceCaches: (keyof IOpalFinesCache)[] = [
+      'sourceMappingsCache$',
       'courtRefDataCache$',
       'businessUnitsCache$',
       'businessUnitsPermissionCache$',
@@ -417,6 +419,21 @@ export class OpalFines {
       OPAL_FINES_PATHS.interfaceJobsSummary,
       this.withRetrySafeReadOptions({ params: this.getInterfaceJobsSummaryParams(params) }),
     );
+  }
+
+  /**
+   * Retrieves source display names, sharing one request and caching a successful response for the session.
+   * Eligible transient failures receive one automatic retry through the safe-read policy.
+   * Failed requests can be retried by a later subscriber. Clearing reference caches resets this response.
+   *
+   * @returns The source mapping array supplied by the backend.
+   */
+  public getSourceMappings(): Observable<IOpalFinesSourceMapping[]> {
+    this.cache.sourceMappingsCache$ ??= this.http
+      .get<IOpalFinesSourceMapping[]>(OPAL_FINES_PATHS.sourceMappings, this.retrySafeReadOptions())
+      .pipe(shareReplay({ bufferSize: 1, refCount: false }));
+
+    return this.cache.sourceMappingsCache$;
   }
 
   /**
