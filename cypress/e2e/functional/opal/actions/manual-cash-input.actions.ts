@@ -4,7 +4,7 @@ import { createScopedLogger } from '../../../../support/utils/log.helper';
 const log = createScopedLogger('ManualCashInputActions');
 const TILLS_ENDPOINT = '/opal-fines-service/tills';
 const BUSINESS_UNITS_ENDPOINT = '/opal-fines-service/business-units';
-const FIRST_TILL_NUMBER = 9002;
+const FIRST_TILL_ID = 1001;
 const UNSAVED_CHANGES_WARNING =
   'WARNING: Are you sure you want to leave this page? Any information you entered will be lost.';
 const MANUAL_CASH_INPUT_TILLS_RESPONSE = {
@@ -12,7 +12,7 @@ const MANUAL_CASH_INPUT_TILLS_RESPONSE = {
     {
       till_id: 1001,
       till_number: 9002,
-      payment_count: 3,
+      payments_count: 3,
       amount: 125.5,
       business_unit_name: 'Camden and Islington',
       processed_by: 'Alex Smith',
@@ -21,7 +21,7 @@ const MANUAL_CASH_INPUT_TILLS_RESPONSE = {
     {
       till_id: 1002,
       till_number: 9001,
-      payment_count: 1,
+      payments_count: 1,
       amount: 10,
       business_unit_name: 'Westminster - North',
       processed_by: 'Sam Jones',
@@ -40,6 +40,12 @@ const MANUAL_CASH_INPUT_BUSINESS_UNITS_RESPONSE = {
 };
 
 type BusinessUnitsResponse = typeof MANUAL_CASH_INPUT_BUSINESS_UNITS_RESPONSE;
+
+const assertTrimmedText = (selector: string, expectedText: string): void => {
+  cy.get(selector)
+    .invoke('text')
+    .then((text) => expect(text.trim()).to.equal(expectedText));
+};
 
 /** Cypress actions for the Manual Cash Input create-till journey. */
 export class ManualCashInputActions {
@@ -76,7 +82,7 @@ export class ManualCashInputActions {
   /** Confirms that declining the warning preserves the till selection. */
   public assertSelectionIsRetained(): void {
     cy.contains('h1', 'Manual cash input').should('be.visible');
-    cy.get(ManualCashInputLocators.tillCheckbox(FIRST_TILL_NUMBER)).should('be.checked');
+    cy.get(ManualCashInputLocators.tillCheckbox(FIRST_TILL_ID)).should('be.checked');
     cy.get(ManualCashInputLocators.selectedCount)
       .invoke('text')
       .then((text) => expect(text.replace(/\s+/g, ' ').trim()).to.equal('1 of 2 selected'));
@@ -182,6 +188,43 @@ export class ManualCashInputActions {
     cy.get(ManualCashInputLocators.tillDetails).should('contain.text', 'Alpha Court');
   }
 
+  /**
+   * Verifies the selected business unit and empty-till guidance on Till Details.
+   * @param businessUnit - Name of the selected business unit.
+   */
+  public assertEmptyTillDetails(businessUnit: string): void {
+    cy.get(ManualCashInputLocators.tillDetails)
+      .find('h1')
+      .invoke('text')
+      .then((text) => expect(text.trim()).to.equal('Till details'));
+    assertTrimmedText(ManualCashInputLocators.tillDetailsBusinessUnitKey, 'Business unit');
+    assertTrimmedText(ManualCashInputLocators.tillDetailsBusinessUnitValue, businessUnit);
+    cy.get(ManualCashInputLocators.tillDetails)
+      .contains('h2', 'Payments')
+      .should('have.text', 'Payments')
+      .next('p')
+      .invoke('text')
+      .then((text) => expect(text.trim()).to.equal('There are no payments'));
+    cy.get(ManualCashInputLocators.tillDetails)
+      .contains('h2', 'Create till')
+      .should('have.text', 'Create till')
+      .next('p')
+      .invoke('text')
+      .then((text) => expect(text.trim()).to.equal('You must add at least 1 payment to the till.'));
+  }
+
+  /** Opens Payment Category from Till Details. */
+  public addPayment(): void {
+    cy.get(ManualCashInputLocators.addPaymentButton).should('contain.text', 'Add payment').click();
+    cy.location('pathname').should('eq', '/fines/manual-cash-input/create/till/payment-category');
+  }
+
+  /** Opens Delete Till from Till Details. */
+  public deleteTill(): void {
+    cy.get(ManualCashInputLocators.deleteTillLink).should('contain.text', 'Delete till').click();
+    cy.location('pathname').should('eq', '/fines/manual-cash-input/create/till/cancel');
+  }
+
   /** Cancels the business-unit screen without a selection or a leave-page warning. */
   public cancelWithoutBusinessUnit(): void {
     cy.get(ManualCashInputLocators.cancelLink).click();
@@ -224,7 +267,7 @@ export class ManualCashInputActions {
       return acceptLeave;
     });
 
-    cy.get(ManualCashInputLocators.tillCheckbox(FIRST_TILL_NUMBER)).check({ force: true });
+    cy.get(ManualCashInputLocators.tillCheckbox(FIRST_TILL_ID)).check({ force: true });
     cy.get(ManualCashInputLocators.backLink).should('be.visible').click();
     cy.then(() => expect(confirmationWasRaised, 'native unsaved-changes warning').to.be.true);
   }

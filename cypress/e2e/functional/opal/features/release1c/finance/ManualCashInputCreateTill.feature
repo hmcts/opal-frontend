@@ -46,6 +46,46 @@ Feature: Manual Cash Input - Create Till
     And I continue
     Then I see the following text on the page "Camden and Islington"
 
+  # PO-3485 AC1: confirming a business unit opens Till Details.
+  # PO-3485 AC2a, AC2b and AC2c: Till Details presents the selected unit and empty-till guidance.
+  @JIRA-STORY:PO-3485
+  Scenario: AC1, AC2a, AC2b, AC2c - a user sees empty Till Details after confirming a business unit
+    When I select the Fines primary navigation item "Finance"
+    And I am taken to the "Finance" Fines landing page
+    And I open Manual Cash Input
+    And I create a till
+    And I select "Camden and Islington"
+    And I continue
+    Then I see empty Till Details for "Camden and Islington"
+
+  # PO-3485 AC2d: Add payment starts the Payment Category journey.
+  # PO-3486 must implement the destination screen before this scenario can verify AC2d end-to-end.
+  # Remove @skip and replace the placeholder assertion with Payment Category screen assertions when PO-3486 is delivered.
+  @skip @JIRA-STORY:PO-3485 @JIRA-STORY:PO-3486
+  Scenario: AC2d - a user starts adding a payment from Till Details
+    When I select the Fines primary navigation item "Finance"
+    And I am taken to the "Finance" Fines landing page
+    And I open Manual Cash Input
+    And I create a till
+    And I select "Camden and Islington"
+    And I continue
+    And I add a payment to the till
+    Then I see the following text on the page "Payment category"
+
+  # PO-3485 AC2e: Delete till starts the Delete Till journey.
+  # PO-3487 must implement the destination screen before this scenario can verify AC2e end-to-end.
+  # Remove @skip and replace the placeholder assertion with Delete Till screen assertions when PO-3487 is delivered.
+  @skip @JIRA-STORY:PO-3485 @JIRA-STORY:PO-3487
+  Scenario: AC2e - a user starts deleting the till from Till Details
+    When I select the Fines primary navigation item "Finance"
+    And I am taken to the "Finance" Fines landing page
+    And I open Manual Cash Input
+    And I create a till
+    And I select "Camden and Islington"
+    And I continue
+    And I delete the till being created
+    Then I see the following text on the page "Delete till"
+
   # AC5: Continue without a valid selection remains on the page and displays "Select business unit".
   @JIRA-STORY:PO-3476
   Scenario: AC5 - a user cannot continue without selecting a business unit
