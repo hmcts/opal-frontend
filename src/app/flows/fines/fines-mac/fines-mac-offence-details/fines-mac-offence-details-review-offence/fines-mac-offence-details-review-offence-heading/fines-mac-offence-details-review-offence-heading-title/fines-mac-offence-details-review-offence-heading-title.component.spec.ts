@@ -22,12 +22,24 @@ describe('FinesMacOffenceDetailsReviewOffenceHeadingTitleComponent', () => {
 
     component.offenceCode = 'AK123456';
     component.offenceTitle = 'ak test';
+    component.headingLevel = 2;
 
     fixture.detectChanges();
   });
 
   it('should create', () => {
     expect(component).toBeTruthy();
+  });
+
+  it.each([
+    { headingLevel: 2, expectedHeading: 'h2' },
+    { headingLevel: 3, expectedHeading: 'h3' },
+  ] as const)('should render the offence title as an h$headingLevel heading', ({ headingLevel, expectedHeading }) => {
+    fixture.componentRef.setInput('headingLevel', headingLevel);
+    fixture.detectChanges();
+
+    expect(fixture.debugElement.query(By.css(expectedHeading))?.nativeElement.textContent).toContain('ak test');
+    expect(fixture.debugElement.query(By.css(expectedHeading === 'h2' ? 'h3' : 'h2'))).toBeNull();
   });
 
   it('should emit action when onActionClick is called', () => {

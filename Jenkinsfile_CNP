@@ -726,6 +726,11 @@ if (releaseSuite) {
     echo "Running default functional selection (TAGS=${env.TAGS})"
 }
 
+// PRs can opt into extended tests with a label; master runs always exclude them.
+boolean extendedTestsEnabled = isPR && cachedPrLabels.contains('extendedTests')
+env.EXCLUDE_EXTENDED_TESTS = extendedTestsEnabled ? stringFalse : stringTrue
+echo "Extended tests enabled: ${extendedTestsEnabled}"
+
 // Primary pipeline definition and lifecycle hooks
 withPipeline(type, product, component) {
     // Inject KeyVault secrets required for login/setup
