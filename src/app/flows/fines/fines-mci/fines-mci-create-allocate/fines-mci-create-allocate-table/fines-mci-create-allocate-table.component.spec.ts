@@ -11,7 +11,7 @@ import { IFinesMciCreateAllocateTableSort } from './interfaces/fines-mci-create-
 const TABLE_ROWS: IFinesMciCreateAllocateTableData[] = [
   {
     tillId: '99000000010005',
-    'Till number': '9005',
+    'Till number': 9005,
     Payments: 3,
     Amount: 1234.56,
     'Business unit': 'Westminster - North (Wells Street)',
@@ -21,7 +21,7 @@ const TABLE_ROWS: IFinesMciCreateAllocateTableData[] = [
   },
   {
     tillId: '99000000010006',
-    'Till number': '9006',
+    'Till number': 9006,
     Payments: 1,
     Amount: 25,
     'Business unit': 'Camberwell Green',
@@ -83,6 +83,20 @@ describe('FinesMciCreateAllocateTableComponent', () => {
     expect(tillNumberCell?.querySelector('a')).toBeNull();
     expect(nativeElement.querySelector('#fines-mci-create-allocate-99000000010005')).toBeTruthy();
     expect(nativeElement.querySelector('#fines-mci-create-allocate-99000000010006')).toBeTruthy();
+  });
+
+  it('should sort till numbers numerically in ascending order', () => {
+    const rows = [
+      { ...TABLE_ROWS[0], tillId: '10', 'Till number': 10 },
+      { ...TABLE_ROWS[0], tillId: '2', 'Till number': 2 },
+      { ...TABLE_ROWS[0], tillId: '9', 'Till number': 9 },
+    ];
+    render(rows);
+
+    const nativeElement = fixture.nativeElement as HTMLElement;
+    nativeElement.querySelector<HTMLButtonElement>('button[data-index="0"]')?.click();
+
+    expect(component.fullTableDataComputed().map((row) => row['Till number'])).toEqual([2, 9, 10]);
   });
 
   it('should show the selected count and emit it when a till is selected and deselected', () => {
@@ -161,12 +175,12 @@ describe('FinesMciCreateAllocateTableComponent', () => {
 
     expect(component.sortedColumnTitleSignal()).toBe('Till number');
     expect(component.sortedColumnDirectionSignal()).toBe('ascending');
-    expect(component.fullTableDataComputed().map((row) => row['Till number'])).toEqual(['9005', '9006']);
+    expect(component.fullTableDataComputed().map((row) => row['Till number'])).toEqual([9005, 9006]);
 
     tillNumberHeader?.triggerEventHandler('sortChange', { key: 'Till number', sortType: 'descending' });
     fixture.detectChanges();
 
-    expect(component.fullTableDataComputed().map((row) => row['Till number'])).toEqual(['9006', '9005']);
+    expect(component.fullTableDataComputed().map((row) => row['Till number'])).toEqual([9006, 9005]);
   });
 
   it('should create stable row identifiers and sanitize them for DOM ids', () => {

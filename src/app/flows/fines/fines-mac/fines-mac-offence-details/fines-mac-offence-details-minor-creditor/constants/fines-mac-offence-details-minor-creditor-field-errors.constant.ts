@@ -126,6 +126,10 @@ export const FINES_MAC_OFFENCE_DETAILS_MINOR_CREDITOR_FIELD_ERRORS: IAbstractFor
       message: 'Enter sort code',
       priority: 1,
     },
+    invalidSortCode: {
+      message: 'Sort code must be 6 numbers',
+      priority: 2,
+    },
     maxlength: {
       message: 'Sort code must be 6 characters or fewer',
       priority: 2,
@@ -140,13 +144,17 @@ export const FINES_MAC_OFFENCE_DETAILS_MINOR_CREDITOR_FIELD_ERRORS: IAbstractFor
       message: 'Enter account number',
       priority: 1,
     },
+    minlength: {
+      message: 'Account number must be between 6 and 8 digits long',
+      priority: 2,
+    },
     maxlength: {
       message: 'Account number must be 8 characters or fewer',
-      priority: 2,
+      priority: 3,
     },
     numericalTextPattern: {
       message: 'Account number must only contain numbers',
-      priority: 3,
+      priority: 4,
     },
   },
   fm_offence_details_minor_creditor_bank_account_ref: {

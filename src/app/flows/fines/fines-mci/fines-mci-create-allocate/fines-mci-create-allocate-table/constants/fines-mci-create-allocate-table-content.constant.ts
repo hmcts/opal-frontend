@@ -3,7 +3,7 @@ export const FINES_MCI_CREATE_ALLOCATE_TABLE_CONTENT = {
   caption: 'Tills available to allocate',
   selectColumn: 'Select tills to allocate',
   selectAll: 'Select all tills',
-  selectTill: (tillNumber: string): string => `Select till ${tillNumber}`,
+  selectTill: (tillNumber: string | number): string => `Select till ${tillNumber}`,
   columns: {
     tillNumber: 'Till number',
     payments: 'Payments',

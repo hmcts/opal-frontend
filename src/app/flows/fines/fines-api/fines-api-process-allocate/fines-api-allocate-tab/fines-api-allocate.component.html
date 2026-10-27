@@ -1,0 +1,40 @@
+<div id="fines-api-allocate-tab-content" class="govuk-grid-column-full">
+  @if (data().processingTotal > 0) {
+    <opal-lib-moj-alert id="fines-api-allocate-processing" type="information" [ariaLabel]="processingAnnouncement()">
+      <opal-lib-moj-alert-icon icon type="information" />
+      <opal-lib-moj-alert-content content>
+        <p class="govuk-body">{{ content.processingTotal(data().processingTotal) }}</p>
+        <ul class="govuk-list">
+          @for (unit of data().processingByBusinessUnit; track unit.businessUnitName) {
+            <li>{{ unit.businessUnitName }} ({{ unit.count }})</li>
+          }
+        </ul>
+        <p>Refresh the page to see the latest status.</p>
+      </opal-lib-moj-alert-content>
+    </opal-lib-moj-alert>
+  }
+
+  <h2 id="fines-api-allocate-heading" class="govuk-heading-m">{{ content.heading }}</h2>
+  @if (data().tills.length > 0) {
+    <p id="fines-api-allocate-hint" class="govuk-hint">{{ content.hint }}</p>
+  } @else {
+    <p id="fines-api-allocate-empty" class="govuk-body">{{ content.emptyState }}</p>
+  }
+  <div class="govuk-button-group">
+    <button
+      id="fines-api-allocate-refresh"
+      type="button"
+      class="govuk-button govuk-button--secondary"
+      (click)="refresh()"
+    >
+      {{ content.refresh }}
+    </button>
+    @if (data().tills.length > 0) {
+      <button id="fines-api-allocate-submit" type="button" class="govuk-button">{{ content.allocate }}</button>
+    }
+  </div>
+
+  @if (data().tills.length > 0) {
+    <app-fines-api-allocate-tills-table-wrapper [tableData]="data().tills" />
+  }
+</div>

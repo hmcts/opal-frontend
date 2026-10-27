@@ -248,10 +248,12 @@ describe('Defendant Account Summary - At a Glance Tab', () => {
 
       setupAccountEnquiryComponent(componentProperties);
 
-      cy.get('h3')
+      cy.wait('@getAtAGlance');
+      cy.get(DOM.atAGlanceTabComponent)
+        .find('h3')
         .contains('Aliases')
         .next('p')
-        .should('exist')
+        .should('be.visible')
         .invoke('text')
         .then((text) => {
           const aliases = text.replace(/\s+/g, ' ').trim();

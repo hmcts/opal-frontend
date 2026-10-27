@@ -6,5 +6,8 @@ export interface IFinesMciRoutingPaths extends IChildRoutingPaths {
     create: string;
     till: string;
     selectBusinessUnit: string;
+    details: string;
+    paymentCategory: string;
+    cancel: string;
   };
 }

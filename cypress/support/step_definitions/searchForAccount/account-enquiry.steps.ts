@@ -1489,7 +1489,7 @@ When('I go to the Impositions tab', () => {
  */
 Then('I should see the defendant account impositions load with the following values:', (table: DataTable) => {
   log('assert', 'Verify defendant account impositions load');
-  impositionsDetails().assertDefendantAccountImpositionsLoaded(table.raw());
+  accountEnquiryFlow().assertDefendantAccountImpositionsLoaded(table);
 });
 
 /**

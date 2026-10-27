@@ -1,5 +1,6 @@
 import { IOpalFinesSuspenseItemHistoryEntry } from './opal-fines-suspense-item-history-entry.interface';
 import { IOpalFinesSuspenseItemSummary } from './opal-fines-suspense-item-summary.interface';
+import { IOpalFinesSourceMapping } from './opal-fines-source-mapping.interface';
 import { Observable } from 'rxjs';
 import { IOpalFinesAccountDefendantDetailsConsolidatedAccounts } from './opal-fines-account-defendant-account-consolidated-accounts.interface';
 import { IOpalFinesCourtRefData } from './opal-fines-court-ref-data.interface';
@@ -29,6 +30,7 @@ import { IOpalFinesAccountMajorCreditorDetailsHistoryAndNotesTabRefData } from '
 export interface IOpalFinesCache {
   suspenseItemHistoryCache$: { [key: string]: Observable<IOpalFinesSuspenseItemHistoryEntry[]> };
   suspenseItemSummaryCache$: { [key: string]: Observable<IOpalFinesSuspenseItemSummary> };
+  sourceMappingsCache$: Observable<IOpalFinesSourceMapping[]> | null;
   courtRefDataCache$: { [key: string]: Observable<IOpalFinesCourtRefData> };
   businessUnitsCache$: Observable<IOpalFinesBusinessUnitRefData> | null;
   businessUnitsPermissionCache$: { [key: string]: Observable<IOpalFinesBusinessUnitRefData> };

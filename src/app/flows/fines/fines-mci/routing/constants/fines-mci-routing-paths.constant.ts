@@ -7,5 +7,8 @@ export const FINES_MCI_ROUTING_PATHS: IFinesMciRoutingPaths = {
     create: 'create',
     till: 'till',
     selectBusinessUnit: 'select-bu',
+    details: 'details',
+    paymentCategory: 'payment-category',
+    cancel: 'cancel',
   },
 };
