@@ -45,8 +45,8 @@ export class FinesMciCreateTillPaymentCategoryComponent {
   private readonly router = inject(Router);
   private readonly document = inject(DOCUMENT);
   private readonly changeDetector = inject(ChangeDetectorRef);
-  protected readonly finesMciStore = inject(FinesMciStore);
   @ViewChild('errorSummary', { read: ElementRef }) private readonly errorSummary?: ElementRef<HTMLElement>;
+  protected readonly finesMciStore = inject(FinesMciStore);
   protected readonly form = new FormGroup({
     paymentCategory: new FormControl<FinesMciJourney | null>(null, Validators.required),
   });
@@ -74,10 +74,6 @@ export class FinesMciCreateTillPaymentCategoryComponent {
     ];
   }
 
-  protected scrollTo(fieldId: string): void {
-    this.document.getElementById(fieldId)?.focus();
-  }
-
   private showValidationError(): void {
     this.formErrorSummaryMessage = [
       {
@@ -88,6 +84,10 @@ export class FinesMciCreateTillPaymentCategoryComponent {
     this.paymentCategoryError = SELECT_PAYMENT_CATEGORY_ERROR;
     this.changeDetector.detectChanges();
     this.errorSummary?.nativeElement.querySelector<HTMLElement>('.govuk-error-summary')?.focus({ preventScroll: true });
+  }
+
+  protected scrollTo(fieldId: string): void {
+    this.document.getElementById(fieldId)?.focus();
   }
 
   public handleSubmit(): void {
