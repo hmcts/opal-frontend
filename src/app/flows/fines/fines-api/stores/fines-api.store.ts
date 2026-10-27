@@ -12,6 +12,7 @@ const getFinesApiState = (): IFinesApiState => ({
   availableBusinessUnits: FINES_API_STATE.availableBusinessUnits.map((businessUnit) => ({ ...businessUnit })),
   selectedBusinessUnitIds: [...FINES_API_STATE.selectedBusinessUnitIds],
   selectedFileIds: [...FINES_API_STATE.selectedFileIds],
+  selectedTillIds: [...FINES_API_STATE.selectedTillIds],
   overrideInhibitFileIds: [...FINES_API_STATE.overrideInhibitFileIds],
 });
 
@@ -48,6 +49,7 @@ export const FinesApiStore = signalStore(
   withComputed((store) => ({
     hasSelectedBusinessUnits: computed(() => store.selectedBusinessUnitIds().length > 0),
     hasSelectedFiles: computed(() => store.selectedFileIds().length > 0),
+    hasSelectedTills: computed(() => store.selectedTillIds().length > 0),
     selectedInterfaceJobIds: computed(() =>
       getSelectedInterfaceJobIds(store.processInterfaceJobs(), store.selectedFileIds()),
     ),
@@ -68,6 +70,7 @@ export const FinesApiStore = signalStore(
         selectedBusinessUnitIds: [...selectedBusinessUnitIds],
         ...(businessUnitsChanged && {
           selectedFileIds: [],
+          selectedTillIds: [],
           overrideInhibitFileIds: [],
           processInterfaceJobs: null,
           activeTab: FINES_API_STATE.activeTab,
@@ -80,6 +83,7 @@ export const FinesApiStore = signalStore(
       patchState(store, {
         selectedBusinessUnitIds: [],
         selectedFileIds: [],
+        selectedTillIds: [],
         overrideInhibitFileIds: [],
         processInterfaceJobs: null,
         activeTab: FINES_API_PROCESS_ALLOCATE_TABS_KEYS.process,
@@ -92,7 +96,14 @@ export const FinesApiStore = signalStore(
         selectedFileIds: [...selectedFileIds],
         overrideInhibitFileIds: [],
         stateChanges: true,
-        unsavedChanges: selectedFileIds.length > 0,
+        unsavedChanges: selectedFileIds.length > 0 || store.hasSelectedTills(),
+      });
+    },
+    setSelectedTillIds: (selectedTillIds: string[]) => {
+      patchState(store, {
+        selectedTillIds: [...selectedTillIds],
+        stateChanges: true,
+        unsavedChanges: selectedTillIds.length > 0 || store.hasSelectedFiles(),
       });
     },
     setProcessInterfaceJobs: (processInterfaceJobs: IOpalFinesInterfaceJobSummary[]) => {
