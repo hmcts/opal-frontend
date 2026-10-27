@@ -111,7 +111,7 @@ describe('FinesMacPersonalDetailsFormComponent', () => {
       'button.moj-add-another__remove-button',
     ) as NodeListOf<HTMLButtonElement>;
 
-    expect(removeButtons.length).toBe(2);
+    expect(removeButtons).toHaveLength(2);
     expect(removeButtons[0].textContent?.trim()).toBe('Remove alias 1');
     expect(removeButtons[1].textContent?.trim()).toBe('Remove alias 2');
 
@@ -150,9 +150,9 @@ describe('FinesMacPersonalDetailsFormComponent', () => {
 
     const removeButtons = aliasContainer.querySelectorAll('button.moj-add-another__remove-button');
 
-    expect(component.aliasControls.length).toBe(1);
+    expect(component.aliasControls).toHaveLength(1);
     expect(aliasHeading?.textContent?.trim()).toBe('Alias 1');
-    expect(removeButtons.length).toBe(0);
+    expect(removeButtons).toHaveLength(0);
     expect(aliasContainer.querySelector('#addAlias')).not.toBeNull();
   });
 
@@ -179,7 +179,7 @@ describe('FinesMacPersonalDetailsFormComponent', () => {
       'button.moj-add-another__remove-button',
     ) as NodeListOf<HTMLButtonElement>;
 
-    expect(removeButtons.length).toBe(2);
+    expect(removeButtons).toHaveLength(2);
 
     removeButtons[0].click();
     fixture.detectChanges();
@@ -188,9 +188,9 @@ describe('FinesMacPersonalDetailsFormComponent', () => {
       'legend.govuk-fieldset__legend h2.govuk-heading-m',
     ) as HTMLHeadingElement | null;
 
-    expect(component.aliasControls.length).toBe(1);
+    expect(component.aliasControls).toHaveLength(1);
     expect(heading?.textContent?.trim()).toBe('Alias 1');
-    expect(aliasContainer.querySelectorAll('button.moj-add-another__remove-button').length).toBe(0);
+    expect(aliasContainer.querySelectorAll('button.moj-add-another__remove-button')).toHaveLength(0);
 
     expect(aliases.at(0).get('fm_personal_details_alias_forenames_0')?.value).toBe('DAVID');
     expect(aliases.at(0).get('fm_personal_details_alias_surname_0')?.value).toBe('JONES');
@@ -229,7 +229,7 @@ describe('FinesMacPersonalDetailsFormComponent', () => {
       'button.moj-add-another__remove-button',
     ) as NodeListOf<HTMLButtonElement>;
 
-    expect(removeButtons.length).toBe(3);
+    expect(removeButtons).toHaveLength(3);
 
     removeButtons[1].click();
     fixture.detectChanges();
@@ -240,7 +240,7 @@ describe('FinesMacPersonalDetailsFormComponent', () => {
 
     expect(Array.from(headings, (heading) => heading.textContent?.trim())).toEqual(['Alias 1 of 2', 'Alias 2 of 2']);
 
-    expect(aliases.length).toBe(2);
+    expect(aliases).toHaveLength(2);
 
     expect(aliases.at(0).get('fm_personal_details_alias_forenames_0')?.value).toBe('JOHN');
     expect(aliases.at(0).get('fm_personal_details_alias_surname_0')?.value).toBe('SMITH');
@@ -281,7 +281,7 @@ describe('FinesMacPersonalDetailsFormComponent', () => {
       'button.moj-add-another__remove-button',
     ) as NodeListOf<HTMLButtonElement>;
 
-    expect(removeButtons.length).toBe(2);
+    expect(removeButtons).toHaveLength(2);
 
     // Remove the final alias.
     removeButtons[1].click();
@@ -291,9 +291,9 @@ describe('FinesMacPersonalDetailsFormComponent', () => {
       'legend.govuk-fieldset__legend h2.govuk-heading-m',
     ) as HTMLHeadingElement | null;
 
-    expect(aliases.length).toBe(1);
+    expect(aliases).toHaveLength(1);
     expect(heading?.textContent?.trim()).toBe('Alias 1');
-    expect(aliasContainer.querySelectorAll('button.moj-add-another__remove-button').length).toBe(0);
+    expect(aliasContainer.querySelectorAll('button.moj-add-another__remove-button')).toHaveLength(0);
 
     expect(aliases.at(0).get('fm_personal_details_alias_forenames_0')?.value).toBe('JOHN');
     expect(aliases.at(0).get('fm_personal_details_alias_surname_0')?.value).toBe('SMITH');
@@ -329,7 +329,7 @@ describe('FinesMacPersonalDetailsFormComponent', () => {
       'button.moj-add-another__remove-button',
     ) as NodeListOf<HTMLButtonElement>;
 
-    expect(removeButtons.length).toBe(3);
+    expect(removeButtons).toHaveLength(3);
 
     removeButtons[0].click();
     fixture.detectChanges();
@@ -340,7 +340,7 @@ describe('FinesMacPersonalDetailsFormComponent', () => {
 
     expect(Array.from(headings, (heading) => heading.textContent?.trim())).toEqual(['Alias 1 of 2', 'Alias 2 of 2']);
 
-    expect(aliases.length).toBe(2);
+    expect(aliases).toHaveLength(2);
 
     expect(aliases.at(0).get('fm_personal_details_alias_forenames_0')?.value).toBe('DAVID');
     expect(aliases.at(0).get('fm_personal_details_alias_surname_0')?.value).toBe('JONES');
@@ -356,6 +356,151 @@ describe('FinesMacPersonalDetailsFormComponent', () => {
       'Remove alias 1',
       'Remove alias 2',
     ]);
+
+    // Editing the surviving first alias must not overwrite the second alias.
+    const firstForenamesInput = aliasContainer.querySelector(
+      '#fm_personal_details_alias_forenames_0',
+    ) as HTMLInputElement;
+
+    const firstSurnameInput = aliasContainer.querySelector('#fm_personal_details_alias_surname_0') as HTMLInputElement;
+
+    const secondForenamesInput = aliasContainer.querySelector(
+      '#fm_personal_details_alias_forenames_1',
+    ) as HTMLInputElement;
+
+    const secondSurnameInput = aliasContainer.querySelector('#fm_personal_details_alias_surname_1') as HTMLInputElement;
+
+    expect(firstForenamesInput).not.toBeNull();
+    expect(firstSurnameInput).not.toBeNull();
+    expect(secondForenamesInput).not.toBeNull();
+    expect(secondSurnameInput).not.toBeNull();
+
+    // Edit the new Alias 1 first names.
+    firstForenamesInput.value = 'UPDATED';
+    firstForenamesInput.dispatchEvent(new Event('input', { bubbles: true }));
+    fixture.detectChanges();
+
+    // Edit the new Alias 1 surname.
+    firstSurnameInput.value = 'edited';
+    firstSurnameInput.dispatchEvent(new Event('input', { bubbles: true }));
+    fixture.detectChanges();
+
+    expect(aliases.at(0).get('fm_personal_details_alias_forenames_0')?.value).toBe('UPDATED');
+    expect(aliases.at(0).get('fm_personal_details_alias_surname_0')?.value).toBe('EDITED');
+
+    // Alias 2 must remain unchanged.
+    expect(aliases.at(1).get('fm_personal_details_alias_forenames_1')?.value).toBe('PETER');
+    expect(aliases.at(1).get('fm_personal_details_alias_surname_1')?.value).toBe('BROWN');
+
+    expect(secondForenamesInput.value).toBe('PETER');
+    expect(secondSurnameInput.value).toBe('BROWN');
+  });
+
+  it('should refresh personal alias validation errors after removing the first alias', () => {
+    globalStore.setFeatureFlags({
+      [RELEASE_1A_1_2_FEATURE_FLAG]: true,
+    });
+
+    component.form.get('fm_personal_details_add_alias')?.setValue(true);
+
+    while (component.aliasControls.length < 3) {
+      component.addAlias(component.aliasControls.length, 'fm_personal_details_aliases');
+    }
+
+    const aliases = component.form.get('fm_personal_details_aliases') as FormArray;
+
+    aliases.at(0).get('fm_personal_details_alias_forenames_0')?.setValue('JOHN');
+    aliases.at(0).get('fm_personal_details_alias_surname_0')?.setValue('SMITH');
+
+    aliases.at(1).get('fm_personal_details_alias_forenames_1')?.setValue('');
+    aliases.at(1).get('fm_personal_details_alias_surname_1')?.setValue('JONES');
+
+    aliases.at(2).get('fm_personal_details_alias_forenames_2')?.setValue('PETER');
+    aliases.at(2).get('fm_personal_details_alias_surname_2')?.setValue('');
+
+    component.handleFormSubmit({ submitter: { className: '' } } as SubmitEvent);
+    fixture.detectChanges();
+
+    expect(component.formErrorSummaryMessage).toContainEqual({
+      fieldId: 'fm_personal_details_alias_forenames_1',
+      message: 'Enter alias 2 first name(s)',
+    });
+
+    expect(component.formErrorSummaryMessage).toContainEqual({
+      fieldId: 'fm_personal_details_alias_surname_2',
+      message: 'Enter alias 3 last name',
+    });
+
+    const container = fixture.nativeElement.querySelector(
+      '[formArrayName="fm_personal_details_aliases"]',
+    ) as HTMLElement;
+
+    const buttons = container.querySelectorAll(
+      'button.moj-add-another__remove-button',
+    ) as NodeListOf<HTMLButtonElement>;
+
+    buttons[0].click();
+    fixture.detectChanges();
+
+    expect(aliases).toHaveLength(2);
+
+    expect(component.formErrorSummaryMessage).toContainEqual({
+      fieldId: 'fm_personal_details_alias_forenames_0',
+      message: 'Enter alias 1 first name(s)',
+    });
+
+    expect(component.formErrorSummaryMessage).toContainEqual({
+      fieldId: 'fm_personal_details_alias_surname_1',
+      message: 'Enter alias 2 last name',
+    });
+
+    expect(
+      component.formErrorSummaryMessage.some(
+        (error) =>
+          error.fieldId === 'fm_personal_details_alias_forenames_2' ||
+          error.fieldId === 'fm_personal_details_alias_surname_2',
+      ),
+    ).toBe(false);
+
+    expect(component.formControlErrorMessages['fm_personal_details_alias_forenames_0']).toBe(
+      'Enter alias 1 first name(s)',
+    );
+
+    expect(component.formControlErrorMessages['fm_personal_details_alias_surname_1']).toBe('Enter alias 2 last name');
+  });
+
+  it('should not display validation errors when removing a personal alias before submission', () => {
+    globalStore.setFeatureFlags({
+      [RELEASE_1A_1_2_FEATURE_FLAG]: true,
+    });
+
+    component.form.get('fm_personal_details_add_alias')?.setValue(true);
+
+    while (component.aliasControls.length < 2) {
+      component.addAlias(component.aliasControls.length, 'fm_personal_details_aliases');
+    }
+
+    fixture.detectChanges();
+
+    expect(component.formErrorSummaryMessage).toHaveLength(0);
+
+    const container = fixture.nativeElement.querySelector(
+      '[formArrayName="fm_personal_details_aliases"]',
+    ) as HTMLElement;
+
+    const buttons = container.querySelectorAll<HTMLButtonElement>('button.moj-add-another__remove-button');
+
+    expect(buttons).toHaveLength(2);
+
+    buttons[1].click();
+    fixture.detectChanges();
+
+    expect(component.aliasControls).toHaveLength(1);
+    expect(component.formErrorSummaryMessage).toHaveLength(0);
+
+    expect(Object.values(component.formControlErrorMessages).filter((message) => message != null)).toHaveLength(0);
+
+    expect(fixture.nativeElement.querySelector('.govuk-error-summary')).toBeNull();
   });
 
   it('should remove the final personal alias and preserve both remaining aliases', () => {
@@ -387,7 +532,7 @@ describe('FinesMacPersonalDetailsFormComponent', () => {
       'button.moj-add-another__remove-button',
     ) as NodeListOf<HTMLButtonElement>;
 
-    expect(removeButtons.length).toBe(3);
+    expect(removeButtons).toHaveLength(3);
 
     // Remove Alias 3.
     removeButtons[2].click();
@@ -399,7 +544,7 @@ describe('FinesMacPersonalDetailsFormComponent', () => {
 
     expect(Array.from(headings, (heading) => heading.textContent?.trim())).toEqual(['Alias 1 of 2', 'Alias 2 of 2']);
 
-    expect(aliases.length).toBe(2);
+    expect(aliases).toHaveLength(2);
 
     expect(aliases.at(0).get('fm_personal_details_alias_forenames_0')?.value).toBe('JOHN');
     expect(aliases.at(0).get('fm_personal_details_alias_surname_0')?.value).toBe('SMITH');
@@ -443,7 +588,7 @@ describe('FinesMacPersonalDetailsFormComponent', () => {
     component.removeAndRenumberAlias(0);
     fixture.detectChanges();
 
-    expect(aliases.length).toBe(2);
+    expect(aliases).toHaveLength(2);
 
     expect(aliases.at(0).get('fm_personal_details_alias_forenames_0')).toBe(secondForenames);
     expect(aliases.at(0).get('fm_personal_details_alias_surname_0')).toBe(secondSurname);
@@ -463,7 +608,7 @@ describe('FinesMacPersonalDetailsFormComponent', () => {
 
     const inputIds = Array.from(aliasInputs, (input) => input.id);
 
-    expect(aliasInputs.length).toBe(6);
+    expect(aliasInputs).toHaveLength(6);
     expect(new Set(inputIds).size).toBe(inputIds.length);
   });
 

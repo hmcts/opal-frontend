@@ -1,6 +1,6 @@
 import { FormArray, FormControl, FormGroup, Validators } from '@angular/forms';
 import { describe, expect, it } from 'vitest';
-import { renumberAliasFormControls } from './fines-alias-renumbering.utils';
+import { focusAfterAliasRemoval, renumberAliasFormControls } from './fines-alias-renumbering.utils';
 
 describe('renumberAliasFormControls', () => {
   it('should renumber a single alias field while preserving its FormControl instance', () => {
@@ -77,7 +77,7 @@ describe('renumberAliasFormControls', () => {
 
     renumberAliasFormControls(aliases, ['fm_personal_details_alias_forenames', 'fm_personal_details_alias_surname']);
 
-    expect(aliases.length).toBe(2);
+    expect(aliases).toHaveLength(2);
 
     expect(aliases.at(0).get('fm_personal_details_alias_forenames_0')).toBe(firstForenames);
     expect(aliases.at(0).get('fm_personal_details_alias_surname_0')).toBe(firstSurname);
@@ -113,5 +113,45 @@ describe('renumberAliasFormControls', () => {
     expect(renamedControl?.hasError('required')).toBe(true);
     expect(renamedControl?.touched).toBe(true);
     expect(renamedControl?.dirty).toBe(true);
+  });
+
+  it('should focus Add another alias when no Remove buttons remain', () => {
+    const container = document.createElement('div');
+
+    container.innerHTML = `
+      <button id="addAlias" type="button">Add another alias</button>
+    `;
+
+    document.body.appendChild(container);
+
+    try {
+      focusAfterAliasRemoval(container, 1);
+
+      expect(document.activeElement).toBe(container.querySelector('#addAlias'));
+    } finally {
+      container.remove();
+    }
+  });
+
+  it('should focus the appropriate surviving Remove button', () => {
+    const container = document.createElement('div');
+
+    container.innerHTML = `
+      <button class="moj-add-another__remove-button" type="button">Remove alias 1</button>
+      <button class="moj-add-another__remove-button" type="button">Remove alias 2</button>
+      <button id="addAlias" type="button">Add another alias</button>
+    `;
+
+    document.body.appendChild(container);
+
+    try {
+      focusAfterAliasRemoval(container, 2);
+
+      const buttons = container.querySelectorAll('.moj-add-another__remove-button');
+
+      expect(document.activeElement).toBe(buttons[1]);
+    } finally {
+      container.remove();
+    }
   });
 });

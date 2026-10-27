@@ -142,9 +142,9 @@ describe('FinesMacParentGuardianDetailsFormComponent', () => {
       'legend.govuk-fieldset__legend h2.govuk-heading-m',
     ) as HTMLHeadingElement | null;
 
-    expect(component.aliasControls.length).toBe(1);
+    expect(component.aliasControls).toHaveLength(1);
     expect(heading?.textContent?.trim()).toBe('Alias 1');
-    expect(container.querySelectorAll('button.moj-add-another__remove-button').length).toBe(0);
+    expect(container.querySelectorAll('button.moj-add-another__remove-button')).toHaveLength(0);
     expect(container.querySelector('#addAlias')).not.toBeNull();
   });
 
@@ -186,7 +186,7 @@ describe('FinesMacParentGuardianDetailsFormComponent', () => {
     buttons[1].click();
     fixture.detectChanges();
 
-    expect(aliases.length).toBe(2);
+    expect(aliases).toHaveLength(2);
 
     expect(aliases.at(0).get('fm_parent_guardian_details_alias_forenames_0')?.value).toBe('JOHN');
     expect(aliases.at(0).get('fm_parent_guardian_details_alias_surname_0')?.value).toBe('SMITH');
@@ -244,12 +244,12 @@ describe('FinesMacParentGuardianDetailsFormComponent', () => {
       'button.moj-add-another__remove-button',
     ) as NodeListOf<HTMLButtonElement>;
 
-    expect(buttons.length).toBe(3);
+    expect(buttons).toHaveLength(3);
 
     buttons[0].click();
     fixture.detectChanges();
 
-    expect(aliases.length).toBe(2);
+    expect(aliases).toHaveLength(2);
 
     expect(aliases.at(0).get('fm_parent_guardian_details_alias_forenames_0')?.value).toBe('DAVID');
     expect(aliases.at(0).get('fm_parent_guardian_details_alias_surname_0')?.value).toBe('JONES');
@@ -261,6 +261,48 @@ describe('FinesMacParentGuardianDetailsFormComponent', () => {
     ) as NodeListOf<HTMLHeadingElement>;
 
     expect(Array.from(headings, (heading) => heading.textContent?.trim())).toEqual(['Alias 1 of 2', 'Alias 2 of 2']);
+
+    // Editing Alias 1 after removal must not overwrite Alias 2.
+    const firstForenamesInput = container.querySelector(
+      '#fm_parent_guardian_details_alias_forenames_0',
+    ) as HTMLInputElement;
+
+    const firstSurnameInput = container.querySelector(
+      '#fm_parent_guardian_details_alias_surname_0',
+    ) as HTMLInputElement;
+
+    const secondForenamesInput = container.querySelector(
+      '#fm_parent_guardian_details_alias_forenames_1',
+    ) as HTMLInputElement;
+
+    const secondSurnameInput = container.querySelector(
+      '#fm_parent_guardian_details_alias_surname_1',
+    ) as HTMLInputElement;
+
+    expect(firstForenamesInput).not.toBeNull();
+    expect(firstSurnameInput).not.toBeNull();
+    expect(secondForenamesInput).not.toBeNull();
+    expect(secondSurnameInput).not.toBeNull();
+
+    // Edit the surviving Alias 1 first names.
+    firstForenamesInput.value = 'UPDATED';
+    firstForenamesInput.dispatchEvent(new Event('input', { bubbles: true }));
+    fixture.detectChanges();
+
+    // Edit the surviving Alias 1 surname.
+    firstSurnameInput.value = 'edited';
+    firstSurnameInput.dispatchEvent(new Event('input', { bubbles: true }));
+    fixture.detectChanges();
+
+    expect(aliases.at(0).get('fm_parent_guardian_details_alias_forenames_0')?.value).toBe('UPDATED');
+    expect(aliases.at(0).get('fm_parent_guardian_details_alias_surname_0')?.value).toBe('EDITED');
+
+    // Alias 2 must retain both original values.
+    expect(aliases.at(1).get('fm_parent_guardian_details_alias_forenames_1')?.value).toBe('PETER');
+    expect(aliases.at(1).get('fm_parent_guardian_details_alias_surname_1')?.value).toBe('BROWN');
+
+    expect(secondForenamesInput.value).toBe('PETER');
+    expect(secondSurnameInput.value).toBe('BROWN');
   });
 
   it('should hide Remove buttons when removing the final alias from two', () => {
@@ -286,7 +328,7 @@ describe('FinesMacParentGuardianDetailsFormComponent', () => {
       'button.moj-add-another__remove-button',
     ) as NodeListOf<HTMLButtonElement>;
 
-    expect(buttons.length).toBe(2);
+    expect(buttons).toHaveLength(2);
 
     buttons[1].click();
     fixture.detectChanges();
@@ -295,14 +337,123 @@ describe('FinesMacParentGuardianDetailsFormComponent', () => {
       'legend.govuk-fieldset__legend h2.govuk-heading-m',
     ) as HTMLHeadingElement | null;
 
-    expect(aliases.length).toBe(1);
+    expect(aliases).toHaveLength(1);
     expect(heading?.textContent?.trim()).toBe('Alias 1');
-    expect(container.querySelectorAll('button.moj-add-another__remove-button').length).toBe(0);
+    expect(container.querySelectorAll('button.moj-add-another__remove-button')).toHaveLength(0);
 
     expect(aliases.at(0).get('fm_parent_guardian_details_alias_forenames_0')?.value).toBe('JOHN');
     expect(aliases.at(0).get('fm_parent_guardian_details_alias_surname_0')?.value).toBe('SMITH');
 
     expect(container.querySelector('#addAlias')).not.toBeNull();
+  });
+
+  it('should refresh parent guardian alias validation errors after removing the first alias', () => {
+    globalStore.setFeatureFlags({
+      [RELEASE_1A_1_2_FEATURE_FLAG]: true,
+    });
+
+    component.form.get('fm_parent_guardian_details_add_alias')?.setValue(true);
+
+    while (component.aliasControls.length < 3) {
+      component.addAlias(component.aliasControls.length, 'fm_parent_guardian_details_aliases');
+    }
+
+    const aliases = component.form.get('fm_parent_guardian_details_aliases') as FormArray;
+
+    aliases.at(0).get('fm_parent_guardian_details_alias_forenames_0')?.setValue('JOHN');
+    aliases.at(0).get('fm_parent_guardian_details_alias_surname_0')?.setValue('SMITH');
+
+    aliases.at(1).get('fm_parent_guardian_details_alias_forenames_1')?.setValue('');
+    aliases.at(1).get('fm_parent_guardian_details_alias_surname_1')?.setValue('JONES');
+
+    aliases.at(2).get('fm_parent_guardian_details_alias_forenames_2')?.setValue('PETER');
+    aliases.at(2).get('fm_parent_guardian_details_alias_surname_2')?.setValue('');
+
+    component.handleFormSubmit({ submitter: { className: '' } } as SubmitEvent);
+    fixture.detectChanges();
+
+    expect(component.formErrorSummaryMessage).toContainEqual({
+      fieldId: 'fm_parent_guardian_details_alias_forenames_1',
+      message: 'Enter alias 2 first name(s)',
+    });
+
+    expect(component.formErrorSummaryMessage).toContainEqual({
+      fieldId: 'fm_parent_guardian_details_alias_surname_2',
+      message: 'Enter alias 3 last name',
+    });
+
+    const container = fixture.nativeElement.querySelector(
+      '[formArrayName="fm_parent_guardian_details_aliases"]',
+    ) as HTMLElement;
+
+    const buttons = container.querySelectorAll(
+      'button.moj-add-another__remove-button',
+    ) as NodeListOf<HTMLButtonElement>;
+
+    buttons[0].click();
+    fixture.detectChanges();
+
+    expect(aliases).toHaveLength(2);
+
+    expect(component.formErrorSummaryMessage).toContainEqual({
+      fieldId: 'fm_parent_guardian_details_alias_forenames_0',
+      message: 'Enter alias 1 first name(s)',
+    });
+
+    expect(component.formErrorSummaryMessage).toContainEqual({
+      fieldId: 'fm_parent_guardian_details_alias_surname_1',
+      message: 'Enter alias 2 last name',
+    });
+
+    expect(
+      component.formErrorSummaryMessage.some(
+        (error) =>
+          error.fieldId === 'fm_parent_guardian_details_alias_forenames_2' ||
+          error.fieldId === 'fm_parent_guardian_details_alias_surname_2',
+      ),
+    ).toBe(false);
+
+    expect(component.formControlErrorMessages['fm_parent_guardian_details_alias_forenames_0']).toBe(
+      'Enter alias 1 first name(s)',
+    );
+
+    expect(component.formControlErrorMessages['fm_parent_guardian_details_alias_surname_1']).toBe(
+      'Enter alias 2 last name',
+    );
+  });
+
+  it('should not display validation errors when removing a parent guardian alias before submission', () => {
+    globalStore.setFeatureFlags({
+      [RELEASE_1A_1_2_FEATURE_FLAG]: true,
+    });
+
+    component.form.get('fm_parent_guardian_details_add_alias')?.setValue(true);
+
+    while (component.aliasControls.length < 2) {
+      component.addAlias(component.aliasControls.length, 'fm_parent_guardian_details_aliases');
+    }
+
+    fixture.detectChanges();
+
+    expect(component.formErrorSummaryMessage).toHaveLength(0);
+
+    const container = fixture.nativeElement.querySelector(
+      '[formArrayName="fm_parent_guardian_details_aliases"]',
+    ) as HTMLElement;
+
+    const buttons = container.querySelectorAll<HTMLButtonElement>('button.moj-add-another__remove-button');
+
+    expect(buttons).toHaveLength(2);
+
+    buttons[1].click();
+    fixture.detectChanges();
+
+    expect(component.aliasControls).toHaveLength(1);
+    expect(component.formErrorSummaryMessage).toHaveLength(0);
+
+    expect(Object.values(component.formControlErrorMessages).filter((message) => message != null)).toHaveLength(0);
+
+    expect(fixture.nativeElement.querySelector('.govuk-error-summary')).toBeNull();
   });
 
   it('should maintain unique input IDs after removing and adding a parent/guardian alias', () => {
@@ -338,8 +489,8 @@ describe('FinesMacParentGuardianDetailsFormComponent', () => {
 
     const inputIds = Array.from(inputs, (input) => input.id);
 
-    expect(component.aliasControls.length).toBe(3);
-    expect(inputs.length).toBe(6);
+    expect(component.aliasControls).toHaveLength(3);
+    expect(inputs).toHaveLength(6);
     expect(new Set(inputIds).size).toBe(inputIds.length);
   });
 

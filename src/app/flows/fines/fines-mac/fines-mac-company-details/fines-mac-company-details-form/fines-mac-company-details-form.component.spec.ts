@@ -81,7 +81,7 @@ describe('FinesMacCompanyDetailsFormComponent', () => {
       'button.moj-add-another__remove-button',
     ) as NodeListOf<HTMLButtonElement>;
 
-    expect(removeButtons.length).toBe(2);
+    expect(removeButtons).toHaveLength(2);
     expect(removeButtons[0].textContent?.trim()).toBe('Remove alias 1');
     expect(removeButtons[1].textContent?.trim()).toBe('Remove alias 2');
 
@@ -89,7 +89,7 @@ describe('FinesMacCompanyDetailsFormComponent', () => {
       '[formArrayName="fm_company_details_aliases"] legend.govuk-fieldset__legend h2.govuk-heading-m',
     ) as NodeListOf<HTMLHeadingElement>;
 
-    expect(aliasHeadings.length).toBe(2);
+    expect(aliasHeadings).toHaveLength(2);
     expect(aliasHeadings[0].textContent?.trim()).toBe('Alias 1 of 2');
     expect(aliasHeadings[1].textContent?.trim()).toBe('Alias 2 of 2');
 
@@ -119,9 +119,9 @@ describe('FinesMacCompanyDetailsFormComponent', () => {
 
     const addButton = aliasContainer.querySelector('#addAlias');
 
-    expect(component.aliasControls.length).toBe(1);
+    expect(component.aliasControls).toHaveLength(1);
     expect(aliasHeading?.textContent?.trim()).toBe('Alias 1');
-    expect(removeButtons.length).toBe(0);
+    expect(removeButtons).toHaveLength(0);
     expect(addButton).not.toBeNull();
   });
 
@@ -150,7 +150,7 @@ describe('FinesMacCompanyDetailsFormComponent', () => {
       'button.moj-add-another__remove-button',
     ) as NodeListOf<HTMLButtonElement>;
 
-    expect(component.aliasControls.length).toBe(3);
+    expect(component.aliasControls).toHaveLength(3);
 
     expect(Array.from(headings, (heading) => heading.textContent?.trim())).toEqual([
       'Alias 1 of 3',
@@ -267,7 +267,7 @@ describe('FinesMacCompanyDetailsFormComponent', () => {
 
     const inputIds = Array.from(aliasInputs, (input) => input.id);
 
-    expect(aliasInputs.length).toBe(3);
+    expect(aliasInputs).toHaveLength(3);
     expect(new Set(inputIds).size).toBe(inputIds.length);
   });
 
@@ -290,7 +290,7 @@ describe('FinesMacCompanyDetailsFormComponent', () => {
     component.removeAndRenumberAlias(1);
     fixture.detectChanges();
 
-    expect(aliases.length).toBe(2);
+    expect(aliases).toHaveLength(2);
 
     expect(aliases.at(0).get('fm_company_details_alias_company_name_0')).toBe(firstControl);
     expect(aliases.at(1).get('fm_company_details_alias_company_name_1')).toBe(thirdControl);
@@ -340,7 +340,7 @@ describe('FinesMacCompanyDetailsFormComponent', () => {
       'button.moj-add-another__remove-button',
     ) as NodeListOf<HTMLButtonElement>;
 
-    expect(removeButtons.length).toBe(2);
+    expect(removeButtons).toHaveLength(2);
 
     removeButtons[1].click();
     fixture.detectChanges();
@@ -349,11 +349,11 @@ describe('FinesMacCompanyDetailsFormComponent', () => {
       'legend.govuk-fieldset__legend h2.govuk-heading-m',
     ) as NodeListOf<HTMLHeadingElement>;
 
-    expect(component.aliasControls.length).toBe(1);
-    expect(headings.length).toBe(1);
+    expect(component.aliasControls).toHaveLength(1);
+    expect(headings).toHaveLength(1);
     expect(headings[0].textContent?.trim()).toBe('Alias 1');
 
-    expect(aliasContainer.querySelectorAll('button.moj-add-another__remove-button').length).toBe(0);
+    expect(aliasContainer.querySelectorAll('button.moj-add-another__remove-button')).toHaveLength(0);
     expect(aliasContainer.querySelector('#addAlias')).not.toBeNull();
   });
 
@@ -378,7 +378,7 @@ describe('FinesMacCompanyDetailsFormComponent', () => {
       'button.moj-add-another__remove-button',
     ) as NodeListOf<HTMLButtonElement>;
 
-    expect(removeButtons.length).toBe(2);
+    expect(removeButtons).toHaveLength(2);
 
     removeButtons[0].click();
     fixture.detectChanges();
@@ -387,9 +387,9 @@ describe('FinesMacCompanyDetailsFormComponent', () => {
       'legend.govuk-fieldset__legend h2.govuk-heading-m',
     ) as HTMLHeadingElement | null;
 
-    expect(component.aliasControls.length).toBe(1);
+    expect(component.aliasControls).toHaveLength(1);
     expect(heading?.textContent?.trim()).toBe('Alias 1');
-    expect(aliasContainer.querySelectorAll('button.moj-add-another__remove-button').length).toBe(0);
+    expect(aliasContainer.querySelectorAll('button.moj-add-another__remove-button')).toHaveLength(0);
     expect(aliasContainer.querySelector('#addAlias')).not.toBeNull();
 
     expect(aliases.at(0).get('fm_company_details_alias_company_name_0')?.value).toBe('SECOND COMPANY');
@@ -420,7 +420,7 @@ describe('FinesMacCompanyDetailsFormComponent', () => {
       'button.moj-add-another__remove-button',
     ) as NodeListOf<HTMLButtonElement>;
 
-    expect(removeButtons.length).toBe(3);
+    expect(removeButtons).toHaveLength(3);
 
     removeButtons[0].click();
     fixture.detectChanges();
@@ -442,6 +442,124 @@ describe('FinesMacCompanyDetailsFormComponent', () => {
 
     expect(aliases.at(0).get('fm_company_details_alias_company_name_0')?.value).toBe('SECOND COMPANY');
     expect(aliases.at(1).get('fm_company_details_alias_company_name_1')?.value).toBe('THIRD COMPANY');
+
+    // Editing the surviving first alias must not overwrite the second alias.
+    const firstInput = aliasContainer.querySelector('#fm_company_details_alias_company_name_0') as HTMLInputElement;
+
+    const secondInput = aliasContainer.querySelector('#fm_company_details_alias_company_name_1') as HTMLInputElement;
+
+    expect(firstInput).not.toBeNull();
+    expect(secondInput).not.toBeNull();
+
+    firstInput.value = 'edited';
+    firstInput.dispatchEvent(new Event('input', { bubbles: true }));
+    fixture.detectChanges();
+
+    expect(aliases.at(0).get('fm_company_details_alias_company_name_0')?.value).toBe('EDITED');
+    expect(aliases.at(1).get('fm_company_details_alias_company_name_1')?.value).toBe('THIRD COMPANY');
+    expect(secondInput.value).toBe('THIRD COMPANY');
+  });
+
+  it('should update displayed validation errors after removing the first alias', () => {
+    globalStore.setFeatureFlags({
+      [RELEASE_1A_1_2_FEATURE_FLAG]: true,
+    });
+
+    component.form.get('fm_company_details_add_alias')?.setValue(true);
+
+    while (component.aliasControls.length < 3) {
+      component.addAlias(component.aliasControls.length, 'fm_company_details_aliases');
+    }
+
+    const aliases = component.form.get('fm_company_details_aliases') as FormArray;
+
+    aliases.at(0).get('fm_company_details_alias_company_name_0')?.setValue('FIRST');
+    aliases.at(1).get('fm_company_details_alias_company_name_1')?.setValue('');
+    aliases.at(2).get('fm_company_details_alias_company_name_2')?.setValue('');
+
+    component.handleFormSubmit({ submitter: { className: '' } } as SubmitEvent);
+    fixture.detectChanges();
+
+    expect(component.formErrorSummaryMessage).toContainEqual({
+      fieldId: 'fm_company_details_alias_company_name_1',
+      message: 'Enter alias 2 company name',
+    });
+
+    expect(component.formErrorSummaryMessage).toContainEqual({
+      fieldId: 'fm_company_details_alias_company_name_2',
+      message: 'Enter alias 3 company name',
+    });
+
+    const container = fixture.nativeElement.querySelector(
+      '[formArrayName="fm_company_details_aliases"]',
+    ) as HTMLElement;
+
+    const removeButtons = container.querySelectorAll(
+      'button.moj-add-another__remove-button',
+    ) as NodeListOf<HTMLButtonElement>;
+
+    removeButtons[0].click();
+    fixture.detectChanges();
+
+    expect(aliases).toHaveLength(2);
+
+    expect(component.formErrorSummaryMessage).toEqual(
+      expect.arrayContaining([
+        {
+          fieldId: 'fm_company_details_alias_company_name_0',
+          message: 'Enter alias 1 company name',
+        },
+        {
+          fieldId: 'fm_company_details_alias_company_name_1',
+          message: 'Enter alias 2 company name',
+        },
+      ]),
+    );
+
+    expect(
+      component.formErrorSummaryMessage.some((error) => error.fieldId === 'fm_company_details_alias_company_name_2'),
+    ).toBe(false);
+
+    expect(component.formControlErrorMessages['fm_company_details_alias_company_name_0']).toBe(
+      'Enter alias 1 company name',
+    );
+    expect(component.formControlErrorMessages['fm_company_details_alias_company_name_1']).toBe(
+      'Enter alias 2 company name',
+    );
+  });
+
+  it('should not display validation errors when removing an alias before submission', () => {
+    globalStore.setFeatureFlags({
+      [RELEASE_1A_1_2_FEATURE_FLAG]: true,
+    });
+
+    component.form.get('fm_company_details_add_alias')?.setValue(true);
+
+    while (component.aliasControls.length < 2) {
+      component.addAlias(component.aliasControls.length, 'fm_company_details_aliases');
+    }
+
+    fixture.detectChanges();
+
+    expect(component.formErrorSummaryMessage).toHaveLength(0);
+
+    const aliasContainer = fixture.nativeElement.querySelector(
+      '[formArrayName="fm_company_details_aliases"]',
+    ) as HTMLElement;
+
+    const removeButtons = aliasContainer.querySelectorAll<HTMLButtonElement>('button.moj-add-another__remove-button');
+
+    expect(removeButtons).toHaveLength(2);
+
+    removeButtons[1].click();
+    fixture.detectChanges();
+
+    expect(component.aliasControls).toHaveLength(1);
+    expect(component.formErrorSummaryMessage).toHaveLength(0);
+
+    expect(Object.values(component.formControlErrorMessages).filter((message) => message != null)).toHaveLength(0);
+
+    expect(fixture.nativeElement.querySelector('.govuk-error-summary')).toBeNull();
   });
 
   it('should renumber remaining aliases when removing the final alias from three', () => {
@@ -470,7 +588,7 @@ describe('FinesMacCompanyDetailsFormComponent', () => {
       'button.moj-add-another__remove-button',
     ) as NodeListOf<HTMLButtonElement>;
 
-    expect(removeButtons.length).toBe(3);
+    expect(removeButtons).toHaveLength(3);
 
     removeButtons[2].click();
     fixture.detectChanges();
@@ -483,7 +601,7 @@ describe('FinesMacCompanyDetailsFormComponent', () => {
       'button.moj-add-another__remove-button',
     ) as NodeListOf<HTMLButtonElement>;
 
-    expect(component.aliasControls.length).toBe(2);
+    expect(component.aliasControls).toHaveLength(2);
 
     expect(Array.from(headings, (heading) => heading.textContent?.trim())).toEqual(['Alias 1 of 2', 'Alias 2 of 2']);
 
@@ -525,7 +643,7 @@ describe('FinesMacCompanyDetailsFormComponent', () => {
       'button.moj-add-another__remove-button',
     ) as NodeListOf<HTMLButtonElement>;
 
-    expect(removeButtons.length).toBe(3);
+    expect(removeButtons).toHaveLength(3);
 
     // Remove Alias 2 (the middle alias).
     removeButtons[1].click();
@@ -539,7 +657,7 @@ describe('FinesMacCompanyDetailsFormComponent', () => {
       'button.moj-add-another__remove-button',
     ) as NodeListOf<HTMLButtonElement>;
 
-    expect(component.aliasControls.length).toBe(2);
+    expect(component.aliasControls).toHaveLength(2);
 
     expect(Array.from(headings, (heading) => heading.textContent?.trim())).toEqual(['Alias 1 of 2', 'Alias 2 of 2']);
 

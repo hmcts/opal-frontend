@@ -1,7 +1,9 @@
 import {
   ChangeDetectionStrategy,
   Component,
+  ElementRef,
   EventEmitter,
+  Injector,
   OnDestroy,
   OnInit,
   Output,
@@ -9,11 +11,19 @@ import {
   inject,
 } from '@angular/core';
 import { AbstractFormAliasBaseComponent } from '@hmcts/opal-frontend-common/components/abstract/abstract-form-alias-base';
-import { FormArray, FormControl, FormGroup, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
+import {
+  AbstractControl,
+  FormArray,
+  FormControl,
+  FormGroup,
+  FormsModule,
+  ReactiveFormsModule,
+  Validators,
+} from '@angular/forms';
 import { GlobalStore } from '@hmcts/opal-frontend-common/stores/global';
 import { RELEASE_1A_1_2_FEATURE_FLAG } from '../../../constants/release-feature-flags.constant';
 import { getFeatureFlagReleaseState } from '../../../utils/fines-section-permissions.utils';
-import { removeAndRenumberAliasControls } from '../../../utils/fines-alias-renumbering.utils';
+import { removeAliasAndRestoreState } from '../../../utils/fines-alias-renumbering.utils';
 import { IFinesMacParentGuardianDetailsFieldErrors } from '../interfaces/fines-mac-parent-guardian-details-field-errors.interface';
 import { IFinesMacParentGuardianDetailsForm } from '../interfaces/fines-mac-parent-guardian-details-form.interface';
 import { FINES_MAC_PARENT_GUARDIAN_DETAILS_ALIAS } from '../constants/fines-mac-parent-guardian-details-alias';
@@ -74,6 +84,8 @@ export class FinesMacParentGuardianDetailsFormComponent
 {
   private readonly finesMacStore = inject(FinesMacStore);
   private readonly globalStore = inject(GlobalStore);
+  private readonly injector = inject(Injector);
+  private readonly elementRef = inject<ElementRef<HTMLElement>>(ElementRef);
 
   @Output() protected override formSubmit = new EventEmitter<IFinesMacParentGuardianDetailsForm>();
   protected readonly dateService = inject(DateService);
@@ -164,16 +176,27 @@ export class FinesMacParentGuardianDetailsFormComponent
    * all remaining alias controls.
    * Preserves existing FormControl instances, values and validators.
    */
+
   public removeAndRenumberAlias(index: number): void {
     const formArrayName = 'fm_parent_guardian_details_aliases';
 
-    this.aliasControls = removeAndRenumberAliasControls(
-      this.form.get(formArrayName) as FormArray,
-      this.aliasFields,
+    this.aliasControls = removeAliasAndRestoreState({
+      aliases: this.form.get(formArrayName) as FormArray,
+      aliasFields: this.aliasFields,
       index,
-      (aliasIndex) => this.removeAlias(aliasIndex, formArrayName),
-      (rowIndex) => this.createAliasControls(this.aliasFields, rowIndex),
-    );
+      formArrayName,
+      errorSummaryCount: this.formErrorSummaryMessage.length,
+      errorMessages: this.formControlErrorMessages,
+      removeAlias: (aliasIndex) => this.removeAlias(aliasIndex, formArrayName),
+      createAliasControls: (rowIndex) => this.createAliasControls(this.aliasFields, rowIndex),
+      refreshErrors: () => this.handleErrorMessages(),
+      elementRef: this.elementRef,
+      injector: this.injector,
+    });
+  }
+
+  public get aliasFormGroups(): AbstractControl[] {
+    return (this.form.get('fm_parent_guardian_details_aliases') as FormArray).controls;
   }
 
   public override ngOnInit(): void {

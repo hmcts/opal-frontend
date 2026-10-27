@@ -1,7 +1,9 @@
 import {
   ChangeDetectionStrategy,
   Component,
+  ElementRef,
   EventEmitter,
+  Injector,
   Input,
   OnDestroy,
   OnInit,
@@ -13,8 +15,16 @@ import { AbstractFormAliasBaseComponent } from '@hmcts/opal-frontend-common/comp
 import { GlobalStore } from '@hmcts/opal-frontend-common/stores/global';
 import { RELEASE_1A_1_2_FEATURE_FLAG } from '../../../constants/release-feature-flags.constant';
 import { getFeatureFlagReleaseState } from '../../../utils/fines-section-permissions.utils';
-import { removeAndRenumberAliasControls } from '../../../utils/fines-alias-renumbering.utils';
-import { FormGroup, FormControl, Validators, FormArray, FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { removeAliasAndRestoreState } from '../../../utils/fines-alias-renumbering.utils';
+import {
+  AbstractControl,
+  FormGroup,
+  FormControl,
+  Validators,
+  FormArray,
+  FormsModule,
+  ReactiveFormsModule,
+} from '@angular/forms';
 import { IFinesMacCompanyDetailsForm } from '../interfaces/fines-mac-company-details-form.interface';
 import { IFinesMacCompanyDetailsFieldErrors } from '../interfaces/fines-mac-company-details-field-errors.interface';
 import { FINES_MAC_COMPANY_DETAILS_ALIAS } from '../constants/fines-mac-company-details-alias';
@@ -65,6 +75,8 @@ const ALPHANUMERIC_WITH_SPACES_PATTERN_VALIDATOR = patternValidator(
 export class FinesMacCompanyDetailsFormComponent extends AbstractFormAliasBaseComponent implements OnInit, OnDestroy {
   private readonly finesMacStore = inject(FinesMacStore);
   private readonly globalStore = inject(GlobalStore);
+  private readonly injector = inject(Injector);
+  private readonly elementRef = inject<ElementRef<HTMLElement>>(ElementRef);
 
   @Output() protected override formSubmit = new EventEmitter<IFinesMacCompanyDetailsForm>();
 
@@ -141,16 +153,27 @@ export class FinesMacCompanyDetailsFormComponent extends AbstractFormAliasBaseCo
    * Removes the selected company alias and renumbers the remaining controls.
    * Preserves existing FormControl instances and their values.
    */
+
   public removeAndRenumberAlias(index: number): void {
     const formArrayName = 'fm_company_details_aliases';
 
-    this.aliasControls = removeAndRenumberAliasControls(
-      this.form.get(formArrayName) as FormArray,
-      this.aliasFields,
+    this.aliasControls = removeAliasAndRestoreState({
+      aliases: this.form.get(formArrayName) as FormArray,
+      aliasFields: this.aliasFields,
       index,
-      (aliasIndex) => this.removeAlias(aliasIndex, formArrayName),
-      (rowIndex) => this.createAliasControls(this.aliasFields, rowIndex),
-    );
+      formArrayName,
+      errorSummaryCount: this.formErrorSummaryMessage.length,
+      errorMessages: this.formControlErrorMessages,
+      removeAlias: (aliasIndex) => this.removeAlias(aliasIndex, formArrayName),
+      createAliasControls: (rowIndex) => this.createAliasControls(this.aliasFields, rowIndex),
+      refreshErrors: () => this.handleErrorMessages(),
+      elementRef: this.elementRef,
+      injector: this.injector,
+    });
+  }
+
+  public get aliasFormGroups(): AbstractControl[] {
+    return (this.form.get('fm_company_details_aliases') as FormArray).controls;
   }
 
   public override ngOnInit(): void {

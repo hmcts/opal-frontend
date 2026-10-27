@@ -31,7 +31,7 @@
       [class.moj-add-another]="release1a1_2Enabled()"
     >
       <div [class.moj-add-another__items]="release1a1_2Enabled()">
-        @for (aliasControl of aliasControls; let rowIndex = $index; track rowIndex) {
+        @for (aliasGroup of aliasFormGroups; let rowIndex = $index; track aliasGroup) {
           <div [class.moj-add-another__item]="release1a1_2Enabled()">
             <fieldset class="govuk-fieldset" [class.moj-add-another__fieldset]="release1a1_2Enabled()">
               <legend
