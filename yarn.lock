@@ -3724,18 +3724,18 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@hmcts/opal-frontend-common-cypress@npm:^0.0.3":
-  version: 0.0.3
-  resolution: "@hmcts/opal-frontend-common-cypress@npm:0.0.3"
+"@hmcts/opal-frontend-common-cypress@npm:0.0.5":
+  version: 0.0.5
+  resolution: "@hmcts/opal-frontend-common-cypress@npm:0.0.5"
   peerDependencies:
-    "@badeball/cypress-cucumber-preprocessor": ">=18 <25"
-    cypress: ">=12 <16"
-    cypress-mochawesome-reporter: ">=3 <5"
+    "@badeball/cypress-cucumber-preprocessor": ">=18 <29"
+    cypress: ">=12 <17"
+    cypress-mochawesome-reporter: ">=3 <6"
     cypress-multi-reporters: ">=1 <3"
     cypress-parallel: ">=0.14 <1"
     junit-report-merger: ">=7 <10"
     mocha-junit-reporter: ">=2 <3"
-    mochawesome: ">=7 <8"
+    mochawesome: ">=7 <9"
     mochawesome-merge: ">=4 <6"
     mochawesome-report-generator: ">=6 <7"
     typescript: ">=5 <7"
@@ -3775,7 +3775,7 @@ __metadata:
     opal-cypress-find-unused-steps: dist/bin/find-unused-steps.js
     opal-cypress-resolve-placeholder-jira-epics: dist/bin/resolve-placeholder-jira-epics.js
     opal-cypress-runner: dist/bin/run-test-suite.js
-  checksum: 10/d1c9a4dae0817f08f4251612a4bc3c229f31cb3fd6d52fff4f69e8cf56a594c2bba40ecf146bda7c0b1c5e3433c8b3410de965230fd290318290c01af257b33b
+  checksum: 10/a0b35dcb783cd9827950d5c320105371cfdee998eec79e9800b2fbbf4d23653000c223948877a2b9b9f53ef633e651f5ad0a02e02e81980fe8dc3d83e96de028
   languageName: node
   linkType: hard
 
@@ -15672,7 +15672,7 @@ __metadata:
     "@hmcts/nodejs-healthcheck": "npm:^1.8.5"
     "@hmcts/nodejs-logging": "npm:^4.0.4"
     "@hmcts/opal-frontend-common": "npm:0.0.114"
-    "@hmcts/opal-frontend-common-cypress": "npm:^0.0.3"
+    "@hmcts/opal-frontend-common-cypress": "npm:0.0.5"
     "@hmcts/opal-frontend-common-node": "npm:^0.0.45"
     "@hmcts/properties-volume": "npm:^1.1.0"
     "@hmcts/zephyr-automation-nodejs": "npm:0.0.8"
