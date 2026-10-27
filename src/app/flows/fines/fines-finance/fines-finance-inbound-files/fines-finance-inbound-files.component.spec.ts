@@ -46,6 +46,20 @@ describe('FinesFinanceInboundFilesComponent', () => {
     return { createObjectURL, revokeObjectURL, filenames, links };
   };
 
+  /**
+   * Waits for the shared autocomplete's lazy initializer to create its visible input.
+   * @param filter - Filter input identifier between the common prefix and suffix.
+   * @returns The initialized autocomplete input.
+   */
+  const getFilterInput = (filter: string): Promise<HTMLInputElement> =>
+    vi.waitFor(() => {
+      const input = fixture.nativeElement.querySelector(
+        '#custom-file-interface-viewer-' + filter + '-autocomplete',
+      ) as HTMLInputElement | null;
+      expect(input).not.toBeNull();
+      return input!;
+    });
+
   beforeEach(async () => {
     vi.useFakeTimers({ toFake: ['Date'] });
     vi.setSystemTime(new Date('2026-10-20T12:00:00Z'));
@@ -101,8 +115,8 @@ describe('FinesFinanceInboundFilesComponent', () => {
     expect(component.tableData()).toBeNull();
     expect(fixture.nativeElement.textContent).not.toContain('There are no inbound interface files to display.');
     request.flush({ number_of_results: 0, interface_files: [] });
+    TestBed.tick();
     await fixture.whenStable();
-    await vi.dynamicImportSettled();
     const filters = fixture.debugElement.query(By.directive(CustomFileInterfaceViewerFiltersComponent))
       .componentInstance as CustomFileInterfaceViewerFiltersComponent;
     expect(filters.filtersForm.getRawValue()).toEqual({
@@ -121,13 +135,7 @@ describe('FinesFinanceInboundFilesComponent', () => {
       (fixture.nativeElement.querySelector('input[type="radio"][value="last7Days"]') as HTMLInputElement).checked,
     ).toBe(true);
     for (const filter of ['business-unit', 'source', 'type']) {
-      expect(
-        (
-          fixture.nativeElement.querySelector(
-            '#custom-file-interface-viewer-' + filter + '-autocomplete',
-          ) as HTMLInputElement
-        ).value,
-      ).toBe('');
+      expect((await getFilterInput(filter)).value).toBe('');
     }
     expect(filters.source).toHaveLength(11);
     expect(filters.source.some((item) => ['OPAL', 'OTHER', 'VARIANT_BANKING'].includes(String(item.value)))).toBe(
@@ -335,9 +343,8 @@ describe('FinesFinanceInboundFilesComponent', () => {
     httpMock
       .expectOne((req) => req.url === '/opal-file-handling-service/interface-files')
       .flush(FINES_FINANCE_INBOUND_FILES_RESPONSE_MOCK);
-    fixture.detectChanges();
+    TestBed.tick();
     await fixture.whenStable();
-    await vi.dynamicImportSettled();
     const filters = fixture.debugElement.query(By.directive(CustomFileInterfaceViewerFiltersComponent))
       .componentInstance as CustomFileInterfaceViewerFiltersComponent;
 
@@ -348,9 +355,7 @@ describe('FinesFinanceInboundFilesComponent', () => {
      * @returns A promise resolving after the form control is updated.
      */
     const selectFilterOption = async (filter: string, name: string): Promise<void> => {
-      const input = fixture.nativeElement.querySelector(
-        '#custom-file-interface-viewer-' + filter + '-autocomplete',
-      ) as HTMLInputElement;
+      const input = await getFilterInput(filter);
       input.value = '';
       input.dispatchEvent(new Event('input', { bubbles: true }));
       input.click();
