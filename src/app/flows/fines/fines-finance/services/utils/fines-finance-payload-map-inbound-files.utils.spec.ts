@@ -109,17 +109,15 @@ describe('mapInboundFilesToTableData', () => {
     ['2026-10-20T12:00:00', '20 Oct 2026 at 13:00', Date.parse('2026-10-20T12:00:00Z')],
     ['2026-10-20T12:00:00Z', '20 Oct 2026 at 13:00', Date.parse('2026-10-20T12:00:00Z')],
     ['2026-10-20T13:00:00+01:00', '20 Oct 2026 at 13:00', Date.parse('2026-10-20T12:00:00Z')],
+    ['2026-10-20T13:30:00+0130', '20 Oct 2026 at 13:00', Date.parse('2026-10-20T12:00:00Z')],
     ['2026-10-20T07:00:00-0500', '20 Oct 2026 at 13:00', Date.parse('2026-10-20T12:00:00Z')],
     ['2026-10-20T12:00:00.123456', '20 Oct 2026 at 13:00', Date.parse('2026-10-20T12:00:00.123Z')],
     ['2026-12-20T12:00:00Z', '20 Dec 2026 at 12:00', Date.parse('2026-12-20T12:00:00Z')],
     ['invalid-time', 'invalid-time', null],
     ['', '', null],
+    [null, null, null],
   ])('maps timestamp %s to local display and chronological milliseconds', (timestamp, display, milliseconds) => {
-    const row = mapInboundFilesToTableData(
-      [{ ...file, created_datetime: timestamp as string }],
-      options,
-      dateService,
-    )[0];
+    const row = mapInboundFilesToTableData([{ ...file, created_datetime: timestamp }], options, dateService)[0];
     expect(row.dateTimeDisplay).toBe(display);
     expect(row['Date and time']).toBe(milliseconds);
   });

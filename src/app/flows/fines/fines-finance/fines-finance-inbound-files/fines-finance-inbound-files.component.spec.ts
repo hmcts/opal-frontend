@@ -465,6 +465,29 @@ describe('FinesFinanceInboundFilesComponent', () => {
     expect(fixture.nativeElement.querySelector('#interface-file-download-1001')).toBeNull();
   });
 
+  it.each([null, ''])('downloads a file with title %j using its file ID as the fallback filename', (title) => {
+    const { filenames, links } = mockFileSave();
+    fixture.detectChanges();
+    httpMock
+      .expectOne((req) => req.url === '/opal-file-handling-service/interface-files')
+      .flush({
+        number_of_results: 1,
+        interface_files: [{ ...FINES_FINANCE_INBOUND_FILES_RESPONSE_MOCK.interface_files![0], file_name: title }],
+      });
+    fixture.detectChanges();
+    const download = fixture.nativeElement.querySelector('#interface-file-download-1001') as HTMLAnchorElement;
+    const saveLink = fixture.nativeElement.querySelector('a[hidden]') as HTMLAnchorElement;
+    expect(download.getAttribute('aria-label')).toBe('Download interface file 1001');
+
+    expect(download.dispatchEvent(new MouseEvent('click', { bubbles: true, cancelable: true }))).toBe(false);
+    httpMock
+      .expectOne('/opal-file-handling-service/interface-files/1001/content')
+      .flush(new Blob(['<interfaceFile />'], { type: 'application/octet-stream' }));
+
+    expect(filenames).toEqual(['interface-file-1001']);
+    expect(links).toEqual([saveLink]);
+  });
+
   it('focuses download errors, returns to the action and retries without changing rows', async () => {
     const { filenames } = mockFileSave();
     fixture.detectChanges();
