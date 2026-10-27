@@ -25,9 +25,9 @@ function getDisplayName(value: string | null, options: IAlphagovAccessibleAutoco
  * @returns A sort value and local display text, retaining invalid text for display.
  */
 function getFileDateTime(timestamp: string | null, dateService: DateService): FinesFinanceInboundFileDateTime {
-  const dateTime = timestamp
-    ? dateService.getFromIso(FINES_FINANCE_INBOUND_FILES_TIMEZONE_PATTERN.test(timestamp) ? timestamp : timestamp + 'Z')
-    : null;
+  const zonedTimestamp =
+    timestamp && !FINES_FINANCE_INBOUND_FILES_TIMEZONE_PATTERN.test(timestamp) ? timestamp + 'Z' : timestamp;
+  const dateTime = zonedTimestamp ? dateService.getFromIso(zonedTimestamp) : null;
   return {
     'Date and time': dateTime?.isValid ? dateTime.toMillis() : null,
     dateTimeDisplay: dateTime?.isValid
