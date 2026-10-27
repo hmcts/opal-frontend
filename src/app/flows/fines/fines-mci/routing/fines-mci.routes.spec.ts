@@ -124,6 +124,14 @@ describe('finesMci routes', () => {
     expect(createTillRoute?.data).toEqual(PRIMARY_NAV_HIDDEN_ROUTE_DATA);
   });
 
+  it('should guard navigation away from payment category when a radio option has been selected', () => {
+    const paymentCategoryRoute = createTillRoute?.children?.find(
+      (route) => route.path === FINES_MCI_ROUTING_PATHS.children.paymentCategory,
+    );
+
+    expect(paymentCategoryRoute?.canDeactivate).toEqual([canDeactivateGuard]);
+  });
+
   it.each([
     ['search', FINES_MCI_ROUTING_TITLES.children.paymentCategoryCriminalSearch],
     ['matches', FINES_MCI_ROUTING_TITLES.children.paymentCategoryCriminalMatches],
