@@ -9,6 +9,8 @@ import { FINES_CON_SELECT_BU_FORM_DATA_MOCK } from 'src/app/flows/fines/fines-co
 import { FinesConStore } from 'src/app/flows/fines/fines-con/stores/fines-con.store';
 import { IFinesConSearchAccountState } from 'src/app/flows/fines/fines-con/consolidate-acc/fines-con-search-account/interfaces/fines-con-search-account-state.interface';
 import { IComponentProperties } from './setupComponent.interface';
+import { GlobalStore } from '@hmcts/opal-frontend-common/stores/global';
+import { RELEASE_1A_1_2_FEATURE_FLAG } from 'src/app/flows/fines/constants/release-feature-flags.constant';
 
 export const setupConsolidationComponent = (componentProperties: IComponentProperties = {}) => {
   const fragment = componentProperties.fragments ?? 'search';
@@ -49,6 +51,14 @@ export const setupConsolidationComponent = (componentProperties: IComponentPrope
             };
           }
 
+          return store;
+        },
+      },
+      {
+        provide: GlobalStore,
+        useFactory: () => {
+          const store = new GlobalStore();
+          store.setFeatureFlags({ [RELEASE_1A_1_2_FEATURE_FLAG]: true });
           return store;
         },
       },

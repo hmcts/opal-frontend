@@ -1,5 +1,8 @@
 import { mount } from 'cypress/angular';
 import { ActivatedRoute } from '@angular/router';
+import { GlobalStore } from '@hmcts/opal-frontend-common/stores/global';
+import { RELEASE_1A_1_2_FEATURE_FLAG } from '../../../../../../src/app/flows/fines/constants/release-feature-flags.constant';
+import { buildFinesMacGlobalStore } from 'cypress/component/CommonSetup/FinesMac/FinesMacSetup';
 import { MacOffenceDetailsSearchOffenceResultsLocators as DOM_ELEMENTS } from '../../../../../shared/selectors/manual-account-creation/mac.offence-details.locators';
 import { provideHttpClient } from '@angular/common/http';
 import { NO_SEARCH_RESULTS_MOCK, TEST_CASES_MOCK, FULL_SEARCH_RESULTS_MOCK } from './mocks/offence_search_results_mock';
@@ -46,6 +49,15 @@ describe('FinesMacOffenceDetailsSearchOffencesResultsComponent', () => {
       providers: [
         provideHttpClient(),
         OpalFines,
+        {
+          provide: GlobalStore,
+          useFactory: () =>
+            buildFinesMacGlobalStore({
+              featureFlags: {
+                [RELEASE_1A_1_2_FEATURE_FLAG]: true,
+              },
+            }),
+        },
         {
           provide: FinesMacOffenceDetailsSearchOffencesStore,
           useFactory: () => {
@@ -123,19 +135,20 @@ describe('FinesMacOffenceDetailsSearchOffencesResultsComponent', () => {
   );
 
   it(
-    'Displays "Copy Code" link between Code and Short Title columns (AC5)',
+    'Displays "Copy code" button in the Actions column (AC5)',
     { tags: [...buildTags('@JIRA-STORY:PO-987'), '@JIRA-EPIC:PO-545', '@JIRA-TEST-KEY:PO-5071'] },
     () => {
       setupComponent();
 
-      cy.get(DOM_ELEMENTS.copyCodeLink).first().should('exist');
-      cy.get(DOM_ELEMENTS.copyCodeLink).first().should('contain', 'Copy code');
+      cy.get(DOM_ELEMENTS.copyCodeButton).first().should('exist');
+      cy.get(DOM_ELEMENTS.copyCodeButton).first().should('have.attr', 'type', 'button');
+      cy.get(DOM_ELEMENTS.copyCodeButton).first().should('contain', 'Copy code');
 
-      cy.get(DOM_ELEMENTS.copyCodeLink).first().click();
+      cy.get(DOM_ELEMENTS.copyCodeButton).first().click();
 
       cy.get('@clipboardWriteText').should('have.been.called');
 
-      cy.get(DOM_ELEMENTS.copyCodeLink).first().should('contain', 'Code copied');
+      cy.get(DOM_ELEMENTS.copyCodeButton).first().should('contain', 'Code copied');
     },
   );
 

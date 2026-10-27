@@ -3,20 +3,10 @@ import { IOpalFinesInterfaceJobSummary } from '@services/fines/opal-fines-servic
 import { IOpalFinesInterfaceJobsSummaryResponse } from '@services/fines/opal-fines-service/interfaces/opal-fines-interface-jobs-summary-response.interface';
 import { FINES_API_PROCESS_FILES_TABLE_WRAPPER_CONTENT } from '../../fines-api-process-allocate/fines-api-process-tab/fines-api-process-files-table-wrapper/constants/fines-api-process-files-table-wrapper-content.constant';
 import { IFinesApiProcessFilesTableWrapperTableData } from '../../fines-api-process-allocate/fines-api-process-tab/fines-api-process-files-table-wrapper/interfaces/fines-api-process-files-table-wrapper-table-data.interface';
-import { FINES_API_INTERFACE_JOB_SOURCE_LABELS } from '../constants/fines-api-interface-job-source-labels.constant';
 
 export const FINES_API_INTERFACE_JOBS_MAX_RESULTS = 500;
 
 const DATE_UPLOADED_OUTPUT_FORMAT = "dd MMMM yyyy 'at' HH:mm";
-
-/**
- * Maps an interface source code to the label shown on the Process tab.
- *
- * Unknown source values are returned unchanged so newly introduced sources remain visible.
- */
-const formatSource = (source: string): string => {
-  return FINES_API_INTERFACE_JOB_SOURCE_LABELS[source.trim().toUpperCase()] ?? source;
-};
 
 /**
  * Converts a UTC ISO timestamp into the local date/time label and numeric table sort value.
@@ -57,14 +47,21 @@ export const extractInterfaceJobs = (response: unknown): IOpalFinesInterfaceJobS
  * Maps raw interface job summaries into sortable Process table rows.
  *
  * The API response order is retained until a user explicitly selects a sortable table header.
+ *
+ * @param interfaceJobs Raw interface jobs in backend order.
+ * @param dateService The shared date parser and formatter.
+ * @param sourceLabels Resolved source codes and display names; unknown sources retain their raw value.
+ * @returns Sortable Process rows, limited to the Process result cap.
  */
 export const mapInterfaceJobs = (
   interfaceJobs: IOpalFinesInterfaceJobSummary[],
   dateService: DateService,
+  sourceLabels: ReadonlyMap<string, string>,
 ): IFinesApiProcessFilesTableWrapperTableData[] => {
   return interfaceJobs.slice(0, FINES_API_INTERFACE_JOBS_MAX_RESULTS).map((interfaceJob) => ({
     [FINES_API_PROCESS_FILES_TABLE_WRAPPER_CONTENT.columns.fileName]: interfaceJob.file_name,
-    [FINES_API_PROCESS_FILES_TABLE_WRAPPER_CONTENT.columns.source]: formatSource(interfaceJob.source),
+    [FINES_API_PROCESS_FILES_TABLE_WRAPPER_CONTENT.columns.source]:
+      sourceLabels.get(interfaceJob.source.trim().toUpperCase()) ?? interfaceJob.source,
     [FINES_API_PROCESS_FILES_TABLE_WRAPPER_CONTENT.columns.businessUnit]: interfaceJob.business_unit_name,
     ...mapDateUploaded(interfaceJob.created_datetime, dateService),
     interfaceJobId: interfaceJob.interface_job_id.toString(),

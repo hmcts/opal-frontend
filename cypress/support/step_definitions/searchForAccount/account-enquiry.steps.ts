@@ -1489,7 +1489,7 @@ When('I go to the Impositions tab', () => {
  */
 Then('I should see the defendant account impositions load with the following values:', (table: DataTable) => {
   log('assert', 'Verify defendant account impositions load');
-  impositionsDetails().assertDefendantAccountImpositionsLoaded(table.raw());
+  accountEnquiryFlow().assertDefendantAccountImpositionsLoaded(table);
 });
 
 /**
@@ -1579,7 +1579,11 @@ Then('the enforcement override summary shows:', (table: DataTable) => {
  * @step Asserts the enforcement action summary row value shown on the Enforcement tab.
  */
 Then('the enforcement action summary shows {string}', (expected: string) => {
-  const expectedWithUniq = applyUniqPlaceholder(expected);
+  const expectedForMode =
+    !isOpalMode() && /^collection order\s*\(collo\)$/i.test(expected.trim())
+      ? 'Collection Order Made(COLLO)'
+      : expected;
+  const expectedWithUniq = applyUniqPlaceholder(expectedForMode);
   log('assert', 'Enforcement action summary value', { expected: expectedWithUniq });
   enforcementActions().assertEnforcementActionSummary(expectedWithUniq);
 });

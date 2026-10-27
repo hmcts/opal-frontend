@@ -70,6 +70,7 @@ describe('FinesMacOffenceDetailsReviewOffenceComponent', () => {
     };
     component.impositionRefData = OPAL_FINES_RESULTS_REF_DATA_MOCK;
     component.majorCreditorRefData = OPAL_FINES_MAJOR_CREDITOR_REF_DATA_MOCK;
+    component.headingLevel = 2;
     component.showActions = false;
   });
 
@@ -81,6 +82,7 @@ describe('FinesMacOffenceDetailsReviewOffenceComponent', () => {
     component.offence = structuredClone(FINES_MAC_OFFENCE_DETAILS_FORM_MOCK);
     component.impositionRefData = OPAL_FINES_RESULTS_REF_DATA_MOCK;
     component.majorCreditorRefData = OPAL_FINES_MAJOR_CREDITOR_REF_DATA_MOCK;
+    component.headingLevel = 2;
     component.showActions = false;
   });
 
