@@ -81,7 +81,7 @@ describe('FinesMciCreateAllocateComponent', () => {
     expect(text).toContain(expectedDate);
   });
 
-  it('should map a decimal amount and an omitted payment count from the shared till response', () => {
+  it('should map a decimal amount and an omitted payment count from the till response', () => {
     const states: unknown[] = [];
     component.tillsState$.subscribe((state) => states.push(state));
 
@@ -95,8 +95,8 @@ describe('FinesMciCreateAllocateComponent', () => {
     opalFinesServiceMock.getTills.mockReturnValue(
       of({
         tills: [
-          { ...tillsResponse.tills[0], till_id: 9001, date_processed: null },
-          { ...tillsResponse.tills[0], till_id: 9002, date_processed: 'not-a-date' },
+          { ...tillsResponse.tills[0], till_id: 9001, till_number: 9001, date_processed: null },
+          { ...tillsResponse.tills[0], till_id: 9002, till_number: 9002, date_processed: 'not-a-date' },
         ],
       }),
     );

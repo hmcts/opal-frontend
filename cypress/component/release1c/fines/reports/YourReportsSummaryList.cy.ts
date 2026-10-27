@@ -170,13 +170,13 @@ describe('Your reports summary list', { tags: ['@JIRA-STORY:PO-2314', '@JIRA-EPI
   );
 
   it(
-    'AC4 and AC6: defaults to all business units and last 7 days',
-    { tags: ['@JIRA-STORY:PO-2314', '@JIRA-EPIC:PO-2248'] },
+    'PO-11125: defaults to a blank business unit and Last 7 days',
+    { tags: ['@JIRA-STORY:PO-11125', '@JIRA-EPIC:PO-2248'] },
     () => {
       setupComponent();
 
-      cy.get(L.filters.businessUnit).should('have.value', 'all');
-      cy.get(L.filters.businessUnitAutocomplete).should('have.value', 'All business units');
+      cy.get(L.filters.businessUnit).should('have.value', '');
+      cy.get(L.filters.businessUnitAutocomplete).should('have.value', '');
       cy.get(L.filters.last7Days).should('be.checked');
       cy.get(L.filters.customDays).should('not.be.visible');
       cy.get(L.filters.dateRange).should('not.be.visible');

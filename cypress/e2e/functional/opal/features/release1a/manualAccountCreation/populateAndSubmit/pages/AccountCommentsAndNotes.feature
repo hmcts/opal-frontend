@@ -1,5 +1,5 @@
 @JIRA-LABEL:manual-account-creation
-@ManualAccountCreation @AccountCommentsAndNotes @JIRA-EPIC:PO-272 @JIRA-STORY:PO-469 @JIRA-STORY:PO-499 @JIRA-STORY:PO-500
+@ManualAccountCreation @AccountCommentsAndNotes @extendedTest @JIRA-EPIC:PO-272 @JIRA-STORY:PO-469 @JIRA-STORY:PO-499 @JIRA-STORY:PO-500
 Feature: Account Comments And Notes
   #This feature file contains tests for the Account Comments and Notes page of the Manual Account Creation journey that cannot be exercised in the component tests #
   #Validation tests are primarily contained in the AccountCommentsAndNotesComponent.cy.ts component tests
@@ -42,12 +42,12 @@ Feature: Account Comments And Notes
 
     @R1A @JIRA-TEST-KEY:PO-5398
     Examples:
-      | comment            | note                       |
-      | O'Neil, comment-1. | Plain note                 |
+      | comment            | note       |
+      | O'Neil, comment-1. | Plain note |
     @R1A @JIRA-TEST-KEY:PO-5399
     Examples:
-      | comment            | note                       |
-      | Plain comment      | Account, note-1. O'Neil ok |
+      | comment       | note                       |
+      | Plain comment | Account, note-1. O'Neil ok |
 
   @R1A @JIRA-DEFECT:PO-3713 @JIRA-TEST-KEY:PO-5400 @JIRA-NFR:PO-2549
   Scenario: Account comments and notes show updated allowed character error messages [@PO-3713, @PO-3415]
