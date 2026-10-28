@@ -49,7 +49,7 @@ const openManualCashInput = (
   cy.get(FinanceLocators.manualCashInputLink).click();
   cy.wait('@getManualCashInputTills').then((interception) => {
     expect(interception.request.query).to.deep.include({
-      statuses: ['CREATED', 'FAILED'],
+      statuses: 'CREATED,FAILED',
       auto_payments: 'false',
     });
   });

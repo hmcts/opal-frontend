@@ -1,3 +1,4 @@
+import { IOpalFinesTillsResponse } from '../../services/opal-fines-service/interfaces/opal-fines-tills-response.interface';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { provideRouter } from '@angular/router';
 import { DateService } from '@hmcts/opal-frontend-common/services/date-service';
@@ -13,15 +14,15 @@ describe('FinesMciCreateAllocateComponent', () => {
     getTills: vi.fn(),
   };
 
-  const tillsResponse = {
+  const tillsResponse: IOpalFinesTillsResponse = {
     tills: [
       {
         till_id: 99000000010005,
         till_number: 9005,
-        payments_count: null,
-        amount: null,
+        errors: 0,
+        amount: '125.50',
         business_unit_name: 'Westminster - North (Wells Street)',
-        processed_by: null,
+        processed_by: 'test.operator',
         date_processed: '2025-06-12T13:31:27.270Z',
       },
     ],
@@ -80,12 +81,22 @@ describe('FinesMciCreateAllocateComponent', () => {
     expect(text).toContain(expectedDate);
   });
 
+  it('should map a decimal amount and an omitted payment count from the till response', () => {
+    const states: unknown[] = [];
+    component.tillsState$.subscribe((state) => states.push(state));
+
+    expect(states.at(-1)).toEqual({
+      status: 'success',
+      tills: [expect.objectContaining({ tillId: '99000000010005', Amount: 125.5, Payments: null })],
+    });
+  });
+
   it('should handle tills with missing or invalid processed dates', () => {
     opalFinesServiceMock.getTills.mockReturnValue(
       of({
         tills: [
-          { ...tillsResponse.tills[0], till_id: 9001, date_processed: null },
-          { ...tillsResponse.tills[0], till_id: 9002, date_processed: 'not-a-date' },
+          { ...tillsResponse.tills[0], till_id: 9001, till_number: 9001, date_processed: null },
+          { ...tillsResponse.tills[0], till_id: 9002, till_number: 9002, date_processed: 'not-a-date' },
         ],
       }),
     );
