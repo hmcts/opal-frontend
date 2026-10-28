@@ -19,28 +19,43 @@ export const FinesMciStore = signalStore(
     businessUnit: null as IOpalFinesBusinessUnit | null,
     tills: [] as IFinesMciTill[],
   })),
-  withMethods((store) => ({
-    setBusinessUnit(businessUnit: IOpalFinesBusinessUnit): void {
-      patchState(store, { businessUnit });
-    },
-    addTill(): string {
+  withMethods((store) => {
+    const ensureTill = (): string => {
+      const existingTill = store.tills()[0];
+      if (existingTill) {
+        return existingTill.tillId;
+      }
+
       const tillId = crypto.randomUUID();
-      patchState(store, { tills: [...store.tills(), { tillId, payments: [] }] });
+      patchState(store, { tills: [{ tillId, payments: [] }] });
       return tillId;
-    },
-    addPayment(tillId: string, journey: FinesMciJourney): string {
-      const paymentId = crypto.randomUUID();
-      patchState(store, {
-        tills: store
-          .tills()
-          .map((till) =>
-            till.tillId === tillId ? { ...till, payments: [...till.payments, { paymentId, journey }] } : till,
-          ),
-      });
-      return paymentId;
-    },
-    reset(): void {
-      patchState(store, { businessUnit: null, tills: [] });
-    },
-  })),
+    };
+
+    return {
+      setBusinessUnit(businessUnit: IOpalFinesBusinessUnit): void {
+        const currentBusinessUnit = store.businessUnit();
+        if (currentBusinessUnit && currentBusinessUnit.business_unit_id !== businessUnit.business_unit_id) {
+          patchState(store, { businessUnit, tills: [] });
+          return;
+        }
+
+        patchState(store, { businessUnit });
+      },
+      ensureTill,
+      addPayment(tillId: string, journey: FinesMciJourney): string {
+        const paymentId = crypto.randomUUID();
+        patchState(store, {
+          tills: store
+            .tills()
+            .map((till) =>
+              till.tillId === tillId ? { ...till, payments: [...till.payments, { paymentId, journey }] } : till,
+            ),
+        });
+        return paymentId;
+      },
+      reset(): void {
+        patchState(store, { businessUnit: null, tills: [] });
+      },
+    };
+  }),
 );

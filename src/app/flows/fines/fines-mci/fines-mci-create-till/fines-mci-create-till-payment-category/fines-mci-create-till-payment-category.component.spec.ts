@@ -8,6 +8,7 @@ import { FinesMciCreateTillPaymentCategoryComponent } from './fines-mci-create-t
 describe('FinesMciCreateTillPaymentCategoryComponent', () => {
   let fixture: ComponentFixture<FinesMciCreateTillPaymentCategoryComponent>;
   let router: Router;
+  let finesMciStore: InstanceType<typeof FinesMciStore>;
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
@@ -15,7 +16,9 @@ describe('FinesMciCreateTillPaymentCategoryComponent', () => {
       providers: [provideRouter([]), FinesMciStore],
     }).compileComponents();
 
-    TestBed.inject(FinesMciStore).setBusinessUnit(OPAL_FINES_BUSINESS_UNIT_REF_DATA_MOCK.refData[0]);
+    finesMciStore = TestBed.inject(FinesMciStore);
+    finesMciStore.setBusinessUnit(OPAL_FINES_BUSINESS_UNIT_REF_DATA_MOCK.refData[0]);
+    finesMciStore.ensureTill();
     fixture = TestBed.createComponent(FinesMciCreateTillPaymentCategoryComponent);
     router = TestBed.inject(Router);
     fixture.detectChanges();
@@ -42,6 +45,20 @@ describe('FinesMciCreateTillPaymentCategoryComponent', () => {
 
     expect(navigateSpy).toHaveBeenCalledWith(['search-account'], { relativeTo: null });
     expect(fixture.componentInstance.stateUnsavedChanges).toBe(false);
+    expect(finesMciStore.tills()[0].payments).toEqual([expect.objectContaining({ journey: 'criminal' })]);
+  });
+
+  it('keeps the page and leave warning when submitted without a category', () => {
+    const navigateSpy = vi.spyOn(router, 'navigate');
+
+    fixture.componentInstance.handleSubmit({
+      formData: { paymentCategory: null },
+      nestedFlow: false,
+    });
+
+    expect(navigateSpy).not.toHaveBeenCalled();
+    expect(fixture.componentInstance.stateUnsavedChanges).toBe(true);
+    expect(finesMciStore.tills()[0].payments).toEqual([]);
   });
 
   it.each(['courtFee', 'suspense'] as const)('keeps the leave warning active for %s after Continue', (category) => {
@@ -54,6 +71,7 @@ describe('FinesMciCreateTillPaymentCategoryComponent', () => {
 
     expect(navigateSpy).not.toHaveBeenCalled();
     expect(fixture.componentInstance.stateUnsavedChanges).toBe(true);
+    expect(finesMciStore.tills()[0].payments).toEqual([expect.objectContaining({ journey: category })]);
   });
 
   it('navigates to Till Details when Cancel is selected', () => {

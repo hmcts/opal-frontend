@@ -173,6 +173,7 @@ export class FinesMciCreateTillSelectBuComponent implements OnDestroy {
     this.businessUnitSelectionError = null;
     this.formErrorSummaryMessage = [];
     this.finesMciStore.setBusinessUnit(businessUnit);
+    this.finesMciStore.ensureTill();
     this.isContinuing = true;
     void this.router.navigate([
       '/',

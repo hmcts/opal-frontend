@@ -16,7 +16,16 @@ export class FinesMciCreateTillPaymentCategoryComponent extends AbstractFormPare
   protected readonly finesMciStore = inject(FinesMciStore);
 
   public handleSubmit(form: IAbstractFormBaseForm<IFinesMciCreateTillPaymentCategoryFormState>): void {
-    if (form.formData.paymentCategory === 'criminal') {
+    const paymentCategory = form.formData.paymentCategory;
+    if (!paymentCategory) {
+      this.stateUnsavedChanges = true;
+      return;
+    }
+
+    const tillId = this.finesMciStore.ensureTill();
+    this.finesMciStore.addPayment(tillId, paymentCategory);
+
+    if (paymentCategory === 'criminal') {
       this.stateUnsavedChanges = false;
       this.routerNavigate(FINES_MCI_ROUTING_PATHS.children.searchAccount);
       return;
