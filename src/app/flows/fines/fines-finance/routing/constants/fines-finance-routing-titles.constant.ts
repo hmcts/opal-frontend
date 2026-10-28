@@ -5,6 +5,6 @@ export const FINES_FINANCE_ROUTING_TITLES: IFinesFinanceRoutingTitles = {
   children: {
     inbound: 'Inbound file viewer',
     outbound: 'Outbound file viewer',
-    upload: 'Variant banking file upload',
+    upload: 'Upload variant banking files',
   },
 };
