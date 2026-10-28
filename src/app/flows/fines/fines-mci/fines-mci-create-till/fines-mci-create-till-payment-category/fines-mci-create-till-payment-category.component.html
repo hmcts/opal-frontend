@@ -1,48 +1,10 @@
 <div class="govuk-grid-column-two-thirds" id="fines-mci-create-till-payment-category">
   <span class="govuk-caption-l">{{ finesMciStore.businessUnit()?.business_unit_name }}</span>
   <h1 class="govuk-heading-l">Payment category</h1>
-  <opal-lib-govuk-error-summary
-    #errorSummary
-    [errors]="formErrorSummaryMessage"
-    (errorClick)="scrollTo($event)"
-  ></opal-lib-govuk-error-summary>
 
-  <form [formGroup]="form" (ngSubmit)="handleSubmit()" novalidate>
-    <opal-lib-govuk-radio
-      fieldSetId="fines-mci-payment-category"
-      legendText="Payment category"
-      legendClasses="govuk-visually-hidden"
-      [errors]="paymentCategoryError"
-    >
-      <div
-        opal-lib-govuk-radios-item
-        labelText="Criminal"
-        inputId="fines-mci-payment-category-criminal"
-        inputName="paymentCategory"
-        inputValue="criminal"
-        [control]="form.controls.paymentCategory"
-      ></div>
-      <div
-        opal-lib-govuk-radios-item
-        labelText="Court fee"
-        inputId="fines-mci-payment-category-court-fee"
-        inputName="paymentCategory"
-        inputValue="courtFee"
-        [control]="form.controls.paymentCategory"
-      ></div>
-      <div
-        opal-lib-govuk-radios-item
-        labelText="Suspense"
-        inputId="fines-mci-payment-category-suspense"
-        inputName="paymentCategory"
-        inputValue="suspense"
-        [control]="form.controls.paymentCategory"
-      ></div>
-    </opal-lib-govuk-radio>
-
-    <div class="govuk-button-group">
-      <button class="govuk-button" id="submitForm" type="submit">Continue</button>
-      <opal-lib-govuk-cancel-link (linkClickEvent)="handleCancel()"></opal-lib-govuk-cancel-link>
-    </div>
-  </form>
+  <app-fines-mci-create-till-payment-category-form
+    (formSubmit)="handleSubmit($event)"
+    (unsavedChanges)="handleUnsavedChanges($event)"
+    (cancelRequested)="handleCancel()"
+  ></app-fines-mci-create-till-payment-category-form>
 </div>

@@ -21,8 +21,9 @@ describe('FinesMciCreateTillPaymentCategoryComponent', () => {
     fixture.detectChanges();
   });
 
-  it('shows the payment categories and selected business unit', () => {
+  it('shows the selected business unit and payment category options', () => {
     const element = fixture.nativeElement as HTMLElement;
+
     expect(element.textContent).toContain('Payment category');
     expect(element.textContent).toContain('Historical Debt');
     expect(element.querySelectorAll('input[type="radio"]')).toHaveLength(3);
@@ -31,74 +32,43 @@ describe('FinesMciCreateTillPaymentCategoryComponent', () => {
     expect(element.textContent).toContain('Suspense');
   });
 
-  it('shows validation when continuing without a category', () => {
-    fixture.componentInstance.handleSubmit();
-    fixture.detectChanges();
-
-    const element = fixture.nativeElement as HTMLElement;
-    expect(element.querySelector('.govuk-form-group.govuk-form-group--error')).not.toBeNull();
-    expect(element.querySelector('.govuk-error-message')?.textContent).toContain('Select payment category');
-    expect(element.querySelector('.govuk-error-summary__list')?.textContent).toContain('Select payment category');
-  });
-
-  it('focuses the first radio when the error summary link is selected', () => {
-    fixture.componentInstance.handleSubmit();
-    fixture.detectChanges();
-
-    const element = fixture.nativeElement as HTMLElement;
-    element.querySelector<HTMLAnchorElement>('.govuk-error-summary__list a')?.click();
-
-    expect(document.activeElement?.id).toBe('paymentCategory-fines-mci-payment-category-criminal');
-  });
-
-  it('navigates to search for an account for the Criminal category', () => {
+  it('navigates to Search for an account for the Criminal category', () => {
     const navigateSpy = vi.spyOn(router, 'navigate').mockResolvedValue(true);
-    fixture.componentInstance['form'].controls.paymentCategory.setValue('criminal');
 
-    fixture.componentInstance.handleSubmit();
+    fixture.componentInstance.handleSubmit({
+      formData: { paymentCategory: 'criminal' },
+      nestedFlow: false,
+    });
 
-    expect(navigateSpy).toHaveBeenCalledWith(['/', 'fines', 'manual-cash-input', 'create', 'till', 'search-account']);
+    expect(navigateSpy).toHaveBeenCalledWith(['search-account'], { relativeTo: null });
+    expect(fixture.componentInstance.stateUnsavedChanges).toBe(false);
   });
 
-  it.each(['courtFee', 'suspense'] as const)('does not navigate for %s', (category) => {
+  it.each(['courtFee', 'suspense'] as const)('keeps the leave warning active for %s after Continue', (category) => {
     const navigateSpy = vi.spyOn(router, 'navigate');
-    fixture.componentInstance['form'].controls.paymentCategory.setValue(category);
 
-    fixture.componentInstance.handleSubmit();
+    fixture.componentInstance.handleSubmit({
+      formData: { paymentCategory: category },
+      nestedFlow: false,
+    });
 
     expect(navigateSpy).not.toHaveBeenCalled();
-    expect(
-      TestBed.inject(FinesMciStore)
-        .tills()
-        .flatMap(({ payments }) => payments),
-    ).toHaveLength(0);
+    expect(fixture.componentInstance.stateUnsavedChanges).toBe(true);
   });
 
-  it('returns to till details from Cancel', () => {
+  it('navigates to Till Details when Cancel is selected', () => {
     const navigateSpy = vi.spyOn(router, 'navigate').mockResolvedValue(true);
 
     fixture.componentInstance.handleCancel();
 
-    expect(navigateSpy).toHaveBeenCalledWith(['/', 'fines', 'manual-cash-input', 'create', 'till', 'details']);
+    expect(navigateSpy).toHaveBeenCalledWith(['details'], { relativeTo: null });
   });
 
-  it('keeps the leave guard active when Cancel is selected after choosing a category', () => {
-    const component = fixture.componentInstance;
-    const navigateSpy = vi.spyOn(router, 'navigate').mockResolvedValue(true);
-    component['form'].controls.paymentCategory.setValue('suspense');
-
-    expect(component.canDeactivate()).toBe(false);
-
-    component.handleCancel();
-
-    expect(navigateSpy).toHaveBeenCalledWith(['/', 'fines', 'manual-cash-input', 'create', 'till', 'details']);
-    expect(component.canDeactivate()).toBe(false);
-  });
-
-  it('warns before refreshing when a category is selected', () => {
-    fixture.componentInstance['form'].controls.paymentCategory.setValue('criminal');
+  it('tracks child form changes for route and browser leave warnings', () => {
+    fixture.componentInstance.handleUnsavedChanges(true);
     const beforeUnloadEvent = new Event('beforeunload', { cancelable: true });
 
+    expect(fixture.componentInstance['canDeactivate']()).toBe(false);
     expect(window.dispatchEvent(beforeUnloadEvent)).toBe(false);
     expect(beforeUnloadEvent.defaultPrevented).toBe(true);
   });
