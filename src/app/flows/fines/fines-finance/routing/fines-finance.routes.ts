@@ -6,7 +6,9 @@ import { FINES_FINANCE_ROUTING_TITLES } from './constants/fines-finance-routing-
 import { FINES_PERMISSIONS } from '../../../../constants/fines-permissions.constant';
 import { routePermissionsGuard } from '@hmcts/opal-frontend-common/guards/route-permissions';
 import { authGuard } from '@hmcts/opal-frontend-common/guards/auth';
+import { canDeactivateGuard } from '@hmcts/opal-frontend-common/guards/can-deactivate';
 import { fetchBusinessUnitsResolver } from '@routing/fines/resolvers/fetch-business-units-resolver/fetch-business-units.resolver';
+import { provideVariantBankingUpload } from '../fines-finance-upload-variant-banking-files/providers/fines-finance-variant-banking-upload.provider';
 
 export const routing: Routes = [
   {
@@ -44,12 +46,13 @@ export const routing: Routes = [
   },
   {
     path: `${FINES_FINANCE_ROUTING_PATHS.children.variantBankingFiles}/${FINES_FINANCE_ROUTING_PATHS.children.upload}`,
-
+    providers: [provideVariantBankingUpload()],
     loadComponent: () =>
       import('../fines-finance-upload-variant-banking-files/fines-finance-upload-variant-banking-files.component').then(
         (c) => c.FinesFinanceUploadVariantBankingFilesComponent,
       ),
     canActivate: [authGuard, routePermissionsGuard],
+    canDeactivate: [canDeactivateGuard],
     data: {
       routePermissionId: [FINES_PERMISSIONS['create-interface-files']],
       title: FINES_FINANCE_ROUTING_TITLES.children.upload,

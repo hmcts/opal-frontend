@@ -1,1 +1,15 @@
-<p>Placeholder for File Upload</p>
+<div class="govuk-grid-column-full govuk-!-margin-bottom-4">
+  <opal-lib-govuk-back-link
+    id="fines-finance-upload-back"
+    (clickEvent)="navigateBack($event)"
+  ></opal-lib-govuk-back-link>
+</div>
+<div id="fines-finance-upload-variant-banking-files" class="govuk-grid-column-two-thirds">
+  <h1 id="fines-finance-upload-heading" class="govuk-heading-l">Upload variant banking files</h1>
+  <app-fines-finance-upload-variant-banking-files-form
+    [files]="fileUploads()"
+    [announcement]="announcement()"
+    [canViewInboundFiles]="canViewInboundFiles()"
+    (filesSelected)="selectFiles($event)"
+  ></app-fines-finance-upload-variant-banking-files-form>
+</div>
