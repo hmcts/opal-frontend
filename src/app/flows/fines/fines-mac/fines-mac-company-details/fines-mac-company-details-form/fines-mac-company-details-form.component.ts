@@ -1,9 +1,7 @@
 import {
   ChangeDetectionStrategy,
   Component,
-  ElementRef,
   EventEmitter,
-  Injector,
   Input,
   OnDestroy,
   OnInit,
@@ -11,20 +9,11 @@ import {
   computed,
   inject,
 } from '@angular/core';
-import { AbstractFormAliasBaseComponent } from '@hmcts/opal-frontend-common/components/abstract/abstract-form-alias-base';
+import { FinesMacAbstractAliasFormComponent } from '../../abstracts/fines-mac-abstract-alias-form.component';
 import { GlobalStore } from '@hmcts/opal-frontend-common/stores/global';
 import { RELEASE_1A_1_2_FEATURE_FLAG } from '../../../constants/release-feature-flags.constant';
 import { getFeatureFlagReleaseState } from '../../../utils/fines-section-permissions.utils';
-import { removeAliasAndRestoreState } from '../../../utils/fines-alias-renumbering.utils';
-import {
-  AbstractControl,
-  FormGroup,
-  FormControl,
-  Validators,
-  FormArray,
-  FormsModule,
-  ReactiveFormsModule,
-} from '@angular/forms';
+import { FormGroup, FormControl, Validators, FormArray, FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { IFinesMacCompanyDetailsForm } from '../interfaces/fines-mac-company-details-form.interface';
 import { IFinesMacCompanyDetailsFieldErrors } from '../interfaces/fines-mac-company-details-field-errors.interface';
 import { FINES_MAC_COMPANY_DETAILS_ALIAS } from '../constants/fines-mac-company-details-alias';
@@ -32,6 +21,7 @@ import { FINES_MAC_COMPANY_DETAILS_FIELD_ERRORS } from '../constants/fines-mac-c
 import { FINES_MAC_ROUTING_NESTED_ROUTES } from '../../routing/constants/fines-mac-routing-nested-routes.constant';
 import { FINES_MAC_ROUTING_PATHS } from '../../routing/constants/fines-mac-routing-paths.constant';
 import { FinesMacStore } from '../../stores/fines-mac.store';
+import { FinesMacAliasRowComponent } from '../../components/fines-mac-alias-row/fines-mac-alias-row.component';
 import { GovukTextInputComponent } from '@hmcts/opal-frontend-common/components/govuk/govuk-text-input';
 import { GovukButtonComponent } from '@hmcts/opal-frontend-common/components/govuk/govuk-button';
 import { GovukCancelLinkComponent } from '@hmcts/opal-frontend-common/components/govuk/govuk-cancel-link';
@@ -58,6 +48,7 @@ const ALPHANUMERIC_WITH_SPACES_PATTERN_VALIDATOR = patternValidator(
   selector: 'app-fines-mac-company-details-form',
   imports: [
     FormsModule,
+    FinesMacAliasRowComponent,
     ReactiveFormsModule,
     GovukButtonComponent,
     GovukErrorSummaryComponent,
@@ -72,16 +63,17 @@ const ALPHANUMERIC_WITH_SPACES_PATTERN_VALIDATOR = patternValidator(
   templateUrl: './fines-mac-company-details-form.component.html',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class FinesMacCompanyDetailsFormComponent extends AbstractFormAliasBaseComponent implements OnInit, OnDestroy {
+export class FinesMacCompanyDetailsFormComponent
+  extends FinesMacAbstractAliasFormComponent
+  implements OnInit, OnDestroy
+{
   private readonly finesMacStore = inject(FinesMacStore);
   private readonly globalStore = inject(GlobalStore);
-  private readonly injector = inject(Injector);
-  private readonly elementRef = inject<ElementRef<HTMLElement>>(ElementRef);
 
   @Output() protected override formSubmit = new EventEmitter<IFinesMacCompanyDetailsForm>();
-
   protected readonly fineMacRoutingPaths = FINES_MAC_ROUTING_PATHS;
   protected readonly finesMacNestedRoutes = FINES_MAC_ROUTING_NESTED_ROUTES;
+  protected override readonly aliasFormArrayName = 'fm_company_details_aliases';
 
   @Input() public defendantType!: string;
   override fieldErrors: IFinesMacCompanyDetailsFieldErrors = FINES_MAC_COMPANY_DETAILS_FIELD_ERRORS;
@@ -147,33 +139,6 @@ export class FinesMacCompanyDetailsFormComponent extends AbstractFormAliasBaseCo
     this.setInitialErrorMessages();
     this.rePopulateForm(formData);
     this.setUpAliasCheckboxListener('fm_company_details_add_alias', 'fm_company_details_aliases');
-  }
-
-  /**
-   * Removes the selected company alias and renumbers the remaining controls.
-   * Preserves existing FormControl instances and their values.
-   */
-
-  public removeAndRenumberAlias(index: number): void {
-    const formArrayName = 'fm_company_details_aliases';
-
-    this.aliasControls = removeAliasAndRestoreState({
-      aliases: this.form.get(formArrayName) as FormArray,
-      aliasFields: this.aliasFields,
-      index,
-      formArrayName,
-      errorSummaryCount: this.formErrorSummaryMessage.length,
-      errorMessages: this.formControlErrorMessages,
-      removeAlias: (aliasIndex) => this.removeAlias(aliasIndex, formArrayName),
-      createAliasControls: (rowIndex) => this.createAliasControls(this.aliasFields, rowIndex),
-      refreshErrors: () => this.handleErrorMessages(),
-      elementRef: this.elementRef,
-      injector: this.injector,
-    });
-  }
-
-  public get aliasFormGroups(): AbstractControl[] {
-    return (this.form.get('fm_company_details_aliases') as FormArray).controls;
   }
 
   public override ngOnInit(): void {

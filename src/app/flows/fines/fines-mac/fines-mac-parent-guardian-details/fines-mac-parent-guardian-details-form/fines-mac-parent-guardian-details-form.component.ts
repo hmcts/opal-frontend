@@ -1,29 +1,18 @@
 import {
   ChangeDetectionStrategy,
   Component,
-  ElementRef,
   EventEmitter,
-  Injector,
   OnDestroy,
   OnInit,
   Output,
   computed,
   inject,
 } from '@angular/core';
-import { AbstractFormAliasBaseComponent } from '@hmcts/opal-frontend-common/components/abstract/abstract-form-alias-base';
-import {
-  AbstractControl,
-  FormArray,
-  FormControl,
-  FormGroup,
-  FormsModule,
-  ReactiveFormsModule,
-  Validators,
-} from '@angular/forms';
+import { FinesMacAbstractAliasFormComponent } from '../../abstracts/fines-mac-abstract-alias-form.component';
+import { FormArray, FormControl, FormGroup, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
 import { GlobalStore } from '@hmcts/opal-frontend-common/stores/global';
 import { RELEASE_1A_1_2_FEATURE_FLAG } from '../../../constants/release-feature-flags.constant';
 import { getFeatureFlagReleaseState } from '../../../utils/fines-section-permissions.utils';
-import { removeAliasAndRestoreState } from '../../../utils/fines-alias-renumbering.utils';
 import { IFinesMacParentGuardianDetailsFieldErrors } from '../interfaces/fines-mac-parent-guardian-details-field-errors.interface';
 import { IFinesMacParentGuardianDetailsForm } from '../interfaces/fines-mac-parent-guardian-details-form.interface';
 import { FINES_MAC_PARENT_GUARDIAN_DETAILS_ALIAS } from '../constants/fines-mac-parent-guardian-details-alias';
@@ -31,6 +20,7 @@ import { FINES_MAC_ROUTING_PATHS } from '../../routing/constants/fines-mac-routi
 import { MojTicketPanelComponent } from '@hmcts/opal-frontend-common/components/moj/moj-ticket-panel';
 import { MojDatePickerComponent } from '@hmcts/opal-frontend-common/components/moj/moj-date-picker';
 import { FINES_MAC_PARENT_GUARDIAN_DETAILS_FIELD_ERRORS } from '../constants/fines-mac-parent-guardian-details-field-errors.constant';
+import { FinesMacAliasRowComponent } from '../../components/fines-mac-alias-row/fines-mac-alias-row.component';
 import { FinesMacStore } from '../../stores/fines-mac.store';
 import { GovukTextInputComponent } from '@hmcts/opal-frontend-common/components/govuk/govuk-text-input';
 import { GovukButtonComponent } from '@hmcts/opal-frontend-common/components/govuk/govuk-button';
@@ -74,22 +64,22 @@ const ALPHANUMERIC_WITH_SPACES_PATTERN_VALIDATOR = patternValidator(
     MojDatePickerComponent,
     CapitalisationDirective,
     TrimLeadingTrailingWhitespaceDirective,
+    FinesMacAliasRowComponent,
   ],
   templateUrl: './fines-mac-parent-guardian-details-form.component.html',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class FinesMacParentGuardianDetailsFormComponent
-  extends AbstractFormAliasBaseComponent
+  extends FinesMacAbstractAliasFormComponent
   implements OnInit, OnDestroy
 {
   private readonly finesMacStore = inject(FinesMacStore);
   private readonly globalStore = inject(GlobalStore);
-  private readonly injector = inject(Injector);
-  private readonly elementRef = inject<ElementRef<HTMLElement>>(ElementRef);
 
   @Output() protected override formSubmit = new EventEmitter<IFinesMacParentGuardianDetailsForm>();
   protected readonly dateService = inject(DateService);
   protected readonly fineMacRoutingPaths = FINES_MAC_ROUTING_PATHS;
+  protected override readonly aliasFormArrayName = 'fm_parent_guardian_details_aliases';
 
   override fieldErrors: IFinesMacParentGuardianDetailsFieldErrors = FINES_MAC_PARENT_GUARDIAN_DETAILS_FIELD_ERRORS;
 
@@ -169,34 +159,6 @@ export class FinesMacParentGuardianDetailsFormComponent
     this.rePopulateForm(formData);
     this.setUpAliasCheckboxListener('fm_parent_guardian_details_add_alias', 'fm_parent_guardian_details_aliases');
     this.yesterday = this.dateService.getPreviousDate({ days: 1 });
-  }
-
-  /**
-   * Removes the selected parent/guardian alias and renumbers
-   * all remaining alias controls.
-   * Preserves existing FormControl instances, values and validators.
-   */
-
-  public removeAndRenumberAlias(index: number): void {
-    const formArrayName = 'fm_parent_guardian_details_aliases';
-
-    this.aliasControls = removeAliasAndRestoreState({
-      aliases: this.form.get(formArrayName) as FormArray,
-      aliasFields: this.aliasFields,
-      index,
-      formArrayName,
-      errorSummaryCount: this.formErrorSummaryMessage.length,
-      errorMessages: this.formControlErrorMessages,
-      removeAlias: (aliasIndex) => this.removeAlias(aliasIndex, formArrayName),
-      createAliasControls: (rowIndex) => this.createAliasControls(this.aliasFields, rowIndex),
-      refreshErrors: () => this.handleErrorMessages(),
-      elementRef: this.elementRef,
-      injector: this.injector,
-    });
-  }
-
-  public get aliasFormGroups(): AbstractControl[] {
-    return (this.form.get('fm_parent_guardian_details_aliases') as FormArray).controls;
   }
 
   public override ngOnInit(): void {

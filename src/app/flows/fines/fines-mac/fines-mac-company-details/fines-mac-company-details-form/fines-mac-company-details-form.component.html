@@ -32,58 +32,37 @@
     >
       <div [class.moj-add-another__items]="release1a1_2Enabled()">
         @for (aliasGroup of aliasFormGroups; let rowIndex = $index; track aliasGroup) {
-          <div [class.moj-add-another__item]="release1a1_2Enabled()">
-            <fieldset class="govuk-fieldset" [class.moj-add-another__fieldset]="release1a1_2Enabled()">
-              <legend
-                class="govuk-fieldset__legend govuk-fieldset__legend--m"
-                [class.moj-add-another__item-title]="release1a1_2Enabled()"
-              >
-                <h2 class="govuk-heading-m govuk-!-margin-0">
-                  Alias {{ rowIndex + 1
-                  }}{{ release1a1_2Enabled() && aliasControls.length > 1 ? ' of ' + aliasControls.length : '' }}
-                </h2>
-              </legend>
-              <div [class.moj-add-another__item-container]="release1a1_2Enabled()">
-                <opal-lib-govuk-text-input
-                  #aliasFirstField
-                  labelText="Company name"
-                  [inputId]="aliasControls[rowIndex]['fm_company_details_alias_company_name'].inputId"
-                  [inputName]="aliasControls[rowIndex]['fm_company_details_alias_company_name'].inputName"
-                  [control]="
-                    form.get([
-                      'fm_company_details_aliases',
-                      rowIndex,
-                      aliasControls[rowIndex]['fm_company_details_alias_company_name'].controlName,
-                    ])
-                  "
-                  [errors]="
-                    formControlErrorMessages[
-                      aliasControls[rowIndex]['fm_company_details_alias_company_name'].controlName
-                    ]
-                  "
-                  [opalLibCapitaliseAllCharacters]="
-                    form.get([
-                      'fm_company_details_aliases',
-                      rowIndex,
-                      aliasControls[rowIndex]['fm_company_details_alias_company_name'].controlName,
-                    ])!
-                  "
-                ></opal-lib-govuk-text-input>
-
-                @if (release1a1_2Enabled() && aliasControls.length > 1) {
-                  <div class="moj-add-another__remove-button-container">
-                    <button
-                      type="button"
-                      class="govuk-button govuk-button--secondary moj-add-another__remove-button"
-                      (click)="removeAndRenumberAlias(rowIndex)"
-                    >
-                      Remove alias {{ rowIndex + 1 }}
-                    </button>
-                  </div>
-                }
-              </div>
-            </fieldset>
-          </div>
+          @let aliasControl = aliasControls[rowIndex];
+          @if (aliasControl) {
+            <app-fines-mac-alias-row
+              [index]="rowIndex"
+              [total]="aliasControls.length"
+              [releaseEnabled]="release1a1_2Enabled()"
+              (removeAlias)="removeAndRenumberAlias($event)"
+            >
+              <opal-lib-govuk-text-input
+                #aliasFirstField
+                labelText="Company name"
+                [inputId]="aliasControl['fm_company_details_alias_company_name'].inputId"
+                [inputName]="aliasControl['fm_company_details_alias_company_name'].inputName"
+                [control]="
+                  form.get([
+                    'fm_company_details_aliases',
+                    rowIndex,
+                    aliasControl['fm_company_details_alias_company_name'].controlName,
+                  ])
+                "
+                [errors]="formControlErrorMessages[aliasControl['fm_company_details_alias_company_name'].controlName]"
+                [opalLibCapitaliseAllCharacters]="
+                  form.get([
+                    'fm_company_details_aliases',
+                    rowIndex,
+                    aliasControl['fm_company_details_alias_company_name'].controlName,
+                  ])!
+                "
+              ></opal-lib-govuk-text-input>
+            </app-fines-mac-alias-row>
+          }
         }
       </div>
       @if (!release1a1_2Enabled() && aliasControls.length > 1) {

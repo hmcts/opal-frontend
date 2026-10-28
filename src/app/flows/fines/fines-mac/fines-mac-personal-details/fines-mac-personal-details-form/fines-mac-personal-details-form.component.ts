@@ -2,8 +2,6 @@ import {
   ChangeDetectionStrategy,
   Component,
   EventEmitter,
-  ElementRef,
-  Injector,
   Input,
   OnDestroy,
   OnInit,
@@ -11,20 +9,12 @@ import {
   computed,
   inject,
 } from '@angular/core';
-import {
-  AbstractControl,
-  FormArray,
-  FormControl,
-  FormGroup,
-  FormsModule,
-  ReactiveFormsModule,
-  Validators,
-} from '@angular/forms';
+import { FormArray, FormControl, FormGroup, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
 import { GlobalStore } from '@hmcts/opal-frontend-common/stores/global';
 import { RELEASE_1A_1_2_FEATURE_FLAG } from '../../../constants/release-feature-flags.constant';
 import { getFeatureFlagReleaseState } from '../../../utils/fines-section-permissions.utils';
-import { removeAliasAndRestoreState } from '../../../utils/fines-alias-renumbering.utils';
-import { AbstractFormAliasBaseComponent } from '@hmcts/opal-frontend-common/components/abstract/abstract-form-alias-base';
+import { FinesMacAbstractAliasFormComponent } from '../../abstracts/fines-mac-abstract-alias-form.component';
+import { FinesMacAliasRowComponent } from '../../components/fines-mac-alias-row/fines-mac-alias-row.component';
 import { IFinesMacPersonalDetailsFieldErrors } from '../interfaces/fines-mac-personal-details-field-errors.interface';
 import { IFinesMacPersonalDetailsForm } from '../interfaces/fines-mac-personal-details-form.interface';
 import { FINES_MAC_PERSONAL_DETAILS_FIELD_ERRORS } from '../constants/fines-mac-personal-details-field-errors.constant';
@@ -85,20 +75,23 @@ const ALPHANUMERIC_WITH_SPACES_PATTERN_VALIDATOR = patternValidator(
     MojDatePickerComponent,
     CapitalisationDirective,
     TrimLeadingTrailingWhitespaceDirective,
+    FinesMacAliasRowComponent,
   ],
   templateUrl: './fines-mac-personal-details-form.component.html',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class FinesMacPersonalDetailsFormComponent extends AbstractFormAliasBaseComponent implements OnInit, OnDestroy {
+export class FinesMacPersonalDetailsFormComponent
+  extends FinesMacAbstractAliasFormComponent
+  implements OnInit, OnDestroy
+{
   private readonly finesMacStore = inject(FinesMacStore);
   private readonly globalStore = inject(GlobalStore);
-  private readonly injector = inject(Injector);
-  private readonly elementRef = inject<ElementRef<HTMLElement>>(ElementRef);
 
   @Output() protected override formSubmit = new EventEmitter<IFinesMacPersonalDetailsForm>();
   protected readonly dateService = inject(DateService);
   protected readonly fineMacRoutingPaths = FINES_MAC_ROUTING_PATHS;
   protected readonly finesMacNestedRoutes = FINES_MAC_ROUTING_NESTED_ROUTES;
+  protected override readonly aliasFormArrayName = 'fm_personal_details_aliases';
 
   @Input() public defendantType!: string;
   override fieldErrors: IFinesMacPersonalDetailsFieldErrors = {
@@ -229,33 +222,6 @@ export class FinesMacPersonalDetailsFormComponent extends AbstractFormAliasBaseC
     this.setUpAliasCheckboxListener('fm_personal_details_add_alias', 'fm_personal_details_aliases');
     this.dateOfBirthListener();
     this.yesterday = this.dateService.getPreviousDate({ days: 1 });
-  }
-
-  /**
-   * Removes the selected personal alias and renumbers the remaining controls.
-   * Preserves existing FormControl instances, values and validators.
-   */
-
-  public removeAndRenumberAlias(index: number): void {
-    const formArrayName = 'fm_personal_details_aliases';
-
-    this.aliasControls = removeAliasAndRestoreState({
-      aliases: this.form.get(formArrayName) as FormArray,
-      aliasFields: this.aliasFields,
-      index,
-      formArrayName,
-      errorSummaryCount: this.formErrorSummaryMessage.length,
-      errorMessages: this.formControlErrorMessages,
-      removeAlias: (aliasIndex) => this.removeAlias(aliasIndex, formArrayName),
-      createAliasControls: (rowIndex) => this.createAliasControls(this.aliasFields, rowIndex),
-      refreshErrors: () => this.handleErrorMessages(),
-      elementRef: this.elementRef,
-      injector: this.injector,
-    });
-  }
-
-  public get aliasFormGroups(): AbstractControl[] {
-    return (this.form.get('fm_personal_details_aliases') as FormArray).controls;
   }
 
   public override ngOnInit(): void {
