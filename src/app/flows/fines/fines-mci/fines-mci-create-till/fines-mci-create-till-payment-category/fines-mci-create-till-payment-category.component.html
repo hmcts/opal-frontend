@@ -8,7 +8,12 @@
   ></opal-lib-govuk-error-summary>
 
   <form [formGroup]="form" (ngSubmit)="handleSubmit()" novalidate>
-    <opal-lib-govuk-radio fieldSetId="fines-mci-payment-category" [errors]="paymentCategoryError">
+    <opal-lib-govuk-radio
+      fieldSetId="fines-mci-payment-category"
+      legendText="Payment category"
+      legendClasses="govuk-visually-hidden"
+      [errors]="paymentCategoryError"
+    >
       <div
         opal-lib-govuk-radios-item
         labelText="Criminal"
@@ -35,8 +40,8 @@
       ></div>
     </opal-lib-govuk-radio>
 
-    <div class="govuk-button-group fines-mci-create-till-select-bu-button-group">
-      <opal-lib-govuk-button buttonId="submitForm" type="submit">Continue</opal-lib-govuk-button>
+    <div class="govuk-button-group">
+      <button class="govuk-button" id="submitForm" type="submit">Continue</button>
       <opal-lib-govuk-cancel-link (linkClickEvent)="handleCancel()"></opal-lib-govuk-cancel-link>
     </div>
   </form>

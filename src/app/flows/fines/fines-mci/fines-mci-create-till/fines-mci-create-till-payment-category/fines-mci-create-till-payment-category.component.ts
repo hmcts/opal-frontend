@@ -13,7 +13,6 @@ import { FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angula
 import { Router } from '@angular/router';
 import { FINES_ROUTING_PATHS } from '@app/flows/fines/routing/constants/fines-routing-paths.constant';
 import { CanDeactivateTypes } from '@hmcts/opal-frontend-common/guards/can-deactivate/types';
-import { GovukButtonComponent } from '@hmcts/opal-frontend-common/components/govuk/govuk-button';
 import { GovukCancelLinkComponent } from '@hmcts/opal-frontend-common/components/govuk/govuk-cancel-link';
 import { GovukErrorSummaryComponent } from '@hmcts/opal-frontend-common/components/govuk/govuk-error-summary';
 import {
@@ -29,7 +28,6 @@ const SELECT_PAYMENT_CATEGORY_ERROR = 'Select payment category';
 @Component({
   selector: 'app-fines-mci-create-till-payment-category',
   imports: [
-    GovukButtonComponent,
     GovukCancelLinkComponent,
     GovukErrorSummaryComponent,
     GovukRadioComponent,
@@ -37,7 +35,6 @@ const SELECT_PAYMENT_CATEGORY_ERROR = 'Select payment category';
     ReactiveFormsModule,
   ],
   templateUrl: './fines-mci-create-till-payment-category.component.html',
-  styleUrl: './fines-mci-create-till-payment-category.component.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class FinesMciCreateTillPaymentCategoryComponent {

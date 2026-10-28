@@ -17,7 +17,6 @@ import { CanDeactivateTypes } from '@hmcts/opal-frontend-common/guards/can-deact
 import { AlphagovAccessibleAutocompleteComponent } from '@hmcts/opal-frontend-common/components/alphagov/alphagov-accessible-autocomplete';
 import { IAlphagovAccessibleAutocompleteItem } from '@hmcts/opal-frontend-common/components/alphagov/alphagov-accessible-autocomplete/interfaces';
 import { IAbstractFormBaseFormErrorSummaryMessage } from '@hmcts/opal-frontend-common/components/abstract/interfaces';
-import { GovukButtonComponent } from '@hmcts/opal-frontend-common/components/govuk/govuk-button';
 import { GovukCancelLinkComponent } from '@hmcts/opal-frontend-common/components/govuk/govuk-cancel-link';
 import { GovukErrorSummaryComponent } from '@hmcts/opal-frontend-common/components/govuk/govuk-error-summary';
 import {
@@ -34,7 +33,6 @@ import { FinesMciStore } from '../../stores/fines-mci.store';
   selector: 'app-fines-mci-create-till-select-bu',
   imports: [
     AlphagovAccessibleAutocompleteComponent,
-    GovukButtonComponent,
     GovukCancelLinkComponent,
     GovukErrorSummaryComponent,
     GovukSummaryListComponent,
@@ -42,7 +40,6 @@ import { FinesMciStore } from '../../stores/fines-mci.store';
     ReactiveFormsModule,
   ],
   templateUrl: './fines-mci-create-till-select-bu.component.html',
-  styleUrl: './fines-mci-create-till-select-bu.component.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class FinesMciCreateTillSelectBuComponent implements OnDestroy {
