@@ -71,7 +71,14 @@ describe('FinesMciCreateTillPaymentCategoryComponent', () => {
 
     expect(navigateSpy).not.toHaveBeenCalled();
     expect(fixture.componentInstance.stateUnsavedChanges).toBe(true);
-    expect(finesMciStore.tills()[0].payments).toEqual([expect.objectContaining({ journey: category })]);
+    expect(finesMciStore.tills()[0].payments).toEqual([]);
+
+    fixture.componentInstance.handleSubmit({
+      formData: { paymentCategory: category },
+      nestedFlow: false,
+    });
+
+    expect(finesMciStore.tills()[0].payments).toEqual([]);
   });
 
   it('navigates to Till Details when Cancel is selected', () => {

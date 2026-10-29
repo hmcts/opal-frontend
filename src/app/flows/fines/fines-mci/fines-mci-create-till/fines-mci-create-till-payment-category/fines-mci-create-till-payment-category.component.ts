@@ -15,6 +15,7 @@ import { IFinesMciCreateTillPaymentCategoryFormState } from './interfaces/fines-
 export class FinesMciCreateTillPaymentCategoryComponent extends AbstractFormParentBaseComponent {
   protected readonly finesMciStore = inject(FinesMciStore);
 
+  /** Handles Continue, adding a payment and advancing only when Criminal is selected. */
   public handleSubmit(form: IAbstractFormBaseForm<IFinesMciCreateTillPaymentCategoryFormState>): void {
     const paymentCategory = form.formData.paymentCategory;
     if (!paymentCategory) {
@@ -22,10 +23,9 @@ export class FinesMciCreateTillPaymentCategoryComponent extends AbstractFormPare
       return;
     }
 
-    const tillId = this.finesMciStore.ensureTill();
-    this.finesMciStore.addPayment(tillId, paymentCategory);
-
     if (paymentCategory === 'criminal') {
+      const tillId = this.finesMciStore.ensureTill();
+      this.finesMciStore.addPayment(tillId, paymentCategory);
       this.stateUnsavedChanges = false;
       this.routerNavigate(FINES_MCI_ROUTING_PATHS.children.searchAccount);
       return;
@@ -34,15 +34,18 @@ export class FinesMciCreateTillPaymentCategoryComponent extends AbstractFormPare
     this.stateUnsavedChanges = true;
   }
 
+  /** Returns to Till Details when the user cancels. */
   public handleCancel(): void {
     this.routerNavigate(FINES_MCI_ROUTING_PATHS.children.details);
   }
 
+  /** Updates the route guard state when the child form changes. */
   public handleUnsavedChanges(unsavedChanges: boolean): void {
     this.stateUnsavedChanges = unsavedChanges;
   }
 
   @HostListener('window:beforeunload')
+  /** Allows the browser to unload only when there are no unsaved changes. */
   public handleBeforeUnload(): boolean {
     return !this.stateUnsavedChanges;
   }

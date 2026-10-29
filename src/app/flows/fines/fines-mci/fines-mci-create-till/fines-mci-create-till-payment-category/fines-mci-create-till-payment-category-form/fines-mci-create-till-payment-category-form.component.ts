@@ -10,7 +10,7 @@ import {
   GovukRadioComponent,
   GovukRadiosItemComponent,
 } from '@hmcts/opal-frontend-common/components/govuk/govuk-radio';
-import { FinesMciJourney } from '../../../stores/fines-mci.store';
+import { FinesMciJourney } from '../../../stores/interfaces/fines-mci.interface';
 import { FINES_MCI_CREATE_TILL_PAYMENT_CATEGORY_FIELD_ERRORS } from '../constants/fines-mci-create-till-payment-category-field-errors.constant';
 import { IFinesMciCreateTillPaymentCategoryFieldErrors } from '../interfaces/fines-mci-create-till-payment-category-field-errors.interface';
 import { IFinesMciCreateTillPaymentCategoryFormState } from '../interfaces/fines-mci-create-till-payment-category-form-state.interface';
@@ -37,12 +37,14 @@ export class FinesMciCreateTillPaymentCategoryFormComponent extends AbstractForm
   };
   public override formControlErrorMessages: IAbstractFormControlErrorMessage = {};
 
+  /** Creates the required payment category radio control. */
   private initialiseForm(): void {
     this.form = new FormGroup({
       paymentCategory: new FormControl<FinesMciJourney | null>(null, Validators.required),
     });
   }
 
+  /** Initialises the form and refreshes validation messages when the selection changes. */
   public override ngOnInit(): void {
     this.initialiseForm();
     this.setInitialErrorMessages();

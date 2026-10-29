@@ -1,4 +1,4 @@
-import { FinesMciJourney } from '../../../stores/fines-mci.store';
+import { FinesMciJourney } from '../../../stores/interfaces/fines-mci.interface';
 
 export interface IFinesMciCreateTillPaymentCategoryFormState {
   paymentCategory: FinesMciJourney | null;
