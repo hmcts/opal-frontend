@@ -61,24 +61,20 @@ describe('FinesMciCreateTillPaymentCategoryComponent', () => {
     expect(finesMciStore.tills()[0].payments).toEqual([]);
   });
 
-  it.each(['courtFee', 'suspense'] as const)('keeps the leave warning active for %s after Continue', (category) => {
-    const navigateSpy = vi.spyOn(router, 'navigate');
+  it.each([
+    ['courtFee', 'court-fee-details'],
+    ['suspense', 'suspense-details'],
+  ] as const)('adds a %s payment and navigates to its details page', (category, route) => {
+    const navigateSpy = vi.spyOn(router, 'navigate').mockResolvedValue(true);
 
     fixture.componentInstance.handleSubmit({
       formData: { paymentCategory: category },
       nestedFlow: false,
     });
 
-    expect(navigateSpy).not.toHaveBeenCalled();
-    expect(fixture.componentInstance.stateUnsavedChanges).toBe(true);
-    expect(finesMciStore.tills()[0].payments).toEqual([]);
-
-    fixture.componentInstance.handleSubmit({
-      formData: { paymentCategory: category },
-      nestedFlow: false,
-    });
-
-    expect(finesMciStore.tills()[0].payments).toEqual([]);
+    expect(navigateSpy).toHaveBeenCalledWith([route], { relativeTo: null });
+    expect(fixture.componentInstance.stateUnsavedChanges).toBe(false);
+    expect(finesMciStore.tills()[0].payments).toEqual([expect.objectContaining({ journey: category })]);
   });
 
   it('navigates to Till Details when Cancel is selected', () => {

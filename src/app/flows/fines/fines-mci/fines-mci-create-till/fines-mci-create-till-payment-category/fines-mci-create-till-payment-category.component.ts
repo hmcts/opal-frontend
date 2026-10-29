@@ -15,7 +15,7 @@ import { IFinesMciCreateTillPaymentCategoryFormState } from './interfaces/fines-
 export class FinesMciCreateTillPaymentCategoryComponent extends AbstractFormParentBaseComponent {
   protected readonly finesMciStore = inject(FinesMciStore);
 
-  /** Handles Continue, adding a payment and advancing only when Criminal is selected. */
+  /** Handles Continue, adding the selected payment and opening its journey. */
   public handleSubmit(form: IAbstractFormBaseForm<IFinesMciCreateTillPaymentCategoryFormState>): void {
     const paymentCategory = form.formData.paymentCategory;
     if (!paymentCategory) {
@@ -23,15 +23,17 @@ export class FinesMciCreateTillPaymentCategoryComponent extends AbstractFormPare
       return;
     }
 
-    if (paymentCategory === 'criminal') {
-      const tillId = this.finesMciStore.ensureTill();
-      this.finesMciStore.addPayment(tillId, paymentCategory);
-      this.stateUnsavedChanges = false;
-      this.routerNavigate(FINES_MCI_ROUTING_PATHS.children.searchAccount);
-      return;
-    }
+    const tillId = this.finesMciStore.ensureTill();
+    this.finesMciStore.addPayment(tillId, paymentCategory);
+    this.stateUnsavedChanges = false;
 
-    this.stateUnsavedChanges = true;
+    const journeyRoute = {
+      criminal: FINES_MCI_ROUTING_PATHS.children.searchAccount,
+      courtFee: FINES_MCI_ROUTING_PATHS.children.courtFeeDetails,
+      suspense: FINES_MCI_ROUTING_PATHS.children.suspenseDetails,
+    }[paymentCategory];
+
+    this.routerNavigate(journeyRoute);
   }
 
   /** Returns to Till Details when the user cancels. */
