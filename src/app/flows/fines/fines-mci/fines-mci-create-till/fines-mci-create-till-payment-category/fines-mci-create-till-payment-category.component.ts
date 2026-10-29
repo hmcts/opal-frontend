@@ -103,6 +103,7 @@ export class FinesMciCreateTillPaymentCategoryComponent extends AbstractFormPare
 
   /** Requests a browser leave warning for unsaved selections or a journey awaiting navigation. */
   @HostListener('window:beforeunload')
+  /** Allows the browser to unload only when there are no unsaved changes. */
   public handleBeforeUnload(): boolean {
     return !this.isContinuing() && !this.stateUnsavedChanges;
   }
