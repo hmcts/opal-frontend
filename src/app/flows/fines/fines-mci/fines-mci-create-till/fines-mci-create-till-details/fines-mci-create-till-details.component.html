@@ -1,0 +1,44 @@
+<div class="govuk-grid-column-full govuk-!-margin-bottom-4">
+  <opal-lib-govuk-back-link (clickEvent)="navigateBack()"></opal-lib-govuk-back-link>
+</div>
+
+<div class="govuk-grid-column-two-thirds" id="fines-mci-create-till-details">
+  <h1 class="govuk-heading-l">Till details</h1>
+
+  <opal-lib-govuk-summary-list summaryListId="fines-mci-till-details-summary">
+    <div
+      opal-lib-govuk-summary-list-row
+      class="govuk-summary-list__row govuk-summary-list__row--no-actions"
+      summaryListId="fines-mci-till-details-summary"
+      summaryListRowId="business-unit"
+    >
+      <ng-container name>Business unit</ng-container>
+      <ng-container value>{{ finesMciStore.businessUnit()?.business_unit_name }}</ng-container>
+    </div>
+  </opal-lib-govuk-summary-list>
+
+  <h2 class="govuk-heading-m govuk-!-margin-top-7">Payments</h2>
+  <p class="govuk-body">There are no payments</p>
+  <opal-lib-govuk-button
+    buttonId="fines-mci-add-payment"
+    buttonClasses="govuk-button--secondary"
+    (buttonClickEvent)="addPayment()"
+  >
+    Add payment
+  </opal-lib-govuk-button>
+
+  <h2 class="govuk-heading-m govuk-!-margin-top-7">Create till</h2>
+  <p class="govuk-body">You must add at least 1 payment to the till.</p>
+
+  <hr class="govuk-section-break govuk-section-break--l govuk-section-break--visible" />
+  <div class="govuk-!-margin-bottom-7">
+    <a
+      id="fines-mci-delete-till"
+      class="govuk-link govuk-link--no-visited-state govuk-error-colour"
+      href=""
+      (click)="cancel($event)"
+    >
+      Delete till
+    </a>
+  </div>
+</div>

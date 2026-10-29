@@ -14,6 +14,10 @@ describe('FinesReportsSummaryListStore', () => {
     store.resetFilters();
   });
 
+  it('should initialise without a selected business unit', () => {
+    expect(store.filters().businessUnit).toBe('');
+  });
+
   it('should store the current report type id', () => {
     store.setReportTypeId('report-a');
 
@@ -60,7 +64,7 @@ describe('FinesReportsSummaryListStore', () => {
 
     expect(store.reportTypeId()).toBe('report-b');
     expect(store.filters()).toEqual({
-      businessUnit: 'all',
+      businessUnit: '',
       dateFilter: 'last7Days',
       days: '',
       dateFrom: '',

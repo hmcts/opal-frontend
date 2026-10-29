@@ -24,7 +24,7 @@
     },
     "enforcementStatus": {
       "collection order": "Collection Order",
-      "date of last movement": "19 February 2025"
+      "date of last movement": "21 October 2026"
     },
     "comments": {
       "comment": "created 19.02.2025"
@@ -50,6 +50,6 @@
   "historyAndNotesTab": {},
   "fixedPenaltyTab": {
     "issuing authority": "POL123",
-    "registration number": "FIXED PENALTY REGISTRATION"
+    "registration number": "—"
   }
 }
