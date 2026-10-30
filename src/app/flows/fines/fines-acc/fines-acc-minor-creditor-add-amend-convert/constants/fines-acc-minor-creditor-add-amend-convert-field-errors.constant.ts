@@ -147,6 +147,10 @@ export const FINES_ACC_MINOR_CREDITOR_ADD_AMEND_CONVERT_FIELD_ERRORS: IFinesAccM
         message: 'Enter sort code',
         priority: 1,
       },
+      invalidSortCode: {
+        message: 'Sort code must be 6 numbers',
+        priority: 2,
+      },
       minlength: {
         message: 'Enter a valid sort code like 309430',
         priority: 2,

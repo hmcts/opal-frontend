@@ -1,10 +1,12 @@
-import { IFinesMciRoutingPaths } from '../interfaces/fines-mci-routing-paths.interface';
-
-export const FINES_MCI_ROUTING_TITLES: IFinesMciRoutingPaths = {
+export const FINES_MCI_ROUTING_TITLES = {
   root: 'Manual cash input',
   children: {
     createAllocate: 'Create and allocate tills',
     paymentCategoryCriminalMatches: 'Criminal account search matches',
     paymentCategoryCriminalSearch: 'Search for criminal accounts',
+    createTillSelectBusinessUnit: 'Select business unit',
+    createTillDetails: 'Till details',
+    createTillPaymentCategory: 'Payment category',
+    createTillCancel: 'Cancel till creation',
   },
 };

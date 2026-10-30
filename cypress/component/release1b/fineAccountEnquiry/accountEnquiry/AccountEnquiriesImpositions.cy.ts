@@ -15,6 +15,8 @@ import {
 } from './intercept/defendantAccountIntercepts';
 import { IComponentProperties } from './setup/setupComponent.interface';
 import { setupAccountEnquiryComponent } from './setup/SetupComponent';
+import { GlobalStore } from '@hmcts/opal-frontend-common/stores/global';
+import { RELEASE_1A_1_2_FEATURE_FLAG } from 'src/app/flows/fines/constants/release-feature-flags.constant';
 
 const ACCOUNT_ENQUIRY_JIRA_LABEL = '@JIRA-LABEL:account-enquiry';
 const IMPOSITIONS_STORY_TAG = '@JIRA-STORY:PO-2079';
@@ -25,6 +27,11 @@ const buildTags = (...tags: string[]): string[] => [...tags, ACCOUNT_ENQUIRY_JIR
 const componentProperties: IComponentProperties = {
   accountId: '77',
   fragments: 'at-a-glance',
+  globalStoreFactory: () => {
+    const store = new GlobalStore();
+    store.setFeatureFlags({ [RELEASE_1A_1_2_FEATURE_FLAG]: true });
+    return store;
+  },
   interceptedRoutes: ['/access-denied', '../note/add', '../debtor/individual/amend', '../debtor/parentGuardian/amend'],
 };
 
@@ -36,6 +43,15 @@ const normalizeText = (text: string): string =>
 
 const expectCellText = (selector: string, expected: string) => {
   cy.get(selector)
+    .invoke('text')
+    .then((text) => {
+      expect(normalizeText(text)).to.eq(expected);
+    });
+};
+
+const expectVisibleCellText = (selector: string, expected: string) => {
+  cy.get(selector)
+    .find('[aria-hidden="true"]')
     .invoke('text')
     .then((text) => {
       expect(normalizeText(text)).to.eq(expected);
@@ -110,15 +126,15 @@ describe('Account Enquiry Impositions', () => {
         .closest('tr')
         .should('have.class', 'govuk-light-grey-background-colour')
         .and('contain.text', 'Minor Creditor Test Ltd');
-      expectCellText(getImpositionsCell('balance', 1), '—');
+      expectVisibleCellText(getImpositionsCell('balance', 1), '—');
 
-      expectCellText(getImpositionsCell('date-added', 2), '—');
-      expectCellText(getImpositionsCell('date-imposed', 2), '—');
+      expectVisibleCellText(getImpositionsCell('date-added', 2), '—');
+      expectVisibleCellText(getImpositionsCell('date-imposed', 2), '—');
     },
   );
 
   it(
-    'AC2a, AC2b: displays the sentencing court name only when the imposition includes an imposing court',
+    'AC2a, AC2b: displays the sentencing court name when available and an em-dash when missing',
     { tags: [...buildTags(IMPOSITIONS_STORY_TAG), IMPOSITIONS_EPIC_TAG, '@JIRA-TEST-KEY:PO-7474'] },
     () => {
       setupImpositionsScreen('impositions');
@@ -126,8 +142,8 @@ describe('Account Enquiry Impositions', () => {
       cy.wait('@getImpositions');
 
       expectCellText(getImpositionsCell('imposed-by', 0), 'West London Magistrates Court');
-      cy.get(getImpositionsCell('imposed-by', 1)).should('be.empty');
-      cy.get(getImpositionsCell('imposed-by', 2)).should('be.empty');
+      expectVisibleCellText(getImpositionsCell('imposed-by', 1), '—');
+      expectVisibleCellText(getImpositionsCell('imposed-by', 2), '—');
     },
   );
 

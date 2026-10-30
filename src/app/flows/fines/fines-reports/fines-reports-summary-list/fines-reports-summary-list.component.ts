@@ -15,21 +15,14 @@ import { FormControl, FormGroup, ReactiveFormsModule } from '@angular/forms';
 import { ActivatedRoute, RouterLink } from '@angular/router';
 import { EMPTY, Observable, Subject, catchError, distinctUntilChanged, map, switchMap, takeUntil } from 'rxjs';
 import { GovukErrorSummaryComponent } from '@hmcts/opal-frontend-common/components/govuk/govuk-error-summary';
-import {
-  GovukRadioComponent,
-  GovukRadiosItemComponent,
-} from '@hmcts/opal-frontend-common/components/govuk/govuk-radio';
+import { CustomDateFilterComponent } from '@hmcts/opal-frontend-common/components/custom/custom-date-filter';
+import { clearInactiveCustomDateFilterFields } from '@hmcts/opal-frontend-common/components/custom/custom-date-filter/utils';
 import { AlphagovAccessibleAutocompleteComponent } from '@hmcts/opal-frontend-common/components/alphagov/alphagov-accessible-autocomplete';
 import { IAlphagovAccessibleAutocompleteItem } from '@hmcts/opal-frontend-common/components/alphagov/alphagov-accessible-autocomplete/interfaces';
-import { MojDatePickerComponent } from '@hmcts/opal-frontend-common/components/moj/moj-date-picker';
 import { GlobalStore } from '@hmcts/opal-frontend-common/stores/global';
 import { CustomPageHeaderComponent } from '@hmcts/opal-frontend-common/components/custom/custom-page-header';
 import { AbstractReportSummaryListBaseComponent } from '@hmcts/opal-frontend-common/components/abstract/abstract-report-summary-list-base';
-import {
-  ABSTRACT_REPORT_SUMMARY_LIST_CUSTOM_DAYS,
-  ABSTRACT_REPORT_SUMMARY_LIST_DATE_RANGE,
-  ABSTRACT_REPORT_SUMMARY_LIST_FILTER_STATE,
-} from '@hmcts/opal-frontend-common/components/abstract/abstract-report-summary-list-base/constants';
+import { ABSTRACT_REPORT_SUMMARY_LIST_FILTER_STATE } from '@hmcts/opal-frontend-common/components/abstract/abstract-report-summary-list-base/constants';
 import { IAbstractReportSummaryListDateValidationMessages } from '@hmcts/opal-frontend-common/components/abstract/abstract-report-summary-list-base/interfaces';
 import { AbstractReportSummaryListDateFilter } from '@hmcts/opal-frontend-common/components/abstract/abstract-report-summary-list-base/types';
 import { OpalFines } from '@services/fines/opal-fines-service/opal-fines.service';
@@ -68,10 +61,8 @@ type FinesReportsSummaryListFilterForm = FormGroup<{
     CommonModule,
     ReactiveFormsModule,
     GovukErrorSummaryComponent,
-    GovukRadioComponent,
-    GovukRadiosItemComponent,
+    CustomDateFilterComponent,
     AlphagovAccessibleAutocompleteComponent,
-    MojDatePickerComponent,
     CustomPageHeaderComponent,
     FinesReportsSummaryListTableWrapperComponent,
     RouterLink,
@@ -134,7 +125,7 @@ export class FinesReportsSummaryListComponent
   public readonly loading = signal(false);
   public readonly loadError = signal(this.reportInstancesResponse()?.loadError ?? false);
   public readonly filtersForm: FinesReportsSummaryListFilterForm = new FormGroup({
-    businessUnit: new FormControl<string | null>(FINES_REPORTS_SUMMARY_LIST_ALL_BUSINESS_UNITS),
+    businessUnit: new FormControl<string | null>(''),
     dateFilter: new FormControl<AbstractReportSummaryListDateFilter | null>(
       ABSTRACT_REPORT_SUMMARY_LIST_FILTER_STATE.dateFilter,
     ),
@@ -255,20 +246,6 @@ export class FinesReportsSummaryListComponent
   }
 
   /**
-   * Clears conditional date fields when their radio option is no longer selected.
-   */
-  private subscribeToDateFilterChanges(): void {
-    this.filtersForm.controls.dateFilter.valueChanges
-      .pipe(takeUntilDestroyed(this.destroyRef))
-      .subscribe((dateFilter) => {
-        this.dateFilter.set(
-          (dateFilter ?? ABSTRACT_REPORT_SUMMARY_LIST_FILTER_STATE.dateFilter) as AbstractReportSummaryListDateFilter,
-        );
-        this.clearInactiveDateFilterFields(this.filtersForm, dateFilter);
-      });
-  }
-
-  /**
    * Applies stored filter state for the current report type, or the default query for a new report type.
    */
   private initialiseFilters(): void {
@@ -277,10 +254,10 @@ export class FinesReportsSummaryListComponent
     const filters: IFinesReportsSummaryListFilterState = this.store.appliedQuery()
       ? this.store.filters()
       : {
-          businessUnit: FINES_REPORTS_SUMMARY_LIST_ALL_BUSINESS_UNITS,
+          businessUnit: '',
           ...ABSTRACT_REPORT_SUMMARY_LIST_FILTER_STATE,
         };
-    this.filtersForm.setValue(filters, { emitEvent: false });
+    this.filtersForm.setValue(filters);
     this.dateFilter.set(filters.dateFilter);
 
     if (!this.store.appliedQuery()) {
@@ -357,14 +334,7 @@ export class FinesReportsSummaryListComponent
     filtersForm: FinesReportsSummaryListFilterForm,
     dateFilter: AbstractReportSummaryListDateFilter | null,
   ): void {
-    if (dateFilter !== ABSTRACT_REPORT_SUMMARY_LIST_CUSTOM_DAYS) {
-      filtersForm.controls.days.setValue('', { emitEvent: false });
-    }
-
-    if (dateFilter !== ABSTRACT_REPORT_SUMMARY_LIST_DATE_RANGE) {
-      filtersForm.controls.dateFrom.setValue('', { emitEvent: false });
-      filtersForm.controls.dateTo.setValue('', { emitEvent: false });
-    }
+    clearInactiveCustomDateFilterFields(filtersForm.controls, dateFilter);
   }
 
   /**
@@ -377,7 +347,7 @@ export class FinesReportsSummaryListComponent
     filtersForm: FinesReportsSummaryListFilterForm,
   ): IFinesReportsSummaryListFilterState {
     return {
-      businessUnit: filtersForm.controls.businessUnit.value ?? FINES_REPORTS_SUMMARY_LIST_ALL_BUSINESS_UNITS,
+      businessUnit: filtersForm.controls.businessUnit.value ?? '',
       dateFilter: filtersForm.controls.dateFilter.value ?? this.dateFilterLast7Days,
       days: filtersForm.controls.days.value ?? '',
       dateFrom: filtersForm.controls.dateFrom.value ?? '',
@@ -392,14 +362,6 @@ export class FinesReportsSummaryListComponent
     this.subscribeToReportInstanceRefreshes();
     this.subscribeToReportIdChanges();
     this.subscribeToReportInstancesData();
-    this.subscribeToDateFilterChanges();
-  }
-
-  /**
-   * Stores the normalized date picker value in the form control.
-   */
-  public onDateChange(fieldName: 'dateFrom' | 'dateTo', value: string): void {
-    this.filtersForm.controls[fieldName].setValue(value);
   }
 
   /**
