@@ -45,7 +45,8 @@ describe('FinesMciCreateTillPaymentCategoryComponent', () => {
 
     expect(navigateSpy).toHaveBeenCalledWith(['search-account'], { relativeTo: null });
     expect(fixture.componentInstance.stateUnsavedChanges).toBe(false);
-    expect(finesMciStore.tills()[0].payments).toEqual([expect.objectContaining({ journey: 'criminal' })]);
+    expect(finesMciStore.draftJourney()).toBe('criminal');
+    expect(finesMciStore.tills()[0].payments).toEqual([]);
   });
 
   it('keeps the page and leave warning when submitted without a category', () => {
@@ -64,7 +65,7 @@ describe('FinesMciCreateTillPaymentCategoryComponent', () => {
   it.each([
     ['courtFee', 'court-fee-details'],
     ['suspense', 'suspense-details'],
-  ] as const)('adds a %s payment and navigates to its details page', (category, route) => {
+  ] as const)('saves a %s draft and navigates to its details page', (category, route) => {
     const navigateSpy = vi.spyOn(router, 'navigate').mockResolvedValue(true);
 
     fixture.componentInstance.handleSubmit({
@@ -74,15 +75,37 @@ describe('FinesMciCreateTillPaymentCategoryComponent', () => {
 
     expect(navigateSpy).toHaveBeenCalledWith([route], { relativeTo: null });
     expect(fixture.componentInstance.stateUnsavedChanges).toBe(false);
-    expect(finesMciStore.tills()[0].payments).toEqual([expect.objectContaining({ journey: category })]);
+    expect(finesMciStore.draftJourney()).toBe(category);
+    expect(finesMciStore.tills()[0].payments).toEqual([]);
+  });
+
+  it('does not add another payment when changing category after returning from an unfinished journey', () => {
+    const navigateSpy = vi.spyOn(router, 'navigate').mockResolvedValue(true);
+
+    fixture.componentInstance.handleSubmit({
+      formData: { paymentCategory: 'criminal' },
+      nestedFlow: false,
+    });
+    expect(finesMciStore.tills()[0].payments).toHaveLength(0);
+
+    fixture.componentInstance.handleSubmit({
+      formData: { paymentCategory: 'courtFee' },
+      nestedFlow: false,
+    });
+
+    expect(navigateSpy).toHaveBeenLastCalledWith(['court-fee-details'], { relativeTo: null });
+    expect(finesMciStore.draftJourney()).toBe('courtFee');
+    expect(finesMciStore.tills()[0].payments).toHaveLength(0);
   });
 
   it('navigates to Till Details when Cancel is selected', () => {
     const navigateSpy = vi.spyOn(router, 'navigate').mockResolvedValue(true);
+    finesMciStore.setDraftJourney('criminal');
 
     fixture.componentInstance.handleCancel();
 
     expect(navigateSpy).toHaveBeenCalledWith(['details'], { relativeTo: null });
+    expect(finesMciStore.draftJourney()).toBeNull();
   });
 
   it('tracks child form changes for route and browser leave warnings', () => {

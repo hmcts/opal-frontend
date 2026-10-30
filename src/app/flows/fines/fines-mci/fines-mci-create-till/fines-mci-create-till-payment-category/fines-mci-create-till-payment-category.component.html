@@ -3,6 +3,7 @@
   <h1 class="govuk-heading-l">Payment category</h1>
 
   <app-fines-mci-create-till-payment-category-form
+    [initialPaymentCategory]="finesMciStore.draftJourney()"
     (formSubmit)="handleSubmit($event)"
     (unsavedChanges)="handleUnsavedChanges($event)"
     (cancelRequested)="handleCancel()"

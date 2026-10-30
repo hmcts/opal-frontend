@@ -15,7 +15,7 @@ import { IFinesMciCreateTillPaymentCategoryFormState } from './interfaces/fines-
 export class FinesMciCreateTillPaymentCategoryComponent extends AbstractFormParentBaseComponent {
   protected readonly finesMciStore = inject(FinesMciStore);
 
-  /** Handles Continue, adding the selected payment and opening its journey. */
+  /** Handles Continue, saving the selected journey as a draft and opening it. */
   public handleSubmit(form: IAbstractFormBaseForm<IFinesMciCreateTillPaymentCategoryFormState>): void {
     const paymentCategory = form.formData.paymentCategory;
     if (!paymentCategory) {
@@ -23,8 +23,7 @@ export class FinesMciCreateTillPaymentCategoryComponent extends AbstractFormPare
       return;
     }
 
-    const tillId = this.finesMciStore.ensureTill();
-    this.finesMciStore.addPayment(tillId, paymentCategory);
+    this.finesMciStore.setDraftJourney(paymentCategory);
     this.stateUnsavedChanges = false;
 
     const journeyRoute = {
@@ -38,6 +37,7 @@ export class FinesMciCreateTillPaymentCategoryComponent extends AbstractFormPare
 
   /** Returns to Till Details when the user cancels. */
   public handleCancel(): void {
+    this.finesMciStore.setDraftJourney(null);
     this.routerNavigate(FINES_MCI_ROUTING_PATHS.children.details);
   }
 
