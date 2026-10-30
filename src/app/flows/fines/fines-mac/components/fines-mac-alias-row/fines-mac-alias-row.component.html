@@ -1,0 +1,27 @@
+<div [class.moj-add-another__item]="releaseEnabled">
+  <fieldset class="govuk-fieldset" [class.moj-add-another__fieldset]="releaseEnabled">
+    <legend
+      class="govuk-fieldset__legend govuk-fieldset__legend--m"
+      [class.moj-add-another__item-title]="releaseEnabled"
+    >
+      <!-- prettier-ignore -->
+      <h2 class="govuk-heading-m govuk-!-margin-0">Alias {{ index + 1 }}{{ releaseEnabled && total > 1 ? ' of ' + total : '' }}</h2>
+    </legend>
+
+    <div [class.moj-add-another__item-container]="releaseEnabled">
+      <ng-content></ng-content>
+
+      @if (releaseEnabled && total > 1) {
+        <div class="moj-add-another__remove-button-container">
+          <button
+            type="button"
+            class="govuk-button govuk-button--secondary moj-add-another__remove-button"
+            (click)="onRemove()"
+          >
+            Remove alias {{ index + 1 }}
+          </button>
+        </div>
+      }
+    </div>
+  </fieldset>
+</div>
