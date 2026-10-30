@@ -1,0 +1,45 @@
+# Send only the inputs needed for the production browser and SSR builds.
+# Re-include parent directories before their contents; later rules win.
+**
+!Dockerfile
+!.dockerignore
+!.nvmrc
+!.yarnrc.yml
+!package.json
+!yarn.lock
+!version
+!.yarn/
+.yarn/**
+!.yarn/releases/
+!.yarn/releases/**
+!.yarn/patches/
+!.yarn/patches/**
+!patches/
+!patches/**
+!angular.json
+!tsconfig.json
+!tsconfig.app.json
+!tsconfig.server.json
+!server.ts
+!server-setup.ts
+!src/
+!src/**
+!config/
+config/**
+!config/default.json
+!config/production.json
+!config/custom-environment-variables.json
+
+# These exclusions also apply inside an allowed source directory.
+**/node_modules
+**/.git
+**/.agents
+**/.codex
+**/.angular
+**/.env*
+**/.opal.env
+**/*.pem
+**/*.key
+**/*.p12
+**/*.pfx
+**/*.log
