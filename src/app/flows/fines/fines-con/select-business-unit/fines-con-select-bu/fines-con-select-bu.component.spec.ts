@@ -56,12 +56,19 @@ describe('FinesConSelectBuComponent', () => {
       refData: [mockBusinessUnitsRefData.refData[0]],
       count: 1,
     };
-    const updateSpy = vi.spyOn(finesConStore, 'updateSelectBuForm');
+    const updateSpy = vi.spyOn(finesConStore, 'updateSelectBuFormComplete');
 
     component.businessUnitsRefData = singleBusinessUnitMock;
     component['setBusinessUnit'](singleBusinessUnitMock);
 
-    expect(updateSpy).toHaveBeenCalled();
+    expect(updateSpy).toHaveBeenCalledWith({
+      ...FINES_CON_SELECT_BU_FORM_INDIVIDUAL_MOCK,
+      formData: {
+        ...FINES_CON_SELECT_BU_FORM_INDIVIDUAL_MOCK.formData,
+        fcon_select_bu_business_unit_id: singleBusinessUnitMock.refData[0].business_unit_id,
+      },
+    });
+    expect(finesConStore.stateChanges()).toBe(false);
   });
 
   it('should handle form submission with individual defendant type', () => {
