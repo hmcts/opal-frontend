@@ -8,7 +8,7 @@ import { FinesReportsComponent } from 'src/app/flows/fines/fines-reports/fines-r
 import { AccountDetailsNotesLocators as L } from '../../../shared/selectors/account-details/account.notes.details.locators';
 import { setupFlowUnloadComponent } from './setup/SetupComponent';
 
-const buildTags = (...tags: string[]): string[] => [...tags, '@JIRA-LABEL:flow-unload'];
+const buildTags = (...tags: string[]): string[] => [...tags, '@JIRA-EPIC:PO-8248', '@JIRA-LABEL:flow-unload'];
 
 const expectUnloadPrevented = (prevented: boolean) =>
   cy.window().then((window) => {

@@ -4,7 +4,12 @@ import { SelectBusinessUnitLocators as Select } from '../../../../shared/selecto
 import { AccountSearchLocators as Search } from '../../../../shared/selectors/consolidation/AccountSearch.locators';
 import { setupConsolidationJourneyComponent } from './setup/SetupJourneyComponent';
 
-const buildTags = (...tags: string[]): string[] => [...tags, '@JIRA-LABEL:consolidation', '@R1CWriteOff'];
+const buildTags = (...tags: string[]): string[] => [
+  ...tags,
+  '@JIRA-EPIC:PO-8248',
+  '@JIRA-LABEL:consolidation',
+  '@R1CWriteOff',
+];
 const warning = 'WARNING: Are you sure you want to leave this page? Any information you entered will be lost.';
 
 const expectUnloadPrevented = (prevented: boolean) =>

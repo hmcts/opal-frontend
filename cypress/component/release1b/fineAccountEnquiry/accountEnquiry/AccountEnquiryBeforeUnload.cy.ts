@@ -12,7 +12,12 @@ import { interceptAtAGlance, interceptDefendantHeader } from './intercept/defend
 import { OPAL_FINES_ACCOUNT_DEFENDANT_AT_A_GLANCE_MOCK } from './mocks/defendant_details_at_glance_mock';
 import { ACCOUNT_ENQUIRY_HEADER_ELEMENTS as Header } from '../../../../shared/selectors/account-enquiry/account.enquiry.header.locators';
 
-const buildTags = (...tags: string[]): string[] => [...tags, '@JIRA-LABEL:account-enquiry', '@R1B'];
+const buildTags = (...tags: string[]): string[] => [
+  ...tags,
+  '@JIRA-EPIC:PO-8248',
+  '@JIRA-LABEL:account-enquiry',
+  '@R1B',
+];
 const warning = 'WARNING: Are you sure you want to leave this page? Any information you entered will be lost.';
 
 // Use the production routes, guards and resolvers; only their API responses are mocked.
