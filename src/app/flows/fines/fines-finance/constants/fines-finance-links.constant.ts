@@ -1,6 +1,6 @@
 import { IDashboardPageConfigurationLink } from '@hmcts/opal-frontend-common/pages/dashboard-page/interfaces';
-import { FINES_ROUTING_PATHS } from '../../routing/constants/fines-routing-paths.constant';
 import { FINES_PERMISSIONS } from '@app/constants/fines-permissions.constant';
+import { FINES_ROUTING_PATHS } from '../../routing/constants/fines-routing-paths.constant';
 
 const FINES_FINANCE_LINK_DEFAULTS: Pick<IDashboardPageConfigurationLink, 'fragment' | 'newTab' | 'style'> = {
   fragment: null,
