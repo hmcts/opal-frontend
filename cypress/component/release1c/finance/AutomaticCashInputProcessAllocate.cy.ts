@@ -245,7 +245,7 @@ describe('Automatic Cash Input - Process files and allocate tills', () => {
   );
 
   it(
-    'keeps a till selection when leaving is cancelled and returns to Select Business Units when confirmed',
+    'returns to Select Business Units without confirmation for till-only selection and clears it on re-entry',
     {
       tags: [
         '@JIRA-STORY:PO-2587',
@@ -286,33 +286,11 @@ describe('Automatic Cash Input - Process files and allocate tills', () => {
       cy.get(AutomaticCashInputLocators.allocateTillCheckbox(123)).check({ force: true });
 
       cy.window().then((window) => {
-        const leavePageConfirm = cy.stub(window, 'confirm');
-
-        leavePageConfirm.onFirstCall().returns(false);
-        leavePageConfirm.onSecondCall().returns(true);
+        const leavePageConfirm = cy.stub(window, 'confirm').returns(false);
         cy.wrap(leavePageConfirm).as('leavePageConfirm');
       });
 
       cy.get(AutomaticCashInputLocators.processAllocateBackLink).click();
-
-      cy.get('@leavePageConfirm')
-        .should('have.been.calledOnce')
-        .and('have.been.calledWithExactly', UNSAVED_CHANGES_MESSAGE);
-      cy.get('@financeRouter')
-        .its('url')
-        .should(
-          'eq',
-          [
-            '',
-            FINES_ROUTING_PATHS.root,
-            FINES_ROUTING_PATHS.children.autoPaymentIn.root,
-            FINES_ROUTING_PATHS.children.autoPaymentIn.children.processAllocate,
-          ].join('/') + '#allocate',
-        );
-      cy.get(AutomaticCashInputLocators.allocateTillCheckbox(123)).should('be.checked');
-
-      cy.get(AutomaticCashInputLocators.processAllocateBackLink).click();
-      cy.get('@leavePageConfirm').should('have.been.calledTwice');
 
       cy.get('@financeRouter')
         .its('url')
@@ -326,11 +304,22 @@ describe('Automatic Cash Input - Process files and allocate tills', () => {
           ].join('/'),
         );
       cy.get(AutomaticCashInputLocators.selectBusinessUnitsLegend).should('contain.text', 'Select business units');
+      cy.get('@leavePageConfirm').should('not.have.been.called');
+
+      cy.get(AutomaticCashInputLocators.businessUnitCheckbox(77)).check({ force: true });
+      cy.get(AutomaticCashInputLocators.continueButton).click();
+      cy.wait('@getInterfaceJobsSummary');
+      cy.get(AutomaticCashInputLocators.allocateTabLink).click();
+      cy.wait('@getInterfaceJobsSummary');
+      cy.wait('@getTills');
+
+      cy.get(AutomaticCashInputLocators.allocateTillCheckbox(123)).should('not.be.checked');
+      assertTrimmedText(AutomaticCashInputLocators.allocateSelectedCount, '0 of 1 tills selected.');
     },
   );
 
   it(
-    '(RGAC3, RGAC3a) prevents browser refresh while a till is selected and retains the selection',
+    'does not prevent a synthetic beforeunload event for till-only selection',
     {
       tags: [
         '@JIRA-STORY:PO-2587',
@@ -375,14 +364,14 @@ describe('Automatic Cash Input - Process files and allocate tills', () => {
 
         window.dispatchEvent(beforeUnloadEvent);
 
-        expect(beforeUnloadEvent.defaultPrevented).to.be.true;
+        expect(beforeUnloadEvent.defaultPrevented).to.be.false;
       });
       cy.get(AutomaticCashInputLocators.allocateTillCheckbox(123)).should('be.checked');
     },
   );
 
   it(
-    '(RGAC2) asks for confirmation before signing out with a selected till',
+    'requests the logout redirect without application confirmation for till-only selection',
     {
       tags: [
         '@JIRA-STORY:PO-2587',
@@ -426,25 +415,13 @@ describe('Automatic Cash Input - Process files and allocate tills', () => {
         cy.stub(appComponent as AppComponent, 'handleRedirect').as('handleRedirect');
       });
       cy.window().then((window) => {
-        const leavePageConfirm = cy.stub(window, 'confirm');
-
-        leavePageConfirm.onFirstCall().returns(false);
-        leavePageConfirm.onSecondCall().returns(true);
+        const leavePageConfirm = cy.stub(window, 'confirm').returns(false);
         cy.wrap(leavePageConfirm).as('leavePageConfirm');
       });
 
       cy.get(LoginLocators.signOutLink).click();
-      cy.get('@leavePageConfirm')
-        .should('have.been.calledOnce')
-        .and('have.been.calledWithExactly', UNSAVED_CHANGES_MESSAGE);
-      cy.get('@handleRedirect').should('not.have.been.called');
-      cy.get('@financeRouter')
-        .its('url')
-        .should('contain', FINES_ROUTING_PATHS.children.autoPaymentIn.children.processAllocate);
-
-      cy.get(LoginLocators.signOutLink).click();
-      cy.get('@leavePageConfirm').should('have.been.calledTwice');
       cy.get('@handleRedirect').should('have.been.calledOnce').and('have.been.calledWithExactly', SSO_ENDPOINTS.logout);
+      cy.get('@leavePageConfirm').should('not.have.been.called');
     },
   );
 
