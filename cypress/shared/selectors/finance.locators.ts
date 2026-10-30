@@ -47,4 +47,8 @@ export const ManualCashInputLocators = {
   continueButton: '#submitForm',
   cancelLink: 'a.govuk-link.button-link',
   tillDetails: '#fines-mci-create-till-details',
+  tillDetailsBusinessUnitKey: '#fines-mci-till-details-summaryBusiness-unitKey',
+  tillDetailsBusinessUnitValue: '#fines-mci-till-details-summaryBusiness-unitValue',
+  addPaymentButton: '#fines-mci-add-payment',
+  deleteTillLink: '#fines-mci-delete-till',
 } as const;

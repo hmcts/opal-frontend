@@ -20,3 +20,14 @@ Feature: Manual Cash Input - Create Till Accessibility
     And I open Manual Cash Input
     And I create a till
     Then I check the page for accessibility
+
+  # PO-3485 AC4: axe-core coverage for Till Details with an empty till.
+  @JIRA-STORY:PO-3485
+  Scenario: AC4 - Till Details screen accessibility
+    When I select the Fines primary navigation item "Finance"
+    And I am taken to the "Finance" Fines landing page
+    And I open Manual Cash Input
+    And I create a till
+    And I select "Camden and Islington"
+    And I continue
+    Then I check the page for accessibility

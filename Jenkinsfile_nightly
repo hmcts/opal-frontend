@@ -1259,6 +1259,9 @@ void setupTestSpecifications() {
   }
 }
 
+// Scheduled and manually triggered nightly jobs include extended tests in the selected suites.
+env.EXCLUDE_EXTENDED_TESTS = 'false'
+
 withNightlyPipeline(type, product, component) {
   loadVaultSecrets(nightlySecrets())
   env.TEST_URL = nightlyTestUrlStaging
