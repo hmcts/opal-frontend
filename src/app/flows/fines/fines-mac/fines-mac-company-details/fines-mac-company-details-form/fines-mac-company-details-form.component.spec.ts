@@ -1,5 +1,7 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { FormArray } from '@angular/forms';
+import { Type } from '@angular/core';
+import { FinesMacAbstractAliasFormComponent } from '../../abstracts/fines-mac-abstract-alias-form.component';
 import { GlobalStore } from '@hmcts/opal-frontend-common/stores/global';
 import { RELEASE_1A_1_2_FEATURE_FLAG } from '../../../constants/release-feature-flags.constant';
 import { FinesMacCompanyDetailsFormComponent } from './fines-mac-company-details-form.component';
@@ -672,6 +674,14 @@ describe('FinesMacCompanyDetailsFormComponent', () => {
     expect(aliasContainer.querySelector('#addAlias')).not.toBeNull();
   });
 
+  it('should create the base alias component through its own Angular factory', () => {
+    const baseFixture = TestBed.createComponent(
+      FinesMacAbstractAliasFormComponent as unknown as Type<FinesMacAbstractAliasFormComponent>,
+    );
+
+    expect(baseFixture.componentInstance).toBeInstanceOf(FinesMacAbstractAliasFormComponent);
+  });
+
   it('should emit form submit event with form value - nestedFlow true', () => {
     const event = { submitter: { className: 'nested-flow' } } as SubmitEvent;
     formSubmit.nestedFlow = true;
@@ -788,5 +798,31 @@ describe('FinesMacCompanyDetailsFormComponent', () => {
       'fm_company_details_add_alias',
       'fm_company_details_aliases',
     );
+  });
+
+  it('should safely remove an alias when its container is no longer present', async () => {
+    component.form.get('fm_company_details_add_alias')?.setValue(true);
+
+    while (component.aliasControls.length < 2) {
+      component.addAlias(component.aliasControls.length, 'fm_company_details_aliases');
+    }
+
+    fixture.detectChanges();
+
+    const aliases = component.form.get('fm_company_details_aliases') as FormArray;
+
+    expect(aliases.controls).toHaveLength(2);
+
+    component.removeAndRenumberAlias(1);
+
+    component.form.get('fm_company_details_add_alias')?.setValue(false);
+
+    fixture.detectChanges();
+
+    await fixture.whenStable();
+
+    expect(fixture.nativeElement.querySelector('[formArrayName="fm_company_details_aliases"]')).toBeNull();
+
+    expect(aliases.controls).toHaveLength(0);
   });
 });

@@ -154,4 +154,24 @@ describe('renumberAliasFormControls', () => {
       container.remove();
     }
   });
+
+  it('should leave a group unchanged when the expected alias field is missing', () => {
+    const unrelatedControl = new FormControl('UNCHANGED');
+
+    const aliases = new FormArray([
+      new FormGroup({
+        unrelated_field: unrelatedControl,
+      }),
+    ]);
+
+    renumberAliasFormControls(aliases, ['fm_personal_details_alias_forenames']);
+
+    const remainingGroup = aliases.at(0);
+
+    expect(remainingGroup.get('unrelated_field')).toBe(unrelatedControl);
+    expect(remainingGroup.get('fm_personal_details_alias_forenames_0')).toBeNull();
+    expect(remainingGroup.value).toEqual({
+      unrelated_field: 'UNCHANGED',
+    });
+  });
 });
