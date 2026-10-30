@@ -219,6 +219,49 @@ export class ManualCashInputActions {
     cy.location('pathname').should('eq', '/fines/manual-cash-input/create/till/payment-category');
   }
 
+  /** Selects a payment category and continues from Payment Category.
+   * @param category - Payment category value to select.
+   */
+  public continueWithPaymentCategory(category: 'criminal' | 'courtFee' | 'suspense'): void {
+    cy.get(`input[name="paymentCategory"][value="${category}"]`).check({ force: true });
+    cy.get(ManualCashInputLocators.continueButton).click();
+  }
+
+  /** Confirms the Criminal journey opens Search for an Account. */
+  public assertSearchForAccountIsDisplayed(): void {
+    cy.location('pathname').should('eq', '/fines/manual-cash-input/create/till/search-account');
+    cy.contains('h1', 'Search for an account').should('be.visible');
+  }
+
+  /** Confirms an out-of-scope payment category leaves the user on Payment Category. */
+  public assertPaymentCategoryIsDisplayed(): void {
+    cy.location('pathname').should('eq', '/fines/manual-cash-input/create/till/payment-category');
+    cy.contains('h1', 'Payment category').should('be.visible');
+  }
+
+  /** Submits Payment Category without choosing an option. */
+  public continueWithoutPaymentCategory(): void {
+    cy.get(ManualCashInputLocators.continueButton).click();
+    cy.location('pathname').should('eq', '/fines/manual-cash-input/create/till/payment-category');
+  }
+
+  /** Verifies the required payment-category messages and their summary link focus. */
+  public assertPaymentCategoryValidation(): void {
+    cy.get(ManualCashInputLocators.errorSummary).should('contain.text', 'Select payment category');
+    cy.get(ManualCashInputLocators.errorSummary)
+      .find('.govuk-error-summary__title')
+      .should('have.text', 'There is a problem');
+    cy.get(ManualCashInputLocators.errorMessage).should('contain.text', 'Select payment category');
+    cy.get(ManualCashInputLocators.errorSummary).find('.govuk-error-summary__list a').click();
+    cy.focused().should('have.id', 'paymentCategory');
+  }
+
+  /** Cancels Payment Category and returns to Till Details. */
+  public cancelPaymentCategory(): void {
+    cy.get(ManualCashInputLocators.cancelLink).should('contain.text', 'Cancel').click();
+    cy.location('pathname').should('eq', '/fines/manual-cash-input/create/till/details');
+  }
+
   /** Opens Delete Till from Till Details. */
   public deleteTill(): void {
     cy.get(ManualCashInputLocators.deleteTillLink).should('contain.text', 'Delete till').click();

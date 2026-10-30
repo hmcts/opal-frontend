@@ -1,0 +1,43 @@
+<opal-lib-govuk-error-summary
+  [errors]="formErrorSummaryMessage"
+  (errorClick)="scrollTo($event)"
+></opal-lib-govuk-error-summary>
+
+<form (submit)="handleFormSubmit($event)" [formGroup]="form" novalidate>
+  <opal-lib-govuk-radio
+    fieldSetId="fines-mci-payment-category"
+    legendText="Payment category"
+    legendClasses="govuk-visually-hidden"
+    [errors]="formControlErrorMessages['paymentCategory']"
+  >
+    <div
+      opal-lib-govuk-radios-item
+      labelText="Criminal"
+      inputId="paymentCategory"
+      inputName="paymentCategory"
+      inputValue="criminal"
+      [control]="form.controls['paymentCategory']"
+    ></div>
+    <div
+      opal-lib-govuk-radios-item
+      labelText="Court fee"
+      inputId="fines-mci-payment-category-court-fee"
+      inputName="paymentCategory"
+      inputValue="courtFee"
+      [control]="form.controls['paymentCategory']"
+    ></div>
+    <div
+      opal-lib-govuk-radios-item
+      labelText="Suspense"
+      inputId="fines-mci-payment-category-suspense"
+      inputName="paymentCategory"
+      inputValue="suspense"
+      [control]="form.controls['paymentCategory']"
+    ></div>
+  </opal-lib-govuk-radio>
+
+  <div class="govuk-button-group">
+    <button class="govuk-button" id="submitForm" type="submit">Continue</button>
+    <opal-lib-govuk-cancel-link (linkClickEvent)="cancelRequested.emit()"></opal-lib-govuk-cancel-link>
+  </div>
+</form>
