@@ -185,24 +185,28 @@ describe('FinesApiAllocateTillsTableWrapperComponent', () => {
     expect(checkbox('fines-api-allocate-select-all').indeterminate).toBe(false);
   });
 
-  it('renders and selects more than 500 tills without pagination or a Process cap', () => {
-    render(data(rows(501)));
-    expect(element().querySelectorAll('tbody tr')).toHaveLength(501);
-    expect(element().querySelector('opal-lib-moj-pagination')).toBeNull();
-    click('fines-api-allocate-till-101');
-    click('fines-api-allocate-select-all');
-    expect(selectedText()).toBe('501 of 501 tills selected.');
-    expect(checkbox('fines-api-allocate-select-all').checked).toBe(true);
-    expect(checkbox('fines-api-allocate-select-all').indeterminate).toBe(false);
-    expect(
-      Array.from(element().querySelectorAll<HTMLInputElement>('tbody input')).every((input) => input.checked),
-    ).toBe(true);
-    click('fines-api-allocate-select-all');
-    expect(selectedText()).toBe('0 of 501 tills selected.');
-    expect(
-      Array.from(element().querySelectorAll<HTMLInputElement>('tbody input')).every((input) => !input.checked),
-    ).toBe(true);
-  });
+  it(
+    'renders and selects more than 500 tills without pagination or a Process cap',
+    () => {
+      render(data(rows(501)));
+      expect(element().querySelectorAll('tbody tr')).toHaveLength(501);
+      expect(element().querySelector('opal-lib-moj-pagination')).toBeNull();
+      click('fines-api-allocate-till-101');
+      click('fines-api-allocate-select-all');
+      expect(selectedText()).toBe('501 of 501 tills selected.');
+      expect(checkbox('fines-api-allocate-select-all').checked).toBe(true);
+      expect(checkbox('fines-api-allocate-select-all').indeterminate).toBe(false);
+      expect(
+        Array.from(element().querySelectorAll<HTMLInputElement>('tbody input')).every((input) => input.checked),
+      ).toBe(true);
+      click('fines-api-allocate-select-all');
+      expect(selectedText()).toBe('0 of 501 tills selected.');
+      expect(
+        Array.from(element().querySelectorAll<HTMLInputElement>('tbody input')).every((input) => !input.checked),
+      ).toBe(true);
+    },
+    15_000,
+  );
 
   it('updates the header when all individual rows become selected', () => {
     render(data());

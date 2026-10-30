@@ -9,6 +9,8 @@ export const FINES_MCI_ROUTING_PATHS: IFinesMciRoutingPaths = {
     selectBusinessUnit: 'select-bu',
     details: 'details',
     paymentCategory: 'payment-category',
+    suspenseDetails: 'suspense-details',
+    courtFeeDetails: 'court-fee-details',
     searchAccount: 'search-account',
     cancel: 'cancel',
   },

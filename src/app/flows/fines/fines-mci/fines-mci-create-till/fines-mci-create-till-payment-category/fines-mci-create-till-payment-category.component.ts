@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, Component, HostListener, inject } from '@angular/core';
+import { ChangeDetectionStrategy, Component, HostListener, inject, OnInit } from '@angular/core';
 import { IAbstractFormBaseForm } from '@hmcts/opal-frontend-common/components/abstract/abstract-form-base/interfaces';
 import { AbstractFormParentBaseComponent } from '@hmcts/opal-frontend-common/components/abstract/abstract-form-parent-base';
 import { FinesMciCreateTillPaymentCategoryFormComponent } from './fines-mci-create-till-payment-category-form/fines-mci-create-till-payment-category-form.component';
@@ -12,10 +12,15 @@ import { IFinesMciCreateTillPaymentCategoryFormState } from './interfaces/fines-
   templateUrl: './fines-mci-create-till-payment-category.component.html',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class FinesMciCreateTillPaymentCategoryComponent extends AbstractFormParentBaseComponent {
+export class FinesMciCreateTillPaymentCategoryComponent extends AbstractFormParentBaseComponent implements OnInit {
   protected readonly finesMciStore = inject(FinesMciStore);
 
-  /** Handles Continue, adding a payment and advancing only when Criminal is selected. */
+  /** Restores leave protection for a category draft restored into the child form. */
+  public ngOnInit(): void {
+    this.stateUnsavedChanges = this.finesMciStore.draftJourney() !== null;
+  }
+
+  /** Handles Continue, saving the selected journey as a draft and opening it. */
   public handleSubmit(form: IAbstractFormBaseForm<IFinesMciCreateTillPaymentCategoryFormState>): void {
     const paymentCategory = form.formData.paymentCategory;
     if (!paymentCategory) {
@@ -23,19 +28,21 @@ export class FinesMciCreateTillPaymentCategoryComponent extends AbstractFormPare
       return;
     }
 
-    if (paymentCategory === 'criminal') {
-      const tillId = this.finesMciStore.ensureTill();
-      this.finesMciStore.addPayment(tillId, paymentCategory);
-      this.stateUnsavedChanges = false;
-      this.routerNavigate(FINES_MCI_ROUTING_PATHS.children.searchAccount);
-      return;
-    }
+    this.finesMciStore.setDraftJourney(paymentCategory);
+    this.stateUnsavedChanges = false;
 
-    this.stateUnsavedChanges = true;
+    const journeyRoute = {
+      criminal: FINES_MCI_ROUTING_PATHS.children.searchAccount,
+      courtFee: FINES_MCI_ROUTING_PATHS.children.courtFeeDetails,
+      suspense: FINES_MCI_ROUTING_PATHS.children.suspenseDetails,
+    }[paymentCategory];
+
+    this.routerNavigate(journeyRoute);
   }
 
   /** Returns to Till Details when the user cancels. */
   public handleCancel(): void {
+    this.finesMciStore.setDraftJourney(null);
     this.routerNavigate(FINES_MCI_ROUTING_PATHS.children.details);
   }
 
