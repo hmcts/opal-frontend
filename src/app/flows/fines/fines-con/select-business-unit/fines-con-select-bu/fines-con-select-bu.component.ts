@@ -31,9 +31,13 @@ export class FinesConSelectBuComponent extends AbstractFormParentBaseComponent i
     const { formData } = this.finesConStore.selectBuForm();
 
     if (result.refData.length === 1 && !formData.fcon_select_bu_business_unit_id) {
-      this.finesConStore.updateSelectBuForm({
-        fcon_select_bu_business_unit_id: result.refData[0].business_unit_id,
-        fcon_select_bu_defendant_type: formData.fcon_select_bu_defendant_type,
+      // A preselected business unit is not user progress through the journey.
+      this.finesConStore.updateSelectBuFormComplete({
+        ...this.finesConStore.selectBuForm(),
+        formData: {
+          ...formData,
+          fcon_select_bu_business_unit_id: result.refData[0].business_unit_id,
+        },
       });
     }
   }
