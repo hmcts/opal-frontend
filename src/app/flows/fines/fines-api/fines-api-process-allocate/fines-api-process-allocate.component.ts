@@ -179,9 +179,6 @@ export class FinesApiProcessAllocateComponent implements OnInit, OnDestroy {
 
     if (tab !== this.finesApiStore.activeTab()) {
       this.finesApiStore.setSelectedFileIds([]);
-      if (tab !== this.tabKeys.allocate) {
-        this.finesApiStore.setSelectedTillIds([]);
-      }
       this.finesApiStore.setActiveTab(tab);
     }
 
@@ -222,18 +219,13 @@ export class FinesApiProcessAllocateComponent implements OnInit, OnDestroy {
   }
 
   public ngOnInit(): void {
-    this.finesApiStore.setUnsavedChanges(
-      this.finesApiStore.hasSelectedFiles() || this.finesApiStore.hasSelectedTills(),
-    );
+    this.finesApiStore.setUnsavedChanges(this.finesApiStore.hasSelectedFiles());
   }
 
   public canDeactivate(): CanDeactivateTypes {
     // The parent journey guard owns external exits. This child guard fills the sibling-route
     // gap for Back while allowing Process -> Confirm to retain the selected file IDs.
-    return (
-      !this.isNavigatingToSelectBusinessUnits() ||
-      (!this.finesApiStore.hasSelectedFiles() && !this.finesApiStore.hasSelectedTills())
-    );
+    return !this.isNavigatingToSelectBusinessUnits() || !this.finesApiStore.hasSelectedFiles();
   }
 
   public ngOnDestroy(): void {
