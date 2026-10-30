@@ -87,6 +87,19 @@ describe('FinesApiIgnoredComponent', () => {
     expect(header('Source').getAttribute('aria-sort')).toBe('none');
   });
 
+  it('preserves the current order and sort indicator when an unknown column is requested', () => {
+    fixture.componentRef.setInput('tabData', { rows });
+    fixture.detectChanges();
+    sort('File name');
+
+    fixture.componentInstance['onSortChange']({ key: 'Unknown column', sortType: 'descending' });
+    fixture.detectChanges();
+
+    expect(names()).toEqual(['file-2.csv', 'file-10.csv']);
+    expect(header('File name').getAttribute('aria-sort')).toBe('ascending');
+    expect(header('Source').getAttribute('aria-sort')).toBe('none');
+  });
+
   it('links each filename using the job ID rather than the file ID', () => {
     const navigate = vi.spyOn(TestBed.inject(Router), 'navigateByUrl').mockResolvedValue(true);
     fixture.componentRef.setInput('tabData', { rows });
