@@ -26,6 +26,10 @@ corepack yarn npm audit --all --recursive --json
 
 Capture stdout, stderr and child exit status separately. Inspect the pinned Yarn report schema: tree-shaped NDJSON is distinct from older advisory maps. Separate deprecations from security advisories. A nonzero exit can mean findings or execution failure; empty, malformed, incomplete or error-only output is not clean. Corroborate an empty JSON result with the same scope in human-readable mode and a recognised successful completion. See [Yarn audit](https://yarnpkg.com/cli/npm/audit).
 
+When the CNP wrapper reports the same advisory as both an unneeded suppression and an unsuppressed finding, compare the complete transformed records, including dependency paths. The selected wrapper compares full advisory objects, so a changed parent path can invalidate a match even when the package, version and advisory ID are unchanged. Its warning does not prove that the vulnerable package is absent. Retain the unresolved record for review instead of deleting or rewriting it automatically.
+
+The selected security gate also counts Yarn deprecation records as blocking findings. Report these as maintenance issues separately from CVEs. A newer supported dependency can remain deprecated; rolling back a security fix or adding a new suppression does not remediate that condition. Any change to deprecation enforcement needs a separate pipeline/policy decision.
+
 Use equivalent registry, workspace and filter coverage before/after. Count distinct canonical GHSA identifiers in the complete graph; report raw record/version counts separately and production independently. Do not add production to complete totals. A production-only reduction caused by reclassification is not a fix. Failed snapshots have unknown counts.
 
 For every advisory, retain authoritative affected/patched ranges, resolved versions, all recursive `yarn why` paths and each owning parent's declared constraint. Account for duplicate copies and existing overrides. Inspect runtime imports and build/test use; distinguish potential packaged exposure from verified image contents and exploitability.

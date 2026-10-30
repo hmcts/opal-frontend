@@ -21,6 +21,14 @@ All entries below are unresolved, not accepted risks. Complete version/path evid
 
 Assignment, tracking, approval and review/expiry remain unverified for every row. The retained OpenTelemetry baseline also names now-absent Core 2.6.1: that portion is stale while Core 1.30.1 remains. Flag the mismatch rather than rewriting it into a new acceptance. Deprecations are maintenance records; changed deprecation versions must not be automatically suppressed.
 
+The Core finding requires work in the shared Node telemetry dependency: its published Application Insights 2 range requires Core 1. A consumer-side major override would bypass that parent contract. A supported migration must preserve request, dependency and trace collection, cloud-role configuration, SSO/proxy correlation and browser configuration transfer. Updating Application Insights alone does not establish removal of the deprecated trace SDK packages; inspect its complete resulting graph as well.
+
+## Unresolved maintenance decisions
+
+`@opentelemetry/sdk-trace-base` and `@opentelemetry/sdk-trace-web` have publisher deprecation notices directing consumers to `@opentelemetry/sdk-trace`. The installed 2.12.0 versions remain on the Application Insights/Azure instrumentation route, and the selected CNP gate treats their audit records as blocking. These notices are distinct from the Core vulnerability and have no CVE IDs. Supported parents still reference the deprecated package names, so a version refresh alone does not resolve them.
+
+Coordinate the owning telemetry packages' migration and a separate decision on deprecation enforcement. No new deprecation suppression, enforcement bypass or exception is authorised by this register. Ownership, tracking and any required approval remain unverified.
+
 ## Required evidence for an authorised exception
 
 | Field              | Evidence                                                                            |
