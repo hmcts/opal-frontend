@@ -3807,9 +3807,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@hmcts/opal-frontend-common@npm:0.0.114":
-  version: 0.0.114
-  resolution: "@hmcts/opal-frontend-common@npm:0.0.114"
+"@hmcts/opal-frontend-common@npm:0.0.116":
+  version: 0.0.116
+  resolution: "@hmcts/opal-frontend-common@npm:0.0.116"
   dependencies:
     "@microsoft/applicationinsights-web": "npm:^3.3.6"
     "@ministryofjustice/frontend": "npm:^11.0.0"
@@ -3831,7 +3831,7 @@ __metadata:
   peerDependenciesMeta:
     "@ngrx/signals":
       optional: true
-  checksum: 10/96b0f3d0715124d7b9b4b6c360618601fac586b25b7f96a4f9f512dcd47408c8f0cd4c6e6d884410f4f6d47c0fbf18aad550458911cf7145010a997de120d446
+  checksum: 10/f8a4b6933f4f7b1e4032dfa608eba51946fbeaa03d414ee3b0751cc547f5d6d2eddd0101cab74e70d7596f3b6902aa9aba7c1e57b62c8e10ac70b35028f515f2
   languageName: node
   linkType: hard
 
@@ -15671,7 +15671,7 @@ __metadata:
     "@hmcts/info-provider": "npm:^1.1.0"
     "@hmcts/nodejs-healthcheck": "npm:^1.8.5"
     "@hmcts/nodejs-logging": "npm:^4.0.4"
-    "@hmcts/opal-frontend-common": "npm:0.0.114"
+    "@hmcts/opal-frontend-common": "npm:0.0.116"
     "@hmcts/opal-frontend-common-cypress": "npm:0.0.5"
     "@hmcts/opal-frontend-common-node": "npm:^0.0.45"
     "@hmcts/properties-volume": "npm:^1.1.0"
