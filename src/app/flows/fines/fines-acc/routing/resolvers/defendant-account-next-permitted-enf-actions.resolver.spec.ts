@@ -51,7 +51,7 @@ describe('nextPermittedEnfActionsResolver', () => {
     );
 
     expect(mockOpalFinesService.getDefendantAccountEnforcementStatus).toHaveBeenCalledWith(12345);
-    expect(mockOpalFinesService.getResults).toHaveBeenCalledWith(['WOC', 'WOA']);
+    expect(mockOpalFinesService.getResults).toHaveBeenCalledWith(['WOC', 'WOA'], { active: true });
     expect(result).toEqual(FINES_ACC_ENF_ACTION_SELECT_NEXT_PERMITTED_ENF_ACTIONS_MOCK);
   });
 
@@ -68,7 +68,7 @@ describe('nextPermittedEnfActionsResolver', () => {
       firstValueFrom(nextPermittedEnfActionsResolver(mockRoute, {} as never) as never),
     );
 
-    expect(mockOpalFinesService.getResults).toHaveBeenCalledWith(['NOENF', 'PRIS', 'WOC']);
+    expect(mockOpalFinesService.getResults).toHaveBeenCalledWith(['NOENF', 'PRIS', 'WOC'], { active: true });
     expect(result).toEqual(FINES_ACC_ENF_ACTION_SELECT_NEXT_PERMITTED_ENF_ACTIONS_MOCK);
   });
 
@@ -85,6 +85,7 @@ describe('nextPermittedEnfActionsResolver', () => {
     );
 
     expect(mockOpalFinesService.getResults).toHaveBeenCalledWith([], {
+      active: true,
       enforcement: true,
       enforcement_override: false,
     });
@@ -105,6 +106,7 @@ describe('nextPermittedEnfActionsResolver', () => {
     );
 
     expect(mockOpalFinesService.getResults).toHaveBeenCalledWith([], {
+      active: true,
       enforcement: true,
       enforcement_override: false,
     });

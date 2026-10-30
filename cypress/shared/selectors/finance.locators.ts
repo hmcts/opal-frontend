@@ -51,4 +51,9 @@ export const ManualCashInputLocators = {
   tillDetailsBusinessUnitValue: '#fines-mci-till-details-summaryBusiness-unitValue',
   addPaymentButton: '#fines-mci-add-payment',
   deleteTillLink: '#fines-mci-delete-till',
+  paymentCategoryPage: '#fines-mci-create-till-payment-category',
+  paymentCategoryBusinessUnit: '#fines-mci-create-till-payment-category .govuk-caption-l',
+  paymentCategoryHeading: '#fines-mci-create-till-payment-category h1',
+  paymentCategoryForm: '#fines-mci-create-till-payment-category form',
+  paymentCategoryRadio: (value: string): string => `input[name="paymentCategory"][value="${value}"]`,
 } as const;
