@@ -505,6 +505,41 @@ describe('FinesApiProcessAllocateComponent', () => {
       expect(native().textContent).toContain('There are no outstanding tills to allocate');
     });
 
+    it('keeps till checkbox selection local without marking the shared journey as dirty', () => {
+      startAllocate();
+      finesApiStore.setStateChanges(false);
+
+      native().querySelector<HTMLInputElement>('#fines-api-allocate-till-123')!.click();
+      fixture.detectChanges();
+
+      expect(native().textContent).toContain('1 of 1 tills selected.');
+      expect(finesApiStore.selectedBusinessUnitIds()).toEqual([77, 80]);
+      expect(finesApiStore.selectedFileIds()).toEqual([]);
+      expect(finesApiStore.stateChanges()).toBe(false);
+      expect(finesApiStore.unsavedChanges()).toBe(false);
+    });
+
+    it('allows Back to Select Business Units when only tills are selected', async () => {
+      startAllocate();
+      native().querySelector<HTMLInputElement>('#fines-api-allocate-till-123')!.click();
+      fixture.detectChanges();
+      mockCurrentNavigationFinalUrl('/fines/auto-payment-in/select-business-units');
+
+      expect(native().textContent).toContain('1 of 1 tills selected.');
+      expect(component.canDeactivate()).toBe(true);
+
+      component['navigateBack']();
+      await fixture.whenStable();
+
+      expect(routerNavigate).toHaveBeenCalledWith([FINES_API_ROUTING_PATHS.children.selectBusinessUnits], {
+        relativeTo: activatedRouteParent,
+        state: { resetFinesApiState: true },
+      });
+      expect(finesApiStore.selectedBusinessUnitIds()).toEqual([]);
+      expect(finesApiStore.selectedFileIds()).toEqual([]);
+      expect(finesApiStore.unsavedChanges()).toBe(false);
+    });
+
     it('refreshes both areas together and clears selection even when till IDs are unchanged', () => {
       startAllocate();
       native().querySelector<HTMLInputElement>('#fines-api-allocate-till-123')!.click();

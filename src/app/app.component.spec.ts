@@ -47,6 +47,7 @@ import { FINES_ACC_DEFENDANT_ROUTING_PATHS } from './flows/fines/fines-acc/routi
 import { FINES_ACC_MINOR_CREDITOR_ROUTING_PATHS } from './flows/fines/fines-acc/routing/constants/fines-acc-minor-creditor-routing-paths.constant';
 import { FINES_CON_ROUTING_PATHS } from './flows/fines/fines-con/routing/constants/fines-con-routing-paths.constant';
 import { FINES_MAC_ROUTING_PATHS } from './flows/fines/fines-mac/routing/constants/fines-mac-routing-paths.constant';
+import { FinesApiStore } from './flows/fines/fines-api/stores/fines-api.store';
 const mockTokenExpiry: ISessionTokenExpiry = SESSION_TOKEN_EXPIRY_MOCK;
 const DEFAULT_RELEASE_FEATURE_FLAGS = {
   [RELEASE_1A_FEATURE_FLAG]: true,
@@ -230,7 +231,7 @@ describe('AppComponent - browser', () => {
 
     component.handleAuthentication();
 
-    expect(spy).toHaveBeenCalled();
+    expect(spy).toHaveBeenCalledExactlyOnceWith(SSO_ENDPOINTS.login);
     expect(mockDocumentLocation.location.href).toBe(SSO_ENDPOINTS.login);
   });
 
@@ -246,9 +247,33 @@ describe('AppComponent - browser', () => {
 
     component.handleAuthentication();
 
-    expect(spy).toHaveBeenCalled();
+    expect(spy).toHaveBeenCalledExactlyOnceWith(SSO_ENDPOINTS.logout);
     expect(mockDocumentLocation.location.href).toBe(SSO_ENDPOINTS.logout);
   });
+
+  it.each(['business units', 'files'] as const)(
+    'should request logout without application confirmation when ACI has selected %s',
+    (selection) => {
+      globalStore.setAuthenticated(true);
+      const finesApiStore = TestBed.inject(FinesApiStore);
+      finesApiStore.setSelectedBusinessUnitIds([77]);
+      if (selection === 'files') {
+        finesApiStore.setSelectedFileIds(['123']);
+      }
+      expect(finesApiStore.unsavedChanges()).toBe(true);
+
+      const fixture = TestBed.createComponent(AppComponent);
+      const component = fixture.componentInstance;
+      const redirectSpy = vi.spyOn(component, 'handleRedirect').mockImplementation(() => {});
+      const confirmSpy = vi.spyOn(window, 'confirm').mockReturnValue(false);
+
+      component.handleAuthentication();
+
+      expect(redirectSpy).toHaveBeenCalledExactlyOnceWith(SSO_ENDPOINTS.logout);
+      expect(confirmSpy).not.toHaveBeenCalled();
+      confirmSpy.mockRestore();
+    },
+  );
 
   it('should unsubscribe from the timeout interval subscription', () => {
     const fixture = TestBed.createComponent(AppComponent);
