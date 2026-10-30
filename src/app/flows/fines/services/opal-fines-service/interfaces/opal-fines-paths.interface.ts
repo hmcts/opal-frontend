@@ -21,5 +21,7 @@ export interface IOpalFinesPaths {
   reports: string;
   reportInstances: string;
   interfaceJobsSummary: string;
+  tills: string;
+  sourceMappings: string;
   processInterfaceJobs: string;
 }

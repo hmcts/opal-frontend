@@ -42,7 +42,20 @@
     }
   }
   @case (tabKeys.allocate) {
-    <!-- Allocate tab component will be loaded here by its implementation ticket. -->
+    @if (tabAllocate$ | async; as tabData) {
+      <app-fines-api-allocate [tabData]="tabData" (refreshRequested)="refreshAllocateData()"></app-fines-api-allocate>
+    } @else {
+      <div class="govuk-grid-column-full">
+        <button
+          id="fines-api-allocate-refresh"
+          type="button"
+          class="govuk-button govuk-button--secondary"
+          (click)="refreshAllocateData()"
+        >
+          {{ allocateContent.refresh }}
+        </button>
+      </div>
+    }
   }
   @case (tabKeys.ignored) {
     <!-- Ignored files tab component will be loaded here by its implementation ticket. -->
