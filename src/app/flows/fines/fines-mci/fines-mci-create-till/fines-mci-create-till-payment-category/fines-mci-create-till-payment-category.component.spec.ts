@@ -116,4 +116,19 @@ describe('FinesMciCreateTillPaymentCategoryComponent', () => {
     expect(window.dispatchEvent(beforeUnloadEvent)).toBe(false);
     expect(beforeUnloadEvent.defaultPrevented).toBe(true);
   });
+
+  it('restores leave protection for a seeded draft before any further input', () => {
+    finesMciStore.setDraftJourney('criminal');
+    const draftFixture = TestBed.createComponent(FinesMciCreateTillPaymentCategoryComponent);
+    draftFixture.detectChanges();
+    const component = draftFixture.componentInstance;
+    const beforeUnloadEvent = new Event('beforeunload', { cancelable: true });
+
+    expect(
+      (draftFixture.nativeElement as HTMLElement).querySelector<HTMLInputElement>('#paymentCategory')?.checked,
+    ).toBe(true);
+    expect(component['canDeactivate']()).toBe(false);
+    expect(window.dispatchEvent(beforeUnloadEvent)).toBe(false);
+    expect(beforeUnloadEvent.defaultPrevented).toBe(true);
+  });
 });

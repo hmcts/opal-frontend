@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, Component, HostListener, inject } from '@angular/core';
+import { ChangeDetectionStrategy, Component, HostListener, inject, OnInit } from '@angular/core';
 import { IAbstractFormBaseForm } from '@hmcts/opal-frontend-common/components/abstract/abstract-form-base/interfaces';
 import { AbstractFormParentBaseComponent } from '@hmcts/opal-frontend-common/components/abstract/abstract-form-parent-base';
 import { FinesMciCreateTillPaymentCategoryFormComponent } from './fines-mci-create-till-payment-category-form/fines-mci-create-till-payment-category-form.component';
@@ -12,8 +12,13 @@ import { IFinesMciCreateTillPaymentCategoryFormState } from './interfaces/fines-
   templateUrl: './fines-mci-create-till-payment-category.component.html',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class FinesMciCreateTillPaymentCategoryComponent extends AbstractFormParentBaseComponent {
+export class FinesMciCreateTillPaymentCategoryComponent extends AbstractFormParentBaseComponent implements OnInit {
   protected readonly finesMciStore = inject(FinesMciStore);
+
+  /** Restores leave protection for a category draft restored into the child form. */
+  public ngOnInit(): void {
+    this.stateUnsavedChanges = this.finesMciStore.draftJourney() !== null;
+  }
 
   /** Handles Continue, saving the selected journey as a draft and opening it. */
   public handleSubmit(form: IAbstractFormBaseForm<IFinesMciCreateTillPaymentCategoryFormState>): void {
