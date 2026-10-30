@@ -108,6 +108,18 @@ describe('FinesMciCreateTillPaymentCategoryComponent', () => {
     expect(finesMciStore.draftJourney()).toBeNull();
   });
 
+  it('keeps leave protection active when Cancel is selected after changing category', () => {
+    const navigateSpy = vi.spyOn(router, 'navigate').mockResolvedValue(true);
+    const component = fixture.componentInstance;
+    component.handleUnsavedChanges(true);
+
+    component.handleCancel();
+
+    expect(component['canDeactivate']()).toBe(false);
+    expect(navigateSpy).toHaveBeenCalledWith(['details'], { relativeTo: null });
+    expect(finesMciStore.draftJourney()).toBeNull();
+  });
+
   it('tracks child form changes for route and browser leave warnings', () => {
     fixture.componentInstance.handleUnsavedChanges(true);
     const beforeUnloadEvent = new Event('beforeunload', { cancelable: true });
