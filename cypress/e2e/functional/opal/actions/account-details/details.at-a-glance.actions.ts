@@ -56,7 +56,16 @@ export class AccountDetailsAtAGlanceActions {
       cy.get(selector, this.common.getTimeoutOptions())
         .should('be.visible')
         .invoke('text')
-        .then((text) => expect(this.normalize(text).toLowerCase()).to.contain(this.normalize(value).toLowerCase()));
+        .then((text) => {
+          const actual = this.normalize(text).toLowerCase();
+          const expectedValue = this.normalize(value).toLowerCase();
+
+          if (normalizedLabel === 'national insurance number') {
+            expect(actual.replace(/\s/g, '')).to.contain(expectedValue.replace(/\s/g, ''));
+          } else {
+            expect(actual).to.contain(expectedValue);
+          }
+        });
     });
   }
 
