@@ -92,6 +92,7 @@ describe('FinesMciCreateTillSelectBuComponent', () => {
     component.handleSubmit();
 
     expect(finesMciStore.businessUnit()).toEqual(OPAL_FINES_BUSINESS_UNIT_REF_DATA_MOCK.refData[0]);
+    expect(finesMciStore.tills()).toHaveLength(1);
     expect(navigateSpy).toHaveBeenCalledWith(['/', 'fines', 'manual-cash-input', 'create', 'till', 'details']);
   });
 
